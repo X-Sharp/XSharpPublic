@@ -36,9 +36,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL cName     := SELF:Encoding:GetString( bName, 0, bName:Length) AS STRING
                 cName           := cName:TrimEnd(<CHAR>{'\0'})
                 VAR tag         := CdxTag{_bag,  nRecno, cName:Trim()}
-                if tag:IsOpen
-                    _tags:Add(tag)
-                ELSEIF oError == NULL
+                _tags:Add(tag)
+                IF !tag:IsOpen
                     oError := RuntimeState.LastRddError
                 ENDIF
             NEXT
@@ -99,13 +98,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
                 LOCAL action := SELF:Add(tag:Header:PageNo, bytes) AS CdxAction
                 IF action:Type == CdxActionType.ExpandRecnos
-                    VAR leaves := SELF:GetLeaves()
+                    VAR leaves := SELF:GetKeys()
                     LOCAL stream    AS Stream
                     LOCAL fileSize  AS LONG
                     stream   := FGetStream(_bag:_hFile)
                     fileSize := (LONG) stream:Length
                     SELF:SetRecordBits(fileSize)
-                    SELF:SetLeaves(leaves, 0, leaves:Count)
+                    SELF:SetKeys(leaves, 0, leaves:Count)
                     action := SELF:Add(tag:Header:PageNo, bytes)
                     Debug.Assert(action:IsOk)
                 ENDIF

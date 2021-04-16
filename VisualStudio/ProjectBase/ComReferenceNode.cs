@@ -21,6 +21,7 @@ using Microsoft.Win32;
 using System.Collections.Generic;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -101,7 +102,10 @@ namespace Microsoft.VisualStudio.Project
         public string WrapperTool
         {
             get { return this.ItemNode.GetMetadata(ProjectFileConstants.WrapperTool); }
-            set { this.ItemNode.SetMetadata(ProjectFileConstants.WrapperTool, value); }
+            set {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                this.ItemNode.SetMetadata(ProjectFileConstants.WrapperTool, value);
+            }
         }
 
         public int MinorVersionNumber
@@ -116,7 +120,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
         private Automation.OAComReference comReference;
-        internal override object Object
+        public override object Object
         {
             get
             {
@@ -142,6 +146,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 this.typeGuid = new Guid(typeGuidAsString);
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             this.majorVersionNumber = this.ItemNode.GetMetadata(ProjectFileConstants.VersionMajor);
             this.minorVersionNumber = this.ItemNode.GetMetadata(ProjectFileConstants.VersionMinor);
@@ -225,6 +230,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 this.ItemNode = this.GetProjectElementBasedOnInputFromComponentSelectorData();
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             this.SetProjectItemsThatRelyOnReferencesToBeResolved(true);
         }
@@ -279,6 +285,7 @@ namespace Microsoft.VisualStudio.Project
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
         private ProjectElement GetProjectElementBasedOnInputFromComponentSelectorData()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             ProjectElement element = new ProjectElement(this.ProjectMgr, this.typeName, ProjectFileConstants.COMReference);
 
@@ -310,6 +317,7 @@ namespace Microsoft.VisualStudio.Project
         {
             // Call MSBuild to build the target ResolveComReferences
             bool success;
+            ThreadHelper.ThrowIfNotOnUIThread();
             ErrorHandler.ThrowOnFailure(this.ProjectMgr.BuildTarget(MsBuildTarget.ResolveComReferences, out success));
             //if(!success)
                 //throw new InvalidOperationException();

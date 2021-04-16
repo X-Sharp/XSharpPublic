@@ -10,8 +10,8 @@ USING System.Reflection
 /// <summary>Query current and/or set new active collation.</summary>
 /// <param name="nCollation">the numeric identifier for the collation table to be selected. Must be one of the values from the XppCollations enum of a simple number</param>
 /// <returns>The numeric identifier of the active collation table </returns>
-/// <seealso cref='T:XSharp.XPP.XppCollations' />
-/// <seealso cref='O:XSharp.XPP.Functions.SetCollationTable' />
+/// <seealso cref='XppCollations' />
+/// <seealso cref='SetCollationTable' />
 FUNCTION SetCollation(nCollation) AS LONG CLIPPER
     LOCAL nOld := @@Set(Set.Collation) AS LONG
     IF PCount() > 0 .AND. IsNumeric(nCollation)
@@ -25,8 +25,8 @@ FUNCTION SetCollation(nCollation) AS LONG CLIPPER
 /// <param name="aTable">a one dimensional array with 256 elements. It must contain numeric values representing the weighing factors for single characters.
 /// The ASCII value of a character plus 1 defines the array element that contains the weighing factor for that character. </param>
 /// <returns>a one dimensional array holding the weighing factors of characters for the active collation. </returns>
-/// <seealso cref='T:XSharp.XPP.XppCollations' />
-/// <seealso cref='O:XSharp.XPP.Functions.SetCollation' />
+/// <seealso cref='XppCollations' />
+/// <seealso cref='SetCollation' />
 FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY CLIPPER
     LOCAL liEnum AS LONG
     LOCAL aCollation AS ARRAY
@@ -70,9 +70,9 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY CLIPPER
 //         ENDIF
     ENDIF
     IF aBytes != NULL
-        aCollation := {}
+        aCollation := ArrayNew((DWORD) aBytes:Length)
         FOR VAR nI := 1 TO aBytes:Length
-            AAdd(aCollation, aBytes[nI])
+            aCollation[nI] := aBytes[nI]
         NEXT
     ELSE
         // Create aCollation from Windows Sort Routine

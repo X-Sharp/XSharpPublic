@@ -1,48 +1,68 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
+
 USING System.Data
-using System.Diagnostics
+USING System.Diagnostics
+/// <include file="Sql.xml" path="doc/SQLCatalogQuery/*" />
+[XSharp.Internal.TypesChanged];
 [DebuggerDisplay( "SQLCatalog {Collection,nq}" )] ;
 CLASS SQLCatalogQuery INHERIT SQLSelect
-    PROTECT oCatalog    AS DataTable    
+    PROTECT oCatalog    AS DataTable
     PROTECT cCollection AS STRING
-    CONSTRUCTOR( oSQLConnection ) 
+/// <include file="Sql.xml" path="doc/SQLCatalogQuery.ctor/*" />
+    CONSTRUCTOR( oSQLConnection )
         SUPER( NIL, oSQLConnection )
-        RETURN 
+        RETURN
 
-    PROPERTY Collection AS STRING GET cCollection 
 
+/// <include file="Sql.xml" path="doc/SQLCatalogQuery.Collection/*" />
+    PROPERTY Collection AS STRING GET cCollection
+
+
+/// <include file="Sql.xml" path="doc/SQLCatalogQuery._Open/*" />
     METHOD _Open(oTable AS DataTable) AS VOID
-        IF oCatalog == NULL 
+        IF oCatalog == NULL
             oCatalog := oTable
             oTable:AcceptChanges()
             IF String.IsNullOrEmpty(SELF:cTableName)
                 cTableName := oTable:TableName
             ENDIF
         ENDIF
-    
 
-    METHOD __GoCold AS LOGIC STRICT 
+
+
+
+ /// <exclude />
+    METHOD __GoCold AS LOGIC STRICT
         RETURN TRUE
-    
-    METHOD Append() AS LOGIC STRICT 
+
+
+/// <include file="Sql.xml" path="doc/SQLCatalogQuery.Append/*" />
+    METHOD Append() AS LOGIC STRICT
         RETURN FALSE
-    
+
+
+/// <include file="Sql.xml" path="doc/SQLCatalogQuery.Execute/*" />
     METHOD Execute()  AS LOGIC CLIPPER
         lBof := FALSE
         lEof := FALSE
         RETURN SELF:__Open(oCatalog, NULL)
-    
-    METHOD FieldPut( uFieldID AS USUAL, uValue AS USUAL) AS USUAL 
+
+
+/// <include file="Sql.xml" path="doc/SQLCatalogQuery.FieldPut/*" />
+    METHOD FieldPut( uFieldID AS USUAL, uValue AS USUAL) AS USUAL
         RETURN uValue
-    
+
+
+/// <include file="Sql.xml" path="doc/SQLCatalogQuery.Prepare/*" />
     METHOD Prepare()  AS LOGIC
         RETURN TRUE
-    
+
+
     PROTECTED METHOD _OpenTable(cCollectionName AS STRING, oSQLConnection AS SQLConnection, aFilters AS ARRAY) AS VOID
         LOCAL aFilterArray AS STRING[]
         LOCAL lHasFilter := FALSE AS LOGIC
@@ -68,5 +88,7 @@ CLASS SQLCatalogQuery INHERIT SQLSelect
         oTable:TableName := cCollectionName
         SELF:_Open(oTable)
 END CLASS
+
+
 
 

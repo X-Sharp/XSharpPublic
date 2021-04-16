@@ -1,7 +1,9 @@
 #ifdef __VULCAN__
-   #using System.Runtime.InteropServices
+   USING System.Runtime.InteropServices
 #endif
 
+
+/// <include file="Gui.xml" path="doc/IpcClient/*" />
 CLASS IpcClient INHERIT EventContext
 	PROTECT dwIdInst AS DWORD
 	PROTECT hServHstr AS PTR
@@ -10,18 +12,24 @@ CLASS IpcClient INHERIT EventContext
 	PROTECT oIpcClientErrorEvent AS IpcClientErrorEvent
     PROTECT dwLastError AS DWORD
 
+
 	#ifdef __VULCAN__
 	   HIDDEN cbDelegate AS DDECallbackDelegate
 	#endif
 	//PP-030828 Strong typing
+ /// <exclude />
 	METHOD __UpdateClient(hData AS PTR, hTopicHstr AS PTR, hItemHstr AS PTR) AS VOID STRICT 
 	//PP-030828 Strong typing
 	
+	
+
 
 	oIpcDataUpdateEvent := IpcDataUpdateEvent{NULL_PTR,0,NULL_PTR, hTopicHstr, hItemHstr, hData, 0, 0, SELF}
 	SELF:DataUpdate(oIpcDataUpdateEvent)
 	RETURN
 
+
+/// <include file="Gui.xml" path="doc/IpcClient.ChangeData/*" />
 METHOD ChangeData(cTopic, cItem, cStringData) 
 	LOCAL hItemHstr AS PTR
 	LOCAL dwLen AS DWORD
@@ -29,6 +37,8 @@ METHOD ChangeData(cTopic, cItem, cStringData)
 	LOCAL hConvTemp AS PTR
 	LOCAL hTopicHstr AS PTR
 
+
+	
 	
 	IF !IsString(cItem)
 		WCError{#ChangData,#IpcClient,__WCSTypeError,cItem,2}:Throw()
@@ -37,12 +47,14 @@ METHOD ChangeData(cTopic, cItem, cStringData)
 		WCError{#ChangData,#IpcClient,__WCSTypeError,cStringData,3}:Throw()
 	ENDIF
 
+
 	IF !Empty(cTopic)
 		hTopicHstr := DdeCreateStringHandle(dwIdInst, String2Psz( cTopic), CP_WINANSI)
 		hConvTemp := DdeConnect(dwIdInst, hServHstr, hTopicHstr, NULL_PTR)
 	ELSE
 		hConvTemp := hConv
 	ENDIF
+
 
 	pszTemp := StringAlloc(cStringData) // Copying the string to static memory
 	dwLen := Len(cStringData) +1
@@ -54,38 +66,54 @@ METHOD ChangeData(cTopic, cItem, cStringData)
 		DdeDisconnect(hConvTemp)
 	ENDIF
 
+
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/IpcClient.ClientError/*" />
 METHOD ClientError(oIpcClientErrorEvent) 
 	LOCAL selected AS DWORD
 	LOCAL __WCSIpcError AS DWORD
 
+
+	
 	
 	selected := oIpcClientErrorEvent:ErrorType
 	DO CASE
 	CASE (selected == IPCSERVERNOTFOUND)
 		__WCSIpcError := __WCSIpcServerNotFound
 
+
 	CASE (selected == IPCOutOfMemory)
 		__WCSIpcError := __WCSIpcOutOfMemory
+
 
 	CASE (selected == IPCTopicNotFound)
 		__WCSIpcError := __WCSIpcTopicNotFound
 
+
 	CASE (selected == IPCItemNotFound)
 		__WCSIpcError := __WCSIpcItemNotFound
+
 
 	ENDCASE
 	WCError{#ClientError,#IpcClient,__WCSIpcError}:Throw()
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/IpcClient.DataUpdate/*" />
 METHOD DataUpdate(oIpcDataUpdateEvent) 
+	
 	
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/IpcClient.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	LOCAL i, dwLen AS DWORD
 	LOCAL hConv AS PTR
+
+
 
 
 	DdeFreeStringHandle(dwIdInst, hServHstr)
@@ -99,6 +127,7 @@ METHOD Destroy()  AS USUAL CLIPPER
 		ENDIF
 	NEXT
 
+
 	IF !InCollect()
 		dwIdInst := 0
 		hServHstr := 0
@@ -108,6 +137,7 @@ METHOD Destroy()  AS USUAL CLIPPER
 	ENDIF
 	SUPER:Destroy()
 
+
 	RETURN SELF
 /// <inheritdoc />
 METHOD Dispatch(oEvent) 
@@ -115,11 +145,15 @@ METHOD Dispatch(oEvent)
 	LOCAL dwType AS DWORD
 	LOCAL hConv AS PTR
 
+
 	
+	
+
 
 	oE := oEvent //faster execution
 	dwType := oE:dwType
 	hConv := oE:hConv
+
 
 	DO CASE
 	CASE dwType == XTYP_DISConnect
@@ -132,15 +166,21 @@ METHOD Dispatch(oEvent)
 		RETURN 1L
 	ENDCASE
 
+
 	RETURN 0L
 
+
+/// <include file="Gui.xml" path="doc/IpcClient.Execute/*" />
 METHOD Execute(cTopic, cItem,cCommand) 
 	LOCAL dwLen AS DWORD
 	LOCAL pszTemp AS PSZ
 	LOCAL hTopicHstr AS PTR
 	LOCAL hConvTemp AS PTR
 
+
 	
+	
+
 
 	IF !IsString(cTopic)
 		WCError{#ChangData,#IpcClient,__WCSTypeError,cTopic,1}:Throw()
@@ -152,6 +192,7 @@ METHOD Execute(cTopic, cItem,cCommand)
 		WCError{#ChangData,#IpcClient,__WCSTypeError,cCommand,3}:Throw()
 	ENDIF
 
+
 	IF !Empty(cTopic)
 		hTopicHstr := DdeCreateStringHandle(dwIdInst, String2Psz(cTopic), CP_WINANSI)
 		hConvTemp := DdeConnect(dwIdInst, hServHstr, hTopicHstr, NULL_PTR)
@@ -159,29 +200,40 @@ METHOD Execute(cTopic, cItem,cCommand)
 		hConvTemp := hConv
 	ENDIF
 
+
 	pszTemp := StringAlloc(cCommand) // Copying the string to static memory
 	dwLen := Len(cCommand) +1
 	DdeClientTransaction(pszTemp, dwLen, hConvTemp, 0, CF_TEXT, XTYP_EXECUTE,;
 		MAX_WAIT, NULL_PTR)
+
 
 	MemFree(pszTemp)
 	IF !Empty(cTopic)
 		DdeDisconnect(hConvTemp)
 	ENDIF
 
+
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/IpcClient.IdInst/*" />
 ACCESS IdInst 
+	
 	
 	RETURN dwIdInst
 
+
+/// <include file="Gui.xml" path="doc/IpcClient.ctor/*" />
 CONSTRUCTOR(cServerName) 
 	
+	
+
 
 	SUPER()
 	IF !IsString(cServerName)
 		WCError{#Init, #IpcClient,__WCSTypeError,cServerName,1}:Throw()
 	ENDIF
+
 
 #ifdef __VULCAN__
    cbDelegate := DDECallbackDelegate{ NULL, @__DdecallbackProc() }
@@ -191,8 +243,11 @@ CONSTRUCTOR(cServerName)
 #endif
 	hServHstr := DdeCreateStringHandle(dwIdInst, String2Psz(cServerName), CP_WINANSI)
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/IpcClient.RequestData/*" />
 METHOD RequestData(oIpcTopic, continuous) 
 	LOCAL iItemListLen AS INT
 	LOCAL liLoop AS LONGINT
@@ -203,6 +258,8 @@ METHOD RequestData(oIpcTopic, continuous)
 	LOCAL hData AS PTR
     LOCAL dwErrorCode AS DWORD
 	
+	
+
 
 	cTopicName := oIpcTopic:cTopicName
 	hTopicHstr := DdeCreateStringHandle(dwIdInst, String2Psz(cTopicName), CP_WINANSI)
@@ -223,6 +280,7 @@ METHOD RequestData(oIpcTopic, continuous)
 				SELF:ClientError(oIpcClientErrorEvent)
 			ENDIF
 
+
 			IF continuous
 				hData := DdeClientTransaction(NULL_PTR, 0,hConv, hItemHstr, CF_TEXT, DWORD(_CAST,_OR(XTYP_ADVSTART, XTYPF_ACKREQ)), MAX_WAIT, NULL_PTR)
 				IF (hData = NULL_PTR)
@@ -240,7 +298,11 @@ METHOD RequestData(oIpcTopic, continuous)
     dwLastError := dwErrorCode
 	RETURN SELF
 
+
 END CLASS
+
+
+
 
 
 

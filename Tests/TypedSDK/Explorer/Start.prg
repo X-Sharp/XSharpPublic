@@ -14,6 +14,7 @@ METHOD Start()
 	LOCAL oExplorerShellWindow AS ExplorerShellWindow
 
 	oExplorerShellWindow := ExplorerShellWindow{SELF}
+    oExplorerShellWindow:Size := Dimension{1280,1024}
 	oExplorerShellWindow:Show(SHOWCENTERED)
 
 	SELF:Exec()

@@ -1,11 +1,10 @@
 
-
-
 USING System.Reflection
 USING SWF := System.Windows.Forms
 
+[XSharp.Internal.TypesChanged];
 CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
-	PROTECT oCtrl                AS SWF.Control
+	PROTECT oCtrl                AS IVOControl
 	PROTECT oParent              AS IControlParent 
 	
 	// The surface window that owns the control. This is the same as oParent except
@@ -27,7 +26,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	PROTECT oFieldSpec           AS FieldSpec
 	PROTECT lChanged             AS LOGIC
 	PROTECT __lModified          AS LOGIC
-	PROTECT oHyperLabel        AS HyperLabel
+	PROTECT oHyperLabel          AS HyperLabel
 	PROTECT lExplicitHL          AS LOGIC
 	PROTECT oServer              AS DataServer		
 	PROTECT lBaseServer          AS LOGIC
@@ -76,13 +75,13 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		lIsDestroyed := TRUE
 		RETURN
 
-	METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS SWF.Control
+	METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS IVOControl
 		RETURN GuiFactory.Instance:CreateControl(SELF:ControlType, SELF, liStyle, liExStyle)
 
-    METHOD OnControlCreated(oC AS SWF.Control) AS VOID
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
         RETURN
 
-	ACCESS __Control AS SWF.Control
+	ACCESS __Control AS IVOControl
 		RETURN oCtrl
 	
 	METHOD __AddTool(oControl AS Control) AS LOGIC STRICT 
@@ -94,7 +93,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		RETURN oDataField
 	
 	METHOD __EnsureVisibity() AS LOGIC STRICT 
-		//Todo
+		//Todo __EnsureVisibity
 		/*
 		LOCAL rCtl, rParent IS _winRECT
 		LOCAL oPoint AS Point
@@ -253,7 +252,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 	[Obsolete];
 	METHOD __ToolTipHandle() AS IntPtr STRICT 
-		// Todo
+		// Todo __EnsureVisibity
 		//	RETURN oParent:__ToolTipHandle()
 		RETURN IntPtr.Zero
 
@@ -340,19 +339,19 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		
 		RETURN 
 	
-	METHOD Activate(oEvent ) 
+	METHOD Activate(oEvent  AS Event ) 
 		// Also empty in GUI Classes
 		RETURN NIL
 
 	METHOD AddChild(oC AS OBJECT) AS VOID STRICT
 		IF SELF:__IsValid
 			DO CASE
-			CASE oC IS Control
-				SELF:oCtrl:Controls:Add(((Control)oC):__Control)
-			CASE oC IS DataWindow
-				SELF:oCtrl:Controls:Add(((DataWIndow) oC):__Frame)
-			CASE oC IS Window
-				SELF:oCtrl:Controls:Add(((Window) oC):__Surface)
+			CASE oC IS Control VAR oCtrl
+				SELF:oCtrl:Controls:Add((System.Windows.Forms.Control) oCtrl:__Control)
+			CASE oC IS DataWindow VAR oDW
+				SELF:oCtrl:Controls:Add((System.Windows.Forms.Control) oDW:__Frame)
+			CASE oC IS Window VAR oWin
+				SELF:oCtrl:Controls:Add((System.Windows.Forms.Control) oWin:__Surface)
 			ENDCASE
 			ENDIF
 		RETURN
@@ -386,21 +385,23 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	END GET
 	SET 
 		IF SELF:__IsValid 
-			oContextMenu := Value
-			IF oContextMenu != NULL_OBJECT
-				oCtrl:ContextMenu := oContextMenu:__Menu:AsContextMenu()
-			ELSE
-				oCtrl:ContextMenu := NULL_OBJECT
-			ENDIF
+			oContextMenu := VALUE
+            IF oCtrl IS System.Windows.Forms.Control VAR oC
+			    IF oContextMenu != NULL_OBJECT
+				    oC:ContextMenu := oContextMenu:__Menu:AsContextMenu()
+			    ELSE
+				    oC:ContextMenu := NULL_OBJECT
+                ENDIF
+            ENDIF
 		ENDIF
 	END SET
 	END PROPERTY
 	
-	PROPERTY SWFControl AS SWF.Control GET oCtrl
+	PROPERTY SWFControl AS IVOControl GET oCtrl
 	PROPERTY ControlID AS LONG GET SELF:wId
 	
 	METHOD CreateWindowEx(dwExStyle AS LONG, sCaption AS STRING, dwStyle AS LONG,;
-		nX AS LONG, nY AS LONG, nWidth AS LONG, nHeight AS LONG, oOwner AS Window) AS SWF.Control
+		nX AS LONG, nY AS LONG, nWidth AS LONG, nHeight AS LONG, oOwner AS Window) AS IVOControl
 		oCtrl  := 	SELF:__CreateControl(dwStyle , dwExStyle ) 
 
 		IF oCtrl != NULL_OBJECT
@@ -413,23 +414,21 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 				oCtrl:Text := sCaption
 			ENDIF
 			IF oOwner != NULL_OBJECT
-				LOCAL oType AS System.Type
-				oType := oCtrl:GetType()
-				IF oType == typeof(VOStatusStrip)
-					oOwner:__Form:Controls:Add(oCtrl)
-				ELSEIF oType == typeof(VOToolBar)
-					oOwner:__Form:Controls:Add(oCtrl)
-				ELSEIF oType == typeof(VODataGridView)
-					oOwner:__Form:Controls:Add(oCtrl)
+				IF oCtrl IS IVOStatusBar VAR oSB
+					oOwner:__Form:AddControl(oSB)
+				ELSEIF oCtrl IS VOToolBar VAR oTB
+					oOwner:__Form:AddControl(oTB)
+				ELSEIF oCtrl IS VODataGridView VAR oGrid
+					oOwner:__Form:AddControl(oGrid)
 					IF oOwner IS DataWindow
 						LOCAL oDataForm AS VODataForm
 						oDataForm := (VODataForm) oOwner:__Form
-						oDataForm:DataBrowser := oCtrl
+						oDataForm:DataBrowser := oGrid
 					ENDIF
 				ELSEIF oOwner:__HasSurface
-					oOwner:__Surface:Controls:Add(oCtrl)
+					oOwner:__Surface:AddControl(oCtrl)
 				ELSE
-					oOwner:__Form:Controls:Add(oCtrl)
+					oOwner:__Form:AddControl(oCtrl)
 				ENDIF
 			ENDIF
 			oCtrl:Location := Point{nX, nY}
@@ -437,7 +436,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		ENDIF
 		RETURN oCtrl
 	
-	METHOD Create() AS SWF.Control
+	METHOD Create() AS IVOControl STRICT
 		LOCAL oDlgItem AS ResourceDialogItem
 		LOCAL oFont AS System.Drawing.Font
 		LOCAL oDevPoint as Point
@@ -507,7 +506,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		RETURN 
 	
 	METHOD Default(oEvent) 		
-		//Todo
+		//Todo Default
 		// LOCAL oEvt := oEvent AS @@event
 		// SELF:EventReturnValue := CallWindowProc(SELF:__lpfnDefaultProc, oCtrl, oEvt:umsg, oEvt:wParam, oEvt:lParam)
 
@@ -518,8 +517,8 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		IF oCtrl != NULL_OBJECT
 			IF ! oCtrl:IsDisposed
 				// Prevent calling Dispose in a background thread
-				IF SWF.Application.MessageLoop
-					oCtrl:Dispose()
+				IF SWF.Application.MessageLoop .AND. oCtrl IS System.Windows.Forms.Control VAR oC
+					oC:Dispose()
 				ENDIF
 			ENDIF
 			oCtrl := NULL_OBJECT
@@ -543,10 +542,10 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	
 
 	METHOD DisableTheme() AS VOID STRICT
-		//Todo
+		//Todo DisableTheme
 		//RETURN SetWindowTheme(SELF:handle(),"","")
 		
-	METHOD Dispatch(oEvent) 
+	METHOD Dispatch(oEvent AS @@Event) 
 		/*
 		LOCAL oEvt := oEvent AS @@event
 		LOCAL msg AS DWORD
@@ -761,7 +760,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		ENDIF
 		RETURN Intptr.Zero
 	
-	PROTECTED PROPERTY hWnd AS IntPtr GET Handle()
+	PROTECTED PROPERTY hWnd AS IntPtr GET SELF:Handle()
 	
 	METHOD HasBorder() AS LOGIC STRICT
 		LOCAL lBorder		AS LOGIC
@@ -818,13 +817,11 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		SUPER()
 		IF oOwner != NULL_OBJECT 
             local oOwnerObject := oOwner as OBJECT
-			IF oOwnerObject IS SWF.Control
-				SELF:oCtrl := (SWF.Control) oOwner
-				SELF:oOrigin := oCtrl:Location
-				SELF:oSize	 := oCtrl:Size
-				IF oOwnerObject is IVOControl
-					LOCAL oWrapper AS IVOControl
-					oWrapper := (IVOControl) oOwner
+			IF oOwnerObject IS IVOControl VAR ownerControl
+				SELF:oCtrl    := ownerControl
+				SELF:oOrigin  := oCtrl:Location
+				SELF:oSize	  := oCtrl:Size
+				IF oOwnerObject IS IVOControlProperties VAR oWrapper
 					oWrapper:SetOwner(SELF)
 				ENDIF
 				RETURN
@@ -1131,7 +1128,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	ACCESS Owner AS OBJECT
 		RETURN SELF:oParent
 
-	STATIC METHOD OwnerAlignmentHandledByWinForms(oC AS SWF.Control, iNewType AS USUAL) AS LOGIC
+	STATIC METHOD OwnerAlignmentHandledByWinForms(oC AS IVOControl, iNewType AS USUAL) AS LOGIC
 		LOCAL lStandard AS LOGIC
 		LOCAL iType AS DWORD
 		lStandard := TRUE
@@ -1281,8 +1278,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 				dwExStyle := _AND(dwExStyle, _NOT(kExStyle))
 			ENDIF
 		ELSE
-			LOCAL iCtrl AS IVOControl
-			iCtrl := (IVOControl) (OBJECT) oCtrl			
+			VAR iCtrl := (IVOControlProperties) oCtrl 
 			liTemp := GuiWin32.GetWindowLong(hWnd, GWL_EXSTYLE)
 			iCtrl:ControlProperties:SetExStyle(kExStyle, lEnable)
 			IF lEnable
@@ -1323,8 +1319,8 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 				dwStyle := _AND(dwStyle, _NOT(kStyle))
 			ENDIF
 		ELSE
-			LOCAL iCtrl AS IVOControl
-			iCtrl := (IVOControl) (OBJECT) oCtrl			
+			LOCAL iCtrl AS IVOControlProperties
+			iCtrl := (IVOControlProperties) (OBJECT) oCtrl			
 			liTemp := GuiWin32.GetWindowLong(SELF:hWnd,GWL_STYLE)				
 			iCtrl:ControlProperties:SetStyle(kStyle, lEnable)
 			IF lEnable

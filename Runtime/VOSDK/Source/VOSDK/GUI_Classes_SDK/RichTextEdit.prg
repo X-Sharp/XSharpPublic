@@ -1,23 +1,32 @@
 #ifdef __VULCAN__
-   #using System.Runtime.InteropServices
+   USING System.Runtime.InteropServices
    INTERNAL DELEGATE RichEditCallback( dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR ) AS DWORD
 #endif
 
+
+/// <include file="Gui.xml" path="doc/RichEdit/*" />
 CLASS RichEdit INHERIT MultiLineEdit
 	PROTECT oBackgroundColor AS Color
 	PROTECT pStreamPos AS BYTE PTR
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	ACCESS __StreamPos AS PTR STRICT 
 	//PP-030828 Strong typing
 	RETURN pStreamPos
 
+
+ /// <exclude />
 ASSIGN __StreamPos(pNewPos AS PTR)  STRICT 
 	//PP-030828 Strong typing
 	pStreamPos := pNewPos
 
+
 	RETURN 
 
+
+ /// <exclude />
 ASSIGN __Value(uNewVal AS USUAL)  STRICT 
 	//PP-030828 Strong typing
 	LOCAL pBufStart AS BYTE PTR
@@ -25,19 +34,23 @@ ASSIGN __Value(uNewVal AS USUAL)  STRICT
 	LOCAL sVal AS STRING
 	LOCAL dwType AS DWORD
 
+
 	DEFAULT(@uNewVal, NULL_STRING)
 	IF !IsString(uNewVal)
 		RETURN NULL_STRING
 	ENDIF
+
 
 	sVal := uNewVal
 	pBufStart := PTR(_CAST, StringAlloc(sVal))
 	pStreamPos := pBufStart
 	dwType := IIF((Lower(Left(sVal, 5)) == "{\rtf"), SF_RTF, SF_TEXT)
 
+
 #ifdef __VULCAN__
    LOCAL gch AS GCHandle
    LOCAL del AS RichEditCallback
+   
    
    gch := GCHandle.Alloc( SELF )
 	strucEditStream:dwCookie := (DWORD) GCHandle.ToIntPtr( gch )
@@ -50,7 +63,9 @@ ASSIGN __Value(uNewVal AS USUAL)  STRICT
 #endif	
 	strucEditStream:dwError := 0
 
+
 	SendMessage(SELF:Handle(), EM_STREAMIN, dwType, LONGINT(_CAST, @strucEditStream))
+
 
 	MemFree(pBufStart)
 #ifdef __VULCAN__	
@@ -64,60 +79,89 @@ ASSIGN __Value(uNewVal AS USUAL)  STRICT
 	SUPER:__Value := uNewVal
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Alignment/*" />
 ACCESS Alignment 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
+	
 	
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_ALIGNMENT
 	SendMessage(SELF:Handle(), EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN strucParaFormat:wAlignment
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Alignment/*" />
 ASSIGN Alignment(kAlignment) 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_ALIGNMENT
 	strucParaFormat:wAlignment := kAlignment
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.BackgroundColor/*" />
 ACCESS BackgroundColor 
 	RETURN oBackgroundColor
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Background/*" />
 ASSIGN Background(oBrush) 
 	LOCAL dwColor AS DWORD
 	dwColor:=__WCGetBrushColor(oBrush)
 	SELF:BackgroundColor:=Color{dwColor,-1}
 
 
+
+
+/// <include file="Gui.xml" path="doc/RichEdit.BackgroundColor/*" />
 ASSIGN BackgroundColor(oColor) 
+
 
 	oBackgroundColor := oColor
 	SendMessage(SELF:Handle(), EM_SETBKGNDCOLOR, 0, oColor:ColorRef)
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.CanPaste/*" />
 METHOD CanPaste(dwClipboardFormat) 
 	LOCAL dwFormat AS DWORD
 	
+	
+
 
 	// EM_CANPASTE can be used to test for specific clipboard formats,
 	// using the wParam to specify the format. If 0 is specified, it
 	// tries any format currently on the clipboard.
 
+
 	DEFAULT(@dwClipboardFormat, 0)
 	dwFormat := dwClipboardFormat
 
+
 	RETURN LOGIC(_CAST, SendMessage(SELF:Handle(), EM_CANPASTE, dwFormat, 0))
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.EnableAdvancedTypography/*" />
 METHOD EnableAdvancedTypography(lEnable) 
 	//PP-030910 from S Ebert
 	LOCAL dwOption AS DWORD
+
 
 	IF IsLogic(lEnable) .AND. ! lEnable
 		dwOption := TO_SIMPLELINEBREAK
@@ -127,17 +171,23 @@ METHOD EnableAdvancedTypography(lEnable)
 	SendMessage(SELF:Handle(), EM_SETTYPOGRAPHYOPTIONS, dwOption, LONGINT(_CAST, dwOption))
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.ControlFont/*" />
 ACCESS ControlFont 
 	//PP-040322 Update from S Ebert
 	LOCAL oFont AS Font
 	LOCAL strucCharFormat IS _winCHARFORMAT
 	LOCAL wFamily AS WORD
 
+
 	
+	
+
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := DWORD(_CAST, _OR(CFM_FACE, CFM_SIZE, CFM_BOLD, CFM_ITALIC, CFM_STRIKEOUT, CFM_UNDERLINE))
 	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, 1, LONGINT(_CAST, @strucCharFormat))
+
 
 	DO CASE
 	CASE _AND(strucCharFormat:bPitchAndFamily, FF_DECORATIVE) == 1
@@ -154,7 +204,9 @@ ACCESS ControlFont
 		wFamily := FONTANY
 	ENDCASE
 
+
 	oFont := Font{wFamily, (strucCharFormat:yHeight / TWIPSCONVERSION), Psz2String(@strucCharFormat:szFaceName[1])}
+
 
 	IF _AND(strucCharFormat:dwEffects, CFE_BOLD) != 0
 		oFont:Bold := TRUE
@@ -169,16 +221,21 @@ ACCESS ControlFont
 		oFont:Strikethru := TRUE
 	ENDIF
 
+
 	RETURN oFont
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.ControlFont/*" />
 ASSIGN ControlFont (oNewFont) 
 	LOCAL strucCharFormat IS _winCHARFORMAT
 	LOCAL cFaceName AS STRING
+
 
 	// First retrieve the current effects
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := DWORD(_CAST, _OR(CFM_FACE, CFM_SIZE, CFM_BOLD, CFM_ITALIC, CFM_STRIKEOUT, CFM_UNDERLINE))
 	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, 1, LONGINT(_CAST, @strucCharFormat))
+
 
 	IF (_AND(strucCharFormat:dwEffects, CFE_BOLD) != 0 .AND. !oNewFont:Bold) .OR. ;
 		(_AND(strucCharFormat:dwEffects, CFE_BOLD) == 0 .AND. oNewFont:Bold)
@@ -197,6 +254,7 @@ ASSIGN ControlFont (oNewFont)
 		strucCharFormat:dwEffects := _XOR(strucCharFormat:dwEffects, CFE_UNDERLINE)
 	ENDIF
 
+
 	// Set the values
 	strucCharFormat:bCharSet := oNewFont:__FontCharSet
 	strucCharFormat:bPitchAndFamily := oNewFont:__FontPitchAndFamily
@@ -210,14 +268,21 @@ ASSIGN ControlFont (oNewFont)
 	// SendMessage(SELF:Handle(), EM_SETCHARFORMAT, _Or(SCF_SELECTION, SCF_WORD), LONG(_CAST, @strucCharFormat))
 	SendMessage(SELF:Handle(), EM_SETCHARFORMAT, SCF_SELECTION, LONGINT(_CAST, @strucCharFormat))
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.GetOption/*" />
 METHOD GetOption(kOption) 
 	
+	
+
 
 	// check to see if the specified option is set
 	RETURN _AND(LONGINT(kOption), SendMessage(SELF:Handle(), EM_SETOPTIONS, 0, 0)) != 0
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.GetTabStops/*" />
 METHOD GetTabStops() 
 	//PP-030910 from S Ebert
 	LOCAL strucParaFormat IS _winPARAFORMAT
@@ -228,13 +293,16 @@ METHOD GetTabStops()
 	LOCAL fTabValue  AS FLOAT
 	LOCAL aTabStops  AS ARRAY
 
+
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_TABSTOPS
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	dwTabCount := strucParaFormat:cTabCount
 	IF dwTabCount > 0
 		aTabStops := ArrayCreate(dwTabCount)
+
 
 		FOR dwI := 1 UPTO dwTabCount
 			dwTabValue := DWORD(strucParaFormat:rgxTabs[dwI])
@@ -249,17 +317,24 @@ METHOD GetTabStops()
 		NEXT  // dwI
 	ENDIF
 
+
 	RETURN aTabStops
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.GetTextRange/*" />
 METHOD GetTextRange(oRange) 
 	LOCAL strucTextRange IS _winTextRange
 	LOCAL sRet AS STRING
 
+
 	
+	
+
 
 	strucTextRange:chrg:cpMin := oRange:Min - 1
 	strucTextRange:chrg:cpMax := oRange:Max - 1
 	strucTextRange:lpstrText := MemAlloc(oRange:Max - oRange:Min + 1)
+
 
 	IF (PTR(_CAST, strucTextRange:lpstrText) != NULL_PTR)
 		SendMessage(SELF:Handle(), EM_GETTEXTRANGE, 0, LONGINT(_CAST, @strucTextRange))
@@ -267,40 +342,60 @@ METHOD GetTextRange(oRange)
 		MemFree(strucTextRange:lpstrText)
 	ENDIF
 
+
 	RETURN sRet
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.GetWordBreak/*" />
 METHOD GetWordBreak(nCharPos, kWordBreakType) 
 	
+	
+
 
 	IF kWordBreakType == REGWB_ISDELIMITER
 		RETURN LOGIC(_CAST, SendMessage(SELF:Handle(), EM_FINDWORDBREAK, kWordBreakType, nCharPos - 1))
 	ENDIF
 
+
 	RETURN SendMessage(SELF:Handle(), EM_FINDWORDBREAK, kWordBreakType, nCharPos - 1)
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.HideSelection/*" />
 METHOD HideSelection(lTemporary) 
 	
+	
+
 
 	DEFAULT(@lTemporary, TRUE)
 
+
 	SendMessage(SELF:Handle(), EM_HIDESELECTION, 1, LONGINT(_CAST, lTemporary))
+
 
 	RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.ctor/*" />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
 	//PP-040508 Update S.Ebert
 	
+	
+
 
 	LoadLibrary(String2Psz("RICHED20.DLL"))
+
 
 	IF IsNil(kStyle) .OR. !IsLong(kStyle)
 		kStyle := _OR(ES_MULTILINE, ES_AUTOHSCROLL, ES_AUTOVSCROLL)
 	ENDIF
 
+
 	SUPER(oOwner, xID, oPoint, oDimension, kStyle)
 	SELF:__ClassName := RICHEDIT_CLASS
 
+
 	SendMessage(SELF:Handle(), EM_SETEVENTMASK, 0, LONGINT(_CAST, _OR(ENM_CHANGE, ENM_PROTECTED, ENM_SCROLL, ENM_SELCHANGE, ENM_UPDATE)))
+
 
 	RETURN 
 	/*
@@ -310,7 +405,9 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	3.0 Riched20.dll
 	4.1 Msftedit.dll
 
-	The following list describes which versions of Rich Edit are included in which releases of Microsoft Windows®.
+
+	The following list describes which versions of Rich Edit are included in which releases of Microsoft Windowsï¿½.
+
 
 	Windows XP SP1 Includes Rich Edit 4.1, Rich Edit 3.0, and a Rich Edit 1.0 emulator.
 	Windows XP Includes Rich Edit 3.0 with a Rich Edit 1.0 emulator.
@@ -321,15 +418,22 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	Windows 95 Includes only Rich Edit 1.0. However, Riched20.dll is compatible with Windows 95 and may be installed by an application that requires it.
 	*/
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.LineFromCharacter/*" />
 METHOD LineFromCharacter(nCharacterPos) 
 	
+	
+
 
 	RETURN SendMessage(SELF:Handle(), EM_EXLINEFROMCHAR, 0, nCharacterPos - 1) + 1
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.LoadFromFile/*" />
 METHOD LoadFromFile(cFileName, dwFormat) 
 	LOCAL es IS _WINEDITSTREAM
 	LOCAL hFile AS PTR
 	LOCAL dwFmt AS DWORD
+
 
 	IF PCount() > 1     // dcaton was ArgCount() but ArgCount doesn't make any sense
 		DEFAULT(@dwFormat, SF_RTF) // tk new
@@ -338,11 +442,14 @@ METHOD LoadFromFile(cFileName, dwFormat)
 		dwFmt := SF_RTF
 	ENDIF
 
+
 	hFile := FOpen(cFileName, FO_READ)
+
 
 	IF hFile != F_ERROR
 		es:dwCookie := DWORD(_CAST, hFile)
 		es:dwError := 0
+		
 		
 #ifdef __VULCAN__
       LOCAL del AS RichEditCallback
@@ -352,23 +459,33 @@ METHOD LoadFromFile(cFileName, dwFormat)
 		es:pfnCallback := @__LoadCallback()
 #endif	
 
+
 		SendMessage(SELF:handle(), EM_STREAMIN, dwFmt, LONGINT(_CAST, @es)) // tk changed
+
 
 #ifdef __VULCAN__
       GC.KeepAlive( del )
 #endif
 
+
 		FClose(hFile)
+
 
 		RETURN TRUE
 	ENDIF
 
+
 	RETURN FALSE
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Margin/*" />
 METHOD Margin(nStart, nRight, nOffset) 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := DWORD(_CAST, _OR(PFM_STARTINDENT, PFM_RIGHTINDENT, PFM_OFFSET))
@@ -377,61 +494,93 @@ METHOD Margin(nStart, nRight, nOffset)
 	strucParaFormat:dxOffset := nOffset
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN 1
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Numbering/*" />
 ACCESS Numbering 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_NUMBERING
 	SendMessage(SELF:Handle(), EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN strucParaFormat:wNumbering
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Numbering/*" />
 ASSIGN Numbering(kNumbering) 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_NUMBERING
 	strucParaFormat:wNumbering := kNumbering
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.PasteSpecial/*" />
 METHOD PasteSpecial(dwClipboardFormat) 
 	
+	
+
 
 	SendMessage(SELF:Handle(), EM_PASTESPECIAL, dwClipboardFormat, 0)
 	RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.PrimaryIndent/*" />
 ACCESS PrimaryIndent 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_STARTINDENT
 	SendMessage(SELF:Handle(), EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN strucParaFormat:dxStartIndent
 
 
+
+
+/// <include file="Gui.xml" path="doc/RichEdit.PrimaryIndent/*" />
 ASSIGN PrimaryIndent(nIndent) 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_STARTINDENT
 	strucParaFormat:dxStartIndent := nIndent
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Print/*" />
 METHOD Print(oPrintingDevice, oRange) 
 	//PP-040322 Update from S Ebert
 	LOCAL strucFormatRange IS _winFormatRange
@@ -449,6 +598,7 @@ METHOD Print(oPrintingDevice, oRange)
 	LOCAL rc2 IS _WINRECT      
 	LOCAL DIM strucTextLength[2] AS DWORD
 
+
 	//RvdH 070717 Changed text length calculatio to 'precize'
 	strucTextLength[1] :=   2| 8	// GTL_PRECISE | GTL_NUMCHARS
 	strucTextLength[2] := CP_ACP
@@ -456,6 +606,7 @@ METHOD Print(oPrintingDevice, oRange)
 	IF liTextAmt = 0  //SE
 		RETURN FALSE   //SE
 	ENDIF             //SE
+
 
 	IF !IsNil(oPrintingDevice)
 		IF IsString(oPrintingDevice)
@@ -492,14 +643,18 @@ METHOD Print(oPrintingDevice, oRange)
 		strucPrintDlg:hPrintTemplate := NULL_PTR
 		strucPrintDlg:hSetupTemplate := NULL_PTR
 
+
 		IF !PrintDlg( @strucPrintDlg)
 			RETURN FALSE
 		ENDIF
 
+
 		hDC := strucPrintDlg:hDC
 	ENDIF
 
+
 	strucFormatRange:hDC := strucFormatRange:hDCTarget := hDC
+
 
 	// area to render to and area of rendering device
 	strucFormatRange:rcPage:left   := 0
@@ -507,8 +662,10 @@ METHOD Print(oPrintingDevice, oRange)
 	strucFormatRange:rcPage:right  := MulDiv(GetDeviceCaps(hdc, PHYSICALWIDTH),  1440, GetDeviceCaps(hdc, LOGPIXELSX))
 	strucFormatRange:rcPage:bottom := MulDiv(GetDeviceCaps(hdc, PHYSICALHEIGHT), 1440, GetDeviceCaps(hdc, LOGPIXELSY))
 
+
 	//strucFormatRange.rc := strucFormatRange.rcPage // start with full page
 	CopyRect(@strucFormatRange:rc, @strucFormatRange:rcPage)	//SE
+
 
 	IF (strucFormatRange:rcPage:right > 2*3*1440/4 + 1440)
 		strucFormatRange:rc:right  -= (strucFormatRange:rc:left := 3*1440/4)
@@ -516,6 +673,7 @@ METHOD Print(oPrintingDevice, oRange)
 	IF (strucFormatRange:rcPage:bottom > 3*1440)
 		strucFormatRange:rc:bottom -= (strucFormatRange:rc:top := 1440)
 	ENDIF
+
 
 	// range to print
 	IF IsNil(oRange)
@@ -526,10 +684,12 @@ METHOD Print(oPrintingDevice, oRange)
 		strucFormatRange:chrg:cpMax := oRange:Max - 1
 	ENDIF
 
+
 	// add null terminator plus 1
 	//liTextAmt += 2 //SE
 	liTextOut := 0
 	lBanding  := (_AND(GetDeviceCaps(hDC, RASTERCAPS), RC_BANDING) = RC_BANDING) // == 0) //SE wrong value, or is the name lBanding wrong ????
+
 
 	pszClassName := StringAlloc(Symbol2String(ClassName(SELF)))
 	strucDocInfo:cbSize       := _SIZEOF(_winDocInfo)
@@ -537,6 +697,7 @@ METHOD Print(oPrintingDevice, oRange)
 	strucDocInfo:lpszOutput   := NULL_PSZ
 	strucDocInfo:lpszDataType := NULL_PSZ
 	strucDocInfo:fwType       := 0
+
 
 	StartDoc(hDC, @strucDocInfo)
 	//RvdH 070717 Save rects. They are changed by the RTF control !
@@ -549,6 +710,7 @@ METHOD Print(oPrintingDevice, oRange)
 	   //RvdH 070717 Restore rects. They are changed by the RTF control !
 		CopyRect(@strucFormatRange:rc		, @rc1)
 		CopyRect(@strucFormatRange:rcPage, @rc2)
+
 
 		liTextPos := liTextOut //SE
 		IF (! lBanding)
@@ -569,6 +731,7 @@ METHOD Print(oPrintingDevice, oRange)
 			ENDIF //SE
 		ENDIF
 
+
 		EndPage(hDC)
 		strucFormatRange:chrg:cpMin := liTextOut
 		strucFormatRange:chrg:cpMax := -1
@@ -579,21 +742,31 @@ METHOD Print(oPrintingDevice, oRange)
 	DeleteDC(hDC)
 	MemFree(pszClassName)
 
+
 	RETURN TRUE
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Protected/*" />
 ACCESS Protected 
 	LOCAL strucCharFormat IS _winCHARFORMAT
 
+
 	
+	
+
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := CFM_PROTECTED
 	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, 1, LONGINT(_CAST, @strucCharFormat))
 
+
 	RETURN _AND(strucCharFormat:dwEffects, CFE_PROTECTED) != 0
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Protected/*" />
 ASSIGN Protected(lEnable) 
 	LOCAL strucCharFormat IS _winCHARFORMAT
+
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := CFM_PROTECTED
@@ -604,35 +777,51 @@ ASSIGN Protected(lEnable)
 	ENDIF
 	SendMessage(SELF:Handle(), EM_SETCHARFORMAT, _OR(SCF_SELECTION, SCF_WORD), LONGINT(_CAST, @strucCharFormat))
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.RightMargin/*" />
 ACCESS RightMargin 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_RIGHTINDENT
 	SendMessage(SELF:Handle(), EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN strucParaFormat:dxRightIndent
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.RightMargin/*" />
 ASSIGN RightMargin(nRightMargin) 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_RIGHTINDENT
 	strucParaFormat:dxRightIndent := nRightMargin
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.SaveToFile/*" />
 METHOD SaveToFile(cFileName, dwFormat) 
 	LOCAL hFile AS PTR
 	LOCAL es IS _WINEDITSTREAM
 	LOCAL dwFmt AS DWORD
+
 
 	//RvdH 071203 Fixed parameter testing
 	IF IsNumeric(dwFormat)
@@ -647,7 +836,9 @@ METHOD SaveToFile(cFileName, dwFormat)
 // 		dwFmt := SF_RTF
 // 	ENDIF
 
+
 	hFile := FCreate(cFileName, FC_NORMAL)
+
 
 	IF (hFile != F_ERROR)
 		es:dwCookie := DWORD(_CAST, hFile)
@@ -660,42 +851,61 @@ METHOD SaveToFile(cFileName, dwFormat)
 		es:pfnCallback := @__SaveCallBack()
 #endif	
 
+
 		SendMessage(SELF:handle(), EM_STREAMOUT, dwFmt, LONGINT(_CAST, @es)) // tk changed
+
 
 #ifdef __VULCAN__
       GC.KeepAlive( del )
 #endif
 
+
 		FClose(hFile)
+
 
 		RETURN TRUE
 	ENDIF
 
+
 	RETURN FALSE
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.SecondaryIndent/*" />
 ACCESS SecondaryIndent 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_OFFSET
 	SendMessage(SELF:Handle(), EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN strucParaFormat:dxOffset
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.SecondaryIndent/*" />
 ASSIGN SecondaryIndent(nIndent) 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_OFFSET
 	strucParaFormat:dxOffset := nIndent
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Seek/*" />
 METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp) 
 	//SE-060522
 	LOCAL strucFindTextEx IS _winFindTextEx
@@ -703,12 +913,16 @@ METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp)
 	LOCAL dwFlags AS DWORD
 	LOCAL liRet   AS LONGINT
 
+
 	
+	
+
 
    DEFAULT(@lMatchCase,   FALSE)
 	DEFAULT(@lWholeWord,   FALSE)
 	DEFAULT(@lReturnRange, FALSE)
 	DEFAULT(@lSearchUp,    FALSE)
+
 
 	IF lSearchUp
       dwFlags := 0
@@ -716,13 +930,16 @@ METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp)
 	   dwFlags := FR_DOWN
 	ENDIF
 
+
 	IF lMatchCase
 		dwFlags := _OR(dwFlags, FR_MATCHCASE)
 	ENDIF
 
+
 	IF lWholeWord
 		dwFlags := _OR(dwFlags, FR_WHOLEWORD)
 	ENDIF
+
 
 	pszText := StringAlloc(cText)
 	strucFindTextEx:lpstrText  := pszText
@@ -731,6 +948,7 @@ METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp)
 	liRet := SendMessage(SELF:Handle(), EM_FINDTEXTEX, dwFlags, LONGINT(_CAST, @strucFindTextEx))
 	MemFree(pszText)
 
+
 	IF lReturnRange
 		IF liRet >= 0l
 			RETURN Range{strucFindTextEx:chrgText:cpMin + 1, strucFindTextEx:chrgText:cpMax + 1}
@@ -738,8 +956,11 @@ METHOD Seek(cText, oRange, lMatchCase, lWholeWord, lReturnRange, lSearchUp)
 	   RETURN Range{0,0}
 	ENDIF
 
+
    RETURN liRet + 1l
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.SelectedText/*" />
 ACCESS SelectedText 
 	//PP-040508 Update S.Ebert
 	LOCAL strucCharRange IS _winCharRange
@@ -747,7 +968,10 @@ ACCESS SelectedText
 	LOCAL pszText        AS PSZ
 	LOCAL cText          AS STRING
 
+
 	
+	
+
 
 	SendMessage(SELF:Handle(), EM_EXGETSEL, 0, LONGINT(_CAST, @strucCharRange))
 	liLength := strucCharRange:cpMax - strucCharRange:cpMin
@@ -762,11 +986,15 @@ ACCESS SelectedText
 		ENDIF
 	ENDIF
 
+
 	RETURN cText
+
 
 	/*
 
+
 	//The old version allocates to much memory in most cases
+
 
 	dwLength := SendMessage(SELF:Handle(), WM_GETTEXTLENGTH, 0, 0)
 	pszText := MemAlloc(dwLength+1)
@@ -776,56 +1004,83 @@ ACCESS SelectedText
 	ENDIF
 	MemFree(pszText)
 
+
 	RETURN cText
 	*/
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Selection/*" />
 ACCESS Selection 
 	LOCAL strucCharRange IS _winCharRange
 
+
 	
+	
+
 
 	SendMessage(SELF:Handle(), EM_EXGETSEL, 0, LONGINT(_CAST, @strucCharRange))
 	RETURN Selection{strucCharRange:cpMin + 1, strucCharRange:cpMax + 1}
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Selection/*" />
 ASSIGN Selection(oSelection) 
 	LOCAL strucCharRange IS _winCharRange
+
 
 	strucCharRange:cpMin := oSelection:Start - 1
 	strucCharRange:cpMax := oSelection:Finish - 1
 	SendMessage(SELF:Handle(), EM_EXSETSEL, 0, LONGINT(_CAST, @strucCharRange))
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.SelectionType/*" />
 ACCESS SelectionType 
 	
+	
+
 
 	RETURN SendMessage(SELF:Handle(), EM_SELECTIONTYPE, 0, 0)
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.SetOption/*" />
 METHOD SetOption(kOption, symOperation) 
 	LOCAL dwOperation AS DWORD
 
+
+	
 	
 
+
 	DEFAULT(@symOperation, #Add)
+
 
 	DO CASE
 	CASE symOperation == #Change
 		dwOperation := ECOOP_SET
 
+
 	CASE symOperation == #Add
 		dwOperation := ECOOP_OR
 
+
 	CASE symOperation == #Keep
 		dwOperation := ECOOP_AND
+
 
 	CASE symOperation == #Remove
 		dwOperation := ECOOP_XOR
 	END CASE
 
+
 	SendMessage(SELF:Handle(), EM_SETOPTIONS, dwOperation, LONGINT(kOption))
+
 
 	RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.SetTabStops/*" />
 METHOD SetTabStops(aTabStops) 
 	//PP-030910 from S Ebert
 	LOCAL strucParaFormat IS _winPARAFORMAT
@@ -836,6 +1091,7 @@ METHOD SetTabStops(aTabStops)
 	LOCAL fTabValue  AS FLOAT
 	LOCAL nTabStop   AS LONG
 	LOCAL dwCount    AS LONG
+
 
 	IF IsNumeric(aTabStops)
 		// It should be a nummer from which the TabStops should be calculated
@@ -848,11 +1104,13 @@ METHOD SetTabStops(aTabStops)
 		NEXT
 	ENDIF
 
+
 	IF IsArray(aTabStops)
 		dwTabCount := Min(ALen(aTabStops), 32)
 		strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 		strucParaFormat:dwMask := PFM_TABSTOPS
 		strucParaFormat:cTabCount := SHORTINT(dwTabCount)
+
 
 		FOR dwI := 1 UPTO dwTabCount
 			IF IsArray(aTabStops[dwI])
@@ -870,54 +1128,81 @@ METHOD SetTabStops(aTabStops)
 	ENDIF
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.ShowSelection/*" />
 METHOD ShowSelection(lTemporary) 
 	
+	
+
 
 	DEFAULT(@lTemporary, TRUE)
 
+
 	SendMessage(SELF:Handle(), EM_HIDESELECTION, 0, LONGINT(_CAST, lTemporary))
+
 
 	RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.TabStopCount/*" />
 ACCESS TabStopCount 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_TABSTOPS
 	SendMessage(SELF:Handle(), EM_GETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN strucParaFormat:cTabCount
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.TabStopCount/*" />
 ASSIGN TabStopCount(nTabStops) 
 	LOCAL strucParaFormat IS _winPARAFORMAT
 
+
 	
+	
+
 
 	strucParaFormat:cbSize := _SIZEOF(_winPARAFORMAT)
 	strucParaFormat:dwMask := PFM_TABSTOPS
 	strucParaFormat:cTabCount := nTabStops
 	SendMessage(SELF:Handle(), EM_SETPARAFORMAT, 0, LONGINT(_CAST, @strucParaFormat))
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.TextColor/*" />
 ACCESS TextColor 
 	LOCAL strucCharFormat IS _winCHARFORMAT
 	LOCAL oColor AS Color
 
+
 	
+	
+
 
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
 	strucCharFormat:dwMask := CFM_COLOR
 	SendMessage(SELF:Handle(), EM_GETCHARFORMAT, 1, LONGINT(_CAST, @strucCharFormat))
 
+
 	//PP-031001: Fix color assignment
 	oColor := Color{}
 	oColor:ColorRef := strucCharFormat:crTextColor
 
+
 	RETURN oColor
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.TextColor/*" />
 ASSIGN TextColor(oColor) 
 	LOCAL strucCharFormat IS _winCHARFORMAT
 	strucCharFormat:cbSize := _SIZEOF(_winCHARFORMAT)
@@ -925,37 +1210,50 @@ ASSIGN TextColor(oColor)
 	strucCharFormat:crTextColor := oColor:ColorRef
 	SendMessage(SELF:Handle(), EM_SETCHARFORMAT, _OR(SCF_SELECTION, SCF_WORD), LONGINT(_CAST, @strucCharFormat))
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.TextLimit/*" />
 ASSIGN TextLimit(dwTextLimit) 
 	
+	
+
 
 	SendMessage(SELF:Handle(), EM_EXLIMITTEXT, 0, dwTextLimit)
 	RETURN 
 
+
+ /// <exclude />
 METHOD __GetValue(dwType AS DWORD) AS STRING
 	LOCAL pBufStart AS BYTE PTR
 	LOCAL strucEditStream IS _winEDITSTREAM
 	LOCAL liSize AS LONGINT
 	LOCAL sReturn AS STRING
 
+
 	liSize := 4 * SendMessage(SELF:Handle(), EM_GETLIMITTEXT, 0, 0)
+
 
 	IF (liSize == 0)
 		RETURN NULL_STRING
 	ENDIF
 
+
 	pBufStart := MemAlloc(DWORD(liSize))
 	MemSet(pBufStart, 0, DWORD(liSize))
 	pStreamPos := pBufStart
+
 
 	IF (pStreamPos == NULL_PTR)
 		RETURN NULL_STRING
 	ENDIF
 
+
 #ifdef __VULCAN__
    LOCAL gch AS System.Runtime.InteropServices.GCHandle
    LOCAL del AS RichEditCallback
+   
    
    gch := GCHandle.Alloc( SELF )
 	strucEditStream:dwCookie := (DWORD) GCHandle.ToIntPtr( gch )
@@ -968,7 +1266,9 @@ METHOD __GetValue(dwType AS DWORD) AS STRING
 #endif	
 	strucEditStream:dwError := 0
 
+
 	SendMessage(SELF:Handle(), EM_STREAMOUT, dwType, LONGINT(_CAST, @strucEditStream))
+
 
 	sReturn := Psz2String(PSZ(_CAST, pBufStart))
 	MemFree(pBufStart)
@@ -980,21 +1280,31 @@ METHOD __GetValue(dwType AS DWORD) AS STRING
 #endif	
 	pStreamPos := NULL_PTR
 
+
 	RETURN sReturn
 
+
+/// <include file="Gui.xml" path="doc/RichEdit.Value/*" />
 ACCESS Value 
-   RETURN __GetValue(SF_RTF)
+   RETURN SELF:__GetValue(SF_RTF)
    
+   
+/// <include file="Gui.xml" path="doc/RichEdit.ValueAsText/*" />
 ACCESS ValueAsText
-   RETURN __GetValue(SF_TEXT)
+   RETURN SELF:__GetValue(SF_TEXT)
    
+   
+/// <include file="Gui.xml" path="doc/RichEdit.Value/*" />
 ASSIGN Value(uNewValue) 
 	RETURN SELF:__Value := uNewValue
 END CLASS
 
+
+ /// <exclude />
 FUNCTION __GetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
 	LOCAL oRTFEdit AS RichEdit
 	LOCAL pStreamPos AS BYTE PTR
+
 
 #ifdef __VULCAN__
    LOCAL gch := GCHandle.FromIntPtr( (IntPtr) dwCookie ) AS GCHandle
@@ -1003,6 +1313,7 @@ FUNCTION __GetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb
 	oRTFEdit := OBJECT(_CAST, dwCookie)
 #endif	
 	pStreamPos := oRTFEdit:__StreamPos
+
 
 	MemCopy(pStreamPos, pbBuff, DWORD(cb))
 	pStreamPos := pStreamPos + cb
@@ -1010,28 +1321,40 @@ FUNCTION __GetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb
 	LONGINT(pcb) := cb
 	oRTFEdit:__StreamPos := pStreamPos
 
+
 	RETURN 0
 
+
+ /// <exclude />
 FUNCTION __LoadCallback(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
 
+
 	LONGINT(pcb) := LONGINT(FRead3(PTR(_CAST, dwCookie), pbBuff, DWORD(cb)))
+
 
 	IF (LONGINT(pcb) <= 0)
 		LONGINT(pcb) := 0
 	ENDIF
 
+
 	RETURN 0
 
+
+ /// <exclude />
 FUNCTION __SaveCallBack(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
 	LONGINT(pcb) := LONGINT(FWrite3(PTR(_CAST, dwCookie), pbBuff, DWORD(cb)))
 
+
 	RETURN 0
 
+
+ /// <exclude />
 FUNCTION __SetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
 	LOCAL oRTFEdit AS RichEdit
 	LOCAL pStreamPos AS BYTE PTR
 	LOCAL liBytesLeft AS LONGINT
 	LOCAL liCopyBytes AS LONGINT
+
 
 #ifdef __VULCAN__
    LOCAL gch := GCHandle.FromIntPtr( (IntPtr) dwCookie ) AS GCHandle
@@ -1041,16 +1364,24 @@ FUNCTION __SetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb
 #endif	
 	pStreamPos := oRTFEdit:__StreamPos
 
+
 	liBytesLeft := LONGINT(_CAST, PszLen(PSZ(_CAST, pStreamPos)))
 	liCopyBytes := Min(liBytesLeft, cb)
+
 
 	MemCopy(pbBuff, pStreamPos, DWORD(liCopyBytes))
 	pStreamPos := pStreamPos + liCopyBytes
 	LONGINT(pcb) := liCopyBytes
 
+
 	oRTFEdit:__StreamPos := pStreamPos
 
+
 	RETURN 0
+
+
+
+
 
 
 

@@ -119,12 +119,18 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
     END PROPERTY
     #endregion
 
+    /// <summary>Get the fieldname for a certain field position</summary>
+    /// <param name="fieldPos">0 based Field number</param>
+    /// <returns>Field Name</returns>
     PROPERTY FieldName[fieldPos AS INT] AS STRING
         GET
             return SELF:Datasource:FieldName(fieldPos)
         END GET
     END PROPERTY
 
+    /// <summary>Get the value for a certain field position</summary>
+    /// <param name="fieldPos">0 based Field number</param>
+    /// <returns>Field Value</returns>
     PROPERTY FieldValue[fieldPos AS INT] AS OBJECT
         GET
             return SELF:Datasource:GetValue(fieldPos)

@@ -132,7 +132,7 @@ CLASS SplitView INHERIT Control
         RETURN NULL_OBJECT
          
 
-    PRIVATE METHOD __GetPaneObject(oObject AS IGUIObject) AS System.Windows.Forms.Control
+    PRIVATE METHOD __GetPaneObject(oObject AS IGUIObject) AS IVOUIObject
         IF oObject IS Control VAR oCtrl
             RETURN oCtrl:__Control
         ELSEIF oObject IS DataWindow VAR oDW
@@ -145,10 +145,10 @@ CLASS SplitView INHERIT Control
 
     METHOD __SetPanelClient(oPanel AS System.Windows.Forms.SplitterPanel, oObject AS IGuiObject) AS VOID
         IF oPanel != NULL_OBJECT
-            VAR oObj := __GetPaneObject(oObject)
+            VAR oObj := SELF:__GetPaneObject(oObject)
             oPanel:Controls:Clear()
             IF oObj != NULL
-                oPanel:Controls:Add(oObj)
+                oPanel:Controls:Add((System.Windows.Forms.Control) oObj)
                 oObj:Dock := System.Windows.Forms.DockStyle.Fill
             ENDIF
         ENDIF
@@ -190,9 +190,7 @@ CLASS SplitView INHERIT Control
         ENDIF
         RETURN
 
-
-
-	METHOD Create() AS System.Windows.Forms.Control
+	METHOD Create() AS IVOControl STRICT
 		VAR oMain := SUPER:Create()
         SELF:__AdjustSize()
         RETURN oMain
@@ -300,18 +298,18 @@ CLASS SplitView INHERIT Control
                 ENDIF
             NEXT
         ENDIF
-        _aPanes  := NULL_OBJECT
-        _aSplits := NULL_OBJECT
-		oPanes  := NULL_OBJECT
+        _aPanes         := NULL_OBJECT
+        _aSplits        := NULL_OBJECT
+		oPanes          := NULL_OBJECT
 		oBackgroundBrush := NULL_OBJECT
-		oBarBrush := NULL_OBJECT
-		oBarFrameBrush := NULL_OBJECT
+		oBarBrush       := NULL_OBJECT
+		oBarFrameBrush  := NULL_OBJECT
 
 		SUPER:Destroy()
 
 		RETURN SELF
 
-	METHOD Dispatch(oEvent) 
+	METHOD Dispatch(oEvent  AS @@Event) 
 		//LOCAL oSize 	AS Dimension
 		//LOCAL lResize 	AS LOGIC
 		//LOCAL oEvt := oEvent AS @@Event

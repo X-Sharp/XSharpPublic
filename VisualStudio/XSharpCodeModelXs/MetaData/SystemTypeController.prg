@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharpModel
 			NEXT
 			RETURN NULL
 		
-      STATIC METHOD FindType(typeName as STRING, assemblyName as STRING) AS XTypeReference
+      STATIC METHOD FindType(typeName as STRING, assemblyName as STRING) AS XPETypeSymbol
          VAR assemblies := List<XAssembly>{}
          var asm := FindAssembly(assemblyName)
          IF asm != null
@@ -96,30 +96,39 @@ BEGIN NAMESPACE XSharpModel
          return NULL
 
 
-		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XTypeReference
-			LOCAL result := NULL AS XTypeReference
-			TRY
-				WriteOutputMessage("--> FindType() "+typeName)
-				IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
-					IF typeName:Length <= (typeName:Replace(">", ""):Length + 1)
-						VAR elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
-						VAR num := (elements:Length - 1)
-						typeName := elements[ 1] + "`" + num:ToString()
-					ELSE
-						VAR pos		   := typeName:IndexOf("<")
-						VAR baseName   := typeName:Substring(0, pos)
-						VAR typeParams := typeName:Substring(pos + 1)
-						typeParams	   := typeParams:Substring(0, typeName:Length - 1):Trim()
-						pos			   := typeParams:IndexOf("<")
-						WHILE pos >= 0
-							VAR pos2  := typeParams:LastIndexOf(">")
-							typeParams := typeParams:Substring(0, pos) + typeParams:Substring(pos2 + 1):Trim()
-							pos := typeParams:IndexOf("<")
-						ENDDO
-						VAR elements := typeParams:Split(",":ToCharArray())
-						typeName := baseName + "`" + elements:Length:ToString()
-					ENDIF
+        STATIC METHOD GetTickedTypeName(typeName as STRING) AS STRING
+           IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
+				IF typeName:Length <= (typeName:Replace(">", ""):Length + 1)
+					VAR elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
+					VAR num := (elements:Length - 1)
+					typeName := elements[ 1] + "`" + num:ToString()
+				ELSE
+					VAR pos		   := typeName:IndexOf("<")
+					VAR baseName   := typeName:Substring(0, pos)
+					VAR typeParams := typeName:Substring(pos + 1)
+					typeParams	   := typeParams:Substring(0, typeName:Length - 1):Trim()
+					pos			   := typeParams:IndexOf("<")
+					WHILE pos >= 0
+						VAR pos2  := typeParams:LastIndexOf(">")
+						typeParams := typeParams:Substring(0, pos) + typeParams:Substring(pos2 + 1):Trim()
+						pos := typeParams:IndexOf("<")
+					ENDDO
+					VAR elements := typeParams:Split(",":ToCharArray())
+					typeName := baseName + "`" + elements:Length:ToString()
 				ENDIF
+            ENDIF
+            IF typeName:EndsWith("[]")
+                RETURN "System.Array"
+            ENDIF
+            RETURN typeName
+
+		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XPETypeSymbol
+			LOCAL result := NULL AS XPETypeSymbol
+			TRY
+                IF XSettings.EnableTypelookupLog
+				WriteOutputMessage("--> FindType() "+typeName)
+                ENDIF
+				typeName := GetTickedTypeName(typeName)
 				result := Lookup(typeName, assemblies)
 				IF result != NULL
 					RETURN result
@@ -151,8 +160,10 @@ BEGIN NAMESPACE XSharpModel
 				XSolution.WriteException(e)
 				result := NULL
 			FINALLY
-				WriteOutputMessage("<-- FindType() "+typeName+" " + IIF(result != NULL, result:FullName, "* not found *"))
-			END TRY
+                IF XSettings.EnableTypelookupLog
+				    WriteOutputMessage("<-- FindType() "+typeName+" " + IIF(result != NULL, result:FullName, "* not found *"))
+                ENDIF
+                END TRY
 			RETURN result
 			
 		STATIC METHOD GetNamespaces(assemblies AS IList<XAssembly>) AS IList<STRING>
@@ -192,7 +203,7 @@ BEGIN NAMESPACE XSharpModel
 			RETURN info
 		
 		
-		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS XTypeReference
+		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS XPETypeSymbol
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
  				VAR type := assembly:GetType(typeName)
@@ -234,14 +245,14 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
 		
-		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS IList<IXMember>
+		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS IList<IXMemberSymbol>
 			// First Search for a system Type
          VAR pos := typeName:IndexOf('<')
          IF pos > 0
             typeName := typeName:Substring(0, pos)+"<>"
 
          ENDIF
-         VAR result := List<IXMember>{} 
+         VAR result := List<IXMemberSymbol>{} 
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
 				IF assembly:HasExtensions

@@ -1,7 +1,10 @@
+/// <include file="Internet.xml" path="doc/SystemErrorString/*" /> 
 FUNCTION SystemErrorString  (nErr AS DWORD, cDefaultMsg AS STRING)  AS STRING STRICT
+
 
     LOCAL cRet  AS STRING
     LOCAL pMsg  AS PSZ
+
 
     IF nErr > 0
         FormatMessage(_Or(FORMAT_MESSAGE_ALLOCATE_BUFFER, FORMAT_MESSAGE_FROM_SYSTEM), ;
@@ -18,12 +21,18 @@ FUNCTION SystemErrorString  (nErr AS DWORD, cDefaultMsg AS STRING)  AS STRING ST
         cRet := cDefaultMsg
     ENDIF
 
+
     RETURN cRet
+
+
+
 
 
 
 #region defines
 DEFINE WSA_WAIT_TIMEOUT      := STATUS_TIMEOUT
+
+
 
 
 /*

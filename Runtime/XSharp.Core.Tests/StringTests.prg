@@ -162,7 +162,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	Assert.Equal(FALSE,IsSpace(""))
 	Assert.Equal(FALSE,IsSpace(NULL))
 
-
+#pragma warnings(165, off)
 	[Fact, Trait("Category", "String")];
 	METHOD LeftTest() AS VOID
 
@@ -178,7 +178,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		Assert.Equal(NULL,Left(unassigned,99))
 				
 	RETURN
-
+#pragma warnings(165, default)
 	[Fact, Trait("Category", "String")];
 	METHOD LowerTest() AS VOID
 		Assert.Equal("hello world",Lower("Hello World"))

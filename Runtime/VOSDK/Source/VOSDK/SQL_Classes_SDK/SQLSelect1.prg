@@ -1,3 +1,4 @@
+/// <include file="SQL.xml" path="doc/SQLSelect/*" />
 PARTIAL CLASS SQLSelect INHERIT DataServer
 	PROTECT oStmt           AS SQLStatement
 	PROTECT oConn				AS SQLConnection
@@ -27,6 +28,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	PROTECT nNotifyCount    AS INT
 	PROTECT lSuppressNotify AS LOGIC
 	
+	
 	PROTECT apColMem        AS ARRAY		//RvdH 050429 Now array of Record Buffers
 	PROTECT nBufferLength	AS DWORD
 	PROTECT nMaxBindColumn  AS DWORD 	//RvdH  Changed from LONG to DWORD
@@ -35,25 +37,33 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	PROTECT aDataRecord     AS ARRAY			// Buffer with SQLData Objects for Data Record (Bound )
 	PROTECT aOriginalRecord  AS ARRAY		// Buffer with SQLData Objects with Original values (Not Bound)
 	
+	
 	PROTECT aColumnAttributes AS ARRAY     // Array of SQLColumnAttributes Objects.
 	PROTECT lNullAsBlank    AS LOGIC
 	PROTECT lTimeStampAsDate AS LOGIC
 	PROTECT lReadColumnInfo	AS LOGIC			//RvdH 070716 Abused to remember lAppendFlag 
 	
+	
 	//RvdH 050413 Added some support methods
+ /// <exclude />
 	METHOD __AllocStmt() AS LOGIC STRICT 
+	
 	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:__AllocStmt()" )
 	#ENDIF
 	RETURN SELF:oStmt:__AllocStmt()
 	
+	
+ /// <exclude />
 METHOD __GetColumn(nIndex AS DWORD) AS SqlColumn
 	IF nIndex > 0 .AND. nIndex <= aLen(aSqlColumns)
 	    RETURN aSqlColumns[nIndex]
 	ENDIF
 	RETURN NULL_OBJECT
 
+
+ /// <exclude />
 METHOD __BuildUpdateStmt AS STRING STRICT 
 	// RvdH 050413 Added
 	LOCAL cUpdate       AS STRING
@@ -64,6 +74,7 @@ METHOD __BuildUpdateStmt AS STRING STRICT
 	LOCAL nIndex        AS DWORD
 	LOCAL nODBCType     AS SHORTINT
 	LOCAL nCount        AS INT
+	
 	
 	cUpdate 	:= "update " + cTableName
 	cSet 		:= " set "
@@ -79,12 +90,14 @@ METHOD __BuildUpdateStmt AS STRING STRICT
 			ENDIF
 		ENDIF
 		
+		
 		IF oData:ValueChanged
 			nCount++
 			cUpdate += cSet
 			cUpdate += cQuote
 			cUpdate += oCol:ColName
 			cUpdate += cQuote
+			
 			
 			cUpdate += __GetDataValuePSZ( oCol, ;
 				oData,    ;
@@ -100,7 +113,12 @@ METHOD __BuildUpdateStmt AS STRING STRICT
 	
 	
 	
+	
+	
+	
 
+
+ /// <exclude />
 METHOD  __CopyDataBuffer( aSQLSource AS ARRAY, aSQLTarget AS ARRAY) AS ARRAY STRICT 
 	LOCAL nIndex  	AS DWORD
 	LOCAL nCols	  AS DWORD
@@ -114,6 +132,7 @@ METHOD  __CopyDataBuffer( aSQLSource AS ARRAY, aSQLTarget AS ARRAY) AS ARRAY STR
 	IF nCols > ALen(aSQLTarget)
 		nCols := ALen(aSQLTarget)
 	ENDIF
+	
 	
 	IF nCols >= 1
 		FOR nIndex := 1 TO nCols
@@ -130,7 +149,11 @@ METHOD  __CopyDataBuffer( aSQLSource AS ARRAY, aSQLTarget AS ARRAY) AS ARRAY STR
 	RETURN aSQLTarget
 	
 	
+	
+	
 
+
+ /// <exclude />
 METHOD __CopySQLError( symMethod AS SYMBOL, oErrInfo AS SQLErrorInfo) AS VOID STRICT 
 	LOCAL oStmtErr AS SQLErrorInfo
 	SELF:oStmt:ErrInfo := SQLErrorInfo{ SELF, symMethod }
@@ -141,6 +164,7 @@ METHOD __CopySQLError( symMethod AS SYMBOL, oErrInfo AS SQLErrorInfo) AS VOID ST
 	oStmtErr:ErrorMessage 	:= oErrInfo:ErrorMessage
 	oStmtErr:SQLState 	 	:= oErrInfo:SQLState
 	RETURN
+	
 	
 	// METHOD __DeleteCursor() AS LOGIC PASCAL CLASS SQLSelect
 	// 	LOCAL nRetcode      AS INT
@@ -173,12 +197,16 @@ METHOD __CopySQLError( symMethod AS SYMBOL, oErrInfo AS SQLErrorInfo) AS VOID ST
 	// 	RETURN lRet
 	//
 
+
+ /// <exclude />
 METHOD __FigureScrollUpdateType() AS DWORD STRICT 
 	LOCAL  nRet AS DWORD
+	
 	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** Select:__FigureScrollUpdateType()" )
 	#ENDIF
+	
 	
 	IF nScrollUpdateType == SQL_SC_UPD_AUTO
 		//  UH 07/10/2000
@@ -197,14 +225,19 @@ METHOD __FigureScrollUpdateType() AS DWORD STRICT
 		nRet := DWORD(SELF:nScrollUpdateType)
 	ENDIF
 	
+	
 	RETURN nRet
 	
+	
 
+
+ /// <exclude />
 METHOD __FindTableName() AS VOID STRICT 
 	LOCAL nPos   AS DWORD
 	LOCAL cClass AS STRING
 	LOCAL cStmt	 AS STRING
 	// RvdH 050413 Optimized by using local strings
+	
 	
 	cStmt := SELF:oStmt:SQLString
 	IF cStmt != NULL_STRING
@@ -213,6 +246,7 @@ METHOD __FindTableName() AS VOID STRICT
 			cTableName := LTrim( SubStr2( cStmt, nPos + 7 ) )
 		ENDIF
 		
+		
 		nPos := AtC( " from ", cStmt )
 		cTableName := LTrim( SubStr2( cStmt, nPos + 6 ) )
 		nPos := At2( " ", cTableName )
@@ -220,16 +254,21 @@ METHOD __FindTableName() AS VOID STRICT
 			cTableName := SubStr3( cTableName, 1, nPos - 1 )
 		ENDIF
 		
+		
 		// tell the DataServer the name...
 		cClass := Symbol2String( ClassName( SELF ) )
 		oHyperLabel := HyperLabel{ cTableName, cTableName,                                   ;
 			cClass + ": "+cTableName, ;
 			cClass + "_"+cTableName }
 		
+		
 	ENDIF
 	RETURN
 	
+	
 
+
+ /// <exclude />
 METHOD __ForceOpen AS LOGIC STRICT 
 	// RvdH 050413 Added
 	IF ! SELF:lCsrOpenFlag
@@ -239,15 +278,22 @@ METHOD __ForceOpen AS LOGIC STRICT
 	ENDIF
 	RETURN TRUE
 	
+	
 
+
+ /// <exclude />
 METHOD __FreeStmt( fOption AS WORD ) AS LOGIC STRICT 
+	
 	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:__FreeStmt()" )
 	#ENDIF
 	RETURN oStmt:__FreeStmt( fOption )
 	
+	
 
+
+ /// <exclude />
 METHOD __GetColIndex( uCol AS USUAL, lAutoFetch AS LOGIC) AS DWORD STRICT 
 	//
 	// Returns the index of the specified column
@@ -255,15 +301,18 @@ METHOD __GetColIndex( uCol AS USUAL, lAutoFetch AS LOGIC) AS DWORD STRICT
 	//
 	// RvdH 050413 Added Check for Column Count and combined Symbol & String handling
 	
+	
 	LOCAL nType  AS DWORD
 	LOCAL nIndex AS DWORD
 	LOCAL sCol   AS STRING
 	LOCAL dwCol	 AS DWORD
 	LOCAL oCol	 AS SQLColumn
 	
+	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:__GetColIndex( "+AsString( uCol )+" )" )
 	#ENDIF
+	
 	
 	IF !IsNil( lAutoFetch ) .AND. lAutoFetch
 		//RvdH 050413 Centralize opening of cursor
@@ -271,11 +320,15 @@ METHOD __GetColIndex( uCol AS USUAL, lAutoFetch AS LOGIC) AS DWORD STRICT
 			RETURN 0
 		ENDIF
 		
+		
 		IF !SELF:lFetchFlag
+			
 			
 			//IF oStmt:Connection:ScrollCsr
 			
+			
 			SELF:__SkipCursor( 1 )
+			
 			
 			// 			ELSEIF !SELF:Fetch()
 			// 				IF ! SELF:lEof .OR. !SELF:lFetchFlag
@@ -284,6 +337,7 @@ METHOD __GetColIndex( uCol AS USUAL, lAutoFetch AS LOGIC) AS DWORD STRICT
 			// 			ENDIF
 		ENDIF
 	ENDIF
+	
 	
 	nType := UsualType( uCol )
 	// Convert SYMBOL to String
@@ -304,11 +358,13 @@ METHOD __GetColIndex( uCol AS USUAL, lAutoFetch AS LOGIC) AS DWORD STRICT
 			ENDIF
 		NEXT
 		
+		
 	CASE LONGINT
 		dwCol := uCol
 		IF (dwCol > 0 .AND. dwCol <= SELF:nNumCols)
 			RETURN dwCol
 		ENDIF
+		
 		
 	CASE FLOAT
 		dwCol := Integer( uCol )
@@ -316,21 +372,27 @@ METHOD __GetColIndex( uCol AS USUAL, lAutoFetch AS LOGIC) AS DWORD STRICT
 			RETURN dwCol
 		ENDIF
 		
+		
 	OTHERWISE
 		NOP
 	END SWITCH
 	RETURN 0
 	
+	
 
+
+ /// <exclude />
 METHOD __GetCursorName () AS LOGIC STRICT 
 	LOCAL nCount        AS SHORTINT // dcaton 070206 was INT
 	LOCAL pszBuffer     AS PSZ
 	LOCAL nRetCode      AS INT
 	LOCAL lRet          AS LOGIC
 	
+	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:__GetCursorName()" )
 	#ENDIF
+	
 	
 	IF ( oStmt:StatementHandle = SQL_NULL_HSTMT )
 		SELF:__AllocStmt()
@@ -361,7 +423,10 @@ METHOD __GetCursorName () AS LOGIC STRICT
 	ENDIF
 	RETURN lRet
 	
+	
 
+
+ /// <exclude />
 METHOD __GetFieldName( uFieldPosition AS USUAL) AS STRING STRICT 
 	//
 	// Same AS FieldName but without autoexecute stuff
@@ -371,11 +436,14 @@ METHOD __GetFieldName( uFieldPosition AS USUAL) AS STRING STRICT
 	LOCAL nIndex AS DWORD
 	LOCAL cRet   AS STRING
 	
+	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:__GetFieldName( "+AsString( uFieldPosition )+" )" )
 	#ENDIF
 	
+	
 	nIndex := SELF:__GetColIndex( uFieldPosition, FALSE )
+	
 	
 	IF nIndex = 0 .OR. nIndex > nNumCols
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldName )
@@ -384,9 +452,13 @@ METHOD __GetFieldName( uFieldPosition AS USUAL) AS STRING STRICT
 		cRet := SELF:__GetColumn(nIndex):ColName
 	ENDIF
 	
+	
 	RETURN cRet
 	
+	
 
+
+ /// <exclude />
 METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC PASCAL  CLASS SQLSelect
    LOCAL nRetCode AS INT
    LOCAL lRet     AS LOGIC
@@ -407,9 +479,11 @@ METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC PASCAL  
    nBlockLen     := oCol:Length
    nMax          := __SQLMaxStringSize()
 
+
    IF nBlockLen > nMax
       nBlockLen := nMax
    ENDIF
+   
    
    pBlock  := MemAlloc( DWORD(nBlockLen ))
    IF pBlock == NULL_PTR
@@ -444,10 +518,12 @@ METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC PASCAL  
             EXIT
          ENDIF
          
+         
          // The first call to SQLGetData returns the total length of the value
          // subsequent calls return the remaining length
          // So when pBufTot = NULL_PTR then we need to allocate the complete buffer
          // Later  
+         
          
          IF pFieldValue == NULL_PTR
             nFieldLen := DWORD(nSize)                       
@@ -466,6 +542,7 @@ METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC PASCAL  
             // Last part retrieved, copy only nSize bytes
             MemCopy( pCurrent, pBlock, DWORD(nSize))
             
+            
          ELSE
             // There is more after this part, copy whole block
             MemCopy( pCurrent, pBlock, DWORD(nBlockLen)) 
@@ -473,6 +550,7 @@ METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC PASCAL  
          IF nRetCode = SQL_SUCCESS  
             // Last block read, so get out of here
             cBuffer := Mem2String( pFieldValue, nFieldLen) 
+            
             
             //  UH 05/15/2000
             //  cBuffer := __AdjustString( cBuffer )
@@ -490,6 +568,7 @@ METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC PASCAL  
                pCurrent += nBlockLen
             ENDIF
 
+
          ENDIF            
       ELSE
          oStmt:MakeErrorInfo(SELF, #__GetLongData, nRetCode)
@@ -499,9 +578,11 @@ METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC PASCAL  
       ENDIF
    ENDDO
    
+   
    #IFDEF __DEBUG__
       __SQLOutputDebug( "** SQLSelect:__GetLongData() returns " + NTrim(SLen(cBuffer))+" characters :"+Left(cBuffer,40) )
    #ENDIF
+   
    
    MemFree( pBlock )      
    //RvdH 070430 pBufTot may be empty for zero length strings
@@ -510,8 +591,11 @@ METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC PASCAL  
    ENDIF
    oData:HasValue := TRUE
 
+
    RETURN lRet
 
+
+ /// <exclude />
 METHOD __GetUpdateKey( lAppend AS LOGIC) AS STRING STRICT 
 	LOCAL cWhere        AS STRING
 	LOCAL nIndex        AS DWORD
@@ -520,7 +604,9 @@ METHOD __GetUpdateKey( lAppend AS LOGIC) AS STRING STRICT
 	LOCAL cQuoteChar		AS STRING
 	LOCAL oCol			  AS SQLColumn
 	
+	
 	cWhere := " where "
+	
 	
 	IF lAppend
 		aData := SELF:aAppendData
@@ -536,6 +622,7 @@ METHOD __GetUpdateKey( lAppend AS LOGIC) AS STRING STRICT
 		nTemp := aIndexCol[nIndex]
 		oCol	:= aSQLColumns[nTemp]
 		
+		
 		cWhere += cQuoteChar
 		cWhere += oCol:ColName
 		cWhere += cQuoteChar
@@ -544,35 +631,46 @@ METHOD __GetUpdateKey( lAppend AS LOGIC) AS STRING STRICT
 			TRUE, ;
 			TRUE )
 		
+		
 		IF nIndex != ALen( aIndexCol )
 			cWhere += " and "
 		ENDIF
 	NEXT
 	
+	
 	RETURN cWhere
 	
+	
 
+
+ /// <exclude />
 METHOD __GetUpdateStmt( nIndex AS DWORD, lAppend AS LOGIC) AS SqlStatement STRICT 
 	LOCAL cRet  AS STRING
 	LOCAL oRet  AS SQLStatement
 	LOCAL nType AS DWORD
+	
 	
 	cRet := "update " + cTableName
 	cRet += " set "
 	cRet += SELF:__GetColumn(nIndex):ColName
 	cRet += " = ? "
 	
+	
 	nType := SELF:__FigureScrollUpdateType()
+	
 	
 	SWITCH nType
 	CASE SQL_SC_UPD_KEY
 		cRet += SELF:__GetUpdateKEY( lAppend )
 		
+		
 	CASE SQL_SC_UPD_CURSOR
 		cRet += SELF:__GetUpdateVAL( lAppend )
 		
+		
 	CASE SQL_SC_UPD_VALUE
 		cRet += SELF:__GetUpdateVAL( lAppend )
+		
 		
 	END SWITCH
 	oRet := oConn:__GetExtraStmt(cRet)
@@ -581,7 +679,10 @@ METHOD __GetUpdateStmt( nIndex AS DWORD, lAppend AS LOGIC) AS SqlStatement STRIC
 	oRet:SQLString := SELF:PreExecute( cRet )
 	RETURN oRet
 	
+	
 
+
+ /// <exclude />
 METHOD __GetUpdateVal( lAppend AS LOGIC) AS STRING STRICT 
 	LOCAL cWhere  := "" AS STRING
 	LOCAL nIndex        AS DWORD
@@ -592,20 +693,26 @@ METHOD __GetUpdateVal( lAppend AS LOGIC) AS STRING STRICT
 	LOCAL oCol			  AS SQLColumn
 	
 	
+	
+	
 	IF lAppend
 		aData := SELF:aAppendData
 	ELSE
 		aData   := SELF:aOriginalRecord
 	ENDIF
 	
+	
 	cWhere += " where "
 	cQuote := SELF:oStmt:__Connection:IdentifierQuoteChar
+	
 	
 	FOR nIndex := 1 TO nNumCols
 		oCol 		  := aSQLColumns[nIndex]
 		nODBCType  := oCol:ODBCType
 		
+		
         IF !SqlIsLongType( nODBCType )
+			
 			
 			IF lStart
 				cWhere += " and "
@@ -613,16 +720,24 @@ METHOD __GetUpdateVal( lAppend AS LOGIC) AS STRING STRICT
 				lStart := TRUE
 			ENDIF
 			
+			
+         
          
          cWhere += cQuote + oCol:ColName + cQuote + __GetDataValuePSZ( oCol, aData[nIndex], TRUE, TRUE )
+			
+			
 			
 			
 		ENDIF
 	NEXT
 	
+	
 	RETURN cWhere
 	
+	
 
+
+ /// <exclude />
 METHOD __GoCold(lForceAppend AS LOGIC, lForceUpdate AS LOGIC) AS LOGIC STRICT 
 	// RvdH 050413 Added
 	//  Append pending?
@@ -638,9 +753,13 @@ METHOD __GoCold(lForceAppend AS LOGIC, lForceUpdate AS LOGIC) AS LOGIC STRICT
 		ENDIF
 	ENDIF
 	
+	
 	RETURN TRUE
 	
+	
 
+
+ /// <exclude />
 METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
    // RvdH 10-3-2012
    // This method solves a problem with the width of numeric columns
@@ -690,13 +809,17 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
         __SQLOutputDebug( "** SQLSelect:__InitColumnDesc()" )
     #ENDIF
    
+   
    SELF:lColBind := FALSE
+   
    
    SELF:NumResultCols()
    IF (nNumCols == 0)
       RETURN FALSE
    ENDIF
 
+
+   
    
    IF ALen( aSQLColumns ) = 0
       aOldSQLColumns := {}
@@ -704,9 +827,11 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       aOldSQLColumns := aSQLColumns
    ENDIF
    
+   
    SELF:aSQLColumns    := ArrayNew( nNumCols )
    SELF:aDataRecord    := ArrayNew( nNumCols )
    SELF:aSQLData       := SELF:aDataRecord
+   
    
    aLength             := ArrayNew(nNumCols)
    aNull               := ArrayNew(nNumCols)
@@ -714,8 +839,10 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
    nMaxString          := __SQLMaxStringSize()
    nMaxDisp            := __SQLMaxDisplaySize()
    
+   
    SELF:__MemFree()
    SELF:apColMem       := {}
+   
    
    //
    //  Init datafield array in super class ( DataServer )
@@ -728,22 +855,28 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       lDataField := FALSE
    ENDIF
    
+   
    pszColName := MemAlloc( MAX_COLNAME_SIZE + 1 )
    IF pszColName == NULL_PSZ
       //SQLThrowOutOfMemoryError()
       RETURN FALSE
    ENDIF
    
+   
    lRet := TRUE
+   
+   
    
    
    //apColMem       := {}
    //aplColNulls    := {}
    nMaxBindColumn := 0
    
+   
    SELF:aColumnAttributes := ArrayNew( nNumCols )
    hStmt := oStmt:StatementHandle
    FOR nIndex := 1 TO nNumCols
+      
       
       nRetCode := SQLDescribeCol(hStmt ,  ;
          nIndex,                 ;
@@ -758,6 +891,7 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
          //oStmt:MakeErrorInfo(SELF, #__InitColumnDesc, nRetCode)
          lRet := FALSE
          
+         
          EXIT
       ENDIF
       cTrueName := Psz2String( pszColName )
@@ -767,6 +901,7 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       IF nTemp > 0
          cColName := SubStr2( cColName, nTemp+1 )
       ENDIF
+      
       
       IF nNullable = SQL_NULLABLE
          lNullable := TRUE
@@ -781,6 +916,7 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       //    nPrecision := nPrecision + nScale + 1
       //ENDIF
       
+      
       nDescType := SQL_COLUMN_DISPLAY_SIZE
       nMax := 0
       nDispSize := 0
@@ -792,11 +928,14 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
          @nMax,                ;
          @nDispSize )
       
+      
       IF nRetCode != SQL_SUCCESS
          oStmt:MakeErrorInfo(SELF, #__InitColumnDesc, nRetCode)
          lRet := FALSE
          EXIT
       ENDIF
+      
+      
       
       
       nSize := ALen( aOldSQLColumns )                     
@@ -811,6 +950,7 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
          END IF
       ENDIF
       
+      
       nColLength   := nPrecision
       nAllocLength := nColLength
       // For LONG columns we only allocate 1 byte. The fields are read using GetLongData anyway
@@ -818,6 +958,7 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
          lLong := TRUE 
          nAllocLength := 1
       ENDIF
+      
       
       //RvdH 050429 Change new ODBC types to Older types
       SWITCH nODBCType
@@ -837,6 +978,7 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       // The next line sets the column type and adjusts the length (for LONGVAR etc) or the scale (for REAL/FLOAT/DOUBLE)         
       cType :=  __ODBCType2FSpec( nODBCType, @nColLength, @nScale )
       
+      
       #IFDEF __DEBUG__
          __SQLOutputDebug(   " ColName=" + cColName +             ;
             " nODBCType=" + AsString( nODBCType )+ ;
@@ -846,7 +988,9 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
             " Mem Size="+AsString(nAllocLength) )
       #ENDIF
       
+      
       cClassName := Symbol2String( ClassName( SELF ) )
+
 
       IF cType == "M"
          IF nPrecision > DWORD(nMaxString)
@@ -862,12 +1006,16 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       #ENDIF
       
       
+      
+      
       cCaption   := cColName
       oHlColumn  := HyperLabel{cColName, cCaption, cClassName + ": " + cColName,  cClassName }
+      
       
       #IFDEF __DEBUG__
          __SQLOutputDebug( " TYPE = " + cType )
       #ENDIF
+      
       
       //RvdH 050429 Take Length from ODBC
       SWITCH nODBCType
@@ -893,10 +1041,13 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       CASE SQL_TIME
          oFieldSpec:Picture := SubStr3( "99:99:99.999999", 1, nColLength )
          
+         
       CASE SQL_TIMESTAMP
          oFieldSpec:Picture := SubStr3( "9999-99-99 99:99:99.999999", 1, nColLength )
          
+         
       END SWITCH
+      
       
       oColumn := SQLColumn{   oHlColumn , ;
          oFieldSpec, ;
@@ -921,16 +1072,19 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       aLength[nIndex]   := nAllocLength
       aNull  [nIndex]   := lNullable
       
+      
       // Now Adjust the size info:
       // Increase with nLength rounded at 4 bytes and add 4 bytes 'to be safe'
       // So Round nLength up to mutiple of 4
       nAllocLength    :=  (nAllocLength / _SIZEOF(LONGINT)) * _SIZEOF(LONGINT) + _SIZEOF(LONGINT)         
       nTotalSize +=  nAllocLength  
       
+      
       IF lDataField
          aDataFields[nIndex] := DataField{oHlColumn,oFieldSpec}
       ENDIF
    NEXT
+   
    
    // Now we know the total size needed for column binding
    // Allocate the buffer for the column binding
@@ -941,8 +1095,11 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       SQLThrowOutOfMemoryError()
    ENDIF
 
+
    AAdd(apColMem, pData)
    AAdd(apColMem, pLength)
+   
+   
    
    
    // Build array of SQLData Objects
@@ -954,9 +1111,11 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       oData:Initialize(pData, pLength, nAllocLength, lNullable, FALSE)
       aSQLData[nIndex]  := oData
       
+      
       nAllocLength  :=  (nAllocLength / _SIZEOF(LONGINT)) * _SIZEOF(LONGINT) + _SIZEOF(LONGINT)                      
       pData    += nAllocLength 
       pLength  += 1
+      
       
       IF lBinding .AND. SELF:BindColumn( nIndex )
          nMaxBindColumn := nIndex
@@ -965,7 +1124,10 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       ENDIF
       
       
+      
+      
    NEXT
+   
    
    // Now setup memory for other arrays
    SELF:aOriginalRecord    := ArrayNew( nNumCols )
@@ -981,6 +1143,7 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
    AAdd(apColMem, pData)
    AAdd(apColMem, pLength)
    
+   
    FOR nIndex := 1 TO nNumCols
       nAllocLength  := aLength[nIndex]
       // Allocate Object for Original record
@@ -988,11 +1151,13 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
       oData:Initialize(pData, pLength, nAllocLength, TRUE, FALSE)
       SELF:aOriginalRecord[nIndex] := oData
       
+      
       // Increase Pointer with nLength rounded at 4 bytes and 4 bytes 'to be safe'     
       nAllocLength := (nAllocLength / _SIZEOF(LONGINT)) * _SIZEOF(LONGINT) + _SIZEOF(LONGINT)
       pData        += nAllocLength 
       pLength      += 1
    NEXT
+   
    
    // AppendData now used the same array as aOriginalRecord
    //    SELF:aAppendData        := ArrayNew( nNumCols )
@@ -1012,21 +1177,27 @@ METHOD __InitColumnDesc() AS LOGIC PASCAL CLASS SQLSelect
    //    NEXT
    SELF:aAppendData := SELF:aOriginalRecord
    
+   
    MemFree( pszColName )
+   
    
    IF nMaxBindColumn > 0
       SELF:lColBind := TRUE
    ENDIF
    
+   
    IF lRet
       oStmt:__ErrInfo:ErrorFlag := FALSE
    ENDIF
+   
    
    IF lLong .AND. ( SELF:nScrollUpdateType == SQL_SC_UPD_AUTO )
       SELF:nScrollUpdateType := SQL_SC_UPD_VALUE
    ENDIF
    RETURN TRUE
 
+
+ /// <exclude />
 METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT 
 	LOCAL nSize         AS INT
 	LOCAL lRet          AS LOGIC
@@ -1038,6 +1209,7 @@ METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT
 	LOCAL oSQLColumn    AS SQLColumn
 	LOCAL oData			  AS SqlData
 	LOCAL pTemp			  AS PTR
+	
 	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:__InitColValue( "+AsString( nIndex )+" )" )
@@ -1070,8 +1242,10 @@ METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT
 		// if Column bound ?
 		IF nIndex > 0 .AND. nIndex <= SELF:nMaxBindColumn
 			
+			
 			pLength 	:= oData:ptrLength
 			nNull 	:= pLength[1]
+			
 			
 			IF nNull = SQL_NULL_DATA
 				oData:Null := TRUE
@@ -1086,21 +1260,25 @@ METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT
 				ENDIF
 			ENDIF
 			
+			
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "** Data found in bound Column" )
 			#ENDIF
 			lRet := TRUE
 		ELSE
 			
+			
 			IF SqlIsLongType( nODBCType )
 				nLen := oSQLColumn:Length  + 1 
 				//lRet := SELF:__GetLongData( nODBCType, nIndex )
                 oData:HasValue := FALSE
 				
+				
 			ELSE
 				nLen := oSQLColumn:__FieldSpec:Length + 1
 				oData:Clear()
 				nODBCType := SQLType2CType( nODBCType )
+				
 				
 				// Get the column data into the buffer( s )
 				nRetCode := SQLGetData( oStmt:StatementHandle, WORD(nIndex),   ;
@@ -1109,8 +1287,10 @@ METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT
 					nLen, ;
 					@nSize )
 				
+				
 				IF ( nRetCode != SQL_SUCCESS )
 					oStmt:MakeErrorInfo(SELF, #__InitColValue, nRetCode)
+					
 					
 				ELSE
 					IF nSize = SQL_NULL_DATA
@@ -1125,7 +1305,10 @@ METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT
 	ENDIF
 	RETURN lRet
 	
+	
 
+
+ /// <exclude />
 METHOD __MemFree() AS VOID STRICT 
 	LOCAL i AS DWORD
 	IF apColMem != NULL_ARRAY
@@ -1134,9 +1317,11 @@ METHOD __MemFree() AS VOID STRICT
 		#ENDIF
 		FOR i := 1 TO ALen( apColMem )
 			
+			
 			IF IsPtr(apColMem[i] ) .AND. apColMem[i] != NULL_PTR
 				MemFree( apColMem[i])
 			ENDIF
+			
 			
 		NEXT  //Vulcan.NET-Transporter: i
 	ENDIF
@@ -1144,14 +1329,20 @@ METHOD __MemFree() AS VOID STRICT
 	SELF:nBufferLength := 0
 	RETURN
 	
+	
 
+
+ /// <exclude />
 METHOD  __PrepareStmtOptions( oStatement AS SQLStatement ) AS VOID STRICT 
 	oStatement:CursorType        := SELF:oStmt:CursorType
 	oStatement:ScrollConcurrency := SELF:oStmt:ScrollConcurrency
 	oStatement:SimulateCursor    := SELF:oStmt:SimulateCursor
 	RETURN
 	
+	
 
+
+ /// <exclude />
 METHOD __PutLongData( cValue AS STRING, nODBCType AS SHORTINT, nIndex AS DWORD, ;
 		lAppend AS LOGIC ) AS STRING STRICT 
 	//
@@ -1174,16 +1365,22 @@ METHOD __PutLongData( cValue AS STRING, nODBCType AS SHORTINT, nIndex AS DWORD, 
 	LOCAL oData			  AS SQLData
 	//  __SQLOutputDebug( "__PutLongData() with " + cValue )
 	
+	
    //nMax := __SQLMaxStringSize()
 	
 	
+	
+	
 	oUpdate := SELF:__GetUpdateStmt( nIndex, lAppend )
+	
 	
 	IF oUpdate = NULL_OBJECT
 		RETURN NULL_STRING
 	ENDIF
 	
+	
 	nLength    	:= SLen( cValue )
+	
 	
 	hStmt := oUpdate:StatementHandle
 	cStmt := oUpdate:SQLString
@@ -1194,7 +1391,9 @@ METHOD __PutLongData( cValue AS STRING, nODBCType AS SHORTINT, nIndex AS DWORD, 
 		__SQLOutputDebug( "   " + cStmt )
 	#ENDIF
 	
+	
    IF nRetCode = SQL_SUCCESS
+      
       
         IF SqlIsCharType(nODBCType)
             nCType := SQL_C_CHAR
@@ -1202,6 +1401,7 @@ METHOD __PutLongData( cValue AS STRING, nODBCType AS SHORTINT, nIndex AS DWORD, 
 		ELSE
 			nCType := SQL_C_BINARY
 		ENDIF
+		
 		
 		nIndex := 1
       //RvdH 071030 Fix for Memo fields that did not update
@@ -1218,24 +1418,31 @@ METHOD __PutLongData( cValue AS STRING, nODBCType AS SHORTINT, nIndex AS DWORD, 
          INT(nLength),           ; // max length of value
          @nDataAtExec )            // Parameter length
 		
+		
 		nRetCode := SQLExecute( hStmt )
 	ENDIF
+	
 	
 	IF nRetCode = SQL_SUCCESS
 		oUpdate:__ErrInfo:ErrorFlag := FALSE
 	ELSE
 		oUpdate:MakeErrorInfo(SELF, #__PutLongData, nRetCode)
 		
+		
 		SELF:__CopySQLError( #__PutLongData, oUpdate:ErrInfo )
 		cValue := Space( 10 )
+		
 		
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "   failed, return value: " + NTrim( nRetCode ) )
 		#ENDIF
 		
 		
+		
+		
 	ENDIF
 	SELF:oConn:__CloseExtraStmt(oUpdate)
+	
 	
 	IF lAppend
 		aData := SELF:aAppendData
@@ -1246,7 +1453,10 @@ METHOD __PutLongData( cValue AS STRING, nODBCType AS SHORTINT, nIndex AS DWORD, 
 	oData:ValueChanged := FALSE  // don't force any other UPDATE
 	RETURN cValue
 	
+	
 
+
+ /// <exclude />
 METHOD __RecCount() AS LONGINT STRICT 
 	LOCAL cStatement    AS STRING
 	LOCAL cCount        AS STRING
@@ -1264,14 +1474,17 @@ METHOD __RecCount() AS LONGINT STRICT
 	LOCAL cQuoteChar	  AS STRING
 	//_DebOut32(String2Psz("Start __RecCount "+NTrim(Seconds())))
 	
+	
 	//RvdH 050413 Centralize opening of cursor
 	IF ! SELF:__ForceOpen()
 		RETURN 0
 	ENDIF
 	
+	
    IF SELF:lLastRecFound
       RETURN SELF:nLastRecNum
    ENDIF 
+	
 	
    //RvdH 050413 Some drivers return negative number as 'guestimate' of # of rows
    nRecs := oStmt:RecCount
@@ -1283,9 +1496,12 @@ METHOD __RecCount() AS LONGINT STRICT
    ENDIF
 	
 	
+	
+	
 	BEGIN SEQUENCE
 		nRet 			:= 0L
 		cStatement 	:= SELF:oStmt:SQLString
+		
 		
 		// RvdH 061218 Suggestion from Robson, Dec 2006
 		// create subselect for more complex commands SQL
@@ -1294,12 +1510,14 @@ METHOD __RecCount() AS LONGINT STRICT
 		//          Instr( "DISTINCT", Upper(cStatement) ) .OR.;
 		//          Instr( "GROUP BY", Upper(cStatement) )
 
+
 		IF AtC( "UNION",   cStatement ) > 0 .OR. ;
 				AtC( "DISTINCT", cStatement ) > 0 .OR. ;
 				AtC( "GROUP BY", cStatement ) > 0
 			//RvdH 070507 Added alias for subselect (suggestion Markus Feser)
 			cQuoteChar := oStmt:__Connection:IdentifierQuoteChar                       
          		cCount := "select count( 1 ) from ( " + AllTrim(cStatement) + " ) "+cQuoteChar+"VOSQLSELECTCOUNTER"+cQuoteChar
+			
 			
 		ELSE
 			//  UH 08/09/2001
@@ -1308,9 +1526,11 @@ METHOD __RecCount() AS LONGINT STRICT
 				cStatement := Left( cStatement,nPos-1 )
 			ENDIF
 			
+			
 			//  UH 08/09/2001
 			//  nPos :=  AtC( "FROM", cStatement )
 			nPos :=  AtC( " FROM ", cStatement )
+			
 			
          IF nPos > 0
             cCount := "select count ( * ) " + SubStr2( cStatement, nPos )
@@ -1322,13 +1542,16 @@ METHOD __RecCount() AS LONGINT STRICT
 		aParams :=SELF:oStmt:__Params  
 		nCount := ALen( aParams )
 		
+		
 		IF nCount > 0
 			IF ! oCount:__SetParameters( aParams)
 				BREAK
 			ENDIF
 		ENDIF
 
+
 		oCount:SQLString := SELF:PreExecute( oCount:SQLString )
+		
 		
 		pData := MemAlloc( _SIZEOF( LONGINT ) )
 		IF pData = NULL_PTR
@@ -1337,8 +1560,10 @@ METHOD __RecCount() AS LONGINT STRICT
 		ENDIF
 		pData[1]	:= 0L
 		
+		
 		pLong := @lRecCount
 		lRecCount := 0
+		
 		
 		nRetCode := SQLBindCol( oCount:StatementHandle, 1,  ;
 			SQL_C_SLONG ,               ;
@@ -1346,10 +1571,12 @@ METHOD __RecCount() AS LONGINT STRICT
 			4,                          ;
 			pLong )
 		
+		
 		IF nRetCode == SQL_SUCCESS
 			oCount:ScrollConcurrency := SQL_CONCUR_READ_ONLY
 			l := LONGINT(SLen( cCount ))
 			nRetCode := SQLExecDirect( oCount:StatementHandle, String2Psz(cCount ),  l  )
+			
 			
 			IF nRetCode = SQL_SUCCESS .OR. nRetCode = SQL_SUCCESS_WITH_INFO
 				nRetCode := SQLFetch( oCount:StatementHandle )
@@ -1362,6 +1589,7 @@ METHOD __RecCount() AS LONGINT STRICT
 		ENDIF
 	RECOVER
 	
+	
 	END SEQUENCE
 	IF pData != NULL_PTR
 		MemFree( pData )
@@ -1372,27 +1600,39 @@ METHOD __RecCount() AS LONGINT STRICT
 	RETURN nRet
 	
 	
+	
+	
 
+
+ /// <exclude />
 METHOD __Reset() AS LOGIC STRICT 
+	
 	
 	RETURN oStmt:__Reset()
 	
+	
 
+
+ /// <exclude />
 METHOD __SetCursorName( cCursorName AS STRING) AS LOGIC STRICT 
 	LOCAL nRetCode      AS INT
 	LOCAL lRet          AS LOGIC
+	
 	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:__SetCursorName()" )
 	#ENDIF
 	
+	
 	IF ( oStmt:StatementHandle = SQL_NULL_HSTMT )
 		SELF:__AllocStmt()
 	ENDIF
 	
+	
 	nRetCode := SQLSetCursorName(   oStmt:StatementHandle,  ;
 		String2Psz(cCursorName),;
 		_SLen( cCursorName ) )
+	
 	
 	IF ( nRetCode != SQL_SUCCESS )
 		oStmt:MakeErrorInfo(SELF, #__SetCursorName, nRetCode)
@@ -1402,12 +1642,18 @@ METHOD __SetCursorName( cCursorName AS STRING) AS LOGIC STRICT
 		lRet := TRUE
 	ENDIF
 	
+	
 	RETURN lRet
 	
 	
+	
+	
 
+
+ /// <exclude />
 METHOD __SetNullData( nODBCType AS SHORTINT, nIndex AS DWORD, aData AS ARRAY) AS VOID STRICT 
 	LOCAL oData 	AS SqlData
+	
 	
 	oData 				 := aData[nIndex]
 	oData:Null         := TRUE
@@ -1420,12 +1666,17 @@ METHOD __SetNullData( nODBCType AS SHORTINT, nIndex AS DWORD, aData AS ARRAY) AS
     ENDIF
 	RETURN
 	
+	
 
+
+ /// <exclude />
 METHOD __SetRecordFlags( lBofNew AS USUAL, lEofNew AS USUAL) AS VOID STRICT 
+	
 	
 	IF IsLogic( lBofNew )
 		SELF:lBof := lBofNew
 	ENDIF
+	
 	
 	IF IsLogic( lEofNew )
 		//
@@ -1436,31 +1687,43 @@ METHOD __SetRecordFlags( lBofNew AS USUAL, lEofNew AS USUAL) AS VOID STRICT
 			SELF:aSQLData := SELF:aDataRecord
 		ENDIF
 		
+		
 		SELF:lEof := lEofNew
 	ENDIF
 	SELF:aSQLData := SELF:aDataRecord
 	RETURN
 	
+	
 
+
+ /// <exclude />
 METHOD __SetScrollOptions( nConcurrency AS DWORD, nKeySet AS DWORD, lAsync AS LOGIC) AS LOGIC STRICT  
+	
 	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:__SetScrollOptions()" )
 	#ENDIF
 	
+	
 	RETURN oStmt:__SetScrollOptions( nConcurrency, nKeyset, lAsync )
 	
+	
 
+
+ /// <exclude />
 METHOD __SkipCursor( nRecCount AS LONGINT) AS LOGIC STRICT 
+	
 	
 	LOCAL nFetchType        AS INT
 	LOCAL lRet              AS LOGIC
 	LOCAL lWasAppending		AS LOGIC
 	// RvdH 050413 Optimized by using _GoCold
 	
+	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:__SkipCursor( " + NTrim( nRecCount )+" )" )
 	#ENDIF
+	
 	
 	IF nRecCount < 0
 		IF SELF:lBof .AND. SELF:nLastRecNum > 0
@@ -1474,32 +1737,45 @@ METHOD __SkipCursor( nRecCount AS LONGINT) AS LOGIC STRICT
 	IF nRecCount = 1
 		nFetchType := SQL_FETCH_NEXT
 		
+		
 		lRet := SELF:ExtendedFetch( nFetchType, nRecCount )
+		
 		
 		IF SELF:lEof .AND. SELF:nLastRecNum > 0
 			SELF:__SetRecordFlags( FALSE, NIL )
 		ENDIF
 		
+		
 	ELSEIF nRecCount = -1
 		nFetchType := SQL_FETCH_PREV
+		
 		
 		IF lWasAppending
 			RETURN SELF:ExtendedFetch( SQL_FETCH_LAST, 0 )
 		ENDIF
 		
+		
 		lRet := SELF:ExtendedFetch( nFetchType, 1 )
+		
 		
 	ELSE
 		nFetchType := SQL_FETCH_RELATIVE
 		
 		
+		
+		
 		lRet := SELF:ExtendedFetch( nFetchType, nRecCount )
 	ENDIF
+	
 	
 	RETURN lRet
 	
 	
+	
+	
 
+
+ /// <exclude />
 METHOD __UpdateLongData( lAppend AS LOGIC ) AS VOID STRICT 
 	LOCAL nIndex    AS DWORD
 	LOCAL nODBCType AS SHORTINT
@@ -1526,5 +1802,7 @@ METHOD __UpdateLongData( lAppend AS LOGIC ) AS VOID STRICT
     NEXT
 	RETURN
 	
+	
 END CLASS
+
 

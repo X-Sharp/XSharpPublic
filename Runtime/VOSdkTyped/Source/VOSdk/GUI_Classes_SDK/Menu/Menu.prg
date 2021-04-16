@@ -85,7 +85,7 @@ CLASS Menu INHERIT VObject
 					oItem := SELF:__CreateMenuItem(cNewItem, nItemID)
 					SELF:oMenu:MenuItems:Add(oItem)
 				ELSEIF IsInstanceOfUsual(xNewItem, #Bitmap)
-					// todo
+					// todo Menu Bitmaps
 					//lRetVal := AppendMenu(hMenu, _OR(MF_BYCOMMAND, MF_BITMAP, MF_ENABLED), nItemID, xNewItem:Handle())
 				ENDIF
 			ENDIF
@@ -317,7 +317,7 @@ CLASS Menu INHERIT VObject
 	
 
 	METHOD MakeMenuRtol(lRToL AS LOGIC) 
-		//Todo
+		//Todo MakeMenuRtol
 		RETURN SELF
 
 
@@ -388,7 +388,7 @@ CLASS Menu INHERIT VObject
 
 		
 	METHOD SetShortCuts(oAccelerator AS Accelerator) AS VOID
-		__ClearShortCuts(SELF:__Menu)
+		SELF:__ClearShortCuts(SELF:__Menu)
 		IF oAccelerator != NULL_OBJECT
 			FOREACH IMPLIED oKey IN oAccelerator:Keys
 				LOCAL IMPLIED oItem := SELF:__Menu:GetItemByID(oKey:ID)
@@ -402,12 +402,12 @@ CLASS Menu INHERIT VObject
 	METHOD __ClearShortCuts(oMenu as System.Windows.Forms.Menu) as VOID
 		FOREACH IMPLIED oItem in oMenu:MenuItems
 			oItem:Shortcut := System.Windows.Forms.Shortcut.None
-			__ClearShortCuts(oItem)
+			SELF:__ClearShortCuts(oItem)
 		NEXT
 		RETURN
 		
 	METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap) 
-		//Todo
+		//Todo ShowAsPopup
 		/*
 		LOCAL hPopUpMenu  AS PTR
 		LOCAL strucPoint  IS _winPoint
@@ -636,7 +636,7 @@ END CLASS
 
 
 //	CONSTRUCTOR(oOwner) 
-//		//Todo
+//		//Todo SystemMenu class
 //		//SUPER(GetSystemMenu(((Window)oOwner):Handle(), FALSE))
 //		SUPER()
 //		RETURN 

@@ -1,3 +1,4 @@
+/// <include file="Gui.xml" path="doc/MultiMediaContainer/*" />
 CLASS MultiMediaContainer INHERIT Control
 	PROTECT pBitmap AS PTR
 	PROTECT sMajorType AS STRING
@@ -6,19 +7,25 @@ CLASS MultiMediaContainer INHERIT Control
 	PROTECT wBasicType AS INT
 	PROTECT hwndMCI AS PTR
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	METHOD __ResizeMCIWnd() AS MultiMediaContainer STRICT 
 	//PP-030828 Strong typing
 	LOCAL rc IS _winRECT
+
 
 	GetClientRect(SELF:handle(), @rc)
 	SetWindowPos(hwndMCI, NULL_PTR, 0, 0, rc:right, rc:bottom, _OR(SWP_NOMOVE, SWP_NOZORDER))
 	RETURN SELF
 
+
+ /// <exclude />
 ASSIGN __Value(uNewVal AS USUAL)  STRICT 
 	//PP-030828 Strong typing
 	LOCAL rc IS _winRECT
 	LOCAL ic1, ic2 AS DWORD
+
 
 	IF IsString(uNewVal)
 		// this sets uValue
@@ -52,20 +59,28 @@ ASSIGN __Value(uNewVal AS USUAL)  STRICT
 	RETURN 
 
 
+
+
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
+
 
 	IF (pBitMap != NULL_PTR)
 		DIBDelete(pBitMap)
 		pBitMap := NULL_PTR
 	ENDIF
 
+
 	IF IsWindow(hwndMCI)
 		MCIWndDestroy(hwndMCI)
 		hwndMCI := NULL_PTR
 	ENDIF
 
+
 	RETURN SUPER:Destroy()
 
+
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.Dispatch/*" />
 METHOD Dispatch(oEvent) 
 	LOCAL ps IS _winPAINTSTRUCT
 	LOCAL oEvt := oEvent AS @@Event
@@ -76,7 +91,9 @@ METHOD Dispatch(oEvent)
 	LOCAL oSize AS DIMENSION
 	//local r8Zoom as real8
 
+
 	//uRet := super:Dispatch(oEvt)
+
 
 	IF (oEvt:Message == WM_PAINT) .AND. (pBitMap != NULL_PTR)
 		// oPoint := self:Origin
@@ -84,13 +101,16 @@ METHOD Dispatch(oEvent)
 		// nHeight := pBmiH.bmiHeader.biHeight
 		// nWidth := pBmiH.bmiHeader.biWidth
 
+
 		oSize := SELF:Size
 		// r8Zoom := oSize:Width/nWidth
 		BeginPaint(hWnd, @ps)
 		EndPaint(hWnd, @ps)
 		DIBStretch(pBitmap, SELF:handle(), DWORD(oSize:Width), DWORD(oSize:Height), 1.0)
 
+
 		RETURN (SELF:EventReturnValue := 0L)
+
 
 		/*
 		 self:Size := DIMension{nWidth, nHeight}
@@ -99,19 +119,25 @@ METHOD Dispatch(oEvent)
 		*/
 	ENDIF
 
+
 	RETURN SUPER:Dispatch(oEvt)
 
 
+
+
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.FileName/*" />
 ASSIGN FileName(sNewVal) 
 	LOCAL rc IS _winRECT
 	LOCAL sof IS _winOFSTRUCT
 	LOCAL sMime AS STRING
+
 
 	IF (pBitMap != NULL_PTR)
 		DIBDelete(pBitMap)
 		pBitMap := NULL_PTR
 		uValue := NULL_STRING
 	ENDIF
+
 
 	IF IsString(sNewVal)
 		IF (OpenFile(String2Psz(sNewVal), @sof, OF_EXIST) != HFILE_ERROR)
@@ -139,6 +165,9 @@ ASSIGN FileName(sNewVal)
 
 
 
+
+
+
 	GetWindowRect(SELF:Handle(), @rc)
 #ifdef __VULCAN__	
 	MapWindowPoints(NULL_PTR, GetParent(SELF:Handle()), (_winPOINT PTR) @rc, 2)
@@ -147,14 +176,20 @@ ASSIGN FileName(sNewVal)
 #endif
 	InvalidateRect(GetParent(SELF:Handle()), @rc, TRUE)
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.ctor/*" />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
 	LOCAL LoadError AS WCError
 
+
 	__LoadMSVFWDll()
 
+
 	SUPER(oOwner, xID, oPoint, oDimension, __WCMMContWindowClass, WS_BORDER, TRUE)
+
 
 	IF (!CAPaintIsLoaded())
 		LoadError := WCError{#Init,#MultiMediaContainer,__WCSCAPaintLoadFailed}
@@ -162,59 +197,84 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension)
 		LoadError:Throw()
 	ENDIF
 
+
 	uValue := NULL_STRING
+
 
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.MajorType/*" />
 ACCESS MajorType 
 	RETURN sMajorType
 
+
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.MajorType/*" />
 ASSIGN MajorType(sNewType) 
 	RETURN (sMajorType := Lower(sNewType))
 
+
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.MCISendMessage/*" />
 METHOD MCISendMessage(dwMsg, wParam, lParam) 
 	LOCAL uMsg, wPar AS DWORD
 	LOCAL lPar, lRet AS LONGINT
+
 
 	IF !IsWindow(hwndMCI)
 		RETURN 0L
 	ENDIF
 
+
 	DEFAULT(@wParam, 0)
 	DEFAULT(@lParam, 0)
+
 
 	uMsg := dwMsg
 	wPar := wParam
 	lPar := lParam
 
+
 	lRet := SendMessage(hwndMCI, uMsg, wPar, lPar)
+
 
 	IF (uMSG == MCIWNDM_CHANGESTYLES)
 		SELF:__ResizeMCIWnd()
 	ENDIF
 
+
 	RETURN lRet
 
+
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.MinorType/*" />
 ACCESS MinorType 
 	RETURN sMinorType
 
+
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.MinorType/*" />
 ASSIGN MinorType(sNewType) 
 	RETURN (sMinorType := Lower(sNewType))
 
+
+/// <include file="Gui.xml" path="doc/MultiMediaContainer.Size/*" />
 ASSIGN Size(oNewDim) 
 	SUPER:Size := oNewDim
 	SELF:__ResizeMCIWnd()
 	RETURN 
 
+
 END CLASS
 
+
+ /// <exclude />
 FUNCTION __LoadMSVFWDll()
 	LOCAL hDll AS PTR
 	LOCAL rsFormat AS ResourceString
 
+
 	IF glMSVFWDllLoaded
 		RETURN TRUE
 	ENDIF
+
 
 	hDll := LoadLibrary(String2Psz("MSVFW32.DLL"))
 	IF (hDll == NULL_PTR)
@@ -223,12 +283,17 @@ FUNCTION __LoadMSVFWDll()
 		RETURN FALSE
 	ENDIF
 
+
 	gpfnMCWWndCreate := GetProcAddress(hDll, String2Psz( "MCIWndCreate"))
+
 
 	RETURN (glMSVFWDllLoaded := TRUE)
 
+
+ /// <exclude />
 PROCEDURE __WCRegisterMMContWindow _INIT3
 	LOCAL wc IS _WINWNDclass
+
 
 	wc:style := _OR(CS_DBLCLKS, CS_GLOBALCLASS)
 #ifdef __VULCAN__
@@ -246,10 +311,13 @@ PROCEDURE __WCRegisterMMContWindow _INIT3
 	wc:cbWndExtra := 0
 	wc:cbClsExtra := 0
 
+
 	RegisterClass(@wc)
 	RETURN
 
+
 STATIC GLOBAL glMSVFWDllLoaded := FALSE AS LOGIC
+
 
 /// <exclude/>
 GLOBAL gpfnMCWWndCreate AS TMCIWndCreate PTR
@@ -257,6 +325,9 @@ GLOBAL gpfnMCWWndCreate AS TMCIWndCreate PTR
 FUNCTION TMCIWndCreate(hwndParent AS PTR, hInstance AS PTR, dwStyle AS DWORD, szFile AS PSZ) AS PTR STRICT
 	//SYSTEM
 	RETURN NULL_PTR
+
+
+
 
 
 

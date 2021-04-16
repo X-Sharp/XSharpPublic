@@ -48,6 +48,7 @@
     </Compile>
     <Compile Include="Binder\Binder.Access.cs" />
     <Compile Include="Binder\Binder.Error.cs" />
+    <Compile Include="Binder\Node.Bound.Stmt.cs" />
     <Compile Include="Binder\Node.Constant.cs" />
     <Compile Include="Binder\Operator.Binary.cs" />
     <Compile Include="Binder\Binder.Argument.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Binder\Symbol.cs" />
     <Compile Include="Binder\Operator.Unary.cs" />
     <Compile Include="Binder\Symbol.Extensions.cs" />
+    <Compile Include="CodeGen\Node.Emit.Stmt.cs" />
     <Compile Include="CodeGen\Operator.Binary.Emit.cs" />
     <Compile Include="CodeGen\CodeGen.cs" />
     <Compile Include="CodeGen\CodeGen.Emit.cs" />
@@ -91,8 +93,11 @@
     <Compile Include="Binder\Intrinsic.cs" />
     <Compile Include="Syntax\Lexer.cs" />
     <Compile Include="Syntax\Literal.cs" />
+    <Compile Include="Syntax\Node.Syntax.Stmt.cs" />
     <Compile Include="Syntax\Parser.cs" />
     <Compile Include="Syntax\Node.Syntax.cs" />
+    <Compile Include="Syntax\Parser.Expr.cs" />
+    <Compile Include="Syntax\Parser.Stmt.cs" />
     <Compile Include="Syntax\SyntaxToken.cs" />
   </ItemGroup>
   <ItemGroup>

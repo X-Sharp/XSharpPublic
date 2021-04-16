@@ -1,6 +1,4 @@
-
-
-
+[XSharp.Internal.TypesChanged];
 CLASS FixedText INHERIT TextControl
 	PROTECT _dwDrawStyle AS DWORD
 	PROTECT _dwMargin	 AS DWORD
@@ -41,8 +39,8 @@ CLASS FixedText INHERIT TextControl
 		RETURN 
 
 
-	ACCESS __Label AS VOOwnerDrawnLabel
-		RETURN (VOOwnerDrawnLabel) oCtrl
+	ACCESS __Label AS IVOLabel
+		RETURN (IVOLabel) oCtrl
 
 	[Obsolete];
 	METHOD __SetColors(_hDC AS IntPtr) AS IntPtr STRICT 

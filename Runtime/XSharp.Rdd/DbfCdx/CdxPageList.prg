@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
          	LOCAL isOk AS LOGIC
             LOCAL buffer AS BYTE[]
             LOCAL oResult AS CdxPage
-            oResult := _FindPage(nPage)
+            oResult := SELF:_FindPage(nPage)
             IF oResult != NULL_OBJECT
                 oResult:Tag := tag
                 RETURN oResult
@@ -77,14 +77,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD SetPage(nPage AS LONG, page AS CdxPage) AS VOID
             SELF:_pages[nPage] :=  page
-
+            
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
             SELF:_pages := Dictionary<LONG, CdxPage>{}
             SELF:_bag   := bag
             
-//         DESTRUCTOR()
-//            SELF:Flush(TRUE)
-
         INTERNAL METHOD Update( pageNo AS LONG ) AS CdxPage
             LOCAL page AS CdxPage
             page := SELF:Read(pageNo)
@@ -101,6 +98,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _pages:Clear()
 
         INTERNAL METHOD Delete(pageNo AS LONG) AS LOGIC
+           Debug.Assert(_pages:ContainsKey(pageNo))
            IF _pages:ContainsKey(pageNo)
                 _pages:Remove(pageNo)
                 RETURN TRUE
@@ -141,9 +139,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             IF ! keepData
-//                FOREACH VAR pair IN _pages
-//                    pair:Value:Free()
-//                NEXT
                 SELF:_pages:Clear()
             ENDIF
             RETURN lOk
@@ -151,7 +146,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD Write(pageNo AS LONG ) AS LOGIC
             // Write a single page from the buffer
             LOCAL lOk := FALSE AS LOGIC
-            VAR page := _FindPage(pageNo)
+            VAR page := SELF:_FindPage(pageNo)
             IF page != NULL
                 IF page:IsHot
                     lOk := page:Write()
@@ -167,9 +162,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 page:Dumped := TRUE
             ENDIF
             RETURN
-            
-            
-            
+
+        INTERNAL METHOD SetVersion(nVersion as DWORD) AS VOID
+            FOREACH VAR page IN _pages
+                page:Value:Generation := nVersion
+            NEXT
+
+        INTERNAL METHOD CheckVersion(nVersion as DWORD) AS VOID
+            FOREACH VAR page IN _pages
+                Debug.Assert(page:Value:Generation == nVersion)
+            NEXT
     END CLASS
     
 END NAMESPACE // global::XSharp.RDD.Types.DbfNtx

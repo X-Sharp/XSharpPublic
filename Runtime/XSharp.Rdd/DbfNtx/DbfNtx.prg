@@ -111,6 +111,7 @@ BEGIN NAMESPACE XSharp.RDD
                     info:Result := ""
                 ENDIF
             CASE DBOI_ORDERCOUNT
+            CASE DBOI_BAGCOUNT
                 info:Result := SELF:_indexList:Count
             CASE DBOI_POSITION
                 IF workOrder == NULL

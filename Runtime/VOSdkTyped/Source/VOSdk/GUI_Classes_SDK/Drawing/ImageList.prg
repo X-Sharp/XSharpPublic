@@ -28,7 +28,7 @@ CLASS ImageList INHERIT VObject
 		RETURN nReturnValue
 
 	METHOD AddMask(oBitmap, oMaskColor) 
-		//Todo
+		//Todo AddMask
 		//LOCAL dwColor AS DWORD
 
 		//IF (oImageList != NULL_OBJECT)
@@ -45,7 +45,7 @@ CLASS ImageList INHERIT VObject
 		RETURN TRUE
 
 	METHOD CreateOverlayImage(nImageIndex, nListIndex) 
-		//Todo
+		//Todo CreateOverlayImage
 		//Default(@nListIndex, 1)
 
 		//IF nListIndex < 1 .or. nListIndex > 4

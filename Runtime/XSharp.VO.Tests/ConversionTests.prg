@@ -30,6 +30,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			VAR n1 := GetThreadCount()
 			Assert.Equal(TRUE, n1 > 1)
+			
+			LOCAL p AS PTR
+			p := @p
+			Assert.Equal(AsString(p), "0x" + AsHexString(p) )
+			Assert.Equal(10, AsString(p):Length)
+			p := NULL_PTR
+			Assert.Equal("0x00000000", AsString(p))
+			Assert.Equal("00000000", AsHexString(p))
 
 		[Fact, Trait("Category", "Conversion")];
 		METHOD StrTest() AS VOID 

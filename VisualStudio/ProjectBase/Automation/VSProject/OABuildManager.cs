@@ -13,6 +13,7 @@ using System;
 using Microsoft.VisualStudio.Shell.Interop;
 using VSLangProj;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
@@ -40,12 +41,20 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual EnvDTE.Project ContainingProject
         {
-            get { return projectManager.GetAutomationObject() as EnvDTE.Project; }
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return projectManager.GetAutomationObject() as EnvDTE.Project;
+            }
         }
 
         public virtual EnvDTE.DTE DTE
         {
-            get { return projectManager.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE; }
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return projectManager.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+            }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
@@ -82,13 +91,15 @@ namespace Microsoft.VisualStudio.Project.Automation
 		{
 			if (DesignTimeOutputDeleted == null)
 				return;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-			string moniker = OABuildManager.GetOutputMoniker(sender);
+            string moniker = OABuildManager.GetOutputMoniker(sender);
 			if (!String.IsNullOrEmpty(moniker))
 				DesignTimeOutputDeleted(moniker);
 		}
         private static string GetOutputMoniker(object sender)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsOutput2 output = sender as IVsOutput2;
             if (output == null)
                 return null;

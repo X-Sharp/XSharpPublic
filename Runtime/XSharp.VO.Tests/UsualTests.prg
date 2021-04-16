@@ -9,7 +9,8 @@ USING System.Linq
 USING System.Text
 USING XUnit
 
-
+#pragma warnings(219, off)  // assigned but not used
+#pragma warnings(165, off)  // unassigned variables
 
 BEGIN NAMESPACE XSharp.VO.Tests
 
@@ -428,7 +429,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL u AS USUAL
 			LOCAL d AS DWORD
 			u := UInt32.MaxValue
-			d := UsualConversionTests_helper(u)
+			d := SELF:UsualConversionTests_helper(u)
 			Assert.Equal(UInt32.MaxValue - 1 , d)
 		
 		METHOD UsualConversionTests_helper(d AS DWORD) AS DWORD
@@ -566,7 +567,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact, Trait("Category", "usual to string tests")];
 		METHOD UsualToStringTests() AS VOID
 			LOCAL cVal AS STRING
-			cVal := GetNullStringInUsual()
+			cVal := SELF:GetNullStringInUsual()
 			Assert.True(Empty(cVal))
 			Assert.True(cVal == "")
 		

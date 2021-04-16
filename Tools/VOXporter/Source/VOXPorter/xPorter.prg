@@ -528,7 +528,7 @@ CLASS xPorter
 				sCode := StringBuilder{}
 				FOREACH cLine AS STRING IN oCode:GetContents()
 					sCode:Append(cLine)
-					sCode:Append(CRLF)
+					sCode:Append(e"\r\n")
 				NEXT
 				Clipboard.SetText(sCode:ToString())
 			CATCH 

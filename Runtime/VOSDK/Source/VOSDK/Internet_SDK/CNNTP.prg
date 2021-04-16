@@ -1,4 +1,6 @@
-﻿
+
+
+/// <include file="Internet.xml" path="doc/CNNTP/*" />
 CLASS CNNTP INHERIT CMailAbstract
     PROTECT oNews           AS CNews
     PROTECT nReceiveBytes   AS DWORD
@@ -10,14 +12,19 @@ CLASS CNNTP INHERIT CMailAbstract
     PROTECT cGroupName      AS STRING
 
 
+
+
+ /// <exclude />
 METHOD  __DecodeStatus  (n)
     LOCAL cTemp     AS STRING
     LOCAL cBuffer   AS STRING
     LOCAL i         AS DWORD
     LOCAL nPos      AS DWORD
 
+
     cBuffer := SELF:cReply
     DEFAULT(@n, SELF:nReply)
+
 
     DO CASE
     CASE n == 211
@@ -32,14 +39,17 @@ METHOD  __DecodeStatus  (n)
                 CASE i == 3
                     SELF:nMsgFirst := Val(cTemp)
 
+
                 CASE i == 4
                     SELF:nMsgLast  := Val(cTemp)
+
 
                 CASE i == 5
                     SELF:cGroupName:= cTemp
                 ENDCASE
             ENDIF
         NEXT
+
 
     CASE n == 223
         FOR i := 1 TO 3
@@ -56,12 +66,18 @@ METHOD  __DecodeStatus  (n)
             ENDIF
         NEXT
 
+
     ENDCASE
+
+
 
 
     RETURN NIL
 
 
+
+
+ /// <exclude />
 METHOD  __GetGroups     (cCommand, cSearch)
     LOCAL aRet      AS ARRAY
     LOCAL cTemp     AS STRING
@@ -70,16 +86,22 @@ METHOD  __GetGroups     (cCommand, cSearch)
     LOCAL aTemp     AS ARRAY
     LOCAL nPos      AS DWORD
 
+
     aRet := {}
+
 
     SELF:nError := 0
 
+
     DEFAULT(@cCommand, "LIST" + CRLF)
+
 
     SELF:nCurState := SENDING_REQUEST
 
+
     IF SELF:SendRemote(cCommand)
         SELF:nCurState := RETREIVING_DATA
+
 
         DEFAULT(@cSearch, "")
         IF IsArray(cSearch)
@@ -92,7 +114,9 @@ METHOD  __GetGroups     (cCommand, cSearch)
             ENDIF
         ENDIF
 
+
         n := ALen(aRet)
+
 
         FOR i := 1 TO n
             aTemp := ArrayCreate(NEWSLIST_MAX)
@@ -110,14 +134,17 @@ METHOD  __GetGroups     (cCommand, cSearch)
                 ENDIF
             NEXT
 
+
             IF AtC("y", cBuffer) > 0
                 aTemp[4] := .T.
             ELSE
                 aTemp[4] := .F.
             ENDIF
 
+
             aRet[i] := aTemp
         NEXT
+
 
         IF ALen(aRet) > 0
             IF aRet[1, NEWSLIST_NAME] == "215" .OR. ;
@@ -128,23 +155,32 @@ METHOD  __GetGroups     (cCommand, cSearch)
         ENDIF
     ENDIF
 
+
     RETURN aRet
 
 
+
+
+ /// <exclude />
 METHOD  __GetNews       (cCommand)
     LOCAL aRet      AS ARRAY
     LOCAL n         AS DWORD
+
 
     aRet := {}
     SELF:nError := 0
     SELF:nCurState := SENDING_REQUEST
 
+
     IF SELF:SendRemote(cCommand)
         SELF:nCurState := RETREIVING_DATA
 
+
         aRet := SELF:oSocket:GetLines({})
 
+
         n := ALen(aRet)
+
 
         IF ALen(aRet) > 0
             ADel(aRet, 1)
@@ -152,14 +188,20 @@ METHOD  __GetNews       (cCommand)
         ENDIF
     ENDIF
 
+
     RETURN aRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.Authenticate/*" />
 METHOD  Authenticate        ()
     LOCAL cBuffer   AS STRING
 
+
     IF SELF:lSocketOpen
         SELF:nError := 0
+
 
         // USER
         cBuffer := "AUTHINFO USER " + SELF:cUserName + CRLF
@@ -177,6 +219,7 @@ METHOD  Authenticate        ()
         IF SELF:nReply != 381
             RETURN .T.
         ENDIF
+
 
         // PASSWORD
         cBuffer := "AUTHINFO PASS " + SELF:cPassWord + CRLF
@@ -198,17 +241,25 @@ METHOD  Authenticate        ()
         ENDIF
     ENDIF
 
+
     RETURN .F.
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.CheckReply/*" />
 METHOD  CheckReply      ()
+
 
     LOCAL c     AS STRING
     LOCAL lRet  AS LOGIC
 
+
     c := SubStr(SELF:cReply, 1, 3)
 
+
     SELF:nReply := Val(c)
+
 
     IF SELF:nReply > 0
         lRet := .T.
@@ -216,13 +267,19 @@ METHOD  CheckReply      ()
         lRet := .F.
     ENDIF
 
+
     RETURN lRet
 
 
 
+
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.connect/*" />
 METHOD  connect         (cIP, n)
     LOCAL nPort     AS WORD
     LOCAL lRet      AS LOGIC
+
 
     IF IsNumeric(n)
         nPort := n
@@ -230,9 +287,11 @@ METHOD  connect         (cIP, n)
         nPort := SELF:wHostPort
     ENDIF
 
+
     IF !IsString(cIP)
         cIP := SELF:cHostAddress
     ENDIF
+
 
     IF SELF:oSocket:connect(cIP, nPort)
         IF SELF:RecvRemote()
@@ -242,44 +301,62 @@ METHOD  connect         (cIP, n)
         SELF:nError := SELF:oSocket:Error
     ENDIF
 
+
     RETURN lRet
 
 
 
+
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.CurrentNews/*" />
 ACCESS  CurrentNews
     RETURN SELF:oNews
 
+
+/// <include file="Internet.xml" path="doc/CNNTP.CurrentNews/*" />
 ASSIGN  CurrentNews     (x)
     IF IsInstanceOfUsual(x, #CNews)
         SELF:oNews := x
     ENDIF
 
+
     RETURN
 
+
+/// <include file="Internet.xml" path="doc/CNNTP.Disconnect/*" />
 METHOD  Disconnect      ()
     LOCAL cBuffer   AS STRING
     LOCAL cTemp     AS STRING
     LOCAL nTemp     AS DWORD
 
+
     nTemp := SELF:nError
     cTemp := SELF:cReply
+
 
     IF SELF:lSocketOpen
         SELF:nError := 0
 
+
         cBuffer := "QUIT" + CRLF
 
+
         SELF:nCurState := SENDING_REQUEST
+
 
         IF !SELF:SendRemote(cBuffer)
             RETURN .F.
         ENDIF
 
+
         SELF:nCurState := RETREIVING_DATA
+
 
         IF !SELF:RecvRemote()
             RETURN .F.
         ENDIF
+
 
         IF SELF:CheckReply()
             //  SUPER:Close()
@@ -290,28 +367,40 @@ METHOD  Disconnect      ()
     ENDIF
 
 
+
+
     RETURN .T.
 
 
 
+
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.GetArticle/*" />
 METHOD  GetArticle  (xMsg)
     LOCAL cBuffer   AS STRING
     LOCAL lRet      AS LOGIC
 
+
     SELF:nError := 0
     DEFAULT(@xMsg, SELF:nMsg)
 
+
     cBuffer := SELF:PrepareCommand("ARTICLE ", xMsg)
+
 
     IF SLen(cBuffer) == 0
         SELF:nError := ERR_NO_ARTICLE_NUMBER
         RETURN .F.
     ENDIF
 
+
     lRet := SELF:RecvData(cBuffer, 220)
+
 
     IF lRet
         SELF:oNews := CNews{SELF:cReply}
+
 
         IF IsNumeric(xMsg)
             SELF:__DecodeStatus(223)
@@ -321,115 +410,163 @@ METHOD  GetArticle  (xMsg)
         ENDIF
     ENDIF
 
+
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.GetBody/*" />
 METHOD  GetBody     (xMsg)
     LOCAL cBuffer   AS STRING
     LOCAL lRet      AS LOGIC
 
+
     DEFAULT(@xMsg, SELF:nMsg)
+
 
     SELF:nError := 0
 
+
     cBuffer := SELF:PrepareCommand("BODY ", xMsg)
+
 
     IF SLen(cBuffer) == 0
         SELF:nError := ERR_NO_ARTICLE_NUMBER
         RETURN .F.
     ENDIF
 
+
     lRet := SELF:RecvData(cBuffer, 222)
+
 
     IF lRet .AND. IsNumeric(xMsg)
         SELF:__DecodeStatus(223)
     ENDIF
 
+
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.GetHeader/*" />
 METHOD  GetHeader   (xMsg)
     LOCAL cBuffer   AS STRING
     LOCAL lRet      AS LOGIC
 
+
     SELF:nError := 0
     DEFAULT(@xMsg, SELF:nMsg)
 
+
     cBuffer := SELF:PrepareCommand("HEAD ", xMsg)
+
 
     IF SLen(cBuffer) == 0
         SELF:nError := ERR_NO_ARTICLE_NUMBER
         RETURN .F.
     ENDIF
 
+
     lRet := SELF:RecvData(cBuffer, 221)
+
 
     IF lRet .AND. IsNumeric(xMsg)
         SELF:oNews := CNews{SELF:cReply}
 
+
         SELF:__DecodeStatus(223)
     ENDIF
+
 
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.GetList/*" />
 METHOD  GetList         (cSearch)
     LOCAL cCommand  AS STRING
 
+
     cCommand := "LIST" + CRLF
+
 
     RETURN SELF:__GetGroups(cCommand, cSearch)
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.GetNewGroups/*" />
 METHOD  GetNewGroups    (cSearch, dDate, cTime, lGmt)
     LOCAL cCommand  AS STRING
+
 
     DEFAULT(@dDate, Today())
     DEFAULT(@cTime, "00:00:00")
     DEFAULT(@cSearch, "")
     DEFAULT(@lGmt, .F. )
 
+
     cCommand := "NEWGROUPS "
     cCommand += __GetDataTime(dDate, cTime, lGmt)
 
+
     cCommand += CRLF
+
 
     RETURN SELF:__GetGroups (cCommand, cSearch)
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.GetNewNews/*" />
 METHOD  GetNewNews      (cGroups, dDate, cTime, lGmt)
     LOCAL cCommand  AS STRING
+
 
     DEFAULT(@dDate, Today())
     DEFAULT(@cTime, "00:00:00")
     DEFAULT(@lGmt, .F. )
 
+
     cCommand := "NEWNEWS "
     cCommand += cGroups + " "
     cCommand += __GetDataTime(dDate, cTime, lGmt)
 
+
     cCommand += CRLF
+
 
     RETURN SELF:__GetNews(cCommand)
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.GetStatus/*" />
 METHOD  GetStatus   (xMsg)
     LOCAL cBuffer   AS STRING
     LOCAL lRet      AS LOGIC
 
+
     SELF:nError := 0
     DEFAULT(@xMsg, SELF:nMsg)
 
+
     cBuffer := SELF:PrepareCommand("STAT ", xMsg)
+
 
     IF SLen(cBuffer) == 0
         SELF:nError := ERR_NO_ARTICLE_NUMBER
         RETURN .F.
     ENDIF
 
+
     IF SELF:SendRemote(cBuffer)
         SELF:nCurState := RETREIVING_DATA
         SELF:RecvRemote()
+
 
         IF SELF:CheckReply()
             IF SELF:nReply == 223
@@ -440,63 +577,94 @@ METHOD  GetStatus   (xMsg)
         ENDIF
     ENDIF
 
+
     IF lRet .AND. IsNumeric(xMsg)
         SELF:__DecodeStatus(223)
     ENDIF
 
+
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.GroupName/*" />
 ACCESS GroupName        ()
     RETURN SELF:cGroupName
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.ctor/*" />
 CONSTRUCTOR            (cServer, cUid, cPwd)
+
 
     SUPER(IPPORT_NNTP, cServer)
 
+
     IF SELF:nError = 0
         SELF:oNews := CNews{}
+
 
         IF IsString(cUID)
             SELF:cUserName := cUID
         ENDIF
 
+
         IF IsString(cPwd)
             SELF:cPassWord := cPwd
         ENDIF
 
+
         SELF:TimeOut := 1000
     ENDIF
 
+
     SELF:TimeOut := 1000
+
 
     RETURN
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.Message/*" />
 ACCESS Message          ()
     RETURN SELF:nMsg
 
+
+/// <include file="Internet.xml" path="doc/CNNTP.MessageCount/*" />
 ACCESS MessageCount     ()
     RETURN SELF:nMsgCount
 
+
+/// <include file="Internet.xml" path="doc/CNNTP.MessageFirst/*" />
 ACCESS MessageFirst     ()
     RETURN SELF:nMsgFirst
 
+
+/// <include file="Internet.xml" path="doc/CNNTP.MessageID/*" />
 ACCESS MessageID        ()
     RETURN SELF:cMsgID
 
+
+/// <include file="Internet.xml" path="doc/CNNTP.MessageLast/*" />
 ACCESS MessageLast      ()
     RETURN SELF:nMsgLast
 
+
+/// <include file="Internet.xml" path="doc/CNNTP.Post/*" />
 METHOD  Post        (oMsg)
     LOCAL cBuffer   AS STRING
     LOCAL lRet      AS LOGIC
 
+
     SELF:nError := 0
     DEFAULT(@oMsg, SELF:oNews)
 
+
     lRet := IsObject(oMsg)
+
 
     IF lRet
         cBuffer := "POST" + CRLF
@@ -513,15 +681,18 @@ METHOD  Post        (oMsg)
             ENDIF
         ENDIF
 
+
         IF lRet
             lRet := .F.
             SELF:oNews := oMsg
+
 
             SELF:nCurState := SENDING_DATA
             lRet := SELF:SendHeader()
             IF lRet
                 lRet := SELF:SendMailBody()
             ENDIF
+
 
             IF lRet
                 SELF:nCurState := RETREIVING_DATA
@@ -537,13 +708,19 @@ METHOD  Post        (oMsg)
         ENDIF
     ENDIF
 
+
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.PrepareCommand/*" />
 METHOD  PrepareCommand(cCommand, xMsg)
     LOCAL cRet  AS STRING
 
+
     cRet := cCommand
+
 
     IF IsString(xMsg)
         IF SubStr(xMsg, 1, 1) == "<"
@@ -552,22 +729,30 @@ METHOD  PrepareCommand(cCommand, xMsg)
             cRet += "<" + xMsg + ">" + CRLF
         ENDIF
 
+
     ELSEIF IsNumeric(xMsg)
         cRet += NTrim(xMsg) + CRLF
+
 
     ELSE
         cRet := ""
     ENDIF
 
+
     RETURN cRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.RecvData/*" />
 METHOD  RecvData(cCommand, nRetCode)
     LOCAL lRet      AS LOGIC
     LOCAL cTemp     AS STRING
     LOCAL nPos      AS DWORD
 
+
     SELF:nCurState := SENDING_REQUEST
+
 
     IF SELF:SendRemote(cCommand)
         SELF:nCurState := RETREIVING_DATA
@@ -575,7 +760,9 @@ METHOD  RecvData(cCommand, nRetCode)
         SELF:cReply        := cTemp
         SELF:nReceiveBytes := SLen(cTemp)
 
+
         lRet := SELF:CheckReply()
+
 
         IF lRet
             IF SELF:nReply != nRetCode
@@ -583,6 +770,7 @@ METHOD  RecvData(cCommand, nRetCode)
                lRet := .F.
             ENDIF
         ENDIF
+
 
         nPos := At2(CRLF, cTemp)
         IF nPos > 0
@@ -592,19 +780,26 @@ METHOD  RecvData(cCommand, nRetCode)
         SELF:InternetStatus(0, INTERNET_STATUS_RESPONSE_RECEIVED, cTemp, SLen(cTemp))
     ENDIF
 
+
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.RecvRemote/*" />
 METHOD  RecvRemote()
     LOCAL lRet      AS LOGIC
     LOCAL nSize     AS DWORD
     LOCAL cTemp     AS STRING
 
+
     cTemp       := SELF:oSocket:GetLine()
     SELF:cReply := cTemp
     nSize       := SLen(cTemp)
 
+
     SELF:nReceiveBytes := nSize
+
 
     IF nSize = 0
        lRet := FALSE
@@ -612,25 +807,36 @@ METHOD  RecvRemote()
        lRet := TRUE
     ENDIF
 
+
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.ReplyString/*" />
 ACCESS  ReplyString     ()
     RETURN SELF:cReply
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.SendHeader/*" />
 METHOD  SendHeader  ()
     LOCAL cRet      AS STRING
+
 
     IF SLen(SELF:oNews:MessageID) = 0
         SELF:oNews:MessageID := GetUseNetMsgID("", GetHostByIP(SELF:RemoteHost))
     ENDIF
 
+
     SELF:oNews:SetMailTime()
+
 
     IF SLen(SELF:oNews:Path) > 0
         cRet := "Path: " + SELF:oNews:Path + CRLF
     ENDIF
+
 
     cRet += "From: "
     IF SLen(SELF:oNews:FromName) > 0
@@ -639,9 +845,12 @@ METHOD  SendHeader  ()
     cRet += "<" + SELF:oNews:FromAddress + ">"
     cRet += CRLF
 
+
     cRet += "Subject: " + SELF:oNews:Subject + CRLF
 
+
     cRet += "Message-ID: " + SELF:oNews:MessageID + CRLF
+
 
     cRet += "Date: " + SELF:oNews:Timestamp + CRLF
     cRet += "Newsgroups: " + SELF:oNews:NewsGroups + CRLF
@@ -650,21 +859,26 @@ METHOD  SendHeader  ()
         cRet += "<" + SELF:oNews:ReplyTo + ">" + CRLF
     ENDIF
 
+
     IF SLen(SELF:oNews:Sender) > 0
         cRet += "Sender: " + SELF:oNews:Sender + CRLF
     ENDIF
+
 
     IF SLen(SELF:oNews:FollowUpTo) > 0
         cRet += "Followup-To: " + SELF:oNews:FollowUpTo + CRLF
     ENDIF
 
+
     IF SLen(SELF:oNews:References) > 0
         cRet += "References: " + SELF:oNews:References + CRLF
     ENDIF
 
+
     IF SLen(SELF:oNews:Organization) > 0
         cRet += "Organization: " + SELF:oNews:Organization + CRLF
     ENDIF
+
 
     cRet += CRLF + CRLF
 #IFDEF __DEBUG__
@@ -674,17 +888,24 @@ METHOD  SendHeader  ()
 
 
 
+
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.SendMailBody/*" />
 METHOD SendMailBody()
     LOCAL cRet      AS STRING
     LOCAL aFiles    AS ARRAY
     LOCAL cTemp     AS STRING
     LOCAL i,n       AS DWORD
 
+
     aFiles := SELF:oNews:AttachmentFileList
     n      := ALen(aFiles)
     cRet   := SELF:oNews:MailBody
 
+
     cRet   += CRLF
+
 
     IF n > 0
         FOR i := 1 TO n
@@ -695,7 +916,9 @@ METHOD SendMailBody()
         NEXT
     ENDIF
 
+
     cRet += DEFAULT_STOPDATA
+
 
 #IFDEF __DEBUG__
     MemoWrit("nntp2.txt", cRet)
@@ -703,21 +926,30 @@ METHOD SendMailBody()
     RETURN SELF:SendRaw(cRet)
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.SetNewsGroup/*" />
 METHOD  SetNewsGroup    (cGroup)
     LOCAL lRet      AS LOGIC
     LOCAL cBuffer   AS STRING
 
+
     SELF:nError := 0
 
+
     DEFAULT(@cGroup, "")
+
 
     IF SLen(cGroup) > 0
         cBuffer := "GROUP " + cGroup + CRLF
 
+
         SELF:nCurState := SENDING_REQUEST
+
 
         IF SELF:SendRemote(cBuffer)
             SELF:nCurState := RETREIVING_DATA
+
 
             IF SELF:RecvRemote()
                 IF SELF:Checkreply()
@@ -733,14 +965,19 @@ METHOD  SetNewsGroup    (cGroup)
         ENDIF
     ENDIF
 
+
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.SetReadMode/*" />
 METHOD  SetReadMode         ()
     //
     //  Necessary for some News servers to
     //
     LOCAL cBuffer   AS STRING
+
 
     cBuffer := "MODE READER" + CRLF
     SELF:nCurState := SENDING_REQUEST
@@ -758,22 +995,32 @@ METHOD  SetReadMode         ()
         RETURN .T.
     ENDIF
 
+
     RETURN .F.
 
 
 
+
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.SkipNext/*" />
 METHOD  SkipNext    ()
     LOCAL lRet      AS LOGIC
     LOCAL cBuffer   AS STRING
 
+
     SELF:nError := 0
+
 
     cBuffer := "NEXT" + CRLF
 
+
     SELF:nCurState := SENDING_REQUEST
+
 
     IF SELF:SendRemote(cBuffer)
         SELF:nCurState := RETREIVING_DATA
+
 
         IF SELF:RecvRemote()
             IF SELF:Checkreply()
@@ -787,21 +1034,30 @@ METHOD  SkipNext    ()
         ENDIF
     ENDIF
 
+
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CNNTP.SkipPrev/*" />
 METHOD  SkipPrev    ()
     LOCAL lRet      AS LOGIC
     LOCAL cBuffer   AS STRING
 
+
     SELF:nError := 0
+
 
     cBuffer := "LAST" + CRLF
 
+
     SELF:nCurState := SENDING_REQUEST
+
 
     IF SELF:SendRemote(cBuffer)
         SELF:nCurState := RETREIVING_DATA
+
 
         IF SELF:RecvRemote()
             IF SELF:Checkreply()
@@ -815,29 +1071,41 @@ METHOD  SkipPrev    ()
         ENDIF
     ENDIF
 
+
     RETURN lRet
+
 
     PRIVATE STATIC METHOD __GetDataTime(dStart AS DATE, cTime AS STRING, lGmt AS LOGIC)   AS STRING STRICT
     LOCAL cRet      AS STRING
     LOCAL cTemp     AS STRING
 
+
     cTemp := DToS(dStart)
     cRet  := SubStr2(cTemp, 3)
 
+
     cTemp := StrTran(cTime, ":", "")
     cRet += " " + cTemp
+
 
     IF lGmt
         cRet += " " + "[GMT]"
     ENDIF
 
+
     RETURN cRet
+
+
+
 
 
 
 END CLASS
 
 
+
+
+/// <include file="Internet.xml" path="doc/NNTPSendMail/*" />
 FUNCTION NNTPSendMail       (cServerIP      AS STRING,;
                          cNewsGroups    AS STRING,;
                          cMailSubject   AS STRING,;
@@ -846,14 +1114,19 @@ FUNCTION NNTPSendMail       (cServerIP      AS STRING,;
                          xAttachFile    AS USUAL,;
                          cFromName      AS STRING)   AS LOGIC STRICT
 
+
     LOCAL oNNTP 	AS CNNTP
     LOCAL lRet  	AS LOGIC
     LOCAL oNews	    AS CNews
 
+
     oNNTP := CNNTP{}
+
 
     oNNTP:RemoteHost := cServerIP
     oNNTP:TimeOut    := 5000
+
+
 
 
 	oNews := CNews{}
@@ -864,14 +1137,18 @@ FUNCTION NNTPSendMail       (cServerIP      AS STRING,;
 	oNews:MailBody	    := cBody
 	oNews:Path          := GetHostByIP(oNNTP:RemoteHost)
 
+
     IF !IsNil(xAttachFile)
         oNews:AttachmentFileList := xAttachFile
     ENDIF
 
+
     lRet := oNNTP:connect(cServerIP)
+
 
     IF lRet
         lRet := oNNTP:Post(oNews)
+
 
     	#IFDEF __DEBUG__
     		IF !lRet
@@ -881,7 +1158,11 @@ FUNCTION NNTPSendMail       (cServerIP      AS STRING,;
         oNNTP:Disconnect()
     ENDIF
 
+
     RETURN lRet
+
+
+
 
 
 
@@ -892,5 +1173,7 @@ DEFINE NEWSLIST_MAX   := 4
 DEFINE NEWSLIST_NAME  := 1
 DEFINE NEWSLIST_POST  := 4
 #endregion
+
+
 
 

@@ -7,10 +7,10 @@
 // in the standard VO GU classes
 
 
-#USING System.Windows.Forms
-#USING System.Reflection
-#using System.ComponentModel
-#using System.Collections.Generic
+USING System.Windows.Forms
+USING System.Reflection
+USING System.ComponentModel
+USING System.Collections.Generic
 CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 
 	#region Fields
@@ -82,7 +82,16 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 			__GetAllControls(oC, iList)
 		NEXT
 		RETURN
-		
+    METHOD AddControl (oCtrl AS IVOControl) AS VOID
+        IF oCtrl IS System.Windows.Forms.Control VAR oC
+            SELF:Controls:Add( oC)
+        ENDIF
+    METHOD SetChildIndex(oCtrl AS IVOControl, nIndex AS LONG) AS VOID
+        IF oCtrl IS System.Windows.Forms.Control VAR oC
+            SELF:Controls:SetChildIndex(oC,nIndex)
+        ENDIF
+        
+
 	METHOD GetAllControls() AS IList<System.Windows.Forms.Control>
 		LOCAL aList AS List<System.Windows.Forms.Control>
 		aList := List<System.Windows.Forms.Control>{}
@@ -91,7 +100,7 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 	
 	STATIC METHOD GetFirstEditableChild(oParent AS System.Windows.Forms.Control)
 		FOREACH oC AS System.Windows.Forms.Control IN oParent:Controls
-			IF oC:CanSelect .AND. !  oc IS VOButton 
+			IF oC:CanSelect .AND. !  oc IS IVOButton 
 				RETURN oC
 			ENDIF
 			

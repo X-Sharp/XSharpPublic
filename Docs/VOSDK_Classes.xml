@@ -9567,7 +9567,7 @@
         This example demonstrates how FocusChange() displays the cursor at the specified cursor position when focus is gained.  If the focus is lost, the cursor is hidden:
         <code language="X#">
           METHOD FocusChange(oFocusChangeEvt) CLASS MyDataWindow
-            IF(oFocusChangeEvt:GotFocus())       // Gaining focus
+            IF oFocusChangeEvt:GotFocus       // Gaining focus
                oMyCursor:Show()
                oMyCursor:ChangePos(oMyCursorPos)
             ELSE                     // Losing focus

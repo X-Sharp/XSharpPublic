@@ -3,7 +3,7 @@
 
 #ifdef __VULCAN__
 
-   #using System.Runtime.InteropServices
+   USING System.Runtime.InteropServices
    INTERNAL DELEGATE DDECallbackDelegate( wType AS WORD, wFmt AS WORD, hConv AS PTR, hsz1 AS PTR, hsz2 AS PTR, hData AS PTR, dwData1 AS DWORD, dwData2 AS DWORD ) AS LONGINT
 
 #endif

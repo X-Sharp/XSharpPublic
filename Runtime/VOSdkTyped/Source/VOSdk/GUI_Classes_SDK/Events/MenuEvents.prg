@@ -3,7 +3,7 @@
 
 
 
-#USING System.Diagnostics
+USING System.Diagnostics
 
 CLASS MenuEvent INHERIT @@Event IMPLEMENTS INamedEvent
 	PROTECT oMenu AS Menu

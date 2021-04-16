@@ -7,11 +7,13 @@ USING System.Collections
 USING System.Collections.Generic
 USING System.Linq
 USING System.Diagnostics
+USING System.Runtime.Serialization
 
 BEGIN NAMESPACE XSharp	
 	/// <summary>Internal type that implements the WIN32 Compatible LOGIC type in UNIONs and VOSTRUCTs</summary>
     [DebuggerDisplay("WinBool({ToString(),nq})", Type := "LOGIC")];
-    PUBLIC STRUCT __WinBool 
+    [Serializable];
+    PUBLIC STRUCT __WinBool IMPLEMENTS ISerializable
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE STATIC trueValue := __WinBool{1}	AS __WinBool
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -116,5 +118,22 @@ BEGIN NAMESPACE XSharp
             RETURN wb:_value == 0
             
             #endregion
+        #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Value", _value)
+            RETURN
+            
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            _value := info:GetInt32("Value")
+            #endregion
+            
     END	STRUCT
 END NAMESPACE

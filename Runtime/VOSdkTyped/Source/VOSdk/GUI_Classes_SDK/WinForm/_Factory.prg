@@ -12,10 +12,8 @@ CLASS GuiFactory
         @@Instance := GuiFactory{}
 
     METHOD CreateControl(type AS ControlType, owner AS VOSDK.Control, liStyle AS LONG, liExStyle AS LONG) AS OBJECT
-        LOCAL oRes AS System.Windows.Forms.Control
+        LOCAL oRes AS IVOControl
         SWITCH type
-        CASE ControlType.Control
-            oRes := System.Windows.Forms.Control{}
             
         CASE ControlType.Label
             oRes := VOLabel{owner, liStyle, liExStyle}
@@ -57,6 +55,9 @@ CLASS GuiFactory
         CASE ControlType.ListBox
             oRes := VOListBox{owner, liStyle, liExStyle}
 
+        CASE ControlType.ComboBox
+            oRes := VOComboBox{owner, liStyle, liExStyle}
+
         CASE ControlType.ListView
             oRes := VOListView{owner, liStyle, liExStyle}
 
@@ -69,11 +70,17 @@ CLASS GuiFactory
         CASE ControlType.VerticalScrollBar
             oRes := VOVScrollBar{owner, liStyle, liExStyle}
 
+        CASE ControlType.VerticalSpinner
+            oRes := VOVSpinner{owner, liStyle, liExStyle}
+                
+        CASE ControlType.HorizontalSpinner
+            oRes := VOHSpinner{owner, liStyle, liExStyle}
+                
         CASE ControlType.Slider
 		    oRes := VOSlider{owner, liStyle, liExStyle}
 
         CASE ControlType.StatusBar
-		    oRes := VOStatusStrip{owner, liStyle, liExStyle}
+		    oRes := VOStatusBar{owner, liStyle, liExStyle}
 
         CASE ControlType.SysLink
             oRes := VOLinkLabel{owner, liStyle, liExStyle}
@@ -124,7 +131,7 @@ CLASS GuiFactory
             RETURN VOSurfacePanel{Owner, dwStyle, dwExStyle}
 
 
-        METHOD CreateFramePanel(oOwner AS VODataForm, oWindow AS Window) AS VOFramePanel
+        METHOD CreateFramePanel(oOwner AS VODataForm, oWindow AS Window) AS IVOFramePanel
             RETURN VOFramePanel{oOwner, oWindow}
 
         METHOD CreateDialogWindow(oWindow AS Window, oRes AS ResourceDialog) AS VoDialogForm
@@ -145,6 +152,15 @@ CLASS GuiFactory
         METHOD CreateWindow(oWindow AS Window) AS VOForm
             RETURN VOForm{oWindow}
 
+        METHOD CreateListViewElement(type AS ControlType, owner AS OBJECT) AS OBJECT
+            SWITCH type
+            CASE ControlType.ListViewItem
+                RETURN VoListViewItem{(ListViewItem) owner}    
+            CASE ControlType.ListViewColumn
+                RETURN VOColumnHeader{(ListViewColumn) owner}    
+            END SWITCH
+            RETURN NULL
+
 END CLASS
 
 
@@ -164,13 +180,19 @@ ENUM ControlType
     MEMBER GroupBox
     MEMBER TabControl
     MEMBER ListView
+    MEMBER ListViewItem
+    MEMBER ListViewColumn
+    MEMBER ListViewGroup
     MEMBER TreeView
+    MEMBER TreeViewItem
     MEMBER DateTimePicker
     MEMBER SpinnerTextBox
     MEMBER Panel
     MEMBER IPAddress
     MEMBER HorizontalScrollBar
     MEMBER VerticalScrollBar
+    MEMBER HorizontalSpinner
+    MEMBER VerticalSpinner
     MEMBER Slider
     MEMBER StatusBar
     MEMBER SysLink

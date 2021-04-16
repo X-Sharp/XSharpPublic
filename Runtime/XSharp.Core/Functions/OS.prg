@@ -143,7 +143,7 @@ FUNCTION DiskFree(cDrive AS STRING) AS INT64
     END TRY
     RETURN result
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.DiskFree(System.String)" />	
+/// <inheritdoc cref="DiskFree" />	
 /// <param name="nDrive">The number of the disk drive to query, where 1 is drive A, 2 is B, 3 is C, and so on. </param>
 FUNCTION DiskFree(nDrive AS INT) AS INT64
 	RETURN DiskFree(DiskNo2DiskName(nDrive))
@@ -165,7 +165,7 @@ FUNCTION DiskSpace(nDrive AS INT) AS INT64
 	cDisk := DiskNo2DiskName(nDrive)
 	RETURN DiskSpace(cDisk)
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.DiskSpace(System.Int32)" />
+/// <inheritdoc cref="DiskSpace" />
 /// <param name="cDrive">The name of the drive as a string, for example "C:", "A:".   If you do not specify a drive, the Windows default is used.</param>
 FUNCTION DiskSpace(cDrive AS STRING) AS INT64
     LOCAL result AS INT64

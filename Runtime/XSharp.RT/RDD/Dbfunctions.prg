@@ -33,7 +33,14 @@ FUNCTION _NoAlias(uArea AS USUAL) AS Error
 /// <exclude />
 FUNCTION _DbThrowErrorOnFailure(funcName AS STRING, resultToCheck AS LOGIC) AS LOGIC
     IF !resultToCheck
-        resultToCheck := (LOGIC) DoError(funcName) 
+        LOCAL result := DoError(funcName) AS OBJECT
+        IF result IS LOGIC VAR lResult
+            resultToCheck := lResult
+        ELSEIF result IS LONG VAR liResult
+            resultToCheck := liResult != 0
+        ELSE
+            resultToCheck := FALSE
+        ENDIF
     ENDIF
     RETURN resultToCheck
 
@@ -370,7 +377,7 @@ FUNCTION RLock(cRecordNumberList AS STRING, uArea AS USUAL) AS LOGIC STRICT
     IF String.IsNullOrWhiteSpace(cRecordNumberList)
         RETURN FALSE
     ENDIF
-    aRecords := cRecordNumberList:Split(<CHAR>{','},StringSplitOptions.RemoveEmptyEntries)
+    aRecords := cRecordNumberList:Split(<CHAR>{c','},StringSplitOptions.RemoveEmptyEntries)
     nSelect := DbGetSelect()
     DbSelectArea(uArea)
     lOk := TRUE

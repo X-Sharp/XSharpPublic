@@ -17,8 +17,8 @@ USING System.Text
 /// <param name="nIgnoreCharsFromLeft">Number of characters that must be ignored. Defaults to 0.</param>
 /// <remarks>In X# A letter is defined as a character for which the Char.IsLetter() method returns TRUE. 
 /// If <paramref name="lNoLetter"/> is set to TRUE  the function returns the position of the first character which is not a letter. </remarks>
-/// <seealso cref="M:XSharp.XPP.Functions.PosLower(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-/// <seealso cref="M:XSharp.XPP.Functions.PosAlpha(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+/// <seealso cref="PosLower"/>
+/// <seealso cref="PosAlpha"/>
 
 FUNCTION PosUpper(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG CLIPPER
     EnforceType(cString, STRING)  
@@ -46,8 +46,8 @@ FUNCTION PosUpper(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG CLIPPER
 /// <param name="nIgnoreCharsFromLeft">Number of characters that must be ignored. Defaults to 0.</param>
 /// <remarks>In X# A letter is defined as a character for which the Char.IsLetter() method returns TRUE. 
 /// If <paramref name="lNoLetter"/> is set to TRUE  the function returns the position of the first character which is not a letter. </remarks>
-/// <seealso cref="M:XSharp.XPP.Functions.PosUpper(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-/// <seealso cref="M:XSharp.XPP.Functions.PosAlpha(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+/// <seealso cref="PosUpper"/>
+/// <seealso cref="PosAlpha"/>
 
 
 FUNCTION PosLower(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG CLIPPER
@@ -79,8 +79,8 @@ FUNCTION PosLower(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG CLIPPER
 /// <param name="nIgnoreCharsFromLeft">Number of characters that must be ignored. Defaults to 0.</param>
 /// <remarks>In X# A letter is defined as a character for which the Char.IsLetter() method returns TRUE. 
 /// If <paramref name="lNoLetter"/> is set to TRUE the function returns the position of the first character which is not a letter. </remarks>
-/// <seealso cref="M:XSharp.XPP.Functions.PosUpper(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-/// <seealso cref="M:XSharp.XPP.Functions.PosLower(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+/// <seealso cref="PosUpper"/>
+/// <seealso cref="PosLower"/>
 
 
 FUNCTION PosAlpha(cString, lNoLetter, nIgnoreCharsFromLeft) AS LONG CLIPPER
@@ -116,9 +116,9 @@ INTERNAL DELEGATE PosDelegate( cChar AS CHAR) AS LOGIC
 /// <param name="cString">String to check</param>
 /// <param name="uChar">The new character to insert into the string</param>
 /// <param name="nPosition">1 based position to change. Defaults to Len(<paramref name="cString"/>).</param>
-/// <seealso cref="M:XSharp.XPP.Functions.PosDel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-/// <seealso cref="M:XSharp.XPP.Functions.PosIns(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-/// <seealso cref="M:XSharp.XPP.Functions.PosRepl(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+/// <seealso cref="PosDel"/>
+/// <seealso cref="PosIns"/>
+/// <seealso cref="PosRepl"/>
     
 FUNCTION PosChar(cString, uChar, nPosition ) AS STRING CLIPPER
     EnforceType(cString, STRING)
@@ -149,9 +149,9 @@ FUNCTION PosChar(cString, uChar, nPosition ) AS STRING CLIPPER
 /// <param name="cString">String to check</param>
 /// <param name="nStartPos">1 based position to start deleting from. Defaults to Len(<paramref name="cString"/>).</param>
 /// <param name="nDeleteLen">The number of characters to delete.</param>
-/// <seealso cref="M:XSharp.XPP.Functions.PosChar(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-/// <seealso cref="M:XSharp.XPP.Functions.PosIns(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-/// <seealso cref="M:XSharp.XPP.Functions.PosRepl(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+/// <seealso cref="PosChar"/>
+/// <seealso cref="PosIns"/>
+/// <seealso cref="PosRepl"/>
 
 
 FUNCTION PosDel(cString, nStartPos, nDeleteLen ) AS STRING CLIPPER
@@ -174,9 +174,9 @@ FUNCTION PosDel(cString, nStartPos, nDeleteLen ) AS STRING CLIPPER
 /// <param name="cString">String to update</param>
 /// <param name="cInsertString">The string to insert</param>
 /// <param name="nPosition">1 based position where the string must be inserted. Defaults to Len(<paramref name="cString"/>)+1.</param>
-/// <seealso cref="M:XSharp.XPP.Functions.PosChar(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-/// <seealso cref="M:XSharp.XPP.Functions.PosDel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-/// <seealso cref="M:XSharp.XPP.Functions.PosRepl(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+/// <seealso cref="PosChar"/>
+/// <seealso cref="PosDel"/>
+/// <seealso cref="PosRepl"/>
 
 FUNCTION PosIns(cString, cInsertString, nPosition ) AS STRING CLIPPER
     EnforceType(cString, STRING)
@@ -199,9 +199,9 @@ FUNCTION PosIns(cString, cInsertString, nPosition ) AS STRING CLIPPER
 /// <param name="nStartPos">1 based position where the string must be inserted. </param>
 /// <remarks>If the parameter <paramref name="nStartPos"/> is not specified the function
 /// replaces Len( <paramref name="cReplace"/> ) characters at the end of <paramref name="cString"/>.</remarks>
-/// <seealso cref="M:XSharp.XPP.Functions.PosChar(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-/// <seealso cref="M:XSharp.XPP.Functions.PosDel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
-/// <seealso cref="M:XSharp.XPP.Functions.PosIns(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)"/>
+/// <seealso cref="PosChar"/>
+/// <seealso cref="PosDel"/>
+/// <seealso cref="PosIns"/>
 FUNCTION PosRepl(cString, cReplace, nStartPos ) AS STRING CLIPPER
     EnforceType(cString, STRING)
     EnforceType(cReplace,STRING)

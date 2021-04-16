@@ -9,6 +9,7 @@
  *
  * ***************************************************************************/
 
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections;
 using System.Diagnostics;
@@ -346,11 +347,12 @@ namespace Microsoft.VisualStudio.Project
         public string GetFileNamespace(string fileFullPath, ProjectNode node)
         {
             Utilities.ArgumentNotNull("node", node);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Get base namespace from the project
             string namespce = node.GetProjectProperty("RootNamespace");
             if(String.IsNullOrEmpty(namespce))
-                namespce = Path.GetFileNameWithoutExtension(fileFullPath); ;
+                namespce = Path.GetFileNameWithoutExtension(fileFullPath); 
 
             // If the item is added to a sub folder, the name space should reflect this.
             // This is done so that class names from 2 files with the same name but different

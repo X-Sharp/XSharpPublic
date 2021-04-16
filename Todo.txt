@@ -1,0 +1,74 @@
+Checks
+- Exclude files, Include files
+- Copy / Paste
+- Drag / Drop
+- Check:
+  - Code completion
+  - QuickInfo
+  - Peek definition
+  - Keyword coloring, including UDC
+  - Goto definition
+  - Regions
+  - Brace Matching
+  - Highlight word
+  - Tasks
+  - Error List
+
+  - :: Code completion
+  - THIS code completion. What is the BASE keyword for FoxPro ?
+  - Code Completion inside WITH statement
+  - Code Completion VAR declations
+  - Code Completion Generics and array elements
+  - Make sure that after SELF there are no typenames and namespaces in the completion list
+  - Code completion: add ( after method but not after event
+
+
+- Type lookup Source 
+  - Local
+  - Parameter
+  - Field, Property, Event in class in single file
+  - Field, Property, Event in partial classes multiple files
+  - Methods 
+  - Super:
+    - Property, Field, Event
+    - Methods
+  - Define
+  - VoGlobal
+  - Class
+  - Struct
+  - Union
+  - Delegate
+  - Enum
+  - EnumMember
+  - XML Doc 
+  - Parameter tips
+  - Completion list after colon
+  - Completion list after dot (incl instance with option from config or in Fox dialect)
+
+- Type lookup PE
+  - Parameter
+  - Field, Property, Event 
+  - Methods 
+  - Define
+  - VoGlobal
+  - Class
+  - Struct
+  - Union
+  - Delegate
+  - Enum
+  - EnumMember
+  - XML Doc 
+  - Completion list after colon
+  - Completion list after dot (incl instance with option from config or in Fox dialect)
+
+- Check with USINGS in start point and also with usings from the file where the field/property is defined.
+
+- Performance large solution
+
+
+- Recognize variable after VAR in IS line
+- Token Under cursor after cast (Test) SomeToken
+- Recognize type after := 
+  VAR x := String.Compare()
+- Recognize type after IF sometype
+- Delegete parameter lookup

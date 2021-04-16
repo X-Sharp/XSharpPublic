@@ -1,7 +1,7 @@
 
 
 
-#using System.Collections.Generic
+USING System.Collections.Generic
 CLASS ToolBar INHERIT Control
 
 	PROTECT oBitmap 		AS Bitmap
@@ -29,7 +29,7 @@ CLASS ToolBar INHERIT Control
     PROPERTY ControlType  AS ControlType  GET ControlType.ToolBar
 
 	#region New Methods for Windows.Forms
-	METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+	METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		VAR oControl := (VOToolBar) oC
 		oControl:ShowToolTips := TRUE
 		oControl:Wrappable := FALSE
@@ -67,8 +67,8 @@ CLASS ToolBar INHERIT Control
 		oButton:MenuID := nID
 		cText := SELF:GetTipText(nID,#MenuItemID)
 		IF SELF:nButtonStyle != TB_ICONONLY
-			oButton:Text := __CleanText(cCaption)
-			IF STRING.IsNullOrEmpty(oButton:Text)
+			oButton:Text := SELF:__CleanText(cCaption)
+			IF String.IsNullOrEmpty(oButton:Text)
 				oButton:Text := cText
 			ENDIF
 		ENDIF
@@ -660,7 +660,7 @@ CLASS ToolBar INHERIT Control
 		RETURN oBoundingBox
 	
 	ACCESS ButtonCount            // dcaton 070215 changed from ACCESS ButtonCount(symTB)
-		RETURN GetButtonCount()
+		RETURN SELF:GetButtonCount()
 
 	METHOD GetButtonCount(symTB)  // dcaton 070215 changed from ACCESS to METHOD, Vulcan doesn't support CLIPPER-calling convention properties
 		LOCAL oTB	as VOToolBar
@@ -749,8 +749,8 @@ CLASS ToolBar INHERIT Control
 		endif
 		*/
 		RETURN NIL
-
-	METHOD Create() AS System.Windows.Forms.Control
+ 
+	METHOD Create() AS IVOControl STRICT
 		//PP-040505 Update from S Ebert
 		//SE-050929
 		//RvdH 070206 Changed to use ToolBarUpdate class
@@ -921,8 +921,8 @@ CLASS ToolBar INHERIT Control
 		LOCAL oOwner AS Window
 		oOwner := (OBJECT) oParent
 		IF oOwner != NULL_OBJECT .and. Owner:__Form != NULL_OBJECT
-			oOwner:__Form:Controls:Add(oCtrl)
-			oOwner:__Form:Controls:SetChildIndex(oCtrl, 0)
+			oOwner:__Form:AddControl(oCtrl)
+			oOwner:__Form:SetChildIndex(oCtrl, 0)
 		ENDIF
 		RETURN oCtrl
 
@@ -1313,35 +1313,35 @@ CLASS ToolBar INHERIT Control
 		RETURN TRUE
 
 	METHOD IsClicked(nID, symIDType, symTB) 
-		LOCAL IMPLIED oButton := __GetButton(nID, symIDType, symTB)
+		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN oButton:Pushed
 		ENDIF
 		RETURN FALSE
 
 	METHOD IsDimmed(nID, symIDType, symTB) 
-		LOCAL IMPLIED oButton := __GetButton(nID, symIDType, symTB)
+		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN !oButton:PartialPush
 		ENDIF
 		RETURN FALSE
 
 	METHOD IsEnabled(nID, symIDType, symTB) AS LOGIC CLIPPER
-		LOCAL IMPLIED oButton := __GetButton(nID, symIDType, symTB)
+		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN oButton:Enabled
 		ENDIF
 		RETURN FALSE
 
 	METHOD IsToolbarHidden(nID, symIDType, symTB) 	
-		LOCAL IMPLIED oButton := __GetButton(nID, symIDType, symTB)
+		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN !oButton:Visible
 		ENDIF
 		RETURN FALSE
 
 	METHOD IsPressed(nID, symIDType, symTB) 
-		LOCAL IMPLIED oButton := __GetButton(nID, symIDType, symTB)
+		LOCAL IMPLIED oButton := SELF:__GetButton(nID, symIDType, symTB)
 		IF oButton != NULL_OBJECT
 			RETURN oButton:Pushed
 		ENDIF
@@ -1402,7 +1402,7 @@ CLASS ToolBar INHERIT Control
 		RETURN 0
 
 	ASSIGN Rows( nRows )	         // dcaton 070215 was ASSIGN Rows(nRows,symTB)
-		SetRows( nRows )
+		SELF:SetRows( nRows )
 
 	METHOD SetRows(nRows, symTB)   // dcaton 070215 changed from ASSIGN to METHOD, Vulcan doesn't support CLIPPER-calling convention properties
 		//PP-040421 Update from S Ebert

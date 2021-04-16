@@ -1,7 +1,5 @@
-
-
-
-#using System.Reflection
+USING System.Reflection
+[XSharp.Internal.TypesChanged];
 CLASS Edit INHERIT TextControl
 	PROTECT lNoNotify AS LOGIC
 	PROTECT lForceModFlag2True AS LOGIC
@@ -24,8 +22,8 @@ CLASS Edit INHERIT TextControl
 		RETURN 
 
 
-	ACCESS __TextBox AS System.Windows.Forms.TextBox
-		RETURN (System.Windows.Forms.TextBox) oCtrl
+	ACCESS __TextBox AS IVOTextBox
+		RETURN (IVOTextBox) oCtrl
 
 
 	ASSIGN __ForceModFlag2True(lNewValue AS LOGIC)  STRICT 
@@ -99,8 +97,6 @@ CLASS Edit INHERIT TextControl
             RETURN Dimension{nLeft, nTop}
         ENDIF
         RETURN Dimension{0, 0}
-
-		
 	
 	ASSIGN Margins(oNewMargins AS Dimension) 
 		IF SELF:ValidateControl()
@@ -302,12 +298,12 @@ CLASS SingleLineEdit INHERIT Edit
 	PROTECT _iStart				AS LONG // These 2 vars are used to save position and length of the selection
 	PROTECT _iLen				AS LONG // because the DotNet textBox changes the selection when a mouse button is clicked.
 
-    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
-		VAR oTextBox := (VOTextBox) oC
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
+		VAR oTextBox := (IVOTextBox) oC
 		SELF:RegisterEvents(oTextBox)
 		RETURN 
 
-	METHOD RegisterEvents(oTb AS System.Windows.Forms.Control) AS VOID STRICT
+	METHOD RegisterEvents(oTb AS IVOTextBox) AS VOID STRICT
 		oTb:KeyDown += OnKeyDown
 		oTb:KeyPress += OnKeyPress
 		oTb:GotFocus += OnGotFocus
@@ -707,8 +703,6 @@ CLASS SingleLineEdit INHERIT Edit
 		ENDIF
 		RETURN SUPER:Undo()
 
-
-
 END CLASS
 
 CLASS strucPictureFuncFlags
@@ -728,28 +722,28 @@ CLASS strucPictureFuncFlags
 END CLASS
 
 CLASS SpinnerEdit INHERIT SingleLineEdit
-	PROTECT oTextBox AS System.Windows.Forms.TextBox
+	PROTECT oTextBox AS IVOTextBox
 
-    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
-		LOCAL oSpinner  AS VOSpinnerTextBox
-		oSpinner := (VOSpinnerTextBox) oC
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
+		LOCAL oSpinner  AS IVOSpinnerTextBox
+		oSpinner := (IVOSpinnerTextBox) oC
 		oSpinner:KeyDown += OnKeyDown
 		oSpinner:KeyPress += OnKeyPress
 		oSpinner:GotFocus += OnGotFocus
 		oSpinner:MouseClick += OnMouseClick
 		LOCAL oProp	    AS PropertyInfo
 		LOCAL oType		AS System.Type
-		oType    := typeof(VOSpinnerTextBox)
+		oType    := oSpinner:GetType()
 		oProp    := oType:GetProperty("TextBox", BindingFlags.Instance+ BindingFlags.NonPUBLIC+BindingFlags.IgnoreCase)
 		IF oProp != NULL_OBJECT
 			oTextBox := oProp:GetValue(oSpinner,NULL)
 		ENDIF
 		RETURN 
 
-	ACCESS __TextBox AS System.Windows.Forms.TextBox
+	ACCESS __TextBox AS IVOTextBox
 		RETURN SELF:oTextBox
 
-	PROPERTY __UpDownControl AS VOSpinnerTextBox GET (VOSpinnerTextBox) oCtrl
+	PROPERTY __UpDownControl AS IVOSpinnerTextBox GET (VOSpinnerTextBox) oCtrl
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
 		SUPER(oOwner, xID, oPoint, oDimension, kStyle)
 		

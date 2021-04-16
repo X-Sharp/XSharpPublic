@@ -101,7 +101,7 @@ PUBLIC CLASS XSharp.Messages
 
 	PROTECTED CONSTRUCTOR(name AS STRING)
 		SUPER()
-		rm := System.Resources.ResourceManager{ name, GetType():Assembly }
+		rm := System.Resources.ResourceManager{ name, SELF:GetType():Assembly }
 		RETURN
 
 	STATIC PROPERTY CurrentLanguageName AS STRING GET _instanceName

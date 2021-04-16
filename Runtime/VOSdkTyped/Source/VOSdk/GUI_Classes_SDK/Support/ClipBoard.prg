@@ -1,7 +1,7 @@
 
 
 
-#USING System.Collections.Specialized
+USING System.Collections.Specialized
 
 CLASS Clipboard INHERIT VObject
 

@@ -1,7 +1,7 @@
 
 
 
-#using System.Runtime.InteropServices
+USING System.Runtime.InteropServices
 CLASS TextControl INHERIT Control
 	PROTECT cSavedText   AS STRING // save text before DESTROY, for 1.0 compatibility
 	PROTECT oFont        AS Font
@@ -152,7 +152,7 @@ CLASS TextControl INHERIT Control
 		ENDIF
 		RETURN 
 
-	METHOD Create() AS System.Windows.Forms.Control 
+	METHOD Create() AS IVOControl STRICT
 		RETURN SUPER:Create() 
 
 	ACCESS CurrentText AS STRING
@@ -278,7 +278,7 @@ CLASS TextControl INHERIT Control
 		IF IsNumeric(dwIcon)
 			oToolTip:ToolTipIcon := (System.Windows.Forms.ToolTipIcon) dwIcon
 		ENDIF
-		oToolTip:SetToolTip(oCtrl, cText)		
+		oToolTip:SetToolTip((System.Windows.Forms.Control) oCtrl, cText)		
 		RETURN SELF
 
 	ACCESS TextColor AS Color

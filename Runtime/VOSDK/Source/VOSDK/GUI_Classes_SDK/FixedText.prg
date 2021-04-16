@@ -1,3 +1,4 @@
+/// <include file="Gui.xml" path="doc/FixedText/*" />
 CLASS FixedText INHERIT TextControl
 	//PP-030915
 	PROTECT _dwDrawStyle AS DWORD
@@ -5,6 +6,8 @@ CLASS FixedText INHERIT TextControl
 	EXPORT lUseDrawText AS LOGIC
 	EXPORT lDrawThemeBackground AS LOGIC
 
+
+ /// <exclude />
 METHOD __SetColors(_hDC AS PTR) AS PTR STRICT 
 	//PP-031129
 	IF SELF:lUseDrawText
@@ -12,6 +15,8 @@ METHOD __SetColors(_hDC AS PTR) AS PTR STRICT
 	ENDIF
 	RETURN SUPER:__SetColors(_hDC)
 
+
+ /// <exclude />
 METHOD __SetText(cNewText AS STRING) AS STRING STRICT 
 	//PP-030915
 	IF SELF:ValidateControl()
@@ -22,6 +27,8 @@ METHOD __SetText(cNewText AS STRING) AS STRING STRICT
 	ENDIF
 	RETURN cNewText
 
+
+/// <include file="Gui.xml" path="doc/FixedText.Dispatch/*" />
 METHOD Dispatch(oEvent) 
 	//PP-040509 From S Ebert
 	LOCAL oEvt := oEvent AS @@Event
@@ -32,6 +39,7 @@ METHOD Dispatch(oEvent)
 	LOCAL dwDrawStyle AS DWORD
 	LOCAL liSSStyle   AS LONGINT
 	LOCAL hOwner AS PTR
+
 
 	IF SELF:lUseDrawText
 		uMsg := oEvt:uMsg
@@ -45,7 +53,9 @@ METHOD Dispatch(oEvent)
 			ENDIF
 			GetClientRect(hWnd, @sRect)
 
+
 			liSSStyle  := GetWindowLong(hWnd, GWL_STYLE)
+
 
 			dwDrawStyle := _dwDrawStyle
 			IF LOGIC(_CAST, _AND(liSSStyle, SS_CENTERIMAGE))
@@ -67,6 +77,8 @@ METHOD Dispatch(oEvent)
 			ENDIF
 
 
+
+
 			IF oControlBackground == NULL_OBJECT
 				//PP-040317 Issue 12691
 				IF IsThemeEnabled() .AND. SELF:lDrawThemeBackground
@@ -81,14 +93,18 @@ METHOD Dispatch(oEvent)
 				FillRect(hdc, @sRect, oControlBackground:Handle())
 			ENDIF
 
+
 			SetBkMode(hDc, TRANSPARENT )
+
 
 			IF (hFont := SendMessage(hwnd, WM_GETFONT, 0l, 0l)) != NULL_PTR
 				SelectObject(hdc, hFont)
 			ENDIF
 
+
 			sRect:left  += LONGINT(_dwMargin)
 			sRect:right -= LONGINT(_dwMargin)
+
 
 			//PP-040416 Issue 12674, 12676 Fix from S Ebert
 			IF LOGIC(_CAST, _AND(liSSStyle, WS_DISABLED))
@@ -107,6 +123,7 @@ METHOD Dispatch(oEvent)
 				ENDIF
 			ENDIF
 			DrawText(hDc, String2Psz(cCaption), INT(SLen(cCaption)), @sRect, dwDrawStyle)
+
 
 			IF uMsg == WM_PAINT
 				EndPaint(hWnd, @struPS)
@@ -130,13 +147,19 @@ METHOD Dispatch(oEvent)
 		END SWITCH
 	ENDIF
 
+
 	RETURN SUPER:Dispatch(oEvt)
 
 
+
+
+/// <include file="Gui.xml" path="doc/FixedText.ctor/*" />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware) 
 	LOCAL cClass AS USUAL
 	LOCAL lResID AS LOGIC
 
+
+	
 	
 	//PP-030915. Text will be displayed using API DrawText(). Default style set below.
 	// Standard styles will cause the appropriate draw style to be used.
@@ -146,8 +169,10 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 	SELF:lUseDrawText := TRUE
 	SELF:lDrawThemeBackground := TRUE
 
+
 	//PP-040317. Issue 12806. Added DT_EXPANDTABS for default behaviour more like old fixed text
 	SELF:_dwDrawStyle := _OR(DT_WORDBREAK,DT_EXPANDTABS)
+
 
 	DEFAULT(@lDataAware, TRUE)
 	lResID:=IsInstanceOfUsual(xID,#ResourceID)
@@ -155,7 +180,9 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 		cClass:="Static"
 	ENDIF
 
+
 	SUPER(oOwner, xID, oPoint, oDimension, cClass, SS_Left, lDataAware)
+
 
 	IF !lResID
 		IF !IsNil(cText)
@@ -164,12 +191,17 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 		ENDIF
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/FixedText.Margin/*" />
 ASSIGN Margin (nNewValue) 
 	//PP-030915
 	RETURN (_dwMargin := nNewValue)
 
+
+/// <include file="Gui.xml" path="doc/FixedText.SetDrawStyle/*" />
 METHOD SetDrawStyle(dwDrawStyle, lEnable) 
 	//PP-030915 from S Ebert
     EnForceNumeric(@dwDrawStyle)
@@ -183,16 +215,22 @@ METHOD SetDrawStyle(dwDrawStyle, lEnable)
 		_dwDrawStyle := dwDrawStyle
 	ENDIF
 
+
 	RETURN _dwDrawStyle
 
+
+/// <include file="Gui.xml" path="doc/FixedText.SetStandardStyle/*" />
 METHOD SetStandardStyle(kTextStyle) 
 	LOCAL dwTempStyle, dwStyle AS DWORD
 	LOCAL hHandle AS PTR
 
+
+	
 	
 	IF !IsLong(kTextStyle)
 		WCError{#SetStandardStyle,#FixedText,__WCSTypeError,kTextStyle,1}:Throw()
 	ENDIF
+
 
 	SWITCH (INT) kTextStyle
 	CASE FT_LEFTALIGN
@@ -203,6 +241,7 @@ METHOD SetStandardStyle(kTextStyle)
 		dwTempStyle := SS_CENTER
 	END SWITCH
 
+
 	hHandle := SELF:Handle()
 	IF (hHandle != 0) .AND. IsWindow(hHandle)
 		dwStyle := DWORD(GetWindowLong(hHandle, GWL_STYLE))
@@ -211,7 +250,10 @@ METHOD SetStandardStyle(kTextStyle)
 		SetWindowLong(hHandle, GWL_STYLE, LONGINT(_CAST, dwStyle))
 	ENDIF
 
+
 	RETURN dwStyle
 
+
 END CLASS
+
 

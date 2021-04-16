@@ -18,7 +18,7 @@ BEGIN
             VALUE "ProductVersion", "1.0.0.0\0"
             VALUE "InternalName", "VO MDI App\0"
             VALUE "ProductName", "X# $safeprojectname$\0"
-            VALUE "LegalCopyright", "Copyright \251 2015-2020\0"
+            VALUE "LegalCopyright", "Copyright \251 2015-2021\0"
         END
     END
     BLOCK "VarFileInfo"

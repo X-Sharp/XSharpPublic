@@ -17,11 +17,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Clipper")];
 		METHOD Clippertest AS VOID
-			Assert.Equal(0, Mtest() )
-			Assert.Equal(1, Mtest(1) )
-			Assert.Equal(2, Mtest(1,2) )
-			Assert.Equal(3, Mtest(1,2,3) )
-			Assert.Equal(4, Mtest(1,2,3,4) )
+			Assert.Equal(0, SELF:Mtest() )
+			Assert.Equal(1, SELF:Mtest(1) )
+			Assert.Equal(2, SELF:Mtest(1,2) )
+			Assert.Equal(3, SELF:Mtest(1,2,3) )
+			Assert.Equal(4, SELF:Mtest(1,2,3,4) )
 			Assert.Equal(0, SMtest() )
 			Assert.Equal(1, SMtest(1) )
 			Assert.Equal(2, SMtest(1,2) )

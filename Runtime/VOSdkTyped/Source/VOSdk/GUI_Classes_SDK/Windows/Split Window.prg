@@ -47,7 +47,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
 
 		RETURN SELF
 
-	METHOD Dispatch(oEvent)
+	METHOD Dispatch(oEvent AS @@Event)
         LOCAL oEvt := oEvent AS Event
 		IF (oEvt:uMsg == WM_SETFOCUS) .AND. oSplitView != NULL_OBJECT
 			VAR oPane := oSplitView:GetPaneClient(1)
@@ -196,7 +196,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
         SELF:__ResizeSplitView()
 		RETURN 
 
-	METHOD ToolBarHeightChanged(oControlNotifyEvent)
+	METHOD ToolBarHeightChanged(oControlNotifyEvent AS ControlNotifyEvent)
         SELF:__ResizeSplitView()
 		RETURN SELF
 

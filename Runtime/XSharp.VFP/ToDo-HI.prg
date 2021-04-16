@@ -43,12 +43,6 @@ FUNCTION InputBox( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout ,cTi
     THROW NotImplementedException{}
     // RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/insmode/*" />
-
-FUNCTION InsMode( lExpression ) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/isblank/*" />

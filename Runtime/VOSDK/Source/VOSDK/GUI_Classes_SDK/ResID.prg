@@ -1,21 +1,27 @@
+/// <include file="Gui.xml" path="doc/ResourceID/*" />
 CLASS ResourceID INHERIT VObject
 	PROTECT hInst AS PTR
 	PROTECT nID AS INT
 	PROTECT sID AS STRING
 	PROTECT _lpAddress AS PSZ
 	
+	
+/// <include file="Gui.xml" path="doc/ResourceID.dtor/*" />
 DESTRUCTOR()
    MemFree( _lpAddress )
    RETURN	
 
+
+/// <include file="Gui.xml" path="doc/ResourceID.Address/*" />
 METHOD Address() 
 	LOCAL lpAddress AS PTR
+
 
 	IF NULL_STRING != sID    
 		//RvdH 070615 Make sure the string is STATIC. We can't control the lifetime of the return variable
 		//lpAddress := PTR(_CAST, Cast2Psz(sID))
 #ifdef __VULCAN__
-         IF SELF:_lpAddress == NULL
+         IF SELF:_lpAddress == NULL_PSZ
              SELF:_lpAddress := lpAddress := StringAlloc(sID)
              GC.ReRegisterForFinalize( SELF )
          ELSE
@@ -28,23 +34,34 @@ METHOD Address()
 		lpAddress := PTR(_CAST, nID)
 	ENDIF
 
+
 	RETURN lpAddress
 
+
+/// <include file="Gui.xml" path="doc/ResourceID.Handle/*" />
 METHOD Handle() AS PTR
+
 
 	RETURN hInst
 
+
+/// <include file="Gui.xml" path="doc/ResourceID.ID/*" />
 ACCESS ID 
+
 
 	IF (NULL_STRING != sID)
 		RETURN sID
 	ENDIF
 	RETURN nID
 
+
+/// <include file="Gui.xml" path="doc/ResourceID.ctor/*" />
 CONSTRUCTOR(xID, xResourceFile) 
 	LOCAL argTypeError AS LOGIC
 	
+	
 	SUPER()
+
 
 	IF IsString(xID)
 		sID := xID
@@ -55,6 +72,7 @@ CONSTRUCTOR(xID, xResourceFile)
 	ELSE
 		argTypeError := TRUE
 	ENDIF
+
 
 	IF IsPtr(xResourceFile)
 		hInst := xResourceFile
@@ -70,9 +88,11 @@ CONSTRUCTOR(xID, xResourceFile)
 		argTypeError := TRUE
 	ENDIF
 
+
 	IF argTypeError
 		WCError{#Init, #ResourceID, __WCSTypeError}:Throw()
 	ENDIF
+	
 	
 #ifdef __VULCAN__		
       // we only need the destructor if lpAddress
@@ -80,6 +100,8 @@ CONSTRUCTOR(xID, xResourceFile)
       GC.SuppressFinalize( SELF )
 #endif
       
+      
 	RETURN 
 END CLASS
+
 

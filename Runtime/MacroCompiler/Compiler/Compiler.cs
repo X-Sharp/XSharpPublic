@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +11,15 @@ namespace XSharp.MacroCompiler
     {    
         public static Compilation<T, Func<T[], T>> Create<T>(MacroOptions options = null)
         {
+            if (options?.ParseStatements == true)
+                return new ScriptCompilation<T, Func<T[], T>>(options);
             return new Compilation<T, Func<T[], T>>(options ?? MacroOptions.Default);
         }
 
         public static Compilation<T, R> Create<T, R>(MacroOptions options = null) where R: Delegate
         {
+            if (options?.ParseStatements == true)
+                return new ScriptCompilation<T, R>(options);
             return new Compilation<T, R>(options ?? MacroOptions.Default);
         }
     }
@@ -56,12 +61,14 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        MacroOptions options;
+        internal MacroOptions options;
 
         internal Compilation(MacroOptions o = null)
         {
             options = o ?? MacroOptions.Default;
         }
+
+        public static Compilation<T, R> Create(MacroOptions options = null) => Compilation.Create<T, R>(options);
 
         public CompilationResult Compile(string source)
         {
@@ -96,11 +103,24 @@ namespace XSharp.MacroCompiler
             return macro.Binder.Emit(macro.SyntaxTree, macro.Source);
         }
 
-        internal Syntax.Codeblock Parse(string source)
+        internal virtual Syntax.Node Parse(string source)
         {
             var lexer = new Lexer(source, options);
             var parser = new Parser(lexer, options);
             return parser.ParseMacro();
+        }
+    }
+    public class ScriptCompilation<T, R> : Compilation<T, R> where R : Delegate
+    {
+        internal ScriptCompilation(MacroOptions o = null): base(o)
+        {
+            options.ParseMode = ParseMode.Statements;
+        }
+        internal override Syntax.Node Parse(string source)
+        {
+            var lexer = new Lexer(source, options);
+            var parser = new Parser(lexer, options);
+            return parser.ParseScript();
         }
     }
 }

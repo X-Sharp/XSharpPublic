@@ -211,7 +211,7 @@ STATIC CLASS WC
 	STATIC METHOD GetControlByHandle(hWnd AS IntPtr) AS VOSDK.Control STRICT
 		LOCAL oC AS System.Windows.Forms.Control
 		oC := System.Windows.Forms.Control.FromHandle(hWnd)
-		IF oC IS IVOControl VAR oVOC
+		IF oC IS IVOControlProperties VAR oVOC
     		RETURN oVOC:Control
 		ENDIF
 		RETURN NULL_OBJECT
@@ -596,7 +596,7 @@ STATIC CLASS WC
 
 		
 
-	STATIC METHOD MoveWindow(oCtrl AS System.Windows.Forms.Control, oPoint AS Point, bRepaint AS LOGIC) AS VOID
+	STATIC METHOD MoveWindow(oCtrl AS IVOUIObject, oPoint AS Point, bRepaint AS LOGIC) AS VOID
 		LOCAL lX, lY AS LONGINT
 
 		lX := oPoint:X

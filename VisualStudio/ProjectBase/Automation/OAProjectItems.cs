@@ -163,6 +163,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>A ProjectItem object. </returns>
         public override ProjectItem AddFromFileCopy(string filePath)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return AddItem(filePath, VSADDITEMOPERATION.VSADDITEMOP_CLONEFILE);
         }
 
@@ -174,6 +175,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         public override ProjectItem AddFromFile(string fileName)
         {
             // TODO: VSADDITEMOP_LINKTOFILE
+            ThreadHelper.ThrowIfNotOnUIThread();
             return AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_OPENFILE);
         }
 
@@ -184,7 +186,8 @@ namespace Microsoft.VisualStudio.Project.Automation
 		/// <returns>A ProjectItem object.</returns>
         public override ProjectItem AddFileLink(string fileName)
 		{
-			return this.AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE);
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return this.AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE);
 		}
         #endregion
 
@@ -227,12 +230,14 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <param name="result">The <paramref name="VSADDRESULT"/> returned by the Add methods</param>
         /// <param name="path">The full path of the item added.</param>
         /// <returns>A ProjectItem object.</returns>
+#pragma warning disable VSTHRD010
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
         protected virtual ProjectItem EvaluateAddResult(VSADDRESULT result, string path)
         {
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
                 if (result == VSADDRESULT.ADDRESULT_Success)
                 {
                     HierarchyNode nodeAdded = this.NodeWithItems.FindChild(path);
@@ -252,6 +257,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                         {
                             item = new OAProjectItem<HierarchyNode>(this.Project, nodeAdded);
                         }
+
                         IEnumerable<ProjectItem> match = base.Items.Where((ProjectItem titem) => titem.Name == item.Name);
                         if (match == null || match.Count() == 0)
                         {
@@ -263,7 +269,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return null;
             });
         }
-
+#pragma warning restore VSTHRED010
         /// <summary>
         /// Removes .zip extensions from the components of a path.
         /// </summary>

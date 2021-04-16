@@ -350,7 +350,7 @@ INTERNAL CLASS VOBitmaps
         // Test for RC_PALETTE added my Meinhard, in order to fix bug with StretchBitmap()
         // Not sure why in VO the same code works correctly, without it..
         IF lpBmpInfo:biClrUsed != 0 .AND. ((GetDeviceCaps( hDC, RASTERCAPS ) ~ RC_PALETTE) == RC_PALETTE)
-            hPalette := MakeDIBPalette( lpBmpInfo, hDC )
+            hPalette := SELF:MakeDIBPalette( lpBmpInfo, hDC )
                 
             IF hPalette == IntPtr.Zero
                 fError := TRUE
@@ -362,7 +362,7 @@ INTERNAL CLASS VOBitmaps
                 RealizePalette( hDC )
                     
                 IF lpBmpInfo:biBitCount < 24
-                    lpHeader := MakeIndexHeader( lpBmpInfo )
+                    lpHeader := SELF:MakeIndexHeader( lpBmpInfo )
                         
                     IF lpHeader != IntPtr.Zero
                         fNewHeader := TRUE
@@ -437,7 +437,7 @@ INTERNAL CLASS VOBitmaps
         LOCAL hLogPal AS IntPtr
         LOCAL i       AS DWORD
         TRY
-            IF lpBmpInfo:biClrUsed != 0 && lpBmpInfo:biBitCount < 24
+            IF lpBmpInfo:biClrUsed != 0 .AND. lpBmpInfo:biBitCount < 24
                 lpPal := (LOGPALETTE PTR) MemAlloc( sizeof(LOGPALETTE) + (WORD)lpBmpInfo:biClrUsed * sizeof(PALETTEENTRY) )
                     
                 IF lpPal == IntPtr.Zero
@@ -517,7 +517,5 @@ INTERNAL STATIC CLASS XSharp.Win32
 
 
 
-END CLASS 
-FUNCTION _Run (cProg AS STRING) AS DWORD PASCAL
- 
-    RETURN Win32.WinExec(cProg, Win32.SW_SHOWNORMAL)
+END CLASS
+

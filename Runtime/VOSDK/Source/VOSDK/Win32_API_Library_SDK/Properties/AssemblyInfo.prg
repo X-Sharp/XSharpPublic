@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // AssemblyInfo.prg
 
-#using System.Reflection
-#using System.Runtime.InteropServices
-#using System.Security
+USING System.Reflection
+USING System.Runtime.InteropServices
+USING System.Security
 
 
 [assembly: AssemblyTitleAttribute( "VO-Compatible Win32 API Library" )]

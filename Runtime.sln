@@ -5,16 +5,28 @@ VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-74CF-4618-9856-D89B3FCB6DA3}"
 	ProjectSection(SolutionItems) = preProject
+		Docs\Console.Xml = Docs\Console.Xml
+		Docs\gui.xml = Docs\gui.xml
+		Docs\Internet.xml = Docs\Internet.xml
+		Docs\rdd.xml = Docs\rdd.xml
+		Docs\Report.Xml = Docs\Report.Xml
+		Docs\RTComments.Xml = Docs\RTComments.Xml
 		Runtime\RuntimeFunctionsAndClasses.xlsx = Runtime\RuntimeFunctionsAndClasses.xlsx
 		Runtime\Docs\RuntimeSpecsV1.docx = Runtime\Docs\RuntimeSpecsV1.docx
 		Runtime\Docs\RuntimeSpecsV2.docx = Runtime\Docs\RuntimeSpecsV2.docx
+		Docs\Sql.Xml = Docs\Sql.Xml
+		Docs\System.Xml = Docs\System.Xml
 		Docs\VOConsoleClasses_manual.xml = Docs\VOConsoleClasses_manual.xml
+		Docs\VoFunctionDocs.xml = Docs\VoFunctionDocs.xml
 		Docs\VOGUIClasses_manual.xml = Docs\VOGUIClasses_manual.xml
 		Docs\VOInternetClasses_manual.xml = Docs\VOInternetClasses_manual.xml
 		Docs\VORDDClasses_manual.xml = Docs\VORDDClasses_manual.xml
 		Docs\VOReportClasses_manual.xml = Docs\VOReportClasses_manual.xml
+		Docs\VOSDK_Classes.xml = Docs\VOSDK_Classes.xml
 		Docs\VOSQLClasses_manual.xml = Docs\VOSQLClasses_manual.xml
 		Docs\VOSystemClasses_manual.xml = Docs\VOSystemClasses_manual.xml
+		Docs\XSharpVOSDK_Classes.xml = Docs\XSharpVOSDK_Classes.xml
+		Docs\XsRuntimeClasses.xml = Docs\XsRuntimeClasses.xml
 	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RDD", "Runtime\XSharp.Rdd\XSharp.RDD.xsproj", "{E83C6C8C-773F-4B01-A597-3D38398A9362}"
@@ -85,8 +97,6 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Data", "Runtime\XSha
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MacroCompiler.Example", "Runtime\MacroCompiler.Example\MacroCompiler.Example.xsproj", "{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MacroCompiler.ExampleFox", "Runtime\MacroCompiler.ExampleFox\MacroCompiler.ExampleFox.xsproj", "{F088D39A-3B54-428F-A28C-4C5411650E17}"
-EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VFP.Tests", "Runtime\XSharp.VFP.Tests\XSharp.VFP.Tests.xsproj", "{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VOSDK-Typed", "VOSDK-Typed", "{D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}"
@@ -134,6 +144,8 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "AppendSpeed", "Tests\AppendSpeed\AppendSpeed.xsproj", "{E6A86E45-AE23-4422-BBDB-F84BF9EF100E}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "FoxTest", "Tests\DbcTest\FoxTest.xsproj", "{4BC29963-3419-4D9A-A301-BB63870381AE}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RT.Debugger", "Runtime\XSharp.RT.Debugger\XSharp.RT.Debugger.xsproj", "{770E6EBB-804F-415A-A9CA-E5B0383105F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -262,11 +274,6 @@ Global
 		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
 		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F088D39A-3B54-428F-A28C-4C5411650E17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F088D39A-3B54-428F-A28C-4C5411650E17}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F088D39A-3B54-428F-A28C-4C5411650E17}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{F088D39A-3B54-428F-A28C-4C5411650E17}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F088D39A-3B54-428F-A28C-4C5411650E17}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
@@ -392,6 +399,12 @@ Global
 		{4BC29963-3419-4D9A-A301-BB63870381AE}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{4BC29963-3419-4D9A-A301-BB63870381AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BC29963-3419-4D9A-A301-BB63870381AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -418,7 +431,6 @@ Global
 		{EB3F3142-07F7-48CA-B38D-F611C45A9511} = {3A990509-B444-4341-A665-5FDA3E8748BD}
 		{DB9AD987-EBD9-4F0C-8604-608A9028585C} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
 		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02} = {3A990509-B444-4341-A665-5FDA3E8748BD}
-		{F088D39A-3B54-428F-A28C-4C5411650E17} = {3A990509-B444-4341-A665-5FDA3E8748BD}
 		{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D} = {AAA2A7F4-2856-4404-9B77-09D7AF56DE9D}
 		{0EE10CED-B863-4B5E-8AC2-443B2CC6EB7A} = {D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}
 		{5AC3E55D-F2BD-45EB-9CC2-DD8BD36240EA} = {D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}
@@ -440,6 +452,7 @@ Global
 		{22F634C4-97C1-4347-8994-A4F89D100AFB} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
 		{E6A86E45-AE23-4422-BBDB-F84BF9EF100E} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
 		{4BC29963-3419-4D9A-A301-BB63870381AE} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
+		{770E6EBB-804F-415A-A9CA-E5B0383105F0} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}

@@ -157,7 +157,7 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
         TRY
             IF Validate(pMem)
                 LOCAL nSize AS DWORD
-                IF AllocatedBlocks:ContainsKey(pMem)
+                IF MemTrace .AND. AllocatedBlocks:ContainsKey(pMem)
                     AllocatedBlocks:Remove(pMem)
                 ENDIF
                 VAR pMemBlockStart  := _GetMemBlockStart (pMem)

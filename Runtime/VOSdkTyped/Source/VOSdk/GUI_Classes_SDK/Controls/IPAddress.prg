@@ -1,5 +1,6 @@
 
 
+[XSharp.Internal.TypesChanged];
 CLASS IPAddress INHERIT TextControl
 
     PROPERTY ControlType AS ControlType  GET ControlType.IPAddress
@@ -96,9 +97,7 @@ CLASS IPAddress INHERIT TextControl
 		SELF:Address := dwAddr
 		RETURN 
 
-
-
-	METHOD SetRange(iFieldIndex, iLower, iUpper) 
+    METHOD SetRange(iFieldIndex, iLower, iUpper) 
 		LOCAL wRange AS LONG
 		LOCAL iField AS DWORD
 

@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
 
@@ -28,6 +29,8 @@ namespace Microsoft.VisualStudio.Project
         public SolutionListenerForBuildDependencyUpdate(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
         }
         #endregion
 
@@ -47,9 +50,10 @@ namespace Microsoft.VisualStudio.Project
             }
 
             IBuildDependencyOnProjectContainer projectNode = hierarchy as IBuildDependencyOnProjectContainer;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // We will update only nested project types and the BuildNestedProjectsOnBuild flag is set to true
-            if(projectNode != null)
+            if (projectNode != null)
             {
                 if(projectNode.BuildNestedProjectsOnBuild)
                 {
@@ -69,6 +73,8 @@ namespace Microsoft.VisualStudio.Project
         public override int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
         {
             // Enum all sub project and add to dependeny list
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             UpdateDependencyListWithSubProjects(null);
 
             return VSConstants.S_OK;
@@ -82,7 +88,9 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="projectNode">Project node to be updated. If null then all ProjectContainer nodes are updated</param>
         private void UpdateDependencyListWithSubProjects(IBuildDependencyOnProjectContainer projectNode)
         {
-            if(projectNode != null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (projectNode != null)
             {
                 // Get list of sub projects
                 IList<IVsHierarchy> nestedProjectList = projectNode.EnumNestedHierachiesForBuildDependency();
@@ -128,9 +136,12 @@ namespace Microsoft.VisualStudio.Project
             IEnumHierarchies enumHierarchies = null;
             Guid guid = Guid.Empty;
             __VSENUMPROJFLAGS flags = __VSENUMPROJFLAGS.EPF_LOADEDINSOLUTION;
-            ErrorHandler.ThrowOnFailure(this.Solution.GetProjectEnum((uint)flags, ref guid, out enumHierarchies));
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(enumHierarchies != null)
+            ErrorHandler.ThrowOnFailure(this.Solution.GetProjectEnum((uint)flags, ref guid, out enumHierarchies));
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (enumHierarchies != null)
             {
                 // Loop projects found
                 IVsHierarchy[] hierarchy = new IVsHierarchy[1];

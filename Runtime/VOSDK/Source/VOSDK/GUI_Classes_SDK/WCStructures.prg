@@ -5,9 +5,11 @@ VOSTRUCT __WCDropFiles
 	MEMBER fInNonClientArea AS LOGIC	//window's non-client area
 	MEMBER fUnicode AS LOGIC			// are the pathnames in Unicaode?
 
+
 /// <exclude/>
 VOSTRUCT SelfPtr
 	MEMBER ptrSelf AS PTR
+
 
 /// <exclude/>
 VOSTRUCT strColor
@@ -28,12 +30,14 @@ VOSTRUCT strColor
 	MEMBER s15 AS DWORD
 	MEMBER s16 AS DWORD
 
+
 /// <exclude/>
 VOSTRUCT WCColor
 	MEMBER bBlue 	AS BYTE
 	MEMBER bGreen 	AS BYTE
 	MEMBER bRed 	AS BYTE
 	MEMBER bNotUsed AS BYTE
+
 
 /// <exclude />
 VOSTRUCT __WCDialog_VARS
@@ -43,4 +47,5 @@ VOSTRUCT __WCDialog_VARS
 	MEMBER Ybase AS LONGINT // original base Y
 	MEMBER fontX AS LONGINT // font width
 	MEMBER fontY AS LONGINT // font height
+
 

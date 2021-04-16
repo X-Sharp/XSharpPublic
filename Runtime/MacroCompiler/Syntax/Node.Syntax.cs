@@ -14,17 +14,6 @@ namespace XSharp.MacroCompiler.Syntax
         internal Token Token = null;
         internal Node(Token t) { Token = t; }
     }
-    abstract internal partial class Stmt : Node
-    {
-        internal Stmt(Token t) : base(t) { }
-    }
-    internal partial class ReturnStmt : Stmt
-    {
-        internal Expr Expr;
-        internal ReturnStmt(Token t, Expr e) : base(t) { Expr = e; }
-        internal ReturnStmt(Expr e) : this(e.Token, e) { }
-        public override string ToString() { return "RETURN (" + Expr.ToString() + ")"; }
-    }
     abstract internal partial class Expr : Node
     {
         internal Expr(Token t) : base(t) { }
@@ -56,6 +45,7 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class IdExpr : NameExpr
     {
         internal IdExpr(Token t) : base(t, t.value, 0) { }
+        internal IdExpr(string name) : base(null, name, 0) { }
         internal IdExpr WithName(string name) { Name = name; return this; }
     }
     internal partial class MemberAccessExpr : Expr
@@ -183,6 +173,11 @@ namespace XSharp.MacroCompiler.Syntax
         internal IsExpr(Expr e, TypeExpr t, Token o) : base(o) { Expr = e; Type = t; }
         public override string ToString() { return "(" + Expr.ToString() + " IS " + Type.ToString() + ")"; }
     }
+    internal partial class IsVarExpr : IsExpr
+    {
+        internal Token Name;
+        internal IsVarExpr(Expr e, TypeExpr t, Token o, Token name) : base(e, t, o) { Name = name; }
+    }
     internal partial class AsTypeExpr : Expr
     {
         internal Expr Expr;
@@ -194,7 +189,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal Expr Expr;
         internal ArgList Args;
-        internal MethodCallExpr(Expr e, ArgList a) : base(e.Token) { Expr = e; Args = a; }
+        internal MethodCallExpr(Expr e, ArgList a) : base(e?.Token) { Expr = e; Args = a; }
         public override string ToString() { return Expr.ToString() + "(" + Args.ToString() + ")"; }
     }
     internal partial class CtorCallExpr : MethodCallExpr
@@ -273,6 +268,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal IList<Arg> Args;
         internal ArgList(IList<Arg> a) : base(null) { Args = a; }
+        static internal ArgList Empty => new ArgList(new List<Arg>(0));
         public override string ToString() { var sb = new StringBuilder(); foreach (var a in Args) { if (sb.Length > 0) sb.Append(", "); sb.Append(a.ToString()); } return sb.ToString(); }
     }
     internal partial class Codeblock : Node

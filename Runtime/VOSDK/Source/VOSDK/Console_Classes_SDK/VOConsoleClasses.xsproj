@@ -8,7 +8,7 @@
     <AssemblyName>VOConsoleClasses</AssemblyName>
     <Name>VOConsoleClasses</Name>
     <OutputName>VOConsoleClasses</OutputName>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.8.0.10</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -23,12 +23,14 @@
     <VO8>false</VO8>
     <VO9>false</VO9>
     <VO10>false</VO10>
+    <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <DocumentationFile>VOConsoleClasses.Xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -76,6 +78,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>copy $(SolutionDir)\Docs\Console.xml $(ProjectDir)\Console.Xml</PreBuildEvent>
+    <PostBuildEvent>erase  $(ProjectDir)\Console.Xml</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

@@ -86,7 +86,7 @@ FUNCTION AX_GetAceTableHandle() AS IntPtr
     ENDIF
     RETURN 0
     
-/// <inheritdoc cref="M:XSharp.RDD.Functions.AX_GetAceTableHandle" />
+/// <inheritdoc cref="AX_GetAceTableHandle" />
 FUNCTION GetAceTableHandle() AS IntPtr
     RETURN AX_GetAceTableHandle()
 
@@ -96,7 +96,7 @@ FUNCTION GetAceTableHandle() AS IntPtr
 /// <param name="cFileName">String containing drive letter or server name to check.
 /// If the application uses a server name as the parameter, it must include the share or
 /// volume name as well. For example, use "\\server\share" or "\\server\vol:"..</param>
-/// <seealso cref="O:XSharp.RDD.Functions.AdsIsServerLoaded">AdsIsServerLoaded Function</seealso>
+/// <seealso cref="AdsIsServerLoaded">AdsIsServerLoaded Function</seealso>
 FUNCTION AX_IsServerLoaded( cFileName AS STRING ) AS LOGIC // 
     LOCAL usLoaded AS WORD
     usLoaded := 0
@@ -129,8 +129,8 @@ FUNCTION AX_SetCollation( strCollation AS STRING ) AS STRING
 
 /// <summary>Sets the connection handle for all successive table opens.</summary>
 /// <param name="ptrHandle">Connection handle that was returned by AdsConnect60</param>
-/// <seealso cref="O:XSharp.RDD.Functions.AdsConnect60">AdsConnect60 Function</seealso>
-/// <seealso cref='O:XSharp.RDD.Functions.AdsGetLastError'>AdsGetLastError FUNCTION</seealso>
+/// <seealso cref="AdsConnect60">AdsConnect60 Function</seealso>
+/// <seealso cref='AdsGetLastError'>AdsGetLastError FUNCTION</seealso>
 PROCEDURE AX_SetConnectionHandle( ptrHandle AS IntPtr ) 
     CoreDb.RddInfo( _SET_CONNECTION_HANDLE, ptrHandle )
     RETURN 
@@ -452,7 +452,7 @@ FUNCTION AdsContinue(hTable AS IntPtr , pbFound OUT WORD) AS DWORD
     
     
 /// <include file="ads.xml" path="functions/ads/*" />
-/// <seealso cref="O:XSharp.RDD.Functions.AX_SetConnectionHandle">AX_SetConnectionHandle Function</seealso>
+/// <seealso cref="AX_SetConnectionHandle">AX_SetConnectionHandle Function</seealso>
 FUNCTION AdsConnect60(pucServerPath AS STRING , usServerTypes AS WORD, pucUserName AS STRING , pucPassword AS STRING , ulOptions AS DWORD, phConnect OUT IntPtr ) AS DWORD 
     RETURN ACE.AdsConnect60(pucServerPath, usServerTypes, pucUserName, pucPassword, ulOptions, OUT phConnect)
     

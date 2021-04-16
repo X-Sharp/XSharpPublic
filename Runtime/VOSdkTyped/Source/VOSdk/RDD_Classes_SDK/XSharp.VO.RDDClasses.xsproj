@@ -8,7 +8,7 @@
     <AssemblyName>XSharp.VORDDClasses</AssemblyName>
     <Name>XSharp.VO.RDDClasses</Name>
     <OutputName>XSharpRDDClasses</OutputName>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.8.0.10</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -27,7 +27,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>VORDDClasses.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.VORDDClasses.Xml</DocumentationFile>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
@@ -84,6 +85,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>Copy $(Solutiondir)Docs\Rdd.xml $(ProjectDir)\Rdd.Xml</PreBuildEvent>
+    <PostBuildEvent>Erase $(ProjectDir)\Rdd.Xml</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

@@ -89,16 +89,17 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	ACCESS __HasSurface AS LOGIC
 		RETURN SELF:__Surface != oWnd
 		
-	ACCESS __Surface AS System.Windows.Forms.Control STRICT
+	ACCESS __Surface AS IVOControlContainer STRICT
 		IF SELF:__IsValid 
 			LOCAL IMPLIED aList := oWnd:GetAllControls()
-			FOREACH oC AS System.Windows.Forms.Control IN aList
-				IF oc IS VOPanel
+			FOREACH oC AS OBJECT IN aList
+				IF oc IS IVOPanel
 					RETURN oC
 				ENDIF
 			NEXT
 		ENDIF
 		RETURN oWnd
+        
 	METHOD __SetupDataControl(oDC AS VOSDK.Control) AS VOID
 		RETURN 
 	
@@ -154,7 +155,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				oRect:Location 	:= oControl:Origin
 				oRect:Size     	:= oForm:Size
 			ELSE
-				LOCAL oCtrl AS System.Windows.Forms.Control
+				LOCAL oCtrl AS IVOControl
 				oCtrl			:= ((VOSDK.Control) oControl):__Control
 				oRect			:= oCtrl:DisplayRectangle
 				oRect:Location  := oCtrl:Location
@@ -192,10 +193,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			ENDIF
 		ENDIF
 		IF SELF:__Surface IS VOPanel VAR oPanel
-			oPanel:ShowToolTip(oControl:__Control, cMessage)
+			oPanel:ShowToolTip((System.Windows.Forms.Control) oControl:__Control, cMessage)
 		ENDIF
 
-	METHOD __AlignControl(	oCtl AS System.Windows.Forms.Control, nX AS LONG, nY AS LONG, nW AS LONG, nH AS LONG) AS VOID 
+	METHOD __AlignControl(	oCtl AS IVOUIObject, nX AS LONG, nY AS LONG, nW AS LONG, nH AS LONG) AS VOID 
 		oCtl:Location := System.Drawing.Point{nX, nY}
 		oCtl:Size     := System.Drawing.Size{nW, nH}
 		RETURN
@@ -234,7 +235,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//          IF you use the Factor/Divisor-Mode you can't use the proportinal alignment
 		//          simultaneously for this control (window).
 		LOCAL oRect		 AS System.Drawing.Rectangle
-		LOCAL oCtl       AS System.Windows.Forms.Control
+		LOCAL oCtl       AS IVOUIObject
 		LOCAL uType      AS USUAL
 		LOCAL dwType     AS DWORD
 		LOCAL liMulDiv   AS LONG
@@ -500,7 +501,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 	METHOD __CreateSelfBitmap() AS IntPtr STRICT 
-		// Todo
+		// Todo __CreateSelfBitmap
 		LOCAL hDIB AS PTR
 		//LOCAL hBitmap AS PTR
 		//LOCAL hBitmapOld AS PTR
@@ -558,7 +559,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN TRUE
 	
 	METHOD __EnableHelpCursor(lEnabled AS LOGIC) AS Window STRICT 
-		// Todo
+		// Todo __EnableHelpCursor
 		//LOCAL strucPoint IS _WinPoint
 		//LOCAL x, y AS LONGINT
 		//LOCAL liHitArea AS LONGINT
@@ -642,7 +643,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 	METHOD __GetDC() AS IntPtr STRICT 
-		// Todo ?
+		// Todo ? __GetDC
 		//LOCAL hFont AS PTR
 		//LOCAL strucLogPen IS _WinLogPen
 		//LOCAL strucLogBrush IS _WinLogBrush
@@ -892,7 +893,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 	METHOD __ProcessHelp(oEvent AS @@Event) AS LOGIC STRICT 
-		// Todo
+		// Todo __ProcessHelp
 		//LOCAL oObject AS OBJECT
 		//LOCAL oHL AS HyperLabel
 		//LOCAL sHelpInfo AS _winHelpInfo
@@ -1036,7 +1037,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 	METHOD __SetFont(oNewFont AS Font) AS Font STRICT 
 		oFont := oNewFont
-		__SetFont()
+		SELF:__SetFont()
 		RETURN oFont
 	
 	METHOD __SetFont() AS VOID STRICT
@@ -1187,7 +1188,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN NIL
 
 	METHOD ComboBoxExNotify(oControlNotifyEvent) 
-		//Todo
+		//Todo ComboBoxExNotify
 		//LOCAL oCNE AS ControlNotifyEvent
 		//oCNE := oControlNotifyEvent 
 		//IF oCNE:NotifyCode = CBEN_ENDEDIT
@@ -1437,7 +1438,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN 0L
 	
 
-	METHOD DeActivate(oEvent) 
+	METHOD DeActivate(oEvent AS Event) 
 		SELF:DeactivateAllOLEObjects()
 		RETURN SELF:Default(oEvent)
 	
@@ -1468,7 +1469,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 	
 
-	METHOD Default(oEvent) 
+	METHOD Default(oEvent AS Event) 
 		SELF:EventReturnValue := 1L
 		RETURN SELF
 	
@@ -1673,13 +1674,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 	METHOD EnableThemeDialogTexture(dwStyle) 
-		// Todo
+		// Todo EnableThemeDialogTexture
 		
 		//RETURN EnableThemeDialogTexture(SELF,dwStyle)
 		RETURN SELF
 
 	METHOD EnableToolTips(lEnable := TRUE AS LOGIC) AS VOID
-		// Todo
+		// Todo EnableToolTips
 		
 		IF lEnable 
 			IF SELF:__Surface IS VOPanel VAR panel
@@ -1740,22 +1741,22 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				ELSEIF control IS VOToolbar
 					// Skip
 					NOP
-				ELSEIF control IS VOStatusStrip
+				ELSEIF control IS IVOStatusBar
 					// Skip
 					NOP
-				ELSEIF control IS VOLabel
+				ELSEIF control IS IVOLabel
 					// Skip
 					NOP
 				ELSEIF control IS IVOControl
-					VAR oControl := control ASTYPE IVOControl
+					VAR oControl := control ASTYPE IVOControlProperties
 					aRet:Add(oControl:Control)
-					// Kinder der Gruppe müssen auch mitkommen
-					IF oControl IS VOGroupBox
-						LOCAL aGroupChilds AS List<IVOControl>
-						VAR oGroup :=  control ASTYPE VOGroupBox
-						aGroupChilds := oGroup:getAllChildren(NULL)
-						FOREACH oc AS IVOCOntrol IN aGroupChilds
-							AADD(aRet,(USUAL) oC:Control)
+					// Get the children of the group boxes also in this list
+					IF oControl IS IVOGroupBox 
+						LOCAL aGroupChildren AS IList<IVOControl>
+						VAR oGroup :=  control ASTYPE IVOGroupBox
+						aGroupChildren := oGroup:getAllChildren(NULL)
+						FOREACH oc AS IVOCOntrolProperties IN aGroupChildren
+							AAdd(aRet,oC:Control)
 						NEXT
 					ENDIF
 				ENDIF
@@ -1862,7 +1863,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN 
 	
 
-	METHOD HorizontalScroll(oScrollEvent) 
+	METHOD HorizontalScroll(oScrollEvent AS ScrollEvent) 
 		LOCAL oScrollBar AS ScrollBar
 		LOCAL oEvt	:= oScrollEvent AS ScrollEvent
 		
@@ -1874,7 +1875,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN SELF:Default(oEvt)
 	
 
-	METHOD HorizontalSlide(uSliderEvent) 
+	METHOD HorizontalSlide(uSliderEvent AS SliderEvent) 
 		LOCAL oSlider AS Slider
 		LOCAL oSliderEvent AS SliderEvent
 		oSliderEvent := uSliderEvent
@@ -1885,7 +1886,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN SELF:Default(oSliderEvent)
 	
 
-	METHOD HorizontalSpin(oSpinnerEvent) 
+	METHOD HorizontalSpin(oSpinnerEvent AS SpinnerEvent) 
 		LOCAL oSpinner AS Spinner
 		LOCAL oEvt	:= oSpinnerEvent AS SpinnerEvent
 		
@@ -2102,7 +2103,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 	METHOD MouseButtonUp(oMouseEvent) 
-		// Todo
+		// Todo MouseButtonUp
 
 		//IF lDragActive
 		//	ReleaseCapture()
@@ -2117,7 +2118,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 	METHOD MouseDrag(oMouseEvent) 
-		// Todo
+		// Todo MouseDrag
 		//LOCAL oEvt := oMouseEvent AS MouseEvent
 		
 		//IF lDragActive
@@ -2130,13 +2131,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 	METHOD MouseTrapOff() 
-		// Todo
+		// Todo MouseTrapOff
 		//ReleaseCapture()
 		RETURN NIL
 	
 
 	METHOD MouseTrapOn() 
-		// Todo
+		// Todo MouseTrapOn
 		//SetCapture(SELF:Handle(0))
 		RETURN NIL
 	
@@ -2197,7 +2198,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 	METHOD PaintBackground(hDC) 
-		// Todo
+		// Todo PaintBackground
 		//LOCAL strRect IS _winRECT
 		//LOCAL _hdc AS PTR
 		//LOCAL _handle AS PTR
@@ -2233,7 +2234,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 	METHOD PaintBoundingBox(oBoundingBox, kPaintMode) 
-		//Todo
+		//Todo PaintBoundingBox
 		//LOCAL hBrush AS PTR
 		//LOCAL r IS _WinRect
 		
@@ -2307,7 +2308,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 	METHOD Print(oDevice)
 		LOCAL lRet AS LOGIC
-		// Todo 
+		// Todo  Print
 		//LOCAL hDIB AS PTR
 		//LOCAL cDevice AS STRING
 		//LOCAL cDriver AS STRING
@@ -2412,7 +2413,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN uRet
 
 	METHOD Scroll(oDimension, oBoundingBox, lClip) 
-		// Todo
+		// Todo Scroll
 		//LOCAL oBB AS BoundingBox
 		//LOCAL strucRectScroll IS _WinRect
 		//LOCAL strucRectClip AS _WinRect
@@ -2472,7 +2473,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 	METHOD SetBackgroundBrush(dwNew) 
-		// TOdo
+		// TOdo SetBackgroundBrush
 		//Default(@dwNew,COLOR_3DSHADOW)
 		
 		//SetClassLong(SELF:handle(), GCL_HBRBACKGROUND, dwNew)
@@ -2680,7 +2681,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN NIL
 	
 	METHOD SysLinkSelect(oSysLinkSelectEvent) 
-		// TOdo
+		// TOdo SysLinkSelect
 		//LOCAL li IS _winLITEM
 		//LOCAL i AS INT
 		//LOCAL oEvt := oSysLinkSelectEvent AS SysLinkSelectEvent
@@ -2707,7 +2708,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 
 	METHOD TextPrint(cText, oPoint) 
-		// Todo
+		// Todo TextPrint
 		//LOCAL strucLogBrush IS _WinLogBrush
 		//LOCAL iOldMode, iNewMode AS INT
 		//LOCAL dwOldBack AS DWORD
@@ -2821,18 +2822,18 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		
 		RETURN NIL
 
-	METHOD VerticalScroll(oScrollEvent) 
+	METHOD VerticalScroll(oScrollEvent AS ScrollEvent) 
 		LOCAL oScrollBar AS ScrollBar
 		LOCAL oEvt	:= oScrollEvent AS ScrollEvent
 		
-		oScrollBar := OBJECT(oEvt:ScrollBar)
+		oScrollBar := oEvt:ScrollBar
 		IF (oScrollBar != NULL_OBJECT)
 			oScrollBar:ThumbPosition:=oEvt:Position
 		ENDIF
 		
 		RETURN SELF:Default(oEvt)
 
-	METHOD VerticalSlide(uSliderEvent) 
+	METHOD VerticalSlide(uSliderEvent AS SliderEvent) 
 		LOCAL oSlider AS Slider
 		LOCAL oSliderEvent AS SliderEvent
 		oSliderEvent := uSliderEvent
@@ -2842,7 +2843,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ENDIF
 		RETURN SELF:Default(oSliderEvent)
 	
-	METHOD VerticalSpin(oSpinnerEvent) 
+	METHOD VerticalSpin(oSpinnerEvent AS SpinnerEvent) 
 		LOCAL oSpinner AS Spinner
 		LOCAL oEvt	:= oSpinnerEvent AS SpinnerEvent
 		

@@ -22,6 +22,7 @@
         <AssemblyName>$(Name)</AssemblyName>
         <Dialect>Core</Dialect>
         <UseNativeVersion>false</UseNativeVersion>
+        <SuppressRCWarnings>true</SuppressRCWarnings>
     </PropertyGroup>
     <!-- Set defaults for Configuration, Platform, Optimize and PDB generation -->
     <PropertyGroup>

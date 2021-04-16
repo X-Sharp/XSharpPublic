@@ -1,3 +1,4 @@
+/// <include file="Gui.xml" path="doc/HelpDisplay/*" />
 CLASS HelpDisplay INHERIT VObject
 	PROTECT cFileName AS STRING
 	PROTECT wError AS LONGINT				        //RvdH 070205 changed from WORD to LONG
@@ -7,18 +8,25 @@ CLASS HelpDisplay INHERIT VObject
 	PROTECT lHTMLHelp AS LOGIC
 	PROTECT cPopUpTopic AS STRING //SE-060519
 
+
 	//PP-030929 Show default page when HelpContents?
 	EXPORT DefaultPageOnContents := TRUE AS LOGIC
+
 
 	//SE-060521
 	EXPORT Win32Processing := FALSE AS LOGIC
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	METHOD __CallHelp(uCommand AS DWORD, dwData AS DWORD, cTopic := "" AS STRING) AS LOGIC STRICT 
    //SE-060519
    LOCAL cFName AS STRING
 
+
    
+   
+
 
    IF lHTMLHelp
       cFName := cFileName
@@ -30,11 +38,16 @@ CLASS HelpDisplay INHERIT VObject
       RETURN LOGIC(_CAST, PCALL(pfnHTMLHelp, hWnd, String2Psz(cFName), uCommand, dwData))
    ENDIF
 
+
    RETURN WinHelp(hWnd, String2Psz(cFileName), uCommand, dwData)
 
+
+ /// <exclude />
 METHOD __VerifyHelp() AS LOGIC STRICT
 	//PP-030828 Strong typing
 	
+	
+
 
 	IF (hWnd == NULL_PTR) .AND. !lHTMLHelp // Create dummy window for use with help system
 		// oTopApp := TopAppWindow{}
@@ -48,10 +61,15 @@ METHOD __VerifyHelp() AS LOGIC STRICT
 		ENDIF
 	ENDIF
 
+
 	RETURN TRUE
 
+
+/// <include file="Gui.xml" path="doc/HelpDisplay.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	
+	
+
 
 	IF (hWnd != NULL_PTR)
 		IF !lHTMLHelp
@@ -61,6 +79,7 @@ METHOD Destroy()  AS USUAL CLIPPER
 		ENDIF
 		//DestroyWindow(hWnd)
 	ENDIF
+
 
 	IF !InCollect()
 		UnregisterAxit(SELF)
@@ -72,22 +91,31 @@ METHOD Destroy()  AS USUAL CLIPPER
 		ENDIF
 	ENDIF
 
+
 	RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/HelpDisplay.EnableHTMLHelp/*" />
 METHOD EnableHTMLHelp(lEnable, cPopUpTopic) 
    //SE-060519
    
+   
+
 
 	Default(@lEnable, TRUE)
 
+
 	lHTMLHelp := FALSE
+
 
 	IF lEnable
 		IF (pfnHTMLHelp := GetProcAddress(LoadLibrary(String2Psz("HHCTRL.OCX")), String2Psz("HtmlHelpA"))) == NULL_PTR
 			RETURN FALSE
 		ENDIF
 
+
 		lHTMLHelp := TRUE
+
 
 	   IF IsString(cPopUpTopic)
        	SELF:cPopUpTopic := cPopUpTopic
@@ -96,20 +124,30 @@ METHOD EnableHTMLHelp(lEnable, cPopUpTopic)
    	ENDIF
 	ENDIF
 
+
    RETURN TRUE
 
+
+/// <include file="Gui.xml" path="doc/HelpDisplay.HelpError/*" />
 METHOD HelpError() 
 	
+	
+
 
 	RETURN wError
 
+
+/// <include file="Gui.xml" path="doc/HelpDisplay.ctor/*" />
 CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing) 
 	//SE-060519
 	
+	
+
 
 	IF !IsString(cFileName)
 		WCError{#Init,#HelpDisplay,__WCSTypeError,cFileName,1}:Throw()
 	ENDIF
+
 
 	IF !IsNil(oOwnerWindow)
 		IF !IsInstanceOfUsual(oOwnerWindow, #Window)
@@ -119,17 +157,24 @@ CONSTRUCTOR(cFileName, oOwnerWindow, lWin32Processing)
 		ENDIF
 	ENDIF
 
+
 	SUPER()
 	
+	
+
 
 	SELF:cFileName := cFileName
+
 
 	IF IsLogic(lWin32Processing)
 		SELF:Win32Processing := lWin32Processing
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/HelpDisplay.Show/*" />
 METHOD Show(cKeyword, symLookupType) 
    //SE-060519
 	LOCAL cKey AS STRING
@@ -144,9 +189,12 @@ METHOD Show(cKeyword, symLookupType)
 	LOCAL sHelpInfo AS _winHelpInfo
 	LOCAL pszKey	AS PSZ
 	
+	
+
 
 	//PP-030929
 	Default(@symLookupType, #KEYWORD)
+
 
 	IF !IsString(cKeyword)
 		WCError{#Show,#HelpDisplay,__WCSTypeError,cKeyword,1}:Throw()
@@ -154,16 +202,20 @@ METHOD Show(cKeyword, symLookupType)
 		RETURN FALSE
 	ENDIF
 
+
 	cKey := cKeyword
+
 
 	IF (cKey == NULL_STRING)
 		wError := HdInvalidKey
 		RETURN FALSE
 	ENDIF
 
+
 	IF !SELF:__VerifyHelp()
 		RETURN FALSE
 	ENDIF
+
 
    IF ! IsSymbol(symLookupType)
 	   IF IsPtr(symLookupType)
@@ -175,13 +227,16 @@ METHOD Show(cKeyword, symLookupType)
       symLookupType := #KEYWORD
    ENDIF
 
+
 	wLen   := SLen(cKey)
 	cFirst := Left(cKey,1)
+
 
 	DO CASE
 	CASE cFirst>="0" .AND. cFirst<="9"
 		// When numeric, take the value of the key
 	   lRetVal := SELF:__CallHelp(IIF(lHTMLHelp, HH_HELP_CONTEXT, HELP_CONTEXT), Val(cKey))
+	   
 	   
 	CASE ! lHTMLHelp .AND. cFirst="[" .AND. wLen>3 .AND. SubStr3(cKey,3,1)="]"
 		// When [Letter] store the Letter in the keylist and use the rest of the key
@@ -233,6 +288,7 @@ METHOD Show(cKeyword, symLookupType)
 			ENDIF
 		ENDIF
 
+
 	OTHERWISE
 		pszKey 	:= StringAlloc(cKey)         
 		IF ! lHTMLHelp
@@ -255,6 +311,7 @@ METHOD Show(cKeyword, symLookupType)
 	   			ENDIF
 	   		ENDIF
 
+
    			hhLink:cbStruct     := _SIZEOF(_winHH_AKLINK)
    			hhLink:fIndexOnFail := TRUE
    			hhLink:pszKeywords  := pszKey
@@ -264,20 +321,28 @@ METHOD Show(cKeyword, symLookupType)
 		ENDIF
 	ENDCASE
 
+
 	IF !lRetVal
 		wError := HDInvalidKey
 	ELSE
 		wError := HDOk
 	ENDIF
 
+
 	RETURN lRetVal
+
 
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/THTMLHelp/*" />
 FUNCTION THTMLHelp(hwndCaller AS PTR, pszFile AS PSZ, uCommand AS DWORD, dwData AS DWORD) AS LONGINT STRICT
 	//SE-060519 Update S.Ebert
 	//SYSTEM
 	RETURN 0
+
+
+
 
 
 

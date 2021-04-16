@@ -60,9 +60,11 @@ namespace XSharp.CodeDom
         [Obsolete]
         public override ICodeParser CreateParser()
         {
-            var parser = new XSharpCodeParser(_projectNode);
-            parser.TabSize = XSharpCodeDomProvider.TabSize;
-            parser.FileName = this.FileName;
+            var parser = new XSharpCodeParser(_projectNode)
+            {
+                TabSize = XSharpCodeDomProvider.TabSize,
+                FileName = this.FileName
+            };
             return parser;
         }
 
@@ -105,18 +107,18 @@ namespace XSharp.CodeDom
     }
     public class XSharpCodeDomHelper1
     {
-        static String Delimiter = new String('-', 5);
-        static void dumpUserData(IDictionary userData)
+        static readonly String Delimiter = new String('-', 5);
+        static void DumpUserData(IDictionary userData)
         {
             if (userData.Count > 0)
             {
-                writeLine(Delimiter);
-                writeLine("UserData");
+                WriteLine(Delimiter);
+                WriteLine("UserData");
                 foreach (DictionaryEntry value in userData)
                 {
-                    writeLine(value.Key.ToString() + "  = " + value.Value.ToString());
+                    WriteLine(value.Key.ToString() + "  = " + value.Value.ToString());
                 }
-                writeLine(Delimiter);
+                WriteLine(Delimiter);
             }
 
         }
@@ -130,46 +132,44 @@ namespace XSharp.CodeDom
                 String Line = new String('=', 25);
                 _indent = 0;
                 //
-                writeLine(Line);
-                writeLine(DateTime.Now.ToString());
-                writeLine(Delimiter);
+                WriteLine(Line);
+                WriteLine(DateTime.Now.ToString());
+                WriteLine(Delimiter);
 
-                writeLine("CodeCompileUnit:");
+                WriteLine("CodeCompileUnit:");
                 //
-                dumpUserData(ccu.UserData);
-                CodeTypeDeclaration ctd = findFirstClass(ccu);
+                DumpUserData(ccu.UserData);
+                CodeTypeDeclaration ctd = FindFirstClass(ccu);
                 if (ctd == null)
                     return;
-                writeLine(Line);
-                writeLine("CodeTypeDeclaration : " +ctd.Name);
+                WriteLine(Line);
+                WriteLine("CodeTypeDeclaration : " +ctd.Name);
                 //
-                dumpUserData(ctd.UserData);
+                DumpUserData(ctd.UserData);
                 //
                 foreach (CodeTypeMember member in ctd.Members)
                 {
-                    writeLine(Delimiter);
-                    writeLine("CodeTypeMember : " + member.Name);
-                    writeLine(Delimiter);
-                    writeLine("CodeTypeMember UserData :");
+                    WriteLine(Delimiter);
+                    WriteLine("CodeTypeMember : " + member.Name);
+                    WriteLine(Delimiter);
+                    WriteLine("CodeTypeMember UserData :");
                     //
-                    dumpUserData(member.UserData);
-                    if (member is CodeMemberField)
+                    DumpUserData(member.UserData);
+                    if (member is CodeMemberField cmf)
                     {
-                        CodeMemberField cmf = (CodeMemberField)member;
-                        writeLine(" -=> CodeMemberField : "+ cmf.Type.BaseType);
-                        dumpUserData(cmf.UserData);
+                        WriteLine(" -=> CodeMemberField : " + cmf.Type.BaseType);
+                        DumpUserData(cmf.UserData);
                     }
-                    else if (member is CodeMemberMethod)
+                    else if (member is CodeMemberMethod cmm)
                     {
-                        CodeMemberMethod cmm = (CodeMemberMethod)member;
-                        writeLine(" -=> CodeMemberMethod : " +cmm.Name);
-                        dumpUserData(cmm.UserData);
+                        WriteLine(" -=> CodeMemberMethod : " + cmm.Name);
+                        DumpUserData(cmm.UserData);
                         foreach (CodeStatement stmt in cmm.Statements)
                         {
-                            writeLine(stmt.GetType().ToString());
+                            WriteLine(stmt.GetType().ToString());
                             DumpStatement(writer, stmt);
                         }
-                        writeLine(Delimiter);
+                        WriteLine(Delimiter);
                     }
                 }
             }
@@ -182,7 +182,7 @@ namespace XSharp.CodeDom
         static int _indent = 0;
         static StreamWriter writer;
 
-        static String indent
+        static String Indent
         {
             get
             {
@@ -190,48 +190,49 @@ namespace XSharp.CodeDom
             }
         }
 
-        static void writeLineIndent(string str)
+        static void WriteLineIndent(string str)
         {
-            writer.WriteLine(indent + str);
+            writer.WriteLine(Indent + str);
         }
 
-        static void writeIndent(string str)
-        {
-            writer.Write(indent + str);
-        }
 
-        static void writeLine(string str)
+        static void WriteLine(string str)
         {
             writer.WriteLine(str);
         }
 
 
-        private static string getExpression(CodeExpression expr)
+        private static string GetExpression(CodeExpression expr)
         {
-            if (expr is CodeFieldReferenceExpression)
+            if (expr is CodeFieldReferenceExpression expression)
             {
-                return ((CodeFieldReferenceExpression)expr).FieldName;
+                return expression.FieldName;
             }
-            if (expr is CodePropertyReferenceExpression)
+            if (expr is CodePropertyReferenceExpression expression1)
             {
-                return ((CodePropertyReferenceExpression)expr).PropertyName;
+                return expression1.PropertyName;
             }
-            if (expr is CodeMethodReferenceExpression)
+            if (expr is CodeMethodReferenceExpression cmre)
             {
-                return ((CodeMethodReferenceExpression)expr).MethodName;
+                return cmre.MethodName;
             }
-            if (expr is CodePrimitiveExpression)
+            if (expr is CodePrimitiveExpression cpe)
             {
-                return ((CodePrimitiveExpression)expr).Value.ToString();
+                return cpe.Value.ToString();
             }
             return expr.ToString();
         }
 
         private static void DumpStatement(StreamWriter writer, CodeStatement s)
         {
+            if (writer is null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
             if (s.UserData.Count > 0)
             {
-                dumpUserData(s.UserData);
+                DumpUserData(s.UserData);
             }
             /*
                   System.CodeDom.CodeAssignStatement
@@ -250,58 +251,53 @@ namespace XSharp.CodeDom
                   System.CodeDom.CodeVariableDeclarationStatement
             */
             _indent++;
-            if (s is CodeAssignStatement)
+            if (s is CodeAssignStatement cas)
             {
-                var stmt = (CodeAssignStatement)s;
-                if (stmt.Left != null)
-                    dumpExpression(stmt.Left);
-                writeLineIndent(getExpression(stmt.Right));
-                if (stmt.Right != null)
-                    dumpExpression(stmt.Right);
+                if (cas.Left != null)
+                    DumpExpression(cas.Left);
+                WriteLineIndent(GetExpression(cas.Right));
+                if (cas.Right != null)
+                    DumpExpression(cas.Right);
             }
-            else if (s is CodeExpressionStatement)
+            else if (s is CodeExpressionStatement ces)
             {
-                var stmt = (CodeExpressionStatement)s;
-                writeLineIndent(stmt.Expression.GetType().ToString());
-                dumpExpression(stmt.Expression);
+                WriteLineIndent(ces.Expression.GetType().ToString());
+                DumpExpression(ces.Expression);
             }
-            else if (s is CodeVariableDeclarationStatement)
+            else if (s is CodeVariableDeclarationStatement cvds)
             {
-                var stmt = (CodeVariableDeclarationStatement)s;
-                writeLineIndent(stmt.Name);
-                var tr = stmt.Type;
-                writeLineIndent(tr.BaseType);
+                WriteLineIndent(cvds.Name);
+                var tr = cvds.Type;
+                WriteLineIndent(tr.BaseType);
             }
-            else if (s is CodeAttachEventStatement)
+            else if (s is CodeAttachEventStatement caes)
             {
-                var stmt = (CodeAttachEventStatement)s;
-                dumpExpression(stmt.Event);
-                dumpExpression(stmt.Listener);
+                DumpExpression(caes.Event);
+                DumpExpression(caes.Listener);
             }
-            else if (s is CodeMethodReturnStatement)
+            else if (s is CodeMethodReturnStatement cmrs)
             {
-                var stmt = (CodeMethodReturnStatement)s;
-                dumpExpression(stmt.Expression);
+                DumpExpression(cmrs.Expression);
             }
             else
             {
-                writeLineIndent(s.GetType().ToString());
+                WriteLineIndent(s.GetType().ToString());
             }
             _indent--;
         }
 
-        private static void dumpExpressionList(CodeExpressionCollection coll)
+        private static void DumpExpressionList(CodeExpressionCollection coll)
         {
             _indent++;
-            writeLineIndent("Parameter count: " + coll.Count.ToString());
+            WriteLineIndent("Parameter count: " + coll.Count.ToString());
             foreach (CodeExpression exp in coll)
             {
-                dumpExpression(exp);
+                DumpExpression(exp);
             }
             _indent--;
         }
 
-        private static void dumpExpression(CodeExpression e)
+        private static void DumpExpression(CodeExpression e)
         {
             /*
               System.CodeDom.CodeArgumentReferenceExpression
@@ -332,69 +328,61 @@ namespace XSharp.CodeDom
             */
             if (e == null)
                 return;
-            if (e is CodeFieldReferenceExpression)
+            if (e is CodeFieldReferenceExpression cfre)
             {
-                CodeFieldReferenceExpression exp = (CodeFieldReferenceExpression)e;
-                dumpExpression(exp.TargetObject);
-                writeLineIndent("F: "+exp.FieldName);
+                DumpExpression(cfre.TargetObject);
+                WriteLineIndent("F: "+ cfre.FieldName);
             }
-            else if (e is CodeObjectCreateExpression)
+            else if (e is CodeObjectCreateExpression coce)
             {
-                var exp = (CodeObjectCreateExpression)e;
-                var tr = exp.CreateType as CodeTypeReference;
-                writeLineIndent(tr.BaseType+"{}");
-                dumpExpressionList(exp.Parameters);
+                var tr = coce.CreateType as CodeTypeReference;
+                WriteLineIndent(tr.BaseType+"{}");
+                DumpExpressionList(coce.Parameters);
             }
-            else if (e is CodeMethodInvokeExpression)
+            else if (e is CodeMethodInvokeExpression cmie)
             {
-                var exp = (CodeMethodInvokeExpression)e;
-                dumpExpression(exp.Method.TargetObject);
-                writeLineIndent("M: " + exp.Method.MethodName);
-                dumpExpressionList(exp.Parameters);
+                DumpExpression(cmie.Method.TargetObject);
+                WriteLineIndent("M: " + cmie.Method.MethodName);
+                DumpExpressionList(cmie.Parameters);
             }
-            else if (e is CodePropertyReferenceExpression)
+            else if (e is CodePropertyReferenceExpression cpre)
             {
-                var exp = (CodePropertyReferenceExpression)e;
-                dumpExpression(exp.TargetObject);
-                writeLineIndent("P: " + exp.PropertyName);
+                DumpExpression(cpre.TargetObject);
+                WriteLineIndent("P: " + cpre.PropertyName);
             }
-            else if (e is CodePrimitiveExpression)
+            else if (e is CodePrimitiveExpression cpe)
             {
-                var exp = (CodePrimitiveExpression)e;
-                writeLineIndent(exp.ToString());
-                writeLineIndent(exp.Value.ToString());
+                WriteLineIndent(cpe.ToString());
+                WriteLineIndent(cpe.Value.ToString());
             }
-            else if (e is CodeCastExpression)
+            else if (e is CodeCastExpression cce)
             {
-                var exp = (CodeCastExpression)e;
-                writeLineIndent(exp.TargetType.ToString());
-                dumpExpression(exp.Expression);
+                WriteLineIndent(cce.TargetType.ToString());
+                DumpExpression(cce.Expression);
             }
             else if (e is CodeThisReferenceExpression)
             {
-                writeLineIndent("SELF");
+                WriteLineIndent("SELF");
             }
-            else if (e is CodeBinaryOperatorExpression)
+            else if (e is CodeBinaryOperatorExpression cboe)
             {
-                var exp = (CodeBinaryOperatorExpression)e;
-                dumpExpression(exp.Left);
-                CodeBinaryOperatorType opType = exp.Operator;
-                writeLineIndent(opType.ToString());
-                dumpExpression(exp.Right);
+                DumpExpression(cboe.Left);
+                CodeBinaryOperatorType opType = cboe.Operator;
+                WriteLineIndent(opType.ToString());
+                DumpExpression(cboe.Right);
             }
-            else if (e is CodeTypeReferenceExpression)
+            else if (e is CodeTypeReferenceExpression ctre)
             {
-                var exp = (CodeTypeReferenceExpression)e;
-                var tr = exp.Type;
-                writeLineIndent(tr.BaseType);
+                var tr = ctre.Type;
+                WriteLineIndent(tr.BaseType);
             }
             else if (e is CodeBaseReferenceExpression)
             {
-                writeLineIndent("SUPER");
+                WriteLineIndent("SUPER");
             }
             else
             {
-                writeLineIndent(e.GetType().FullName);
+                WriteLineIndent(e.GetType().FullName);
             }
        }
 
@@ -403,13 +391,12 @@ namespace XSharp.CodeDom
         /// </summary>
         /// <param name="ccu"></param>
         /// <returns></returns>
-        private static XCodeTypeDeclaration findFirstClass(CodeCompileUnit ccu)
+        private static XCodeTypeDeclaration FindFirstClass(CodeCompileUnit ccu)
         {
-            XCodeNamespace namespaceName;
-            return findFirstClass(ccu, out namespaceName);
+            return FindFirstClass(ccu, out _);
         }
 
-        private static XCodeTypeDeclaration findFirstClass(CodeCompileUnit ccu, out XCodeNamespace namespaceName)
+        private static XCodeTypeDeclaration FindFirstClass(CodeCompileUnit ccu, out XCodeNamespace namespaceName)
         {
             namespaceName = null;
             XCodeTypeDeclaration rstClass = null;

@@ -41,7 +41,7 @@ namespace XSharp.Project
         {
             _projects = new Dictionary<Guid, ErrorListManager>();
             _gate = new object();
-            _errorList = XSharpProjectPackage.Instance.ErrorList;
+            _errorList = XSharpProjectPackage.XInstance.ErrorList;
             _manager = _errorList.TableControl.Manager;
             _provider = new ErrorListProvider(_manager);
         }

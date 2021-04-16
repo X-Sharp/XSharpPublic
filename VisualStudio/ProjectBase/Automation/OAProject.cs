@@ -41,7 +41,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region ctor
-        internal OAProject(ProjectNode project)
+        public OAProject(ProjectNode project)
         {
             this.project = project;
 
@@ -96,15 +96,14 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    int dirty;
-                    ErrorHandler.ThrowOnFailure(project.IsDirty(out dirty));
-                    return dirty != 0;
+                int dirty;
+
+                ErrorHandler.ThrowOnFailure(project.IsDirty(out dirty));
+                return dirty != 0;
                 });
-                
             }
             set
             {
@@ -146,7 +145,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    return (EnvDTE.DTE)this.project.Site.GetService(typeof(EnvDTE.DTE));
+                return (EnvDTE.DTE)this.project.Site.GetService(typeof(EnvDTE.DTE));
                 });
             }
         }
@@ -235,7 +234,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                return DTE.ObjectExtenders.GetExtender(project.NodeProperties.ExtenderCATID.ToUpper(), ExtenderName, project.NodeProperties);
+            return DTE.ObjectExtenders.GetExtender(project.NodeProperties.ExtenderCATID.ToUpper(), ExtenderName, project.NodeProperties);
             });
         }
 
@@ -291,6 +290,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return !this.IsDirty;
             }
             set
@@ -371,6 +371,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <exception cref="ArgumentNullException">Is thrown if fileName is null.</exception>
         public virtual void SaveAs(string fileName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.DoSave(true, fileName);
         }
 
@@ -382,6 +383,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <exception cref="ArgumentNullException">Is thrown if fileName is null.</exception>
         public virtual void Save(string fileName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.DoSave(false, fileName);
         }
 

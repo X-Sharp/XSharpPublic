@@ -26,22 +26,23 @@ namespace XSharp.MacroCompiler.Syntax
         FIRST_KEYWORD,
 
         // Entity keywords [entity]
-        ACCESS, ALIGN, ASPEN, ASSIGN, CALLBACK, CLASS, CLIPPER, DECLARE, DEFINE, DLL, DLLEXPORT, EXPORT, FASTCALL, 
-        FUNC, FUNCTION, GLOBAL, HIDDEN, INHERIT, INIT1, INIT2, INIT3, INSTANCE, MEMBER, METHOD, PARAMETERS, PASCAL,
+        ACCESS, ALIGN, ASPEN, ASSIGN, CALLBACK, CLASS, CLIPPER, DEFINE, DLL, DLLEXPORT, EXPORT, FASTCALL, 
+        FUNC, FUNCTION, GLOBAL, HIDDEN, INHERIT, INIT1, INIT2, INIT3, INSTANCE, MEMBER, METHOD, PARAMETERS, LPARAMETERS, PASCAL,
         PRIVATE, PROC, PROCEDURE, PROTECTED, PUBLIC, STRICT, THISCALL, UNION,
         USING, WINCALL,
 
         // Statement keywords [statement]
-        BEGIN, BREAK, CASE, DIM, DO, DOWNTO, ELSE, ELSEIF, END, ENDCASE, ENDDO, ENDIF, EXIT,
+        BEGIN, BREAK, CASE, DIM, DO, DOWNTO, ELSE, ELSEIF, END, ENDCASE, ENDDO, ENDIF, EXIT, THEN,
         FOR, IN, LOCAL, LOOP, NAMEOF, NEXT, OTHERWISE,
         RECOVER, RETURN, SEQUENCE, STATIC, STEP, TO,
         UPTO, WHILE,
+        DECLARE, DIMENSION,
 
         // Vulcan stmt keywords [statement]
         CATCH, FINALLY, THROW,
 
         // Expression keywords
-        IIF, IF, AS, SELF, SUPER, SIZEOF, TYPEOF, FIELD, CAST, IS, MEMVAR,
+        IIF, IF, AS, OF, SELF, SUPER, SIZEOF, TYPEOF, FIELD, CAST, IS, MEMVAR,
 
 
         FIRST_POSITIONAL_KEYWORD,
@@ -50,7 +51,7 @@ namespace XSharp.MacroCompiler.Syntax
         NAMESPACE, NEW, OPERATOR, PARTIAL, PROPERTY, SEALED, SET, STRUCTURE, UNICODE, UNTIL, VALUE, VIRTUAL, VOSTRUCT,
 
         // New Vulcan Keywords (no 4 letter abbreviations) [statement]
-        CONST, FOREACH, IMPLICIT, IMPLIED, LOCK, OUT, REPEAT, SCOPE, TRY,
+        CONST, EACH, FOREACH, IMPLICIT, IMPLIED, LOCK, OUT, REPEAT, SCOPE, TRY,
 
         // New Vulcan expr Keywords (no 4 letter abbreviations)
         DEFAULT,
@@ -60,7 +61,7 @@ namespace XSharp.MacroCompiler.Syntax
 
         //// New XSharp Keywords (no 4 letter abbreviations) [statement]
         ARGLIST, ASCENDING, BY, DESCENDING, EQUALS, FROM, GROUP, INTO, JOIN, LET, NOP,
-        ON, ORDERBY, SELECT, SWITCH, VAR, VOLATILE, WHERE, YIELD,
+        ON, ORDERBY, SELECT, SWITCH, VAR, VOLATILE, WHERE, YIELD, WITH, WHEN,
 
         //// New XSharp expr Keywords (no 4 letter abbreviations)
         AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED,
@@ -188,10 +189,19 @@ namespace XSharp.MacroCompiler.Syntax
         }
         internal static readonly Token None = new Token(TokenType.UNRECOGNIZED, TokenType.UNRECOGNIZED, -1, 0, null, Channel.DEFOUTCHANNEL);
         public override string ToString() => ( !string.IsNullOrEmpty(value) ? value : TokenAttr.TokenText(type) ) ;
+        internal CompilationError Error(ErrorCode e, params object[] args) => Compilation.Error(this, e, args);
     }
 
     internal class TokenAttr
     {
+        static internal readonly IDictionary<string, TokenType> coreKwIds;
+        static internal readonly IDictionary<string, TokenType> coreKwIdsS;
+        static internal readonly IDictionary<string, TokenType> coreKwIdsE;
+
+        static internal readonly IDictionary<string, TokenType> abbrKwIds;
+        static internal readonly IDictionary<string, TokenType> abbrKwIdsS;
+        static internal readonly IDictionary<string, TokenType> abbrKwIdsE;
+
         static internal readonly IDictionary<string, TokenType> voKwIds;
         static internal readonly IDictionary<string, TokenType> voKwIdsS;
         static internal readonly IDictionary<string, TokenType> voKwIdsE;
@@ -199,6 +209,10 @@ namespace XSharp.MacroCompiler.Syntax
         static internal readonly IDictionary<string, TokenType> xsKwIds;
         static internal readonly IDictionary<string, TokenType> xsKwIdsS;
         static internal readonly IDictionary<string, TokenType> xsKwIdsE;
+
+        static internal readonly IDictionary<string, TokenType> foxKwIds;
+        static internal readonly IDictionary<string, TokenType> foxKwIdsS;
+        static internal readonly IDictionary<string, TokenType> foxKwIdsE;
 
         static internal readonly IDictionary<string, TokenType> symIds;
         static internal readonly IDictionary<string, TokenType> symIdsE;
@@ -218,7 +232,6 @@ namespace XSharp.MacroCompiler.Syntax
                 {"CALLBACK", TokenType.CALLBACK},
                 {"CLASS", TokenType.CLASS},
                 {"CLIPPER", TokenType.CLIPPER},
-                {"DECLARE", TokenType.DECLARE},
                 {"DEFINE", TokenType.DEFINE},
                 {"_DLL", TokenType.DLL},
                 {"DLLEXPORT", TokenType.DLLEXPORT},
@@ -231,16 +244,12 @@ namespace XSharp.MacroCompiler.Syntax
                 {"INSTANCE", TokenType.INSTANCE},
                 {"MEMBER", TokenType.MEMBER},
                 {"METHOD", TokenType.METHOD},
-                {"PARAMETERS", TokenType.PARAMETERS},
                 {"PASCAL", TokenType.PASCAL},
-                {"PRIVATE", TokenType.PRIVATE},
                 {"PROCEDURE", TokenType.PROCEDURE},
                 {"PROTECTED", TokenType.PROTECTED},
-                {"PUBLIC", TokenType.PUBLIC},
                 {"STRICT", TokenType.STRICT},
                 {"THISCALL", TokenType.THISCALL},
                 {"UNION", TokenType.UNION},
-                {"USING", TokenType.USING},
                 {"WINCALL", TokenType.WINCALL},
             };
 
@@ -250,7 +259,9 @@ namespace XSharp.MacroCompiler.Syntax
                 {"BEGIN", TokenType.BEGIN},
                 {"BREAK", TokenType.BREAK},
                 {"CASE", TokenType.CASE},
+                {"DECLARE", TokenType.DECLARE},
                 {"DIM", TokenType.DIM},
+                {"DIMENSION", TokenType.DIMENSION},
                 {"DO", TokenType.DO},
                 {"DOWNTO", TokenType.DOWNTO},
                 {"ELSE", TokenType.ELSE},
@@ -266,7 +277,10 @@ namespace XSharp.MacroCompiler.Syntax
                 {"LOOP", TokenType.LOOP},
                 {"MEMVAR", TokenType.MEMVAR},
                 {"NEXT", TokenType.NEXT},
+                {"OF", TokenType.OF},
                 {"OTHERWISE", TokenType.OTHERWISE},
+                {"PRIVATE", TokenType.PRIVATE},
+                {"PUBLIC", TokenType.PUBLIC},
                 {"RECOVER", TokenType.RECOVER},
                 {"RETURN", TokenType.RETURN},
                 {"SELF", TokenType.SELF},
@@ -275,7 +289,9 @@ namespace XSharp.MacroCompiler.Syntax
                 {"STEP", TokenType.STEP},
                 {"SUPER", TokenType.SUPER},
                 {"TO", TokenType.TO},
+                {"THEN", TokenType.THEN },
                 {"UPTO", TokenType.UPTO},
+                {"USING", TokenType.USING},
                 {"WHILE", TokenType.WHILE},
 
             };
@@ -437,6 +453,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"CONST", TokenType.CONST},
                 {"FINALLY", TokenType.FINALLY},
                 {"FOREACH", TokenType.FOREACH},
+                {"EACH", TokenType.EACH},
                 {"IMPLIED", TokenType.IMPLIED},
                 {"LOCK", TokenType.LOCK},
                 {"ON", TokenType.ON},
@@ -472,9 +489,15 @@ namespace XSharp.MacroCompiler.Syntax
                 {"VOLATILE", TokenType.VOLATILE},
                 {"WHERE", TokenType.WHERE},
                 {"YIELD", TokenType.YIELD},
+                {"WITH", TokenType.WITH},
+                {"WHEN", TokenType.WHEN},
 
 			    // XSharp types
 			    {"DYNAMIC", TokenType.DYNAMIC},
+
+                // FoxPro keywords
+                {"PARAMETERS", TokenType.PARAMETERS},
+                {"LPARAMETERS", TokenType.LPARAMETERS},
             };
 
             var Keywords = new Dictionary<string, TokenType>
@@ -503,117 +526,79 @@ namespace XSharp.MacroCompiler.Syntax
                 {"M", TokenType.M},
             };
 
+            //=====================
+            // Expression keywords
+            //=====================
+
+            coreKwIds = new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase);
+            abbrKwIds = new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase);
             voKwIds = new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase);
             xsKwIds = new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase);
+            foxKwIds = new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase);
+
+            // These keywords are abbreviated for VO
+            coreKwIds.AddKeywords(VoKeywords);
+            abbrKwIds.AddKeywordAbbrevs(VoKeywords);
+
+            // These keywords are inserted without abbreviations
+            coreKwIds.AddKeywords(Keywords);
 
             // These are predefined abbreviations of some keywords that are also valid in Vulcan
             xsKwIds.Add("SHORT", TokenType.SHORTINT);
             xsKwIds.Add("LONG", TokenType.LONGINT);
             xsKwIds.Add("_CODEBLOCK", TokenType.CODEBLOCK);
 
-            // These keywords are abbreviated for VO
-            foreach (var text in VoKeywords.Keys)
-            {
-                var token = VoKeywords[text];
-                xsKwIds.Add(text, token);
-                voKwIds.Add(text, token);
-                {
-                    var s = text;
-                    while (s.Length > 4)
-                    {
-                        s = s.Substring(0, s.Length - 1);
-                        if (!voKwIds.ContainsKey(s))
-                            voKwIds.Add(s, token);
-                    }
-                }
-            }
-
-            // These keywords are inserted without abbreviations
-            foreach (var text in Keywords.Keys)
-            {
-                var token = Keywords[text];
-                xsKwIds.Add(text, token);
-                voKwIds.Add(text, token);
-            }
-
             // Add FoxPro dialect LOGICAL operators AND, OR, NOT and XOR
-            if (RuntimeState.Dialect == XSharpDialect.FoxPro)
-            {
-                voKwIds.Add("AND", TokenType.LOGIC_AND);
-                voKwIds.Add("OR", TokenType.LOGIC_OR);
-                voKwIds.Add("NOT", TokenType.LOGIC_NOT);
-                voKwIds.Add("XOR", TokenType.LOGIC_XOR);
-                xsKwIds.Add("AND", TokenType.LOGIC_AND);
-                xsKwIds.Add("OR", TokenType.LOGIC_OR);
-                xsKwIds.Add("NOT", TokenType.LOGIC_NOT);
-                xsKwIds.Add("XOR", TokenType.LOGIC_XOR);
-            }
+            foxKwIds.Add("AND", TokenType.LOGIC_AND);
+            foxKwIds.Add("OR", TokenType.LOGIC_OR);
+            foxKwIds.Add("NOT", TokenType.LOGIC_NOT);
+            foxKwIds.Add("XOR", TokenType.LOGIC_XOR);
 
+            //====================
+            // Statement keywords
+            //====================
 
+            coreKwIdsS = new Dictionary<string, TokenType>(coreKwIds, StringComparer.OrdinalIgnoreCase);
+            abbrKwIdsS = new Dictionary<string, TokenType>(abbrKwIds, StringComparer.OrdinalIgnoreCase);
             voKwIdsS = new Dictionary<string, TokenType>(voKwIds, StringComparer.OrdinalIgnoreCase);
             xsKwIdsS = new Dictionary<string, TokenType>(xsKwIds, StringComparer.OrdinalIgnoreCase);
+            foxKwIdsS = new Dictionary<string, TokenType>(foxKwIds, StringComparer.OrdinalIgnoreCase);
+
+            // These keywords are abbreviated for VO
+            coreKwIdsS.AddKeywords(VoKeywordsStmt);
+            abbrKwIdsS.AddKeywordAbbrevs(VoKeywordsStmt);
+
+            // These keywords are inserted without abbreviations
+            coreKwIdsS.AddKeywords(KeywordsStmt);
 
             // These are predefined abbreviations of some keywords that are also valid in Vulcan
             voKwIdsS.Add("ANY", TokenType.USUAL);
 
-            // These keywords are abbreviated for VO
-            foreach (var text in VoKeywordsStmt.Keys)
-            {
-                var token = VoKeywordsStmt[text];
-                xsKwIdsS.Add(text, token);
-                voKwIdsS.Add(text, token);
-                {
-                    var s = text;
-                    while (s.Length > 4)
-                    {
-                        s = s.Substring(0, s.Length - 1);
-                        if (!voKwIdsS.ContainsKey(s))
-                            voKwIdsS.Add(s, token);
-                    }
-                }
-            }
+            //=================
+            // Entity keywords
+            //=================
 
-            // These keywords are inserted without abbreviations
-            foreach (var text in KeywordsStmt.Keys)
-            {
-                var token = KeywordsStmt[text];
-                xsKwIdsS.Add(text, token);
-                voKwIdsS.Add(text, token);
-            }
-
+            coreKwIdsE = new Dictionary<string, TokenType>(coreKwIdsS, StringComparer.OrdinalIgnoreCase);
+            abbrKwIdsE = new Dictionary<string, TokenType>(abbrKwIdsS, StringComparer.OrdinalIgnoreCase);
             voKwIdsE = new Dictionary<string, TokenType>(voKwIdsS, StringComparer.OrdinalIgnoreCase);
             xsKwIdsE = new Dictionary<string, TokenType>(xsKwIdsS, StringComparer.OrdinalIgnoreCase);
+            foxKwIdsE = new Dictionary<string, TokenType>(foxKwIdsS, StringComparer.OrdinalIgnoreCase);
+
+            // These keywords are abbreviated for VO
+            coreKwIdsE.AddKeywords(VoKeywordsEnt);
+            abbrKwIdsE.AddKeywordAbbrevs(VoKeywordsEnt);
+
+            // These keywords are inserted without abbreviations
+            coreKwIdsE.AddKeywords(KeywordsEnt);
 
             // These are predefined abbreviations of some keywords that are also valid in Vulcan
             xsKwIdsE.Add("PROC", TokenType.PROC);
             xsKwIdsE.Add("FUNC", TokenType.FUNC);
             xsKwIdsE.Add("PROTECT", TokenType.PROTECTED);
 
-            // These keywords are abbreviated for VO
-            foreach (var text in VoKeywordsEnt.Keys)
-            {
-                var token = VoKeywordsEnt[text];
-                xsKwIdsS.Add(text, token);
-                voKwIdsS.Add(text, token);
-                {
-                    var s = text;
-                    while (s.Length > 4)
-                    {
-                        s = s.Substring(0, s.Length - 1);
-                        if (!voKwIdsS.ContainsKey(s))
-                            voKwIdsS.Add(s, token);
-                    }
-                }
-            }
-
-            // These keywords are inserted without abbreviations
-            foreach (var text in KeywordsEnt.Keys)
-            {
-                var token = KeywordsEnt[text];
-                xsKwIdsS.Add(text, token);
-                voKwIdsS.Add(text, token);
-            }
-
+            //===============
+            // Hash keywords
+            //===============
 
             symIds = new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase)
             {
@@ -652,6 +637,10 @@ namespace XSharp.MacroCompiler.Syntax
                 { "#USING", TokenType.USING},
                 { "#PRAGMA", TokenType.PRAGMA},
             };
+
+            //=================
+            // Special symbols
+            //=================
 
             specialTable = new TokenType[128];
             for (int i = 0; i < specialTable.Length; i++)
@@ -700,12 +689,17 @@ namespace XSharp.MacroCompiler.Syntax
             for (char c = '0'; c <= '9'; c++)
                 specialTable[c] = TokenType.INT_CONST;
 
+            //===============
+            // Soft keywords
+            //===============
+
             softKws = new BitArray((int)TokenType.LAST);
 
             //vo soft KWs
             softKws[(int)TokenType.DATE] = true;
             softKws[(int)TokenType.DATETIME] = true;
             softKws[(int)TokenType.ARRAY] = true;
+            softKws[(int)TokenType.OF] = true;
 
             //vulcan soft KWs
             softKws[(int)TokenType.ABSTRACT] = true;
@@ -716,6 +710,7 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.DEFAULT] = true;
             softKws[(int)TokenType.EXPLICIT] = true;
             softKws[(int)TokenType.FOREACH] = true;
+            softKws[(int)TokenType.EACH] = true;
             softKws[(int)TokenType.GET] = true;
             softKws[(int)TokenType.IMPLEMENTS] = true;
             softKws[(int)TokenType.IMPLICIT] = true;
@@ -773,9 +768,12 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.VOLATILE] = true;
             softKws[(int)TokenType.WHERE] = true;
             softKws[(int)TokenType.YIELD] = true;
+            softKws[(int)TokenType.WITH] = true;
+            softKws[(int)TokenType.WHEN] = true;
             softKws[(int)TokenType.CHAR] = true;
             softKws[(int)TokenType.MEMVAR] = true;
             softKws[(int)TokenType.PARAMETERS] = true;
+            softKws[(int)TokenType.LPARAMETERS] = true;
             softKws[(int)TokenType.DEFINE] = true;
             softKws[(int)TokenType.DELEGATE] = true;
             softKws[(int)TokenType.ENUM] = true;
@@ -791,6 +789,7 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.CLIPPER] = true;
             softKws[(int)TokenType.DECLARE] = true;
             softKws[(int)TokenType.DIM] = true;
+            softKws[(int)TokenType.DIMENSION] = true;
             softKws[(int)TokenType.DOWNTO] = true;
             softKws[(int)TokenType.DLLEXPORT] = true;
             softKws[(int)TokenType.EVENT] = true;
@@ -804,6 +803,7 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.STEP] = true;
             softKws[(int)TokenType.STRICT] = true;
             softKws[(int)TokenType.TO] = true;
+            softKws[(int)TokenType.THEN] = true;
             softKws[(int)TokenType.THISCALL] = true;
             softKws[(int)TokenType.UNION] = true;
             softKws[(int)TokenType.UNTIL] = true;
@@ -811,7 +811,10 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.USING] = true;
             softKws[(int)TokenType.WINCALL] = true;
 
-            for(var i = (int)TokenType.FIRST_POSITIONAL_KEYWORD+1; i < (int)TokenType.LAST_POSITIONAL_KEYWORD; i++)
+            // fox soft KWs
+            softKws[(int)TokenType.M] = true;
+
+            for (var i = (int)TokenType.FIRST_POSITIONAL_KEYWORD + 1; i < (int)TokenType.LAST_POSITIONAL_KEYWORD; i++)
             {
                 softKws[i] = true;
             }
@@ -914,6 +917,33 @@ namespace XSharp.MacroCompiler.Syntax
                 System.Threading.Interlocked.CompareExchange(ref _tokenText, v, null);
             }
             return _tokenText[(int)token];
+        }
+    }
+    internal static class TokenExtensions
+    {
+        internal static void AddKeywords(this IDictionary<string, TokenType> kwIds, Dictionary<string, TokenType> keywords)
+        {
+            foreach (var text in keywords.Keys)
+            {
+                var token = keywords[text];
+                kwIds.Add(text, token);
+            }
+        }
+        internal static void AddKeywordAbbrevs(this IDictionary<string, TokenType> kwIds, Dictionary<string, TokenType> keywords, int minLen = 4)
+        {
+            foreach (var text in keywords.Keys)
+            {
+                var token = keywords[text];
+                {
+                    var s = text;
+                    while (s.Length > minLen)
+                    {
+                        s = s.Substring(0, s.Length - 1);
+                        if (!kwIds.ContainsKey(s))
+                            kwIds.Add(s, token);
+                    }
+                }
+            }
         }
     }
 }

@@ -7,26 +7,30 @@ USING System
 USING System.Runtime.Serialization
 USING System.Globalization
 USING System.Runtime.InteropServices
+USING System.Runtime.Serialization
 USING System.Runtime.CompilerServices
 USING XSharp
 USING System.Diagnostics
+
 BEGIN NAMESPACE XSharp
 	/// <summary>Internal type that implements the VO Compatible DATE type<br/>
 	/// This type has many operators and implicit converters that normally are never directly called from user code.
 	/// It holds year, month, day in 32 bits. For date calculations it uses the System.DateTime calculation logic.
 	/// There are implicit converters between Date and DateTime.
 	/// </summary>
-	/// <seealso cref="T:XSharp.IDate"/>
+	/// <seealso cref="IDate"/>
 	/// <seealso cref="T:XSharp.RDD.DbDate"/>
 	//[DebuggerTypeProxy(TYPEOF(DateDebugView))];
 	[DebuggerDisplay("{ToDebugString(),nq}", Type := "DATE" )];
 	[StructLayout(LayoutKind.Explicit,Pack := 1)];
+    [Serializable];
 	PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
 		System.IFormattable, ;
 		System.IConvertible, ;
 		IDate, ;
 		IComparable<__Date>, ;
-		IEquatable<__Date>
+		IEquatable<__Date>,;
+        ISerializable 
 		// This structure uses an explicit layout to map
 		// year, month and date into 32 bits
 		// the _ymd field is for convenience, so we can do a single numeric comparison
@@ -169,11 +173,11 @@ BEGIN NAMESPACE XSharp
 			/// <inheritdoc />
 			METHOD CompareTo(o AS OBJECT) AS LONG
 				VAR rhs := (DATE)o
-				RETURN _ymd:CompareTo(rhs:_ymd)
+                RETURN SELF:YMD:CompareTo(rhs:YMD)
 
 			/// <inheritdoc />
 			METHOD CompareTo(rhs AS DATE) AS LONG
-				RETURN _ymd:CompareTo(rhs:_ymd)
+                RETURN SELF:YMD:CompareTo(rhs:YMD)
 
 			/// <inheritdoc />
 			OVERRIDE METHOD GetHashCode() AS LONG
@@ -566,6 +570,8 @@ BEGIN NAMESPACE XSharp
 			METHOD IConvertible.ToType(conversionType AS System.Type, provider AS System.IFormatProvider) AS OBJECT
 				IF conversionType == TYPEOF(DATE)
 					RETURN SELF
+                ELSEIF conversionType == TYPEOF(STRING)
+                    RETURN SELF:ToString()
 				ELSEIF conversionType == TYPEOF(System.DateTime)
 					RETURN SELF:Value
 				ENDIF
@@ -614,7 +620,25 @@ BEGIN NAMESPACE XSharp
 				ENDIF
 				RETURN SELF:Value:ToString(s, fp)
 		#endregion
-		#region properties
+
+        #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Value", DToS(SELF))
+            RETURN
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            _ymd := _year := _month := _day := 0
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            SELF := SToD(info:GetString("Value"))
+        #endregion
+
+        #region properties
 
 			/// <inheritdoc />
             [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -632,28 +656,24 @@ BEGIN NAMESPACE XSharp
 			// Next properties for easy access in right type
             [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			INTERNAL PROPERTY DYear		AS DWORD GET _year
+
             [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			INTERNAL PROPERTY DMonth	AS DWORD GET _month
+                
             [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			INTERNAL PROPERTY DDay		AS DWORD GET _day
-
+                
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+			INTERNAL PROPERTY YMD AS DWORD GET ;
+                (SELF:DYear * 0xFFFF)  + (SELF:DMonth *0xFF) + _day
+                
             INTERNAL METHOD ToDebugString() AS STRING
 				IF (_ymd == 0)
 					RETURN "NULL_DATE"
                 ENDIF
                 RETURN SELF:Value:ToShortDateString()
                 
-//			INTERNAL CLASS DateDebugView
-//				PRIVATE _value AS DATE
-//				PUBLIC CONSTRUCTOR (d AS DATE)
-//					_value := d
-//
-//				PUBLIC PROPERTY Year	AS INT GET _value:Year
-//				PUBLIC PROPERTY Month	AS INT GET _value:Month
-//				PUBLIC PROPERTY Day		AS INT GET _value:Day
-//
-//			END CLASS
-//
+
 		#endregion
 
 		#region STATIC Properties
@@ -664,5 +684,6 @@ BEGIN NAMESPACE XSharp
 
 
 		#endregion
+
 	END STRUCTURE
 END NAMESPACE

@@ -1,6 +1,3 @@
-
-
-
 CLASS ListBox INHERIT BaseListBox
 	PROTECT wSelectNum 		AS LONG
 
@@ -173,7 +170,7 @@ CLASS ListBox INHERIT BaseListBox
 
 		RETURN FALSE
 
-	METHOD Create() AS System.Windows.Forms.Control
+	METHOD Create() AS IVOControl STRICT
 		IF oCtrl ==  NULL_OBJECT  .AND. !IsInstanceOf(SELF, #ComboBox)
 			SELF:SetStyle(_OR(LBS_Notify, LBS_NoIntegralHeight))
 		ENDIF
@@ -239,7 +236,7 @@ CLASS ListBox INHERIT BaseListBox
 		RETURN FALSE
 
 	METHOD EnableItemDrag() AS VOID
-		//Todo
+		//Todo EnableItemDrag
 		//IF IsInstanceOf(oFormSurface, #DialogWindow)
 		//	Send(oFormSurface, #__SubClassForDragList)
 		//ENDIF
@@ -365,7 +362,7 @@ CLASS ListBox INHERIT BaseListBox
 		RETURN (LONG) SELF:__Items:Count
 	
 	METHOD ListFiles(sStartDir, oFixedText, FileTypes) 
-		//Todo
+		//Todo ListFiles
 		RETURN SELF
 		//LOCAL pPath AS PSZ
 		//LOCAL i,iRet AS INT
@@ -437,7 +434,7 @@ CLASS ListBox INHERIT BaseListBox
 		RETURN liNumSelected
 
 	ACCESS SelectedFile AS STRING
-		//Todo
+		//Todo SelectedFile
 		//LOCAL pPath AS PSZ
 		//LOCAL sRet AS STRING
 		//pPath := MemAlloc(261)

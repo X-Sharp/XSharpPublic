@@ -1,7 +1,7 @@
 
 
-
-using System.Collections
+USING System.Collections
+USING System.Collections.Generic
 using System.Diagnostics
 
 /// <summary>
@@ -13,33 +13,33 @@ CLASS BaseListBox INHERIT TextControl
 	PROTECT lIsComboBox		AS LOGIC
 	PROPERTY  IsBusy         AS LOGIC AUTO
 	
-	ACCESS __List AS System.Windows.Forms.ListControl
-		RETURN (System.Windows.Forms.ListControl) oCtrl
+	ACCESS __List AS IVOListBox
+		RETURN (IVOListBox) oCtrl
 	
-	ACCESS __Items AS IList
+	ACCESS __Items AS IList<OBJECT>
 		IF oCtrl != NULL
 			IF SELF:lIsComboBox
-				RETURN ((VOComboBox) oCtrl):Items
+				RETURN ((IVOComboBox) oCtrl):Items
 			ENDIF
-			RETURN ((VOListBox) oCtrl):Items
+			RETURN ((IVOListBox) oCtrl):Items
 		ELSE
-			RETURN System.Collections.Generic.List<ListBoxItemValue>{}
+			RETURN System.Collections.Generic.List<OBJECT>{}
 		ENDIF
 	
-	ACCESS __ComboBox AS VOComboBox
+	ACCESS __ComboBox AS IVOComboBox
 		IF SELF:lIsComboBox
-			RETURN (VOComboBox) oCtrl
+			RETURN (IVOComboBox) oCtrl
 		ENDIF
 		RETURN NULL_OBJECT
 
-	ACCESS __ListBox AS VOListBox
+	ACCESS __ListBox AS IVOListBox
 		IF SELF:lIsComboBox
 			RETURN NULL_OBJECT			
 		ENDIF
-		RETURN (VOListBox) oCtrl
+		RETURN (IVOListBox) oCtrl
 	
-	ACCESS __ListControl AS System.Windows.Forms.ListControl
-		RETURN (System.Windows.Forms.ListControl) oCtrl
+	ACCESS __ListControl AS IVOListControl
+		RETURN (IVOListControl) oCtrl
 	
 	METHOD AddItem(uItem , uIndex, uValue   ) AS LONG
 		// nIndex = 1-based index in collection

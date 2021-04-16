@@ -119,6 +119,8 @@ namespace XSharp.MacroCompiler
         internal const string StringAlloc = "StringAlloc";
         internal const string GetElement = "__GetElement";
         internal const string SetElement = "__SetElement";
+        internal const string QOut = "QOut";
+        internal const string QQOut = "QQOut";
         // These are in the generated code
         internal const string RunInitProcs = "RunInitProcs";
     }
@@ -217,6 +219,14 @@ namespace XSharp.MacroCompiler
         internal const string IndexerName = "Item";
         internal const string DelegateInvokeName = "Invoke";
         internal const string CtorName = ".ctor";
+        internal const string ArrayGetValue = "GetValue";
+        internal const string ArraySetValue = "SetValue";
+        internal const string GetEnumerator = "GetEnumerator";
+        internal const string MoveNext = "MoveNext";
+        internal const string Current = "Current";
+        internal const string CurrentGetter = "get_Current";
+        internal const string Dispose = "Dispose";
+        internal const string Length = "Length";
     }
     internal static class SystemQualifiedNames
     {
@@ -244,6 +254,8 @@ namespace XSharp.MacroCompiler
         internal const string Void1 = "System.Void";
         internal const string Void2 = "global::System.Void";
         internal const string CollectionsGeneric = "global::System.Collections.Generic";
+        internal const string IEnumerator = "global::System.Collections.IEnumerator";
+        internal const string IEnumeratorOfT = "global::System.Collections.Generic.IEnumerator`1";
     }
     internal static class OperatorNames
     {

@@ -23,10 +23,10 @@ namespace XSharp.Project
     public class XSharpPropertiesFolderNodeProperties : NodeProperties
     {
         #region properties
-        [Microsoft.VisualStudio.Project.SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Misc)]
-        [Microsoft.VisualStudio.Project.LocDisplayName(Microsoft.VisualStudio.Project.SR.FolderName)]
-        [Microsoft.VisualStudio.Project.SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
-        [AutomationBrowsable(false)]
+        [SRCategory(Microsoft.VisualStudio.Project.SR.Misc)]
+        [LocDisplayName(SR.FolderName)]
+        [SRDescription(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
+        //[AutomationBrowsable(false)]
         public string FolderName
         {
             get
@@ -37,7 +37,7 @@ namespace XSharp.Project
 
         #region properties - used for automation only
         [Browsable(false)]
-        [AutomationBrowsable(true)]
+        //[AutomationBrowsable(true)]
         public string FileName
         {
             get
@@ -47,7 +47,7 @@ namespace XSharp.Project
         }
 
         [Browsable(false)]
-        [AutomationBrowsable(true)]
+        //[AutomationBrowsable(true)]
         public string FullPath
         {
             get
@@ -93,9 +93,9 @@ namespace XSharp.Project
         }
 
 
-        [Microsoft.VisualStudio.Project.SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Advanced)]
-        [Microsoft.VisualStudio.Project.LocDisplayName(Microsoft.VisualStudio.Project.SR.BuildAction)]
-        [Microsoft.VisualStudio.Project.SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.BuildActionDescription)]
+        [SRCategory(Microsoft.VisualStudio.Project.SR.Advanced)]
+        [LocDisplayName(Microsoft.VisualStudio.Project.SR.BuildAction)]
+        [SRDescription(Microsoft.VisualStudio.Project.SR.BuildActionDescription)]
         public Microsoft.VisualStudio.Project.BuildAction BuildAction
         {
             get
@@ -105,7 +105,7 @@ namespace XSharp.Project
 
         }
         [SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Misc)]
-        [Microsoft.VisualStudio.Project.LocDisplayName(Microsoft.VisualStudio.Project.SR.FileName)]
+        [LocDisplayName(Microsoft.VisualStudio.Project.SR.FileName)]
         [SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.FileNameDescription)]
         public string FileName
         {
@@ -142,7 +142,7 @@ namespace XSharp.Project
         /// <value>Gets / Sets the BuildAction for the item. It defines how the MS Build
         /// will treat this item at build time.</value>
         [Browsable(false)]
-        [AutomationBrowsable(false)]
+        //[AutomationBrowsable(false)]
         public override BuildActionEnum BuildAction
         {
             get
@@ -189,11 +189,12 @@ namespace XSharp.Project
             get
             {
                 string value = this.Node.ItemNode.ItemName;
-                if (value == null || value.Length == 0)
+                BuildActionEnum action;
+                if (! Enum.TryParse(value, out action))
                 {
-                    return BuildActionEnum.None;
+                    action = BuildActionEnum.None;
                 }
-                return (BuildActionEnum)Enum.Parse(typeof(BuildAction), value);
+                return action;
             }
             set
             {

@@ -9,7 +9,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING System.Diagnostics
-#command VFPPROP <cName> <cType> => PROPERTY <cName> AS <cType> GET _GetProperty(<"cName">) SET _SetProperty(<"cName">, value)
+#command VFPPROP <cName> <cType> => PROPERTY <cName> AS <cType> GET SELF:_GetProperty(<"cName">) SET SELF:_SetProperty(<"cName">, value)
 
 BEGIN NAMESPACE XSharp.VFP
 

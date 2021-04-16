@@ -86,14 +86,14 @@ CLASS XSharp.OleDateTime
 		    RETURN 
         END SET
     END PROPERTY
-    /// <inheritdoc cref="M:System.DateTime.ToString(System.IFormatProvider)" />
+    /// <inheritdoc cref="System.DateTime.ToString" />
 	VIRTUAL METHOD ToString( provider AS IFormatProvider ) AS STRING
 		RETURN dt:ToString( provider )
-	/// <inheritdoc cref="M:System.DateTime.ToString(System.String,System.IFormatProvider)" />
+    /// <inheritdoc cref="System.DateTime.ToString" />
 	VIRTUAL METHOD ToString( s AS STRING, fp AS IFormatProvider ) AS STRING
 		RETURN dt:ToString( s, fp )
 
-    /// <inheritdoc cref="M:System.DateTime.ToString(System.String)" />
+    /// <inheritdoc cref="System.DateTime.ToString" />
 	OVERRIDE METHOD ToString() AS STRING
 		RETURN dt:ToString()
     /// <exclude/>

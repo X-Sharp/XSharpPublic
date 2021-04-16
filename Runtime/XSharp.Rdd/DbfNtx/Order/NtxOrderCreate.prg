@@ -403,7 +403,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             REPEAT
                 result := TRUE
                 SELF:_oRdd:ReadRecord()
-                result := getKeyValue(sourceIndex, byteArray)
+                result := SELF:getKeyValue(sourceIndex, byteArray)
                 IF !result
                     EXIT
                 ENDIF

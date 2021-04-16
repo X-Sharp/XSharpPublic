@@ -16,7 +16,7 @@
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
     <ProjectTypeTag Value="Library" />
-    <ProjectTypeTag Value="VFP" />
+    <ProjectTypeTag Value="FoxPro" />
   </TemplateData>
   <TemplateContent>
     <Project File="FoxClassLibrary.xsproj" ReplaceParameters="true">

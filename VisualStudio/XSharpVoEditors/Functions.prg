@@ -1,8 +1,4 @@
-﻿// Functions.prg
-// Created by    : robert
-// Creation Date : 8/8/2017 11:57:43 AM
-// Created for   :
-// WorkStation   : ZEUS
+﻿
 
 USING System.Collections.Generic
 USING XSharpModel

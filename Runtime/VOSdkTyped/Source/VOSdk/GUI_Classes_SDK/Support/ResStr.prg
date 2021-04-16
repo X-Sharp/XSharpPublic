@@ -1,5 +1,5 @@
 
-#USING System.Text
+USING System.Text
 CLASS ResourceString INHERIT VObject
 	PROTECT iLength AS INT
 	PROTECT sBuffer AS STRING

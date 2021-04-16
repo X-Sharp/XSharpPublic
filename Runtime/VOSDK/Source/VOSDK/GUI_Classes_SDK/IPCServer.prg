@@ -1,10 +1,14 @@
 #ifdef __VULCAN__
 
-   #using System.Runtime.InteropServices
+
+   USING System.Runtime.InteropServices
    INTERNAL DELEGATE DDECallbackDelegate( wType AS WORD, wFmt AS WORD, hConv AS PTR, hsz1 AS PTR, hsz2 AS PTR, hData AS PTR, dwData1 AS DWORD, dwData2 AS DWORD ) AS LONGINT
+
 
 #endif
 
+
+/// <include file="Gui.xml" path="doc/IpcServer/*" />
 CLASS IpcServer INHERIT EventContext
 	PROTECT dwIdInst AS DWORD
 	PROTECT hInst AS PTR
@@ -15,11 +19,14 @@ CLASS IpcServer INHERIT EventContext
 	PROTECT oIpcExecuteRequestEvent AS IpcExecuteRequestEvent
 	PROTECT oIpcDataUpdateEvent AS IpcDataUpdateEvent
 	
+	
 	#ifdef __VULCAN__
 	   HIDDEN cbDelegate AS DDECallbackDelegate
 	#endif
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	METHOD __FindTopic(hsz1 AS PTR) AS LOGIC STRICT 
 	//PP-030828 Strong typing
 	//SE-060526
@@ -29,10 +36,14 @@ CLASS IpcServer INHERIT EventContext
 	LOCAL dwLen AS DWORD
 	LOCAL cTopic AS STRING
 
+
 	
+	
+
 
 	hHsz  := DWORD (_CAST, hsz1)
 	dwLen := DdeQueryString(dwidInst, hHsz, NULL_PSZ,20,0)
+
 
 	pszString := MemAlloc(dwLen+1)
 	IF (PTR(_CAST, pszString) != NULL_PTR)
@@ -41,6 +52,7 @@ CLASS IpcServer INHERIT EventContext
 		MemFree(pszString)
 	ENDIF
 
+
 	dwLen := ALen(aTopicList)
 	FOR dwI := 1 UPTO dwLen
 	   IF aTopicList[dwI, 1] == cTopic
@@ -48,12 +60,17 @@ CLASS IpcServer INHERIT EventContext
 	   ENDIF
 	NEXT  // dwI
 
+
 	RETURN FALSE
 
+
+ /// <exclude />
 METHOD __WCAddTopicToList(cTopic AS STRING, oIpcTopic AS IPCTopic) AS IPCServer STRICT 
 	//PP-030828 Strong typing
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aTopicList)
@@ -64,10 +81,14 @@ METHOD __WCAddTopicToList(cTopic AS STRING, oIpcTopic AS IPCTopic) AS IPCServer 
 	   ENDIF
 	NEXT  // dwI
 
+
 	AAdd(aTopicList,{cTopic, oIpcTopic})
+
 
 	RETURN SELF
 
+
+ /// <exclude />
 METHOD __WCFindItem(hsz1 AS PTR, hsz2 AS PTR) AS LOGIC STRICT 
 	//PP-030828 Strong typing
 	//SE-060526
@@ -81,8 +102,10 @@ METHOD __WCFindItem(hsz1 AS PTR, hsz2 AS PTR) AS LOGIC STRICT
 	LOCAL oIpcTopic AS IpcTopic
 	LOCAL aItemList AS ARRAY
 
+
 	hHsz1 := DWORD (_CAST,hsz1)
 	dwLen := DdeQueryString(dwidInst, hHsz1, NULL_PSZ, 20, 0)
+
 
 	pszTopic := MemAlloc(dwLen+1)
 	IF (PTR(_CAST, pszTopic) != NULL_PTR)
@@ -91,9 +114,11 @@ METHOD __WCFindItem(hsz1 AS PTR, hsz2 AS PTR) AS LOGIC STRICT
       MemFree(pszTopic)
    ENDIF
 
+
 	oIpcTopic := SELF:__WCGetTopicFromList(cTempTopic)
 	hHsz2 := DWORD(_CAST, hsz2)
 	dwLen := DdeQueryString(dwidInst, hHsz2, NULL_PSZ, 20, 0)
+
 
 	pszItem := MemAlloc(dwLen+1)
 	IF (PTR(_CAST, pszItem) != NULL_PTR)
@@ -101,6 +126,7 @@ METHOD __WCFindItem(hsz1 AS PTR, hsz2 AS PTR) AS LOGIC STRICT
 		cTempItem := Upper(Psz2String(pszItem))
 		MemFree(pszItem)
 	ENDIF
+
 
 	aItemList := AClone(oIpcTopic:aItemList)
 	dwLen := ALen(aItemList)
@@ -110,13 +136,18 @@ METHOD __WCFindItem(hsz1 AS PTR, hsz2 AS PTR) AS LOGIC STRICT
 		ENDIF
 	NEXT  // dwI
 
+
 	RETURN FALSE
 
+
+ /// <exclude />
 METHOD __WCGetTopicFromList(cTopic AS STRING) AS OBJECT STRICT 
 	//PP-030828 Strong typing
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 	LOCAL cTempTopic   AS STRING
+
+
 
 
 	cTempTopic := Upper(cTopic)
@@ -127,48 +158,70 @@ METHOD __WCGetTopicFromList(cTopic AS STRING) AS OBJECT STRICT
 	   ENDIF
 	NEXT  // dwI
 
+
 	RETURN NULL_OBJECT
 
+
+/// <include file="Gui.xml" path="doc/IpcServer.AddTopic/*" />
 METHOD AddTopic(oIpcTopic) 
 	//PP-030828 Strong typing
 	LOCAL cTopicString AS STRING
 
+
 	
+	
+
 
 	IF !IsNil(oIpcTopic)
 		IF !IsInstanceOfUsual(oIpcTopic, #IpcTopic)
 			WCError{#AddItem,#IpcServer,__WCSTypeError,oIpcTopic,1}:Throw()
 		ENDIF
 
+
 		cTopicString :=oIpcTopic:cTopicName
 		SELF:__WCAddTopicToList(cTopicString, oIpcTopic)
 	ENDIF
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/IpcServer.DataRequest/*" />
 METHOD DataRequest(oIpcDataRequestEvent) 
 	LOCAL oIpcTopicData AS IpcTopicData
 
+
 	
+	
+
 
 	oIpcTopicData := IpcTopicData{"ok", 3}
 
+
 	RETURN oIpcTopicData
 
+
+/// <include file="Gui.xml" path="doc/IpcServer.DataUpdate/*" />
 METHOD DataUpdate(oIpcDataUpdateEvent) 
+	
 	
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/IpcServer.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	LOCAL i, dwLen AS DWORD
 	LOCAL hConv AS PTR
 	LOCAL hHsz AS PTR
 
+
 	
+	
+
 
 	DdeFreeStringHandle(dwIdInst, hStr)
 	IF dwIdInst != 0
 		DdeUninitialize(dwIdInst)
 	ENDIF
+
 
 	dwLen := ALen(aDdeConv)
 	FOR i := 1 UPTO dwLen
@@ -178,7 +231,9 @@ METHOD Destroy()  AS USUAL CLIPPER
 			__WCDelIpcObjectFromConv(hConv)
 		ENDIF
 
+
 	NEXT
+
 
 	dwLen := ALen(aDdeServer)
 	IF dwLen >0
@@ -188,8 +243,10 @@ METHOD Destroy()  AS USUAL CLIPPER
 				__WCDelServerFromHsz(hHsz)
 			ENDIF
 
+
 		NEXT
 	ENDIF
+
 
 	IF !InCollect()
 		dwIdInst := 0
@@ -200,11 +257,14 @@ METHOD Destroy()  AS USUAL CLIPPER
 		oIpcExecuteRequestEvent := NULL_OBJECT
 		oIpcDataUpdateEvent := NULL_OBJECT
 
+
 		UnregisterAxit(SELF)
 	ENDIF
 	SUPER:Destroy()
 
+
 	RETURN SELF
+
 
 /// <inheritdoc />
 METHOD Dispatch(oEvent) 
@@ -220,7 +280,10 @@ METHOD Dispatch(oEvent)
 	LOCAL ptrData AS PTR
 	LOCAL dwLen AS DWORD
 
+
 	
+	
+
 
 	oE:=oEvent //faster execution
 	dwType :=oE:dwType
@@ -232,6 +295,7 @@ METHOD Dispatch(oEvent)
 	dwData1 := oE:dwData1
 	dwData2 := oE:dwData2
 
+
 	DO CASE
 	CASE dwType == XTYP_CONNECT
 		IF SELF:__FindTopic(hHsz1)
@@ -240,13 +304,16 @@ METHOD Dispatch(oEvent)
 			RETURN	0L
 		ENDIF
 
+
 	CASE dwType == DWORD(_CAST, XTYP_CONNECT_CONFIRM)
 		__WCAddIpcObjectToConv(hConv, SELF)
 		RETURN 0L
 
+
 	CASE dwType == DWORD(_CAST,XTYP_DISCONNECT)
 		__WCDelIpcObjectFromConv(hConv)
 		RETURN 0L
+
 
 	CASE dwType == XTYP_ADVREQ .OR. dwType == XTYP_REQUEST .OR. dwType == XTYP_ADVSTART
 		IF !SELF:__WCFindItem(hHsz1, hHsz2)
@@ -259,11 +326,13 @@ METHOD Dispatch(oEvent)
 			RETURN LONGINT(_CAST, DDeCreateDataHandle(dwIdInst, ptrData, dwLen, 0, hHsz2, CF_TEXT,0))
 		ENDIF
 
+
 	CASE dwType == xtyp_EXECUTE
 		oIpcExecuteRequestEvent := IpcExecuteRequestEvent{dwType, dwFmt, hConv, hHsz1, hHsz2,;
 			hData, dwdata1, dwData2, SELF}
 		SELF:ExecuteRequest(oIpcExecuteRequestEvent)
 		RETURN (LONGINT(_CAST, DDE_FACK))
+
 
 	CASE dwType == XTYP_POKE
 		oIpcDataUpdateEvent := IpcDataUpdateEvent{dwType, dwFmt, hConv, hHsz1, hHsz2,;
@@ -275,24 +344,37 @@ METHOD Dispatch(oEvent)
 	ENDCASE
 
 
+
+
+/// <include file="Gui.xml" path="doc/IpcServer.ExecuteRequest/*" />
 METHOD ExecuteRequest(oIpcExecuteRequestEvent) 
+	
 	
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/IpcServer.idInst/*" />
 ACCESS idInst 
+	
 	
 	RETURN dwIdInst
 
+
+/// <include file="Gui.xml" path="doc/IpcServer.ctor/*" />
 CONSTRUCTOR(cServName) 
 	LOCAL c AS STRING
 
+
 	
+	
+
 
 	aTopicList := {}
 	SUPER()
 	IF !IsString(cServName)
 		WCError{#Init,#IpcServer,__WCSTypeError,cServName,1}:Throw()
 	ENDIF
+
 
 #ifdef __VULCAN__
    cbDelegate := DDECallbackDelegate{ NULL, @__DdecallbackProc() }
@@ -305,8 +387,11 @@ CONSTRUCTOR(cServName)
 	__WCAddServerToHsz(hStr, SELF )
 	DdeNameService(dwIdInst, hStr, 0, DNS_REGISTER)
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/IpcServer.UpdateTopic/*" />
 METHOD UpdateTopic(cTopic, cItem) 
 	LOCAL oIpcTopic AS IpcTopic
 	LOCAL aItemLIst AS ARRAY
@@ -317,18 +402,24 @@ METHOD UpdateTopic(cTopic, cItem)
 	LOCAL hTopic AS PTR
 	LOCAL hItem AS PTR
 
+
 	
+	
+
 
 	IF !IsString(cTopic)
 		WCError{#UpdateTopic,#IpcServer,__WCSTypeError,cTopic,1}:Throw()
 	ENDIF
 
+
 	IF !IsString(cItem)
 		WCError{#UPdateTopic,#IpcServer,__WCSTypeError,cItem,2}:Throw()
 	ENDIF
 
+
 	cTempItem := Upper(cItem)
 	oIpcTopic := SELF:__WCGetTopicFromList(cTopic)
+
 
 	IF !IsNil(oIpcTopic)
 		cTopicName := oIpcTopic:cTopicName
@@ -345,14 +436,20 @@ METHOD UpdateTopic(cTopic, cItem)
 		NEXT  // dwI
 	ENDIF
 
+
 	RETURN SELF
+
 
 END CLASS
 
+
+ /// <exclude />
 FUNCTION __DdecallbackProc(wType AS WORD, wFmt AS WORD, hConv AS PTR, hsz1 AS PTR, hsz2 AS PTR, hData AS PTR, dwData1 AS DWORD, dwData2 AS DWORD) AS LONGINT /* WINCALL */
 	LOCAL oIpcEvent AS IpcEvent
 	LOCAL oIPCObject AS OBJECT
 	LOCAL liRetVal AS LONGINT
+
+
 
 
 	oIpcEvent := IpcEvent{wType, wFmt, hConv, hsz1, hsz2, hData, dwData1, dwData2}
@@ -363,5 +460,7 @@ FUNCTION __DdecallbackProc(wType AS WORD, wFmt AS WORD, hConv AS PTR, hsz1 AS PT
 		RETURN liRetVal
 	ENDIF
 
+
 	RETURN 0L
+
 

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -61,6 +61,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _bag            AS CdxOrderBag
         PRIVATE getKeyValue     AS ValueBlock       // Delegate to calculate the key
         PRIVATE _Collation      AS VfpCollation
+        PRIVATE _Valid          AS LOGIC
 
 #endregion
 
@@ -116,7 +117,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_oRdd          := oBag:_oRdd
             SELF:_stack         := CdxPageStack{SELF}
             SELF:_Encoding      := _oRdd:_Encoding
-  
+
             SELF:_SingleField   := -1
             SELF:_currentvalue := RddKeyData{MAX_KEY_LEN}
             SELF:_newvalue     := RddKeyData{MAX_KEY_LEN}
@@ -125,14 +126,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // Constructor for Creation of tags
         INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag)
 	        SUPER()
-            _InitFields(oBag)
+            SELF:_InitFields(oBag)
 
 
 
         // Constructor for Opening of tags
         INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag, nPage AS Int32, cName AS STRING)
 	        SUPER()
-            _InitFields(oBag)
+            SELF:_InitFields(oBag)
             SELF:_orderName := cName
             SELF:Page := nPage
             SELF:_Header := CdxTagHeader{oBag, nPage,SELF:OrderName, SELF}
@@ -161,10 +162,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:ClearStack()
             SELF:ReadHeader()
             IF !String.IsNullOrEmpty(SELF:_Header:VFPCollation)
-                IF SELF:_oRdd IS DBFVFP 
+                IF SELF:_oRdd IS DBFVFP
                     SELF:_Collation := VfpCollation{SELF:_Header:VFPCollation,SELF:_oRdd:Header:CodePage:ToCodePage()}
                 ELSE
-                    SELF:_oRdd:_dbfError( Subcodes.ERDD_CORRUPT, Gencode.EG_CORRUPTION, "CdxTag.Open","Indexes with collation must be opened with the DBFVFP driver")
+                    SELF:ThrowException( Subcodes.ERDD_CORRUPT, Gencode.EG_CORRUPTION, "CdxTag.Open","Indexes with collation must be opened with the DBFVFP driver")
                 ENDIF
             ENDIF
             SELF:_oRdd:__Goto(0)
@@ -189,13 +190,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             page:SetRecordBits(numRecs)
             RETURN
 
+        INTERNAL METHOD SetSyntaxError(ex AS Exception) AS VOID
+            SELF:_oRdd:_dbfError(ex, Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions", FALSE)
+            RETURN
+
         INTERNAL METHOD EvaluateExpressions() AS LOGIC
             LOCAL evalOk AS LOGIC
             LOCAL oKey := NULL AS OBJECT
             evalOk := TRUE
+            SELF:_Valid := TRUE
             TRY
                 SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
             CATCH AS Exception
+                SELF:_Valid := FALSE
                 evalOk := FALSE
             END TRY
             IF ! evalOk
@@ -207,6 +214,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 evalOk := FALSE
             END TRY
             IF !evalOk
+                SELF:_Valid := FALSE
                 RETURN FALSE
             ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
@@ -221,7 +229,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
 
             // If the Key Expression contains only a Field Name
-            
+
             IF SELF:_oRdd IS DBFVFPSQL
                 SELF:_SingleField := -1
             ELSE
@@ -265,8 +273,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF SELF:_Collation != NULL
                         SELF:_keySize := SELF:Header:KeySize
                     ELSE
-                        var ex := Exception{"Expression length in index does not match calculated expression length"}
-                        SELF:_oRdd:_dbfError(ex, Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions") 
+                        VAR ex := Exception{"Expression length in index does not match calculated expression length"}
+                        SELF:SetSyntaxError(ex)
                     ENDIF
                 ENDIF
             ENDIF
@@ -279,7 +287,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 TRY
                     SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
                 CATCH ex AS Exception
-                    SELF:_oRdd:_dbfError( ex, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBFCDX.EvaluateExpressions")
+                    IF RuntimeState.LastRddError == NULL
+                        SELF:SetSyntaxError(ex)
+                    ENDIF
+                    SELF:_Valid := FALSE
                     RETURN FALSE
                 END TRY
                 SELF:_oRdd:GoTo(1)
@@ -288,7 +299,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     VAR oValue := SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
                     evalOk     := SELF:_oRdd:_getUsualType(oValue) == __UsualType.Logic
                 CATCH ex AS Exception
-                    SELF:_oRdd:_dbfError(ex, Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions") 
+                    IF RuntimeState.LastRddError == NULL
+                        SELF:SetSyntaxError(ex)
+                    ENDIF
+                    SELF:_Valid := FALSE
                     evalOk := FALSE
                 END TRY
                 IF !evalOk
@@ -296,41 +310,22 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 SELF:_Conditional := TRUE
             ENDIF
- 
+
 
             RETURN isOk
 
         INTERNAL METHOD Flush() AS LOGIC
-//           
-//            IF !SELF:Shared .AND. SELF:_Hot 
-//                SELF:GoCold()
-//                SELF:_PageList:Flush(TRUE)
-//                SELF:_Header:IndexingVersion        := 1
-//                SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
-//                SELF:_Header:FirstPageOffset        := SELF:_rootPage
-//                SELF:_Header:Write( )
-//            ENDIF
-//            FFlush( SELF:_hFile )
+            // do NOT Call bag:flush to avoid recursion
+            //SELF:_bag:Flush()
             RETURN TRUE
 
         INTERNAL METHOD Commit() AS LOGIC
-            //SELF:GoCold()
-//            IF !SELF:_Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
-//                SELF:_Header:IndexingVersion        := 1
-//                SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
-//                SELF:_Header:FirstPageOffset        := SELF:_rootPage
-//                SELF:_Header:Write( )
-//            ENDIF
-//            FFlush( SELF:_hFile )
+            SELF:GoCold()
+            SELF:_bag:Flush()
             RETURN TRUE
-            
+
         INTERNAL METHOD Close() AS LOGIC
-            LOCAL lOk AS LOGIC
-            lOk := SELF:GoCold()
-            IF lOk
-                lOk := SELF:Flush()
-            ENDIF
-            RETURN TRUE
+            RETURN SELF:Commit()
 
         INTERNAL METHOD GoCold() AS LOGIC
             IF SELF:_oRdd:IsHot
@@ -340,7 +335,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD GoHot() AS LOGIC
             // Is called to save the current for value and key value
-            RETURN _saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentvalue)
+            RETURN SELF:_saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentvalue)
 
         INTERNAL METHOD GetPage(nPage AS LONG) AS CdxTreePage
             IF nPage == -1
@@ -374,7 +369,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN 1
             ENDIF
             RETURN 0
-            
+
 
         INTERNAL STATIC METHOD _compareBin(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
             IF aRHS == NULL
@@ -400,12 +395,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 Array.Copy(node:KeyBytes, SELF:_currentvalue:Key, _keySize)
             ENDIF
         STATIC PRIVATE Jan_1_1901 := DateTime{1901, 1, 1 } AS DateTime
-        
+
         PRIVATE STATIC METHOD _toJulian(dt AS DateTime) AS LONG
             VAR days      := dt:Subtract( Jan_1_1901 )
             RETURN Convert.ToInt32( days:TotalDays ) + 2415386   // Julian date number of 1901-01-01
 
-        PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG ,  buffer AS BYTE[] ) AS LOGIC    
+        PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG ,  buffer AS BYTE[] ) AS LOGIC
             LOCAL resultLength AS LONG
             resultLength := 0
             RETURN SELF:_ToString( toConvert, sLen, buffer,  REF resultLength)
@@ -457,7 +452,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN TRUE
 
- 
+
         INTERNAL METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DbOrder_Info ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL result AS LOGIC
@@ -465,28 +460,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             result := TRUE
             SWITCH uiScope
             CASE DbOrder_Info.DBOI_SCOPETOPCLEAR
-                SELF:_Scopes[SELF:TopScopeNo]:Clear()
+                SELF:_Scopes[TOPSCOPE]:Clear()
                 SELF:_scopeEmpty := FALSE
+                SELF:_mustCheckEof := TRUE
             CASE DbOrder_Info.DBOI_SCOPEBOTTOMCLEAR
-                SELF:_Scopes[SELF:BottomScopeNo]:Clear()
+                SELF:_Scopes[BOTTOMSCOPE]:Clear()
                 SELF:_scopeEmpty := FALSE
+                SELF:_mustCheckEof := TRUE
             CASE DbOrder_Info.DBOI_SCOPETOP
-                if (itmScope != SELF:_Scopes[SELF:TopScopeNo]:Value)
-                    SELF:_scopeEmpty := FALSE
-                    SELF:_Scopes[SELF:TopScopeNo]:Value := itmScope
-                    IF itmScope != NULL
-                        SELF:_ToString(itmScope, SELF:_keySize,  SELF:_Scopes[SELF:TopScopeNo]:Buffer, REF uiRealLen)
-                        SELF:_Scopes[SELF:TopScopeNo]:Size := uiRealLen
-                    ENDIF
-                ENDIF
             CASE DbOrder_Info.DBOI_SCOPEBOTTOM
-                IF (itmScope != SELF:_Scopes[SELF:BottomScopeNo]:Value)
+                VAR nItem := IIF( uiScope == DbOrder_Info.DBOI_SCOPETOP, SELF:TopScopeNo, SELF:BottomScopeNo)
+                IF (itmScope != SELF:_Scopes[nItem]:Value)
                     SELF:_scopeEmpty := FALSE
-                    SELF:_Scopes[SELF:BottomScopeNo]:Value   := itmScope
+                    SELF:_Scopes[nItem]:Value := itmScope
                     IF itmScope != NULL
-                        SELF:_ToString(itmScope, SELF:_keySize, SELF:_Scopes[SELF:BottomScopeNo]:Buffer, REF uiRealLen)
-                        SELF:_Scopes[SELF:BottomScopeNo]:Size := uiRealLen
+                        SELF:_ToString(itmScope, SELF:_keySize,  SELF:_Scopes[nItem]:Buffer, REF uiRealLen)
+                        SELF:_Scopes[nItem]:Size := uiRealLen
                     ENDIF
+                    SELF:_mustCheckEof := TRUE
                 ENDIF
             OTHERWISE
                 result := FALSE
@@ -500,22 +491,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL last AS LONG
             LOCAL count AS LONG
             LOCAL isLocked := FALSE AS LOGIC
+            LOCAL saveEmpty := SELF:_scopeEmpty AS LOGIC
             isOk := TRUE
             SELF:_bag:Flush()
             SELF:_oRdd:GoCold()
             oldRec := SELF:_RecNo
             TRY
+                SELF:_scopeEmpty := FALSE
                 IF SELF:Shared
                     isLocked := SELF:Slock()
                     IF !isLocked
                         RETURN FALSE
                     ENDIF
                 ENDIF
-                IF SELF:HasScope .AND. ! XSharp.RuntimeState.Deleted .AND. ! SELF:_oRdd:FilterInfo:Active
+                IF SELF:HasScope .AND. ! SELF:_oRdd:FilterInfo:Active
                     SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPEBOTTOM)
                     records := SELF:_getScopePos()
                 ELSE
-                    IF  XSharp.RuntimeState.Deleted  .OR. SELF:_oRdd:FilterInfo:Active
+                    IF SELF:_oRdd:FilterInfo:Active
                         SELF:_oRdd:SkipFilter(1)
                         oldRec := SELF:_RecNo
                         records := 0
@@ -524,23 +517,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         IF lWasDescending
                             SELF:Descending := FALSE
                         ENDIF
+
                         SELF:_oRdd:_SetEOF(FALSE)
                         SELF:_oRdd:_SetBOF(FALSE)
                         isOk := SELF:GoTop()
-                        recno := SELF:_RecNo
-                        last := SELF:_oRdd:RecCount + 1
-                        count := 0
-                        LOCAL previous AS LONG
-                        previous := recno
-                        DO WHILE recno != 0 .AND. recno < last
-                            count++
-                            recno := SELF:_ScopeSkip(1)
-                            IF recno == previous
-                                EXIT
-                            ENDIF
+                        IF !SELF:_isInScope()
+                           records := 0
+                        ELSE
+                            recno := SELF:_RecNo
+                            last := SELF:_oRdd:RecCount + 1
+                            count := 0
+                            LOCAL previous AS LONG
                             previous := recno
-                        ENDDO
-                        records := count
+                            DO WHILE recno != 0 .AND. recno < last
+                                count++
+                                recno := SELF:_ScopeSkip(1)
+                                IF recno == previous
+                                    EXIT
+                                ENDIF
+                                previous := recno
+                            ENDDO
+                            records := count
+                        ENDIF
                         SELF:Descending := lWasDescending
                     ELSE
                          records := 0
@@ -572,10 +570,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDIF
                 SELF:_GoToRecno(oldRec)
+            CATCH
+                isOk := FALSE
             FINALLY
                 IF SELF:Shared .AND. isLocked
                     isOk := SELF:UnLock()
                 ENDIF
+                SELF:_scopeEmpty := saveEmpty
             END TRY
             RETURN isOk
 
@@ -585,7 +586,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL recno AS LONG
             LOCAL count AS LONG
             LOCAL isLocked := FALSE AS LOGIC
-            
+            IF SELF:RDD:EoF
+               record := 0
+               RETURN TRUE
+            ENDIF
             SELF:_oRdd:GoCold()
             oldRec := SELF:_RecNo
             TRY
@@ -631,7 +635,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             END TRY
             RETURN TRUE
-            
+
         PRIVATE METHOD _nextKey( keyMove AS LONG ) AS LONG
             LOCAL recno			AS LONG
             LOCAL moveDirection	AS SkipDirection
@@ -663,7 +667,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 endif
             ENDIF
             RETURN recno
-            
+
         INTERNAL METHOD PopPage() AS CdxStackEntry
             SELF:_stack:Pop()
             RETURN SELF:_stack:Top
@@ -674,7 +678,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL PROPERTY CurrentLeaf AS CdxLeafPage GET SELF:_stack:Top:Page ASTYPE  CdxLeafPage
 
-        INTERNAL PROPERTY CurrentTop  AS CdxTreePage GET SELF:_stack:Top:Page 
+        INTERNAL PROPERTY CurrentTop  AS CdxTreePage GET SELF:_stack:Top:Page
 
         INTERNAL METHOD InsertOnTop(oPage AS CdxTreePage) AS LOGIC
             SELF:_stack:InsertOnTop(oPage)
@@ -687,14 +691,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD PushPage(oPage AS CdxTreePage , nPos AS WORD) AS VOID
             SELF:_stack:Push(oPage, nPos)
-            RETURN 
+            RETURN
 
         INTERNAL METHOD ClearStack() AS VOID
             SELF:_stack:Clear()
             RETURN
-            
+
         INTERNAL METHOD _dump() AS VOID
-	    
+
             LOCAL hDump     AS IntPtr
             LOCAL cFile     AS STRING
             LOCAL sBlock    AS STRING
@@ -773,7 +777,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 FWrite(hDump, sRecords:ToString())
                 FWrite(hDump, sbLevels:ToString())
                 FClose(hDump)
-                
+
             ENDIF
             RETURN
 
@@ -804,7 +808,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN TRUE
             ENDIF
             RETURN FALSE
-        
+
         PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             SELF:_oRdd:Validate()
             Array.Copy(SELF:_oRdd:RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
@@ -815,7 +819,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Collation:Translate(byteArray)
             RETURN TRUE
 
-            
+
         PRIVATE METHOD _getExpressionValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL result := TRUE AS LOGIC
             TRY
@@ -824,7 +828,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL uiRealLen := 0 AS LONG
                 result := SELF:_ToString(oKeyValue, SELF:_keySize,  byteArray,  REF uiRealLen)
             CATCH ex AS Exception
-                SELF:_oRdd:_dbfError(ex, Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFCDX._GetExpressionValue") 
+                SELF:SetSyntaxError(ex)
                 result := FALSE
             END TRY
             RETURN result

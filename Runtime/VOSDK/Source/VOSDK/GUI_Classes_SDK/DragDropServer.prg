@@ -1,10 +1,13 @@
+/// <include file="Gui.xml" path="doc/DragDropServer/*" />
 CLASS DragDropServer INHERIT VObject
 	PROTECT oParent AS Window
 	//Liuho01 05-15-96 for DragDraopServer
 	PROTECT hDragSingleCursor AS PTR
 	PROTECT hDragMultipCursor AS PTR
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	METHOD __DragAppendFiles(hDrop AS PTR, acFilesToDrop AS ARRAY) AS PTR STRICT 
 	//PP-030828 Strong typing
 	LOCAL strDropFile AS __WCDropFiles
@@ -14,17 +17,22 @@ CLASS DragDropServer INHERIT VObject
 	LOCAL pCurPath AS BYTE PTR
 	LOCAL dwPathNameLength AS DWORD
 
+
 	
+	
+
 
 	iAlen := INT(_CAST, ALen(acFilesToDrop))
 	FOR i:= 1 UPTO iAlen
 		dwPathnameLength += SLen(acFilesToDrop[i]) + 1
 	NEXT
 
+
 	hDrop := GlobalReAlloc(hDrop, _SIZEOF(__WCDropFiles) + dwPathNameLength + 1, _OR(GMEM_MOVEABLE, GMEM_SHARE, GMEM_ZEROINIT))
 	strDropFile := GlobalLock(hDrop)
 	pCurPath := PTR(_CAST, strDropFile)
 	pCurPath += _SIZEOF(__WCDropFiles)
+
 
 	FOR i:= 1 UPTO iAlen
 		dwLen := SLen(acFilesToDrop[i])
@@ -32,18 +40,25 @@ CLASS DragDropServer INHERIT VObject
 		pCurPath += dwLen + 1
 	NEXT
 
+
 	BYTE(pCurPath) := 0
+
 
 	GlobalUnlock(hDrop)
 
+
 	RETURN hDrop
 
+
+ /// <exclude />
 METHOD __DragCreateMemHandle() AS PTR STRICT 
 	//PP-030828 Strong typing
 	LOCAL hDrop AS PTR
 	LOCAL strDropFile AS __WCDropFiles
 	LOCAL strPoint IS _winPoint
 	
+	
+
 
 	GetCursorPos(@strPoint) //Get the Drop mouse position
 	hDrop := GlobalAlloc(_OR(GMEM_MOVEABLE,GMEM_SHARE,GMEM_ZEROINIT), _SIZEOF(__WCDropFiles) + 1)
@@ -55,44 +70,65 @@ METHOD __DragCreateMemHandle() AS PTR STRICT
 	strDropFile:fUnicode := FALSE //not in Unicode
 	GlobalUnlock(hDrop)
 
+
 	RETURN hDrop
 
+
+ /// <exclude />
 METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT 
 	//PP-030828 Strong typing
 	LOCAL DIM aKeyStates[256] AS BYTE
 
+
 	
+	
+
 
 	GetKeyboardState(@aKeyStates)
 	IF _AND(aKeyStates[bKey + 1], 1) == 1
 		RETURN TRUE
 	ENDIF
 
+
 	RETURN FALSE
 
+
+/// <include file="Gui.xml" path="doc/DragDropServer.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	
+	
+
 
 	IF !InCollect()
 		UnregisterAxit(SELF)
 		oParent := NULL_OBJECT
 	ENDIF
 
+
 	SUPER:Destroy()
+
 
 	RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/DragDropServer.ctor/*" />
 CONSTRUCTOR(oOwner) 
 	
+	
+
 
 	IF !IsInstanceOfUsual(oOwner,#Window)
 		WCError{#Init,#DragDropServer,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 
+
 	__LoadShellDll()
 
+
+	
 	
 	oParent := oOwner
+
 
 	IF hDragSingleCursor == NULL_PTR //load Cursor at first time
 		hDragSingleCursor := LoadCursor(_GetInst(), String2Psz("DragSingle"))
@@ -101,8 +137,11 @@ CONSTRUCTOR(oOwner)
 		hDragMultipCursor := LoadCursor(_GetInst(), String2Psz("DragMultip"))
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/DragDropServer.StartDrag/*" />
 METHOD StartDrag(acFilesToDrag) 
 	LOCAL strPoint IS _winPoint
 	LOCAL hWndSubject AS PTR
@@ -113,16 +152,21 @@ METHOD StartDrag(acFilesToDrag)
 	LOCAL lStyle AS LONGINT
 	LOCAL hDragCursor AS PTR
 
+
 	
+	
+
 
 	IF !IsArray(acFilesToDrag)
 		WCError{#Init,#DragDropServer,__WCSTypeError,acFilesToDrag,1}:Throw()
 	ENDIF
 
+
 	dwArrlen := ALen(acFilesToDrag)
 	IF (dwArrLen == 0)
 		RETURN FALSE
 	ENDIF
+
 
 	IF (dwArrlen > 1) // have some files to be draged
 		hDragCursor := hDragMultipCursor
@@ -130,10 +174,13 @@ METHOD StartDrag(acFilesToDrag)
 		hDragCursor := hDragSingleCursor
 	ENDIF
 
+
 	hDrop:= SELF:__DragCreateMemHandle() //Allocate a memory block
 	hDrop:= SELF:__DragAppendFiles(hDrop, acFilesToDrag)
 
+
 	GlobalLock(hDrop)
+
 
 	IF (hDrop == NULL_PTR)
 		oTB := TextBox{	oParent, ;
@@ -145,9 +192,12 @@ METHOD StartDrag(acFilesToDrag)
 		RETURN FALSE
 	ENDIF
 
+
 	ReleaseCapture()
 
+
 	DragObject(GetDesktopWindow(), oParent:Handle(), 0x8003, 0, hDragCursor)
+
 
 	// lGetFileNo = false, it means a real drag-Drop operation
 	GetCursorPos(@strPoint) //Get the Drop mouse position
@@ -163,6 +213,7 @@ METHOD StartDrag(acFilesToDrag)
 		hWndSubject:= GetParent(hWndSubject)
 	ENDDO
 
+
 	IF (hWndClient == NULL_PTR)
 		DragFinish(hDrop)
 		RETURN FALSE
@@ -171,4 +222,5 @@ METHOD StartDrag(acFilesToDrag)
 	PostMessage(hWndClient, WM_DROPFILES, DWORD(_CAST, hDrop), 0)
 	RETURN TRUE
 END CLASS
+
 

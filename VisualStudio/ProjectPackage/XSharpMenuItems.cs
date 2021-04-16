@@ -34,14 +34,14 @@ namespace XSharp.Project
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
-        private readonly Package package;
+        private readonly XSharpProjectPackage package;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XSharpMenuItems"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private XSharpMenuItems(Package package)
+        private XSharpMenuItems(XSharpProjectPackage package)
         {
             if (package == null)
             {
@@ -93,7 +93,7 @@ namespace XSharp.Project
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package)
+        public static void Initialize(XSharpProjectPackage package)
         {
             Instance = new XSharpMenuItems(package);
         }
@@ -150,8 +150,8 @@ namespace XSharp.Project
             switch (cmd.CommandID.ID)
             {
                 case IdWebsite:
-                    //System.Diagnostics.Process.Start("https://www.xsharp.info");
-                    ((XSharpProjectPackage)package).OpenInBrowser("https://www.xsharp.info");
+                    //System.Diagnostics.Process.Start("https://www.xsharp.eu");
+                    package.OpenInBrowser("https://www.xsharp.eu");
                     break;
                 case IdOnlineHelp:
                     string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;

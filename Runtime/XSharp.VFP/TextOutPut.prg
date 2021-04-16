@@ -35,7 +35,7 @@ Function SetTextMerge(lSet as LOGIC) AS LOGIC
 /// <param name="cFile">Name of the file to create. When this name is NULL or Empty then the file will be closed when it is open</param>
 /// <returns>TRUE when the file was succesfully opened / closed.</returns>
 /// <remarks>The file handle for the file will be stored in the _TEXT system variable.</remarks>
-/// <seealso cref='F:XSharp.VFP.Functions._TEXT' />
+/// <seealso cref='_TEXT' />
 FUNCTION SetTextFile(cFile as STRING) AS LOGIC
     local hFile as IntPtr
     IF _TEXT != -1

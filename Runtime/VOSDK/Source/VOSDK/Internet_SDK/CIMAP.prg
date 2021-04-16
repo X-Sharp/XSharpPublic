@@ -1,11 +1,16 @@
-﻿CLASS CImap INHERIT CPop
+/// <include file="Internet.xml" path="doc/CImap/*" />
+CLASS CImap INHERIT CPop
     PROTECT nPrefix     AS DWORD
     PROTECT cMailBox    AS STRING
 
 
+
+
+ /// <exclude />
 METHOD  __FetchExtract  (c)     
     LOCAL nPos      AS DWORD
     LOCAL cEnd      AS STRING
+
 
     nPos := At2(CRLF, c)
     IF nPos > 0
@@ -17,12 +22,17 @@ METHOD  __FetchExtract  (c)
         ENDIF
     ENDIF
 
+
     RETURN c
 
 
+
+
+ /// <exclude />
 METHOD  __FetchToken    (cBuffer, cStart, cStop) 
     LOCAL nPos      AS DWORD
     LOCAL cRet      AS STRING
+
 
     nPos := AtC(cStart, cBuffer)
     IF nPos > 0
@@ -33,37 +43,53 @@ METHOD  __FetchToken    (cBuffer, cStart, cStop)
         ENDIF
     ENDIF
 
+
     RETURN cRet
 
+
+ /// <exclude />
 METHOD  __GetBody     (nMail) 
     LOCAL cBody     AS STRING
     LOCAL cTemp     AS STRING
 
+
     cTemp := "fetch " + NTrim(nMail) + " RFC822.TEXT"
+
 
     IF SELF:ClientCommand(cTemp)
         cBody := SELF:__FetchExtract(SELF:cReply)
     ENDIF
 
+
     RETURN cBody
 
 
 
+
+
+
+ /// <exclude />
 METHOD  __GetHeader   (nMail) 
     LOCAL cHeader   AS STRING
     LOCAL cTemp     AS STRING
+
 
     cTemp := "fetch " + NTrim(nMail) + " RFC822.HEADER"
     IF SELF:ClientCommand(cTemp)
         cHeader := SELF:__FetchExtract(SELF:cReply)
     ENDIF
 
+
     RETURN cHeader
 
 
+
+
+ /// <exclude />
 METHOD  __GetSize   (nMail) 
     LOCAL nRet      AS INT
     LOCAL cTemp     AS STRING
+
 
     cTemp := "fetch " + NTrim(nMail) + " RFC822.SIZE"
     IF SELF:ClientCommand(cTemp)
@@ -71,18 +97,25 @@ METHOD  __GetSize   (nMail)
         nRet := Val(cTemp)
     ENDIF
 
+
     RETURN nRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CImap.CheckReply/*" />
 METHOD  CheckReply      ()  
     LOCAL c     AS STRING
     LOCAL lRet  AS LOGIC
     LOCAL cLast AS STRING
     LOCAL nPos  AS DWORD
 
+
     c := NTrim(SELF:nPrefix) + " " + "OK"
 
+
     cLast := SELF:cReply
+
 
     nPos := RAt(CRLF, cLast)
     IF nPos > 0
@@ -93,21 +126,29 @@ METHOD  CheckReply      ()
         ENDIF
     ENDIF
 
+
     IF SubStr(cLast, 1, 7) == c
         lRet := .T. 
     ELSE
         lRet := .F. 
     ENDIF
 
+
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CImap.ClientCommand/*" />
 METHOD  ClientCommand   (cBuffer)    
     LOCAL lRet      AS LOGIC
 
+
     DEFAULT(@cBuffer, "")
 
+
     SELF:nError := 0
+
 
     IF SELF:nCurState > 0
         IF SLen(cBuffer) > 0
@@ -123,10 +164,15 @@ METHOD  ClientCommand   (cBuffer)
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CImap.DeleteMail/*" />
 METHOD  DeleteMail      (nMail)     
     LOCAL cTemp     AS STRING
 
+
     cTemp := "store " + NTrim(nMail) + " +flags \deleted"
+
 
     RETURN SELF:ClientCommand(cTemp)
 
@@ -134,25 +180,38 @@ METHOD  DeleteMail      (nMail)
 
 
 
+
+
+
+
+
+/// <include file="Internet.xml" path="doc/CImap.Disconnect/*" />
 METHOD  Disconnect      ()                              
     LOCAL cBuffer   AS STRING
+
 
     IF SELF:lSocketOpen
         SELF:nError := 0
 
+
         cBuffer := "LOGOUT" + CRLF
 
+
         SELF:nCurState := SENDING_REQUEST
+
 
         IF !SELF:SendRemote(cBuffer)
             RETURN .F. 
         ENDIF
 
+
         SELF:nCurState := RETREIVING_DATA
+
 
         IF !SELF:RecvRemote()
             RETURN .F. 
         ENDIF
+
 
         IF SELF:CheckReply()
             SELF:Close()
@@ -160,68 +219,94 @@ METHOD  Disconnect      ()
         SELF:nCurState := 0
     ENDIF
 
+
     RETURN .T. 
 
 
+
+
+/// <include file="Internet.xml" path="doc/CImap.GetMail/*" />
 METHOD  GetMail         (nMail) 
     LOCAL cHeader   AS STRING
     LOCAL cBody     AS STRING
     LOCAL cTemp     AS STRING
     LOCAL lRet      AS LOGIC
 
+
     cHeader := SELF:__GetHeader(nMail)
+
 
     #IFDEF __DEBUG__
 		MemoWrit("header.txt", cHeader)
     #ENDIF
 
+
     IF SLen(cHeader) > 0
         cBody := SELF:__GetBody(nMail)
+
 
         #IFDEF __DEBUG__
     		MemoWrit("body.txt", cBody)
         #ENDIF
 
+
         cTemp := cHeader + cBody
+
 
         #IFDEF __DEBUG__
     		MemoWrit("raw.txt", cTemp)
         #ENDIF
 
+
         SELF:oEmail := CEmail{}
+
 
         lRet := SELF:oEmail:Decode(cTemp)
     ENDIF
 
+
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CImap.GetPrefix/*" />
 METHOD  GetPrefix       ()                              
     SELF:nPrefix := SELF:nPrefix + 1
     RETURN NTrim(SELF:nPrefix) + " "
 
 
+
+
+/// <include file="Internet.xml" path="doc/CImap.GetStatus/*" />
 METHOD  GetStatus       ()      
     LOCAL cBuffer   AS STRING
     LOCAL cTemp     AS STRING
     LOCAL i         AS DWORD
 
+
     SELF:nError := 0
+
 
     cBuffer := "STATUS"
     IF SLen(SELF:cMailBox) > 0
         cBuffer += " " + SELF:cMailBox
     ENDIF
 
+
     cBuffer += " (" + TEMP_MESSAGES + ")" + CRLF
 
+
     SELF:nCurState := SENDING_REQUEST
+
 
     IF !SELF:SendRemote(cBuffer)
         RETURN ""
     ENDIF
 
+
     SELF:nCurState := RETREIVING_DATA
+
 
     IF SELF:RecvRemote()
         IF SELF:CheckReply()
@@ -232,10 +317,12 @@ METHOD  GetStatus       ()
         cBuffer := ""
     ENDIF
 
+
     IF SLen(cBuffer) > 0
         cTemp := SELF:__FetchToken(cBuffer, "(" + TEMP_MESSAGES, ")")
         SELF:nMailCount := Val(cTemp)
     ENDIF
+
 
     SELF:nTotalBytes := 0
     IF SELF:nMailCount > 0
@@ -244,84 +331,118 @@ METHOD  GetStatus       ()
         NEXT
     ENDIF
 
+
     RETURN cBuffer
 
 
+
+
+/// <include file="Internet.xml" path="doc/CImap.ctor/*" />
 CONSTRUCTOR            (cServer, cUid, cPwd)               
+
 
     SUPER(cServer, cUid, cPwd, IPPORT_IMAP)
 
+
     SELF:nPrefix := 1000
+
 
     IF SELF:nError = 0
         IF IsString(cUID)
             SELF:cUserName := cUID
         ENDIF
 
+
         IF IsString(cPwd)
             SELF:cPassWord := cPwd
         ENDIF
 
+
         SELF:TimeOut := 1000
+
 
         SELF:oEmail := CEmail{}
 
+
     ENDIF
 
+
     SELF:cMailBox := "inbox"
+
 
     RETURN 
 
 
+
+
+/// <include file="Internet.xml" path="doc/CImap.LogOn/*" />
 METHOD  LogOn           (cUID, cPwd)    
     LOCAL cBuffer AS STRING
+
 
     DEFAULT(@cUID, "")
     DEFAULT(@cPwd, "")
 
+
     SELF:nError := 0
+
 
     IF SLen(cUID) > 0
         SELF:cUserName := cUID
     ENDIF
 
+
     IF SLen(cPwd) > 0
         SELF:cPassWord := cPwd
     ENDIF
 
+
     SELF:nCurState := CONNECTING
+
 
     IF !SELF:connect( SELF:cHostAddress )
         RETURN .F. 
     ENDIF
 
+
     SELF:nCurState := LOGGING_ON
 
+
     cBuffer := "LOGIN " + SELF:cUserName + " " + SELF:cPassWord + CRLF
+
 
     IF !SELF:SendRemote(cBuffer)
         RETURN .F. 
     ENDIF
 
+
     IF !SELF:RecvRemote()
         RETURN .F. 
     ENDIF
+
 
     IF !SELF:CheckReply()
         SELF:nError :=  ERROR_INTERNET_INCORRECT_PASSWORD
         RETURN .F. 
     ENDIF
 
+
     IF SLen(SELF:cMailBox) > 0
         SELF:ClientCommand("SELECT " + SELF:cMailBox)
     ENDIF
 
+
     RETURN .T. 
 
 
+
+
+/// <include file="Internet.xml" path="doc/CImap.MailBox/*" />
 ACCESS  MailBox         ()                                  
     RETURN SELF:cMailBox
 
+
+/// <include file="Internet.xml" path="doc/CImap.MailBox/*" />
 ASSIGN  MailBox         (xNew)                              
     DEFAULT(@xNew, "")
     IF SELF:nCurState > 0
@@ -335,17 +456,27 @@ ASSIGN  MailBox         (xNew)
     ENDIF
     RETURN 
 
+
+/// <include file="Internet.xml" path="doc/CImap.SendRemote/*" />
 METHOD  SendRemote      (cData)                         
     LOCAL lRet      AS LOGIC
+
 
     IF IsString(cData)
         lRet := SUPER:Sendremote( SELF:GetPrefix() + cData )
     ENDIF
 
+
     RETURN lRet
 
 
+
+
 END CLASS
+
+
+
+
 
 
 

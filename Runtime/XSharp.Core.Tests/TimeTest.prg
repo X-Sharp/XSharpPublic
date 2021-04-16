@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	[Fact, Trait("Category", "Time")];
 	METHOD AmPmTest() AS VOID
 		VAR time := "16:55:23"
-		SetAMPM(TRUE)
+		SetAmPm(TRUE)
 		SetAMExt(" AM")
 		SetPMExt(" PM")
 		Assert.Equal("04:55:23 PM",AmPm(time))
@@ -27,11 +27,18 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		[Fact, Trait("Category", "Time")];
 		METHOD ElapTimeTest() AS VOID
 			LOCAL lAmPm := GetAmPm() AS LOGIC
-			SetAMPM(FALSE)
+			SetAmPm(FALSE)
 			Assert.Equal("11:23:34",ElapTime("12:00:00","23:23:34"))
 			Assert.Equal("12:36:26",ElapTime("23:23:34","12:00:00"))	
 			Assert.Equal("06:36:26",ElapTime("29:23:34","12:00:00"))
-			SetAMPM(lAmPm)
+
+			Assert.Equal(3600U,Secs(ElapTime("10:00:0","11:00:00")))
+			Assert.Equal(3600U,Secs(ElapTime("10:00:0","11:00:0")))
+			Assert.Equal(3600U,Secs(ElapTime("10:00:","11:00:")))
+			Assert.Equal(3600U,Secs(ElapTime("10:00","11:00")))
+			Assert.Equal(3600U,Secs(ElapTime("10:0","11:0")))
+			Assert.Equal(3600U,Secs(ElapTime("10","11")))
+			SetAmPm(lAmPm)
 		RETURN
 
 		[Fact, Trait("Category", "Time")];
@@ -44,6 +51,17 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			r81 := Secs("12:00:00")
 			r82 := Secs("12:00:01")
 			Assert.True(r82 == r81 + 1.0)
+
+			Assert.Equal(0U,    Secs("1"))
+			Assert.Equal(3600U, Secs("01"))
+			Assert.Equal(36000U,Secs("10"))
+			Assert.Equal(3600U, Secs("01:"))
+			Assert.Equal(3600U, Secs("01:00"))
+			Assert.Equal(3600U, Secs("01:00:00"))
+
+			Assert.Equal(3661U, Secs("01:01:01"))
+			Assert.Equal(40260U,Secs("11:11"))
+			Assert.Equal(39600U,Secs("11"))
 
 		[Fact, Trait("Category", "Time")];
 		METHOD ConTimeTest() AS VOID
@@ -61,11 +79,11 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		METHOD TimeTest() AS VOID
 			LOCAL cTime1 AS STRING
 			LOCAL cTime2 AS STRING
-			SetAMPM(FALSE)
+			SetAmPm(FALSE)
 			cTime1 := Time()
 			cTime2 := Time24()
 			Assert.Equal(cTime1, cTIme2)
-			SetAMPM(TRUE)
+			SetAmPm(TRUE)
 			SetAMExt("")
 			SetPMExt("")
 			cTime1 := Time()

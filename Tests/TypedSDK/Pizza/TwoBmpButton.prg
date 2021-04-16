@@ -12,7 +12,7 @@ ASSIGN BmpUnpressed(oNewBmp)
 	SELF:Image := oBmpUnpressed
 	RETURN NIL
 
-METHOD Dispatch(oEvt ) 
+METHOD Dispatch(oEvt  AS @@Event) 
   IF oEvt:uMsg == WM_LBUTTONDOWN
     SELF:Image := oBmpPressed
   ELSEIF oEvt:uMsg == WM_LBUTTONUP

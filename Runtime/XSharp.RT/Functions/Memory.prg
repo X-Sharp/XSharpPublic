@@ -110,7 +110,7 @@ FUNCTION MemGrpOpen() AS DWORD
 	RETURN 0
 
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.MemCAlloc(System.UInt32,System.UInt32)" />
+/// <inheritdoc cref="MemCAlloc" />
 /// <param name="wGroup">The group to which the newly allocated memory buffer will belong.  This group should have already been opened by MemGrpOpen().</param>
 /// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemGrpCAlloc(wGroup AS DWORD,wItems AS DWORD,wBytes AS DWORD) AS IntPtr

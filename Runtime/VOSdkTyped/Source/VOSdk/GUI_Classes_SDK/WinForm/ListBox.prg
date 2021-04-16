@@ -7,8 +7,9 @@
 
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
+USING System.Collections.Generic
 
-CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 
 #region fields    
 	PROTECTED lBusy AS LOGIC
@@ -24,6 +25,9 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 		END GET
     END PROPERTY
 
+    NEW PROPERTY Items           AS IList<OBJECT> GET (IList<OBJECT>) SUPER:Items
+    NEW PROPERTY SelectedIndices AS IList<LONG> GET (IList<LONG>) SUPER:SelectedIndices
+    NEW PROPERTY SelectedItems   AS IList<OBJECT> GET (IList<OBJECT>) SUPER:SelectedItems
 
 #endregion
 	#include "PropControl.vh"
@@ -203,7 +207,7 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 	
 END CLASS
 
-CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOComboBox
 	PROPERTY ComboBox AS VOSDK.ComboBox GET (VOSDK.ComboBox) SELF:Control
 	PROTECTED searchString := STRING.Empty AS STRING
 	PROTECTED lastKeyPressTime := DateTime.MinValue AS DateTime
@@ -218,6 +222,8 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOControl, IV
 		SELF:Margin			:= Padding{0,0,0,0}
 		RETURN
 
+    NEW PROPERTY AutoCompleteSource AS DWORD GET (DWORD) SUPER:AutoCompleteSource SET SUPER:AutoCompleteSource := (System.Windows.Forms.AutoCompleteSource) VALUE
+    NEW PROPERTY Items           AS IList<OBJECT> GET (IList<OBJECT>) SUPER:Items
 
 	PROPERTY Text AS STRING
 		GET

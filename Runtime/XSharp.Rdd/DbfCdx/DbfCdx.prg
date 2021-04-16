@@ -136,9 +136,12 @@ BEGIN NAMESPACE XSharp.RDD
             OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
                 LOCAL result AS LONG
                 LOCAL isOk := FALSE AS LOGIC
-                
+                LOCAL oBag := NULL AS CdxOrderBag
                 result := 0
                 SELF:_indexList:FindOrder(info, OUT VAR workOrder)
+                IF ! String.IsNullOrEmpty(info:BagName)
+                     oBag := SELF:_indexList:FindOrderBag(info:BagName)
+                ENDIF
 
                 IF workOrder == NULL .AND. info:IsEmpty
                     workOrder := SELF:CurrentOrder
@@ -154,8 +157,13 @@ BEGIN NAMESPACE XSharp.RDD
                         info:Result := workOrder:Expression
                     ENDIF
                 CASE DBOI_ORDERCOUNT
-                    info:Result := SELF:_indexList:Count
+                    IF oBag == NULL        
+                        info:Result := SELF:_indexList:Count
+                    ELSE
+                        info:Result := oBag:Tags:Count    
+                    ENDIF
                 CASE DBOI_POSITION
+                    VAR oState := SELF:_GetState()        
                     IF workOrder == NULL
                         info:Result := SELF:RecNo
                     ELSE
@@ -164,8 +172,10 @@ BEGIN NAMESPACE XSharp.RDD
                             info:Result := result
                         ENDIF
                     ENDIF
+                    SELF:_SetState(oState)
                 CASE DBOI_KEYCOUNT
                     result := 0
+                    VAR oState := SELF:_GetState()
                     IF workOrder != NULL
                         info:Result := 0
                         isOk := workOrder:_CountRecords(REF result)
@@ -175,6 +185,7 @@ BEGIN NAMESPACE XSharp.RDD
                     IF isOk
                         info:Result := result
                     ENDIF
+                    SELF:_SetState(oState)
                 CASE DBOI_NUMBER
                     info:Result := SELF:_indexList:OrderPos(workOrder)
                 CASE DBOI_BAGEXT
@@ -186,13 +197,18 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSE
                         info:Result := ""
                     ENDIF
+                CASE DBOI_BAGCOUNT
+                    info:Result := SELF:_indexList:BagCount
                 CASE DBOI_BAGNAME
                     //CASE DBOI_INDEXNAME // alias
-                    IF workOrder != NULL
-                        info:Result := workOrder:FileName
+                    IF info:Order IS LONG VAR nOrder
+                        info:Result := SELF:_indexList:BagName(nOrder)                        
+                    ELSEIF workOrder != NULL
+                            info:Result := workOrder:FileName
                     ELSE
                         info:Result := ""
                     ENDIF
+                        
                 CASE DBOI_NAME
                     IF workOrder != NULL
                         info:Result := workOrder:_orderName
@@ -337,15 +353,18 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DBOI_USER + 42
                 CASE DBOI_DUMP
                     // Dump Cdx to Txt file
+                    VAR oState := SELF:_GetState()
                     IF workOrder != NULL
                         workOrder:_dump()
                     ENDIF
-                    
+                    SELF:_SetState(oState)
                 CASE DBOI_VALIDATE
                     // Validate integrity of the current Order
+                     VAR oState := SELF:_GetState()
                     IF workOrder != NULL
                         info:Result := workOrder:_validate()
                     ENDIF
+                    SELF:_SetState(oState)
                 OTHERWISE
                     SUPER:OrderInfo(nOrdinal, info)
                 END SWITCH
@@ -533,6 +552,7 @@ BEGIN NAMESPACE XSharp.RDD
                     if (! result)
                         SELF:_SetEOF(TRUE)
                         SELF:_SetBOF(TRUE)
+                        result := TRUE
                     ELSE
                         SELF:_CheckEofBof()
                     ENDIF
@@ -607,7 +627,21 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SELF:_indexList:Flush() .AND. isOk
             END LOCK
             
-        #ENDREGION
+        #endregion
+
+        INTERNAL METHOD _GetState() AS CdxState
+            RETURN CdxState{} {EoF := SELF:EoF, BoF := SELF:BoF, RecNo := SELF:RecNo}
+
+        INTERNAL METHOD _SetState(oState AS CdxState) AS VOID
+            SELF:__Goto(oState:RecNo)
+            SELF:_SetEOF(oState:EoF)
+            SELF:_SetBOF(oState:BoF)
+
+        INTERNAL CLASS CdxState
+            PROPERTY EoF AS LOGIC AUTO
+            PROPERTY BoF AS LOGIC AUTO
+            PROPERTY RecNo AS LONG AUTO
+        END CLASS
     END CLASS    
     
 END NAMESPACE

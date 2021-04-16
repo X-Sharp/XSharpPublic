@@ -16,6 +16,7 @@ using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using XSharpModel;
 
 namespace XSharp.Project
 {
@@ -42,6 +43,7 @@ namespace XSharp.Project
                 name = elements[0];
                 platName = elements[1];
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
             return base.GetCfgOfName(name, platName, out cfg);
 
         }
@@ -68,7 +70,7 @@ namespace XSharp.Project
                         {
                             if (! prop.IsImported)
                             { 
-                            prop.UnevaluatedValue = prop.UnevaluatedValue;
+                                prop.UnevaluatedValue = prop.UnevaluatedValue;
                             }
                             result = prop.EvaluatedValue;
                         }
@@ -98,21 +100,26 @@ namespace XSharp.Project
                 info.dlo = DEBUG_LAUNCH_OPERATION.DLO_CreateProcess;
 
                 // On first call, reset the cache, following calls will use the cached values
-                string property = GetConfigurationProperty("DebuggerCommand", true);
+                
+                string property = GetConfigurationProperty(XSharpProjectFileConstants.DebuggerCommand, true);
                 if (string.IsNullOrEmpty(property))
                 {
                     property = this._project.GetOutputAssembly(this.ConfigCanonicalName);
                 }
                 info.bstrExe = property;
 
-                property = GetConfigurationProperty("DebuggerWorkingDirectory", false);
+                property = GetConfigurationProperty(XSharpProjectFileConstants.DebuggerWorkingDirectory, false);
                 if (string.IsNullOrEmpty(property))
                 {
                     property = Path.GetDirectoryName(info.bstrExe);
                 }
+                if (! Path.IsPathRooted(property))
+                {
+                    property = Path.Combine(this.ProjectMgr.ProjectFolder, property);
+                }
                 info.bstrCurDir = property;
 
-                property = GetConfigurationProperty("DebuggerCommandArguments", false);
+                property = GetConfigurationProperty(XSharpProjectFileConstants.DebuggerCommandArguments, false);
                 if (!string.IsNullOrEmpty(property))
                 {
                     info.bstrArg = property;
@@ -135,7 +142,7 @@ namespace XSharp.Project
                 }
 
 
-                property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
+                property = GetConfigurationProperty(XSharpProjectFileConstants.EnableUnmanagedDebugging, false);
                 if (property != null && string.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedAndNative_guid; // {92EF0900-2251-11D2-B72E-0000F87572EF}
@@ -144,12 +151,18 @@ namespace XSharp.Project
                 {
                     info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedOnly_guid;      // {449EC4CC-30D2-4032-9256-EE18EB41B62B}
                 }
+                if (! string.IsNullOrEmpty(this.ProjectMgr.BuildProject.Xml.Sdk))
+                {
+                    // Sdk style project
+                    info.clsidCustom = VSConstants.DebugEnginesGuids.CoreSystemClr_guid;
+                }
+
                 info.grfLaunch = grfLaunch;
                 VsShellUtilities.LaunchDebugger(this._project.Site, info);
             }
             catch (Exception e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
 
                 return Marshal.GetHRForException(e);
             }
@@ -157,7 +170,7 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-        internal override OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group)
+        protected override OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group)
         {
             OutputGroup outputGroup = new XSharpOutputGroup(group.Key, group.Value, project, this);
             return outputGroup;
@@ -177,6 +190,7 @@ namespace XSharp.Project
         {
             // Let MSBuild know which configuration we are working with
             this.Project.SetConfiguration(this.ProjectCfg.ConfigCanonicalName);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Generate dependencies if such a task exist
             if (this.Project.ProjectInstance.Targets.ContainsKey(ProjectFileConstants.AllProjectOutputGroups))

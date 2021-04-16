@@ -317,17 +317,17 @@ BEGIN NAMESPACE XSharp.RDD
         /// <summary>Find a connection in the Database container.</summary>
         /// <param name="cConnection">The connection name to look for.</param>
         PUBLIC METHOD FindConnection(cConnection as STRING) AS DbcConnection
-            RETURN FindObject(SELF:_connections, cConnection)
+            RETURN SELF:FindObject(SELF:_connections, cConnection)
 
         /// <summary>Find a table in the Database container.</summary>
         /// <param name="cTable">The table name to look for.</param>
         PUBLIC METHOD FindTable(cTable as STRING) AS DbcTable
-            RETURN FindObject(SELF:_tables, cTable)
+            RETURN SELF:FindObject(SELF:_tables, cTable)
 
         /// <summary>Find a view in the Database container.</summary>
         /// <param name="cView">The view name to look for.</param>
         PUBLIC METHOD FindView(cView as STRING) AS DbcView 
-            RETURN FindObject(SELF:_views, cView)
+            RETURN SELF:FindObject(SELF:_views, cView)
 
         /// <summary>Loads the tables, views and connections from the DBC file</summary>
         OVERRIDE METHOD GetData() AS VOID
@@ -381,7 +381,7 @@ BEGIN NAMESPACE XSharp.RDD
                 if fields == null
                     THROW Error.ArgumentError(__FUNCTION__, nameof(cName), "Could not find table or view '"+names[0]+"'")
                 endif
-                var oField := FindObject(fields, names[1]:Trim())
+                var oField := SELF:FindObject(fields, names[1]:Trim())
                 if oField != NULL
                     RETURN oField:Properties:GetValue(cProp)
                 ELSE
@@ -567,10 +567,22 @@ BEGIN NAMESPACE XSharp.RDD
         PROPERTY ParentID AS LONG AUTO
         PROPERTY ObjectType AS STRING AUTO
         PROPERTY ObjectName AS STRING AUTO
-        PROPERTY Properties AS DatabasePropertyCollection AUTO
         PROPERTY Parent     AS OBJECT AUTO
         PROPERTY ObjectKey  AS STRING GET ObjectID:ToString():PadLeft(10,' ')
-        
+        PROPERTY Properties AS DatabasePropertyCollection
+            GET
+                if _lazyProperties == NULL
+                    _lazyProperties := DatabasePropertyCollection{}
+                endif
+                return _lazyProperties
+            END GET
+            SET
+                _lazyProperties := value
+            END SET
+        END PROPERTY
+        PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
+        PROPERTY HasProperties as LOGIC GET _lazyProperties != NULL
+         
         CONSTRUCTOR
             Properties := DatabasePropertyCollection{}
         VIRTUAL METHOD Read() AS LOGIC

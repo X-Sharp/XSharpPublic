@@ -24,7 +24,7 @@ CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
     CONSTRUCTOR()
         _Properties := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase}
         _Attributes := Dictionary<STRING, Tuple<PropertyVisibility, STRING> >{StringComparer.OrdinalIgnoreCase}
-        __InitCompileTimeProperties()
+        SELF:__InitCompileTimeProperties()
         RETURN
         
     METHOD __InitCompileTimeProperties() AS VOID

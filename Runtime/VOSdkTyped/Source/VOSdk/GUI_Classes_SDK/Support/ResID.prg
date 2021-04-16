@@ -17,7 +17,7 @@ CLASS ResourceID INHERIT VObject
 		LOCAL lpAddress AS IntPtr
 
 		IF NULL_STRING != sID    
-			IF SELF:_lpAddress == NULL
+			IF SELF:_lpAddress == NULL_PSZ
 				SELF:_lpAddress := lpAddress := StringAlloc(sID)
 				SELF:_lMustFree := TRUE
 			ELSE

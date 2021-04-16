@@ -50,7 +50,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 CASE 861
                 CASE 865
                 CASE 895
+                CASE 1250
                 CASE 1252
+                CASE 1254
                     NOP
                 OTHERWISE
                     SELF:Unsupported(cName, nCodePage)

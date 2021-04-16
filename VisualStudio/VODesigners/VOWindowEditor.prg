@@ -1,3 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 USING System.Windows.Forms
 USING System.Drawing
 USING System.Collections.Generic
@@ -1081,8 +1087,8 @@ RETURN
 
 		cLine := ""
 		DO CASE
-		CASE TRUE
-			cLine := String.Format(e"\tSUPER(oParent , \"IDD_DEFDLG2\" , TRUE)" , SELF:oWindowDesign:Name)
+//		CASE TRUE
+//			cLine := String.Format(e"\tSUPER(oParent , \"IDD_DEFDLG2\" , TRUE)" , SELF:oWindowDesign:Name)
 		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATAWINDOW") == 0
 			cLine += String.Format(e"\tSUPER(oWindow , ResourceID{{\"{0}\" , _GetInst()}},iCtlID)" , SELF:oWindowDesign:Name)
 		CASE SELF:oWindowDesign:cFullClass:IndexOf("FORM:DATADIALOG") == 0
@@ -1648,7 +1654,7 @@ RETURN
 	RETURN
 	
 	ACCESS IsGridEnabled AS LOGIC
-	   RETURN oWindow != NULL && oOptions:lShowGrid
+	   RETURN oWindow != NULL .AND. oOptions:lShowGrid
 	   
 	ACCESS ViewMode AS ViewMode
 		LOCAL oProp AS DesignProperty
@@ -2351,13 +2357,13 @@ RETURN
 					LOOP
 				ENDIF
 				
-/*				IF (Glo.glPartialLasso .and. Control.ModifierKeys != Keys.Shift) .or. ;
-					(!Glo.glPartialLasso .and. Control.ModifierKeys == Keys.Shift)
-					lInclude := oDesign:x <= xx .and. oDesign:y <= yy .and. oDesign:x + oDesign:xs >= x .and. oDesign:y + oDesign:ys >= y
+				IF (XEditorSettings.PartialLasso .and. Control.ModifierKeys != Keys.Shift) .or. ;
+					(!XEditorSettings.PartialLasso .and. Control.ModifierKeys == Keys.Shift)
+					lInclude := oDesign:Control:Left <= xx .and. oDesign:Control:Top <= yy .and. oDesign:Control:Right >= x .and. oDesign:Control:Bottom >= y
 				ELSE
-					lInclude := oDesign:x >= x .and. oDesign:y >= y .and. oDesign:x + oDesign:xs <= xx .and. oDesign:y + oDesign:ys <= yy
-				ENDIF*/
-				lInclude := oDesign:Control:Left >= x .AND. oDesign:Control:Top >= y .AND. oDesign:Control:Right <= xx .AND. oDesign:Control:Bottom <= yy
+					lInclude := oDesign:Control:Left >= x .and. oDesign:Control:Top >= y .and. oDesign:Control:Right <= xx .and. oDesign:Control:Bottom <= yy
+				ENDIF
+				//lInclude := oDesign:Control:Left >= x .AND. oDesign:Control:Top >= y .AND. oDesign:Control:Right <= xx .AND. oDesign:Control:Bottom <= yy
 	
 				IF lInclude
 					IF lAdded
@@ -3504,8 +3510,8 @@ RETURN
 			IF lNameConflict
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "Name" , SELF:GetNextName(oEntry:cName)})
 			END IF
-			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Left" , oEntry:x + 8 * oEntry:nPasted})
-			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Top" , oEntry:y + 8 * oEntry:nPasted})
+			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Left" , oEntry:x + XEditorSettings.PasteOffSetX * oEntry:nPasted})
+			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Top" , oEntry:y + XEditorSettings.PasteOffSetY * oEntry:nPasted})
 			IF SELF:ViewMode == ViewMode.Browse
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Deleted" , 1})
 			END IF
@@ -3629,7 +3635,7 @@ RETURN
 		LOCAL oColor AS Color
 		DO CASE
 		CASE oProp:Name == "Caption"
-			IF oDesign:Control:GetType() == TypeOf(DesignPushButton)
+			IF oDesign:Control:GetType() == TypeOf(DesignPushButton) .or. oDesign:Control:GetType() == TypeOf(DesignCheckBox)
 				oDesign:Control:Text := ""
 				oDesign:Control:Invalidate()
 				RETURN
@@ -4358,7 +4364,14 @@ CLASS DesignWindowItem INHERIT DesignItem
 			END IF
 //			TRY
 				aPages := (List<STRING>)VOWindowEditorTemplate.aPages[cPage:ToUpper()]
-//				MessageBox.Show((aPages == NULL):ToString() , cPage)
+                IF aPages == NULL
+                    STATIC LOCAL lMessageShown AS LOGIC
+                    IF .not. lMessageShown
+				        MessageBox.Show(String.Format("Properties page '{0}' not found for window/control template '{1}' ({2})", cPage, oTemplate:cName, oTemplate:cFullClass), "Error in cavowed.inf")
+                        lMessageShown := TRUE
+                    ENDIF
+                    LOOP
+                ENDIF
 				FOR m := 0 UPTO aPages:Count - 1
 					LOCAL lBasic AS LOGIC
 					cProp := aPages[m]:ToUpper()
@@ -4982,7 +4995,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
       END IF
       // we need the xfile object to get to the XProject and read the files from the database
       IF xfile == NULL
-         SELF:oCloneButton:Visible := FALSE
+         SELF:oCloneButton:Enabled := FALSE
       ENDIF
 
 	RETURN

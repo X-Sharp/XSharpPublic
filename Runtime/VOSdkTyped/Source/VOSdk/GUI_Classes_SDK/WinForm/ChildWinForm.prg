@@ -77,7 +77,7 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 		
 		RETURN NIL
 		
-	METHOD Activate(o)
+	METHOD Activate(o  AS Event) 
 		LOCAL u AS USUAL
 		
 		u := SUPER:Activate(o)
@@ -87,7 +87,7 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 		RETURN u
 		
 	PROTECT METHOD ActivateWinForm() STRICT
-		//Todo
+		//Todo ActivateWinForm
 		//PostMessage(SELF:form:Handle,WM_SETFOCUS,0,0)
 
 		//IF SELF:form:Controls:Count > 0
@@ -102,7 +102,7 @@ CLASS ChildWinForm INHERIT ChildAppWindow
 
 		RETURN NIL
 
-	METHOD DeActivate(o)
+	METHOD DeActivate(o  AS Event)
 		LOCAL u AS USUAL
 
 		SELF:DeActivateWinForm()

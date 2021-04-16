@@ -618,7 +618,7 @@ FUNCTION FFlush(ptrHandle AS IntPtr, lCommit AS LOGIC) AS LOGIC
 	RETURN XSharp.IO.File.Flush(ptrHandle, lCommit)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ffunlock/*" />
-/// <inheritdoc cref="M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)" />"
+/// <inheritdoc cref="FFLock" />"
 FUNCTION FFUnLock(ptrHandle AS IntPtr,offset AS DWORD,length AS DWORD) AS LOGIC
 	VAR lResult := XSharp.IO.File.Lock(ptrHandle, (INT64) offset, (INT64) length, FALSE)
     //? "DWUnLock", dwOffset, dwLength, lResult
@@ -626,7 +626,7 @@ FUNCTION FFUnLock(ptrHandle AS IntPtr,offset AS DWORD,length AS DWORD) AS LOGIC
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ffunlock/*" />
-/// <inheritdoc cref="M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)" />"
+/// <inheritdoc cref="FFLock" />"
 FUNCTION FFUnLock64(ptrHandle AS IntPtr,offset AS INT64,length AS INT64) AS LOGIC
 	VAR lResult := XSharp.IO.File.Lock(ptrHandle,  offset,  length, FALSE)
     //? "I64UnLock", iOffset, iLength, lResult
@@ -736,12 +736,12 @@ FUNCTION FSeek3(ptrHandle AS IntPtr,liOffset AS LONG, dwOrigin AS DWORD) AS LONG
 FUNCTION FTell(ptrHandle AS IntPtr) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.Tell(ptrHandle)
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FTell(System.IntPtr)" />
+/// <inheritdoc cref="FTell" />
 FUNCTION FTell64(pFile AS IntPtr) AS INT64
 	RETURN XSharp.IO.File.Tell(pFile)
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
+/// <inheritdoc cref="FWrite" />
 FUNCTION FWrite( pFile AS IntPtr, c AS STRING ) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.Write( pFile, c,  c:Length, TRUE )
 
@@ -767,7 +767,7 @@ FUNCTION FClearErrorState() AS VOID
 FUNCTION FWrite( ptrHandle AS IntPtr, cBuffer AS STRING, nBytes AS DWORD ) AS DWORD
 	RETURN FWrite( ptrHandle, cBuffer, nBytes, TRUE)
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />	
+/// <inheritdoc cref="FWrite" />	
 /// <param name="lAnsi">If FALSE an OEM to ANSI conversion is made. </param>
 FUNCTION FWrite( ptrHandle AS IntPtr, cBuffer AS STRING, nBytes AS DWORD, lAnsi AS LOGIC) AS DWORD
 	RETURN (DWORD) XSharp.IO.File.Write(ptrHandle, cBuffer, (INT) nBytes, lAnsi)
@@ -1019,7 +1019,7 @@ INTERNAL FUNCTION Bytes2Line(aBytes AS BYTE[], nBuffLen REF INT) AS STRING
 /// When there is already a buffer allocated for the file handle, and this buffer is large enough then the existing buffer is returned.
 /// When the size requested exceeds the size of the allocated buffer, or when no buffer exists, then a new byte array will be allocated.
 /// </remarks>
-/// <seealso cref="O:XSharp.Core.Functions.FClose" />
+/// <seealso cref="FClose" />
 
 FUNCTION FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
     RETURN XSharp.IO.File.GetBuffer(hFile, nSize)
@@ -1031,7 +1031,7 @@ FUNCTION FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
 /// The Lifetime management of the stream should be left to the X# Runtime <br/>
 /// If you want to close the stream, please use the FClose() function </note>
 /// </remarks>
-/// <seealso cref="O:XSharp.Core.Functions.FClose" />
+/// <seealso cref="FClose" />
 FUNCTION FGetStream(pFile AS IntPtr) AS FileStream 
     RETURN XSharp.IO.File.findStream(pFile)
 
@@ -1039,7 +1039,7 @@ FUNCTION FGetStream(pFile AS IntPtr) AS FileStream
 /// <summary>Returns the size in bytes of a specified file. </summary>
 /// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
 /// <returns>The size of the file or -1 when the file handle is not valid.</returns>
-/// <seealso cref="O:XSharp.Core.Functions.FClose" />
+/// <seealso cref="FClose" />
 FUNCTION FSize(pFile AS IntPtr) AS INT64 
    VAR oStream := XSharp.IO.File.findStream(pFile)
     IF oStream != NULL
@@ -1050,7 +1050,7 @@ FUNCTION FSize(pFile AS IntPtr) AS INT64
 /// <summary>Returns the size in bytes of a specified file. </summary>
 /// <param name="cFileName">Specifies a file for which FSIZE( ) returns the size in bytes.</param> 
 /// <returns>The size of the file or -1 when the file is not found.</returns>
-/// <seealso cref="M:XSharp.Core.Functions.File(System.String)" />
+/// <seealso cref="File" />
 FUNCTION FSize(cFileName AS STRING) AS INT64
     IF File(cFileName)
         cFileName := FPathName()

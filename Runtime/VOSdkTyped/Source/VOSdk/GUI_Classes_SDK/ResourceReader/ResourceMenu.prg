@@ -1,6 +1,6 @@
 
 // ResourceMenu.prg
-#using System.Collections.Generic
+USING System.Collections.Generic
 #define    M_GRAYED         0x0001   // 'GRAYED' keyword 
 #define    M_INACTIVE       0x0002   // 'INACTIVE' keyword 
 #define    M_BITMAP         0x0004   // 'BITMAP' keyword 
@@ -11,7 +11,7 @@
 #define    M_MENUBREAK      0x0040   // 'MENUBREAK' keyword 
 #define    M_ENDMENU        0x0080   // Used internally 
 
-#USING System.Diagnostics
+USING System.Diagnostics
 
 
 CLASS ResourceMenu INHERIT ResourceReader

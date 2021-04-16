@@ -9,6 +9,13 @@ USING System.Reflection
 /// <exclude />
 STATIC CLASS XSharp.AssemblyHelper
 
+    STATIC METHOD FindLoadedAssembly(cName AS STRING) AS Assembly
+        FOREACH oAsm AS Assembly IN AppDomain.CurrentDomain:GetAssemblies()
+            IF String.Compare(oAsm:GetName():Name,cName, StringComparison.OrdinalIgnoreCase) == 0
+                RETURN oAsm
+            ENDIF
+        NEXT
+        RETURN NULL_OBJECT
     /// <exclude />
     STATIC METHOD LoadFrom(cName AS STRING, cFileName AS STRING) AS Assembly
         TRY
@@ -21,17 +28,16 @@ STATIC CLASS XSharp.AssemblyHelper
         /// <exclude />
     STATIC METHOD Load(cName AS STRING) AS Assembly
         // first locate the assembly that has the macro compiler in the list of loaded assemblies
-        FOREACH oAsm AS Assembly IN AppDomain.CurrentDomain:GetAssemblies()
-            IF String.Compare(oAsm:GetName():Name,cName, StringComparison.OrdinalIgnoreCase) == 0
-                RETURN oAsm
-            ENDIF
-        NEXT
+        VAR oAsm := FindLoadedAssembly(cName)
+        IF oAsm != NULL_OBJECT
+            RETURN oAsm
+        ENDIF
         VAR oCore := typeof(Error):Assembly
         // locate the dll in the GAC 
         VAR oName       := oCore:GetName()
         VAR cFullName   := oName:FullName:Replace("XSharp.Core", cName)
         TRY
-            VAR oAsm := Assembly.Load(cFullName)
+            oAsm := Assembly.Load(cFullName)
             RETURN oAsm
         CATCH AS Exception
             NOP
@@ -64,6 +70,9 @@ STATIC CLASS XSharp.AssemblyHelper
                 RETURN AssemblyHelper.LoadFrom(cName, cFile)
             ENDIF
         NEXT
-            
-        THROW Error{EG_OPEN, "", "Could not find "+cName} {FileName := cFileName,FuncSym := "AssemblyLoader"}
+        VAR ex := System.IO.FileNotFoundException{"Could not find "+cName,cName}    
+        VAR err :=  Error{ex}
+        err:FuncSym := "AssemblyHelper.Load"
+        err:Gencode := EG_OPEN
+        THROW err
 END CLASS

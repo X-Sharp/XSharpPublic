@@ -1,3 +1,4 @@
+/// <include file="SQL.xml" path="doc/SQLListProcedureColumns/*" />
 CLASS SQLListProcedureColumns INHERIT SQLCatalogQuery
 	EXPORT Qualifier AS STRING
 	EXPORT Owner     AS STRING
@@ -6,12 +7,17 @@ CLASS SQLListProcedureColumns INHERIT SQLCatalogQuery
 
 
 
+
+
+
+/// <include file="SQL.xml" path="doc/SQLListProcedureColumns.Execute/*" />
 METHOD Execute() 
 	LOCAL nRet AS INT
     LOCAL psz1, psz2, psz3, psz4 AS PSZ
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLListProcedureColumns:Execute()" )
 	#ENDIF
+
 
 	IF oStmt:StatementHandle = SQL_NULL_HSTMT
 		SELF:__AllocStmt()
@@ -29,11 +35,13 @@ METHOD Execute()
         psz4 := String2Psz(ColName)
     ENDIF
 
+
     nRet := SQLProcedureColumns( oStmt:StatementHandle,           ;
                                 psz1, _SLen( Qualifier ),;       
                                 psz2, _SLen( Owner ) ,    ;
                                 psz3, _SLen( ProcName ), ;
                                 psz4, _SLen( ColName )  )
+
 
 	IF nRet != SQL_SUCCESS
 		oStmt:ErrInfo := SQLErrorInfo{  SELF,       ;
@@ -42,18 +50,25 @@ METHOD Execute()
 										oStmt:__Connection:ConnHandle, ;
 										oStmt:StatementHandle }
 
+
 		RETURN FALSE
 	ENDIF
 
+
 	RETURN SUPER:Execute()
 
+
+/// <include file="SQL.xml" path="doc/SQLListProcedureColumns.ctor/*" />
 CONSTRUCTOR( cQualifier, cOwner, cProcName, cColName, oSQLConnection ) 
 
+
 	SUPER( oSQLConnection )
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLListProcedureColumns:Init()" )
 	#ENDIF
+
 
 	IF IsString( cQualifier )
 		SELF:Qualifier := cQualifier
@@ -61,17 +76,20 @@ CONSTRUCTOR( cQualifier, cOwner, cProcName, cColName, oSQLConnection )
 		SELF:Qualifier := NULL_STRING
 	ENDIF
 
+
 	IF IsString( cOwner )
 		SELF:Owner := cOwner
 	ELSE
 		SELF:Owner := NULL_STRING
 	ENDIF
 
+
 	IF IsString( cProcName )
 		SELF:ProcName := cProcName
 	ELSE
 		SELF:ProcName := NULL_STRING
 	ENDIF
+
 
 	IF IsString( cColName )
 		SELF:ColName := cColName
@@ -80,9 +98,14 @@ CONSTRUCTOR( cQualifier, cOwner, cProcName, cColName, oSQLConnection )
 	ENDIF
 
 
+
+
 	SELF:Execute()
+
 
 	RETURN 
 
+
 END CLASS
+
 

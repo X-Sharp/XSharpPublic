@@ -1,10 +1,7 @@
 
 
 CLASS MultiLineEdit INHERIT Edit
-
-
     PROPERTY ControlType AS ControlType GET ControlType.Mle
-
 
 	METHOD __GetText() AS STRING STRICT 
 		LOCAL cText AS STRING
@@ -16,8 +13,8 @@ CLASS MultiLineEdit INHERIT Edit
 		ENDIF
 		RETURN cText
 
-	ACCESS __MultiLineEdit AS VOMLETextBox
-		RETURN (VOMLETextBox) oCtrl
+	ACCESS __MultiLineEdit AS IVOMLETextBox
+		RETURN (IVOMLETextBox) oCtrl
 	
 	METHOD GetLine(nLineNumber, nMaxLength) 
 		LOCAL dwIndex AS LONG
@@ -90,7 +87,7 @@ CLASS MultiLineEdit INHERIT Edit
 
 		RETURN SELF
 
-	METHOD @@ScrollHorizontal(nChars) 
+	METHOD ScrollHorizontal(nChars) 
 		IF !IsLong(nChars)
 			WCError{#ScrollHorizontal, #MultiLineEdit, __WCSTypeError, nChars, 1}:@@Throw()
 		ENDIF
@@ -101,7 +98,7 @@ CLASS MultiLineEdit INHERIT Edit
 
 		RETURN SELF
 
-	METHOD @@ScrollVertical(nLines) 
+	METHOD ScrollVertical(nLines) 
 		IF !IsLong(nLines)
 			WCError{#ScrollVertical, #MultiLineEdit, __WCSTypeError, nLines, 1}:@@Throw()
 		ENDIF

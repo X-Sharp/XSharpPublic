@@ -16,9 +16,9 @@ begin namespace $rootnamespace$
 
         public constructor() strict
             InitializeComponent()
-			return
+            return
 
-		/// <summary>
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private components := null as System.ComponentModel.IContainer
@@ -33,7 +33,7 @@ begin namespace $rootnamespace$
                 components:Dispose()
             endif
             Super:Dispose(disposing)
-			return
+            return
 
         #region Windows Form Designer generated code
 
@@ -45,7 +45,7 @@ begin namespace $rootnamespace$
             self:components := System.ComponentModel.Container{}
             self:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
             self:Text := "$safeitemrootname$"
-			return
+            return
 
         #endregion
     end class

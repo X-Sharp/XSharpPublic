@@ -1,7 +1,8 @@
 
+
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Data
@@ -13,6 +14,10 @@ USING System.Runtime.ConstrainedExecution
 USING System.Runtime.InteropServices
 USING System.Collections.Generic
 USING XSharp.Data
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection/*" />
+[XSharp.Internal.TypesChanged];
 CLASS SQLConnection
 	#region IVars
 	// VO Compatible Ivars
@@ -34,23 +39,28 @@ CLASS SQLConnection
 	PROTECT nIdentifierCase        AS Int32
 	PROTECT nQuotedIdentifierCase  AS Int32
 	PROTECT nSupportedJoinOperators as Int32
-	
+
+
 	// DotNet Specific Ivars
 	PROTECT oNetConn         AS DbConnection
 	PROTECT oTransaction     AS DbTransaction
-	PRIVATE oFactory         AS XSharp.Data.ISqlFactory 
+	PRIVATE oFactory         AS XSharp.Data.ISqlFactory
 	#endregion
 	#region static ivars
-	
+
+
 	STATIC PROTECT aInfoString  AS List<INT>
 	STATIC PROTECT aInfoWord    AS List<INT>
 	STATIC PROTECT aInfoDWord   AS List<INT>
-	STATIC INTERNAL lConnErrMsg := TRUE    AS LOGIC   
-	STATIC INTERNAL oDefConnection AS SQLConnection 
-	
+	STATIC INTERNAL lConnErrMsg := TRUE    AS LOGIC
+	STATIC INTERNAL oDefConnection AS SQLConnection
+
+
 	#endregion
-	
+
+
 	#region Constructors and Destructors
+/// <include file="Sql.xml" path="doc/SQLConnection.ctor/*" />
 	CONSTRUCTOR ( cConnStr, cUserID, cPassword )
         SELF:oFactory := XSharp.Data.Functions.GetSqlFactory()
 		aStmts := List<SQLStatement>{}
@@ -65,8 +75,10 @@ CLASS SQLConnection
 			SELF:Connect( cConnStr, cUser, cAuthString )
 			SELF:_ParseConnectionString()
 		ENDIF
-	RETURN 
-	
+	RETURN
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.dtor/*" />
 	DESTRUCTOR
 		SELF:Disconnect()
 		IF SELF:oNetConn != NULL_OBJECT
@@ -75,10 +87,13 @@ CLASS SQLConnection
 		ENDIF
 	RETURN
 	#endregion
-	
+
+
 	#region Transactions
-	
-	METHOD BeginTransaction() 
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.BeginTransaction/*" />
+	METHOD BeginTransaction()
 		LOCAL lOk AS LOGIC
 		TRY
 			lOk := FALSE
@@ -90,8 +105,10 @@ CLASS SQLConnection
 			lOk := FALSE
 		END TRY
 		RETURN lOk
-	
-	METHOD EndTransaction() 
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.EndTransaction/*" />
+	METHOD EndTransaction()
 		LOCAL lOk AS LOGIC
 		TRY
 			lOk := FALSE
@@ -107,9 +124,12 @@ CLASS SQLConnection
 			lOk := FALSE
 		END TRY
 		RETURN lOk
-	
-	
-	METHOD Commit() 
+
+
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.Commit/*" />
+	METHOD Commit()
 		LOCAL lOk AS LOGIC
 		TRY
 			lOk := FALSE
@@ -120,14 +140,17 @@ CLASS SQLConnection
 				SELF:oTransaction:Dispose()
 				SELF:oTransaction := NULL_OBJECT
 				lOk := TRUE
-				
+
+
 			ENDIF
 		CATCH
 			lOk := FALSE
 		END TRY
 		RETURN lOk
-	
-	METHOD Rollback() 
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.Rollback/*" />
+	METHOD Rollback()
 		LOCAL lOk AS LOGIC
 		TRY
 			lOk := FALSE
@@ -144,11 +167,15 @@ CLASS SQLConnection
 		END TRY
 		RETURN lOk
 	#endregion
-	
+
+
 	#region Connect & Disconnect
 
-	METHOD Connect( uConnStr, uUserID, uPassword ) 
-		
+
+/// <include file="Sql.xml" path="doc/SQLConnection.Connect/*" />
+	METHOD Connect( uConnStr, uUserID, uPassword )
+
+
 		LOCAL lRet    := FALSE   AS LOGIC
 		LOCAL ex          AS Exception
 		LOCAL cConnStr AS STRING
@@ -159,7 +186,7 @@ CLASS SQLConnection
 		@@Default( REF uPassword, SELF:Password )
 		cConnStr := (STRING) uConnStr
 		cUserID  := (STRING) uUserID
-		cPassword := (STRING) uPassword        
+		cPassword := (STRING) uPassword
 		IF !SELF:Connected
 			cConnStr := oFactory:BeforeConnect(cConnStr, cUserID, cPassword)
 			SELF:cConnectString := cConnStr
@@ -184,6 +211,8 @@ CLASS SQLConnection
 		ENDIF
 		RETURN lRet
 
+
+/// <include file="Sql.xml" path="doc/SQLConnection.NetConnect/*" />
 	METHOD NetConnect() AS Exception
 		LOCAL ex := NULL AS Exception
 		TRY
@@ -193,7 +222,7 @@ CLASS SQLConnection
 //			IF oBuilder IS MySQL.Data.MySqlClient.MySQLConnectionStringBuilder
 //				LOCAL oBuilder2 AS MySQL.Data.MySqlClient.MySQLConnectionStringBuilder
 //				oBuilder2 := (MySQL.Data.MySqlClient.MySQLConnectionStringBuilder) oBuilder
-//				oBuilder2:AllowLoadLocalInfile := TRUE		
+//				oBuilder2:AllowLoadLocalInfile := TRUE
 //			ENDIF
 			SELF:NetConn:ConnectionString := oBuilder:ToString()
 			SELF:NetConn:Open()
@@ -207,18 +236,26 @@ CLASS SQLConnection
 		END TRY
 		RETURN ex
 
-	
+
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.DataSource/*" />
 	PROPERTY DataSource AS STRING GET cDSN      SET cDSN := value
+/// <include file="Sql.xml" path="doc/SQLConnection.Server/*" />
 	PROPERTY Server     AS STRING GET cServer   SET cServer     := value
-	
-	METHOD Disconnect() 
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.Disconnect/*" />
+	METHOD Disconnect()
 		LOCAL lRet      AS LOGIC
-		
+
+
 		FOREACH VAR oStmt IN aStmts:ToArray()
     		oStmt:Destroy()
 		NEXT
-		
-		IF SELF:Connected 
+
+
+		IF SELF:Connected
 			TRY
 				SELF:Rollback()
                 oFactory:BeforeDisConnect(SELF:NetConn)
@@ -234,21 +271,25 @@ CLASS SQLConnection
 				oErrInfo := SQLErrorInfo{SELF, #Disconnect,  e}
 				lRet := FALSE
 			END TRY
-			
+
+
 			IF lRet
 				oErrInfo:ErrorFlag := FALSE
 			ENDIF
 		ELSE
 			lRet := TRUE
 		ENDIF
-		
+
+
 		UnRegisterAxit( SELF )
-		
+
+
 		RETURN TRUE
-	
-	
-	
-	
+
+
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.DriverConnect/*" />
 	METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
         LOCAL cResult AS STRING
         LOCAL lRet    := FALSE AS LOGIC
@@ -257,7 +298,7 @@ CLASS SQLConnection
         ENDIF
 		cResult  := SELF:oFactory:DriverConnect(hWindow, nDriverCompletion, cConnStrIn)
         IF ! Empty(cResult)
-            SELF:cConnectString := cResult        
+            SELF:cConnectString := cResult
             LOCAL oBuilder AS DbConnectionStringBuilder
             oBuilder  := oFactory:CreateConnectionStringBuilder()
             oBuilder:ConnectionString := cResult
@@ -265,7 +306,7 @@ CLASS SQLConnection
                 cDSN := oBuilder["DataSource"]:ToString()
             ELSEIF oBuilder:ContainsKey("DSN")
                 cDSN := oBuilder["DSN"]:ToString()
-            ENDIF            
+            ENDIF
             IF oBuilder:ContainsKey("UID" )
                 cUser := oBuilder["UID"]:ToString()
             ENDIF
@@ -284,7 +325,8 @@ CLASS SQLConnection
                 cServer         := oTempConn:DataSource
                 cConnectString  := oTempConn:ConnectionString
                 cDatabase       := oTempConn:Database
-                
+
+
                 cVersion        := oTempConn:ServerVersion
                 IF SELF:oNetConn != NULL_OBJECT .AND. SELF:oNetConn:State == ConnectionState.Open
                     SELF:oNetConn:Close()
@@ -292,7 +334,8 @@ CLASS SQLConnection
                 ENDIF
                 SELF:oNetConn   := oTempConn
                 SELF:_ReadProperties()
-                
+
+
             CATCH AS Exception
                 lRet := FALSE
             END TRY
@@ -300,16 +343,21 @@ CLASS SQLConnection
             lRet := FALSE
         ENDIF
 		RETURN lRet
-	
-	METHOD Reconnect() 
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.Reconnect/*" />
+	METHOD Reconnect()
 		IF SELF:Connected
 			SELF:Disconnect()
 		ENDIF
-		RETURN SELF:Connect()  
-	
+		RETURN SELF:Connect()
+
+
 	#endregion
-	
+
+
 	#region .NET Extensions
+/// <include file="Sql.xml" path="doc/SQLConnection.GetSchemaTable/*" />
 	METHOD GetSchemaTable(cSchema AS STRING, aFilter AS STRING[]) AS DataTable
 		LOCAL oTable AS DataTable
 		LOCAL lFound := FALSE AS LOGIC
@@ -320,7 +368,7 @@ CLASS SQLConnection
 			FOREACH oRow AS DataRow IN oTable:Rows
 				IF String.Compare( (STRING)oRow:Item["CollectionName"], cSchema, StringComparison.OrdinalIgnoreCase) == 0
 					lFound := TRUE
-					nRestrictions := (INT) oRow:Item["NumberOfRestrictions"] 
+					nRestrictions := (INT) oRow:Item["NumberOfRestrictions"]
 					EXIT
 				ENDIF
 			NEXT
@@ -348,7 +396,9 @@ CLASS SQLConnection
 			SELF:__GenerateSqlError( e:Message, #GetSchema )
 		END TRY
 		RETURN NULL
-	
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.GetSchema/*" />
 	METHOD GetSchema(cSchema AS STRING, aFilter AS STRING[]) AS SQLCatalogQuery
 		LOCAL oSqlCatalog AS SQLCatalogQuery
 		LOCAL oTable AS DataTable
@@ -362,11 +412,14 @@ CLASS SQLConnection
 				RETURN oSqlCatalog
 			ENDIF
 		CATCH AS Exception
-			THROW 
+			THROW
 		END TRY
 		RETURN NULL_OBJECT
-	
-	
+
+
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection._CreateConnection/*" />
 	METHOD _CreateConnection() AS DbConnection STRICT
 		IF SELF:Factory == NULL
 			THROW NullReferenceException{"Factory has not been set"}
@@ -374,7 +427,9 @@ CLASS SQLConnection
 		LOCAL oConn AS DbConnection
 		oConn := SELF:Factory:CreateConnection()
 		RETURN oConn
-	
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection._CreateCommand/*" />
 	METHOD _CreateCommand() AS DbCommand STRICT
 		IF SELF:Factory == NULL
 			THROW NullReferenceException{"Factory has not been set"}
@@ -384,7 +439,9 @@ CLASS SQLConnection
 		oCmd:Connection := SELF:NetConn
 		oCmd:CommandTimeout := 0
 		RETURN oCmd
-	
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection._CreateParameter/*" />
 	METHOD _CreateParameter() AS DbParameter STRICT
 		IF SELF:Factory == NULL
 			THROW NullReferenceException{"Factory has not been set"}
@@ -392,7 +449,9 @@ CLASS SQLConnection
 		LOCAL oPar AS DbParameter
 		oPar := SELF:Factory:CreateParameter()
 		RETURN oPar
-	
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection._CreateDataAdapter/*" />
 	METHOD _CreateDataAdapter() AS DbDataAdapter STRICT
 		IF SELF:Factory == NULL
 			THROW NullReferenceException{"Factory has not been set"}
@@ -400,8 +459,11 @@ CLASS SQLConnection
 		LOCAL oDba AS DbDataAdapter
 		oDba := SELF:Factory:CreateDataAdapter()
 		RETURN oDba
-	
-	
+
+
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection._ParseConnectionString/*" />
 	METHOD _ParseConnectionString() AS VOID
 		LOCAL oBuilder AS DbConnectionStringBuilder
 		oBuilder := Factory:CreateConnectionStringBuilder()
@@ -435,14 +497,16 @@ CLASS SQLConnection
 		IF oBuilder:ContainsKey("Driver")
 			cDriver := oBuilder["Driver"]:ToString()
 		ENDIF
-		RETURN     
-				   
+		RETURN
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection._ReadProperties/*" />
 	METHOD _ReadProperties AS VOID STRICT
 		// Read Some values from the provider
 		LOCAL oTable AS DataTable
 		LOCAL oRow AS DataRow
 		LOCAL oBuilder AS DbConnectionStringBuilder
-		oTable := GetSchemaTable("DataSourceInformation",NULL)
+		oTable := SELF:GetSchemaTable("DataSourceInformation",NULL)
 		oRow := oTable:Rows[0]
 		SELF:cDataSourceName            := (STRING) oRow["DataSourceProductName"]
 		SELF:cDataSourceVersion         := (STRING) oRow["DataSourceProductVersion"]
@@ -454,49 +518,65 @@ CLASS SQLConnection
 		oTable:Dispose()
 		oBuilder := SELF:Factory:CreateConnectionStringBuilder()
 		oBuilder:ConnectionString := SELF:NetConn:ConnectionString
-		IF String.IsNullOrEmpty(SELF:cUser) 
+		IF String.IsNullOrEmpty(SELF:cUser)
 			IF oBuilder:ContainsKey("UID")
 				SELF:cUser := oBuilder["UID"]:ToString()
 			ELSEIF oBuilder:ContainsKey("UserId")
 				SELF:cUser := oBuilder["UserId"]:ToString()
 			ENDIF
 		ENDIF
-		IF String.IsNullOrEmpty(SELF:cAuthString) 
+		IF String.IsNullOrEmpty(SELF:cAuthString)
 			IF oBuilder:ContainsKey("PWD")
 				SELF:cAuthString := oBuilder["PWD"]:ToString()
 			ELSEIF oBuilder:ContainsKey("PASSWORD")
 				SELF:cAuthString := oBuilder["PASSWORD"]:ToString()
 			ENDIF
 		ENDIF
-		RETURN     
+		RETURN
 	#endregion
-	
+
+
 	#region Obsolete Properties
+/// <include file="Sql.xml" path="doc/SQLConnection.IsolationOption/*" />
 	[Obsolete];
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-	PROPERTY IsolationOption  AS LONG GET 0 
+	PROPERTY IsolationOption  AS LONG GET 0
+
+/// <include file="Sql.xml" path="doc/SQLConnection.ODBCCursors/*" />
 	[Obsolete];
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)];
-	PROPERTY ODBCCursors AS LONG GET 0 
+	PROPERTY ODBCCursors AS LONG GET 0
+
+    /// <include file="Sql.xml" path="doc/SQLConnection.PositionOps/*" />
 	[Obsolete];
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PROPERTY PositionOps AS LOGIC  GET TRUE
+
+/// <include file="Sql.xml" path="doc/SQLConnection.ScrollConcurrency/*" />
 	[Obsolete];
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PROPERTY ScrollConcurrency AS LONG GET 0
-	[Obsolete];
+/// <include file="Sql.xml" path="doc/SQLConnection.ScrollCsr/*" />
+
+    [Obsolete];
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PROPERTY ScrollCsr AS LOGIC GET TRUE SET Today()
+
+/// <include file="Sql.xml" path="doc/SQLConnection.ConnHandle/*" />
 	[Obsolete];
 	[DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PROPERTY ConnHandle AS IntPtr GET NULL
-	
+
+
 	#endregion
-	
+
+
 	#region Obsolete methods
-	
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.GetConnectOption/*" />
 	[Obsolete];
-	METHOD GetConnectOption( nOption AS DWORD ) 
+	METHOD GetConnectOption( nOption AS DWORD )
 		//LOCAL oHandle AS OBJECT
 		//LOCAL oMethodInfo AS MethodInfo
 		//LOCAL oType       AS System.Type
@@ -516,7 +596,7 @@ CLASS SQLConnection
 		//IF nOption = SQL_OPT_TRACEFILE .OR. ;
 		//    nOption = SQL_TRANSLATE_DLL .or. ;
 		//    nOption == SQL_ATTR_TRANSLATE_LIB .or.;
-		//    nOption == SQL_ATTR_CURRENT_CATALOG 
+		//    nOption == SQL_ATTR_CURRENT_CATALOG
 		//    LOCAL sRet AS STRING
 		//    sRet := System.Text.Encoding.Unicode:GetString(buffer,0, (LONG) params[3])
 		//    IF sRet:IndexOf('\0') >= 0
@@ -527,10 +607,13 @@ CLASS SQLConnection
 		//    uRet := BitConverter.ToInt32(buffer,0)
 		//ENDIF
 		//RETURN uRet
-		RETURN NIL    
-	
-	
-	METHOD Info( nInfoType AS WORD) 
+		RETURN NIL
+
+
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.Info/*" />
+	METHOD Info( nInfoType AS WORD)
 		SWITCH nInfoType
         CASE SQL_DRIVER_NAME	// 6
             RETURN oFactory:GetName(oNetConn)
@@ -543,22 +626,26 @@ CLASS SQLConnection
 		CASE SQL_DBMS_VER		// 18
 			RETURN cVersion
         CASE SQL_IDENTIFIER_QUOTE_CHAR // 29
-            RETURN oFactory:QuoteChar       
+            RETURN oFactory:QuoteChar
         OTHERWISE
-		    IF aInfoDWord:Contains( nInfoType ) 
+		    IF aInfoDWord:Contains( nInfoType )
 			    RETURN 0U
-		    ELSEIF aInfoString:Contains(  nInfoType ) 
+		    ELSEIF aInfoString:Contains(  nInfoType )
 			    RETURN String.Empty
-		    ELSEIF aInfoWord:Contains(  nInfoType ) 
+		    ELSEIF aInfoWord:Contains(  nInfoType )
 			    RETURN (WORD) 0
 			ENDIF
-			
+
+
 		END SWITCH
-		
+
+
 		RETURN NIL
-	
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.isFunction/*" />
 	[Obsolete];
-	METHOD isFunction( nFunction AS WORD ) 
+	METHOD isFunction( nFunction AS WORD )
 		//LOCAL oHandle AS OBJECT
 		//LOCAL oMethodInfo AS MethodInfo
 		//LOCAL oType       AS System.Type
@@ -573,10 +660,12 @@ CLASS SQLConnection
 		//siRet := (SHORTINT) oMethodInfo:Invoke(oHandle, params)
 		//SELF:oErrInfo:ErrorFlag := (siRet < 0)
 		//RETURN ((SHORTINT) params[2]) != 0
-		RETURN TRUE    
-	
+		RETURN TRUE
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.SetConnectOption/*" />
 	[Obsolete];
-	METHOD SetConnectOption( nOption AS WORD, uValue AS USUAL) 
+	METHOD SetConnectOption( nOption AS WORD, uValue AS USUAL)
 		//LOCAL oHandle AS OBJECT
 		//LOCAL oMethodInfo AS MethodInfo
 		//LOCAL oType       AS System.Type
@@ -599,53 +688,75 @@ CLASS SQLConnection
 		//    SELF:oErrInfo:ErrorFlag := siRet < 0
 		//RETURN TRUE
 		//ENDIF
-		//RETURN FALSE    
-		RETURN FALSE    
+		//RETURN FALSE
+		RETURN FALSE
 
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __AllocConnect() AS LOGIC 
+	METHOD __AllocConnect() AS LOGIC
 		RETURN TRUE
-	
-	
+
+
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __AllocEnv() AS LOGIC 
+	METHOD __AllocEnv() AS LOGIC
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __CheckActiveStmts() AS LOGIC 
+	METHOD __CheckActiveStmts() AS LOGIC
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __CheckIdentQuoteChar() AS LOGIC 
+	METHOD __CheckIdentQuoteChar() AS LOGIC
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __CheckPositionOps() AS LOGIC 
+	METHOD __CheckPositionOps() AS LOGIC
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __CheckQE() AS LOGIC 
+	METHOD __CheckQE() AS LOGIC
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __CheckScrollable() AS LOGIC 
+	METHOD __CheckScrollable() AS LOGIC
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __CloseExtraStmt(oStmt AS SQLStatement)  AS VOID 
-		RETURN 
+	METHOD __CloseExtraStmt(oStmt AS SQLStatement)  AS VOID
+		RETURN
+ /// <exclude />
 	[Obsolete];
-	METHOD __Free() AS LOGIC 
+	METHOD __Free() AS LOGIC
 		RETURN TRUE
+ /// <exclude />
 	[Obsolete];
-	METHOD __FreeConnect() AS LOGIC 
+	METHOD __FreeConnect() AS LOGIC
 		RETURN TRUE
+ /// <exclude />
 	[Obsolete];
 	METHOD __FreeEnv () AS LOGIC
 		RETURN TRUE
 	#endregion
-	
-	METHOD __GenerateSqlError( cErrorString AS STRING, symMethod AS SYMBOL) AS SQLErrorInfo 
+
+
+ /// <exclude />
+	METHOD __GenerateSqlError( cErrorString AS STRING, symMethod AS SYMBOL) AS SQLErrorInfo
 		SELF:oErrInfo:ErrorMessage := __CavoStr( __CAVOSTR_SQLCLASS__ODBC_VO ) +   ;
 		Symbol2String( ClassName( SELF ) ) +   ;
 		":" + Symbol2String( symMethod ) +    ;
@@ -660,18 +771,24 @@ CLASS SQLConnection
 		SELF:oErrInfo:Severity    := ES_ERROR
 		SELF:oErrInfo:ReturnCode  := SQL_SUCCESS
 		RETURN oErrInfo
-	
-	METHOD __GetExtraStmt(cStmtText AS STRING) AS SQLStatement 
+
+
+ /// <exclude />
+	METHOD __GetExtraStmt(cStmtText AS STRING) AS SQLStatement
 		LOCAL oNewStmt AS SQLStatement
 		oNewStmt := SQLStatement{ cStmtText, SELF}
 		RETURN oNewStmt
-	
-	METHOD __RegisterStmt( oStmt AS SQLStatement ) AS LOGIC 
+
+
+ /// <exclude />
+	METHOD __RegisterStmt( oStmt AS SQLStatement ) AS LOGIC
 		IF ! aStmts:Contains(oStmt)
 			aStmts:Add(oStmt)
 		ENDIF
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	METHOD __UnregisterStmt( oStmt AS SQLStatement ) AS LOGIC
         LOCAL lRet := FALSE AS LOGIC
 		IF aStmts:Contains(oStmt)
@@ -679,20 +796,33 @@ CLASS SQLConnection
             lRet := TRUE
 		ENDIF
 		RETURN lRet
-	
-	
+
+
+
+
 	#region Properties
+/// <include file="Sql.xml" path="doc/SQLConnection.DataSourceName/*" />
 	PROPERTY DataSourceName                         AS STRING GET cDataSourceName
+/// <include file="Sql.xml" path="doc/SQLConnection.DataSourceVersion/*" />
 	PROPERTY DataSourceVersion                      AS STRING GET SELF:cDataSourceVersion
+/// <include file="Sql.xml" path="doc/SQLConnection.OrderByColumnsInSelect/*" />
 	PROPERTY OrderByColumnsInSelect                 AS LOGIC GET SELF:lOrderByColumnsInSelect
+/// <include file="Sql.xml" path="doc/SQLConnection.GroupByBehavior/*" />
 	PROPERTY GroupByBehavior                        AS GroupByBehavior GET (GroupByBehavior) nGroupByBehavior
+/// <include file="Sql.xml" path="doc/SQLConnection.IdentifierCase/*" />
 	PROPERTY IdentifierCase                         AS IdentifierCase GET (IdentifierCase) nIdentifierCase
+/// <include file="Sql.xml" path="doc/SQLConnection.QuotedIdentifierCase/*" />
 	PROPERTY QuotedIdentifierCase                   AS IdentifierCase GET (IdentifierCase) nQuotedIdentifierCase
+/// <include file="Sql.xml" path="doc/SQLConnection.SupportedJoinOperators/*" />
 	PROPERTY SupportedJoinOperators                 AS SupportedJoinOperators GET (SupportedJoinOperators) nSupportedJoinOperators
-	
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.AccessMode/*" />
 	PROPERTY AccessMode                             AS LONG GET SQL_MODE_READ_WRITE
 
-	PROPERTY NetConn AS DbConnection 
+
+/// <include file="Sql.xml" path="doc/SQLConnection.NetConn/*" />
+	PROPERTY NetConn AS DbConnection
 		GET
 			IF SELF:oNetConn == NULL_OBJECT
 				SELF:oNetConn := SELF:_CreateConnection()
@@ -700,34 +830,43 @@ CLASS SQLConnection
 			RETURN oNetConn
 		END GET
     END PROPERTY
-    
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.Connected/*" />
 	PROPERTY Connected AS LOGIC
-		GET 
+		GET
 			IF SELF:oNetConn != NULL_OBJECT
 				RETURN SELF:oNetConn:State == ConnectionState.Open
 			ENDIF
 			RETURN FALSE
 		END GET
 	END PROPERTY
-	
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.ConnectionHandle/*" />
 	PROPERTY ConnectionHandle AS DbConnection GET SELF:NetConn
-	PROPERTY ConnectString AS STRING 
-		GET 
-			RETURN SELF:cConnectString 
+/// <include file="Sql.xml" path="doc/SQLConnection.ConnectString/*" />
+	PROPERTY ConnectString AS STRING
+		GET
+			RETURN SELF:cConnectString
 		END GET
-		SET 
+		SET
 			SELF:Disconnect()
 			SELF:cConnectString := value
 			SELF:_ParseConnectionString()
 		END SET
     END PROPERTY
-    
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.ErrInfo/*" />
 	ACCESS ErrInfo AS SQLErrorInfo
 		IF oErrInfo:ErrorFlag
 			RETURN oErrInfo
 		ENDIF
 		RETURN NULL
-	
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.HyperLabel/*" />
 	ACCESS HyperLabel AS HyperLabel
 		LOCAL oHL := NULL AS HyperLabel
 		IF SLen( SELF:cDatabase ) > 0
@@ -738,14 +877,19 @@ CLASS SQLConnection
 		ENDIF
 		RETURN oHL
 
-	
+
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.IdentifierQuoteChar/*" />
 	PROPERTY IdentifierQuoteChar AS STRING GET oFactory:QuoteChar
-	
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.Password/*" />
 	PROPERTY Password   AS STRING
-		GET 
+		GET
 			RETURN SELF:cAuthString
 		END GET
-		SET 
+		SET
 			IF  !SELF:Connected
 				SELF:cAuthString := value
 			ELSE
@@ -754,17 +898,22 @@ CLASS SQLConnection
 			ENDIF
 		END SET
 	END PROPERTY
-	
-	PROPERTY Factory    AS XSharp.Data.ISqlFactory 
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.Factory/*" />
+	PROPERTY Factory    AS XSharp.Data.ISqlFactory
 		GET
 			RETURN oFactory
 		END GET
 	END PROPERTY
-	
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.Status/*" />
 	PROPERTY Status AS HyperLabel
 		GET
 			LOCAL oStatus := NULL AS HyperLabel
-			 
+
+
 			IF oErrInfo:ErrorFlag
 				oStatus := HyperLabel{  oErrInfo:FuncSym,  ;
 				oErrInfo:SQLState, ;
@@ -776,24 +925,30 @@ CLASS SQLConnection
 	END PROPERTY
 
 
+
+
+/// <include file="Sql.xml" path="doc/SQLConnection.UserID/*" />
 	PROPERTY UserID AS STRING
-		GET 
+		GET
 			RETURN SELF:cUser
 		END GET
-		SET 
+		SET
 			IF !SELF:Connected
 				SELF:cUser := value
 			ELSE
 				SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__CONNECTED ), #UserID )
 				oErrInfo:Throw()
 			ENDIF
-			RETURN 
+			RETURN
 		END SET
 	END PROPERTY
-	
+
+
+
 
 	#endregion
-	
+
+
 	STATIC METHOD GetODBCDataSources AS ARRAY
 		LOCAL aSources  AS ARRAY
 		LOCAL oEnum     AS DbDataSourceEnumerator
@@ -831,13 +986,17 @@ CLASS SQLConnection
 			oKey:Close()
             ENDIF
 		ENDIF
-		
+
+
 		RETURN aSources
-	
-	
+
+
+
+
 	/*
 	STATIC METHOD OpenConnection()                  AS SQLConnection
-	
+
+
 	//
 	// Displays a dialog box that displays a list of available ODBC data sources.
 	// Note: if only one ODBC driver is installed on the system, it immediately
@@ -848,18 +1007,21 @@ CLASS SQLConnection
 	oConn := SQLConnection{}
 	oConn:DriverConnect()
 	RETURN oConn
-	
+
+
 	*/
 	STATIC INTERNAL METHOD SetConnection( oNewConnection := NULL AS SQLConnection ) AS SQLConnection STRICT
 		LOCAL oDefConn      AS SQLConnection
 		oDefConn    := SQLConnection.oDefConnection
 		IF oNewConnection != NULL
-			SQLConnection.oDefConnection := oNewConnection            
+			SQLConnection.oDefConnection := oNewConnection
 		ENDIF
 		RETURN oDefConn
-	
-	
-	STATIC CONSTRUCTOR 
+
+
+
+
+	STATIC CONSTRUCTOR
 		// Initialize
 		aInfoString := List<INT>{}{     ;
 		SQL_ACCESSIBLE_PROCEDURES,      ;
@@ -905,7 +1067,8 @@ CLASS SQLConnection
 		SQL_TABLE_TERM,                 ;
 		SQL_USER_NAME ,                  ;
 		SQL_XOPEN_CLI_YEAR}
-		
+
+
 		aInfoWord := List<INT>{}{                   ;
 		SQL_AGGREGATE_FUNCTIONS,         ;
 		SQL_ACTIVE_ENVIRONMENTS,         ;
@@ -937,7 +1100,8 @@ CLASS SQLConnection
 		SQL_QUOTED_IDENTIFIER_CASE,;
 		SQL_TXN_CAPABLE ;
 		}
-		
+
+
 		aInfoDWord  := List<INT>{}{        ;
 		SQL_ACTIVE_CONNECTIONS,          ;
 		SQL_ACTIVE_STATEMENTS,           ;
@@ -1048,12 +1212,15 @@ CLASS SQLConnection
 		SQL_TIMEDATE_FUNCTIONS,;
 		SQL_TXN_ISOLATION_OPTION,;
 		SQL_UNION}
-		
+
+
 	RETURN
-	
-	// Wird nicht geloggt, das Logging ist in der Schicht drüber
+
+
+	// Wird nicht geloggt, das Logging ist in der Schicht drï¿½ber
+/// <include file="Sql.xml" path="doc/SQLConnection.DoSimpleSelect/*" />
 	METHOD DoSimpleSelect(cSelect AS STRING)  AS USUAL
-	// Schickt ein SQL-Select an den Server und gibt das erste Feld zurück
+	// Schickt ein SQL-Select an den Server und gibt das erste Feld zurï¿½ck
 	LOCAL oRetVal AS OBJECT
 	LOCAL uRetVal AS USUAL
 	LOCAL oCmd  := NULL AS DbCommand
@@ -1070,45 +1237,58 @@ CLASS SQLConnection
 		oCmd:Dispose()
 	ENDIF
 
+
 	RETURN uRetVal
 
-	
-	
+
 END CLASS
+
+
 
 
 #region Obsolete Functions
 
+
+/// <include file="Sql.xml" path="doc/SQLDropMyConnection/*" />
 [Obsolete];
 FUNCTION SQLDropMyConnection( cMySourceName, cMyUserID, cMyPassword ) AS LOGIC
 	RETURN TRUE
 
+
+/// <include file="Sql.xml" path="doc/GetMyConnection/*" />
 [Obsolete];
 FUNCTION GetMyConnection( cMySourceName, cMyUserID, cMyPassword )
 	RETURN NULL_OBJECT
 
+
+/// <include file="Sql.xml" path="doc/SQLOpenConnection/*" />
 [Obsolete];
 FUNCTION SQLOpenConnection()  AS SQLConnection
 	LOCAL oConn              AS SQLConnection
 	oConn := SQLConnection{}
 	oConn:DriverConnect()
 	RETURN oConn
-	
 
 
 #endregion
 
+
+/// <include file="Sql.xml" path="doc/SQLSetConnection/*" />
 FUNCTION SQLSetConnection( oSQLConnection ) AS SQLConnection
 	RETURN SQLConnection.SetConnection(oSQLConnection)
 
+
+/// <include file="Sql.xml" path="doc/SQLGetDataSources/*" />
 FUNCTION SQLGetDataSources() AS ARRAY
 	RETURN SQLConnection.GetODBCDataSources()
 
 
+
+
+/// <include file="Sql.xml" path="doc/SQLConnectErrorMsg/*" />
 FUNCTION SQLConnectErrorMsg( lValue ) AS LOGIC
 	@@Default( REF lValue, FALSE )
 	SQLConnection.lConnErrMsg := lValue
 	RETURN SQLConnection.lConnErrMsg
-
 
 

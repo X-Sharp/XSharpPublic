@@ -41,6 +41,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentNullException("serviceProviderParameter");
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             this._serviceProvider = serviceProviderParameter;
             this._projectDocTracker = _serviceProvider.GetService(typeof(SVsTrackProjectDocuments)) as IVsTrackProjectDocuments2;
@@ -155,6 +156,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void Dispose()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -163,7 +166,8 @@ namespace Microsoft.VisualStudio.Project
         #region methods
         public void Init()
         {
-            if(this.ProjectDocumentTracker2 != null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (this.ProjectDocumentTracker2 != null)
             {
                 this.ProjectDocumentTracker2.AdviseTrackProjectDocumentsEvents(this, out this.eventsCookie);
             }
@@ -177,7 +181,9 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void Dispose(bool disposing)
         {
             // Everybody can go here.
-            if(!this.isDisposed)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (!this.isDisposed)
             {
                 // Synchronize calls to the Dispose simulteniously.
                 lock(Mutex)

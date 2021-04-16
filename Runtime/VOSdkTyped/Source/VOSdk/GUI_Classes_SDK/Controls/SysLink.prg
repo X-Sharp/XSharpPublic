@@ -5,10 +5,10 @@ CLASS SysLink INHERIT TextControl
 
     PROPERTY ControlType AS ControlType GET ControlType.SysLink
 
-    PROPERTY __LinkLabel AS VOLinkLabel GET (VOLinkLabel) oCtrl
+    PROPERTY __LinkLabel AS IVOLinkLabel GET (IVOLinkLabel) oCtrl
 
-    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
-      LOCAL oLL := (VOLinkLabel) oC AS VOLinkLabel
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
+      LOCAL oLL := (IVOLinkLabel) oC AS IVOLinkLabel
       oLL:LinkClicked += LinkClicked
 
 

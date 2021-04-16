@@ -16,11 +16,17 @@ namespace XSharp.MacroCompiler
         System_Int32,
         System_UInt32,
         System_Runtime_CompilerServices_IsConst,
+        System_IDisposable,
+        System_Collections_IEnumerator,
+        System_Collections_Generic_IEnumerator_T1,
+        System_Exception,
         ClipperCallingConventionAttribute,
         DefaultParameterValueAttribute,
         XSharp_Internal_VOStructAttribute,
         XSharp_Internal_ClassLibraryAttribute,
         XSharp_Internal_CompilerServices,
+        XSharp_Internal_WrappedException,
+        XSharp_Error,
         ImplicitNamespaceAttribute,
         XSharp_RT_Functions,
         XSharp_Codeblock,
@@ -33,7 +39,7 @@ namespace XSharp.MacroCompiler
         XSharp___ArrayBase_T1,
         XSharp___WinBool,
     }
-
+ 
     public static partial class Compilation
     {
         static string[] TypeNames =
@@ -42,11 +48,17 @@ namespace XSharp.MacroCompiler
             "System.Int32",
             "System.UInt32",
             "System.Runtime.CompilerServices.IsConst",
+            "System.IDisposable",
+            "System.Collections.IEnumerator",
+            "System.Collections.Generic.IEnumerator`1",
+            "System.Exception",
             XSharpQualifiedTypeNames.ClipperCallingConvention + "|" + VulcanQualifiedTypeNames.ClipperCallingConvention,
             XSharpQualifiedTypeNames.DefaultParameterAttribute + "|" + VulcanQualifiedTypeNames.DefaultParameterAttribute,
             "XSharp.Internal.VOStructAttribute|Vulcan.Internal.VOStructAttribute",
             "XSharp.Internal.ClassLibraryAttribute|Vulcan.Internal.VulcanClassLibraryAttribute",
             "XSharp.Internal.CompilerServices|Vulcan.Internal.CompilerServices",
+            XSharpQualifiedTypeNames.WrappedException + "|" + VulcanQualifiedTypeNames.WrappedException,
+            XSharpQualifiedTypeNames.Error + "|" + VulcanQualifiedTypeNames.Error,
             "XSharp.ImplicitNamespaceAttribute|Vulcan.VulcanImplicitNamespaceAttribute",
             "XSharp.RT.Functions|VulcanRTFuncs.Functions",
             "XSharp.Codeblock|Vulcan.Codeblock",

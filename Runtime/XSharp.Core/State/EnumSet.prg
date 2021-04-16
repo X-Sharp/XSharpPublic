@@ -10,9 +10,9 @@ BEGIN NAMESPACE XSharp
     /// <remarks>Global settings are stored in the RuntimeState and are thread specific.
     /// The numeric value of these sets indicate the key of the setting in the settings dictionary on the runtimestate.
     /// </remarks>
-    /// <seealso cref='T:XSharp.RuntimeState'>RuntimeState</seealso>
-    /// <seealso cref='M:XSharp.RuntimeState.GetValue``1(XSharp.Set)'>RuntimeState.GetValue</seealso>
-    /// <seealso cref='M:XSharp.RuntimeState.SetValue``1(XSharp.Set,``0)'>RuntimeState.SetValue</seealso>
+    /// <seealso cref='RuntimeState'>RuntimeState</seealso>
+    /// <seealso cref='RuntimeState.GetValue``1(XSharp.Set)'>RuntimeState.GetValue</seealso>
+    /// <seealso cref='RuntimeState.SetValue``1(XSharp.Set,``0)'>RuntimeState.SetValue</seealso>
     ENUM Set
         /// <summary>Specifies rules that Visual FoxPro uses when comparing two strings of different lengths.</summary>
         MEMBER Exact       := 1			// LOGIC
@@ -27,7 +27,7 @@ BEGIN NAMESPACE XSharp
         /// <summary>Specifies a path for file searches.</summary>
         MEMBER Path        := 6			// STRING
         /// <summary>Specifies the default drive and directory.</summary>
-        MEMBER Default	   := 7			// STRING
+        MEMBER @@Default   := 7			// STRING
         /// <summary>Specifies whether Visual FoxPro opens table files for exclusive or shared use on a network.</summary>
         MEMBER Exclusive   := 8			// LOGIC
         /// <summary>Determines where the record pointer is positioned after FIND or SEEK unsuccessfully searches for a record.</summary>
@@ -141,7 +141,9 @@ BEGIN NAMESPACE XSharp
         MEMBER DateFormatNet := 72		// String
         /// <summary>The empty representation of the current date format.</summary>
         MEMBER DateFormatEmpty := 73    // String
-        // 74 - 75 unused
+        /// <summary>SysObject value</summary>
+        MEMBER SysObject := 74
+        // 75 unused
         /// <summary>The last method called with a late bound send operator that was not found in the object that was used.</summary>
         MEMBER NoMethod		:= 76	// STRING
         // 77 unused 
@@ -157,7 +159,8 @@ BEGIN NAMESPACE XSharp
         MEMBER ErrorBlock   := 82  // Codeblock
         /// <summary>The last error that occurred for a RDD operation.</summary>
         MEMBER LastRddError := 84   // Exception object
-        // 85 unused
+        /// <summary>The last script error that occurred.</summary>
+        MEMBER LastScriptError := 85   // Exception object
         /// <summary>The last file found with File()</summary>
         MEMBER LastFound    := 86   // Last file found with File()
         /// <summary>The last File error code</summary>
@@ -171,7 +174,8 @@ BEGIN NAMESPACE XSharp
         MEMBER FieldDelimiter   := 90
         /// <summary>Determines the current record delimiter for Delim RDDs</summary>
         MEMBER RecordDelimiter  := 91
-
+        /// <summary>Name of the error log file from the default RT error handler. Defaults to VOERROR.LOG</summary>
+        MEMBER ErrorLogFile     := 92
         // 92 - 97 unused
         /// <summary></summary>
         MEMBER Dict        := 98	// LOGIC
@@ -880,15 +884,17 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.ErrorBlock     // Codeblock
             RETURN NULL        
         
-        CASE Set.LastRddError   // Exception object
-            RETURN NULL        
-        CASE Set.FileException  // Last File exception
+        CASE Set.LastRddError       // Exception object
+        CASE Set.LastScriptError    // Exception object
+        CASE Set.FileException      // Exception object
             RETURN NULL
 
         CASE Set.Intl           
         CASE Set.CollationMode
             RETURN CollationMode.Windows
 
+        CASE Set.ErrorLogFile
+            RETURN "ERROR.LOG"
 
 
         CASE Set.DosCodepage

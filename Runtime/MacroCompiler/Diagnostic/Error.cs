@@ -51,6 +51,19 @@ namespace XSharp.MacroCompiler
         NameExpected = 231,
         DotMemberAccess = 232,
         BinaryIncorrectLength = 233,
+        NoBindTarget = 234,
+        LocalSameName = 235,
+        NoLoopableStatement = 236,
+        NoExitableStatement = 237,
+        MultipleDefaultInSwitch = 238,
+        WrongNumberIfIndices = 239,
+        NoSuitableEnumerator = 240,
+        TypeMustDeriveFrom = 241,
+        ReturnNotAllowed = 242,
+        RequireReferenceType = 243,
+        ValueNotConst = 244,
+        ConstWithoutInitializer = 245,
+        Internal = 999,
     }
 
     internal class ErrorString
@@ -99,6 +112,19 @@ namespace XSharp.MacroCompiler
             { ErrorCode.NameExpected, "Member name expected" },
             { ErrorCode.DotMemberAccess, "Dot operator does not allow instance member access" },
             { ErrorCode.BinaryIncorrectLength, "Binary Literal '{0}' has incorrect length" },
+            { ErrorCode.NoBindTarget, "No bind target entity" },
+            { ErrorCode.LocalSameName, "Local variable exists with the same name: '{0}'" },
+            { ErrorCode.NoLoopableStatement, "No loopable statement" },
+            { ErrorCode.NoExitableStatement, "No exitable statement" },
+            { ErrorCode.MultipleDefaultInSwitch, "Only one '{0}' block allowed in switch statement" },
+            { ErrorCode.WrongNumberIfIndices, "Wrong number of indices in array" },
+            { ErrorCode.NoSuitableEnumerator, "No suitable enumerator getter" },
+            { ErrorCode.TypeMustDeriveFrom, "Type must derive from {0}" },
+            { ErrorCode.ReturnNotAllowed, "Return not allowed from within a FINALLY block" },
+            { ErrorCode.RequireReferenceType, "Reference type required" },
+            { ErrorCode.ValueNotConst, "Value must be a constant" },
+            { ErrorCode.ConstWithoutInitializer, "CONST variable must have an initializer" },
+            { ErrorCode.Internal, "Internal error" },
         };
 
         static internal string Get(ErrorCode e) { return _errorStrings[e]; }

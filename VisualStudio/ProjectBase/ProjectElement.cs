@@ -19,6 +19,7 @@ using Microsoft.VisualStudio;
 using MSBuild = Microsoft.Build.Evaluation;
 using Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -85,7 +86,8 @@ namespace Microsoft.VisualStudio.Project
             }
             set
             {
-                if(!this.HasItemBeenDeleted())
+                ThreadHelper.ThrowIfNotOnUIThread();
+                if (!this.HasItemBeenDeleted())
                 {
                     // Check out the project file.
                     if(!this.itemProject.QueryEditProjectFile(false))
@@ -99,7 +101,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        internal MSBuild.ProjectItem Item
+        public MSBuild.ProjectItem Item
         {
             get
             {
@@ -107,7 +109,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        internal bool IsVirtual
+        public bool IsVirtual
         {
             get
             {
@@ -203,6 +205,7 @@ namespace Microsoft.VisualStudio.Project
                 item.ItemType = attributeValue;
                 return;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             String currentValue = item?.GetMetadataValue(attributeName);
             bool changed;

@@ -65,7 +65,7 @@ FUNCTION DoW(dDate AS DATE) AS DWORD
 FUNCTION DToC(dDate AS DATE) AS STRING
     RETURN DtToC(dDate)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dos/*" />   
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dtos/*" />   
 FUNCTION DToS(dDate AS DATE) AS STRING
     RETURN DtToS(dDate)
 

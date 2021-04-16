@@ -16,25 +16,6 @@ namespace XSharp.MacroCompiler.Syntax
         internal virtual Node Bind(Binder b) { throw new InternalError(); }
         internal CompilationError Error(ErrorCode e, params object[] args) => Compilation.Error(Token, e, args);
     }
-    abstract internal partial class Stmt : Node
-    {
-        internal bool RequireExceptionHandling = false;
-    }
-    internal partial class ReturnStmt : Stmt
-    {
-        internal override Node Bind(Binder b)
-        {
-            if (Expr != null)
-            {
-                b.Bind(ref Expr);
-                if (Expr.Datatype.NativeType != NativeType.Void)
-                {
-                    b.Convert(ref Expr, b.ObjectType);
-                }
-            }
-            return null;
-        }
-    }
     abstract internal partial class Expr : Node
     {
         internal TypeSymbol Datatype = null;
@@ -78,6 +59,14 @@ namespace XSharp.MacroCompiler.Syntax
                 ThrowError(ErrorCode.NotFound, "Expression", this.ToString());
             if (!Symbol.HasSetAccess)
                 throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Set);
+        }
+        internal virtual void RequireInitAccess()
+        {
+            RequireValue();
+            if (Symbol == null)
+                ThrowError(ErrorCode.NotFound, "Expression", this.ToString());
+            if (!Symbol.HasInitAccess)
+                throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Init);
         }
         internal virtual void RequireGetSetAccess()
         {
@@ -149,11 +138,11 @@ namespace XSharp.MacroCompiler.Syntax
     }
     internal partial class IdExpr : NameExpr
     {
-        static internal IdExpr Bound(LocalSymbol loc)
+        static internal IdExpr Bound(Symbol sym)
         {
             var e = new IdExpr(Token.None);
-            e.Symbol = loc;
-            e.Datatype = loc.Type;
+            e.Symbol = sym;
+            e.Datatype = sym.Type();
             return e;
         }
         internal override Node Bind(Binder b)
@@ -216,6 +205,8 @@ namespace XSharp.MacroCompiler.Syntax
                 ThrowError(ErrorCode.DotMemberAccess);
             b.Bind(ref Expr);
             Expr.RequireValue();
+            if (Expr.Datatype.IsArray && Expr.Datatype.ArrayRank == 1 && Binder.LookupComparer.Equals((Member as IdExpr)?.Name, SystemNames.Length))
+                return ArrayLengthExpr.Bound(Expr);
             Symbol = b.BindMemberAccess(ref Expr, ref Member, Affinity);
             Datatype = Symbol.Type();
             return null;
@@ -232,6 +223,17 @@ namespace XSharp.MacroCompiler.Syntax
             e.Symbol = b.BindMemberAccess(ref e.Expr, ref e.Member, affinity);
             e.Datatype = e.Symbol.Type();
             return e;
+        }
+    }
+    internal partial class ArrayLengthExpr : MemberAccessExpr
+    {
+        internal ArrayLengthExpr(Expr array) : base(array, array.Token, null) { }
+        internal override void RequireGetAccess() { }
+        internal override void RequireSetAccess() => throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Set);
+        internal override void RequireRefAccess() => throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Ref);
+        internal static ArrayLengthExpr Bound(Expr expr)
+        {
+            return new ArrayLengthExpr(expr) { Datatype = Compilation.Get(NativeType.Int32) };
         }
     }
     internal partial class QualifiedNameExpr : NameExpr
@@ -256,6 +258,11 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 if (b.Options.AllowDotAccess)
                 {
+                    if (b.Options.UndeclaredVariableResolution != VariableResolution.TreatAsField)
+                    {
+                        Expr.Symbol = null; // re-bind Expr -- this is a hack!!!
+                        b.Bind(ref Expr, Affinity);
+                    }
                     if (Expr.Symbol.UniqueIdent() != null)
                         return MemberAccessExpr.Bound(b, Expr, Member, Affinity);
                     if (Expr is NameExpr aname && Member is NameExpr fname)
@@ -287,6 +294,24 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Left.Datatype;
             return null;
         }
+        internal static AssignExpr Bound(Expr Left, Expr Right, BindOptions options)
+        {
+            Left.RequireSetAccess();
+            Right.RequireGetAccess();
+            Binder.Convert(ref Right, Left.Datatype, options);
+            return new AssignExpr(Left, Left.Token, Right) { Symbol = Left.Symbol, Datatype = Left.Datatype };
+        }
+    }
+    internal partial class InitExpr : AssignExpr
+    {
+        InitExpr(Expr l, Token o, Expr r) : base(l, o, r) { }
+        internal static new InitExpr Bound(Expr Left, Expr Right, BindOptions options)
+        {
+            Left.RequireInitAccess();
+            Right.RequireGetAccess();
+            Binder.Convert(ref Right, Left.Datatype, options);
+            return new InitExpr(Left, Left.Token, Right) { Symbol = Left.Symbol, Datatype = Left.Datatype };
+        }
     }
     internal partial class AssignOpExpr : AssignExpr
     {
@@ -296,11 +321,19 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Right);
             Left.RequireGetSetAccess();
             Right.RequireGetAccess();
-            Right = BinaryExpr.Bound(Left.Cloned(b), Token, Right, BinaryOperatorSymbol.OperatorKind(Kind), false, b.Options.Binding);
+            Right = BinaryExpr.Bound(Left.Cloned(b), Token, Right, BinaryOperatorSymbol.OperatorKind(Kind), b.Options.Binding);
             b.Convert(ref Right, Left.Datatype);
             Symbol = Left.Symbol;
             Datatype = Left.Datatype;
             return null;
+        }
+        internal static AssignOpExpr Bound(Expr Left, Expr Right, BinaryOperatorKind kind, Binder b)
+        {
+            Left.RequireGetSetAccess();
+            Right.RequireGetAccess();
+            Right = BinaryExpr.Bound(Left.Cloned(b), Left.Token, Right, kind, b.Options.Binding);
+            b.Convert(ref Right, Left.Datatype);
+            return new AssignOpExpr(Left, Left.Token, Right) { Symbol = Left.Symbol, Datatype = Left.Datatype };
         }
     }
     internal partial class BinaryExpr : Expr
@@ -318,8 +351,10 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Symbol.Type();
             return null;
         }
-        internal static BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, bool logic, BindOptions options)
+        internal static BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, BindOptions options)
         {
+            Left.RequireGetAccess();
+            Right.RequireGetAccess();
             var e = new BinaryExpr(Left, t, Right);
             e.Symbol = Binder.BindBinaryOperation(e, kind, options);
             e.Datatype = e.Symbol.Type();
@@ -337,6 +372,15 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol = b.BindBinaryLogicOperation(this, BinaryOperatorSymbol.OperatorKind(Kind));
             Datatype = Symbol.Type();
             return null;
+        }
+        internal static new BinaryExpr Bound(Expr Left, Token t, Expr Right, BinaryOperatorKind kind, BindOptions options)
+        {
+            Left.RequireGetAccess();
+            Right.RequireGetAccess();
+            var e = new BinaryExpr(Left, t, Right);
+            e.Symbol = Binder.BindBinaryOperation(e, kind, options | BindOptions.Logic);
+            e.Datatype = e.Symbol.Type();
+            return e;
         }
     }
     internal partial class UnaryExpr : Expr
@@ -458,9 +502,21 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Type, BindAffinity.Type);
             Type.RequireType();
+            if (b.Options.Dialect == XSharpDialect.FoxPro && (Type.Symbol as TypeSymbol).NativeType == NativeType.Usual)
+                return LiteralExpr.Bound(Constant.Create(false));
             Symbol = Type.Symbol as TypeSymbol;
             Datatype = Symbol as TypeSymbol;
             return null;
+        }
+        internal static Expr Bound(Binder b, TypeSymbol type)
+        {
+            if (b.Options.Dialect == XSharpDialect.FoxPro && type.NativeType == NativeType.Usual)
+            {
+                Expr e = LiteralExpr.Bound(Constant.Create(false));
+                b.Convert(ref e, type);
+                return e;
+            }
+            return new DefaultExpr(null, null) { Symbol = type, Datatype = type };
         }
         internal override void RequireGetAccess() => base.RequireValue();
     }
@@ -477,11 +533,23 @@ namespace XSharp.MacroCompiler.Syntax
                 ThrowError(ErrorCode.NoConversion, Expr.Datatype, Type.Symbol);
             return null;
         }
-        internal static TypeCast Bound(Expr e, TypeSymbol t) { return new TypeCast(null, e) { Datatype = t }; }
+        internal static TypeCast Bound(Binder b, Expr e, TypeSymbol t)
+        {
+            var s = b.ExplicitConversion(e, t);
+            return new TypeCast(null, e) { Datatype = t, Symbol = s };
+        }
     }
     internal partial class TypeConversion : TypeCast
     {
-        internal static TypeConversion Bound(Expr e, TypeSymbol t, ConversionSymbol conv) { return new TypeConversion(null, e) { Datatype = t, Symbol = conv }; }
+        internal static TypeConversion Bound(Expr e, TypeSymbol t, ConversionSymbol conv)
+        {
+            return new TypeConversion(null, e) { Datatype = t, Symbol = conv };
+        }
+        internal new static Expr Bound(Binder b, Expr e, TypeSymbol t)
+        {
+            b.Convert(ref e, t);
+            return e;
+        }
     }
     internal partial class IsExpr : Expr
     {
@@ -505,6 +573,42 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Compilation.Get(NativeType.Boolean);
             return null;
         }
+        internal static Expr Bound(Expr expr, TypeExpr type)
+        {
+            if (expr.Datatype.IsValueType)
+            {
+                if (Binder.TypesMatch(expr.Datatype, type.Symbol as TypeSymbol))
+                    return LiteralExpr.Bound(Constant.Create(true));
+                else if (Binder.TypesMatch(type.Symbol as TypeSymbol, Compilation.Get(WellKnownTypes.System_ValueType)))
+                    return LiteralExpr.Bound(Constant.Create(true));
+                else if (Binder.TypesMatch(type.Symbol as TypeSymbol, Compilation.Get(NativeType.Object)))
+                    return LiteralExpr.Bound(Constant.Create(true));
+                return LiteralExpr.Bound(Constant.Create(false));
+            }
+            return new IsExpr(expr, type, null) { Symbol = type.Symbol, Datatype = Compilation.Get(NativeType.Boolean) };
+        }
+        internal override void RequireGetAccess() { }
+    }
+    internal partial class IsVarExpr : IsExpr
+    {
+        internal LocalSymbol Var;
+        internal bool? Check = null;
+        internal static IsVarExpr Bound(Expr expr, TypeExpr type, LocalSymbol var)
+        {
+            bool? check = null;
+            if (expr.Datatype.IsValueType)
+            {
+                if (Binder.TypesMatch(expr.Datatype, type.Symbol as TypeSymbol))
+                    check = true;
+                else if (Binder.TypesMatch(type.Symbol as TypeSymbol, Compilation.Get(WellKnownTypes.System_ValueType)))
+                    check = true;
+                else if (Binder.TypesMatch(type.Symbol as TypeSymbol, Compilation.Get(NativeType.Object)))
+                    check = true;
+                else
+                    check = false;
+            }
+            return new IsVarExpr(expr, type, null, null) { Symbol = type.Symbol, Datatype = Compilation.Get(NativeType.Boolean), Var = var, Check = check };
+        }
     }
     internal partial class AsTypeExpr : Expr
     {
@@ -518,6 +622,11 @@ namespace XSharp.MacroCompiler.Syntax
             Datatype = Type.Symbol as TypeSymbol;
             return null;
         }
+        internal static Expr Bound(Expr expr, TypeExpr type)
+        {
+            return new AsTypeExpr(expr, type, null) { Symbol = type.Symbol, Datatype = type.Symbol as TypeSymbol };
+        }
+        internal override void RequireGetAccess() { }
     }
     internal partial class MethodCallExpr : Expr
     {
@@ -545,7 +654,30 @@ namespace XSharp.MacroCompiler.Syntax
             }
             return null;
         }
-    }
+        internal static MethodCallExpr Bound(Expr e, Symbol sym, Expr self, ArgList args)
+        {
+            return new MethodCallExpr(e, args) { Symbol = sym, Datatype = sym.Type(), Self = self };
+        }
+        internal static MethodCallExpr Bound(Binder b, Expr e, Symbol sym, Expr self, ArgList args)
+        {
+            Expr boundSelf;
+            if (self != null)
+                e = new MemberAccessExpr(self, null, null);
+            var m = b.BindMethodCall(e, sym, args, out boundSelf);
+            return new MethodCallExpr(e, args) { Symbol = m, Datatype = m.Type(), Self = boundSelf };
+        }
+        internal static MethodCallExpr Bound(Binder b, Expr e, string name, ArgList args)
+        {
+            Expr m = new IdExpr(name);
+            Expr self;
+            var ms = b.BindMemberAccess(ref e, ref m, BindAffinity.Invoke);
+            if (!(ms is MethodSymbol))
+                throw e.Error(ErrorCode.Internal);
+            var expr = new MemberAccessExpr(e, e.Token, m) { Symbol = ms };
+            var sym = b.BindMethodCall(expr, ms, ArgList.Empty, out self);
+            return Bound(e, sym, self, ArgList.Empty);
+        }
+}
     internal partial class CtorCallExpr : MethodCallExpr
     {
         internal override Node Bind(Binder b)
@@ -556,6 +688,11 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol = b.BindCtorCall(Expr, Expr.Symbol, Args);
             Datatype = Symbol.Type();
             return null;
+        }
+        internal static CtorCallExpr Bound(Binder b, TypeExpr type, ArgList args)
+        {
+            var sym = b.BindCtorCall(type, type.Symbol, args);
+            return new CtorCallExpr(type, args) { Symbol = sym, Datatype = sym.Type() };
         }
     }
     internal partial class IntrinsicCallExpr : MethodCallExpr
@@ -590,11 +727,30 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr);
             Expr.RequireGetAccess();
             b.Bind(ref Args);
-            b.Convert(ref Expr, Compilation.Get(NativeType.Array));
+            if (Expr.Datatype.IsUsualOrObject())
+            {
+                b.Convert(ref Expr, Compilation.Get(NativeType.Array));
+            }
+            if (Binder.TypesMatch(Expr.Datatype,NativeType.Array) || Expr.Datatype.IsArray)
+            {
+                b.ConvertArrayBase(Args);
+            }
+            if (Expr.Datatype.IsArray && Expr.Datatype.ArrayRank == 1)
+            {
+                if (Args.Args.Count != 1)
+                    throw Error(ErrorCode.WrongNumberIfIndices);
+                return NativeArrayAccessExpr.Bound(Expr, Args);
+            }
             Self = Expr;
             var s = Self.Datatype.Lookup(SystemNames.IndexerName);
             Symbol = b.BindArrayAccess(Self, s, Args);
             Datatype = Symbol.Type();
+            if (Expr.Datatype.IsArray && Expr.Datatype != Datatype)
+            {
+                Expr conv = this;
+                b.Convert(ref conv, Expr.Datatype.ElementType);
+                return conv;
+            }
             return null;
         }
         internal override Expr Cloned(Binder b)
@@ -603,8 +759,36 @@ namespace XSharp.MacroCompiler.Syntax
             foreach (var arg in Args.Args) b.Cache(ref arg.Expr);
             return this;
         }
+        internal static ArrayAccessExpr Bound(Expr e, ArgList a, Binder b)
+        {
+            if (e.Datatype.IsUsualOrObject())
+            {
+                b.Convert(ref e, Compilation.Get(NativeType.Array));
+            }
+            if (Binder.TypesMatch(e.Datatype, NativeType.Array) || e.Datatype.IsArray)
+            {
+                b.ConvertArrayBase(a);
+            }
+            if (e.Datatype.IsArray && e.Datatype.ArrayRank == 1)
+            {
+                if (a.Args.Count != 1)
+                    throw e.Error(ErrorCode.WrongNumberIfIndices);
+                return NativeArrayAccessExpr.Bound(e, a);
+            }
+            var item = e.Datatype.Lookup(SystemNames.IndexerName);
+            var sym = b.BindArrayAccess(e, item, a);
+            return new ArrayAccessExpr(e, a) { Self = e, Symbol = sym, Datatype = sym.Type() };
+        }
         internal override void RequireSetAccess() => RequireGetAccess();
         internal override void RequireGetSetAccess() => RequireGetAccess();
+    }
+    internal partial class NativeArrayAccessExpr : ArrayAccessExpr
+    {
+        NativeArrayAccessExpr(Expr e, ArgList a) : base(e, a) { }
+        internal static NativeArrayAccessExpr Bound(Expr e, ArgList a)
+        {
+            return new NativeArrayAccessExpr(e, a) { Self = e, Symbol = e.Symbol, Datatype = e.Symbol.Type().ElementType };
+        }
     }
     internal partial class EmptyExpr : Expr
     {
@@ -689,6 +873,16 @@ namespace XSharp.MacroCompiler.Syntax
             b.Convert(ref Cond, Compilation.Get(NativeType.Boolean));
             Datatype = b.ConvertResult(ref True, ref False);
             return null;
+        }
+        internal static IifExpr Bound(Expr cond, Expr t, Expr f, BindOptions opt)
+        {
+            cond.RequireGetAccess();
+            t.RequireGetAccess();
+            f.RequireGetAccess();
+            Binder.Convert(ref cond, Compilation.Get(NativeType.Boolean), Binder.Conversion(cond, Compilation.Get(NativeType.Boolean), opt));
+            var r = new IifExpr(cond, t, f, cond.Token);
+            r.Datatype = Binder.ConvertResult(ref r.True, ref r.False, opt);
+            return r;
         }
         internal override void RequireGetAccess() => base.RequireValue();
     }
@@ -832,6 +1026,10 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(Args);
             return null;
         }
+        internal static ArgList Bound(params Expr[] argExprs)
+        {
+            return new ArgList(new List<Arg>(argExprs.Select(e => new Arg(e))));
+        }
     }
     internal partial class Codeblock : Node
     {
@@ -839,6 +1037,7 @@ namespace XSharp.MacroCompiler.Syntax
         ArgumentSymbol ParamArray;
         internal override Node Bind(Binder b)
         {
+            b.Entity = this;
             if (Params != null)
             {
                 foreach (var p in Params)
@@ -852,7 +1051,6 @@ namespace XSharp.MacroCompiler.Syntax
             PCount = b.AddLocal(XSharpSpecialNames.ClipperPCount, Compilation.Get(NativeType.Int32));
             if (Body != null)
             {
-                Body.Symbol = b.ObjectType;
                 b.BindStmt(ref Body);
             }
             return null;

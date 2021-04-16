@@ -1,16 +1,21 @@
+/// <include file="Console.xml" path="doc/Console/*" />
 CLASS Console
-
+      
+    /// <include file="Console.xml" path="doc/Console.ctor/*" />
     CONSTRUCTOR( ) STRICT
         RETURN 
-        
+      
+    /// <include file="Console.xml" path="doc/Console.ctor/*" />
     CONSTRUCTOR( lNew AS LOGIC ) 
         SELF()
-        
+      
+    /// <include file="Console.xml" path="doc/Console.Clear/*" />
     METHOD Clear( ) AS Console
         System.Console.Clear()
         System.Console.SetCursorPosition(0,0)
         RETURN SELF
-        
+      
+    /// <include file="Console.xml" path="doc/Console.CursorPos/*" />
     PROPERTY CursorPos AS ConsoleCoord 
         GET
             RETURN ConsoleCoord{ System.Console.CursorLeft, System.Console.CursorTop }
@@ -21,21 +26,26 @@ CLASS Console
             RETURN
         END SET
     END PROPERTY
-    
+      
+    /// <include file="Console.xml" path="doc/Console.CursorSize/*" />
     PROPERTY CursorSize AS INT ;
         GET System.Console.CursorSize ;
         SET System.Console.CursorSize := VALUE
-        
+      
+    /// <include file="Console.xml" path="doc/Console.CursorVisible/*" />
     PROPERTY CursorVisible AS LOGIC ;
         GET System.Console.CursorVisible ;
         SET System.Console.CursorVisible := VALUE
         
+    /// <include file="Console.xml" path="doc/Console.Destroy/*" />
     METHOD Destroy( ) AS USUAL CLIPPER
         RETURN SELF
             
+    /// <include file="Console.xml" path="doc/Console.Read/*" />
     METHOD Read( ) AS STRING
         RETURN System.Console.ReadLine()
             
+    /// <include file="Console.xml" path="doc/Console.Size/*" />
     PROPERTY Size AS ConsoleCoord
         GET 
             RETURN ConsoleCoord{ System.Console.BufferHeight, System.Console.BufferWidth}
@@ -74,6 +84,7 @@ CLASS Console
         END SET
     END PROPERTY
     
+    /// <include file="Console.xml" path="doc/Console.TextAttribute/*" />
     PROPERTY TextAttribute AS WORD
     GET
         RETURN (WORD)System.Console.ForegroundColor | (WORD)(System.Console.BackgroundColor) << 4
@@ -85,10 +96,12 @@ CLASS Console
     END PROPERTY
 
     
+    /// <include file="Console.xml" path="doc/Console.Title/*" />
     PROPERTY Title AS STRING ;
         GET System.Console.Title ;
         SET System.Console.Title := VALUE
     
+    /// <include file="Console.xml" path="doc/Console.Wait/*" />
     METHOD Wait AS STRING
         local Info     as System.ConsoleKeyInfo
         LOCAL cResult   AS STRING
@@ -98,14 +111,17 @@ CLASS Console
         return cResult
         
         
+    /// <include file="Console.xml" path="doc/Console.Write/*" />
     METHOD Write( sMsg AS STRING ) AS VOID
         System.Console.Write(sMsg)
         RETURN
         
+    /// <include file="Console.xml" path="doc/Console.WriteError/*" />
     METHOD WriteError( sMsg AS STRING) AS VOID
         System.Console.Error:Write(sMsg)
         RETURN 
         
+    /// <include file="Console.xml" path="doc/Console.WriteLine/*" />
     METHOD WriteLine( sMsg AS STRING ) AS VOID
         System.Console.WriteLine(sMsg)
         RETURN 

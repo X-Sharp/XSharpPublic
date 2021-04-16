@@ -1,15 +1,19 @@
 #translate DBFDebug(<c1> [, <cn>]) =>
-
+#pragma options ("enforceself", on)
 PARTIAL CLASS DbServer
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.RddInfo/*" />
 METHOD RDDINFO( kRDDInfoType, uRDDVal )
 	//SE-060601
    LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError AS USUAL
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__, AsString(kRDDInfoType), AsString(uRDDVal))
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -25,11 +29,15 @@ METHOD RDDINFO( kRDDInfoType, uRDDVal )
 	END SEQUENCE
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Leaving "+__ENTITY__, AsString(uRDDVal) )
 	#ENDIF
 	RETURN uRDDVal
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Recall/*" />
 METHOD Recall( cbForBlock, cbWhileBlock, uScope )
 	LOCAL nNextCount AS LONGINT
 	LOCAL lRestOfFile AS LOGIC
@@ -40,9 +48,11 @@ METHOD Recall( cbForBlock, cbWhileBlock, uScope )
 	LOCAL lFLock AS LOGIC
 	LOCAL uVoRet AS USUAL
 
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+ __ENTITY__ )
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -53,9 +63,11 @@ METHOD Recall( cbForBlock, cbWhileBlock, uScope )
 					cbForBlock := &( "{ || " + cbForBlock + " }" )
 				ENDIF
 
+
 				IF IsString( cbWhileBlock )
 					cbWhileBlock := &( "{ || " + cbWhileBlock + " }" )
 				ENDIF
+
 
 				IF ! IsNil( uScope )
 					IF IsNumeric( uScope )
@@ -79,6 +91,7 @@ METHOD Recall( cbForBlock, cbWhileBlock, uScope )
 					__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			ENDIF
 
+
 		ELSEIF lActiveScope
 			IF SELF:Notify( NOTIFYINTENTTOMOVE )
 				lRetCode := SELF:__DBServerEval( { || VODBRecall() },  ;
@@ -95,6 +108,7 @@ METHOD Recall( cbForBlock, cbWhileBlock, uScope )
 				SELF:__SetStatusHL( #Recall, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
 					__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			ENDIF
+
 
 		ELSE
 			VODBInfo( DBI_ISFLOCK, REF uVoRet )
@@ -121,8 +135,10 @@ METHOD Recall( cbForBlock, cbWhileBlock, uScope )
 			SELF:Notify( NOTIFYRECORDCHANGE )
 		ENDIF
 
+
 		SELF:__ProcessConcurrency( TRUE )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
@@ -133,11 +149,15 @@ METHOD Recall( cbForBlock, cbWhileBlock, uScope )
 	END SEQUENCE
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.RecallAll/*" />
 METHOD RecallAll()
 	LOCAL lRetCode AS LOGIC
 	LOCAL uValue AS USUAL
@@ -146,9 +166,11 @@ METHOD RecallAll()
 	LOCAL oError AS USUAL
 	LOCAL lSetDeleted AS LOGIC
 
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+ __ENTITY__ )
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -199,6 +221,7 @@ METHOD RecallAll()
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
@@ -208,19 +231,25 @@ METHOD RecallAll()
 	END SEQUENCE
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.RecordInfo/*" />
 METHOD RecordInfo( kRecInfoType, nRecordNumber, uRecVal )
 	//SE-060601
    LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError AS USUAL
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__ )
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -237,6 +266,7 @@ METHOD RecordInfo( kRecInfoType, nRecordNumber, uRecVal )
 		ENDIF
 	   __DBSSetSelect( dwCurrentWorkArea )
 
+
 	RECOVER USING oError
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -244,11 +274,15 @@ METHOD RecordInfo( kRecInfoType, nRecordNumber, uRecVal )
 	END SEQUENCE
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(uRecVal))
 	#ENDIF
 	RETURN uRecVal
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Refresh/*" />
 METHOD Refresh() CLIPPER
 	LOCAL lRet AS LOGIC
 	LOCAL oError AS USUAL
@@ -258,9 +292,11 @@ METHOD Refresh() CLIPPER
 	LOCAL nRec AS LONGINT
 	LOCAL lRelease AS LOGIC
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__ )
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -286,6 +322,7 @@ METHOD Refresh() CLIPPER
 			ENDIF
 		ENDIF
 
+
 		IF lRet
 			// We must write back changes to BLOB fields to the Server
 			// Since they are not rolled back by VODBBuffRefresh()
@@ -298,20 +335,25 @@ METHOD Refresh() CLIPPER
 				ENDIF
 			NEXT  // n
 
+
 			IF lRelease
 				VODBUnlock( nRec )
 			ENDIF
 		ENDIF
 
+
 		IF nEffectiveCCMode == ccOptimistic
 			lCCOptimisticRecChg := FALSE
 		ENDIF
+
 
 		IF ! (lRet := VODBBuffRefresh())
 			BREAK ErrorBuild( _VODBErrInfoPtr() )
 		ENDIF
 
+
 		SELF:Notify( NOTIFYRECORDCHANGE )
+
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
@@ -320,21 +362,28 @@ METHOD Refresh() CLIPPER
 	END SEQUENCE
 
 
+
+
 	__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+
 
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRet))
 	#ENDIF
 	RETURN lRet
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Reindex/*" />
 METHOD Reindex()
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
 
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+ __ENTITY__ )
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -353,6 +402,7 @@ METHOD Reindex()
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
@@ -362,20 +412,26 @@ METHOD Reindex()
 	END SEQUENCE
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Relation/*" />
 METHOD Relation( nRelation )
 	//SE-060601
     LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL cRelation AS STRING
 	LOCAL oError AS USUAL
 
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+ __ENTITY__, AsString(nRelation))
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -384,13 +440,17 @@ METHOD Relation( nRelation )
 			BREAK ErrorBuild( _VODBErrInfoPtr() )
 		ENDIF
 
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		cRelation := ""
 	END SEQUENCE
 
+
    __DBSSetSelect( dwCurrentWorkArea )
+
+
 
 
 	#IFDEF __DEBUG__
@@ -398,6 +458,8 @@ METHOD Relation( nRelation )
 	#ENDIF
 	RETURN cRelation
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Replace/*" />
 METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope )
 	LOCAL nNextCount AS LONGINT
 	LOCAL lRestOfFile AS LOGIC
@@ -412,9 +474,11 @@ METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope )
 	LOCAL oError AS USUAL
 	LOCAL oHLTemp AS OBJECT
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__ )
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -422,6 +486,7 @@ METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope )
 		IF ! IsArray( acbExpression )
 			acbExpression := { acbExpression }
 		ENDIF
+
 
 		wExprCount := ALen( acbExpression )
 		acbExpr := ArrayNew( wExprCount )
@@ -442,15 +507,18 @@ METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope )
 			ENDIF
 		NEXT
 
+
 		IF ! IsArray( aFieldList )
 			aFieldList := { aFieldList }
 		ENDIF
+
 
 		wFieldCount := ALen( aFieldList )
 		aFieldNames := ArrayNew( wFieldCount )
 		FOR w := 1 UPTO wFieldCount
 			aFieldNames[w] := String2Symbol( AsString( aFieldList[w] ) )
 		NEXT
+
 
 		IF wExprCount > 1 .AND. wExprCount != wFieldCount
 			BREAK DbError{ SELF, #Replace, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_MISMATCH ) }
@@ -519,7 +587,9 @@ METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope )
          lRetCode := SELF:__ProcessConcurrency( TRUE )
 		ENDIF
 
+
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
@@ -531,7 +601,10 @@ METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope )
 	END SEQUENCE
 
 
+
+
 	SELF:__Notify( NOTIFYFILECHANGE )
+
 
 	IF ! lRetCode .AND. ! IsNil( oHLTemp )
 		lErrorFlag := TRUE
@@ -543,31 +616,41 @@ METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope )
 		ENDIF
 	ENDIF
 
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.ResetNotification/*" />
 METHOD ResetNotification()
+
 
 	IF siSuspendNotification > 0
 		siSuspendNotification -= 1
 	ENDIF
 
+
 	RETURN SELF
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.RLock/*" />
 METHOD RLOCK( nRecordNumber )
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL nTries AS DWORD
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__, AsString(nRecordNumber))
 	#ENDIF
 
+
 	lErrorFlag := FALSE
 	nTries := SELF:nReTries
+
 
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -578,9 +661,11 @@ METHOD RLOCK( nRecordNumber )
 // 			nRecordNumber := VODBRecno()
 // 		ENDIF
 
+
 		lRetCode := __DBSRLock( nRecordNumber, nTries )
 		SELF:__OptimisticFlushNoLock()
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
@@ -590,24 +675,32 @@ METHOD RLOCK( nRecordNumber )
 	END SEQUENCE
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.RLockVerify/*" />
 METHOD RLockVerify()
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__ )
 	#ENDIF
+
 
 	//SE-060602
 	IF nEffectiveCCMode != ccOptimistic
 		RETURN FALSE
 	ENDIF
+
+
 
 
 	lErrorFlag := FALSE
@@ -619,6 +712,7 @@ METHOD RLockVerify()
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
@@ -627,20 +721,26 @@ METHOD RLockVerify()
 	END SEQUENCE
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Seek/*" />
 METHOD Seek( uSearchExpr, lSoftSeek, lLast )
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL nTries AS DWORD
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__,AsString(uSearchExpr), AsString(lSoftSeek), AsString(lLast))
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	nTries := SELF:nReTries
@@ -671,12 +771,15 @@ METHOD Seek( uSearchExpr, lSoftSeek, lLast )
 			SELF:Notify( NOTIFYRECORDCHANGE )
 
 
+
+
 		ELSE
 			lRetCode := FALSE
 			SELF:__SetStatusHL( #Seek, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
@@ -687,11 +790,15 @@ METHOD Seek( uSearchExpr, lSoftSeek, lLast )
 	END SEQUENCE
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Leaving "+__ENTITY__, AsString(lRetCode) )
 	#ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Select/*" />
 METHOD SELECT()
 	// RvdH 060623 Added
 	LOCAL dwCurrentWorkArea AS DWORD
@@ -700,15 +807,21 @@ METHOD SELECT()
 
 
 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.SetDataField/*" />
 METHOD SetDataField( nFieldPosition, oDataField )
 	LOCAL wFieldPosition := nFieldPosition  AS DWORD
 	LOCAL oField := oDataField AS DataField
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__, AsString(nFieldPosition), AsString(oDataField))
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -716,14 +829,17 @@ METHOD SetDataField( nFieldPosition, oDataField )
 			BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE,  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_NODATAFIELDSEXIST ) }
 
+
 		ELSEIF IsNil( nFieldPosition ) .OR. ! IsNumeric( nFieldPosition ) .OR.  ;
 			wFieldPosition < 1 .OR. wFieldPosition > ALen( aDataFields )
 			BREAK DbError{ SELF, #SetDataField, EG_ARG,  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_BADFIELDPOSITION ), nFieldPosition, "nFieldPosition" }
 
+
 		ELSEIF IsNil( oDataField ) .OR. ! IsInstanceOfUsual( oDataField, #DataField )
 			BREAK DbError{ SELF, #SetDataField, EG_ARG,  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_BADFIELDPOSITION ), nFieldPosition, "nFieldPosition" }
+
 
 		ELSE
 			IF oField:Name == aStruct[wFieldPosition, DBS_NAME] .AND.  ;
@@ -738,6 +854,7 @@ METHOD SetDataField( nFieldPosition, oDataField )
 			ENDIF
 		ENDIF
 
+
 	RECOVER USING oError
 		oHLStatus 	:= SELF:__GenerateStatusHL( oError )
 		oErrorInfo 	:= oError
@@ -745,11 +862,15 @@ METHOD SetDataField( nFieldPosition, oDataField )
 	END SEQUENCE
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Leaving "+__ENTITY__, AsString(lRetCode) )
 	#ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.SetFilter/*" />
 METHOD SetFilter( cbFilterBlock, cFilterText )
 	//SE-060601
    LOCAL dwCurrentWorkArea AS DWORD
@@ -759,11 +880,14 @@ METHOD SetFilter( cbFilterBlock, cFilterText )
 	LOCAL cFilter				AS STRING
 	LOCAL oErr					AS Error
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__, AsString(cbFilterBlock), AsString(cFilterText))
 	#ENDIF
 
+
 	lErrorFlag := FALSE
+
 
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -772,7 +896,9 @@ METHOD SetFilter( cbFilterBlock, cFilterText )
 			cFilterText := "UNKNOWN"
 		ENDIF
 
+
 		//RvdH 070717 Added 'clear filter' for empty strings and NO arguments
+
 
 		IF PCount() == 0
 			lClearFilter := TRUE
@@ -810,13 +936,17 @@ METHOD SetFilter( cbFilterBlock, cFilterText )
       ENDIF
 		SELF:GoTop()
 
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		lRetCode := FALSE
 	END SEQUENCE
 
+
    __DBSSetSelect( dwCurrentWorkArea )
+
+
 
 
 	#IFDEF __DEBUG__
@@ -824,6 +954,8 @@ METHOD SetFilter( cbFilterBlock, cFilterText )
 	#ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.SetIndex/*" />
 METHOD SetIndex( oFSIndexFile )
 	// oFSIndexFile is a a FileSpec object for the index file,
 	// or the filename of the index file as a string,
@@ -839,12 +971,16 @@ METHOD SetIndex( oFSIndexFile )
 	LOCAL nTries            AS DWORD
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__, AsString(oFSIndexFile))
 	#ENDIF
 
+
 	lErrorFlag := FALSE
 	nTries := SELF:nReTries
+
 
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -860,12 +996,14 @@ METHOD SetIndex( oFSIndexFile )
 				lRetCode := __DBSOrdListAdd(cIndexFileName, NIL, nTries)
 			END
 
+
 			SELF:Notify( NOTIFYFILECHANGE )
 		ELSE
 			lRetCode:=FALSE
 			SELF:__SetStatusHL ( #SetIndex, __CavoStr(__CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION), __CavoStr(__CAVOSTR_DBFCLASS_INTENTTOMOVE) )
 		ENDIF
 		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
+
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
@@ -875,9 +1013,14 @@ METHOD SetIndex( oFSIndexFile )
 	END SEQUENCE
 
 
+
+
 	RETURN lRetCode
 
 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.SetOrder/*" />
 METHOD SetOrder( uOrder, cIndexFileName )
 	// Like function SetOrder
 	// It sends a NotifyRecordChange
@@ -889,12 +1032,15 @@ METHOD SetOrder( uOrder, cIndexFileName )
 	LOCAL oError        AS USUAL
 	LOCAL pszStuff      AS STRING
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__, AsString( uOrder ), AsString( cIndexFileName ))
 	#ENDIF
 
-	lErrorFlag := FALSE 
+
+	lErrorFlag := FALSE
 	BEGIN SEQUENCE
+
 
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
         //RvdH 070925 Save pending changes
@@ -910,6 +1056,7 @@ METHOD SetOrder( uOrder, cIndexFileName )
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Notify( NOTIFYFILECHANGE )
 
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -918,11 +1065,15 @@ METHOD SetOrder( uOrder, cIndexFileName )
 	END SEQUENCE
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Leaving "+__ENTITY__, AsString(lRetCode) )
 	#ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.SetOrderCondition/*" />
 METHOD SetOrderCondition(   cFor,           ;
 	cbForBlock,     ;
 	lAll,           ;
@@ -939,21 +1090,26 @@ METHOD SetOrderCondition(   cFor,           ;
 	lCustom,        ;
 	lNoOptimize)
 
+
    //SE-060601
    LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL lRetCode      AS LOGIC
 	LOCAL oError        AS USUAL
 	LOCAL cTemp         AS STRING
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__ )
 	#ENDIF
 
 
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
       VODBSelect( wWorkArea, REF dwCurrentWorkArea )
-		IF !__CanEval(cbForBlock) 
+		IF !__CanEval(cbForBlock)
+
 
 			IF IsString(cbForBlock)
 				cTemp := cbForBlock
@@ -961,10 +1117,12 @@ METHOD SetOrderCondition(   cFor,           ;
 				cTemp := cFor
 			ENDIF
 
+
 			IF SLen(cTemp) > 0
 				cbForBlock := MExec( MCompile("{||" + cTemp + "}") )  //&("{||" + cTemp + "}" )
 			ENDIF
 		ENDIF
+
 
 		lRetCode := OrdCondSet(    cFor,           ;
 			cbForBlock,     ;
@@ -982,13 +1140,17 @@ METHOD SetOrderCondition(   cFor,           ;
 			lCustom,        ;
 			lNoOptimize)
 
+
 		__DBSSetSelect( dwCurrentWorkArea )
+
 
 	RECOVER USING oError
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Error( oErrorInfo, #SetOrderCondition )
 	END SEQUENCE
+
+
 
 
 	#IFDEF __DEBUG__
@@ -998,6 +1160,10 @@ METHOD SetOrderCondition(   cFor,           ;
 
 
 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.SetRelation/*" />
 METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 	// Sets a relation from this server to the child server.
 	// The child server must be specified as a DbServer object ( not as an alias )
@@ -1020,9 +1186,11 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 	LOCAL cbRelationExpression  AS USUAL // AS CODEBLOCK
 	LOCAL oError                AS USUAL
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__ )
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1059,7 +1227,9 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 				BREAK DbError{ SELF, #SetRelation, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_NOFIELDS), uRelation, "uRelation" }
 			ENDIF
 
+
 			Send(oDBChild,#__NotifyBufferFlush)
+
 
          VODBSelect( wWorkArea, REF dwCurrentWorkArea )
          lRetCode := VODBSetRelation( cChildAlias, cbRelationExpression, cRelationExpression )
@@ -1067,6 +1237,7 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 			IF ! lRetCode
 				BREAK ErrorBuild(_VODBErrInfoPtr())
 			ENDIF
+
 
 			IF AScan( aRelationChildren, oDBChild ) == 0
 				AAdd( aRelationChildren, oDBChild )
@@ -1078,11 +1249,14 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 			Send(oDBChild,#Notify, NOTIFYRELATIONCHANGE )
 		ENDIF
 
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		lRetCode := FALSE
 	END SEQUENCE
+
+
 
 
 	#IFDEF __DEBUG__
@@ -1092,18 +1266,27 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 
 
 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.SetSelectiveRelation/*" />
 METHOD SetSelectiveRelation(oDBChild,uRelation,cRelation)
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__ )
 	#ENDIF
 
+
 	#IFDEF __DEBUG__
 		// AltD()
 	#ENDIF
 
+
 	RETURN SELF:SetRelation( oDBChild, uRelation, cRelation, TRUE )
 
 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Skip/*" />
 METHOD Skip( nRecordCount )
 	LOCAL dwCurrentWorkArea  AS DWORD
 	LOCAL iRecords          AS LONGINT
@@ -1112,9 +1295,12 @@ METHOD Skip( nRecordCount )
 	LOCAL lRetCode          AS LOGIC
 	LOCAL oError            AS USUAL
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__, AsString(nRecordCount))
 	#ENDIF
+
+
 
 
 	lErrorFlag := FALSE
@@ -1129,6 +1315,7 @@ METHOD Skip( nRecordCount )
 			ENDIF
 			IF lSelectionActive
 				lRetCode := TRUE
+
 
 				IF iRecords > 0
 					IF !(siSelectionStatus == DBSELECTIONEOF .OR. siSelectionStatus == DBSELECTIONEMPTY)
@@ -1180,6 +1367,7 @@ METHOD Skip( nRecordCount )
 				SELF:Notify( NOTIFYRECORDCHANGE, iRecords )
 			ENDIF
 
+
 			IF lRetCode
 				lRetCode := SELF:__ProcessConcurrency( TRUE )
 			ENDIF
@@ -1193,7 +1381,9 @@ METHOD Skip( nRecordCount )
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 
+
 		SELF:__ProcessConcurrency(FALSE)
+
 
 		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
 		lRetCode := FALSE
@@ -1205,6 +1395,10 @@ METHOD Skip( nRecordCount )
 
 
 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Sort/*" />
 METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	// Like Sort
 	// Parameter differences:
@@ -1242,11 +1436,13 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope)
 			cTarget := oFSTarget
 		ENDIF
 
+
 		aFieldNames := ArrayNew( ALen( aFieldList ) )
 		wLen:=ALen(aFieldList)
 		FOR w := 1 UPTO wLen
 			aFieldNames[ w ] := AsString( aFieldList[ w ] )
 		NEXT
+
 
 		IF !IsNil(cbForBlock) .OR. !IsNil(cbWhileBlock) .OR. !IsNil(uScope)
 			IF IsString( cbForBlock )
@@ -1299,7 +1495,9 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope)
             aStruct, SELF:cRDDName)
 		ENDIF
 
+
 		lRetCode := SELF:__ProcessConcurrency(TRUE)
+
 
 	ELSE
 		lRetCode:=FALSE
@@ -1308,7 +1506,10 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	ENDIF
 	__DBSSetSelect(dwCurrentWorkArea) //SE-060527
 
+
     RECOVER USING oError
+
+
 
 
         __DBSSetSelect(dwCurrentWorkArea) //SE-060527
@@ -1317,12 +1518,15 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope)
         oHLTemp := oHLStatus
     END SEQUENCE
 
+
 	SELF:__Notify( NOTIFYRECORDCHANGE )
+
 
 	IF !lRetCode .AND. !IsNil(oHLTemp)
 		lErrorFlag := TRUE
 		oHLStatus := oHLTemp
 	ENDIF
+
 
 	DbSetRestoreWorkarea(lRestore)
 	#IFDEF __DEBUG__
@@ -1331,6 +1535,9 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	RETURN lRetCode
 
 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Sum/*" />
 METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 	// SUM totals a series of numeric expressions
 	//
@@ -1355,9 +1562,11 @@ METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 	LOCAL dwCurrentWorkArea      AS DWORD
 	LOCAL oHLTemp               AS OBJECT
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__ )
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1369,8 +1578,10 @@ METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 			acbExpression := { acbExpression }
 		ENDIF
 
+
 		wExprCount := ALen( acbExpression )
 		acbExpr := ArrayNew( wExprCount )
+
 
 		FOR w := 1 UPTO wExprCount
 			IF __CanEval( acbExpression[ w ] )
@@ -1385,8 +1596,10 @@ METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 			ENDIF
 		NEXT
 
+
 		aResults := ArrayNew( wExprCount )
 		AFill( aResults, 0 )
+
 
 		IF !IsNil(cbForBlock) .OR. !IsNil(cbWhileBlock) .OR. !IsNil(uScope)
 			IF IsString( cbForBlock )
@@ -1444,13 +1657,18 @@ METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 				DBCCREADONLY )
 		ENDIF
 
+
 		SELF:__ProcessConcurrency(TRUE)
+
 
 		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
 
+
 	RECOVER USING oError
 
+
 		SELF:__ProcessConcurrency(FALSE)
+
 
 		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
 		SELF:Error( oError, #Sum )
@@ -1460,7 +1678,10 @@ METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 	END SEQUENCE
 
 
+
+
 	SELF:__Notify( NOTIFYRECORDCHANGE )
+
 
 	IF !IsNil(oHLTemp) //Restore oHLStatus and oErrorInfo
 		lErrorFlag:=TRUE
@@ -1473,6 +1694,8 @@ METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 	ENDIF
 
 
+
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Leaving "+__ENTITY__, AsString(aResults) )
 	#ENDIF
@@ -1480,11 +1703,18 @@ METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 
 
 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.SuspendNotification/*" />
 METHOD SuspendNotification()
+
 
 	siSuspendNotification += 1
 	RETURN SELF
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Total/*" />
 METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	// Like DBTotal
 	// Parameter differences:
@@ -1513,6 +1743,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
    //				  The codeblocks may select another workarea
 	lRestore	:= DbSetRestoreWorkarea(TRUE)
 
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -1537,6 +1768,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 				ELSEIF IsNil(cbForBlock)
 					cbForBlock:={||TRUE}
 				ENDIF
+
 
 				IF IsNil(cbWhileBlock)
 					cbWhileBlock:={||TRUE}
@@ -1573,7 +1805,9 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 					cbForBlock:=cbStoredForBlock
 				ENDIF
 
+
 				lRestOfFile:=lStoredRestOfFile
+
 
 				IF IsNil(cbStoredWhileBlock)
 					cbWhileBlock:={||TRUE}
@@ -1581,6 +1815,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 					cbWhileBlock:=cbStoredWhileBlock
 					lRestOfFile:=TRUE
 				ENDIF
+
 
 				nNextCount:=nStoredNextCount
 				IF IsNil(nNextCount)
@@ -1619,7 +1854,9 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 					aStruct, SELF:cRDDName)
 			ENDIF
 
+
 			lRetCode := SELF:__ProcessConcurrency(TRUE)
+
 
 		ELSE
 			lRetCode:=FALSE
@@ -1628,19 +1865,25 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 		ENDIF
 		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
 
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
 		oErrorInfo := oError
 
+
 		SELF:__ProcessConcurrency(FALSE)
+
 
 		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
 		lRetCode := FALSE
 	END SEQUENCE
 
 
+
+
 	SELF:__Notify( NOTIFYRECORDCHANGE )
+
 
 	IF !lRetCode .AND. !IsNil(oHLTemp) //Restore oHLStatus and oErrorInfo
 		lErrorFlag:=TRUE
@@ -1652,23 +1895,29 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 		ENDIF
 	ENDIF
 
+
 	DbSetRestoreWorkarea(lRestore)
 	#IFDEF __DEBUG__
 		DBFDebug( "Leaving "+__ENTITY__, AsString(lRetCode) )
 	#ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.UnLock/*" />
 METHOD UnLock( nRecordNumber )
 	LOCAL lRetCode          AS LOGIC
 	LOCAL oError            AS USUAL
 	LOCAL dwCurrentWorkArea  AS DWORD
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__, AsString( nRecordNumber ))
 	#ENDIF
 
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
+
 
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF ! (lRetCode := VODBUnlock(nRecordNumber))
@@ -1679,12 +1928,15 @@ METHOD UnLock( nRecordNumber )
 		ENDIF
 		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
 
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
 		lRetCode := FALSE
 	END SEQUENCE
+
+
 
 
 	#IFDEF __DEBUG__
@@ -1694,6 +1946,10 @@ METHOD UnLock( nRecordNumber )
 
 
 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Update/*" />
 METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace)
 	// Like the DbUpdate function
 	// Parameter differences:
@@ -1713,8 +1969,10 @@ METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace)
    //				  The codeblocks may select another workarea
 	lRestore	:= DbSetRestoreWorkarea(TRUE)
 
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
+
 
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
         //RvdH 070925 Save pending changes
@@ -1725,41 +1983,54 @@ METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace)
 			cAlias := AsString( oDbServer )
 		ENDIF
 
+
 		IF IsSymbol( cbKey )
 			cbKey := &( "{ ||" + Symbol2String( cbKey ) + " }" )
 		ELSEIF IsString( cbKey )
 			cbKey := &( "{ ||" + cbKey + " }" )
 		ENDIF
 
+
 		IF IsNil(lRandomFlag)
 			lRandomFlag:=FALSE
 		ENDIF
 
+
 		lRetCode := __DBSDBUPDATE( cAlias, cbKey, lRandomFlag, cbReplace )
+
 
 		lRetCode := SELF:__ProcessConcurrency(TRUE)
 
+
 		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
 		SELF:Notify( NOTIFYFILECHANGE )
+
 
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 
+
 		SELF:__ProcessConcurrency(FALSE)
+
 
 		__DBSSetSelect(dwCurrentWorkArea) //SE-060527
 		lRetCode := FALSE
 	END SEQUENCE
 
+
 	DbSetRestoreWorkarea(lRestore )
+
 
 	#IFDEF __DEBUG__
 		DBFDebug( "Leaving "+__ENTITY__, AsString(lRetCode) )
 	#ENDIF
 
+
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Zap/*" />
 METHOD Zap()
 	// Like Zap
 	// Sends a NotifyFileChange message
@@ -1769,9 +2040,11 @@ METHOD Zap()
 	LOCAL lRetCode              AS LOGIC
 	LOCAL oError                AS USUAL
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Entering "+__ENTITY__ )
 	#ENDIF
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1783,16 +2056,20 @@ METHOD Zap()
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		lRetCode := FALSE
 	END SEQUENCE
 
+
 	#IFDEF __DEBUG__
 		DBFDebug( "Leaving "+__ENTITY__, AsString(lRetCode) )
 	#ENDIF
 
+
 	RETURN lRetCode
 END CLASS
+
 

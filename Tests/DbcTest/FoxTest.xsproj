@@ -14,7 +14,7 @@
     <Dialect>FoxPro</Dialect>
     <vo15>false</vo15>
     <OutputName>ConsoleApplication1</OutputName>
-    <XSharpProjectversion>2.6.3.0</XSharpProjectversion>
+    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -51,7 +51,7 @@
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
-    <PPO>true</PPO>
+    <PPO>false</PPO>
     <Prefer32Bit>True</Prefer32Bit>
     <RegisterForComInterop>False</RegisterForComInterop>
   </PropertyGroup>

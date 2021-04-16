@@ -1,4 +1,6 @@
+/// <include file="Gui.xml" path="doc/ComboBox/*" />
 CLASS ComboBox INHERIT ListBox
+ /// <exclude />
 	METHOD __EditChange() AS VOID STRICT 
 	//PP-030923 Update value with control contents on editchange (triggered by window dispatch)
 	//PP-040508 Update S.Ebert
@@ -7,6 +9,8 @@ CLASS ComboBox INHERIT ListBox
 	SELF:Modified := TRUE
 	RETURN
 
+
+ /// <exclude />
 METHOD __InitTextMetrics() AS VOID STRICT 
 	//PP-030828 Strong typing
 	//PP-040508 Update S.Ebert
@@ -16,11 +20,14 @@ METHOD __InitTextMetrics() AS VOID STRICT
 	LOCAL liHeight AS LONGINT
 	LOCAL hHandle AS PTR
 
+
 	hHandle := SELF:Handle()
+
 
 	GetWindowRect(hHandle, @strucRect2)
 	SendMessage(hHandle, CB_GETDROPPEDCONTROLRECT, 0, LONGINT(_CAST,@strucRect1))
 	UnionRect(@strucRect, @strucRect1, @strucRect2)
+
 
 	liWidth   := strucRect:Right  - strucRect:Left
 	liHeight  := strucRect:Bottom - strucRect:Top
@@ -32,13 +39,18 @@ METHOD __InitTextMetrics() AS VOID STRICT
 	ENDIF
 	RETURN
 
+
+/// <include file="Gui.xml" path="doc/ComboBox.CurrentText/*" />
 ASSIGN CurrentText(cNewText) 
 	LOCAL cCurrentText AS STRING
 	
+	
+
 
 	IF !IsString(cNewText)
 		WCError{#CurrentText,#ComboBox,__WCSTypeError,cNewText,1}:Throw()
 	ENDIF
+
 
 	cCurrentText := SELF:__SetText(cNewText)
 	IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
@@ -48,6 +60,8 @@ ASSIGN CurrentText(cNewText)
 	ENDIF
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/ComboBox.EditHandle/*" />
 ACCESS EditHandle 
 	//PP-030902
 	//SE-060519
@@ -56,32 +70,47 @@ ACCESS EditHandle
 	ENDIF
 	RETURN NULL_PTR
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ComboBox.EditHeight/*" />
 ACCESS EditHeight 
+
 
 	IF SELF:ValidateControl()
 		RETURN SendMessage(hWnd, CB_GETITEMHEIGHT, DWORD(_CAST, -1L), 0L)
 	ENDIF
 
+
 	RETURN 0
 
+
+/// <include file="Gui.xml" path="doc/ComboBox.EditHeight/*" />
 ASSIGN EditHeight(liNewHeight) 
+
 
 	IF SELF:ValidateControl()
 		SendMessage(hWnd, CB_SETITEMHEIGHT, DWORD(_CAST, -1L), liNewHeight)
 		RETURN liNewHeight
 	ENDIF
 
+
 	RETURN 0
 
+
+/// <include file="Gui.xml" path="doc/ComboBox.EnableAutoComplete/*" />
 METHOD EnableAutoComplete(dwFlags) 
 	//PP-030902
 	Default(@dwFlags,SHACF_DEFAULT)
 	RETURN ShellAutoComplete(SELF:Edithandle, dwFlags)
 
+
+/// <include file="Gui.xml" path="doc/ComboBox.Font/*" />
 METHOD Font(oNewFont, lRescal) 
 	LOCAL uRet AS USUAL
 	LOCAL hEdit AS PTR
+
+
 
 
 	IF SELF:ValidateControl()
@@ -93,14 +122,20 @@ METHOD Font(oNewFont, lRescal)
 		ENDIF
 	ENDIF
 
+
 	RETURN uRet
 
+
+/// <include file="Gui.xml" path="doc/ComboBox.ctor/*" />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle) 
 	LOCAL liComboType AS LONGINT
 	LOCAL dwStyle AS DWORD
 
 
+
+
 	SUPER(oOwner, xID, oPoint, oDimension, kStyle)
+
 
 	IF !IsNil(kComboType)
 		IF !IsLong(kComboType)
@@ -110,6 +145,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 	ELSE
 		liComboType := BoxDropDown
 	ENDIF
+
 
 	IF !IsInstanceOfUsual(xID,#ResourceID)
 		IF !IsInstanceOf(SELF, #ComboBoxEx)
@@ -129,17 +165,24 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 	ENDIF
 	SELF:__ClassName := "ComboBox"
 
+
 	SELF:MsgGroup := 2
+
 
 	// fpListFiles := @DlgDirListComboBox()
 	// fpSelectedFile := @DlgDirSelectComboBoxEx()
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/ComboBox.RemoveEditBalloonTip/*" />
 METHOD RemoveEditBalloonTip() 
 	//PP-030902
 	RETURN SUPER:RemoveEditBalloonTip(SELF:EditHandle)
 
+
+/// <include file="Gui.xml" path="doc/ComboBox.ReadOnly/*" />
 ACCESS ReadOnly()  
    LOCAL hEdit AS PTR 
    LOCAL liStyle AS LONG 
@@ -147,6 +190,8 @@ ACCESS ReadOnly()
 	liStyle := GetWindowLong( hEdit, GWL_STYLE ) 
    RETURN _AND( liStyle, LONG( ES_READONLY ) ) == ES_READONLY 
 
+
+/// <include file="Gui.xml" path="doc/ComboBox.ReadOnly/*" />
 ASSIGN ReadOnly( lReadOnly )  
    LOCAL hEdit AS PTR 
 	Default(@lReadOnly,TRUE) 
@@ -168,35 +213,54 @@ ASSIGN ReadOnly( lReadOnly )
 	ENDIF 
 
 
+
+
 RETURN 
 
 
 
+
+
+
+/// <include file="Gui.xml" path="doc/ComboBox.SetCueBanner/*" />
 METHOD SetCueBanner(cTitle) 
 	//PP-030902
 	RETURN SUPER:SetCueBanner(cTitle,SELF:EditHandle)
 
+
+/// <include file="Gui.xml" path="doc/ComboBox.ShowEditBalloonTip/*" />
 METHOD ShowEditBalloonTip(cTitle,cText,dwIcon) 
 	//PP-030902
 	RETURN SUPER:ShowEditBalloonTip(cTitle,cText,dwIcon,SELF:EditHandle)
 
+
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx/*" />
 CLASS ComboBoxEx INHERIT ComboBox
 	PROTECT oImgList AS ImageList
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.AddItem/*" />
 METHOD AddItem(cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent) 
 	//SE-060519
+
 
 	Default(@nItemNumber, 0)
 	Default(@iSelectedIdx, iImageIdx)
 
+
 	RETURN SELF:InsertItem(ComboBoxExItem{cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent})
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.DeleteItem/*" />
 METHOD DeleteItem(nItemNumber) 
 	//SE-060519
 	LOCAL lReturnValue AS LOGIC
    LOCAL dwPos        AS DWORD
+
+
 
 
 	IF ! IsNil(nItemNumber)
@@ -210,6 +274,7 @@ METHOD DeleteItem(nItemNumber)
 		nItemNumber := 0
 	ENDIF
 
+
 	IF (nItemNumber == 0)
 		IF ((dwPos := SELF:CurrentItemNo) == 0)
 			RETURN FALSE
@@ -217,7 +282,9 @@ METHOD DeleteItem(nItemNumber)
 		dwPos--
 	ENDIF
 
+
    lReturnValue := (SendMessage(SELF:Handle(), CBEM_DELETEITEM, dwPos, 0) != CB_ERR)
+
 
 	IF lReturnValue
 		dwPos++
@@ -227,14 +294,19 @@ METHOD DeleteItem(nItemNumber)
 		ASize(aRetValues, ALen(aRetValues) - 1)
 	ENDIF
 
+
 	RETURN lReturnValue
+
 
 //	RETURN SUPER:DeleteItem(nItemNumber)
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.Dispatch/*" />
 METHOD Dispatch (oEvent) 
 	//SE-060518
    LOCAL oEvt AS @@event
    LOCAL hBr  AS PTR
+
 
    oEvt := oEvent
    IF oEvt:uMsg == WM_CTLCOLOREDIT //supports Background of ComboBoxEx control
@@ -245,8 +317,11 @@ METHOD Dispatch (oEvent)
       ENDIF
    ENDIF
 
+
    RETURN SUPER:Dispatch (oEvt)
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.EditHandle/*" />
 ACCESS EditHandle 
 	//SE-060519
 	IF SELF:ValidateControl()
@@ -254,30 +329,40 @@ ACCESS EditHandle
 	ENDIF
 	RETURN NULL_PTR
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.GetExCBStyle/*" />
 METHOD GetExCBStyle(kExStyle) 
 	//SE-060519
 	LOCAL dwExStyle AS DWORD
 
+
 	dwExStyle := DWORD(_CAST, SendMessage(SELF:handle(), CBEM_GETEXSTYLE,0,0)) //CBEM_GETEXTENDEDSTYLE, 0, 0))
+
 
 	IF IsLong(kExStyle)
 		RETURN (_AND(dwExStyle, DWORD(kExStyle)) > 0)
 	ENDIF
 
+
    RETURN dwExStyle
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.GetItemAttributes/*" />
 METHOD GetItemAttributes(uItemNumber) 
 	//SE-060519
 	LOCAL oComboBoxExItem AS ComboBoxExItem
 	LOCAL cbxi IS _winCOMBOBOXEXITEM
 
+
 	IF IsNil(uItemNumber) .OR. uItemNumber = 0
 		uItemNumber := SELF:CurrentItemNo
 	ENDIF
 
+
    IF uItemNumber > 0
 	   cbxi:mask  := _OR(CBEIF_IMAGE, CBEIF_SELECTEDIMAGE, CBEIF_OVERLAY, CBEIF_INDENT)
 	   cbxi:iItem := uItemNumber -1l
+
 
 	   IF SendMessage(SELF:Handle(), CBEM_GETITEM, 0, LONGINT(_CAST, @cbxi)) != 0
 	   	oComboBoxExItem := ComboBoxExItem{aDisplayValues[uItemNumber],uItemNumber,aRetValues[uItemNumber]}
@@ -285,14 +370,21 @@ METHOD GetItemAttributes(uItemNumber)
 		ENDIF
 	ENDIF
 
+
    RETURN oComboBoxExItem
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.ImageList/*" />
 ACCESS ImageList 
+
 
 	RETURN oImgList
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.ImageList/*" />
 ASSIGN ImageList(oNewImageList) 
 	LOCAL oDim AS Dimension
+
 
 	oImgList := oNewImageList
 	//SE-060520
@@ -305,44 +397,60 @@ ASSIGN ImageList(oNewImageList)
 		SetWindowPos(hWnd, NULL_PTR, 0, 0, oDim:width, oDim:height, _OR(SWP_NOACTIVATE, SWP_NOZORDER,SWP_NOMOVE))
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.ctor/*" />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle) 
+
 
 	Default(@kComboType, BOXDROPDOWN)
 	SUPER(oOwner, xID, oPoint, oDimension, kComboType, kStyle)
 	SELF:__ClassName := "ComboBoxEx32"
 
+
 	dwExStyle := _AND(dwExStyle, DWORD(_CAST, _NOT(WS_EX_CLIENTEDGE)))
 	dwStyle := _OR(dwStyle, DWORD(_CAST, CCS_NOMOVEY))
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.InsertItem/*" />
 METHOD InsertItem(uComboBoxExItem) 
 	//SE-060519
 	LOCAL oComboBoxExItem 	AS ComboBoxExItem
 	LOCAL cbxi 					IS _winCOMBOBOXEXITEM
 	LOCAL lPosition 			AS INT
 
+
    oComboBoxExItem := uComboBoxExItem
    oComboBoxExItem:__SetValues(@cbxi)
 
+
 	lPosition := SendMessage(SELF:Handle(), CBEM_INSERTITEM, 0, LONGINT(_CAST, @cbxi)) + 1l
+   
    
    //RvdH 070615 Free ptr allocated in __SetValues
 	IF (cbxi:pszText != NULL_PSZ)
 		MemFree(cbxi:pszText)
 	ENDIF
 
+
 	IF (lPosition != 0)
 		SELF:__AddItem(oComboBoxExItem:TextValue, oComboBoxExItem:Value, DWORD(lPosition))
 	ENDIF
 
+
 	RETURN lPosition
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.Length/*" />
 ACCESS Length 
 	LOCAL lRetVal AS LONGINT
 	LOCAL hHandle AS PTR
 
+
+	
 	
    //SE-060519
 	IF (hHandle := SELF:EditHandle) != NULL_PTR
@@ -352,33 +460,46 @@ ACCESS Length
 		ENDIF
 	ENDIF
 
+
 	RETURN lRetVal
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.SetExCBStyle/*" />
 METHOD SetExCBStyle(kExStyle, lEnable) 
 	//SE-060519
 	
+	
+
 
 	IF !IsLong(kExStyle)
 		WCError{#SetExCBStyle,#ComboBoxEx,__WCSTypeError,kExStyle,}:Throw()
 	ENDIF
 
+
 	IF IsNil(lEnable) .OR. !IsLogic(lEnable)
 		lEnable := TRUE
 	ENDIF
 
+
 	SendMessage(SELF:Handle(), CBEM_SETEXTENDEDSTYLE, kExStyle, IIF(lEnable, kExStyle, 0l))
+
 
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxEx.SetItemAttributes/*" />
 METHOD SetItemAttributes(uComboBoxExItem) 
 	//SE-060519
 	LOCAL oComboBoxExItem AS ComboBoxExItem
 	LOCAL cbxi IS _winCOMBOBOXEXITEM
 
+
 	oComboBoxExItem := uComboBoxExItem
+
 
    IF oComboBoxExItem:ItemIndex > 0
    	oComboBoxExItem:__SetValues(@cbxi)
+
 
 	   IF SendMessage(SELF:Handle(), CBEM_SETITEM, 0, LONGINT(_CAST, @cbxi)) != 0
          aRetValues[oComboBoxExItem:ItemIndex] := oComboBoxExItem:Value
@@ -388,12 +509,17 @@ METHOD SetItemAttributes(uComboBoxExItem)
 			MemFree(cbxi:pszText)
 		ENDIF
 
+
 	ENDIF
+
 
    RETURN SELF
 
+
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxExItem/*" />
 CLASS ComboBoxExItem INHERIT VObject
 	//SE-060519
 	EXPORT ItemIndex AS INT
@@ -404,6 +530,8 @@ CLASS ComboBoxExItem INHERIT VObject
 	EXPORT Value AS USUAL
 	EXPORT Indent AS INT
 
+
+ /// <exclude />
 	METHOD __GetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT 
 	//SE-060519
 	SELF:ItemIndex          := cbxi:iItem + 1l
@@ -413,13 +541,17 @@ CLASS ComboBoxExItem INHERIT VObject
 	SELF:Indent             := cbxi:iIndent
 	RETURN
 
+
+ /// <exclude />
 METHOD __SetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT 
 	//SE-060519
 	LOCAL cItem AS STRING
 
+
 	cbxi:mask           := _OR(CBEIF_TEXT, CBEIF_INDENT)
    cbxi:iItem          := Max(SELF:ItemIndex - 1L,-1L)  	//RvdH 070611 Suggestion from Meinhard
    cbxi:iIndent        := SELF:Indent
+
 
    cItem               := SELF:TextValue
    //RvdH 060608 optimized: cItem is a string
@@ -429,6 +561,7 @@ METHOD __SetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT
 		cbxi:pszText := StringAlloc(cItem)		// RvdH 070615 Cast2Psz is not safe here !	   
    ENDIF
 
+
    IF SELF:ImageIndex != 0
    	cbxi:mask   := _OR(cbxi:mask, CBEIF_IMAGE)
    	cbxi:iImage := SELF:ImageIndex
@@ -436,6 +569,7 @@ METHOD __SetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT
    		cbxi:iImage -=1l
    	ENDIF
    ENDIF
+
 
    IF SELF:SelectedImageIndex != 0
    	cbxi:mask           := _OR(cbxi:mask, CBEIF_SELECTEDIMAGE)
@@ -445,42 +579,55 @@ METHOD __SetValues(cbxi AS _winCOMBOBOXEXITEM) AS VOID STRICT
    	ENDIF
    ENDIF
 
+
    IF SELF:OverlayImageIndex != 0
    	cbxi:mask     := _OR(cbxi:mask, CBEIF_OVERLAY)
    	cbxi:iOverlay := SELF:OverlayImageIndex
    ENDIF
 
+
    RETURN
 
+
+/// <include file="Gui.xml" path="doc/ComboBoxExItem.ctor/*" />
 CONSTRUCTOR(cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent) 
 	//SE-060519
+
 
 	IF IsString(cItem)
 		SELF:TextValue := cItem
 	ENDIF
 
+
 	IF IsNumeric(nItemNumber)
 		SELF:ItemIndex := nItemNumber
 	ENDIF
 
+
    SELF:Value := uRetValue
+
 
 	IF IsNumeric(iImageIdx)
 		SELF:ImageIndex := iImageIdx
 	ENDIF
 
+
 	IF IsNumeric(iSelectedIdx)
 		SELF:SelectedImageIndex := iSelectedIdx
 	ENDIF
+
 
 	IF IsNumeric(iOverlayIdx)
 		SELF:OverlayImageIndex := iOverlayIdx
 	ENDIF
 
+
 	IF IsNumeric(iIndent)
 		SELF:Indent := iIndent
 	ENDIF
 
+
    RETURN 
 END CLASS
+
 

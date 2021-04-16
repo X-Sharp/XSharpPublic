@@ -1,5 +1,7 @@
 STATIC GLOBAL nMaxStringSize := 0x1000  AS DWORD  //MAX_LONGVARCHAR   AS DWORD
 
+
+ /// <exclude />
 FUNCTION __SQLMaxStringSize( nValue )
    //  JSP 09/05/2000
    //  STATIC LOCAL nMaxStringSize := 10000    //MAX_LONGVARCHAR  AS DWORD
@@ -7,23 +9,33 @@ FUNCTION __SQLMaxStringSize( nValue )
       nMaxStringSize := nValue
    ENDIF
 
+
    RETURN nMaxStringSize
+
 
 STATIC GLOBAL nMaxDispSize := 256  AS DWORD
 
+
+ /// <exclude />
 FUNCTION __SQLMaxDisplaySize( nValue )
+
 
    IF IsNumeric( nValue )
       nMaxDispSize := nValue
    ENDIF
 
+
    RETURN nMaxDispSize
 
+
+ /// <exclude />
 FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
    LOCAL nType AS DWORD
    LOCAL cRet  AS STRING
 
+
    nType := UsualType( uString )
+
 
    SWITCH nType
    CASE SYMBOL
@@ -35,8 +47,11 @@ FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
    END SWITCH
    RETURN cRet
 
+
+ /// <exclude />
 FUNCTION __GetStringFromODBCType( ODBCType AS SHORTINT ) AS STRING STRICT
    LOCAL cType     AS STRING
+
 
    SWITCH ODBCType
    CASE SQL_INTEGER   
@@ -48,34 +63,45 @@ FUNCTION __GetStringFromODBCType( ODBCType AS SHORTINT ) AS STRING STRICT
    CASE SQL_DOUBLE
       cType := "N"
 
+
    CASE SQL_BIT
       cType := "L"
+
 
    CASE SQL_DATE
       cType := "D"
 
+
    CASE SQL_TIMESTAMP
       cType := "C"
+
 
    CASE SQL_NUMERIC 
    CASE SQL_DECIMAL
       cType := "N"
+
 
    CASE SQL_LONGVARCHAR 
    CASE SQL_LONGVARBINARY 
    CASE SQL_WLONGVARCHAR
       cType := "M"
 
+
    OTHERWISE
       cType := "C"
 
+
    END SWITCH
+
 
    RETURN cType
 
+
+ /// <exclude />
 FUNCTION __AdjustString( c AS STRING ) AS STRING STRICT
    LOCAL nLen	AS DWORD
    LOCAL nSize	AS DWORD
+
 
    nLen  := SLen( c )
    nSize := PszLen( String2Psz( c ) )
@@ -85,18 +111,26 @@ FUNCTION __AdjustString( c AS STRING ) AS STRING STRICT
    RETURN c
 
 
+
+
+ /// <exclude />
 FUNCTION __CheckHandles( hEnv AS USUAL, hDbc AS USUAL, hStmt AS USUAL ) AS LOGIC STRICT
    LOCAL lRet  AS LOGIC
+
 
    IF IsPtr( hEnv ) .AND. IsPtr( hDbc ) .AND. IsPtr( hStmt )
       lRet := TRUE
    ENDIF
 
+
    RETURN lRet
 
+
+/// <include file="SQL.xml" path="doc/DToCSQL/*" />
 FUNCTION DToCSQL( dDate AS DATE ) AS STRING
    LOCAL cSveFormat    AS STRING
    LOCAL cDate         AS STRING
+
 
    cSveFormat := GetDateFormat( )
    SetDateFormat( "YYYY-MM-DD" )
@@ -104,12 +138,15 @@ FUNCTION DToCSQL( dDate AS DATE ) AS STRING
    SetDateFormat( cSveFormat )
    RETURN cDate
 
+
+/// <include file="SQL.xml" path="doc/MakeTimeStamp/*" />
 FUNCTION MakeTimeStamp( dDate, nSeconds )
    LOCAL cTimestamp    AS STRING
    LOCAL wHours        AS WORD
    LOCAL wMinutes      AS WORD
    LOCAL cFrac         AS STRING
    LOCAL cTime         AS STRING
+
 
    DEFAULT(@dDate, Today( ))
    DEFAULT(@nSeconds, Seconds( ))
@@ -122,7 +159,10 @@ FUNCTION MakeTimeStamp( dDate, nSeconds )
       cFrac    := "000"
       nSeconds := 0
 
+
    ENDIF
+
+
 
 
    wHours   := Integer( nSeconds / 3600 )
@@ -130,19 +170,28 @@ FUNCTION MakeTimeStamp( dDate, nSeconds )
    wMinutes := Integer( nSeconds / 60 )
    nSeconds := Mod( nSeconds, 60 )
 
+
    cTime    := StrZero( wHours,   2, 0 ) + ":" + ;
       StrZero( wMinutes, 2, 0 ) + ":" + ;
       StrZero( nSeconds, 2, 0 ) + "." + cFrac
 
+
    cTimestamp := DToCSQL( dDate ) + " " + cTime
+
 
    RETURN cTimestamp   
 
+
+/// <include file="SQL.xml" path="doc/SQL_LEN_DATA_AT_EXEC/*" />
 FUNCTION  SQL_LEN_DATA_AT_EXEC( nLength AS INT ) AS INT STRICT
+
 
    RETURN -nLength + SQL_LEN_DATA_AT_EXEC_OFFSET
 
 
+
+
+ /// <exclude />
 FUNCTION __SQLOutputDebug( cMsg AS STRING) AS VOID STRICT
    LOCAL I AS DWORD
     LOCAL cLine AS STRING
@@ -155,7 +204,9 @@ FUNCTION __SQLOutputDebug( cMsg AS STRING) AS VOID STRICT
     NEXT
    RETURN
 
+
 STATIC GLOBAL nSqlSetStmtConcurrencyValue := __CAVO_SQL_CONCURRENCY AS INT
+/// <include file="SQL.xml" path="doc/SqlSetStmtConcurrency/*" />
 FUNCTION SqlSetStmtConcurrency( nNew ) AS INT
    LOCAL nResult AS INT
    nResult := nSqlSetStmtConcurrencyValue
@@ -164,8 +215,11 @@ FUNCTION SqlSetStmtConcurrency( nNew ) AS INT
    ENDIF
    RETURN nResult
 
+
 STATIC GLOBAL nSqlSetStmtCursorTypeValue := __CAVO_SQL_CURSOR_TYPE AS INT
 
+
+/// <include file="SQL.xml" path="doc/SqlSetStmtCursorType/*" />
 FUNCTION SqlSetStmtCursorType( nNew ) AS INT
    LOCAL nResult AS INT
    nResult := nSqlSetStmtCursorTypeValue
@@ -174,7 +228,9 @@ FUNCTION SqlSetStmtCursorType( nNew ) AS INT
    ENDIF
    RETURN nResult
 
+
 STATIC GLOBAL nSqlSetStmtSimulateCursor := __CAVO_SQL_SIMULATE_CURSOR  AS INT
+/// <include file="SQL.xml" path="doc/SqlSetStmtSimulateCursor/*" />
 FUNCTION SqlSetStmtSimulateCursor( nNew ) AS INT
    LOCAL nResult AS INT
    nResult := nSqlSetStmtSimulateCursor
@@ -184,6 +240,9 @@ FUNCTION SqlSetStmtSimulateCursor( nNew ) AS INT
    RETURN nResult
 
 
+
+
+/// <include file="SQL.xml" path="doc/SqlDeleteWhiteSpace/*" />
 FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
    LOCAL cResult AS STRING
    LOCAL pString AS PSZ
@@ -198,14 +257,18 @@ FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
    LOCAL cDelims     AS STRING
    LOCAL cWhitespace AS STRING
 
+
    LOCAL lWhiteSpace AS LOGIC
+
 
    lWhiteSpace := FALSE
    lCopy       := FALSE
 
+
    cDelims := "'"+e"\""+"["
    //Stripping out CRLF may be dangerous if they used end of line comments...
    cWhitespace := " "+_CHR(9) //+CHR(10)+CHR(13)+CHR(141)     
+
 
    nSLen   := SLen(cString)
    pString := StringAlloc(cString)
@@ -214,8 +277,10 @@ FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
    	SQLThrowOutOfMemoryError()
    ENDIF
    
-   pTWalk  := MemAlloc( nSLen+1 )                                 // fürs zero terminated
+   
+   pTWalk  := MemAlloc( nSLen+1 )                                 // fï¿½rs zero terminated
    pTarget := PSZ(_CAST,pTWalk)                                   // merken zum freigeben
+
 
    FOR i:=1 UPTO nSLen+1
       cChar := Chr(BYTE(pWalk))                              // get character
@@ -223,7 +288,7 @@ FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
          BYTE(pTWalk) := BYTE(pWalk)                             // kopieren
          pWalk  += 1
          pTWalk += 1
-         lCopy := ( cChar != cCloseDelim )                       // wenn wir  den schließenden delimiter erreicht haben , kopieren aus
+         lCopy := ( cChar != cCloseDelim )                       // wenn wir  den schlieï¿½enden delimiter erreicht haben , kopieren aus
       ELSE
          DO CASE
          CASE At2(cChar,cDelims) > 0                          // wir kommen an einen delimitierten STRING
@@ -259,6 +324,10 @@ FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
 
 
 
+
+
+
+/// <include file="SQL.xml" path="doc/SQLThrowOutOfMemoryError/*" />
 FUNCTION SQLThrowOutOfMemoryError() AS VOID STRICT
 	LOCAL oError AS Error
 	oError:=Error{}
@@ -267,9 +336,13 @@ FUNCTION SQLThrowOutOfMemoryError() AS VOID STRICT
 	Eval(ErrorBlock(),oError)
 	RETURN
 	
+	
+/// <include file="SQL.xml" path="doc/_SLen/*" />
 FUNCTION _SLen( c AS STRING ) AS SHORTINT STRICT
    RETURN SHORTINT( _CAST, SLen( c ) )
 
+
+ /// <exclude />
 FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual AS LOGIC, lUseIS AS LOGIC )
    LOCAL sValue                AS STRING
    LOCAL cTemp		       AS STRING
@@ -282,6 +355,7 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
    LOCAL nLow                  AS DWORD
    LOCAL nHigh                 AS LONGINT
 
+
    IF  oSQLData:Null
       IF lEqual
          IF lUseIS
@@ -293,9 +367,11 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
          sValue := __CAVOSTR_SQLCLASS__NULL
       ENDIF
 
+
       // 		#IFDEF __DEBUG__
       // 			__SQLOutputDebug( "__GetDataValuePSZ( ) for NULL: " + sValue )
       // 		#ENDIF
+
 
    ELSE
       nODBCType := oSQLColumn:ODBCType
@@ -305,42 +381,56 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
          sValue := " "
       ENDIF
 
+
       pTemp := oSQLData:ptrValue
       uData := pTemp
       SWITCH nODBCType
       CASE  SQL_SMALLINT
 
+
             sValue += LTrim(__Str( uData.siVal ))
+
 
       CASE SQL_INTEGER
 
+
             sValue += LTrim(__Str( uData.liVal ))
+
 
       CASE SQL_REAL
 
+
             sValue += LTrim(__Str( uData.fVal ))
+
 
       CASE SQL_FLOAT 
       CASE SQL_DOUBLE
 
+
             sValue += LTrim(__Str( uData.dVal ))
+
 
       CASE SQL_DECIMAL 
       CASE SQL_NUMERIC
          uiLen := oSQLColumn:__FieldSpec:Length
 
+
          cTemp := Mem2String( pTemp, uiLen )
          sValue += AllTrim( __AdjustString( cTemp ) )
+
 
       CASE SQL_BINARY
          sVal  := Mem2String(pTemp, oSQLData:Length)
          sValue += "'" + sVal + "'"
 
+
          #IFDEF __DEBUG__
             __SQLOutputDebug( "__GetDataValuePSZ() for BIN: " + cTemp )
          #ENDIF
 
+
       CASE SQL_BIT
+
 
         IF uData.bVal > 0x29
             sValue += Chr( uData.bVal )
@@ -348,7 +438,9 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
             sValue += Str( uData.bVal,1,0 )
          ENDIF
 
+
       CASE SQL_DATE
+
 
          sVal := Mem2String(pTemp, PszLen(pTemp))
          sValue += "{d '" +RTrim(sVal)  + "'}"
@@ -356,27 +448,35 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
             __SQLOutputDebug( "__GetDataValuePSZ( ) for DATE: " + sValue )
          #ENDIF
 
+
       CASE SQL_TIMESTAMP
+
 
          sVal 	 := Mem2String(pTemp, PszLen(pTemp))
          sValue += "{ts '" + sVal + "'}"
 
+
       CASE SQL_TINYINT
+
 
         sValue += Str3( uData.bVal, 3, 0 )
          #IFDEF __DEBUG__
             __SQLOutputDebug( "__GetDataValuePSZ( ) for TINYINT: " + sValue )
          #ENDIF
 
+
       CASE SQL_BIGINT
+
 
          MemCopy( @nLow, pTemp, 4 )
          pTemp := PTR( _CAST, DWORD( _CAST, pTemp ) + 4 )
          MemCopy( @nHigh, pTemp, 4 )
 
+
          fTemp := nHigh * ( 2^32 )
          fTemp += nLow
          sValue += __Str( fTemp )
+
 
       CASE SQL_LONGVARCHAR 
       CASE SQL_LONGVARBINARY 
@@ -384,9 +484,11 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
          cTemp  := Space( 10 )
          sValue += "'" + cTemp +"'"
 
+
          #IFDEF __DEBUG__
             __SQLOutputDebug( "__GetDataValuePSZ( ) for SQL_LONGVARCHAR: " + sValue )
          #ENDIF
+
 
       OTHERWISE
       	uiLen := PszLen( pTemp )
@@ -396,13 +498,18 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
          cTemp := Mem2String(pTemp, uiLen)
          cTemp := StrTran( cTemp, "'" , "''")
 
+
          sValue += "'" + Trim( cTemp )+ "'"
+
 
       END SWITCH
    ENDIF
 
+
    RETURN sValue
 
+
+/// <include file="SQL.xml" path="doc/SQLType2CType/*" />
 FUNCTION SQLType2CType( nODBCType AS SHORTINT ) AS SHORTINT STRICT
 	LOCAL nType     AS SHORTINT
 	SWITCH nODBCType
@@ -413,17 +520,23 @@ FUNCTION SQLType2CType( nODBCType AS SHORTINT ) AS SHORTINT STRICT
 	CASE SQL_WLONGVARCHAR
 	CASE SQL_GUID
 
+
       nType := SQL_C_CHAR
+
 
    CASE SQL_BINARY
       nType := SQL_C_BINARY
+
 
    OTHERWISE
       nType := SQL_C_DEFAULT
    END SWITCH
 
+
    RETURN nType
 
+
+ /// <exclude />
 FUNCTION __ODBCType2FSpec( nODBCType AS SHORTINT, nPrecision REF DWORD, nScale REF SHORT ) AS STRING  PASCAL  // dcaton 070206 was nScale REF INT
     IF SqlIsLongType( nODBCType )
         nPrecision := 10
@@ -435,7 +548,9 @@ FUNCTION __ODBCType2FSpec( nODBCType AS SHORTINT, nPrecision REF DWORD, nScale R
         ENDIF
     ENDIF
 
+
     RETURN __GetStringFromODBCType( nODBCType )
+
 
 /// <exclude/>
 UNION SqlData_Union
@@ -445,6 +560,8 @@ UNION SqlData_Union
     MEMBER fVal  AS REAL4
     MEMBER dVal  AS REAL8
 
+
+/// <include file="SQL.xml" path="doc/SqlIsBinaryType/*" />
 FUNCTION SqlIsBinaryType(nODBCType AS LONG) AS LOGIC
     SWITCH nODBCType
     CASE SQL_LONGVARBINARY
@@ -455,6 +572,9 @@ FUNCTION SqlIsBinaryType(nODBCType AS LONG) AS LOGIC
     RETURN FALSE
 
 
+
+
+/// <include file="SQL.xml" path="doc/SqlIsCharType/*" />
 FUNCTION SqlIsCharType(nODBCType AS LONG) AS LOGIC
    SWITCH nODBCType
     CASE SQL_LONGVARCHAR
@@ -467,6 +587,8 @@ FUNCTION SqlIsCharType(nODBCType AS LONG) AS LOGIC
     END SWITCH
     RETURN FALSE
 
+
+/// <include file="SQL.xml" path="doc/SqlIsLongType/*" />
 FUNCTION SqlIsLongType(nODBCType AS LONG) AS LOGIC
    SWITCH nODBCType
    CASE SQL_LONGVARCHAR
@@ -476,5 +598,7 @@ FUNCTION SqlIsLongType(nODBCType AS LONG) AS LOGIC
         RETURN TRUE
     END SWITCH
     RETURN FALSE
+
+
 
 

@@ -2,9 +2,9 @@
 // SDKAssemblyInfo.prg
 
 
-#using System.Reflection
-#using System.Runtime.InteropServices
-#using System.Security
+using System.Reflection
+using System.Runtime.InteropServices
+using System.Security
 
 #include "BuildNumber.h"    
 #undef  COPYRIGHT_STR

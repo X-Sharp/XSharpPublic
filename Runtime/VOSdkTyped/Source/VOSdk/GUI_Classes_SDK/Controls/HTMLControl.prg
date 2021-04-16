@@ -18,12 +18,12 @@ METHOD __GetText() AS STRING STRICT
 
 PROPERTY ControlType AS ControlType GET ControlType.Panel
 
-METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+METHOD OnControlCreated(oC AS IVOControl) AS VOID
 	SELF:_oWebBrowser := VOHtmlEditorControl{}
-	SELF:_oWebBrowser:Parent := oC
+	SELF:_oWebBrowser:Parent := (System.Windows.Forms.Control) oC
 	SELF:_oWebBrowser:Dock := System.Windows.Forms.DockStyle.Fill
 	SELF:_oVScrollBar				:= System.Windows.Forms.VScrollBar{}
-	SELF:_oVScrollBar:Parent		:= oC		
+	SELF:_oVScrollBar:Parent		:= (System.Windows.Forms.Control) oC		
 	SELF:_oVScrollBar:Visible		:= TRUE
 	SELF:_oVScrollBar:Dock		:= System.Windows.Forms.DockStyle.Right
 	SELF:_oVScrollBar:BackColor	:= System.Drawing.Color.Yellow
@@ -42,11 +42,6 @@ PROTECTED METHOD setDefaultFont(sender AS OBJECT, e AS System.Windows.Forms.WebB
 
 PROTECTED METHOD OnVScrolled(sender AS OBJECT, se AS System.Windows.Forms.ScrollEventArgs ) AS VOID
 	SELF:_oWebBrowser:Document:body:ScrollTop := SELF:_oVScrollBar:Value * 10
-
-
-
-ACCESS __ListBox AS VoListBox
-	RETURN (VoListBox) oCtrl
 
 ASSIGN __ForceModFlag2True(lNewValue AS LOGIC)  STRICT 
 	lForceModFlag2True := lNewValue
@@ -108,19 +103,19 @@ ACCESS Margins  AS Dimension
 	LOCAL nLeft AS LONG
 	LOCAL nTop AS LONG
 	IF SELF:ValidateControl()
-		nLeft := __ListBox:Margin:Left
-		nTop  := __ListBox:Margin:Top
+		nLeft := _oWebBrowser:Margin:Left
+		nTop  := _oWebBrowser:Margin:Top
 	ENDIF
 	RETURN Dimension{nLeft, nTop}
 	
 ASSIGN Margins(oNewMargins AS Dimension) 
 		IF SELF:ValidateControl()
 			LOCAL oPadding AS System.Windows.Forms.Padding
-			oPadding := __ListBox:Margin
+			oPadding := _oWebBrowser:Margin
 			IF oPadding:Left != oNewMargins:Width .or. oPadding:Right != oNewMargins:Height
 				oPadding:Left := oNewMargins:Width
 				oPadding:Right := oNewMargins:Height
-				__ListBox:Margin := oPadding
+				_oWebBrowser:Margin := oPadding
 			ENDIF
 		ENDIF
 
@@ -199,9 +194,6 @@ ASSIGN Modified(lModified  AS LOGIC)
 		SELF:_lModified := lModified
 	ENDIF
 	RETURN 
-
-
-
 
 END CLASS
 

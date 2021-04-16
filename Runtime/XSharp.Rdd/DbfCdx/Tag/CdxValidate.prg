@@ -81,7 +81,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR prevKey := BYTE[]{_keySize}
                 VAR currKey := BYTE[]{_keySize}
                 LOCAL prevRec := 0 AS LONG
-                FOREACH leaf AS CdxLeaf IN currentPage:Leaves
+                FOREACH leaf AS CdxLeaf IN currentPage:Keys
                     IF aRecordList[leaf:Recno]
                         SELF:_addError( i"Record {leaf.Recno} is found more than once at the Leaf level. Second occurrence was on page on page {currentPage.PageNo:X} ")
                     ELSE
@@ -155,8 +155,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             DO WHILE currentPage != NULL
                 VAR prevKey := BYTE[]{_keySize}
                 LOCAL prevRecno := 0 AS LONG
-                FOR VAR nBranch := 0 TO currentPage:Branches:Count-1
-                    VAR branch := currentPage:Branches[nBranch]
+                FOR VAR nBranch := 0 TO currentPage:Keys:Count-1
+                    VAR branch := currentPage:Keys[nBranch]
                     IF SELF:__Compare(prevKey, branch:Key, _keySize, prevRecno, branch:Recno) > 0
                         SELF:_addError( i"Key value in the index for page {branch.ChildPage:X}, record {branch.Recno} is not in the right order")
                     ENDIF
@@ -164,7 +164,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     VAR lastNode   := childPage:LastNode
                     IF lastNode != NULL
                         IF branch:Recno != lastNode:Recno
-                            SELF:_addError( i"Page {currentPage.PageNo:X}, position {nBranch} branch points to page {branch.ChildPage:X} and record {branch.Recno} but the last record on page {branch.ChildPage:X} is {lastNode.Recno}")
+                            SELF:_addError( i"Page {currentPage.PageNoX}, position {nBranch} branch points to page {branch.ChildPageX} and record {branch.Recno} but the last record on page {branch.ChildPageX} is {lastNode.Recno}")
                         ENDIF
                         IF SELF:__Compare(lastNode:KeyBytes, branch:Key, _keySize, lastNode:Recno, branch:Recno) != 0
                             SELF:_addError( i"Branch has another keyvalue as page {branch.ChildPage:X} ")

@@ -55,7 +55,6 @@ method OpenExplorer()
 
 	// add the new explorer to the list of children
 	AAdd(aChildWindows, oNewExplorer)
-
 	return nil
 
 

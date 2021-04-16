@@ -1,7 +1,10 @@
+/// <include file="Gui.xml" path="doc/Accelerator/*" />
 CLASS Accelerator INHERIT VObject
 	PROTECT hAccel  AS PTR
 	PROTECT aAccels AS ARRAY //SE-060525
 
+
+/// <include file="Gui.xml" path="doc/Accelerator.AddAccelerator/*" />
 METHOD AddAccelerator(oAccelerator) 
 	//SE-060525
    LOCAL hAc     AS PTR
@@ -11,15 +14,21 @@ METHOD AddAccelerator(oAccelerator)
    LOCAL pMem    AS _winAccel
 
 
+
+
    IF ! IsInstanceOfUsual(oAccelerator, #Accelerator)
 		WCError{#AddAccelerator, #Accelerator, __WCSTypeError, oAccelerator, 1}:Throw()
 	ENDIF
 
+
    IF hAccel == NULL_PTR
+
 
       hAc := oAccelerator:Handle()
 
+
       IF hAc != NULL_PTR
+
 
          dwCount := DWORD(CopyAcceleratorTable(hAc, NULL_PTR, 0l))
          IF dwCount > 1
@@ -36,10 +45,14 @@ METHOD AddAccelerator(oAccelerator)
       ENDIF
       RETURN TRUE
 
+
    ENDIF
+
 
    RETURN FALSE
 
+
+/// <include file="Gui.xml" path="doc/Accelerator.AddKey/*" />
 METHOD AddKey(nMenuItemId, xKeyId, lCtrl, lAlt, lShift) 
 	//SE-060525
    LOCAL fVirt AS BYTE
@@ -47,21 +60,28 @@ METHOD AddKey(nMenuItemId, xKeyId, lCtrl, lAlt, lShift)
    LOCAL wCmd  AS LONGINT
 
 
+
+
    IF hAccel == NULL_PTR
 
+
 	   fVirt := 0
+
 
 	   IF IsLogic(lAlt) .AND. lAlt
 	      fVirt := _OR(fVirt, FALT)
 	   ENDIF
 
+
 	   IF IsLogic(lCtrl) .AND. lCtrl
 	      fVirt := _OR(fVirt, FCONTROL)
 	   ENDIF
 
+
 	   IF IsLogic(lShift) .AND. lShift
 	      fVirt := _OR(fVirt, FSHIFT)
 	   ENDIF
+
 
 	   IF IsNumeric(xKeyId)
 	      fVirt := _OR(fVirt, 0x01)  //FVIRTKEY
@@ -75,14 +95,19 @@ METHOD AddKey(nMenuItemId, xKeyId, lCtrl, lAlt, lShift)
 	      ENDIF
 	   ENDIF
 
+
 	   wCmd := nMenuItemId
+
 
 	   AAdd(aAccels, {fVirt, wKey, wCmd})
 	   RETURN TRUE
    ENDIF
 
+
    RETURN FALSE
 
+
+/// <include file="Gui.xml" path="doc/Accelerator.Create/*" />
 METHOD Create() 
 	//SE-060525
    LOCAL dwI     AS DWORD
@@ -90,6 +115,8 @@ METHOD Create()
    LOCAL pAccel  AS _winAccel
    LOCAL pMem    AS _winAccel
    LOCAL aAccel  AS ARRAY
+
+
 
 
    IF hAccel == NULL_PTR
@@ -119,21 +146,30 @@ METHOD Create()
       ENDIF
    ENDIF
 
+
    RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/Accelerator.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	//SE-060525
+
 
    IF hAccel != NULL_PTR
       DestroyAcceleratorTable(hAccel)
       hAccel := NULL_PTR
    ENDIF
 
+
    SUPER:Destroy()
+
 
    RETURN NIL
 
 
+
+
+/// <include file="Gui.xml" path="doc/Accelerator.Empty/*" />
 ACCESS Empty  AS LOGIC
    //SE-120216
    IF hAccel == NULL_PTR
@@ -141,21 +177,29 @@ ACCESS Empty  AS LOGIC
    ENDIF
    RETURN FALSE
 
+
+/// <include file="Gui.xml" path="doc/Accelerator.Handle/*" />
 METHOD Handle() AS PTR
 	//SE-060525
+
 
    IF hAccel == NULL_PTR
       SELF:Create()
    ENDIF
 
+
    RETURN hAccel
 
+
+/// <include file="Gui.xml" path="doc/Accelerator.ctor/*" />
 CONSTRUCTOR(xResourceID) 
 	//SE-060525
 	LOCAL hInst AS PTR
 	LOCAL lpTableName AS PTR
 
+
 	SUPER()
+
 
 	IF IsNumeric(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
 		xResourceID := ResourceID{xResourceID}
@@ -172,13 +216,18 @@ CONSTRUCTOR(xResourceID)
 		WCError{#Init, #Accelerator, __WCSTypeError, xResourceID, 1}:Throw()
 	ENDIF
 
+
    aAccels := NULL_ARRAY
+
 
 	hInst := xResourceID:Handle()
 	lpTableName := xResourceID:Address()
 
+
 	hAccel := LoadAccelerators(hInst, lpTableName)
+
 
 	RETURN 
 END CLASS
+
 

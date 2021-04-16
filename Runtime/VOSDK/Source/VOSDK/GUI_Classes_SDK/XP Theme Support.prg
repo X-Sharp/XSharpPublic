@@ -1,8 +1,11 @@
+ /// <exclude />
 PROCEDURE __InitTheme() _INIT3
 	//PP-030909
 	__LoadThemeDll()
 	RETURN
 
+
+ /// <exclude />
 FUNCTION __LoadThemeDll() AS LOGIC STRICT
 	//PP-030909
 	LOCAL hModule AS PTR
@@ -10,6 +13,7 @@ FUNCTION __LoadThemeDll() AS LOGIC STRICT
 	IF glThemeDllLoaded
 		RETURN TRUE
 	ENDIF
+
 
 	glThemeDllLoaded := FALSE
 	// Check if the app is using the newer
@@ -32,12 +36,16 @@ FUNCTION __LoadThemeDll() AS LOGIC STRICT
 			gfpSetWindowTheme            := GetProcAddress(hModule, String2Psz("SetWindowTheme"))
 			gfpIsAppThemed               := GetProcAddress(hModule, String2Psz("IsAppThemed")) //SE-060526
 
+
 			glThemeDLLLoaded := TRUE
+
 
 			EnableAppVisualTheme()
 
+
 		ENDIF
 	ENDIF
+
 
 	RETURN glThemeDLLLoaded
 /// <exclude/>
@@ -45,18 +53,22 @@ FUNCTION AllocUnicodeString(cValue AS STRING) AS PTR STRICT
    LOCAL pUnicodeString AS PTR
 	LOCAL dwSize         AS DWORD
 
+
    dwSize := SLen(cValue)
    IF (pUnicodeString := MemAlloc((dwSize + 1) * _SizeOf(WORD))) != Null_Ptr
       // Transform the string
       MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, String2Psz(cValue), INT(dwSize), pUnicodeString, INT(dwSize))
    ENDIF
 
+
    RETURN pUnicodeString
+
 
 /// <exclude/>
 FUNCTION EnableAppVisualTheme(lEnable := TRUE AS LOGIC) AS LOGIC STRICT
 	//SE-060526
 	LOCAL dwStyle AS DWORD
+
 
 	IF lEnable
 		dwStyle := _Or(STAP_ALLOW_NONCLIENT, STAP_ALLOW_CONTROLS, STAP_ALLOW_WEBCONTENT)
@@ -64,9 +76,12 @@ FUNCTION EnableAppVisualTheme(lEnable := TRUE AS LOGIC) AS LOGIC STRICT
 		dwStyle := STAP_ALLOW_NONCLIENT
 	ENDIF
 
+
    SetThemeAppProperties(dwStyle)
 
+
    RETURN VerifyThemeState()
+
 
 /// <exclude/>
 FUNCTION GetThemeAppProperties() AS DWORD STRICT
@@ -76,6 +91,7 @@ FUNCTION GetThemeAppProperties() AS DWORD STRICT
    ENDIF
 	RETURN 0u
 
+
 /// <exclude/>
 FUNCTION GetWindowTheme(hWnd AS PTR) AS PTR STRICT
    IF gfpGetWindowTheme != NULL_PTR
@@ -83,46 +99,60 @@ FUNCTION GetWindowTheme(hWnd AS PTR) AS PTR STRICT
    ENDIF
    RETURN Null_Ptr
 
+
 // dcaton 070625 - added prototypes so PCALL() can work.  
 // Somehow this compiles in VO with these typed simply as PTR,
 // but Vulcan needs parameter and return type
 // information in order to generate proper IL code.
 
+
 STATIC FUNCTION _CloseThemeData( hTheme AS PTR ) AS INT PASCAL
    RETURN 0
+   
    
 STATIC FUNCTION _DrawThemeBackground( hTheme AS PTR, hDC AS PTR, iPartId AS INT, iStateId AS INT, pRect AS PTR, pClipRect AS PTR ) AS INT PASCAL
    RETURN 0
 
+
 STATIC FUNCTION _DrawThemeEdge( hTheme AS PTR, hDC AS PTR, iPartId AS INT, iStateId AS INT, pDestRect AS PTR, uEdge AS DWORD, uFlags AS DWORD, pContentRect AS PTR ) AS INT PASCAL
    RETURN 0
+   
    
 STATIC FUNCTION _DrawThemeParentBackground( hTheme AS PTR, hDC AS PTR, prc AS PTR ) AS INT PASCAL
    RETURN 0
    
+   
 STATIC FUNCTION _EnableThemeDialogTexture( hwnd AS PTR, dwFlags AS DWORD ) AS INT PASCAL
    RETURN 0
+   
    
 STATIC FUNCTION _GetThemeAppProperties() AS DWORD PASCAL
    RETURN 0
    
+   
 STATIC FUNCTION _GetThemeColor( hTheme AS PTR, iPartId AS INT, iStateId AS INT, iPropId AS INT, pColor AS PTR ) AS INT PASCAL
    RETURN 0
+
 
 STATIC FUNCTION _GetWindowTheme( hWnd AS PTR ) AS PTR PASCAL
    RETURN 0
    
+   
 STATIC FUNCTION _OpenThemeData( hWnd AS PTR, lpcwstr AS PTR ) AS PTR PASCAL
    RETURN 0
+
 
 STATIC FUNCTION _SetThemeAppProperties( dwFlags AS DWORD ) AS VOID PASCAL
    RETURN   
    
+   
 STATIC FUNCTION _SetWindowTheme( hWnd AS PTR, SubAppName AS PTR, SubIdList AS PTR ) AS PTR PASCAL
    RETURN 0   
 
+
 STATIC FUNCTION _IsAppThemed() AS LOGIC PASCAL
    RETURN FALSE   
+
 
 STATIC GLOBAL gfpCloseThemeData            AS _CloseThemeData PTR
 STATIC GLOBAL gfpDrawThemeBackground       AS _DrawThemeBackground PTR
@@ -139,6 +169,7 @@ STATIC GLOBAL gfpIsAppThemed               AS _IsAppThemed PTR
 STATIC GLOBAL glThemeDLLLoaded AS LOGIC
 STATIC GLOBAL glThemeEnabled AS LOGIC
 
+
 /// <exclude/>
 FUNCTION IsAppThemed() AS LOGIC STRICT
    //SE-060526
@@ -147,18 +178,22 @@ FUNCTION IsAppThemed() AS LOGIC STRICT
    ENDIF
    RETURN FALSE
 
+
 /// <exclude/>
 FUNCTION IsThemeEnabled() AS LOGIC STRICT
 	RETURN glThemeEnabled
+
 
 /// <exclude/>
 FUNCTION IsThemeSupported() AS LOGIC STRICT
 	RETURN glThemeDLLLoaded
 
+
 /// <exclude/>
 FUNCTION OpenThemeData (hWnd AS PTR, cClassList AS STRING) AS PTR STRICT
    LOCAL pClassList AS PTR
    LOCAL hTheme AS PTR
+
 
 	IF gfpOpenThemeData != Null_Ptr
    	IF (pClassList := AllocUnicodeString(cClassList)) != Null_Ptr
@@ -168,12 +203,14 @@ FUNCTION OpenThemeData (hWnd AS PTR, cClassList AS STRING) AS PTR STRICT
    ENDIF
    RETURN hTheme
 
+
 /// <exclude/>
 FUNCTION SetThemeAppProperties(dwFlags AS DWORD) AS VOID STRICT
    IF gfpSetThemeAppProperties != Null_Ptr
       PCALL(gfpSetThemeAppProperties, dwFlags)
    ENDIF
 	RETURN
+
 
 /// <exclude/>
 FUNCTION VerifyThemeState() AS LOGIC STRICT
@@ -186,17 +223,20 @@ FUNCTION VerifyThemeState() AS LOGIC STRICT
    ENDIF
    RETURN glThemeEnabled
 
+
 /// <exclude/>
 FUNCTION CloseThemeData(hTheme AS PTR) AS LONGINT STRICT
    IF gfpCloseThemeData != Null_Ptr
       RETURN LONGINT(_CAST, PCALL(gfpCloseThemeData, hTheme))
    ENDIF
    RETURN S_FALSE
+/// <include file="Gui.xml" path="doc/DrawThemeEdge/*" />
 FUNCTION DrawThemeEdge(hTheme AS PTR, hdc AS PTR, iPartId AS INT, iStateId AS INT, pDestRect AS PTR, uEdge AS DWORD, uFlags AS DWORD, pContentRect AS PTR) AS LONGINT STRICT
    IF gfpDrawThemeEdge != Null_Ptr
       RETURN LONGINT(_CAST, PCALL(gfpDrawThemeEdge, hTheme, hdc, iPartId, iStateId, pDestRect, uEdge, uFlags, pContentRect))
    ENDIF
    RETURN S_FALSE
+
 
 /// <exclude/>
 FUNCTION DrawThemeParentBackground(hwnd AS PTR, hDC AS PTR, pRect AS PTR) AS LOGIC STRICT
@@ -211,6 +251,7 @@ FUNCTION DrawThemeParentBackground(hwnd AS PTR, hDC AS PTR, pRect AS PTR) AS LOG
 	ENDIF
 	RETURN FALSE
 
+
 /// <exclude/>
 FUNCTION DrawThemeBackground(hTheme AS PTR, hdc AS PTR, iPartId AS INT, iStateId AS INT, pRect AS PTR, pClipRect AS PTR) AS LONGINT STRICT
 	//PP-040410
@@ -220,10 +261,13 @@ FUNCTION DrawThemeBackground(hTheme AS PTR, hdc AS PTR, iPartId AS INT, iStateId
 	RETURN S_FALSE
 
 
+
+
 /// <exclude/>
 FUNCTION EnableThemeDialogTexture(oWindow AS USUAL, dwStyle AS DWORD) AS LOGIC STRICT
 	//PP-030909
    LOCAL hwnd AS PTR            
+
 
    IF ! gfpEnableThemeDialogTexture == NULL_PTR .and. glThemeEnabled
    	IF IsInstanceOfUsual(oWindow, #Window)
@@ -237,6 +281,7 @@ FUNCTION EnableThemeDialogTexture(oWindow AS USUAL, dwStyle AS DWORD) AS LOGIC S
    ENDIF
    RETURN FALSE
 
+
 /// <exclude/>
 FUNCTION GetThemeColor (hTheme AS PTR, iPartId AS INT, iStateId AS INT, iPropID AS INT, pColor AS PTR) AS LONGINT STRICT
    IF gfpGetThemeColor != Null_Ptr
@@ -244,12 +289,14 @@ FUNCTION GetThemeColor (hTheme AS PTR, iPartId AS INT, iStateId AS INT, iPropID 
    ENDIF
    RETURN S_FALSE
 
+
 /// <exclude/>
 FUNCTION SetWindowTheme(hWnd AS PTR, cAppName AS STRING, cIdList AS STRING) AS LOGIC STRICT
 	//PP-030910
 	LOCAL pAppName AS PTR
 	LOCAL pIdList  AS PTR
 	LOCAL lResult AS LOGIC
+
 
 	IF ! gfpSetWindowTheme == NULL_PTR
 #ifndef __VULCAN__
@@ -273,7 +320,11 @@ FUNCTION SetWindowTheme(hWnd AS PTR, cAppName AS STRING, cIdList AS STRING) AS L
 		ENDIF
 	ENDIF
 
+
 	RETURN lResult
+
+
+
 
 
 

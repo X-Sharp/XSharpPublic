@@ -9,6 +9,8 @@ VOSTRUCT OleProps
 	MEMBER fIsActive AS LOGIC
 	MEMBER fAllowDocView AS LOGIC
 
+
+ /// <exclude />
 FUNCTION __OleDropTargetCallback(DragInfo AS OleDragEventInfo) AS LOGIC /* WINCALL */
 	LOCAL oAppWnd   AS AppWindow
 	LOCAL oWnd      AS OBJECT
@@ -17,6 +19,7 @@ FUNCTION __OleDropTargetCallback(DragInfo AS OleDragEventInfo) AS LOGIC /* WINCA
     // RvdH 080814 Added the methods to the AppWindow class, so we could 
     // get rid of the IsMethod checks
 	lRet := FALSE
+
 
 	oWnd := __WCGetWindowByHandle(DragInfo:hDocWnd):owner
 	IF !IsInstanceOf(oWnd, #AppWindow)
@@ -44,13 +47,17 @@ FUNCTION __OleDropTargetCallback(DragInfo AS OleDragEventInfo) AS LOGIC /* WINCA
 	ENDCASE
 	DragInfo:dwEffect := DWORD(_CAST, oOleDragEvent:Effect)
 
+
 	IF UsualType(lRet) != LOGIC
 		lRet := FALSE
 	ENDIF
 	RETURN lRet
 
+
+ /// <exclude />
 FUNCTION __OleStatusCallback(hwnd AS PTR, StatusMsg AS PSZ) AS DWORD /* WINCALL */
 	LOCAL oShellWindow AS OBJECT
+
 
 	oShellWindow := __WCGetWindowByHandle(hwnd)
 	IF (oShellWindow != NULL_OBJECT) .AND. IsInstanceOf(oShellWindow, #ShellWindow)
@@ -61,6 +68,7 @@ FUNCTION __OleStatusCallback(hwnd AS PTR, StatusMsg AS PSZ) AS DWORD /* WINCALL 
 	ENDIF
 	RETURN 1
 
+
 	// RvdH 030815 Moved method to AppWindow Module
 	//METHOD EnableOleDropTarget(lEnable) CLASS AppWindow
 	//   IF (lEnable)
@@ -69,9 +77,13 @@ FUNCTION __OleStatusCallback(hwnd AS PTR, StatusMsg AS PSZ) AS DWORD /* WINCALL 
 	//      RETURN _VOOLERegisterDropTargetCallback(SELF:owner:handle(), SELF:Handle(), NULL_PTR)
 	//   ENDIF
 
+
 	//RvdH 030825 Moved function below to the module CavoOle
 	//FUNCTION DeleteStorage(cFileName, cStorage) AS LOGIC
 	//   RETURN _VOOLEDeleteStorage(String2Psz(cFileName), String2Psz(cStorage))
+
+
+
 
 
 

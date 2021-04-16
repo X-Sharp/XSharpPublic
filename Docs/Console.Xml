@@ -16,7 +16,8 @@
         </summary>
         <param name="lNew">A logical value forcing the allocation of a new console window, if set to TRUE.  The default is FALSE.</param>
         <remarks>
-            The Init() method allocates a new console window.  By default, or if the <paramref name="lNew" /> parameter is set to FALSE, X# first tries to use an already open console window, e.g., if the application was started from the command line.  If this fails, or if <paramref name="lNew" /> was set to TRUE, Console:Init() allocates and opens a new console window.
+            The constructor allocates a new console window.  By default, or if the <paramref name="lNew" /> parameter is set to FALSE, X# first tries to use an already open console window, e.g., if the application was started from the command line.  If this fails, or if <paramref name="lNew" /> was set to TRUE, 
+            Console{} allocates and opens a new console window.
         </remarks>
         <example>
             This code snippet creates and clear a new console window:
@@ -226,7 +227,8 @@
         <param name="nX">An integer value specifying the x-axis position or width.</param>
         <param name="nY">An integer value specifying the y-axis position or height.</param>
         <remarks>
-            ConsoleCoord:Init() instantiates a new ConsoleCoord object, which can be used for the Console:Size and Console:CursorPos properties.
+            ConsoleCoord{} instantiates a new ConsoleCoord object, which can be used for the Console:Size 
+            and Console:CursorPos properties.
         </remarks>
     </ConsoleCoord.ctor>
 </doc>

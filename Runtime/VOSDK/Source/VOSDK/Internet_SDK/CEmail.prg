@@ -1,20 +1,27 @@
+/// <include file="Internet.xml" path="doc/CEmail/*" />
 CLASS CEmail INHERIT CMessage
+
 
 	PROTECT aDestList       AS ARRAY
 	PROTECT aCCList         AS ARRAY
 	PROTECT aBCCList        AS ARRAY
+
 
 	//PROTECT cHtmlBody       AS STRING //not used
 	PROTECT cReturnReceipt  AS STRING
 	PROTECT cDispositionNotification AS STRING
 	PROTECT aBoundary       AS ARRAY
 
+
 	PROTECT dwStreamStatus  AS DWORD  //Used for streaming
 	PROTECT aStreamOut      AS ARRAY  //Used for StreamOut()
 	PROTECT cContentPart    AS STRING //Used for StreamIn()
 
+
 	PROTECT oStorage        AS CStorage;
 
+
+ /// <exclude />
 METHOD __CreateCommands() AS ARRAY STRICT
 	LOCAL lAlternate AS LOGIC
 	LOCAL dwFiles    AS DWORD
@@ -22,12 +29,15 @@ METHOD __CreateCommands() AS ARRAY STRICT
 	LOCAL aCommands  AS ARRAY
 	LOCAL lText, lHtml AS LOGIC
 
+
 	aCommands := {}
+
 
 	dwFiles    	:= SELF:AttachmentCount
 	lText 		:= SLen(SELF:cBody) > 0
 	lHtml 		:= SLen(SELF:cBodyHtml) > 0
 	lAlternate 	:= lText .AND. lHtml
+
 
 	IF dwFiles>0
 		AAdd(aCommands, CEMail_CMixed)
@@ -62,10 +72,14 @@ METHOD __CreateCommands() AS ARRAY STRICT
 		ENDCASE
 	ENDIF
 
+
 	RETURN aCommands
 
+
+ /// <exclude />
 METHOD __CreateContentType(dwType AS DWORD, dwCode REF DWORD) AS STRING STRICT
 	LOCAL cRet AS STRING
+
 
 	IF _AND(dwType, CEMail_CMixed)         = CEMail_CMixed
 		cRet   := CONTENT_MULTIPART_MIXED
@@ -81,8 +95,11 @@ METHOD __CreateContentType(dwType AS DWORD, dwCode REF DWORD) AS STRING STRICT
 		dwCode := CODING_TYPE_PRINTABLE
 	ENDIF
 
+
 	RETURN cRet
 
+
+ /// <exclude />
 METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
     LOCAL cTemp    AS STRING
     LOCAL dwType   AS DWORD
@@ -91,17 +108,21 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
     LOCAL cName    AS STRING
     LOCAL cDisposition  AS STRING
 
+
     dwType := STREAM_END
+
 
     cTemp := __GetMailInfo(cPart, TEMP_CONTENT, FALSE)
     IF cTemp == NULL_STRING
         cTemp := CONTENT_DEFAULT //Default content type
     ENDIF
 
+
     SELF:cContentType := cTemp
     // Save charset
     SELF:cCharSet :=  __GetToken(cTemp, TEMP_CHARSET, ";", TRUE)
     SELF:cCharSet := StrTran (SELF:cCharSet, e"\"")	// added this line KB 20-5-2010 because sometimes the charset is between quotes
+
 
     cContent := Lower(__GetToken(cTemp, NULL_STRING, ";", TRUE))
     IF cContent = CONTENT_MULTIPART
@@ -121,7 +142,9 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
             dwType := STREAM_Boundary
         ENDIF
 
+
     ELSEIF cContent = CONTENT_TEXT_PLAIN .OR. cContent = CONTENT_TEXT_HTML
+
 
         cDisposition := __GetMailInfo(cPart, TEMP_CONTENTDISPOSITION, FALSE)
         IF Lower(cDisposition) = TEMP_ATTACHMENT
@@ -139,7 +162,9 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
         dwType := STREAM_Attachment
     ENDIF
 
+
     dwTEnc := CODING_TYPE_UNKNOWN
+
 
     cTemp := __GetMailInfo(cPart, TEMP_ENCODE, FALSE)
     IF SLen(cTemp) > 0
@@ -158,10 +183,13 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
         ENDCASE
     ENDIF
 
+
     SELF:nTransferEncoding := dwTEnc
+
 
     IF dwType = STREAM_Attachment
         cName := __GetToken(cDisposition, TEMP_FNAME, ";", TRUE)
+
 
         IF cName == NULL_STRING
             cTemp := __GetMailInfo(cPart, TEMP_CONTENT, FALSE)
@@ -203,6 +231,7 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
            cTemp := NULL_STRING
         ENDIF
 
+
         AAdd(SELF:aFileList,         cName)
         AAdd(SELF:aTransferEncoding, dwTEnc)
         AAdd(SELF:aContentType,      SELF:cContentType)
@@ -211,21 +240,28 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
         SELF:cContentType := cContent
     ENDIF
 
+
     RETURN dwType
 
+
+ /// <exclude />
 METHOD __GetFileContentType(cFile AS STRING) AS STRING STRICT
 	//Here we could implement a routine which calculates
 	//the conten-type of a file.
 	RETURN CONTENT_APPLICATION
 
+
+ /// <exclude />
 METHOD __IsBoundary(cLine AS STRING, lEnd := FALSE AS LOGIC) AS LOGIC STRICT
 	LOCAL cBound AS STRING
+
 
 	IF cLine = ATTACH_BEGIN
 		cBound := SELF:Boundary
 		IF cBound == NULL_STRING
 			RETURN FALSE
 		ENDIF
+
 
 		IF lEnd
 			IF cLine = cBound + "--" + CRLF
@@ -243,12 +279,16 @@ METHOD __IsBoundary(cLine AS STRING, lEnd := FALSE AS LOGIC) AS LOGIC STRICT
 		RETURN TRUE
 	ENDIF
 
+
 	RETURN FALSE
 
+
+/// <include file="Internet.xml" path="doc/CEmail.AddAttachment/*" />
 METHOD AddAttachment(cFullPath, cContentType, dwEncodeType, cContentID, cFilename)
 	LOCAL cTemp  AS STRING
 	LOCAL cID    AS STRING
 	LOCAL cFName AS STRING
+
 
 	IF IsString(cFullPath)
 		cID := cFullPath
@@ -279,29 +319,39 @@ METHOD AddAttachment(cFullPath, cContentType, dwEncodeType, cContentID, cFilenam
 		ENDIF
 	ENDIF
 
+
 	RETURN FALSE
 
+
+/// <include file="Internet.xml" path="doc/CEmail.AttachmentFileList/*" />
 ASSIGN  AttachmentFileList(xNew)
 	LOCAL dwCount AS DWORD
 	LOCAL dwI     AS DWORD
 	LOCAL aFiles  AS ARRAY
 
+
 	SUPER:AttachmentFileList := xNew
 
+
 	aFiles := SELF:aFileList
+
 
 	SELF:aFileList         := {}
 	SELF:aAttachList       := {}
 	SELF:aContentType      := {}
 	SELF:aTransferEncoding := {}
 
+
 	dwCount := ALen(aFiles)
 	FOR dwI := 1 UPTO dwCount
 		SELF:AddAttachment(aFiles[dwI])
 	NEXT //dwI
 
+
 	RETURN
 
+
+/// <include file="Internet.xml" path="doc/CEmail.AttachmentInfo/*" />
 ACCESS  AttachmentInfo
 	//Returns the complete attachment info as a single string
 	LOCAL cTemp   AS STRING
@@ -310,9 +360,11 @@ ACCESS  AttachmentInfo
 	LOCAL aProps  AS ARRAY
 	LOCAL aFile   AS ARRAY
 
+
 	dwCount := SELF:AttachmentCount
 	IF dwCount > 0
 		cTemp := NTrim(dwCount)+CRLF
+
 
 		FOR dwI := 1 UPTO dwCount
 			aProps := SELF:aAttachList[dwI]
@@ -322,8 +374,11 @@ ACCESS  AttachmentInfo
 		NEXT //dwI
 	ENDIF
 
+
 	RETURN cTemp
 
+
+/// <include file="Internet.xml" path="doc/CEmail.AttachmentInfo/*" />
 ASSIGN  AttachmentInfo(cValue)
 	//Stores an attachment info string into the CEMail arrays
 	LOCAL cInfo   AS STRING
@@ -333,7 +388,9 @@ ASSIGN  AttachmentInfo(cValue)
 	LOCAL dwStart AS DWORD
 	LOCAL dwPos   AS DWORD
 
+
 	cInfo := cValue
+
 
 	IF (dwPos := At2(CRLF, cInfo)) > 0
 		dwCount := Val(SubStr3(cInfo, 1, dwPos-1))
@@ -356,6 +413,7 @@ ASSIGN  AttachmentInfo(cValue)
 		ENDIF
 	ENDIF
 
+
 	IF dwCount = 0
 		SELF:aFileList         := {}
 		SELF:aAttachList       := {}
@@ -363,12 +421,18 @@ ASSIGN  AttachmentInfo(cValue)
 		SELF:aTransferEncoding := {}
 	ENDIF
 
+
 	RETURN
 
+
+/// <include file="Internet.xml" path="doc/CEmail.BCCList/*" />
 ACCESS BCCList
 	RETURN SELF:aBCCList
 
+
+/// <include file="Internet.xml" path="doc/CEmail.BCCList/*" />
 ASSIGN BCCList(xNew)
+
 
 	IF IsString(xNew)
 		//SELF:aBCCList := __StrList2Array(xNew)
@@ -377,15 +441,22 @@ ASSIGN BCCList(xNew)
 		SELF:aBCCList := xNew
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Internet.xml" path="doc/CEmail.Boundary/*" />
 ACCESS Boundary
 	RETURN SELF:cBoundary
 
+
+/// <include file="Internet.xml" path="doc/CEmail.Boundary/*" />
 ASSIGN Boundary(uValue)
 	LOCAL dwCount AS DWORD
 
+
 	SELF:cBoundary := uValue
+
 
 	IF SELF:cBoundary == NULL_STRING
 		dwCount := ALen(aBoundary)
@@ -404,12 +475,18 @@ ASSIGN Boundary(uValue)
 		AAdd(aBoundary, SELF:cBoundary)
 	ENDIF
 
+
 	RETURN
 
+
+/// <include file="Internet.xml" path="doc/CEmail.CCList/*" />
 ACCESS CCList
 	RETURN SELF:aCCList
 
+
+/// <include file="Internet.xml" path="doc/CEmail.CCList/*" />
 ASSIGN CCList(xNew)
+
 
 	IF IsString(xNew)
 		//SELF:aCCList := __StrList2Array(xNew)
@@ -418,13 +495,17 @@ ASSIGN CCList(xNew)
 		SELF:aCCList := xNew
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Internet.xml" path="doc/CEmail.CloneAttachments/*" />
 METHOD CloneAttachments() AS VOID STRICT
 	LOCAL dwI       AS DWORD
 	LOCAL dwCount   AS DWORD
 	LOCAL cFullPath AS STRING
 	LOCAL cID       AS STRING
+
 
 	dwCount := SELF:AttachmentCount
 	FOR dwI := 1 UPTO dwCount
@@ -436,10 +517,13 @@ METHOD CloneAttachments() AS VOID STRICT
 	NEXT //dwI
 	RETURN
 
+
+/// <include file="Internet.xml" path="doc/CEmail.CreateHtml/*" />
 METHOD CreateHtml(cText AS STRING) AS STRING STRICT
 	//convert plain text to HTML
 	LOCAL cHTM, cLine AS STRING
 	LOCAL dwStart, dwEnd, dwLen AS DWORD
+
 
 	// add the header
 	cHTM := e"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">" +;
@@ -470,8 +554,11 @@ METHOD CreateHtml(cText AS STRING) AS STRING STRICT
 	// close off the HTML
 	cHTM += "</BODY></HTML>" + CRLF
 
+
 	RETURN cHTM
 
+
+/// <include file="Internet.xml" path="doc/CEmail.CreateReplyBody/*" />
 METHOD CreateReplyBody(lReFormat := TRUE AS LOGIC) AS STRING
 	// Converts Text into a forward/Reply to format - does not consider HTML component
 	LOCAL cTemp       AS STRING
@@ -482,16 +569,21 @@ METHOD CreateReplyBody(lReFormat := TRUE AS LOGIC) AS STRING
 	LOCAL dwEnd       AS DWORD
 	LOCAL dwLen       AS DWORD
 
+
 	// the HTML component is now left untouched therefor you may use it from your own code
+
+
 
 
 	// rebuild the message as a forwarded message
 	cFrom := __FormatAddress(SELF:FromAddress, SELF:FromName)
 
+
 	cOutput := CRLF + CRLF + "---------- Original Message ----------" + CRLF + CRLF + ;
 		"Message From: " + cFrom + CRLF + ;
 		"Message To: "   + __Array2StrList(SELF:DestList) + CRLF + ;
 		"Message Date: " + __GetMailInfo(SELF:MailHeader, TEMP_DATE, FALSE) + CRLF + CRLF
+
 
 	IF lReFormat
 		cTemp   := SELF:Body
@@ -514,19 +606,25 @@ METHOD CreateReplyBody(lReFormat := TRUE AS LOGIC) AS STRING
 		cOutput += SELF:Body
 	ENDIF
 
+
 	RETURN cOutput
 
+
+/// <include file="Internet.xml" path="doc/CEmail.Decode/*" />
 METHOD Decode(cMail)
    LOCAL dwPos  AS DWORD
    LOCAL dwEnd  AS DWORD
    LOCAL dwStop AS DWORD
    LOCAL cRaw   AS STRING
 
+
    cRaw  := cMail
    dwEnd := SLen(cRaw)
    dwPos := 1
 
+
    SELF:StreamStart()
+
 
    DO WHILE dwPos <= dwEnd
       IF (dwStop := At3(CRLF, cRaw, dwPos-1)) > 0
@@ -538,21 +636,28 @@ METHOD Decode(cMail)
       ENDIF
    ENDDO
 
+
    SELF:StreamIn(NULL_STRING)
+
 
    RETURN TRUE
 
+
+/// <include file="Internet.xml" path="doc/CEmail.DeleteAttachment/*" />
 METHOD DeleteAttachment(dwIndex AS DWORD) AS LOGIC
 	LOCAL uValue    AS USUAL
 	LOCAL dwCount   AS DWORD
 	LOCAL cID       AS STRING
 
+
 	dwCount := SELF:AttachmentCount
+
 
 	IF dwCount > 0 .AND. dwIndex <= dwCount
 		IF dwIndex = 0
 			dwIndex := dwCount
 		ENDIF
+
 
 		uValue := SELF:GetAttachmentInfo(dwIndex, ATTACH_STOREID)
 		IF IsString(uValue)
@@ -562,31 +667,45 @@ METHOD DeleteAttachment(dwIndex AS DWORD) AS LOGIC
 			ENDIF
 		ENDIF
 
+
 		ADel(SELF:aFileList,         dwIndex)
 		ADel(SELF:aAttachList,       dwIndex)
 		ADel(SELF:aContentType,      dwIndex)
 		ADel(SELF:aTransferEncoding, dwIndex)
 
+
 		dwCount -= 1
+
 
 		ASize(SELF:aFileList,         dwCount)
 		ASize(SELF:aAttachList,       dwCount)
 		ASize(SELF:aContentType,      dwCount)
 		ASize(SELF:aTransferEncoding, dwCount)
 
+
 		RETURN TRUE
 	ENDIF
+
 
 	RETURN FALSE
 
 
 
+
+
+
+/// <include file="Internet.xml" path="doc/CEmail.DestList/*" />
 ACCESS DestList()
+
+
 
 
 	RETURN SELF:aDestList
 
+
+/// <include file="Internet.xml" path="doc/CEmail.DestList/*" />
 ASSIGN DestList(xNew)
+
 
 	IF IsString(xNew)
 		//SELF:aDestList := __StrList2Array(xNew)
@@ -595,18 +714,26 @@ ASSIGN DestList(xNew)
 		SELF:aDestList := xNew
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Internet.xml" path="doc/CEmail.DispositionNotification/*" />
 ACCESS DispositionNotification
 	RETURN SELF:cDispositionNotification
 
+
+/// <include file="Internet.xml" path="doc/CEmail.DispositionNotification/*" />
 ASSIGN DispositionNotification(uValue)
 	IF IsString(uValue)
 		SELF:cDispositionNotification := __Array2StrList(__GetAddressList(uValue))
 	ENDIF
 	RETURN
 
+
+/// <include file="Internet.xml" path="doc/CEmail.GetAttachmentInfo/*" />
 METHOD GetAttachmentInfo(dwIndex AS DWORD, dwType AS DWORD) AS USUAL STRICT
+
 
 	IF dwIndex > 0 .AND. dwIndex <= SELF:AttachmentCount
         IF dwType > 0 .AND. dwType < 4 //ATTACH_STOREID, ATTACH_CONTENTID, ATTACH_FILESIZE
@@ -631,14 +758,20 @@ METHOD GetAttachmentInfo(dwIndex AS DWORD, dwType AS DWORD) AS USUAL STRICT
 		ENDIF
 	ENDIF
 
+
 	RETURN NIL
 
+
+/// <include file="Internet.xml" path="doc/CEmail.GetHeaderInfo/*" />
 METHOD GetHeaderInfo()
 	LOCAL cHeader AS STRING
 
+
 	cHeader := SELF:MailHeader
 
+
 	SUPER:GetHeaderInfo()
+
 
 	// Your class might choose to pass in details of what to do with new addessees
 	// or even extract the name lists in terms of our contact DBF
@@ -646,12 +779,16 @@ METHOD GetHeaderInfo()
 	SELF:CCList   := __GetMailInfo(cHeader, TEMP_CC, FALSE)
 	SELF:BCCList  := __GetMailInfo(cHeader, TEMP_BCC, FALSE)
 
+
 	SELF:ReturnReceipt           := __GetMailInfo(cHeader, TEMP_RETURN_RECEIPT, .F. )
 	SELF:Priority                := Val(__GetMailInfo(cHeader, TEMP_PRIORITY, TRUE))
 	SELF:DispositionNotification := __GetMailInfo(cHeader, TEMP_DISPOSITIONNOTIFICATION, FALSE)
 
+
 	RETURN TRUE
 
+
+/// <include file="Internet.xml" path="doc/CEmail.HTMLText/*" />
 ACCESS HTMLText
     // either read the HTML text or convert plain text to HTML
     LOCAL cHTM, cTag, cContentID, cTmp AS STRING
@@ -659,10 +796,12 @@ ACCESS HTMLText
     LOCAL dwStart, dwLen, dwStop, dwPos AS DWORD
     LOCAL lQM AS LOGIC
 
+
 	cHTM := SELF:BodyHtml
 	IF Empty(cHTM)
 		cHTM := SELF:CreateHtml(SELF:Body)
 	ENDIF
+
 
 	// Now - check through the string to see if there are embedded ControlIDs
 	dwStart := 1
@@ -702,11 +841,16 @@ ACCESS HTMLText
         ENDIF
     ENDDO
 
+
 	RETURN cHTM
 
+
+/// <include file="Internet.xml" path="doc/CEmail.ctor/*" />
 CONSTRUCTOR(cRawMail, uStorage)
 
+
 	SUPER()
+
 
 	IF IsInstanceOfUsual(uStorage, #CStorage)
 		oStorage := uStorage
@@ -716,39 +860,56 @@ CONSTRUCTOR(cRawMail, uStorage)
 		oStorage := CStorage{uStorage}
 	ENDIF
 
+
 	IF IsString(cRawMail)
 		SELF:Decode(cRawMail)
 	ENDIF
 
+
 	RETURN
 
+
+/// <include file="Internet.xml" path="doc/CEmail.MailPriority/*" />
 ACCESS  MailPriority
 	RETURN SELF:Priority
 
+
+/// <include file="Internet.xml" path="doc/CEmail.MailPriority/*" />
 ASSIGN MailPriority(nNew)
 	SELF:Priority := nNew
 
 
+
+
+/// <include file="Internet.xml" path="doc/CEmail.MimeEncode/*" />
 METHOD MimeEncode(c, nCode)
+
 
 	DEFAULT(@c, SELF:MailBody)
 	DEFAULT(@nCode, SELF:TransferEncoding)
+
 
 	IF nCode = 0
 		nCode := CODING_TYPE_PRINTABLE
 	ENDIF
 
+
 	DO CASE
 	CASE nCode == CODING_TYPE_PRINTABLE
 		RETURN QPEncode(c)
 
+
 	CASE nCode == CODING_TYPE_BASE64
 		RETURN B64EncodeString(c)
 
+
 	ENDCASE
+
 
 	RETURN StrTran(c, CRLF + ".", CRLF + "..")
 
+
+/// <include file="Internet.xml" path="doc/CEmail.MimeHeader/*" />
 METHOD MimeHeader(nCode, xContentType, cFile, cCID)
     // Added " before and after the filenames KB 16-6-2009
     // reason: some clients could not open attachments with long filenames
@@ -760,21 +921,27 @@ METHOD MimeHeader(nCode, xContentType, cFile, cCID)
 	LOCAL cFName   AS STRING
     LOCAL cDispositionType AS STRING
 
+
 	IF IsString(xContentType)
 		cContent := xContentType
 	ELSE
 		cContent := SELF:cContentType
 	ENDIF
 
+
 	DEFAULT(@nCode, SELF:TransferEncoding)
 
+
 	lEncode := TRUE
+
 
 	IF SLen(cContent) = 0
 		cContent := CONTENT_TEXT_PLAIN
 	ENDIF
 
+
 	cTemp := Lower(cContent)
+
 
 	IF cTemp = CONTENT_TEXT_PLAIN .OR. cTemp = CONTENT_TEXT_HTML
 		IF AtC2(TEMP_CHARSET, cContent) = 0
@@ -799,7 +966,9 @@ METHOD MimeHeader(nCode, xContentType, cFile, cCID)
 		ENDIF
 	ENDIF
 
+
 	cRet := TEMP_CONTENT + " " + cContent
+
 
 	IF lEncode
 		cTemp := NULL_STRING
@@ -820,16 +989,22 @@ METHOD MimeHeader(nCode, xContentType, cFile, cCID)
 		ENDIF
 	ENDIF
 
+
 	IF ! cFName == NULL_STRING
         cRet += CRLF + TEMP_CONTENTDISPOSITION + " " + cDispositionType + ";" + CRLF +;
 			TAB + TEMP_FNAME + e"\"" +cFName+e"\""
 	ENDIF
 
+
 	RETURN cRet
 
+
+/// <include file="Internet.xml" path="doc/CEmail.ReturnReceipt/*" />
 ACCESS ReturnReceipt
 	RETURN SELF:cReturnReceipt
 
+
+/// <include file="Internet.xml" path="doc/CEmail.ReturnReceipt/*" />
 ASSIGN ReturnReceipt(cFrom)
 	IF IsString(cFrom)
 		SELF:cReturnReceipt := __Array2StrList(__GetAddressList(cFrom))
@@ -837,9 +1012,14 @@ ASSIGN ReturnReceipt(cFrom)
 	RETURN
 
 
+
+
+/// <include file="Internet.xml" path="doc/CEmail.SaveAs/*" />
 METHOD SaveAs(cPath, cFile, n)
 
+
 	DEFAULT(@n, 1)
+
 
 	IF n < 1
 		RETURN FALSE
@@ -849,21 +1029,28 @@ METHOD SaveAs(cPath, cFile, n)
 		ENDIF
 	ENDIF
 
+
     // Updated to better handle UNC paths
     cPath := __AdJustPath(cPath)
+
 
 	DEFAULT(@cFile, "")
 	IF SLen(cFile) = 0
 		cFile := __GetFileName(SELF:aFileList[n])
 	ENDIF
 
+
 	RETURN oStorage:AttachmentSave(SELF:aAttachList[n, ATTACH_STOREID], cPath+cFile)
 
+
+/// <include file="Internet.xml" path="doc/CEmail.SetAttachmentInfo/*" />
 METHOD SetAttachmentInfo(dwIndex AS DWORD, dwType AS DWORD, uNewValue AS USUAL) AS USUAL STRICT
 	LOCAL uOldValue AS USUAL
 	LOCAL dwCount   AS DWORD
 
+
 	dwCount := SELF:AttachmentCount
+
 
 	IF dwIndex <= dwCount
 		IF dwIndex = 0
@@ -883,68 +1070,90 @@ METHOD SetAttachmentInfo(dwIndex AS DWORD, dwType AS DWORD, uNewValue AS USUAL) 
 		ENDIF
 	ENDIF
 
+
 	RETURN uOldValue
 
+
+/// <include file="Internet.xml" path="doc/CEmail.SetHeaderInfo/*" />
 METHOD SetHeaderInfo()
 	LOCAL cBuffer AS STRING
 
+
 	SELF:SetMailTime()
+
 
 	cBuffer := TEMP_DATE + " " + SELF:TimeStamp + CRLF +;
 	           __CreateAddressList(TEMP_FROM, {__FormatAddress(SELF:FromAddress, SELF:FromName)})
+
 
 	// Build the To: list
 	IF ALen(SELF:DestList) > 0
 		cBuffer += __CreateAddressList(TEMP_TO, SELF:DestList)
 	ENDIF
 
+
 	cBuffer += TEMP_SUBJECT + " " + __EncodeField(SELF:Subject, SLen(TEMP_SUBJECT)+1) + CRLF
+
 
 	// Build the Cc: list
 	IF ALen(SELF:CCList) > 0
 		cBuffer += __CreateAddressList(TEMP_CC, SELF:CCList)
 	ENDIF
 
+
 	// NEVER include the BCC list in the header...
 	//IF ALen(SELF:BCCList) > 0
 	//	cBuffer += TEMP_BCC + " " + __CreateAddressList(SELF:BCCList)
 	//ENDIF
 
+
 	IF SLen(SELF:ReplyTo) > 0
       cBuffer += __CreateAddressList(TEMP_REPLY, {SELF:ReplyTo}, FALSE)
 	ENDIF
+
 
 	IF SLen(SELF:ReturnReceipt) > 0
 	   cBuffer += __CreateAddressList(TEMP_RETURN_RECEIPT, __GetAddressList(SELF:ReturnReceipt), FALSE)
 	ENDIF
 
+
    IF SLen(SELF:DispositionNotification) > 0
 	   cBuffer += __CreateAddressList(TEMP_DISPOSITIONNOTIFICATION, __GetAddressList(SELF:DispositionNotification), FALSE)
 	ENDIF
+
 
    IF SELF:MailPriority > 0
       cBuffer += TEMP_PRIORITY + " " + NTrim(SELF:MailPriority) + CRLF
    ENDIF
 
+
    cBuffer += TEMP_MIMEVERSION + CRLF + SELF:MimeHeader(,SELF:cContentType) + CRLF
+
 
 	IF SLen(SELF:Cargo) > 0
 		cBuffer += SELF:Cargo
 	ENDIF
 
+
    SELF:cHeader := cBuffer
+
 
    RETURN cBuffer
 
 
+
+
+/// <include file="Internet.xml" path="doc/CEmail.Size/*" />
 ACCESS Size
 	LOCAL dwSize      AS DWORD
 	LOCAL dwI         AS DWORD
 	LOCAL dwCount     AS DWORD
 	LOCAL cMailHeader AS STRING
 
+
 	cMailHeader := SELF:MailHeader
 	SELF:SetHeaderInfo()
+
 
 	dwSize := SLen(SELF:MailHeader) + SLen(SELF:Body) + SLen(SELF:BodyHtml)
 	dwCount := SELF:AttachmentCount
@@ -952,10 +1161,14 @@ ACCESS Size
 		dwSize += SELF:GetAttachmentInfo(dwI, ATTACH_SIZE)
 	NEXT //dwI
 
+
 	SELF:MailHeader := cMailHeader
+
 
 	RETURN dwSize
 
+
+/// <include file="Internet.xml" path="doc/CEmail.StreamIn/*" />
 METHOD StreamIn(cData AS STRING) AS LOGIC STRICT
 	IF dwStreamStatus = STREAM_RESET  //Reset Header
 		oStorage:RawNew(SELF)
@@ -967,7 +1180,9 @@ METHOD StreamIn(cData AS STRING) AS LOGIC STRICT
 		dwStreamStatus    := STREAM_Header
 	ENDIF
 
+
 	oStorage:RawWrite(cData)
+
 
 	IF dwStreamStatus = STREAM_Header //Read Header
 		IF cData == CRLF
@@ -977,6 +1192,7 @@ METHOD StreamIn(cData AS STRING) AS LOGIC STRICT
 			SELF:cHeader += cData
 		ENDIF
 
+
 	ELSEIF dwStreamStatus = STREAM_Plain .OR. dwStreamStatus = STREAM_Html //Read plain text or html text
 		IF SELF:__IsBoundary(cData)
 			IF dwStreamStatus = STREAM_Plain
@@ -984,6 +1200,7 @@ METHOD StreamIn(cData AS STRING) AS LOGIC STRICT
 			ELSE
                 SELF:cBodyHtml += SELF:__DecodeContent(cContentPart)
 			ENDIF
+
 
 			IF SELF:__IsBoundary(cData, TRUE)
 				IF SELF:Boundary == NULL_STRING
@@ -1000,12 +1217,15 @@ METHOD StreamIn(cData AS STRING) AS LOGIC STRICT
 			cContentPart += cData
 		ENDIF
 
+
 	ELSEIF dwStreamStatus = STREAM_Attachment //Read attachment
 		IF SELF:__IsBoundary(cData)
 			//Close saving
 
+
 			SELF:SetAttachmentInfo(0, ATTACH_FILESIZE, oStorage:AttachmentSize)
 			oStorage:AttachmentClose()
+
 
 			IF SELF:__IsBoundary(cData, TRUE)
 				IF SELF:cBoundary == NULL_STRING
@@ -1023,6 +1243,7 @@ METHOD StreamIn(cData AS STRING) AS LOGIC STRICT
 			oStorage:AttachmentWrite(cData)
 		ENDIF
 
+
 	ELSEIF dwStreamStatus = STREAM_Boundary //Next boundary
         IF !SELF:__IsBoundary(cData, TRUE)	// ignore a closing boundary KB 7-12-2009
 	        IF SELF:__IsBoundary(cData)
@@ -1030,6 +1251,7 @@ METHOD StreamIn(cData AS STRING) AS LOGIC STRICT
 	            cContentPart   := NULL_STRING
 	        ENDIF
         ENDIF
+
 
 	ELSEIF dwStreamStatus = STREAM_Part
 		IF cData == CRLF
@@ -1040,20 +1262,25 @@ METHOD StreamIn(cData AS STRING) AS LOGIC STRICT
 		ENDIF
 	ENDIF
 
+
    IF cData == NULL_STRING
       dwStreamStatus := STREAM_END
 		oStorage:RawClose()
 		RETURN FALSE
 	ENDIF
 
+
 	RETURN TRUE
 
+
+/// <include file="Internet.xml" path="doc/CEmail.StreamOut/*" />
 METHOD StreamOut() AS STRING STRICT
 	LOCAL cData  AS STRING
 	LOCAL dwType AS DWORD
 	LOCAL cTemp  AS STRING
 	LOCAL dwFile AS DWORD
 	LOCAL dwCode AS DWORD
+
 
 	IF dwStreamStatus = STREAM_RESET
 		aStreamOut        := SELF:__CreateCommands()
@@ -1062,6 +1289,7 @@ METHOD StreamOut() AS STRING STRICT
 		SELF:cContentType := SELF:__CreateContentType(dwType, @dwCode)
 		SELF:nTransferEncoding := dwCode
 		cData             := SELF:SetHeaderInfo()
+
 
 		IF _AND(dwType, CEMail_CMixed) ==  CEMail_CMixed ;
 				.OR. _AND(dwType, CEMail_CAlternate)  == CEMail_CAlternate
@@ -1075,11 +1303,13 @@ METHOD StreamOut() AS STRING STRICT
 			dwType := LoWord(dwType)
 			dwStreamStatus += 1
 
+
 			IF dwType = CEMAIL_Attachment
 				IF dwFile>0
 					cData := CRLF + SELF:Boundary + CRLF
                     cTemp := aAttachList[dwFile, ATTACH_CONTENTID] 
 		            cData += SELF:MimeHeader(aTransferEncoding[dwFile], aContentType[dwFile], __GetFileName(aFileList[dwFile]), cTemp) + CRLF
+
 
 					IF cTemp == NULL_STRING
 						cData += CRLF
@@ -1109,10 +1339,12 @@ METHOD StreamOut() AS STRING STRICT
 					cData += CRLF + cTemp + CRLF
 				ENDIF
 
+
 				cTemp := SELF:__CreateContentType(dwType, @dwCode)
 				IF ! cTemp == NULL_STRING
 					cData += SELF:MimeHeader(dwCode, cTemp) + CRLF
 				ENDIF
+
 
 				cTemp := NULL_STRING
 				IF _AND(dwType, CEMail_Body) > 0
@@ -1125,17 +1357,24 @@ METHOD StreamOut() AS STRING STRICT
 				ENDIF
 			ENDIF
 
+
 		ELSE
 			aStreamOut := NULL_ARRAY
 		ENDIF
 	ENDIF
 
+
 	RETURN cData
 
+
+/// <include file="Internet.xml" path="doc/CEmail.StreamStart/*" />
 METHOD StreamStart()
     dwStreamStatus := STREAM_RESET
 	RETURN TRUE
 END CLASS
+
+
+
 
 
 

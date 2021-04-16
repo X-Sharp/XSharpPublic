@@ -1,23 +1,34 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
+
 #pragma warnings(165, off)
+
 PARTIAL CLASS DbServer
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Alias/*" />
     PROPERTY Alias  AS STRING GET Symbol2String( symAlias )
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.AliasSym/*" />
     PROPERTY AliasSym AS SYMBOL GET symAlias
-    
-    
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.BoF/*" />
     PROPERTY BoF AS LOGIC
         GET
-        
+
+
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL lRetVal AS LOGIC
-        
+
+
         IF lSelectionActive
             RETURN siSelectionStatus == DBSELECTIONBOF .OR. siSelectionStatus == DBSELECTIONEMPTY
         ENDIF
@@ -27,18 +38,23 @@ PARTIAL CLASS DbServer
         RETURN lRetVal
         END GET
     END PROPERTY
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ConcurrencyControl/*" />
     ACCESS ConcurrencyControl AS USUAL
         RETURN SELF:nCCMode
-        
-    ASSIGN ConcurrencyControl( nMode AS USUAL) 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ConcurrencyControl/*" />
+    ASSIGN ConcurrencyControl( nMode AS USUAL)
         LOCAL newMode := nMode AS USUAL
         LOCAL dwCurrentWorkArea  := 0 AS DWORD
         LOCAL oError            AS USUAL
         IF IsString(newMode)
             newMode := String2Symbol(nMode)
         ENDIF
-        
+
+
         IF IsSymbol(newMode)
             DO CASE
                 CASE newMode == #ccNone
@@ -53,7 +69,8 @@ PARTIAL CLASS DbServer
                     newMode := ccFile
             ENDCASE
         ENDIF
-        
+
+
         IF !IsNumeric(newMode)
                 oErrorInfo:=DbError{ SELF, #ConcurrencyControl, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN), nMode, "nMode" }
             SELF:Error( oErrorInfo, #ConcurrencyControl )
@@ -67,65 +84,88 @@ PARTIAL CLASS DbServer
                     ENDIF
                     SELF:nCCMode := newMode
                     SELF:__SetupLocks()
-                __DBSSetSelect( dwCurrentWorkArea )  
+                __DBSSetSelect( dwCurrentWorkArea )
             RECOVER USING oError
                 oErrorInfo := oError
-                __DBSSetSelect( dwCurrentWorkArea )  
+                __DBSSetSelect( dwCurrentWorkArea )
                 SELF:Error( oErrorInfo, #Average )
             END SEQUENCE
         ENDIF
-        
-        RETURN 
-    
-    
+
+
+        RETURN
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.DBStruct/*" />
     PROPERTY DBStruct  AS ARRAY
         GET
         IF ALen(aStruct) == 0
             SELF:Error( __MakeErrObj(0), #DBSTRUCT )
         ENDIF
-        
+
+
         RETURN AClone(aStruct)
         END GET
     END PROPERTY
-        
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.DbStructure/*" />
     PROPERTY DbStructure AS ARRAY GET SELF:aStruct
         // This returns the original structure array
-        
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Deleted/*" />
     PROPERTY Deleted AS LOGIC
         GET
-        
+
+
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL uRetVal           AS USUAL
         LOCAL oError            AS USUAL
-        
-        
+
+
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
                 uRetVal := VoDbDeleted()
-            
+
+
         RECOVER USING oError
             oHLStatus := SELF:__GenerateStatusHL( oError )
             oErrorInfo := oError
             uRetVal := FALSE
         END SEQUENCE
-        
+
+
         __DBSSetSelect( dwCurrentWorkArea )
-        
-        
+
+
+
+
         RETURN uRetVal
         END GET
     END PROPERTY
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Driver/*" />
     PROPERTY Driver AS STRING GET SELF:cRDDName
-    
-    
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.EoF/*" />
     PROPERTY EoF AS LOGIC
         GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL lRetVal AS LOGIC
-        
-        
+
+
+
+
         IF lSelectionActive
             RETURN siSelectionStatus == DBSELECTIONEOF .OR. siSelectionStatus == DBSELECTIONEMPTY
         ENDIF
@@ -135,24 +175,38 @@ PARTIAL CLASS DbServer
         RETURN lRetVal
         END GET
     END PROPERTY
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ErrInfo/*" />
     PROPERTY ErrInfo AS Error GET IIF (lErrorFlag, oErrorInfo, NULL_OBJECT)
         // returns an Error object if last operation generated an error.
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.ErrorInfo/*" />
     PROPERTY ErrorInfo() AS Error GET SELF:oErrorInfo
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FCount/*" />
     PROPERTY FCount AS DWORD GET SELF:wFieldCount
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldDesc/*" />
     PROPERTY FieldDesc AS ARRAY GET {}
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FileSpec/*" />
     PROPERTY FileSpec AS FileSpec GET oFileSpec
-    
-    
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Filter/*" />
     ACCESS Filter AS USUAL
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL uInfo             AS USUAL
-        
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -165,22 +219,34 @@ PARTIAL CLASS DbServer
             __DBSSetSelect( dwCurrentWorkArea )
             SELF:Error( oErrorInfo, #Filter )
         END SEQUENCE
-        
-        
+
+
+
+
         RETURN uInfo
-    
-    
-    ASSIGN Filter( uFilterBlock AS USUAL) 
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Filter/*" />
+    ASSIGN Filter( uFilterBlock AS USUAL)
         SELF:SetFilter( uFilterBlock )
-        
-        RETURN 
-    
-    
+
+
+        RETURN
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ForBlock/*" />
     ACCESS ForBlock AS USUAL
         RETURN cbStoredForBlock
-    
-    
-    ASSIGN ForBlock( cbForBlock  AS USUAL) 
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ForBlock/*" />
+    ASSIGN ForBlock( cbForBlock  AS USUAL)
         IF IsString(cbForBlock)
             cbStoredForBlock := &( "{ ||" + cbForBlock + " }" )
         ELSEIF IsSymbol(cbForBlock)
@@ -190,9 +256,12 @@ PARTIAL CLASS DbServer
         ENDIF
         SELF:lActiveScope := cbStoredForBlock# NIL .OR. cbStoredWhileBlock# NIL ;
         .OR. uStoredScope# NIL
-        RETURN 
-    
-    
+        RETURN
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Found/*" />
     PROPERTY Found AS LOGIC
         GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
@@ -201,8 +270,10 @@ PARTIAL CLASS DbServer
         IF lSelectionActive
             RETURN siSelectionStatus == DBSELECTIONFOUND
         ENDIF
-        
-        
+
+
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -212,21 +283,28 @@ PARTIAL CLASS DbServer
             oErrorInfo := oError
             lRetCode := FALSE
         END SEQUENCE
-        
+
+
         __DBSSetSelect( dwCurrentWorkArea )
-        
-        
+
+
+
+
         RETURN lRetCode
         END GET
     END PROPERTY
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Header/*" />
     PROPERTY Header AS DWORD
         GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL uInfo             AS USUAL
-        
-        
+
+
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
             VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -239,20 +317,27 @@ PARTIAL CLASS DbServer
             __DBSSetSelect( dwCurrentWorkArea )
             SELF:Error( oErrorInfo, #Info )
         END SEQUENCE
-        
-        
+
+
+
+
         RETURN uInfo
         END GET
     END PROPERTY
 
 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.IndexExt/*" />
     PROPERTY IndexExt AS STRING
         GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL uOrdVal           AS USUAL
-        
-        
+
+
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -265,35 +350,48 @@ PARTIAL CLASS DbServer
             __DBSSetSelect( dwCurrentWorkArea )
             SELF:Error( oErrorInfo, #OrderInfo )
         END SEQUENCE
-        
-        
+
+
+
+
         RETURN uOrdVal
         END GET
    END PROPERTY
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.IndexList/*" />
     PROPERTY IndexList AS ARRAY GET {}
-    
-    
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.LastRec/*" />
     PROPERTY LastRec AS LONG
-        GET        
+        GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL liRecno AS LONGINT
-        
-        
+
+
+
+
         VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
         liRecno := VoDbLastRec()
         __DBSSetSelect( dwCurrentWorkArea )
         RETURN liRecno
         END GET
    END PROPERTY
-        
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Lupdate/*" />
     PROPERTY Lupdate AS DATE
         GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL uInfo             AS USUAL
-        
-        
+
+
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -306,12 +404,16 @@ PARTIAL CLASS DbServer
             __DBSSetSelect( dwCurrentWorkArea )
             SELF:Error( oErrorInfo, #Info )
         END SEQUENCE
-        
-        
+
+
+
+
         RETURN uInfo
         END GET
    END PROPERTY
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.MemoExt/*" />
     PROPERTY MemoExt AS STRING
         GET
         IF SELF:Used
@@ -320,17 +422,25 @@ PARTIAL CLASS DbServer
         RETURN ""
         END GET
     END PROPERTY
-        
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Name/*" />
     PROPERTY Name AS STRING GET SUPER:Name
-    
-    PROPERTY OleExt AS STRING GET "DFL"	
-        
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OleExt/*" />
+    PROPERTY OleExt AS STRING GET "DFL"
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderBottomScope/*" />
     ACCESS OrderBottomScope AS USUAL
-        
+
+
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL uRetVal := NIL AS USUAL
         LOCAL oError        AS USUAL
-        
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -344,16 +454,22 @@ PARTIAL CLASS DbServer
             SELF:Error( oErrorInfo, #OrderBottomScope )
             uRetVal:=NIL
         END SEQUENCE
-        
+
+
         RETURN uRetVal
-    
-    
-    ASSIGN OrderBottomScope(uValue  AS USUAL) 
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderBottomScope/*" />
+    ASSIGN OrderBottomScope(uValue  AS USUAL)
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError        AS USUAL
         LOCAL n             AS DWORD
-        
-        
+
+
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -361,27 +477,34 @@ PARTIAL CLASS DbServer
                 IF IsNil(uValue)
                     n := DBOI_SCOPEBOTTOMCLEAR
                 ENDIF
-                
+
+
                 IF ! VoDbOrderInfo(n, "", NIL, REF uValue)
                     BREAK ErrorBuild(_VoDbErrInfoPtr())
                 ENDIF
                 __DBSSetSelect( dwCurrentWorkArea )
-            
+
+
         RECOVER USING oError
             oErrorInfo := oError
             __DBSSetSelect( dwCurrentWorkArea )
             SELF:Error( oErrorInfo, #OrderBottomScope )
         END SEQUENCE
-        
-        RETURN 
-        
+
+
+        RETURN
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyVal/*" />
     PROPERTY OrderKeyVal  AS USUAL
         GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL uRetVal := NIL AS USUAL
         LOCAL oError        AS USUAL
-        
-        
+
+
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -396,18 +519,24 @@ PARTIAL CLASS DbServer
             SELF:Error( oErrorInfo, #OrderKeyVal )
             uRetVal:=NIL
         END SEQUENCE
-        
+
+
         RETURN uRetVal
         END GET
     END PROPERTY
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderTopScope/*" />
     ACCESS OrderTopScope  AS USUAL
-        
+
+
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL uRetVal := NIL AS USUAL
         LOCAL oError        AS USUAL
-        
-        
+
+
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -422,16 +551,22 @@ PARTIAL CLASS DbServer
             SELF:Error( oErrorInfo, #OrderTopScope )
             uRetVal:=NIL
         END SEQUENCE
-        
+
+
         RETURN uRetVal
-    
-    ASSIGN OrderTopScope(uValue AS USUAL) 
-        
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderTopScope/*" />
+    ASSIGN OrderTopScope(uValue AS USUAL)
+
+
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError        AS USUAL
         LOCAL n             AS DWORD
-        
-        
+
+
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -439,7 +574,8 @@ PARTIAL CLASS DbServer
                 IF IsNil(uValue)
                     n := DBOI_SCOPETOPCLEAR
                 ENDIF
-                
+
+
                 IF ! VoDbOrderInfo(n, "", NIL, REF uValue)
                     BREAK ErrorBuild(_VoDbErrInfoPtr())
                 ENDIF
@@ -449,48 +585,68 @@ PARTIAL CLASS DbServer
             __DBSSetSelect( dwCurrentWorkArea )
             SELF:Error( oErrorInfo, #OrderTopScope )
         END SEQUENCE
-        RETURN 
-    
-    
+        RETURN
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.PaintedStructure/*" />
     PROPERTY  PaintedStructure AS ARRAY
         GET
         LOCAL aRet       AS ARRAY
         LOCAL aFDesc     AS ARRAY
         LOCAL i,nField   AS DWORD
-        
+
+
         aFDesc := SELF:FieldDesc
         nField := ALen(aFDesc)
-        
+
+
         aRet := {}
-        
+
+
         FOR i:=1 UPTO nField
             LOCAL oFs AS FieldSpec
             oFs := aFDesc[i][DBC_FIELDSPEC]
             AAdd( aRet, { aFDesc[i][DBC_NAME] , oFs:ValType, oFs:Length , oFs:Decimals } )
         NEXT
-        
+
+
         RETURN aRet
         END GET
     END PROPERTY
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RddName/*" />
     PROPERTY RddName  AS STRING GET cRDDName
-    
-    
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Rdds/*" />
     PROPERTY Rdds AS ARRAY GET aRdds
-    
-    
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ReadOnly/*" />
     PROPERTY ReadOnly AS LOGIC GET lReadOnly
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RecCount/*" />
     PROPERTY RecCount  AS LONG
         GET
         LOCAL nCurrentRecord            AS LONGINT
         LOCAL siCurrentSelectionStatus  AS SHORTINT
         LOCAL iRetVal                   AS INT
         LOCAL dwCurrentWorkArea := 0    AS DWORD
-         
-         
+
+
+
+
         LOCAL oError                    AS USUAL
-        
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 IF lSelectionActive
@@ -504,7 +660,7 @@ PARTIAL CLASS DbServer
                             IF ! VoDbGoto( nCurrentRecord )
                                 BREAK ErrorBuild(_VoDbErrInfoPtr())
                             ENDIF
-                            __DBSSetSelect( dwCurrentWorkArea )  
+                            __DBSSetSelect( dwCurrentWorkArea )
                             siSelectionStatus       := siCurrentSelectionStatus
                     ENDIF
                 ELSE
@@ -512,23 +668,29 @@ PARTIAL CLASS DbServer
                     iRetVal := VoDbLastRec()
                     __DBSSetSelect( dwCurrentWorkArea )
                 ENDIF
-            
+
+
         RECOVER USING oError
             oErrorInfo := oError
-            __DBSSetSelect( dwCurrentWorkArea )  
+            __DBSSetSelect( dwCurrentWorkArea )
             SELF:Error( oErrorInfo, #RECCOUNT )
         END SEQUENCE
-        
-        
+
+
+
+
         RETURN iRetVal
         END GET
     END PROPERTY
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RecNo/*" />
     ACCESS RecNo AS LONG
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL wRetCode      AS LONGINT
         LOCAL oError        AS USUAL
-        
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -539,15 +701,22 @@ PARTIAL CLASS DbServer
             __DBSSetSelect( dwCurrentWorkArea )
             SELF:Error( oErrorInfo, #RECNO )
         END SEQUENCE
-        
-        
+
+
+
+
         RETURN wRetCode
-    
-    
-    ASSIGN RecNo( nRecordNumber AS LONG) 
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RecNo/*" />
+    ASSIGN RecNo( nRecordNumber AS LONG)
         LOCAL oError        AS USUAL
-        
-        
+
+
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
             SELF:GoTo( nRecordNumber )
@@ -555,18 +724,25 @@ PARTIAL CLASS DbServer
             oErrorInfo := oError
             SELF:Error( oErrorInfo, #RECNO )
         END SEQUENCE
-        
-        
-        RETURN 
-    
-    
+
+
+
+
+        RETURN
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RecSize/*" />
     PROPERTY RecSize AS DWORD
         GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError        AS USUAL
         LOCAL uVoVal        AS USUAL
-        
-        
+
+
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -579,16 +755,22 @@ PARTIAL CLASS DbServer
             __DBSSetSelect( dwCurrentWorkArea )
             SELF:Error( oErrorInfo, #RECSIZE )
         END SEQUENCE
-        
+
+
         RETURN uVoVal
         END GET
      END PROPERTY
-    
-     
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RelationChildren/*" />
     ACCESS RelationChildren AS ARRAY
         RETURN SELF:aRelationChildren
-        
-    ASSIGN RelationChildren(aNewChildren AS ARRAY) 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RelationChildren/*" />
+    ASSIGN RelationChildren(aNewChildren AS ARRAY)
         IF IsArray(aNewChildren)
             SELF:aRelationChildren := aNewChildren
         ENDIF
@@ -597,25 +779,34 @@ PARTIAL CLASS DbServer
         ELSE
             lRelationsActive := TRUE
         ENDIF
-        
-        RETURN 
-         
+
+
+        RETURN
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Retries/*" />
     ACCESS Retries AS DWORD
         RETURN SELF:nRetries
-      
-    ASSIGN Retries  (n AS DWORD) 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Retries/*" />
+    ASSIGN Retries  (n AS DWORD)
         IF n > 0
             SELF:nRetries := n
         ENDIF
-        RETURN 
-    
-    
+        RETURN
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RLockList/*" />
     PROPERTY RLockList AS ARRAY
         GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL oError            AS USUAL
         LOCAL aLockList := { }  AS ARRAY
-        
+
+
         lErrorFlag := FALSE
         BEGIN SEQUENCE
                 VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -626,16 +817,22 @@ PARTIAL CLASS DbServer
             __DBSSetSelect( dwCurrentWorkArea )
             SELF:Error( oErrorInfo, #RLockList )
         END SEQUENCE
-        
+
+
         RETURN aLockList
         END GET
     END PROPERTY
+/// <include file="Rdd.xml" path="doc/DbServer.Scope/*" />
     ACCESS Scope AS USUAL
         RETURN uStoredScope
-    
-    PROPERTY SelectionWorkArea AS DWORD GET SELF:wSelectionWorkArea	
-        
-    ASSIGN Scope( uScope AS USUAL) 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.SelectionWorkArea/*" />
+    PROPERTY SelectionWorkArea AS DWORD GET SELF:wSelectionWorkArea
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Scope/*" />
+    ASSIGN Scope( uScope AS USUAL)
         uStoredScope := uScope
         IF uScope == NIL
             lStoredAllRecords := FALSE
@@ -656,31 +853,45 @@ PARTIAL CLASS DbServer
         ENDIF
         lActiveScope := cbStoredForBlock# NIL .OR. cbStoredWhileBlock# NIL ;
         .OR. uStoredScope# NIL
-        RETURN 
-    
-    
+        RETURN
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Shared/*" />
     PROPERTY  Shared AS LOGIC GET lShared
-    
-    
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Status/*" />
     ACCESS Status AS HyperLabel
         IF ( lErrorFlag )
             RETURN oHLStatus
         ENDIF
         RETURN NULL_OBJECT
-    
-    ASSIGN Status(oHl AS HyperLabel) 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Status/*" />
+    ASSIGN Status(oHl AS HyperLabel)
         SUPER:Status := oHl
         SELF:lErrorFlag := TRUE
-        
-        RETURN  
-        
+
+
+        RETURN
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.TableExt/*" />
     PROPERTY TableExt AS STRING GET SELF:Info(DBI_TABLEEXT)
-        
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Used/*" />
     PROPERTY Used AS LOGIC
         GET
         LOCAL dwCurrentWorkArea := 0 AS DWORD
         LOCAL lRetVal AS LOGIC
-        
+
+
         IF SELF:wWorkArea == 0
             RETURN FALSE
         ENDIF
@@ -690,12 +901,17 @@ PARTIAL CLASS DbServer
         RETURN lRetVal
         END GET
     END PROPERTY
-    
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.WhileBlock/*" />
     ACCESS WhileBlock AS USUAL
         RETURN cbStoredWhileBlock
-    
-    
-    ASSIGN WhileBlock( cbWhileBlock  AS USUAL) 
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.WhileBlock/*" />
+    ASSIGN WhileBlock( cbWhileBlock  AS USUAL)
         IF IsString(cbWhileBlock)
             cbStoredWhileBlock := &( "{ ||" + cbWhileBlock + " }" )
         ELSEIF IsSymbol(cbWhileBlock)
@@ -705,9 +921,13 @@ PARTIAL CLASS DbServer
         ENDIF
         lActiveScope := cbStoredForBlock# NIL .OR. cbStoredWhileBlock# NIL ;
         .OR. uStoredScope# NIL
-        RETURN 
-    
-    
+        RETURN
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.WorkArea/*" />
     PROPERTY  WorkArea AS DWORD GET wWorkArea
     END CLASS
-        
+
+

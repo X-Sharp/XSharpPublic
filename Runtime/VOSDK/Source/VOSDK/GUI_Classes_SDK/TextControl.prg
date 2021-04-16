@@ -1,3 +1,4 @@
+/// <include file="Gui.xml" path="doc/TextControl/*" />
 CLASS TextControl INHERIT Control
 	PROTECT cSavedText AS STRING // save text before DESTROY, for 1.0 compatibility
 	PROTECT oFont AS Font
@@ -7,13 +8,16 @@ CLASS TextControl INHERIT Control
 	PROTECT wYChars AS DWORD
 	PROTECT symImeFlag AS SYMBOL // default, don't check for IME
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	METHOD __GetText() AS STRING STRICT 
 	//PP-030828 Strong typing
 	LOCAL iLength, iReturn AS INT
 	LOCAL cBuffer AS PTR
 	LOCAL DIM aBuf[128] AS BYTE
 	LOCAL sRet AS STRING
+
 
 	IF SELF:ValidateControl()
 		iLength := SELF:Length
@@ -35,9 +39,13 @@ CLASS TextControl INHERIT Control
 		RETURN sRet
 	ENDIF
 
+
 	RETURN cSavedText
 
 
+
+
+ /// <exclude />
 METHOD __InitTextMetrics() AS VOID STRICT 
 	//PP-030828 Strong typing
 	LOCAL strucRect IS _WinRect
@@ -45,7 +53,9 @@ METHOD __InitTextMetrics() AS VOID STRICT
 	LOCAL iWidth AS INT
 	LOCAL iHeight AS INT
 	
+	
 	GetWindowRect(SELF:Handle(),@strucRect)
+
 
 	iWidth := strucRect:Right - strucRect:Left
 	iHeight := strucRect:Bottom - strucRect:Top
@@ -57,6 +67,8 @@ METHOD __InitTextMetrics() AS VOID STRICT
 	ENDIF
 	RETURN
 
+
+ /// <exclude />
 METHOD __RescalCntlB(hFont AS PTR) AS VOID STRICT  //Hong. For Font Method
 	//PP-030828 Strong typing
 	LOCAL tm IS _winTextMetric
@@ -65,6 +77,7 @@ METHOD __RescalCntlB(hFont AS PTR) AS VOID STRICT  //Hong. For Font Method
 	LOCAL hOldFont AS PTR
 	LOCAL dwHeight AS DWORD
 	LOCAL dwWidth AS DWORD
+
 
 	hDCtmp := GetDC(SELF:Handle())
 	hOldFont := SelectObject(hDCtmp, hfont)
@@ -78,16 +91,20 @@ METHOD __RescalCntlB(hFont AS PTR) AS VOID STRICT  //Hong. For Font Method
 	dwWidth := wXChars * DWORD(_CAST, tm:tmAveCharWidth)
 	dwHeight := wYChars * DWORD(_CAST, (tm:tmHeight + 2*tm:tmExternalLeading))
 
+
 	oNewDimension := Dimension{dwWidth, dwHeight}
 	InvalidateRect(SELF:Handle(), NULL, TRUE)
 	SELF:Size := oNewDimension
 	RETURN
 
+
+ /// <exclude />
 METHOD __SetColors(_hDC AS PTR) AS PTR STRICT 
 	//PP-030828 Strong typing
 	//SE-050804 see new version of Control:__SetColors()
 	LOCAL hBr AS PTR
 	LOCAL strucLogBrush IS _WinLogBrush
+
 
     IF (oTextColor != NULL_OBJECT) .OR. (oControlBackGround != NULL_OBJECT)
 		IF (lManageColor)
@@ -97,7 +114,9 @@ METHOD __SetColors(_hDC AS PTR) AS PTR STRICT
 		ENDIF
 	ENDIF
 
+
    hBr := SUPER:__SetColors(_hDC)
+
 
 	IF hBr = NULL_PTR .AND. oTextColor != NULL_OBJECT
 		IF IsInstanceOf(SELF, #Edit) .OR. IsInstanceOf(SELF, #ListBox)
@@ -109,23 +128,32 @@ METHOD __SetColors(_hDC AS PTR) AS PTR STRICT
 		SetBkColor(_hDC, strucLogBrush:lbColor)
 	ENDIF
 
+
 	RETURN hBr
 
+
+ /// <exclude />
 METHOD __SetText(cNewText AS STRING) AS STRING STRICT 
 	//PP-030828 Strong typing
 	
+	
+
 
 //PP-040410 Parameter checking not required with strong typing
 // 	IF !IsString(cNewText)
 // 		WCError{#__SetText,#TextControl,__WCSTypeError,cNewText,1}:Throw()
 // 	ENDIF
 
+
 	IF SELF:ValidateControl()
 		SendMessage(hwnd, WM_SETTEXT, 0, LONGINT(_CAST, String2Psz(cNewText)))
 	ENDIF
 
+
 	RETURN cNewText
 
+
+ /// <exclude />
 METHOD __Update() AS Control STRICT 
 	//PP-030828 Strong typing
 	// Added version of __Update() for TextControl
@@ -133,13 +161,17 @@ METHOD __Update() AS Control STRICT
 	LOCAL cNewText AS STRING
 	LOCAL uOldValue AS USUAL
 
+
+	
 	
 	IF SELF:Modified
 		cText := SELF:TextValue
 		uOldValue := AsString(uValue)
 		IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
 
+
 			uValue := SELF:FieldSpec:Val(cText)
+
 
 			// If theres a picture clause we need to reformat the data at this point
 			//RvdH 060608 optimized
@@ -152,6 +184,7 @@ METHOD __Update() AS Control STRICT
 				cNewText := AsString(uValue)
 			ENDIF
 
+
 			IF !(cNewText == cText)
 				SELF:TextValue := cNewText
 			ENDIF
@@ -159,30 +192,43 @@ METHOD __Update() AS Control STRICT
 			uValue := cText
 		ENDIF
 
+
 		SELF:Modified := .F. 
 		SELF:ValueChanged := !(uOldValue == AsString(uValue))
 	ENDIF
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/TextControl.Caption/*" />
 ACCESS Caption 
 	
+	
+
 
 	IF !IsString(cCaption)
 		cCaption := SELF:__GetText()
 	ENDIF
 
+
 	RETURN cCaption
 
+
+/// <include file="Gui.xml" path="doc/TextControl.Caption/*" />
 ASSIGN Caption(cNewCaption) 
 	
+	
+
 
 	IF !IsString(cNewCaption)
 		WCError{#Caption,#TextControl,__WCSTypeError,cNewCaption,1}:Throw()
 	ENDIF
 	cCaption := cNewCaption
 
+
 	RETURN SELF:__SetText(cNewCaption)
 
+
+/// <include file="Gui.xml" path="doc/TextControl.ControlFont/*" />
 ACCESS ControlFont
     // RvdH 080609 Report from J Bieler:
     // We renamed the Textcontrol:Font access to ControlFont
@@ -212,8 +258,11 @@ ACCESS ControlFont
     ENDIF
     RETURN SELF:oFont
 
+
+/// <include file="Gui.xml" path="doc/TextControl.ControlFont/*" />
 ASSIGN ControlFont(oNewFont)  
 	LOCAL hFont AS PTR
+
 
 	oFont:= oNewFont
 	IF oFont != NULL_OBJECT
@@ -226,32 +275,45 @@ ASSIGN ControlFont(oNewFont)
 		ENDIF
 	ENDIF
 
+
 	SELF:__RescalCntlB(hFont)
 	SendMessage(SELF:Handle(), WM_SETFONT, DWORD(_CAST, hFont), 1)
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/TextControl.Create/*" />
 METHOD Create() 
 	IF SUPER:Create() != NULL_PTR
 		SELF:__InitTextMetrics()
 	ENDIF
 
+
 	RETURN hWnd
 
+
+/// <include file="Gui.xml" path="doc/TextControl.CurrentText/*" />
 ACCESS CurrentText 
 	RETURN SELF:__GetText()
 
+
+/// <include file="Gui.xml" path="doc/TextControl.CurrentText/*" />
 ASSIGN CurrentText(cNewText) 
 	LOCAL cCurrentText AS STRING
 	LOCAL cOldValue AS STRING
 
+
+	
 	
 	IF !IsString(cNewText)
 		WCError{#CurrentText,#TextControl,__WCSTypeError,cNewText,1}:Throw()
 	ENDIF
 
+
 	cCurrentText := SELF:__SetText(cNewText)
 	cOldValue := AsString(uValue)
+
 
 	IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
 		uValue := SELF:FieldSpec:Val(cCurrentText)
@@ -261,30 +323,40 @@ ASSIGN CurrentText(cNewText)
 		SELF:ValueChanged := !(cOldValue == uValue)
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/TextControl.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	// save the current text for TextValue Accesses afte enddialog/endwindow (for 1.0 compatibility)
 	IF IsWindow(hwnd)
 		cSavedText := SELF:__GetText()
 	ENDIF
 
+
 	IF !InCollect()
 		oFont := NULL_OBJECT
 	ENDIF
 
+
 	SUPER:Destroy()
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/TextControl.EnableAutoComplete/*" />
 METHOD EnableAutoComplete(dwFlags) 
 	//PP-030902
 	DEFAULT(@dwFlags,SHACF_DEFAULT)
 	RETURN ShellAutoComplete(SELF:handle(),dwFlags)
 
+
+/// <include file="Gui.xml" path="doc/TextControl.Font/*" />
 METHOD Font(oNewFont, lRescal)  // hong. 01/22/96
 	LOCAL lRescalCntl AS LOGIC
 	LOCAL oOldFont AS Font
 	LOCAL hFont AS PTR
+
 
 	IF !IsNil(oNewFont)
 		IF !IsInstanceOfUsual(oNewFont, #Font)
@@ -292,11 +364,13 @@ METHOD Font(oNewFont, lRescal)  // hong. 01/22/96
 		ENDIF
 	ENDIF
 
+
 	IF IsNil(lRescal)
 		lRescalCntl := FALSE
 	ELSE
 		lRescalCntl := lRescal
 	ENDIF
+
 
 	oOldFont := SELF:ControlFont
 	oFont := oNewFont
@@ -310,28 +384,42 @@ METHOD Font(oNewFont, lRescal)  // hong. 01/22/96
 		ENDIF
 	ENDIF
 
+
 	IF lRescalCntl
 		SELF:__RescalCntlB(hFont)
 	ENDIF
 	SendMessage(SELF:Handle(), WM_SETFONT, DWORD(_CAST, hFont), 1)
 
+
 	RETURN oOldFont
 
+
 #ifndef __VULCAN__
+/// <include file="Gui.xml" path="doc/TextControl.Font/*" />
 ACCESS Font  // hong. 01/22/96
+	
 	
 	RETURN SELF:ControlFont
 
+
+/// <include file="Gui.xml" path="doc/TextControl.Font/*" />
 ASSIGN Font(oNewFont)  // hong. 01/22/96
 	
+	
+
 
 	SELF:ControlFont := oNewFont
+
 
 	RETURN 
 #endif	
 
+
+/// <include file="Gui.xml" path="doc/TextControl.Ime/*" />
 METHOD Ime(symIme) 
 	
+	
+
 
 	IF (symIme == NIL)
 		RETURN SELF:symImeFlag
@@ -339,8 +427,12 @@ METHOD Ime(symIme)
 	SELF:symImeFlag := symIme
 	RETURN symIme
 
+
+/// <include file="Gui.xml" path="doc/TextControl.ctor/*" />
 CONSTRUCTOR(oOwner, xId, oPoint, oDimension, cRegclass, kStyle, lDataAware) 
 	
+	
+
 
 	symIMEFlag := #AUTO
 	SUPER(oOwner, xID, oPoint, oDimension, cRegclass, kStyle, lDataAware)
@@ -348,11 +440,16 @@ CONSTRUCTOR(oOwner, xId, oPoint, oDimension, cRegclass, kStyle, lDataAware)
 		SELF:__InitTextMetrics()
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/TextControl.Length/*" />
 ACCESS Length 
 	LOCAL lRetVal AS LONGINT
 
+
+	
 	
 	IF SELF:ValidateControl()
 		lRetVal := GetWindowTextLength(hwnd)
@@ -361,33 +458,45 @@ ACCESS Length
 		ENDIF
 	ENDIF
 
+
 	RETURN lRetVal
 
+
+/// <include file="Gui.xml" path="doc/TextControl.RemoveEditBalloonTip/*" />
 METHOD RemoveEditBalloonTip(hControl) 
 	//PP-030902
 	DEFAULT(@hControl,SELF:handle())
 	SendMessage(hControl,EM_HIDEBALLOONTIP,0,0)
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/TextControl.SetCueBanner/*" />
 METHOD SetCueBanner(cText,hControl) 
 	//PP-030902
 	// Requires XP or greater
 	LOCAL pMsg AS PTR
 	LOCAL lReturn AS LOGIC
 
+
 	DEFAULT(@hControl,SELF:handle())
 	pMsg := String2W(cText)
 
+
 	lReturn := LOGIC(_CAST,SendMessage(hControl,EM_SETCUEBANNER,0,LONGINT(_CAST,pMsg)))
+
 
    	SysFreeString(pMsg)
 
+
 	RETURN lReturn
 
+
+/// <include file="Gui.xml" path="doc/TextControl.ShowEditBalloonTip/*" />
 METHOD ShowEditBalloonTip(cTitle,cText,dwIcon,hControl) 
 	//PP-030902
 	// Requires XP or greater
 	LOCAL pMsg IS _WINEDITBALLOONTIP
+
 
 	DEFAULT(@hControl,SELF:handle())
 	pMsg:cbStruct := _SIZEOF(_WINEDITBALLOONTIP)
@@ -395,21 +504,29 @@ METHOD ShowEditBalloonTip(cTitle,cText,dwIcon,hControl)
 	pMsg:pszText := String2W(cText)
 	pMsg:ttiIcon := dwIcon
 
+
 	SendMessage(hControl,EM_SHOWBALLOONTIP,0,LONGINT(_CAST,@pMsg))
+
 
   	SysFreeString(pMsg:pszText)
   	SysFreeString(pMsg:pszTitle)
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/TextControl.TextColor/*" />
 ACCESS TextColor 
 	//RvdH 050509 Make sure we always return an Object
 	
+	
+
 
 	IF SELF:oTextColor == NULL_OBJECT
       oTextColor := Color{GetSysColor(COLOR_WINDOWTEXT), -1l}
 	ENDIF
 	RETURN oTextColor
 
+
+/// <include file="Gui.xml" path="doc/TextControl.TextColor/*" />
 ASSIGN TextColor(_oColor) 
    //PP-040627 Update. S.Ebert
 	LOCAL dwDefaultColor AS DWORD
@@ -418,6 +535,8 @@ ASSIGN TextColor(_oColor)
 	LOCAL hHandle AS PTR
     LOCAL oColor    AS Color
 	
+	
+
 
 	IF ! IsInstanceOfUsual(_oColor,#Color)
 		WCError{#TextColor,#TextControl,__WCSTypeError,_oColor,1}:Throw()
@@ -431,10 +550,13 @@ ASSIGN TextColor(_oColor)
       dwOldColor := dwDefaultColor
    ENDIF
 
+
 	oTextColor := oColor
+
 
    //Check if we need to revert to system default
 	lManageColor := (dwNewColor != dwDefaultColor)
+
 
    IF dwNewColor != dwOldColor
 	   hHandle := SELF:Handle()
@@ -444,25 +566,36 @@ ASSIGN TextColor(_oColor)
       ENDIF
    ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/TextControl.TextValue/*" />
 ACCESS TextValue 
 	// TextValue - returns current contents
 	
+	
+
 
 	RETURN SELF:__GetText()
 
+
+/// <include file="Gui.xml" path="doc/TextControl.TextValue/*" />
 ASSIGN TextValue(cNewCaption) 
 	LOCAL cTextValue AS STRING
 	LOCAL cOldValue AS STRING
 
+
+	
 	
 	IF !IsString(cNewCaption)
 		WCError{#TextValue,#TextControl,__WCSTypeError,cNewCaption,1}:Throw()
 	ENDIF
 
+
 	cTextValue := SELF:__SetText(cNewCaption)
 	cOldValue := AsString(uValue)
+
 
 	IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
 		uValue := SELF:FieldSpec:Val(cTextValue)
@@ -472,9 +605,12 @@ ASSIGN TextValue(cNewCaption)
 		SELF:ValueChanged := !(cOldValue == uValue)
 	ENDIF
 
+
 	RETURN 
 
+
 END CLASS
+
 
 /// <exclude/>
 VOSTRUCT _WINEDITBALLOONTIP
@@ -483,6 +619,9 @@ VOSTRUCT _WINEDITBALLOONTIP
     MEMBER pszTitle AS PSZ
 	MEMBER pszText AS PSZ
     MEMBER ttiIcon AS INT
+
+
+
 
 
 

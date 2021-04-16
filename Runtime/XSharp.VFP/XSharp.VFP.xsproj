@@ -27,8 +27,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>XSharp.VFP.Xml</DocumentationFile>
-    <PreBuildEvent>copy $(Solutiondir)Runtime\XSharp.RT\VoFunctionDocs.xml $(Solutiondir)Runtime\XSharp.Core\VoFunctionDocs.xml &gt;NUL</PreBuildEvent>
-    <PostBuildEvent>erase $(Solutiondir)Runtime\XSharp.Core\VoFunctionDocs.xml &gt;NUL</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -171,7 +169,6 @@
     <None Include="TestData\suppliers.fpt" />
     <None Include="TestData\territories.cdx" />
     <None Include="TestData\territories.dbf" />
-    <None Include="VFPDocs.xml" />
     <None Include="VFPFileStructures\VFP26Form-2.pdf" />
     <None Include="VFPFileStructures\VFP26Form.pdf" />
     <None Include="VFPFileStructures\VFP26Menu.pdf" />
@@ -188,7 +185,6 @@
     <None Include="VFPFileStructures\VFP6Project2.pdf" />
     <None Include="VFPFileStructures\VFP6Report.pdf" />
     <None Include="VFPFileStructures\VFP6Report2.pdf" />
-    <None Include="VfpRuntimeDocs.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\AssertDialog.resx">
@@ -212,8 +208,16 @@
     <RunPostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <PreBuildEvent>copy $(Solutiondir)Runtime\XSharp.RT\VoFunctionDocs.xml $(Solutiondir)Runtime\XSharp.VFP\VoFunctionDocs.xml &gt;NUL</PreBuildEvent>
-    <PostBuildEvent>erase $(Solutiondir)Runtime\XSharp.VFP\VoFunctionDocs.xml &gt;NUL</PostBuildEvent>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <PreBuildEvent>copy $(SolutionDir)\Docs\RtComments.xml $(ProjectDir)\RtComments.Xml
+    copy $(SolutionDir)\Docs\VOFunctionDocs.xml $(ProjectDir)\VOFunctionDocs.Xml
+    copy $(SolutionDir)\Docs\VfpRuntimeDocs.xml $(ProjectDir)\VfpRuntimeDocs.Xml
+    copy $(SolutionDir)\Docs\VfpDocs.xml $(ProjectDir)\VfpDocs.Xml
+    </PreBuildEvent>
+    <PostBuildEvent>erase  $(ProjectDir)\RtComments.Xml
+    erase  $(ProjectDir)\VOFunctionDocs.Xml
+    erase  $(ProjectDir)\VfpRuntimeDocs.Xml
+    erase  $(ProjectDir)\VfpDocs.Xml
+    </PostBuildEvent>
+    <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

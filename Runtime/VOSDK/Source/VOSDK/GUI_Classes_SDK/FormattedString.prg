@@ -1,3 +1,4 @@
+ /// <exclude />
 CLASS __FormattedString
 	PROTECT oEditOwner AS SingleLineEdit
 	PROTECT sPicture AS STRING
@@ -15,9 +16,13 @@ CLASS __FormattedString
 	EXPORT wOverWrite AS LONGINT			//RvdH 070205 changed from WORD to LONG
 	EXPORT wScrMode AS LONGINT				//RvdH 070205 changed from WORD to LONG
 
+
+ /// <exclude />
 	METHOD AsString() AS STRING STRICT 
 	RETURN sValue
 
+
+ /// <exclude />
 METHOD Cut() AS LOGIC STRICT 
 	LOCAL iStart AS INT
 	LOCAL iEnd AS INT
@@ -25,48 +30,65 @@ METHOD Cut() AS LOGIC STRICT
 	LOCAL hGbl AS PTR
 	LOCAL pszGbl AS PSZ
 
+
 	SendMessage(oEditOwner:Handle(), EM_GETSEL, DWORD(_CAST, @iStart), LONGINT(_CAST, @iEnd))
+
 
 	IF (iStart == iEnd)
 		RETURN FALSE
 	ENDIF
 
+
 	IF (!OpenClipboard(NULL_PTR))
 		RETURN FALSE
 	ENDIF
 
+
 	EmptyClipboard()
+
 
 	iStart++
 	iEnd++
 	iLen := iEnd - iStart
 
+
 	hGbl := GlobalAlloc(GMEM_DDESHARE, DWORD(iLen+1))
+
 
 	IF (hGbl == NULL_PTR)
 		CloseClipboard()
 		RETURN FALSE
 	ENDIF
 
+
 	pszGbl := GlobalLock(hGbl)
 	MemCopy(pszGbl, String2Psz(SubStr3(sValue, DWORD(iStart), DWORD(iLen))), DWORD(iLen+1))
 
+
 	GlobalUnlock(hGbl)
+
 
 	SetClipboardData(CF_TEXT, hGbl)
 
+
 	CloseClipboard()
+
 
 	SELF:DeleteSelection(iStart, iEnd)
 	RETURN TRUE
 
+
+ /// <exclude />
 ACCESS DecimalPos AS INT STRICT 
 	RETURN INT(_CAST, At2(".", sTemplate))
 
+
+ /// <exclude />
 METHOD DeleteChar(iPos AS INT, lInvert AS LOGIC, lUpdateOwner AS LOGIC) AS VOID STRICT 
 	LOCAL iCurPos AS INT
 	LOCAL iNextPos AS INT
 	LOCAL sNextChar AS STRING
+
 
 	IF IsNil(iPos)
 		iCurPos := oEditOwner:__CurPos
@@ -74,16 +96,19 @@ METHOD DeleteChar(iPos AS INT, lInvert AS LOGIC, lUpdateOwner AS LOGIC) AS VOID 
 		iCurPos := iPos
 	ENDIF
 
+
 	IF !SELF:IsEditPos(iCurPos)
 		SELF:InvalidAction()
 		RETURN
 	ENDIF
+
 
 	IF !lInvert
 		iNextPos := SELF:NextEditPos(iCurPos + 1)
 	ELSE
 		iNextPos := SELF:PrevEditPos(iCurPos - 1)
 	ENDIF
+
 
 	IF (wScrMode != SCRMODE_NO)
 		WHILE (iCurPos > 0) .AND. (iNextPos > 0)
@@ -111,15 +136,19 @@ METHOD DeleteChar(iPos AS INT, lInvert AS LOGIC, lUpdateOwner AS LOGIC) AS VOID 
 		END
 	ENDIF
 
+
 	IF (SELF:IsEditPos(iCurPos))
 		SELF:PutChar(" ", iCurPos)
 	ENDIF
+
 
 	IF lUpdateOwner
 		SELF:UpdateEditOwner()
 	ENDIF
 	RETURN
 
+
+ /// <exclude />
 METHOD DeleteSelection(iStart AS INT, iEnd AS INT) AS VOID STRICT 
 	LOCAL i AS INT
 	LOCAL lInvert AS LOGIC
@@ -128,16 +157,20 @@ METHOD DeleteSelection(iStart AS INT, iEnd AS INT) AS VOID STRICT
 	LOCAL iSignPos AS INT
 	LOCAL lNumeric AS LOGIC
 
+
 	IF (iEnd <= iStart)
 		iEnd := iStart
 	ELSE
 		iEnd--
 	ENDIF
 
+
 	iDelStart := iStart
 	iDelEnd := iEnd
 
+
 	lNumeric := (cType == "N")
+
 
 	IF lNumeric .AND. ((iDecPos := INT(_CAST, At2(Chr(wDecSep), sValue))) > istart) .AND. (iDecPos < iEnd)
 		SELF:DeleteSelection(iStart, iDecPos)
@@ -173,20 +206,26 @@ METHOD DeleteSelection(iStart AS INT, iEnd AS INT) AS VOID STRICT
 		ENDIF
 		SELF:UpdateEditOwner()
 
+
 		IF (lInvert .OR. (wScrMode == SCRMODE_NO))
 			oEditOwner:__CurPos := SELF:PrevEditPos(iEnd+1)
 		ENDIF
 	ENDIF
 
+
 	iDelStart := iDelEnd := 0
 	RETURN
 
+
+ /// <exclude />
 ACCESS EmptyValue AS STRING STRICT 
 	LOCAL sEmpty AS STRING
 	LOCAL cCurTplChar AS STRING
 	LOCAL i AS DWORD
 
+
 	sEmpty := ""
+
 
 	FOR i:=1 TO DWORD(iTemplLen)
 		cCurTplChar := CharPos(sTemplate, i)
@@ -207,20 +246,27 @@ ACCESS EmptyValue AS STRING STRICT
 		ENDIF
 	NEXT
 
+
 	RETURN sEmpty
 
+
+ /// <exclude />
 CONSTRUCTOR(Owner, PicString, Type, OverWrite, DefTempl, ScrMode) 
 
+
 	DEFAULT(@Type, "C")
+
 
 	oEditOwner := Owner
 	cType := Type // !!! order dependancy: ASSIGN Picture needs type to be set !!!
 	SELF:Picture := PicString
 
+
 	wDecSep := SetDecimalSep()
 	wThousSep := SetThousandSep()
 	wOverWrite := OverWrite
 	wScrMode := ScrMode
+
 
 	IF !Empty(DefTempl) .AND. Empty(sTemplate)
 		sTemplate := DefTempl
@@ -228,22 +274,28 @@ CONSTRUCTOR(Owner, PicString, Type, OverWrite, DefTempl, ScrMode)
 		iTemplLen := INT(_CAST, SLen(sTemplate))
 	ENDIF
 
+
 	sValue := SELF:EmptyValue
+
 
 	SELF:UpdateEditOwner()
 	RETURN 
 
+
+ /// <exclude />
 METHOD InsertChar(cInsChar AS STRING, iPos AS INT, lInvert AS LOGIC) AS VOID STRICT 
 	LOCAL iCurPos AS INT
 	LOCAL iNextPos AS INT
 	LOCAL cSaveChar AS STRING
 	LOCAL cTempChar AS STRING
 
+
 	IF IsNil(iPos)
 		iCurPos := oEditOwner:__CurPos
 	ELSE
 		iCurPos := iPos
 	ENDIF
+
 
 	IF !SELF:IsEditPos(iCurPos) .AND. !lInvert
 #ifdef __VULCAN__	
@@ -265,6 +317,7 @@ METHOD InsertChar(cInsChar AS STRING, iPos AS INT, lInvert AS LOGIC) AS VOID STR
 #endif		
 	ENDIF
 
+
 	IF !lInvert
 		iNextPos := SELF:NextEditPos(iCurPos + 1)
 	ELSE
@@ -272,8 +325,10 @@ METHOD InsertChar(cInsChar AS STRING, iPos AS INT, lInvert AS LOGIC) AS VOID STR
 		iNextPos := SELF:PrevEditPos(iCurPos - 1)
 	ENDIF
 
+
 	cSaveChar := CharPos(sValue, DWORD(iCurPos))
 	SELF:PutChar(cInsChar, iCurPos)
+
 
 	WHILE (iCurPos > 0) .AND. (iNextPos > 0)
 		IF (wScrMode != SCRMODE_FULL) .AND. (Abs(iNextPos - iCurPos) != 1)
@@ -306,43 +361,60 @@ METHOD InsertChar(cInsChar AS STRING, iPos AS INT, lInvert AS LOGIC) AS VOID STR
 	RETURN
 
 
+
+
+ /// <exclude />
 METHOD InvalidAction() AS VOID STRICT 
 	MessageBeep(0xFFFFFFFF)
    RETURN
 
+
+ /// <exclude />
 METHOD IsEditPos(iPos AS INT) AS LOGIC STRICT 
 	RETURN IsEditTemplChar(CharPos(sTemplate, DWORD(iPos)))
 
+
+ /// <exclude />
 ACCESS IsEmpty AS LOGIC STRICT 
 	RETURN (sValue == SELF:EmptyValue)
 
+
+ /// <exclude />
 METHOD IsValidChar(cChar AS STRING, iPos AS INT, lIgnoreBlank AS LOGIC) AS LOGIC STRICT 
 	RETURN SELF:MatchesTemplChar(cChar, CharPos(sTemplate, DWORD(iPos)), lIgnoreBlank)
 
+
 #ifdef __VULCAN__
 // This implementation avoids unnecesary String -> PSZ conversions that would happen using the VO implementation
+ /// <exclude />
 METHOD MatchesTemplChar( cTest AS STRING, _cTemplChar AS STRING, lIgnoreBlank AS LOGIC ) AS LOGIC
 	LOCAL lIsNumeric := ( cType != "N" ) AS LOGIC
 	LOCAL cTemplChar AS CHAR
+
 
 	IF ! IsEditTemplChar( _cTemplChar ) .AND. lIsNumeric
 		RETURN FALSE
 	ENDIF
 	
+	
 	IF ! String.IsNullOrEmpty( _cTemplChar )
 	   cTemplChar := _cTemplChar[0]
 	ENDIF
+
 
 	// speed up this case
 	IF cTemplChar == c'X'
 		RETURN TRUE
 	ENDIF
 
+
 	IF cTest == " " .AND. lIgnoreBlank
 		RETURN TRUE
 	ENDIF
 
+
 	SWITCH cTemplChar
+
 
 	CASE c'A'
 		RETURN IsAlpha( cTest )
@@ -361,13 +433,19 @@ METHOD MatchesTemplChar( cTest AS STRING, _cTemplChar AS STRING, lIgnoreBlank AS
 		cTest := cTest:ToUpper()
 		RETURN At2( cTest, __CavoStr( RT_MSG_YNSTRING ) ) > 0 .OR. cTest == __CavoStr( RT_MSG_SHORT_TRUE ) .OR. cTest == __CavoStr( RT_MSG_SHORT_FALSE )
 	
+	
+        
         
 	END SWITCH
 
+
 	RETURN FALSE
+
 
 #else
 
+
+ /// <exclude />
 METHOD MatchesTemplChar(cTest AS STRING, cTemplChar AS STRING, lIgnoreBlank AS LOGIC) AS LOGIC STRICT 
 	LOCAL lIsNumeric := (cType != "N") AS LOGIC
    LOCAL cYesNo, cTrue, cFalse AS STRING
@@ -375,14 +453,17 @@ METHOD MatchesTemplChar(cTest AS STRING, cTemplChar AS STRING, lIgnoreBlank AS L
 		RETURN FALSE
 	ENDIF
 
+
 	// speed up this case
 	IF (cTemplChar == "X")
 		RETURN TRUE
 	ENDIF
 
+
 	IF (cTest == " " .AND. lIgnoreBlank)
 		RETURN TRUE
 	ENDIF
+
 
 	DO CASE
 	CASE cTemplChar == "A"
@@ -407,15 +488,20 @@ METHOD MatchesTemplChar(cTest AS STRING, cTemplChar AS STRING, lIgnoreBlank AS L
 		RETURN TRUE
 	ENDCASE
 
+
 	RETURN FALSE
 #endif
 
+
+ /// <exclude />
 METHOD NextEditPos(iPos AS INT) AS INT STRICT 
 	LOCAL i AS INT
+
 
 	IF (iPos == -1)
 		iPos := oEditOwner:__CurPos + 1
 	ENDIF
+
 
 	FOR i := iPos TO iTemplLen
 		IF IsEditTemplChar(CharPos(sTemplate, DWORD(i)))
@@ -426,8 +512,11 @@ METHOD NextEditPos(iPos AS INT) AS INT STRICT
 		ENDIF
 	NEXT
 
+
 	RETURN iPos
 
+
+ /// <exclude />
 METHOD Paste() AS LOGIC STRICT 
 	LOCAL hGlb AS PTR
 	LOCAL pszPaste AS PSZ
@@ -436,15 +525,19 @@ METHOD Paste() AS LOGIC STRICT
 	LOCAL iStart, iEnd AS INT
 	LOCAL oKeyEvent AS KeyEvent
 
+
 	IF (!IsClipboardFormatAvailable(CF_TEXT))
 		RETURN FALSE
 	ENDIF
+
 
 	IF (!OpenClipboard(NULL_PTR))
 		RETURN FALSE
 	ENDIF
 
+
 	hGlb := GetClipboardData(CF_TEXT)
+
 
 	IF (hGlb != NULL_PTR)
 		pszPaste := GlobalLock(hGlb)
@@ -464,13 +557,19 @@ METHOD Paste() AS LOGIC STRICT
 		GlobalUnlock(hGlb)
 	ENDIF
 
+
 	CloseClipboard()
+
 
 	RETURN TRUE
 
+
+ /// <exclude />
 ACCESS Picture AS STRING STRICT 
 	RETURN sPicture
 
+
+ /// <exclude />
 ASSIGN Picture(cNewPicture AS STRING)  STRICT 
 	LOCAL pLogic AS LOGIC PTR
 	LOCAL iSpcPos, iFuncPos, i AS DWORD
@@ -478,6 +577,7 @@ ASSIGN Picture(cNewPicture AS STRING)  STRICT
 	#ifndef __VULCAN__
 	LOCAL iAsc, iAscD, iAscM, iAscY, iAsc9 AS DWORD
 	#endif
+
 
 	sPicture := cNewPicture
 	pLogic := (LOGIC PTR) @FuncFlags
@@ -500,8 +600,10 @@ ASSIGN Picture(cNewPicture AS STRING)  STRICT
 		NEXT
 	ENDIF
 
+
 	sTemplate := SubStr2(sPicture, (iSpcPos + 1))
 	iTemplLen := INT(_CAST, SLen(sTemplate))
+
 
 	#ifndef __VULCAN__
 	iAscD :=  68 	// Asc("D")
@@ -524,6 +626,7 @@ ASSIGN Picture(cNewPicture AS STRING)  STRICT
 #endif				
 	ENDIF
 
+
 	IF (iTemplLen == 0)
 		IF FuncFlags:lAlphaOnly
 			sTemplate := Replicate("A", Min(Min(DEFAULT_STRING_TEMPL_SIZE, oEditOwner:TextLimit), oEditOwner:__FSLength))
@@ -533,14 +636,19 @@ ASSIGN Picture(cNewPicture AS STRING)  STRICT
 		iTemplLen := LONGINT(SLen(sTemplate))
 	ENDIF
 
+
 	RETURN 
 
+
+ /// <exclude />
 METHOD PrevEditPos(iPos AS INT) AS INT STRICT 
 	LOCAL i AS DWORD
+
 
 	IF (iPos == -1)
 		iPos := oEditOwner:__CurPos - 1
 	ENDIF
+
 
 	FOR i := DWORD(iPos) DOWNTO 1
 		IF IsEditTemplChar(CharPos(sTemplate, i))
@@ -551,16 +659,21 @@ METHOD PrevEditPos(iPos AS INT) AS INT STRICT
 		ENDIF
 	NEXT
 
+
 	RETURN 0L
 
+
+ /// <exclude />
 METHOD ProcessChar(cChar AS STRING) AS LOGIC STRICT 
 	LOCAL iCurPos AS INT
 	LOCAL cTemplChar AS STRING
 	LOCAL lInvert AS LOGIC
 	LOCAL iDecPos AS INT
 
+
 	iCurPos 		:= oEditOwner:__CurPos
 	cTemplChar 	:= CharPos(sTemplate, DWORD(iCurPos))
+
 
 	IF SELF:MatchesTemplChar(cChar, cTemplChar, FALSE)
 		IF cTemplChar == "!"
@@ -597,9 +710,11 @@ METHOD ProcessChar(cChar AS STRING) AS LOGIC STRICT
 		SELF:InvalidAction()
 	ENDIF
 
+
 	RETURN TRUE
 #pragma warnings(219,off)
 // warning about assignment to iCurPos. We have to call oEditOwner:__CurPos for code inside that property
+ /// <exclude />
 METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT 
 	LOCAL iCurPos AS INT
 	LOCAL uMsg AS DWORD
@@ -608,10 +723,12 @@ METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT
 	LOCAL iEnd AS INT
 	LOCAL dwKCode AS DWORD
 
+
 	uMsg := oKeyEvt:umsg
 	// causes code in oEditOwner:__CurPos to be executed, do not remove
 	iCurPos := oEditOwner:__CurPos
 	lRet := TRUE
+
 
     SWITCH uMsg
 	CASE WM_KEYDOWN
@@ -660,10 +777,14 @@ METHOD ProcessKeyEvent(oKeyEvt AS KeyEvent) AS LOGIC STRICT
 		ENDIF
 	END SWITCH
 
+
 	RETURN lRet
+
 
 #pragma warnings(219,on)
 
+
+ /// <exclude />
 METHOD PutChar(cChar AS STRING, iPos AS INT) AS VOID STRICT 
 #ifdef __VULCAN__
    // VO version modifies existing string, this is illegal in .NET
@@ -680,6 +801,7 @@ METHOD PutChar(cChar AS STRING, iPos AS INT) AS VOID STRICT
 	LOCAL pString AS BYTE PTR
 	LOCAL iOffset AS INT
 
+
 	IF (iPos <= INT(_CAST, SLen(sValue)))
 		iOffset := (iPos -1)
 		IF FuncFlags:lConvUpper
@@ -691,6 +813,8 @@ METHOD PutChar(cChar AS STRING, iPos AS INT) AS VOID STRICT
 #endif	
 	RETURN
 
+
+ /// <exclude />
 METHOD TestFirstChar(cChar) 
 	LOCAL iCurPos    AS LONGINT
 	iCurPos := 1
@@ -700,22 +824,33 @@ METHOD TestFirstChar(cChar)
 	ENDIF
 	RETURN NIL
 
+
+ /// <exclude />
 ACCESS Type AS STRING STRICT 
 	RETURN cType
 
+
+ /// <exclude />
 ASSIGN TYPE(cNewType AS STRING)  STRICT 
 	RETURN (cType := cNewType)
 
+
+ /// <exclude />
 METHOD Undo() AS LOGIC STRICT 
 	sValue := sOldValue
 	SELF:UpdateEditOwner()
 
+
 	RETURN TRUE
 
+
+ /// <exclude />
 METHOD UpdateEditOwner() AS VOID STRICT 
 	LOCAL iSaveCurPos AS INT
 
+
 	iSaveCurPos := oEditOwner:__CurPos
+
 
 	oEditOwner:__ForceModFlag2True := TRUE
 	oEditOwner:__SetText(sValue)
@@ -724,14 +859,18 @@ METHOD UpdateEditOwner() AS VOID STRICT
 	oEditOwner:__CurPos := iSaveCurPos
 	RETURN
 
+
+ /// <exclude />
 ASSIGN UsualValue(uNewValue AS USUAL)  STRICT 
 	IF !IsNil(uNewValue)
 		cType := ValType(uNewValue)
 	ENDIF
 
+
 	IF !IsNil(uNewValue) .AND. (CType == "C") .AND. (iTemplLen > INT(_CAST, Len(uNewValue)))
 		uNewValue := uNewValue + Space(DWORD(iTemplLen) - Len(uNewValue))
 	ENDIF
+
 
 	IF !IsNil(uNewValue)
 		sValue := Transform(uNewValue, sPicture)
@@ -739,23 +878,34 @@ ASSIGN UsualValue(uNewValue AS USUAL)  STRICT
 		sValue := SELF:EmptyValue
 	ENDIF
 
+
 	oEditOwner:__SetText(sValue)
+
 
 	RETURN 
 
+
+ /// <exclude />
 ACCESS Template
 RETURN SELF:sTemplate
 END CLASS
 
+
 STATIC FUNCTION IsEditTemplChar(cTest AS STRING) AS LOGIC STRICT
    RETURN LOGIC(_CAST, At2(cTest, "ANX9!YL#"))
+
 
 STATIC FUNCTION IsOverWriteModeEnabled() AS LOGIC STRICT
    /*STATIC*/ LOCAL DIM aKeyStates[256] AS BYTE // compiler bug!!!
 
+
    GetKeyboardState(@aKeyStates)
 
+
    RETURN !LOGIC(_CAST, _AND(aKeyStates[VK_INSERT + 1], 1))
+
+
+
 
 
 

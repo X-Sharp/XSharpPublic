@@ -1,13 +1,20 @@
+/// <include file="Gui.xml" path="doc/FixedImage/*" />
 CLASS FixedImage INHERIT Control
 	PROTECT oImage AS OBJECT
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	METHOD __SetImage(uResId AS USUAL) AS OBJECT STRICT 
 	//PP-030828 Strong typing
 	RETURN NULL_OBJECT
 
+
+/// <include file="Gui.xml" path="doc/FixedImage.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	
+	
+
 
 	IF (oImage != NULL_OBJECT)
 		oImage:Destroy()
@@ -17,15 +24,21 @@ METHOD Destroy()  AS USUAL CLIPPER
 	ENDIF
 	SUPER:Destroy()
 
+
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/FixedImage.ctor/*" />
 CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID) 
 	
+	
+
 
 	IF  IsInstanceOfUsual(uID,#ResourceID)
 		SUPER(uOwner,uID,,,,,FALSE)
 	ELSEIF IsLong(uID)
 		SUPER(uOwner, uID,	uPoint, uDimension, "Static", , FALSE)
+
 
 		IF !IsNil(uResID)
 			SELF:__SetImage(uResID)
@@ -35,7 +48,10 @@ CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID)
 		WCError{#Init,#FixedBitmap,__WCSTypeError}:Throw()
 	ENDIF
 
+
 	RETURN 
 
+
 END CLASS
+
 

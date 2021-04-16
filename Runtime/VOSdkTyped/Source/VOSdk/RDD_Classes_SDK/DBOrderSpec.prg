@@ -1,13 +1,16 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
+
 #pragma warnings(165, off)
+/// <include file="Rdd.xml" path="doc/OrderSpec/*" />
 [XSharp.Internal.TypesChanged];
 CLASS OrderSpec
 	PROTECT oDBF            AS DbFileSpec
+
 
 	// index order items
 	PROTECT cFileName       AS STRING
@@ -17,12 +20,13 @@ CLASS OrderSpec
 	PROTECT lUnique         AS LOGIC
 	PROTECT aKeyInfo        AS ARRAY
 
+
 	// conditional index items
 	PROTECT lIsCond          AS LOGIC
-	PROTECT uForCond        AS STRING   
-	PROTECT uForBlock       AS USUAL	
-	PROTECT uWhileBlock     AS USUAL	
-	PROTECT uEvalBlock      AS USUAL	
+	PROTECT uForCond        AS STRING
+	PROTECT uForBlock       AS USUAL
+	PROTECT uWhileBlock     AS USUAL
+	PROTECT uEvalBlock      AS USUAL
 	PROTECT nStep           AS DWORD
 	PROTECT nStart          AS DWORD
 	PROTECT nNext           AS DWORD
@@ -35,9 +39,11 @@ CLASS OrderSpec
 	PROTECT lCurrent        AS LOGIC
 	PROTECT lNoOpt          AS LOGIC
 
+
 	// NTX order items
 	PROTECT lHPLock         AS LOGIC
 	PROTECT nLockOffSet     AS LONGINT
+
 
 	// CDX order items
 	PROTECT lAutoOpen       AS LOGIC
@@ -45,15 +51,21 @@ CLASS OrderSpec
 	PROTECT nAutoShare      AS LONGINT
 	PROTECT lStrictRead     AS LOGIC
 
-	METHOD __OpenDb      ( cAlias AS STRING )	AS LOGIC STRICT	
+
+ /// <exclude />
+	METHOD __OpenDb      ( cAlias AS STRING )	AS LOGIC STRICT
+
 
 	IF SLen( cAlias ) > 0
 		cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oDBF:FileName ) )
 	ENDIF
 
+
 	RETURN DbUseArea( TRUE, SELF:oDBF:RDDs, SELF:oDBF:FullPath, cAlias, FALSE, FALSE )
 
-METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT  
+
+ /// <exclude />
+METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 	// Gets order information and assigns info into the OrderSpec Object.
 	// Assumes that the workarea defined by cAlias is already opened and the order
 	// has been set.
@@ -61,29 +73,37 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 	LOCAL aKeyInfo      AS ARRAY
 	LOCAL cRDD          AS STRING
 
+
 	IF SLen( cAlias )  > 0
 		aKeyInfo := ArrayNew( 4 )
 
+
 		cRDD := SELF:DBF:RDD_Name
+
 
 		aKeyInfo[ORD_KEYTYPE] := ( cAlias )->( DbOrderInfo( DBOI_KEYTYPE ) )
 		DO CASE
 		CASE aKeyInfo[ORD_KEYTYPE] == 7
 			aKeyInfo[ORD_KEYTYPE] := "STRING"
 
+
 		CASE aKeyInfo[ORD_KEYTYPE] == 3
 			aKeyInfo[ORD_KEYTYPE] := "NUMERIC"
 
+
 		CASE aKeyInfo[ORD_KEYTYPE] == 2
 			aKeyInfo[ORD_KEYTYPE] := "DATE"
+
 
 		CASE aKeyInfo[ORD_KEYTYPE] == 8
 			aKeyInfo[ORD_KEYTYPE] := "LOGIC"
 		ENDCASE
 
+
 		aKeyInfo[ORD_KEYCOUNT]      := ( cAlias )->( DbOrderInfo( DBOI_KEYCOUNT ) )
 		aKeyInfo[ORD_KEYSIZE]       := ( cAlias )->( DbOrderInfo( DBOI_KEYSIZE ) )
 		aKeyInfo[ORD_KEYDEC]        := ( cAlias )->( DbOrderInfo( DBOI_KEYDEC ) )
+
 
 		// non-conditional order information
 		SELF:FileName           := ( cAlias )->( DbOrderInfo( DBOI_FULLPATH ) )
@@ -93,10 +113,13 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 		SELF:OrderBlock         := &( "{||" + SELF:OrderExpr + "}" )
 		SELF:Unique             := ( cAlias )->( DbOrderInfo( DBOI_UNIQUE ) )
 
+
 		SELF:DBF:Orders         := SELF
+
 
 		// key info
 		SELF:KeyInfo            := aKeyInfo
+
 
 		// conditional index info
 		SELF:lIsCond            := ( cAlias )->( DbOrderInfo( DBOI_ISCOND ) )
@@ -108,7 +131,9 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 			SELF:uForBlock       := NIL
 		ENDIF
 
+
 		SELF:Descend            := ( cAlias )->( DbOrderInfo( DBOI_ISDESC ) )
+
 
 		// NTX specific items
 		IF cRDD == "DBFNTX"
@@ -117,7 +142,9 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 			SELF:lHPLock        := ( cAlias )->( DbOrderInfo( DBOI_HPLOCKING ) )
 			SELF:nLockOffSet    := ( cAlias )->( DbOrderInfo( DBOI_LOCKOFFSET ) )
 
+
 		ENDIF
+
 
 		// CDX specific items
 		//	IF cRDD == "DBFCDX"
@@ -130,6 +157,7 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 			SELF:lStrictRead    := ( cAlias )->( RddInfo( _SET_STRICTREAD ) )
 		ENDIF
 
+
 	ELSE
 		// null everything out if no alias
 		SELF:FileName       := NULL_STRING
@@ -138,7 +166,9 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 		SELF:OrderBlock     := NIL
 		SELF:Unique         := FALSE
 
+
 		SELF:KeyInfo        := NULL_ARRAY
+
 
 		SELF:lIsCond         := FALSE
 		SELF:uForCond        := NULL_STRING
@@ -157,64 +187,94 @@ METHOD __OrderSetInfo( cAlias AS STRING ) AS VOID STRICT
 		SELF:Current        := FALSE
 		SELF:NoOptimize     := FALSE
 
+
 		SELF:lHPLock        := FALSE
 		SELF:nLockOffSet    := 0
+
 
 		SELF:lAutoOpen      := FALSE
 		SELF:nAutoOrder     := 0
 		SELF:nAutoShare     := 0
 		SELF:lStrictRead    := FALSE
 
+
 	ENDIF
+
 
 	RETURN
 
-ACCESS Add   AS LOGIC        
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Add/*" />
+ACCESS Add   AS LOGIC
 	RETURN SELF:lAdd
 
-ASSIGN Add( lLogic  AS LOGIC)      
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Add/*" />
+ASSIGN Add( lLogic  AS LOGIC)
 	// conditional index
 	SELF:lAdd := lLogic
 	SELF:lIsCond := TRUE
-	RETURN 
+	RETURN
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.All/*" />
 ACCESS All  AS LOGIC
 	RETURN SELF:lAll
 
-ASSIGN All( lLogic AS LOGIC)      
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.All/*" />
+ASSIGN All( lLogic AS LOGIC)
 	SELF:lAll := lLogic
 	SELF:lIsCond := TRUE
-	RETURN 
+	RETURN
 
-ACCESS AutoOpen AS LOGIC    
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.AutoOpen/*" />
+ACCESS AutoOpen AS LOGIC
 	RETURN SELF:lAutoOpen
 
-ACCESS AutoOrder  AS LONG   
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.AutoOrder/*" />
+ACCESS AutoOrder  AS LONG
 	RETURN SELF:nAutoOrder
 
-ACCESS AutoShare  AS LONG  
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.AutoShare/*" />
+ACCESS AutoShare  AS LONG
 	RETURN SELF:nAutoShare
 
-ACCESS Current   AS LOGIC        
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Current/*" />
+ACCESS Current   AS LOGIC
 	RETURN SELF:lCurrent
 
-ASSIGN Current( lLogic  AS LOGIC) 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Current/*" />
+ASSIGN Current( lLogic  AS LOGIC)
 	// conditional index
 	SELF:lCurrent := lLogic
 	SELF:lIsCond := TRUE
 
-	RETURN 
 
-ACCESS Custom   AS LOGIC 
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Custom/*" />
+ACCESS Custom   AS LOGIC
 	RETURN SELF:lCustom
 
-ASSIGN Custom( lLogic  AS LOGIC) 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Custom/*" />
+ASSIGN Custom( lLogic  AS LOGIC)
 	// conditional index
 	SELF:lCustom := lLogic
 	SELF:lIsCond := TRUE
 
-	RETURN 
 
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.DBF/*" />
 ACCESS DBF AS DbFileSpec
 	//
 	// Returns the DBFileSpec object that this OrderSpec object
@@ -222,26 +282,37 @@ ACCESS DBF AS DbFileSpec
 	//
 	RETURN SELF:oDBF
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Descend/*" />
 ACCESS Descend AS LOGIC
 	RETURN SELF:lDescend
 
-ASSIGN Descend( lLogic  AS LOGIC) 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Descend/*" />
+ASSIGN Descend( lLogic  AS LOGIC)
 	// conditional index
 	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
 		SELF:lDescend := FALSE
+
 
 	ELSE
 		SELF:lDescend := lLogic
 		SELF:lIsCond := TRUE
 
+
 	ENDIF
 
-	RETURN 
 
-ACCESS EvalBlock  AS USUAL  
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.EvalBlock/*" />
+ACCESS EvalBlock  AS USUAL
 	RETURN SELF:uEvalBlock
 
-ASSIGN EvalBlock( cbCodeBlock AS USUAL)   
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.EvalBlock/*" />
+ASSIGN EvalBlock( cbCodeBlock AS USUAL)
 	// conditional index
 	IF Empty( cbCodeBlock ) .OR. !__CanEval( cbCodeBlock )
 		SELF:uEvalBlock := NIL
@@ -250,18 +321,25 @@ ASSIGN EvalBlock( cbCodeBlock AS USUAL)
 		SELF:lIsCond := TRUE
 	ENDIF
 
-	RETURN 
 
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.FileName/*" />
 ACCESS FileName AS STRING
 	RETURN SELF:cFileName
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.FileName/*" />
 ASSIGN FileName( cName AS STRING)
 	LOCAL aFullPath AS ARRAY
 	LOCAL cFileName AS STRING
 	LOCAL oDBFS     AS DbFileSpec
 
-	IF Empty( cName ) 
+
+	IF Empty( cName )
 		SELF:cFileName := NULL_STRING
+
 
 	ELSE
 		aFullPath := ArrayNew( 4 )
@@ -269,41 +347,57 @@ ASSIGN FileName( cName AS STRING)
 		// clean up the drive+path+filename
 		__SplitPath( oDBFS, cName, aFullPath )
 
+
 		IF SubStr2( aFullPath[ 2 ], SLen( aFullPath[ 2 ] ) ) == "\"
 			cFileName := aFullPath[ 1 ] + aFullPath[ 2 ] + ;
 				aFullPath[ 3 ] + aFullPath[ 4 ]
+
 
 		ELSE
 			cFileName := aFullPath[ 1 ] + aFullPath[ 2 ] + "\" + ;
 				aFullPath[ 3 ] + aFullPath[ 4 ]
 
+
 		ENDIF
+
 
 		SELF:cFileName := Upper( cFileName )
 	ENDIF
 
-	RETURN 
 
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.ForBlock/*" />
 ACCESS ForBlock AS USUAL
 	RETURN SELF:uForBlock
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.ForBlock/*" />
 ASSIGN ForBlock( cbCodeBlock AS USUAL)
 	// conditional index
 	IF Empty( cbCodeBlock ) .OR. !__CanEval( cbCodeBlock )
 		SELF:uForBlock := NIL
 
+
 	ELSE
 		SELF:uForBlock := cbCodeBlock
 		SELF:lIsCond := TRUE
 
+
 	ENDIF
 
-	RETURN 
 
-ACCESS ForCond AS USUAL 
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.ForCond/*" />
+ACCESS ForCond AS USUAL
 	RETURN SELF:uForCond
 
-ASSIGN ForCond( cForCondition AS USUAL)   
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.ForCond/*" />
+ASSIGN ForCond( cForCondition AS USUAL)
 	// conditional index
 	IF Empty( cForCondition ) .OR. !IsString( cForCondition )
 		SELF:uForCond := NULL_STRING
@@ -311,20 +405,29 @@ ASSIGN ForCond( cForCondition AS USUAL)
 		SELF:uForCond := cForCondition
 		SELF:lIsCond := TRUE
 	ENDIF
-	RETURN 
+	RETURN
 
-ACCESS HPLock AS LOGIC 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.HPLock/*" />
+ACCESS HPLock AS LOGIC
 	RETURN SELF:lHPLock
 
-ASSIGN HPLock( lLogic AS LOGIC)   
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.HPLock/*" />
+ASSIGN HPLock( lLogic AS LOGIC)
 	SELF:lHPLock := lLogic
-	RETURN 
+	RETURN
 
 
-CONSTRUCTOR( )      
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.ctor/*" />
+CONSTRUCTOR( )
    SELF(NULL_OBJECT)
 
-CONSTRUCTOR( oDBFS AS DbFileSpec)      
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.ctor/*" />
+CONSTRUCTOR( oDBFS AS DbFileSpec)
       SELF:oDBF := oDBFS
       IF SELF:oDBF != NULL_OBJECT
          IF SELF:DBF:Orders == NULL_ARRAY
@@ -340,39 +443,57 @@ CONSTRUCTOR( oDBFS AS DbFileSpec)
       SELF:uWhileBlock := NIL
       SELF:uEvalBlock  := NIL
       SELF:aKeyInfo   	:= {}
-   RETURN 
+   RETURN
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Interval/*" />
 ACCESS Interval AS DWORD
 	RETURN SELF:nStep
 
-ASSIGN Interval( nDWord AS DWORD)     
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Interval/*" />
+ASSIGN Interval( nDWord AS DWORD)
 	// conditional index
 	SELF:nStep := nDWord
 	SELF:lIsCond := TRUE
-	RETURN 
+	RETURN
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.IsCond/*" />
 ACCESS IsCond AS LOGIC
 	RETURN SELF:lIsCond
 
-ASSIGN IsCond( lLogic AS LOGIC)       
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.IsCond/*" />
+ASSIGN IsCond( lLogic AS LOGIC)
 	// conditional index
 	SELF:lIsCond := lLogic
-	RETURN 
+	RETURN
 
-ACCESS KeyInfo AS ARRAY     
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.KeyInfo/*" />
+ACCESS KeyInfo AS ARRAY
 	RETURN SELF:aKeyInfo
 
-ASSIGN KeyInfo( aKeyInfo AS ARRAY)        
-	SELF:aKeyInfo := aKeyInfo
-	RETURN 
 
-ACCESS LockOffSet  AS LONG 
+/// <include file="Rdd.xml" path="doc/OrderSpec.KeyInfo/*" />
+ASSIGN KeyInfo( aKeyInfo AS ARRAY)
+	SELF:aKeyInfo := aKeyInfo
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.LockOffSet/*" />
+ACCESS LockOffSet  AS LONG
 	RETURN SELF:nLockOffSet
 
-ACCESS NoOptimize   AS LOGIC    
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.NoOptimize/*" />
+ACCESS NoOptimize   AS LOGIC
 	RETURN SELF:lNoOpt
 
-ASSIGN NoOptimize( lLogic AS LOGIC)   
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.NoOptimize/*" />
+ASSIGN NoOptimize( lLogic AS LOGIC)
 	// conditional index
 	IF Empty( lLogic ) .OR. !IsLogic( lLogic )
 		SELF:lNoOpt := FALSE
@@ -380,8 +501,10 @@ ASSIGN NoOptimize( lLogic AS LOGIC)
 		SELF:lNoOpt := lLogic
 		SELF:lIsCond := TRUE
 	ENDIF
-	RETURN 
+	RETURN
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.OrderAdd/*" />
 METHOD OrderAdd( oFS, uOrder ) AS LOGIC   CLIPPER
 	LOCAL lRetCode      AS LOGIC
 	LOCAL aFullPath     AS ARRAY
@@ -394,20 +517,24 @@ METHOD OrderAdd( oFS, uOrder ) AS LOGIC   CLIPPER
 	//LOCAL oSelf         AS OrderSpec
 	LOCAL cAlias		AS STRING
 
+
 	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FileSpec VAR oFS2
 		cDrive      := oFS2:Drive
 		cPath       := oFS2:Path
 		cFile       := oFS2:FileName
 		cExt        := oFS2:Extension
 
+
 		// default drive and path to where DBF file is
 		IF Empty( cDrive )
 			cDrive := SELF:oDBF:Drive
 		ENDIF
 
+
 		IF Empty( cPath )
 			cPath := SELF:oDBF:Path
 		ENDIF
+
 
 		// build full path
 		IF SubStr2( cPath, SLen( cPath ) ) == "\"
@@ -420,15 +547,18 @@ METHOD OrderAdd( oFS, uOrder ) AS LOGIC   CLIPPER
 			RETURN FALSE
 		ENDIF
 
+
 		oDBFSpec := SELF:oDBF
 		cFile := Upper( oFS )
 		aFullPath := ArrayNew( 4 )
 		__SplitPath( oDBFSpec, cFile, aFullPath )
 
+
 		cDrive      := aFullPath[ 1 ]
 		cPath       := aFullPath[ 2 ]
 		cFile       := aFullPath[ 3 ]
 		cExt        := aFullPath[ 4 ]
+
 
 		// build full path
 		IF SubStr2( cPath, SLen( cPath ) ) == "\"
@@ -438,10 +568,13 @@ METHOD OrderAdd( oFS, uOrder ) AS LOGIC   CLIPPER
 		ENDIF
 	ENDIF
 
+
 	cRDD  := SELF:oDBF:RDD_Name
 	//oSelf := SELF
 
+
 	cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oDBF:FileName ) )
+
 
 	IF cRDD != "DBFNTX"
 		IF SELF:__OpenDb( cAlias )
@@ -450,14 +583,16 @@ METHOD OrderAdd( oFS, uOrder ) AS LOGIC   CLIPPER
 				lRetCode := ( cAlias )->( DbSetOrder ( uOrder ) )
 			ELSE
 				( cAlias )->( OrdListAdd( cFile ) )
-				lRetCode := ( cAlias )->( DbSetOrder( uOrder ) ) 
+				lRetCode := ( cAlias )->( DbSetOrder( uOrder ) )
 			ENDIF
+
 
 			IF lRetCode
 				SELF:__OrderSetInfo( cAlias )
 			ENDIF
-			( cAlias )->( DbCloseArea() ) 
+			( cAlias )->( DbCloseArea() )
 		ENDIF
+
 
 	ELSE
 		IF SELF:__OpenDb( NULL_STRING )
@@ -465,16 +600,22 @@ METHOD OrderAdd( oFS, uOrder ) AS LOGIC   CLIPPER
 			IF lRetCode
 				SELF:__OrderSetInfo( cAlias )
 			ENDIF
-			( cAlias )->( DbCloseArea() ) 
+			( cAlias )->( DbCloseArea() )
 		ENDIF
 	ENDIF
 
+
 	RETURN lRetCode
 
-ACCESS OrderBlock    AS USUAL    
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.OrderBlock/*" />
+ACCESS OrderBlock    AS USUAL
 	RETURN SELF:cbOrdExpr
 
-ASSIGN OrderBlock( cbCodeBlock AS USUAL)          
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.OrderBlock/*" />
+ASSIGN OrderBlock( cbCodeBlock AS USUAL)
+
 
 	IF Empty( cbCodeBlock ) .OR. !__CanEval( cbCodeBlock )
 		SELF:cbOrdExpr := NIL
@@ -483,6 +624,8 @@ ASSIGN OrderBlock( cbCodeBlock AS USUAL)
 	ENDIF
 	RETURN
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.OrderCreate/*" />
 METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC CLIPPER
 	LOCAL lRetCode      AS LOGIC
 	LOCAL aFullPath     AS ARRAY
@@ -497,20 +640,25 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC CLIPP
 	LOCAL nNext         AS USUAL
 	LOCAL nRec          AS USUAL
 
+
 	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FileSpec VAR oFS2
 		cDrive      :=oFS2:Drive
 		cPath       :=oFS2:Path
 		cFile       :=oFS2:FileName
 		cExt        :=oFS2:Extension
 
+
 		// default drive and path to where DBF file is
 		IF Empty( cDrive )
 			cDrive := SELF:oDBF:Drive
 
+
 		ENDIF
+
 
 		IF Empty( cPath )
 			cPath := SELF:oDBF:Path
+
 
 		ENDIF
 		// build full path
@@ -527,15 +675,18 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC CLIPP
 			ENDIF
 		ENDIF
 
+
 		oDBFSpec := SELF:oDBF
 		cFile := Upper( oFS )
 		aFullPath := ArrayNew( 4 )
 		__SplitPath( oDBFSpec, cFile, aFullPath )
 
+
 		cDrive      := aFullPath[ 1 ]
 		cPath       := aFullPath[ 2 ]
 		cFile       := aFullPath[ 3 ]
 		cExt        := aFullPath[ 4 ]
+
 
 		// build full path
 		IF SubStr2( cPath, SLen( cPath ) ) == "\"
@@ -545,7 +696,9 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC CLIPP
 		ENDIF
 	ENDIF
 
+
 	cRDD := SELF:oDBF:RDD_Name
+
 
 	// NTX only has single orders
 	IF cRDD == "DBFNTX"
@@ -554,13 +707,16 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC CLIPP
 		cOrder := SELF:cOrdName
 	ENDIF
 
+
 	IF Empty( cKeyValue ) .OR. !IsString( cKeyValue )
 		cKeyValue := SELF:cOrdExpr
 	ENDIF
 
+
 	IF IsNil( cbKeyValue ) .OR. !__CanEval( cbKeyValue )
 		cbKeyValue := SELF:cbOrdExpr
 	ENDIF
+
 
 	IF IsNil( cbKeyValue )
 		IF Empty( cKeyValue )
@@ -569,9 +725,11 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC CLIPP
 		cbKeyValue := &( "{||" + cKeyValue + "}" )
 	ENDIF
 
+
 	IF Empty( lUnique )
 		lUnique := SELF:lUnique
 	ENDIF
+
 
 	IF SELF:uForCond != NULL_STRING
 		IF IsNil( SELF:uForBlock )
@@ -579,11 +737,13 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC CLIPP
 		ENDIF
 	ENDIF
 
+
 	IF SELF:nNext = 0
 		nNext := NIL
 	ELSE
 		nNext := SELF:nNext
 	ENDIF
+
 
 	IF SELF:nRecno = 0
 		nRec := NIL
@@ -591,8 +751,10 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC CLIPP
 		nRec := SELF:nRecno
 	ENDIF
 
+
 	cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oDBF:FileName ) )
 	IF SELF:__OpenDb( cAlias )
+
 
 		// if any condition ASSIGN was made, then call OrdCondSet()
 		IF SELF:lIsCond
@@ -612,14 +774,18 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC CLIPP
 				SELF:lCustom,    ;
 				SELF:lNoOpt      ) )
 
+
 		ENDIF
+
 
 		// set HP locking for this order
 		IF cRDD == "DBFNTX"
 			lOldHPLock := ( cAlias )->( IndexHPLock( SELF:lHPLock ) )
 		ENDIF
 
+
 		lRetCode := ( cAlias )->( VoDbOrdCreate ( cFile, cOrder, cKeyValue, cbKeyValue, lUnique, NULL ) )
+
 
 		IF cRDD == "DBFNTX"
 			( cAlias )->( IndexHPLock( lOldHPLock ) )
@@ -631,6 +797,8 @@ METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) AS LOGIC CLIPP
 	ENDIF
 	RETURN lRetCode
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.OrderDelete/*" />
 METHOD OrderDelete( uOrder )  AS LOGIC CLIPPER
 	LOCAL lRetCode  AS LOGIC
 	LOCAL cFullPath AS STRING
@@ -640,7 +808,9 @@ METHOD OrderDelete( uOrder )  AS LOGIC CLIPPER
 	LOCAL nOrders, nFiles   AS DWORD
 	LOCAL nOrdCount, nHandle AS DWORD
 
+
 	cRDD := SELF:oDBF:RDD_Name
+
 
 	IF cRDD != "DBFNTX"
 		cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oDBF:FileName ) )
@@ -657,6 +827,7 @@ METHOD OrderDelete( uOrder )  AS LOGIC CLIPPER
 				lRetCode := ( cAlias )->( DbDeleteOrder( uOrder, cFullPath ) )
 			ENDIF
 
+
 			IF lRetCode
 				nOrders := ALen( SELF:DBF:Orders )
 				FOR i := 1 UPTO nOrders
@@ -669,8 +840,10 @@ METHOD OrderDelete( uOrder )  AS LOGIC CLIPPER
 				NEXT
 			ENDIF
 
+
 			nOrdCount := ( cAlias )->( DbOrderInfo( DBOI_ORDERCOUNT, SELF:cFileName ) )
 			( cAlias )->( DbCloseArea() )
+
 
 			// DBFCDX deletes index file if order count == 0
 			IF nOrdCount = 0
@@ -708,6 +881,7 @@ METHOD OrderDelete( uOrder )  AS LOGIC CLIPPER
 		ENDIF
 	ENDIF
 
+
 	// clear everything out
 	IF lRetCode
 		SELF:__OrderSetInfo( NULL_STRING )
@@ -715,74 +889,109 @@ METHOD OrderDelete( uOrder )  AS LOGIC CLIPPER
 	RETURN lRetCode
 
 
-ACCESS OrderExpr AS STRING       
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.OrderExpr/*" />
+ACCESS OrderExpr AS STRING
 	RETURN SELF:cOrdExpr
 
-ASSIGN OrderExpr( cExpression AS STRING)           
-	SELF:cOrdExpr := cExpression
-	RETURN 
 
+/// <include file="Rdd.xml" path="doc/OrderSpec.OrderExpr/*" />
+ASSIGN OrderExpr( cExpression AS STRING)
+	SELF:cOrdExpr := cExpression
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.OrderName/*" />
 ACCESS OrderName  AS STRING
 	RETURN SELF:cOrdName
 
-ASSIGN OrderName( cOrderName AS STRING)            
-	SELF:cOrdName := cOrderName
-	RETURN 
 
-ACCESS RecNo  AS DWORD      
+/// <include file="Rdd.xml" path="doc/OrderSpec.OrderName/*" />
+ASSIGN OrderName( cOrderName AS STRING)
+	SELF:cOrdName := cOrderName
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Recno/*" />
+ACCESS RecNo  AS DWORD
 	RETURN SELF:nRecno
 
-ASSIGN RecNo ( nDWord AS DWORD)        
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Recno/*" />
+ASSIGN RecNo ( nDWord AS DWORD)
 	// conditional index
-	IF Empty( nDWord ) 
+	IF Empty( nDWord )
 		SELF:nRecno := 0
 	ELSE
 		SELF:nRecno := nDWord
 		SELF:lIsCond := TRUE
 	ENDIF
-	RETURN 
+	RETURN
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Records/*" />
 ACCESS Records  AS DWORD
 	RETURN SELF:nNext
 
-ASSIGN Records( nDWord AS DWORD)      
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Records/*" />
+ASSIGN Records( nDWord AS DWORD)
 	// conditional index
 	SELF:nNext := nDWord
 	SELF:lIsCond := TRUE
-	RETURN 
+	RETURN
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Rest/*" />
 ACCESS Rest  AS LOGIC
 	RETURN SELF:lRest
 
-ASSIGN Rest( lLogic AS LOGIC)     
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Rest/*" />
+ASSIGN Rest( lLogic AS LOGIC)
 	// conditional index
 	SELF:lRest := lLogic
 	SELF:lIsCond := TRUE
-	RETURN 
+	RETURN
 
-ACCESS Start  AS DWORD      
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Start/*" />
+ACCESS Start  AS DWORD
 	RETURN SELF:nStart
 
-ASSIGN Start( nDWord AS DWORD)        
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Start/*" />
+ASSIGN Start( nDWord AS DWORD)
 	// conditional index
 	SELF:nStart := nDWord
 	SELF:lIsCond := TRUE
-	RETURN 
+	RETURN
 
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.StrictRead/*" />
 ACCESS StrictRead  AS LOGIC
 	RETURN SELF:lStrictRead
 
-ACCESS Unique  AS LOGIC      
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.Unique/*" />
+ACCESS Unique  AS LOGIC
 	RETURN SELF:lUnique
 
-ASSIGN Unique( lLogic  AS LOGIC)           
-	SELF:lUnique := lLogic
-	RETURN 
 
+/// <include file="Rdd.xml" path="doc/OrderSpec.Unique/*" />
+ASSIGN Unique( lLogic  AS LOGIC)
+	SELF:lUnique := lLogic
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.WhileBlock/*" />
 ACCESS WhileBlock  AS USUAL
 	RETURN SELF:uWhileBlock
 
-ASSIGN WhileBlock( cbCodeBlock AS USUAL)  
+
+/// <include file="Rdd.xml" path="doc/OrderSpec.WhileBlock/*" />
+ASSIGN WhileBlock( cbCodeBlock AS USUAL)
 	// conditional index
 	IF Empty( cbCodeBlock ) .OR. !__CanEval( cbCodeBlock )
 		SELF:uWhileBlock := NIL
@@ -790,6 +999,7 @@ ASSIGN WhileBlock( cbCodeBlock AS USUAL)
 		SELF:uWhileBlock := cbCodeBlock
 		SELF:lIsCond := TRUE
 	ENDIF
-	RETURN 
+	RETURN
 END CLASS
+
 

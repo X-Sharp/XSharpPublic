@@ -1,4 +1,5 @@
 #pragma options ("enforceself", on)
+ /// <exclude />
 CLASS __SplitView INHERIT Control
 	PROTECT	dwDeferPaintCount	AS DWORD
 	PROTECT	oPanes			 	AS Dimension
@@ -6,20 +7,32 @@ CLASS __SplitView INHERIT Control
 	PROTECT	oBarBrush		 	AS Brush
 	PROTECT	oBarFrameBrush		AS Brush
 
+
+ /// <exclude />
 ACCESS Background 
+	
 	
 	RETURN oBackgroundBrush
 
+
+ /// <exclude />
 ASSIGN Background(oBrush) 
 	
+	
+
 
 	SELF:ChangeBackground(oBrush, SPLTCOLOR_WINDOW)
 	RETURN 
 
+
+ /// <exclude />
 METHOD ChangeBackground(oBrush, kWhere) 
 	LOCAL dwNewColor	AS DWORD
 
+
 	
+	
+
 
 	IF !IsInstanceOfUsual(oBrush, #Brush)
 		WCError{#ChangeBackground, #__SplitView, __WCSTypeError, oBrush, 1}:Throw()
@@ -30,6 +43,7 @@ METHOD ChangeBackground(oBrush, kWhere)
 		ENDIF
 	ENDIF
 
+
 	// change the particular color using the supplied brush,
 	// or the appropriate system color if the brush is null
 	SWITCH (INT) kWhere
@@ -38,6 +52,7 @@ METHOD ChangeBackground(oBrush, kWhere)
 		IF oBackgroundBrush == NULL_OBJECT
 			dwNewColor := GetSysColor(COLOR_APPWORKSPACE)
 		ENDIF
+
 
 	CASE SPLTCOLOR_BAR
 		oBarBrush := oBrush
@@ -50,6 +65,7 @@ METHOD ChangeBackground(oBrush, kWhere)
 				dwNewColor := GetSysColor(COLOR_BTNFACE)
 			ENDIF
 		ENDIF
+
 
 	CASE SPLTCOLOR_BARFRAME
 		oBarFrameBrush := oBrush
@@ -64,22 +80,30 @@ METHOD ChangeBackground(oBrush, kWhere)
 		ENDIF
 	END SWITCH
 
+
 	IF oBrush != NULL_OBJECT
 		dwNewColor := __WCGetBrushColor(oBrush)
 	ENDIF
 	PCALL(gpfnSpltColorSet, SELF:Handle(), kWhere, INT(_CAST, dwNewColor))
 
+
 	RETURN SELF
 
+
+ /// <exclude />
 METHOD Create() 
 	//PP-031129 Flicker removal
 	LOCAL hOwner	 AS PTR
 	LOCAL oDevPoint AS Point
 	LOCAL hInst AS PTR
 
+
+	
 	
 
+
 	hInst := _GetInst()
+
 
 	IF (hWnd == NULL_PTR)
 		IF (WCGetCoordinateSystem() == WCCartesianCoordinates)
@@ -88,8 +112,10 @@ METHOD Create()
 		oDevPoint:=__WCConvertPoint(oFormSurface, Point{oOrigin:X,oOrigin:Y})
 		hOwner := oFormSurface:Handle()
 
+
 		// remove the WS_EX_CLIENTEDGE style
 		SELF:SetExStyle(WS_EX_CLIENTEDGE, FALSE)
+
 
 		hWnd := CreateWindowEx(dwExStyle,;
 			String2Psz(SELF:__ClassName), String2Psz(cWindowName),;
@@ -97,18 +123,22 @@ METHOD Create()
 			oSize:Width, oSize:Height,;
 			hOwner, wID, hInst, NULL_PTR)
 
+
 		IF hWnd != NULL_PTR
 			__lpfnDefaultProc := GetWindowLong(hWnd, GWL_WNDPROC)
 			SetWindowLong(hWnd, GWL_WNDPROC, LONGINT(_CAST, Get__WCControlProcPtr()))
 
+
 			//Suppresses flicker in SplitWindow Control
 			SetClassStyle(hWnd, _OR(CS_VREDRAW,CS_HREDRAW), FALSE)
+
 
 			oSize := NULL_OBJECT
 			oOrigin := NULL_OBJECT
 			__WCRegisterControl(SELF) //register after we get the handle
 		ENDIF
 	ENDIF
+
 
 	// set the various visual elements of the control
 	IF hWnd != NULL_PTR
@@ -124,19 +154,27 @@ METHOD Create()
 		ENDIF
 	ENDIF
 
+
 	RETURN hWnd
 
+
+ /// <exclude />
 ACCESS deferPaintCount 
 	// DHer: 18/12/2008
 RETURN SELF:dwDeferPaintCount
 
+
+ /// <exclude />
 METHOD Destroy()  AS USUAL CLIPPER
 	//SE-060519
 	LOCAL liPane  AS LONGINT
    LOCAL liCount AS LONGINT
 	LOCAL oPane   AS OBJECT
 
+
 	
+	
+
 
 	IF (oPanes != NULL_OBJECT)
 		liCount := oPanes:Width * oPanes:Height
@@ -148,6 +186,7 @@ METHOD Destroy()  AS USUAL CLIPPER
 		NEXT  // liPane
 	ENDIF
 
+
 	// if not in garbage collection, clean up instance variables
 	IF ! InCollect()
 		oPanes := NULL_OBJECT
@@ -156,14 +195,19 @@ METHOD Destroy()  AS USUAL CLIPPER
 		oBarFrameBrush := NULL_OBJECT
 	ENDIF
 
+
 	SUPER:Destroy()
+
 
 	RETURN SELF
 
+
+ /// <exclude />
 METHOD Dispatch(oEvent) 
 	LOCAL oSize 	AS Dimension
 	LOCAL lResize 	AS LOGIC
 	LOCAL oEvt := oEvent AS @@Event
+
 
 	IF (oEvt:Message == WM_CAPTURECHANGED)
 		oSize := SELF:GetPaneSize(1)
@@ -180,8 +224,11 @@ METHOD Dispatch(oEvent)
 		ENDIF
 	ENDIF
 
+
 	RETURN SUPER:Dispatch(oEvt)
 
+
+ /// <exclude />
 METHOD GetAllPaneClients(aChildren) 
 	//SE-060519
 	LOCAL aPanes  AS ARRAY
@@ -189,14 +236,17 @@ METHOD GetAllPaneClients(aChildren)
    LOCAL liCount AS LONGINT
 	LOCAL oPane   AS OBJECT
 
+
 	IF IsArray(aChildren)
 		aPanes := aChildren
 	ELSE
 		aPanes := {}
 	ENDIF
 
+
    IF oPanes != NULL_OBJECT
 	   liCount := oPanes:Width * oPanes:Height - 1l
+
 
 		FOR liPane := 0 UPTO liCount
 			 oPane :=__WCGetObjectByHandle(PCALL(gpfnSpltPaneAssocGet, SELF:Handle(), liPane))
@@ -209,11 +259,16 @@ METHOD GetAllPaneClients(aChildren)
 		NEXT  // dwPane
 	ENDIF
 
+
 	RETURN aPanes
 
+
+ /// <exclude />
 METHOD GetPaneClient(nPane) 
 	LOCAL oRet AS OBJECT
 	
+	
+
 
 	// if nPane is a valid pane number, return the pane's client object
 	IF (nPane > 0) .AND. ((oPanes != NULL_OBJECT) .AND. nPane <= (oPanes:Width * oPanes:Height))
@@ -223,12 +278,18 @@ METHOD GetPaneClient(nPane)
 		ENDIF
 	ENDIF
 
+
 	RETURN oRet
 
+
+ /// <exclude />
 METHOD GetPaneSize(nPane) 
 	LOCAL strucSize	IS _winSize
 
+
 	
+	
+
 
 	// if nPane is a valid pane number, return the pane's dimension	object
 	IF (nPane > 0) .AND. ((oPanes != NULL_OBJECT) .AND. nPane <= (oPanes:Width * oPanes:Height))
@@ -237,10 +298,15 @@ METHOD GetPaneSize(nPane)
 		ENDIF
 	ENDIF
 
+
 	RETURN NULL_OBJECT
 
+
+ /// <exclude />
 METHOD Hide(nPane) 
 	
+	
+
 
 	// if nPane is supplied, hide the appropriate pane;
 	// otherwise, hide all the panes
@@ -250,30 +316,46 @@ METHOD Hide(nPane)
 		PCALL(gpfnSpltPaneShow, SELF:Handle(), nPane - 1, SPS_HIDEPANE)
 	ENDIF
 
+
 	RETURN SELF
 
+
+ /// <exclude />
 ACCESS HorizontalAlign 
 	
+	
+
 
 	RETURN _AND(SWS_HALIGN, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 1
 
+
+ /// <exclude />
 ACCESS HorizontalDrag 
 	
+	
+
 
 	RETURN _AND(SWS_NOHORZDRAG, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 0
 
+
+ /// <exclude />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment) 
 	LOCAL oWin AS Window
 
+
+	
 	
 
+
 	__LoadSplitWindowDLL() //SE-060520
+
 
 	// the owner must be a window
 	IF !IsInstanceOfUsual(oOwner, #Window)
 		WCError{#Init, #__SplitView, __WCSTypeError, oOwner, 1}:Throw()
 	ENDIF
 	oWin := oOwner
+
 
 	// the actual owner on a form will be the FormDialog
 	IF IsInstanceOf(oWin, #DataWindow) 
@@ -283,7 +365,9 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAl
 		oWin := Send(oWin, #GetDialogWindow)
 	ENDIF
 
+
 	SUPER(oWin, xID, oPoint, oDimension, CASPLIT_CLASS, _OR(WS_VISIBLE, WS_CHILD))
+
 
 	// set drag and alignment attributes
 	IF !lHorizontalDrag
@@ -294,13 +378,20 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAl
 	ENDIF
 	SELF:SetStyle(kAlignment)
 
+
 	RETURN 
 
+
+ /// <exclude />
 ACCESS Layout 
 	
+	
+
 
 	RETURN oPanes
 
+
+ /// <exclude />
 ASSIGN Layout(oDimension) 
    //SE-060520 S. Ebert
 	//Corrects a problem which occurs if you define Layout and the window height or width is 0.
@@ -314,35 +405,46 @@ ASSIGN Layout(oDimension)
 	LOCAL dwFlags  AS DWORD
 	LOCAL hSplit   AS PTR
 
+
 	
+	
+
 
 	// store the dimensions of the window and create the
 	// array that will store the pane client objects
 	oPanes := oDimension
 
+
 	liWidth  := oPanes:Width
    liHeight := oPanes:Height
    liCount  := liWidth * liHeight - 1l
 
+
    hSplit := SELF:Handle()
+
 
    //Initialize layout
    PCALL(gpfnSpltPaneShow, hSplit, 0, SPS_HIDEALLPANES)
    PCALL(gpfnSpltLayout, hSplit, oPanes:Height, oPanes:Width)
+
 
    //show and initialize each pane
    FOR liPane := 0 UPTO liCount
    	 PCALL(gpfnSpltPaneShow, hSplit, liPane, SPS_SHOWPANE)
    NEXT  // liPane
 
+
    //force the same size for each pane
    liWidth  *= 50l
    liHeight *= 50l
 
+
 	GetClientRect(hSplit, @sRect)
+
 
    dwFlags  := _OR(SWP_NOMOVE, SWP_NOZORDER, SWP_NOACTIVATE)
    SetWindowPos(hSplit, 0, 0, 0, liWidth, liHeight, dwFlags)
+
 
    sSize:cx := 51l
 	sSize:cy := 51l
@@ -350,29 +452,42 @@ ASSIGN Layout(oDimension)
        PCALL(gpfnSpltPaneExtSet, hSplit, liPane, @sSize)
    NEXT  // liPane
 
+
    SetWindowPos(hSplit, 0, 0, 0, sRect:Right, sRect:bottom, dwFlags)
+
 
    RETURN 
 
+
+ /// <exclude />
 METHOD RestoreUpdate() 
 
+
 	
+	
+
 
 	// decrement the deferred paint count
 	IF (dwDeferPaintCount != 0)
 		--dwDeferPaintCount
 	ENDIF
 
+
 	// if the deferred paint count is 0, end deferred painting
 	IF (dwDeferPaintCount == 0)
 		PCALL(gpfnSpltEndDeferPaint, SELF:Handle(), TRUE)
 	ENDIF
 
+
 	RETURN SELF
 
+
+ /// <exclude />
 METHOD SetPaneClient(oWindow, nPane) 
 	LOCAL dwStyles AS DWORD
 	
+	
+
 
 	//PP-030910 Bug 99
 	//PP-030916 // Check oWindow is a Window before changing style
@@ -386,7 +501,10 @@ METHOD SetPaneClient(oWindow, nPane)
 		dwStyles := _OR(dwStyles,  WS_CHILD)
 		SetWindowLong(oWindow:handle(), GWL_STYLE, LONGINT(_CAST, dwStyles))
 
+
 	ENDIF
+
+
 
 
 	// store the client in the array, and connect it to the pane
@@ -396,12 +514,18 @@ METHOD SetPaneClient(oWindow, nPane)
 		PCALL(gpfnSpltPaneAssocSet, SELF:Handle(), NULL_PTR, nPane - 1)
 	ENDIF
 
+
 	RETURN NIL
 
+
+ /// <exclude />
 METHOD SetPaneSize(oDimension, nPane) 
 	LOCAL strucSize IS _winSize
 
+
 	
+	
+
 
 	// if nPane is valid, return the size of the pane
 	IF nPane > 0 .AND. nPane <= (oPanes:Width * oPanes:Height)
@@ -416,10 +540,15 @@ METHOD SetPaneSize(oDimension, nPane)
 		RETURN PCALL(gpfnSpltPaneExtSet, SELF:Handle(), nPane - 1, @strucSize)
 	ENDIF
 
+
 	RETURN FALSE
 
+
+ /// <exclude />
 METHOD Show(nPane) 
 	
+	
+
 
 	// if nPane is supplied, show the appropriate pane;
 	// otherwise, show all the panes
@@ -429,32 +558,53 @@ METHOD Show(nPane)
 		PCALL(gpfnSpltPaneShow, SELF:Handle(), nPane - 1, SPS_SHOWPANE)
 	ENDIF
 
+
 	RETURN SELF
 
+
+ /// <exclude />
 ACCESS SplitBarBackground 
 	
+	
+
 
 	RETURN oBarBrush
 
+
+ /// <exclude />
 ASSIGN SplitBarBackground(oBrush) 
 	
+	
+
 
 	SELF:ChangeBackground(oBrush, SPLTCOLOR_BAR)
 	RETURN 
 
+
+ /// <exclude />
 ACCESS SplitBarFrameBackground 
 	
+	
+
 
 	RETURN oBarFrameBrush
 
+
+ /// <exclude />
 ASSIGN SplitBarFrameBackground(oBrush) 
 	
+	
+
 
 	SELF:ChangeBackground(oBrush, SPLTCOLOR_BARFRAME)
 	RETURN 
 
+
+ /// <exclude />
 METHOD SuspendUpdate() 
 	
+	
+
 
 	// if the deferred paint count is 0, begin deferred painting
 	IF (dwDeferPaintCount == 0)
@@ -462,25 +612,39 @@ METHOD SuspendUpdate()
 	ENDIF
 	dwDeferPaintCount := dwDeferPaintCount + 1 //++
 
+
 	RETURN NIL
 
+
+ /// <exclude />
 ACCESS VerticalAlign 
 	
+	
+
 
 	RETURN _AND(SWS_VALIGN, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 1
 
+
+ /// <exclude />
 ACCESS VerticalDrag 
 	
+	
+
 
 	RETURN _AND(SWS_NOVERTDRAG, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 0
 
+
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow/*" />
 CLASS SplitWindow INHERIT ChildAppWindow
 	PROTECT oSplitView	AS __SplitView
 	PROTECT lInDestroy AS LOGIC
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	METHOD __ResizeSplitView() AS VOID STRICT 
 	//SE-050822 S. Ebert
 	//Corrects a two pixel horizontal sizing mismatch.
@@ -489,24 +653,32 @@ CLASS SplitWindow INHERIT ChildAppWindow
 	LOCAL oTB    AS ToolBar
 	LOCAL oSB    AS StatusBar
 
+
 	IF oSplitView != NULL_OBJECT
+
 
 		GetClientRect(hWnd, @rect)
 
+
 		yPoint := 0
+
 
 		IF (oTB := SELF:ToolBar) != NULL_OBJECT
 			yPoint := oTB:Size:Height
 			rect:bottom -= yPoint
 		ENDIF
 
+
 		IF (oSB := SELF:StatusBar) != NULL_OBJECT
 			rect:bottom -= oSB:Size:Height
 		ENDIF
 
+
       SetWindowPos(oSplitView:Handle(), 0, 0, yPoint, rect:right, rect:bottom, _OR(SWP_NOZORDER, SWP_NOACTIVATE))
 
+
 	ENDIF
+
 
 	RETURN
 // 	//PP-030828 Strong typing
@@ -557,29 +729,46 @@ CLASS SplitWindow INHERIT ChildAppWindow
 // 	ENDIF
 // 	RETURN
 
+
+ /// <exclude />
 ACCESS __SplitView AS __SplitView STRICT 
 	//PP-030828 Strong typing
 	
+	
+
 
 	RETURN oSplitView
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.Background/*" />
 ACCESS Background 
+	
 	
 	IF oSplitView != NULL_OBJECT
 		RETURN oSplitView:Background
 	ENDIF
 	RETURN NULL_OBJECT
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.Background/*" />
 ASSIGN Background(oBrush) 
+	
 	
 	RETURN oSplitView:Background := oBrush
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.ChangeBackground/*" />
 METHOD ChangeBackground(oBrush, kWhere) 
+	
 	
 	RETURN oSplitView:ChangeBackground(oBrush, kWhere)
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	
+	
+
 
 	// if not in garbage collection, destroy the split view control
 	lInDestroy := TRUE
@@ -591,11 +780,15 @@ METHOD Destroy()  AS USUAL CLIPPER
 	ENDIF
 	SUPER:Destroy()
 
+
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.Dispatch/*" />
 METHOD Dispatch(oEvent) 
 	LOCAL oEvt := oEvent AS @@Event
 	LOCAL oPane AS OBJECT
+
 
 	IF (oEvt:uMsg == WM_NCACTIVATE) .AND. LOGIC(_CAST, oEvt:wParam)
 		InvalidateRect(hwnd, NULL_PTR, TRUE)
@@ -606,55 +799,88 @@ METHOD Dispatch(oEvent)
 		ENDIF
 	ENDIF
 
+
 	RETURN SUPER:Dispatch(oEvt)
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.EnableStatusBar/*" />
 METHOD EnableStatusBar(lEnable) 
 	
+	
+
 
 	SUPER:EnableStatusBar(lEnable)
 	SELF:__ResizeSplitView()
 
+
 	RETURN SELF:StatusBar
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.GetAllChildren/*" />
 METHOD GetAllChildren() 
 	//RvdH 060519 Added, so all pane clients are also returned
 	//SE-060520
 	LOCAL aChildren AS ARRAY
+
 
 	aChildren := SUPER:GetAllChildren()
 	IF oSplitView != NULL_OBJECT
 	   aChildren := oSplitView:GetAllPaneClients(aChildren)
 	ENDIF
 
+
 	RETURN aChildren
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.GetPaneClient/*" />
 METHOD GetPaneClient(nPane) 
 	
+	
+
 
 	RETURN oSplitView:GetPaneClient(nPane)
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.GetPaneSize/*" />
 METHOD GetPaneSize(nPane) 
 	
+	
+
 
 	RETURN oSplitView:GetPaneSize(nPane)
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.HidePane/*" />
 METHOD HidePane(nPane) 
 	
+	
+
 
 	SELF:oSplitView:Hide(nPane)
 	RETURN SELF
 
 
+
+
+/// <include file="Gui.xml" path="doc/SplitWindow.HorizontalAlign/*" />
 ACCESS HorizontalAlign 
 	
+	
+
 
 	RETURN oSplitView:HorizontalAlign
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.HorizontalDrag/*" />
 ACCESS HorizontalDrag 
 	
+	
+
 
 	RETURN oSplitView:HorizontalDrag
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.ctor/*" />
 CONSTRUCTOR(oOwner, lHorizontalDrag, lVerticalDrag, kAlignment) 
 	LOCAL oObject		AS OBJECT
 	LOCAL oBar			AS Control
@@ -663,7 +889,10 @@ CONSTRUCTOR(oOwner, lHorizontalDrag, lVerticalDrag, kAlignment)
 	LOCAL nOffsetTop	AS INT
 	LOCAL nOffsetBottom	AS INT
 
+
 	
+	
+
 
 	IF IsObject(oOwner)
 		oObject := oOwner
@@ -688,65 +917,99 @@ CONSTRUCTOR(oOwner, lHorizontalDrag, lVerticalDrag, kAlignment)
 		SUPER(oOwner)
 	ENDIF
 
+
 	oBar := SELF:ToolBar
 	IF oBar != NULL_OBJECT
 		nOffsetTop := oBar:Size:Height
 	ENDIF
+
 
 	oBar := SELF:StatusBar
 	IF oBar != NULL_OBJECT
 		nOffsetBottom := oBar:Size:Height
 	ENDIF
 
+
 	oDimension := Dimension{SELF:CanvasArea:Width, SELF:CanvasArea:Height - nOffsetTop}
 	oPoint := Point{0, nOffsetBottom}
 
+
 	// set up drag and alignment options
+
 
 	DEFAULT(@lHorizontalDrag, FALSE)
 	DEFAULT(@lVerticalDrag, TRUE)
 	DEFAULT(@kAlignment, SPLIT_VERTALIGN )
 
+
 	oSplitView := __SplitView{SELF, 1000, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment}
 	oSplitView:Show()
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.Layout/*" />
 ACCESS Layout 
 	
+	
+
 
 	RETURN oSplitView:Layout
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.Layout/*" />
 ASSIGN Layout(oDimension) 
    //SE-060520
 	RETURN oSplitView:Layout := oDimension
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.Resize/*" />
 METHOD Resize(oResizeEvent) 
 	
+	
+
 
 	SUPER:Resize(oResizeEvent)
 	SELF:__ResizeSplitView()
 
+
 	RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.RestoreUpdate/*" />
 METHOD RestoreUpdate 
 	
+	
+
 
 	RETURN oSplitView:RestoreUpdate()
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.SetPaneClient/*" />
 METHOD SetPaneClient(oWindow, nPane) 
 	
+	
+
 
 	RETURN oSplitView:SetPaneClient(oWindow, nPane)
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.SetPaneSize/*" />
 METHOD SetPaneSize(oDimension, nPane) 
 	//SE-060518
 	
+	
+
 
 	RETURN oSplitView:SetPaneSize(oDimension, nPane)
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.Show/*" />
 METHOD Show(nShowState, nPane) 
 	
+	
+
 
 	SUPER:Show(nShowState)
 	SELF:__ResizeSplitView()
@@ -762,68 +1025,111 @@ METHOD Show(nShowState, nPane)
 	   oSplitView:Show(nPane)
 	ENDIF
 
+
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.ShowPane/*" />
 METHOD ShowPane(nPane) 
 	
+	
+
 
 	SELF:oSplitView:Show(nPane)
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.SplitBarBackground/*" />
 ACCESS SplitBarBackground 
 	
+	
+
 
 	RETURN oSplitView:SplitBarBackground
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.SplitBarBackground/*" />
 ASSIGN SplitBarBackground(oBrush) 
 	
+	
+
 
 	RETURN oSplitView:SplitBarBackground := oBrush
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.SplitBarFrameBackground/*" />
 ACCESS SplitBarFrameBackground 
 	
+	
+
 
 	RETURN oSplitView:SplitBarFrameBackground
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.SplitBarFrameBackground/*" />
 ASSIGN SplitBarFrameBackground(oBrush) 
 	
+	
+
 
 	RETURN oSplitView:SplitBarFrameBackground := oBrush
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.SuspendUpdate/*" />
 METHOD SuspendUpdate 
 	
+	
+
 
 	RETURN oSplitView:SuspendUpdate()
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.ToolBar/*" />
 ASSIGN ToolBar(oNewToolBar) 
 	
+	
+
 
 	SUPER:Toolbar := oNewToolBar
 	SELF:__ResizeSplitView()
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.ToolBarHeightChanged/*" />
 METHOD ToolBarHeightChanged(oControlNotifyEvent) 
    SELF:__ResizeSplitView()
    RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.VerticalAlign/*" />
 ACCESS VerticalAlign 
 	
+	
+
 
 	RETURN oSplitView:VerticalAlign
 
+
+/// <include file="Gui.xml" path="doc/SplitWindow.VerticalDrag/*" />
 ACCESS VerticalDrag 
 	
+	
+
 
 	RETURN oSplitView:VerticalDrag
 END CLASS
 
+
 STATIC GLOBAL glSplitDllLoaded := FALSE AS LOGIC
+
 
 //function declarations
 STATIC GLOBAL gpfnSpltColorSet AS TSpltColorSet PTR
 STATIC GLOBAL gpfnSpltDeferPaint AS TSpltDeferPaint PTR
 STATIC GLOBAL gpfnSpltEndDeferPaint AS TSpltEndDeferPaint PTR
+
 
 STATIC GLOBAL gpfnSpltLayout AS TSpltLayout PTR
 STATIC GLOBAL gpfnSpltPaneAssocGet AS TSpltPaneAssocGet PTR
@@ -836,46 +1142,58 @@ STATIC FUNCTION TSpltColorSet(hWnd AS PTR, iColor AS DWORD, cr AS INT) AS INT ST
 	//SYSTEM
 	RETURN 0
 
+
 STATIC FUNCTION TSpltDeferPaint(hWnd AS PTR) AS VOID STRICT
 	RETURN
 STATIC FUNCTION TSpltEndDeferPaint(hWnd AS PTR, bUpdate AS LOGIC) AS VOID STRICT
 	RETURN
 
+
 STATIC FUNCTION TSpltLayout(hWnd AS PTR, nRows AS INT, nCols AS INT) AS LOGIC STRICT
 	//SYSTEM
 	RETURN FALSE
+
 
 STATIC FUNCTION TSpltPaneAssocGet(hWnd AS PTR, iPane AS INT) AS PTR STRICT
 	//SYSTEM
 	RETURN NULL_PTR
 
+
 STATIC FUNCTION TSpltPaneAssocSet(hWnd AS PTR, hWndAssoc AS PTR, iPane AS INT) AS PTR STRICT
 	//SYSTEM
 	RETURN NULL_PTR
+
 
 STATIC FUNCTION TSpltPaneExtGet(hWnd AS PTR, iPane AS INT, lpExt AS _winSize) AS LOGIC STRICT
 	//SYSTEM
 	RETURN FALSE
 
+
 STATIC FUNCTION TSpltPaneExtSet(hWnd AS PTR, iPane AS INT, lpExt AS _winSize) AS LOGIC STRICT
 	//SYSTEM
 	RETURN FALSE
+
 
 STATIC FUNCTION TSpltPaneShow(hWnd AS PTR, iPane AS INT, uCode AS DWORD) AS LOGIC STRICT
 	//SYSTEM
 	RETURN FALSE
 
+
 STATIC FUNCTION TSpltStyleGet(hWnd AS PTR) AS DWORD STRICT
 	//SYSTEM
 	RETURN 0
 
+
+ /// <exclude />
 FUNCTION __LoadSplitWindowDLL()
 	LOCAL hDll AS PTR
 	LOCAL rsFormat AS ResourceString
 
+
 	IF glSplitDllLoaded
 		RETURN TRUE
 	ENDIF
+
 
 	hDll := LoadLibrary(String2Psz( "CATO3SPL.DLL"))
 	IF (hDll == NULL_PTR)
@@ -883,6 +1201,7 @@ FUNCTION __LoadSplitWindowDLL()
 		WCError{#LoadSplitWindowDLL, #SplitWindow, VO_Sprintf(rsFormat:value, "CATO3SPL.DLL"),,,FALSE}:Throw()
 		RETURN FALSE
 	ENDIF
+
 
 	gpfnSpltColorSet 		:= GetProcAddress(hDll, String2Psz( "SpltColorSet"))
 	gpfnSpltPaneAssocGet := GetProcAddress(hDll, String2Psz("SpltPaneAssocGet"))
@@ -894,5 +1213,6 @@ FUNCTION __LoadSplitWindowDLL()
 	gpfnSpltLayout 		:= GetProcAddress(hDll, String2Psz( "SpltLayout"))
 	gpfnSpltDeferPaint 	:= GetProcAddress(hDll, String2Psz( "SpltDeferPaint"))
 	gpfnSpltEndDeferPaint := GetProcAddress(hDll, String2Psz( "SpltEndDeferPaint"))
+
 
 	RETURN (glSplitDllLoaded := TRUE)

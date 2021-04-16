@@ -1,3 +1,4 @@
+/// <include file="SQL.xml" path="doc/SQLListColumns/*" />
 CLASS SQLListColumns INHERIT SQLCatalogQuery
     EXPORT Qualifier    AS STRING
     EXPORT Owner        AS STRING
@@ -6,17 +7,24 @@ CLASS SQLListColumns INHERIT SQLCatalogQuery
 
 
 
+
+
+
+/// <include file="SQL.xml" path="doc/SQLListColumns.Execute/*" />
 METHOD Execute  () 
     LOCAL psz1, psz2, psz3, psz4 AS PSZ
     LOCAL   nRet    AS INT
+
 
     #IFDEF __DEBUG__
         __SQLOutputDebug("** SQLListColumns:Execute()")
     #ENDIF
 
+
     IF oStmt:StatementHandle = SQL_NULL_HSTMT
         SELF:__AllocStmt()
     ENDIF
+
 
     IF SELF:Qualifier != NULL_STRING
         psz1 := String2Psz(SELF:Qualifier)
@@ -37,6 +45,7 @@ METHOD Execute  ()
                         psz3, _SLen(SELF:TableName),    ;
                         psz4, _SLen(SELF:ColName)               )
 
+
     IF nRet != SQL_SUCCESS
         oStmt:ErrInfo := SQLErrorInfo{  SELF,           ;
                                         #Init,          ;
@@ -44,14 +53,20 @@ METHOD Execute  ()
                                         oStmt:__Connection:ConnHandle,      ;
                                         oStmt:StatementHandle }
 
+
         RETURN FALSE
     ENDIF
 
+
     RETURN SUPER:Execute()
 
+
+/// <include file="SQL.xml" path="doc/SQLListColumns.ctor/*" />
 CONSTRUCTOR     ( cQualifier, cOwner, cTableName, cColName, oSQLConnection) 
 
+
     SUPER(oSQLConnection)
+
 
     #IFDEF __DEBUG__
         __SQLOutputDebug("** SQLListColumns:Init("+AsString(cQualifier)+","+   ;
@@ -60,11 +75,13 @@ CONSTRUCTOR     ( cQualifier, cOwner, cTableName, cColName, oSQLConnection)
                             AsString(cColName)+")" )
     #ENDIF
 
+
     IF IsString(cQualifier)
         SELF:Qualifier := cQualifier
     ELSE
         SELF:Qualifier := NULL_STRING
     ENDIF
+
 
     IF IsString(cOwner)
         SELF:Owner := cOwner
@@ -72,11 +89,13 @@ CONSTRUCTOR     ( cQualifier, cOwner, cTableName, cColName, oSQLConnection)
         SELF:Owner := NULL_STRING
     ENDIF
 
+
     IF IsString(cTableName)
         SELF:TableName := cTableName
     ELSE
         SELF:TableName := NULL_STRING
     ENDIF
+
 
     IF IsString(cColName)
         SELF:ColName := cColName
@@ -84,10 +103,15 @@ CONSTRUCTOR     ( cQualifier, cOwner, cTableName, cColName, oSQLConnection)
         SELF:ColName := NULL_STRING
     ENDIF
 
+
     SELF:Execute()
+
 
     RETURN 
 
 
+
+
 END CLASS
+
 

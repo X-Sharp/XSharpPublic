@@ -1,6 +1,10 @@
-﻿CLASS CFtp INHERIT CSession
+/// <include file="Internet.xml" path="doc/CFtp/*" />
+CLASS CFtp INHERIT CSession
 
+
+/// <include file="Internet.xml" path="doc/CFtp.Append/*" />
 METHOD Append (cLocalFile, nFlags) 
+
 
     LOCAL lRet          AS LOGIC
     LOCAL cRemoteFile   AS STRING
@@ -9,18 +13,23 @@ METHOD Append (cLocalFile, nFlags)
     LOCAL nDefFlags     AS DWORD
     LOCAL hFTP          AS PTR
 
+
     IF SELF:hConnect = NULL_PTR
         RETURN .F. 
     ENDIF
 
+
     nDefFlags := FTP_TRANSFER_TYPE_BINARY
     DEFAULT(@nFlags, nDefFlags)
 
+
     DEFAULT(@cLocalFile, "")
+
 
     IF !File(cLocalFile)
         RETURN .F. 
     ENDIF
+
 
     nPos := RAt("\", cLocalFile)
     IF nPos > 0
@@ -29,22 +38,31 @@ METHOD Append (cLocalFile, nFlags)
         cRemoteFile := cLocalFile
     ENDIF
 
+
     cCommand := "APPEND " + cRemoteFile
+
 
     lRet := FtpCommand(SELF:hConnect, .F. , nFlags, String2Psz( cCommand),  SELF:__GetStatusContext(), @hFTP)
 
+
     RETURN lRet
 
+
+/// <include file="Internet.xml" path="doc/CFtp.ConnectRemote/*" />
 METHOD ConnectRemote(cIP, cID, cPw, lBypass) 
 
+
 	LOCAL lRet          AS LOGIC
+
 
 	DEFAULT(@cID, "")
 	DEFAULT(@cPw, "")
 	DEFAULT(@lBypass, FALSE)
 
+
 	SELF:Password := cPw
 	SELF:UserName := cID
+
 
     //  UH 02/28/2001 New argument nFlags, can be one of the following:
     //  INTERNET_FLAG_ASYNC ...... ....... Only asynchronous requests on handles descended from that connection
@@ -74,12 +92,14 @@ METHOD ConnectRemote(cIP, cID, cPw, lBypass)
     //  WININET_API_FLAG_SYNC ............ Forces synchronous operations.
     //  WININET_API_FLAG_USE_CONTEXT ..... Forces the API to use the context value
 
+
 	IF lBypass
 		// this bypasses cFTP class where the INTERNET_FLAG_PASSIVE is used inadvisedly - Uwe Holz 01/03/01
 		lRet := SUPER:ConnectRemote(cIP, INTERNET_SERVICE_FTP, 0, SELF:__GetStatusContext())
 	ELSE
 		lRet := SUPER:ConnectRemote(cIP, INTERNET_SERVICE_FTP, INTERNET_FLAG_PASSIVE, SELF:__GetStatusContext())
 	ENDIF
+
 
 	IF SELF:hConnect = NULL_PTR
 		SELF:InternetStatus(SELF:__GetStatusContext(), INTERNET_STATUS_CONNECTION_CLOSED, NULL_PTR, 0)
@@ -90,49 +110,69 @@ METHOD ConnectRemote(cIP, cID, cPw, lBypass)
 	ELSE
 	ENDIF
 
+
 	RETURN lRet
 
+
+/// <include file="Internet.xml" path="doc/CFtp.CreateDir/*" />
 METHOD CreateDir(cRemoteDir) 
 
+
     LOCAL lRet AS LOGIC
+
 
     IF SELF:hConnect = NULL_PTR
         RETURN .F. 
     ENDIF
+
 
     IF !IsString(cRemoteDir) .OR. SLen(cRemoteDir) = 0
         RETURN .F. 
     ENDIF
 
+
     lRet := FtpCreateDirectory(SELF:hConnect, cRemoteDir)
+
 
     IF !lRet
         SELF:nError := GetLastError()
     ENDIF
 
+
     RETURN lRet
 
+
+/// <include file="Internet.xml" path="doc/CFtp.DeleteFile/*" />
 METHOD DeleteFile(cRemoteFile) 
 
+
     LOCAL lRet AS LOGIC
+
 
     IF SELF:hConnect = NULL_PTR
         RETURN .F. 
     ENDIF
 
+
     IF SLen(cRemoteFile) = 0
         RETURN .F. 
     ENDIF
 
+
     lRet := FtpDeleteFile(SELF:hConnect, cRemoteFile)
+
 
     IF !lRet
         SELF:nError := GetLastError()
     ENDIF
 
+
     RETURN lRet
 
+
+/// <include file="Internet.xml" path="doc/CFtp.Directory/*" />
 METHOD Directory (cFile, nFlags) 
+
 
     LOCAL pData      AS _WINWIN32_FIND_DATA
     LOCAL hFind      AS PTR
@@ -140,22 +180,30 @@ METHOD Directory (cFile, nFlags)
     LOCAL aTemp      AS ARRAY
     LOCAL nContext   AS DWORD
 
+
     aRet := {}
+
 
     DEFAULT(@cFile, "*.*")
 
+
     DEFAULT(@nFlags, _OR(INTERNET_FLAG_RELOAD , INTERNET_FLAG_RESYNCHRONIZE))
+
 
     IF SELF:hConnect = NULL_PTR
         RETURN aRet
     ENDIF
 
+
     pData := MemAlloc(_SIZEOF(_WINWIN32_FIND_DATA) )
+
 
     nContext := SELF:__GetStatusContext()
 
+
     //  Start enumeration and get file handle
     hFind := IFXFtpFindFirstFile(SELF:hConnect, cFile, pData, nFlags, nContext)
+
 
     IF hFind = NULL_PTR
         SELF:nError := GetLastError()
@@ -176,11 +224,16 @@ METHOD Directory (cFile, nFlags)
         ENDDO
     ENDIF
 
+
     MemFree(pData)
+
 
     RETURN aRet
 
+
+/// <include file="Internet.xml" path="doc/CFtp.GetCurDir/*" />
 METHOD GetCurDir() 
+
 
     LOCAL     lRet              AS LOGIC
     LOCAL     cRet              AS STRING
@@ -188,19 +241,26 @@ METHOD GetCurDir()
     LOCAL     nSize             AS DWORD
     LOCAL     pSave             AS PTR
 
+
     IF SELF:hConnect = NULL_PTR
         RETURN .F. 
     ENDIF
 
+
     nSize := _MAX_PATH
+
 
     IF SELF:lStatus
         pSave := InternetSetStatusCallback( SELF:hConnect, NULL_PTR)
     ENDIF
 
+
     lRet  := FtpGetCurrentDirectory(SELF:hConnect, @abTemp[1], @nSize)
       
+      
     InternetSetStatusCallback( SELF:hConnect, pSave )
+
+
 
 
     IF lRet
@@ -209,28 +269,37 @@ METHOD GetCurDir()
         SELF:nError := GetLastError()
     ENDIF
 
+
     RETURN cRet
 
+
+/// <include file="Internet.xml" path="doc/CFtp.GetFile/*" />
 METHOD GetFile(cRemoteFile, cNewFile, lFailIfExists, nFlags) 
 
+
     LOCAL lRet AS LOGIC
+
 
     IF SELF:hConnect = NULL_PTR
         RETURN .F. 
     ENDIF
+
 
     DEFAULT(@lFailIfExists, .F. )
     DEFAULT(@nFlags, INTERNET_FLAG_TRANSFER_BINARY)
     DEFAULT(@cRemoteFile, "")
     DEFAULT(@cNewFile, "")
 
+
     IF SLen(cRemoteFile) = 0
         RETURN .F. 
     ENDIF
 
+
     IF SLen(cNewFile) = 0
         cNewFile := cRemoteFile
     ENDIF
+
 
     lRet := FtpGetFile(SELF:hConnect, cRemoteFile, cNewFile, lFailIfExists, FC_ARCHIVED, nFlags, SELF:__GetStatusContext())
     IF !lRet
@@ -240,27 +309,37 @@ METHOD GetFile(cRemoteFile, cNewFile, lFailIfExists, nFlags)
         ENDIF
     ELSE
 
+
         SELF:SetResponseStatus()
     ENDIF
     RETURN lRet
 
+
+/// <include file="Internet.xml" path="doc/CFtp.ctor/*" />
 CONSTRUCTOR (cCaption, n, lStat) 
+
 
     IF !IsString(cCaption) .OR. IsNil(cCaption)
         cCaption := "VO Ftp Client"
     ENDIF
+
 
     IF IsNumeric(n)
     ELSE
         n := INTERNET_DEFAULT_FTP_PORT
     ENDIF
 
+
     SUPER(cCaption, n, lStat)
+
 
     SELF:AccessType := INTERNET_OPEN_TYPE_DIRECT
 
+
     RETURN 
 
+
+/// <include file="Internet.xml" path="doc/CFtp.InternetStatus/*" />
 METHOD InternetStatus(nContext, nStatus, pStatusInfo, nStatusLength) 
 	//
 	//	This method receives all Low Level FTP notification. Please keep all
@@ -268,83 +347,114 @@ METHOD InternetStatus(nContext, nStatus, pStatusInfo, nStatusLength)
 	//
     LOCAL cMsg  AS USUAL
 
+
     cMsg := NIL	// used to detect no update required
+
 
     DO CASE
     CASE nStatus == INTERNET_STATUS_RESOLVING_NAME
         cMsg := "Resolving Name ... "
 
+
     CASE nStatus == INTERNET_STATUS_NAME_RESOLVED
         cMsg := "Name resolved"
+
 
     CASE nStatus == INTERNET_STATUS_CONNECTING_TO_SERVER
         cMsg := "Connecting to Server ... "
 
+
     CASE nStatus == INTERNET_STATUS_CONNECTED_TO_SERVER
         cMsg := "Connected to Server"
+
 
     CASE nStatus == INTERNET_STATUS_SENDING_REQUEST
 //        cMsg := "Sending Request ... "
 
+
     CASE nStatus == INTERNET_STATUS_REQUEST_SENT
         cMsg := "Request sent"
+
 
     CASE nStatus == INTERNET_STATUS_RECEIVING_RESPONSE
 //        cMsg := "Receiving response ..."
 
+
     CASE nStatus == INTERNET_STATUS_RESPONSE_RECEIVED
         cMsg := "Response received"
+
 
     CASE nStatus == INTERNET_STATUS_CTL_RESPONSE_RECEIVED
 //        cMsg := "CTL Response received"
 
+
     CASE nStatus == INTERNET_STATUS_PREFETCH
         cMsg := "Prefetch"
+
 
     CASE nStatus == INTERNET_STATUS_CLOSING_CONNECTION
         cMsg := "Closing Connection ..."
 
+
     CASE nStatus == INTERNET_STATUS_CONNECTION_CLOSED
         cMsg := "Connection closed"
+
 
     CASE nStatus == INTERNET_STATUS_HANDLE_CREATED
 //        cMsg := "Handle created"
 
+
     CASE nStatus == INTERNET_STATUS_HANDLE_CLOSING
 //        cMsg := "Closing handle ..."
+
 
     CASE nStatus == INTERNET_STATUS_REQUEST_COMPLETE
         cMsg := "Request complete"
 
+
     CASE nStatus == INTERNET_STATUS_REDIRECT
         cMsg := "Redirect"
+
 
     OTHERWISE
         cMsg := "Unkown FTP Status"
 
+
     ENDCASE
+
 
     RETURN cMsg
 
+
+/// <include file="Internet.xml" path="doc/CFtp.Open/*" />
 METHOD Open(nFlags, xProxy, aProxyByPass) 
+
 
     LOCAL lRet AS LOGIC
 
+
     lRet := SUPER:Open(nFlags, xProxy, aProxyByPass)
+
 
     RETURN lRet
 
+
+/// <include file="Internet.xml" path="doc/CFtp.OpenFile/*" />
 METHOD OpenFile(cRemoteFile, nAccess, nFlags) 
+
 
     LOCAL hRet      AS PTR
     LOCAL n         AS DWORD
     LOCAL nContxt   AS DWORD
 
+
     DEFAULT(@nFlags, _OR(FTP_TRANSFER_TYPE_BINARY , INTERNET_FLAG_RELOAD))
     DEFAULT(@nAccess, 0)
     DEFAULT(@cRemoteFile, "")
 
+
     nContxt := SELF:__GetStatusContext()
+
 
     IF nAccess = 0
         n := DWORD(_CAST, GENERIC_READ)
@@ -352,8 +462,10 @@ METHOD OpenFile(cRemoteFile, nAccess, nFlags)
         n := nAccess
     ENDIF
 
+
     IF SLen(cRemoteFile) > 0
         hRet := FtpOpenFile(SELF:hConnect, cRemoteFile, n, nFlags, nContxt)
+
 
         IF hRet = NULL_PTR
             SELF:nError := GetLastError()
@@ -362,9 +474,13 @@ METHOD OpenFile(cRemoteFile, nAccess, nFlags)
         ENDIF
     ENDIF
 
+
     RETURN hRet
 
+
+/// <include file="Internet.xml" path="doc/CFtp.Proxy/*" />
 ASSIGN Proxy(cNew) 
+
 
     IF IsString(cNew)
     	IF SLen(cNew) > 0
@@ -373,12 +489,17 @@ ASSIGN Proxy(cNew)
 			ENDIF
 		ENDIF
 
+
         SELF:cProxy := cNew
     ENDIF
 
+
     RETURN
 
+
+/// <include file="Internet.xml" path="doc/CFtp.PutFile/*" />
 METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags) 
+
 
     LOCAL lRet      AS LOGIC
     LOCAL lFound    AS LOGIC
@@ -387,21 +508,26 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
     LOCAL pData     AS _WINWIN32_FIND_DATA
     LOCAL hFind     AS PTR
 
+
     IF SELF:hConnect = NULL_PTR
         RETURN .F. 
     ENDIF
+
 
     //  Default(@nFlags, 0)
     nDefFlags := FTP_TRANSFER_TYPE_BINARY
     DEFAULT(@nFlags, nDefFlags)
 
+
     DEFAULT(@cLocalFile, "")
     DEFAULT(@cRemoteFile, "")
     DEFAULT(@lFailIfExists, .F. )
 
+
     IF !File(cLocalFile)
         RETURN .F. 
     ENDIF
+
 
     IF SLen(cRemoteFile) = 0
         nPos := RAt("\", cLocalFile)
@@ -411,10 +537,13 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
         cRemoteFile := cLocalFile
     ENDIF
 
+
     IF lFailIfExists
         pData := MemAlloc(_SIZEOF(_WINWIN32_FIND_DATA) )
 
+
         hFind := IFXFtpFindFirstFile(SELF:hConnect, cRemoteFile, pData, 0, 0)
+
 
         IF hFind = NULL_PTR
             SELF:nError := 0
@@ -424,6 +553,7 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
         ENDIF
         MemFree(pData)
     ENDIF
+
 
     IF lFound
         lRet := .F. 
@@ -440,69 +570,98 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
         ENDIF
     ENDIF
 
+
     RETURN lRet
 
+
+/// <include file="Internet.xml" path="doc/CFtp.RemoveDir/*" />
 METHOD RemoveDir(cRemoteDir) 
 
+
     LOCAL lRet AS LOGIC
+
 
     IF SELF:hConnect = NULL_PTR
         RETURN .F. 
     ENDIF
+
 
     IF !IsString(cRemoteDir) .OR. SLen(cRemoteDir) = 0
         RETURN .F. 
     ENDIF
 
+
     lRet := FtpRemoveDirectory(SELF:hConnect, cRemoteDir)
+
 
     IF !lRet
         SELF:nError := GetLastError()
     ENDIF
 
+
     RETURN lRet
 
+
+/// <include file="Internet.xml" path="doc/CFtp.RenameFile/*" />
 METHOD RenameFile(cRemoteFile, cNewName) 
 
+
     LOCAL lRet AS LOGIC
+
 
     IF SELF:hConnect = NULL_PTR
         RETURN .F. 
     ENDIF
+
 
     IF SLen(cRemoteFile) = 0 .OR. SLen(cNewName) = 0
         RETURN .F. 
     ENDIF
 
+
     lRet := FtpRenameFile(SELF:hConnect, cRemoteFile, cNewName)
+
 
     IF !lRet
         SELF:nError := GetLastError()
     ENDIF
 
+
     RETURN lRet
 
 
+
+
+/// <include file="Internet.xml" path="doc/CFtp.SetCurDir/*" />
 METHOD SetCurDir(cRemoteDir) 
 
+
     LOCAL lRet     AS LOGIC
+
 
     IF SELF:hConnect = NULL_PTR
         RETURN .F. 
     ENDIF
 
+
     IF !IsString(cRemoteDir) .OR. SLen(cRemoteDir) = 0
         RETURN .F. 
     ENDIF
 
+
     lRet := FtpSetCurrentDirectory(SELF:hConnect, cRemoteDir)
+
 
     IF !lRet
         SELF:nError := GetLastError()
     ENDIF
 
+
     RETURN lRet
 
 
+
+
 END CLASS
+
 

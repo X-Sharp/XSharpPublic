@@ -4,9 +4,12 @@
 // See License.txt in the project root for license information.
 //
 
+
 USING System.Data
 USING System.Data.Common
 USING System.Diagnostics
+
+/// <include file="Sql.xml" path="doc/SqlParameter/*" />
 
 [XSharp.Internal.TypesChanged];
 [DebuggerDisplay( "SqlParameter({Value})" )] ;
@@ -20,6 +23,8 @@ CLASS SqlParameter
 	EXPORT InternalParam	AS LOGIC			
     PROTECT uValue           AS USUAL
 
+
+/// <include file="Sql.xml" path="doc/SqlParameter.ctor/*" />
 CONSTRUCTOR(xValue,nIO,nODBCType,nSize) 
 	DEFAULT nIO 		TO SQL_PARAM_INPUT
 	DEFAULT nODBCType	TO SQL_TYPE_UNKNOWN
@@ -29,21 +34,33 @@ CONSTRUCTOR(xValue,nIO,nODBCType,nSize)
 	SELF:SetValue(xValue,nSize)
 	RETURN 
 	
+	
+/// <include file="Sql.xml" path="doc/SqlParameter.Bind/*" />
 METHOD Bind(oStatement AS SQLStatement,nPos AS DWORD) AS LONGINT STRICT 
     RETURN 0	
 
+
+/// <include file="Sql.xml" path="doc/SqlParameter.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	RETURN TRUE
 	
+	
+/// <include file="Sql.xml" path="doc/SqlParameter.SetValue/*" />
 METHOD SetValue(xValue AS USUAL,nSize AS LONGINT) AS USUAL STRICT 
     SELF:uValue := xValue
 	RETURN NIL
 
+
+/// <include file="Sql.xml" path="doc/SqlParameter.Value/*" />
 ACCESS Value AS USUAL STRICT 
     RETURN uValue
 
 
+
+
 END CLASS
 
+
 DEFINE SQL_TYPE_UNKNOWN:=-9999
+
 

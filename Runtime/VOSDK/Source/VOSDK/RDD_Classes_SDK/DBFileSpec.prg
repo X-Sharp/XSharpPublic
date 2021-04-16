@@ -1,3 +1,4 @@
+/// <include file="Rdd.xml" path="doc/DbFileSpec/*" />
 CLASS DbFileSpec INHERIT FileSpec
 	PROTECT DBF AS ARRAY
 	PROTECT cMemFileName AS STRING
@@ -26,21 +27,27 @@ CLASS DbFileSpec INHERIT FileSpec
 	PROTECT aHidRDDs AS ARRAY
 	PROTECT aOrders AS ARRAY
 	PROTECT aIndexNames AS ARRAY
-	METHOD __MemFullPath() AS STRING STRICT 
+ /// <exclude />
+METHOD __MemFullPath() AS STRING STRICT
 	LOCAL cPath AS STRING
+
 
 	IF SELF:MemFileName == NULL_STRING .AND. SELF:MemFileExt == NULL_STRING
 		RETURN NULL_STRING
 	ENDIF
 
+
 	cPath := SELF:cFSPath
+
 
 	IF cPath == NULL_STRING .OR. SubStr2( cPath, SLen( cPath ) ) == "\"
 		RETURN SELF:cFSDrive + cPath + SELF:MemFileName + SELF:MemFileExt
 	ENDIF
 	RETURN SELF:cFSDrive + cPath + "\" + SELF:MemFileName + SELF:MemFileExt
 
-METHOD Copy( oDBFSTarget, lIDX, lName ) 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Copy/*" />
+METHOD Copy( oDBFSTarget, lIDX, lName )
 	LOCAL cMEMTarget AS STRING
 	LOCAL cTargetPath AS STRING
 	LOCAL cFileName AS STRING
@@ -55,15 +62,19 @@ METHOD Copy( oDBFSTarget, lIDX, lName )
 	LOCAL i AS DWORD
 	LOCAL nFiles AS DWORD
 
+
 	IF Empty( lName ) .OR. ! IsLogic( lName )
 		lName := FALSE
 	ENDIF
 
+
 	lRetCode := SUPER:Copy( oDBFSTarget, lName )
+
 
 	IF lRetCode
 		cFileName := SELF:MemFileName
 		cbOldErr := ErrorBlock( { | oErr | _Break( oErr ) } )
+
 
 		BEGIN SEQUENCE
 			IF cFileName != NULL_STRING
@@ -90,11 +101,13 @@ METHOD Copy( oDBFSTarget, lIDX, lName )
 					ENDIF
 				ENDIF
 
+
 				IF SubStr2( cPath, SLen( cPath ) ) == "\"
 					cTargetPath := cDrive + cPath
 				ELSE
 					cTargetPath := cDrive + cPath + "\"
 				ENDIF
+
 
 				IF lName
 					IF ( cNewName := __NewName( cTargetPath + cFileName + SELF:MemFileExt ) ) != NULL_STRING
@@ -102,14 +115,18 @@ METHOD Copy( oDBFSTarget, lIDX, lName )
 					ENDIF
 				ENDIF
 
+
 				cMEMTarget := cTargetPath + cFileName + SELF:MemFileExt
 				lRetCode := FCopy( SELF:MemFullPath, cMEMTarget )
 
+
 			ENDIF
+
 
 			IF Empty( lIDX ) .OR. ! IsLogic( lIDX )
 				lIDX := TRUE
 			ENDIF
+
 
 			IF lRetCode .AND. lIDX .AND. ! Empty( SELF:aIndexNames )
 				nFiles := ALen( SELF:aIndexNames )
@@ -121,6 +138,7 @@ METHOD Copy( oDBFSTarget, lIDX, lName )
 				NEXT
 			ENDIF
 
+
 		RECOVER USING oError
 			ErrorBlock( cbOldErr )
             LOCAL oErr := oError as Error
@@ -129,18 +147,26 @@ METHOD Copy( oDBFSTarget, lIDX, lName )
 					" ( " + DosErrString( oErr:OsCode ) + " )" )
 			ENDIF
 
+
 			SELF:oErrorInfo := oErr
 			lRetCode := FALSE
 
+
 		END SEQUENCE
+
 
 		ErrorBlock( cbOldErr )
 
+
 	ENDIF
 
-	RETURN lRetCode
 
-METHOD CopyTo( oFS, cDriver, lWantAnsi ) 
+	RETURN lRetCode
+/// <include file="Rdd.xml" path="doc/DbFileSpec.CopyTo/*" />
+
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.CopyTo/*" />
+METHOD CopyTo( oFS, cDriver, lWantAnsi )
 	LOCAL cTarget AS STRING
 	LOCAL cAlias AS STRING
 	LOCAL aFullPath AS ARRAY
@@ -152,12 +178,15 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 	LOCAL nNext AS USUAL
 	LOCAL nRec AS USUAL
 
+
 	IF IsObject(oFS) .AND. __Usual.ToObject(oFS) IS FileSpec VAR oFsParam
 		oFS := oFsParam:FullPath
 	ENDIF
 
+
 	IF Empty( oFS ) .OR. ! IsString( oFS )
 		RETURN FALSE
+
 
 	ELSE
 		aFullPath := ArrayNew( 4 )
@@ -165,9 +194,11 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 		oSelf := SELF
 		__SplitPath( oSelf, cTarget, aFullPath )
 
+
 		IF SELF:cDelim == NULL_STRING .AND. ! SELF:lSDF .AND. aFullPath[4] == NULL_STRING
 			aFullPath[4] := SELF:cFSExtension
 		ENDIF
+
 
 		IF SubStr2( aFullPath[2], SLen( aFullPath[2] ) ) == "\"
 			cTarget := aFullPath[1] + aFullPath[2] + aFullPath[3] + aFullPath[4]
@@ -175,9 +206,12 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 			cTarget := aFullPath[1] + aFullPath[2] + "\" + aFullPath[3] + aFullPath[4]
 		ENDIF
 
+
 	ENDIF
 
+
 	cbOldErr := ErrorBlock( { | oErr | _Break( oErr ) } )
+
 
 	BEGIN SEQUENCE
 		IF Empty( lWantAnsi ) .OR. ! IsLogic( lWantAnsi )
@@ -186,11 +220,13 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 			lOldAnsi := SetAnsi( lWantAnsi )
 		ENDIF
 
+
 		IF SELF:nNext = 0
 			nNext := NIL
 		ELSE
 			nNext := SELF:nNext
 		ENDIF
+
 
 		IF SELF:nRecord = 0
 			nRec := NIL
@@ -198,7 +234,9 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 			nRec := SELF:nRecord
 		ENDIF
 
+
 		cAlias := Symbol2String( __ConstructUniqueAlias( SELF:cFSFileName ) )
+
 
 		IF ( lRetCode := DBUseArea( TRUE, SELF:aRDDs, SELF:FullPath, cAlias, TRUE, TRUE, NIL, NIL ) )
 			IF SELF:cDelim == NULL_STRING .AND. ! SELF:lSDF
@@ -212,6 +250,7 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 					cDriver,  ;
 					SELF:aHidRDDs )
 
+
 			ELSEIF SELF:cDelim != NULL_STRING .AND. ! SELF:lSDF
 				lRetCode := ( cAlias ) -> DBCopyDelim( cTarget,  ;
 					SELF:cDelim,  ;
@@ -222,6 +261,7 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 					nRec,  ;
 					SELF:lRest )
 
+
 			ELSEIF SELF:cDelim == NULL_STRING .AND. SELF:lSDF
 				lRetCode := ( cAlias ) -> DBCopySDF( cTarget,  ;
 					SELF:aFields,  ;
@@ -231,16 +271,22 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 					nRec,  ;
 					SELF:lRest )
 
+
 			ELSE
 				lRetCode := FALSE
 
+
 			ENDIF
+
 
 			( cAlias ) -> ( DBCloseArea() )
 
+
 		ENDIF
 
+
 		SetAnsi( lOldAnsi )
+
 
 	RECOVER USING oError
 		ErrorBlock( cbOldErr )
@@ -250,16 +296,23 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 				" ( " + DosErrString( oErr:OsCode ) + " )" )
 		ENDIF
 
+
 		SELF:oErrorInfo := oErr
 		lRetCode := FALSE
 
+
 	END SEQUENCE
+
 
 	ErrorBlock( cbOldErr )
 
-	RETURN lRetCode
 
-METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs ) 
+	RETURN lRetCode
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Create/*" />
+
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Create/*" />
+METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 	LOCAL cAlias AS STRING
 	LOCAL lRetCode AS LOGIC
 	LOCAL rddList AS _RDDLIST
@@ -272,11 +325,14 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 	LOCAL cbOldErr AS USUAL
 	LOCAL oError AS USUAL
 
+
 	IF IsObject(cFullPath) .and. __Usual.ToObject(cFullPath) IS FileSpec  VAR oFS
 		cFullPath := oFS:FullPath
 	ENDIF
 
+
 	cbOldErr := ErrorBlock( { | oErr | _Break( oErr ) } )
+
 
 	BEGIN SEQUENCE
 		IF IsArray( cFullPath )
@@ -286,6 +342,7 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 			aDbStruct := cFullPath
 		ENDIF
 
+
 		IF Empty( cFullPath ) .OR. ! IsString( cFullPath )
 			IF SLen( SELF:cFSPath ) = RAt2( "\", SELF:cFSPath )
 				cFullPath := SELF:cFSDrive + SELF:cFSPath + SELF:cFSFileName + SELF:cFSExtension
@@ -293,6 +350,7 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 				cFullPath := SELF:cFSDrive + SELF:cFSPath + "\" + SELF:cFSFileName + SELF:cFSExtension
 			ENDIF
 		ENDIF
+
 
 		IF Empty( aDbStruct ) .OR. ! IsArray( aDbStruct )
 			cAlias := Symbol2String( __ConstructUniqueAlias( SELF:cFSFileName ) )
@@ -304,26 +362,33 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 			ENDIF
 		ENDIF
 
+
 		aFullPath := ArrayNew( 4 )
 		oSelf := SELF
 
+
 		cFullPath := Upper( cFullPath )
 		__SplitPath( oSelf, cFullPath, aFullPath )
+
 
 		IF aFullPath[3] == NULL_STRING
 			aFullPath[3] := SELF:cFSFileName
 		ENDIF
 
+
 		IF aFullPath[4] == NULL_STRING
 			aFullPath[4] := SELF:cFSExtension
 		ENDIF
 
+
 		cPath := aFullPath[1] + aFullPath[2]
 		cFileName := aFullPath[3] + aFullPath[4]
+
 
 		IF aFullPath[3] == SELF:cFSFileName
 			cAlias := Symbol2String( __ConstructUniqueAlias( aFullPath[3] ) )
 		ENDIF
+
 
 		IF SubStr2( cPath, SLen( cPath ) ) == "\"
 			IF ( cNewName := __NewName( cPath + cFileName ) ) != NULL_STRING
@@ -340,8 +405,11 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 		ENDIF
 
 
+
+
 		aRdds := __RddList( cDriver, aRdds )
 		rddList := __AllocRddList( aRdds )
+
 
 		IF Empty( lWantAnsi ) .OR. ! IsLogic( lWantAnsi )
 			lOldAnsi := SetAnsi( SELF:lAnsi )
@@ -349,7 +417,9 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 			lOldAnsi := SetAnsi( lWantAnsi )
 		ENDIF
 
+
 		lRetCode := VODBCreate( cFileName, aDbStruct, rddList, TRUE, cAlias, "", FALSE, FALSE )
+
 
 		IF lRetCode
 			IF SELF:HeaderSize == 0
@@ -358,7 +428,9 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 			ENDIF
 		ENDIF
 
+
 		SetAnsi( lOldAnsi )
+
 
 	RECOVER USING oError
 		ErrorBlock( cbOldErr )
@@ -368,37 +440,57 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 				" ( " + DosErrString( oErr:OsCode ) + " )" )
 		ENDIF
 
+
 		SELF:oErrorInfo := oErr
 		lRetCode := FALSE
 
+
 	END SEQUENCE
+
 
 	ErrorBlock( cbOldErr )
 
+
 	RETURN lRetCode
 
-ACCESS DBFAttr 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.DBFAttr/*" />
+PROPERTY DBFAttr AS USUAL
+GET
+
 
 	IF ALen( SELF:DBF ) > 0
 		RETURN SELF:DBF[1, F_ATTR]
 	ENDIF
 	RETURN NULL_STRING
+END GET
+END PROPERTY
+/// <include file="Rdd.xml" path="doc/DbFileSpec.DBFDateChanged/*" />
 
-ACCESS DBFDateChanged 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.DBFDateChanged/*" />
+ACCESS DBFDateChanged
+
 
 	IF ALen( SELF:DBF ) > 0
 		RETURN SELF:DBF[1, F_DATE]
 	ENDIF
 	RETURN NULL_DATE
+/// <include file="Rdd.xml" path="doc/DbFileSpec.DBFName/*" />
 
-ACCESS DBFName 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.DBFName/*" />
+ACCESS DBFName
+
 
 	IF ALen( SELF:DBF ) > 0
 		RETURN SELF:DBF[1, F_NAME]
 	ENDIF
 	RETURN NULL_STRING
 
-METHOD DBFSGetInfo( xRDDs, aHidden ) 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.DBFSGetInfo/*" />
+METHOD DBFSGetInfo( xRDDs, aHidden )
 	LOCAL cAlias AS STRING
 	LOCAL cFile AS STRING
 	LOCAL aDirArray AS ARRAY
@@ -407,15 +499,19 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
 	LOCAL cbOldErr AS USUAL
 	LOCAL oMemoHandle AS OBJECT
 
+
 	cbOldErr := ErrorBlock( { | oErr | _Break( oErr ) } )
+
 
 	BEGIN SEQUENCE
 		cFile := SELF:__FullPathAcc()
 		cAlias := Symbol2String( __ConstructUniqueAlias( SELF:cFSFileName ) )
 
+
 		IF ! IsArray( xRdds )
 			xRdds := SELF:aRDDs
 		ENDIF
+
 
 		IF ALen( xRdds ) < 2
 			IF ! IsString( xRdds )
@@ -424,17 +520,21 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
 			xRdds := __RddList( xRdds, aHidden )
 		ENDIF
 
+
 		lRetCode := DBUseArea( TRUE, xRdds, cFile , cAlias, TRUE, TRUE, NIL, NIL, aHidden )
+
 
 		IF lRetCode
 			SELF:cRDD_Name := RDDName()
 			SELF:uRDD_Version := ( cAlias ) -> ( DBInfo( DBI_RDD_VERSION ) )
 			SELF:aRDDs := xRDDs
 
+
 			aDirArray := Directory( cFile )
 			IF ALen( aDirArray ) > 0
 				SELF:DBF := aDirArray
 			ENDIF
+
 
 			IF DBInfo( DBI_ISDBF )
 				SELF:nFCount := ( cAlias ) -> ( DBInfo( DBI_FCOUNT ) )
@@ -446,6 +546,7 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
 				SELF:nRLockCount := ( cAlias ) -> ( DBInfo( DBI_LOCKCOUNT ) )
 				SELF:aDbStruct := ( cAlias ) -> ( DBStruct() )
 			ENDIF
+
 
             // pMemoHandle := ( cAlias ) -> ( DBINFO( DBI_MEMOHANDLE ) )
 			// Workaround for bug #965, DBInfo( DBI_MEMOHANDLE ) returns FileStream or IntPtr
@@ -462,10 +563,12 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
 				lMemoHandle := FALSE
 			END CASE
 
+
 			IF lMemoHandle
 				SELF:cMemFileName := SELF:cFSFileName
 				SELF:cMemFileExt := ( cAlias ) -> ( DBInfo(  DBI_MEMOEXT ) )
 				SELF:nMemBlockSize := ( cAlias ) -> ( DBInfo( DBI_MEMOBLOCKSIZE ) )
+
 
 				aDirArray := Directory( SELF:MemFullPath )
 				IF ALen( aDirArray ) > 0
@@ -475,6 +578,7 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
 			( cAlias ) -> ( DBCloseArea() )
 		ENDIF
 
+
 	RECOVER USING oError
 		ErrorBlock( cbOldErr )
         LOCAL oErr := oError as Error
@@ -483,57 +587,81 @@ METHOD DBFSGetInfo( xRDDs, aHidden )
 				" ( " + DosErrString( oErr:OsCode ) + " )" )
 		ENDIF
 
+
 		IF lRetCode
 			( cAlias ) -> ( DBCloseArea() )
 		ENDIF
 
+
 		lRetCode := FALSE
+
 
 		oErr:FuncSym := String2Symbol( "DBFileSpec:DBFSGetInfo" )
 		oErr:CanDefault := FALSE
 		oErr:CanRetry   := FALSE
 
+
 		SELF:oErrorInfo := oErr
+
 
 		Eval( cbOldErr, oErr )
 
+
 	END SEQUENCE
+
 
 	ErrorBlock( cbOldErr )
 
-	RETURN lRetCode
 
-ACCESS DBFSize 
+	RETURN lRetCode
+/// <include file="Rdd.xml" path="doc/DbFileSpec.DBFSize/*" />
+
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.DBFSize/*" />
+ACCESS DBFSize
 	LOCAL DW AS DWORD
+
 
 	IF ALen( SELF:DBF ) > 0
 		DW := SELF:DBF[1, F_SIZE]
 	ENDIF
 
-	RETURN DW
 
-ACCESS DBFTime 
+	RETURN DW
+/// <include file="Rdd.xml" path="doc/DbFileSpec.DBFTime/*" />
+
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.DBFTime/*" />
+ACCESS DBFTime
+
 
 	IF ALen( SELF:DBF ) > 0
 		RETURN SELF:DBF[1, F_TIME]
 	ENDIF
 	RETURN NULL_STRING
 
-ACCESS DbStruct 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.DbStruct/*" />
+ACCESS DbStruct
+
 
 	RETURN SELF:aDbStruct
 
-METHOD Delete() 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Delete/*" />
+METHOD Delete()
 	LOCAL cFileFullPath AS STRING
 	LOCAL cMemFullPath AS STRING
 	LOCAL lRetCode AS LOGIC
 
+
 	cFileFullPath := SELF:__FullPathAcc()
 
+
 	IF cFileFullPath != NULL_STRING
-		lRetCode := FErase( cFileFullPath ) 
+		lRetCode := FErase( cFileFullPath )
 		IF ( ( cMemFullPath := SELF:MemFullPath ) != NULL_STRING ) .AND. lRetCode
-			lRetCode := FErase( cMemFullPath ) 
+			lRetCode := FErase( cMemFullPath )
 			IF lRetCode
 				SELF:MemFullPath := NULL_STRING
 			ENDIF
@@ -556,13 +684,16 @@ METHOD Delete()
 			SELF:nMemBlockSize := 0
 		ENDIF
 
+
 		IF lRetCode .AND. ! Empty( SELF:aIndexNames )
 			// cPath := SubStr3( cFileFullPath, 1, RAt2( "\", cFileFullPath ) )  // dcaton 070439 never used
 
+
 			FOREACH cFame as STRING in SELF:aIndexNames
 				//cDBFTarget := cPath + SubStr2( cFileName, RAt2( "\", cFileName ) + 1 )  // dcaton 070430 never used
-				lRetCode := FErase( cFame ) 
+				lRetCode := FErase( cFame )
 			NEXT
+
 
 			FOREACH os as OrderSpec in aOrders
 				IF lRetCode
@@ -591,6 +722,7 @@ METHOD Delete()
 				ENDIF
 			NEXT
 
+
 			IF lRetCode
 				SELF:aOrders := NULL_ARRAY
 				SELF:aIndexNames := NULL_ARRAY
@@ -598,13 +730,20 @@ METHOD Delete()
 		ENDIF
 	ENDIF
 
+
 	RETURN lRetCode
 
-ACCESS Delim 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Delim/*" />
+ACCESS Delim
+
 
 	RETURN SELF:cDelim
 
-ASSIGN Delim( cDelimiter ) 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Delim/*" />
+ASSIGN Delim( cDelimiter )
+
 
 	IF Empty( cDelimiter ) .OR. ! IsString( cDelimiter )
 		SELF:cDelim := NULL_STRING
@@ -612,18 +751,29 @@ ASSIGN Delim( cDelimiter )
 		SELF:cDelim := cDelimiter
 	ENDIF
 
+
 	RETURN SELF:cDelim
 
-ACCESS FCount 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.FCount/*" />
+ACCESS FCount
+
 
 	RETURN SELF:nFCount
 
-ACCESS Fields 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Fields/*" />
+ACCESS Fields
+
 
 	RETURN SELF:aFields
 
 
-ASSIGN Fields( aFLDs ) 
+
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Fields/*" />
+ASSIGN Fields( aFLDs )
+
 
 	IF Empty( aFLDs ) .OR. ! IsArray( aFLDs )
 		SELF:aFields := NULL_ARRAY
@@ -631,11 +781,15 @@ ASSIGN Fields( aFLDs )
 		SELF:aFields := aFLDs
 	ENDIF
 
+
 	RETURN SELF:aFields
 
-ASSIGN FileName( cFileName ) 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.FileName/*" />
+ASSIGN FileName( cFileName )
 	LOCAL aFullPath AS ARRAY
 	LOCAL cGetDefault AS STRING
+
 
 	IF ! Empty( cFileName ) .AND. IsString( cFileName )
 		IF SubStr2( cFileName, SLen( cFileName ) ) == "\"
@@ -645,49 +799,67 @@ ASSIGN FileName( cFileName )
 			cFileName += ".DBF"
 		ENDIF
 
+
 		cFileName := Upper( cFileName )
 		aFullPath := ArrayNew( 4 )
 		__SplitPath( NIL, cFileName, aFullPath )
 		cGetDefault := GetDefault()
+
 
 		IF At2( ":", cFileName ) != 0 .OR.  ;
 				( cGetDefault != NULL_STRING .AND. SELF:cFSDrive == NULL_STRING )
 			SELF:cFSDrive := aFullPath[1]
 		ENDIF
 
+
 		IF At2( "\", cFileName ) != 0 .OR.  ;
 				( cGetDefault != NULL_STRING .AND. SELF:cFSPath == NULL_STRING )
 			SELF:cFSPath := aFullPath[2]
 		ENDIF
 
+
 		SELF:cFSFileName := aFullPath[3]
+
 
 		IF RAt2( ".", cFileName ) > 0
 			SELF:cFSExtension := aFullPath[ 4 ]
 		ENDIF
 
+
 	ELSE
 		SELF:cFSFileName := NULL_STRING
 	ENDIF
 
-	RETURN 
 
-METHOD Find() 
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Find/*" />
+METHOD Find()
 	LOCAL lRetCode AS LOGIC
 
+
 	lRetCode := SUPER:Find()
+
 
 	IF lRetCode
 		lRetCode := SELF:DBFSGetInfo( SELF:aRDDs )
 	ENDIF
 
+
 	RETURN lRetCode
 
-ACCESS ForBlock 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.ForBlock/*" />
+ACCESS ForBlock
+
 
 	RETURN SELF:bForBlock
 
-ASSIGN ForBlock( cbCodeBlock ) 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.ForBlock/*" />
+ASSIGN ForBlock( cbCodeBlock )
+
 
 	IF Empty( cbCodeBlock ) .OR. ! __CanEval( cbCodeBlock )
 		SELF:bForBlock := NIL
@@ -695,28 +867,36 @@ ASSIGN ForBlock( cbCodeBlock )
 		SELF:bForBlock := cbCodeBlock
 	ENDIF
 
+
 	RETURN SELF:bForBlock
 
-ASSIGN FullPath( cFullPath ) 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.FullPath/*" />
+ASSIGN FullPath( cFullPath )
 	LOCAL aFullPath AS ARRAY
+
 
 	IF ! Empty( cFullPath ) .AND. IsString( cFullPath )
 		IF SubStr2( cFullPath, SLen( cFullPath ) ) == "\"
 			cFullPath := SubStr3( cFullPath, 1, SLen( cFullPath ) - 1 )
 			cFullPath += ".DBF"
 
+
 		ELSEIF  RAt2( ".", cFullPath ) = 0
 			cFullPath += ".DBF"
 		ENDIF
+
 
 		cFullPath := Upper( cFullPath )
 		aFullPath := ArrayNew( 4 )
 		__SplitPath( NIL, cFullPath, aFullPath )
 
+
 		SELF:cFSDrive := aFullPath[1]
 		SELF:cFSPath := aFullPath[2]
 		SELF:cFSFileName := aFullPath[3]
 		SELF:cFSExtension := aFullPath[4]
+
 
 	ELSE
 		SELF:cFSDrive := NULL_STRING
@@ -724,18 +904,26 @@ ASSIGN FullPath( cFullPath )
 		SELF:cFSFileName := NULL_STRING
 		SELF:cFSExtension := NULL_STRING
 
+
 	ENDIF
 	RETURN SELF:__FullPathAcc()
 
-ACCESS HeaderSize 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.HeaderSize/*" />
+ACCESS HeaderSize
 	RETURN SELF:nHeaderSize
 
-ACCESS HidRDDs 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.HidRDDs/*" />
+ACCESS HidRDDs
+
 
 	RETURN SELF:aHidRDDs
 
-ASSIGN HidRDDs( aHiddenRDD ) 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.HidRDDs/*" />
+ASSIGN HidRDDs( aHiddenRDD )
+
 
 	IF Empty( aHiddenRDD ) .OR. !IsArray( aHiddenRDD )
 		SELF:aHidRDDs := NULL_ARRAY
@@ -743,26 +931,33 @@ ASSIGN HidRDDs( aHiddenRDD )
 		SELF:aHidRDDs := aHiddenRDD
 	ENDIF
 
+
 	RETURN SELF:aHidRDDs
 
-ACCESS IndexNames 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.IndexNames/*" />
+ACCESS IndexNames
 	RETURN SELF:aIndexNames
 
-ASSIGN IndexNames( cIndexName ) 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.IndexNames/*" />
+ASSIGN IndexNames( cIndexName )
 	LOCAL i AS DWORD
 	LOCAL nFiles AS DWORD
 	LOCAL cFile AS STRING
+
 
 	IF IsArray( cIndexName )
 		SELF:aIndexNames := cIndexName
 		RETURN cIndexName
 	ENDIF
 
+
 	IF ! Empty( cIndexName ) .AND. IsString( cIndexName )
 		nFiles := ALen( SELF:aIndexNames )
 		cFile := Upper( cIndexName )
 		cFile := AllTrim( cFile )
+
 
 		FOR i := 1 UPTO nFiles
 			IF SELF:aIndexNames[i] == cFile
@@ -770,23 +965,31 @@ ASSIGN IndexNames( cIndexName )
 			ENDIF
 		NEXT
 
+
 		AAdd( SELF:aIndexNames, cFile )
 	ENDIF
 
-	RETURN 
 
-CONSTRUCTOR( cFullPath, cDriver, _aRDDs ) 
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.ctor/*" />
+CONSTRUCTOR( cFullPath, cDriver, _aRDDs )
+
 
 	#IFDEF __DEBUG__
 		// AltD()
 	#ENDIF
 
+
 	SELF:aOrders := { }
 	SELF:aIndexNames := { }
+
 
 	IF IsObject(cFullPath) .and. __Usual.ToObject(cFullPath) IS FileSpec  VAR oFS
 		cFullPath := oFS:FullPath
 	ENDIF
+
 
 	IF Empty( cDriver ) .OR. ! IsString( cDriver )
 		SELF:cRDD_Name := RDDInfo( _SET_DEFAULTRDD )
@@ -794,66 +997,99 @@ CONSTRUCTOR( cFullPath, cDriver, _aRDDs )
 		SELF:cRDD_Name := cDriver
 	ENDIF
 
+
 	IF Empty( _aRDDs ) .OR. ! IsArray( _aRDDs )
 		SELF:aRDDs := NULL_ARRAY
 	ELSE
 		SELF:aRDDs := _aRDDs
 	ENDIF
 
+
 	IF ! Empty( cFullPath )
 
+
 		SUPER( cFullPath )
+
 
 		IF SELF:cFSExtension == NULL_STRING
 			SELF:cFSExtension := ".DBF"
 		ENDIF
+
 
 		IF File( SELF:FullPath )
 			SELF:DBFSGetInfo()
 		ENDIF
 	ENDIF
 
-	RETURN 
 
-ACCESS IsAnsi 
+	RETURN
+
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.IsAnsi/*" />
+ACCESS IsAnsi
+
 
 	RETURN SELF:lAnsi
 
-ACCESS LastUpDate 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.LastUpDate/*" />
+ACCESS LastUpDate
+
 
 	RETURN SELF:dLastUpDate
 
-ACCESS MemAttr 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.MemAttr/*" />
+ACCESS MemAttr
+
 
 	IF ALen( SELF:Memo ) > 0
 		RETURN SELF:Memo[1, F_ATTR]
 	ENDIF
 	RETURN NULL_STRING
 
-ACCESS MemBlockSize 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.MemBlockSize/*" />
+ACCESS MemBlockSize
+
 
 	RETURN SELF:nMemBlockSize
 
-ACCESS MemDateChanged 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.MemDateChanged/*" />
+ACCESS MemDateChanged
+
 
 	IF ALen( SELF:Memo ) > 0
 		RETURN SELF:Memo[1, F_DATE]
 	ENDIF
 	RETURN NULL_DATE
 
-ACCESS MemFileExt 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.MemFileExt/*" />
+ACCESS MemFileExt
+
 
 	RETURN SELF:cMemFileExt
 
-ACCESS MemFileName 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.MemFileName/*" />
+ACCESS MemFileName
+
 
 	RETURN SELF:cMemFileName
 
-ACCESS MemFullPath 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.MemFullPath/*" />
+ACCESS MemFullPath
+
 
 	RETURN SELF:__MemFullPath()
 
-ASSIGN MemFullPath( cFullPath ) 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.MemFullPath/*" />
+ASSIGN MemFullPath( cFullPath )
+
 
 	IF Empty( cFullPath ) .OR. ! IsString( cFullPath )
 		SELF:cMemFileName := NULL_STRING
@@ -861,13 +1097,16 @@ ASSIGN MemFullPath( cFullPath )
 		RETURN NULL_STRING
 	ENDIF
 
+
 	IF At2( ":", cFullPath ) != 0
 		cFullPath := SubStr2( cFullPath, At2( ":", cFullPath ) + 1 )
 	ENDIF
 
+
 	IF RAt2( "\", cFullPath ) != 0
 		cFullPath := SubStr2( cFullPath, RAt2(  "\", cFullPath ) + 1 )
 	ENDIF
+
 
 	IF RAt2( ".", cFullPath ) != 0
 		SELF:cMemFileName := SubStr3( cFullPath, 1, RAt2( ".", cFullPath ) - 1 )
@@ -877,30 +1116,42 @@ ASSIGN MemFullPath( cFullPath )
 	ENDIF
 	RETURN SELF:__MemFullPath()
 
-ACCESS MemName 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.MemName/*" />
+ACCESS MemName
+
 
 	IF ALen( SELF:Memo ) > 0
 		RETURN SELF:Memo[1, F_NAME]
 	ENDIF
 	RETURN NULL_STRING
 
-ACCESS MemSize 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.MemSize/*" />
+ACCESS MemSize
 	LOCAL DW AS DWORD
+
 
 	IF ALen( SELF:Memo ) > 0
 		DW := SELF:Memo[1, F_SIZE]
 	ENDIF
 
+
 	RETURN DW
 
-ACCESS MemTime 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.MemTime/*" />
+ACCESS MemTime
+
 
 	IF ALen( SELF:Memo ) > 0
 		RETURN SELF:Memo[1, F_TIME]
 	ENDIF
 	RETURN NULL_STRING
 
-METHOD Move( oDBFSTarget, lIDX, lName ) 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Move/*" />
+METHOD Move( oDBFSTarget, lIDX, lName )
 	LOCAL cTargetPath AS STRING
 	LOCAL cMEMTarget AS STRING
 	LOCAL cFileName AS STRING
@@ -915,9 +1166,11 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 	LOCAL i AS DWORD
 	LOCAL nFiles AS DWORD
 
+
 	IF Empty( lName ) .OR. ! IsLogic( lName )
 		lName := FALSE
 	ENDIF
+
 
 	IF SubStr2( SELF:cFSPath, SLen( SELF:cFSPath ) ) == "\"
 		cSourcePath := SELF:cFSDrive + SELF:cFSPath
@@ -925,12 +1178,15 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 		cSourcePath := SELF:cFSDrive + SELF:cFSPath + "\"
 	ENDIF
 
+
 	lRetCode := SUPER:Move( oDBFSTarget, lName )
+
 
 	IF lRetCode
 		IF Empty( lIDX ) .OR. ! IsLogic( lIDX )
 			lIDX := TRUE
 		ENDIF
+
 
 		IF SubStr2( SELF:cFSPath, SLen( SELF:cFSPath ) ) == "\"
 			cTargetPath := SELF:cFSDrive + SELF:cFSPath
@@ -938,10 +1194,12 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 			cTargetPath := SELF:cFSDrive + SELF:cFSPath + "\"
 		ENDIF
 
+
 		aDirArray := Directory( cTargetPath + SELF:cFSFileName + SELF:cFSExtension )
 		IF ALen( aDirArray ) > 0
 			SELF:DBF := aDirArray
 		ENDIF
+
 
 		cbOldErr := ErrorBlock( { | oErr | _Break( oErr ) } )
 		BEGIN SEQUENCE
@@ -951,8 +1209,10 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 					cFileName := SELF:cFSFileName
 				ENDIF
 
+
 				cMEMTarget := cTargetPath + cFileName + SELF:MemFileExt
 				cMEMSource := cSourcePath + SELF:MemFileName + SELF:MemFileExt
+
 
 				IF SubStr3( cMEMTarget, 1, At2( ":", cMEMTarget ) ) == SubStr3( cMemSource, 1, At2( ":", cMemSource ) )
 					IF !lName .AND. File( cMEMTarget )
@@ -963,6 +1223,7 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 						lRetCode := FRename( cMEMSource , cMEMTarget  )
 					ENDIF
 
+
 					IF lRetCode
 						SELF:MemFullPath := cMEMTarget
 						aDirArray := Directory( cTargetPath + cFileName + SELF:MemFileExt )
@@ -970,6 +1231,7 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 							SELF:Memo := aDirArray
 						ENDIF
 					ENDIF
+
 
 				ELSE
 					IF lRetCode := FCopy( cMEMSource, cMEMTarget )
@@ -984,6 +1246,7 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 					ENDIF
 				ENDIF
 			ENDIF
+
 
 			IF lRetCode .AND. lIDX .AND. ! Empty( SELF:aIndexNames )
 				IF SubStr3( cTargetPath, 1, At2( ":", cTargetPath ) ) == SubStr3( cSourcePath, 1, At2( ":", cSourcePath ) )
@@ -1004,6 +1267,7 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 							cTargetPath := cPath + SubStr2( cFileName, RAt2( "\", cFileName ) + 1 )
 						ENDIF
 
+
 						IF ! lName .AND. File( cTargetPath )
 							IF ( lRetCode := FErase( cTargetPath  ) )
 								lRetCode := FRename( cFileName , cTargetPath  )
@@ -1020,6 +1284,7 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 							SELF:aIndexNames[i] := cTargetPath
 						ENDIF
 					NEXT
+
 
 				ELSE
 					cPath := Upper( cTargetPath )
@@ -1039,6 +1304,7 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 							cTargetPath := cPath + SubStr2( cFileName, RAt2( "\", cFileName ) + 1 )
 						ENDIF
 
+
 						lRetCode := FCopy( cFileName, cTargetPath )
 						IF lRetCode
 							lRetCode := FErase( cFileName  )
@@ -1055,90 +1321,115 @@ METHOD Move( oDBFSTarget, lIDX, lName )
 				ENDIF
 			ENDIF
 
+
 		RECOVER USING oError
 			ErrorBlock( cbOldErr )
             LOCAL oErr := oError as Error
+
 
 			IF oErr:OsCode != 0
 				oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) + ;
 					" ( " + DosErrString( oErr:OsCode ) + " )" )
 			ENDIF
 
+
 			SELF:oErrorInfo := oErr
 			lRetCode := FALSE
 
+
 		END SEQUENCE
+
 
 		ErrorBlock( cbOldErr )
 
+
 	ENDIF
+
 
 	RETURN lRetCode
 
-ACCESS Orders 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Orders/*" />
+ACCESS Orders
 	RETURN SELF:aOrders
 
-ASSIGN Orders( oOrderSpec ) 
 
-	IF IsObject(oOrderSpec) .and. __Usual.ToObject(oOrderSpec) IS OrderSpec  
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Orders/*" />
+ASSIGN Orders( oOrderSpec )
+	IF IsObject(oOrderSpec) .AND. __Usual.ToObject(oOrderSpec) IS OrderSpec
 		AAdd( SELF:aOrders, oOrderSpec )
 	ENDIF
 	IF IsArray( oOrderSpec )
 		SELF:aOrders := oOrderSpec
 	ENDIF
 
-	RETURN 
 
-ACCESS RDD_Name 
+	RETURN
 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.RDD_Name/*" />
+ACCESS RDD_Name
 	RETURN SELF:cRDD_Name
 
-ACCESS RDD_Version 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.RDD_Version/*" />
+ACCESS RDD_Version
 	RETURN SELF:uRDD_Version
 
-ACCESS RDDs 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.RDDs/*" />
+ACCESS RDDs
 	RETURN SELF:aRDDs
 
-ACCESS RecCount 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.RecCount/*" />
+ACCESS RecCount
+
 
 	RETURN SELF:nRecCount
 
-ACCESS Recno 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Recno/*" />
+ACCESS Recno
 	RETURN SELF:nRecord
 
-ASSIGN RecNo( nDWord ) 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Recno/*" />
+ASSIGN RecNo( nDWord )
 	IF Empty( nDWord ) .OR. ! IsNumeric( nDWord )
 		SELF:nRecord := 0
 	ELSE
 		SELF:nRecord := nDWord
 	ENDIF
 
+
 	RETURN SELF:nRecord
 
-ACCESS Records 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Records/*" />
+ACCESS Records
 	RETURN SELF:nNext
 
-ASSIGN Records( nDWord ) 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Records/*" />
+ASSIGN Records( nDWord )
 	IF Empty( nDWord ) .OR. ! IsNumeric( nDWord )
 		SELF:nNext := 0
 	ELSE
 		SELF:nNext := nDWord
 	ENDIF
 
+
 	RETURN SELF:nNext
 
-ACCESS RecSize 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.RecSize/*" />
+ACCESS RecSize
 	RETURN SELF:nRecSize
 
-METHOD Rename( oDBFSNewName, lName ) 
+
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Rename/*" />
+METHOD Rename( oDBFSNewName, lName )
 	LOCAL cTargetPath AS STRING
 	LOCAL cSourcePath AS STRING
 	LOCAL aDirArray AS ARRAY
@@ -1149,16 +1440,19 @@ METHOD Rename( oDBFSNewName, lName )
 	LOCAL oError AS USUAL
 	LOCAL lRetCode AS LOGIC
 
+
 	IF IsString( oDBFSNewName )
 		oDBFSNewName := Upper( oDBFSNewName )
 		IF At2( ":", oDBFSNewName ) != 0 .OR. At2( "\", oDBFSNewName ) != 0
 			RETURN FALSE
 		ENDIF
 
+
 		IF RAt2( ".", oDBFSNewName ) = 0
 			oDBFSNewName += ".DBF"
 		ENDIF
 	ENDIF
+
 
 	IF SubStr2( SELF:cFSPath, SLen( SELF:cFSPath ) ) == "\"
 		cSourcePath := SELF:cFSDrive + SELF:cFSPath
@@ -1166,13 +1460,17 @@ METHOD Rename( oDBFSNewName, lName )
 		cSourcePath := SELF:cFSDrive + SELF:cFSPath + "\"
 	ENDIF
 
+
 	IF Empty( lName ) .OR. ! IsLogic( lName )
 		lName := FALSE
 	ENDIF
 
+
 	lRetCode := SUPER:Rename( oDBFSNewName, lName )
 
+
 	cbOldErr := ErrorBlock( { | oErr | _Break( oErr ) } )
+
 
 	BEGIN SEQUENCE
 		IF lRetCode
@@ -1181,6 +1479,7 @@ METHOD Rename( oDBFSNewName, lName )
 				SELF:DBF := aDirArray
 			ENDIF
 		ENDIF
+
 
 		IF lRetCode .AND. SELF:MemFileName != NULL_STRING
 			IF SubStr2( SELF:cFSPath, SLen( SELF:cFSPath ) ) == "\"
@@ -1191,8 +1490,10 @@ METHOD Rename( oDBFSNewName, lName )
 				cPath := SELF:cFSDrive + SELF:cFSPath + "\"
 			ENDIF
 
+
 			cSourcePath += SELF:MemFileName + SELF:MemFileExt
 			cTargetPath += SELF:cFSFileName + SELF:MemFileExt
+
 
 			IF lRetCode := FRename( cSourcePath , cTargetPath  )
 				SELF:MemFullPath := cTargetPath
@@ -1203,6 +1504,7 @@ METHOD Rename( oDBFSNewName, lName )
 			ENDIF
 		ENDIF
 
+
 		IF lRetCode .AND. ALen( SELF:aIndexNames ) = 1 .AND. SELF:cRDD_Name != "DBFNTX"
 			cFileName := SELF:aIndexNames[1]
 			cProdIndex := SubStr2( cFileName, RAt2( "\", cFileName ) + 1 )
@@ -1210,7 +1512,9 @@ METHOD Rename( oDBFSNewName, lName )
 			cProdIndex := SELF:cFSFileName + SubStr2( cFileName, RAt2( ".", cFileName ) )
 			cTargetPath := cPath + cProdIndex
 
+
 			lRetCode := FRename( cFileName , cTargetPath  )
+
 
 			IF lRetCode
 				FOREACH os as OrderSpec IN SELF:aOrders
@@ -1219,72 +1523,88 @@ METHOD Rename( oDBFSNewName, lName )
 					ENDIF
 				NEXT
 
+
 				SELF:aIndexNames[1] := cTargetPath
 			ENDIF
 		ENDIF
 
+
 	RECOVER USING oError
 		ErrorBlock( cbOldErr )
         LOCAL oErr := oError as Error
+
 
 		IF oErr:OsCode != 0
 			oErr:Description := VO_Sprintf( __CAVOSTR_SYSLIB_DOS_ERROR, NTrim( oErr:OsCode ) +  ;
 				" ( " + DosErrString( oErr:OsCode ) + " )" )
 		ENDIF
 
+
 		SELF:oErrorInfo := oErr
 		lRetCode := FALSE
 
+
 	END SEQUENCE
+
 
 	ErrorBlock( cbOldErr )
 
+
 	RETURN lRetCode
 
-ACCESS Rest 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Rest/*" />
+ACCESS Rest
 	RETURN SELF:lRest
 
-ASSIGN Rest( lLogic ) 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.Rest/*" />
+ASSIGN Rest( lLogic )
 	IF Empty( lLogic ) .OR. ! IsLogic( lLogic )
 		SELF:lRest := FALSE
 	ELSE
 		SELF:lRest := lLogic
 	ENDIF
 
+
 	RETURN SELF:lRest
 
-ACCESS RLockCount 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.RLockCount/*" />
+ACCESS RLockCount
 	RETURN SELF:nRLockCount
 
-ACCESS SDF 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.SDF/*" />
+ACCESS SDF
 	RETURN SELF:lSDF
 
-ASSIGN SDF( lLogic ) 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.SDF/*" />
+ASSIGN SDF( lLogic )
 	IF Empty( lLogic ) .OR. ! IsLogic( lLogic )
 		SELF:lSDF := FALSE
 	ELSE
 		SELF:lSDF := lLogic
 	ENDIF
 
+
 	RETURN SELF:lSDF
 
-ACCESS WhileBlock 
 
+/// <include file="Rdd.xml" path="doc/DbFileSpec.WhileBlock/*" />
+ACCESS WhileBlock
 	RETURN SELF:bWhileBlock
-
-ASSIGN WhileBlock( cbCodeBlock ) 
-
+/// <include file="Rdd.xml" path="doc/DbFileSpec.WhileBlock/*" />
+ASSIGN WhileBlock( cbCodeBlock )
 	IF Empty( cbCodeBlock ) .OR. ! __CanEval( cbCodeBlock )
 		SELF:bWhileBlock := NIL
 	ELSE
 		SELF:bWhileBlock := cbCodeBlock
 	ENDIF
 
+
 	RETURN SELF:bWhileBlock
 END CLASS
+
 

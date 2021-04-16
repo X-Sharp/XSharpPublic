@@ -1,13 +1,20 @@
+/// <include file="Gui.xml" path="doc/ChildAppWindow/*" />
 CLASS ChildAppWindow INHERIT AppWindow
 	PROTECT oImp AS Window
 	
+	
 	//PP-030828 Strong typing
+ /// <exclude />
 	ASSIGN __Imp(oImpObject AS Window)  STRICT 
 	//PP-030828 Strong typing
 	
+	
 	RETURN oImp := oImpObject
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.ContextMenu/*" />
 ASSIGN ContextMenu(oNewMenu) 
 	//PP-040603 S.Ebert
 	IF SELF:oImp != NULL_OBJECT
@@ -16,18 +23,29 @@ ASSIGN ContextMenu(oNewMenu)
 	SUPER:ContextMenu := oNewMenu
 	RETURN 
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.Default/*" />
 METHOD Default(oEvent) 
+	
+	
 	
 	
 	IF (oImp != NULL_OBJECT)
 		oImp:Default(oEvent)
 	ENDIF
 	
+	
 	RETURN SELF
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
+	
+	
 	
 	
 	IF !InCollect()
@@ -39,13 +57,20 @@ METHOD Destroy()  AS USUAL CLIPPER
 		ENDIF
 	ENDIF
 	
+	
 	SUPER:Destroy()
+	
 	
 	RETURN SELF
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.EnableBorder/*" />
 METHOD EnableBorder(kBorderStyle) 
 	LOCAL oWnd AS AppWindow
+	
+	
 	
 	
 	IF IsInstanceOf(oImp, #AppWindow)
@@ -53,20 +78,32 @@ METHOD EnableBorder(kBorderStyle)
 		oWnd:EnableBorder(kBorderStyle)
 	ENDIF
 	
+	
 	RETURN NIL
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.EnableHorizontalScroll/*" />
 METHOD EnableHorizontalScroll(lEnable) 
+	
+	
 	
 	
 	IF IsInstanceOf(oImp, #AppWindow)
 		RETURN Send(oImp, #EnableHorizontalScroll, lEnable)
 	ENDIF
 	
+	
 	RETURN NULL_OBJECT
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.EnableStatusBar/*" />
 METHOD EnableStatusBar(lEnable) 
+	
+	
 	
 	
 	IF IsInstanceOf(oImp, #AppWindow)
@@ -75,23 +112,35 @@ METHOD EnableStatusBar(lEnable)
 	//RvdH 050810 Suggestion from S.Ebert
 	//RETURN oStatusBar
 	
+	
 	RETURN SELF:StatusBar
 	
 	
+	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.EnableVerticalScroll/*" />
 METHOD EnableVerticalScroll(lEnable) 
+	
+	
 	
 	
 	IF IsInstanceOf(oImp, #AppWindow)
 		RETURN Send(oImp, #EnableVerticalScroll, lEnable)
 	ENDIF
 	
+	
 	RETURN NULL_OBJECT
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.ctor/*" />
 CONSTRUCTOR(oOwner, lManaged, lImpl) 
 	LOCAL lMng AS LOGIC
    LOCAL lClientEdge   AS LOGIC
+	
 	
 	SUPER(oOwner)
 	IF !IsNil(lManaged)
@@ -102,7 +151,9 @@ CONSTRUCTOR(oOwner, lManaged, lImpl)
 		ENDIF
 	ENDIF
 	
+	
 	Default(@lImpl, TRUE)
+	
 	
 	IF (lImpl)
         IF (oImp == NULL_OBJECT)
@@ -124,14 +175,21 @@ CONSTRUCTOR(oOwner, lManaged, lImpl)
 		ENDIF
 	ENDIF
 	
+	
 	IF (oParent != NULL_OBJECT)
 		SELF:HelpDisplay := oParent:HelpDisplay
 	ENDIF
 	
+	
 	RETURN 
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.Menu/*" />
 ASSIGN Menu(oNewMenu) 
+	
+	
 	
 	
 	IF (oImp != NULL_OBJECT)
@@ -139,61 +197,94 @@ ASSIGN Menu(oNewMenu)
 		oImp:Menu := oNewMenu
 	ENDIF
 	
+	
 	RETURN 
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.Show/*" />
 METHOD Show(kShowState) 
+	
+	
 	
 	
 	IF (oImp != NULL_OBJECT)
 		RETURN oImp:Show(kShowState)
 	ENDIF
 	
+	
 	RETURN SELF
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.StatusBar/*" />
 ACCESS StatusBar 
+	
+	
 	
 	
 	IF IsInstanceOf(oImp, #AppWindow)
 		RETURN IVarGet(oImp, #StatusBar)
 	ENDIF
 	
+	
 	RETURN NULL_OBJECT
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.StatusBar/*" />
 ASSIGN StatusBar(oNewStatusBar) 
+	
+	
 	
 	
 	IF IsInstanceOf(oImp, #AppWindow)
 		RETURN IVarPut(oImp, #StatusBar, oNewStatusBar)
 	ENDIF
 	
+	
 	RETURN 
 	
 	
+	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.ToolBar/*" />
 ACCESS ToolBar 
+	
+	
 	
 	
 	IF IsInstanceOf(oImp, #Window)
 		RETURN IVarGet(oImp, #Toolbar)
 	ENDIF
 	
+	
 	RETURN NULL_OBJECT
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ChildAppWindow.ToolBar/*" />
 ASSIGN ToolBar(oNewToolBar) 
 //	LOCAL oRet := NULL_OBJECT AS OBJECT
 	LOCAL oTB  AS Toolbar
+	
 	
 	IF IsInstanceOf(oImp, #Window) .and. IsInstanceOfUsual(oNewToolbar, #ToolBar)
 		oTb := oNewToolBar 
 		oImp:ToolBar := oTb
 		oTb:__SetParent(SELF)
 		
+		
 	ENDIF
 	
+	
 	RETURN 
+	
 	
 END CLASS

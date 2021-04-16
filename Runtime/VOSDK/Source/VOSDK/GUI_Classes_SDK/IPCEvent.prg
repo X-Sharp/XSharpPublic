@@ -1,52 +1,86 @@
+/// <include file="Gui.xml" path="doc/IpcClientErrorEvent/*" />
 CLASS IpcClientErrorEvent INHERIT @@Event
 
+
+/// <include file="Gui.xml" path="doc/IpcClientErrorEvent.ErrorType/*" />
 ACCESS ErrorType 
 	
+	
+
 
 	RETURN wParam
 
+
+/// <include file="Gui.xml" path="doc/IpcClientErrorEvent.ctor/*" />
 CONSTRUCTOR(nErrorType) 
 	
+	
+
 
 	SUPER(NULL_PTR,0,nErrorType,0, NULL_OBJECT)
+
 
 	RETURN 
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/IpcDataRequestEvent/*" />
 CLASS IpcDataRequestEvent INHERIT IpcEvent
 
+
+/// <include file="Gui.xml" path="doc/IpcDataRequestEvent.ctor/*" />
 CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc) 
     
+    
     SUPER(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
+
+
 
 
 RETURN 
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/IpcDataUpdateEvent/*" />
 CLASS IpcDataUpdateEvent INHERIT IpcEvent
 	PROTECT cData AS STRING
 
+
+/// <include file="Gui.xml" path="doc/IpcDataUpdateEvent.AsString/*" />
 ACCESS AsString 
 	
+	
+
 
 	RETURN cData
 
+
+/// <include file="Gui.xml" path="doc/IpcDataUpdateEvent.GetData/*" />
 METHOD GetData() 
+	
 	
 	RETURN cData
 
+
+/// <include file="Gui.xml" path="doc/IpcDataUpdateEvent.ctor/*" />
 CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc) 
 	LOCAL dwLen AS DWORD
 
+
 	SUPER(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
+
 
 	cData := Psz2String(DdeAccessData(hdata,@dwLen))
 	DdeUnaccessData(hdata)
 
+
 	RETURN 
+
 
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/IpcEvent/*" />
 CLASS IpcEvent INHERIT VObject
 	EXPORT dwType AS DWORD
 	EXPORT dwFmt AS DWORD
@@ -58,10 +92,14 @@ CLASS IpcEvent INHERIT VObject
 	EXPORT dwData2 AS DWORD
 	EXPORT oIPCObject AS OBJECT
 
+
+/// <include file="Gui.xml" path="doc/IpcEvent.ctor/*" />
 CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc) 
 	LOCAL oIpcEvent AS IpcEvent
 
+
 	SUPER()
+
 
 	IF !IsObject(wT)
 		IF IsPtr(wT)
@@ -69,6 +107,7 @@ CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
 		ELSE
 			dwType :=wT
 		ENDIF
+
 
 		dwFmt := wF
 		hConv :=hC
@@ -78,13 +117,16 @@ CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
 		dwData1 := dwD1
 		dwData2 := dwD2
 
+
 		IF !IsNil(oIpc)
 			oIpcObject := oIpc
 		ELSE
 			DO CASE
 
+
 			CASE dwType == DWORD(_CAST, XTYP_CONNECT_CONFIRM)
 				oIPCObject:=__WCGetServerFromHsz(hsz2)
+
 
 			CASE dwType==XTYP_CONNECT
 				oIPCObject:=__WCGetServerFromHsz(hsz2)
@@ -118,14 +160,20 @@ CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
 		oIPCObject:=oIpcEvent:oIPCObject
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/IpcEvent.Item/*" />
 ACCESS Item 
 	LOCAL cBuf AS STRING
 	LOCAL dwLen AS DWORD
 	LOCAL pszBuf := NULL_PSZ AS PSZ
 
+
 	
+	
+
 
 	IF (oIPCObject != NULL_OBJECT)
 		dwLen := DdeQueryString(oIPCObject:idInst, hsz2, NULL_PSZ, 0, CP_WINANSI) +1
@@ -138,14 +186,20 @@ ACCESS Item
 		MemFree(pszBuf)
 	ENDIF
 
+
 	RETURN cBuf
 
+
+/// <include file="Gui.xml" path="doc/IpcEvent.Topic/*" />
 ACCESS Topic 
 	LOCAL cBuf AS STRING
 	LOCAL dwLen AS DWORD
 	LOCAL pszBuf := NULL_PSZ AS PSZ
 
+
 	
+	
+
 
 	IF (oIPCObject != NULL_OBJECT)
 		dwLen := DdeQueryString(oIPCObject:idInst, hsz1, NULL_PSZ, 0, CP_WINANSI) +1
@@ -159,38 +213,58 @@ ACCESS Topic
 	ENDIF
 	RETURN cBuf
 
+
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/IpcExecuteRequestEvent/*" />
 CLASS IpcExecuteRequestEvent INHERIT IpcEvent
 	PROTECT cCommand AS STRING
 
+
+/// <include file="Gui.xml" path="doc/IpcExecuteRequestEvent.Command/*" />
 ACCESS Command 
 	
+	
+
 
 	RETURN cCommand
 
+
+/// <include file="Gui.xml" path="doc/IpcExecuteRequestEvent.ctor/*" />
 CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc) 
 	LOCAL dwLen AS DWORD
 
+
 	
+	
+
 
 	SUPER(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
 	cCommand := Psz2String(DdeAccessData(hdata, @dwLen))
 	DdeUnaccessData(hdata)
 
+
 	RETURN 
 
+
 END CLASS
+
 
 /// <exclude/>
 GLOBAL aDdeConv:={} AS ARRAY //Table of Conversation handles and IPC objects (Clients or servers)
 
+
 /// <exclude/>
 GLOBAL aDdeServer:={} AS ARRAY //Table of Servers objects and Server handles
 
+
+ /// <exclude />
 FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aDdeConv)
@@ -202,12 +276,17 @@ FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
 	   ENDIF
 	NEXT  // dwI
 
+
 	AAdd(aDdeConv, {hConv, oIpc})
 
+
 	RETURN
+ /// <exclude />
  FUNCTION __WCAddServerToHsz(dwHsz AS PTR, oServer AS IpcServer) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aDdeServer)
@@ -218,13 +297,19 @@ FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
 	   ENDIF
 	NEXT  // dwI
 
+
 	AAdd(aDdeServer, {dwHsz, oServer})
+
 
 	RETURN
 
+
+ /// <exclude />
 FUNCTION __WCDelIpcObjectFromConv(hConv AS PTR) AS VOID
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aDdeConv)
@@ -236,11 +321,16 @@ FUNCTION __WCDelIpcObjectFromConv(hConv AS PTR) AS VOID
 	   ENDIF
 	NEXT  // dwI
 
+
 	RETURN
 
+
+ /// <exclude />
 FUNCTION __WCDelServerFromHsz(dwHsz AS PTR) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aDdeServer)
@@ -252,11 +342,16 @@ FUNCTION __WCDelServerFromHsz(dwHsz AS PTR) AS VOID
 	   ENDIF
 	NEXT  // dwI
 
+
 	RETURN
 
+
+ /// <exclude />
 FUNCTION __WCGetHConvFromConv(oIpc AS OBJECT) AS PTR
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aDdeConv)
@@ -266,12 +361,18 @@ FUNCTION __WCGetHConvFromConv(oIpc AS OBJECT) AS PTR
 	   ENDIF
 	NEXT  // dwI
 
+
 	RETURN NULL_PTR
 
 
+
+
+ /// <exclude />
 FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS PTR
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aDdeServer)
@@ -281,11 +382,16 @@ FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS PTR
 	   ENDIF
 	NEXT  // dwI
 
+
 	RETURN NULL_PTR
 
+
+ /// <exclude />
 FUNCTION __WCGetIpcObjectFromConv(hConv AS PTR) AS OBJECT
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aDdeConv)
@@ -295,11 +401,16 @@ FUNCTION __WCGetIpcObjectFromConv(hConv AS PTR) AS OBJECT
 	   ENDIF
 	NEXT  // dwI
 
+
 	RETURN NULL_OBJECT
 
+
+ /// <exclude />
 FUNCTION __WCGetServerFromHsz(dwHsz AS PTR) AS OBJECT
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aDdeServer)
@@ -309,5 +420,7 @@ FUNCTION __WCGetServerFromHsz(dwHsz AS PTR) AS OBJECT
 	   ENDIF
 	NEXT  // dwI
 
+
 	RETURN NULL_OBJECT
+
 

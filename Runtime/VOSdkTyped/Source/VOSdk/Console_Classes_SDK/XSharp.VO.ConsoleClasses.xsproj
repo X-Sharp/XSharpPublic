@@ -84,4 +84,9 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>copy $(SolutionDir)\Docs\Console.xml $(ProjectDir)\Console.Xml</PreBuildEvent>
+    <PostBuildEvent>erase  $(ProjectDir)\Console.Xml</PostBuildEvent>
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

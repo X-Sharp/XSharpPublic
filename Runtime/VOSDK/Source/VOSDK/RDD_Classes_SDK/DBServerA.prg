@@ -1,28 +1,41 @@
 #translate DBFDebug(<c1> [, <cn>]) =>
 
+
+
 PARTIAL CLASS DbServer
 
+
+ /// <exclude />
 PROPERTY __FileSpec as FileSpec GET SELF:oFileSpec
 
-ACCESS Alias 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Alias/*" />
+ACCESS Alias
 		#IFDEF __DEBUG__
 			DBFDebug(__ENTITY__, Symbol2String( symAlias ))
 		#ENDIF
 		RETURN Symbol2String( symAlias )
-	
 
-ACCESS AliasSym 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.AliasSym/*" />
+ACCESS AliasSym
 		#IFDEF __DEBUG__
 			DBFDebug(__ENTITY__, Symbol2String( symAlias ))
 		#ENDIF
 		RETURN symAlias
-	
 
-ACCESS BoF 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.BoF/*" />
+ACCESS BoF
 		//SE-060601
 		LOCAL dwCurrentWorkArea AS DWORD
 		LOCAL lRetVal AS LOGIC
-		
+
+
 		IF lSelectionActive
 			RETURN siSelectionStatus == DBSELECTIONBOF .OR. siSelectionStatus == DBSELECTIONEMPTY
 		ENDIF
@@ -33,15 +46,20 @@ ACCESS BoF
 			DBFDebug(__ENTITY__, AsString(lRetVal))
 		#ENDIF
 		RETURN lRetVal
-	
 
-ACCESS ConcurrencyControl 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ConcurrencyControl/*" />
+ACCESS ConcurrencyControl
 		#IFDEF __DEBUG__
 			DBFDebug(__ENTITY__, AsString(SELF:nCCMode))
 		#ENDIF
 		RETURN SELF:nCCMode
 
-ASSIGN ConcurrencyControl( nMode) 
+
+/// <include file="Rdd.xml" path="doc/DbServer.ConcurrencyControl/*" />
+ASSIGN ConcurrencyControl( nMode)
 	LOCAL newMode := nMode
 	LOCAL dwCurrentWorkArea  AS DWORD
 	LOCAL oError            AS USUAL
@@ -51,7 +69,8 @@ ASSIGN ConcurrencyControl( nMode)
 	IF IsString(newMode)
 		newMode := String2Symbol(nMode)
 	ENDIF
-	
+
+
 	IF IsSymbol(newMode)
 		DO CASE
 		CASE newMode == #ccNone
@@ -66,7 +85,8 @@ ASSIGN ConcurrencyControl( nMode)
 			newMode := ccFile
 		ENDCASE
 	ENDIF
-	
+
+
 	IF !IsNumeric(newMode)
 		oErrorInfo:=DbError{ SELF, #ConcurrencyControl, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN), nMode, "nMode" }
 		SELF:Error( oErrorInfo, #ConcurrencyControl )
@@ -87,85 +107,116 @@ ASSIGN ConcurrencyControl( nMode)
 			SELF:Error( oErrorInfo, #Average )
 		END SEQUENCE
 	ENDIF
-	
-	RETURN SELF:nCCMode
-	
 
+
+	RETURN SELF:nCCMode
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.DBStruct/*" />
 ACCESS DBStruct    // dcaton 070307 changed case to match overridden parent property
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
 	IF ALen(aStruct) == 0
 		SELF:Error( __MakeErrObj(0), #DBSTRUCT )
 	ENDIF
-	
+
+
 	RETURN AClone(aStruct)
 
-ACCESS DbStructure 
+
+/// <include file="Rdd.xml" path="doc/DbServer.DbStructure/*" />
+ACCESS DbStructure
 	// DHer: 18/12/2008
 	// This returns the original structure array
 RETURN SELF:aStruct
-	
+
+
 	// UH 09/13/1999
 	/*ACCESS Name CLASS DBServer
 	LOCAL xRet   AS USUAL
 	LOCAL nPos   AS INT
-	
+
+
 	nPos := SELF:FieldPos(#NAME)
-	
+
+
 	IF nPos > 0
 	xRet := SELF:FIELDGET(nPos)
 	ELSE
 	xRet := SUPER:Name
 	ENDIF
-	
-	RETURN xRet
-	
-	*/
-	
 
-ACCESS Deleted 
+
+	RETURN xRet
+
+
+	*/
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Deleted/*" />
+ACCESS Deleted
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL uRetVal           AS USUAL
 	LOCAL oError            AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		uRetVal := VODBDeleted()
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		uRetVal := FALSE
 	END SEQUENCE
-	
-	__DBSSetSelect( dwCurrentWorkArea )
-	
-	
-	RETURN uRetVal
-	
 
-ACCESS Driver 
+
+	__DBSSetSelect( dwCurrentWorkArea )
+
+
+
+
+	RETURN uRetVal
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Driver/*" />
+ACCESS Driver
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
-	RETURN SELF:cRDDName
-	
 
-ACCESS EoF 
+
+	RETURN SELF:cRDDName
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.EoF/*" />
+ACCESS EoF
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL lRetVal AS LOGIC
-	
-	
+
+
+
+
 	IF lSelectionActive
 		RETURN siSelectionStatus == DBSELECTIONEOF .OR. siSelectionStatus == DBSELECTIONEMPTY
 	ENDIF
@@ -176,9 +227,12 @@ ACCESS EoF
 		DBFDebug(__ENTITY__, AsString(lRetVal))
 	#ENDIF
 	RETURN lRetVal
-	
 
-ACCESS ErrInfo 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ErrInfo/*" />
+ACCESS ErrInfo
 	// returns an Error object if last operation generated an error.
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
@@ -188,40 +242,57 @@ ACCESS ErrInfo
 	ENDIF
 	RETURN NULL_OBJECT
 
-ACCESS ErrorInfo() 
-	
+
+/// <include file="Rdd.xml" path="doc/DbServer.ErrorInfo/*" />
+ACCESS ErrorInfo()
+
+
 	// DHer: 18/12/2008
 	// This returns ErrorInfo regardless of the ErrortFlag
 RETURN SELF:oErrorInfo
-	
 
-ACCESS FCount 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FCount/*" />
+ACCESS FCount
 	// ACCESS: like FCount( )
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(SELF:wFieldCount))
 	#ENDIF
 	RETURN SELF:wFieldCount
-	
 
-ACCESS FieldDesc 
-	
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldDesc/*" />
+ACCESS FieldDesc
+
+
 	LOCAL   aRet AS ARRAY
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
 	aRet := {}
-	
-	RETURN aRet
-	
 
-ACCESS FileSpec 
+
+	RETURN aRet
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FileSpec/*" />
+ACCESS FileSpec
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(oFileSpec))
 	#ENDIF
 	RETURN oFileSpec
-	
 
-ACCESS Filter 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Filter/*" />
+ACCESS Filter
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError            AS USUAL
@@ -229,7 +300,8 @@ ACCESS Filter
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -242,28 +314,40 @@ ACCESS Filter
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Error( oErrorInfo, #Filter )
 	END SEQUENCE
-	
-	
-	RETURN uInfo
-	
 
-ASSIGN Filter( uFilterBlock ) 
+
+
+
+	RETURN uInfo
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Filter/*" />
+ASSIGN Filter( uFilterBlock )
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(uFilterBlock))
 	#ENDIF
 	SELF:SetFilter( uFilterBlock )
-	
-	RETURN 
-	
 
-ACCESS ForBlock 
+
+	RETURN
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ForBlock/*" />
+ACCESS ForBlock
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
 	RETURN cbStoredForBlock
-	
 
-ASSIGN ForBlock( cbForBlock ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ForBlock/*" />
+ASSIGN ForBlock( cbForBlock )
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(cbForBlock))
 	#ENDIF
@@ -276,10 +360,13 @@ ASSIGN ForBlock( cbForBlock )
 	ENDIF
 	SELF:lActiveScope := cbStoredForBlock# NIL .OR. cbStoredWhileBlock# NIL ;
 		.OR. uStoredScope# NIL
-	RETURN 
-	
+	RETURN
 
-ACCESS Found 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Found/*" />
+ACCESS Found
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError            AS USUAL
@@ -290,8 +377,10 @@ ACCESS Found
 	IF lSelectionActive
 		RETURN siSelectionStatus == DBSELECTIONFOUND
 	ENDIF
-	
-	
+
+
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -301,23 +390,31 @@ ACCESS Found
 		oErrorInfo := oError
 		lRetCode := FALSE
 	END SEQUENCE
-	
-	__DBSSetSelect( dwCurrentWorkArea )
-	
-	
-	RETURN lRetCode
-	
 
-ACCESS Header 
+
+	__DBSSetSelect( dwCurrentWorkArea )
+
+
+
+
+	RETURN lRetCode
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Header/*" />
+ACCESS Header
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL uInfo             AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -330,20 +427,26 @@ ACCESS Header
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Error( oErrorInfo, #Info )
 	END SEQUENCE
-	
-	
+
+
+
+
 	RETURN uInfo
 
-ACCESS IndexExt 
+
+/// <include file="Rdd.xml" path="doc/DbServer.IndexExt/*" />
+ACCESS IndexExt
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL uOrdVal           AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -356,44 +459,58 @@ ACCESS IndexExt
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Error( oErrorInfo, #OrderInfo )
 	END SEQUENCE
-	
-	
-	RETURN uOrdVal
-	
 
-ACCESS IndexList 
+
+
+
+	RETURN uOrdVal
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.IndexList/*" />
+ACCESS IndexList
 	LOCAL aRet  AS ARRAY
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
 	aRet := {}
 	RETURN aRet
-	
 
-ACCESS LastRec 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.LastRec/*" />
+ACCESS LastRec
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL liRecno AS LONGINT
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 	liRecno := VODBLastRec()
 	__DBSSetSelect( dwCurrentWorkArea )
 	RETURN liRecno
 
-ACCESS Lupdate 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Lupdate/*" />
+ACCESS Lupdate
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL uInfo             AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -406,18 +523,24 @@ ACCESS Lupdate
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Error( oErrorInfo, #Info )
 	END SEQUENCE
-	
-	
+
+
+
+
 	RETURN uInfo
-	
-ACCESS MemoExt 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.MemoExt/*" />
+ACCESS MemoExt
 	// DHer: 18/12/2008
 	IF SELF:Used
 		RETURN SELF:Info(DBI_MEMOEXT)
 	ENDIF
 RETURN ""
 
-ACCESS Name 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Name/*" />
+ACCESS Name
 	//  01/01/2000
 	//  12/23/1999 Reactivated
 	//  RETURN SUPER:Name()
@@ -425,21 +548,27 @@ ACCESS Name
 		DBFDebug(__ENTITY__, AsString(SUPER:Name))
 	#ENDIF
 	RETURN SUPER:Name
-	
-ACCESS OleExt 
-	// DHer: 18/12/2008
-RETURN "DFL"	
 
-ACCESS OrderBottomScope 
+
+/// <include file="Rdd.xml" path="doc/DbServer.OleExt/*" />
+ACCESS OleExt
+	// DHer: 18/12/2008
+RETURN "DFL"
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderBottomScope/*" />
+ACCESS OrderBottomScope
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL uRetVal       AS USUAL
 	LOCAL oError        AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -453,22 +582,28 @@ ACCESS OrderBottomScope
 		SELF:Error( oErrorInfo, #OrderBottomScope )
 		uRetVal:=NIL
 	END SEQUENCE
-	
-	RETURN uRetVal
-	
 
-ASSIGN OrderBottomScope(uValue) 
+
+	RETURN uRetVal
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderBottomScope/*" />
+ASSIGN OrderBottomScope(uValue)
 	//PP-040416 uRetVal was LOGIC, should be USUAL
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	//LOCAL uRetVal       AS USUAL
 	LOCAL oError        AS USUAL
 	LOCAL n             AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(uValue))
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -477,35 +612,44 @@ ASSIGN OrderBottomScope(uValue)
 		IF IsNil(uValue)
 			n := DBOI_SCOPEBOTTOMCLEAR
 		ENDIF
-		
+
+
 		IF ! VODBOrderInfo(n, "", NIL, REF uValue)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
-		
+
+
 	RECOVER USING oError
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Error( oErrorInfo, #OrderBottomScope )
 		//uRetVal:=NIL
 	END SEQUENCE
-	
-	RETURN 
+
+
+	RETURN
 /*
 
-This conflicts with METHOD OrderKeyNo !!!
-	
 
-ACCESS OrderKeyNo 
+This conflicts with METHOD OrderKeyNo !!!
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyNo/*" />
+ACCESS OrderKeyNo
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL uRetVal       AS USUAL
 	LOCAL oError        AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -520,12 +664,16 @@ ACCESS OrderKeyNo
 		SELF:Error( oErrorInfo, #OrderKeyNo )
 		uRetVal:=0
 	END SEQUENCE
-	
+
+
 	RETURN uRetVal
-*/	
-	
-	
-	
+*/
+
+
+
+
+
+
 //	RvdH 070323 This does not set the keyno, but retrieves the KeyVal...
 // ASSIGN OrderKeyNo(uKeyValue) CLASS DbServer
 // 	LOCAL uRetVal       AS USUAL
@@ -534,7 +682,7 @@ ACCESS OrderKeyNo
 // 	#IFDEF __DEBUG__
 // 		DBFDebug(__ENTITY__,AsString(uKeyValue))
 // 	#ENDIF
-// 	
+//
 // 	lErrorFlag := FALSE
 // 	BEGIN SEQUENCE
 // 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -546,9 +694,9 @@ ACCESS OrderKeyNo
 // 		//endif
 // 		//VODBOrderInfo(DBOI_KEYVAL, "", NIL, REF uRetVal)
 // 		SELF:OrderKeyGoTo(nKeyPos)
-// 		
+//
 // 		SELF:__ProcessConcurrency(TRUE)
-// 		
+//
 // 		SELF:Notify( NOTIFYRECORDCHANGE )
 // 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 // 	RECOVER USING oError
@@ -557,27 +705,35 @@ ACCESS OrderKeyNo
 // 		SELF:Error( oErrorInfo, #OrderKeyNo )
 // 		uRetVal:=0
 //	END SEQUENCE
-//	RETURN uRetVal                              
+//	RETURN uRetVal
 /*
 
-This conflicts with METHOD OrderKeyNo !!!
-	
-ASSIGN OrderKeyNo(nKeyPos) 
-	SELF:OrderKeyGoTo(nKeyPos)
-	RETURN 
-	
-*/	
 
-ACCESS OrderKeyVal 
+This conflicts with METHOD OrderKeyNo !!!
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyNo/*" />
+ASSIGN OrderKeyNo(nKeyPos)
+	SELF:OrderKeyGoTo(nKeyPos)
+	RETURN
+
+
+*/
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderKeyVal/*" />
+ACCESS OrderKeyVal
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL uRetVal       AS USUAL
 	LOCAL oError        AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -592,20 +748,26 @@ ACCESS OrderKeyVal
 		SELF:Error( oErrorInfo, #OrderKeyVal )
 		uRetVal:=NIL
 	END SEQUENCE
-	
-	RETURN uRetVal
-	
 
-ACCESS OrderTopScope 
+
+	RETURN uRetVal
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderTopScope/*" />
+ACCESS OrderTopScope
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL uRetVal       AS USUAL
 	LOCAL oError        AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -620,23 +782,30 @@ ACCESS OrderTopScope
 		SELF:Error( oErrorInfo, #OrderTopScope )
 		uRetVal:=NIL
 	END SEQUENCE
-	
-	RETURN uRetVal
-	
-	
 
-ASSIGN OrderTopScope(uValue) 
+
+	RETURN uRetVal
+
+
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.OrderTopScope/*" />
+ASSIGN OrderTopScope(uValue)
 	//PP-040416 uRetVal was LOGIC, should be USUAL
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	//LOCAL uRetVal       AS USUAL
 	LOCAL oError        AS USUAL
 	LOCAL n             AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__,AsString(uValue))
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -645,7 +814,8 @@ ASSIGN OrderTopScope(uValue)
 		IF IsNil(uValue)
 			n := DBOI_SCOPETOPCLEAR
 		ENDIF
-		
+
+
 		IF ! VODBOrderInfo(n, "", NIL, REF uValue)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
@@ -656,64 +826,86 @@ ASSIGN OrderTopScope(uValue)
 		SELF:Error( oErrorInfo, #OrderTopScope )
 		//uRetVal:=NIL
 	END SEQUENCE
-	RETURN 
-	
+	RETURN
 
-ACCESS  PaintedStructure 
-	
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.PaintedStructure/*" />
+ACCESS  PaintedStructure
+
+
 	LOCAL aRet       AS ARRAY
 	LOCAL aFDesc     AS ARRAY
 	LOCAL i,nField   AS DWORD
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	aFDesc := SELF:FieldDesc
 	nField := ALen(aFDesc)
-	
+
+
 	aRet := {}
-	
+
+
 	FOR i:=1 UPTO nField
         LOCAL oFs as FieldSpec
         oFs := aFDesc[i][DBC_FIELDSPEC]
 		AAdd( aRet, { aFDesc[i][DBC_NAME] , oFS:valtype , oFS:length , oFS:Decimals } )
 	NEXT
-	
-	RETURN aRet
-	
 
-ACCESS RddName 
+
+	RETURN aRet
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RddName/*" />
+ACCESS RddName
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, cRDDName)
 	#ENDIF
 	RETURN cRDDName
-	
 
-ACCESS Rdds 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Rdds/*" />
+ACCESS Rdds
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(aRdds))
 	#ENDIF
 	RETURN aRdds
-	
 
-ACCESS ReadOnly 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.ReadOnly/*" />
+ACCESS ReadOnly
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(lReadOnly))
 	#ENDIF
 	RETURN lReadOnly
-	
 
-ACCESS RecCount  
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RecCount/*" />
+ACCESS RecCount
 	LOCAL nCurrentRecord            AS LONGINT
 	LOCAL siCurrentSelectionStatus  AS SHORTINT
 	LOCAL iRetVal                   AS INT
 	LOCAL dwCurrentWorkArea          AS DWORD
 	LOCAL oError                    AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		IF lSelectionActive
@@ -735,27 +927,35 @@ ACCESS RecCount
 			iRetVal := VODBLastRec()
 			__DBSSetSelect( dwCurrentWorkArea )
 		ENDIF
-		
+
+
 	RECOVER USING oError
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		SELF:Error( oErrorInfo, #RECCOUNT )
 	END SEQUENCE
-	
-	
-	RETURN iRetVal
-	
 
-ACCESS RecNo 
+
+
+
+	RETURN iRetVal
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RecNo/*" />
+ACCESS RecNo
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL wRetCode      AS LONGINT
 	LOCAL oError        AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -766,21 +966,28 @@ ACCESS RecNo
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Error( oErrorInfo, #RECNO )
 	END SEQUENCE
-	
-	
+
+
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(wRetCode))
 	#ENDIF
 	RETURN wRetCode
-	
 
-ASSIGN RecNo( nRecordNumber ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RecNo/*" />
+ASSIGN RecNo( nRecordNumber )
 	LOCAL oError        AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(nRecordNumber))
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		SELF:GoTo( nRecordNumber )
@@ -788,21 +995,28 @@ ASSIGN RecNo( nRecordNumber )
 		oErrorInfo := oError
 		SELF:Error( oErrorInfo, #RECNO )
 	END SEQUENCE
-	
-	
-	RETURN 
-	
 
-ACCESS RecSize 
+
+
+
+	RETURN
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RecSize/*" />
+ACCESS RecSize
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError        AS USUAL
 	LOCAL uVoVal        AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -815,23 +1029,32 @@ ACCESS RecSize
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Error( oErrorInfo, #RECSIZE )
 	END SEQUENCE
-	
-	
-	RETURN uVoVal
-	
 
-ACCESS Retries 
+
+
+
+	RETURN uVoVal
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Retries/*" />
+ACCESS Retries
 	//  UH 01/05/2000
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
 	RETURN SELF:nRetries
-	
-ACCESS RelationChildren 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RelationChildren/*" />
+ACCESS RelationChildren
 	// DHer: 18/12/2008
 RETURN SELF:aRelationChildren
 
-ASSIGN RelationChildren(aNewChildren) 
+
+/// <include file="Rdd.xml" path="doc/DbServer.RelationChildren/*" />
+ASSIGN RelationChildren(aNewChildren)
 	// DHer: 18/12/2008
 	IF IsArray(aNewChildren)
 		SELF:aRelationChildren := aNewChildren
@@ -842,9 +1065,12 @@ ASSIGN RelationChildren(aNewChildren)
 		lRelationsActive := TRUE
 	ENDIF
 
+
 RETURN SELF:aRelationChildren
 
-ASSIGN Retries  (n) 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Retries/*" />
+ASSIGN Retries  (n)
 	//  UH 01/05/2000
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(n))
@@ -853,9 +1079,12 @@ ASSIGN Retries  (n)
 		SELF:nRetries := n
 	ENDIF
 	RETURN SELF:nRetries
-	
 
-ACCESS RLockList 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.RLockList/*" />
+ACCESS RLockList
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError            AS USUAL
@@ -863,8 +1092,10 @@ ACCESS RLockList
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
-	
-	
+
+
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
@@ -875,23 +1106,33 @@ ACCESS RLockList
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Error( oErrorInfo, #RLockList )
 	END SEQUENCE
-	
-	
-	RETURN aLockList
-	
-	
 
-ACCESS Scope 
+
+
+
+	RETURN aLockList
+
+
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Scope/*" />
+ACCESS Scope
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
 	RETURN uStoredScope
-	
-ACCESS SelectionWorkArea 
-	// DHer: 18/12/2008
-RETURN SELF:wSelectionWorkArea	
 
-ASSIGN Scope( uScope ) 
+
+/// <include file="Rdd.xml" path="doc/DbServer.SelectionWorkArea/*" />
+ACCESS SelectionWorkArea
+	// DHer: 18/12/2008
+RETURN SELF:wSelectionWorkArea
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Scope/*" />
+ASSIGN Scope( uScope )
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(uScope))
 	#ENDIF
@@ -915,17 +1156,23 @@ ASSIGN Scope( uScope )
 	ENDIF
 	lActiveScope := cbStoredForBlock# NIL .OR. cbStoredWhileBlock# NIL ;
 		.OR. uStoredScope# NIL
-	RETURN 
-	
+	RETURN
 
-ACCESS Shared 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Shared/*" />
+ACCESS Shared
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
 	RETURN lShared
-	
 
-ACCESS Status 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Status/*" />
+ACCESS Status
 	// UH 08/30/1999
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
@@ -934,23 +1181,31 @@ ACCESS Status
 		RETURN oHLStatus
 	ENDIF
 	RETURN NULL_OBJECT
-	
-ASSIGN Status(oHl) 
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Status/*" />
+ASSIGN Status(oHl)
 	// DHer: 18/12/2008
 	SUPER:Status := oHl
 	SELF:lErrorFlag := TRUE
 
+
 RETURN SELF:oHLStatus
 
-ACCESS TableExt 
+
+/// <include file="Rdd.xml" path="doc/DbServer.TableExt/*" />
+ACCESS TableExt
 	// DHer: 18/12/2008
 RETURN SELF:Info(DBI_TABLEEXT)
 
-ACCESS Used 
+
+/// <include file="Rdd.xml" path="doc/DbServer.Used/*" />
+ACCESS Used
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL lRetVal AS LOGIC
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
@@ -961,16 +1216,22 @@ ACCESS Used
 	lRetVal := Used()
 	__DBSSetSelect( dwCurrentWorkArea )
 	RETURN lRetVal
-	
 
-ACCESS WhileBlock 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.WhileBlock/*" />
+ACCESS WhileBlock
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__)
 	#ENDIF
 	RETURN cbStoredWhileBlock
-	
 
-ASSIGN WhileBlock( cbWhileBlock ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.WhileBlock/*" />
+ASSIGN WhileBlock( cbWhileBlock )
 	#IFDEF __DEBUG__
 		DBFDebug(__ENTITY__, AsString(cbWhileBlock))
 	#ENDIF
@@ -983,11 +1244,15 @@ ASSIGN WhileBlock( cbWhileBlock )
 	ENDIF
 	lActiveScope := cbStoredForBlock# NIL .OR. cbStoredWhileBlock# NIL ;
 		.OR. uStoredScope# NIL
-	RETURN 
-	
+	RETURN
 
-ACCESS WorkArea 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.WorkArea/*" />
+ACCESS WorkArea
 	//SE-060527
 	RETURN wWorkArea
 END CLASS
+
 

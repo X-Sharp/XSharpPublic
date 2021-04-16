@@ -1,21 +1,34 @@
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery/*" />
 CLASS SQLCatalogQuery INHERIT SQLSelect
 
-ACCESS CursorName 
+
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery.CursorName/*" />
+ACCESS CursorName
+
 
 	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #CursorName )
 	RETURN NIL
 
-ASSIGN CursorName( cCursor ) 
+
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery.CursorName/*" />
+ASSIGN CursorName( cCursor )
+
 
 	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #CursorName )
-	RETURN 
+	RETURN
 
-METHOD Delete() 
+
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery.Delete/*" />
+METHOD Delete()
+
 
 	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #Delete )
 	RETURN FALSE
 
-METHOD Execute() 
+
+/// <exclude />
+METHOD Execute()
+
 
 	lCsrOpenFlag := TRUE
 	lRowModified := FALSE
@@ -24,15 +37,21 @@ METHOD Execute()
 	lFetchFlag := FALSE
 	lDeleteFlag := FALSE
 
+
 	RETURN SELF:__InitColumnDesc()
 
-METHOD FIELDPUT() 
+
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery.FIELDPUT/*" />
+METHOD FIELDPUT()
+
 
 	///RvdH Changed #FieldSet to #FieldPut
 	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #FieldPut )
 	RETURN FALSE
 
-METHOD GoTop() 
+
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery.GoTop/*" />
+METHOD GoTop()
 	//RvdH 051216 Added method, because Some ODBC Drivers don't support scrollable Catalog queries
 	LOCAL lRet AS LOGIC
 	#IFDEF __DEBUG__
@@ -47,12 +66,14 @@ METHOD GoTop()
 		RETURN FALSE
 	ENDIF
 
+
 	// Some ODBC Drivers don't support scrollable Catalog queries, so use regular Fetch here,
 	// And make sure we are on top by checking the Record number
 	IF SELF:nRecNum > 1
 		SELF:Execute()
-	ENDIF	
+	ENDIF
 	lRet := SELF:Fetch()
+
 
 	IF !lRet
 		SELF:nLastRecnum := 0
@@ -61,24 +82,34 @@ METHOD GoTop()
 	ENDIF
 	RETURN lRet
 
-CONSTRUCTOR( oSQLConnection ) 
+
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery.ctor/*" />
+CONSTRUCTOR( oSQLConnection )
+
 
 	SUPER( NIL, oSQLConnection )
-	RETURN 
+	RETURN
 
-METHOD Prepare() 
+
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery.Prepare/*" />
+METHOD Prepare()
 	RETURN TRUE
 
 
-METHOD Skip( nRecordCount ) 
+
+
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery.Skip/*" />
+METHOD Skip( nRecordCount )
 	LOCAL iRecCount, i       AS INT
 	LOCAL lRet					  AS LOGIC
 	//RvdH 051216 Added method, because Some ODBC Drivers don't support scrollable Catalog queries
+
 
 	IF ! SELF:Notify( NOTIFYINTENTTOMOVE )
 		oStmt:__GenerateSQLError( "IntentToMove returned false.", #Skip )
 		RETURN FALSE
 	ENDIF
+
 
 	IF nRecordCount = NIL
 		iRecCount := 1
@@ -86,9 +117,11 @@ METHOD Skip( nRecordCount )
 		iRecCount := nRecordCount
 	ENDIF
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:Skip( "+NTrim( iRecCount )+" )" )
 	#ENDIF
+
 
 	IF ( iRecCount = 0 )
 		RETURN TRUE
@@ -102,14 +135,22 @@ METHOD Skip( nRecordCount )
 	RETURN lRet
 
 
-ACCESS TableName 
+
+
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery.TableName/*" />
+ACCESS TableName
+
 
 	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #TableName )
 	RETURN NIL
 
-METHOD Update() 
+
+/// <include file="SQL.xml" path="doc/SQLCatalogQuery.Update/*" />
+METHOD Update()
+
 
 	oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__INV_OP ), #Update )
 	RETURN FALSE
 END CLASS
+
 

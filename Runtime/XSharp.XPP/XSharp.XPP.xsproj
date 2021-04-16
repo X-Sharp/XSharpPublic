@@ -138,4 +138,11 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>copy $(SolutionDir)Docs\XppComments.xml $(ProjectDir)\XppComments.Xml
+    </PreBuildEvent> 
+    <PostBuildEvent>erase  $(ProjectDir)\XppComments.Xml
+    </PostBuildEvent>
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

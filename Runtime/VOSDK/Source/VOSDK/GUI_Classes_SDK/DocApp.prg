@@ -1,9 +1,14 @@
+ /// <exclude />
 CLASS __DocApp INHERIT AppWindow
 	PROTECT oShellWin AS ShellWindow
 
-METHOD __AssociateAccel(lSwitch AS LOGIC) AS Window STRICT 
+
+ /// <exclude />
+METHOD __AssociateAccel(lSwitch AS LOGIC) AS Window STRICT
 	//PP-030828 Strong typing
-	
+
+
+
 
 	IF lSwitch .AND. (oParent:Accelerator != NULL_OBJECT)
 		//SetAccelerator(hWnd, oParent:Accelerator:Handle())
@@ -15,38 +20,56 @@ METHOD __AssociateAccel(lSwitch AS LOGIC) AS Window STRICT
 		SetAccelerator(NULL_PTR, NULL_PTR)
 	ENDIF
 
+
 	RETURN SELF
 
-METHOD __DestroyWnd() AS LOGIC STRICT 
+
+ /// <exclude />
+METHOD __DestroyWnd() AS LOGIC STRICT
 	//PP-030828 Strong typing
-	
+
+
+
 
 	IF (hwnd != NULL_PTR)
 		SendMessage(oShellWin:Handle(4), WM_MDIDESTROY, DWORD(_CAST, hWnd), 0)
 	ENDIF
 	RETURN TRUE
 
-METHOD Default(oEvent) 
+
+ /// <exclude />
+METHOD DEFAULT(oEvent)
 	LOCAL oEvt := oEvent AS @@Event
 
-	
+
+
+
+
 
 	oParent:EventReturnValue := DefMDIChildProc(oEvt:hWnd, oEvt:uMsg, oEvt:wParam, oEvt:lParam)
 
+
 	RETURN SELF
 
-METHOD Dispatch(oEvent) 
+
+ /// <exclude />
+METHOD Dispatch(oEvent)
 	LOCAL oEvt := oEvent AS @@Event
 	LOCAL uMsg AS DWORD
 
-	
+
+
+
+
 
 	oParent:EventReturnValue := 0L
 	uMsg := oEvt:uMsg
 
+
 	IF (oParent != NULL_OBJECT)
 		oEvt:oWindow := oParent
 	ENDIF
+
 
 	SWITCH uMsg
 	CASE WM_MDIACTIVATE
@@ -65,6 +88,7 @@ METHOD Dispatch(oEvent)
 			RETURN oParent:EventReturnValue
 		ENDIF
 
+
 	CASE WM_SIZE
 		IF (oStatusBar != NULL_OBJECT)
 			SendMessage(oStatusBar:Handle(), oEvt:uMsg, oEvt:wParam, oEvt:lParam)
@@ -74,9 +98,11 @@ METHOD Dispatch(oEvent)
 		oParent:Resize(ResizeEvent{oEvt})
 		RETURN oParent:EventReturnValue
 
+
 	CASE WM_QUERYENDSESSION
 		oParent:EventReturnValue := oParent:QueryClose(oEvt)
 		RETURN oParent:EventReturnValue
+
 
 	CASE WM_CREATE
 		hWnd := oEvt:hWnd
@@ -89,8 +115,9 @@ METHOD Dispatch(oEvent)
 		oParent:Dispatch(oEvt)
 		RETURN oParent:EventReturnValue
 
+
     OTHERWISE
-        IF oParent IS Window VAR oWnd        
+        IF oParent IS Window VAR oWnd
 		     oWnd:Dispatch(oEvt)
 		     RETURN oWnd:EventReturnValue
         ENDIF
@@ -98,14 +125,20 @@ METHOD Dispatch(oEvent)
         RETURN oParent:EventReturnValue
 	END SWITCH
 
+
 	SELF:Default(oEvt)
 	RETURN oParent:EventReturnValue
 
-CONSTRUCTOR(oChildApp) 
-	
+
+ /// <exclude />
+CONSTRUCTOR(oChildApp)
+
+
+
 
 	SUPER(oChildApp)
 	oShellWin := oChildApp:Owner
+
 
 	IF __WCRegisterDocAppWindow(_GetInst())
 		hwnd := CreateMDIWindow(String2Psz(__WCDocAppWindowClass), NULL_PSZ,;
@@ -114,51 +147,72 @@ CONSTRUCTOR(oChildApp)
 			PTR(_CAST,oShellWin:Handle(4)), _GetInst(), LONGINT(_CAST, ptrSelfPtr))
 	ENDIF
 
-	RETURN 
 
-ASSIGN Menu(oNewMenu) 
-	
+	RETURN
+
+
+ /// <exclude />
+ASSIGN Menu(oNewMenu)
+
+
+
 
 	IF IsWindowVisible(hWnd)
 		oShellWin:__UseChildMenu(oNewMenu)
 	ENDIF
 
-	RETURN 
 
-METHOD Show(kShowState) 
+	RETURN
+
+
+ /// <exclude />
+METHOD Show(kShowState)
 	LOCAL hCurrent AS PTR
 
-	
+
+
+
+
 
 	SUPER:Show(kShowState)
 	hCurrent := PTR(_CAST, SendMessage(oShellWin:Handle(4), DWORD(WM_MDIGETACTIVE), 0, 0))
+
 
 	IF (hCurrent == hWnd) .AND. !IsWindowVisible(hWnd) .AND. (SELF:Menu != NULL_OBJECT)
 		// Show after a hide
 		oShellWin:__UseChildMenu(SELF:Menu)
 	ENDIF
 
+
 	SendMessage(oShellWin:Handle(4), WM_MDIACTIVATE, DWORD(_CAST, hWnd), 0 )
 	RETURN SELF
 
-ACCESS ToolBar 
+
+ /// <exclude />
+ACCESS ToolBar
 	IF (oShellWin:ChildToolBarLocation == TBL_CHILD)
 		RETURN SUPER:Toolbar
 	ENDIF
 	RETURN oShellWin:ToolBar
 
-ASSIGN ToolBar(oNewToolBar) 
+
+ /// <exclude />
+ASSIGN ToolBar(oNewToolBar)
+
 
 	IF (oShellWin:ChildToolBarLocation == TBL_CHILD)
 		RETURN SUPER:Toolbar := oNewToolBar
 	ENDIF
-	RETURN 
+	RETURN
+
 
 END CLASS
+
 
 STATIC FUNCTION __WCRegisterDocAppWindow(hInst AS PTR) AS LOGIC
 	STATIC LOCAL lretVal AS LOGIC
 	LOCAL wc IS _WINWNDCLASS
+
 
 	//PP-031129 From S Ebert. Changed wc.hbrBackground
 	//Otherwise under XP and theme suport on, you see a toolbar,
@@ -174,9 +228,9 @@ STATIC FUNCTION __WCRegisterDocAppWindow(hInst AS PTR) AS LOGIC
          WCDocAppWndProcDelegate := __WCDocAppWndProcDelegate{ NULL, @__WCDocAppWndProc() }
       ENDIF
 		wc:lpfnWndProc := System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) WCDocAppWndProcDelegate )
-#else		
+#else
 		wc:lpfnWndProc := PTR(_CAST, @__WCDocAppWndProc())
-#endif		
+#endif
 		wc:hInstance := hInst
 		wc:hIcon := LoadIcon(0, IDI_APPLICATION)
 		wc:hCursor := LoadCursor(0, IDC_Arrow)
@@ -184,19 +238,27 @@ STATIC FUNCTION __WCRegisterDocAppWindow(hInst AS PTR) AS LOGIC
 		wc:lpszClassName := PSZ(_CAST, __WCDocAppWindowClass)
 		wc:cbWndExtra := 12
 
+
 		lretVal := (RegisterClass(@wc)!=0)
 	ENDIF
 
+
 	RETURN lretVal
 
+
 #ifdef __VULCAN__
-   DELEGATE __WCDocAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
+    /// <exclude/>
+    DELEGATE __WCDocAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
 #endif
 
+
+ /// <exclude />
 FUNCTION __WCDocAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
 	LOCAL oWindow AS Window
 	LOCAL strucCreateStruct AS _WinCreateStruct
 	LOCAL strucMDICreateStruct AS _WinMDICreateStruct
+
+
 
 
 	IF uMsg == WM_Create
@@ -205,12 +267,17 @@ FUNCTION __WCDocAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam A
 		SetWindowLong(hWnd, DWL_User, LONGINT(_CAST,strucMDICreateStruct:lParam))
 	ENDIF
 
-	oWindow := __WCGetWindowByHandle(hWnd) 
+
+	oWindow := __WCGetWindowByHandle(hWnd)
+
 
 	IF (oWindow != NULL_OBJECT)
 		RETURN oWindow:Dispatch(@@Event{ hwnd, uMsg, wParam, lParam, oWindow}     )
 	ENDIF
 	RETURN DefMDIChildProc(hWnd, uMsg, wParam, lParam)
+
+
+
 
 
 

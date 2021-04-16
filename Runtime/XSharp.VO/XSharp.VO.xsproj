@@ -103,8 +103,12 @@
     <RunPostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <PreBuildEvent>copy $(Solutiondir)Runtime\XSharp.RT\VoFunctionDocs.xml $(Solutiondir)Runtime\XSharp.VO\VoFunctionDocs.xml &gt;NUL</PreBuildEvent>
-    <PostBuildEvent>erase $(Solutiondir)Runtime\XSharp.VO\VoFunctionDocs.xml &gt;NUL</PostBuildEvent>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <PreBuildEvent>copy $(SolutionDir)\Docs\RtComments.xml $(ProjectDir)\RtComments.Xml
+    copy $(SolutionDir)\Docs\VOFunctionDocs.xml $(ProjectDir)\VOFunctionDocs.Xml
+    </PreBuildEvent>
+    <PostBuildEvent>erase  $(ProjectDir)\RtComments.Xml
+    erase  $(ProjectDir)\VOFunctionDocs.Xml
+    </PostBuildEvent>
+    <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

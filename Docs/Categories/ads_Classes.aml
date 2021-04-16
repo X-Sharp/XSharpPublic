@@ -166,7 +166,7 @@
 <entry><para>Delegate used by some advantage progress functions</para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.AdsSQLServer</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>ADS Compatible DbServer class that received a Sql Select statement in its constructor</para></entry></row>
 </table>
 </content>
      </section>

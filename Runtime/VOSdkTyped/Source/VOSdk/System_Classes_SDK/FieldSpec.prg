@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 #pragma options ("enforceself", on)
+/// <include file="System.xml" path="doc/FieldSpec/*" />
 [XSharp.Internal.TypesChanged];
 CLASS FieldSpec
 	// Class that contains a number of properties of database fields and form fields ( controls )
@@ -42,6 +43,8 @@ CLASS FieldSpec
 	PROTECT cPicture 		AS STRING
 	PROTECT lNullable AS LOGIC
 
+
+ /// <exclude />
 	METHOD __GetHLRange  AS VOID STRICT 
 	    IF SELF:oHLRange == NULL_OBJECT
 		    IF IsNil(SELF:uMin) .AND. IsNil(SELF:uMax)
@@ -62,25 +65,38 @@ CLASS FieldSpec
 	    ENDIF
 	    RETURN
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.AsString/*" />
 METHOD AsString( ) AS STRING STRICT                             
 	RETURN oHyperLabel:Caption
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Decimals/*" />
 ACCESS Decimals   AS DWORD                              
 	// Returns the number of decimals
 	RETURN SELF:wDecimals
 
 
+
+
+/// <include file="System.xml" path="doc/FieldSpec.Decimals/*" />
 ASSIGN Decimals (uDecimals AS DWORD )                    
 	SELF:wDecimals := uDecimals
 	RETURN 
 
+
+/// <include file="System.xml" path="doc/FieldSpec.HyperLabel/*" />
 ACCESS HyperLabel AS HyperLabel                            
 	// Returns the HyperLabel object
 	RETURN oHyperLabel
 
+
+/// <include file="System.xml" path="doc/FieldSpec.ctor/*" />
 CONSTRUCTOR( oHLName AS STRING, uType:= NIL AS USUAL, uLength := 0 AS DWORD, uDecimals := 0 AS DWORD) 
     SELF(HyperLabel{oHLName}, uType, uLength, uDecimals)
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.ctor/*" />
 CONSTRUCTOR( oHLName AS HyperLabel, uType:= NIL AS USUAL, uLength := 0 AS DWORD, uDecimals := 0 AS DWORD) 
 	// Instantiation parameters for FieldSpec
 	// oHLName      ( required ) HyperLabel
@@ -89,6 +105,7 @@ CONSTRUCTOR( oHLName AS HyperLabel, uType:= NIL AS USUAL, uLength := 0 AS DWORD,
 	// uLength          ( required for some data types, not for LOGIC for example )
 	// uDecimals        ( optional ) defaults to 0
 	oHyperLabel := oHLName
+
 
 	IF IsString( uType )
 		cType := Upper(uType)
@@ -153,30 +170,46 @@ CONSTRUCTOR( oHLName AS HyperLabel, uType:= NIL AS USUAL, uLength := 0 AS DWORD,
        DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
     ENDIF
 
+
 	SELF:wLength := uLength
 	SELF:wDecimals := uDecimals
 	RETURN 
 
 
+
+
+/// <include file="System.xml" path="doc/FieldSpec.Length/*" />
 ACCESS Length AS DWORD                                  
 	// Returns the length of the field
 	RETURN SELF:wLength
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Maximum/*" />
 ACCESS Maximum   AS USUAL                               
 	RETURN SELF:uMax
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Minimum/*" />
 ACCESS Minimum   AS USUAL                               
 	RETURN SELF:uMin
 
+
+/// <include file="System.xml" path="doc/FieldSpec.MinLength/*" />
 ACCESS MinLength AS DWORD                               
 	RETURN wMinLength
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Nullable/*" />
 ACCESS Nullable  AS LOGIC
 	RETURN SELF:lNullable
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Nullable/*" />
 ASSIGN Nullable( lNew AS LOGIC)                         
 	SELF:lNullable := lNew
 
+
+/// <include file="System.xml" path="doc/FieldSpec.PerformValidations/*" />
 METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 	// Performs all the validations on the specified value: required field, data type compliance, range, etc.
 	// Returns a LOGIC indicating whether the validation succeeded.
@@ -187,11 +220,14 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 	LOCAL wLen, wDecLen:=0, i  AS DWORD
 	LOCAL cDecSep, cTmp   AS STRING
 
+
 	SELF:oHLStatus := NULL_OBJECT
+
 
 	IF SELF:lNullable .AND. IsNil(uValue)
 		RETURN .T. 
 	ENDIF
+
 
 	IF (IsString(uValue) .AND. Empty(AllTrim(uValue))) .OR. ;  
 		(IsDate(uValue) .AND. uValue == NULL_DATE)         
@@ -201,6 +237,7 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 				SELF:oHLRequired := HyperLabel{ #FieldSpecRequired, , VO_Sprintf(__CAVOSTR_DBFCLASS_REQUIRED,oHyperLabel:Name) }
 			ENDIF
 
+
 			SELF:oHLStatus := SELF:oHLRequired
 			RETURN FALSE
 		ENDIF
@@ -209,6 +246,7 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 			RETURN .T. 
 		ENDIF
 
+
 		// Check data type (no conversions here!)
 		IF !(UsualType(uValue) == wType .OR. (lNumeric .AND. IsNumeric(uValue)) .OR. ((wType == TYPE_MULTIMEDIA) .AND. IsString(uValue)))
 			IF SELF:oHLType == NULL_OBJECT
@@ -216,8 +254,10 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 			ENDIF
 			SELF:oHLStatus := SELF:oHLType
 
+
 			RETURN FALSE
 		ENDIF
+
 
 		// Check max and min length
 		IF lNumeric
@@ -227,14 +267,17 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 				cValue := AllTrim(AsString(uValue))
 			ENDIF
 
+
 			IF !Empty(SELF:cPicture)
 				cDecSep := Chr(SetDecimalSep())
+
 
 				// NOTE: picture templates need to be in U.S. format for output
 				// to be correct when set from control panel.
 				IF At2(".", SELF:cPicture) > 0
 					// get decimal locations according to picture
 					cTmp := SubStr2(SELF:cPicture, At2(".", SELF:cPicture) + 1)
+
 
 					wLen := SLen(cTmp)
                     i := 0
@@ -245,8 +288,10 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 						i++
 					ENDDO	
 
+
 					// substring cValue based on control panel's decimal sep.
 					cValue := SubStr3(cValue, 1, At2(cDecSep, cValue) + wDecLen)
+
 
 				ENDIF
 			ENDIF
@@ -254,16 +299,21 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 			cValue := uValue
 		ENDIF
 
+
 		wLen := SLen(cValue)
 
+
 		IF wLen > SELF:wLength .AND. !(cType == "M" ) 
+
 
 			IF SELF:oHLLength == NULL_OBJECT
 				SELF:oHLLength := HyperLabel{ #FieldSpecLength, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDLENGTH,oHyperLabel:Name,Str( SELF:wLength ) ) }
 			ENDIF
 
+
 			SELF:oHLStatus := SELF:oHLLength
 			RETURN FALSE
+
 
 		ELSEIF wType == STRING .AND. wLen < wMinLength
 			IF  SELF:oHLMinLength = NULL_OBJECT
@@ -274,6 +324,7 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 			RETURN FALSE
 		ENDIF
 
+
 		// Check range
 		IF !IsNil(SELF:uMin) .AND. uValue < SELF:uMin
 			IF SELF:oHLRange == NULL_OBJECT
@@ -283,15 +334,18 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 			RETURN FALSE
 		ENDIF
 
+
 		IF !IsNil(SELF:uMax) .AND. uValue > SELF:uMax
 			IF SELF:oHLRange == NULL_OBJECT
 				SELF:__GetHLRange( )
 			ENDIF
 			SELF:oHLStatus := SELF:oHLRange
 
+
 			RETURN FALSE
 		ENDIF
 	ENDIF
+
 
 	// Check validation method or codeblock
 	IF !SELF:Validate(uValue)
@@ -302,21 +356,31 @@ METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 			SELF:oHLStatus := SELF:oHLValidation      // Fill in status if not done by client code
 		ENDIF
 
+
 		RETURN FALSE
 	ENDIF
 
+
 	RETURN TRUE
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Picture/*" />
 ACCESS Picture  AS STRING                                
 	RETURN cPicture
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Picture/*" />
 ASSIGN Picture( cNewPicture AS STRING)                   
 	//ASSERT _DYNCHECKERRORBOX( )
 	cPicture := cNewPicture
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Required/*" />
 ACCESS Required  AS LOGIC                               
 	RETURN lRequired
 
+
+/// <include file="System.xml" path="doc/FieldSpec.SetLength/*" />
 METHOD SetLength( w  AS DWORD, oHL := NULL AS HyperLabel )  AS VOID                      
 	// The length is set through the instantiation parameter, and is not normally changed later
 	// This method does allow changing the length and, more usefully,
@@ -328,6 +392,8 @@ METHOD SetLength( w  AS DWORD, oHL := NULL AS HyperLabel )  AS VOID
 	ENDIF
 	RETURN 
 
+
+/// <include file="System.xml" path="doc/FieldSpec.SetMinLength/*" />
 METHOD SetMinLength( w  AS DWORD, oHL := NULL AS HyperLabel) AS VOID                  
 	// This method is used to set the minimum length,
 	// and the HyperLabel diagnostic for the minlength check (applies to string data only)
@@ -338,6 +404,8 @@ METHOD SetMinLength( w  AS DWORD, oHL := NULL AS HyperLabel) AS VOID
 	ENDIF
 	RETURN 
 
+
+/// <include file="System.xml" path="doc/FieldSpec.SetRange/*" />
 METHOD SetRange( uMinimum AS USUAL, uMaximum AS USUAL, oHL := NULL AS HyperLabel ) AS VOID   
 	// Sets the range and the HyperLabel for the range check error message
 	// All parameters are optional, if one is not provided the corresponding value is not changed
@@ -352,6 +420,8 @@ METHOD SetRange( uMinimum AS USUAL, uMaximum AS USUAL, oHL := NULL AS HyperLabel
 	ENDIF
 	RETURN 
 
+
+/// <include file="System.xml" path="doc/FieldSpec.SetRequired/*" />
 METHOD SetRequired( lReq := TRUE AS LOGIC, oHL := NULL AS HyperLabel) AS VOID                   
 	// This method is used to specify whether this is a required field,
 	// and the HyperLabel diagnostic for the required check
@@ -363,6 +433,8 @@ METHOD SetRequired( lReq := TRUE AS LOGIC, oHL := NULL AS HyperLabel) AS VOID
 	ENDIF
 	RETURN 
 
+
+/// <include file="System.xml" path="doc/FieldSpec.SetType/*" />
 METHOD SetType( uType AS USUAL, oHL := NULL AS HyperLabel) AS VOID                  
 	// The storage type is normally set as an instantiation parameter and is not changed later.
 	// This method does allow the storage type to be changed and, more usefully,
@@ -382,14 +454,17 @@ METHOD SetType( uType AS USUAL, oHL := NULL AS HyperLabel) AS VOID
 			ELSEIF cType == "D"
 				wType := DATE
 
+
 				// SABR01 12/28/95
 				// O is an OLE object
 			ELSEIF cType == "O"
 				wType := OBJECT
 
+
 				// Ansgar 7/9/97 added Bitmap
 			ELSEIF cType == "B"
 				wType := TYPE_MULTIMEDIA
+
 
 			ELSE
 				cType := ""
@@ -415,6 +490,7 @@ METHOD SetType( uType AS USUAL, oHL := NULL AS HyperLabel) AS VOID
 			ELSEIF (wType == TYPE_MULTIMEDIA)
 				cType := "B"
 
+
 			ELSE
 				wType := 0
 				DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
@@ -427,6 +503,9 @@ METHOD SetType( uType AS USUAL, oHL := NULL AS HyperLabel) AS VOID
 	RETURN 
 
 
+
+
+/// <include file="System.xml" path="doc/FieldSpec.SetValidation/*" />
 METHOD SetValidation( cb AS USUAL, oHL := NULL_OBJECT AS HyperLabel) AS VOID                  
 	// Used to set the validation codeblock and its corresponding HyperLabel diagnostic
 	// The validation rule may be specified as a codeblock or a string
@@ -446,23 +525,32 @@ METHOD SetValidation( cb AS USUAL, oHL := NULL_OBJECT AS HyperLabel) AS VOID
 	RETURN 
 
 
+
+
+/// <include file="System.xml" path="doc/FieldSpec.Status/*" />
 ACCESS Status  AS HyperLabel                                 
 	// Returns the Status HyperLabel object; NIL if status is OK. Status reflects the
 	// most recently made validation ( see METHOD PerformValidations ).
 	RETURN SELF:oHLStatus
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Status/*" />
 ASSIGN Status (oHL AS HyperLabel)
     SELF:oHLStatus := oHL
 	RETURN 
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Transform/*" />
 METHOD Transform( uValue AS USUAL) AS STRING                     
 	// Format the value into a string according to the picture clause
 	// should default to windows formats
+
 
 	LOCAL cResult   AS STRING
 	LOCAL cTemp     AS STRING   
 	LOCAL lScience  AS LOGIC    
 	LOCAL lZero :=FALSE   AS LOGIC    
+
 
 	IF cPicture == NULL_STRING
 		IF lNumeric
@@ -471,6 +559,7 @@ METHOD Transform( uValue AS USUAL) AS STRING
 			ELSE
 				cResult := Transform(uValue,Replicate("9",SELF:wLength-SELF:wDecimals-1)+"."+Replicate("9",SELF:wDecimals))
 			ENDIF
+
 
 			IF SubStr3(cResult,1,1) == "*"
 				lScience := SetScience(TRUE)
@@ -504,18 +593,26 @@ METHOD Transform( uValue AS USUAL) AS STRING
 		cResult := Transform(uValue,cPicture)
 	ENDIF
 
+
 	RETURN cResult
 
 
+
+
+/// <include file="System.xml" path="doc/FieldSpec.UsualType/*" />
 ACCESS UsualType  AS DWORD                              
 	// Returns the storage type as a keyword (INT, STRING, etc.)
 	RETURN wType
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Val/*" />
 METHOD Val( cString AS STRING) AS USUAL                          
 	// Converts a string to the appropriate data type
 
+
 	LOCAL xRet  := NIL AS USUAL
 	LOCAL cType AS STRING
+
 
 	IF lNumeric
 		IF SELF:lNullable
@@ -525,6 +622,7 @@ METHOD Val( cString AS STRING) AS USUAL
 		ENDIF
 		xRet := Unformat( cString, cPicture, cType)
 
+
 	ELSEIF wType = DATE
 		IF SELF:lNullable
 			cType := "D0"
@@ -533,6 +631,7 @@ METHOD Val( cString AS STRING) AS USUAL
 		ENDIF
 		xRet := Unformat( cString, cPicture, cType)
 
+
 	ELSEIF wType = LOGIC
 		IF SELF:lNullable
 			cType := "L0"
@@ -540,6 +639,7 @@ METHOD Val( cString AS STRING) AS USUAL
 			cType := "L"
 		ENDIF
 		xRet := Unformat( cString, cPicture, cType)
+
 
 	ELSEIF wType = STRING
 		IF SELF:lNullable
@@ -550,83 +650,134 @@ METHOD Val( cString AS STRING) AS USUAL
 		xRet := Unformat( cString, cPicture, cType)
 	ENDIF
 
+
 	RETURN xRet
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Validate/*" />
 METHOD Validate( uValue AS USUAL, arg := NIL AS USUAL) AS LOGIC                       
+
 
 	RETURN cbValidation = NIL .OR. Eval( cbValidation, uValue, arg )
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Validation/*" />
 ACCESS Validation  AS USUAL                             
 	RETURN cbValidation
 
+
+/// <include file="System.xml" path="doc/FieldSpec.ValType/*" />
 ACCESS ValType AS STRING                                 
 	// Returns the storage type as a keyword (INT, STRING, etc.)
 	RETURN cType
 
 
+
+
+/// <include file="System.xml" path="doc/FieldSpec.MinLengthHL/*" />
 ACCESS MinLengthHL AS HyperLabel
 	RETURN SELF:oHLMinLength
 
+
+/// <include file="System.xml" path="doc/FieldSpec.RangeHL/*" />
 ACCESS RangeHL AS HyperLabel
 	RETURN SELF:oHLRange
 
+
+/// <include file="System.xml" path="doc/FieldSpec.RequiredHL/*" />
 ACCESS RequiredHL AS HyperLabel
 	RETURN SELF:oHLRequired
 
+
+/// <include file="System.xml" path="doc/FieldSpec.ValidationHL/*" />
 ACCESS ValidationHL AS HyperLabel
 	RETURN SELF:oHLValidation
 
+
 END CLASS
 
+
+/// <include file="System.xml" path="doc/DateFS/*" />
 PARTIAL CLASS DateFS INHERIT FieldSpec
 
+
+/// <include file="System.xml" path="doc/DateFS.ctor/*" />
 CONSTRUCTOR( oHLName := "__DateFS" AS STRING)                      
     SELF(HyperLabel{oHLName})
     
+    
+/// <include file="System.xml" path="doc/DateFS.ctor/*" />
 CONSTRUCTOR( oHLName AS HyperLabel)                      
 	SUPER(oHLName,"D",8,0)
 	RETURN 
 END CLASS
 
+
+/// <include file="System.xml" path="doc/IntegerFS/*" />
 PARTIAL CLASS IntegerFS INHERIT FieldSpec
+/// <include file="System.xml" path="doc/IntegerFS.ctor/*" />
 CONSTRUCTOR( oHLName := "__MoneyFS" AS STRING, uLength := 10 AS DWORD)   
     SELF(HyperLabel{oHLName}, uLength)
 
+
+/// <include file="System.xml" path="doc/IntegerFS.ctor/*" />
 CONSTRUCTOR( oHLName AS HyperLabel, uLength := 10 AS DWORD)   
 	SUPER(oHLName,"N",uLength,0)
 	SELF:Picture := " 9,999"
 	RETURN 
 END CLASS
 
+
+/// <include file="System.xml" path="doc/LogicFS/*" />
 PARTIAL CLASS LogicFS INHERIT FieldSpec
 
+
+/// <include file="System.xml" path="doc/LogicFS.ctor/*" />
 CONSTRUCTOR(oHLName := "__LogicFS" AS STRING)   
     SELF(HyperLabel{oHLName})
     
+    
+/// <include file="System.xml" path="doc/LogicFS.ctor/*" />
 CONSTRUCTOR(oHLName AS HyperLabel)   
 	SUPER(oHLName,"L",1,0)
 	RETURN 
 END CLASS
 
+
+/// <include file="System.xml" path="doc/MoneyFS/*" />
 PARTIAL CLASS MoneyFS INHERIT NumberFS
 
+
+/// <include file="System.xml" path="doc/MoneyFS.ctor/*" />
 CONSTRUCTOR( oHLName := "__MoneyFS" AS STRING, uLength := 12 AS DWORD, uDecimals := 2 AS DWORD)   
 	SUPER(oHLName,uLength,uDecimals)
 
 
+
+
+/// <include file="System.xml" path="doc/MoneyFS.ctor/*" />
 CONSTRUCTOR( oHLName AS HyperLabel, uLength := 12 AS DWORD, uDecimals := 2 AS DWORD)   
 	SUPER(oHLName,uLength,uDecimals)
 
 
+
+
 END CLASS
 
+
+/// <include file="System.xml" path="doc/NumberFS/*" />
 PARTIAL CLASS NumberFS INHERIT FieldSpec
 
+
+/// <include file="System.xml" path="doc/NumberFS.ctor/*" />
 CONSTRUCTOR(oHLName := "__NumberFS" AS STRING, uLength := 12 AS DWORD, uDecimals := 2 AS DWORD)    
     SELF( HyperLabel{oHLName}, uLength, uDecimals)
 
+
+/// <include file="System.xml" path="doc/NumberFS.ctor/*" />
 CONSTRUCTOR(oHLName AS HyperLabel, uLength := 12 AS DWORD, uDecimals := 2 AS DWORD)    
 	SUPER(oHLName,"N",uLength,uDecimals)
+
 
 	IF  uDecimals > 0
 		SELF:Picture := Replicate("9",uLength-uDecimals-1) + "." +;
@@ -636,19 +787,28 @@ CONSTRUCTOR(oHLName AS HyperLabel, uLength := 12 AS DWORD, uDecimals := 2 AS DWO
 	ENDIF
 	RETURN 
 
+
 END CLASS
 
+
+/// <include file="System.xml" path="doc/StringFS/*" />
 PARTIAL CLASS StringFS INHERIT FieldSpec
 
+
+/// <include file="System.xml" path="doc/StringFS.ctor/*" />
 CONSTRUCTOR( oHLName := "__StringFS" AS STRING, uLength := 10 AS DWORD)              
 	SELF(HyperLabel{oHLName},uLength)
 	RETURN 
 
+
+/// <include file="System.xml" path="doc/StringFS.ctor/*" />
 CONSTRUCTOR( oHLName AS HyperLabel, uLength := 10 AS DWORD)              
 	SUPER(oHLName,"C",uLength,0)
 	RETURN 
 
+
 END CLASS
+
 
 INTERNAL FUNCTION TypeAsString(wType AS DWORD) AS STRING
 	IF wType = STRING
@@ -662,4 +822,5 @@ INTERNAL FUNCTION TypeAsString(wType AS DWORD) AS STRING
 	ELSE
 		RETURN "integer"
 	ENDIF
+
 

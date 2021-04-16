@@ -1,8 +1,13 @@
+/// <include file="Gui.xml" path="doc/CheckBox/*" />
 CLASS CheckBox INHERIT Button
 	PROTECT lSavedChecked AS LOGIC
 
+
+/// <include file="Gui.xml" path="doc/CheckBox.Checked/*" />
 ACCESS Checked 
 	
+	
+
 
 	IF SELF:ValidateControl()
 		RETURN (SendMessage(SELF:Handle(), BM_GETCHECK, 0, 0) != 0)
@@ -11,8 +16,13 @@ ACCESS Checked
 	ENDIF
 
 
+
+
+/// <include file="Gui.xml" path="doc/CheckBox.Checked/*" />
 ASSIGN Checked(lChecked) 
 	
+	
+
 
 	IF SELF:ValidateControl()
 		IF !IsLogic(lChecked)
@@ -21,49 +31,72 @@ ASSIGN Checked(lChecked)
 		SendMessage(SELF:Handle(), BM_SETCHECK, DWORD(_CAST, lChecked), 0)
 	ENDIF
 
+
 	__lModified := TRUE
 	SELF:__Update()
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/CheckBox.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	
+	
+
 
 	IF IsWindow(hwnd)
 		lSavedChecked := SELF:Checked
 	ENDIF
 
+
 	RETURN SUPER:Destroy()
 
+
+/// <include file="Gui.xml" path="doc/CheckBox.Image/*" />
 ACCESS Image 
 	//PP-031002
 	RETURN SELF:__GetImage()
 
+
+/// <include file="Gui.xml" path="doc/CheckBox.Image/*" />
 ASSIGN Image(oNewImage) 
 	//PP-031002
 	IF ! SELF:__SetImage(oNewImage)
 		SUPER:Image := oNewImage
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/CheckBox.ctor/*" />
 CONSTRUCTOR( oOwner, xID, oPoint, oDimension, cText, kStyle) 
 	
+	
+
 
 	SUPER(oOwner, xID, oPoint, oDimension, cText, kStyle, TRUE)
+
 
 	IF !IsInstanceOfUsual(xID, #ResourceID) .and. IsNil(kStyle)
 		SELF:SetStyle(BS_AUTOCHECKBOX)
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/CheckBox.TextValue/*" />
 ACCESS TextValue 
 	LOCAL lTicked AS LOGIC
 	LOCAL cTickValue AS STRING
 
+
+	
 	
 	lTicked := SELF:Checked
+
 
 	IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
 		cTickValue := SELF:FieldSpec:Transform(lTicked)
@@ -71,17 +104,23 @@ ACCESS TextValue
 		cTickValue := AsString(lTicked)
 	ENDIF
 
+
 	RETURN cTickValue
 
+
+/// <include file="Gui.xml" path="doc/CheckBox.TextValue/*" />
 ASSIGN TextValue(cNewValue) 
 	LOCAL lOldTicked AS LOGIC
 	LOCAL lTicked AS LOGIC
 	LOCAL uTicked AS USUAL
 
+
+	
 	
 	IF !IsString(cNewValue)
 		WCError{#TextValue,#CheckBox,__WCSTypeError,cNewValue,1}:Throw()
 	ENDIF
+
 
 	lOldTicked := SELF:Checked
 	IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
@@ -97,18 +136,25 @@ ASSIGN TextValue(cNewValue)
 		lTicked := Unformat(cNewValue, "", "L")
 	ENDIF
 
+
 	IF (lTicked != lOldTicked)
 		SELF:Checked := lTicked
 		SELF:Modified := .T. 
 		// self:SetFocus()
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/CheckBox.Value/*" />
 ACCESS Value 
 	LOCAL uVal AS USUAL
 
+
 	
+	
+
 
 	IF IsInstanceOf(SELF:Owner, #DataWindow)
 		//PP-041004  uVal below must always be NIL since it is a LOCAL
@@ -116,7 +162,9 @@ ACCESS Value
 			uValue := SELF:Checked
 		// ENDIF
 
+
 		uVal := SUPER:Value
+
 
 		IF IsString(uVal)
 			RETURN (uVal == ".T.")
@@ -126,5 +174,7 @@ ACCESS Value
 	ENDIF
 	RETURN SELF:Checked
 
+
 END CLASS
+
 

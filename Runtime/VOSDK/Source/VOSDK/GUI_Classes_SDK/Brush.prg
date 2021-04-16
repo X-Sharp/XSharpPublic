@@ -1,11 +1,15 @@
+/// <include file="Gui.xml" path="doc/Brush/*" />
 CLASS Brush INHERIT VObject
 	PROTECT hBrush   AS PTR
 	PROTECT _hParent AS PTR
 
+
+ /// <exclude />
 	METHOD __SetBrushOrg(_hDc AS PTR, hClient AS PTR) AS VOID STRICT 
 	LOCAL sRect   	IS _winRect
 	LOCAL sPoint	IS _winPoint	
 	LOCAL hParent AS PTR
+
 
 	IF _hParent == NULL_PTR
 		//PP-040416 Issue 12706
@@ -24,6 +28,7 @@ CLASS Brush INHERIT VObject
 		hParent := _hParent
 	ENDIF
 
+
 	IF hParent != hClient
 		UnrealizeObject(hBrush)                                   
 		GetWindowRect(hClient, @sRect)
@@ -39,18 +44,25 @@ CLASS Brush INHERIT VObject
 	ENDIF
 	RETURN
 
+
+/// <include file="Gui.xml" path="doc/Brush.CreateNew/*" />
 METHOD CreateNew(xColor, kHatchStyle) 
 	LOCAL argTypeError AS LOGIC
 
+
 	
+	
+
 
 	IF (hBrush != NULL_PTR)
 		DeleteObject(hBrush)
 		hBrush := NULL_PTR
 	ENDIF
 
+
 	IF IsInstanceOfUsual(xColor, #Color)
 		DEFAULT(@kHatchStyle, HATCHSOLID)
+
 
 		IF IsNumeric(kHatchStyle)
 			IF (kHatchStyle == HATCHSOLID)
@@ -62,12 +74,14 @@ METHOD CreateNew(xColor, kHatchStyle)
 			argTypeError := TRUE
 		ENDIF
 
+
 	ELSEIF IsInstanceOfUsual(xColor, #Bitmap)
 		IF IsNil(kHatchStyle)
 			hBrush := CreatePatternBrush(xColor:Handle())
 		ELSE
 			argTypeError := TRUE
 		ENDIF
+
 
 	ELSEIF IsNumeric(xColor)
 		IF IsNil(kHatchStyle)
@@ -76,48 +90,73 @@ METHOD CreateNew(xColor, kHatchStyle)
 			argTypeError := TRUE
 		ENDIF
 
+
 	ELSE
 		argTypeError := TRUE
 	ENDIF
+
 
 	IF argTypeError
 		WCError{#Init, #Brush, __WCSTypeError}:Throw()
 	ENDIF
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/Brush.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	
+	
+
 
 	IF (hBrush != NULL_PTR)
 		DeleteObject(hBrush)
 		hBrush := NULL_PTR
 	ENDIF
 
+
 	SUPER:Destroy()
+
 
 	RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/Brush.Handle/*" />
 METHOD Handle() AS PTR
 	
+	
+
 
 	RETURN hBrush
 
+
+/// <include file="Gui.xml" path="doc/Brush.ctor/*" />
 CONSTRUCTOR(xColor, kHatchStyle, oParent) 
 
+
 	
+	
+
 
 	SUPER()
 
+
 	SELF:CreateNew(xColor, kHatchStyle)
+
 
 	SELF:Parent := oParent
 
+
 	
+	
+
 
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Brush.Parent/*" />
 ASSIGN Parent (oWindow) 
 	LOCAL oParent AS Window
+
 
 	IF IsInstanceOfUsual(oWindow, #Window)
 		IF IsInstanceOf(oWindow, #DataWindow)
@@ -131,11 +170,14 @@ ASSIGN Parent (oWindow)
 	ENDIF
    RETURN 
 
+
 END CLASS
+
 
 /// <exclude/>
 FUNCTION __ConvertHatch(hatchStyle AS INT) AS INT STRICT
 	LOCAL retVal AS INT
+
 
 	SWITCH hatchStyle
 	CASE HATCHDIAGONAL45
@@ -152,11 +194,14 @@ FUNCTION __ConvertHatch(hatchStyle AS INT) AS INT STRICT
 		retVal := HS_DIAGCROSS
 	END SWITCH
 
+
 	RETURN retVal
+
 
 /// <exclude/>
 FUNCTION __ConvertBrush(brushType AS INT) AS INT STRICT
 	LOCAL retVal AS INT
+
 
 	SWITCH brushType 
 	CASE BRUSHBLACK
@@ -174,5 +219,6 @@ FUNCTION __ConvertBrush(brushType AS INT) AS INT STRICT
 	OTHERWISE
 		retVal := WHITE_BRUSH
 	END SWITCH
+
 
 	RETURN retVal

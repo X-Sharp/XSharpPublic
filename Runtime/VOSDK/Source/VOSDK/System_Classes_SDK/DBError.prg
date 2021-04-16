@@ -1,5 +1,8 @@
+/// <include file="System.xml" path="doc/DbError/*" />
 PARTIAL CLASS DbError   INHERIT Error
 
+
+/// <include file="System.xml" path="doc/DbError.ctor/*" />
 CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 )  
     //RvdH 080609 Added call to super:Init to correctly fill the callstack
     SUPER()
@@ -30,15 +33,20 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 	Severity := ES_ERROR
 	RETURN 
 
+
 #ifdef __XSHARP_RT__
+/// <include file="System.xml" path="doc/DbError.Throw/*" />
 METHOD Throw() AS VOID STRICT
 #else
+/// <include file="System.xml" path="doc/DbError.Throw/*" />
 METHOD Throw()
 #endif
+
 
 	IF CanBreak()
 		BREAK SELF
 	ENDIF
 	RETURN Eval(ErrorBlock(), SELF)
 END CLASS
+
 

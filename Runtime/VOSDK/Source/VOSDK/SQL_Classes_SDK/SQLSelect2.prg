@@ -1,19 +1,25 @@
+
 PARTIAL CLASS SQLSelect
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.AddDateVal/*" />
 METHOD AddDateVal( uFieldPos, dDate ) 
 	//  Adds time string to Timestamp field
 	LOCAL cVal  AS STRING
 	LOCAL cDate AS STRING
 	LOCAL cTime AS STRING
 
+
 	IF !IsDate( dDate )
 		dDate := Today()
 	ENDIF
+
 
 	cVal := SELF:GetTimestamp( uFieldPos )
 	IF IsNil( cVal )
 		RETURN NIL
 	ENDIF
+
 
 	cDate := DToCSQL( dDate )
 	IF SLen( cVal ) = 0
@@ -24,14 +30,18 @@ METHOD AddDateVal( uFieldPos, dDate )
 	cVal := cDate + " " + cTime
 	RETURN SELF:SetTimeStamp( uFieldPos, cVal )
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.AddTimeString/*" />
 METHOD AddTimeString( uFieldPos, cTime ) 
 	//  Adds time string to Timestamp field
 	LOCAL cVal  AS STRING
 	LOCAL cDate AS STRING
 
+
 	IF !IsString( cTime )
 		cTime := Time()
 	ENDIF
+
 
 	IF At2( ".", cTime ) == 0
 		cTime := cTime + ".000000"
@@ -51,11 +61,17 @@ METHOD AddTimeString( uFieldPos, cTime )
 
 
 
+
+
+
+
+/// <include file="SQL.xml" path="doc/SQLSelect.Append/*" />
 METHOD Append() 
 	LOCAL nIndex    AS DWORD
 // 	LOCAL nSize     AS INT
 // 	LOCAL pTemp     AS PTR
 // 	LOCAL oData		AS SqlData
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:Append()" )
@@ -73,19 +89,23 @@ METHOD Append()
 		RETURN FALSE
 	ENDIF
 
+
 	IF !lFetchFlag
 		SELF:__GetColIndex( 1, TRUE )
 	ENDIF
+
 
    // Set Append/Deleted Flags and set EOF/BOF Flags to FALSE
    SELF:lAppendFlag := TRUE
    SELF:lDeleteFlag := FALSE
    SELF:__SetRecordFlags(FALSE, FALSE)
 
+
    // initialize SQLData objects...
    FOR nIndex := 1 TO nNumCols
 		SELF:__InitColValue(nIndex) 
 	NEXT
+
 
 	SELF:lReadColumnInfo		 := TRUE 		//RvdH 070716 Abused to remember lAppendFlag 
 	SELF:lNotifyIntentToMove := FALSE
@@ -97,9 +117,13 @@ METHOD Append()
 		__SQLOutputDebug( "   nLastRecNum: " + NTrim( SELF:nLastRecnum ) )
 	#ENDIF
 
+
 	RETURN TRUE
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.AppendRow/*" />
 METHOD AppendRow( lForce ) 
+
 
 	LOCAL nIndex    AS DWORD
 	LOCAL sInsert   AS STRING
@@ -115,9 +139,11 @@ METHOD AppendRow( lForce )
 	LOCAL cQuote	AS STRING
 	LOCAL sValues	AS STRING
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:AppendRow( "+AsString( lForce )+" )" )
 	#ENDIF
+
 
 	lAppendFlag  := FALSE
 	IF SELF:lRowModified
@@ -127,16 +153,20 @@ METHOD AppendRow( lForce )
 			__SQLOutputDebug( "**  suppressed because not modified " )
 		#ENDIF
 
+
 		RETURN TRUE
 	ENDIF
+
 
 	IF IsLogic( lForce ) .AND. !lForce .AND. !SELF:lNotifyIntentToMove
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "**  suppressed by !lNotifyIntentToMove" )
 		#ENDIF
 
+
 		RETURN TRUE
 	ENDIF
+
 
 	sInsert 		:= "insert into " + SELF:cTableName + " ( "
 	sValues 		:= ""
@@ -158,6 +188,7 @@ METHOD AppendRow( lForce )
 				AAdd( aLongData, { nIndex, oData:LongValue } )
 				nLongData++
 
+
 			ELSE
 				cValue := __GetDataValuePSZ( oColumn, oData, FALSE, FALSE )
 			ENDIF
@@ -173,8 +204,10 @@ METHOD AppendRow( lForce )
 			ENDIF
 			++nCount
 
+
 		ENDIF
 	NEXT
+
 
 	IF nCount = 0
 		lAppendFlag := FALSE
@@ -182,16 +215,22 @@ METHOD AppendRow( lForce )
 		RETURN TRUE
 	ENDIF
 
+
 	sInsert += ") values ( "+sValues + " ) "
+
+
 
 
 	oInsert := oConn:__GetExtraStmt(sInsert)
 
+
 	SELF:__PrepareStmtOptions( oInsert )
 	oInsert:SQLString := SELF:PreExecute( oInsert:SQLString )
 
+
 	IF !oInsert:Execute()
 		SELF:__CopySQLError( #AppendRow, oInsert:ErrInfo )
+
 
 		IF oStmt:__ErrInfo:ReturnCode != SQL_SUCCESS_WITH_INFO
 			oConn:__CloseExtraStmt(oInsert)
@@ -199,15 +238,19 @@ METHOD AppendRow( lForce )
 		ENDIF
 	ENDIF
 
+
 	SELF:nRowCount := oInsert:NumSuccessfulRows
 	oConn:__CloseExtraStmt(oInsert)
+
 
 	IF nRowCount = 0
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__NO_INS ), #AppendRow )
 		RETURN FALSE
 	ENDIF
 
+
 	SELF:nAppendRecNum := SELF:nRecNum
+
 
 	IF SELF:__Reset()
 		SELF:nLastRecNum := SELF:nLastRecNum + SELF:NumSuccessfulRows
@@ -215,6 +258,7 @@ METHOD AppendRow( lForce )
 		lReadColumnInfo := FALSE
 		lRet := TRUE
 	ENDIF
+
 
 	// Now write the Long Values to the new record
 	IF nLongData > 0
@@ -229,9 +273,13 @@ METHOD AppendRow( lForce )
 		SELF:Notify( NOTIFYFILECHANGE )
 	ENDIF
 
+
 	RETURN lRet
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.dtor/*" />
 DESTRUCTOR() 
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:Axit()" )
@@ -240,6 +288,8 @@ DESTRUCTOR()
 	UnregisterAxit(SELF)
 	RETURN 
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.BindColumn/*" />
 METHOD BindColumn( i ) 
 	LOCAL nCType    AS SHORTINT
 	LOCAL nRetCode  AS SHORTINT
@@ -251,9 +301,11 @@ METHOD BindColumn( i )
 	LOCAL nODBCType AS SHORTINT
 	LOCAL oData		 AS SQLData
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:BindColumn() " + NTrim( i ) )
 	#ENDIF
+   
    
 	oCol := SELF:aSQLColumns[i]
 	nODBCType := oCol:ODBCType
@@ -267,14 +319,17 @@ METHOD BindColumn( i )
 	nSize	   := LONGINT(oData:Length)
 	nCType := SQLType2CType( nODBCType )
 
+
 	nRetCode := SQLBindCol( oStmt:StatementHandle, i,   ;
 							nCType,                     ;
 							pData,                      ;
 							nSize,                      ;
 							pLength )
 
+
 	IF nRetCode != SQL_SUCCESS
 		oStmt:MakeErrorInfo(SELF, #BindColumn, nRetCode)
+
 
 		#IFDEF __DEBUG__
 			__SQLOutputDebug(   " SQLBindCol() failed " )
@@ -283,12 +338,16 @@ METHOD BindColumn( i )
 		lRet := TRUE
 	ENDIF
 
+
 	RETURN lRet
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.Close/*" />
 METHOD Close() 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:Close()" )
 	#ENDIF
+
 
 	IF ! SELF:__GoCold(TRUE, TRUE)
 		RETURN FALSE
@@ -301,6 +360,8 @@ METHOD Close()
 #ENDIF	
 
 
+
+
 	SELF:lFetchFlag      := FALSE
 	SELF:lCsrOpenFlag    := FALSE
 	SELF:lBof            := TRUE
@@ -310,10 +371,15 @@ METHOD Close()
 	SELF:nRecNum         := 0
 	SELF:nLastRecNum     := 0
 	
+	
+
 
 	RETURN TRUE
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLSelect.Column/*" />
 METHOD Column( siCol ) 
 	LOCAL nIndex    AS DWORD
 	LOCAL oColumn   AS OBJECT
@@ -328,8 +394,11 @@ METHOD Column( siCol )
 		oColumn := aSQLColumns[nIndex]
 	ENDIF
 
+
 	RETURN oColumn
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.ColumnAttributes/*" />
 METHOD ColumnAttributes( siCol ) 
 	LOCAL nIndex            AS DWORD
 	LOCAL nValue            AS LONGINT
@@ -342,22 +411,27 @@ METHOD ColumnAttributes( siCol )
 	LOCAL nAttrib				AS DWORD
 	//RvdH 050413 Optimized  : added local oSqlCol and removed duplicate code by using a Loop
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:ColumnAttributes( "+AsString( siCol )+" )" )
 	#ENDIF
 
+
 	nIndex := SELF:__GetColIndex( siCol, TRUE )
+
 
 	IF nIndex = 0 .OR. nIndex > nNumCols
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADCOL ), #ColumnAttributes )
 		RETURN NULL_OBJECT
 	ENDIF
 
+
 	IF ALen( SELF:aColumnAttributes ) >= nIndex
 		IF IsObject( SELF:aColumnAttributes[nIndex] )
 			RETURN SELF:aColumnAttributes[nIndex]
 		ENDIF
 	ENDIF
+
 
 	oSqlCol		:= aSQLColumns[nIndex]
 	oSQLColAtt 	:= SQLColumnAttributes{ oSqlCol:HyperLabel , ;
@@ -369,7 +443,9 @@ METHOD ColumnAttributes( siCol )
 										oSqlCol:ColName,    ;
 										oSqlCol:AliasName }
 
+
 	oSQLColAtt:DisplaySize		:= oSqlCol:DisplaySize
+
 
 	//RvdH 050413 Converted this into a loop, to remove tons of duplicate code
    //
@@ -381,9 +457,12 @@ METHOD ColumnAttributes( siCol )
 						SQL_COLUMN_CASE_SENSITIVE,	;       // 6
 						SQL_COLUMN_SEARCHABLE}             // 7
 
+
 	aValues 	:= ArrayNew(ALen(aAttribs))
 
+
 	FOR nAttrib := 1 TO ALen(aAttribs)
+
 
 		nRetCode := SQLColAttributes(   oStmt:StatementHandle,  ;
 										WORD( _CAST,nIndex ),   ;
@@ -392,12 +471,14 @@ METHOD ColumnAttributes( siCol )
 										@nMax,                  ;
 										@nValue )
 
+
 		IF ( nRetCode != SQL_SUCCESS )
 			oStmt:MakeErrorInfo(SELF, #ColumnAttributes, nRetCode)
 			RETURN NULL_OBJECT
 		ENDIF
 		aValues[nAttrib] := nValue
 	NEXT
+
 
 	oSQLColAtt:Length 			:= aValues[1]
 	oSQLColAtt:Unsigned 			:= aValues[2] != 0
@@ -407,12 +488,15 @@ METHOD ColumnAttributes( siCol )
    oSQLColAtt:CaseSensitive 	:= aValues[6] != 0
 	oSQLColAtt:Searchable 		:= aValues[7]
 
+
 	oStmt:__ErrInfo:ErrorFlag 	:= FALSE
 	SELF:aColumnAttributes[nIndex] := oSQLColAtt
 	//RvdH 050413 Replace Column in aSQLColumns since ColumAttributes is a subclass
 	SELF:aSQLColumns[nIndex] := oSqlColAtt
 	RETURN oSQLColAtt
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.Commit/*" />
 METHOD Commit() 
 	//
 	//  UH: Obsolete method, don't support after 2.0 !!!!
@@ -424,9 +508,12 @@ METHOD Commit()
 	SELF:Update(TRUE)
 	RETURN SELF:oStmt:__Connection:Commit()
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.DataField/*" />
 METHOD DataField( uFieldPos ) 
 	LOCAL nIndex        AS DWORD
 	LOCAL oRet          AS OBJECT
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:DataField( "+AsString( uFieldPos )+" )" )
@@ -437,10 +524,13 @@ METHOD DataField( uFieldPos )
 	ELSE
 		oStmt:__ErrInfo:ErrorFlag := FALSE
 
+
 		oRet := aDataFields[nIndex]
 	ENDIF
 	RETURN oRet
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.Delete/*" />
 METHOD Delete() 
 	LOCAL sDelete       AS STRING
 	LOCAL oDelete       AS SQLStatement
@@ -453,9 +543,11 @@ METHOD Delete()
 	LOCAL oCOl			  AS SQLColumn
 	LOCAL nCol				AS LONGINT
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:Delete()" )
 	#ENDIF
+
 
 	IF lAppendFlag
 		lAppendFlag := FALSE
@@ -463,6 +555,7 @@ METHOD Delete()
 		nRecNum := nAppendRecNum
 		RETURN TRUE
 	ENDIF
+
 
 	IF ! lCsrOpenFlag
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__NO_CSR ), #Delete )
@@ -473,9 +566,13 @@ METHOD Delete()
 	SWITCH nType
 	CASE SQL_SC_UPD_CURSOR
 
+
 		SELF:__GetCursorName()
 
+
 		sDelete := "delete from " + cTableName + " where current of " + cCursor
+
+
 
 
 	CASE SQL_SC_UPD_KEY
@@ -483,6 +580,7 @@ METHOD Delete()
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__NO_KEY ), #Delete )
 			RETURN FALSE
 		ENDIF
+
 
 		sDelete := "delete from " + cTableName + " where "
       //aDataBuffer := aSQLDataBuffer[nBuffIndex, SQL_DATA_BUFFER]
@@ -495,6 +593,7 @@ METHOD Delete()
             sDelete += " and "
          ENDIF
       NEXT
+
 
 	CASE SQL_SC_UPD_VALUE
 		sDelete := "delete from " + cTableName + " where "
@@ -515,7 +614,9 @@ METHOD Delete()
       NEXT
 	END SWITCH
 
+
 	oDelete := oConn:__GetExtraStmt(sDelete)
+
 
 	SELF:__PrepareStmtOptions( oDelete )
 	oDelete:SQLString := SELF:PreExecute( oDelete:SQLString )
@@ -527,14 +628,18 @@ METHOD Delete()
 		ENDIF
 	ENDIF
 
+
 	nRowCount := oDelete:NumSuccessfulRows
 	oConn:__CloseExtraStmt(oDelete)
+
+
 
 
 	IF nRowCount = 0
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__NO_ROW ), #Delete )
 		RETURN FALSE
 	ENDIF
+
 
 	lRowModified := FALSE
 	IF oStmt:__Connection:ScrollCsr
@@ -543,6 +648,7 @@ METHOD Delete()
 			IF SetDeleted()
 				IF SELF:__Reset()
 					SELF:nLastRecNum := SELF:nLastRecNum - SELF:nRowCount
+
 
 					IF  SELF:nLastRecNum < 1
 						SELF:__SetRecordFlags( TRUE, TRUE )
@@ -555,6 +661,7 @@ METHOD Delete()
 				ENDIF
 			ELSE
 
+
 				SELF:lDeleteFlag := TRUE
 			ENDIF
 		ENDIF
@@ -563,19 +670,25 @@ METHOD Delete()
 		SELF:Skip( -1 )
 	ENDIF
 
+
 	SELF:Notify( NOTIFYDELETE )
+
 
 	IF SELF:BOF .AND. !SELF:EOF
 		SELF:GoTop()
 	ENDIF
 
+
 	RETURN TRUE
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.DirectSkip/*" />
 METHOD DirectSkip( nSkip ) 
 	LOCAL lRet          AS LOGIC
 	LOCAL lRowCount     AS DWORD // dcaton 070206 was LONGINT
 	LOCAL nRowStat      AS WORD // dcaton 070206 was INT
 	LOCAL nRetCode      AS INT
+
 
 	nRetCode := SQLExtendedFetch( SELF:oStmt:StatementHandle, ;
 									SQL_FETCH_RELATIVE, ;
@@ -588,6 +701,8 @@ METHOD DirectSkip( nSkip )
 	ENDIF
 	RETURN lRet
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.Error/*" />
 METHOD Error( oError ) 
 	//  Method for handling error conditions raised during database processing
 	//
@@ -599,6 +714,7 @@ METHOD Error( oError )
 	//
 	//  Note: if an error comes in while one is being handled, the Error
 	//  method immediately breaks without any fancy stuff.
+
 
 	STATIC LOCAL    lErrorProcessingSemaphor    AS LOGIC
 	IF lErrorProcessingSemaphor
@@ -615,6 +731,8 @@ METHOD Error( oError )
 	ENDIF
 	RETURN NIL
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.Execute/*" />
 METHOD Execute( uParam ) 
 	LOCAL nCount        AS DWORD
 	LOCAL lRet          AS LOGIC
@@ -622,13 +740,16 @@ METHOD Execute( uParam )
 	LOCAL aArgs         AS ARRAY
 	//RvdH 050413 Optimized by suppress reading of Column Attributes
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:Execute()" )
 	#ENDIF
 
+
 	IF oStmt:StatementHandle = SQL_NULL_HSTMT
 		SELF:__AllocStmt()
 	ENDIF
+
 
 	oStmt:SQLString := SELF:PreExecute( oStmt:SQLString )
 	nCount := PCount()
@@ -643,6 +764,7 @@ METHOD Execute( uParam )
 		ENDIF 
 	ENDIF
 	lRet := oStmt:Execute( aArgs)
+
 
 	IF lRet
 		SELF:lCsrOpenFlag := TRUE
@@ -664,17 +786,21 @@ METHOD Execute( uParam )
 			__SQLOutputDebug( "** Number of Rows: " + NTrim( oStmt:NumSuccessfulRows ) )
 		#ENDIF
 
+
 		//SELF:lNoBuffering  := oConn:ScrollCsr
 		lRet := SELF:__InitColumnDesc()
+
 
       // RvdH 050413 Suppress reading of ColumnAttributes until really necessary
 		// 		FOR i := 1 TO SELF:nNumCols
 		// 			SELF:ColumnAttributes( i )
 		// 		NEXT
 
+
 		IF SELF:nNumCols = 0
 			lRet := FALSE
 		ELSE
+
 
 //          RvdH 080925 This generates a lot of unwanted traffic
 //          IF !SELF:lLastRecFound
@@ -683,7 +809,9 @@ METHOD Execute( uParam )
 //             ENDIF
 //          ENDIF
 
+
 			SELF:GoTop()
+
 
 			#IFDEF __DEBUG__
 				//__SQLOutputDebug( "** Buffering: " + AsString( !SELF:lNoBuffering ) )
@@ -701,6 +829,8 @@ METHOD Execute( uParam )
 	// Parameters are not freed. They are used in the __RecCount Access
 	RETURN lRet
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.ExtendedFetch/*" />
 METHOD ExtendedFetch( nFetchType, nRow ) 
 	LOCAL nRetCode      AS INT
 	LOCAL nIndex        AS DWORD
@@ -709,6 +839,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
 	LOCAL lAppended     AS LOGIC
 	LOCAL lRet          AS LOGIC
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:ExtendedFetch( "+AsString( nFetchType )+","+AsString( nRow )+" )" )
 	#ENDIF
@@ -716,6 +847,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
 	IF ! SELF:__ForceOpen()
 		RETURN FALSE
 	ENDIF
+
 
 	//  Already at eof?
 	IF SELF:lEof .AND. nFetchType = SQL_FETCH_NEXT
@@ -740,6 +872,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
 			SELF:Notify( NOTIFYFILECHANGE ) //refresh browser
 		ENDIF
 
+
 		RETURN FALSE
 	ENDIF
 	//  append pending?
@@ -751,6 +884,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
       lAppended := TRUE
    ENDIF
 
+
    SELF:__SetRecordFlags( FALSE, NIL )
 	//
 	// Fetch the row...
@@ -760,6 +894,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
 									nRow,                   ;
 									@nNumRows,              ;
 									@nRowStatus )
+
 
 	IF nRetCode = SQL_NO_DATA_FOUND
 		SWITCH (LONG) nFetchType
@@ -773,11 +908,13 @@ METHOD ExtendedFetch( nFetchType, nRow )
 				__SQLOutputDebug( "** SQLSelect:ExtendedFetch( NEXT ) EOF!, last record found!" )
 			#ENDIF
 
+
 		CASE SQL_FETCH_PREV
 			SELF:__SetRecordFlags( TRUE, NIL )
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "** SQLSelect:ExtendedFetch( PREV ) BOF!" )
 			#ENDIF
+
 
 		CASE SQL_FETCH_FIRST 
 		CASE SQL_FETCH_LAST
@@ -785,6 +922,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "** SQLSelect:ExtendedFetch() BOF & EOF!" )
 			#ENDIF
+
 
 		CASE SQL_FETCH_RELATIVE
 			IF nRow > 0
@@ -803,17 +941,21 @@ METHOD ExtendedFetch( nFetchType, nRow )
 		IF SELF:lBof .AND. !SELF:lEof
 			// position csr on the first row...
 
+
 			nRetCode := SQLExtendedFetch(   oStmt:StatementHandle,  ;
 											SQL_FETCH_FIRST,        ;
 											0,                      ;
 											@nNumRows,              ;
 											@nRowStatus )
 
+
 			//  Allow with info
 			IF nRetCode != SQL_SUCCESS .AND. nRetCode != SQL_SUCCESS_WITH_INFO
 				IF nRetCode = SQL_NO_DATA_FOUND
 
+
 					SELF:__SetRecordFlags( NIL, TRUE)
+
 
 				ELSE
 					oStmt:MakeErrorInfo(SELF, #ExtendedFetch, nRetCode)
@@ -824,18 +966,22 @@ METHOD ExtendedFetch( nFetchType, nRow )
 				nRecNum := 1
 			ENDIF
 
+
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "   BOF, back on first!" )
 			#ENDIF
 
+
 		ENDIF
 		IF !SELF:lBof .AND. SELF:lEof
+
 
 			nRetCode := SQLExtendedFetch(   oStmt:StatementHandle,  ;
 											SQL_FETCH_LAST,         ;
 											0,                      ;
 											@nNumRows,              ;
 											@nRowStatus )
+
 
 			IF nRetCode != SQL_SUCCESS .AND. nRetCode != SQL_SUCCESS_WITH_INFO
 				IF nRetCode = SQL_NO_DATA_FOUND
@@ -861,9 +1007,12 @@ METHOD ExtendedFetch( nFetchType, nRow )
 			__SQLOutputDebug( "*** nRecNum = " + NTrim( nRecNum ) )
 		#ENDIF
 
+
 		RETURN FALSE
 
+
 	ELSEIF nRetCode != SQL_SUCCESS
+
 
 		oStmt:MakeErrorInfo(SELF, #ExtendedFetch, nRetCode)
 		//
@@ -873,9 +1022,12 @@ METHOD ExtendedFetch( nFetchType, nRow )
 			nFetchType = SQL_FETCH_PREV        .AND. ;
 			SubStr3( oStmt:__ErrInfo:SQLState,1,5 ) = "01S06"
 
+
 			oStmt:__ErrInfo:ErrorFlag := FALSE
 
+
 			SELF:__SetRecordFlags( TRUE, NIL)
+
 
 			RETURN TRUE
 		ENDIF
@@ -884,6 +1036,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
 	ELSE
 		SELF:__SetRecordFlags( FALSE, FALSE )
 	ENDIF
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "*** nRowStatus: " + NTrim( nRowStatus ) )
@@ -903,6 +1056,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
 			SELF:__InitColValue( nIndex )
 		NEXT
 
+
 		lRet := TRUE
 		IF nRowStatus = SQL_ROW_DELETED
 			SELF:lDeleteFlag := TRUE
@@ -916,13 +1070,17 @@ METHOD ExtendedFetch( nFetchType, nRow )
 // 			__SQLOutputDebug( "** SQLSelect:ExtendedFetch() rowstat EOF!" )
 // 		#ENDIF
 
+
 // 		RETURN FALSE
 // 	ENDIF
+
 
 	//nBuffIndex := 1
 	SELF:__CopyDataBuffer( SELF:aSQLData, SELF:aOriginalRecord)
 
+
 	//aSQLDataBuffer[nBuffIndex, SQL_DATA_DELETE] := SELF:lDeleteFlag
+
 
 	SELF:lFetchFlag  := TRUE
 	SELF:lRowModified:= FALSE
@@ -932,11 +1090,13 @@ METHOD ExtendedFetch( nFetchType, nRow )
 		++nRecNum
 		SELF:Notify( NOTIFYRECORDCHANGE, 1 )
 
+
 	CASE SQL_FETCH_PREV
 		IF ! lAppended  //  appended already restored recnum
 			--nRecNum
 		ENDIF
 		SELF:Notify( NOTIFYRECORDCHANGE, -1 )
+
 
 	CASE SQL_FETCH_FIRST
 		nRecNum := 1
@@ -945,19 +1105,24 @@ METHOD ExtendedFetch( nFetchType, nRow )
 		ENDIF
 		SELF:Notify( NOTIFYGOTOP )
 
+
 	CASE SQL_FETCH_LAST
 		nRecNum := SELF:nLastRecNum
 		SELF:Notify( NOTIFYGOBOTTOM )
+
 
 	CASE SQL_FETCH_ABSOLUTE
 		nRecNum := nRow
 		SELF:Notify( NOTIFYRECORDCHANGE )
 
+
 	CASE SQL_FETCH_RELATIVE
 		nRecNum += nRow
 		SELF:Notify( NOTIFYRECORDCHANGE, nRow )
 
+
 	END SWITCH
+
 
 	IF !SELF:lLastRecFound
 		IF SELF:nRecnum > SELF:nLastRecNum
@@ -965,15 +1130,19 @@ METHOD ExtendedFetch( nFetchType, nRow )
 		ENDIF
 	ENDIF
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "*** nRecNum = " + NTrim( nRecNum ) )
 	#ENDIF
 	oStmt:__ErrInfo:ErrorFlag := FALSE
 	RETURN lRet
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.Fetch/*" />
 METHOD Fetch( ) 
 	LOCAL nRetCode  AS SHORTINT
 	LOCAL nIndex    AS DWORD
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:Fetch()" )
@@ -987,9 +1156,12 @@ METHOD Fetch( )
 		RETURN FALSE
 	ENDIF
 
+
 	IF !SELF:lFetchFlag
 		SELF:__SetRecordFlags( TRUE, NIL)
 	ENDIF
+
+
 
 
 	IF SELF:lEof .AND. !SELF:lSkipFlag
@@ -997,11 +1169,14 @@ METHOD Fetch( )
 			__SQLOutputDebug( "             Fetch() Already at EOF!" )
 		#ENDIF
 
+
 		RETURN FALSE
 	ENDIF
 
+
 		nRetCode := SQLFetch( oStmt:StatementHandle )
 		IF nRetCode = SQL_NO_DATA_FOUND
+
 
 			SELF:__SetRecordFlags( NIL, TRUE )
 			nLastRecNum := nRecNum
@@ -1011,21 +1186,26 @@ METHOD Fetch( )
 			#ENDIF
 			RETURN FALSE
 
+
 		ELSEIF nRetCode != SQL_SUCCESS
 			oStmt:MakeErrorInfo(SELF, #Fetch, nRetCode)
 			RETURN FALSE
 		ENDIF
 
+
 		FOR nIndex := 1 TO nNumCols
 			SELF:__InitColValue( nIndex )
 		NEXT
 
+
 		SELF:__CopyDataBuffer(SELF:aSqlData, SELF:aOriginalRecord)
 		++nRecNum
+
 
 	IF lFetchFlag
 		SELF:__SetRecordFlags( FALSE, NIL)
 	ENDIF
+
 
 	SELF:lFetchFlag  := TRUE
 	SELF:lRowModified:= FALSE
@@ -1035,22 +1215,28 @@ METHOD Fetch( )
 	SELF:__SetRecordFlags( NIL, FALSE )
 	SELF:Notify( NOTIFYRECORDCHANGE, 1 )
 
+
 	RETURN TRUE
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FIELDGET/*" />
 METHOD FIELDGET( uField ) 
 	LOCAL nType  AS DWORD
 	LOCAL xRet   AS USUAL
 	LOCAL nIndex AS DWORD
 	LOCAL cType  AS STRING
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:FieldGet( "+AsString( uField )+" )" )
 	#ENDIF
+
 
 	nIndex := SELF:__GetColIndex( uField, TRUE )
 	IF nIndex = 0 .OR. nIndex > SELF:FCount
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldGet )
 		SELF:Error( oStmt:ErrInfo )
+
 
 	ELSE
 		xRet := SELF:GetData( nIndex )
@@ -1074,11 +1260,15 @@ METHOD FIELDGET( uField )
 				xRet := Integer( xRet )
 			ENDIF
 
+
 		ENDIF
 	ENDIF
 
+
 	RETURN xRet
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FieldGetFormatted/*" />
 METHOD FieldGetFormatted( uFieldPos ) 
 	LOCAL nIndex    AS DWORD
 	LOCAL xRet      AS USUAL
@@ -1095,6 +1285,8 @@ METHOD FieldGetFormatted( uFieldPos )
 		xRet := ((DataField)aDataFields[nIndex]):__FieldSpec:Transform( xRet )
 	ENDIF
 
+
 	RETURN xRet
 END CLASS
+
 

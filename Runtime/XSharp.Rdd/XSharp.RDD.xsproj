@@ -267,4 +267,11 @@
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>copy $(SolutionDir)\Docs\Ads.xml $(ProjectDir)\Ads.Xml
+    </PreBuildEvent>
+    <PostBuildEvent>erase  $(ProjectDir)\Ads.Xml
+    </PostBuildEvent>
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

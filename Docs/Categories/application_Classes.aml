@@ -12,61 +12,61 @@
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.App</codeEntityReference></para></entry>
 <entry><para>
-        Create an entity that represents the overall application. Please note that you have to create a subclass of App in your code and add a Start() method to this class. You can't add a Start() method to the App() class inside GUI Classes like you can in VO.
-      </para></entry></row>
+            Create an entity that represents the overall application. Please note that you have to create a subclass of App in your code and add a Start() method to this class. You can't add a Start() method to the App() class inside GUI Classes like you can in VO.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.AppWindow</codeEntityReference></para></entry>
 <entry><para>
-        Provide the base class from which all X# application windows are subclassed.
-      </para></entry></row>
+            Provide the base class from which all X# application windows are subclassed.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Clipboard</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DragDropClient</codeEntityReference></para></entry>
 <entry><para>
-        Create the client for use in a drag-and-drop operation.
-      </para></entry></row>
+            Create the client for use in a drag-and-drop operation.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DragDropServer</codeEntityReference></para></entry>
 <entry><para>
-        Create the server for use in a drag-and-drop operation.
-      </para></entry></row>
+            Create the server for use in a drag-and-drop operation.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IpcClient</codeEntityReference></para></entry>
 <entry><para>
-        Register an application as a client able to request and receive data from a designated server application.
-      </para></entry></row>
+            Register an application as a client able to request and receive data from a designated server application.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IpcServer</codeEntityReference></para></entry>
 <entry><para>
-        Register an application as a server able to access data on specific topics and update registered topics and update registered client applications.
-      </para></entry></row>
+            Register an application as a server able to access data on specific topics and update registered topics and update registered client applications.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IpcTopic</codeEntityReference></para></entry>
 <entry><para>
-        Create topic (and items) to be supported by an IPC server and which IPC clients can request.  These objects are used by IpcServer:AddTopic() and IpcClient:RequestData().
-      </para></entry></row>
+            Create topic (and items) to be supported by an IPC server and which IPC clients can request.  These objects are used by IpcServer:AddTopic() and IpcClient:RequestData().
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IpcTopicData</codeEntityReference></para></entry>
 <entry><para>
-        Create a global memory object and pass a data handle back to the application.
-      </para></entry></row>
+            Create a global memory object and pass a data handle back to the application.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ResourceFile</codeEntityReference></para></entry>
 <entry><para>
-        Identify a file containing resource information.
-      </para></entry></row>
+            Identify a file containing resource information.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ResourceID</codeEntityReference></para></entry>
 <entry><para>
-        Identify and create a ResourceID using a numeric resource ID.
-      </para></entry></row>
+            Identify and create a ResourceID using a numeric resource ID.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ResourceString</codeEntityReference></para></entry>
 <entry><para>
-        Extract strings from a resource entity.
-      </para></entry></row>
+            Extract strings from a resource entity.
+        </para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.Codeblock</codeEntityReference></para></entry>
 <entry><para>Internal type that implements the VO Compatible CODEBLOCK type

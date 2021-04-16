@@ -1,30 +1,49 @@
+/// <include file="Gui.xml" path="doc/Color/*" />
 CLASS Color INHERIT VObject
 	PROTECT dwColorRef AS DWORD
 
+
+/// <include file="Gui.xml" path="doc/Color.Blue/*" />
 ACCESS Blue 
+	
 	
 	RETURN GetBValue(dwColorRef)
 
+
+/// <include file="Gui.xml" path="doc/Color.Blue/*" />
 ASSIGN Blue(nBlue) 
+	
 	
 	dwColorRef := _OR(_AND(dwColorRef, 0x0000FFFF), _AND(DWORD(nBlue), 255) << 16)
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Color.ColorRef/*" />
 ACCESS ColorRef 
 	RETURN dwColorRef
 
+
+/// <include file="Gui.xml" path="doc/Color.ColorRef/*" />
 ASSIGN ColorRef(n) 
 	RETURN dwColorRef := n
 
+
+/// <include file="Gui.xml" path="doc/Color.Green/*" />
 ACCESS Green 
+	
 	
 	RETURN GetGValue(dwColorRef)
 
+
+/// <include file="Gui.xml" path="doc/Color.Green/*" />
 ASSIGN Green(nGreen) 
+	
 	
 	dwColorRef := _OR(_AND(dwColorRef, 0x00FF00FF), _AND(DWORD(nGreen), 255) << 8)
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Color.ctor/*" />
 CONSTRUCTOR(nRed, nGreen, nBlue) 
 	LOCAL nColor  AS LONGINT
 	LOCAL dwBlue  AS DWORD
@@ -33,7 +52,9 @@ CONSTRUCTOR(nRed, nGreen, nBlue)
 	//RvdH 050909 Optimize by checking PCOUNT
 	//SE-070427 removed PCount() for future Vulcan compatibility
 	
+	
 	SUPER()
+	
 	
 	IF IsNumeric(nRed) .AND. IsNil(nBlue)
 		IF (nRed < 8)
@@ -44,21 +65,26 @@ CONSTRUCTOR(nRed, nGreen, nBlue)
 						nColor=ColorYellow .OR. ;
 						nColor=ColorWhite
 	
+	
 					dwRed:= 0xFF
 				ENDIF
+	
 	
 				IF nColor=ColorGreen .OR. ;
 						nColor=ColorCyan .OR. ;
 						nColor=ColorYellow .OR. ;
 						nColor=ColorWhite
 	
+	
 					dwGreen:= 0xFF
 				ENDIF
+	
 	
 				IF nColor=ColorBlue .OR. ;
 						nColor=ColorCyan .OR. ;
 						nColor=ColorMagenta .OR. ;
 						nColor=ColorWhite
+	
 	
 					dwBlue:= 0xFF
 				ENDIF
@@ -82,17 +108,27 @@ CONSTRUCTOR(nRed, nGreen, nBlue)
 		dwColorRef := RGB(BYTE(dwRed), BYTE(dwGreen), BYTE(dwBlue))
 	ENDIF
 	
+	
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Color.Red/*" />
 ACCESS Red 
+	
 	
 	RETURN GetRValue(dwColorRef)
 
+
+/// <include file="Gui.xml" path="doc/Color.Red/*" />
 ASSIGN Red(nRed) 
 	
+	
+
 
 	dwColorRef := _OR(_AND(dwColorRef, 0x00FFFF00), _AND(DWORD(nRed), 255))
 
+
 	RETURN 
 END CLASS
+
 

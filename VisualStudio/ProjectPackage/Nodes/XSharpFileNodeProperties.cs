@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using System.Globalization;
 
 using Microsoft.VisualStudio.Project;
-
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project
 {
@@ -86,9 +86,12 @@ namespace XSharp.Project
             get
             {
                 string value = Node.ItemNode.ItemName;
-                if (string.IsNullOrEmpty(value))
-                    return XSharpBuildAction.None;
-                return (XSharpBuildAction)Enum.Parse(typeof(XSharpBuildAction), value);
+                XSharpBuildAction result;
+                if (! Enum.TryParse(value, true, out result))
+                {
+                    result = XSharpBuildAction.None;
+                }
+                return result;
             }
 
             set

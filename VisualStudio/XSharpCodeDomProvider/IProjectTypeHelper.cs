@@ -8,10 +8,10 @@ namespace XSharp.CodeDom
 {
     public interface IProjectTypeHelper
     {
-        XSharpModel.XTypeDefinition ResolveXType(string name, IReadOnlyList<string> usings);
+        XSharpModel.XSourceTypeSymbol ResolveXType(string name, IList<string> usings);
         [Obsolete("This method is obsolete and does the same as ResolveXType")]
-        XSharpModel.XTypeDefinition ResolveReferencedType(string name, IReadOnlyList<string> usings);
-        XSharpModel.IXType ResolveExternalType(string name, IReadOnlyList<string> usings);
+        XSharpModel.XSourceTypeSymbol ResolveReferencedType(string name, IList<string> usings);
+        XSharpModel.IXTypeSymbol ResolveExternalType(string name, IList<string> usings);
 
         XSharpParseOptions ParseOptions { get; }
         string SynchronizeKeywordCase(string code, string fileName);

@@ -110,8 +110,9 @@ namespace Microsoft.VisualStudio.Project
             {
                 return VSConstants.E_FAIL;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(IsOpenedByUs)
+            if (IsOpenedByUs)
             {
                 IVsUIShellOpenDocument shell = this.Node.ProjectMgr.Site.GetService(typeof(IVsUIShellOpenDocument)) as IVsUIShellOpenDocument;
                 Assumes.Present(shell);
@@ -139,6 +140,8 @@ namespace Microsoft.VisualStudio.Project
         /// <remarks>The call to SaveDocData may return Microsoft.VisualStudio.Shell.Interop.PFF_RESULTS.STG_S_DATALOSS to indicate some characters could not be represented in the current codepage</remarks>
         public virtual void Save(bool saveIfDirty)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (saveIfDirty && IsDirty)
 			{
                 IVsPersistDocData persistDocData = DocData;
@@ -158,6 +161,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public bool IsDirty {
             get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 var docTable = (IVsRunningDocumentTable4)node.ProjectMgr.GetService(typeof(SVsRunningDocumentTable));
                 if (docTable == null || !docTable.IsMonikerValid(node.GetMkDocument())) {
                     return false;
@@ -172,6 +177,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public bool IsOpenedByUs {
             get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 var docTable = (IVsRunningDocumentTable4)node.ProjectMgr.GetService(typeof(SVsRunningDocumentTable));
                 if (docTable == null || !docTable.IsMonikerValid(node.GetMkDocument())) {
                     return false;
@@ -193,6 +200,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public uint DocCookie {
             get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 var docTable = (IVsRunningDocumentTable4)node.ProjectMgr.GetService(typeof(SVsRunningDocumentTable));
                 if (docTable == null || !docTable.IsMonikerValid(node.GetMkDocument())) {
                     return (uint)ShellConstants.VSDOCCOOKIE_NIL;
@@ -206,6 +215,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public IVsPersistDocData DocData {
             get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 var docTable = (IVsRunningDocumentTable4)node.ProjectMgr.GetService(typeof(SVsRunningDocumentTable));
                 if (docTable == null || !docTable.IsMonikerValid(node.GetMkDocument())) {
                     return null;
@@ -221,6 +232,8 @@ namespace Microsoft.VisualStudio.Project
             Debug.Assert(this.node != null, "No node has been initialized for the document manager");
 
             object pvar;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             ErrorHandler.ThrowOnFailure(this.node.GetProperty(this.node.ID, (int)__VSHPROPID.VSHPROPID_Caption, out pvar));
 
             return (pvar as string);
@@ -228,10 +241,12 @@ namespace Microsoft.VisualStudio.Project
 
         protected static void CloseWindowFrame(ref IVsWindowFrame windowFrame)
         {
-            if(windowFrame != null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (windowFrame != null)
             {
                 try
                 {
+
                     ErrorHandler.ThrowOnFailure(windowFrame.CloseFrame(0));
                 }
                 finally
@@ -271,6 +286,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentException(SR.GetString(SR.ParameterCannotBeNullOrEmpty, CultureInfo.CurrentUICulture), "caption");
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsUIShell uiShell = site.GetService(typeof(SVsUIShell)) as IVsUIShell;
             Assumes.Present(uiShell);
@@ -328,6 +344,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentNullException("newItemId");
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsRunningDocumentTable pRDT = site.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
             IVsUIShellOpenDocument doc = site.GetService(typeof(SVsUIShellOpenDocument)) as IVsUIShellOpenDocument;
@@ -339,8 +356,9 @@ namespace Microsoft.VisualStudio.Project
             IntPtr docData;
             uint uiVsDocCookie;
             ErrorHandler.ThrowOnFailure(pRDT.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, oldName, out pIVsHierarchy, out itemId, out docData, out uiVsDocCookie));
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(docData != IntPtr.Zero && pIVsHierarchy != null)
+            if (docData != IntPtr.Zero && pIVsHierarchy != null)
             {
                 try
                 {

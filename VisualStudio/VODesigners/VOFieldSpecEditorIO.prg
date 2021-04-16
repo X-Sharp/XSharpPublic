@@ -1,11 +1,16 @@
-#using System.Windows.Forms
-#using System.Drawing
-#using System.Collections
-#using System.Collections.Generic
-#using System.Xml
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Windows.Forms
+USING System.Drawing
+USING System.Collections
+USING System.Collections.Generic
+USING System.Xml
 
-#using System.IO
-#using System.Text
+USING System.IO
+using System.Text
 
 
 PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase

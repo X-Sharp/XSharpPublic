@@ -77,7 +77,7 @@ namespace XSharp.CodeDom
         private string keywordRETURN;
         private string keywordUSING;
         private string keywordTHROW;
-
+        private bool mustEscape = true;
 
         public XSharpCodeGenerator() : base()
         {
@@ -514,12 +514,15 @@ namespace XSharp.CodeDom
 
         protected override void GenerateEventReferenceExpression(CodeEventReferenceExpression e)
         {
+            var oldescape = mustEscape;
             if (e.TargetObject != null)
             {
                 base.GenerateExpression(e.TargetObject);
                 base.Output.Write(this.selector);
+                mustEscape = false;
             }
             this.OutputIdentifier(e.EventName);
+            mustEscape = oldescape;
         }
 
         protected override void GenerateExpressionStatement(CodeExpressionStatement e)
@@ -599,6 +602,7 @@ namespace XSharp.CodeDom
 
         protected override void GenerateFieldReferenceExpression(CodeFieldReferenceExpression e)
         {
+            var oldescape = mustEscape;
             if (e.TargetObject != null)
             {
                 this.GenerateExpression(e.TargetObject);
@@ -611,9 +615,11 @@ namespace XSharp.CodeDom
                 {
                     base.Output.Write(this.selector);
                 }
+                mustEscape = false;
             }
 
             this.OutputIdentifier(e.FieldName);
+            mustEscape = oldescape;
         }
 
         protected override void GenerateGotoStatement(CodeGotoStatement e)
@@ -837,6 +843,8 @@ namespace XSharp.CodeDom
 
         protected override void GenerateMethodReferenceExpression(CodeMethodReferenceExpression e)
         {
+            var oldEscape = mustEscape;
+
             if (e.TargetObject != null)
             {
                 if (e.TargetObject is CodeBinaryOperatorExpression)
@@ -1035,6 +1043,7 @@ namespace XSharp.CodeDom
         protected override void GeneratePropertyReferenceExpression(CodePropertyReferenceExpression e)
         {
             bool isIdentifier = true;
+            var oldescape = mustEscape;
 
             if (e.TargetObject != null)
             {
@@ -1048,11 +1057,13 @@ namespace XSharp.CodeDom
                 {
                     this.Output.Write(this.selector);
                 }
+                mustEscape = false;
             }
             if (isIdentifier)
                 this.OutputIdentifier(e.PropertyName);
             else
                 this.Output.Write(e.PropertyName);
+            mustEscape = oldescape;
 
         }
 
@@ -1331,7 +1342,35 @@ namespace XSharp.CodeDom
         {
             this.OutputIdentifier(e.VariableName);
         }
+        protected override void GeneratePrimitiveExpression(CodePrimitiveExpression e)
+        {
+            if (e.Value is char)
+            {
+                var c = (char)e.Value;
+                if ((int)c < 127)
+                {
+                    base.Output.Write("c'" + c.ToString() + "'");
+                }
+                else
+                {
+                    var i = (int)c;
+                    base.Output.Write("c'\\x" + i.ToString("X") + "'");
+                }
 
+            }
+            else
+            {
+                if (e.Value is uint || e.Value is ulong)
+                {
+                    var tmp = Convert.ToDouble(e.Value);
+                    if (tmp < long.MaxValue)
+                        e.Value = Convert.ToInt64(e.Value);
+                    else
+                        e.Value = tmp;
+                }
+                base.GeneratePrimitiveExpression(e);
+            }
+        }
         protected override void GenerateParameterDeclarationExpression(CodeParameterDeclarationExpression e)
         {
             if (e.CustomAttributes.Count > 0)
@@ -1424,8 +1463,8 @@ namespace XSharp.CodeDom
                 case "system.char":
                     return formatKeyword("CHAR");
 
-                case "system.object":
-                    return formatKeyword("OBJECT");
+                case "system.object":       // keep because it is used as in System.Object.ReferenceEquals
+                    return "System.Object";
 
                 case "system.boolean":
                     return formatKeyword("LOGIC");
@@ -1507,24 +1546,19 @@ namespace XSharp.CodeDom
             {
                 return false;
             }
-            if (value[0] != '@')
+            if (XSharpKeywords.Contains(value))
             {
-                if (XSharpKeywords.Contains(value))
-                {
-                    return false;
-                }
+                return false;
             }
-            else
-            {
-                value = value.Substring(1);
-                if (!XSharpKeywords.Contains(value))
-                {
-                    return false;
-                }
-            }
+            if (value.StartsWith("@@"))
+                return true;
             return CodeGenerator.IsValidLanguageIndependentIdentifier(value);
         }
 
+        protected override void ValidateIdentifier(string value)
+        {
+            base.ValidateIdentifier(value);
+        }
         protected override void OutputType(CodeTypeReference typeRef)
         {
             // Fix problem where Windows Forms designer does not put the fully qualified path to the global
@@ -1927,7 +1961,10 @@ namespace XSharp.CodeDom
 
         protected override void OutputIdentifier(string ident)
         {
-            base.OutputIdentifier(CreateEscapedIdentifier(ident));
+            if (mustEscape)
+                base.OutputIdentifier(CreateEscapedIdentifier(ident));
+            else
+                base.OutputIdentifier(ident);
         }
         protected override void OutputMemberAccessModifier(MemberAttributes attributes)
         {

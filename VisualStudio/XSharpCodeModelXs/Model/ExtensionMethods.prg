@@ -14,8 +14,8 @@ BEGIN NAMESPACE XSharpModel
 	
 	STATIC CLASS ExtensionMethods
 		
-		STATIC METHOD IsEmpty( SELF cType AS CompletionType) AS LOGIC
-			RETURN cType == NULL .OR. ! cType:IsInitialized
+//		STATIC METHOD IsEmpty( SELF cType AS CompletionType) AS LOGIC
+//			RETURN cType == NULL .OR. ! cType:IsInitialized
 		
 		STATIC METHOD AddUnique<TKey, TValue>( SELF dict AS Dictionary<TKey, TValue>, key AS TKey, VALUE AS TValue) AS TValue 
 			IF dict != NULL .AND. key != NULL
@@ -36,6 +36,12 @@ BEGIN NAMESPACE XSharpModel
 					RETURN "DEFINE"
 				CASE Kind.EnumMember
 					RETURN "MEMBER"
+				CASE Kind.LocalFunc
+					RETURN "LOCAL FUNCTION"
+				CASE Kind.LocalProc
+					RETURN "LOCAL PROCEDURE"
+				CASE Kind.VODLL
+					RETURN "DLL FUNCTION"
 			END SWITCH
 			RETURN elementKind:ToString()
 		
@@ -51,6 +57,8 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Operator 
 				CASE Kind.Delegate 
 				CASE Kind.VODLL 
+				CASE Kind.LocalFunc 
+				CASE Kind.LocalProc 
 					//
 					RETURN TRUE
 			END SWITCH
@@ -71,6 +79,7 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Delegate 
 				CASE Kind.VOGlobal 
 				CASE Kind.VODefine 
+				CASE Kind.LocalFunc 
 					RETURN TRUE
 			END SWITCH
 			RETURN FALSE
@@ -81,12 +90,14 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			RETURN HasReturnType(elementKind)
 		
-      STATIC METHOD IsGlobalType(SELF elementKind AS Kind) AS LOGIC
+      STATIC METHOD IsGlobalTypeMember(SELF elementKind AS Kind) AS LOGIC
          SWITCH elementKind
          CASE Kind.VOGlobal
          CASE Kind.VODefine
          CASE Kind.Function
          CASE Kind.Procedure
+         CASE Kind.LocalFunc
+         CASE Kind.LocalProc
          CASE Kind.VODLL
             RETURN TRUE
          END SWITCH
@@ -103,6 +114,7 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Property 
 				CASE Kind.Event 
 				CASE Kind.Operator 
+				CASE Kind.Field
 					RETURN TRUE
 				OTHERWISE
 					IF ( inDialect == XSharpDialect.FoxPro )
@@ -185,6 +197,16 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Operator
 				CASE Kind.Constructor
 				CASE Kind.Destructor
+				CASE Kind.LocalFunc 
+				CASE Kind.LocalProc
+					RETURN TRUE
+			END SWITCH
+			RETURN FALSE
+
+        STATIC METHOD IsLocal(SELF eKind AS Kind) AS LOGIC
+			SWITCH eKind
+				CASE Kind.LocalFunc 
+				CASE Kind.LocalProc
 					RETURN TRUE
 			END SWITCH
 			RETURN FALSE
@@ -224,7 +246,7 @@ BEGIN NAMESPACE XSharpModel
 				list:Add(item)
 			ENDIF
 		
-		STATIC METHOD Expanded( SELF source AS IEnumerable<STRING>) AS IReadOnlyList<STRING>
+		STATIC METHOD Expanded( SELF source AS IEnumerable<STRING>) AS IList<STRING>
 			LOCAL list AS List<STRING>
 			LOCAL item AS STRING
 			list := List<STRING>{}
@@ -250,6 +272,8 @@ BEGIN NAMESPACE XSharpModel
 						imgK := ImageListKind.Class
 					CASE Kind.Function 
 					CASE Kind.Procedure 
+					CASE Kind.LocalFunc 
+					CASE Kind.LocalProc
 						imgK := ImageListKind.Overload
 					CASE Kind.Constructor 
 					CASE Kind.Destructor 

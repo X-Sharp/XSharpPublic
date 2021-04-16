@@ -12,6 +12,7 @@
 using System;
 using System.Diagnostics;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
@@ -70,6 +71,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             this.serviceProvider = serviceProvider;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             this.solutionBuildManager = this.serviceProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
             Assumes.Present(solutionBuildManager);
@@ -117,6 +119,8 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 return (IVsSolutionBuildManager3)this.solutionBuildManager;
             }
 
@@ -243,6 +247,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void Dispose()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -257,7 +263,9 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void Dispose(bool disposing)
         {
             // Everybody can go here.
-            if(!this.isDisposed)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (!this.isDisposed)
             {
                 // Synchronize calls to the Dispose simultaniously.
                 lock(Mutex)

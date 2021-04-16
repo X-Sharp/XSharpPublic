@@ -1,17 +1,17 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+using System.ComponentModel.Composition;
+using Microsoft.VisualStudio.ProjectSystem;
+using Microsoft.VisualStudio.ProjectSystem.Properties;
 namespace XSharp.ProjectSystem
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Microsoft.VisualStudio.ProjectSystem;
-    using Microsoft.VisualStudio.ProjectSystem.Properties;
-    //using Microsoft.VisualStudio.ProjectSystem.Utilities;
 
     [Export]
-    [AppliesTo(MyUnconfiguredProject.UniqueCapability)]
+    [AppliesTo(XSharpConstants.LanguageName)]
     internal partial class ProjectProperties : StronglyTypedPropertyAccess
     {
         /// <summary>
@@ -21,6 +21,7 @@ namespace XSharp.ProjectSystem
         public ProjectProperties(ConfiguredProject configuredProject)
             : base(configuredProject)
         {
+            ;
         }
 
         /// <summary>
@@ -29,6 +30,7 @@ namespace XSharp.ProjectSystem
         public ProjectProperties(ConfiguredProject configuredProject, string file, string itemType, string itemName)
             : base(configuredProject, file, itemType, itemName)
         {
+            ;
         }
 
         /// <summary>
@@ -37,6 +39,7 @@ namespace XSharp.ProjectSystem
         public ProjectProperties(ConfiguredProject configuredProject, IProjectPropertiesContext projectPropertiesContext)
             : base(configuredProject, projectPropertiesContext)
         {
+            ;
         }
 
         /// <summary>
@@ -45,6 +48,7 @@ namespace XSharp.ProjectSystem
         public ProjectProperties(ConfiguredProject configuredProject, UnconfiguredProject unconfiguredProject)
             : base(configuredProject, unconfiguredProject)
         {
+            ;
         }
     }
 }

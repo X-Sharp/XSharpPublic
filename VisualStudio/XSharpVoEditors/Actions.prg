@@ -1,13 +1,14 @@
-﻿
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 USING System
 USING System.Collections.Generic
 USING System.Text
 USING XSharp.VODesigners
 BEGIN NAMESPACE XSharp.VOEditors
 
-	/// <summary>
-    /// The Class1 class.
-    /// </summary>
 	ENUM Actions
 		MEMBER AlignLeft		:=DesignerActionType.AlignLeft
 		MEMBER AlignRight		:= DesignerActionType.AlignRight

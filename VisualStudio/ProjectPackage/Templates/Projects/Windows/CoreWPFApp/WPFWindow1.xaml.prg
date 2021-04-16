@@ -22,7 +22,7 @@ BEGIN NAMESPACE $safeprojectname$
     
         PUBLIC CONSTRUCTOR() STRICT
             InitializeComponent()
-			RETURN
+            RETURN
 
     END CLASS
 END NAMESPACE

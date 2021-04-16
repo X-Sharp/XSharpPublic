@@ -37,7 +37,7 @@ namespace XSharpDebugger
             switch (typeCode)
             {
                 case PrimitiveTypeCode.Boolean:
-                    return XSharpType.Boolean;
+                    return XSharpType.Logic;
                 case PrimitiveTypeCode.SByte:
                     return XSharpType.SByte;
                 case PrimitiveTypeCode.Int16:
@@ -71,6 +71,7 @@ namespace XSharpDebugger
                 case PrimitiveTypeCode.Object:
                     return XSharpType.Object;
                 case PrimitiveTypeCode.TypedReference:
+                default:
                     break;
             }
             return XSharpType.Create("UNKNOWN");

@@ -185,7 +185,7 @@ namespace XSharp.Project
         }
 
 
-        protected internal override void DeleteFromStorage(string path)
+        protected override void DeleteFromStorage(string path)
         {
             if (Directory.Exists(path))
             {

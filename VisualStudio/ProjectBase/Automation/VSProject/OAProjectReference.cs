@@ -50,6 +50,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return BaseReferenceNode.ReferencedProjectOutputPath;
             }
         }
@@ -57,7 +58,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                if(Guid.Empty == BaseReferenceNode.ReferencedProjectGuid)
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                if (Guid.Empty == BaseReferenceNode.ReferencedProjectGuid)
                 {
                     return null;
                 }
@@ -89,6 +92,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 var project = SourceProject;
                 return project.Properties.Item("TargetFrameworkVersion").Value.ToString();
             }

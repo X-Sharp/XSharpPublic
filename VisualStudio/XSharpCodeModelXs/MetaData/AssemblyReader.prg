@@ -69,7 +69,7 @@ INTERNAL CLASS AssemblyReader
    			END SWITCH
          NEXT
          foreach var md in _extensionMethods
-            assembly:ExtensionMethods:Add( XMethodReference{md, assembly })
+            assembly:ExtensionMethods:Add( XPEMethodSymbol{md, assembly })
          next
          assembly:Loaded                 := TRUE
          RETURN 
@@ -80,7 +80,7 @@ INTERNAL CLASS AssemblyReader
       VAR vis := _AND(type:Attributes, TypeAttributes.VisibilityMask )
       IF vis == TypeAttributes.Public .OR. vis == TypeAttributes.NestedPublic 
          VAR name := type:FullName
-         VAR typeref := XTypeReference{type, assembly}
+         VAR typeref := XPETypeSymbol{type, assembly}
          VAR ns := typeref:Namespace
          IF  ns:Length > 0
             IF ! assembly:Namespaces:Contains(ns)
@@ -91,7 +91,7 @@ INTERNAL CLASS AssemblyReader
             assembly:Types:Add(name, typeref)      // FullName
          ELSE
             IF assembly:DuplicateTypes == NULL
-               assembly:DuplicateTypes := List<XTypeReference>{}
+               assembly:DuplicateTypes := List<XPETypeSymbol>{}
             ENDIF
             XSolution.WriteOutputMessage("**************************")
             XSolution.WriteOutputMessage("Duplicate type name found: "+typeref:FullName)

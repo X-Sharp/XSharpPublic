@@ -6,47 +6,113 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using XSharp;
+using Meta = Microsoft.VisualStudio.Debugger.Metadata;
 namespace XSharpDebugger
 {
+    internal enum KeywordCase
+    {
+        None = 0,
+        Upper = 1,
+        Lower = 2,
+        Title = 3,
+    }
     /// <summary>
     /// A type in the XSharp type system.  Each unique type should have one and only one instance of
     /// the XSharpType class.  This allows us to use reference equality to equate types.
     /// </summary>
     public class XSharpType
     {
-        public static readonly XSharpType Char = new XSharpType("CHAR");
-        public static readonly XSharpType Real4 = new XSharpType("REAL4");
-        public static readonly XSharpType Real8 = new XSharpType("REAL8");
-        public static readonly XSharpType Ptr = new XSharpType("PTR");
-        public static readonly XSharpType SByte = new XSharpType("SBYTE");
-        public static readonly XSharpType Integer = new XSharpType("INT");
-        public static readonly XSharpType Int64 = new XSharpType("INT64");
-        public static readonly XSharpType Short = new XSharpType("SHORT");
-        public static readonly XSharpType Byte = new XSharpType("BYTE");
-        public static readonly XSharpType Word = new XSharpType("WORD");
-        public static readonly XSharpType DWord = new XSharpType("DWORD");
-        public static readonly XSharpType UInt64 = new XSharpType("UINT64");
-        public static readonly XSharpType String = new XSharpType("STRING");
-        public static readonly XSharpType Boolean = new XSharpType("LOGIC");
-        public static readonly XSharpType Void = new XSharpType("VOID");
-        public static readonly XSharpType Object = new XSharpType("OBJECT");
+        // This defines how the types will be shown in the locals and auto window
+        internal static XSharpType Char ;
+        internal static XSharpType Real4;
+        internal static XSharpType Real8;
+        internal static XSharpType Ptr ;
+        internal static XSharpType SByte ;
+        internal static XSharpType Integer ;
+        internal static XSharpType Int64 ;
+        internal static XSharpType Short ;
+        internal static XSharpType Byte ;
+        internal static XSharpType Word ;
+        internal static XSharpType DWord;
+        internal static XSharpType UInt64 ;
+        internal static XSharpType String ;
+        internal static XSharpType Logic ;
+        internal static XSharpType Void ;
+        internal static XSharpType Object ;
 
-        public static readonly XSharpType Usual = new XSharpType("USUAL");
-        public static readonly XSharpType Date = new XSharpType("DATE");
-        public static readonly XSharpType Float = new XSharpType("FLOAT");
-        public static readonly XSharpType Symbol = new XSharpType("SYMBOL");
-        public static readonly XSharpType Array = new XSharpType("ARRAY");
-        public static readonly XSharpType Psz = new XSharpType("PSZ");
-        public static readonly XSharpType Invalid = new XSharpType("INVALID");
+        internal static XSharpType Usual ;
+        internal static XSharpType Date ;
+        internal static XSharpType Float;
+        internal static XSharpType Symbol ;
+        internal static XSharpType Array ;
+        internal static XSharpType ArrayBase;
+        internal static XSharpType Psz ;
+        internal static XSharpType Binary ;
+        internal static XSharpType Currency ;
+        internal static XSharpType FoxArray ;
+        internal static XSharpType Invalid ;
 
-        private static Dictionary<XSharpType, ArrayType> s_arrayTypes = new Dictionary<XSharpType, ArrayType>();
-        private static Dictionary<XSharpType, ByRefType> s_byRefTypes = new Dictionary<XSharpType, ByRefType>();
-        private static Dictionary<String, XSharpType> s_types = new  Dictionary<String, XSharpType>();
+        private static readonly Dictionary<XSharpType, ArrayType> s_arrayTypes = new Dictionary<XSharpType, ArrayType>();
+        private static readonly Dictionary<XSharpType, ByRefType> s_byRefTypes = new Dictionary<XSharpType, ByRefType>();
+        private static readonly Dictionary<String, XSharpType> s_types = new  Dictionary<String, XSharpType>();
         private readonly string _name;
+
+        private static readonly KeywordCase KeywordCase;
 
         static XSharpType()
         {
+            try
+            {
+                // read case sync settings from registry. We cache this once. So if they switch the case
+                // then this will be reflected the next time they run VS.
+                var key = Microsoft.Win32.Registry.CurrentUser;
+                var subkey = key.OpenSubKey(Constants.RegistryKey, true);
+                if (subkey == null)
+                {
+                    subkey = key.CreateSubKey(Constants.RegistryKey);
+                }
+                var kwcase = subkey.GetValue("KeywordCase");
+                if (kwcase == null)
+                {
+                    subkey.SetValue("KeywordCase", 1);
+                }
+                KeywordCase = (KeywordCase)kwcase;
+            }
+            catch
+            {
+                KeywordCase = KeywordCase.None;
+            }
+
+            Char = new XSharpType("Char");
+            Real4 = new XSharpType("Real4");
+            Real8 = new XSharpType("Real8");
+            Ptr = new XSharpType("Ptr");
+            SByte = new XSharpType("Sbyte");
+            Integer = new XSharpType("Int");
+            Int64 = new XSharpType("Int64");
+            Short = new XSharpType("Short");
+            Byte = new XSharpType("Byte");
+            Word = new XSharpType("Word");
+            DWord = new XSharpType("Dword");
+            UInt64 = new XSharpType("Uint64");
+            String = new XSharpType("String");
+            Logic = new XSharpType("Logic");
+            Void = new XSharpType("Void");
+            Object = new XSharpType("Object");
+
+            Usual = new XSharpType("Usual");
+            Date = new XSharpType("Date");
+            Float = new XSharpType("Float");
+            Symbol = new XSharpType("Symbol");
+            Array = new XSharpType("Array");
+            ArrayBase = new XSharpType("Array Of");
+            Psz = new XSharpType("Psz");
+            Binary = new XSharpType("Binary");
+            Currency = new XSharpType("Currency");
+            FoxArray = new XSharpType("Foxarray");
+            Invalid = new XSharpType("Invalid");
+
             s_types.Add("System.SByte", XSharpType.SByte);
             s_types.Add("System.Int16", XSharpType.Short);
             s_types.Add("System.Int32", XSharpType.Integer);
@@ -57,7 +123,7 @@ namespace XSharpDebugger
             s_types.Add("System.UInt64", XSharpType.UInt64);
             s_types.Add("System.Single", XSharpType.Real4);
             s_types.Add("System.Double", XSharpType.Real8);
-            s_types.Add("System.Boolean", XSharpType.Boolean);
+            s_types.Add("System.Boolean", XSharpType.Logic);
             s_types.Add("System.Void", XSharpType.Void);
             s_types.Add("System.IntPtr", XSharpType.Ptr);
             s_types.Add("System.Char", XSharpType.Char);
@@ -76,17 +142,66 @@ namespace XSharpDebugger
             s_types.Add("XSharp.__VOFloat", XSharpType.Float);
             s_types.Add("XSharp.__Symbol", XSharpType.Symbol);
             s_types.Add("XSharp.__Array", XSharpType.Array);
+            s_types.Add("XSharp.__ArrayBase", XSharpType.ArrayBase);
             s_types.Add("XSharp.__Psz", XSharpType.Psz);
+            s_types.Add("XSharp.__Binary", XSharpType.Binary);
+            s_types.Add("XSharp.__Currency", XSharpType.Currency);
+            s_types.Add("XSharp.__FoxArray", XSharpType.FoxArray);
         }
 
-
+        internal static string FormatKeyword(string keyword)
+        {
+            switch (KeywordCase)
+            {
+                case KeywordCase.Upper:
+                    return keyword.ToUpper();
+                case KeywordCase.Lower:
+                    return keyword.ToLower();
+                case KeywordCase.Title:
+                    return keyword.Substring(0, 1).ToUpper() + keyword.Substring(1).ToLower();
+                case KeywordCase.None:
+                default:
+                    return keyword;
+            }
+        }
         internal string Name => _name;
         protected XSharpType(string name)
         {
-            _name = name;
+            _name = FormatKeyword(name);
         }
+
+        internal static XSharpType Create (Meta.Type gentype, Meta.Type[] args)
+        {
+            var name = gentype.FullName;
+            XSharpType baseType = Create(name);
+            var resultName = baseType.ToString();
+            if (baseType != ArrayBase)
+                resultName += "<";
+            else
+                resultName += " ";
+            bool first = true;
+            foreach (var arg in args)
+            {
+                if (!first)
+                    resultName += ",";
+                var t = Create(arg.FullName);
+                resultName += t.ToString();
+                first = false;
+            }
+            if (baseType != ArrayBase)
+            {
+                resultName += ">";
+            }
+
+            var result = Create(resultName);
+            return result;
+        }
+
         internal static XSharpType Create(string name)
         {
+            var pos = name.IndexOf("`");
+            if (pos > 0)
+                name = name.Substring(0, pos);
             if (s_types.ContainsKey(name))
                 return s_types[name];
             var result = new XSharpType(name);
@@ -108,7 +223,7 @@ namespace XSharpDebugger
         {
             get
             {
-                return this == Integer || this == String || this == Boolean;
+                return this == Integer || this == String || this == Logic;
             }
         }
 
@@ -132,8 +247,7 @@ namespace XSharpDebugger
         private XSharpType MakeCompoundType<T>(Dictionary<XSharpType, T> existingTypes, Func<XSharpType, T> factory)
             where T : XSharpType
         {
-            T type;
-            if (!existingTypes.TryGetValue(this, out type))
+            if (!existingTypes.TryGetValue(this, out T type))
             {
                 type = factory(this);
                 existingTypes.Add(this, type);

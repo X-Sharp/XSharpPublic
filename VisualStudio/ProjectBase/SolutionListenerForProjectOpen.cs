@@ -15,7 +15,8 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project.Automation;
 using IServiceProvider = System.IServiceProvider;
-using XSharp.Project;
+using XSharpModel;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -26,12 +27,16 @@ namespace Microsoft.VisualStudio.Project
         public SolutionListenerForProjectOpen(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
         }
 
         public override int OnAfterOpenProject(IVsHierarchy hierarchy, int added)
         {
             // If this is a new project and our project. We use here that it is only our project that will implement the "internal"  IBuildDependencyOnProjectContainer.
-            if(added != 0 && hierarchy is IBuildDependencyUpdate)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (added != 0 && hierarchy is IBuildDependencyUpdate)
             {
                 IVsUIHierarchy uiHierarchy = hierarchy as IVsUIHierarchy;
                 Debug.Assert(uiHierarchy != null, "The ProjectNode should implement IVsUIHierarchy");
@@ -55,10 +60,10 @@ namespace Microsoft.VisualStudio.Project
                             int hr;
                             hr = uiWindow.ExpandItem(uiHierarchy, VSConstants.VSITEMID_ROOT, EXPANDFLAGS.EXPF_ExpandParentsToShowItem);
                             if(ErrorHandler.Failed(hr))
-                                XSharpProjectPackage.Instance.DisplayOutPutMessage("Failed to expand project node");
+                                XSettings.DisplayOutputMessage("Failed to expand project node");
                             hr = uiWindow.ExpandItem(uiHierarchy, VSConstants.VSITEMID_ROOT, EXPANDFLAGS.EXPF_SelectItem);
                             if(ErrorHandler.Failed(hr))
-                                XSharpProjectPackage.Instance.DisplayOutPutMessage("Failed to select project node");
+                                XSettings.DisplayOutputMessage("Failed to select project node");
 
                             return hr;
                         }

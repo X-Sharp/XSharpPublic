@@ -22,6 +22,7 @@ using Microsoft.VisualStudio.Designer.Interfaces;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using static Microsoft.VisualStudio.VSConstants;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -31,7 +32,7 @@ namespace Microsoft.VisualStudio.Project
     /// </summary>
     [CLSCompliant(false), ComVisible(true)]
     public abstract class SettingsPage :
-        LocalizableProperties,
+        DialogPage,
         IPropertyPage,
         IDisposable
     {
@@ -40,12 +41,12 @@ namespace Microsoft.VisualStudio.Project
         private bool active;
         private bool dirty = false;
         private IPropertyPageSite site;
-        private ProjectNode project;
-        private ProjectConfig[] projectConfigs;
-        private IVSMDPropertyGrid grid;
+        private IVsProject project;
+        private IVsProjectCfg2[] projectConfigs;
+        private IVSMDPropertyGrid grid = null;
         private string name;
         private static volatile object Mutex = new object();
-        private bool isDisposed;
+       //private bool isDisposed;
         #endregion
 
         #region properties
@@ -68,7 +69,7 @@ namespace Microsoft.VisualStudio.Project
 
         [Browsable(false)]
         [AutomationBrowsable(false)]
-        public ProjectNode ProjectMgr
+        public IVsProject ProjectMgr
         {
             get
             {
@@ -143,16 +144,16 @@ namespace Microsoft.VisualStudio.Project
 
         public string GetProperty(string propertyName)
         {
-            if(this.ProjectMgr != null)
-            {
-                string property;
-                bool found = this.ProjectMgr.BuildProject.GlobalProperties.TryGetValue(propertyName, out property);
-
-                if(found)
-                {
-                    return property;
-                }
-            }
+            //if(this.ProjectMgr != null)
+            //{
+            //    string property;
+            //    //bool found = this.ProjectMgr.BuildProject.GlobalProperties.TryGetValue(propertyName, out property);
+                
+            //    if(found)
+            //    {
+            //        return property;
+            //    }
+            //}
 
             return String.Empty;
         }
@@ -167,11 +168,12 @@ namespace Microsoft.VisualStudio.Project
 
                 for(int i = 0; i < this.projectConfigs.Length; i++)
                 {
-                    ProjectConfig config = projectConfigs[i];
-                    string property = config.GetConfigurationProperty(propertyName, cacheNeedReset);
+                    IVsProjectCfg2 config = projectConfigs[i];
+                    //string property = config.GetConfigurationProperty(propertyName, cacheNeedReset);
+                    string property = null;
                     cacheNeedReset = false;
 
-                    if(property != null)
+                    if(property != null && cacheNeedReset)
                     {
                         string text = property.Trim();
 
@@ -196,8 +198,9 @@ namespace Microsoft.VisualStudio.Project
 
                 for (int i = 0; i < this.projectConfigs.Length; i++)
                 {
-                    ProjectConfig config = projectConfigs[i];
-                    string property = config.GetUnevaluatedConfigurationProperty(propertyName);
+                    var config = projectConfigs[i];
+                    //string property = config.GetUnevaluatedConfigurationProperty(propertyName);
+                    string property = null;
 
                     if (property != null)
                     {
@@ -231,20 +234,33 @@ namespace Microsoft.VisualStudio.Project
                 value = String.Empty;
             }
 
-            if(this.ProjectMgr != null)
-            {
-                for(int i = 0, n = this.projectConfigs.Length; i < n; i++)
-                {
-                    ProjectConfig config = projectConfigs[i];
+            //if(this.ProjectMgr != null)
+            //{
+            //    for(int i = 0, n = this.projectConfigs.Length; i < n; i++)
+            //    {
+            //        IVsProjectCfg2 config = projectConfigs[i];
 
-                    config.SetConfigurationProperty(name, value);
-                }
+            //        config.SetConfigurationProperty(name, value);
+            //    }
 
-                this.ProjectMgr.SetProjectFileDirty(true);
-            }
+            //    this.ProjectMgr.SetProjectFileDirty(true);
+            //}
         }
 
         #endregion
+
+        protected virtual IVSMDPropertyGrid CreateGrid()
+        {
+            //if (this.grid == null && this.project != null && this.project.Site != null)
+            //{
+
+            //    IVSMDPropertyBrowser pb = this.project.Site.GetService(typeof(IVSMDPropertyBrowser)) as IVSMDPropertyBrowser;
+            //    Assumes.Present(pb);
+            //    this.grid = pb.CreatePropertyGrid();
+            //}
+            return null;
+
+        }
 
         #region IPropertyPage methods.
         public virtual void Activate(IntPtr parent, RECT[] pRect, int bModal)
@@ -264,14 +280,10 @@ namespace Microsoft.VisualStudio.Project
                 this.panel.CreateControl();
                 NativeMethods.SetParent(this.panel.Handle, parent);
             }
-
-            if(this.grid == null && this.project != null && this.project.Site != null)
+            if (this.grid == null)
             {
-                IVSMDPropertyBrowser pb = this.project.Site.GetService(typeof(IVSMDPropertyBrowser)) as IVSMDPropertyBrowser;
-                Assumes.Present(pb);
-                this.grid = pb.CreatePropertyGrid();
+                this.grid = CreateGrid();
             }
-
             if (this.grid != null)
             {
                 this.active = true;
@@ -290,24 +302,24 @@ namespace Microsoft.VisualStudio.Project
             }
             RegisterProjectEvents();
         }
-        private bool isRegistered = false;
+        //private bool isRegistered = false;
         private void RegisterProjectEvents()
         {
-            if (this.project != null && ! isRegistered)
-            {
-                this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
-                isRegistered = true;
-            }
+            //if (this.project != null && ! isRegistered)
+            //{
+            //    this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
+            //    isRegistered = true;
+            //}
         }
         private void UnRegisterProjectEvents()
         {
-            if (this.project != null)
-            {
-                this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
-            }
-            isRegistered = false;
+            //if (this.project != null)
+            //{
+            //    this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
+            //}
+            //isRegistered = false;
         }
-        internal virtual void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
+        protected virtual void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
 
         }
@@ -384,15 +396,15 @@ namespace Microsoft.VisualStudio.Project
 
             if(count > 0)
             {
-                if(punk[0] is ProjectConfig)
+                if (punk[0] is ProjectConfig pconfig)
                 {
                     ArrayList configs = new ArrayList();
 
-                    for(int i = 0; i < count; i++)
+                    for (int i = 0; i < count; i++)
                     {
                         ProjectConfig config = (ProjectConfig)punk[i];
 
-                        if(this.project == null || (this.project != (punk[0] as ProjectConfig).ProjectMgr))
+                        if (this.project == null || (this.project != pconfig.ProjectMgr))
                         {
                             UnRegisterProjectEvents();
                             this.project = config.ProjectMgr;
@@ -404,46 +416,47 @@ namespace Microsoft.VisualStudio.Project
 
                     this.projectConfigs = (ProjectConfig[])configs.ToArray(typeof(ProjectConfig));
                 }
-                else if(punk[0] is NodeProperties)
+
+                else if (punk[0] is NodeProperties props)
                 {
-                    if (this.project == null || (this.project != (punk[0] as NodeProperties).Node.ProjectMgr))
+                    if (this.project == null || (this.project != props.Node.ProjectMgr))
                     {
                         UnRegisterProjectEvents();
-                        this.project = (punk[0] as NodeProperties).Node.ProjectMgr;
+                        this.project = props.Node.ProjectMgr;
                         RegisterProjectEvents();
                     }
 
-                    Dictionary<string, ProjectConfig> configsMap = new Dictionary<string, ProjectConfig>();
+                    var configsMap = new Dictionary<string, IVsProjectCfg2>();
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                    for(int i = 0; i < count; i++)
-                    {
-                        NodeProperties property = (NodeProperties)punk[i];
-                        IVsCfgProvider provider;
-                        ErrorHandler.ThrowOnFailure(property.Node.ProjectMgr.GetCfgProvider(out provider));
-                        uint[] expected = new uint[1];
-                        ErrorHandler.ThrowOnFailure(provider.GetCfgs(0, null, expected, null));
-                        if(expected[0] > 0)
+                        for (int i = 0; i < count; i++)
                         {
-                            ProjectConfig[] configs = new ProjectConfig[expected[0]];
-                            uint[] actual = new uint[1];
-                            provider.GetCfgs(expected[0], configs, actual, null);
-
-                            foreach(ProjectConfig config in configs)
+                            NodeProperties property = (NodeProperties)punk[i];
+                            IVsCfgProvider provider;
+                            ErrorHandler.ThrowOnFailure(property.Node.ProjectMgr.GetCfgProvider(out provider));
+                            uint[] expected = new uint[1];
+                            ErrorHandler.ThrowOnFailure(provider.GetCfgs(0, null, expected, null));
+                            if (expected[0] > 0)
                             {
-                                if(!configsMap.ContainsKey(config.ConfigName))
+                                ProjectConfig[] configs = new ProjectConfig[expected[0]];
+                                uint[] actual = new uint[1];
+                                provider.GetCfgs(expected[0], configs, actual, null);
+
+                                foreach (ProjectConfig config in configs)
                                 {
-                                    configsMap.Add(config.ConfigName, config);
+                                    if (!configsMap.ContainsKey(config.ConfigName))
+                                    {
+                                        configsMap.Add(config.ConfigName, config);
+                                    }
                                 }
                             }
                         }
-                    }
                     });
-                    if(configsMap.Count > 0)
+                    if (configsMap.Count > 0)
                     {
-                        if(this.projectConfigs == null)
+                        if (this.projectConfigs == null)
                         {
                             this.projectConfigs = new ProjectConfig[configsMap.Keys.Count];
                         }
@@ -493,10 +506,10 @@ namespace Microsoft.VisualStudio.Project
 
         #region helper methods
 
-        protected ProjectConfig[] GetProjectConfigurations()
-        {
-            return this.projectConfigs;
-        }
+        //protected IVsProjectCfg2[] GetProjectConfigurations()
+        //{
+        //    return this.projectConfigs;
+        //}
 
         protected void UpdateObjects()
         {
@@ -535,28 +548,28 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        //public void Dispose()
+        //{
+        //    this.Dispose(true);
+        //    GC.SuppressFinalize(this);
+        //}
 
 
         #endregion
 
-        private void Dispose(bool disposing)
-        {
-            if(!this.isDisposed)
-            {
-                lock(Mutex)
-                {
-                    if(disposing)
-                    {
-                        this.panel.Dispose();
-                    }
-                    this.isDisposed = true;
-                }
-            }
-        }
+        //private void Dispose(bool disposing)
+        //{
+        //    if(!this.isDisposed)
+        //    {
+        //        lock(Mutex)
+        //        {
+        //            if(disposing)
+        //            {
+        //                this.panel.Dispose();
+        //            }
+        //            this.isDisposed = true;
+        //        }
+        //    }
+        //}
     }
 }

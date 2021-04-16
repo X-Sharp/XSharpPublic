@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using VSLangProj;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
@@ -57,6 +58,8 @@ namespace Microsoft.VisualStudio.Project.Automation
             if (_container == null) {
                 return null;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             ReferenceNode refNode = _container.AddReferenceFromSelectorData(selector, wrapperTool);
             if(null == refNode)
             {
@@ -87,6 +90,8 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 return null;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             VSCOMPONENTSELECTORDATA selector = new VSCOMPONENTSELECTORDATA();
             selector.type = VSCOMPONENTTYPE.VSCOMPONENTTYPE_File;
             selector.bstrFile = bstrPath;
@@ -102,6 +107,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             selector.lcidTypeLibrary = (uint)lLocaleId;
             selector.wTypeLibraryMajorVersion = (ushort)lMajorVer;
             selector.wTypeLibraryMinorVersion = (ushort)lMinorVer;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             return AddFromSelectorData(selector, bstrWrapperTool);
         }
@@ -112,7 +118,8 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 return null;
             }
-            // Get the soulution.
+            ThreadHelper.ThrowIfNotOnUIThread();
+            // Get the solution.
             IVsSolution solution = _container.ProjectMgr.Site.GetService(typeof(SVsSolution)) as IVsSolution;
             if(null == solution)
             {
@@ -140,6 +147,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return _project.GetAutomationObject() as EnvDTE.Project;
             }
         }
@@ -160,6 +168,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return _project.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
             }
         }

@@ -18,13 +18,16 @@ using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using System.Diagnostics;
 
 using XSharpModel;
+using System.Globalization;
+
 namespace XSharp.CodeDom
 {
     internal class XSharpBaseDiscover : XSharpBaseListener
     {
+        protected CodeTypeDeclaration _typeInOtherFile = null;
 
         protected IProjectTypeHelper _projectNode;
-        private Dictionary<string, IXType> _types;    // type cache
+        private Dictionary<string, IXTypeSymbol> _types;    // type cache
         private List<string> _usings;          // uses for type lookup
         protected IList<IToken> _tokens;          // used to find comments
 
@@ -32,7 +35,7 @@ namespace XSharp.CodeDom
         internal string SourceCode { get; set; }
         internal string CurrentFile { get; set; }
         const string SnippetsTxt = @"D:\Snippets.txt";
-        protected IDictionary<string, IXType> _locals;          // used to keep track of local vars
+        protected IDictionary<string, IXTypeSymbol> _locals;          // used to keep track of local vars
 
         protected CodeExpression BuildSnippetExpression(String txt)
         {
@@ -44,14 +47,15 @@ namespace XSharp.CodeDom
             return new CodeSnippetExpression(txt);
         }
 
-        internal XSharpBaseDiscover(IProjectTypeHelper projectNode) : base()
+        internal XSharpBaseDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration otherType) : base()
         {
             FieldList = new Dictionary<ParserRuleContext, List<XCodeMemberField>>();
             _projectNode = projectNode;
-            this._types = new Dictionary<string, IXType>(StringComparer.OrdinalIgnoreCase);
+            this._types = new Dictionary<string, IXTypeSymbol>(StringComparer.OrdinalIgnoreCase);
             this._usings = new List<string>();
-            this._locals = new Dictionary<string, IXType>(StringComparer.OrdinalIgnoreCase);
+            this._locals = new Dictionary<string, IXTypeSymbol>(StringComparer.OrdinalIgnoreCase);
             this._members = new Dictionary<string, XMemberType>(StringComparer.OrdinalIgnoreCase);
+            this._typeInOtherFile = otherType;
 
         }
 
@@ -69,7 +73,7 @@ namespace XSharp.CodeDom
             _members.Clear();
         }
 
-        private bool hasClassMember(IXType type, string name, MemberTypes mtype)
+        private bool hasClassMember(IXTypeSymbol type, string name, MemberTypes mtype)
         {
             if (_members.ContainsKey(name))
             {
@@ -81,37 +85,38 @@ namespace XSharp.CodeDom
                 return false;
             bool result = false;
 
-            IXMember element = type.GetMembers(name, true).FirstOrDefault();
+            var element = type.GetMembers(name, true).FirstOrDefault();
             if (element != null)
             {
-                IXType t = null;
-                var tm = element as IXMember;
-                t = findType(tm.OriginalTypeName);
-                var typeName = element.OriginalTypeName;
-                switch (element.Kind)
+                var xtype = findType(element.OriginalTypeName);
+                if (xtype != null)
                 {
-                    case Kind.Field:
-                        result = (mtype | MemberTypes.Field) != 0;
-                        addClassMember(new XMemberType(name, MemberTypes.Field, true, t, typeName));
-                        break;
-                    case Kind.Property:
-                    case Kind.Access:
-                    case Kind.Assign:
-                        result = (mtype | MemberTypes.Property) != 0;
-                        addClassMember(new XMemberType(name, MemberTypes.Property, true, t, typeName));
-                        break;
-                    case Kind.Method:
-                        result = (mtype | MemberTypes.Method) != 0;
-                        addClassMember(new XMemberType(name, MemberTypes.Method, true, t, typeName));
-                        break;
-                    case Kind.Event:
-                        result = (mtype | MemberTypes.Event) != 0;
-                        addClassMember(new XMemberType(name, MemberTypes.Event, true, t, typeName));
-                        break;
-                    case Kind.Constructor:
-                        result = (mtype | MemberTypes.Constructor) != 0;
-                        addClassMember(new XMemberType(name, MemberTypes.Constructor, true, t, typeName));
-                        break;
+                    var typeName = element.OriginalTypeName;
+                    switch (element.Kind)
+                    {
+                        case Kind.Field:
+                            result = (mtype | MemberTypes.Field) != 0;
+                            addClassMember(new XMemberType(element.Name, MemberTypes.Field, true, xtype, typeName));
+                            break;
+                        case Kind.Property:
+                        case Kind.Access:
+                        case Kind.Assign:
+                            result = (mtype | MemberTypes.Property) != 0;
+                            addClassMember(new XMemberType(element.Name, MemberTypes.Property, true, xtype, typeName));
+                            break;
+                        case Kind.Method:
+                            result = (mtype | MemberTypes.Method) != 0;
+                            addClassMember(new XMemberType(element.Name, MemberTypes.Method, true, xtype, typeName));
+                            break;
+                        case Kind.Event:
+                            result = (mtype | MemberTypes.Event) != 0;
+                            addClassMember(new XMemberType(element.Name, MemberTypes.Event, true, xtype, typeName));
+                            break;
+                        case Kind.Constructor:
+                            result = (mtype | MemberTypes.Constructor) != 0;
+                            addClassMember(new XMemberType(element.Name, MemberTypes.Constructor, true, xtype, typeName));
+                            break;
+                    }
                 }
             }
             else
@@ -125,7 +130,7 @@ namespace XSharp.CodeDom
 
 
 
-        protected IXType getClassMemberType(string name, MemberTypes memberType)
+        protected IXTypeSymbol getClassMemberType(string name, MemberTypes memberType)
         {
             if (_members.ContainsKey(name))
             {
@@ -454,7 +459,7 @@ namespace XSharp.CodeDom
         {
             var elements = new List<XSharpParser.AccessMemberContext>();
             string typeName;
-            IXType xtype = null;
+            IXTypeSymbol xtype = null;
             // if the top level element has a Dot it may be a type of a field of a type.
             if (amc.Op.Type == XSharpParser.DOT)
             {
@@ -537,7 +542,7 @@ namespace XSharp.CodeDom
             // expr should have a value here
             if (lhs != null)
             {
-                IXType memberType = null;
+                IXTypeSymbol memberType = null;
                 for (int i = 0; i < elements.Count; i++)
                 {
                     amc = elements[i];
@@ -569,39 +574,39 @@ namespace XSharp.CodeDom
             }
             return lhs;
         }
-        private CodeExpression buildTypeMemberExpression(IXType xtype, string name)
+        private CodeExpression buildTypeMemberExpression(IXTypeSymbol xtype, string name)
         {
-            var l = new XCodeTypeReferenceExpression(xtype.FullName);
+            var typeRef = new XCodeTypeReferenceExpression(xtype.FullName);
             var members = xtype.GetMembers(name, true);
             var m = members.Where(e => (e.Kind == Kind.Field || e.Kind == Kind.EnumMember)).FirstOrDefault();
             if (m != null)
             {
-                var fld = new XCodeFieldReferenceExpression(l, name);
+                var fld = new XCodeFieldReferenceExpression(typeRef, m.Name);
                 return fld;
             }
             m = members.Where(e => (e.Kind == Kind.Property || e.Kind == Kind.Access || e.Kind == Kind.Assign)).FirstOrDefault();
             if (m != null)
             {
-                var prop = new XCodePropertyReferenceExpression(l, name);
+                var prop = new XCodePropertyReferenceExpression(typeRef, m.Name);
                 return prop;
             }
             m = members.Where(e => e.Kind == Kind.Method).FirstOrDefault();
             if (m != null)
             {
-                var met = new XCodeMethodReferenceExpression(l, name);
+                var met = new XCodeMethodReferenceExpression(typeRef, m.Name);
                 return met;
             }
             m = members.Where(e => e.Kind == Kind.Event).FirstOrDefault();
             if (m != null)
             {
-                var evt = new XCodeEventReferenceExpression(l, name);
+                var evt = new XCodeEventReferenceExpression(typeRef, m.Name);
                 return evt;
             }
             return null;
         }
 
 
-        private CodeExpression buildTypeMemberExpression(CodeExpression target, IXType xtype, string name, out IXType memberType)
+        private CodeExpression buildTypeMemberExpression(CodeExpression target, IXTypeSymbol xtype, string name, out IXTypeSymbol memberType)
         {
             // Special Name ? (Keyword)
             CodeExpression expr = null;
@@ -623,18 +628,18 @@ namespace XSharp.CodeDom
                     switch (m.Kind)
                     {
                         case Kind.Field:
-                            expr = new XCodeFieldReferenceExpression(target, name);
+                            expr = new XCodeFieldReferenceExpression(target, m.Name);
                             break;
                         case Kind.Access:
                         case Kind.Assign:
                         case Kind.Property:
-                            expr = new XCodePropertyReferenceExpression(target, name);
+                            expr = new XCodePropertyReferenceExpression(target, m.Name);
                             break;
                         case Kind.Method:
-                            expr = new XCodeMethodReferenceExpression(target, name);
+                            expr = new XCodeMethodReferenceExpression(target, m.Name);
                             break;
                         case Kind.Event:
-                            expr = new XCodeEventReferenceExpression(target, name);
+                            expr = new XCodeEventReferenceExpression(target, m.Name);
                             break;
                         default:
                             break;
@@ -645,7 +650,7 @@ namespace XSharp.CodeDom
             return expr;
         }
 
-        private CodeExpression buildSelfExpression(CodeExpression target, string name, out IXType memberType)
+        private CodeExpression buildSelfExpression(CodeExpression target, string name, out IXTypeSymbol memberType)
         {
             CodeExpression expr = null;
             memberType = null;
@@ -689,13 +694,17 @@ namespace XSharp.CodeDom
 
         private bool findMemberInBaseTypes(string name, MemberTypes mtype)
         {
-            foreach (XCodeTypeReference basetype in CurrentClass.BaseTypes)
+            var baseTypes = CurrentClass.BaseTypes;
+            if (baseTypes.Count == 0 && _typeInOtherFile != null)
+                baseTypes = _typeInOtherFile.BaseTypes;
+
+            foreach (XCodeTypeReference basetype in baseTypes)
             {
                 string typeName = basetype.BaseType;
                 var baseType = findType(typeName);
-                if (baseType != null)
+                if (baseType != null && hasClassMember(baseType, name, mtype))
                 {
-                    return hasClassMember(baseType, name, mtype);
+                    return true;
                 }
             }
             return false;
@@ -954,7 +963,20 @@ namespace XSharp.CodeDom
                     break;
                 case XSharpParser.CHAR_CONST:
                     value = context.GetText();
-                    value = value.Substring(1, value.Length - 2);
+                    if (value[0] == 'C' || value[0] == 'c')
+                    {
+                        value = value.Substring(1);
+                    }
+                    if (value.Length == 3)
+                    { 
+                        value = value.Substring(1, 1);
+                    }
+                    else  // escaped notation
+                    {
+                        value = value.Substring(0, value.Length - 1);
+                        value = BuildUnEscapedString(value);
+                    }
+
                     if (value.Length >= 1)
                         expr = new CodePrimitiveExpression(value[0]);
                     break;
@@ -972,6 +994,7 @@ namespace XSharp.CodeDom
                 case XSharpParser.NULL_SYMBOL:
                 case XSharpParser.SYMBOL_CONST:
                 case XSharpParser.DATE_CONST:
+                case XSharpParser.BINARY_CONST:
                 default:
                     expr = BuildSnippetExpression(context.Token.Text);
                     break;
@@ -1245,6 +1268,7 @@ namespace XSharp.CodeDom
             {
                 bool isUnsigned = value.EndsWith("u", StringComparison.OrdinalIgnoreCase);
                 bool isSigned = value.EndsWith("l", StringComparison.OrdinalIgnoreCase);
+                // Note: we do not return a primitive with unsigned numbers because VS does not like that !
                 if (isSigned || isUnsigned)
                 {
                     value = value.Substring(0, value.Length - 1);
@@ -1256,22 +1280,21 @@ namespace XSharp.CodeDom
                 {
                     if (len > 64)
                     {
-                        ret = Double.NaN;
+                       ret = double.NaN;
                     }
                     else
                     {
                         // Don't forget to remove the prefix !!!
                         value = value.Substring(2);
                         // BIN are always unsigned (??)
-                        UInt64 bin64;
+                        long bin64;
                         try
                         {
-                            bin64 = Convert.ToUInt64(value, 2);
+                            bin64 = Convert.ToInt64(value, 2);
                             // Maybe 32 bits is enough ?
-                            if (bin64 <= UInt32.MaxValue)
+                            if (bin64 <= Int32.MaxValue && bin64 >= Int32.MinValue)
                             {
-                                UInt32 bin32 = Convert.ToUInt32(bin64);
-                                ret = bin32;
+                                ret = Convert.ToInt32(bin64);
                             }
                             else
                             {
@@ -1280,7 +1303,7 @@ namespace XSharp.CodeDom
                         }
                         catch
                         {
-                            ret = Double.NaN;
+                            ret = double.NaN;
                         }
                     }
                 }
@@ -1288,22 +1311,22 @@ namespace XSharp.CodeDom
                 {
                     if (len > 16)
                     {
-                        ret = Double.NaN;
+                        ret = Convert.ToDouble(value);
                     }
                     else
                     {
                         // Don't forget to remove the prefix !!!
                         value = value.Substring(2);
                         // HEX are always unsigned (??)
-                        UInt64 hex64;
+                        // the designer wants signed integers only
+                        Int64 hex64;
                         try
                         {
-                            hex64 = Convert.ToUInt64(value, 16);
+                            hex64 = Convert.ToInt64(value, 16);
                             // Maybe 32 bits is enough ?
-                            if (hex64 <= UInt32.MaxValue)
+                            if (hex64 <= Int32.MaxValue && hex64 >= Int32.MinValue)
                             {
-                                UInt32 hex32 = Convert.ToUInt32(hex64);
-                                ret = hex32;
+                                ret = Convert.ToInt32(hex64);
                             }
                             else
                             {
@@ -1312,49 +1335,30 @@ namespace XSharp.CodeDom
                         }
                         catch
                         {
-                            ret = Double.NaN;
+                            ret = double.NaN;
                         }
                     }
                 }
                 else
                 {
                     // context.INT_CONST() != null
-                    if (len > 64)
+                    if (len > 19)
                     {
-                        ret = Double.NaN;
-                    }
-                    else if (isUnsigned)
-                    {
-                        UInt64 myUInt64;
-                        try
-                        {
-                            myUInt64 = Convert.ToUInt64(value, 10);
-                            // Maybe 32 bits is enough ?
-                            if (myUInt64 <= UInt32.MaxValue)
-                            {
-                                UInt32 myUInt32 = Convert.ToUInt32(myUInt64);
-                                ret = myUInt32;
-                            }
-                            else
-                            {
-                                ret = myUInt64;
-                            }
-                        }
-                        catch
-                        {
-                            ret = Double.NaN;
-                        }
+                        if (Double.TryParse(value, NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var d))
+                            ret = d;
+                        else
+                            ret = double.NaN;
                     }
                     else
                     {
-                        Int64 myInt64;
+                        long myInt64;
                         try
                         {
                             myInt64 = Convert.ToInt64(value, 10);
                             // Maybe 32 bits is enough ?
-                            if ((myInt64 >= UInt32.MinValue) && (myInt64 <= UInt32.MaxValue))
+                            if ((myInt64 >= int.MinValue) && (myInt64 <= int.MaxValue))
                             {
-                                Int32 myInt32 = Convert.ToInt32(myInt64);
+                                int myInt32 = Convert.ToInt32(myInt64);
                                 ret = myInt32;
                             }
                             else
@@ -1364,29 +1368,33 @@ namespace XSharp.CodeDom
                         }
                         catch
                         {
-                            ret = Double.NaN;
+                            if (Double.TryParse(value, NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var d))
+                                ret = d;
+                            else
+                                ret = double.NaN;
                         }
                     }
                 }
             }
             else
             {
-                double d;
-                if (value.EndsWith("m", StringComparison.OrdinalIgnoreCase) ||
-                    value.EndsWith("r", StringComparison.OrdinalIgnoreCase) ||
-                    value.EndsWith("d", StringComparison.OrdinalIgnoreCase))
+                if (value.EndsWith("m", StringComparison.OrdinalIgnoreCase) ||      // money
+                    value.EndsWith("s", StringComparison.OrdinalIgnoreCase) ||      // single
+                    value.EndsWith("d", StringComparison.OrdinalIgnoreCase))        // double
                 {
                     value = value.Substring(0, value.Length - 1);
                 }
                 try
                 {
-                    d = double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                    ret = double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
                 }
                 catch (Exception)
                 {
-                    d = Double.NaN;
+                    if (Double.TryParse(value, out var d))
+                        ret = d;
+                    else
+                        ret = double.NaN;
                 }
-                ret = d;
             }
             return ret;
         }
@@ -1535,7 +1543,7 @@ namespace XSharp.CodeDom
 
         }
 
-        protected IXType findInCache(string typeName)
+        protected IXTypeSymbol findInCache(string typeName)
         {
             if (_types.ContainsKey(typeName))
             {
@@ -1562,7 +1570,7 @@ namespace XSharp.CodeDom
             return name;
         }
 
-        protected IXType findType(string typeName, IList<string> usings = null)
+        protected IXTypeSymbol findType(string typeName, IList<string> usings = null)
         {
             typeName = simplifyType(typeName);
             typeName = typeName.GetSystemTypeName(_projectNode.ParseOptions.XSharpRuntime);
@@ -1574,7 +1582,7 @@ namespace XSharp.CodeDom
             {
                 usings = _usings;
             }
-            IXType type;
+            IXTypeSymbol type;
             var myusings = usings.ToArray();
             // this looks up the type in the current project and all the dependent X# projects
             type = _projectNode.ResolveXType(typeName, myusings);
@@ -1592,19 +1600,27 @@ namespace XSharp.CodeDom
         }
 
 
-        protected IXType findParentType(IXType xtype)
+        protected IXTypeSymbol findParentType(IXTypeSymbol xtype)
         {
             var name = simplifyType(xtype.BaseType);
+            IList<string> usings;
+            if (xtype is XSourceTypeSymbol xsts)
+            {
+                usings = xsts.FileUsings;
+            }
+            else
+                usings = new string[]{ };
+
             var result = findInCache(name);
             if (result != null)
                 return result;
-            var xparent = findType(name, xtype.FileUsings);
+            var xparent = findType(name, usings);
             if (xparent != null)
                 return xparent;
             var parent = findType(name);
             if (parent == null)
             {
-                parent = _projectNode.ResolveXType(name, xtype.FileUsings.ToArray());
+                parent = _projectNode.ResolveXType(name, usings.ToArray());
             }
             return parent;
 

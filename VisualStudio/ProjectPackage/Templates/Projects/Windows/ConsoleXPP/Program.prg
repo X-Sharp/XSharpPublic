@@ -5,6 +5,6 @@ $endif$USING System.Text
 
 
 Procedure Main
-    ? "Hello World! Today is ",Today()
+    ? "Hello World! Today is ",Date()
     WAIT
-	RETURN
+    RETURN

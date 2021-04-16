@@ -27,7 +27,7 @@ namespace XSharp.CodeDom
         internal ParserRuleContext currentClass;
         private MemberAttributes classVarModifiers;
 
-        internal XSharpFieldsDiscover(IProjectTypeHelper projectNode) : base(projectNode)
+        internal XSharpFieldsDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
             classes = new Stack<ParserRuleContext>();
             currentClass = null;

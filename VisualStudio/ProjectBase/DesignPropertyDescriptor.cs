@@ -8,6 +8,7 @@
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections;
 using System.ComponentModel;

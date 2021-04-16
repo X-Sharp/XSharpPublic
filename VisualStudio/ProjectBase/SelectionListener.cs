@@ -46,7 +46,7 @@ namespace Microsoft.VisualStudio.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            this.monSel = this.serviceProvider.GetService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
+                this.monSel = this.serviceProvider.GetService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
             });
             if(this.monSel == null)
             {
@@ -117,10 +117,11 @@ namespace Microsoft.VisualStudio.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            if(this.SelectionMonitor != null)
-            {
-                this.SelectionMonitor.AdviseSelectionEvents(this, out this.eventsCookie);
-            }
+
+                if (this.SelectionMonitor != null)
+                {
+                    this.SelectionMonitor.AdviseSelectionEvents(this, out this.eventsCookie);
+                }
             });
         }
 

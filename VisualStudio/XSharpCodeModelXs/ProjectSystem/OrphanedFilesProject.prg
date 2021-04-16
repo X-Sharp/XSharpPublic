@@ -79,7 +79,11 @@ BEGIN NAMESPACE XSharpModel
       METHOD OpenElement(file AS STRING, line AS LONG, column AS LONG) AS VOID
          RETURN
          
-         
+
+     METHOD RunInForeGroundThread( a as Action) AS VOID
+            a()
+            RETURN
+
       METHOD SetStatusBarAnimation(onoff AS LOGIC, id AS SHORT) AS VOID
          RETURN
          
@@ -99,5 +103,4 @@ BEGIN NAMESPACE XSharpModel
          END CLASS
          
    END NAMESPACE
-   
    

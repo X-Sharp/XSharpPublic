@@ -1,25 +1,25 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Reflection
 USING System.Globalization
 USING System.Collections.Generic
 
-USING XSharp.Internal		
+USING XSharp.Internal
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
     FUNCTION Evaluate(cString AS STRING) AS USUAL
-RETURN Evaluate(cString, TRUE) 
+RETURN Evaluate(cString, TRUE)
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />	
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters.</param>
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
     FUNCTION Evaluate(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
-    LOCAL oMacro AS XSharp._Codeblock 
+    LOCAL oMacro AS XSharp._Codeblock
     LOCAL uRes   AS USUAL
     oMacro := MCompile(cString, lAllowSingleQuotes)
     IF oMacro != NULL_OBJECT .AND. ! oMacro:IsBlock
@@ -30,14 +30,14 @@ RETURN Evaluate(cString, TRUE)
     ENDIF
 RETURN uRes
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mcompile/*" />	
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mcompile/*" />
 /// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
 /// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net.</note>
 /// <seealso cref="_Codeblock" />
 FUNCTION MCompile(cString AS STRING) AS XSharp._Codeblock
     RETURN MCompile(cString, TRUE)
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mcompile/*" />	
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mcompile/*" />
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters</param>
 /// <seealso cref="_Codeblock" />
 FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Codeblock
@@ -61,10 +61,10 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
         ENDIF
         RETURN oResult
     ENDIF
-    RETURN NULL_OBJECT	
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />	
+    RETURN NULL_OBJECT
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />
 /// <note type="caution">MCompile returns a STRING containing PCode tokens in VO.
 /// It returns a XSharp._Codeblock in .Net. Therefore the parameter of MExec is a Codeblock</note>
 /// <seealso cref="_Codeblock" />
@@ -81,7 +81,7 @@ RETURN Eval(oBlock)
 INTERNAL FUNCTION _IsIdentifierStartChar(cChar AS CHAR) AS LOGIC
     IF cChar >= c'A' .AND. cChar <= c'Z'
         RETURN TRUE
-    ENDIF        
+    ENDIF
     IF cChar >= c'a' .AND. cChar <= c'z'
         RETURN TRUE
     ENDIF
@@ -116,7 +116,7 @@ INTERNAL FUNCTION _IsIdentifierPartChar(cChar AS CHAR) AS LOGIC
         CASE UnicodeCategory.SpacingCombiningMark
             RETURN TRUE
         CASE UnicodeCategory.Format
-            RETURN cChar > 127 
+            RETURN cChar > 127
     END SWITCH
 RETURN FALSE
 
@@ -124,7 +124,7 @@ INTERNAL FUNCTION _IsIdentifier(cName AS STRING) AS LOGIC
     IF cName:Length=0 .OR. ! _IsIdentifierStartChar(cName[0])
         RETURN FALSE
     ENDIF
-    FOR VAR nChar := 1 TO cName:Length-1 
+    FOR VAR nChar := 1 TO cName:Length-1
         IF ! _IsIdentifierPartChar(cName[nChar])
             RETURN FALSE
         ENDIF
@@ -137,7 +137,7 @@ RETURN TRUE
     FUNCTION Type(cString AS STRING) AS STRING
     LOCAL uValue AS USUAL
     LOCAL cRet	 AS STRING
-    IF String.IsNullOrEmpty(cString)	
+    IF String.IsNullOrEmpty(cString)
         cRet := "UE"
     ELSE
         TRY
@@ -150,7 +150,7 @@ RETURN TRUE
                     cRet   := ValType(uValue)
             ENDIF
         CATCH  AS Exception
-            cRet  := "UE" 
+            cRet  := "UE"
         END TRY
     ENDIF
 RETURN cRet
@@ -199,7 +199,7 @@ RETURN cRet
                         ENDIF
                     ENDIF
             END SWITCH
-            IF evalMacro 
+            IF evalMacro
                 VAR result := StrEvaluateMemVarGet(cVariableName)
                 sb:Append(result)
                 evalMacro := FALSE
@@ -223,7 +223,7 @@ INTERNAL FUNCTION StrEvaluateMemVarGet(cVariableName AS STRING) AS STRING
             IF oMemVar == NULL
                 oMemVar := XSharp.MemVar.PublicFind(cVariableName)
             ENDIF
-            IF oMemVar != NULL   
+            IF oMemVar != NULL
                 RETURN oMemVar:Value:ToString()
         ENDIF
     CATCH
@@ -244,7 +244,7 @@ INTERNAL FUNCTION DefaultMacroAmbigousMatchResolver(m1 AS MemberInfo, m2 AS Memb
             RETURN 1
         ENDIF
     ENDIF
-    
+
 RETURN 0
 
 INTERNAL FUNCTION GetCompany(asm AS System.Reflection.Assembly) AS STRING
@@ -269,7 +269,7 @@ FUNCTION ExecScript( cExpression, eParameters ) AS USUAL CLIPPER
             _fullMacroCompiler := AssemblyHelper.Load("XSharp.MacroCompiler.Full")
             VAR oImm := AssemblyHelper.FindLoadedAssembly("System.Collections.Immutable")
             IF oImm == NULL_OBJECT
-                oImm := Assembly.Load("System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
+                oImm := Assembly.Load("System.Collections.Immutable, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
             ENDIF
             IF oImm == NULL_OBJECT
                 THROW Error{"Could not load 'System.Collections.Immutable'"}
@@ -304,6 +304,6 @@ FUNCTION ExecScript( cExpression, eParameters ) AS USUAL CLIPPER
         THROW e
     END TRY
     RETURN result
-    
-    
-    
+
+
+

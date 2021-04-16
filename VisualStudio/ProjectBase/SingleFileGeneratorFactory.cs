@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 using VSRegistry = Microsoft.VisualStudio.Shell.VSRegistry;
@@ -208,11 +209,11 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                if(this.baseGeneratorRegistryKey == null)
+                if (this.baseGeneratorRegistryKey == null)
                 {
-                    using(RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration))
+                    using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_Configuration))
                     {
-                        if(null != root)
+                        if (null != root)
                         {
                             string regPath = "Generators\\" + this.ProjectGuid.ToString("B");
                             baseGeneratorRegistryKey = root.OpenSubKey(regPath);
@@ -231,6 +232,8 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 return this.serviceProvider.GetService(typeof(SLocalRegistry)) as ILocalRegistry;
             }
         }
@@ -249,22 +252,24 @@ namespace Microsoft.VisualStudio.Project
         public virtual int CreateGeneratorInstance(string progId, out int generatesDesignTimeSource, out int generatesSharedDesignTimeSource, out int useTempPEFlag, out IVsSingleFileGenerator generate)
         {
             Guid genGuid;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             ErrorHandler.ThrowOnFailure(this.GetGeneratorInformation(progId, out generatesDesignTimeSource, out generatesSharedDesignTimeSource, out useTempPEFlag, out genGuid));
 
-			//Create the single file generator and pass it out. Check to see if it is in the cache
-         if (genGuid.CompareTo(Guid.Empty) == 0)
-         {
-            generate = null;
-            return VSConstants.S_FALSE;
-         }
-            if(!this.generatorsMap.ContainsKey(progId) || ((this.generatorsMap[progId]).Generator == null))
+            //Create the single file generator and pass it out. Check to see if it is in the cache
+            if (genGuid.CompareTo(Guid.Empty) == 0)
+            {
+                generate = null;
+                return VSConstants.S_FALSE;
+            }
+            if (!this.generatorsMap.ContainsKey(progId) || ((this.generatorsMap[progId]).Generator == null))
             {
                 Guid riid = VSConstants.IID_IUnknown;
                 uint dwClsCtx = (uint)CLSCTX.CLSCTX_INPROC_SERVER;
                 IntPtr genIUnknown = IntPtr.Zero;
                 //create a new one.
                 ErrorHandler.ThrowOnFailure(this.LocalRegistry.CreateInstance(genGuid, null, ref riid, dwClsCtx, out genIUnknown));
-                if(genIUnknown != IntPtr.Zero)
+                if (genIUnknown != IntPtr.Zero)
                 {
                     try
                     {
@@ -322,11 +327,11 @@ namespace Microsoft.VisualStudio.Project
                 return VSConstants.S_FALSE;
 
             //Create the single file generator and pass it out.
-            if(!this.generatorsMap.ContainsKey(progId))
+            if (!this.generatorsMap.ContainsKey(progId))
             {
                 // We have to check whether the BaseGeneratorkey returns null.
                 RegistryKey tempBaseGeneratorKey = this.BaseGeneratorsKey;
-                if(tempBaseGeneratorKey == null || (genKey = tempBaseGeneratorKey.OpenSubKey(progId)) == null)
+                if (tempBaseGeneratorKey == null || (genKey = tempBaseGeneratorKey.OpenSubKey(progId)) == null)
                 {
                     return VSConstants.S_FALSE;
                 }

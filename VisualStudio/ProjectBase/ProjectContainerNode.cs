@@ -20,7 +20,7 @@ using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using MSBuild = Microsoft.Build.Evaluation;
-using XSharp.Project;
+using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -76,7 +76,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// This is the object that will be returned by EnvDTE.Project.Object for this project
         /// </summary>
-        internal override object Object
+        public override object Object
         {
             get { return new OASolutionFolder<ProjectContainerNode>(this); }
         }
@@ -140,7 +140,9 @@ namespace Microsoft.VisualStudio.Project
         {
             HierarchyNode hierNode = this.NodeFromItemId(itemId);
             Debug.Assert(hierNode != null, "Hierarchy node not found");
-            if(hierNode != this)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (hierNode != this)
             {
                 return ErrorHandler.ThrowOnFailure(hierNode.IsItemDirty(itemId, punkDocData, out pfDirty));
             }
@@ -154,7 +156,9 @@ namespace Microsoft.VisualStudio.Project
         {
             HierarchyNode hierNode = this.NodeFromItemId(itemid);
             Debug.Assert(hierNode != null, "Hierarchy node not found");
-            if(hierNode != this)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (hierNode != this)
             {
                 return ErrorHandler.ThrowOnFailure(hierNode.SaveItem(dwSave, silentSaveAsName, itemid, punkDocData, out pfCancelled));
             }
@@ -182,8 +186,9 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
         public override int ReloadItem(uint itemId, uint reserved)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             #region precondition
-            if(this.IsClosed)
+            if (this.IsClosed)
             {
                 return VSConstants.E_FAIL;
             }
@@ -215,6 +220,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected override void Reload()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             base.Reload();
             this.CreateNestedProjectNodes();
         }
@@ -223,6 +229,8 @@ namespace Microsoft.VisualStudio.Project
         #region IVsParentProject
         public virtual int OpenChildren()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsSolution solution = this.GetService(typeof(IVsSolution)) as IVsSolution;
 
             Debug.Assert(solution != null, "Could not retrieve the solution from the services provided by this project");
@@ -260,7 +268,7 @@ namespace Microsoft.VisualStudio.Project
                     Utilities.ShowMessageBox(this.Site, title, e.Message, icon, buttons, defaultButton);
                 }
 
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
                 throw;
             }
             finally
@@ -281,6 +289,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual int CloseChildren()
         {
             int returnValue = VSConstants.S_OK; // be optimistic.
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsSolution solution = this.GetService(typeof(IVsSolution)) as IVsSolution;
             Debug.Assert(solution != null, "Could not retrieve the solution from the services provided by this project");
@@ -361,6 +370,7 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
 
+            ThreadHelper.ThrowIfNotOnUIThread();
             // We do not care of file changes after this.
             this.NestedProjectNodeReloader.FileChangedOnDisk -= this.OnNestedProjectFileChangedOnDisk;
             this.NestedProjectNodeReloader.Dispose();
@@ -386,6 +396,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 creationFlags |= __VSCREATEPROJFLAGS.CPF_OPENFILE;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             foreach (MSBuild.ProjectItem item in this.BuildProject.Items)
             {
@@ -433,6 +444,7 @@ namespace Microsoft.VisualStudio.Project
             string filename = elementToUse.GetFullPathForElement();
             // Delegate to AddNestedProjectFromTemplate. Because we pass flags that specify open project rather then clone, this will works.
             Debug.Assert((creationFlags & __VSCREATEPROJFLAGS.CPF_OPENFILE) == __VSCREATEPROJFLAGS.CPF_OPENFILE, "__VSCREATEPROJFLAGS.CPF_OPENFILE should have been specified, did you mean to call AddNestedProjectFromTemplate?");
+            ThreadHelper.ThrowIfNotOnUIThread();
             return AddNestedProjectFromTemplate(filename, Path.GetDirectoryName(filename), Path.GetFileName(filename), elementToUse, creationFlags);
         }
 
@@ -525,6 +537,7 @@ namespace Microsoft.VisualStudio.Project
             }
             string destination = elementToUse.GetFullPathForElement();
             string template = this.GetProjectTemplatePath(elementToUse);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             return this.AddNestedProjectFromTemplate(template, Path.GetDirectoryName(destination), Path.GetFileName(destination), elementToUse, creationFlags);
         }
@@ -540,8 +553,9 @@ namespace Microsoft.VisualStudio.Project
         {
             // If this is project creation and the template specified a subproject in its project file, this.nestedProjectElement will be used
             ProjectElement elementToUse = (element == null) ? this.nestedProjectElement : element;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(elementToUse == null)
+            if (elementToUse == null)
             {
                 // If this is null, this means MSBuild does not know anything about our subproject so add an MSBuild item for it
                 elementToUse = new ProjectElement(this, fileName, ProjectFileConstants.SubProject);
@@ -587,7 +601,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected virtual void AddVirtualProjects()
         {
-            for(HierarchyNode child = this.FirstChild; child != null; child = child.NextSibling)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            for (HierarchyNode child = this.FirstChild; child != null; child = child.NextSibling)
             {
                 NestedProjectNode nestedProjectNode = child as NestedProjectNode;
                 if(nestedProjectNode != null)
@@ -683,6 +698,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentNullException("node");
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsSolution solution = this.GetService(typeof(IVsSolution)) as IVsSolution;
 
@@ -787,6 +803,8 @@ namespace Microsoft.VisualStudio.Project
 
             // test if we actually have a document for this id.
             string moniker;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             this.GetMkDocument(e.ItemID, out moniker);
             Debug.Assert(NativeMethods.IsSamePath(moniker, e.FileName), " The file + " + e.FileName + " has changed but we could not retrieve the path for the item id associated to the path.");
             #endregion
@@ -802,8 +820,9 @@ namespace Microsoft.VisualStudio.Project
                 OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
                 reload = (Utilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton) == NativeMethods.IDYES);
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(reload)
+            if (reload)
             {
                 // We have to use here the interface method call, since it might be that specialized project nodes like the project container item
                 // is overwriting the default functionality.

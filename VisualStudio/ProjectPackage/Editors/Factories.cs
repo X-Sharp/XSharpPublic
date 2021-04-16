@@ -35,6 +35,7 @@ namespace XSharp.Project
         /// </summary>
         public void Dispose()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (vsServiceProvider != null)
             {
                 vsServiceProvider.Dispose();
@@ -151,76 +152,76 @@ namespace XSharp.Project
 
         #endregion
         #region Helper Methods
-        protected bool CalledFromVulcanDLL()
-        {
-            var trace = new System.Diagnostics.StackTrace(false);
-            int i = 0;
-            foreach (var frame in trace.GetFrames())
-            {
-                if (i > 0)
-                {
-                    var dll = frame.GetMethod().Module.Assembly;
-                    String name = dll.GetName().Name.ToLower();
-                    if (name.Contains("vulcanproject2015"))
-                    {
-                        return true;
-                    }
-                }
-                i++;
-            }
-            return false;
+        //protected bool CalledFromVulcanDLL()
+        //{
+        //    var trace = new System.Diagnostics.StackTrace(false);
+        //    int i = 0;
+        //    foreach (var frame in trace.GetFrames())
+        //    {
+        //        if (i > 0)
+        //        {
+        //            var dll = frame.GetMethod().Module.Assembly;
+        //            String name = dll.GetName().Name.ToLower();
+        //            if (name.Contains("vulcanproject2015"))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        i++;
+        //    }
+        //    return false;
 
-        }
-        protected object GetProjectNode(string fileName)
-        {
-            var dte = this.GetService(typeof(SDTE)) as EnvDTE80.DTE2;
-            var projectitem = dte.Solution.FindProjectItem(fileName);
-            if (projectitem != null)
-            {
-                var project = projectitem.ContainingProject.Object as object;
-                if (project != null)
-                {
-                    System.Type type2 = project.GetType();
-                    var property = type2.GetProperty("Project", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
-                    if (property != null)
-                    {
-                        // Now get Vulcans OAProjectNode
-                        object vulproject = property.GetValue(project);
-                        if (vulproject != null)     // Vulcans OAProject
-                        {
-                            // Now get Vulcans ProjectNode
-                            type2 = vulproject.GetType();
-                            property = type2.GetProperty("Project", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
-                            if (property != null)
-                                return property.GetValue(vulproject);
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-        protected object GetVulcanFactory(string className, string fileName)
-        {
-            object projectNode = GetProjectNode(fileName);
-            object package = null;
-            object factory = null;
-            if (projectNode != null)
-            {
-                var type = projectNode.GetType();
-                if (type != null)
-                {
-                    var projectDLL = type.Assembly;
-                    var property = type.GetProperty("Package", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
-                    if (property != null)
-                    {
-                        type = projectDLL.GetType(className);
-                        package = property.GetValue(projectNode);
-                        factory = Activator.CreateInstance(type, new object[] { package });
-                    }
-                }
-            }
-            return factory;
-        }
+        //}
+        //protected object GetProjectNode(string fileName)
+        //{
+        //    var dte = this.GetService(typeof(Microsoft.VisualStudio.Shell.Interop.SDTE)) as EnvDTE80.DTE2;
+        //    var projectitem = dte.Solution.FindProjectItem(fileName);
+        //    if (projectitem != null)
+        //    {
+        //        var project = projectitem.ContainingProject.Object as object;
+        //        if (project != null)
+        //        {
+        //            System.Type type2 = project.GetType();
+        //            var property = type2.GetProperty("Project", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
+        //            if (property != null)
+        //            {
+        //                // Now get Vulcans OAProjectNode
+        //                object vulproject = property.GetValue(project);
+        //                if (vulproject != null)     // Vulcans OAProject
+        //                {
+        //                    // Now get Vulcans ProjectNode
+        //                    type2 = vulproject.GetType();
+        //                    property = type2.GetProperty("Project", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
+        //                    if (property != null)
+        //                        return property.GetValue(vulproject);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return null;
+        //}
+        //protected object GetVulcanFactory(string className, string fileName)
+        //{
+        //    object projectNode = GetProjectNode(fileName);
+        //    object package = null;
+        //    object factory = null;
+        //    if (projectNode != null)
+        //    {
+        //        var type = projectNode.GetType();
+        //        if (type != null)
+        //        {
+        //            var projectDLL = type.Assembly;
+        //            var property = type.GetProperty("Package", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
+        //            if (property != null)
+        //            {
+        //                type = projectDLL.GetType(className);
+        //                package = property.GetValue(projectNode);
+        //                factory = Activator.CreateInstance(type, new object[] { package });
+        //            }
+        //        }
+        //    }
+        //    return factory;
+        //}
         #endregion
     }
 
@@ -249,13 +250,13 @@ namespace XSharp.Project
                         out int pgrfCDW)
         {
 
-            if (CalledFromVulcanDLL())
-            {
-                IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOFormEditorFactory", pszMkDocument) as IVsEditorFactory;
-                if (factory != null)
-                    return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
-                        out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
-            }
+            //if (CalledFromVulcanDLL())
+            //{
+            //    IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOFormEditorFactory", pszMkDocument) as IVsEditorFactory;
+            //    if (factory != null)
+            //        return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
+            //            out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
+            //}
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
@@ -308,13 +309,13 @@ namespace XSharp.Project
                         out int pgrfCDW)
         {
 
-            if (CalledFromVulcanDLL())
-            {
-                IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOMenuEditorFactory", pszMkDocument) as IVsEditorFactory;
-                if (factory != null)
-                    return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
-                    out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
-            }
+            //if (CalledFromVulcanDLL())
+            //{
+            //    IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOMenuEditorFactory", pszMkDocument) as IVsEditorFactory;
+            //    if (factory != null)
+            //        return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
+            //        out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
+            //}
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
@@ -373,13 +374,13 @@ namespace XSharp.Project
                         out int pgrfCDW)
         {
 
-            if (CalledFromVulcanDLL())
-            {
-                IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOFieldSpecEditorFactory", pszMkDocument) as IVsEditorFactory;
-                if (factory != null)
-                    return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
-                    out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
-            }
+            //if (CalledFromVulcanDLL())
+            //{
+            //    IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VOFieldSpecEditorFactory", pszMkDocument) as IVsEditorFactory;
+            //    if (factory != null)
+            //        return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
+            //        out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
+            //}
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
@@ -435,13 +436,13 @@ namespace XSharp.Project
                         out int pgrfCDW)
         {
 
-            if (CalledFromVulcanDLL())
-            {
-                IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VODBServerEditorFactory", pszMkDocument) as IVsEditorFactory;
-                if (factory != null)
-                    return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
-                    out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
-            }
+            //if (CalledFromVulcanDLL())
+            //{
+            //    IVsEditorFactory factory = GetVulcanFactory("VulcanVSPackage.VODBServerEditorFactory", pszMkDocument) as IVsEditorFactory;
+            //    if (factory != null)
+            //        return factory.CreateEditorInstance(grfCreateDoc, pszMkDocument, pszPhysicalView, pvHier, itemid, punkDocDataExisting,
+            //        out ppunkDocView, out ppunkDocData, out pbstrEditorCaption, out pguidCmdUI, out pgrfCDW);
+            //}
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;

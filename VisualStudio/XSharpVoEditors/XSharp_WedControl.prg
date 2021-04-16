@@ -1,4 +1,9 @@
-﻿USING System.Drawing
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Drawing
 USING System.IO
 USING System.Windows.Forms
 USING XSharp.VODesigners
@@ -74,10 +79,10 @@ CLASS XSharp_VOWEDControl INHERIT VOWEDControl IMPLEMENTS IVOWEDControl
 	    ENDIF
     RETURN
 
-	PROPERTY IsGridEnabled AS LOGIC GET oWed != NULL && oWed:IsGridEnabled
+	PROPERTY IsGridEnabled AS LOGIC GET oWed != NULL .AND. oWed:IsGridEnabled
 
 
-	PROPERTY ReadOnly AS LOGIC GET SUPER:oEditor:ReadOnly SET SUPER:ReadOnly := VALUE
+	NEW PROPERTY ReadOnly AS LOGIC GET SUPER:oEditor:ReadOnly SET SUPER:ReadOnly := VALUE
 
 	PROPERTY IWin32Window AS IWin32Window GET (IWin32Window) SELF
 

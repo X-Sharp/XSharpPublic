@@ -9,6 +9,7 @@
  *
  * ***************************************************************************/
 
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -38,7 +39,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region properties
-        internal RT BaseReferenceNode
+        public RT BaseReferenceNode
         {
             get { return referenceNode; }
         }
@@ -62,6 +63,8 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 return BaseReferenceNode.ProjectMgr.GetAutomationObject() as EnvDTE.Project;
             }
         }
@@ -87,6 +90,8 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 return BaseReferenceNode.ProjectMgr.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
             }
         }
@@ -144,6 +149,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual void Remove()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             BaseReferenceNode.Remove(false);
         }
 

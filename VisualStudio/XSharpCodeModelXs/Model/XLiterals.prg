@@ -12,6 +12,12 @@ USING LanguageService.CodeAnalysis.XSharp
 
 BEGIN NAMESPACE XSharpModel
    
+   ENUM KeywordCase
+      MEMBER None := 0
+      MEMBER Upper := 1
+      MEMBER Lower := 2
+      MEMBER Title := 3
+   END ENUM
    STATIC CLASS XLiterals
    STATIC CONSTRUCTOR
        // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
@@ -30,9 +36,9 @@ BEGIN NAMESPACE XSharpModel
       RETURN
    STATIC METHOD Choose(kw1 as string, kw2 as string, kw3 as string) as string
       SWITCH XSettings.KeywordCase
-         CASE 2
+         CASE KeywordCase.Lower
             return kw2
-         CASE 3
+         CASE KeywordCase.Upper
             return kw3
       END SWITCH
       return kw1
@@ -67,23 +73,32 @@ BEGIN NAMESPACE XSharpModel
       endif
       VAR res := mods:ToString():Replace(",","")
       SWITCH XSettings.KeywordCase
-      CASE 2
+      CASE KeywordCase.Lower
          RETURN res:ToLower()
-      CASE 3
+      CASE KeywordCase.Title
          RETURN res:Substring(0,1):ToUpper()+res:Substring(1):ToLower()
       OTHERWISE
          RETURN res
       END SWITCH
    
    STATIC METHOD ToDisplayString(SELF kind as Kind) AS STRING
+      VAR result := kind:DisplayName()
       SWITCH XSettings.KeywordCase
-      CASE 2
+      CASE KeywordCase.Lower
          RETURN kind:ToString():ToLower()
-      CASE 3
-         VAR s := kind:ToString()
-         RETURN s:Substring(0,1):ToUpper()+s:Substring(1):ToLower()
+      CASE KeywordCase.Title
+         IF result:Contains(" ")
+            var parts := result:Split(<CHAR>{' '})
+            result := ""
+            FOREACH VAR s IN parts
+               result += s:Substring(0,1):ToUpper()+s:Substring(1):ToLower()+" "
+            NEXT
+            RETURN result:Substring(0, result:Length-1)
+         ELSE
+            RETURN result:Substring(0,1):ToUpper()+result:Substring(1):ToLower()
+         ENDIF
       OTHERWISE
-         RETURN kind:ToString():ToUpper()
+         RETURN result:ToUpper()
       END SWITCH
 
    END CLASS

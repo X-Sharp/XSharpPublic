@@ -132,6 +132,8 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Ignore      :=  28
       MEMBER @@MemVar      :=  29
       MEMBER @@DbField     :=  30
+      MEMBER @@LocalFunc   :=  31
+      MEMBER @@LocalProc   :=  32
    END ENUM                   
    
    [Flags];
@@ -186,7 +188,8 @@ BEGIN NAMESPACE XSharpModel
       MEMBER Settings         :=12
       MEMBER License          :=13
       MEMBER Resource         := 14
-      MEMBER Template         := 15       // tpl and inf 
+      MEMBER Template         := 15       // tpl and inf
+      MEMBER TextTemplate     := 16     // tt
    END ENUM
    
    ENUM ParamType AS BYTE
@@ -195,6 +198,10 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Out	   := 2
       MEMBER @@Params   := 3
       MEMBER @@In  	   := 4
+   END ENUM
+   ENUM LocalType as BYTE
+      MEMBER @@As       := 0
+      MEMBER @@Is       := 1
    END ENUM
    
    ENUM CallingConvention
@@ -208,7 +215,16 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Fastcall    :=  XSharpLexer.FASTCALL
       MEMBER @@Thiscall    :=  XSharpLexer.THISCALL
    END ENUM
-   
+
+    ENUM ImpliedKind
+        MEMBER None         := 0     //
+        MEMBER Assignment   := 1     // VAR name := Expression         Need to detect the type of Expression. Save everything after := to the Expression
+        MEMBER TypeCheck    := 2     // IF x IS type VAR name          This will assign the typename of the ImpliedVar. No need to store the Expression
+        MEMBER InCollection := 3     // FOREACH VAR x IN collection    Need to detect type of collection: everything after IN is saved in the Expression
+        MEMBER LoopCounter  := 4     // FOR VAR  name := start TO end  Need to detect the type of start or end. Save tokens start .. end in the Expression
+        MEMBER OutParam     := 5     // Int32.TryParse("123", OUT VAR name)  // need to detect the type of the method and get the parametertype. Whole line until closing paren in the Expression
+        MEMBER Using        := 6     // (BEGIN) USING VAR name := Expression   variation of VAR Name := Expression
+    END ENUM
    
 END NAMESPACE
 

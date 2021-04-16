@@ -19,7 +19,7 @@ namespace XSharp.CodeDom
         internal XCodeTypeReference(string typeName) : base(typeName)
         {
         }
-        internal XCodeTypeReference(IXType type) : base(type.FullName)
+        internal XCodeTypeReference(IXTypeSymbol type) : base(type.FullName)
         {
         }
     }

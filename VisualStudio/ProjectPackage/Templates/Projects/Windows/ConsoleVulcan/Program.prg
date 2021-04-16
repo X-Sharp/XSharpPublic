@@ -6,12 +6,12 @@ $endif$USING System.Text
 
 
 FUNCTION Start() AS VOID STRICT
-	LOCAL cbMacro as CODEBLOCK
-	LOCAL cMacro as STRING
-	cMacro := "{||DTOC(Today())}"
-	cbMacro := &(cMacro)
-	Console.WriteLine("Hello World today is " + (STRING) Eval(cbMacro))
-	
-	Console.WriteLine("Press any key to continue...")
-	Console.ReadKey()
-	
+    LOCAL cbMacro as CODEBLOCK
+    LOCAL cMacro as STRING
+    cMacro := "{||DTOC(Today())}"
+    cbMacro := &(cMacro)
+    Console.WriteLine("Hello World today is " + (STRING) Eval(cbMacro))
+    
+    Console.WriteLine("Press any key to continue...")
+    Console.ReadKey()
+    RETURN

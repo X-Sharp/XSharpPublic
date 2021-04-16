@@ -57,7 +57,7 @@ namespace XSharp.Project
             if (! string.IsNullOrEmpty(solutionFile))
             {
                 XSharpModel.XSolution.Open(solutionFile);
-                XSharpProjectPackage.Instance.SetCommentTokens();
+                XSharpProjectPackage.XInstance.SetCommentTokens();
             }
             projectfiles.Clear();
 
@@ -101,7 +101,7 @@ namespace XSharp.Project
         public override int OnAfterCloseSolution(object reserved)
         {
             XSharpModel.XSolution.Close();
-            XSharpXMLDocTools.Close();
+            XSharp.LanguageService.XSharpXMLDocTools.Close();
             XSharpModel.XSolution.IsClosing = false;
             return VSConstants.S_OK;
         }
@@ -112,24 +112,49 @@ namespace XSharp.Project
         }
         const string oldText = @"$(MSBuildExtensionsPath)\XSharp";
         const string newText = @"$(XSharpMsBuildDir)";
+        const string MsTestGuid = @"{3AC096D0-A1C2-E12C-1390-A8335801FDAB};";
         public override void OnBeforeOpenProject(ref Guid guidProjectID, ref Guid guidProjectType, string pszFileName)
         {
-            if (hasEnvironmentvariable && pszFileName != null && pszFileName.ToLower().EndsWith("xsproj") && System.IO.File.Exists(pszFileName))
+            if (pszFileName != null && pszFileName.ToLower().EndsWith("xsproj") && System.IO.File.Exists(pszFileName))
             {
                 string xml = File.ReadAllText(pszFileName);
-                var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
-                if (pos >= 0)
+                var original = Path.ChangeExtension(pszFileName, ".original");
+                bool changed = false;
+                if (hasEnvironmentvariable)
                 {
-                    while (pos > 0)
+                    var pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
+                    if (pos >= 0)
                     {
-                        xml = xml.Substring(0, pos) + newText + xml.Substring(pos + oldText.Length);
-                        pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
+                        while (pos > 0)
+                        {
+                            xml = xml.Substring(0, pos) + newText + xml.Substring(pos + oldText.Length);
+                            pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
+                        }
+                        
+                        Utilities.DeleteFileSafe(original);
+                        File.Copy(pszFileName, original);
+                        Utilities.DeleteFileSafe(pszFileName);
+                        File.WriteAllText(pszFileName, xml);
+                        changed = true;
                     }
-                    var original = Path.ChangeExtension(pszFileName, ".original");
-                    Utilities.DeleteFileSafe(original);
-                    File.Copy(pszFileName, original);
+                }
+                var testpos = xml.IndexOf(MsTestGuid, StringComparison.OrdinalIgnoreCase);
+                if (testpos >= 0)
+                {
+                    var left = xml.Substring(0, testpos);
+                    var right = xml.Substring(testpos + MsTestGuid.Length);
+                    if (! changed)
+                    {
+                        Utilities.DeleteFileSafe(original);
+                        File.Copy(pszFileName, original);
+                    }
+                    xml = left + right;
                     Utilities.DeleteFileSafe(pszFileName);
                     File.WriteAllText(pszFileName, xml);
+                    changed = true;
+                }
+                if (changed)
+                {
                     changedProjectfiles.Add(pszFileName, original);
                 }
             }

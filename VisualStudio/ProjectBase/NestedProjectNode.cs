@@ -153,6 +153,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="dispid">Dispatch identifier of the property that is about to change or DISPID_UNKNOWN if multiple properties are about to change.</param>
         public virtual void OnChanged(int dispid)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (dispid == (int)VSLangProj80.VsProjPropId.VBPROJPROPID_FileName)
             {
                 // Get the filename of the nested project. Inetead of asking the label on the nested we ask the filename, since the label might not yet been set.
@@ -208,6 +209,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>It return an object which type is dependent on the propid.</returns>
         public override object GetProperty(int propId)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             __VSHPROPID vshPropId = (__VSHPROPID)propId;
             switch (vshPropId)
             {
@@ -264,6 +266,7 @@ namespace Microsoft.VisualStudio.Project
         {
             Debug.Assert(this.nestedHierarchy != null, "The nested hierarchy object must be created before calling this method");
             Debug.Assert(punkDocData != IntPtr.Zero, "docData intptr was zero");
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Get an IPersistFileFormat object from docData object
             IPersistFileFormat persistFileFormat = Marshal.GetTypedObjectForIUnknown(punkDocData, typeof(IPersistFileFormat)) as IPersistFileFormat;
@@ -286,6 +289,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public override int SaveItem(VSSAVEFLAGS dwSave, string silentSaveAsName, uint itemid, IntPtr punkDocData, out int pfCancelled)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             // Don't ignore/unignore file changes
             // Use Advise/Unadvise to work around rename situations
             try
@@ -324,6 +328,7 @@ namespace Microsoft.VisualStudio.Project
         public override object GetIconHandle(bool open)
         {
             Debug.Assert(this.nestedHierarchy != null, "The nested hierarchy object must be created before calling this method");
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             object iconHandle = null;
             this.nestedHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_IconHandle, out iconHandle);
@@ -390,6 +395,7 @@ namespace Microsoft.VisualStudio.Project
         public override int SetEditLabel(string label)
         {
             int result = this.DelegateSetPropertyToNested((int)__VSHPROPID.VSHPROPID_EditLabel, label);
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (ErrorHandler.Succeeded(result))
             {
                 this.RenameNestedProjectInParentProject(label);
@@ -404,6 +410,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>the node cation</returns>
         public override string GetEditLabel()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return (string)this.DelegateGetPropertyToNested((int)__VSHPROPID.VSHPROPID_EditLabel);
         }
 
@@ -429,6 +436,7 @@ namespace Microsoft.VisualStudio.Project
 
             Debug.Assert(this.nestedHierarchy != null, "The nested hierarchy object must be created before calling this method");
             #endregion
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsPersistHierarchyItem2 persistHierachyItem = this.nestedHierarchy as IVsPersistHierarchyItem2;
 
@@ -458,6 +466,7 @@ namespace Microsoft.VisualStudio.Project
             #endregion
 
             this.IgnoreNestedProjectFile(ignoreFlag);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsPersistHierarchyItem2 persistHierachyItem = this.nestedHierarchy as IVsPersistHierarchyItem2;
 
@@ -570,6 +579,7 @@ namespace Microsoft.VisualStudio.Project
         /// <remarks>This methos should be called just after a NestedProjectNode object is created.</remarks>
         public virtual void Init(string fileNameParam, string destinationParam, string projectNameParam, __VSCREATEPROJFLAGS createFlags)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (String.IsNullOrEmpty(fileNameParam))
             {
                 throw new ArgumentException(SR.GetString(SR.ParameterCannotBeNullOrEmpty, CultureInfo.CurrentUICulture), "fileNameParam");
@@ -659,6 +669,7 @@ namespace Microsoft.VisualStudio.Project
             }
             #endregion
             // get the IVsSolution interface from the global service provider
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsSolution solution = this.GetService(typeof(IVsSolution)) as IVsSolution;
             Debug.Assert(solution != null, "Could not get the IVsSolution object from the services exposed by this project");
             if (solution == null)
@@ -682,6 +693,7 @@ namespace Microsoft.VisualStudio.Project
         protected override void Dispose(bool disposing)
         {
             // Everybody can go here.
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (!this.isDisposed)
             {
                 try
@@ -737,6 +749,7 @@ namespace Microsoft.VisualStudio.Project
             _VSRDTFLAGS flags = _VSRDTFLAGS.RDT_VirtualDocument | _VSRDTFLAGS.RDT_ProjSlnDocument; ;
 
             // Request the RDT service
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsRunningDocumentTable rdt = this.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
             Debug.Assert(rdt != null, " Could not get running document table from the services exposed by this project");
             if (rdt == null)
@@ -804,6 +817,7 @@ namespace Microsoft.VisualStudio.Project
                 return;
             }
             // First we see if someone else has opened the requested view of the file.
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsRunningDocumentTable rdt = this.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
             if (rdt != null && this.DocCookie != (int)ShellConstants.VSDOCCOOKIE_NIL)
             {
@@ -822,6 +836,7 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void RenameNestedProjectInParentProject(string label)
         {
             string existingLabel = this.Caption;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (String.Compare(existingLabel, label, StringComparison.Ordinal) == 0)
             {
@@ -890,8 +905,10 @@ namespace Microsoft.VisualStudio.Project
             }
 
             uint itemid = VSConstants.VSITEMID_NIL;
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 this.DisconnectPropertyNotifySink();
 
                 IVsUIHierarchy hier;
@@ -940,6 +957,7 @@ namespace Microsoft.VisualStudio.Project
             Debug.Assert(this.nestedHierarchy != null, "The nested hierarchy object must be created before calling this method");
 
             // This method should be called from the open children method, then we can safely use the IsNewProject property
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (this.ProjectMgr.IsNewProject)
             {
                 instanceGuid = Guid.NewGuid();
@@ -989,6 +1007,7 @@ namespace Microsoft.VisualStudio.Project
         private void SetDocCookieOnNestedHier(uint itemDocCookie)
         {
             object docCookie = (int)itemDocCookie;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             try
             {
@@ -1003,6 +1022,7 @@ namespace Microsoft.VisualStudio.Project
         private void InitImageHandler()
         {
             Debug.Assert(this.nestedHierarchy != null, "The nested hierarchy object must be created before calling this method");
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (null == imageHandler)
             {
@@ -1023,6 +1043,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>The return of the GetProperty from nested.</returns>
         private object DelegateGetPropertyToNested(int propID)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (!this.ProjectMgr.IsClosed)
             {
                 Debug.Assert(this.nestedHierarchy != null, "The nested hierarchy object must be created before calling this method");
@@ -1054,6 +1075,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             Debug.Assert(this.nestedHierarchy != null, "The nested hierarchy object must be created before calling this method");
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Do not throw since some project types will return E_FAIL if they do not support a property.
             return this.nestedHierarchy.SetProperty(VSConstants.VSITEMID_ROOT, propID, value);
@@ -1065,6 +1087,7 @@ namespace Microsoft.VisualStudio.Project
         private void ObserveNestedProjectFile()
         {
             ProjectContainerNode parent = this.ProjectMgr as ProjectContainerNode;
+            ThreadHelper.ThrowIfNotOnUIThread();
             Debug.Assert(parent != null, "The parent project for nested projects should be subclassed from ProjectContainerNode");
             parent.NestedProjectNodeReloader.ObserveItem(this.GetMkDocument(), this.ID);
         }
@@ -1076,6 +1099,7 @@ namespace Microsoft.VisualStudio.Project
         {
             ProjectContainerNode parent = this.ProjectMgr as ProjectContainerNode;
             Debug.Assert(parent != null, "The parent project for nested projects should be subclassed from ProjectContainerNode");
+            ThreadHelper.ThrowIfNotOnUIThread();
             parent.NestedProjectNodeReloader.StopObservingItem(this.GetMkDocument());
         }
 
@@ -1086,6 +1110,7 @@ namespace Microsoft.VisualStudio.Project
         private void IgnoreNestedProjectFile(bool ignoreFlag)
         {
             ProjectContainerNode parent = this.ProjectMgr as ProjectContainerNode;
+            ThreadHelper.ThrowIfNotOnUIThread();
             Debug.Assert(parent != null, "The parent project for nested projects should be subclassed from ProjectContainerNode");
             parent.NestedProjectNodeReloader.IgnoreItemChanges(this.GetMkDocument(), ignoreFlag);
         }
@@ -1100,6 +1125,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 return;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IConnectionPoint connectionPoint = this.GetConnectionPointFromPropertySink();
             if (connectionPoint != null)
@@ -1117,6 +1143,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 return;
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IConnectionPoint connectionPoint = this.GetConnectionPointFromPropertySink();
             if (connectionPoint != null)
@@ -1133,6 +1160,7 @@ namespace Microsoft.VisualStudio.Project
         private IConnectionPoint GetConnectionPointFromPropertySink()
         {
             IConnectionPoint connectionPoint = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
             object browseObject = this.GetProperty((int)__VSHPROPID.VSHPROPID_BrowseObject);
             IConnectionPointContainer connectionPointContainer = browseObject as IConnectionPointContainer;
 

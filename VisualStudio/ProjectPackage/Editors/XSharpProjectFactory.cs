@@ -8,6 +8,8 @@ using Microsoft.VisualStudio.Project;
 using System;
 using System.Runtime.InteropServices;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using XSharp.LanguageService;
+using Microsoft.VisualStudio.Shell;
 
 namespace XSharp.Project
 {
@@ -40,6 +42,7 @@ namespace XSharp.Project
         /// <returns></returns>
         protected override ProjectNode CreateProject()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             XSharpProjectNode project = new XSharpProjectNode(this.package);
             IOleServiceProvider provider = null;
             var serviceProvider = this.package as IServiceProvider;

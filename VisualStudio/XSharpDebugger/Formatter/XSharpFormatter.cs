@@ -145,7 +145,7 @@ namespace XSharpDebugger.Formatter
                     case TypeCode.Int32:
                         return FormatInteger((int)hostObjectValue, radix);
                     case TypeCode.Boolean:
-                        return (bool)hostObjectValue ? "TRUE" : "FALSE";
+                        return (bool)hostObjectValue ? XSharpType.FormatKeyword("TRUE") : XSharpType.FormatKeyword("FALSE");
                     case TypeCode.String:
                         return FormatString(hostObjectValue.ToString(), inspectionContext.EvaluationFlags);
                 }

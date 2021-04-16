@@ -19,7 +19,6 @@ using System.Security.Permissions;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
-using XSharp.Project;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -301,6 +300,7 @@ namespace Microsoft.VisualStudio.Project
 
         public static int QueryGetData(Microsoft.VisualStudio.OLE.Interop.IDataObject pDataObject, ref FORMATETC fmtetc)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             int returnValue = VSConstants.E_FAIL;
             FORMATETC[] af = new FORMATETC[1];
             af[0] = fmtetc;
@@ -325,6 +325,7 @@ namespace Microsoft.VisualStudio.Project
 
         public static STGMEDIUM GetData(Microsoft.VisualStudio.OLE.Interop.IDataObject pDataObject, ref FORMATETC fmtetc)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             FORMATETC[] af = new FORMATETC[1];
             af[0] = fmtetc;
             STGMEDIUM[] sm = new STGMEDIUM[1];
@@ -340,6 +341,7 @@ namespace Microsoft.VisualStudio.Project
         {
             ddt = DropDataType.None;
             List<string> droppedFiles = new List<string>();
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // try HDROP
             FORMATETC fmtetc = CreateFormatEtc(format);
@@ -387,8 +389,9 @@ namespace Microsoft.VisualStudio.Project
         {
             string projectPath = null;
             FORMATETC fmtetc = CreateFormatEtc(CF_VSPROJECTCLIPDESCRIPTOR);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(QueryGetData(dataObject, ref fmtetc) == VSConstants.S_OK)
+            if (QueryGetData(dataObject, ref fmtetc) == VSConstants.S_OK)
             {
                 STGMEDIUM stgmedium = DragDropHelper.GetData(dataObject, ref fmtetc);
                 if(stgmedium.tymed == (uint)TYMED.TYMED_HGLOBAL)

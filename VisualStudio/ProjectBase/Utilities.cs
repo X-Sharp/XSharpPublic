@@ -97,6 +97,7 @@ namespace Microsoft.VisualStudio.Project
         public static bool IsVisualStudioInDesignMode(IServiceProvider site)
         {
             Utilities.ArgumentNotNull("site", site);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsMonitorSelection selectionMonitor = site.GetService(typeof(IVsMonitorSelection)) as IVsMonitorSelection;
             Assumes.Present(selectionMonitor);
@@ -117,6 +118,7 @@ namespace Microsoft.VisualStudio.Project
         public static bool IsInAutomationFunction(IServiceProvider serviceProvider)
         {
             Utilities.ArgumentNotNull("serviceProvider", serviceProvider);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsExtensibility3 extensibility = serviceProvider.GetService(typeof(EnvDTE.IVsExtensibility)) as IVsExtensibility3;
 
@@ -190,18 +192,18 @@ namespace Microsoft.VisualStudio.Project
             return Guid.TryParse(y, out gy) && x == gy;
         }
 
-        internal static void CheckNotNull(object value, string message = null) {
+        public static void CheckNotNull(object value, string message = null) {
             if(value == null) {
                 throw new InvalidOperationException(message);
             }
         }
 
-        internal static void ArgumentNotNull(string name, object value) {
+        public static void ArgumentNotNull(string name, object value) {
             if(value == null) {
                 throw new ArgumentNullException(name);
             }
         }
-        internal static void ArgumentNotNullOrEmpty(string name, string value) {
+        public static void ArgumentNotNullOrEmpty(string name, string value) {
             if(String.IsNullOrEmpty(value)) {
                 throw new ArgumentNullException(name);
             }
@@ -247,11 +249,13 @@ namespace Microsoft.VisualStudio.Project
                     }
                 }
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(errorMessage.Length > 0)
+            if (errorMessage.Length > 0)
             {
                 // If it is not called from an automation method show a dialog box.
-                if(!Utilities.IsInAutomationFunction(serviceProvider))
+
+                if (!Utilities.IsInAutomationFunction(serviceProvider))
                 {
                     string title = null;
                     OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
@@ -419,15 +423,22 @@ namespace Microsoft.VisualStudio.Project
             Utilities.ArgumentNotNull("automationObject", automationObject);
 
             string currentConfigName = string.Empty;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (automationObject.ConfigurationManager != null)
             {
                 try
                 {
-                    EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
-                    if (activeConfig != null)
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
-                        currentConfigName = activeConfig.ConfigurationName;
-                    }
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                        EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
+                        if (activeConfig != null)
+                        {
+                            currentConfigName = activeConfig.ConfigurationName;
+                        }
+                    });
                 }
                 catch (COMException ex)
                 {
@@ -439,12 +450,12 @@ namespace Microsoft.VisualStudio.Project
 
         }
 
-		/// <summary>
-		/// Gets the active platform name.
-		/// </summary>
-		/// <param name="automationObject">The automation object.</param>
-		/// <returns>The name of the active platform.</returns>
-		internal static string GetActivePlatformName(EnvDTE.Project automationObject)
+        /// <summary>
+        /// Gets the active platform name.
+        /// </summary>
+        /// <param name="automationObject">The automation object.</param>
+        /// <returns>The name of the active platform.</returns>
+        public static string GetActivePlatformName(EnvDTE.Project automationObject)
 		{
             if (automationObject == null)
 			{
@@ -452,16 +463,21 @@ namespace Microsoft.VisualStudio.Project
 			}
 
 			string currentPlatformName = string.Empty;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (automationObject.ConfigurationManager != null)
 			{
                 try
                 {
-
-					EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
-					if (activeConfig != null)
-					{
-						currentPlatformName = activeConfig.PlatformName;
-					}
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
+                        if (activeConfig != null)
+                        {
+                            currentPlatformName = activeConfig.PlatformName;
+                        }
+                    });
                 }
                 catch (COMException ex)
                 {
@@ -470,7 +486,7 @@ namespace Microsoft.VisualStudio.Project
                 }
 			}
 
-			return currentPlatformName;
+            return currentPlatformName;
 		}
 
 
@@ -521,7 +537,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="objToQuery">Managed or COM object.</param>
         /// <returns>Pointer to the IUnknown interface of the object.</returns>
-        internal static IntPtr QueryInterfaceIUnknown(object objToQuery)
+        public static IntPtr QueryInterfaceIUnknown(object objToQuery)
         {
             bool releaseIt = false;
             IntPtr unknown = IntPtr.Zero;
@@ -745,8 +761,9 @@ namespace Microsoft.VisualStudio.Project
 			string solutionFile = null;
 			string userOptionsFile = null;
 			string installDir = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-			if (provider != null)
+            if (provider != null)
 			{
 				IVsSolution solution = provider.GetService(typeof(SVsSolution)) as IVsSolution;
 				if (solution != null)
@@ -1062,7 +1079,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="anyFileName">A file name, which can be relative/absolute and contain lower-case/upper-case characters.</param>
         /// <returns>Canonicalized file name.</returns>
-        internal static string CanonicalizeFileName(string anyFileName)
+        public static string CanonicalizeFileName(string anyFileName)
         {
             // Get absolute path
             // Note: this will not handle UNC paths
@@ -1070,7 +1087,7 @@ namespace Microsoft.VisualStudio.Project
             string fullPath = fileInfo.FullName;
 
             // Cast to upper-case
-            fullPath = fullPath.ToUpperInvariant();
+            //fullPath = fullPath.ToUpperInvariant();
 
             return fullPath;
         }
@@ -1081,7 +1098,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="fileName">The file to check whether it is a template file</param>
         /// <returns>true if the file is a template file</returns>
-        internal static bool IsTemplateFile(string fileName)
+        public static bool IsTemplateFile(string fileName)
         {
             if(String.IsNullOrEmpty(fileName))
             {
@@ -1096,6 +1113,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <returns>Whether succeeded</returns>
         public static bool SaveDirtyFiles() {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var rdt = ServiceProvider.GlobalProvider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
             if (rdt != null) {
                 // Consider using (uint)(__VSRDTSAVEOPTIONS.RDTSAVEOPT_SaveIfDirty | __VSRDTSAVEOPTIONS.RDTSAVEOPT_PromptSave)
@@ -1128,7 +1147,7 @@ namespace Microsoft.VisualStudio.Project
 		/// <param name="configuration">The name of the active configuration.</param>
 		/// <param name="platform">The name of the platform.</param>
 		/// <returns>true if successfull.</returns>
-		internal static bool TryGetActiveConfigurationAndPlatform(System.IServiceProvider serviceProvider, IVsHierarchy hierarchy, out ConfigCanonicalName configCanonicalName)
+		public static bool TryGetActiveConfigurationAndPlatform(System.IServiceProvider serviceProvider, IVsHierarchy hierarchy, out ConfigCanonicalName configCanonicalName)
 		{
 			if (serviceProvider == null)
 			{
@@ -1139,8 +1158,9 @@ namespace Microsoft.VisualStudio.Project
 			{
 				throw new ArgumentNullException("hierarchy");
 			}
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-			IVsSolutionBuildManager2 solutionBuildManager = serviceProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
+            IVsSolutionBuildManager2 solutionBuildManager = serviceProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
 
 			if (solutionBuildManager == null)
 			{
@@ -1168,9 +1188,10 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="serviceProvider">A reference to a Service Provider.</param>
         /// <returns>true if the shell is in command line mode. false otherwise.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal static bool IsShellInCommandLineMode(System.IServiceProvider serviceProvider)
+        public static bool IsShellInCommandLineMode(System.IServiceProvider serviceProvider)
         {
             Utilities.ArgumentNotNull("serviceProvider", serviceProvider);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsShell shell = serviceProvider.GetService(typeof(SVsShell)) as IVsShell;
             if(shell == null)
@@ -1189,14 +1210,15 @@ namespace Microsoft.VisualStudio.Project
 		/// </summary>
 		/// <param name="serviceProvider">A reference to a Service Provider.</param>
 		/// <param name="projectLoadSecurityDialogState">The dialog state</param>
-		internal static void SaveDialogStateInSolution(IServiceProvider serviceProvider, _ProjectLoadSecurityDialogState projectLoadSecurityDialogState)
+		public static void SaveDialogStateInSolution(IServiceProvider serviceProvider, _ProjectLoadSecurityDialogState projectLoadSecurityDialogState)
 		{
 			if (serviceProvider == null)
 			{
 				throw new ArgumentNullException("serviceProvider");
 			}
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-			IVsSolution solution = serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
+            IVsSolution solution = serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
 
 			if (solution == null)
 			{
@@ -1205,7 +1227,7 @@ namespace Microsoft.VisualStudio.Project
 
 			ErrorHandler.ThrowOnFailure(solution.SetProperty((int)__VSPROPID2.VSPROPID_ProjectLoadSecurityDialogState, projectLoadSecurityDialogState));
 		}
-        internal static bool DeleteFileSafe(string fileName)
+        public static bool DeleteFileSafe(string fileName)
         {
             try
             {
@@ -1229,6 +1251,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public static int ShowMessageBox(IServiceProvider serviceProvider, string message, string title, OLEMSGICON icon, OLEMSGBUTTON msgButton, OLEMSGDEFBUTTON defaultButton)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             IVsUIShell uiShell = serviceProvider.GetService(typeof(IVsUIShell)) as IVsUIShell;
             Debug.Assert(uiShell != null, "Could not get the IVsUIShell object from the services exposed by this serviceprovider");
             if (uiShell == null)

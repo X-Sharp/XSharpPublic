@@ -13,17 +13,17 @@ USING XSharpModel
 USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharpModel.XFileTypeHelpers
 BEGIN NAMESPACE XSharpModel
-    DELEGATE FindMemberComparer (oElement AS XEntityDefinition, nValue AS LONG ) AS LONG
+    DELEGATE FindMemberComparer (oElement AS XSourceEntity, nValue AS LONG ) AS LONG
 
     [DebuggerDisplay("{FullPath,nq}")];
     CLASS XFile
         #region Fields
         PROPERTY Id           AS INT64          AUTO      GET INTERNAL SET 
-        PRIVATE _globalType	AS XTypeDefinition
+        PRIVATE _globalType 	AS XSourceTypeSymbol
         PRIVATE _parsed			AS LOGIC
         PRIVATE _type			AS XFileType
-        PRIVATE _typeList		AS Dictionary<STRING, XTypeDefinition>
-        PRIVATE _entityList	AS List<XEntityDefinition>
+        PRIVATE _typeList		AS Dictionary<STRING, XSourceTypeSymbol>
+        PRIVATE _entityList	AS List<XSourceEntity>
         PRIVATE _usings			AS List<STRING>
         PRIVATE _usingStatics	AS List<STRING>
         PRIVATE _project      AS XProject
@@ -39,11 +39,11 @@ BEGIN NAMESPACE XSharpModel
             SELF:_project := project
 
         PROPERTY CommentTasks AS IList<XCommentTask> AUTO 
-        PROPERTY EntityList   AS 	List<XEntityDefinition> GET _entityList
+        PROPERTY EntityList   AS 	List<XSourceEntity> GET _entityList
         PROPERTY Dialect AS XSharpDialect GET _project:Dialect
         PROPERTY Virtual AS LOGIC AUTO
 
-        METHOD AddDefaultUsings() AS void
+        METHOD AddDefaultUsings() AS VOID
             IF SELF:_usings:IndexOf("XSharp") == -1
                 SELF:_usings:Insert(0, "XSharp")
             ENDIF
@@ -51,13 +51,13 @@ BEGIN NAMESPACE XSharpModel
                 SELF:_usings:Insert(0, "System")
             ENDIF
             RETURN
+            
 
-
-        METHOD FirstMember() AS IXMember
+        METHOD FirstMember() AS IXMemberSymbol
             IF (! SELF:HasCode)
                 RETURN NULL
             ENDIF
-            IF (SELF:TypeList == NULL || SELF:TypeList:Count == 0)
+            IF (SELF:TypeList == NULL .OR. SELF:TypeList:Count == 0)
                 RETURN NULL
             ENDIF
             BEGIN LOCK SELF
@@ -69,9 +69,9 @@ BEGIN NAMESPACE XSharpModel
             ///
             ///
 
-        METHOD FindMember(oDel AS FindMemberComparer, nValue AS LONG) AS XEntityDefinition
-            LOCAL oResult := NULL_OBJECT AS XEntityDefinition
-            LOCAL oLast AS XEntityDefinition
+        METHOD FindMember(oDel AS FindMemberComparer, nValue AS LONG) AS XSourceEntity
+            LOCAL oResult := NULL_OBJECT AS XSourceEntity
+            LOCAL oLast AS XSourceEntity
             // perform binary search to speed up things
             VAR current := 0
             VAR bottom := 0
@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharpModel
                 current := (bottom + top) / 2
                 VAR oElement := _entityList[current]
                 VAR result := oDel(oElement, nValue)
-                IF result == 0
+                IF result == 0 .and. oElement:Kind != Kind.Namespace
                     // found
                     RETURN oElement
                 ELSEIF result = 1 // element is after the search point
@@ -100,14 +100,14 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN oResult
 
-        PRIVATE METHOD CompareByLine(oElement AS XEntityDefinition, nLine AS LONG) AS LONG
+        PRIVATE METHOD CompareByLine(oElement AS XSourceEntity, nLine AS LONG) AS LONG
             LOCAL nResult AS LONG
             LOCAL nStart, nEnd AS LONG
             nStart := oElement:Range:StartLine
             nEnd   := oElement:Range:EndLine
-            IF oElement IS XTypeDefinition
-                VAR oType := oElement ASTYPE XTypeDefinition
-                IF oType:Members:Count > 0 .and. oType:Members[0] is XMemberDefinition VAR xmember
+            IF oElement IS XSourceTypeSymbol
+                VAR oType := oElement ASTYPE XSourceTypeSymbol
+                IF oType:Members:Count > 0 .AND. oType:Members[0] IS XSourceMemberSymbol VAR xmember
                     nEnd := xmember:Range:StartLine-1
                 ENDIF
             ENDIF
@@ -120,21 +120,21 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN nResult
 
-        METHOD FindMemberAtRow(nLine AS LONG) AS XEntityDefinition
+        METHOD FindMemberAtRow(nLine AS LONG) AS XSourceEntity
             RETURN SELF:FindMember(CompareByLine, nLine)
 
             ///
             /// <Summary>Find member in file based on 0 based position</Summary>
             ///
             ///
-        PRIVATE METHOD CompareByPosition(oElement AS XEntityDefinition, nPos AS LONG) AS LONG
+        PRIVATE METHOD CompareByPosition(oElement AS XSourceEntity, nPos AS LONG) AS LONG
             LOCAL nResult AS LONG
             LOCAL nStart, nEnd AS LONG
             nStart := oElement:Interval:Start
             nEnd   := oElement:Interval:Stop
-            IF oElement IS XTypeDefinition
-                VAR oType := oElement ASTYPE XTypeDefinition
-                IF oType:Members:Count > 0 .and. oType:Members[0] is XMemberDefinition VAR xmember
+            IF oElement IS XSourceTypeSymbol
+                VAR oType := oElement ASTYPE XSourceTypeSymbol
+                IF oType:Members:Count > 0 .AND. oType:Members[0] IS XSourceMemberSymbol VAR xmember
                     nEnd := xmember:Interval:Start-2
                 ENDIF
             ENDIF
@@ -147,32 +147,32 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN nResult
 
-        METHOD FindMemberAtPosition(nPos AS LONG) AS XEntityDefinition
+        METHOD FindMemberAtPosition(nPos AS LONG) AS XSourceEntity
             RETURN SELF:FindMember(CompareByPosition, nPos)
 
 
         METHOD InitTypeList() AS VOID
             SELF:_usings		   := List<STRING>{}
             SELF:_usingStatics	:= List<STRING>{}
-            SELF:_entityList     := List<XEntityDefinition>{}
-            SELF:_typeList		   := Dictionary<STRING, XTypeDefinition>{System.StringComparer.InvariantCultureIgnoreCase}
+            SELF:_entityList     := List<XSourceEntity>{}
+            SELF:_typeList		   := Dictionary<STRING, XSourceTypeSymbol>{System.StringComparer.InvariantCultureIgnoreCase}
             SELF:AddDefaultUsings()
             IF SELF:HasCode
-                SELF:_globalType	:= XTypeDefinition.CreateGlobalType(SELF)
+                SELF:_globalType	:= XSourceTypeSymbol.CreateGlobalType(SELF)
                 SELF:_typeList:Add(SELF:_globalType:Name, SELF:_globalType)
             ENDIF
 
-        METHOD SetTypes(types AS IDictionary<STRING, XTypeDefinition>, usings AS IList<STRING>, ;
-            staticUsings AS IList<STRING>, aEntities AS IList<XEntityDefinition>) AS VOID
+        METHOD SetTypes(types AS IDictionary<STRING, XSourceTypeSymbol>, usings AS IList<STRING>, ;
+            staticUsings AS IList<STRING>, aEntities AS IList<XSourceEntity>) AS VOID
             IF SELF:HasCode
                 //WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
                 BEGIN LOCK SELF
                     SELF:_typeList:Clear()
                     SELF:_usings:Clear()
                     SELF:_usingStatics:Clear()
-                    FOREACH type AS KeyValuePair<STRING, XTypeDefinition> IN types
+                    FOREACH type AS KeyValuePair<STRING, XSourceTypeSymbol> IN types
                         SELF:_typeList:Add(type:Key, type:Value)
-                        IF (XTypeDefinition.IsGlobalType(type:Value))
+                        IF (XSourceTypeSymbol.IsGlobalType(type:Value))
                             SELF:_globalType := type:Value
                         ENDIF
                     NEXT
@@ -183,8 +183,13 @@ BEGIN NAMESPACE XSharpModel
                     SELF:_entityList:AddRange(aEntities)
                 END LOCK
                 //WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
+                IF ContentsChanged != NULL
+                    ContentsChanged()
+                ENDIF
             ENDIF
-      
+
+        METHOD FindType(typeName as STRING) AS IXTypeSymbol
+            RETURN SELF:Project:FindType(typeName, SELF:Usings)
          
         METHOD SaveToDatabase() AS VOID
             IF ! SELF:Virtual
@@ -257,14 +262,14 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 BEGIN LOCK SELF
                     VAR hash := 0U
-					      TRY
-						      FOREACH VAR entity IN SELF:EntityList
-							      BEGIN UNCHECKED
-							         hash += (DWORD) entity:Prototype:GetHashCode()
-							         hash += (DWORD) entity:Range:StartLine
-							      END UNCHECKED
-						      NEXT
-                     CATCH
+                    TRY
+                        FOREACH VAR entity IN SELF:EntityList
+                            BEGIN UNCHECKED
+                                hash += (DWORD) entity:Prototype:GetHashCode()
+                                hash += (DWORD) entity:Range:StartLine
+                            END UNCHECKED
+                        NEXT
+                    CATCH
                         NOP
                     END TRY
                     RETURN hash
@@ -273,7 +278,7 @@ BEGIN NAMESPACE XSharpModel
         END PROPERTY
 
         PROPERTY FullPath           AS STRING AUTO GET INTERNAL SET 
-        PROPERTY GlobalType         AS XTypeDefinition GET SELF:_globalType
+        PROPERTY GlobalType         AS XSourceTypeSymbol GET SELF:_globalType
         PROPERTY HasCode            AS LOGIC GET SELF:IsSource .OR. SELF:IsXaml .OR. SELF:IsHeader
         PROPERTY HasParseErrors     AS LOGIC AUTO
         PROPERTY Interactive        AS LOGIC AUTO 
@@ -322,25 +327,71 @@ BEGIN NAMESPACE XSharpModel
             END GET
         END PROPERTY
 
-        PROPERTY TypeList AS IDictionary<STRING, XTypeDefinition>
+        PROPERTY TypeList AS IDictionary<STRING, XSourceTypeSymbol>
             GET
                 IF ! SELF:HasCode .OR. SELF:_typeList==NULL
                     RETURN NULL
                 ENDIF
                 BEGIN LOCK SELF
-                    RETURN ReadOnlyDictionary<STRING, XTypeDefinition>{SELF:_typeList}
+                    RETURN ReadOnlyDictionary<STRING, XSourceTypeSymbol>{SELF:_typeList}
                 END LOCK
             END GET
         END PROPERTY
 
         PROPERTY Usings AS IList<STRING>
             GET
-                IF ! SELF:HasCode
-                    RETURN NULL
+                IF ! SELF:HasCode .or. _usings == NULL  
+                    RETURN <STRING>{}
                 ENDIF
                 RETURN _usings:ToArray()
             END GET
+         END PROPERTY
+
+        PROPERTY UsingsStr AS STRING 
+            GET
+               if _usings == NULL 
+                  return String.Empty
+               endif
+               var sb := System.Text.StringBuilder{}
+               FOREACH var str in _usings
+                  IF (sb:Length > 0)
+                     sb:AppendLine("")
+                  ENDIF
+                  sb:Append(str)
+               NEXT
+            
+               RETURN sb:ToString()
+            END GET
+            SET
+               SELF:_usings		   := List<STRING>{}
+               if ! String.IsNullOrEmpty(value)
+                  self:_usings:AddRange(value:Split( <CHAR>{'\r'}))
+               endif
+            END SET
         END PROPERTY
+
+        PROPERTY StaticUsingsStr AS STRING
+            GET
+             if _usingStatics == NULL 
+                  return String.Empty
+               endif
+                 var sb := System.Text.StringBuilder{}
+               FOREACH var str in _usingStatics
+                  IF (sb:Length > 0)
+                     sb:AppendLine("")
+                  ENDIF
+                  sb:Append(str)
+               NEXT
+               RETURN sb:ToString()
+            END GET
+            SET
+               SELF:_usingStatics		   := List<STRING>{}
+               if ! String.IsNullOrEmpty(value)
+                  self:_usingStatics:AddRange(value:Split( <CHAR>{'\r'}))
+               endif
+            END SET
+        END PROPERTY
+
 
         PROPERTY XamlCodeBehindFile AS STRING
             GET
@@ -350,6 +401,8 @@ BEGIN NAMESPACE XSharpModel
         END PROPERTY
 
         PROPERTY XFileType AS XFileType GET SELF:_type
+
+        PUBLIC EVENT ContentsChanged AS Action
       #endregion
  
     END CLASS

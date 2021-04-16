@@ -10,11 +10,12 @@
  * ***************************************************************************/
 
 using System.Diagnostics;
-using XSharp.Project;
+using XSharpModel;
+
 
 namespace Microsoft.VisualStudio.Project
 {
-    internal class CCITracing
+    public  class CCITracing
     {
         private CCITracing() { }
 
@@ -27,7 +28,7 @@ namespace Microsoft.VisualStudio.Project
             if(method != null)
             {
                 string name = method.Name + " \tin class " + method.DeclaringType.Name;
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("Call Trace: \t" + name);
+                XSettings.DisplayOutputMessage("Call Trace: \t" + name);
             }
         }
 
@@ -42,26 +43,26 @@ namespace Microsoft.VisualStudio.Project
         static public void TraceCall(string strParameters)
         {
             CCITracing.InternalTraceCall(2);
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("\tParameters: \t" + strParameters);
+            XSettings.DisplayOutputMessage("\tParameters: \t" + strParameters);
         }
 
         [ConditionalAttribute("CCI_TRACING")]
         static public void Trace(System.Exception e)
         {
             CCITracing.InternalTraceCall(2);
-            XSharpProjectPackage.Instance.DisplayException(e);
+            XSettings.DisplayException(e);
         }
 
         [ConditionalAttribute("CCI_TRACING")]
         static public void Trace(string strOutput)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage(strOutput);
+            XSettings.DisplayOutputMessage(strOutput);
         }
 
         [ConditionalAttribute("CCI_TRACING")]
         static public void TraceData(string strOutput)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("Data Trace: \t" + strOutput);
+            XSettings.DisplayOutputMessage("Data Trace: \t" + strOutput);
         }
 
         [ConditionalAttribute("Enable_CCIFileOutput")]

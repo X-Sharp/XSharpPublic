@@ -1,4 +1,10 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
@@ -6,16 +12,15 @@ using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.Debug;
 using Microsoft.VisualStudio.ProjectSystem.Properties;
 using Microsoft.VisualStudio.ProjectSystem.VS.Debug;
-using XSharp;
 namespace XSharp.ProjectSystem
 {
     [ExportDebugger(XSharpDebugger.SchemaName)]
-    [AppliesTo(MyUnconfiguredProject.UniqueCapability)]
+    [AppliesTo(XSharpConstants.LanguageName)]
     public class XSharpDebuggerLaunchProvider : DebugLaunchProviderBase
     {
         // 
         [ExportPropertyXamlRuleDefinition("XSharpProjectCPS, Version=" + Constants.Version + ", Culture=neutral, PublicKeyToken=9be6e469bc4921f1", "XamlRuleToCode:PropertyPage_Debugger.xaml", "Project")]
-        [AppliesTo(MyUnconfiguredProject.UniqueCapability)]
+        [AppliesTo(XSharpConstants.LanguageName)]
         private object DebuggerXaml { get { throw new NotImplementedException(); } }
 
         [ImportingConstructor]

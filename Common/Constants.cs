@@ -14,8 +14,8 @@ namespace XSharp
         internal const string Product = "XSharp";
         // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE
         internal const string Version = "2.6.0.0";
-        internal const string FileVersion = "2.8.0.6";
-        internal const string ProductVersion = "2.8 beta 6";
+        internal const string FileVersion = "2.8.0.10";
+        internal const string ProductVersion = "2.8 GA";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2021";
 
@@ -30,6 +30,6 @@ namespace XSharp
         // This also enables the "magic" button on the tools-options dialog
         // and adds CRLF to the response file between the various commands to make it easier to read.
         internal const string EnvironmentXSharpDev = "XSHARPDEV";       
-
     }
+
 }

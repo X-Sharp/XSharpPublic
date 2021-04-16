@@ -58,7 +58,7 @@ namespace XSharpDebugger.ExpressionCompiler
             result = null;
             bool changed = false;
             string originalExpr = expression.Text;
-            // We use a trick to change the Text when sending it to C#, by retrieveing the field info.
+            // We use a trick to change the Text when sending it to C#, by retrieving the field info.
             // This field has a property get but not a property set.
             var fi = typeof(DkmLanguageExpression).GetField("m_Text", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
             if (fi != null)
@@ -128,7 +128,8 @@ namespace XSharpDebugger.ExpressionCompiler
                 else if (loc.VariableName == "this")
                 {
                     // rename
-                    var newloc = DkmClrLocalVariableInfo.Create("SELF", "SELF", loc.MethodName, loc.CompilationFlags, loc.ResultCategory, loc.CustomTypeInfo);
+                    var selfName = XSharpType.FormatKeyword("SELF");
+                    var newloc = DkmClrLocalVariableInfo.Create(selfName, selfName, loc.MethodName, loc.CompilationFlags, loc.ResultCategory, loc.CustomTypeInfo);
                     newlocals.Add(newloc);
                     changed = true;
                 }

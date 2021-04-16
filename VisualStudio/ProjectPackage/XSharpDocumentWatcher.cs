@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace XSharp.Project
         {
             this.provider = provider;
             knownCookies = new List<uint>();
+            ThreadHelper.ThrowIfNotOnUIThread();
             rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
             if (null != rdt)
             {
@@ -34,6 +36,7 @@ namespace XSharp.Project
                 return;
             }
             // Do not throw in case of error.
+            ThreadHelper.ThrowIfNotOnUIThread();
             rdt.UnadviseRunningDocTableEvents(runningDocTableCookie);
             runningDocTableCookie = 0;
         }
@@ -68,6 +71,7 @@ namespace XSharp.Project
             // so we check for a vulcan file before opening the window
             // when it one of our files then we register the XFile object in the XSolution,
             // when it is an orphaned file then it is registered in the OrphanedFiles Project
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (fFirstShow != 0)
             {
                 if (knownCookies.Contains(docCookie))
@@ -88,7 +92,7 @@ namespace XSharp.Project
                     int hr = rdt.GetDocumentInfo(docCookie, out flags, out readLocks, out writeLoks,
                                                  out documentMoniker, out hierarchy, out itemId, out unkDocData);
                     // check to see if this is one our files.
-                    VsTextViewCreationListener.IsOurSourceFile(documentMoniker);
+                    //VsTextViewCreationListener.IsOurSourceFile(documentMoniker);
                 }
             }
             return VSConstants.S_OK;

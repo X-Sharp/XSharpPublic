@@ -16,12 +16,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TextManager.Interop;
-using XSharp.Project;
+using XSharpModel;
 
 namespace Microsoft.VisualStudio.Project
 {
-    internal static class NativeMethods
+    public static class NativeMethods
     {
         public static IntPtr InvalidIntPtr = ((IntPtr)((int)(-1)));
         // IIDS
@@ -630,10 +631,12 @@ namespace Microsoft.VisualStudio.Project
 
             public override long Position {
                 get {
+                    ThreadHelper.ThrowIfNotOnUIThread();
                     return Seek(0, SeekOrigin.Current);
                 }
 
                 set {
+                    ThreadHelper.ThrowIfNotOnUIThread();
                     Seek(value, SeekOrigin.Begin);
                 }
             }
@@ -658,6 +661,7 @@ namespace Microsoft.VisualStudio.Project
 
             public override long Length {
                 get {
+                    ThreadHelper.ThrowIfNotOnUIThread();
                     long curPos = this.Position;
                     long endPos = Seek(0, SeekOrigin.End);
                     this.Position = curPos;
@@ -672,6 +676,8 @@ namespace Microsoft.VisualStudio.Project
 
             protected override void Dispose(bool disposing) {
                 try {
+                    ThreadHelper.ThrowIfNotOnUIThread();
+
                     if (disposing) {
                         if (comStream != null) {
                             Flush();
@@ -686,6 +692,8 @@ namespace Microsoft.VisualStudio.Project
             }
 
             public override void Flush() {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 if (comStream != null) {
                     try {
                         comStream.Commit(StreamConsts.STGC_DEFAULT);
@@ -703,6 +711,7 @@ namespace Microsoft.VisualStudio.Project
                     b = new byte[buffer.Length - index];
                     buffer.CopyTo(b, 0);
                 }
+                ThreadHelper.ThrowIfNotOnUIThread();
 
                 comStream.Read(b, (uint)count, out bytesRead);
 
@@ -714,12 +723,14 @@ namespace Microsoft.VisualStudio.Project
             }
 
             public override void SetLength(long value) {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 ULARGE_INTEGER ul = new ULARGE_INTEGER();
                 ul.QuadPart = (ulong)value;
                 comStream.SetSize(ul);
             }
 
             public override long Seek(long offset, SeekOrigin origin) {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 LARGE_INTEGER l = new LARGE_INTEGER();
                 ULARGE_INTEGER[] ul = new ULARGE_INTEGER[1];
                 ul[0] = new ULARGE_INTEGER();
@@ -730,6 +741,7 @@ namespace Microsoft.VisualStudio.Project
 
             public override void Write(byte[] buffer, int index, int count) {
                 uint bytesWritten;
+                ThreadHelper.ThrowIfNotOnUIThread();
 
                 if (count > 0) {
 
@@ -780,13 +792,14 @@ namespace Microsoft.VisualStudio.Project
             /// which will call on a managed code sink that implements that interface.
             /// </devdoc>
             public ConnectionPointCookie(object source, object sink, Type eventInterface) : this(source, sink, eventInterface, true){
+                ThreadHelper.ThrowIfNotOnUIThread();
             }
-
+#pragma warning disable VSTHRD010
             /// <include file='doc\NativeMethods.uex' path='docs/doc[@for="NativeMethods.Finalize1"]/*' />
             ~ConnectionPointCookie(){
                 #if DEBUG
                 System.Diagnostics.Debug.Assert(connectionPoint == null || cookie == 0, "We should never finalize an active connection point. (Interface = " + eventInterface.FullName + "), allocating code (see stack) is responsible for unhooking the ConnectionPoint by calling Disconnect.  Hookup Stack =\r\n" +  callStack);
-                #endif
+#endif
 
                 // We must pass false here because chances are that if someone
                 // forgot to Dispose this object, the IConnectionPoint is likely to be
@@ -795,13 +808,15 @@ namespace Microsoft.VisualStudio.Project
                 // expected result for an undisposed IDisposable object. [clovett] bug 369592.
                 Dispose(false);
             }
-
+#pragma warning restore VSTHRD010
             public void Dispose() {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 Dispose(true);
                 GC.SuppressFinalize(this);
             }
 
             private void Dispose(bool disposing) {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (disposing) {
                     try {
                         if (connectionPoint != null && cookie != 0) {
@@ -822,6 +837,7 @@ namespace Microsoft.VisualStudio.Project
             /// </devdoc>
             public ConnectionPointCookie(object source, object sink, Type eventInterface, bool throwException){
                 Exception ex = null;
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (source is Microsoft.VisualStudio.OLE.Interop.IConnectionPointContainer) {
                     this.cpc = (Microsoft.VisualStudio.OLE.Interop.IConnectionPointContainer)source;
 
@@ -924,7 +940,8 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(UriFormatException e)
             {
-                XSharpProjectPackage.Instance.DisplayException(e);
+
+                XSettings.DisplayException(e);
             }
 
             return false;
@@ -1063,7 +1080,7 @@ namespace Microsoft.VisualStudio.Project
         [DllImport("user32.dll", ExactSpelling = true, CharSet = CharSet.Auto)]
         public static extern bool DestroyIcon(IntPtr handle);
 
-        [DllImport("user32.dll", EntryPoint = "IsDialogMessageA", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+        [DllImport("user32.dll", EntryPoint = "IsDialogMessageA", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = System.Runtime.InteropServices.CallingConvention.StdCall)]
         public static extern bool IsDialogMessageA(IntPtr hDlg, ref MSG msg);
 
         /// <summary>

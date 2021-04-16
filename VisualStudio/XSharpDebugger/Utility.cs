@@ -34,6 +34,13 @@ namespace XSharpDebugger
 
                 return elementType.MakeByRefType();
             }
+            else if (lmrType.IsGenericType)
+            {
+                var args = lmrType.GetGenericArguments();
+                var td = lmrType.GetGenericTypeDefinition();
+                return XSharpType.Create(td,args);
+            }
+
             else if (lmrType.FullName.Equals("System.String"))
             {
                 return XSharpType.String;

@@ -187,7 +187,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                var asm = BaseReferenceNode as XSharp.Project.XSharpAssemblyReferenceNode;
+                var asm = BaseReferenceNode as AssemblyReferenceNode;
                 return asm.GetMsBuildProperty("imageruntime");
             }
         }
@@ -195,7 +195,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                var asm = BaseReferenceNode as XSharp.Project.XSharpAssemblyReferenceNode;
+                var asm = BaseReferenceNode as AssemblyReferenceNode;
                 return asm.GetMsBuildProperty("Aliases");
             }
         }

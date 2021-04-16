@@ -143,8 +143,8 @@
   </data>
   <data name="112" xml:space="preserve">
     <value>The X# Project system allows you to edit, compile and debug your X# application inside Visual Studio.
-Copyright (c) XSharp BV 2015-2019. All rights reserved.
-http://www.xsharp.info</value>
+Copyright (c) XSharp BV 2015-2021. All rights reserved.
+http://www.xsharp.eu</value>
     <comment>Text that appears in the details window on the Help about dialog</comment>
   </data>
   <data name="1" xml:space="preserve">

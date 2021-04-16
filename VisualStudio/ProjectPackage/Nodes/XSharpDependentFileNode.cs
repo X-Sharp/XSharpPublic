@@ -54,9 +54,13 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="label">new label</param>
         /// <returns>E_NOTIMPLE in order to tell the call that we do not support rename</returns>
-        public override string GetEditLabel()
+        //public override string GetEditLabel()
+        //{
+        //    throw new NotImplementedException();
+        //}
+        protected override bool CanRenameItem()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         // Called since the FileNode.ImageIndex returns -1 by default.
@@ -112,7 +116,7 @@ namespace XSharp.Project
         /// DependentFileNodes node cannot be dragged.
         /// </summary>
         /// <returns>null</returns>
-        protected internal override StringBuilder PrepareSelectedNodesForClipBoard()
+        protected override StringBuilder PrepareSelectedNodesForClipBoard()
         {
             return null;
         }
@@ -121,7 +125,7 @@ namespace XSharp.Project
         /// Redraws the state icon if the node is not excluded from source control.
         /// </summary>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Scc")]
-        protected internal override void UpdateSccStateIcons()
+        protected override void UpdateSccStateIcons()
         {
             if (!this.ExcludeNodeFromScc)
             {

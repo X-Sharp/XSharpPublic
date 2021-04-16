@@ -29,6 +29,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD SetStatusBarText(message AS STRING) AS VOID
       METHOD ShowIntellisenseErrors() AS VOID
       METHOD SynchronizeKeywordCase(code as STRING, fileName as STRING) AS STRING
+      METHOD RunInForeGroundThread( a as Action) AS VOID
       
          // Properties
       PROPERTY IntermediateOutputPath AS STRING GET

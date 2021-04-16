@@ -12,6 +12,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Microsoft.VisualStudio.Project
@@ -412,7 +413,7 @@ namespace Microsoft.VisualStudio.Project
     /// Argument of the event raised when a project property is changed.
     /// </summary>
 	[SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-    internal class ProjectPropertyChangedArgs : EventArgs {
+    public class ProjectPropertyChangedArgs : EventArgs {
         private string propertyName;
         private string oldValue;
         private string newValue;
@@ -439,7 +440,7 @@ namespace Microsoft.VisualStudio.Project
     /// <summary>
     /// This class is used for the events raised by a HierarchyNode object.
     /// </summary>
-    internal class HierarchyNodeEventArgs : EventArgs
+    public class HierarchyNodeEventArgs : EventArgs
     {
         private HierarchyNode child;
 

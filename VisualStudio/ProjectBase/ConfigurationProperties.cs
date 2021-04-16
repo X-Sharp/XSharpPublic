@@ -9,6 +9,7 @@
  *
  * ***************************************************************************/
 
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
 
@@ -48,11 +49,13 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                return this.projectConfig.GetConfigurationProperty(BuildPropertyPageTag.OutputPath.ToString(), true);
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return this.projectConfig.GetConfigurationProperty(ProjectFileConstants.OutputPath.ToString(), true);
             }
             set
             {
-                this.projectConfig.SetConfigurationProperty(BuildPropertyPageTag.OutputPath.ToString(), value);
+                ThreadHelper.ThrowIfNotOnUIThread();
+                this.projectConfig.SetConfigurationProperty(ProjectFileConstants.OutputPath.ToString(), value);
             }
         }
 

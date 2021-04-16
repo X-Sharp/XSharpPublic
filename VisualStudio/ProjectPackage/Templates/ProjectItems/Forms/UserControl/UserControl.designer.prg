@@ -1,6 +1,6 @@
 ﻿begin namespace $rootnamespace$
 
-    partial class $safeitemrootname$ inherit System.Windows.Forms.UserControl
+    partial class $safeitemrootname$ 
        /// <summary>
        /// Required designer variable.
        /// </summary>
@@ -11,7 +11,7 @@
        /// </summary>
        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
        protected method Dispose( disposing as logic ) as void strict
-          if disposing && components != null
+          IF disposing .AND. components != null
              components:Dispose()
           endif
           super:Dispose( disposing )
@@ -28,4 +28,4 @@
           return
     
     end class
-end namespace
+END NAMESPACE

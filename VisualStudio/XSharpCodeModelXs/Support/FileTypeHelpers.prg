@@ -54,6 +54,8 @@ BEGIN NAMESPACE XSharpModel
 				CASE ".tpl"
 				CASE ".inf"
 					RETURN XFileType.Template
+				CASE ".tt"
+					RETURN XFileType.TextTemplate
 
 			END SWITCH
 			RETURN XFileType.Unknown

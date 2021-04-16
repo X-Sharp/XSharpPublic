@@ -124,7 +124,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                return (EnvDTE.DTE)this._parent.Site.GetService(typeof(EnvDTE.DTE));
+                    return (EnvDTE.DTE)this._parent.Site.GetService(typeof(EnvDTE.DTE));
                 });
             }
         }

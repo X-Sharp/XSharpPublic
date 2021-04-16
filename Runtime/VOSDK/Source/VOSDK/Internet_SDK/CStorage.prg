@@ -1,4 +1,5 @@
-﻿CLASS CStorage
+/// <include file="Internet.xml" path="doc/CStorage/*" />
+CLASS CStorage
    PROTECT _cPath           AS STRING
    PROTECT _lNoSave         AS LOGIC
    PROTECT _hAttFile        AS PTR
@@ -6,6 +7,8 @@
    PROTECT _dwCharCount     AS DWORD
    PROTECT _cRest           AS STRING
   
+  
+ /// <exclude />
 METHOD __CreateNewID(cFileName AS STRING) AS STRING
    LOCAL cID      AS STRING
    LOCAL cExt     AS STRING
@@ -13,10 +16,13 @@ METHOD __CreateNewID(cFileName AS STRING) AS STRING
    LOCAL dwPos    AS DWORD
    LOCAL cToFile  AS STRING
 
+
    cID     := __GetFileName(cFileName)
    cToFile := _cPath + cID
 
+
    IF File(cToFile)
+
 
       IF (dwPos := RAt2(".", cID)) > 0
          cName := SubStr3(cID, 1, dwPos - 1)
@@ -36,12 +42,16 @@ METHOD __CreateNewID(cFileName AS STRING) AS STRING
       ENDDO
    ENDIF
 
+
    RETURN cID
 
+
+ /// <exclude />
 METHOD __StreamDecode(cData AS STRING, dwCode AS DWORD) AS STRING
    LOCAL dwDecoded AS DWORD
    LOCAL dwLength  AS DWORD
    LOCAL pBuffer   AS PTR
+
 
     IF dwCode == CODING_TYPE_BASE64
        cData    := _cRest + cData
@@ -64,10 +74,14 @@ METHOD __StreamDecode(cData AS STRING, dwCode AS DWORD) AS STRING
         cData := QPDecode(cData)
     ENDIF
 
+
     RETURN cData
 
+
+ /// <exclude />
 METHOD __StreamEncode(cData AS STRING, dwCode AS DWORD) AS STRING
     LOCAL dwCharCount AS DWORD
+
 
     IF dwCode == CODING_TYPE_BASE64
        IF ! cData == NULL_STRING
@@ -77,20 +91,28 @@ METHOD __StreamEncode(cData AS STRING, dwCode AS DWORD) AS STRING
        ENDIF
     ENDIF
 
+
     RETURN cData
 
+
+/// <include file="Internet.xml" path="doc/CStorage.AttachmentAdd/*" />
 METHOD AttachmentAdd(cFile AS STRING, dwCode := 0 AS DWORD) AS STRING
    LOCAL cID AS STRING
 
+
    SELF:AttachmentClose()
+
 
    IF _lNoSave
       RETURN NULL_STRING
    ENDIF
 
+
    cID := SELF:__CreateNewID(cFile)
 
+
    _dwCode   := dwCode
+
 
    _hAttFile := FCreate(_cPath + cID, FC_NORMAL)
    IF _hAttFile = F_ERROR
@@ -98,9 +120,13 @@ METHOD AttachmentAdd(cFile AS STRING, dwCode := 0 AS DWORD) AS STRING
       cID := NULL_STRING
    ENDIF
 
+
    RETURN cID
 
 
+
+
+/// <include file="Internet.xml" path="doc/CStorage.AttachmentClose/*" />
 METHOD AttachmentClose() AS VOID STRICT
    //Close the current attachmentfile
    IF _hAttFile != NULL_PTR
@@ -108,11 +134,15 @@ METHOD AttachmentClose() AS VOID STRICT
       _hAttFile := NULL_PTR
    ENDIF
 
+
    _dwCode := _dwCharCount := 0
     _cRest  := NULL_STRING  
 
+
    RETURN
 
+
+/// <include file="Internet.xml" path="doc/CStorage.AttachmentDelete/*" />
 METHOD AttachmentDelete(cID AS STRING) AS LOGIC
    IF ! cID = ATTACHID_PATHFLAG
       //only stored attachments will be deleted and not the originals.
@@ -121,21 +151,29 @@ METHOD AttachmentDelete(cID AS STRING) AS LOGIC
       ENDIF
    ENDIF
 
+
    RETURN TRUE
 
+
+/// <include file="Internet.xml" path="doc/CStorage.AttachmentFullPath/*" />
 METHOD AttachmentFullPath(cAttachID AS STRING) AS STRING STRICT
    IF cAttachID = ATTACHID_PATHFLAG
       RETURN SubStr2(cAttachID, 2)
    ENDIF
    RETURN _cPath + cAttachID
 
+
+/// <include file="Internet.xml" path="doc/CStorage.AttachmentOpen/*" />
 METHOD AttachmentOpen(cAttachID AS STRING, dwCode := 0 AS DWORD) AS LOGIC STRICT
    //Opens an attachment file for reading
    //If cAttachID is empty, cFile should contain the full path of the file
 
+
    SELF:AttachmentClose()
 
+
    _dwCode   := dwCode
+
 
    _hAttFile := FOpen(SELF:AttachmentFullPath(cAttachID), _OR(FO_SHARED, FO_READ))
    IF _hAttFile = F_ERROR
@@ -143,8 +181,11 @@ METHOD AttachmentOpen(cAttachID AS STRING, dwCode := 0 AS DWORD) AS LOGIC STRICT
       RETURN FALSE
    ENDIF
 
+
    RETURN TRUE
 
+
+/// <include file="Internet.xml" path="doc/CStorage.AttachmentRead/*" />
 METHOD AttachmentRead() AS STRING STRICT
    //Read from the current attachmentfile
    LOCAL ptrData 	AS PTR
@@ -159,15 +200,21 @@ METHOD AttachmentRead() AS STRING STRICT
 		RETURN SELF:__StreamEncode(cData, _dwCode)
    ENDIF
 
+
    RETURN NULL_STRING
 
+
+/// <include file="Internet.xml" path="doc/CStorage.AttachmentSave/*" />
 METHOD AttachmentSave(cAttachID AS STRING, cToFile AS STRING) AS LOGIC
    //Save the attachment with the ID cAttachID to the file cToFile
    //cToFile must be a full path name
    //If cAttachID is empty, cFile should contain the full path name of the file
 
+
    RETURN FCopy(SELF:AttachmentFullPath(cAttachID), cToFile)
 
+
+/// <include file="Internet.xml" path="doc/CStorage.AttachmentSize/*" />
 ACCESS AttachmentSize AS DWORD STRICT
    //Calculates the size of the current opened attachment file
    LOCAL dwPos, dwSize AS LONGINT
@@ -178,6 +225,8 @@ ACCESS AttachmentSize AS DWORD STRICT
    ENDIF
    RETURN DWORD(dwSize)
 
+
+/// <include file="Internet.xml" path="doc/CStorage.AttachmentWrite/*" />
 METHOD AttachmentWrite(cData AS STRING) AS VOID STRICT
    //Write to the current attachmentfile
    IF _hAttFile != NULL_PTR
@@ -186,10 +235,15 @@ METHOD AttachmentWrite(cData AS STRING) AS VOID STRICT
    ENDIF
    RETURN
 
+
+/// <include file="Internet.xml" path="doc/CStorage.CreateNewEMail/*" />
 METHOD CreateNewEMail() AS CEMail STRICT
     RETURN CEMail{NIL, SELF}
 
+
+/// <include file="Internet.xml" path="doc/CStorage.ctor/*" />
 CONSTRUCTOR(cPath)
+
 
    IF IsString(cPath)
       _cPath := cPath
@@ -197,18 +251,24 @@ CONSTRUCTOR(cPath)
       _cPath := GetDefault()
    ENDIF
 
+
    IF Right(_cPath,1) != "\"
       _cPath += "\"
    ENDIF
    RETURN
 
+
+/// <include file="Internet.xml" path="doc/CStorage.LoadEMail/*" />
 METHOD LoadEMail(cId AS STRING)
    //Load an EMail with the ID cID into an empty CEMail object and fill the object
    //You should do the following:
 
+
    LOCAL oEMail AS CEMail
 
+
    oEMail := SELF:CreateNewEmail()
+
 
    // 1.) assign oEMail:MailHeader
    // 2.) Call oEMail:GetHeaderInfo()
@@ -217,26 +277,39 @@ METHOD LoadEMail(cId AS STRING)
    // 5.) assign oEMail:AttachmentInfo
 
 
+
+
    RETURN oEMail
 
+
+/// <include file="Internet.xml" path="doc/CStorage.NoSave/*" />
 ASSIGN NoSave(lValue AS LOGIC)
    RETURN _lNoSave := lValue
 
+
+/// <include file="Internet.xml" path="doc/CStorage.RawClose/*" />
 METHOD RawClose() AS VOID STRICT
    RETURN
 
+
+/// <include file="Internet.xml" path="doc/CStorage.RawNew/*" />
 METHOD RawNew(oEMail AS CEmail) AS VOID STRICT
    RETURN
 
+
+/// <include file="Internet.xml" path="doc/CStorage.RawWrite/*" />
 METHOD RawWrite(cData AS STRING) AS VOID STRICT
    RETURN
 
+
+/// <include file="Internet.xml" path="doc/CStorage.SaveAttachments/*" />
 METHOD SaveAttachments(oEMail AS CEMail, lClone := FALSE AS LOGIC) AS LOGIC STRICT
    LOCAL dwI       AS DWORD
    LOCAL dwCount   AS DWORD
    LOCAL cID       AS STRING
    LOCAL cNewID    AS STRING
    LOCAL cFileName AS STRING
+
 
    IF oEMail != NULL_OBJECT
       dwCount := oEmail:AttachmentCount
@@ -251,8 +324,11 @@ METHOD SaveAttachments(oEMail AS CEMail, lClone := FALSE AS LOGIC) AS LOGIC STRI
       NEXT  // dwI
    ENDIF
 
+
    RETURN TRUE
 
+
+/// <include file="Internet.xml" path="doc/CStorage.SaveEMail/*" />
 METHOD SaveEMail(cId AS STRING, oEMail AS CEMail) AS LOGIC STRICT
    //Save oEMail with the current ID
    //You should save the following
@@ -264,6 +340,9 @@ METHOD SaveEMail(cId AS STRING, oEMail AS CEMail) AS LOGIC STRICT
    //     oEMail:AttachmentInfo
    RETURN TRUE
 END CLASS
+
+
+
 
 
 

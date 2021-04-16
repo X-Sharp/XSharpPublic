@@ -1,3 +1,4 @@
+/// <include file="Gui.xml" path="doc/Printer/*" />
 CLASS Printer INHERIT Window
 	PROTECT oPerr AS PrinterErrorEvent
 	PROTECT lprValid AS LOGIC
@@ -10,11 +11,13 @@ CLASS Printer INHERIT Window
 	PROTECT iWidth AS INT
 	PROTECT iHeight AS INT
 
+
 #ifdef __VULCAN__
    HIDDEN PrinterAbortProcDelegate AS __PrinterAbortProcDelegate
 #endif
 	//PP-030828 Strong typing
-	METHOD __GetDC() AS PTR STRICT 
+ /// <exclude />
+	METHOD __GetDC() AS PTR STRICT
 	//PP-030828 Strong typing
 	LOCAL hFont AS PTR
 	LOCAL oFont AS Font
@@ -22,7 +25,10 @@ CLASS Printer INHERIT Window
 	LOCAL oForeground AS Brush
 	LOCAL strucLogPen IS _WinLogPen
 
-	
+
+
+
+
 
 	IF (hDC == NULL_PTR)	 // Invalid printer
 		SELF:__ResetDCFlags()
@@ -30,10 +36,12 @@ CLASS Printer INHERIT Window
 		RETURN 0
 	ENDIF
 
+
 	IF (!DCInitialized)
 		IF (WCGetCoordinateSystem() == WCCartesianCoordinates)
 			SetMapMode(hDC, MM_TEXT)
 			SetMapMode(hDC, MM_ANISOTROPIC)
+
 
 			SetViewportExtEx(hDC, iWidth, iHeight, NULL_PTR) // logical coords used by GDI
 			SetWindowExtEx(hDC, iWidth, -iHeight, NULL_PTR) // device coords
@@ -41,11 +49,14 @@ CLASS Printer INHERIT Window
 		ELSE
 			SetMapMode(hDC, MM_TEXT)
 
+
 			SetViewportOrgEx(hDC, 0, 0, NULL_PTR)
 		ENDIF
 
+
 		DCInitialized := TRUE
 	ENDIF
+
 
 	IF SELF:DCFontNeeded .AND. !SUPER:DCFontInUse
 		oFont := SELF:Font
@@ -54,16 +65,19 @@ CLASS Printer INHERIT Window
 			hFont := oFont:Handle()
 		ENDIF
 
+
 		IF (hFont != NULL_PTR)
 			SelectObject(hDC, hFont)
 		ELSE
 			SelectObject(hDC, GetStockObject(DEVICE_DEFAULT_FONT)) // * 0.5 *
 		ENDIF
 
+
 		DCFontInUse := TRUE
 		DCFontNeeded := FALSE
 		SetTextAlign(hDC, _OR(TA_LEFT, TA_BOTTOM))
 	ENDIF
+
 
 	IF SELF:DCPenNeeded .AND. !SUPER:DCPenInUse
 		oPen := SELF:Pen
@@ -79,6 +93,7 @@ CLASS Printer INHERIT Window
 		DCPenNeeded := FALSE
 	ENDIF
 
+
 	IF SELF:DCBrushNeeded .AND. !SELF:DCBrushInUse
 		oForeground := SELF:Foreground
 		IF (oForeground != NULL_OBJECT)
@@ -88,15 +103,21 @@ CLASS Printer INHERIT Window
 			SelectObject(hDC, GetStockObject(Black_Brush))
 		ENDIF
 
+
 		DCBrushInUse := TRUE
 		DCBrushNeeded := FALSE
 	ENDIF
 
+
 	RETURN hDC
 
-METHOD __ResetDCFlags() AS Printer STRICT 
+
+ /// <exclude />
+METHOD __ResetDCFlags() AS Printer STRICT
 	//PP-030828 Strong typing
-	
+
+
+
 
 	DCInitialized := FALSE
 	DCPenNeeded := TRUE
@@ -106,38 +127,57 @@ METHOD __ResetDCFlags() AS Printer STRICT
 	DCBrushInUse := FALSE
 	DCFontInUse := FALSE
 
+
 	RETURN SELF
 
-METHOD Abort() 
-	
+
+/// <include file="Gui.xml" path="doc/Printer.Abort/*" />
+METHOD Abort()
+
+
+
 
 	lprAbort := TRUE
 	RETURN SELF
 
-METHOD Aborted() 
-	
+
+/// <include file="Gui.xml" path="doc/Printer.Aborted/*" />
+METHOD Aborted()
+
+
+
 
 	RETURN lprAbort
 
-METHOD BeginDoc() 
+
+/// <include file="Gui.xml" path="doc/Printer.BeginDoc/*" />
+METHOD BeginDoc()
 	LOCAL iRetVal AS INT
 	LOCAL DocInfo IS _winDOCINFO
+
 
 	MemSet(@DocInfo, 0, _SIZEOF(_winDOCINFO))
 	DocInfo:cbSize := _SIZEOF(_winDOCINFO)
 
-	
+
+
+
+
 
 	//if (NULL_STRING != sJobName)
 	//	pszJob := String2Psz(sJobName)
 	//endif
 
+
 	//iRetVal := Escape(hDC, STARTDOC_, SLen(sJobName), pszJob, NULL_PTR)
+
 
 	DocInfo:lpszDocName := String2Psz(sJobname)
 	iRetVal := StartDoc(hDC, @DocInfo)
 
+
 	lprValid := TRUE
+
 
 	IF (iRetVal > 0)
 		lDocStarted := TRUE
@@ -148,15 +188,24 @@ METHOD BeginDoc()
 		hDC := 0
 	ENDIF
 
+
 	RETURN lprValid
 
-ACCESS CanvasArea 
-	
+
+/// <include file="Gui.xml" path="doc/Printer.CanvasArea/*" />
+ACCESS CanvasArea
+
+
+
 
 	RETURN BoundingBox{Point{0, 0}, Dimension{iWidth, iHeight}}
 
+
+/// <include file="Gui.xml" path="doc/Printer.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
+
+
+
 
 	IF (hDC != NULL_PTR)
 		IF	lprValid
@@ -170,48 +219,68 @@ METHOD Destroy()  AS USUAL CLIPPER
 		hDC := NULL_PTR
 	ENDIF
 
+
 	IF !InCollect()
 		oPerr :=	NULL_OBJECT
 		aPrinterhDCPrinter := {}
 	ENDIF
 
+
 	SUPER:Destroy()
+
 
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/Printer.Handle/*" />
 METHOD Handle(ServiceID) AS PTR
-	
+
+
+
 
 	RETURN hDC
 
+
 	/*
 	Default(@ServiceID, API_WINDOW_HDC)
+
 
 	if ServiceID = API_WINDOW_HWND
 	return self:hWnd
 	endif
 
+
 	if ServiceID = API_WINDOW_HDC
 	return hDC
 	endif */
 
-METHOD Idle() 
-	
+
+/// <include file="Gui.xml" path="doc/Printer.Idle/*" />
+METHOD Idle()
+
+
+
 
 	IF (oApp != NULL_OBJECT)
 		oApp:Exec(ExecWhileEvent)
 	ENDIF
 
+
 	RETURN SELF
 
-CONSTRUCTOR(cJobname, oDevice) 
+
+/// <include file="Gui.xml" path="doc/Printer.ctor/*" />
+CONSTRUCTOR(cJobname, oDevice)
 	LOCAL cDevice AS STRING
 	LOCAL cDriver AS STRING
 	LOCAL cPort AS STRING
 	LOCAL ptrDevMode AS PTR
 	LOCAL oPrintingDev AS PrintingDevice
 
-	
+
+
+
+
 
 	lprValid		:= FALSE
 	lprAbort		:= FALSE
@@ -219,9 +288,13 @@ CONSTRUCTOR(cJobname, oDevice)
 	lDocStarted := FALSE
 	aPrinterhDCPrinter := {}
 
-	
+
+
+
+
 
 	SUPER()
+
 
 	IF !IsNil(oDevice)
 		IF !IsInstanceOfUsual(oDevice, #PrintingDevice)
@@ -232,15 +305,18 @@ CONSTRUCTOR(cJobname, oDevice)
 		oPrintingDev := PrintingDevice{}
 	ENDIF
 
+
 	cDevice := oPrintingDev:Device
 	cDriver := oPrintingDev:Driver
 	cPort := oPrintingDev:Port
 	ptrDevMode := oPrintingDev:GetDevMode()
 
+
 	IF IsNil(cDevice) .AND. IsNil(cDriver) .AND. IsNil(cPort)
 		hDC := NULL
 		RETURN
 	ENDIF
+
 
 	hDC := CreateDC(String2Psz(cDriver), String2Psz(cDevice), String2Psz(cPort), ptrDevMode)
 	IF (hDC != NULL_PTR)
@@ -252,10 +328,11 @@ CONSTRUCTOR(cJobname, oDevice)
 #ifdef __VULCAN__
       PrinterAbortProcDelegate := __PrinterAbortProcDelegate{ NULL, @__PrinterAbortProc() }
 		SetAbortProc(hDC, System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate((System.Delegate) PrinterAbortProcDelegate ) )
-#else		
+#else
 		SetAbortProc(hDC, @__PrinterAbortProc())
-#endif		
+#endif
 		GetLastError()
+
 
 		IF !IsNil(cJobName)
 			IF !IsString(cJobname)
@@ -266,21 +343,31 @@ CONSTRUCTOR(cJobname, oDevice)
 			sJobName := NULL_STRING
 		ENDIF
 
+
 		lprValid := TRUE
 	ENDIF
 
-	RETURN 
 
-METHOD IsValid() 
-	
+	RETURN
+
+
+/// <include file="Gui.xml" path="doc/Printer.IsValid/*" />
+METHOD IsValid()
+
+
 	RETURN	lprValid
 
-METHOD NewPage() 
+
+/// <include file="Gui.xml" path="doc/Printer.NewPage/*" />
+METHOD NewPage()
 	LOCAL error_val AS INT
 	LOCAL repeat_flag AS LOGIC
 	LOCAL repeatable AS LOGIC
 
-	
+
+
+
+
 
 	IF lprValid
 		oPerr := PrinterErrorEvent{NULL_PTR,0,0,0,SELF}
@@ -292,23 +379,29 @@ METHOD NewPage()
 					oPerr:wParam := PRINTERERRORGENERALERROR
 					repeatable := TRUE
 
+
 				CASE error_val == SP_APPABORT
 					oPerr:wParam := PRINTERERRORGENERALERROR
 
+
 				CASE error_val == SP_USERABORT
 					oPerr:wParam := PRINTERERRORUSERABORT
+
 
 				CASE error_val == SP_OUTOFDISK
 					repeatable := TRUE
 					oPerr:wParam := PRINTERERRORNODISKSPACE
 
+
 				CASE error_val == SP_OUTOFMEMORY
 					repeatable := TRUE
 					oPerr:wParam := PRINTERERRORNOMEMSPACE
 
+
 				OTHERWISE
 					oPerr:wParam := PRINTERERRORGENERALERROR
 				ENDCASE
+
 
 				repeat_flag := SELF:PrinterError(oPerr)
 				IF repeat_flag
@@ -318,6 +411,7 @@ METHOD NewPage()
 				ENDIF
 			ENDDO
 
+
 		ELSEIF lprAbort // user Abort
 			error_val := SP_USERABORT
 		ELSE
@@ -325,12 +419,15 @@ METHOD NewPage()
 		ENDIF
 		lprPage := TRUE
 
+
 		// Do we need to clean up ?
+
 
 		IF error_val >= 0
 			error_val := StartPage(hDC)
 			DCInitialized := FALSE
 		ENDIF
+
 
 		IF error_val < 0
 			lprValid := FALSE
@@ -340,16 +437,21 @@ METHOD NewPage()
 	ENDIF
 	RETURN SELF
 
-METHOD PrinterError(oPerr) 
+
+/// <include file="Gui.xml" path="doc/Printer.PrinterError/*" />
+METHOD PrinterError(oPerr)
 	LOCAL rsTitle AS ResourceString
 	LOCAL rsError AS ResourceString
 	LOCAL wErrorType AS WORD
 	LOCAL mb AS TextBox
-	
+
+
+
 
 	IF !IsNil(oPerr) .AND. !IsInstanceOfUsual(oPerr,#PrinterErrorEvent)
 		WCError{#PrinterError,#printer,__WCSTypeError,oPerr,1}:Throw()
 	ENDIF
+
 
 	wErrorType := oPerr:ErrorType
 	IF wErrorType = PRINTERERRORNODISKSPACE
@@ -366,36 +468,48 @@ METHOD PrinterError(oPerr)
 		RETURN FALSE
 	ENDIF
 
-METHOD PrinterExpose(oPrinterExposeEvt) 
-	
+
+/// <include file="Gui.xml" path="doc/Printer.PrinterExpose/*" />
+METHOD PrinterExpose(oPrinterExposeEvt)
+
+
+
 
 	IF !IsNil(oPrinterExposeEvt) .AND. !IsInstanceOfUsual(oPrinterExposeEvt,#PrinterExposeEvent)
 		WCError{#PrinterExpose,#printer,__WCSTypeError,oPrinterExposeEvt,1}:Throw()
 	ENDIF
 	RETURN TRUE
 
-METHOD Start(oRange) 
+
+/// <include file="Gui.xml" path="doc/Printer.Start/*" />
+METHOD Start(oRange)
 	LOCAL iPageNum AS INT
 	LOCAL lAnotherPage AS LOGIC
 	LOCAL PEE AS PrinterExposeEvent
 	iPageNum := 1
 	lAnotherPage := TRUE
 
+
 	SELF:BeginDoc()
+
 
 	IF !IsNil(oRange)
 		IF !IsInstanceOfUsual(oRange, #Range)
 			WCError{#Start,#Printer,__WCSTypeError,oRange,1}:Throw()
-		ENDIF           
+		ENDIF
 		iPageNum := oRange:Min
 	ENDIF
 
+
 	PEE := PrinterExposeEvent{NULL_PTR, 0, iPageNum, 0, SELF:CanvasArea}
+
 
 	DO WHILE ((oRange == NULL_OBJECT .OR. iPageNum <= oRange:Max) .AND. lAnotherPage .AND. SELF:IsValid() .AND. !SELF:Aborted())
 		PEE:wParam := DWORD(iPageNum)
 
+
 		lAnotherPage := SELF:PrinterExpose(PEE)
+
 
 		iPageNum++
 		IF (lAnotherPage .AND. (oRange == NULL_OBJECT .OR. iPageNum <= oRange:Max))
@@ -403,21 +517,32 @@ METHOD Start(oRange)
 		ENDIF
 	ENDDO
 
+
 	RETURN SELF
 
-ACCESS WindowArea 
-	
+
+/// <include file="Gui.xml" path="doc/Printer.WindowArea/*" />
+ACCESS WindowArea
+
+
+
 
 	RETURN BoundingBox{Point{0, 0}, Dimension{iWidth, iHeight}}
 
+
 END CLASS
 
-#ifdef __VULCAN__
-   DELEGATE __PrinterAbortProcDelegate( hDCPrinter AS PTR, _Code AS INT ) AS LOGIC
-#endif  
 
+#ifdef __VULCAN__
+    /// <exclude/>
+    DELEGATE __PrinterAbortProcDelegate( hDCPrinter AS PTR, _Code AS INT ) AS LOGIC
+#endif
+
+
+ /// <exclude />
 FUNCTION __PrinterAbortProc(hDCPrinter AS PTR, _Code AS INT) AS LOGIC /* WINCALL */
 	LOCAL oPri AS Printer
+
 
 	oPri :=__WCGetPrinterFromArray(hDCPrinter)
 	IF oPri != NULL_OBJECT
@@ -430,13 +555,19 @@ FUNCTION __PrinterAbortProc(hDCPrinter AS PTR, _Code AS INT) AS LOGIC /* WINCALL
 		RETURN TRUE
 	ENDIF
 
+
 	RETURN FALSE
+
 
 STATIC GLOBAL aPrinterhDCPrinter AS ARRAY
 
+
+ /// <exclude />
 FUNCTION __WCAddPrinterToArray(hDCPrinter AS PTR, oPrinter AS Printer) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aPrinterhDCPrinter)
@@ -447,13 +578,19 @@ FUNCTION __WCAddPrinterToArray(hDCPrinter AS PTR, oPrinter AS Printer) AS VOID
 		ENDIF
 	NEXT  // dwI
 
+
 	AAdd(aPrinterhDCPrinter, {hDCPrinter, oPrinter})
+
 
 	RETURN
 
+
+ /// <exclude />
 FUNCTION __WCDelPrinterFromArray(hDCPrinter AS PTR) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aPrinterhDCPrinter)
@@ -465,11 +602,16 @@ FUNCTION __WCDelPrinterFromArray(hDCPrinter AS PTR) AS VOID
 		ENDIF
 	NEXT  // dwI
 
+
 	RETURN
 
+
+ /// <exclude />
 FUNCTION __WCGetPrinterFromArray(hDCPrinter AS PTR) AS OBJECT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
+
 
 
 	dwCount := ALen(aPrinterhDCPrinter)
@@ -479,5 +621,7 @@ FUNCTION __WCGetPrinterFromArray(hDCPrinter AS PTR) AS OBJECT
 		ENDIF
 	NEXT  // dwI
 
+
 	RETURN NULL_OBJECT
+
 

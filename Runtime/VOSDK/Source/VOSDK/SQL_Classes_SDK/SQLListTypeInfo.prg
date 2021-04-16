@@ -1,18 +1,25 @@
+/// <include file="SQL.xml" path="doc/SQLListTypeInfo/*" />
 CLASS SQLListTypeInfo INHERIT SQLCatalogQuery
 	EXPORT SqlType          AS SHORTINT
 
+
+/// <include file="SQL.xml" path="doc/SQLListTypeInfo.Execute/*" />
 METHOD Execute()  
 	LOCAL   nRet    AS SHORTINT
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLListTypeInfo:Execute()" )
 	#ENDIF
 
+
 	IF  oStmt:StatementHandle = SQL_NULL_HSTMT
 		SELF:__AllocStmt()
 	ENDIF
 
+
 	nRet := SQLGetTypeInfo( oStmt:StatementHandle, SqlType )
+
 
 	IF nRet != SQL_SUCCESS
 		oStmt:ErrInfo := SQLErrorInfo{  SELF,                       ;
@@ -24,13 +31,18 @@ METHOD Execute()
 	ENDIF
 	RETURN SUPER:Execute()
 
+
+/// <include file="SQL.xml" path="doc/SQLListTypeInfo.ctor/*" />
 CONSTRUCTOR( nSqlType, oSQLConnection ) 
 
+
 	SUPER( oSQLConnection )
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLListTypeInfo:Init()" )
 	#ENDIF
+
 
 	IF IsNumeric( nSqlType )
 		SELF:SqlType := nSqlType
@@ -38,8 +50,11 @@ CONSTRUCTOR( nSqlType, oSQLConnection )
 		SELF:SqlType := SQL_ALL_TYPES
 	ENDIF
 
+
 	SELF:Execute()
 	RETURN 
 
+
 END CLASS
+
 

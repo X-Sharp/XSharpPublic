@@ -1,4 +1,6 @@
+/// <include file="SQL.xml" path="doc/SQLTable/*" />
 CLASS SQLTable INHERIT SQLSelect
+
 
 	PROTECT cTblStmt            AS STRING
 	PROTECT cTable              AS STRING
@@ -18,26 +20,33 @@ CLASS SQLTable INHERIT SQLSelect
 	PROTECT lSoft               AS LOGIC
 	PROTECT SymCol              AS USUAL // Array of Symbols or Symbol
 
+
+ /// <exclude />
 	METHOD __AcceptSelectiveRelation( oParent AS OBJECT, uRelation AS USUAL, cRelation AS USUAL) AS LOGIC STRICT 
 	LOCAL wFieldNo, wFieldCount AS DWORD
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:__AcceptSelectiveRelation()" )
 	#ENDIF
 
+
 	// save parent & relation
 	lSelectionActive := TRUE
 	oSelectionParent := oParent
+
 
 	IF IsCodeBlock( uRelation )
 		cRelationExpression := IIF( cRelation = NIL, "", cRelation )
 		aParentRelationCols := {}
 		AAdd( aParentRelationCols, cRelationExpression )
 
+
 	ELSEIF IsSymbol( uRelation ) .OR. IsString( uRelation )
 		cRelationExpression := AsString( uRelation )
 		aParentRelationCols := {}
 		AAdd( aParentRelationCols, cRelationExpression )
+
 
 	ELSEIF IsArray( uRelation )
 		wFieldCount := ALen( uRelation )
@@ -55,21 +64,26 @@ CLASS SQLTable INHERIT SQLSelect
 							cRelationExpression += " AND "
 							AAdd( aParentRelationCols, uRelation[wFieldNo] )
 
+
 						CASE SQL_RELOP_OR
 							cRelationExpression += " OR "
 							AAdd( aParentRelationCols, uRelation[wFieldNo] )
+
 
 						CASE SQL_RELOP_NOT
 							cRelationExpression += " NOT "
 							AAdd( aParentRelationCols, uRelation[wFieldNo] )
 
+
 						CASE SQL_RELOP_OPENP
 							cRelationExpression += " ( "
 							AAdd( aParentRelationCols, uRelation[wFieldNo] )
 
+
 						CASE SQL_RELOP_CLOSEP
 							cRelationExpression += " ) "
 							AAdd( aParentRelationCols, uRelation[wFieldNo] )
+
 
 						END SWITCH
 					ELSE
@@ -78,6 +92,7 @@ CLASS SQLTable INHERIT SQLSelect
 						ELSE
 							cRelationExpression += "+" + AsString( uRelation[wFieldNo] )
 						ENDIF
+
 
 						AAdd( aParentRelationCols, AsString( uRelation[wFieldNo] ) )
 					ENDIF  	// IsNumeric( uRelation[wFieldNo] )
@@ -89,13 +104,17 @@ CLASS SQLTable INHERIT SQLSelect
 		RETURN FALSE
 	ENDIF
 
+
 	//RvdH 050413 Centralize opening of cursor
 	IF ! SELF:__ForceOpen()
 		RETURN FALSE
 	ENDIF
 
+
 	RETURN TRUE
 
+
+ /// <exclude />
 METHOD __BuildSQLString() AS VOID STRICT 
 	LOCAL nIndex        AS DWORD
 	LOCAL cWhereSep  := ""   AS STRING
@@ -112,9 +131,11 @@ METHOD __BuildSQLString() AS VOID STRICT
 	LOCAL cQuote		  AS STRING
 	LOCAL symColumn	  AS SYMBOL
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** NewSQLTable:__BuildSQLString()" )
 	#ENDIF
+
 
 	IF lSoft
 		cOperator := " >= ? "
@@ -131,14 +152,18 @@ METHOD __BuildSQLString() AS VOID STRICT
 				FOR nIndex := 1 TO ALen( symCol )
 					symColumn := symCol[nIndex]
 
+
 					cWhereSeek += cWhereSep + cQuote + __GetSymString( symColumn) + cQuote + cOperator
 					cWhereSep  := " and "
+
 
 					cOrderSeek +=   cOrderSep + cQuote + __GetSymString( symColumn ) + cQuote
 					cOrderSep := ","
 
+
 				NEXT
 			ELSE
+
 
 				cWhereSeek := cQuote + __GetSymString( symCol ) + cQuote + cOperator
 				cOrderSeek := cQuote + __GetSymString( symCol ) + cQuote
@@ -146,31 +171,39 @@ METHOD __BuildSQLString() AS VOID STRICT
 		ENDIF
 	ENDIF
 
+
 	IF lCsrOpenFlag
 		lSuppressNotify := TRUE
 		SELF:Close()
 
+
 		lSuppressNotify := FALSE
 	ENDIF
+
 
 	//
 	cTblStmt := "select " + cFields + " from "+ cTable
 
+
 	IF Len( cWhereSeek ) != 0 .OR. Len( cWhere ) != 0
 		cTblStmt += " where "
 
+
 		IF SLen( cWhereSeek ) != 0
 			cTblStmt += cWhereSeek + " "
+
 
 			IF SLen( cWhere ) != 0
 				cTblStmt += " and "
 			ENDIF
 		ENDIF
 
+
 		IF SLen( cWhere ) != 0
 			cTblStmt += cWhere + " "
 		ENDIF
 	ENDIF
+
 
 	// selective child?
 	IF lSelectionActive
@@ -180,13 +213,16 @@ METHOD __BuildSQLString() AS VOID STRICT
 			cTblStmt += " and "
 		ENDIF
 
+
 		//  Put in parenthesis
 		cTblStmt += " ( "
+
 
 		// now add selective child restriction,
 		// using value of parent's relation columns...
 		nMax := Len( aParentRelationCols )
 		lNeedOP := FALSE
+
 
 		FOR nIndex := 1 UPTO nMax
 			IF IsNumeric( aParentRelationCols[nIndex] )
@@ -195,27 +231,33 @@ METHOD __BuildSQLString() AS VOID STRICT
 					cTblStmt += " AND "
 					lNeedOP := FALSE
 
+
 				CASE SQL_RELOP_OR
 					cTblStmt += " OR "
 					lNeedOP := FALSE
+
 
 				CASE SQL_RELOP_NOT
 					cTblStmt += " NOT "
 					lNeedOP := FALSE
 
+
 				CASE SQL_RELOP_OPENP
 					cTblStmt += " ( "
 					lNeedOP := FALSE
 
+
 				CASE SQL_RELOP_CLOSEP
 					cTblStmt += " ) "
 					lNeedOP := FALSE
+
 
 				END SWITCH
 			ELSE
 				IF lNeedOP
 					cTblStmt += " and "
 				ENDIF
+
 
 				// Enhancement to allow a reflexive relationship!
 				// That means that you can have a relationship from Table1:FieldName1 to Tablex:Fieldname2
@@ -233,24 +275,30 @@ METHOD __BuildSQLString() AS VOID STRICT
 				// This is working very well when the field in the Childtable have the same datatype as the
 				// field in the parenttable.
 
+
 				IF ( nFPos := At2( "=",aParentRelationCols[nIndex] ) ) > 0          // Syntax 1
 					cParentField := AllTrim( SubStr3( aParentRelationCols[nIndex], 1, nFPos-1 ) )
 					cChildField  := AllTrim( SubStr2( aParentRelationCols[nIndex], nFPos + 1 ) )
 
+
 				ELSEIF ( nFPos := At2( "|",aParentRelationCols[nIndex] ) ) > 0      // Syntax 2
 					cParentField := AllTrim( SubStr3( aParentRelationCols[nIndex], 1, nFPos-1 ) )
 					cChildField  := AllTrim( SubStr2( aParentRelationCols[nIndex], nFPos + 1 ) )
+
 
 				ELSE
 					cParentField := aParentRelationCols[nIndex]
 					cChildField  := cParentField
 				ENDIF
 
+
 				//  Use access instead of fieldget
 				uTempValue := IVarGet( oSelectionParent, AsSymbol( cParentField ) )
 
+
 				//  Get fieldspec ( for type )
 				oFldSpec := Send( oSelectionParent, #FieldSpec, AsSymbol( cParentField ) )
+
 
 				//  Check NIL value
 				IF IsNil( uTempValue )
@@ -263,6 +311,7 @@ METHOD __BuildSQLString() AS VOID STRICT
 							cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
 										cQuote + " = " + AsString( uTempValue )
 
+
 						CASE "L"
 							IF uTempValue
 								cVal := "1"
@@ -270,8 +319,10 @@ METHOD __BuildSQLString() AS VOID STRICT
 								cVal := "0"
 							ENDIF
 
+
 							cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
 										cQuote + " = " +cVal
+
 
 						CASE "D"
 							cVal := DToS( uTempValue )
@@ -291,50 +342,65 @@ METHOD __BuildSQLString() AS VOID STRICT
 					ENDIF
 				ENDIF
 
+
 				lNeedOP := TRUE
+
 
 			ENDIF
 		NEXT
 
+
 		//  Put in parenthesis
 		cTblStmt += " ) "
 
+
 	ENDIF
+
 
 	IF SLen( cSuffix ) != 0
 		cTblStmt += " " + cSuffix
 	ENDIF
+
 
 	IF SLen( cOrderSeek ) != 0 .OR. Len( cOrder ) != 0
 		cTblStmt += __CAVOSTR_SQLCLASS__ORDER_BY
 		IF Len( cOrderSeek ) != 0
 			cTblStmt += cOrderSeek + " "
 
+
 			IF Len( cOrder ) != 0
 				cTblStmt += ","
 			ENDIF
 		ENDIF
+
 
 		IF Len( cOrder ) != 0
 			cTblStmt += cOrder + " "
 		ENDIF
 	ENDIF
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "  __BuildSQLString() cTblStmt="+AsString( cTblStmt ) )
 	#ENDIF
+
 
 	//  add the statement to oStmt
 	//  UH 06/05/2000
 	//  oStmt:SQLString := cTblStmt
 	SELF:oStmt:SQLString := SELF:__StripStatement( cTblStmt )
 
+
 	RETURN
 
 
+
+
+ /// <exclude />
 METHOD __StripStatement( cStat AS STRING ) AS STRING STRICT 
 	LOCAL cChar AS STRING
 	LOCAL nPos AS DWORD
+
 
 	cChar := e"\""
 	nPos := At2( cChar, cStat )
@@ -347,12 +413,16 @@ METHOD __StripStatement( cStat AS STRING ) AS STRING STRICT
 		nPos := At2( cChar, cStat )
 	ENDDO
 
+
 	RETURN cStat
 
+
+/// <include file="SQL.xml" path="doc/SQLTable.ClearRelation/*" />
 METHOD ClearRelation( nRelation ) 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:ClearRelation()" )
 	#ENDIF
+
 
 	IF lRelationsActive
 		//  nRelation means clear all relations
@@ -371,6 +441,7 @@ METHOD ClearRelation( nRelation )
 			ADel( aRelationChildren, nRelation )
 			ASize( aRelationChildren, ALen( aRelationChildren ) - 1 )
 
+
 			IF ALen( aRelationChildren ) = 0
 				lRelationsActive := FALSE
 				aRelationChildren := {}
@@ -381,7 +452,10 @@ METHOD ClearRelation( nRelation )
 		RETURN FALSE
 	ENDIF
 
+
+/// <include file="SQL.xml" path="doc/SQLTable.Condition/*" />
 METHOD Condition( cOtherConditions ) 
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:Condition( "+AsString( cOtherConditions )+" )" )
@@ -391,10 +465,14 @@ METHOD Condition( cOtherConditions )
 		SELF:cSuffix := cOtherConditions
 	ENDIF
 
+
 	SELF:__BuildSQLString()
 	RETURN NIL
 
+
+/// <include file="SQL.xml" path="doc/SQLTable.ctor/*" />
 CONSTRUCTOR( symTableName, aFieldList, oSQLConnection ) 
+
 
 	// You can specify a table name as a symbol ( or string ), and an
 	//  optional array of field names ( as symbols or strings ).
@@ -419,9 +497,11 @@ CONSTRUCTOR( symTableName, aFieldList, oSQLConnection )
 	LOCAL nIndex            AS DWORD
 	LOCAL cSeparator  := ""	AS STRING
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:Init( "+AsString( symTableName )+" )" )
 	#ENDIF
+
 
 	SELF:aRelationChildren   := {}
 	SELF:aParentRelationCols := {}
@@ -440,11 +520,14 @@ CONSTRUCTOR( symTableName, aFieldList, oSQLConnection )
 		ENDIF
 	ENDIF
 
+
 	SUPER( NIL , oSQLConnection )
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:Init() cFields="+AsString( cFields ) )
 	#ENDIF
+
 
 	cTableName := cTable
 	lRelationsActive    := FALSE
@@ -456,29 +539,37 @@ CONSTRUCTOR( symTableName, aFieldList, oSQLConnection )
 	cRelationExpression := ""
 	lSoft               := FALSE
 
+
 	SELF:__BuildSQLString()
 	oHyperLabel := HyperLabel{  cTable, ;
 								cTable, ;
 								Symbol2String( ClassName( SELF ) )+": "+cTable, ;
 								Symbol2String( ClassName( SELF ) )+"_"+cTable }
 
+
 	RETURN 
 
+
+/// <include file="SQL.xml" path="doc/SQLTable.Notify/*" />
 METHOD Notify ( kNotification, uDescription ) 
 	LOCAL lRetValue AS LOGIC
 	LOCAL nChild := 0 AS DWORD
 
+
 	lRetValue := TRUE
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:Notify( "+AsString( kNotification )+          ;
 						  " ) Count="+AsString( nNotifyCount ) )
 	#ENDIF
 
+
 	// NOT suspended & NOT suppressed?
 	IF nNotifyCount = 0 .AND. ! lSuppressNotify
 		IF kNotification <= NOTIFYCOMPLETION
 			SUPER:Notify( kNotification, uDescription )
+
 
 		ELSEIF kNotification = NOTIFYINTENTTOMOVE
 			lRetValue := SUPER:Notify( kNotification, uDescription )
@@ -490,12 +581,14 @@ METHOD Notify ( kNotification, uDescription )
 			ENDIF
 			RETURN lRetValue
 
+
 		ELSEIF kNotification <= NOTIFYFILECHANGE
 			SUPER:Notify( kNotification, uDescription )
 			IF lRelationsActive
 				// file changed, need to reset any child relations
 				ASend( aRelationChildren, #Notify, NOTIFYRELATIONCHANGE )
 			ENDIF
+
 
 		ELSEIF kNotification = NOTIFYRELATIONCHANGE
 			IF lSelectionActive
@@ -506,20 +599,25 @@ METHOD Notify ( kNotification, uDescription )
 				SELF:ResetNotification()
 				lSelectionSeek := FALSE
 
+
 				IF oStmt:__ErrInfo:ErrorFlag
 					RETURN NIL
 				ENDIF
 			ENDIF
 
+
 			SUPER:Notify( kNotification, uDescription )
+
 
 			IF lRelationsActive
 				// pass it on to my children
 				ASend( aRelationChildren, #Notify, NOTIFYRELATIONCHANGE )
 			ENDIF
 
+
 		ELSEIF kNotification = NOTIFYCLEARRELATION
 			lSelectionActive := FALSE
+
 
 		ELSE   // event I don't know about
 			SUPER:Notify( kNotification, uDescription )
@@ -529,16 +627,22 @@ METHOD Notify ( kNotification, uDescription )
 		ENDIF
 	ENDIF
 
+
 	RETURN lRetValue
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLTable.OrderBy/*" />
 METHOD OrderBy( /* symColName1,symColName2,... */ ) CLIPPER
 	LOCAL wCount AS DWORD
 	LOCAL cSeparator := ""  AS STRING
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:OrderBy()" )
 	#ENDIF
+
 
 	cOrder := NULL_STRING
 	// any parameters?
@@ -549,14 +653,19 @@ METHOD OrderBy( /* symColName1,symColName2,... */ ) CLIPPER
 		NEXT
 	ENDIF
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:OrderBy() cOrder="+AsString( cOrder ) )
 	#ENDIF
+
 
 	SELF:__BuildSQLString()
 	RETURN NIL
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLTable.Relation/*" />
 METHOD Relation( nRelation ) 
 	//
 	// returns a string representation of the relation; or NULL_STRING
@@ -564,6 +673,7 @@ METHOD Relation( nRelation )
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:Relation()" )
 	#ENDIF
+
 
 	IF IsNil( nRelation )
 		RETURN cRelationExpression
@@ -574,12 +684,17 @@ METHOD Relation( nRelation )
 			RETURN NULL_STRING
 		ENDIF
 
+
 		// then return the childs's relationship to the parent
 		RETURN Send(aRelationChildren[nRelation],#Relation)
 	ENDIF
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLTable.Seek/*" />
 METHOD Seek( symColumn, uValue, lSoftSeek ) 
+
 
 	LOCAL aArgs                              AS ARRAY
 	#IFDEF __DEBUG__
@@ -589,13 +704,17 @@ METHOD Seek( symColumn, uValue, lSoftSeek )
 		lSoft := lSoftSeek
 	ENDIF
 
+
 	symCol := symColumn
 
+
 	SELF:__BuildSQLString()
+
 
 	//  Pre-execute any stmt override
 	//  UH 07/17/2000
 	//  oStmt:SQLString := SELF:PreExecute( oStmt:SQLString )
+
 
 	aArgs := {}
 	IF uValue != NIL
@@ -609,20 +728,26 @@ METHOD Seek( symColumn, uValue, lSoftSeek )
 		RETURN .F. 
 	ENDIF
 
+
 	SELF:__GetColIndex( 1, TRUE )
 	//  If empty, set bof
 	IF SELF:lEof
 		SELF:__SetRecordFlags( TRUE, NIL )
 	ENDIF
 
+
 	SELF:Notify( NOTIFYFILECHANGE )
 	RETURN !SELF:lEof
 
+
+/// <include file="SQL.xml" path="doc/SQLTable.SetRelation/*" />
 METHOD SetRelation( oChild, uRelation, cRelation ) 
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:SetRelation()" )
 	#ENDIF
+
 
 	IF oChild = NIL
 		SELF:ClearRelation()
@@ -633,6 +758,7 @@ METHOD SetRelation( oChild, uRelation, cRelation )
 			RETURN FALSE
 		ENDIF
 
+
 		// is this our child?
 		IF AScan( aRelationChildren, oChild ) = 0
 			// no, adopt it
@@ -640,26 +766,36 @@ METHOD SetRelation( oChild, uRelation, cRelation )
 		ENDIF
 		lRelationsActive := TRUE
 
+
 		IF ! Send(oChild,#__AcceptSelectiveRelation, SELF, uRelation, cRelation )
 			RETURN FALSE
 		ENDIF
 		Send(oChild,#Notify, NOTIFYRELATIONCHANGE )
 	ENDIF
 
+
 	RETURN TRUE
 
 
 
+
+
+
+/// <include file="SQL.xml" path="doc/SQLTable.SetSelectiveRelation/*" />
 METHOD SetSelectiveRelation( oChild, uRelation, cRelation ) 
 	RETURN SELF:SetRelation( oChild, uRelation, cRelation )
 
+
+/// <include file="SQL.xml" path="doc/SQLTable.Where/*" />
 METHOD Where( )  CLIPPER
 	LOCAL wCount                AS DWORD
 	LOCAL cSeparator := ""      AS STRING
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:Where()" )
 	#ENDIF
+
 
 	cWhere := NULL_STRING
 	// any parameters?
@@ -670,34 +806,52 @@ METHOD Where( )  CLIPPER
 		NEXT
 	ENDIF
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLTable:Where() cWhere="+AsString( cWhere ) )
 	#ENDIF
 
+
 	SELF:__BuildSQLString()
 	RETURN NIL
 
+
 //RvdH 2010-12-03: Some extra properties
+/// <include file="SQL.xml" path="doc/SQLTable.Fields/*" />
 ACCESS Fields 
 	RETURN cFields
 
+
+/// <include file="SQL.xml" path="doc/SQLTable.OrderByClause/*" />
 ACCESS OrderByClause 
 	RETURN cOrder
 	
+	
+/// <include file="SQL.xml" path="doc/SQLTable.OrderSeek/*" />
 ACCESS OrderSeek
 	RETURN cOrderSeek
 
+
+/// <include file="SQL.xml" path="doc/SQLTable.Suffix/*" />
 ACCESS Suffix
 	RETURN cSuffix
 
+
+/// <include file="SQL.xml" path="doc/SQLTable.Table/*" />
 ACCESS Table 
 	RETURN cTable
 	
+	
+/// <include file="SQL.xml" path="doc/SQLTable.WhereClause/*" />
 ACCESS WhereClause
 	RETURN cWhere
 
+
+/// <include file="SQL.xml" path="doc/SQLTable.WhereSeek/*" />
 ACCESS WhereSeek
 	RETURN cWhereSeek
 
+
 END CLASS
+
 

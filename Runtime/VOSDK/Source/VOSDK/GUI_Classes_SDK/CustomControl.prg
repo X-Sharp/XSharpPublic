@@ -1,13 +1,21 @@
+/// <include file="Gui.xml" path="doc/CustomControl/*" />
 CLASS CustomControl INHERIT Control
 
+
+/// <include file="Gui.xml" path="doc/CustomControl.ctor/*" />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware) 
+
 
 	SUPER(oOwner, xID, oPoint, oDimension, __WCCustomControlClass, kStyle, lDataAware)
 
+
 	RETURN 
+
 
 END CLASS
 
+
+ /// <exclude />
 PROCEDURE __WCRegisterCustomControl _INIT3
 	LOCAL wc IS _WINWNDclass
 	wc:style := _OR(CS_DBLCLKS, CS_GLOBALCLASS)
@@ -26,9 +34,14 @@ PROCEDURE __WCRegisterCustomControl _INIT3
 	wc:cbWndExtra := 0
 	wc:cbClsExtra := 0
 
+
 	RegisterClass(@wc)
 
+
 	RETURN
+
+
+
 
 
 

@@ -1,9 +1,13 @@
+/// <include file="Gui.xml" path="doc/SysLink/*" />
 CLASS SysLink INHERIT TextControl
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	METHOD __StripTags(sHTML AS STRING) AS VOID STRICT 
 	//PP-030828 Strong typing
 	LOCAL iPosOpen, iPosClose AS DWORD
+
 
 	iPosOpen := At2("<", sHTML)
 	WHILE (iPosOpen > 0)
@@ -16,12 +20,16 @@ CLASS SysLink INHERIT TextControl
    RETURN
 
 
+
+
+/// <include file="Gui.xml" path="doc/SysLink.ctor/*" />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware) 
 	LOCAL cClass AS USUAL
 	LOCAL lResID AS LOGIC
 	LOCAL dwInfoSize, dw AS DWORD
 	LOCAL pData AS PTR
 	LOCAL pVI AS _winVS_FIXEDFILEINFO
+
 
 	Default(@lDataAware, TRUE)
 	lResID := IsInstanceOfUsual(xID,#ResourceID)
@@ -38,7 +46,9 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 	ENDIF
 	MemFree(pData)
 
+
 	SUPER(oOwner, xID, oPoint, oDimension, cClass, SS_Left, lDataAware)
+
 
 	IF !lResID
 		IF !IsNil(cText)
@@ -50,7 +60,10 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 		ENDIF
 	ENDIF
 
+
 	RETURN 
 
+
 END CLASS
+
 

@@ -2,7 +2,9 @@
 #pragma options ("enforceself", on)
 PARTIAL CLASS DbServer
 
-METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver, aRdd )  
+
+/// <include file="Rdd.xml" path="doc/DbServer.CopyDB/*" />
+METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver, aRdd )
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -15,40 +17,48 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 	LOCAL oError AS USUAL
 	LOCAL oHLTemp AS OBJECT
 	LOCAL wLen AS DWORD
-	LOCAL lRestore AS LOGIC	
+	LOCAL lRestore AS LOGIC
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
    //RvdH 070711 Make sure we restore the workarea
    //				  The codeblocks may select another workarea
-	lRestore	:= DbSetRestoreWorkarea(TRUE)      
-	
+	lRestore	:= DbSetRestoreWorkarea(TRUE)
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
 				cTarget := oFS:FullPath
-				
+
+
 			ELSEIF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS DbServer VAR oDb
 				cTarget := oDb:__FileSpec:FullPath
-				
+
+
 			ELSE
 				cTarget := oFSTarget
-				
+
+
 			ENDIF
-			
+
+
 			wLen := ALen( aFieldList )
 			aFieldNames := ArrayNew( wLen )
-			
+
+
 			FOR w := 1 UPTO wLen
 				aFieldNames[ w ] := AsString( aFieldList[ w ] )
 			NEXT
-			
+
+
 			IF Empty( cdriver )
 				cdriver := SELF:cRDDName
 			ENDIF
-			
+
+
 			IF ! IsNil( cbForBlock ) .OR. ! IsNil( cbWhileBlock ) .OR. ! IsNil( uScope )
 				IF IsString( cbForBlock )
 					cbForBlock := &( "{ || " + cbForBlock + "  }" )
@@ -62,7 +72,7 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 					ELSE
 						lRestOfFile := uScope
 					ENDIF
-				ENDIF  
+				ENDIF
 				lRetCode := __DBSDBCopy( cTarget,  ;
 					aFieldNames,  ;
 					cbForBlock,  ;
@@ -73,7 +83,8 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 					cdriver,  ;
 					aRdd,  ;
 					aStruct )
-				
+
+
 			ELSEIF lActiveScope
 				lRetCode := __DBSDBCopy( cTarget,  ;
 					aFieldNames,  ;
@@ -85,7 +96,8 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 					cdriver,  ;
 					aRdd,  ;
 					aStruct )
-				
+
+
 			ELSEIF lSelectionActive
 				uValue := uSelectionValue
 				cbKey := cbSelectionIndexingExpression
@@ -107,11 +119,13 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 					IF ! VODBSkip( 1 )
 						BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 					ENDIF
-					
+
+
 				ELSE
 					BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 				ENDIF
-				
+
+
 			ELSE
 				lRetCode := __DBSDBCopy( cTarget,  ;
 					aFieldNames,  ;
@@ -124,19 +138,24 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 					aRdd,  ;
 					aStruct )
 			ENDIF
-			
+
+
 			SELF:__ProcessConcurrency( TRUE )
-			
+
+
 		ELSE
 			lRetCode := FALSE
 			SELF:__SetStatusHL ( #CopyDB, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			oHLTemp := oHLStatus
-			
+
+
 		ENDIF
-		
+
+
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
@@ -144,12 +163,16 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 		SELF:__ProcessConcurrency( FALSE )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		lRetCode := FALSE
-		
+
+
 	END SEQUENCE
-	
-	
+
+
+
+
 	SELF:__Notify( NOTIFYRECORDCHANGE )
-	
+
+
 	IF ! lRetCode .AND. ! IsNil( oHLTemp )
 		lErrorFlag := TRUE
 		oHLStatus := oHLTemp
@@ -164,9 +187,12 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
-	
 
-METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBlock, uScope )  
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.CopyDelimited/*" />
+METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBlock, uScope )
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -178,15 +204,17 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oHLTemp AS OBJECT
-	LOCAL wLen AS DWORD   
+	LOCAL wLen AS DWORD
 	LOCAL lRestore AS LOGIC
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
    //RvdH 070711 Make sure we restore the workarea
    //				  The codeblocks may select another workarea
-	lRestore	:= DbSetRestoreWorkarea(TRUE)      
+	lRestore	:= DbSetRestoreWorkarea(TRUE)
+
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -197,10 +225,12 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 			ELSE
 				cTarget := oFSTarget
 			ENDIF
-			
+
+
 			wLen := ALen( aFieldList )
 			aFieldNames := ArrayNew( wLen )
-			
+
+
 			FOR w := 1 UPTO wLen
 				aFieldNames[w] := AsString( aFieldList[w] )
 			NEXT
@@ -225,7 +255,8 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 					NIL,  ;
 					lRestOfFile,  ;
 					aStruct )
-				
+
+
 			ELSEIF lActiveScope
 				lRetCode := __DBSDBCOPYDELIM( cTarget, cDelimiter,  aFieldNames,  ;
 					cbStoredForBlock,  ;
@@ -234,7 +265,8 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 					NIL,  ;
 					lStoredRestOfFile,  ;
 					aStruct )
-				
+
+
 			ELSEIF lSelectionActive
 				uValue := uSelectionValue
 				cbKey := cbSelectionIndexingExpression
@@ -265,9 +297,11 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 					NIL,  ;
 					aStruct )
 			ENDIF
-			
+
+
 			SELF:__ProcessConcurrency( TRUE )
-			
+
+
 		ELSE
 			lRetCode := FALSE
 			SELF:__SetStatusHL ( #CopyDelimited, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION),  ;
@@ -275,7 +309,8 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 			oHLTemp := oHLStatus
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
@@ -284,10 +319,13 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		lRetCode := FALSE
 	END SEQUENCE
-	
-	
+
+
+
+
 	SELF:__Notify( NOTIFYRECORDCHANGE )
-	
+
+
 	IF ! lRetCode .AND. ! IsNil( oHLTemp )
 		lErrorFlag := TRUE
 		oHLStatus := oHLTemp
@@ -297,16 +335,21 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 			oErrorInfo := NULL_OBJECT
 		ENDIF
 	ENDIF
-	
+
+
 	DbSetRestoreWorkarea(lRestore)
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 
-	RETURN lRetCode
-	
 
-METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )  
+	RETURN lRetCode
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.CopySDF/*" />
+METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -319,14 +362,15 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oHLTemp AS OBJECT
 	LOCAL wLen AS DWORD
-	LOCAL lRestore AS LOGIC	
+	LOCAL lRestore AS LOGIC
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
    //RvdH 070711 Make sure we restore the workarea
    //				  The codeblocks may select another workarea
-	lRestore	:= DbSetRestoreWorkarea(TRUE)      
-	
+	lRestore	:= DbSetRestoreWorkarea(TRUE)
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -336,14 +380,17 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 			ELSE
 				cTarget := oFSTarget
 			ENDIF
-			
+
+
 			wLen := ALen( aFieldList )
 			aFieldNames := ArrayNew( wLen )
-			
+
+
 			FOR w := 1 UPTO wLen
 				aFieldNames[w] := AsString( aFieldList[w] )
 			NEXT
-			
+
+
 			IF ! IsNil( cbForBlock ) .OR. ! IsNil( cbWhileBlock ) .OR. ! IsNil( uScope )
 				IF IsString( cbForBlock )
 					cbForBlock := &( "{ || " + cbForBlock + " }" )
@@ -365,7 +412,8 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 					NIL,  ;
 					lRestOfFile,  ;
 					aStruct )
-				
+
+
 			ELSEIF lActiveScope
 				lRetCode := __DBSDBCOPYSDF( cTarget, aFieldNames,  ;
 					cbStoredForBlock,  ;
@@ -374,7 +422,8 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 					NIL,  ;
 					lStoredRestOfFile,  ;
 					aStruct  )
-				
+
+
 			ELSEIF lSelectionActive
 				uValue := uSelectionValue
 				cbKey := cbSelectionIndexingExpression
@@ -405,9 +454,11 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 					NIL,  ;
 					aStruct )
 			ENDIF
-			
+
+
 			SELF:__ProcessConcurrency( TRUE )
-			
+
+
 		ELSE
 			lRetCode := FALSE
 			SELF:__SetStatusHL ( #CopySDF, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
@@ -415,7 +466,8 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 			oHLTemp := oHLStatus
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
@@ -424,10 +476,13 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		lRetCode := FALSE
 	END SEQUENCE
-	
-	
+
+
+
+
 	SELF:__Notify( NOTIFYRECORDCHANGE )
-	
+
+
 	IF ! lRetCode .AND. ! IsNil( oHLTemp )
 		lErrorFlag := TRUE
 		oHLStatus := oHLTemp
@@ -438,14 +493,18 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 		ENDIF
 	ENDIF
 	DbSetRestoreWorkarea(lRestore)
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
-	
 
-METHOD CopyStructure( oFSTarget, aFieldList )  
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.CopyStructure/*" />
+METHOD CopyStructure( oFSTarget, aFieldList )
 	LOCAL cTarget AS STRING
 	LOCAL w AS DWORD
 	LOCAL j AS DWORD
@@ -462,21 +521,25 @@ METHOD CopyStructure( oFSTarget, aFieldList )
 	LOCAL aFullPath AS ARRAY
 	LOCAL aRdds AS ARRAY
 	LOCAL rddList AS _RDDLIST
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
 			cTarget := oFS:FullPath
 			cFileName := oFS:FileName
-			
+
+
 			IF Upper( SELF:oFileSpec:FileName ) == Upper( cFileName )
 				cAlias := Symbol2String( __ConstructUniqueAlias( cFileName ) )
 			ENDIF
-			
+
+
 		ELSE
 			cTarget := oFSTarget
 			aFullPath := ArrayNew( 4 )
@@ -487,19 +550,23 @@ METHOD CopyStructure( oFSTarget, aFieldList )
 			ELSE
 				cPath := aFullPath[1] + aFullPath[2] + "\"
 			ENDIF
-			
+
+
 			cFileName := aFullPath[3] + aFullPath[4]
-			
+
+
 			IF aFullPath[4] == NULL_STRING
 				cFileName += oFileSpec:Extension
 			ENDIF
-			
+
+
 			IF aFullPath[3] == SELF:oFileSpec:FileName
 				cAlias := Symbol2String( __ConstructUniqueAlias( SELF:oFileSpec:FileName ) )
 			ENDIF
 			cTarget := cPath + cFileName
 		ENDIF
-		
+
+
 		IF IsNil( aFieldList )
 			aNew := aStruct
 		ELSE
@@ -513,29 +580,38 @@ METHOD CopyStructure( oFSTarget, aFieldList )
 				ENDIF
 			NEXT
 		ENDIF
-		
+
+
 		lRetCode := TRUE
-		
+
+
 		aRdds := __RddList( SELF:cRDDName )
 		rddList := __AllocRddList( aRdds )
-		
+
+
 		lRetCode := VODBCreate( cTarget, aNew, rddList, TRUE, cAlias, "", FALSE, FALSE )
-		
+
+
 		IF ! lRetCode
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
 		oErrorInfo := oError
 		lRetCode := FALSE
-		
+
+
 	END SEQUENCE
-	
-	
+
+
+
+
 	SELF:__Notify( NotifyCompletion, #CopyStructure )
-	
+
+
 	IF ! lRetCode .AND. ! IsNil( oHLTemp )
 		lErrorFlag := TRUE
 		IF ! IsNil( oError )
@@ -544,14 +620,18 @@ METHOD CopyStructure( oFSTarget, aFieldList )
 			oErrorInfo := NULL_OBJECT
 		ENDIF
 	ENDIF
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
-	
 
-METHOD Count( cbForBlock, cbWhileBlock, uScope )  
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Count/*" />
+METHOD Count( cbForBlock, cbWhileBlock, uScope )
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -560,11 +640,13 @@ METHOD Count( cbForBlock, cbWhileBlock, uScope )
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oHLTemp AS OBJECT
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -593,7 +675,8 @@ METHOD Count( cbForBlock, cbWhileBlock, uScope )
 				lRestOfFile,  ;
 				DBCCON,  ;
 				DBCCREADONLY )
-			
+
+
 		ELSEIF lActiveScope
 			SELF:__DBServerEval( { || iTally++ },  ;
 				cbStoredForBlock,  ;
@@ -603,7 +686,8 @@ METHOD Count( cbForBlock, cbWhileBlock, uScope )
 				lStoredRestOfFile,  ;
 				DBCCON,  ;
 				DBCCREADONLY )
-			
+
+
 		ELSEIF lSelectionActive
 			uValue := uSelectionValue
 			cbKey := cbSelectionIndexingExpression
@@ -637,11 +721,14 @@ METHOD Count( cbForBlock, cbWhileBlock, uScope )
 				DBCCON,  ;
 				DBCCREADONLY )
 		ENDIF
-		
+
+
 		SELF:__ProcessConcurrency( TRUE )
-		
+
+
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		SELF:__ProcessConcurrency( FALSE )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
@@ -650,10 +737,13 @@ METHOD Count( cbForBlock, cbWhileBlock, uScope )
 		oHLTemp := oHLStatus
 		iTally := 0
 	END SEQUENCE
-	
-	
+
+
+
+
 	SELF:__Notify( NOTIFYRECORDCHANGE )
-	
+
+
 	IF ! IsNil( oHLTemp )
 		lErrorFlag := TRUE
 		oHLStatus := oHLTemp
@@ -663,27 +753,32 @@ METHOD Count( cbForBlock, cbWhileBlock, uScope )
 			oErrorInfo := NULL_OBJECT
 		ENDIF
 	ENDIF
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(iTally))
 	#ENDIF
 	RETURN iTally
-	
 
-METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.CreateIndex/*" />
+METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )
 	LOCAL cIndexFileName AS STRING
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oHLTemp AS OBJECT
-	LOCAL lRestore AS LOGIC	
+	LOCAL lRestore AS LOGIC
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
    //RvdH 070711 Make sure we restore the workarea
    //				  The codeblocks may select another workarea
-	lRestore	:= DbSetRestoreWorkarea(TRUE)      
-	
+	lRestore	:= DbSetRestoreWorkarea(TRUE)
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -696,7 +791,8 @@ METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )
 				BREAK DbError{ SELF, #CreateIndex, EG_ARG,  ;
 					VO_Sprintf( __CAVOSTR_DBFCLASS_INVALIDINDEX ) }
 			ENDIF
-			
+
+
 			IF IsSymbol( cExpr )
 				cExpr := Symbol2String( cExpr )
 			ELSEIF IsNil( cExpr )
@@ -706,22 +802,27 @@ METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )
 						VO_Sprintf( __CAVOSTR_DBFCLASS_KEYVALUE ) }
 				ENDIF
 			ENDIF
-			
+
+
 			IF IsNil( cbExpr )
 				cbExpr := &( "{ || " + cExpr + " }" )
 			ENDIF
-			
+
+
 			IF IsNil( lUnique )
 				lUnique := SetUnique( )
 			ENDIF
-			
+
+
 			IF ! VODBOrdCreate( cIndexFileName, NIL, cExpr, cbExpr, lUnique, NULL )
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 			ENDIF
 			lRetCode := TRUE
-			
+
+
 			siSelectionStatus := DBSELECTIONNULL
-			
+
+
 		ELSE
 			lRetCode := FALSE
 			SELF:__SetStatusHL( #CreateIndex, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
@@ -729,7 +830,8 @@ METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )
 			oHLTemp := oHLStatus
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea ) //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
@@ -737,10 +839,13 @@ METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		lRetCode := FALSE
 	END SEQUENCE
-	
-	
+
+
+
+
 	SELF:__Notify( NOTIFYFILECHANGE )
-	
+
+
 	IF ! lRetCode .AND. ! IsNil( oHLTemp )
 		lErrorFlag := TRUE
 		oHLStatus := oHLTemp
@@ -754,23 +859,28 @@ METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__)
 	#ENDIF
-	
-	RETURN lRetCode
-	
 
-METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique ) 
+
+	RETURN lRetCode
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.CreateOrder/*" />
+METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oHLTemp AS OBJECT
-	LOCAL lRestore AS LOGIC	
+	LOCAL lRestore AS LOGIC
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
    //RvdH 070711 Make sure we restore the workarea
    //				  The codeblocks may select another workarea
-	lRestore	:= DbSetRestoreWorkarea(TRUE)      
-	
+	lRestore	:= DbSetRestoreWorkarea(TRUE)
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -784,7 +894,8 @@ METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )
 				ENDIF
 				cIndexFileName := ""
 			ENDIF
-			
+
+
 			IF IsSymbol( cExpr )
 				cExpr := Symbol2String( cExpr )
 			ELSEIF IsNil( cExpr )
@@ -797,11 +908,13 @@ METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )
 			IF IsNil( cbExpr )
 				cbExpr := &( "{ || " + cExpr + " }" )
 			ENDIF
-			
+
+
 			IF IsNil( lUnique )
 				lUnique := SetUnique( )
 			ENDIF
-			
+
+
 			IF ! VODBOrdCreate( cIndexFileName, cOrderName, cExpr, cbExpr, lUnique, NULL )
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 			ENDIF
@@ -814,7 +927,8 @@ METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )
 			oHLTemp := oHLStatus
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
@@ -822,10 +936,13 @@ METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		lRetCode := FALSE
 	END SEQUENCE
-	
-	
+
+
+
+
 	SELF:__Notify( NOTIFYFILECHANGE )
-	
+
+
 	IF ! lRetCode .AND. ! IsNil( oHLTemp )
 		lErrorFlag := TRUE
 		oHLStatus := oHLTemp
@@ -836,20 +953,26 @@ METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )
 		ENDIF
 	ENDIF
 	DbSetRestoreWorkarea(lRestore)
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__)
 	#ENDIF
-	
-	RETURN lRetCode
-	
 
-METHOD DataField( uField ) 
+
+	RETURN lRetCode
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.DataField/*" />
+METHOD DataField( uField )
 	//SE-060527
 	LOCAL oResult AS OBJECT
 	LOCAL dwPos   AS DWORD
 	LOCAL dwCurrentWorkArea AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__, AsString(uField))
 	#ENDIF
@@ -875,9 +998,12 @@ METHOD DataField( uField )
 		DBFDebug("Leaving "+__ENTITY__, AsString(uField), AsString(oResult))
 	#ENDIF
 	RETURN oResult
-	
 
-METHOD Delete( cbForBlock, cbWhileBlock, uScope ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Delete/*" />
+METHOD Delete( cbForBlock, cbWhileBlock, uScope )
 	LOCAL nNextCount AS LONGINT
 	LOCAL lRestOfFile AS LOGIC
 	LOCAL lRetCode AS LOGIC
@@ -896,11 +1022,13 @@ METHOD Delete( cbForBlock, cbWhileBlock, uScope )
 				IF IsString( cbForBlock )
 					cbForBlock := &( "{ ||" + cbForBlock + " }" )
 				ENDIF
-				
+
+
 				IF IsString( cbWhileBlock )
 					cbWhileBlock := &( "{ ||" + cbWhileBlock + " }" )
 				ENDIF
-				
+
+
 				IF ! IsNil( uScope )
 					IF IsNumeric( uScope )
 						nNextCount := uScope
@@ -908,7 +1036,8 @@ METHOD Delete( cbForBlock, cbWhileBlock, uScope )
 						lRestOfFile := uScope
 					ENDIF
 				ENDIF
-				
+
+
 				lRetCode := SELF:__DBServerEval( { || VODBDelete( ) },  ;
 					cbForBlock,  ;
 					cbWhileBlock,  ;
@@ -921,13 +1050,15 @@ METHOD Delete( cbForBlock, cbWhileBlock, uScope )
 				IF ! lRetCode
 					BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 				ENDIF
-				
+
+
 			ELSE
 				lRetCode := FALSE
 				SELF:__SetStatusHL( #Delete, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
 					__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			ENDIF
-			
+
+
 		ELSEIF lActiveScope
 			IF SELF:Notify( NOTIFYINTENTTOMOVE )
 				lRetCode := SELF:__DBServerEval( { || VODBDelete( ) },  ;
@@ -971,37 +1102,47 @@ METHOD Delete( cbForBlock, cbWhileBlock, uScope )
 			ENDIF
 			SELF:Notify( NOTIFYDELETE )
 		ENDIF
-		
+
+
 		IF lRetCode
 			lRetCode := SELF:__ProcessConcurrency(  TRUE )
 		ENDIF
-		
+
+
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
-		
+
+
 		SELF:__ProcessConcurrency( FALSE )
-		
+
+
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		lRetCode := FALSE
 	END SEQUENCE
 	RETURN lRetCode
-	
 
-METHOD DeleteAll( )  
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.DeleteAll/*" />
+METHOD DeleteAll( )
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oHLTemp AS OBJECT
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1025,7 +1166,8 @@ METHOD DeleteAll( )
 						BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 					ENDIF
 				ENDIF
-				
+
+
 			ELSE
 				//PP-040216 lRest requires a logic due to strong typing
 				lRetCode := SELF:__DBServerEval( { || VODBDelete( ) },  ;
@@ -1037,15 +1179,19 @@ METHOD DeleteAll( )
 					DBCCON,  ;
 					DBCCUPDATE )
 			ENDIF
-			
+
+
 			siSelectionStatus := DBSELECTIONEOF
-			
+
+
 			IF ! lRetCode
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 			ENDIF
-			
+
+
 			SELF:__ProcessConcurrency( TRUE )
-			
+
+
 		ELSE
 			lRetCode := FALSE
 			SELF:__SetStatusHL( #DeleteAll, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
@@ -1053,7 +1199,8 @@ METHOD DeleteAll( )
 			oHLTemp := oHLStatus
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
@@ -1062,10 +1209,13 @@ METHOD DeleteAll( )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		lRetCode := FALSE
 	END SEQUENCE
-	
-	
+
+
+
+
 	SELF:__Notify( NOTIFYFILECHANGE )
-	
+
+
 	IF ! lRetCode .AND. ! IsNil( oHLTemp )
 		lErrorFlag := TRUE
 		oHLStatus := oHLTemp
@@ -1075,24 +1225,30 @@ METHOD DeleteAll( )
 			oErrorInfo := NULL_OBJECT
 		ENDIF
 	ENDIF
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
-	
 
-METHOD DeleteOrder( uOrder, cIndexFileName ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.DeleteOrder/*" />
+METHOD DeleteOrder( uOrder, cIndexFileName )
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL cOrder AS USUAL
 	LOCAL cOrdBag AS STRING
 	LOCAL dwCurrentWorkArea AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1101,7 +1257,8 @@ METHOD DeleteOrder( uOrder, cIndexFileName )
 		ELSE
 			cOrdBag := cIndexFileName
 		ENDIF
-		
+
+
 		IF IsNumeric( uOrder )
 			cOrder := NIL
 			VODBOrderInfo( DBOI_NAME, "", uOrder, REF cOrder )
@@ -1109,32 +1266,40 @@ METHOD DeleteOrder( uOrder, cIndexFileName )
 		ELSEIF ! IsString( uOrder )
 			BREAK DbError{ SELF, #DeleteOrder, EG_ARG, VO_Sprintf( __CAVOSTR_DBFCLASS_INVALIDORDER ) }
 		ENDIF
-		
+
+
 		lRetCode := TRUE
 		IF ! VODBOrdDestroy( cOrdBag, uOrder )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		lRetCode := FALSE
 	END SEQUENCE
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__)
 	#ENDIF
-	
-	RETURN lRetCode
-	
 
-METHOD Error( oError, symMethod ) 
+
+	RETURN lRetCode
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Error/*" />
+METHOD Error( oError, symMethod )
 	STATIC LOCAL lErrorProcessingSemaphor AS LOGIC
 	LOCAL cErrorValType AS STRING
     LOCAL oErr  as Error
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
@@ -1142,7 +1307,8 @@ METHOD Error( oError, symMethod )
 		Eval( ErrorBlock( ), oError )
 	ELSE
 		lErrorProcessingSemaphor := TRUE
-		
+
+
 		IF ! IsInstanceOfUsual( oError, #Error )
 			cErrorValType := ValType( oError )
 			oErr := oError := Error{ }
@@ -1156,29 +1322,38 @@ METHOD Error( oError, symMethod )
 		ELSE
 			oErr:FuncSym := symMethod
 		ENDIF
-		
+
+
 		oErr:MethodSelf := SELF
-		
+
+
 		oHLStatus := SELF:__GenerateStatusHL( oErr )
-		
+
+
 		IF IsArray( aClients ) .AND. nClients != 0 .AND. IsMethod( aClients[1], #Error )
 			Send(aClients[1],#Error, oErr )
 		ELSE
 			lErrorProcessingSemaphor := FALSE
 			Eval( ErrorBlock( ), oErr )
 		ENDIF
-		
+
+
 		lErrorProcessingSemaphor := FALSE
-		
+
+
 	ENDIF
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__)
 	#ENDIF
-	
-	RETURN SELF
-	
 
-METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )  
+
+	RETURN SELF
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.Eval/*" />
+METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -1187,11 +1362,13 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL oHLTemp AS OBJECT
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1217,7 +1394,8 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 					lRestOfFile,  ;
 					DBCCON,  ;
 					DBCCUPDATE )
-				
+
+
 			ELSEIF lActiveScope
 				lRetCode := SELF:__DBServerEval( cbBlock, cbStoredForBlock,  ;
 					cbStoredWhileBlock,  ;
@@ -1226,7 +1404,8 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 					lStoredRestOfFile,  ;
 					DBCCON,  ;
 					DBCCUPDATE )
-				
+
+
 			ELSEIF lSelectionActive
 				uValue := uSelectionValue
 				cbKey := cbSelectionIndexingExpression
@@ -1247,7 +1426,8 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 						BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 					ENDIF
 				ENDIF
-				
+
+
 			ELSE
 				//PP-031124 Pass FALSE for 6th parameter instead of NIL since it is strongly typed as LOGIC
 				lRetCode := SELF:__DBServerEval( cbBlock,  ;
@@ -1259,13 +1439,16 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 					DBCCON,  ;
 					DBCCUPDATE )
 			ENDIF
-			
+
+
 			IF ! lRetCode
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 			ENDIF
-			
+
+
 			SELF:__ProcessConcurrency( TRUE )
-			
+
+
 		ELSE
 			lRetCode := FALSE
 			SELF:__SetStatusHL ( #Eval, __CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE_CAPTION ),  ;
@@ -1273,7 +1456,8 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 			oHLTemp := oHLStatus
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oHLTemp := oHLStatus
@@ -1282,10 +1466,13 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 		SELF:__ProcessConcurrency( FALSE )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 	END SEQUENCE
-	
-	
+
+
+
+
 	SELF:__Notify( NOTIFYFILECHANGE )
-	
+
+
 	IF ! lRetCode .AND. ! IsNil( oHLTemp )
 		lErrorFlag := TRUE
 		oHLStatus := oHLTemp
@@ -1295,14 +1482,18 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 			oErrorInfo := NULL_OBJECT
 		ENDIF
 	ENDIF
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
-	
 
-METHOD FIELDGET( uField ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldGet/*" />
+METHOD FIELDGET( uField )
 	//SE-060601
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
@@ -1311,45 +1502,56 @@ METHOD FIELDGET( uField )
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__, AsString(uField))
 	#ENDIF
-	
-	
+
+
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
-        IF PCount() != 1   
+        IF PCount() != 1
          BREAK DbError{ SELF, #FieldGet, EG_ARG, ;
-                "Incorrect number of arguments", uField, NULL_STRING} 
-        ENDIF  
+                "Incorrect number of arguments", uField, NULL_STRING}
+        ENDIF
+
 
         IF (wPos := __GetFldPos( uField, wFieldCount )) = 0
          BREAK DbError{ SELF, #FIELDGET, EG_ARG, ;
             __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
         ENDIF
-		
+
+
 		IF wpos > 0  .AND. nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg .AND. ;
 				aCurrentBuffer[BUFFER_IS_CHANGED, wpos] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, wpos]
-			
+
+
 			uRetVal := aCurrentBuffer[BUFFER_VALUE, wpos]
 		ELSE
 			IF ! VODBFieldGet( wpos, REF uRetVal )
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 			ENDIF
 		ENDIF
-		
+
+
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		SELF:Error( oErrorInfo, #FIELDGET )
 	END SEQUENCE
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(uField), AsString(uRetVal))
 	#ENDIF
-	
+
+
 	RETURN uRetVal
 
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldGetBytes/*" />
 METHOD FieldGetBytes( uField AS USUAL ) AS BYTE[]
 	LOCAL bRetVal AS BYTE[]
 	LOCAL oError AS USUAL
@@ -1358,8 +1560,10 @@ METHOD FieldGetBytes( uField AS USUAL ) AS BYTE[]
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__, AsString(uField))
 	#ENDIF
-	
-	
+
+
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1370,34 +1574,44 @@ METHOD FieldGetBytes( uField AS USUAL ) AS BYTE[]
 		IF ! VODBFieldGetBytes( wpos, REF bRetVal )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
-		
+
+
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		SELF:Error( oErrorInfo, #FieldGetBytes )
 	END SEQUENCE
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(uField), AsString(bRetVal))
 	#ENDIF
-	
+
+
 	RETURN bRetVal
-		
 
 
-METHOD FieldGetFormatted( uField ) 
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldGetFormatted/*" />
+METHOD FieldGetFormatted( uField )
 	//SE-060527
 	LOCAL uRetVal AS USUAL
 	LOCAL wPos AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__,AsString(uField))
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1407,7 +1621,8 @@ METHOD FieldGetFormatted( uField )
 		ELSE
 			IF nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg .AND.  ;
 					aCurrentBuffer[BUFFER_IS_CHANGED, wpos] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, wpos]
-				
+
+
 				uRetVal := aCurrentBuffer[BUFFER_VALUE, wpos]
 			ELSE
 				IF ! VODBFieldGet( wPos, REF uRetVal )
@@ -1420,32 +1635,40 @@ METHOD FieldGetFormatted( uField )
 			aDataFields[wPos] := SELF:__BuildDataField( aStruct[wPos] )
 		ENDIF
         SELF:__DataField(wPos):__FieldSpec:Transform( uRetVal )
-		
+
+
 	RECOVER USING oError
 		oErrorInfo := oError
 		SELF:Error( oErrorInfo, #FieldGetFormatted )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		RETURN NULL_STRING
 	END SEQUENCE
-	
-	
+
+
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(uField), AsString(uRetVal))
 	#ENDIF
 	RETURN uRetVal
-	
 
-METHOD FieldHyperLabel( uField ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldHyperLabel/*" />
+METHOD FieldHyperLabel( uField )
 	//SE-060527
 	LOCAL wPos AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__,AsString(uField))
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1460,31 +1683,39 @@ METHOD FieldHyperLabel( uField )
 			BREAK DbError{ SELF, #FieldHyperlabel, EG_ARG,  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
 		ENDIF
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		uRetVal := NULL_OBJECT
 	END SEQUENCE
-	
-	
+
+
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(uField), AsString(uRetVal))
 	#ENDIF
 	RETURN uRetVal
-	
 
-METHOD FieldInfo( kFieldInfoType, uField, uFieldVal ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldInfo/*" />
+METHOD FieldInfo( kFieldInfoType, uField, uFieldVal )
 	//SE-060527
 	LOCAL nPos AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1494,38 +1725,48 @@ METHOD FieldInfo( kFieldInfoType, uField, uFieldVal )
 		ELSE
 			nPos := __GetFldPos( uField, wFieldCount )
 		ENDIF
-		
+
+
 		IF ! VODBFieldInfo( kFieldInfoType, nPos, REF uFieldVal )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oErrorInfo := oError
 		SELF:Error( oErrorInfo, #FieldInfo )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		ufieldVal := NIL
 	END SEQUENCE
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(uField), AsString(uFieldVal))
 	#ENDIF
-	
-	RETURN uFieldVal
-	
 
-METHOD FieldName( nFieldPosition ) 
+
+	RETURN uFieldVal
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldName/*" />
+METHOD FieldName( nFieldPosition )
 	//SE-060601
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__, AsString(nFieldPosition))
 	#ENDIF
-	
+
+
 	VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		IF nFieldPosition > 0 .AND. nFieldPosition <= wFieldCount
@@ -1534,53 +1775,68 @@ METHOD FieldName( nFieldPosition )
 			SELF:__SetStatusHL ( #FieldName, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
 			uRetVal := NULL_STRING
 		ENDIF
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		uRetVal := NULL_STRING
 	END SEQUENCE
-	
-	__DBSSetSelect( dwCurrentWorkArea ) 
-	
+
+
+	__DBSSetSelect( dwCurrentWorkArea )
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(nFieldPosition), AsString(uRetVal))
 	#ENDIF
-	
-	RETURN uRetVal
-	
 
-METHOD FieldPos( cFieldName ) 
+
+	RETURN uRetVal
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldPos/*" />
+METHOD FieldPos( cFieldName )
 	//SE-060527
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__, AsString(cFieldName))
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		uRetVal := __GetFldPos( cFieldName, wFieldCount )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		uRetVal := 0
 	END SEQUENCE
-	
-	
+
+
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(cFieldName), AsString(uRetVal))
 	#ENDIF
 	RETURN uRetVal
-	
 
-METHOD FIELDPUT( uField, uValue ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldPut/*" />
+METHOD FIELDPUT( uField, uValue )
     //SE-080608 Updated error handling
 	LOCAL wPos AS DWORD
 	LOCAL symFieldName AS SYMBOL
@@ -1595,24 +1851,25 @@ METHOD FIELDPUT( uField, uValue )
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
-        IF PCount() != 2 
+        IF PCount() != 2
             BREAK DbError{ SELF, #FIELDPUT, EG_ARG, ;
-                "Incorrect number of arguments", uField, NULL_STRING} 
-        ENDIF 
+                "Incorrect number of arguments", uField, NULL_STRING}
+        ENDIF
         IF (wPos := __GetFldPos( uField, wFieldCount )) = 0
             BREAK DbError{ SELF, #FIELDGET, EG_ARG, ;
                  __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
         ENDIF
         IF nEffectiveCCMode == ccOptimistic .AND. VODBRecno() <= VODBLastRec()
-            //type checking for optimistic locking 
+            //type checking for optimistic locking
             IF ! __CheckFieldType(REF uValue, aStruct[wPos], REF uError)
                 ASize(uError, 3)
                 BREAK DbError{SELF, #FIELDPUT, uError[1], VO_Sprintf(uError[2], "Field " + aStruct[wPos,DBS_NAME], uError[3]), uValue, "uValue"}
-            ENDIF 
+            ENDIF
+
 
 			IF ! VODBRecordInfo( DBRI_LOCKED, 0, REF uRLock )
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
-			ENDIF               
+			ENDIF
 			IF ! uRLock
 				aCurrentBuffer[BUFFER_VALUE, wpos]		:= uValue
 				aCurrentBuffer[BUFFER_IS_CHANGED, wpos]	:= TRUE
@@ -1627,24 +1884,30 @@ METHOD FIELDPUT( uField, uValue )
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 			ENDIF
 		ENDIF
-      symFieldName := FieldSym(wPos)      
+      symFieldName := FieldSym(wPos)
 		SELF:Notify( NotifyFieldChange, symFieldName )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING uError
 		oErrorInfo := uError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		SELF:Error( oErrorInfo, #FIELDPUT )
 		uValue := NIL
 	END SEQUENCE
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(uValue))
 	#ENDIF
-	
-	RETURN uValue
-	
 
+
+	RETURN uValue
+
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldPutBytes/*" />
 METHOD FieldPutBytes( uField AS USUAL, bValue AS BYTE[])  AS BYTE[]
 	LOCAL wPos AS DWORD
 	LOCAL symFieldName AS SYMBOL
@@ -1659,38 +1922,46 @@ METHOD FieldPutBytes( uField AS USUAL, bValue AS BYTE[])  AS BYTE[]
         IF (wPos := __GetFldPos( uField, wFieldCount )) = 0
             BREAK DbError{ SELF, #FIELDGET, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
         ENDIF
-  
+
+
 		IF ! VODBFieldPutBytes( wPos, bValue )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
-      symFieldName := FieldSym(wPos)      
+      symFieldName := FieldSym(wPos)
 		SELF:Notify( NotifyFieldChange, symFieldName )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING uError
 		oErrorInfo := uError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		SELF:Error( oErrorInfo, #FieldPutBytes )
 		bValue := NULL
 	END SEQUENCE
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(bValue))
 	#ENDIF
-	
+
+
 	RETURN bValue
 
-METHOD FieldSpec( uField ) 
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldSpec/*" />
+METHOD FieldSpec( uField )
 	//SE-060527
 	LOCAL wPos AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__, AsString(uField))
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1705,32 +1976,40 @@ METHOD FieldSpec( uField )
 			SELF:__SetStatusHL( #FieldSpec, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
 			uRetVal := NULL_OBJECT
 		ENDIF
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		uRetVal := NULL_OBJECT
 	END SEQUENCE
-	
-	
+
+
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(uField), AsString(uRetVal))
 	#ENDIF
 	RETURN uRetVal
-	
 
-METHOD FieldStatus( uField ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldStatus/*" />
+METHOD FieldStatus( uField )
 	//SE-060527
 	LOCAL wPos AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__, AsString(uField))
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1745,32 +2024,40 @@ METHOD FieldStatus( uField )
 			SELF:__SetStatusHL( #FieldStatus, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ) )
 			uRetVal := NULL_OBJECT
 		ENDIF
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		uRetVal := NULL_OBJECT
 	END SEQUENCE
-	
-	
+
+
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(uField), AsString(uRetVal))
 	#ENDIF
 	RETURN uRetVal
-	
 
-METHOD FieldSym( uField ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldSym/*" />
+METHOD FieldSym( uField )
 	//SE-060527
 	LOCAL wPos AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__, AsString(uField))
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1781,32 +2068,40 @@ METHOD FieldSym( uField )
 			uRetVal := NULL_SYMBOL
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		uRetVal := NULL_SYMBOL
 	END SEQUENCE
-	
-	
+
+
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(uField), AsString(uRetVal))
 	#ENDIF
 	RETURN uRetVal
-	
 
-METHOD FieldValidate( uField, uValue ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FieldValidate/*" />
+METHOD FieldValidate( uField, uValue )
 	//SE-060527
 	LOCAL wPos AS DWORD
 	LOCAL uRetVal AS USUAL
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__, AsString(uField), AsString(uValue))
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
@@ -1821,54 +2116,70 @@ METHOD FieldValidate( uField, uValue )
 			BREAK DbError{ SELF, #FieldValidate, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
 				uField, "uField" }
 		ENDIF
-		
+
+
 	RECOVER USING oError
 		oErrorInfo := oError
 		SELF:Error( oErrorInfo, #FieldValidate )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		uRetVal := FALSE
 	END SEQUENCE
-	
-	
+
+
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__, AsString(uField), AsString(uRetVal))
 	#ENDIF
 	RETURN uRetVal
-	
 
-METHOD FLOCK( ) 
+
+
+
+/// <include file="Rdd.xml" path="doc/DbServer.FLock/*" />
+METHOD FLOCK( )
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL nTries AS DWORD
-	
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
-	
+
+
 	lErrorFlag := FALSE
 	nTries := SELF:nRetries
-	
+
+
 	BEGIN SEQUENCE
 		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		lRetCode := __DBSFLock( nTries )
 		SELF:__OptimisticFlushNoLock( )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
-		
+
+
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
 		oErrorInfo := oError
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		lRetCode := FALSE
 	END SEQUENCE
-	
-	
+
+
+
+
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__,  AsString(lRetCode))
 	#ENDIF
 	RETURN lRetCode
-	
-	
-	
+
+
+
+
+
+
 END CLASS
+
 

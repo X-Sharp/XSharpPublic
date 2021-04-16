@@ -1,5 +1,7 @@
 STATIC DEFINE __WCMdiFirstChildID := 0x8001
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow/*" />
 CLASS ShellWindow INHERIT AppWindow
 	PROTECT hWndClient AS PTR
 	PROTECT lOpened AS LOGIC
@@ -8,14 +10,21 @@ CLASS ShellWindow INHERIT AppWindow
 	PROTECT oSavedTB AS ToolBar
 	PROTECT iChildTBLoc AS INT
 	
+	
 	//PP-030828 Strong typing
+ /// <exclude />
 	ACCESS __ActualMenu AS Menu STRICT 
 	//PP-030828 Strong typing
 	
 	
+	
+	
 	RETURN oActualMenu
 	
+	
 
+
+ /// <exclude />
 METHOD __AdjustClient() AS LOGIC STRICT 
 	//PP-030828 Strong typing
 	LOCAL strucClientRect IS _winRect
@@ -26,8 +35,12 @@ METHOD __AdjustClient() AS LOGIC STRICT
 	
 	
 	
+	
+	
+	
 	oToolBar := SELF:ToolBar
 	oStatusBar := SELF:StatusBar
+	
 	
 	IF (oToolBar == NULL_OBJECT)
 		lToolBarValid := FALSE
@@ -35,17 +48,21 @@ METHOD __AdjustClient() AS LOGIC STRICT
 		lToolBarValid := FALSE
 	ENDIF
 	
+	
 	IF (oStatusBar == NULL_OBJECT)
 		lStatusBarValid := FALSE
 	ELSEIF !oStatusBar:IsVisible()
 		lStatusBarValid := FALSE
 	ENDIF
 	
+	
 	//if !lToolBarValid .and. !lStatusBarValid
 	// return false
 	//endif
 	
+	
 	GetClientRect(SELF:Handle(), @strucClientRect)
+	
 	
 	IF lStatusBarValid
 		IF oStatusBar:__IsTopAligned
@@ -55,6 +72,7 @@ METHOD __AdjustClient() AS LOGIC STRICT
 		ENDIF
 	ENDIF
 	
+	
 	IF lToolBarValid
 		IF oToolBar:__IsTopAligned
 			strucClientRect:top += oToolBar:Size:Height
@@ -63,17 +81,25 @@ METHOD __AdjustClient() AS LOGIC STRICT
 		ENDIF
 	ENDIF
 	
+	
 	MoveWindow(SELF:Handle(4), strucClientRect:left, strucClientRect:top, ;
 		strucClientRect:right - strucClientRect:left, ;
 		strucClientRect:bottom - strucClientRect:top, TRUE)
 	
+	
 	RETURN TRUE
 	
+	
 
+
+ /// <exclude />
 METHOD __AssociateAccel(lSwitch AS LOGIC) AS Window STRICT 
 	//PP-030828 Strong typing
 	LOCAL hWndChild AS PTR
 	LOCAL oWindow AS OBJECT
+	
+	
+	
 	
 	
 	
@@ -86,11 +112,17 @@ METHOD __AssociateAccel(lSwitch AS LOGIC) AS Window STRICT
 		ENDIF
 	ENDIF
 	
+	
 	RETURN SUPER:__AssociateAccel(lSwitch)
 	
+	
 
+
+ /// <exclude />
 METHOD __RemoveChildToolBar() AS ToolBar STRICT 
 	//PP-030828 Strong typing
+	
+	
 	
 	
 	IF (iChildTBLoc == TBL_SHELL)
@@ -103,22 +135,33 @@ METHOD __RemoveChildToolBar() AS ToolBar STRICT
 		//endif
 	ENDIF
 	
+	
 	RETURN oToolBar
 	
 	
+	
+	
 
+
+ /// <exclude />
 METHOD __SetChildToolBar(oChildToolbar AS ToolBar) AS ToolBar STRICT 
 	//PP-030828 Strong typing
 	LOCAL oTB AS ToolBar
 	
 	
 	
+	
+	
+	
 	IF oChildToolbar != NULL_OBJECT  //SE-050926
+		
 		
 		IF (iChildTBLoc == TBL_SHELL)
 			
+			
 			IF (oToolBar != oChildToolBar)
 				oTB := oToolBar
+				
 				
 				oToolbar := oChildToolBar
 				oToolBar:__SetParent(SELF)
@@ -134,17 +177,23 @@ METHOD __SetChildToolBar(oChildToolbar AS ToolBar) AS ToolBar STRICT
 			// oToolBar:AddBand(#__CHILDTBBAND, oChildToolBar, 1, 50, 25)
 		ENDIF
 		
+		
 	ENDIF
+	
 	
 	RETURN oToolBar
 	
+	
 
+
+ /// <exclude />
 METHOD __UseChildMenu(oMenu AS Menu) AS ShellWindow STRICT 
 	//PP-030828 Strong typing
 	//PP-040927 Update. S.Ebert
 	LOCAL hMenu AS PTR
 	LOCAL liMenuPos AS LONGINT
 	LOCAL oShellMenu AS Menu
+	
 	
 	IF (oMenu != NULL_OBJECT)
 		lUsingChildMenu := TRUE
@@ -175,12 +224,18 @@ METHOD __UseChildMenu(oMenu AS Menu) AS ShellWindow STRICT
 		ENDIF
 	ENDIF
 	
+	
 	SendMessage(hwndClient, WM_MDIREFRESHMENU, 0, 0)
 	RETURN SELF
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.Arrange/*" />
 METHOD Arrange(kArrangeStyle) 
 	LOCAL liStyle AS LONGINT
+	
+	
 	
 	
 	IF IsNil(kArrangeStyle)
@@ -191,6 +246,7 @@ METHOD Arrange(kArrangeStyle)
 		ENDIF
 		liStyle := kArrangeStyle
 	ENDIF
+	
 	
 	SWITCH liStyle
 	CASE ARRANGEASICONS
@@ -203,24 +259,39 @@ METHOD Arrange(kArrangeStyle)
 		SendMessage(hWndClient,WM_MDITILE, _OR(MDITILE_SKIPDISABLED,MDITILE_HORIZONTAL), 0)
 	END SWITCH
 	
+	
 	RETURN SELF
 	
 	
+	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.ChildToolBarLocation/*" />
 ACCESS ChildToolBarLocation 
 	RETURN iChildTBLoc
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.ChildToolBarLocation/*" />
 ASSIGN ChildToolBarLocation(iNewLoc) 
 	RETURN (iChildTBLoc := iNewLoc)
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.CloseAllChildren/*" />
 METHOD CloseAllChildren() 
 	LOCAL hChild, hNextChild AS PTR
 	
 	
 	
+	
+	
+	
 	hChild := GetWindow(SELF:Handle(4), GW_CHILD)
+	
 	
 	WHILE (hChild != NULL_PTR)
 		hNextChild := GetWindow(hChild, GW_HWNDNEXT)
@@ -228,24 +299,38 @@ METHOD CloseAllChildren()
 		hChild := hNextChild
 	END
 	
+	
 	RETURN NIL
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.Default/*" />
 METHOD Default(oEvent) 
 	LOCAL oEvt := oEvent AS @@Event
 	
 	
 	
+	
+	
+	
 	SELF:EventReturnValue := DefFrameProc(oEvt:hWnd, hwndClient, oEvt:uMsg, oEvt:wParam, oEvt:lParam)
+	
 	
 	RETURN SELF
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
+	
+	
 	
 	
 	// was at the end !!!
 	SUPER:Destroy()
+	
 	
 	// Tests if this is the last TopAppWindow
 	IF (oApp != NULL_OBJECT)
@@ -255,9 +340,13 @@ METHOD Destroy()  AS USUAL CLIPPER
 		PostQuitMessage(0)
 	ENDIF
 	
+	
 	RETURN SELF
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.Dispatch/*" />
 METHOD Dispatch(oEvent) 
 	//PP-040601 S.Ebert (WM_CONTEXTMENU)
 	LOCAL oEvt := oEvent AS @@Event
@@ -274,23 +363,31 @@ METHOD Dispatch(oEvent)
 	
 	
 	
+	
+	
+	
 	uMsg := oEvt:uMsg
+	
 	
 	SWITCH uMsg
     CASE WM_MENUSELECT
     CASE WM_INITMENU
     CASE WM_INITMENUPOPUP
 		
+		
 		hWndChild := PTR(_CAST, SendMessage(hWndClient, WM_MDIGetActive, 0, 0))
 		SendMessage(hWndChild, oEvt:uMsg, oEvt:wParam, oEvt:lParam)
+		
 		
 	CASE WM_COMMAND
 		// If the WM_COMMAND is not a help message (id < 0xFFFD)
 		// and not a WINDOW menu option (id >= MDI_FIRSTCHILDID)
 		// process it.
 		
+		
 		wParam := oEvt:wParam
 		wParamLow := LoWord(wParam)
+		
 		
 		IF (wParamLow >= __WCMdiFirstChildID) //.and. wParamLow<ID_FirstSystemID
 			IF (wParamLow < ID_FIRSTWCHELPID)
@@ -298,6 +395,7 @@ METHOD Dispatch(oEvent)
 				RETURN SELF:EventReturnValue
 			ENDIF
 		ENDIF
+		
 		
 		lParam := oEvt:lParam
 		IF (HiWord(wParam) <= 1) //accelerator or menu
@@ -307,7 +405,9 @@ METHOD Dispatch(oEvent)
 					RETURN SELF:EventReturnValue
 				ENDIF
 				
+				
 				hWndChild := PTR(_CAST,SendMessage(hWndClient,WM_MDIGetActive,0,0))
+				
 				
 				IF (hWndChild != 0)
 					SendMessage(hWndChild, WM_COMMAND, wParam, lParam)
@@ -318,6 +418,7 @@ METHOD Dispatch(oEvent)
 				RETURN SELF:EventReturnValue
 			ENDIF
 		ENDIF
+		
 		
 	CASE WM_CREATE
 		// If this is a top app window
@@ -330,6 +431,7 @@ METHOD Dispatch(oEvent)
 				oApp:__WindowCount += 1
 			ENDIF
 		ENDIF
+		
 		
 	CASE WM_SETCURSOR
 		IF (oEvt:wParam) != (DWORD(_CAST, hwndClient))
@@ -349,18 +451,23 @@ METHOD Dispatch(oEvent)
 		SELF:__HandlePointer(oEvt, lHelpEnable, lclient)
 		RETURN SELF:EventReturnValue
 		
+		
 	CASE WM_WCHELP
 		SELF:__EnableHelpCursor(FALSE)
 		SELF:HelpRequest(HelpRequestEvent{oEvt})
 		RETURN SELF:EventReturnValue
 		
+		
 		// case uMsg == WM_NCLBUTTONDBLCLK
+		
 		
 		/* if (CV_RunTime :: Event_wParam ( e ) == HTMENU )
 		{
 		dword dwActive=SendMessage(hwndClient,WM_MDIGETACTIVE, 0, 0);
 			
+			
 		// if it is maximized, look if the click is inside the system menu
+		
 		
 		if (HiWord(dwActive))
 		{
@@ -368,14 +475,18 @@ METHOD Dispatch(oEvent)
 			// use windows SDK functions for rectangle to avoid all
 		// tricks with vertical coordinates
 		
+		
 		::GetWindowRect(hEContext,&rc);
 			
+			
 		// Calculate system menu rectangle
+		
 		
 		rc.left+=::GetSystemMetrics(SM_CXBORDER);
 			rc.top+=(::GetSystemMetrics(SM_CYBORDER)+::GetSystemMetrics(SM_CYCAPTION));
 			rc.right=rc.left+::GetSystemMetrics(SM_CXSIZE);
 			rc.bottom=rc.top+::GetSystemMetrics(SM_CYSIZE);
+			
 			
 		if (::PtInRect(&rc,MAKEPOINT(CV_RunTime :: Event_lParam( e ))))
 		SendMessage(LoWord(dwActive),WM_SYSCOMMAND,SC_CLOSE,CV_RunTime :: Event_lParam( e ));
@@ -400,6 +511,7 @@ METHOD Dispatch(oEvent)
 			ENDIF
 		ENDIF
 		
+		
 	CASE WM_SIZE
 		SUPER:Dispatch(oEvt)
 		IF SELF:__AdjustClient()
@@ -420,6 +532,7 @@ METHOD Dispatch(oEvent)
 		ENDIF
 		RETURN SELF:EventReturnValue
 		
+		
 	CASE WM_CONTEXTMENU
 		//In a Shellwindow this message becomes created in the MDIClient Window
 		//and __WCGetWindowByHandle() returns a Null_Object in this case, so
@@ -428,13 +541,19 @@ METHOD Dispatch(oEvent)
 			oEvt:wPARAM := DWORD(_CAST, hWnd)
 		ENDIF
 		
+		
 	END SWITCH
+	
 	
 	SUPER:Dispatch(oEvt)
 	
+	
 	RETURN SELF:EventReturnValue
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.EnableOleStatusMessages/*" />
 METHOD EnableOleStatusMessages(lEnable) 
 	// RvdH 030815 Moved method from Ole classes
 #ifdef __VULCAN__
@@ -447,6 +566,7 @@ METHOD EnableOleStatusMessages(lEnable)
 			lEnable := TRUE
 		ENDIF
 		
+		
 		IF (lEnable)
 			PCALL(pRegister, @__OleStatusCallback())
 		ELSE
@@ -457,23 +577,35 @@ METHOD EnableOleStatusMessages(lEnable)
 #endif	
 	RETURN FALSE
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.GetActiveChild/*" />
 METHOD GetActiveChild() 
 	LOCAL hActive AS PTR
 	LOCAL oActive AS Window
 	
 	
 	
+	
+	
+	
 	hActive := PTR(_CAST, SendMessage(SELF:Handle(4), WM_MDIGETACTIVE, 0, 0L))
 	oActive := __WCGetWindowByHandle(hActive)
+	
 	
 	IF IsInstanceOf(oActive, #__DocApp)
 		oActive := oActive:Owner
 	ENDIF
 	
+	
 	RETURN oActive
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.Handle/*" />
 METHOD Handle(nHandleType) AS PTR
+	
+	
 	
 	
 	IF !IsNil(nHandleType)
@@ -485,11 +617,17 @@ METHOD Handle(nHandleType) AS PTR
 		ENDIF
 	ENDIF
 	
+	
 	RETURN hWnd
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.HelpRequest/*" />
 METHOD HelpRequest(oHelpRequestEvent) 
 	LOCAL cHelpContext AS STRING
+	
+	
 	
 	
 	IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent) ;
@@ -507,34 +645,48 @@ METHOD HelpRequest(oHelpRequestEvent)
 		SUPER:HelpRequest(oHelpRequestEvent)
 	ENDIF
 	
+	
 	RETURN NIL
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.ctor/*" />
 CONSTRUCTOR(oOwner) 
 	LOCAL strucClientCreate IS _WinClientCreateStruct
 	
 	
 	
+	
+	
+	
 	SUPER(oOwner)
+	
 	
 	IF __WCRegisterShellWindow(_GetInst())
 		hWnd := CreateWindowEx (0, PSZ(_CAST, __WCShellWindowClass), String2Psz(" "),;
 			_OR(WS_OverlappedWindow,WS_CLIPCHILDREN),;
 			CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, 0, 0, _GetInst(), ptrSelfPtr)
 		
+		
 		strucClientCreate:idFirstChild := __WCMdiFirstChildID
+		
 		
 		hwndClient := CreateWindowEx(WS_EX_CLIENTEDGE, String2Psz("MDICLIENT"), NULL_PTR,;
 			_OR(WS_CHILD,WS_CLIPCHILDREN,WS_CLIPSIBLINGS,MDIS_AllChildStyles),;
 			0, 0, 0, 0, hWnd, 0x2000, _GetInst(), @strucClientCreate)
 		
+		
 		IF (oApp != NULL_OBJECT)
 			oApp:SetMdiClientWindow(hwndClient)
 		ENDIF
 		
+		
 		ShowWindow(hwndClient, SW_SHOW)
 		
+		
 		SendMessage(hwndClient, WM_MDICASCADE, 0, 0)
+		
 		
 		//self:EnableSystemMenu()
 		//self:EnableBorder()
@@ -542,18 +694,27 @@ CONSTRUCTOR(oOwner)
 		//self:EnableMaxBox()
 	ENDIF
 	
+	
 	SELF:EnableStatusBar(TRUE)
+	
 	
 	RETURN 
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.Menu/*" />
 ASSIGN Menu(oNewMenu) 
 	LOCAL oRetMenu AS Menu
 	LOCAL hMenu AS PTR
 	
 	
 	
+	
+	
+	
 	oRetMenu := (SUPER:Menu := oNewMenu)
+	
 	
 	IF oRetMenu != NULL_OBJECT
 		hMenu := oRetMenu:Handle()
@@ -561,10 +722,15 @@ ASSIGN Menu(oNewMenu)
 		SendMessage(hwndClient, WM_MDIREFRESHMENU, 0, 0)
 	ENDIF
 	
+	
 	RETURN 
 	
 	
+	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.OnOleStatusMessage/*" />
 METHOD OnOleStatusMessage(cMsgString) 
 	// RvdH 030815 Moved method from Ole classes
 	IF SELF:StatusBar != NULL_OBJECT
@@ -572,9 +738,15 @@ METHOD OnOleStatusMessage(cMsgString)
 	ENDIF
 	RETURN SELF
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.Resize/*" />
 METHOD Resize(oResizeEvent) 
 	LOCAL oResEvt := oResizeEvent AS ResizeEvent
+	
+	
+	
 	
 	
 	
@@ -582,39 +754,56 @@ METHOD Resize(oResizeEvent)
 		SendMessage(SELF:ToolBar:Handle(), WM_SIZE, oResEvt:wParam, oResEvt:lParam)
 	ENDIF
 	
+	
 	RETURN NIL
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.StatusBar/*" />
 ASSIGN StatusBar(oNewBar) 
     SUPER:StatusBar := oNewBar
 	SELF:__AdjustClient()
 	RETURN 
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.ToolBar/*" />
 ASSIGN ToolBar(oNewToolBar) 
 	oSavedTB := oNewToolBar
 	
+	
 	RETURN (SUPER:ToolBar := oNewToolBar)
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/ShellWindow.ToolBarHeightChanged/*" />
 METHOD ToolBarHeightChanged(oControlNotifyEvent) 
 	
 	
+	
+	
 	SUPER:ToolBarHeightChanged(oControlNotifyEvent)
+	
 	
 	SELF:__AdjustClient()
 	RETURN SELF
 END CLASS
 
+
 STATIC FUNCTION __WCRegisterShellWindow(hInst AS PTR) AS LOGIC
 	STATIC LOCAL lretVal AS LOGIC
 	LOCAL wc IS _WINWNDCLASS
+	
 	
 	//PP-031129 From S Ebert. Changed wc.hbrBackground
 	//Otherwise under XP and theme suport on, you see a toolbar,
 	//which is not a client of a rebar with a white background.
 	//The reason for this is the transparency flag of toolbar which
 	//is needed for XP. So you see the background color of the owner window.
+	
 	
 	IF !lretVal
 		// 2.5c. REDRAW removed - lead to flicker!
@@ -635,28 +824,39 @@ STATIC FUNCTION __WCRegisterShellWindow(hInst AS PTR) AS LOGIC
 		wc:lpszClassName := String2Psz(__WCShellWindowClass)
 		wc:cbWndExtra := 12
 		
+		
 		lretVal := (RegisterClass(@wc)!=0)
 	ENDIF
 	
+	
 	RETURN lretVal
+	
 	
 STATIC FUNCTION _VOOLERegisterStatusCallback(pCallBackFunc AS PTR) AS LOGIC STRICT
 	RETURN FALSE
+	
 	
 #ifdef __VULCAN__	
    DELEGATE __WCQueryCloseEnumFuncDelegate( hWnd AS PTR, lParam AS LONGINT ) AS LONGINT
 #endif
 	
+	
+ /// <exclude />
 FUNCTION __WCQueryCloseEnumFunc(hWnd AS PTR, lParam AS LONGINT) AS LONGINT /* WINCALL */
 	RETURN SendMessage(hWnd, WM_QueryEndSession, 0, 0)
+	
 	
 #ifdef __VULCAN__
    DELEGATE __WCShellWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
 #endif	
 	
+	
+ /// <exclude />
 FUNCTION __WCShellWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
 	LOCAL oWindow AS Window
 	LOCAL strucCreateStruct AS _WinCreateStruct
+	
+	
 	
 	
 	IF (uMsg == WM_CREATE)
@@ -664,11 +864,15 @@ FUNCTION __WCShellWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS
 		SetWindowLong(hWnd, DWL_User, LONGINT(_CAST,strucCreateStruct:lpCreateParams))
 	ENDIF
 	
+	
 	oWindow := __WCGetWindowByHandle(hWnd)
 	IF (oWindow != NULL_OBJECT)
 		RETURN oWindow:Dispatch(@@Event{hWnd, uMsg, wParam, lParam, oWindow})
 	ENDIF
 	RETURN DefFrameProc(hWnd, NULL_PTR, uMsg, wParam, lParam)
+
+
+
 
 
 

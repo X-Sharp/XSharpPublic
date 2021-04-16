@@ -21,26 +21,31 @@
 // way increase the scope of this warranty.
 #pragma options ("enforceself", on)
 
+
 //#include "VOSystemLibrary.vh"
 // #include "dbfaxs.vh"
-/// <summary>ADS Compatible DbServer class that received a Sql Select statement in its constructor</summary>
+/// <include file="Rdd.xml" path="doc/AdsSQLServer/*" />
 CLASS AdsSQLServer INHERIT DBServer
-/// <inheritdoc />
+/// <include file="Rdd.xml" path="doc/AdsSQLServer.ctor/*" />
 CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
     LOCAL cTemp AS STRING
     LOCAL cFileName AS STRING
 
+
     // Set the query text, this is necessary because the VO runtime doesn't like
     // some of the special characters that are used in SQL queries
     RDDINFO( _SET_SQL_QUERY, oFile )
+
 
     // Some VO libraries have trouble with the alias as is.  So for the SQL RDDS,
     // just grab the first word of the SQL query and use it as the alias.  The VO
     // runtime will adjust it to be unique if there is a naming conflict.
     cTemp := Left( oFile, At( " ", oFile ) - 1 )
 
+
     // Call the DBServer init method which will execute the query
     SUPER( cTemp, lShareMode, lReadOnlyMode, xDriver, aRdd )
+
 
     // Now that the query is executed, fixup some member variables that couldn't
     // be set properly before the query was executed.  Only do this if the table
@@ -49,15 +54,22 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
         oFileSpec := FileSpec{ SELF:Info( DBI_FULLPATH ) }
         cFileName := oFileSpec:FileName
 
+
         cTemp := Symbol2String( ClassName( SELF ) )
         oHyperLabel := HyperLabel{ cFileName, cFileName,  ;
             cTemp + ": " + cFileName + " Alias=" +  ;
             cTemp + "_" + cFileName }
     ENDIF
 
+
 RETURN
 
+
 END CLASS
+
+
+
+
 
 
 

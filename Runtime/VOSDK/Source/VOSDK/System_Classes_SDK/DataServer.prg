@@ -1,3 +1,4 @@
+/// <include file="System.xml" path="doc/DataServer/*" />
 CLASS DataServer
     PROTECT oHyperLabel AS HyperLabel
     PROTECT oHLStatus		AS USUAL
@@ -8,7 +9,9 @@ CLASS DataServer
     PROTECT nCCMode		    AS DWORD
     PROTECT nLastLock		AS DWORD
 
-METHOD __ClearLocks( ) AS VOID STRICT 
+
+ /// <exclude />
+METHOD __ClearLocks( ) AS VOID STRICT
     SWITCH nCCMode
     CASE ccStable
         SELF:Unlock( nLastLock )
@@ -18,24 +21,33 @@ METHOD __ClearLocks( ) AS VOID STRICT
         SELF:Unlock( )
     END SWITCH
 
+
     RETURN
 
+
+ /// <exclude />
 METHOD __DataField (nFieldPosition AS DWORD) AS DataField
     RETURN aDataFields[ nFieldPosition ]
 
-ACCESS __Clients AS ARRAY STRICT 
+
+ /// <exclude />
+ACCESS __Clients AS ARRAY STRICT
     RETURN SELF:aClients
 
-METHOD __SetupLocks( ) AS VOID STRICT 
+
+ /// <exclude />
+METHOD __SetupLocks( ) AS VOID STRICT
+
 
     nLastLock := 0
 
+
     SWITCH nCCMode
-    CASE ccNone 
+    CASE ccNone
     CASE ccOptimistic
         //nothing to do
         NOP
-    CASE ccStable 
+    CASE ccStable
     CASE ccRepeatable
         nLastLock := SELF:Recno
         // Do not free locks in case user has other locks
@@ -52,44 +64,65 @@ METHOD __SetupLocks( ) AS VOID STRICT
             __CavoStr(__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN), nCCMode, "nCCMode" }
     END SWITCH
 
+
     RETURN
 
-METHOD Append( ) 
+
+/// <include file="System.xml" path="doc/DataServer.Append/*" />
+METHOD Append( )
     RETURN FALSE
 
-METHOD AsString( ) 
+
+/// <include file="System.xml" path="doc/DataServer.AsString/*" />
+METHOD AsString( )
     RETURN oHyperLabel:AsString( )
 
-ACCESS BoF 
+
+/// <include file="System.xml" path="doc/DataServer.BoF/*" />
+ACCESS BoF
     RETURN FALSE
 
-ACCESS Clients 
+
+/// <include file="System.xml" path="doc/DataServer.Clients/*" />
+ACCESS Clients
     // DHer: 18/12/2008
    RETURN SELF:aClients
 
-ASSIGN Clients(aNewClients) 
+
+/// <include file="System.xml" path="doc/DataServer.Clients/*" />
+ASSIGN Clients(aNewClients)
     // DHer: 18/12/2008
     IF IsArray(aNewClients)
         SELF:aClients := aNewClients
     ENDIF
     SELF:nClients := ALen(SELF:aClients)
-RETURN 
+RETURN
 
-METHOD Close( ) 
+
+/// <include file="System.xml" path="doc/DataServer.Close/*" />
+METHOD Close( )
     RETURN FALSE
 
-METHOD Commit( ) 
+
+/// <include file="System.xml" path="doc/DataServer.Commit/*" />
+METHOD Commit( )
     RETURN FALSE
 
-ACCESS ConcurrencyControl( ) 
+
+/// <include file="System.xml" path="doc/DataServer.ConcurrencyControl/*" />
+ACCESS ConcurrencyControl( )
     RETURN SELF:nCCMode
 
-ASSIGN ConcurrencyControl( nMode) 
+
+/// <include file="System.xml" path="doc/DataServer.ConcurrencyControl/*" />
+ASSIGN ConcurrencyControl( nMode)
     LOCAL newMode := nMode
+
 
     IF UsualType( newMode ) == STRING
         newMode := String2Symbol( nMode )
     ENDIF
+
 
     IF UsualType( newMode ) == SYMBOL
         SWITCH newMode:ToString()
@@ -103,11 +136,12 @@ ASSIGN ConcurrencyControl( nMode)
             newMode := ccRepeatable
         CASE "CCFILE"
             newMode := ccFile
-        OTHERWISE 
+        OTHERWISE
             BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
                 __CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nMode, "nMode" }
         END SWITCH
     ENDIF
+
 
     IF IsNumeric( newMode ) .AND. ( newMode != SELF:nCCMode )
         SELF:__ClearLocks( )
@@ -115,15 +149,21 @@ ASSIGN ConcurrencyControl( nMode)
         SELF:__SetupLocks( )
     ENDIF
 
-    RETURN 
 
-METHOD DataField( nFieldPosition ) 
+    RETURN
+
+
+/// <include file="System.xml" path="doc/DataServer.DataField/*" />
+METHOD DataField( nFieldPosition )
     RETURN SELF:__DataField (nFieldPosition)
 
-ACCESS DBStruct 
+
+/// <include file="System.xml" path="doc/DataServer.DBStruct/*" />
+ACCESS DBStruct
     LOCAL aStruct	AS ARRAY
     LOCAL oDF		AS DataField
     LOCAL w			AS DWORD
+
 
     aStruct := ArrayNew( wFieldCount )
     FOR w := 1 UPTO wFieldCount
@@ -131,96 +171,150 @@ ACCESS DBStruct
         aStruct[ w ] := { oDF:Name, oDF:__FieldSpec:UsualType, oDF:__FieldSpec:Length, oDF:__FieldSpec:Decimals }
     NEXT
 
+
     RETURN aStruct
 
-METHOD Delete( ) 
+
+/// <include file="System.xml" path="doc/DataServer.Delete/*" />
+METHOD Delete( )
     RETURN FALSE
 
-ACCESS EoF 
+
+/// <include file="System.xml" path="doc/DataServer.EoF/*" />
+ACCESS EoF
     RETURN FALSE
 
-ACCESS FCount 
+
+/// <include file="System.xml" path="doc/DataServer.FCount/*" />
+ACCESS FCount
     RETURN wFieldCount
 
-METHOD FIELDGET( nFieldPosition ) 
+
+/// <include file="System.xml" path="doc/DataServer.FieldGet/*" />
+METHOD FIELDGET( nFieldPosition )
     RETURN NIL
 
-METHOD FieldGetFormatted( nFieldPosition ) 
+
+/// <include file="System.xml" path="doc/DataServer.FieldGetFormatted/*" />
+METHOD FieldGetFormatted( nFieldPosition )
     RETURN NIL
 
-METHOD FieldHyperLabel( nFieldPosition ) 
+
+/// <include file="System.xml" path="doc/DataServer.FieldHyperLabel/*" />
+METHOD FieldHyperLabel( nFieldPosition )
     RETURN SELF:__DataField (nFieldPosition):HyperLabel
 
-METHOD FieldName( nFieldPosition ) 
+
+/// <include file="System.xml" path="doc/DataServer.FieldName/*" />
+METHOD FieldName( nFieldPosition )
     RETURN SELF:__DataField (nFieldPosition):__HyperLabel:Name
 
-METHOD FieldPos( nFieldPosition ) 
+
+/// <include file="System.xml" path="doc/DataServer.FieldPos/*" />
+METHOD FieldPos( nFieldPosition )
     RETURN NIL
 
-METHOD FIELDPUT( nFieldPosition, uValue ) 
+
+/// <include file="System.xml" path="doc/DataServer.FieldPut/*" /> 
+METHOD FIELDPUT( nFieldPosition, uValue )
     RETURN NIL
 
-METHOD FieldSpec( nFieldPosition ) 
+
+/// <include file="System.xml" path="doc/DataServer.FieldSpec/*" />
+METHOD FieldSpec( nFieldPosition )
     RETURN SELF:__DataField (nFieldPosition):FieldSpec
 
-METHOD FieldStatus( nFieldPosition ) 
+
+/// <include file="System.xml" path="doc/DataServer.FieldStatus/*" />
+METHOD FieldStatus( nFieldPosition )
     RETURN SELF:__DataField (nFieldPosition):__FieldSpec:Status
 
-METHOD FieldSym( nFieldPosition ) 
+
+/// <include file="System.xml" path="doc/DataServer.FieldSym/*" />
+METHOD FieldSym( nFieldPosition )
     RETURN SELF:__DataField (nFieldPosition):__HyperLabel:NameSym
 
-METHOD FieldValidate( nFieldPosition, uValue ) 
+
+/// <include file="System.xml" path="doc/DataServer.FieldValidate/*" />
+METHOD FieldValidate( nFieldPosition, uValue )
     RETURN SELF:__DataField (nFieldPosition):__FieldSpec:PerformValidations( uValue )
 
-METHOD FLOCK( ) 
+
+/// <include file="System.xml" path="doc/DataServer.FLOCK/*" />
+METHOD FLOCK( )
     RETURN FALSE
 
-METHOD GoBottom( ) 
+
+/// <include file="System.xml" path="doc/DataServer.GoBottom/*" />
+METHOD GoBottom( )
     RETURN FALSE
 
-METHOD GoTo( nPosition ) 
+
+/// <include file="System.xml" path="doc/DataServer.GoTo/*" />
+METHOD GoTo( nPosition )
     RETURN FALSE
 
-METHOD GoTop( ) 
+
+/// <include file="System.xml" path="doc/DataServer.GoTop/*" />
+METHOD GoTop( )
     RETURN FALSE
 
+
+/// <include file="System.xml" path="doc/DataServer.HLStatus/*" />
 ACCESS HLStatus
-    // This always returns the status, regardless of the error flag	
-    RETURN SELF:oHLStatus	
+    // This always returns the status, regardless of the error flag
+    RETURN SELF:oHLStatus
 
-ACCESS HyperLabel 
+
+/// <include file="System.xml" path="doc/DataServer.HyperLabel/*" />
+ACCESS HyperLabel
     RETURN oHyperLabel
 
-ASSIGN HyperLabel( oHL ) 
+
+/// <include file="System.xml" path="doc/DataServer.HyperLabel/*" />
+ASSIGN HyperLabel( oHL )
     oHyperLabel := oHL
-    RETURN 
+    RETURN
 
-CONSTRUCTOR( ) 
+
+/// <include file="System.xml" path="doc/DataServer.ctor/*" />
+CONSTRUCTOR( )
     SELF:aClients := { }
-    RETURN 
+    RETURN
 
-ACCESS Name 
+
+/// <include file="System.xml" path="doc/DataServer.Name/*" />
+ACCESS Name
     IF oHyperlabel != NULL_OBJECT
         RETURN oHyperLabel:Name
     ENDIF
     RETURN NULL_STRING
 
-ACCESS NameSym 
+
+/// <include file="System.xml" path="doc/DataServer.NameSym/*" />
+ACCESS NameSym
     IF oHyperlabel != NULL_OBJECT
         RETURN oHyperLabel:NameSym
     ENDIF
     RETURN NULL_STRING
 
-METHOD NoIVarGet( symFieldName ) 
+
+/// <include file="System.xml" path="doc/DataServer.NoIVarGet/*" />
+METHOD NoIVarGet( symFieldName )
     RETURN SELF:FieldGet( symFieldName )
 
-METHOD NoIVarPut( symFieldName, uValue ) 
+
+/// <include file="System.xml" path="doc/DataServer.NoIVarPut/*" />
+METHOD NoIVarPut( symFieldName, uValue )
+
 
     SELF:FieldPut( symFieldName, uValue )
     SELF:Notify( NOTIFYFIELDCHANGE, symFieldName )
     RETURN uValue
 
-METHOD Notify( kNotification, uDescription ) 
+
+/// <include file="System.xml" path="doc/DataServer.Notify/*" />
+METHOD Notify( kNotification, uDescription )
     //unsupported syntax under .NET
     //aClients:Notify( kNotification, uDescription )
     FOREACH oClient AS OBJECT IN AClone(aClients)
@@ -228,22 +322,35 @@ METHOD Notify( kNotification, uDescription )
     NEXT
     RETURN SELF
 
-METHOD PostInit( ) 
+
+/// <include file="System.xml" path="doc/DataServer.PostInit/*" />
+METHOD PostInit( )
     RETURN SELF
 
-METHOD PreInit( ) 
+
+/// <include file="System.xml" path="doc/DataServer.PreInit/*" />
+METHOD PreInit( )
     RETURN SELF
 
-ACCESS RecCount 
+
+/// <include file="System.xml" path="doc/DataServer.RecCount/*" />
+ACCESS RecCount
     RETURN 0
 
-ACCESS RecNo 
+
+/// <include file="System.xml" path="doc/DataServer.RecNo/*" />
+ACCESS RecNo
     RETURN NIL
 
-ASSIGN RecNo( lRecNo ) 
-    RETURN 
 
-METHOD RegisterClient( oForm ) 
+/// <include file="System.xml" path="doc/DataServer.RecNo/*" />
+ASSIGN RecNo( lRecNo )
+    RETURN
+
+
+/// <include file="System.xml" path="doc/DataServer.RegisterClient/*" />
+METHOD RegisterClient( oForm )
+
 
     IF AScan( aClients, oForm ) # 0
         RETURN FALSE
@@ -251,25 +358,39 @@ METHOD RegisterClient( oForm )
     AAdd( aClients, oForm )
     nClients := ALen( aClients )
 
+
     RETURN TRUE
 
-METHOD ResetNotification( ) 
+
+/// <include file="System.xml" path="doc/DataServer.ResetNotification/*" />
+METHOD ResetNotification( )
     RETURN 0
 
-METHOD RLOCK( nRecord ) 
+
+/// <include file="System.xml" path="doc/DataServer.RLOCK/*" />
+METHOD RLOCK( nRecord )
     RETURN FALSE
 
-METHOD RLockVerify( ) 
+
+/// <include file="System.xml" path="doc/DataServer.RLockVerify/*" />
+METHOD RLockVerify( )
     RETURN FALSE
 
-METHOD Rollback( ) 
+
+/// <include file="System.xml" path="doc/DataServer.Rollback/*" />
+METHOD Rollback( )
     RETURN FALSE
 
-METHOD Seek( uValue ) 
+
+/// <include file="System.xml" path="doc/DataServer.Seek/*" />
+METHOD Seek( uValue )
     RETURN FALSE
 
-METHOD SetDataField( nFieldPosition, oDataField ) 
+
+/// <include file="System.xml" path="doc/DataServer.SetDataField/*" />
+METHOD SetDataField( nFieldPosition, oDataField )
     LOCAL wFieldPosition := nFieldPosition	AS WORD
+
 
     IF aDataFields = NULL_ARRAY
         BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE, ;
@@ -296,24 +417,37 @@ METHOD SetDataField( nFieldPosition, oDataField )
         ENDIF
     ENDIF
 
-METHOD Skip( nRelativePosition ) 
+
+/// <include file="System.xml" path="doc/DataServer.Skip/*" />
+METHOD Skip( nRelativePosition )
     RETURN FALSE
 
-ACCESS Status 
+
+/// <include file="System.xml" path="doc/DataServer.Status/*" />
+ACCESS Status
     RETURN oHLStatus
 
-ASSIGN Status(oHl) 
+
+/// <include file="System.xml" path="doc/DataServer.Status/*" />
+ASSIGN Status(oHl)
     SELF:oHLStatus := oHl
     RETURN
-    
-METHOD SuspendNotification( ) 
+
+
+/// <include file="System.xml" path="doc/DataServer.SuspendNotification/*" />
+METHOD SuspendNotification( )
     RETURN 0
 
-METHOD UnLock( ) CLIPPER 
+
+/// <include file="System.xml" path="doc/DataServer.UnLock/*" />
+METHOD UnLock( ) CLIPPER
     RETURN FALSE
 
-METHOD UnRegisterClient( oClient, lAllowClose ) 
+
+/// <include file="System.xml" path="doc/DataServer.UnRegisterClient/*" />
+METHOD UnRegisterClient( oClient, lAllowClose )
     LOCAL w AS DWORD
+
 
     IF ( w := AScan( aClients, oClient ) ) = 0
         RETURN FALSE
@@ -327,7 +461,10 @@ METHOD UnRegisterClient( oClient, lAllowClose )
         RETURN TRUE
     ENDIF
 
-METHOD Update( ) 
+
+/// <include file="System.xml" path="doc/DataServer.Update/*" />
+METHOD Update( )
     RETURN FALSE
 END CLASS
+
 

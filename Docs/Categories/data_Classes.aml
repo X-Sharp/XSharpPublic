@@ -12,78 +12,78 @@
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataBrowser</codeEntityReference></para></entry>
 <entry><para>
-        Create a data browser, which is a spreadsheet-like table for displaying information from a data server.
-      </para></entry></row>
+            Create a data browser, which is a spreadsheet-like table for displaying information from a data server.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataColumn</codeEntityReference></para></entry>
 <entry><para>
-        Create columns for use in a data browser.
-      </para></entry></row>
+            Create columns for use in a data browser.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataField</codeEntityReference></para></entry>
 <entry><para>
-        Create a field, which is an object that holds information that defines a particular field in a data server (for example, the field's data type and length).
-      </para></entry></row>
+            Create a field, which is an object that holds information that defines a particular field in a data server (for example, the field's data type and length).
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DataServer</codeEntityReference></para></entry>
 <entry><para>
-        Provide the base class from which all X# data servers are subclassed.
-      </para></entry></row>
+            Provide the base class from which all X# data servers are subclassed.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DateFS</codeEntityReference></para></entry>
 <entry><para>
-        Create a date field specification which holds date data type information.
-      </para></entry></row>
+            Create a date field specification which holds date data type information.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DbFileSpec</codeEntityReference></para></entry>
 <entry><para>
-        Hold the file name and path for a .DBF file and provide DBF-related functions, such as creating, copying, deleting, moving, and renaming files.
-      </para></entry></row>
+            Hold the file name and path for a .DBF file and provide DBF-related functions, such as creating, copying, deleting, moving, and renaming files.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DbServer</codeEntityReference></para></entry>
 <entry><para>
-        Create a data server that can operate with existing .DBF database files and their associated index files.
-      </para></entry></row>
+            Create a data server that can operate with existing .DBF database files and their associated index files.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FieldSpec</codeEntityReference></para></entry>
 <entry><para>
-        Create a field specification, which holds general data type information about data elements, such as database fields and window controls.
-      </para></entry></row>
+            Create a field specification, which holds general data type information about data elements, such as database fields and window controls.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.FileSpec</codeEntityReference></para></entry>
 <entry><para>
-        Create a file specification, which provides a useful framework for managing file names and paths.
-      </para></entry></row>
+            Create a file specification, which provides a useful framework for managing file names and paths.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.IntegerFS</codeEntityReference></para></entry>
 <entry><para>
-        Create an integer field specification, which holds integer data type information.
-      </para></entry></row>
+            Create an integer field specification, which holds integer data type information.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.LogicFS</codeEntityReference></para></entry>
 <entry><para>
-        Create a logic field specification, which holds logic data type information.
-      </para></entry></row>
+            Create a logic field specification, which holds logic data type information.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.MoneyFS</codeEntityReference></para></entry>
 <entry><para>
-        Create a money field specification, which holds money data type information.
-      </para></entry></row>
+            Create a money field specification, which holds money data type information.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.NumberFS</codeEntityReference></para></entry>
 <entry><para>
-        Create a number field specification, which holds numeric data type information.
-      </para></entry></row>
+            Create a number field specification, which holds numeric data type information.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.OrderSpec</codeEntityReference></para></entry>
 <entry><para>
-        OrderSpec class was designed to model index information at the order level — not file level — and complement the DBFileSpec class.
-      </para></entry></row>
+            OrderSpec class was designed to model index information at the order level - not file level - and complement the DBFileSpec class.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.StringFS</codeEntityReference></para></entry>
 <entry><para>
-        Create a string field specification, which holds string data type information.
-      </para></entry></row>
+            Create a string field specification, which holds string data type information.
+        </para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.DbDataColumn</codeEntityReference></para></entry>
 <entry><para>This class represents a DBF Field in a DbDataTable class.</para></entry></row>
@@ -107,46 +107,70 @@
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.DataField</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Create a field, which is an object that holds information that defines a particular field in a data server (for example, the field's data type and length).
+        </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.DataServer</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.DateFS</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Create a date field specification which holds date data type information.
+        </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.DbFileSpec</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Hold the file name and path for a .DBF file and provide DBF-related functions, such as creating, copying, deleting, moving, and renaming files.
+        </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.DbServer</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Create a data server that can operate with existing .DBF database files and their associated index files.
+        </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.FieldSpec</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Create a field specification, which holds general data type information about data elements, such as database fields and window controls.
+        </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.FileSpec</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Create a file specification, which provides a useful framework for managing file names and paths.
+        </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.IntegerFS</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Create an integer field specification, which holds integer data type information.
+        </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.LogicFS</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Create a logic field specification, which holds logic data type information.
+        </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.MoneyFS</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Create a money field specification, which holds money data type information.
+        </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.Notify</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.NumberFS</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Create a number field specification, which holds numeric data type information.
+        </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.OrderSpec</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            OrderSpec class was designed to model index information at the order level - not file level - and complement the DBFileSpec class.
+        </para></entry></row>
 <row><entry><para>XSharp.VO.SDK</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.VO.SDK.StringFS</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
+<entry><para>
+            Create a string field specification, which holds string data type information.
+        </para></entry></row>
 </table>
 </content>
      </section>

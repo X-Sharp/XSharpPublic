@@ -1,3 +1,4 @@
+/// <include file="SQL.xml" path="doc/SQLListSpecialColumns/*" />
 CLASS SQLListSpecialColumns INHERIT SQLCatalogQuery
 	EXPORT Qualifier AS STRING
 	EXPORT Owner     AS STRING
@@ -7,12 +8,16 @@ CLASS SQLListSpecialColumns INHERIT SQLCatalogQuery
 	EXPORT Scope     AS WORD
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLListSpecialColumns.Execute/*" />
 METHOD Execute() 
 	LOCAL   nRet    AS SHORTINT
     LOCAL psz1, psz2, psz3 AS PSZ
     #IFDEF __DEBUG__
         __SQLOutputDebug( "** SQLListSpecialColumns:Execute()" )
     #ENDIF
+
 
     IF oStmt:StatementHandle = SQL_NULL_HSTMT
         SELF:__AllocStmt()
@@ -26,6 +31,7 @@ METHOD Execute()
     IF SELF:TableName != NULL_STRING
         psz3 := String2Psz(TableName)
     ENDIF
+
 
     nRet := SQLSpecialColumns(  oStmt:StatementHandle,    ColType , ;
         psz1,  _SLen( Qualifier ),    ;
@@ -42,14 +48,19 @@ METHOD Execute()
 	ENDIF
 	RETURN SUPER:Execute()
 
+
+/// <include file="SQL.xml" path="doc/SQLListSpecialColumns.ctor/*" />
 CONSTRUCTOR( nColType, cQualifier, cOwner, cTableName, nScope, ;
 			 nNullable, oSQLConnection ) 
 
+
 	SUPER( oSQLConnection )
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLListSpecialColumns:Init()" )
 	#ENDIF
+
 
 	IF IsString( cQualifier )
 		SELF:Qualifier := cQualifier
@@ -57,11 +68,13 @@ CONSTRUCTOR( nColType, cQualifier, cOwner, cTableName, nScope, ;
 		SELF:Qualifier := NULL_STRING
 	ENDIF
 
+
 	IF IsString( cOwner )
 		SELF:Owner := cOwner
 	ELSE
 		SELF:Owner := NULL_STRING
 	ENDIF
+
 
 	IF IsString( cTableName )
 		SELF:TableName := cTableName
@@ -69,11 +82,13 @@ CONSTRUCTOR( nColType, cQualifier, cOwner, cTableName, nScope, ;
 		SELF:TableName := NULL_STRING
 	ENDIF
 
+
 	IF IsNumeric( nColType )
 		SELF:ColType := nColType
 	ELSE
 		SELF:ColType := SQL_BEST_ROWID
 	ENDIF
+
 
 	IF IsNumeric( nScope )
 		SELF:Scope := nScope
@@ -81,15 +96,20 @@ CONSTRUCTOR( nColType, cQualifier, cOwner, cTableName, nScope, ;
 		SELF:Scope :=  SQL_SCOPE_CURROW
 	ENDIF
 
+
 	IF IsNumeric( nNullable )
 		SELF:Nullable := nNullable
 	ELSE
 		SELF:Nullable := SQL_NULLABLE
 	ENDIF
 
+
 	SELF:Execute()
+
 
 	RETURN 
 
+
 END CLASS
+
 

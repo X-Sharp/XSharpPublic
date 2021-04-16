@@ -1,15 +1,19 @@
+/// <include file="SQL.xml" path="doc/SQLListColumnPrivileges/*" />
 CLASS SQLListColumnPrivileges INHERIT SQLCatalogQuery
 	EXPORT Qualifier AS STRING
 	EXPORT Owner     AS STRING
 	EXPORT TableName AS STRING
 	EXPORT ColName   AS STRING
 
+
+/// <include file="SQL.xml" path="doc/SQLListColumnPrivileges.Execute/*" />
 METHOD Execute() 
 	LOCAL   nRet    AS INT
     LOCAL psz1, psz2, psz3, psz4 AS PSZ
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLListColumnPrivileges:Execute()" )
 	#ENDIF
+
 
 	IF ( oStmt:StatementHandle = SQL_NULL_HSTMT )
 		SELF:__AllocStmt()
@@ -27,11 +31,13 @@ METHOD Execute()
         psz4 := String2Psz(ColName)
     ENDIF
 
+
     nRet := SQLColumnPrivileges( oStmt:StatementHandle,      ;
                                 psz1, _SLen( Qualifier ),;       
                                 psz2, _SLen( Owner ) ,    ;
                                 psz3, _SLen( TableName ), ;
                                 psz4, _SLen( ColName )  )
+
 
 	IF nRet != SQL_SUCCESS
 		oStmt:ErrInfo := SQLErrorInfo{  SELF,           ;
@@ -42,9 +48,13 @@ METHOD Execute()
 		RETURN FALSE
 	ENDIF
 
+
 	RETURN SUPER:Execute()
 
+
+/// <include file="SQL.xml" path="doc/SQLListColumnPrivileges.ctor/*" />
 CONSTRUCTOR( cQualifier, cOwner, cTableName, cColName, oSQLConnection ) 
+
 
 	SUPER( oSQLConnection )
 	#IFDEF __DEBUG__
@@ -54,11 +64,13 @@ CONSTRUCTOR( cQualifier, cOwner, cTableName, cColName, oSQLConnection )
 						AsString( cColName )+" )" )
 	#ENDIF
 
+
 	IF IsString( cQualifier )
 		SELF:Qualifier := cQualifier
 	ELSE
 		SELF:Qualifier := NULL_STRING
 	ENDIF
+
 
 	IF IsString( cOwner )
 		SELF:Owner := cOwner
@@ -66,11 +78,13 @@ CONSTRUCTOR( cQualifier, cOwner, cTableName, cColName, oSQLConnection )
 		SELF:Owner := NULL_STRING
 	ENDIF
 
+
 	IF IsString( cTableName )
 		SELF:TableName := cTableName
 	ELSE
 		SELF:TableName := NULL_STRING
 	ENDIF
+
 
 	IF IsString( cColName )
 		SELF:ColName := cColName
@@ -78,8 +92,11 @@ CONSTRUCTOR( cQualifier, cOwner, cTableName, cColName, oSQLConnection )
 		SELF:ColName := NULL_STRING
 	ENDIF
 
+
 	SELF:Execute()
+
 
 	RETURN 
 END CLASS
+
 

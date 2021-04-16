@@ -1,14 +1,18 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+
 
 USING System.Data.Common
 using System.Data
 
+
 PARTIAL CLASS SQLSelect INHERIT DataServer
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.AddDateVal/*" />
 	METHOD AddDateVal( uFieldPos AS USUAL, dDate AS DATE) AS VOID
 		//  Adds time string to Timestamp field
 		LOCAL cVal  AS STRING
@@ -18,10 +22,12 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			dDate := Today()
 		ENDIF
 
+
 		cVal := SELF:GetTimeStamp( uFieldPos )
 		IF IsNil( cVal )
-			RETURN 
+			RETURN
 		ENDIF
+
 
 		cDate := DToCSQL( dDate )
 		IF SLen( cVal ) = 0
@@ -32,21 +38,25 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		cVal := cDate + " " + cTime
 		SELF:SetTimeStamp( uFieldPos, cVal )
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.AddTimeString/*" />
 	METHOD AddTimeString( uFieldPos AS USUAL, cTime AS STRING) AS VOID
 		//  Adds time string to Timestamp field
 		LOCAL cVal  AS STRING
 		LOCAL cDate AS STRING
 
+
 		IF !IsString( cTime )
 			cTime := Time()
 		ENDIF
+
 
 		IF At2( ".", cTime ) == 0
 			cTime := cTime + ".000000"
 		ENDIF
 		cVal := SELF:GetTimeStamp( uFieldPos )
 		IF IsNil( cVal )
-			RETURN 
+			RETURN
 		ENDIF
 		IF SLen( cVal ) = 0
 			cDate := DToCSQL( Today() )
@@ -57,7 +67,10 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		SELF:SetTimeStamp( uFieldPos, cVal )
 
 
-	METHOD Append(lReleaseLocks AS LOGIC)  AS LOGIC 
+
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Append/*" />
+	METHOD Append(lReleaseLocks AS LOGIC)  AS LOGIC
 		LOCAL oRow AS DataRow
 		LOCAL lOk := FALSE AS LOGIC
 		IF SELF:__PrepareForRecordMovement()
@@ -74,10 +87,15 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN lOk
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.AppendRow/*" />
 	METHOD AppendRow( lForce )
 		RETURN SELF:Update(lForce)
 
 
+
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Error/*" />
 	METHOD Error( oError ) AS USUAL
 	//  Method for handling error conditions raised during database processing
 	//
@@ -89,6 +107,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	//
 	//  Note: if an error comes in while one is being handled, the Error
 	//  method immediately breaks without any fancy stuff.
+
 
 	STATIC LOCAL    lErrorProcessingSemaphor    AS LOGIC
 	IF lErrorProcessingSemaphor
@@ -109,7 +128,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	ENDIF
 	RETURN NIL
 
+
 /*
+/// <include file="Sql.xml" path="doc/SQLSelect.Error/*" />
 	METHOD Error( uError, symMethod )
 		STATIC LOCAL    lErrorProcessingSemaphor    AS LOGIC
 		LOCAL           oError                      AS Error
@@ -118,6 +139,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			THROW oError
 		ELSE
 			lErrorProcessingSemaphor := TRUE
+
 
 			IF ! IsInstanceOfUsual( oError, #Error )
 				oError := CreateError(EG_ERRORBUILD, "Wrong Error Object ")
@@ -132,6 +154,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			SELF:lErrorFlag := TRUE
 			SELF:oStmt:ErrInfo := oError
 
+
 			IF IsArray( SELF:aClients ) .AND. ALen(SELF:aClients) != 0 .AND. IsMethod( aClients[1], #Error )
 				Send(aClients[1],#Error, oError )
 			ELSE
@@ -139,17 +162,24 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 				THROW oError
 			ENDIF
 
+
 			lErrorProcessingSemaphor := FALSE
 
+
 		ENDIF
+
 
 		RETURN SELF
 */
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.BindColumn/*" />
 	[Obsolete];
 	METHOD BindColumn( i ) AS LOGIC
 		RETURN TRUE
- 
+
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Close/*" />
 	METHOD Close() AS LOGIC STRICT
 		LOCAL lOk AS LOGIC
 		SELF:lErrorFlag := FALSE
@@ -168,6 +198,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			ENDIF
 
 
+
+
 		CATCH e AS Exception
 			SELF:Error(Error{e},#Close)
 			lOk := FALSE
@@ -175,6 +207,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN lOk
 
 
+
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Column/*" />
 	METHOD Column( siCol AS USUAL ) AS SQLColumn
 		LOCAL nIndex    AS DWORD
 		LOCAL oColumn   := NULL AS SQLColumn
@@ -187,17 +222,22 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN oColumn
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.ColumnAttributes/*" />
 	METHOD ColumnAttributes( siCol AS USUAL) AS SQLColumnAttributes
 		LOCAL nIndex            AS DWORD
 		LOCAL oSQLColAtt        AS SQLColumnAttributes
 		LOCAL oSqlCol			AS SQLColumn
 
+
 		nIndex := SELF:__GetColIndex( siCol, TRUE )
+
 
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADCOL ), #ColumnAttributes )
 			RETURN NULL_OBJECT
 		ENDIF
+
 
 		IF SELF:aColumnAttributes:Length >= nIndex
 			IF IsObject( SELF:aColumnAttributes[nIndex] )
@@ -205,7 +245,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			ENDIF
 		ENDIF
 
-		oSqlCol		:= aSQLColumns[nIndex] 
+
+		oSqlCol		:= aSQLColumns[nIndex]
 		oSQLColAtt 	:= SQLColumnAttributes{ (HyperLabel) oSqlCol:HyperLabel , ;
 											(FieldSpec) oSqlCol:FieldSpec,  ;
 											oSqlCol:Type,   ;
@@ -214,6 +255,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 											oSqlCol:Index,      ;
 											oSqlCol:ColName,    ;
 											oSqlCol:AliasName }
+
 
 		oSQLColAtt:DisplaySize		:= oSqlCol:DisplaySize
 		LOCAL oDataColumn AS DataColumn
@@ -225,25 +267,32 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			oFs := oDf:FieldSpec
 			oSQLColAtt:Length 			:= (LONG) oFs:Length
 		ELSE
-			oSQLColAtt:Length 			:= oDataColumn:MaxLength 
+			oSQLColAtt:Length 			:= oDataColumn:MaxLength
 		ENDIF
 		oSQLColAtt:Unsigned 		:= InList(oDataColumn:DataType, typeof(WORD), typeof(DWORD), typeof(UINT64))
 		oSQLColAtt:Money 			:= oDataColumn:DataType == Typeof(System.Decimal)
 		oSQLColAtt:Updatable 		:= ! oDataColumn:ReadOnly
 		oSQLColAtt:AutoIncrement 	:= oDataColumn:AutoIncrement
 
+
 		oStmt:ErrInfo:ErrorFlag 	:= FALSE
-		
+
+
 		SELF:aColumnAttributes[nIndex] := oSQLColAtt
 		RETURN oSQLColAtt
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Commit/*" />
 	METHOD Commit() AS LOGIC STRICT
 		SELF:Update(TRUE)
 		RETURN SELF:oConn:Commit()
 
-	METHOD DataField( uFieldPos AS USUAL) AS DataField 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.DataField/*" />
+	METHOD DataField( uFieldPos AS USUAL) AS DataField
 		LOCAL nIndex        AS DWORD
 		LOCAL oRet         := NULL  AS DataField
+
 
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
@@ -251,10 +300,13 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ELSE
 			oStmt:ErrInfo:ErrorFlag := FALSE
 
+
 			oRet := aDataFields[nIndex]
 		ENDIF
 		RETURN oRet
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Delete/*" />
 	METHOD Delete() AS LOGIC CLIPPER
 		LOCAL lOk := FALSE AS LOGIC
 		IF SELF:__PrepareForRecordMovement()
@@ -270,18 +322,24 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN lOk
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.DirectSkip/*" />
 METHOD DirectSkip( nSkip )
 	RETURN SELF:Skip(nSkip)
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Execute/*" />
 METHOD Execute( uParam ) AS LOGIC
 	LOCAL nCount        AS DWORD
 	LOCAL lRet          AS LOGIC
 	LOCAL i             AS DWORD
 	LOCAL aArgs       := NULL_ARRAY   AS ARRAY
 
+
 	IF oStmt:StatementHandle == NULL_OBJECT
 		SELF:__AllocStmt()
 	ENDIF
+
 
 	oStmt:SQLString := SELF:PreExecute( oStmt:SQLString )
 	nCount := (DWORD) PCount()
@@ -298,6 +356,7 @@ METHOD Execute( uParam ) AS LOGIC
 	SELF:aLastArgs := aArgs
 	lRet := oStmt:Execute( aArgs)
 
+
 	IF lRet
 		SELF:__Open(oStmt:oDataTable, oStmt:oSchema)
 	ELSE
@@ -305,15 +364,19 @@ METHOD Execute( uParam ) AS LOGIC
 		SELF:lEof         := TRUE
 		SELF:nRowCount    := -1
 	ENDIF
-	
+
+
 	RETURN lRet
 
 
+
+
+/// <include file="Sql.xml" path="doc/SQLSelect.ExtendedFetch/*" />
 	METHOD ExtendedFetch( nFetchType, nRow ) AS LOGIC
 		LOCAL lResult AS LOGIC
 		EnforceType(REF nFetchType, LONG)
 		@@Default ( REF nRow, 0)
-		SWITCH (LONG) nFetchType 
+		SWITCH (LONG) nFetchType
 		CASE SQL_FETCH_LAST
 			lResult := SELF:GoBottom()
 		CASE SQL_FETCH_FIRST
@@ -333,6 +396,9 @@ METHOD Execute( uParam ) AS LOGIC
 		RETURN lResult
 
 
+
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Fetch/*" />
 	METHOD Fetch( ) AS LOGIC
 		IF SELF:lFetchFlag
 			SELF:Skip(1)
@@ -341,6 +407,8 @@ METHOD Execute( uParam ) AS LOGIC
 		ENDIF
 		RETURN !SELF:EoF
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FieldGet/*" />
 	METHOD FieldGet( uFieldID AS USUAL ) AS USUAL
 		LOCAL uValue   := NIL AS USUAL
 		LOCAL cType    AS STRING
@@ -350,7 +418,7 @@ METHOD Execute( uParam ) AS LOGIC
 		wField	:= SELF:__GetColIndex(uFieldID, TRUE)
 		IF wField > 0 .AND. wField <= SELF:nNumCols
 			uValue  := SELF:GetData(uFieldID)
-			IF IsNil(uValue)  .AND. SELF:lNullAsBlank 
+			IF IsNil(uValue)  .AND. SELF:lNullAsBlank
 				oCol    := SELF:aSQLColumns[wField]
 				IF oCol != NULL_OBJECT
 					oFs		:= oCol:FieldSpec
@@ -378,6 +446,8 @@ METHOD Execute( uParam ) AS LOGIC
 		ENDIF
 		RETURN uValue
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FieldGetFormatted/*" />
 	METHOD FieldGetFormatted( uFieldPos AS USUAL ) STRICT
 		LOCAL nIndex    AS DWORD
 		LOCAL xRet     := NIL  AS USUAL
@@ -394,6 +464,7 @@ METHOD Execute( uParam ) AS LOGIC
 			oFs  := oCol:FieldSpec
 			xRet := oFs:Transform( xRet )
 		ENDIF
+
 
 		RETURN xRet
 END CLASS

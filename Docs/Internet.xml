@@ -1,0 +1,3432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <members>
+    </members>
+    <CEmail>
+        <summary>
+            Provide a class to store and decode all data for an e-mail.
+        </summary>
+        <remarks>
+            This class provides all necessary methods and properties for checking and receiving e-mail from an Internet POP Server. The class decodes email text string passed into its header components only. HTML and attachment components are decoded as required.
+        </remarks>
+        <example>
+            <code language="X#">
+                FUNCTION SMTPSendMail       (cServerIP      AS STRING,;
+                     cMailSubject   AS STRING,;
+                     xDestUser      AS USUAL,;
+                     xCCUser        AS USUAL,;
+                     cBody          AS STRING,;
+                     cFromAddress   AS STRING,;
+                     xAttachFile    AS USUAL,;
+                     cFromName      AS STRING,;
+                     xBCCUser       AS USUAL,;
+                     cCargo         AS STRING)   AS LOGIC PASCAL
+                  LOCAL oSmtp    AS CSMTP
+                  LOCAL lRet     AS LOGIC
+                  LOCAL oEmail   AS CEmail
+                  oEMail := CEmail{}
+                  oEmail:FromAddress   := cFromAddress
+                  oEmail:FromName      := cFromName
+                  oEmail:Cargo         := cCargo
+                  oEmail:Subject       := cMailSubject
+                  oEmail:DestList      := xDestUser
+                  oEmail:CCList        := xCCUser
+                  oEmail:BCCList       := xBCCUser
+                  oEmail:MailBody        := cBody
+                  IF !IsNil(xAttachFile)
+                     oEmail:AttachmentFileList := xAttachFile
+                  ENDIF
+                  oSmtp := CSmtp{oEmail}
+                  oSMtp:RemoteHost  := cServerIP
+                  oSmtp:TimeOut := 5000
+                  lRet := oSmtp:SendMail()
+                  RETURN lRet
+            </code>
+            See Also
+            CLASS CPop, CLASS CSmtp, Class CStorage
+        </example>
+    </CEmail>
+    <CEmail.ctor>
+        <summary>
+            Construct a CEmail object.
+        </summary>
+        <param name="cRawMail">** missing parameter documentation **</param>
+        <param name="uStorage">** missing parameter documentation **</param>
+    </CEmail.ctor>
+    <CEmail.AddAttachment>
+        <summary>
+            Adds an attachment to the email.
+        </summary>
+        <param name="cFullPath">The file to attach to the email</param>
+        <param name="cContentType">The content type to use. The default is 'application/octet-stream'</param>
+        <param name="dwEncodeType">The Encoding to use. The default is </param>
+        <param name="cContentID">** missing parameter documentation **</param>
+        <param name="cFilename">The filename to use in the message body. The default is the name of the file itself.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CEmail.AddAttachment>
+    <CEmail.AttachmentFileList>
+        <summary>
+            Array containing the names of the attached files.
+        </summary>
+        <value>Array containing the names of the attached files.</value>
+    </CEmail.AttachmentFileList>
+    <CEmail.AttachmentInfo>
+        <summary>
+            Returns or sets the information about all attachments as a single string.
+            For each attachment there is a separate line.
+            Each line contains: The Fully qualified filename, Content Type, Encoding, ID, Size, ContentId
+        </summary>
+        <value>
+            or sets the information about all attachments as a single string.
+            For each attachment there is a separate line.
+            Each line contains: The Fully qualified filename, Content Type, Encoding, ID, Size, ContentId
+        </value>
+    </CEmail.AttachmentInfo>
+    <CEmail.AttachmentList>
+        <summary>
+            Array of strings containing the encoded contents of the attached files.
+        </summary>
+        <value>Array of strings containing the encoded contents of the attached files.</value>
+    </CEmail.AttachmentList>
+    <CEmail.BCCList>
+        <summary>
+            Array of strings containing the e-mails of all blind carbon copy (BCC) recipients.
+        </summary>
+        <value>Array of strings containing the e-mails of all blind carbon copy (BCC) recipients.</value>
+    </CEmail.BCCList>
+    <CEmail.Boundary>
+        <summary>
+            String value used as boundary for different e-mail parts.
+        </summary>
+        <value>String value used as boundary for different e-mail parts.</value>
+    </CEmail.Boundary>
+    <CEmail.Cargo>
+        <summary>
+            String value for additional user-defined header information.
+        </summary>
+        <value>String value for additional user-defined header information.</value>
+    </CEmail.Cargo>
+    <CEmail.CCList>
+        <summary>
+            Array of strings containing the e-mails of all carbon copy (CC) recipients.
+        </summary>
+        <value>Array of strings containing the e-mails of all carbon copy (CC) recipients.</value>
+    </CEmail.CCList>
+    <CEmail.CloneAttachments>
+        <summary>
+            Clones the internal Attachment array.
+        </summary>
+        <returns>
+            Nothing
+        </returns>
+    </CEmail.CloneAttachments>
+    <CEmail.CreateHtml>
+        <summary>
+            Creates a HTML body based on the text body of the email message.
+        </summary>
+        <param name="cText">The text to encode</param>
+        <returns>
+            cHTML	a HTML copy of cText.
+        </returns>
+    </CEmail.CreateHtml>
+    <CEmail.CreateReplyBody>
+        <summary>
+            Prepares a default text response.
+        </summary>
+        <param name="lReFormat">** missing parameter documentation **</param>
+        <remarks>
+            This method prepares a default reply text and places it in the cText instance variable of the Class. It incorporates a From Address, destination list and datetime stamp. The existing text lines are prefixed with an "&gt; " and any HTML text is cleaned out.
+        </remarks>
+    </CEmail.CreateReplyBody>
+    <CEmail.DateTimeStamp>
+        <summary>
+            A string containing the fully qualified date and time of the email.
+        </summary>
+        <value>A string containing the fully qualified date and time of the email.</value>
+    </CEmail.DateTimeStamp>
+    <CEmail.Decode>
+        <summary>
+            Extract all information from the various parts of an e-mail.
+        </summary>
+        <param name="cMail">The mail message to decode.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method knocks down all of the different parts of the raw e-mail stream and assigns them to appropriate properties.
+        </remarks>
+    </CEmail.Decode>
+    <CEmail.DeleteAttachment>
+        <summary>
+            Adds an attachment to the email.
+        </summary>
+        <param name="dwIndex">The index of the attachment to delete</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CEmail.DeleteAttachment>
+    <CEmail.DestList>
+        <summary>
+            Array of strings containing the e-mail addresses of all recipients.
+        </summary>
+        <value>Array of strings containing the e-mail addresses of all recipients.</value>
+    </CEmail.DestList>
+    <CEmail.DispositionNotification>
+        <summary>
+            A string containing the email address of a party to be notified that the email was received. This is sometimes replaced with a Return Receipt by some email clients.
+        </summary>
+        <value>A string containing the email address of a party to be notified that the email was received. This is sometimes replaced with a Return Receipt by some email clients.</value>
+    </CEmail.DispositionNotification>
+    <CEmail.EncodeAttachment>
+        <summary>
+            Provide a method to encode the provided file and provide the mail section header to properly define the attachment to the email.
+        </summary>
+        <param name="cFilename">The full path name to the file to be attached.</param>
+        <returns>
+            STRING containing error information. The string will be empty if the encoding was successful.
+        </returns>
+        <remarks>
+            This method encodes the presented filename with Base64 Encoding and formats the full text for an attachment section and adds it to the email.
+        </remarks>
+    </CEmail.EncodeAttachment>
+    <CEmail.Error>
+        <summary>
+            Numeric value representing the last error code that occurred.
+        </summary>
+        <value>Numeric value representing the last error code that occurred.</value>
+    </CEmail.Error>
+    <CEmail.ErrorMsg>
+        <summary>
+            A string representing the error description.
+        </summary>
+        <value>A string representing the error description.</value>
+    </CEmail.ErrorMsg>
+    <CEmail.FindBoundary>
+        <summary>
+            Locate a boundary within an email section
+        </summary>
+        <param name="cSection">The email section text in which the search is to take place.</param>
+        <returns>
+            STRING containing the found boundary.
+        </returns>
+        <remarks>
+            This method can be used to find the main boundary of the email body or a sub boundary.
+        </remarks>
+    </CEmail.FindBoundary>
+    <CEmail.FromAddress>
+        <summary>
+            String containing the sender's e-mail.
+        </summary>
+        <value>String containing the sender's e-mail.</value>
+    </CEmail.FromAddress>
+    <CEmail.FromName>
+        <summary>
+            String representing the sender's name.
+        </summary>
+        <value>String representing the sender's name.</value>
+    </CEmail.FromName>
+    <CEmail.FullFromAddress>
+        <summary>
+            The From Address as specified in the email header.
+        </summary>
+        <value>The From Address as specified in the email header.</value>
+    </CEmail.FullFromAddress>
+    <CEmail.GetAttachmentInfo>
+        <summary>
+            Method to decode all header elements of an email
+        </summary>
+        <param name="dwIndex">** missing parameter documentation **</param>
+        <param name="dwType">** missing parameter documentation **</param>
+        <remarks>
+            This method reads the current raw email data and decodes all header elements into their respective ivars. The process also decodes and separates all addressees and resolves names, datetime stamps, priority and receipt requirements.
+        </remarks>
+    </CEmail.GetAttachmentInfo>
+    <CEmail.GetHeaderInfo>
+        <summary>
+            Method to decode all header elements of an email
+        </summary>
+        <remarks>
+            This method reads the current raw email data and decodes all header elements into their respective ivars. The process also decodes and separates all addressees and resolves names, datetime stamps, priority and receipt requirements.
+        </remarks>
+    </CEmail.GetHeaderInfo>
+    <CEmail.HTMLText>
+        <summary>
+            A properly formed HTML text string suitable for display in a web browser pane. If the email did not contain an HTM component, one is formed from the Text component by wrapping it in appropriate tags.
+            If the email did contain HTML and had embedded images (marked with src="cid:) then these references will be replaced with references to the actual files names of these images.
+        </summary>
+        <value>
+            A properly formed HTML text string suitable for display in a web browser pane. If the email did not contain an HTM component, one is formed from the Text component by wrapping it in appropriate tags.
+            If the email did contain HTML and had embedded images (marked with src="cid:) then these references will be replaced with references to the actual files names of these images.
+        </value>
+    </CEmail.HTMLText>
+    <CEmail.MailBody>
+        <summary>
+            String containing the mail text.
+        </summary>
+        <value>String containing the mail text.</value>
+    </CEmail.MailBody>
+    <CEmail.MailDate>
+        <summary>
+            Date value representing the e-mail's received (sent) data.
+        </summary>
+        <value>Date value representing the e-mail's received (sent) data.</value>
+    </CEmail.MailDate>
+    <CEmail.MailHeader>
+        <summary>
+            String containing the mail's header text.
+        </summary>
+        <value>String containing the mail's header text.</value>
+    </CEmail.MailHeader>
+    <CEmail.MailPriority>
+        <summary>
+            Numeric value representing the e-mail priority.
+        </summary>
+        <value>Numeric value representing the e-mail priority.</value>
+    </CEmail.MailPriority>
+    <CEmail.MailTime>
+        <summary>
+            Time string representing the e-mail's sent time.
+        </summary>
+        <value>Time string representing the e-mail's sent time.</value>
+    </CEmail.MailTime>
+    <CEmail.MimeEncode>
+        <summary>
+            Method to encode a string using a specific encoding or the default encoding of an email
+        </summary>
+        <param name="c">Optional String to encode. The default is to encode the body</param>
+        <param name="nCode">
+            Optional encoding type to use. VO supports the following two encodings:
+            CODING_TYPE_PRINTABLE (the default)
+            CODING_TYPE_BASE64
+        </param>
+        <returns>
+            The encoded string.
+        </returns>
+    </CEmail.MimeEncode>
+    <CEmail.MimeHeader>
+        <summary>
+            Method to encode an MIME Attachment header
+        </summary>
+        <param name="nCode">
+            Optional encoding type to use. VO supports the following two encodings:
+            CODING_TYPE_PRINTABLE (the default)
+            CODING_TYPE_BASE64
+        </param>
+        <param name="xContentType">
+            Content type to use when encoding. The default is the content type of the message. When one of the following is used VO will assume that the file is part of the body:
+            If another type is used, VO will assume that the file is not part of the message body but an attachment
+        </param>
+        <param name="cFile">File name to use for the encoded header. This name is not used for the three content types mentioned above.</param>
+        <param name="cCID">** missing parameter documentation **</param>
+        <returns>
+            The encoded string.
+        </returns>
+        <remarks>
+            The MimeHeader() method is called by the CEMail:StreamOut() method during the streaming of the message.
+        </remarks>
+    </CEmail.MimeHeader>
+    <CEmail.Priority>
+        <summary>
+            A numeric value representing the priority of the email (normal = 3).
+        </summary>
+        <value>A numeric value representing the priority of the email (normal = 3).</value>
+    </CEmail.Priority>
+    <CEmail.ReplyTo>
+        <summary>
+            String value containing the e-mail to which a reply is being sent.
+        </summary>
+        <value>String value containing the e-mail to which a reply is being sent.</value>
+    </CEmail.ReplyTo>
+    <CEmail.ReturnReceipt>
+        <summary>
+            A string containing the email address of a party to be sent a receipt advice. Some email clients may use this to contain a return receipt and others may use Disposition Notification instead.
+        </summary>
+        <value>A string containing the email address of a party to be sent a receipt advice. Some email clients may use this to contain a return receipt and others may use Disposition Notification instead.</value>
+    </CEmail.ReturnReceipt>
+    <CEmail.SaveAs>
+        <summary>
+            Decode and save the specified encoded attachment of an e-mail as a local file.
+        </summary>
+        <param name="cPath">The directory in which the file is to be saved.  If not specified, the attachment will be saved within the current directory.</param>
+        <param name="cFile">String containing a new file name for the attachment being saved.  If not specified, the attachment will be saved under the file name contained in the attachment e-mail header.</param>
+        <param name="n">Number specifying which of the multiple attachments should be decoded and saved as a file.  If not specified, the first attachment will be saved.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method decodes the specified encoded attachment and saves it either under the specified or default file name.
+        </remarks>
+    </CEmail.SaveAs>
+    <CEmail.SetAttachmentInfo>
+        <summary>
+            This method allows you to replace elements of the internal attachment array of the email object.
+        </summary>
+        <param name="dwIndex">The element in the attachment array that needs to be replaced</param>
+        <param name="dwType">
+            The type of information that needs to be replaced. This can be one of:
+            ATTACH_STOREID (1)
+            ATTACH_CONTENTID (2)
+            ATTACH_FILESIZE (3)
+            ATTACH_FILENAME (4)
+            ATTACH_CONTENTTYPE (5)
+            ATTACH_TRANSFERENCODING (6)
+            ATTACH_FULLPATH (7)
+            ATTACH_SIZE (8)
+        </param>
+        <param name="uNewValue">New value for the type.</param>
+        <returns>
+            The old value for the attachment array element
+        </returns>
+    </CEmail.SetAttachmentInfo>
+    <CEmail.SetHeaderInfo>
+        <summary>
+            Method to encode all header elements of an email
+        </summary>
+        <remarks>
+            This method reads the properties of the Email object and creates a header from these properties. It also assigns the header to the Header property of the email.
+            This method is called from CEmail:StreamOut during the streaming of the email message.
+        </remarks>
+    </CEmail.SetHeaderInfo>
+    <CEmail.SetMailTime>
+        <summary>
+            Create an ANSI Date/Time based on current date and time.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method creates a string containing the date and time in a format that can be understood by all Internet servers.  The resulting string can be used via the TimeStamp access.
+        </remarks>
+    </CEmail.SetMailTime>
+    <CEmail.Size>
+        <summary>**Missing documentation **</summary>
+    </CEmail.Size>
+    <CEmail.StreamIn>
+        <summary>
+            This method gets called when an email messages is received. It calls into the Storage object to decode and store attachments.
+        </summary>
+        <param name="cData">The string that was received and needs to be decoded</param>
+        <remarks>
+            There is usually no need to call this method yourself. It gets called from the CPop class when receiving emails. It also gets called from the CEMail:Decode() message when decoding a raw message.
+            <note type="tip">
+                Visual Objects tries to avoid building large emails completely in memory. Therefore it reads or writes them in chunks. The StreamIn() and StreamOut() methods on the CEmail class handle these chunks.
+            </note>
+        </remarks>
+    </CEmail.StreamIn>
+    <CEmail.StreamOut>
+        <summary>
+            Generate message contents
+        </summary>
+        <remarks>
+            There is usually no need to call this message directly. It is called repeatedly from CSmtp:SendMail() when sending emails.
+            <note type="tip">
+                Visual Objects tries to avoid building large emails completely in memory. Therefore it reads or writes them in chunks. The StreamIn() and StreamOut() methods on the CEmail class handle these chunks.
+            </note>
+        </remarks>
+    </CEmail.StreamOut>
+    <CEmail.StreamStart>
+        <summary>
+            Initialize the Stream Status of an email message.
+        </summary>
+        <remarks>
+            There is usually no need to call this message directly. It is called repeatedly from CSmtp:SendMail() when sending emails, from CPop when receiving mails and from CEmail:Decode when decoding mails
+            <note type="tip">
+                Visual Objects tries to avoid building large emails completely in memory. Therefore it reads or writes them in chunks. The StreamIn() and StreamOut() methods on the CEmail class handle these chunks.
+            </note>
+        </remarks>
+    </CEmail.StreamStart>
+    <CEmail.Subject>
+        <summary>
+            String value containing the e-mail subject.
+        </summary>
+        <value>String value containing the e-mail subject.</value>
+    </CEmail.Subject>
+    <CEmail.TimeStamp>
+        <summary>
+            String value containing the date and time that the e-mail was sent.
+        </summary>
+        <value>String value containing the date and time that the e-mail was sent.</value>
+    </CEmail.TimeStamp>
+    <CFtp>
+        <summary>
+            Wrapper class for high-level File Transfer Protocol (FTP) functions provided by Microsoft in Wininet.dll.
+        </summary>
+        <remarks>
+            This class provides all necessary methods and properties for file transfer and exchange using File Transfer Protocol.
+        </remarks>
+    </CFtp>
+    <CFtp.ctor>
+        <summary>
+            Construct a CFtp object instance.
+        </summary>
+        <param name="cCaption">Name of the application or entity calling subsequent methods.  The default is 'VO Ftp Client'.</param>
+        <param name="n">Port number.  The default FTP port number is 21.</param>
+        <param name="lStat">Logical value specifying whether the CFtp:InternetStatus() method should be called for status callback notifications.  The default is TRUE.</param>
+    </CFtp.ctor>
+    <CFtp.AccessType>
+        <summary>
+            Numeric value representing the required access.
+            The application can select one of these type values:
+            INTERNET_OPEN_TYPE_DIRECT
+            Resolve all host names locally.
+            INTERNET_OPEN_TYPE_PROXY
+            Pass requests to the proxy specified by CFtp:Proxy unless a proxy bypass list is supplied by CFtp:ProxyBypass and the name to be resolved bypasses the proxy. In this case, the function proceeds as for INTERNET_OPEN_TYPE_DIRECT.
+            INTERNET_OPEN_TYPE_PRECONFIG
+            Retrieve the proxy or direct configuration from the registry.
+        </summary>
+        <value>Numeric value representing the required access.</value>
+    </CFtp.AccessType>
+    <CFtp.Append>
+        <summary>**Missing documentation **</summary>
+        <param name="cLocalFile">** missing parameter documentation **</param>
+        <param name="nFlags">** missing parameter documentation **</param>
+    </CFtp.Append>
+    <CFtp.CloseFile>
+        <summary>
+            Close a remote file.
+        </summary>
+        <param name="ptrHandle">Handle of a previously opened remote file.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method should be used to close the handle returned from the OpenFile() method.
+        </remarks>
+    </CFtp.CloseFile>
+    <CFtp.CloseRemote>
+        <summary>
+            Shut down the current Internet FTP connection.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method can be used to close the connection made for the CFtp object instance.  If not specified, the connection will be automatically closed if the appropriate object instance goes out of scope.
+        </remarks>
+        <example>
+            See the CFtp:ConnectRemote() example.
+        </example>
+    </CFtp.CloseRemote>
+    <CFtp.Connected>
+        <summary>
+            Logical value representing the connection status.
+        </summary>
+        <value>Logical value representing the connection status.</value>
+    </CFtp.Connected>
+    <CFtp.ConnectRemote>
+        <summary>
+            Connect an application to a remote FTP server.
+        </summary>
+        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  </param>
+        <param name="cID">String that contains the name of the user to log on.  If this parameter is NULL, the function uses the appropriate default ('anonymous').  For the FTP protocol, the default is anonymous.</param>
+        <param name="cPw">User's password as a string.  For anonymous login users, the user's e-mail name can be used as password.</param>
+        <param name="lBypass">** missing parameter documentation **</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method establishes a connection to a remote FTP server.
+        </remarks>
+        <example>
+            The following example creates a list of all files and directories of the X# download section at ftp.cai.com:
+            <code language="X#">
+                FUNC ListVOFiles()
+                LOCAL oFTP AS CFtp
+                LOCAL lRet AS LOGIC
+                LOCAL aRet AS ARRAY
+                LOCAL i    AS INT
+                oFTP := CFtp{"VO Sample FTP Agent"}
+                IF oFTP:ConnectRemote("ftp.cai.com", ;
+                                     "anonymous",   ;
+                                     "Darth.Vader@starwars.com")
+                oFTP:SetCurDir("/pub/vo")
+                ? "Contents of Directory " + oFTP:GetCurDir()
+                aRet := oFTP:Directory("*.*")
+                FOR i := 1 UPTO ALen(aRet)
+                ?  aRet[i, F_NAME]
+                ?? ", Size: " + NTrim(aRet[i, F_SIZE])
+                ?? ", Date/Time: " + DToC(aRet[i, F_DATE]) + ;
+                "/" + aRet[i, F_TIME]
+                ?? ", Attribute(s): ", aRet[i, F_ATTR]
+                NEXT
+                ENDIF
+                oFTP:CloseRemote()
+            </code><code language="X#">RETURN lRet</code>
+        </example>
+    </CFtp.ConnectRemote>
+    <CFtp.CreateDir>
+        <summary>
+            Create a new directory on the FTP server.
+        </summary>
+        <param name="cRemoteDir">String that contains the name of the directory that is to be created.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method creates a new directory on the remote FTP server.
+        </remarks>
+    </CFtp.CreateDir>
+    <CFtp.DeleteFile>
+        <summary>
+            Delete a file stored on the FTP server.
+        </summary>
+        <param name="cRemoteFile">String that contains the name of the file to be deleted on the remote FTP server.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method removes a file from a remote FTP server.
+        </remarks>
+    </CFtp.DeleteFile>
+    <CFtp.Directory>
+        <summary>
+            Create an array of directory and file information about the remote FTP server.
+        </summary>
+        <param name="cFile">
+            The file specification for the search.  Besides a file name, this specification can include an optional drive, directory, and extension.
+            The file name and extension can include the standard wildcard characters (* and ?).  
+            If you do not specify a drive and directory, the Windows defaults are used.  If you do not specify any file name, '*.*' is assumed.
+        </param>
+        <param name="nFlags">** missing parameter documentation **</param>
+        <returns>
+            An array of subarrays, with each subarray containing information about each file matching &lt;cFileSpec&gt;.  The subarray elements are referenced as shown in the example under the CFtp:ConnectRemote() Method section.
+        </returns>
+        <remarks>
+            This method returns information about files in the current or specified directory.  You can use it to perform actions on groups of files.
+        </remarks>
+    </CFtp.Directory>
+    <CFtp.Error>
+        <summary>
+            Numeric value representing the last occurring error code.
+        </summary>
+        <value>Numeric value representing the last occurring error code.</value>
+    </CFtp.Error>
+    <CFtp.ErrorMsg>
+        <summary>
+            A string representing the error description.
+        </summary>
+        <value>A string representing the error description.</value>
+    </CFtp.ErrorMsg>
+    <CFtp.GetCurDir>
+        <summary>
+            Get the name of the current directory on the remote FTP server for the current process.
+        </summary>
+        <returns>
+            Name of the current directory, if successful; otherwise, NULL_STRING.
+        </returns>
+        <remarks>
+            This method retrieves the directory name on the remote FTP server for the current process.
+        </remarks>
+    </CFtp.GetCurDir>
+    <CFtp.GetFile>
+        <summary>
+            Receive a file from the FTP server.
+        </summary>
+        <param name="cRemoteFile">Name of the remote file that has to be received.  </param>
+        <param name="cNewFile">String that contains the name of the file to create on the local system.  If not specified, &lt;cRemoteFile&gt; automatically becomes the name of the local file.</param>
+        <param name="lFailIfExists">Logical value indicating whether the method should proceed if a local file of the specified name already exists.  If &lt;lFailIfExists&gt; is TRUE and the local file exists, the GetFile() method fails.</param>
+        <param name="nFlags">
+            Flags that control how the function will handle the file download.  The first set of flag values indicates the conditions under which the transfer occurs.  These transfer type flags can be used in combination with the second set of flags that control caching.
+            The application can select one of these transfer type values:
+            The following flags handle how the caching of this file will be handled.  Any combination of the following flags can be used with the transfer type flag.
+            The possible values are:
+        </param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method retrieves a file from an FTP server and stores it under the specified name as a local file.
+        </remarks>
+        <example>
+            The following receives the comprehensive list (00index.txt) of all files contained in the X# download section at ftp.cai.com:
+            <code language="X#">
+                FUNC TestGetFile()
+                LOCAL oFTP  AS CFtp
+                LOCAL cFile AS STRING
+                oFTP := CFtp{"VO Sample FTP Agent"}
+                IF oFTP:ConnectRemote("ftp.cai.com", ;
+                                     "anonymous",   ;
+                                     "Darth.Vader@starwars.com")
+                cFile := "00index.txt"
+                IF oFTP:SetCurDir("/pub/vo")
+                IF oFTP:GetFile(cFile)
+                IF File(cFile)
+                ? "File received: " + FPathName()
+                ENDIF
+                ELSE
+                __RaiseFTPError(oFTP)
+                ENDIF
+                ELSE
+                __RaiseFTPError(oFTP)
+                ENDIF
+                ENDIF
+                oFTP:CloseRemote()
+                RETURN
+                STATIC FUNC __RaiseFTPError (oFTP AS CFtp) AS INT ;
+                PASCAL
+                LOCAL cError    AS STRING
+                LOCAL nRet      AS INT
+                nRet := oFTP:Error
+                IF nRet &gt; 0
+                cError := oFTP:ErrorMsg
+                IF SLen(cError) &gt; 0
+                MessageBox(0, cError, "FTP Error", MB_OK)
+                ENDIF
+                ENDIF
+                RETURN nRet
+            </code>
+        </example>
+    </CFtp.GetFile>
+    <CFtp.InternetStatus>
+        <summary>
+            Method InternetStatus() is a callback placeholder to receive current status information for an FTP session.  It should be overloaded by subclasses to implement the desired behavior.
+        </summary>
+        <param name="nContext">Application-defined context value associated with the current class.</param>
+        <param name="nStatus">Status code that indicates the reason for calling.  It can be one of the following values: </param>
+        <param name="pStatusInfo">Address of a buffer that contains information pertinent to this call to the callback function.  </param>
+        <param name="nStatusLength">Size of the &lt;pStatusInfo&gt; buffer.  </param>
+        <remarks>
+            The InternetStatus() method can be used to receive different status information at any stage of an FTP transfer between the FTP client and server.
+        </remarks>
+        <example>
+            The following example demonstrates using the InternetStatus() method to notify every status change to the owner window:
+            <code language="X#">
+                CLASS MyFTP INHERIT CFtp
+                  PROTECT oOwner   AS OBJECT
+                METHOD Init(oParent, cCaption, n, lStat)CLASS MyFtp
+                  SUPER:Init(cCaption, n, lStat)
+                  SELF:oOwner := oParent
+                  RETURN SELF
+                METHOD InternetStatus( nContext, nStatus, ; pStatusInfo, nStatusLength ) CLASS MyFTP
+                //
+                // This method receives all Low Level FTP
+                // notification. Please keep all parameters if you
+                // want to overwrite it for your own purpose
+                //
+                LOCAL cMsg AS STRING
+                DO CASE
+                CASE nStatus == INTERNET_STATUS_RESOLVING_NAME
+                  cMsg := "Resolving Name ... "
+                CASE nStatus == INTERNET_STATUS_NAME_RESOLVED
+                  cMsg := "Name resolved"
+                CASE nStatus == INTERNET_STATUS_CONNECTING_TO_SERVER
+                  cMsg := "Connecting to Server ... "
+                CASE nStatus == INTERNET_STATUS_CONNECTED_TO_SERVER
+                  cMsg := "Connected to Server"
+                CASE nStatus == INTERNET_STATUS_SENDING_REQUEST
+                  cMsg := "Sending Request ... "
+                CASE nStatus == INTERNET_STATUS_REQUEST_SENT
+                  cMsg := "Request sent"
+                CASE nStatus == INTERNET_STATUS_RECEIVING_RESPONSE
+                  cMsg := "Receiving response ..."
+                CASE nStatus == INTERNET_STATUS_RESPONSE_RECEIVED
+                  cMsg := "Response received"
+                CASE nStatus == INTERNET_STATUS_CTL_RESPONSE_RECEIVED
+                  cMsg := "CTL Response received"
+                CASE nStatus == INTERNET_STATUS_PREFETCH
+                  cMsg := "Prefetch"
+                CASE nStatus == INTERNET_STATUS_CLOSING_CONNECTION
+                  cMsg := "Closing Connection ..."
+                CASE nStatus == INTERNET_STATUS_CONNECTION_CLOSED
+                  cMsg := "Connection closed"
+                CASE nStatus == INTERNET_STATUS_HANDLE_CREATED
+                  cMsg := "Handle created"
+                  //      _DebOut32( "FTP Status : " + cMsg )
+                  RETURN
+                CASE nStatus == INTERNET_STATUS_HANDLE_CLOSING
+                  cMsg := "Closing handle ..."
+                CASE nStatus == INTERNET_STATUS_REQUEST_COMPLETE
+                  cMsg := "Request complete"
+                CASE nStatus == INTERNET_STATUS_REDIRECT
+                  cMsg := "Redirect"
+                OTHERWISE
+                  cMsg := "Unkown FTP Status"
+                ENDCASE
+                SELF:oOwner:FTPStatus := cMsg
+                RETURN NIL
+            </code>
+        </example>
+    </CFtp.InternetStatus>
+    <CFtp.Open>
+        <summary>
+            Initialize an application's use of the Win32 Internet functions.
+        </summary>
+        <param name="nFlags">
+            Flag that indicates various options affecting the behavior of the methods.  It can be a combination of these values:
+            INTERNET_FLAG_OFFLINE
+            Satisfy download operations on this handle through the persistent cache only.  If the item does not exist in the cache, the method returns an appropriate error code.
+            INTERNET_FLAG_ASYNC
+            Future operations on this handle may fail with ERROR_IO_PENDING.
+        </param>
+        <param name="xProxy">String containing the name of the proxy server to use if proxy access was specified.  If this parameter is NIL, the function reads proxy information from the registry.</param>
+        <param name="aProxyByPass">
+            Array with host names or IP addresses, or both, that are known locally.  Requests to these names are not routed through the proxy.  The strings can contain wildcards, such as {'157.55.*', '*int*'}, meaning any IP address starting with 157.55, or any name containing the substring 'int', will bypass the proxy.
+            If this array contains the '&lt;local&gt;' string as the only entry, the function bypasses any host name that does not contain a period.  For example, 'www.cai.com' would be routed to the proxy, whereas 'internet' would not.  If this parameter is NIL, the function reads the bypass list from the registry.
+        </param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method initializes internal data structures and prepares for future calls to CFtp methods.  It does not have to be called explicitly, because the CFtp:ConnectRemote() method internally calls this method, if necessary.
+        </remarks>
+    </CFtp.Open>
+    <CFtp.OpenFile>
+        <summary>
+            Open a remote file for writing or reading.
+        </summary>
+        <param name="cRemoteFile">String containing the name of the file that has to be accessed on the remote system.</param>
+        <param name="nAccess">Numeric value determining the type of file access (GENERIC_READ or GENERIC_WRITE — not both).  The default is GENERIC_READ.</param>
+        <param name="nFlags">
+            Conditions for operation with the specified file.  The application should select one transfer type and any of the flags that control how the caching of the file will be controlled.
+            The transfer type can be any one of the following values:
+            The application can use one or more of the following values to control the caching of the file:
+        </param>
+        <returns>
+            File handle, if successful; otherwise, NULL_PTR.
+        </returns>
+        <remarks>
+            The OpenFile() method initializes a remote file handle for subsequent file operations.  The handle remains open until calling the CloseFile() method, and it can be used to call functions like InternetReadFile() or InternetWriteFile(), InternetCloseHandle(), or FtpFindFirstFile().
+        </remarks>
+    </CFtp.OpenFile>
+    <CFtp.PassWord>
+        <summary>
+            A string representing the password for the FTP session.
+        </summary>
+        <value>A string representing the password for the FTP session.</value>
+    </CFtp.PassWord>
+    <CFtp.Proxy>
+        <summary>
+            A string containing the name of the proxy server (or servers) to use for Internet connections.
+        </summary>
+        <value>A string containing the name of the proxy server (or servers) to use for Internet connections.</value>
+    </CFtp.Proxy>
+    <CFtp.ProxyBypass>
+        <summary>
+            A string containing an optional list of host names or IP addresses, or both, that are known locally. Requests to these names are not routed through the proxy. The list can contain wildcards, such as "130.126.*.* *dev*", meaning that any IP address starting with 130.126 or any name containing the substring "dev" will bypass the proxy.
+        </summary>
+        <value>A string containing an optional list of host names or IP addresses, or both, that are known locally. Requests to these names are not routed through the proxy. The list can contain wildcards, such as "130.126.*.* *dev*", meaning that any IP address starting with 130.126 or any name containing the substring "dev" will bypass the proxy.</value>
+    </CFtp.ProxyBypass>
+    <CFtp.PutFile>
+        <summary>
+            Store a file on the FTP server.
+        </summary>
+        <param name="cLocalFile">Name of the local file that is to be sent to the remote FTP server.  </param>
+        <param name="cRemoteFile">String that contains the name of the file to create on the remote FTP server.  If not specified, &lt;cLocalFile&gt; automatically becomes the name of the remote file.</param>
+        <param name="lFailIfExists">Logical value indicating whether the method should proceed if a remote file of the specified name already exists.  If &lt;lFailIfExists&gt; is TRUE and the remote file exists, method PutFile() fails.</param>
+        <param name="nFlags">
+            Flags that control how the function will handle the file upload and the conditions under which the transfers occur.  The application should select one transfer type and any of the flags that control how the caching of the file will be controlled.
+            The transfer type can be any one of the following values:
+            The application can use one or more of the following values to control the caching of the file:
+        </param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method handles all of the necessary processes associated with reading a file locally and storing it on an FTP server.
+        </remarks>
+        <example>
+            The following receives the comprehensive list (00index.txt) of all files contained in the X# download section at ftp.cai.com:
+            <code language="X#">
+                FUNC TestGetFile()
+                LOCAL oFTP  AS CFtp
+                LOCAL cFile AS STRING
+                oFTP := CFtp{"VO Sample FTP Agent"}
+                IF oFTP:ConnectRemote("ftp.cai.com", ;
+                                       "anonymous",   ;
+                                       "Darth.Vader@starwars.com")
+                cFile := "00index.txt"
+                IF oFTP:SetCurDir("/pub/vo")
+                IF oFTP:GetFile(cFile)
+                IF File(cFile)
+                ? "File received: " + FPathName()
+                ENDIF
+                ELSE
+                __RaiseFTPError(oFTP)
+                ENDIF
+                ELSE
+                __RaiseFTPError(oFTP)
+                ENDIF
+                oFTP:CloseRemote()
+                RETURN
+                STATIC FUNC __RaiseFTPError (oFTP AS CFtp) AS INT PASCAL
+                LOCAL cError    AS STRING
+                LOCAL nRet      AS INT
+                nRet := oFTP:Error
+                IF nRet &gt; 0
+                cError := oFTP:ErrorMsg
+                IF SLen(cError) &gt; 0
+                MessageBox(0, cError, "FTP Error", MB_OK)
+                ENDIF
+                ENDIF
+                RETURN nRet
+            </code>
+        </example>
+    </CFtp.PutFile>
+    <CFtp.RemoteHost>
+        <summary>
+            A string representing the name of the FTP server to which you want to connect.
+        </summary>
+        <value>A string representing the name of the FTP server to which you want to connect.</value>
+    </CFtp.RemoteHost>
+    <CFtp.RemoveDir>
+        <summary>
+            Delete a directory from the remote FTP server.
+        </summary>
+        <param name="cRemoteDir">String that contains the name of the directory that is to be removed.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method removes a directory from the remote FTP server.
+        </remarks>
+    </CFtp.RemoveDir>
+    <CFtp.RenameFile>
+        <summary>
+            Rename a file stored on the FTP server.
+        </summary>
+        <param name="cRemoteFile">String that contains the name of the file to be renamed on the remote FTP server.</param>
+        <param name="cNewName">The new name to give to the file.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            The RenameFile() method renames a file on the remote FTP server.
+        </remarks>
+    </CFtp.RenameFile>
+    <CFtp.SetCurDir>
+        <summary>
+            Change the current directory on the remote FTP server for the current process.
+        </summary>
+        <param name="cRemoteDir">String that contains the path of the directory to change to.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            The SetCurDir() method changes the directory on the remote FTP server for the current process.
+        </remarks>
+    </CFtp.SetCurDir>
+    <CFtp.UserName>
+        <summary>
+            A string for identifying the user for the FTP connection.
+        </summary>
+        <value>A string for identifying the user for the FTP connection.</value>
+    </CFtp.UserName>
+    <CHttp>
+        <summary>
+            Wrapper class for an Http (Hypertext transfer protocol) session.
+        </summary>
+        <remarks>
+            This class provides all necessary methods and properties for an HyperText Transfer Protocol session.
+        </remarks>
+    </CHttp>
+    <CHttp.ctor>
+        <summary>
+            Instantiates a new Http wrapper object.
+        </summary>
+        <param name="cCaption">An optional caption as a string.</param>
+        <param name="n">The HTTP port address ( the default is 80 ).</param>
+        <param name="lStat">** missing parameter documentation **</param>
+    </CHttp.ctor>
+    <CHttp.AddRequestHeaders>
+        <summary>
+            Adds additional headers to the current request.
+        </summary>
+        <param name="cHeaders">Contains the headers to append to the request. Each header must be terminated by a CR/LF (carriage return/line feed) pair.</param>
+        <param name="nModifiers">Contains values used to modify the semantics of this function (see HttpAddRequestHeaders in the Win32 Internet API help for possible values).</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CHttp.AddRequestHeaders>
+    <CHttp.CloseRemote>
+        <summary>
+            Closes the http connection.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CHttp.CloseRemote>
+    <CHttp.CloseRequest>
+        <summary>
+            Closes an http request.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CHttp.CloseRequest>
+    <CHttp.ConnectRemote>
+        <summary>
+            Opens the http connection.
+        </summary>
+        <param name="cIP">The host name or IP address of the remote server.</param>
+        <param name="cID">User ID ( Optional )</param>
+        <param name="cPw">Password ( Optional )</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CHttp.ConnectRemote>
+    <CHttp.Directory>
+        <summary>
+            If an ftp server is accessed via http, this method returns an array of the files of the current directory.
+        </summary>
+        <returns>
+            An array of the files in the current directory on the ftp server.
+        </returns>
+    </CHttp.Directory>
+    <CHttp.FtpRequest>
+        <summary>
+            Indicates that the http connection is being used to access an ftp server.
+        </summary>
+        <value>Indicates that the http connection is being used to access an ftp server.</value>
+    </CHttp.FtpRequest>
+    <CHttp.GetCurDir>
+        <summary>
+            Gets the name of the current directory on the remote server.
+        </summary>
+        <returns>
+            The directory name as a string.
+        </returns>
+    </CHttp.GetCurDir>
+    <CHttp.GetDocumentByURL>
+        <summary>
+            Retrieves a document from the server.
+        </summary>
+        <param name="cURL">The URL of the document to retrieve.</param>
+        <param name="nFlags">** missing parameter documentation **</param>
+        <returns>
+            The document as a string.
+        </returns>
+    </CHttp.GetDocumentByURL>
+    <CHttp.GetDocumentFromServer>
+        <summary>
+            Retrieves a document from the server.
+        </summary>
+        <param name="cServer">The server to retrieve the file from.</param>
+        <param name="cDocument">The document to retrrieve.</param>
+        <param name="cID">Optional user ID.</param>
+        <param name="cPw">Optional password.</param>
+        <returns>
+            The document as a string.
+        </returns>
+    </CHttp.GetDocumentFromServer>
+    <CHttp.GetFile>
+        <summary>
+            Retrieves the remote file cRemoteFile to the (local) file cNewFile.
+        </summary>
+        <param name="cRemoteFile">The name of the file on the remote server to retrieve.</param>
+        <param name="cNewFile">The name to use when saving the file on the local drive.</param>
+        <param name="lFailIfExists">IF lFailIfExists is set to TRUE the method will fail if the file exists on the local disk. If it is set to FALSE an existing file will be over written.</param>
+        <returns>
+            TRUE if the file is saved, otherwise FALSE.
+        </returns>
+    </CHttp.GetFile>
+    <CHttp.GetResponse>
+        <summary>
+            Gets the response for the current request.
+        </summary>
+        <returns>
+            The response for the current request as a string.
+        </returns>
+    </CHttp.GetResponse>
+    <CHttp.GetResponseHeader>
+        <summary>
+            Gets the response header for the current request.
+        </summary>
+        <returns>
+            The response header for the current request as a string.
+        </returns>
+    </CHttp.GetResponseHeader>
+    <CHttp.Open>
+        <summary>
+            Opens the http connection.
+        </summary>
+        <param name="nFlags">Contains flags used in the internal InternetConnect call (see Win32 Internet API help for possible values).</param>
+        <param name="xProxy">Name of a proxy server (optional).</param>
+        <param name="aProxyByPass">Array of server names that should not be accessed through the proxy (optional).</param>
+        <returns>
+            TRUE if the connection was opened, otherwise FALSE.
+        </returns>
+    </CHttp.Open>
+    <CHttp.OpenFile>
+        <summary>
+            Opens a remote file.
+        </summary>
+        <param name="cRemoteFile">The file name as a string.</param>
+        <param name="nAccess">**Missing parameter documentation **</param>
+        <param name="nFlags">Contains flags used in the internal call (see Win32 Internet API help for possible values).</param>
+        <returns>
+            The handle of the requested file.
+        </returns>
+    </CHttp.OpenFile>
+    <CHttp.OpenRequest>
+        <summary>
+            Opens a new request.
+        </summary>
+        <param name="cMethod">The request verb (e.g. GET).</param>
+        <param name="cDocument">The name of the target document to open.</param>
+        <param name="nFlags">Contains flags used in the internal HttpOpenRequest call (see Win32 Internet API help for possible values).</param>
+        <returns>
+            TRUE if the document was opened, otherwise FALSE.
+        </returns>
+    </CHttp.OpenRequest>
+    <CHttp.Response>
+        <summary>
+            Use this to get the response.
+        </summary>
+        <value>Use this to get the response.</value>
+    </CHttp.Response>
+    <CHttp.ResponseHeader>
+        <summary>
+            Use this to get the response header.
+        </summary>
+        <value>Use this to get the response header.</value>
+    </CHttp.ResponseHeader>
+    <CHttp.SendRequest>
+        <summary>
+            Sends a request to the server.
+        </summary>
+        <param name="cHeaders">Additional headers (optional).</param>
+        <param name="pData">Pointer to data of size &lt;nDataSize&gt; (optional).</param>
+        <param name="nDataSize">The size of the data in &lt;pData&gt; (optional but must be provided if &lt;pData&gt; is used).</param>
+        <returns>
+            TRUE if the request is successful, otherwise FALSE.
+        </returns>
+    </CHttp.SendRequest>
+    <CHttp.SetCurDir>
+        <summary>
+            Changes the current directory on the remote server for the current process.
+        </summary>
+        <param name="cRemoteDir">The path of the directory to change to.</param>
+        <returns>
+            The new directory name as a string.
+        </returns>
+    </CHttp.SetCurDir>
+    <CIMap>
+        <summary>Class to read a mailbox using the IMAP protocol.</summary>
+    </CIMap>
+    <CImap.ctor>
+        <summary>**Missing documentation **</summary>
+        <param name="cServer">** missing parameter documentation **</param>
+        <param name="cUid">** missing parameter documentation **</param>
+        <param name="cPwd">** missing parameter documentation **</param>
+    </CImap.ctor>
+    <CImap.CheckReply>
+        <summary>**Missing documentation **</summary>
+    </CImap.CheckReply>
+    <CImap.ClientCommand>
+        <summary>**Missing documentation **</summary>
+        <param name="cBuffer">** missing parameter documentation **</param>
+    </CImap.ClientCommand>
+    <CImap.DeleteMail>
+        <summary>**Missing documentation **</summary>
+        <param name="nMail">** missing parameter documentation **</param>
+    </CImap.DeleteMail>
+    <CImap.Disconnect>
+        <summary>**Missing documentation **</summary>
+    </CImap.Disconnect>
+    <CImap.GetMail>
+        <summary>**Missing documentation **</summary>
+        <param name="nMail">** missing parameter documentation **</param>
+    </CImap.GetMail>
+    <CImap.GetPrefix>
+        <summary>**Missing documentation **</summary>
+    </CImap.GetPrefix>
+    <CImap.GetStatus>
+        <summary>**Missing documentation **</summary>
+    </CImap.GetStatus>
+    <CImap.LogOn>
+        <summary>**Missing documentation **</summary>
+        <param name="cUID">** missing parameter documentation **</param>
+        <param name="cPwd">** missing parameter documentation **</param>
+    </CImap.LogOn>
+    <CImap.MailBox>
+        <summary>**Missing documentation **</summary>
+    </CImap.MailBox>
+    <CImap.SendRemote>
+        <summary>**Missing documentation **</summary>
+        <param name="cData">** missing parameter documentation **</param>
+    </CImap.SendRemote>
+    <CInetDial>
+        <summary>
+            Class for establishing dial up connections
+        </summary>
+        <remarks>
+            This class wraps functionality to manage Dialup Connections
+        </remarks>
+    </CInetDial>
+    <CINetDial.ctor>
+        <summary>**Missing documentation **</summary>
+        <param name="dwDialFlag">** missing parameter documentation **</param>
+        <param name="oOwner">** missing parameter documentation **</param>
+        <param name="symNotifyMethod">** missing parameter documentation **</param>
+    </CINetDial.ctor>
+    <CINetDial.AutoDial>
+        <summary>**Missing documentation **</summary>
+        <param name="dwDialFlag">** missing parameter documentation **</param>
+    </CINetDial.AutoDial>
+    <CINetDial.Dial>
+        <summary>**Missing documentation **</summary>
+        <param name="cConnectionName">** missing parameter documentation **</param>
+        <param name="dwDialFlag">** missing parameter documentation **</param>
+    </CINetDial.Dial>
+    <CINetDial.DialFlag>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.DialFlag>
+    <CINetDial.Error>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.Error>
+    <CINetDial.ErrorDescription>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.ErrorDescription>
+    <CINetDial.GetConnectedState>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.GetConnectedState>
+    <CINetDial.GetConnections>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.GetConnections>
+    <CINetDial.GetDialUpEntries>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.GetDialUpEntries>
+    <CINetDial.HangUp>
+        <summary>**Missing documentation **</summary>
+        <param name="lAllModems">** missing parameter documentation **</param>
+    </CINetDial.HangUp>
+    <CINetDial.IsConfigured>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.IsConfigured>
+    <CINetDial.IsConnected>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.IsConnected>
+    <CINetDial.IsLan>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.IsLan>
+    <CINetDial.IsModem>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.IsModem>
+    <CINetDial.IsOffline>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.IsOffline>
+    <CINetDial.IsProxy>
+        <summary>**Missing documentation **</summary>
+    </CINetDial.IsProxy>
+    <CINetDial.SetOwner>
+        <summary>**Missing documentation **</summary>
+        <param name="oOwner">** missing parameter documentation **</param>
+        <param name="symNotifyMethod">** missing parameter documentation **</param>
+    </CINetDial.SetOwner>
+    <CINetDial.SetSystemOffline>
+        <summary>**Missing documentation **</summary>
+        <param name="lEnable">** missing parameter documentation **</param>
+    </CINetDial.SetSystemOffline>
+    <CINetDial.VerifyConnection>
+        <summary>**Missing documentation **</summary>
+        <param name="dwDialFlag">** missing parameter documentation **</param>
+        <param name="cConnectionName">** missing parameter documentation **</param>
+    </CINetDial.VerifyConnection>
+    <CMailAbstract>
+        <summary>
+            Base class for CPop, CSmtp and CNNTP classes.
+        </summary>
+        <remarks>
+            <br />Important!  CMailAbstract is an abstract class and should not be used directly — instead, use one of its subclasses.
+            This abstract class defines the common protocol — properties and behavior — used by the e-mail classes, CPop, CSmtp and CNNTP.
+        </remarks>
+    </CMailAbstract>
+    <CMailAbstract.ctor>
+        <summary>
+            Construct a CMailAbstract object.
+        </summary>
+        <param name="nPort">Port number at &lt;cHostNameOrIP&gt;.  The default value is IPPORT_SMTP (25).</param>
+        <param name="cServer">String containing the local name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  If NULL_STRING is specified, the local host name is assumed.</param>
+    </CMailAbstract.ctor>
+    <CMailAbstract.Close>
+        <summary>
+            De-initialize all internal values of an Internet session.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method closes down an Internet session by closing and destroying the appropriate CSocket object instance.
+        </remarks>
+    </CMailAbstract.Close>
+    <CMailAbstract.Destroy>
+        <summary>**Missing documentation **</summary>
+    </CMailAbstract.Destroy>
+    <CMailAbstract.DomainName>
+        <summary>**Missing documentation **</summary>
+    </CMailAbstract.DomainName>
+    <CMailAbstract.Email>
+        <summary>
+            CEmail object instance representing e-mail to be sent.
+        </summary>
+        <value>CEmail object instance representing e-mail to be sent.</value>
+    </CMailAbstract.Email>
+    <CMailAbstract.Error>
+        <summary>
+            Numeric value representing the last occurring error code.
+        </summary>
+        <value>Numeric value representing the last occurring error code.</value>
+    </CMailAbstract.Error>
+    <CMailAbstract.ErrorMsg>
+        <summary>
+            A string representing the error description.
+        </summary>
+        <value>A string representing the error description.</value>
+    </CMailAbstract.ErrorMsg>
+    <CMailAbstract.InternetStatus>
+        <summary>**Missing documentation **</summary>
+        <param name="nContext">** missing parameter documentation **</param>
+        <param name="nStatus">** missing parameter documentation **</param>
+        <param name="xStatus">** missing parameter documentation **</param>
+        <param name="nStatusLength">** missing parameter documentation **</param>
+    </CMailAbstract.InternetStatus>
+    <CMailAbstract.Open>
+        <summary>
+            Initialize all internal startup values for an Internet session.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method initializes an Internet session by creating a CSocket object that will be used later on.
+        </remarks>
+    </CMailAbstract.Open>
+    <CMailAbstract.oSocket>
+        <exclude />
+    </CMailAbstract.oSocket>
+    <CMailAbstract.PassWord>
+        <summary>
+            A string representing the password to be used.
+        </summary>
+        <value>A string representing the password to be used.</value>
+    </CMailAbstract.PassWord>
+    <CMailAbstract.RecvRemote>
+        <summary>
+            Receive data from a remote host.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            The RecvRemote() method receives data from a connected remote host.  Received data are stored to instance variable, SELF:cReply.
+        </remarks>
+    </CMailAbstract.RecvRemote>
+    <CMailAbstract.RemoteHost>
+        <summary>
+            String representing the address of the mail server.
+        </summary>
+        <value>String representing the address of the mail server.</value>
+    </CMailAbstract.RemoteHost>
+    <CMailAbstract.RemotePort>
+        <summary>
+            Numeric value representing the port number.
+        </summary>
+        <value>Numeric value representing the port number.</value>
+    </CMailAbstract.RemotePort>
+    <CMailAbstract.ReplyCode>
+        <summary>
+            Numeric value representing the server's reply code.
+        </summary>
+        <value>Numeric value representing the server's reply code.</value>
+    </CMailAbstract.ReplyCode>
+    <CMailAbstract.ReplyString>
+        <summary>
+            String representing the server's reply.
+        </summary>
+        <value>String representing the server's reply.</value>
+    </CMailAbstract.ReplyString>
+    <CMailAbstract.SendData>
+        <summary>
+            Send data to a remote host.
+        </summary>
+        <param name="cData">Data to be sent to a remote host.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method sends data via a socket to the remote host after adding trailing CRLF to the data stream.
+        </remarks>
+    </CMailAbstract.SendData>
+    <CMailAbstract.SendRaw>
+        <summary>**Missing documentation **</summary>
+        <param name="cData">** missing parameter documentation **</param>
+    </CMailAbstract.SendRaw>
+    <CMailAbstract.SendRemote>
+        <summary>
+            Send any data to a remote host.
+        </summary>
+        <param name="cData">Data to be sent to the remote host.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method sends data via a socket to the remote host.
+        </remarks>
+    </CMailAbstract.SendRemote>
+    <CMailAbstract.Socket>
+        <summary>
+            CSocket object instance representing the used socket.
+        </summary>
+        <value>CSocket object instance representing the used socket.</value>
+    </CMailAbstract.Socket>
+    <CMailAbstract.Timeout>
+        <summary>
+            Numeric value representing the time-out in milliseconds.
+        </summary>
+        <value>Numeric value representing the time-out in milliseconds.</value>
+    </CMailAbstract.Timeout>
+    <CMailAbstract.TimeoutRetries>
+        <summary>**Missing documentation **</summary>
+    </CMailAbstract.TimeoutRetries>
+    <CMailAbstract.UserName>
+        <summary>
+            A string containing the user name to be used.
+        </summary>
+        <value>A string containing the user name to be used.</value>
+    </CMailAbstract.UserName>
+    <CMessage>
+        <summary>
+            Base class for CEmail class.
+        </summary>
+        <remarks>
+            <br />Important!  CMessage is an abstract class and should not be used directly — instead, use one of its subclasses.
+            This abstract class defines the common protocol — properties and behaviour — used by the e-mail classes, CEmail.
+        </remarks>
+    </CMessage>
+    <CMessage.ctor>
+        <summary>
+            Construct a new CMessage object.
+        </summary>
+    </CMessage.ctor>
+    <CMessage.AttachmentCount>
+        <summary>**Missing documentation **</summary>
+    </CMessage.AttachmentCount>
+    <CMessage.AttachmentFileList>
+        <summary>
+            An array of filenames for attachments. (Used only by CNews.)
+        </summary>
+        <value>An array of filenames for attachments. (Used only by CNews.)</value>
+    </CMessage.AttachmentFileList>
+    <CMessage.AttachmentList>
+        <summary>**Missing documentation **</summary>
+    </CMessage.AttachmentList>
+    <CMessage.Body>
+        <summary>**Missing documentation **</summary>
+    </CMessage.Body>
+    <CMessage.BodyExtract>
+        <summary>**Missing documentation **</summary>
+        <param name="c">** missing parameter documentation **</param>
+    </CMessage.BodyExtract>
+    <CMessage.BodyHtml>
+        <summary>**Missing documentation **</summary>
+    </CMessage.BodyHtml>
+    <CMessage.Boundary>
+        <summary>
+            A string representing the main boundary for the email.
+        </summary>
+        <value>A string representing the main boundary for the email.</value>
+    </CMessage.Boundary>
+    <CMessage.Cargo>
+        <summary>**Missing documentation **</summary>
+    </CMessage.Cargo>
+    <CMessage.ContentType>
+        <summary>
+            A string representing the content type for that section.
+        </summary>
+        <value>A string representing the content type for that section.</value>
+    </CMessage.ContentType>
+    <CMessage.Decode>
+        <summary>
+            Decodes a raw message string into its parts.
+        </summary>
+        <param name="cMail">The raw string to be decoded.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CMessage.Decode>
+    <CMessage.DecodeAndSaveAs>
+        <summary>
+            This is an abstract method called by CMessage:SaveAs() If the code type is unknown.
+            This method can be provided by the developer to implement unsupported code types.
+        </summary>
+        <remarks>
+            <br />Important!  This is a callback method used by X#.  Normally, it should not be called in your application code.
+        </remarks>
+        <param name="cPath">The path to use when saving the file.</param>
+        <param name="cFile">The file name to use.</param>
+        <param name="cMail">The raw string to be decoded.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CMessage.DecodeAndSaveAs>
+    <CMessage.Error>
+        <summary>
+            A number representing the error most recently occurring.
+        </summary>
+        <value>A number representing the error most recently occurring.</value>
+    </CMessage.Error>
+    <CMessage.ErrorMsg>
+        <summary>
+            A string representing the details of the last error.
+        </summary>
+        <value>A string representing the details of the last error.</value>
+    </CMessage.ErrorMsg>
+    <CMessage.FakeAttachmentList>
+        <summary>
+            Gets the original file names of the attachment(s).
+        </summary>
+        <returns>
+            Returns a string with the original file names of the attachment(s).
+        </returns>
+    </CMessage.FakeAttachmentList>
+    <CMessage.FromAddress>
+        <summary>
+            A string representing the email address of the sender.
+        </summary>
+        <value>A string representing the email address of the sender.</value>
+    </CMessage.FromAddress>
+    <CMessage.FromName>
+        <summary>
+            A string representing the name of the sender.
+        </summary>
+        <value>A string representing the name of the sender.</value>
+    </CMessage.FromName>
+    <CMessage.GetAttachInfo>
+        <summary>
+            Retrieves information about attachment(s).
+        </summary>
+        <param name="c">The optional attachment string.</param>
+        <param name="lNewsGroupMessage">A logical flag indicating whether &lt;c&gt; is a news group message.</param>
+    </CMessage.GetAttachInfo>
+    <CMessage.GetHeaderInfo>
+        <summary>
+            Extracts all the header information and stores that information into the appropriate properties.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CMessage.GetHeaderInfo>
+    <CMessage.HEADER>
+        <summary>**Missing documentation **</summary>
+    </CMessage.HEADER>
+    <CMessage.MailBody>
+        <summary>
+            A string representing the entire contents of the body of the email. This will include all attachments and multi-part extensions.
+        </summary>
+        <value>A string representing the entire contents of the body of the email. This will include all attachments and multi-part extensions.</value>
+    </CMessage.MailBody>
+    <CMessage.MailDate>
+        <summary>
+            Returns the creation date of the message.
+        </summary>
+        <value>The creation date of the message.</value>
+    </CMessage.MailDate>
+    <CMessage.MailHeader>
+        <summary>
+            A string representing the entire header contents for the email.
+        </summary>
+        <value>A string representing the entire header contents for the email.</value>
+    </CMessage.MailHeader>
+    <CMessage.MailTime>
+        <summary>
+            Returns the creation time of the message as a string.
+        </summary>
+        <value>The creation time of the message as a string.</value>
+    </CMessage.MailTime>
+    <CMessage.MessageID>
+        <summary>
+            A string representing the ID of the email.
+        </summary>
+        <value>A string representing the ID of the email.</value>
+    </CMessage.MessageID>
+    <CMessage.Priority>
+        <summary>**Missing documentation **</summary>
+    </CMessage.Priority>
+    <CMessage.References>
+        <summary>**Missing documentation **</summary>
+    </CMessage.References>
+    <CMessage.ReplyTo>
+        <summary>**Missing documentation **</summary>
+    </CMessage.ReplyTo>
+    <CMessage.SaveAs>
+        <summary>
+            Decode and save the attachment.
+        </summary>
+        <param name="cPath">The optional directory in which the file will be saved.</param>
+        <param name="cFile">The optional file name to save the attachment as.</param>
+        <param name="n">Which attachment to save.  If not specified, the first attachment will be saved.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CMessage.SaveAs>
+    <CMessage.SetMailTime>
+        <summary>
+            Converts the current time and date into an Internet timestamp string for the current message object.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CMessage.SetMailTime>
+    <CMessage.SubBoundary>
+        <summary>
+            A string representing the sub boundary for the multi-part alternate email. This is one which carries both text and html components.
+        </summary>
+        <value>A string representing the sub boundary for the multi-part alternate email. This is one which carries both text and html components.</value>
+    </CMessage.SubBoundary>
+    <CMessage.Subject>
+        <summary>**Missing documentation **</summary>
+    </CMessage.Subject>
+    <CMessage.TimeStamp>
+        <summary>
+            Returns the creation date and time of the message as a Time-stamp string.
+        </summary>
+        <value>The creation date and time of the message as a Time-stamp string.</value>
+    </CMessage.TimeStamp>
+    <CMessage.TransferEncoding>
+        <summary>
+            A string representing the Transfer encoding type for the current section.
+        </summary>
+        <value>A string representing the Transfer encoding type for the current section.</value>
+    </CMessage.TransferEncoding>
+    <CNews>
+        <summary>
+            To encapsulate Internet news messages.
+        </summary>
+        <remarks>
+            This class is used to retrieve messages from a news group.
+        </remarks>
+    </CNews>
+    <CNews.ctor>
+        <summary>
+            Construct a new CNews object.
+        </summary>
+        <param name="xData">The optional raw news message, which will be decoded into its individual parts.</param>
+    </CNews.ctor>
+    <CNews.FollowUpTo>
+        <summary>
+            Returns a string representing the FollowUpTo field of the news message header.
+        </summary>
+        <value>A string representing the FollowUpTo field of the news message header.</value>
+    </CNews.FollowUpTo>
+    <CNews.GetAttachInfo>
+        <summary>
+            Returns information about any attachments.
+        </summary>
+        <param name="c">The optional attachment string.</param>
+    </CNews.GetAttachInfo>
+    <CNews.GetHeaderInfo>
+        <summary>
+            Extracts all the header information and stores that information into the appropriate properties.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CNews.GetHeaderInfo>
+    <CNews.NewsGroups>
+        <summary>
+            Returns a string representing the NewsGroups field of the news message header.
+        </summary>
+        <value>A string representing the NewsGroups field of the news message header.</value>
+    </CNews.NewsGroups>
+    <CNews.Organization>
+        <summary>
+            Returns a string representing the Organization field of the news message header.
+        </summary>
+        <value>A string representing the Organization field of the news message header.</value>
+    </CNews.Organization>
+    <CNews.Path>
+        <summary>
+            Returns a string representing the Path field of the news message header.
+        </summary>
+        <value>A string representing the Path field of the news message header.</value>
+    </CNews.Path>
+    <CNews.Sender>
+        <summary>
+            Returns a string representing the Sender field of the news message header.
+        </summary>
+        <value>A string representing the Sender field of the news message header.</value>
+    </CNews.Sender>
+    <CNews.Size>
+        <summary>
+            Returns a string representing the size of the news message.
+        </summary>
+        <value>A string representing the size of the news message.</value>
+    </CNews.Size>
+    <CNNTP>
+        <summary>
+            Create an Internet News Server based on NNTP (Network News Transport Protocol).
+        </summary>
+        <remarks>
+            Encapsulates an Internet session to an Internet News Server based on NNTP (Network News Transport Protocol).
+        </remarks>
+    </CNNTP>
+    <CNNTP.ctor>
+        <summary>
+            Construct a new NNTP object.
+        </summary>
+        <param name="cServer">The local name of the Internet News Server.</param>
+        <param name="cUid">The optional user ID as a string.</param>
+        <param name="cPwd">The optional password as a string.</param>
+    </CNNTP.ctor>
+    <CNNTP.Authenticate>
+        <summary>
+            Authenticates the user to a NNTP Server.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            <note type="tip">
+                The user ID and password should be specified when initializing the CNNTP object.
+            </note>
+        </remarks>
+    </CNNTP.Authenticate>
+    <CNNTP.CheckReply>
+        <summary>
+            Determines if the reply from the server has been successful.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CNNTP.CheckReply>
+    <CNNTP.connect>
+        <summary>
+            Establishes a connection to an Internet Mail Server.
+        </summary>
+        <param name="cIP">The optional string containing the local name of an Internet server. The default is the local host name.</param>
+        <param name="n">The optional port number to use at cIP.  The default is IPPORT_SMTP (25).</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CNNTP.connect>
+    <CNNTP.CurrentNews>
+        <summary>
+            The current CNews object of the CNNTP class.
+        </summary>
+        <value>The current CNews object of the CNNTP class.</value>
+    </CNNTP.CurrentNews>
+    <CNNTP.Disconnect>
+        <summary>
+            Disconnect from the news server.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CNNTP.Disconnect>
+    <CNNTP.GetArticle>
+        <summary>
+            Retrieves a specified message from the selected group.
+        </summary>
+        <param name="xMsg">This can be a numeric ID or a string containing a unique identifier. If xMsg is not specified, the current message is assumed.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CNNTP.GetArticle>
+    <CNNTP.GetBody>
+        <summary>
+            Retrieves a specified message body from the selected group.
+        </summary>
+        <param name="xMsg">This can be a numeric ID or a string containing a unique identifier. If xMsg is not specified, the current message is assumed.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CNNTP.GetBody>
+    <CNNTP.GetHeader>
+        <summary>
+            Retrieves a specified message header from the selected group.
+        </summary>
+        <param name="xMsg">This can be a numeric ID or a string containing a unique identifier. If xMsg is not specified, the current message is assumed.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CNNTP.GetHeader>
+    <CNNTP.GetList>
+        <summary>
+            Returns a list of all groups from an NTTP Server containing cSearch in their names.
+        </summary>
+        <param name="cSearch">The string to search for. If cSearch is not specified, the resulting list contains all groups.</param>
+        <returns>
+            An array of groups.
+        </returns>
+    </CNNTP.GetList>
+    <CNNTP.GetNewGroups>
+        <summary>
+            Returns a list of all newly created groups from an NTTP Server.
+        </summary>
+        <param name="cSearch">The optional string to search for. If cSearch is not specified, the resulting list contains all groups.</param>
+        <param name="dDate">The optional date that is the oldes creation date to accept.</param>
+        <param name="cTime">The optional time as a string that is the oldes creation time to accept.</param>
+        <param name="lGmt">An optional logical value that determines whether GMT time should be used.</param>
+        <returns>
+            An array of groups.
+        </returns>
+    </CNNTP.GetNewGroups>
+    <CNNTP.GetNewNews>
+        <summary>
+            Returns a list of all newly created messages for a specific group or list of groups from an NTTP Server.
+        </summary>
+        <param name="cGroups">The group (i.e. 'comp.lang.clipper.visual-objects) or list of groups (i.e. 'comp.lang.clipper.*') to query.</param>
+        <param name="dDate">The optional date that is the oldes creation date of the message to accept.</param>
+        <param name="cTime">The optional time as a string that is the oldes creation time of the message to accept.</param>
+        <param name="lGmt">An optional logical value that determines whether GMT time should be used.</param>
+        <returns>
+            An array of newly created messages.
+        </returns>
+    </CNNTP.GetNewNews>
+    <CNNTP.GetStatus>
+        <summary>
+            Retrieves a specified message status from the selected group.
+        </summary>
+        <param name="xMsg">This can be a numeric ID or a string containing a unique identifier. If xMsg is not specified, the current message is assumed.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CNNTP.GetStatus>
+    <CNNTP.GroupName>
+        <summary>
+            Returns a string representing the name of the currently selected group.
+        </summary>
+        <value>A string representing the name of the currently selected group.</value>
+    </CNNTP.GroupName>
+    <CNNTP.Message>
+        <summary>
+            Returns the numeric ID of the message currently being processed.
+        </summary>
+        <value>The numeric ID of the message currently being processed.</value>
+    </CNNTP.Message>
+    <CNNTP.MessageCount>
+        <summary>
+            Returns the number of messages in the currently selected group.
+        </summary>
+        <value>The number of messages in the currently selected group.</value>
+    </CNNTP.MessageCount>
+    <CNNTP.MessageFirst>
+        <summary>
+            Returns the numeric ID of the first available message in the currently selected group.
+        </summary>
+        <value>The numeric ID of the first available message in the currently selected group.</value>
+    </CNNTP.MessageFirst>
+    <CNNTP.MessageID>
+        <summary>
+            Returns a string representing the unique message ID of the message currently being processed.
+        </summary>
+        <value>A string representing the unique message ID of the message currently being processed.</value>
+    </CNNTP.MessageID>
+    <CNNTP.MessageLast>
+        <summary>
+            Returns the numeric ID of the last available message in the currently selected group.
+        </summary>
+        <value>The numeric ID of the last available message in the currently selected group.</value>
+    </CNNTP.MessageLast>
+    <CNNTP.Post>
+        <summary>**Missing documentation **</summary>
+        <param name="oMsg">** missing parameter documentation **</param>
+    </CNNTP.Post>
+    <CNNTP.PrepareCommand>
+        <summary>**Missing documentation **</summary>
+        <param name="cCommand">** missing parameter documentation **</param>
+        <param name="xMsg">** missing parameter documentation **</param>
+    </CNNTP.PrepareCommand>
+    <CNNTP.RecvData>
+        <summary>**Missing documentation **</summary>
+        <param name="cCommand">** missing parameter documentation **</param>
+        <param name="nRetCode">** missing parameter documentation **</param>
+    </CNNTP.RecvData>
+    <CNNTP.RecvRemote>
+        <summary>
+            Retrieves data from the news server via socket.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            <note type="tip">
+                The data that is retrieved wil be terminated by a CRLF.
+            </note>
+        </remarks>
+    </CNNTP.RecvRemote>
+    <CNNTP.ReplyString>
+        <summary>
+            Returns a string with the latest reply from the NNTP Server.
+        </summary>
+        <value>A string with the latest reply from the NNTP Server.</value>
+    </CNNTP.ReplyString>
+    <CNNTP.SendHeader>
+        <summary>**Missing documentation **</summary>
+    </CNNTP.SendHeader>
+    <CNNTP.SendMailBody>
+        <summary>**Missing documentation **</summary>
+    </CNNTP.SendMailBody>
+    <CNNTP.SetNewsGroup>
+        <summary>
+            Selects a newsgroup from a NTTP Server for further processing.
+        </summary>
+        <param name="cGroup">The name of the group to select as a string.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CNNTP.SetNewsGroup>
+    <CNNTP.SetReadMode>
+        <summary>**Missing documentation **</summary>
+    </CNNTP.SetReadMode>
+    <CNNTP.SkipNext>
+        <summary>
+            Sets the internal message pointer to the next available message of the current group.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CNNTP.SkipNext>
+    <CNNTP.SkipPrev>
+        <summary>
+            Sets the internal message pointer to the previous available message of the current group.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CNNTP.SkipPrev>
+    <CPop>
+        <summary>
+            Provide a class for Internet Post Office Protocol (POP).
+        </summary>
+        <remarks>
+            This class provides all necessary methods and properties for checking and receiving e-mail from an Internet POP Server.
+        </remarks>
+    </CPop>
+    <CPop.ctor>
+        <summary>
+            Construct a CPop object.
+        </summary>
+        <param name="cServer">String containing the host name of a valid POP server.  Alternately, the string can contain the IP number of the POP server in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
+        <param name="cUserName">The user ID.</param>
+        <param name="cPassword">The user's password.</param>
+        <param name="nPort">** missing parameter documentation **</param>
+        <param name="oEMailStorage">** missing parameter documentation **</param>
+    </CPop.ctor>
+    <CPop.CheckReply>
+        <summary>
+            Check the response from a POP server for error codes.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method checks the response string from the POP server for error codes, and sets the ReplyCode, ReplyString and Error properties.
+        </remarks>
+    </CPop.CheckReply>
+    <CPop.connect>
+        <summary>
+            Establish a connection to the remote POP server.
+        </summary>
+        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the POP server in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
+        <param name="n">Port number at &lt;cHostNameOrIP&gt;.  If not specified, the connection will be established to port SELF:RemotePort.  The default value is IPPORT_POP (110).</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method establishes a connection to the specified remote mail server at port &lt;nPort&gt; or SELF:RemotePort.
+        </remarks>
+    </CPop.connect>
+    <CPop.DeleteMail>
+        <summary>
+            Delete specified mail from a remote POP server.
+        </summary>
+        <param name="nMail">The number of the e-mail message to be deleted from the queue.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method removes the specified e-mail message from a remote POP server.
+        </remarks>
+        <example>
+            The following function collects all waiting e-mail messages and deletes them from the remote POP server:
+            <code language="X#">
+                FUNC POPGetMails (cServerIP  AS STRING,;
+                cUser      AS STRING,;
+                cPassW     AS STRING,;
+                lDelete    AS LOGIC ) AS ARRAY ;
+                PASCAL
+                LOCAL oPop  AS CPop
+                LOCAL aRet  AS ARRAY
+                LOCAL i,n   AS INT
+                oPop := CPop{cServerIP}
+                IF oPop:Logon(cUser, cPassW)
+                oPop:GetStatus()
+                n    := oPop:MailCount
+                aRet := oPop:ListMail()
+                IF lDelete
+                // Deleting all messages
+                FOR i := 1 TO n
+                oPop:DeleteMail(i)
+                NEXT
+                ENDIF
+                ENDIF
+                oPop:Disconnect()
+                RETURN aRet
+            </code>
+        </example>
+    </CPop.DeleteMail>
+    <CPop.Disconnect>
+        <summary>
+            Shut down the current POP connection.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method can be used to close the connection to a POP3 Server.
+        </remarks>
+        <example>
+            See the CPop:DeleteMail() example.
+        </example>
+    </CPop.Disconnect>
+    <CPop.Email>
+        <summary>**Missing documentation **</summary>
+    </CPop.Email>
+    <CPop.GetList>
+        <summary>
+            Method to return an array of information regarding a particular email waiting on the server.
+        </summary>
+        <param name="nMail">The number of the email being investigated</param>
+        <returns>
+            ARRAY of strings representing the date, time, sender name and subject for that email.
+            {cDate, cTime, cSender, cSubject}
+        </returns>
+        <remarks>
+            This method consults the server and returns information about emails waiting to be downloaded. The user can then make decisions about which mails to download or delete.
+        </remarks>
+    </CPop.GetList>
+    <CPop.GetListIDs>
+        <summary>**Missing documentation **</summary>
+        <param name="nMail">** missing parameter documentation **</param>
+    </CPop.GetListIDs>
+    <CPop.GetMail>
+        <summary>
+            Read specified mail from a remote POP server.
+        </summary>
+        <param name="nMail">The number of the e-mail message to be read from the queue.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method reads the specified e-mail message from a remote POP server and decodes it into its MailHeader, MailBody, and Attachment parts.
+        </remarks>
+        <example>
+            The following function reads the specified e-mail messages from a remote POP server:
+            <code language="X#">
+                FUNC POPReadMail (cServerIP  AS STRING,;
+                cUser      AS STRING,;
+                cPassW     AS STRING,;
+                nMail      AS INT ) AS ARRAY ;
+                PASCAL
+                LOCAL oPop  AS CPop
+                LOCAL aRet  AS ARRAY
+                LOCAL n     AS INT
+                oPop := CPop{cServerIP}
+                IF oPop:Logon(cUser, cPassW)
+                oPop:GetStatus()
+                n    := oPop:MailCount
+                IF nMail &lt;= n
+                IF oPop:GetMail(nMail)
+                aRet := ArrayCreate(3)
+                aRet[1] := oPop:MailHeader
+                aRet[2] := oPop:MailBody
+                aRet[3] := oPop:Attachment
+                ENDIF
+                ENDIF
+                ENDIF
+                oPop:Disconnect()
+                RETURN aRet
+            </code>
+        </example>
+    </CPop.GetMail>
+    <CPop.GetMailTop>
+        <summary>**Missing documentation **</summary>
+        <param name="nMail">** missing parameter documentation **</param>
+        <param name="nBodyLines">** missing parameter documentation **</param>
+    </CPop.GetMailTop>
+    <CPop.GetStatus>
+        <summary>
+            Retrieve the mail status for the current active user from a remote POP server.
+        </summary>
+        <returns>
+            A string containing the current status.
+        </returns>
+        <remarks>
+            This method asks for the status for the current active user, who must be logged on, and saves the results to the MailHeader, MailCount, and TotalBytes properties.
+        </remarks>
+        <example>
+            See the CPop:DeleteMail() example.
+        </example>
+    </CPop.GetStatus>
+    <CPop.ListMail>
+        <summary>
+            Read all e-mails from a remote POP server.
+        </summary>
+        <returns>
+            Array with all e-mails, if successful; otherwise, an empty array.
+        </returns>
+        <remarks>
+            This method reads all e-mails from a remote POP server and puts them into an array as raw strings containing each header, body, and attachment.
+        </remarks>
+        <example>
+            See the CPop:DeleteMail() example.
+        </example>
+    </CPop.ListMail>
+    <CPop.ListMailIDs>
+        <summary>
+            Method to return an array of mail IDs of emails waiting on the server for download.
+        </summary>
+        <returns>
+            ARRAY of mail IDs with the following format.
+            {{nNum, cID}, …}
+        </returns>
+        <remarks>
+            This method consults the server and returns a list of mail numbers and their corresponding ID. This information can be used to prevent duplicated downloads where headers are inspected or mails downloaded but not deleted from the server.
+        </remarks>
+    </CPop.ListMailIDs>
+    <CPop.LogOn>
+        <summary>
+            Log a user onto a connected POP server.
+        </summary>
+        <param name="cUID">The user ID.</param>
+        <param name="cPwd">The user's password.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <example>
+            See the CPop:DeleteMail() example.
+        </example>
+    </CPop.LogOn>
+    <CPop.MailboxInfo>
+        <summary>
+            An array of parameters representing information about emails waiting on the server to be downloaded. The format of the array, one for each mail, is as follows:
+            {{cDate, cTime, cSender, cSubject}, …}
+            Each element of the array is a string.
+        </summary>
+        <value>
+            An array of parameters representing information about emails waiting on the server to be downloaded. The format of the array, one for each mail, is as follows:
+            {{cDate, cTime, cSender, cSubject}, …}
+            Each element of the array is a string.
+        </value>
+    </CPop.MailboxInfo>
+    <CPop.MailCount>
+        <summary>
+            Numeric value representing the number of e-mails for the specific user.
+        </summary>
+        <value>Numeric value representing the number of e-mails for the specific user.</value>
+    </CPop.MailCount>
+    <CPop.PassWord>
+        <summary>
+            String representing the user's password.
+        </summary>
+        <value>String representing the user's password.</value>
+    </CPop.PassWord>
+    <CPop.ReceiveBytes>
+        <summary>
+            Numeric value representing the number of bytes received.
+        </summary>
+        <value>Numeric value representing the number of bytes received.</value>
+    </CPop.ReceiveBytes>
+    <CPop.RecvRemote>
+        <summary>
+            Receive response data from a remote mail server.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method receives data from the connected remote POP server.  Received data is stored to the ReplyString property.
+        </remarks>
+    </CPop.RecvRemote>
+    <CPop.TotalBytes>
+        <summary>
+            Total size of all e-mails for the specific user.
+        </summary>
+        <value>Total size of all e-mails for the specific user.</value>
+    </CPop.TotalBytes>
+    <CPop.UserName>
+        <summary>
+            String representing the user's name.
+        </summary>
+        <value>String representing the user's name.</value>
+    </CPop.UserName>
+    <CSession>
+        <summary>
+            Abstract class for wrapping an Internet session.
+        </summary>
+        <remarks>
+            This class provides all necessary methods and properties as a base for sending and receiving files via Ftp and Http.
+        </remarks>
+    </CSession>
+    <CSession.ctor>
+        <summary>
+            Construct a CSession object.
+        </summary>
+        <param name="cCaption">The optional caption as a string.</param>
+        <param name="n">The optional port number. If not provided the defaults is 0.</param>
+        <param name="lStat">** missing parameter documentation **</param>
+    </CSession.ctor>
+    <CSession.AccessType>
+        <summary>
+            The type of Internet session.
+            The default type is INTERNET_OPEN_TYPE_DIRECT.
+            The alternate type is INTERNET_OPEN_TYPE_PROXY.
+        </summary>
+        <value>
+            The type of Internet session.
+            The default type is INTERNET_OPEN_TYPE_DIRECT.
+            The alternate type is INTERNET_OPEN_TYPE_PROXY.
+        </value>
+    </CSession.AccessType>
+    <CSession.CloseFile>
+        <summary>
+            Closes a remote file.
+        </summary>
+        <param name="hFile">The handle of the file to close.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CSession.CloseFile>
+    <CSession.CloseRemote>
+        <summary>
+            Closes the Internet connection.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CSession.CloseRemote>
+    <CSession.Connected>
+        <summary>
+            A logical value indicating the status of the connection.
+        </summary>
+        <value>A logical value indicating the status of the connection.</value>
+    </CSession.Connected>
+    <CSession.ConnectHandle>
+        <summary>
+            Internet connection handle.
+        </summary>
+        <value>Internet connection handle.</value>
+    </CSession.ConnectHandle>
+    <CSession.ConnectRemote>
+        <summary>
+            Opens a connection to the Internet server.
+        </summary>
+        <param name="cIP">The host name or IP address of the remote server.</param>
+        <param name="nService">A constant representing the type of service to access.</param>
+        <param name="nFlags">The flags to use in the internal InternetConnect call.</param>
+        <param name="nContext">An identifier for the application context of the returned connection handle.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CSession.ConnectRemote>
+    <CSession.Destroy>
+        <summary>**Missing documentation **</summary>
+    </CSession.Destroy>
+    <CSession.Error>
+        <summary>
+            The number of the last error code received.
+        </summary>
+        <value>The number of the last error code received.</value>
+    </CSession.Error>
+    <CSession.ErrorMsg>
+        <summary>
+            A string representing the last error message received.
+        </summary>
+        <value>A string representing the last error message received.</value>
+    </CSession.ErrorMsg>
+    <CSession.Handle>
+        <summary>
+            The Internet session handle.
+        </summary>
+        <value>The Internet session handle.</value>
+    </CSession.Handle>
+    <CSession.InternetStatus>
+        <summary>**Missing documentation **</summary>
+        <param name="nContext">** missing parameter documentation **</param>
+        <param name="nStatus">** missing parameter documentation **</param>
+        <param name="pStatusInfo">** missing parameter documentation **</param>
+        <param name="nStatusLength">** missing parameter documentation **</param>
+    </CSession.InternetStatus>
+    <CSession.ogStatus>
+        <exclude />
+    </CSession.ogStatus>
+    <CSession.oLock>
+        <exclude />
+    </CSession.oLock>
+    <CSession.Open>
+        <summary>
+            Opens a connection to the Internet server.
+        </summary>
+        <param name="nFlags">The flags to use in the internal InternetConnect call.</param>
+        <param name="xProxy">The optional name of a proxy server.</param>
+        <param name="aProxyByPass">An optional array of server names that should not be accessed through the proxy.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+    </CSession.Open>
+    <CSession.OpenFlags>
+        <summary>**Missing documentation **</summary>
+    </CSession.OpenFlags>
+    <CSession.PassWord>
+        <summary>
+            The password necessary to establish the remote connection.
+        </summary>
+        <value>The password necessary to establish the remote connection.</value>
+    </CSession.PassWord>
+    <CSession.Port>
+        <summary>
+            The Port number of the current session communication.
+        </summary>
+        <value>The Port number of the current session communication.</value>
+    </CSession.Port>
+    <CSession.Proxy>
+        <summary>
+            A string representing the proxy for the remote connection.
+        </summary>
+        <value>A string representing the proxy for the remote connection.</value>
+    </CSession.Proxy>
+    <CSession.ProxyBypass>
+        <summary>
+            A string representing the proxies to bypass when establishing the remote connection.
+        </summary>
+        <value>A string representing the proxies to bypass when establishing the remote connection.</value>
+    </CSession.ProxyBypass>
+    <CSession.RemoteHost>
+        <summary>
+            A string representing the Host name or IP address of the remote server.
+        </summary>
+        <value>A string representing the Host name or IP address of the remote server.</value>
+    </CSession.RemoteHost>
+    <CSession.SetResponseStatus>
+        <summary>**Missing documentation **</summary>
+    </CSession.SetResponseStatus>
+    <CSession.UserName>
+        <summary>
+            A string representing the User ID necessary to establish the remote connection.
+        </summary>
+        <value>A string representing the User ID necessary to establish the remote connection.</value>
+    </CSession.UserName>
+    <CSmtp>
+        <summary>
+            Provide a class for Internet Protocol SMTP.
+        </summary>
+        <remarks>
+            This class provides all necessary methods and properties for sending e-mail to a Simple Message Transfer Protocol (SMTP) server.
+        </remarks>
+        <example>
+            <code language="X#">
+                FUNCTION SMTPSendMail       (cServerIP      AS STRING,;
+                     cMailSubject   AS STRING,;
+                     xDestUser      AS USUAL,;
+                     xCCUser        AS USUAL,;
+                     cBody          AS STRING,;
+                     cFromAddress   AS STRING,;
+                     xAttachFile    AS USUAL,;
+                     cFromName      AS STRING,;
+                     xBCCUser       AS USUAL,;
+                     cCargo         AS STRING)   AS LOGIC PASCAL
+                  LOCAL oSmtp    AS CSMTP
+                  LOCAL lRet     AS LOGIC
+                  LOCAL oEmail   AS CEmail
+                  oEMail := CEmail{}
+                  oEmail:FromAddress   := cFromAddress
+                  oEmail:FromName      := cFromName
+                  oEmail:Cargo         := cCargo
+                  oEmail:Subject       := cMailSubject
+                  oEmail:DestList      := xDestUser
+                  oEmail:CCList        := xCCUser
+                  oEmail:BCCList       := xBCCUser
+                  oEmail:MailBody        := cBody
+                  IF !IsNil(xAttachFile)
+                     oEmail:AttachmentFileList := xAttachFile
+                  ENDIF
+                  oSmtp := CSmtp{oEmail}
+                  oSMtp:RemoteHost  := cServerIP
+                  oSmtp:TimeOut := 5000
+                  lRet := oSmtp:SendMail()
+                  RETURN lRet
+            </code>
+        </example>
+    </CSmtp>
+    <CSmtp.ctor>
+        <summary>
+            Construct a CSmtp object.
+        </summary>
+        <param name="oMail">A CEmail object.  If omitted, a generic (empty) CEmail object is created.</param>
+        <param name="cServer">Name of the remote host that the class should connect to</param>
+        <param name="nPort">Email port of the remote host that the class should connect to. Defaults to 25</param>
+    </CSmtp.ctor>
+    <CSmtp.CheckReply>
+        <summary>
+            Check the response from a mail server for error codes.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method checks for a response string from a mail server for error codes and sets the properties, ReplyCode, ReplyString, and Error.
+        </remarks>
+        <example>
+            The following example checks the connection to Computer Associates mail server:
+            <code language="X#">
+                FUNC SmtpTest()
+                LOCAL oSmtp AS CSMTP
+                oSmtp   := CSMTP{"ServerCheck", "", "", "Check "}
+                oSmtp:Timeout := 1000
+                oSmtp:Connect("mail2.cai.com")
+                oSmtp:CheckReply()
+                ? oSmtp:ReplyString
+                ? oSmtp:ReplyCode
+                ? oSmtp:Error
+                oSmtp:Disconnect()
+            </code>
+        </example>
+    </CSmtp.CheckReply>
+    <CSmtp.connect>
+        <summary>
+            Establish a connection to a remote SMTP server.
+        </summary>
+        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45). </param>
+        <param name="nPort">Port number at &lt;cHostNameOrIP&gt;.  If not specified, the connection will be established to port SELF:RemotePort.  The default value is IPPORT_SMTP (25).</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method establishes a connection to the specified remote mail server at port &lt;nPort&gt; or SELF:RemotePort.
+        </remarks>
+        <example>
+            See the CSmtp:CheckReply() example.
+        </example>
+    </CSmtp.connect>
+    <CSmtp.Disconnect>
+        <summary>
+            Shut down the current SMTP connection.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method can be used to close the connection to the SMTP server.
+        </remarks>
+        <example>
+            See the CSmtp:CheckReply() example.
+        </example>
+    </CSmtp.Disconnect>
+    <CSmtp.Email>
+        <summary>
+            An instance of the CEmail class.
+        </summary>
+        <value>An instance of the CEmail class.</value>
+    </CSmtp.Email>
+    <CSmtp.EmailFormat>
+        <summary>
+            The format of the email.
+        </summary>
+        <value>The format of the email.</value>
+    </CSmtp.EmailFormat>
+    <CSmtp.Logon>
+        <summary>
+            Logs on to the remote host with the user name and password of the smtp class
+        </summary>
+        <returns>
+            Logic indicating if the Login was succesful
+        </returns>
+    </CSmtp.Logon>
+    <CSmtp.MailApplication>
+        <summary>
+            A string that holds the name that is used when connection to mail servers
+        </summary>
+        <value>A string that holds the name that is used when connection to mail servers</value>
+    </CSmtp.MailApplication>
+    <CSmtp.RecvRemote>
+        <summary>
+            Receive response data from a remote mail server.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method receives data from the connected remote mail server.  Received data is stored to the ReplyString property.
+        </remarks>
+    </CSmtp.RecvRemote>
+    <CSmtp.SecureSMTP>
+        <summary>
+            A logic indicating if the CSmtp class should use Secure SMTP
+        </summary>
+        <value>A logic indicating if the CSmtp class should use Secure SMTP</value>
+    </CSmtp.SecureSMTP>
+    <CSmtp.SendAttachedFile>
+        <summary>
+            Send an attached file as part of an e-mail to a remote SMTP server.
+        </summary>
+        <param name="cFile">The file, optionally including the drive letter and path, to be sent.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            SendAttachedFile() is called from the SendMail() method to encode and send the file specified by SELF:AttachmentFile to the remote SMTP Server.
+        </remarks>
+    </CSmtp.SendAttachedFile>
+    <CSmtp.SendHeaderInfo>
+        <summary>
+            Create a mail header and send it as part of an e-mail to a remote SMTP server.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            SendHeaderInfo() is called from the SendMail() method to prepare and send the appropriate header to the remote SMTP server. The method does not take any parameters. The values for the FROM, TO, CC and BCC are read from the Email property of the cSMTP class.
+        </remarks>
+    </CSmtp.SendHeaderInfo>
+    <CSmtp.SendMail>
+        <summary>
+            Send a complete e-mail to a remote SMTP server.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method sends the complete e-mail to the remote SMTP Server.  Based on the SELF:MailBody, SELF:AttachmentFile, SELF:DestList, SELF:CCList, SELF:FromAddress and SELF:RemoteHost values, the SendMail()method prepares all necessary data including header and control sequences, and calls the SELF:SendHeaderInfo(), SendMailBody() and SELF:SendAttachedFile() methods at different stages of that transaction.
+        </remarks>
+    </CSmtp.SendMail>
+    <CSmtp.SendMailBody>
+        <summary>
+            This method is no longer available in &lt;%APPVER%&gt;
+        </summary>
+    </CSmtp.SendMailBody>
+    <CSmtp.TextEncoding>
+        <summary>
+            The text encoding type of the email.
+        </summary>
+        <value>The text encoding type of the email.</value>
+    </CSmtp.TextEncoding>
+    <CSocket>
+        <summary>
+            Provide a class for low-level TCP/IP programming.
+        </summary>
+        <remarks>
+            This class provides low-level socket functionality that can be used to implement different Internet protocols.
+        </remarks>
+    </CSocket>
+    <CSocket.ctor>
+        <summary>
+            Construct a CSocket object.
+        </summary>
+        <param name="nType">The type of the newly created socket.  Valid values are:</param>
+        <param name="xSocket">The socket number.</param>
+        <param name="xSocketStatus">The socket status.</param>
+    </CSocket.ctor>
+    <CSocket.accept>
+        <summary>
+            Accept a new connection on a socket.
+        </summary>
+        <returns>
+            A new CSocket object instance, if successful; otherwise, NULL_OBJECT.
+        </returns>
+        <remarks>
+            This method can be used to make Internet server applications wait for a client's connection.
+        </remarks>
+        <example>
+            The following example implements a simple socket server function listening for first connections at port 7:
+            <code language="X#">
+                FUNCTION ServerTest()
+                LOCAL oSocket   AS CSocket
+                LOCAL oSockMsg  AS CSocket
+                LOCAL cData     AS STRING
+                LOCAL cFrom     AS STRING
+                LOCAL nPort     AS INT
+                LOCAL lRet      AS LOGIC
+                oSocket  := CSocket{SOCK_STREAM}
+                IF oSocket:bind(7, NULL_STRING, AF_INET)
+                oSocket:listen(1)
+                lRet := .F.
+                oSockMsg := oSocket:accept()
+                IF oSockMsg != NULL_OBJECT
+                cData := oSockMsg:GetLine()
+                oSockMsg:getpeername(@cFrom, @nPort)
+                ? "Connection accepted from ", cFrom, ;
+                , client port: , NTrim(nPort)
+                ? "Received data: ", cData
+                lRet := .T.
+                ENDIF
+                oSockMsg:Close()
+                ENDIF
+                oSocket:Close()
+                RETURN lRet
+            </code>
+        </example>
+    </CSocket.accept>
+    <CSocket.bind>
+        <summary>
+            Associate a local address with a socket.
+        </summary>
+        <param name="nPort">Port number at &lt;cHostNameOrIP&gt;.</param>
+        <param name="cIP">String containing the local name of an Internet server. Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  If NULL_STRING is specified, the local host name is assumed.</param>
+        <param name="nFamily">SHORTINT number specifying the Address Family. </param>
+    </CSocket.bind>
+    <CSocket.Close>
+        <summary>
+            Disconnects the socket and closes it.
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method disconnects a connection and then closes it.
+            If a socket is not closed in code, it will be automatically closed if the appropriate object instance goes out of scope.
+        </remarks>
+        <example>
+            See the CSocket:Connect() example.
+        </example>
+    </CSocket.Close>
+    <CSocket.connect>
+        <summary>
+            Establish a connection of the socket instance to a peer.
+        </summary>
+        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
+        <param name="nPort">Port number at &lt;cHostNameOrIP&gt;.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method establishes a connection to the specified remote address at port &lt;nPort&gt;.
+        </remarks>
+        <example>
+            The following example checks whether a remote SMTP server is currently available:
+            <code language="X#">
+                FUNCTION Start
+                IF CheckRemote("mail2.cai.com", IPPORT_SMTP, 1000)
+                ? "CA's mail server is available"
+                ELSE
+                ? "Mail server currently not accessible"
+                ENDIF
+                FUNCTION CheckRemote (cServer AS STRING, nPort AS INT, ;
+                nTimeout AS INT); AS LOGIC  PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL lRet      AS LOGIC
+                oSocket := CSocket{SOCK_STREAM}
+                oSocket:TimeOut := nTimeout
+                lRet := oSocket:connect(cServer, nPort)
+                oSocket:Close()
+                RETURN lRet
+            </code>
+        </example>
+    </CSocket.connect>
+    <CSocket.Destroy>
+        <summary>**Missing documentation **</summary>
+    </CSocket.Destroy>
+    <CSocket.DisConnect>
+        <summary>
+            Shut down the current socket connection.
+            This disables sending/receiving on the socket, but does NOT close the socket.
+            Note that this function does NOT close the connection like it did in Visual Objects 2.5!
+            To close a socket you need to call cSocket:Close()!
+        </summary>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            Disconnect() can be used to close the connection made for the CSocket object instance.  If not specified, the connection will automatically be closed if the appropriate object instance goes out of scope.
+        </remarks>
+        <example>
+            See the CSocket:Connect() example.
+        </example>
+    </CSocket.DisConnect>
+    <CSocket.DisplayError>
+        <summary>
+            Display error messages.
+        </summary>
+        <remarks>
+            Displays the error message.
+        </remarks>
+    </CSocket.DisplayError>
+    <CSocket.Error>
+        <summary>
+            Numeric value representing the error code.
+        </summary>
+        <value>Numeric value representing the error code.</value>
+    </CSocket.Error>
+    <CSocket.ErrorMsg>
+        <summary>
+            String with error information.
+        </summary>
+        <value>String with error information.</value>
+    </CSocket.ErrorMsg>
+    <CSocket.GetLine>
+        <summary>
+            Extract the first line from the socket data received via the current connection.
+        </summary>
+        <returns>
+            String containing the received line of data, if successful; otherwise, NULL_STRING
+        </returns>
+        <remarks>
+            This method extracts the first line from input data.
+            <note type="tip">GetLine() can be used for TCP sockets only, because it assumes that a connection is already established.</note>
+        </remarks>
+        <example>
+            See the CSocket:Accept() example.
+        </example>
+    </CSocket.GetLine>
+    <CSocket.GetLineFrom>
+        <summary>
+            Wait for connection and extract first line from incoming data.
+        </summary>
+        <param name="cIP">Reference to a string to receive the client's IP address.</param>
+        <param name="nRemPort">Reference to a DWORD value to receive the client's port number.</param>
+        <returns>
+            String containing the received line, if successful; otherwise, NULL_STRING
+        </returns>
+        <remarks>
+            This method waits for data packages and extracts the first line from input data.  Besides this, GetLineFrom() extracts the IP address and port number associated with the received Data.  This method can be used by UDP sockets to retrieve datagram packages sent via the Internet.
+        </remarks>
+        <example>
+            The following example implements a simple socket server function listening for the first datagram package at port 7:
+            <code language="X#">
+                FUNCTION ServerTest2()   AS VOID PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cData     AS STRING
+                LOCAL cFrom     AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_DGRAM}
+                IF oSocket:bind(7, NULL_STRING, AF_INET)
+                oSocket:TimeOut := 10000
+                cData := oSocket:GetLineFrom(@cFrom, @nPort)
+                IF cFrom == NULL_STRING
+                ? "Timeout expired, no data received :-("
+                ELSE
+                ? "Data received from ", cFrom, ;
+                , "Client port: ", NTrim(nPort)
+                ? "Received data:" , cData
+                ENDIF
+                ENDIF
+                oSocket:Close()
+                RETURN
+            </code>
+        </example>
+    </CSocket.GetLineFrom>
+    <CSocket.GetLines>
+        <summary>**Missing documentation **</summary>
+        <param name="aSearch">** missing parameter documentation **</param>
+    </CSocket.GetLines>
+    <CSocket.getpeername>
+        <summary>
+            Get the address of the peer to which the socket is connected.
+        </summary>
+        <param name="cName">Reference to a string to receive the peer's IP address.</param>
+        <param name="nPort">Reference to a DWORD value to receive the peer's port number.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE.
+        </returns>
+        <remarks>
+            This method gets the address and port number of the peer to which the socket is connected.
+        </remarks>
+        <example>
+            See the CSocket:Accept() example.
+        </example>
+    </CSocket.getpeername>
+    <CSocket.GetRaw>
+        <summary>
+            Receive all available data from a socket.
+        </summary>
+        <returns>
+            String containing the received data, if successful; otherwise, NULL_STRING.
+        </returns>
+        <remarks>
+            This method stores input data to a string.
+            <note type="tip">GetRaw() can be used for TCP sockets only, because it assumes that a connection is already established.</note>
+        </remarks>
+        <example>
+            The following example implements a simple socket server function waiting for connection at port 7 and receiving all data from the client:
+            <code language="X#">
+                FUNCTION ServerTest3()   AS VOID PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL oSockMsg  AS CSocket
+                LOCAL cData     AS STRING
+                LOCAL cFrom     AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_STREAM}
+                IF oSocket:bind(7, NULL_STRING, AF_INET)
+                  oSocket:listen(1)
+                  oSockMsg := oSocket:accept()
+                  IF oSockMsg != NULL_OBJECT
+                  	   cData := oSockMsg:GetRaw()
+                  oSockMsg:GetPeerName(@cFrom, @nPort)
+                  ? "Data received from ", cFrom, ;
+                  ", Client 	port: ", NTrim(nPort)
+                  ? "Received data: ", cData
+                  ENDIF
+                  oSockMsg:Close()
+                ENDIF
+                oSocket:Close()
+                RETURN
+            </code>
+        </example>
+    </CSocket.GetRaw>
+    <CSocket.GetRawText>
+        <summary>
+            Receive all available data from a socket.
+        </summary>
+        <param name="lLineMode">** missing parameter documentation **</param>
+        <param name="lNext">** missing parameter documentation **</param>
+        <param name="dwByteCount">** missing parameter documentation **</param>
+        <returns>
+            String containing the received data, if successful; otherwise, NULL_STRING.
+        </returns>
+        <remarks>
+            This method stores input data to a string.
+            <note type="tip">GetRaw() can be used for TCP sockets only, because it assumes that a connection is already established.</note>
+        </remarks>
+        <example>
+            The following example implements a simple socket server function waiting for connection at port 7 and receiving all data from the client:
+            <code language="X#">
+                FUNCTION ServerTest3()   AS VOID PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL oSockMsg  AS CSocket
+                LOCAL cData     AS STRING
+                LOCAL cFrom     AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_STREAM}
+                IF oSocket:bind(7, NULL_STRING, AF_INET)
+                  oSocket:listen(1)
+                  oSockMsg := oSocket:accept()
+                  IF oSockMsg != NULL_OBJECT
+                  	   cData := oSockMsg:GetRaw()
+                  oSockMsg:GetPeerName(@cFrom, @nPort)
+                  ? "Data received from ", cFrom, ;
+                  ", Client 	port: ", NTrim(nPort)
+                  ? "Received data: ", cData
+                  ENDIF
+                  oSockMsg:Close()
+                ENDIF
+                oSocket:Close()
+                RETURN
+            </code>
+        </example>
+    </CSocket.GetRawText>
+    <CSocket.getsockname>
+        <summary>
+            Get the local name for a socket.
+        </summary>
+        <param name="cName">Reference to a string which is to receive the peer's IP address.</param>
+        <param name="nPort">Reference to a DWORD value to receive the peer's port number</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE
+        </returns>
+        <remarks>
+            This method gets the local address and port number of the socket.
+        </remarks>
+        <example>
+            The following example demonstrates the use of this method:
+            <code language="X#">
+                FUNCTION SimpleTest()   AS VOID PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cIP       AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_STREAM}
+                IF oSocket:bind(7, NULL_STRING, AF_INET)
+                oSocket:GetSockName(@cIP, @nPort)
+                ? "Local IP ", cIP, ", port: ", NTrim(nPort)
+                ENDIF    
+                oSocket:Close()
+                RETURN
+            </code>
+        </example>
+    </CSocket.getsockname>
+    <CSocket.InternetStatus>
+        <summary>**Missing documentation **</summary>
+        <param name="nContext">** missing parameter documentation **</param>
+        <param name="nStatus">** missing parameter documentation **</param>
+        <param name="xStatus">** missing parameter documentation **</param>
+        <param name="nStatusLength">** missing parameter documentation **</param>
+    </CSocket.InternetStatus>
+    <CSocket.listen>
+        <summary>
+            Establish a socket to listen for an incoming connection.
+        </summary>
+        <param name="nBackLog">The maximum length to which the queue of pending connections can grow.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE
+        </returns>
+        <remarks>
+            This method establishes a socket to listen for an incoming connection.
+        </remarks>
+        <example>
+            See the CSocket:Accept() example.
+        </example>
+    </CSocket.listen>
+    <CSocket.RcvBufSize>
+        <summary>**Missing documentation **</summary>
+    </CSocket.RcvBufSize>
+    <CSocket.SendLine>
+        <summary>
+            Send data terminated by CRLF to the connected socket.
+        </summary>
+        <param name="cData">Data to be sent via the socket.</param>
+        <returns>
+            Number of data sent, if successful; otherwise, 0 (zero).
+        </returns>
+        <remarks>
+            Method SendLine() sends a line to the connected socket.
+            <note type="tip">This method can be used for TCP sockets only, because it assumes that a connection is already established.</note>
+        </remarks>
+        <example>
+            The following example demonstrates this method:
+            <code language="X#">
+                FUNCTION ClientTest()   AS LOGIC PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cTo       AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_STREAM}
+                IF oSocket:connect( HostName(), 7)
+                IF oSocket:SendLine("Hello world") &gt; 0
+                oSocket:GetPeerName(@cTo, @nPort)
+                ? "Data sent to ", cTo, ", port: ", NTrim(nPort)
+                ENDIF
+                oSocket:Close()
+                ENDIF
+                RETURN
+            </code>
+        </example>
+    </CSocket.SendLine>
+    <CSocket.SendLineTo>
+        <summary>
+            Send data terminated by CRLF to a specific destination.
+        </summary>
+        <param name="cData">Data to be sent via the socket.</param>
+        <param name="cDest">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45). </param>
+        <param name="nRemPort">Port number at &lt;cHostNameOrIP&gt;.</param>
+        <returns>
+            Number of data sent, if successful; otherwise, 0 (zero).
+        </returns>
+        <remarks>
+            This method sends a line to a destination without establishing a connection.  SendLine() can be used for UDP sockets to send datagram packages via the Internet.
+        </remarks>
+        <example>
+            The following example demonstrates the use of this method:
+            <code language="X#">
+                FUNCTION ClientTest1()   AS LOGIC PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cTo       AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_DGRAM}
+                IF oSocket:SendLineTo("Hello world", HostName(), 7)
+                ? "Datagram package sent ... "
+                ENDIF
+                oSocket:Close()
+                RETURN
+            </code>
+        </example>
+    </CSocket.SendLineTo>
+    <CSocket.SendRaw>
+        <summary>
+            Send any data to the connected socket.
+        </summary>
+        <param name="pData">Pointer to the data to be sent via the socket.</param>
+        <param name="nSize">Length of the data to be sent.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE
+        </returns>
+        <remarks>
+            SendRaw() sends raw data to the connected socket.
+            <note type="tip">This method can be used for TCP sockets only, because it assumes that a connection is already established.</note>
+        </remarks>
+        <example>
+            The following example demonstrates the use of this method:
+            <code language="X#">
+                FUNCTION ClientTest2()  AS LOGIC PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cTo       AS STRING
+                LOCAL cData     AS STRING
+                LOCAL nSize     AS INT
+                LOCAL nPort     AS INT
+                CLS
+                oSocket  := CSocket{SOCK_STREAM}
+                IF oSocket:connect( HostName(), 7)
+                  cData := MemoRead("Test.txt")
+                  nSize := SLen(cData)
+                  IF oSocket:SendRaw(PTR(_CAST, cData), nSize)
+                  oSocket:GetPeerName(@cTo, @nPort)
+                  	   ? "Data sent to ", cTo, ", port: ", ;
+                  		NTrim(nPort)
+                  ENDIF
+                ENDIF
+                oSocket:Close()
+                RETURN
+            </code>
+        </example>
+    </CSocket.SendRaw>
+    <CSocket.SendRawText>
+        <summary>
+            Send any data to the connected socket.
+        </summary>
+        <param name="cData">Pointer to the data to be sent via the socket.</param>
+        <param name="nDataLen">Length of the data to be sent.</param>
+        <returns>
+            TRUE if successful; otherwise, FALSE
+        </returns>
+        <remarks>
+            SendRaw() sends raw data to the connected socket.
+            <note type="tip">This method can be used for TCP sockets only, because it assumes that a connection is already established.</note>
+        </remarks>
+        <example>
+            The following example demonstrates the use of this method:
+            <code language="X#">
+                FUNCTION ClientTest2()  AS LOGIC PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cTo       AS STRING
+                LOCAL cData     AS STRING
+                LOCAL nSize     AS INT
+                LOCAL nPort     AS INT
+                CLS
+                oSocket  := CSocket{SOCK_STREAM}
+                IF oSocket:connect( HostName(), 7)
+                  cData := MemoRead("Test.txt")
+                  nSize := SLen(cData)
+                  IF oSocket:SendRaw(PTR(_CAST, cData), nSize)
+                  oSocket:GetPeerName(@cTo, @nPort)
+                  	   ? "Data sent to ", cTo, ", port: ", ;
+                  		NTrim(nPort)
+                  ENDIF
+                ENDIF
+                oSocket:Close()
+                RETURN
+            </code>
+        </example>
+    </CSocket.SendRawText>
+    <CSocket.SndBufSize>
+        <summary>**Missing documentation **</summary>
+    </CSocket.SndBufSize>
+    <CSocket.Status>
+        <summary>
+            Numeric value with the current status representing one of the following states:
+        </summary>
+        <value>Numeric value with the current status representing one of the following states:</value>
+        <remarks>
+            <list type="table">
+                <item>
+                    <term>SSTAT_UNINITIALIZED</term>
+                </item>
+                <item>
+                    <term>SSTAT_DISCONNECTED</term>
+                </item>
+                <item>
+                    <term>SSTAT_CONNECTING</term>
+                </item>
+                <item>
+                    <term>SSTAT_LISTENING</term>
+                </item>
+                <item>
+                    <term>SSTAT_DISCONNECTING</term>
+                </item>
+                <item>
+                    <term>SSTAT_CONNECTED</term>
+                </item>
+                <item>
+                    <term>SSTAT_ERRORSTATE</term>
+                </item>
+                <item>
+                    <term>SSTAT_TIMEDOUT</term>
+                </item>
+            </list>
+        </remarks>
+    </CSocket.Status>
+    <CSocket.TimeOut>
+        <summary>
+            Numeric value representing the time-out in milliseconds.
+        </summary>
+        <value>Numeric value representing the time-out in milliseconds.</value>
+    </CSocket.TimeOut>
+    <CSocket.TimeOutRetries>
+        <summary>**Missing documentation **</summary>
+    </CSocket.TimeOutRetries>
+    <CStorage>
+        <summary>
+            Provide an interface to handle large Email Messages and attachments
+        </summary>
+        <remarks>
+            This class is used Exclusively by the CEMail Class to read and write attachments.
+            The class reads/writes attachments in a disk folder.
+            If you want to store attachments on another location (for example a SQL Database) then you should subclass this class and override the implementation of the methods.
+            CStorage also gives you an interface to store the raw data of received emails. During reception of an email the following three methods are called:
+            RawNew()
+            RawWrite()
+            RawClose()
+            You can use these methods to implement your own mechanism to save the raw email contents.
+
+            This class provides an interface that is used to handle streaming of inbound and outbound messages
+        </remarks>
+    </CStorage>
+    <CStorage.ctor>
+        <summary>
+            Enter topic text here.
+        </summary>
+        <param name="cPath">** missing parameter documentation **</param>
+    </CStorage.ctor>
+    <CStorage.AttachmentAdd>
+        <summary>
+            This method is called when an email is received to initialize the saving of a new attachment.
+            The implementation in CStorage generates a unique ID and creates the (empty) file.
+        </summary>
+        <param name="cFile">Contains the file name of the attachment.</param>
+        <param name="dwCode">
+            The Coding type. Can be one of the following values:
+            <pre>
+                CODING_TYPE_7BIT
+                CODING_TYPE_8BIT
+                CODING_TYPE_BASE64
+                CODING_TYPE_NONE
+                CODING_TYPE_PRINTABLE
+                CODING_TYPE_UNKNOWN
+                CODING_TYPE_UUENCODE
+            </pre>
+            In most cases it is CODING_TYPE_BASE64 and only this type is implemented in the CStorage class.
+        </param>
+        <returns>
+            <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        </returns>
+    </CStorage.AttachmentAdd>
+    <CStorage.AttachmentClose>
+        <summary>
+            This method is called after receiving of an attachment or after reading of an attachment from the storage during sending.
+            The implementation in CStorage closes an open file.
+        </summary>
+    </CStorage.AttachmentClose>
+    <CStorage.AttachmentDelete>
+        <summary>
+            This method returns the full path of an attachment file addressed through cAttachID.
+        </summary>
+        <param name="cID">Contains the ID or the full path of the attachment.</param>
+        <returns>
+            LOGIC	TRUE when the attachment could be deleted.
+        </returns>
+    </CStorage.AttachmentDelete>
+    <CStorage.AttachmentFullPath>
+        <summary>
+            This method returns the full path of an attachment file addressed through cAttachID.
+        </summary>
+        <param name="cAttachID">Contains the ID or the full path of the attachment.If it is a full path the first character of cAttachID is ATTACHID_PATHFLAG (&gt;)</param>
+        <returns>
+            <paramref name="cID" />	STRING The full path of an attachment file
+        </returns>
+    </CStorage.AttachmentFullPath>
+    <CStorage.AttachmentOpen>
+        <summary>
+            This method is called during sending of an email, if an attachment have to be sent. It prepares the loading process from the storage. In our case it addresses the attachment file and opens it.
+        </summary>
+        <param name="cAttachID">Contains the ID or the full path of the attachment.</param>
+        <param name="dwCode">
+            Contains the coding type. It can be one of the following values:
+            <list type="bullet">
+                <item>CODING_TYPE_7BIT</item>
+                <item>CODING_TYPE_8BIT</item>
+                <item>CODING_TYPE_BASE64</item>
+                <item>CODING_TYPE_NONE</item>
+                <item>CODING_TYPE_PRINTABLE</item>
+                <item>CODING_TYPE_UNKNOWN</item>
+                <item>CODING_TYPE_UUENCODE</item>
+            </list>
+            In most cases it is CODING_TYPE_BASE64 and only this type is implemented in the CStorage class.
+        </param>
+        <returns>
+            LOGIC	TRUE when the attachment could be opened successfully.
+        </returns>
+    </CStorage.AttachmentOpen>
+    <CStorage.AttachmentRead>
+        <summary>
+            This method is called during sending of an attachment. It reads a data block from the attachment file. In our implementation it reads 1536 bytes. The result string is the encoded value of this data block.
+        </summary>
+        <returns>
+            STRING	The encoded value of this data block.
+        </returns>
+    </CStorage.AttachmentRead>
+    <CStorage.AttachmentSave>
+        <summary>
+            Stores the attachment with the ID cAttachID to the file cToFile.
+            cToFile must be a full path name. This method is called from CEMail:SaveAs().
+        </summary>
+        <param name="cAttachID">Contains the ID or the full path of the attachment.</param>
+        <param name="cToFile">Contains the full path name of the target file.</param>
+        <returns>
+            <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        </returns>
+    </CStorage.AttachmentSave>
+    <CStorage.AttachmentSize>
+        <summary>
+            Returns the file size of a currently stored or an opened attachment file. This access is called during receiving an email.
+        </summary>
+        <value>The file size of a currently stored or an opened attachment file. This access is called during receiving an email.</value>
+    </CStorage.AttachmentSize>
+    <CStorage.AttachmentWrite>
+        <summary>
+            This method is called multiple times per attachment during the receive process.
+        </summary>
+        <param name="cData">Contains the encoded attachment data. For BASE64 encoded data the length of cData is mostly 78 characters.The default implementation decodes cData and writes it into the file.</param>
+        <returns>
+            NOTHING
+        </returns>
+    </CStorage.AttachmentWrite>
+    <CStorage.CreateNewEMail>
+        <summary>**Missing documentation **</summary>
+    </CStorage.CreateNewEMail>
+    <CStorage.CreateNewMail>
+        <summary>
+            This method returns a new empty CEMail object.
+        </summary>
+        <returns>
+            &lt;oMail&gt;	A new empty CEmail object.
+        </returns>
+    </CStorage.CreateNewMail>
+    <CStorage.LoadEMail>
+        <summary>
+            This method returns a CEMail object filled with all data addressed through the cID.
+            You have to implement this method and the meaning of cID.
+            THIS METHOD IS NOT IMPLEMENTED IN CSTORAGE AND NOT CALLED BY THE INTERNET CLASSES
+        </summary>
+        <param name="cId">Contains a unique identifier that describes the Email</param>
+        <returns>
+            &lt;oEmail&gt;
+        </returns>
+        <remarks>
+            <note type="tip">
+                The following shows a logical template of this method:
+                <code language="X#">
+                    METHOD LoadEMail(cId AS STRING) CLASS MyCStorage
+                    //You should do the following:
+                    LOCAL oEMail AS CEMail
+                    oEMail := SELF:CreateNewEmail()
+                    // 1.) assign oEMail:MailHeader
+                    // 2.) Call oEMail:GetHeaderInfo()
+                    // 3.) assign oEMail:Body
+                    // 4.) assign oEMail:Html
+                    // 5.) assign oEMail:AttachmentInfo
+
+                    RETURN oEMail
+                </code>
+            </note>
+        </remarks>
+    </CStorage.LoadEMail>
+    <CStorage.NoSave>
+        <summary>
+            You can use this assign to suppress the storing of the attachments into the storage. This makes sense, if you want to store only raw email files.
+        </summary>
+        <value>You can use this assign to suppress the storing of the attachments into the storage. This makes sense, if you want to store only raw email files.</value>
+        <param name="LOGIC">TRUE suppresses saving of attachments. In that case you need to implement the Raw..() methods in your CStorage subclass to save the raw emails.</param>
+    </CStorage.NoSave>
+    <CStorage.RawClose>
+        <summary>
+            This method is called when an email was received completely.
+        </summary>
+        <param name="cFile">Contains the file name of the attachment.</param>
+        <returns>
+            NOTHING
+        </returns>
+        <remarks>
+            <note type="tip">
+                It is not recommended to decode raw emails in memory as one single string.
+                The preferred mechanism is to stream them to disk or to a database. "streaming" instead.
+                Look into the method EmailWindowMain:ImportMail() of the email sample to see how easy this works.
+                If you want to see how to send an email into a raw email file look into the method EmailStore:SendMailAsFile() of the email sample.
+            </note>
+        </remarks>
+    </CStorage.RawClose>
+    <CStorage.RawNew>
+        <summary>
+            This method is called at the beginning before any data is received.
+            You have to implement how you want to store and address the raw data here.
+        </summary>
+        <param name="oEMail">Email object for the mail that is received. Note that almost all of the properties of this object will be empty.</param>
+        <returns>
+            NOTHING
+        </returns>
+        <remarks>
+            <note type="tip">
+                It is not recommended to decode raw emails in memory as one single string.
+                The preferred mechanism is to stream them to disk or to a database. "streaming" instead.
+                Look into the method EmailWindowMain:ImportMail() of the email sample to see how easy this works.
+                If you want to see how to send an email into a raw email file look into the method EmailStore:SendMailAsFile() of the email sample.
+            </note>
+        </remarks>
+    </CStorage.RawNew>
+    <CStorage.RawWrite>
+        <summary>
+            Now this method is called multiple times until the complete email including all attachments is received. You have to implement how you want to store each data block.
+        </summary>
+        <param name="cData">Contains the file name of the attachment.</param>
+        <returns>
+            <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        </returns>
+        <remarks>
+            <note type="tip">
+                It is not recommended to decode raw emails in memory as one single string.
+                The preferred mechanism is to stream them to disk or to a database. "streaming" instead.
+                Look into the method EmailWindowMain:ImportMail() of the email sample to see how easy this works.
+                If you want to see how to send an email into a raw email file look into the method EmailStore:SendMailAsFile() of the email sample.
+            </note>
+        </remarks>
+    </CStorage.RawWrite>
+    <CStorage.SaveAttachments>
+        <summary>
+            This method stores all attachments of an email into the storage.
+        </summary>
+        <param name="oEMail">The Email from which the attachments need to be saved to the storage.</param>
+        <param name="lClone">If lClone is TRUE and oEMail was loaded from the storage new copies of the attachments are stored into the storage.</param>
+        <returns>
+            <paramref name="cID" />	STRING The unique ID. If AttachmentAdd() fails it returns a NULL_STRING.
+        </returns>
+    </CStorage.SaveAttachments>
+    <CStorage.SaveEMail>
+        <summary>
+            This method stores a CEMail object including all data under the address of the cID.
+            You have to implement this method and the meaning of cID.
+            THIS METHOD IS NOT IMPLEMENTED IN CSTORAGE AND NOT CALLED BY THE INTERNET CLASSES
+        </summary>
+        <param name="cId">Unique Identifier for the Email</param>
+        <param name="oEMail">Object that contains the email</param>
+        <returns>
+            LOGIC	TRUE when the email was saved succesfully
+        </returns>
+        <remarks>
+            <note type="tip">
+                The following shows a logical template of this method:
+                <code language="X#">
+                    METHOD SaveEMail(cId AS STRING, oEMail AS CEMail) AS LOGIC PASCAL CLASS MyCStorage
+                    //Save oEMail with the current ID
+                    //You should save the following
+                    // 1.) oEMail:MailHeader for received mails, not for sent mails
+                    //     call oEMail:SetHeaderInfo() to create the MailHeader
+                    // 2.) oEMail:Body
+                    // 3.) oEMail:Html
+                    // 4.) Call Self:SaveAttachments(oEMail)
+                    // 5.) Save oEMail:AttachmentInfo
+                    RETURN TRUE
+                </code>
+            </note>
+        </remarks>
+    </CStorage.SaveEMail>
+    <commonblocks>
+        <notify>
+            <span>
+                <list type="table">
+                    <listheader>
+                        <term>Constant</term>
+                        <description>Description</description>
+                    </listheader>
+                    <item>
+                        <term>NOTIFYAPPEND</term>
+                        <description>A blank record has been appended to the server; the server is still positioned on this new record, and its values have not been finalized.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLEARRELATION</term>
+                        <description>Not sent to a data browser.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLOSE</term>
+                        <description>The server intends to close itself.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCOMPLETION</term>
+                        <description>The server has completed some large operation that did not involve repositioning of the server or change to the data (such as reindexing).  This gives the browser a chance to update visual indication to the user that some operation has been completed.   In this situation, &lt;uDescription&gt; is the name of the method that was just completed, as a symbol.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYDELETE</term>
+                        <description>The current record has been deleted, and the server is now positioned according to its rules for how a deletion is handled.  The browser should refresh its display accordingly.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYFIELDCHANGE</term>
+                        <description>A field has changed.  &lt;uDescription&gt; is the field name as a symbol.   Note that the browser might not contain a column with the indicated name.  The server knows only that it has a field of that name and that it changed, and it notifies all its clients in case they are interested.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYFILECHANGE</term>
+                        <description>The server has executed some method that perform many changes to the data; all the browser's knowledge about the server and its data is potentially obsolete, and it should refresh all information from the server and all calculations that depend on the data or its position.  </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOBOTTOM</term>
+                        <description>The server has moved to its last record.  Many clients treat this merely as a record change, but the data browser can treat a positioning-to-the-end as a special case.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOTOP</term>
+                        <description>The server has moved to its first record.  Many clients treat this merely as a record change, but the data browser can treat a positioning-to-the-top as a special case.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYINTENTTOMOVE</term>
+                        <description>The server intends to make a move.  (Note that the move may have been initiated by another client.) The browser should make sure that all its data is saved, if necessary, before the movement is done.  The standard implementation checks validation status.  If the browser contains data that is invalid, the user has a choice of correcting the errors or discarding the data.  </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRECORDCHANGE</term>
+                        <description>The record position of the server has changed.   All clients are notified after any movement, so they can refresh their displays from the server.  A browser needs to update its display intelligently, depending on how far the move was.   &lt;uDescription&gt; might indicate the length of the move (the number of records).  The browser can use this information for display optimization, but cannot rely on its availability.  </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRELATIONCHANGE</term>
+                        <description>Not sent to a data browser (relation changes among servers are transmitted to clients as file changes).</description>
+                    </item>
+                </list>
+                This Notify() method is at the heart of the automatic notification among linked browsers and servers, allowing any window to make a change to a field value or initiate a movement and also ensuring that all client windows reflect the change.  Any class that is registered as a client of a server must respond intelligently to the Notify message.
+                As always with defined constants, you should never rely on the actual values of the constants — they will not necessarily stay the same.  However, the constants do maintain their order:
+                <list type="table">
+                    <listheader>
+                        <term>Constant</term>
+                        <description>Description</description>
+                    </listheader>
+                    <item>
+                        <term>NOTIFYFIELDCHANGE</term>
+                        <description>Lowest</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLOSE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCOMPLETION</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYINTENTTOMOVE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRECORDCHANGE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOBOTTOM</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOTOP</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYDELETE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYAPPEND</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYFILECHANGE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRELATIONCHANGE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLEARRELATION</term>
+                        <description>Highest</description>
+                    </item>
+                </list>
+                Thus, you can reliably write:
+                <code language="X#">
+                    IF    kNotifyName &gt; NOTIFYINTENTTOMOVE;
+                    .AND. kNotifyName &lt; NOTIFYFILECHANGE
+                    ... // Only record level moves
+                    ENDIF
+                </code>
+            </span>
+        </notify>
+    </commonblocks>
+</doc>

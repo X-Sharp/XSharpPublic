@@ -1,12 +1,17 @@
+
 PARTIAL CLASS SQLSelect
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FieldHyperLabel/*" />
 METHOD FieldHyperLabel  ( uFieldPos ) 
 	LOCAL nIndex    AS DWORD
 	LOCAL oRet      AS OBJECT
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:FieldHyperLabel( "+AsString( uFieldPos )+" )" )
 	#ENDIF
+
 
 	nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 	IF ( nIndex = 0 .OR. nIndex > nNumCols )
@@ -17,6 +22,8 @@ METHOD FieldHyperLabel  ( uFieldPos )
 	ENDIF
 	RETURN oRet
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FieldInfo/*" />
 METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal ) 
 	//
 	//  Retrieves information about fields
@@ -33,12 +40,15 @@ METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal )
 	LOCAL xRet      AS USUAL  
 	LOCAL oColumn	AS SQLColumn
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:FieldInfo( "+AsString( kFieldInfoType )+","+    ;
 			AsString( uFieldPos )+","+AsString( uFieldVal )+" )" )
 	#ENDIF
 
+
 	nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
+
 
 	IF nIndex = 0 .OR. nIndex > nNumCols
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldInfo )
@@ -49,14 +59,18 @@ METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal )
 		CASE DBS_NAME
 			xRet := oColumn:ColName
 
+
 		CASE DBS_TYPE
 			xRet := oColumn:__FieldSpec:ValType
+
 
 		CASE DBS_LEN
 			xRet := oColumn:__FieldSpec:Length
 
+
 		CASE DBS_DEC
 			xRet := oColumn:__FieldSpec:Decimals
+
 
 		CASE DBS_ALIAS
 			IF IsSymbol( uFieldVal )
@@ -70,23 +84,31 @@ METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal )
 			ENDIF
 			xRet := oColumn:AliasName
 
+
 		OTHERWISE
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADPAR ), #FieldInfo )
 		END SWITCH
 	ENDIF
 
+
 	RETURN xRet
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FieldName/*" />
 METHOD FieldName( siFieldPosition ) 
 	LOCAL nIndex    AS DWORD
 	LOCAL cRet      AS STRING
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:FieldName( "+AsString( siFieldPosition )+" )" )
 	#ENDIF
 
+
 	nIndex := SELF:__GetColIndex( siFieldPosition, TRUE )
+
 
 	IF ( nIndex = 0 .OR. nIndex > nNumCols )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldName )
@@ -95,12 +117,17 @@ METHOD FieldName( siFieldPosition )
 		oStmt:__ErrInfo:ErrorFlag := FALSE
 	ENDIF
 
+
 	RETURN cRet
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FieldPos/*" />
 METHOD FieldPos( cFieldName ) 
 	LOCAL nIndex    AS DWORD
 	LOCAL nRet      AS DWORD
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:FieldPos( "+AsString( cFieldName )+" )" )
@@ -114,6 +141,8 @@ METHOD FieldPos( cFieldName )
 	ENDIF
 	RETURN nRet
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FIELDPUT/*" />
 METHOD FIELDPUT( uFieldPos, uValue ) 
 	LOCAL nIndex    AS DWORD
 	LOCAL nODBCType AS SHORTINT
@@ -150,7 +179,9 @@ METHOD FIELDPUT( uFieldPos, uValue )
 		__SQLOutputDebug( "** SQLSelect:FieldPut( "+AsString( uFieldPos )+","+ cOut +" )" )
 	#ENDIF
 
+
 	nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
+
 
 	IF ( nIndex = 0 .OR. nIndex > nNumCols )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldPut )
@@ -158,11 +189,13 @@ METHOD FIELDPUT( uFieldPos, uValue )
 		RETURN NIL
 	ENDIF
 
+
 	IF ! ((SqlColumnAttributes)SELF:ColumnAttributes( nIndex )):Updatable
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__UPDATE_COL ), #FieldPut )
 		SELF:Error( oStmt:ErrInfo )
 		RETURN NIL
 	ENDIF
+
 
 	lNull := FALSE
 	IF IsNil( uValue )
@@ -171,15 +204,18 @@ METHOD FIELDPUT( uFieldPos, uValue )
 		IF IsString( uValue ) .AND. NULL_STRING = uValue
 			lNull := TRUE
 
+
 		ELSEIF IsDate( uValue ) .AND. NULL_DATE = uValue
 			lNull := TRUE
 		ENDIF
 	ENDIF
 
+
 	// 	lNull 	  := __CheckNULLDataValue( uValue, nODBCType )
 	oColumn		:= aSQLColumns[nIndex]
 	nODBCType 	:= oColumn:ODBCType
 	oFs		   := oColumn:FieldSpec
+
 
 	IF lAppendFlag
 		aData := aAppendData
@@ -203,28 +239,34 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			lRowModified := TRUE
 		ENDIF
 	
+	
 		//RvdH 050429 Clear buffer first
 		//pTemp := PTR( _CAST, oData:Value)
 		oData:Clear()
 		pTemp := oData:ptrValue
+	
 	
 		SWITCH nODBCType
 		CASE SQL_SMALLINT
 			nVal   := uValue
 			SHORTINT( pTemp ) := SHORTINT( _CAST,nVal )
 	
+	
 		CASE SQL_INTEGER
 			liVal := uValue
 			LONGINT( pTemp ) := liVal
+	
 	
 		CASE SQL_REAL
 			fVal := uValue
 			REAL4( pTemp ) := fVal
 	
+	
 		CASE SQL_FLOAT 
 		CASE SQL_DOUBLE
 			dVal   := uValue
 			REAL8( pTemp ) := dVal
+	
 	
 		CASE SQL_DECIMAL 
 		CASE SQL_NUMERIC
@@ -235,14 +277,18 @@ METHOD FIELDPUT( uFieldPos, uValue )
 	   			nLen := nDec := -1
 		   	ENDIF
 	
+	
 			cVal := __Str( uValue, nLen , nDec)
+	
 	
 			//RvdH 030925 Changed to MemCopyString: Safer
 			//MemCopy( pTemp, PTR( _CAST, cVal ), nLen )
 			MemCopyString( pTemp, cVal , DWORD(nLen) )
 	
+	
 		CASE SQL_BIT
 			lVal := uValue
+	
 	
 			IF lVal
 				bVal := SQL_LOGICAL_TRUE
@@ -250,11 +296,14 @@ METHOD FIELDPUT( uFieldPos, uValue )
 				bVal := SQL_LOGICAL_FALSE
 			ENDIF
 	
+	
 			BYTE( pTemp ) := bVal
+	
 	
 		CASE SQL_TINYINT
 			bVal  := uValue
 			BYTE( pTemp ) := bVal
+	
 	
 		CASE SQL_DATE
 			IF IsDate( uValue )
@@ -262,6 +311,7 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			ELSEIF IsString( uValue )
 				dDate := CToDAnsi( uValue )
 			ENDIF
+	
 	
 			IF dDate = NULL_DATE
 				oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADPAR ), #FIELDPUT )
@@ -275,8 +325,11 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			MemCopyString( pTemp, cVal , SQL_DATE_LEN )
 	
 	
+	
+	
 		CASE SQL_TIMESTAMP
 			nDataType := UsualType( uValue )
+	
 	
 			IF nDataType == STRING        
 				//RvdH 070430 When date = empty, assign NULL when allowed
@@ -304,9 +357,12 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			nMax := oData:Length
 			nMax := IIF(nMax > nLow, nLow, nMax)
 	
+	
 			//RvdH 030925 Changed to MemCopyString: Safer
 			//MemCopy( pTemp, PTR( _CAST, cVal ), nLow )
 			MemCopyString( pTemp, cVal , nMax )
+	
+	
 	
 	
 		CASE SQL_LONGVARCHAR 
@@ -324,6 +380,8 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			uValue := cVal
 	
 	
+	
+	
 		CASE SQL_BIGINT
 			fBigVal := uValue
 			nLow    := Integer( fBigVal % ( 2^32 ) )
@@ -331,10 +389,12 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			// RvdH 030703 Bug report Dirk H
 			//liVal   := uValue
 	
+	
 			pBigInt := oData:ptrValue
 			MemCopy( pBigInt, @nLow, 4 )
 			pBigInt := PTR( _CAST, DWORD( _CAST, pBigInt ) + 4 )
 			MemCopy( pBigInt, @nHigh, 4 )
+	
 	
 		OTHERWISE
 			cVal := AsString( uValue )
@@ -344,6 +404,7 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			MemCopyString( pTemp, cVal , nMax )
 		END SWITCH
 	
+	
 		oData:ValueChanged := TRUE
 		lRowModified       := TRUE
 	ENDIF
@@ -352,8 +413,12 @@ METHOD FIELDPUT( uFieldPos, uValue )
 	RETURN uValue
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FieldSpec/*" />
 METHOD FieldSpec( uFieldPos ) 
 	LOCAL nIndex AS DWORD
+
 
 	nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 	IF ( nIndex = 0 .OR. nIndex > SELF:FCount )
@@ -363,9 +428,12 @@ METHOD FieldSpec( uFieldPos )
 	oStmt:__ErrInfo:ErrorFlag := FALSE
 	RETURN ((DataField)aDataFields[nIndex]):FieldSpec
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FieldStatus/*" />
 METHOD FieldStatus( uFieldPos ) 
 	LOCAL nIndex AS DWORD
 	LOCAL oRet   AS OBJECT
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:FieldStatus( "+AsString( uFieldPos )+" )" )
@@ -376,13 +444,17 @@ METHOD FieldStatus( uFieldPos )
 	ELSE
 		oStmt:__ErrInfo:ErrorFlag := FALSE
 
+
 		oRet := SELF:__GetColumn(nIndex):HyperLabel
 	ENDIF
 	RETURN oRet
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FieldSym/*" />
 METHOD FieldSym( uFieldPos ) 
 	LOCAL nIndex        AS DWORD
 	LOCAL symRet        AS SYMBOL
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:FieldSym( "+AsString( uFieldPos )+" )" )
@@ -395,16 +467,22 @@ METHOD FieldSym( uFieldPos )
 		symRet := SELF:__GetColumn(nIndex):__HyperLabel:NameSym
 	ENDIF
 
+
 	RETURN symRet
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FieldValidate/*" />
 METHOD FieldValidate( uFieldPos, uValue ) 
 	LOCAL nIndex    AS DWORD
 	LOCAL lRet      AS LOGIC
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:FieldValidate( "+AsString( uFieldPos )+" )" )
 	#ENDIF
+
 
 	nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 	IF nIndex = 0 .OR. nIndex > nNumCols
@@ -427,21 +505,31 @@ METHOD FieldValidate( uFieldPos, uValue )
 
 
 
+
+
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FLOCK/*" />
 METHOD FLOCK() 
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:FLock()" )
 	#ENDIF
 	RETURN TRUE
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.FreeStmt/*" />
 METHOD FreeStmt( fOption ) 
 	//RvdH 070530 Added default value, as suggested by Stavros Spanos
 	IF PCount() == 0
 		fOption := SQL_CLOSE
 	ENDIF
 
+
 	RETURN oStmt:FreeStmt( fOption )
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.GetData/*" />
 METHOD GetData( iCol ) 
 	LOCAL nIndex    AS DWORD
 	LOCAL nODBCType AS SHORTINT
@@ -461,9 +549,11 @@ METHOD GetData( iCol )
 	LOCAL nLen      AS DWORD
 	LOCAL oData		AS SqlData
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:GetData( "+AsString( iCol )+" )" )
 	#ENDIF
+
 
 	nIndex := SELF:__GetColIndex( iCol, TRUE )
 	IF nIndex = 0 .OR. nIndex > nNumCols
@@ -473,6 +563,7 @@ METHOD GetData( iCol )
 	ENDIF
 	oStmt:__ErrInfo:ErrorFlag := FALSE
 	nODBCType := SELF:__GetColumn(nIndex):ODBCType
+
 
 	IF lAppendFlag
 		aData := aAppendData
@@ -493,6 +584,7 @@ METHOD GetData( iCol )
 		RETURN NIL
 	ENDIF
 
+
 	pTemp := oData:ptrValue
 	SWITCH nODBCType
 	CASE SQL_SMALLINT
@@ -502,12 +594,14 @@ METHOD GetData( iCol )
 		#ENDIF
 		RETURN nVal
 
+
 	CASE SQL_INTEGER
 		liVal := LONGINT( pTemp )
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "**          :GetData( li )="+AsString( liVal ) )
 		#ENDIF
 		RETURN liVal
+
 
 	CASE SQL_REAL
 		fVal  := REAL4( pTemp )
@@ -516,6 +610,7 @@ METHOD GetData( iCol )
 		#ENDIF
 		RETURN fVal
 
+
 	CASE SQL_FLOAT   
 	CASE SQL_DOUBLE
 		dVal  := REAL8( pTemp )
@@ -523,6 +618,7 @@ METHOD GetData( iCol )
 			__SQLOutputDebug( "**          :GetData( db )="+AsString( dVal ) )
 		#ENDIF
 		RETURN dVal
+
 
 	CASE SQL_NUMERIC 
 	CASE SQL_DECIMAL
@@ -535,6 +631,7 @@ METHOD GetData( iCol )
 			xVal := Round( xVal, nDec )
 		ENDIF
 		RETURN xVal
+
 
 	CASE SQL_BIT
 		bVal  := BYTE( pTemp )
@@ -549,12 +646,14 @@ METHOD GetData( iCol )
 		#ENDIF
 		RETURN lVal
 
+
 	CASE SQL_TINYINT
 		bVal  := BYTE( pTemp )
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "**    :GetData( l )="+AsString( bVal ) )
 		#ENDIF
 		RETURN bVal
+
 
 	CASE SQL_DATE
 		cVal  := Mem2String( pTemp, SQL_DATE_LEN+1 )
@@ -564,6 +663,7 @@ METHOD GetData( iCol )
 			__SQLOutputDebug( "**          :GetData( d )="+AsString( dDate ) )
 		#ENDIF
 		RETURN dDate
+
 
 	CASE SQL_TIMESTAMP
 		// UH: Map timestamp to vo string   
@@ -575,6 +675,7 @@ METHOD GetData( iCol )
 			RETURN dDate
 		ELSE
 		
+		
 			cVal := SELF:GetTimeStamp( nIndex )
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "**          :GetData( tsd )="+ cVal )
@@ -582,11 +683,13 @@ METHOD GetData( iCol )
 			RETURN cVal
 		ENDIF
 
+
 	CASE SQL_LONGVARCHAR  
 	CASE SQL_WLONGVARCHAR 
 	CASE SQL_LONGVARBINARY
 		cVal := oData:LongValue
 		RETURN cVal
+
 
 	OTHERWISE
 		pTemp := oData:ptrValue
@@ -598,13 +701,19 @@ METHOD GetData( iCol )
 		#ENDIF
 		RETURN cVal
 
+
 	END SWITCH
 
 
 
+
+
+
+/// <include file="SQL.xml" path="doc/SQLSelect.GetdateVal/*" />
 METHOD GetdateVal( uFieldPos ) 
 	LOCAL cVal AS STRING
 	LOCAL dVal AS DATE
+
 
 	cVal := SELF:GetTimestamp( uFieldPos )
 	IF !IsNil( cVal )
@@ -612,9 +721,12 @@ METHOD GetdateVal( uFieldPos )
 	ENDIF
 	RETURN dVal
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.GetLookupTable/*" />
 METHOD GetLookupTable( nMaxRows,uField1,uField2 ) 
 	LOCAL aResult := {}         AS ARRAY
 	LOCAL wRows := 32767        AS WORD
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:GetLookupTable()" )
@@ -638,7 +750,10 @@ METHOD GetLookupTable( nMaxRows,uField1,uField2 )
 	SELF:Notify( NotifyRecordChange )
 	RETURN aResult
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.GetStatementOption/*" />
 METHOD GetStatementOption( fOption ) 
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:GetStatementOption()" )
@@ -646,6 +761,9 @@ METHOD GetStatementOption( fOption )
 	RETURN oStmt:GetStatementOption( fOption )
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLSelect.GetTimeStamp/*" />
 METHOD GetTimeStamp( uFieldPos ) 
 	LOCAL nIndex    AS DWORD
 	LOCAL nODBCType AS SHORTINT
@@ -658,8 +776,10 @@ METHOD GetTimeStamp( uFieldPos )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldGet )
 		SELF:Error( oStmt:ErrInfo )
 
+
 		RETURN NIL
 	ENDIF
+
 
 	oColumn 	 := aSQLColumns[nIndex]
 	nODBCType := oColumn:ODBCType
@@ -683,8 +803,11 @@ METHOD GetTimeStamp( uFieldPos )
 	oStmt:__ErrInfo:ErrorFlag := FALSE
 	RETURN cVal
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.GetTimeString/*" />
 METHOD GetTimeString( uFieldPos ) 
 	LOCAL cVal AS STRING
+
 
 	cVal := SELF:GetTimestamp( uFieldPos )
 	IF !IsNil( cVal )
@@ -692,8 +815,11 @@ METHOD GetTimeString( uFieldPos )
 	ENDIF
 	RETURN cVal
 
+
+/// <include file="SQL.xml" path="doc/SQLSelect.GoBottom/*" />
 METHOD GoBottom() 
 	LOCAL lOk		 AS LOGIC
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:GoBottom()" )
@@ -712,11 +838,14 @@ METHOD GoBottom()
 			__SQLOutputDebug( "***  Moved to appended record " )
 		#ENDIF
 
+
 		SELF:__SetRecordFlags( FALSE, TRUE )
+
 
 		lOk :=  TRUE     // already at append, OK
 	ELSE
 		lOk := SELF:ExtendedFetch( SQL_FETCH_LAST, 0 )
+
 
 		IF lOk
 			SELF:__SetRecordFlags( NIL, FALSE )
@@ -727,10 +856,14 @@ METHOD GoBottom()
 			SELF:__SetRecordFlags( TRUE, TRUE )
 		ENDIF
 
+
 	ENDIF
 	RETURN lOk
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLSelect.GoTo/*" />
 METHOD GoTo( uRecordExpr ) 
 	//	LOCAL siIndex       AS INT
 	LOCAL nRecno AS LONGINT
@@ -748,6 +881,7 @@ METHOD GoTo( uRecordExpr )
 	ENDIF  
 	nRecno := uRecordExpr
 
+
    // Below is the 'Old' __GoToCursor method
 	IF nRecno = SELF:nLastRecNum + 1
 		IF lAppendFlag
@@ -763,6 +897,7 @@ METHOD GoTo( uRecordExpr )
 				__SQLOutputDebug( "**  Back to appended record restored" )
 			#ENDIF
 
+
 			lAppendFlag   := TRUE
 			nAppendRecNum := nRecno
 			nRecNum       := nRecno             
@@ -771,7 +906,9 @@ METHOD GoTo( uRecordExpr )
 			SELF:ReReadRow()
 			RETURN TRUE
 			
+			
 		ENDIF       
+		
 		
 	ENDIF
 	IF nRecno = 0
@@ -802,6 +939,10 @@ METHOD GoTo( uRecordExpr )
 
 
 
+
+
+
+/// <include file="SQL.xml" path="doc/SQLSelect.GoTop/*" />
 METHOD GoTop() 
 	LOCAL lRet AS LOGIC
 	#IFDEF __DEBUG__
@@ -818,6 +959,7 @@ METHOD GoTop()
    // Below is the 'Old' __GoTopCursor method
 	lRet := SELF:ExtendedFetch( SQL_FETCH_FIRST, 0 )
 
+
 	IF !lRet
 		SELF:nLastRecnum := 0
 		SELF:nRecnum := 1
@@ -825,5 +967,7 @@ METHOD GoTop()
 	ENDIF
 	RETURN lRet
 
+
 END CLASS
+
 

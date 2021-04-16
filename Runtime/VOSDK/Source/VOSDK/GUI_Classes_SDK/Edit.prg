@@ -1,50 +1,77 @@
+/// <include file="Gui.xml" path="doc/Edit/*" />
 CLASS Edit INHERIT TextControl
 	PROTECT lNoNotify AS LOGIC
 	PROTECT lForceModFlag2True AS LOGIC
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	ASSIGN __ForceModFlag2True(lNewValue AS LOGIC)  STRICT 
 	//PP-030828 Strong typing
 	
+	
+
 
 	RETURN (lForceModFlag2True := lNewValue)
 
+
+ /// <exclude />
 ACCESS __NoNotify AS LOGIC STRICT 
 	//PP-030828 Strong typing
 	
+	
+
 
 	RETURN lNoNotify
 
+
+/// <include file="Gui.xml" path="doc/Edit.CanUndo/*" />
 METHOD CanUndo() 
 	
+	
+
 
 	IF SELF:ValidateControl()
 		RETURN LOGIC(_CAST, SendMessage(SELF:Handle(), EM_CANUNDO, 0, 0 ))
 	ENDIF
 
+
 	RETURN FALSE
 
+
+/// <include file="Gui.xml" path="doc/Edit.Caption/*" />
 ACCESS Caption 
 	
+	
+
 
 	RETURN cCaption
 
+
+/// <include file="Gui.xml" path="doc/Edit.Caption/*" />
 ASSIGN Caption(cNewCaption) 
+	
 	
 	IF !IsString(cNewCaption)
 		WCError{#Caption,#Edit,__WCSTypeError,cNewCaption,1}:Throw()
 	ENDIF
 	RETURN cCaption := cNewCaption
 
+
+/// <include file="Gui.xml" path="doc/Edit.Clear/*" />
 METHOD Clear() 
+	
 	
 	IF SELF:ValidateControl()
 		SendMessage (SELF:Handle(), WM_CLEAR, 0, 0 )
 	ENDIF
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/Edit.Copy/*" />
 METHOD Copy() 
 	LOCAL hHandle AS PTR
+
 
 	IF SELF:ValidateControl()
 		hHandle := SELF:Handle()
@@ -52,20 +79,29 @@ METHOD Copy()
 		SendMessage(hHandle, WM_COPY, 0, 0)
 	ENDIF
 
+
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/Edit.Cut/*" />
 METHOD Cut() 
 	
+	
+
 
 	IF SELF:ValidateControl()
 		SendMessage(SELF:Handle(), WM_CUT, 0, 0)
 	ENDIF
 
+
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/Edit.Font/*" />
 METHOD Font(oNewFont, lRescal) 
 	LOCAL uRet AS USUAL
 	LOCAL oMargins AS Pair
+
 
 	IF SELF:ValidateControl()
 		oMargins := SELF:Margins
@@ -73,12 +109,18 @@ METHOD Font(oNewFont, lRescal)
 		SELF:Margins := oMargins
 	ENDIF
 
+
 	RETURN uRet
 
+
+/// <include file="Gui.xml" path="doc/Edit.ctor/*" />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
 	LOCAL dwStyle AS DWORD
 
+
 	
+	
+
 
 	IF !IsInstanceOfUsual(xID,#ResourceID)
 		dwStyle:= _OR(WS_CHILD, WS_CLIPSIBLINGS)
@@ -90,29 +132,43 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 		SUPER(oOwner, xID, oPoint, oDimension, , kStyle, TRUE)
 	ENDIF
 
+
 	RETURN 
 
 
+
+
+/// <include file="Gui.xml" path="doc/Edit.IsPassword/*" />
 METHOD IsPassword() 
 LOCAL Style		AS LONG
+
 
 	// DHer: 18/12/2008
 	Style := GetWindowLong(SELF:Handle(),GWL_STYLE)
 
+
 RETURN _AND(Style,ES_PASSWORD)!=0
 
+
+/// <include file="Gui.xml" path="doc/Edit.Margins/*" />
 ACCESS Margins 
 	LOCAL dwRet AS DWORD
+
 
 	IF SELF:ValidateControl()
 		dwRet := DWORD(SendMessage(SELF:Handle(), EM_GETMARGINS, 0, 0))
 	ENDIF
 
+
 	RETURN Dimension{LoWord(dwRet), HiWord(dwRet)}
 
+
+/// <include file="Gui.xml" path="doc/Edit.Margins/*" />
 ASSIGN Margins(oNewMargins) 
 	LOCAL wLeft, wRight AS WORD
 	
+	
+
 
 	IF SELF:ValidateControl()
 		wLeft := oNewMargins:Width
@@ -120,10 +176,15 @@ ASSIGN Margins(oNewMargins)
 		SendMessage(SELF:Handle(), EM_SETMARGINS, _OR(EC_LEFTMARGIN, EC_RIGHTMARGIN), MAKELPARAM(wLeft, wRight))
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Edit.Modified/*" />
 ACCESS Modified 
 	
+	
+
 
 	IF SELF:ValidateControl()
 		IF lForceModFlag2True
@@ -133,25 +194,37 @@ ACCESS Modified
 		ENDIF
 	ENDIF
 
+
 	RETURN FALSE
 
+
+/// <include file="Gui.xml" path="doc/Edit.Modified/*" />
 ASSIGN Modified(lModified) 
 	
+	
+
 
 	IF !IsLogic(lModified)
 		WCError{#Modified,#Edit,__WCSTypeError,lModified,1}:Throw()
 	ENDIF
 
+
 	IF SELF:ValidateControl()
 		SendMessage(SELF:Handle(), EM_SETMODIFY, DWORD(_CAST, lModified), 0)
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Edit.Paste/*" />
 METHOD Paste(cNewString) 
 	LOCAL hHandle AS PTR
 
+
 	
+	
+
 
 	IF SELF:ValidateControl()
 		IF IsNil(cNewString)
@@ -166,15 +239,21 @@ METHOD Paste(cNewString)
 		ENDIF
 	ENDIF
 
+
 	RETURN SELF
 
 
+
+
+/// <include file="Gui.xml" path="doc/Edit.ReadOnly/*" />
 ACCESS ReadOnly 
 	IF SELF:ValidateControl()
 		RETURN (_AND(GetWindowLong(SELF:Handle(), GWL_STYLE), ES_READONLY) > 0)
 	ENDIF
 	RETURN (_AND(dwStyle, DWORD(_CAST, ES_READONLY)) > 0)
 
+
+/// <include file="Gui.xml" path="doc/Edit.ReadOnly/*" />
 ASSIGN ReadOnly(lNewValue) 
 	IF SELF:ValidateControl()
 		SendMessage(SELF:Handle(), EM_SETREADONLY, DWORD(_CAST, lNewValue), 0L)
@@ -186,15 +265,21 @@ ASSIGN ReadOnly(lNewValue)
 		ENDIF
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Edit.SelectedText/*" />
 ACCESS SelectedText 
 	//PP-040508 Update S.Ebert
 	LOCAL dwLast  AS DWORD
 	LOCAL dwFirst AS DWORD
 	LOCAL cReturn AS STRING
 
+
 	
+	
+
 
 	IF SELF:ValidateControl()
 		SendMessage(hWnd, EM_GETSEL, DWORD(_CAST,@dwFirst), LONGINT(_CAST,@dwLast))
@@ -203,9 +288,13 @@ ACCESS SelectedText
 		ENDIF
 	ENDIF
 
+
 	RETURN cReturn
 
+
+/// <include file="Gui.xml" path="doc/Edit.SelectedText/*" />
 ASSIGN SelectedText(cNewString) 
+	
 	
 	IF !IsString(cNewString)
 		WCError{#SelectedText,#Edit,__WCSTypeError,cNewString,1}:Throw()
@@ -214,19 +303,26 @@ ASSIGN SelectedText(cNewString)
 		SendMessage( SELF:Handle(), EM_REPLACESEL, 0, LONGINT(_CAST, String2Psz(cNewString)))
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Edit.Selection/*" />
 ACCESS Selection 
 	LOCAL dwStart AS DWORD
 	LOCAL dwFinish AS DWORD
+
 
 	IF SELF:ValidateControl()
 		SendMessage(SELF:Handle(), EM_GETSEL, DWORD(_CAST, @dwStart), LONGINT(_CAST, @dwFinish))
 		RETURN Selection{dwStart, dwFinish}
 	ENDIF
 
+
 	RETURN Selection{0,0}
 
+
+/// <include file="Gui.xml" path="doc/Edit.Selection/*" />
 ASSIGN Selection(oSelection) 
 	LOCAL oSel AS Selection
 	IF !IsInstanceOfUsual(oSelection,#Selection)
@@ -238,54 +334,73 @@ ASSIGN Selection(oSelection)
 		PostMessage(SELF:Handle(), EM_SETSEL, DWORD(oSel:Start), oSel:Finish)
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Edit.SelectAll/*" />
 METHOD SelectAll()
 	// Selects the whole text in an edit control
 	IF SELF:ValidateControl()
 		SendMessage( SELF:Handle(), EM_SETSEL, 0, -1 )
 	ENDIF
 
+
 RETURN NIL
 	
+	
+/// <include file="Gui.xml" path="doc/Edit.SelectNone/*" />
 METHOD SelectNone()
 	// Deselects the text in an edit control
 	IF SELF:ValidateControl()
 		SendMessage( SELF:Handle(), EM_SETSEL, 0, 0 )
 	ENDIF
 
+
 RETURN NIL
 		
+		
+/// <include file="Gui.xml" path="doc/Edit.SetSelectionFocus/*" />
 METHOD SetSelectionFocus() 
 	// DHer: 18/12/2008
 	SELF:Owner:SetFocus()
 	SELF:SetFocus()
 	SELF:Selection := Selection{0,SLen(SELF:Textvalue)+1}
 
+
 RETURN NIL
 
 
+
+
+/// <include file="Gui.xml" path="doc/Edit.TextLimit/*" />
 ACCESS TextLimit 
 	IF SELF:ValidateControl()
 		RETURN SendMessage(SELF:Handle(), EM_GETLIMITTEXT, 0, 0)
 	ENDIF
 
+
 	RETURN 0
 
+
+/// <include file="Gui.xml" path="doc/Edit.TextLimit/*" />
 ASSIGN TextLimit(nChars) 
 	LOCAL dwTextLen AS DWORD
 	LOCAL ptrBuffer AS PTR
 	LOCAL wChars AS DWORD
 	LOCAL hHandle AS PTR
 
+
 	IF !IsNumeric(nChars)
 		WCError{#TextLimit,#Edit,__WCSTypeError,nChars,1}:Throw()
 	ENDIF
+
 
 	IF SELF:ValidateControl()
 		hHandle := SELF:Handle()
 		wChars := nChars
 		dwTextLen := DWORD(SendMessage(hHandle, WM_GETTEXTLENGTH, 0, 0))
+
 
 		IF (dwTextLen > wChars)
 			ptrBuffer := MemAlloc(wChars+1)
@@ -294,28 +409,41 @@ ASSIGN TextLimit(nChars)
 			MemFree(ptrBuffer)
 		ENDIF
 
+
 		SendMessage(hHandle, EM_LIMITTEXT, wChars, 0)
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Edit.TextValue/*" />
 ACCESS TextValue 
 	
+	
+
 
 	RETURN SELF:__GetText()
 
+
+/// <include file="Gui.xml" path="doc/Edit.TextValue/*" />
 ASSIGN TextValue(cNewText) 
 	LOCAL cTextValue AS STRING
 	LOCAL cOldValue AS STRING
 
+
 	
+	
+
 
 	IF !IsString(cNewText)
 		WCError{#TextValue,#Edit,__WCSTypeError,cNewText,1}:Throw()
 	ENDIF
 
+
 	cOldValue := AsString(uValue)
 	cTextValue := SELF:__SetText(cNewText)
+
 
 	IF IsInstanceOfUsual(SELF:FieldSpec, #FieldSpec)
 		uValue := SELF:FieldSpec:Val(cTextValue)
@@ -323,20 +451,29 @@ ASSIGN TextValue(cNewText)
 		uValue := cTextValue
 	ENDIF
 
+
 	SELF:ValueChanged := !(cOldValue == AsString(uValue))
+
 
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Edit.Undo/*" />
 METHOD Undo() 
 	
+	
+
 
 	IF SELF:ValidateControl()
 		RETURN (SendMessage(SELF:Handle(), EM_UNDO, 0, 0) != 0)
 	ENDIF
 
+
 	RETURN FALSE
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit/*" />
 CLASS SingleLineEdit INHERIT Edit
 	PROTECT oEditString AS __FormattedString
 	PROTECT wOverWrite AS LONGINT  		//RvdH 070205 changed from WORD to LONG
@@ -345,22 +482,31 @@ CLASS SingleLineEdit INHERIT Edit
 	PROTECT lAllowSelection AS LOGIC
 	PROTECT lAutoFocusChange AS LOGIC
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	ASSIGN __AllowSelection(lNewValue AS LOGIC)  STRICT 
 	//PP-030828 Strong typing
 	RETURN (lAllowSelection := lNewValue)
 
+
+ /// <exclude />
 ACCESS __CurPos AS LONGINT STRICT 
 	//PP-030828 Strong typing
 	LOCAL liStart AS LONGINT
 
+
 	SendMessage(SELF:Handle(), EM_GETSEL, DWORD(_CAST, @liStart), 0)
+
 
 	liStart++
 	RETURN liStart
 
+
+ /// <exclude />
 ASSIGN __CurPos(iNewPos AS LONGINT)  STRICT 
 	//PP-030828 Strong typing
+	
 	
 	IF (iNewPos > 0)
 		SendMessage(SELF:Handle(), EM_SETSEL, DWORD(iNewPos-1), iNewPos-1)
@@ -368,23 +514,34 @@ ASSIGN __CurPos(iNewPos AS LONGINT)  STRICT
 		SendMessage(SELF:Handle(), EM_SETSEL, 0, 0)
 	ENDIF
 
+
 	RETURN 
 
+
+ /// <exclude />
 ACCESS __EditString AS __FormattedString STRICT  
 	//PP-030828 Strong typing
 	
+	
+
 
 	RETURN oEditString
 
+
+ /// <exclude />
 ACCESS __FSLength AS DWORD STRICT 
 	//PP-030828 Strong typing
+
 
 	IF (oFieldSpec != NULL_OBJECT)
 		RETURN ofieldSpec:Length
 	ENDIF
 
+
 	RETURN 0xFFFF
 
+
+ /// <exclude />
 METHOD __Update() AS Control STRICT 
 	//PP-030828 Strong typing
 	// Added version of __Update() for TextControl
@@ -392,11 +549,13 @@ METHOD __Update() AS Control STRICT
 	LOCAL cNewText AS STRING
 	LOCAL uOldValue AS USUAL
 
+
 	IF (NULL_STRING == SELF:Picture)
 		RETURN SUPER:__Update()
 	ELSEIF SELF:Modified
 		cText := SELF:TextValue
 		uOldValue := AsString(uValue)
+
 
 		IF (oFieldSpec != NULL_OBJECT)
 			IF (oFieldSpec:ValType == "N")
@@ -419,6 +578,7 @@ METHOD __Update() AS Control STRICT
 			uValue := Unformat(cText, SELF:Picture, oEditString:Type)
 		ENDIF
 
+
 		cNewText := Transform(uValue, SELF:Picture)
 		IF !(cNewText == cText)
 			SELF:TextValue := cNewText
@@ -428,9 +588,13 @@ METHOD __Update() AS Control STRICT
 	ENDIF
 	RETURN SELF
 
+
+ /// <exclude />
 ASSIGN __Value(uNewValue AS USUAL)  STRICT 
 	//PP-030828 Strong typing
 	
+	
+
 
 	IF (oEditString != NULL_OBJECT .AND. (oFieldSpec == NULL_OBJECT))
 		oEditString:UsualValue := uNewValue
@@ -443,21 +607,32 @@ ASSIGN __Value(uNewValue AS USUAL)  STRICT
 	ENDIF
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.AutoFocusChange/*" />
 ACCESS AutoFocusChange 
+
 
 	RETURN lAutoFocusChange
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.AutoFocusChange/*" />
 ASSIGN AutoFocusChange(lNewVal) 
+
 
 	RETURN (lAutoFocusChange := lNewVal)
 
 
+
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.CreateFormattedString/*" />
 METHOD CreateFormattedString(cPicture, cType, cDefTempl) 
 	//PP-031115 New method, replaces __FormattedString assignment with method call, allowing overriding
 	//PP-040101 Fixed method name spelling
 	oEditString := __FormattedString{SELF, cPicture, cType, wOverWrite, cDefTempl, wScrMode}
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.Dispatch/*" />
 METHOD Dispatch(oEvent) 
 	LOCAL oEvt := oEvent AS @@Event
 	LOCAL uMsg 		AS DWORD
@@ -466,8 +641,10 @@ METHOD Dispatch(oEvent)
 	LOCAL lCtrlOn AS LOGIC
 	LOCAL lExtSel AS LOGIC
 
+
 	uMsg 	 := oEvt:uMsg 
 	wParam := oEvt:wParam 
+	
 	
 	IF ((oEditString != NULL_OBJECT) .AND. (_AND(GetWindowLong(hwnd, GWL_STYLE), ES_READONLY) == 0))
 		IF (((uMsg == WM_KEYDOWN) .OR. (uMsg == WM_KEYUP) .OR. (uMsg == WM_CHAR)))
@@ -482,6 +659,7 @@ METHOD Dispatch(oEvent)
 				((wParam == VK_LEFT) .OR. (wParam == VK_RIGHT) .OR. (wParam == VK_END) .OR. (wParam == VK_HOME))
 			IF !((lAllowSelection .AND. lExtSel) .OR. (lCtrlOn .AND. (uMsg != WM_CHAR)))
 
+
 				//PP-040429 The following IF clause was within the ProcessKeyEvent IF clause
 				// It was moved here in response to emailed bug report from Willie Moore, 2004-04-28
 				//PP-030505 Bug:100
@@ -491,6 +669,7 @@ METHOD Dispatch(oEvent)
 					ENDIF
 				ENDIF
 
+
 				//IF oEditString:ProcessKeyEvent(__ObjectCastClassPtr(oEvt, __pCKeyEvent))
 				IF oEditString:ProcessKeyEvent(KeyEvent{oEvt})
 					// 2.5b fix to invoke event handler
@@ -499,13 +678,16 @@ METHOD Dispatch(oEvent)
 				ENDIF
 			ENDIF
 
+
 			//elseif (uMsg == EM_SETSEL) .and. (oEvt:lParam < 0)
 			// self:__CurPos := oEditString:NextEditPos(1)
 			// return 1L
 
+
 		ELSEIF (uMsg == WM_PASTE)
 			SELF:oEditString:Paste()
 			RETURN 1L
+
 
 		ELSEIF (uMsg == WM_CUT)
 			SELF:oEditString:Cut()
@@ -520,18 +702,25 @@ METHOD Dispatch(oEvent)
 			RETURN SELF:EventReturnValue
 		ENDIF
 
+
 	ENDIF
+
 
 	RETURN SUPER:Dispatch(oEvt)
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.FieldSpec/*" />
 ASSIGN FieldSpec(oNewFS) 
 	LOCAL sPic AS STRING
 	LOCAL pos AS USUAL
 	LOCAL vt AS STRING
 	LOCAL sDefTempl AS STRING
 
+
+	
 	
 	SUPER:FieldSpec := oNewFS
+
 
 	vt := oFieldSpec:ValType
 	DO CASE
@@ -547,6 +736,7 @@ ASSIGN FieldSpec(oNewFS)
 		ENDIF
 	ENDCASE
 
+
 	IF (NULL_STRING != SELF:Picture)
 		sPic := SELF:Picture
 	ELSEIF	(NULL_STRING != oFieldSpec:Picture)
@@ -557,12 +747,14 @@ ASSIGN FieldSpec(oNewFS)
 		sPic := sDefTempl
 	ENDIF
 
+
 	IF (NULL_STRING != sPic)
 		//PP-031115 Replace __FormattedString assignment with method call, allowing overriding
 		// oEditString := __FormattedString{SELF, sPic, vT, wOverWrite, sDefTempl, wScrMode}
 		//PP-040101 Fixed method name spelling
 		SELF:CreateFormattedString(sPic, vT, sDefTempl)
 	ENDIF
+
 
 	DO CASE
 	//RvdH 050602 Added default value for STRINGS (issue 13031)
@@ -578,15 +770,22 @@ ASSIGN FieldSpec(oNewFS)
 		ENDIF
 	ENDCASE
 
+
 	SELF:modified := FALSE
+
 
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.FocusChange/*" />
 METHOD FocusChange(oFocusChangeEvent) 
 	LOCAL iPos AS INT
 
+
+	
 	
 	//PP-030505 Bug:93 SendMessage changed to PostMessage
+
 
 	IF oFocusChangeEvent:GotFocus
 		IF (oEditString != NULL_OBJECT)
@@ -617,28 +816,43 @@ METHOD FocusChange(oFocusChangeEvent)
 		ENDIF
 	ENDIF
 
+
 	RETURN SUPER:FocusChange(oFocusChangeEvent)
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.FocusSelect/*" />
 ACCESS FocusSelect 
 	
+	
+
 
 	RETURN wFocusSel
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.FocusSelect/*" />
 ASSIGN FocusSelect(wNewValue) 
 	
+	
+
 
 	IF !IsLong(wNewValue)
 		WCError{#FocusSelect,#SingleLineEdit,__WCSTypeError,wNewValue,1}:Throw()
 	ENDIF
 
+
 	IF (wNewValue < 0) .OR. (wNewValue > 4)
 		wNewValue := FSEL_TRIM
 	ENDIF
 
+
 	RETURN (wFocusSel := wNewValue)
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.ctor/*" />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
 	
+	
+
 
 	SUPER(oOwner, xID, oPoint, oDimension, kStyle)
 	wOverWrite := OVERWRITE_NEVER
@@ -646,47 +860,69 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	wFocusSel := FSEL_TRIM
 	lAllowSelection := TRUE
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.OverWrite/*" />
 ACCESS OverWrite 
 	
+	
+
 
 	RETURN wOverWrite
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.OverWrite/*" />
 ASSIGN OverWrite(wNewValue) 
 	
+	
+
 
 	IF !IsLong(wNewValue)
 		WCError{#OverWrite,#SingleLineEdit,__WCSTypeError,wNewValue,1}:Throw()
 	ENDIF
 
+
 	IF (wNewValue < 0) .OR. (wNewValue > 2)
 		wNewValue := OVERWRITE_NEVER
 	ENDIF
+
 
 	wOverWrite := wNewValue
 	IF (oEditString != NULL_OBJECT)
 		oEditString:wOverwrite := wOverWrite
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.Picture/*" />
 ACCESS Picture 
 	
+	
+
 
 	IF oEditString == NULL_OBJECT
 		RETURN NULL_STRING
 	ENDIF
 	RETURN oEditString:Picture
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.Picture/*" />
 ASSIGN Picture(cNewPicture) 
 	LOCAL uOldVal AS USUAL
 
+
 	
+	
+
 
 	IF !IsString(cNewPicture)
 		WCError{#Picture,#SingleLineEdit,__WCSTypeError,cNewPicture,1}:Throw()
 	ENDIF
+
 
 	IF (oEditString == NULL_OBJECT)
 		lNoNotify := TRUE
@@ -706,31 +942,45 @@ ASSIGN Picture(cNewPicture)
 		ENDIF
 	ENDIF
 
+
 	RETURN oEditString:Picture
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.ScrollMode/*" />
 ACCESS ScrollMode 
 	
+	
+
 
 	RETURN wScrMode
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.ScrollMode/*" />
 ASSIGN ScrollMode(wNewValue) 
 	
+	
+
 
 	IF !IsLong(wNewValue)
 		WCError{#ScrMode,#SingleLineEdit,__WCSTypeError,wNewValue,1}:Throw()
 	ENDIF
 
+
 	IF (wNewValue < 0) .OR. (wNewValue > 2)
 		wNewValue := SCRMODE_FULL
 	ENDIF
+
 
 	wScrMode := wNewValue
 	IF (oEditString != NULL_OBJECT)
 		oEditString:wScrMode := wScrMode
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.TextValue/*" />
 ACCESS TextValue 
 LOCAL cText			AS STRING
 LOCAL cOrigText		AS STRING
@@ -740,8 +990,10 @@ LOCAL nPosMonth		AS DWORD
 LOCAL nDay			AS INT
 LOCAL nMonth		AS INT
 
+
 	// DHer: 18/12/2008
 	// Error in VO : Date "25/2 /2005" gets translated to in "25/04/2005" !!!  (in DD/MM/YYYY format)
+
 
 	cOrigText := SUPER:TextValue
 	cText := cOrigText
@@ -774,12 +1026,18 @@ LOCAL nMonth		AS INT
 		ENDIF
 	ENDIF
 
+
 RETURN cText
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.TextValue/*" />
 ASSIGN TextValue(cNewText) 
 	
+	
+
 
 	SUPER:TextValue := cNewText
+
 
 	IF (oEditString != NULL_OBJECT)
 		IF (IsInstanceOf(oFieldSpec, #FieldSpec) .AND. (IVarGet(oFieldSpec, #Nullable) == TRUE))
@@ -790,10 +1048,15 @@ ASSIGN TextValue(cNewText)
 		oEditString:UsualValue := uValue
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/SingleLineEdit.Undo/*" />
 METHOD Undo() 
 	
+	
+
 
 	IF (oEditString != NULL_OBJECT)
 		RETURN oEditString:Undo()
@@ -802,7 +1065,11 @@ METHOD Undo()
 
 
 
+
+
+
 END CLASS
+
 
 /// <exclude/>
 VOSTRUCT strucPictureFuncFlags
@@ -817,7 +1084,11 @@ VOSTRUCT strucPictureFuncFlags
 	MEMBER lConvUpper AS LOGIC
 	MEMBER lAlphaOnly AS LOGIC
 
+
 	//static global dim aKeyStates[256] as byte
+
+
+
 
 
 

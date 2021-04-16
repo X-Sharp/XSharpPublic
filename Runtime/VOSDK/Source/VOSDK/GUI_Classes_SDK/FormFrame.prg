@@ -1,6 +1,8 @@
 GLOBAL DefaultFormDialogClassName := #__FormDialogWindow AS SYMBOL
 
+
 #pragma options ("enforceself", on)
+ /// <exclude />
 CLASS __FormFrame INHERIT ChildAppWindow
 	PROTECT lAutoLayout AS LOGIC
 	PROTECT lSubForm AS LOGIC
@@ -15,6 +17,7 @@ CLASS __FormFrame INHERIT ChildAppWindow
 	// ScrollBars need to be added
 	PROTECT liMinX, liMinY AS LONGINT
 
+
 	PROTECT oFormDlg AS __FormDialogWindow
 	PROTECT oBrowser AS Control
 	PROTECT oSubFrame AS FixedText  // Not used
@@ -22,16 +25,23 @@ CLASS __FormFrame INHERIT ChildAppWindow
 	PROTECT oHScroll AS WindowHorizontalScrollBar
 	PROTECT oDataWin AS DataWindow
 
+
 	//PP-030828 Strong typing
+ /// <exclude />
 	METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT
 	//PP-030828 Strong typing
 
 
+
+
 	RETURN SELF:Owner:__CommandFromEvent(oEvent)
 
+
+ /// <exclude />
 METHOD __DoValidate(oControl AS Control) AS __FormFrame STRICT
 	//PP-030828 Strong typing
 	LOCAL oDW AS OBJECT
+
 
 	IF !IsNil(oControl)
 		oDW := oControl:Owner
@@ -40,8 +50,11 @@ METHOD __DoValidate(oControl AS Control) AS __FormFrame STRICT
 		ENDIF
 	ENDIF
 
+
 	RETURN SELF
 
+
+ /// <exclude />
 METHOD __ResizeParent() AS __FormFrame STRICT
 	LOCAL liXInc, liYInc, liX, liY, liNewWidth, liNewHeight AS LONGINT
 	LOCAL r IS _WinRect
@@ -55,15 +68,20 @@ METHOD __ResizeParent() AS __FormFrame STRICT
 
 
 
+
+
+
 	// If this form is not a subform try to resize its parent to hold the form
 	IF !lSubForm //.and. (!IsLong(uResIdId) .or. !uResIdId==-1)
 		hWndParent := oParent:Handle()
 		hWndApp := GetParent(hWndParent) //HoParent:Owner:Handle()
 
+
 		oTB := oParent:Toolbar
 		IF (oTB != NULL_OBJECT) .AND. (oTB:Owner == oParent) //.and. (lIgnoreVisibility .or. IsWindowVisible(oParent:Toolbar:Handle()))
 			liToolBarVOffset := oTB:Size:Height
 		ENDIF
+
 
         IF oParent IS AppWindow VAR oAppWnd
 		    IF (oAppWnd:StatusBar != NULL_OBJECT) 
@@ -75,29 +93,38 @@ METHOD __ResizeParent() AS __FormFrame STRICT
             ENDIF
         ENDIF
 
+
 		GetClientRect(hWndParent, @r)
+
 
 		liXInc := liMinX - r:Right
 		liYInc := liMinY - r:Bottom
+
 
 		GetWindowRect(hWndParent, @r)
 		ScreenToClient(hWndApp, (_winPOINT PTR) @r:left)
 		ScreenToClient(hWndApp, (_winPOINT PTR) @r:right)
 
+
 		r:Right += liXInc
 		r:Bottom += liYInc
+
 
 		liNewHeight := r:Bottom - r:Top
 		liNewWidth := r:Right - r:Left
 
+
 		liX := r:Left
 		liY := r:Top
+
 
 		liNewHeight += liToolBarVOffset
 		liNewHeight += liStatusBarVOffset
 
+
 		IF !IsInstanceOf(oParent, #DataDialog) .AND. (hwndApp != NULL_PTR)
 			GetClientRect(hWndApp, @r)
+
 
 			IF (liX + liNewWidth) > r:Right
 				liX := r:Right - liNewWidth
@@ -106,6 +133,7 @@ METHOD __ResizeParent() AS __FormFrame STRICT
 					liNewWidth := r:Right
 				ENDIF
 			ENDIF
+
 
 			IF (liY + liNewHeight) > r:Bottom
 				liY := r:Bottom - liNewHeight
@@ -116,11 +144,14 @@ METHOD __ResizeParent() AS __FormFrame STRICT
 			ENDIF
 		ENDIF
 
+
 		//PP-030910 from S Ebert, remove flicker next line replaces commented code below
 		liBorderX := liBorderY := LONGINT(GetFrameWidth(hWnd) * 2)
 		/*
 		// liNewHeight += liToolBarVOffset
 		// liNewHeight += liStatusBarVOffset
+
+
 
 
 		GetWindowRect(hWnd, @r)
@@ -130,10 +161,12 @@ METHOD __ResizeParent() AS __FormFrame STRICT
 		liBorderX -= r.right
 		liBorderY -= r.bottom
 
+
 		liBorderX := GetSystemMetrics(SM_CXEDGE) * 2
 		liBorderY := GetSystemMetrics(SM_CYEDGE) * 2
 		*/
 		MoveWindow(hWndParent, liX, liY, liNewWidth+liBorderX, liNewHeight+liBorderY, TRUE)
+
 
 		oBB := oParent:CanvasArea
 		IF (WCGetCoordinateSystem() == WCWindowsCoordinates)
@@ -146,8 +179,11 @@ METHOD __ResizeParent() AS __FormFrame STRICT
 		SELF:ChangeFormSize(oBB:Origin, oBB:Size)
 	ENDIF
 
+
 	RETURN SELF
 
+
+ /// <exclude />
 METHOD AddControl(oControl)
 	LOCAL oPoint AS Point
 	LOCAL oDim AS Dimension
@@ -156,14 +192,19 @@ METHOD AddControl(oControl)
 
 
 
+
+
+
 	IF !IsInstanceOfUsual(oControl,#Control)
 		WCError{#AddControl,#__FormFrame,__WCSTypeError,oControl,1}:Throw()
 	ENDIF
+
 
 	oPoint := oControl:Origin
 	oDim := oControl:Size
 	//liScrollHeight := GetSystemMetrics( SM_CXHSCROLL )
 	//liScrollWidth := GetSystemMetrics( SM_CXVSCROLL )
+
 
 	// if !lSubForm .or. true
 	liTemp := oPoint:X + oDim:Width + IIF(lAutoLayout, INSIDEFORMBORDER, 0)
@@ -172,11 +213,13 @@ METHOD AddControl(oControl)
 		lResize := TRUE
 	ENDIF
 
+
 	liTemp := oPoint:Y + oDim:Height + IIF(lAutoLayout, INSIDEFORMBORDER, 0)
 	IF liTemp > liMinY
 		liMinY := liTemp// + liScrollHeight
 		lResize := TRUE
 	ENDIF
+
 
 	IF lResize
 		//oFormDlg:Size:=Dimension{liMinX,liMinY}
@@ -188,27 +231,41 @@ METHOD AddControl(oControl)
 	ENDIF
 	// endif
 
+
 	// Set the controls TABSTOP bit
 	IF lAutoLayout .AND. !IsInstanceOf(oControl, #FixedText)
 		oControl:SetStyle(WS_TabStop)
 	ENDIF
 
+
 	RETURN SELF
 
+
+ /// <exclude />
 ACCESS AllowScroll AS LOGIC
 	RETURN lAllowScroll
 
+
+ /// <exclude />
 ASSIGN AllowScroll (lLogic AS LOGIC)
+
 
 	RETURN lAllowScroll:=lLogic
 
+
+ /// <exclude />
 ACCESS AutoLayout
+
 
 	RETURN lAutoLayout
 
+
+ /// <exclude />
 ASSIGN AutoLayout (lLogic)
 
+
 	RETURN lAutoLayout:=lLogic
+
 
 // TEXTBLOCK METHOD ChangeFormSize(oPoint, oDimension) CLASS __FormFrame
 // 	//PP-030910 Method has been replaced with one supplied by S Ebert to improve visual aspects (Bug 78)
@@ -222,10 +279,12 @@ ASSIGN AutoLayout (lLogic)
 // 	LOCAL lNewVScroll AS LOGIC
 // 	LOCAL liBorderX, liBorderY AS LONG
 
+
 // 	IF _AND(GetWindowLong(hwnd, GWL_EXSTYLE), WS_EX_CLIENTEDGE) != 0
 // 		liBorderX := GetSystemMetrics(SM_CXEDGE) * 2
 // 		liBorderY := GetSystemMetrics(SM_CYEDGE) * 2
 // 	ENDIF
+
 
 // 	liHeight := oDimension:Height
 // 	liWidth := oDimension:Width
@@ -237,6 +296,7 @@ ASSIGN AutoLayout (lLogic)
 // 	liDlgPosX := oDlgPos:X
 // 	liDlgPosY := oDlgPos:Y
 
+
 // 	IF lViewingGBrowse
 // 		SELF:size := oDimension
 // 		SELF:Origin := oPoint
@@ -246,6 +306,7 @@ ASSIGN AutoLayout (lLogic)
 // 		// return self
 // 	ENDIF
 
+
 // 	// Change the window sizes - Also see if we need scroll bars
 // 	IF (liHeight < liMinY) .AND. lAllowScroll
 // 		lWantVScroll := TRUE
@@ -253,6 +314,7 @@ ASSIGN AutoLayout (lLogic)
 // 	IF (liWidth < liMinX) .AND. lAllowScroll
 // 		lWantHScroll := TRUE
 // 	ENDIF
+
 
 // 	// If either scroll bars are not required - check that they do not
 // 	// already exist and if they do delete them
@@ -264,6 +326,7 @@ ASSIGN AutoLayout (lLogic)
 // 		SELF:EnableHorizontalScroll(FALSE)
 // 		oHScroll := NULL_OBJECT
 // 	ENDIF
+
 
 // 	// Create any scrollbars required and set their range
 // 	IF lWantHScroll .AND. !lViewingGBrowse
@@ -283,6 +346,7 @@ ASSIGN AutoLayout (lLogic)
 // 		oHScroll:Show()
 // 	ENDIF
 
+
 // 	IF lWantVScroll .AND. !lViewingGBrowse
 // 		IF (oVScroll == NULL_OBJECT)
 // 			oVScroll := SELF:EnableVerticalScroll()
@@ -299,6 +363,7 @@ ASSIGN AutoLayout (lLogic)
 // 		oVScroll:Show()
 // 	ENDIF
 
+
 // 	// Move and size the windows correctly
 // 	//SELF:Size := Dimension{liWidth, liHeight}
 // 	//SELF:Origin := oPoint
@@ -311,6 +376,7 @@ ASSIGN AutoLayout (lLogic)
 // 		oDlgSize:Width := liMinX
 // 	ENDIF
 
+
 // 	IF (liDlgPosX + oDlgSize:Width) < liWidth
 // 		liDlgPosX := liWidth - oDlgSize:Width
 // 		IF liDlgPosX > 0
@@ -318,6 +384,7 @@ ASSIGN AutoLayout (lLogic)
 // 			oDlgSize:Width := liWidth
 // 		ENDIF
 // 	ENDIF
+
 
 // 	IF (liDlgPosY + oDlgSize:Height) < oCanvasSize:Height
 // 		liDlgPosY := oCanvasSize:Height - oDlgSize:Height
@@ -327,32 +394,40 @@ ASSIGN AutoLayout (lLogic)
 // 		ENDIF
 // 	ENDIF
 
+
 // 	IF lNewVScroll .AND. (liDlgPosY + oDlgSize:Height) > oCanvasSize:Height
 // 		liDlgPosY := oCanvasSize:Height - oDlgSize:Height
 // 	ENDIF
+
 
 // 	IF liDlgPosY > 0
 // 		liDlgPosY := 0
 // 		oDlgSize:Height := oCanvasSize:Height
 // 	ENDIF
 
+
 // 	IF (oVScroll != NULL_OBJECT)
 // 		oVScroll:Range := Range{0, oDlgSize:Height - oCanvasSize:Height}
 // 		oVScroll:ThumbPosition := oDlgSize:Height - oCanvasSize:Height + liDlgPosY
 // 	ENDIF
+
 
 // 	IF (oHScroll != NULL_OBJECT)
 // 		oHScroll:Range := Range{0, oDlgSize:Width - oCanvasSize:Width}
 // 		oHScroll:ThumbPosition := -liDlgPosX
 // 	ENDIF
 
+
 // 	//oFormDlg:Size := oDlgSize
 // 	//oFormDlg:Origin := Point{liDlgPosX, liDlgPosY}
 // 	//2.5c removes flicker
 // 	WCMoveWindow(oFormDlg, Point{liDlgPosX, liDlgPosY}, oDlgSize, TRUE)
 
+
 // 	RETURN SELF
 
+
+ /// <exclude />
 METHOD ChangeFormSize(oPt, oDim, lWinCoordinates)
 	//PP-030910 Method from S Ebert
 	//PP-031129 Update from S Ebert
@@ -377,15 +452,19 @@ METHOD ChangeFormSize(oPt, oDim, lWinCoordinates)
 	oDimension := oDim
 	oPoint	  := oPt
 
+
 	liBorderX := liBorderY := LONGINT(GetFrameWidth(hWnd) * 2)
+
 
 	liHeight  := oDimension:Height
 	liWidth   := oDimension:Width
+
 
 	oDlgSize       := Dimension{liWidth - liBorderX, liHeight - liBorderY}
 	oCanvasSize    := Dimension{liWidth - liBorderX, liHeight - liBorderY}
 	liScrollHeight := GetSystemMetrics(SM_CXHSCROLL)
 	liScrollWidth  := GetSystemMetrics(SM_CXVSCROLL)
+
 
 	GetWindowRect(oFormDlg:Handle(), @sRect)
 	sPoint:x := sRect:Left
@@ -394,27 +473,33 @@ METHOD ChangeFormSize(oPt, oDim, lWinCoordinates)
 	liDlgPosX := sPoint:x
 	liDlgPosY := sPoint:y
 
+
 	IF IsLogic(lWinCoordinates) .AND. lWinCoordinates
 		SetWindowPos(hWnd, NULL_PTR, oPoint:X, oPoint:Y, liWidth, liHeight, _OR(SWP_NOZORDER, SWP_NOACTIVATE))
 	ELSE
 		WCMoveWindow(SELF, Point{oPoint:X, oPoint:Y}, oDimension, TRUE)
 	ENDIF
 
+
 	IF lViewingGbrowse .AND. oBrowser != NULL_OBJECT
 		Send(oBrowser, #__AutoResize)
 	ENDIF
+
 
 	IF (oDlgSize:Height < liMinY)
 		oDlgSize:Height := liMinY
 	ENDIF
 
+
 	IF (oDlgSize:Width < liMinX)
 		oDlgSize:Width := liMinX
 	ENDIF
 
+
 	IF lAllowScroll
 		lWantVScroll := (liHeight < liMinY)
 		lWantHScroll := (liWidth  < liMinX)
+
 
 		IF lWantVScroll .AND. ! lWantHScroll
 			lWantHScroll := (liWidth  - liScrollWidth  < liMinX)
@@ -426,8 +511,10 @@ METHOD ChangeFormSize(oPt, oDim, lWinCoordinates)
 		lWantVScroll := lWantHScroll := FALSE
 	ENDIF
 
+
 	liWidth  := oDlgSize:Width
 	liHeight := oDlgSize:Height
+
 
 	IF lWantHScroll
 		IF ! lViewingGbrowse
@@ -448,6 +535,7 @@ METHOD ChangeFormSize(oPt, oDim, lWinCoordinates)
 		liDlgPosX := 0
 	ENDIF
 
+
 	IF lWantVScroll
 		IF ! lViewingGbrowse
 			IF (oVScroll == NULL_OBJECT)
@@ -467,23 +555,28 @@ METHOD ChangeFormSize(oPt, oDim, lWinCoordinates)
 		liDlgPosY := 0
 	ENDIF
 
+
 	IF (liDlgPosX + liWidth) < oCanvasSize:Width
 		liDlgPosX := oCanvasSize:Width - liWidth
 	ENDIF
 
+
 	IF (liDlgPosY + liHeight) < oCanvasSize:Height
 		liDlgPosY := oCanvasSize:Height - liHeight
 	ENDIF
+
 
 	IF liDlgPosX > 0
 		liDlgPosX := 0
 		oDlgSize:Width  := oCanvasSize:Width
 	ENDIF
 
+
 	IF liDlgPosY > 0
 		liDlgPosY := 0
 		oDlgSize:Height := oCanvasSize:Height
 	ENDIF
+
 
 	IF oHScroll != NULL_OBJECT
 	   //SE-070421
@@ -493,6 +586,7 @@ METHOD ChangeFormSize(oPt, oDim, lWinCoordinates)
 		oHScroll:Show()
 	ENDIF
 
+
 	IF oVScroll != NULL_OBJECT
 	   //SE-070421
 	   oVScroll:SetInfo(Range{0, liMinY-1}, -liDlgPosY, oCanvasSize:Height)
@@ -501,15 +595,20 @@ METHOD ChangeFormSize(oPt, oDim, lWinCoordinates)
 		oVScroll:Show()
 	ENDIF
 
+
 	SetWindowPos(oFormDlg:Handle(), NULL_PTR, liDlgPosX, liDlgPosY, oDlgSize:Width, oDlgSize:Height, _OR(SWP_NOZORDER, SWP_NOACTIVATE))
+
 
 	//PP-031129 Fix for 109 removed, cause problems sizing elsewhere
 	//PP-030910 Bug 109
 	// InvalidateRect(oFormDlg:Handle(),NULL,TRUE)
 	// UpdateWindow(oFormDlg:Handle())
 
+
 	RETURN SELF
 
+
+ /// <exclude />
 METHOD CreateSubform(nResourceID, oResID)
 	LOCAL oFocus AS OBJECT
 	LOCAL oNewForm AS __FormFrame
@@ -519,6 +618,7 @@ METHOD CreateSubform(nResourceID, oResID)
 	LOCAL hSubFrameWnd AS PTR
 	LOCAL sRect IS _winRect
 
+
 	// DataPages don't have an associated control and will be created with nResourceID == 0
 	IF (nResourceID > 0)
 		//PP-041013 Change from S Ebert
@@ -526,6 +626,7 @@ METHOD CreateSubform(nResourceID, oResID)
 		lBorder := (_AND(DWORD(_CAST, WS_EX_CLIENTEDGE), DWORD(_CAST, GetWindowLong(hSubFrameWnd, GWL_EXSTYLE))) > 0U) .OR.;
 			(_AND(DWORD(_CAST, WS_BORDER), DWORD(_CAST, GetWindowLong(hSubFrameWnd, GWL_STYLE))) > 0U)
 	ENDIF
+
 
 	// First get the window that currently has focus. If this is either
 	// a form dialog or a control on one we need to send it a WM_ACTIVATE
@@ -541,23 +642,29 @@ METHOD CreateSubform(nResourceID, oResID)
 		ENDIF
 	ENDIF
 
+
 	// Create a new form object
 	oNewForm := __FormFrame{oFormDlg, oResID, TRUE, lBorder, TRUE}
 
+
 	oNewForm:SBCreate := TRUE
 
+
 	oSubFormDlg := oNewForm:GetDialogWindow()
+
 
 	// Size and position the new form according to subdata-control
 	IF hSubFrameWnd != NULL_PTR
 		//PP-041013 Change from S Ebert
 		GetWindowRect(hSubFrameWnd, @sRect)
 
+
 #ifdef __VULCAN__
    	MapWindowPoints(NULL_PTR, oFormDlg:Handle(), (_winPOINT PTR) @sRect, 2)
 #else
 	   MapWindowPoints(NULL_PTR, oFormDlg:Handle(), @sRect, 2)
 #endif
+
 
 		oNewForm:ChangeFormSize(Point{sRect:left, sRect:top}, Dimension{sRect:right-sRect:left, sRect:bottom-sRect:top}, TRUE)
 		SetWindowPos(oNewForm:Handle(), hSubFrameWnd, 0, 0, 0, 0, _OR(SWP_NOSIZE, SWP_NOMOVE, SWP_NOREDRAW))
@@ -566,12 +673,15 @@ METHOD CreateSubform(nResourceID, oResID)
 		oNewForm:ChangeFormSize(oSubFormDlg:Origin, oSubFormDlg:Size)
 	ENDIF
 
+
 	// Set the subforms parent form to this one and add the new subform
 	// to it's parents list
 	oSubFormDlg:SetSubformParent(oFormDlg)
 
+
 	// Show the new form
 	// oNewForm:Show()
+
 
 	// Reactivate previously active form
 	IF (oFocus != NULL_OBJECT)
@@ -579,9 +689,14 @@ METHOD CreateSubform(nResourceID, oResID)
 		SendMessage(oFocus:Handle(), WM_ACTIVATE, WA_ACTIVE, 0 )
 	ENDIF
 
+
 	RETURN oNewForm
 
+
+ /// <exclude />
 ACCESS DataWindow
+
+
 
 
 	IF oDataWin != NULL_OBJECT
@@ -591,7 +706,11 @@ ACCESS DataWindow
 	ENDIF
 	RETURN NULL_OBJECT
 
+
+ /// <exclude />
 ASSIGN DataWindow(oNewDW)
+
+
 
 
 	oDataWin := oNewDW
@@ -599,13 +718,18 @@ ASSIGN DataWindow(oNewDW)
 	// Send(oImp, #SetOwner, oNewDW)
 	//endif
 
+
 	RETURN
 //
 // METHOD DeleteSubform ( oFormFrame ) CLASS __FormFrame
 // 	//PP-041014 Method unused, to be removed next repository build
 // 	RETURN SELF
 
+
+ /// <exclude />
 METHOD Destroy() AS USUAL CLIPPER
+
+
 
 
 	IF (oFormDlg != NULL_OBJECT)
@@ -622,24 +746,38 @@ METHOD Destroy() AS USUAL CLIPPER
 	ENDIF
 	SUPER:Destroy()
 
+
 	RETURN SELF
 
+
+ /// <exclude />
 METHOD FocusChange(oFocusChangeEvent)
+
 
 	LOCAL oFCE := oFocusChangeEvent AS FocusChangeEvent
 	IF oFCE:GotFocus
 		SELF:SetFocusToForm()
 	ENDIF
 
+
 	RETURN SUPER:FocusChange(oFCE)
 
+
+ /// <exclude />
 METHOD GetDialogWindow()
+
+
 
 
 	RETURN oFormDlg
 
+
+ /// <exclude />
 ACCESS HelpDisplay
 	LOCAL oDW AS DataWindow
+
+
+
 
 
 
@@ -648,10 +786,15 @@ ACCESS HelpDisplay
 		RETURN oDW:HelpDisplay
 	ENDIF
 
+
 	RETURN NULL_OBJECT
 
+
+ /// <exclude />
 METHOD HelpRequest(oHelpRequestEvent)
 	LOCAL cHelpContext AS STRING
+
+
 
 
 	IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent) ;
@@ -675,12 +818,16 @@ METHOD HelpRequest(oHelpRequestEvent)
 		ENDIF
 	ENDIF
 
+
 	RETURN NIL
 
+
+ /// <exclude />
 METHOD HorizontalScroll(oScrollEvent)
    //SE-070421
 	LOCAL oPoint AS Point
 	LOCAL oSE := oScrollEvent AS ScrollEvent
+
 
 	oPoint 	:= oFormDlg:Origin
 	oPoint:X := -oSE:Position
@@ -688,11 +835,13 @@ METHOD HorizontalScroll(oScrollEvent)
 	oParent:HorizontalScroll(oSE)
 	RETURN SELF
 
+
    /*
    LOCAL oPoint AS Point
 	LOCAL iPos AS INT
 	LOCAL iOldPos AS INT
 	LOCAL oSE := oScrollEvent AS ScrollEvent
+
 
 	oPoint 	:= oFormDlg:Origin
 	iPos 		:= oSE:Position
@@ -703,10 +852,15 @@ METHOD HorizontalScroll(oScrollEvent)
 	RETURN SELF
    */
 
+
+ /// <exclude />
 CONSTRUCTOR(oOwner, oResID, lScroll, lBorder, lIsSub)
 	LOCAL uResIdId AS USUAL
 	LOCAL dwSubStyle AS DWORD
 	LOCAL symFDialog AS SYMBOL
+
+
+
 
 
 
@@ -716,21 +870,26 @@ CONSTRUCTOR(oOwner, oResID, lScroll, lBorder, lIsSub)
 		lAllowScroll := lScroll
 	ENDIF
 
+
 	IF IsNil(lIsSub)
 		lSubForm := FALSE
 	ELSE
 		lSubForm := lIsSub
 	ENDIF
 
+
 	SUPER(oOwner, FALSE)
+
 
 	//PP-031129 Bug 109
 	SELF:SetStyle(WS_CLIPSIBLINGS,TRUE)
 	SELF:SetStyle(WS_CLIPCHILDREN,FALSE)
 
+
 	IF !IsNil(lBorder) .AND. lBorder
 		SELF:EnableBorder(WindowNonSizingBorder)
 	ENDIF
+
 
 	//PP-030627
 	//PP-030505
@@ -745,11 +904,13 @@ CONSTRUCTOR(oOwner, oResID, lScroll, lBorder, lIsSub)
 		oFormDlg := CreateInstance(symFDialog,SELF, oResId)
 	ENDIF
 
+
 	// !!!!
 	dwSubStyle := DWORD(_CAST, GetWindowLong(oFormDlg:Handle(), GWL_STYLE))
 	IF (_AND(dwSubStyle, DWORD(_CAST, DS_CONTROL)) > 0)
 		dwSubStyle := DWORD(GetWindowLong(SELF:Handle(), GWL_EXSTYLE))
 		SetWindowLong(SELF:Handle(), GWL_EXSTYLE, LONGINT(_CAST, _OR(dwSubStyle, DWORD(_CAST, WS_EX_CONTROLPARENT))))
+
 
 		IF IsInstanceOf(oOwner, #__FormDialogWindow)
 			dwSubStyle := DWORD(GetWindowLong(oOwner:Handle(), GWL_EXSTYLE))
@@ -758,27 +919,43 @@ CONSTRUCTOR(oOwner, oResID, lScroll, lBorder, lIsSub)
 	ENDIF
 	// !!!
 
+
 	oFormDlg:Origin := Point{0,0}
 	oFormDlg:Show()
 
+
 	liMinX := Max(oFormDlg:Size:Width, IIF(!lSubForm, MIN_DATAWINDOWWIDTH, 0))
 	liMinY := oFormDlg:Size:Height
+
 
 	SELF:__ResizeParent()
 	RETURN
 
 
+
+
+ /// <exclude />
 ACCESS IsSubform
+
 
 	RETURN lSubform
 
+
+ /// <exclude />
 ASSIGN IsSubform(l)
+
+
 
 
 	RETURN lSubform:=l
 
+
+ /// <exclude />
 METHOD MouseDrag(oEvent)
 	LOCAL oObject AS OBJECT
+
+
+
 
 
 
@@ -786,10 +963,15 @@ METHOD MouseDrag(oEvent)
 	//oObject:MouseDrag(__ObjectCastClassPtr(oEvent, __pCMouseEvent))
 	oObject:MouseDrag(MouseEvent{oEvent})
 
+
 	//	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
+
+ /// <exclude />
 ACCESS Owner
+
+
 
 
 	IF SELF:dataWindow != NULL_OBJECT
@@ -797,23 +979,37 @@ ACCESS Owner
 	ENDIF
 	RETURN SUPER:Owner
 
+
+ /// <exclude />
 METHOD ResetMinSize()
 	liMinX := IIF(!lSubForm, MIN_DATAWINDOWWIDTH, 0)
 	liMinY := 2
 	RETURN SELF
 
+
+ /// <exclude />
 ACCESS SBCreate
+
+
 
 
 	RETURN lSBCreateSubform
 
+
+ /// <exclude />
 ASSIGN SBCreate(lSBCreate)
+
+
 
 
 	RETURN lSBCreateSubform:=lSBCreate
 
+
+ /// <exclude />
 METHOD SetFocusToForm ( )
 	LOCAL hWndCtrl AS PTR
+
+
 
 
 	// If focus is not returning to any specific control then set
@@ -823,11 +1019,13 @@ METHOD SetFocusToForm ( )
 		RETURN SELF
 	ENDIF
 
+
 	// Send WM_ACTIVATE message to dialog to set the currently active dialog
 	IF (oFormDlg == NULL_OBJECT)
 		RETURN SELF
 	ENDIF
 	//oFormDlg:SetFocus()
+
 
 	hWndCtrl := GetFocus()
 	IF (hWndCtrl == NULL_PTR) .OR. (GetParent(hWndCtrl) != oFormDlg:Handle())
@@ -836,10 +1034,15 @@ METHOD SetFocusToForm ( )
 		ENDIF
 	ENDIF
 
+
 	RETURN SELF
 
+
+ /// <exclude />
 METHOD SetGBrowse(oDataBrowser)
 	//PP-040515 Update S.Ebert
+
+
 
 
 	oBrowser := oDataBrowser
@@ -848,24 +1051,32 @@ METHOD SetGBrowse(oDataBrowser)
 	ENDIF
 	RETURN SELF
 
+
+ /// <exclude />
 METHOD VerticalScroll (oScrollEvent)
    //SE-070421
 	LOCAL oPoint AS Point
 	LOCAL oSE := oScrollEvent AS ScrollEvent
 
+
 	oPoint := oFormDlg:Origin
+
 
 	SetWindowPos(oFormDlg:Handle(), NULL_PTR, oPoint:X, -oSE:Position, 0, 0, _OR(SWP_NOSIZE, SWP_NOZORDER, SWP_NOACTIVATE))
 
+
 	oParent:VerticalScroll(oSE)
 
+
 	RETURN SELF
+
 
 /*
 	LOCAL oPoint AS Point
 	LOCAL iPos AS INT
 	LOCAL iOldPos AS INT
 	LOCAL oSE := oScrollEvent AS ScrollEvent
+
 
 	oPoint 		:= oFormDlg:Origin
 	iPos 			:= oSE:Position
@@ -878,13 +1089,18 @@ METHOD VerticalScroll (oScrollEvent)
 	ENDIF
 	oFormDlg:Origin := oPoint
 
+
 	oParent:VerticalScroll(oSE)
+
 
 	RETURN SELF
 */
 
+
+ /// <exclude />
 METHOD ViewAs(lBrowse)
 	LOCAL liTemp AS LONGINT
+
 
 	// If we want to view the GBRowse
 	IF lBrowse
@@ -910,6 +1126,7 @@ METHOD ViewAs(lBrowse)
 		oFormDlg:Hide()
 		oBrowser:Show()
 		// BringWindowToTop(oBrowser:Handle())
+
 
 		// EndDeferWindowPos(hWinPos)
 		lViewingGBrowse := TRUE
@@ -946,27 +1163,39 @@ METHOD ViewAs(lBrowse)
 		//		EndDeferWindowPos( hWinPos )
 	ENDIF
 
+
 	RETURN SELF
+
 
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/GetFrameWidth/*" />
 FUNCTION GetFrameWidth(hWnd AS PTR) AS DWORD STRICT
 	LOCAL sRect IS _WinRect
 	LOCAL dwStyle, dwExStyle AS DWORD
+
 
 	IF (hWnd == NULL_PTR)
 		RETURN 0l
 	ENDIF
 
+
 	SetRect(@sRect,10,10,20,20)
 	dwStyle   := DWORD(_CAST,GetWindowLong(hWnd, GWL_STYLE))
 	dwExStyle := DWORD(_CAST,GetWindowLong(hWnd, GWL_EXSTYLE))
 
+
 	AdjustWindowRectEx(@sRect, dwStyle, FALSE, dwExStyle)
+
 
 	RETURN DWORD(10l - sRect:Left)
 
+
 	// Calculates the width of the windowframe depending of the windowstyles.
+
+
+
 
 
 

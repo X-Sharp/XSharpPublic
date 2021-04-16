@@ -1,4 +1,5 @@
 #pragma options ("enforceself", on)
+/// <include file="System.xml" path="doc/FieldSpec/*" />
 CLASS FieldSpec
     // Class that contains a number of properties of database fields and form fields ( controls )
     // HyperLabel   describes the FieldSpec
@@ -37,7 +38,9 @@ PROTECT cPicture 		AS STRING
     // UH 01/30/1997
 PROTECT lNullable AS LOGIC
 
+
     //RvdH-030916 Strong typing
+ /// <exclude />
     METHOD __GetHLRange  AS VOID STRICT 
         //RvdH-030916 Strong typing
         IF IsNil(oHLRange)
@@ -59,15 +62,23 @@ PROTECT lNullable AS LOGIC
         ENDIF
         RETURN
 
+
+/// <include file="System.xml" path="doc/FieldSpec.AsString/*" />
     METHOD AsString( )                              
         RETURN oHyperLabel:Caption
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.Decimals/*" />
     ACCESS Decimals                                 
         // Returns the number of decimals
         RETURN wDecimals
     
     
+    
+    
+/// <include file="System.xml" path="doc/FieldSpec.Decimals/*" />
     ASSIGN Decimals (uDecimals)                     
+        
         
         IF IsNil(uDecimals )
             wDecimals := 0
@@ -80,12 +91,17 @@ PROTECT lNullable AS LOGIC
         ENDIF
         RETURN 
     
+    
+ /// <exclude />
     ACCESS __HyperLabel as HyperLabel
         RETURN oHyperLabel
+/// <include file="System.xml" path="doc/FieldSpec.HyperLabel/*" />
     ACCESS HyperLabel                               
         // Returns the HyperLabel object
         RETURN oHyperLabel
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.ctor/*" />
     CONSTRUCTOR( oHLName, uType, uLength, uDecimals ) 
         // Instantiation parameters for FieldSpec
         // oHLName      ( required ) HyperLabel
@@ -102,6 +118,7 @@ PROTECT lNullable AS LOGIC
             //  BREAK DbError{SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADNAME), oHLName, "oHLName" }
             DbError{SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADNAME), oHLName, "oHLName" }:Throw()
         ENDIF
+        
         
         IF IsString( uType )
             cType := Left(Upper(uType),1)
@@ -124,6 +141,7 @@ PROTECT lNullable AS LOGIC
             CASE "T"                // DateTime
                 wType := DATE
                         
+                        
             CASE "G"                // General
             CASE "O"                // Object
             CASE "P"                // Picture
@@ -131,6 +149,7 @@ PROTECT lNullable AS LOGIC
                 wType := OBJECT
             CASE "X"
                 wType := TYPE_MULTIMEDIA
+                        
                         
             OTHERWISE
                 cType := ""
@@ -162,6 +181,7 @@ PROTECT lNullable AS LOGIC
             ENDIF
         ENDIF
         
+        
         IF IsNumeric( uLength )
             wLength := uLength
         ELSE
@@ -170,6 +190,7 @@ PROTECT lNullable AS LOGIC
                 DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADLENGTH), uLength, "uLength" }:Throw()
             ENDIF
         ENDIF
+        
         
         IF IsNil(uDecimals )
             wDecimals := 0
@@ -181,24 +202,38 @@ PROTECT lNullable AS LOGIC
         RETURN 
     
     
+    
+    
+/// <include file="System.xml" path="doc/FieldSpec.Length/*" />
     ACCESS Length
         // Returns the length of the field
         RETURN wLength
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.Maximum/*" />
     ACCESS Maximum
         RETURN uMax
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.Minimum/*" />
     ACCESS Minimum
         RETURN uMin
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.MinLength/*" />
     ACCESS MinLength
         RETURN wMinLength
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.Nullable/*" />
     ACCESS Nullable
         RETURN SELF:lNullable
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.Nullable/*" />
     ASSIGN Nullable( lNew )
         RETURN SELF:lNullable := lNew
+/// <include file="System.xml" path="doc/FieldSpec.PerformValidations/*" />
     METHOD PerformValidations(uValue, arg)        
         // Performs all the validations on the specified value: required field, data type compliance, range, etc.
         // Returns a LOGIC indicating whether the validation succeeded.
@@ -209,12 +244,15 @@ PROTECT lNullable AS LOGIC
         LOCAL wLen, wDecLen:=0, i  AS DWORD
         LOCAL cDecSep, cTmp   AS STRING
         
+        
         oHLStatus := NULL_OBJECT
+        
         
         //  UH 01/31/1997
         IF SELF:lNullable .AND. IsNil(uValue)
             RETURN .T. 
         ENDIF
+        
         
         IF (IsString(uValue) .AND. Empty(AllTrim(uValue))) .OR. ;  
                 (IsDate(uValue) .AND. uValue == NULL_DATE)         
@@ -223,6 +261,7 @@ PROTECT lNullable AS LOGIC
                     IF IsNil(oHLRequired)
                         oHLRequired := HyperLabel{ #FieldSpecRequired, , VO_Sprintf(__CAVOSTR_DBFCLASS_REQUIRED,oHyperLabel:Name) }
                     ENDIF
+                    
                     
                     oHLStatus := oHLRequired
                     RETURN FALSE
@@ -233,6 +272,7 @@ PROTECT lNullable AS LOGIC
                 RETURN .T. 
             ENDIF
             
+            
             // Check data type (no conversions here!)
             IF !(UsualType(uValue) == wType .OR. (lNumeric .AND. IsNumeric(uValue)) .OR. ((wType == TYPE_MULTIMEDIA) .AND. IsString(uValue)))
                 IF oHLType == NULL_OBJECT
@@ -240,8 +280,10 @@ PROTECT lNullable AS LOGIC
                 ENDIF
                 oHLStatus := oHLType
                 
+                
                 RETURN FALSE
             ENDIF
+            
             
             // Check max and min length
             IF lNumeric
@@ -251,14 +293,17 @@ PROTECT lNullable AS LOGIC
                         cValue := AllTrim(AsString(uValue))
                     ENDIF
                     
+                    
                     IF !Empty(SELF:cPicture)
                         cDecSep := Chr(SetDecimalSep())
+                        
                         
                         // NOTE: picture templates need to be in U.S. format for output
                         // to be correct when set from control panel.
                         IF At2(".", SELF:cPicture) > 0
                             // get decimal locations according to picture
                             cTmp := SubStr2(SELF:cPicture, At2(".", SELF:cPicture) + 1)
+                            
                             
                             wLen := SLen(cTmp)
                             #ifdef __VULCAN__
@@ -277,8 +322,10 @@ PROTECT lNullable AS LOGIC
                                 NEXT
                             #endif						
                             
+                            
                             // substring cValue based on control panel's decimal sep.
                             cValue := SubStr3(cValue, 1, At2(cDecSep, cValue) + wDecLen)
+                            
                             
                         ENDIF
                 ENDIF
@@ -286,17 +333,22 @@ PROTECT lNullable AS LOGIC
                 cValue := uValue
             ENDIF
             
+            
             wLen := SLen(cValue)
+            
             
             IF wLen > wLength .AND. ;
                     !(cType == "M" /*.AND. wLength == 10 .AND. !wLength > 65536*/ ) 
+                    
                     
                     IF oHLLength == NULL_OBJECT
                         oHLLength := HyperLabel{ #FieldSpecLength, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDLENGTH,oHyperLabel:Name,Str( wLength ) ) }
                     ENDIF
                     
+                    
                     oHLStatus := oHLLength
                     RETURN FALSE
+                
                 
             ELSEIF wType == STRING .AND. wLen < wMinLength
                 IF  oHLMinLength = NULL_OBJECT
@@ -307,6 +359,7 @@ PROTECT lNullable AS LOGIC
                 RETURN FALSE
             ENDIF
             
+            
             // Check range
             IF !IsNil(uMin) .AND. uValue < uMin
                 IF IsNil(oHLRange)
@@ -316,15 +369,18 @@ PROTECT lNullable AS LOGIC
                 RETURN FALSE
             ENDIF
             
+            
             IF !IsNil(uMax) .AND. uValue > uMax
                 IF IsNil(oHLRange)
                     SELF:__GetHLRange( )
                 ENDIF
                 oHLStatus := oHLRange
                 
+                
                 RETURN FALSE
             ENDIF
         ENDIF
+        
         
         // Check validation method or codeblock
         IF !SELF:Validate(uValue, arg)
@@ -335,21 +391,31 @@ PROTECT lNullable AS LOGIC
                 oHLStatus := oHLValidation      // Fill in status if not done by client code
             ENDIF
             
+            
             RETURN FALSE
         ENDIF
         
+        
         RETURN TRUE
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Picture/*" />
     ACCESS Picture
         RETURN cPicture
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.Picture/*" />
     ASSIGN Picture( cNewPicture ) 
         //ASSERT _DYNCHECKERRORBOX( )
         RETURN cPicture := cNewPicture
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.Required/*" />
     ACCESS Required
         RETURN lRequired
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.SetLength/*" />
     METHOD SetLength( w, oHL )
         // The length is set through the instantiation parameter, and is not normally changed later
         // This method does allow changing the length and, more usefully,
@@ -371,6 +437,8 @@ PROTECT lNullable AS LOGIC
         ENDIF
         RETURN NIL
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.SetMinLength/*" />
     METHOD SetMinLength( w, oHL )                   
         // This method is used to set the minimum length,
         // and the HyperLabel diagnostic for the minlength check (applies to string data only)
@@ -391,6 +459,8 @@ PROTECT lNullable AS LOGIC
         ENDIF
         RETURN NIL
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.SetRange/*" />
     METHOD SetRange( uMinimum, uMaximum, oHL )      
         // Sets the range and the HyperLabel for the range check error message
         // All parameters are optional, if one is not provided the corresponding value is not changed
@@ -409,6 +479,8 @@ PROTECT lNullable AS LOGIC
         ENDIF
         RETURN NIL
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.SetRequired/*" />
     METHOD SetRequired( lReq, oHL )                 
         // This method is used to specify whether this is a required field,
         // and the HyperLabel diagnostic for the required check
@@ -430,6 +502,8 @@ PROTECT lNullable AS LOGIC
         ENDIF
         RETURN NIL
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.SetType/*" />
     METHOD SetType( uType, oHL )                    
         // The storage type is normally set as an instantiation parameter and is not changed later.
         // This method does allow the storage type to be changed and, more usefully,
@@ -449,14 +523,17 @@ PROTECT lNullable AS LOGIC
                     ELSEIF cType == "D"
                         wType := DATE
                         
+                        
                         // SABR01 12/28/95
                         // O is an OLE object
                     ELSEIF cType == "O"
                         wType := OBJECT
                         
+                        
                         // Ansgar 7/9/97 added Bitmap
                     ELSEIF cType == "B"
                         wType := TYPE_MULTIMEDIA
+                        
                         
                     ELSE
                         cType := ""
@@ -482,6 +559,7 @@ PROTECT lNullable AS LOGIC
                 ELSEIF (wType == TYPE_MULTIMEDIA)
                     cType := "B"
                     
+                    
                 ELSE
                     wType := 0
                     DbError{ SELF, #Init, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADTYPE), uType, "uType" }:Throw()
@@ -498,11 +576,15 @@ PROTECT lNullable AS LOGIC
         RETURN NIL
     
     
+    
+    
+/// <include file="System.xml" path="doc/FieldSpec.SetValidation/*" />
     METHOD SetValidation( cb, oHL )                 
         // Used to set the validation codeblock and its corresponding HyperLabel diagnostic
         // The validation rule may be specified as a codeblock or a string
         // Both parameters are optional, if one is not provided the corresponding value is not changed
         IF !IsNil(cb)
+            
             
             //  UH 04/10/2000
             //  IF IsCodeBlock( cb )
@@ -524,11 +606,16 @@ PROTECT lNullable AS LOGIC
         RETURN NIL
     
     
+    
+    
+/// <include file="System.xml" path="doc/FieldSpec.Status/*" />
     ACCESS Status                                   
         // Returns the Status HyperLabel object; NIL if status is OK. Status reflects the
         // most recently made validation ( see METHOD PerformValidations ).
         RETURN oHLStatus
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.Status/*" />
     ASSIGN Status (oHL)
         IF IsObject(oHL) .AND. __Usual.ToObject(oHL) IS HyperLabel
             oHLStatus := oHL
@@ -536,16 +623,21 @@ PROTECT lNullable AS LOGIC
             DbError{ SELF, #Status, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADHL), oHL, "oHL" }:Throw()
         ENDIF
          
+         
         RETURN 
 
+
+/// <include file="System.xml" path="doc/FieldSpec.Transform/*" />
     METHOD Transform( uValue )                      
         // Format the value into a string according to the picture clause
         // should default to windows formats
+        
         
         LOCAL cResult   AS STRING
         LOCAL cTemp     AS STRING   
         LOCAL lScience  AS LOGIC    
         LOCAL lZero :=FALSE   AS LOGIC    
+        
         
         IF cPicture == NULL_STRING
                 IF lNumeric 
@@ -554,6 +646,7 @@ PROTECT lNullable AS LOGIC
                         ELSE
                             cResult := Transform(uValue,Replicate("9",wLength-wDecimals-1)+"."+Replicate("9",wDecimals))
                         ENDIF
+                        
                         
                         IF SubStr3(cResult,1,1) == "*"
                             lScience := SetScience(TRUE)
@@ -587,22 +680,31 @@ PROTECT lNullable AS LOGIC
             cResult := Transform(uValue,cPicture)
         ENDIF
         
+        
         RETURN cResult
 
+
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.UsualType/*" />
     ACCESS UsualType                                
         // Returns the storage type as a keyword (INT, STRING, etc.)
         RETURN wType
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.Val/*" />
     METHOD Val( cString )                           
         // Converts a string to the appropriate data type
+        
         
         LOCAL xRet  AS USUAL
         LOCAL cType AS STRING
         
+        
         IF !IsString( cString )     // This is a generic converter
             DbError{ SELF, #Val, EG_ARG, __CavoStr(__CAVOSTR_DBFCLASS_BADSTRING), cString, "cString" }:Throw()
         ENDIF
+        
         
         IF lNumeric
                 IF SELF:lNullable
@@ -612,6 +714,7 @@ PROTECT lNullable AS LOGIC
                 ENDIF
                 xRet := Unformat( cString, cPicture, cType)
             
+            
         ELSEIF wType = DATE
             IF SELF:lNullable
                 cType := "D0"
@@ -620,6 +723,7 @@ PROTECT lNullable AS LOGIC
             ENDIF
             xRet := Unformat( cString, cPicture, cType)
             
+            
         ELSEIF wType = LOGIC
             IF SELF:lNullable
                 cType := "L0"
@@ -627,6 +731,7 @@ PROTECT lNullable AS LOGIC
                 cType := "L"
             ENDIF
             xRet := Unformat( cString, cPicture, cType)
+            
             
         ELSEIF wType = STRING
             IF SELF:lNullable
@@ -637,38 +742,61 @@ PROTECT lNullable AS LOGIC
             xRet := Unformat( cString, cPicture, cType)
         ENDIF
         
+        
         RETURN xRet
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.Validate/*" />
     METHOD Validate( uValue, arg )                       
+        
         
         RETURN cbValidation = NIL .OR. Eval( cbValidation, uValue, arg )
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.Validation/*" />
     ACCESS Validation                               
         RETURN cbValidation
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.ValType/*" />
     ACCESS ValType                                  
         // Returns the storage type as a keyword (INT, STRING, etc.)
         RETURN cType
     
     
+    
+    
     //RvdH 2010-12-03: Some extra accesses
+/// <include file="System.xml" path="doc/FieldSpec.MinLengthHL/*" />
     ACCESS MinLengthHL 
         RETURN oHLMinLength
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.RangeHL/*" />
     ACCESS RangeHL 
         RETURN oHLRange
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.RequiredHL/*" />
     ACCESS RequiredHL 
         RETURN oHLRequired
     
+    
+/// <include file="System.xml" path="doc/FieldSpec.ValidationHL/*" />
     ACCESS ValidationHL 
         RETURN oHLValidation
         
         
+        
+        
     END CLASS
 
+
+/// <include file="System.xml" path="doc/DateFS/*" />
 PARTIAL CLASS DateFS INHERIT FieldSpec
 
+
+/// <include file="System.xml" path="doc/DateFS.ctor/*" />
     CONSTRUCTOR( oHLName )                      
         IF IsNil(oHLName)
             oHLName := "__DateFS"
@@ -677,25 +805,36 @@ PARTIAL CLASS DateFS INHERIT FieldSpec
         RETURN 
     END CLASS
 
+
+/// <include file="System.xml" path="doc/IntegerFS/*" />
 PARTIAL CLASS IntegerFS INHERIT FieldSpec
 
+
+/// <include file="System.xml" path="doc/IntegerFS.ctor/*" />
     CONSTRUCTOR( oHLName, uLength )             
         IF IsNil(oHLName)
             oHLName := "__IntegerFS"
         ENDIF
         
+        
         IF IsNil(uLength)
             uLength := 10
         ENDIF
+        
         
         SUPER(oHLName,"N",uLength,0)
         SELF:Picture := " 9,999"
         RETURN 
     END CLASS
 
+
+/// <include file="System.xml" path="doc/LogicFS/*" />
 PARTIAL CLASS LogicFS INHERIT FieldSpec
 
+
+/// <include file="System.xml" path="doc/LogicFS.ctor/*" />
     CONSTRUCTOR(oHLName)   
+        
         
         IF IsNil(oHLName)
             oHLName := "__LogicFS"
@@ -704,19 +843,28 @@ PARTIAL CLASS LogicFS INHERIT FieldSpec
         RETURN 
     END CLASS
 
+
+/// <include file="System.xml" path="doc/MoneyFS/*" />
 PARTIAL CLASS MoneyFS INHERIT NumberFS
 
+
+/// <include file="System.xml" path="doc/MoneyFS.ctor/*" />
     CONSTRUCTOR( oHLName, uLength, uDecimals)   
         IF IsNil(oHLName)
             oHLName := "__MoneyFS"
         ENDIF
         
+        
         SUPER(oHLName,uLength,uDecimals)
         RETURN 
     END CLASS
 
+
+/// <include file="System.xml" path="doc/NumberFS/*" />
 PARTIAL CLASS NumberFS INHERIT FieldSpec
 
+
+/// <include file="System.xml" path="doc/NumberFS.ctor/*" />
     CONSTRUCTOR(oHLName, uLength, uDecimals)    
         IF IsNil(oHLName)
             oHLName := "__NumberFS"
@@ -729,6 +877,7 @@ PARTIAL CLASS NumberFS INHERIT FieldSpec
         ENDIF
         SUPER(oHLName,"N",uLength,uDecimals)
         
+        
         IF  uDecimals > 0
                 SELF:Picture := Replicate("9",uLength-uDecimals-1) + "." +;
             Replicate("9",uDecimals)
@@ -737,10 +886,15 @@ PARTIAL CLASS NumberFS INHERIT FieldSpec
         ENDIF
         RETURN 
         
+        
     END CLASS
 
+
+/// <include file="System.xml" path="doc/StringFS/*" />
 PARTIAL CLASS StringFS INHERIT FieldSpec
 
+
+/// <include file="System.xml" path="doc/StringFS.ctor/*" />
     CONSTRUCTOR( oHLName, uLength)              
         IF IsNil(oHLName)
             oHLName := "__StringFS"
@@ -751,7 +905,9 @@ PARTIAL CLASS StringFS INHERIT FieldSpec
         SUPER(oHLName,"C",uLength,0)
         RETURN 
         
+        
     END CLASS
+
 
 STATIC FUNCTION TypeAsString(wType AS DWORD) AS STRING
     IF wType = STRING
@@ -767,4 +923,7 @@ STATIC FUNCTION TypeAsString(wType AS DWORD) AS STRING
     ENDIF
     
     
+    
+    
+
 

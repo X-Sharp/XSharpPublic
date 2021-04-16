@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+
 #region defines
 DEFINE DBCCON               := TRUE
 DEFINE DBCCOFF              := FALSE

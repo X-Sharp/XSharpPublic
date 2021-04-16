@@ -8,7 +8,7 @@
     <AssemblyName>VOConsoleClasses</AssemblyName>
     <Name>VOConsoleClasses</Name>
     <OutputName>VOConsoleClasses</OutputName>
-    <XSharpProjectversion>2.8.0.9</XSharpProjectversion>
+    <XSharpProjectversion>2.8.0.10</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -78,6 +78,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>copy $(SolutionDir)\Docs\Console.xml $(ProjectDir)\Console.Xml</PreBuildEvent>
+    <PostBuildEvent>erase  $(ProjectDir)\Console.Xml</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

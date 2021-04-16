@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+
 #region defines
 DEFINE _assert  := TRUE
 DEFINE  __CAVO_SQL_TXN_READ_COMMITTED := SQL_TXN_READ_COMMITTED

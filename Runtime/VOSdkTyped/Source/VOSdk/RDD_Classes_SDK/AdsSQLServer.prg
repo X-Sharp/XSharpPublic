@@ -11,7 +11,7 @@
 // licensee, upon request, at no cost to Extended Systems Inc., the modifications.
 //
 // Extended Systems Inc. does not warrant that the operation of this software
-// will meet your requirements or that the operation of the software will be 
+// will meet your requirements or that the operation of the software will be
 // uninterrupted, be error free, or that defects in software will be corrected.
 // This software is provided "AS IS" without warranty of any kind. The entire
 // risk as to the quality and performance of this software is with the purchaser.
@@ -21,25 +21,33 @@
 // way increase the scope of this warranty.
 #pragma options ("enforceself", on)
 
+
 //#include "VOSystemLibrary.vh"
-// #include "dbfaxs.vh"   
+// #include "dbfaxs.vh"
+/// <include file="Rdd.xml" path="doc/AdsSQLServer/*" />
 CLASS AdsSQLServer INHERIT DbServer
 
+
+/// <include file="Rdd.xml" path="doc/AdsSQLServer.ctor/*" />
 CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd ) CLIPPER
     LOCAL cTemp AS STRING
     LOCAL cFileName AS STRING
 
+
     // Set the query text, this is necessary because the VO runtime doesn't like
     // some of the special characters that are used in SQL queries
     RddInfo( _SET_SQL_QUERY, oFile )
+
 
     // Some VO libraries have trouble with the alias as is.  So for the SQL RDDS,
     // just grab the first word of the SQL query and use it as the alias.  The VO
     // runtime will adjust it to be unique if there is a naming conflict.
     cTemp := Left( oFile, At( " ", oFile ) - 1 )
 
+
     // Call the DBServer init method which will execute the query
     SUPER( cTemp, lShareMode, lReadOnlyMode, xDriver, aRdd )
+
 
     // Now that the query is executed, fixup some member variables that couldn't
     // be set properly before the query was executed.  Only do this if the table
@@ -48,12 +56,15 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd ) CLIPPER
         oFileSpec := FileSpec{ SELF:Info( DBI_FULLPATH ) }
         cFileName := oFileSpec:FileName
 
+
         cTemp := Symbol2String( ClassName( SELF ) )
         oHyperLabel := HyperLabel{ cFileName, cFileName,  ;
             cTemp + ": " + cFileName + " Alias=" +  ;
             cTemp + "_" + cFileName }
     ENDIF
 
+
 RETURN
+
 
 END CLASS

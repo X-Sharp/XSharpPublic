@@ -12,18 +12,18 @@
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CEmail</codeEntityReference></para></entry>
 <entry><para>
-        Provide a class to store and decode all data for an e-mail.
-      </para></entry></row>
+            Provide a class to store and decode all data for an e-mail.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CFtp</codeEntityReference></para></entry>
 <entry><para>
-        Wrapper class for high-level File Transfer Protocol (FTP) functions provided by Microsoft in Wininet.dll.
-      </para></entry></row>
+            Wrapper class for high-level File Transfer Protocol (FTP) functions provided by Microsoft in Wininet.dll.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CHttp</codeEntityReference></para></entry>
 <entry><para>
-        Wrapper class for an Http (Hypertext transfer protocol) session.
-      </para></entry></row>
+            Wrapper class for an Http (Hypertext transfer protocol) session.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CImap</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -33,48 +33,48 @@
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CMailAbstract</codeEntityReference></para></entry>
 <entry><para>
-        Base class for CPop, CSmtp and CNNTP classes.
-      </para></entry></row>
+            Base class for CPop, CSmtp and CNNTP classes.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CMessage</codeEntityReference></para></entry>
 <entry><para>
-        Base class for CEmail class.
-      </para></entry></row>
+            Base class for CEmail class.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CNews</codeEntityReference></para></entry>
 <entry><para>
-        To encapsulate Internet news messages.
-      </para></entry></row>
+            To encapsulate Internet news messages.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CNNTP</codeEntityReference></para></entry>
 <entry><para>
-        Create an Internet News Server based on NNTP (Network News Transport Protocol).
-      </para></entry></row>
+            Create an Internet News Server based on NNTP (Network News Transport Protocol).
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CPop</codeEntityReference></para></entry>
 <entry><para>
-        Provide a class for Internet Post Office Protocol (POP).
-      </para></entry></row>
+            Provide a class for Internet Post Office Protocol (POP).
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CSession</codeEntityReference></para></entry>
 <entry><para>
-        Abstract class for wrapping an Internet session.
-      </para></entry></row>
+            Abstract class for wrapping an Internet session.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CSmtp</codeEntityReference></para></entry>
 <entry><para>
-        Provide a class for Internet Protocol SMTP.
-      </para></entry></row>
+            Provide a class for Internet Protocol SMTP.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CSocket</codeEntityReference></para></entry>
 <entry><para>
-        Provide a class for low-level TCP/IP programming.
-      </para></entry></row>
+            Provide a class for low-level TCP/IP programming.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.CStorage</codeEntityReference></para></entry>
 <entry><para>
-        Provide an interface to handle large Email Messages and attachments
-      </para></entry></row>
+            Provide an interface to handle large Email Messages and attachments
+        </para></entry></row>
 </table>
 </content>
      </section>

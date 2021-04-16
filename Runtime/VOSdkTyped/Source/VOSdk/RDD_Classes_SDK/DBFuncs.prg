@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+
 #pragma warnings(165, off)
 /// <exclude/>
 FUNCTION __GetFldPos( uField AS USUAL, wFieldCount AS DWORD ) AS DWORD STRICT
@@ -13,15 +14,20 @@ FUNCTION __GetFldPos( uField AS USUAL, wFieldCount AS DWORD ) AS DWORD STRICT
 			dwPos := uField
 		ENDIF
 
+
 	ELSEIF IsSymbol( uField )
 		dwPos := FieldPosSym( uField )
+
 
 	ELSEIF IsString( uField )
 		dwPos := FieldPos( uField )
 
+
 	ENDIF
 
+
    RETURN dwPos
+
 
 /// <exclude/>
 FUNCTION __DBSAPPEND( lRelease AS LOGIC, nTries := 1 AS DWORD ) AS LOGIC STRICT
@@ -40,6 +46,7 @@ FUNCTION __DBSAPPEND( lRelease AS LOGIC, nTries := 1 AS DWORD ) AS LOGIC STRICT
    ENDIF
 	RETURN lOk
 
+
 /// <exclude/>
 FUNCTION __DBSCommit( nTries := 1 AS DWORD) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
@@ -57,6 +64,7 @@ FUNCTION __DBSCommit( nTries := 1 AS DWORD) AS LOGIC STRICT
 	ENDDO
 	RETURN lOk
 
+
 /// <exclude/>
 FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  nNext, nRec, lRest, cDriver, aRDD, aStruct ) AS LOGIC  CLIPPER
 	LOCAL cobOldErrFunc AS USUAL
@@ -72,35 +80,44 @@ FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  nNext, nRec, lRest, cD
 	LOCAL aMatch AS ARRAY
 	LOCAL rddList AS _RddList
 
+
 	lAnsi  := SetAnsi( )
 	dwTo := VoDbGetSelect( )
+
 
 	IF Empty( aStruct := __DBFLEDIT( aStruct, aFields, NULL_ARRAY ) )
 		BREAK DbError{ NIL, #AppendDB, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFIELDMATCH ),  ;
 			aFields, "aFields" }
 	ENDIF
 
+
 	aRdds := __RDDList( cDriver, aRDD )
 	rddList := __AllocRddList( aRdds )
 	lRetCode := VoDbUseArea( TRUE, rddList, cFile, __UniqueAlias( cFile ), TRUE, TRUE )
   
+  
+
 
 	IF !lRetCode
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
+
 
 	dwFrom := VoDbGetSelect( )
 	aFields := { }
 	n := FCount( )
 	aMatch := DbStruct( )
 
+
 	FOR i := 1 UPTO n
 		AAdd( aFields, FieldName( i ) )
 	NEXT
 
+
    IF ( ! lAnsi ) .AND. ( __DBSDBINFO( DBI_ISANSI) )
 		SetAnsi( TRUE)
 	ENDIF
+
 
    cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
    BEGIN SEQUENCE
@@ -112,18 +129,23 @@ FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  nNext, nRec, lRest, cD
       lBreak := TRUE
 	END SEQUENCE
 
+
 	IF ( dwFrom > 0 )
 		VoDbCloseArea( )
 	ENDIF
 
+
 	VoDbSetSelect(LONGINT(dwTo ) )
 	SetAnsi( lAnsi )
+
 
 	IF lBreak
 		BREAK oError
 	ENDIF
 
+
 	RETURN lRetCode
+
 
 /// <exclude/>
 FUNCTION __DBSDBAPPDELIM( cFile, cDelim, aFields,	uCobFor, uCobWhile,   ;
@@ -137,42 +159,55 @@ FUNCTION __DBSDBAPPDELIM( cFile, cDelim, aFields,	uCobFor, uCobWhile,   ;
 	LOCAL lDbfAnsi 		AS LOGIC
 	LOCAL rddList 			AS _RddList
 
+
 	lAnsi := SetAnsi( )
 	dwTo := VoDbGetSelect( )
+
 
 	IF Empty( aStruct := __DBFLEDIT( aStruct, aFields, NULL_ARRAY ) )
 		BREAK DbError{ NIL, #AppendDelimited, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFIELDMATCH ),  ;
 			aFields, "aFields" }
 	ENDIF
 
+
 	IF Empty( cFile )
 		BREAK DbError{ NIL, #AppendDelimited, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFILENAME ),  ;
 			cFile, "cFile" }
 	ENDIF
 
+
 	IF At(".", cFile ) == 0
 		cFile := cFile + ".TXT"
 	ENDIF
 
+
 	rddList := __AllocRddList( { "DELIM" } )
 
+
 	lRetCode := VoDbCreate( cFile, aStruct, rddList, TRUE, __UniqueAlias( cFile ), cDelim, TRUE, TRUE )
+
+
 
 
 	IF ! lRetCode
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
+
 	lDbfAnsi := __DBSDBINFO( DBI_ISANSI )
+
 
 	IF ( ! lAnsi .AND. lDbfAnsi )
 		SetAnsi( TRUE )
 	ENDIF
 
+
    cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 	BEGIN SEQUENCE
 
+
 		lRetCode := DbTrans( dwTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest )
+
 
 	RECOVER USING oError
 		ErrorBlock(cobOldErrFunc)
@@ -180,15 +215,19 @@ FUNCTION __DBSDBAPPDELIM( cFile, cDelim, aFields,	uCobFor, uCobWhile,   ;
 	END SEQUENCE
    ErrorBlock(cobOldErrFunc)
 
+
 	VoDbCloseArea( )
 	VoDbSetSelect(LONGINT(dwTo ) )
 	SetAnsi( lAnsi )
+
 
 	IF lBreak
 		BREAK oError
 	ENDIF
 
+
 	RETURN lRetCode
+
 
 /// <exclude/>
 FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  nNext, nRec, lRest, aStruct ) AS LOGIC  CLIPPER
@@ -201,45 +240,56 @@ FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  nNext, nRec, lRest,
 	LOCAL lDbfAnsi AS LOGIC
 	LOCAL rddList AS _RddList
 
+
 	lAnsi := SetAnsi( )
 	dwTo := VoDbGetSelect( )
+
 
 	IF Empty( aStruct := __DBFLEDIT( DbStruct( ), aFields, NULL_ARRAY ) )
 		BREAK DbError{ NIL, #AppendSDF, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFIELDMATCH ),  ;
 			aFields, "aFields" }
 	ENDIF
 
+
 	IF Empty( cFile )
 		BREAK DbError{ NIL, #AppendSDF, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFILENAME ),  ;
 			cFile, "cFile" }
 	ENDIF
+
 
 //	IF Empty( siPos := At( ".", cFile ) )
 	IF At( ".", cFile ) == 0
 		cFile := cFile + ".TXT"
 	ENDIF
 
+
 	IF ! File( cFile )
 		BREAK DbError{ NIL, #AppendSDF, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  ;
 			cFile, "cFile" }
 	ENDIF
 
+
 	lDbfAnsi := __DBSDBINFO( DBI_ISANSI )
 	rddList := __AllocRddList( { "SDF" } )
 	lRetCode := VoDbCreate( cFile, aStruct, rddList, TRUE, __UniqueAlias( cFile ), "", TRUE, TRUE )
+
 
 	IF ! lRetCode
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
+
 	IF ( ! lAnsi .AND. lDbfAnsi )
 		SetAnsi( TRUE )
 	ENDIF
 
+
     cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 	BEGIN SEQUENCE
 
+
 		lRetCode := DbTrans( dwTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest )
+
 
 	RECOVER USING oError
 		ErrorBlock(cobOldErrFunc)
@@ -247,15 +297,19 @@ FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  nNext, nRec, lRest,
 	END SEQUENCE
    ErrorBlock(cobOldErrFunc)
 
+
 	VoDbCloseArea( )
 	VoDbSetSelect(LONGINT(dwTo ) )
 	SetAnsi( lAnsi )
+
 
 	IF lBreak
 		BREAK oError
 	ENDIF
 
+
 	RETURN lRetCode
+
 
 /// <exclude/>
 FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  cDriver, aRDD, aStruct ) AS LOGIC  CLIPPER
@@ -269,7 +323,9 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  c
 	LOCAL aRdds AS ARRAY
 	LOCAL rddList AS _RddList
 
+
 	dwFrom := VoDbGetSelect( )
+
 
 	IF  Empty( aFields ) .AND. IsNil( uCobFor ) .AND. IsNil( uCobWhile ) .AND.  ;
 		IsNil( nNext ) .AND. IsNil( nRec ) .AND. 	Empty( lRest ) .AND. IsNil( cDriver ) .AND.  ;
@@ -277,8 +333,10 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  c
 		( __DBSDBINFO( DBI_MEMOHANDLE ) == 0 ) .AND.  ;
 		( __DBSDbOrderInfo( DBOI_ORDERCOUNT ) = 0 )
 
+
 		lRetCode := DBFileCopy( __DBSDBINFO( DBI_FILEHANDLE ), cFile, __DBSDBINFO( DBI_FULLPATH ) )
 	ELSE
+
 
 		lAnsi := SetAnsi( )
 		IF Empty( aStruct := __DBFLEDIT( aStruct, aFields, NULL_ARRAY ) )
@@ -286,35 +344,46 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  c
 				aFields, "aFields" }
 		ENDIF
 
+
 		IF IsNil( cDriver )
 			cDriver := ""
 		ENDIF
 
+
 		aRdds := __RDDList( cDriver, aRDD )
 		rddList := __AllocRddList( aRdds )
 
+
 		lRetCode := VoDbCreate( cFile, aStruct, rddList, TRUE, __UniqueAlias( cFile ), "", FALSE, FALSE )
+
 
 		IF ! lRetCode
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
+
 
 		IF ( ! lAnsi ) .AND. ( __DBSDBINFO( DBI_ISANSI ) )
 			SetAnsi( TRUE )
 		ENDIF
 
+
 		lRetCode := VoDbUseArea( TRUE, rddList, cFile, __UniqueAlias( cFile ), ! SetExclusive( ), FALSE )
+
 
 		IF ! lRetCode
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
 
+
 		VoDbSelect( dwFrom, OUT dwTo )
+
 
       cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 		BEGIN SEQUENCE
 
+
 			lRetCode := DbTrans( dwTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest )
+
 
 		RECOVER USING oError
 			ErrorBlock(cobOldErrFunc)
@@ -322,20 +391,25 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  c
 		END SEQUENCE
 	   ErrorBlock(cobOldErrFunc)
 
+
 		IF ( dwTo > 0 )
 			VoDbSetSelect(LONGINT(dwTo ) )
 			VoDbCloseArea( )
 		ENDIF
 
+
 		VoDbSetSelect(LONGINT(dwFrom ) )
 		SetAnsi( lAnsi )
+
 
 		IF lBreak
 			BREAK oError
 		ENDIF
 	ENDIF
 
+
 	RETURN lRetCode
+
 
 /// <exclude/>
 FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  nRec, lRest, aStruct ) AS LOGIC  CLIPPER
@@ -349,13 +423,16 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  n
 	LOCAL lDbfAnsi AS LOGIC
 	LOCAL rddList AS _RddList
 
+
 	lAnsi  := SetAnsi( )
 	dwFrom := VoDbGetSelect( )
+
 
 	IF Empty( aStruct := __DBFLEDIT( aStruct, aFields, NULL_ARRAY ) )
 		BREAK DbError{ NIL, #CopyDelimited, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFIELDMATCH ),  ;
 			aFields, "aFields" }
 	ENDIF
+
 
 	IF Empty( cFile )
 		BREAK DbError{ NIL, #CopyDelimited, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  ;
@@ -365,29 +442,38 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  n
 		cFile := cFile + ".TXT"
 	ENDIF
 
+
 	IF IsNil( cDelim )
 		cDelim := ""
 	ENDIF
 
+
 	lDbfAnsi := __DBSDBINFO( DBI_ISANSI )
 	rddList := __AllocRddList( { "DELIM" } )
 
+
 	lRetCode := VoDbCreate( cFile, aStruct, rddList, TRUE, __UniqueAlias( cFile ), cDelim, TRUE, FALSE )
+
 
 	IF ! lRetCode
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
+
 	IF ( ! lAnsi .AND. lDbfAnsi )
 		SetAnsi( TRUE )
 	ENDIF
 
+
 	VoDbSelect( dwFrom, OUT dwTo )
+
 
 	cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 	BEGIN SEQUENCE
 
+
 		lRetCode := DbTrans( dwTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest )
+
 
 	RECOVER USING oError
 		ErrorBlock(cobOldErrFunc)
@@ -395,17 +481,22 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  n
 	END SEQUENCE
    ErrorBlock(cobOldErrFunc)
 
+
 	VoDbSetSelect(LONGINT(dwTo ) )
 	VoDbCloseArea( )
 	VoDbSetSelect(LONGINT(dwFrom ) )
 
+
 	SetAnsi( lAnsi )
+
 
 	IF lBreak
 		BREAK oError
 	ENDIF
 
+
 	RETURN lRetCode
+
 
 /// <exclude/>
 FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStruct ) AS LOGIC  CLIPPER
@@ -420,13 +511,16 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,
 	LOCAL lDbfAnsi AS LOGIC
 	LOCAL rddList AS _RddList
 
+
 	lAnsi := SetAnsi( )
 	dwFrom := VoDbGetSelect( )
+
 
 	IF Empty( aStruct := __DBFLEDIT( aStruct, aFields, NULL_ARRAY ) )
 		BREAK DbError{ NIL, #CopySDF, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFIELDMATCH ),  ;
 			aFields, "aFields" }
 	ENDIF
+
 
 	IF Empty( cFile )
 		BREAK DbError{ NIL, #CopySDF, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADFILENAME ),  ;
@@ -436,26 +530,34 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,
 		cFile := cFile + ".TXT"
 	ENDIF
 
+
 	cAlias := __UniqueAlias( cFile )
 	lDbfAnsi := __DBSDBINFO( DBI_ISANSI )
 
+
 	rddList := __AllocRddList( { "SDF" } )
 	lRetCode := VoDbCreate( cFile, aStruct, rddList, TRUE, cAlias, "", TRUE, FALSE )
+
 
 	IF ! lRetCode
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
+
 	IF ( ! lAnsi .AND. lDbfAnsi )
 		SetAnsi( TRUE )
 	ENDIF
 
+
 	VoDbSelect( dwFrom, OUT dwTo )
+
 
 	cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 	BEGIN SEQUENCE
 
+
 		lRetCode := DbTrans( dwTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest )
+
 
 	RECOVER USING oError
 		ErrorBlock(cobOldErrFunc)
@@ -463,17 +565,22 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,
 	END SEQUENCE
    ErrorBlock(cobOldErrFunc)
 
+
 	VoDbSetSelect(LONGINT(dwTo ) )
 	VoDbCloseArea( )
 	VoDbSetSelect(LONGINT(dwFrom ) )
 
+
 	SetAnsi( lAnsi )
+
 
 	IF lBreak
 		BREAK oError
 	ENDIF
 
+
 	RETURN lRetCode
+	
 	
 /// <exclude/>
 FUNCTION __DBSDBINFO( nOrdinal AS DWORD , xNewVal := NIL AS USUAL, nTries := 1 AS DWORD) AS USUAL STRICT
@@ -490,6 +597,7 @@ FUNCTION __DBSDBINFO( nOrdinal AS DWORD , xNewVal := NIL AS USUAL, nTries := 1 A
    ENDIF
 	RETURN xNewVal
 
+
 /// <exclude/>
 FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 	LOCAL dwFrom1 AS DWORD
@@ -500,38 +608,51 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 	LOCAL rddList AS _RddList
 	LOCAL aRdds AS ARRAY
 
+
 	IF uCobFor == NIL
 		RETURN FALSE
 	ENDIF
 
+
 	dwFrom1 := VoDbGetSelect( )
 
+
 	dwFrom2 := @@Select( cAlias )
+
 
 	IF dwFrom2 = 0
 		BREAK DbError{ NIL, #JOIN, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_BADALIAS ), cAlias, "cAlias" }
 	ENDIF
 
+
 	VoDbSetSelect(LONGINT(dwFrom1 ) )
+
 
 	IF Empty( aStruct := __TargetFields( cAlias, aFields, OUT VAR pJoinList ) )
 		BREAK DbError{ NIL, #JOIN, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFIELDMATCH ), aFields, "aFields" }
 	ENDIF
 
+
 	aRdds := __RDDList( cRDD )
 	rddList := __AllocRddList( aRdds )
 
+
 	lRetCode := VoDbCreate( cFile, aStruct, rddList, TRUE, NULL_STRING, NULL_STRING, TRUE, FALSE )
+
 
 	IF ! lRetCode
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
+
 	VoDbSelect( dwFrom1, OUT dwTo )
+
 
 	pJoinList:uiDestSel := dwTo
 
+
 	lRetCode := VoDbGoTop( )
+
 
 	DO WHILE ! VoDbEof( )
 		VoDbSetSelect(LONGINT(dwFrom2 ) )
@@ -548,18 +669,23 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 		VoDbSkip( 1 )
 	ENDDO
 
+
 	IF dwTo > 0
 		VoDbSetSelect(LONGINT(dwTo ) )
 		VoDbCloseArea( )
 	ENDIF
 
+
 	VoDbSetSelect(LONGINT(dwFrom1 ) )
 
+
 	RETURN lRetCode
+
 
 /// <exclude/>
 FUNCTION __DBSDbOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING, uOrder:= NIL AS USUAL, xNewVal := NIL AS USUAL, nTries := 1 AS DWORD) AS USUAL STRICT
 	LOCAL lKeyVal   AS LOGIC
+
 
 	IF IsString(uOrder)
 		IF Len(uOrder) == 0
@@ -567,10 +693,12 @@ FUNCTION __DBSDbOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING,
 		ENDIF
 	ENDIF
 
+
 	IF nOrdinal == DBOI_KEYVAL
 		lKeyVal  := .T. 
 		nOrdinal := DBOI_EXPRESSION
 	ENDIF
+
 
    DO WHILE nTries > 0
 		IF VoDbOrderInfo(nOrdinal, cBagName, uOrder, REF xNewVal)
@@ -579,9 +707,11 @@ FUNCTION __DBSDbOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING,
 	   nTries--
 	ENDDO
 
+
    IF nTries = 0
    	BREAK ErrorBuild(_VoDbErrInfoPtr())
    ENDIF
+
 
 	IF lKeyVal
 		IF IsString(xNewVal)
@@ -593,7 +723,9 @@ FUNCTION __DBSDbOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING,
 		ENDIF
 	ENDIF
 
+
 	RETURN xNewVal
+
 
 /// <exclude/>
 FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStruct, cRDD ) AS LOGIC  CLIPPER
@@ -606,52 +738,68 @@ FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aS
 	LOCAL lRetCode 		AS LOGIC
 	LOCAL oError 			AS USUAL
 
+
 	IF ! IsLogic( lRest )
 		lRest := FALSE
 	ENDIF
 
+
 	dwFrom := VoDbGetSelect( )
 
+
 	fnFieldNames := _AllocFieldNames( aStruct )
+
 
 	IF Empty( aFields )
 		BREAK DbError{ NIL, #SORT, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFIELDS ),  ;
 			aFields, "aFields" }
 	ENDIF
 
+
 	fnSortNames := __allocNames( aFields )
+
 
 	aRdds := __RDDList( cRDD )
 	rddList := __AllocRddList( aRdds )
 
+
 	lRetCode := VoDbCreate( cFile, aStruct, rddList, TRUE, NULL_STRING, NULL_STRING, TRUE, FALSE )
+
 
 	IF ! lRetCode
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
+
 	VoDbSelect( dwFrom, OUT dwTo )
+
 
 	lRetCode := VoDbSort( dwTo, fnFieldNames, uCobFor, uCobWhile, nNext, nRec, lRest, fnSortNames )
 	IF ! lRetCode
 		oError := ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
+
 	_FreeFieldNames( fnFieldNames )
 	_FreeFieldNames( fnSortNames )
+
 
 	IF ( dwTo > 0 )
 		VoDbSetSelect(LONGINT(dwTo ) )
 		VoDbCloseArea( )
 	ENDIF
 
+
 	VoDbSetSelect(LONGINT(dwFrom ) )
+
 
 	IF ! lRetCode
 		BREAK oError
 	ENDIF
 
+
 	RETURN TRUE
+
 
 /// <exclude/>
 FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStruct, cRDD ) AS LOGIC  CLIPPER
@@ -671,23 +819,30 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec, lR
 	LOCAL rddList AS _RddList
 	LOCAL nCountMemos AS DWORD  
 
+
 	IF ! lRest
 		IF ! VoDbGoTop( )
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
 	ENDIF
 
+
 	aFldNum := { }
 
+
 	n := Len( aFields )
+
 
 	FOR i := 1 UPTO n
 		AAdd( aFldNum, FieldPos( AllTrim( aFields[i] ) ) )
 	NEXT
 
+
 	aNum  := ArrayNew( n )
 
+
 	dwFrom := VoDbGetSelect( )
+
 
 	n := ALen( aStruct )
 	FOR i := n DOWNTO 1
@@ -698,27 +853,36 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec, lR
 	NEXT
 	ASize( aStruct, ALen( aStruct ) - nCountMemos)
 
+
 	IF ( Empty( aStruct ) )
 		BREAK DbError{ NIL, #TOTAL, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFIELDS ),  ;
 			aFields, "aFields" }
 	ENDIF
 
+
 	fldNames := _AllocFieldNames( aStruct )
+
 
 	aRdds := __RDDList( cRDD )
 	rddList := __AllocRddList( aRdds )
 
+
 	lRetCode := VoDbCreate( cFile, aStruct, rddList, TRUE, NULL_STRING, NULL_STRING, TRUE, FALSE )
+
 
 	IF ! lRetCode
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
+
 	VoDbSelect( dwFrom, OUT dwTo )
+
 
 	n := Len( aFldNum )
 
+
 	BEGIN SEQUENCE
+
 
 		DO WHILE ( ( ! VoDbEof( ) ) .AND. nNext != 0 .AND. Eval( uCobWhile ) )
 			lSomething := FALSE
@@ -741,6 +905,7 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec, lR
 				ENDIF
 				VoDbSkip( 1 )
 
+
 				IF lSomething
 					VoDbSetSelect(LONGINT(dwTo ) )
 					FOR i := 1 UPTO n
@@ -752,26 +917,34 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec, lR
 				ENDIF
 			ENDDO
 
+
    	ENDDO
+
 
 	RECOVER USING oError
       lBreak := TRUE
 	END SEQUENCE
 
+
 	_FreeFieldNames( fldNames )
+
 
 	IF ( dwTo > 0 )
 		VoDbSetSelect(LONGINT(dwTo ) )
 		VoDbCloseArea( )
 	ENDIF
 
+
 	VoDbSetSelect( LONGINT(dwFrom ) )
+
 
 	IF lBreak
 		BREAK oError
 	ENDIF
 
+
 	RETURN lRetCode
+
 
 /// <exclude/>
 FUNCTION __DBSDBUPDATE( cAlias, uCobKey, lRand, bReplace ) AS LOGIC  CLIPPER
@@ -780,13 +953,17 @@ FUNCTION __DBSDBUPDATE( cAlias, uCobKey, lRand, bReplace ) AS LOGIC  CLIPPER
 	LOCAL kEval AS USUAL
 	LOCAL lRetCode AS LOGIC
 
+
 	lRetCode := TRUE
+
 
 	VoDbGoTop( )
 	dwTo := VoDbGetSelect( )
 
+
 	dwFrom := @@Select( cAlias )
 	VoDbGoTop( )
+
 
 	DO WHILE ! VoDbEof( )
 		kEval := Eval( uCobKey )
@@ -805,13 +982,18 @@ FUNCTION __DBSDBUPDATE( cAlias, uCobKey, lRand, bReplace ) AS LOGIC  CLIPPER
 			ENDIF
 		ENDIF
 
+
 		VoDbSetSelect(LONGINT(dwFrom ) )
 		VoDbSkip( 1 )
 	ENDDO
 
+
 	VoDbSetSelect(LONGINT(dwTo ) )
 
+
 	RETURN lRetCode
+
+
 
 
 /// <exclude/>
@@ -829,6 +1011,7 @@ FUNCTION __DBSFLock( nTries := 1 AS DWORD) AS LOGIC STRICT
 			EXIT
 		ENDIF
 	ENDDO
+
 
 	RETURN lOk
 /// <exclude/>
@@ -851,6 +1034,7 @@ FUNCTION __DBSGoTop( nTries := 1 AS DWORD) AS LOGIC STRICT
    ENDIF
 	RETURN lOk
 
+
 /// <exclude/>
 FUNCTION __DBSGoBottom( nTries := 1 AS DWORD) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
@@ -867,10 +1051,12 @@ FUNCTION __DBSGoBottom( nTries := 1 AS DWORD) AS LOGIC STRICT
 		ENDIF
 	ENDDO
 
+
    IF ! lOk
 		BREAK ErrorBuild(_VoDbErrInfoPtr())
    ENDIF
 	RETURN lOk
+
 
 /// <exclude/>
 FUNCTION __DBSOrdListAdd( cBag AS STRING, xOrder AS USUAL, nTries  := 1 AS DWORD) AS LOGIC STRICT
@@ -892,6 +1078,7 @@ FUNCTION __DBSOrdListAdd( cBag AS STRING, xOrder AS USUAL, nTries  := 1 AS DWORD
    ENDIF
 	RETURN lOk
 
+
 /// <exclude/>
 FUNCTION __DBSOrdListClear( cBag AS STRING, xOrder AS USUAL, nTries := 1 AS DWORD ) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
@@ -912,6 +1099,7 @@ FUNCTION __DBSOrdListClear( cBag AS STRING, xOrder AS USUAL, nTries := 1 AS DWOR
    ENDIF
 	RETURN lOk
 
+
 /// <exclude/>
 FUNCTION __DBSRLock( n AS USUAL, nTries := 1 AS DWORD) AS LOGIC STRICT
 	 LOCAL lOk := FALSE AS LOGIC
@@ -928,15 +1116,19 @@ FUNCTION __DBSRLock( n AS USUAL, nTries := 1 AS DWORD) AS LOGIC STRICT
 		ENDIF
 	ENDDO
 
+
 	RETURN lOk
+
 
 /// <exclude/>
 FUNCTION __DBSSeek( xValue AS USUAL, lSoft AS USUAL, lLast AS USUAL, nTries  := 1 AS DWORD) AS LOGIC STRICT
    LOCAL lRet  AS LOGIC
 
+
 	@@Default(REF lSoft, SetSoftSeek())
 	@@Default(REF lLast, FALSE)
 	@@Default(REF xValue, "")
+
 
 	DO WHILE nTries > 0
 		NetErr( FALSE )
@@ -950,13 +1142,17 @@ FUNCTION __DBSSeek( xValue AS USUAL, lSoft AS USUAL, lLast AS USUAL, nTries  := 
 		ENDIF
 	ENDDO
 
+
 	IF nTries = 0
 		BREAK ErrorBuild(_VoDbErrInfoPtr())
 	ENDIF
 
+
 	lRet := VoDbFound()
 
+
 	RETURN lRet
+
 
 /// <exclude/>
 FUNCTION __DBSSetSelect(dwNew AS DWORD) AS DWORD STRICT
@@ -965,28 +1161,36 @@ FUNCTION __DBSSetSelect(dwNew AS DWORD) AS DWORD STRICT
    ENDIF
    RETURN dwNew
 
+
 STATIC GLOBAL __glRestoreWorkarea := FALSE AS LOGIC 
+
 
 /// <exclude/>
 FUNCTION __DBSFieldGet( wPos AS DWORD ) AS USUAL
 	LOCAL xRetVal AS USUAL
 
+
 	IF ! VoDbFieldGet( wPos, REF xRetVal )
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
+
 	RETURN xRetVal
+
 
 /// <exclude/>
 FUNCTION __IsBlob( nField AS INT ) AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL uVal AS USUAL
 
+
 	IF VoDbFieldInfo( DBS_BLOB_TYPE, DWORD(nField), REF uVal )
 		lRetCode := ! IsNil( uVal )
 	ENDIF
 
+
 	RETURN lRetCode
+
 
 /// <exclude/>
 FUNCTION __IterateForFieldAssign( acbExpression AS ARRAY, aFields AS ARRAY ) AS VOID
@@ -995,15 +1199,18 @@ FUNCTION __IterateForFieldAssign( acbExpression AS ARRAY, aFields AS ARRAY ) AS 
 	LOCAL xValue AS USUAL
 	LOCAL nPos AS DWORD
 
+
 	nLen := ALen( acbExpression )
 	FOR n := 1 UPTO nLen
 		nPos := FieldPosSym( aFields[n] )
+
 
 		IF __CanEval( acbExpression[n] )
 			xValue := Eval( acbExpression[n] )
 		ELSE
 			xValue := acbExpression[n]
 		ENDIF
+
 
 		IF ! VoDbFieldPut( nPos, xValue )
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ))
@@ -1015,40 +1222,53 @@ FUNCTION __IterateForSum( acbExpression AS ARRAY, aResults AS ARRAY ) AS VOID
 	LOCAL wLen AS DWORD
 	LOCAL w AS DWORD
 
+
 	wLen := ALen( acbExpression )
 	FOR w := 1 UPTO wLen
 		aResults[w] += Eval( acbExpression[w] )
 	NEXT
 	RETURN
 
+
 /// <exclude/>
 FUNCTION __MakeErrObj( nTries ) AS USUAL  CLIPPER
 	LOCAL oError AS OBJECT
 
+
 	oError := ErrorBuild( _VoDbErrInfoPtr( ) )
+
 
 	IF ! IsNil( nTries )
 		((Error)oError):Tries := nTries
 	ENDIF
 
+
 	RETURN oError     
+
 
 /// <summary>Get/Set the flag that determines if DbServer operations restore the current workarea </summary>
 
+
+/// <include file="Rdd.xml" path="doc/DbSetRestoreWorkarea/*" />
 FUNCTION DbSetRestoreWorkarea(lEnable := NIL AS USUAL) AS LOGIC STRICT
    LOCAL lOldValue AS LOGIC
 
+
    lOldValue := __glRestoreWorkarea
+
 
    IF IsLogic(lEnable)
       __glRestoreWorkarea := lEnable
    ENDIF
 
+
    RETURN lOldValue
+
 
 /// <exclude/>
 FUNCTION __DBSErrorBlock() AS USUAL CLIPPER
    RETURN ErrorBlock( { | oErr | _Break( oErr ) } )
+
 
 //  UH 11/12/2000
 /// <exclude/>
@@ -1066,7 +1286,9 @@ FUNCTION __ConstructUniqueAlias ( cFileName AS STRING ) AS SYMBOL STRICT
 		cTryNewAlias := Upper(cFileName)+"_"+AllTrim( Str( w++ ) )
 	ENDDO
 
+
 	RETURN String2Symbol( cTryNewAlias )
+
 
 /// <exclude/>
 FUNCTION __DBSGoTo( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
@@ -1084,10 +1306,12 @@ FUNCTION __DBSGoTo( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
 		ENDIF
 	ENDDO
 
+
    IF ! lOk
 		BREAK ErrorBuild(_VoDbErrInfoPtr())
    ENDIF
 	RETURN lOk
+
 
 /// <exclude/>
 FUNCTION __DBSSkip( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
@@ -1105,10 +1329,13 @@ FUNCTION __DBSSkip( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
 		ENDIF
 	ENDDO
 
+
    IF ! lOk
 		BREAK ErrorBuild(_VoDbErrInfoPtr())
    ENDIF
 	RETURN lOk
+
+
 
 
 /// <exclude/>
@@ -1116,6 +1343,7 @@ FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) A
     LOCAL dwType AS DWORD
     LOCAL cType  AS STRING
     LOCAL lOK    AS LOGIC
+    
     
     dwType := Asc(aField[DBS_TYPE]) 
     SWITCH dwType
@@ -1140,6 +1368,7 @@ FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) A
                 lOK     := FALSE   
                 uError  := { EG_DATAWIDTH, __CAVOSTR_DBFCLASS_INVALIDLENGTH, NTrim(aField[DBS_LEN]) + "(decimals "+NTrim(aField[DBS_DEC]) + ")"}
                 
+                
             ENDIF
         ENDIF 
     ELSE             
@@ -1156,8 +1385,10 @@ FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) A
         uError := {EG_DATATYPE, __CAVOSTR_DBFCLASS_INVALIDTYPE, cType}
     ENDIF
     
+    
     RETURN lOK
 STATIC GLOBAL sgLockMode := ccOptimistic AS DWORD
+
 
 /// <summary>Get/Set the default locking mode for the DbServer class</summary>
 /// <param name="dwLockMode">The new locking mode. The default = ccOptimistic</param>
@@ -1168,8 +1399,10 @@ FUNCTION DbSetDefaultLockMode(dwLockMode AS DWORD) AS DWORD PASCAL
     sgLockMode := dwLockMode
     RETURN dwOld
     
+    
 /// <summary>Get the default locking mode for the DbServer class</summary>
 /// <returns>The current locking mode</returns>
 FUNCTION DbGetDefaultLockMode() AS DWORD PASCAL
     RETURN sgLockMode
+
 

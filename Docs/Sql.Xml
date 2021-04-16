@@ -1,0 +1,2845 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <members></members>
+<SQLCatalogQuery>
+      <summary>
+        Provide the base class from which all X# catalog classes are subclassed.
+      </summary>
+      <remarks>
+        <br />Important!  This is an abstract class and should never be used directly — instead, use one of its subclasses, which include SQLListColumnPrivileges, SQLListColumns, SQLListForeignKeys, SQLListPrimaryKeys, SQLListProcedureColumns, SQLListProcedures, SQLListSpecialColumns, SQLListStatistics, SQLListTablePrivileges, SQLListTables, or SQLListTypeInfo.
+      </remarks>
+</SQLCatalogQuery>
+<SQLCatalogQuery.ctor>
+      <summary>
+        Construct an SQLCatalogQuery object.
+      </summary>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+</SQLCatalogQuery.ctor>
+<SQLCatalogQuery.CursorName>
+      <summary>
+        This property is provided to override the inherited functionality from the SQLSelect class, as it does not apply to SQLCatalogQuery.
+      </summary>
+      <value>This property is provided to override the inherited functionality from the SQLSelect class, as it does not apply to SQLCatalogQuery.</value>
+</SQLCatalogQuery.CursorName>
+<SQLCatalogQuery.Delete>
+      <summary>
+        This method is provided to override the inherited functionality from the SQLSelect class, as it does not apply to SQLCatalogQuery; therefore it generates an error and returns FALSE.
+      </summary>
+</SQLCatalogQuery.Delete>
+<SQLCatalogQuery.FIELDPUT>
+      <summary>
+        This method is provided to override the inherited functionality from the SQLSelect class, as it does not apply to SQLCatalogQuery; therefore it generates an error and returns FALSE.
+      </summary>
+</SQLCatalogQuery.FIELDPUT>
+<SQLCatalogQuery.TableName>
+      <summary>
+        This property is provided to override the inherited functionality from the SQLSelect class, as it does not apply to SQLCatalogQuery.
+      </summary>
+      <value>This property is provided to override the inherited functionality from the SQLSelect class, as it does not apply to SQLCatalogQuery.</value>
+</SQLCatalogQuery.TableName>
+<SQLCatalogQuery.Update>
+      <summary>
+        This method is provided to override the inherited functionality from the SQLSelect class, as it does not apply to SQLCatalogQuery; therefore it generates an error and returns FALSE.
+      </summary>
+</SQLCatalogQuery.Update>
+<SQLColumn>
+      <summary>
+        Describe an SQL column.
+      </summary>
+</SQLColumn>
+<SQLColumn.ctor>
+      <summary>
+        Construct an SQL column.
+      </summary>
+      <param name="oHyperLabel">The hyperlabel for the SQL column.</param>
+      <param name="oFieldSpec">The field specification for the SQL column.</param>
+      <param name="nODBCType">The ODBC data type of the SQL column (for example, SQL_INTEGER, SQL_CHAR, and SQL_FLOAT).  Refer to your ODBC documentation for a complete list of ODBC data types that are available.</param>
+      <param name="nScale">The decimal precision of the SQL column.  This is specified only when the ODBC data type is numeric.</param>
+      <param name="lNullable">Specify TRUE if the value can be NULL; otherwise, FALSE.</param>
+      <param name="nIndex">The SQL column number.</param>
+      <param name="cColName">The SQL column name.</param>
+      <param name="cAlias">The SQL column alias name.</param>
+</SQLColumn.ctor>
+<SQLColumn.AliasName>
+      <summary>
+        The alias name of the SQL column.
+      </summary>
+      <value>The alias name of the SQL column.</value>
+</SQLColumn.AliasName>
+<SQLColumn.ColName>
+      <summary>
+        A string representing the SQL column name.
+      </summary>
+      <value>A string representing the SQL column name.</value>
+</SQLColumn.ColName>
+<SQLColumn.Index>
+      <summary>
+        A numeric value representing the SQL column number.
+      </summary>
+      <value>A numeric value representing the SQL column number.</value>
+</SQLColumn.Index>
+<SQLColumnAttributes>
+      <summary>
+        Describe the attributes of an SQL column.
+      </summary>
+</SQLColumnAttributes>
+<SQLColumnAttributes.ctor>
+      <summary>
+        Construct an SQLColumnAttributes object.
+      </summary>
+      <param name="oHyperLabel">The hyperlabel for the SQLColumnAttributes object.</param>
+      <param name="oFieldSpec">The field specification for the SQLColumnAttributes object.</param>
+      <param name="nODBCType">The ODBC data type of the SQL column(for example, SQL_INTEGER, SQL_CHAR, and SQL_FLOAT)</param>
+      <param name="nScale">The decimal precision of the SQL value.  This is specified only when the ODBC data type is numeric.</param>
+      <param name="lNullable">TRUE if the value can be NULL; otherwise, FALSE.</param>
+      <param name="nIndex">The SQL column number.</param>
+      <param name="cColName">The SQL column name.</param>
+      <param name="cAliasName">The SQL column alias name.</param>
+      <remarks>
+        <note type="tip">Refer to your ODBC documentation for a complete list of ODBC data types that are available.</note>
+      </remarks>
+</SQLColumnAttributes.ctor>
+<SQLColumnAttributes.AutoIncrement>
+      <summary>
+        A logical value of TRUE if the column is automatically incremented or FALSE if it is either not automatically incremented or non-numeric.
+      </summary>
+      <value>A logical value of TRUE if the column is automatically incremented or FALSE if it is either not automatically incremented or non-numeric.</value>
+</SQLColumnAttributes.AutoIncrement>
+<SQLColumnAttributes.CaseSensitive>
+      <summary>
+        A logical value of TRUE if collating sequences are case sensitive; otherwise, FALSE.
+      </summary>
+      <value>A logical value of TRUE if collating sequences are case sensitive; otherwise, FALSE.</value>
+</SQLColumnAttributes.CaseSensitive>
+<SQLColumnAttributes.DisplaySize>
+      <summary>
+        A numeric value representing the maximum number of characters required to display the SQL column data.
+      </summary>
+      <value>A numeric value representing the maximum number of characters required to display the SQL column data.</value>
+</SQLColumnAttributes.DisplaySize>
+<SQLColumnAttributes.Length>
+      <summary>
+        A numeric value representing the length — in bytes — of the SQL data value.
+      </summary>
+      <value>A numeric value representing the length — in bytes — of the SQL data value.</value>
+</SQLColumnAttributes.Length>
+<SQLColumnAttributes.Money>
+      <summary>
+        A logical value of TRUE if the SQL column is a money data type; otherwise, FALSE.
+      </summary>
+      <value>A logical value of TRUE if the SQL column is a money data type; otherwise, FALSE.</value>
+</SQLColumnAttributes.Money>
+<SQLColumnAttributes.Searchable>
+      <summary>
+        A constant (four standard values) representing how the column can be used in searches:
+      </summary>
+      <value>A constant (four standard values) representing how the column can be used in searches:</value>
+      <remarks>
+        One of the following constants (four standard values) representing how the column can be used in searches:
+        <pre>
+          Constant				Meaning
+          SQL_ALL_EXCEPT_LIKE	The column can be used in a WHERE clause with all comparison operators except LIKE.
+          SQL_LIKE_ONLY			The column can be used in a WHERE clause only with the LIKE predicate.
+          SQL_SEARCHABLE		The column can be used in a WHERE clause with any comparison operator.
+          SQL_UNSEARCHABLE		The column cannot be used in a WHERE clause.
+        </pre></remarks>
+</SQLColumnAttributes.Searchable>
+<SQLColumnAttributes.Unsigned>
+      <summary>
+        A logical value of TRUE if the column is unsigned or non-numeric; otherwise, FALSE.
+      </summary>
+      <value>A logical value of TRUE if the column is unsigned or non-numeric; otherwise, FALSE.</value>
+</SQLColumnAttributes.Unsigned>
+<SQLColumnAttributes.Updatable>
+      <summary>
+        A logical value of TRUE if the column can be updated; otherwise, FALSE.
+      </summary>
+      <value>A logical value of TRUE if the column can be updated; otherwise, FALSE.</value>
+</SQLColumnAttributes.Updatable>
+<SQLConnection>
+      <summary>
+        Manage an SQL connection to an ODBC data source.  A SQLConnection object is needed before any database operations can be performed.
+      </summary>
+      <remarks>
+        An SQLConnection object represents the connection to an ODBC data source.  The data source (associated with a particular database) is set-up using the Microsoft ODBC administrator.
+      </remarks>
+      <example>
+        The following example demonstrates how to establish a connection to a source named SAMPLE:
+        <code language="X#">
+          FUNCTION Start()
+          LOCAL oConn AS SQLConnection
+          oConn := SQLConnection{}
+          // SAMPLE source has been set up to connect to 	// WATCOM
+          oConn:Connect("sample","dba","sql")
+          // Check for errors
+          IF IsNil(oConn:ErrInfo)
+          oConn:Disconnect()
+          ELSE
+          oConn:ErrInfo:ShowErrorMsg()
+          ENDIF
+        </code></example>
+</SQLConnection>
+<SQLConnection.ctor>
+      <summary>
+        Construct an SQL connection.
+      </summary>
+      <param name="cDataSourceName">The ODBC data source name.  If not specified, the default is NULL_STRING.</param>
+      <param name="cUserID">The ODBC user ID.  If not specified, the default is NULL_STRING.</param>
+      <param name="cPassword">The ODBC password (authorization string).  If not specified, the default is NULL_STRING.</param>
+      <remarks>
+        If a data source is provided to this method, an attempt to connect will occur; otherwise, use the SQLConnection:Connect() method.  Another option is to use SQLConnection:DataSource to name the source.
+      </remarks>
+</SQLConnection.ctor>
+<SQLConnection.AccessMode>
+      <summary>
+        A constant representing the SQL connection's access mode.
+      </summary>
+      <value>A constant representing the SQL connection's access mode.</value>
+      <remarks>
+        <note type="tip">
+          The access mode can only be changed if the current connection is not busy.  If an invalid value is specified, the access mode remains unchanged.
+          Possible values include SQL_MODE_READ_ONLY and SQL_MODE_READ_WRITE (default for most drivers).
+        </note>
+        <note type="tip"> Refer to your ODBC documentation for a description of these constants.</note>
+      </remarks>
+</SQLConnection.AccessMode>
+<SQLConnection.Connect>
+      <summary>
+        Connect a user to an ODBC data source.
+      </summary>
+      <param name="cDataSource">The ODBC data source name.  If not specified, the default is NULL_STRING.</param>
+      <param name="cUserID">The ODBC user ID.  If not specified, the default is NULL_STRING.</param>
+      <param name="cPassword">The ODBC password (authorization string).  If not specified, the default is NULL_STRING.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        If the connection fails, a message box will display the error.  To suppress the message box, call the SQLConnectErrorMsg(FALSE) function.
+      </remarks>
+</SQLConnection.Connect>
+<SQLConnection.Connected>
+      <summary>
+        A logical value representing whether the SQL connection object is connected.
+      </summary>
+      <value>A logical value representing whether the SQL connection object is connected.</value>
+</SQLConnection.Connected>
+<SQLConnection.ConnectString>
+      <summary>
+        A string representing the connection parameters (for example, "DSN=&lt;Source&gt;;UID=&lt;UserID&gt;;PWD=&lt;Authorization&gt;").  This string is initialized during the SQLConnection:Connect() or SQLConnection:DriverConnect() methods.
+      </summary>
+      <value>A string representing the connection parameters (for example, "DSN=&lt;Source&gt;;UID=&lt;UserID&gt;;PWD=&lt;Authorization&gt;").  This string is initialized during the SQLConnection:Connect() or SQLConnection:DriverConnect() methods.</value>
+</SQLConnection.ConnectString>
+<SQLConnection.ConnHandle>
+      <summary>
+        A long integer representing the connection handle.
+      </summary>
+      <value>A long integer representing the connection handle.</value>
+</SQLConnection.ConnHandle>
+<SQLConnection.DataSource>
+      <summary>
+        A string representing the ODBC data source name.
+      </summary>
+      <value>A string representing the ODBC data source name.</value>
+      <remarks>
+        <note type="tip">This string cannot be assigned if the connection is open.</note>
+      </remarks>
+</SQLConnection.DataSource>
+<SQLConnection.Disconnect>
+      <summary>
+        Disconnect the current user from an ODBC data source.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+</SQLConnection.Disconnect>
+<SQLConnection.DriverConnect>
+      <summary>
+        Display a dialog box prompting for a source; after a source is selected, displays the driver's connection dialog box; then connects to the selected data source.
+      </summary>
+      <param name="nHandle">The handle of the application window.  If not specified, the active window handle is used.</param>
+      <param name="kDriverCompletion">The driver completion type, represented by one of the following constants:</param>
+      <param name="cConnStrIn">A string representing an input connection.  If omitted, the SQL_DRIVER_PROMPT option should be used to prompt for the driver.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 1
+      </returns>
+      <remarks>
+        <list type="table">
+          <listheader>
+            <term>Constant</term>
+            <description>Description</description>
+          </listheader>
+          <item>
+            <term>SQL_DRIVER_PROMPT</term>
+            <description>The driver presents a dialog box listing all sources that have been installed.  The user can choose which one to connect to.  This is the default.</description>
+          </item>
+          <item>
+            <term>SQL_DRIVER_ COMPLETE</term>
+            <description>If the connection string (&lt;cConnStrIn&gt;) contains enough information, the driver will connect to that source; otherwise, a dialog box will be presented to prompt for information.</description>
+          </item>
+        </list>
+        SQL_DRIVER_ COMPLETE_REQUIRED
+        Behaves like SQL_DRIVER_COMPLETE, except that the driver disables the controls for any information that is not required to connect.
+        SQL_DRIVER_ NOPROMPT	If the connection string (&lt;cConnStrIn&gt;) contains enough information, the driver will connect to that source; otherwise, it returns an error.
+        If &lt;cConnStrIn&gt; is omitted, the SQL_DRIVER_PROMPT option should be used, which prompts for the driver.  If some of the &lt;cConnectStrIn&gt; information is present, SQL_DRIVER_COMPLETE should be used.  If all of the information is passed, then there is no need to prompt for the driver; therefore, the SQL_DRIVER_NOPROMPT option can be used.
+        If the connection fails, a message box will display the error.  To suppress the message box, call the SQLConnectErrorMsg(FALSE) function.
+      </remarks>
+</SQLConnection.DriverConnect>
+<SQLConnection.EnvHandle>
+      <summary>
+        A long integer representing the environment handle.
+      </summary>
+      <value>A long integer representing the environment handle.</value>
+</SQLConnection.EnvHandle>
+<SQLConnection.GetConnectOption>
+      <summary>
+        Return current setting for a connection option.
+      </summary>
+      <param name="kOption">The connection option (for example, SQL_ACCESS_MODE or SQL_AUTOCOMMIT).  Refer to SQLGetConnectOption() in your ODBC documentation for a complete list of ODBC connection options that are available.</param>
+</SQLConnection.GetConnectOption>
+<SQLConnection.HyperLabel>
+      <summary>
+        The hyperlabel of the connection containing the name of the data source, or NIL, if there is no data source name.
+      </summary>
+      <value>The hyperlabel of the connection containing the name of the data source, or NIL, if there is no data source name.</value>
+</SQLConnection.HyperLabel>
+<SQLConnection.IdentifierQuoteChar>
+      <summary>
+        A string used to surround a delimited identifier for this connection.
+      </summary>
+      <value>A string used to surround a delimited identifier for this connection.</value>
+</SQLConnection.IdentifierQuoteChar>
+<SQLConnection.Info>
+      <summary>
+        Return current setting for connection information.
+      </summary>
+      <param name="kInfoType">The connection information type (for example, SQL_ODBC_API_CONFORMANCE and SQL_DRIVER_NAME).  Refer to SQLGetInfo() — a method of the SQLConnection class — in your ODBC documentation for a complete list of ODBC information types that are available.</param>
+</SQLConnection.Info>
+<SQLConnection.isFunction>
+      <summary>
+        Determine whether an ODBC function is supported by the driver.
+      </summary>
+      <param name="kFunction">The ODBC function (for example, SQL_API_SQLTABLES and SQL_API_SQLCOLUMNS).  Refer to your ODBC documentation for a complete list of ODBC functions that are available.</param>
+      <returns>
+        TRUE if the function is supported; otherwise, FALSE.
+
+        Level 1
+      </returns>
+</SQLConnection.isFunction>
+<SQLConnection.IsolationOption>
+      <summary>
+        A constant representing the isolation level of the SQL connection.
+      </summary>
+      <value>A constant representing the isolation level of the SQL connection.</value>
+      <remarks>
+        A constant representing the isolation level of the SQL connection.
+        <note type="tip">The isolation option can only be changed if the current connection is not busy.  If an invalid value is specified, the isolation option remains unchanged.</note><para>Possible values include:</para><list type="table"><item><term>SQL_CUR_USE_IF NEEDED (default for most drivers)</term></item><item><term>SQL_CUR_USE_ODBC</term></item><item><term>SQL_CUR_USE_DRIVER</term></item></list><note type="tip">Refer to your ODBC documentation for a description of these constants.</note></remarks>
+</SQLConnection.IsolationOption>
+<SQLConnection.ODBCCursors>
+      <summary>
+        A constant representing the cursor type for the SQL connection.
+      </summary>
+      <value>A constant representing the cursor type for the SQL connection.</value>
+      <remarks>
+        <note type="tip">The cursor type can only be changed if the current connection is not busy.  If an invalid value is specified, the cursor type remains unchanged.</note>
+        Possible values include:
+        SQL_CUR_USE_IF NEEDED  (default for most drivers)
+        SQL_CUR_USE_ODBC
+        SQL_CUR_USE_DRIVER
+        <note type="tip">Refer to your ODBC documentation for a description of these constants.</note><note type="tip">
+          Please note that the default for this option has changed from SQL_CUR_USE_ODBC in the past to SQL_CUR_USE_IF NEEDED in the latest versions of X#.
+        </note></remarks>
+</SQLConnection.ODBCCursors>
+<SQLConnection.Password>
+      <summary>
+        A string containing the ODBC password (authorization string).
+      </summary>
+      <value>A string containing the ODBC password (authorization string).</value>
+      <remarks>
+        <note type="tip">This string cannot be assigned if the connection is open.</note>
+      </remarks>
+</SQLConnection.Password>
+<SQLConnection.PositionOps>
+      <summary>
+        A logical value representing whether the driver supports positioned operations
+      </summary>
+      <value>A logical value representing whether the driver supports positioned operations</value>
+      <remarks>
+        A logical value representing whether the driver supports positioned operations (i.e., the use of the cursor in positioned updates and delete statements).  If the driver doesn't respond to the inquiry about positioned operations, the default setting is TRUE.
+      </remarks>
+</SQLConnection.PositionOps>
+<SQLConnection.Reconnect>
+      <summary>
+        Disconnect the current user from a data source; if connected; then, connect.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+</SQLConnection.Reconnect>
+<SQLConnection.ScrollConcurrency>
+      <summary>
+        A constant representing the concurrency level of the SQL connection.
+      </summary>
+      <value>A constant representing the concurrency level of the SQL connection.</value>
+      <remarks>
+        A constant representing the concurrency level of the SQL connection.  If an invalid value is specified, the concurrency level remains unchanged.
+        Valid values include:
+        SQL_CONCUR_LOCK
+        SQL_CONCUR_READ_ONLY
+        SQL_CONCUR_TIMESTAMP	(equivalent to SQL_CONCUR_ROWVER)
+        SQL_CONCUR_VALUES	(default for most drivers)
+        <note type="tip">Refer to your ODBC documentation for a description of these constants.</note></remarks>
+</SQLConnection.ScrollConcurrency>
+<SQLConnection.ScrollCsr>
+      <summary>
+        A logical value representing whether the driver supports scrollable cursors.
+      </summary>
+      <value>A logical value representing whether the driver supports scrollable cursors.</value>
+      <remarks>
+        A logical value representing whether the driver supports scrollable cursors.
+        <note type="tip">If a driver supports scrollable cursors, the SQLSelect will use the extended positioning operations of the driver; otherwise, it will be simulated by repositioning in the buffer.</note></remarks>
+</SQLConnection.ScrollCsr>
+<SQLConnection.SetConnectOption>
+      <summary>
+        Set the value of a connection option.
+      </summary>
+      <param name="kOption">The connection option to set (for example, SQL_ACCESS_MODE and SQL_AUTOCOMMIT).  Refer to SQLGetConnectOption() in your ODBC documentation for a complete list of ODBC connection options that are available.</param>
+      <param name="uNewValue">The new value of the connection option.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 1
+      </returns>
+</SQLConnection.SetConnectOption>
+<SQLConnection.SQLErrInfo>
+      <summary>
+        An SQL error information (SQLErrorInfo) object, or NIL, if no error has occurred.
+      </summary>
+      <value>An SQL error information (SQLErrorInfo) object, or NIL, if no error has occurred.</value>
+</SQLConnection.SQLErrInfo>
+<SQLConnection.Status>
+      <summary>
+        A hyperlabel of the SQLConnection object containing the error message, or NULL_OBJECT, if no error has occurred.
+      </summary>
+      <value>A hyperlabel of the SQLConnection object containing the error message, or NULL_OBJECT, if no error has occurred.</value>
+</SQLConnection.Status>
+<SQLConnection.UserID>
+      <summary>
+        A string representing the ODBC user ID.
+      </summary>
+      <value>A string representing the ODBC user ID.</value>
+      <remarks>
+        <note type="tip">This string cannot be assigned if the connection is open.</note>
+      </remarks>
+</SQLConnection.UserID>
+<SQLData>
+      <summary>
+        Represent an SQL data value; used internally by SQL classes.
+      </summary>
+</SQLData>
+<SQLData.ctor>
+      <summary>
+        Construct an SQLData object.
+      </summary>
+      <param name="uValue">The data value to be assigned to the SQLData object.  If not specified, the default is NIL.</param>
+      <param name="lNull">Specify TRUE if the data value is NULL; otherwise, FALSE.  If not specified, the default is FALSE.</param>
+      <param name="lChanged">Specify TRUE if the data value has changed; otherwise, FALSE.  If not specified, the default is FALSE.</param>
+      <example>
+        The following example creates an SQLData object and prints the values of SQLData:Null, SQLData:Value, and SQLData:ValueChanged, respectively:
+        <code language="X#">
+          LOCAL oSQLData
+          oSQLData := SQLData{"Test",TRUE,TRUE}
+          ?oSQLData:Null					// Returns TRUE
+          ?oSQLData:Value				// Returns "Test"
+          ?oSQLData:ValueChanged			// Returns TRUE
+        </code></example>
+</SQLData.ctor>
+<SQLData.Null>
+      <summary>
+        A logical value representing whether the SQL value is a NULL value.  If it is NULL, TRUE is returned; otherwise, FALSE
+      </summary>
+      <value>A logical value representing whether the SQL value is a NULL value.  If it is NULL, TRUE is returned; otherwise, FALSE</value>
+</SQLData.Null>
+<SQLData.Value>
+      <summary>
+        A usual value representing the SQL data value.
+      </summary>
+      <value>A usual value representing the SQL data value.</value>
+</SQLData.Value>
+<SQLData.ValueChanged>
+      <summary>
+        A logical value indicating whether the SQL data value has been changed since it was last set.  TRUE indicates that it has been changed; FALSE indicates that it has not.
+      </summary>
+      <value>A logical value indicating whether the SQL data value has been changed since it was last set.  TRUE indicates that it has been changed; FALSE indicates that it has not.</value>
+</SQLData.ValueChanged>
+<SQLErrorInfo>
+      <summary>
+        Describe a SQL error.
+      </summary>
+      <remarks>
+        An SQLErrorInfo object will be automatically created by the SQL classes (SQLConnection, SQLStatement, SQLSelect, SQLTable, and so on) whenever an error occurs.  To retrieve the error, use the SQLSelect:ErrInfo access.
+      </remarks>
+      <example>
+        The following traps an error that is received and creates an SQLErrorInfo object:
+        <code language="X#">
+          LOCAL oSQLErrorInfo AS OBJECT
+          LOCAL oConnection AS OBJECT
+          LOCAL oSelect AS OBJECT
+          // Create the object for SQLConnection
+          oConnection := SQLConnection{"sample", "dba",;
+          "sql"}
+          // Create the object for SQLSelect
+          oSelect := SQLSelect{"SELECT * FROM lab",
+          oConnection}
+          // Test for invalid argument
+          IF SQLGetStmtOption(oSelect:StatementHandle,;
+          30000, NULL_PTR) # SQLSuccess
+          // Now, create SQLErrorInfo object to pick up
+          // last error. The first two parameters are
+          // optional, followed by the environment handle,
+          // the connection handle, followed by the
+          // statement handle from SQLSelect.
+          oSQLErrorInfo := SQLErrorInfo{ , , ;
+          oConnection:EnvHandle,;
+          oConnection:ConnHandle,;
+          oSelect:StatementHandle}
+          ENDIF
+          ?oSQLErrorInfo:ErrorFlag
+          ?oSQLErrorInfo:ErrorMessage
+          ?oSQLErrorInfo:NativeError
+          ?oSQLErrorInfo:SQLState
+        </code></example>
+</SQLErrorInfo>
+<SQLErrorInfo.ctor>
+      <summary>
+        Construct a SQLErrorInfo object.
+      </summary>
+      <param name="oOriginator">The object in which the error occurred.</param>
+      <param name="symMethod">The name of the method of the object in which the error occurred.</param>
+      <param name="hEnv">The environment handle.</param>
+      <param name="hDbc">The connection handle.</param>
+      <param name="hStmt">The statement handle.</param>
+</SQLErrorInfo.ctor>
+<SQLErrorInfo.ErrorFlag>
+      <summary>
+        A logical value representing whether a SQL error has just occurred.
+      </summary>
+      <value>A logical value representing whether a SQL error has just occurred.</value>
+</SQLErrorInfo.ErrorFlag>
+<SQLErrorInfo.ErrorMessage>
+      <summary>
+        A string that contains the SQL error message.
+      </summary>
+      <value>A string that contains the SQL error message.</value>
+</SQLErrorInfo.ErrorMessage>
+<SQLErrorInfo.ErrorMessageLen>
+      <summary>
+        A numeric value that represents the SQL error message length.
+      </summary>
+      <value>A numeric value that represents the SQL error message length.</value>
+</SQLErrorInfo.ErrorMessageLen>
+<SQLErrorInfo.NativeError>
+      <summary>
+        A numeric value that represents the native SQL error.
+      </summary>
+      <value>A numeric value that represents the native SQL error.</value>
+</SQLErrorInfo.NativeError>
+<SQLErrorInfo.ReturnCode>
+      <summary>
+        A numeric value that represents the SQL return code value (for example, SQL_ERROR, SQL_SUCCESS_WITH_INFO, etc.).
+      </summary>
+      <value>A numeric value that represents the SQL return code value (for example, SQL_ERROR, SQL_SUCCESS_WITH_INFO, etc.).</value>
+      <remarks>
+        <note type="tip">Refer to your ODBC documentation for a complete list of SQL return codes that are available.</note>
+      </remarks>
+</SQLErrorInfo.ReturnCode>
+<SQLErrorInfo.ShowErrorMsg>
+      <summary>
+        Display an SQL error message.
+      </summary>
+      <remarks>
+        When an SQL error occurs, the error message is formatted and displayed in a message box.
+      </remarks>
+</SQLErrorInfo.ShowErrorMsg>
+<SQLErrorInfo.SQLState>
+      <summary>
+        A string that contains the SQL error state (for example, S1000, which is a general error).
+      </summary>
+      <value>A string that contains the SQL error state (for example, S1000, which is a general error).</value>
+      <remarks>
+        <note type="tip">Refer to SQLState in your ODBC documentation for a complete list of ODBC error states that are available.</note>
+      </remarks>
+</SQLErrorInfo.SQLState>
+<SQLListColumnPrivileges>
+      <summary>
+        List the columns and associated privileges for one or more tables.
+      </summary>
+</SQLListColumnPrivileges>
+<SQLListColumnPrivileges.ctor>
+      <summary>
+        Construct a SQLListColumnPrivileges object.
+      </summary>
+      <param name="cQualifier">The search string or name of the table qualifier.</param>
+      <param name="cOwner">The search string or name of the table owner.</param>
+      <param name="cTableName">The search string or name of the table.</param>
+      <param name="cColName">The search string or column name.</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+</SQLListColumnPrivileges.ctor>
+<SQLListColumnPrivileges.ColName>
+      <summary>
+        A string representing the name of the column.
+      </summary>
+      <value>A string representing the name of the column.</value>
+</SQLListColumnPrivileges.ColName>
+<SQLListColumnPrivileges.Execute>
+      <summary>
+        Retrieve the list of column privileges.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 2
+      </returns>
+</SQLListColumnPrivileges.Execute>
+<SQLListColumnPrivileges.Owner>
+      <summary>
+        A string representing the owner of the table.
+      </summary>
+      <value>A string representing the owner of the table.</value>
+</SQLListColumnPrivileges.Owner>
+<SQLListColumnPrivileges.Qualifier>
+      <summary>
+        A string representing the name of the qualifier for the table.
+      </summary>
+      <value>A string representing the name of the qualifier for the table.</value>
+</SQLListColumnPrivileges.Qualifier>
+<SQLListColumnPrivileges.TableName>
+      <summary>
+        A string representing the name of the table.
+      </summary>
+      <value>A string representing the name of the table.</value>
+</SQLListColumnPrivileges.TableName>
+<SQLListColumns>
+      <summary>
+        List the column names in specified tables.
+      </summary>
+</SQLListColumns>
+<SQLListColumns.ctor>
+      <summary>
+        Construct a SQLListColumns object.
+      </summary>
+      <param name="cQualifier">The search string or name of the table qualifier.</param>
+      <param name="cOwner">The search string or name of the table owner.</param>
+      <param name="cTableName">The search string or name of the table.</param>
+      <param name="cColName">The search string or column name.</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+</SQLListColumns.ctor>
+<SQLListColumns.ColName>
+      <summary>
+        A string representing the name of the column.
+      </summary>
+      <value>A string representing the name of the column.</value>
+</SQLListColumns.ColName>
+<SQLListColumns.Execute>
+      <summary>
+        Retrieve the list of columns.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 1
+      </returns>
+</SQLListColumns.Execute>
+<SQLListColumns.Owner>
+      <summary>
+        A string representing the owner of the table.
+      </summary>
+      <value>A string representing the owner of the table.</value>
+</SQLListColumns.Owner>
+<SQLListColumns.Qualifier>
+      <summary>
+        A string representing the name of the qualifier for the table.
+      </summary>
+      <value>A string representing the name of the qualifier for the table.</value>
+</SQLListColumns.Qualifier>
+<SQLListColumns.TableName>
+      <summary>
+        A string representing the name of the table.
+      </summary>
+      <value>A string representing the name of the table.</value>
+</SQLListColumns.TableName>
+<SQLListForeignKeys>
+      <summary>
+        List the column names that comprise foreign keys, if they exist for a specified table.
+      </summary>
+</SQLListForeignKeys>
+<SQLListForeignKeys.ctor>
+      <summary>
+        Construct a SQLListForeignKeys object.
+      </summary>
+      <param name="cPQualifier">The search string or name of the primary key table qualifier.</param>
+      <param name="cpOwner">The search string or name of the primary key table owner.</param>
+      <param name="cPTableName">The search string or name of the primary key table.</param>
+      <param name="cFQualifier">The search string or name of the foreign key table qualifier.</param>
+      <param name="cFOwner">The search string or name of the foreign key table owner.</param>
+      <param name="cFTableName">The search string or name of the foreign key table.</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+</SQLListForeignKeys.ctor>
+<SQLListForeignKeys.Execute>
+      <summary>
+        Retrieve the list of columns representing foreign keys.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 2
+      </returns>
+</SQLListForeignKeys.Execute>
+<SQLListForeignKeys.FOwner>
+      <summary>
+        A string representing the owner of the foreign key table.
+      </summary>
+      <value>A string representing the owner of the foreign key table.</value>
+</SQLListForeignKeys.FOwner>
+<SQLListForeignKeys.FQualifier>
+      <summary>
+        A string representing the name of the qualifier for a foreign key table.
+      </summary>
+      <value>A string representing the name of the qualifier for a foreign key table.</value>
+</SQLListForeignKeys.FQualifier>
+<SQLListForeignKeys.FTableName>
+      <summary>
+        A string representing the name of a foreign key table.
+      </summary>
+      <value>A string representing the name of a foreign key table.</value>
+</SQLListForeignKeys.FTableName>
+<SQLListForeignKeys.POwner>
+      <summary>
+        A string representing the name of the owner of a primary key table.
+      </summary>
+      <value>A string representing the name of the owner of a primary key table.</value>
+</SQLListForeignKeys.POwner>
+<SQLListForeignKeys.PQualifier>
+      <summary>
+        A string representing the name of the qualifier for a primary key table.
+      </summary>
+      <value>A string representing the name of the qualifier for a primary key table.</value>
+</SQLListForeignKeys.PQualifier>
+<SQLListForeignKeys.PTableName>
+      <summary>
+        A string representing the name of a primary key table.
+      </summary>
+      <value>A string representing the name of a primary key table.</value>
+</SQLListForeignKeys.PTableName>
+<SQLListPrimaryKeys>
+      <summary>
+        List the column names that comprise the primary key for a table.
+      </summary>
+</SQLListPrimaryKeys>
+<SQLListPrimaryKeys.ctor>
+      <summary>
+        Construct a SQLListPrimaryKeys object.
+      </summary>
+      <param name="cQualifier">The search string or name of the primary key table qualifier.</param>
+      <param name="cOwner">The search string or name of the primary key table owner.</param>
+      <param name="cTableName">The search string or name of the primary key table.</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+</SQLListPrimaryKeys.ctor>
+<SQLListPrimaryKeys.Execute>
+      <summary>
+        Retrieve the list of primary keys.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 2
+      </returns>
+</SQLListPrimaryKeys.Execute>
+<SQLListPrimaryKeys.Owner>
+      <summary>
+        A string representing the owner of the primary key table.
+      </summary>
+      <value>A string representing the owner of the primary key table.</value>
+</SQLListPrimaryKeys.Owner>
+<SQLListPrimaryKeys.Qualifier>
+      <summary>
+        A string representing the name of the qualifier for the primary key table.
+      </summary>
+      <value>A string representing the name of the qualifier for the primary key table.</value>
+</SQLListPrimaryKeys.Qualifier>
+<SQLListPrimaryKeys.TableName>
+      <summary>
+        A string representing the name of the primary key table.
+      </summary>
+      <value>A string representing the name of the primary key table.</value>
+</SQLListPrimaryKeys.TableName>
+<SQLListProcedureColumns>
+      <summary>
+        List the input and output procedure parameters and columns that make up the result set for the specified procedures.
+      </summary>
+</SQLListProcedureColumns>
+<SQLListProcedureColumns.ctor>
+      <summary>
+        Construct a SQLListProcedureColumns object.
+      </summary>
+      <param name="cQualifier">The search string or name of the procedure qualifier.</param>
+      <param name="cOwner">The search string or name of the procedure owner.</param>
+      <param name="cProcName">The search string or name of the procedure.</param>
+      <param name="cColName">The search string or name of the column.</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+</SQLListProcedureColumns.ctor>
+<SQLListProcedureColumns.ColName>
+      <summary>
+        A string representing the name of the procedure column.
+      </summary>
+      <value>A string representing the name of the procedure column.</value>
+</SQLListProcedureColumns.ColName>
+<SQLListProcedureColumns.Execute>
+      <summary>
+        Retrieve a list of procedure columns.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 2
+      </returns>
+</SQLListProcedureColumns.Execute>
+<SQLListProcedureColumns.Owner>
+      <summary>
+        A string representing the owner of the procedure.
+      </summary>
+      <value>A string representing the owner of the procedure.</value>
+</SQLListProcedureColumns.Owner>
+<SQLListProcedureColumns.ProcName>
+      <summary>
+        A string representing the name of the procedure.
+      </summary>
+      <value>A string representing the name of the procedure.</value>
+</SQLListProcedureColumns.ProcName>
+<SQLListProcedureColumns.Qualifier>
+      <summary>
+        A string representing the qualifier for the procedure.
+      </summary>
+      <value>A string representing the qualifier for the procedure.</value>
+</SQLListProcedureColumns.Qualifier>
+<SQLListProcedures>
+      <summary>
+        List the procedure names stored in a specific data source.
+      </summary>
+</SQLListProcedures>
+<SQLListProcedures.ctor>
+      <summary>
+        Construct a SQLListProcedures object.
+      </summary>
+      <param name="cQualifier">The search string or name of the procedure qualifier.</param>
+      <param name="cOwner">The search string or name of the procedure owner.</param>
+      <param name="cProcName">The search string or name of the procedure.</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+</SQLListProcedures.ctor>
+<SQLListProcedures.Execute>
+      <summary>
+        Retrieve the list of procedure names in a specific data source.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 2
+      </returns>
+</SQLListProcedures.Execute>
+<SQLListProcedures.Owner>
+      <summary>
+        A string representing the name of the owner of the procedure.
+      </summary>
+      <value>A string representing the name of the owner of the procedure.</value>
+</SQLListProcedures.Owner>
+<SQLListProcedures.ProcName>
+      <summary>
+        A string representing the name of the procedure.
+      </summary>
+      <value>A string representing the name of the procedure.</value>
+</SQLListProcedures.ProcName>
+<SQLListProcedures.Qualifier>
+      <summary>
+        A string representing the name of the qualifier of the procedure.
+      </summary>
+      <value>A string representing the name of the qualifier of the procedure.</value>
+</SQLListProcedures.Qualifier>
+<SQLListSpecialColumns>
+      <summary>
+        List information about the optimal set of columns that uniquely identifies a row in a specified table or the columns that are updated automatically when any value in the row is updated by a transaction.
+      </summary>
+</SQLListSpecialColumns>
+<SQLListSpecialColumns.ctor>
+      <summary>
+        Construct an SQLListSpecialColumns object.
+      </summary>
+      <param name="nColType">A search string or one of the following constants representing the type of column to return:</param>
+      <param name="cQualifier">The search string or name of the table qualifier.</param>
+      <param name="cOwner">The search string or name of the table owner.</param>
+      <param name="cTableName">The search string or name of the table.</param>
+      <param name="nScope">One of the following constants representing the minimum required scope of the current row ID (the returned row ID can be of greater scope.):</param>
+      <param name="nNullable">One of the following constants representing whether to return special columns that can have a NULL value:</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+      <remarks>
+        kColumnType possible values
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_BEST_ROWID</term><description>Returns the optimal column or set of columns that, by retrieving values from the column(s), allows any row in the specified tables to be uniquely identified.</description></item><item><term>SQL_ROWVER</term><description>Returns the column(s) in the specified table, if any, that are automatically updated by the data source when any value in the row is updated by any transaction.</description></item></list>
+        kScope possible values
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_SCOPE_CURROW</term><description>The row ID is guaranteed to be valid only while positioned on that row.  A later reselect using row ID may not return a row if the row was updated or deleted by another transaction.</description></item><item><term>SQL_SCOPE_SESSION</term><description>The row ID is guaranteed to be valid for the duration of the session (across transaction boundaries).</description></item><item><term>SQL_SCOPE_TRANSACTION</term><description>The row ID is guaranteed to be valid for the duration of the current transaction.</description></item></list>
+        kNullable possible values
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_NO_NULLS</term><description>Exclude special columns that can have NULL values.</description></item><item><term>SQL_NULLABLE</term><description>Return special columns, even if they can have NULL values.</description></item></list>
+
+        Level 1
+      </remarks>
+</SQLListSpecialColumns.ctor>
+<SQLListSpecialColumns.ColType>
+      <summary>
+        A constant representing the type of column to return:
+      </summary>
+      <value>A constant representing the type of column to return:</value>
+      <remarks>
+        One of the following constants representing the type of column to return:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_BEST_ROWID</term><description>Returns the optimal column or set of columns that, by retrieving values from the column(s), allows any row in the specified tables to be uniquely identified.</description></item><item><term>SQL_ROWVER</term><description>Returns the column(s) in the specified table, if any, that are automatically updated by the data source when any value in the row is updated by any transaction.</description></item></list></remarks>
+</SQLListSpecialColumns.ColType>
+<SQLListSpecialColumns.Execute>
+      <summary>
+        Initiate the retrieval of the list of special columns.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 1
+      </returns>
+</SQLListSpecialColumns.Execute>
+<SQLListSpecialColumns.Nullable>
+      <summary>
+        A constant representing whether to return special columns that can have a NULL value:
+      </summary>
+      <value>A constant representing whether to return special columns that can have a NULL value:</value>
+      <remarks>
+        One of the following constants representing whether to return special columns that can have a NULL value:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_NO_NULLS</term><description>Exclude special columns that can have NULL values.</description></item><item><term>SQL_NULLABLE</term><description>Return special columns, even if they can have NULL values.</description></item></list></remarks>
+</SQLListSpecialColumns.Nullable>
+<SQLListSpecialColumns.Owner>
+      <summary>
+        A string representing the name of the special column table owner.
+      </summary>
+      <value>A string representing the name of the special column table owner.</value>
+</SQLListSpecialColumns.Owner>
+<SQLListSpecialColumns.Qualifier>
+      <summary>
+        A string representing the qualifier name for the special column table.
+      </summary>
+      <value>A string representing the qualifier name for the special column table.</value>
+</SQLListSpecialColumns.Qualifier>
+<SQLListSpecialColumns.Scope>
+      <summary>
+        A constant representing the minimum required scope of the current row ID (the returned row ID can be of greater scope.):
+      </summary>
+      <value>A constant representing the minimum required scope of the current row ID (the returned row ID can be of greater scope.):</value>
+      <remarks>
+        One of the following constants representing the minimum required scope of the current row ID (the returned row ID can be of greater scope.):
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_SCOPE_CURROW</term><description>The row ID is guaranteed to be valid only while positioned on that row.  A later reselect using row ID may not return a row if the row was updated or deleted by another transaction.</description></item><item><term>SQL_SCOPE_SESSION</term><description>The row ID is guaranteed to be valid for the duration of the session (across transaction boundaries).</description></item><item><term>SQL_SCOPE_TRANSACTION</term><description>The row ID is guaranteed to be valid for the duration of the current transaction.</description></item></list></remarks>
+</SQLListSpecialColumns.Scope>
+<SQLListSpecialColumns.TableName>
+      <summary>
+        A string representing the name of the special column table.
+      </summary>
+      <value>A string representing the name of the special column table.</value>
+</SQLListSpecialColumns.TableName>
+<SQLListStatistics>
+      <summary>
+        List the table statistics and the indexes.
+      </summary>
+</SQLListStatistics>
+<SQLListStatistics.ctor>
+      <summary>
+        Construct a SQLListStatistics object.
+      </summary>
+      <param name="cQualifier">The search string or name of the table qualifier.</param>
+      <param name="cOwner">The search string or name of the table owner.</param>
+      <param name="cTableName">The search string or name of the table.</param>
+      <param name="nUnique">One of the following constants representing the type of index associated with the table:</param>
+      <param name="nAccuracy">One of the following constants representing the importance of the CARDINALITY and PAGES columns in the result set:</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+      <remarks>
+        To specify a search pattern, you can use the underscore (_)  or percent (%) wildcard characters in the search string.  An _ will match a single character and a % will match any sequence of 0 or more characters.  The ESCAPE character (driver-defined) permits the _ and % characters to be used as literals.  To obtain the ESCAPE character, you can call SQLConnection:Info(SQL_SEARCH_PATTERN_ESCAPE).
+        nUnique possible values:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_INDEX_ALL</term><description>Return all indexes.</description></item><item><term>SQL_INDEX_UNIQUE</term><description>Return only the indexes that are unique.</description></item></list>
+        nAccuracy possible values:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_ENSURE</term><description>Requests that the driver unconditionally retrieves the statistics.</description></item><item><term>SQL_QUICK</term><description>Requests that the driver retrieves results only if they are readily available from the server.  In this case, the driver does not ensure that the values are current.</description></item></list></remarks>
+</SQLListStatistics.ctor>
+<SQLListStatistics.Accuracy>
+      <summary>
+        A constant representing the importance of the CARDINALITY and PAGES columns in the result set:
+      </summary>
+      <value>A constant representing the importance of the CARDINALITY and PAGES columns in the result set:</value>
+      <remarks>
+        One of the following constants representing the importance of the CARDINALITY and PAGES columns in the result set:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_ENSURE</term><description>Requests that the driver unconditionally retrieves the statistics.</description></item><item><term>SQL_QUICK</term><description>Requests that the driver retrieves results only if they are readily available from the server.  In this case, the driver does not ensure that the values are current.</description></item></list><note type="tip">Refer to your ODBC documentation for more information on CARDINALITY and PAGES.</note></remarks>
+</SQLListStatistics.Accuracy>
+<SQLListStatistics.Execute>
+      <summary>
+        Retrieve the list of statistics about a table and indexes associated with the table.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 1
+      </returns>
+</SQLListStatistics.Execute>
+<SQLListStatistics.Owner>
+      <summary>
+        A string representing the owner of the table to which the statistic or index applies.  NULL is not applicable to the data source.
+      </summary>
+      <value>A string representing the owner of the table to which the statistic or index applies.  NULL is not applicable to the data source.</value>
+</SQLListStatistics.Owner>
+<SQLListStatistics.Qualifier>
+      <summary>
+        A string representing the qualifier of the table to which the statistic or index applies.
+      </summary>
+      <value>A string representing the qualifier of the table to which the statistic or index applies.</value>
+</SQLListStatistics.Qualifier>
+<SQLListStatistics.TableName>
+      <summary>
+        A string representing the name of the table to which the statistic or index applies.
+      </summary>
+      <value>A string representing the name of the table to which the statistic or index applies.</value>
+</SQLListStatistics.TableName>
+<SQLListStatistics.Unique>
+      <summary>
+        A constant representing the type of index associated with the table:
+      </summary>
+      <value>A constant representing the type of index associated with the table:</value>
+      <remarks>
+        One of the following constants representing the type of index associated with the table:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_INDEX_ALL</term><description>Return all indexes.</description></item><item><term>SQL_INDEX_UNIQUE</term><description>Return only the indexes that are unique.</description></item></list></remarks>
+</SQLListStatistics.Unique>
+<SQLListTablePrivileges>
+      <summary>
+        List the tables and associated privileges.
+      </summary>
+</SQLListTablePrivileges>
+<SQLListTablePrivileges.ctor>
+      <summary>
+        Construct a SQLListTablePrivileges object.
+      </summary>
+      <param name="cQualifier">The search string or name of the table qualifier.</param>
+      <param name="cOwner">The search string or name of the table owner.</param>
+      <param name="cTable">The search string or name of the table.</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+</SQLListTablePrivileges.ctor>
+<SQLListTablePrivileges.Execute>
+      <summary>
+        Retrieve the list of table privileges.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 2
+      </returns>
+</SQLListTablePrivileges.Execute>
+<SQLListTablePrivileges.Owner>
+      <summary>
+        A string representing the name of the owner of the table.
+      </summary>
+      <value>A string representing the name of the owner of the table.</value>
+</SQLListTablePrivileges.Owner>
+<SQLListTablePrivileges.Qualifier>
+      <summary>
+        A string representing the name of the qualifier for the table.
+      </summary>
+      <value>A string representing the name of the qualifier for the table.</value>
+</SQLListTablePrivileges.Qualifier>
+<SQLListTablePrivileges.TableName>
+      <summary>
+        A string representing the name of the table.
+      </summary>
+      <value>A string representing the name of the table.</value>
+</SQLListTablePrivileges.TableName>
+<SQLListTables>
+      <summary>
+        List the table names stored in a specific data source.
+      </summary>
+</SQLListTables>
+<SQLListTables.ctor>
+      <summary>
+        Construct a SQLListTables object.
+      </summary>
+      <param name="cQualifier">The search string or name of the table qualifier.</param>
+      <param name="cOwner">The search string or name of the table owner.</param>
+      <param name="cTableName">The search string or name of the table.</param>"
+      <param name="cTableType">The list of table types to match (for example, ''Table', 'View', 'Synonym', 'System Table', 'Alias'').  Refer to your driver documentation for a complete list of table types that are available.</param><param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+</SQLListTables.ctor>
+<SQLListTables.Execute>
+      <summary>
+        Retrieve the list of tables.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 1
+      </returns>
+</SQLListTables.Execute>
+<SQLListTables.Owner>
+      <summary>
+        A string representing a list of names of table owners.
+      </summary>
+      <value>A string representing a list of names of table owners.</value>
+</SQLListTables.Owner>
+<SQLListTables.Qualifier>
+      <summary>
+        A string representing a list of names of table qualifiers.
+      </summary>
+      <value>A string representing a list of names of table qualifiers.</value>
+</SQLListTables.Qualifier>
+<SQLListTables.TableName>
+      <summary>
+        A string representing a list of names of tables.
+      </summary>
+      <value>A string representing a list of names of tables.</value>
+</SQLListTables.TableName>
+<SQLListTables.TableType>
+      <summary>
+        A string representing a list of table types.
+      </summary>
+      <value>A string representing a list of table types.</value>
+</SQLListTables.TableType>
+<SQLListTypeInfo>
+      <summary>
+        List the ODBC data types that are supported by this connection.
+      </summary>
+</SQLListTypeInfo>
+<SQLListTypeInfo.ctor>
+      <summary>
+        Construct a SQLListTypeInfo object.
+      </summary>
+      <param name="nSqlType">The ODBC data type of the SQLListTypeInfo object (for example, SQL_INTEGER, SQL_CHAR, SQL_FLOAT, etc.)</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+      <remarks>
+        <note type="tip">Refer to your ODBC documentation for a complete list of ODBC data types that are available.</note>
+      </remarks>
+</SQLListTypeInfo.ctor>
+<SQLListTypeInfo.Execute>
+      <summary>
+        Retrieve the list of type information.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 1
+      </returns>
+</SQLListTypeInfo.Execute>
+<SQLListTypeInfo.SqlType>
+      <summary>
+        A numeric value representing the ODBC data type (for example, SQL_INTEGER, SQL_CHAR, SQL_FLOAT, etc.).
+      </summary>
+      <value>A numeric value representing the ODBC data type (for example, SQL_INTEGER, SQL_CHAR, SQL_FLOAT, etc.).</value>
+      <remarks>
+        <note type="tip">Refer to your ODBC documentation for a complete list of ODBC data types that are available.</note>
+      </remarks>
+</SQLListTypeInfo.SqlType>
+<SQLParameter>
+      <summary>
+        Describe a SQL parameter.
+      </summary>
+</SQLParameter>
+<SqlParameter.ctor>
+      <summary>
+        Construct a SQLParameter object.
+      </summary>
+      <param name="oHLParam">The hyperlabel for the SQLParameter object.</param>
+      <param name="oFSParam">The column specification for the SQLParameter object.</param>
+      <param name="nODBCType">
+        The ODBC data type of the SQLParameter object (for example, SQL_INTEGER, SQL_CHAR, SQL_FLOAT, etc.).
+      </param>
+      <param name="nScale">The decimal precision of the SQLParameter object.  This is specified only when the data type is numeric.</param>
+      <param name="lNullable">TRUE if the value can be NULL; otherwise, FALSE.</param>
+      <param name="nIndex">The index of the SQLParameter object.</param>
+      <remarks>
+        <note type="tip">Refer to your ODBC documentation for a complete list of ODBC data types that are available.</note>
+      </remarks>
+</SqlParameter.ctor>
+<SqlParameter.Index>
+      <summary>
+        A numeric value representing the index of the parameter object.
+      </summary>
+      <value>A numeric value representing the index of the parameter object.</value>
+</SqlParameter.Index>
+<SQLSelect>
+      <summary>
+        Manage a SQL select statement to select a set of rows from an ODBC data source.  The rows can be read, modified, or deleted using the SQLSelect methods.
+      </summary>
+      <remarks>
+        Once a SQL table is opened in a DataServer object, it can be manipulated through the methods of the SQLSelect class:
+        <code language="X#">
+          oCust:= SQLSelect{"SELECT * FROM customer"}
+          oCust:Skip(3)
+          ? oCust:CustName
+          oCust:Delete()
+          oCust:Close()
+        </code>
+
+        The model for SQL returns rows and columns as a result set, instead of records and fields.  The columns can be considered as exported instance variables of the object.  They can also be accessed through the FieldGet() and FieldPut() methods, with the column identified through a symbol, a string, or a number:
+        <code language="X#">
+          oCust := SQLSelect{"SELECT * FROM customer"}
+          oCust:CustNo := 1234
+          ? oCust:CustNo
+          oCust:FieldPut(#CustNo, 1234)
+          oCust:FieldPut("CustNo", 1234)
+          oCust:FieldPut(1, 1234)
+          ? oCust:FieldGet(#CustNo)
+          ? oCust:FieldGet("CustNo")
+          ? oCust:FieldGet(1)
+        </code>
+        (The columns are, of course, not real exported variables of the SQLSelect class.  See "Objects, Classes, and Methods" in the Programmer's Guide for a discussion of how these "virtual" exported variables are created using the NoIVarGet() and NoIVarPut() methods.)
+
+        Unlike the DBServer class, the SQLSelect class does not position the server on the first row when an object is created.  However, when a method that references the first row is called, it will automatically be positioned on the first row.
+        For databases that support positioned operations (such as, WATCOM) using scrollable cursors, the positioning methods (GoTop(), GoBottom(), Skip(), GoTo()) use the driver.  Otherwise, SQLSelect buffers the rows as it moves forward and performs the positioning methods by moving within the buffer (for backwards positioning).  Refer to the SQLConnection:ScrollCsr access for additional information.  To disable this buffering, use the SQLSelect:BufferData() method.
+
+        It is not possible to use the SQLSelect class to create a database table; the table must exist before a server can be opened on it.
+        <note type="tip">
+          The cursor type and lock mode that is used by a SQLSelect object can be controlled by the following functions.
+          Please consult the documentation for the ODBC driver you are using to see the effects of this setting on the performance of your application.
+          SqlSetStmtConcurrency(),
+          SqlSetStmtCursorType(),
+          SqlSetStmtSimulateCursor()
+        </note></remarks>
+</SQLSelect>
+<SQLSelect.ctor>
+      <summary>
+        Construct a SQL select object.
+      </summary>
+      <param name="cSQLSelect">A SQL select statement (for example 'SELECT * FROM employee').</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+      <returns>
+        As with all Init() methods, the instantiation returns the object.  An object is created even if the table was not successfully opened, perhaps because the table does not exist, is corrupted or is locked by another user.
+      </returns>
+</SQLSelect.ctor>
+<SQLSelect.Append>
+      <summary>
+        Create a blank row in the buffer; this blank row becomes the current position and is ready for assignment of data values.  The SQLSelect:RecNo of this buffer is SQLSelect:RecCount+1.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        <note type="tip">The details of the implementation of this method, and how it interacts with other operations such as unique indexes and concurrency control, depend on the particular database.</note>
+        Use FieldPut() to assign values into the blank buffer.  When you attempt to move position off this record, an insert will be automatically performed (using SQLSelect:AppendRow()) into the table, using the values in the buffer.  You can also deliberately force the update to occur by calling SQLSelect:AppendRow() or SQLSelect:Update(TRUE).
+        If the AutoCommit option is off, you may need to invoke the Commit() method to insert the row into the database.
+        <note type="tip">To cancel the pending update, call the SQLSelect:Delete() method.</note></remarks>
+      <example>
+        The following example demonstrates the use of the SQLSelect:Append() method:
+        <code language="X#">
+          FUNCTION NewRecord()
+          LOCAL oSel AS SQLSelect
+          LOCAL oConn AS SQLConnection
+          oConn := SQLConnection{"sample","dba","sql"}
+          oSel := SQLSelect{"SELECT * FROM customer", oConn}
+          oSel:Append()
+          oSel:CustNo := 515
+          oSel:CustName := "Michelle"
+          oSel:GoTop()		// Record inserted at this point
+          oSel:FreeStmt(SQL_DROP)
+          oConn:Disconnect()
+        </code></example>
+</SQLSelect.Append>
+<SQLSelect.AppendFlag>
+      <summary>**Missing documentation **</summary>
+      <value>**Missing documentation **</value>
+</SQLSelect.AppendFlag>
+<SQLSelect.AppendRow>
+      <summary>
+        Insert the row that has been created in the buffer since the last SQLSelect:Append() operation.
+      </summary>
+      <param name="lForce">A logical value determining whether the update should occur.  If omitted, the default is TRUE.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        <note type="tip">The details of the implementation of this method, and how it interacts with other operations such as unique indexes and concurrency control, depend on the particular database.</note>
+        This method is used to actually perform the insertion of a row into the table after the SQLSelect:Append() and SQLSelect:FieldPut() operations have been performed, which insert a blank row into the buffer and assign values into the buffer.
+        It is not necessary to call SQLSelect:AppendRow() in all cases, since it will be called automatically when the position is changed (for example, using GoTop(), Skip(), etc.), using the values in the buffer.
+        If the AutoCommit option is off, you may need to invoke the Commit() method to insert the row into the database.
+        <note type="tip">To cancel the pending update, call the SQLSelect:Delete() method.</note></remarks>
+</SQLSelect.AppendRow>
+<SQLSelect.BoF>
+      <summary>
+        A logical value indicating whether the server is positioned at the beginning of the result set, on the first row.
+      </summary>
+      <value>A logical value indicating whether the server is positioned at the beginning of the result set, on the first row.</value>
+      <remarks>
+        A logical value indicating whether the server is positioned at the beginning of the result set, on the first row.
+        It returns TRUE after an attempt to move backward beyond the first logical row in the result set; otherwise, it returns FALSE.  If the current result set contains no rows, BOF returns TRUE.
+      </remarks>
+</SQLSelect.BoF>
+<SQLSelect.BoundedColumns>
+      <summary>**Missing documentation **</summary>
+      <value>**Missing documentation **</value>
+</SQLSelect.BoundedColumns>
+<SQLSelect.BufferData>
+      <summary>
+
+        Note: This method is no longer available in Visual Objects 2.8 !
+      </summary>
+</SQLSelect.BufferData>
+<SQLSelect.Close>
+      <summary>
+        Close the cursor corresponding to the server.  Note that the database connection is not closed, only the cursor.
+      </summary>
+      <returns>
+        TRUE if the operation was successful; FALSE if not.  (How can closing down a server be unsuccessful?  If you are accessing a database over a network, and the network goes down before the server is closed, the SQLSelect:Close() operation may be the first one to fail, but it is still important to respond to this failure since it may indicate that database changes are not committed.)
+      </returns>
+</SQLSelect.Close>
+<SQLSelect.Column>
+      <summary>
+        Return a specified SQL column.
+      </summary>
+      <param name="siCol">The name, number, or symbol representing the desired column.</param>
+      <returns>
+        A SQLColumn object if successful; otherwise, NULL_OBJECT.
+      </returns>
+</SQLSelect.Column>
+<SQLSelect.ColumnAttributes>
+      <summary>
+        Return the SQL column attributes for a specified column.
+      </summary>
+      <param name="siCol">The name, number, or symbol representing the desired column.</param>
+      <returns>
+        A SQLColumnAttributes object if successful; otherwise, NULL_OBJECT.
+      </returns>
+</SQLSelect.ColumnAttributes>
+<SQLSelect.Commit>
+      <summary>
+        Save the changes (updates and deletes) made since the last Commit().
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.  Commit() can fail for many reasons, from a lack of capability in the server to lock conflicts to technical problems such as network crashes.  Use the SQLSelect:Status property to determine the exact cause of the failure.
+      </returns>
+      <remarks>
+        The exact implications of this action depend on the server.  With some database management systems, the method commits all servers using the same connection; with others, it commits only this server; and with yet others the method does nothing.  In addition, some SQL servers have other implications of a commit operation (they can close cursors, for example).  This is an area that is not standardized; you should carefully study the documentation for your database management system.
+        The AutoCommit option may interfere with manual commits.  You may want to turn AutoCommit off, for example:
+        <code language="X#">oSelect:Connection:SetConnectOption(SQL_AUTOCOMMIT, 0)</code></remarks>
+</SQLSelect.Commit>
+<SQLSelect.Connection>
+      <summary>
+        The SQL connection object that the SQLSelect is using to manipulate the result set.
+      </summary>
+      <value>The SQL connection object that the SQLSelect is using to manipulate the result set.</value>
+</SQLSelect.Connection>
+<SQLSelect.CursorName>
+      <summary>
+        A string containing the cursor name.
+      </summary>
+      <value>A string containing the cursor name.</value>
+</SQLSelect.CursorName>
+<SQLSelect.CursorType>
+      <summary>
+        A constant, which describes the cursor type used by the SQL statement:
+      </summary>
+      <value>A constant, which describes the cursor type used by the SQL statement:</value>
+      <remarks>
+        One of the following constants, which describes the cursor type used by the SQL statement:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_CURSOR_FORWARD_ONLY</term><description>The cursor only scrolls forward</description></item><item><term>SQL_CURSOR_KEYSET_DRIVEN</term><description>The driver saves and uses the keys for the number of rows specified in the SQL_ATTR_KEYSET_SIZE statement attribute</description></item><item><term>SQL_CURSOR_DYNAMIC</term><description>The driver saves and uses only the keys for the rows in the rowset.</description></item><item><term>SQL_CURSOR_STATIC</term><description>The data in the result set is static</description></item></list>
+        The default value for this property can be set through the function SqlSetStmtCursorType()
+        <note type="tip">
+          Please consult the documentation for the ODBC driver you are using to see the effects of this setting on the performance of your application.
+        </note></remarks>
+</SQLSelect.CursorType>
+<SQLSelect.DataField>
+      <summary>
+        Return the data (DataField object) at a specified column position.
+      </summary>
+      <param name="uFieldPos">The name, number, or symbol representing the desired column.</param>
+      <returns>
+        A DataField object if successful; otherwise, -1.
+      </returns>
+</SQLSelect.DataField>
+<SQLSelect.DBStruct>
+      <summary>
+        An array containing the structure of this data server.
+      </summary>
+      <value>An array containing the structure of this data server.</value>
+      <remarks>
+        An array containing the structure of this data server, whose length (that is, number of elements) is equal to the number of columns in the server.
+        Each subarray is comprised of five elements, which contain the following information, in this order:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>DBS_NAME</term><description>cName</description></item><item><term>DBS_TYPE</term><description>cType</description></item><item><term>DBS_LEN</term><description>nLength</description></item><item><term>DBS_DEC</term><description>nDecimals</description></item><item><term>DBS_ALIAS</term><description>cAlias</description></item></list></remarks>
+</SQLSelect.DBStruct>
+<SQLSelect.Delete>
+      <summary>
+        Delete the current row.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        The row is not deleted until the Commit() is invoked and is not deleted if Rollback() is invoked.  Delete() sends a NotifyRecordChange message if successful.
+        If the server is currently positioned on the append buffer, SQLSelect:Delete() will cancel the pending update.
+        The type of SQL statement (searched or positioned) used by Delete() is determined by the system automatically, unless set to cursor, key, or value, using SQLSelect:ScrollUpdateType.
+        <note type="tip">If the type of SQL statement used by SQLSelect:Delete() is "value", more than one row may be deleted, since the rows that are deleted are based on matching this value.</note></remarks>
+</SQLSelect.Delete>
+<SQLSelect.Deleted>
+      <summary>
+        A logical value indicating whether the current row has been deleted.
+      </summary>
+      <value>A logical value indicating whether the current row has been deleted.</value>
+      <remarks>
+        A logical value indicating whether the current row has been deleted.
+        It returns TRUE if the current row has been deleted; otherwise, it returns FALSE.
+      </remarks>
+</SQLSelect.Deleted>
+<SQLSelect.EoF>
+      <summary>
+        A logical value indicating whether the server is positioned at the end of the result set, after the last row.
+      </summary>
+      <value>A logical value indicating whether the server is positioned at the end of the result set, after the last row.</value>
+      <remarks>
+        A logical value indicating whether the server is positioned at the end of the result set, after the last row.
+        It returns TRUE after an attempt to move forward beyond the last logical row; otherwise, it returns FALSE.  If the current result set contains no rows, BOF returns TRUE.
+      </remarks>
+</SQLSelect.EoF>
+<SQLSelect.ErrInfo>
+      <summary>
+        An SQLErrorInformation object.
+      </summary>
+      <value>An SQLErrorInformation object.</value>
+</SQLSelect.ErrInfo>
+<SQLSelect.Error>
+      <summary>
+        Provide a method for handling error conditions raised during database processing.  This is an event handler: it is automatically called by other methods; the developer does not normally need to call the error method, but might want to replace or amend it.
+      </summary>
+      <param name="oError">An Error object describing the error condition.</param>
+      <remarks>
+        All methods of the SQLSelect trap serious errors with a recover statement and send them to this method.  Ordinary failures, such as locking conflicts or record-not-found, do not raise error conditions; they are simply indicated through failure return values.
+        The standard Error() handling method fills in some more information about the errors and about the SQLSelect object that originates the error, sets the status value for the server object, and passes the problem to its client, if there is one, in its standard Error() handling method.  If there is no client who wants to deal with the problem, the method passes it up the call stack by issuing a BREAK with the same Error object.
+        <note type="tip">If an error comes in while one is being handled, the Error() method immediately breaks.</note></remarks>
+</SQLSelect.Error>
+<SQLSelect.Execute>
+      <summary>
+        Open the cursor.
+      </summary>
+      <param name="uParam">
+        The array of parameters to execute.
+        &lt;cParam&gt; [, &lt;cParam&gt; …] | &lt;nParam&gt; [ , &lt;nParam&gt; …]
+        The list of parameters to execute.
+      </param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <example>
+        The following example demonstrates the use of the SQLSelect:Execute() method:
+        <code language="X#">
+          oSel := SQLSelect{"SELECT * FROM customer WHERE CustNo &gt; ?",oConn}
+          oSel:Execute(100)
+        </code></example>
+</SQLSelect.Execute>
+<SQLSelect.ExtendedFetch>
+      <summary>
+        Provide extended fetch capabilities, specifying type and row.
+      </summary>
+      <param name="kFetchType">The type of fetch (for example, SQL_FETCH_NEXT, SQL_FETCH_PREV, SQL_FETCH_FIRST, SQL_FETCH_LAST, SQL_FETCH_ABSOLUTE, SQL_FETCH_RELATIVE).  Refer to your ODBC documentation for a complete list of ODBC fetch types that are available.</param>
+      <param name="kRow">The row to be fetched, specified by SQL_FETCH_ABSOLUTE or SQL_FETCH_RELATIVE.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 2
+      </returns>
+      <remarks>
+        Sends a NotifyRecordChange message, if successful.  (If &lt;kFetchType&gt; is specified as SQL_FETCH_FIRST, this method sends a NotifyGoTop message, if successful.  If SQL_FETCH_LAST is specified, NotifyGoBottom is sent, if successful.)
+        <note type="tip">ODBC does not support the use of both SQLSelect:Fetch() and SQLSelect:ExtendedFetch() within the same select.</note></remarks>
+</SQLSelect.ExtendedFetch>
+<SQLSelect.FCount>
+      <summary>
+        The number of columns in the result set.  A value of -1 indicates an error.
+      </summary>
+      <value>The number of columns in the result set.  A value of -1 indicates an error.</value>
+</SQLSelect.FCount>
+<SQLSelect.Fetch>
+      <summary>
+        Fetch the next row.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise FALSE.
+      </returns>
+      <remarks>
+        Sends a NotifyRecordChange message, if successful.
+        <note type="tip">ODBC does not support the use of both SQLSelect:Fetch() and SQLSelect:ExtendedFetch() within the same select.</note></remarks>
+</SQLSelect.Fetch>
+<SQLSelect.FIELDGET>
+      <summary>
+        Retrieve the contents of the specified column.
+      </summary>
+      <param name="uField">The name, number, or symbol representing the desired column.</param>
+      <returns>
+        The contents of the specified column, whose data type depends on the data type of the column, which is available from the Column() or ColumnAttributes() method.
+        The following table shows how the ODBC database data type is mapped to the X# return value and the return value if the SQL value of the column is NULL:
+        <list type="table"><listheader><term>ODBC Data Type</term><description>Return Value - NULL Return Value</description></listheader><item><term>SQL_BIGINT</term><description>DWORD - NIL</description></item><item><term>SQL_BIT</term><description>LOGIC - NIL</description></item><item><term>SQL_CHAR</term><description>STRING - NULL_STRING</description></item><item><term>SQL_DATE</term><description>DATE - NULL_DATE</description></item><item><term>SQL_DECIMAL</term><description>REAL8 - NIL</description></item><item><term>SQL_DOUBLE</term><description>REAL8 - NIL</description></item><item><term>SQL_FLOAT</term><description>REAL8 - NIL</description></item><item><term>SQL_INTEGER</term><description>LONGINT - NIL</description></item><item><term>SQL_LONGVARBINARY</term><description>MEMO - NULL_STRING</description></item><item><term>SQL_LONGVARCHAR</term><description>MEMO - NULL_STRING</description></item><item><term>SQL_NUMERIC</term><description>REAL8 - NIL</description></item><item><term>SQL_REAL </term><description>REAL4 N- IL</description></item><item><term>SQL_SMALLINT</term><description>SHORTINT - NIL</description></item><item><term>SQL_TIME </term><description>STRING - NULL_STRING</description></item><item><term>SQL_TIMESTAMP</term><description>STRING - NULL_DATE</description></item><item><term>SQL_TINYINT</term><description>BYTE - NIL</description></item><item><term>SQL_VARCHAR</term><description>STRING - NULL_STRING</description></item></list></returns>
+</SQLSelect.FIELDGET>
+<SQLSelect.FieldGetFormatted>
+      <summary>
+        Retrieve the contents of the specified column according to the formatting specifications of its field specification.
+      </summary>
+      <param name="uFieldPos">The name, number, or symbol representing the desired column.</param>
+</SQLSelect.FieldGetFormatted>
+<SQLSelect.FieldHyperLabel>
+      <summary>
+        Return the hyperlabel of a specified column.
+      </summary>
+      <param name="uFieldPos">The name, number, or symbol representing the desired column.</param>
+      <returns>
+        The column hyperlabel object if successful; otherwise, NULL_OBJECT.
+      </returns>
+      <remarks>
+        By accessing the hyperlabel, you can in turn access its various properties which annotate the column:
+        <code language="X#">
+          oServer:FieldHyperLabel(#LastName):Caption
+          oServer:FieldHyperLabel(#LastName):Description
+          oServer:FieldHyperLabel(#LastName):HelpContext
+        </code></remarks>
+</SQLSelect.FieldHyperLabel>
+<SQLSelect.FieldInfo>
+      <summary>
+        Retrieve information about or set an alias for the indicated column.
+      </summary>
+      <param name="kFieldInfoType">
+        The type of information, as specified by the following constants:
+      </param>
+      <param name="uFieldPos">The name, number, or symbol representing the desired column.</param>
+      <param name="uFieldVal">The alias name to be assigned to the column.  This argument is only used if DB_ALIAS is specified for &lt;kColumnInfoType&gt;.</param>
+      <returns>
+        A value (whose data type depends on the value requested) if successful; otherwise, NIL.
+      </returns>
+      <remarks>
+        <list type="table">
+          <listheader>
+            <term>Constant</term>
+            <description>Description</description>
+          </listheader>
+          <item>
+            <term>DBS_ALIAS</term>
+            <description>Alternate name (or alias) by which a column can be referenced</description>
+          </item>
+          <item>
+            <term>DBS_DEC</term>
+            <description>Number of decimal places</description>
+          </item>
+          <item>
+            <term>DBS_LEN</term>
+            <description>Length (field size) as a number</description>
+          </item>
+          <item>
+            <term>DBS_NAME</term>
+            <description>Field name as a string</description>
+          </item>
+          <item>
+            <term>DBS_TYPE</term>
+            <description>Data type as a string</description>
+          </item>
+        </list>
+        The SQLSelect:FieldInfo() method is used to retrieve information about a column, except if you specify &lt;kColumnInfoType&gt; to be DBS_ALIAS.  You can then specify an alias for a column, which you can access by using the SQLColumn:AliasName property.
+      </remarks>
+</SQLSelect.FieldInfo>
+<SQLSelect.FieldName>
+      <summary>
+        Return the name of a specified column.  Note that the column's hyperlabel also contains a name.
+      </summary>
+      <param name="siFieldPosition">The name, number, or symbol representing the desired column.</param>
+      <returns>
+        The name of the specified column if successful; otherwise, NULL_STRING.
+      </returns>
+</SQLSelect.FieldName>
+<SQLSelect.FieldPos>
+      <summary>
+        Return the position of a specified column within the data server, as a number starting with 1.
+      </summary>
+      <param name="cFieldName">The name, number, or symbol representing the desired column.</param>
+      <returns>
+        The position of the specified column if successful; otherwise, 0.
+      </returns>
+</SQLSelect.FieldPos>
+<SQLSelect.FIELDPUT>
+      <summary>
+        Assign a value to a column in a data server.
+      </summary>
+      <param name="uFieldPos">The name, number, or symbol representing the desired column.</param>
+      <param name="uValue">The value to be assigned to the column.  The data type of the value should match the data type of the column (refer to SQLSelect:FieldGet() for data types); if not, it is converted.</param>
+      <returns>
+        The value assigned to the column if successful; otherwise, NIL.
+      </returns>
+      <remarks>
+        Sends a NotifyRecordChange message, if successful.
+      </remarks>
+</SQLSelect.FIELDPUT>
+<SQLSelect.FieldSpec>
+      <summary>
+        Return the field specification object for the indicated column.
+      </summary>
+      <param name="uFieldPos">The name, number, or symbol representing the desired column.</param>
+      <returns>
+        The field specification object if successful; otherwise, NULL_OBJECT.
+      </returns>
+</SQLSelect.FieldSpec>
+<SQLSelect.FieldStatus>
+      <summary>
+        Return a hyperlabel object identifying the status after the last operation.
+      </summary>
+      <param name="uFieldPos">The name, number, or symbol representing the desired column.</param>
+      <returns>
+        Returns a hyperlabel object if any error condition had occurred or if a validation has failed, NIL if everything is OK, if the validation passed, or if there has been no validation attempt.  In particular, SQLSelect:FieldStatus() can be used to find out more about a validation failure.
+        By accessing the properties of this hyperlabel, you can retrieve not only a description but also context-sensitive help on the condition that was raised:
+        <code language="X#">
+          oServer:FieldStatus(#LastName):Caption
+          oServer:FieldStatus(#LastName):Description
+          oServer:FieldStatus(#LastName):HelpContext
+        </code></returns>
+</SQLSelect.FieldStatus>
+<SQLSelect.FieldSym>
+      <summary>
+        Return the symbolic name of a specified column.  Note that the column's hyperlabel also contains a name; these two names are the same in the code generated by the SQL Editor.
+      </summary>
+      <param name="uFieldPos">The name, number, or symbol representing the desired column.</param>
+      <returns>
+        The symbolic name if successful; otherwise, NULL_SYMBOL.
+      </returns>
+</SQLSelect.FieldSym>
+<SQLSelect.FieldValidate>
+      <summary>
+        Validate the provided value according to the validation rules of the indicated column's FieldSpec.
+      </summary>
+      <param name="uFieldPos">The name, number, or symbol representing the desired column.</param>
+      <param name="uValue">
+        The value that is to be validated.  It should be of a type compatible with the data type of the column; 
+        if the type cannot be converted to the appropriate data type, it is considered to have failed validation.
+      </param>
+</SQLSelect.FieldValidate>
+<SQLSelect.FLOCK>
+      <summary>
+        This method is provided to override the inherited functionality from the DataServer class, as it does not apply to SQLSelect.
+      </summary>
+</SQLSelect.FLOCK>
+<SQLSelect.FOUND>
+      <summary>
+        A logical value indicating whether the previous search operation succeeded.
+      </summary>
+      <value>A logical value indicating whether the previous search operation succeeded.</value>
+</SQLSelect.FOUND>
+<SQLSelect.FreeStmt>
+      <summary>
+        Free the statement, according to the specified option.
+      </summary>
+      <param name="kOption">The option used when the statement is freed, specified by one of the following constants:</param>
+      <param name="Constant">Description</param>
+      <param name="SQL_CLOSE">Closes the cursor.</param>
+      <param name="SQL_DROP">Closes the cursor, unbinds and resets the parameters, and frees the statement.</param>
+      <param name="SQL_RESET_PARAMS">Resets the parameters.</param>
+      <param name="SQL_UNBIND">Unbinds the parameters.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+</SQLSelect.FreeStmt>
+<SQLSelect.GetData>
+      <summary>
+        Retrieve the contents of the specified column.
+      </summary>
+      <returns>
+        The data type of the return value depends on the data type of the column, which is available from Column() or ColumnAttributes() methods.  If the SQL value of the column is NULL, then NIL is returned.
+      </returns>
+</SQLSelect.GetData>
+<SQLSelect.GetLookupTable>
+      <summary>
+        Retrieve a two-column array of values from two fields in the server.
+      </summary>
+      <param name="nMaxRows">
+        The maximum number of rows that should be retrieved.  If omitted, the default is 100.
+        The name, number, or symbol of the first field to be retrieved.  If omitted, the first field is retrieved.
+        The name, number, or symbol of the second field to be retrieved.  If omitted, the second field is retrieved.
+      </param>
+      <returns>
+        The method returns a two-column array of values found for the specified fields, moving sequentially until the specified maximum number of rows or until end of file.
+        Note that the method does not reposition to the beginning before starting to fill the array.  Either provide a start value, or explicitly position the server before using the method.  (This allows incremental reading, building up an array in pieces.)
+      </returns>
+      <remarks>
+        Sends a NotifyRecordChange message afterwards, and leaves the server positioned at the last record used or at end of file (last file record).  One use of this method is to populate translation lists in user interfacing.  The resulting array can be used in ATranslate().
+      </remarks>
+      <example>
+        The following builds a lookup table, for example to translate product codes into product names and vice versa, beginning at the indicated product number:
+        <code language="X#">
+          oSQLSelect := SQLSelect{"SELECT * FROM products WHERE ProdNo &gt; 100"}
+          aProducts := SQLSelect:GetLookupTable(500,#ProdNo, #ProdName)
+          oSQLSelect:Close()
+        </code></example>
+</SQLSelect.GetLookupTable>
+<SQLSelect.GetStatementOption>
+      <summary>
+        Retrieve the current setting for a statement option.
+      </summary>
+      <param name="kStmtOption">The statement option (for example, SQL_MAX_LENGTH or SQL_NOSCAN).  Refer to SQLGetStmtOption() in your ODBC documentation for a complete list of ODBC connection options that are available.</param>
+      <returns>
+        The current settings for a statement option if successful; otherwise, NIL.
+
+        Level 1
+      </returns>
+</SQLSelect.GetStatementOption>
+<SQLSelect.GoBottom>
+      <summary>
+        Position the data server on the last row.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        Sends a NotifyGoBottom message, if successful.
+        <note type="tip">If the database supports scrollable cursors (see SQLConnection:ScrollCsr), then record numbers will be negative relative to the bottom (see SQLSelect:RecNo).  If not, all records will be buffered, to simulate positioning.  Use with caution, since large result sets may degrade performance.  You can disable the buffering with the SQLSelect:BufferData() method.</note></remarks>
+      <example>
+        The following example demonstrates the value that SQLSelect:RecNo returns after the SQLSelect:GoBottom() method is called:
+        <code language="X#">
+          oCust := SQLSelect{"SELECT * FROM customer"}
+          oCust:GoTop()
+          ? oCust:RECNO			// Prints 1
+          oCust:Skip()
+          ? oCust:RECNO			// Prints 2
+          oCust:GoBottom()
+          ? oCust:RECNO			// Prints -1
+          oCust:Skip(-1)
+          ? oCust:RECNO			// Prints -2
+          oCust:GoTop()
+          ? oCust:RECNO			// Prints 1
+          oCust:Skip()
+          ? oCust:RECNO			// Prints 2
+        </code></example>
+</SQLSelect.GoBottom>
+<SQLSelect.GoTo>
+      <summary>
+        Position the data server on the specified row number.
+      </summary>
+      <param name="nRow">The row number that the server should be positioned to.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        <note type="tip">Some types of data servers cannot support movement by row number.</note>
+        Sends a NotifyRecordChange message, if successful.
+      </remarks>
+</SQLSelect.GoTo>
+<SQLSelect.GoTop>
+      <summary>
+        Position the data server on the first row.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        Sends a NotifyGoTop message, if successful.
+      </remarks>
+      <example>
+        The following example demonstrates the value that SQLSelect:RecNo returns after the SQLSelect:GoTop() method is called:
+        <code language="X#">
+          oCust := SQLSelect{"SELECT * FROM customer"}
+          oCust:GoTop()
+          ? oCust:RECNO				// Prints 1
+          oCust:Skip()
+          ? oCust:RECNO				// Prints 2
+          oCust:GoBottom()
+          ? oCust:RECNO				// Prints -1
+          oCust:Skip(-1)
+          ? oCust:RECNO				// Prints -2
+          oCust:GoTop()
+          ? oCust:RECNO				// Prints 1
+          oCust:Skip()
+          ? oCust:RECNO				// Prints 2
+        </code></example>
+</SQLSelect.GoTop>
+<SQLSelect.LASTREC>
+      <summary>**Missing documentation **</summary>
+      <value>**Missing documentation **</value>
+</SQLSelect.LASTREC>
+<SQLSelect.MoreResults>
+      <summary>
+        A logical value representing whether there are more rows to retrieve.
+      </summary>
+      <value>A logical value representing whether there are more rows to retrieve.</value>
+</SQLSelect.MoreResults>
+<SQLSelect.Name>
+      <summary>
+        A string representing the name of the table.
+      </summary>
+      <value>A string representing the name of the table.</value>
+</SQLSelect.Name>
+<SQLSelect.NameSym>
+      <summary>
+        A symbol representing the name of the table.
+      </summary>
+      <value>A symbol representing the name of the table.</value>
+</SQLSelect.NameSym>
+<SQLSelect.NativeSQL>
+      <summary>
+        A string containing the native SQL text of the statement.
+
+        Level 2
+      </summary>
+      <value>
+        A string containing the native SQL text of the statement.
+
+        Level 2
+      </value>
+</SQLSelect.NativeSQL>
+<SQLSelect.NoIVarGet>
+      <summary>
+        Provide a general error interception that is automatically called (in any class) whenever an access reference is made to a non-existent exported instance variable.  In the SQLSelect class, it is used to implement the virtual column variable.
+        <br />Important!  NoIVarGet() should not be called directly; it is called by the system for handling invalid references.
+      </summary>
+      <param name="symFieldName">he name, number, or symbol representing the desired column.</param>
+      <remarks>
+        For SQLSelect, this method is used to intercept references to column names as exported variables, which ordinarily would not be allowed.  If the column name is valid, it does FieldGet() for the corresponding column name, in effect turning table columns into access methods of each SQLSelect object.  See "Objects, Classes, and Methods" in the Programmer's Guide for more information on NoIVarGet().
+      </remarks>
+</SQLSelect.NoIVarGet>
+<SQLSelect.NoIVarPut>
+      <summary>
+        Provide a general error interception that is automatically called (in any class) whenever an assignment reference is made to a non-existent exported instance variable.
+        <br />Important!  NoIVarPut() should not be called directly; it is called by the system for handling invalid references.
+      </summary>
+      <param name="symFieldName">The name, number, or symbol representing the desired column.</param>
+      <param name="uValue">The corresponding value to be assigned.  &lt;uValue&gt; should be compatible with the column type.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        Sends a NotifyFieldChange message if the variable reference was to a valid column of the server, and the assignment was successful.
+        For SQLSelect, this method is used to intercept references to column names as exported variables, which ordinarily would not be allowed.  If the column name is valid, it does a FieldPut() for the corresponding column name with the passed value, in effect turning table columns into Assign methods of each SQLSelect object.  See "Objects, Classes, and Methods" in the Programmer's Guide for more information on NoIVarPut().
+      </remarks>
+</SQLSelect.NoIVarPut>
+<SQLSelect.Notify>
+      <summary>
+        Provide a method that is automatically called by the action methods of the server after completion of some significant event:  a column has changed, the server position has changed, some operation has been completed.  Its standard implementation is to broadcast the same notification to its attached clients.
+      </summary>
+      <param name="kNotifyName">
+        The identification of the event, specified as one of the following constants:
+        symbol describing the event.  Used only with some notification types, as described above.
+      </param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        <include file="VOSDK_Classes.xml" path="doc/commonblocks/notify/*" />
+      </remarks>
+</SQLSelect.Notify>
+<SQLSelect.NullAsBlank>
+      <summary>
+        A logical value determining whether SQL NULL values are strongly typed (TRUE) or not (FALSE, default value).
+      </summary>
+      <value>A logical value determining whether SQL NULL values are strongly typed (TRUE) or not (FALSE, default value).</value>
+      <remarks>
+        A logical value determining whether SQL NULL values are strongly typed (TRUE) or not (FALSE, default value).  Proper support for SQL NULL values would be to set this value to TRUE.
+        <para>If TRUE, null fields will have the following values:</para><list type="table"><listheader><term>VO Type</term><description>NULL Value</description></listheader><item><term>STRING</term><description>NULL_STRING</description></item><item><term>DATE</term><description>NULL_DATE</description></item><item><term>LOGIC</term><description>FALSE</description></item><item><term>FLOAT</term><description>0</description></item><item><term>LONG</term><description>0</description></item><item><term>All others</term><description>NIL</description></item></list>
+
+        If FALSE, all null fields will be NIL.  Note that the default behavior (FALSE) can cause conflicts with strongly typed variables, as NIL cannot be assigned to strongly typed variables.
+      </remarks>
+</SQLSelect.NullAsBlank>
+<SQLSelect.NumParameters>
+      <summary>
+        A numeric value containing the number of parameters.  A value of -1 indicates an error.
+
+        Level 2
+      </summary>
+      <value>
+        A numeric value containing the number of parameters.  A value of -1 indicates an error.
+
+        Level 2
+      </value>
+</SQLSelect.NumParameters>
+<SQLSelect.NumResultCols>
+      <summary>
+        Return the number of columns in the result set.
+      </summary>
+      <returns>
+        The number of columns if successful; otherwise, -1.
+      </returns>
+</SQLSelect.NumResultCols>
+<SQLSelect.NumResultColumns>
+      <summary>
+        A numeric value containing the number of columns in the result set.
+      </summary>
+      <value>A numeric value containing the number of columns in the result set.</value>
+</SQLSelect.NumResultColumns>
+<SQLSelect.NumSuccessfulRows>
+      <summary>
+        A numeric value containing the number of rows that were modified by a delete, append, or update operation.
+      </summary>
+      <value>A numeric value containing the number of rows that were modified by a delete, append, or update operation.</value>
+</SQLSelect.NumSuccessfulRows>
+<SQLSelect.PreExecute>
+      <summary>
+        Return the SQL command that is generated by X#.
+      </summary>
+      <param name="cSQLString">A string containing the SQL statement which will be passed to the SQL driver.</param>
+      <returns>
+        A possibly updated SQL string that will be passed to the SQL driver.
+      </returns>
+      <remarks>
+        This method is a callback method that is passed to the SQL command generated by X# for the purpose of inspection and optional modification, immediately prior to the command being passed to ODBC.  It must return SQL statement text.
+      </remarks>
+      <example>
+        The following example demonstrates the use of the SQLSelect:PreExecute() method:
+        <code language="X#">
+          METHOD PreExecute(cSQLString) CLASS SubclassOfSQLSelect
+          ? sSQLString	//View all the SQL can modify it here, too
+          RETURN cSQLString
+        </code></example>
+</SQLSelect.PreExecute>
+<SQLSelect.Prepare>
+      <summary>
+        Prepare the statement.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        In most cases, there is no need to invoke SQLSelect:Prepare(), since it is automatically invoked when needed.
+      </remarks>
+</SQLSelect.Prepare>
+<SQLSelect.PrepFlag>
+      <summary>
+        A logical value that indicates if the select statement has been prepared.
+      </summary>
+      <value>A logical value that indicates if the select statement has been prepared.</value>
+</SQLSelect.PrepFlag>
+<SQLSelect.RecCount>
+      <summary>
+        A numeric value representing the number of rows in the data server.
+      </summary>
+      <value>A numeric value representing the number of rows in the data server.</value>
+      <remarks>
+        A numeric value representing the number of rows in the data server.  NIL is returned if the number of rows cannot be determined.
+        <note type="tip">Some types of data servers may not be able to provide this number.</note></remarks>
+</SQLSelect.RecCount>
+<SQLSelect.Recno>
+      <summary>
+        A numeric value representing the relative position in the data server.
+      </summary>
+      <value>A numeric value representing the relative position in the data server.</value>
+      <remarks>
+        A numeric value representing the relative position in the data server.
+        It is not possible to efficiently or accurately determine how many records are in the result set for SQL (especially for databases that support scrollable cursors, like WATCOM).  Therefore, negative numbers are used to reflect relative position from the bottom of the database, as positive numbers are used to reflect relative position from the top of the database.
+        If the server is positioned at the Phantom record (after skipping past the last record) SQLSelect:Recno returns SQLSelect:Reccount+1
+      </remarks>
+      <example>
+        The following example demonstrates the value that SQLSelect:RecNo returns after each method is called:
+        <code language="X#">
+          oCust := SQLSelect{"SELECT * FROM customer"}
+          oCust:GoTop()
+          ? oCust:RECNO			// Prints 1
+          oCust:Skip()
+          ? oCust:RECNO			// Prints 2
+          oCust:GoBottom()
+          ? oCust:RECNO			// Prints -1
+          oCust:Skip(-1)
+          ? oCust:RECNO			// Prints -2
+          oCust:GoTop()
+          ? oCust:RECNO			// Prints 1
+          oCust:Skip()
+          ? oCust:RECNO			// Prints 2
+        </code></example>
+</SQLSelect.Recno>
+<SQLSelect.Refresh>
+      <summary>
+        Refresh the current row in the buffer, discarding any changes that have been made.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        Sends a NotifyRecordChange message, if successful.
+        This command discards all changes to the current row.  It is useful as a way of implementing Undo in an application. However, it cannot roll back changes that have been committed with the SQLSelect:Commit().  Also, note that it applies only to the current row; the data server and the drivers do not buffer changes made to multiple rows.
+      </remarks>
+</SQLSelect.Refresh>
+<SQLSelect.ResetNotification>
+      <summary>
+        Resume the broadcasting of Notify messages to the server's attached clients (after SQLSelect:SuspendNotification() has been called).
+      </summary>
+      <remarks>
+        This method is used in conjunction with SQLSelect:SuspendNotification(), which suspends the broadcasting of Notify messages.
+        Note that SQLSelect:SuspendNotification() stacks its invocations.  Therefore, for each call to SQLSelect:SuspendNotification(), there needs to be a corresponding call SQLSelect:ResetNotification().
+      </remarks>
+</SQLSelect.ResetNotification>
+<SQLSelect.RLOCK>
+      <summary>
+        This method is provided to override the inherited functionality from the DataServer class, as it does not apply to SQLSelect.
+      </summary>
+</SQLSelect.RLOCK>
+<SQLSelect.RLockVerify>
+      <summary>
+        This method is provided to override the inherited functionality from the DataServer class, as it does not apply to SQLSelect.
+      </summary>
+</SQLSelect.RLockVerify>
+<SQLSelect.Rollback>
+      <summary>
+        Undo the changes (updates and deletes) made since the last Commit().
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.  Rollback() can fail for many reasons, from a lack of capability in the server to lock conflicts to technical problems such as network crashes.  Use the SQLSelect:Status property to determine the exact cause of the failure.
+      </returns>
+      <remarks>
+        Some servers lack support for this operation.  If the server does support it, the exact implications of a rollback vary with the server — with some database management systems, the method rolls back all servers using the same connection; with others, it rolls back only this server.  In addition, some SQL servers have other implications of a rollback operation (they can close cursors, for example).  This is an area that is that is not standardized in SQL; you should carefully study the documentation for your database management system.
+        The AutoCommit option may interfere with manual commits.  You may want to turn AutoCommit off, for example:
+        <code language="X#">oSelect:Connection:SetConnectOption(SQL_AUTOCOMMIT, 0)</code></remarks>
+</SQLSelect.Rollback>
+<SQLSelect.ScrollConcurrency>
+      <summary>
+        A constant, which describes the concurrency mode used by the SQL statement:
+      </summary>
+      <value>A constant, which describes the concurrency mode used by the SQL statement:</value>
+      <remarks>
+        <para>One of the following constants, which describes the concurrency mode used by the SQL statement:</para>
+        <list type="table">
+          <listheader>
+            <term>Constant</term>
+            <description>Description</description>
+          </listheader>
+          <item>
+            <term>SQL_CONCUR_READ_ONLY</term>
+            <description>Cursor is read-only. No updates are allowed</description>
+          </item>
+          <item>
+            <term>SQL_CONCUR_LOCK</term>
+            <description>Cursor uses the lowest level of locking sufficient to ensure that the row can be updated</description>
+          </item>
+          <item>
+            <term>SQL_CONCUR_ROWVER</term>
+            <description>Cursor uses optimistic concurrency control, comparing row versions such as SQLBase ROWID or Sybase TIMESTAMP</description>
+          </item>
+          <item>
+            <term>SQL_CONCUR_VALUES</term>
+            <description>Cursor uses optimistic concurrency control, comparing values</description>
+          </item>
+        </list>
+        The default value for this property can be set through the function SqlSetStmtConcurrency()
+        <note type="tip">
+          Please consult the documentation for the ODBC driver you are using to see the effects of this setting on the performance of your application.
+        </note></remarks>
+</SQLSelect.ScrollConcurrency>
+<SQLSelect.ScrollUpdateType>
+      <summary>
+        A constant, which describes the type of SQL statement to use during append, update or delete operations.
+      </summary>
+      <value>A constant, which describes the type of SQL statement to use during append, update or delete operations.</value>
+      <remarks>
+        One of the following constants, which describes the type of SQL statement; searched (by key or value) or positioned (by cursor) to use during append, delete, or update operations:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_SC_UPD_AUTO</term><description>
+              The system determines which type of SQL statement to use:  attempting to use cursor, key, and value, respectively.
+              The type that applies first is used.  This is the <b>default</b>.
+            </description></item><item><term>SQL_SC_UPD_CURSOR</term><description>The cursor position is used.</description></item><item><term>SQL_SC_UPD_KEY</term><description>The key(s) specified in the primary key are used.</description></item><item><term>SQL_SC_UPD_VALUE</term><description>The value(s) of all the columns in the row are used.</description></item></list></remarks>
+</SQLSelect.ScrollUpdateType>
+<SQLSelect.Seek>
+      <summary>
+        This method is provided to override the inherited functionality from the DataServer class, as it does not apply to SQLSelect.
+      </summary>
+</SQLSelect.Seek>
+<SQLSelect.SetPrimaryKey>
+      <summary>
+        Specify a column to be used as a unique index in searched updates or deletes that require a key (i.e., SQLSelect:ScrollUpdateType = SQL_SC_UPD_KEY).
+      </summary>
+      <param name="uFieldPos">The name, number, or symbol representing the desired column.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        If SQLSelect:SetPrimaryKey() is passed a zero as an argument, all assigned columns are cleared.  You can also find the unique index columns by using the SQLListSpecialColumns class.
+      </remarks>
+</SQLSelect.SetPrimaryKey>
+<SQLSelect.SetStatementOption>
+      <summary>
+        Change a statement option.
+      </summary>
+      <param name="fOption">
+        The statement option to set (for example, SQL_MAX_LENGTH or SQL_NOSCAN).
+      </param>
+      <param name="uValue">The value of the statement option.</param>
+      <remarks>
+        <note type="tip">Refer to SQLSetStatementOption() in your ODBC documentation for a complete list of ODBC statement options that are available.</note>
+      </remarks>
+</SQLSelect.SetStatementOption>
+<SQLSelect.SimulateCursor>
+      <summary>
+        A constant, which describes the way the ODBC drivers tries to guarantee that update or delete statements only affect one single row.
+      </summary>
+      <value>A constant, which describes the way the ODBC drivers tries to guarantee that update or delete statements only affect one single row.</value>
+      <remarks>
+        One of the following constants, which describes the way the ODBC drivers tries to guarantee that update or delete statements only affect one single row.
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_SC_NON_UNIQUE</term><description>
+              The driver does not guarantee that simulated positioned update or delete statements will affect only one row;
+              it is the application's responsibility to do so. If a statement affects more than one row, SQLExecute, SQLExecDirect, or SQLSetPos returns SQLSTATE 01001 (Cursor operation conflict).
+            </description></item><item><term>SQL_SC_TRY_UNIQUE</term><description>
+              The driver attempts to guarantee that simulated positioned update or delete statements affect only one row.
+              The driver always executes such statements, even if they might affect more than one row, such as when there is no unique key. If a statement affects more than one row, SQLExecute, SQLExecDirect, or SQLSetPos returns SQLSTATE 01001 (Cursor operation conflict).
+            </description></item><item><term>SQL_SC_UNIQUE</term><description>
+              The driver guarantees that simulated positioned update or delete statements affect only one row.
+              If the driver cannot guarantee this for a given statement, SQLExecDirect or SQLPrepare returns an error
+            </description></item></list>
+        The default value for this property can be set through the function SqlSetStmtSimulateCursor()
+        <note type="tip">
+          Please consult the documentation for the ODBC driver you are using to see the effects of this setting on the performance of your application.
+        </note></remarks>
+</SQLSelect.SimulateCursor>
+<SQLSelect.Skip>
+      <summary>
+        Move forward or backward relative to the current row.  (Similar to the Skip() function).
+      </summary>
+      <param name="nRowCount">The number of rows to skip.  Positive numbers more forward; negative numbers move backward.  If omitted, +1 is assumed.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE (including if beginning or end of data was encountered).
+      </returns>
+      <remarks>
+        <note type="tip">Not all data servers are capable of moving backward.  (See SQLConnection:ScrollCsr and SQLSelect:BufferData().)</note>
+        Sends a NotifyRecordChange message if any move was made.
+      </remarks>
+</SQLSelect.Skip>
+<SQLSelect.SQLColumns>
+      <summary>**Missing documentation **</summary>
+      <value>**Missing documentation **</value>
+</SQLSelect.SQLColumns>
+<SQLSelect.SqlData>
+      <summary>**Missing documentation **</summary>
+      <value>**Missing documentation **</value>
+</SQLSelect.SqlData>
+<SQLSelect.SQLString>
+      <summary>
+        A string representing the SQL statement text.
+      </summary>
+      <value>A string representing the SQL statement text.</value>
+      <remarks>
+        A string representing the SQL statement text.
+        <note type="tip">	The SQLSelect:SQLString assign will automatically close the cursor, if one is open.</note></remarks>
+</SQLSelect.SQLString>
+<SQLSelect.Statement>
+      <summary>
+        A SQL statement object.
+      </summary>
+      <value>A SQL statement object.</value>
+      <remarks>
+        A SQL statement object.
+      </remarks>
+</SQLSelect.Statement>
+<SQLSelect.StatementHandle>
+      <summary>
+        A numeric value representing the statement handle.
+      </summary>
+      <value>A numeric value representing the statement handle.</value>
+</SQLSelect.StatementHandle>
+<SQLSelect.Status>
+      <summary>
+        A hyperlabel object identifying the status after the last operation.
+      </summary>
+      <value>A hyperlabel object identifying the status after the last operation.</value>
+      <remarks>
+        A hyperlabel object identifying the status after the last operation.  If the last operation was successful, SQLSelect:Status returns NULL_OBJECT; if something went wrong, whether it raised an error condition or merely returned a failure code, SQLSelect:Status returns an informative hyperlabel object.
+        By accessing the properties of this hyperlabel, you can retrieve not only a description but also context-sensitive help on the condition that was raised.
+      </remarks>
+      <example>
+        The following examples invoke several Status access/assign methods of the data server:
+        <code language="X#">
+          oServer:Status:Caption
+          oServer:Status:Description
+          oServer:Status:HelpContext
+        </code></example>
+</SQLSelect.Status>
+<SQLSelect.SuspendNotification>
+      <summary>
+        Suspend the broadcasting of Notify messages to the server's attached clients.
+      </summary>
+      <remarks>
+        This method is useful, for example, when the server is moving through the database and the server is ultimately restored to its original position.  Therefore, there is no reason to notify the clients of the server of a change in position within the database.
+        Note that SQLSelect:SuspendNotification() stacks its invocations.  Therefore, for each call to SQLSelect:SuspendNotification(), there needs to be a corresponding call SQLSelect:ResetNotification().
+      </remarks>
+</SQLSelect.SuspendNotification>
+<SQLSelect.TableName>
+      <summary>
+        A string representing the name of the table.
+      </summary>
+      <value>A string representing the name of the table.</value>
+</SQLSelect.TableName>
+<SQLSelect.TimeStampAsDate>
+      <summary>**Missing documentation **</summary>
+      <value>**Missing documentation **</value>
+</SQLSelect.TimeStampAsDate>
+<SQLSelect.Unlock>
+      <summary>
+        This method is provided to override the inherited functionality from the DataServer class, as it does not apply to SQLSelect.
+      </summary>
+</SQLSelect.Unlock>
+<SQLSelect.Update>
+      <summary>
+        Update the current row or restore the original values of the row.
+      </summary>
+      <param name="lUpdate">TRUE updates the row; FALSE cancels the update and restores the original values of the row.  The default is TRUE.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        The type of SQL statement (searched or positioned) used by Update() is determined by the system automatically, unless set to cursor, key, or value, using SQLSelect:ScrollUpdateType.
+        SQLSelect:Update() is invoked automatically if a field's value is changed (using SQLSelect:FieldPut()), and then a positioning operation (such as Skip()) was requested.
+        When executed successfully, this method sends a NotifyRecordChange message to this data server's clients.
+      </remarks>
+</SQLSelect.Update>
+<SQLSelect.Used>
+      <summary>
+        A logical value indicating whether the current query is active.
+        It returns TRUE if the current query is active; otherwise, it returns FALSE.
+      </summary>
+      <value>
+        A logical value indicating whether the current query is active.
+        It returns TRUE if the current query is active; otherwise, it returns FALSE.
+      </value>
+</SQLSelect.Used>
+<SQLStatement>
+      <summary>
+        Manage a SQL statement.
+      </summary>
+      <example>
+        The following example demonstrates the use of the SQLStatement class:
+        <code language="X#">
+          FUNCTION CreateTable()
+          LOCAL oStmt AS SQLStatement
+          LOCAL oConn AS SQLConnection
+          oConn := SQLConnection{"sample","dba","sql"}
+          oStmt := SQLStatement{"Create table test ;
+          (Col1 INT,Col2 Char(10))", oConn}
+          IF !oStmt:Execute()
+          oStmt:ErrInfo:ShowErrorMsg()
+          ENDIF
+          oStmt:FreeStmt(SQL_DROP)
+          oConn:Disconnect()
+        </code></example>
+</SQLStatement>
+<SQLStatement.ctor>
+      <summary>
+        Construct a SQLStatement object.
+      </summary>
+      <param name="cSQLStatement">The statement text.</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+      <example>
+        The following example executes the SQL statement:
+        <code language="X#">
+          oConn := SQLConnection{Source,UserId,Pswd}
+          ACCEPT "Enter Simple SQL Statement:" TO cStatement
+          oStmt := SQLStatement{cStatement,oConn}
+          // Execute the statement...
+          oStmt:Execute()
+        </code></example>
+</SQLStatement.ctor>
+<SQLStatement.Commit>
+      <summary>
+        Save the changes made since the last Commit().
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        The AutoCommit option may interfere with manual commits.  You may want to turn AutoCommit off, for example:
+        <code language="X#">oStmt:Connection:SetConnectOption(SQL_AUTOCOMMIT, 0)</code></remarks>
+</SQLStatement.Commit>
+<SQLStatement.Connection>
+      <summary>
+        The data source — a SQLConnection object — that this statement is connected to.
+      </summary>
+      <value>The data source — a SQLConnection object — that this statement is connected to.</value>
+</SQLStatement.Connection>
+<SQLStatement.ErrInfo>
+      <summary>
+        An SQL statement error information (SQLErrorInfo) object.  Use the error flag of the returned object to determine if an error occurred.
+      </summary>
+      <value>An SQL statement error information (SQLErrorInfo) object.  Use the error flag of the returned object to determine if an error occurred.</value>
+</SQLStatement.ErrInfo>
+<SQLStatement.Execute>
+      <summary>
+        Execute the statement.
+      </summary>
+      <param name="uParm">The array of parameters to execute., or a list of parameters to execute.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <example>
+        The following example executes the SQL statement:
+        <code language="X#">
+          oStmt := SQLStatement{"Insert into employee;
+          values(?, ?, ?, ?, ?, ?, ?, ?)",oConn}
+          Execute(90012, 'Bill', 'wm', NULL, '911', NULL, 'PROF','4002')
+          ?"Inserted!"
+        </code></example>
+</SQLStatement.Execute>
+<SQLStatement.FreeStmt>
+      <summary>
+        Free the statement, according to the specified option.
+      </summary>
+      <param name="kOption">
+        The option used when the statement is freed, specified by one of the following constants:
+        Constant	Description
+        SQL_CLOSE	Closes the cursor.
+        SQL_DROP	Closes the cursor, unbinds and resets the parameters, and frees the statement.
+        SQL_RESET_PARAMS	Resets the parameters.
+        SQL_UNBIND	Unbinds the parameters.
+      </param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+</SQLStatement.FreeStmt>
+<SQLStatement.GetStatementOption>
+      <summary>
+        Return current setting for a statement option or NIL, if an error occurred.
+      </summary>
+      <param name="kOption">The statement option (for example, SQL_BIND_TYPE, etc.).  Refer to SQLGetStmtOption() in your ODBC documentation for a complete list of ODBC connection options that are available.</param>
+</SQLStatement.GetStatementOption>
+<SQLStatement.HyperLabel>
+      <summary>
+        A hyperlabel containing a description of the statement.
+      </summary>
+      <value>A hyperlabel containing a description of the statement.</value>
+</SQLStatement.HyperLabel>
+<SQLStatement.NativeSQL>
+      <summary>
+        A string containing the native text of the statement.
+
+        Level 2
+      </summary>
+      <value>
+        A string containing the native text of the statement.
+
+        Level 2
+      </value>
+</SQLStatement.NativeSQL>
+<SQLStatement.NumParameters>
+      <summary>
+        A numeric value containing the number of parameters in the statement.  A return value of -1 indicates an error.
+
+        Level 2
+      </summary>
+      <value>
+        A numeric value containing the number of parameters in the statement.  A return value of -1 indicates an error.
+
+        Level 2
+      </value>
+</SQLStatement.NumParameters>
+<SQLStatement.NumSuccessfulRows>
+      <summary>
+        A numeric value containing the number of rows that were affected by the insert, update, or delete statement.  A return value of -1 indicates an error.
+      </summary>
+      <value>A numeric value containing the number of rows that were affected by the insert, update, or delete statement.  A return value of -1 indicates an error.</value>
+</SQLStatement.NumSuccessfulRows>
+<SQLStatement.Prepare>
+      <summary>
+        Prepare a statement.
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        In most cases, there is no need to invoke SQLStatement:Prepare(), since it will be automatically invoked when needed, by other methods (for example, Execute()).
+      </remarks>
+</SQLStatement.Prepare>
+<SQLStatement.PrepFlag>
+      <summary>
+        A logical value that indicates if the statement has been prepared.
+      </summary>
+      <value>A logical value that indicates if the statement has been prepared.</value>
+</SQLStatement.PrepFlag>
+<SQLStatement.RollBack>
+      <summary>
+        Undo the changes made since the last Commit().
+      </summary>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        The AutoCommit option may interfere with manual commits.  You may want to turn AutoCommit off, for example:
+        <code language="X#">oStmt:Connection:SetConnectOption(SQL_AUTOCOMMIT, 0)</code></remarks>
+</SQLStatement.RollBack>
+<SQLStatement.SetStatementOption>
+      <summary>
+        Set current setting for a statement option.
+      </summary>
+      <param name="fOption">The statement option (for example, SQL_BIND_TYPE, etc.).  Refer to SQLSetStatement Option() in your ODBC documentation for a complete list of ODBC statement options that are available.</param>
+      <param name="uValue">The value to set the statement option to.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+
+        Level 1
+      </returns>
+</SQLStatement.SetStatementOption>
+<SQLStatement.SQLString>
+      <summary>
+        A string containing the text of the statement.
+      </summary>
+      <value>A string containing the text of the statement.</value>
+      <remarks>
+        A string containing the text of the statement.
+        <note type="tip">	You can use the SQLSelect:SQLString assign to change the statement text.</note>
+        Note:		If you assign a different SQLString and the statement is Preparedm it will become 'unprepared'.
+      </remarks>
+</SQLStatement.SQLString>
+<SQLStatement.StatementHandle>
+      <summary>
+        A long integer representing the statement handle.
+      </summary>
+      <value>A long integer representing the statement handle.</value>
+</SQLStatement.StatementHandle>
+<SQLStatement.Status>
+      <summary>
+        A hyperlabel describing the error, or NULL_OBJECT if no error has occurred.
+      </summary>
+      <value>A hyperlabel describing the error, or NULL_OBJECT if no error has occurred.</value>
+</SQLStatement.Status>
+<SQLTable>
+      <summary>
+        Manage a table.
+      </summary>
+</SQLTable>
+<SQLTable.ctor>
+      <summary>
+        Construct a SQLTable object.
+      </summary>
+      <param name="symTableName">The symbol representing the name of the table.</param>
+      <param name="aFieldList">The array of column names from the table to be included.  If not specified, all columns are included.</param>
+      <param name="oSQLConnection">The SQL connection indicating where the table can be found.  If not specified, the current default connection is used, if any; if none is defined, the system asks the end user to log on to a database.</param>
+</SQLTable.ctor>
+<SQLTable.ClearRelation>
+      <summary>
+        Clear a relation (or all relations) held by this server to other servers.
+      </summary>
+      <param name="nRelation">The number of the relation to clear.  If omitted, all relations are cleared.</param>
+      <returns>
+        TRUE if successful; otherwise, it returns FALSE.
+      </returns>
+</SQLTable.ClearRelation>
+<SQLTable.Condition>
+      <summary>
+        Store any other condition that is appended to the end of the SQL statement.
+      </summary>
+      <param name="cOtherConditions">A string representing other conditions appended to the end of the SQL statement, such as 'GROUPBY' and 'HAVING'.</param>
+</SQLTable.Condition>
+<SQLTable.Notify>
+      <summary>
+        Provide a method that is automatically called by the action methods of the server after completion of some significant event:  a column has changed, the server position has changed, some operation has been completed.  Its standard implementation is to broadcast the same notification to its attached clients.
+      </summary>
+      <param name="kNotification">The identification of the event, specified as one of the following constants:</param>
+      <param name="uDescription">Used only with some notification types.</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        <include file="VOSDK_Classes.xml" path="doc/commonblocks/notify/*" />
+      </remarks>
+</SQLTable.Notify>
+<SQLTable.OrderBy>
+      <summary>
+        Specify an ORDER BY clause.
+      </summary>
+      <param name="cOrder [, cOrder]">The list of strings comprising the ORDER BY clause.  The list will be concatenated, separated by commas.  The strings can contain any valid ORDER BY syntax that is accepted by the driver, including ASC and DESC keywords.</param>
+      <example>
+        The following example demonstrates the use of the SQLTable:OrderBy() method:
+        <code language="X#">
+          oTable := SQLTable{#Customer,,oConn}
+          oTable:OrderBy("CustNum DESC")
+          oTable:Seek()
+        </code></example>
+</SQLTable.OrderBy>
+<SQLTable.Relation>
+      <summary>
+        Return the linking expression of a specified relation.
+      </summary>
+      <param name="nRelation">The position of the desired relation in the list of current relations.  The relations are numbered according to the order in which they were defined with SetRelation().</param>
+      <returns>
+        A string containing the linking expression of the relation specified by &lt;nRelation&gt;.  If there is no relation set for &lt;nRelation&gt;, SQLTable:Relation() returns a NULL_STRING.
+      </returns>
+</SQLTable.Relation>
+<SQLTable.Seek>
+      <summary>
+        Search for a value based on a controlling search order.
+      </summary>
+      <param name="asymColumn">The array of columns that is to be searched for.</param>
+      <param name="auValue">The array of values that is to be searched for of a type compatible with &lt;asymColumn&gt;.  The number of elements in this array and &lt;asymColumn&gt; must be identical.</param>
+      <param name="symColumn">The column that is to be searched for.</param>
+      <param name="uValue">The value that is to be searched for of a type compatible with &lt;symColumn&gt;.</param>
+      <param name="lSoftSeek">Indicates whether the '&gt;=' operator is to used in the where clause (TRUE) or if the '=' operator is to be used (FALSE).</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE. (whether this is because the server is incapable of searching, or because the value was not found).
+      </returns>
+      <remarks>
+        SQLTable:Seek() dynamically rebuilds the select statement using the values in the WHERE clause.
+      </remarks>
+</SQLTable.Seek>
+<SQLTable.SetRelation>
+      <summary>
+        Set a relation from this server to the child server; standard database operations are restricted to those records that match the relation.
+      </summary>
+      <param name="oChild">The server attached to the child server must be specified as a SQLTable object.  If omitted, all relations for this server are removed (the recommended way of doing this is the ClearRelations() method).</param>
+      <param name="uRelation">The field name representing the relation for the server.  An alias can be used for the field name.  (See the SQLSelect:FieldInfo() method to set an alias name).</param>
+      <param name="cRelation">The array of field names representing the relation for the server.  The array can also contain complex relational operators (SQL_RELOP_AND, SQL_RELOP_OR, SQL_RELOP_NOT, SQL_RELOP_OPENP, SQL_RELOP_CLOSEP).</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        In the SQLTable class, SetRelation() functions identically to SetSelectiveRelation().  The relation is implemented as an extension to the WHERE clause.
+        Sends a NotifyRecordChange message to the child server, if successful.
+      </remarks>
+      <example>
+        The API can take these forms:
+        <code language="X#">
+          oSQLCustomer:SetRelation(oSQLOrders, {||_FIELD-&gt;CustNo},"CustNo")
+          oSQLCustomer:SetRelation(oSQLOrders,#CustNo)
+          oSQLCustomer:SetRelation(oSQLOrders, {#LastName,#Initial,#FirstName})
+        </code>
+        The following relation is equivalent to the set of orders where ORDER.LASTNAME=CUST.LASTNAME OR (ORDER.INITIAL=CUST.INITIAL AND ORDER.FIRSTNAME=CUST.FIRSTNAME):
+        <code language="X#">
+          oSQLCustomer:SetRelation(oSQLOrders,{#LastName,
+          SQL_RELOP_OR,SQL_RELOP_OPENP,#Initial,
+          SQL_RELOP_AND,#FirstName,SQL_RELOP_CLOSEP}
+        </code></example>
+</SQLTable.SetRelation>
+<SQLTable.SetSelectiveRelation>
+      <summary>
+        Set a selective relation from this server to the child server; standard database operations are restricted to those records that match the relation.
+      </summary>
+      <param name="oChild">The server attached to the child server must be specified as a SQLTable object.  If &lt;oSQLChild&gt; is omitted, all relations for this server are removed (the recommended way of doing this is the ClearRelations() method).</param>
+      <param name="uRelation">The field name from this server.  An alias can be used for the field name.  (See the SQLSelect:FieldInfo() method to set an alias name).</param>
+      <param name="cRelation">The array of field names representing the relation for the server.  The array can also contain complex relational operators (SQL_RELOP_AND, SQL_RELOP_OR, SQL_RELOP_NOT, SQL_RELOP_OPENP, SQL_RELOP_CLOSEP).</param>
+      <returns>
+        TRUE if successful; otherwise, FALSE.
+      </returns>
+      <remarks>
+        Sends a NotifyRecordChange message to the child server, if successful.  This method is equivalent to the SetRelation() method.
+      </remarks>
+      <example>
+        The API can take these forms:
+        <code language="X#">
+          oSQLCustomer:SetSelectiveRelation(oSQLOrders,;
+          {||_FIELD-&gt;CustNo},"CustNo")
+          oSQLCustomer:SetSelectiveRelation(oSQLOrders, CustNo)
+          oSQLCustomer:SetSelectiveRelation(oSQLOrders,;
+          {#LastName,#Initial,#FirstName})
+        </code></example>
+</SQLTable.SetSelectiveRelation>
+<SQLTable.Where>
+      <summary>
+        Specify a WHERE condition.  The where clause is built by concatenating these conditions with the AND operator.
+      </summary>
+      <param name="cCondition [, cCondition]">The list of conditions (for example, 'STATE = 'NY'', etc.).</param>
+</SQLTable.Where>
+<SQLValue>
+      <summary>
+        Describe a SQL value.
+      </summary>
+</SQLValue>
+<SQLValue.ctor>
+      <summary>
+        Construct a SQLValue object.
+      </summary>
+      <param name="oHyperLabel">The hyperlabel for the SQL value.</param>
+      <param name="oFieldSpec">The column specification for the SQL value.</param>
+      <param name="nODBCType">The ODBC data type of the SQL value (for example, SQL_INTEGER, SQL_CHAR, SQL_FLOAT, etc.).  Refer to your ODBC documentation for a complete list of ODBC data types that are available.</param>
+      <param name="nScale">The decimal precision of the SQL value.  This is specified only when the ODBC data type is numeric.</param>
+      <param name="lNullable">Specify TRUE if the value can be NULL; otherwise, FALSE.</param>
+</SQLValue.ctor>
+<SQLValue.Nullable>
+      <summary>
+        A logical value representing whether the SQL value can be NULL.
+      </summary>
+      <value>A logical value representing whether the SQL value can be NULL.</value>
+      <remarks>
+        A logical value representing whether the SQL value can be NULL.  If it can be NULL, TRUE is returned; otherwise, FALSE.
+      </remarks>
+</SQLValue.Nullable>
+<SQLValue.ODBCType>
+      <summary>
+        A numeric value representing the ODBC type of the SQL value (such as, SQL_INTEGER, SQL_CHAR, SQL_FLOAT).
+      </summary>
+      <value>A numeric value representing the ODBC type of the SQL value (such as, SQL_INTEGER, SQL_CHAR, SQL_FLOAT).</value>
+      <remarks>
+        <note type="tip">Refer to your ODBC documentation for a complete list of ODBC data types that are available.</note>
+      </remarks>
+</SQLValue.ODBCType>
+<SQLValue.Scale>
+      <summary>
+        A numeric value representing the number of decimal places in the SQL value.
+      </summary>
+      <value>A numeric value representing the number of decimal places in the SQL value.</value>
+</SQLValue.Scale>
+<SQLValue.UsualType>
+      <summary>
+        A string representing the X# usual type corresponding to the originating ODBC type (for example, SQL_INTEGER returns LONG).
+      </summary>
+      <value>A string representing the X# usual type corresponding to the originating ODBC type (for example, SQL_INTEGER returns LONG).</value>
+      <remarks>
+        A string representing the X# usual type corresponding to the originating ODBC type (for example, SQL_INTEGER returns LONG).
+        <para>Possible ODBC types and their return values include:</para><list type="table"><listheader><term>ODBC Type</term><description>VO Type</description></listheader><item><term>SQL_INTEGER</term><description>LONG</description></item><item><term>SQL_SMALLINT</term><description>SHORTINT</description></item><item><term>SQL_FLOAT</term><description>FLOAT</description></item><item><term>SQL_REAL</term><description>FLOAT</description></item><item><term>SQL_DOUBLE</term><description>FLOAT</description></item><item><term>SQL_BIT</term><description>LOGIC</description></item><item><term>SQL_DATE</term><description>DATE</description></item><item><term>All other values</term><description>STRING</description></item></list><note type="tip">Refer to your ODBC documentation for a complete list of ODBC usual types that are available for that particular driver.</note></remarks>
+</SQLValue.UsualType>
+<SQLConnectErrorMsg>
+      <summary>
+        Return and optionally change the setting that determines whether to display connection error messages.
+      </summary>
+      <param name="lValue">
+        TRUE enables the connection error message; FALSE disables the connection error message.
+        The initial default is TRUE.
+      </param>
+      <returns>
+        If &lt;lNewSetting&gt; is not specified, SQLConnectErrorMsg() returns the current setting.
+        If &lt;lNewSetting&gt; is specified, the previous setting is returned.
+      </returns>
+      <remarks>
+        If SQLConnectErrorMsg() is set to FALSE, connection error messages are not displayed.
+        If SQLConnectErrorMsg() is set to TRUE, which is the default, a connection error message is displayed in a message box.
+      </remarks>
+      <example></example>
+      <seealso cref="O:VO.SQLConnection.Connect">SQLConnection:Connect</seealso>
+      <seealso cref="O:VO.SQLConnection.DriverConnect">SQLConnection:DriverConnect</seealso>
+</SQLConnectErrorMsg>
+<SqlDeleteWhiteSpace>
+      <summary>**Missing documentation **</summary>
+</SqlDeleteWhiteSpace>
+<SQLDropMyConnection>
+      <summary>
+        Disconnect the ODBC data source.
+      </summary>
+      <param name="cMySourceName">The source for this connection.</param>
+      <param name="cMyUserid">The user id that was used to connect to the source.</param>
+      <param name="cMyPassword">The password that was used to connect to the source.</param>
+      <returns>
+        TRUE if a connection is found; otherwise FALSE.
+      </returns>
+      <remarks>
+        If a connection is found, the use count is decremented by 1.  When the use count is 1, the source is disconnected.
+      </remarks>
+      <example>
+        The following example connects to WATCOM; then ends the connection:
+        <code language="X#">
+          FUNCTION TestConnect()
+          LOCAL oConn AS SQLConnection
+          oConn := SQLGetMyConnection("sample", "dba", "sql")
+          ? "SRC=",oConn:DataSource
+          ? "UID=",oConn:UserID
+          ? "PWD=",oConn:Password
+          SQLDropMyConnection("sample", "dba", "sql")
+        </code></example>
+      <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+</SQLDropMyConnection>
+<SQLGetDataSources>
+      <summary>
+        Identify the available ODBC data sources.
+      </summary>
+      <returns>
+        An array of strings identifying the available ODBC data sources.
+        If no sources are available, SQLGetDataSources() returns a NULL_ARRAY.
+      </returns>
+      <remarks></remarks>
+      <example>
+        The following example tests connection utility functions:
+        <code language="X#">
+          FUNCTION TestConnect()
+          LOCAL wCount AS DWORD
+          LOCAL aSources AS ARRAY
+          LOCAL oConn AS SQLConnection
+          // Get an array of sources
+          aSources := SQLGetDataSources()
+          // List them
+          ? "ODBC Sources..."
+          for wCount := 1 to ALen(aSources)
+          ? aSources[wCount]
+          next
+          // Connect to a list of sources
+          oConn := SQLOpenConnection()
+          // Make it the default connection
+          SQLSetConnection(oConn)
+          // Disconnect
+          oConn:Disconnect()
+        </code></example>
+      <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+</SQLGetDataSources>
+<SQLGetMyConnection>
+      <summary>
+        Connect to the ODBC source specified.
+      </summary>
+      <param name="cMySourceName">The source to connect to.</param>
+      <param name="cMyUserID">The user ID that will be used to connect to the source.</param>
+      <param name="cMyPassword">The password that will be used to connect to the source.</param>
+      <returns>
+        If a connection to the source is found, it is returned as an SQLConnection object.
+        If a connection is not found, one is created and returned as an object.
+      </returns>
+      <remarks>
+        SQLGetMyConnection is used in the code generated from the SQL editor.
+        It allows a connection to be shared among multiple servers in the same task.
+      </remarks>
+      <example>
+        The following example connects to WATCOM; then ends the connection:
+        <code language="X#">
+          FUNCTION TestConnect()
+          LOCAL oConn AS SQLConnection
+          oConn := SQLGetMyConnection("sample", "dba", "sql")
+          ? "SRC=",oConn:DataSource
+          ? "UID=",oConn:UserID
+          ? "PWD=",oConn:Password
+          SQLDropMyConnection("sample", "dba", "sql")
+        </code></example>
+      <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLOpenConnection">SQLOpenConnection</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+</SQLGetMyConnection>
+<SqlIsBinaryType>
+      <summary>Helper function to determine if an ODBC type is Binary</summary>
+</SqlIsBinaryType>
+<SqlIsCharType>
+      <summary>Helper function to determine if an ODBC type is Character</summary>
+</SqlIsCharType>
+<SqlIsLongType>
+      <summary>Helper function to determine if an ODBC type is Long (BLOB, MEMO etc)</summary>
+</SqlIsLongType>
+<SQLOpenConnection>
+      <summary>
+        Connect to a list of ODBC sources.
+      </summary>
+      <returns>
+        An SQLConnection object.
+      </returns>
+      <remarks>
+        SQLOpenConnection() displays a dialog box listing all of the sources that have been installed and prompts you to select one.
+      </remarks>
+      <example>
+        The following example tests connection utility functions:
+        <code language="X#">
+          FUNCTION TestConnect()
+          LOCAL wCount AS DWORD
+          LOCAL aSources AS ARRAY
+          LOCAL oConn AS SQLConnection
+          // Get an array of sources
+          aSources := SQLGetDataSources()
+          // List them
+          ? "ODBC Sources..."
+          for wCount := 1 to ALen(aSources)
+          ? aSources[wCount]
+          next
+          // Connect to a list of sources
+          oConn := SQLOpenConnection()
+          // Make it the default connection
+          SQLSetConnection(oConn)
+          // Disconnect
+          oConn:Disconnect()
+        </code></example>
+      <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+</SQLOpenConnection>
+<SQLSetConnection>
+      <summary>
+        Return and optionally change the default SQL connection.
+      </summary>
+      <param name="oSQLConnection">The default SQL connection that will be used by any function or class that requires a connection.</param>
+      <returns>
+        If &lt;oSQLConnection&gt; is not specified, SQLSetConnection() returns the current setting.
+        If &lt;oSQLConnection&gt; is specified, the new setting is returned.
+      </returns>
+      <remarks>
+        If &lt;oSQLConnection&gt; is not specified and there is no previous or default connection, SQLSetConnection() calls SQLOpenConnection(), sets that connection as the default, and returns it.
+      </remarks>
+      <example>
+        The following example tests connection utility functions:
+        <code language="X#">
+          FUNCTION TestConnect()
+          LOCAL wCount AS DWORD
+          LOCAL aSources AS ARRAY
+          LOCAL oConn AS SQLConnection
+          // Get an array of sources
+          aSources := SQLGetDataSources()
+          // List them
+          ? "ODBC Sources..."
+          for wCount := 1 to ALen(aSources)
+          ? aSources[wCount]
+          next
+          // Connect to a list of sources
+          oConn := SQLOpenConnection()
+          // Make it the default connection
+          SQLSetConnection(oConn)
+          // Disconnect
+          oConn:Disconnect()
+        </code></example>
+      <seealso cref="O:VOSQLClasses.Functions.SQLDropMyConnection">SQLDropMyConnection</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLGetDataSources">SQLGetDataSources</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLGetMyConnection">SQLGetMyConnection</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SQLSetConnection">SQLSetConnection</seealso>
+</SQLSetConnection>
+<SqlSetStmtConcurrency>
+      <summary>
+        Return and optionally change the default concurrency mode for SQLSelect objects
+      </summary>
+      <param name="nNew">The default  concurrency strategy that will be used by new SqlSelect objects</param>
+      <returns>
+        If <paramref name="nNew" /> is not specified, SQLSetStmtConcurrency() returns the current setting.
+        If <paramref name="nNew" /> is specified, the new setting is returned.
+      </returns>
+      <remarks>
+        The concurrency mode for SQLSelect objects is used to determine if rows have been changed by other connections. The possible values are:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_CONCUR_READ_ONLY</term><description>Cursor is read-only. No updates are allowed</description></item><item><term>SQL_CONCUR_LOCK</term><description>Cursor uses the lowest level of locking sufficient to ensure that the row can be updated</description></item><item><term>SQL_CONCUR_ROWVER</term><description>Cursor uses optimistic concurrency control, comparing row versions such as SQLBase ROWID or Sybase TIMESTAMP</description></item><item><term>SQL_CONCUR_VALUES</term><description>Cursor uses optimistic concurrency control, comparing values</description></item></list>
+        The default value used by X# is SQL_CONCUR_ROWVER
+      </remarks>
+      <example></example>
+      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtCursorType">SqlSetStmtCursorType</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtSimulateCursor">SqlSetStmtSimulateCursor</seealso>
+      <seealso cref="P:VO.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
+      <seealso cref="P:VO.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
+      <seealso cref="P:VO.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
+</SqlSetStmtConcurrency>
+<SqlSetStmtCursorType>
+      <summary>
+        Return and optionally change the default cursor type used by for SQLSelect objects
+      </summary>
+      <param name="nNew">The default  concurrency strategy that will be used by new SqlSelect objects</param>
+      <returns>
+        If <paramref name="nNew" /> is not specified, SQLSetStmtCursorType() returns the current setting.
+        If <paramref name="nNew" /> is specified, the new setting is returned.
+      </returns>
+      <remarks>
+        The concurrency mode for SQLSelect objects is used to determine if rows have been changed by other connections. The possible values are:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_CURSOR_FORWARD_ONLY</term><description>The cursor only scrolls forward</description></item><item><term>SQL_CURSOR_KEYSET_DRIVEN</term><description>The driver saves and uses the keys for the number of rows specified in the SQL_ATTR_KEYSET_SIZE statement attribute</description></item><item><term>SQL_CURSOR_DYNAMIC</term><description>The driver saves and uses only the keys for the rows in the rowset.</description></item><item><term>SQL_CURSOR_STATIC</term><description>The data in the result set is static</description></item></list>
+        The default value used by X# is SQL_CURSOR_KEYSET_DRIVEN
+      </remarks>
+      <example></example>
+      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtConcurrency">SqlSetStmtConcurrency</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtSimulateCursor">SqlSetStmtSimulateCursor</seealso>
+      <seealso cref="P:VO.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
+      <seealso cref="P:VO.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
+      <seealso cref="P:VO.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
+</SqlSetStmtCursorType>
+<SqlSetStmtSimulateCursor>
+      <summary>
+        Return and optionally change the default cursor simulation mode used by for SQLSelect objects
+      </summary>
+      <param name="nNew">The default cursor simulation mode that will be used by new SqlSelect objects</param>
+      <returns>
+        If <paramref name="nNew" /> is not specified, SQLSetStmtSimulateCursor() returns the current setting.
+        If <paramref name="nNew" /> is specified, the new setting is returned.
+      </returns>
+      <remarks>
+        The cursor simulation mode for SQLSelect objects is used to determine if rows have been changed by other connections. The possible values are:
+        <list type="table"><listheader><term>Constant</term><description>Description</description></listheader><item><term>SQL_SC_NON_UNIQUE</term><description>The driver does not guarantee that simulated positioned update or delete statements will affect only one row; it is the application's responsibility to do so. If a statement affects more than one row, SQLExecute, SQLExecDirect, or SQLSetPos returns SQLSTATE 01001 (Cursor operation conflict).</description></item><item><term>SQL_SC_TRY_UNIQUE</term><description>The driver attempts to guarantee that simulated positioned update or delete statements affect only one row. The driver always executes such statements, even if they might affect more than one row, such as when there is no unique key. If a statement affects more than one row, SQLExecute, SQLExecDirect, or SQLSetPos returns SQLSTATE 01001 (Cursor operation conflict).</description></item><item><term>SQL_SC_UNIQUE</term><description>The driver guarantees that simulated positioned update or delete statements affect only one row. If the driver cannot guarantee this for a given statement, SQLExecDirect or SQLPrepare returns an error.</description></item></list>
+        The default value used by X# is SQL_SC_TRY_UNIQUE
+      </remarks>
+      <example></example>
+      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtConcurrency">SqlSetStmtConcurrency</seealso>
+      <seealso cref="O:VOSQLClasses.Functions.SqlSetStmtCursorType">SqlSetStmtCursorType</seealso>
+      <seealso cref="P:VO.SQLSelect.ScrollConcurrency">SqlSelect:ScrollConcurrency</seealso>
+      <seealso cref="P:VO.SQLSelect.CursorType">SqlSelect:CursorType</seealso>
+      <seealso cref="P:VO.SQLSelect.SimulateCursor">SqlSelect:SimulateCursor</seealso>
+</SqlSetStmtSimulateCursor>
+<SQLThrowOutOfMemoryError>
+      <exclude />
+</SQLThrowOutOfMemoryError>
+<SQLType2CType>
+      <exclude />
+</SQLType2CType>
+
+</doc>

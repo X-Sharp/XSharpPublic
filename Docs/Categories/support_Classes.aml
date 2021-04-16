@@ -12,43 +12,43 @@
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.DateRange</codeEntityReference></para></entry>
 <entry><para>
-        An auxiliary class used by the DateTimePicker and MonthCalendar controls to represent a date range.
-      </para></entry></row>
+            An auxiliary class used by the DateTimePicker and MonthCalendar controls to represent a date range.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Dimension</codeEntityReference></para></entry>
 <entry><para>
-        Create a Dimension object, which is used to describe the size of two-dimensional objects using ordered pair coordinates (width, height or x, y).
-      </para></entry></row>
+            Create a Dimension object, which is used to describe the size of two-dimensional objects using ordered pair coordinates (width, height or x, y).
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HotKey</codeEntityReference></para></entry>
 <entry><para>
-        Create a hot key.
-      </para></entry></row>
+            Create a hot key.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.HotKeyRule</codeEntityReference></para></entry>
 <entry><para>
-        Create a hot key rule.
-      </para></entry></row>
+            Create a hot key rule.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Pair</codeEntityReference></para></entry>
 <entry><para>
-        Provide the base class from which all X# objects containing ordered pairs of values are subclassed.
-      </para></entry></row>
+            Provide the base class from which all X# objects containing ordered pairs of values are subclassed.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Point</codeEntityReference></para></entry>
 <entry><para>
-        Create a point, which is used to describe a location on the canvas of a window.  
-      </para></entry></row>
+            Create a point, which is used to describe a location on the canvas of a window.  
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Range</codeEntityReference></para></entry>
 <entry><para>
-        Create a range, representing the minimum and maximum values of the coordinates (or scroll units) that the thumb position on a scroll bar can move — up or down, left or right.
-      </para></entry></row>
+            Create a range, representing the minimum and maximum values of the coordinates (or scroll units) that the thumb position on a scroll bar can move — up or down, left or right.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Selection</codeEntityReference></para></entry>
 <entry><para>
-        Create a selection, which represents the start and end of a text selection in an edit control as an ordered pair.
-      </para></entry></row>
+            Create a selection, which represents the start and end of a text selection in an edit control as an ordered pair.
+        </para></entry></row>
 <row><entry><para>XSharp</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:XSharp.CollationMode</codeEntityReference></para></entry>
 <entry><para>This enum specifies the collation mode used to create and update index strings.</para></entry></row>

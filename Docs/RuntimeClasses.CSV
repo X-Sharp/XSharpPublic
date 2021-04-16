@@ -455,6 +455,7 @@ XSharp.Core.DLL,XSharp.RDD.Support,DbTransInfo,RDD,Support
 XSharp.Core.DLL,XSharp.RDD.Support,DbTransItem,RDD,Support
 XSharp.Core.DLL,XSharp.RDD.Support,RddFieldInfo,RDD,
 XSharp.RT.DLL,XSharp.RT,MemWalker,Support,
+XSharp.RT.DLL,XSharp.RT,ShowErrorDialog_Delegate
 XSharp.VFP.DLL,XSharp.VFP,Abstract,VFP,
 XSharp.VFP.DLL,XSharp.VFP,AssertDialog,VFP,
 XSharp.VFP.DLL,XSharp.VFP,AssertResult,VFP,

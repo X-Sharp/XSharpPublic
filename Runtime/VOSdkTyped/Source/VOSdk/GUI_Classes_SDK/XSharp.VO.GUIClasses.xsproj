@@ -44,7 +44,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>XSharpSystemClasses.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.VO.GUIClasses.Xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -316,6 +316,11 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>Copy $(Solutiondir)Docs\Gui.xml $(ProjectDir)\Gui.Xml</PreBuildEvent>
+    <PostBuildEvent>Erase $(ProjectDir)\Gui.Xml</PostBuildEvent>
+    <RunPostBuildEvent />
   </PropertyGroup>
   <ProjectExtensions>
     <ProjectCapabilities>

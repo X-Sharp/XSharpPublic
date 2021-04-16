@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <members></members>
+<ReportQueue>
+      <summary>
+        Manage Report Editor reporting activities, as well as the appearance of the Report Editor window.
+      </summary>
+      <remarks>
+        The ReportQueue class allows an application to create, edit, print, preview, and save reports using report definition files (*.RET) created and formatted using the Report Editor.
+      </remarks>
+</ReportQueue>
+<ReportQueue.ctor>
+      <summary>
+        Construct a report queue.
+      </summary>
+      <param name="oOwner">The window that owns the ReportQueue object.</param>
+      <param name="cServerName">
+        The Report Editor server to be used.  If not specified, the default value is 'Report Editor', which is the Report Editor runtime engine.
+      </param>
+      <remarks>
+        <note type="tip">Report Editor is the only server that is supported.</note>
+        ReportQueue:Init() creates a ReportQueue object owned by a window.  This object can then be used for sequential reporting tasks.
+      </remarks>
+      <example>
+        This example creates a shell window containing a ReportQueue object:
+        <code language="X#">
+          CLASS MyShellWindow INHERIT ShellWindow
+          HIDDEN oRQ AS OBJECT
+          METHOD Start() CLASS App
+          LOCAL oSW := MyShellWind{}
+          oSW:Show()
+          SELF:Exec()
+          METHOD Init() CLASS MyShellWind
+          SUPER:Init()
+          // Initializes the server
+          oRQ := ReportQueue{SELF,"Report Editor"}
+        </code></example>
+</ReportQueue.ctor>
+<ReportQueue.ActiveFile>
+      <summary>
+        The report definition file the Report Editor server was just using.  This information can be used within an AppWindow:ReportNotification() method.
+      </summary>
+      <value>The report definition file the Report Editor server was just using.  This information can be used within an AppWindow:ReportNotification() method.</value>
+</ReportQueue.ActiveFile>
+<ReportQueue.Close>
+      <summary>
+        Close a report.
+      </summary>
+      <remarks>
+        When a program has finished with a report, it should close the report to reduce the Report Editor's memory usage.  This does not close the Report Editor; only the open report within it.
+        The ReportQueue keeps a stack of the reports it opened by calls to the ReportQueue:Open() method (but it does not have visibility to the extra files the user opens via the Report Editor's menu).  Once all reports are closed (via the ReportQueue:Close() method or the Report Editor menu), the ReportQueue knows of no reports that are open and rejects any further calls to print, preview, or export "the current report," until the next ReportQueue:Open() call.
+        ReportQueue:Close() displays its status in the owner window's status bar.
+        Even if the ReportQueue believes that the Report Editor has no report open, the Close() method still sends the FILE.CLOSE command to the Report Editor.  This command is quietly ignored by the Report Editor, so it is always safe to call ReportQueue:Close().
+        The ReportQueue:Close() method totally closes a report.  The ReportQueue:Close() method closes a preview (if open), and/or closes the report definition, depending on which window type is open.
+        The Report Editor advises the ReportQueue whenever a report or view is closed (whether the close was initiated by ReportQueue or the user).
+      </remarks>
+      <example>
+        The following example closes a report definition:
+        <code language="X#">
+          LOCAL oReportQueue := ReportQueue{SELF,;
+          "Report Editor"}
+          oReportQueue:Open("one.ret")
+          oReportQueue:Close()
+        </code></example>
+</ReportQueue.Close>
+<ReportQueue.CloseAll>
+      <summary>
+        Close all reports.
+      </summary>
+      <remarks>
+        CloseAll() displays its status in the owner window's status bar.  It leaves both the Report Editor server and your program running.  CloseAll() can be called safely at any time, and is probably useful both in exception handlers and in clean-up routines.
+      </remarks>
+</ReportQueue.CloseAll>
+<ReportQueue.ConnectToDB>
+      <summary>
+        Connect to an ODBC data source.
+      </summary>
+      <param name="cDataSourceName">The name of the ODBC data source to connect to. If no data source is specified, a dialog box will appear so that one can be selected.</param>
+      <param name="cUserName">The ODBC user name for this data source.</param>
+      <param name="cPassword">The ODBC password or authorization string for this data source.</param>
+      <returns>
+        TRUE is successful; otherwise, FALSE.
+
+        TRUE if successful; otherwise FALSE.
+      </returns>
+      <remarks>
+        The Report Editor requires an active database connection.  Before opening a report, you must create a data source for the report database.
+      </remarks>
+      <example>
+        The following example connects to a "CA Xbase" data source:
+        <code language="X#">oRQ:ConnectToDB("CA Xbase")</code></example>
+</ReportQueue.ConnectToDB>
+<ReportQueue.DataUpdate>
+      <summary>
+        Handle DataUpdateEvent, if one occurs.  Provide this event handler in your derived ReportQueue class if you require special handling of events.
+        <br />Important!  You should neither attempt to call nor provide alternative implementations to this method.  Instead, you can provide extra handling of  events in your derived version of AppWindow:ReportNotification().
+      </summary>
+      <param name="oIpcDataUpdateEvent">Stores the topic name, item name, and the changed data as a string.</param>
+      <remarks>
+        This method executes outstanding ReportQueue methods (either commands, like Print() and SaveToFile() or Report Editor appearance methods).  Once a report is opened, subsequent command methods can take an array of report parameters to be inserted into the Report Editor report text and/or database query.  The Report Editor's appearance can be changed synchronously, but the Report Editor performs commands asynchronously and all subsequent commands and appearance changes are queued within the ReportQueue until the Report Editor advises that it has finished the previous command.
+        The ReportQueue methods post messages on their owner window's status bar whenever they send a command to the Report Editor and replace it with a confirmation on completing each command.
+      </remarks>
+</ReportQueue.DataUpdate>
+<ReportQueue.Edit>
+      <summary>
+        Load a report into the Report Editor for editing.
+      </summary>
+      <remarks>
+        This method allows the user to edit the report definition (.RET) file and provides the same environment as the IDE.
+      </remarks>
+      <example>
+        The following example opens the "sales.ret" report file and allows the user to edit the file:
+        <code language="X#">
+          oRQ:Open("sales.ret")
+          oRQ:Edit()
+        </code></example>
+</ReportQueue.Edit>
+<ReportQueue.EventType>
+      <summary>
+        One of the following constants representing an event:
+        <pre>
+          Constant					Description
+          REPORTCLOSEEVENT			Current report has been closed.
+          REPORTCOMPLETEERROREVENT	A print or export task has aborted.
+          REPORTCOMPLETEEVENT		A print or export task has completed.
+          REPORTFILESAVEEVENT		A report definition has been closed.
+          REPORTOPENEVENT			Requested report has been opened.
+          REPORTSERVERCLOSEEVENT	Report Editor has been closed.
+          REPORTVIEWCLOSEEVENT		A report preview has been closed (but the report itself remains open).
+        </pre>
+        It should be used only in any AppWindow:ReportNotification() method you add to your window class that owns this ReportQueue object.
+      </summary>
+      <value>
+        A constant representing an event
+      </value>
+</ReportQueue.EventType>
+<ReportQueue.Filename>
+      <summary>
+        The name of the .RET file that defines the report.  This access is unlikely to be used within the function that opened the report — as the file name string should already be local to the function.  It would be useful if one method opens a report and another method needs to use that open file.
+        Note that this accesses the name of the report that is open when the next command method gets around to executing on the Report Editor, as opposed to the ReportQueue:ActiveFile which might be an earlier report now being processed by the Report Editor.
+      </summary>
+      <value>
+        The name of the .RET file that defines the report.  This access is unlikely to be used within the function that opened the report — as the file name string should already be local to the function.  It would be useful if one method opens a report and another method needs to use that open file.
+        Note that this accesses the name of the report that is open when the next command method gets around to executing on the Report Editor, as opposed to the ReportQueue:ActiveFile which might be an earlier report now being processed by the Report Editor.
+      </value>
+</ReportQueue.Filename>
+<ReportQueue.Hide>
+      <summary>
+        Hide the Report Editor window and icon so that they are not visible.
+      </summary>
+</ReportQueue.Hide>
+<ReportQueue.NEW>
+      <summary>
+        Create a new report definition in the Report Editor for editing.
+      </summary>
+      <param name="cSQLSelectStatement">The SQL Select statement string that defines the report.</param>
+      <param name="kReportStyle">
+        One of the following constants representing the report style for the new report:
+      </param>
+      <remarks>
+        <pre>
+          Constant				Description
+          RPTSTYLE_CROSSTAB		Creates a cross-tabular report.
+          RPTSTYLE_FORM			Creates a form-based report
+          RPTSTYLE_FREESTYLE	Creates a free-style report
+          RPTSTYLE_LABEL		Creates a label report
+          RPTSTYLE_LETTER		Creates a letter report
+          RPTSTYLE_TABULAR		Creates a tabular report
+          If no report style is specified, a dialog box containing all the above report styles will appear.
+        </pre>
+        This method allows the user to edit the report definition (.RET) file and provides the same environment as the IDE.
+      </remarks>
+      <example>
+        The following example creates a new report definition file and allows the user to edit the file:
+        <code language="X#">oRQ:New("SELECT CUSTOMERS * FROM C:\CAVO2x\SAMPLES\CUSTOMER")</code></example>
+</ReportQueue.NEW>
+<ReportQueue.Open>
+      <summary>
+        Open a report.
+      </summary>
+      <param name="cReportName">An existing Report Editor report definition file.  If no extension is given, .RET is appended to the file name specified.</param>
+      <remarks>
+        Open() must be called before calling ReportQueue command methods like Print() or Preview().
+        Before opening a second report, we recommend you close the first, in order to save memory, although it is not required.
+        Open() displays its status in the owner window's status bar.
+        <note type="tip">The Report Editor requires an active database connection.  Before opening a report, you must create a data source for the report database and connect to it using ReportQueue:ConnectToDB().</note></remarks>
+      <example>
+        This example opens a report definition:
+        <code language="X#">
+          LOCAL od AS OBJECT
+          LOCAL ReportFile AS STRING
+          od := OpenDialog{SELF,"*.ret"}
+          od:Show()
+          ReportFile := od:FileName
+          od:Destroy()
+          oRQ:ConnectToDB(...)
+          oRQ:Open(ReportFile)
+        </code></example>
+</ReportQueue.Open>
+<ReportQueue.Origin>
+      <summary>
+        A point defining where the top left corner of the Report Editor window is shown, in canvas coordinates.  The Report Editor is shown from this point downward.  This is in contrast to the coordinate system used by X# applications, which consider their window's origin at the bottom-left corner and show windows in an upward direction.
+      </summary>
+      <value>A point defining where the top left corner of the Report Editor window is shown, in canvas coordinates.  The Report Editor is shown from this point downward.  This is in contrast to the coordinate system used by X# applications, which consider their window's origin at the bottom-left corner and show windows in an upward direction.</value>
+</ReportQueue.Origin>
+<ReportQueue.owner>
+      <summary>
+        The window that owns the ReportQueue object.  This access allows code using a ReportQueue to call methods of the owner (ultimately derived from AppWindow).
+      </summary>
+      <value>The window that owns the ReportQueue object.  This access allows code using a ReportQueue to call methods of the owner (ultimately derived from AppWindow).</value>
+</ReportQueue.owner>
+<ReportQueue.Preview>
+      <summary>
+        Cause a report to be previewed on screen.
+      </summary>
+      <param name="aParams">An array of report parameters, as understood by the Report Editor report file.  These report parameters can be inserted by the Report Editor into the report text, and/or can be used as selection criteria in the report query.  Use commas to default any unused parameters or to re-use previously provided parameters.</param>
+      <param name="cPreviewTitle">String representing the title for the Preview window.  If omitted, no title will appear in the window title bar.</param>
+      <param name="lMDIChild">Logical value indicating whether the preview window will be an MDI child (TRUE) or not (FALSE).  If omitted, the default value is FALSE.</param>
+      <remarks>
+        The status of the method is sent to the owner window's status bar, displaying "&lt;ServerName&gt; has completed report."
+        The parameters are transmitted to the Report Editor before the Preview() method, and would be used by subsequent Print() methods.  You can prefer to leave the decision whether to print the report with the person previewing, rather than have the program request a print.
+      </remarks>
+      <example>
+        The following example previews a file on the screen before printing it:
+        <code language="X#">
+          oRQ:ConnectToDB(...)
+          oRQ:Open("sales.ret")
+          oRQ:Preview({"Spain","1993"})
+          oRQ:Print()
+        </code></example>
+</ReportQueue.Preview>
+<ReportQueue.Print>
+      <summary>
+        Print a report to the Report Editor's selected printer.
+      </summary>
+      <param name="aParams">An array of report parameters, as understood by the Report Editor report file.  These report parameters can be inserted by the Report Editor into the report text, and/or can be used as selection criteria in the report query.  Use commas to default any unused parameters or to re-use previously provided parameters.</param>
+      <param name="oRange">The range of page numbers to print.  Omit this parameter to print all pages of the report.  A Range:Min parameter of zero means 'from start,' while a Range:Max parameter of zero means 'to end.'</param>
+      <remarks>
+        The report parameters are transmitted to the Report Editor before the print command, and is used by subsequent Print() methods.
+      </remarks>
+      <example>
+        This example prints three different reports from the same report definition:
+        <code language="X#">
+          // Print all
+          oRQ:ConnectToDB(...)
+          oRQ:Open{"sales.ret"}
+          // Default to 1992 again
+          oRQ:Print({"Spain","1992"})
+          oRQ:Print({"Ireland"})
+          // Second &amp; third pages
+          oRQ:Print({,"1993"},Range{2,3})
+          oRQ:Close()
+        </code></example>
+</ReportQueue.Print>
+<ReportQueue.ReportExit>
+      <summary>
+        Exit the Report Editor.
+      </summary>
+</ReportQueue.ReportExit>
+<ReportQueue.ReportServer>
+      <summary>
+        The Report Editor server currently in use by this ReportQueue.  The value is set in the ReportQueue:Init() method.
+      </summary>
+      <value>The Report Editor server currently in use by this ReportQueue.  The value is set in the ReportQueue:Init() method.</value>
+      <remarks>
+        <note type="tip">The only supported server is "Report Editor."</note>
+      </remarks>
+</ReportQueue.ReportServer>
+<ReportQueue.SaveToFile>
+      <summary>
+        Save a report to the given file name.
+      </summary>
+      <param name="cTarget">The file to which a report is saved.</param>
+      <param name="cFormat">Another string defining the save format to be either RTF or TEXT.  Rich Text Format maintains all the spacing, table alignments, fonts, and such characteristics.  The default is RTF.</param>
+      <param name="aParams">An array of string parameters, which are report parameters as understood by the Report Editor report file.  See the discussion under the ReportQueue:Preview() method.</param>
+      <example>
+        This example stores two files in RTF format to disk:
+        <code language="X#">
+          oRQ:Print({"Spain","1992"})
+          oRQ:SaveToFile("spain92.rtf","RTF")
+          oRQ:SaveToFile("spain93.rtf",,{,"1993"})
+        </code></example>
+</ReportQueue.SaveToFile>
+<ReportQueue.SetPapersize>
+      <summary>
+        Set the paper size for the report.
+      </summary>
+      <param name="iSize">
+        Integer representing one of the predefined paper sizes (see below).
+        If omitted, the default is 1 (Letter 8 1/2 x 11 in).
+      </param>
+      <remarks>
+        Paper Size	&lt;&gt;
+        A3 297 x 420 mm	  8
+        A4 210 x 297 mm	  9
+        A4 Small 210 x 297 mm	10
+        A5 148 x 210 mm	11
+        B4 250 x 354	12
+        B5 182 x 257 mm	13
+        C size sheet	24
+        D size sheet	25
+        E size sheet	26
+        Envelope B4  250 x 353 mm	33
+        Envelope B5  176 x 250 mm	34
+        Envelope B6  176 x 125 mm	35
+        Envelope C5 162 x 229 mm	28
+        Envelope C3  324 x 458 mm	29
+        Envelope C4  229 x 324 mm	30
+        Envelope C6  114 x 162 mm	31
+        Envelope C65 114 x 229 mm	32
+        Envelope DL 110 x 220 mm	27
+        Envelope 110 x 230 mm	36
+        Envelope Monarch 3.875 x 7.5 in	37
+        6 3/4 Envelope 3 5/8 x 6 1/2 in	38
+        Envelope #9 3 7/8 x 8 7/8	19
+        Envelope #10 4 1/8 x 9 1/2	20
+        Envelope #11 4 1/2 x 10 3/8	21
+        Envelope #12 4 \276 x 11	22
+        Envelope #14 5 x 11 1/2	23
+        Executive 7 1/4 x 10 1/2 in	  7
+        Folio 8 1/2 x 13 in	14
+        German Std Fanfold 8 1/2 x 12 in	40
+        German Legal Fanfold 8 1/2 x 13 in	41
+        Ledger 17 x 11 in	  4
+        Legal 8 1/2 x 14 in	  5
+        Letter 8 1/2 x 11 in	  1
+        Letter Small 8 1/2 x 11 in	  2
+        Note 8 1/2 x 11 in	18
+        Quarto 215 x 275 mm	15
+        Statement 5 1/2 x 8 1/2 in	  6
+        Tabloid 11 x 17 in	  3
+        US Std Fanfold 14 7/8 x 11 in	39
+        10x14 in	16
+        11x17 in	17
+        The paper size should be set before calling Print() or Preview().
+        <note type="tip">Not all paper sizes are supported on all printers.  Consult your printer documentation for supported paper sizes.</note></remarks>
+      <example>
+        <code language="X#">oRQ:SetPrinterPaperSize(5)    // Sets paper size to Legal 8 1/2 x 14in</code>
+      </example>
+</ReportQueue.SetPapersize>
+<ReportQueue.SetPrinterOrientation>
+      <summary>
+        Set the printer orientation for the report.
+      </summary>
+      <param name="bOrientation">Binary value value indicating whether the printer orientation will be portrait (0) or landscape (1).  If omitted, default is 0 (portrait).</param>
+      <remarks>
+        The paper orientation should be set before calling Print() or Preview().
+      </remarks>
+      <example>
+        <code language="X#">oRQ:SetPrinterOrientation(1)	// Set orientation to landscape</code>
+      </example>
+</ReportQueue.SetPrinterOrientation>
+<ReportQueue.SetReportQuery>
+      <summary>
+        Set the query to be used for the report.
+      </summary>
+      <param name="sQueryName">Name of the query to use for the report.</param>
+      <remarks>
+        For reports that contain multiple queries, this method can be used to select which query is used when running a report.  To view what queries are available, go into the Report Editor and select the Query, Set Report Query menu item.  If that menu item is disabled, then only the default query (QUERY1) is defined.  Otherwise a Set Report Query dialog box will appear and the available queries will be listed.
+        The report query should be set before calling Print() or Preview().
+      </remarks>
+      <example>
+        <code language="X#">oRQ:SetReportQuery("QUERY2")	//Set the report query to QUERY2</code>
+      </example>
+</ReportQueue.SetReportQuery>
+<ReportQueue.SetSQLFile>
+      <summary>
+        Load an SQL query file as the active SQL query for the report.
+      </summary>
+      <param name="sQueryFile">Name of the query file to load.</param>
+      <remarks>
+        Loads an SQL query file from disk to be used as the active query for this report.  The SQL query file should be loaded before calling Print() or Preview().
+        <note type="tip">Query-By-Example (.QBE) query files are not supported by the X# Report Writer.</note></remarks>
+      <example>
+        <code language="X#">oRQ:SetSQLFile("QUERY6.SQL")</code>
+      </example>
+</ReportQueue.SetSQLFile>
+<ReportQueue.SetSQLText>
+      <summary>
+        Set a text string as the active SQL query for the report.
+      </summary>
+      <param name="sQuery">The query string to use as the active SQL query.</param>
+      <remarks>
+        The query text should be set before calling Print() or Preview().
+      </remarks>
+      <example>
+        <code language="X#">
+          oRQ:SetSQLText("SELECT Customer.* FROM " + ;
+          "C:\CAVO2x\Samples\Explorer\Customer WHERE " + ;
+          "Customer.CustNum = 8")
+        </code>
+      </example>
+</ReportQueue.SetSQLText>
+<ReportQueue.Show>
+      <summary>
+        Minimize or maximize the Report Editor window.
+      </summary>
+      <param name="kShowState">
+        The state in which the Report Editor window area should be displayed.  Specify one of the following constants:
+      </param>
+      <remarks>
+        <pre>
+          Constant		Description
+          SHOWICONIZED	Iconizes or minimizes the Report Editor window.
+          SHOWNORMAL	Normalizes the Report Editor window.  This is the default.
+          SHOWZOOMED	Maximizes the Report Editor window to a full screen.
+        </pre>
+      </remarks>
+</ReportQueue.Show>
+<ReportQueue.Size>
+      <summary>
+        A dimension representing the current size of the Report Editor window, in canvas coordinates.
+      </summary>
+      <value>A dimension representing the current size of the Report Editor window, in canvas coordinates.</value>
+</ReportQueue.Size>
+
+</doc>

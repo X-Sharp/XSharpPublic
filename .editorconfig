@@ -41,6 +41,9 @@ indent_size = 2
 [*.md]
 trim_trailing_whitespace = false
 
+[*.xml]
+trim_trailing_whitespace = false
+
 [*.prg]
 indent_style = space
 keyword_case = upper

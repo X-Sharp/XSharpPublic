@@ -1,21 +1,36 @@
+/// <include file="Gui.xml" path="doc/GroupBox/*" />
 CLASS GroupBox INHERIT TextControl
 
+
+/// <include file="Gui.xml" path="doc/GroupBox.AsString/*" />
 METHOD AsString () 
+	
 	
 	RETURN "#"+Symbol2String(ClassName(SELF))+":"+SELF:Caption
 
+
+/// <include file="Gui.xml" path="doc/GroupBox.CurrentText/*" />
 ACCESS CurrentText 
+	
 	
 	RETURN Null_String
 
+
+/// <include file="Gui.xml" path="doc/GroupBox.CurrentText/*" />
 ASSIGN CurrentText(cValue) 
+	
 	
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/GroupBox.ctor/*" />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware) 
 	
+	
+
 
 	Default(@lDataAware, FALSE)
+
 
 	IF IsInstanceOfUsual(xID,#ResourceID)
 		SUPER(oOwner, xID, oPoint, oDimension, , , lDataAware)
@@ -26,6 +41,8 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 		ENDIF
 	ENDIF
 
+
 	RETURN 
 END CLASS
+
 

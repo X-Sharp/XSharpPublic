@@ -1,6 +1,3 @@
-
-
-
 #define SBGRIPSIZE 15
 #define SBMAXITEMS 255
 #define SBMAXMESSAGE 512
@@ -45,8 +42,8 @@ CLASS StatusBar INHERIT Control
 
     PROPERTY ControlType AS ControlType GET ControlType.StatusBar
 
-	METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
-		VAR oControl := (VOStatusStrip) oC
+	METHOD OnControlCreated(oC AS IVOControl) AS VOID
+		VAR oControl := (IVOStatusBar) oC
 		oControl:Stretch := TRUE
 		oControl:ShowItemToolTips := TRUE
 		oControl:CanOverflow := TRUE
@@ -76,11 +73,11 @@ CLASS StatusBar INHERIT Control
 
 
 
-	ACCESS __StatusStrip AS VOStatusStrip
+	ACCESS __StatusStrip AS IVOStatusBar
 		IF oCtrl == NULL_OBJECT
 			SELF:Create()
 		ENDIF
-		RETURN (VOStatusStrip) oCtrl
+		RETURN (IVOStatusBar) oCtrl
 
 
 	
@@ -221,7 +218,7 @@ CLASS StatusBar INHERIT Control
 		aKeyStates := BYTE[]{256}
 		
 
-		IF __GetItemFromSymbol(#InsArea) > 0
+		IF SELF:__GetItemFromSymbol(#InsArea) > 0
 
 			GuiWin32.GetKeyboardState(aKeyStates)
 
@@ -326,7 +323,7 @@ CLASS StatusBar INHERIT Control
 		LOCAL oStatusBarItem AS StatusBarKeyItem
 		LOCAL aKeys AS ARRAY
 		// Make sure this section hasn't already been added
-		IF __GetItemFromSymbol(#InsArea) > 0
+		IF SELF:__GetItemFromSymbol(#InsArea) > 0
 			RETURN NIL
 		ENDIF
 
@@ -353,7 +350,7 @@ CLASS StatusBar INHERIT Control
 
 
 		// Make sure this section hasn't already been added
-		IF __GetItemFromSymbol(#MemoryArea) > 0
+		IF SELF:__GetItemFromSymbol(#MemoryArea) > 0
 			RETURN NIL
 		ENDIF
 
@@ -373,7 +370,7 @@ CLASS StatusBar INHERIT Control
 	METHOD DisplayMessage() 
 		LOCAL dwItemCount AS DWORD
 		// Make sure this section hasn't already been added
-		IF __GetItemFromSymbol(#MessageArea) > 0
+		IF SELF:__GetItemFromSymbol(#MessageArea) > 0
 			RETURN NIL
 		ENDIF
 
@@ -397,7 +394,7 @@ CLASS StatusBar INHERIT Control
 		
 
 		// Make sure this section hasn't already been added
-		IF __GetItemFromSymbol(#PositionArea) > 0
+		IF SELF:__GetItemFromSymbol(#PositionArea) > 0
 			RETURN NIL
 		ENDIF
 
@@ -419,7 +416,7 @@ CLASS StatusBar INHERIT Control
 		LOCAL oStatusBarItem AS StatusBarItem
 
 		// Make sure this section hasn't already been added
-		IF __GetItemFromSymbol(#TimeArea) > 0
+		IF SELF:__GetItemFromSymbol(#TimeArea) > 0
 			RETURN NIL
 		ENDIF
 

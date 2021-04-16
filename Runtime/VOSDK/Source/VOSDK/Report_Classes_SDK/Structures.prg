@@ -6,10 +6,12 @@ VOSTRUCT bdCACQMINIT ALIGN 1
 //	bdNoEDT
 //	bdNoSQI
 
+
 //	bdRamis
 //	bdEZtrieve
 //	bdHost			bit 8
 	MEMBER bddwFlags AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT bdCACQMQRYPROPS ALIGN 1
@@ -18,30 +20,37 @@ VOSTRUCT bdCACQMQRYPROPS ALIGN 1
 //	bdOem			bit 3
 	MEMBER bddwFlags AS DWORD
 
+
 /// <exclude/>
 VOSTRUCT CAWBMINIT ALIGN 1
 	// inputs
 	MEMBER lpAppDefRslt AS CAWPAPPDEF // Result application defined info
+
 
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 	MEMBER BD IS bdCAWBMINIT
 	
+	
 /// <exclude/>
 VOSTRUCT CADBAINIT ALIGN 1
 	// inputs
 	MEMBER hDbaInitAppWnd AS PTR
 
+
 	MEMBER wMessageBase AS WORD
+
 
 	MEMBER wCommandBase AS WORD
 	MEMBER hCaCqmHndl AS DWORD
+
 
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 	MEMBER BD IS bdCADBAINIT
+
 
 /// <exclude/>
 VOSTRUCT CACQMDBPROPS ALIGN 1
@@ -50,15 +59,19 @@ VOSTRUCT CACQMDBPROPS ALIGN 1
 	MEMBER lpsUserName AS PSZ
 	MEMBER lpsQueryFile AS PSZ
 
+
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
   MEMBER sODBCPrompAction AS SHORTINT
 
+
 	MEMBER BD IS bdCACQMDBPROPS
+
 
 	// outputs
 	MEMBER lpsServerName AS PSZ
+
 
 /// <exclude/>
 VOSTRUCT CACQMDBINIT ALIGN 1
@@ -71,29 +84,36 @@ VOSTRUCT CACQMDBINIT ALIGN 1
 	MEMBER lpsUserName AS PSZ
 	MEMBER lpsQueryFile AS PSZ
 
+
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts2 AS WORD
 	MEMBER dwExtension2 AS DWORD
 	MEMBER sODBCPromptAction AS SHORTINT 
 	MEMBER BD2 IS bdCACQMDBPROPS
 
+
 	// outputs
 	MEMBER lpsServerName AS PSZ
 /////////////////////////////////
 	MEMBER lpsPassword AS PSZ
 
+
 	MEMBER hDbcOdbc AS PTR
+
 
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
  	MEMBER BD IS bdCACQMDBINIT
 
+
  	MEMBER hDbHandle AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT bdCAWRMINIT ALIGN 1
 //	bdRuntimeOnly		bit 1
 	MEMBER bddwFlags AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT bdCACQMLSTDBINIT ALIGN 1
@@ -101,6 +121,7 @@ VOSTRUCT bdCACQMLSTDBINIT ALIGN 1
 //	bdProperties
 //	bdNoRegProps		bit 3
 	MEMBER bddwFlags AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT bdCAWQMINIT ALIGN 1
@@ -110,12 +131,15 @@ VOSTRUCT bdCAWRMCREATEDEFINIT ALIGN 1
 //	bdRptPrompt			bit 1
 //	bdRptIsHidden
 
+
 //	bdRptEmbedded
 //	bdRptIsMdi
+
 
 //	bdRptPreview
 //	bdRptPrint
 //	bdRptExport
+
 
 //	bdNtfyClose
 //	bdNtfyPreview
@@ -124,7 +148,9 @@ VOSTRUCT bdCAWRMCREATEDEFINIT ALIGN 1
 //	bdNtfyNewWrap
 //	bdNtfySave			bit 13
 
+
 	MEMBER bddwFlags AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT RETCALLBACK ALIGN 1
@@ -132,6 +158,7 @@ VOSTRUCT RETCALLBACK ALIGN 1
     // other mechanisms if they are desired?  Note we can't make NOTWINDOW
     // be the default since there is not neccessarily a window around
     // for the notification if we just loading a report.
+
 
 //    enum {
 //	RET_CLLBCK_NOTSPECIFIED,	// no callback mechanism requested
@@ -141,15 +168,19 @@ VOSTRUCT RETCALLBACK ALIGN 1
 //    } eType;
 	MEMBER eType AS INT // enum
 
+
 	MEMBER uTypeData IS CallBackTypeData
 
+
     MEMBER dwCallbackContext AS DWORD	//  value put in the callback argument
+
 
 /// <exclude/>
 VOSTRUCT FILENAME ALIGN 1 			// info about the file for FILENAME
 	MEMBER lpsFileName AS PSZ
 	MEMBER wFileBufferLen AS WORD
 	MEMBER lpsDefFileType AS PSZ
+
 
 /// <exclude/>
 VOSTRUCT RETFILE ALIGN 4
@@ -168,6 +199,7 @@ VOSTRUCT RETFILE ALIGN 4
 	MEMBER eFileType AS INT // enum
 	MEMBER uTypeData IS  RETFILETYPEDATA
 
+
 /// <exclude/>
 VOSTRUCT RETQUERY ALIGN 1
 //   enum {
@@ -182,6 +214,7 @@ VOSTRUCT RETQUERY ALIGN 1
 	MEMBER lpstrName AS PSZ
 	MEMBER uTypeData IS RetQueryTypeData
 
+
 /// <exclude/>
 VOSTRUCT NOTSPECIFIED ALIGN 1		// information for not specified
 //	bdExcludeNoQuery		bit 1	// when prompting, do not include no query queries
@@ -191,9 +224,11 @@ VOSTRUCT NOTSPECIFIED ALIGN 1		// information for not specified
 //	bdReturnOnly			bit 5	// if there is only one query not excluded, return it
 	MEMBER bddwFlags AS DWORD
 
+
 /// <exclude/>
 VOSTRUCT RETRPTPROPERTIES ALIGN 1
 	MEMBER rDisplayOptions AS DISPLAYOPTIONS
+
 
 //    enum { 					// how to display fields
 //        RETPROPFLD_NAMES=0,
@@ -201,11 +236,13 @@ VOSTRUCT RETRPTPROPERTIES ALIGN 1
 //    } eFieldDisplay;
 	MEMBER eFieldDisplay AS INT // enum
 	
+	
 //    enum { 					// units to use for measuring
 //        RETPROP_INCHES=0,
 //	RETPROP_CENTIMETERS
 //    } eMeasurementUnits;
 	MEMBER eMeasurementUnits AS INT // enum
+
 
 	MEMBER uiSnapResolution AS DWORD			// snap resolution in logical twips
 	MEMBER rEditOptions IS EDITOPTIONS
@@ -226,10 +263,12 @@ VOSTRUCT CQMSQLSTRING ALIGN 1		// info for CQMSQLSTRUNG
 	MEMBER lpstrSQL AS PSZ
 	MEMBER hDbHandle AS DWORD
 
+
 /// <exclude/>
 VOSTRUCT CAWRMSAVENTFY ALIGN 1
 	MEMBER hWrmHandle AS DWORD	// handle for report that was saved
 	MEMBER lpstrFileName AS PSZ	// pointer to file name
+
 
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
@@ -246,6 +285,7 @@ VOSTRUCT CAWQMINIT ALIGN 1
 	MEMBER lpAppDefQq AS CAWPAPPDEF
 	MEMBER lpAppDefSql AS CAWPAPPDEF
 
+
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
@@ -255,42 +295,55 @@ VOSTRUCT CACQMINIT ALIGN 1
 	// inputs
 	MEMBER hCqmInitAppWnd AS PTR
 
+
 	MEMBER lpstrDebugFlags AS PSZ
 	MEMBER lpstrAppTitle AS PSZ
 	MEMBER lpstrMbTitle AS PSZ
 	MEMBER lpstrIniFilePath AS PSZ
 	MEMBER lpsHelpFile AS PSZ
 
+
 	MEMBER wMessageBase AS WORD
 	MEMBER wCommandBase AS WORD
 	MEMBER wDialogHelpBase AS WORD
 	
+	
 	MEMBER hEnvOdbc AS PTR
+	
 	
 	MEMBER lpQryProps AS CACQMQRYPROPS
 
+
 	MEMBER hCableInst AS PTR
 
+
 	MEMBER lpfErrMsgProc AS PTR
+
 
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 
+
 	MEMBER BD IS bdCACQMINIT
 
+
 	MEMBER hDbHandle AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT bdCADBAINIT ALIGN 1
 //	bdThreeD			bit 1
 //	bdDebugSql			bit 2
 
+
 	MEMBER bddwFlags AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT RETREPORT ALIGN 1
     // description of report to open or create
+
 
 //    enum {
 //	RET_REPORT_CREATE,
@@ -298,23 +351,29 @@ VOSTRUCT RETREPORT ALIGN 1
 //    } eReportType;
 	MEMBER eReportType AS INT // enum
 
+
 	MEMBER rRptCallback IS RETCALLBACK	// how to notifiy loader concerning this report
 	MEMBER rRptContinue IS RETCONTINUE	// check whether to continue loading
 
+
     MEMBER hCqmHandle AS DWORD	    // cqm handle to use
+
 
     // Cqm database to use for the report.  This may be overridden by
     // a database included in the RETQUERY
     MEMBER hDbHandle AS DWORD
 
+
     // specification of the report file
 	MEMBER rRptFile IS RETFILE
+
 
     // if Create, query & report style to use
 	MEMBER rRptQuery IS RETQUERY
 	MEMBER rRptRptStyle IS RETRPTSTYLE
 	MEMBER lpsRptTitle AS PSZ	// string to use to identify the
 								// report if there is no report file
+
 
 	MEMBER lpRptProperties AS RETRPTPROPERTIES// optional properties for the report
 	MEMBER lpsRptDlgHelpFile AS PSZ
@@ -325,9 +384,11 @@ VOSTRUCT RETREPORT ALIGN 1
 								// for dialogs if there is no
 								// control associated with the report
 
+
 /// <exclude/>
 VOSTRUCT EXECUTIONOPTIONS ALIGN 1
 	MEMBER bdPreviewWhilePrinting AS DWORD	// preview while printing
+
 
 /// <exclude/>
 VOSTRUCT bdCAWPINIT ALIGN 1
@@ -335,13 +396,16 @@ VOSTRUCT bdCAWPINIT ALIGN 1
 //	bdResultWrapper
 //	bdReportWrapper			bit 3
 
+
 	MEMBER bddwFlags AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT NOTWINDOW ALIGN 1
 	MEMBER hNotWnd AS PTR
 	MEMBER wNotMessage AS WORD	// message to send to the window
 				// structure will be the lparam
+
 
 /// <exclude/>
 VOSTRUCT CACQMQRYPROPS ALIGN 1
@@ -368,7 +432,9 @@ VOSTRUCT CACQMQRYPROPS ALIGN 1
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 	
+	
 	MEMBER BD IS bdCACQMQRYPROPS
+
 
 /// <exclude/>
 VOSTRUCT CAWPAPPDEF ALIGN 1
@@ -377,11 +443,14 @@ VOSTRUCT CAWPAPPDEF ALIGN 1
 	MEMBER lpsMenu AS PSZ		// app menu name
 	MEMBER lpsAccel AS PSZ		// app accelerator table name
 
+
 	MEMBER wMessageBase AS WORD	// base TO use FOR control notification
 								// messages (IF 0, use defaults)
 
+
 	MEMBER wCommandBase AS WORD	// base TO use FOR menu command
 								// messages (IF 0, use defaults)
+
 
 	MEMBER iToolBar AS INT		// the calling apps toolbar
 								// id TO use
@@ -389,44 +458,54 @@ VOSTRUCT CAWPAPPDEF ALIGN 1
 								// button STRING (including spaces)
 	MEMBER lpsButton AS PSZ		// toolbar button STRING
 
+
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 	MEMBER BD IS bdCAWPAPPDEF
 
+
 /// <exclude/>
 VOSTRUCT bdCARCCINIT ALIGN 1
 	MEMBER bddwFlags AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT CACQMLSTDBINIT ALIGN 1
 	// inputs
 	MEMBER hDbHandle AS DWORD
 
+
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 	MEMBER BD IS bdCACQMLSTDBINIT
 
+
 /// <exclude/>
 VOSTRUCT CAWRMINIT ALIGN 1
+
 
 	// inputs
 	MEMBER lpAppDefRet AS CAWPAPPDEF
 	MEMBER lpAppDefVw AS CAWPAPPDEF
 
+
 	MEMBER hRetHandle AS DWORD
 	MEMBER hCqmHandle AS DWORD
 	MEMBER hRccHandle AS DWORD
+	
 	
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 	MEMBER BD IS bdCAWRMINIT
 
+
 /// <exclude/>
 VOSTRUCT QRTCALLBACK ALIGN 1
 //	RETCALLBACKPROC callbackRoutine;	// callback routine to call
 	MEMBER callbackRoutine AS PTR	// callback routine to call
+
 
 /// <exclude/>
 VOSTRUCT DISPLAYOPTIONS ALIGN 1	
@@ -440,39 +519,47 @@ VOSTRUCT DISPLAYOPTIONS ALIGN 1
 //	bdParagraphMarks		bit 8	// display paragraph marks
 	MEMBER bddwFlags AS DWORD
 
+
 /// <exclude/>
 VOSTRUCT RETCONTINUE ALIGN 1
 //    RETCONTINUEPROC continueCallback;
 	MEMBER continueCallback AS PTR
     MEMBER dwContinueContext AS DWORD
 
+
 /// <exclude/>
 VOSTRUCT bdCAWRMADVISENTFY ALIGN 1
 	MEMBER bddwFlags AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT bdCACQMDBINIT ALIGN 1
 //	bdNoIniDbProps			bit 1
 	MEMBER bddwFlags AS DWORD
 
+
 /// <exclude/>
 VOSTRUCT CAWPINIT ALIGN 1
 	// inputs
 	MEMBER hCqmHandle AS DWORD
+
 
 	MEMBER lpsIniFile AS PSZ
 	MEMBER lpsQrySection AS PSZ
 	MEMBER lpsResSection AS PSZ
 	MEMBER lpsRetSection AS PSZ
 	
+	
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 	MEMBER BD IS bdCAWPINIT
 
+
 /// <exclude/>
 VOSTRUCT bdCAWBMINIT ALIGN 1
 	MEMBER bddwFlags AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT bdCACQMDBPROPS ALIGN 1
@@ -483,20 +570,25 @@ VOSTRUCT bdCACQMDBPROPS ALIGN 1
 //	bdRegistered			bit 5
 	MEMBER bddwFlags AS DWORD
 
+
 /// <exclude/>
 VOSTRUCT CARCCINIT ALIGN 1
 	MEMBER hWndApp AS PTR
 	MEMBER hWndClient AS PTR
 
+
 	MEMBER hCqmHandle AS DWORD
+
 
 	MEMBER lpCtrlProps AS CARCCCTRLPROPS
 	MEMBER lpsIniFilePath AS PSZ
+	
 	
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 	MEMBER BD IS bdCARCCINIT
+
 
 /// <exclude/>
 VOSTRUCT bdCARCCCTRLPROPS ALIGN 1
@@ -504,8 +596,10 @@ VOSTRUCT bdCARCCCTRLPROPS ALIGN 1
 //	bdNoToolBar				bit 2
 	MEMBER bddwFlags AS DWORD
 
+
 /// <exclude/>
 VOSTRUCT CARCCCTRLPROPS ALIGN 1
+
 
 	// inputs
 	MEMBER DIM hFont[MAX_RCC_FONT] AS PTR
@@ -526,6 +620,7 @@ VOSTRUCT CARCCCTRLPROPS ALIGN 1
 	MEMBER lfPitchAndFamily AS BYTE
 	MEMBER DIM lfFaceName[LF_FACESIZE] AS BYTE
 
+
 	MEMBER lfHeight2 AS LONGINT
 	MEMBER lfWidth2 AS LONGINT
 	MEMBER lfEscapement2 AS LONGINT
@@ -543,7 +638,9 @@ VOSTRUCT CARCCCTRLPROPS ALIGN 1
 /////////////////////////////////////
 	MEMBER DIM ColorRef[MAX_RCC_COLOR] AS DWORD
 
+
 	MEMBER uiStopTrigger AS DWORD
+
 
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
@@ -558,13 +655,16 @@ VOSTRUCT CAWRMADVISENTFY ALIGN 1
 	MEMBER lpstrItem AS PSZ		// item string
 	MEMBER lpstrValue AS PSZ	// value string
 
+
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 	MEMBER BD IS bdCAWRMADVISENTFY
 
+
 /// <exclude/>
 VOSTRUCT bdCAWRMPREVIEWNTFY ALIGN 1
 	MEMBER bddwFlags AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT CAWRMCREATEVWINIT ALIGN 1
@@ -572,10 +672,13 @@ VOSTRUCT CAWRMCREATEVWINIT ALIGN 1
 	MEMBER hWndParent AS PTR
 	MEMBER hWndNotify AS PTR
 
+
 	MEMBER hWrmFrame AS DWORD
 	MEMBER hWndMdiClient AS PTR
 
+
 	MEMBER hCqmHandle AS DWORD
+
 
 	MEMBER hRetVw AS DWORD
 ///////////////
@@ -593,23 +696,31 @@ VOSTRUCT CAWRMCREATEVWINIT ALIGN 1
 //////////////////
 	MEMBER hWrmReport AS DWORD
 	
+	
 	MEMBER wMessageBase AS WORD
+
 
 	MEMBER lpsTitle AS PSZ
 
+
 	MEMBER lpAppDefVw AS CAWPAPPDEF
 
+
 	MEMBER dwUserData AS DWORD
+
 
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 
+
 	MEMBER BD IS bdCAWRMCREATEVWINIT
+
 
 	// outputs
 	MEMBER hVwMenu AS PTR	// application defined menu handle
 	MEMBER hWrmHandle AS DWORD	// Wrm handle
+
 
 /// <exclude/>
 VOSTRUCT bdCAWRMCREATEVWINIT ALIGN 1
@@ -617,8 +728,10 @@ VOSTRUCT bdCAWRMCREATEVWINIT ALIGN 1
 //	bdVwIsMdi
 //	bdVwSynch
 
+
 //	bdNtfyClose				bit 4
 	MEMBER bddwFlags AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT RetLoadVw ALIGN 1
@@ -629,6 +742,7 @@ VOSTRUCT RetLoadVw ALIGN 1
 	MEMBER lpsVwDlgHelpFile AS PSZ
 	MEMBER wRptVwHelpBase AS WORD
 
+
 /// <exclude/>
 VOSTRUCT RetVwProperties ALIGN 1
 	MEMBER bddwFlags AS DWORD
@@ -638,21 +752,27 @@ VOSTRUCT RetVwProperties ALIGN 1
 //    } rDisplayOptions;
 
 
+
+
 /// <exclude/>
 VOSTRUCT CAWRMCREATEDEFINIT ALIGN 1
 	// inputs
 	MEMBER hWndParent AS PTR
 	MEMBER hWndNotify AS PTR
 
+
 	MEMBER hWrmFrame AS DWORD
 	MEMBER hWndMdiClient AS PTR
+
 
 	MEMBER hCqmHandle AS DWORD
 	MEMBER hRccHandle AS DWORD
 
+
 	MEMBER hReport AS DWORD
 //11111111111111111111111111111111
 //	MEMBER rRetReport IS RETREPORT
+
 
 	MEMBER eReportType AS INT
 //2222222222222222222222222222222
@@ -675,11 +795,14 @@ VOSTRUCT CAWRMCREATEDEFINIT ALIGN 1
     MEMBER dwContinueContext AS DWORD
 //555555555555555555555555
 
+
     MEMBER hCqmHandle2 AS DWORD	    // cqm handle to use
+
 
     // Cqm database to use for the report.  This may be overridden by
     // a database included in the RETQUERY
     MEMBER hDbHandle AS DWORD
+
 
     // specification of the report file
 //66666666666666666666666666
@@ -695,6 +818,7 @@ VOSTRUCT CAWRMCREATEDEFINIT ALIGN 1
 //8888888888888888
 // below from UNION
 //	MEMBER hFileHandle AS PTR // handle for FILEHANDLE case
+
 
 //77777777777777777
 //66666666666666666666666666
@@ -722,6 +846,7 @@ VOSTRUCT CAWRMCREATEDEFINIT ALIGN 1
 	MEMBER wFiller AS WORD
 	MEMBER Filler2 AS RETFILE
 
+
 //101010101010101010
 //9999999999999999999
 //11 11 11 11 11 11 11 11 11 11
@@ -732,6 +857,7 @@ VOSTRUCT CAWRMCREATEDEFINIT ALIGN 1
 	MEMBER lpsRptTitle AS PSZ	// string to use to identify the
 								// report if there is no report file
 
+
 	MEMBER lpRptProperties AS RETRPTPROPERTIES // optional properties for the report
 	MEMBER lpsRptDlgHelpFile AS PSZ
 	MEMBER wRptDlgHelpBase AS WORD
@@ -741,23 +867,30 @@ VOSTRUCT CAWRMCREATEDEFINIT ALIGN 1
 								// for dialogs if there is no
 								// control associated with the report
 
+
 //11111111111111111111111111111111
 	MEMBER wMessageBase AS WORD
 
+
 	MEMBER lpsTitle AS PSZ
+
 
 	MEMBER lpAppDefRet AS CAWPAPPDEF
 	
+	
 	MEMBER dwUserData AS DWORD
+
 
 	MEMBER DIM dwXFutureUse[10] AS DWORD
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 
+
 	MEMBER BD IS bdCAWRMCREATEDEFINIT
 	// outputs
 	MEMBER hRptMenu AS PTR
 	MEMBER hWrmHandle AS DWORD
+
 
 /// <exclude/>
 VOSTRUCT RETRPTSTYLE ALIGN 1
@@ -773,14 +906,17 @@ VOSTRUCT RETRPTSTYLE ALIGN 1
 	MEMBER eDefReportStyle AS INT // enum
 	MEMBER lpsLabelStyle AS PSZ	// Label info
 
+
 /// <exclude/>
 VOSTRUCT CAWRMPREVIEWNTFY ALIGN 1
 	MEMBER hWrmHandle AS DWORD	// handle for the definer to preview
 	MEMBER bWait AS LOGIC		// TRUE if you should do a preview wait
 
+
 	MEMBER wNumExts AS WORD
 	MEMBER dwExtension AS DWORD
 	MEMBER BD IS bdCAWRMPREVIEWNTFY
+
 
 /// <exclude/>
 UNION RETFILETYPEDATA
@@ -793,10 +929,13 @@ UNION RETQUERYTYPEDATA
 	MEMBER rCqmQueryFile AS CqmQueryFile
 	MEMBER rCqmSqlString AS CqmSqlString
 
+
 	MEMBER hQueryHandle AS DWORD // handle of a CQM query for CQMQUERY
+
 
 /// <exclude/>
 UNION CALLBACKTYPEDATA
 	MEMBER rNotWindow IS NOTWINDOW
 	MEMBER rCallback IS QRTCALLBACK
+	
 	

@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
@@ -314,7 +319,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	PROTECTED VIRTUAL METHOD WriteCallback(oDesign AS DesignWindowItem , cName AS STRING) AS VOID
 		LOCAL oProject AS XSharpModel.XProject
 		LOCAL oFile AS XSharpModel.XFile
-		LOCAL oType AS XSharpModel.XTypeDefinition
+		LOCAL oType AS XSharpModel.XSourceTypeSymbol
 		//LOCAL oEditor AS VulcanEditor
 		LOCAL aLines AS List<STRING>
 		LOCAL cClass AS STRING

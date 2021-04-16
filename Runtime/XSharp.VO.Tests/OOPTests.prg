@@ -10,6 +10,7 @@ USING System.Text
 USING XUnit
 // These test require late binding, that is why we enable late binding for this file only
 #pragma options ("lb", ON)
+#pragma warnings(169, off)  // unused field
 
 BEGIN NAMESPACE XSharp.VO.Tests
 	
@@ -528,7 +529,7 @@ END CLASS
 CLASS ClassWithNoMethod
 	METHOD NoMethod(arg1, arg2, arg3 , uNil)
 		LOCAL cMethodName AS STRING
-		cMethodName := NoMethod()
+		cMethodName := XSharp.RT.Functions.NoMethod()
 		IF cMethodName = "ADD"
 			RETURN arg1+arg2+arg3
 		ELSEIF cMethodName = "MUL"

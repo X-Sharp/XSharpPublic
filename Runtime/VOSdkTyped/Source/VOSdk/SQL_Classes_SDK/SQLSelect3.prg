@@ -1,18 +1,25 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+
+
 
 
 USING System.Data.Common
 USING System.Data
 
+
+
 PARTIAL CLASS SQLSelect INHERIT DataServer
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FieldHyperLabel/*" />
 	METHOD FieldHyperLabel  ( uFieldPos AS USUAL) AS HyperLabel
 		LOCAL nIndex    AS DWORD
 		LOCAL oRet      := NULL AS HyperLabel
+
 
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF ( nIndex = 0 .OR. nIndex > nNumCols )
@@ -21,8 +28,10 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			oStmt:ErrInfo:ErrorFlag := FALSE
 			oRet := ((SQLColumn)aSQLColumns[nIndex]):HyperLabel
 		ENDIF
-		RETURN oRet 
+		RETURN oRet
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FieldInfo/*" />
 	METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal ) AS USUAL
 		//
 		//  Retrieves information about fields
@@ -41,6 +50,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		LOCAL oFs       AS FieldSpec
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 
+
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldInfo )
 		ELSE
@@ -51,14 +61,18 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			CASE DBS_NAME
 				xRet := oColumn:ColName
 
+
 			CASE DBS_TYPE
 				xRet := oFs:ValType
+
 
 			CASE DBS_LEN
 				xRet := oFs:Length
 
+
 			CASE DBS_DEC
 				xRet := oFs:Decimals
+
 
 			CASE DBS_ALIAS
 				IF IsSymbol( uFieldVal )
@@ -72,12 +86,15 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 				ENDIF
 				xRet := oColumn:AliasName
 
+
 			OTHERWISE
 				oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADPAR ), #FieldInfo )
 			END SWITCH
 		ENDIF
 		RETURN xRet
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FieldName/*" />
 	METHOD FieldName( uFieldID AS USUAL ) AS STRING
 		LOCAL nIndex    AS DWORD
 		LOCAL cRet      AS STRING
@@ -93,9 +110,13 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN cRet
 
 
+
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FieldPos/*" />
 	METHOD FieldPos( uFieldID  AS USUAL)  AS DWORD STRICT
 		LOCAL nIndex    AS DWORD
 		LOCAL nRet      AS DWORD
+
 
 		nIndex := SELF:__GetColIndex( uFieldID, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
@@ -106,7 +127,10 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN (LONG)nRet
 
-	METHOD FieldPut( uFieldID AS USUAL , uValue AS USUAL) AS USUAL 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FieldPut/*" />
+	METHOD FieldPut( uFieldID AS USUAL , uValue AS USUAL) AS USUAL
+
 
 		LOCAL wField AS INT
 		LOCAL oError AS Error
@@ -139,7 +163,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 					LOCAL oDT AS DateTime
 //					LOCAL oDColumn AS DataColumn
 					oDT     := ((DATE) uValue):ToDateTime()
-//					oDColumn := oTable:Columns[wField-1] 
+//					oDColumn := oTable:Columns[wField-1]
 //					IF oDColumn:DataType == typeof(MySql.Data.Types.MySqlDateTime)
 //						LOCAL mysqlDate AS MySql.Data.Types.MySqlDateTime
 //						mysqlDate := MySql.Data.Types.MySqlDateTime{oDT}
@@ -159,6 +183,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		END TRY
 		RETURN uValue
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FieldSpec/*" />
 	METHOD FieldSpec( uFieldPos AS USUAL)  AS FieldSpec
 		LOCAL nIndex AS DWORD
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
@@ -170,6 +196,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN ((DataField) aDataFields[nIndex]):FieldSpec
 
 
+
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FieldStatus/*" />
 	METHOD FieldStatus( uFieldPos AS USUAL) AS HyperLabel
 		LOCAL nIndex AS DWORD
 		LOCAL oRet   := NULL AS HyperLabel
@@ -184,6 +213,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN oRet
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FieldSym/*" />
 	METHOD FieldSym( uFieldPos AS USUAL)  AS SYMBOL
 		LOCAL nIndex        AS DWORD
 		LOCAL symRet    := NULL_SYMBOL   AS SYMBOL
@@ -198,9 +229,12 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN symRet
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FieldValidate/*" />
 	METHOD FieldValidate( uField AS USUAL, uValue AS USUAL) AS LOGIC
 		LOCAL nIndex    AS DWORD
 		LOCAL lRet    := FALSE  AS LOGIC
+
 
 		nIndex := SELF:__GetColIndex( uField, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
@@ -225,13 +259,19 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN lRet
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FLock/*" />
 	METHOD FLock( ) AS LOGIC STRICT
 		// Dummy, no locking available for SQL
 		RETURN TRUE
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.FreeStmt/*" />
 	METHOD FreeStmt( fOption := SQL_CLOSE AS WORD ) AS LOGIC
 		RETURN oStmt:FreeStmt( fOption )
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.GetData/*" />
 	METHOD GetData( uFieldID AS USUAL )  AS USUAL
 		LOCAL wField := 0 AS LONG
 		LOCAL uValue := NIL AS USUAL
@@ -250,9 +290,10 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			ELSEIF oCurrentRow != NULL
 				LOCAL oFs AS FieldSpec
 				LOCAL oDf AS DataField
-				oDf := SELF:aDataFields[wField] 
+				oDf := SELF:aDataFields[wField]
 				oFs := oDf:FieldSpec
-                
+
+
 				uValue := SELF:oConn:Factory:HandleSpecialValue(oCurrentRow:Item[wField-1], oFs,SELF:lTimeStampAsDate)
 			ENDIF
 		CATCH e AS Exception
@@ -264,9 +305,12 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		END TRY
 		RETURN uValue
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.GetdateVal/*" />
 	METHOD GetdateVal( uFieldPos AS USUAL) AS DATE
 		LOCAL cVal  AS STRING
 		LOCAL dVal := NULL_DATE AS DATE
+
 
 		cVal := SELF:GetTimeStamp( uFieldPos )
 		IF !IsNil( cVal )
@@ -274,6 +318,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN dVal
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.GetLookupTable/*" />
 	METHOD GetLookupTable(nMaxRows,uField1,uField2) AS ARRAY
 		LOCAL aResult 	:= {}         AS ARRAY
 		LOCAL nRows 	:= 32767      AS DWORD
@@ -296,12 +342,17 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		SELF:Notify( NOTIFYRECORDCHANGE )
 		RETURN aResult
 
-	
+
+
+
+/// <include file="Sql.xml" path="doc/SQLSelect.GetStatementOption/*" />
 	[Obsolete];
 	METHOD GetStatementOption( fOption )
 		//RETURN oStmt:GetStatementOption( fOption )
 		RETURN NIL
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.GetTimeStamp/*" />
 	METHOD GetTimeStamp( uFieldPos AS USUAL) AS STRING
 		LOCAL nIndex    AS DWORD
 		LOCAL oType     AS System.Type
@@ -325,6 +376,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		cVal := oDT:ToString("yyyy-MM-dd HH:mm:ss.fff")
 		RETURN cVal
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.GetTimeString/*" />
 	METHOD GetTimeString( uFieldPos AS USUAL ) AS STRING
 		LOCAL cVal AS STRING
 		cVal := SELF:GetTimeStamp( uFieldPos )
@@ -333,6 +386,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN cVal
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.GoBottom/*" />
 	METHOD GoBottom() AS LOGIC STRICT
 		LOCAL lOk AS LOGIC
 		SELF:lErrorFlag := FALSE
@@ -349,13 +404,16 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		END TRY
 		RETURN lOk
 
-	METHOD GoTo( nNewRec AS LONG ) AS LOGIC 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.GoTo/*" />
+	METHOD GoTo( nNewRec AS LONG ) AS LOGIC
 		LOCAL lOk AS LOGIC
 		SELF:lErrorFlag := FALSE
 		TRY
 			lOk := SELF:__PrepareForRecordMovement()
 			IF lOk
 				IF IsNumeric(nNewRec)
+
 
 					// Before we move we assume we won't land at BOF or EOF
 					SELF:lEof := SELF:lBof := FALSE
@@ -372,6 +430,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		END  TRY
 		RETURN lOk
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.GoTop/*" />
 	METHOD GoTop() AS LOGIC STRICT
 		LOCAL lOk AS LOGIC
 		SELF:lErrorFlag := FALSE
@@ -389,6 +449,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		END TRY
 		RETURN lOk
 
-  
+
+
+
 END CLASS
+
 

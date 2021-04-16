@@ -1,3 +1,4 @@
+/// <include file="SQL.xml" path="doc/SQLListForeignKeys/*" />
 CLASS SQLListForeignKeys INHERIT SQLCatalogQuery
 	EXPORT PQualifier AS STRING
 	EXPORT POwner     AS STRING
@@ -7,13 +8,18 @@ CLASS SQLListForeignKeys INHERIT SQLCatalogQuery
 	EXPORT FTableName AS STRING
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLListForeignKeys.Execute/*" />
 METHOD Execute() 
 	LOCAL   nRet    AS INT
     LOCAL psz1, psz2, psz3, psz4, psz5, psz6 AS PSZ
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLListForeignKeys:Execute()" )
 	#ENDIF
+
 
 	IF oStmt:StatementHandle = SQL_NULL_HSTMT
 		SELF:__AllocStmt()
@@ -37,6 +43,7 @@ METHOD Execute()
         psz6 := String2Psz(FTableName)
     ENDIF
 
+
     nRet := SQLForeignKeys( oStmt:StatementHandle,      ;
                                psz1,  _SLen( PQualifier ) ,;
                                psz2,  _SLen( POwner ) ,    ;
@@ -44,6 +51,7 @@ METHOD Execute()
                                psz4,  _SLen( FQualifier  ), ;
                                psz5,  _SLen( FOwner ) ,    ;
                                psz6,  _SLen( FTableName  ) )
+
 
 	IF nRet != SQL_SUCCESS
 		oStmt:ErrInfo := SQLErrorInfo{  SELF,                       ;
@@ -55,14 +63,19 @@ METHOD Execute()
 	ENDIF
 	RETURN SUPER:Execute()
 
+
+/// <include file="SQL.xml" path="doc/SQLListForeignKeys.ctor/*" />
 CONSTRUCTOR( cPQualifier, cpOwner, cPTableName, cFQualifier, cFOwner, ;
 			  cFTableName, oSQLConnection ) 
 
+
 	SUPER( oSQLConnection )
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLListForeignKeys:Init()" )
 	#ENDIF
+
 
 	IF IsString( cPQualifier )
 		SELF:PQualifier := cPQualifier
@@ -70,11 +83,13 @@ CONSTRUCTOR( cPQualifier, cpOwner, cPTableName, cFQualifier, cFOwner, ;
 		SELF:PQualifier := NULL_STRING
 	ENDIF
 
+
 	IF IsString( cPOwner )
 		SELF:POwner := cPOwner
 	ELSE
 		SELF:POwner := NULL_STRING
 	ENDIF
+
 
 	IF IsString( cPTableName )
 		SELF:PTableName := cPTableName
@@ -82,11 +97,13 @@ CONSTRUCTOR( cPQualifier, cpOwner, cPTableName, cFQualifier, cFOwner, ;
 		SELF:PTableName := NULL_STRING
 	ENDIF
 
+
 	IF IsString( cFQualifier )
 		SELF:FQualifier := cFQualifier
 	ELSE
 		SELF:FQualifier := NULL_STRING
 	ENDIF
+
 
 	IF IsString( cFOwner )
 		SELF:FOwner := cFOwner
@@ -94,14 +111,18 @@ CONSTRUCTOR( cPQualifier, cpOwner, cPTableName, cFQualifier, cFOwner, ;
 		SELF:FOwner := NULL_STRING
 	ENDIF
 
+
 	IF IsString( cFTableName )
 		SELF:FTableName := cFTableName
 	ELSE
 		SELF:FTableName := NULL_STRING
 	ENDIF
 
+
 	SELF:Execute()
+
 
 	RETURN 
 END CLASS
+
 

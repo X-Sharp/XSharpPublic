@@ -92,4 +92,9 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>Copy $(Solutiondir)Docs\Internet.xml $(ProjectDir)\Internet.Xml</PreBuildEvent>
+    <PostBuildEvent>Erase $(ProjectDir)\Internet.Xml</PostBuildEvent>
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

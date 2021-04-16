@@ -1,6 +1,6 @@
 ﻿begin namespace $safeprojectname$
 
-    partial class Form1 inherit System.Windows.Forms.Form
+    partial class Form1 
 
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         private method InitializeComponent() as void  STRICT
             self:components := System.ComponentModel.Container{}
             self:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
-            self:Text := "$safeitemrootname$"
+            self:Text := "Form1"
 			return
 
         #endregion

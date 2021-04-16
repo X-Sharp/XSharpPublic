@@ -30,7 +30,7 @@ namespace XSharp.CodeDom
             Type = null;
             TypeName = typeName;
         }
-        internal XMemberType(string name, MemberTypes memberType, bool inherited, IXType type, string typeName)
+        internal XMemberType(string name, MemberTypes memberType, bool inherited, IXTypeSymbol type, string typeName)
         {
             Name = name;
             MemberType = memberType;
@@ -46,7 +46,7 @@ namespace XSharp.CodeDom
 
         internal string Name { get; private set; }
         internal MemberTypes MemberType { get; private set; }
-        internal IXType Type { get; private set; }
+        internal IXTypeSymbol Type { get; private set; }
         internal string TypeName { get; private set; }
         internal bool Inherited { get; private set; }
 
@@ -63,7 +63,7 @@ namespace XSharp.CodeDom
     {
         private XCodeMemberMethod initComponent;
 
-        public XSharpClassDiscover(IProjectTypeHelper projectNode) : base(projectNode)
+        public XSharpClassDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
             // The default (empty) CodeCompileUnit, so we can work if none is provided
             this.CodeCompileUnit = new XCodeCompileUnit();
@@ -648,9 +648,9 @@ namespace XSharp.CodeDom
             }
             return expr;
         }
-        private IXType findType(CodeExpression expr)
+        private IXTypeSymbol findType(CodeExpression expr)
         {
-            IXType type;
+            IXTypeSymbol type;
             if (expr is CodeFieldReferenceExpression)
             {
                 var cfr = expr as CodeFieldReferenceExpression;
@@ -817,8 +817,8 @@ namespace XSharp.CodeDom
         public static string GetCleanText(this XSharpParserRuleContext context)
         {
             string name = context.GetText();
-            if (name.IndexOf("@@") >= 0)
-                name = name.Replace("@@", "");
+            //if (name.IndexOf("@@") >= 0)
+            //    name = name.Replace("@@", "");
             return name;
         }
     }

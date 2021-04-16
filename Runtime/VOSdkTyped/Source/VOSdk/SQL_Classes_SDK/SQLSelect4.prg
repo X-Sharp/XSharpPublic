@@ -1,22 +1,30 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+
+
 
 
 USING System.Data.Common
 USING System.Data
 using System.Collections.Generic
+
 PARTIAL CLASS SQLSelect INHERIT DataServer
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.ctor/*" />
 	CONSTRUCTOR( cSQLSelect, oSQLConnection )
 
+
 		SUPER()
+
 
 		SELF:oStmt 	    := SQLStatement{ cSQLSelect, oSQLConnection }
 		SELF:oConn 	    := SELF:oStmt:Connection
 		SELF:oNetConn   := oConn:ConnectionHandle
+
 
 		SELF:lFetchFlag      	:= FALSE
 		SELF:lCsrOpenFlag    	:= FALSE
@@ -33,14 +41,21 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			SELF:__FindTableName()
 		ENDIF
 
+
 		RETURN
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.NoIVarGet/*" />
 	METHOD NoIVarGet(symVar  AS USUAL) AS USUAL
 		RETURN SELF:FieldGet(symVar)
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.NoIVarPut/*" />
 	METHOD NoIVarPut(symVar AS USUAL, uValue  AS USUAL) AS USUAL
 		RETURN SELF:FieldPut(symVar, uValue)
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Notify/*" />
 	METHOD Notify( kNotification AS LONG, uDescription := NIL AS USUAL) AS USUAL
 		LOCAL lRetValue AS LOGIC
 		LOCAL uRetValue	AS USUAL
@@ -59,10 +74,12 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 					Send(oClient,#Notify, kNotification, uDescription )
 				NEXT
 
+
 			ELSEIF kNotification = NOTIFYINTENTTOMOVE
 				nClient := 0
 				DO WHILE lRetValue .AND. nClient < ALen(laClients)
 					nClient++
+
 
 					uRetValue := Send(laClients[nClient],#Notify,kNotification)
 					IF IsLogic(uRetValue)
@@ -86,6 +103,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN lRetValue
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.NumResultCols/*" />
 	METHOD NumResultCols() AS LONG
 		//  Make sure we have a stmt
 		IF ( oStmt:StatementHandle = NULL )
@@ -97,20 +116,30 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN nNumCols
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.PreExecute/*" />
 	METHOD PreExecute( cSQLString AS STRING) AS STRING
 		RETURN cSQLString
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Prepare/*" />
 	METHOD Prepare() AS LOGIC
 		RETURN oStmt:Prepare()
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Refresh/*" />
 	METHOD Refresh() AS LOGIC STRICT
 		RETURN SELF:Update( FALSE )
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.RejectChanges/*" />
 	METHOD RejectChanges() AS LOGIC
 		oTable:RejectChanges()
 		SELF:lChanges := FALSE
 		RETURN TRUE
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Requery/*" />
 	METHOD Requery() AS LOGIC
 		LOCAL lOk		AS LOGIC
 		// ask the clients if they want to move
@@ -126,30 +155,44 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		END TRY
 		RETURN lOk
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.ReReadRow/*" />
 	METHOD ReReadRow() AS LOGIC
 		IF oCurrentRow != NULL
 			oCurrentRow:RejectChanges()
 		ENDIF
 		RETURN TRUE
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.ResetCursor/*" />
 	METHOD ResetCursor( nUpdateType ) AS LOGIC
 		SELF:oTable:RejectChanges()
 		SELF:GoTo( SELF:RecNo )
 		RETURN TRUE
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.ResetNotification/*" />
 	METHOD ResetNotification() AS LONG STRICT
 		--nNotifyCount
 		RETURN nNotifyCount
 
-	METHOD RLock(nRecord AS LONG ) AS LOGIC 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.RLock/*" />
+	METHOD RLock(nRecord AS LONG ) AS LOGIC
 		RETURN TRUE
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.RLockVerify/*" />
 	METHOD RLockVerify() AS LOGIC STRICT
 		RETURN TRUE
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Rollback/*" />
 	METHOD Rollback() AS LOGIC STRICT
 		RETURN SELF:oStmt:Connection:Rollback()
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.SetColumnAttributes/*" />
 	METHOD SetColumnAttributes(uFieldPos AS USUAL, oColAttributes AS SQLColumnAttributes) AS LOGIC
 		LOCAL nIndex    AS DWORD
 		LOCAL lOk		 AS LOGIC
@@ -164,7 +207,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN lOk
 
-	METHOD SetDataField( nFieldPosition AS USUAL, oDataField AS DataField) AS LOGIC
+
+/// <include file="Sql.xml" path="doc/SQLSelect.SetDataField/*" />
+	METHOD SetDataField( nFieldPosition AS DWORD, oDataField AS DataField) AS LOGIC
 		// override method in DataServer class because it does not allow
 		// to change size/decimals for numeric columns
 		LOCAL lRetVal := FALSE AS LOGIC
@@ -175,11 +220,14 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		IF SELF:aDataFields = NULL_ARRAY
 			BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE,  __CavoStr( __CAVOSTR_SQLCLASS__NODATAFIELDSEXIST )  }
 
+
 		ELSEIF IsNil(nFieldPosition) .OR. !IsNumeric(nFieldPosition) .OR. wFieldPosition<1 .OR. wFieldPosition>ALen( SELF:aDataFields )
 			BREAK DbError{ SELF, #SetDataField, EG_ARG, __CavoStr( __CAVOSTR_SQLCLASS__BADFIELDPOSITION ),nFieldPosition, "nFieldPosition" }
 
+
 		ELSEIF IsNil(oDataField) .OR. !IsInstanceOfUsual(oDataField,#DataField)
 			BREAK DbError{ SELF, #SetDataField, EG_ARG,__CavoStr( __CAVOSTR_SQLCLASS__BADFIELDPOSITION ), nFieldPosition, "nFieldPosition" }
+
 
 		ELSE
 			oDF := SELF:aDataFields[ wFieldPosition ]
@@ -199,15 +247,18 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ENDIF
 		RETURN lRetVal
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.SetPos/*" />
 	[Obsolete];
 	METHOD SetPos( nPos, nOption, nLock )
 		RETURN TRUE
 
 
-
+/// <include file="Sql.xml" path="doc/SQLSelect.SetPrimaryKey/*" />
 	METHOD SetPrimaryKey( uFieldPos ) AS LOGIC
 		LOCAL nIndex    AS DWORD
 		LOCAL lRet      := FALSE AS LOGIC
+
 
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF nIndex = 0
@@ -226,16 +277,22 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN lRet
 
 
+
+
+/// <include file="Sql.xml" path="doc/SQLSelect.SetStatementOption/*" />
 	[Obsolete];
 	METHOD SetStatementOption( fOption, uValue ) AS LOGIC
 		//RETURN oStmt:SetStatementOption( fOption, uValue, TRUE )
 		RETURN TRUE
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.SetTimeStamp/*" />
 	METHOD SetTimeStamp( uFieldPos AS USUAL, cTimeStamp AS STRING) AS VOID
 		LOCAL nIndex AS DWORD
 		LOCAL oErr		AS Error
 		LOCAL oColumn   AS SQLColumn
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
+
 
 		IF ( nIndex = 0 .OR. nIndex > nNumCols )
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #SetTimeStamp )
@@ -243,8 +300,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			oErr:ArgNum := 1
 			oErr:Args := {uFieldPos, cTimeStamp}
 			SELF:Error( oErr )
-			RETURN 
+			RETURN
 		ENDIF
+
 
 		oColumn := aSQLColumns[nIndex]
 		IF  oColumn:Type != typeof(DateTime)
@@ -253,8 +311,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			oErr:ArgNum := 1
 			oErr:Args := {uFieldPos, cTimeStamp}
 			SELF:Error( oErr )
-			RETURN 
+			RETURN
 		ENDIF
+
 
 		IF ! IsString(cTimeStamp )
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADPAR ), #SetTimeStamp  )
@@ -262,16 +321,20 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			oErr:ArgNum := 2
 			oErr:Args := {uFieldPos, cTimeStamp}
 			SELF:Error( oErr )
-			RETURN 
+			RETURN
 		ENDIF
+
 
 		LOCAL oDT AS DateTime
 		oDT := DateTime.Parse(cTimeStamp)
 		SELF:FieldPut(nIndex, oDT)
-		RETURN 
+		RETURN
 
 
-	METHOD Skip( nSkip := 1 AS LONG) AS LOGIC 
+
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Skip/*" />
+	METHOD Skip( nSkip := 1 AS LONG) AS LOGIC
 		LOCAL lOk AS LOGIC
 		LOCAL nRow AS LONG
 		SELF:lErrorFlag := FALSE
@@ -285,6 +348,7 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 				IF nSkip < 0 .AND. SELF:lBof
 					// already on BOF
 					// don't move !
+
 
 					lOk := FALSE
 				ELSEIF nSkip < 0 .AND. SELF:lEof
@@ -311,13 +375,19 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		END TRY
 		RETURN lOk
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.SuspendNotification/*" />
 	METHOD SuspendNotification() AS LONG STRICT
 		SELF:nNotifyCount := SELF:nNotifyCount + 1
 		RETURN nNotifyCount
 
-	METHOD UnLock( nRecordNumber := 0 AS LONG) AS LOGIC  
+
+/// <include file="Sql.xml" path="doc/SQLSelect.UnLock/*" />
+	METHOD UnLock( nRecordNumber := 0 AS LONG) AS LOGIC
 		RETURN TRUE
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect.Update/*" />
 	METHOD Update(lUpdateFlag) AS LOGIC CLIPPER
 		LOCAL lRet          AS LOGIC
 		IF ! IsLogic(lUpdateFlag)
@@ -332,16 +402,22 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN lRet
 
 
+
+
 	#region Dummy Methods
+/// <include file="Sql.xml" path="doc/SQLSelect.UpdateCursor/*" />
 	[Obsolete];
 	METHOD UpdateCursor() AS LOGIC
 		RETURN TRUE
+/// <include file="Sql.xml" path="doc/SQLSelect.UpdateKey/*" />
 	[Obsolete];
 	METHOD UpdateKey() AS LOGIC
 		RETURN TRUE
+/// <include file="Sql.xml" path="doc/SQLSelect.UpdateVal/*" />
 	[Obsolete];
 	METHOD UpdateVal() AS LOGIC
 		RETURN TRUE
 	#endregion
+
 
 END CLASS

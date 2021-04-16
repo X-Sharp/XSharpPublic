@@ -124,6 +124,7 @@ namespace Microsoft.VisualStudio.Project
 
             // Get the list of GUIDs from the project/template
             string guidsList = this.ProjectTypeGuids(fileName);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Launch the aggregate creation process (we should be called back on our IVsAggregatableProjectFactoryCorrected implementation)
             IVsCreateAggregateProject aggregateProjectFactory = (IVsCreateAggregateProject)this.Site.GetService(typeof(SVsCreateAggregateProject));

@@ -1,6 +1,4 @@
 
-
-
 CLASS RadioButtonGroup INHERIT GroupBox
 	PROTECT wPressedButton AS DWORD
 	PROTECT aButtons AS ARRAY
@@ -68,9 +66,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 			oRB := aButtons[dwI]
 			IF oRB:Pressed
 				wPressedButton := dwI
-				oRB:__RadioButton:lBlockCheckedChanged :=TRUE
 				oRB:Pressed := FALSE
-				oRB:__RadioButton:lBlockCheckedChanged :=FALSE
 			ENDIF
 		NEXT  
 
@@ -81,9 +77,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 				wPressedButton := dwI
 				oRB := aButtons[wPressedButton]
 				IF ! oRB:Pressed
-					oRB:__RadioButton:lBlockCheckedChanged :=TRUE
 					oRB:Pressed := TRUE
-					oRB:__RadioButton:lBlockCheckedChanged := FALSE
 					EXIT
 				ENDIF
 			ENDIF
@@ -193,7 +187,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 				oPoint:X -= nX
 				oPoint:Y -= nY
 				oItem:Origin := oPoint			
-				SELF:oCtrl:Controls:Add(oItem:__Control)
+				SELF:oCtrl:Controls:Add((System.Windows.Forms.Control) oItem:__Control)
 			ENDIF
 			oItem:Show()
 		NEXT

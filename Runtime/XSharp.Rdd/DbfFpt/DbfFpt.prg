@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharp.RDD
                     element := bData[nOffset] != 0
                     nOffset += 1
                 CASE FlexArrayTypes.Array    
-                    element := DecodeFlexArray(FlexFieldType.Array16, bData, REF nOffset)
+                    element := SELF:DecodeFlexArray(FlexFieldType.Array16, bData, REF nOffset)
 
                 CASE FlexArrayTypes.CodeBlock
                     element := NULL
@@ -208,7 +208,7 @@ BEGIN NAMESPACE XSharp.RDD
             CASE FlexFieldType.Array16
             CASE FlexFieldType.Array32
                 offset := 8
-                RETURN DecodeFlexArray(token:DataType, bData, REF offset)
+                RETURN SELF:DecodeFlexArray(token:DataType, bData, REF offset)
             CASE FlexFieldType.Picture
             CASE FlexFieldType.OleObject
                 VAR buffer := BYTE[]{ bData:Length - 8}

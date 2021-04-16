@@ -9,7 +9,7 @@
     <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
     <Name>XSharp.VO.GUIClasses</Name>
     <OutputName>XSharpGUIClasses</OutputName>
-    <XSharpProjectversion>2.6.3.0</XSharpProjectversion>
+    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>x86</PlatformTarget>
@@ -44,7 +44,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>XSharpSystemClasses.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.VO.GUIClasses.Xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -242,6 +242,16 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore">
+      <Name>PresentationCore</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <Name>PresentationFramework</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <Name>System.Data</Name>
@@ -262,8 +272,14 @@
       <Name>System.Windows.Forms</Name>
       <AssemblyName>System.Windows.Forms.dll</AssemblyName>
     </Reference>
+    <Reference Include="WindowsBase">
+      <Name>WindowsBase</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>WindowsBase.dll</AssemblyName>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassMapping.xlsx" />
     <None Include="WinForm\PropControl.vh" />
     <None Include="_readme.txt" />
   </ItemGroup>
@@ -300,6 +316,11 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>Copy $(Solutiondir)Docs\Gui.xml $(ProjectDir)\Gui.Xml</PreBuildEvent>
+    <PostBuildEvent>Erase $(ProjectDir)\Gui.Xml</PostBuildEvent>
+    <RunPostBuildEvent />
   </PropertyGroup>
   <ProjectExtensions>
     <ProjectCapabilities>

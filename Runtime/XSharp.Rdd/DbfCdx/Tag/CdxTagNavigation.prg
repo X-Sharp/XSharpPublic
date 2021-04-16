@@ -20,23 +20,37 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL PARTIAL SEALED CLASS CdxTag
 
         // Methods for walking indices, so GoTop, GoBottom, Skip and Seek
-
+        PRIVATE _mustCheckEof AS LOGIC
         INTERNAL PROPERTY EmptyResultSet as LOGIC
             GET
-                IF SELF:_oRdd:MustForceRel
+                IF !SELF:_Valid
+                    SELF:_oRdd:_SetEOF(TRUE)
+                    RETURN TRUE
+                ENDIF
+                IF _mustCheckEof .OR. SELF:_oRdd:MustForceRel 
                     RETURN FALSE
                 ENDIF
                 RETURN SELF:_oRdd:EoF .AND. SELF:_oRdd:BoF
             END GET
         END PROPERTY
 
+        INTERNAL METHOD ThrowException(nSubcode AS Subcodes, nGenCode AS Gencode, cMessage AS STRING) AS VOID
+            SELF:_oRdd:_dbfError( nSubcode, nGenCode,cMessage)
+            RETURN
+        INTERNAL METHOD ThrowException(nSubcode AS Subcodes, nGenCode AS Gencode, cFunction AS STRING, cMessage AS STRING) AS VOID
+            SELF:_oRdd:_dbfError( nSubcode, nGenCode,cFunction, cMessage)
+            RETURN
+        INTERNAL METHOD ThrowException(ex AS Exception, nSubcode AS Subcodes, nGenCode AS Gencode, cMessage AS STRING) AS VOID
+            SELF:_oRdd:_dbfError( ex, nSubcode, nGenCode,cMessage)
+            RETURN
+  
         INTERNAL METHOD GoBottom() AS LOGIC
             LOCAL locked AS LOGIC
             LOCAL result AS LOGIC
             IF SELF:EmptyResultSet
                 return TRUE
             ENDIF
-            
+            SELF:_mustCheckEof := FALSE
             locked := FALSE
             TRY
                 IF SELF:HasBottomScope
@@ -79,6 +93,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 return TRUE
             ENDIF
             locked := FALSE
+            SELF:_mustCheckEof := FALSE
             TRY
                 SELF:_oRdd:GoCold()
                 IF SELF:HasTopScope
@@ -88,6 +103,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     result := SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPETOP)
                     IF !SELF:_oRdd:Found
                         SELF:_oRdd:_SetBOF(TRUE)
+                        SELF:_oRdd:_SetEOF(TRUE)
                         SELF:_scopeEmpty := TRUE
                     ENDIF
                 ELSE
@@ -136,11 +152,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRdd:Found := FALSE
                 RETURN TRUE
             ENDIF
+            SELF:_mustCheckEof := FALSE
             uiRealLen := 0
             byteArray := BYTE[]{ _keySize }
             // Convert the key to a byte Array
             IF !SELF:_ToString(seekInfo:Value, SELF:_keySize, byteArray, REF uiRealLen)
-                SELF:_oRdd:_dbfError( Subcodes.ERDD_VAR_TYPE, Gencode.EG_DATATYPE,SELF:FileName)
+                SELF:ThrowException(Subcodes.ERDD_VAR_TYPE, Gencode.EG_DATATYPE,SELF:FileName)
                 RETURN FALSE
             ENDIF
             LOCAL nScopeTop AS LONG
@@ -177,6 +194,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:EmptyResultSet
                 RETURN TRUE
             ENDIF
+            SELF:_mustCheckEof := FALSE
             // Default Position = Current Record
             IF nToSkip == 0
                 recno := SELF:_RecNo
@@ -264,7 +282,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN result
                 ENDIF
             CATCH ex AS Exception
-                SELF:_oRdd:_dbfError(ex, Subcodes.EDB_SKIP,Gencode.EG_CORRUPTION,  "CdxTag.SkipRaw") 
+               SELF:ThrowException(ex, Subcodes.EDB_SKIP,Gencode.EG_CORRUPTION,  "CdxTag.SkipRaw") 
             FINALLY
                 IF locked
                     result := SELF:UnLock() .AND. result
@@ -292,9 +310,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 // Once we are at the bottom level then we simply skip forward using the Right Pointers
                 IF topStack:Pos == page:NumKeys
+                    IF ! page:ValidateSiblings()
+                        SELF:ThrowException(Subcodes.ERDD_INVALID_ORDER,Gencode.EG_CORRUPTION,  "CdxTag._getNextKey","Incorrect link between sibling pages for page: "+page:PageNoX) 
+                    ENDIF
                     IF page:HasRight
                         VAR rightPtr := page:RightPtr
                         VAR newpage := SELF:GetPage(rightPtr)
+
                         SELF:Stack:Replace(page, newpage, 0)
                         // Normally we should not find empty pages, but if we do, we simply skip them.
                         DO WHILE newpage:NumKeys == 0 .AND. newpage:HasRight
@@ -400,7 +422,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 oData:ForCond := SELF:_EvalBlock(SELF:_ForCodeBlock, TRUE)
             ENDIF
             IF !isOk
-                SELF:_oRdd:_dbfError(Subcodes.ERDD_KEY_EVAL, Gencode.EG_DATATYPE, SELF:FileName)
+                SELF:ThrowException(Subcodes.ERDD_KEY_EVAL, Gencode.EG_DATATYPE, SELF:FileName)
             ENDIF
             RETURN isOk
             
@@ -533,25 +555,52 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 seekInfo:Value      := obj
                 seekInfo:SoftSeek   := TRUE
                 result              := SELF:_Seek(seekInfo, obj)
-                SELF:_oRdd:Found    := SELF:_isBeforeBottomScope()
+                SELF:_oRdd:Found    := SELF:_isInScope()
                 IF !SELF:_oRdd:Found
                     SELF:_oRdd:GoTo(0)
-                    self:_scopeEmpty := TRUE
+                     SELF:_oRdd:_SetBOF(TRUE)
+                     SELF:_oRdd:_SetEOF(TRUE)
+                    SELF:_scopeEmpty := TRUE
                 ENDIF
             ENDIF
             RETURN result
             
             
-        PRIVATE METHOD _isBeforeBottomScope() AS LOGIC
+        PRIVATE METHOD _isInScope() AS LOGIC
             LOCAL isOk AS LOGIC
             isOk := SELF:_oRdd:Found
-            IF !isOk 
-                IF SELF:HasBottomScope
-                    IF SELF:__ScopeCompare(SELF:_currentvalue:Key, BottomScopeNo) <= 0 
+            IF !SELF:Descending
+                IF !isOk 
+                    IF SELF:HasBottomScope
+                        IF SELF:__ScopeCompare(SELF:_currentvalue:Key, BottomScopeNo) <= 0 
+                            isOk := TRUE
+                        ENDIF
+                    ELSE
                         isOk := TRUE
+                    ENDIF
+                    IF isOk .AND. SELF:HasTopScope
+                        IF SELF:__ScopeCompare(SELF:_currentvalue:Key, TopScopeNo) >= 0 
+                            isOk := TRUE
+                        ELSE
+                            isOk := FALSE    
+                        ENDIF
+                    ENDIF
+               ENDIF
+            ELSE
+               isOk := FALSE
+               IF SELF:HasBottomScope
+                    IF SELF:__ScopeCompare(SELF:_currentvalue:Key, BottomScopeNo) >= 0 
+                            isOk := TRUE
                     ENDIF
                 ELSE
                     isOk := TRUE
+                ENDIF
+                IF isOk .AND. SELF:HasTopScope
+                    IF SELF:__ScopeCompare(SELF:_currentvalue:Key, TopScopeNo) <= 0 
+                        isOk := TRUE
+                    ELSE
+                        isOk := FALSE    
+                    ENDIF
                 ENDIF
             ENDIF
             RETURN isOk
@@ -576,7 +625,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:_goRecord(SELF:_currentvalue:Key, SELF:_keySize, recno) != recno
                 IF SELF:_goRecord(NULL, 0, recno) != recno .AND. recno <= SELF:_oRdd:RecCount
                     IF !SELF:Unique .AND. !SELF:Conditional .AND. !SELF:Custom
-                        SELF:_oRdd:_dbfError( Subcodes.ERDD_RECNO_MISSING, Gencode.EG_CORRUPTION,SELF:FileName)
+                        SELF:ThrowException(Subcodes.ERDD_RECNO_MISSING, Gencode.EG_CORRUPTION,SELF:FileName)
                         result := FALSE
                     ENDIF
                     SELF:Stack:Clear()
@@ -660,6 +709,58 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN node:Recno
 
 
+        PRIVATE METHOD FixBrokenBranches(branch AS CdxBranchPage) AS LOGIC
+              // try to copy the first key from the right page
+               //Debug.Assert(nodeCount > 0,"Branchpage with 0 keys found")
+               _DebOut32("DBFCDX Detected empty Branch page "+ branch:PageNoX+", attempting to fix")
+               VAR isFixed := FALSE
+               IF branch:HasRight 
+                  VAR oRight := (CdxBranchPage) SELF:GetPage(branch:RightPtr)
+                  IF oRight:NumKeys > 1
+                     VAR recno := oRight:GetRecno(0)
+                     VAR key   := oRight:GetKey(0)
+                     VAR child := oRight:GetChildPage(0)
+                     oRight:Delete(0)
+                     oRight:Write()
+                     branch:Add(recno, child, key)
+                     branch:Write()
+                     VAR action := CdxAction.ChangeParent(branch)
+                     DO WHILE action != CdxAction.Ok
+                        action := SELF:DoAction(action)
+                     ENDDO
+                     isFixed := TRUE
+                     _DebOut32("DBFCDX Fixed by moving first key from Right Sibling "+ oRight:PageNoX)
+                  ENDIF
+               ENDIF
+               IF ! isFixed .AND. branch:HasLeft
+                  VAR oLeft := (CdxBranchPage) SELF:GetPage(branch:LeftPtr)
+                  IF oLeft:NumKeys > 1
+                     VAR keyno := oLeft:NumKeys -1
+                     VAR recno := oLeft:GetRecno(keyno)
+                     VAR key   := oLeft:GetKey(keyno)
+                     VAR child := oLeft:GetChildPage(keyno)
+                     oLeft:Delete(keyno)
+                     oLeft:Write()
+                     VAR action := CdxAction.ChangeParent(oLeft)
+                     DO WHILE action != CdxAction.Ok
+                        action := SELF:DoAction(action)
+                     ENDDO
+                     branch:Add(recno, child, key)
+                     branch:Write()
+                     action := CdxAction.ChangeParent(branch)
+                     DO WHILE action != CdxAction.Ok
+                        action := SELF:DoAction(action)
+                     ENDDO
+                      isFixed := TRUE
+                     _DebOut32("DBFCDX Fixed by moving last key from Left Sibling "+ oLeft:PageNoX)
+                  ENDIF
+               ENDIF
+               IF isFixed
+                  branch:ValidateLevel()
+               ENDIF
+               RETURN isFixed
+          
+
         PRIVATE METHOD _locate(keyBuffer AS BYTE[] , keyLength AS LONG , searchMode AS SearchMode , pageOffset AS LONG, recNo AS LONG) AS LONG
             LOCAL foundPos  AS WORD
             LOCAL page      AS CdxTreePage
@@ -680,6 +781,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR topStack      := SELF:CurrentStack
             // How many Items in that page ?
             nodeCount := page:NumKeys
+            IF nodeCount == 0
+               _DebOut32("DBFCDX Detected empty page "+ page:PageNoX)
+            ENDIF
+            IF (nodeCount == 0 .AND. page IS CdxBranchPage VAR branch)
+               VAR isFixed := SELF:FixBrokenBranches(branch)
+               IF ! isFixed
+                  SELF:_UpdateError(NULL, "CdxTag._locate","Found Branch Page with 0 keys and no Siblings")
+               ELSE
+                   RETURN 0
+               ENDIF
+            ENDIF
             IF (nodeCount == 0)
                 SELF:PushPage(page, 0)
                 RETURN   0

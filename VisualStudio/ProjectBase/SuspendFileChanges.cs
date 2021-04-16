@@ -16,7 +16,8 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
-using XSharp.Project;
+using XSharpModel;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -49,6 +50,7 @@ namespace Microsoft.VisualStudio.Project
             IntPtr docData = IntPtr.Zero;
             try
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 IVsRunningDocumentTable rdt = this.site.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
 
                 IVsHierarchy hierarchy;
@@ -93,7 +95,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(InvalidCastException e)
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("Exception" + e.Message);
+                XSettings.DisplayOutputMessage("Exception" + e.Message);
             }
             finally
             {
@@ -110,6 +112,8 @@ namespace Microsoft.VisualStudio.Project
             if(!this.isSuspending)
                 return;
             IVsFileChangeEx fileChange;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             fileChange = this.site.GetService(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
             if(fileChange != null)
             {

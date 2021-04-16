@@ -1,10 +1,15 @@
-#using System.Collections
-#using System.Collections.Generic
-#using System.Windows.Forms
-#using System.Drawing
-#using System.IO
-#using System.Text
-#using System.Globalization
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Collections
+USING System.Collections.Generic
+USING System.Windows.Forms
+USING System.Drawing
+USING System.IO
+USING System.Text
+using System.Globalization
 
 PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 //	PROTECT aAffected AS List<STRING>
@@ -102,6 +107,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 	RETURN FALSE
 
 	ACCESS AutoUpdateItem AS INT
+        STATIC LOCAL aWindow := <STRING>{"WINDOW","Fenêtre":ToUpper(),"FENSTER","FINESTRA","VENTANA","Fönster":ToUpper(),"VENSTER","VINDU","VINDUE","JANELA","OKNO","ABLAK"} AS STRING[]
 		LOCAL oNode AS TreeNode
 		LOCAL cText AS STRING
 		LOCAL n AS INT
@@ -109,7 +115,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 			oNode := SELF:oMainNode:Nodes[n]
 			cText := oNode:Text:Trim():ToUpper()
 			cText := cText:Replace("&" , "")
-			IF cText == "WINDOW"
+			IF System.Array.IndexOf(aWindow, cText) != -1
 				RETURN n
 			END IF
 		NEXT

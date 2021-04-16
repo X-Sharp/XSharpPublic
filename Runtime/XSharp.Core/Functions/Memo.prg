@@ -337,8 +337,8 @@ nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memoread/*" />
 /// <remarks>This function should NOT be used to read the contents of a binary file (such as a word document).
 /// Use MemoReadBinary() in stead .</remarks>
-/// <seealso cref='M:XSharp.Core.Functions.MemoReadBinary(System.String)' >MemoReadBinary</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.MemoWrit(System.String,System.String)' >MemoWrit</seealso>
+/// <seealso cref='MemoReadBinary' >MemoReadBinary</seealso>
+/// <seealso cref='MemoWrit' >MemoWrit</seealso>
 FUNCTION MemoRead(cFileName AS STRING) AS STRING
 	LOCAL cResult AS STRING
 	TRY
@@ -369,8 +369,8 @@ FUNCTION MemoRead(cFileName AS STRING) AS STRING
 /// </summary>
 /// <param name="cFile">The name of the binary file to read from disk, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed</param>
 /// <returns>The file as an array of bytes</returns>
-/// <seealso cref='M:XSharp.Core.Functions.MemoRead(System.String)' >MemoRead</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])' >MemoWritBinary</seealso>
+/// <seealso cref='MemoRead' >MemoRead</seealso>
+/// <seealso cref='MemoWritBinary' >MemoWritBinary</seealso>
 
 FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 	LOCAL bResult AS BYTE[]
@@ -389,7 +389,7 @@ FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 	RETURN bResult
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memowrit/*" />	
-/// <seealso cref='M:XSharp.Core.Functions.MemoWritBinary(System.String,System.Byte[])' >MemoWritBinary</seealso>
+/// <seealso cref='MemoWritBinary' >MemoWritBinary</seealso>
 FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
 	LOCAL lOk AS LOGIC
 	TRY
@@ -424,8 +424,8 @@ FUNCTION MemoWrit(cFileName AS STRING,cString AS BYTE[]) AS LOGIC
 /// for example, another process is using the file, MemoWrit() returns FALSE and NetErr() is set to TRUE.</param>
 /// <param name="bData">The contents to write</param>
 /// <returns>TRUE if the writing operation is successful; otherwise, FALSE</returns>
-/// <seealso cref='M:XSharp.Core.Functions.MemoReadBinary(System.String)' >MemoReadBinary</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.MemoWrit(System.String,System.String)' >MemoWrit</seealso>
+/// <seealso cref='MemoReadBinary' >MemoReadBinary</seealso>
+/// <seealso cref='MemoWrit' >MemoWrit</seealso>
 
 FUNCTION MemoWritBinary(cFile AS STRING,bData AS BYTE[]) AS LOGIC
 	LOCAL lOk AS LOGIC

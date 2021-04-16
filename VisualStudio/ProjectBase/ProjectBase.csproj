@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Microsoft.VisualStudio.Project</RootNamespace>
+    <AssemblyName>XSharp.ProjectBase</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
+    <TargetFrameworkProfile />
+    <ProjectGuid>{CACB60A9-1E76-4F92-8831-B134A658C695}</ProjectGuid>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
+    <DefineConstants>TRACE;DEBUG;XSHARP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>1762;VSSDK006</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
+    <DefineConstants>XSHARP;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>VSTHRD010;VSSDK006;1762</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="AssemblyReferenceNode.cs" />
+    <Compile Include="Attributes.cs" />
+    <Compile Include="Automation\AutomationScope.cs" />
+    <Compile Include="Automation\OAFileItem.cs" />
+    <Compile Include="Automation\OAFolderItem.cs" />
+    <Compile Include="Automation\OAGlobals.cs" />
+    <Compile Include="Automation\OANavigableProjectItems.cs" />
+    <Compile Include="Automation\OANestedProjectItem.cs" />
+    <Compile Include="Automation\OANullProperty.cs" />
+    <Compile Include="Automation\OAProject.cs" />
+    <Compile Include="Automation\OAProjectItem.cs" />
+    <Compile Include="Automation\OAProjectItems.cs" />
+    <Compile Include="Automation\OAProperties.cs" />
+    <Compile Include="Automation\OAProperty.cs" />
+    <Compile Include="Automation\OAReferenceFolderItem.cs" />
+    <Compile Include="Automation\OAReferenceItem.cs" />
+    <Compile Include="Automation\OASolutionFolder.cs" />
+    <Compile Include="Automation\VSProject\OAAssemblyReference.cs" />
+    <Compile Include="Automation\VSProject\OABuildManager.cs" />
+    <Compile Include="Automation\VSProject\OAComReference.cs" />
+    <Compile Include="Automation\VSProject\OAProjectReference.cs" />
+    <Compile Include="Automation\VSProject\OAReferenceBase.cs" />
+    <Compile Include="Automation\VSProject\OAReferences.cs" />
+    <Compile Include="Automation\VSProject\OAVSProject.cs" />
+    <Compile Include="Automation\VSProject\OAVSProjectItem.cs" />
+    <Compile Include="BuildDependency.cs" />
+    <Compile Include="BuildPropertyPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ComReferenceNode.cs" />
+    <Compile Include="ConfigProvider.cs" />
+    <Compile Include="ConfigurationProperties.cs" />
+    <Compile Include="DataObject.cs" />
+    <Compile Include="DependentFileNode.cs" />
+    <Compile Include="DesignPropertyDescriptor.cs" />
+    <Compile Include="DesignTimeAssemblyResolution.cs" />
+    <Compile Include="DocumentManager.cs" />
+    <Compile Include="DontShowAgainDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DontShowAgainDialog.Designer.cs">
+      <DependentUpon>DontShowAgainDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EnumDependencies.cs" />
+    <Compile Include="FileChangeManager.cs" />
+    <Compile Include="FileDocumentManager.cs" />
+    <Compile Include="FileNode.cs" />
+    <Compile Include="fileoverwritedialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fileoverwritedialog.designer.cs">
+      <DependentUpon>fileoverwritedialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FolderNode.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="HierarchyNode.cs" />
+    <Compile Include="IDEBuildLogger.cs" />
+    <Compile Include="ImageHandler.cs" />
+    <Compile Include="Interfaces.cs" />
+    <Compile Include="LocalizableProperties.cs" />
+    <Compile Include="Misc\ThreadUtilities.cs" />
+    <Compile Include="Resources.cs" />
+    <Compile Include="Url.cs" />
+    <Compile Include="VisualStudio.Project.cs" />
+    <Compile Include="Misc\ConnectionPointContainer.cs" />
+    <Compile Include="Misc\ExternDll.cs" />
+    <Compile Include="Misc\NativeMethods.cs" />
+    <Compile Include="Misc\UnsafeNativeMethods.cs" />
+    <Compile Include="NestedProjectBuildDependency.cs" />
+    <Compile Include="NestedProjectNode.cs" />
+    <Compile Include="NodeProperties.cs" />
+    <Compile Include="OleServiceProvider.cs" />
+    <Compile Include="Output.cs" />
+    <Compile Include="OutputGroup.cs" />
+    <Compile Include="ProjectConfig.cs" />
+    <Compile Include="ProjectContainerNode.cs" />
+    <Compile Include="ProjectDesignerDocumentManager.cs" />
+    <Compile Include="ProjectDocumentsListener.cs" />
+    <Compile Include="ProjectElement.cs" />
+    <Compile Include="ProjectFactory.cs" />
+    <Compile Include="ProjectFileConstants.cs" />
+    <Compile Include="ProjectNode.CopyPaste.cs" />
+    <Compile Include="ProjectNode.cs" />
+    <Compile Include="ProjectNode.Events.cs" />
+    <Compile Include="ProjectOptions.cs" />
+    <Compile Include="ProjectPackage.cs" />
+    <Compile Include="ProjectReferenceNode.cs" />
+    <Compile Include="PropertiesEditorLauncher.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReferenceContainerNode.cs" />
+    <Compile Include="ReferenceNode.cs" />
+    <Compile Include="RegisteredProjectType.cs" />
+    <Compile Include="SelectionListener.cs" />
+    <Compile Include="SettingsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SingleFileGenerator.cs" />
+    <Compile Include="SingleFileGeneratorFactory.cs" />
+    <Compile Include="SolutionListener.cs" />
+    <Compile Include="SolutionListenerForBuildDependencyUpdate.cs" />
+    <Compile Include="SolutionListenerForProjectEvents.cs" />
+    <Compile Include="SolutionListenerForProjectOpen.cs" />
+    <Compile Include="SolutionListenerForProjectReferenceUpdate.cs" />
+    <Compile Include="StructuresEnums.cs" />
+    <Compile Include="SuspendFileChanges.cs" />
+    <Compile Include="TokenProcessor.cs" />
+    <Compile Include="Tracing.cs" />
+    <Compile Include="TrackDocumentsHelper.cs" />
+    <Compile Include="TypeConverters.cs" />
+    <Compile Include="UpdateSolutionEventsListener.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="VsCommands.cs" />
+    <Compile Include="vsmdcodedomprovider.cs" />
+    <Compile Include="VSShellUtilities.cs" />
+    <Compile Include="..\..\Common\Constants.cs">
+      <Link>Constants.cs</Link>
+    </Compile>
+    <Compile Include="Wix\IProjectSourceNode.cs" />
+    <Compile Include="Wix\XBuildMacroCollection.cs" />
+    <Compile Include="Wix\XDesignPropertyDescriptor.cs" />
+    <Compile Include="Wix\XFileNode.cs" />
+    <Compile Include="Wix\XFileNodeNonMemberProperties.cs" />
+    <Compile Include="Wix\XFolderNode.cs" />
+    <Compile Include="Wix\XFolderNodeNonMemberProperties.cs" />
+    <Compile Include="Wix\XFolderNodeProperties.cs" />
+    <Compile Include="Wix\XNonMemberDesignPropertyDescriptor.cs" />
+    <Compile Include="Wix\XProjectConfig.cs" />
+    <Compile Include="Wix\XProjectFileConstants.cs" />
+    <Compile Include="Wix\XProjectNode.cs" />
+    <Compile Include="Wix\XHelperMethods.cs" />
+    <Compile Include="Wix\XProjectMembers.cs" />
+    <Compile Include="Wix\XPackageSettings.cs" />
+    <Compile Include="Wix\XStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>XStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Wix\XVsConstants.cs" />
+    <Compile Include="XSharpFileType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Wix\Resources\Delete.png" />
+    <Content Include="Wix\Resources\DownArrow.png" />
+    <Content Include="Wix\Resources\UpArrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="dontshowagaindialog.resx">
+      <DependentUpon>DontShowAgainDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fileoverwritedialog.resx">
+      <DependentUpon>fileoverwritedialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <DependentUpon>Resources.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VisualStudio.Project.resx">
+      <LogicalName>Microsoft.VisualStudio.Project.resources</LogicalName>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\imagelis.bmp" />
+    <EmbeddedResource Include="Wix\XStrings.resx">
+      <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>XStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="EnvDTE">
+      <Version>16.8.30705.32</Version>
+    </PackageReference>
+    <PackageReference Include="EnvDTE80">
+      <Version>16.8.30705.32</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build">
+      <Version>16.8.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build.Tasks.Core">
+      <Version>16.8.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Designer.Interfaces">
+      <Version>1.1.4323</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK">
+      <Version>16.0.206</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes">
+      <Version>15.0.36</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Design">
+      <Version>16.7.30329.88</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop">
+      <Version>16.8.30705.32</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime">
+      <Version>16.8.30705.32</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.15.6.DesignTime">
+      <Version>16.8.30705.32</Version>
+    </PackageReference>
+    <PackageReference Include="StreamJsonRpc">
+      <Version>2.6.121</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading">
+      <Version>16.8.55</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Design">
+      <Version>4.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="VSSDK.VSHelp">
+      <Version>7.0.4</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>XSharpModelXs</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

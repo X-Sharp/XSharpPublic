@@ -44,7 +44,7 @@ namespace XSharp.Runtime
             if (Options.AllowOldStyleComments != lVo || objectCompiler == null)
             {
                 options.AllowSingleQuotedStrings = lVo;
-                objectCompiler = new ObjectCompilation(options);
+                objectCompiler = ObjectCompilation.Create(options);
                 usualCompiler = null;
             }
             return objectCompiler;
@@ -55,7 +55,7 @@ namespace XSharp.Runtime
             if (Options.AllowOldStyleComments != lVo || usualCompiler == null)
             {
                 options.AllowSingleQuotedStrings = lVo;
-                usualCompiler = new UsualCompilation(options);
+                usualCompiler = UsualCompilation.Create(options);
                 objectCompiler = null;
             }
             return usualCompiler;
@@ -90,6 +90,8 @@ namespace XSharp.Runtime
             {
                 throw m.Diagnostic;
             }
+            if (m.CreatesAutoVars)
+                return new XSharp.MacroCompiler.ObjectMacro.MacroMemVarCodeblock(m.Macro, m.ParamCount);
             return new XSharp.MacroCompiler.ObjectMacro.MacroCodeblock(m.Macro, m.ParamCount);
         }
 
@@ -118,6 +120,8 @@ namespace XSharp.Runtime
             {
                 throw m.Diagnostic;
             }
+            if (m.CreatesAutoVars)
+                return new XSharp.MacroCompiler.UsualMacro.MacroMemVarCodeblock(m.Macro, m.ParamCount, macro, macro.Replace(" ", "").StartsWith("{|"));
             return new XSharp.MacroCompiler.UsualMacro.MacroCodeblock(m.Macro, m.ParamCount, macro, macro.Replace(" ", "").StartsWith("{|"));
         }
     }

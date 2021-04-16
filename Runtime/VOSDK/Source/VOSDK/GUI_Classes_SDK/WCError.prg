@@ -1,12 +1,17 @@
+/// <include file="Gui.xml" path="doc/WCError/*" />
 CLASS WCError INHERIT error
 
+
+/// <include file="Gui.xml" path="doc/WCError.ctor/*" />
 CONSTRUCTOR(methodName, className, desc, varName, varnum, lAllowIgnore) 
 	LOCAL rsSubSystem AS ResourceString
     //RvdH 080609 Added call to super:Init to correctly fill the callstack
     SUPER()
 
+
 	rsSubSystem := ResourceString{__WCSLibraryName}
 	subsystem := rsSubSystem:Value
+
 
 	IF IsNil(methodName) .AND. IsNil(className)
 		FuncSym := String2Symbol(ProcName(1))
@@ -16,8 +21,10 @@ CONSTRUCTOR(methodName, className, desc, varName, varnum, lAllowIgnore)
 		FuncSym := String2Symbol(Symbol2String(className) + ":" + Symbol2String(methodName))
 	ENDIF
 
+
 	Default(@desc, __WCSInterfaceError)
 	Default(@lAllowIgnore, TRUE)
+
 
 	IF IsString(desc)
 		description := desc
@@ -26,21 +33,26 @@ CONSTRUCTOR(methodName, className, desc, varName, varnum, lAllowIgnore)
 	ENDIF
 	CanDefault := lAllowIgnore
 
+
 	IF !IsNil(varName) .OR. !IsNil(varnum)
 		arg:=AsString(varName)
 		argtype:=UsualType(varName)
 	ENDIF
 
+
 	IF !IsNil(varnum)
 		Argnum:=varnum
 	ENDIF
+
 
 	args := {}
 	tries := 1
 	RETURN 
 
+
 //RvdH 080814 Not needed. Also in parent class
 //METHOD Throw() 
 //	RETURN Eval(ErrorBlock(), SELF)
 END CLASS
+
 

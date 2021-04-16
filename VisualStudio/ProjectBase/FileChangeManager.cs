@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using IServiceProvider = System.IServiceProvider;
 
@@ -29,47 +30,16 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         private struct ObservedItemInfo
         {
-            /// <summary>
-            /// Defines the id of the item that is to be reloaded.
-            /// </summary>
-            private uint itemID;
-
-            /// <summary>
-            /// Defines the file change cookie that is returned when listening on file changes on the nested project item.
-            /// </summary>
-            private uint fileChangeCookie;
 
             /// <summary>
             /// Defines the nested project item that is to be reloaded.
             /// </summary>
-            internal uint ItemID
-            {
-                get
-                {
-                    return this.itemID;
-                }
-
-                set
-                {
-                    this.itemID = value;
-                }
-            }
+            internal uint ItemID { get; set; }
 
             /// <summary>
             /// Defines the file change cookie that is returned when listenning on file changes on the nested project item.
             /// </summary>
-            internal uint FileChangeCookie
-            {
-                get
-                {
-                    return this.fileChangeCookie;
-                }
-
-                set
-                {
-                    this.fileChangeCookie = value;
-                }
-            }
+            internal uint FileChangeCookie { get; set; }
         }
         #endregion
 
@@ -88,7 +58,7 @@ namespace Microsoft.VisualStudio.Project
         /// Maps between the observed item identified by its filename (in canonicalized form) and the cookie used for subscribing
         /// to the events.
         /// </summary>
-        private Dictionary<string, ObservedItemInfo> observedItems = new Dictionary<string, ObservedItemInfo>();
+        private Dictionary<string, ObservedItemInfo> observedItems = new Dictionary<string, ObservedItemInfo>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Has Disposed already been called?
@@ -110,6 +80,7 @@ namespace Microsoft.VisualStudio.Project
             }
             #endregion
 
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.fileChangeService = (IVsFileChangeEx)serviceProvider.GetService(typeof(SVsFileChangeEx));
             Assumes.Present(fileChangeService);
         }
@@ -128,9 +99,10 @@ namespace Microsoft.VisualStudio.Project
             }
 
             this.disposed = true;
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Unsubscribe from the observed source files.
-            foreach(ObservedItemInfo info in this.observedItems.Values)
+            foreach (ObservedItemInfo info in this.observedItems.Values)
             {
                 this.fileChangeService.UnadviseFileChange(info.FileChangeCookie);
             }
@@ -167,15 +139,22 @@ namespace Microsoft.VisualStudio.Project
                     string fullFileName = Utilities.CanonicalizeFileName(filesChanged[i]);
                     if(this.observedItems.ContainsKey(fullFileName))
                     {
-                        ObservedItemInfo info = this.observedItems[fullFileName];
-                        this.FileChangedOnDisk(this, new FileChangedOnDiskEventArgs(fullFileName, info.ItemID, (_VSFILECHANGEFLAGS)flags[i]));
+                        var time = System.IO.File.GetLastWriteTime(fullFileName);
+                        if (fullFileName != lastFile || lastTime != time)
+                        {
+                            ObservedItemInfo info = this.observedItems[fullFileName];
+                            this.FileChangedOnDisk(this, new FileChangedOnDiskEventArgs(fullFileName, info.ItemID, (_VSFILECHANGEFLAGS)flags[i]));
+                            lastFile = fullFileName;
+                            lastTime = time;
+                        }
                     }
                 }
             }
 
             return VSConstants.S_OK;
-        }
-
+        } 
+        private string lastFile = "";
+        private DateTime lastTime = DateTime.MinValue;
         /// <summary>
         /// Notifies clients of changes made to a directory.
         /// </summary>
@@ -194,6 +173,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="fileName">File to observe.</param>
         internal void ObserveItem(string fileName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.ObserveItem(fileName, VSConstants.VSITEMID_NIL);
         }
 
@@ -210,6 +190,7 @@ namespace Microsoft.VisualStudio.Project
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "fileName");
             }
             #endregion
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             string fullFileName = Utilities.CanonicalizeFileName(fileName);
             if(!this.observedItems.ContainsKey(fullFileName))
@@ -240,6 +221,7 @@ namespace Microsoft.VisualStudio.Project
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "fileName");
             }
             #endregion
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             string fullFileName = Utilities.CanonicalizeFileName(fileName);
             if(this.observedItems.ContainsKey(fullFileName))
@@ -263,8 +245,9 @@ namespace Microsoft.VisualStudio.Project
             #endregion
 
             string fullFileName = Utilities.CanonicalizeFileName(fileName);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            if(this.observedItems.ContainsKey(fullFileName))
+            if (this.observedItems.ContainsKey(fullFileName))
             {
                 // Get the cookie that was used for this.observedItems to this file.
                 ObservedItemInfo itemInfo = this.observedItems[fullFileName];

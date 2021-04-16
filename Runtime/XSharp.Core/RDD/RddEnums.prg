@@ -830,9 +830,9 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 
     /// <summary>Enum that described the possible Notification messages that are sent to clients of Workareas</summary>
     /// <remarks>Clients that want to subscribe to these notifications can register themselves by calling DbRegisterClient() and must implement IDbNotify().</remarks>
-    /// <seealso cref="T:XSharp.IDbNotify"/>
-    /// <seealso cref="M:XSharp.Core.Functions.DbRegisterClient(XSharp.IDbNotify)"/>
-    /// <seealso cref="M:XSharp.Core.Functions.DbUnRegisterClient(XSharp.IDbNotify)"/>
+    /// <seealso cref="IDbNotify"/>
+    /// <seealso cref="DbRegisterClient"/>
+    /// <seealso cref="DbUnRegisterClient"/>
     Enum DbNotificationType
         /// <summary>This message is sent after a file was created. The Data parameter is the name of the file that was opened.</summary>
         MEMBER FileCreate             

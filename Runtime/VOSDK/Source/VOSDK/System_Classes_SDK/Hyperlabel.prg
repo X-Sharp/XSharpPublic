@@ -1,26 +1,39 @@
+/// <include file="System.xml" path="doc/HyperLabel/*" />
 CLASS HyperLabel
 	PROTECT symName AS SYMBOL       // A programmer's identifier
 	PROTECT rCaption AS STRING      // A human-readable identifier, used for things such as field labels on forms
 	PROTECT rDescription AS STRING  // A human-readable description, used for things such as status bar prompts
 	PROTECT rHelpContext AS STRING	// A token used as an identifier for the context-sensitive help
 
+
+/// <include file="System.xml" path="doc/HyperLabel.AsString/*" />
 METHOD AsString( )                              
 	RETURN SELF:Caption
 
+
+/// <include file="System.xml" path="doc/HyperLabel.Caption/*" />
 ACCESS Caption                                	
 	RETURN rCaption
 
+
+/// <include file="System.xml" path="doc/HyperLabel.Caption/*" />
 ASSIGN Caption(u)     
 	SELF:rCaption := u
 	RETURN 
 
+
+/// <include file="System.xml" path="doc/HyperLabel.Description/*" />
 ACCESS Description                                
 	RETURN rDescription
 
+
+/// <include file="System.xml" path="doc/HyperLabel.Description/*" />
 ASSIGN Description(u) 
 	SELF:rDescription  := u
 	RETURN 
 
+
+/// <include file="System.xml" path="doc/HyperLabel.Error/*" />
 METHOD Error( oError, symMethod )                 
 	LOCAL cErrorValType AS STRING
     LOCAL oErr AS Error
@@ -43,14 +56,22 @@ METHOD Error( oError, symMethod )
 	RETURN NIL
 
 
+
+
+/// <include file="System.xml" path="doc/HyperLabel.HelpContext/*" />
 ACCESS HelpContext                            
 	RETURN rHelpContext
 
+
+/// <include file="System.xml" path="doc/HyperLabel.HelpContext/*" />
 ASSIGN HelpContext(u) 
 	SELF:rHelpContext :=u
 	RETURN 
 
+
+/// <include file="System.xml" path="doc/HyperLabel.ctor/*" />
 CONSTRUCTOR( uName, uCaption, uDescription, uHelpContext )  
+
 
 	IF IsSymbol( uName )
 		symName := uName
@@ -59,6 +80,7 @@ CONSTRUCTOR( uName, uCaption, uDescription, uHelpContext )
 	ELSE
 		SELF:Error(HLError{ SELF, #Init, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADNAME), uName, "uName" }, #Init) 
 	ENDIF
+
 
 	IF IsNil(uCaption)
 		rCaption := Symbol2String( symName )
@@ -72,6 +94,7 @@ CONSTRUCTOR( uName, uCaption, uDescription, uHelpContext )
 		SELF:Error(HLError{ SELF, #Init, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADCAPTION), uCaption, "uCaption" }, #Init) 
 	ENDIF
 
+
 	IF IsNil(uDescription)                    
 		rDescription := " "                   
 	ELSEIF IsString( uDescription )           
@@ -84,6 +107,7 @@ CONSTRUCTOR( uName, uCaption, uDescription, uHelpContext )
 		SELF:Error(HLError{ SELF, #Init, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADDESCRIPTION), uDescription, "uDescription" }, #Init) 
 	ENDIF
 
+
 	IF IsString( uHelpContext )
 		rHelpContext := uHelpContext
 	ELSEIF IsSymbol( uHelpContext )
@@ -94,25 +118,38 @@ CONSTRUCTOR( uName, uCaption, uDescription, uHelpContext )
 		SELF:Error(HLError{ SELF, #Init, EG_ARG,__CavoStr(__CAVOSTR_SYSCLASS_BADHELPCONTEXT), uHelpContext, "uHelpContext" }, #Init) 
 	ENDIF
 
+
 	RETURN 
 
 
+
+
+/// <include file="System.xml" path="doc/HyperLabel.Name/*" />
 ACCESS Name                                   	
 	RETURN Symbol2String( symName )
 
+
+/// <include file="System.xml" path="doc/HyperLabel.NameSym/*" />
 ACCESS NameSym                                	
 	RETURN symName
 
+
+/// <include file="System.xml" path="doc/HyperLabel.NameSym/*" />
 ASSIGN NameSym  (x)                 			
 	IF IsSymbol(x)
 		SELF:SymName := x
 	ENDIF
 	RETURN SELF:SymName
 
+
 END CLASS
 
+
+/// <include file="System.xml" path="doc/HLError/*" />
 PARTIAL CLASS HLError   INHERIT Error
 
+
+/// <include file="System.xml" path="doc/HLError.ctor/*" />
 CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 )  
     //RvdH 080609 Added call to super:Init to correctly fill the callstack
     SUPER()
@@ -132,6 +169,7 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 	IF oHLErrorMessage# NIL
         IF IsObject( oHLErrorMessage) .and. __USual.ToObject(oHLErrorMessage) IS HyperLabel 
 
+
 			SELF:Description := ((HyperLabel)oHLErrorMessage):Description
 		ELSE
 			SELF:Description := oHLErrorMessage
@@ -144,4 +182,5 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 	SELF:Severity := ES_ERROR
 	RETURN 
 END CLASS
+
 

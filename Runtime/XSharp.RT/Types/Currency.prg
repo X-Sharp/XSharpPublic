@@ -7,6 +7,7 @@ USING System
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 USING System.Diagnostics
+USING System.Runtime.Serialization
 
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
@@ -15,14 +16,18 @@ BEGIN NAMESPACE XSharp
     /// This type has many operators and implicit converters that normally are never directly called from user code.
     /// The data in this type is stored as a System.Decimal with 4 decimal places
     /// </summary>
-    /// <seealso cref="T:XSharp.__Float"/>
-    /// <seealso cref="T:System.Decimal"/>
+    /// <seealso cref="__Float"/>
+    /// <seealso cref="System.Decimal"/>
+    [DebuggerDisplay("{ToDebugString(),nq}")];
+    [Serializable];
     PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,; 
         IFormattable, ;
         IComparable<__Currency>, ;
         IEquatable<__Currency>, ;
-        IComparable
+        IComparable,            ;
+        ISerializable
     
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE INITONLY _value AS System.Decimal
         
         #region constructors
@@ -43,7 +48,8 @@ BEGIN NAMESPACE XSharp
 
         #endregion
         #region Properties
-        /// <summary>REAL8 (System.Double) value</summary>
+        /// <summary>Decimal (System.Decimal) value</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PROPERTY @@Value    AS System.Decimal	GET _value			
         #endregion
         
@@ -412,18 +418,24 @@ BEGIN NAMESPACE XSharp
             RETURN ((IConvertible) _value):ToString(provider)
             #endregion
         #region IFormattable
-        /// <inheritdoc />
+        /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC OVERRIDE METHOD ToString() AS STRING
-            RETURN ToString("0.0000")
+            RETURN SELF:ToString("0.0000")
             
-        /// <inheritdoc cref="M:System.Double.ToString(System.String)"/>
+        /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
             RETURN _value:ToString(sFormat)
             
             /// <inheritdoc />
         PUBLIC METHOD ToString(format AS STRING, provider AS System.IFormatProvider) AS STRING
             RETURN ((IFormattable) _value):ToString(format, provider)
-            #endregion
+
+
+        INTERNAL METHOD ToDebugString() AS STRING 
+            RETURN SELF:ToString("0.0000")
+
+        #endregion
+            
         #region IComparable
         /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS CURRENCY) AS INT
@@ -433,6 +445,24 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD CompareTo(rhs AS OBJECT) AS INT
             RETURN SELF:CompareTo( (CURRENCY) rhs)
             #endregion
+            
+        #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Value", SELF:_value)
+            RETURN
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            SELF:_value   := info:GetDecimal("Value")
+        #endregion
+
+
             
     END STRUCTURE
     

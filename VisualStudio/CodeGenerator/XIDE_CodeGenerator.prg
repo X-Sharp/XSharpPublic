@@ -9,7 +9,6 @@ BEGIN NAMESPACE Xide
 CLASS AbstractEditor
 	EXPORT aLines AS List<LineObject>
 	PROTECT nStart,nEnd AS INT
-	PROTECT oCaretPos AS System.Drawing.Point
 	PROTECT oBuffer AS EditorBuffer
 	CONSTRUCTOR(_oBuffer AS EditorBuffer)
 		SELF:oBuffer := _oBuffer
@@ -74,7 +73,6 @@ END CLASS
 PARTIAL CLASS CodeGenerator
 	PROTECT aLines AS List<LineObject>
 	PROTECT nStart,nEnd AS INT
-	PROTECT oCaretPos AS System.Drawing.Point
 	PROTECT oEditor , oBaseEditor , oDesEditor AS AbstractEditor
 
 	CONSTRUCTOR(oBuffer AS EditorBuffer)
@@ -560,7 +558,10 @@ RETURN
 		cMask := "DEFINE {0} := {1}"
 		IF lStatic
 			cMask := "STATIC "+cMask			
-		ENDIF
+        ENDIF
+        IF nLine == 0
+            nLine := 1
+        ENDIF
 		FOR LOCAL n := 0 AS INT UPTO aDefines:Count - 1
 			cLine := String.Format(cMask , aDefines[n] , aDefineValues[n])
 			SELF:InsertLine(nLine , cLine)

@@ -18,15 +18,20 @@ DEFINE IDM_StandardShellMenu_Edit_Go_To_Bottom_ID := 18019
 DEFINE IDM_StandardShellMenu_View_ID := 18020
 DEFINE IDM_StandardShellMenu_View_Form_ID := 18021
 DEFINE IDM_StandardShellMenu_View_Table_ID := 18022
-DEFINE IDM_StandardShellMenu_Window_ID := 18023
-DEFINE IDM_StandardShellMenu_Window_Cascade_ID := 18024
-DEFINE IDM_StandardShellMenu_Window_Tile_ID := 18025
-DEFINE IDM_StandardShellMenu_Window_Close_All_ID := 18026
-DEFINE IDM_StandardShellMenu_Help_ID := 18027
-DEFINE IDM_StandardShellMenu_Help_Index_ID := 18028
-DEFINE IDM_StandardShellMenu_Help_Context_Help_ID := 18029
-DEFINE IDM_StandardShellMenu_Help_Using_Help_ID := 18030
-DEFINE IDM_StandardShellMenu_Help_About_ID := 18032
+DEFINE IDM_StandardShellMenu_Debugger_ID := 18023
+DEFINE IDM_StandardShellMenu_Debugger_Globals_ID := 18024
+DEFINE IDM_StandardShellMenu_Debugger_Memvars_ID := 18025
+DEFINE IDM_StandardShellMenu_Debugger_Workareas_ID := 18026
+DEFINE IDM_StandardShellMenu_Debugger_Settings_ID := 18027
+DEFINE IDM_StandardShellMenu_Window_ID := 18028
+DEFINE IDM_StandardShellMenu_Window_Cascade_ID := 18029
+DEFINE IDM_StandardShellMenu_Window_Tile_ID := 18030
+DEFINE IDM_StandardShellMenu_Window_Close_All_ID := 18031
+DEFINE IDM_StandardShellMenu_Help_ID := 18032
+DEFINE IDM_StandardShellMenu_Help_Index_ID := 18033
+DEFINE IDM_StandardShellMenu_Help_Context_Help_ID := 18034
+DEFINE IDM_StandardShellMenu_Help_Using_Help_ID := 18035
+DEFINE IDM_StandardShellMenu_Help_About_ID := 18037
 DEFINE IDM_EmptyShellMenu_File_ID := 12500
 DEFINE IDM_EmptyShellMenu_File_Open_ID := 12501
 DEFINE IDM_EmptyShellMenu_File_Print_Setup_ID := 12503
@@ -167,8 +172,23 @@ CONSTRUCTOR( oOwner )
 	SELF:RegisterItem(IDM_StandardShellMenu_View_Table_ID, ;
 		HyperLabel{ #ViewTable , "&Table	F2" , "View several records in a table" , "ViewTable" })
 
+	SELF:RegisterItem(IDM_StandardShellMenu_Debugger_ID, ;
+		HyperLabel{ #StandardShellMenu_Debugger , "&Debugger" ,  ,  } , SELF:Handle() , 3)
+
+	SELF:RegisterItem(IDM_StandardShellMenu_Debugger_Globals_ID, ;
+		HyperLabel{ #ShowGlobals , "Globals" ,  ,  })
+
+	SELF:RegisterItem(IDM_StandardShellMenu_Debugger_Memvars_ID, ;
+		HyperLabel{ #ShowMemvars , "Memvars" ,  ,  })
+
+	SELF:RegisterItem(IDM_StandardShellMenu_Debugger_Workareas_ID, ;
+		HyperLabel{ #ShowWorkareas , "Workareas" ,  ,  })
+
+	SELF:RegisterItem(IDM_StandardShellMenu_Debugger_Settings_ID, ;
+		HyperLabel{ #ShowSettings , "Settings" ,  ,  })
+
 	SELF:RegisterItem(IDM_StandardShellMenu_Window_ID, ;
-		HyperLabel{ #Window , "&Window" , "Arrange child windows" ,  } , SELF:Handle() , 3)
+		HyperLabel{ #Window , "&Window" , "Arrange child windows" ,  } , SELF:Handle() , 4)
 
 	SELF:RegisterItem(IDM_StandardShellMenu_Window_Cascade_ID, ;
 		HyperLabel{ #WindowCascade , "&Cascade" , "Arrange child windows in a cascade" , "WindowCascade" })
@@ -180,7 +200,7 @@ CONSTRUCTOR( oOwner )
 		HyperLabel{ #CloseAllChildren , "Close A&ll" , "Close all child windows" , "WindowCloseAll" })
 
 	SELF:RegisterItem(IDM_StandardShellMenu_Help_ID, ;
-		HyperLabel{ #Help , "&Help" ,  ,  } , SELF:Handle() , 4)
+		HyperLabel{ #Help , "&Help" ,  ,  } , SELF:Handle() , 5)
 
 	SELF:RegisterItem(IDM_StandardShellMenu_Help_Index_ID, ;
 		HyperLabel{ #HelpIndex , "&Index	F1" , "Index of help" , "Help_Index" })
@@ -194,7 +214,7 @@ CONSTRUCTOR( oOwner )
 	SELF:RegisterItem(IDM_StandardShellMenu_Help_About_ID, ;
 		HyperLabel{ #HelpAbout , "&About..." , "About application" ,  })
 
-	SELF:SetAutoUpdate( 3 )
+	SELF:SetAutoUpdate( 4 )
 
 	oTB := Toolbar{}
 

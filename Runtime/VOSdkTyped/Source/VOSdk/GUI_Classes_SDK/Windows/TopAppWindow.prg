@@ -1,7 +1,7 @@
 
 
 
-#USING System.Windows.Forms
+USING System.Windows.Forms
 
 CLASS TopAppWindow INHERIT AppWindow
 
@@ -48,7 +48,7 @@ CLASS TopAppWindow INHERIT AppWindow
 		SELF:__ResizeChild()
 		RETURN SELF
 
-	METHOD ToolBarHeightChanged(oEvent) 
+	METHOD ToolBarHeightChanged(oEvent AS ControlNotifyEvent) 
 		SELF:__ResizeChild()
 		RETURN SELF
 END CLASS

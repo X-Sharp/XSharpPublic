@@ -1,12 +1,15 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+
 
 USING System.Reflection
 using System.Data
 
+
+ /// <exclude />
 FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
 	LOCAL nType AS DWORD
 	LOCAL cRet  AS STRING
@@ -22,7 +25,7 @@ FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
 	RETURN cRet
 
 
-
+/// <include file="Sql.xml" path="doc/DToCSQL/*" />
 FUNCTION DToCSQL( dDate AS DATE ) AS STRING
 	LOCAL dDT           AS DateTime
 	dDT := dDate
@@ -31,6 +34,7 @@ FUNCTION DToCSQL( dDate AS DATE ) AS STRING
 
 
 
+/// <include file="Sql.xml" path="doc/SqlSetStmtConcurrency/*" />
 [Obsolete];
 FUNCTION SqlSetStmtConcurrency( nNew ) AS INT
 	STATIC nValue := __CAVO_SQL_CONCURRENCY AS INT
@@ -41,6 +45,8 @@ FUNCTION SqlSetStmtConcurrency( nNew ) AS INT
 	ENDIF
 	RETURN nResult
 
+
+/// <include file="Sql.xml" path="doc/SqlSetStmtCursorType/*" />
 [Obsolete];
 FUNCTION SqlSetStmtCursorType( nNew ) AS INT
 	STATIC nValue := __CAVO_SQL_CURSOR_TYPE AS INT
@@ -51,6 +57,8 @@ FUNCTION SqlSetStmtCursorType( nNew ) AS INT
 	ENDIF
 	RETURN nResult
 
+
+/// <include file="Sql.xml" path="doc/SqlSetStmtSimulateCursor/*" />
 [Obsolete];
 FUNCTION SqlSetStmtSimulateCursor( nNew ) AS INT
 	STATIC nValue := __CAVO_SQL_SIMULATE_CURSOR  AS INT
@@ -62,6 +70,9 @@ FUNCTION SqlSetStmtSimulateCursor( nNew ) AS INT
 	RETURN nResult
 
 
+
+
+/// <include file="Sql.xml" path="doc/SqlDeleteWhiteSpace/*" />
 [Obsolete];
 FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
 	//LOCAL cResult AS STRING
@@ -76,33 +87,39 @@ FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
 	//LOCAL cCloseDelim AS STRING
 	//LOCAL cDelims     AS STRING
 	//LOCAL cWhitespace AS STRING
-	
+
+
 	//LOCAL lWhiteSpace AS LOGIC
-	
+
+
 	//lWhiteSpace := FALSE
 	//lCopy       := FALSE
-	
+
+
 	//cDelims := "'"+chr(34)+"["
 	////Stripping out CRLF may be dangerous if they used end of line comments...
-	//cWhitespace := " "+_CHR(9) //+CHR(10)+CHR(13)+CHR(141)     
-	
+	//cWhitespace := " "+_CHR(9) //+CHR(10)+CHR(13)+CHR(141)
+
+
 	//nSlen   := SLen(cString)
 	//pString := StringAlloc(cString)
 	//pWalk   := PTR(_CAST,pString)
 	//IF (pWalk == NULL_PTR)
 	//	SQLThrowOutOfMemoryError()
 	//ENDIF
-	
-	//pTWalk  := MemAlloc( nSLen+1 )                                 // fürs zero terminated
+
+
+	//pTWalk  := MemAlloc( nSLen+1 )                                 // fï¿½rs zero terminated
 	//pTarget := PSZ(_CAST,pTWalk)                                   // merken zum freigeben
-	
+
+
 	//FOR i:=1 UPTO nSlen+1
 	//   cChar := CHR(BYTE(pWalk))                              // get character
 	//   IF lCopy                                                   // innerhalb von delimitern wird einfach blind kopiert
 	//      BYTE(pTWalk) := BYTE(pWalk)                             // kopieren
 	//      pWalk  += 1
 	//      pTWalk += 1
-	//      lCopy := ( cChar != cCloseDelim )                       // wenn wir  den schließenden delimiter erreicht haben , kopieren aus
+	//      lCopy := ( cChar != cCloseDelim )                       // wenn wir  den schlieï¿½enden delimiter erreicht haben , kopieren aus
 	//   ELSE
 	//      DO CASE
 	//      CASE At2(cChar,cDelims) > 0                          // wir kommen an einen delimitierten STRING
@@ -137,7 +154,7 @@ FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
 	RETURN cString
 
 
-
+/// <include file="Sql.xml" path="doc/SQLThrowOutOfMemoryError/*" />
 FUNCTION SQLThrowOutOfMemoryError() AS VOID STRICT
 	LOCAL oError AS Error
 	oError:=Error{}
@@ -146,9 +163,11 @@ FUNCTION SQLThrowOutOfMemoryError() AS VOID STRICT
 	THROW oError
 	//RETURN
 
+
+/// <include file="Sql.xml" path="doc/_SLen/*" />
 [Obsolete];
 FUNCTION _SLen( c AS STRING ) AS SHORTINT STRICT
-	RETURN (SHORT) SLen( c ) 
+	RETURN (SHORT) SLen( c )
 
 
 
@@ -156,12 +175,13 @@ FUNCTION _SLen( c AS STRING ) AS SHORTINT STRICT
 STATIC CLASS SqlFunctions
 /*
 	STATIC METHOD SqlObject2Usual(oValue AS OBJECT, oFs := NULL AS FieldSpec, lDateTimeAsDate := TRUE AS LOGIC) AS USUAL
-	LOCAL uValue AS USUAL  
+	LOCAL uValue AS USUAL
 	LOCAL oType  AS System.Type
 	LOCAL oTC    AS TypeCode
 	LOCAL fValue AS FLOAT
-	TRY      
-		
+	TRY
+
+
 		IF oValue == NULL
 			RETURN NIL
 		ENDIF
@@ -172,7 +192,7 @@ STATIC CLASS SqlFunctions
 			uValue := NIL
 		CASE oTC == TypeCode.Decimal
 			LOCAL oDec AS System.Decimal
-			oDec := (System.Decimal) oValue                
+			oDec := (System.Decimal) oValue
 			IF oFs != NULL .and. oFs:Decimals == 0
 				TRY
 					IF oDec > (System.Decimal) System.Int32.MaxValue .or. oDec < (System.Decimal) System.Int32.MinValue
@@ -196,7 +216,7 @@ STATIC CLASS SqlFunctions
 			ENDIF
 		CASE oTC == TypeCode.Int64
 			LOCAL oInt64 AS System.Int64
-			oInt64 := (System.Int64) oValue                
+			oInt64 := (System.Int64) oValue
 			TRY
 				IF oInt64 > (System.Int64) System.Int32.MaxValue .or. oInt64 < (System.Int64) System.Int32.MinValue
 					fValue := (System.Double) oInt64
@@ -237,7 +257,7 @@ STATIC CLASS SqlFunctions
 			uValue := oValue
 		ENDCASE
 		IF oFs != NULL
-			IF oFs:ValType == "D" 
+			IF oFs:ValType == "D"
 				IF ! IsDate(uValue)
 					LOCAL oDT AS DateTime
 					oDT := Convert.ToDateTime((OBJECT) uValue)
@@ -249,7 +269,7 @@ STATIC CLASS SqlFunctions
 				ENDIF
 			ELSEIF oFs:ValType == "L"
 				IF IsNumeric(uValue)
-					uValue := uValue != 0  
+					uValue := uValue != 0
 				ELSEIF IsString(uValue)
 					uValue := Val(uValue) != 0
 				ENDIF
@@ -303,7 +323,6 @@ STATIC CLASS SqlFunctions
 		RETURN cName
 
 
-       
 	STATIC METHOD CreateError(nErrCode AS DWORD, cMessage AS STRING)
 		LOCAL oError AS Error
 		oError 				:= Error{}
@@ -313,7 +332,8 @@ STATIC CLASS SqlFunctions
 		oError:Severity		:= nErrCode
 		oError:Tries 	 	:= 1
 		RETURN oError
-	
+
+
 	STATIC METHOD CreateError(e AS Exception) AS Error
 		LOCAL oError AS Error
 		oError 				:= Error{e}
@@ -326,8 +346,9 @@ STATIC CLASS SqlFunctions
 	STATIC PRIVATE INITONLY cAllowed AS STRING
 	STATIC PRIVATE INITONLY aFieldNames AS System.Collections.Generic.Dictionary<STRING, STRING>
 	STATIC CONSTRUCTOR
-		cAllowed   := "ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789_abcdefghijklmnopqrstuvwxyz"	
+		cAllowed   := "ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789_abcdefghijklmnopqrstuvwxyz"
 		aFieldNames := System.Collections.Generic.Dictionary<STRING, STRING>{}
+
 
     STATIC METHOD  CleanupColumnName( cColumnName AS  STRING ) AS STRING
 		LOCAL sb AS System.Text.StringBuilder
@@ -336,8 +357,8 @@ STATIC CLASS SqlFunctions
 		LOCAL cWork		AS STRING
 		IF aFieldNames:ContainsKey(cColumnName)
 			RETURN aFieldNames[cColumnName]
-		ENDIF		
-		// Gibt nur erlaubte zeichen zurück. Alles andere wird als Unterstrich dargestellt.
+		ENDIF
+		// Gibt nur erlaubte zeichen zurï¿½ck. Alles andere wird als Unterstrich dargestellt.
 		sb  := System.Text.StringBuilder{}
 		// When the column is an expresion like CONCAT( foo, bar)
 		// Then remove the function name and the last closing param
@@ -373,23 +394,26 @@ STATIC CLASS SqlFunctions
 					lLastWasOk := FALSE
 				ENDIF
 			NEXT
-		ENDIF	
+		ENDIF
 		IF sb:Length > 1
 			DO WHILE sb[sb:Length-1] == '_'
 				sb:Remove(sb:Length-1,1)
 			ENDDO
-		ENDIF	
+		ENDIF
 		IF sb:Length == 0
-			cResult := "EXPR" 
-		ELSE	
+			cResult := "EXPR"
+		ELSE
 			cResult := sb:ToString()
 		ENDIF
 		aFieldNames:Add(cColumnName, cResult)
 		RETURN cResult
-	
+
+
 END CLASS
 
-FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldName AS STRING) AS FieldSpec 
+
+/// <include file="Sql.xml" path="doc/DotNetType2VOType/*" />
+FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldName AS STRING) AS FieldSpec
 		LOCAL cName AS STRING
 		LOCAL oHL AS HyperLabel
 		LOCAL nLen, nDec AS LONG
@@ -404,8 +428,9 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 		oHL     := HyperLabel{String2Symbol(cName),cName,cName}
 		nDec    := 0
 		SWITCH TC
-		CASE TypeCode.String 
-				
+		CASE TypeCode.String
+
+
 			cType := "C"
 			nLen := oColumn:MaxLength
 			// Automatically Convert Long Strings to Memos
@@ -414,20 +439,25 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 				cType := "M"
 			ENDIF
 			oFs	:= FieldSpec{oHL,cType,nLen ,0 }
-			
+
+
 		CASE TypeCode.Boolean
 			cType 	:= "L"
 			nLen 		:= 1
 			oFs 		:= LogicFS{oHL}
 			oFs:Picture := "Y"
-			
-			
+
+
+
+
 		CASE TypeCode.Double
         CASE TypeCode.Single
         CASE TypeCode.Decimal
             // .OR. (lTypeCodeIsInt .AND. oProviderType = ProviderType.Oracle)
-				
-				
+
+
+
+
 			cType		 := "N"
 			// 2.72 Changed size calculation:
 			// SQL handles precision like this
@@ -436,13 +466,13 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 			// So if Scale = 0 Length = Precision + 1
 			// So if Scale <> 0 Length = Precision + 2
 			// ...
-			// In Vewa führt diese Modifikation zu Abweichungen, da hier mit den Längen der SQL-Datentypen
+			// In Vewa fï¿½hrt diese Modifikation zu Abweichungen, da hier mit den Lï¿½ngen der SQL-Datentypen
 			// gerechnet wird. So kommt es zum Beispiel vor, dass ein Feld, was in einer SQL-Struktur mit N,5,2
 			// definiert ist, in einer Makse nur mit XX,XX beschrieben werden kann. Dieses Problem ist so alt,
-			// das in einigen Einrichtungen sogar damit gerechnet wird, weswegen hier nichts verändert
+			// das in einigen Einrichtungen sogar damit gerechnet wird, weswegen hier nichts verï¿½ndert
 			// werden sollte (siehe dazu auch Ticket #4126).
 			nDec := 1
-			IF oSchema:Rows:Count >= oColumn:Ordinal 
+			IF oSchema:Rows:Count >= oColumn:Ordinal
 				oRow := oSchema:Rows[oColumn:Ordinal]
 				nDec := Convert.ToInt32(oRow:Item["NumericScale"])
 				nLen := Convert.ToInt32(oRow:Item["NumericPrecision"])
@@ -453,7 +483,7 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 //							lVersionLow :=  !((iMyVersion[1] > 6) .OR. (iMyVersion[1] = 6 .AND. iMyVersion[2] > 9) .OR. (iMyVersion[1] = 6 .AND. iMyVersion[2] = 9 .AND. iMyVersion[3] >= 11))
 //						ENDIF
 //					ENDIF
-					// Längen von Zahlen ohne Dezimalstellen kommen um eine Stelle zu kurz an
+					// Lï¿½ngen von Zahlen ohne Dezimalstellen kommen um eine Stelle zu kurz an
 					//IF nDec = 0 .AND. oProviderType = ProviderType.MySql .AND. lVersionLow
 						// Dies ist ab 6.9.11 gefixt
 					//	nLen++
@@ -475,45 +505,56 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 				nLen := 10
 			ENDIF
 			oFs	:= NumberFS{oHL,nLen, nDec}
-			
+
+
 		CASE TypeCode.Int32		// -2147483647 - 2147483648 (2^31)
 			nLen := 11
 			oFs	:= FieldSpec{oHL,"N",nLen,0}
-                
+
+
 		CASE TypeCode.Int64		// - 9223372036854775807 - 9223372036854775808 (2^63)
 			nLen := 21
 			oFs	:= FieldSpec{oHL,"N",nLen,0}
-                
+
+
 		CASE TypeCode.Int16	// -32767 - 32768 (2^15)
 			nLen := 6
 			oFs	:= FieldSpec{oHL,"N",nLen,0}
-                
+
+
 		CASE TypeCode.Byte
 			nLen := 4         		// -128  - 127 (2^7)
 			oFs	:= FieldSpec{oHL,"N",nLen,0}
-                
+
+
 		CASE TypeCode.SByte	// 0 - 255 	(2^8)
 			nLen := 3
 			oFs	:= FieldSpec{oHL,"N",nLen,0}
-                
+
+
 		CASE TypeCode.UInt16	// 0 - 65535 (2^16)
 			nLen := 5
 			oFs	:= FieldSpec{oHL,"N",nLen,0}
-                
+
+
 		CASE TypeCode.UInt32		// 0 - 4294836225 (2^32)
 			nLen := 10
 			oFs	:= FieldSpec{oHL,"N",nLen,0}
-                
+
+
 		CASE TypeCode.UInt64	// 0 - 18445618199572250625 (2^64)
 			nLen := 20
 			oFs	:= FieldSpec{oHL,"N",nLen,0}
-			
+
+
 		CASE TypeCode.DateTime
-				
+
+
 			cType   := "D"
 			nLen 	:= 8
 			oFs	    := DateFS{oHL}
-			
+
+
 		CASE TypeCode.Object
 			LOCAL lIsDate := FALSE AS LOGIC
 			LOCAL oMems AS MethodInfo[]
@@ -530,19 +571,21 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 			IF ! lFound
 				LOCAL cTypeName AS STRING
 				cTypeName := oType:Name:ToUpperInvariant()
-				lIsDate     := cTypeName:Contains("DATE") 
+				lIsDate     := cTypeName:Contains("DATE")
 			ENDIF
 			IF lIsDate
-					
+
+
 				cType := "D"
 				nLen 	:= 8
 				oFs	:= DateFS{oHL}
 			ELSE
 				cType 	:= "C"
 				nLen 	:= 10
-				oFs		:= FieldSpec{oHL,"C",10,0} 
+				oFs		:= FieldSpec{oHL,"C",10,0}
 			ENDIF
-			
+
+
 		OTHERWISE
 			cType := "C"
 			nLen 	:= oColumn:MaxLength
@@ -552,6 +595,7 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 				cType := "M"
 				oFs := oFs	:= FieldSpec{oHL,"M",10,0}
 			ENDIF
-			
+
+
         END SWITCH
 		RETURN oFs

@@ -104,7 +104,7 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
             ENDIF
 	    ELSEIF cFileSpec:EndsWith(sPathSep)
 		    cFileSpec += "*.*"
-	    ELSEIF cFileSpec:Length == 2 && cFileSpec[1] == System.IO.Path.VolumeSeparatorChar .AND. Char.IsLetter( cFileSpec, 0 )   // only a drive letter specified
+	    ELSEIF cFileSpec:Length == 2 .and. cFileSpec[1] == System.IO.Path.VolumeSeparatorChar .AND. Char.IsLetter( cFileSpec, 0 )   // only a drive letter specified
 		    VAR  curdir := Environment.CurrentDirectory 
 		    IF Char.ToUpper( cFileSpec[0] ) == Char.ToUpper( curdir[0] )  // if same drive, use current directory
                 cFileSpec := curdir + sPathSep + "*.*"

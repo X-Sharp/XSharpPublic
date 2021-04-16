@@ -224,6 +224,7 @@ namespace Microsoft.VisualStudio.Project
         #region ISpecifyPropertyPages methods
         public virtual void GetPages(CAUUID[] pages)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.GetCommonPropertyPages(pages);
         }
         #endregion
@@ -276,6 +277,7 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
 
+            ThreadHelper.ThrowIfNotOnUIThread();
             buildMacroValue = this.Node.ProjectMgr.GetBuildMacroValue(buildMacroName);
             return NativeMethods.S_OK;
         }
@@ -290,6 +292,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         public virtual int GetProjectDesignerPages(CAUUID[] pages)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.GetCommonPropertyPages(pages);
             return VSConstants.S_OK;
         }
@@ -316,6 +319,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new InvalidOperationException();
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
             hier = HierarchyNode.GetOuterHierarchy(this.node.ProjectMgr);
             itemid = this.node.ID;
             return VSConstants.S_OK;
@@ -350,6 +354,8 @@ namespace Microsoft.VisualStudio.Project
 
         protected void SetProperty(string name, string value)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             this.Node.ItemNode.SetMetadata(name, value);
         }
 
@@ -371,9 +377,10 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "pages");
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Only the project should show the property page the rest should show the project properties.
-            if(this.node != null && (this.node is ProjectNode))
+            if (this.node != null && (this.node is ProjectNode))
             {
                 // Retrieve the list of guids from hierarchy properties.
                 // Because a flavor could modify that list we must make sure we are calling the outer most implementation of IVsHierarchy
@@ -406,6 +413,7 @@ namespace Microsoft.VisualStudio.Project
 
         bool EnvDTE80.IInternalExtenderProvider.CanExtend(string extenderCATID, string extenderName, object extendeeObject)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsHierarchy outerHierarchy = HierarchyNode.GetOuterHierarchy(this.Node);
             if (outerHierarchy is EnvDTE80.IInternalExtenderProvider)
             {
@@ -416,6 +424,7 @@ namespace Microsoft.VisualStudio.Project
 
         object EnvDTE80.IInternalExtenderProvider.GetExtender(string extenderCATID, string extenderName, object extendeeObject, EnvDTE.IExtenderSite extenderSite, int cookie)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsHierarchy outerHierarchy = HierarchyNode.GetOuterHierarchy(this.Node);
             if (outerHierarchy is EnvDTE80.IInternalExtenderProvider)
             {
@@ -426,6 +435,7 @@ namespace Microsoft.VisualStudio.Project
 
         object EnvDTE80.IInternalExtenderProvider.GetExtenderNames(string extenderCATID, object extendeeObject)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsHierarchy outerHierarchy = HierarchyNode.GetOuterHierarchy(this.Node);
             if (outerHierarchy is EnvDTE80.IInternalExtenderProvider)
             {
@@ -455,6 +465,7 @@ namespace Microsoft.VisualStudio.Project
         [Browsable(false)]
         public object ExtenderNames()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             EnvDTE.ObjectExtenders extenderService = (EnvDTE.ObjectExtenders)this.Node.GetService(typeof(EnvDTE.ObjectExtenders));
             Debug.Assert(extenderService != null, "Could not get the ObjectExtenders object from the services exposed by this property object");
             if (extenderService == null)
@@ -466,6 +477,7 @@ namespace Microsoft.VisualStudio.Project
 
         public object Extender(string extenderName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             EnvDTE.ObjectExtenders extenderService = (EnvDTE.ObjectExtenders)this.Node.GetService(typeof(EnvDTE.ObjectExtenders));
             Debug.Assert(extenderService != null, "Could not get the ObjectExtenders object from the services exposed by this property object");
             if (extenderService == null)
@@ -498,6 +510,7 @@ namespace Microsoft.VisualStudio.Project
             }
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 this.Node.ItemNode.ItemName = value.ToString();
             }
         }
@@ -568,10 +581,12 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return (VSLangProj.prjBuildAction)Enum.Parse(typeof(VSPackage.BuildAction), BuildAction.ToString());
             }
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 this.BuildAction = new BuildAction(Enum.GetName(typeof(VSPackage.BuildAction), value)).ToBuildActionEnum();
             }
         }
@@ -699,14 +714,18 @@ namespace Microsoft.VisualStudio.Project
             get
             {
                 string value = this.Node.ItemNode.GetEvaluatedMetadata(ProjectFileConstants.CopyToOutputDirectory);
-                if (String.IsNullOrEmpty(value))
+                ThreadHelper.ThrowIfNotOnUIThread();
+                VSPackage.CopyToOutputDirectory result;
+                if (! Enum.TryParse(value, true, out result))
                 {
-                    return VSPackage.CopyToOutputDirectory.DoNotCopy;
+                    result = VSPackage.CopyToOutputDirectory.DoNotCopy;
                 }
-                return (VSPackage.CopyToOutputDirectory)Enum.Parse(typeof(VSPackage.CopyToOutputDirectory), value);
+                return result;
             }
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 if (value == CopyToOutputDirectory.DoNotCopy)
                     this.Node.ItemNode.SetMetadata(ProjectFileConstants.CopyToOutputDirectory, null);
                 else
@@ -818,13 +837,13 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region custom tool events
-        internal event EventHandler<HierarchyNodeEventArgs> OnCustomToolChanged
+        public event EventHandler<HierarchyNodeEventArgs> OnCustomToolChanged
         {
             add { onCustomToolChanged += value; }
             remove { onCustomToolChanged -= value; }
         }
 
-        internal event EventHandler<HierarchyNodeEventArgs> OnCustomToolNameSpaceChanged
+        public event EventHandler<HierarchyNodeEventArgs> OnCustomToolNameSpaceChanged
         {
             add { onCustomToolNameSpaceChanged += value; }
             remove { onCustomToolNameSpaceChanged -= value; }
@@ -840,12 +859,14 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 _customTool = this.Node.ItemNode.GetMetadata(ProjectFileConstants.Generator);
                 return _customTool;
             }
             set
             {
                 _customTool = value;
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (!String.IsNullOrEmpty(_customTool))
                 {
                     this.Node.ItemNode.SetMetadata(ProjectFileConstants.Generator, _customTool);
@@ -865,12 +886,14 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 _customToolNamespace = this.Node.ItemNode.GetMetadata(ProjectFileConstants.CustomToolNamespace);
                 return _customToolNamespace;
             }
             set
             {
                 _customToolNamespace = value;
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (!String.IsNullOrEmpty(_customToolNamespace))
                 {
                     this.Node.ItemNode.SetMetadata(ProjectFileConstants.CustomToolNamespace, _customToolNamespace);
@@ -920,6 +943,7 @@ namespace Microsoft.VisualStudio.Project
             }
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 this.Node.ProjectMgr.ProjectFile = value;
             }
         }
@@ -934,6 +958,7 @@ namespace Microsoft.VisualStudio.Project
             }
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 this.Node.ProjectMgr.ProjectFile = value;
             }
         }
@@ -943,10 +968,12 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return this.Node.ProjectMgr.GetProjectProperty(ProjectFileConstants.ReferencePath, true);
             }
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 this.Node.ProjectMgr.SetProjectProperty(ProjectFileConstants.ReferencePath, value);
             }
         }
@@ -1007,6 +1034,8 @@ namespace Microsoft.VisualStudio.Project
         {
             // Override the scenario where we are asked for a ComponentEditor
             // as this is how the Properties Browser calls us
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (editorBaseType.IsEquivalentTo(typeof(ComponentEditor)))
             {
                 IOleServiceProvider sp;
@@ -1019,7 +1048,9 @@ namespace Microsoft.VisualStudio.Project
 
         public override int GetCfgProvider(out IVsCfgProvider p)
         {
-            if(this.Node != null && this.Node.ProjectMgr != null)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (this.Node != null && this.Node.ProjectMgr != null)
             {
                 return this.Node.ProjectMgr.GetCfgProvider(out p);
             }
@@ -1079,12 +1110,18 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                var project = this.Node.ProjectMgr as XSharp.Project.XSharpProjectNode;
+                ThreadHelper.ThrowIfNotOnUIThread();
+                var project = this.Node.ProjectMgr as ProjectNode;
                 string parentName = (string)project.GetProperty((int)__VSHPROPID.VSHPROPID_DefaultNamespace);
                 string relativePath = project.GetRelativePath(this.Node.Url);
                 if (relativePath.EndsWith("\\"))
                     relativePath = relativePath.Substring(0, relativePath.Length - 1);
-                return "global::"+parentName + "." + relativePath.Replace('\\', '.'); ;
+                var result = parentName + "." + relativePath.Replace('\\', '.'); ;
+                if (!project.WizardIsRunning)
+                {
+                    result = "global::" + result;
+                }
+                return result;
             }
         }
 
@@ -1145,6 +1182,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return (string)this.Node.ProjectMgr.GetProperty((int)__VSHPROPID.VSHPROPID_DefaultNamespace);
             }
         }
@@ -1156,6 +1194,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 string copyLocal = this.GetProperty(ProjectFileConstants.Private, "False");
                 if(copyLocal == null || copyLocal.Length == 0)
                     return true;
@@ -1163,6 +1202,7 @@ namespace Microsoft.VisualStudio.Project
             }
             set
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 if (value)
                 {
                     this.SetProperty(ProjectFileConstants.Private, null);
@@ -1248,6 +1288,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 return ((ProjectReferenceNode)Node).ReferencedProjectOutputPath;
             }
         }
@@ -1267,8 +1308,14 @@ namespace Microsoft.VisualStudio.Project
         [SRDescription(SR.EmbedInteropTypesDescription)]
         public virtual bool EmbedInteropTypes
         {
-            get { return ((ComReferenceNode)this.Node).EmbedInteropTypes; }
-            set { ((ComReferenceNode)this.Node).EmbedInteropTypes = value; }
+            get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return ((ComReferenceNode)this.Node).EmbedInteropTypes;
+            }
+            set {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                ((ComReferenceNode)this.Node).EmbedInteropTypes = value;
+            }
         }
     }
 }

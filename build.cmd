@@ -1,12 +1,16 @@
 @echo off
+set xsoldpath=%path%
+set xsdotnetpath=%~dp0\Binaries\Tools\dotnet
+set path=%xsdotnetpath%;%PATH%
+if "%VSVERSION%" == "" SET VSVERSION=2019
+if "%VSEDITION%" == "" SET VSEDITION=Enterprise
+set VsBatch="C:\Program Files (x86)\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat"
+if not exist %VsBatch% goto VsError
+if "%VSSDKINSTALL%" == "" call %VsBatch%
 if /i "%1" == "Debug" goto Ok
 if /i "%1" == "Release" goto Ok
 goto Error
 :Ok
-call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
-set msbuilddir=c:\Program Files (x86)\MSBuild\14.0\Bin\
-if "%msbuilddir%" == "" goto NotFound
-:found
 
 Echo Building VsIntegration and Tools %1 Configuration
 "%msbuilddir%msbuild" VsIntegration.sln  /fl1 /flp1:Append;Verbosity=diag /p:Configuration=%1 /p:Platform=x86     /t:Build  /m /v:q /nologo 

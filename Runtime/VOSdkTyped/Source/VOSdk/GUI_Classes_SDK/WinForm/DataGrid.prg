@@ -101,7 +101,7 @@ CLASS VODataGridView INHERIT System.Windows.Forms.DataGridView IMPLEMENTS IVOCon
 	
 	VIRTUAL PROTECTED METHOD ProcessDataGridViewKey(e AS KeyEventArgs) AS LOGIC
 		IF (e:KeyCode == Keys.C .and. e:Control)
-			CopyCellToClipboard()
+			SELF:CopyCellToClipboard()
 			RETURN TRUE
 		ELSE
 			RETURN SUPER:ProcessDataGridViewKey(e)
@@ -109,7 +109,7 @@ CLASS VODataGridView INHERIT System.Windows.Forms.DataGridView IMPLEMENTS IVOCon
 	
 	VIRTUAL PROTECTED METHOD ProcessCmdKey(msg REF Message, keyData AS System.Windows.Forms.Keys) AS LOGIC
 		IF (int)keyData == 131139
-			CopyCellToClipboard()
+			SELF:CopyCellToClipboard()
 			RETURN TRUE
 		ELSE
 			RETURN SUPER:ProcessCmdKey(REF msg,keyData)

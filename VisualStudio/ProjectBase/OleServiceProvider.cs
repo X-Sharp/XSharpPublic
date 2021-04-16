@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -287,6 +288,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual int GetProjectItem(out IVsHierarchy hier, out uint itemid)
         {
             ServiceData serviceInstance = services[typeof(IVsBrowseObject).GUID];
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (serviceInstance != null)
             {

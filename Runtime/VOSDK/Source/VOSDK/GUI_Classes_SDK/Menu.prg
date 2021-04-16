@@ -1,3 +1,5 @@
+#pragma options ("enforceself", on)
+/// <include file="Gui.xml" path="doc/Menu/*" />
 CLASS Menu INHERIT VObject
 	PROTECT oParent 	AS Menu
 	PROTECT hMenu 		AS PTR
@@ -7,25 +9,38 @@ CLASS Menu INHERIT VObject
 	PROTECT oToolBar 	AS ToolBar
 	PROTECT aItem 		AS ARRAY
 
+
+/// <include file="Gui.xml" path="doc/Menu.Accelerator/*" />
 ACCESS Accelerator 
 	RETURN oAccelerator
 
+
+/// <include file="Gui.xml" path="doc/Menu.Accelerator/*" />
 ASSIGN Accelerator(oNewAccelerator) 
 	oAccelerator := oNewAccelerator
 
+
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Menu.Items/*" />
 ACCESS Items
     RETURN aItem
 
+
+/// <include file="Gui.xml" path="doc/Menu.AddChild/*" />
 METHOD AddChild(oMenu) 
 	AAdd(aChildren, oMenu)
 
+
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/Menu.AppendItem/*" />
 METHOD AppendItem(nItemID, xNewItem) 
 	LOCAL lRetVal AS LOGIC                
 	LOCAL cNewItem AS STRING
+
 
 	IF IsInstanceOfUsual(nItemID, #Menu)
 		nItemID:SetParent(SELF)
@@ -49,19 +64,29 @@ METHOD AppendItem(nItemID, xNewItem)
 		ENDIF
 	ENDIF
 
+
 	RETURN lRetVal
 
+
+/// <include file="Gui.xml" path="doc/Menu.CheckItem/*" />
 METHOD CheckItem(nItemID) 
 	
+	
+
 
 	RETURN CheckMenuItem(hMenu, nItemID, _OR(MF_CHECKED, MF_BYCOMMAND))
 
+
+/// <include file="Gui.xml" path="doc/Menu.Children/*" />
 ACCESS Children() AS ARRAY
 	Return aChildren
 
+
+/// <include file="Gui.xml" path="doc/Menu.DeleteChild/*" />
 METHOD DeleteChild(oMenu)  
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
+
 
 	dwCount := ALen(aChildren)
 	FOR dwI := 1 UPTO dwCount
@@ -72,13 +97,17 @@ METHOD DeleteChild(oMenu)
 	   ENDIF
 	NEXT  // dwI
 
+
 	RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/Menu.DeleteItem/*" />
 METHOD DeleteItem(xItemIdOrMenu) 
 	LOCAL retVal AS LOGIC
 	LOCAL i AS DWORD
 	LOCAL hTmp AS PTR
 	LOCAL iItemCount AS DWORD
+
 
 	IF IsInstanceOfUsual(xItemIdOrMenu, #Menu)
 		iItemCount := DWORD(GetMenuItemCount(hMenu))
@@ -100,17 +129,22 @@ METHOD DeleteItem(xItemIdOrMenu)
 		ENDIF
 	ENDIF
 
+
 	RETURN retVal
+/// <include file="Gui.xml" path="doc/Menu.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	LOCAL wIndex AS DWORD
 	LOCAL wLen AS DWORD
 	LOCAL oSubMenu AS Menu
 	
+	
 	IF hMenu != 0
 		DestroyMenu(hMenu)
 	ENDIF
 
+
 	__WCUnregisterMenu(SELF)
+
 
 	IF !InCollect()
 		IF oParent!=NULL_OBJECT
@@ -129,49 +163,78 @@ METHOD Destroy()  AS USUAL CLIPPER
 		UnregisterAxit(SELF)
 	ENDIF
 
+
 	SUPER:Destroy()
+
 
 	RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/Menu.DisableItem/*" />
 METHOD DisableItem(nItemID) 
 	
+	
+
 
 	IF (oToolBar != NULL_OBJECT)
 		oToolBar:DisableItem(nItemID)
 	ENDIF
 	RETURN EnableMenuItem(hMenu, nItemID, _OR(MF_DISABLED, MF_GRAYED, MF_BYCOMMAND))
 
+
+/// <include file="Gui.xml" path="doc/Menu.DisableAutoUpdate/*" />
 METHOD DisableAutoUpdate() 
+
 
 	// DHer: 18/12/2008
 	SELF:SetAutoUpdate(999)
 
+
 RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/Menu.EnableItem/*" />
 METHOD EnableItem(nItemID) 
 	
+	
+
 
 	IF (oToolBar != NULL_OBJECT)
 		oToolBar:EnableItem(nItemID)
 	ENDIF
 
+
 	RETURN EnableMenuItem(hMenu, nItemID, _OR(MF_ENABLED , MF_BYCOMMAND))
 
+
+/// <include file="Gui.xml" path="doc/Menu.GetAutoUpdate/*" />
 METHOD GetAutoUpdate() 
 	
+	
+
 
 	RETURN iAutoPosition
 
+
+/// <include file="Gui.xml" path="doc/Menu.GetSubMenu/*" />
 METHOD GetSubMenu(nIndex) 
 	
+	
+
 
 	RETURN GetSubMenu(hMenu,nIndex)
 
+
+/// <include file="Gui.xml" path="doc/Menu.Handle/*" />
 METHOD Handle() AS PTR
 	
+	
+
 
 	RETURN hMenu
 
+
+/// <include file="Gui.xml" path="doc/Menu.HyperLabel/*" />
 METHOD HyperLabel(nItemID) 
 	//SE-060526
 	LOCAL dwIndex AS DWORD
@@ -179,7 +242,10 @@ METHOD HyperLabel(nItemID)
 	LOCAL oHyperLabel AS HyperLabel
 	LOCAL oChildMenu AS Menu
 
+
 	
+	
+
 
 	dwCount := ALen(aItem)
 	FOR dwIndex := 1 UPTO dwCount
@@ -187,6 +253,7 @@ METHOD HyperLabel(nItemID)
 	   	RETURN aItem[dwIndex][2]
 	   ENDIF
 	NEXT  // dwI
+
 
 	dwCount := ALen(aChildren)
 	FOR dwIndex := 1 UPTO ALen(aChildren)
@@ -197,14 +264,20 @@ METHOD HyperLabel(nItemID)
 		ENDIF
 	NEXT  // dwIndex
 
+
 	RETURN NULL_OBJECT
 
+
+/// <include file="Gui.xml" path="doc/Menu.ctor/*" />
 CONSTRUCTOR(xResourceID) 
 	LOCAL hInst AS PTR
 	LOCAL lpszMenu AS PTR
 
+
+	
 	
 	SUPER()
+
 
 	IF IsNil(xResourceID)
 		hMenu := CreateMenu()
@@ -217,24 +290,34 @@ CONSTRUCTOR(xResourceID)
 			WCError{#Init, #Menu, __WCSTypeError}:Throw()
 		ENDIF
 
+
 		hInst := xResourceID:Handle()
 		lpszMenu := xResourceID:Address()
+
 
 		hMenu := LoadMenu(hInst, lpszMenu)
 	ENDIF
 
+
 	aChildren := {}
 	aItem := {}
 
+
 	__WCRegisterMenu(SELF, hMenu)
 	
+	
+
 
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/Menu.InsertItem/*" />
 METHOD InsertItem(nItemID, xNewItem, nBeforeID) 
 	LOCAL retVal AS LOGIC
 	LOCAL cNewItem AS STRING
 	
+	
+
 
 	IF IsInstanceOfUsual(nItemID, #Menu)
 		nItemID:SetParent(SELF)
@@ -257,24 +340,33 @@ METHOD InsertItem(nItemID, xNewItem, nBeforeID)
 		ENDIF
 	ENDIF
 
+
 	RETURN retVal
 
+
+/// <include file="Gui.xml" path="doc/Menu.MakeMenuRtol/*" />
 METHOD MakeMenuRtol(lRToL) 
 	LOCAL strcMII IS _winMENUITEMINFO
 	LOCAL pszBuffer AS PSZ
 
+
 	Default(@lRToL, TRUE)
 
+
 	pszBuffer := MemAlloc(128)
+
 
 	strcmii:cbSize := _SIZEOF(_winMENUITEMINFO)
 	strcmii:fMask := MIIM_TYPE
 	strcmii:dwTypeData := pszBuffer
 	strcmii:cch := 128
 
+
 	GetMenuItemInfo(hMenu, 0, TRUE, @strcMII)
 
+
 	strcmii:fMask := MIIM_TYPE
+
 
 	IF lRToL
 		strcmii:fType := _OR(strcmii:fType, DWORD(_CAST, MFT_RIGHTJUSTIFY), DWORD(_CAST, MFT_RIGHTORDER))
@@ -282,54 +374,81 @@ METHOD MakeMenuRtol(lRToL)
 		strcmii:fType := _AND(strcmii:fType, DWORD(_CAST, _NOT(_OR(MFT_RIGHTJUSTIFY , MFT_RIGHTORDER))))
 	ENDIF
 
+
 	// Right justify the specified item and all those following it
 	SetMenuItemInfo(hMenu, 0, TRUE, @strcMII)
 	MemFree(pszbuffer)
 
+
 	RETURN SELF
 	
+	
+/// <include file="Gui.xml" path="doc/Menu.MenuItems/*" />
 ACCESS MenuItems AS ARRAY
 	RETURN aItem
 
 
+
+
+/// <include file="Gui.xml" path="doc/Menu.Name/*" />
 METHOD Name(nItemID) 
 	LOCAL oHL AS HyperLabel
 
+
 	
+	
+
 
 	oHL := SELF:HyperLabel(nItemID)
 	IF (oHL != NULL_OBJECT)
 		RETURN oHL:Name
 	ENDIF
 
+
 	RETURN NULL_STRING
 
+
+/// <include file="Gui.xml" path="doc/Menu.NameSym/*" />
 METHOD NameSym(nItemID) 
 	LOCAL oHL AS HyperLabel
 
+
+	
 	
 
+
 	oHL:=SELF:HyperLabel(nItemID)
+
 
 	IF (oHL != NULL_OBJECT)
 		RETURN oHL:NameSym
 	ENDIF
 
+
 	RETURN NULL_SYMBOL
 
+
+/// <include file="Gui.xml" path="doc/Menu.PostInit/*" />
 METHOD PostInit() 
      RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/Menu.PreInit/*" />
 METHOD PreInit() 
      RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/Menu.RegisterItem/*" />
 METHOD RegisterItem(nItemID, oHyperLabel, hParentMenu, nPosition) 
 	LOCAL hMenu AS PTR
 	LOCAL lResult AS LOGIC
 	LOCAL cCaption AS STRING
 	//PP-040110 return logic value from ModifyMenu
 
+
 	
+	
+
 
 	IF IsLong(nItemID)
 		// RvdH 070206 Changed to NOT use PCount() but check parameter types
@@ -350,20 +469,31 @@ METHOD RegisterItem(nItemID, oHyperLabel, hParentMenu, nPosition)
 		WCError{#RegisterItem, #Menu, __WCSTypeError, nItemID, 1}:Throw()
 	ENDIF
 
+
 	RETURN lResult
 
+
+/// <include file="Gui.xml" path="doc/Menu.SetAutoUpdate/*" />
 METHOD SetAutoUpdate(nMenuNumber) 
+
 
 	iAutoPosition := nMenuNumber
 	RETURN iAutoPosition
 
+
+/// <include file="Gui.xml" path="doc/Menu.SetParent/*" />
 METHOD SetParent(oMenu) 
 	
+	
+
 
 	oParent := oMenu
 
+
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/Menu.ShowAsPopup/*" />
 METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap) 
 	LOCAL hPopUpMenu  AS PTR
 	LOCAL strucPoint  IS _winPoint
@@ -377,12 +507,15 @@ METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 	//PP-030319 new parameter oNotOverlap, courtesy S. Ebert
 	//PP-041001 Update from S. Ebert
 
+
 	IF !IsInstanceOfUsual(oOwner, #Window) .AND. !IsInstanceOfUsual(oOwner, #Control)
 		WCError{#ShowPopup, #Menu, __WCSTypeError, oOwner, 1}:Throw()
 	ENDIF
 
+
 	Default(@kButton, PM_RIGHTBUTTON)
 	Default(@kAlignment, PM_ALIGNLEFT)
+
 
 	IF IsInstanceOfUsual(oPoint, #Point)
 		strucPoint:x := oPoint:X
@@ -406,6 +539,7 @@ METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 	ELSE
 		GetCursorPos(@strucPoint)
 	ENDIF
+
 
 	IF strucPoint:x = -1 .AND. strucPoint:y = -1 //Keyboard call
 		hWnd := oOwner:Handle()
@@ -439,6 +573,7 @@ METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 		ENDIF
 	ENDIF
 
+
 	IF IsInstanceOfUsual(oNotOverlap, #Control) .OR. IsInstanceOfUsual(oNotOverlap, #Window)
 		strucTPM:cbSize := _SIZEOF(_winTPMParams)
 		GetWindowRect(oNotOverlap:Handle(), @strucTPM:rcExclude)
@@ -457,27 +592,41 @@ METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 		pTPM := @strucTPM
 	ENDIF
 
+
 	hPopUpMenu := GetSubMenu(SELF:Handle(), 0)
 	IF hPopUpMenu != NULL_PTR
 		lRet := TrackPopupMenuEx(hPopUpMenu, _OR(DWORD(kButton), DWORD(kAlignment)),;
 			strucPoint:x, strucPoint:y, oOwner:Handle(), pTPM)
 	ENDIF
 
+
 	RETURN lRet
 
+
+/// <include file="Gui.xml" path="doc/Menu.ToolBar/*" />
 ACCESS ToolBar 
 	
+	
+
 
 	RETURN oToolBar
 
+
+/// <include file="Gui.xml" path="doc/Menu.ToolBar/*" />
 ASSIGN ToolBar(oNewToolBar) 
+	
 	
 	RETURN oToolBar := oNewToolBar
 
+
+/// <include file="Gui.xml" path="doc/Menu.UncheckItem/*" />
 METHOD UncheckItem(nItemID) 
+	
 	
 	RETURN CheckMenuItem(hMenu, nItemID, _OR(MF_UNCHECKED, MF_BYCOMMAND))
 
+
+/// <include file="Gui.xml" path="doc/Menu.UnregisterItem/*" />
 METHOD UnregisterItem(nItemID)  
 	//SE-060526
 	LOCAL dwIndex AS DWORD
@@ -487,7 +636,9 @@ METHOD UnregisterItem(nItemID)
 	// Workaround for export locals not working yet
 	STATIC LOCAL nItemIDKludge AS DWORD
 	
+	
 	nItemIDKludge:=nItemID
+
 
 	IF IsLong(nItemID)
 		dwCount := ALen(aItem)
@@ -502,27 +653,42 @@ METHOD UnregisterItem(nItemID)
 		WCError{#UnregisterItem, #Menu, __WCSTypeError, nItemID, 1}:Throw()
 	ENDIF
 
+
 	RETURN NIL
+
 
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/SystemMenu/*" />
 CLASS SystemMenu INHERIT Menu
 
+
+/// <include file="Gui.xml" path="doc/SystemMenu.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	
+	
+
 
 	IF !InCollect()
 		hMenu := 0
 	ENDIF
 	SUPER:Destroy()
 
+
 	RETURN SELF
 
+
+/// <include file="Gui.xml" path="doc/SystemMenu.ctor/*" />
 CONSTRUCTOR(oOwner) 
 	
+	
+
 
 	SUPER(GetSystemMenu(oOwner:Handle(), FALSE))
 
+
 	RETURN 
 END CLASS
+
 

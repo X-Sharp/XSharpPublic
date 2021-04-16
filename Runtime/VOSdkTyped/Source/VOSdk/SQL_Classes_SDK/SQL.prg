@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+
 #region defines
 DEFINE SQL_NULL_DATA	:=	(-1)
 DEFINE SQL_DATA_AT_EXEC	:=	(-2)

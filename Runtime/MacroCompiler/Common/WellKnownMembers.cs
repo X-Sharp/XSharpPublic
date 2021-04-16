@@ -22,12 +22,17 @@ namespace XSharp.MacroCompiler
         System_Object_Equals,
         System_Decimal_ctor,
         System_DateTime_ctor,
+        System_Array_get_Length,
+        System_IDisposable_Dispose,
+        System_Threading_Monitor_Enter,
+        System_Threading_Monitor_Exit,
         XSharp___Array_ctor,
         XSharp___Float_ctor,
         XSharp___Date_ctor,
         XSharp___Symbol_ctor,
         XSharp___Currency_ctor,
         XSharp___Binary_ctor,
+        XSharp___Array___ArrayNew,
         XSharp_RT_Functions_POW,
         XSharp_RT_Functions___InternalSend,
         XSharp_RT_Functions_IVarGet,
@@ -47,6 +52,9 @@ namespace XSharp.MacroCompiler
         XSharp_RT_Functions___pushWorkarea,
         XSharp_RT_Functions___popWorkarea,
         XSharp_Core_Functions_Chr,
+        XSharp_Internal_CompilerServices_EnterBeginSequence,
+        XSharp_Internal_CompilerServices_ExitBeginSequence,
+        XSharp_Error_WrapRawException,
     }
 
     public static partial class Compilation
@@ -63,12 +71,17 @@ namespace XSharp.MacroCompiler
             "System.Object.Equals$(System.Object,System.Object)",
             "System.Decimal.@ctor(System.Int32[])",
             "System.DateTime.@ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)",
+            "System.Array.get_Length",
+            "System.IDisposable.Dispose",
+            "System.Threading.Monitor.Enter$(System.Object,System.Boolean&)",
+            "System.Threading.Monitor.Exit$(System.Object)",
             "XSharp.__Array.@ctor(XSharp.__Usual[])|Vulcan.__Array.@ctor(XSharp.__Usual[])",
             "XSharp.__Float.@ctor(System.Double,System.Int32,System.Int32)|Vulcan.__VOFloat.@ctor(System.Double,System.Int32,System.Int32)",
             "XSharp.__Date.@ctor(System.Int32,System.Int32,System.Int32)|Vulcan.__VODate.@ctor(System.Int32,System.Int32,System.Int32)",
             "XSharp.__Symbol.@ctor(System.String)|Vulcan.__Symbol.@ctor(System.String)",
             "XSharp.__Currency.@ctor(System.Decimal)",
             "XSharp.__Binary.@ctor(System.Byte[])",
+            "XSharp.__Array.__ArrayNew$(System.Int32[])",
             XSharpQualifiedTypeNames.Functions+".POW|"+VulcanQualifiedTypeNames.Functions+".POW",
             XSharpQualifiedFunctionNames.InternalSend+"|"+VulcanQualifiedFunctionNames.InternalSend,
             XSharpQualifiedFunctionNames.IVarGet+"|"+VulcanQualifiedFunctionNames.IVarGet,
@@ -88,9 +101,36 @@ namespace XSharp.MacroCompiler
             XSharpQualifiedFunctionNames.PushWorkarea+"|"+VulcanQualifiedFunctionNames.PushWorkarea,
             XSharpQualifiedFunctionNames.PopWorkarea+"|"+VulcanQualifiedFunctionNames.PopWorkarea,
             XSharpQualifiedFunctionNames.Chr+"|"+VulcanQualifiedFunctionNames.Chr,
+            XSharpQualifiedFunctionNames.EnterSequence+"|"+VulcanQualifiedFunctionNames.EnterSequence,
+            XSharpQualifiedFunctionNames.ExitSequence+"|"+VulcanQualifiedFunctionNames.ExitSequence,
+            XSharpQualifiedFunctionNames.WrapException+"|"+VulcanQualifiedFunctionNames.WrapException,
         };
 
         static MemberSymbol[] WellKnownMemberSymbols;
+
+        static MemberSymbol FindMember(string names)
+        {
+            foreach (var proto in names.Split('|'))
+            {
+                var name = proto.Replace("$", "").Split('(').First();
+                var s = Binder.LookupFullName(name.Replace("global::", "").Split('.').Select(n => n.Replace('@', '.')).ToArray());
+                if (s == null)
+                    continue;
+                if (s is SymbolList)
+                {
+                    var isStatic = proto.Contains('$');
+                    var args = proto.Replace(")", "").Split('(').Last().Split(',');
+                    var argTypes = args.Select(x => Binder.LookupFullName(x) as TypeSymbol).ToArray();
+                    s = (s as SymbolList).Symbols.Find(x => (x as MethodBaseSymbol)?.MethodBase.GetParameters().Length == args.Length
+                       && (x as MethodBaseSymbol)?.MethodBase.IsStatic == isStatic
+                       && (x as MethodBaseSymbol)?.MethodBase.GetParameters().All(y => args[y.Position] == "*" || y.ParameterType == argTypes[y.Position].Type) == true);
+                    Debug.Assert(s is MethodBaseSymbol);
+                }
+                Debug.Assert(s is MemberSymbol);
+                return s as MemberSymbol;
+            }
+            return null;
+        }
 
         internal static void InitializeWellKnownMembers()
         {
@@ -101,26 +141,7 @@ namespace XSharp.MacroCompiler
                 {
                     var names = MemberNames[(int)m];
                     Debug.Assert(m.ToString().StartsWith(names.Replace("global::", "").Replace('.', '_').Replace("`", "_T").Replace("$", "").Replace("@", "").Split('|', '(').First()));
-                    foreach (var proto in names.Split('|'))
-                    {
-                        var name = proto.Replace("$", "").Split('(').First();
-                        var s = Binder.LookupFullName(name.Replace("global::", "").Split('.').Select(n => n.Replace('@', '.')).ToArray());
-                        if (s == null)
-                            continue;
-                        if (s is SymbolList)
-                        {
-                            var isStatic = proto.Contains('$');
-                            var args = proto.Replace(")", "").Split('(').Last().Split(',');
-                            var argTypes = args.Select(x => Binder.LookupFullName(x) as TypeSymbol).ToArray();
-                            s = (s as SymbolList).Symbols.Find(x => (x as MethodBaseSymbol)?.MethodBase.GetParameters().Length == args.Length
-                               && (x as MethodBaseSymbol)?.MethodBase.IsStatic == isStatic
-                               && (x as MethodBaseSymbol)?.MethodBase.GetParameters().All(y => args[y.Position] == "*" || y.ParameterType == argTypes[y.Position].Type) == true);
-                            Debug.Assert(s is MethodBaseSymbol);
-                        }
-                        Debug.Assert(s is MemberSymbol);
-                        memberSymbols[(int)m] = s as MemberSymbol;
-                        break;
-                    }
+                    memberSymbols[(int)m] = FindMember(names);
                     Debug.Assert(memberSymbols[(int)m] != null);
                 }
 
@@ -135,8 +156,13 @@ namespace XSharp.MacroCompiler
         }
 
         // Useful for testing
-        internal static bool Override(WellKnownMembers kind, string proto)
+        internal static bool Override(WellKnownMembers kind, string proto = null)
         {
+            if (proto == null)
+            {
+                WellKnownMemberSymbols[(int)kind] = FindMember(MemberNames[(int)kind]);
+                return true;
+            }
             var name = proto.Replace("$", "").Split('(').First();
             var s = Binder.LookupName(name);
             if (s == null)

@@ -80,32 +80,36 @@ FUNCTION NToCMonth(dwMonthNum AS DWORD) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/secs/*" />
 FUNCTION Secs(cTime AS STRING) AS DWORD
+	// Note that VO "accepts" practically any format, even say "0:#23:&1" and returns semi random results, but we will not emulate all that
+	// Instead, we support formats that make sense, like "HH", "HH:MM" and "HH:MM:SS". And, oh, we do support also "10:99:99" that VO allows as well..
 	LOCAL cSeparator AS STRING
 	LOCAL nHours AS INT
 	LOCAL nMinutes AS INT
 	LOCAL nSeconds AS INT
-	LOCAL nExpectedLength AS INT
 	LOCAL result AS DWORD
 	IF String.IsNullOrEmpty(cTime)
 		RETURN 0
 	ENDIF
 	cSeparator := Chr(GetTimeSep())
-	nExpectedLength := 6 + 2 * cSeparator:Length
-	IF cTime:Length >= nExpectedLength
-		LOCAL nOffSet := 0 AS INT
-		TRY
-			nHours   := Int32.Parse(cTime:Substring(nOffSet,2))
-			nOffSet += cSeparator:Length +2
-			nMinutes := Int32.Parse(cTime:Substring(nOffSet,2))
-			nOffSet += cSeparator:Length +2
-			nSeconds := Int32.Parse(cTime:Substring(nOffSet,2))
-			result := (DWORD) (nHours * 3600 + nMinutes * 60 + nSeconds)
-		CATCH 
-			result := 0
-		END TRY
-	ELSE
-		result := 0
-	ENDIF
+	LOCAL nOffSet := 0 AS INT
+	TRY
+		nHours   := Int32.Parse(cTime:Substring(nOffSet,2))
+	CATCH
+		nHours   := 0
+	END TRY
+	nOffSet += cSeparator:Length +2
+	TRY
+		nMinutes := Int32.Parse(cTime:Substring(nOffSet,2))
+	CATCH
+		nMinutes := 0
+	END TRY
+	nOffSet += cSeparator:Length +2
+	TRY
+		nSeconds := Int32.Parse(cTime:Substring(nOffSet,2))
+	CATCH
+		nSeconds := 0
+	END TRY
+	result := (DWORD) (nHours * 3600 + nMinutes * 60 + nSeconds)
 	RETURN result
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/days/*" />
@@ -358,9 +362,11 @@ FUNCTION DtToC(d AS DateTime) AS STRING
 /// An 8-character string in the format yyyymmdd.  If dDate is a DateTime.MinValue, a string of eight spaces is returned.  The return value is not affected by the current date format.
 /// </returns>
 FUNCTION DtToS(dDate AS DateTime) AS STRING
-	LOCAL result:="        " AS STRING		
+	LOCAL result := NULL  AS STRING		
 	IF dDate != DateTime.MinValue
 		result := dDate:ToString("yyyyMMdd")
+    ELSE
+        result:="        " 
 	ENDIF
 	RETURN result 
 
@@ -372,22 +378,27 @@ FUNCTION DtToS(dDate AS DateTime) AS STRING
 FUNCTION SToDt(cDate AS STRING) AS DateTime
 	LOCAL convertedDate AS DateTime
 	TRY
-		IF cDate:Length == 8 .AND. cDate[0] == c'0' .AND. cDate[1] == c'0'
-			// VO adjusts date strings like "00yyMMdd" to epoch-based year
-			LOCAL dwY AS DWORD
-			dwY := UInt32.Parse(cDate:Substring(0,4))
+        IF String.IsNullOrWhiteSpace(cDate)
+            convertedDate := DateTime.MinValue
+        ELSE
+            IF cDate:Length == 8 .AND. cDate[0] == c'0' .AND. cDate[1] == c'0'
+			    // VO adjusts date strings like "00yyMMdd" to epoch-based year
+			    LOCAL dwY AS DWORD
+			    dwY := UInt32.Parse(cDate:Substring(0,4))
 			
-			// same code as in ConDate(), probably better adjust SToD() to use ConDate() directly
-			LOCAL lAfter AS LOGIC
-			lAfter := dwY > XSharp.RuntimeState.EpochYear
-			dwY += XSharp.RuntimeState.EpochCent
-			IF lAfter
-				dwY -= 100
-			ENDIF
+			    // same code as in ConDate(), probably better adjust SToD() to use ConDate() directly
+			    LOCAL lAfter AS LOGIC
+			    lAfter := dwY > XSharp.RuntimeState.EpochYear
+			    dwY += XSharp.RuntimeState.EpochCent
+			    IF lAfter
+				    dwY -= 100
+			    ENDIF
 			
-			cDate := dwY:ToString():PadLeft(4 , c'0') + cDate:Substring(4)
-		END IF
-		convertedDate := DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+			    cDate := dwY:ToString():PadLeft(4 , c'0') + cDate:Substring(4)
+    		END IF
+	    	convertedDate := DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+        ENDIF
+        
 	CATCH
 		convertedDate := DateTime.MinValue
 	END TRY

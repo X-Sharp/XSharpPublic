@@ -35,27 +35,36 @@
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.xml" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="Docs\VOSDK_Classes.xml" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.XML" />
-      <DocumentationSource sourceFile="Docs\XSharpVOSDK_Classes.xml" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.Debugger.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.Debugger.Xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSQLClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.dll" />
+      <DocumentationSource sourceFile="Docs\Console.Xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.Xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.Xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSQLClasses.Xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.Xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.7.0.0</HelpFileVersion>
+    <HelpFileVersion>2.8.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
-    <ContentPlacement>AboveNamespaces</ContentPlacement>
+    <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
@@ -63,7 +72,7 @@
     <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013XSharp</PresentationStyle>
-    <CleanIntermediates>True</CleanIntermediates>
+    <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <IndentHtml>False</IndentHtml>
@@ -181,7 +190,7 @@
     </PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime and VO SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.info/licensing/xsharp-open-software-license</CopyrightHref>
-    <CopyrightText>Copyright &amp;#169%3b 2015-2020 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b 1993-2020 Computer Associates.</CopyrightText>
+    <CopyrightText>Copyright &amp;#169%3b 2015-2021 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b 1993-2020 Computer Associates.</CopyrightText>
     <BuildLogFile>C:\XSharp\DevRt\Binaries\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
@@ -263,6 +272,85 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="Docs\Categories\" />
     <Folder Include="Docs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Docs\Categories\Metadata_Functions.aml" />
+    <None Include="Docs\Categories\display_Classes.aml" />
+    <None Include="Docs\Categories\attributes_Classes.aml" />
+    <None Include="Docs\Categories\ads_Classes.aml" />
+    <None Include="Docs\Categories\file_Classes.aml" />
+    <None Include="Docs\Categories\event_Classes.aml" />
+    <None Include="Docs\Categories\error_Classes.aml" />
+    <None Include="Docs\Categories\application_Classes.aml" />
+    <None Include="Docs\Categories\dbc_Classes.aml" />
+    <None Include="Docs\Categories\data_Classes.aml" />
+    <None Include="Docs\Categories\dialog_Classes.aml" />
+    <None Include="Docs\Categories\draw_Classes.aml" />
+    <None Include="Docs\Categories\button_Classes.aml" />
+    <None Include="Docs\Categories\control_Classes.aml" />
+    <None Include="Docs\Categories\xpp_Classes.aml" />
+    <None Include="Docs\Categories\window_Classes.aml" />
+    <None Include="Docs\Categories\vfp_Classes.aml" />
+    <None Include="Docs\Categories\textcontrol_Classes.aml" />
+    <None Include="Docs\Categories\support_Classes.aml" />
+    <None Include="Docs\Categories\state_Classes.aml" />
+    <None Include="Docs\Categories\sql_Classes.aml" />
+    <None Include="Docs\Categories\rdd_Classes.aml" />
+    <None Include="Docs\Categories\printer_Classes.aml" />
+    <None Include="Docs\Categories\ole_Classes.aml" />
+    <None Include="Docs\Categories\menu_Classes.aml" />
+    <None Include="Docs\Categories\macro_Classes.aml" />
+    <None Include="Docs\Categories\internet_Classes.aml" />
+    <None Include="Docs\Categories\international_Classes.aml" />
+    <None Include="Docs\Categories\image_Classes.aml" />
+    <None Include="Docs\Categories\help_Classes.aml" />
+    <None Include="Docs\Categories\gdi_Functions.aml" />
+    <None Include="Docs\Categories\datetime_Functions.aml" />
+    <None Include="Docs\Categories\Codeblock_Functions.aml" />
+    <None Include="Docs\Categories\template.aml" />
+    <None Include="Docs\Categories\XML_Functions.aml" />
+    <None Include="Docs\Categories\Usual_Functions.aml" />
+    <None Include="Docs\Categories\Time_Functions.aml" />
+    <None Include="Docs\Categories\Terminal_Functions.aml" />
+    <None Include="Docs\Categories\Symbol_Functions.aml" />
+    <None Include="Docs\Categories\Support_Functions.aml" />
+    <None Include="Docs\Categories\Sql_Functions.aml" />
+    <None Include="Docs\Categories\Settings_Functions.aml" />
+    <None Include="Docs\Categories\Registry_Functions.aml" />
+    <None Include="Docs\Categories\RDD_Functions.aml" />
+    <None Include="Docs\Categories\PSZ_Functions.aml" />
+    <None Include="Docs\Categories\Programming_Functions.aml" />
+    <None Include="Docs\Categories\Printing_Functions.aml" />
+    <None Include="Docs\Categories\Numeric_Functions.aml" />
+    <None Include="Docs\Categories\Network_Functions.aml" />
+    <None Include="Docs\Categories\Memvar_Functions.aml" />
+    <None Include="Docs\Categories\Memory_Functions.aml" />
+    <None Include="Docs\Categories\Memo_Functions.aml" />
+    <None Include="Docs\Categories\Macro_Functions.aml" />
+    <None Include="Docs\Categories\Locking_Functions.aml" />
+    <None Include="Docs\Categories\International_Functions.aml" />
+    <None Include="Docs\Categories\Index_Functions.aml" />
+    <None Include="Docs\Categories\File_Functions.aml" />
+    <None Include="Docs\Categories\Error_Functions.aml" />
+    <None Include="Docs\Categories\Encryption_Functions.aml" />
+    <None Include="Docs\Categories\Disk_Functions.aml" />
+    <None Include="Docs\Categories\Dialog_Functions.aml" />
+    <None Include="Docs\Categories\Debug_Functions.aml" />
+    <None Include="Docs\Categories\DbfTyped_Functions.aml" />
+    <None Include="Docs\Categories\Dbf_Functions.aml" />
+    <None Include="Docs\Categories\Dbc_Functions.aml" />
+    <None Include="Docs\Categories\Cursor_Functions.aml" />
+    <None Include="Docs\Categories\Conversion_Functions.aml" />
+    <None Include="Docs\Categories\Blob_Functions.aml" />
+    <None Include="Docs\Categories\Binary_Functions.aml" />
+    <None Include="Docs\Categories\Array_Functions.aml" />
+    <None Include="Docs\Categories\Ads_Functions.aml" />
+    <None Include="Docs\Categories\Date_Functions.aml" />
+    <None Include="Docs\Categories\String_Functions.aml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ContentLayout Include="Docs\Content.content" />
   </ItemGroup>
 </Project>

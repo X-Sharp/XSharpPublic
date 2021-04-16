@@ -447,7 +447,7 @@ FUNCTION Occurs3(cSearch AS STRING,cTarget AS STRING,dwOffset AS DWORD) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oem/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemBuff" />
+/// <seealso cref="Ansi2OemBuff" />
 FUNCTION Ansi2Oem(cAnsiString AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -460,12 +460,13 @@ FUNCTION Ansi2Oem(cAnsiString AS STRING) AS STRING
 /// Convert an array of bytes from ANSI to OEM.
 /// </summary>
 /// <param name="bSource">String in Ansi format</param>
-/// <inheritdoc cref="M:XSharp.Core.Functions.Ansi2Oem(System.String)" />
+// <inheritdoc cref="Ansi2Oem" />
+/// <inheritdoc cref="Ansi2Oem" />
 FUNCTION Ansi2Oem(bSource AS BYTE[]) AS BYTE[]
 	RETURN Ansi2Oem(bSource, bSource:Length)
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.Ansi2Oem(System.Byte[])" />
+/// <inheritdoc cref="Ansi2Oem(System.Byte[])" />
 /// <param name="iLen">Length of the source array</param>
 FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
@@ -475,13 +476,12 @@ FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 
 /// <overloads>
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiA" />
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
+/// <seealso cref="Oem2AnsiA" />
+/// <seealso cref="Ansi2Oem" />
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oema/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemBuff" />
-/// <seealso cref="O:XSharp.RT.Functions.Ansi2OemBuff" />
+/// <seealso cref="Ansi2OemBuff" />
 FUNCTION Ansi2OemA(cAnsiString REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -496,7 +496,7 @@ FUNCTION Ansi2OemA(cAnsiString REF STRING) AS STRING
 /// Convert an array of ANSI characters to OEM characters, changing the contents of the argument as well as the return value.
 /// </summary>
 /// <param name="bSource">A byte array that contains the string to convert</param>
-/// <inheritdoc cref="M:XSharp.Core.Functions.Ansi2OemA(System.String@)" />
+/// <inheritdoc cref="Ansi2OemA(System.String@)" />
 FUNCTION Ansi2OemA(bSource AS BYTE[]) AS VOID
 	LOCAL bDest AS BYTE[]
 	bDest := Ansi2Oem(bSource, bSource:Length)
@@ -506,12 +506,12 @@ FUNCTION Ansi2OemA(bSource AS BYTE[]) AS VOID
 
 /// <overloads>
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
-/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiA" />
+/// <seealso cref="Ansi2Oem" />
+/// <seealso cref="Oem2AnsiA" />
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansi/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiBuff" />
+/// <seealso cref="Oem2AnsiBuff" />
 FUNCTION Oem2Ansi(cOemString AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -524,14 +524,14 @@ FUNCTION Oem2Ansi(cOemString AS STRING) AS STRING
 /// Convert an array of OEM characters to ANSI characters.
 /// </summary>
 /// <param name="bSource">A byte array that contains the string to convert</param>
-/// <inheritdoc cref="M:XSharp.Core.Functions.Oem2Ansi(System.String)" />
+/// <inheritdoc cref="Oem2Ansi(System.String)" />
 FUNCTION Oem2Ansi(bSource AS BYTE[]) AS BYTE[]
 	RETURN Oem2Ansi(bSource, bSource:Length)
 
 /// <overloads>
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="O:XSharp.Core.Functions.Oem2Ansi" />
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemA" />
+/// <seealso cref="Oem2Ansi" />
+/// <seealso cref="Ansi2OemA" />
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansia/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
@@ -546,7 +546,7 @@ FUNCTION Oem2AnsiA(cOemString REF STRING) AS STRING
 
 
 /// <param name="bSource">A byte array that contains the string to convert</param>
-/// <inheritdoc cref="M:XSharp.Core.Functions.Oem2AnsiA(System.String@)" />
+/// <inheritdoc cref="System.String@)" />
 FUNCTION Oem2AnsiA(bSource AS BYTE[]) AS VOID
 	LOCAL bDest AS BYTE[]
 	bDest := Oem2Ansi(bSource, bSource:Length)
@@ -554,10 +554,10 @@ FUNCTION Oem2AnsiA(bSource AS BYTE[]) AS VOID
     RETURN
 	
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.Oem2Ansi(System.Byte[])" />
+/// <inheritdoc cref="Oem2Ansi(System.Byte[])" />
 /// <param name="iLen">The number of characters to convert</param>
 /// <returns>String converted to Ansi</returns>
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
+/// <seealso cref="Ansi2Oem" />
 FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}
@@ -566,14 +566,14 @@ FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansibuff/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemBuff" />
+/// <seealso cref="Ansi2OemBuff" />
 FUNCTION Oem2AnsiBuff(pszTarget AS BYTE[],pszSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
 	OemToCharBuffA(pszSource, pszTarget, dwCount)
 	RETURN pszTarget
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oembuff/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiBuff" />
+/// <seealso cref="Oem2AnsiBuff" />
 FUNCTION Ansi2OemBuff(pszTarget AS BYTE[],pszSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
 	CharToOemBuffA(pszSource, pszTarget, dwCount)
 	RETURN pszTarget

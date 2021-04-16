@@ -1,7 +1,8 @@
 
 
-#USING System.Windows.Forms
-using System.Drawing
+USING System.Windows.Forms
+USING System.Drawing
+[XSharp.Internal.TypesChanged];
 CLASS Button INHERIT TextControl
 	PROTECT oImage AS VObject
 
@@ -25,8 +26,8 @@ CLASS Button INHERIT TextControl
         ENDIF
 
 
-	ACCESS __Button AS VOButton
-		RETURN (VOButton) oCtrl
+	ACCESS __Button AS IVOButton
+		RETURN (IVOButton) oCtrl
 		
 
 	METHOD __GetImage()  AS VObject
@@ -54,7 +55,7 @@ CLASS Button INHERIT TextControl
 		RETURN FALSE
 
 
-    METHOD Dispatch (oEvent)
+    METHOD Dispatch (oEvent AS @@Event)
         
         RETURN SUPER:Dispatch(oEvent)
 

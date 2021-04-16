@@ -1,21 +1,21 @@
 
 
+[XSharp.Internal.TypesChanged];
 CLASS GroupBox INHERIT TextControl
-
 
     PROPERTY ControlType AS ControlType GET ControlType.GroupBox
 
-    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
-        VAR oGroup := (VOGroupBox) oC
+    METHOD OnControlCreated(oC AS IVOControl) AS VOID
+        VAR oGroup := (IVOGroupBox) oC
 		oGroup:SendToBack()
 		oGroup:VisibleChanged += OnVisibleChanged
 		oGroup:IsRadioGroup  := SELF IS RadioButtonGroup
 
 
 	METHOD OnVisibleChanged(sender AS OBJECT, e AS EventArgs) AS VOID
-		IF oCtrl != NULL_OBJECT .and. oCtrl:Visible
+        // Set timer to refresh all child controls after 1 second
+		IF oCtrl != NULL_OBJECT .AND. oCtrl:Visible
 			SELF:RegisterTimer(1, TRUE)
-			
 		ENDIF
 		
 	METHOD Timer() AS USUAL CLIPPER
@@ -26,8 +26,8 @@ CLASS GroupBox INHERIT TextControl
 		ENDIF
 		RETURN NIL
 
-	ACCESS __GroupBox AS VOGroupBox
-		RETURN (VOGroupBox) oCtrl
+	ACCESS __GroupBox AS IVOGroupBox
+		RETURN (IVOGroupBox) oCtrl
 	
 	METHOD AsString () 
 		RETURN "#"+Symbol2String(ClassName(SELF))+":"+SELF:Caption

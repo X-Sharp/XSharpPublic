@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
+// The contents of this file is derived from ace.h
 USING System
 USING System.Text
 USING System.Runtime.InteropServices
@@ -12,101 +13,364 @@ BEGIN NAMESPACE XSharp.ADS
     STATIC CLASS ACE
         
         #region Constants
+        /* SQL Timeout value */
+        PUBLIC CONST ADS_DEFAULT_SQL_TIMEOUT       := 0x0000  AS WORD // Default client SQL timeout.
+        /* Logical constants */
         PUBLIC CONST ADS_FALSE := 0 AS WORD
         PUBLIC CONST ADS_TRUE := 1 AS WORD
+        /* This is for parameters to routines that accept a default setting */
         PUBLIC CONST ADS_DEFAULT := 0 AS WORD 
-        PUBLIC CONST ADS_ANSI := 1 AS WORD
-        PUBLIC CONST ADS_OEM := 2 AS WORD
-        PUBLIC CONST ADS_MAX_CHAR_SETS := 68 AS WORD 
-        PUBLIC CONST ADS_CHECKRIGHTS := 1 AS WORD 
-        PUBLIC CONST ADS_IGNORERIGHTS := 2 AS WORD 
-        PUBLIC CONST ADS_INC_USERCOUNT := 1 AS WORD
-        PUBLIC CONST ADS_STORED_PROC_CONN := 2 AS WORD 
-        PUBLIC CONST ADS_COMPRESS_ALWAYS := 4 AS WORD 
-        PUBLIC CONST ADS_COMPRESS_NEVER := 8 AS WORD 
-        PUBLIC CONST ADS_COMPRESS_INTERNET := 12 AS WORD 
-        PUBLIC CONST ADS_REPLICATION_CONNECTION := 16 AS WORD 
-        PUBLIC CONST ADS_UDP_IP_CONNECTION := 32 AS WORD 
-        PUBLIC CONST ADS_IPX_CONNECTION := 64 AS WORD 
-        PUBLIC CONST ADS_TCP_IP_CONNECTION := 128 AS WORD 
-        PUBLIC CONST ADS_TCP_IP_V6_CONNECTION := 256 AS WORD 
-        PUBLIC CONST ADS_NOTIFICATION_CONNECTION := 512 AS WORD 
-        PUBLIC CONST ADS_EXCLUSIVE := 1 AS WORD 
-        PUBLIC CONST ADS_READONLY := 2 AS WORD 
-        PUBLIC CONST ADS_SHARED := 4 AS WORD 
-        PUBLIC CONST ADS_CLIPPER_MEMOS := 8 AS WORD 
-        PUBLIC CONST ADS_TABLE_PERM_READ := 16 AS WORD 
-        PUBLIC CONST ADS_TABLE_PERM_UPDATE := 32 AS WORD 
-        PUBLIC CONST ADS_TABLE_PERM_INSERT := 64 AS WORD 
-        PUBLIC CONST ADS_TABLE_PERM_DELETE := 128 AS WORD 
-        PUBLIC CONST ADS_REINDEX_ON_COLLATION_MISMATCH := 256 AS WORD 
-        PUBLIC CONST ADS_IGNORE_COLLATION_MISMATCH := 512 AS WORD 
-        PUBLIC CONST ADS_FREE_TABLE := 4096 AS WORD 
-        PUBLIC CONST ADS_TEMP_TABLE := 8192 AS WORD 
-        PUBLIC CONST ADS_DICTIONARY_BOUND_TABLE := 16384 AS WORD 
+
+        /* character set types */
+        PUBLIC CONST ADS_ANSI                      := 1 AS WORD
+        PUBLIC CONST ADS_OEM                       := 2 AS WORD
+        PUBLIC CONST CZECH_VFP_CI_AS_1250          := 3 AS WORD
+        PUBLIC CONST GENERAL_VFP_CI_AS_1250        := 4 AS WORD
+        PUBLIC CONST HUNGARY_VFP_CI_AS_1250        := 5 AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_1250          := 6 AS WORD
+        PUBLIC CONST POLISH_VFP_CI_AS_1250         := 7 AS WORD
+        PUBLIC CONST SLOVAK_VFP_CI_AS_1250         := 8 AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_1251          := 9 AS WORD
+        PUBLIC CONST RUSSIAN_VFP_CI_AS_1251        := 10 AS WORD
+        PUBLIC CONST DUTCH_VFP_CI_AS_1252          := 11 AS WORD
+        PUBLIC CONST GENERAL_VFP_CI_AS_1252        := 12 AS WORD
+        PUBLIC CONST GERMAN_VFP_CI_AS_1252         := 13 AS WORD
+        PUBLIC CONST ICELAND_VFP_CI_AS_1252        := 14 AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_1252          := 15 AS WORD
+        PUBLIC CONST NORDAN_VFP_CI_AS_1252         := 16 AS WORD
+        PUBLIC CONST SPANISH_VFP_CI_AS_1252        := 17 AS WORD
+        PUBLIC CONST SWEFIN_VFP_CI_AS_1252         := 18 AS WORD
+        PUBLIC CONST UNIQWT_VFP_CS_AS_1252         := 19 AS WORD
+        PUBLIC CONST GREEK_VFP_CI_AS_1253          := 20 AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_1253          := 21 AS WORD
+        PUBLIC CONST GENERAL_VFP_CI_AS_1254        := 22 AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_1254          := 23 AS WORD
+        PUBLIC CONST TURKISH_VFP_CI_AS_1254        := 24 AS WORD
+        PUBLIC CONST DUTCH_VFP_CI_AS_437           := 25 AS WORD
+        PUBLIC CONST GENERAL_VFP_CI_AS_437         := 26 AS WORD
+        PUBLIC CONST GERMAN_VFP_CI_AS_437          := 27 AS WORD
+        PUBLIC CONST ICELAND_VFP_CI_AS_437         := 28 AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_437           := 29 AS WORD
+        PUBLIC CONST NORDAN_VFP_CI_AS_437          := 30 AS WORD
+        PUBLIC CONST SPANISH_VFP_CI_AS_437         := 31 AS WORD
+        PUBLIC CONST SWEFIN_VFP_CI_AS_437          := 32 AS WORD
+        PUBLIC CONST UNIQWT_VFP_CS_AS_437          := 33 AS WORD
+        PUBLIC CONST GENERAL_VFP_CI_AS_620         := 34 AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_620           := 35 AS WORD
+        PUBLIC CONST POLISH_VFP_CI_AS_620          := 36 AS WORD
+        PUBLIC CONST GREEK_VFP_CI_AS_737           := 37 AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_737           := 38 AS WORD
+        PUBLIC CONST DUTCH_VFP_CI_AS_850           := 39  AS WORD
+        PUBLIC CONST GENERAL_VFP_CI_AS_850         := 40  AS WORD
+        PUBLIC CONST ICELAND_VFP_CI_AS_850         := 41  AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_850           := 42  AS WORD
+        PUBLIC CONST NORDAN_VFP_CI_AS_850         := 43   AS WORD
+        PUBLIC CONST SPANISH_VFP_CI_AS_850        := 44   AS WORD
+        PUBLIC CONST SWEFIN_VFP_CI_AS_850         := 45   AS WORD
+        PUBLIC CONST UNIQWT_VFP_CS_AS_850         := 46   AS WORD
+        PUBLIC CONST CZECH_VFP_CI_AS_852          := 47   AS WORD
+        PUBLIC CONST GENERAL_VFP_CI_AS_852        := 48   AS WORD
+        PUBLIC CONST HUNGARY_VFP_CI_AS_852        := 49   AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_852          := 50   AS WORD
+        PUBLIC CONST POLISH_VFP_CI_AS_852         := 51   AS WORD
+        PUBLIC CONST SLOVAK_VFP_CI_AS_852         := 52   AS WORD
+        PUBLIC CONST GENERAL_VFP_CI_AS_857        := 53   AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_857          := 54   AS WORD
+        PUBLIC CONST TURKISH_VFP_CI_AS_857        := 55   AS WORD
+        PUBLIC CONST GENERAL_VFP_CI_AS_861        := 56   AS WORD
+        PUBLIC CONST ICELAND_VFP_CI_AS_861        := 57   AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_861          := 58   AS WORD
+        PUBLIC CONST GENERAL_VFP_CI_AS_865        := 59   AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_865          := 60   AS WORD
+        PUBLIC CONST NORDAN_VFP_CI_AS_865         := 61   AS WORD
+        PUBLIC CONST SWEFIN_VFP_CI_AS_865         := 62   AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_866          := 63   AS WORD
+        PUBLIC CONST RUSSIAN_VFP_CI_AS_866        := 64   AS WORD
+        PUBLIC CONST CZECH_VFP_CI_AS_895          := 65   AS WORD
+        PUBLIC CONST GENERAL_VFP_CI_AS_895        := 66   AS WORD
+        PUBLIC CONST MACHINE_VFP_BIN_895          := 67   AS WORD
+        PUBLIC CONST SLOVAK_VFP_CI_AS_895         := 68   AS WORD
+        PUBLIC CONST DANISH_ADS_CS_AS_1252        := 69   AS WORD
+        PUBLIC CONST DUTCH_ADS_CS_AS_1252         := 70   AS WORD
+        PUBLIC CONST ENGL_AMER_ADS_CS_AS_1252     := 71   AS WORD
+        PUBLIC CONST ENGL_CAN_ADS_CS_AS_1252      := 72   AS WORD
+        PUBLIC CONST ENGL_UK_ADS_CS_AS_1252       := 73   AS WORD
+        PUBLIC CONST FINNISH_ADS_CS_AS_1252       := 74   AS WORD
+        PUBLIC CONST FRENCH_ADS_CS_AS_1252        := 75   AS WORD
+        PUBLIC CONST FRENCH_CAN_ADS_CS_AS_1252    := 76   AS WORD
+        PUBLIC CONST GERMAN_ADS_CS_AS_1252        := 77   AS WORD
+        PUBLIC CONST ICELANDIC_ADS_CS_AS_1252     := 78   AS WORD
+        PUBLIC CONST ITALIAN_ADS_CS_AS_1252       := 79   AS WORD
+        PUBLIC CONST NORWEGIAN_ADS_CS_AS_1252     := 80   AS WORD
+        PUBLIC CONST PORTUGUESE_ADS_CS_AS_1252    :=  81  AS WORD
+        PUBLIC CONST SPANISH_ADS_CS_AS_1252       :=  82   AS WORD
+        PUBLIC CONST SPAN_MOD_ADS_CS_AS_1252      :=  83   AS WORD
+        PUBLIC CONST SWEDISH_ADS_CS_AS_1252       :=  84   AS WORD
+        PUBLIC CONST RUSSIAN_ADS_CS_AS_1251       :=  85   AS WORD
+        PUBLIC CONST ASCII_ADS_CS_AS_1252         :=  86   AS WORD
+        PUBLIC CONST TURKISH_ADS_CS_AS_1254       :=  87   AS WORD
+        PUBLIC CONST POLISH_ADS_CS_AS_1250        :=  88   AS WORD
+        PUBLIC CONST BALTIC_ADS_CS_AS_1257        :=  89   AS WORD
+        PUBLIC CONST UKRAINIAN_ADS_CS_AS_1251     :=  90   AS WORD
+        PUBLIC CONST DUDEN_DE_ADS_CS_AS_1252      :=  91   AS WORD
+        PUBLIC CONST USA_ADS_CS_AS_437            :=  92   AS WORD
+        PUBLIC CONST DANISH_ADS_CS_AS_865         :=  93   AS WORD
+        PUBLIC CONST DUTCH_ADS_CS_AS_850          :=  94   AS WORD
+        PUBLIC CONST FINNISH_ADS_CS_AS_865        :=  95   AS WORD
+        PUBLIC CONST FRENCH_ADS_CS_AS_863         :=  96   AS WORD
+        PUBLIC CONST GERMAN_ADS_CS_AS_850         :=  97   AS WORD
+        PUBLIC CONST GREEK437_ADS_CS_AS_437       :=  98   AS WORD
+        PUBLIC CONST GREEK851_ADS_CS_AS_851       :=  99   AS WORD
+        PUBLIC CONST ICELD850_ADS_CS_AS_850       :=  100  AS WORD
+        PUBLIC CONST ICELD861_ADS_CS_AS_861       :=  101  AS WORD
+        PUBLIC CONST ITALIAN_ADS_CS_AS_850        :=  102  AS WORD
+        PUBLIC CONST NORWEGN_ADS_CS_AS_865        :=  103  AS WORD
+        PUBLIC CONST PORTUGUE_ADS_CS_AS_860       :=  104  AS WORD
+        PUBLIC CONST SPANISH_ADS_CS_AS_852        :=  105  AS WORD
+        PUBLIC CONST SWEDISH_ADS_CS_AS_865        :=  106  AS WORD
+        PUBLIC CONST MAZOVIA_ADS_CS_AS_852        :=  107  AS WORD
+        PUBLIC CONST PC_LATIN_ADS_CS_AS_852       :=  108  AS WORD
+        PUBLIC CONST ISOLATIN_ADS_CS_AS_850       :=  109  AS WORD
+        PUBLIC CONST RUSSIAN_ADS_CS_AS_866        :=  110  AS WORD
+        PUBLIC CONST NTXCZ852_ADS_CS_AS_852       :=  111  AS WORD
+        PUBLIC CONST NTXCZ895_ADS_CS_AS_895       :=  112  AS WORD
+        PUBLIC CONST NTXSL852_ADS_CS_AS_852       :=  113 AS WORD
+        PUBLIC CONST NTXSL895_ADS_CS_AS_895       :=  114 AS WORD
+        PUBLIC CONST NTXHU852_ADS_CS_AS_852       :=  115 AS WORD
+        PUBLIC CONST NTXPL852_ADS_CS_AS_852       :=  116 AS WORD
+        PUBLIC CONST TURKISH_ADS_CS_AS_857        :=  117 AS WORD
+        PUBLIC CONST BOSNIAN_ADS_CS_AS_775        :=  118 AS WORD
+                                           
+        PUBLIC CONST ADS_MAX_CHAR_SETS            :=  118 AS WORD
+
+
+        /* rights checking options */
+        PUBLIC CONST ADS_CHECKRIGHTS          := 1 AS WORD
+        PUBLIC CONST ADS_IGNORERIGHTS         := 2 AS WORD
+
+
+         /*
+         * In version 10, the default behavior is changed to never do the rights
+         * checking for performance reasons.  The client side existence checks are very
+         * expensive and are unnecessary in almost all situations.  If an application
+         * requires the old behavior, it can be restored with AdsSetRightsChecking and
+         * passing it the appropriate flag below.
+         */
+        PUBLIC CONST ADS_RESPECT_RIGHTS_CHECKING   := 0x00000001 AS WORD  // pre v10 behavior
+        PUBLIC CONST ADS_IGNORE_RIGHTS_CHECKING    := 0x00000002 AS WORD   // post v10 behavior
+
+
+       /* options for connecting to Advantage servers - can be ORed together */
+        PUBLIC CONST ADS_INC_USERCOUNT           := 0x00000001 AS WORD
+        PUBLIC CONST ADS_STORED_PROC_CONN        := 0x00000002 AS WORD
+        PUBLIC CONST ADS_COMPRESS_ALWAYS         := 0x00000004 AS WORD
+        PUBLIC CONST ADS_COMPRESS_NEVER          := 0x00000008 AS WORD
+        PUBLIC CONST ADS_COMPRESS_INTERNET       := 0x0000000C AS WORD
+        PUBLIC CONST ADS_REPLICATION_CONNECTION  := 0x00000010 AS WORD
+        PUBLIC CONST ADS_UDP_IP_CONNECTION       := 0x00000020 AS WORD
+        PUBLIC CONST ADS_IPX_CONNECTION          := 0x00000040 AS WORD
+        PUBLIC CONST ADS_TCP_IP_CONNECTION       := 0x00000080 AS WORD
+        PUBLIC CONST ADS_TCP_IP_V6_CONNECTION    := 0x00000100 AS WORD
+        PUBLIC CONST ADS_NOTIFICATION_CONNECTION := 0x00000200 AS WORD
+        // Reserved                         0x00000400
+        // Reserved                         0x00000800
+        PUBLIC CONST ADS_TLS_CONNECTION          := 0x00001000 AS WORD
+        PUBLIC CONST ADS_CHECK_FREE_TABLE_ACCESS := 0x00002000 AS WORD
+            /* options for opening/create tables - can be ORed together */
+        /* options for opening/create tables - can be ORed together */
+        PUBLIC CONST ADS_EXCLUSIVE                    := 0x00000001 AS DWORD
+        PUBLIC CONST ADS_READONLY                     := 0x00000002 AS DWORD
+        PUBLIC CONST ADS_SHARED                       := 0x00000004 AS DWORD
+        PUBLIC CONST ADS_CLIPPER_MEMOS                := 0x00000008 AS DWORD
+        PUBLIC CONST ADS_TABLE_PERM_READ              := 0x00000010 AS DWORD
+        PUBLIC CONST ADS_TABLE_PERM_UPDATE            := 0x00000020 AS DWORD
+        PUBLIC CONST ADS_TABLE_PERM_INSERT            := 0x00000040 AS DWORD
+        PUBLIC CONST ADS_TABLE_PERM_DELETE            := 0x00000080 AS DWORD
+        PUBLIC CONST ADS_REINDEX_ON_COLLATION_MISMATCH:= 0x00000100 AS DWORD
+        PUBLIC CONST ADS_IGNORE_COLLATION_MISMATCH    := 0x00000200 AS DWORD
+        PUBLIC CONST ADS_FREE_TABLE                   := 0x00001000 AS DWORD // Mutually exclusive with ADS_DICTIONARY_BOUND_TABLE
+        PUBLIC CONST ADS_TEMP_TABLE                   := 0x00002000 AS DWORD // Mutually exclusive with ADS_DICTIONARY_BOUND_TABLE
+        PUBLIC CONST ADS_DICTIONARY_BOUND_TABLE       := 0x00004000 AS DWORD // Mutually exclusive with ADS_FREE_TABLE or ADS_TEMP_TABLE
+        PUBLIC CONST ADS_CACHE_READS                  := 0x20000000 AS DWORD // Enable caching of reads on the table
+        PUBLIC CONST ADS_CACHE_WRITES                 := 0x40000000 AS DWORD // Enable caching of reads & writes on the table
+            
+        /* When adding entry in here, make sure the corresponding
+        * entry is added in aceunpub.h and ensure that there is no
+        * conflict.
+ 		*/
+
+
+
+
+
+/*
+        * Options for creating indexes - can be ORed together. Be sure to update
+        * the ADS_INDEX_OPTIONS_MASK when adding bits to the options
+        */
         PUBLIC CONST ADS_ASCENDING := 0 AS WORD 
         PUBLIC CONST ADS_UNIQUE := 1 AS WORD 
         PUBLIC CONST ADS_COMPOUND := 2 AS WORD 
         PUBLIC CONST ADS_CUSTOM := 4 AS WORD 
         PUBLIC CONST ADS_DESCENDING := 8 AS WORD 
-        PUBLIC CONST ADS_USER_DEFINED := 16 AS WORD 
-        PUBLIC CONST ADS_NOT_AUTO_OPEN := 1024 AS WORD 
-        PUBLIC CONST ADS_CANDIDATE := 2048 AS WORD 
-        PUBLIC CONST ADS_FTS_INDEX := 32 AS WORD 
-        PUBLIC CONST ADS_FTS_FIXED := 64 AS WORD 
-        PUBLIC CONST ADS_FTS_CASE_SENSITIVE := 128 AS WORD 
-        PUBLIC CONST ADS_FTS_KEEP_SCORE := 256 AS WORD 
-        PUBLIC CONST ADS_FTS_PROTECT_NUMBERS := 512 AS WORD 
-        PUBLIC CONST ADS_NONE := 0 AS WORD 
-        PUBLIC CONST ADS_LTRIM := 1 AS WORD 
-        PUBLIC CONST ADS_RTRIM := 2 AS WORD 
-        PUBLIC CONST ADS_TRIM := 3 AS WORD 
+        PUBLIC CONST ADS_USER_DEFINED := 0x10 AS WORD 
+        /* Options specifically for FTS indexes 0020 - 0200 */
+        PUBLIC CONST ADS_FTS_INDEX := 0x20 AS WORD 
+        PUBLIC CONST ADS_FTS_FIXED := 0x40 AS WORD 
+        PUBLIC CONST ADS_FTS_CASE_SENSITIVE := 0x80 AS WORD 
+        PUBLIC CONST ADS_FTS_KEEP_SCORE := 0x100 AS WORD 
+        PUBLIC CONST ADS_FTS_PROTECT_NUMBERS := 0x200 AS WORD 
+            
+        PUBLIC CONST ADS_NOT_AUTO_OPEN := 0x400 AS WORD 
+        PUBLIC CONST ADS_CANDIDATE := 0x800 AS WORD 
+        PUBLIC CONST ADS_BINARY_INDEX        :=       0x00001000  AS WORD   // logical index with a bitmap for data
+            
+            /* Options concerning the parameters supplied to the AdsCreateFTSIndex 00002000 - 00004000 */
+        PUBLIC CONST ADS_FTS_ENCODE_UTF8     :=       0x00002000 AS DWORD
+        PUBLIC CONST ADS_FTS_ENCODE_UTF16    :=       0x00004000 AS DWORD
+            
+        PUBLIC CONST ADS_ONLINE              :=       0x00200000 AS DWORD    // Perform ONLINE create with table open shared
+            
+            /* Option to force index version */
+        PUBLIC CONST ADS_ALLOW_MULTIPLE_COLLATION  := 0x10000000 AS DWORD
+            
+            /* Options concerning Unicode string in the indexes 20000000 - 40000000 */
+        PUBLIC CONST ADS_UCHAR_KEY_SHORT   :=         0x20000000 AS DWORD
+        PUBLIC CONST ADS_UCHAR_KEY_LONG    :=         0x40000000 AS DWORD
+        PUBLIC CONST ADS_UCHAR_KEY_XLONG   :=         0x60000000 AS DWORD
+            
+        PUBLIC CONST ADS_INDEX_OPTIONS_MASK  :=       0x70207FFF   AS DWORD  // All valid index options
+            
+        /* Options for returning string values */
+        PUBLIC CONST ADS_NONE                   := 0x0000 AS WORD 
+        PUBLIC CONST ADS_LTRIM                  := 0x0001 AS WORD 
+        PUBLIC CONST ADS_RTRIM                  := 0x0002 AS WORD 
+        PUBLIC CONST ADS_TRIM                   := 0x0003 AS WORD
+        PUBLIC CONST DS_GET_UTF8                := 0x0004 AS WORD
+        PUBLIC CONST ADS_DONT_CHECK_CONV_ERR    := 0x0008 AS WORD
+        PUBLIC CONST ADS_GET_FORMAT_ANSI        := 0x0010 AS WORD
+        PUBLIC CONST ADS_GET_FORMAT_WEB         := 0x0030 AS WORD
+        PUBLIC CONST ADS_GET_GUID_MIME          := 0x0100 AS WORD    // MIME ENCODED
+        PUBLIC CONST ADS_GET_GUID_FILE          := 0x0200 AS WORD   // FILE ENCODED
+        PUBLIC CONST ADS_GET_GUID_NUMBERS       := 0x0400 AS WORD   // ONLY NUMBER
+        PUBLIC CONST ADS_GET_GUID_REGISTRY      := 0x0800 AS WORD   // REGISTRY Format - default
+                
+        /* this is for passing null terminated strings */
+        PUBLIC CONST ADS_NTS    := 0xFFFF AS WORD
+            
+            /* locking compatibility */
         PUBLIC CONST ADS_COMPATIBLE_LOCKING := 0 AS WORD 
         PUBLIC CONST ADS_PROPRIETARY_LOCKING := 1 AS WORD 
-        PUBLIC CONST ADS_SOFTSEEK := 1 AS WORD 
-        PUBLIC CONST ADS_HARDSEEK := 2 AS WORD 
-        PUBLIC CONST ADS_SEEKGT := 4 AS WORD 
-        PUBLIC CONST ADS_RAWKEY := 1 AS WORD 
-        PUBLIC CONST ADS_STRINGKEY := 2 AS WORD 
-        PUBLIC CONST ADS_DOUBLEKEY := 4 AS WORD 
+            
+            /* settings for seeks */
+        PUBLIC CONST ADS_SOFTSEEK := 0x0001 AS WORD 
+        PUBLIC CONST ADS_HARDSEEK := 0x0002 AS WORD 
+        PUBLIC CONST ADS_SEEKGT   := 0x0004 AS WORD 
+            
+            /* data types for seeks (and scopes) */
+            
+        PUBLIC CONST ADS_RAWKEY     := 1 AS WORD    /* no conversion performed on given data */
+        PUBLIC CONST ADS_STRINGKEY  := 2 AS WORD    /* data given as a string */
+        PUBLIC CONST ADS_DOUBLEKEY  := 4 AS WORD    /* data is a pointer to 8 byte double */
+        PUBLIC CONST ADS_WSTRINGKEY := 8 AS WORD    /* data given as a UTF16 string */
+                
+                /* Option for AdsBuildRawKey100 */
+        PUBLIC CONST ADS_GET_DEFAULT_KEY_LENGTH      := 0x0000 AS WORD
+        PUBLIC CONST ADS_GET_PARTIAL_FULL_KEY_LENGTH := 0x0001 AS WORD
+        PUBLIC CONST ADS_GET_FULL_KEY_LENGTH         := 0x0002 AS WORD
+        PUBLIC CONST ADS_GET_PRIMARY_WEIGHT_LENGTH   := 0x0004 AS WORD
+                                                     
+            
+            /* For retrieving scope settings */
         PUBLIC CONST ADS_TOP := 1 AS WORD 
-        PUBLIC CONST ADS_BOTTOM := 2 AS WORD 
+        PUBLIC CONST ADS_BOTTOM := 2 AS WORD
+            
+            /* for calls that can optionally use filters */
         PUBLIC CONST ADS_RESPECTFILTERS := 1 AS WORD 
         PUBLIC CONST ADS_IGNOREFILTERS := 2 AS WORD 
         PUBLIC CONST ADS_RESPECTSCOPES := 3 AS WORD 
-        PUBLIC CONST ADS_REFRESHCOUNT := 4 AS WORD 
-        PUBLIC CONST ADS_LOCAL_SERVER := 1 AS WORD 
-        PUBLIC CONST ADS_REMOTE_SERVER := 2 AS WORD 
-        PUBLIC CONST ADS_AIS_SERVER := 4 AS WORD 
-        PUBLIC CONST ADS_CONNECTION := 1 AS WORD 
-        PUBLIC CONST ADS_TABLE := 2 AS WORD 
-        PUBLIC CONST ADS_INDEX_ORDER := 3 AS WORD 
-        PUBLIC CONST ADS_STATEMENT := 4 AS WORD 
-        PUBLIC CONST ADS_CURSOR := 5 AS WORD 
-        PUBLIC CONST ADS_DATABASE_CONNECTION := 6 AS WORD 
-        PUBLIC CONST ADS_FTS_INDEX_ORDER := 8 AS WORD 
+        /*
+        * This value is only used with GetRecordCount:  It can be ORed in with the
+        * ignore filter value to force a read from the table header to get the most
+        * current record count.
+        */
+        
+        PUBLIC CONST ADS_REFRESHCOUNT := 4 AS WORD
+        
+        /* Server type constants */
+        PUBLIC CONST ADS_LOCAL_SERVER   := 0x0001 AS WORD 
+        PUBLIC CONST ADS_REMOTE_SERVER  := 0x0002 AS WORD 
+        PUBLIC CONST ADS_AIS_SERVER     := 0x0004 AS WORD 
+            
+            /* ACE Handle types */
+        PUBLIC CONST ADS_CONNECTION             := 1 AS WORD 
+        PUBLIC CONST ADS_TABLE                  := 2 AS WORD 
+        PUBLIC CONST ADS_INDEX_ORDER            := 3 AS WORD 
+        PUBLIC CONST ADS_STATEMENT              := 4 AS WORD 
+        PUBLIC CONST ADS_CURSOR                 := 5 AS WORD 
+        PUBLIC CONST ADS_DATABASE_CONNECTION    := 6 AS WORD 
+        /* #define ADS_SYS_ADMIN_CONNECTION  7   obsolete */
+        PUBLIC CONST ADS_FTS_INDEX_ORDER        := 8 AS WORD
+        
+            /* ACE Cursor ReadOnly settings */
         PUBLIC CONST ADS_CURSOR_READONLY := 1 AS WORD 
-        PUBLIC CONST ADS_CURSOR_READWRITE := 2 AS WORD 
+        PUBLIC CONST ADS_CURSOR_READWRITE := 2 AS WORD
+        
+            /* ACE Cursor Constrain settings */
         PUBLIC CONST ADS_CONSTRAIN := 1 AS WORD 
-        PUBLIC CONST ADS_NO_CONSTRAIN := 2 AS WORD 
+        PUBLIC CONST ADS_NO_CONSTRAIN := 2 AS WORD
+        
+            /* Select Field Read settings */
         PUBLIC CONST ADS_READ_ALL_COLUMNS := 1 AS WORD 
         PUBLIC CONST ADS_READ_SELECT_COLUMNS := 2 AS WORD 
         PUBLIC CONST ADS_NO_OPTIMIZATION := 1 AS WORD 
-        PUBLIC CONST ADS_NO_VALIDATE := 0 AS WORD 
-        PUBLIC CONST ADS_VALIDATE_NO_SAVE := 1 AS WORD 
-        PUBLIC CONST ADS_VALIDATE_WRITE_FAIL := 2 AS WORD 
-        PUBLIC CONST ADS_VALIDATE_APPEND_FAIL := 3 AS WORD 
-        PUBLIC CONST ADS_VALIDATE_RETURN_ERROR := 4 AS WORD 
+
+        /* Data dictionary new contraint property validation options */
+        PUBLIC CONST ADS_NO_VALIDATE := 0 AS WORD           /* Do not validate records against the new constraint */
+        PUBLIC CONST ADS_VALIDATE_NO_SAVE := 1 AS WORD      /* Delete record not meeting the constraint from the table, no save */
+        PUBLIC CONST ADS_VALIDATE_WRITE_FAIL := 2 AS WORD   /* Validate the records against the new constraint and overwrite
+                                                             * the fail table with records not meeting the constraint. */
+        PUBLIC CONST ADS_VALIDATE_APPEND_FAIL := 3 AS WORD  /* Validate the records against the new constraint and append
+                                                             * the failed records into the fail table */
+        PUBLIC CONST ADS_VALIDATE_RETURN_ERROR := 4 AS WORD /* Validate the records against the new constraint and return
+                                                             * error if there is any record not meeting the constraint */
+            
+            /* Possible result values from AdsCompareBookmarks. */
         PUBLIC CONST ADS_CMP_LESS := -1 AS INT
         PUBLIC CONST ADS_CMP_EQUAL := 0 AS INT
         PUBLIC CONST ADS_CMP_GREATER := 1 AS INT
-        PUBLIC CONST ADS_CONNECTIONPROP_USERNAME := 0 AS WORD 
-        PUBLIC CONST ADS_CONNECTIONPROP_PASSWORD := 1 AS WORD 
+            
+            /* Property values for the AdsGetConnectionProperty API */
+        PUBLIC CONST ADS_CONNECTIONPROP_USERNAME          := 0 AS WORD 
+        PUBLIC CONST ADS_CONNECTIONPROP_PASSWORD          := 1 AS WORD 
+        PUBLIC CONST ADS_CONNECTIONPROP_PROTOCOL          := 2 AS WORD
+        PUBLIC CONST ADS_CONNECTIONPROP_ENCRYPTION_TYPE   := 3 AS WORD
+        PUBLIC CONST ADS_CONNECTIONPROP_FIPS_MODE         := 4 AS WORD
+        PUBLIC CONST ADS_CONNECTIONPROP_CERTIFICATE_FILE  := 5 AS WORD
+        PUBLIC CONST ADS_CONNECTIONPROP_CIPHER_SUITE      := 6 AS WORD
+        PUBLIC CONST ADS_CONNECTIONPROP_COMMON_NAME       := 7 AS WORD
+                
+                
+        PUBLIC CONST ADS_CONNECTIONPROP_USING_TCP_IP      := 1 AS WORD
+        PUBLIC CONST ADS_CONNECTIONPROP_USING_TLC         := 5 AS WORD
+        
+            /* Options for the AdsGetRecordCRC API */
         PUBLIC CONST ADS_CRC_LOCALLY := 1 AS WORD 
         PUBLIC CONST ADS_CRC_IGNOREMEMOPAGES := 2 AS WORD 
-        PUBLIC CONST ADS_EVENT_ASYNC := 1 AS WORD 
+            
+            /* Options for notification events */
+        PUBLIC CONST ADS_EVENT_ASYNC        := 1 AS WORD 
+        PUBLIC CONST ADS_EVENT_WITH_DATA    := 2 AS WORD  // Allow data to be passed with this event
+            
+            /* Options for the AdsCancelUpdate90 API */
         PUBLIC CONST ADS_PRESERVE_ERR := 1 AS WORD 
+                
+        /* property for AdsGetIntProperty API */
+        PUBLIC CONST ADS_CODE_PAGE              :=  1 AS WORD
+        
+        /* Success return code */
         PUBLIC CONST AE_SUCCESS := 0 AS WORD 
+
+        /* Error codes */
         PUBLIC CONST AE_ALLOCATION_FAILED := 5001 AS WORD 
         PUBLIC CONST AE_COMM_MISMATCH := 5002 AS WORD 
         PUBLIC CONST AE_DATA_TOO_LONG := 5003 AS WORD 
@@ -314,30 +578,84 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST AE_NOT_VFP_VARIABLE_FIELD := 5206 AS WORD
         PUBLIC CONST AE_ILLEGAL_EVENT_COMMAND := 5207 AS WORD
         PUBLIC CONST AE_KEY_CANNOT_BE_NULL := 5208 AS WORD
+        PUBLIC CONST AE_COLLATIONS_DO_NOT_MATCH := 5209 AS WORD
+        PUBLIC CONST AE_INVALID_APPID := 5210 AS WORD
+        PUBLIC CONST AE_UNICODE_CONVERSION := 5211 AS WORD
+        PUBLIC CONST AE_UNICODE_COLLATION := 5212 AS WORD
+        PUBLIC CONST AE_SERVER_ENUMERATION_ERROR := 5213 AS WORD
+        PUBLIC CONST AE_UNABLE_TO_LOAD_SSL := 5214 AS WORD
+        PUBLIC CONST AE_UNABLE_TO_VERIFY_SIGNATURE := 5215 AS WORD
+        PUBLIC CONST AE_UNABLE_TO_LOAD_SSL_ENTRYPOINT := 5216 AS WORD
+        PUBLIC CONST AE_CRYPTO_ERROR := 5217 AS WORD
+        PUBLIC CONST AE_UNRECOGNIZED_CIPHER := 5218 AS WORD
+        PUBLIC CONST AE_FIPS_MODE_ENCRYPTION := 5219 AS WORD
+        PUBLIC CONST AE_FIPS_REQUIRED := 5220 AS WORD
+        PUBLIC CONST AE_FIPS_NOT_ALLOWED := 5221 AS WORD
+        PUBLIC CONST AE_FIPS_MODE_FAILED := 5222 AS WORD
+        PUBLIC CONST AE_PASSWORD_REQUIRED := 5223 AS WORD
+        PUBLIC CONST AE_CONNECTION_TIMED_OUT := 5224 AS WORD
+        PUBLIC CONST AE_DELTA_SUPPORT_NOT_POSSIBLE := 5225 AS WORD
+        PUBLIC CONST AE_QUERY_LOGGING_ERROR := 5226 AS WORD
+        PUBLIC CONST AE_COMPRESSION_FAILED := 5227 AS WORD
+        PUBLIC CONST AE_INVALID_DATA := 5228 AS WORD
+        PUBLIC CONST AE_ROWVERSION_REQUIRED := 5229 AS WORD
+            
+            /* Supported file types */
         PUBLIC CONST ADS_DATABASE_TABLE := 0 AS WORD
         PUBLIC CONST ADS_NTX := 1 AS WORD
         PUBLIC CONST ADS_CDX := 2 AS WORD
         PUBLIC CONST ADS_ADT := 3 AS WORD
         PUBLIC CONST ADS_VFP := 4 AS WORD
+            /* for retrieving file names of tables */
         PUBLIC CONST ADS_BASENAME := 1 AS WORD
         PUBLIC CONST ADS_BASENAMEANDEXT := 2 AS WORD
         PUBLIC CONST ADS_FULLPATHNAME := 3 AS WORD
         PUBLIC CONST ADS_DATADICTIONARY_NAME := 4 AS WORD
         PUBLIC CONST ADS_TABLE_OPEN_NAME := 5 AS WORD
+            
+            
+            /* Advantage Optimized Filter (AOF) optimization levels */
+            
         PUBLIC CONST ADS_OPTIMIZED_FULL := 1 AS WORD
         PUBLIC CONST ADS_OPTIMIZED_PART := 2 AS WORD
         PUBLIC CONST ADS_OPTIMIZED_NONE := 3 AS WORD
-        PUBLIC CONST ADS_DYNAMIC_AOF := 0 AS WORD 
-        PUBLIC CONST ADS_RESOLVE_IMMEDIATE := 1 AS WORD 
-        PUBLIC CONST ADS_RESOLVE_DYNAMIC := 2 AS WORD 
-        PUBLIC CONST ADS_KEYSET_AOF := 4 AS WORD 
-        PUBLIC CONST ADS_FIXED_AOF := 8 AS WORD 
+            
+            /* Advantage Optimized Filter (AOF) options */
+        PUBLIC CONST ADS_DYNAMIC_AOF            := 0x0000 AS WORD 
+        PUBLIC CONST ADS_RESOLVE_IMMEDIATE      := 0x0001 AS WORD 
+        PUBLIC CONST ADS_RESOLVE_DYNAMIC        := 0x0002 AS WORD 
+        PUBLIC CONST ADS_KEYSET_AOF             := 0x0004 AS WORD 
+        PUBLIC CONST ADS_FIXED_AOF              := 0x0008 AS WORD 
+        PUBLIC CONST ADS_KEEP_AOF_PLAN          := 0x0010 AS WORD
+        PUBLIC CONST ADS_ENCODE_UTF16           := 0x2000 AS WORD        // Used in AdsSetFilter100 options as well
+        PUBLIC CONST ADS_ENCODE_UTF8            := 0x4000 AS WORD       // Used in AdsSetFitler100 options as well
+                
+        PUBLIC CONST ADS_ENCODING_MASK          := ( ADS_ENCODE_UTF8 | ADS_ENCODE_UTF16 ) AS WORD
+            
+            /* Advantage Optimized Filter (AOF) customization options */
         PUBLIC CONST ADS_AOF_ADD_RECORD := 1 AS WORD
         PUBLIC CONST ADS_AOF_REMOVE_RECORD := 2 AS WORD
         PUBLIC CONST ADS_AOF_TOGGLE_RECORD := 3 AS WORD
+            
+            /* Stored procedure or trigger type */
         PUBLIC CONST ADS_STORED_PROC := 1u  AS DWORD 
         PUBLIC CONST ADS_COMSTORED_PROC := 2 AS WORD 
-        PUBLIC CONST ADS_SCRIPT_PROC := 4 AS WORD 
+        PUBLIC CONST ADS_SCRIPT_PROC := 4 AS WORD
+        /*
+        * Bit mask used by AdsDDAddProcedure to specify that the procedure returns an varying
+        * output cursor. Used in the ulInvokeType param.
+        */
+        
+        PUBLIC CONST ADS_PROC_VARYING_OUTPUT := 4096 AS WORD
+            
+            
+            /* Table (and related file) encryption types when using v10 */
+        PUBLIC CONST ADS_ENCRYPTION_RC4       := 3  AS WORD /* RC4 Encryption */
+        PUBLIC CONST ADS_ENCRYPTION_AES128    := 5  AS WORD  /* 128-bit AES in CTR mode, PBKDF2 key derivation */
+        PUBLIC CONST ADS_ENCRYPTION_AES256    := 6  AS WORD  /* 256-bit AES in CTR mode, PBKDF2 key derivation */
+        
+        /* some maximum values used by the client */
+        /* NOTE:  constants meant for string length exclude space for null terminator */
         PUBLIC CONST ADS_MAX_DATEMASK := 12 AS WORD
         PUBLIC CONST ADS_MAX_ERROR_LEN := 600 AS WORD
         PUBLIC CONST ADS_MAX_INDEX_EXPR_LEN := 510 AS WORD
@@ -350,40 +668,74 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_MAX_TAG_NAME := 128 AS WORD
         PUBLIC CONST ADS_MAX_TAGS := 50 AS WORD
         PUBLIC CONST ADS_MAX_OBJECT_NAME := 200 AS WORD
-        PUBLIC CONST ADS_MAX_TABLE_AND_PATH := 515 AS WORD
+        PUBLIC CONST ADS_MAX_TABLE_AND_PATH := ADS_MAX_TABLE_NAME + ADS_MAX_PATH AS WORD
+        /*
+        * Valid range of page sizes for ADI indexes.  The default page size is 512
+        * bytes.  Before using another page size, please read the section titled
+        * "Index Page Size" in the Advantage Client Engine help file (ace.hlp)
+        */
         PUBLIC CONST ADS_MIN_ADI_PAGESIZE := 512 AS WORD
         PUBLIC CONST ADS_MAX_ADI_PAGESIZE := 8192 AS WORD
+            
+            /* data types */
+            
         PUBLIC CONST ADS_TYPE_UNKNOWN := 0 AS WORD
-        PUBLIC CONST ADS_LOGICAL := 1 AS WORD
-        PUBLIC CONST ADS_NUMERIC := 2 AS WORD
-        PUBLIC CONST ADS_DATE := 3 AS WORD
-        PUBLIC CONST ADS_STRING := 4 AS WORD
-        PUBLIC CONST ADS_MEMO := 5 AS WORD
-        PUBLIC CONST ADS_BINARY := 6 AS WORD
-        PUBLIC CONST ADS_IMAGE := 7 AS WORD
-        PUBLIC CONST ADS_VARCHAR := 8 AS WORD
-        PUBLIC CONST ADS_COMPACTDATE := 9 AS WORD
-        PUBLIC CONST ADS_DOUBLE := 10 AS WORD
-        PUBLIC CONST ADS_INTEGER := 11 AS WORD
-        PUBLIC CONST ADS_SHORTINT := 12 AS WORD
-        PUBLIC CONST ADS_TIME := 13 AS WORD
-        PUBLIC CONST ADS_TIMESTAMP := 14 AS WORD
-        PUBLIC CONST ADS_AUTOINC := 15 AS WORD
-        PUBLIC CONST ADS_RAW := 16 AS WORD
-        PUBLIC CONST ADS_CURDOUBLE := 17 AS WORD
-        PUBLIC CONST ADS_MONEY := 18 AS WORD
-        PUBLIC CONST ADS_INT64  := 19 AS WORD
-        PUBLIC CONST ADS_CISTRING := 20 AS WORD
-        PUBLIC CONST ADS_ROWVERSION := 21 AS WORD
-        PUBLIC CONST ADS_MODTIME := 22 AS WORD
-        PUBLIC CONST ADS_VARCHAR_FOX := 23 AS WORD
-        PUBLIC CONST ADS_VARBINARY_FOX := 24 AS WORD
-        PUBLIC CONST ADS_SYSTEM_FIELD := 25 AS WORD
-        PUBLIC CONST ADS_NCHAR := 26 AS WORD
-        PUBLIC CONST ADS_NVARCHAR  := 27 AS WORD
-        PUBLIC CONST ADS_NMEMO  := 28 AS WORD
+        PUBLIC CONST ADS_LOGICAL := 1 AS WORD       /* 1 byte logical value */
+        PUBLIC CONST ADS_NUMERIC := 2 AS WORD       /* DBF character style numeric */
+        PUBLIC CONST ADS_DATE := 3 AS WORD          /* Date field.  With ADS_NTX, ADS_CDX, and
+                                                    * ADS_VFP< this is an 8 byte field of the form
+                                                    * CCYYMMDD.  With ADS_ADT, it is a 4 byte
+                                                    * Julian date. */
+        PUBLIC CONST ADS_STRING := 4 AS WORD        /* Character data */
+        PUBLIC CONST ADS_MEMO := 5 AS WORD          /* Variable length character data */
+        
+        /* the following are extended data types */
+        PUBLIC CONST ADS_BINARY := 6 AS WORD        /* BLOB - any data */
+        PUBLIC CONST ADS_IMAGE := 7 AS WORD         /* BLOB - bitmap */
+        PUBLIC CONST ADS_VARCHAR := 8 AS WORD       /* variable length character FIELD */
+        PUBLIC CONST ADS_COMPACTDATE := 9 AS WORD   /* DBF date represented with 3 bytes */
+        PUBLIC CONST ADS_DOUBLE := 10 AS WORD       /* IEEE 8 byte floating point */
+        PUBLIC CONST ADS_INTEGER := 11 AS WORD      /* IEEE 4 byte signed long integer */
+                                                    /* the following are supported with the ADT format */
+            
+        PUBLIC CONST ADS_SHORTINT := 12 AS WORD     /* IEEE 2 byte signed short integer */
+        PUBLIC CONST ADS_TIME := 13 AS WORD         /* 4 byte long integer representing
+                                                    * milliseconds since midnight */
+        PUBLIC CONST ADS_TIMESTAMP := 14 AS WORD    /* 8 bytes.  High order 4 bytes are a
+                                                    * long integer representing Julian date.
+                                                    * Low order 4 bytes are a long integer
+                                                    * representing milliseconds since
+                                                    * midnight */
+        PUBLIC CONST ADS_AUTOINC := 15 AS WORD      /* 4 byte auto-increment value */
+        PUBLIC CONST ADS_RAW := 16 AS WORD          /* Untranslated data */
+        PUBLIC CONST ADS_CURDOUBLE := 17 AS WORD    /* IEEE 8 byte floating point currency */
+        PUBLIC CONST ADS_MONEY := 18 AS WORD        /* 8 byte, 4 implied decimal Currency Field */
+        PUBLIC CONST ADS_INT64  := 19 AS WORD       /* 8 byte integer */
+        PUBLIC CONST ADS_CISTRING := 20 AS WORD     /* CaSe INSensiTIVE character data */
+        PUBLIC CONST ADS_ROWVERSION := 21 AS WORD   /* 8 byte integer, incremented for every update, unique to entire table */
+        PUBLIC CONST ADS_MODTIME := 22 AS WORD      /* 8 byte timestamp, updated when record is updated */
+        PUBLIC CONST ADS_VARCHAR_FOX := 23 AS WORD  /* Visual FoxPro varchar field */
+        PUBLIC CONST ADS_VARBINARY_FOX := 24 AS WORD /* Visual FoxPro varbinary field */
+        PUBLIC CONST ADS_SYSTEM_FIELD := 25 AS WORD /* For internal usage */
+        PUBLIC CONST ADS_NCHAR := 26 AS WORD        /* Unicode Character data */
+        PUBLIC CONST ADS_NVARCHAR  := 27 AS WORD    /* Unpadded Unicode Character data */
+        PUBLIC CONST ADS_NMEMO  := 28 AS WORD       /* Variable Length Unicode Data */
+        PUBLIC CONST ADS_GUID   := 29 AS WORD       /* 16-byte binary data */
+            
+            /*
+            * supported User Defined Function types to be used with AdsRegisterUDF
+            */
         PUBLIC CONST ADS_INDEX_UDF := 1 AS WORD
+            
+        /*
+        * Constant for AdsMgGetConfigInfo
+        */
         PUBLIC CONST ADS_MAX_CFG_PATH := 256 AS WORD
+            
+            /*
+            * Constants for AdsMgGetServerType
+            * Note ADS_MGMT_NETWARE_SERVER remains for backwards compatibility only
+            */
         PUBLIC CONST ADS_MGMT_NETWARE_SERVER := 1 AS WORD
         PUBLIC CONST ADS_MGMT_NETWARE4_OR_OLDER_SERVER := 1 AS WORD
         PUBLIC CONST ADS_MGMT_NT_SERVER := 2 AS WORD
@@ -393,15 +745,25 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_MGMT_LINUX_SERVER := 6 AS WORD
         PUBLIC CONST ADS_MGMT_NT_SERVER_64_BIT := 7 AS WORD
         PUBLIC CONST ADS_MGMT_LINUX_SERVER_64_BIT := 8 AS WORD
+            
+        /*
+        * Constants for AdsMgGetLockOwner
+        */
         PUBLIC CONST ADS_MGMT_NO_LOCK := 1 AS WORD
         PUBLIC CONST ADS_MGMT_RECORD_LOCK := 2 AS WORD
         PUBLIC CONST ADS_MGMT_FILE_LOCK := 3 AS WORD
+        /*
+        * Constants for MgGetInstallInfo
+        */
         PUBLIC CONST ADS_REG_OWNER_LEN := 36 AS WORD
         PUBLIC CONST ADS_REVISION_LEN := 16 AS WORD
         PUBLIC CONST ADS_INST_DATE_LEN := 16 AS WORD
         PUBLIC CONST ADS_OEM_CHAR_NAME_LEN := 16 AS WORD
         PUBLIC CONST ADS_ANSI_CHAR_NAME_LEN := 16 AS WORD
         PUBLIC CONST ADS_SERIAL_NUM_LEN := 16 AS WORD
+            /*
+            * Constants for MgGetOpenTables
+            */
         PUBLIC CONST ADS_MGMT_MAX_PATH := 260 AS WORD
         PUBLIC CONST ADS_MGMT_PROPRIETARY_LOCKING := 1 AS WORD
         PUBLIC CONST ADS_MGMT_CDX_LOCKING := 2 AS WORD
@@ -411,6 +773,9 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_MAX_USER_NAME := 50 AS WORD
         PUBLIC CONST ADS_MAX_ADDRESS_SIZE := 30 AS WORD
         PUBLIC CONST ADS_MAX_MGMT_APPID_SIZE :=  70 AS WORD
+            /*
+            * Data dictionary properties related constants and structure
+            */
         PUBLIC CONST ADS_DD_PROPERTY_NOT_AVAIL := 65535 AS WORD
         PUBLIC CONST ADS_DD_MAX_PROPERTY_LEN := 65534 AS WORD
         PUBLIC CONST ADS_DD_MAX_OBJECT_NAME_LEN := 200 AS WORD
@@ -422,13 +787,13 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_DD_COLUMN_OBJECT := 4 AS WORD
         PUBLIC CONST ADS_DD_INDEX_OBJECT := 5 AS WORD
         PUBLIC CONST ADS_DD_VIEW_OBJECT := 6 AS WORD
-        PUBLIC CONST ADS_DD_VIEW_OR_TABLE_OBJECT := 7 AS WORD
+        PUBLIC CONST ADS_DD_VIEW_OR_TABLE_OBJECT := 7 AS WORD /* Used in AdsFindFirst/NextTable */
         PUBLIC CONST ADS_DD_USER_OBJECT := 8 AS WORD
         PUBLIC CONST ADS_DD_USER_GROUP_OBJECT := 9 AS WORD
         PUBLIC CONST ADS_DD_PROCEDURE_OBJECT := 10 AS WORD
         PUBLIC CONST ADS_DD_DATABASE_OBJECT := 11 AS WORD
         PUBLIC CONST ADS_DD_LINK_OBJECT := 12 AS WORD
-        PUBLIC CONST ADS_DD_TABLE_VIEW_OR_LINK_OBJECT := 13 AS WORD
+        PUBLIC CONST ADS_DD_TABLE_VIEW_OR_LINK_OBJECT := 13 AS WORD /* Used in v6.2 AdsFindFirst/NextTable */
         PUBLIC CONST ADS_DD_TRIGGER_OBJECT := 14 AS WORD
         PUBLIC CONST ADS_DD_PUBLICATION_OBJECT := 15 AS WORD
         PUBLIC CONST ADS_DD_ARTICLE_OBJECT := 16 AS WORD
@@ -436,6 +801,11 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_DD_FUNCTION_OBJECT := 18 AS WORD
         PUBLIC CONST ADS_DD_PACKAGE_OBJECT := 19 AS WORD
         PUBLIC CONST ADS_DD_QUALIFIED_TRIGGER_OBJ := 20 AS WORD
+        PUBLIC CONST ADS_DD_PERMISSION_OBJECT         := 21 AS WORD
+        PUBLIC CONST ADS_DD_DATABASE_TRIGGER_OBJ      := 22 AS WORD  /* Used in AdsDDFindFirst/NextObject */
+            
+            
+            /* Common properties numbers < 100 */
         PUBLIC CONST ADS_DD_COMMENT := 1 AS WORD
         PUBLIC CONST ADS_DD_VERSION := 2 AS WORD
         PUBLIC CONST ADS_DD_USER_DEFINED_PROP := 3 AS WORD
@@ -443,6 +813,12 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_DD_TRIGGERS_DISABLED := 5 AS WORD
         PUBLIC CONST ADS_DD_OBJECT_ID := 6 AS WORD
         PUBLIC CONST ADS_DD_OPTIONS := 7 AS WORD
+            /* bit options for ADS_DD_QUERY_VIA_ROOT */
+            
+        PUBLIC CONST ADS_DD_QVR_OPT_QUERY := 1 AS WORD
+        PUBLIC CONST ADS_DD_QVR_OPT_PROCEDURE := 2 AS WORD
+            
+            /* Database properties between 100 and 199 */
         PUBLIC CONST ADS_DD_DEFAULT_TABLE_PATH := 100 AS WORD
         PUBLIC CONST ADS_DD_ADMIN_PASSWORD := 101 AS WORD
         PUBLIC CONST ADS_DD_TEMP_TABLE_PATH := 102 AS WORD
@@ -469,6 +845,15 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_DD_DEFAULT_TABLE_RELATIVE_PATH := 123 AS WORD
         PUBLIC CONST ADS_DD_TEMP_TABLE_RELATIVE_PATH := 124 AS WORD
         PUBLIC CONST ADS_DD_DISABLE_DLL_CACHING := 125 AS WORD
+        PUBLIC CONST ADS_DD_DATA_ENCRYPTION_TYPE := 126 AS WORD
+        PUBLIC CONST ADS_DD_FTS_DELIMITERS_W := 127 AS WORD
+        PUBLIC CONST ADS_DD_FTS_NOISE_W := 128 AS WORD
+        PUBLIC CONST ADS_DD_FTS_DROP_CHARS_W := 129 AS WORD
+        PUBLIC CONST ADS_DD_FTS_CONDITIONAL_CHARS_W := 130 AS WORD
+        PUBLIC CONST ADS_DD_QUERY_VIA_ROOT := 131 AS WORD
+        PUBLIC CONST ADS_DD_ENFORCE_MAX_FAILED_LOGINS := 132 AS WORD
+            
+            /* Table properties between 200 and 299 */
         PUBLIC CONST ADS_DD_TABLE_VALIDATION_EXPR := 200 AS WORD
         PUBLIC CONST ADS_DD_TABLE_VALIDATION_MSG := 201 AS WORD
         PUBLIC CONST ADS_DD_TABLE_PRIMARY_KEY := 202 AS WORD
@@ -488,8 +873,20 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_DD_TABLE_PERMISSION_LEVEL := 216 AS WORD
         PUBLIC CONST ADS_DD_TABLE_TRIGGER_TYPES := 217 AS WORD
         PUBLIC CONST ADS_DD_TABLE_TRIGGER_OPTIONS := 218 AS WORD
+        PUBLIC CONST ADS_DD_TABLE_CACHING := 219 AS WORD
+        PUBLIC CONST ADS_DD_TABLE_TXN_FREE := 220 AS WORD
+        PUBLIC CONST ADS_DD_TABLE_VALIDATION_EXPR_W := 221 AS WORD
+        PUBLIC CONST ADS_DD_TABLE_WEB_DELTA := 222 AS WORD
+        PUBLIC CONST ADS_DD_TABLE_CONCURRENCY_ENABLED := 223 AS WORD
+            
+            
+            /* Bit values for the ADS_DD_FIELD_OPTIONS property */
+            
         PUBLIC CONST ADS_DD_FIELD_OPT_VFP_BINARY := 1 AS WORD 
-        PUBLIC CONST ADS_DD_FIELD_OPT_VFP_NULLABLE := 2 AS WORD 
+        PUBLIC CONST ADS_DD_FIELD_OPT_VFP_NULLABLE := 2 AS WORD
+        PUBLIC CONST ADS_DD_FIELD_OPT_COMPRESSED := 65536 AS DWORD
+            
+            /* Field properties between 300 - 399 */
         PUBLIC CONST ADS_DD_FIELD_DEFAULT_VALUE := 300 AS WORD
         PUBLIC CONST ADS_DD_FIELD_CAN_NULL := 301 AS WORD
         PUBLIC CONST ADS_DD_FIELD_MIN_VALUE := 302 AS WORD
@@ -501,6 +898,11 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_DD_FIELD_DECIMAL := 308 AS WORD
         PUBLIC CONST ADS_DD_FIELD_NUM := 309 AS WORD
         PUBLIC CONST ADS_DD_FIELD_OPTIONS := 310 AS WORD
+        PUBLIC CONST ADS_DD_FIELD_DEFAULT_VALUE_W := 311 AS WORD
+        PUBLIC CONST ADS_DD_FIELD_MIN_VALUE_W := 312 AS WORD
+        PUBLIC CONST ADS_DD_FIELD_MAX_VALUE_W := 313 AS WORD
+            
+            /* Index tag properties between 400 - 499 */
         PUBLIC CONST ADS_DD_INDEX_FILE_NAME := 400 AS WORD
         PUBLIC CONST ADS_DD_INDEX_EXPRESSION := 401 AS WORD
         PUBLIC CONST ADS_DD_INDEX_CONDITION := 402 AS WORD
@@ -513,6 +915,12 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_DD_INDEX_FTS_DROP_CHARS := 409 AS WORD
         PUBLIC CONST ADS_DD_INDEX_FTS_CONDITIONAL_CHARS := 410 AS WORD
         PUBLIC CONST ADS_DD_INDEX_COLLATION := 411 AS WORD
+        PUBLIC CONST ADS_DD_INDEX_FTS_DELIMITERS_W  := 412 AS WORD
+        PUBLIC CONST ADS_DD_INDEX_FTS_NOISE_W       := 413 AS WORD
+        PUBLIC CONST ADS_DD_INDEX_FTS_DROP_CHARS_W  := 414 AS WORD
+        PUBLIC CONST ADS_DD_INDEX_FTS_CONDITIONAL_CHARS_W := 415 AS WORD
+            
+            /* RI properties between 500-599 */
         PUBLIC CONST ADS_DD_RI_PARENT_GRAPH := 500 AS WORD
         PUBLIC CONST ADS_DD_RI_PRIMARY_TABLE := 501 AS WORD
         PUBLIC CONST ADS_DD_RI_PRIMARY_INDEX := 502 AS WORD
@@ -522,33 +930,58 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_DD_RI_DELETERULE := 506 AS WORD
         PUBLIC CONST ADS_DD_RI_NO_PKEY_ERROR := 507 AS WORD
         PUBLIC CONST ADS_DD_RI_CASCADE_ERROR := 508 AS WORD
+            
+            /* User properties between 600-699 */
         PUBLIC CONST ADS_DD_USER_GROUP_NAME := 600 AS WORD
+            
+            /* View properties between 700-749 */
         PUBLIC CONST ADS_DD_VIEW_STMT := 700 AS WORD
         PUBLIC CONST ADS_DD_VIEW_STMT_LEN := 701 AS WORD
         PUBLIC CONST ADS_DD_VIEW_TRIGGER_TYPES := 702 AS WORD
         PUBLIC CONST ADS_DD_VIEW_TRIGGER_OPTIONS := 703 AS WORD
+            
+            /* Stored procedure properties 800-899 */
         PUBLIC CONST ADS_DD_PROC_INPUT := 800 AS WORD
         PUBLIC CONST ADS_DD_PROC_OUTPUT := 801 AS WORD
         PUBLIC CONST ADS_DD_PROC_DLL_NAME := 802 AS WORD
         PUBLIC CONST ADS_DD_PROC_DLL_FUNCTION_NAME := 803 AS WORD
         PUBLIC CONST ADS_DD_PROC_INVOKE_OPTION := 804 AS WORD
         PUBLIC CONST ADS_DD_PROC_SCRIPT := 805 AS WORD
+        PUBLIC CONST ADS_DD_PROC_SCRIPT_W  := 806 AS WORD
+            
+            /* Index file properties 900-999 */
         PUBLIC CONST ADS_DD_INDEX_FILE_PATH := 900 AS WORD
         PUBLIC CONST ADS_DD_INDEX_FILE_PAGESIZE := 901 AS WORD
         PUBLIC CONST ADS_DD_INDEX_FILE_RELATIVE_PATH := 902 AS WORD
         PUBLIC CONST ADS_DD_INDEX_FILE_TYPE := 903 AS WORD
+            
+            /*
+            * Object rights properties 1001 - 1099 .  They can be used
+            * with either user or user group objects.
+            */
         PUBLIC CONST ADS_DD_TABLES_RIGHTS := 1001 AS WORD
         PUBLIC CONST ADS_DD_VIEWS_RIGHTS := 1002 AS WORD
         PUBLIC CONST ADS_DD_PROCS_RIGHTS := 1003 AS WORD
         PUBLIC CONST ADS_DD_OBJECTS_RIGHTS := 1004 AS WORD
         PUBLIC CONST ADS_DD_FREE_TABLES_RIGHTS := 1005 AS WORD
+            /* User Properties 1101 - 1199 */
+            
         PUBLIC CONST ADS_DD_USER_PASSWORD := 1101 AS WORD
         PUBLIC CONST ADS_DD_USER_GROUP_MEMBERSHIP := 1102 AS WORD
         PUBLIC CONST ADS_DD_USER_BAD_LOGINS := 1103 AS WORD
+        PUBLIC CONST ADS_DD_CURRENT_USER_PASSWORD := 1104 AS WORD
+        PUBLIC CONST ADS_DD_REQUIRE_OLD_PASSWORD := 1105  AS WORD
+            /* User group Properties 1201 - 1299 */
+            /* None at this moment. */
+            
+            /* Link properties 1300 - 1399 */
         PUBLIC CONST ADS_DD_LINK_PATH := 1300 AS WORD
         PUBLIC CONST ADS_DD_LINK_OPTIONS := 1301 AS WORD
         PUBLIC CONST ADS_DD_LINK_USERNAME := 1302 AS WORD
         PUBLIC CONST ADS_DD_LINK_RELATIVE_PATH := 1303 AS WORD
+            
+            /* Trigger properties 1400 - 1499 */
+            
         PUBLIC CONST ADS_DD_TRIG_TABLEID := 1400 AS WORD
         PUBLIC CONST ADS_DD_TRIG_EVENT_TYPE := 1401 AS WORD
         PUBLIC CONST ADS_DD_TRIG_TRIGGER_TYPE := 1402 AS WORD
@@ -557,83 +990,197 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC CONST ADS_DD_TRIG_FUNCTION_NAME := 1405 AS WORD
         PUBLIC CONST ADS_DD_TRIG_PRIORITY := 1406 AS WORD
         PUBLIC CONST ADS_DD_TRIG_OPTIONS := 1407 AS WORD
+        PUBLIC CONST ADS_DD_TRIG_CONTAINER_W := 1409  AS WORD
         PUBLIC CONST ADS_DD_TRIG_TABLENAME := 1408 AS WORD
+            
+            /* Publication properties 1500 - 1599 */
         PUBLIC CONST ADS_DD_PUBLICATION_OPTIONS := 1500 AS WORD
-        PUBLIC CONST ADS_DD_ARTICLE_FILTER := 1600 AS WORD
-        PUBLIC CONST ADS_DD_ARTICLE_ID_COLUMNS := 1601 AS WORD
-        PUBLIC CONST ADS_DD_ARTICLE_ID_COLUMN_NUMBERS := 1602 AS WORD
-        PUBLIC CONST ADS_DD_ARTICLE_FILTER_SHORT := 1603 AS WORD
-        PUBLIC CONST ADS_DD_ARTICLE_INCLUDE_COLUMNS := 1604 AS WORD
-        PUBLIC CONST ADS_DD_ARTICLE_EXCLUDE_COLUMNS := 1605 AS WORD
-        PUBLIC CONST ADS_DD_ARTICLE_INC_COLUMN_NUMBERS := 1606 AS WORD
-        PUBLIC CONST ADS_DD_ARTICLE_INSERT_MERGE := 1607 AS WORD
-        PUBLIC CONST ADS_DD_ARTICLE_UPDATE_MERGE := 1608 AS WORD
-        PUBLIC CONST ADS_DD_SUBSCR_PUBLICATION_NAME := 1700 AS WORD
-        PUBLIC CONST ADS_DD_SUBSCR_TARGET := 1701 AS WORD
-        PUBLIC CONST ADS_DD_SUBSCR_USERNAME := 1702 AS WORD
-        PUBLIC CONST ADS_DD_SUBSCR_PASSWORD := 1703 AS WORD
-        PUBLIC CONST ADS_DD_SUBSCR_FORWARD := 1704 AS WORD
-        PUBLIC CONST ADS_DD_SUBSCR_ENABLED := 1705 AS WORD
-        PUBLIC CONST ADS_DD_SUBSCR_QUEUE_NAME := 1706 AS WORD
-        PUBLIC CONST ADS_DD_SUBSCR_OPTIONS := 1707 AS WORD
-        PUBLIC CONST ADS_DD_SUBSCR_QUEUE_NAME_RELATIVE := 1708 AS WORD
-        PUBLIC CONST ADS_DD_SUBSCR_PAUSED := 1709 AS WORD
+            
+            /* Publication article properties 1600 - 1699 */
+        PUBLIC CONST ADS_DD_ARTICLE_FILTER             := 1600  AS WORD   // horizontal filter (optional)
+        PUBLIC CONST ADS_DD_ARTICLE_ID_COLUMNS         := 1601  AS WORD   // columns that identify the target row
+        PUBLIC CONST ADS_DD_ARTICLE_ID_COLUMN_NUMBERS  := 1602  AS WORD   // array of the field numbers
+        PUBLIC CONST ADS_DD_ARTICLE_FILTER_SHORT       := 1603  AS WORD   // short version of the expression
+        PUBLIC CONST ADS_DD_ARTICLE_INCLUDE_COLUMNS    := 1604  AS WORD   // Vertical filter (inclusion list)
+        PUBLIC CONST ADS_DD_ARTICLE_EXCLUDE_COLUMNS    := 1605  AS WORD   // Vertical filter (exclusion list)
+        PUBLIC CONST ADS_DD_ARTICLE_INC_COLUMN_NUMBERS := 1606  AS WORD   // Retrieve column nums to replicate
+        PUBLIC CONST ADS_DD_ARTICLE_INSERT_MERGE       := 1607  AS WORD   // Use SQL MERGE with INSERTs
+        PUBLIC CONST ADS_DD_ARTICLE_UPDATE_MERGE       := 1608  AS WORD   // Use SQL MERGE with UPDATEs
+        PUBLIC CONST ADS_DD_ARTICLE_FILTER_W           := 1609  AS WORD   // horizontal filter (optional)
+            
+        /* Subscription article properties 1700 - 1799 */
+        PUBLIC CONST ADS_DD_SUBSCR_PUBLICATION_NAME    := 1700 AS WORD   // Name of the publication (for reading)
+        PUBLIC CONST ADS_DD_SUBSCR_TARGET              := 1701 AS WORD   // full path of target database
+        PUBLIC CONST ADS_DD_SUBSCR_USERNAME            := 1702 AS WORD   // user name to use to connect to target
+        PUBLIC CONST ADS_DD_SUBSCR_PASSWORD            := 1703 AS WORD   // password for connecting
+        PUBLIC CONST ADS_DD_SUBSCR_FORWARD             := 1704 AS WORD   // boolean flag:  forward updates that came from a replication?
+        PUBLIC CONST ADS_DD_SUBSCR_ENABLED             := 1705 AS WORD   // boolean flag:  Replication enabled on this subscription?
+        PUBLIC CONST ADS_DD_SUBSCR_QUEUE_NAME          := 1706 AS WORD   // replication queue
+        PUBLIC CONST ADS_DD_SUBSCR_OPTIONS             := 1707 AS WORD   // for future use
+        PUBLIC CONST ADS_DD_SUBSCR_QUEUE_NAME_RELATIVE := 1708 AS WORD   // replication queue relative to the DD
+        PUBLIC CONST ADS_DD_SUBSCR_PAUSED              := 1709 AS WORD   // boolean flag:  Replication paused on this subscription?
+        PUBLIC CONST ADS_DD_SUBSCR_COMM_TCP_IP         := 1710 AS WORD   // boolean flag:  TRUE for TCP/IP communications
+        PUBLIC CONST ADS_DD_SUBSCR_COMM_TCP_IP_V6      := 1711 AS WORD   // boolean flag:  TRUE for TCP/IP V6 communications
+        PUBLIC CONST ADS_DD_SUBSCR_COMM_UDP_IP         := 1712 AS WORD   // boolean flag:  TRUE for UDP/IP communications
+        PUBLIC CONST ADS_DD_SUBSCR_COMM_IPX            := 1713 AS WORD   // boolean flag:  TRUE for IPX communications
+        PUBLIC CONST ADS_DD_SUBSCR_OPTIONS_INTERNAL    := 1714 AS WORD   // internal ID to get ALL options incl COMM types
+        PUBLIC CONST ADS_DD_SUBSCR_COMM_TLS            := 1715 AS WORD   // boolean flag:  TRUE for TLS communications
+        PUBLIC CONST ADS_DD_SUBSCR_CONNECTION_STR      := 1716 AS WORD   // Free form connection string for new AdsConnect101 API
+            
+            /* AdsMgKillUser90 Constants */
+            
+        PUBLIC CONST ADS_PROPERTY_UNSPECIFIED := 0x0000 AS WORD
+        PUBLIC CONST ADS_DONT_KILL_APPID      := 0x0001 AS WORD
+        PUBLIC CONST ADS_RESTRICT_KILL        := 0x0002 AS WORD
+            
         PUBLIC CONST ADS_DD_LEVEL_0 := 0 AS WORD
         PUBLIC CONST ADS_DD_LEVEL_1 := 1 AS WORD
         PUBLIC CONST ADS_DD_LEVEL_2 := 2 AS WORD
+            
+            /* Referential Integrity (RI) update and delete rules */
         PUBLIC CONST ADS_DD_RI_CASCADE := 1 AS WORD
         PUBLIC CONST ADS_DD_RI_RESTRICT := 2 AS WORD
         PUBLIC CONST ADS_DD_RI_SETNULL := 3 AS WORD
         PUBLIC CONST ADS_DD_RI_SETDEFAULT := 4 AS WORD
+            
+            /* Default Field Value Options */
         PUBLIC CONST ADS_DD_DFV_UNKNOWN := 1 AS WORD
         PUBLIC CONST ADS_DD_DFV_NONE := 2 AS WORD
         PUBLIC CONST ADS_DD_DFV_VALUES_STORED := 3 AS WORD
-        PUBLIC CONST ADS_PERMISSION_NONE := 0 AS WORD 
-        PUBLIC CONST ADS_PERMISSION_READ := 1 AS WORD 
-        PUBLIC CONST ADS_PERMISSION_UPDATE := 2 AS WORD 
-        PUBLIC CONST ADS_PERMISSION_EXECUTE := 4 AS WORD 
-        PUBLIC CONST ADS_PERMISSION_INHERIT := 8 AS WORD 
-        PUBLIC CONST ADS_PERMISSION_INSERT := 16 AS WORD 
-        PUBLIC CONST ADS_PERMISSION_DELETE := 32 AS WORD 
-        PUBLIC CONST ADS_PERMISSION_LINK_ACCESS := 64 AS WORD 
-        PUBLIC CONST ADS_PERMISSION_CREATE := 128 AS WORD 
-        PUBLIC CONST ADS_PERMISSION_ALTER := 256 AS WORD 
-        PUBLIC CONST ADS_PERMISSION_DROP := 512 AS WORD 
-        PUBLIC CONST ADS_PERMISSION_WITH_GRANT := 0x80000000 AS DWORD 
-        PUBLIC CONST ADS_PERMISSION_ALL_WITH_GRANT := 0x8FFFFFFF AS DWORD 
-        PUBLIC CONST ADS_PERMISSION_ALL := 0xFFFFFFFF AS DWORD 
-        PUBLIC CONST ADS_GET_PERMISSIONS_WITH_GRANT := 0x8000FFFF AS DWORD 
-        PUBLIC CONST ADS_GET_PERMISSIONS_CREATE := 0xFFFF0080 AS DWORD 
+            
+            /* Supported permissions in the data dictionary */
+        PUBLIC CONST ADS_PERMISSION_NONE            := 0x00000000   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_READ            := 0x00000001   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_UPDATE          := 0x00000002   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_EXECUTE         := 0x00000004   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_INHERIT         := 0x00000008   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_INSERT          := 0x00000010   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_DELETE          := 0x00000020   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_LINK_ACCESS     := 0x00000040   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_CREATE          := 0x00000080   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_ALTER           := 0x00000100   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_DROP            := 0x00000200   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_WITH_GRANT      := 0x80000000   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_ALL_WITH_GRANT  := 0x8FFFFFFF   AS DWORD
+        PUBLIC CONST ADS_PERMISSION_ALL             := 0xFFFFFFFF   AS DWORD
+                                            
+            /*
+            * special code that can be used as the input to specify
+            * which special permission to retrieve.
+            */
+        PUBLIC CONST ADS_GET_PERMISSIONS_WITH_GRANT     := 0x8000FFFF AS DWORD 
+        PUBLIC CONST ADS_GET_PERMISSIONS_CREATE         := 0xFFFF0080 AS DWORD 
         PUBLIC CONST ADS_GET_PERMISSIONS_CREATE_WITH_GRANT := 0x8FFFFF8F AS DWORD
-        PUBLIC CONST ADS_GET_HEADER_LENGTH := 92 AS DWORD
-        PUBLIC CONST ADS_LINK_GLOBAL := 1 AS DWORD 
-        PUBLIC CONST ADS_LINK_AUTH_ACTIVE_USER := 2 AS WORD 
-        PUBLIC CONST ADS_LINK_PATH_IS_STATIC := 4 AS WORD 
+            
+            
+            
+            /* Link DD options */
+            
+        PUBLIC CONST ADS_LINK_GLOBAL            := 0x0001 AS DWORD 
+        PUBLIC CONST ADS_LINK_AUTH_ACTIVE_USER  := 0x0002 AS WORD 
+        PUBLIC CONST ADS_LINK_PATH_IS_STATIC    := 0x0004 AS WORD 
+            
+            /* Trigger event types */
         PUBLIC CONST ADS_TRIGEVENT_INSERT := 1 AS WORD
         PUBLIC CONST ADS_TRIGEVENT_UPDATE := 2 AS WORD
         PUBLIC CONST ADS_TRIGEVENT_DELETE := 3 AS WORD
+                /* Dictionary (system) trigger event types */
+        PUBLIC CONST ADS_TRIGEVENT_OPEN_TABLE         := 4 AS WORD
+        PUBLIC CONST ADS_TRIGEVENT_CLOSE_TABLE        := 5 AS WORD
+        PUBLIC CONST ADS_TRIGEVENT_CONNECT            := 6 AS WORD
+        PUBLIC CONST ADS_TRIGEVENT_DISCONNECT         := 7 AS WORD
+            
+            /* Trigger types */
         PUBLIC CONST ADS_TRIGTYPE_BEFORE := 1 AS WORD 
         PUBLIC CONST ADS_TRIGTYPE_INSTEADOF := 2 AS WORD 
         PUBLIC CONST ADS_TRIGTYPE_AFTER := 4 AS WORD 
         PUBLIC CONST ADS_TRIGTYPE_CONFLICTON := 8 AS WORD 
+            
+            /* Trigger container types */
         PUBLIC CONST ADS_TRIG_WIN32DLL := 1 AS WORD
         PUBLIC CONST ADS_TRIG_COM := 2 AS WORD
         PUBLIC CONST ADS_TRIG_SCRIPT := 3 AS WORD
+
+        /*
+        * Trigger options, if changed or adding more please inspect code
+        * in RemoveTriggerFromDictionary
+        */
         PUBLIC CONST ADS_TRIGOPTIONS_NO_VALUES := 0 AS WORD 
         PUBLIC CONST ADS_TRIGOPTIONS_WANT_VALUES := 1 AS WORD 
         PUBLIC CONST ADS_TRIGOPTIONS_WANT_MEMOS_AND_BLOBS := 2 AS WORD 
         PUBLIC CONST ADS_TRIGOPTIONS_DEFAULT := 3 AS WORD 
-        PUBLIC CONST ADS_TRIGOPTIONS_NO_TRANSACTION := 4 AS WORD 
+	    PUBLIC CONST ADS_TRIGOPTIONS_NO_TRANSACTION := 4 AS WORD 
+
+            
+        /*
+        * Table permission verification levels.
+        * level 1 is all columns searchable, even those without permission.
+        * level 2 is default. Permission to the column is required to search or filter on a column.
+        * level 3 is most restricted. Only static SQL cursor is allowed.
+        */
         PUBLIC CONST ADS_DD_TABLE_PERMISSION_LEVEL_1 := 1 AS WORD
         PUBLIC CONST ADS_DD_TABLE_PERMISSION_LEVEL_2 := 2 AS WORD
         PUBLIC CONST ADS_DD_TABLE_PERMISSION_LEVEL_3 := 3 AS WORD
+            
+        /* AdsDDRenameObject options */
+            
         PUBLIC CONST ADS_KEEP_TABLE_FILE_NAME := 1 AS WORD 
+            
+            
+        /* AdsDDCreateArticle options */
+            
         PUBLIC CONST ADS_IDENTIFY_BY_PRIMARY := 1 AS WORD 
         PUBLIC CONST ADS_IDENTIFY_BY_ALL := 2 AS WORD 
+            
+            
+            /* AdsDDCreateSubscription options */
         PUBLIC CONST ADS_SUBSCR_QUEUE_IS_STATIC := 1 AS WORD 
         PUBLIC CONST ADS_SUBSCR_AIS_TARGET := 2 AS WORD 
         PUBLIC CONST ADS_SUBSCR_IGNORE_FAILED_REP := 4 AS WORD 
-            PUBLIC CONST ADS_SUBSCR_LOG_FAILED_REP_DATA := 8 AS WORD 
+        PUBLIC CONST ADS_SUBSCR_LOG_FAILED_REP_DATA := 8 AS WORD 
+                                                     // the error log.
+		//#define ADS_UDP_IP_CONNECTION         0x00000020   // These connection type constants are stored in the
+		//#define ADS_IPX_CONNECTION            0x00000040   // options of the subscription, so don't use these values
+		//#define ADS_TCP_IP_CONNECTION         0x00000080   // for other subscription properties.
+		//#define ADS_TCP_IP_V6_CONNECTION      0x00000100
+
+            /* AdsGetFieldLength10 options */
+            
+        PUBLIC CONST ADS_CODEUNIT_LENGTH := 0 AS WORD
+        PUBLIC CONST ADS_BYTE_LENGTH := 1 AS WORD
+        PUBLIC CONST ADS_BYTE_LENGTH_IN_BUFFER := 2 AS WORD
+            
+            /* Options for AdsFindServers */
+        PUBLIC CONST ADS_FS_MULTICAST_ONLY := 1 AS WORD
+        PUBLIC CONST ADS_FS_CONNECT_ALL := 2  AS WORD
+            
+            /* Table caching property modes, used with AdsDDSetTableProperty etc. */
+        PUBLIC CONST ADS_TABLE_CACHE_NONE := 0 AS WORD
+        PUBLIC CONST ADS_TABLE_CACHE_READS := 1 AS WORD
+        PUBLIC CONST ADS_TABLE_CACHE_WRITES := 2 AS WORD
+            
+            
+            /* Connection string encryption options as strings. */
+        PUBLIC CONST ADS_ENCRYPT_STRING_RC4 := "RC4" AS STRING
+        PUBLIC CONST ADS_ENCRYPT_STRING_AES128 := "AES128" AS STRING
+        PUBLIC CONST ADS_ENCRYPT_STRING_AES256 := "AES256" AS STRING
+            
+            
+            /* Connection string cipher suite options as strings. */
+        PUBLIC CONST ADS_CIPHER_SUITE_STRING_RC4 := "RC4-MD5" AS STRING
+        PUBLIC CONST ADS_CIPHER_SUITE_STRING_AES128 := "AES128-SHA" AS STRING
+        PUBLIC CONST ADS_CIPHER_SUITE_STRING_AES256 := "AES256-SHA" AS STRING
+            
+        /*
+        * System alias which always resolves to the root dictionary
+        * defined by ADS_ROOT_DICTIONARY server configuration setting
+        */
+        PUBLIC CONST ADS_ROOT_DD_ALIAS := "__rootdd" AS STRING
+            
+        /* Options for the AdsGetKeyFilter */
+            
+        PUBLIC CONST ADS_FILTER_FORMAT_ODATA := 1 AS DWORD
+            PUBLIC CONST ADS_FILTER_ENCODE_UTF8 := 2 AS DWORD
                 
                 
                 
@@ -1912,7 +2459,7 @@ BEGIN NAMESPACE XSharp.ADS
         RETURN delGetRecordLength(hTable, OUT pulLength)
         
         
-        PUBLIC STATIC METHOD AdsGetTableFilename(hTable AS IntPtr, usOption AS WORD, strName AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetTableFilename(hTable AS IntPtr, usOption AS WORD, [InAttribute] [OutAttribute] strName AS CHAR[], wLen REF WORD ) AS DWORD 
         RETURN delGetTableFilename(hTable, usOption, strName, REF wLen)
         
         PUBLIC STATIC METHOD AdsOpenTable90(hConnect AS IntPtr, strName AS STRING, strAlias AS STRING, usTableType AS WORD, usCharType AS WORD, usLockType AS WORD, usCheckRights AS WORD, ulOptions AS DWORD, strCollation AS STRING, phTable OUT IntPtr ) AS DWORD 
@@ -1939,7 +2486,7 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
         RETURN delGetField1(hTable, lFieldOrdinal, abBuf, REF pulLen, usOption)
         
-        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, lFieldOrdinal AS DWORD, strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
         RETURN delGetField2(hTable, lFieldOrdinal, strBuf, REF pulLen, usOption)
         
         PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, strFldName AS STRING, abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
@@ -1949,7 +2496,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE64.AdsGetField(hTable, strFldName,  abBuf, REF pulLen, usOption)
         ENDIF
         
-        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, strFldName AS STRING,  strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, strFldName AS STRING,  [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
             IF Is32Bits
                 RETURN ACE32.AdsGetField(hTable, strFldName, strBuf,  REF pulLen, usOption)
             ELSE
@@ -3394,14 +3941,14 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE64.AdsGetSearchPath(strPath, REF wLen ) 
         ENDIF
         
-        PUBLIC STATIC METHOD AdsGetServerName(hConnect AS IntPtr, strName AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetServerName(hConnect AS IntPtr, [InAttribute] [OutAttribute] strName AS CHAR[], wLen REF WORD ) AS DWORD 
             IF Is32Bits
                 RETURN ACE32.AdsGetServerName(hConnect, strName, REF wLen ) 
             ELSE
                 RETURN ACE64.AdsGetServerName(hConnect, strName, REF wLen ) 
         ENDIF
         
-        PUBLIC STATIC METHOD AdsGetServerTime(hConnect AS IntPtr,  strDateBuf AS CHAR[], pusDateBufLen REF WORD, plTime OUT INT, [InAttribute] [OutAttribute] strTimeBuf AS CHAR[], pusTimeBufLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetServerTime(hConnect AS IntPtr,  [InAttribute] [OutAttribute] strDateBuf AS CHAR[], pusDateBufLen REF WORD, plTime OUT INT, [InAttribute] [OutAttribute] strTimeBuf AS CHAR[], pusTimeBufLen REF WORD ) AS DWORD 
             IF Is32Bits
                 RETURN ACE32.AdsGetServerTime(hConnect,  strDateBuf, REF pusDateBufLen, OUT plTime, strTimeBuf, REF pusTimeBufLen ) 
             ELSE
@@ -3851,7 +4398,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgDisconnect( hMgmtHandle)
             ELSE
                 RETURN ACE64.AdsMgDisconnect( hMgmtHandle)
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgDumpInternalTables( hMgmtHandle AS IntPtr ) AS DWORD 
@@ -3867,7 +4414,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgGetActivityInfo( hMgmtHandle, pstActivityInfo, REF pusStructSize)
             ELSE
                 RETURN ACE64.AdsMgGetActivityInfo( hMgmtHandle, pstActivityInfo, REF pusStructSize)
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgGetCommStats( hMgmtHandle AS IntPtr, pstCommStats AS IntPtr, pusStructSize REF WORD ) AS DWORD 
@@ -3875,7 +4422,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgGetCommStats ( hMgmtHandle, pstCommStats, REF pusStructSize)
             ELSE
                 RETURN ACE64.AdsMgGetCommStats ( hMgmtHandle, pstCommStats, REF pusStructSize)
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgGetConfigInfo( hMgmtHandle AS IntPtr, pstConfigValues AS IntPtr, pusConfigValuesStructSize REF WORD, pstConfigMemory AS IntPtr, pusConfigMemoryStructSize REF WORD ) AS DWORD 
@@ -3883,7 +4430,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgGetConfigInfo( hMgmtHandle, pstConfigValues, REF pusConfigValuesStructSize, pstConfigMemory, REF pusConfigMemoryStructSize) 
             ELSE
                 RETURN ACE64.AdsMgGetConfigInfo( hMgmtHandle, pstConfigValues, REF pusConfigValuesStructSize, pstConfigMemory, REF pusConfigMemoryStructSize) 
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgGetInstallInfo( hMgmtHandle AS IntPtr, pstInstallInfo AS IntPtr, pusStructSize REF WORD ) AS DWORD 
@@ -3891,7 +4438,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgGetInstallInfo(  hMgmtHandle, pstInstallInfo, REF pusStructSize)
             ELSE
                 RETURN ACE64.AdsMgGetInstallInfo(  hMgmtHandle, pstInstallInfo, REF pusStructSize)
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgGetLockOwner( hMgmtHandle AS IntPtr, pucTableName AS STRING, ulRecordNumber AS DWORD, pstUserInfo AS IntPtr, pusStructSize REF WORD, pusLockType REF WORD ) AS DWORD 
@@ -3899,7 +4446,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgGetLockOwner( hMgmtHandle, pucTableName, ulRecordNumber, pstUserInfo, REF pusStructSize, REF pusLockType)
             ELSE
                 RETURN ACE64.AdsMgGetLockOwner( hMgmtHandle, pucTableName, ulRecordNumber, pstUserInfo, REF pusStructSize, REF pusLockType)
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgGetLocks( hMgmtHandle AS IntPtr, pucTableName AS STRING, pucUserName AS STRING, usConnNumber AS WORD, astRecordInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
@@ -3907,7 +4454,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgGetLocks( hMgmtHandle, pucTableName,  pucUserName, usConnNumber, astRecordInfo, REF pusArrayLen, REF pusStructSize)
             ELSE
                 RETURN ACE64.AdsMgGetLocks( hMgmtHandle, pucTableName,  pucUserName, usConnNumber, astRecordInfo, REF pusArrayLen, REF pusStructSize)
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgGetOpenIndexes( hMgmtHandle AS IntPtr, pucTableName AS STRING, pucUserName AS STRING, usConnNumber AS WORD, astOpenIndexInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
@@ -3915,7 +4462,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgGetOpenIndexes( hMgmtHandle, pucTableName, pucUserName , usConnNumber, astOpenIndexInfo, REF pusArrayLen, REF pusStructSize)
             ELSE
                 RETURN ACE64.AdsMgGetOpenIndexes( hMgmtHandle, pucTableName, pucUserName , usConnNumber, astOpenIndexInfo, REF pusArrayLen, REF pusStructSize)
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgGetOpenTables( hMgmtHandle AS IntPtr, pucUserName AS STRING, usConnNumber AS WORD, astOpenTableInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
@@ -3923,7 +4470,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgGetOpenTables( hMgmtHandle, pucUserName, usConnNumber, astOpenTableInfo, REF pusArrayLen, REF pusStructSize)
             ELSE
                 RETURN ACE64.AdsMgGetOpenTables( hMgmtHandle, pucUserName, usConnNumber, astOpenTableInfo, REF pusArrayLen, REF pusStructSize)
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgGetServerType( hMgmtHandle AS IntPtr, pusServerType REF WORD ) AS DWORD 
@@ -3931,7 +4478,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgGetServerType( hMgmtHandle, REF pusServerType)
             ELSE
                 RETURN ACE64.AdsMgGetServerType( hMgmtHandle, REF pusServerType)
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgGetUserNames( hMgmtHandle AS IntPtr, pucFileName AS STRING, astUserInfo AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
@@ -3939,7 +4486,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgGetUserNames(hMgmtHandle, pucFileName, astUserInfo, REF pusArrayLen , REF pusStructSize)
             ELSE
                 RETURN ACE64.AdsMgGetUserNames(hMgmtHandle, pucFileName, astUserInfo, REF pusArrayLen , REF pusStructSize)
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgGetWorkerThreadActivity( hMgmtHandle AS IntPtr, astWorkerThreadActivity AS IntPtr, pusArrayLen REF WORD, pusStructSize REF WORD ) AS DWORD 
@@ -3947,7 +4494,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgGetWorkerThreadActivity(hMgmtHandle, astWorkerThreadActivity, REF pusArrayLen, REF pusStructSize)
             ELSE
                 RETURN ACE64.AdsMgGetWorkerThreadActivity(hMgmtHandle, astWorkerThreadActivity, REF pusArrayLen, REF pusStructSize)
-            ENDIF        
+        ENDIF        
         
         PUBLIC STATIC METHOD  AdsMgKillUser( hMgmtHandle AS IntPtr, pucUserName AS STRING, usConnNumber AS WORD ) AS DWORD 
             
@@ -3955,7 +4502,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACE32.AdsMgKillUser( hMgmtHandle,pucUserName,  usConnNumber)
             ELSE
                 RETURN ACE64.AdsMgKillUser( hMgmtHandle,pucUserName,  usConnNumber)
-            ENDIF        
+        ENDIF        
         
         
         PUBLIC STATIC METHOD  AdsMgResetCommStats( hMgmtHandle AS IntPtr ) AS DWORD 
@@ -3992,7 +4539,7 @@ BEGIN NAMESPACE XSharp.ADS
         //INTERNAL DELEGATE _delGetDateS(hTable AS IntPtr, strFldName AS STRING, [InAttribute] [OutAttribute] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delGetFTSIndexes(hTable AS IntPtr, [InAttribute] [OutAttribute] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delGetField1(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetField2(hTable AS IntPtr, lFieldOrdinal AS DWORD, strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetField2(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
         //INTERNAL DELEGATE _delGetField3(hTable AS IntPtr, strFldName AS STRING, abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
         //INTERNAL DELEGATE _delGetField4(hTable AS IntPtr, strFldName AS STRING,  strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
     INTERNAL DELEGATE _delGetFieldName(hTable AS IntPtr, usFld AS WORD, [InAttribute] [OutAttribute] strName AS CHAR[], pusBufLen REF WORD ) AS DWORD 
@@ -4005,7 +4552,7 @@ BEGIN NAMESPACE XSharp.ADS
     INTERNAL DELEGATE _delGetScope(hIndex AS IntPtr, usScopeOption AS WORD, [InAttribute] [OutAttribute] strScope AS CHAR[], pusBufLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delGetStringD(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD) AS DWORD 
         //INTERNAL DELEGATE _delGetStringS(hTable AS IntPtr, strFldName AS STRING, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetTableFilename(hTable AS IntPtr, usOption AS WORD, strName AS CHAR[], wLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetTableFilename(hTable AS IntPtr, usOption AS WORD, [InAttribute] [OutAttribute] strName AS CHAR[], wLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delH (h AS IntPtr) AS DWORD
     INTERNAL DELEGATE _delHD(h AS IntPtr, d AS DWORD) AS DWORD
     INTERNAL DELEGATE _delHDI(h AS IntPtr, d AS DWORD, i AS INT) AS DWORD

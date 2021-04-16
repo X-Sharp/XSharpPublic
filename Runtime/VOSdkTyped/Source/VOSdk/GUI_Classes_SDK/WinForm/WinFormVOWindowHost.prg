@@ -6,7 +6,7 @@
 
 
 
-#using System.ComponentModel
+USING System.ComponentModel
 
 CLASS WinFormVOWindowHost INHERIT Component
 	PRIVATE components := NULL AS System.ComponentModel.IContainer
@@ -44,7 +44,7 @@ CLASS WinFormVOWindowHost INHERIT Component
 		RETURN
 		
 	PROTECTED METHOD Dispose( disposing AS LOGIC ) AS VOID
-		IF disposing && (components != NULL)
+		IF disposing .AND. (components != NULL)
 			SELF:Close()
 			components:Dispose()
 		ENDIF
@@ -63,7 +63,7 @@ CLASS WinFormVOWindowHost INHERIT Component
 
 	PRIVATE METHOD UpdateHost() AS VOID STRICT
 		IF ! SELF:DesignMode
-			IF window == NULL && ! String.IsNullOrEmpty( windowClassName )
+			IF window == NULL .AND. ! String.IsNullOrEmpty( windowClassName )
 				TRY
 					window := (Window)CreateInstance(windowClassName)
 				CATCH
@@ -135,7 +135,7 @@ CLASS WinFormVOWindowHost INHERIT Component
 		RETURN result
 		
 	METHOD AdjustVOWindow() AS VOID STRICT
-		//Todo
+		//Todo AdjustVOWindow
 		//IF ! window == NULL
 		//    LOCAL windowRect IS _winRect
 		//    GetWindowRect(window:Handle(),@windowRect)

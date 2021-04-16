@@ -13,8 +13,8 @@ USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.VFP
 
-    INTERNAL STATIC CLASS Win32
-    
+    INTERNAL PARTIAL STATIC CLASS Win32
+
 
     INTERNAL STATIC METHOD GetParentWindow() AS IntPtr
         LOCAL hResult AS IntPtr
@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharp.VFP
 
         [DllImport("user32.dll", CharSet := CharSet.Ansi)];
         INTERNAL STATIC METHOD GetDesktopWindow() AS IntPtr PASCAL
-    
+
 		INTERNAL DELEGATE EnumChildProc(hWnd AS IntPtr , lParam AS IntPtr ) AS LOGIC
 
         [DllImport("user32.dll", CharSet := CharSet.Auto, SetLastError := TRUE)] ;
@@ -49,18 +49,18 @@ BEGIN NAMESPACE XSharp.VFP
 
 	PUBLIC STATIC METHOD FindMessageBox(caption AS STRING ) AS IntPtr
 		RETURN UnsafeNativeMethods.FindWindow("#32770", caption)
-        
+
     PRIVATE CONST WM_COMMAND  := 273U AS DWORD
 
 	PUBLIC STATIC METHOD SendCommandToDlgButton(hWnd AS IntPtr , dlgButtonId AS LONG ) AS VOID
 		IF hWnd != IntPtr.Zero
-			UnsafeNativeMethods.EnumChildWindows(hWnd, { handle , param => 
+			UnsafeNativeMethods.EnumChildWindows(hWnd, { handle , param =>
 				VAR dlgCtrlID := UnsafeNativeMethods.GetDlgCtrlID(handle)
 				IF dlgCtrlID == dlgButtonId
 					UnsafeNativeMethods.PostMessage(hWnd, WM_COMMAND, IntPtr{dlgCtrlID}, handle)
 				ENDIF
 				RETURN dlgCtrlID != dlgButtonId
 			}, IntPtr.Zero)
-		ENDIF        
+		ENDIF
 END CLASS
 END NAMESPACE // XSharp.VFP

@@ -42,11 +42,13 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>false</Nostandarddefs>
     <AssemblyOriginatorKeyFile>$(Solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <Memvar>False</Memvar>
+    <Undeclared>False</Undeclared>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -98,12 +100,18 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FoxTests.prg" />
+    <Compile Include="Helpers.prg" />
+    <Compile Include="ParserTests.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Program.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ScriptTests.prg" />
+    <Compile Include="TestData.prg" />
+    <Compile Include="VoTests.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

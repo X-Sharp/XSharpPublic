@@ -1,7 +1,12 @@
-#using System.Collections.Generic
-#using System.Collections
-#using System.Xml
-#using System.Text
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Collections.Generic
+USING System.Collections
+USING System.Xml
+using System.Text
 
 ENUM DBServerItemType
 	MEMBER DBServer

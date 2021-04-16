@@ -79,4 +79,9 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>Copy $(Solutiondir)Docs\System.xml $(ProjectDir)\System.Xml</PreBuildEvent>
+    <PostBuildEvent>Erase $(ProjectDir)\System.Xml</PostBuildEvent>
+    <RunPostBuildEvent />
+  </PropertyGroup>
 </Project>

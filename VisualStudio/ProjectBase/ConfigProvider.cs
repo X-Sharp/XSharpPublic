@@ -54,7 +54,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The associated project.
         /// </summary>
-        internal ProjectNode ProjectMgr
+        protected internal ProjectNode ProjectMgr
         {
             get
             {
@@ -83,7 +83,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region ctors
-        internal ConfigProvider(ProjectNode manager)
+        protected internal ConfigProvider(ProjectNode manager)
         {
             this.project = manager;
         }
@@ -190,7 +190,9 @@ namespace Microsoft.VisualStudio.Project
         public virtual int AddCfgsOfCfgName(string name, string cloneName, int fPrivate)
         {
             // We need to QE/QS the project file
-            if(!this.ProjectMgr.QueryEditProjectFile(false))
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (!this.ProjectMgr.QueryEditProjectFile(false))
             {
                 throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
             }
@@ -368,7 +370,8 @@ namespace Microsoft.VisualStudio.Project
 				string newCondition = newCanonicalName.ToMSBuildCondition();
 				newConfig.Condition = newCondition;
 			}
-			NotifyOnPlatformNameAdded(platformName);
+            ThreadHelper.ThrowIfNotOnUIThread();
+            NotifyOnPlatformNameAdded(platformName);
 			return VSConstants.S_OK;
 
 		}
@@ -380,8 +383,10 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
 		public virtual int DeleteCfgsOfCfgName(string name)
 		{
-			// We need to QE/QS the project file
-			if (!this.ProjectMgr.QueryEditProjectFile(false))
+            // We need to QE/QS the project file
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (!this.ProjectMgr.QueryEditProjectFile(false))
 			{
 				throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
 			}
@@ -453,8 +458,9 @@ namespace Microsoft.VisualStudio.Project
 			{
 				group.Parent.RemoveChild(group);
 			}
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-			NotifyOnPlatformNameDeleted(platName);
+            NotifyOnPlatformNameDeleted(platName);
 
 			return VSConstants.S_OK;
 
@@ -715,7 +721,6 @@ namespace Microsoft.VisualStudio.Project
             });
 			// Get the properties of the configuration
 			configurationProperties = ((ProjectConfig)cfg).ConfigurationProperties;
-
 			return VSConstants.S_OK;
 
 		}
@@ -778,7 +783,8 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 		protected void NotifyOnPlatformNameAdded(string platformName)
         {
-            foreach(IVsCfgProviderEvents sink in this.cfgEventSinks)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            foreach (IVsCfgProviderEvents sink in this.cfgEventSinks)
             {
                 ErrorHandler.ThrowOnFailure(sink.OnPlatformNameAdded(platformName));
             }
@@ -791,7 +797,9 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 		protected void NotifyOnPlatformNameDeleted(string platformName)
         {
-            foreach(IVsCfgProviderEvents sink in this.cfgEventSinks)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            foreach (IVsCfgProviderEvents sink in this.cfgEventSinks)
             {
                 ErrorHandler.ThrowOnFailure(sink.OnPlatformNameDeleted(platformName));
             }

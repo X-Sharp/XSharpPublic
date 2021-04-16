@@ -1,6 +1,6 @@
 
 
-
+[XSharp.Internal.TypesChanged];
 CLASS CustomControl INHERIT Control
 	// Custom Control is based on a Panel
 

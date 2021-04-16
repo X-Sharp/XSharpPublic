@@ -26,7 +26,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>VOSQLClasses.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.VOSQLClasses.Xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
@@ -105,6 +105,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>Copy $(Solutiondir)Docs\Sql.xml $(ProjectDir)\Sql.Xml</PreBuildEvent>
+    <PostBuildEvent>Erase $(ProjectDir)\Sql.Xml</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

@@ -2,7 +2,7 @@
 
 
 #define SYSTEM_KEYCODE 0x20000000
-#USING System.Diagnostics
+USING System.Diagnostics
 
 INTERFACE INamedEvent
     PROPERTY Name    AS STRING GET
@@ -187,7 +187,7 @@ CLASS HelpRequestEvent INHERIT @@Event
 	
 	CONSTRUCTOR(e AS System.Windows.Forms.HelpEventArgs, sender AS OBJECT)
 		SUPER()
-		IF sender IS IVOControl VAR oC
+		IF sender IS IVOControlProperties VAR oC
 			SELF:oControl := oC:Control
 			SELF:oWindow  := oControl:Owner
 			SELF:HyperLabel := oControl:HyperLabel 

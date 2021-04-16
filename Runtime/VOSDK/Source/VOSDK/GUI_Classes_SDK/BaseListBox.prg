@@ -1,13 +1,19 @@
+/// <include file="Gui.xml" path="doc/BaseListBox/*" />
 CLASS BaseListBox INHERIT TextControl
 	PROTECT MsgGroup 					AS INT
 	PROTECT liSavedCurrentItemNo 	AS LONGINT
 	PROTECT sSavedCurrentItem 		AS STRING
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.AddItem/*" />
 METHOD AddItem(cItem, nItemNumber) 
 	LOCAL dwPosition AS DWORD
 	LOCAL dwMessType AS LONGINT
 	LOCAL liRetVal AS  LONGINT
+	
+	
 	
 	
 	IF !IsString(cItem)
@@ -27,8 +33,10 @@ METHOD AddItem(cItem, nItemNumber)
 		dwMessType := LBAddString
 	ENDIF
 	
+	
 	IF SELF:ValidateControl()
 		liRetVal := SendMessage(hwnd, LBMessages[dwMessType,MsgGroup], dwPosition, LONGINT(_CAST, String2Psz(cItem)))
+		
 		
 		IF liRetVal < LB_Okay
 			liRetVal := 0
@@ -37,34 +45,53 @@ METHOD AddItem(cItem, nItemNumber)
 		ENDIF
 	ENDIF
 	
+	
 	RETURN liRetVal
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.Clear/*" />
 METHOD Clear() 
 	IF SELF:ValidateControl()
 		SendMessage(SELF:Handle(), LBMessages[LBResetContent,MsgGroup], 0, 0)
 	ENDIF
 	RETURN SELF
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.CurrentItem/*" />
 ACCESS CurrentItem 
 	RETURN NULL_STRING
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.CurrentItemNo/*" />
 ACCESS CurrentItemNo 
 	RETURN 0
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.CurrentText/*" />
 ACCESS CurrentText 
 	IF IsInstanceOf(SELF, #ComboBox)
 		RETURN SUPER:CurrentText
 	ENDIF
 	RETURN NULL_STRING
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.DeleteItem/*" />
 METHOD DeleteItem(nItemNumber) 
 	LOCAL dwPos AS DWORD
 	LOCAL dwTemp AS DWORD
+	
+	
+	
 	
 	
 	
@@ -77,6 +104,7 @@ METHOD DeleteItem(nItemNumber)
 		ENDIF
 	ENDIF
 	
+	
 	IF (nItemNumber == 0)
 		IF ((dwPos := SELF:CurrentItemNo) == 0)
 			RETURN FALSE
@@ -84,23 +112,32 @@ METHOD DeleteItem(nItemNumber)
 		dwPos--
 	ENDIF
 	
+	
 	IF SELF:ValidateControl()
 		dwTemp := LBMessages[LBDeleteString,MsgGroup]
 		RETURN (SendMessage(hwnd, dwTemp, dwPos, 0) >= 0)
 	ENDIF
 	
+	
 	RETURN FALSE
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.Destroy/*" />
 METHOD Destroy()   AS USUAL CLIPPER
 	IF IsWindow(hwnd)
 		sSavedCurrentItem := SELF:CurrentItem
 		liSavedCurrentItemNo := SELF:CurrentItemNo
 	ENDIF
 	
+	
 	RETURN SUPER:Destroy()
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.FindItem/*" />
 METHOD FindItem(cItem, lWholeItem, nStart) 
 	LOCAL liIndex := LB_ERR AS LONGINT
 	LOCAL iMessType AS LONGINT
@@ -109,6 +146,7 @@ METHOD FindItem(cItem, lWholeItem, nStart)
 	IF !IsString(cItem)
 		WCError{#FindItem,#BaseListBox,__WCSTypeError,cItem,1}:Throw()
 	ENDIF
+	
 	
 	iMessType := LBFindStringExact //Default is exact match
 	IF !IsNil(lWholeItem)
@@ -120,6 +158,7 @@ METHOD FindItem(cItem, lWholeItem, nStart)
 		ENDIF
 	ENDIF
 	
+	
 	IF !IsNil(nStart)
 		IF !IsLong(nstart)
 			WCError{#FindItem,#BaseListBox,__WCSTypeError,nStart,3}:Throw()
@@ -127,21 +166,28 @@ METHOD FindItem(cItem, lWholeItem, nStart)
 		liStart := nStart-1
 	ENDIF
 	
+	
 	IF (NULL_STRING == cItem)
 		RETURN 0
 	ENDIF
+	
 	
 	IF SELF:ValidateControl()
 		liIndex := SendMessage(hwnd, LBMessages[iMessType ,MsgGroup], DWORD(liStart), LONGINT(_CAST, String2Psz(cItem)))
 	ENDIF
 	
+	
 	IF (liIndex < LB_OKAY)
 		RETURN 0
 	ENDIF
 	
+	
 	RETURN liIndex+1
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.GetItem/*" />
 METHOD GetItem(nItemNumber, nLength) 
 	LOCAL liPosition AS LONGINT
 	LOCAL liMaxLength AS LONGINT
@@ -156,6 +202,7 @@ METHOD GetItem(nItemNumber, nLength)
 		liPosition := nItemNumber
 	ENDIF
 	
+	
 	IF !IsNil(nLength)
 		IF !IsLong(nLength)
 			WCError{#GetItem,#BaseListBox,__WCSTypeError,nLength,2}:Throw()
@@ -169,9 +216,11 @@ METHOD GetItem(nItemNumber, nLength)
 		liLength := 65535
 	ENDIF
 	
+	
 	IF (liPosition == 0) .AND. ((liPosition := SELF:CurrentItemNo) == 0)
 		RETURN ""
 	ENDIF
+	
 	
 	liPosition--
 	hHandle := SELF:Handle()
@@ -187,10 +236,16 @@ METHOD GetItem(nItemNumber, nLength)
 	ENDIF
 	MemFree(ptrBuffer)
 	
+	
 	RETURN cRetVal
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.ctor/*" />
 CONSTRUCTOR( oOwner, xID, oPoint, oDimension, kStyle, lDataAware) 
+	
+	
 	
 	
 	IF IsInstanceOfUsual(xID,#ResourceID)
@@ -228,22 +283,32 @@ CONSTRUCTOR( oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
 	ENDIF
 	MsgGroup := 1
 	
+	
 	RETURN 
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.ItemCount/*" />
 ACCESS ItemCount 
 	LOCAL dwTemp AS DWORD
+	
 	
 	IF SELF:ValidateControl()
 		dwTemp 	:= LBMessages[LBGetCount, MsgGroup]
 		RETURN SendMessage(SELF:Handle(), dwTemp, 0, 0)
 	ENDIF
 	
+	
 	RETURN 0
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/BaseListBox.SetTop/*" />
 METHOD SetTop(nItemNumber) 
 	LOCAL liPosition AS DWORD
+	
 	
 	IF !IsNil(nItemNumber)
 		IF !IsLong(nItemNumber)
@@ -259,11 +324,16 @@ METHOD SetTop(nItemNumber)
 		SendMessage (SELF:Handle(), LB_SetTopIndex, DWORD(liPosition), 0)
 	ENDIF
 	
+	
 	RETURN SELF
+	
 	
 END CLASS
 
+
 /// <exclude/>
 GLOBAL DIM LBMessages [11,2] AS DWORD
+	
+	
 	
 	

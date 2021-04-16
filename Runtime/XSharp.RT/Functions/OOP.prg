@@ -402,6 +402,7 @@ INTERNAL STATIC CLASS OOPHelpers
                     ENDIF
                 OTHERWISE
 	                result := oDefAttrib:Value
+                    result := Convert.ChangeType(result,oPar:ParameterType)
                 END SWITCH
             END IF
         ENDIF

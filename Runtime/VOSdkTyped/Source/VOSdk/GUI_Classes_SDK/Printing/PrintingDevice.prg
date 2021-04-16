@@ -2,8 +2,8 @@
 
 
 
-#using System.Drawing.Printing
-#using System.Reflection
+USING System.Drawing.Printing
+USING System.Reflection
 CLASS PrintingDevice INHERIT VObject
 	PROTECT oSettings AS System.Drawing.Printing.PrinterSettings
 	PROTECT cDriver AS STRING

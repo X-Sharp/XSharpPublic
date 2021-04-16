@@ -1,23 +1,33 @@
+/// <include file="Gui.xml" path="doc/CurHand/*" />
 CLASS CurHand INHERIT Pointer
 
+
+/// <include file="Gui.xml" path="doc/CurHand.ctor/*" />
 CONSTRUCTOR () 
 	SUPER(ResourceID{"CURHAND", _GetInst()})
 	RETURN 
 
+
 END CLASS
 
+
+/// <include file="Gui.xml" path="doc/HyperLink/*" />
 CLASS HyperLink INHERIT FixedText
 	// Another generous contribution from S Ebert
 	PROTECT _oPointer AS Pointer
 
+
+/// <include file="Gui.xml" path="doc/HyperLink.Dispatch/*" />
 METHOD Dispatch(oEvent) 
 	LOCAL oEvt  AS @@Event
 	LOCAL nMsg  AS DWORD
 	LOCAL sRect IS _WinRect
 	LOCAL hDc, hFont AS PTR
 
+
 	oEvt := oEvent
 	nMsg := oEvt:uMsg
+
 
 	DO CASE
 	CASE nMsg == WM_SETCURSOR .AND. LoWord(DWORD(_CAST,oEvt:lParam)) == HTClient
@@ -59,23 +69,30 @@ METHOD Dispatch(oEvent)
 		RETURN 1l
 	ENDCASE
 
+
 	RETURN SUPER:Dispatch(oEvt)
 
+
+/// <include file="Gui.xml" path="doc/HyperLink.ctor/*" />
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText) 
 	SUPER(oOwner, xID, oPoint, oDimension, cText )
 	SELF:Setstyle(SS_NOTIFY, TRUE)
 	_oPointer := CurHand{}
 	RETURN 
 
+
+/// <include file="Gui.xml" path="doc/HyperLink.OpenLink/*" />
 METHOD OpenLink() 
 	ShellOpen(SELF:Owner, SELF:Caption)
 	RETURN SELF
 END CLASS
 
+
 /// <exclude/>
 FUNCTION ShellOpen(oWindow AS Window, cFile AS STRING) AS VOID STRICT
     //SE-080603
    LOCAL hWnd AS PTR 
+
 
 	cFile := AllTrim(Lower(cFile))
 	IF At2("@",cFile)>1
@@ -92,4 +109,5 @@ FUNCTION ShellOpen(oWindow AS Window, cFile AS STRING) AS VOID STRICT
       ShellExecute(hWnd, String2Psz("open"), String2Psz(cFile), NULL_PSZ, NULL_PSZ, SW_SHOWNORMAL)
 	ENDIF
 	RETURN
+
 

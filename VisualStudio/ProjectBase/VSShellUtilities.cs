@@ -38,6 +38,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentNullException("serviceProvider");
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsUIShell shell = serviceProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
 
@@ -77,6 +78,7 @@ namespace Microsoft.VisualStudio.Project
             } else {
                 OpenDocument(serviceProvider, filename, out viewAdapter, out pWindowFrame);
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             ErrorHandler.ThrowOnFailure(pWindowFrame.Show());
 
@@ -92,6 +94,7 @@ namespace Microsoft.VisualStudio.Project
             } else {
                 OpenDocument(serviceProvider, filename, out viewAdapter, out pWindowFrame);
             }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             ErrorHandler.ThrowOnFailure(pWindowFrame.Show());
             int line, col;

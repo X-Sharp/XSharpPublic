@@ -1,4 +1,4 @@
-﻿#using System.ComponentModel
+﻿using System.ComponentModel
 /// <summary>This class is used to host a VO GUI Window in a Windows Forms UI Hierarchy</summary>
 CLASS XSharp.WinFormVOWindowHost INHERIT Component
     PRIVATE components := NULL AS System.ComponentModel.IContainer
@@ -39,7 +39,7 @@ CLASS XSharp.WinFormVOWindowHost INHERIT Component
         
     /// <inheritdoc/>
     PROTECTED METHOD Dispose( disposing AS LOGIC ) AS VOID
-        IF disposing && (components != NULL)
+        IF disposing .AND. (components != NULL)
             SELF:Close()
             components:Dispose()
         ENDIF
@@ -58,7 +58,7 @@ CLASS XSharp.WinFormVOWindowHost INHERIT Component
 
     PRIVATE METHOD UpdateHost() AS VOID STRICT
         IF ! SELF:DesignMode
-            IF window == NULL && ! String.IsNullOrEmpty( windowClassName )
+            IF window == NULL .AND. ! String.IsNullOrEmpty( windowClassName )
                 TRY
                     window := (Window)CreateInstance(windowClassName)
                 CATCH

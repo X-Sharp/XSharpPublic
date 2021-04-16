@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _tagNumber AS DWORD
         PRIVATE _maxLockTries AS INT
         PRIVATE _parkPlace AS DWORD
-        INTERNAL _LockOffset AS LONG
+        INTERNAL _LockOffset AS INT64
         #endregion
 
         PRIVATE METHOD _initLockValues() as VOID
@@ -76,7 +76,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL locked AS LOGIC
             locked := _oStream:SafeLock(nOffset, nLong )
             IF ! locked
-                Trace.WriteLine("Lock Error:" + FException():Message)
+                var oEx := FException()
+                var msg := iif(oEx != NULL, oEx:Message, "Unknown")
+                Trace.WriteLine(i"Lock Error, position: {nOffset} length: {nLong} Message: {msg}")
             ENDIF
             RETURN locked
             
@@ -84,7 +86,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL unlocked AS LOGIC
             unlocked := _oStream:SafeUnlock( nOffset, nLong )
             IF ! unlocked
-                Trace.WriteLine("UnLock Error:" + FException():Message)
+                var oEx := FException()
+                var msg := iif(oEx != NULL, oEx:Message, "Unknown")
+                Trace.WriteLine(i"UnLock Error, position: {nOffset} length: {nLong} Message: {msg}")
             ENDIF
             RETURN unlocked
             
@@ -138,7 +142,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL dwOffSet AS DWORD
             
             result := FALSE
-            IF _lockGate(SELF:_tagNumber)
+            IF SELF:_lockGate(SELF:_tagNumber)
                 dwOffSet := ~(SELF:_getParkLotPlace(SELF:_tagNumber) + SELF:_parkPlace)
                 IF !SELF:_lockBytes(dwOffSet, 1)
                     SELF:_unlockBytes( SELF:_getParkLotGate( SELF:_tagNumber ), 1)
@@ -224,7 +228,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
         PRIVATE METHOD _ReadLock() AS LOGIC
             LOCAL isOk AS LOGIC
-            
             isOk := TRUE
             Trace.Assert(SELF:_writeLocks == 0, "Attempting read lock while holding write lock")
             IF SELF:_readLocks != 0

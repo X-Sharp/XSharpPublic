@@ -20,7 +20,7 @@ CLASS RectangleObject INHERIT ShapeObject
 		RETURN 
 	#ifdef DONOTINCLUDE
 	METHOD Draw() 
-		//ToDo
+		//ToDo Draw
 		LOCAL hDC AS PTR
 		LOCAL hLastRop AS PTR
 		LOCAL hOldPen AS PTR

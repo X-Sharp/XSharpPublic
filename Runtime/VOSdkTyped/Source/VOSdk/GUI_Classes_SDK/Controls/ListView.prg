@@ -1,6 +1,3 @@
-
-
-
 USING System.Collections.Generic
 USING System.Diagnostics
 USING Swf := System.Windows.Forms
@@ -44,8 +41,6 @@ CLASS ListView INHERIT TextControl
 	STATIC METHOD ListView_Scroll(hwndLV AS IntPtr, dx AS INT, dy AS INT) AS LOGIC STRICT
 		RETURN (LOGIC(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_SCROLL, DWORD(_CAST,dx), LONGINT(_CAST,dy)))))
 
-
-
 	STATIC METHOD ListView_RedrawItems(hwndLV AS IntPtr, iFirst AS INT, iLast AS INT) AS LOGIC STRICT
 		RETURN (LOGIC(_CAST, (GuiWin32.SendMessage((hwndLV), LVM_REDRAWITEMS, DWORD(_CAST, iFirst), LONGINT(_CAST, iLast)))))
 
@@ -63,8 +58,8 @@ CLASS ListView INHERIT TextControl
 	#endregion
 
 
-	ACCESS __ListView AS VOListView
-		RETURN (VOListView) oCtrl
+	ACCESS __ListView AS IVOListView
+		RETURN (IVOListView) oCtrl
 
 	METHOD __GetItemAtIndex(nIndex AS LONG) AS ListViewItem
 		IF SELF:__IsValid
@@ -75,7 +70,7 @@ CLASS ListView INHERIT TextControl
 		RETURN NULL_OBJECT
 
 	METHOD __CreateDragImageList(nItem AS DWORD) AS OBJECT STRICT 
-		//Todo
+		//Todo __CreateDragImageList
 		//LOCAL hImageList AS PTR
 		//LOCAL strucPoint IS _winPoint
 		//// create an ImageList handle from a ListView item
@@ -184,10 +179,10 @@ CLASS ListView INHERIT TextControl
 		RETURN SELF:InsertColumn(oListViewColumn)
 
 	METHOD AddGroup(iGroupId,cGroupName,dwAlign) 
-		// iGroupId is Ignored
-		LOCAL oGroup AS System.Windows.Forms.ListViewGroup
-		oGroup := System.Windows.Forms.ListViewGroup{(STRING) cGroupName}
-		//oGroup:ID := iGroupId
+		// iGroupId is stored in the Tag
+		LOCAL oGroup AS Swf.ListViewGroup
+		oGroup := Swf.ListViewGroup{(STRING) cGroupName}
+		oGroup:Tag := (LONG) iGroupId
 		IF ! IsNil(dwAlign)
 			oGroup:HeaderAlignment := (	System.Windows.Forms.HorizontalAlignment) dwAlign
 		ENDIF
@@ -325,12 +320,13 @@ CLASS ListView INHERIT TextControl
 		RETURN TRUE
 		ENDIF
 		RETURN FALSE
+        
 	METHOD DeleteColumn(oListViewColumn AS ListViewColumn) 
 		LOCAL cKey AS STRING
 		IF SELF:__IsValid
 			cKey := (STRING) oListViewColumn:NameSym
-			IF SELF:__ListView:Columns:ContainsKey(cKey)
-				SELF:__ListView:Columns:RemoveByKey(cKey)
+			IF SELF:__ListView:ContainsColumn(cKey)
+				SELF:__ListView:RemoveColumn(cKey)
 				RETURN TRUE
 			ENDIF
 		ENDIF
@@ -356,11 +352,11 @@ CLASS ListView INHERIT TextControl
 		RETURN lDragDropEnabled
 
 	ACCESS DragImageList AS ImageList
-		//Todo		
+		//Todo	 DragImageList	
 		RETURN NULL_OBJECT
 
 	ASSIGN DragImageList(oNewDragImageList AS ImageList) 
-		//Todo		
+		//Todo	 DragImageList	
 		RETURN 
 
 	METHOD EditItemLabel(nItem AS LONG) 
@@ -477,12 +473,12 @@ CLASS ListView INHERIT TextControl
 		RETURN NULL_OBJECT
 
 	METHOD GetItemAttributes(nItem AS LONG) AS ListViewItem
-		LOCAL oLvItem		AS VOListViewItem
+		LOCAL oLvItem		AS IVOListViewItem
 		LOCAL oListViewItem AS ListViewItem
 		LOCAL nIndex		AS LONG
 		LOCAL oListViewColumn AS ListViewColumn
 		IF nItem > 0 .and. nItem <= __ListView:Items:Count
-			oLvItem := (VOListViewItem) __ListView:Items[nItem-1]
+			oLvItem := __ListView:Items[nItem-1]
 			IF oLvItem:Item != NULL_OBJECT
 				oListViewItem	:= oLvItem:Item
 			ELSE
@@ -499,7 +495,7 @@ CLASS ListView INHERIT TextControl
 		RETURN oListViewItem
 
 	METHOD GetItemBoundingBox(nItem AS LONG) AS BoundingBox
-		LOCAL oItem AS System.Windows.Forms.ListViewItem
+		LOCAL oItem AS IVOListViewItem
 		IF nItem < __ListView:Items:Count .and. nItem > 0
 			oItem := __ListView:Items[nItem-1]
 			RETURN (BoundingBox) oItem:Bounds
@@ -507,7 +503,7 @@ CLASS ListView INHERIT TextControl
 		RETURN NULL_OBJECT
 
 	METHOD GetItemPosition(nItem AS LONG) AS Point
-		LOCAL oItem AS System.Windows.Forms.ListViewItem
+		LOCAL oItem AS IVOListViewItem
 		IF nItem < __ListView:Items:Count .and. nItem > 0
 			oItem := __ListView:Items[nItem-1]
 			RETURN (Point) oItem:Position
@@ -590,7 +586,7 @@ CLASS ListView INHERIT TextControl
 
 	METHOD HasGroup(iGroupId AS LONG) 
 		FOREACH IMPLIED oGroup IN __ListView:Groups
-			IF oGroup:ID == iGroupId
+			IF (LONG) oGroup:Tag == iGroupId
 				RETURN TRUE
 			ENDIF
 		NEXT
@@ -604,8 +600,8 @@ CLASS ListView INHERIT TextControl
 
 
 	METHOD InsertColumn(oListViewColumn AS ListViewColumn, nInsertAfter:= -1 AS LONG) AS LOGIC
-		LOCAL oHeader AS VOColumnHeader
-		IF ! ValidateControl()
+		LOCAL oHeader AS IVOColumnHeader
+		IF ! SELF:ValidateControl()
 			RETURN FALSE
 		ENDIF
 		IF nInsertAfter == -1
@@ -623,10 +619,10 @@ CLASS ListView INHERIT TextControl
 	METHOD InsertItem(oLVItem AS ListViewItem, nInsertAfter := -1 AS LONG) AS LOGIC
 		LOCAL dwIndex AS LONG
 		LOCAL oListViewColumn	AS ListViewColumn
-		LOCAL oListViewItem		AS VOListViewItem
+		LOCAL oListViewItem		AS IVOListViewItem
 		LOCAL cCaption AS STRING
 		// copy the usual values from the item to the column
-		IF ! ValidateControl()
+		IF ! SELF:ValidateControl()
 			RETURN FALSE
 		ENDIF
 
@@ -674,7 +670,7 @@ CLASS ListView INHERIT TextControl
 		RETURN __ListView:Items:Count
 
 	ACCESS ItemsPerPage AS LONG
-		//tODO
+		//tODO ItemsPerPage
 		RETURN 0
 	
 
@@ -694,7 +690,7 @@ CLASS ListView INHERIT TextControl
 
 	METHOD RemoveGroup(iGroupId AS LONG)  AS LOGIC
 		FOREACH IMPLIED oGroup IN __ListView:Groups
-			IF oGroup:ID == iGroupId
+			IF (LONG) oGroup:Tag == iGroupId
 				__ListView:Groups:Remove(oGroup)
 				RETURN TRUE
 			ENDIF
@@ -706,7 +702,7 @@ CLASS ListView INHERIT TextControl
 		RETURN LOGIC(_CAST, ListView_Scroll(SELF:Handle(), oDimension:Width, -oDimension:Height))
 
 	ACCESS SearchString AS STRING
-		//Todo
+		//Todo SearchString
 		//LOCAL pszSearchString AS PSZ
 		//LOCAL cSearchString AS STRING
 		//LOCAL DIM aBuf[257] AS BYTE
@@ -718,7 +714,7 @@ CLASS ListView INHERIT TextControl
 		RETURN "" 
 		
 	METHOD Seek(uValue, kSeekType, nStart, lWrap, lPartial) 
-		//Todo
+		//Todo Seek
 		LOCAL oPoint AS Point
 		//LOCAL aValList AS ARRAY
 		//LOCAL dwIndex, dwCount AS DWORD
@@ -800,7 +796,7 @@ CLASS ListView INHERIT TextControl
 		RETURN TRUE
 
 	METHOD SetBackgroundImage(uImage,dwFlags,xOffSet,yOffSet) 
-		//Todo
+		//Todo SetBackgroundImage
 		RETURN FALSE
 	// Requires a call to CoInitialize() or the OLE library linked in. If CoInitialize() call CoUnitialize() later.
 	//LOCAL pLVBKI IS _WINLVBKIMAGE
@@ -843,7 +839,7 @@ CLASS ListView INHERIT TextControl
 
 	METHOD SetColumnFormat(nCol AS LONG, dwFlag:= 0 AS LONG,nImage := 0 AS LONG) 
 		//PP-030909
-		LOCAL oHeader AS System.Windows.Forms.ColumnHeader
+		LOCAL oHeader AS IVOColumnHeader
 		IF nCol > 0 .and. nCol  <= __ListView:Columns:Count
 			oHeader := __ListView:Columns[nCol]
 			IF nImage != 0
@@ -881,8 +877,6 @@ CLASS ListView INHERIT TextControl
 		//SE-060519
 		// 2.5b renaming of method - was conflicting with Control:SetExStyle
 
-		
-
 		IF !IsLong(kExStyle)
 			WCError{#SetExLVStyle,#ListView,__WCSTypeError,kExStyle,}:@@Throw()
 		ENDIF
@@ -897,7 +891,7 @@ CLASS ListView INHERIT TextControl
 
 	METHOD SetGroupName(iGroupId AS LONG,cGroupName AS STRING,dwAlign := -1 AS LONG) as LOGIC
 		FOREACH IMPLIED oGroup IN __ListView:Groups
-			IF oGroup:ID == iGroupId
+			IF (LONG) oGroup:Tag == iGroupId
 				oGroup:Name := cGroupName
 				IF dwAlign != -1
 					oGroup:HeaderAlignment := (System.Windows.Forms.HorizontalAlignment) dwAlign
@@ -920,7 +914,7 @@ CLASS ListView INHERIT TextControl
 
 
 	METHOD SetItemAttributes(oListViewItem AS ListViewItem) 
-		LOCAL oLvItem		AS VOListViewItem
+		LOCAL oLvItem		AS IVOListViewItem
 		LOCAL nIndex		AS LONG
 		LOCAL oListViewColumn AS ListViewColumn
 		IF oListViewItem != NULL_OBJECT
@@ -943,7 +937,7 @@ CLASS ListView INHERIT TextControl
 		ENDIF
 		IF oListViewItem != NULL_OBJECT
 			FOREACH IMPLIED oG IN SELF:__ListView:Groups
-				IF oG:ID == nId
+				IF (LONG) oG:Tag == nId
 					oListViewItem:__ListViewItem:Group :=  oG
 					RETURN TRUE
 				ENDIF
@@ -961,7 +955,7 @@ CLASS ListView INHERIT TextControl
 		RETURN FALSE
 
 	METHOD SetSelectedColumn(nIndex AS LONG) AS LOGIC
-		//Todo			
+		//Todo	 SetSelectedColumn		
 		//SendMessage(SELF:handle(), LVM_SETSELECTEDCOLUMN, nIndex-1, 0)
 
 		//InvalidateRect(SELF:handle(),NULL,TRUE)
@@ -1056,7 +1050,7 @@ CLASS ListView INHERIT TextControl
 		RETURN 
 
 	ACCESS ViewBoundingBox AS BoundingBox
-		//Todo
+		//Todo ViewBoundingBox
 		//LOCAL strucRect IS _winRect
 		//LOCAL oOrigin AS Point
 		//LOCAL oSize AS Dimension
@@ -1072,7 +1066,7 @@ CLASS ListView INHERIT TextControl
 		RETURN NULL_OBJECT
 
 	ACCESS ViewOrigin AS Point
-		//Todo
+		//Todo ViewOrigin
 		//LOCAL strucPoint IS _winPoint
 		//// this call is only meaningful if the current view is list or report
 		//IF ListView_GetOrigin(SELF:Handle(),  @strucPoint)
@@ -1088,9 +1082,9 @@ CLASS ListViewColumn INHERIT VObject
 	PROTECT oFieldSpec AS FieldSpec
 	PROTECT oHyperLabel AS HyperLabel
 	PROTECT oOwner AS ListView
-	PROTECT oHeader AS VOColumnHeader
+	PROTECT oHeader AS IVOColumnHeader
 
-	PROPERTY __Header AS VOColumnHeader GET oHeader SET oHeader := Value
+	PROPERTY __Header AS IVOColumnHeader GET oHeader SET oHeader := VALUE
 	PROPERTY __Owner AS ListView  
 		GET 
 		RETURN oOwner 
@@ -1145,7 +1139,7 @@ CLASS ListViewColumn INHERIT VObject
 
 	CONSTRUCTOR(nWidth, xColumnID, kAlignment) 
 		SUPER()
-		oHeader := VOColumnHeader{SELF}
+		oHeader := (IVOColumnHeader) GUIFactory.Instance:CreateListViewElement(ControlType.ListViewColumn, SELF)
 		// set the width of the column
 		IF IsInstanceOfUsual(nWidth, #FieldSpec)
 			self:nWidth := __GetFSDefaultLength((FieldSpec) nWidth)
@@ -1228,9 +1222,9 @@ CLASS ListViewItem INHERIT VObject
 	PROTECT aColumnText AS Dictionary<SYMBOL, Tuple<STRING, LONG > >
 	PROTECT aColumnValue AS Dictionary<SYMBOL, USUAL>
 	PROTECT lParam AS LONGINT
-	PROTECT oItem AS VOListViewItem
+	PROTECT oItem AS IVOListViewItem
 
-	ACCESS __ListViewItem AS VOListViewItem
+	ACCESS __ListViewItem AS IVOListViewItem
 		RETURN oItem		
 
 	ACCESS __ColumnValueList AS Dictionary<SYMBOL, USUAL> STRICT 
@@ -1261,11 +1255,11 @@ CLASS ListViewItem INHERIT VObject
 		lDisabled := lEnabled
 
 	ACCESS DropTarget  AS LOGIC
-		//Todo
+		//Todo DropTarget
 		RETURN lDropTarget
 
 	ASSIGN DropTarget(lEnabled AS LOGIC) 
-		//Todo
+		//Todo DropTarget
 		lDropTarget := lEnabled
 
 	ACCESS Focused  AS LOGIC
@@ -1292,15 +1286,12 @@ CLASS ListViewItem INHERIT VObject
 		RETURN NULL_STRING
 
 
-	METHOD GetValue() AS USUAL STRICT
-		// Gets the default value
-		RETURN NIL
-
-	METHOD GetValue(symColumnName AS SYMBOL) AS USUAL
-		IF aColumnValue:ContainsKey( symColumnName)
-			RETURN aColumnValue[symColumnName]
-		ENDIF	
-
+	METHOD GetValue(symColumnName := NULL_SYMBOL AS SYMBOL) AS USUAL
+        IF symColumnName != NULL_SYMBOL
+		    IF aColumnValue:ContainsKey( symColumnName)
+			    RETURN aColumnValue[symColumnName]
+		    ENDIF	
+        ENDIF
 		RETURN NIL
 
 	ACCESS ImageIndex AS LONG
@@ -1330,14 +1321,14 @@ CLASS ListViewItem INHERIT VObject
 			oItem:IndentCount := iNewIndent
 		ENDIF
 
-	constructor() strict
-		local oItem as VOListViewItem
-		oItem := VOListViewItem{SELF}
+	CONSTRUCTOR() STRICT
+		LOCAL oItem AS IVOListViewItem
+		oItem := (IVOListViewItem) GuiFactory.Instance:CreateListViewElement(Controltype.ListViewItem, SELF)
 		SELF(oItem)
 		RETURN
 
 
-	CONSTRUCTOR(loItem AS VOListViewItem) 
+	CONSTRUCTOR(loItem AS IVOListViewItem) 
 		SUPER()
 		SELF:oItem := loItem
 		oItem:LinkTo(SELF)
@@ -1354,7 +1345,7 @@ CLASS ListViewItem INHERIT VObject
 		RETURN 0
 
 	ACCESS OverlayImageIndex AS LONG
-		//todo
+		//todo OverlayImageIndex
 		// see http://www.hightechtalks.com/dotnet-framework-winforms-controls/overlay-image-listview-221468.html
 		RETURN nOverlayImage
 
@@ -1404,15 +1395,13 @@ CLASS ListViewItem INHERIT VObject
 			oItem:StateImageIndex := nNewStateImage -1
 		ENDIF
 
-
-
 END CLASS
 
-#using System.Collections
-#using System.Reflection
+USING System.Collections
+USING System.Reflection
 CLASS ListViewItemComparer IMPLEMENTS IComparer
 	PROTECT oListView AS ListView
-	PROTECT symMethod AS SYMBOL	  
+	PROTECT symMethod AS SYMBOL
 	CONSTRUCTOR(oLv AS ListView)
 		oListView := oLv
 	
@@ -1422,10 +1411,10 @@ CLASS ListViewItemComparer IMPLEMENTS IComparer
 				IF IsMethod(oListView, oListView:__SortRoutineName)
 					symMethod := oListView:__SortRoutineName
 				ENDIF
-			ENDIF
-			IF symMethod != NULL_SYMBOL
-				VAR oItem1 := (VOListViewItem) x
-				VAR oItem2 := (VOListViewItem) y
+            ENDIF
+        	IF symMethod != NULL_SYMBOL
+			    VAR oItem1 := (VOListViewItem) x
+			    VAR oItem2 := (VOListViewItem) y
                 RETURN __InternalSend(oListview, symMethod, oItem1:Item, oItem2:Item)
 			ENDIF
 		ENDIF

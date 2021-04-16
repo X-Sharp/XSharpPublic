@@ -1,4 +1,6 @@
+/// <include file="SQL.xml" path="doc/SQLStatement/*" />
 CLASS SQLStatement
+	
 	
 	HIDDEN  hStmt   			AS PTR
 	HIDDEN  cStatement      AS STRING
@@ -12,14 +14,17 @@ CLASS SQLStatement
 	PROTECT nKeySet         AS INT
 //	HIDDEN  nRecCount       AS LONGINT // Unused
 	PROTECT aUserOption     AS ARRAY
+ /// <exclude />
 	METHOD __AllocStmt() AS LOGIC STRICT 
 	LOCAL hStmtNew AS PTR
 	LOCAL nRetCode AS INT
 	LOCAL lRet     AS LOGIC
 	
+	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLStatement:__AllocStmt()" )
 	#ENDIF
+	
 	
 	IF hStmt = SQL_NULL_HSTMT
 		//RvdH 050413 This should be replaced with SqlAllocHandle
@@ -36,13 +41,17 @@ CLASS SQLStatement
 			SELF:MakeErrorInfo(SELF, #AllocStmt, nRetCode)
 		ENDIF
 		
+		
 	ELSE
 		// Statement already allocated
 		SELF:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__STMT_ALLOC ), #AllocStmt )
 	ENDIF
 	
+	
 	RETURN lRet
 
+
+ /// <exclude />
 METHOD __FreeParameters() 
 	LOCAL nPar AS DWORD
 	LOCAL oPar AS SqlParameter
@@ -64,16 +73,22 @@ METHOD __FreeParameters()
 	ASize(SELF:aParams,0)           
 	RETURN TRUE
 	
+	
 
+
+ /// <exclude />
 METHOD __FreeStmt( nOption AS WORD) AS LOGIC STRICT 
 	LOCAL nRetCode AS INT
 	LOCAL lRet     AS LOGIC
+		
 		
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLStatement:__FreeStmt( "+AsString( nOption )+" ) hStmt="+AsString( hStmt ) )
 	#ENDIF
 
+
 	IF hStmt != SQL_NULL_HSTMT
+
 
 		IF nOption = SQL_DROP
 			SQLFreeStmt( hStmt, SQL_UNBIND )
@@ -84,7 +99,9 @@ METHOD __FreeStmt( nOption AS WORD) AS LOGIC STRICT
 			nRetCode := SQLFreeStmt( hStmt, nOption )
 		ENDIF
 		
+		
 		IF nRetCode = SQL_SUCCESS
+			
 			
 			oErrInfo:ErrorFlag := FALSE
 			IF nOption = SQL_DROP
@@ -92,9 +109,11 @@ METHOD __FreeStmt( nOption AS WORD) AS LOGIC STRICT
 				SELF:hStmt := SQL_NULL_HSTMT
 				lPrepFlag := FALSE
 				
+				
 			ELSEIF nOption = SQL_CLOSE
 				lPrepFlag := FALSE
 			ENDIF
+			
 			
 			lRet := TRUE
 		ELSE 
@@ -103,13 +122,18 @@ METHOD __FreeStmt( nOption AS WORD) AS LOGIC STRICT
 	ENDIF
 	RETURN lRet
 	
+	
 
+
+ /// <exclude />
 METHOD __GenerateSQLError( cErrorString AS STRING, symMethod AS SYMBOL) AS SQLErrorInfo STRICT 
+	
 	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLStatement:__GenerateSQLError( "+         ;
 			AsString( cErrorString )+","+AsString( symMethod )+" )" )
 	#ENDIF
+	
 	
 	oErrInfo:ErrorMessage := __CavoStr( __CAVOSTR_SQLCLASS__ODBC_VO ) +      ;
 		Symbol2String( ClassName( SELF ) ) +   ;
@@ -125,18 +149,28 @@ METHOD __GenerateSQLError( cErrorString AS STRING, symMethod AS SYMBOL) AS SQLEr
 	oErrInfo:Severity   := ES_ERROR
 	oErrInfo:ReturnCode := SQL_SUCCESS 
 	
+	
 	RETURN oErrInfo
 	
+	
 
+
+ /// <exclude />
 ACCESS __Params AS ARRAY STRICT 
+
 
 	RETURN SELF:aParams
 
+
+ /// <exclude />
 ASSIGN __Params( aNewParams AS ARRAY)  STRICT 
 	RETURN 
 
+
+ /// <exclude />
 METHOD __Reset( ) AS LOGIC STRICT 
 	LOCAL lRet AS LOGIC
+	
 	
 	IF hStmt != SQL_NULL_HSTMT
 		IF SELF:__FreeStmt( SQL_CLOSE )
@@ -147,16 +181,22 @@ METHOD __Reset( ) AS LOGIC STRICT
 		__SQLOutputDebug( "** SQLStatement:__ResetStmt() returns " + AsString( lRet ) )
 	#ENDIF
 	
+	
 	RETURN lRet
 	
+	
 
+
+ /// <exclude />
 METHOD __SetDefaultStatementOptions() AS LOGIC STRICT 
 	LOCAL n     AS INT
+	
 	
 	IF SELF:nCursorType > 0
       n := SELF:nCursorType 
       SELF:SetStatementOption( SQL_CURSOR_TYPE, n , TRUE)
 	ENDIF
+	
 	
 	// If keyset driven, set keyset size
 	IF ( SELF:nCursorType == SQL_CURSOR_KEYSET_DRIVEN )
@@ -166,21 +206,28 @@ METHOD __SetDefaultStatementOptions() AS LOGIC STRICT
 		ENDIF
 	ENDIF
 	
+	
 	IF SELF:nRowSet > 0
       n := SELF:nRowSet
       SELF:SetStatementOption( SQL_ROWSET_SIZE, n , TRUE)
 	ENDIF
 	
+	
 	// Set concurrency level
 	n := SELF:ScrollConcurrency
+	
 	
 	IF n > 0
       SELF:SetStatementOption( SQL_CONCURRENCY, n , TRUE)
 	ENDIF
 	
+	
 	RETURN TRUE
 	
+	
 
+
+ /// <exclude />
 METHOD __SetParameters( aNewParams AS ARRAY) AS LOGIC STRICT 
 	LOCAL nIndex        AS DWORD
 	LOCAL nNumParams    AS DWORD
@@ -188,9 +235,11 @@ METHOD __SetParameters( aNewParams AS ARRAY) AS LOGIC STRICT
 	LOCAL uParam		  AS USUAL
 	LOCAL oParam		  AS SqlParameter
 
+
 	IF ( ! SELF:__FreeStmt( SQL_RESET_PARAMS ) )
 		RETURN FALSE
 	ENDIF
+
 
 	nNumParams := ALen( aNewParams )
 	ASize(SELF:aParams, nNumParams)
@@ -206,24 +255,32 @@ METHOD __SetParameters( aNewParams AS ARRAY) AS LOGIC STRICT
 		SELF:aParams[nIndex] := oParam		
       nRetCode := oParam:bind(SELF, nIndex)
 
+
 		IF ( nRetCode != SQL_SUCCESS )
 			SELF:MakeErrorInfo(SELF, #SetParameters, nRetCode)
 			RETURN FALSE
 		ENDIF
 
+
 	NEXT  
 	SELF:__ErrInfo:ErrorFlag := FALSE
 	RETURN TRUE
 	
+	
 
+
+ /// <exclude />
 METHOD __SetScrollOptions( nConcType AS DWORD, nKeySet AS DWORD, lAsync AS LOGIC) AS LOGIC STRICT 
 	LOCAL lRet AS LOGIC
+	
 	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLStatement:SetScrollOptions()" )
 	#ENDIF
 	
+	
 	lRet := TRUE
+	
 	
 	lRet := SELF:SetStatementOption( SQL_CURSOR_TYPE, nKeySet, .F. )
 	IF lRet
@@ -236,19 +293,26 @@ METHOD __SetScrollOptions( nConcType AS DWORD, nKeySet AS DWORD, lAsync AS LOGIC
 		lRet := SELF:SetStatementOption( SQL_ASYNC_ENABLE, IIF( lAsync, 1, 0 ), .F. )
 	ENDIF
 	
+	
 	IF lRet
 		oErrInfo:ErrorFlag := FALSE
 	ELSE
 		SELF:MakeErrorInfo(SELF,   #__SetScrollOptions,0)
 	ENDIF
 	
+	
 	RETURN lRet
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.dtor/*" />
 DESTRUCTOR() 
 	SELF:Destroy()
 	RETURN 
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.Commit/*" />
 METHOD Commit() 
 	//
 	//  UH: Obsolete method, don't support after 2.0 !!!!
@@ -257,20 +321,32 @@ METHOD Commit()
 		__SQLOutputDebug( "** SQLStatement:Commit()" )
 	#ENDIF
 	
+	
 	RETURN SELF:__Connection:Commit()
 	
+	
+ /// <exclude />
 ACCESS __Connection as SqlConnection
     RETURN SELF:oConn
+/// <include file="SQL.xml" path="doc/SQLStatement.Connection/*" />
 ACCESS Connection 
+	
 	
 	RETURN SELF:oConn
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.CursorType/*" />
 ACCESS CursorType 
+	
 	
 	RETURN SELF:GetStatementOption( SQL_CURSOR_TYPE )
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.CursorType/*" />
 ASSIGN CursorType( nVal ) 
+	
 	
 	IF IsNumeric( nVal ) .AND. ;
 			( nVal == SQL_CURSOR_FORWARD_ONLY .OR. ;
@@ -281,6 +357,8 @@ ASSIGN CursorType( nVal )
 	ENDIF
 	RETURN SELF:nCursorType
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
 	IF hStmt != SQL_NULL_HSTMT .AND. oConn != NULL_OBJECT 
 		IF oConn:Connected
@@ -294,22 +372,36 @@ METHOD Destroy()  AS USUAL CLIPPER
 	ENDIF
 	RETURN NIL	
 	
+	
 
+
+ /// <exclude />
 ACCESS __ErrInfo as SqlErrorInfo
     return oErrInfo
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.ErrInfo/*" />
 ACCESS ErrInfo 
+	
 	
 	RETURN oErrInfo
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.ErrInfo/*" />
 ASSIGN ErrInfo( uVal ) 
+	
 	
 	SELF:oErrInfo := uVal
 	
+	
 	RETURN SELF:oErrInfo
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.Execute/*" />
 METHOD Execute( uParm ) 
 	LOCAL nCount     AS DWORD
 	LOCAL aArg       AS ARRAY
@@ -318,15 +410,19 @@ METHOD Execute( uParm )
 	LOCAL lRet       AS LOGIC
 	LOCAL lNewParams AS LOGIC
 	
+	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLStatement:Execute()" )
 	#ENDIF
+	
 	
 	IF hStmt = SQL_NULL_HSTMT
 		SELF:__AllocStmt()
 	ENDIF
 	
+	
 	nCount := ALen( SELF:aParams )
+	
 	
 	IF PCount() != 0
 		IF PCount() = 1 .AND. UsualType( uParm ) = ARRAY
@@ -335,12 +431,14 @@ METHOD Execute( uParm )
 		ELSE
 			aArg := {}
 			
+			
 			FOR nCount := 1 UPTO PCount()
 				AAdd( aArg, _GETMPARAM( nCount ) )
 			NEXT
 		ENDIF
 		lNewParams := TRUE
 	ENDIF
+	
 	
 	IF nCount != 0
 		IF ! lNewParams
@@ -361,7 +459,9 @@ METHOD Execute( uParm )
 			ENDIF
 		ENDIF
 		
+		
 		l := LONGINT( _CAST,SLen( cStatement ) )
+
 
 		#IFDEF __DEBUG__
 			IF DWORD( _CAST, l ) != PszLen( String2Psz( cStatement ) )
@@ -381,11 +481,13 @@ METHOD Execute( uParm )
 			__SQLOutputDebug( "**              MemTotal() -> " + NTrim( MemTotal() ) )
 		#ENDIF
 		
+		
 	ELSE
 		//_DebOut32(String2Psz("SQLExecute start "+NTrim(Seconds())))
 		nRetCode := SQLExecute( hStmt )
 		//_DebOut32(String2Psz("SQLExecute ok "+NTrim(Seconds())))
 	ENDIF
+	
 	
 	// SQL_SUCCESS_WITH_INFO is no error
 	// We should still check the results here though,
@@ -395,6 +497,7 @@ METHOD Execute( uParm )
 		lPrepFlag := TRUE
 		lRet      := TRUE
 		
+		
 		// Try to determine the number of rows
 		// SQLRowCount is only guaranteed to work after UPDATE,
 		// INSERT or DELETE operations. Some drivers however
@@ -402,9 +505,12 @@ METHOD Execute( uParm )
 		// of a SELECT statement even before fetching any rows.
 		// So this is still worth a try.
 		
+		
 	ELSE
 		SELF:MakeErrorInfo(SELF, #Execute, nRetCode)
 	ENDIF
+	
+	
 	
 	
 	#IFDEF __DEBUG__
@@ -413,17 +519,25 @@ METHOD Execute( uParm )
 	//SELF:__FreeParameters()
 	RETURN lRet
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.FreeStmt/*" />
 METHOD FreeStmt( fOption ) 
 	//RvdH 070530 Added default value, as suggested by Stavros Spanos
 	IF PCount() == 0
 		fOption := SQL_CLOSE
 	ENDIF
 
+
+ 	
  	
 	RETURN SELF:__FreeStmt( fOption )
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.GetStatementOption/*" />
 METHOD GetStatementOption( fOption ) 
 	LOCAL nValue   AS INT
 	LOCAL pData    AS PTR
@@ -433,15 +547,19 @@ METHOD GetStatementOption( fOption )
 	//  Get current setting for a statement option; returns NIL if err
 	//
 	
+	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLStatement:GetStatementOption()" )
 	#ENDIF
+	
 	
 	IF hStmt != SQL_NULL_HSTMT
 		pData := @nValue
 		//RvdH 050413 This should be replaced with a Call to SQLGetStmtAttr()
 		
+		
 		nRetCode := SQLGetStmtOption( hStmt, fOption, pData )
+		
 		
 		IF nRetCode = SQL_SUCCESS
 			oErrInfo:ErrorFlag := FALSE
@@ -454,9 +572,13 @@ METHOD GetStatementOption( fOption )
 	ENDIF
 	RETURN xRet
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.HyperLabel/*" />
 ACCESS HyperLabel 
 	LOCAL oHL       AS HyperLabel
+	
 	
 	oHL := HyperLabel{  #Statement,     ;
 							cStatement,     ;
@@ -466,8 +588,14 @@ ACCESS HyperLabel
 	
 	
 	
+	
+	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.ctor/*" />
 CONSTRUCTOR( cSQLStatement, oSQLConnection ) 
+	
 	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLStatement:Init( "+AsString( cSQLStatement )+" )" )
@@ -484,9 +612,11 @@ CONSTRUCTOR( cSQLStatement, oSQLConnection )
 		SELF:oConn := oSQLConnection
 	ENDIF
 	
+	
 	SELF:ScrollConcurrency  := SqlSetStmtConcurrency()
 	SELF:CursorType         := SqlSetStmtCursorType()
 	SELF:SimulateCursor     := SqlSetStmtSimulateCursor()
+	
 	
 	IF oConn:Connected
 		SELF:__AllocStmt()
@@ -494,24 +624,34 @@ CONSTRUCTOR( cSQLStatement, oSQLConnection )
 		SELF:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__NOT_CONN ), #Init )
 	ENDIF
 	
+	
 	nRowSet := 1
 	nKeySet := 128
 	SELF:aUserOption := {}
 	SELF:aParams := {}	
 	RETURN 
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.KeySet/*" />
 ACCESS KeySet 
 	RETURN SELF:nKeySet
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.KeySet/*" />
 ASSIGN KeySet( n ) 
 	IF IsNumeric( n )
 		SELF:nKeySet := Integer( n )
 	ENDIF
 	RETURN SELF:nKeySet
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.MakeErrorInfo/*" />
 METHOD MakeErrorInfo(oObject, symMethod, nRetCode) 
 	SELF:ErrInfo := SQLErrorInfo{  oObject, symMethod,            ;
 											SELF:oConn:EnvHandle,         ;
@@ -521,7 +661,11 @@ METHOD MakeErrorInfo(oObject, symMethod, nRetCode)
 	RETURN SELF:ErrInfo
 	
 	
+	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.NativeSQL/*" />
 ACCESS NativeSQL 
 	LOCAL nBytes        AS INT // dcaton 070206 was DWORD
 	LOCAL nSize         AS DWORD
@@ -529,9 +673,11 @@ ACCESS NativeSQL
 	LOCAL nRetCode      AS INT
 	LOCAL pszStmt       AS PSZ
 	
+	
 	IF cStatement == NULL_STRING .OR. hStmt = SQL_NULL_HSTMT
 		SELF:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__NO_STMT ), #NativeSQL )
 	ELSE
+		
 		
 		nSize 	:= SLen( cStatement ) * 2 + 1
 		pszStmt := MemAlloc( nSize )
@@ -546,6 +692,7 @@ ACCESS NativeSQL
 											SHORTINT( _CAST,nSize - 1 ),              ;
 											@nBytes )
 			
+			
 		ENDIF
 		IF nRetCode = SQL_SUCCESS
 			oErrInfo:ErrorFlag := FALSE
@@ -557,10 +704,14 @@ ACCESS NativeSQL
 	ENDIF
 	RETURN cValueNew
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.NumParameters/*" />
 ACCESS NumParameters 
 	LOCAL nCount    AS SHORTINT // dcaton 070206 was INT
 	LOCAL nRetCode  AS INT
+	
 	
 	IF ( hStmt = SQL_NULL_HSTMT )
 		SELF:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__NO_STMT ), #NumParameters )
@@ -568,8 +719,10 @@ ACCESS NumParameters
 	ELSE
 		nRetCode := SQLNumParams( hStmt, @nCount )
 		
+		
 		IF nRetCode = SQL_SUCCESS
 			oErrInfo:ErrorFlag := FALSE
+			
 			
 		ELSE
 			SELF:MakeErrorInfo(SELF, #NumParameters, nRetCode)
@@ -577,24 +730,32 @@ ACCESS NumParameters
 		ENDIF
 	ENDIF
 	
+	
 	RETURN nCount
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.NumSuccessfulRows/*" />
 ACCESS NumSuccessfulRows 
 	LOCAL nCount    AS INT
 	LOCAL nRetCode  AS INT
+	
 	
 	IF hStmt = SQL_NULL_HSTMT
 		SELF:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__NO_STMT ), #NumSuccessfulRows )
 		nCount := -1
 	ELSE
 		
+		
 		nRetCode := SQLRowCount( hStmt, @nCount )
+		
 		
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "** SQLRowCount() returns " + NTrim( nRetCode ) )
 			__SQLOutputDebug( "** Number of rows " + NTrim( nCount ) )
 		#ENDIF
+		
 		
 		IF nRetCode = SQL_SUCCESS
 			oErrInfo:ErrorFlag := FALSE
@@ -603,25 +764,34 @@ ACCESS NumSuccessfulRows
 			nCount := -1
 		ENDIF
 		
+		
 	ENDIF
+	
 	
 	RETURN nCount
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.Prepare/*" />
 METHOD Prepare() 
+	
 	
 	LOCAL nRetCode AS INT
 	LOCAL lRet     AS LOGIC
 	
+	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLStatement:Prepare()" )
 	#ENDIF
+	
 	
 	IF hStmt = SQL_NULL_HSTMT
 		IF !SELF:__AllocStmt()
 			RETURN lRet
 		ENDIF
 	ENDIF
+	
 	
 	IF SELF:oConn:ScrollCsr
 		// Set all required options
@@ -631,7 +801,9 @@ METHOD Prepare()
 			ENDIF
 		ENDIF
 		
+		
 	ENDIF
+	
 	
 	nRetCode := SQLPrepare( hStmt, String2Psz( cStatement ), LONGINT( _CAST, SLen( cStatement ) ) )
 	///RvdH
@@ -647,29 +819,47 @@ METHOD Prepare()
 		SELF:MakeErrorInfo(SELF, #Prepare,  nRetCode)
 	ENDIF
 	
+	
 	RETURN lRet
 	
 	
+	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.PrepFlag/*" />
 ACCESS PrepFlag 
+	
 	
 	RETURN SELF:lPrepFlag
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.PrepFlag/*" />
 ASSIGN PrepFlag( lNew ) 
+	
 	
 	IF IsLogic( lNew )
 		SELF:lPrepFlag := lNew
 	ENDIF
 	
+	
 	RETURN SELF:lPrepFlag
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.RecCount/*" />
 ACCESS RecCount 
+	
 	
 	RETURN SELF:NumSuccessfulRows
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.RollBack/*" />
 METHOD RollBack() 
 	//
 	//  UH: Obsolete method, don't support after 2.0 !!!!
@@ -678,35 +868,56 @@ METHOD RollBack()
 		__SQLOutputDebug( "** SQLStatement:Rollback()" )
 	#ENDIF
 	
+	
 	RETURN SELF:__Connection:RollBack()
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.RowSet/*" />
 ACCESS RowSet 
+	
 	
 	RETURN SELF:nRowSet
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.RowSet/*" />
 ASSIGN RowSet( nVal ) 
 	
+	
 	IF IsNumeric( nVal ) .AND. nVal > 0
+		
 		
 		//  UH: To implement buffering for scrollable cursors
 		//  SELF:nRowSet := nVal
 		SELF:nRowSet := 1
 		
+		
 	ENDIF
 	RETURN SELF:nRowSet
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.ScrollConcurrency/*" />
 ACCESS ScrollConcurrency 
 	RETURN SELF:oConn:ScrollConcurrency
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.ScrollConcurrency/*" />
 ASSIGN ScrollConcurrency( nVal ) 
+	
 	
 	RETURN SELF:oConn:ScrollConcurrency := nVal
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.SetStatementOption/*" />
 METHOD SetStatementOption( fOption, uValue, lUser ) 
+	
 	
 	//
 	//  Sets current setting for a statement option; returns TRUE if successful
@@ -716,14 +927,18 @@ METHOD SetStatementOption( fOption, uValue, lUser )
 	LOCAL lRet     AS LOGIC
    LOCAL nOption  AS DWORD
 	
+	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug(   "** SQLStatement:SetStatementOption( " + ;
 			AsString( fOption ) + "," + AsString( uValue ) + " )" )
 	#ENDIF
 	
+	
 	DEFAULT( @lUser, TRUE )
 	
+	
 	nExist := AScan( SELF:aUserOption, fOption )
+	
 	
 	IF lUser
 		IF nExist = 0
@@ -738,6 +953,7 @@ METHOD SetStatementOption( fOption, uValue, lUser )
 		ENDIF
 	ENDIF
 	
+	
 	IF hStmt = SQL_NULL_HSTMT
 		SELF:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__NO_STMT ), #SetStatementOption )
 	ELSE
@@ -745,9 +961,11 @@ METHOD SetStatementOption( fOption, uValue, lUser )
       nOption  := uValue 
       nRetCode := SQLSetStmtOption( hStmt, fOption, nOption )
 		
+		
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "** nRetCode : " + NTrim( nRetCode ) )
 		#ENDIF
+		
 		
 		IF ( nRetCode = SQL_SUCCESS ) .OR. ( nRetCode = SQL_SUCCESS_WITH_INFO )
 			oErrInfo:ErrorFlag := FALSE
@@ -758,30 +976,46 @@ METHOD SetStatementOption( fOption, uValue, lUser )
 	ENDIF
 	RETURN lRet
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.SimulateCursor/*" />
 ACCESS SimulateCursor 
 	RETURN SELF:GetStatementOption( SQL_SIMULATE_CURSOR )
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.SimulateCursor/*" />
 ASSIGN SimulateCursor( nVal ) 
+	
 	
 	IF IsNumeric( nVal ) .AND. ;
 			( nVal == SQL_SC_NON_UNIQUE .OR. ;
 			nVal == SQL_SC_TRY_UNIQUE .OR. ;
 			nVal == SQL_SC_UNIQUE )
 		
+		
 		RETURN SELF:nSimulateCursor := nVal
 	ENDIF
 	RETURN SELF:nSimulateCursor
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.SQLString/*" />
 ACCESS SQLString 
+	
 	
 	RETURN cStatement
 	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.SQLString/*" />
 ASSIGN SQLString( uVal ) 
 	LOCAL cRet  AS STRING
+	
 	
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLStatement:SQLString uVal="+AsString( uVal ) )
@@ -805,11 +1039,17 @@ ASSIGN SQLString( uVal )
 	//ENDIF
 	RETURN 
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.StatementHandle/*" />
 ACCESS StatementHandle 
+	
 	
 	RETURN hStmt
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.StatementHandle/*" />
 ASSIGN StatementHandle( uVal ) 
+	
 	
 	IF hStmt = SQL_NULL_HSTMT
 		SELF:hStmt := uVal
@@ -820,9 +1060,14 @@ ASSIGN StatementHandle( uVal )
 	RETURN 
 	
 	
+	
+	
 
+
+/// <include file="SQL.xml" path="doc/SQLStatement.Status/*" />
 ACCESS Status 
 	LOCAL   oRet    AS OBJECT
+	
 	
 	IF SELF:oErrInfo:ErrorFlag
 		oRet := HyperLabel{ oErrInfo:FuncSym,                           ;
@@ -831,12 +1076,18 @@ ACCESS Status
 			oErrInfo:ErrorMessage }
 	ENDIF
 	
+	
 	RETURN oRet
 
+
 //RvdH 2010-12-03: Some extra properties
+/// <include file="SQL.xml" path="doc/SQLStatement.Params/*" />
 ACCESS Params 
 	RETURN SELF:aParams
 
+
+	
 	
 END CLASS
+
 

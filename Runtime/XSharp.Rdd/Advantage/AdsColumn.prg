@@ -34,7 +34,8 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.VARCHAR_FOX
             CASE AdsFieldType.NCHAR
             CASE AdsFieldType.NVARCHAR
-                return AdsCharacterColumn{oInfo, oRDD, type,nPos}
+            CASE AdsFieldType.GUID
+                RETURN AdsCharacterColumn{oInfo, oRDD, type,nPos}
 
             CASE AdsFieldType.MEMO
             CASE AdsFieldType.BINARY
@@ -50,6 +51,7 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.NUMERIC
             CASE AdsFieldType.DOUBLE
             CASE AdsFieldType.CURDOUBLE
+            CASE AdsFieldType.INT64
                 return AdsNumericColumn{oInfo, oRDD, type,nPos}
 
             CASE AdsFieldType.LOGICAL
@@ -114,6 +116,7 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.CISTRING
             CASE AdsFieldType.NCHAR
             CASE AdsFieldType.NVARCHAR
+            CASE AdsFieldType.GUID
                 IF tc != TypeCode.String
                     SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"String expected")
                 ENDIF
@@ -346,6 +349,10 @@ BEGIN NAMESPACE XSharp.ADS
                 ELSE
                     RETURN DbFloat{r8, SELF:Length, SELF:Decimals}
                 ENDIF
+            CASE AdsFieldType.INT64
+                LOCAL i64 AS INT64        
+                result := ACE.AdsGetLongLong(SELF:_Table, SELF:FieldPos, OUT i64)
+                RETURN i64
             OTHERWISE
                 // Should never happen. We filter on the type when creating the column object
                 SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
@@ -364,10 +371,14 @@ BEGIN NAMESPACE XSharp.ADS
         SELF:RDD:_CheckError(ACE.AdsGetFieldType(SELF:_Table, SELF:FieldPos, OUT wType),EG_READ)
         IF wType != ACE.ADS_AUTOINC
             TRY
-                LOCAL r8 AS REAL8
-                r8 := Convert.ToDouble(oValue)
-                SELF:RDD:_CheckError(ACE.AdsSetDouble(SELF:_Table, SELF:FieldPos, r8),EG_WRITE)
-        
+                IF SELF:AdsType == AdsFieldType.INT64
+                    VAR i64 := Convert.ToInt64(oValue)
+                    SELF:RDD:_CheckError(ACE.AdsSetLongLong(SELF:_Table, SELF:FieldPos,i64))
+                ELSE
+                    LOCAL r8 AS REAL8
+                    r8 := Convert.ToDouble(oValue)
+                    SELF:RDD:_CheckError(ACE.AdsSetDouble(SELF:_Table, SELF:FieldPos, r8),EG_WRITE)
+                ENDIF        
             CATCH
                 SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Numeric value expected")
                 RETURN FALSE
@@ -437,7 +448,15 @@ BEGIN NAMESPACE XSharp.ADS
                 SWITCH SELF:AdsType
                 CASE AdsFieldType.MEMO
                     chars := CHAR[] {++mlength}
-                    SELF:RDD:_CheckError(ACE.AdsGetString(SELF:_Table, SELF:FieldPos, chars, REF mlength ,0),EG_READ)
+                    result := ACE.AdsGetString(SELF:_Table, SELF:FieldPos, chars, REF mlength ,0)
+                    if (result == ACE.AE_INVALID_FIELD_TYPE)
+                        chars := NULL
+                        bytes := BYTE[] {mlength}
+                        result := ACE.AdsGetBinary(SELF:_Table, SELF:FieldPos, 0, bytes, REF mlength )
+                        SELF:RDD:_CheckError(result)
+                        return RuntimeState:WinEncoding:GetString(bytes, 0, bytes:Length)
+                    ENDIF
+                    SELF:RDD:_CheckError(result,EG_READ)
                     RETURN SELF:RDD:_Ansi2Unicode(chars, (INT) mlength)
                 CASE AdsFieldType.NMEMO
                     chars := CHAR[] {++mlength}

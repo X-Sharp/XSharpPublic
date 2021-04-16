@@ -37,6 +37,7 @@ using Microsoft;
 using LanguageService.SyntaxTree;
 using System.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using XSharp.LanguageService;
 
 namespace XSharp.Project
 {
@@ -46,7 +47,7 @@ namespace XSharp.Project
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
     public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject,
-        IVsDesignTimeAssemblyResolution, IVsProject5, IProjectTypeHelper
+        IVsDesignTimeAssemblyResolution, IVsProject5, IProjectTypeHelper, IXsProjectDesigner
     //, IVsReferenceManagerUser
     {
 
@@ -58,6 +59,8 @@ namespace XSharp.Project
             dependencies.Add(".designer.prg", ".prg");
             dependencies.Add(".xaml.prg", ".xaml");
             dependencies.Add(".vh", ".prg");
+            dependencies.Add(".xh", ".prg");
+            dependencies.Add(".resx", ".prg");
             try
             {
                 imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
@@ -73,16 +76,14 @@ namespace XSharp.Project
         }
 
         #region Constants
-        internal const string ProjectTypeName = "XSharp";
+        internal const string ProjectTypeName = XSharpConstants.LanguageName;
         #endregion
 
         #region Fields
         private XSharpProjectPackage package;
-        internal static int imageOffset;
         private static ImageList imageList;
         private VSLangProj.VSProject vsProject;
         bool isLoading = false;
-        private FileChangeManager filechangemanager = null;
         XSharpModel.XProject projectModel;
 
 
@@ -98,7 +99,8 @@ namespace XSharp.Project
         public XSharpProjectNode(XSharpProjectPackage package)
         {
             this.package = package;
-            package.StartLanguageService();
+            _hasDialect = false;
+            this.OnProjectPropertyChanged += XSharpProjectNode_OnProjectPropertyChanged;
             InitializeImageList();
 
             InitializeCATIDs();
@@ -115,21 +117,29 @@ namespace XSharp.Project
 
         }
 
-        private void Filechangemanager_FileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
+        private void XSharpProjectNode_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("FileChangedOnDisk " + e.FileName);
-            if (IsXamlFile(e.FileName) || IsCodeFile(e.FileName))
+            if (string.Compare(e.PropertyName, "dialect", true) == 0)
+                _hasDialect = false;
+        }
+
+
+        protected override void OnFileChanged(string url)
+        {
+            //XSettings.DisplayOutputMessage("FileChangedOnDisk " + e.FileName);
+            if (IsXamlFile(url) || IsCodeFile(url))
             {
-                XFile file = this.ProjectModel.FindXFile(e.FileName);
+                XFile file = this.ProjectModel.FindXFile(url);
                 if (file != null)
                 {
-                    this.ProjectModel.WalkFile(file);
+                    this.ProjectModel.WalkFile(file,true);
                 }
             }
         }
 
         private void Newtask_Navigate(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             lock (this)
             {
                 var task = (Microsoft.VisualStudio.Shell.Task)sender;
@@ -221,31 +231,13 @@ namespace XSharp.Project
                 {
                     return null;
                 }
+                ThreadHelper.ThrowIfNotOnUIThread();
                 IVsHierarchy hier = Marshal.GetObjectForIUnknown(unknownPtr) as IVsHierarchy;
                 return hier;
             }
         }
 
-        // Gets the output file name depending on current OutputType.
-        // View GeneralProperyPage
-        string _outputFile;
-        string _configName;
-        public string OutputFile
-        {
-            get
-            {
-                if (_outputFile == null && _configName != CurrentConfig.ConfigName)
-                {
-                    _outputFile = this.GetProjectProperty(ProjectFileConstants.TargetPath);
-                    _configName = CurrentConfig.ConfigName;
-                }
-                return _outputFile;
-            }
-            internal set
-            {
-                _outputFile = value;
-            }
-        }
+
         #endregion
 
         #region Overriden implementation
@@ -280,7 +272,7 @@ namespace XSharp.Project
             }
         }
 
-        internal override object Object
+        public override object Object
         {
             get
             {
@@ -302,7 +294,7 @@ namespace XSharp.Project
         private void invalidateOptions()
         {
             this.options = null;
-            this._outputFile = null;
+            this.OutputFile = null;
             this._outputPath = null;
 
         }
@@ -314,23 +306,38 @@ namespace XSharp.Project
 
         public override ProjectOptions GetProjectOptions(ConfigCanonicalName configCanonicalName)
         {
-            if (this.options != null)
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                var xoptions = this.options as XSharpProjectOptions;
-                if (xoptions.ConfigCanonicalName != configCanonicalName)
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                if (this.options != null)
                 {
-                    invalidateOptions();
+                    var xoptions = this.options as XSharpProjectOptions;
+                    if (xoptions.ConfigCanonicalName != configCanonicalName)
+                    {
+                        invalidateOptions();
+                    }
                 }
-            }
-            if (this.options == null)
-            {
-                this.options = base.GetProjectOptions(configCanonicalName);
-                var xoptions = this.options as XSharpProjectOptions;
-                xoptions.ConfigCanonicalName = configCanonicalName;
-                xoptions.BuildCommandLine();
-            }
-            return this.options;
+                if (this.options == null)
+                {
+                    this.options = base.GetProjectOptions(configCanonicalName);
+                    var xoptions = this.options as XSharpProjectOptions;
+                    xoptions.ConfigCanonicalName = configCanonicalName;
+                    xoptions.BuildCommandLine();
+                }
+                return this.options;
+            });
         }
+
+
+        void IXsProjectDesigner.RemoveProjectProperty(string name)
+        {
+            var prop = this.BuildProject.GetProperty(name);
+            if (prop != null)
+            {
+                this.BuildProject.RemoveProperty(prop);
+            }
+        }
+
 
         public override string GetProjectProperty(string propertyName, bool resetCache, bool unevaluated = false)
         {
@@ -340,6 +347,7 @@ namespace XSharp.Project
             }
             return null;
         }
+       
         public __VSPROJOUTPUTTYPE GetOutPutType()
         {
             string outputTypeAsString = this.ProjectMgr.GetProjectProperty("OutputType", false);
@@ -367,7 +375,7 @@ namespace XSharp.Project
                 case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
                     return this.RootNameSpace;
                 case (int)__VSHPROPID5.VSHPROPID_OutputType:
-                    return GetOutPutType();
+                    return (uint) GetOutPutType();
                 case (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration:
                 case (int)__VSHPROPID3.VSHPROPID_WebReferenceSupported:
                 case (int)__VSHPROPID3.VSHPROPID_ServiceReferenceSupported:
@@ -377,7 +385,7 @@ namespace XSharp.Project
                 case (int)__VSHPROPID6.VSHPROPID_ShowAllProjectFilesInProjectView:
                     return true;
                 case (int)__VSHPROPID6.VSHPROPID_NuGetPackageProjectTypeContext:
-                    return "XSharp.ProjectSystem";
+                    return "XSharp.ProjectSystem"; 
                 //case (int)__VSHPROPID6.VSHPROPID_Subcaption:
                 //case (int)__VSHPROPID7.VSHPROPID_ShortSubcaption:
                 //    return "X#";
@@ -449,7 +457,7 @@ namespace XSharp.Project
         /// <param name="element">MSBuild element.</param>
         /// <returns>Returns newly created Folder Node object.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration", MessageId = "1#")]
-        protected internal override FolderNode CreateFolderNode(string path, ProjectElement element)
+        protected override FolderNode CreateFolderNode(string path, ProjectElement element)
         {
             Utilities.ArgumentNotNull("element", element);
             FolderNode folderNode;
@@ -724,7 +732,14 @@ namespace XSharp.Project
                 throw new FileLoadException("Failed to add template file to project", target, e);
             }
         }
-
+        internal bool WizardIsRunning { get; set; } = false;
+        public override VSADDRESULT RunWizard(HierarchyNode parentNode, string itemName, string wizardToRun, IntPtr dlgOwner)
+        {
+            WizardIsRunning = true;
+            var result = base.RunWizard(parentNode, itemName, wizardToRun, dlgOwner);
+            WizardIsRunning = false;
+            return result;
+        }
 
 
         protected override HierarchyNode AddDependentFileNode(IDictionary<String, MSBuild.ProjectItem> subitems, string key)
@@ -838,13 +853,18 @@ namespace XSharp.Project
             var path = System.IO.Path.GetDirectoryName(fileName);
             fileName = System.IO.Path.GetFileName(fileName);
             int dotPos = fileName.IndexOf(".");
-            string parentFile = Path.Combine(path, fileName.Substring(0, dotPos));
-            string extension = fileName.Substring(dotPos);
-            //
-            if (dependencies.ContainsKey(extension))
+            string extension = System.IO.Path.GetExtension(originalfileName);
+            if (dotPos >0)
             {
-                //
-                HierarchyNode newParent = parentNode.FindChild(parentFile + dependencies[extension]);
+                extension = fileName.Substring(dotPos);
+            }
+            var parentFile = fileName.Substring(0, fileName.Length - extension.Length ) ;
+            parentFile = Path.Combine(path, parentFile);
+            var parentExtension = ".prg";
+            if (dependencies.ContainsKey(extension) )
+            {
+                parentExtension = dependencies[extension];
+                HierarchyNode newParent = parentNode.FindChild(parentFile +parentExtension);
                 if (newParent != null)
                 {
                     parentNode = newParent;
@@ -869,7 +889,7 @@ namespace XSharp.Project
                 case XFileType.VOOrder:
                 case XFileType.VOIndex:
                     // dependent file
-                    HierarchyNode newParent = parentNode.FindChild(parentFile + ".prg");
+                    HierarchyNode newParent = parentNode.FindChild(parentFile + parentExtension);
                     if (newParent != null)
                     {
                         parentNode = newParent;
@@ -939,8 +959,8 @@ namespace XSharp.Project
                 || String.Compare(type, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase) == 0  // resx
                 || String.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
                 || String.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition
-                || String.Compare(type, XSharpProjectFileConstants.NativeResource, StringComparison.OrdinalIgnoreCase) == 0           // rc file
-                || String.Compare(type, XSharpProjectFileConstants.VOBinary, StringComparison.OrdinalIgnoreCase) == 0           // vobinary file
+                || String.Compare(type, ProjectFileConstants.NativeResource, StringComparison.OrdinalIgnoreCase) == 0           // rc file
+                || String.Compare(type, ProjectFileConstants.VOBinary, StringComparison.OrdinalIgnoreCase) == 0           // vobinary file
                 )
             {
                 return true;
@@ -950,18 +970,12 @@ namespace XSharp.Project
             return base.IsItemTypeFileType(type);
         }
 
-        internal override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
+        public override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             base.OnAfterProjectOpen(sender, e);
 
             // initialize the parser
 
-            if (filechangemanager == null)
-            {
-                filechangemanager = new FileChangeManager(this.Site);
-                filechangemanager.FileChangedOnDisk += Filechangemanager_FileChangedOnDisk;
-
-            }
             if (this.isLoading)
             {
                 // Run the background Walker/Listener, to fill the Model
@@ -976,11 +990,7 @@ namespace XSharp.Project
                             if (File.Exists(url))
                             {
                                 this.ProjectModel.AddFile(url);
-                                // make sure generated code is updated when changed
-                                if (xnode.IsDependent || IsXamlFile(url))
-                                {
-                                    filechangemanager.ObserveItem(url);
-                                }
+                            	base.ObserveItem(url);
                             }
                         }
                     }
@@ -1000,10 +1010,11 @@ namespace XSharp.Project
             this.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
             this.OleServiceProvider.AddService(typeof(System.CodeDom.Compiler.CodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
 
-            // This will call the Calback in PojectPackage
+            // This will call the callback in PojectPackage
             IXSharpLibraryManager libraryManager = Site.GetService(typeof(IXSharpLibraryManager)) as IXSharpLibraryManager;
             // Be sure we have External/system types for Intellisense
             UpdateAssemblyReferencesModel();
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (null != libraryManager)
             {
                 libraryManager.RegisterHierarchy(this.InteropSafeHierarchy, this.ProjectModel, this);
@@ -1256,11 +1267,7 @@ namespace XSharp.Project
                         this.ProjectModel.AddFile(url);
                         if (IsXamlFile(url))
                         {
-                            if (filechangemanager != null)
-                            {
-                                filechangemanager.ObserveItem(url);
-                            }
-
+                            base.ObserveItem(url);
                         }
                     }
                 }
@@ -1311,21 +1318,26 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
-                foreach (EnvDTE.Project p in dte.Solution.Projects)
+                var tmp = this.Site.GetService(typeof(EnvDTE.DTE));
+                if (tmp != null)
                 {
-                    if (p == null || p.Properties == null) // unloaded ?
+                    dte = (EnvDTE.DTE)tmp;
+
+                    foreach (EnvDTE.Project p in dte.Solution.Projects)
                     {
-                        continue;
-                    }
-                    // EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder
-                    if (p.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
-                    {
-                        list.AddRange(GetSolutionFolderProjects(p));
-                    }
-                    else
-                    {
-                        list.Add(p);
+                        if (p == null || p.Properties == null) // unloaded ?
+                        {
+                            continue;
+                        }
+                        // EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder
+                        if (p.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
+                        {
+                            list.AddRange(GetSolutionFolderProjects(p));
+                        }
+                        else
+                        {
+                            list.Add(p);
+                        }
                     }
                 }
             });
@@ -1333,6 +1345,8 @@ namespace XSharp.Project
         }
         public EnvDTE.Project FindProject(string sProject)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             foreach (var p in GetSolutionProjects())
             {
                 string name = "";
@@ -1371,14 +1385,10 @@ namespace XSharp.Project
                     var node = this.FindChild(url) as XSharpFileNode;
                     if (node != null && !node.IsNonMemberItem)
                     {
-                        if (filechangemanager != null)
+                        if (IsXamlFile(url) ||node.IsDependent)
                         {
-                            if (IsXamlFile(url) ||
-                                node.IsDependent)
-
-                                filechangemanager.StopObservingItem(url);
+                            base.StopObservingItem(url);
                         }
-
                         this.ProjectModel.RemoveFile(url);
                     }
                 }
@@ -1393,6 +1403,7 @@ namespace XSharp.Project
             // because the type lookup will not work then
             if (physicalView == "Design" && !projectModel.FileWalkCompleted)
                 return VSConstants.E_FAIL;
+            ThreadHelper.ThrowIfNotOnUIThread();
             return base.ReopenItem(itemId, ref editorType, physicalView, ref logicalView, docDataExisting, out frame);
         }
 
@@ -1423,10 +1434,19 @@ namespace XSharp.Project
         #region IXSharpProject Interface
         protected IVsStatusbar statusBar;
 
+        public void RunInForeGroundThread(Action a)
+        {
+
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                a();
+            });
+        }
+
         public string SynchronizeKeywordCase(string code, string fileName)
         {
-            var package = XSharp.Project.XSharpProjectPackage.Instance;
-            if (XSettings.KeywordCase == (int) Project.KeywordCase.None)
+            if (XSettings.KeywordCase == KeywordCase.None)
                 return code;
             // we also normalize the line endings
             code = code.Replace("\n", "");
@@ -1442,7 +1462,7 @@ namespace XSharp.Project
             else
                 parseoptions = XSharpParseOptions.Default;
             ITokenStream tokenStream;
-            var reporter = new ErrorIgnorer();
+            var reporter = new XSharp.CodeDom.ErrorIgnorer();
             bool ok = XSharp.Parser.VsParser.Lex(code, fileName, parseoptions, reporter, out tokenStream);
             var stream = tokenStream as BufferedTokenStream;
             var tokens = stream.GetTokens();
@@ -1465,7 +1485,11 @@ namespace XSharp.Project
         {
             if (statusBar == null && !lTriedToGetStatusBar)
             {
-                statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+                });
                 lTriedToGetStatusBar = true;
             }
         }
@@ -1540,6 +1564,7 @@ namespace XSharp.Project
             uint dummy2;
             try
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 VsShellUtilities.OpenDocument(this.Site, file, VSConstants.LOGVIEWID_Code, out dummy1, out dummy2, out window, out textView);
                 if ((window != null) && (textView != null))
                 {
@@ -1590,27 +1615,7 @@ namespace XSharp.Project
             }
 
         }
-        string _rootNamespace = null;
-
-        public string RootNameSpace
-        {
-            get
-            {
-                if (_rootNamespace == null)
-                {
-                    lock (this)
-                    {
-                        if (_rootNamespace == null)
-                            _rootNamespace = GetProjectProperty(ProjectFileConstants.RootNamespace, false);
-                    }
-                }
-                return _rootNamespace;
-            }
-            internal set
-            {
-                _rootNamespace = value;
-            }
-        }
+        
 
         #endregion
 
@@ -1670,7 +1675,7 @@ namespace XSharp.Project
             return bMoved;
         }
 
-        internal override bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences, uint dropEffect)
+        protected override bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences, uint dropEffect)
         {
             bool bOk = base.AddFilesFromProjectReferences(targetNode, projectReferences, dropEffect);
             if (bOk)
@@ -1680,7 +1685,7 @@ namespace XSharp.Project
             return bOk;
         }
         #region IProjectTypeHelper
-        public IXType ResolveExternalType(string name, IReadOnlyList<string> usings)
+        public IXTypeSymbol ResolveExternalType(string name, IList<string> usings)
         {
             switch (name.ToLower())
             {
@@ -1708,17 +1713,17 @@ namespace XSharp.Project
             return model.FindSystemType(name, myusings);
         }
 
-        public XTypeDefinition ResolveXType(string name, IReadOnlyList<string> usings)
+        public XSourceTypeSymbol ResolveXType(string name, IList<string> usings)
         {
             var model = this.ProjectModel;
-            XTypeDefinition result = model.Lookup(name, usings);
+            XSourceTypeSymbol result = model.Lookup(name, usings);
             if (result != null)
                 return result;
             return result;
         }
 
 
-        public XTypeDefinition ResolveReferencedType(string name, IReadOnlyList<string> usings)
+        public XSourceTypeSymbol ResolveReferencedType(string name, IList<string> usings)
         {
             // identical but may be used by others
             return ResolveXType(name, usings);
@@ -1763,6 +1768,7 @@ namespace XSharp.Project
             pbGeneratesSharedDesignTimeSource = 0;
             pbUseTempPEFlag = 0;
             ppGenerate = null;
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (createIVsSingleFileGeneratorFactory())
                 return factory.CreateGeneratorInstance(wszProgId, out pbGeneratesDesignTimeSource, out pbGeneratesSharedDesignTimeSource, out pbUseTempPEFlag, out ppGenerate);
             return VSConstants.S_FALSE;
@@ -1774,6 +1780,7 @@ namespace XSharp.Project
             pbGeneratesSharedDesignTimeSource = 0;
             pbUseTempPEFlag = 0;
             pguidGenerator = Guid.Empty;
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (createIVsSingleFileGeneratorFactory())
                 return factory.GetGeneratorInformation(wszProgId, out pbGeneratesDesignTimeSource, out pbGeneratesSharedDesignTimeSource, out pbUseTempPEFlag, out pguidGenerator);
             return VSConstants.S_FALSE;
@@ -1786,7 +1793,7 @@ namespace XSharp.Project
         private DesignTimeAssemblyResolution designTimeAssemblyResolution;
         private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", "AnyCPU");
 
-        protected internal override void SetConfiguration(ConfigCanonicalName config)
+        public override void SetConfiguration(ConfigCanonicalName config)
         {
             _config = config;
             base.SetConfiguration(config);
@@ -1840,7 +1847,7 @@ namespace XSharp.Project
         }
         XSharpIDEBuildLogger logger = null;
 
-        internal override IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
+        protected override IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
         {
             logger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
             logger.ProjectNode = this;
@@ -1900,11 +1907,14 @@ namespace XSharp.Project
         #endregion
         public bool IsDocumentOpen(string documentName)
         {
-            IVsUIHierarchy hier;
-            uint itemid;
-            IVsWindowFrame windowFrame;
-            bool open = VsShellUtilities.IsDocumentOpen(this.Site, documentName, Guid.Empty, out hier, out itemid, out windowFrame);
-            return open;
+            return ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(); IVsUIHierarchy hier;
+                uint itemid;
+                IVsWindowFrame windowFrame;
+                bool open = VsShellUtilities.IsDocumentOpen(this.Site, documentName, Guid.Empty, out hier, out itemid, out windowFrame);
+                return open;
+            });
         }
 
 
@@ -1942,47 +1952,50 @@ namespace XSharp.Project
         protected override void Dispose(bool disposing)
         {
             projectModel = null;
-            if (filechangemanager != null)
-            {
-                filechangemanager.Dispose();
-                filechangemanager = null;
-            }
             base.Dispose(disposing);
         }
-
+        private bool _hasDialect = false;
+        private XSharpDialect _dialect;
         public XSharpDialect Dialect
         {
             get
             {
-                var prop = GetProjectProperty("Dialect");
-                XSharpDialect dialect = XSharpDialect.Core;
-                try
+                if (_hasDialect)
+                    return _dialect;
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    dialect = (XSharpDialect)Enum.Parse(typeof(XSharpDialect), prop);
-                }
-                catch
-                {
-                    dialect = XSharpDialect.Core;
-                }
-                return dialect;
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    var prop = GetProjectProperty("Dialect");
+                    if (!Enum.TryParse(prop, true, out _dialect))
+                    {
+                        _dialect = XSharpDialect.Core;
+                    }
+                    _hasDialect = true;
+                    return _dialect;
+                });
             }
 
         }
+
         public XSharpParseOptions ParseOptions
         {
             get
             {
-                if (this.CurrentConfig != null)
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
-                    if (xoptions != null)
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    if (this.CurrentConfig != null)
                     {
-                        if (xoptions.ParseOptions == null)
-                            xoptions.BuildCommandLine();
-                        return xoptions.ParseOptions;
+                        var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
+                        if (xoptions != null)
+                        {
+                            if (xoptions.ParseOptions == null)
+                                xoptions.BuildCommandLine();
+                            return xoptions.ParseOptions;
+                        }
                     }
-                }
-                return XSharpParseOptions.Default;
+                    return XSharpParseOptions.Default;
+                });
             }
         }
         bool _closing = false;
@@ -1991,6 +2004,8 @@ namespace XSharp.Project
 
             // First remove the Navigation Data
             //
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (this.Site != null)
             {
 
@@ -2065,6 +2080,7 @@ namespace XSharp.Project
             int result;
             bool dialectVO = false;
             bool ok = true;
+            ThreadHelper.ThrowIfNotOnUIThread();
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
             if (ModelScannerEvents.ChangedProjectFiles.ContainsKey(this.Url))
             {
@@ -2604,7 +2620,7 @@ namespace XSharp.Project
         }
         internal int ShowMessageBox(string message)
         {
-            return XSharpProjectPackage.Instance.ShowMessageBox(message);
+            return XSharpProjectPackage.XInstance.ShowMessageBox(message);
         }
 
         #region IVsProject5

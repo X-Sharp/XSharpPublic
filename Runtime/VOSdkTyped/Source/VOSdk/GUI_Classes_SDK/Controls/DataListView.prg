@@ -14,11 +14,11 @@ CLASS DataListView INHERIT ListView
 
     PROPERTY ControlType AS ControlType GET ControlType.DataListView
 
-	METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+	METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		VAR oGrid := (VODataListView) oC
 		oGrid:RetrieveVirtualItem	+= __RetrieveVirtualItems
-		oGrid:CacheVirtualItems	+= __CacheVirtualItems
-		oGrid:SearchForVirtualItem += __SearchForVirtualItems
+		oGrid:CacheVirtualItems	    += __CacheVirtualItems
+		oGrid:SearchForVirtualItem  += __SearchForVirtualItems
 		RETURN 
 
 	PROTECTED METHOD __RetrieveVirtualItems(sender AS OBJECT, e AS RetrieveVirtualItemEventArgs) AS VOID
@@ -41,7 +41,7 @@ CLASS DataListView INHERIT ListView
 			sValue := oFs:Transform(uValue)
 			oItem:SetText(sValue, oColumn:NameSym)
 		NEXT		
-		e:Item := oItem:__ListViewItem
+		e:Item := (VOListViewItem) oItem:__ListViewItem
 		RETURN 
 		
 	PROTECTED METHOD __CacheVirtualItems(sender AS OBJECT, e AS CacheVirtualItemsEventArgs ) AS VOID
@@ -195,8 +195,6 @@ CLASS DataListView INHERIT ListView
 	//	LOCAL fi AS _winNMLVFINDITEM
 	//	LOCAL iRet := -1 AS INT
 
-		
-
 	//	IF lUseOrder
 	//		fi := PTR(_CAST, oCtrlNotifyEvent:lParam)
 	//		// self:owner:owner:caption := "searching from "+NTrim(fi.iStart)+" for "+AsString(fi.lvfi._psz)
@@ -298,8 +296,6 @@ CLASS DataListView INHERIT ListView
 	//	//PP-030828 Strong typing
 	//	LOCAL nmlv AS _winNM_LISTVIEW
 
-		
-
 	//	nmlv := PTR(_CAST, oCtrlNotifyEvent:lParam)
 	//	IF (_AND(nmlv:uChanged, LVIF_STATE) > 0) .AND. (_AND(nmlv:uNewState, LVIS_SELECTED) > 0)
 	//		lNoNotifies := TRUE
@@ -313,7 +309,7 @@ CLASS DataListView INHERIT ListView
 		RETURN NIL
 
 	METHOD __RecordChange(lDoSelect := NIL AS USUAL) AS VOID STRICT 
-		LOCAL oLvItem		AS System.Windows.Forms.ListViewItem
+		LOCAL oLvItem		AS IVOListViewItem
 		LOCAL iItem AS INT
 		DEFAULT lDoSelect TO  TRUE
 
@@ -435,8 +431,6 @@ CLASS DataListView INHERIT ListView
 		RETURN 
 
 	METHOD Notify(kNotification, uDescription) 
-
-		
 
 		IF lNoNotifies
 			IF kNotification == NOTIFYINTENTTOMOVE

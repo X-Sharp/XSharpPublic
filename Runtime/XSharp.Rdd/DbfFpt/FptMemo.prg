@@ -41,8 +41,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL lOk := TRUE AS LOGIC
             IF SELF:Shared
                 IF SELF:_lockCount == 0
-                    lOk := SELF:_tryLock(0, 1, 10)
-                    IF lOk
+                    DO WHILE ! SELF:_tryLock(0, 1, 10)
                         SELF:_lockCount := 1
                         IF refreshHeaders
                             IF SELF:ReadHeader()
@@ -53,7 +52,8 @@ BEGIN NAMESPACE XSharp.RDD
                                 SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.LockHeader")
                             ENDIF
                         ENDIF
-                    ENDIF
+                    ENDDO
+                    SELF:_lockCount := 1
                 ELSE
                     SELF:_lockCount += 1
                 ENDIF
@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF updated 
                SELF:_hotHeader := TRUE
             ENDIF
-            IF SELF:_lockCount == 1
+            IF SELF:_lockCount <= 1
                 IF SELF:_hotHeader
                     SELF:WriteHeader()
                 ENDIF
@@ -292,12 +292,11 @@ BEGIN NAMESPACE XSharp.RDD
                             SELF:LastWrittenBlockNumber := blockNbr
                             RETURN TRUE
                         ENDIF
-                    ELSE
-                        SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.PutValue")
                     ENDIF
+                    SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.PutValue")
                 ELSE
                     // Deallocate block and allocate new
-                    DeleteBlock(blockNbr)
+                    SELF:DeleteBlock(blockNbr)
                     lNewBlock := TRUE
                 ENDIF
             ELSE
@@ -371,7 +370,7 @@ BEGIN NAMESPACE XSharp.RDD
             /// <inheritdoc />
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             LOCAL isOk      AS LOGIC
-            SELF:Extension := GetMemoExtFromDbfExt(info:FileName)
+            SELF:Extension := SELF:GetMemoExtFromDbfExt(info:FileName)
             isOk := SUPER:CreateMemFile(info)
             IF isOk
                 
@@ -383,7 +382,7 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:Error(FException(), Subcodes.ERDD_CREATE_MEMO, Gencode.EG_WRITE, "FPTMemo.CreateMemFile")
                 ENDIF
                 SELF:_initContext()
-                SELF:_fptHeader:NextFree :=  RoundToBlockSize(_fptHeader:Size + _flexHeader:Size) / _blockSize
+                SELF:_fptHeader:NextFree :=  SELF:RoundToBlockSize(_fptHeader:Size + _flexHeader:Size) / _blockSize
                 SELF:WriteHeader()
             ELSE
                 SELF:Error( FException(), ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE, "FPTMemo.CreateMemFile")
@@ -394,7 +393,7 @@ BEGIN NAMESPACE XSharp.RDD
             /// <inheritdoc />
         VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
-            SELF:Extension := GetMemoExtFromDbfExt(info:FileName)
+            SELF:Extension := SELF:GetMemoExtFromDbfExt(info:FileName)
             isOk := SUPER:OpenMemFile(info)
             IF isOk
                 // Per default, Block Size if 512
@@ -439,9 +438,9 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             REPEAT
                 locked := _oStream:SafeLock(nOffset, nLong )
-                IF ! locked
-                    SELF:Error(FException(), Subcodes.ERDD_INIT_LOCK, Gencode.EG_LOCK_ERROR, "FPTMemo._tryLock")
-                ENDIF
+//                IF ! locked
+//                    SELF:Error(FException(), Subcodes.ERDD_INIT_LOCK, Gencode.EG_LOCK_ERROR, "FPTMemo._tryLock")
+//                ENDIF
                 IF ( !locked )
                     nTries --
                     IF ( nTries > 0 )

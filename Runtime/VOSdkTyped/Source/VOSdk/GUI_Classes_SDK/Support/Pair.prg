@@ -1,6 +1,6 @@
 
 
-#USING System.Diagnostics
+USING System.Diagnostics
 
 [DebuggerStepThrough];
 [DebuggerDisplay("{iInt1}, {iInt2}")];
@@ -86,7 +86,7 @@ CLASS Point INHERIT Pair
 		RETURN SELF:ConvertToScreen(hWnd, TRUE)
 
 	METHOD ConvertToScreen(hWnd AS IntPtr, lWinRect AS LOGIC) AS LOGIC 
-		//Todo
+		//Todo ConvertToScreen
 		LOCAL sPoint := WINPOINT{} AS WINPOINT
 
 		IF hWnd = IntPtr.Zero

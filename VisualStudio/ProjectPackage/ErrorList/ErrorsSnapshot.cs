@@ -107,7 +107,7 @@ namespace XSharp.Project
                         if (errorcode != null && errorcode.StartsWith("xs"))
                         {
                             if (columnName == StandardTableKeyNames.HelpLink)
-                                content = "https://www.xsharp.info/help/" + errorcode + ".html";
+                                content = "https://www.xsharp.eu/help/" + errorcode + ".html";
                             else
                                 content = "Get help for '" + error.ErrorCode + "' from the XSharp website";
                             return true;

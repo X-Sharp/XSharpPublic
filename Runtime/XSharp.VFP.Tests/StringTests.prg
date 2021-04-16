@@ -8,7 +8,7 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 USING XUnit
-
+#pragma warnings (219, disable) // unused variables
 
 // Array tests are not working correctly yet with the current build
 BEGIN NAMESPACE XSharp.VFP.Tests

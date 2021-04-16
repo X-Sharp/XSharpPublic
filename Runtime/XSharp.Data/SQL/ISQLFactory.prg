@@ -9,9 +9,9 @@ USING System.Data
 USING XSharp.Data
 
 /// <summary>This interface declares the common behavior for all XSharp Data Factory classes.</summary>
-/// <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
-/// <seealso cref="O:XSharp.Data.Functions.SetSqlFactory">SetSqlFactory()</seealso>
-/// <seealso cref="O:XSharp.Data.Functions.GetSqlFactory">GetSqlFactory()</seealso>
+/// <seealso cref="M:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+/// <seealso cref="SetSqlFactory">SetSqlFactory()</seealso>
+/// <seealso cref="GetSqlFactory">GetSqlFactory()</seealso>
 
 INTERFACE XSharp.Data.ISqlFactory
 
@@ -31,25 +31,32 @@ INTERFACE XSharp.Data.ISqlFactory
     /// <summary>Return the name of the factory.</summary>
     METHOD GetName(oConn AS DbConnection) AS STRING  
 
-    /// <summary>Create a connection object.</summary>
+    /// <inheritdoc cref="DbProviderFactory.CreateConnection" />
+    /// <seealso cref='DbConnection' />
     METHOD CreateConnection AS DbConnection
 
-    /// <summary>Create a command object.</summary>
+    /// <inheritdoc cref="DbProviderFactory.CreateCommand" />
+    /// <seealso cref='DbCommand' />
     METHOD CreateCommand                        AS DbCommand
 
-    /// <summary>Create a commandbuilder object.</summary>
+    /// <inheritdoc cref="DbProviderFactory.CreateCommandBuilder" />
+    /// <seealso cref='DbCommandBuilder' />
     METHOD CreateCommandBuilder    AS DbCommandBuilder  
 
-    /// <summary>Create a connectionstring builder object.</summary>
+    /// <inheritdoc cref="DbProviderFactory.CreateConnectionStringBuilder" />
+    /// <seealso cref='DbConnectionStringBuilder' />
     METHOD CreateConnectionStringBuilder    AS DbConnectionStringBuilder
 
-    /// <summary>Create a parameter object.</summary>
+    /// <inheritdoc cref="DbProviderFactory.CreateParameter" />
+    /// <seealso cref='DbParameter' />
     METHOD CreateParameter                  AS DbParameter
 
-    /// <summary>Create a dataadapter object.</summary>
+    /// <inheritdoc cref="DbProviderFactory.CreateDataAdapter" />
+    /// <seealso cref='DbDataAdapter' />
     METHOD CreateDataAdapter                AS DbDataAdapter
 
-    /// <summary>Create a datasource enumerator object.</summary>
+    /// <inheritdoc cref="DbProviderFactory.CreateDataSourceEnumerator" />
+    /// <seealso cref='DbDataSourceEnumerator' />
     METHOD CreateDataSourceEnumerator() AS DbDataSourceEnumerator
 
 
@@ -127,9 +134,9 @@ END INTERFACE
 
 
 /// <summary>Set a new default SQL factory.</summary>
-/// <seealso cref="T:XSharp.Data.ISqlFactory">ISqlFactory</seealso>
+/// <seealso cref="ISqlFactory">ISqlFactory</seealso>
 /// <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
-/// <seealso cref="O:XSharp.Data.Functions.SetSqlFactory">SetSqlFactory()</seealso>
+/// <seealso cref="SetSqlFactory">SetSqlFactory()</seealso>
 /// <param name="oFactory">New default factory</param>
 /// <returns>The current default factory.</returns>
 FUNCTION SetSqlFactory(oFactory AS ISqlFactory) AS ISqlFactory
@@ -139,9 +146,9 @@ FUNCTION SetSqlFactory(oFactory AS ISqlFactory) AS ISqlFactory
     RETURN oOld
 
 /// <summary>Retrieve the default SQL factory.</summary>
-/// <seealso cref="T:XSharp.Data.ISqlFactory">ISqlFactory</seealso>
+/// <seealso cref="ISqlFactory">ISqlFactory</seealso>
 /// <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
-/// <seealso cref="O:XSharp.Data.Functions.SetSqlFactory">SetSqlFactory()</seealso>
+/// <seealso cref="SetSqlFactory">SetSqlFactory()</seealso>
 /// <returns>The current default factory.</returns>
 FUNCTION GetSqlFactory() AS ISqlFactory STRICT
     LOCAL oOld AS ISqlFactory

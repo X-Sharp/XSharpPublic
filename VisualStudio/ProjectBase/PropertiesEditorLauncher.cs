@@ -41,7 +41,9 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If we succeeded or not</returns>
         public override bool EditComponent(ITypeDescriptorContext context, object component)
         {
-            if(component is ProjectNodeProperties)
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (component is ProjectNodeProperties)
             {
                 IVsPropertyPageFrame propertyPageFrame = (IVsPropertyPageFrame)serviceProvider.GetService((typeof(SVsPropertyPageFrame)));
                 Assumes.Present(propertyPageFrame);

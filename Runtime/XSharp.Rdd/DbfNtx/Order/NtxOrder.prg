@@ -26,8 +26,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE CONST NTX_COUNT         := 16    AS WORD
         PRIVATE CONST STACK_DEPTH       := 20    AS WORD
         PRIVATE CONST MAX_TRIES         := 50 AS WORD
-        PRIVATE CONST LOCKOFFSET_OLD    := 1000000000 AS LONG
-        PRIVATE CONST LOCKOFFSET_NEW    := -1 AS LONG
+        PRIVATE CONST LOCKOFFSET_OLD    := 1000000000 AS DWORD
+        PRIVATE CONST LOCKOFFSET_NEW    := 0xFFFFFFFF AS DWORD
         INTERNAL CONST NTX_EXTENSION     := ".NTX" AS STRING
         #endregion
         #region fields
@@ -374,7 +374,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
         INTERNAL METHOD GoHot() AS LOGIC
             // Is called to save the current for value and key value
-            RETURN _saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentvalue)
+            RETURN SELF:_saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentvalue)
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
         INTERNAL METHOD __Compare( aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG

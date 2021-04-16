@@ -14,7 +14,7 @@ CLASS XSharp.VObject
         RETURN
         
     DESTRUCTOR()
-        Destroy()
+        SELF:Destroy()
         RETURN
     /// <summary>Free memory resources allocated for a VObject object and its derived objects.</summary> 
     VIRTUAL METHOD Destroy() AS USUAL CLIPPER

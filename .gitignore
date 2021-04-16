@@ -227,3 +227,4 @@ Tools/Converter/PrjConvert.exe
 *.chm
 /Runtime/XSharp.Core/VoFunctionDocs.xml
 /Runtime/XSharp.Vo/VoFunctionDocs.xml
+*.exe

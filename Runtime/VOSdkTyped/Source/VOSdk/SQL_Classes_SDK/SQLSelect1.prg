@@ -1,8 +1,9 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+
 
 USING System.Data.Common
 USING System.Data
@@ -10,8 +11,11 @@ USING System.Collections.Generic
 USING System.Reflection
 USING System.Diagnostics
 
+
+/// <include file="Sql.xml" path="doc/SQLSelect/*" />
+[XSharp.Internal.TypesChanged];
 [DebuggerDisplay( "SqlSelect {TableName,nq}" )] ;
-PARTIAL CLASS SQLSelect INHERIT DataServer 
+PARTIAL CLASS SQLSelect INHERIT DataServer
 	PROTECT oStmt           AS SQLStatement   // Statement object
 	PROTECT oConn           AS SQLConnection
 	PROTECT cCursor         AS STRING		// No longer used
@@ -19,7 +23,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	PROTECT lFetchFlag      AS LOGIC        // First Fetch has been performed
 	PROTECT lBof            AS LOGIC        // Are we at BOF
 	PROTECT lEof            AS LOGIC        // Are we at EOF
-	
+
+
 	PROTECT nNumCols		AS LONG			// # Of Columns in resultset
 	PROTECT lAppendFlag     AS LOGIC        // Are we on a new record
 	PROTECT aIndexCol       AS List<INT>
@@ -32,39 +37,51 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 	PROTECT lNullAsBlank	  AS LOGIC		// Return Null values as Blank
 	PROTECT lTimeStampAsDate  AS LOGIC		// Should datetimes be handled as data ?
 	PROTECT aLastArgs         AS ARRAY
-	
-	
+
+
+
+
 	// Dummy Properties
 	PROTECT nLastRecNum     AS LONG
 	PROTECT nRecNum         AS LONG
 	PROTECT lLastRecFound   AS LOGIC
 	PROTECT lDeleteFlag     AS LOGIC
-	
+
+
 	// New .Net Properties
 	PROTECT oNetConn		AS IDbConnection // Connection
 	PROTECT oTable			AS DataTable	// Contents of resultset
 	PROTECT oSchema			AS DataTable	// Schema definition of resultset
     PROTECT oAdapter        AS DbDataAdapter  // Data Adapter for Insert/Update/Delete
 	PROTECT oCurrentRow		AS DataRow		// Current data row in result set. NULL when at EOF
-	
+
+
 	PROTECT oFieldHash      AS System.Collections.Hashtable // Hashtable of Strings and Symbols and column positions
 	PROTECT nCurrentRow		AS LONG			// Current row number, 0 based
 	PROTECT nSuspendNot     AS LONG			// Is used to keep track of the current notification state
 	PROTECT lErrorFlag      AS LOGIC		// Was there an error with the last operation
 	PROTECT lChanges        AS LOGIC
-	
-	
+
+
+
+
 	#region Internal Methods
-	
+
+
+ /// <exclude />
 	METHOD __getDataTable() AS DataTable
 		RETURN SELF:oTable
-	
+
+
+ /// <exclude />
 	METHOD __AllocStmt() AS LOGIC STRICT
 		IF SELF:oNetConn:State != ConnectionState.Open
 			SELF:oNetConn:Open()
 		ENDIF
 		RETURN oStmt:__AllocStmt()
-	
+
+
+ /// <exclude />
 	METHOD __CheckEOF AS VOID
 		IF nRowCount == 0
 			SELF:lBof := TRUE
@@ -86,11 +103,15 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			ENDIF
 		ENDIF
 		RETURN
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD __CopySQLError( symMethod AS SYMBOL, oErrInfo AS SQLErrorInfo) AS VOID STRICT
 		RETURN
-	
+
+
+ /// <exclude />
 	METHOD __ForceOpen AS LOGIC STRICT
 		TRY
 			IF ! SELF:lCsrOpenFlag
@@ -100,10 +121,14 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			lCsrOpenFlag := FALSE
 		END TRY
 		RETURN lCsrOpenFlag
-	
+
+
+ /// <exclude />
 	METHOD __FreeStmt( fOption AS WORD ) AS LOGIC STRICT
 		RETURN oStmt:__FreeStmt( fOption )
-	
+
+
+ /// <exclude />
 	METHOD __GetColIndex( uFieldID AS USUAL, lAutoFetch AS LOGIC) AS DWORD STRICT
 		LOCAL nPos AS DWORD
 		LOCAL lOk  AS LOGIC
@@ -135,11 +160,14 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 				IF (oFieldHash:ContainsKey(cField))
 					nPos := (DWORD) oFieldHash[cField]
 				ENDIF
-				
+
+
 			ENDIF
 		ENDIF
 		RETURN nPos
-	
+
+
+ /// <exclude />
 	METHOD __PrepareForRecordMovement AS LOGIC STRICT
 		LOCAL lOk AS LOGIC
 		lOk := SELF:__ForceOpen()
@@ -153,31 +181,38 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			lOk := FALSE
 		ENDIF
 		RETURN lOk
-	
-	
+
+
+
+
 	#endregion
-	
-	
-	
+
+
+ /// <exclude />
 	METHOD __GetFieldName( uFieldPosition AS USUAL) AS STRING STRICT
 		LOCAL nIndex AS DWORD
 		LOCAL cRet   AS STRING
-		
+
+
 		nIndex := SELF:__GetColIndex( uFieldPosition, FALSE )
-		
+
+
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldName )
 		ELSE
 			oStmt:ErrInfo:ErrorFlag := FALSE
 			cRet := ((SQLColumn)aSQLColumns[nIndex]):ColName
 		ENDIF
-		
+
+
 		RETURN cRet
-	
+
+
+ /// <exclude />
 	METHOD __GoCold AS LOGIC STRICT
 		LOCAL lOk AS LOGIC
 		IF SELF:lChanges
-			// Todo: Check Writing back changes to server. 
+			// Todo: Check Writing back changes to server.
             nRowCount := SELF:oAdapter:Update(oTable)
 			oTable:AcceptChanges()
 			SELF:lChanges := FALSE
@@ -186,7 +221,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			lOk := TRUE
 		ENDIF
 		RETURN lOk
-	
+
+
+ /// <exclude />
 	METHOD __InitColumnDesc() AS LOGIC STRICT
 		LOCAL oDF           AS DataField		// Datafield
 		LOCAL oHL           AS HyperLabel		// Hyperlabel
@@ -238,13 +275,15 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 					ENDIF
 					SELF:aSQLColumns[i] := oCol
 					SELF:aDataFields[i] := oDF
-				CATCH e AS Exception 
+				CATCH e AS Exception
 					oStmt:__GenerateSQLError( "Error reading structure: "+e:Message, #__InitColumnDesc )
 				END TRY
 			NEXT
 		ENDIF
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	METHOD __Notify(kNot AS LONG ,uDesc := NIL AS USUAL) AS LOGIC
 		LOCAL lOk 	AS USUAL
 		LOCAL oError AS Error
@@ -255,7 +294,9 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			SELF:Error(oError)
 		ENDIF
 		RETURN lOk
-	
+
+
+ /// <exclude />
 	METHOD __Open(Table AS DataTable, Schema AS DataTable) AS LOGIC
 		LOCAL cName AS STRING
 		LOCAL lRet AS LOGIC
@@ -279,7 +320,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		ELSE
 			cName := oTable:TableName
 		ENDIF
-		
+
+
 		IF String.IsNullOrEmpty(cName)
 			LOCAL nPos AS DWORD
 			LOCAL cStmt AS STRING
@@ -295,20 +337,24 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		oHyperLabel  	:= HyperLabel{ String2Symbol(cName),cName }
 		// Build the list of DataField objects, the Field array and the
 		// DbStruct array
-		
+
+
 		SELF:lCsrOpenFlag := TRUE
 		SELF:lBof         := FALSE
 		SELF:lEof         := FALSE
 		SELF:lFetchFlag   := FALSE
-		
+
+
 		lRet := SELF:__InitColumnDesc()
 		SELF:__CheckEOF()
 		IF SELF:nNumCols = 0
 			lRet := FALSE
 		ENDIF
 		RETURN lRet
-	
-	
+
+
+
+
 	STATIC METHOD FindTableName( cStmt AS STRING) AS STRING
 		LOCAL cTable:="" AS STRING
 		LOCAL nPos   AS DWORD
@@ -317,7 +363,8 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			IF nPos > 0
 				cTable := LTrim( SubStr2( cStmt, nPos + 7 ) )
 			ENDIF
-			
+
+
 			nPos := AtC( " from ", cStmt )
 			cTable := LTrim( SubStr2( cStmt, nPos + 6 ) )
 			nPos := At2( " ", cTable )
@@ -328,11 +375,15 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 		RETURN cTable
 
 
-	METHOD __FindTableName() AS VOID STRICT 
+
+
+ /// <exclude />
+	METHOD __FindTableName() AS VOID STRICT
 		LOCAL cClass AS STRING
 		LOCAL cStmt	 AS STRING
 		// RvdH 050413 Optimized by using local strings
-		
+
+
 		cStmt := SELF:oStmt:SQLString
 		IF cStmt != NULL_STRING
 			cTableName := FindTableName(cStmt)
@@ -343,106 +394,150 @@ PARTIAL CLASS SQLSelect INHERIT DataServer
 			cClass + "_"+cTableName }
 		ENDIF
 		RETURN
-	
-	
+
+
+
+
+ /// <exclude />
 	METHOD __RecCount() AS LONGINT STRICT
 		RETURN SELF:nRowCount
-	
-	
+
+
+
+
+ /// <exclude />
 	METHOD __SetRecordFlags( lBofNew AS USUAL, lEofNew AS USUAL) AS VOID STRICT
 		IF IsLogic( lBofNew )
 			SELF:lBof := lBofNew
 		ENDIF
-		
+
+
 		IF IsLogic( lEofNew )
-			
+
+
 			SELF:lEof := lEofNew
 		ENDIF
-		
+
+
 		RETURN
-	
-	
-	
+
+
 	#region Dummy Methods
-	
+
+
+/// <exclude />
 	[Obsolete];
-	METHOD __BuildUpdateStmt AS STRING STRICT
+ 	METHOD __BuildUpdateStmt AS STRING STRICT
 		RETURN ""
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD  __CopyDataBuffer( aSQLSource AS ARRAY, aSQLTarget AS ARRAY) AS ARRAY STRICT
 		RETURN aSQLTarget
-	
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __FigureScrollUpdateType() AS DWORD STRICT 
+	METHOD __FigureScrollUpdateType() AS DWORD STRICT
 		RETURN 0
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD __GetCursorName () AS LOGIC STRICT
 		RETURN TRUE
-	
+
+
+/// <exclude />
 	[Obsolete];
-	METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC STRICT
+ 	METHOD __GetLongData( nODBCType AS SHORTINT, nIndex AS DWORD ) AS LOGIC STRICT
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __GetUpdateKey( lAppend AS LOGIC) AS STRING STRICT 
+	METHOD __GetUpdateKey( lAppend AS LOGIC) AS STRING STRICT
 		RETURN ""
-	
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __GetUpdateStmt( nIndex AS DWORD, lAppend AS LOGIC) AS SQLStatement STRICT 
+	METHOD __GetUpdateStmt( nIndex AS DWORD, lAppend AS LOGIC) AS SQLStatement STRICT
 		RETURN NULL
-	
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __GetUpdateVal( lAppend AS LOGIC) AS STRING STRICT 
+	METHOD __GetUpdateVal( lAppend AS LOGIC) AS STRING STRICT
 		RETURN ""
-	
+
+
+ /// <exclude />
 	[Obsolete];
-	METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT 
+	METHOD __InitColValue( nIndex AS DWORD ) AS LOGIC STRICT
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD __MemFree() AS VOID STRICT
 		RETURN
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD  __PrepareStmtOptions( oStatement AS SQLStatement ) AS VOID STRICT
 		RETURN
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD __PutLongData( cValue AS STRING, nODBCType AS SHORTINT, nIndex AS DWORD, lAppend AS LOGIC ) AS STRING STRICT
 		RETURN cValue
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD __Reset() AS LOGIC STRICT
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD __SetCursorName( cCursorName AS STRING) AS LOGIC STRICT
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD __SetNullData( nODBCType AS SHORTINT, nIndex AS DWORD, aData AS ARRAY) AS VOID STRICT
 		RETURN
-	
-	
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD __SetScrollOptions( nConcurrency AS DWORD, nKeySet AS DWORD, lAsync AS LOGIC) AS LOGIC STRICT
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD __SkipCursor( nRecCount AS LONGINT) AS LOGIC STRICT
 		RETURN TRUE
-	
+
+
+ /// <exclude />
 	[Obsolete];
 	METHOD __UpdateLongData( lAppend AS LOGIC ) AS VOID STRICT
 		RETURN
 	#endregion
-	
-	
-	
-	
+
+
+
+
 END CLASS
+
+
 
 

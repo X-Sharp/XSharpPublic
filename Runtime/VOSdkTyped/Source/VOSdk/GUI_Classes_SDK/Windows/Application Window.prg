@@ -1,7 +1,7 @@
 
 
 
-#USING System.Windows.Forms
+USING System.Windows.Forms
 CLASS AppWindow INHERIT Window
 	PROTECT oVertScroll AS WindowVerticalScrollBar
 	PROTECT oHorzScroll AS WindowHorizontalScrollBar
@@ -25,7 +25,7 @@ CLASS AppWindow INHERIT Window
 		RETURN
 	
 
-    METHOD Activate(oEvent)
+    METHOD Activate(oEvent  AS Event)
         SUPER:Activate(oEvent)
         IF SELF:__Form:IsMdiChild
             VAR oShell  := SELF:__Form:ParentForm
@@ -35,7 +35,7 @@ CLASS AppWindow INHERIT Window
         
 
 
-	METHOD Default(oEvent) 
+	METHOD Default(oEvent AS Event) 
 		RETURN SELF
 	
 
@@ -61,8 +61,8 @@ CLASS AppWindow INHERIT Window
 		SUPER:Destroy()
 		RETURN SELF
 	
-	METHOD Dispatch(oEvt) 
-		//Todo
+	METHOD Dispatch(oEvt AS @@Event) 
+		//Todo Dispatch ?
 		//LOCAL oEvt := oEvent AS @@Event
 		//LOCAL dwMsg AS DWORD
 		
@@ -109,7 +109,7 @@ CLASS AppWindow INHERIT Window
 		
 		RETURN SUPER:Dispatch(oEvt)
 
-    METHOD MenuSelect(oEvent) 
+    METHOD MenuSelect(oEvent AS MenuSelectEvent) 
         SELF:__StatusMessageFromEvent(oEvent, MESSAGEMENU)
         RETURN NIL
 

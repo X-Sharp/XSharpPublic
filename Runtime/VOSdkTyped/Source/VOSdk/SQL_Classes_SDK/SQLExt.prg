@@ -6,6 +6,8 @@
 //
 
 
+
+
 #region defines
 DEFINE SQL_SPEC_MAJOR	:=	3     	/* Major version of specification  */
 DEFINE SQL_SPEC_MINOR	:=	52     	/* Minor version of specification  */

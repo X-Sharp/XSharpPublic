@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-Printing_Functions" revisionNumber="1" title="Printing Functions">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+	<title>Printing Functions</title>
+      
+	<content><table><tableHeader>
+<row><entry><para>Assembly</para></entry>
+<entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
+</row></tableHeader>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.APrinters(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para>-- todo --</para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetPrinter</codeEntityReference></para></entry>
+<entry><para>-- todo --</para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PCol</codeEntityReference></para></entry>
+<entry><para>-- todo --</para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PRow</codeEntityReference></para></entry>
+<entry><para>-- todo --</para></entry></row>
+<row><entry><para>XSharp.VFP</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.PrtInfo(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para>-- todo --</para></entry></row>
+</table>
+</content>
+     </section>
+  </developerConceptualDocument>
+</topic>

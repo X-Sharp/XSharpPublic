@@ -9,7 +9,7 @@ CLASS HorizontalScrollBar INHERIT ScrollBar
 
 END CLASS
 
-CLASS ScrollBar INHERIT Control
+ABSTRACT CLASS ScrollBar INHERIT Control
 
 	ACCESS __ScrollBar as System.Windows.Forms.ScrollBar
 		RETURN (System.Windows.Forms.ScrollBar) oCtrl

@@ -1,5 +1,15 @@
-PARTIAL CLASS DbError   INHERIT Error
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
+
+/// <include file="System.xml" path="doc/DbError/*" />
+CLASS DbError   INHERIT Error
+
+
+/// <include file="System.xml" path="doc/DbError.ctor/*" />
 CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 )  CLIPPER
     SUPER()
 	SubSystem := "Database"
@@ -30,6 +40,9 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 	RETURN 
 
 
+
+
+/// <include file="System.xml" path="doc/DbError.Throw/*" />
 METHOD Throw() AS VOID STRICT
 	IF CanBreak()
 		BREAK SELF
@@ -37,5 +50,7 @@ METHOD Throw() AS VOID STRICT
 	Eval(ErrorBlock(), SELF)
     RETURN
     
+    
 END CLASS
+
 

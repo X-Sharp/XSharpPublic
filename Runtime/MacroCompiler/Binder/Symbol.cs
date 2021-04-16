@@ -16,17 +16,20 @@ namespace XSharp.MacroCompiler
             None = 0,
             Get = 1,
             Set = 2,
-            Ref = 3,
-            GetSet = Get | Set,
-            All = Get | Set | Ref,
+            Ref = 4,
+            Init = 8,
+            InitGet = Get | Init,
+            GetSet = Get | Set | Init,
+            All = Get | Set | Ref | Init,
         };
-        AccessMode access_ = AccessMode.None;
+        internal AccessMode access_ = AccessMode.None;
         internal Symbol() { }
         internal Symbol(AccessMode access) { access_ = access; }
         internal abstract Symbol Lookup(string name);
         internal bool HasGetAccess { get => access_.HasFlag(AccessMode.Get); }
         internal bool HasSetAccess { get => access_.HasFlag(AccessMode.Set); }
         internal bool HasRefAccess { get => access_.HasFlag(AccessMode.Ref); }
+        internal bool HasInitAccess { get => access_.HasFlag(AccessMode.Init); }
         internal static Symbol Join(Symbol s, Symbol t)
         {
             if (t != null)
@@ -79,7 +82,7 @@ namespace XSharp.MacroCompiler
     }
     internal abstract partial class ContainerSymbol : Symbol
     {
-        internal Dictionary<string, Symbol> Members = new Dictionary<string, Symbol>(Binder.LookupComprer);
+        internal Dictionary<string, Symbol> Members = new Dictionary<string, Symbol>(Binder.LookupComparer);
         internal ContainerSymbol() { }
         internal override Symbol Lookup(string name) { Symbol s; Members.TryGetValue(name, out s); return s; }
     }
@@ -93,15 +96,19 @@ namespace XSharp.MacroCompiler
     internal partial class TypeSymbol : ContainerSymbol
     {
         bool Cached = false;
+        internal bool IsFunctionsClass { get; set; }
         internal readonly Type Type;
         internal NativeType NativeType;
         internal TypeSymbol DeclaringType { get { return Binder.FindType(Type.DeclaringType); } }
         internal NamespaceSymbol Namespace { get { return Binder.LookupFullName(Type.Namespace) as NamespaceSymbol; } }
-        internal TypeSymbol(Type type) { Type = type; }
+        internal TypeSymbol(Type type) { Type = type; IsFunctionsClass = type.Name.EndsWith("Functions"); }
         internal bool IsByRef { get { return Type.IsByRef; } }
+        internal bool IsArray { get { return Type.IsArray; } }
         internal bool IsValueType { get { return Type.IsValueType; } }
         internal bool IsReferenceType { get { return Type.IsClass || Type.IsInterface; } }
         internal bool IsEnum { get { return Type.IsEnum; } }
+        internal bool IsGenericType { get { return Type.IsGenericType; } }
+        internal int ArrayRank { get { return Type.GetArrayRank(); } }
         internal TypeSymbol ElementType { get { return Type.HasElementType ? Binder.FindType(Type.GetElementType()) : null; } }
         internal TypeSymbol EnumUnderlyingType { get { return Type.IsEnum ? Binder.FindType(Type.GetEnumUnderlyingType()) : null; } }
         internal Dictionary<MemberInfo, Symbol> MemberTable = new Dictionary<MemberInfo, Symbol>();
@@ -120,6 +127,27 @@ namespace XSharp.MacroCompiler
             else
                 Members[name] = ms;
         }
+        static List<MemberInfo> GetMemberInfoList(Type t, BindingFlags flags)
+        {
+            List<MemberInfo> result = new List<MemberInfo>();
+            result.AddRange(t.GetMembers(flags));
+            var usedIfaces = new HashSet<Type>();
+            var ifaces = new Stack<Type>();
+            ifaces.Push(t);
+            while (ifaces.Count > 0)
+            {
+                foreach(var iface in ifaces.Pop().GetInterfaces())
+                {
+                    if (!usedIfaces.Contains(iface))
+                    {
+                        usedIfaces.Add(iface);
+                        result.AddRange(iface.GetMembers(flags));
+                        ifaces.Push(iface);
+                    }
+                }
+            }
+            return result;
+        }
         internal void UpdateCache()
         {
             if (Cached)
@@ -129,7 +157,7 @@ namespace XSharp.MacroCompiler
             {
                 flags |= BindingFlags.NonPublic;
             }
-            foreach(var m in Type.GetMembers(flags))
+            foreach (var m in GetMemberInfoList(Type, flags))
             {
                 lock (this)
                 { 
@@ -152,6 +180,17 @@ namespace XSharp.MacroCompiler
                 Members.TryGetValue(XSharpFunctionNames.SetElement, out setter);
                 if (getter is SymbolList) getter = (getter as SymbolList).Symbols.Find(s => (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType.IsArray == true);
                 if (setter is SymbolList) setter = (setter as SymbolList).Symbols.Find(s => (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType.IsArray == true);
+                if (getter is MethodSymbol && setter is MethodSymbol)
+                    AddMember(SystemNames.IndexerName, new PropertySymbol(this, getter as MethodSymbol, setter as MethodSymbol, false));
+            }
+            if (IsArray && ArrayRank > 1)
+            {
+                Symbol getters;
+                Symbol setters;
+                Members.TryGetValue(SystemNames.ArrayGetValue, out getters);
+                Members.TryGetValue(SystemNames.ArraySetValue, out setters);
+                var getter = (getters as SymbolList).Symbols.Find(s => { var t = (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType; return t.IsArray == true && t.GetElementType() == typeof(int); });
+                var setter = (setters as SymbolList).Symbols.Find(s => { var t = (s as MethodSymbol)?.Parameters.Parameters.LastOrDefault()?.ParameterType; return t.IsArray == true && t.GetElementType() == typeof(int); });
                 if (getter is MethodSymbol && setter is MethodSymbol)
                     AddMember(SystemNames.IndexerName, new PropertySymbol(this, getter as MethodSymbol, setter as MethodSymbol, false));
             }
@@ -186,10 +225,13 @@ namespace XSharp.MacroCompiler
         internal override TypeSymbol Type { get; }
         internal int Index = -1;
         internal bool IsParam { get; set; }
+
+        internal bool IsConst => !HasSetAccess;
         internal LocalSymbol(string name, TypeSymbol type) : base(AccessMode.All) { Name = name; Type = type; }
         internal LocalSymbol(TypeSymbol type, int index) : this(null, type) { Index = index; }
         internal LocalSymbol(TypeSymbol type) : this(null, type) { }
         internal override Symbol Lookup(string name) { return null; }
+        internal void SetConst() { access_ &= ~AccessMode.Set; }
     }
     internal partial class ArgumentSymbol : LocalSymbol
     {
@@ -198,6 +240,16 @@ namespace XSharp.MacroCompiler
     internal partial class VariableSymbol : LocalSymbol
     {
         internal VariableSymbol(string name, TypeSymbol type) : base(name, type) { }
+    }
+    internal partial class MemvarSymbol : LocalSymbol
+    {
+        internal MemvarSymbol(string name) : base(name, Compilation.Get(NativeType.Usual)) { access_ = AccessMode.GetSet; }
+    }
+    internal partial class FieldAliasSymbol : LocalSymbol
+    {
+        internal string WorkArea = null;
+        internal FieldAliasSymbol(string name) : base(name, Compilation.Get(NativeType.Usual)) { access_ = AccessMode.GetSet; }
+        internal FieldAliasSymbol(string name, string wa) : this(name) { WorkArea = wa; }
     }
     internal partial class DynamicSymbol : TypedSymbol
     {
@@ -241,6 +293,9 @@ namespace XSharp.MacroCompiler
                     return new MethodSymbol(contType, (MethodInfo)member);
                 case MemberTypes.Field:
                     {
+                        // Do not store Globals and Defines from the Functions classes
+                        if (contType.IsFunctionsClass)
+                            return null;
                         var field = (FieldInfo)member;
                         if (field.IsLiteral)
                         {

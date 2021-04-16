@@ -3,7 +3,7 @@
 
 PARTIAL CLASS Window
 
-	METHOD Dispatch(oEvent) 
+	METHOD Dispatch(oEvent AS @@Event) 
 		RETURN SELF:EventReturnValue
 		
 	//LOCAL msg IS _winMSG
@@ -109,8 +109,8 @@ PARTIAL CLASS Window
 	//		oTempEvent := ScrollEvent{oEvt}
 	//		oScrollBar := oTempEvent:ScrollBar
 			
-	//		//if (sbi && CV_RunTime::ScrollBar_GetIgnore(sbi)
-	//		// && (CV_RunTime::Event_wParam(e) == SB_ENDSCROLL))
+	//		//if (sbi .and. CV_RunTime::ScrollBar_GetIgnore(sbi)
+	//		// .and. (CV_RunTime::Event_wParam(e) == SB_ENDSCROLL))
 	//		// CV_RunTime::ScrollBar_SetIgnore(sbi, 0)
 	//		// ((pDW)pRequestor) -> _Default(e)
 	//		//endif
@@ -122,7 +122,7 @@ PARTIAL CLASS Window
 	//		ENDIF
 			
 	//		// Required for Windows 3.x onwards
-	//		//if (sbi && CV_RunTime ::Event_wParam(e) == SB_THUMBPOSITION)
+	//		//if (sbi .and. CV_RunTime ::Event_wParam(e) == SB_THUMBPOSITION)
 	//		// CV_RunTime::ScrollBar_SetIgnore(sbi, 1)
 	//		//endif
 	//	ENDIF

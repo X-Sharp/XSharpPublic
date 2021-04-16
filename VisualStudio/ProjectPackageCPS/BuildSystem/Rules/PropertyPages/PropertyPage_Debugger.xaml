@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule
+	Name="XSharpDebugger"
+	DisplayName="XSharp Debugger"
+	PageTemplate="debugger"
+	Order="5"
+    	Description="XSharpDebugger Debugger options"
+	xmlns="http://schemas.microsoft.com/build/2009/properties">
+    <Rule.DataSource>
+        <DataSource Persistence="UserFileWithXamlDefaults" />
+    </Rule.DataSource>
+    <Rule.Categories>
+        <Category Name="General"   DisplayName="General"/>
+        <Category Name="Special"   DisplayName="Special"/>
+    </Rule.Categories>
+    <EnumProperty Category="General" Name="DebugType" DisplayName="Generate Debug Information" Default="none" >
+        <EnumValue Name="none" DisplayName="None" />
+        <EnumValue Name="full" DisplayName="Full" />
+        <EnumValue Name="pdbonly" DisplayName="Pdb Only" />
+        <EnumProperty.DataSource>
+            <DataSource Persistence="ProjectFile" HasConfigurationCondition="True" />
+        </EnumProperty.DataSource>
+    </EnumProperty>
+    <StringProperty 
+    	Category="General" 
+	Name="XSharpDebuggerCommand" 
+	DisplayName="Command"
+        Default="$(TargetPath)"
+        Description="The debug command to execute.">
+        <StringProperty.ValueEditors>
+            <ValueEditor EditorType="DefaultFindFullPathPropertyEditor" DisplayName="$(TargetPath)">
+                <ValueEditor.Metadata>
+                    <NameValuePair Name="Exename" Value="$(TargetPath)" />
+                </ValueEditor.Metadata>
+            </ValueEditor>
+            <ValueEditor EditorType="DefaultStringPropertyEditor" DisplayName="&lt;Edit...&gt;"/>
+            <ValueEditor EditorType="DefaultFilePropertyEditor" DisplayName="&lt;Browse...&gt;">
+                <ValueEditor.Metadata>
+                    <NameValuePair Name="Filters" Value="Executables (*.exe)|*.exe" />
+                </ValueEditor.Metadata>
+            </ValueEditor>
+        </StringProperty.ValueEditors>
+    </StringProperty>
+
+    <StringProperty 
+    	Category="General" 
+    	Name="XSharpDebuggerCommandArguments" 
+	DisplayName="Command Arguments"
+        Description="The command line arguments to pass to the application.">
+        <Argument Property="XSharpDebuggerCommand" />
+    </StringProperty>
+    <StringProperty 
+    	Category="General" 
+    	Name="XSharpDebuggerWorkingDirectory" 
+	DisplayName="Working Directory"
+        Default="$(MSBuildProjectDirectory)"  
+        Description="The application's working directory. By default, the directory containing the project file."
+        Subtype="folder"/>
+    <BoolProperty Category="General" 
+    	Name="XSharpDebuggerDebuggerAttach" 
+	DisplayName="Attach"
+        Default="False"
+        Description="Specifies whether the debugger should attempt to attach to an existing process when debugging starts." />
+    <!--<BoolProperty 
+    	Category="Special" 
+    	Name="UseVSHostingProcess" 
+	DisplayName="Enable the Visual Studio Hosting Process" 
+	Default="True"/>-->
+    <BoolProperty 
+    	Category="Special" 
+	Name="EnableUnmanagedDebugging" 
+	DisplayName="Enable unmanaged debugging" 
+	Default="False"/>
+
+</Rule>

@@ -3,7 +3,15 @@ USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 
 BEGIN NAMESPACE XSharp.ADS
-    
+
+
+//typedef struct _ADD_FIELD_DESC_
+//   {
+//   UNSIGNED16  usFieldType;
+//   UNSIGNED16  usFieldLength;
+//   UNSIGNED16  usFieldDecimal;
+//   } ADD_FIELD_DESC;
+
 [VoStructAttribute(6, 2)];
 [StructLayout(LayoutKind.Explicit, Size := 6)];
 STRUCTURE ADD_FIELD_DESC
@@ -13,11 +21,27 @@ STRUCTURE ADD_FIELD_DESC
 END STRUCTURE
 
 
+/*//typedef struct
+//   {
+//   UNSIGNED32 ulRecordNumber;       /* Record number that is locked */
+//   } ADS_MGMT_RECORD_INFO;
+//
+
 [VoStructAttribute(4, 4)];
 STRUCTURE ADS_MGMT_RECORD_INFO
     PUBLIC ulRecordNumber AS DWORD      /* Record number that is locked */
 END STRUCTURE
 
+
+
+//typedef struct
+//   {
+//   UNSIGNED16  usDays;        /* Number of days server has been up    */
+//   UNSIGNED16  usHours;       /* Number of hours server has been up   */
+//   UNSIGNED16  usMinutes;     /* Number of minutes server has been up */
+//   UNSIGNED16  usSeconds;     /* Number of seconds server has been up */
+//   } ADS_MGMT_UPTIME_INFO;
+//
 
 [VoStructAttribute(8, 2)];
 [StructLayout(LayoutKind.Explicit, Size := 8)];
@@ -28,6 +52,15 @@ STRUCTURE ADS_MGMT_UPTIME_INFO
     [FieldOffset(6)] PUBLIC usSeconds     AS WORD  /* Number of seconds server has been up */
 END STRUCTURE  
 
+//typedef struct
+//   {
+//   UNSIGNED32  ulInUse;       /* Number of items in use        */
+//   UNSIGNED32  ulMaxUsed;     /* Max number of items ever used */
+//   UNSIGNED32  ulRejected;    /* Number of items rejected      */
+//   } ADS_MGMT_USAGE_INFO;
+
+
+
 [VoStructAttribute(12, 4)];
 [StructLayout(LayoutKind.Explicit, Size := 12)];
 STRUCTURE ADS_MGMT_USAGE_INFO
@@ -35,6 +68,28 @@ STRUCTURE ADS_MGMT_USAGE_INFO
     [FieldOffset(4)] PUBLIC ulMaxUsed     AS DWORD  /* Max number of items ever used */
     [FieldOffset(8)] PUBLIC ulRejected    AS DWORD  /* Number of items rejected      */
 END STRUCTURE
+
+
+
+//typedef struct
+//   {
+//   UNSIGNED32           ulOperations;     /* Number operations since started */
+//   UNSIGNED32           ulLoggedErrors;   /* Number logged errors            */
+//   ADS_MGMT_UPTIME_INFO stUpTime;         /* Length of time ADS has been up  */
+//   ADS_MGMT_USAGE_INFO  stUsers;          /* Users in use, max, rejected     */
+//   ADS_MGMT_USAGE_INFO  stConnections;    /* Conns in use, max, rejected     */
+//   ADS_MGMT_USAGE_INFO  stWorkAreas;      /* WAs in use, max, rejected       */
+//   ADS_MGMT_USAGE_INFO  stTables;         /* Tables in use, max, rejected    */
+//   ADS_MGMT_USAGE_INFO  stIndexes;        /* Indexes in use, max, rejected   */
+//   ADS_MGMT_USAGE_INFO  stLocks;          /* Locks in use, max, rejected     */
+//   ADS_MGMT_USAGE_INFO  stTpsHeaderElems; /* TPS header elems in use, max    */
+//   ADS_MGMT_USAGE_INFO  stTpsVisElems;    /* TPS vis elems in use, max       */
+//   ADS_MGMT_USAGE_INFO  stTpsMemoElems;   /* TPS memo elems in use, max      */
+//   ADS_MGMT_USAGE_INFO  stWorkerThreads;  /* Worker threads in use, max      */
+//   ADS_MGMT_USAGE_INFO  stQueries;        /* Queries in use, max, rejected   */
+//   ADS_MGMT_USAGE_INFO  stStatefulUsers;  /* Stateful users in use          */
+//   ADS_MGMT_USAGE_INFO  stStatelessUsers; /* Stateless users in use          */
+//   } ADS_MGMT_ACTIVITY_INFO;
 
 
 [VoStructAttribute(172, 4)];
@@ -60,6 +115,24 @@ STRUCTURE ADS_MGMT_ACTIVITY_INFO
 END STRUCTURE
 
 
+
+//typedef struct
+//   {
+//   double      dPercentCheckSums;   /* % of pkts with checksum failures */
+//   UNSIGNED32  ulTotalPackets;      /* Total packets received           */
+//   UNSIGNED32  ulRcvPktOutOfSeq;    /* Receive packets out of sequence  */
+//   UNSIGNED32  ulNotLoggedIn;       /* Packet owner not logged in       */
+//   UNSIGNED32  ulRcvReqOutOfSeq;    /* Receive requests out of sequence */
+//   UNSIGNED32  ulCheckSumFailures;  /* Checksum failures                */
+//   UNSIGNED32  ulDisconnectedUsers; /* Server initiated disconnects     */
+//   UNSIGNED32  ulPartialConnects;   /* Removed partial connections      */
+//   UNSIGNED32  ulInvalidPackets;    /* Rcvd invalid packets (NT only)   */
+//   UNSIGNED32  ulRecvFromErrors;    /* RecvFrom failed (NT only)        */
+//   UNSIGNED32  ulSendToErrors;      /* SendTo failed (NT only)          */
+//   } ADS_MGMT_COMM_STATS;
+//
+
+
 [VoStructAttribute(48, 8)];
 STRUCTURE ADS_MGMT_COMM_STATS
     PUBLIC  dPercentCheckSums   AS REAL8 /* % of pkts with checksum failures */
@@ -74,6 +147,27 @@ STRUCTURE ADS_MGMT_COMM_STATS
     PUBLIC  ulRecvFromErrors    AS DWORD /* RecvFrom failed (NT only)        */
     PUBLIC  ulSendToErrors      AS DWORD /* SendTo failed (NT only)          */
 END STRUCTURE
+
+
+
+
+//typedef struct
+//   {
+//   UNSIGNED32  ulTotalConfigMem;          /* Total mem taken by cfg params */
+//   UNSIGNED32  ulConnectionMem;           /* memory taken by connections   */
+//   UNSIGNED32  ulWorkAreaMem;             /* memory taken by work areas    */
+//   UNSIGNED32  ulTableMem;                /* memory taken by tables        */
+//   UNSIGNED32  ulIndexMem;                /* memory taken by indexes       */
+//   UNSIGNED32  ulLockMem;                 /* memory taken by locks         */
+//   UNSIGNED32  ulUserBufferMem;           /* memory taken by user buffer   */
+//   UNSIGNED32  ulTPSHeaderElemMem;        /* memory taken by TPS hdr elems */
+//   UNSIGNED32  ulTPSVisibilityElemMem;    /* memory taken by TPS vis elems */
+//   UNSIGNED32  ulTPSMemoTransElemMem;     /* mem taken by TPS memo elems   */
+//   UNSIGNED32  ulReceiveEcbMem;           /* mem taken by rcv ECBs (NLM)   */
+//   UNSIGNED32  ulSendEcbMem;              /* mem taken by send ECBs (NLM)  */
+//   UNSIGNED32  ulWorkerThreadMem;         /* mem taken by worker threads   */
+//   UNSIGNED32  ulQueryMem;                /* mem taken by queries          */
+//   } ADS_MGMT_CONFIG_MEMORY;
 
 
 [VoStructAttribute(56, 8)];
@@ -94,6 +188,15 @@ STRUCTURE ADS_MGMT_CONFIG_MEMORY
     PUBLIC ulQueryMem                AS DWORD  /* mem taken by queries          */
 END STRUCTURE
 
+
+
+//typedef struct
+//   {
+//   UNSIGNED8  aucTableName[ADS_MGMT_MAX_PATH]; /* Fully qualified table name */
+//   UNSIGNED16 usLockType;                      /* Advantage locking mode     */
+//   } ADS_MGMT_TABLE_INFO;
+
+
 [VoStructAttribute(262, 2)];
 [StructLayout(LayoutKind.Explicit, Size := 262)];
 STRUCTURE ADS_MGMT_TABLE_INFO
@@ -104,12 +207,29 @@ STRUCTURE ADS_MGMT_TABLE_INFO
     [FieldOffset(a2)] PUBLIC usLockType      AS WORD     /* Advantage locking mode     */
 END STRUCTURE
 
+
+//typedef struct
+//   {
+//   UNSIGNED8  aucIndexName[ADS_MGMT_MAX_PATH]; /* Fully qualified table name */
+//   } ADS_MGMT_INDEX_INFO;
+
+
 [VoStructAttribute(260, 1)];
 [StructLayout(LayoutKind.Explicit, Size := 260)];
 STRUCTURE ADS_MGMT_INDEX_INFO
     // use Explicit layout to declare buffer for aucIndexName
     [FieldOffset(0)] PUBLIC aucIndexName   AS BYTE   /* Fully qualified index name */
 END STRUCTURE
+
+//typedef struct
+//   {
+//   UNSIGNED32 ulThreadNumber;                 /* Thread Number               */
+//   UNSIGNED16 usOpCode;                       /* Operation in progress       */
+//   UNSIGNED8  aucUserName[ADS_MAX_USER_NAME]; /* Name of user                */
+//   UNSIGNED16 usConnNumber;                   /* NetWare conn num (NLM only) */
+//   UNSIGNED16 usReserved1;                    /* Reserved                    */
+//   UNSIGNED8  aucOSUserLoginName[ADS_MAX_USER_NAME]; /* OS user login name   */
+//   } ADS_MGMT_THREAD_ACTIVITY;
 
 [VoStructAttribute(110, 4)];
 [StructLayout(LayoutKind.Explicit, Size := 110)];
@@ -128,6 +248,21 @@ STRUCTURE ADS_MGMT_THREAD_ACTIVITY
     [FieldOffset(a5)] PUBLIC usReserved1               AS WORD    /* Reserved                    */
     [FieldOffset(a6)] PUBLIC aucOSUserLoginName        AS BYTE    /* OS User Login Name          */
 END STRUCTURE   
+
+
+
+//typedef struct
+//   {
+//   UNSIGNED8  aucUserName[ADS_MAX_USER_NAME]; /* Name of connected user    */
+//   UNSIGNED16 usConnNumber;                   /* NetWare conn # (NLM only) */
+//   UNSIGNED8  aucAuthUserName[ADS_MAX_USER_NAME]; /* Dictionary user name  */
+//   UNSIGNED8  aucAddress[ADS_MAX_ADDRESS_SIZE]; /* Network address of user */
+//   UNSIGNED8  aucOSUserLoginName[ADS_MAX_USER_NAME]; /* OS user login name */
+//   UNSIGNED8  aucTSAddress[ADS_MAX_ADDRESS_SIZE]; /* Terminal Services client IP Address */
+//   UNSIGNED8  aucApplicationID[ADS_MAX_MGMT_APPID_SIZE]; /* application id */
+//   UNSIGNED32 ulAveRequestCost;               /* estimated average cost of each server request */
+//   UNSIGNED16 usReserved1;                    /* reserved to maintain byte alignment (ace.pas structs are not packed) */
+//   } ADS_MGMT_USER_INFO;
 
 
 [VoStructAttribute(290, 4)];
@@ -154,6 +289,23 @@ STRUCTURE ADS_MGMT_USER_INFO
     [FieldOffset(a8)] PUBLIC ulAveRequestCost                 AS DWORD   /* estimated average cost of each server request */
     [FieldOffset(a9)] PUBLIC usReserved1                      AS WORD    /* reserved to maintain byte alignment (ace.pas structs are not packed) */
 END STRUCTURE        
+
+
+
+//typedef struct
+//   {
+//   UNSIGNED32  ulUserOption;                            /* User option purchased                  */
+//   UNSIGNED8   aucRegisteredOwner[ADS_REG_OWNER_LEN];   /* Registered owner                       */
+//   UNSIGNED8   aucVersionStr[ADS_REVISION_LEN];         /* Advantage version                      */
+//   UNSIGNED8   aucInstallDate[ADS_INST_DATE_LEN];       /* Install date string                    */
+//   UNSIGNED8   aucOemCharName[ADS_OEM_CHAR_NAME_LEN];   /* OEM char language                      */
+//   UNSIGNED8   aucAnsiCharName[ADS_ANSI_CHAR_NAME_LEN]; /* ANSI char language                     */
+//   UNSIGNED8   aucEvalExpireDate[ADS_INST_DATE_LEN];    /* Eval expiration date                   */
+//   UNSIGNED8   aucSerialNumber[ADS_SERIAL_NUM_LEN];     /* Serial number string                   */
+//   UNSIGNED32  ulMaxStatefulUsers;                      /* How many stateful connections allowed */
+//   UNSIGNED32  ulMaxStatelessUsers;                     /* How many stateless connections allowed */
+//   } ADS_MGMT_INSTALL_INFO;
+
 
 [VoStructAttribute(144, 4)];
 [StructLayout(LayoutKind.Explicit, Size := 144)];
@@ -183,6 +335,55 @@ STRUCTURE ADS_MGMT_INSTALL_INFO
 END STRUCTURE
 
 
+
+//typedef struct
+//   {
+//   UNSIGNED32  ulNumConnections;          /* number connections            */
+//   UNSIGNED32  ulNumWorkAreas;            /* number work areas             */
+//   UNSIGNED32  ulNumTables;               /* number tables                 */
+//   UNSIGNED32  ulNumIndexes;              /* number indexes                */
+//   UNSIGNED32  ulNumLocks;                /* number locks                  */
+//   UNSIGNED32  ulUserBufferSize;          /* user buffer                   */
+//   UNSIGNED32  ulStatDumpInterval;        /* statistics dump interval      */
+//   UNSIGNED32  ulErrorLogMax;             /* max size of error log         */
+//   UNSIGNED32  ulNumTPSHeaderElems;       /* number TPS header elems       */
+//   UNSIGNED32  ulNumTPSVisibilityElems;   /* number TPS vis elems          */
+//   UNSIGNED32  ulNumTPSMemoTransElems;    /* number TPS memo elems         */
+//   UNSIGNED16  usNumReceiveECBs;          /* number rcv ECBs (NLM only)    */
+//   UNSIGNED16  usNumSendECBs;             /* number send ECBs (NLM only)   */
+//   UNSIGNED16  usNumBurstPackets;         /* number packets per burst      */
+//   UNSIGNED16  usNumWorkerThreads;        /* number worker threads         */
+//   UNSIGNED32  ulSortBuffSize;            /* index sort buffer size        */
+//   UNSIGNED8   aucErrorLog[ADS_MAX_CFG_PATH];    /* error log path         */
+//   UNSIGNED8   aucSemaphore[ADS_MAX_CFG_PATH];   /* semaphore file path    */
+//   UNSIGNED8   aucTransaction[ADS_MAX_CFG_PATH]; /* TPS log file path      */
+//
+//   UNSIGNED8   ucReserved3;               /* reserved                      */
+//   UNSIGNED8   ucReserved4;               /* reserved                      */
+//   UNSIGNED16  usSendIPPort;              /* NT Service IP send port #     */
+//   UNSIGNED16  usReceiveIPPort;           /* NT Service IP rcv port #      */
+//   UNSIGNED8   ucUseIPProtocol;           /* Win9x only. Which protocol to use */
+//   UNSIGNED8   ucFlushEveryUpdate;        /* Win9x specific                */
+//
+//   UNSIGNED32  ulGhostTimeout;            /* Diconnection time for partial connections */
+//   UNSIGNED32  ulFlushFrequency;          /* For local server only         */
+//
+//   UNSIGNED32  ulKeepAliveTimeOut;     /* When not using semaophore files. In milliseconds */
+//   UNSIGNED8   ucDisplayNWLoginNames;  /* Display connections using user names. */
+//   UNSIGNED8   ucUseSemaphoreFiles;    /* Whether or not to use semaphore files */
+//   UNSIGNED8   ucUseDynamicAOFs;
+//   UNSIGNED8   ucUseInternet;          /* 0 if an Internet port is not specified. */
+//
+//   UNSIGNED16  usInternetPort;         /* Internet Port */
+//   UNSIGNED16  usMaxConnFailures;      /* Maximum Internet connection failures allowed. */
+//   UNSIGNED32  ulInternetKeepAlive;    /* In Milliseconds */
+//
+//   UNSIGNED16  usCompressionLevel;     /* Compression option at server.  ADS_COMPRESS_NEVER,
+//                                        * ADS_COMPRESS_INTERNET, or ADS_COMPRESS_ALWAYS */
+//   UNSIGNED32  ulNumQueries;           /* number of queries */
+//   UNSIGNED16  usReceiveSSLPort;       /* Port number used for SSL */
+//
+//   } ADS_MGMT_CONFIG_PARAMS;
 
 
     [VoStructAttribute(866, 4)];
@@ -277,17 +478,17 @@ END STRUCTURE
 END NAMESPACE
 
 
-DEFINE ADS_MGMT_ADT_LOCKING :=           4
-DEFINE ADS_MGMT_CDX_LOCKING :=           2
-DEFINE ADS_MGMT_COMIX_LOCKING :=         5
+DEFINE ADS_MGMT_ADT_LOCKING :=           ACE.ADS_MGMT_ADT_LOCKING
+DEFINE ADS_MGMT_CDX_LOCKING :=           ACE.ADS_MGMT_CDX_LOCKING
+DEFINE ADS_MGMT_COMIX_LOCKING :=         ACE.ADS_MGMT_COMIX_LOCKING
     
-DEFINE ADS_MGMT_FILE_LOCK :=       3
+DEFINE ADS_MGMT_FILE_LOCK :=       ACE.ADS_MGMT_FILE_LOCK
     
 /*
  * Constants for MgGetInstallInfo
  */
-DEFINE ADS_MGMT_LINUX_SERVER :=             6
-DEFINE ADS_MGMT_LINUX_SERVER_64_BIT :=      8
+DEFINE ADS_MGMT_LINUX_SERVER :=             ACE.ADS_MGMT_LINUX_SERVER
+DEFINE ADS_MGMT_LINUX_SERVER_64_BIT :=      ACE.ADS_MGMT_LINUX_SERVER_64_BIT
     
     
 /*

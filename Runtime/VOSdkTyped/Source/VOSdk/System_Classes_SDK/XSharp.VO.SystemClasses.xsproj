@@ -30,7 +30,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DocumentationFile>XSharpSystemClasses.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.VOSystemClasses.Xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -77,6 +77,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <PreBuildEvent>Copy $(Solutiondir)Docs\System.xml $(ProjectDir)\System.Xml</PreBuildEvent>
+    <PostBuildEvent>Erase $(ProjectDir)\System.Xml</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

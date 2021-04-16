@@ -32,8 +32,19 @@ CLASS RddFieldInfo
     /// <summary>1 based Ordinal position in the RDD.</summary>
 	PUBLIC Ordinal      AS LONG
     /// <summary>Dynamic list of optional properties, such as Caption, Description.</summary>
-    PUBLIC Properties   := DatabasePropertyCollection{} AS DatabasePropertyCollection
-    
+    PUBLIC PROPERTY Properties AS DatabasePropertyCollection
+        GET
+            if _lazyProperties == NULL
+                _lazyProperties := DatabasePropertyCollection{}
+            endif
+            return _lazyProperties
+        END GET
+        SET
+            _lazyProperties := value
+        END SET
+    END PROPERTY
+    PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
+    PROPERTY HasProperties as LOGIC GET _lazyProperties != NULL
     /// <summary>Construct a RddFieldInfo object.</summary>
     /// <param name="sName">Name</param>
     /// <param name="sType">Type, may also contain flags in the form of a colon follwed by N,0,B,+,Z,E,U</param>

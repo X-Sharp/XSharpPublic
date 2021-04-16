@@ -215,6 +215,8 @@ namespace XSharp.MacroCompiler
                 case TokenType.NULL:
                     return Constant.Create((object)null);
                 case TokenType.NIL:
+                    if (Options.Dialect == XSharpDialect.FoxPro)
+                        return Constant.Create(false);
                     return Constant.CreateDefault(Compilation.Get(NativeType.Usual));
                 case TokenType.DATE_CONST:
                     {

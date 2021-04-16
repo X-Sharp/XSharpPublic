@@ -1,3 +1,4 @@
+/// <include file="SQL.xml" path="doc/SQLData/*" />
 CLASS SQLData
 	EXPORT @@Null 			AS LOGIC
 	EXPORT ValueChanged 	AS LOGIC
@@ -7,6 +8,8 @@ CLASS SQLData
 	EXPORT LongValue		AS STRING
 	EXPORT HasValue      AS LOGIC
 
+
+/// <include file="SQL.xml" path="doc/SQLData.Clear/*" />
 	METHOD Clear() AS VOID STRICT 
 	IF SELF:ptrValue != NULL_PTR
 		MemClear(SELF:ptrValue, SELF:Length)
@@ -16,11 +19,17 @@ CLASS SQLData
 	ENDIF
 	RETURN
 
+
+/// <include file="SQL.xml" path="doc/SQLData.ctor/*" />
 CONSTRUCTOR() 
+    
+    
     
     
 RETURN 
 
+
+/// <include file="SQL.xml" path="doc/SQLData.Initialize/*" />
 METHOD Initialize( pData AS PTR, pLength AS PTR, nLen AS DWORD, lNull AS LOGIC, lChanged AS LOGIC) AS VOID STRICT 
 	SELF:PtrValue 	   := pData
 	SELF:ptrLength    := pLength
@@ -29,4 +38,5 @@ METHOD Initialize( pData AS PTR, pLength AS PTR, nLen AS DWORD, lNull AS LOGIC, 
 	SELF:ValueChanged := lChanged
 	RETURN
 END CLASS
+
 

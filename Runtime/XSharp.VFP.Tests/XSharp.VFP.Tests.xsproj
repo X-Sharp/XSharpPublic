@@ -17,7 +17,7 @@
     <Name>XSharp.VFP.Tests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Vulcan</Dialect>
+    <Dialect>FoxPro</Dialect>
     <OutputName>XSharp.Runtime.VFP.Tests</OutputName>
     <StartupObject />
     <ApplicationIcon />
@@ -46,14 +46,15 @@
     <VO15>true</VO15>
     <VO16>false</VO16>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.6.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>false</NamedArgs>
     <StandardDefs />
-    <MemVar>false</MemVar>
+    <MemVar>true</MemVar>
     <Undeclared>false</Undeclared>
     <InitLocals>false</InitLocals>
+    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -162,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EmptyTests.prg" />
+    <Compile Include="FoxArraytests.prg" />
     <Compile Include="MiscTests.prg" />
     <Compile Include="DateTests.prg" />
     <Compile Include="NumericTests.prg" />

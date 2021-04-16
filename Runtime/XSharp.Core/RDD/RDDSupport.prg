@@ -45,7 +45,7 @@ CLASS DbFilterInfo
 	///<summary>Clear the filter fields.</summary>
 	METHOD Clear() AS VOID
 		SELF:FilterBlock := NULL
-		SELF:FilterText	 := NULL
+		SELF:FilterText	 := String.Empty
 		SELF:Active		 := FALSE
 		SELF:Optimized	 := FALSE
 		RETURN   
@@ -319,7 +319,8 @@ CLASS DbScopeInfo
 	/// <summary>A code block representing the conditional while clause.  A while condition permits continuation of a process that steps through rows until the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
 	PUBLIC WhileBlock		AS ICodeblock
 	/// <summary>A string representing the conditional while clause.  A while condition permits continuation of a process that steps through rows until the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
-	PUBLIC WhileExpression	AS STRING    
+	PUBLIC WhileExpression	AS STRING
+    
 	/// <summary>Construct a DbScopeInfo object.</summary>
 	CONSTRUCTOR()
 		SELF:Clear()
@@ -330,13 +331,13 @@ CLASS DbScopeInfo
 		IgnoreFilter	 := FALSE
 		IncludeDeleted 	 := FALSE
 		ForBlock		 := NULL
-		ForExpression	 := NULL
+		ForExpression	 := String.Empty
 		Last			 := FALSE
 		NextCount		 := 0
 		RecId			 := NULL
 		Rest			 := FALSE
 		WhileBlock		 := NULL
-		WhileExpression  := NULL
+		WhileExpression  := String.Empty
 
 	///<summary>Clone the scopeinfo object.</summary>
 	METHOD Clone AS DbScopeInfo

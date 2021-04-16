@@ -1,3 +1,10 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
+
 #region defines
 ENUM Concurrency
     MEMBER None				:= 0
@@ -25,6 +32,7 @@ DEFINE DBC_SYMBOL		:= 1
 DEFINE DBC_NAME			:= 2
 DEFINE DBC_FIELDSPEC		:= 3
 
+
 ENUM Notify
     MEMBER FieldChange :=  -1
     MEMBER Close :=  0
@@ -41,6 +49,7 @@ ENUM Notify
     MEMBER ConcurrencyControlMode := 50
 END ENUM
 
+
 DEFINE NOTIFYFIELDCHANGE        :=  Notify.FieldChange
 DEFINE NOTIFYCLEARRELATION      :=  Notify.ClearRelation
 DEFINE NOTIFYCLOSE              :=  Notify.Close
@@ -55,6 +64,7 @@ DEFINE NOTIFYFILECHANGE         :=  Notify.FileChange
 DEFINE NOTIFYRELATIONCHANGE     := Notify.RelationChange
 DEFINE NOTIFYCONCURRENCYCONTROLMODE := Notify.ConcurrencyControlMode
 DEFINE TYPE_MULTIMEDIA          := 42
+
 
 DEFINE MAXFILENAME      := 260
 DEFINE MAXEXTNAME       := 128

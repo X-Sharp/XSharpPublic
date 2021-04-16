@@ -18,6 +18,7 @@ using System.Linq;
 using System.Runtime.Versioning;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -338,6 +339,8 @@ namespace Microsoft.VisualStudio.Project
         public override TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
             IServiceProvider sp = ProjectNode.ServiceProvider;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var multiTargetService = sp.GetService(typeof(SVsFrameworkMultiTargeting)) as IVsFrameworkMultiTargeting;
             if (multiTargetService == null)
             {
@@ -346,9 +349,16 @@ namespace Microsoft.VisualStudio.Project
             }
             Array frameworks;
             Marshal.ThrowExceptionForHR(multiTargetService.GetSupportedFrameworks(out frameworks));
-            return new StandardValuesCollection(
-                frameworks.Cast<string>().Select(fx => new FrameworkName(fx)).ToArray()
-            );
+            var result = new List<string>();
+            foreach (string name in frameworks)
+            {
+                if (name.ToLower().IndexOf("profile") == -1 && name.StartsWith(".NETFramework"))
+                {
+                    result.Add(name);
+                }
+
+            }
+            return new StandardValuesCollection(result.Select(x => new FrameworkName(x)).ToArray());
         }
     }
 }

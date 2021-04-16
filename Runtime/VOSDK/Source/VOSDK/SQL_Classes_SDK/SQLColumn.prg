@@ -1,3 +1,4 @@
+/// <include file="SQL.xml" path="doc/SQLColumn/*" />
 CLASS SQLColumn         INHERIT SQLValue
 	//  UH 08/09/2001
 	//  EXPORT DisplaySize  AS INT
@@ -7,23 +8,31 @@ CLASS SQLColumn         INHERIT SQLValue
 	EXPORT AliasName    AS STRING
 	EXPORT Length       AS LONGINT
 
+
+/// <include file="SQL.xml" path="doc/SQLColumn.ctor/*" />
 CONSTRUCTOR( oHyperLabel, oFieldSpec, nODBCType, nScale, lNullable, ;
 	nIndex, cColName, cAlias )  
 
+
 	SUPER( oHyperLabel, oFieldSpec, nODBCType, nScale, lNullable )
+
 
 	IF IsNumeric( nIndex )
 		SELF:Index := nIndex
 	ENDIF
 
+
 	IF IsString( cColName )
 		SELF:ColName := cColName
 	ENDIF
+
 
 	IF IsString( cAlias )
 		SELF:AliasName := cAlias
 	ENDIF
 
+
 	RETURN 
 END CLASS
+
 

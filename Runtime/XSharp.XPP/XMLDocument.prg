@@ -242,9 +242,9 @@ BEGIN NAMESPACE XSharp.XPP
                 END LOCK
                 lOk := TRUE
             CATCH e AS XmlException
-                LastError := AddOpenError(e)
+                LastError := SELF:AddOpenError(e)
             CATCH e AS Exception
-                LastError := AddError(e)
+                LastError := SELF:AddError(e)
                 BEGIN LOCK gate
                     IF aDocuments:Contains(SELF)
                         aDocuments:Remove(SELF)
@@ -260,11 +260,11 @@ BEGIN NAMESPACE XSharp.XPP
             SELF:ClearError()
             SELF:cFileName := cFile
             IF String.IsNullOrEmpty(cFile)
-                LastError := AddOpenError(XError{cFile, XMLDOC_ERROR_NO_FILENAME})
+                LastError := SELF:AddOpenError(XError{cFile, XMLDOC_ERROR_NO_FILENAME})
                 RETURN FALSE
             ENDIF
             IF !System.IO.File.Exists(cFile)
-                LastError := AddOpenError(XError{cFile, XMLDOC_ERROR_FILE_NOT_FOUND})
+                LastError := SELF:AddOpenError(XError{cFile, XMLDOC_ERROR_FILE_NOT_FOUND})
                 RETURN FALSE
             ENDIF
             TRY
@@ -274,7 +274,7 @@ BEGIN NAMESPACE XSharp.XPP
                 END USING
                 SELF:Process()
             CATCH e AS Exception
-                LastError := AddError(e)
+                LastError := SELF:AddError(e)
                 lOk := FALSE
             END TRY
             RETURN lOk
@@ -314,9 +314,9 @@ BEGIN NAMESPACE XSharp.XPP
                 VAR root := oDoc:DocumentElement
                 SELF:RootId := Nodes[root]
             CATCH e AS XmlException
-                LastError := AddOpenError(e)
+                LastError := SELF:AddOpenError(e)
             CATCH e AS Exception
-                LastError := AddError(e)
+                LastError := SELF:AddError(e)
             END TRY
             RETURN
 
@@ -338,10 +338,10 @@ BEGIN NAMESPACE XSharp.XPP
                 NEXT
                 lOk := TRUE
             CATCH e AS XmlException
-                LastError := AddOpenError(e)
+                LastError := SELF:AddOpenError(e)
                 lOk := FALSE
             CATCH e AS Exception
-                LastError := AddError(e)
+                LastError := SELF:AddError(e)
                 lOk := FALSE
             END TRY
             RETURN lOk

@@ -16,9 +16,9 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _projects             AS List<XProject>
       
       PROPERTY Id                   AS INT64 AUTO GET INTERNAL SET
-      PROPERTY Types                AS Dictionary<STRING, XTypeReference> AUTO
-      PROPERTY ExtensionMethods     AS IList<XMemberReference> AUTO
-      PROPERTY ExtensionDict        AS Dictionary<STRING, IList<IXMember> > AUTO
+      PROPERTY Types                AS Dictionary<STRING, XPETypeSymbol> AUTO
+      PROPERTY ExtensionMethods     AS IList<XPEMemberSymbol> AUTO
+      PROPERTY ExtensionDict        AS Dictionary<STRING, IList<IXMemberSymbol> > AUTO
       PROPERTY ImplicitNamespaces   AS IList<STRING> AUTO
       PROPERTY Namespaces           AS IList<STRING> AUTO
       PROPERTY ReferencedAssemblies AS IList<STRING> AUTO
@@ -30,7 +30,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Loaded               AS LOGIC AUTO
       PROPERTY LastChanged          AS DateTime AUTO GET INTERNAL SET
       PROPERTY Size                 AS INT64 AUTO GET INTERNAL SET    
-      PROPERTY DuplicateTypes       AS List<XTypeReference> AUTO
+      PROPERTY DuplicateTypes       AS List<XPETypeSymbol> AUTO
       PROPERTY HasDuplicateTypes    AS LOGIC GET DuplicateTypes != NULL .AND. DuplicateTypes:Count > 0
       
       STATIC CONSTRUCTOR
@@ -53,13 +53,13 @@ BEGIN NAMESPACE XSharpModel
          SELF:UpdateAssembly()
 
      METHOD Initialize() AS VOID
-         Types                := Dictionary<STRING, XTypeReference>{StringComparer.OrdinalIgnoreCase}
+         Types                := Dictionary<STRING, XPETypeSymbol>{StringComparer.OrdinalIgnoreCase}
          ImplicitNamespaces   := List<STRING>{}
          Namespaces           := List<STRING>{}
          ReferencedAssemblies := List<STRING>{}
          CustomAttributes     := List<STRING>{}
          DuplicateTypes       := NULL
-         ExtensionMethods     := List<XMemberReference>{}
+         ExtensionMethods     := List<XPEMemberSymbol>{}
          ExtensionDict        := NULL
          GlobalClassName      := ""
          ExtensionDict        := NULL
@@ -83,7 +83,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_projects:Add(project)
          ENDIF
          
-      METHOD GetType(name AS STRING) AS XTypeReference
+      METHOD GetType(name AS STRING) AS XPETypeSymbol
          
          IF SELF:IsModifiedOnDisk .OR. SELF:Types:Count == 0
             SELF:Read()
@@ -218,8 +218,8 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
          XSolution.WriteOutputMessage("XModel.XAssembly " +message )
 
-      METHOD FindExtensionMethodsForType(typeName AS STRING) AS IList<IXMember>
-         VAR result := List<IXMember>{}
+      METHOD FindExtensionMethodsForType(typeName AS STRING) AS IList<IXMemberSymbol>
+         VAR result := List<IXMemberSymbol>{}
          IF SELF:HasExtensions
             IF ExtensionDict == NULL
                SELF:BuildExtensionDict()
@@ -232,13 +232,13 @@ BEGIN NAMESPACE XSharpModel
          RETURN result
          
       METHOD BuildExtensionDict() AS VOID
-         ExtensionDict := Dictionary<STRING, IList<IXMember>> {StringComparer.OrdinalIgnoreCase}
-         FOREACH ext AS IXMember IN SELF:ExtensionMethods
+         ExtensionDict := Dictionary<STRING, IList<IXMemberSymbol>> {StringComparer.OrdinalIgnoreCase}
+         FOREACH ext AS IXMemberSymbol IN SELF:ExtensionMethods
             IF ext:Parameters:Count > 0
                VAR par  := ext:Parameters:First()
                VAR type := par:TypeName
                IF !ExtensionDict:ContainsKey(type)
-                  ExtensionDict:Add(type, List<IXMember>{})
+                  ExtensionDict:Add(type, List<IXMemberSymbol>{})
                ENDIF
                ExtensionDict[type]:Add(ext)
             ENDIF

@@ -14,6 +14,8 @@ namespace XSharp.MacroCompiler
 
         internal static bool IsSubclassOf(this TypeSymbol ts, TypeSymbol tb) => ts.Type.IsSubclassOf(tb.Type);
 
+        internal static bool IsAssignableFrom(this TypeSymbol ts, TypeSymbol tb) => ts.Type.IsAssignableFrom(tb.Type);
+
         internal static bool IsMethodOrMethodGroup(this Symbol s)
         {
             if (s is MethodBaseSymbol)
@@ -122,5 +124,35 @@ namespace XSharp.MacroCompiler
         }
 
         internal static bool IsConstant(this Symbol s) => (s as Constant)?.Type.IsUsualOrObject() == false;
+
+        internal static bool Matches(this TypeSymbol s, TypeSymbol other) => Binder.TypesMatch(s, other);
+
+        internal static bool IsEnumeratorGetter(this MethodSymbol s) => s.Parameters.Parameters.Length == 0 &&
+            (s.Type.Matches(Compilation.Get(WellKnownTypes.System_Collections_IEnumerator)) || s.Type.DeclaringType.Matches(Compilation.Get(WellKnownTypes.System_Collections_Generic_IEnumerator_T1)));
+
+        internal static MethodSymbol GetEnumeratorGetter(this Symbol s)
+        {
+            var members = s.Lookup(SystemNames.GetEnumerator);
+            if (members is MethodSymbol singleGetter && singleGetter.IsEnumeratorGetter())
+                return singleGetter;
+            if (members is SymbolList memberList && memberList.HasMethod)
+            {
+                MethodSymbol getter = null;
+                foreach (var member in memberList.Symbols)
+                {
+                    if (member is MethodSymbol method && method.IsEnumeratorGetter())
+                    {
+                        if (getter == null)
+                            getter = method;
+                        else if (!getter.Type.IsGenericType && method.Type.IsGenericType)
+                            getter = method;
+                        else if (getter.Type.IsGenericType && method.Type.IsGenericType)
+                            return null;
+                    }
+                }
+                return getter;
+            }
+            return null;
+        }
     }
 }

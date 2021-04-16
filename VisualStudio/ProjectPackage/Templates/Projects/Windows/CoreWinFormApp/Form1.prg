@@ -16,7 +16,7 @@ BEGIN NAMESPACE $safeprojectname$
 
         PUBLIC CONSTRUCTOR()   STRICT//$safeitemrootname$
             InitializeComponent()
-			RETURN
+            RETURN
 
     END CLASS
 END NAMESPACE

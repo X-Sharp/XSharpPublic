@@ -8,7 +8,7 @@
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
 
-CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOControl, IVOControlInitialize
+CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOTextBox
 	PROPERTY oEdit		AS VOSDK.Edit GET (VOSDK.Edit) SELF:Control
 
 	#include "PropControl.vh"
@@ -96,7 +96,7 @@ CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOControl, IVOC
 
 END CLASS
 
-CLASS VOHotKeyTextBox INHERIT VOTextBox IMPLEMENTS IVOControl
+CLASS VOHotKeyTextBox INHERIT VOTextBox IMPLEMENTS IVOHotKeyTextBox
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner, dwStyle, dwExStyle)
 
@@ -109,7 +109,7 @@ CLASS VOHotKeyTextBox INHERIT VOTextBox IMPLEMENTS IVOControl
 	END PROPERTY
 END CLASS
 
-CLASS VOMLETextBox INHERIT VOTextBox
+CLASS VOMLETextBox INHERIT VOTextBox IMPLEMENTS IVOMLETextBox
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner,dwStyle,dwExStyle )
 		SELF:Multiline := TRUE
@@ -132,7 +132,7 @@ END CLASS
 
 
 
-CLASS VOIPAddressTextBox INHERIT VOTextBox
+CLASS VOIPAddressTextBox INHERIT VOTextBox IMPLEMENTS IVOIPAddressTextBox
 	CONSTRUCTOR(Owner AS VOSDK.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER(Owner,dwStyle,dwExStyle )
 	
@@ -142,8 +142,7 @@ CLASS VOIPAddressTextBox INHERIT VOTextBox
 			result:ClassName := "SysIPAddress32"
 			RETURN result
 		END GET
-	END PROPERTY
-
+    END PROPERTY
 END CLASS
 
 
@@ -170,7 +169,7 @@ CLASS VORichTextBox INHERIT System.Windows.Forms.RichTextBox IMPLEMENTS IVOContr
 END CLASS
 
 
-CLASS VOSpinnerTextBox INHERIT System.Windows.Forms.NumericUpDown IMPLEMENTS IVOControl
+CLASS VOSpinnerTextBox INHERIT System.Windows.Forms.NumericUpDown IMPLEMENTS IVOSpinnerTextBox
 	PROPERTY oEdit		AS VOSDK.SpinnerEdit GET (VOSDK.SpinnerEdit) SELF:Control
 	#include "PropControl.vh"
 
@@ -235,8 +234,7 @@ CLASS VOSpinnerTextBox INHERIT System.Windows.Forms.NumericUpDown IMPLEMENTS IVO
 			ENDIF
 			SUPER:Text := VALUE
 		END SET
-	END PROPERTY
-
+    END PROPERTY
 END CLASS
 
 

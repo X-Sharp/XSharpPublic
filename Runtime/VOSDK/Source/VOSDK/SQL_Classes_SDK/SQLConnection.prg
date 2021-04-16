@@ -1,3 +1,4 @@
+/// <include file="SQL.xml" path="doc/SQLConnection/*" />
 CLASS SQLConnection
 	HIDDEN cSourceName    AS STRING
 	HIDDEN cUser          AS STRING
@@ -20,26 +21,32 @@ CLASS SQLConnection
 	PROTECT nODBCCursors        AS INT
 	PROTECT nAccessMode         AS INT
 	PROTECT nIsolationOption    AS INT
+ /// <exclude />
 	METHOD __AllocConnect() AS LOGIC STRICT 
 	LOCAL hDbcNew  AS PTR
 	LOCAL nRetCode AS INT
 	LOCAL lRet     AS LOGIC
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__AllocConnect()" )
 	#ENDIF
+
 
 	IF ( hDbc = SQL_NULL_HDBC )
 		//RvdH 050413 This should be replaced with SqlAllocHandle
 		nRetCode := SQLAllocConnect( hEnv, @hDbcNew )
 
+
 		IF nRetCode = SQL_SUCCESS
 			oErrInfo:ErrorFlag := FALSE
 			SELF:hDbc := hDbcNew
 
+
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "** hDbc="+AsString( hDbc ) )
 			#ENDIF
+
 
 			lRet := TRUE
 		ELSE
@@ -49,22 +56,30 @@ CLASS SQLConnection
 				SQL_NULL_HDBC,    ;
 				SQL_NULL_HSTMT }
 
+
 			oErrInfo:ReturnCode := nRetCode
 		ENDIF
+
 
 	ELSE
 		SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__CON_ALLOC ), #AllocConnect )
 	ENDIF
 
+
 	RETURN lRet
 
 
+
+
+ /// <exclude />
 METHOD __AllocEnv() AS LOGIC STRICT 
 	LOCAL lRet AS LOGIC
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__AllocEnv()" )
 	#ENDIF
+
 
 	IF hEnv = SQL_NULL_HENV
 		SELF:hEnv := __GetMyEnv()
@@ -82,28 +97,37 @@ METHOD __AllocEnv() AS LOGIC STRICT
 		SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__ENV_ALLOC ), #AllocEnv )
 	ENDIF
 
+
 	RETURN lRet
 
+
+ /// <exclude />
 METHOD __CheckActiveStmts() AS LOGIC STRICT 
+
 
 	LOCAL nBytes    AS SHORTINT // dcaton 070206 was INT
 	LOCAL nActStmts AS INT
 	LOCAL nRetCode  AS INT
 	LOCAL lRet      AS LOGIC
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__CheckActiveStmts()" )
 	#ENDIF
 
+
 	SELF:nActiveStmts := 0
 
+
 	IF ( !SELF:lUseSingleConnection )
+
 
 		nRetCode := SQLGetInfo( hDbc,                   ;
 			SQL_ACTIVE_STATEMENTS,  ;
 			@nActStmts,             ;
 			_SIZEOF( INT ),         ;
 			@nBytes )
+
 
 		IF nRetCode = SQL_SUCCESS
 			SELF:nActiveStmts := nActStmts
@@ -114,16 +138,22 @@ METHOD __CheckActiveStmts() AS LOGIC STRICT
 			lRet := TRUE
 		ENDIF
 
+
 	ENDIF
+
 
 	RETURN lRet
 
 
+
+
+ /// <exclude />
 METHOD __CheckIdentQuoteChar() AS LOGIC STRICT 
 	LOCAL nBytes   AS SHORTINT // dcaton 070206 was INT
 	LOCAL nRetCode AS INT
 	LOCAL lRet     AS LOGIC
 	LOCAL DIM bData[10] AS BYTE
+
 
 	SELF:cIdentifierQuoteChar := NULL_STRING
 	IF hDbc != SQL_NULL_HDBC
@@ -140,23 +170,30 @@ METHOD __CheckIdentQuoteChar() AS LOGIC STRICT
 		ENDIF
 	ENDIF
 
+
 	oErrInfo:ErrorFlag := FALSE
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__CheckIdentQuoteChar()="+AsString( cIdentifierQuoteChar ) )
 	#ENDIF
 
+
 	RETURN lRet
 
+
+ /// <exclude />
 METHOD __CheckPositionOps() AS LOGIC STRICT 
 	LOCAL nPosition AS INT
 	LOCAL nRetCode  AS INT
 	LOCAL lRet      AS LOGIC
 	LOCAL nBytes    AS SHORTINT // dcaton 070206 was INT
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__CheckPositionOps()" )
 	#ENDIF
+
 
 	lPositionOps   := TRUE
 	lSelect4Update := FALSE
@@ -165,6 +202,7 @@ METHOD __CheckPositionOps() AS LOGIC STRICT
 		@nPosition,                 ;
 		_SIZEOF( LONGINT ),           ;
 		@nBytes )
+
 
 	IF nRetCode = SQL_SUCCESS
 		//
@@ -184,8 +222,11 @@ METHOD __CheckPositionOps() AS LOGIC STRICT
 		lRet := TRUE
 	ENDIF
 
+
 	RETURN lRet
 
+
+ /// <exclude />
 METHOD __CheckQE() AS LOGIC STRICT 
 	//
 	//  Check Q+E driver ( say we're CA )
@@ -202,28 +243,35 @@ METHOD __CheckQE() AS LOGIC STRICT
 	LOCAL hInst    AS PTR
 	LOCAL nSize    AS DWORD
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__CheckQE()" )
 	#ENDIF
 
+
 	hInst := LoadLibrary( PSZ( _CAST,"ODBC32.DLL" ) )
+
 
 	IF hInst != 0
 		pFunc := GetProcAddress( hInst, PSZ( _CAST, "SQLSetConnectAttr" ) )
 	ENDIF
+
 
 	IF pFunc = NULL
 		nOption  := 1041
 		ptrValue := String2Psz( __CAVOSTR_SQLCLASS__QE_LIC )
 		nValue   := DWORD( _CAST, ptrValue )
 
+
 		//RvdH 050413 This should be replaced with a Call to SQLSetConnectAttr()
 		SQLSetConnectOption( hDbc, nOption, nValue )
+
 
 		nOption := 1042
 		ptrValue := String2Psz( __CAVOSTR_SQLCLASS__QE_PSWD )
 		nValue := DWORD( _CAST, ptrValue )
 		//RvdH 050413 This should be replaced with a Call to SQLSetConnectAttr()
+
 
 		SQLSetConnectOption( hDbc, nOption, nValue )
 	ELSE
@@ -231,17 +279,21 @@ METHOD __CheckQE() AS LOGIC STRICT
 		ptrValue := String2Psz( __CAVOSTR_SQLCLASS__QE_LIC )
 		nSize    := SLen( __CAVOSTR_SQLCLASS__QE_LIC )
 
+
 #ifdef __VULCAN__
 		nRet := PCallNative<SHORT>( pFunc, hDbc, WORD( _CAST,nOption ), ptrValue, WORD( _CAST,nSize + 1 ) )
 #else		
 		nRet := PCALL( pFunc, hDbc, WORD( _CAST,nOption ), ptrValue, WORD( _CAST,nSize + 1 ) )
 #endif		
 
+
 		IF nRet == SQL_SUCCESS
+
 
 			nOption := 1042
 			ptrValue := String2Psz( __CAVOSTR_SQLCLASS__QE_PSWD )
 			nSize    := SLen( __CAVOSTR_SQLCLASS__QE_PSWD )
+
 
 #ifdef __VULCAN__
 			nRet := PCallNative<SHORT>( pFunc, hDbc, WORD( _CAST,nOption ), ptrValue, WORD( _CAST,nSize + 1 ) )
@@ -251,12 +303,16 @@ METHOD __CheckQE() AS LOGIC STRICT
 		ENDIF
 	ENDIF
 
+
 	IF hInst != NULL
 		FreeLibrary( hInst )
 	ENDIF
 
+
 	RETURN TRUE
 
+
+ /// <exclude />
 METHOD __CheckScrollable() AS LOGIC STRICT 
 	//
 	//  Check if a driver supports scrollable cursors; sets lScrollCsr flag
@@ -270,29 +326,37 @@ METHOD __CheckScrollable() AS LOGIC STRICT
 	LOCAL nBytes     AS SHORTINT // dcaton 070206 was INT
 	LOCAL nRetCode   AS INT
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__CheckScrollable()" )
 	#ENDIF
+
 
 	IF SELF:lScrollCsr = FALSE
 		RETURN FALSE
 	ENDIF
 
+
 	nConcurrency := SQL_CONCUR_READ_ONLY
+
 
 	IF SQLGetFunctions( hDbc, SQL_API_SQLEXTENDEDFETCH, @nExists ) != SQL_SUCCESS
 		RETURN FALSE
 	ENDIF
 
+
 	IF nExists != 1
 		RETURN FALSE
 	ENDIF
 
+
 	nRetCode := SQLGetInfo( hDbc, SQL_FETCH_DIRECTION, @nDirection, _SIZEOF( LONGINT ), @nBytes )
+
 
 	IF nRetCode != SQL_SUCCESS
 		RETURN FALSE
 	ENDIF
+
 
 	IF _AND( nDirection, SQL_FD_FETCH_NEXT )   =  SQL_FD_FETCH_NEXT     .AND. ;
 			_AND( nDirection, SQL_FD_FETCH_FIRST )   =  SQL_FD_FETCH_FIRST    .AND. ;
@@ -301,7 +365,9 @@ METHOD __CheckScrollable() AS LOGIC STRICT
 			_AND( nDirection, SQL_FD_FETCH_ABSOLUTE )= SQL_FD_FETCH_ABSOLUTE  .AND. ;
 			_AND( nDirection, SQL_FD_FETCH_RELATIVE )= SQL_FD_FETCH_RELATIVE
 
+
 		SELF:lScrollCsr := TRUE           // OK, use the driver!
+
 
 		nRetCode := SQLGetInfo( hDbc,                           ;
 			SQL_SCROLL_CONCURRENCY,         ;
@@ -309,7 +375,9 @@ METHOD __CheckScrollable() AS LOGIC STRICT
 			_SIZEOF( LONGINT ),               ;
 			@nBytes )
 
+
 		IF nRetCode == SQL_SUCCESS
+
 
 			IF _AND( nConcur,SQL_SCCO_OPT_VALUES ) = SQL_SCCO_OPT_VALUES
 				nConcurrency := SQL_CONCUR_VALUES
@@ -321,6 +389,7 @@ METHOD __CheckScrollable() AS LOGIC STRICT
 				nConcurrency := SQL_CONCUR_READ_ONLY
 			ENDIF
 
+
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "   nConcur=" + AsString(  nConcurrency ) )
 				__SQLOutputDebug( "   lScrollCsr=" + AsString( lScrollCsr ) )
@@ -328,8 +397,11 @@ METHOD __CheckScrollable() AS LOGIC STRICT
 		ENDIF
 	ENDIF
 
+
 	RETURN SELF:lScrollCsr
 
+
+ /// <exclude />
 METHOD __CloseExtraStmt(oStmt AS SQLStatement)  AS VOID STRICT 
 	LOCAL oNewStmt AS SQLStatement
 	oNewStmt := oStmt
@@ -339,28 +411,37 @@ METHOD __CloseExtraStmt(oStmt AS SQLStatement)  AS VOID STRICT
 	ENDIF
 	RETURN
 
+
+ /// <exclude />
 METHOD __Free() AS LOGIC STRICT 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__Free()" )
 	#ENDIF
 
+
 	SELF:Disconnect()
 	SELF:__FreeConnect()
 
+
 	RETURN SELF:__FreeEnv()
 
+
+ /// <exclude />
 METHOD __FreeConnect() AS LOGIC STRICT 
 	LOCAL nRetCode AS INT
 	LOCAL lRet     AS LOGIC
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__FreeConnect() hDbc="+AsString( hDbc ) )
 	#ENDIF
 
+
 	IF hDbc = SQL_NULL_HDBC
 		SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__CON_FREE ), #FreeConnect )
 	ELSE
 		nRetCode := SQLFreeConnect( hDbc )
+
 
 		IF nRetCode = SQL_SUCCESS
 			SELF:hDbc := SQL_NULL_HDBC
@@ -373,14 +454,19 @@ METHOD __FreeConnect() AS LOGIC STRICT
 		ENDIF
 	ENDIF
 
+
 	RETURN lRet
 
+
+ /// <exclude />
 METHOD __FreeEnv () AS LOGIC STRICT 
 	LOCAL lRet AS LOGIC
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__FreeEnv hEnv="+AsString( hEnv ) )
 	#ENDIF
+
 
 	IF hEnv = SQL_NULL_HENV
 		SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__ENV_FREE ), #FreeEnv )
@@ -398,9 +484,13 @@ METHOD __FreeEnv () AS LOGIC STRICT
 		ENDIF
 	ENDIF
 
+
 	RETURN lRet
 
+
+ /// <exclude />
 METHOD __GenerateSqlError( cErrorString AS STRING, symMethod AS SYMBOL) AS SQLErrorInfo 
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__GenerateSQLError( "+         ;
@@ -421,6 +511,8 @@ METHOD __GenerateSqlError( cErrorString AS STRING, symMethod AS SYMBOL) AS SQLEr
 	SELF:oErrInfo:ReturnCode  := SQL_SUCCESS
 	RETURN oErrInfo
 
+
+ /// <exclude />
 METHOD __GetExtraStmt(cStmtText AS STRING) AS SqlStatement STRICT 
 	LOCAL oNewConn AS SQLConnection
 	LOCAL oNewStmt AS SQLStatement
@@ -437,14 +529,18 @@ METHOD __GetExtraStmt(cStmtText AS STRING) AS SqlStatement STRICT
 	oNewStmt := SQLStatement{ cStmtText, oNewConn }
 	RETURN oNewStmt
 
+
+ /// <exclude />
 METHOD __RegisterStmt( oStmt AS SQLStatement ) AS LOGIC STRICT 
 	LOCAL nIndex AS DWORD
 	LOCAL nCount AS DWORD
 	LOCAL lFound AS LOGIC
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** __RegisterStmt( "+AsString( oStmt:StatementHandle )+" )" )
 	#ENDIF
+
 
 	nCount := ALen( aStmts )
 	//
@@ -465,6 +561,8 @@ METHOD __RegisterStmt( oStmt AS SQLStatement ) AS LOGIC STRICT
 	ENDIF
 	RETURN TRUE
 
+
+ /// <exclude />
 METHOD __Transact( nType AS WORD) AS LOGIC STRICT 
 	//
 	//  Commit/Rollback transaction; returns TRUE if successful
@@ -472,11 +570,14 @@ METHOD __Transact( nType AS WORD) AS LOGIC STRICT
 	LOCAL nRetCode  AS INT
 	LOCAL lRet      AS LOGIC
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:Transact()" )
 	#ENDIF
 
+
 	nRetCode := SQLTransact( SQL_NULL_HENV, SELF:ConnHandle, nType )
+
 
 	IF  nRetCode = SQL_SUCCESS
 		SELF:oErrInfo:ErrorFlag := FALSE
@@ -488,21 +589,28 @@ METHOD __Transact( nType AS WORD) AS LOGIC STRICT
 			SELF:ConnHandle, ;
 			SQL_NULL_HSTMT }
 
+
 		oErrInfo:ReturnCode := nRetCode
 	ENDIF
 
+
 	RETURN lRet
 
+
+ /// <exclude />
 METHOD __UnregisterStmt( oStmt AS SQLStatement ) AS LOGIC STRICT 
 	LOCAL nIndex AS DWORD
 	LOCAL nCount AS DWORD
 	LOCAL lRet   AS LOGIC
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** __UnRegisterStmt( "+AsString( oStmt:StatementHandle )+" )" )
 	#ENDIF
 
+
 	nCount := ALen( aStmts )
+
 
 	FOR nIndex := 1 TO nCount
 		IF aStmts[nIndex] != NIL .AND.              ;
@@ -511,6 +619,7 @@ METHOD __UnregisterStmt( oStmt AS SQLStatement ) AS LOGIC STRICT
 				__SQLOutputDebug( "** found oStmt, index="+AsString( nIndex ) )
 			#ENDIF
 
+
 			ADel( aStmts, nIndex )
 			ASize( aStmts, nCount - 1 )
 			lRet := TRUE
@@ -518,17 +627,25 @@ METHOD __UnregisterStmt( oStmt AS SQLStatement ) AS LOGIC STRICT
 		ENDIF
 	NEXT
 
+
 	RETURN lRet
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.AccessMode/*" />
 ACCESS AccessMode 
+
 
 	RETURN SELF:nAccessMode
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.AccessMode/*" />
 ASSIGN AccessMode( nVal ) 
+
 
 	IF IsNumeric( nVal ) .AND. ;
 			( nVal == SQL_MODE_READ_ONLY .OR. ;
 			nVal == SQL_MODE_READ_WRITE )
+
 
 		SELF:SetConnectOption( SQL_ACCESS_MODE, nVal )
 		RETURN SELF:nAccessMode := nVal
@@ -537,26 +654,38 @@ ASSIGN AccessMode( nVal )
 	ENDIF
 	//RETURN 
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.dtor/*" />
 DESTRUCTOR() 
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:Axit() hEnv="+ AsString( hEnv ) + ;
 			", hDbc="+ AsString( hDbc ) )
 	#ENDIF
 
+
 	RETURN SELF:Disconnect()
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.BeginTransaction/*" />
 METHOD BeginTransaction() 
+
 
 	RETURN SELF:SetConnectOption( SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_OFF )
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.Commit/*" />
 METHOD Commit() 
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:Commit()" )
 	#ENDIF
 	RETURN SELF:__Transact( SQL_COMMIT )
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.Connect/*" />
 METHOD Connect( cDataSource, cUserID, cPassword ) 
 	LOCAL nRetCode       AS SHORTINT
 	LOCAL nTemp          AS DWORD
@@ -565,20 +694,24 @@ METHOD Connect( cDataSource, cUserID, cPassword )
 	LOCAL pPassword      AS PSZ
 	LOCAL pSource        AS PSZ
 
+
 	//  UH 11/13/2001
 	DEFAULT( @cDataSource, "" )
 	DEFAULT( @cUserID, "" )
 	DEFAULT( @cPassword, "" )
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:Connect( "+AsString( cDataSource )+","+  ;
 			AsString( cUserID )+","+AsString( cPassword )+" )" )
 	#ENDIF
 
+
 	IF !SELF:lConnFlag
 		SELF:cSourceName := cDataSource
 		SELF:cUser       := cUserID
 		SELF:cAuthString := cPassword
+
 
 		nTemp   := SLen( cDataSource )
 		pSource := MemAlloc( nTemp+1 )
@@ -596,6 +729,7 @@ METHOD Connect( cDataSource, cUserID, cPassword )
 			MemSet( pSource, 0, 1 )
 		ENDIF
 
+
 		nTemp := SLen( SELF:cUser )
 		pUser := MemAlloc( nTemp+1 )
 		IF pUser == NULL_PSZ
@@ -611,6 +745,7 @@ METHOD Connect( cDataSource, cUserID, cPassword )
 		ELSE
 			MemSet( pUser, 0, 1 )
 		ENDIF
+
 
 		nTemp := SLen( SELF:cAuthString )
 		pPassword := MemAlloc( nTemp+1 )
@@ -629,6 +764,7 @@ METHOD Connect( cDataSource, cUserID, cPassword )
 			MemSet( pPassword, 0, 1 )
 		ENDIF
 
+
 		nRetCode := SQLConnect( SELF:hDbc, ;
 			pSource,   ;
 			SQL_NTS,   ;
@@ -640,13 +776,16 @@ METHOD Connect( cDataSource, cUserID, cPassword )
 		MemFree( pUser )
 		MemFree( pPassword )
 
+
 		IF nRetCode != SQL_SUCCESS .AND. nRetCode != SQL_SUCCESS_WITH_INFO
+
 
 			oErrInfo := SQLErrorInfo{   SELF,    ;
 				#Connect,;
 				hEnv,    ;
 				hDbc,    ;
 				SQL_NULL_HSTMT }
+
 
 			oErrInfo:ReturnCode := nRetCode
 			lConnFlag := FALSE
@@ -675,19 +814,31 @@ METHOD Connect( cDataSource, cUserID, cPassword )
 	ENDIF
 	RETURN lRet
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.Connected/*" />
 ACCESS Connected 
+
 
 	RETURN SELF:lConnFlag
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.ConnectString/*" />
 ACCESS ConnectString 
+
 
 	RETURN SELF:cConnectString
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.ConnHandle/*" />
 ACCESS ConnHandle 
+
 
 	RETURN SELF:hDbc
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.ConnHandle/*" />
 ASSIGN ConnHandle( uVal ) 
+
 
 	IF SELF:hDbc = SQL_NULL_HDBC
 		SELF:hDbc := uVal
@@ -707,12 +858,18 @@ ASSIGN ConnHandle( uVal )
 		lConnOverride := TRUE
 	ENDIF
 
+
 	RETURN SELF:hDbc
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.DataSource/*" />
 ACCESS DataSource 
+
 
 	RETURN cSourceName
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.DataSource/*" />
 ASSIGN DataSource( uVal ) 
 	IF !lConnFlag
 		SELF:cSourceName := uVal
@@ -721,22 +878,28 @@ ASSIGN DataSource( uVal )
 		oErrInfo:Throw()
 	ENDIF
 
+
 	RETURN SELF:cSourceName
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.Disconnect/*" />
 METHOD Disconnect() 
 	LOCAL nRetCode  AS SHORTINT
 	LOCAL lRet      AS LOGIC
 	LOCAL nIndex    AS DWORD
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:Disconnect(), hDbc="+ AsString( hDbc ) )
 	#ENDIF
+
 
 	FOR nIndex := 1 TO ALen( aStmts )
 		IF aStmts[nIndex] != NIL
 			((SqlStatement)aStmts[nIndex]):Destroy()
 		ENDIF
 	NEXT
+
 
 	IF lConnFlag .AND. !lConnOverride
 		IF hDbc = SQL_NULL_HDBC
@@ -746,6 +909,7 @@ METHOD Disconnect()
 				__SQLOutputDebug( "** Disconnect, hDbc="+ AsString( hDbc ) )
 			#ENDIF
 
+
 			SELF:Rollback()
 			nRetCode := SQLDisconnect( hDbc )
 			IF nRetCode = SQL_SUCCESS
@@ -753,6 +917,7 @@ METHOD Disconnect()
 					__SQLOutputDebug( "** Freeconnect, hDbc="+ AsString( hDbc ) )
 				#ENDIF
 				//RvdH 050413 This should be replaced with a Call to SQLFreeHandle()
+
 
 				SQLFreeConnect( hDbc )
 				__RemoveConnection( hDbc )
@@ -762,6 +927,7 @@ METHOD Disconnect()
 					#Disconnect,    ;
 					hEnv,           ;
 					hDbc, SQL_NULL_HSTMT }
+
 
 				oErrInfo:ReturnCode := nRetCode
 			ENDIF
@@ -777,13 +943,17 @@ METHOD Disconnect()
 		lRet := TRUE
 	ENDIF
 
+
 	UnregisterAxit( SELF )
 	IF hEnv != SQL_NULL_HENV .AND. !lEnvOverride
 		__DropMyEnv( hEnv )
 	ENDIF
 
+
 	RETURN lRet
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.DriverConnect/*" />
 METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn ) 
 	LOCAL nBytes      AS SHORTINT // dcaton 070206 was INT
 	LOCAL nRetCode    AS INT
@@ -796,6 +966,7 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 	LOCAL lRet        AS LOGIC
 	LOCAL hWnd        AS PTR
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:DriverConnect( "+;
 			AsString( hWindow )+","+;
@@ -803,11 +974,13 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 			AsString( cConnStrIn )+" )" )
 	#ENDIF
 
+
 	IF IsNumeric( nDriverCompletion )
 		nCompletion := nDriverCompletion
 	ELSE
 		nCompletion := SQL_DRIVER_PROMPT
 	ENDIF
+
 
 	IF !lConnFlag
 		IF IsPtr( hWindow )
@@ -817,9 +990,11 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 			hWnd := GetActiveWindow()
 		ENDIF
 
+
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "  DriverConnect,hWnd="+AsString( hWnd ) )
 		#ENDIF
+
 
 		pszConnect := MemAlloc( SQL_MAX_MESSAGE_LENGTH + 1 )
 		IF pszConnect == NULL_PSZ
@@ -845,6 +1020,7 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 			nSize := 0
 		ENDIF
 
+
 		nRetCode := SQLDriverConnect( 	hDbc,                    ;
 													hWnd,                    ;
 													pszConStr,               ;
@@ -854,12 +1030,15 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 													@nBytes,                 ;
 													WORD( _CAST,nCompletion ) )
 
+
 		IF nSize > 0
 			MemFree( pszConStr )
 		ENDIF
 
+
 		IF nRetCode = SQL_NO_DATA_FOUND
 			SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__CANCELLED ), #DriverConnect )
+
 
 		ELSEIF nRetCode != SQL_SUCCESS .AND. nRetCode != SQL_SUCCESS_WITH_INFO
 			oErrInfo := SQLErrorInfo{SELF,           ;
@@ -868,7 +1047,9 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 											hDbc,           ;
 											SQL_NULL_HSTMT }
 							
+							
 			oErrInfo:ReturnCode := nRetCode
+
 
 			IF lConnErrMsg
 				oErrInfo:ShowErrorMsg()
@@ -880,6 +1061,7 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 			SELF:__CheckQE()
 			SELF:__CheckIdentQuoteChar()
 			SELF:__CheckActiveStmts()
+
 
 			cConnectString := Psz2String( pszConnect )
 			oErrInfo:ErrorFlag := FALSE
@@ -893,8 +1075,10 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 				ENDIF
 			ENDIF
 
+
 			nStart := At2( __CAVOSTR_SQLCLASS__UID, cConnectString )
 			nEnd   := At3( Chr( 59 ), cConnectString, nStart )
+
 
 			IF nStart != 0
 				IF nEnd != 0
@@ -904,8 +1088,10 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 				ENDIF
 			ENDIF
 
+
 			nStart  := At2( __CAVOSTR_SQLCLASS__PWD, cConnectString )
 			nEnd    := At3( Chr( 59 ), cConnectString, nStart )
+
 
 			IF nStart != 0
 				IF nEnd != 0
@@ -915,9 +1101,11 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 				ENDIF
 			ENDIF
 
+
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "  DriverConnect ConnectString="+cConnectString )
 			#ENDIF
+
 
 			lRet := TRUE
 		ENDIF
@@ -926,18 +1114,29 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 		SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__CONNECTED ), #DriverConnect )
 	ENDIF
 
+
 	RETURN lRet
 
 
+
+
+/// <include file="SQL.xml" path="doc/SQLConnection.EndTransaction/*" />
 METHOD EndTransaction() 
+
 
 	RETURN SELF:SetConnectOption( SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON )
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.EnvHandle/*" />
 ACCESS EnvHandle 
+
 
 	RETURN hEnv
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.EnvHandle/*" />
 ASSIGN EnvHandle( uVal ) 
+
 
 	IF SELF:hEnv = SQL_NULL_HENV
 		IF IsPtr( uVal )
@@ -950,6 +1149,7 @@ ASSIGN EnvHandle( uVal )
 				SELF:hEnv := uVal
 			ENDIF
 
+
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "** SQLConnection:EnvHandle reassign hEnv="+AsString( hEnv ) )
 			#ENDIF
@@ -958,21 +1158,27 @@ ASSIGN EnvHandle( uVal )
 	ENDIF
 	RETURN SELF:hEnv
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.ErrInfo/*" />
 ACCESS ErrInfo 
 	IF oErrInfo:ErrorFlag
 		RETURN oErrInfo
 	ENDIF
 	RETURN NIL
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.GetConnectOption/*" />
 METHOD GetConnectOption( nOption ) 
 	LOCAL nValue        AS INT
 	LOCAL pData         AS PTR
 	LOCAL xRet          AS USUAL
 	LOCAL nRetCode      AS INT
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:GetConnectOption( "+AsString( nOption )+" )" )
 	#ENDIF
+
 
 	IF hDbc = SQL_NULL_HDBC
 		SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__NOT_CONN ), #GetConnectOption )
@@ -988,6 +1194,7 @@ METHOD GetConnectOption( nOption )
 		ENDIF
 		//RvdH 050413 This should be replaced with a Call to SQLGetConnectAttr()
 
+
 		nRetCode := SQLGetConnectOption( hDbc, nOption, pData )
 		IF nRetCode = SQL_SUCCESS
 			oErrInfo:ErrorFlag := FALSE
@@ -997,6 +1204,7 @@ METHOD GetConnectOption( nOption )
 			ELSE
 				xRet := nValue
 			ENDIF
+
 
 		ELSE
 			oErrInfo := SQLErrorInfo{ SELF,                     ;
@@ -1010,12 +1218,17 @@ METHOD GetConnectOption( nOption )
 			RETURN NIL
 		ENDIF
 
+
 	ENDIF
+
 
 	RETURN xRet
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.HyperLabel/*" />
 ACCESS HyperLabel 
 	LOCAL oHL AS HyperLabel
+
 
 	IF SLen( SELF:cSourceName ) > 0
 		oHL := HyperLabel{  cSourceName, ;
@@ -1024,21 +1237,34 @@ ACCESS HyperLabel
 			Symbol2String( ClassName( SELF ) )+ "_" + cSourceName  }
 	ENDIF
 
+
 	RETURN oHL
 
 
 
 
+
+
+
+
+/// <include file="SQL.xml" path="doc/SQLConnection.IdentifierQuoteChar/*" />
 ACCESS IdentifierQuoteChar 
+
 
 	RETURN cIdentifierQuoteChar
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.IdentifierQuoteChar/*" />
 ASSIGN IdentifierQuoteChar( uVal ) 
+
 
 	SELF:cIdentifierQuoteChar := uVal
 
+
 	RETURN 
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.Info/*" />
 METHOD Info( nInfoType ) 
 	LOCAL dwValue       AS DWORD
 	LOCAL wValue        AS DWORD
@@ -1049,6 +1275,7 @@ METHOD Info( nInfoType )
 	LOCAL lIsString     AS LOGIC
 	LOCAL lIsWord       AS LOGIC
 	LOCAL oStmt			  AS SQLStatement
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:Info( "+AsString( nInfoType )+" )" )
@@ -1075,12 +1302,14 @@ METHOD Info( nInfoType )
 			ENDIF
 			pData := @dwValue
 
+
 		ENDIF
 		nRetCode := SQLGetInfo( hDbc,                   ;
 			nInfoType,              ;
 			pData,                  ;
 			MAX_CONNECT_INFO_STRING,;
 			@nBytes )
+
 
 		IF nRetCode = SQL_SUCCESS
 			oErrInfo:ErrorFlag := FALSE
@@ -1099,6 +1328,7 @@ METHOD Info( nInfoType )
 				hDbc,       ;
 				SQL_NULL_HSTMT }
 
+
 			oErrInfo:ReturnCode := nRetCode
 			IF lIsString
 				MemFree( pData )
@@ -1106,14 +1336,19 @@ METHOD Info( nInfoType )
 		ENDIF
 	ENDIF
 
+
 	RETURN xRet
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.ctor/*" />
 CONSTRUCTOR ( cDataSourceName, cUserID, cPassword ) 
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:Init( "+AsString( cDataSourceName )+","+     ;
 			AsString( cUserID )+","+AsString( cPassword )+" )" )
 	#ENDIF
+
 
 	aStmts := {}
 	SELF:lConnFlag    := FALSE
@@ -1124,6 +1359,7 @@ CONSTRUCTOR ( cDataSourceName, cUserID, cPassword )
 	SELF:lConnOverride := FALSE
 	oErrInfo := SQLErrorInfo{}
 	
+	
 	IF !SELF:__AllocEnv()
 		RETURN
 	ENDIF
@@ -1132,42 +1368,53 @@ CONSTRUCTOR ( cDataSourceName, cUserID, cPassword )
 		RETURN
 	ENDIF
 
+
 	SELF:lUseSingleConnection := TRUE
 	IF SELF:nODBCCursors == 0
 		SELF:nODBCCursors := __CAVO_SQL_ODBC_CURSORS
 	ENDIF
 	SELF:ODBCCursors := SELF:nODBCCursors
 
+
 	IF SELF:nAccessMode == 0
 		SELF:nAccessMode := __CAVO_SQL_MODE_READ_WRITE
 	ENDIF
 	SELF:AccessMode := SELF:nAccessMode
+
 
 	IF SELF:nIsolationOption == 0
 		SELF:nIsolationOption := __CAVO_SQL_TXN_READ_COMMITTED
 	ENDIF
 	SELF:IsolationOption := SELF:nIsolationOption
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "**** Scrollable: " + AsString( SELF:lScrollCsr ) )
 	#ENDIF
+
 
 	IF IsString( cUserID )
 		SELF:cUser := cUserID
 	ENDIF
 
+
 	IF IsString( cPassword )
 		SELF:cAuthString := cPassword
 	ENDIF
 
+
 	IF IsString( cDataSourceName )
 		SELF:cSourceName := cDataSourceName
+
 
 		SELF:connect( cSourceName, cUser, cAuthString )
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.isFunction/*" />
 METHOD isFunction( nFunction ) 
 	//
 	//  Determine if a function is supported; returns TRUE/FALSE, NIL if err
@@ -1176,14 +1423,17 @@ METHOD isFunction( nFunction )
 	LOCAL xRet      AS USUAL
 	LOCAL nRetCode  AS INT
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:IsFunction( "+AsString( nFUNCTION )+" )" )
 	#ENDIF
+
 
 	IF hDbc = SQL_NULL_HDBC
 		SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__NOT_CONN ), #IsFunction )
 	ELSE
 		nRetCode := SQLGetFunctions( hDbc, nFunction, @nExists )
+
 
 		IF nRetCode = SQL_SUCCESS
 			oErrInfo:ErrorFlag := FALSE
@@ -1192,6 +1442,7 @@ METHOD isFunction( nFunction )
 			ELSE
 				xRet := TRUE
 			ENDIF
+
 
 		ELSE
 			oErrInfo := SQLErrorInfo{   SELF,           ;
@@ -1203,15 +1454,24 @@ METHOD isFunction( nFunction )
 		ENDIF
 	ENDIF
 
+
 	RETURN xRet
 
 
 
+
+
+
+/// <include file="SQL.xml" path="doc/SQLConnection.IsolationOption/*" />
 ACCESS IsolationOption 
+
 
 	RETURN SELF:nIsolationOption
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.IsolationOption/*" />
 ASSIGN IsolationOption( nVal ) 
+
 
 	IF IsNumeric( nVal ) .AND. ;
 			( nVal == SQL_TXN_READ_UNCOMMITTED .OR. ;
@@ -1220,16 +1480,23 @@ ASSIGN IsolationOption( nVal )
 			nVal == SQL_TXN_SERIALIZABLE .OR. ;
 			nVal == SQL_TXN_VERSIONING )
 
+
 		SELF:SetConnectOption( SQL_TXN_ISOLATION_OPTION, nVal )
 		SELF:nIsolationOption := nVal
 	ENDIF
 	RETURN SELF:nIsolationOption
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.ODBCCursors/*" />
 ACCESS ODBCCursors 
+
 
 	RETURN SELF:nODBCCursors
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.ODBCCursors/*" />
 ASSIGN ODBCCursors( nVal ) 
+
 
 	IF IsNumeric( nVal ) .AND. ;
 			( nVal == SQL_CUR_USE_IF_NEEDED .OR. ;
@@ -1240,10 +1507,15 @@ ASSIGN ODBCCursors( nVal )
 	ENDIF
 	RETURN SELF:nODBCCursors
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.Password/*" />
 ACCESS Password 
+
 
 	RETURN cAuthString
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.Password/*" />
 ASSIGN Password( uVal ) 
 	IF  !lConnFlag
 		SELF:cAuthString := uVal
@@ -1252,13 +1524,20 @@ ASSIGN Password( uVal )
 		oErrInfo:Throw()
 	ENDIF
 
+
 	RETURN SELF:cAuthString
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.PositionOps/*" />
 ACCESS PositionOps 
+
 
 	RETURN lPositionOps
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.Reconnect/*" />
 METHOD Reconnect() 
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:Reconnect()" )
@@ -1268,19 +1547,29 @@ METHOD Reconnect()
 	ENDIF
 	RETURN SELF:connect()
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.Rollback/*" />
 METHOD Rollback() 
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:Rollback()" )
 	#ENDIF
 
+
 	RETURN SELF:__Transact( SQL_ROLLBACK )
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.ScrollConcurrency/*" />
 ACCESS ScrollConcurrency 
+
 
 	RETURN nConcurrency
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.ScrollConcurrency/*" />
 ASSIGN ScrollConcurrency( nVal ) 
+
 
 	IF IsNumeric( nVal ) .AND. ;
 			( nVal == SQL_CONCUR_READ_ONLY .OR. ;
@@ -1291,23 +1580,33 @@ ASSIGN ScrollConcurrency( nVal )
 	ENDIF
 	RETURN SELF:nConcurrency
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.ScrollCsr/*" />
 ACCESS ScrollCsr 
+
 
 	RETURN SELF:lScrollCsr
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.ScrollCsr/*" />
 ASSIGN ScrollCsr( uVal ) 
+
 
 	IF IsLogic( uVal )
 		SELF:lScrollCsr := uVal
 	ENDIF
 
+
 	RETURN 
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.SetConnectOption/*" />
 METHOD SetConnectOption( nOption, uValue ) 
 	LOCAL cValue        AS STRING
 	LOCAL nValue        AS DWORD
 	LOCAL nRetCode      AS INT
 	LOCAL lRet          AS LOGIC
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:SetConnectOption( "+AsString( nOption )+ ;
@@ -1323,6 +1622,7 @@ METHOD SetConnectOption( nOption, uValue )
 			nValue := uValue
 		ENDIF
 		//RvdH 050413 This should be replaced with a Call to SQLSetConnectAttr()
+
 
 		nRetCode := SQLSetConnectOption( hDbc, nOption, nValue )
 		#IFDEF __DEBUG__
@@ -1342,8 +1642,11 @@ METHOD SetConnectOption( nOption, uValue )
 	ENDIF
 	RETURN lRet
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.Status/*" />
 ACCESS Status 
 	LOCAL oStatus AS HyperLabel
+
 
 	IF oErrInfo:ErrorFlag
 		oStatus := HyperLabel{  oErrInfo:FuncSym,  ;
@@ -1352,13 +1655,20 @@ ACCESS Status
 			oErrInfo:ErrorMessage }
 	ENDIF
 
+
 	RETURN oStatus
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.UserID/*" />
 ACCESS UserID 
+
 
 	RETURN SELF:cUser
 
+
+/// <include file="SQL.xml" path="doc/SQLConnection.UserID/*" />
 ASSIGN UserID( uVal ) 
+
 
 	IF  !lConnFlag
 		SELF:cUser := uVal
@@ -1367,34 +1677,46 @@ ASSIGN UserID( uVal )
 		oErrInfo:Throw()
 	ENDIF
 
+
 	RETURN SELF:cUser
 
+
 //RvdH 2010-12-03: Some extra accesses
+/// <include file="SQL.xml" path="doc/SQLConnection.ActiveStmts/*" />
 ACCESS ActiveStmts 
+
 
 	RETURN aStmts
 
+
 END CLASS
 
+
+/// <include file="SQL.xml" path="doc/SQLDropMyConnection/*" />
 FUNCTION SQLDropMyConnection( cMySourceName, cMyUserID, cMyPassword )
 	LOCAL nIndex       AS DWORD
 	LOCAL hTask        AS PTR
 	LOCAL lRet         AS LOGIC
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLDropMyConnection( "+AsString( cMySourceName )+","+ ;
 			AsString( cMyUserID )+","+AsString( cMyPassword )+" )" )
 	#ENDIF
 
+
 	hTask := GetCurrentProcess()
 
+
 	FOR nIndex := 1 TO ALen( aMyConn )
+
 
 		IF  aMyConn[nIndex] != NIL .AND.                ;
 				aMyConn[nIndex,1] == cMySourceName .AND.    ;
 				aMyConn[nIndex,2] == cMyUserId .AND.        ;
 				aMyConn[nIndex,3] == cMyPassword .AND.      ;
 				aMyConn[nIndex,6] == hTask
+
 
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "** found Connection, index="+AsString( nIndex )+     ;
@@ -1410,9 +1732,11 @@ FUNCTION SQLDropMyConnection( cMySourceName, cMyUserID, cMyPassword )
 				aMyConn[nIndex,5] := aMyConn[nIndex,5] - 1
 			ENDIF
 
+
 			lRet := TRUE
 		ENDIF
 	NEXT
+
 
 	#IFDEF __DEBUG__
 		IF !lRet
@@ -1420,12 +1744,16 @@ FUNCTION SQLDropMyConnection( cMySourceName, cMyUserID, cMyPassword )
 		ENDIF
 	#ENDIF
 
+
 	RETURN lRet
 
+
+/// <include file="SQL.xml" path="doc/SQLGetMyConnection/*" />
 FUNCTION SQLGetMyConnection( cMySourceName, cMyUserID, cMyPassword )
 	LOCAL oConn         AS SQLConnection
 	LOCAL nIndex        AS DWORD
 	LOCAL hTask         AS PTR
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug(   "** SQLGetMyConnection( "    + ;
@@ -1434,7 +1762,9 @@ FUNCTION SQLGetMyConnection( cMySourceName, cMyUserID, cMyPassword )
 			AsString( cMyPassword ) + " )" )
 	#ENDIF
 
+
 	hTask := GetCurrentProcess()
+
 
 	FOR nIndex := 1 TO ALen( aMyConn )
 		IF  aMyConn[nIndex] != NIL              .AND.   ;
@@ -1462,6 +1792,8 @@ FUNCTION SQLGetMyConnection( cMySourceName, cMyUserID, cMyPassword )
 	AAdd( aMyConn, { cMySourceName, cMyUserID, cMyPassword, oConn, 1, hTask } )
 	RETURN oConn
 
+
+/// <include file="SQL.xml" path="doc/SQLOpenConnection/*" />
 FUNCTION SQLOpenConnection()                  AS SQLConnection
 	//
 	// Displays a dialog box that displays a list of available ODBC data sources.
@@ -1471,18 +1803,26 @@ FUNCTION SQLOpenConnection()                  AS SQLConnection
 	//
 	LOCAL oConn              AS SQLConnection
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLOpenConnection()" )
 	#ENDIF
 
+
 	oConn := SQLConnection{}
 
+
 	oConn:DriverConnect()
+
 
 	RETURN oConn
 
 
 
+
+
+
+/// <include file="SQL.xml" path="doc/SQLSetConnection/*" />
 FUNCTION SQLSetConnection( oSQLConnection ) AS SQLConnection
 	//
 	// Specify default SQL driver to be used by any function or class that
@@ -1494,12 +1834,15 @@ FUNCTION SQLSetConnection( oSQLConnection ) AS SQLConnection
 	//
 	LOCAL oDefConn      AS SQLConnection
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSetConnection()" )
 	#ENDIF
 
+
 	// get current default connection
 	oDefConn := __GetMyDefConn()
+
 
 	// any connection passed?
 	IF oSQLConnection = NIL
@@ -1520,12 +1863,16 @@ FUNCTION SQLSetConnection( oSQLConnection ) AS SQLConnection
 			ENDIF
 		ENDIF
 
+
 		__SetMyDefConn( oDefConn )
 	ELSE
 		oDefConn := __SetMyDefConn( oSQLConnection )
 	ENDIF
 
+
 	RETURN oDefConn
+
+
 
 
 STATIC FUNCTION __DropMyEnv( hEnv )
@@ -1540,14 +1887,18 @@ STATIC FUNCTION __DropMyEnv( hEnv )
 	LOCAL nCount       AS DWORD
 	LOCAL lRet         AS LOGIC
 
+
 	nCount := ALen( aMyEnv )
 
+
 	hTask := GetCurrentProcess()
+
 
 	FOR nIndex := 1 TO nCount
 		IF aMyEnv[nIndex] != NIL    .AND.    ;
 				aMyEnv[nIndex,1] = hTask .AND.    ;
 				aMyEnv[nIndex,3] = hEnv
+
 
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "** found env, hEnv="+ AsString( aMyEnv[nIndex,3] ) + ;
@@ -1555,6 +1906,7 @@ STATIC FUNCTION __DropMyEnv( hEnv )
 					", count="+ AsString( aMyEnv[nIndex,2] )+            ;
 					", hTask="+ AsString( hTask ) )
 			#ENDIF
+
 
 			IF aMyEnv[nIndex,2] == 1
 				//RvdH 050413 This should be replaced with a Call to SQLFreeHandle()
@@ -1577,6 +1929,7 @@ STATIC FUNCTION __DropMyEnv( hEnv )
 	#ENDIF
 	RETURN lRet
 
+
 STATIC FUNCTION __GetMyDefConn() AS SQLConnection
 	//
 	//  Lookup my task in static array, if found,
@@ -1587,6 +1940,7 @@ STATIC FUNCTION __GetMyDefConn() AS SQLConnection
 	LOCAL hTask        AS PTR
 	LOCAL nCount       AS DWORD
 	LOCAL oRet         AS OBJECT
+
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** __GetMyDefConn()" )
@@ -1600,10 +1954,12 @@ STATIC FUNCTION __GetMyDefConn() AS SQLConnection
 					", hTask="+ AsString( hTask ) )
 			#ENDIF
 
+
 			oRet := aMyDefConn[nIndex,2]             // return it
 		ENDIF
 	NEXT
 	RETURN oRet
+
 
 STATIC FUNCTION __GetMyEnv() AS USUAL STRICT
 	LOCAL nIndex       AS DWORD
@@ -1611,15 +1967,18 @@ STATIC FUNCTION __GetMyEnv() AS USUAL STRICT
 	LOCAL hEnv         AS PTR
 	LOCAL nCount       AS DWORD
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** __GetMyEnv()" )
 	#ENDIF
+
 
 	hTask := GetCurrentProcess()
 	nCount := ALen( aMyEnv )
 	FOR nIndex := 1 TO nCount
 		IF ( aMyEnv[nIndex] != NIL ) .AND. ( aMyEnv[nIndex,1] = hTask )
 			aMyEnv[nIndex,2] := aMyEnv[nIndex,2] + 1  // bump use count
+
 
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "** found env, hEnv="+ AsString( aMyEnv[nIndex,3] ) + ;
@@ -1645,13 +2004,17 @@ STATIC FUNCTION __GetMyEnv() AS USUAL STRICT
 	ENDIF
 	RETURN hEnv
 
+
+ /// <exclude />
 FUNCTION __RemoveConnection( hDbc )
 	LOCAL nIndex       AS DWORD
 	LOCAL lRet         AS LOGIC
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** __RemoveConnection( "+AsString( hDbc )+" )" )
 	#ENDIF
+
 
 	FOR nIndex := 1 TO ALen( aMyConn )
 		IF  ( aMyConn[nIndex] != NIL ) .AND. ( ((SqlConnection)aMyConn[nIndex,4]):ConnHandle = hDbc )
@@ -1660,11 +2023,13 @@ FUNCTION __RemoveConnection( hDbc )
 					", count="+ AsString( aMyConn[nIndex,5] ) )
 			#ENDIF
 
+
 			ADel( aMyConn, nIndex )
 			ASize( aMyConn, ALen( aMyConn ) - 1 )
 			lRet := TRUE
 		ENDIF
 	NEXT
+
 
 	#IFDEF __DEBUG__
 		IF !lRet
@@ -1672,7 +2037,10 @@ FUNCTION __RemoveConnection( hDbc )
 		ENDIF
 	#ENDIF
 
+
 	RETURN lRet
+
+
 
 
 STATIC FUNCTION __SetMyDefConn( oConn )
@@ -1685,6 +2053,7 @@ STATIC FUNCTION __SetMyDefConn( oConn )
 	LOCAL hTask        AS PTR
 	LOCAL lFound       AS LOGIC
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** __SetMyDefConn()" )
 	#ENDIF
@@ -1694,6 +2063,7 @@ STATIC FUNCTION __SetMyDefConn( oConn )
 		IF aMyDefConn[nIndex] != NIL .AND.                          ;
 				aMyDefConn[nIndex,1] = hTask
 
+
 			aMyDefConn[nIndex,2] := oConn   // set it
 			lFound := TRUE
 		ENDIF
@@ -1702,7 +2072,9 @@ STATIC FUNCTION __SetMyDefConn( oConn )
 		AAdd( aMyDefConn, { hTask, oConn } )
 	ENDIF
 
+
 	RETURN oConn
+
 
 STATIC GLOBAL aInfoString 	AS ARRAY
 STATIC GLOBAL aInfoWord 	AS ARRAY
@@ -1755,6 +2127,7 @@ PROCEDURE InitGlobals _INIT1
 		SQL_USER_NAME ,						;
 		SQL_XOPEN_CLI_YEAR}
 
+
 	aInfoWord := {							;
 		SQL_AGGREGATE_FUNCTIONS,         ;
 		SQL_ACTIVE_ENVIRONMENTS,        	;
@@ -1786,6 +2159,7 @@ PROCEDURE InitGlobals _INIT1
 		SQL_QUOTED_IDENTIFIER_CASE,;
 		SQL_TXN_CAPABLE ;
 		}
+
 
 	aInfoDWord  := {        ;
 		SQL_ACTIVE_CONNECTIONS,         	;
@@ -1900,18 +2274,24 @@ PROCEDURE InitGlobals _INIT1
 	RETURN
 STATIC GLOBAL aMyConn   := {} AS ARRAY  // array of connection info ( per task )
 
+
 STATIC GLOBAL aMyDefConn:= {} AS ARRAY  // array of default conn. ( per task )
+
 
 STATIC GLOBAL aMyEnv    := {} AS ARRAY  // array of environments ( per task )
 
+
 STATIC GLOBAL lConnErrMsg := TRUE    AS LOGIC   // default is TRUE!
+/// <include file="SQL.xml" path="doc/SQLConnectErrorMsg/*" />
 FUNCTION SQLConnectErrorMsg( lValue ) AS LOGIC
 	//
 	// Set connection error messagebox flag
 	//
 	DEFAULT( @lValue, FALSE )
 
+
 	lConnErrMsg := lValue
+
 
 	RETURN lConnErrMsg
 STATIC FUNCTION __SQLSetConnectAttr( hDbc AS PTR, ;
@@ -1919,6 +2299,8 @@ STATIC FUNCTION __SQLSetConnectAttr( hDbc AS PTR, ;
 	// Used For typed function pointer in __CheckQE
 	RETURN 0
 
+
+/// <include file="SQL.xml" path="doc/SQLGetDataSources/*" />
 FUNCTION SQLGetDataSources() AS ARRAY
 	//
 	// Returns an ARRAY OF strings identifying the available ODBC data sources.
@@ -1933,16 +2315,21 @@ FUNCTION SQLGetDataSources() AS ARRAY
 	LOCAL nRetCode          AS INT
 	LOCAL cNewSource        AS STRING
 
+
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLGetDataSources()" )
 	#ENDIF
 
+
 	aSources := {}
+
 
 	// get an environment
 	hEnv := __GetMyEnv()
 
+
 	IF hEnv != SQL_NULL_HENV
+
 
 		pszSource      := MemAlloc( SQL_MAX_DSN_LENGTH + 1 )
 		pszDescription := MemAlloc( SQL_MAX_MESSAGE_LENGTH + 1 )
@@ -1954,6 +2341,8 @@ FUNCTION SQLGetDataSources() AS ARRAY
 		ENDIF
 
 
+
+
 		// get the first source...
 		nRetCode := SQLDataSources( hEnv, SQL_FETCH_FIRST,  ;
 			pszSource,              ;
@@ -1963,11 +2352,14 @@ FUNCTION SQLGetDataSources() AS ARRAY
 			SQL_MAX_MESSAGE_LENGTH, ;
 			@nDBytes )
 
+
 		// get the rest...
 		DO WHILE nRetCode = SQL_SUCCESS
 			cNewSource := Psz2String( pszSource )
 
+
 			AAdd( aSources, cNewSource )
+
 
 			nRetCode := SQLDataSources( hEnv,                   ;
 				SQL_FETCH_NEXT,         ;
@@ -1979,14 +2371,21 @@ FUNCTION SQLGetDataSources() AS ARRAY
 				@nDBytes )
 		ENDDO
 
+
 		MemFree( pszSource )
 		MemFree( pszDescription )
 
+
 		__DropMyEnv( hEnv )
+
 
 	ENDIF
 
+
 	RETURN aSources
+
+
+
 
 
 

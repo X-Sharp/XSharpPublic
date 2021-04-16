@@ -7,8 +7,8 @@ BEGIN NAMESPACE XSharp.VFP
     INTERNAL DELEGATE __IsInDelimiterArray(tc2Check AS Char) AS LOGIC
     INTERNAL DELEGATE __GetWordCountActive(tcString AS STRING) AS LONG
 	
-    INTERNAL DEFINE Asc_A_Low := 097 && Asc_A + 32
-    INTERNAL DEFINE Asc_Z_Low := 122 && Asc_Z + 32
+    INTERNAL DEFINE Asc_A_Low := 097 // Asc_A + 32
+    INTERNAL DEFINE Asc_Z_Low := 122 // Asc_Z + 32
 
     INTERNAL INTERFACE IGetWord
         METHOD GetWordCount(tcString AS STRING) AS LONG
@@ -18,10 +18,10 @@ BEGIN NAMESPACE XSharp.VFP
     END INTERFACE
                
     INTERNAL CLASS GetVfpDefault IMPLEMENTS IGetWord
-        INTERNAL CONST _cSpace := c' '    AS Char && _Chr(ASC_BLANK)  Chr(032)[0]
-        INTERNAL CONST _c_LinF := c'\n'   AS Char && _Chr(ASC_LF)     Chr(010)[0]
-        INTERNAL CONST _c__Tab := c'\t'   AS Char && _Chr(ASC_Tab)    Chr(009)[0]
-        * public const _c_CRet := c'\r'   as Char && _Chr(ASC_CR)     Chr(013)[0]
+        INTERNAL CONST _cSpace := c' '    AS Char // _Chr(ASC_BLANK)  Chr(032)[0]
+        INTERNAL CONST _c_LinF := c'\n'   AS Char // _Chr(ASC_LF)     Chr(010)[0]
+        INTERNAL CONST _c__Tab := c'\t'   AS Char // _Chr(ASC_Tab)    Chr(009)[0]
+        * public const _c_CRet := c'\r'   as Char // _Chr(ASC_CR)     Chr(013)[0]
     
         INTERNAL oParent AS GetWordHandler
 
@@ -207,7 +207,7 @@ BEGIN NAMESPACE XSharp.VFP
     
     INTERNAL CLASS GetMultiple INHERIT GetVfpDefault
         *-- if not single char, DotNetWhite or VfpWhite:
-        PRIVATE CONST _c_A126 := (Char) 126 AS Char && _Chr(ASC_Z_Low)  Chr(126)[0], cut off ~ TO be safe on 1 off
+        PRIVATE CONST _c_A126 := (Char) 126 AS Char // _Chr(ASC_Z_Low)  Chr(126)[0], cut off ~ TO be safe on 1 off
         PRIVATE CONST _i_ArSz := 135 AS INT
         PRIVATE CONST _i_ArOf := _i_ArSz - 2 AS INT
 
@@ -242,7 +242,7 @@ BEGIN NAMESPACE XSharp.VFP
 
             LOCAL lcAdd AS Char
             LOCAL lnI AS INT
-            FOR LOCAL lnRun := 0 AS INT TO SELF:oParent:cRawStr:Length-1  && Att: ARRAY base 1, STRING Base 0!!!
+            FOR LOCAL lnRun := 0 AS INT TO SELF:oParent:cRawStr:Length-1  // Att: ARRAY base 1, STRING Base 0!!!
                 lcAdd := SELF:oParent:cRawStr[lnRun]
                 *-- Alternative coding with Try/Catch faster?? usually the Catch part incurs runtime hit?
                 *-- but feels less clean, as source of problem (duplicate keys in string) known
@@ -267,10 +267,10 @@ BEGIN NAMESPACE XSharp.VFP
     
     INTERNAL CLASS GetMoreLanguage INHERIT GetMultiple
         *-- exchange with Range for Greek or Cyrillic alphabet
-        PRIVATE CONST _c_Up_A := c'A'    AS Char && _Chr(ASC_A)      Chr(065)[0]
-        PRIVATE CONST _c_Up_Z := c'Z'    AS Char && _Chr(ASC_Z)      Chr(090)[0]
-        PRIVATE CONST _c_Lw_a := c'a'    AS Char && _Chr(ASC_A_Low)  Chr(097)[0]
-        PRIVATE CONST _c_Lw_z := c'z'    AS Char && _Chr(ASC_Z_Low)  Chr(122)[0]
+        PRIVATE CONST _c_Up_A := c'A'    AS Char // _Chr(ASC_A)      Chr(065)[0]
+        PRIVATE CONST _c_Up_Z := c'Z'    AS Char // _Chr(ASC_Z)      Chr(090)[0]
+        PRIVATE CONST _c_Lw_a := c'a'    AS Char // _Chr(ASC_A_Low)  Chr(097)[0]
+        PRIVATE CONST _c_Lw_z := c'z'    AS Char // _Chr(ASC_Z_Low)  Chr(122)[0]
         
         OVERRIDE METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
             *-- even better would be 1 Compare, then checking against known numeric range,
@@ -278,11 +278,11 @@ BEGIN NAMESPACE XSharp.VFP
             *-- generating+compiling "specific" IsDelimiter() on the fly
             *-- either generating whole class dynamic only predicate delegate IsDelimiter 
             * local liCompared2BigAlpha := 
-           IF  tc2Check:CompareTo(_c_Lw_a)>=0 .and. tc2Check:CompareTo(_c_Lw_z)<=0    && lower letters first, AS ocurring more often
+           IF  tc2Check:CompareTo(_c_Lw_a)>=0 .and. tc2Check:CompareTo(_c_Lw_z)<=0    // lower letters first, AS ocurring more often
                 RETURN .f.
             ELSEIF  tc2Check:CompareTo(_c_Up_A)>=0 .and. tc2Check:CompareTo(_c_Up_Z)<=0
                 RETURN .f.
-            ELSE //IF  .t. && SELF:isVfpWhiteSwitchChar(tc2Check)
+            ELSE //IF  .t. // SELF:isVfpWhiteSwitchChar(tc2Check)
                 /// Flag Check Version???
                 RETURN .t.
             ENDIF
@@ -310,7 +310,7 @@ BEGIN NAMESPACE XSharp.VFP
         PRIVATE STATIC oSingleChar := NULL AS GetSingle
         PRIVATE STATIC oSingle_Opt := NULL AS GetSingleOpt
         PRIVATE STATIC oMultipleCs := NULL AS GetMultiple
-        INTERNAL oActiveObjc := NULL AS IGetWord && IGetWord AS common INTERFACE would be cleaner
+        INTERNAL oActiveObjc := NULL AS IGetWord // IGetWord AS common INTERFACE would be cleaner
         
         *-- plus a few special methods to set different delimiters,
         *-- causing the object to "reoptimize" the code used to analyze/extract the string (
@@ -375,7 +375,7 @@ BEGIN NAMESPACE XSharp.VFP
                     IF oVfpDefault == NULL
                         oVfpDefault := GetVfpDefault{SELF}
                     ENDIF
-                    SELF:oActiveObjc := oVfpDefault &&
+                    SELF:oActiveObjc := oVfpDefault //
                 * case 34
                     * Hook for additional Char sets like Greek, Cyrillic...
                     * self:IsDelimiter := Self:isViaDictGuarded
@@ -397,7 +397,7 @@ BEGIN NAMESPACE XSharp.VFP
             SELF:oActiveObjc:SetStru()
             
         INTERNAL METHOD isViaStr(tc2Check AS Char) AS LOGIC
-            RETURN .t. && SELF:cRawStr:Contains((STRING) tc2Check)
+            RETURN .t. // SELF:cRawStr:Contains((STRING) tc2Check)
 
 
     CONSTRUCTOR()  
@@ -415,7 +415,7 @@ END NAMESPACE // XSharp.VFP
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/getwordcount/*" />
 INTERNAL FUNCTION GetDefaultWordHandler()  AS GetWordHandler
     LOCAL loSrch := GetWordHandler{} AS GetWordHandler
-    loSrch:iMethod := 22    && Sidestepping check on cRawStr
+    loSrch:iMethod := 22    // Sidestepping check on cRawStr
     loSrch:SetActive()
     RETURN loSrch
 
@@ -471,4 +471,4 @@ INTERNAL FUNCTION GetWordNum( cString AS STRING, nIndex AS INT, cDelimiters AS S
 
     //STATIC FUNCTION __GetDelimiters() AS STRING
     //RETURN e" \n\t"
-    //RETURN Space(1) + Chr(10) + Chr(9) && + Chr(13) CarriageReturn not included IN vfp9!
+    //RETURN Space(1) + Chr(10) + Chr(9) // + Chr(13) CarriageReturn not included IN vfp9!

@@ -12,12 +12,13 @@ USING System.Runtime.CompilerServices
 /// <summary>Internal type that implements the VO Compatible CODEBLOCK type<br/>
 /// This type has methods that normally are never directly called from user code.
 /// </summary>
-/// <seealso cref="T:XSharp.ICodeblock"/>
-[DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
+/// <seealso cref="ICodeblock"/>
+//[DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
 ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 	PRIVATE INITONLY _pcount AS INT
 
-    PRIVATE STATIC nullArgs as USUAL[]
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+    PRIVATE STATIC nullArgs AS USUAL[]
 
     STATIC CONSTRUCTOR
         nullArgs := USUAL[]{0}
@@ -73,9 +74,9 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 		
 /// <summary>Internal type that is the base class for macro compiled codeblocks.
 /// </summary>
-/// <seealso cref="T:XSharp.ICodeblock"/>
-/// <seealso cref="T:XSharp.IMacroCompiler"/>
-/// <seealso cref="T:XSharp.Codeblock"/>
+/// <seealso cref="ICodeblock"/>
+/// <seealso cref="IMacroCompiler"/>
+/// <seealso cref="Codeblock"/>
 [DebuggerDisplay( "{_cMacro}", Type := "_Codeblock" )] ;
 PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 	/// <exclude />
@@ -87,7 +88,8 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 	/// <exclude />
 	PROTECT _addsMemVars AS LOGIC
 
-    STATIC PRIVATE nullArgs as OBJECT[]
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)];
+    STATIC PRIVATE nullArgs AS OBJECT[]
 
     STATIC CONSTRUCTOR
         nullArgs := OBJECT[]{0}
@@ -116,7 +118,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 		LOCAL oRes      AS OBJECT
         LOCAL iLevel    AS INT
         IF _addsMemVars
-            iLevel := XSharp.MemVar.InitPrivates()
+            iLevel := XSharp.MemVar.InitPrivates(TRUE)
         ELSE
             iLevel := 0
         ENDIF

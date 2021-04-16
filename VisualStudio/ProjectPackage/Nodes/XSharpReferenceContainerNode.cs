@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project;
 using System.Diagnostics;
 using System.IO;
+using XSharpModel;
 
 namespace XSharp.Project
 {
@@ -66,7 +67,7 @@ namespace XSharp.Project
           }
           catch (Exception e)
           {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
             }
           ReferenceNode existing = null;
           if (isDuplicateNode(node, ref existing))
@@ -193,7 +194,7 @@ namespace XSharp.Project
           }
           catch (Exception e)
           {
-                XSharpProjectPackage.Instance.DisplayException(e);
+                XSettings.DisplayException(e);
           }
           return node;
       }

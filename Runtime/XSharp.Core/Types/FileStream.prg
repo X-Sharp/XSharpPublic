@@ -97,7 +97,7 @@ BEGIN NAMESPACE XSharp.IO
         STATIC METHOD CreateFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
             IF share != FileShare.None
                 IF IsRunningOnWindows()
-                    RETURN CreateXsSharedFileStream(path, mode, faccess, share, bufferSize, options)
+                    RETURN CreateWin32FileStream(path, mode, faccess, share, bufferSize, options)
                 ELSE
                     RETURN XsFileStream{path, mode, faccess, share, 0xFFFF, options}
                 ENDIF
@@ -109,8 +109,8 @@ BEGIN NAMESPACE XSharp.IO
                 ENDIF
             ENDIF
         
-        INTERNAL STATIC METHOD CreateXsSharedFileStream(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
-            RETURN XsFileStream{path, mode, faccess, share, bufferSize, options}
+        INTERNAL STATIC METHOD CreateWin32FileStream(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
+            RETURN XsWin32FileStream{path, mode, faccess, share, bufferSize, options}
         #endregion
         
     END CLASS

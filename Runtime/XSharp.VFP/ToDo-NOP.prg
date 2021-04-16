@@ -21,12 +21,8 @@ FUNCTION Normalize( cExpression ) AS STRING
     THROW NotImplementedException{}
     // RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/numlock/*" />
 
-FUNCTION NumLock( lExpression ) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
+
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/oldval/*" />

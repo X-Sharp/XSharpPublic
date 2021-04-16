@@ -19,7 +19,7 @@ CLASS TabControl INHERIT TextControl
 
     PROPERTY ControlType AS Controltype GET Controltype.TabControl
 
-	METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+	METHOD OnControlCreated(oC AS IVOControl) AS VOID
 		oC:Resize += OnReSize
 		RETURN 
 
@@ -68,7 +68,7 @@ CLASS TabControl INHERIT TextControl
 		LOCAL oOldPage        AS Window
 		LOCAL lSelfFocus      AS LOGIC
 		LOCAL oTabPage		  as System.Windows.Forms.TabPage
-		LOCAL oPanel			AS VOPanel
+		LOCAL oPanel			AS IVOPanel
 		IF ! SELF:__IsValid
 			RETURN
 		ENDIF
@@ -470,7 +470,7 @@ CLASS TabControl INHERIT TextControl
 		RETURN oImageList
 
 	ASSIGN ImageList(oNewImageList AS ImageList) 
-		IF ValidateControl()
+		IF SELF:ValidateControl()
 			oImageList := oNewImageList
 			__TabControl:ImageList := oImageList:__ImageList
 		ENDIF
@@ -498,7 +498,7 @@ CLASS TabControl INHERIT TextControl
 		LOCAL cTooltip AS STRING
 
 		DEFAULT(@nImage, 0)
-		IF ValidateControl()
+		IF SELF:ValidateControl()
 		
 			cTooltip := SELF:GetTipText(symTabName)
 
@@ -572,7 +572,7 @@ CLASS TabControl INHERIT TextControl
 		RETURN NIL
 
 	METHOD PadTabs(dwWidth AS INT, dwHeight AS INT) AS VOID
-		IF ValidateControl()
+		IF SELF:ValidateControl()
 			__TabControl:Padding := Point{dwWidth, dwHeight}
 		ENDIF
 		RETURN 
@@ -595,7 +595,7 @@ CLASS TabControl INHERIT TextControl
 		ELSE
 			symName := symTabName
 		ENDIF
-		oPage := __GetTabPage(symTabName)
+		oPage := SELF:__GetTabPage(symTabName)
 		IF oPage != NULL_OBJECT
 			oPage:ToolTipText := NULL_STRING
 		ENDIF

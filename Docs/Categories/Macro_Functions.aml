@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<topic id="cat-Macro_Functions" revisionNumber="1" title="Macro Functions">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <section address="Section1">
+	<title>Macro Functions</title>
+      
+	<content><table><tableHeader>
+<row><entry><para>Assembly</para></entry>
+<entry><para>Function</para></entry>
+<entry><para>Description</para></entry>
+</row></tableHeader>
+<row><entry><para>XSharp.Core</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.GetMacroCompiler</codeEntityReference></para></entry>
+<entry><para>
+            Get the type of the class that is used to compile macros
+            </para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MCompile(System.String)</codeEntityReference></para></entry>
+<entry><para>
+      Macro compile a string.
+    </para></entry></row>
+<row><entry><para>XSharp.RT</para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MExec(XSharp.Codeblock)</codeEntityReference></para></entry>
+<entry><para>
+      Evaluate a macro-compiled string.
+    </para></entry></row>
+</table>
+</content>
+     </section>
+  </developerConceptualDocument>
+</topic>

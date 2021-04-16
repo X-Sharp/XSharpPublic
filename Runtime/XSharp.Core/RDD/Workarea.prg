@@ -13,7 +13,7 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD
 
 	/// <summary>Base class for DBF based RDDs. Holds common properties such as the Workarea number, Alias, Fields list and various flags.</summary> 
-	/// <seealso cref="T:XSharp.RDD.IRdd"/>
+	/// <seealso cref="IRdd"/>
     [DebuggerDisplay("Workarea ({Alias,nq})")];
 	CLASS Workarea IMPLEMENTS IRdd, IDisposable 
 		// This class does NOT implement file based (DBF stuff). 
@@ -73,16 +73,21 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <summary>Result of the last Block evaluation.</summary>
 		PROTECTED _EvalResult    AS OBJECT
 
-        PROTECTED Properties   := DatabasePropertyCollection{} AS DatabasePropertyCollection
-		#endregion
-		
-		#region Static Properties that point to Runtime state ?
-		// Ansi
-		// AutoOrder
-		// AutoShare
-		// etc
-		#endregion
-		/// <exclude />
+        PUBLIC PROPERTY Properties AS DatabasePropertyCollection
+            GET
+                if _lazyProperties == NULL
+                    _lazyProperties := DatabasePropertyCollection{}
+                endif
+                return _lazyProperties
+            END GET
+            SET
+                _lazyProperties := value
+            END SET
+        END PROPERTY
+        PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
+        PROPERTY HasProperties as LOGIC GET _lazyProperties != NULL
+        #endregion
+ 	        /// <exclude />
 		CONSTRUCTOR() 
 			SELF:_FilterInfo := DbFilterInfo{}
 			SELF:_ScopeInfo  := DbScopeInfo{}            
@@ -649,7 +654,7 @@ BEGIN NAMESPACE XSharp.RDD
             GET
                 var result := Dictionary<String, Object>{}
                 FOR var i := 1 to SELF:FieldCount
-                    var columnName := (string) FieldInfo(i, DBS_CAPTION, NULL)
+                    var columnName := (string) SELF:FieldInfo(i, DBS_CAPTION, NULL)
                     result:Add(columnName, SELF:GetValue(i))
                 NEXT
                 RETURN result
@@ -964,10 +969,10 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE STATIC METHOD FindCbType AS VOID
             FOREACH VAR asm IN AppDomain.CurrentDomain:GetAssemblies()
                 IF asm:GetName():Name:ToLower() == "xsharp.rt"
-                    oCbType := asm:GetType("XSharp.__Codeblock")
+                    oCbType := asm:GetType("XSharp._Codeblock")
                     IF oCbType == NULL
                         FOREACH VAR oT IN asm:GetTypes()
-                            IF oT:FullName:ToLower() == "xsharp.__codeblock"
+                            IF oT:FullName:ToLower() == "xsharp._codeblock"
                                 oCbType := oT
                                 EXIT
                             ENDIF
@@ -992,7 +997,17 @@ BEGIN NAMESPACE XSharp.RDD
                     LOCAL addsMemvars   AS LOGIC
 					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock, OUT addsMemvars)
                     // Convert to _CodeBlock when needed
-                    IF oBlock IS XSharp.RuntimeCodeblock
+                    VAR is_CodeBlock := FALSE
+                    LOCAL type := oBlock:GetType() AS System.Type
+                    DO WHILE type != NULL
+                        IF type.FullName != "XSharp._Codeblock"
+                            type := type:BaseType
+                        ELSE
+                            is_CodeBlock := TRUE
+                            EXIT
+                        ENDIF
+                    ENDDO
+                    IF ! is_CodeBlock
                         IF (oCbType == NULL)
                             FindCbType()
                         ENDIF
@@ -1069,8 +1084,12 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbInfo.DBI_EOF           
 					oResult := SELF:EoF   
 				CASE DbInfo.DBI_DBFILTER
-                    IF SELF:_FilterInfo != NULL
-					    oResult := SELF:_FilterInfo:FilterText
+                    IF SELF:_FilterInfo != NULL 
+                        IF String.IsNullOrEmpty(SELF:_FilterInfo:FilterText)
+                            oResult := String.Empty
+                        ELSE
+					        oResult := SELF:_FilterInfo:FilterText
+                        ENDIF
                     ELSE
                         oResult := String.Empty
                     ENDIF
@@ -1126,7 +1145,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY FieldCount AS LONG GET (LONG) _Fields?:Length
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY FilterText AS STRING GET _FilterInfo?:FilterText
+		VIRTUAL PROPERTY FilterText AS STRING GET _FilterInfo?:FilterText DEFAULT String.Empty
 		
 		/// <inheritdoc />
 		VIRTUAL PROPERTY Found AS LOGIC GET _Found SET _Found := value

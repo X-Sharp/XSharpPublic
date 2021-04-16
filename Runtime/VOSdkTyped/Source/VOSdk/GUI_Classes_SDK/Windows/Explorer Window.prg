@@ -19,7 +19,7 @@ METHOD DefaultSort(oLVItem1, oLVItem2)
 		RETURN 1
 	ENDIF
 
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent  AS @@Event) 
 	LOCAL oEvt := oEvent AS @@Event	
 		
 
@@ -39,7 +39,7 @@ END CLASS
 
 CLASS __ExplorerTV INHERIT TreeView
 
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent AS @@Event) 
 	LOCAL oEvt := oEvent AS @@Event	
 	
 	IF (oEvt:uMsg == WM_CHAR)	.AND. (oEvt:wParam == 0x00000009)
@@ -148,11 +148,10 @@ ACCESS LabelRight AS Fixedtext
 ACCESS ListView AS ListView
 	RETURN oListView
 
-METHOD ListViewColumnClick(oEvt) 
-	
+METHOD ListViewColumnClick(oEvt AS ListViewColumnClickEvent) 
 
-	IF IsInstanceOf(oListView, #__ExplorerLV)
-		IVarPut(oListView, #symSortCol, oEvt:ListViewColumn:NameSym)
+	IF oListView IS __ExplorerLV VAR oLV
+		oLV:symSortCol := oEvt:ListViewColumn:NameSym
 		oListView:SortItems()
 	ENDIF
 

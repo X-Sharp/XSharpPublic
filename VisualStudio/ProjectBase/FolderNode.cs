@@ -131,6 +131,7 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 RenameFolder(label);
 
                 //Refresh the properties in the properties window
@@ -249,7 +250,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected internal override void UpdateSccStateIcons()
         {
-            for(HierarchyNode child = this.FirstChild; child != null; child = child.NextSibling)
+            ThreadHelper.ThrowIfNotOnUIThread();
+            for (HierarchyNode child = this.FirstChild; child != null; child = child.NextSibling)
             {
                 child.UpdateSccStateIcons();
             }
@@ -381,7 +383,8 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         public virtual void RenameDirectory(string newPath)
         {
-            if(Directory.Exists(this.Url))
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (Directory.Exists(this.Url))
             {
                 if(Directory.Exists(newPath))
                 {
@@ -405,9 +408,10 @@ namespace Microsoft.VisualStudio.Project
             this.VirtualNodeName = newPath;
 
             this.ItemNode.Rename(VirtualNodeName);
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Let all children know of the new path
-            for(HierarchyNode child = this.FirstChild; child != null; child = child.NextSibling)
+            for (HierarchyNode child = this.FirstChild; child != null; child = child.NextSibling)
             {
 				FileNode childFileNode = child as FileNode;
 				if (childFileNode != null && childFileNode.IsLink)
@@ -448,7 +452,8 @@ namespace Microsoft.VisualStudio.Project
             //A file or folder with the name '{0}' already exists on disk at this location. Please choose another name.
             //If this file or folder does not appear in the Solution Explorer, then it is not currently part of your project. To view files which exist on disk, but are not in the project, select Show All Files from the Project menu.
             string errorMessage = (String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.FileOrFolderAlreadyExists, CultureInfo.CurrentUICulture), newPath));
-            if(!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
             {
                 string title = null;
                 OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;

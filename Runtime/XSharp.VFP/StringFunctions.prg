@@ -20,12 +20,12 @@ END CLASS
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/addbs/*" />
-/// <seealso cref='O:XSharp.VFP.Functions.DefaultExt' />
-/// <seealso cref='O:XSharp.VFP.Functions.JustDrive' />
-/// <seealso cref='O:XSharp.VFP.Functions.JustExt' />
-/// <seealso cref='O:XSharp.VFP.Functions.JustFName' />
-/// <seealso cref='O:XSharp.VFP.Functions.JustPath' />
-/// <seealso cref='O:XSharp.VFP.Functions.JustStem' />
+/// <seealso cref='DefaultExt' />
+/// <seealso cref='JustDrive' />
+/// <seealso cref='JustExt' />
+/// <seealso cref='JustFName' />
+/// <seealso cref='JustPath' />
+/// <seealso cref='JustStem' />
 FUNCTION AddBs (cPath AS STRING) AS STRING
     IF String.IsNullOrEmpty(cPath)
         RETURN ""
@@ -281,7 +281,7 @@ FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurre
 	ENDIF
 	RETURN position
      
-/// <inheritdoc cref="M:XSharp.VFP.Functions.At(System.String,System.String,System.UInt32)" />
+/// <inheritdoc cref="At" />
 /// <remarks>This is an alias for the At() function. X# works with unicode and the difference
 /// between single byte and multi byte characters does not exist in Unicode</remarks> 
 FUNCTION At_C(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
@@ -303,7 +303,7 @@ FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurr
 	ENDIF
 	RETURN position
 
-/// <inheritdoc cref="M:XSharp.VFP.Functions.AtC(System.String,System.String,System.UInt32)" />
+/// <inheritdoc cref="AtC" />
 /// <remarks>This is an alias for the AtC() function. X# works with unicode and the difference
 /// between single byte and multi byte characters does not exist in Unicode</remarks> 
 
@@ -399,4 +399,9 @@ STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expressio
     RETURN Expression
 
 END FUNCTION
+
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/transform/*" />
+FUNCTION Transform( uValue AS USUAL ) AS STRING
+    RETURN AsString(uValue)	
 

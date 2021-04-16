@@ -6,15 +6,21 @@
 USING System.Collections
 USING System.Collections.Generic
 USING System.Linq
+USING System.Text
 USING System.Diagnostics
 USING System.Reflection
 USING XSharp
+USING System.Runtime.Serialization
 BEGIN NAMESPACE XSharp 
 	/// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>
     /// <typeparam name="T">Type of the elements inside the array </typeparam>
-	PUBLIC CLASS __ArrayBase<T> IMPLEMENTS INamedIndexer, IEnumerable<T> WHERE T IS NEW()
+    [DebuggerDisplay("{DebuggerString(),nq}")] ;
+    [Serializable];
+	PUBLIC CLASS __ArrayBase<T> ;
+        IMPLEMENTS INamedIndexer, IEnumerable<T>, ISerializable
+        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PROTECTED INTERNAL _internalList AS List<T>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -79,15 +85,15 @@ BEGIN NAMESPACE XSharp
 
         /// <summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
-        PUBLIC VIRTUAL PROPERTY DefaultValue AS T GET T{}
+        PUBLIC VIRTUAL PROPERTY DefaultValue AS T GET DEFAULT(T)
 		#endregion
 
 		#region Enumerators
 		PUBLIC METHOD IEnumerable<T>.GetEnumerator() AS IEnumerator<T>
-			RETURN _internalList:GetEnumerator()
+            RETURN ((IList<T> ) _internalList:ToArray()):GetEnumerator()
 
 		PUBLIC METHOD IEnumerable.GetEnumerator() AS IEnumerator
-			RETURN _internalList:GetEnumerator()
+			RETURN _internalList:ToArray():GetEnumerator()
 
 			#endregion
 
@@ -116,7 +122,7 @@ BEGIN NAMESPACE XSharp
 	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />  
 		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The element stored at the specified location in the array.</returns>
-        PUBLIC METHOD __GetElement(index AS INT) AS T
+        PUBLIC VIRTUAL METHOD __GetElement(index AS INT) AS T
 			RETURN SELF:_internalList[ index ]
 
 	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />  
@@ -205,7 +211,7 @@ BEGIN NAMESPACE XSharp
                     RETURN oIndex[index2]
                 ENDIF
 				LOCAL oProp    AS PropertyInfo
-                oProp    := __GetIndexer(TRUE)
+                oProp    := SELF:__GetIndexer(TRUE)
                 IF oProp != NULL
                     RETURN oProp:GetValue(oElement, <OBJECT>{index2})
                 ENDIF
@@ -223,7 +229,7 @@ BEGIN NAMESPACE XSharp
                         oIndex[index2] := value
                     ENDIF
 					LOCAL oProp    AS PropertyInfo
-                    oProp    := __GetIndexer(TRUE)
+                    oProp    := SELF:__GetIndexer(TRUE)
                     IF oProp != NULL
                         oProp:SetValue(oElement, OOPHelpers.VOConvert(value, oProp:PropertyType), <OBJECT>{index2} )
                         RETURN
@@ -249,11 +255,11 @@ BEGIN NAMESPACE XSharp
                     RETURN oIndex[name]
                 ENDIF
 				LOCAL oProp    AS PropertyInfo
-                oProp    := __GetIndexer(FALSE)
+                oProp    := SELF:__GetIndexer(FALSE)
                 IF oProp != NULL
                     RETURN oProp:GetValue(oElement, <OBJECT>{name})
                 ENDIF
-				oProp	 := __GetProperty( name)
+				oProp	 := SELF:__GetProperty( name)
 				RETURN oProp:GetValue(oElement, NULL)
 			END GET
 			SET
@@ -268,12 +274,12 @@ BEGIN NAMESPACE XSharp
                         oIndex[name] := value
                     ENDIF
 					LOCAL oProp    AS PropertyInfo
-                    oProp    := __GetIndexer(FALSE)
+                    oProp    := SELF:__GetIndexer(FALSE)
                     IF oProp != NULL
                         oProp:SetValue(oElement, OOPHelpers.VOConvert(value, oProp:PropertyType), <OBJECT>{name} )
                         RETURN
                     ENDIF
-					oProp	 := __GetProperty( name)
+					oProp	 := SELF:__GetProperty( name)
 					oProp:SetValue(oElement, NULL, value)
 				ENDIF
 			END SET
@@ -364,7 +370,7 @@ BEGIN NAMESPACE XSharp
 		INTERNAL METHOD Swap(position AS INT, element AS OBJECT) AS T
 			//try
 			VAR elementT := (T) (OBJECT) element
-			RETURN Swap( position, elementT)
+			RETURN SELF:Swap( position, elementT)
 			//catch
 			//	throw ArgumentException{"Parameter is of incorrect type "+element:GetType():FullName,nameof(element)}
 			//end try
@@ -380,6 +386,7 @@ BEGIN NAMESPACE XSharp
 			SELF:_islocked := lLocked
 			RETURN wasLocked
 			/// <summary>Is the array locked?</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PROPERTY Locked AS LOGIC GET _islocked
 
 		INTERNAL METHOD CheckLock AS LOGIC
@@ -431,6 +438,57 @@ BEGIN NAMESPACE XSharp
 			RETURN aResult:ToArray()
 
     #endregion
+            
+        PROTECTED VIRTUAL METHOD DebuggerString() AS STRING
+            LOCAL sb AS StringBuilder
+            LOCAL cnt, tot AS LONG
+            sb := StringBuilder{}
+            sb:Append(SELF:ToString())
+            sb:Append("{")
+            tot := _internalList:Count
+            cnt := 0
+            FOREACH VAR element IN SELF:_internalList
+                IF cnt > 0
+                    sb:Append(",")
+                ENDIF
+                sb:Append(element:ToString())
+                cnt++
+                IF cnt > 5
+                    IF cnt < tot
+                        sb:Append(",..")
+                    ENDIF
+                    EXIT
+                ENDIF
+            NEXT
+            sb:Append("}")
+            RETURN sb:ToString()
+
+      
+    #region ISerializable
+        /// <inheritdoc/>
+        PUBLIC VIRTUAL METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            info:AddValue("Count", SELF:Count)
+            FOR VAR i := 1 TO SELF:Count
+                info:AddValue("Item"+i:ToString(), _internalList[i-1])
+            NEXT
+            RETURN
+            
+        /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
+        CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
+            IF info == NULL
+                THROW System.ArgumentException{"info"}
+            ENDIF
+            VAR count := info:GetInt32("Count")
+            _internalList := List<T>{  }
+            FOR VAR i := 1 TO count
+                _internalList:Add( (T) info:GetValue("Item"+i:ToString(), typeof(T)))
+            NEXT
+            
+            
+            #endregion    
 
 	END	CLASS
 END NAMESPACE

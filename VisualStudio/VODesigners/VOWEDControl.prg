@@ -1,6 +1,12 @@
-#using System.Windows.Forms
-#using System.Drawing
-#using System.IO
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+USING System.Windows.Forms
+USING System.Drawing
+USING System.IO
+USING XSharpModel
 
 DELEGATE StatusBarMessageDelegate(cMessage AS STRING) AS VOID
 
@@ -19,8 +25,8 @@ CLASS VOWEDControl INHERIT Panel
     CONSTRUCTOR()
         SUPER()
         SELF:oOptions := WindowDesignerOptions{}
-        SELF:oOptions:lUseGrid := FALSE
-        SELF:oOptions:lShowGrid := FALSE
+        SELF:oOptions:lUseGrid := XEditorSettings.ShowGrid
+        SELF:oOptions:lShowGrid := XEditorSettings.ShowGrid
         SELF:AutoScroll := TRUE
     RETURN
 
@@ -145,7 +151,7 @@ CLASS VOWEDControl INHERIT Panel
 	RETURN
 
    ACCESS IsGridEnabled AS LOGIC
-      RETURN oWed != NULL && oWed:IsGridEnabled
+      RETURN oWed != NULL .AND. oWed:IsGridEnabled
 
 	ASSIGN ReadOnly(_lReadOnly AS LOGIC)
         IF SELF:oEditor != NULL

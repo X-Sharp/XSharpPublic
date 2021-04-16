@@ -5,7 +5,7 @@ CLASS ControlWindow INHERIT Window
 	PROTECT oCtrl AS Control
 	PROTECT oSurface AS VOSurfacePanel
 
-	ACCESS __Surface AS System.Windows.Forms.Control
+	ACCESS __Surface AS IVOControlContainer
 		RETURN oSurface
 	
 	ACCESS Control AS Control
@@ -54,7 +54,7 @@ CLASS ControlWindow INHERIT Window
 		oCtrl:__ControlWindow := SELF
 		
 		oSurface:Dock := System.Windows.Forms.DockStyle.Fill
-		oSurface:Controls:Add(oCtrl:__Control)
+		oSurface:AddControl(oCtrl:__Control)
 		oSurface:Visible := TRUE
 
 		RETURN 

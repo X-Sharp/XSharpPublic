@@ -46,11 +46,11 @@ namespace XSharp.MacroCompiler
         static List<ContainerSymbol> RuntimeFunctions = null;
         static Dictionary<Type, TypeSymbol> TypeCache = null;
 
-        internal static StringComparer LookupComprer = StringComparer.OrdinalIgnoreCase;
+        internal static StringComparer LookupComparer = StringComparer.OrdinalIgnoreCase;
 
         internal MacroOptions Options;
 
-        internal Dictionary<string, Symbol> LocalCache = new Dictionary<string, Symbol>(LookupComprer);
+        internal Dictionary<string, Symbol> LocalCache = new Dictionary<string, Symbol>(LookupComparer);
         internal List<LocalSymbol> Locals = new List<LocalSymbol>();
         internal List<ArgumentSymbol> Args = new List<ArgumentSymbol>();
         internal TypeSymbol ObjectType;
@@ -58,6 +58,8 @@ namespace XSharp.MacroCompiler
         internal List<XSharp.Codeblock> NestedCodeblocks;
         internal bool CreatesAutoVars = false;
         internal Stack<Stmt> StmtStack = new Stack<Stmt>();
+        internal Stack<int> ScopeStack = new Stack<int>();
+        internal Node Entity = null;
 
         protected Binder(Type objectType, Type delegateType, MacroOptions options)
         {
@@ -289,6 +291,14 @@ namespace XSharp.MacroCompiler
             return FindType(nt);
         }
 
+        internal static TypeSymbol ArrayOf(TypeSymbol t, int rank)
+        {
+            if (t == null)
+                return null;
+            var nt = rank == 1 ? t.Type.MakeArrayType() : t.Type.MakeArrayType(rank);
+            return FindType(nt);
+        }
+
         internal static TypeSymbol PointerOf(TypeSymbol t)
         {
             if (t == null)
@@ -332,6 +342,7 @@ namespace XSharp.MacroCompiler
         internal static Symbol LookupName(string name)
         {
             Symbol v = Global.Lookup(name);
+
             foreach (var u in Usings)
                 v = Symbol.Join(v, u.Lookup(name));
             if (!v.HasFunctions())
@@ -408,7 +419,11 @@ namespace XSharp.MacroCompiler
             local.IsParam = isParam;
             Locals.Add(local);
             if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
                 LocalCache.Add(name, local);
+            }
             return local;
         }
 
@@ -423,7 +438,11 @@ namespace XSharp.MacroCompiler
             else
                 Args.Add(arg);
             if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
                 LocalCache.Add(name, arg);
+            }
             return arg;
         }
 
@@ -432,14 +451,48 @@ namespace XSharp.MacroCompiler
             var variable = new VariableSymbol(name, type);
             Locals.Add(variable);
             if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
                 LocalCache.Add(name, variable);
+            }
             return variable;
         }
 
-        internal void AddConstant(string name, Constant c)
+        internal MemvarSymbol AddMemvar(string name)
+        {
+            var variable = new MemvarSymbol(name);
+            Locals.Add(variable);
+            if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
+                LocalCache.Add(name, variable);
+            }
+            return variable;
+        }
+        internal FieldAliasSymbol AddFieldAlias(string name, string wa = null)
+        {
+            var variable = new FieldAliasSymbol(name, wa);
+            Locals.Add(variable);
+            if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
+                LocalCache.Add(name, variable);
+            }
+            return variable;
+        }
+
+        internal Constant AddConstant(string name, Constant c)
         {
             if (!string.IsNullOrEmpty(name))
+            {
+                if (LocalCache.ContainsKey(name))
+                    return null;
                 LocalCache.Add(name, c);
+            }
+            return c;
         }
 
         internal int ParamCount
@@ -452,6 +505,36 @@ namespace XSharp.MacroCompiler
                         c++;
                 return c;
             }
+        }
+
+        internal int OpenScope()
+        {
+            ScopeStack.Push(Locals.Count);
+            return Locals.Count;
+        }
+
+        internal void CloseScope()
+        {
+            var scopeBase = ScopeStack.Pop();
+            for (var i = scopeBase; i <Locals.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(Locals[i].Name))
+                {
+                    LocalCache.Remove(Locals[i].Name);
+                }
+            }
+        }
+
+        internal T FindOuter<T>() where T: class
+        {
+            foreach(var s in StmtStack)
+            {
+                if (s is T ts)
+                {
+                    return ts;
+                }
+            }
+            return null;
         }
 
         internal int AddNestedCodeblock(out Symbol argSym)
@@ -500,7 +583,7 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        internal Codeblock Bind(Codeblock macro)
+        internal U Bind<U>(U macro) where U: Node
         {
             Bind(ref macro);
             return macro;

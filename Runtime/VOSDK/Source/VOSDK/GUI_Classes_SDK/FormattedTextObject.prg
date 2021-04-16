@@ -1,7 +1,11 @@
+/// <include file="Gui.xml" path="doc/FormattedTextObject/*" />
 CLASS FormattedTextObject INHERIT TextObject
 	PROTECT wTabSize:=8 AS LONGINT       //RvdH 070205 changed from WORD to LONG 
 	
+	
 
+
+/// <include file="Gui.xml" path="doc/FormattedTextObject.Draw/*" />
 METHOD Draw() 
 	//RvdH 070205 changed variables from WORD to LONG 
 	//	and use typed byte pointer in stead of casting
@@ -19,7 +23,11 @@ METHOD Draw()
 	
 	
 	
+	
+	
+	
 	hDC := SELF:Handle()
+	
 	
 	IF (hDC != 0)
 		oOldPen := oWnd:Pen
@@ -28,11 +36,13 @@ METHOD Draw()
 		oWnd:Font := SELF:Font
 		GetTextMetrics(hDC, @strucTM)
 		
+		
 		iTabStops 	:= wTabSize * strucTM:tmAveCharWidth
 		iLineHeight := strucTM:tmAscent + strucTM:tmDescent + strucTM:tmExternalLeading
 		oOrigin := SELF:Origin
 		iY := oOrigin:Y
 		iX := oOrigin:X
+		
 		
 		pText := StringAlloc( SELF:DisplayText)
 		i		:= 1
@@ -70,6 +80,7 @@ METHOD Draw()
 				iLenSegment++
 				lPrevCR := FALSE
 				
+				
 			CASE (bChar == 13) //CR
 				IF (iLenSegment != 0)    
 					TabbedTextOut( hDC, iX, iY, pText+i-iLenSegment  , iLenSegment, 1, @iTabStops, iX)					
@@ -77,6 +88,7 @@ METHOD Draw()
 				lPrevCR := TRUE
 				iLenSegment := 0
 				iY -= iLineHeight //Move to new line
+				
 				
 			CASE (bChar == 10) //LF
 				IF !lPrevCR
@@ -88,11 +100,13 @@ METHOD Draw()
 				ENDIF
 				lPrevCR := FALSE
 				
+				
 			CASE (bChar == 0)
 				IF (iLenSegment != 0)
 					TabbedTextOut( hDC, iX, iY, pText+i-iLenSegment, iLenSegment, 1, @iTabStops, iX)
 				ENDIF
 				EXIT
+				
 				
 			OTHERWISE
 				iLenSegment++
@@ -106,24 +120,38 @@ METHOD Draw()
 		oWnd:Font := oOldFont
 	ENDIF
 	
+	
 	RETURN NIL
 
+
+/// <include file="Gui.xml" path="doc/FormattedTextObject.ctor/*" />
 CONSTRUCTOR(oPoint, cText, oFont, oColor) 
+    
     
     SUPER(oPoint, cText, oFont, oColor)
 
 
+
+
 RETURN 
 
+
+/// <include file="Gui.xml" path="doc/FormattedTextObject.TabSize/*" />
 ASSIGN TabSize(nNewTabSize) 
+	
+	
 	
 	
 	IF !IsLong(nNewTabSize)
 		WCError{#TabSize,#FormattedTextObject,__WCSTypeError,nNewTabSize,1}:Throw()
 	ENDIF
 	
+	
 	RETURN wTabSize:=nNewTabSize
 	
 	
+	
+	
 END CLASS
+
 

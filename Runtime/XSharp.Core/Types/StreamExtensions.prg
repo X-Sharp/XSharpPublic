@@ -164,7 +164,7 @@ BEGIN NAMESPACE XSharp
                 ENDIF
                 oStream:Lock(offset, length)
                 result := TRUE
-            CATCH
+            CATCH 
                 result := FALSE
             END TRY
             RETURN result

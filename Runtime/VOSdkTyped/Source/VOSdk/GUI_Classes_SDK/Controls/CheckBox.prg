@@ -1,5 +1,5 @@
 
-
+[XSharp.Internal.TypesChanged];
 CLASS CheckBox INHERIT Button
 	PROTECT lSavedChecked AS LOGIC
 
@@ -20,8 +20,8 @@ CLASS CheckBox INHERIT Button
 		RETURN
 
 
-	ACCESS __CheckBox AS VOCheckBox 
-		RETURN (VOCheckBox ) oCtrl
+	ACCESS __CheckBox AS IVOCheckBox 
+		RETURN (IVOCheckBox ) oCtrl
 
 	METHOD __SetImage(oNewImage AS VObject)  AS LOGIC
 		IF oNewImage IS ButtonImageList

@@ -58,13 +58,38 @@ namespace XSharp.MacroCompiler
             get { return _options.AllowPackedDotOperators; }
         }
 
-        IDictionary<string, TokenType> KwIds
+        bool TryGetKeyword(string text, out TokenType token)
         {
-            get
+            var cKwIds = _options.ParseEntities ? coreKwIdsE : _options.ParseStatements ? coreKwIdsS : coreKwIds;
+            if (cKwIds.TryGetValue(text, out token))
+                return true;
+
+            if (AllowFourLetterAbbreviations)
             {
-                return AllowFourLetterAbbreviations
-                    ? (_options.ParseEntities ? voKwIdsE : _options.ParseStatements ? voKwIdsS : voKwIds)
-                    : (_options.ParseEntities ? xsKwIdsE : _options.ParseStatements ? xsKwIdsS : xsKwIds);
+                var aKwIds = _options.ParseEntities ? abbrKwIdsE : _options.ParseStatements ? abbrKwIdsS : abbrKwIds;
+                if (aKwIds.TryGetValue(text, out token))
+                    return true;
+            }
+
+            switch (_options.Dialect)
+            {
+                case XSharpDialect.FoxPro:
+                    {
+                        var kwIds = _options.ParseEntities ? foxKwIdsE : _options.ParseStatements ? foxKwIdsS : foxKwIds;
+                        return kwIds.TryGetValue(text, out token);
+                    }
+                case XSharpDialect.Core:
+                case XSharpDialect.Vulcan:
+                    {
+                        var kwIds = _options.ParseEntities ? xsKwIdsE : _options.ParseStatements ? xsKwIdsS : xsKwIds;
+                        return kwIds.TryGetValue(text, out token);
+                    }
+                case XSharpDialect.VO:
+                default:
+                    {
+                        var kwIds = _options.ParseEntities ? voKwIdsE : _options.ParseStatements ? voKwIdsS : voKwIds;
+                        return kwIds.TryGetValue(text, out token);
+                    }
             }
         }
 
@@ -350,7 +375,7 @@ namespace XSharp.MacroCompiler
         {
             if (!Eoi())
             {
-                if (La() != c1 && La(2) == c2)
+                if (La() != c1 || La(2) != c2)
                 {
                     Consume();
                     return false;
@@ -675,10 +700,10 @@ namespace XSharp.MacroCompiler
                                 if (!nokw)
                                 {
                                     TokenType tt;
-                                    if (KwIds.TryGetValue(value, out tt))
+                                    if (TryGetKeyword(value, out tt))
                                     {
                                         t = tt;
-                                        if (IsSoftKeyword(tt))
+                                        if (IsSoftKeyword(tt) || _inDottedIdentifier)
                                         { 
                                             st = TokenType.ID;
                                             if (_lastToken == TokenType.COLON ||_lastToken == TokenType.DOT)

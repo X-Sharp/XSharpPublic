@@ -3,6 +3,7 @@
 USING System.Windows.Forms
 USING System.Drawing
 USING VOSDK := XSharp.VO.SDK
+#pragma warnings (9043, disable) // Controls is ambiguous
 
 #define INSIDEFORMBORDER 5
 /*
@@ -54,9 +55,9 @@ scrollbars are shown on the framepanel
 CLASS VODataForm INHERIT VOChildAppForm
 #region Fields
 	PROTECT oSurfacePanel	AS VoSurfacePanel		// This is the place where the controls are drawn
-	PROTECT oFramePanel		AS VOFramePanel			// This is a panel on which the Surface sits. When the window is too small this panel will show the scrollbars
+	PROTECT oFramePanel		AS IVOFramePanel			// This is a panel on which the Surface sits. When the window is too small this panel will show the scrollbars
 	PROTECT oToolBar		AS VOToolBar			
-	PROTECT oStatusBar		AS VOStatusStrip
+	PROTECT oStatusBar		AS IVOStatusBar
 	PROTECT oResDlg			AS ResourceDialog
 	PROTECT lInBrowseView   AS LOGIC
 	PROTECT oDataBrowser	AS System.Windows.Forms.Control
@@ -64,7 +65,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 #region Properties
 	PROPERTY Origin			AS VOSDK.Point      GET SELF:Location SET SELF:Location := Value
 	PROPERTY Surface		AS VoSurfacePanel	GET oSurfacePanel
-	PROPERTY Frame          AS VOFramePanel		GET oFramePanel
+	PROPERTY Frame          AS IVOFramePanel	GET oFramePanel
 	PROPERTY AutoLayout	    AS LOGIC AUTO       GET SET 
 	
 	PROPERTY DataBrowser AS System.Windows.Forms.Control
@@ -94,14 +95,14 @@ CLASS VODataForm INHERIT VOChildAppForm
     PROPERTY DataWindow AS VOSDK.DataWindow GET (DataWindow) Window
 
 
-	PROPERTY StatusBar AS VOStatusStrip
+	PROPERTY StatusBar AS IVOStatusBar
 		GET
 			RETURN oStatusBar
 		END GET
 		SET
 			oStatusBar := Value
 			IF oStatusBar != NULL_OBJECT
-				SELF:Controls:Add(oStatusBar)
+				SELF:Controls:Add((System.Windows.Forms.Control) oStatusBar)
 				oStatusBar:Dock := DockStyle.Bottom
 				oStatusBar:TabIndex := 3
 				SELF:PerformLayout()
@@ -151,7 +152,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		SELF:Text := "DataWinForm"
         // Form owns the frame
 		oFramePanel := GuiFactory.Instance:CreateFramePanel(SELF, oWindow)
-		SELF:Controls:Add(oFramePanel)
+		SELF:Controls:Add((System.Windows.Forms.Control) oFramePanel)
         // Frame owns the surface
         oSurfacePanel := GuiFactory.Instance:CreateSurfacePanel(oWindow)
 		oFramePanel:Controls:Add(oSurfacePanel)
@@ -167,9 +168,9 @@ CLASS VODataForm INHERIT VOChildAppForm
 #region Winforms Method overrides
 	OVERRIDE PROTECT METHOD OnShown(e AS EventArgs) AS VOID STRICT
 		FOREACH oC AS System.Windows.Forms.Control IN SELF:Surface:Controls
-			IF oC IS VOButton VAR oVOB
+			IF oC IS IVOButton VAR oVOB
 				IF oVOB:DefaultButton
-					SELF:AcceptButton := oVOB
+					SELF:AcceptButton := (IButtonControl) oVOB
 				ENDIF
 			ENDIF
 		NEXT
@@ -178,7 +179,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 	OVERRIDE PROTECT METHOD OnSizeChanged(e AS EventArgs ) AS VOID
 		SUPER:OnSizeChanged(e)
 		IF SELF:Visible
-			AdjustSizes()
+			SELF:AdjustSizes()
 		ENDIF
 		RETURN
 
@@ -190,6 +191,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		LOCAL oSize AS Size
 		// This is called when resizing and/or when toolbar or statusbar is shown
 		// it recalculates the size of the framepanel
+       // DebOut(__FUNCTION__)
 		SELF:SuspendLayout()
 		IF ! SELF:SubForm
 			oSize := SELF:ClientRectangle:Size
@@ -222,6 +224,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		LOCAL nBordX, nBordY AS LONG
 		LOCAL oLoc       AS System.Drawing.Point
 		SELF:SuspendLayout()
+        //DebOut(__FUNCTION__)
 		IF SELF:SubForm
 			NOP
 		ELSE	
@@ -252,6 +255,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		RETURN
 
 	METHOD ChangeFormSize(oDim AS Size) AS VOID
+        //DebOut(__FUNCTION__)
 		SELF:Size := oDim
 		RETURN
 
@@ -337,6 +341,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		RETURN 	
 
 	PUBLIC METHOD SuspendRedraw AS VOID
+        //DebOut(__FUNCTION__)
 		IF SELF:lInBrowseView
 	        GuiWin32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 0, 0)
 		ELSE
@@ -344,6 +349,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		ENDIF
 
 	PUBLIC METHOD ResumeRedraw AS VOID
+        //DebOut(__FUNCTION__)
 		IF SELF:lInBrowseView
 	        GuiWin32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 1, 0)
 		ELSE

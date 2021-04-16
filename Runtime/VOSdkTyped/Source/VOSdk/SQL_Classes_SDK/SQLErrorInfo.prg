@@ -5,16 +5,29 @@
 //
 
 
+
+
 USING System.Data.Common
 USING System.Collections
+/// <include file="Sql.xml" path="doc/SQLErrorInfo/*" />
+
+[XSharp.Internal.TypesChanged];
 CLASS SQLErrorInfo  INHERIT Error
+/// <include file="Sql.xml" path="doc/SQLErrorInfo.SQLState/*" />
 	PROPERTY SQLState           AS STRING AUTO
+/// <include file="Sql.xml" path="doc/SQLErrorInfo.NativeError/*" />
 	PROPERTY NativeError        AS LONG   AUTO
+/// <include file="Sql.xml" path="doc/SQLErrorInfo.ErrorFlag/*" />
 	PROPERTY ErrorFlag          AS LOGIC  AUTO
+/// <include file="Sql.xml" path="doc/SQLErrorInfo.ErrorMessage/*" />
 	PROPERTY ErrorMessage       AS STRING AUTO
+/// <include file="Sql.xml" path="doc/SQLErrorInfo.ErrorMessageLen/*" />
 	PROPERTY ErrorMessageLen    AS LONG   GET (LONG) SLen(ErrorMessage)
+/// <include file="Sql.xml" path="doc/SQLErrorInfo.ReturnCode/*" />
 	PROPERTY ReturnCode         AS LONG   AUTO
 	
+	
+/// <include file="Sql.xml" path="doc/SQLErrorInfo.ctor/*" />
 	CONSTRUCTOR( oOriginator, symMethod, Ex ) 
 		LOCAL oType AS System.Type
 		IF IsNil(Ex)
@@ -29,17 +42,21 @@ CLASS SQLErrorInfo  INHERIT Error
 			ENDIF        
 		ENDIF
 		
+		
 		SELF:SubSystem := __CavoStr( __CAVOSTR_SQLCLASS_SUBSYS )
+		
 		
 		IF IsObject( oOriginator )
 			SELF:MethodSelf := oOriginator
 		ENDIF
+		
 		
 		IF IsSymbol( symMethod )
 			SELF:FuncSym     := symMethod
 			SELF:CallFuncSym := symMethod
 		ENDIF
 		RETURN 
+	
 	
 	PRIVATE METHOD _SetDbException(oEx AS DbException) AS VOID
 		SELF:ErrorMessage := oEx:Message
@@ -78,6 +95,8 @@ CLASS SQLErrorInfo  INHERIT Error
         //SELF
 		RETURN 
 	
+	
+/// <include file="Sql.xml" path="doc/SQLErrorInfo.ShowErrorMsg/*" />
 	METHOD ShowErrorMsg() 
 //		LOCAL cTitle AS STRING
 //		
@@ -96,31 +115,45 @@ CLASS SQLErrorInfo  INHERIT Error
 //			
 //		ENDIF
 		
+		
 		RETURN NIL
 	
 	
+	
+	
+/// <include file="Sql.xml" path="doc/SQLErrorInfo.ErrorList/*" />
 	ACCESS ErrorList AS ARRAY
 		LOCAL oErr 		AS SQLErrorInfo
 		LOCAL oStmt		AS SQLStatement
 		LOCAL aRet		AS ARRAY
 		
+		
 		aRet		:= {} 
 		
+		
 		IF IsInstanceOf( SELF:MethodSelf , #SqlStatement)
+			
 			
 			oStmt		:= (SQLStatement) SELF:MethodSelf 		
 			oErr 		:= SELF
 			
+			
 			WHILE oErr != NULL_OBJECT .and. (Val(oErr:SQLState) <> 0 .or. oErr:NativeError <> 0)
+				
 				
 				AAdd( aRet, { oErr:NativeError, oErr:SQLState, oErr:ErrorMessage } )
 				oErr		:= SQLErrorInfo{ oStmt, SELF:FuncSym}
 			ENDDO		
 			
+			
 		ENDIF
+		
 		
 		RETURN aRet
 	
 	
+	
+	
 END CLASS
+
 

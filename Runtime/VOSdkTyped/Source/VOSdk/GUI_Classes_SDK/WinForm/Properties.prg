@@ -100,7 +100,7 @@ CLASS VOControlProperties INHERIT VOProperties
 
     METHOD Dispatch(m REF Message) AS VOID
         IF OnWndProc != NULL
-            OnWndProc(m)
+            SELF:OnWndProc(m)
         ENDIF
         VAR oEvent := Event{REF m}
         SELF:Control:Dispatch( oEvent)
@@ -113,9 +113,7 @@ CLASS VOControlProperties INHERIT VOProperties
 	METHOD LinkTo(oOwner AS VOSDK.Control) AS VOID STRICT
 		Control := oOwner
 		Window := oOwner:Owner
-		IF oWFC is IVOControl
-			LOCAL oVOC AS IVOControl
-			oVOC := (IVOControl) oWFC
+		IF oWFC IS IVOControlProperties VAR oVOC
 			SELF:StyleChanged += oVOC:SetVisualStyle
 		ENDIF
 
@@ -186,13 +184,13 @@ CLASS VOControlProperties INHERIT VOProperties
 	
 	METHOD OnKeyDown(s AS OBJECT, e AS KeyEventArgs) AS VOID	
 		IF SELF:Control != NULL_OBJECT
-				LOCAL k AS KeyEvent
-				k := KeyEvent{e}
-				SELF:Control:EventReturnValue := 0
-				SELF:Control:KeyDown(k)
-				IF SELF:Window != NULL_OBJECT .AND. SELF:Control:EventReturnValue == 0
-					SELF:Window:KeyDown(k)					
-				ENDIF
+			LOCAL k AS KeyEvent
+			k := KeyEvent{e}
+			SELF:Control:EventReturnValue := 0
+			SELF:Control:KeyDown(k)
+			IF SELF:Window != NULL_OBJECT .AND. SELF:Control:EventReturnValue == 0
+				SELF:Window:KeyDown(k)					
+			ENDIF
 		ENDIF
 		RETURN		
 	

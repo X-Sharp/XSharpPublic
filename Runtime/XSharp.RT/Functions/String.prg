@@ -279,7 +279,7 @@ FUNCTION StrTran( uTarget, uSearch, uReplace, uStart, uCount ) AS STRING CLIPPER
 
    RETURN sbRet:ToString()
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.SubStr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" />
+/// <inheritdoc cref="SubStr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" />
 FUNCTION SubS(cTarget ,nStart ,nCount ) AS STRING CLIPPER
 	RETURN SubStr(cTarget, nStart, nCount)
 

@@ -147,7 +147,47 @@ BEGIN NAMESPACE XSharp.Internal
 			SUPER()
 		
 	END CLASS
-	
+
+    /// <summary>
+	/// This class is used to mark methods, properties etc. that want access to Local Variables by name.
+	/// </summary>
+    /// <remarks>
+    /// In FoxPro several built-in functions have access to locals "by name". We can't do that because it violates
+    /// the normal rules of encapsulation. However we can "emulate" this behavior by adding this attribute to a function or
+    /// method that wants access to locals.
+    /// At runtime we will then populate a table in the runtime with the names and values of local variables
+	/// And we can access this table with the normal MemVarGet() and MemVarPut() functions.
+    /// </remarks>
+    /// <seealso cref="O:XSharp.RT.Functions.Type" />
+    /// <seealso cref="O:XSharp.RT.Functions.MExec" />
+    /// <seealso cref="O:XSharp.RT.Functions.Evaluate" />
+    /// <seealso cref="O:XSharp.RT.Functions.StrEvaluate" />
+    /// <seealso cref="O:XSharp.VFP.Functions.SqlExec" />
+    /// <seealso cref="O:XSharp.VFP.Functions.SqlPrepare" />
+	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Constructor) ];
+	SEALED CLASS NeedsAccessToLocalsAttribute INHERIT Attribute
+        PRIVATE _writesToLocals := FALSE AS LOGIC
+        PROPERTY WritesToLocals AS LOGIC GET _writesToLocals
+		/// <summary></summary>	
+		CONSTRUCTOR(lWrites AS LOGIC)
+            _writesToLocals := lWrites
+		
+	END CLASS
+
+
+    /// <summary>
+	/// This class is used to mark a class and indicate that the property types and or parameter types in this class were changed.
+    /// When the compiler detects that a subclass does not have the right parameter or property types then the subclass will be automatically
+    /// adjusted to preserved the types from the parent class.
+	/// </summary>
+    [AttributeUsage(AttributeTargets.Class) ];
+    SEALED CLASS TypesChangedAttribute INHERIT Attribute
+		CONSTRUCTOR()
+			SUPER()
+	END CLASS
+    
+
+
 END NAMESPACE
 
 

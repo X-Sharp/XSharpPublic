@@ -2028,8 +2028,17 @@
   <data name="ERRORDIALOG_CLOSE" xml:space="preserve">
     <value>Sluiten</value>
   </data>
+  <data name="ERRORDIALOG_ABORT" xml:space="preserve">
+    <value>&amp;Afbreken</value>
+  </data>
+  <data name="ERRORDIALOG_RETRY" xml:space="preserve">
+    <value>&amp;Herhalen</value>
+  </data>
+  <data name="ERRORDIALOG_IGNORE" xml:space="preserve">
+    <value>&amp;Negeren</value>
+  </data>
   <data name="ERRORDIALOG_COPY" xml:space="preserve">
-    <value>Kopieer naar Klembord</value>
+    <value>&amp;Kopieer naar Klembord</value>
   </data>
   <!-- The following strings are not used (yet) in X#-->
   <data name="__CAVOSTR_SYSLIB_BADTRANSLATIONARRAY" xml:space="preserve">

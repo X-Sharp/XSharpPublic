@@ -495,6 +495,9 @@
         <topicref type="topic" id="440684277166773" build="ALL" modified="2020-08-25T12:58:59.687Z" icon="0" href="Highlight-words">
           <caption translate="true">Highlight words</caption>
         </topicref>
+        <topicref type="topic" id="443027287321532" build="ALL" modified="2021-04-16T14:33:30.631Z" icon="0" href="_EditorConfig-files">
+          <caption translate="true">.EditorConfig files</caption>
+        </topicref>
       </topicref>
       <topicref type="topic" id="423890888167298" build="ALL" modified="2017-04-20T14:46:46.911Z" icon="0" href="Templates">
         <caption translate="true">Templates</caption>

@@ -21,13 +21,22 @@ namespace XSharp.LanguageService
     static public class XSharpXMLDocTools
     {
         static readonly Dictionary<string, IVsXMLMemberIndex> _memberIndexes = new Dictionary<string, IVsXMLMemberIndex>();
-        static readonly IVsXMLMemberIndexService _XMLMemberIndexService;
+        static IVsXMLMemberIndexService _XMLMemberIndexService;
         static string coreLoc = "";
         static IVsXMLMemberIndex coreIndex = null;
         static XSharpXMLDocTools()
         {
             var lang = XSharpLanguageService.Instance;
-            _XMLMemberIndexService =  lang.GetService<SVsXMLMemberIndexService,IVsXMLMemberIndexService>(false);
+            object result = null;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                result = await lang.GetServiceAsync(typeof(SVsXMLMemberIndexService));
+            });
+            if (result != null)
+                _XMLMemberIndexService = (IVsXMLMemberIndexService)result;
+
             Assumes.Present(_XMLMemberIndexService);
             return;
         }

@@ -818,6 +818,7 @@ BEGIN NAMESPACE XSharpModel
 
       METHOD FindType(typeName as STRING, usings AS IList<STRING>) AS IXTypeSymbol
          LOCAL result as IXTypeSymbol
+         typeName := typeName:GetSystemTypeName(ParseOptions:XSharpRuntime)
          result := SELF:Lookup(typeName, usings)
          if result == NULL
              result := SELF:FindSystemType(typeName, usings)  

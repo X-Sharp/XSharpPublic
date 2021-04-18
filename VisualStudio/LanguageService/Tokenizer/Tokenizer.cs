@@ -121,7 +121,7 @@ namespace XSharp.LanguageService
         internal static IList<XSharpToken> GetTokensUnderCursor(XSharpSearchLocation location, BufferedTokenStream tokens)
         {
 
-            var result = GetTokenList(location, tokens, out var _, false);
+            var result = GetTokenList(location, tokens, out var _, true);
             // Find "current" token
             if (result.Count > 0)
             {

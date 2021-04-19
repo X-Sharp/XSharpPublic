@@ -1479,12 +1479,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return varType;
         }
 
-        public override ConstructorDeclarationSyntax GenerateDefaultCtor(SyntaxToken id, XP.Class_Context classctx)
+        public override ConstructorDeclarationSyntax GenerateDefaultCtor(SyntaxToken id, XP.Class_Context classctx,
+            SyntaxListBuilder<UsingDirectiveSyntax> usingslist, List<XSharpLanguageParser.PartialPropertyElement> elements)
         {
             ParameterListSyntax pars = GetClipperParameters();
 
             var arg = MakeArgument(GenerateSimpleName(XSharpSpecialNames.ClipperArgs));
             ArgumentListSyntax args = MakeArgumentList(arg);
+
+            // add using statements
+            if (elements != null )
+            {
+                foreach (var element in elements)
+                {
+                    foreach (var u in element.Usings)
+                    {
+                        var green = u.Green as UsingDirectiveSyntax;
+                        this.AddUsingWhenMissing(usingslist, green.Name, green.StaticKeyword != null, green.Alias);
+                    }
+                }
+            }
 
             var chain = _syntaxFactory.ConstructorInitializer(SyntaxKind.BaseConstructorInitializer,
                                                                 SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
@@ -1557,7 +1571,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     //
                     if (!hasComImport)
                     {
-                        var ctor = GenerateDefaultCtor(classdecl.Identifier, context);
+                        var ctor = GenerateDefaultCtor(classdecl.Identifier, context, default, null);
                         var newmembers = _pool.Allocate<MemberDeclarationSyntax>();
                         newmembers.AddRange(classdecl.Members);
                         if (ctor != null)

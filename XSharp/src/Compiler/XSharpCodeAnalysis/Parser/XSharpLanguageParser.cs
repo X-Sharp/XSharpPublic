@@ -832,7 +832,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var classcontext = ctxt as XP.Class_Context;
                             if (!hasctor && !classdecl.IsStatic() && trans != null && _options.HasOption(CompilerOption.DefaultClipperContructors, classcontext, trans.PragmaOptions))
                             {
-                                var ctor = trans.GenerateDefaultCtor(classdecl.Identifier, classcontext);
+                                var ctor = trans.GenerateDefaultCtor(classdecl.Identifier, classcontext, usingslist, element.Value);
                                 if (ctor != null)
                                 {
                                     clsmembers.Add(ctor);

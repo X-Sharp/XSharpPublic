@@ -25,7 +25,7 @@ STATIC CLASS VOWindowEditorTemplate
 	STATIC PRIVATE aAssignMap AS Dictionary<STRING,STRING>
 	STATIC PRIVATE lLoaded AS LOGIC
 	STATIC EXPORT aPages AS HashTable
-	STATIC EXPORT GridX , GridY AS INT
+	//STATIC EXPORT GridX , GridY AS INT
 	STATIC CONSTRUCTOR()
 
 		VOWindowEditorTemplate.aControls := ArrayList{}
@@ -45,17 +45,17 @@ STATIC CLASS VOWindowEditorTemplate
 
 		VOWindowEditorTemplate.aAssignMap:Add("FILLUSING" , "FillUsing")
 		VOWindowEditorTemplate.aAssignMap:Add("FONT" , "Font")
-		
+
 	RETURN
 	STATIC METHOD Load(cDirectory AS STRING) AS LOGIC
 		LOCAL cCavoWed AS STRING
       LOCAL cOrigDir AS STRING
 		LOCAL lSuccess AS LOGIC
-		
+
 		IF VOWindowEditorTemplate.lLoaded
 			RETURN TRUE
 		ENDIF
-		
+
 //		oReader := StreamReader{"C:\CAVOWED.INF"}
 //		oReader := StreamReader{"CAVOWED.INF"}
 //		oReader := StreamReader{"C:\CAVO28\BIN\CAVOWED.INF"}
@@ -101,12 +101,12 @@ STATIC CLASS VOWindowEditorTemplate
 				RETURN FALSE
 			ENDIF
 		END DO
-		
+
 		IF VOWindowEditorTemplate.LoadInfFile(cCavoWed)
 			VOWindowEditorTemplate.lLoaded := TRUE
 			lSuccess := TRUE
 		ENDIF
-			
+
 	RETURN lSuccess
 	INTERNAL STATIC METHOD LoadInfFile(cCavoWed AS STRING) AS LOGIC
 		LOCAL oControl AS VOControlTemplate
@@ -124,7 +124,7 @@ STATIC CLASS VOWindowEditorTemplate
 		LOCAL aPages AS List<STRING>
 		LOCAL lSuccess AS LOGIC
 		LOCAL nAt AS INT
-		
+
 		eSection := CavoWedInfSection.None
 
 		TRY
@@ -170,10 +170,10 @@ STATIC CLASS VOWindowEditorTemplate
 							oControl:aProperties:Add(VODesignProperty{"_Visible","Visible",NULL,"YESNO"})
 							oControl:aProperties:Add(VODesignProperty{"_GenCode","Generate Code",NULL,"YESNO"})
 //							oControl:aProperties:Add(VODesignProperty{"Inherit From Class","Inherit From Class",PropertyType.Text})
-	
+
 							oControl:aProperties:Add(VODesignProperty{"_DBInhFrom","Browser Inherit From",NULL,PropertyType.Text})
 							oControl:aProperties:Add(VODesignProperty{"_DCInhFrom","Columns Inherit From",NULL,PropertyType.Text})
-	
+
 							oControl:aProperties:Add(VODesignProperty{"_IsDataPage","Page Data Aware",NULL,"YESNO"})
 							oControl:aProperties:Add(VODesignProperty{"_PageCaption","Page Caption",NULL,PropertyType.Text})
 							oControl:aProperties:Add(VODesignProperty{"_PageName","Page Name",NULL,PropertyType.Text})
@@ -302,7 +302,7 @@ STATIC CLASS VOWindowEditorTemplate
 									oControl:aProperties:Add(oProp)
 								ENDIF
 							ENDIF
-	
+
 						CASE cLeft:IndexOf("ASSIGN") == 0 .or. cLeft:IndexOf("INHERITCLASSNAME") == 0
 							nAt := cRight:IndexOf(',')
 							IF nAt != - 1
@@ -373,7 +373,7 @@ STATIC CLASS VOWindowEditorTemplate
 									oControl:aProperties:Add(oProp)
 								END CASE
 							ENDIF
-	
+
 						CASE cLeft:IndexOf("METHOD") == 0
 							nAt := cRight:IndexOf(',')
 							IF nAt != - 1
@@ -406,10 +406,10 @@ STATIC CLASS VOWindowEditorTemplate
 									oControl:aProperties:Add(oProp)
 								END CASE
 							ENDIF
-	
+
 						END CASE
 					ENDIF
-	
+
 				CASE eSection == CavoWedInfSection.AssignMap
 					nAt := cLine:IndexOf('=')
 					IF nAt != -1
@@ -419,7 +419,7 @@ STATIC CLASS VOWindowEditorTemplate
 							VOWindowEditorTemplate.aAssignMap:Add(cLeft , cRight)
 						ENDIF
 					ENDIF
-	
+
 				CASE eSection == CavoWedInfSection.Supplemental
 					nAt := cLine:IndexOf('=')
 					IF nAt != -1
@@ -438,8 +438,8 @@ STATIC CLASS VOWindowEditorTemplate
 							ENDIF
 						ENDIF
 					ENDIF
-	
-				CASE eSection == CavoWedInfSection.Options
+
+/*				CASE eSection == CavoWedInfSection.Options
 					nAt := cLine:IndexOf('=')
 					IF nAt != -1
 						cLeft := cLine:Substring(0 , nAt):ToUpper()
@@ -451,29 +451,29 @@ STATIC CLASS VOWindowEditorTemplate
 							CASE cLeft == "GRIDY"
 								VOWindowEditorTemplate.GridY := Int32.Parse(cRight)
 							END CASE
-                  CATCH
-                     NOP
+						CATCH
+                            NOP
 						END TRY
-					ENDIF
-	
+					ENDIF*/
+
 				END CASE
-				
+
 			END DO
 
 			lSuccess := TRUE
-			
+
 		CATCH
-			
+
 			Funcs.ErrorBox("Error loading file " + cCavoWed , Resources.EditorName)
-		
+
 		FINALLY
 
 			IF oReader != NULL
 				oReader:Close()
 			END IF
-		
+
 		END TRY
-		
+
 	RETURN lSuccess
 
 
@@ -526,7 +526,7 @@ STATIC CLASS VOWindowEditorTemplate
 			RETURN VOWindowEditorTemplate.aAssignMap[cKey]
 		ENDIF
 	RETURN NULL
-	
+
 END CLASS
 
 CLASS VOControlTemplate
@@ -582,5 +582,5 @@ CLASS VOControlTemplate
 			END IF
 		ENDIF
 	RETURN
-	
+
 END CLASS

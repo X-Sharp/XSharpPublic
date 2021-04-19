@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -35,7 +35,7 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
         timer       := System.Timers.Timer{5000}
         timer:Elapsed += OnTimer
         timer:AutoReset := TRUE
-        
+
     /// <summary>Add a DataSession to the list of open datasessions</summary>
     /// <param name="session">The DataSession to add </param>
     STATIC METHOD Add(session as DataSession) AS VOID
@@ -101,7 +101,8 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
         // This runs at process exit in the GC Thread
         IF sessions != NULL
             BEGIN LOCK sessions
-                FOREACH var session in sessions:ToArray()
+                FOREACH VAR session IN sessions:ToArray()
+
                     Close(session)
                 NEXT
                 RuntimeState:SetDataSession(NULL)
@@ -119,7 +120,7 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
     PUBLIC PROPERTY Name as STRING AUTO
     #endregion
     /// <summary>Construct a new datasession</summary>
-    /// <param name="cName">The name for this datasession.</param> 
+    /// <param name="cName">The name for this datasession.</param>
     PUBLIC CONSTRUCTOR(cName as STRING)
         SUPER()
         SELF:Name   := cName
@@ -129,7 +130,7 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
 
     /// <summary>Construct a new datasession</summary>
     /// <param name="cName">The name for this datasession.</param>
-    /// <param name="nId">The ID for the datasession.</param> 
+    /// <param name="nId">The ID for the datasession.</param>
     PUBLIC CONSTRUCTOR(nId AS LONG, cName as STRING)
         SUPER()
         SELF:Name   := cName

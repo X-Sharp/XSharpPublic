@@ -62,13 +62,13 @@
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE;DOCUMENTATION</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;DOCUMENTATION;RUNTIME</DefineConstants>
     <DisabledWarnings>1591,9015,169,649</DisabledWarnings>
     <CommandLineOption>/noclipcall</CommandLineOption>
 	<vo15>true</vo15>
@@ -78,6 +78,6 @@
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;RUNTIME</DefineConstants>
   </PropertyGroup>
 </Project>

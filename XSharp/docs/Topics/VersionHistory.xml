@@ -66,7 +66,7 @@
       <li styleclass="Body Text">Wildcard markers (such as the dbfAndFields marker in the previous bullet) now can also appear in the middle of a UDC. They will continue to match until the first token after the Wildcard marker (in the above example the FROM keyword) is found.</li>
       <li styleclass="Body Text">The standard header files (from the XSharp\Include folder) are now also included in the compiler as resource. When the file is missing then these files will be loaded from the resource.</li>
       <li styleclass="Body Text">The preprocessor was not generating macros for __FOX2__ . This has been fixed (but it is now obsolete, see the FoxPro dialect)</li>
-      <li styleclass="Body Text">When wildcard tokens are included with a stringify result marker then the whitespace between these tokens is correctly included in the output of the UDC.</li>
+      <li styleclass="Body Text">When wildcard tokens are included with a stringify result marker then the white space between these tokens is correctly included in the output of the UDC.</li>
     </list>
     <para styleclass="Heading3">FoxPro dialect</para>
     <list id="116" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -87,7 +87,7 @@
       <li styleclass="Body Text">Fixed a problem with SetScope() for the DBFCDX RDD when the previous scope was empty. (#578)</li>
       <li styleclass="Body Text">Adjusted the Secs() function to make it more Visual Objects compatible.</li>
       <li styleclass="Body Text">The enumerator for Array and Array Of now returns an enumerator for a clone of the internal data, to prevent runtime errors when you are modifying the array from within your code.</li>
-      <li styleclass="Body Text">The various XBase types (DATE, FLOAT, CURRENCY, BINARY, ARRAY, USUAL etc.) are now marked with a [Serializable] attribute and implement ISerializable. They all work fine with the BinaryFormatter() classes, since that class not only stores the values but also the values in the stream. Most of the types also work with the JsonSerializer, however not all of values can be correctly deserialized with the Json serializers. (#529)</li>
+      <li styleclass="Body Text">The various Xbase types (DATE, FLOAT, CURRENCY, BINARY, ARRAY, USUAL etc.) are now marked with a [Serializable] attribute and implement ISerializable. They all work fine with the BinaryFormatter() classes, since that class not only stores the values but also the values in the stream. Most of the types also work with the JsonSerializer, however not all of values can be correctly deserialized with the Json serializers. (#529)</li>
       <li styleclass="Body Text">The CompareTo() operator on the Date type was not sorting the values correctly because it was making an incorrect assumption about the memory layout of the elements in the structure. This has been fixed.</li>
       <li styleclass="Body Text">We have made some changes in the error handling for functions such as DbUseArea() and DbSkip(). They were not always behaving the same as Visual Objects when an error occurs (for example when a file could not be opened). We have now also added an error handler similar to the default error handler in Visual Objects with a dialog that has the Abort, Retry and Ignore buttons. The Retry button is only enabled when the error object has the property &quot;CanRetry&quot; set to TRUE. (#587, #594)</li>
       <li styleclass="Body Text">Fixed Val() incompatibility with string that has more than one decimal place (#572)</li>
@@ -95,7 +95,7 @@
     </list>
     <para styleclass="Heading3">RDD system</para>
     <list id="117" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">DbCommit and DbCommitAll were failing when a workarea is opened Readonly. This has been fixed. (#554)</li>
+      <li styleclass="Body Text">DbCommit and DbCommitAll were failing when a workarea is opened Read only. This has been fixed. (#554)</li>
       <li styleclass="Body Text">When FoxPro CDX file has more than one tag and one of the tags has an invalid index expression (for example a missing closing parenthesis, which was accepted by Visual Objects) then the RDD system did not open the CDX at all. We now open the CDX with the exception of the tag with the corrupted index expression. (#542)</li>
       <li styleclass="Body Text">Added support for Advantage GUID and Int64 columns. GUIDs are returned as string and INT64 as INT64. We have also added some missing DEFINE values from the ACE header file.</li>
       <li styleclass="Body Text">Fixed a problem with incorrect negative Lock Offsets in the DBFNTX driver.</li>
@@ -122,7 +122,7 @@
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">We have added support for SysObject (#596)</li>
     </list>
-    <para styleclass="Heading3">XBase++ dialect</para>
+    <para styleclass="Heading3">Xbase++ dialect</para>
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed a problem with XPP Collation tables that was introduced in 2.7</li>
     </list>
@@ -130,7 +130,7 @@
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added the <link displaytype="text" defaultstyle="true" type="topiclink" href="html\T_XSharp_Internal_NeedsAccessToLocalsAttribute.htm" domain="XSharpRef.chm">NeedsAccessToLocalsAttribute</link> for the /fox2 compiler option</li>
       <li styleclass="Body Text">Adjusted the code that exposes the values of LOCAL variables to functions such as Type() and SqlExec().</li>
-      <li styleclass="Body Text">Several funcitons have been marked with the new attributes so they will be able to &quot;see&quot; local variables.</li>
+      <li styleclass="Body Text">Several functions have been marked with the new attributes so they will be able to &quot;see&quot; local variables.</li>
       <li styleclass="Body Text">Added an overload of TransForm() with a single argument.</li>
       <li styleclass="Body Text">Fixed a problem with the SQLExec() function and sql statements that contain a &quot;:&quot; (colon) character.</li>
       <li styleclass="Body Text">We have added the Bit..() functions (thanks Antonio)</li>
@@ -155,7 +155,8 @@
       <li styleclass="Body Text">We have added 2 new options to the formatting options for the editor: &quot;Trim Trailing Whitespace&quot; and &quot;Insert Final Newline&quot;</li>
       <li styleclass="Body Text">Loading a MsTest project did not always work. The project file for MsTest projects will be adjusted when opening the project. (#563)</li>
       <li styleclass="Body Text">We have added support for t4 templates (text files with a .tt extension containing scripts to generate code) </li>
-      <li styleclass="Body Text">Adding an extisting &#160;.resx file did not make it a child of a parent form.prg (#197)</li>
+      <li styleclass="Body Text">Adding an existing &#160;.resx file did not make it a child of a parent form.prg (#197)</li>
+      <li styleclass="Body Text">The project property dialogs have been completely redesigned.</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading3">Source code editor</para>

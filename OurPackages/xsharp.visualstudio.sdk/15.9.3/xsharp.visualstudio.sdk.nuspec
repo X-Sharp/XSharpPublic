@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>XSharp.VisualStudio.SDK</id>
+    <version>15.9.3</version>
+    <title>XSharp.VisualStudio.SDK</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft,VisualStudioExtensibility</owners>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <licenseUrl>https://go.microsoft.com/fwlink/?LinkID=746386</licenseUrl>
+    <projectUrl>https://aka.ms/vsextensibility</projectUrl>
+    <iconUrl>https://aka.ms/vsextensibilityicon</iconUrl>
+    <description>**Patched** Meta package containing core Visual Studio SDK Reference Assemblies</description>
+    <summary>**Patched** Meta package containing core Visual Studio SDK Reference Assemblies</summary>
+    <releaseNotes>https://go.microsoft.com/fwlink/?linkid=836359</releaseNotes>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <tags>Microsoft VSSDK</tags>
+    <dependencies>
+      <dependency id="EnvDTE100" version="10.0.3" />
+      <dependency id="Microsoft.VisualStudio.CommandBars" version="8.0.0" />
+      <dependency id="Microsoft.VisualStudio.ComponentModelHost" version="15.8.525" />
+      <dependency id="Microsoft.VisualStudio.CoreUtility" version="15.8.525" />
+      <dependency id="Microsoft.VisualStudio.Debugger.Engine" version="15.9.28307" />
+      <dependency id="Microsoft.VisualStudio.Debugger.Interop" version="8.0.50729" />
+      <dependency id="Microsoft.VisualStudio.Debugger.Interop.10.0" version="10.0.30320" />
+      <dependency id="Microsoft.VisualStudio.Debugger.Interop.12.0" version="12.0.21006" />
+      <dependency id="Microsoft.VisualStudio.Debugger.Interop.14.0" version="14.3.25408" />
+      <dependency id="Microsoft.VisualStudio.Debugger.Interop.15.0" version="15.9.28307" />
+      <dependency id="Microsoft.VisualStudio.Designer.Interfaces" version="1.1.4323" />
+      <dependency id="Microsoft.VisualStudio.Editor" version="15.8.525" />
+      <dependency id="Microsoft.VisualStudio.ImageCatalog" version="15.9.28307" />
+      <dependency id="Microsoft.VisualStudio.Language" version="15.8.525" />
+      <dependency id="Microsoft.VisualStudio.Language.Intellisense" version="15.8.525" />
+      <dependency id="Microsoft.VisualStudio.Language.NavigateTo.Interfaces" version="15.8.525" />
+      <dependency id="Microsoft.VisualStudio.Language.StandardClassification" version="15.8.525" />
+      <dependency id="Microsoft.VisualStudio.LanguageServer.Client" version="15.9.3032" />
+      <dependency id="Microsoft.VisualStudio.OLE.Interop" version="7.10.6071" />
+      <dependency id="Microsoft.VisualStudio.Package.LanguageService.15.0" version="15.9.28307" />
+      <dependency id="Microsoft.VisualStudio.ProjectAggregator" version="8.0.50728" />
+      <dependency id="Microsoft.VisualStudio.ProjectSystem.Sdk" version="15.8.243" />
+      <dependency id="Microsoft.VisualStudio.Setup.Configuration.Interop" version="1.16.30" />
+      <dependency id="Microsoft.VisualStudio.Shell.15.0" version="15.9.28307" />
+      <dependency id="Microsoft.VisualStudio.Shell.Design" version="15.9.28307" />
+      <dependency id="Microsoft.VisualStudio.Shell.Embeddable" version="15.9.28307" />
+      <dependency id="Microsoft.VisualStudio.Shell.Interop" version="7.10.6072" />
+      <dependency id="Microsoft.VisualStudio.Shell.Interop.15.1.DesignTime" version="15.0.26929" />
+      <dependency id="Microsoft.VisualStudio.Shell.Interop.15.5.DesignTime" version="15.6.27413" />
+      <dependency id="Microsoft.VisualStudio.Shell.Interop.15.7.DesignTime" version="15.7.1" />
+      <dependency id="Microsoft.VisualStudio.Shell.Interop.15.8.DesignTime" version="15.8.1" />
+      <dependency id="Microsoft.VisualStudio.TaskRunnerExplorer.14.0" version="14.0.0" />
+      <dependency id="Microsoft.VisualStudio.TextManager.Interop.12.1.DesignTime" version="12.1.30330" />
+      <dependency id="Microsoft.VisualStudio.TextTemplating.15.0" version="15.9.28307" />
+      <dependency id="Microsoft.VisualStudio.TextTemplating.Interfaces.15.0" version="15.9.28307" />
+      <dependency id="Microsoft.VisualStudio.TextTemplating.VSHost.15.0" version="15.9.28307" />
+      <dependency id="Microsoft.VisualStudio.Threading" version="15.8.132" />
+      <dependency id="Microsoft.VisualStudio.Web.BrowserLink.12.0" version="12.0.0" />
+      <dependency id="Microsoft.VisualStudio.Workspace.VSIntegration" version="15.0.485" />
+      <dependency id="Microsoft.Win32.Primitives" version="4.3.0" />
+      <dependency id="Newtonsoft.Json" version="9.0.1" />
+      <dependency id="StreamJsonRpc" version="1.3.23" />
+      <dependency id="System.Collections.Immutable" version="1.5.0" />
+      <dependency id="System.ComponentModel.Composition" version="4.5.0" />
+      <dependency id="VSLangProj100" version="10.0.30320" />
+      <dependency id="VSLangProj110" version="11.0.61031" />
+      <dependency id="VSLangProj140" version="14.0.25030" />
+      <dependency id="VSLangProj150" version="15.0.26229" />
+      <dependency id="VSLangProj157" version="15.7.0" />
+      <dependency id="VSLangProj158" version="15.8.0" />
+      <dependency id="VSLangProj2" version="7.0.5001" />
+    </dependencies>
+  </metadata>
+</package>

@@ -211,8 +211,7 @@ namespace XSharp.Project
                 if (textLines == null)
                 {
                     // Try get the text buffer from textbuffer provider
-                    IVsTextBufferProvider textBufferProvider = dataObject as IVsTextBufferProvider;
-                    if (textBufferProvider != null)
+                    if (dataObject is IVsTextBufferProvider textBufferProvider)
                     {
                         textBufferProvider.GetTextBuffer(out textLines);
                     }

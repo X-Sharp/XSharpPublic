@@ -167,20 +167,11 @@
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.CoreUtility">
-      <Version>15.8.525</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>15.9.3</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop">
-      <Version>7.10.6073</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
-      <Version>12.0.30113</Version>
+      <Version>16.9.31213.332</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Threading">
-      <Version>15.8.209</Version>
+    <PackageReference Include="XSharp.VisualStudio.SDK">
+      <Version>15.9.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

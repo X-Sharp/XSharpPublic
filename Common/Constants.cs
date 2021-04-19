@@ -8,12 +8,16 @@ namespace XSharp
     internal static class Constants
     {
         internal const string LanguageName = "XSharp";
-        internal const string Company = "XSharp BV";
+        internal const string Company = "XSharpBV";
         internal const string RegCompany = "XSharpBV";
         internal const string ProductName = "XSharp Cahors";
         internal const string Product = "XSharp";
         // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE
+#if RUNTIME
+        internal const string Version = "2.6.0.0";
+#else
         internal const string Version = "2.8.0.0";
+#endif
         internal const string FileVersion = "2.8.0.10";
         internal const string ProductVersion = "2.8 GA";
         internal const string PublicKey = "ed555a0467764586";

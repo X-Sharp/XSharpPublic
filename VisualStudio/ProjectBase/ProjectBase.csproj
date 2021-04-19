@@ -231,9 +231,6 @@
     <PackageReference Include="Microsoft.Build.Tasks.Core">
       <Version>15.9.20</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>15.9.3</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes">
       <Version>15.0.36</Version>
     </PackageReference>
@@ -254,6 +251,9 @@
     </PackageReference>
     <PackageReference Include="VSSDK.VSHelp">
       <Version>7.0.4</Version>
+    </PackageReference>
+    <PackageReference Include="XSharp.VisualStudio.SDK">
+      <Version>15.9.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

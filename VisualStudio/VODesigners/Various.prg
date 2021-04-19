@@ -94,6 +94,9 @@ CLASS WindowDesignerOptions
 		SELF:lUseGrid := XEditorSettings.ShowGrid
 		SELF:lShowGrid := XEditorSettings.ShowGrid
 		SELF:oGridSize := Size{XEditorSettings.GridX , XEditorSettings.GridY}
+        IF SELF:oGridSize:Width < 1 .OR. SELF:oGridSize:Height < 1
+            SELF:oGridSize := Size{8 , 8}
+        ENDIF
 
 		SELF:oColorSelected := Color.Blue
 		SELF:oColorDefault := Color.DarkBlue
@@ -243,53 +246,53 @@ CLASS ProgressBarForm INHERIT System.Windows.Forms.Form
 	CONSTRUCTOR(cTitle AS STRING , nMaximum AS INT)
 
 		SUPER()
-		
+
 		LOCAL oCancelButton AS System.Windows.Forms.Button
 		LOCAL oGroupBox1 AS System.Windows.Forms.GroupBox
-	
+
 		oCancelButton := System.Windows.Forms.Button{}
 		oGroupBox1 := System.Windows.Forms.GroupBox{}
 		SELF:oProgressBar := System.Windows.Forms.ProgressBar{}
-	
+
 		SELF:SuspendLayout()
-	
+
 		SELF:ClientSize := System.Drawing.Size{384 , 96}
 		SELF:FormBorderStyle := System.Windows.Forms.FormBorderStyle.FixedDialog
 		SELF:Location := System.Drawing.Point{100 , 100}
 		SELF:MaximizeBox := FALSE
 		SELF:MinimizeBox := FALSE
-	
+
 		oCancelButton:Click += System.EventHandler{ SELF , @CancelButton_Click() }
 		oCancelButton:Location := System.Drawing.Point{294 , 69}
 		oCancelButton:Size := System.Drawing.Size{85 , 23}
 		oCancelButton:TabIndex := 1
 		oCancelButton:Text := "&Cancel"
 		SELF:Controls:Add(oCancelButton)
-		
+
 		oGroupBox1:SuspendLayout()
 		oGroupBox1:Location := System.Drawing.Point{8 , 0}
 		oGroupBox1:Name := "GroupBox1"
 		oGroupBox1:Size := System.Drawing.Size{368 , 64}
 		oGroupBox1:TabIndex := 0
 		SELF:Controls:Add(oGroupBox1)
-		
-	
+
+
 		SELF:oProgressBar:Location := System.Drawing.Point{8 , 22}
 		SELF:oProgressBar:Name := "ProgressBar"
 		SELF:oProgressBar:Size := System.Drawing.Size{352 , 23}
 		SELF:oProgressBar:TabIndex := 0
 		oGroupBox1:Controls:Add(SELF:oProgressBar)
-		
+
 		oGroupBox1:ResumeLayout()
 		SELF:ResumeLayout()
-	
+
 		SELF:Text := cTitle
 		SELF:oProgressBar:Minimum := 0
 		SELF:oProgressBar:Maximum := nMaximum
 		SELF:StartPosition := FormStartPosition.CenterParent
 		SELF:TopMost := TRUE
 		SELF:ShowInTaskbar := FALSE
-	
+
 	RETURN
 	PROTECTED METHOD OnClosing(e AS System.ComponentModel.CancelEventArgs) AS VOID
 		SUPER:OnClosing(e)

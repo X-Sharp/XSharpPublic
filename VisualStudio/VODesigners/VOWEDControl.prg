@@ -25,8 +25,9 @@ CLASS VOWEDControl INHERIT Panel
     CONSTRUCTOR()
         SUPER()
         SELF:oOptions := WindowDesignerOptions{}
-        SELF:oOptions:lUseGrid := XEditorSettings.ShowGrid
-        SELF:oOptions:lShowGrid := XEditorSettings.ShowGrid
+        //SELF:oOptions:lUseGrid := XEditorSettings.ShowGrid
+        //SELF:oOptions:lShowGrid := XEditorSettings.ShowGrid
+        //SELF:oOptions:oGridSize := Size{XEditorSettings.GridX , XEditorSettings.GridY}
         SELF:AutoScroll := TRUE
     RETURN
 
@@ -40,16 +41,16 @@ CLASS VOWEDControl INHERIT Panel
         VOWEDControl.InitializeGrid()
         VOWEDControl.InitializeToolbox()
         VOWEDControl.ToolBox:SelectPointer()
-        
-        SELF:oOptions:oGridSize := Size{VOWindowEditorTemplate.GridX , VOWindowEditorTemplate.GridY}
-        
+
+        //SELF:oOptions:oGridSize := Size{VOWindowEditorTemplate.GridX , VOWindowEditorTemplate.GridY}
+
 /*        IF TRUE .and. cFileName:ToUpper():Contains("MENU")
         	SELF:oMed := VOMenuEditor{SELF , VOWEDControl.Grid}
         	SELF:oEditor := SELF:oMed
         	SELF:oMed:OpenVNmnu(cFileName)
             RETURN TRUE
         ENDIF*/
-        
+
     	SELF:oWed := VOWindowEditor{SELF , SELF:oOptions , VOWEDControl.Grid , VOWEDControl.ToolBox}
     	SELF:oEditor := SELF:oWed
         IF .not. SELF:oWed:Open(cFileName)
@@ -65,7 +66,7 @@ CLASS VOWEDControl INHERIT Panel
 /*		IF TRUE .and. cFileName:ToUpper():Contains("FIELDSPEC")
             RETURN SELF:OpenFieldSpec(cFileName)
         ENDIF*/
-		
+
 //		MessageBox.Show(cFileName:ToUpper())
 /*		IF TRUE .and. cFileName:ToUpper():Contains("SERVER.CONTROLS")
             RETURN SELF:OpenDBServer(cFileName)
@@ -78,9 +79,9 @@ CLASS VOWEDControl INHERIT Panel
 		ENDIF*/
 		VOWEDControl.InitializeGrid()
 //		VOWEDControl.ToolBox:SelectPointer()
-		
+
 //		SELF:oOptions:oGridSize := Size{VOWindowEditorTemplate.GridX , VOWindowEditorTemplate.GridY}
-		
+
 		SELF:oMed := VOMenuEditor{SELF , VOWEDControl.Grid}
 		SELF:oEditor := SELF:oMed
 		IF .not. SELF:oMed:Open(cFileName)
@@ -98,9 +99,9 @@ CLASS VOWEDControl INHERIT Panel
 		ENDIF*/
 		VOWEDControl.InitializeGrid()
 //		VOWEDControl.ToolBox:SelectPointer()
-		
+
 //		SELF:oOptions:oGridSize := Size{VOWindowEditorTemplate.GridX , VOWindowEditorTemplate.GridY}
-		
+
 		SELF:oFed := VOFieldSpecEditor{SELF , VOWEDControl.Grid}
 		SELF:oEditor := SELF:oFed
 		IF .not. SELF:oFed:Open(cFileName)
@@ -113,7 +114,7 @@ CLASS VOWEDControl INHERIT Panel
     METHOD OpenDBServer(cFileName AS STRING) AS LOGIC
 
 		VOWEDControl.InitializeGrid()
-		
+
 		SELF:oDed := VODBServerEditor{SELF , VOWEDControl.Grid}
 		SELF:oEditor := SELF:oDed
 		IF .not. SELF:oDed:Open(cFileName)
@@ -158,7 +159,7 @@ CLASS VOWEDControl INHERIT Panel
 			SELF:oEditor:ReadOnly := _lReadOnly
         ENDIF
 	RETURN
-      
+
     METHOD ToggleGrid() AS VOID
         IF SELF:oWed != NULL
             SELF:oWed:ToggleGrid()
@@ -188,7 +189,7 @@ CLASS VOWEDControl INHERIT Panel
             SELF:oWed:TestForm()
         ENDIF
     RETURN
-    
+
     METHOD RecordCommand(cCommand AS STRING) AS VOID
     RETURN
     METHOD GetIndexFromLineAndColumn(n AS INT, m AS INT) AS INT
@@ -244,7 +245,7 @@ CLASS VOWEDControl INHERIT Panel
     	 oForm:Closing += System.ComponentModel.CancelEventHandler{ NULL , @ToolWindowClosing() }
        oForm:Move    += ToolWindowmoving
        oForm:SizeChanged += ToolWindowSizeChanged
-    RETURN 
+    RETURN
     STATIC METHOD ToolWindowClosing(o AS OBJECT , e AS System.ComponentModel.CancelEventArgs) AS VOID
 	    e:Cancel := TRUE
 	    ((Form)o):Hide()
@@ -306,8 +307,8 @@ CLASS VOWEDControl INHERIT Panel
             IF ok
                size  := System.Drawing.Size{ iW, iH}
                point := System.Drawing.Point{ iX, iY}
-            ENDIF            
-            
+            ENDIF
+
          CATCH e AS Exception
             subkey:DeleteValue(keyName+"_W")
             subkey:DeleteValue(keyName+"_H")

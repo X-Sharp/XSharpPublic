@@ -90,9 +90,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
@@ -692,17 +690,8 @@
     </ZipItem>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Designer.Interfaces">
-      <Version>1.1.4323</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>15.9.3</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes">
       <Version>15.0.36</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Threading">
-      <Version>15.8.209</Version>
     </PackageReference>
     <PackageReference Include="System.ComponentModel">
       <Version>4.3.0</Version>
@@ -712,6 +701,9 @@
     </PackageReference>
     <PackageReference Include="VSSDK.VSHelp">
       <Version>7.0.4</Version>
+    </PackageReference>
+    <PackageReference Include="XSharp.VisualStudio.SDK">
+      <Version>15.9.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

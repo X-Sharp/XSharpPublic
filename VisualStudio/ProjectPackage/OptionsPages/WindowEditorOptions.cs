@@ -17,7 +17,7 @@ namespace XSharp.Project.Options
         public int GridX{ get; set; } = 8;
 
         [Category("Grid Settings")]
-        [DisplayName("Grid distance Horizontal")]
+        [DisplayName("Grid distance Vertical")]
         [Description("The vertical distance between the dots in the grid.")]
         [DefaultValue(8)]
         public int GridY { get; set; } = 8;

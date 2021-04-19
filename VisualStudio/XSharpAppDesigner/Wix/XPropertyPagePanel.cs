@@ -441,10 +441,14 @@ namespace Microsoft.VisualStudio.Project
                 tb.Text = openFileDialog.FileName;
             }
         }
-        protected void showMacroDialog(TextBox tb, string caption)
+        protected void showMacroDialog(TextBox tb, string caption, string filter = "")
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var form = new XSharpSLEPropertyForm();
+            if (! string.IsNullOrEmpty(filter))
+            {
+                form.Filter = filter;
+            }
             XBuildMacroCollection mc = new XBuildMacroCollection((ProjectNode)this.ParentPropertyPage.ProjectMgr);
             form.SetMacros(mc);
             form.PropertyText.Text = tb.Text;

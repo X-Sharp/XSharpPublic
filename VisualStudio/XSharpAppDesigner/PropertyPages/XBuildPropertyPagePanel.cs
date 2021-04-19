@@ -257,7 +257,9 @@ namespace XSharp.Project
         private void btnKeyFile_Click(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            this.ShowOpenFileDialog(txtAssemblyOriginatorKeyFile, "Select Key File", "Key Files (*.snk; *.pfx)|*.snk;*.pfx|All files (*.*)|*.*");
+            showMacroDialog(txtAssemblyOriginatorKeyFile, descAssemblyOriginatorKeyFile,
+                "Key Files (*.snk; *.pfx)|*.snk;*.pfx|All files (*.*)|*.*");
+
         }
     }
 }

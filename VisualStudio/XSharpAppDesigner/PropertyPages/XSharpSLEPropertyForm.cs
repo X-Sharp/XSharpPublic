@@ -13,11 +13,12 @@ namespace XSharp.Project
 
     public partial class XSharpSLEPropertyForm : Form
     {
+        internal string Filter { get; set; } = "";
         public XSharpSLEPropertyForm()
         {
             InitializeComponent();
         }
-
+        
         public void SetMacros(XBuildMacroCollection mc)
         {
             MacrosList.BeginUpdate();
@@ -52,6 +53,10 @@ namespace XSharp.Project
         private void InsertFilenameBtn_Click(object sender, EventArgs e)
         {
             OpenFileDialog dlgOpenFile = new OpenFileDialog();
+            if (! String.IsNullOrEmpty(Filter))
+            {
+                dlgOpenFile.Filter = Filter;
+            }
 
             if (dlgOpenFile.ShowDialog() == DialogResult.OK)
             {

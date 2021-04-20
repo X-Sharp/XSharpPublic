@@ -75,7 +75,8 @@ namespace XSharp.LanguageService
 
         [Import(typeof(ITextStructureNavigatorSelectorService))]
         internal ITextStructureNavigatorSelectorService NavigatorService { get; set; }
-
+        // the default key is the VS2019 key.
+        internal static object dropDownBarKey = typeof(IVsCodeWindow);
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             IVsTextLines textlines;
@@ -83,7 +84,7 @@ namespace XSharp.LanguageService
             IVsTextBuffer textBuffer = EditorAdaptersFactoryService.GetBufferAdapter(textView.TextBuffer);
             textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument document);
 
-            XFile file = null; 
+            XFile file = null;
             textViewAdapter.GetBuffer(out textlines);
             if (textlines != null)
             {
@@ -110,31 +111,49 @@ namespace XSharp.LanguageService
                             textView.TextBuffer.Properties.AddProperty(typeof(XFile), file);
                         }
                     }
-                    
+
                     if (file != null)
                     {
                         file.Interactive = true;
                     }
-                    CommandFilter filter = new CommandFilter(textView, CompletionBroker, SignatureHelpBroker, BufferTagAggregatorFactoryService, this );
+                    CommandFilter filter = new CommandFilter(textView, CompletionBroker, SignatureHelpBroker, BufferTagAggregatorFactoryService, this);
                     IOleCommandTarget next;
                     textViewAdapter.AddCommandFilter(filter, out next);
-                    
+
                     filter.Next = next;
                 }
             }
-            IVsCodeWindow codeWindow;
-            if (textView.Properties.TryGetProperty(typeof(IVsCodeWindow), out codeWindow))
+            // For VS 2017 we look for Microsoft.VisualStudio.Editor.Implementation.VsCodeWindowAdapter
+            // For VS 2019 we look for Microsoft.VisualStudio.TextManager.Interop.IVsCodeWindow
+            // Both implement IVsDropdownbarManager
+            IVsDropdownBarManager dropDownBarManager = null;
+            if (dropDownBarKey != null && textView.Properties.ContainsProperty(dropDownBarKey))
             {
-                IVsDropdownBarManager dropDownBarManager = codeWindow as IVsDropdownBarManager;
-                if (dropDownBarManager != null)
+                object window = textView.Properties.GetProperty(dropDownBarKey);
+                dropDownBarManager = window as IVsDropdownBarManager;
+            }
+            if (dropDownBarManager == null)
+            {
+                // look at all the properties to find the one that implements IVsDropdownBarManager
+                foreach (var property in textView.Properties.PropertyList)
                 {
-                    var dropDownClient = new XSharpDropDownClient(textView, codeWindow, file);
-                    dropDownBarManager.RemoveDropdownBar();
-                    dropDownBarManager.AddDropdownBar(2, dropDownClient);
-                    textView.Properties.AddProperty(typeof(IVsDropdownBarManager), dropDownBarManager);
-                    new TextViewClosedHandlerHelper(typeof(IVsDropdownBarManager), textView);
+                    if (property.Value is IVsDropdownBarManager manager)
+                    {
+                        dropDownBarKey = property.Key;  // remember key for next iteration
+                        dropDownBarManager = manager;
+                        break;
+                    }
                 }
             }
+            if (dropDownBarManager != null)
+            {
+                var dropDownClient = new XSharpDropDownClient(textView, file);
+                dropDownBarManager.RemoveDropdownBar();
+                dropDownBarManager.AddDropdownBar(2, dropDownClient);
+                textView.Properties.AddProperty(typeof(IVsDropdownBarManager), dropDownBarManager);
+                new TextViewClosedHandlerHelper(typeof(IVsDropdownBarManager), textView);
+            }
+
         }
         internal static bool IsOurSourceFile(string fileName)
         {

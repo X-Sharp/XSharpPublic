@@ -268,7 +268,7 @@ namespace XSharp.Project
                 var woptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
                 XEditorSettings.ShowGrid = woptions.ShowGrid;
                 XEditorSettings.GridX = woptions.GridX;
-                XEditorSettings.GridY = woptions.GridX;
+                XEditorSettings.GridY = woptions.GridY;
                 XEditorSettings.PasteOffSetX = woptions.PasteOffSetX;
                 XEditorSettings.PasteOffSetY = woptions.PasteOffSetY;
                 XEditorSettings.PartialLasso = woptions.PartialLasso;

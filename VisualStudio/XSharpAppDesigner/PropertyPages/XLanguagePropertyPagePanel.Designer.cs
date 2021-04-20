@@ -122,9 +122,9 @@ namespace XSharp.Project
             this.lblIncludePaths.Location = new System.Drawing.Point(193, 139);
             this.lblIncludePaths.Margin = new System.Windows.Forms.Padding(5, 3, 3, 0);
             this.lblIncludePaths.Name = "lblIncludePaths";
-            this.lblIncludePaths.Size = new System.Drawing.Size(115, 13);
+            this.lblIncludePaths.Size = new System.Drawing.Size(121, 13);
             this.lblIncludePaths.TabIndex = 17;
-            this.lblIncludePaths.Text = "Additionl Include Paths";
+            this.lblIncludePaths.Text = "Additional Include Paths";
             // 
             // chkNS
             // 

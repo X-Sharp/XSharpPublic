@@ -1,6 +1,6 @@
 [General]
 PROJECT = Runtime
-IDEVersion = 1.26
+IDEVersion = 1.28
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 3A2B95E7-CF54-4E77-B22D-FDA94582BA81
@@ -34,7 +34,7 @@ DefaultPropertiesGuid = E02D3177-9FE5-4634-BC3D-B9108BC76452
 
 ; ************** APPLICATION XSharp.Core *************
 Application = XSharp.Core
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -566,7 +566,7 @@ ENDApplication = XSharp.Core
 
 ; ************** APPLICATION XSharp.VO *************
 Application = XSharp.VO
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -574,7 +574,7 @@ Target = 2
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = Vulcan
+Dialect = VO
 Folder = %ProjectPath%\Runtime\XSharp.VO\
 PrgSubFolder = 
 ResourcesSubFolder = 
@@ -679,6 +679,11 @@ FileGUID = 8B6BB1A1-D248-456E-A3FA-9AF099015569
 FileFileGroup = 12DB2134-A8BB-4C2B-8F9D-1697D7532259
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Functions\General.prg
+FileGUID = 26789AAD-2902-40A2-935B-1B8F97416247
+FileFileGroup = 12DB2134-A8BB-4C2B-8F9D-1697D7532259
+FileType = Code
+CopyToBin = 0
 [XSharp.VO References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
@@ -754,7 +759,7 @@ ENDApplication = XSharp.VO
 
 ; ************** APPLICATION Xide.Tests *************
 Application = Xide.Tests
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -873,7 +878,7 @@ ENDApplication = Xide.Tests
 
 ; ************** APPLICATION Xide.Unit *************
 Application = Xide.Unit
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -992,7 +997,7 @@ ENDApplication = Xide.Unit
 
 ; ************** APPLICATION XSharp.Core.Tests *************
 Application = XSharp.Core.Tests
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1145,7 +1150,7 @@ ENDApplication = XSharp.Core.Tests
 
 ; ************** APPLICATION XSharp.VO.Tests *************
 Application = XSharp.VO.Tests
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1286,7 +1291,7 @@ VO9=0
 VO10=0
 VO11=0
 VO12=0
-VO13=0
+VO13=1
 VO14=1
 VO16=0
 FOX1=0
@@ -1334,7 +1339,7 @@ ENDApplication = XSharp.VO.Tests
 
 ; ************** APPLICATION XSharp.Rdd *************
 Application = XSharp.Rdd
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1921,7 +1926,7 @@ ENDApplication = XSharp.Rdd
 
 ; ************** APPLICATION XSharp.Rdd.Tests *************
 Application = XSharp.Rdd.Tests
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2047,7 +2052,7 @@ ENDApplication = XSharp.Rdd.Tests
 
 ; ************** APPLICATION XSharp.RT *************
 Application = XSharp.RT
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2055,7 +2060,7 @@ Target = 2
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = Vulcan
+Dialect = VO
 Folder = %ProjectPath%\Runtime\XSharp.RT\
 PrgSubFolder = 
 ResourcesSubFolder = 
@@ -2431,7 +2436,7 @@ ENDApplication = XSharp.RT
 
 ; ************** APPLICATION XSharp.XPP *************
 Application = XSharp.XPP
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2626,7 +2631,7 @@ ENDApplication = XSharp.XPP
 
 ; ************** APPLICATION MacroCompiler *************
 Application = MacroCompiler
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2982,7 +2987,7 @@ ENDApplication = MacroCompiler
 
 ; ************** APPLICATION XSharp.Data *************
 Application = XSharp.Data
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3162,7 +3167,7 @@ ENDApplication = XSharp.Data
 
 ; ************** APPLICATION XSharp.VFP *************
 Application = XSharp.VFP
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3391,6 +3396,19 @@ FileGUID = 9F00030B-EDF4-4609-B6CF-0254936651F4
 FileFileGroup = 8B574BCB-AFF6-4A94-BB09-1379F5DD71AB
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Keyboard.prg
+FileGUID = 70DB497F-D449-4200-84AB-8ECCBE0F7458
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\ArrayFunctions.prg
+FileGUID = 2FD4C5A1-F734-4BCF-87C1-455C8A84EAA2
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Classes\FoxArray.prg
+FileGUID = 6131C682-88EA-478C-AFD0-3F9B33ECFCDC
+FileFileGroup = 14E65B3B-7353-48FE-85BA-7F41A74E684C
+FileType = Code
+CopyToBin = 0
 [XSharp.VFP References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Data,1,0,4.0.0.0
@@ -3468,7 +3486,7 @@ ENDApplication = XSharp.VFP
 
 ; ************** APPLICATION XSharp.VFP.Tests *************
 Application = XSharp.VFP.Tests
-IDEVersion = 1.26
+IDEVersion = 1.28
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -3527,6 +3545,14 @@ CopyToBin = 0
 File = %AppPath%\Properties\AssemblyInfo.prg
 FileGUID = 0D460800-F9EE-4E38-BC1E-E635DB0BB4F0
 FileFileGroup = DE3E72D7-6876-4607-9222-1163BC407B1A
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\FoxArraytests.prg
+FileGUID = 43836877-6EB8-4E2E-83F6-530E1D9FEB7A
+FileType = Text
+CopyToBin = 0
+File = %AppPath%\OtherTests.prg
+FileGUID = 8BBC8281-AB33-4D38-B0D9-4E3AEA442753
 FileType = Code
 CopyToBin = 0
 [XSharp.VFP.Tests References]

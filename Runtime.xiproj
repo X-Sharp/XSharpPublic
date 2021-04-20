@@ -502,7 +502,7 @@ Modified = 0
 [XSharp.Core Native Resources]
 [XSharp.Core License files]
 [XSharp.Core General Options]
-Switches=/nowarn:162
+Switches=/nowarn:162`/define:RUNTIME
 ZeroArrays=1
 CaseSensitive=1
 ImplicitNamespace=0
@@ -695,7 +695,7 @@ ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
 [XSharp.VO Native Resources]
 [XSharp.VO License files]
 [XSharp.VO General Options]
-Switches=/nowarn:162
+Switches=/nowarn:162`/define:RUNTIME
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=1
@@ -1862,7 +1862,7 @@ ReferenceGAC = CLR4,System.Data,1,0,4.0.0.0
 [XSharp.Rdd Native Resources]
 [XSharp.Rdd License files]
 [XSharp.Rdd General Options]
-Switches=/nostddefs
+Switches=/nostddefs`/define:RUNTIME
 ZeroArrays=1
 CaseSensitive=1
 ImplicitNamespace=0
@@ -2372,7 +2372,7 @@ ReferenceGAC = CLR4,System.Data,1,0,4.0.0.0
 [XSharp.RT Native Resources]
 [XSharp.RT License files]
 [XSharp.RT General Options]
-Switches=/nowarn:162
+Switches=/nowarn:162`/define:RUNTIME
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -2567,7 +2567,7 @@ ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 [XSharp.XPP Native Resources]
 [XSharp.XPP License files]
 [XSharp.XPP General Options]
-Switches=
+Switches=/define:RUNTIME
 ZeroArrays=0
 CaseSensitive=1
 ImplicitNamespace=0
@@ -3422,7 +3422,7 @@ ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
 [XSharp.VFP Native Resources]
 [XSharp.VFP License files]
 [XSharp.VFP General Options]
-Switches=
+Switches=/define:RUNTIME
 ZeroArrays=0
 CaseSensitive=1
 ImplicitNamespace=0

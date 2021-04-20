@@ -351,7 +351,7 @@ namespace XSharp.LanguageService
 
         public int OnModeChange(DBGMODE dbgmodeNew)
         {
-            XSettings.DebuggerIsRunning = dbgmodeNew == DBGMODE.DBGMODE_Run;
+            XSettings.DebuggerIsRunning = dbgmodeNew != DBGMODE.DBGMODE_Design;
             return VSConstants.S_OK;
         }
 #endregion

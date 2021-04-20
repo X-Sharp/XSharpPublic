@@ -40,7 +40,6 @@ namespace XSharp.LanguageService
         private bool _lastSorted ;
         private List<string> _relatedFiles;
         private DateTime _lastFileChanged = DateTime.MinValue;
-        private IVsCodeWindow _codeWindow;
 
         static XSharpDropDownClient()
         {
@@ -51,10 +50,9 @@ namespace XSharp.LanguageService
         }
 
 
-        public XSharpDropDownClient(ITextView textView, IVsCodeWindow codeWindow, XFile file)
+        public XSharpDropDownClient(ITextView textView, XFile file)
         {
             _textView = textView;
-            _codeWindow = codeWindow;
             _textView.Caret.PositionChanged += Caret_PositionChanged;
             _textView.Closed += _textView_Closed;
             _file = file;

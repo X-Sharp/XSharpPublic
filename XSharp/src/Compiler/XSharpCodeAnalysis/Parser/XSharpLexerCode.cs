@@ -1564,7 +1564,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
-                    // These entity types at start of line, after modifier or attribute, after DLL or after END
+                // These entity types at start of line, after modifier or attribute, after DLL or after END
                 case CONSTRUCTOR:
                 case DESTRUCTOR:
                 case EVENT:
@@ -1572,7 +1572,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case INTERFACE:
                 case VOSTRUCT:
                 case UNION:
-                case OPERATOR: 
+                case OPERATOR:
                     if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != DLL && lastToken != LBRKT && lastToken != RBRKT && lastToken != END)
                     {
                         return ID;
@@ -1590,12 +1590,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case SYNC:
                 case DEFERRED:
                 case INLINE:    // should not appear after modifier ... 
-                    if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != RBRKT )
+                    if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != RBRKT)
                     {
                         return ID;
                     }
                     break;
-                    // This modifiers at start of line, after modifier or attribute and also after BEGIN or END
+                // This modifiers at start of line, after modifier or attribute and also after BEGIN or END
                 case UNSAFE:
                     if (!StartOfLine(lastToken) && !IsModifier(lastToken) && lastToken != RBRKT && lastToken != BEGIN && lastToken != END)
                     {
@@ -1609,66 +1609,65 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return keyword;
                 case FOX_M:
                     return keyword;
-                default:
-                    switch (lastToken)
-                    {
-                        case CLASS:
-                            if (Dialect == XSharpDialect.XPP)   // XPP uses CLASS instead of STATIC
-                                return keyword;
-                            else
-                                return ID;
-                        case ACCESS:
-                        case ASSIGN:
-                            if (Dialect == XSharpDialect.XPP)   // XPP allows ACCESS ASSIGN or ASSIGN ACCESS in class definition
-                                return keyword;
-                            else
-                                return ID;
+            }
+            // when all else fails...
+            switch (lastToken)
+            {
+                case CLASS:
+                    if (Dialect == XSharpDialect.XPP)   // XPP uses CLASS instead of STATIC
+                        return keyword;
+                    else
+                        return ID;
+                case ACCESS:
+                case ASSIGN:
+                    if (Dialect == XSharpDialect.XPP)   // XPP allows ACCESS ASSIGN or ASSIGN ACCESS in class definition
+                        return keyword;
+                    else
+                        return ID;
 
-                        case DEFINE:
-                            if (Dialect == XSharpDialect.FoxPro )   // FoxPro uses DEFINE CLASS
-                                return keyword;
-                            else
-                                return ID;
+                case DEFINE:
+                    if (Dialect == XSharpDialect.FoxPro)   // FoxPro uses DEFINE CLASS
+                        return keyword;
+                    else
+                        return ID;
 
-                        case LOCAL:
-                            if (keyword == FUNCTION || keyword == PROCEDURE || keyword == ARRAY)    // local function and procedure statement and local array
-                                return keyword;
-                            return ID;
+                case LOCAL:
+                    if (keyword == FUNCTION || keyword == PROCEDURE || keyword == ARRAY)    // local function and procedure statement and local array
+                        return keyword;
+                    return ID;
 
-                        // After these keywords we expect an ID
-                        // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
+                // After these keywords we expect an ID
+                // Some of these also have a possible SELF, DIM, CONST or STATIC clause but these have been excluded above
 
-                        case METHOD:
-                        case PROCEDURE:
-                        case FUNCTION:
-                        case INTERFACE:
-                        case STRUCTURE:
-                        case VOSTRUCT:
-                        case UNION:
-                        case DELEGATE:
-                        case PROPERTY:
-                        case EVENT:
-                        case ENUM:
-                        case MEMBER:
-                        case DIM:
-                        case VAR:
-                        case IMPLIED:
-                        // Linq
-                        case FROM:
-                        case LET:
-                        case JOIN:
-                        case INTO:
-                            return ID;
-                        case USING:
-                            // BEGIN USING can/will be followed by a Variable Declaration
-                            if (keyword != LOCAL && keyword != VAR)
-                                return ID;
-                            break;
-                        case MEMVAR:            // VO & XPP: followed by list of names
-                        case PARAMETERS:
-                            return ID;
-                    }
+                case METHOD:
+                case PROCEDURE:
+                case FUNCTION:
+                case INTERFACE:
+                case STRUCTURE:
+                case VOSTRUCT:
+                case UNION:
+                case DELEGATE:
+                case PROPERTY:
+                case EVENT:
+                case ENUM:
+                case MEMBER:
+                case DIM:
+                case VAR:
+                case IMPLIED:
+                // Linq
+                case FROM:
+                case LET:
+                case JOIN:
+                case INTO:
+                    return ID;
+                case USING:
+                    // BEGIN USING can/will be followed by a Variable Declaration
+                    if (keyword != LOCAL && keyword != VAR)
+                        return ID;
                     break;
+                case MEMVAR:            // VO & XPP: followed by list of names
+                case PARAMETERS:
+                    return ID;
             }
             return keyword;
         }

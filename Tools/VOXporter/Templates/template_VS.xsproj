@@ -41,6 +41,7 @@
     <VO15>true</VO15>
     <VO16>true</VO16>
     <NoStandardDefs>false</NoStandardDefs>
+    <EnforceSelf>True</EnforceSelf>
     <IncludePaths />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">

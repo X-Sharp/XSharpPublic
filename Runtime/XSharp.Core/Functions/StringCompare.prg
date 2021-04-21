@@ -50,9 +50,12 @@ STATIC CLASS XSharp.StringHelpers
         LOCAL adjust AS INT
         lhsLen := strLHS:Length
         rhsLen := strRHS:Length
-        IF lhsLen >= rhsLen
+        IF lhsLen == rhsLen
             nLen := rhsLen
             adjust := 0
+        ELSEIF lhsLen > rhsLen
+            nLen := rhsLen
+            adjust := -1
         ELSE
             nLen := lhsLen
             adjust := 1

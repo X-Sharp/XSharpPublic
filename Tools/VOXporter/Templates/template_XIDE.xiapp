@@ -61,6 +61,7 @@ VO16=1
 LateBound=1
 Unsafe=1
 IgnoreStdDefs=0
+EnforceSelf=1
 Ovf=%option_overflow%
 FOvf=%option_overflow%
 ResponseOnly=0

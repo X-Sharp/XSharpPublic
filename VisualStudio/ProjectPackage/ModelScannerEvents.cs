@@ -11,6 +11,8 @@ using IServiceProvider = System.IServiceProvider;
 using System.IO;
 
 using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
+
 namespace XSharp.Project
 {
     /// <summary>
@@ -41,6 +43,7 @@ namespace XSharp.Project
         {
             // Restart scanning. Was suspended on opening of project system
             // or closing of previous solution
+            //
             EnvDTE80.DTE2 dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
             EnvDTE80.Solution2 solution = dte.Solution as EnvDTE80.Solution2;
             var solutionFile = solution.FullName;
@@ -92,6 +95,35 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
+        public override int OnQueryCloseSolution(object pUnkReserved, ref int cancel)
+        {
+            // close OUR documents that are opened in design mode.
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                EnvDTE80.DTE2 dte = ServiceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
+                var docs = dte.Documents;
+                var windows = new List<EnvDTE.Window>();
+                foreach (EnvDTE.Document doc in docs)
+                {
+                    if (doc.FullName.ToLower().EndsWith(".prg"))
+                    {
+                        var wnd = doc.ActiveWindow;
+                        if (wnd != null && wnd.Caption.EndsWith("]"))
+                        {
+                            windows.Add(wnd);
+                        }
+                    }
+                }
+                foreach (var wnd in windows)
+                {
+                    wnd.Document.Save();
+                    wnd.Close();
+                }
+
+            });
+            return VSConstants.S_OK;
+        }
         public override int OnBeforeCloseSolution(object pUnkReserved)
         {
             XSharpModel.XSolution.IsClosing = true;

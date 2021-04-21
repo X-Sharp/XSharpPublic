@@ -29,7 +29,6 @@ namespace Microsoft.VisualStudio.Project
         public SolutionListenerForBuildDependencyUpdate(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
 
         }
         #endregion

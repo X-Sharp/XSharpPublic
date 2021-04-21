@@ -30,8 +30,6 @@ namespace Microsoft.VisualStudio.Project
         public SolutionListenerForProjectReferenceUpdate(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
         }
         #endregion
 

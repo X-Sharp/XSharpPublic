@@ -37,8 +37,6 @@ namespace Microsoft.VisualStudio.Project
         internal SolutionListenerForProjectEvents(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
         }
         #endregion
 

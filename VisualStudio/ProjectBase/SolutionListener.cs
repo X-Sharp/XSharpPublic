@@ -42,11 +42,14 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentNullException("serviceProviderParameter");
             }
-                this.serviceProvider = serviceProviderParameter;
-            ThreadHelper.ThrowIfNotOnUIThread();
+            this.serviceProvider = serviceProviderParameter;
+            this.solution = null;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                this.solution = this.serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
+            });
 
-            this.solution = this.serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
-            
             if (this.solution == null)
             {
                 throw new InvalidOperationException("Could not get the IVsSolution object from the services exposed by this project");

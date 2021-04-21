@@ -8,7 +8,7 @@ namespace XSharp
     internal static class Constants
     {
         internal const string LanguageName = "XSharp";
-        internal const string Company = "XSharpBV";
+        internal const string Company = "XSharp BV";
         internal const string RegCompany = "XSharpBV";
         internal const string ProductName = "XSharp Cahors";
         internal const string Product = "XSharp";

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -40,7 +40,7 @@ STATIC CLASS XSharp.StringHelpers
 		encDos			:= RuntimeState.DosEncoding
         encWin			:= RuntimeState.WinEncoding
 		RETURN
-		
+
     /// <exclude />
 	STATIC METHOD CompareWindows(strLHS AS STRING, strRHS AS STRING) AS INT
 		LOCAL nLen	AS INT
@@ -55,10 +55,10 @@ STATIC CLASS XSharp.StringHelpers
             adjust := 0
         ELSEIF lhsLen > rhsLen
             nLen := rhsLen
-            adjust := -1
+            adjust := 1
         ELSE
             nLen := lhsLen
-            adjust := 1
+            adjust := -1
         ENDIF
 		// Lock because we are using the same byte array for each comparison
         BEGIN LOCK gate
@@ -69,8 +69,8 @@ STATIC CLASS XSharp.StringHelpers
 			encWin:GetBytes(strLHS, 0, nLen, bLHS, 0)
 			encWin:GetBytes(strRHS, 0, nLen, bRHS, 0)
             result := CompareWindows(bLHS, bRHS, nLen)
-            IF result == 0          // when equal: if lhs shorter than rhs then return -1
-                result -= adjust    
+            IF result == 0          // when equal: use result that takes into account the length of the strings
+                result := adjust
             ENDIF
 
         END LOCK
@@ -87,8 +87,8 @@ STATIC CLASS XSharp.StringHelpers
             result := 0
         ENDIF
         RETURN result
-		
-		
+
+
     /// <exclude />
     STATIC METHOD CompareClipper(strLHS AS STRING, strRHS AS STRING) AS INT
 		LOCAL rLen   AS INT
@@ -127,7 +127,7 @@ STATIC CLASS XSharp.StringHelpers
             ENDIF
             nLen := Math.Min(nLen, Math.Min(bLHS:Length, bRHS:Length))
             IF collationTable == NULL
-                VAR oErr := Error{Gencode.EG_NULLVAR,nameof(collationTable),"The collation table is not initialized"} 
+                VAR oErr := Error{Gencode.EG_NULLVAR,nameof(collationTable),"The collation table is not initialized"}
                 oErr:FuncSym := __FUNCTION__
                 THROW oErr
             ELSEIF collationTable:Length < Byte.MaxValue+1
@@ -152,7 +152,7 @@ STATIC CLASS XSharp.StringHelpers
 						// this normally only happens when 2 characters are mapped to the same weight
 						// that could for example happen when ü and u have the same weight
 						// I am not sure if this ever happens. If would make creating an index unreliable
-						// most likely the ü will be sorted between u and v. 
+						// most likely the ü will be sorted between u and v.
 					ENDIF
 				ENDIF
 			NEXT

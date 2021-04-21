@@ -502,6 +502,9 @@ namespace XSharp.LanguageService
             {
                 switch ((VSConstants.VSStd2KCmdID)nCmdID)
                 {
+                    case VSConstants.VSStd2KCmdID.HELPKEYWORD:
+                    case VSConstants.VSStd2KCmdID.HELP:
+                        break;
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
@@ -548,6 +551,11 @@ namespace XSharp.LanguageService
             {
                 switch ((VSConstants.VSStd97CmdID)nCmdID)
                 {
+                    case VSConstants.VSStd97CmdID.F1Help:
+                    case VSConstants.VSStd97CmdID.WindowHelp:
+                        //handled = true;
+                        //Todo RvdH Call X# Help
+                        break;
                     case VSConstants.VSStd97CmdID.Save:
                     case VSConstants.VSStd97CmdID.SaveAs:
                     case VSConstants.VSStd97CmdID.SaveProjectItem:
@@ -676,9 +684,11 @@ namespace XSharp.LanguageService
                             break;
 
                         case VSConstants.VSStd2KCmdID.RETURN:
-                            CancelSignatureSession();
                             if (!returnClosedCompletionList)
+                            { 
+                                CancelSignatureSession();
                                 FormatLine();
+                            }
                             handled = true;
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:

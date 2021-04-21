@@ -724,6 +724,13 @@ namespace XSharp.LanguageService
                             // Foo() could be a delegate call where Foo is a local or Field
                             result.AddRange(SearchDelegateCall(location, currentName, currentType, visibility));
                         }
+                        if (result.Count == 0)
+                        {
+                            // Foo() can be a method call inside the current class
+                            var type = location?.Member?.ParentType ?? currentType;
+                            result.AddRange(SearchMethod(location, type, currentName, visibility, false));
+                        }
+
                         if (currentPos == lastopentoken || currentPos == lastopentoken - 1)
                         {
                             return result;
@@ -1219,23 +1226,21 @@ namespace XSharp.LanguageService
                     }
                 }
 
-                if (result.Count == 0)
+                if (result.Count == 0 && type.FullName != "System.Object")
                 {
-                    if (!string.IsNullOrEmpty(type.BaseType))
+                    var baseTypeName = type.BaseType ?? "System.Object";
+                    if (minVisibility == Modifiers.Private)
+                        minVisibility = Modifiers.Protected;
+                    IXTypeSymbol baseType;
+                    if (type is XSourceTypeSymbol sourceType)
                     {
-                        if (minVisibility == Modifiers.Private)
-                            minVisibility = Modifiers.Protected;
-                        IXTypeSymbol baseType;
-                        if (type is XSourceTypeSymbol sourceType)
-                        {
-                            baseType = sourceType.File.FindType(type.BaseType);
-                        }
-                        else
-                        {
-                            baseType = location.FindType(type.BaseType);
-                        }
-                        result.AddRange(SearchMethod(location, baseType, name, minVisibility, staticOnly));
+                        baseType = sourceType.File.FindType(baseTypeName);
                     }
+                    else
+                    {
+                        baseType = location.FindType(baseTypeName);
+                    }
+                    result.AddRange(SearchMethod(location, baseType, name, minVisibility, staticOnly));
                 }
                 if (result.Count == 0 && type.Interfaces.Count > 0)
                 {

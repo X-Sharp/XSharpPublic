@@ -27,8 +27,6 @@ namespace Microsoft.VisualStudio.Project
         public SolutionListenerForProjectOpen(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
         }
 
         public override int OnAfterOpenProject(IVsHierarchy hierarchy, int added)

@@ -6,74 +6,74 @@ CLASS AppCommandEvent INHERIT @@Event
 	//PP-030904
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/AppCommandEvent.Command/*" />
-	ACCESS Command AS DWORD STRICT 
+	ACCESS Command AS DWORD STRICT
 	RETURN Get_AppCommand_lParam(DWORD(_CAST,SELF:lParam))
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.IsControl/*" />
-ACCESS IsControl AS LOGIC STRICT 
+ACCESS IsControl AS LOGIC STRICT
 	RETURN _AND(WORD(Get_KeyState_lParam(DWORD(_CAST,SELF:lParam))),MK_CONTROL) > 0
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.IsDeviceKey/*" />
-ACCESS IsDeviceKey AS LOGIC STRICT 
+ACCESS IsDeviceKey AS LOGIC STRICT
 	RETURN Get_Device_lParam(DWORD(_CAST,SELF:lParam)) == FAPPCOMMAND_KEY
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.IsDeviceMouse/*" />
-ACCESS IsDeviceMouse AS LOGIC STRICT 
+ACCESS IsDeviceMouse AS LOGIC STRICT
 	RETURN Get_Device_lParam(DWORD(_CAST,SELF:lParam)) == FAPPCOMMAND_MOUSE
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.IsDeviceOEM/*" />
-ACCESS IsDeviceOEM AS LOGIC STRICT 
+ACCESS IsDeviceOEM AS LOGIC STRICT
 	RETURN Get_Device_lParam(DWORD(_CAST,SELF:lParam)) == FAPPCOMMAND_OEM
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.IsLeftButton/*" />
-ACCESS IsLeftButton AS LOGIC STRICT 
+ACCESS IsLeftButton AS LOGIC STRICT
 	RETURN _AND(WORD(Get_KeyState_lParam(DWORD(_CAST,SELF:lParam))),MK_LBUTTON) > 0
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.IsMiddleButton/*" />
-ACCESS IsMiddleButton AS LOGIC STRICT 
+ACCESS IsMiddleButton AS LOGIC STRICT
 	RETURN _AND(WORD(Get_KeyState_lParam(DWORD(_CAST,SELF:lParam))),MK_MBUTTON) > 0
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.IsRightButton/*" />
-ACCESS IsRightButton AS LOGIC STRICT 
+ACCESS IsRightButton AS LOGIC STRICT
 	RETURN _AND(WORD(Get_KeyState_lParam(DWORD(_CAST,SELF:lParam))),MK_RBUTTON) > 0
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.IsShift/*" />
-ACCESS IsShift AS LOGIC STRICT 
+ACCESS IsShift AS LOGIC STRICT
 	RETURN _AND(WORD(Get_KeyState_lParam(DWORD(_CAST,SELF:lParam))),MK_SHIFT) > 0
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.IsXButton1/*" />
-ACCESS IsXButton1 AS LOGIC STRICT 
+ACCESS IsXButton1 AS LOGIC STRICT
 	RETURN _AND(WORD(Get_KeyState_lParam(DWORD(_CAST,SELF:lParam))),MK_XBUTTON1) > 0
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.IsXButton2/*" />
-ACCESS IsXButton2 AS LOGIC STRICT 
+ACCESS IsXButton2 AS LOGIC STRICT
 	RETURN _AND(WORD(Get_KeyState_lParam(DWORD(_CAST,SELF:lParam))),MK_XBUTTON2) > 0
 
 
 /// <include file="Gui.xml" path="doc/AppCommandEvent.oTarget/*" />
-ACCESS oTarget AS OBJECT STRICT 
+ACCESS oTarget AS OBJECT STRICT
 	RETURN __WCGetObjectByHandle(PTR(_CAST,SELF:wParam))
 
 
@@ -84,28 +84,28 @@ END CLASS
 
 /// <include file="Gui.xml" path="doc/ComboBoxExEndEditEvent/*" />
 CLASS ComboBoxExEndEditEvent INHERIT ControlNotifyEvent
-	//SE-060519              
+	//SE-060519
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ComboBoxExEndEditEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/ComboBoxExEndEditEvent.IsChanged/*" />
-ACCESS IsChanged AS LOGIC STRICT 
+ACCESS IsChanged AS LOGIC STRICT
 	//SE-060519
 	LOCAL sNMCBEENDEDIT AS _winNMCBEENDEDIT
 
 
-	
-	
+
+
 
 
 	sNMCBEENDEDIT := PTR(_CAST, SELF:lParam)
@@ -113,13 +113,13 @@ ACCESS IsChanged AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ComboBoxExEndEditEvent.NewSelection/*" />
-ACCESS NewSelection AS LONGINT STRICT 
+ACCESS NewSelection AS LONGINT STRICT
 	//SE-060519
 	LOCAL sNMCBEENDEDIT AS _winNMCBEENDEDIT
 
 
-	
-	
+
+
 
 
 	sNMCBEENDEDIT := PTR(_CAST, SELF:lParam)
@@ -127,13 +127,13 @@ ACCESS NewSelection AS LONGINT STRICT
 
 
 /// <include file="Gui.xml" path="doc/ComboBoxExEndEditEvent.TextValue/*" />
-ACCESS TextValue AS STRING STRICT 
+ACCESS TextValue AS STRING STRICT
 	//SE-060519
 	LOCAL sNMCBEENDEDIT AS _winNMCBEENDEDIT
 
 
-	
-	
+
+
 
 
 	sNMCBEENDEDIT := PTR(_CAST, SELF:lParam)
@@ -144,13 +144,13 @@ ACCESS TextValue AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/ComboBoxExEndEditEvent.Why/*" />
-ACCESS Why AS LONGINT STRICT    
+ACCESS Why AS LONGINT STRICT
 	//SE-060519
 	LOCAL sNMCBEENDEDIT AS _winNMCBEENDEDIT
 
 
-	
-	
+
+
 
 
 	sNMCBEENDEDIT := PTR(_CAST, SELF:lParam)
@@ -174,22 +174,22 @@ CLASS ControlEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/ControlEvent.Control/*" />
-ACCESS Control AS Control STRICT 
+ACCESS Control AS Control STRICT
 	RETURN __WCGetControlByHandle(lParam)
 
 
 /// <include file="Gui.xml" path="doc/ControlEvent.ControlID/*" />
-ACCESS ControlID AS LONGINT STRICT 
+ACCESS ControlID AS LONGINT STRICT
 	RETURN LoWord(wParam)
 
 
 /// <include file="Gui.xml" path="doc/ControlEvent.Description/*" />
-ACCESS Description AS STRING STRICT 
+ACCESS Description AS STRING STRICT
 	LOCAL oHL AS HyperLabel
 
 
-	
-	
+
+
 	oHL:=SELF:HyperLabel
 	IF oHL!=NULL_OBJECT
 		RETURN oHL:Description
@@ -198,12 +198,12 @@ ACCESS Description AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/ControlEvent.HelpContext/*" />
-ACCESS HelpContext AS STRING STRICT 
+ACCESS HelpContext AS STRING STRICT
 	LOCAL oHL AS HyperLabel
 
 
-	
-	
+
+
 	oHL:=SELF:HyperLabel
 
 
@@ -216,12 +216,12 @@ ACCESS HelpContext AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/ControlEvent.HyperLabel/*" />
-ACCESS HyperLabel AS HyperLabel STRICT 
+ACCESS HyperLabel AS HyperLabel STRICT
 	LOCAL oControl AS Control
 
 
-	
-	
+
+
 
 
 	oControl:=SELF:Control
@@ -234,24 +234,24 @@ ACCESS HyperLabel AS HyperLabel STRICT
 
 
 /// <include file="Gui.xml" path="doc/ControlEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/ControlEvent.Name/*" />
-ACCESS Name AS STRING STRICT 
+ACCESS Name AS STRING STRICT
 	LOCAL oHL AS HyperLabel
 
 
-	
-	
+
+
 
 
 	oHL:=SELF:HyperLabel
@@ -264,12 +264,12 @@ ACCESS Name AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/ControlEvent.NameSym/*" />
-ACCESS NameSym AS SYMBOL STRICT 
+ACCESS NameSym AS SYMBOL STRICT
 	LOCAL oHL AS HyperLabel
 
 
-	
-	
+
+
 
 
 	oHL:=SELF:HyperLabel
@@ -285,23 +285,23 @@ END CLASS
 
 
 /// <include file="Gui.xml" path="doc/ControlFocusChangeEvent/*" />
-CLASS ControlFocusChangeEvent INHERIT FocusChangeEvent  
+CLASS ControlFocusChangeEvent INHERIT FocusChangeEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ControlFocusChangeEvent.Control/*" />
-	ACCESS Control AS CONTROL STRICT 
+	ACCESS Control AS CONTROL STRICT
   RETURN SELF:Window
 
 
 /// <include file="Gui.xml" path="doc/ControlFocusChangeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 END CLASS
 
 
@@ -309,31 +309,31 @@ END CLASS
 CLASS ControlNotifyEvent INHERIT ControlEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ControlNotifyEvent.Control/*" />
-ACCESS Control AS Control STRICT 
+ACCESS Control AS Control STRICT
 	LOCAL strucNotify AS _winNMHDR
 	strucNotify := PTR(_CAST, SELF:LParam)
 	RETURN __WCGetControlByHandle(strucNotify:hwndFrom)
 
 
 /// <include file="Gui.xml" path="doc/ControlNotifyEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/ControlNotifyEvent.NotifyCode/*" />
-ACCESS NotifyCode AS DWORD STRICT 
+ACCESS NotifyCode AS DWORD STRICT
 	LOCAL strucNotify AS _winNMHDR
 
 
-	
-	
+
+
 
 
 	strucNotify := PTR(_CAST, SELF:lParam)
@@ -349,19 +349,19 @@ END CLASS
 CLASS DateTimeSelectionEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/DateTimeSelectionEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/DateTimeSelectionEvent.SelectedDate/*" />
-ACCESS SelectedDate AS DATE STRICT 
+ACCESS SelectedDate AS DATE STRICT
 	LOCAL sc AS _winNMDATETIMECHANGE
 
 
@@ -370,7 +370,7 @@ ACCESS SelectedDate AS DATE STRICT
 
 
 /// <include file="Gui.xml" path="doc/DateTimeSelectionEvent.SelectedTime/*" />
-ACCESS SelectedTime AS STRING STRICT 
+ACCESS SelectedTime AS STRING STRICT
 	LOCAL sc AS _winNMDATETIMECHANGE
 	LOCAL sReturn AS STRING
 
@@ -382,7 +382,7 @@ ACCESS SelectedTime AS STRING STRICT
 	//#else
 	//sReturn := Buffer(8)
 	//wsprintf(String2Psz(sReturn), String2Psz("%02d:%02d:%02d"), sc:st:wHour, sc:st:wMinute, sc:st:wSecond)
-	//#endif   
+	//#endif
 //
 	RETURN sReturn
 
@@ -395,19 +395,19 @@ CLASS DragEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 	PROTECT oControl AS Control
 /// <include file="Gui.xml" path="doc/DragEvent.Control/*" />
-	ACCESS Control AS OBJECT STRICT 
-	
-	
+	ACCESS Control AS OBJECT STRICT
+
+
 
 
 	RETURN SELF:oControl
 
 
 /// <include file="Gui.xml" path="doc/DragEvent.FileCount/*" />
-ACCESS FileCount 
+ACCESS FileCount
 	//local strucDragInfo as __WCDragInfo
-	
-	
+
+
 
 
 	//if uMsg==WM_QueryDropObject //Riz This is undocumented windows stuff
@@ -429,14 +429,14 @@ ACCESS FileCount
 
 
 /// <include file="Gui.xml" path="doc/DragEvent.FileName/*" />
-METHOD FileName(nfile) 
+METHOD FileName(nfile)
 	LOCAL dwSize AS DWORD
 	LOCAL pszBuf AS PSZ
 	LOCAL cBuf AS STRING
 
 
-	
-	
+
+
 
 
 	IF !IsLong(nFile)
@@ -462,9 +462,9 @@ METHOD FileName(nfile)
 
 
 /// <include file="Gui.xml" path="doc/DragEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-	
-	
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
 
 
 	SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
@@ -477,15 +477,15 @@ CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/DragEvent.Origin/*" />
-ACCESS Origin 
+ACCESS Origin
 	LOCAL strucPoint IS _WinPoint
 	LOCAL strucRect IS _WinRect
-	
-	
+
+
 	//if uMsg==WM_QueryDropObject //Riz This is undocumented windows stuff
 	//Riz Gets the current cursor position, not the position when the
 	//message was created. To get the position of the cursor when the message
@@ -508,10 +508,10 @@ END CLASS
 
 
 /// <include file="Gui.xml" path="doc/EditFocusChangeEvent/*" />
-CLASS EditFocusChangeEvent INHERIT ControlEvent 
+CLASS EditFocusChangeEvent INHERIT ControlEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/EditFocusChangeEvent.GotFocus/*" />
-	ACCESS GotFocus AS LOGIC STRICT 
+	ACCESS GotFocus AS LOGIC STRICT
 	LOCAL dwHiWord AS DWORD
 
 
@@ -522,40 +522,40 @@ CLASS EditFocusChangeEvent INHERIT ControlEvent
 
 
 /// <include file="Gui.xml" path="doc/EditFocusChangeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 END CLASS
 
 
-/// <include file="Gui.xml" path="doc/@@Event/*" />
+/// <include file="Gui.xml" path="doc/Event/*" />
 CLASS @@Event //inherit object
 	//RvdH 061218 Declared properties for performance
 	EXPORT hWnd 	AS PTR
 	EXPORT uMsg 	AS DWORD
 	EXPORT wParam 	AS DWORD
 	EXPORT lParam 	AS LONGINT
-	EXPORT oWindow AS OBJECT 
-/// <include file="Gui.xml" path="doc/@@Event.Handle/*" />
-	ACCESS Handle AS PTR STRICT 
-	
-	
+	EXPORT oWindow AS OBJECT
+/// <include file="Gui.xml" path="doc/Event.Handle/*" />
+	ACCESS Handle AS PTR STRICT
+
+
 
 
 	RETURN hWnd
 
 
-/// <include file="Gui.xml" path="doc/@@Event.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
+/// <include file="Gui.xml" path="doc/Event.ctor/*" />
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 	LOCAL oEvent AS @@Event
-	
-	
+
+
 
 
 	//super:Init()
@@ -577,20 +577,20 @@ CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
-/// <include file="Gui.xml" path="doc/@@Event.Message/*" />
-ACCESS Message AS DWORD STRICT 
-	
-	
+/// <include file="Gui.xml" path="doc/Event.Message/*" />
+ACCESS Message AS DWORD STRICT
+
+
 	RETURN uMsg
 
 
-/// <include file="Gui.xml" path="doc/@@Event.Window/*" />
-ACCESS Window AS OBJECT STRICT 
-	
-	
+/// <include file="Gui.xml" path="doc/Event.Window/*" />
+ACCESS Window AS OBJECT STRICT
+
+
 
 
 	IF (oWindow == NULL_OBJECT)
@@ -608,15 +608,15 @@ END CLASS
 CLASS ExposeEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ExposeEvent.ExposedArea/*" />
-	ACCESS ExposedArea AS BoundingBox STRICT 
+	ACCESS ExposedArea AS BoundingBox STRICT
 	LOCAL hwndWindow AS PTR
 	LOCAL strucExpRect IS _WinRect
 	LOCAL strucCtlRect IS _WinRect
 	LOCAL siY AS LONGINT
 
 
-	
-	
+
+
 
 
 	hwndWindow := SELF:oWindow:Handle()
@@ -640,15 +640,15 @@ CLASS ExposeEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/ExposeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 END CLASS
 
 
@@ -656,22 +656,22 @@ END CLASS
 CLASS FocusChangeEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/FocusChangeEvent.GotFocus/*" />
-	ACCESS GotFocus AS LOGIC STRICT 
-	
-	
+	ACCESS GotFocus AS LOGIC STRICT
+
+
 	RETURN uMsg == WM_SETFOCUS
 
 
 /// <include file="Gui.xml" path="doc/FocusChangeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 END CLASS
 
 
@@ -679,12 +679,12 @@ END CLASS
 CLASS HelpRequestEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/HelpRequestEvent.HelpContext/*" />
-	ACCESS HelpContext AS STRING STRICT 
+	ACCESS HelpContext AS STRING STRICT
 	LOCAL oHL AS HyperLabel
 
 
-	
-	
+
+
 
 
 	oHL:=SELF:HyperLabel
@@ -699,10 +699,10 @@ CLASS HelpRequestEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/HelpRequestEvent.HelpInfo/*" />
-ACCESS HelpInfo AS PTR STRICT 
+ACCESS HelpInfo AS PTR STRICT
 	//SE-060522
-	
-	
+
+
 
 
 	IF uMsg = WM_HELP
@@ -714,9 +714,9 @@ ACCESS HelpInfo AS PTR STRICT
 
 
 /// <include file="Gui.xml" path="doc/HelpRequestEvent.HelpType/*" />
-ACCESS HelpType AS DWORD STRICT 
-	
-	
+ACCESS HelpType AS DWORD STRICT
+
+
 
 
 	IF uMsg = WM_HELP
@@ -728,7 +728,7 @@ ACCESS HelpType AS DWORD STRICT
 
 
 /// <include file="Gui.xml" path="doc/HelpRequestEvent.HyperLabel/*" />
-ACCESS HyperLabel AS HyperLabel STRICT 
+ACCESS HyperLabel AS HyperLabel STRICT
 	 LOCAL oObject AS OBJECT
 	 LOCAL oMenu AS Menu
 	 LOCAL oHL AS HyperLabel
@@ -736,8 +736,8 @@ ACCESS HyperLabel AS HyperLabel STRICT
     LOCAL hTemp AS PTR
 
 
-    
-    
+
+
 
 
 	 IF uMsg = WM_HELP
@@ -806,19 +806,19 @@ ACCESS HyperLabel AS HyperLabel STRICT
 
 
 /// <include file="Gui.xml" path="doc/HelpRequestEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/HelpRequestEvent.ItemID/*" />
-ACCESS ItemID AS DWORD STRICT 
+ACCESS ItemID AS DWORD STRICT
 	LOCAL dwID AS DWORD
 
 
@@ -835,12 +835,12 @@ ACCESS ItemID AS DWORD STRICT
 
 
 /// <include file="Gui.xml" path="doc/HelpRequestEvent.Position/*" />
-ACCESS Position AS POINT STRICT 
+ACCESS Position AS POINT STRICT
 	LOCAL strucPoint IS _WinPoint
 
 
-	
-	
+
+
 
 
 	GetCursorPos(@strucPoint)
@@ -851,9 +851,9 @@ ACCESS Position AS POINT STRICT
 
 
 /// <include file="Gui.xml" path="doc/HelpRequestEvent.WindowRegion/*" />
-ACCESS WindowRegion() AS LONGINT STRICT 
-	
-	
+ACCESS WindowRegion() AS LONGINT STRICT
+
+
 
 
 	IF wParam == HelpWindow
@@ -871,14 +871,14 @@ END CLASS
 CLASS KeyEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/KeyEvent.ASCIIChar/*" />
-	ACCESS ASCIIChar AS DWORD STRICT 
+	ACCESS ASCIIChar AS DWORD STRICT
 	LOCAL retVal AS DWORD
 	LOCAL DIM keyState[256] AS BYTE
 	LOCAL DIM result[5] AS WORD   // dcaton 070328 was BYTE, wrong type for ToAscii()
 
 
-	
-	
+
+
 
 
 	IF (uMsg == WM_CHAR)
@@ -897,21 +897,21 @@ CLASS KeyEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/KeyEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/KeyEvent.KeyCode/*" />
-ACCESS KeyCode AS DWORD STRICT 
-	
-	
+ACCESS KeyCode AS DWORD STRICT
+
+
 
 
 	IF (uMsg != WM_CHAR)
@@ -921,15 +921,15 @@ ACCESS KeyCode AS DWORD STRICT
 
 
 /// <include file="Gui.xml" path="doc/KeyEvent.RepeatCount/*" />
-ACCESS RepeatCount AS LONGINT STRICT 
-	LOCAL dw := DWORD(_CAST,lParam) AS DWORD	
+ACCESS RepeatCount AS LONGINT STRICT
+	LOCAL dw := DWORD(_CAST,lParam) AS DWORD
 	RETURN LoWord(dw)
 
 
 /// <include file="Gui.xml" path="doc/KeyEvent.System/*" />
-ACCESS System AS LOGIC STRICT 
-	
-	
+ACCESS System AS LOGIC STRICT
+
+
 	RETURN _AND(lParam, SYSTEM_KEYCODE) != 0
 
 
@@ -940,24 +940,24 @@ END CLASS
 CLASS ListViewColumnClickEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ListViewColumnClickEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewColumnClickEvent.ListViewColumn/*" />
-ACCESS ListViewColumn AS ListViewCOlumn STRICT 
+ACCESS ListViewColumn AS ListViewCOlumn STRICT
 	LOCAL strucListView AS _winNM_ListView
 	LOCAL oListView		AS ListView
 	oListView := OBJECT(SELF:Control)
-	
-	
+
+
 
 
 	strucListView := PTR(_CAST, SELF:lParam)
@@ -972,15 +972,15 @@ CLASS ListViewDeleteEvent INHERIT ListViewItemEvent
 
 
 /// <include file="Gui.xml" path="doc/ListViewDeleteEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 END CLASS
 
 
@@ -988,21 +988,21 @@ END CLASS
 CLASS ListViewDragEvent INHERIT ListViewItemEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ListViewDragEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewDragEvent.IsLeftButton/*" />
-ACCESS IsLeftButton AS LOGIC STRICT 
-	
-	
+ACCESS IsLeftButton AS LOGIC STRICT
+
+
 
 
 	IF SELF:NotifyCode == LVN_BEGINRDRAG
@@ -1014,9 +1014,9 @@ ACCESS IsLeftButton AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewDragEvent.IsRightButton/*" />
-ACCESS IsRightButton AS LOGIC STRICT 
-	
-	
+ACCESS IsRightButton AS LOGIC STRICT
+
+
 
 
 	IF SELF:NotifyCode == LVN_BEGINRDRAG
@@ -1028,13 +1028,13 @@ ACCESS IsRightButton AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewDragEvent.Position/*" />
-ACCESS Position AS POINT STRICT 
+ACCESS Position AS POINT STRICT
 	LOCAL strucListView AS _winNM_ListView
 	LOCAL oPoint AS Point
 
 
-	
-	
+
+
 
 
 	strucListView := PTR(_CAST, SELF:lParam)
@@ -1051,30 +1051,30 @@ END CLASS
 CLASS ListViewEditEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ListViewEditEvent.EditBeginning/*" />
-	ACCESS EditBeginning AS LOGIC STRICT 
-	
-	
+	ACCESS EditBeginning AS LOGIC STRICT
+
+
 
 
 	RETURN (SELF:NotifyCode == LVN_BEGINLABELEDIT)
 
 
 /// <include file="Gui.xml" path="doc/ListViewEditEvent.EditEnding/*" />
-ACCESS EditEnding AS LOGIC STRICT 
-	
-	
+ACCESS EditEnding AS LOGIC STRICT
+
+
 
 
 	RETURN (SELF:NotifyCode == LVN_ENDLABELEDIT)
 
 
 /// <include file="Gui.xml" path="doc/ListViewEditEvent.EditText/*" />
-ACCESS EditText AS STRING STRICT 
+ACCESS EditText AS STRING STRICT
 	LOCAL strucDispInfo AS _winLV_DispInfo
 
 
-	
-	
+
+
 
 
 	strucDispInfo := PTR(_CAST, SELF:lParam)
@@ -1087,26 +1087,26 @@ ACCESS EditText AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewEditEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewEditEvent.ListViewItem/*" />
-ACCESS ListViewItem 
+ACCESS ListViewItem
 	LOCAL strucDispInfo AS _winLV_DispInfo
 	LOCAL oListView		AS ListView
 	oListView := OBJECT(SELF:Control)
 
 
-	
-	
+
+
 
 
 	strucDispInfo := PTR(_CAST, SELF:lParam)
@@ -1120,25 +1120,25 @@ END CLASS
 CLASS ListViewItemEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ListViewItemEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewItemEvent.ListViewItem/*" />
-ACCESS ListViewItem AS ListViewItem STRICT 
+ACCESS ListViewItem AS ListViewItem STRICT
 	LOCAL oListView AS ListView
 	LOCAL strucListView AS _winNM_ListView
 
 
-	
-	
+
+
 
 
 	strucListView := PTR(_CAST, SELF:lParam)
@@ -1157,24 +1157,24 @@ END CLASS
 CLASS ListViewKeyEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ListViewKeyEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewKeyEvent.KeyCode/*" />
-ACCESS KeyCode AS LONGINT STRICT 
+ACCESS KeyCode AS LONGINT STRICT
 	LOCAL strucKeyDown AS _winLV_KeyDown
 
 
-	
-	
+
+
 
 
 	strucKeyDown := PTR(_CAST, SELF:LParam)
@@ -1190,12 +1190,12 @@ CLASS ListViewMouseEvent INHERIT ControlNotifyEvent
 	PROTECT nX AS INT
 	PROTECT nY AS INT
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.ButtonID/*" />
-	ACCESS ButtonID AS LONGINT STRICT 
+	ACCESS ButtonID AS LONGINT STRICT
 	LOCAL dwNotifyCode AS DWORD
 
 
-	
-	
+
+
 
 
 	dwNotifyCode := SELF:NotifyCode
@@ -1211,12 +1211,12 @@ CLASS ListViewMouseEvent INHERIT ControlNotifyEvent
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.ctor/*" />
-CONSTRUCTOR(oControlNotifyEvent) 
+CONSTRUCTOR(oControlNotifyEvent)
 	LOCAL strucPoint IS _winPoint
 
 
-	
-	
+
+
 
 
 	SUPER(oControlNotifyEvent)
@@ -1228,17 +1228,17 @@ CONSTRUCTOR(oControlNotifyEvent)
 	nY := strucPoint:y
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.IsLeftButton/*" />
-ACCESS IsLeftButton AS LOGIC STRICT 
+ACCESS IsLeftButton AS LOGIC STRICT
 	//RvdH 061214 Added type (was untyped)
 	LOCAL dwNotifyCode AS DWORD
 
 
-	
-	
+
+
 
 
 	dwNotifyCode := SELF:NotifyCode
@@ -1251,13 +1251,13 @@ ACCESS IsLeftButton AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.IsRightButton/*" />
-ACCESS IsRightButton AS LOGIC STRICT 
+ACCESS IsRightButton AS LOGIC STRICT
 	//RvdH 061214 Added type (was untyped)
 	LOCAL dwNotifyCode AS DWORD
 
 
-	
-	
+
+
 
 
 	dwNotifyCode := SELF:NotifyCode
@@ -1270,13 +1270,13 @@ ACCESS IsRightButton AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.ListViewItem/*" />
-ACCESS ListViewItem AS ListViewItem STRICT 
+ACCESS ListViewItem AS ListViewItem STRICT
 	LOCAL strucHitTestInfo IS _winLV_HitTestInfo
 	LOCAL oListView AS ListView
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -1292,12 +1292,12 @@ ACCESS ListViewItem AS ListViewItem STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.PointAboveClientArea/*" />
-ACCESS PointAboveClientArea AS LOGIC STRICT 
+ACCESS PointAboveClientArea AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winLV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -1309,12 +1309,12 @@ ACCESS PointAboveClientArea AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.PointBelowClientArea/*" />
-ACCESS PointBelowClientArea AS LOGIC STRICT 
+ACCESS PointBelowClientArea AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winLV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -1326,12 +1326,12 @@ ACCESS PointBelowClientArea AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.PointLeftOfClientArea/*" />
-ACCESS PointLeftOfClientArea AS LOGIC STRICT 
+ACCESS PointLeftOfClientArea AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winLV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -1343,12 +1343,12 @@ ACCESS PointLeftOfClientArea AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.PointNowhere/*" />
-ACCESS PointNowhere AS LOGIC STRICT 
+ACCESS PointNowhere AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winLV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -1360,12 +1360,12 @@ ACCESS PointNowhere AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.PointOnItem/*" />
-ACCESS PointOnItem AS LOGIC STRICT 
+ACCESS PointOnItem AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winLV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -1377,12 +1377,12 @@ ACCESS PointOnItem AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.PointOnItemImage/*" />
-ACCESS PointOnItemImage AS LOGIC STRICT 
+ACCESS PointOnItemImage AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winLV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -1394,12 +1394,12 @@ ACCESS PointOnItemImage AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.PointOnItemLabel/*" />
-ACCESS PointOnItemLabel AS LOGIC STRICT 
+ACCESS PointOnItemLabel AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winLV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -1411,12 +1411,12 @@ ACCESS PointOnItemLabel AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.PointOnItemStateImage/*" />
-ACCESS PointOnItemStateImage AS LOGIC STRICT 
+ACCESS PointOnItemStateImage AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winLV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -1428,12 +1428,12 @@ ACCESS PointOnItemStateImage AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.PointRightOfClientArea/*" />
-ACCESS PointRightOfClientArea AS LOGIC STRICT 
+ACCESS PointRightOfClientArea AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winLV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -1445,11 +1445,11 @@ ACCESS PointRightOfClientArea AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/ListViewMouseEvent.Position/*" />
-ACCESS Position AS POINT STRICT 
+ACCESS Position AS POINT STRICT
 
 
-	
-	
+
+
 
 
 	RETURN __WCConvertPoint(SELF:Control, Point{nX, nY})
@@ -1465,14 +1465,14 @@ CLASS MenuCommandEvent INHERIT @@Event
 
 
  /// <exclude />
-	METHOD __SetMenu(oParam AS OBJECT) AS MenuCommandEvent STRICT 
+	METHOD __SetMenu(oParam AS OBJECT) AS MenuCommandEvent STRICT
 	//PP-030828 Strong typing
 	LOCAL oParent AS Window
 	LOCAL oObject AS OBJECT
 
 
-	
-	
+
+
 
 
 	IF uMsg == WM_SYSCOMMAND .AND. IsInstanceOf(oWindow, #AppWindow)
@@ -1506,14 +1506,14 @@ CLASS MenuCommandEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.AsString/*" />
-METHOD AsString() AS STRING STRICT 
+METHOD AsString() AS STRING STRICT
 	LOCAL pszBuffer AS PSZ
 	LOCAL cString AS STRING
 	LOCAL liLength AS LONGINT
 
 
-	
-	
+
+
 
 
 	pszBuffer := MemAlloc(256)
@@ -1532,12 +1532,12 @@ METHOD AsString() AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.HyperLabel/*" />
-ACCESS HyperLabel AS HyperLabel STRICT 
+ACCESS HyperLabel AS HyperLabel STRICT
 	LOCAL oHL AS HyperLabel
 
 
-	
-	
+
+
 
 
 	IF IsInstanceOf(oMenu, #Menu)
@@ -1549,42 +1549,42 @@ ACCESS HyperLabel AS HyperLabel STRICT
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.ItemID/*" />
-ACCESS ItemID AS LONGINT STRICT 
-	
-	
+ACCESS ItemID AS LONGINT STRICT
+
+
 
 
 	RETURN LoWord(wParam)
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.Menu/*" />
-ACCESS Menu AS MENU STRICT 
-	
-	
+ACCESS Menu AS MENU STRICT
+
+
 
 
 	RETURN oMenu
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.Name/*" />
-ACCESS Name AS STRING STRICT 
+ACCESS Name AS STRING STRICT
 	LOCAL oHL AS HyperLabel
 
 
-	
-	
+
+
 
 
 	oHL := SELF:HyperLabel
@@ -1599,12 +1599,12 @@ ACCESS Name AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/MenuCommandEvent.NameSym/*" />
-ACCESS NameSym AS SYMBOL STRICT 
+ACCESS NameSym AS SYMBOL STRICT
 	LOCAL oHL AS HyperLabel
 
 
-	
-	
+
+
 
 
 	oHL := SELF:HyperLabel
@@ -1623,21 +1623,21 @@ END CLASS
 CLASS MenuInitEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/MenuInitEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-	
-	
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
 
 
 	SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/MenuInitEvent.Menu/*" />
-ACCESS Menu AS Menu STRICT 
-	
-	
+ACCESS Menu AS Menu STRICT
+
+
 
 
 	RETURN __WCGetMenuByHandle(PTR(_CAST, wParam))
@@ -1650,14 +1650,14 @@ END CLASS
 CLASS MenuSelectEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/MenuSelectEvent.AsString/*" />
-	METHOD AsString() AS STRING STRICT 
+	METHOD AsString() AS STRING STRICT
 	LOCAL hMenu AS PTR
 	LOCAL pszBuffer AS PSZ
 	LOCAL cString AS STRING
 
 
-	
-	
+
+
 	IF (_AND(HiWord(wParam), MF_SYSMENU) != 0)
 		hMenu := GetSystemMenu(hWnd, FALSE)
 	ELSE
@@ -1675,12 +1675,12 @@ CLASS MenuSelectEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/MenuSelectEvent.HyperLabel/*" />
-ACCESS HyperLabel AS HyperLabel STRICT 
+ACCESS HyperLabel AS HyperLabel STRICT
 	LOCAL oHyperLabel AS HyperLabel
 
 
-	
-	
+
+
 
 
 	IF (SELF:Menu != NULL_OBJECT)
@@ -1692,26 +1692,26 @@ ACCESS HyperLabel AS HyperLabel STRICT
 
 
 /// <include file="Gui.xml" path="doc/MenuSelectEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-	
-	
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
 
 
 	SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/MenuSelectEvent.ItemID/*" />
-ACCESS ItemID AS LONGINT STRICT 
-	
-	
+ACCESS ItemID AS LONGINT STRICT
+
+
 	RETURN LoWord(wParam)
 
 
 /// <include file="Gui.xml" path="doc/MenuSelectEvent.Menu/*" />
-ACCESS Menu AS Menu STRICT 
+ACCESS Menu AS Menu STRICT
 	LOCAL oMenu AS Menu
 
 
@@ -1727,12 +1727,12 @@ ACCESS Menu AS Menu STRICT
 
 
 /// <include file="Gui.xml" path="doc/MenuSelectEvent.Name/*" />
-ACCESS Name AS STRING STRICT 
+ACCESS Name AS STRING STRICT
 	LOCAL retVal AS STRING
 
 
-	
-	
+
+
 
 
 	IF SELF:HyperLabel != NULL_OBJECT
@@ -1744,12 +1744,12 @@ ACCESS Name AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/MenuSelectEvent.NameSym/*" />
-ACCESS NameSym AS SYMBOL STRICT 
+ACCESS NameSym AS SYMBOL STRICT
 	LOCAL retVal AS SYMBOL
 
 
-	
-	
+
+
 
 
 	IF SELF:HyperLabel != NULL_OBJECT
@@ -1764,22 +1764,22 @@ END CLASS
 
 
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent/*" />
-CLASS MinMaxInfoEvent INHERIT @@Event                          
+CLASS MinMaxInfoEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent.MaxPosition/*" />
-ACCESS MaxPosition AS POINT STRICT 
+ACCESS MaxPosition AS POINT STRICT
 	LOCAL sMinMax AS _WINMINMAXINFO
 
 
@@ -1788,7 +1788,7 @@ ACCESS MaxPosition AS POINT STRICT
 
 
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent.MaxPosition/*" />
-ASSIGN MaxPosition(oPoint AS point)  STRICT 
+ASSIGN MaxPosition(oPoint AS point)  STRICT
 	LOCAL oMaxPos  AS Point
 	LOCAL sMinMax  AS _WINMINMAXINFO
 
@@ -1797,11 +1797,11 @@ ASSIGN MaxPosition(oPoint AS point)  STRICT
 	sMinMax  := PTR(_CAST, lParam)
 	sMinMax:ptMaxPosition:X := oMaxPos:X
 	sMinMax:ptMaxPosition:Y := oMaxPos:Y
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent.MaxSize/*" />
-ACCESS MaxSize AS Dimension STRICT 
+ACCESS MaxSize AS Dimension STRICT
 	LOCAL sMinMax AS _WINMINMAXINFO
 
 
@@ -1810,7 +1810,7 @@ ACCESS MaxSize AS Dimension STRICT
 
 
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent.MaxSize/*" />
-ASSIGN MaxSize(oSize AS Dimension)  STRICT 
+ASSIGN MaxSize(oSize AS Dimension)  STRICT
 	LOCAL oMaxSize AS Dimension
 	LOCAL sMinMax  AS _WINMINMAXINFO
 
@@ -1819,11 +1819,11 @@ ASSIGN MaxSize(oSize AS Dimension)  STRICT
 	sMinMax  := PTR(_CAST, lParam)
 	sMinMax:ptMaxSize:X := oMaxSize:Width
 	sMinMax:ptMaxSize:Y := oMaxSize:Height
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent.MaxTrackSize/*" />
-ACCESS MaxTrackSize AS Dimension STRICT 
+ACCESS MaxTrackSize AS Dimension STRICT
 	LOCAL sMinMax AS _WINMINMAXINFO
 
 
@@ -1832,7 +1832,7 @@ ACCESS MaxTrackSize AS Dimension STRICT
 
 
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent.MaxTrackSize/*" />
-ASSIGN MaxTrackSize(oSize AS Dimension)  STRICT 
+ASSIGN MaxTrackSize(oSize AS Dimension)  STRICT
 	LOCAL oMaxSize AS Dimension
 	LOCAL sMinMax  AS _WINMINMAXINFO
 
@@ -1841,11 +1841,11 @@ ASSIGN MaxTrackSize(oSize AS Dimension)  STRICT
 	sMinMax  := PTR(_CAST, lParam)
 	sMinMax:ptMaxTrackSize:X := oMaxSize:Width
 	sMinMax:ptMaxTrackSize:Y := oMaxSize:Height
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent.MinTrackSize/*" />
-ACCESS MinTrackSize AS Dimension STRICT 
+ACCESS MinTrackSize AS Dimension STRICT
 	LOCAL sMinMax AS _WINMINMAXINFO
 
 
@@ -1854,7 +1854,7 @@ ACCESS MinTrackSize AS Dimension STRICT
 
 
 /// <include file="Gui.xml" path="doc/MinMaxInfoEvent.MinTrackSize/*" />
-ASSIGN MinTrackSize(oSize AS Dimension)  STRICT 
+ASSIGN MinTrackSize(oSize AS Dimension)  STRICT
 	LOCAL oMinSize AS Dimension
 	LOCAL sMinMax  AS _WINMINMAXINFO
 
@@ -1863,7 +1863,7 @@ ASSIGN MinTrackSize(oSize AS Dimension)  STRICT
 	sMinMax  := PTR(_CAST, lParam)
 	sMinMax:ptMinTrackSize:X := oMinSize:Width
 	sMinMax:ptMinTrackSize:Y := oMinSize:Height
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -1873,24 +1873,24 @@ END CLASS
 CLASS MonthCalSelectionEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/MonthCalSelectionEvent.Explicit/*" />
-	ACCESS Explicit AS LOGIC STRICT 
+	ACCESS Explicit AS LOGIC STRICT
 	RETURN (SELF:NotifyCode == MCN_SELECT)
 
 
 /// <include file="Gui.xml" path="doc/MonthCalSelectionEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/MonthCalSelectionEvent.Selection/*" />
-ACCESS Selection AS DateRange STRICT 
+ACCESS Selection AS DateRange STRICT
 	LOCAL sc AS _winNMSELCHANGE
 
 
@@ -1905,12 +1905,12 @@ END CLASS
 CLASS MouseEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/MouseEvent.ButtonID/*" />
-	ACCESS ButtonID AS LONGINT STRICT 
+	ACCESS ButtonID AS LONGINT STRICT
 	LOCAL retVal AS LONGINT
 
 
-	
-	
+
+
 
 
 	SWITCH uMsg
@@ -1945,38 +1945,38 @@ CLASS MouseEvent INHERIT @@Event
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.Height/*" />
-ACCESS Height AS LONGINT STRICT 
-	
-	
+ACCESS Height AS LONGINT STRICT
+
+
 	RETURN HiWord(DWORD(lParam))
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.IsControlButton/*" />
-ACCESS IsControlButton AS LOGIC STRICT 
-	
-	
+ACCESS IsControlButton AS LOGIC STRICT
+
+
 	RETURN _AND(wParam, ButtonControl) == ButtonControl
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.IsLeftButton/*" />
-ACCESS IsLeftButton AS LOGIC STRICT 
+ACCESS IsLeftButton AS LOGIC STRICT
 	LOCAL retVal AS LOGIC
 
 
-	
-	
+
+
 
 
 	SWITCH uMsg
@@ -1995,12 +1995,12 @@ ACCESS IsLeftButton AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.IsMiddleButton/*" />
-ACCESS IsMiddleButton AS LOGIC STRICT 
+ACCESS IsMiddleButton AS LOGIC STRICT
 	LOCAL retVal AS LOGIC
 
 
-	
-	
+
+
 
 
 	SWITCH uMsg
@@ -2019,12 +2019,12 @@ ACCESS IsMiddleButton AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.IsRightButton/*" />
-ACCESS IsRightButton AS LOGIC STRICT 
+ACCESS IsRightButton AS LOGIC STRICT
 	LOCAL retVal AS LOGIC
 
 
 	SWITCH uMsg
-    CASE WM_RBUTTONUP 
+    CASE WM_RBUTTONUP
     CASE WM_RBUTTONDOWN
     CASE WM_RBUTTONDBLCLK
 		retVal := TRUE
@@ -2039,20 +2039,20 @@ ACCESS IsRightButton AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.IsShiftButton/*" />
-ACCESS IsShiftButton AS LOGIC STRICT 
-	
-	
+ACCESS IsShiftButton AS LOGIC STRICT
+
+
 	RETURN _AND(wParam, ButtonShift) == ButtonShift
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.IsXButton1/*" />
-ACCESS IsXButton1 AS LOGIC STRICT 
+ACCESS IsXButton1 AS LOGIC STRICT
 	//PP-030904
 	LOCAL retVal AS LOGIC
 
 
-	
-	
+
+
 
 
 	SWITCH uMsg
@@ -2073,13 +2073,13 @@ ACCESS IsXButton1 AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.IsXButton2/*" />
-ACCESS IsXButton2 AS LOGIC STRICT 
+ACCESS IsXButton2 AS LOGIC STRICT
 	//PP-030904
 	LOCAL retVal AS LOGIC
 
 
-	
-	
+
+
 
 
 	SWITCH uMsg
@@ -2102,23 +2102,23 @@ ACCESS IsXButton2 AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.Position/*" />
-ACCESS Position AS POINT STRICT 
-   //SE-080520 
-	LOCAL dw := DWORD(_CAST,lParam) AS DWORD	
+ACCESS Position AS POINT STRICT
+   //SE-080520
+	LOCAL dw := DWORD(_CAST,lParam) AS DWORD
 	// In 1.0 there was a problem if the window was a control.
 	// This should not be the case in 2.0, but you never really know!
 	RETURN __WCConvertPoint(oWindow, Point{SHORT(_CAST, LoWord(dw)), SHORT(_CAST, HiWord(dw))})
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.Size/*" />
-ACCESS Size AS Dimension STRICT 
-	LOCAL dw := DWORD(_CAST,lParam) AS DWORD	
+ACCESS Size AS Dimension STRICT
+	LOCAL dw := DWORD(_CAST,lParam) AS DWORD
 	RETURN Dimension{LoWord(dw), HiWord(dw)}
 
 
 /// <include file="Gui.xml" path="doc/MouseEvent.Width/*" />
-ACCESS Width AS LONGINT STRICT 
-	LOCAL dw := DWORD(_CAST,lParam) AS DWORD	
+ACCESS Width AS LONGINT STRICT
+	LOCAL dw := DWORD(_CAST,lParam) AS DWORD
 	RETURN LoWord(dw)
 
 
@@ -2129,21 +2129,21 @@ END CLASS
 CLASS MoveEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/MoveEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/MoveEvent.Origin/*" />
-ACCESS Origin AS Point STRICT 
+ACCESS Origin AS Point STRICT
   //SE-080520
-	LOCAL dw := DWORD(_CAST,lParam) AS DWORD	
+	LOCAL dw := DWORD(_CAST,lParam) AS DWORD
 	RETURN __WCConvertPoint(oWindow, Point{SHORT(_CAST, LoWord(dw)), SHORT(_CAST, HiWord(dw))})
 
 
@@ -2156,22 +2156,22 @@ END CLASS
 CLASS PrinterErrorEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/PrinterErrorEvent.ErrorType/*" />
-	ACCESS ErrorType AS DWORD STRICT 
-	
-	
+	ACCESS ErrorType AS DWORD STRICT
+
+
 	RETURN wParam
 
 
 /// <include file="Gui.xml" path="doc/PrinterErrorEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 END CLASS
 
 
@@ -2179,30 +2179,30 @@ END CLASS
 CLASS PrinterExposeEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/PrinterExposeEvent.ExposedArea/*" />
-	ACCESS ExposedArea AS OBJECT STRICT 
-	
-	
+	ACCESS ExposedArea AS OBJECT STRICT
+
+
 
 
 	RETURN oWindow
 
 
 /// <include file="Gui.xml" path="doc/PrinterExposeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/PrinterExposeEvent.PageNo/*" />
-ACCESS PageNo AS DWORD STRICT 
-	
-	
+ACCESS PageNo AS DWORD STRICT
+
+
 
 
 	RETURN wParam
@@ -2215,32 +2215,32 @@ END CLASS
 CLASS ResizeEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ResizeEvent.Height/*" />
-	ACCESS Height AS LONGINT STRICT 
-	LOCAL dw := DWORD(_CAST,lParam) AS DWORD	
+	ACCESS Height AS LONGINT STRICT
+	LOCAL dw := DWORD(_CAST,lParam) AS DWORD
 	RETURN HiWord(dw)
 
 
 /// <include file="Gui.xml" path="doc/ResizeEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/ResizeEvent.Size/*" />
-ACCESS Size AS Dimension STRICT 
-	LOCAL dw := DWORD(_CAST,lParam) AS DWORD	
+ACCESS Size AS Dimension STRICT
+	LOCAL dw := DWORD(_CAST,lParam) AS DWORD
 	RETURN Dimension{LoWord(dw), HiWord(dw)}
 
 
 /// <include file="Gui.xml" path="doc/ResizeEvent.Width/*" />
-ACCESS Width AS LONGINT STRICT 
-	LOCAL dw := DWORD(_CAST,lParam) AS DWORD	
+ACCESS Width AS LONGINT STRICT
+	LOCAL dw := DWORD(_CAST,lParam) AS DWORD
 	RETURN LoWord(dw)
 
 
@@ -2251,25 +2251,25 @@ END CLASS
 CLASS RichEditProtectEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/RichEditProtectEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEditProtectEvent.Selection/*" />
-ACCESS Selection AS Selection STRICT 
+ACCESS Selection AS Selection STRICT
 	//PP-030910
 	LOCAL strucENProtect AS _winENProtected
 
 
-	
-	
+
+
 
 
 	strucENProtect := PTR(_CAST, lParam)
@@ -2281,12 +2281,12 @@ ACCESS Selection AS Selection STRICT
 
 
 /// <include file="Gui.xml" path="doc/RichEditProtectEvent.SelectionRange/*" />
-ACCESS SelectionRange AS Range STRICT 
+ACCESS SelectionRange AS Range STRICT
 	LOCAL strucENProtect AS _winENProtected
 
 
-	
-	
+
+
 
 
 	strucENProtect := PTR(_CAST, lParam)
@@ -2302,25 +2302,25 @@ END CLASS
 CLASS RichEditSelectionEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/RichEditSelectionEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/RichEditSelectionEvent.Selection/*" />
-ACCESS Selection AS Selection STRICT 
+ACCESS Selection AS Selection STRICT
 	//PP-030910
 	LOCAL strucSelChange AS _winSelChange
 
 
-	
-	
+
+
 
 
 	strucSelChange := PTR(_CAST, lParam)
@@ -2328,12 +2328,12 @@ ACCESS Selection AS Selection STRICT
 
 
 /// <include file="Gui.xml" path="doc/RichEditSelectionEvent.SelectionRange/*" />
-ACCESS SelectionRange AS Range STRICT 
+ACCESS SelectionRange AS Range STRICT
 	LOCAL strucSelChange AS _winSelChange
 
 
-	
-	
+
+
 
 
 	strucSelChange := PTR(_CAST, lParam)
@@ -2341,12 +2341,12 @@ ACCESS SelectionRange AS Range STRICT
 
 
 /// <include file="Gui.xml" path="doc/RichEditSelectionEvent.SelectionType/*" />
-ACCESS SelectionType AS LONGINT STRICT 
+ACCESS SelectionType AS LONGINT STRICT
 	LOCAL strucSelChange AS _winSelChange
 
 
-	
-	
+
+
 
 
 	strucSelChange := PTR(_CAST, lParam)
@@ -2360,28 +2360,28 @@ END CLASS
 CLASS ScrollEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/ScrollEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/ScrollEvent.IsWindowScroll/*" />
-ACCESS IsWindowScroll AS LOGIC STRICT 
-	
-	
+ACCESS IsWindowScroll AS LOGIC STRICT
+
+
 
 
 	RETURN (lParam == 0)
 
 
 /// <include file="Gui.xml" path="doc/ScrollEvent.OldPosition/*" />
-ACCESS OldPosition AS LONGINT STRICT 
+ACCESS OldPosition AS LONGINT STRICT
 	//SE-051114
 	LOCAL sScrollInfo IS _WINSCROLLINFO
 	LOCAL hHandle     AS PTR
@@ -2389,8 +2389,8 @@ ACCESS OldPosition AS LONGINT STRICT
 	LOCAL dwSBType    AS DWORD
 
 
-	
-	
+
+
 
 
 	oSB := SELF:ScrollBar
@@ -2423,7 +2423,7 @@ ACCESS OldPosition AS LONGINT STRICT
 
 
 /// <include file="Gui.xml" path="doc/ScrollEvent.Position/*" />
-ACCESS Position AS LONGINT STRICT 
+ACCESS Position AS LONGINT STRICT
 	//SE-051114
 	//SE-070421
 	LOCAL strucScrollInfo IS _winScrollInfo
@@ -2453,7 +2453,7 @@ ACCESS Position AS LONGINT STRICT
 			strucScrollInfo:fMask  := SIF_ALL //_OR(SIF_PAGE, SIF_POS, SIF_TRACKPOS)
 			GetScrollInfo(hHandle, nSBType, @strucScrollInfo )
 	      nPage   := INT(_CAST, strucScrollInfo:nPage)
-		ENDIF               
+		ENDIF
 		nMin   := oRange:Min
 		nMax   := oRange:Max
 	ELSE
@@ -2472,8 +2472,8 @@ ACCESS Position AS LONGINT STRICT
 		ENDIF
 		strucScrollInfo:fMask := SIF_ALL // _OR(SIF_RANGE, SIF_PAGE, SIF_POS, SIF_TRACKPOS)
 		GetScrollInfo(hHandle, nSBType, @strucScrollInfo )
-		nMin    := strucScrollInfo:nMin 
-		nMax    := strucScrollInfo:nMax 
+		nMin    := strucScrollInfo:nMin
+		nMax    := strucScrollInfo:nMax
 	ENDIF
 
 
@@ -2486,7 +2486,7 @@ ACCESS Position AS LONGINT STRICT
     		liRetVal := SHORT(_CAST, HiWord(wParam))  // Note that the high word is signed !
     	CASE SB_LINEDOWN
     		IF (liRetVal + nUnit + nPage) > nMax
-    			liRetVal := nMax 
+    			liRetVal := nMax
     		ELSE
     			liRetVal += nUnit
     		ENDIF
@@ -2511,8 +2511,8 @@ ACCESS Position AS LONGINT STRICT
     	END SWITCH
     ELSE
     	SWITCH dwType
-    	
-    	
+
+
     	CASE SB_THUMBPOSITION
         CASE SB_THUMBTRACK
     		liRetVal := strucScrollInfo:nTrackPos //nPos
@@ -2552,9 +2552,9 @@ ACCESS Position AS LONGINT STRICT
 
 
 /// <include file="Gui.xml" path="doc/ScrollEvent.ScrollBar/*" />
-ACCESS ScrollBar AS Scrollbar STRICT 
-	
-	
+ACCESS ScrollBar AS Scrollbar STRICT
+
+
 
 
 	IF (lParam == 0) .AND. IsMethod(oWindow, #ENABLEVERTICALSCROLL)
@@ -2570,10 +2570,10 @@ ACCESS ScrollBar AS Scrollbar STRICT
 
 
 /// <include file="Gui.xml" path="doc/ScrollEvent.ScrollBarID/*" />
-ACCESS ScrollBarID AS LONGINT STRICT 
+ACCESS ScrollBarID AS LONGINT STRICT
 	LOCAL myScrollbar AS ScrollBar
-	
-	
+
+
 
 
 	myScrollbar := SELF:ScrollBar
@@ -2586,10 +2586,10 @@ ACCESS ScrollBarID AS LONGINT STRICT
 
 
 /// <include file="Gui.xml" path="doc/ScrollEvent.TYPE/*" />
-ACCESS TYPE AS LONGINT STRICT 
+ACCESS TYPE AS LONGINT STRICT
 	LOCAL dwType AS DWORD
-	
-	
+
+
 
 
 	dwType:=LoWord(wParam)
@@ -2623,28 +2623,28 @@ END CLASS
 CLASS SliderEvent INHERIT ScrollEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/SliderEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/SliderEvent.IsWindowScroll/*" />
-ACCESS IsWindowScroll AS LOGIC STRICT 
-	
-	
+ACCESS IsWindowScroll AS LOGIC STRICT
+
+
 	RETURN FALSE
 
 
 /// <include file="Gui.xml" path="doc/SliderEvent.Slider/*" />
-ACCESS Slider AS OBJECT STRICT 
-	
-	
+ACCESS Slider AS OBJECT STRICT
+
+
 	RETURN __WCGetControlByHandle(PTR(_CAST,lParam))
 
 
@@ -2655,19 +2655,19 @@ END CLASS
 CLASS SpinnerEvent INHERIT @@Event
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/SpinnerEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/SpinnerEvent.OldPosition/*" />
-ACCESS OldPosition AS LONGINT STRICT 
+ACCESS OldPosition AS LONGINT STRICT
 	LOCAL oS AS Spinner
 	//LOCAL dwTemp AS DWORD
     LOCAL lOk   AS LOGIC
@@ -2686,8 +2686,8 @@ ACCESS OldPosition AS LONGINT STRICT
         IF (lOk)
             RETURN lRetVal
         ENDIF
-		
-		
+
+
 	ENDIF
 
 
@@ -2695,16 +2695,16 @@ ACCESS OldPosition AS LONGINT STRICT
 
 
 /// <include file="Gui.xml" path="doc/SpinnerEvent.OldValue/*" />
-ACCESS OldValue AS LONGINT STRICT 
+ACCESS OldValue AS LONGINT STRICT
 RETURN SELF:OldPosition
 
 
 /// <include file="Gui.xml" path="doc/SpinnerEvent.Position/*" />
-ACCESS Position AS LONGINT STRICT 
+ACCESS Position AS LONGINT STRICT
 	LOCAL oS AS Spinner
 	LOCAL oRange AS OBJECT
 	LOCAL liRetVal, wUnit AS LONG
-	//LOCAL dwTemp AS DWORD                                           
+	//LOCAL dwTemp AS DWORD
 	LOCAL iLow, iHigh AS LONG
    LOCAL wLow, wHigh   AS WORD
 
@@ -2727,7 +2727,7 @@ ACCESS Position AS LONGINT STRICT
 
 
    wLow    := LoWord(wParam)
-   wHigh   := HiWord(wParam)                              
+   wHigh   := HiWord(wParam)
 
 
 	SWITCH wLow
@@ -2756,17 +2756,17 @@ ACCESS Position AS LONGINT STRICT
 
 
 /// <include file="Gui.xml" path="doc/SpinnerEvent.Spinner/*" />
-ACCESS Spinner AS OBJECT STRICT 
+ACCESS Spinner AS OBJECT STRICT
 	LOCAL oS AS OBJECT
 	oS :=  __WCGetControlByHandle(PTR(_CAST, lParam))
 	IF IsInstanceOf(oS, #Spinner)
 	    RETURN oS
 	ENDIF
-	RETURN NULL_OBJECT 
+	RETURN NULL_OBJECT
 
 
 /// <include file="Gui.xml" path="doc/SpinnerEvent.SpinnerID/*" />
-ACCESS SpinnerID AS LONGINT STRICT 
+ACCESS SpinnerID AS LONGINT STRICT
 	LOCAL oS AS Spinner
 	oS := SELF:Spinner
 	IF (oS != NULL_OBJECT)
@@ -2778,7 +2778,7 @@ ACCESS SpinnerID AS LONGINT STRICT
 
 
 /// <include file="Gui.xml" path="doc/SpinnerEvent.Type/*" />
-ACCESS Type AS LONGINT STRICT 
+ACCESS Type AS LONGINT STRICT
 	LOCAL wType AS WORD
 	wType := LoWord(wParam)
 	SWITCH wType
@@ -2797,11 +2797,11 @@ ACCESS Type AS LONGINT STRICT
 
 
 /// <include file="Gui.xml" path="doc/SpinnerEvent.Value/*" />
-ACCESS Value AS LONGINT STRICT 
+ACCESS Value AS LONGINT STRICT
 
 
-	
-	
+
+
 
 
 	RETURN SELF:Position
@@ -2814,7 +2814,7 @@ END CLASS
 CLASS SysLinkSelectEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/SysLinkSelectEvent.ID/*" />
-	ACCESS ID AS STRING STRICT 
+	ACCESS ID AS STRING STRICT
 	LOCAL DIM szUrl[MAX_LINKID_TEXT] AS BYTE
 	LOCAL nml AS _winNMLink
 	nml := PTR(_CAST, lParam)
@@ -2825,26 +2825,26 @@ CLASS SysLinkSelectEvent INHERIT ControlNotifyEvent
 
 
 /// <include file="Gui.xml" path="doc/SysLinkSelectEvent.ctor/*" />
-CONSTRUCTOR(oControlNotifyEvent) 
-	
-	
+CONSTRUCTOR(oControlNotifyEvent)
+
+
 
 
 	SUPER(oControlNotifyEvent)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/SysLinkSelectEvent.LinkIndex/*" />
-ACCESS LinkIndex AS LONGINT STRICT 
+ACCESS LinkIndex AS LONGINT STRICT
 	LOCAL nml AS _winNMLink
 	nml := PTR(_CAST, lParam)
 	RETURN nml:item:iLink
 
 
 /// <include file="Gui.xml" path="doc/SysLinkSelectEvent.URL/*" />
-ACCESS URL AS STRING STRICT 
+ACCESS URL AS STRING STRICT
 	LOCAL DIM szUrl[L_MAX_URL_LENGTH] AS BYTE
 	LOCAL nml AS _winNMLink
 	nml := PTR(_CAST, lParam)
@@ -2861,25 +2861,25 @@ END CLASS
 CLASS TreeViewDeleteEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewDeleteEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewDeleteEvent.TreeViewItem/*" />
-ACCESS TreeViewItem AS TreeViewItem STRICT 
+ACCESS TreeViewItem AS TreeViewItem STRICT
 	LOCAL strucTreeView AS _winNM_TreeView
 	LOCAL oTreeView AS TreeView
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, lParam)
@@ -2896,45 +2896,45 @@ END CLASS
 CLASS TreeViewDragEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewDragEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewDragEvent.IsLeftButton/*" />
-ACCESS IsLeftButton AS LOGIC STRICT 
+ACCESS IsLeftButton AS LOGIC STRICT
 
 
-	
-	
+
+
 
 
 	RETURN (SELF:NotifyCode == TVN_BEGINDRAG)
 
 
 /// <include file="Gui.xml" path="doc/TreeViewDragEvent.IsRightButton/*" />
-ACCESS IsRightButton AS LOGIC STRICT  
-	
-	
+ACCESS IsRightButton AS LOGIC STRICT
+
+
 
 
 	RETURN (SELF:NotifyCode == TVN_BEGINRDRAG)
 
 
 /// <include file="Gui.xml" path="doc/TreeViewDragEvent.Position/*" />
-ACCESS Position AS Point STRICT  
+ACCESS Position AS Point STRICT
 	LOCAL strucTreeView AS _winNM_TREEVIEW
 	LOCAL oPoint AS Point
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, SELF:lParam)
@@ -2948,13 +2948,13 @@ ACCESS Position AS Point STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewDragEvent.TreeViewItem/*" />
-ACCESS TreeViewItem AS TreeViewItem STRICT 
+ACCESS TreeViewItem AS TreeViewItem STRICT
 	LOCAL strucTreeView AS _winNM_TREEVIEW
 	LOCAL oTreeView AS TreeView
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, SELF:lParam)
@@ -2971,30 +2971,30 @@ END CLASS
 CLASS TreeViewEditEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewEditEvent.EditBeginning/*" />
-	ACCESS EditBeginning AS LOGIC STRICT 
-	
-	
+	ACCESS EditBeginning AS LOGIC STRICT
+
+
 
 
 	RETURN (SELF:NotifyCode == TVN_BEGINLABELEDIT)
 
 
 /// <include file="Gui.xml" path="doc/TreeViewEditEvent.EditEnding/*" />
-ACCESS EditEnding AS LOGIC STRICT 
-	
-	
+ACCESS EditEnding AS LOGIC STRICT
+
+
 
 
 	RETURN (SELF:NotifyCode == TVN_ENDLABELEDIT)
 
 
 /// <include file="Gui.xml" path="doc/TreeViewEditEvent.EditText/*" />
-ACCESS EditText  AS STRING STRICT 
+ACCESS EditText  AS STRING STRICT
 	LOCAL strucDispInfo AS _winTV_DispInfo
 
 
-	
-	
+
+
 
 
 	strucDispInfo := PTR(_CAST, SELF:lParam)
@@ -3007,25 +3007,25 @@ ACCESS EditText  AS STRING STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewEditEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewEditEvent.TreeViewItem/*" />
-ACCESS TreeViewItem AS TreeViewItem STRICT 
+ACCESS TreeViewItem AS TreeViewItem STRICT
 	LOCAL strucDispInfo AS _winTV_DispInfo
 	LOCAL oTreeView AS TreeView
 
 
-	
-	
+
+
 
 
 	strucDispInfo := PTR(_CAST, SELF:lParam)
@@ -3042,12 +3042,12 @@ END CLASS
 CLASS TreeViewExpandedEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewExpandedEvent.Collapsed/*" />
-	ACCESS Collapsed AS LOGIC STRICT 
+	ACCESS Collapsed AS LOGIC STRICT
 	LOCAL strucTreeView AS _winNM_TreeView
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, SELF:lParam)
@@ -3057,12 +3057,12 @@ CLASS TreeViewExpandedEvent INHERIT ControlNotifyEvent
 
 
 /// <include file="Gui.xml" path="doc/TreeViewExpandedEvent.Expanded/*" />
-ACCESS Expanded  AS LOGIC STRICT 
+ACCESS Expanded  AS LOGIC STRICT
 	LOCAL strucTreeView AS _winNM_TreeView
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, SELF:lParam)
@@ -3072,25 +3072,25 @@ ACCESS Expanded  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewExpandedEvent.ctor/*" />
-CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewExpandedEvent.TreeViewItem/*" />
-ACCESS TreeViewItem AS TreeViewItem STRICT 
+ACCESS TreeViewItem AS TreeViewItem STRICT
 	LOCAL strucTreeView AS _winNM_TreeView
 	LOCAL oTreeView AS TreeView
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, SELF:lParam)
@@ -3107,25 +3107,25 @@ END CLASS
 CLASS TreeViewExpandingEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewExpandingEvent.ctor/*" />
-   CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+   CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewExpandingEvent.TreeViewItem/*" />
-ACCESS TreeViewItem AS TreeViewItem STRICT 
+ACCESS TreeViewItem AS TreeViewItem STRICT
 	LOCAL strucTreeView AS _winNM_TreeView
 	LOCAL oTreeView AS TreeView
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, SELF:lParam)
@@ -3142,24 +3142,24 @@ END CLASS
 CLASS TreeViewKeyEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewKeyEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewKeyEvent.KeyCode/*" />
-ACCESS KeyCode AS LONGINT STRICT 
+ACCESS KeyCode AS LONGINT STRICT
 	LOCAL strucKeyDown AS _winTV_KeyDown
 
 
-	
-	
+
+
 
 
 	strucKeyDown := PTR(_CAST, SELF:LParam)
@@ -3175,12 +3175,12 @@ CLASS TreeViewMouseEvent INHERIT ControlNotifyEvent
 	PROTECT nX AS LONGINT
 	PROTECT nY AS LONGINT
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.ButtonID/*" />
-	ACCESS ButtonID AS LONGINT STRICT 
+	ACCESS ButtonID AS LONGINT STRICT
 	LOCAL dwNotifyCode AS DWORD
 
 
-	
-	
+
+
 
 
 	dwNotifyCode := SELF:NotifyCode
@@ -3200,12 +3200,12 @@ CLASS TreeViewMouseEvent INHERIT ControlNotifyEvent
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.ctor/*" />
-CONSTRUCTOR(oControlNotifyEvent) 
+CONSTRUCTOR(oControlNotifyEvent)
 	LOCAL strucPoint IS _winPoint
 
 
-	
-	
+
+
 
 
 	SUPER(oControlNotifyEvent)
@@ -3217,17 +3217,17 @@ CONSTRUCTOR(oControlNotifyEvent)
 	nY := strucPoint:y
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.IsLeftButton/*" />
-ACCESS IsLeftButton AS LOGIC STRICT 
+ACCESS IsLeftButton AS LOGIC STRICT
 	//RvdH 061214 Added type (was untyped)
 	LOCAL dwNotifyCode  AS DWORD
 
 
-	
-	
+
+
 
 
 	dwNotifyCode := SELF:NotifyCode
@@ -3240,13 +3240,13 @@ ACCESS IsLeftButton AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.IsRightButton/*" />
-ACCESS IsRightButton  AS LOGIC STRICT 
+ACCESS IsRightButton  AS LOGIC STRICT
 	//RvdH 061214 Added type (was untyped)
 	LOCAL dwNotifyCode AS DWORD
 
 
-	
-	
+
+
 
 
 	dwNotifyCode := SELF:NotifyCode
@@ -3256,12 +3256,12 @@ ACCESS IsRightButton  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointAboveClientArea/*" />
-ACCESS PointAboveClientArea  AS LOGIC STRICT 
+ACCESS PointAboveClientArea  AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3273,12 +3273,12 @@ ACCESS PointAboveClientArea  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointBelowClientArea/*" />
-ACCESS PointBelowClientArea  AS LOGIC STRICT 
+ACCESS PointBelowClientArea  AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3290,12 +3290,12 @@ ACCESS PointBelowClientArea  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointLeftOfClientArea/*" />
-ACCESS PointLeftOfClientArea  AS LOGIC STRICT 
+ACCESS PointLeftOfClientArea  AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3307,12 +3307,12 @@ ACCESS PointLeftOfClientArea  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointNowhere/*" />
-ACCESS PointNowhere  AS LOGIC STRICT 
+ACCESS PointNowhere  AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3324,12 +3324,12 @@ ACCESS PointNowhere  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointOnItem/*" />
-ACCESS PointOnItem  AS LOGIC STRICT 
+ACCESS PointOnItem  AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3341,12 +3341,12 @@ ACCESS PointOnItem  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointOnItemButton/*" />
-ACCESS PointOnItemButton  AS LOGIC STRICT 
+ACCESS PointOnItemButton  AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3358,12 +3358,12 @@ ACCESS PointOnItemButton  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointOnItemImage/*" />
-ACCESS PointOnItemImage  AS LOGIC STRICT 
+ACCESS PointOnItemImage  AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3375,12 +3375,12 @@ ACCESS PointOnItemImage  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointOnItemIndent/*" />
-ACCESS PointOnItemIndent  AS LOGIC STRICT 
+ACCESS PointOnItemIndent  AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3392,12 +3392,12 @@ ACCESS PointOnItemIndent  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointOnItemLabel/*" />
-ACCESS PointOnItemLabel  AS LOGIC STRICT 
+ACCESS PointOnItemLabel  AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3409,12 +3409,12 @@ ACCESS PointOnItemLabel  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointOnItemRight/*" />
-ACCESS PointOnItemRight AS LOGIC STRICT  
+ACCESS PointOnItemRight AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3426,12 +3426,12 @@ ACCESS PointOnItemRight AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointOnItemStateImage/*" />
-ACCESS PointOnItemStateImage  AS LOGIC STRICT 
+ACCESS PointOnItemStateImage  AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3443,12 +3443,12 @@ ACCESS PointOnItemStateImage  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.PointRightOfClientArea/*" />
-ACCESS PointRightOfClientArea  AS LOGIC STRICT 
+ACCESS PointRightOfClientArea  AS LOGIC STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 
 
-	
-	
+
+
 
 
 	strucHitTestInfo:pt:x := nX
@@ -3460,24 +3460,24 @@ ACCESS PointRightOfClientArea  AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.Position/*" />
-ACCESS Position AS Point STRICT 
+ACCESS Position AS Point STRICT
 
 
-	
-	
+
+
 
 
 	RETURN __WCConvertPoint(SELF:Control, Point{nX, nY})
 
 
 /// <include file="Gui.xml" path="doc/TreeViewMouseEvent.TreeViewItem/*" />
-ACCESS TreeViewItem AS TreeViewItem STRICT 
+ACCESS TreeViewItem AS TreeViewItem STRICT
 	LOCAL strucHitTestInfo IS _winTV_HitTestInfo
 	LOCAL oTreeView AS TreeView
 
 
-	
-	
+
+
 
 
 	oTreeView := OBJECT(SELF:Control)
@@ -3496,24 +3496,24 @@ END CLASS
 CLASS TreeViewSelectionEvent INHERIT ControlNotifyEvent
 	//RvdH 061218 Declared properties for performance
 /// <include file="Gui.xml" path="doc/TreeViewSelectionEvent.ctor/*" />
-	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow) 
-    
-    
+	CONSTRUCTOR(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
+
+
     SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 
 
 
 
-RETURN 
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/TreeViewSelectionEvent.KeyBoardAction/*" />
-ACCESS KeyBoardAction AS LOGIC STRICT 
+ACCESS KeyBoardAction AS LOGIC STRICT
 	LOCAL strucTreeView AS _winNM_TreeView
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, SELF:lParam)
@@ -3523,12 +3523,12 @@ ACCESS KeyBoardAction AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewSelectionEvent.MouseAction/*" />
-ACCESS MouseAction AS LOGIC STRICT 
+ACCESS MouseAction AS LOGIC STRICT
 	LOCAL strucTreeView AS _winNM_TreeView
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, SELF:lParam)
@@ -3538,13 +3538,13 @@ ACCESS MouseAction AS LOGIC STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewSelectionEvent.NewTreeViewItem/*" />
-ACCESS NewTreeViewItem AS TreeViewItem STRICT 
+ACCESS NewTreeViewItem AS TreeViewItem STRICT
 	LOCAL strucTreeView AS _winNM_TreeView
 	LOCAL oTreeView AS TreeView
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, SELF:lParam)
@@ -3555,13 +3555,13 @@ ACCESS NewTreeViewItem AS TreeViewItem STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewSelectionEvent.OldTreeViewItem/*" />
-ACCESS OldTreeViewItem AS TreeViewItem STRICT 
+ACCESS OldTreeViewItem AS TreeViewItem STRICT
 	LOCAL strucTreeView AS _winNM_TreeView
 	LOCAL oTreeView AS TreeView
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, SELF:lParam)
@@ -3572,30 +3572,30 @@ ACCESS OldTreeViewItem AS TreeViewItem STRICT
 
 
 /// <include file="Gui.xml" path="doc/TreeViewSelectionEvent.SelectionChanged/*" />
-ACCESS SelectionChanged  AS LOGIC STRICT 
-	
-	
+ACCESS SelectionChanged  AS LOGIC STRICT
+
+
 
 
 	RETURN (SELF:NotifyCode == TVN_SELCHANGEDA)
 
 
 /// <include file="Gui.xml" path="doc/TreeViewSelectionEvent.SelectionChanging/*" />
-ACCESS SelectionChanging  AS LOGIC STRICT 
-	
-	
+ACCESS SelectionChanging  AS LOGIC STRICT
+
+
 
 
 	RETURN (SELF:NotifyCode == TVN_SELCHANGINGA)
 
 
 /// <include file="Gui.xml" path="doc/TreeViewSelectionEvent.UnknownAction/*" />
-ACCESS UnknownAction  AS LOGIC STRICT 
+ACCESS UnknownAction  AS LOGIC STRICT
 	LOCAL strucTreeView AS _winNM_TreeView
 
 
-	
-	
+
+
 
 
 	strucTreeView := PTR(_CAST, SELF:lParam)

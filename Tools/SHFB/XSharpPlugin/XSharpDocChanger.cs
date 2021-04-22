@@ -872,7 +872,7 @@ namespace XSharpDocs
             string Currency = "Currency";
             string ArrayReplace = "Array";
             string FoxArrayReplace = "FoxArray";
-            string ArrayBaseReplace = "Array Of";
+            string ArrayBaseReplace = "Array Of"; 
             string DateReplace = "Date";
             string SymbolReplace = "Symbol";
             string UsualReplace = "Usual"; 
@@ -891,7 +891,6 @@ namespace XSharpDocs
             replacements.Add(Usual, UsualReplace);
             replacements.Add(Currency, CurrencyReplace);
             replacements.Add(Binary, BinaryReplace);
-            replacements.Add(FoxArray, FoxArrayReplace);
             string allText = File.ReadAllText(path);
             string or = "|";
             string pattern = delimiters + "(" + string.Join(or, new List<string>(replacements.Keys).ToArray()) + ")";

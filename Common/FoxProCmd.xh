@@ -479,4 +479,6 @@
 
 #command __FIELDSERROR__ => #error You cannot combine both a field list and an wildcard mask in a statement
 
+#include "FoxProSql.xh"
 #endif
+

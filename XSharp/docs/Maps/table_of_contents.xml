@@ -283,6 +283,9 @@
       <topicref type="topic" id="4345204950299" build="ALL" modified="2018-12-07T11:35:46.212Z" icon="0" href="XSharp_RT">
         <caption translate="true">XSharp.RT</caption>
       </topicref>
+      <topicref type="topic" id="443068963776763" build="ALL" modified="2021-04-20T21:46:16.537Z" icon="0" href="XSharp_RT_Debugger_DLL">
+        <caption translate="true">XSharp.RT.Debugger.DLL</caption>
+      </topicref>
       <topicref type="topic" id="432586107516927" build="ALL" modified="2018-06-07T17:53:59.687Z" icon="0" href="XSharp_VO">
         <caption translate="true">XSharp.VO</caption>
       </topicref>

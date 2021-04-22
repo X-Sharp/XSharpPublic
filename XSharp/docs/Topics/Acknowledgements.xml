@@ -9,7 +9,7 @@
     <para styleclass="Normal">We could not have done this project without (source code) contributions from others.<br/>Below is a list of the contributions that we used for our compiler and Visual Studio integration</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="11" colcount="2" style="width:auto;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="2" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal">Name</para>
@@ -97,6 +97,15 @@
         </td>
         <td>
           <para styleclass="Body Text">We are using their SQLite database inside our project system</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Karl-Heinz Rauscher (Germany)</para>
+          <para styleclass="Body Text">António Lopes (Portugal)</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Have contributed functions for the FoxPro library.</para>
         </td>
       </tr>
     </table></para>

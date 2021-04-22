@@ -13,10 +13,10 @@
     <para styleclass="Heading2">Introduction</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When we designed the X# compile and X# Runtime we had a few focus points in mind:</para>
-    <list id="6" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal">The language and runtime should be VO compatible whenever possible. We know that the Vulcan devteam made some decisions not to support certain features from VO, but we decided that we would like to be as compatible as technically possible.</li>
     </list>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">We want our runtime to be fully Unicode and AnyCPU. It should run on any platform and also both in x86 and x64 mode. &#160;That has caused some challenges because VO is Ansi (and not Unicode) and also X86. In VO you can cast a LONG to a PTR. That will not work in X64 mode because a LONG is 32 bits and a PTR 64 bits</li>
       <li styleclass="Normal">We want the code to compile in &quot;Safe&quot; mode. No unsafe code when not strictly needed. The biggest problem / challenge here is the PTR type. With a PTR you can access memory directly and read/write from memory, even if you don&apos;t &quot;own&quot; that memory. However the same PTR type is also used as &quot;unique identifier&quot; for example in the low level file i/o and in the GUI classes for Window and Control handles. These PTR values are never used to read/write memory but are like object references. We have decided to use the .Net IntPtr type for this kind of handles. Of course the compiler can transparently convert between PTR and IntPtr.</li>
       <li styleclass="Normal">We want to prove that the X# language is a first class .Net development language. That is why we decided to write the X# runtime in X#. By doing that we also create a large codebase to test the compiler. So that is a win - win situation.</li>
@@ -27,9 +27,9 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you want to know in which Assembly a function or type is defined then your &quot;best friend&quot; is the documentation. We are using a tool to generate the documentation, so this is always correct. <br/>Some subsystems have functions XSharp.Core DLL and in XSharp.VO.DLL as well.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="11" colcount="4" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="4" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
-        <td style="width:20%;">
+        <td style="width:21%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Component</text></para>
         </td>
         <td>
@@ -43,7 +43,7 @@
         </td>
       </thead>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:21%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Core">XSharp.Core.DLL</link></para>
         </td>
         <td>
@@ -57,7 +57,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:21%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Data">XSharp.Data.DLL</link></para>
         </td>
         <td>
@@ -71,7 +71,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:21%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RT">XSharp.RT.DLL</link></para>
         </td>
         <td>
@@ -85,7 +85,21 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
+        <td style="width:21%;">
+          <para styleclass="Normal">XSharp.RT.Debugger.DLL</para>
+        </td>
         <td>
+          <para styleclass="Normal">This DLL contains the functions and windows for the Runtime Debugger</para>
+        </td>
+        <td>
+          <para styleclass="Normal">X# core</para>
+        </td>
+        <td>
+          <para styleclass="Normal">4.6</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:21%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VO">XSharp.VO.DLL</link></para>
         </td>
         <td>
@@ -99,7 +113,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:21%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_XPP">XSharp.XPP.DLL</link></para>
         </td>
         <td>
@@ -113,7 +127,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:21%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VFP">XSharp.VFP.DLL</link></para>
         </td>
         <td>
@@ -127,7 +141,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:21%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Macrocompiler">XSharp.Macrocompiler.DLL</link></para>
         </td>
         <td>
@@ -141,7 +155,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:21%;">
           <para styleclass="Normal">XSharp.MacroCompiler.Full.DLL</para>
         </td>
         <td>
@@ -155,7 +169,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:21%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RDD">XSharp.RDD.DLL</link></para>
         </td>
         <td>
@@ -169,7 +183,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:21%;">
           <para styleclass="Normal">VO SDK Class libraries:<br/>VOConsoleClasses.dll</para>
           <para styleclass="Normal">VOGUIClasses.dll</para>
           <para styleclass="Normal">VOInternetClasses.dll</para>

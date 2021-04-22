@@ -19,7 +19,7 @@
     // This is the file version number, which is ignored by .NET but used by Windows installer to determine
     // whether one file is newer than another.
     // This typically would change if we're generating a patch, otherwise it should be the same as VERSION_NUMBER
-    #define FILEVERSION_NUMBER   "2.8.0.10"
+    #define FILEVERSION_NUMBER   "2.8.0.11"
     #define INFORMATIONAL_NUMBER  "2.8 GA"
 
     #ifdef __DEBUG__

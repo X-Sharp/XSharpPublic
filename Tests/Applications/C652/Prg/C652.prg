@@ -15,5 +15,6 @@ FUNCTION Start() AS VOID
 	LOCAL d AS DWORD
 	d := 1 // no error
 	d := iif(TRUE, 1,2) // no error
-	d := iif(lLogic, 1,2) // ERROR
+	d := iif(lLogic, 1,2) // ERROR   
+	? d
 RETURN

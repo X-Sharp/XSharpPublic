@@ -13,13 +13,13 @@
 #ifndef XSHARPDEFS_XH
 #define XSHARPDEFS_XH
 
+#xcommand QUIT                   		=> _Quit()
 
 // The following UDCs require the xBase Runtime
 #ifndef __DIALECT_CORE__
 #command ACCEPT [<msg>] TO <v>         	=> <v> := _accept( <msg> ) 
 #xcommand WAIT [<msg>]                  => _wait( <msg> )
 #xcommand WAIT [<msg>] TO <v>           => <v> := _wait( <msg> )
-#xcommand QUIT                   		=> _Quit()
 
 #xcommand DEFAULT <v1> TO <x1> [, <vn> TO <xn> ]  => ;
           IF <v1> == NIL ; <v1> := <x1> ; END        ;
@@ -45,7 +45,7 @@
 #xcommand ENDDEFINE <*any*> => ENDDEFINE 
 #xcommand ENDCLASS <*any*> => ENDCLASS 
 
-#endif	
+#endif
 
 #ifdef __DIALECT_XBASEPP__
 #include "XbasePPCmd.xh"
@@ -60,5 +60,6 @@
 
 // Various DBF related commands
 #include "dbcmd.xh"
-
+// Include (optional) custom UDCs
+#include "CustomDefs.xh"
 #endif

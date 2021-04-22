@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8429</title>
+<keywords>
+<keyword>XS8429</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8429</para>
+  </header>
+  <para styleclass="Normal">Invocation of implicit Range Indexer cannot name the argument.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

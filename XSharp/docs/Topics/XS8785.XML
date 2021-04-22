@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS8785</title>
+<keywords>
+<keyword>XS8785</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS8785</para>
+  </header>
+  <para styleclass="Normal">Generator '{0}' failed to generate source. It will not contribute to the output and compilation errors may occur as a result. Exception was of type '{1}' with message '{2}'</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

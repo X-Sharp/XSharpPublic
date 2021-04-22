@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS8524</title>
+<keywords>
+<keyword>XS8524</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS8524</para>
+  </header>
+  <para styleclass="Normal">The switch expression does not handle some values of its input type (it is not exhaustive) involving an unnamed enum value. For example, the pattern '{0}' is not covered.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

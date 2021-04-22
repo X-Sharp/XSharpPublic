@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8812</title>
+<keywords>
+<keyword>XS8812</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8812</para>
+  </header>
+  <para styleclass="Normal">Cannot convert @method '{0}' to non-function pointer type '{1}'.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

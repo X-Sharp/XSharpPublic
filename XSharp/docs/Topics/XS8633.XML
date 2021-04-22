@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS8633</title>
+<keywords>
+<keyword>XS8633</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS8633</para>
+  </header>
+  <para styleclass="Normal">Nullability in constraints for type parameter '{0}' of method '{1}' doesn't match the constraints for type parameter '{2}' of interface method '{3}'. Consider using an explicit interface implementation instead.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

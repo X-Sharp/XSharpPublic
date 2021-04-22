@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8652</title>
+<keywords>
+<keyword>XS8652</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8652</para>
+  </header>
+  <para styleclass="Normal">The feature '{0}' is currently in Preview and *unsupported*. To use Preview features, use the 'preview' language version.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

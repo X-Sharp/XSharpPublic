@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS8882</title>
+<keywords>
+<keyword>XS8882</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS8882</para>
+  </header>
+  <para styleclass="Normal">The out parameter '{0}' must be assigned to before control leaves the current method</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

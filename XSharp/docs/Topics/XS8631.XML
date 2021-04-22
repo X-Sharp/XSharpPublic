@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS8631</title>
+<keywords>
+<keyword>XS8631</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS8631</para>
+  </header>
+  <para styleclass="Normal">The type '{3}' cannot be used as type parameter '{2}' in the generic type or method '{0}'. Nullability of type argument '{3}' doesn't match constraint type '{1}'.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

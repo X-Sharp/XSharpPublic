@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS9105</title>
+<keywords>
+<keyword>XS9105</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS9105</para>
+  </header>
+  <para styleclass="Normal">'{0}': Type was changed to '{2}' in the parenttype '{1}'. The compiler will automatically propagate the new type '{2}' to the subclass.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

@@ -184,8 +184,7 @@ METHOD Exec(kExecType, oObject)
 
 
 		IF lBeforeDisp
-            VAR result := oBeforeDisp:Invoke(SELF, <OBJECT> {msg:hwnd, msg:message, msg:wParam, msg:lParam} )
-            IF result IS LOGIC VAR lRes .AND. ! lRes
+            IF Send(SELF, oBeforeDisp, msg:hwnd, msg:message, msg:wParam, msg:lParam ) == FALSE
 			//IF Send(SELF, #BeforeDispatch, msg:hwnd, msg:message, msg:wParam, msg:lParam) == FALSE
 				IF retVal	// When processing WM_QUIT we want to EXIT below
 					LOOP
@@ -238,7 +237,7 @@ METHOD Exec(kExecType, oObject)
 		ENDIF
 		//RvdH 050331 Moved from below
 		IF lAfterDisp
-            oAfterDisp:Invoke(SELF, <OBJECT> {msg:hwnd, msg:message, msg:wParam, msg:lParam} )
+            Send(SELF, oAfterDisp, msg:hwnd, msg:message, msg:wParam, msg:lParam ,)
 			//Send(SELF, #AfterDispatch, msg:hwnd, msg:message, msg:wParam, msg:lParam)
 		ENDIF
 

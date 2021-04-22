@@ -86,6 +86,20 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(6363+1+2+3, (INT) Send(oObject, #TestMe3,1.0,2,3))             // the float causes the USUAL overload to be called
 			Assert.Equal(8484+1+2+3, (INT) __InternalSend(oObject, #TestMe3,1,2,3))     // all int so the int overload gets called
 			
+			LOCAL uObject AS USUAL
+			LOCAL usMethod := #NewTest AS USUAL
+			LOCAL sMethod := #NewTest AS SYMBOL
+			oObject := SendTester{}
+			uObject := oObject
+			
+			Assert.True(Send(oObject, #NewTest, 1) == 1)
+			Assert.True(Send(uObject, #NewTest, 2) == 2)
+			Assert.True(Send(oObject, sMethod,  3) == 3)
+			Assert.True(Send(uObject, sMethod,  4) == 4)
+			Assert.True(Send(oObject, usMethod, 5) == 5)
+			Assert.True(Send(uObject, usMethod, 6) == 6)
+			
+			
 		[Fact, Trait("Category", "OOP")];
 		METHOD NoMethodTests() AS VOID
 			LOCAL oObject AS OBJECT
@@ -506,6 +520,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 END NAMESPACE
 
+CLASS SendTester
+	METHOD NewTest(u)
+	RETURN u
+END CLASS
+
 CLASS Tester INHERIT father
 	PROPERTY name AS STRING AUTO
 	PROPERTY age AS INT AUTO
@@ -519,7 +538,6 @@ CONSTRUCTOR CLIPPER
 		RETURN 6363+a+b+c
 	METHOD TestMe3(a AS INT,b AS INT, c AS INT) AS LONG
         RETURN 8484+a+b+c
-
 END CLASS
 	
 CLASS Father
@@ -584,10 +602,10 @@ CLASS GeneralLBTestClass
 	PRIVATE METHOD meth_priv(a,b,c,d)
 	RETURN NIL
 
-    METHOD MethodOverloaded as LOGIC
+    METHOD MethodOverloaded AS LOGIC
         RETURN TRUE
 
-    METHOD MethodOverloaded(lParam as LOGIC) as LOGIC
+    METHOD MethodOverloaded(lParam AS LOGIC) AS LOGIC
         RETURN lParam
 
 	METHOD MethodPtr() AS PTR

@@ -1336,7 +1336,7 @@ FUNCTION CSend(oObject AS OBJECT,symMethod AS STRING, MethodArgList PARAMS USUAL
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/send/*" />
-FUNCTION Send(oObject AS OBJECT,symMethod AS MethodInfo, MethodArgList PARAMS USUAL[]) AS USUAL
+FUNCTION _Send(oObject AS OBJECT,symMethod AS MethodInfo, MethodArgList PARAMS USUAL[]) AS USUAL
     IF OOPHelpers.SendHelper(oObject, symMethod, MethodArgList, OUT VAR result)
         RETURN result
     ENDIF

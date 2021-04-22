@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -13,15 +13,15 @@ USING XUnit
 #pragma warnings(169, off)  // unused field
 
 BEGIN NAMESPACE XSharp.VO.Tests
-	
-	
-	
+
+
+
 	CLASS OOPTests
-		
+
 		[Fact, Trait("Category", "OOP")];
 		METHOD CreateInstanceTests() AS VOID
 			LOCAL oObject AS OBJECT
-            LOCAL oObject2 AS TestStrong 
+            LOCAL oObject2 AS TestStrong
 			/// note that vulcan does not return true for IsClassOf(#Tester, "Object")
 			oObject := CreateInstance(#Tester)
 			Assert.NotEqual(NULL_OBJECT, oObject)
@@ -34,7 +34,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             oObject2 := CreateInstance(#TestStrong, oObject, oObject) // too many parameters passed
             Assert.Equal(oObject, oObject2:Param)
 
-		
+
 		[Fact, Trait("Category", "OOP")];
 		METHOD MetadataTests() AS VOID
 			LOCAL oObject AS OBJECT
@@ -76,7 +76,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(9, (INT) ALen(aTree[1][3]))	// 9 Methods = same as MethodList + 2 non public methods
 
 
-		
+
 		[Fact, Trait("Category", "OOP")];
 		METHOD SendTests() AS VOID
 			LOCAL oObject AS OBJECT
@@ -85,21 +85,38 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(4242+1+2+3, (INT) Send(oObject, #TestMe2,1,2,3))
 			Assert.Equal(6363+1+2+3, (INT) Send(oObject, #TestMe3,1.0,2,3))             // the float causes the USUAL overload to be called
 			Assert.Equal(8484+1+2+3, (INT) __InternalSend(oObject, #TestMe3,1,2,3))     // all int so the int overload gets called
-			
+
 			LOCAL uObject AS USUAL
 			LOCAL usMethod := #NewTest AS USUAL
 			LOCAL sMethod := #NewTest AS SYMBOL
 			oObject := SendTester{}
 			uObject := oObject
-			
+
 			Assert.True(Send(oObject, #NewTest, 1) == 1)
 			Assert.True(Send(uObject, #NewTest, 2) == 2)
 			Assert.True(Send(oObject, sMethod,  3) == 3)
 			Assert.True(Send(uObject, sMethod,  4) == 4)
 			Assert.True(Send(oObject, usMethod, 5) == 5)
 			Assert.True(Send(uObject, usMethod, 6) == 6)
-			
-			
+
+		[Fact, Trait("Category", "OOP")];
+		METHOD _SendTests() AS VOID
+            // Test _Send that takes MethodInfo parameter
+			LOCAL oObject AS OBJECT
+			oObject := CreateInstance(#Tester)
+            VAR mi := Typeof(tester):GetMethod("TestMe")
+            VAR mi2 := Typeof(tester):GetMethod("TestMe2")
+            VAR mi3u := Typeof(tester):GetMethods():Where ( { m => m:Name:ToUpper()=="TESTME3" .AND. m:GetParameters()[1]:ParameterType:FullName=="XSharp.__Usual"}):First()
+            VAR mi3i := Typeof(tester):GetMethods():Where ( { m => m:Name:ToUpper()=="TESTME3" .AND. m:GetParameters()[1]:ParameterType:FullName!="XSharp.__Usual"}):First()
+			Assert.Equal(2121+1+2+3, (INT) _Send(oObject, mi,1,2,3))
+			Assert.Equal(2121+4+5+6, (INT) _Send(oObject, mi,4,5,6))
+			Assert.Equal(4242+1+2+3, (INT) _Send(oObject, mi2,1,2,3))
+			Assert.Equal(4242+4+5+6, (INT) _Send(oObject, mi2,4,5,6))
+			Assert.Equal(6363+1+2+3, (INT) _Send(oObject, mi3u,1.0,2,3))             // USUAL overload
+			Assert.Equal(6363+4+5+6, (INT) _Send(oObject, mi3u,4.0,5,6))             // USUAL overload
+			Assert.Equal(8484+1+2+3, (INT) _Send(oObject, mi3i,1.0,2,3))             // INT overload, runtime will convert 1.0 to 1
+			Assert.Equal(8484+4+5+6, (INT) _Send(oObject, mi3i,4.0,5,6))             // INT overload, runtime will convert 4.0 to 1
+
 		[Fact, Trait("Category", "OOP")];
 		METHOD NoMethodTests() AS VOID
 			LOCAL oObject AS OBJECT
@@ -112,21 +129,21 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "OOP")];
 		METHOD ParamCountTests() AS VOID
             VObject{}
-			assert.Equal(3, (INT) FParamCount("STR"))            
-			assert.Equal(2, (INT) FParamCount("STR2"))            
-			assert.Equal(3, (INT) FParamCount("STR3"))            
+			assert.Equal(3, (INT) FParamCount("STR"))
+			assert.Equal(2, (INT) FParamCount("STR2"))
+			assert.Equal(3, (INT) FParamCount("STR3"))
 			assert.Equal(3, (INT) MParamCount(#Tester, #TestMe))
 			assert.Equal(0, (INT) MParamCount("VObject", "Destroy"))
 			//assert.Throws( FParamCount("ProcName"))	// ambiguous
-		
-		
+
+
 		[Fact, Trait("Category", "OOP")];
 		METHOD CallClipFuncTests() AS VOID
 			SetDecimalSep( (WORD) c'.')
-			assert.Equal("10.00", (STRING) _CallClipFunc("STR", {10,5,2}))  
-			assert.Equal("   10.01", (STRING) _CallClipFunc("STR", {10.01,8,2}))  
-			assert.Equal("   10.02", (STRING) _CallClipFunc("STR3", {10.02,8,2}))  
-			assert.Equal("2.50", (STRING) _CallClipFunc("STR3", {2.49999,4,2}))  
+			assert.Equal("10.00", (STRING) _CallClipFunc("STR", {10,5,2}))
+			assert.Equal("   10.01", (STRING) _CallClipFunc("STR", {10.01,8,2}))
+			assert.Equal("   10.02", (STRING) _CallClipFunc("STR3", {10.02,8,2}))
+			assert.Equal("2.50", (STRING) _CallClipFunc("STR3", {2.49999,4,2}))
 
 
 		[Fact, Trait("Category", "OOP")];
@@ -179,42 +196,42 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			l := TRUE
 			u:TestUntyped(REF l)
 			Assert.Equal(FALSE, l)
-			
+
 			l := TRUE
 			u:TestUntyped(@l)
 			Assert.Equal(FALSE, l)
-			
-			
+
+
 			LOCAL i AS INT
 			i := 555
 			u:TestUntyped(REF i)
 			Assert.Equal(123, i)
-			
+
 			i := 555
 			u:TestUntyped(@i)
 			Assert.Equal(123, i)
-			
-			
+
+
 			LOCAL c AS STRING
 			c := "asd"
 			u:TestUntyped(REF c)
 			Assert.Equal("test", c)
-			
+
 			c := "asd"
 			u:TestUntyped(@c)
 			Assert.Equal("test", c)
-			
-			
+
+
 			LOCAL d AS DATE
 			d := Today()
 			u:TestUntyped(REF d)
 			Assert.Equal(Today()-1, d)
-			
+
 			d := Today()
 			u:TestUntyped(@d)
 			Assert.Equal(Today()-1, d)
-			
-			
+
+
 			LOCAL f AS FLOAT
 			u:TestUntyped(@f)
             Assert.Equal(f, 123.0)
@@ -238,14 +255,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			n := 1
 			u:TestInt(@n)
 			Assert.Equal(123, n)
-		
+
 			l := FALSE
 			u:TestLogic(REF l)
 			Assert.Equal(TRUE, l)
 			l := FALSE
 			u:TestLogic(@l)
 			Assert.Equal(TRUE, l)
-		
+
 			c := ""
 			u:TestString(REF c)
 			Assert.Equal("changed", c)
@@ -256,19 +273,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		RETURN
 #pragma options ("vo7", DEFAULT)
-        
+
         [Fact, Trait("Category", "OOP")];
         METHOD IConvertibleTest() AS VOID
            //Issue 1 - runtime - Object must implement IConvertible
             LOCAL o AS AzControl
             LOCAL x AS OBJECT
-                     
+
             o := AzControl{}
             o:cbWhen := {||TRUE}
-       
+
             x := o
-       
-            x:cbWhen := {||TRUE}       
+
+            x:cbWhen := {||TRUE}
 
             Assert.NotEqual(o:cbWhen, NULL)
 
@@ -281,7 +298,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.False(IsClassOf(#None, #None))
 			Assert.False(IsClassOf(#None, #TestClassChild))
 			Assert.False(IsClassOf(#TestClassChild, #None))
-	
+
 		[Fact, Trait("Category", "OOP")];
 		METHOD IsInstanceOf_Tests() AS VOID
 			Assert.True(IsInstanceOf(123 , "Int32"))
@@ -318,22 +335,22 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	Assert.False( IsAssign(o , #acc_exp) )
         	Assert.False( IsMethod(o , #meth_exp) )
 
-            
+
 
         [Fact, Trait("Category", "OOP")];
         METHOD IVarPutGetSet_tests() AS VOID
         	LOCAL o AS GeneralLBTestClass
         	o := GeneralLBTestClass{}
-        	
+
         	IVarPut(o , #fld_exp , 1)
         	Assert.Equal(1 , (INT) IVarGet(o , #fld_exp))
 
         	IVarPutSelf(o , #fld_prot , 2)
         	Assert.Equal(2 , (INT) IVarGetSelf(o , #fld_prot))
-        	
+
         	Assert.ThrowsAny<Exception>( { => IVarPut(o , #fld_prot , 3) })
         	Assert.Equal(2 , (INT) IVarGetSelf(o , #fld_prot))
-        	
+
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_prot) })
         	Assert.ThrowsAny<Exception>( { => IVarGet(o , #fld_priv) })
 
@@ -341,7 +358,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         METHOD PtrAndIntPtrMethodCalls() AS VOID
         	LOCAL o AS GeneralLBTestClass
         	o := GeneralLBTestClass{}
-        	
+
         	LOCAL pPtr AS PTR
         	LOCAL pIntPtr AS PTR
         	pPtr := o:MethodPtr()
@@ -350,14 +367,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	? pIntPtr
         	Assert.NotEqual((INT)pIntPtr , 0)
         	Assert.NotEqual((INT)pPtr , 0)
-    
+
         	pPtr := o:MethodIntPtr()
         	? pPtr
         	pIntPtr := o:MethodIntPtr()
         	? pIntPtr
         	Assert.NotEqual((INT)pIntPtr , 0)
         	Assert.NotEqual((INT)pPtr , 0)
-        	
+
         	LOCAL u AS USUAL
         	u := o
         	pPtr := u:MethodPtr()
@@ -366,7 +383,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         	? pIntPtr
         	Assert.NotEqual((INT)pIntPtr , 0)
         	Assert.NotEqual((INT)pPtr , 0)
-    
+
         	pPtr := u:MethodIntPtr()
         	? pPtr
         	pIntPtr := u:MethodIntPtr()
@@ -378,7 +395,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         METHOD DefaultParameters() AS VOID
         	LOCAL o AS USUAL
         	o := AnotherClass{}
-        	
+
         	Assert.Equal(60 , (INT)o:DefaultParams1(10,20,30))
         	Assert.Equal(15 , (INT)o:DefaultParams1(10))
         	Assert.Equal(32 , (INT)o:DefaultParams1(10,,20)) // doesn't work in VO either
@@ -405,7 +422,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.False( u == c ) // FALSE, ok
 			Assert.False( u = c  ) // exception
 			Assert.False( u = "aaa"  ) // exception
-			
+
 			// exceptions also:
 			u := NilTestClass{}
 			Assert.False( u:NilMethod() = "A" )
@@ -423,30 +440,30 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.False( n == uNil )
 			Assert.False( NIL == n  )
 			Assert.False( uNil == n )
-			
+
 			Assert.False( uNil == c )
 			Assert.False( c == NIL  )
 			Assert.False( c == uNil )
-			
+
 			LOCAL o AS USUAL
 			o := NilTestClass{}
 			Assert.False( o:NilMethod() == 1        )
 			Assert.False( o:NilMethodUntyped() == 1 )
 			Assert.False( o:NilMethodUntyped() == c )
-		
+
 			Assert.False( o:NilAccess == 1  )
 			Assert.False( o:NilAccess == "" )
-		
+
 			Assert.False( o:DoesNotExistAccess == 1   )
 			Assert.False( o:DoesNotExistMethod() == 1 )
-		
+
 			Assert.False( o:DoesNotExistMethodNil() == 1     )
 			Assert.False( o:DoesNotExistMethodNil() == "abc" )
-		
+
 			Assert.False( o:DoesNotExistAccessNil == 1     ) // exception here "Value does not fall within the expected range."
 			Assert.False( o:DoesNotExistAccessNil == "abc" ) // exception
 			Assert.False( o:DoesNotExistAccessNil == n     ) // exception
-		
+
 			Assert.True( o:DoesNotExistAccessNil == NIL   ) // OK, TRUE
 		RETURN
 
@@ -468,7 +485,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			o:AssignDateTime := ConDate(2020,12,2)
 			Assert.Equal(o:FieldDateTime , DateTime{2020,12,2})
 			Assert.Equal(o:AccessDateTime , DateTime{2020,12,2})
-			
+
 			o:Date_DateTime_Method(DateTime{2010,1,1} , 2012.02.02)
 			Assert.Equal(o:FieldDate , 2010.01.01)
 			Assert.Equal(o:FieldDateTime , DateTime{2012,02,02})
@@ -509,12 +526,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				SELF:FieldDateTime := dt
 			RETURN
 		END CLASS
-    
+
         CLASS AzControl
-       
+
             EXPORT cbWhen AS CODEBLOCK
-       
-        END CLASS   
+
+        END CLASS
 	END CLASS
 
 
@@ -539,7 +556,7 @@ CONSTRUCTOR CLIPPER
 	METHOD TestMe3(a AS INT,b AS INT, c AS INT) AS LONG
         RETURN 8484+a+b+c
 END CLASS
-	
+
 CLASS Father
 END CLASS
 
@@ -567,7 +584,7 @@ CLASS AnotherClass
 	RETURN "2" + n:ToString()
 	METHOD TestOther2C(n)
 	RETURN "2" + ((INT)n):ToString()
-	
+
 	METHOD DefaultParams1(n1 AS INT, n2 := 2 AS INT, n3 := 3 AS INT) AS INT
 	RETURN n1 + n2 + n3
 	METHOD DefaultParams2(cValue := "abc" AS STRING, lValue := TRUE AS LOGIC) AS STRING
@@ -576,7 +593,7 @@ CLASS AnotherClass
 	RETURN dValue
 	METHOD DefaultParams4(sValue := #MYSYMBOL AS SYMBOL) AS SYMBOL
 	RETURN sValue
-	
+
 END CLASS
 
 CLASS GeneralLBTestClass
@@ -594,7 +611,7 @@ CLASS GeneralLBTestClass
 	ASSIGN asn_exp(n AS INT)
 	PROTECT ASSIGN asn_prot(n AS INT)
 	PROTECT ASSIGN asn_priv(n AS INT)
-		
+
 	METHOD meth_exp(a,b,c,d)
 	RETURN NIL
 	PROTECTED METHOD meth_prot(a,b,c,d)
@@ -670,13 +687,13 @@ CLASS LBTestClass
 			u := FALSE
 		END CASE
 	RETURN NIL
-		
+
 	METHOD TestInt(n REF INT) AS VOID
 	n := 123
 	METHOD TestLogic(l REF LOGIC) AS VOID
 	l := TRUE
 	METHOD TestString(c REF STRING) AS VOID
 	c := "changed"
-	
+
 END CLASS
 

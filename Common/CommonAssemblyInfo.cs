@@ -9,6 +9,15 @@ using System.Reflection;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+
+#if COMMITHASH
+#if DEBUG
+[assembly: Microsoft.CodeAnalysis.CommitHashAttribute("debug")]
+#else
+[assembly: Microsoft.CodeAnalysis.CommitHashAttribute("release")]
+#endif
+#endif
+
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else

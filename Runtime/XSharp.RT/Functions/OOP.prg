@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -26,7 +26,7 @@ INTERNAL STATIC CLASS OOPHelpers
         fieldPropCache              := Dictionary<System.Type, Dictionary<STRING, MemberInfo> >{}
         overloadCache               := Dictionary<System.Type, Dictionary<STRING, IList<MethodInfo>> >{}
 	RETURN
-    
+
 	STATIC METHOD FindOurAssemblies AS IEnumerable<Assembly>
 		RETURN	FROM asm IN AppDomain.CurrentDomain:GetAssemblies() ;
 				WHERE asm:IsDefined(TYPEOF( ClassLibraryAttribute ), FALSE) ;
@@ -43,8 +43,8 @@ INTERNAL STATIC CLASS OOPHelpers
 			IF oType != NULL_OBJECT
 				LOCAL oMI AS MethodInfo
 				LOCAL bf AS BindingFlags
-				bf := BindingFlags.Static | BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.DeclaredOnly 
-				TRY 
+				bf := BindingFlags.Static | BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.DeclaredOnly
+				TRY
 					oMI := oType:GetMethod(cFunction,bf)
 					IF oMI != NULL_OBJECT
 						aMethods:Add( (MethodInfo) oMI)
@@ -52,13 +52,13 @@ INTERNAL STATIC CLASS OOPHelpers
 				CATCH AS AmbiguousMatchException
 					LOCAL aMI AS MethodInfo[]
                     VAR list := OOPHelpers.GetCachedOverLoads(oType, cFunction)
-                    IF list != NULL 
+                    IF list != NULL
                         aMethods:AddRange(list)
                     ELSE
                         list := OOPHelpers.FindOverloads(oType, cFunction, FALSE)
 					    aMI := oType:GetMethods(bf)
 					    FOREACH oM AS MethodInfo IN aMI
-						    IF ! oM:IsSpecialName .and. String.Compare(oM:Name, cFunction, TRUE) == 0
+						    IF ! oM:IsSpecialName .AND. String.Compare(oM:Name, cFunction, TRUE) == 0
 							    list:Add( oM )
 						    ENDIF
                         NEXT
@@ -66,19 +66,19 @@ INTERNAL STATIC CLASS OOPHelpers
                             aMethods:AddRange(list)
                         ENDIF
                     ENDIF
-				END TRY 
+				END TRY
 			ENDIF
 		NEXT
 		RETURN aMethods:ToArray()
-		
-	STATIC METHOD FindClass(cName AS STRING) AS System.Type 
+
+	STATIC METHOD FindClass(cName AS STRING) AS System.Type
 	    RETURN OOPHelpers.FindClass(cName, TRUE)
 
-	STATIC METHOD FindClass(cName AS STRING, lOurAssembliesOnly AS LOGIC) AS System.Type 
+	STATIC METHOD FindClass(cName AS STRING, lOurAssembliesOnly AS LOGIC) AS System.Type
 		// TOdo Optimize FindClass
 		LOCAL ret := NULL AS System.Type
 		LOCAL aAssemblies AS IEnumerable<Assembly>
-		
+
 		IF String.IsNullOrWhiteSpace(cName)
 			// otherwise asm:GetType() will throw an exception with empty name
 			RETURN ret
@@ -95,13 +95,13 @@ INTERNAL STATIC CLASS OOPHelpers
 			END IF
 			aAssemblies := AppDomain.CurrentDomain:GetAssemblies()
 		END IF
-		
+
 		FOREACH asm AS Assembly IN aAssemblies
 			ret := asm:GetType( cName, FALSE, TRUE )
 			IF ret != NULL
-				EXIT 
+				EXIT
 			ENDIF
-			// The class could be prefixed with a Namespace. 
+			// The class could be prefixed with a Namespace.
 			// If there is a class library attribute and we prefixed all classes with a namespace then
             // this is visible in the ClassLibraryAttribute
 			// We don't know if the current assembly is compiler with /INS, but we assume it is when they
@@ -171,18 +171,18 @@ INTERNAL STATIC CLASS OOPHelpers
 				END IF
 			END IF
 		END IF
-		
+
 		RETURN ret
-		
-	STATIC METHOD FindMethod(t AS System.Type, cName AS STRING, lSelf AS LOGIC, lInstance := TRUE as LOGIC ) AS MethodInfo
+
+	STATIC METHOD FindMethod(t AS System.Type, cName AS STRING, lSelf AS LOGIC, lInstance := TRUE AS LOGIC ) AS MethodInfo
 		LOCAL oMI := NULL AS MethodInfo
-		
+
 		IF t == NULL .OR. String.IsNullOrEmpty(cName)
 			RETURN NULL
 		END IF
-		
+
 		TRY
-            var bf := BindingFlags.IgnoreCase | BindingFlags.Public
+            VAR bf := BindingFlags.IgnoreCase | BindingFlags.Public
             IF lSelf
                 bf |= BindingFlags.NonPublic
             ELSE
@@ -197,7 +197,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		CATCH AS System.Reflection.AmbiguousMatchException
 			oMI := NULL
 		END TRY
-		
+
 		RETURN oMI
 
     STATIC METHOD CompareMethods(m1 AS MethodBase, m2 AS MethodBase, uArgs AS USUAL[]) AS LONG
@@ -270,14 +270,14 @@ INTERNAL STATIC CLASS OOPHelpers
             ENDIF
         NEXT
         IF found:Count == 1
-            RETURN found:First() 
+            RETURN found:First()
         ENDIF
         LOCAL cClass AS STRING
         cClass := overloads:First():DeclaringType:Name
         VAR oError := Error.VOError( EG_AMBIGUOUSMETHOD, cFunction, "MethodName", 1, <OBJECT>{cClass+":"+overloads:First():Name})
         oError:Description := oError:Message+" ' "+cFunction+"'"
         THROW oError
-        
+
 
     STATIC METHOD MatchParameters<T>( methodinfo AS T, args AS USUAL[], hasByRef OUT LOGIC) AS OBJECT[] WHERE T IS MethodBase
         // args contains the list of arguments. The methodname has already been deleted when appropriated
@@ -292,9 +292,9 @@ INTERNAL STATIC CLASS OOPHelpers
         ENDIF
         DO CASE
         CASE lClipper
-            // pass the whole array of clipper parameters (usual[]) as single parameter        
+            // pass the whole array of clipper parameters (usual[]) as single parameter
 			oArgs  := <OBJECT>{args}
-        CASE aPars:Length == 0 
+        CASE aPars:Length == 0
 			// no args
 			oArgs := NULL
 		OTHERWISE
@@ -324,16 +324,16 @@ INTERNAL STATIC CLASS OOPHelpers
                     END TRY
                 ENDIF
                 IF parType == TYPEOF(USUAL)
-					// We need to box a usual here 
+					// We need to box a usual here
     				oArgs[nPar] := __CASTCLASS(OBJECT, arg)
                 ELSEIF arg == NIL
-                    // This is new in X#: a NIL in the middle of the parameter list gets set to the default value now 
+                    // This is new in X#: a NIL in the middle of the parameter list gets set to the default value now
                     oArgs[nPar] := OOPHelpers.GetDefaultValue(pi)
-                ELSEIF arg == NULL .or. parType:IsAssignableFrom(arg:SystemType) // Null check must appear first !
+                ELSEIF arg == NULL .OR. parType:IsAssignableFrom(arg:SystemType) // Null check must appear first !
 					oArgs[nPar] := arg
                 ELSEIF pi:GetCustomAttributes( TYPEOF( ParamArrayAttribute ), FALSE ):Length > 0
                     // Parameter array of certain type
-					// -> convert remaining elements from uArgs to an array and assign that to oArgs[i] 
+					// -> convert remaining elements from uArgs to an array and assign that to oArgs[i]
 					LOCAL elementType := parType:GetElementType() AS System.Type
 					LOCAL aVarArgs    := System.Array.CreateInstance(elementType, args:Length - nPar +1) AS System.Array
 					FOR VAR nArg := nPar TO numActualParameters -1
@@ -350,14 +350,14 @@ INTERNAL STATIC CLASS OOPHelpers
 					oArgs[nPar] := aVarArgs
                     EXIT    // done with parameters
                 ELSE
-                    
+
                     // try to convert to the expected type, but don't do this for out parameters.
                     // We can leave the slot empty for out parameters
                     IF ! pi:IsOut
 					    oArgs[nPar]  := OOPHelpers.VOConvert(args[nPar], parType)
                     ENDIF
                 ENDIF
-			NEXT 
+			NEXT
             // set default values for missing parameters, so we start after the last parameter
             FOR VAR nArg := numActualParameters TO numDefinedParameters -1
                 LOCAL oPar AS ParameterInfo
@@ -380,7 +380,7 @@ INTERNAL STATIC CLASS OOPHelpers
             LOCAL oDefAttrib AS DefaultParameterValueAttribute
             oDefAttrib := (DefaultParameterValueAttribute) oPar:GetCustomAttribute(TypeOf(DefaultParameterValueAttribute))
             IF oDefAttrib != NULL
-                SWITCH oDefAttrib:Flag 
+                SWITCH oDefAttrib:Flag
                 CASE 1 // NIL
                 	NOP // it is already NIL
                 CASE 2 // DATE, stored in Ticks
@@ -407,45 +407,45 @@ INTERNAL STATIC CLASS OOPHelpers
             END IF
         ENDIF
         RETURN result
-    
+
 	STATIC METHOD IsMethod( t AS System.Type, cName AS STRING ) AS LOGIC
         LOCAL lResult := FALSE AS LOGIC
 		lResult := OOPHelpers.FindMethod(t, cName, TRUE) != NULL
         IF ! lResult
-            var overloads := OOPHelpers.GetCachedOverLoads(t, cName)
-            if overloads == null
+            VAR overloads := OOPHelpers.GetCachedOverLoads(t, cName)
+            IF overloads == NULL
                 overloads := OOPHelpers.FindOverloads(t, cName, TRUE)
-            endif
-            lResult := overloads != NULL .and. overloads:Count > 0
+            ENDIF
+            lResult := overloads != NULL .AND. overloads:Count > 0
         ENDIF
         RETURN lResult
-		
-	STATIC METHOD ClassTree( t AS Type ) AS ARRAY   
+
+	STATIC METHOD ClassTree( t AS Type ) AS ARRAY
 		LOCAL aList := {} AS ARRAY
 		DO WHILE t != NULL
 			AAdd( aList, (SYMBOL) t:Name)
 			t := t:BaseType
 		ENDDO
-		
+
 		RETURN aList
-		
+
 	STATIC METHOD IVarHelper(o AS OBJECT, cName AS STRING, lGet AS LOGIC) AS DWORD
-	
+
 		IF o == NULL
 			RETURN 0
 		ENDIF
-		
+
 		VAR t := o:GetType()
-		
+
 		VAR fi := t:GetField( cName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic  | BindingFlags.IgnoreCase)
 		IF fi != NULL
 			IF fi:IsPublic
 				RETURN 2U
-			ELSEIF fi:IsFamily 
+			ELSEIF fi:IsFamily
 				RETURN 1U
 			ENDIF
 		ENDIF
-		
+
 		DO WHILE t != NULL
 			VAR pi := t:GetProperty( cName , BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase )
 			IF pi != NULL .AND. ( (lGet .AND. pi:CanRead) .OR. (.NOT. lGet .AND. pi:CanWrite) )
@@ -454,9 +454,9 @@ INTERNAL STATIC CLASS OOPHelpers
 				t := t:BaseType
 			ENDIF
 		ENDDO
-		
+
 		RETURN 0U
-		
+
 	STATIC METHOD IVarList( t AS Type ) AS ARRAY
 		IF t == NULL
 			RETURN NULL_ARRAY
@@ -465,16 +465,16 @@ INTERNAL STATIC CLASS OOPHelpers
 		VAR aFields := t:GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
 		VAR list := List<STRING>{}
 		FOREACH fi AS FieldInfo IN aFields
-			IF fi:IsPublic || (fi:IsFamily  .and. fi:IsDefined(typeof(IsInstanceAttribute), false))
+			IF fi:IsPublic || (fi:IsFamily  .AND. fi:IsDefined(typeof(IsInstanceAttribute), FALSE))
 				VAR name := fi:Name:ToUpperInvariant()
 				IF ! list:Contains(name)
 					list:Add(name)
 				ENDIF
 			ENDIF
 		NEXT
-		
+
 		VAR aProps := t:GetProperties( BindingFlags.Instance | BindingFlags.Public )
-		
+
 		FOREACH pi AS PropertyInfo IN aProps
 			VAR name := pi:Name:ToUpperInvariant()
 			IF ! list:Contains(name)
@@ -482,18 +482,18 @@ INTERNAL STATIC CLASS OOPHelpers
 			ENDIF
         NEXT
 		RETURN list:ToVoSymArray()
-		
-		
+
+
 	STATIC METHOD MethodList(t AS Type) AS ARRAY
 		VAR list := List<STRING>{}
 		VAR aInfo := t:GetMethods( BindingFlags.Instance | BindingFlags.Public )
 		FOREACH oMI AS MethodInfo IN aInfo
-			IF !oMI:IsSpecialName .and. ! list:Contains(oMI:Name)
+			IF !oMI:IsSpecialName .AND. ! list:Contains(oMI:Name)
         		list:Add(oMI:Name )
 			ENDIF
 		NEXT
 		RETURN list:ToVoSymArray()
-		
+
 	STATIC METHOD ToVoSymArray(SELF list AS List<STRING>) AS ARRAY
 		// convert List<STRING> to Array of Symbols
 		LOCAL aResult AS ARRAY
@@ -502,13 +502,13 @@ INTERNAL STATIC CLASS OOPHelpers
 			AAdd(aResult, String2Symbol(name))
 		NEXT
 		RETURN aResult
-		
-	STATIC METHOD TreeHelper( t AS Type ) AS ARRAY 
+
+	STATIC METHOD TreeHelper( t AS Type ) AS ARRAY
 		LOCAL aList := NULL_ARRAY AS ARRAY
 		IF t == NULL
 			RETURN aList
 		END IF
-		
+
 		VAR aInheritance := List<Type>{}
 		DO WHILE t != NULL
 			aInheritance:Add(t)
@@ -539,7 +539,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			VAR aInstance := listVar:ToVoSymArray()
 			VAR aMethod   := listMethod:ToVoSymArray()
 			AAdd(aList , {(SYMBOL) type:FullName, aInstance, aMethod})
-			
+
 		NEXT
 		RETURN aList
 
@@ -552,9 +552,9 @@ INTERNAL STATIC CLASS OOPHelpers
             IF mi IS PropertyInfo VAR pi
                 // we must check. Sometimes in a subclass the Access was overwritten but not the assign
                 // then we want to read the assign from the parent class
-                IF lAccess .and. pi:CanRead .and. IsPropertyMethodVisible(pi:GetMethod, lSelf)
+                IF lAccess .AND. pi:CanRead .AND. IsPropertyMethodVisible(pi:GetMethod, lSelf)
                     RETURN pi
-                ELSEIF ! lAccess .and. pi:CanWrite .and. IsPropertyMethodVisible(pi:SetMethod, lSelf)
+                ELSEIF ! lAccess .AND. pi:CanWrite .AND. IsPropertyMethodVisible(pi:SetMethod, lSelf)
                     RETURN pi
                 ENDIF
             ELSE
@@ -567,12 +567,12 @@ INTERNAL STATIC CLASS OOPHelpers
             ENDIF
         ENDIF
 
-        var bf := BindingFlags.Instance | BindingFlags.IgnoreCase |  BindingFlags.DeclaredOnly | BindingFlags.Public
+        VAR bf := BindingFlags.Instance | BindingFlags.IgnoreCase |  BindingFlags.DeclaredOnly | BindingFlags.Public
         IF lSelf
-            bf |= BindingFlags.NonPublic 
+            bf |= BindingFlags.NonPublic
         ENDIF
 		DO WHILE t != NULL
-			VAR oInfo := t:GetProperty( cName, bf) 
+			VAR oInfo := t:GetProperty( cName, bf)
 			IF oInfo != NULL .AND. ( (lAccess .AND. oInfo:CanRead) .OR. (.NOT. lAccess .AND. oInfo:CanWrite) )
                 AddMember(t, cName, oInfo)
 				RETURN oInfo
@@ -604,7 +604,7 @@ INTERNAL STATIC CLASS OOPHelpers
         RETURN NULL
 
     STATIC METHOD AddMember(t AS Type, cName AS STRING, mi AS MemberInfo) AS LOGIC
-        IF t != NULL .AND. ! String.IsNullOrEmpty(cName) 
+        IF t != NULL .AND. ! String.IsNullOrEmpty(cName)
             IF ! fieldPropCache:ContainsKey(t)
                 fieldPropCache:Add( t, Dictionary<STRING, MemberInfo> {StringComparison.OrdinalIgnoreCase})
             ENDIF
@@ -629,13 +629,13 @@ INTERNAL STATIC CLASS OOPHelpers
             RETURN NULL     // it must be a property then
         ENDIF
         VAR bt := t
-        var bf := BindingFlags.Instance | BindingFlags.IgnoreCase |  BindingFlags.DeclaredOnly | BindingFlags.Public
+        VAR bf := BindingFlags.Instance | BindingFlags.IgnoreCase |  BindingFlags.DeclaredOnly | BindingFlags.Public
         IF lSelf
             bf |= BindingFlags.NonPublic
-        ENDIF        
+        ENDIF
 		DO WHILE t != NULL
-			VAR oInfo := t:GetField( cName, bf ) 
-			IF oInfo != NULL 
+			VAR oInfo := t:GetField( cName, bf )
+			IF oInfo != NULL
 				// check for readonly (initonly) fields
 				IF lAccess .OR. ! oInfo:Attributes:HasFlag(FieldAttributes.InitOnly)
                     OOPHelpers.AddMember(bt, cName, oInfo)
@@ -646,7 +646,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			ENDIF
 		ENDDO
 		RETURN NULL
-		
+
 	STATIC METHOD IsFieldVisible(oFld AS FieldInfo, lSelf AS LOGIC) AS LOGIC
 		IF oFld == NULL_OBJECT
 			RETURN FALSE
@@ -656,8 +656,8 @@ INTERNAL STATIC CLASS OOPHelpers
 			RETURN TRUE
 		ENDIF
 		RETURN FALSE
-		
-    
+
+
 	STATIC METHOD IVarGet(oObject AS OBJECT, cIVar AS STRING, lSelf AS LOGIC) AS USUAL
 		LOCAL t AS Type
         LOCAL result AS OBJECT
@@ -674,7 +674,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		t := oObject:GetType()
         TRY
 		    VAR propInfo := OOPHelpers.FindProperty(t, cIVar, TRUE, lSelf)
-            if propInfo != NULL_OBJECT 
+            IF propInfo != NULL_OBJECT
                 IF propInfo:GetIndexParameters():Length == 0
 			        result := propInfo:GetValue(oObject, NULL)
                     IF result == NULL .AND. propInfo:PropertyType == TYPEOF(System.String)
@@ -686,7 +686,7 @@ INTERNAL STATIC CLASS OOPHelpers
                 ENDIF
             ENDIF
     		VAR fldInfo := OOPHelpers.FindField(t, cIVar, TRUE, lSelf)
-		    IF fldInfo != NULL_OBJECT 
+		    IF fldInfo != NULL_OBJECT
                 result := fldInfo:GetValue(oObject)
                 IF result == NULL .AND. fldInfo:FieldType == TYPEOF(System.String)
                     result := String.Empty
@@ -705,7 +705,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		VAR oError := Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar} )
         oError:Description := oError:Message+" '"+cIVar+"'"
         THROW oError
-		
+
 	STATIC METHOD IVarPut(oObject AS OBJECT, cIVar AS STRING, oValue AS OBJECT, lSelf AS LOGIC)  AS VOID
 		LOCAL t AS Type
         IF oObject == NULL_OBJECT
@@ -722,13 +722,13 @@ INTERNAL STATIC CLASS OOPHelpers
 		t := oObject:GetType()
         TRY
 		    VAR propInfo := OOPHelpers.FindProperty(t, cIVar, FALSE, lSelf)
-		    IF propInfo != NULL_OBJECT 
+		    IF propInfo != NULL_OBJECT
 			    oValue := OOPHelpers.VOConvert(oValue, propInfo:PropertyType)
 			    propInfo:SetValue(oObject,oValue , NULL)
 			    RETURN
 		    ENDIF
 		    VAR fldInfo := OOPHelpers.FindField(t, cIVar, FALSE, lSelf)
-		    IF fldInfo != NULL_OBJECT 
+		    IF fldInfo != NULL_OBJECT
 			    oValue := OOPHelpers.VOConvert(oValue, fldInfo:FieldType)
 			    fldInfo:SetValue(oObject, oValue)
 			    RETURN
@@ -751,16 +751,16 @@ INTERNAL STATIC CLASS OOPHelpers
         oObject := result   // get rid of warning
         RETURN lOk
 
-    STATIC METHOD FindOverloads(t AS System.Type, cMethod AS STRING, lInstance as LOGIC) AS IList<MethodInfo>
+    STATIC METHOD FindOverloads(t AS System.Type, cMethod AS STRING, lInstance AS LOGIC) AS IList<MethodInfo>
         VAR list := List<MethodInfo>{}
-        LOCAL bf as BindingFlags
+        LOCAL bf AS BindingFlags
         IF lInstance
-            bf := BindingFlags.Instance | BindingFlags.Public 
+            bf := BindingFlags.Instance | BindingFlags.Public
         ELSE
-            bf := BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly 
+            bf := BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly
         ENDIF
         FOREACH VAR minfo IN t:GetMethods(bf)
-            IF !minfo:IsSpecialName .and. String.Compare(minfo:Name, cMethod, StringComparison.OrdinalIgnoreCase) == 0
+            IF !minfo:IsSpecialName .AND. String.Compare(minfo:Name, cMethod, StringComparison.OrdinalIgnoreCase) == 0
                 list:Add(minfo)
             ENDIF
         NEXT
@@ -777,10 +777,10 @@ INTERNAL STATIC CLASS OOPHelpers
             VAR type := overloadCache[t]
             IF type:ContainsKey(cMethod)
                 VAR result := type[cMethod]
-                return result
+                RETURN result
             ENDIF
         ENDIF
-        RETURN null
+        RETURN NULL
 
     STATIC METHOD CacheOverLoads(t AS System.Type, cMethod AS STRING, ml AS IList<MethodInfo>) AS LOGIC
         IF !overloadCache:ContainsKey(t)
@@ -824,16 +824,16 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF mi == NULL
 			// No Error Here. THat is done in the calling code
 			RETURN FALSE
-		ENDIF	
+		ENDIF
 		RETURN OOPHelpers.SendHelper(oObject, mi, uArgs, OUT result)
-		
+
 	STATIC METHOD SendHelper(oObject AS OBJECT, mi AS MethodInfo , uArgs AS USUAL[], result OUT USUAL) AS LOGIC
         result := NIL
 		IF oObject == NULL .AND. ! mi:IsStatic
 			THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oObject), 1 )
 		ENDIF
-		IF mi != NULL   
-            VAR oArgs := OOPHelpers.MatchParameters(mi, uArgs, OUT VAR hasByRef) 
+		IF mi != NULL
+            VAR oArgs := OOPHelpers.MatchParameters(mi, uArgs, OUT VAR hasByRef)
             TRY
 			    IF mi:ReturnType == typeof(USUAL)
                     result := mi:Invoke(oObject, oArgs)
@@ -869,22 +869,22 @@ INTERNAL STATIC CLASS OOPHelpers
                 ENDIF
                 THROW // rethrow exception
             END TRY
-			
+
 		ENDIF
 		RETURN TRUE
 
-    STATIC METHOD CopyByRefParameters(uArgs as USUAL[], oArgs as OBJECT[], pars as ParameterInfo[]) AS VOID
+    STATIC METHOD CopyByRefParameters(uArgs AS USUAL[], oArgs AS OBJECT[], pars AS ParameterInfo[]) AS VOID
         // Assign parameters back.
         VAR max    := Math.Min(uArgs:Length, oArgs:Length)  -1
-        FOR VAR nParam := 0 to max
-            LOCAL param := pars[nParam] as ParameterInfo
-            IF param:IsOut .or. param:ParameterType:IsByRef
+        FOR VAR nParam := 0 TO max
+            LOCAL param := pars[nParam] AS ParameterInfo
+            IF param:IsOut .OR. param:ParameterType:IsByRef
                 IF uArgs[nParam]:IsByRef
                     uArgs[nParam] := oArgs[nParam]
                 ENDIF
             ENDIF
         NEXT
-        
+
 	STATIC METHOD VOConvert(uValue AS USUAL,toType AS System.Type) AS OBJECT
 		IF toType == TYPEOF(FLOAT)
 			RETURN (FLOAT) uValue
@@ -899,9 +899,9 @@ INTERNAL STATIC CLASS OOPHelpers
             ELSEIF uValue:IsObject .OR. uValue:IsCodeblock
                 RETURN (OBJECT) uValue
             ELSEIF uValue:IsPtr .AND. toType == typeof(PTR)
-                return IntPtr{(PTR) uValue}
+                RETURN IntPtr{(PTR) uValue}
             ENDIF
-      		
+
       		LOCAL oRet AS OBJECT
       		TRY
      		    oRet := Convert.ChangeType(uValue, toType)
@@ -910,7 +910,7 @@ INTERNAL STATIC CLASS OOPHelpers
       		END TRY
 			RETURN oRet
 		ENDIF
-		
+
 	STATIC METHOD DoSend(oObject AS OBJECT, cMethod AS STRING, args AS USUAL[] ) AS USUAL
 		IF oObject == NULL
 			THROW Error.NullArgumentError( __FUNCTION__, NAMEOF(oObject), 1 )
@@ -924,12 +924,12 @@ INTERNAL STATIC CLASS OOPHelpers
     	    RuntimeState.NoMethod := cMethod   // For NoMethod() function
             IF XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan
                 // vulcan includes the method name
-			    nomethodArgs := USUAL[]{ args:Length+1 } 
+			    nomethodArgs := USUAL[]{ args:Length+1 }
                 nomethodArgs[0] := cMethod
 			    Array.Copy( args, 0, nomethodArgs, 1, args:Length )
             ELSE
                 // other dialects do not include the method name
-			    nomethodArgs := USUAL[]{ args:Length } 
+			    nomethodArgs := USUAL[]{ args:Length }
 			    Array.Copy( args, 0, nomethodArgs, 0, args:Length )
             ENDIF
 			IF ! OOPHelpers.SendHelper(oObject, "NoMethod" , nomethodArgs, OUT result)
@@ -940,20 +940,20 @@ INTERNAL STATIC CLASS OOPHelpers
 			ENDIF
 		ENDIF
 		RETURN result
-		
+
 END CLASS
-		
-		
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asend/*" />
-FUNCTION ASend(aTarget AS ARRAY, symMethod AS STRING, MethodArgList PARAMS USUAL[] ) AS ARRAY 
+FUNCTION ASend(aTarget AS ARRAY, symMethod AS STRING, MethodArgList PARAMS USUAL[] ) AS ARRAY
 	IF aTarget != NULL .AND. ! String.IsNullOrEmpty( symMethod )
 		FOREACH VAR x IN aTarget
 			__InternalSend( x, symMethod, MethodArgList )
 		NEXT
-	ENDIF   
+	ENDIF
 	RETURN aTarget
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/checkinstanceof/*" />
 FUNCTION CheckInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	IF oObject == NULL_OBJECT
@@ -964,12 +964,12 @@ FUNCTION CheckInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	LOCAL oError := Error.VOError(EG_WRONGCLASS, __FUNCTION__, NAMEOF(oObject),1, NULL) AS Error
 	oError:Description := symClassName + " <-> " + oObject:GetType():Name
 	THROW oError
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classcount/*" />
 FUNCTION ClassCount() AS DWORD
 	RETURN ClassList():Length
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classlist/*" />
 FUNCTION ClassList() AS ARRAY
 	LOCAL classes    := ARRAY{} AS ARRAY
@@ -982,38 +982,38 @@ FUNCTION ClassList() AS ARRAY
 					IF type:IsPublic
 						classes:Add(String2Symbol(type:Name))
                     ENDIF
-                CATCH as Exception
+                CATCH AS Exception
                     NOP
-                
+
 				END TRY
 			NEXT
 //		CATCH oEx AS ReflectionTypeLoadException
-        CATCH as Exception
+        CATCH AS Exception
             NOP
 		END TRY
 	NEXT
 	RETURN classes
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classname/*" />
 FUNCTION ClassName(oObject AS OBJECT) AS STRING
     IF oObject != NULL
 	    RETURN oObject?:GetType():Name:ToUpper()
     ENDIF
     RETURN ""
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtree/*" />
 FUNCTION ClassTree(oObject AS OBJECT) AS ARRAY
     IF oObject != NULL
 	    RETURN OOPHelpers.ClassTree(oObject?:GetType())
     ENDIF
     RETURN {}
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/createinstance/*" />
 FUNCTION CreateInstance(symClassName,InitArgList) AS OBJECT CLIPPER
 	IF ! ( symClassName:IsSymbol || symClassName:IsString )
 		THROW Error.DataTypeError( __FUNCTION__, NAMEOF(symClassName), 1, symClassName)
-	ENDIF    	
+	ENDIF
 	VAR t := OOPHelpers.FindClass((STRING) symClassName)
 	IF t == NULL
 		 VAR oError := Error.VOError( EG_NOCLASS, __FUNCTION__, NAMEOF(symClassName), 1,  <OBJECT>{symClassName}  )
@@ -1021,35 +1021,35 @@ FUNCTION CreateInstance(symClassName,InitArgList) AS OBJECT CLIPPER
          THROW oError
 	ENDIF
 	VAR constructors := t:GetConstructors()
-    VAR nPCount := PCount() 
+    VAR nPCount := PCount()
 	VAR uArgs := USUAL[]{nPCount-1}
 	FOR VAR nArg := 1 TO nPCount-1
 		uArgs[nArg-1] := _GetFParam(nArg+1) // _GetFParam() is 1 based !
-	NEXT 
+	NEXT
     LOCAL ctor := OOPHelpers.FindBestOverLoad(constructors, __FUNCTION__ ,uArgs) AS ConstructorInfo
 	IF ctor == NULL
     	VAR oError := Error.VOError( EG_NOMETHOD, __FUNCTION__, "Constructor", 0 , NULL)
-        oError:Description := "No CONSTRUCTOR defined for type "+ (String) symClassName
-        throw oError
+        oError:Description := "No CONSTRUCTOR defined for type "+ (STRING) symClassName
+        THROW oError
     ENDIF
-	LOCAL oRet AS OBJECT  
+	LOCAL oRet AS OBJECT
 	TRY
 		LOCAL oArgs := OOPHelpers.MatchParameters(ctor, uArgs, OUT VAR hasByRef) AS OBJECT[]
 		oRet := ctor:Invoke( oArgs )
         IF hasByRef
             OOPHelpers.CopyByRefParameters(uArgs, oArgs, ctor:GetParameters())
-            
+
         ENDIF
-    CATCH e as Error
+    CATCH e AS Error
         THROW e
     CATCH e AS Exception
         THROW Error{e:GetInnerException()}
 	END TRY
 	RETURN oRet
-	
-	
-	
-	
+
+
+
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtreeclass/*" />
 FUNCTION ClassTreeClass(symClass AS STRING) AS ARRAY
@@ -1059,10 +1059,10 @@ FUNCTION ClassTreeClass(symClass AS STRING) AS ARRAY
 	ELSE
 		THROW Error{EG_NOCLASS,0}
 	ENDIF
-	
-	
-	
-	
+
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isaccess/*" />
 FUNCTION IsAccess(oObject AS OBJECT,symAccess AS STRING) AS LOGIC
     IF oObject != NULL
@@ -1082,11 +1082,11 @@ FUNCTION IsAssign(oObject AS OBJECT,symAssign AS STRING) AS LOGIC
         ENDIF
     ENDIF
 	RETURN FALSE
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isclass/*" />
 FUNCTION IsClass(symClassName AS STRING) AS LOGIC
 	RETURN OOPHelpers.FindClass(symClassName) != NULL
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isclassof/*" />
 FUNCTION IsClassOf(symClassName AS STRING,symSuperClassName AS STRING) AS LOGIC
 	LOCAL tSub   := OOPHelpers.FindClass(symClassName) AS Type
@@ -1102,9 +1102,9 @@ FUNCTION IsClassOf(symClassName AS STRING,symSuperClassName AS STRING) AS LOGIC
 /// <returns>System.Type object or NULL </returns>
 
 FUNCTION FindClass(cClassname AS STRING) AS System.Type
-	RETURN OOPHelpers.FindClass(cClassname) 
-	
-	
+	RETURN OOPHelpers.FindClass(cClassname)
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isinstanceof/*" />
 FUNCTION IsInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	IF oObject == NULL_OBJECT
@@ -1126,7 +1126,7 @@ FUNCTION IsInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 		oType := oType:BaseType
 	END DO
 	RETURN FALSE
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isinstanceofusual/*" />
 FUNCTION IsInstanceOfUsual(uObject AS USUAL,symClassName AS STRING) AS LOGIC
     SWITCH uObject:Type
@@ -1138,9 +1138,9 @@ FUNCTION IsInstanceOfUsual(uObject AS USUAL,symClassName AS STRING) AS LOGIC
     	RETURN IsInstanceOf(uObject, symClassName)
     END SWITCH
     RETURN FALSE
-	
-	
-	
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarget/*" />
 FUNCTION IVarGet(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
 	IF oObject == NULL_OBJECT
@@ -1150,36 +1150,36 @@ FUNCTION IVarGet(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
 		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(symInstanceVar),2)
 	ENDIF
 	RETURN OOPHelpers.IVarGet(oObject, symInstanceVar, FALSE)
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetinfo/*" />
 FUNCTION IVarGetInfo(oObject AS OBJECT,symInstanceVar AS STRING) AS DWORD
     RETURN OOPHelpers.IVarHelper(oObject, symInstanceVar, TRUE)
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethod/*" />
 FUNCTION IsMethod(oObject AS OBJECT,symMethod AS STRING) AS LOGIC
 	IF oObject != NULL_OBJECT
 	    RETURN OOPHelpers.IsMethod(oObject?:GetType(), symMethod)
     ENDIF
     RETURN FALSE
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethodusual/*" />
 FUNCTION IsMethodUsual(uObject AS USUAL,symMethod AS STRING) AS LOGIC
 	IF uObject:IsObject
 		RETURN IsMethod( uObject, symMethod )
 	ENDIF
 	RETURN FALSE
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethodclass/*" />
 FUNCTION IsMethodClass( symClass AS STRING, symMethod AS STRING ) AS LOGIC
 	VAR t := OOPHelpers.FindClass( symClass )
-	
+
 	IF t != NULL
 		RETURN OOPHelpers.IsMethod( t, symMethod )
 	ENDIF
 	RETURN FALSE
-	
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetself/*" />
 FUNCTION IVarGetSelf(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
@@ -1190,32 +1190,32 @@ FUNCTION IVarGetSelf(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
 		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(symInstanceVar),2)
 	ENDIF
 	RETURN OOPHelpers.IVarGet(oObject, symInstanceVar, TRUE)
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlist/*" />
 FUNCTION IvarList(oObject AS OBJECT) AS ARRAY
     // IVarList already checks for NULL_OBJECT
-    IF oObject IS IDynamicProperties var oDynamic
-        var props := oDynamic:GetPropertyNames()
-        var result := {}
-        FOREACH var prop in props
+    IF oObject IS IDynamicProperties VAR oDynamic
+        VAR props := oDynamic:GetPropertyNames()
+        VAR result := {}
+        FOREACH VAR prop IN props
             result:Add(prop:ToUpper())
         NEXT
         RETURN result
     ENDIF
     RETURN OOPHelpers.IVarList(oObject?:GetType())
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlistclass/*" />
 FUNCTION IvarListClass(symClass AS STRING) AS ARRAY
 	VAR t := OOPHelpers.FindClass(symClass)
 	RETURN OOPHelpers.IVarList(t)
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputinfo/*" />
 FUNCTION IVarPutInfo(oObject AS OBJECT,symInstanceVar AS SYMBOL) AS DWORD
     // IVarHelper already checks for NULL_OBJECT
     RETURN OOPHelpers.IVarHelper(oObject, symInstanceVar, FALSE)
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarput/*" />
 FUNCTION IVarPut(oObject AS OBJECT,symInstanceVar AS STRING,uValue AS USUAL) AS USUAL
 	IF oObject == NULL_OBJECT
@@ -1226,7 +1226,7 @@ FUNCTION IVarPut(oObject AS OBJECT,symInstanceVar AS STRING,uValue AS USUAL) AS 
 	ENDIF
 	OOPHelpers.IVarPut(oObject, symInstanceVar, uValue, FALSE)
 	RETURN uValue
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputself/*" />
 FUNCTION IVarPutSelf(oObject AS OBJECT,symInstanceVar AS STRING,uValue AS USUAL) AS USUAL
 	IF oObject == NULL_OBJECT
@@ -1235,17 +1235,17 @@ FUNCTION IVarPutSelf(oObject AS OBJECT,symInstanceVar AS STRING,uValue AS USUAL)
 	IF String.IsNullOrEmpty(symInstanceVar)
 		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(symInstanceVar),2)
 	ENDIF
-	OOPHelpers.IVarPut(oObject, symInstanceVar, uValue,TRUE) 
+	OOPHelpers.IVarPut(oObject, symInstanceVar, uValue,TRUE)
 	RETURN uValue
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/methodlist/*" />
 FUNCTION MethodList(oClass AS OBJECT) AS ARRAY
 	IF oClass != NULL
 		RETURN OOPHelpers.MethodList( oClass:GetType() )
 	ENDIF
 	RETURN NULL_ARRAY
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/methodlistclass/*" />
 FUNCTION MethodListClass( symClass AS STRING ) AS ARRAY
 	LOCAL aReturn AS ARRAY
@@ -1255,16 +1255,16 @@ FUNCTION MethodListClass( symClass AS STRING ) AS ARRAY
 	ELSE
 		aReturn  := NULL_ARRAY
 	ENDIF
-	
+
 	RETURN aReturn
-	
-	
-	
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/nomethod/*" />
 FUNCTION NoMethod() AS STRING
 	RETURN RuntimeState.NoMethod
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/object2array/*" />
 FUNCTION Object2Array(oObject AS OBJECT) AS ARRAY
 	LOCAL t AS System.Type
@@ -1280,7 +1280,7 @@ FUNCTION Object2Array(oObject AS OBJECT) AS ARRAY
     TRY
 	    FOREACH p AS PropertyInfo IN aProps
 		    LOCAL uVal AS USUAL
-		    IF p:CanRead 
+		    IF p:CanRead
 			    uVal := p:GetValue(oObject,NULL)
 			    AAdd(aResult, uVal)
 		    ENDIF
@@ -1293,27 +1293,27 @@ FUNCTION Object2Array(oObject AS OBJECT) AS ARRAY
 			    AAdd(aResult, uVal)
 		    ENDIF
     	NEXT
-    CATCH e as Exception
+    CATCH e AS Exception
         THROW Error{e:GetInnerException()}
     END TRY
    	RETURN aResult
-	
-	
-	
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptree/*" />
 FUNCTION OOPTree(oObject AS OBJECT) AS ARRAY
-    // TreeHelper already checks for NULL_OBJECT    
+    // TreeHelper already checks for NULL_OBJECT
 	RETURN OOPHelpers.TreeHelper(oObject?:GetType())
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptreeclass/*" />
 FUNCTION OOPTreeClass(symClass AS STRING) AS ARRAY
 	VAR type := OOPHelpers.FindClass(symClass)
-    // TreeHelper already checks for NULL_OBJECT    
+    // TreeHelper already checks for NULL_OBJECT
 	RETURN OOPHelpers.TreeHelper(type)
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/send/*" />
-FUNCTION Send(oObject AS USUAL,symMethod AS USUAL, MethodArgList PARAMS USUAL[]) AS USUAL 
+FUNCTION Send(oObject AS USUAL,symMethod AS USUAL, MethodArgList PARAMS USUAL[]) AS USUAL
 	IF !oObject:IsObject
 	     THROW Error.VOError( EG_DATATYPE, __FUNCTION__, NAMEOF(oObject), 1, <OBJECT>{ oObject}  )
 	ENDIF
@@ -1329,11 +1329,20 @@ FUNCTION Send(oObject AS USUAL,symMethod AS USUAL, MethodArgList PARAMS USUAL[])
 	LOCAL uResult AS USUAL
 	uResult := OOPHelpers.DoSend(oToSend, cMethod, MethodArgList)
 	RETURN uResult
-	
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/send/*" />
 FUNCTION CSend(oObject AS OBJECT,symMethod AS STRING, MethodArgList PARAMS USUAL[]) AS USUAL
 	RETURN __InternalSend(oObject, symMethod, MethodArgList)
-	
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/send/*" />
+FUNCTION Send(oObject AS OBJECT,symMethod AS MethodInfo, MethodArgList PARAMS USUAL[]) AS USUAL
+    IF OOPHelpers.SendHelper(oObject, symMethod, MethodArgList, OUT VAR result)
+        RETURN result
+    ENDIF
+    RETURN FALSE
+
+
 	// This is called by the compiler when a late bound call is made on a USUAL.
 	// It is strongly typed and more efficient than Send(), which must use the
 	// CLIPPER calling convention for compatiblity with VO.
@@ -1343,74 +1352,74 @@ FUNCTION CSend(oObject AS OBJECT,symMethod AS STRING, MethodArgList PARAMS USUAL
 FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args PARAMS USUAL[] ) AS USUAL
 	RETURN OOPHelpers.DoSend(oObject, cMethod, args)
 
-/// <summary>Helper function to convert ARRAY to USUAL[]</summary>		
+/// <summary>Helper function to convert ARRAY to USUAL[]</summary>
 FUNCTION _ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uargs    AS USUAL[]
 	LOCAL x        AS DWORD
-	
+
 	elements := (INT) args:Length
 	uargs    := USUAL[]{ elements }
-	
+
 	FOR x := 0 UPTO elements -1
 		uargs[x] := args[x]
 	NEXT
 	RETURN uargs
 
-/// <summary>Helper function to convert ARRAY to OBJECT[]</summary>		
+/// <summary>Helper function to convert ARRAY to OBJECT[]</summary>
 FUNCTION _ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
 	LOCAL x        AS DWORD
-	
+
 	elements := (INT) args:Length
 	oArgs    := OBJECT[]{ elements }
-	
+
 	FOR x := 0 UPTO elements -1
 		oArgs[x] := args[x]
 	NEXT
 	RETURN oArgs
 
-/// <summary>Helper function to convert USUAL[] to OBJECT[]</summary>			
+/// <summary>Helper function to convert USUAL[] to OBJECT[]</summary>
 FUNCTION _UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
 	LOCAL x        AS DWORD
-	
+
 	elements := (INT) args:Length
 	oArgs    := OBJECT[]{ elements }
-	
+
 	FOR x := 0 UPTO elements -1
 		oArgs[x] := args[x]
 	NEXT
 	RETURN oArgs
 
-/// <summary>Helper function to convert OBJECT[] to USUAL[]</summary>		
+/// <summary>Helper function to convert OBJECT[] to USUAL[]</summary>
 FUNCTION _ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uArgs    AS USUAL[]
 	LOCAL x        AS DWORD
-	
+
 	elements := (INT) args:Length
 	uArgs    := USUAL[]{ elements }
-	
+
 	FOR x := 0 UPTO elements -1
 		uArgs[x] := args[x]
 	NEXT
 	RETURN uArgs
-	
-/// <exclude/>	
+
+/// <exclude/>
 	// identical to CSend and __InternalSend but with a normal array of args
 FUNCTION _SendClassParams( oObject AS OBJECT, cmethod AS STRING, args AS ARRAY ) AS USUAL
 	LOCAL uArgs AS USUAL[]
 	uArgs := _ArrayToUsualArray(args)
 	RETURN OOPHelpers.DoSend(oObject, cmethod, uArgs )
-	
-	
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mparamcount/*" />
 FUNCTION MParamCount(symClass AS STRING,symMethod AS STRING) AS DWORD
 	LOCAL type AS Type
-	type := OOPHelpers.FindClass(symClass)	
+	type := OOPHelpers.FindClass(symClass)
 	IF type != NULL
 		LOCAL met AS MethodInfo
 		met := OOPHelpers.FindMethod(type, symMethod, TRUE)
@@ -1429,9 +1438,9 @@ FUNCTION MParamCount(symClass AS STRING,symMethod AS STRING) AS DWORD
 		THROW Error.VOError( EG_WRONGCLASS,  "MParamCount", NAMEOF(symClass), 1, <OBJECT>{symClass} )
 	ENDIF
 
-	
-	
-	
+
+
+
 /// <summary>Return the number of local arguments that a function is expecting.</summary>
 /// <param name="symFunction">The name of the function to examine.</param>
 /// <returns>The number of arguments that a method is expecting.</returns>
@@ -1442,8 +1451,8 @@ FUNCTION FParamCount(symFunction AS STRING) AS DWORD
 	LOCAL aFuncs AS MethodInfo[]
 	aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
 	// CLipper functions can't and shouldn't have overloads
-	IF aFuncs != NULL 
-		IF aFuncs:Length == 1 
+	IF aFuncs != NULL
+		IF aFuncs:Length == 1
 			LOCAL oMI := aFuncs:First() AS MethodInfo
 			IF oMI:IsDefined(TYPEOF(ClipperCallingConventionAttribute),FALSE)
 				// calculate the # of parameters
@@ -1460,7 +1469,7 @@ FUNCTION FParamCount(symFunction AS STRING) AS DWORD
 		THROW Error.VOError( EG_NOFUNC,  "FParamCount", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 	ENDIF
 
-	
+
 /// <summary>Call a clipper function by name</summary>
 /// <param name="symFunction">The name of the function to call.</param>
 /// <param name="aArgs">The list of arguments to pass to the function</param>
@@ -1479,8 +1488,8 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 
 	aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
 	// CLipper functions can't and shouldn't have overloads
-	IF aFuncs != NULL 
-		IF aFuncs:Length == 1 
+	IF aFuncs != NULL
+		IF aFuncs:Length == 1
 			LOCAL oMI AS MethodInfo
 			oMI		:= aFuncs:First()
 			IF OOPHelpers.SendHelper(NULL, oMI, uArgs, OUT VAR result)
@@ -1495,7 +1504,7 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 		THROW Error.VOError( EG_NOFUNC,  "FParamCount", NAMEOF(symFunction), 1, <OBJECT>{symFunction} )
 	ENDIF
 
-	RETURN  NIL   
+	RETURN  NIL
 
 
 /// <summary>Dynamically loads a library (dll) compiled with X#, running any _INIT procedures it may contain.</summary>

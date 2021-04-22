@@ -52,8 +52,8 @@
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.Event</codeEntityReference></para></entry>
 <entry><para>
-        Provide the base class from which all X# events are subclassed.
-      </para></entry></row>
+            Provide the base class from which all X# events are subclassed.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ExposeEvent</codeEntityReference></para></entry>
 <entry><para>

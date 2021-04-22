@@ -12,8 +12,8 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AsSymbol(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Convert a string or a PSZ to a symbol.
-    </para></entry></row>
+            Convert a string or a PSZ to a symbol.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ConcatAtom(XSharp.__Symbol,XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
@@ -33,28 +33,28 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldBlockSym(XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Return a set-get code block for a field that is identified by a symbol.
-    </para></entry></row>
+            Return a set-get code block for a field that is identified by a symbol.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldGetSym(XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Retrieve the contents of a field that is identified by its symbolic name.
-    </para></entry></row>
+            Retrieve the contents of a field that is identified by its symbolic name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPosSym(XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Return the position of a field that is identified by a symbol.
-    </para></entry></row>
+            Return the position of a field that is identified by a symbol.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Set the value of a field that is identified by its symbolic name.
-    </para></entry></row>
+            Set the value of a field that is identified by its symbolic name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IsSymbol(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Determine if a value is a symbol.
-    </para></entry></row>
+            Determine if a value is a symbol.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MaxAtom</codeEntityReference></para></entry>
 <entry><para>
@@ -96,13 +96,13 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarGetSym(XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Return the contents of a field or a memory variable.
-    </para></entry></row>
+            Return the contents of a field or a memory variable.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Assign a value to a field or a memory variable of a given name.
-    </para></entry></row>
+            Assign a value to a field or a memory variable of a given name.
+        </para></entry></row>
 </table>
 </content>
      </section>

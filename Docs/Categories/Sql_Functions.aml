@@ -21,13 +21,13 @@
       Stores numeric references to all active SQL connection statement handles in an array.
     </para></entry></row>
 <row><entry><para>XSharp.VOSQLClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses.Functions.DotNetType2VOType(System.Data.DataTable,System.Data.DataColumn,System.String)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses_Functions.DotNetType2VOType(System.Data.DataTable,System.Data.DataColumn,System.String)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>VOSQLClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.DToCSQL(XSharp.__Date)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.VOSQLClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses.Functions.DToCSQL(XSharp.__Date)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses_Functions.DToCSQL(XSharp.__Date)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.Data</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Data.Functions.GetSqlFactory</codeEntityReference></para></entry>
@@ -73,7 +73,7 @@
         Return and optionally change the setting that determines whether to display connection error messages.
       </para></entry></row>
 <row><entry><para>XSharp.VOSQLClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses.Functions.SQLConnectErrorMsg(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses_Functions.SQLConnectErrorMsg(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>VOSQLClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SqlDeleteWhiteSpace(System.String)</codeEntityReference></para></entry>
@@ -99,7 +99,7 @@
         Identify the available ODBC data sources.
       </para></entry></row>
 <row><entry><para>XSharp.VOSQLClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses.Functions.SQLGetDataSources</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses_Functions.SQLGetDataSources</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>VOSQLClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOSQLClasses.Functions.SQLGetMyConnection(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
@@ -152,7 +152,7 @@
         Return and optionally change the default SQL connection.
       </para></entry></row>
 <row><entry><para>XSharp.VOSQLClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses.Functions.SQLSetConnection(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses_Functions.SQLSetConnection(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.SqlSetFactory</codeEntityReference></para></entry>
@@ -191,7 +191,7 @@
       Stores the names of tables in a data source to a X# cursor.
     </para></entry></row>
 <row><entry><para>XSharp.VOSQLClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses.Functions.SQLThrowOutOfMemoryError</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VOSQLClasses_Functions.SQLThrowOutOfMemoryError</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 </table>
 </content>

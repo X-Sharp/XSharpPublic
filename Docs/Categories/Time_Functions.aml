@@ -15,23 +15,23 @@
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.AmPm(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Convert a 24-hour military time to a 12-hour clock time.
-    </para></entry></row>
+            Convert a 24-hour military time to a 12-hour clock time.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ConTime(System.UInt32,System.UInt32,System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
-      Format a set of numbers representing an hour, minute, and second as a time string.
-    </para></entry></row>
+            Format a set of numbers representing an hour, minute, and second as a time string.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.ElapTime(System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Return the difference between two time strings.
-    </para></entry></row>
+            Return the difference between two time strings.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.FTime</codeEntityReference></para></entry>
 <entry><para>
-      Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
-    </para></entry></row>
+            Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.GetTickCountLow</codeEntityReference></para></entry>
 <entry><para>
@@ -40,8 +40,8 @@
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.GetTimeSep</codeEntityReference></para></entry>
 <entry><para>
-      Return the current separation character used in time strings.
-    </para></entry></row>
+            Return the current separation character used in time strings.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.GetTimeZoneDiff</codeEntityReference></para></entry>
 <entry><para>
@@ -65,36 +65,36 @@
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Seconds</codeEntityReference></para></entry>
 <entry><para>
-      Return the number of seconds that have elapsed since midnight.
-    </para></entry></row>
+            Return the number of seconds that have elapsed since midnight.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Secs(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Return a time as the number of seconds that have elapsed since midnight.
-    </para></entry></row>
+            Return a time as the number of seconds that have elapsed since midnight.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetTimeFormat(System.String)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.SetTimeSep</codeEntityReference></para></entry>
 <entry><para>
-      Change the setting that determines the separation character to be used in time strings.
-    </para></entry></row>
+            Change the setting that determines the separation character to be used in time strings.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Time</codeEntityReference></para></entry>
 <entry><para>
-      Return the system time in a format determined by various international settings.
-    </para></entry></row>
+            Return the system time in a format determined by various international settings.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.Time24</codeEntityReference></para></entry>
 <entry><para>
-      Return the system time in 24-hour format.
-    </para></entry></row>
+            Return the system time in 24-hour format.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.TString(System.Double)</codeEntityReference></para></entry>
 <entry><para>
-      Convert a specified number of seconds to a time string.
-    </para></entry></row>
+            Convert a specified number of seconds to a time string.
+        </para></entry></row>
 </table>
 </content>
      </section>

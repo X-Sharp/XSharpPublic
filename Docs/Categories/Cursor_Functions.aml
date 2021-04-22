@@ -12,18 +12,18 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Alias(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the alias of a specified work area as a string.
-    </para></entry></row>
+            Return the alias of a specified work area as a string.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Alias0</codeEntityReference></para></entry>
 <entry><para>
-      Return the alias of the current work area as a string.
-    </para></entry></row>
+            Return the alias of the current work area as a string.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Alias0Sym</codeEntityReference></para></entry>
 <entry><para>
-      Return the alias of the current work area as a symbol.
-    </para></entry></row>
+            Return the alias of the current work area as a symbol.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CreateOffline(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>

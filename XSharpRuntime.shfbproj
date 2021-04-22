@@ -54,7 +54,6 @@
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSQLClasses.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="Docs\Console.Xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.Xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.Xml" />
@@ -62,14 +61,14 @@
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.Xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.8.0.0</HelpFileVersion>
+    <HelpFileVersion>2.8.0.11</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013XSharp</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>
@@ -151,17 +150,17 @@
     </ComponentConfigurations>
     <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
     <TransformComponentArguments>
-      <Argument Key="logoFile" Value="" />
+      <Argument Key="logoFile" Value="logo100.jpg" />
       <Argument Key="logoHeight" Value="50" />
-      <Argument Key="logoWidth" Value="90" />
+      <Argument Key="logoWidth" Value="" />
       <Argument Key="logoAltText" Value="X#" />
-      <Argument Key="logoPlacement" Value="left" />
+      <Argument Key="logoPlacement" Value="right" />
       <Argument Key="logoAlignment" Value="center" />
       <Argument Key="maxVersionParts" Value="2" />
       <Argument Key="defaultLanguage" Value="xs" />
       <Argument Key="includeEnumValues" Value="true" />
       <Argument Key="baseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/blob/feature/Runtime/" />
-      <Argument Key="requestExampleUrl" Value="" />
+      <Argument Key="requestExampleUrl" Value="mailto:info@xsharp.eu" />
     </TransformComponentArguments>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
     <BinaryTOC>True</BinaryTOC>
@@ -178,18 +177,9 @@
       <PlugInConfig id="XSharp Function Output" enabled="True">
         <configuration />
       </PlugInConfig>
-      <PlugInConfig id="XPath Reflection File Filter" enabled="True">
-        <configuration>
-          <expressions>
-            <expression>//api[starts-with(apidata/@name,"$")]</expression>
-            <expression>//api[contains(@id,"XSharp.ADS.ACE")]</expression>
-            <expression>//api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression>
-          </expressions>
-        </configuration>
-      </PlugInConfig>
-    </PlugInConfigurations>
+<PlugInConfig id="XPath Reflection File Filter" enabled="True"><configuration><expressions><expression>//api[starts-with(apidata/@name,"$")]</expression><expression>//api[contains(@id,"XSharp.ADS.ACE")]</expression><expression>//api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression></expressions></configuration></PlugInConfig></PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime and VO SDK Reference</RootNamespaceTitle>
-    <CopyrightHref>https://www.xsharp.info/licensing/xsharp-open-software-license</CopyrightHref>
+    <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2021 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b 1993-2020 Computer Associates.</CopyrightText>
     <BuildLogFile>C:\XSharp\DevRt\Binaries\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
@@ -232,7 +222,7 @@
       &amp;lt%3bitem&amp;gt%3bFix the problem&amp;lt%3b/item&amp;gt%3b
       &amp;lt%3bitem&amp;gt%3bSend us a pull request for the unit test and the bug fix&amp;lt%3b/item&amp;gt%3b
       &amp;lt%3b/list&amp;gt%3b
-      Of course you can also discuss issues you have or send us your comments on the forum &amp;lt%3ba href=&amp;quot%3bhttps://www.xsharp.info&amp;quot%3b  _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3bon our website &amp;lt%3b/a&amp;gt%3b&amp;lt%3bbr/&amp;gt%3b
+      Of course you can also discuss issues you have or send us your comments on the forum &amp;lt%3ba href=&amp;quot%3bhttps://www.xsharp.eu&amp;quot%3b  _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3bon our website &amp;lt%3b/a&amp;gt%3b&amp;lt%3bbr/&amp;gt%3b
       Finally, if you like what you are seeing, you can help to support the X# development by subscribing to the &amp;quot%3bFriends Of XSharp&amp;quot%3b %28FOX%29 program. &amp;lt%3bbr/&amp;gt%3b
       More information about that program can be found at our website as well.&amp;lt%3bbr/&amp;gt%3b
     </ProjectSummary>
@@ -272,6 +262,7 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="icons\" />
     <Folder Include="Docs\Categories\" />
     <Folder Include="Docs\" />
   </ItemGroup>
@@ -352,5 +343,11 @@
   </ItemGroup>
   <ItemGroup>
     <ContentLayout Include="Docs\Content.content" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icons\logo100.jpg">
+      <ImageId>logo100</ImageId>
+      <AlternateText>logo 100</AlternateText>
+    </Content>
   </ItemGroup>
 </Project>

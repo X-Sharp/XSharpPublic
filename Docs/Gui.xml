@@ -7466,7 +7466,7 @@
         <inheritdoc />
     </DialogWindow.Show>
     <DialogWindow.ShowModal>
-        <summary>**Missing documentation **</summary>
+        <summary>This is the worker method that shows the DialogWindow</summary>
         <param name="lActive">** missing parameter documentation **</param>
     </DialogWindow.ShowModal>
     <DialogWindow.StatusMessage>

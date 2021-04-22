@@ -12,78 +12,78 @@
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._SplitPath(System.String,System.String@,System.String@,System.String@,System.String@)</codeEntityReference></para></entry>
 <entry><para>
-      Break a path name into its components.
-    </para></entry></row>
+            Break a path name into its components.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CurDir(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Return the current Windows directory.
-    </para></entry></row>
+            Return the current Windows directory.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.CurDrive</codeEntityReference></para></entry>
 <entry><para>
-      Return the current Windows drive.
-    </para></entry></row>
+            Return the current Windows drive.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DirChange(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Change the current Windows directory.
-    </para></entry></row>
+            Change the current Windows directory.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DirChange(XSharp.__Psz)</codeEntityReference></para></entry>
 <entry><para>
-      Change the current Windows directory.
-    </para></entry></row>
+            Change the current Windows directory.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Directory(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Create an array of directory and file information.
-    </para></entry></row>
+            Create an array of directory and file information.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DirMake(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Create a directory.
-    </para></entry></row>
+            Create a directory.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DirMake(XSharp.__Psz)</codeEntityReference></para></entry>
 <entry><para>
-      Create a directory.
-    </para></entry></row>
+            Create a directory.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DirRemove(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Remove a directory.
-    </para></entry></row>
+            Remove a directory.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DirRemove(XSharp.__Psz)</codeEntityReference></para></entry>
 <entry><para>
-      Remove a directory.
-    </para></entry></row>
+            Remove a directory.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DiskChange(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Change the current disk drive.
-    </para></entry></row>
+            Change the current disk drive.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DiskChange(XSharp.__Psz)</codeEntityReference></para></entry>
 <entry><para>
-      Change the current disk drive.
-    </para></entry></row>
+            Change the current disk drive.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DiskFree</codeEntityReference></para></entry>
 <entry><para>
-      Return the space available on a specified disk.
-    </para></entry></row>
+            Return the space available on a specified disk.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DiskName</codeEntityReference></para></entry>
 <entry><para>
-      Return the current Windows drive.
-    </para></entry></row>
+            Return the current Windows drive.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DiskSpace</codeEntityReference></para></entry>
 <entry><para>
-      Return the capacity of the specified disk.
-    </para></entry></row>
+            Return the capacity of the specified disk.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DriveType(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -111,13 +111,13 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SplitPath(System.String,System.String@,System.String@,System.String@,System.String@)</codeEntityReference></para></entry>
 <entry><para>
-      Break a path name into its components.
-    </para></entry></row>
+            Break a path name into its components.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.WorkDir</codeEntityReference></para></entry>
 <entry><para>
-      Return the currently selected working directory.
-    </para></entry></row>
+            Return the currently selected working directory.
+        </para></entry></row>
 </table>
 </content>
      </section>

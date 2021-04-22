@@ -15,29 +15,29 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._Select(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Determine the number of a work area.
-    </para></entry></row>
+            Determine the number of a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._SelectString(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Determine the number of a work area.
-    </para></entry></row>
+            Determine the number of a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.AFields(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Fill arrays with the structure of the current database file.
-      Note:
-      AFields() is a compatibility function and therefore not recommended.
-      It is superseded by DBStruct(), which does not require the existence of any arrays prior to invocation and returns a multidimensional array containing the current database file structure.
-    </para></entry></row>
+            Fill arrays with the structure of the current database file.
+            Note:
+            AFields() is a compatibility function and therefore not recommended.
+            It is superseded by DBStruct(), which does not require the existence of any arrays prior to invocation and returns a multidimensional array containing the current database file structure.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Bof</codeEntityReference></para></entry>
 <entry><para>
-      Determine when beginning-of-file is encountered.
-    </para></entry></row>
+            Determine when beginning-of-file is encountered.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.CurVal(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -49,21 +49,21 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbApp(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Import records from a database file.
-    </para></entry></row>
+            Import records from a database file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppDelim(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Import records from a delimited text file.
-    </para></entry></row>
+            Import records from a delimited text file.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbAppDelimFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppend(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Add a new record to a database file.
-    </para></entry></row>
+            Add a new record to a database file.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbAppendFromArray(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -73,8 +73,8 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbAppSdf(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Import records from an SDF file.
-    </para></entry></row>
+            Import records from an SDF file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbBlobInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -87,61 +87,61 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbClearFilter</codeEntityReference></para></entry>
 <entry><para>
-      Clear a logical filter condition.
-    </para></entry></row>
+            Clear a logical filter condition.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbClearIndex(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Remove orders from the order list in a work area and close associated index files.
-    </para></entry></row>
+            Remove orders from the order list in a work area and close associated index files.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DBClearOrderCondition</codeEntityReference></para></entry>
 <entry><para>
-      Clear the condition and scope for an order.
-    </para></entry></row>
+            Clear the condition and scope for an order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbClearRelation</codeEntityReference></para></entry>
 <entry><para>
-      Clear any active relations.
-    </para></entry></row>
+            Clear any active relations.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbClearScope(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>Clears the top and/or bottom scope. </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCloseAll</codeEntityReference></para></entry>
 <entry><para>
-      Close all files in all work areas.
-    </para></entry></row>
+            Close all files in all work areas.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCloseArea</codeEntityReference></para></entry>
 <entry><para>
-      Close all files in a work area.
-    </para></entry></row>
+            Close all files in a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCommit(XSharp.__Usual)</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCommit</codeEntityReference></para></entry>
 <entry><para>
-      Flush all pending updates in one work area.
-    </para></entry></row>
+            Flush all pending updates in one work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCommitAll</codeEntityReference></para></entry>
 <entry><para>
-      Flush all pending updates in all work areas.
-    </para></entry></row>
+            Flush all pending updates in all work areas.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbContinue(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Resume a pending locate condition.
-    </para></entry></row>
+            Resume a pending locate condition.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCopy(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Export records to a new database file.
-    </para></entry></row>
+            Export records to a new database file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCopyDelim(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Export records to a new delimited text file.
-    </para></entry></row>
+            Export records to a new delimited text file.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyDelimFox(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -151,36 +151,36 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCopySDF(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Export records to a new SDF file.
-    </para></entry></row>
+            Export records to a new SDF file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCopyStruct(System.String,XSharp.__Array)</codeEntityReference></para></entry>
 <entry><para>
-      Create an empty database file with field definitions from another database file.
-    </para></entry></row>
+            Create an empty database file with field definitions from another database file.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbCopyToArray(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCopyXStruct(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Copy the field definitions in a database file structure to a structure-extended file as data.
-    </para></entry></row>
+            Copy the field definitions in a database file structure to a structure-extended file as data.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Create a database file from a database structure array.
-    </para></entry></row>
+            Create a database file from a database structure array.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCreateIndex(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Create an index file and add an order to it.
-    </para></entry></row>
+            Create an index file and add an order to it.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbCreateOrder(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Create or replace an order in an index file.
-    </para></entry></row>
+            Create or replace an order in an index file.
+        </para></entry></row>
 <row><entry><para>XSharp.Data</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Data.Functions.DbDataSource</codeEntityReference></para></entry>
 <entry><para>Create a DbDataSource object attached to the current workarea</para></entry></row>
@@ -190,92 +190,92 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbDelete</codeEntityReference></para></entry>
 <entry><para>
-      Mark the current record for deletion.
-    </para></entry></row>
+            Mark the current record for deletion.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbDeleteOrder(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Remove an order from an open index file.
-    </para></entry></row>
+            Remove an order from an open index file.
+        </para></entry></row>
 <row><entry><para>XSharp.XPP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.DbDescend</codeEntityReference></para></entry>
 <entry><para>Checks if the order for navigation is descending </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbDriver</codeEntityReference></para></entry>
 <entry><para>
-      Return the default RDD for the application.
-    </para></entry></row>
+            Return the default RDD for the application.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Evaluate a code block for each record that matches a specified scope and/or condition.
-    </para></entry></row>
+            Evaluate a code block for each record that matches a specified scope and/or condition.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DBF</codeEntityReference></para></entry>
 <entry><para>
-      Return the name of the alias.
-      Note:  DBF() is a compatibility function and is no longer recommended.
-      It is superseded by Alias0().  See Alias0() for more information.
-    </para></entry></row>
+            Return the name of the alias.
+            Note:  DBF() is a compatibility function and is no longer recommended.
+            It is superseded by Alias0().  See Alias0() for more information.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbFieldInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return and optionally change information about a field.
-    </para></entry></row>
+            Return and optionally change information about a field.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DBFileCopy(System.IntPtr,System.String,System.String)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbFilter</codeEntityReference></para></entry>
 <entry><para>
-      Return a filter.
-    </para></entry></row>
+            Return a filter.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbGetSelect</codeEntityReference></para></entry>
 <entry><para>
-      Return the work area number.
-    </para></entry></row>
+            Return the work area number.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbGoBottom</codeEntityReference></para></entry>
 <entry><para>
-      Move to the last logical record.
-    </para></entry></row>
+            Move to the last logical record.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbGoto(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Move to a record specified by record number.
-    </para></entry></row>
+            Move to a record specified by record number.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbGoTop</codeEntityReference></para></entry>
 <entry><para>
-      Move to the first logical record.
-    </para></entry></row>
+            Move to the first logical record.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbInfo(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return and optionally change information about a database file open in a work area.
-    </para></entry></row>
+            Return and optionally change information about a database file open in a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbJoin(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Create a new database file by merging records/fields from two work areas.
-    </para></entry></row>
+            Create a new database file by merging records/fields from two work areas.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbJoinAppend(System.UInt32,XSharp._JoinList)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbLocate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Search for the first record that matches the specified condition and scope.
-    </para></entry></row>
+            Search for the first record that matches the specified condition and scope.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbMemoExt(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbMemoField(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the memo field pointer of a DBF record.
-    </para></entry></row>
+            Return the memo field pointer of a DBF record.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbMoveToDisk</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -285,178 +285,178 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbOrderInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return and optionally change information about orders and index files.
-    </para></entry></row>
+            Return and optionally change information about orders and index files.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbPack</codeEntityReference></para></entry>
 <entry><para>
-      Remove all records marked for deletion from a database file, rebuild all active orders, and recover all physical space occupied by the deleted records.
-    </para></entry></row>
+            Remove all records marked for deletion from a database file, rebuild all active orders, and recover all physical space occupied by the deleted records.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRecall</codeEntityReference></para></entry>
 <entry><para>
-      Restore the current record if it has been marked for deletion.
-    </para></entry></row>
+            Restore the current record if it has been marked for deletion.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRecordInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Retrieve field definition information about a record.
-    </para></entry></row>
+            Retrieve field definition information about a record.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DbRegisterClient(XSharp.IDbNotify)</codeEntityReference></para></entry>
 <entry><para>Register an object that will receive notification messages for Workarea events.</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbReindex</codeEntityReference></para></entry>
 <entry><para>
-      Rebuild all orders in the order list of a work area.
-    </para></entry></row>
+            Rebuild all orders in the order list of a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRelation(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the linking expression of a specified relation.
-    </para></entry></row>
+            Return the linking expression of a specified relation.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRLock(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Lock a record in a shared database file, optionally retaining previous record locks.
-    </para></entry></row>
+            Lock a record in a shared database file, optionally retaining previous record locks.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRLockList</codeEntityReference></para></entry>
 <entry><para>
-      Get a list of locked records.
-    </para></entry></row>
+            Get a list of locked records.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRSelect(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the work area number of a relation.
-    </para></entry></row>
+            Return the work area number of a relation.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbRUnLock(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Release all or specified record locks.
-    </para></entry></row>
+            Release all or specified record locks.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbScope(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>Checks if a scope is set in a work area.</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSeek(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Move to the record having the specified key value in the controlling order.
-    </para></entry></row>
+            Move to the record having the specified key value in the controlling order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSelect(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Select a new work area and retrieve the current work area.
-    </para></entry></row>
+            Select a new work area and retrieve the current work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSelectArea(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Change the current work area.
-    </para></entry></row>
+            Change the current work area.
+        </para></entry></row>
 <row><entry><para>XSharp.XPP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.XPP.Functions.DbSetDescend(System.Boolean)</codeEntityReference></para></entry>
 <entry><para>Reverses the navigational order of a work area.</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetDriver(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return and optionally change the default RDD driver for the application.
-      Note:  DBSetDriver() is a compatibility function and is no longer recommended.
-      It is superseded by the RDDSetDefault() function.  See RDDSetDefault() for more information.
-    </para></entry></row>
+            Return and optionally change the default RDD driver for the application.
+            Note:  DBSetDriver() is a compatibility function and is no longer recommended.
+            It is superseded by the RDDSetDefault() function.  See RDDSetDefault() for more information.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetFilter(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Set a filter condition.
-    </para></entry></row>
+            Set a filter condition.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetFound(System.Boolean)</codeEntityReference></para></entry>
 <entry><para>
-      Set the found flag.
-    </para></entry></row>
+            Set the found flag.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetIndex(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Open an index file and add all its orders to the order list in a work area.
-    </para></entry></row>
+            Open an index file and add all its orders to the order list in a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetOrder(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Set the controlling order for a work area.
-    </para></entry></row>
+            Set the controlling order for a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetOrderCondition(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Set the condition and scope to use in creating the next order.
-    </para></entry></row>
+            Set the condition and scope to use in creating the next order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetRelation(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Relate a specified work area to the current work area.
-    </para></entry></row>
+            Relate a specified work area to the current work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>Sets scope values.</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSetSelect(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Select a new work area.
-    </para></entry></row>
+            Select a new work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSkip(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Move the record pointer relative to the current record.
-    </para></entry></row>
+            Move the record pointer relative to the current record.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSort(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Copy records to a database file in sorted order.
-    </para></entry></row>
+            Copy records to a database file in sorted order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbStruct</codeEntityReference></para></entry>
 <entry><para>
-      Create an array containing the structure of a database file.
-    </para></entry></row>
+            Create an array containing the structure of a database file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbSymSelect(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Select a new work area by specifying its alias as a symbol.
-    </para></entry></row>
+            Select a new work area by specifying its alias as a symbol.
+        </para></entry></row>
 <row><entry><para>XSharp.Data</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Data.Functions.DbTableSave(XSharp.DbDataTable)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbTotal(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Summarize records by key value to a database file.
-    </para></entry></row>
+            Summarize records by key value to a database file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbTrans(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Transfer records to an open database file.
-    </para></entry></row>
+            Transfer records to an open database file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbUnLock</codeEntityReference></para></entry>
 <entry><para>
-      Release all locks for a work area.
-    </para></entry></row>
+            Release all locks for a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbUnLockAll</codeEntityReference></para></entry>
 <entry><para>
-      Release all locks for all work areas.
-    </para></entry></row>
+            Release all locks for all work areas.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DbUnRegisterClient(XSharp.IDbNotify)</codeEntityReference></para></entry>
 <entry><para>Unregister an object that receives notification messages for Workarea events.</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbUpdate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Replace fields in the current work area with values from another work area, based on the specified key expression.
-    </para></entry></row>
+            Replace fields in the current work area with values from another work area, based on the specified key expression.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbUseArea(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Open a database file.
-    </para></entry></row>
+            Open a database file.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.DbUsed(System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -465,18 +465,18 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.DbZap</codeEntityReference></para></entry>
 <entry><para>
-      Remove all records from open files.
-    </para></entry></row>
+            Remove all records from open files.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Deleted</codeEntityReference></para></entry>
 <entry><para>
-      Return the deleted status of the current record.
-    </para></entry></row>
+            Return the deleted status of the current record.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Eof</codeEntityReference></para></entry>
 <entry><para>
-      Determine when end-of-file is encountered.
-    </para></entry></row>
+            Determine when end-of-file is encountered.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Field(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -485,73 +485,73 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldBlock(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Return a set-get code block for a field that is identified by its name.
-    </para></entry></row>
+            Return a set-get code block for a field that is identified by its name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldBlockSym(XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Return a set-get code block for a field that is identified by a symbol.
-    </para></entry></row>
+            Return a set-get code block for a field that is identified by a symbol.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldGet(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Get the contents of a field that is identified by its position.
-    </para></entry></row>
+            Get the contents of a field that is identified by its position.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldGetAlias(XSharp.__Symbol,XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Get the contents of a field that is identified by a work area alias and the field name.
-    </para></entry></row>
+            Get the contents of a field that is identified by a work area alias and the field name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldGetArea(System.UInt32,XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Get the contents of a field that is identified by its work area and a symbol.
-    </para></entry></row>
+            Get the contents of a field that is identified by its work area and a symbol.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldGetBytes(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Get the contents of a field that is identified by its position.
-    </para></entry></row>
+            Get the contents of a field that is identified by its position.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldGetSelect(XSharp.__Usual,XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Get the contents of a field that is identified by a work area alias and the field name.
-    </para></entry></row>
+            Get the contents of a field that is identified by a work area alias and the field name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldGetSym(XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Retrieve the contents of a field that is identified by its symbolic name.
-    </para></entry></row>
+            Retrieve the contents of a field that is identified by its symbolic name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldName(System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
-      Return the name of a field as a string.
-    </para></entry></row>
+            Return the name of a field as a string.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPos(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Return the position of a field.
-    </para></entry></row>
+            Return the position of a field.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPosSym(XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Return the position of a field that is identified by a symbol.
-    </para></entry></row>
+            Return the position of a field that is identified by a symbol.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPut(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Set the value of a field identified by its position.
-    </para></entry></row>
+            Set the value of a field identified by its position.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutAlias(XSharp.__Symbol,XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Set the value of a field identified by its work area alias and field name.
-    </para></entry></row>
+            Set the value of a field identified by its work area alias and field name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutArea(System.UInt32,XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Set the value of a field identified by its work area number and field name.
-    </para></entry></row>
+            Set the value of a field identified by its work area number and field name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutBytes(XSharp.__Usual,System.Byte[])</codeEntityReference></para></entry>
 <entry><para>Write an array of bytes direct to the workarea buffer.</para></entry></row>
@@ -561,23 +561,23 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Set the value of a field that is identified by its symbolic name.
-    </para></entry></row>
+            Set the value of a field that is identified by its symbolic name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldSym(System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
-      Return the name of a field as a symbol.
-    </para></entry></row>
+            Return the name of a field as a symbol.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldWBlock(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return a set-get code block for a field, specified as a string, in a specified work area.
-    </para></entry></row>
+            Return a set-get code block for a field, specified as a string, in a specified work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.FieldWBlockSym(XSharp.__Symbol,System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
-      Return a set-get code block for a field, specified as a symbol, in a specified work area.
-    </para></entry></row>
+            Return a set-get code block for a field, specified as a symbol, in a specified work area.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Filter(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -594,29 +594,29 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Flock</codeEntityReference></para></entry>
 <entry><para>
-      Lock an opened and shared database file.
-    </para></entry></row>
+            Lock an opened and shared database file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Found</codeEntityReference></para></entry>
 <entry><para>
-      Determine if the previous search operation succeeded.
-    </para></entry></row>
+            Determine if the previous search operation succeeded.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.GetResultSet</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Header</codeEntityReference></para></entry>
 <entry><para>
-      Return the length of the database file header.
-    </para></entry></row>
+            Return the length of the database file header.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Id</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.LastRec</codeEntityReference></para></entry>
 <entry><para>
-      Return the number of the last record in a database file.
-    </para></entry></row>
+            Return the number of the last record in a database file.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Lock(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -629,8 +629,8 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.LUpdate</codeEntityReference></para></entry>
 <entry><para>
-      Return the date a database file was last modified and closed.
-    </para></entry></row>
+            Return the date a database file was last modified and closed.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Mdx(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -642,18 +642,18 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RecCount</codeEntityReference></para></entry>
 <entry><para>
-      Determine the number of records in a database file.
-    </para></entry></row>
+            Determine the number of records in a database file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RecNo</codeEntityReference></para></entry>
 <entry><para>
-      Return the current record number.
-    </para></entry></row>
+            Return the current record number.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RecSize</codeEntityReference></para></entry>
 <entry><para>
-      Determine the record length of a database file.
-    </para></entry></row>
+            Determine the record length of a database file.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Relation(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -662,16 +662,16 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.RLock</codeEntityReference></para></entry>
 <entry><para>
-      Lock the current record.
-    </para></entry></row>
+            Lock the current record.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Seek(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Select(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Determine the number of a work area.
-    </para></entry></row>
+            Determine the number of a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TableRevert(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -689,8 +689,8 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Used</codeEntityReference></para></entry>
 <entry><para>
-      Determine whether a database file is open.
-    </para></entry></row>
+            Determine whether a database file is open.
+        </para></entry></row>
 </table>
 </content>
      </section>

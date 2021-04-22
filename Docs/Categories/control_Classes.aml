@@ -167,8 +167,8 @@
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.TabControl</codeEntityReference></para></entry>
 <entry><para>
-        Create a tab control.
-      </para></entry></row>
+            Create a tab control.
+        </para></entry></row>
 <row><entry><para>VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">T:VO.ToolBar</codeEntityReference></para></entry>
 <entry><para>

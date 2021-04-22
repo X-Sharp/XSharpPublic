@@ -19,7 +19,7 @@ CLASS TabControlEntry
 
 
 
-/// <include file="Gui.xml" path="doc/TabControlEntry.TabControl/*" />
+/// <include file="Gui.xml" path="doc/TabControl/*" />
 CLASS TabControl INHERIT TextControl
 	PROTECT oImageList		AS ImageList
 	PROTECT aPages			 AS ARRAY
@@ -32,7 +32,7 @@ CLASS TabControl INHERIT TextControl
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __AdjustPage() AS VOID STRICT 
+	METHOD __AdjustPage() AS VOID STRICT
 	//PP-040614 Method from S Ebert
    // Added check for __SubForm
 	LOCAL sRect IS _WINRect
@@ -46,9 +46,9 @@ CLASS TabControl INHERIT TextControl
 
 #ifdef __VULCAN__
 		MapWindowPoints(HWND_DESKTOP, oFormSurface:Handle(), (_winPOINT PTR) @sRect, 2)
-#else		
+#else
 		MapWindowPoints(HWND_DESKTOP, oFormSurface:Handle(), @sRect, 2)
-#endif		
+#endif
 
 
 		IF IsInstanceOf(oCurrentPage, #DataWindow) .AND. IVarGet(oCurrentPage, #__SubForm)
@@ -64,7 +64,7 @@ CLASS TabControl INHERIT TextControl
 
 
  /// <exclude />
-METHOD __CalcNewDimension(oNewPage AS OBJECT) AS VOID STRICT 
+METHOD __CalcNewDimension(oNewPage AS OBJECT) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL oOrigin AS Point
 	LOCAL strucPageRect IS _WINRECT
@@ -112,7 +112,7 @@ METHOD __CalcNewDimension(oNewPage AS OBJECT) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __FocusPage(nIndex AS INT) AS VOID STRICT 
+METHOD __FocusPage(nIndex AS INT) AS VOID STRICT
 	//PP-031129 Revised method from S Ebert-correct Z order after page change, keyboard handling, positioning
 	//PP-030828 Strong typing
 	//PP-040417 Update from S Ebert
@@ -147,9 +147,9 @@ METHOD __FocusPage(nIndex AS INT) AS VOID STRICT
 
 #ifdef __VULCAN__
 		MapWindowPoints(HWND_DESKTOP, oFormSurface:Handle(), (_winPOINT PTR) @rectTab, 2)
-#else		
+#else
 		MapWindowPoints(HWND_DESKTOP, oFormSurface:Handle(), @rectTab, 2)
-#endif		
+#endif
 
 
 		SetWindowPos(oCurrentPage:Handle(), NULL, rectTab:left - 1, rectTab:top, 0, 0, _OR(SWP_NOSIZE, SWP_NOZORDER, SWP_NOREDRAW))
@@ -181,7 +181,7 @@ METHOD __FocusPage(nIndex AS INT) AS VOID STRICT
 
 
  /// <exclude />
-METHOD __GetIndexFromSymbol(symTabName AS SYMBOL) AS INT STRICT 
+METHOD __GetIndexFromSymbol(symTabName AS SYMBOL) AS INT STRICT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
  	dwCount := ALen(aPages)
@@ -193,10 +193,10 @@ METHOD __GetIndexFromSymbol(symTabName AS SYMBOL) AS INT STRICT
 
 
 	RETURN -1
-	
-	
+
+
  /// <exclude />
-METHOD __GetIndexFromPage(oTab) 
+METHOD __GetIndexFromPage(oTab)
 	// DHer: 18/12/2008
 	LOCAL dwI, dwCount AS DWORD
  	dwCount := ALen(aPages)
@@ -211,7 +211,7 @@ RETURN -1
 
 
  /// <exclude />
-METHOD __GetPageFromIndex(nTabIndex AS LONG) AS OBJECT STRICT 
+METHOD __GetPageFromIndex(nTabIndex AS LONG) AS OBJECT STRICT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 	LOCAL xPage AS USUAL
@@ -234,7 +234,7 @@ METHOD __GetPageFromIndex(nTabIndex AS LONG) AS OBJECT STRICT
 
 
  /// <exclude />
-METHOD __GetPageFromSymbol(symTabName) 
+METHOD __GetPageFromSymbol(symTabName)
 	// DHer: 18/12/2008
 	LOCAL dwI, dwCount AS DWORD
  	dwCount := ALen(aPages)
@@ -249,7 +249,7 @@ RETURN NULL_OBJECT
 
 
  /// <exclude />
-METHOD __GetSymbolFromIndex(nTabIndex AS LONG) AS SYMBOL STRICT 
+METHOD __GetSymbolFromIndex(nTabIndex AS LONG) AS SYMBOL STRICT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -268,7 +268,7 @@ METHOD __GetSymbolFromIndex(nTabIndex AS LONG) AS SYMBOL STRICT
 
 
  /// <exclude />
-METHOD __GetSymbolFromPage(oTab) 
+METHOD __GetSymbolFromPage(oTab)
 	// DHer: 18/12/2008
 	LOCAL dwI, dwCount AS DWORD
 
@@ -287,10 +287,10 @@ RETURN NULL_SYMBOL
 
 
 /// <include file="Gui.xml" path="doc/TabControl.AddTipText/*" />
-METHOD AddTipText(symTabName, cText) 
+METHOD AddTipText(symTabName, cText)
 	//SE-060526
-	
-	
+
+
 	IF ! SELF:ChangeTipText(symTabName, cText)
 		AAdd(aTipsText, {symTabName, cText})
 	ENDIF
@@ -298,7 +298,7 @@ METHOD AddTipText(symTabName, cText)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.AppendTab/*" />
-METHOD AppendTab(symTabName, cCaption, xPage, nImage) 
+METHOD AppendTab(symTabName, cCaption, xPage, nImage)
 	LOCAL strucTabItem	IS _winTC_Item
 	LOCAL pszCaption	AS PSZ
 	LOCAL nIndex		AS INT
@@ -306,7 +306,7 @@ METHOD AppendTab(symTabName, cCaption, xPage, nImage)
 	LOCAL hFirst, hBefore AS PTR
 
 
-	//RvdH 070503         
+	//RvdH 070503
    DEFAULT(@nImage, 0)
 
 
@@ -318,12 +318,12 @@ METHOD AppendTab(symTabName, cCaption, xPage, nImage)
 	strucTabItem:cchTextMax := 128
 
 
-	//SE-070430     
-	IF IsInstanceOfUsual(xPage,#Window) 
+	//SE-070430
+	IF IsInstanceOfUsual(xPage,#Window)
 		//PP-030909 XP theme background on tab page
 		xPage:EnableThemeDialogTexture(ETDT_ENABLETAB)
-		
-		
+
+
 		IF Empty(cCaption) .AND. (xPage:Hyperlabel != NULL_OBJECT)
 			cCaption := xPage:Hyperlabel:Caption
 		ENDIF
@@ -369,34 +369,34 @@ METHOD AppendTab(symTabName, cCaption, xPage, nImage)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.AutoSize/*" />
-ACCESS AutoSize 
-	
-	
+ACCESS AutoSize
+
+
 
 
 	RETURN lAutoSize
 
 
 /// <include file="Gui.xml" path="doc/TabControl.AutoSize/*" />
-ASSIGN AutoSize(lNewValue) 
-	
-	
+ASSIGN AutoSize(lNewValue)
+
+
 
 
 	lAutoSize := lNewValue
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/TabControl.ChangeTipText/*" />
-METHOD ChangeTipText(symTabName, cText) 
+METHOD ChangeTipText(symTabName, cText)
 	//SE-060526
 	LOCAL dwIndex AS DWORD
 	LOCAL dwCount AS DWORD
 	LOCAL symName AS SYMBOL
 
 
-	
-	
+
+
 
 
 	IF IsLong(symTabName)
@@ -419,7 +419,7 @@ METHOD ChangeTipText(symTabName, cText)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.CreatePageInstance/*" />
-METHOD CreatePageInstance(symPageClass, symTabName) 
+METHOD CreatePageInstance(symPageClass, symTabName)
 	//SE-060526
 	LOCAL oPage AS OBJECT
 
@@ -444,22 +444,22 @@ METHOD CreatePageInstance(symPageClass, symTabName)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.CurrentPage/*" />
-ACCESS CurrentPage 
-	
-	
+ACCESS CurrentPage
+
+
 
 
 	RETURN oCurrentPage
 
 
 /// <include file="Gui.xml" path="doc/TabControl.DeleteAllTabs/*" />
-METHOD DeleteAllTabs() 
+METHOD DeleteAllTabs()
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
 
-	
-	
+
+
 
 
 	dwCount := ALen(aPages)
@@ -479,15 +479,15 @@ METHOD DeleteAllTabs()
 
 
 /// <include file="Gui.xml" path="doc/TabControl.DeleteTab/*" />
-METHOD DeleteTab(symTabName) 
+METHOD DeleteTab(symTabName)
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 	LOCAL iTabIdx AS INT
 	LOCAL lRet AS LOGIC
 
 
-	
-	
+
+
 
 
 	iTabIdx := SELF:__GetIndexFromSymbol(symTabName)
@@ -537,8 +537,8 @@ METHOD DeleteTab(symTabName)
 
 /// <include file="Gui.xml" path="doc/TabControl.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF !InCollect()
@@ -557,7 +557,7 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 /// <include file="Gui.xml" path="doc/TabControl.FocusNextPage/*" />
 METHOD FocusNextPage() AS LOGIC
-	// Set the focus to the next possible page of the tab control	
+	// Set the focus to the next possible page of the tab control
 	LOCAL iPageCount	AS INT
 	LOCAL iPageNo,iOld	AS INT
 	LOCAL lChanged		AS LOGIC
@@ -566,7 +566,7 @@ METHOD FocusNextPage() AS LOGIC
 	IF (iPageCount:=INT(_CAST,ALen(aPages))) > 0
 		iPageNo := TabCtrl_GetCurSel( SELF:Handle() ) // Note: API is 0-based
 		iOld 	:= iPageNo
-		IF iPageNo = iPageCount-1	
+		IF iPageNo = iPageCount-1
 			iPageNo := 0
 		ELSE
 			++iPageNo
@@ -587,7 +587,7 @@ RETURN lChanged
 
 /// <include file="Gui.xml" path="doc/TabControl.FocusPreviousPage/*" />
 METHOD FocusPreviousPage()   AS LOGIC
-	// Set the focus to the previous possible page of the tab control	
+	// Set the focus to the previous possible page of the tab control
 	LOCAL iPageCount	AS INT
 	LOCAL iPageNo,iOld	AS INT
 	LOCAL lChanged		AS LOGIC
@@ -618,20 +618,20 @@ RETURN lChanged
 /// <include file="Gui.xml" path="doc/TabControl.FocusTab/*" />
 METHOD FocusTab(symTabName AS SYMBOL) AS VOID
     LOCAL iIndex as int
-	
-	
+
+
     iIndex := self:__GetIndexFromSymbol(symTabName)
     IF iIndex > -1
         TabCtrl_SetCurFocus(self:Handle(), dword(_cast,iIndex))
         self:__FocusPage(dword(_cast,iIndex))
     ENDIF
-	
-	
-RETURN 
+
+
+RETURN
 
 
 /// <include file="Gui.xml" path="doc/TabControl.GetCaption/*" />
-METHOD GetCaption(symTabName) 
+METHOD GetCaption(symTabName)
 	//RvdH 070124
 	LOCAL strucTabItem IS _winTC_Item
 	LOCAL i AS INT
@@ -661,13 +661,13 @@ METHOD GetCaption(symTabName)
 /// <include file="Gui.xml" path="doc/TabControl.GetPage/*" />
 METHOD GetPage(symPageName as USUAL)  AS Window
    // Returns the window object of a tabpage
-		
-		
+
+
 	LOCAL dwPage	AS DWORD
 	LOCAL oWindow	AS Window
 	LOCAL wI,wJ	AS DWORD
-	
-	
+
+
 	IF IsString(symPageName)
 		symPageName := String2Symbol(symPageName)
 	ENDIF
@@ -675,8 +675,8 @@ METHOD GetPage(symPageName as USUAL)  AS Window
 
 	IF IsNumeric(symPageName)
 		dwPage := symPageName
-		
-		
+
+
 	ELSEIF IsSymbol(symPageName)
 		wJ := ALen(aPages)
 		FOR wI:=1 UPTO wJ
@@ -685,17 +685,17 @@ METHOD GetPage(symPageName as USUAL)  AS Window
 				EXIT
 			ENDIF
 		NEXT
-		
-		
+
+
 	ENDIF
-	
-	
+
+
 	IF dwPage > 0
 		oWindow := aPages[dwPage,3]
 	ENDIF
 
 
-	RETURN oWindow	
+	RETURN oWindow
 
 
 
@@ -704,37 +704,37 @@ METHOD GetPage(symPageName as USUAL)  AS Window
 METHOD GetPageSymbol(uPageName AS USUAL) AS SYMBOL
 	// Returns the symbolic name of a page in the tab control
 	LOCAL symPageName	AS SYMBOL
-	
-	
+
+
 	IF IsNumeric(uPageName)
 		symPageName := self:__GetSymbolFromIndex(dword(_cast,uPageName)) // Note: API is 0-based
-		
-		
+
+
 	ELSEIF IsString(uPageName)
 		symPageName := String2Symbol(uPageName)
-		
-		
+
+
 	ELSE
-		
-		
+
+
 		symPageName := SYMBOL(_CAST,uPageName)
 	ENDIF
 
 
-	RETURN symPageName	
-	
-	
+	RETURN symPageName
+
+
 
 
 /// <include file="Gui.xml" path="doc/TabControl.GetTabBoundingBox/*" />
-METHOD GetTabBoundingBox(symTabName) 
+METHOD GetTabBoundingBox(symTabName)
 	LOCAL strucRect IS _winRect
 	LOCAL oOrigin	AS Point
 	LOCAL oSize		AS Dimension
 
 
-	
-	
+
+
 
 
 	IF LOGIC(_CAST, TabCtrl_GetItemRect(SELF:Handle(), SELF:__GetIndexFromSymbol(symTabName),  @strucRect))
@@ -751,13 +751,13 @@ METHOD GetTabBoundingBox(symTabName)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.GetTabImage/*" />
-METHOD GetTabImage (symTabName) 
+METHOD GetTabImage (symTabName)
 	//RvdH 070124
 	LOCAL nIndex AS INT
 	LOCAL strucTabItem IS _winTC_Item
 	LOCAL nImageIndex	AS INT
-	
-	
+
+
 	nIndex := SELF:__GetIndexFromSymbol(symTabName)
 	IF (nIndex != -1)
 		strucTabItem:mask := TCIF_IMAGE
@@ -773,7 +773,7 @@ METHOD GetTabImage (symTabName)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.GetTabPage/*" />
-METHOD GetTabPage(xSymbolOrPosition) 
+METHOD GetTabPage(xSymbolOrPosition)
 	IF IsSymbol(xSymbolOrPosition)
 		RETURN SELF:__GetPageFromIndex(SELF:__GetIndexFromSymbol(xSymbolOrPosition))
 	ELSEIF IsNumeric(xSymbolOrPosition)
@@ -785,15 +785,15 @@ METHOD GetTabPage(xSymbolOrPosition)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.GetTipText/*" />
-METHOD GetTipText(symTabName) 
+METHOD GetTipText(symTabName)
 	//SE-060526
 	LOCAL dwIndex AS DWORD
 	LOCAL dwCount AS DWORD
 	LOCAL symName AS SYMBOL
 
 
-	
-	
+
+
 
 
 	IF IsLong(symTabName)
@@ -815,9 +815,9 @@ METHOD GetTipText(symTabName)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.Hide/*" />
-METHOD Hide() 
-	
-	
+METHOD Hide()
+
+
 
 
 	SUPER:Hide()
@@ -830,18 +830,18 @@ METHOD Hide()
 
 
 /// <include file="Gui.xml" path="doc/TabControl.ImageList/*" />
-ACCESS ImageList 
-	
-	
+ACCESS ImageList
+
+
 
 
 	RETURN oImageList
 
 
 /// <include file="Gui.xml" path="doc/TabControl.ImageList/*" />
-ASSIGN ImageList(oNewImageList) 
-	
-	
+ASSIGN ImageList(oNewImageList)
+
+
 
 
 	IF IsInstanceOfUsual(oNewImageList, #ImageList)
@@ -850,13 +850,13 @@ ASSIGN ImageList(oNewImageList)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/TabControl.ctor/*" />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
-	
-	
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
+
+
 
 
 	IF IsInstanceOfUsual(xID, #ResourceID)
@@ -873,11 +873,11 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	aTipsText := {}
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/TabControl.InsertTab/*" />
-METHOD InsertTab(nPosition, symTabName, cCaption, xPage, nImage) 
+METHOD InsertTab(nPosition, symTabName, cCaption, xPage, nImage)
 	LOCAL strucTabItem	IS _winTC_Item
 	LOCAL pszCaption	AS PSZ
 	LOCAL nIndex		AS INT
@@ -885,8 +885,8 @@ METHOD InsertTab(nPosition, symTabName, cCaption, xPage, nImage)
 	LOCAL iLen, i AS INT
 
 
-	
-	
+
+
 
 
 	//PP-030909 XP theme background on tab page
@@ -934,16 +934,16 @@ METHOD InsertTab(nPosition, symTabName, cCaption, xPage, nImage)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.IsTabPage/*" />
-METHOD IsTabPage(xSymbolOrPosition) 
+METHOD IsTabPage(xSymbolOrPosition)
     //SE-070430
     LOCAL dwTabIndex   AS DWORD
     LOCAL symTabName   AS SYMBOL
     LOCAL dwI, dwCount AS DWORD
-    LOCAL cbBlock      AS CODEBLOCK 
-	
-	
+    LOCAL cbBlock      AS CODEBLOCK
+
+
     IF IsSymbol(xSymbolOrPosition)
-        symTabName := xSymbolOrPosition 
+        symTabName := xSymbolOrPosition
         cbBlock    := {|x|x[TAB_SYMBOL]==symTabName}
     ELSEIF IsNumeric(xSymbolOrPosition)
         dwTabIndex := xSymbolOrPosition-1
@@ -954,11 +954,11 @@ METHOD IsTabPage(xSymbolOrPosition)
 
 
     dwCount := ALen(aPages)
-    FOR dwI := 1 UPTO dwCount 
+    FOR dwI := 1 UPTO dwCount
         IF Eval(cbBlock, aPages[dwI])
             IF IsInstanceOfUsual(aPages[dwI, TAB_PAGE], #Window)
                 RETURN TRUE
-            ENDIF    
+            ENDIF
             EXIT
         ENDIF
     NEXT
@@ -970,16 +970,16 @@ METHOD IsTabPage(xSymbolOrPosition)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.Move/*" />
-METHOD Move(oMoveEvent) 
+METHOD Move(oMoveEvent)
 	//PP-040614 Method from S Ebert
 	SELF:__AdjustPage()
 	RETURN NIL
 
 
 /// <include file="Gui.xml" path="doc/TabControl.PadTabs/*" />
-METHOD PadTabs(dwWidth, dwHeight) 
-	
-	
+METHOD PadTabs(dwWidth, dwHeight)
+
+
 
 
 	TabCtrl_SetPadding(SELF:Handle(), dwWidth, dwHeight)
@@ -994,30 +994,30 @@ METHOD PadTabs(dwWidth, dwHeight)
 ACCESS Pages AS ARRAY
 	// Returns a 2-dim Array with informations of the pages of the tab control
 	RETURN aPages
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/TabControl.RemoveTabImage/*" />
-METHOD RemoveTabImage(nImageIndex) 
+METHOD RemoveTabImage(nImageIndex)
 
 
-	
-	
+
+
 	TabCtrl_RemoveImage(SELF:Handle(), nImageIndex -1)
 	RETURN TRUE
 
 
 /// <include file="Gui.xml" path="doc/TabControl.RemoveTipText/*" />
-METHOD RemoveTipText(symTabName) 
+METHOD RemoveTipText(symTabName)
 	//SE-060526
 	LOCAL dwIndex AS DWORD
 	LOCAL dwCount AS DWORD
 	LOCAL symName AS SYMBOL
 
 
-	
-	
+
+
 
 
 	IF IsLong(symTabName)
@@ -1041,16 +1041,16 @@ METHOD RemoveTipText(symTabName)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.Resize/*" />
-METHOD Resize(oResizeEvent) 
+METHOD Resize(oResizeEvent)
     //PP-040322 Method from S Ebert
     SELF:__AdjustPage()
     RETURN SELF
 
 
 /// <include file="Gui.xml" path="doc/TabControl.RowCount/*" />
-ACCESS RowCount 
-	
-	
+ACCESS RowCount
+
+
 
 
 	IF (_AND(GetWindowLong(SELF:Handle(), GWL_STYLE), TCS_MULTILINE) > 0)
@@ -1062,12 +1062,12 @@ ACCESS RowCount
 
 
 /// <include file="Gui.xml" path="doc/TabControl.SelectedTab/*" />
-ACCESS SelectedTab 
+ACCESS SelectedTab
 	RETURN SELF:__GetSymbolFromIndex(TabCtrl_GetCurSel(SELF:Handle()))
 
 
 /// <include file="Gui.xml" path="doc/TabControl.SelectedTabPage/*" />
-ACCESS SelectedTabPage 
+ACCESS SelectedTabPage
 	LOCAL sTabPage AS SYMBOL
 
 
@@ -1081,7 +1081,7 @@ ACCESS SelectedTabPage
 
 
 /// <include file="Gui.xml" path="doc/TabControl.SelectTab/*" />
-METHOD SelectTab(symTabName) 
+METHOD SelectTab(symTabName)
 	LOCAL nIndex AS INT
 
 
@@ -1096,7 +1096,7 @@ METHOD SelectTab(symTabName)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.SetCaption/*" />
-METHOD SetCaption(symTabName, cCaption) 
+METHOD SetCaption(symTabName, cCaption)
 	//RvdH 070124
 	LOCAL strucTabItem IS _winTC_Item
 	LOCAL i AS INT
@@ -1123,7 +1123,7 @@ METHOD SetCaption(symTabName, cCaption)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.SetTabImage/*" />
-METHOD SetTabImage(symTabName, nImageIndex) 
+METHOD SetTabImage(symTabName, nImageIndex)
 	LOCAL nIndex AS INT
 	LOCAL strucTabItem IS _winTC_ITEM
 
@@ -1140,13 +1140,13 @@ METHOD SetTabImage(symTabName, nImageIndex)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.SetTipText/*" />
-METHOD SetTipText(symTabName, cText) 
-	//RvdH 070124 	
+METHOD SetTipText(symTabName, cText)
+	//RvdH 070124
 	RETURN SELF:AddTipText(symTabName, cText)
 
 
 /// <include file="Gui.xml" path="doc/TabControl.Show/*" />
-METHOD Show() 
+METHOD Show()
 	SUPER:Show()
 
 
@@ -1159,22 +1159,22 @@ METHOD Show()
 
 
 /// <include file="Gui.xml" path="doc/TabControl.TabCaption/*" />
-ACCESS TabCaption (symTabName) 
+ACCESS TabCaption (symTabName)
 	RETURN SELF:GetCaption(symTabName)
-	
-	
+
+
 
 
 /// <include file="Gui.xml" path="doc/TabControl.TabCaption/*" />
-ASSIGN TabCaption (cCaption,symTabName) 
+ASSIGN TabCaption (cCaption,symTabName)
 	SELF:SetCaption(symTabName, cCaption)
-	RETURN 
-	
-	
+	RETURN
+
+
 
 
 /// <include file="Gui.xml" path="doc/TabControl.TabCount/*" />
-ACCESS TabCount 
+ACCESS TabCount
 	RETURN TabCtrl_GetItemCount(SELF:Handle())
 END CLASS
 

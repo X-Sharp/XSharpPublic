@@ -77,18 +77,18 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MAssign(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Perform an assignment to a variable whose name is stored in a specified string.
-    </para></entry></row>
+            Perform an assignment to a variable whose name is stored in a specified string.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarBlock(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Return a set-get code block for a given memory variable.
-    </para></entry></row>
+            Return a set-get code block for a given memory variable.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarBlockSym(XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Return a set-get code block for a given memory variable.
-    </para></entry></row>
+            Return a set-get code block for a given memory variable.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarClear(System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -97,23 +97,23 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarGet(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Return the contents of a memory variable.
-    </para></entry></row>
+            Return the contents of a memory variable.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarGetSym(XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Return the contents of a memory variable.
-    </para></entry></row>
+            Return the contents of a memory variable.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarPut(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Assign a value to a memory variable of a given name.
-    </para></entry></row>
+            Assign a value to a memory variable of a given name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Assign a value to a memory variable of a given name.
-    </para></entry></row>
+            Assign a value to a memory variable of a given name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MemVarRelease(System.String)</codeEntityReference></para></entry>
 <entry><para>
@@ -131,23 +131,23 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarGet(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Return the contents of a field or a memory variable.
-    </para></entry></row>
+            Return the contents of a field or a memory variable.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarGetSym(XSharp.__Symbol)</codeEntityReference></para></entry>
 <entry><para>
-      Return the contents of a field or a memory variable.
-    </para></entry></row>
+            Return the contents of a field or a memory variable.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarPut(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Assign a value to a field or a memory variable of a given name.
-    </para></entry></row>
+            Assign a value to a field or a memory variable of a given name.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VarPutSym(XSharp.__Symbol,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Assign a value to a field or a memory variable of a given name.
-    </para></entry></row>
+            Assign a value to a field or a memory variable of a given name.
+        </para></entry></row>
 </table>
 </content>
      </section>

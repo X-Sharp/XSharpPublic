@@ -12,13 +12,13 @@
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.NetErr</codeEntityReference></para></entry>
 <entry><para>
-      Detect a concurrency conflict.
-    </para></entry></row>
+            Detect a concurrency conflict.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.NetName</codeEntityReference></para></entry>
 <entry><para>
-      Identify the current workstation.
-    </para></entry></row>
+            Identify the current workstation.
+        </para></entry></row>
 </table>
 </content>
      </section>

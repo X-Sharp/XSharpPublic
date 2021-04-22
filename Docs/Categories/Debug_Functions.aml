@@ -12,13 +12,13 @@
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions._DebOut32(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Write information to the Debug Terminal Program
-    </para></entry></row>
+            Write information to the Debug Terminal Program
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.AltD</codeEntityReference></para></entry>
 <entry><para>
-      Programmatically define a breakpoint in an application.
-    </para></entry></row>
+            Programmatically define a breakpoint in an application.
+        </para></entry></row>
 <row><entry><para>XSharp.RT.Debugger</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Debugger.Functions.DbgShowGlobals</codeEntityReference></para></entry>
 <entry><para>Open a window to show the (public) symbols in the running app and the other loaded assemblies</para></entry></row>
@@ -39,8 +39,8 @@
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DebOut32(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Write information to the Debug Terminal Program
-    </para></entry></row>
+            Write information to the Debug Terminal Program
+        </para></entry></row>
 </table>
 </content>
      </section>

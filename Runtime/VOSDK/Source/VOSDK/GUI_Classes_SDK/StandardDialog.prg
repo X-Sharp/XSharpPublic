@@ -10,9 +10,9 @@ CLASS OpenDialog INHERIT StandardFileDialog
 
 
 /// <include file="Gui.xml" path="doc/OpenDialog.ctor/*" />
-CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag) 
-	
-	
+CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag)
+
+
 
 
 	SUPER(oOwnWnd,cInitPath,dwFlag)
@@ -26,7 +26,7 @@ CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -37,9 +37,9 @@ CLASS PaletteDialog INHERIT StandardColorDialog
 
 
 /// <include file="Gui.xml" path="doc/PaletteDialog.ctor/*" />
-CONSTRUCTOR(uOwner,oColor) 
-	
-	
+CONSTRUCTOR(uOwner,oColor)
+
+
 
 
 	IF !IsNil(uOwner)
@@ -62,7 +62,7 @@ CONSTRUCTOR(uOwner,oColor)
 	liFlags := CC_RGBINIT
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -73,9 +73,9 @@ CLASS SaveAsDialog INHERIT StandardFileDialog
 
 
 /// <include file="Gui.xml" path="doc/SaveAsDialog.ctor/*" />
-CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag) 
-	
-	
+CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag)
+
+
 
 
 	SUPER(oOwnWnd,cInitPath, dwFlag)
@@ -88,7 +88,7 @@ CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -99,9 +99,9 @@ CLASS SelectDialog INHERIT StandardColorDialog
 
 
 /// <include file="Gui.xml" path="doc/SelectDialog.ctor/*" />
-CONSTRUCTOR(uOwner,oColor) 
-	
-	
+CONSTRUCTOR(uOwner,oColor)
+
+
 
 
 	IF !IsNil(uOwner)
@@ -122,7 +122,7 @@ CONSTRUCTOR(uOwner,oColor)
 	liFlags := _OR(CC_PREVENTFULLOPEN, CC_RGBINIT)
 
 
-	RETURN 
+	RETURN
 
 
 END CLASS
@@ -137,15 +137,15 @@ CLASS StandardColorDialog INHERIT StandardDialog
 
 
 /// <include file="Gui.xml" path="doc/StandardColorDialog.Color/*" />
-METHOD Color() 
+METHOD Color()
 	//PP-040425 Changed to use new capability of the Color class
 	RETURN Color{dwDefColor, -1}
 
 
 /// <include file="Gui.xml" path="doc/StandardColorDialog.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF (pCustClr != NULL_PTR)
@@ -161,12 +161,12 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/StandardColorDialog.ctor/*" />
-CONSTRUCTOR(oColor) 
+CONSTRUCTOR(oColor)
 	LOCAL hDC AS PTR
 	LOCAL aCustClrs AS strColor
 	LOCAL oDefColor AS Color
-	
-	
+
+
 
 
 	//__LoadComDlgDLL()
@@ -209,11 +209,11 @@ CONSTRUCTOR(oColor)
 		aCustClrs:s15 := aCustClrs:s16 := aCustClrs:s2
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StandardColorDialog.Show/*" />
-METHOD Show() 
+METHOD Show()
 	LOCAL lRet AS LOGIC
 	LOCAL iSize := _SIZEOF(_winCHOOSECOLOR) AS DWORD
 	LOCAL cc AS _WINCHOOSECOLOR
@@ -252,15 +252,15 @@ CLASS StandardDialog INHERIT VObject
 
 
 /// <include file="Gui.xml" path="doc/StandardDialog.ctor/*" />
-CONSTRUCTOR() 
-    
-    
+CONSTRUCTOR()
+
+
     SUPER()
 
 
 
 
-RETURN 
+RETURN
 END CLASS
 
 
@@ -283,7 +283,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __AddFilter(sFilter AS STRING, sFilterDesc AS STRING) AS VOID STRICT 
+	METHOD __AddFilter(sFilter AS STRING, sFilterDesc AS STRING) AS VOID STRICT
 	//PP-030828 Strong typing
 	LOCAL pszNew AS PSZ
 	LOCAL pCurPos AS BYTE PTR
@@ -323,10 +323,10 @@ CLASS StandardFileDialog INHERIT StandardDialog
 
 
  /// <exclude />
-METHOD __ClearFilters() AS VOID STRICT 
+METHOD __ClearFilters() AS VOID STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	IF (PTR(_CAST, pszFilters) != NULL_PTR)
@@ -338,52 +338,52 @@ METHOD __ClearFilters() AS VOID STRICT
 
 
  /// <exclude />
-ACCESS __Flags AS DWORD STRICT 
+ACCESS __Flags AS DWORD STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN Flags
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.Caption/*" />
-ACCESS Caption 
-	
-	
+ACCESS Caption
+
+
 
 
 	RETURN Title
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.Caption/*" />
-ASSIGN Caption(cNewCaption) 
-	
-	
+ASSIGN Caption(cNewCaption)
+
+
 
 
 	Title := AsString(cNewCaption)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.DefExt/*" />
-ACCESS DefExt 
+ACCESS DefExt
 	//PP-040101
 	RETURN SELF:cDefExt
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.DefExt/*" />
-ASSIGN DefExt( cNew ) 
+ASSIGN DefExt( cNew )
 	//PP-040101
 	RETURN ( SELF:cDefExt := cNew )
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	IF (pOpenFileName != NULL_PTR)
@@ -404,14 +404,14 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.Dispatch/*" />
-METHOD Dispatch(oEvt, hDlg) 
+METHOD Dispatch(oEvt, hDlg)
 
 
 	RETURN 0L
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.DlgStyle/*" />
-ASSIGN DlgStyle(flag) 
+ASSIGN DlgStyle(flag)
 
 
 	IF LoWord(GetVersion()) >= 4
@@ -423,13 +423,13 @@ ASSIGN DlgStyle(flag)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.FileName/*" />
-ACCESS FileName 
-	
-	
+ACCESS FileName
+
+
 
 
 	IF (Len(Result) == 0)
@@ -439,24 +439,24 @@ ACCESS FileName
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.FilterIndex/*" />
-ACCESS FilterIndex 
+ACCESS FilterIndex
 	//PP-030910
 	RETURN fltindex
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.help/*" />
-METHOD help() 
-	
-	
+METHOD help()
+
+
 
 
 	RETURN NIL
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.HideReadOnly/*" />
-ASSIGN HideReadOnly(flag) 
-	
-	
+ASSIGN HideReadOnly(flag)
+
+
 
 
 	IF flag
@@ -466,11 +466,11 @@ ASSIGN HideReadOnly(flag)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.ctor/*" />
-CONSTRUCTOR(uOwner, cInitPath) 
+CONSTRUCTOR(uOwner, cInitPath)
 	LOCAL iPos/*, iRest*/ AS INT
 	LOCAL cTest, cRest, cAllFiles AS STRING
 	LOCAL lHasWildCard := FALSE AS LOGIC
@@ -518,8 +518,8 @@ CONSTRUCTOR(uOwner, cInitPath)
 	IsOpen := FALSE
 	// needed for changing dialog's style (by OFN_EXPLORER)
 	Flags := OFN_ALLOWMULTISELECT
-	
-	
+
+
 	sOFN := MemAlloc(DWORD(Size))
 	MemClear(sOFN, DWORD(Size))
 	pOpenFileName := sOFN
@@ -584,43 +584,43 @@ CONSTRUCTOR(uOwner, cInitPath)
    strucSelf :=__WCSelfPtrAlloc(SELF)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.InitialDirectory/*" />
-ACCESS InitialDirectory 
-	
-	
+ACCESS InitialDirectory
+
+
 
 
 	RETURN InitDir
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.InitialDirectory/*" />
-ASSIGN InitialDirectory(cNewDir) 
-	
-	
+ASSIGN InitialDirectory(cNewDir)
+
+
 
 
 	InitDir := AsString(cNewDir)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.NoPlacesBar/*" />
-ACCESS NoPlacesBar 
-	
-	
+ACCESS NoPlacesBar
+
+
 
 
 	RETURN LOGIC(_CAST, _AND(FlagsEx, OFN_EX_NOPLACESBAR))
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.NoPlacesBar/*" />
-ASSIGN NoPlacesBar(flag) 
-	
-	
+ASSIGN NoPlacesBar(flag)
+
+
 
 
 	IF flag
@@ -630,22 +630,22 @@ ASSIGN NoPlacesBar(flag)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.ReadOnly/*" />
-ACCESS ReadOnly 
-	
-	
+ACCESS ReadOnly
+
+
 
 
 	RETURN LOGIC(_CAST, _AND(Flags, OFN_READONLY))
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.ReadOnly/*" />
-ASSIGN ReadOnly(flag) 
-	
-	
+ASSIGN ReadOnly(flag)
+
+
 
 
 	IF flag
@@ -655,16 +655,16 @@ ASSIGN ReadOnly(flag)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.SetFilter/*" />
-METHOD SetFilter(uFilter, uFilterDesc, nIndex) 
+METHOD SetFilter(uFilter, uFilterDesc, nIndex)
 	LOCAL i AS INT
 
 
-	
-	
+
+
 
 
 	IF IsLong(nIndex)
@@ -687,9 +687,9 @@ METHOD SetFilter(uFilter, uFilterDesc, nIndex)
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.SetStyle/*" />
-METHOD SetStyle(kStyle, lOnOff) 
-	
-	
+METHOD SetStyle(kStyle, lOnOff)
+
+
 
 
 	DEFAULT(@lOnOff, TRUE)
@@ -706,9 +706,9 @@ METHOD SetStyle(kStyle, lOnOff)
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.SetStyleEx/*" />
-METHOD SetStyleEx(kStyle, lOnOff) 
-	
-	
+METHOD SetStyleEx(kStyle, lOnOff)
+
+
 
 
 	DEFAULT(@lOnOff, TRUE)
@@ -725,7 +725,7 @@ METHOD SetStyleEx(kStyle, lOnOff)
 
 
 /// <include file="Gui.xml" path="doc/StandardFileDialog.Show/*" />
-METHOD Show() 
+METHOD Show()
 	LOCAL lRet := TRUE AS LOGIC
 	LOCAL sOFN AS _winOPENFILENAME
 	LOCAL pszRes AS PSZ
@@ -736,8 +736,8 @@ METHOD Show()
 	LOCAL aResults AS ARRAY
 
 
-	
-	
+
+
 
 
 	sOFN := pOpenFileName
@@ -763,9 +763,9 @@ METHOD Show()
    LOCAL StdFileHookDelegate AS __StdFileHookDelegate
    StdFileHookDelegate := __StdFileHookDelegate{ NULL, @__StdFileHook() }
 	sOFN:lpfnHook 		:= System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) StdFileHookDelegate )
-#else	
+#else
 	sOFN:lpfnHook 		:= @__StdFileHook()
-#endif	
+#endif
 	sOFN:lCustData 	:= LONGINT(_CAST, strucSelf)
 	sOFN:lpstrFilter 	:= pszFilters
 	sOFN:nFilterIndex := DWORD(FltIndex)
@@ -884,13 +884,13 @@ CLASS StandardFolderDialog INHERIT StandardDialog
 
 	//PP-030828 Strong typing
  /// <exclude />
-	ACCESS __StartFolder AS STRING STRICT 
+	ACCESS __StartFolder AS STRING STRICT
 	//PP-030828 Strong typing
 	RETURN sStart
 
 
 /// <include file="Gui.xml" path="doc/StandardFolderDialog.DialogCallBack/*" />
-METHOD DialogCallBack(hWnd, uMsg, lParam, lpData) 
+METHOD DialogCallBack(hWnd, uMsg, lParam, lpData)
 	//PP-030910 suggestion from S Ebert
 	IF uMsg = BFFM_INITIALIZED
 		IF ! Empty(sStart)
@@ -901,12 +901,12 @@ METHOD DialogCallBack(hWnd, uMsg, lParam, lpData)
 
 
 /// <include file="Gui.xml" path="doc/StandardFolderDialog.FolderName/*" />
-ACCESS FolderName 
+ACCESS FolderName
 	RETURN sResult
 
 
 /// <include file="Gui.xml" path="doc/StandardFolderDialog.ctor/*" />
-CONSTRUCTOR(oOwner, sCaption, sStartFolder, kType) 
+CONSTRUCTOR(oOwner, sCaption, sStartFolder, kType)
    SUPER()
 	DEFAULT(@kType, BIF_RETURNONLYFSDIRS)
 	DEFAULT(@sCaption, "Browser Folder")
@@ -931,16 +931,16 @@ CONSTRUCTOR(oOwner, sCaption, sStartFolder, kType)
 	ENDIF
 
 
-   RETURN 
+   RETURN
 
 
 /// <include file="Gui.xml" path="doc/StandardFolderDialog.Result/*" />
-ACCESS Result 
+ACCESS Result
 	RETURN sResult
 
 
 /// <include file="Gui.xml" path="doc/StandardFolderDialog.Show/*" />
-METHOD Show() 
+METHOD Show()
 	LOCAL bi IS _winBROWSEINFO
 	LOCAL pidl AS PTR
 	LOCAL DIM aName[MAX_PATH] AS BYTE
@@ -954,7 +954,7 @@ METHOD Show()
 		IF Empty(sTitle)
 			bi:lpszTitle := NULL_PTR
 		ELSE
-			bi:lpszTitle := String2Psz(sTitle)  
+			bi:lpszTitle := String2Psz(sTitle)
 		ENDIF
 		bi:ulFlags := dwType
 #ifdef __VULCAN__
@@ -970,8 +970,8 @@ METHOD Show()
         //RvdH 100216 Changed. The original code does not work at all....
         //bi:lParam := LONGINT(_CAST,@p)
 		bi:lParam := LONGINT(_CAST,p)
-        
-        
+
+
 		bi:iImage := 0
 
 
@@ -1016,9 +1016,9 @@ CLASS StandardFontDialog INHERIT StandardDialog
 
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.EnableANSI/*" />
-METHOD EnableANSI(bOnOff) 
-	
-	
+METHOD EnableANSI(bOnOff)
+
+
 
 
 	DEFAULT(@bOnOff, TRUE)
@@ -1032,9 +1032,9 @@ METHOD EnableANSI(bOnOff)
 
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.EnableEffects/*" />
-METHOD EnableEffects(bOnOff) 
-	
-	
+METHOD EnableEffects(bOnOff)
+
+
 
 
 	DEFAULT(@bOnOff, TRUE)
@@ -1049,7 +1049,7 @@ METHOD EnableEffects(bOnOff)
 
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.EnableFixedPitch/*" />
-METHOD EnableFixedPitch(bOnOff) 
+METHOD EnableFixedPitch(bOnOff)
 
 
 	DEFAULT(@bOnOff, TRUE)
@@ -1062,9 +1062,9 @@ METHOD EnableFixedPitch(bOnOff)
 
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.EnableTrueType/*" />
-METHOD EnableTrueType(bOnOff) 
-	
-	
+METHOD EnableTrueType(bOnOff)
+
+
 
 
 	DEFAULT(@bOnOff, TRUE)
@@ -1077,57 +1077,57 @@ METHOD EnableTrueType(bOnOff)
 
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.Flags/*" />
-ASSIGN Flags(lInt) 
-	
-	
+ASSIGN Flags(lInt)
+
+
 
 
 	lFlags := _OR(lFlags, LONGINT(_CAST, lInt))
-	RETURN 
+	RETURN
 
 
 
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.Font/*" />
-ACCESS Font 
-	
-	
+ACCESS Font
+
+
 
 
 	RETURN oFont
 
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.Font/*" />
-ASSIGN Font(oInitFont) 
-	
-	
+ASSIGN Font(oInitFont)
+
+
 
 
 	RETURN (oFont := oInitFont)
 
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.FontColor/*" />
-ACCESS FontColor 
-	
-	
+ACCESS FontColor
+
+
 
 
 	RETURN oColor
 
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.FontColor/*" />
-ASSIGN FontColor(oNewCol) 
-	
-	
+ASSIGN FontColor(oNewCol)
+
+
 
 
 	RETURN (oColor := oNewCol)
 
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.ctor/*" />
-CONSTRUCTOR(uOwner) 
-	
-	
+CONSTRUCTOR(uOwner)
+
+
 
 
 	//__LoadComDlgDLL()
@@ -1160,11 +1160,11 @@ CONSTRUCTOR(uOwner)
 	SELF:EnableEffects(TRUE)
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/StandardFontDialog.Show/*" />
-METHOD Show() 
+METHOD Show()
 	LOCAL bRet AS LOGIC
 	LOCAL iFam AS INT
 	LOCAL oDim AS Dimension
@@ -1408,13 +1408,13 @@ FUNCTION __StdFileHook(hWnd AS PTR, msg AS DWORD, wParam AS DWORD, lParam AS LON
 
 
 	oStdFileDlg := __WCGetObjectByProperty(hwnd)
-	IF IsInstanceOf(oStdFileDlg, #StandardFileDialog)
+	IF oStdFileDlg IS StandardFileDialog VAR stdFileDlg
 		hDlg := hWnd
 		lFlags := oStdFileDlg:__Flags
 		IF (_AND(lFlags, OFN_EXPLORER) != 0)
 			hDlg := GetParent(hDlg)
 		ENDIF
-		liRet := Send(oStdFileDlg, #Dispatch, @@Event{ hWnd, msg, wParam, lParam}, hDlg)
+		liRet := stdFileDlg:Dispatch( @@Event{ hWnd, msg, wParam, lParam}, hDlg)
 		RETURN (liRet != 0)
 	ENDIF
 

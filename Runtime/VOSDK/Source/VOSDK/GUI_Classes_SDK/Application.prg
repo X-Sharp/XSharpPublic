@@ -1,3 +1,5 @@
+USING System.Reflection
+USING System.Linq
 /// <include file="Gui.xml" path="doc/App/*" />
 CLASS App INHERIT VObject
 	PROTECT oParent AS OBJECT
@@ -11,11 +13,13 @@ CLASS App INHERIT VObject
 	PROTECT hMdiClientWnd AS PTR
 	PROTECT lBeforeDisp AS LOGIC
 	PROTECT lAfterDisp AS LOGIC
+    PROTECT oBeforeDisp AS MethodInfo
+    PROTECT oAfterDisp  AS MethodInfo
 
 
 	//PP-030828 Strong typing
  /// <exclude />
-	ACCESS __HelpCursor() AS PTR STRICT 
+	ACCESS __HelpCursor() AS PTR STRICT
 	//PP-030828 Strong typing
 	LOCAL hRet AS PTR
 
@@ -24,11 +28,11 @@ CLASS App INHERIT VObject
    BEGIN LOCK __WCCSApp
 #else
    EnterCriticalSection(@__WCCSApp)
-#endif   
+#endif
    hRet := hHelpCursor
 #ifdef __VULCAN__
    END LOCK
-#else   
+#else
    LeaveCriticalSection(@__WCCSApp)
 #endif
 
@@ -37,7 +41,7 @@ CLASS App INHERIT VObject
 
 
  /// <exclude />
-ACCESS __HelpWndHandle AS PTR STRICT 
+ACCESS __HelpWndHandle AS PTR STRICT
 	//PP-030828 Strong typing
 	LOCAL hRet AS PTR
 
@@ -46,18 +50,18 @@ ACCESS __HelpWndHandle AS PTR STRICT
    BEGIN LOCK __WCCSApp
 #else
    EnterCriticalSection(@__WCCSApp)
-#endif   
+#endif
    hRet := hHelpWnd
 #ifdef __VULCAN__
    END LOCK
-#else   
+#else
    LeaveCriticalSection(@__WCCSApp)
 #endif
 	RETURN hRet
 
 
  /// <exclude />
-METHOD __SetHelpWind(hHandle AS PTR, wMode AS LONGINT) AS App STRICT 
+METHOD __SetHelpWind(hHandle AS PTR, wMode AS LONGINT) AS App STRICT
 	//PP-030828 Strong typing
 
 
@@ -65,7 +69,7 @@ METHOD __SetHelpWind(hHandle AS PTR, wMode AS LONGINT) AS App STRICT
    BEGIN LOCK __WCCSApp
 #else
    EnterCriticalSection(@__WCCSApp)
-#endif   
+#endif
 
 
 	hHelpWnd := hHandle
@@ -88,7 +92,7 @@ METHOD __SetHelpWind(hHandle AS PTR, wMode AS LONGINT) AS App STRICT
 
 #ifdef __VULCAN__
    END LOCK
-#else   
+#else
    LeaveCriticalSection(@__WCCSApp)
 #endif
 
@@ -97,7 +101,7 @@ METHOD __SetHelpWind(hHandle AS PTR, wMode AS LONGINT) AS App STRICT
 
 
  /// <exclude />
-ACCESS __WindowCount AS LONGINT STRICT 
+ACCESS __WindowCount AS LONGINT STRICT
 	//PP-030828 Strong typing
 	LOCAL lRet AS LONGINT
 
@@ -106,11 +110,11 @@ ACCESS __WindowCount AS LONGINT STRICT
    BEGIN LOCK __WCCSApp
 #else
    EnterCriticalSection(@__WCCSApp)
-#endif   
+#endif
    lRet := liWindowCount
 #ifdef __VULCAN__
    END LOCK
-#else   
+#else
    LeaveCriticalSection(@__WCCSApp)
 #endif
 
@@ -119,7 +123,7 @@ ACCESS __WindowCount AS LONGINT STRICT
 
 
  /// <exclude />
-ASSIGN __WindowCount(nValue AS LONGINT)  STRICT 
+ASSIGN __WindowCount(nValue AS LONGINT)  STRICT
 	//PP-030828 Strong typing
 
 
@@ -127,20 +131,20 @@ ASSIGN __WindowCount(nValue AS LONGINT)  STRICT
    BEGIN LOCK __WCCSApp
 #else
    EnterCriticalSection(@__WCCSApp)
-#endif   
+#endif
    liWindowCount := nValue
 #ifdef __VULCAN__
    END LOCK
-#else   
+#else
    LeaveCriticalSection(@__WCCSApp)
 #endif
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/App.Exec/*" />
-METHOD Exec(kExecType, oObject) 
+METHOD Exec(kExecType, oObject)
 	// The Exec() method is designed to be used in three ways. One, as the
 	// central event loop of the application. Two, a way of yeilding control
 	// to Windows during an intensive CPU operation. Three, a nested loop
@@ -180,7 +184,8 @@ METHOD Exec(kExecType, oObject)
 
 
 		IF lBeforeDisp
-			IF Send(SELF, #BeforeDispatch, msg:hwnd, msg:message, msg:wParam, msg:lParam) == FALSE
+            IF Send(SELF, oBeforeDisp, msg:hwnd, msg:message, msg:wParam, msg:lParam ) == FALSE
+			//IF Send(SELF, #BeforeDispatch, msg:hwnd, msg:message, msg:wParam, msg:lParam) == FALSE
 				IF retVal	// When processing WM_QUIT we want to EXIT below
 					LOOP
 				ENDIF
@@ -198,7 +203,7 @@ METHOD Exec(kExecType, oObject)
          lTranslated := _VOOLETranslateMsg(@msg)
 #else
          lTranslated := FALSE
-#endif                  
+#endif
 			IF  !lTranslated
 				IF (hHelpAccel == NULL_PTR) .OR. (TranslateAccelerator(hHelpWnd, hHelpAccel, @msg) == 0)
 					IF (hAccel == NULL_PTR) .OR. (TranslateAccelerator(hAccelWnd, hAccel, @msg) == 0)
@@ -232,7 +237,8 @@ METHOD Exec(kExecType, oObject)
 		ENDIF
 		//RvdH 050331 Moved from below
 		IF lAfterDisp
-			Send(SELF, #AfterDispatch, msg:hwnd, msg:message, msg:wParam, msg:lParam)
+            Send(SELF, oAfterDisp, msg:hwnd, msg:message, msg:wParam, msg:lParam ,)
+			//Send(SELF, #AfterDispatch, msg:hwnd, msg:message, msg:wParam, msg:lParam)
 		ENDIF
 
 
@@ -300,7 +306,7 @@ METHOD Handle() AS PTR
 
 
 /// <include file="Gui.xml" path="doc/App.ctor/*" />
-CONSTRUCTOR(oOwner) 
+CONSTRUCTOR(oOwner)
 
 
 	SUPER()
@@ -315,8 +321,10 @@ CONSTRUCTOR(oOwner)
    //InitializeCriticalSection(@__WCCSApp)
 
 
-	lBeforeDisp := IsMethod(SELF, #BeforeDispatch)
-	lAfterDisp := IsMethod(SELF, #AfterDispatch)
+    oBeforeDisp := SELF:GetType():GetMethods():Where( {x => x:Name:ToUpper() == "BEFOREDISPATCH"}):FirstOrDefault()
+    oAfterDisp := SELF:GetType():GetMethods():Where( {x => x:Name:ToUpper() == "AFTERDISPATCH"}):FirstOrDefault()
+    lBeforeDisp := oBeforeDisp != NULL_OBJECT
+    lAfterDisp := oAfterDisp != NULL_OBJECT
    #ifdef __VULCAN__
       // Set GLOBAL oApp since the application doesn't
       // have access to it
@@ -324,11 +332,11 @@ CONSTRUCTOR(oOwner)
    #endif
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/App.Quit/*" />
-METHOD Quit() 
+METHOD Quit()
 
 
 	PostQuitMessage(0)
@@ -338,14 +346,14 @@ METHOD Quit()
 
 
 /// <include file="Gui.xml" path="doc/App.Run/*" />
-METHOD Run(sCommand) 
+METHOD Run(sCommand)
 
 
 	RETURN WinExec(String2Psz(sCommand), SW_SHOWNORMAL)
 
 
 /// <include file="Gui.xml" path="doc/App.SetAccel/*" />
-METHOD SetAccel(hNewAccel) 
+METHOD SetAccel(hNewAccel)
    BEGIN LOCK __WCCSApp
       hAccel := hNewAccel
    END LOCK
@@ -355,7 +363,7 @@ METHOD SetAccel(hNewAccel)
 
 
 /// <include file="Gui.xml" path="doc/App.SetAccelWindow/*" />
-METHOD SetAccelWindow(hNewAccelWnd) 
+METHOD SetAccelWindow(hNewAccelWnd)
 
 
    BEGIN LOCK __WCCSApp
@@ -367,7 +375,7 @@ METHOD SetAccelWindow(hNewAccelWnd)
 
 
 /// <include file="Gui.xml" path="doc/App.SetDialogWindow/*" />
-METHOD SetDialogWindow(hNewDialogWnd) 
+METHOD SetDialogWindow(hNewDialogWnd)
 
 
    BEGIN LOCK __WCCSApp
@@ -379,7 +387,7 @@ METHOD SetDialogWindow(hNewDialogWnd)
 
 
 /// <include file="Gui.xml" path="doc/App.SetMdiClientWindow/*" />
-METHOD SetMdiClientWindow(hNewMdiClientWnd) 
+METHOD SetMdiClientWindow(hNewMdiClientWnd)
 
 
    BEGIN LOCK __WCCSApp
@@ -436,14 +444,14 @@ PROCEDURE __InitFunctionPointer() _INIT3
 
 
 		IF (gpfnInitCommonControlsEx == NULL_PTR)
-			InitCommonControls()                                    
+			InitCommonControls()
 		ENDIF
 
 
 		gdwDragListMsg := RegisterWindowMessage(String2Psz(DRAGLISTMSGSTRING))
 		gatomVOObjPtr 	:= GlobalAddAtom(String2Psz("__VOObjPtr"))
 		gsymBrowserDef := IIF(File("CATO3CNT.DLL"), #DataBrowser, #DataListView)
-	// else 
+	// else
 	// should throw an error here ?
 	endif
 	RETURN

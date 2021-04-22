@@ -306,6 +306,203 @@ BEGIN NAMESPACE XSharp.VO.Tests
                 Assert.Equal("...1.23...", PadC(u,10,"."))
                 Assert.Equal("      1.23", PadL(u,10))
 
+
+#pragma options ("vo13" , on)
+            [Fact, Trait("Category", "Str")];
+		    METHOD StringComparison_WINDOWS_notEXACT() AS VOID
+				LOCAL uAB,uA AS USUAL
+				LOCAL sAB,sA AS USUAL
+				LOCAL c,e,vo13 AS USUAL
+				vo13 := XSharp.RuntimeState.CompilerOptionVO13
+				XSharp.RuntimeState.CompilerOptionVO13 := TRUE
+				c := SetCollation(#WINDOWS)
+				e := SetExact(FALSE)
+				
+				uAB := "AB"
+				uA := "A"
+				sAB := uAB
+				sA := uA
+				
+				Assert.True ( "AB" = "A"  )
+				Assert.False( "A" = "AB"  )
+				Assert.True ( uAB = uA    )
+				Assert.False( uA = uAB    )
+				Assert.True ( sAB = sA    )
+				Assert.False( sA = sAB    )
+
+				Assert.True ( "AB" != "A" ) // Moronic VO behavior, different behavior with literals than with USUALs/STRINGs
+				Assert.True ( "A" != "AB" )
+				Assert.False( uAB != uA   )
+				Assert.True ( uA != uAB   )
+				Assert.False( sAB != sA   )
+				Assert.True ( sA != sAB   )
+
+				Assert.True ( "AB" >= "A" )
+				Assert.True ( "AB" <= "A" )
+				Assert.True ( uAB >= uA   )
+				Assert.True ( uAB <= uA   )
+				Assert.True ( sAB >= sA   )
+				Assert.True ( sAB <= sA   )
+				
+				Assert.False( "AB" > "A"  )
+				Assert.False( "AB" < "A"  )
+				Assert.False( uAB > uA    )
+				Assert.False( uAB < uA    )
+				Assert.False( sAB > sA    )
+				Assert.False( sAB < sA    )
+
+				SetCollation(c)
+				SetExact(e)
+
+				XSharp.RuntimeState.CompilerOptionVO13 := vo13
+
+            [Fact, Trait("Category", "Str")];
+		    METHOD StringComparison_CLIPPER_notEXACT() AS VOID
+				LOCAL uAB,uA AS USUAL
+				LOCAL sAB,sA AS USUAL
+				LOCAL c,e,vo13 AS USUAL
+				vo13 := XSharp.RuntimeState.CompilerOptionVO13
+				XSharp.RuntimeState.CompilerOptionVO13 := TRUE
+				c := SetCollation(#CLIPPER)
+				e := SetExact(FALSE)
+				
+				uAB := "AB"
+				uA := "A"
+				sAB := uAB
+				sA := uA
+				
+				Assert.True ( "AB" = "A"  )
+				Assert.False( "A" = "AB"  )
+				Assert.True ( uAB = uA    )
+				Assert.False( uA = uAB    )
+				Assert.True ( sAB = sA    )
+				Assert.False( sA = sAB    )
+
+				Assert.True ( "AB" != "A" )
+				Assert.True ( "A" != "AB" )
+				Assert.False( uAB != uA   )
+				Assert.True ( uA != uAB   )
+				Assert.False( sAB != sA   )
+				Assert.True ( sA != sAB   )
+
+				Assert.True ( "AB" >= "A" )
+				Assert.True ( "AB" <= "A" )
+				Assert.True ( uAB >= uA   )
+				Assert.True ( uAB <= uA   )
+				Assert.True ( sAB >= sA   )
+				Assert.True ( sAB <= sA   )
+				
+				Assert.False( "AB" > "A"  )
+				Assert.False( "AB" < "A"  )
+				Assert.False( uAB > uA    )
+				Assert.False( uAB < uA    )
+				Assert.False( sAB > sA    )
+				Assert.False( sAB < sA    )
+
+				SetCollation(c)
+				SetExact(e)
+
+				XSharp.RuntimeState.CompilerOptionVO13 := vo13
+
+            [Fact, Trait("Category", "Str")];
+		    METHOD StringComparison_WINDOWS_EXACT() AS VOID
+				LOCAL uAB,uA AS USUAL
+				LOCAL sAB,sA AS USUAL
+				LOCAL c,e,vo13 AS USUAL
+				vo13 := XSharp.RuntimeState.CompilerOptionVO13
+				XSharp.RuntimeState.CompilerOptionVO13 := TRUE
+				c := SetCollation(#WINDOWS)
+				e := SetExact(TRUE)
+				
+				uAB := "AB"
+				uA := "A"
+				sAB := uAB
+				sA := uA
+				
+				Assert.False( "AB" = "A"  )
+				Assert.False( "A" = "AB"  )
+				Assert.False( uAB = uA    )
+				Assert.False( uA = uAB    )
+				Assert.False( sAB = sA    )
+				Assert.False( sA = sAB    )
+
+				Assert.True ( "AB" != "A" )
+				Assert.True ( "A" != "AB" )
+				Assert.True ( uAB != uA   )
+				Assert.True ( uA != uAB   )
+				Assert.True ( sAB != sA   )
+				Assert.True ( sA != sAB   )
+
+				Assert.True ( "AB" >= "A" )
+				Assert.False( "AB" <= "A" )
+				Assert.True ( uAB >= uA   )
+				Assert.False( uAB <= uA   )
+				Assert.True ( sAB >= sA   )
+				Assert.False( sAB <= sA   )
+				
+				Assert.True ( "AB" > "A"  )
+				Assert.False( "AB" < "A"  )
+				Assert.True ( uAB > uA    )
+				Assert.False( uAB < uA    )
+				Assert.True ( sAB > sA    )
+				Assert.False( sAB < sA    )
+
+				SetCollation(c)
+				SetExact(e)
+
+				XSharp.RuntimeState.CompilerOptionVO13 := vo13
+
+            [Fact, Trait("Category", "Str")];
+		    METHOD StringComparison_CLIPPER_EXACT() AS VOID
+				LOCAL uAB,uA AS USUAL
+				LOCAL sAB,sA AS USUAL
+				LOCAL c,e,vo13 AS USUAL
+				vo13 := XSharp.RuntimeState.CompilerOptionVO13
+				XSharp.RuntimeState.CompilerOptionVO13 := TRUE
+				c := SetCollation(#CLIPPER)
+				e := SetExact(TRUE)
+				
+				uAB := "AB"
+				uA := "A"
+				sAB := uAB
+				sA := uA
+				
+				Assert.False( "AB" = "A"  )
+				Assert.False( "A" = "AB"  )
+				Assert.False( uAB = uA    )
+				Assert.False( uA = uAB    )
+				Assert.False( sAB = sA    )
+				Assert.False( sA = sAB    )
+
+				Assert.True ( "AB" != "A" )
+				Assert.True ( "A" != "AB" )
+				Assert.True ( uAB != uA   )
+				Assert.True ( uA != uAB   )
+				Assert.True ( sAB != sA   )
+				Assert.True ( sA != sAB   )
+
+				Assert.True ( "AB" >= "A" )
+				Assert.False( "AB" <= "A" )
+				Assert.True ( uAB >= uA   )
+				Assert.False( uAB <= uA   )
+				Assert.True ( sAB >= sA   )
+				Assert.False( sAB <= sA   )
+				
+				Assert.True ( "AB" > "A"  )
+				Assert.False( "AB" < "A"  )
+				Assert.True ( uAB > uA    )
+				Assert.False( uAB < uA    )
+				Assert.True ( sAB > sA    )
+				Assert.False( sAB < sA    )
+
+				SetCollation(c)
+				SetExact(e)
+
+				XSharp.RuntimeState.CompilerOptionVO13 := vo13
+
+
+#pragma options ("vo13" , default)
+
 	END CLASS
 
 END NAMESPACE

@@ -4527,6 +4527,7 @@ RETURN
 			RddSetDefault("DBFCDX")
 			cDbf := GetTempFileName()
 			DbfTests.CreateDatabase(cDbf , {{"MEMOFLD","M",10,0}} )
+			DbUseArea( TRUE,,cDBF,,FALSE )
 			FOR LOCAL n := 1 AS INT UPTO 10
 				DbAppend()
 			NEXT
@@ -4540,6 +4541,30 @@ RETURN
 			NEXT
 
 			DbCloseArea()
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD DBClose_tests() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/611
+			Assert.False( DbCloseArea() )
+			Assert.False( DbCloseAll() )
+			Assert.False( DbCloseArea() )
+			Assert.False( DbCloseAll() )
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD ReadOnly_Test() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/610
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , {{"FLD","C",10,0}} , {"a","b"} )
+			DbCloseArea()
+
+			Assert.True( DbUseArea( TRUE,,cDBF,,FALSE,TRUE ) )
+			Assert.True( DbCreateIndex(cDbf,"FLD") )
+			Assert.True( DbCloseArea() )
+
+			Assert.True( DbUseArea(TRUE,"DBFCDX", cDbf , , TRUE) )
+			Assert.True( DbCloseArea() )
 
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING

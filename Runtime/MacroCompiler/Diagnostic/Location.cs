@@ -12,12 +12,14 @@ namespace XSharp.MacroCompiler
         int Offset;
         public int Line;
         public int Col;
+        public string FileName;
         internal bool Valid { get { return Offset >= 0; } }
 
         internal static readonly SourceLocation None = new SourceLocation(-1);
 
         public SourceLocation(int offset)
         {
+            FileName = null;
             Offset = offset;
             Line = 0;
             Col = 0;
@@ -27,6 +29,7 @@ namespace XSharp.MacroCompiler
 
         public SourceLocation(string source, int offset)
         {
+            FileName = null;
             Offset = offset;
             if (source != null)
             {
@@ -56,6 +59,17 @@ namespace XSharp.MacroCompiler
                 Line = 0;
                 Col = 0;
             }
+        }
+
+        public override string ToString()
+        {
+            if (Valid)
+            {
+                if (FileName != null)
+                    return String.Format("{0}:({1},{2})", FileName, Line, Col);
+                return String.Format("({0},{1})", Line, Col);
+            }
+            return null;
         }
     }
 }

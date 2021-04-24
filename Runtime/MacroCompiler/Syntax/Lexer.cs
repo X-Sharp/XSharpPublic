@@ -8,6 +8,7 @@ namespace XSharp.MacroCompiler
 {
     using Syntax;
     using System.Globalization;
+    using System.Threading;
     using static Syntax.TokenAttr;
 
     partial class Lexer
@@ -33,6 +34,10 @@ namespace XSharp.MacroCompiler
         internal bool HasPPRegions = false;
         internal bool HasPPIfdefs = false;
         internal bool HasPPUDCs = false;
+        internal bool MustBeProcessed => HasPPMessages || HasPPUDCs || HasPPIncludes || HasPPIfdefs;
+
+        // Lexer result
+        TokenSource _tokenSource = null;
 
         internal Lexer(string source, MacroOptions options)
         {
@@ -40,23 +45,11 @@ namespace XSharp.MacroCompiler
             _options = options;
         }
 
-        internal bool AllowFourLetterAbbreviations
-        {
-            get { return _options.AllowFourLetterAbbreviations; }
-        }
-        internal bool AllowSingleQuotedStrings
-        {
-            get { return _options.AllowSingleQuotedStrings; }
-
-        }
-        internal bool AllowOldStyleComments
-        {
-            get { return _options.AllowOldStyleComments; }
-        }
-        internal bool AllowPackedDotOperators
-        {
-            get { return _options.AllowPackedDotOperators; }
-        }
+        internal bool AllowFourLetterAbbreviations => _options.AllowFourLetterAbbreviations;
+        internal bool AllowSingleQuotedStrings => _options.AllowSingleQuotedStrings;
+        internal bool AllowOldStyleComments => _options.AllowOldStyleComments;
+        internal bool AllowPackedDotOperators =>_options.AllowPackedDotOperators;
+        internal TokenSource TokenSource => _tokenSource;
 
         bool TryGetKeyword(string text, out TokenType token)
         {
@@ -97,7 +90,7 @@ namespace XSharp.MacroCompiler
         {
             get
             {
-                return _options.ParseEntities ? symIdsE : symIds;
+                return _options.ParseStatements ? symIdsS : symIds;
             }
         }
 
@@ -392,11 +385,19 @@ namespace XSharp.MacroCompiler
 
         internal IList<Token> AllTokens()
         {
-            var l = new List<Token>();
-            Token t;
-            while ((t = NextToken()) != null)
-                l.Add(t);
-            return l;
+            if (_tokenSource == null)
+            {
+                var source = new TokenSource(_Source);
+                Token t;
+                while ((t = NextToken()) != null)
+                {
+                    t.source = source;
+                    t.index = source.Tokens.Count;
+                    source.Tokens.Add(t);
+                }
+                Interlocked.CompareExchange(ref _tokenSource, source, null);
+            }
+            return _tokenSource.Tokens;
         }
 
         internal string GetText(Token t)
@@ -628,7 +629,7 @@ namespace XSharp.MacroCompiler
                                             value = null;
                                             Rewind(start + 1);
                                         }
-                                        else if (_options.ParseEntities)
+                                        else if (_options.ParseStatements)
                                         {
                                             t = tt;
                                             if (tt >= TokenType.PP_FIRST && t <= TokenType.PP_LAST)
@@ -669,7 +670,7 @@ namespace XSharp.MacroCompiler
                                             }
                                             else if (tt == TokenType.PRAGMA)
                                             {
-                                                ch = Channel.PRAGMACHANNEL;
+                                                ch = Channel.PREPROCESSORCHANNEL;
                                                 while (!ReachEol()) ;
                                             }
                                         }
@@ -893,12 +894,12 @@ namespace XSharp.MacroCompiler
                         if (ch == Channel.DEFOUTCHANNEL)
                         {
                             ch = Channel.PREPROCESSORCHANNEL;
-                            if (t == TokenType.NL || Eoi())
+                            if (t == TokenType.EOS)
                                 _inPp = false;
                         }
                     }
 
-                    if (ch == Channel.DEFOUTCHANNEL)
+                    if (ch == Channel.DEFOUTCHANNEL || ch == Channel.PREPROCESSORCHANNEL)
                     {
                         _lastToken = t;
                         return new Token(t, st, start, _index - start, value, ch);
@@ -907,8 +908,10 @@ namespace XSharp.MacroCompiler
             }
             if (!_hasEos)
             {
+                var ch = _inPp ? Channel.PREPROCESSORCHANNEL : Channel.DEFOUTCHANNEL;
                 _hasEos = true;
-                return new Token(TokenType.EOS, TokenType.UNRECOGNIZED, _index, _index, null, Channel.DEFOUTCHANNEL);
+                _inPp = false;
+                return new Token(TokenType.EOS, TokenType.UNRECOGNIZED, _index, 0, null, ch);
             }
             return null;
         }

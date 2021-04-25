@@ -550,7 +550,10 @@ BEGIN NAMESPACE MacroCompilerTest
         var tempGetInst := System.Runtime.InteropServices.Marshal.GetHINSTANCE(typeof(XSharp.Core.Functions):Module)
         TestMacro(mc, e"{||_GetInst()}", Args(), tempGetInst, typeof(IntPtr))
 
-
+        // Dynamic assembly load test (note: XSharp.VO needs to be compiled before this for it to work! This is ensured by the solution build order)
+        TestMacro(mc, "{ || FloatNext(0) } ", Args(), null, null, ErrorCode.NotAMethod)
+        System.Reflection.Assembly.Load("XSharp.VO")
+        TestMacro(mc, "{ || FloatNext(0) } ", Args(), 0.0, typeof(float))
 
         Console.WriteLine("Total pass: {0}/{1}", TotalSuccess, TotalTests)
         RETURN

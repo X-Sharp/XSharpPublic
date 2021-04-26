@@ -27,13 +27,13 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.PaletteRGB(XSharp.__Usual,XSharp.__Usual,System.Byte)</codeEntityReference></para></entry>
 <entry><para>
-      Get a particular color from a user-defined palette.
-    </para></entry></row>
+            Get a particular color from a user-defined palette.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.RGB(System.Byte,System.Byte,System.Byte)</codeEntityReference></para></entry>
 <entry><para>
-      Get a particular Windows color.
-    </para></entry></row>
+            Get a particular Windows color.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.RgbScheme(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -46,13 +46,13 @@
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.ShowBitmap(System.IntPtr,System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Display a bitmap in a window or control.
-    </para></entry></row>
+            Display a bitmap in a window or control.
+        </para></entry></row>
 <row><entry><para>XSharp.VO</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VO.Functions.StretchBitmap(System.IntPtr,System.String,System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Display a bitmap stretched or shrunk to fit a window or control.
-    </para></entry></row>
+            Display a bitmap stretched or shrunk to fit a window or control.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.TxtWidth(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>

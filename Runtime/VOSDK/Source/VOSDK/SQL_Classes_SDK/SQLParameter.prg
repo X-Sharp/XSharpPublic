@@ -165,7 +165,7 @@ CONSTRUCTOR(xValue,nIO,nODBCType,nSize)
 	
 	
 	
-	Default nIO 			TO SQL_PARAM_INPUT
+	DEFAULT nIO 			TO SQL_PARAM_INPUT
 	Default nODBCType		TO SQL_TYPE_UNKNOWN
 	Default nSize			TO 0
 	

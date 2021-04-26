@@ -12,39 +12,39 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._accept</codeEntityReference></para></entry>
 <entry><para>
-      Take input from the keyboard and assign it to a memory variable.
-    </para></entry></row>
+            Take input from the keyboard and assign it to a memory variable.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions._wait</codeEntityReference></para></entry>
 <entry><para>
-      Display a prompt after sending a carriage return/linefeed to the terminal window, then wait for a key to be pressed.
-      Note:  WAIT is a compatibility command and is no longer recommended.
-    </para></entry></row>
+            Display a prompt after sending a carriage return/linefeed to the terminal window, then wait for a key to be pressed.
+            Note:  WAIT is a compatibility command and is no longer recommended.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.cls</codeEntityReference></para></entry>
 <entry><para>
-      Clear the terminal window and position the cursor at row and column 0.
-    </para></entry></row>
+            Clear the terminal window and position the cursor at row and column 0.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Col</codeEntityReference></para></entry>
 <entry><para>
-      Return the current column position of the cursor in the terminal window.
-    </para></entry></row>
+            Return the current column position of the cursor in the terminal window.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.QOut</codeEntityReference></para></entry>
 <entry><para>
-      Display the results of one or more expressions in the terminal window to the console.
-    </para></entry></row>
+            Display the results of one or more expressions in the terminal window to the console.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.QQOut(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Display the results of one or more expressions in the terminal window to the console.
-    </para></entry></row>
+            Display the results of one or more expressions in the terminal window to the console.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Row</codeEntityReference></para></entry>
 <entry><para>
-      Return the screen row position of the cursor in the terminal window.
-    </para></entry></row>
+            Return the screen row position of the cursor in the terminal window.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.SetAlternate(System.Boolean)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -69,11 +69,11 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.Tone(System.UInt32,System.UInt32)</codeEntityReference></para></entry>
 <entry><para>
-      Sound a speaker tone for a specified frequency and duration.
-      Note:
-      Tone() is a compatibility function and is no longer recommended.
-      It is superseded by the Windows API MessageBeep(), SndPlaySound(), and the MCI family of functions.  MessageBeep() is defined in the System Library, whereas the other functions are defined in the Win32 API library.  In order to use these functions, you must include the Win32 API library in your application's search path.
-    </para></entry></row>
+            Sound a speaker tone for a specified frequency and duration.
+            Note:
+            Tone() is a compatibility function and is no longer recommended.
+            It is superseded by the Windows API MessageBeep(), SndPlaySound(), and the MCI family of functions.  MessageBeep() is defined in the System Library, whereas the other functions are defined in the Win32 API library.  In order to use these functions, you must include the Win32 API library in your application's search path.
+        </para></entry></row>
 </table>
 </content>
      </section>

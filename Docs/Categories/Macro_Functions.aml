@@ -17,13 +17,13 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MCompile(System.String)</codeEntityReference></para></entry>
 <entry><para>
-      Macro compile a string.
-    </para></entry></row>
+            Macro compile a string.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.MExec(XSharp.Codeblock)</codeEntityReference></para></entry>
 <entry><para>
-      Evaluate a macro-compiled string.
-    </para></entry></row>
+            Evaluate a macro-compiled string.
+        </para></entry></row>
 </table>
 </content>
      </section>

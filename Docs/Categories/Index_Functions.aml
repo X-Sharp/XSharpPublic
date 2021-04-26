@@ -42,23 +42,23 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IndexExt</codeEntityReference></para></entry>
 <entry><para>
-      Return the default index file extension for a work area as defined by its RDD.
-    </para></entry></row>
+            Return the default index file extension for a work area as defined by its RDD.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return and optionally change the setting that determines whether to use the High Performance (HP) locking schema for newly created .NTX files.
-    </para></entry></row>
+            Return and optionally change the setting that determines whether to use the High Performance (HP) locking schema for newly created .NTX files.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IndexKey(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the key expression of a specified order.
-    </para></entry></row>
+            Return the key expression of a specified order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.IndexOrd</codeEntityReference></para></entry>
 <entry><para>
-      Return the position of the controlling order within the order list.
-    </para></entry></row>
+            Return the position of the controlling order within the order list.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.IndexSeek(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -78,36 +78,36 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdBagExt</codeEntityReference></para></entry>
 <entry><para>
-      Return the default index file extension for a work area as defined by its RDD.
-    </para></entry></row>
+            Return the default index file extension for a work area as defined by its RDD.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdBagName(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the index file name of a specific order.
-    </para></entry></row>
+            Return the index file name of a specific order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdCondSet(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Set the condition and scope for an order.
-    </para></entry></row>
+            Set the condition and scope for an order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdCount</codeEntityReference></para></entry>
 <entry><para>Determines the number of orders for the current work area.  </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Create or replace an order in an index file.
-    </para></entry></row>
+            Create or replace an order in an index file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdDescend(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return and optionally change the descending flag of an order.
-    </para></entry></row>
+            Return and optionally change the descending flag of an order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdDestroy(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Remove an order from an open index file.
-    </para></entry></row>
+            Remove an order from an open index file.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Order(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -116,96 +116,96 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdFor(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the for condition of an order.
-    </para></entry></row>
+            Return the for condition of an order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdIsUnique(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the status of the unique flag for a given order.
-    </para></entry></row>
+            Return the status of the unique flag for a given order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKey(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the key expression of an order.
-    </para></entry></row>
+            Return the key expression of an order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyAdd(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Add a key to a custom built order.
-    </para></entry></row>
+            Add a key to a custom built order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyCount(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the number of keys in an order.
-    </para></entry></row>
+            Return the number of keys in an order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyDel(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Delete a key from a custom built order.
-    </para></entry></row>
+            Delete a key from a custom built order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyGoto(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Move to a record specified by its logical record number in the controlling order.
-    </para></entry></row>
+            Move to a record specified by its logical record number in the controlling order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyNo(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Get the logical record number of the current record.
-    </para></entry></row>
+            Get the logical record number of the current record.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdKeyVal(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Get the key value of the current record from the controlling order.
-    </para></entry></row>
+            Get the key value of the current record from the controlling order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdList</codeEntityReference></para></entry>
 <entry><para>Return a list of all tag names for the current work area. </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdListAdd(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Open an index file and add specified orders to the order list in a work area.
-    </para></entry></row>
+            Open an index file and add specified orders to the order list in a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdListClear(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Remove orders from the order list in a work area and close associated index files.
-    </para></entry></row>
+            Remove orders from the order list in a work area and close associated index files.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdListRebuild</codeEntityReference></para></entry>
 <entry><para>
-      Rebuild all orders in the order list of a work area.
-    </para></entry></row>
+            Rebuild all orders in the order list of a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdName(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the name of an order in the order list of a work area.
-    </para></entry></row>
+            Return the name of an order in the order list of a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdNumber(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Return the position of an order in the order list of a work area.
-    </para></entry></row>
+            Return the position of an order in the order list of a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdScope(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Set or clear the boundaries for scoping key values in the controlling order.
-    </para></entry></row>
+            Set or clear the boundaries for scoping key values in the controlling order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdSetFocus(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Set the controlling order for a work area.
-    </para></entry></row>
+            Set the controlling order for a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdSetRelation(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Relate a specified work area to the current work area.
-    </para></entry></row>
+            Relate a specified work area to the current work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.OrdSkipUnique(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Move the record pointer to the next or previous unique key in the controlling order.
-    </para></entry></row>
+            Move the record pointer to the next or previous unique key in the controlling order.
+        </para></entry></row>
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.Primary(XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
@@ -246,43 +246,43 @@
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdCondSet(XSharp.RDD.Support.DbOrderCondInfo)</codeEntityReference></para></entry>
 <entry><para>
-      Set the condition and scope for an order.
-    </para></entry></row>
+            Set the condition and scope for an order.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdCreate(System.String,XSharp.__Usual,System.String,XSharp.__Usual,System.Boolean,XSharp.RDD.Support.DbOrderCondInfo)</codeEntityReference></para></entry>
 <entry><para>
-      Create or replace an order in an index file.
-    </para></entry></row>
+            Create or replace an order in an index file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdDestroy(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Remove an order from an open index file.
-    </para></entry></row>
+            Remove an order from an open index file.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrderInfo(System.UInt32,System.String,XSharp.__Usual,XSharp.__Usual@)</codeEntityReference></para></entry>
 <entry><para>
-      Return information about index files and the orders in them.
-    </para></entry></row>
+            Return information about index files and the orders in them.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListAdd(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Open an index file and add all its orders to the order list in a work area.
-    </para></entry></row>
+            Open an index file and add all its orders to the order list in a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListClear(System.String,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
-      Remove orders from the order list in a work area and close associated index files.
-    </para></entry></row>
+            Remove orders from the order list in a work area and close associated index files.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdListRebuild</codeEntityReference></para></entry>
 <entry><para>
-      Rebuild all orders in the order list of a work area.
-    </para></entry></row>
+            Rebuild all orders in the order list of a work area.
+        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.VoDbOrdSetFocus(System.String,XSharp.__Usual,System.String@)</codeEntityReference></para></entry>
 <entry><para>
-      Set the controlling order for a work area.
-    </para></entry></row>
+            Set the controlling order for a work area.
+        </para></entry></row>
 </table>
 </content>
      </section>

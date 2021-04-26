@@ -74,6 +74,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BoundExpression SubtractIndex(BoundExpression expr, DiagnosticBag diagnostics, SpecialType specialType)
         {
+            expr = BindToNaturalType(expr, diagnostics, false);
             var type = expr.Type;
             var kind = BinaryOperatorKind.IntSubtraction;
             if (!specialType.IsSignedIntegralType())

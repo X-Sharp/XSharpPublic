@@ -207,10 +207,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             int elementSize = type.SpecialType.FixedBufferElementSizeInBytes();
             if (elementSize == 0)
             {
-                if (type.IsPszType()|| type.IsPointerType())
-                    elementSize = 4;
-                else
+                switch (type.Name)
+                {
+                    case OurTypeNames.PszType:
+                    case OurTypeNames.DateType:
+                    case OurTypeNames.SymbolType:
+                    case OurTypeNames.WinBoolType:
+                        elementSize = 4;
+                        break;
+                    default:
+                        if (type.SpecialType == SpecialType.System_IntPtr ||
+                            type.SpecialType == SpecialType.System_UIntPtr ||
+                            type.IsPointerType())
+                            elementSize = 4;
+                        break;
+
+                }
+                if (elementSize == 0)
+                {
                     elementSize = type.VoStructOrUnionSizeInBytes();
+                }
             }
             return elementSize;
         }

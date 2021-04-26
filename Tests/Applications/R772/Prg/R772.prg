@@ -1,9 +1,22 @@
 // R772: Cannot use DATE in VOSTRUCT
-FUNCTION Start( ) AS VOID
-	System.Console.WriteLine("Hello x#!")
-RETURN
 
 VOSTRUCT MyStruct
 MEMBER n AS INT
 MEMBER s AS SYMBOL // ok
-MEMBER d AS DATE // error
+MEMBER d AS DATE // error           
+MEMBER l AS LOGIC       
+MEMBER p AS PSZ
+MEMBER pt AS PTR  
+MEMBER u IS utest
+
+
+UNION utest
+    MEMBER l AS LONG
+    MEMBER d AS DWORD
+    MEMBER s AS SYMBOL
+    MEMBER dt AS DATE    
+    MEMBER r8 AS REAL8
+    MEMBER r4 AS REAL4
+
+
+

@@ -18,4 +18,8 @@ CLASS XApp INHERIT App
 
 		SELF:Exec()
    RETURN NIL
+  METHOD AfterDispatch( hwnd , msg , wparam , lparam) AS LOGIC
+        RETURN TRUE
+  METHOD BeforeDispatch( hwnd , msg , wparam , lparam ) AS LOGIC
+        RETURN TRUE
 END CLASS

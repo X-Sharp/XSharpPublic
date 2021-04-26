@@ -71,6 +71,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		NEXT
 		RETURN aMethods:ToArray()
 
+    
 	STATIC METHOD FindClass(cName AS STRING) AS System.Type
 	    RETURN OOPHelpers.FindClass(cName, TRUE)
 
@@ -420,6 +421,7 @@ INTERNAL STATIC CLASS OOPHelpers
         ENDIF
         RETURN lResult
 
+    
 	STATIC METHOD ClassTree( t AS Type ) AS ARRAY
 		LOCAL aList := {} AS ARRAY
 		DO WHILE t != NULL
@@ -702,7 +704,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF SendHelper(oObject, "NoIVarGet", <USUAL>{cIVar}, OUT VAR oResult)
 			RETURN oResult
 		END IF
-		VAR oError := Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar} )
+		VAR oError := Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __FUNCTION__, __FUNCTION__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar} )
         oError:Description := oError:Message+" '"+cIVar+"'"
         THROW oError
 
@@ -737,7 +739,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		    IF SendHelper(oObject, "NoIVarPut", <USUAL>{cIVar, oValue})
 			    RETURN
 		    END IF
-		    VAR oError :=  Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar, oValue, lSelf})
+		    VAR oError :=  Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __FUNCTION__, __FUNCTION__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar, oValue, lSelf})
 		    oError:Description := oError:Message+" '"+cIVar+"'"
             THROW oError
         CATCH e AS TargetInvocationException
@@ -746,6 +748,7 @@ INTERNAL STATIC CLASS OOPHelpers
             THROW Error{e:GetInnerException()}
         END TRY
 
+    
     STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[]) AS LOGIC
         LOCAL lOk := OOPHelpers.SendHelper(oObject, cMethod, uArgs, OUT VAR result) AS LOGIC
         oObject := result   // get rid of warning
@@ -829,9 +832,15 @@ INTERNAL STATIC CLASS OOPHelpers
 
 	STATIC METHOD SendHelper(oObject AS OBJECT, mi AS MethodInfo , uArgs AS USUAL[], result OUT USUAL) AS LOGIC
         result := NIL
+        IF mi == NULL
+            THROW Error.NullArgumentError( __FUNCTION__, NAMEOF(mi), 2 )
+        ENDIF
 		IF oObject == NULL .AND. ! mi:IsStatic
-			THROW Error.NullArgumentError( __ENTITY__, NAMEOF(oObject), 1 )
-		ENDIF
+			THROW Error.NullArgumentError( __FUNCTION__, NAMEOF(oObject), 1 )
+        ENDIF
+        IF uArgs == NULL
+            THROW Error.NullArgumentError( __FUNCTION__, NAMEOF(uArgs), 3 )
+        ENDIF
 		IF mi != NULL
             VAR oArgs := OOPHelpers.MatchParameters(mi, uArgs, OUT VAR hasByRef)
             TRY
@@ -967,6 +976,7 @@ FUNCTION CheckInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classcount/*" />
+
 FUNCTION ClassCount() AS DWORD
 	RETURN ClassList():Length
 
@@ -995,6 +1005,7 @@ FUNCTION ClassList() AS ARRAY
 	RETURN classes
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classname/*" />
+
 FUNCTION ClassName(oObject AS OBJECT) AS STRING
     IF oObject != NULL
 	    RETURN oObject?:GetType():Name:ToUpper()
@@ -1003,6 +1014,7 @@ FUNCTION ClassName(oObject AS OBJECT) AS STRING
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtree/*" />
+
 FUNCTION ClassTree(oObject AS OBJECT) AS ARRAY
     IF oObject != NULL
 	    RETURN OOPHelpers.ClassTree(oObject?:GetType())
@@ -1052,6 +1064,7 @@ FUNCTION CreateInstance(symClassName,InitArgList) AS OBJECT CLIPPER
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/classtreeclass/*" />
+
 FUNCTION ClassTreeClass(symClass AS STRING) AS ARRAY
 	VAR t := OOPHelpers.FindClass(symClass)
 	IF t != NULL
@@ -1062,8 +1075,8 @@ FUNCTION ClassTreeClass(symClass AS STRING) AS ARRAY
 
 
 
-
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isaccess/*" />
+
 FUNCTION IsAccess(oObject AS OBJECT,symAccess AS STRING) AS LOGIC
     IF oObject != NULL
 	    VAR oProp := OOPHelpers.FindProperty(oObject?:GetType(), symAccess, TRUE, TRUE)
@@ -1074,6 +1087,7 @@ FUNCTION IsAccess(oObject AS OBJECT,symAccess AS STRING) AS LOGIC
 	RETURN FALSE
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isassign/*" />
+
 FUNCTION IsAssign(oObject AS OBJECT,symAssign AS STRING) AS LOGIC
     IF oObject != NULL
 	    VAR oProp := OOPHelpers.FindProperty(oObject?:GetType(), symAssign, FALSE, TRUE)
@@ -1084,6 +1098,7 @@ FUNCTION IsAssign(oObject AS OBJECT,symAssign AS STRING) AS LOGIC
 	RETURN FALSE
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isclass/*" />
+
 FUNCTION IsClass(symClassName AS STRING) AS LOGIC
 	RETURN OOPHelpers.FindClass(symClassName) != NULL
 
@@ -1128,6 +1143,7 @@ FUNCTION IsInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	RETURN FALSE
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isinstanceofusual/*" />
+
 FUNCTION IsInstanceOfUsual(uObject AS USUAL,symClassName AS STRING) AS LOGIC
     SWITCH uObject:Type
     CASE __UsualType.Object
@@ -1142,6 +1158,7 @@ FUNCTION IsInstanceOfUsual(uObject AS USUAL,symClassName AS STRING) AS LOGIC
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarget/*" />
+
 FUNCTION IVarGet(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
 	IF oObject == NULL_OBJECT
 		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(oObject),1)
@@ -1152,11 +1169,13 @@ FUNCTION IVarGet(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
 	RETURN OOPHelpers.IVarGet(oObject, symInstanceVar, FALSE)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetinfo/*" />
+
 FUNCTION IVarGetInfo(oObject AS OBJECT,symInstanceVar AS STRING) AS DWORD
     RETURN OOPHelpers.IVarHelper(oObject, symInstanceVar, TRUE)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethod/*" />
+
 FUNCTION IsMethod(oObject AS OBJECT,symMethod AS STRING) AS LOGIC
 	IF oObject != NULL_OBJECT
 	    RETURN OOPHelpers.IsMethod(oObject?:GetType(), symMethod)
@@ -1165,6 +1184,7 @@ FUNCTION IsMethod(oObject AS OBJECT,symMethod AS STRING) AS LOGIC
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethodusual/*" />
+
 FUNCTION IsMethodUsual(uObject AS USUAL,symMethod AS STRING) AS LOGIC
 	IF uObject:IsObject
 		RETURN IsMethod( uObject, symMethod )
@@ -1172,9 +1192,9 @@ FUNCTION IsMethodUsual(uObject AS USUAL,symMethod AS STRING) AS LOGIC
 	RETURN FALSE
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ismethodclass/*" />
+
 FUNCTION IsMethodClass( symClass AS STRING, symMethod AS STRING ) AS LOGIC
 	VAR t := OOPHelpers.FindClass( symClass )
-
 	IF t != NULL
 		RETURN OOPHelpers.IsMethod( t, symMethod )
 	ENDIF
@@ -1182,6 +1202,7 @@ FUNCTION IsMethodClass( symClass AS STRING, symMethod AS STRING ) AS LOGIC
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivargetself/*" />
+
 FUNCTION IVarGetSelf(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
 	IF oObject == NULL_OBJECT
 		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(oObject),1)
@@ -1192,6 +1213,7 @@ FUNCTION IVarGetSelf(oObject AS OBJECT,symInstanceVar AS STRING) AS USUAL
 	RETURN OOPHelpers.IVarGet(oObject, symInstanceVar, TRUE)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlist/*" />
+
 FUNCTION IvarList(oObject AS OBJECT) AS ARRAY
     // IVarList already checks for NULL_OBJECT
     IF oObject IS IDynamicProperties VAR oDynamic
@@ -1206,17 +1228,20 @@ FUNCTION IvarList(oObject AS OBJECT) AS ARRAY
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarlistclass/*" />
+
 FUNCTION IvarListClass(symClass AS STRING) AS ARRAY
 	VAR t := OOPHelpers.FindClass(symClass)
 	RETURN OOPHelpers.IVarList(t)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputinfo/*" />
+
 FUNCTION IVarPutInfo(oObject AS OBJECT,symInstanceVar AS SYMBOL) AS DWORD
     // IVarHelper already checks for NULL_OBJECT
     RETURN OOPHelpers.IVarHelper(oObject, symInstanceVar, FALSE)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarput/*" />
+
 FUNCTION IVarPut(oObject AS OBJECT,symInstanceVar AS STRING,uValue AS USUAL) AS USUAL
 	IF oObject == NULL_OBJECT
 		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(oObject),1)
@@ -1228,6 +1253,7 @@ FUNCTION IVarPut(oObject AS OBJECT,symInstanceVar AS STRING,uValue AS USUAL) AS 
 	RETURN uValue
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ivarputself/*" />
+
 FUNCTION IVarPutSelf(oObject AS OBJECT,symInstanceVar AS STRING,uValue AS USUAL) AS USUAL
 	IF oObject == NULL_OBJECT
 		THROW Error.NullArgumentError(__FUNCTION__, NAMEOF(oObject),1)
@@ -1240,6 +1266,7 @@ FUNCTION IVarPutSelf(oObject AS OBJECT,symInstanceVar AS STRING,uValue AS USUAL)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/methodlist/*" />
+
 FUNCTION MethodList(oClass AS OBJECT) AS ARRAY
 	IF oClass != NULL
 		RETURN OOPHelpers.MethodList( oClass:GetType() )
@@ -1247,6 +1274,7 @@ FUNCTION MethodList(oClass AS OBJECT) AS ARRAY
 	RETURN NULL_ARRAY
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/methodlistclass/*" />
+
 FUNCTION MethodListClass( symClass AS STRING ) AS ARRAY
 	LOCAL aReturn AS ARRAY
 	VAR t := OOPHelpers.FindClass( symClass )
@@ -1261,6 +1289,7 @@ FUNCTION MethodListClass( symClass AS STRING ) AS ARRAY
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/nomethod/*" />
+
 FUNCTION NoMethod() AS STRING
 	RETURN RuntimeState.NoMethod
 
@@ -1301,11 +1330,13 @@ FUNCTION Object2Array(oObject AS OBJECT) AS ARRAY
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptree/*" />
+
 FUNCTION OOPTree(oObject AS OBJECT) AS ARRAY
     // TreeHelper already checks for NULL_OBJECT
 	RETURN OOPHelpers.TreeHelper(oObject?:GetType())
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ooptreeclass/*" />
+
 FUNCTION OOPTreeClass(symClass AS STRING) AS ARRAY
 	VAR type := OOPHelpers.FindClass(symClass)
     // TreeHelper already checks for NULL_OBJECT
@@ -1331,15 +1362,18 @@ FUNCTION Send(oObject AS USUAL,symMethod AS USUAL, MethodArgList PARAMS USUAL[])
 	RETURN uResult
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/send/*" />
+
 FUNCTION CSend(oObject AS OBJECT,symMethod AS STRING, MethodArgList PARAMS USUAL[]) AS USUAL
 	RETURN __InternalSend(oObject, symMethod, MethodArgList)
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/send/*" />
-FUNCTION Send(oObject AS OBJECT,symMethod AS MethodInfo, MethodArgList PARAMS USUAL[]) AS USUAL
+/// <exclude />
+
+FUNCTION _Send(oObject AS OBJECT,symMethod AS MethodInfo, MethodArgList PARAMS USUAL[]) AS USUAL
     IF OOPHelpers.SendHelper(oObject, symMethod, MethodArgList, OUT VAR result)
         RETURN result
     ENDIF
+    // SendHelper never returns FALSE. It throw an exception
     RETURN FALSE
 
 
@@ -1349,10 +1383,14 @@ FUNCTION Send(oObject AS OBJECT,symMethod AS MethodInfo, MethodArgList PARAMS US
 	// Note: Make The first parameter in __InternalSend() in the runtime must be a USUAL!
 	//       The compiler expects that
 /// <exclude />
+
 FUNCTION __InternalSend( oObject AS USUAL, cMethod AS STRING, args PARAMS USUAL[] ) AS USUAL
 	RETURN OOPHelpers.DoSend(oObject, cMethod, args)
 
 /// <summary>Helper function to convert ARRAY to USUAL[]</summary>
+/// <param name="args">X# array to convert</param>
+/// <returns>USUAL Array</returns>
+/// <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
 FUNCTION _ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uargs    AS USUAL[]
@@ -1367,6 +1405,9 @@ FUNCTION _ArrayToUsualArray (args AS ARRAY) AS USUAL[]
 	RETURN uargs
 
 /// <summary>Helper function to convert ARRAY to OBJECT[]</summary>
+/// <param name="args">X# array to convert</param>
+/// <returns>OBJECT Array</returns>
+/// <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
 FUNCTION _ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
@@ -1381,6 +1422,9 @@ FUNCTION _ArrayToObjectArray (args AS ARRAY) AS OBJECT[]
 	RETURN oArgs
 
 /// <summary>Helper function to convert USUAL[] to OBJECT[]</summary>
+/// <param name="args">USUAL array to convert</param>
+/// <returns>OBJECT Array</returns>
+/// <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
 FUNCTION _UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	LOCAL elements AS INT
 	LOCAL oArgs    AS OBJECT[]
@@ -1395,6 +1439,9 @@ FUNCTION _UsualArrayToObjectArray (args AS USUAL[]) AS OBJECT[]
 	RETURN oArgs
 
 /// <summary>Helper function to convert OBJECT[] to USUAL[]</summary>
+/// <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
+/// <param name="args">OBJECT array to convert</param>
+/// <returns>USUAL Array</returns>
 FUNCTION _ObjectArrayToUsualArray (args AS OBJECT[]) AS USUAL[]
 	LOCAL elements AS INT
 	LOCAL uArgs    AS USUAL[]
@@ -1444,7 +1491,7 @@ FUNCTION MParamCount(symClass AS STRING,symMethod AS STRING) AS DWORD
 /// <summary>Return the number of local arguments that a function is expecting.</summary>
 /// <param name="symFunction">The name of the function to examine.</param>
 /// <returns>The number of arguments that a method is expecting.</returns>
-/// <remarks>Note that you can't call functions that are overloaded.<br/>
+/// <remarks>Note that you can't use this for functions that are overloaded.<br/>
 /// And unlike in VO this function can also be used to return the number of parameters for typed functions.</remarks>
 
 FUNCTION FParamCount(symFunction AS STRING) AS DWORD
@@ -1475,6 +1522,7 @@ FUNCTION FParamCount(symFunction AS STRING) AS DWORD
 /// <param name="aArgs">The list of arguments to pass to the function</param>
 /// <returns>The return value of the function</returns>
 /// <remarks>Note that you can't call functions that are overloaded.</remarks>
+
 FUNCTION _CallClipFunc(symFunction AS STRING,aArgs AS ARRAY) AS USUAL
 	RETURN	_CallClipFunc(symFunction, _ArrayToUsualArray(aArgs))
 

@@ -36,38 +36,38 @@
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.DIBCreateFromFile(XSharp.__Psz)</codeEntityReference></para></entry>
 <entry><para>
-        Create a device independent bitmap (DIB) from an image file.
-      </para></entry></row>
+            Create a device independent bitmap (DIB) from an image file.
+        </para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.DIBCreateFromPTR(System.Byte*,System.Int32)</codeEntityReference></para></entry>
 <entry><para>
-        Convert an image file to a device independent bitmap (DIB).
-      </para></entry></row>
+            Convert an image file to a device independent bitmap (DIB).
+        </para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.DIBDelete(System.Void*)</codeEntityReference></para></entry>
 <entry><para>
-        Destroy a DIB created either by DIBCreateFromFile() or DIBCreateFromPtr().
-      </para></entry></row>
+            Destroy a DIB created either by DIBCreateFromFile() or DIBCreateFromPtr().
+        </para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.DIBGetInfo(System.Void*)</codeEntityReference></para></entry>
 <entry><para>
-        Retrieve a pointer to the BITMAPINFO structure of a DIB.
-      </para></entry></row>
+            Retrieve a pointer to the BITMAPINFO structure of a DIB.
+        </para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.DIBSaveAs(System.Void*,XSharp.__Psz)</codeEntityReference></para></entry>
 <entry><para>
-        Save the DIB to a file.
-      </para></entry></row>
+            Save the DIB to a file.
+        </para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.DIBShow(System.Void*,System.Void*)</codeEntityReference></para></entry>
 <entry><para>
-        Display the DIB within the specified window.
-      </para></entry></row>
+            Display the DIB within the specified window.
+        </para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.DIBStretch(System.Void*,System.Void*,System.UInt32,System.UInt32,System.Double)</codeEntityReference></para></entry>
 <entry><para>
-        Display the DIB within the specified window.
-      </para></entry></row>
+            Display the DIB within the specified window.
+        </para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.DragAcceptFiles(System.Void*,System.Boolean)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
@@ -107,21 +107,21 @@
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.GetAppObject</codeEntityReference></para></entry>
 <entry><para>
-        Return the global App object for this application.
-      </para></entry></row>
+            Return the global App object for this application.
+        </para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.GetFocusedObject</codeEntityReference></para></entry>
 <entry><para>
-        Return the object corresponding to the control or window that currently has input focus.
-      </para></entry></row>
+            Return the object corresponding to the control or window that currently has input focus.
+        </para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.GetFrameWidth(System.Void*)</codeEntityReference></para></entry>
 <entry><para>**Missing documentation **</para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.GetObjectByHandle(System.Void*)</codeEntityReference></para></entry>
 <entry><para>
-        Return the object associated with a given window handle.
-      </para></entry></row>
+            Return the object associated with a given window handle.
+        </para></entry></row>
 <row><entry><para>VOGUIClasses</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VOGUIClasses.Functions.GetThemeAppProperties</codeEntityReference></para></entry>
 <entry><para></para></entry></row>

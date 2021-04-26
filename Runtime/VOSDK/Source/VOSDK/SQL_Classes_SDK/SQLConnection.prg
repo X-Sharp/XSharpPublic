@@ -22,7 +22,7 @@ CLASS SQLConnection
 	PROTECT nAccessMode         AS INT
 	PROTECT nIsolationOption    AS INT
  /// <exclude />
-	METHOD __AllocConnect() AS LOGIC STRICT 
+	METHOD __AllocConnect() AS LOGIC STRICT
 	LOCAL hDbcNew  AS PTR
 	LOCAL nRetCode AS INT
 	LOCAL lRet     AS LOGIC
@@ -72,7 +72,7 @@ CLASS SQLConnection
 
 
  /// <exclude />
-METHOD __AllocEnv() AS LOGIC STRICT 
+METHOD __AllocEnv() AS LOGIC STRICT
 	LOCAL lRet AS LOGIC
 
 
@@ -102,7 +102,7 @@ METHOD __AllocEnv() AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __CheckActiveStmts() AS LOGIC STRICT 
+METHOD __CheckActiveStmts() AS LOGIC STRICT
 
 
 	LOCAL nBytes    AS SHORTINT // dcaton 070206 was INT
@@ -148,7 +148,7 @@ METHOD __CheckActiveStmts() AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __CheckIdentQuoteChar() AS LOGIC STRICT 
+METHOD __CheckIdentQuoteChar() AS LOGIC STRICT
 	LOCAL nBytes   AS SHORTINT // dcaton 070206 was INT
 	LOCAL nRetCode AS INT
 	LOCAL lRet     AS LOGIC
@@ -183,7 +183,7 @@ METHOD __CheckIdentQuoteChar() AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __CheckPositionOps() AS LOGIC STRICT 
+METHOD __CheckPositionOps() AS LOGIC STRICT
 	LOCAL nPosition AS INT
 	LOCAL nRetCode  AS INT
 	LOCAL lRet      AS LOGIC
@@ -227,7 +227,7 @@ METHOD __CheckPositionOps() AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __CheckQE() AS LOGIC STRICT 
+METHOD __CheckQE() AS LOGIC STRICT
 	//
 	//  Check Q+E driver ( say we're CA )
 	//
@@ -239,7 +239,7 @@ METHOD __CheckQE() AS LOGIC STRICT
 	LOCAL pFunc    AS PTR
 #else
 	LOCAL pFunc    AS __SQLSetConnectAttr PTR
-#endif	
+#endif
 	LOCAL hInst    AS PTR
 	LOCAL nSize    AS DWORD
 
@@ -282,9 +282,9 @@ METHOD __CheckQE() AS LOGIC STRICT
 
 #ifdef __VULCAN__
 		nRet := PCallNative<SHORT>( pFunc, hDbc, WORD( _CAST,nOption ), ptrValue, WORD( _CAST,nSize + 1 ) )
-#else		
+#else
 		nRet := PCALL( pFunc, hDbc, WORD( _CAST,nOption ), ptrValue, WORD( _CAST,nSize + 1 ) )
-#endif		
+#endif
 
 
 		IF nRet == SQL_SUCCESS
@@ -297,9 +297,9 @@ METHOD __CheckQE() AS LOGIC STRICT
 
 #ifdef __VULCAN__
 			nRet := PCallNative<SHORT>( pFunc, hDbc, WORD( _CAST,nOption ), ptrValue, WORD( _CAST,nSize + 1 ) )
-#else			
+#else
 			nRet := PCALL( pFunc, hDbc, WORD( _CAST,nOption ), ptrValue, WORD( _CAST,nSize + 1 ) )
-#endif			
+#endif
 		ENDIF
 	ENDIF
 
@@ -313,7 +313,7 @@ METHOD __CheckQE() AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __CheckScrollable() AS LOGIC STRICT 
+METHOD __CheckScrollable() AS LOGIC STRICT
 	//
 	//  Check if a driver supports scrollable cursors; sets lScrollCsr flag
 	//  Driver must:  1. Support the SQLExtendedFetch function
@@ -402,7 +402,7 @@ METHOD __CheckScrollable() AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __CloseExtraStmt(oStmt AS SQLStatement)  AS VOID STRICT 
+METHOD __CloseExtraStmt(oStmt AS SQLStatement)  AS VOID STRICT
 	LOCAL oNewStmt AS SQLStatement
 	oNewStmt := oStmt
 	oNewStmt:FreeStmt(SQL_DROP)
@@ -413,7 +413,7 @@ METHOD __CloseExtraStmt(oStmt AS SQLStatement)  AS VOID STRICT
 
 
  /// <exclude />
-METHOD __Free() AS LOGIC STRICT 
+METHOD __Free() AS LOGIC STRICT
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLConnection:__Free()" )
 	#ENDIF
@@ -427,7 +427,7 @@ METHOD __Free() AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __FreeConnect() AS LOGIC STRICT 
+METHOD __FreeConnect() AS LOGIC STRICT
 	LOCAL nRetCode AS INT
 	LOCAL lRet     AS LOGIC
 
@@ -459,7 +459,7 @@ METHOD __FreeConnect() AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __FreeEnv () AS LOGIC STRICT 
+METHOD __FreeEnv () AS LOGIC STRICT
 	LOCAL lRet AS LOGIC
 
 
@@ -489,7 +489,7 @@ METHOD __FreeEnv () AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __GenerateSqlError( cErrorString AS STRING, symMethod AS SYMBOL) AS SQLErrorInfo 
+METHOD __GenerateSqlError( cErrorString AS STRING, symMethod AS SYMBOL) AS SQLErrorInfo
 
 
 	#IFDEF __DEBUG__
@@ -513,7 +513,7 @@ METHOD __GenerateSqlError( cErrorString AS STRING, symMethod AS SYMBOL) AS SQLEr
 
 
  /// <exclude />
-METHOD __GetExtraStmt(cStmtText AS STRING) AS SqlStatement STRICT 
+METHOD __GetExtraStmt(cStmtText AS STRING) AS SqlStatement STRICT
 	LOCAL oNewConn AS SQLConnection
 	LOCAL oNewStmt AS SQLStatement
 	IF SELF:nActiveStmts = 1
@@ -531,7 +531,7 @@ METHOD __GetExtraStmt(cStmtText AS STRING) AS SqlStatement STRICT
 
 
  /// <exclude />
-METHOD __RegisterStmt( oStmt AS SQLStatement ) AS LOGIC STRICT 
+METHOD __RegisterStmt( oStmt AS SQLStatement ) AS LOGIC STRICT
 	LOCAL nIndex AS DWORD
 	LOCAL nCount AS DWORD
 	LOCAL lFound AS LOGIC
@@ -563,7 +563,7 @@ METHOD __RegisterStmt( oStmt AS SQLStatement ) AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __Transact( nType AS WORD) AS LOGIC STRICT 
+METHOD __Transact( nType AS WORD) AS LOGIC STRICT
 	//
 	//  Commit/Rollback transaction; returns TRUE if successful
 	//
@@ -598,7 +598,7 @@ METHOD __Transact( nType AS WORD) AS LOGIC STRICT
 
 
  /// <exclude />
-METHOD __UnregisterStmt( oStmt AS SQLStatement ) AS LOGIC STRICT 
+METHOD __UnregisterStmt( oStmt AS SQLStatement ) AS LOGIC STRICT
 	LOCAL nIndex AS DWORD
 	LOCAL nCount AS DWORD
 	LOCAL lRet   AS LOGIC
@@ -632,14 +632,14 @@ METHOD __UnregisterStmt( oStmt AS SQLStatement ) AS LOGIC STRICT
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.AccessMode/*" />
-ACCESS AccessMode 
+ACCESS AccessMode
 
 
 	RETURN SELF:nAccessMode
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.AccessMode/*" />
-ASSIGN AccessMode( nVal ) 
+ASSIGN AccessMode( nVal )
 
 
 	IF IsNumeric( nVal ) .AND. ;
@@ -652,11 +652,11 @@ ASSIGN AccessMode( nVal )
 	ELSE
 		RETURN SELF:nAccessMode
 	ENDIF
-	//RETURN 
+	//RETURN
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.dtor/*" />
-DESTRUCTOR() 
+DESTRUCTOR()
 
 
 	#IFDEF __DEBUG__
@@ -669,14 +669,14 @@ DESTRUCTOR()
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.BeginTransaction/*" />
-METHOD BeginTransaction() 
+METHOD BeginTransaction()
 
 
 	RETURN SELF:SetConnectOption( SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_OFF )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.Commit/*" />
-METHOD Commit() 
+METHOD Commit()
 
 
 	#IFDEF __DEBUG__
@@ -686,7 +686,7 @@ METHOD Commit()
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.Connect/*" />
-METHOD Connect( cDataSource, cUserID, cPassword ) 
+METHOD Connect( cDataSource, cUserID, cPassword )
 	LOCAL nRetCode       AS SHORTINT
 	LOCAL nTemp          AS DWORD
 	LOCAL lRet           AS LOGIC
@@ -816,28 +816,28 @@ METHOD Connect( cDataSource, cUserID, cPassword )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.Connected/*" />
-ACCESS Connected 
+ACCESS Connected
 
 
 	RETURN SELF:lConnFlag
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.ConnectString/*" />
-ACCESS ConnectString 
+ACCESS ConnectString
 
 
 	RETURN SELF:cConnectString
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.ConnHandle/*" />
-ACCESS ConnHandle 
+ACCESS ConnHandle
 
 
 	RETURN SELF:hDbc
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.ConnHandle/*" />
-ASSIGN ConnHandle( uVal ) 
+ASSIGN ConnHandle( uVal )
 
 
 	IF SELF:hDbc = SQL_NULL_HDBC
@@ -863,14 +863,14 @@ ASSIGN ConnHandle( uVal )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.DataSource/*" />
-ACCESS DataSource 
+ACCESS DataSource
 
 
 	RETURN cSourceName
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.DataSource/*" />
-ASSIGN DataSource( uVal ) 
+ASSIGN DataSource( uVal )
 	IF !lConnFlag
 		SELF:cSourceName := uVal
 	ELSE
@@ -883,7 +883,7 @@ ASSIGN DataSource( uVal )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.Disconnect/*" />
-METHOD Disconnect() 
+METHOD Disconnect()
 	LOCAL nRetCode  AS SHORTINT
 	LOCAL lRet      AS LOGIC
 	LOCAL nIndex    AS DWORD
@@ -954,7 +954,7 @@ METHOD Disconnect()
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.DriverConnect/*" />
-METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn ) 
+METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 	LOCAL nBytes      AS SHORTINT // dcaton 070206 was INT
 	LOCAL nRetCode    AS INT
 	LOCAL nStart      AS DWORD
@@ -1046,8 +1046,8 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 											hEnv,           ;
 											hDbc,           ;
 											SQL_NULL_HSTMT }
-							
-							
+
+
 			oErrInfo:ReturnCode := nRetCode
 
 
@@ -1121,21 +1121,21 @@ METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.EndTransaction/*" />
-METHOD EndTransaction() 
+METHOD EndTransaction()
 
 
 	RETURN SELF:SetConnectOption( SQL_AUTOCOMMIT, SQL_AUTOCOMMIT_ON )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.EnvHandle/*" />
-ACCESS EnvHandle 
+ACCESS EnvHandle
 
 
 	RETURN hEnv
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.EnvHandle/*" />
-ASSIGN EnvHandle( uVal ) 
+ASSIGN EnvHandle( uVal )
 
 
 	IF SELF:hEnv = SQL_NULL_HENV
@@ -1160,7 +1160,7 @@ ASSIGN EnvHandle( uVal )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.ErrInfo/*" />
-ACCESS ErrInfo 
+ACCESS ErrInfo
 	IF oErrInfo:ErrorFlag
 		RETURN oErrInfo
 	ENDIF
@@ -1168,7 +1168,7 @@ ACCESS ErrInfo
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.GetConnectOption/*" />
-METHOD GetConnectOption( nOption ) 
+METHOD GetConnectOption( nOption )
 	LOCAL nValue        AS INT
 	LOCAL pData         AS PTR
 	LOCAL xRet          AS USUAL
@@ -1226,7 +1226,7 @@ METHOD GetConnectOption( nOption )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.HyperLabel/*" />
-ACCESS HyperLabel 
+ACCESS HyperLabel
 	LOCAL oHL AS HyperLabel
 
 
@@ -1248,28 +1248,28 @@ ACCESS HyperLabel
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.IdentifierQuoteChar/*" />
-ACCESS IdentifierQuoteChar 
+ACCESS IdentifierQuoteChar
 
 
 	RETURN cIdentifierQuoteChar
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.IdentifierQuoteChar/*" />
-ASSIGN IdentifierQuoteChar( uVal ) 
+ASSIGN IdentifierQuoteChar( uVal )
 
 
 	SELF:cIdentifierQuoteChar := uVal
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.Info/*" />
-METHOD Info( nInfoType ) 
+METHOD Info( nInfoType )
 	LOCAL dwValue       AS DWORD
 	LOCAL wValue        AS DWORD
 	LOCAL pData         AS PTR
-	LOCAL nBytes        AS SHORTINT 
+	LOCAL nBytes        AS SHORTINT
 	LOCAL nRetCode      AS INT
 	LOCAL xRet          AS USUAL
 	LOCAL lIsString     AS LOGIC
@@ -1341,7 +1341,7 @@ METHOD Info( nInfoType )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.ctor/*" />
-CONSTRUCTOR ( cDataSourceName, cUserID, cPassword ) 
+CONSTRUCTOR ( cDataSourceName, cUserID, cPassword )
 
 
 	#IFDEF __DEBUG__
@@ -1358,8 +1358,8 @@ CONSTRUCTOR ( cDataSourceName, cUserID, cPassword )
 	SELF:lEnvOverride  := FALSE
 	SELF:lConnOverride := FALSE
 	oErrInfo := SQLErrorInfo{}
-	
-	
+
+
 	IF !SELF:__AllocEnv()
 		RETURN
 	ENDIF
@@ -1411,11 +1411,11 @@ CONSTRUCTOR ( cDataSourceName, cUserID, cPassword )
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.isFunction/*" />
-METHOD isFunction( nFunction ) 
+METHOD isFunction( nFunction )
 	//
 	//  Determine if a function is supported; returns TRUE/FALSE, NIL if err
 	//
@@ -1463,14 +1463,14 @@ METHOD isFunction( nFunction )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.IsolationOption/*" />
-ACCESS IsolationOption 
+ACCESS IsolationOption
 
 
 	RETURN SELF:nIsolationOption
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.IsolationOption/*" />
-ASSIGN IsolationOption( nVal ) 
+ASSIGN IsolationOption( nVal )
 
 
 	IF IsNumeric( nVal ) .AND. ;
@@ -1488,14 +1488,14 @@ ASSIGN IsolationOption( nVal )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.ODBCCursors/*" />
-ACCESS ODBCCursors 
+ACCESS ODBCCursors
 
 
 	RETURN SELF:nODBCCursors
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.ODBCCursors/*" />
-ASSIGN ODBCCursors( nVal ) 
+ASSIGN ODBCCursors( nVal )
 
 
 	IF IsNumeric( nVal ) .AND. ;
@@ -1509,14 +1509,14 @@ ASSIGN ODBCCursors( nVal )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.Password/*" />
-ACCESS Password 
+ACCESS Password
 
 
 	RETURN cAuthString
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.Password/*" />
-ASSIGN Password( uVal ) 
+ASSIGN Password( uVal )
 	IF  !lConnFlag
 		SELF:cAuthString := uVal
 	ELSE
@@ -1529,14 +1529,14 @@ ASSIGN Password( uVal )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.PositionOps/*" />
-ACCESS PositionOps 
+ACCESS PositionOps
 
 
 	RETURN lPositionOps
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.Reconnect/*" />
-METHOD Reconnect() 
+METHOD Reconnect()
 
 
 	#IFDEF __DEBUG__
@@ -1549,7 +1549,7 @@ METHOD Reconnect()
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.Rollback/*" />
-METHOD Rollback() 
+METHOD Rollback()
 
 
 	#IFDEF __DEBUG__
@@ -1561,14 +1561,14 @@ METHOD Rollback()
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.ScrollConcurrency/*" />
-ACCESS ScrollConcurrency 
+ACCESS ScrollConcurrency
 
 
 	RETURN nConcurrency
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.ScrollConcurrency/*" />
-ASSIGN ScrollConcurrency( nVal ) 
+ASSIGN ScrollConcurrency( nVal )
 
 
 	IF IsNumeric( nVal ) .AND. ;
@@ -1582,14 +1582,14 @@ ASSIGN ScrollConcurrency( nVal )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.ScrollCsr/*" />
-ACCESS ScrollCsr 
+ACCESS ScrollCsr
 
 
 	RETURN SELF:lScrollCsr
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.ScrollCsr/*" />
-ASSIGN ScrollCsr( uVal ) 
+ASSIGN ScrollCsr( uVal )
 
 
 	IF IsLogic( uVal )
@@ -1597,11 +1597,11 @@ ASSIGN ScrollCsr( uVal )
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.SetConnectOption/*" />
-METHOD SetConnectOption( nOption, uValue ) 
+METHOD SetConnectOption( nOption, uValue )
 	LOCAL cValue        AS STRING
 	LOCAL nValue        AS DWORD
 	LOCAL nRetCode      AS INT
@@ -1644,7 +1644,7 @@ METHOD SetConnectOption( nOption, uValue )
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.Status/*" />
-ACCESS Status 
+ACCESS Status
 	LOCAL oStatus AS HyperLabel
 
 
@@ -1660,14 +1660,14 @@ ACCESS Status
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.UserID/*" />
-ACCESS UserID 
+ACCESS UserID
 
 
 	RETURN SELF:cUser
 
 
 /// <include file="SQL.xml" path="doc/SQLConnection.UserID/*" />
-ASSIGN UserID( uVal ) 
+ASSIGN UserID( uVal )
 
 
 	IF  !lConnFlag
@@ -1683,7 +1683,7 @@ ASSIGN UserID( uVal )
 
 //RvdH 2010-12-03: Some extra accesses
 /// <include file="SQL.xml" path="doc/SQLConnection.ActiveStmts/*" />
-ACCESS ActiveStmts 
+ACCESS ActiveStmts
 
 
 	RETURN aStmts

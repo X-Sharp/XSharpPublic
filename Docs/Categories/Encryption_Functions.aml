@@ -18,8 +18,8 @@
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.DecodeBase64(System.String,System.IntPtr)</codeEntityReference></para></entry>
 <entry><para>
-      Decode a file from an e-mail transfer.
-    </para></entry></row>
+            Decode a file from an e-mail transfer.
+        </para></entry></row>
 <row><entry><para>XSharp.Core</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.Core.Functions.QPEncString(System.String)</codeEntityReference></para></entry>
 <entry><para></para></entry></row>

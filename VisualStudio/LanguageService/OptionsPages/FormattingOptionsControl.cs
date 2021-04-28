@@ -39,6 +39,7 @@ namespace XSharp.LanguageService.OptionsPages
                     break;
             }
             //
+            chkSynchronizeUDCKeywords.Checked = formattingPage.UdcCase;
             chkIdentifierCase.Checked = formattingPage.IdentifierCase;
             chkAlignDoCase.Checked = formattingPage.AlignDoCase;
             chkAlignMethod.Checked = formattingPage.AlignMethod;
@@ -109,6 +110,11 @@ namespace XSharp.LanguageService.OptionsPages
         private void chkInsertFinalNewLine_CheckedChanged(object sender, EventArgs e)
         {
             formattingPage.InsertFinalNewLine = chkInsertFinalNewLine.Checked;
+        }
+
+        private void chkSynchronizeUDCKeywords_CheckedChanged(object sender, EventArgs e)
+        {
+            formattingPage.UdcCase = chkSynchronizeUDCKeywords.Checked;
         }
     }
 }

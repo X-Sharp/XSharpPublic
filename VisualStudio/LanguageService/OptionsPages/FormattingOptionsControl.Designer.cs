@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.Label label1;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormattingOptionsControl));
             this.label2 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.chkAlignMethod = new System.Windows.Forms.CheckBox();
@@ -38,6 +39,7 @@
             this.chkInsertFinalNewLine = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.grpCase = new System.Windows.Forms.GroupBox();
+            this.chkSynchronizeUDCKeywords = new System.Windows.Forms.CheckBox();
             this.multiFactor = new System.Windows.Forms.TextBox();
             this.grpKeywordCase = new System.Windows.Forms.GroupBox();
             this.rbTitle = new System.Windows.Forms.RadioButton();
@@ -61,16 +63,18 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 120);
+            this.label2.Location = new System.Drawing.Point(10, 147);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(192, 13);
-            this.label2.TabIndex = 9;
+            this.label2.TabIndex = 5;
             this.label2.Text = "MultiLine Statement Indentation factor :";
+            this.toolTip1.SetToolTip(this.label2, "Specify the number of tab stops the editor should indent for multiline statements" +
+        "");
             // 
             // chkAlignMethod
             // 
             this.chkAlignMethod.AutoSize = true;
-            this.chkAlignMethod.Location = new System.Drawing.Point(13, 100);
+            this.chkAlignMethod.Location = new System.Drawing.Point(13, 125);
             this.chkAlignMethod.Name = "chkAlignMethod";
             this.chkAlignMethod.Size = new System.Drawing.Size(316, 17);
             this.chkAlignMethod.TabIndex = 4;
@@ -84,7 +88,7 @@
             // chkAlignDoCase
             // 
             this.chkAlignDoCase.AutoSize = true;
-            this.chkAlignDoCase.Location = new System.Drawing.Point(13, 78);
+            this.chkAlignDoCase.Location = new System.Drawing.Point(13, 103);
             this.chkAlignDoCase.Name = "chkAlignDoCase";
             this.chkAlignDoCase.Size = new System.Drawing.Size(241, 17);
             this.chkAlignDoCase.TabIndex = 3;
@@ -97,26 +101,26 @@
             // chkTrimTrailngWhiteSpace
             // 
             this.chkTrimTrailngWhiteSpace.AutoSize = true;
-            this.chkTrimTrailngWhiteSpace.Location = new System.Drawing.Point(13, 143);
+            this.chkTrimTrailngWhiteSpace.Location = new System.Drawing.Point(13, 168);
             this.chkTrimTrailngWhiteSpace.Name = "chkTrimTrailngWhiteSpace";
             this.chkTrimTrailngWhiteSpace.Size = new System.Drawing.Size(143, 17);
-            this.chkTrimTrailngWhiteSpace.TabIndex = 11;
+            this.chkTrimTrailngWhiteSpace.TabIndex = 7;
             this.chkTrimTrailngWhiteSpace.Text = "Trim Trailing Whitespace";
-            this.toolTip1.SetToolTip(this.chkTrimTrailngWhiteSpace, "When you select this then the CASE keywords will line up with the DO keyword from" +
-        " a DO CASE statement or the SWITCH keyword from a SWITCH statement");
+            this.toolTip1.SetToolTip(this.chkTrimTrailngWhiteSpace, "When you select this then all the lines will be \"trimmed\" when you save the file." +
+        "");
             this.chkTrimTrailngWhiteSpace.UseVisualStyleBackColor = true;
             this.chkTrimTrailngWhiteSpace.CheckedChanged += new System.EventHandler(this.chkTrimTrailngWhiteSpace_CheckedChanged);
             // 
             // chkInsertFinalNewLine
             // 
             this.chkInsertFinalNewLine.AutoSize = true;
-            this.chkInsertFinalNewLine.Location = new System.Drawing.Point(13, 166);
+            this.chkInsertFinalNewLine.Location = new System.Drawing.Point(13, 191);
             this.chkInsertFinalNewLine.Name = "chkInsertFinalNewLine";
             this.chkInsertFinalNewLine.Size = new System.Drawing.Size(122, 17);
-            this.chkInsertFinalNewLine.TabIndex = 12;
+            this.chkInsertFinalNewLine.TabIndex = 8;
             this.chkInsertFinalNewLine.Text = "Insert Final NewLine";
-            this.toolTip1.SetToolTip(this.chkInsertFinalNewLine, "When you select this then the CASE keywords will line up with the DO keyword from" +
-        " a DO CASE statement or the SWITCH keyword from a SWITCH statement");
+            this.toolTip1.SetToolTip(this.chkInsertFinalNewLine, "When you select this then the editor will add a CRLF after the last line of code " +
+        "when needed.");
             this.chkInsertFinalNewLine.UseVisualStyleBackColor = true;
             this.chkInsertFinalNewLine.CheckedChanged += new System.EventHandler(this.chkInsertFinalNewLine_CheckedChanged);
             // 
@@ -125,11 +129,12 @@
             this.panel1.Controls.Add(this.grpCase);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(381, 221);
-            this.panel1.TabIndex = 4;
+            this.panel1.Size = new System.Drawing.Size(381, 251);
+            this.panel1.TabIndex = 0;
             // 
             // grpCase
             // 
+            this.grpCase.Controls.Add(this.chkSynchronizeUDCKeywords);
             this.grpCase.Controls.Add(this.chkInsertFinalNewLine);
             this.grpCase.Controls.Add(this.chkTrimTrailngWhiteSpace);
             this.grpCase.Controls.Add(this.label2);
@@ -140,19 +145,34 @@
             this.grpCase.Controls.Add(this.chkIdentifierCase);
             this.grpCase.Location = new System.Drawing.Point(3, 14);
             this.grpCase.Name = "grpCase";
-            this.grpCase.Size = new System.Drawing.Size(373, 195);
-            this.grpCase.TabIndex = 5;
+            this.grpCase.Size = new System.Drawing.Size(373, 221);
+            this.grpCase.TabIndex = 0;
             this.grpCase.TabStop = false;
             this.grpCase.Text = "Document Formatting";
             // 
+            // chkSynchronizeUDCKeywords
+            // 
+            this.chkSynchronizeUDCKeywords.AutoSize = true;
+            this.chkSynchronizeUDCKeywords.Location = new System.Drawing.Point(13, 59);
+            this.chkSynchronizeUDCKeywords.Name = "chkSynchronizeUDCKeywords";
+            this.chkSynchronizeUDCKeywords.Size = new System.Drawing.Size(191, 17);
+            this.chkSynchronizeUDCKeywords.TabIndex = 1;
+            this.chkSynchronizeUDCKeywords.Text = "Sychronize case of &UDC Keywords";
+            this.toolTip1.SetToolTip(this.chkSynchronizeUDCKeywords, "When you enable this option then User Defined keywords inside UDCs will follow th" +
+        "e capitalization rules for the built-in keywords");
+            this.chkSynchronizeUDCKeywords.UseVisualStyleBackColor = true;
+            this.chkSynchronizeUDCKeywords.CheckedChanged += new System.EventHandler(this.chkSynchronizeUDCKeywords_CheckedChanged);
+            // 
             // multiFactor
             // 
-            this.multiFactor.Location = new System.Drawing.Point(220, 118);
+            this.multiFactor.Location = new System.Drawing.Point(220, 143);
             this.multiFactor.Margin = new System.Windows.Forms.Padding(2);
             this.multiFactor.Name = "multiFactor";
             this.multiFactor.Size = new System.Drawing.Size(27, 20);
-            this.multiFactor.TabIndex = 10;
+            this.multiFactor.TabIndex = 6;
             this.multiFactor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip1.SetToolTip(this.multiFactor, "Specify the number of tab stops the editor should indent for multiline statements" +
+        "");
             this.multiFactor.TextChanged += new System.EventHandler(this.multiFactor_TextChanged);
             // 
             // grpKeywordCase
@@ -164,7 +184,7 @@
             this.grpKeywordCase.Location = new System.Drawing.Point(7, 16);
             this.grpKeywordCase.Name = "grpKeywordCase";
             this.grpKeywordCase.Size = new System.Drawing.Size(237, 36);
-            this.grpKeywordCase.TabIndex = 1;
+            this.grpKeywordCase.TabIndex = 0;
             this.grpKeywordCase.TabStop = false;
             this.grpKeywordCase.Text = "&Keyword Case Synchronization";
             // 
@@ -220,11 +240,12 @@
             // 
             this.chkIdentifierCase.AutoSize = true;
             this.chkIdentifierCase.Enabled = false;
-            this.chkIdentifierCase.Location = new System.Drawing.Point(13, 57);
+            this.chkIdentifierCase.Location = new System.Drawing.Point(13, 82);
             this.chkIdentifierCase.Name = "chkIdentifierCase";
             this.chkIdentifierCase.Size = new System.Drawing.Size(171, 17);
             this.chkIdentifierCase.TabIndex = 2;
             this.chkIdentifierCase.Text = "&Identifier Case Synchronization";
+            this.toolTip1.SetToolTip(this.chkIdentifierCase, resources.GetString("chkIdentifierCase.ToolTip"));
             this.chkIdentifierCase.UseVisualStyleBackColor = true;
             this.chkIdentifierCase.CheckedChanged += new System.EventHandler(this.chkIdentifierCase_CheckedChanged);
             // 
@@ -235,7 +256,7 @@
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
             this.Name = "FormattingOptionsControl";
-            this.Size = new System.Drawing.Size(389, 266);
+            this.Size = new System.Drawing.Size(389, 281);
             this.panel1.ResumeLayout(false);
             this.grpCase.ResumeLayout(false);
             this.grpCase.PerformLayout();
@@ -261,5 +282,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox chkInsertFinalNewLine;
         private System.Windows.Forms.CheckBox chkTrimTrailngWhiteSpace;
+        private System.Windows.Forms.CheckBox chkSynchronizeUDCKeywords;
     }
 }

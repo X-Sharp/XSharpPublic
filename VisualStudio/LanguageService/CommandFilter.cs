@@ -191,6 +191,9 @@ namespace XSharp.LanguageService
             // Some exceptions are (pseudo) functions. These should not be formatted
             switch (token.Type)
             {
+                case XSharpLexer.UDC_KEYWORD:
+                    syncKeyword = XSettings.UDCKeywordCase;
+                    break;
                 case XSharpLexer.NAMEOF:
                 case XSharpLexer.SIZEOF:
                 case XSharpLexer.TYPEOF:

@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EnableQuickInfoLog                 AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EnableReferenceInfoLog             AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EnableTypelookupLog                AS LOGIC AUTO
-        
+
         PUBLIC STATIC PROPERTY DisableAssemblyReferences          AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableBraceMatching               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableCaseSynchronization         AS LOGIC AUTO
@@ -41,10 +41,11 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY DisableRegions                     AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableSyntaxHighlighting          AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableXSharpProjectReferences     AS LOGIC AUTO
-        
+
         PUBLIC STATIC PROPERTY KeywordCase                        AS KeywordCase AUTO
         PUBLIC STATIC PROPERTY IdentifierCase                     AS LOGIC AUTO
-        
+        PUBLIC STATIC PROPERTY UDCKeywordCase                     AS LOGIC AUTO
+
         PUBLIC STATIC PROPERTY EditorUseDotAsUniversalSelector    AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorKeywordsInAll                AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorHideAdvancedMembers          AS LOGIC AUTO
@@ -52,11 +53,11 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EditorCompletionListAfterEachChar  AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorCompletionAutoPairs          AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorCommitChars                  AS STRING AUTO
-        
+
         PUBLIC STATIC PROPERTY EditorFormatAlignDoCase            AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorFormatAlignMethod            AS LOGIC AUTO
         //PUBLIC STATIC PROPERTY EditorFormatAlignDoCase            AS LOGIC AUTO
-        
+
         PUBLIC STATIC PROPERTY EditorNavigationIncludeFields        AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorNavigationSorted               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorNavigationMembersOfCurrentTypeOnly AS LOGIC AUTO
@@ -69,7 +70,7 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EditorIndentFactor               AS LONG AUTO
         PUBLIC STATIC PROPERTY EditorInsertFinalNewline         AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorTrimTrailingWhiteSpace     AS LOGIC AUTO
-        
+
         PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO
         PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO
         PUBLIC STATIC PROPERTY ShowMessageBox                   AS ShowMessageBox AUTO
@@ -82,8 +83,8 @@ BEGIN NAMESPACE XSharpModel
         RETURN
         PRIVATE STATIC METHOD NoMessageBox(message AS STRING) AS INT
         RETURN 0
-        
-        
+
+
         STATIC CONSTRUCTOR
             DisplayOutputMessage := NoOutput
             DisplayException     := NoException
@@ -91,7 +92,7 @@ BEGIN NAMESPACE XSharpModel
 
         STATIC METHOD FormatKeyword(sKeyword AS STRING) AS STRING
             RETURN FormatKeyword(sKeyword, XSettings.KeywordCase)
-            
+
         STATIC METHOD FormatKeyword(sKeyword AS STRING, nKeywordCase AS KeywordCase) AS STRING
             IF sKeyword == NULL
                 RETURN ""
@@ -107,16 +108,16 @@ BEGIN NAMESPACE XSharpModel
                     RETURN IIF(sKeyword:Length > 1 , sKeyword:Substring(0, 1):ToUpper() + sKeyword:Substring(1):ToLower() , sKeyword:ToUpper())
             END SWITCH
         RETURN sKeyword
-         
+
         STATIC METHOD FormatKeyword(sKeyword AS OBJECT) AS STRING
             RETURN FormatKeyword(sKeyword:ToString(), XSettings.KeywordCase)
-        
+
         STATIC METHOD FormatKeyword(sKeyword AS OBJECT, nKeywordCase AS KeywordCase) AS STRING
             RETURN FormatKeyword(sKeyword:ToString(), nKeywordCase)
-        
+
         STATIC METHOD FormatKeyword(keyword AS Kind) AS STRING
             RETURN FormatKeyword(keyword , XSettings.KeywordCase)
-            
+
         STATIC METHOD FormatKeyword(keyword AS Kind, nKeywordCase AS KeywordCase) AS STRING
             SWITCH (keyword)
                 CASE Kind.VODefine
@@ -127,7 +128,7 @@ BEGIN NAMESPACE XSharpModel
                     RETURN XSettings.FormatKeyword("_dll function",nKeywordCase)
             END SWITCH
             RETURN XSettings.FormatKeyword(keyword:ToString(),nKeywordCase)
-            
+
     END CLASS
 
 END NAMESPACE

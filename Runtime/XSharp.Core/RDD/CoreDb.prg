@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -18,13 +18,13 @@ USING System.Text
 #define EVENTS
 #ifdef EVENTS
 #command RAISE      <kNot> <oData>  => IF HasEvents;  RaiseEvent(oRdd , DbNotificationType.<kNot>, <oData>) ;  ENDIF
-#command BEFOREBULK                 => RAISE BeforeBulkOperation    __FUNCTION__ 
+#command BEFOREBULK                 => RAISE BeforeBulkOperation    __FUNCTION__
 #command AFTERBULK                  => RAISE AfterBulkOperation     __FUNCTION__
 #command BEFOREMOVE                 => RAISE BeforeMove             __FUNCTION__
 #command AFTERMOVE                  => RAISE AfterMove              __FUNCTION__
 #translate SaveBagName( <cBagName>, <oOrder>)    => <cBagName> + "-"+iif(<oOrder> == NULL, "", <oOrder>:ToString())
 #else
-#command RAISE      <kNot> <oData>  => 
+#command RAISE      <kNot> <oData>  =>
 #command BEFOREBULK                 =>
 #command AFTERBULK                  =>
 #command BEFOREMOVE                 =>
@@ -37,7 +37,7 @@ USING System.Text
 /// </summary>
 CLASS XSharp.CoreDb
     /// <exclude />
-    STATIC METHOD CWA(cFunction AS STRING, lThrow := TRUE AS LOGIC) AS IRdd 
+    STATIC METHOD CWA(cFunction AS STRING, lThrow := TRUE AS LOGIC) AS IRdd
         LOCAL oResult AS IRdd
         RuntimeState.LastRddError := NULL
         oResult := RuntimeState.Workareas:CurrentWorkarea
@@ -48,7 +48,7 @@ CLASS XSharp.CoreDb
             RddError.PostNoTableError(cFunction)
         ENDIF
         RETURN NULL
-        /// <exclude />    
+        /// <exclude />
     STATIC METHOD CWANum(cFunction AS STRING)  AS DWORD
         VAR oWA := RuntimeState.Workareas:CurrentWorkarea
         IF oWA != NULL
@@ -56,7 +56,7 @@ CLASS XSharp.CoreDb
         ENDIF
         RddError.PostNoTableError(cFunction)
         RETURN 0
-        
+
         /// <exclude />
     INTERNAL STATIC METHOD AdjustPath(cPath as STRING) AS STRING
         IF String.IsNullOrEmpty(cPath)
@@ -66,26 +66,26 @@ CLASS XSharp.CoreDb
             cPath := System.Environment.CurrentDirectory
         ENDIF
         RETURN cPath
-        
+
     INTERNAL STATIC METHOD  RddNameToType( cRDDName AS STRING ) AS Type
         LOCAL ret := NULL AS  Type
         LOCAL oRdd        AS RegisteredRDD
         oRdd := RegisteredRDD.Find(cRDDName)
-        IF oRdd != NULL   
+        IF oRdd != NULL
             oRdd:Load()
             ret := oRdd:RddType
         ENDIF
-        IF ret == NULL       
+        IF ret == NULL
             LOCAL loadedAssemblies := AppDomain.CurrentDomain:GetAssemblies() AS Assembly[]
             FOREACH VAR asm IN loadedAssemblies
                 ret := asm:GetType( cRDDName, FALSE, TRUE )
                 IF ret != NULL
                     EXIT
-                ENDIF   
+                ENDIF
             NEXT
         ENDIF
         RETURN ret
-        /// <exclude />   
+        /// <exclude />
     INTERNAL STATIC METHOD BuildTrans( dbti AS DbTransInfo, lpfn AS _FieldNames, src AS IRdd, dst AS IRdd ) AS LOGIC
         LOCAL oTmp          AS OBJECT
         LOCAL srcFieldCount AS DWORD
@@ -95,7 +95,7 @@ CLASS XSharp.CoreDb
         LOCAL j             AS LONG
         LOCAL uiSrc         AS LONG
         LOCAL uiDst         AS LONG
-        
+
         oTmp := src:Info( DbInfo.DBI_FCOUNT, NULL)
         srcFieldCount := Convert.ToUInt32( oTmp )
         oTmp := dst:Info( DbInfo.DBI_FCOUNT, NULL )
@@ -105,18 +105,18 @@ CLASS XSharp.CoreDb
         fMatch := (DWORD) dbti:ItemCount == srcFieldCount .AND. srcFieldCount == dstFieldCount .AND. i == j
         j := 0
         FOR i := 0 UPTO lpfn:FieldCount -1
-        
+
             uiSrc := src:FieldIndex( lpfn:Fields[i] )       // returns a 1 based index
             uiDst := dst:FieldIndex( lpfn:Fields[i]  )
-            
+
             IF uiSrc == 0 || uiDst == 0
                 fMatch := FALSE
             ELSE
-                
-                dbti:Items[j]:Source       := uiSrc 
-                dbti:Items[j]:Destination  := uiDst 
+
+                dbti:Items[j]:Source       := uiSrc
+                dbti:Items[j]:Destination  := uiDst
                 j++
-                
+
                 IF fMatch
                     LOCAL srcFld AS RddFieldInfo
                     LOCAL dstFld AS RddFieldInfo
@@ -124,13 +124,13 @@ CLASS XSharp.CoreDb
                     dstFld := dst:GetField(uiDst)
                     fMatch := uiSrc == uiDst && srcFld:SameType( dstFld )
                 ENDIF
-            ENDIF 
+            ENDIF
         NEXT
-        
-        dbti:ItemCount := j 
-        
+
+        dbti:ItemCount := j
+
         RETURN fMatch
-        /// <exclude />   
+        /// <exclude />
     INTERNAL STATIC METHOD TransSetInfo(oRdd AS IRdd, info AS DbTransInfo, cFunc AS STRING,nDest AS DWORD, fldNames AS _FieldNames,;
                                         uCobFor AS ICodeblock ,uCobWhile AS ICodeblock ,;
                                         nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS VOID
@@ -145,7 +145,7 @@ CLASS XSharp.CoreDb
             LOCAL oCanPutRecTarget AS OBJECT
             oCanPutRecSource := oRdd:Info(DbInfo.DBI_CANPUTREC, NULL)
             oCanPutRecTarget := oDest:Info(DbInfo.DBI_CANPUTREC, NULL)
-            IF oCanPutRecSource IS LOGIC .AND. oCanPutRecTarget IS LOGIC 
+            IF oCanPutRecSource IS LOGIC .AND. oCanPutRecTarget IS LOGIC
                 IF (LOGIC) oCanPutRecSource .and. (LOGIC) oCanPutRecTarget
                     info:Flags |= DbTransInfoFlags.CanPutRec
                 ENDIF
@@ -166,9 +166,9 @@ CLASS XSharp.CoreDb
         IF nRecno IS LONG
             info:Scope:RecId := nRecno
         ENDIF
-        info:Scope:Rest  := lRest     
+        info:Scope:Rest  := lRest
         RETURN
-        /// <exclude />   
+        /// <exclude />
     INTERNAL STATIC METHOD AliasFromFilename( cFilename AS STRING, cAlias REF STRING , lMakeUnique AS LOGIC) AS LOGIC
         LOCAL ret AS LOGIC
         TRY
@@ -194,20 +194,20 @@ CLASS XSharp.CoreDb
                 LOCAL nCounter := 0 AS LONG
                 VAR Workareas := RuntimeState.Workareas
                 LOCAL nExistingArea := Workareas:FindAlias(cAlias) AS DWORD
-                DO WHILE nExistingArea != 0 
+                DO WHILE nExistingArea != 0
                     nCounter++
                     cAlias := cTemp+"_"+nCounter:ToString()
                     nExistingArea := Workareas:FindAlias(cAlias)
                 ENDDO
             ENDIF
         ENDIF
-        RETURN ret   
-        
-        
+        RETURN ret
+
+
         // Check if Alias is used for current thread
     INTERNAL STATIC METHOD IsAliasUnused( cAlias AS STRING ) AS LOGIC
         RETURN RuntimeState.Workareas:FindAlias(cAlias) == 0
-        
+
         // Create RDD Object from RDD Type
     INTERNAL STATIC METHOD CreateRDDInstance( rddType AS Type , cAlias AS STRING) AS IRdd
         LOCAL ret    AS IRdd
@@ -218,7 +218,7 @@ CLASS XSharp.CoreDb
             Fail(e)
             ret := NULL
         END TRY
-        RETURN ret 
+        RETURN ret
 
     INTERNAL STATIC METHOD Fail(e AS Exception) AS VOID
         RuntimeState.LastRddError := e
@@ -236,10 +236,10 @@ CLASS XSharp.CoreDb
             Fail(e)
         END TRY
         RETURN DEFAULT(T)
-        
+
      /// <summary>
      /// An event to which you can subscribe to be notified of operations on Workareas.
-     /// </summary>        
+     /// </summary>
      PUBLIC STATIC EVENT Notify AS DbNotifyEventHandler
 
      PRIVATE STATIC PROPERTY HasEvents AS LOGIC GET Notify != NULL
@@ -260,7 +260,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         RETURN RuntimeState.Workareas:GetAlias(nArea)
         })
-        
+
         /// <summary>
         /// Add a new record.
         /// </summary>
@@ -276,9 +276,9 @@ CLASS XSharp.CoreDb
         VAR result := oRdd:Append(lReleaseLocks)
         RAISE RecordAppended oRdd:RecNo
         RETURN result
-        
+
         })
-        
+
         /// <summary>Retrieve information about a memo column.</summary>
         /// <param name="nOrdinal"></param>
         /// <param name="nPos"></param>
@@ -287,12 +287,12 @@ CLASS XSharp.CoreDb
         /// <seealso cref="O:XSharp.RT.Functions.VoDbBlobInfo" >VoDbBlobInfo overloads </seealso>
         /// <seealso cref="O:XSharp.VoDb.BlobInfo" >BlobInfo overloads in VoDb</seealso>
         /// <seealso cref="BlobInfo" >BlobInfo overloads in CoreDb</seealso>
-         
+
     STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.BlobInfo(nOrdinal, nPos, REF oRet)
         })
-        
+
     /// <inheritdoc cref="BlobInfo(System.UInt32,System.UInt32,System.Object)" />
     /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
     STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,oRet REF OBJECT) AS LOGIC
@@ -302,7 +302,7 @@ CLASS XSharp.CoreDb
         })
         oRet := oTemp
         return result
-        
+
         /// <summary>
         /// Determine when beginning-of-file is encountered.
         /// </summary>
@@ -318,7 +318,7 @@ CLASS XSharp.CoreDb
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:BoF
         })
-        
+
         /// <summary>Refresh the buffer for the current Workarea, discarding any changes that were made.</summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBBuffRefresh().
@@ -334,10 +334,10 @@ CLASS XSharp.CoreDb
         /// Clear a logical filter condition.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBClearFilter().  
+        /// <remarks>This function is like DBClearFilter().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbClearFilter() and CoreDb.ClearFilter() are aliases</note></remarks>
-        
+
     STATIC METHOD ClearFilter() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -346,12 +346,12 @@ CLASS XSharp.CoreDb
         AFTERBULK
         RETURN result
         })
-        
+
         /// <summary>
         /// Clear a locate condition by deleting the locate code block.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBClearLocate().  
+        /// <remarks>This function is like DBClearLocate().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbClearLocate() and CoreDb.ClearLocate() are aliases</note></remarks>
     STATIC METHOD ClearLocate() AS LOGIC
@@ -359,13 +359,13 @@ CLASS XSharp.CoreDb
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:ClearScope()
         })
-        
+
         /// <summary>Clear any active relations.</summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBClearRelation().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbClearRelation() and CoreDb.ClearRelation() are aliases</note></remarks>
-        
+
     STATIC METHOD ClearRelation() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -374,10 +374,10 @@ CLASS XSharp.CoreDb
         AFTERBULK
         RETURN result
         })
-        
+
         /// <summary>Clear the active locate condition.</summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBClearScope().  
+        /// <remarks>This function is like DBClearScope().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbClearScope() and CoreDb.ClearScope() are aliases</note></remarks>
     STATIC METHOD ClearScope() AS LOGIC
@@ -389,31 +389,34 @@ CLASS XSharp.CoreDb
         /// Close all files in all work areas.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBCloseAll().  
+        /// <remarks>This function is like DBCloseAll().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbCloseAll() and CoreDb.CloseAll() are aliases</note></remarks>
     STATIC METHOD CloseAll() AS LOGIC
         RETURN CoreDb.Do ({ =>
-        VAR oRdd := RuntimeState.Workareas:CurrentWorkarea
+        VAR oRdd := RuntimeState.Workareas:CurrentWorkarea  // needed for BEFOREBULK and AFTERBULK
         BEFOREBULK
         VAR result := RuntimeState.Workareas:CloseAll()
         AFTERBULK
         RETURN result
-        })    
+        })
         /// <summary>
         /// Close all files in a work area.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBCloseArea().  
+        /// <remarks>This function is like DBCloseArea().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbCloseArea() and CoreDb.CloseArea() are aliases</note></remarks>
     STATIC METHOD CloseArea() AS LOGIC
         RETURN CoreDb.Do ({ =>
             VAR Workareas := RuntimeState.Workareas
             VAR uiNewArea := Workareas:CurrentWorkareaNO
-            VAR oRdd := Workareas:CurrentWorkarea 
-            RAISE FileClose  oRdd:Info(DbInfo.DBI_FULLPATH,NULL)
-            RETURN Workareas:CloseArea(uiNewArea)
+            VAR oRdd := Workareas:CurrentWorkarea
+            IF oRdd != NULL
+                RAISE FileClose  oRdd:Info(DbInfo.DBI_FULLPATH,NULL)
+                RETURN Workareas:CloseArea(uiNewArea)
+            ENDIF
+            RETURN FALSE
         })
 
         /// <summary>
@@ -426,17 +429,17 @@ CLASS XSharp.CoreDb
         RETURN oRdd:Refresh()
         })
 
-        
+
         /// <summary>
         /// Flush pending updates in one work area.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBCommit().  
+        /// <remarks>This function is like DBCommit().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbCommit() and CoreDb.Commit() are aliases</note></remarks>
     STATIC METHOD Commit() AS LOGIC
         RETURN CoreDb.Do ({ =>
-        LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd 
+        LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         LOCAL lOk := oRdd:Skip(0) AS LOGIC
         IF lOk
             lOk := oRdd:Flush()
@@ -450,15 +453,15 @@ CLASS XSharp.CoreDb
         ENDIF
         RETURN lOk
         })
-        
+
         /// <summary>
         /// Flush pending updates in all work areas.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBCommitAll().  
+        /// <remarks>This function is like DBCommitAll().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbCommitAll() and CoreDb.CommitAll() are aliases</note></remarks>
-        
+
     STATIC METHOD CommitAll() AS LOGIC
         RETURN CoreDb.Do ({ =>
         VAR oRdd := RuntimeState.Workareas:CurrentWorkarea
@@ -471,19 +474,19 @@ CLASS XSharp.CoreDb
         /// Resume a pending locate condition.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBContinue().  
+        /// <remarks>This function is like DBContinue().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbContinue() and CoreDb.Continue() are aliases</note></remarks>
-        
+
     STATIC METHOD Continue() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:Continue()
         })
-        
+
     /// <inheritdoc cref="Create(System.String,XSharp.RDD.Support.RddFieldInfo[],System.Type,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
     /// <param name="cRddName">Name of RDD to use</param>
-    
+
     STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], cRddName AS STRING, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL rddType AS Type
@@ -494,7 +497,7 @@ CLASS XSharp.CoreDb
             RETURN CoreDb.Create( cName, aStruct, rddType, lNew, cAlias, cDelim, lKeep, lJustOpen )
         ENDIF
         })
-        
+
     /// <inheritdoc cref="Create(System.String,XSharp.RDD.Support.RddFieldInfo[],System.Type,System.Boolean,System.String,System.String,System.Boolean,System.Boolean)" />
     /// <param name="rddList">List of RDDs to use when creating the file</param>
     STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], rddList AS _RddList, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
@@ -506,8 +509,8 @@ CLASS XSharp.CoreDb
         IF oRdd != NULL_OBJECT
             RETURN CoreDb.Create(cName, aStruct:ToArray(), oRdd:RddType, lNew, cAlias, cDelim, lKeep, lJustOpen)
         ENDIF
-        RETURN FALSE 
-     
+        RETURN FALSE
+
         /// <overloads>
         /// <summary>
         /// Create new file through the specified RDDs
@@ -527,7 +530,7 @@ CLASS XSharp.CoreDb
         /// <returns>TRUE when succesfull, otherwise FALSE. When an error has occurred then you can retrieve that error from RuntimeState.LastRddError.</returns>
         /// <seealso cref="M:XSharp.RT.Functions.DbCreate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" >DbCreate() function </seealso>
         /// <seealso cref="O:XSharp.RT.Functions.VoDbCreate" >VoDbCreate overloads</seealso>
-    
+
     STATIC METHOD Create( cName AS STRING, aStruct AS RddFieldInfo[], rddType AS System.Type, lNew AS LOGIC, cAlias AS STRING, cDelim AS STRING, lKeep AS LOGIC, lJustOpen AS LOGIC ) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL uiOldArea := 0 AS DWORD
@@ -542,7 +545,7 @@ CLASS XSharp.CoreDb
         ELSEIF lNew && ! ( ret := CoreDb.Select( 0, REF uiOldArea ) )
             RddError.PostError( __FUNCTION__, EG_CREATE, EDB_NOAREAS )
         ELSE
-            ret := TRUE   
+            ret := TRUE
         ENDIF
         IF lNew
             uiNewArea := Workareas:FindEmptyArea(TRUE)
@@ -552,7 +555,7 @@ CLASS XSharp.CoreDb
             Workareas:CloseArea(uiNewArea)
         ENDIF
         Workareas:CurrentWorkareaNO := uiNewArea
-        IF ret .AND. String.IsNullOrEmpty( cAlias ) 
+        IF ret .AND. String.IsNullOrEmpty( cAlias )
             ret := CoreDb.AliasFromFilename( cName, REF cAlias ,!lKeep)
             IF ! ret
                 RddError.PostArgumentError( __FUNCTION__, EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
@@ -561,7 +564,7 @@ CLASS XSharp.CoreDb
         IF ret
             cAlias := cAlias:ToUpperInvariant()
         ENDIF
-        IF ret 
+        IF ret
             ret := CoreDb.IsAliasUnused( cAlias )
             IF ! ret
                 RddError.PostArgumentError( __FUNCTION__, EDB_DUPALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
@@ -578,7 +581,7 @@ CLASS XSharp.CoreDb
             ret := FALSE
         ELSE
             IF ! String.IsNullOrEmpty( cDelim )
-                oRdd:Info( DBI_SETDELIMITER, cDelim ) 
+                oRdd:Info( DBI_SETDELIMITER, cDelim )
             ENDIF
             IF ret
                 ret := oRdd:CreateFields(aStruct)
@@ -627,17 +630,17 @@ CLASS XSharp.CoreDb
                 ELSE
                    RETURN oRdd:Alias
                 ENDIF
-            ENDIF                            
+            ENDIF
             RETURN String.Empty
-            
+
         /// <summary>
         /// Mark the current record for deletion.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBDelete().  
+        /// <remarks>This function is like DBDelete().
     /// <include file="CoreComments.xml" path="Comments/LastError/*" />
     /// <note type="tip">VoDbDelete() and CoreDb.Delete() are aliases</note></remarks>
-        
+
     /// <seealso cref="M:XSharp.RT.Functions.DbDelete">DbDelete Function</seealso>
     STATIC METHOD Delete() AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -647,21 +650,21 @@ CLASS XSharp.CoreDb
         RETURN result
 
         })
-        
+
         /// <summary>
         /// Return the deleted status of the current record.
         /// </summary>
-        /// <returns>TRUE if the current record is marked for deletion; otherwise, FALSE.  
+        /// <returns>TRUE if the current record is marked for deletion; otherwise, FALSE.
         /// If there is no database file in use in the current work area, CoreDbDeleted() returns FALSE.</returns>
         /// <seealso cref="M:XSharp.RT.Functions.Deleted">Deleted Function</seealso>
         /// <remarks><note type="tip">VoDbDelete() and CoreDb.Delete() are aliases</note></remarks>
-        
+
     STATIC METHOD Deleted() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:Deleted
         })
-        
+
         /// <summary>
         /// Determine when end-of-file is encountered.
         /// </summary>
@@ -677,7 +680,7 @@ CLASS XSharp.CoreDb
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:EoF
         })
-        
+
         /// <summary>
         /// Evaluate a code block for each record that matches a specified scope and/or condition.
         /// </summary>
@@ -696,7 +699,7 @@ CLASS XSharp.CoreDb
         /// Eval() can be used as a primitive for the construction of commands that process database files.
         /// In fact, many of the database processing commands are created using Eval().
         /// </remarks>
-        
+
     STATIC METHOD Eval(uBlock AS ICodeblock,uCobFor AS ICodeblock,uCobWhile AS ICodeblock,uNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL nNext AS LONG
@@ -764,7 +767,7 @@ CLASS XSharp.CoreDb
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
              IF oRdd IS Workarea VAR oDBF
                 LOCAL oFld AS RddFieldInfo
-                
+
                 oFld := oDBF:GetField((LONG) nPos)
                 IF oFld != NULL
                     IF oFld:FieldType.IsMemo()
@@ -798,12 +801,12 @@ CLASS XSharp.CoreDb
     /// Retrieve the value of a specified database field as an array of bytes
     /// </summary>
     /// <param name="nPos">The 1 based position of the field in the database file structure for the current work area.</param>
-    /// <param name="aValue">The value to write to the field</param>        
+    /// <param name="aValue">The value to write to the field</param>
     /// <returns>TRUE if successful; otherwise, FALSE.</returns>
     /// <remarks>This function only works with RDDs that inherit from the DBF RDD. The Advantage RDD does not support this.</remarks>
 
     STATIC METHOD FieldPutBytes(nPos AS DWORD, aValue AS BYTE[]) AS LOGIC
-        VAR lResult :=  CoreDb.Do( { =>        
+        VAR lResult :=  CoreDb.Do( { =>
              LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
              IF oRdd IS Workarea VAR oWa
                 LOCAL oFld AS RddFieldInfo
@@ -833,24 +836,24 @@ CLASS XSharp.CoreDb
         /// </remarks>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbFieldInfo' >VoDbFieldInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.FieldInfo' >FieldInfo overloads in CoreDb</seealso>
-        
+
     STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.FieldInfo(nOrdinal, nFldPos, REF oValue)
         })
-        
+
     /// <inheritdoc cref="FieldInfo(System.UInt32,System.UInt32,System.Object)" />
     /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
     STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oRet REF OBJECT) AS LOGIC
         VAR oTemp := oRet
-        VAR lResult :=  CoreDb.Do( { =>        
+        VAR lResult :=  CoreDb.Do( { =>
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
             oTemp := oRdd:FieldInfo((INT) nFldPos, (INT) nOrdinal, oTemp)
             RETURN TRUE
         })
         oRet := oTemp
         RETURN lResult
-        
+
     /// <summary>
     /// Return the name of a field as a string.
     /// </summary>
@@ -863,7 +866,7 @@ CLASS XSharp.CoreDb
         IF (oRdd != NULL)
             RETURN oRdd:FieldName((INT) nPos)
         ENDIF
-        RETURN String.Empty   
+        RETURN String.Empty
         /// <summary>
         /// Return the position of a field.
         /// </summary>
@@ -873,9 +876,9 @@ CLASS XSharp.CoreDb
     STATIC METHOD FieldPos(sFieldName AS STRING) AS DWORD
         LOCAL oRdd := CoreDb.CWA("FieldPos",FALSE) AS IRdd
         IF (oRdd != NULL)
-            RETURN (DWORD) oRdd:FieldIndex(sFieldName) 
+            RETURN (DWORD) oRdd:FieldIndex(sFieldName)
         ENDIF
-        RETURN 0   
+        RETURN 0
 
         /// <summary>
         /// Set the value of a specified database field.
@@ -893,8 +896,8 @@ CLASS XSharp.CoreDb
         VAR result := oRdd:PutValue((INT) nPos, xValue)
         RAISE AfterFieldUpdate oRdd:FieldName((INT) nPos)
         RETURN result
-        })    
-        
+        })
+
         /// <summary>Import contents from file into Memo field </summary>
         /// <param name="nPos">The 1 based position of the field in the database file structure for the current work area.</param>
         /// <param name="cFile">The name of the file where the value must be written.</param>
@@ -907,7 +910,7 @@ CLASS XSharp.CoreDb
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:GetValueFile((INT) nPos, cFile)
         })
-        
+
         /// <summary>Export field contents from Memo field to file</summary>
         /// <param name="nPos">The 1 based position of the field in the database file structure for the current work area.</param>
         /// <param name="cFile">The name of the file to write</param>
@@ -921,7 +924,7 @@ CLASS XSharp.CoreDb
         RAISE AfterFieldUpdate oRdd:FieldName((INT) nPos)
         RETURN result
         })
-        
+
         /// <summary>
         /// Return a filter.
         /// </summary>
@@ -930,13 +933,13 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBFilter().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbFilter() and CoreDb.Filter() are aliases</note></remarks>
-        
+
     STATIC METHOD Filter() AS STRING
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:FilterText
         })
-        
+
         /// <summary>
         /// Lock an opened and shared database file.
         /// </summary>
@@ -945,7 +948,7 @@ CLASS XSharp.CoreDb
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbFlock() and CoreDb.Flock() are aliases</note></remarks>
     STATIC METHOD Flock() AS LOGIC
-        RETURN CoreDb.Do ({ =>    
+        RETURN CoreDb.Do ({ =>
         VAR oRdd := CoreDb.CWA(__FUNCTION__)
         LOCAL dbli AS DbLockInfo
         dbli := DbLockInfo{}
@@ -953,7 +956,7 @@ CLASS XSharp.CoreDb
         dbli:Method := DbLockInfo.LockMethod.File
         RETURN oRdd:Lock(dbli)
         })
-        
+
         /// <summary>
         /// Determine if the previous search operation succeeded.
         /// </summary>
@@ -962,14 +965,14 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like Found().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbFound() and CoreDb.Found() are aliases</note></remarks>
-        
+
     STATIC METHOD Found() AS LOGIC
         RETURN CoreDb.Do ({ =>
         VAR oRdd := CoreDb.CWA(__FUNCTION__)
         RETURN oRdd:Found
         })
-        
-        
+
+
         /// <summary>
         /// Return the work area number.
         /// </summary>
@@ -978,22 +981,22 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBGetSelect().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbGetSelect() and CoreDb.GetSelect() are aliases</note></remarks>
-        
+
     STATIC METHOD GetSelect() AS DWORD
-        RETURN RuntimeState.Workareas:CurrentWorkareaNO  
+        RETURN RuntimeState.Workareas:CurrentWorkareaNO
         /// <summary>
         /// Move to the last logical record.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBGoBottom().  
+        /// <remarks>This function is like DBGoBottom().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbGoBottom() and CoreDb.GoBottom() are aliases</note></remarks>
-        
-        
+
+
     STATIC METHOD GoBottom() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-        BEFOREMOVE 
+        BEFOREMOVE
         VAR result := oRdd:GoBottom()
         AFTERMOVE
         RETURN result
@@ -1006,27 +1009,27 @@ CLASS XSharp.CoreDb
     STATIC METHOD Goto(uRecId AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-        BEFOREMOVE 
+        BEFOREMOVE
         VAR result := oRdd:GoToId(uRecId)
-        AFTERMOVE  
+        AFTERMOVE
         RETURN result
         })
-        
+
         /// <summary>
         /// Move to the first logical record.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBGoTop().  
+        /// <remarks>This function is like DBGoTop().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbGoTop() and CoreDb.GoTop() are aliases</note></remarks>
-        
-        
+
+
     STATIC METHOD GoTop() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         BEFOREMOVE
         VAR result := oRdd:GoTop()
-        AFTERMOVE  
+        AFTERMOVE
         RETURN result
         })
 
@@ -1037,7 +1040,7 @@ CLASS XSharp.CoreDb
             RETURN (LONG) oValue
         ENDIF
         RETURN 0
-        
+
         /// <summary>
         /// Retrieve information about a work area.
         /// </summary>
@@ -1046,13 +1049,13 @@ CLASS XSharp.CoreDb
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbInfo' >VoDbInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.Info' >Info overloads in VoDb</seealso>
-    
+
     STATIC METHOD Info(nOrdinal AS DWORD,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.Info(nOrdinal, REF oValue)
         })
-        
-        
+
+
     /// <inheritdoc cref="Info" />
     /// <param name="oValue">If specified, this parameter is used to change the value of a setting. This parameter also receives the return value.</param>
 
@@ -1074,7 +1077,7 @@ CLASS XSharp.CoreDb
         })
         oValue := oTemp
         RETURN result
-        
+
         /// <summary>Write values to destination Workarea in a JOIN operation</summary>
         /// <param name="nSelect"></param>
         /// <param name="struList"></param>
@@ -1109,20 +1112,20 @@ CLASS XSharp.CoreDb
         ENDIF
         RETURN result
         })
-        
+
         /// <summary>
         /// Return the number of the last record in a database file.
         /// </summary>
         /// <returns>
         /// </returns>
         /// <remarks> <note type="tip">VoDbLastRec() and CoreDb.LastRec() are aliases</note></remarks>
-        
+
     STATIC METHOD LastRec() AS LONG
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:RecCount
-        })  
-        
+        })
+
         /// <summary>
         /// Search for the first record that matches a specified condition and scope.
         /// </summary>
@@ -1132,7 +1135,7 @@ CLASS XSharp.CoreDb
         /// <param name="uRecId">The number of the record to process.</param>
         /// <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DBLocate() but strongly typed.  
+        /// <remarks>This function is like DBLocate() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
     STATIC METHOD Locate(uCobFor AS ICodeblock,uCobWhile AS ICodeblock,nNext AS LONG,uRecId AS OBJECT,lRest AS LOGIC) AS LOGIC
@@ -1145,26 +1148,26 @@ CLASS XSharp.CoreDb
         scopeinfo:Rest:= lRest
         scopeinfo:RecId := IIF(uRecId IS LONG, uRecId, NULL)
         scopeinfo:NextCount := nNext
-        BEFOREMOVE 
+        BEFOREMOVE
         result := oRdd:SetScope(scopeinfo)
         IF result
             result := oRdd:SkipScope(1)
         ENDIF
-        AFTERMOVE 
+        AFTERMOVE
         RETURN result
-        })  
-        
+        })
+
         /// <summary>Return Memo File extension</summary>
         /// <param name="cDriver"></param>
         /// <returns>
         /// </returns>
         /// <remarks> <note type="tip">VoDbMemoExt() and CoreDb.MemoExt() are aliases</note></remarks>
-        
+
     STATIC METHOD MemoExt(cDriver AS STRING) AS STRING
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := NULL AS IRdd
         IF String.IsNullOrEmpty(cDriver)
-            oRdd := CoreDb.CWA(__FUNCTION__, FALSE) 
+            oRdd := CoreDb.CWA(__FUNCTION__, FALSE)
             IF oRdd == NULL
                 cDriver := RuntimeState.DefaultRDD
             ENDIF
@@ -1196,7 +1199,7 @@ CLASS XSharp.CoreDb
         oRdd:OrderInfo(DBOI_BAGEXT, info)
         RETURN (STRING) info:Result
         })
-        
+
         /// <summary>
         /// Set the condition and scope for an order.
         /// </summary>
@@ -1223,8 +1226,8 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DbCreateOrder() but strongly typed and the condition information is passed in an object.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-        
-        
+
+
     STATIC METHOD OrdCreate(cBagName AS STRING,oOrder AS OBJECT,cExpr AS STRING,oCodeBlock AS ICodeblock,lUnique AS LOGIC,ordCondInfo AS DbOrderCondInfo) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -1235,9 +1238,9 @@ CLASS XSharp.CoreDb
         info:Block      	:= oCodeBlock
         info:Unique			:= lUnique
         info:OrdCondInfo 	:= ordCondInfo
-        BEFOREBULK 
+        BEFOREBULK
         VAR result := oRdd:OrderCreate(info)
-        AFTERBULK 
+        AFTERBULK
         RAISE IndexCreate SAVEBAGNAME(cBagName , oOrder)
         RETURN result
         })
@@ -1250,8 +1253,8 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DbDeleteOrder() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-        
-        
+
+
     STATIC METHOD OrdDestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -1261,7 +1264,7 @@ CLASS XSharp.CoreDb
         VAR result := oRdd:OrderDestroy(info)
         RAISE IndexDelete SAVEBAGNAME(cBagName , oOrder)
         RETURN result
-        })  
+        })
         /// <summary>
         /// Return information about index files and the orders in them.
         /// </summary>
@@ -1275,12 +1278,12 @@ CLASS XSharp.CoreDb
         /// </remarks>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbOrderInfo' >VoDbOrderInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.OrderInfo' >OrderInfo overloads in VoDb</seealso>
-    
+
         STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.OrderInfo(nOrdinal, cBagName, oOrder, REF oValue)
         })
-        
+
     /// <inheritdoc cref="OrderInfo" />
     /// <param name="oValue">If specified, this parameter is used to change the value of a setting and retrieve the current setting. </param>
     STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue REF OBJECT) AS LOGIC
@@ -1297,8 +1300,8 @@ CLASS XSharp.CoreDb
         })
         oValue := oTemp
         return result
-        
-        
+
+
         /// <summary>
         /// Open an index file and add specified orders to the order list in a work area.
         /// </summary>
@@ -1327,7 +1330,7 @@ CLASS XSharp.CoreDb
             RETURN result
         ENDIF
         })
-        
+
         /// <summary>
         /// Remove orders from the order list in a work area and close associated index files.
         /// </summary>
@@ -1337,11 +1340,11 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBClearIndex() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-        
-        
+
+
     STATIC METHOD OrdListClear(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
-        
+
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__,FALSE) AS IRdd
         IF oRdd == NULL
             RETURN TRUE // not logical but compatible with VO
@@ -1358,7 +1361,7 @@ CLASS XSharp.CoreDb
             RAISE IndexClose SAVEBAGNAME(cBagName , oOrder)
             RETURN result
         ENDIF
-        })  
+        })
         /// <summary>
         /// Rebuild all orders in the order list of a work area.
         /// </summary>
@@ -1366,14 +1369,14 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like OrdListRebuild().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-        
-        
+
+
     STATIC METHOD OrdListRebuild() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-        BEFOREBULK 
+        BEFOREBULK
         VAR result := oRdd:OrderListRebuild()
-        AFTERBULK 
+        AFTERBULK
         RETURN result
         })
 
@@ -1398,7 +1401,7 @@ CLASS XSharp.CoreDb
             RAISE OrderChanged oRdd:OrderInfo(DBOI_NAME,info)
             RETURN  result
          })
-    
+
         /// <summary>
         /// Set the controlling order for a work area.
         /// </summary>
@@ -1427,35 +1430,35 @@ CLASS XSharp.CoreDb
             IF HasEvents .AND. ! info:IsEmpty
                 RAISE OrderChanged info:Result
             ENDIF
-            RETURN isOk 
+            RETURN isOk
         })
         strPreviousOrder := strTemp
         return lResult
-        
-        
+
+
         /// <summary>
         /// Remove all records that have been marked for deletion from a database file.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <remarks>This function is like DbPack(). 
+        /// <remarks>This function is like DbPack().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbPack() and CoreDb.Pack() are aliases</note></remarks>
     STATIC METHOD Pack() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-        BEFOREBULK 
+        BEFOREBULK
         VAR result := oRdd:Pack()
-        AFTERBULK 
+        AFTERBULK
         RETURN result
         })
-        
-        
+
+
         /// <summary>
         /// </summary>
         /// <returns>
         /// </returns>
         /// <remarks><note type="tip">VoDbRddCount() and CoreDb.RddCount() are aliases</note></remarks>
-        
+
     STATIC METHOD RddCount() AS DWORD
         RETURN CoreDb.Do ({ =>
         RETURN (DWORD) CoreDb.RddList():Length
@@ -1466,7 +1469,7 @@ CLASS XSharp.CoreDb
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbRddInfo' >VoDbRddInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.RddInfo' >RddInfo overloads in VoDb</seealso>
-        
+
     STATIC METHOD RddInfo(nOrdinal AS DWORD,oValue REF OBJECT) AS LOGIC
         VAR oTemp := oValue
         VAR result := CoreDb.Do ({ =>
@@ -1480,21 +1483,21 @@ CLASS XSharp.CoreDb
         })
         oValue := oTemp
         RETURN result
-        
-        
+
+
     /// <inheritdoc cref="RddInfo" />
     STATIC METHOD RddInfo(nOrdinal AS DWORD,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RuntimeState.SetValue((XSharp.Set) nOrdinal, oValue)
         RETURN TRUE
         })
-        
-        
+
+
     [Obsolete( "'CoreDbRddList( rddList, nRddType )' is not supported, use CoreDbRddList() instead", TRUE )];
     STATIC METHOD RddList(rddList AS _RddList,nRddType AS DWORD) AS LOGIC
         THROW  NotImplementedException{}
-        
-        
+
+
         /// <summary>Returns list of RDD names that are in use at this moment</summary>
     /// <remarks><note type="tip">VoDbRddList() and CoreDb.RddList() are aliases</note></remarks>
     STATIC METHOD RddList() AS STRING[]
@@ -1514,14 +1517,14 @@ CLASS XSharp.CoreDb
         NEXT
         RETURN aList:ToArray()
         })
-        
-        
+
+
         /// <summary>
-        /// Return an RDD name.                  
+        /// Return an RDD name.
         /// </summary>
         /// <returns>The name of the RDD</returns>
         /// <remarks><note type="tip">VoDbRddName() and CoreDb.RddName() are aliases</note></remarks>
-        
+
     STATIC METHOD RddName() AS STRING
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -1533,7 +1536,7 @@ CLASS XSharp.CoreDb
         /// <param name="cNewRDD"></param>
         /// <returns>The previous default RDD</returns>
         /// <remarks><note type="tip">VoDbRddSetDefault() and CoreDb.RddSetDefault() are aliases</note></remarks>
-        
+
     STATIC METHOD RddSetDefault(cNewRDD AS STRING) AS STRING
         LOCAL cOldRDD AS STRING
         cOldRDD := RuntimeState.DefaultRDD
@@ -1541,22 +1544,22 @@ CLASS XSharp.CoreDb
             RuntimeState.DefaultRDD := cNewRDD
         ENDIF
         RETURN cOldRDD
-        
+
         /// <summary>
         /// Restore the current record if it is marked for deletion.
         /// </summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBRecall().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
-        
+
         /// <note type="tip">VoDbRecall() and CoreDb.Recall() are aliases</note></remarks>
-        
+
     STATIC METHOD Recall() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         VAR result := oRdd:Recall()
         RAISE RecordRecalled  oRdd:RecNo
-        RETURN result        
+        RETURN result
         })
 
 
@@ -1573,23 +1576,23 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <returns>The 1 based current record number.</returns>
         /// <remarks><note type="tip">VoDbRecno() and CoreDb.Recno() are aliases</note></remarks>
-        
+
     STATIC METHOD Recno() AS DWORD
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN (DWORD) oRdd:RecNo
         })
-        
+
         /// <summary>Get the contents of the current record as an array of bytes</summary>
         /// <returns>An array of bytes that contains the current record.</returns>
         /// <remarks><note type="tip">VoDbRecordGet() and CoreDb.RecordGet() are aliases</note></remarks>
-        
+
     STATIC METHOD RecordGet() AS BYTE[]
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:GetRec()
-        }) 
-        
+        })
+
         /// <summary>
         /// Retrieve information about a record.
         /// </summary>
@@ -1600,12 +1603,12 @@ CLASS XSharp.CoreDb
         /// <seealso cref='O:XSharp.RT.Functions.VoDbRecordInfo'  >VoDbRecordInfo overloads</seealso>
         /// <seealso cref='O:XSharp.VoDb.RecordInfo'  >RecordInfo overloads in VoDb</seealso>
         /// <seealso cref='DbRecordInfo'>DbRecordInfo ENUM</seealso>
-        
+
     STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         RETURN CoreDb.RecordInfo(nOrdinal, oRecID, REF oValue)
-        }) 
-        
+        })
+
     /// <inheritdoc cref="RecordInfo(System.UInt32,System.Object,System.Object)" />
     /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
     STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oValue REF OBJECT) AS LOGIC
@@ -1616,19 +1619,19 @@ CLASS XSharp.CoreDb
         RETURN TRUE
         })
         oValue := oTemp
-        RETURN result    
-        
+        RETURN result
+
         /// <summary>Update the current record from an array of bytes</summary>
         /// <param name="aRecord">The bytes that form the record. Please note that if the DBF has a memo file, then this array must contain a valid position for the memo attached to the record.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks><note type="tip">VoDbRecordPut() and CoreDb.RecordPut() are aliases</note></remarks>
-        
+
     STATIC METHOD RecordPut(aRecord AS BYTE[]) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         RETURN oRdd:PutRec(aRecord)
         })
-        
+
         /// <summary>
         /// Return the linking expression of a specified relation.
         /// </summary>
@@ -1638,7 +1641,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBSetRelation().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-        
+
     STATIC METHOD Relation(nPos AS DWORD,sRel REF STRING) AS LOGIC
         VAR sTemp := sRel
         VAR result := CoreDb.Do ({ =>
@@ -1647,8 +1650,8 @@ CLASS XSharp.CoreDb
         RETURN TRUE
         })
         sRel := sTemp
-        RETURN result  
-        
+        RETURN result
+
         /// <summary>
         /// Lock the current record.
         /// </summary>
@@ -1657,7 +1660,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBRlock() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-        
+
     STATIC METHOD RLock(uRecId AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -1681,8 +1684,8 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBRSelect() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbRSelect() and CoreDb.RSelect() are aliases</note></remarks>
-        
-        
+
+
     STATIC METHOD RSelect(nPos AS DWORD) AS DWORD
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -1697,21 +1700,21 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBSeek() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-        
+
     STATIC METHOD Seek(oValue AS OBJECT,lSoftSeek AS LOGIC, lLast AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         VAR info 		:= DbSeekInfo{}
-        info:Value 		:= oValue          
+        info:Value 		:= oValue
         info:SoftSeek 	:= lSoftSeek
         info:Last		:= lLast
-        BEFOREMOVE 
+        BEFOREMOVE
         VAR result := oRdd:Seek(info)
-        AFTERMOVE 
+        AFTERMOVE
         RETURN result
         })
-        
-        
+
+
         /// <summary>
         /// Select a new work area and retrieve the current work area.
         /// </summary>
@@ -1721,7 +1724,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBSelect() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbSelect() and CoreDb.Select() are aliases</note></remarks>
-        
+
     STATIC METHOD Select(nNew AS DWORD,nOld OUT DWORD ) AS LOGIC
         LOCAL nTemp := 0 as DWORD
         var result := CoreDb.Do ({ =>
@@ -1741,7 +1744,7 @@ CLASS XSharp.CoreDb
         })
         nOld := nTemp
         RETURN result
-        
+
         /// <summary>
         /// Set a filter condition.
         /// </summary>
@@ -1751,7 +1754,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBSetFilter() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-        
+
     STATIC METHOD SetFilter(oBlock AS ICodeblock,cFilter AS STRING) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -1762,10 +1765,10 @@ CLASS XSharp.CoreDb
         ENDIF
         BEFOREBULK
         VAR result := oRdd:SetFilter(info)
-        AFTERBULK 
+        AFTERBULK
         RETURN result
         })
-        
+
         /// <summary>
         /// Set the found flag.
         /// </summary>
@@ -1773,8 +1776,8 @@ CLASS XSharp.CoreDb
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSetFound().
         /// <note type="tip">VoDbSetFound() and CoreDb.SetFound() are aliases</note></remarks>
-        
-        
+
+
     STATIC METHOD SetFound(lFound AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -1789,16 +1792,16 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBSetLocate() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-        
+
     STATIC METHOD SetLocate(oBlock AS ICodeblock) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         VAR scope := oRdd:GetScope()
         scope:ForBlock := oBlock
-        oRdd:SetScope(scope)    
+        oRdd:SetScope(scope)
         RETURN TRUE
-        })                      
-        
+        })
+
         /// <summary>
         /// Relate a specified work area to the current work area.
         /// </summary>
@@ -1810,7 +1813,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBSetRelation() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-        
+
     STATIC METHOD SetRelation(cAlias AS STRING,oKey  AS ICodeblock,cKey AS STRING, cName AS STRING) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -1835,14 +1838,14 @@ CLASS XSharp.CoreDb
         oRelInfo:Name   := cName
         BEFOREMOVE
         VAR result :=  oRdd:SetRel(oRelInfo)
-        AFTERMOVE 
+        AFTERMOVE
         RETURN result
         })
 
 
         /// <summary>Gets the locate condition.</summary>
         /// <returns>An object containing the scope for the current area.</returns>
-        
+
     STATIC METHOD GetScope() AS DbScopeInfo
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -1853,7 +1856,7 @@ CLASS XSharp.CoreDb
         /// <param name="scope">A Scope objhect describing the current scope.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks><note type="tip">VoDbSetScope() and CoreDb.SetScope() are aliases</note></remarks>
-        
+
     STATIC METHOD SetScope(scope AS DbScopeInfo) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -1867,7 +1870,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBSetSelect() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbSetSelect() and CoreDb.SetSelect() are aliases</note></remarks>
-        
+
     STATIC METHOD SetSelect(siNew AS INT) AS DWORD
         RETURN CoreDb.Do ({ =>
         IF siNew == -1
@@ -1877,14 +1880,14 @@ CLASS XSharp.CoreDb
         ENDIF
         IF siNew > Workareas.MaxWorkareas
             siNew := 0
-        ELSEIF siNew == 0 
+        ELSEIF siNew == 0
             RddError.PostArgumentError( __FUNCTION__, EDB_SELECT, nameof(siNew), 1, <OBJECT>{siNew})
-        ELSE      
-            RuntimeState.CurrentWorkarea := (DWORD) siNew   
+        ELSE
+            RuntimeState.CurrentWorkarea := (DWORD) siNew
         ENDIF
         RETURN (DWORD) siNew
         })
-        
+
         /// <summary>
         /// Move the record pointer relative to the current record.
         /// </summary>
@@ -1893,33 +1896,33 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBSkip() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">DbSkip(), VoDbSkip() and CoreDb.Skip() are aliases</note></remarks>
-        
+
     STATIC METHOD Skip(nRecords AS LONG) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-        BEFOREMOVE 
+        BEFOREMOVE
         VAR result := oRdd:Skip(nRecords)
-        AFTERMOVE 
+        AFTERMOVE
         RETURN result
         })
-        
+
         /// <summary>Position the cursor relative to its current position within the current scope.</summary>
         /// <param name="nRecords"></param>
         /// <param name="scope"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks><note type="tip">VoDbSkipScope() and CoreDb.SkipScope() are aliases</note></remarks>
-        
+
     STATIC METHOD SkipScope(nRecords AS LONG,scope AS DbScopeInfo) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         oRdd:SetScope(scope)
-        BEFOREMOVE 
+        BEFOREMOVE
         VAR result := oRdd:Skip(nRecords)
         AFTERMOVE
         RETURN result
         })
-        
-        
+
+
         /// <summary>Copy records to a database file in sorted order.</summary>
         /// <param name="nDest">The work area number for the target Workarea.</param>
         /// <param name="fieldNames">The field names to write specified as an _FieldNames object.</param>
@@ -1935,7 +1938,7 @@ CLASS XSharp.CoreDb
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         LOCAL info AS DbSortInfo
         info := DbSortInfo{fieldNames:FieldCount, sortNames:FieldCount}
-        CoreDb.TransSetInfo(oRdd, info:TransInfo, __FUNCTION__, nDest, fieldNames,uCobFor, uCobWhile, nNext, nRecno, lRest)        
+        CoreDb.TransSetInfo(oRdd, info:TransInfo, __FUNCTION__, nDest, fieldNames,uCobFor, uCobWhile, nNext, nRecno, lRest)
         // Now process the fieldnames in the sortnames list
         LOCAL nFld AS INT
         FOR nFld := 0 TO sortNames:FieldCount -1
@@ -1963,12 +1966,12 @@ CLASS XSharp.CoreDb
             ENDIF
             info:Items[nFld]:FieldNo := iField
         NEXT
-        BEFOREBULK 
+        BEFOREBULK
         VAR result := oRdd:Sort( info )
-        AFTERBULK  
+        AFTERBULK
         RETURN result
         })
-        
+
         /// <summary>
         /// Select a new work area by specifying its alias as a string and return the number of the current work area.
         /// </summary>
@@ -1992,7 +1995,7 @@ CLASS XSharp.CoreDb
         /// <param name="uCobFor"><include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" /></param>
         /// <param name="uCobWhile"><include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" /></param>
         /// <param name="sortNames">The sort keys, specified as an _FieldNames object.</param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
+        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
     STATIC METHOD Trans(nDest AS DWORD,fldNames AS _FieldNames,uCobFor AS ICodeblock,uCobWhile AS ICodeblock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -2001,16 +2004,16 @@ CLASS XSharp.CoreDb
         CoreDb.TransSetInfo(oRdd, info, __FUNCTION__, nDest, fldNames, uCobFor, uCobWhile, nNext, nRecno, lRest)
         BEFOREBULK
         VAR result := oRdd:Trans( info )
-        AFTERBULK 
+        AFTERBULK
         RETURN result
-        
+
         })
         /// <summary>Copy a single row from one work area to another.</summary>
         /// <param name="nDest">The work area number for the target Workarea.</param>
         /// <param name="fldNames">The field names to write specified as an _FieldNames object.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks><note type="tip">VoDbTransRec() and CoreDb.TransRec() are aliases</note></remarks>
-        
+
     STATIC METHOD TransRec(nDest AS DWORD,fldNames AS _FieldNames) AS LOGIC
         RETURN CoreDb.Do ({ =>
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -2034,7 +2037,7 @@ CLASS XSharp.CoreDb
             ENDIF
             RETURN oRdd:TransRec( dbti )
         })
-        
+
         /// <summary>
         /// Release all locks for a work area.
         /// </summary>
@@ -2044,7 +2047,7 @@ CLASS XSharp.CoreDb
         /// <remarks>This function is like DBUnlock().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// </remarks>
-        
+
     STATIC METHOD Unlock(uRecno AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
@@ -2052,8 +2055,8 @@ CLASS XSharp.CoreDb
         RAISE RecordUnLocked IIF(uRecno == NULL, oRdd:RecNo, uRecno)
         RETURN result
         })
-        
-        
+
+
         /// <summary>Release all locks for all work areas.</summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBUnlockAll().
@@ -2064,10 +2067,10 @@ CLASS XSharp.CoreDb
         VAR oRdd := RuntimeState.Workareas:CurrentWorkarea
         BEFOREBULK
         RuntimeState.Workareas:UnLockAll()
-        AFTERBULK 
+        AFTERBULK
         RETURN TRUE
         })
-        
+
         /// <overloads>
         /// <summary>
         /// Open a file
@@ -2084,11 +2087,11 @@ CLASS XSharp.CoreDb
         /// <param name="cAlias">Alias to use for the Workarea</param>
         /// <param name="lShare">Should the file be opened shared ?</param>
         /// <param name="lReadOnly">Should the file be opened readonly ?</param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
+        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBUseArea() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbUseArea() and CoreDb.UseArea() are aliases</note></remarks>
-        
+
     STATIC METHOD UseArea(lNew AS LOGIC,rddList AS _RddList,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := NULL  AS RegisteredRDD
@@ -2103,8 +2106,8 @@ CLASS XSharp.CoreDb
         })
         /// <inheritdoc cref='UseArea(System.Boolean,XSharp._RddList,System.String,System.String,System.Boolean,System.Boolean)' />
         /// <param name="rddName">Name of the RDD to use.</param>
-        
-        
+
+
     STATIC METHOD UseArea(lNew AS LOGIC,rddName AS STRING,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL rddType AS Type
@@ -2115,11 +2118,11 @@ CLASS XSharp.CoreDb
         ENDIF
         RETURN FALSE
         })
-        
-        
+
+
         /// <inheritdoc cref='UseArea(System.Boolean,XSharp._RddList,System.String,System.String,System.Boolean,System.Boolean)' />
         /// <param name="rddType">Type of the RDD to use.</param>
-        
+
     STATIC METHOD UseArea(lNew AS LOGIC,rddType AS System.Type,cName AS STRING,cAlias AS STRING,lShare AS LOGIC,lReadOnly AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL ret   := FALSE AS LOGIC
@@ -2131,15 +2134,15 @@ CLASS XSharp.CoreDb
             ret := TRUE
             NetErr( FALSE )
             cName := cName:Trim() // :ToUpperInvariant()
-            
+
             IF String.IsNullOrEmpty( cAlias )
                 TRY
                     cAlias := Path.GetFileNameWithoutExtension( cName )
                 CATCH e  AS ArgumentException
                     Fail(e)
-                    RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 3, <OBJECT>{cName} ) 
+                    RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 3, <OBJECT>{cName} )
                     ret := FALSE
-                END TRY   
+                END TRY
             ENDIF
             cAlias := cAlias:ToUpperInvariant()
             IF lNew
@@ -2151,11 +2154,11 @@ CLASS XSharp.CoreDb
                 ENDIF
             ELSE
                 area := Workareas:CurrentWorkareaNO
-            ENDIF   
+            ENDIF
             IF ret
                 Workareas:CloseArea(area)
                 LOCAL oRdd := CoreDb.CreateRDDInstance( rddType, cAlias ) AS IRdd
-                
+
                 IF oRdd == NULL
                     RddError.PostArgumentError( __FUNCTION__, EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
                     ret := FALSE
@@ -2191,35 +2194,35 @@ CLASS XSharp.CoreDb
                         Workareas:CloseArea(uiArea)
                     ENDIF
                     Workareas:CurrentWorkareaNO := uiArea
-                ENDIF   
+                ENDIF
             ENDIF
         ENDIF
-        
+
         RETURN ret
         })
-        
-        
+
+
         /// <summary>Remove all records from the current Workarea.</summary>
         /// <returns>TRUE if successful; otherwise, FALSE./// </returns>
         /// <remarks>This function is like DBZap().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbZap() and CoreDb.Zap() are aliases</note></remarks>
-        
+
     STATIC METHOD Zap() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-        BEFOREBULK 
+        BEFOREBULK
         VAR result := oRdd:Zap()
-        AFTERBULK  
+        AFTERBULK
         RETURN result
-        })      
-        
-        
-        /// <summary>Return exception object from last RDD operation.</summary>    
+        })
+
+
+        /// <summary>Return exception object from last RDD operation.</summary>
     STATIC METHOD  _ErrInfoPtr AS Exception
         IF RuntimeState.LastRddError == NULL
             RuntimeState.LastRddError := Exception {"No RDD Exception found in the runtime state"}
         ENDIF
         RETURN RuntimeState.LastRddError
-        
-END CLASS    
+
+END CLASS

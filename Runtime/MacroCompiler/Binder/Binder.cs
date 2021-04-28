@@ -383,7 +383,8 @@ namespace XSharp.MacroCompiler
                 v = Symbol.Join(v, u.Lookup(name));
             if (!v.HasFunctions())
             {
-                foreach (var u in RuntimeFunctions)
+                // prevent "Collection was modified" error
+                foreach (var u in RuntimeFunctions.ToArray())
                     v = Symbol.Join(v, u.Lookup(name));
             }
             return v;

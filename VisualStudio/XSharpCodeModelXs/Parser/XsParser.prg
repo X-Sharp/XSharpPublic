@@ -115,6 +115,18 @@ BEGIN NAMESPACE XSharpModel
          SELF:Parse(stream, lBlocks, lLocals)
          RETURN
 
+      METHOD AddCommentLine(comment AS STRING, token AS XSharpToken, cmtToken AS XCommentToken) AS VOID
+        comment := comment:Trim()
+        IF comment:IndexOf(cmtToken:Text, StringComparison.OrdinalIgnoreCase) == 0 .AND. ;
+            comment:Length > cmtToken:Text:Length
+            VAR nextchar := comment[cmtToken:Text:Length]
+            IF ! Char.IsLetterOrDigit(nextchar)
+                VAR item := XCommentTask{}{ File:=_file, Line := token:Line, Column := token:Column, Priority := cmtToken:Priority, Comment := comment}
+                _commentTasks:Add(item)
+            ENDIF
+        ENDIF
+
+
       METHOD Parse( tokenStream AS ITokenStream, lBlocks AS LOGIC, lLocals AS LOGIC) AS VOID
          LOCAL aAttribs        AS IList<XSharpToken>
          LOCAL cXmlDoc   := "" AS STRING
@@ -133,14 +145,18 @@ BEGIN NAMESPACE XSharpModel
                IF XSharpLexer.IsComment(token:Type)
                   FOREACH VAR cmtToken IN cmtTokens
                      VAR pos := token:Text:IndexOf(cmtToken:Text, StringComparison.OrdinalIgnoreCase)
+                     VAR include := FALSE
                      IF pos >= 0
-                        VAR comment := token:Text:Substring(pos)
-                        pos := comment:IndexOf('\r')
-                        IF pos > 0
-                           comment := comment.Substring(0, pos)
+                        IF token:Type == XSharpLexer.SL_COMMENT
+                            VAR comment := token:Text:Substring(2):Trim()
+                            AddCommentLine(comment, token, cmtToken)
+                         ELSEIF token:Type == XSharpLexer.ML_COMMENT
+                            VAR comment := token:Text:Substring(2, token:Text:Length-4)
+                            VAR lines :=comment:Split(<CHAR>{'\r','\n'}, StringSplitOptions.RemoveEmptyEntries)
+                            FOREACH VAR line IN lines
+                                AddCommentLine(line, token, cmtToken)
+                            NEXT
                         ENDIF
-                         VAR item := XCommentTask{}{ File:=_file, Line := token:Line, Column := token:Column, Priority := cmtToken:Priority, Comment := comment}
-                         _commentTasks:Add(item)
                      ENDIF
                   NEXT
                ENDIF

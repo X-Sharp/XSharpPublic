@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -15,7 +15,7 @@ USING System.Diagnostics
 #ifdef TESTCDX
     GLOBAL LOGGING := TRUE AS LOGIC
     GLOBAL VALIDATETREE := FALSE AS LOGIC
-    
+
 #endif
 
 BEGIN NAMESPACE XSharp.RDD
@@ -29,46 +29,46 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL PROPERTY Driver  AS STRING GET "DBFCDX"
         INTERNAL PROPERTY MustForceRel AS LOGIC GET _RelInfoPending != NULL
 
-        
+
         CONSTRUCTOR()
             SUPER()
             _indexList := CdxOrderBagList{SELF}
             RETURN
-            
-            
+
+
             #ifdef TESTCDX
             PUBLIC STATIC METHOD StartLogging AS VOID
                 LOGGING := TRUE
-                RETURN 
-                
+                RETURN
+
             PUBLIC STATIC METHOD StopLogging AS VOID
                 LOGGING := FALSE
-                RETURN 
-                
+                RETURN
+
             PUBLIC STATIC METHOD ValidateTree AS VOID
                 VALIDATETREE := TRUE
                 CoreDb.GoTop()
                 VALIDATETREE := FALSE
-                RETURN 
+                RETURN
             #endif
-            
-            
-            
+
+
+
             #region Order Support
-            
+
             VIRTUAL METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
                 VAR result := SELF:_indexList:Create(orderInfo)
                 if result
                     SELF:MarkDbfHeader(SELF:_FileName,TRUE)
                 endif
                 RETURN result
-                
+
             VIRTUAL METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
                 RETURN SELF:_indexList:Destroy(orderInfo)
-                
+
             METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
                 RETURN SUPER:OrderCondition(info)
-                
+
             VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
                 BEGIN LOCK SELF
                     SELF:GoCold()
@@ -76,7 +76,7 @@ BEGIN NAMESPACE XSharp.RDD
                     fullPath := orderInfo:BagName
                     IF File(fullPath)
                         fullPath := FPathName()
-                    ELSEIF String.IsNullOrEmpty(Path.GetExtension(fullPath)) 
+                    ELSEIF String.IsNullOrEmpty(Path.GetExtension(fullPath))
                         fullPath := Path.ChangeExtension(fullPath, CdxOrderBag.CDX_EXTENSION)
                         IF File(fullPath)
                             fullPath := FPathName()
@@ -100,26 +100,26 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                     RETURN lOk
                 END LOCK
-                
-            
+
+
             METHOD _CloseAllIndexes(orderInfo AS DbOrderInfo, lCloseStructural AS LOGIC) AS LOGIC
                 RETURN SELF:_indexList:Delete(orderInfo, lCloseStructural)
-                
+
             VIRTUAL METHOD OrderListDelete(orderInfo AS DbOrderInfo) AS LOGIC
                 BEGIN LOCK SELF
                     SELF:GoCold()
                     RETURN SELF:_CloseAllIndexes(orderInfo, FALSE)
                 END LOCK
-            
+
             VIRTUAL METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC
                 BEGIN LOCK SELF
                     SELF:GoCold()
                     RETURN SELF:_indexList:Focus(orderInfo)
                 END LOCK
-            
+
             VIRTUAL METHOD OrderListRebuild() AS LOGIC
                 BEGIN LOCK SELF
-                    IF SELF:Shared 
+                    IF SELF:Shared
                         // Error !! Cannot be written !
                         SELF:_dbfError( ERDD.SHARED, XSharp.Gencode.EG_SHARED )
                         RETURN FALSE
@@ -128,11 +128,11 @@ BEGIN NAMESPACE XSharp.RDD
                         SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY)
                         RETURN FALSE
                     ENDIF
-                    
+
                     SELF:GoCold()
                     RETURN SELF:_indexList:Rebuild()
                 END LOCK
-            
+
             OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
                 LOCAL result AS LONG
                 LOCAL isOk := FALSE AS LOGIC
@@ -146,7 +146,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF workOrder == NULL .AND. info:IsEmpty
                     workOrder := SELF:CurrentOrder
                 ENDIF
-                
+
                 BEGIN SWITCH nOrdinal
                 CASE DBOI_CONDITION
                     IF workOrder != NULL
@@ -157,13 +157,13 @@ BEGIN NAMESPACE XSharp.RDD
                         info:Result := workOrder:Expression
                     ENDIF
                 CASE DBOI_ORDERCOUNT
-                    IF oBag == NULL        
+                    IF oBag == NULL
                         info:Result := SELF:_indexList:Count
                     ELSE
-                        info:Result := oBag:Tags:Count    
+                        info:Result := oBag:Tags:Count
                     ENDIF
                 CASE DBOI_POSITION
-                    VAR oState := SELF:_GetState()        
+                    VAR oState := SELF:_GetState()
                     IF workOrder == NULL
                         info:Result := SELF:RecNo
                     ELSE
@@ -202,13 +202,13 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DBOI_BAGNAME
                     //CASE DBOI_INDEXNAME // alias
                     IF info:Order IS LONG VAR nOrder
-                        info:Result := SELF:_indexList:BagName(nOrder)                        
+                        info:Result := SELF:_indexList:BagName(nOrder)
                     ELSEIF workOrder != NULL
                             info:Result := workOrder:FileName
                     ELSE
                         info:Result := ""
                     ENDIF
-                        
+
                 CASE DBOI_NAME
                     IF workOrder != NULL
                         info:Result := workOrder:_orderName
@@ -349,7 +349,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSE
                         info:Result := FALSE
                     ENDIF
-                    
+
                 CASE DBOI_USER + 42
                 CASE DBOI_DUMP
                     // Dump Cdx to Txt file
@@ -369,7 +369,7 @@ BEGIN NAMESPACE XSharp.RDD
                     SUPER:OrderInfo(nOrdinal, info)
                 END SWITCH
                 RETURN info:Result
-                
+
             #endregion
         #region relations
         METHOD ForceRel() AS LOGIC
@@ -378,13 +378,13 @@ BEGIN NAMESPACE XSharp.RDD
                 // Save the current context
                 LOCAL currentRelation := SELF:_RelInfoPending AS DbRelInfo
                 SELF:_RelInfoPending := NULL
-                VAR oParent := (DBFCDX) currentRelation:Parent 
+                VAR oParent := (DBFCDX) currentRelation:Parent
                 IF oParent:EoF
                     //
                     isOk := SELF:GoTo( 0 )
                 ELSE
                     isOk := SELF:RelEval( currentRelation )
-                    
+
                     IF isOk .AND. !((DBFCDX)currentRelation:Parent):EoF
                         TRY
                             LOCAL seekInfo AS DbSeekInfo
@@ -392,40 +392,40 @@ BEGIN NAMESPACE XSharp.RDD
                             seekInfo:Value := SELF:_EvalResult
                             seekInfo:SoftSeek := FALSE
                             isOk := SELF:Seek(seekInfo)
-                            
+
                         CATCH ex AS InvalidCastException
-                            SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE,Gencode.EG_DATATYPE,  "DBFNTX.ForceRel") 
-                            
+                            SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE,Gencode.EG_DATATYPE,  "DBFNTX.ForceRel")
+
                         END TRY
                     ENDIF
                 ENDIF
             ENDIF
-            
+
             RETURN isOk
             #endregion
         #region Pack, Zap
         METHOD Pack() AS LOGIC
             LOCAL isOk AS LOGIC
-            
+
             isOk := SUPER:Pack()
             IF isOk
                 isOk := SELF:OrderListRebuild()
             ENDIF
             RETURN isOk
-            
+
         PUBLIC METHOD Zap() AS LOGIC
             LOCAL isOk AS LOGIC
-            
+
             isOk := SUPER:Zap()
             IF isOk
                 isOk := SELF:OrderListRebuild()
             ENDIF
             RETURN isOk
-            
+
         #endregion
-        
+
         #region Open, Close, Create
-        
+
         PUBLIC OVERRIDE METHOD Close() AS LOGIC
             LOCAL orderInfo AS DbOrderInfo
             BEGIN LOCK SELF
@@ -435,7 +435,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_CloseAllIndexes(orderInfo, TRUE)
                 RETURN SUPER:Close()
             END LOCK
-        
+
         PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL lMemo := FALSE AS LOGIC
@@ -458,10 +458,10 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     SELF:_Header:Version := DBFVersion.FoxBaseDBase3NoMemo
                 ENDIF
-            ENDIF    
+            ENDIF
             RETURN isOk
-            
-        
+
+
         METHOD Open(info AS DbOpenInfo) AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := SUPER:Open(info)
@@ -473,7 +473,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:GoTop()
             ENDIF
             RETURN lOk
-            
+
         PROTECTED METHOD OpenProductionIndex(info AS DbOpenInfo) AS VOID
             VAR cExt  := CdxOrderBag.GetIndexExtFromDbfExt(info:FileName)
             IF ! String.IsNullOrEmpty(cExt)
@@ -496,40 +496,42 @@ BEGIN NAMESPACE XSharp.RDD
                     wanted &= _NOT(DBFTableFlags.HasStructuralCDX)
                 ENDIF
                 IF wanted != SELF:Header:TableFlags .or. lForce
-                    SELF:Header:TableFlags := wanted
-                    SELF:Header:Write()
+                    IF ! SELF:_ReadOnly
+                        SELF:Header:TableFlags := wanted
+                        SELF:Header:Write()
+                    ENDIF
                 ENDIF
             ENDIF
-                
+
         #endregion
-        
-        
-        
+
+
+
         #REGION Move
-        
+
         INTERNAL METHOD ReadRecord() AS LOGIC
             RETURN SELF:_readRecord()
-            
-            
+
+
         PUBLIC METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
-            
+
             isOk := FALSE
             BEGIN LOCK SELF
                 VAR index := SELF:CurrentOrder
                 IF index != NULL
                     isOk := index:Seek(seekInfo)
                 ENDIF
-                IF  !isOk 
+                IF  !isOk
                     SELF:_dbfError(Subcodes.ERDD_DATATYPE, Gencode.EG_NOORDER )
                 ENDIF
                 SELF:_CheckEofBof()
             END LOCK
             RETURN isOk
-            
+
         PUBLIC METHOD GoBottom() AS LOGIC
             BEGIN LOCK SELF
-                LOCAL result AS LOGIC    
+                LOCAL result AS LOGIC
                 IF SELF:CurrentOrder != NULL
                     result := SELF:CurrentOrder:GoBottom()
                     if (! result)
@@ -543,10 +545,10 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 RETURN result
             END LOCK
-        
+
         PUBLIC METHOD GoTop() AS LOGIC
             BEGIN LOCK SELF
-                LOCAL result AS LOGIC    
+                LOCAL result AS LOGIC
                 IF SELF:CurrentOrder != NULL
                     result := SELF:CurrentOrder:GoTop()
                     if (! result)
@@ -561,24 +563,24 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 RETURN result
             END LOCK
-        
+
         METHOD __Goto(nRec AS LONG) AS LOGIC
             // Skip without reset of topstack
             RETURN SUPER:GoTo(nRec)
-            
+
         METHOD GoTo(nRec AS LONG) AS LOGIC
-            LOCAL result AS LOGIC    
+            LOCAL result AS LOGIC
             SELF:GoCold()
             IF SELF:CurrentOrder != NULL
                 SELF:CurrentOrder:ClearStack() // force to reseek later
             ENDIF
             result := SUPER:GoTo(nRec)
             RETURN result
-            
-            
+
+
         PUBLIC METHOD SkipRaw( move AS LONG ) AS LOGIC
             BEGIN LOCK SELF
-                LOCAL result AS LOGIC    
+                LOCAL result AS LOGIC
                 IF SELF:CurrentOrder != NULL
                     result := SELF:CurrentOrder:SkipRaw(move)
                     SELF:_CheckEofBof()
@@ -587,28 +589,28 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 RETURN result
             END LOCK
-            
+
         #ENDREGION
-        
+
         #REGION GoCold, GoHot, Flush
         PUBLIC OVERRIDE METHOD GoCold() AS LOGIC
             LOCAL isOk AS LOGIC
-            
+
             isOk := TRUE
             BEGIN LOCK SELF
-                IF !SELF:IsHot 
+                IF !SELF:IsHot
                     RETURN isOk
                 ENDIF
-                isOk := SELF:_indexList:GoCold() 
+                isOk := SELF:_indexList:GoCold()
                 IF !isOk
                     RETURN isOk
                 ENDIF
                 RETURN SUPER:GoCold()
             END LOCK
-        
+
         PUBLIC OVERRIDE METHOD GoHot() AS LOGIC
             LOCAL isOk AS LOGIC
-            
+
             isOk := TRUE
             BEGIN LOCK SELF
                 isOk := SUPER:GoHot()
@@ -617,16 +619,16 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 RETURN SELF:_indexList:GoHot()
             END LOCK
-        
+
         PUBLIC OVERRIDE METHOD Flush() AS LOGIC
             LOCAL isOk AS LOGIC
-            
+
             isOk := TRUE
             BEGIN LOCK SELF
                 isOk := SUPER:Flush()
                 RETURN SELF:_indexList:Flush() .AND. isOk
             END LOCK
-            
+
         #endregion
 
         INTERNAL METHOD _GetState() AS CdxState
@@ -642,6 +644,6 @@ BEGIN NAMESPACE XSharp.RDD
             PROPERTY BoF AS LOGIC AUTO
             PROPERTY RecNo AS LONG AUTO
         END CLASS
-    END CLASS    
-    
+    END CLASS
+
 END NAMESPACE

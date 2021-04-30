@@ -62,7 +62,7 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="BraceMatching\BraceMatching.cs" />
-    <Compile Include="EditorConfigSettings.cs" />
+    <Compile Include="Formatting\EditorConfigSettings.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Lookup\XSharpSearchLocation.cs" />

@@ -119,10 +119,8 @@ namespace XSharp.Project
             this.mainPanel.Controls.Add(this.chkPPO, 0, 2);
             this.mainPanel.Controls.Add(this.chkXMLDocumentationFile, 0, 20);
             this.mainPanel.Controls.Add(this.lblPlatformTarget, 0, 3);
-            this.mainPanel.Controls.Add(this.comboPlatformTarget, 1, 3);
             this.mainPanel.Controls.Add(this.chkOptimize, 0, 4);
             this.mainPanel.Controls.Add(this.chkUseSharedCompilation, 0, 5);
-            this.mainPanel.Controls.Add(this.chkPrefer32Bit, 2, 3);
             this.mainPanel.Controls.Add(this.lblOutputPath, 0, 16);
             this.mainPanel.Controls.Add(this.lblCommandLineOption, 0, 6);
             this.mainPanel.Controls.Add(this.txtCommandLineOption, 1, 6);
@@ -137,8 +135,10 @@ namespace XSharp.Project
             this.mainPanel.Controls.Add(this.chkSuppressRCWarnings, 0, 14);
             this.mainPanel.Controls.Add(this.txtSpecificWarnings, 1, 13);
             this.mainPanel.Controls.Add(this.btnKeyFile, 2, 24);
+            this.mainPanel.Controls.Add(this.comboPlatformTarget, 1, 3);
+            this.mainPanel.Controls.Add(this.chkPrefer32Bit, 2, 3);
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainPanel.ForeColor = System.Drawing.Color.Black;
+            this.mainPanel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.mainPanel.Location = new System.Drawing.Point(0, 0);
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.RowCount = 27;
@@ -168,7 +168,7 @@ namespace XSharp.Project
             this.mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 5F));
             this.mainPanel.Size = new System.Drawing.Size(633, 618);
             this.mainPanel.TabIndex = 0;
             // 
@@ -182,8 +182,8 @@ namespace XSharp.Project
             this.panelSigning.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.panelSigning.Controls.Add(this.lblSigningLine, 1, 0);
             this.panelSigning.Controls.Add(this.lblSigning, 0, 0);
-            this.panelSigning.ForeColor = System.Drawing.Color.Black;
-            this.panelSigning.Location = new System.Drawing.Point(0, 501);
+            this.panelSigning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.panelSigning.Location = new System.Drawing.Point(0, 467);
             this.panelSigning.Margin = new System.Windows.Forms.Padding(0);
             this.panelSigning.Name = "panelSigning";
             this.panelSigning.RowCount = 1;
@@ -197,7 +197,7 @@ namespace XSharp.Project
             this.lblSigningLine.AccessibleRole = System.Windows.Forms.AccessibleRole.Separator;
             this.lblSigningLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSigningLine.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.lblSigningLine.ForeColor = System.Drawing.Color.Black;
+            this.lblSigningLine.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblSigningLine.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.lblSigningLine.Location = new System.Drawing.Point(51, 6);
             this.lblSigningLine.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
@@ -209,7 +209,7 @@ namespace XSharp.Project
             // 
             this.lblSigning.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSigning.AutoSize = true;
-            this.lblSigning.ForeColor = System.Drawing.Color.Black;
+            this.lblSigning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblSigning.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.lblSigning.Location = new System.Drawing.Point(3, 0);
             this.lblSigning.Name = "lblSigning";
@@ -227,8 +227,8 @@ namespace XSharp.Project
             this.outputTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.outputTableLayoutPanel.Controls.Add(this.outputLineLabel, 1, 0);
             this.outputTableLayoutPanel.Controls.Add(this.outputLabel, 0, 0);
-            this.outputTableLayoutPanel.ForeColor = System.Drawing.Color.Black;
-            this.outputTableLayoutPanel.Location = new System.Drawing.Point(0, 373);
+            this.outputTableLayoutPanel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.outputTableLayoutPanel.Location = new System.Drawing.Point(0, 344);
             this.outputTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.outputTableLayoutPanel.Name = "outputTableLayoutPanel";
             this.outputTableLayoutPanel.RowCount = 1;
@@ -242,7 +242,7 @@ namespace XSharp.Project
             this.outputLineLabel.AccessibleRole = System.Windows.Forms.AccessibleRole.Separator;
             this.outputLineLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.outputLineLabel.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.outputLineLabel.ForeColor = System.Drawing.Color.Black;
+            this.outputLineLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.outputLineLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.outputLineLabel.Location = new System.Drawing.Point(48, 6);
             this.outputLineLabel.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
@@ -254,7 +254,7 @@ namespace XSharp.Project
             // 
             this.outputLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.outputLabel.AutoSize = true;
-            this.outputLabel.ForeColor = System.Drawing.Color.Black;
+            this.outputLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.outputLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.outputLabel.Location = new System.Drawing.Point(3, 0);
             this.outputLabel.Name = "outputLabel";
@@ -272,8 +272,8 @@ namespace XSharp.Project
             this.treatWarningsAsErrorsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.treatWarningsAsErrorsTableLayoutPanel.Controls.Add(this.treatWarningsAsErrorsLineLabel, 1, 0);
             this.treatWarningsAsErrorsTableLayoutPanel.Controls.Add(this.treatWarningsAsErrorsLabel, 0, 0);
-            this.treatWarningsAsErrorsTableLayoutPanel.ForeColor = System.Drawing.Color.Black;
-            this.treatWarningsAsErrorsTableLayoutPanel.Location = new System.Drawing.Point(0, 252);
+            this.treatWarningsAsErrorsTableLayoutPanel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.treatWarningsAsErrorsTableLayoutPanel.Location = new System.Drawing.Point(0, 233);
             this.treatWarningsAsErrorsTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.treatWarningsAsErrorsTableLayoutPanel.Name = "treatWarningsAsErrorsTableLayoutPanel";
             this.treatWarningsAsErrorsTableLayoutPanel.RowCount = 1;
@@ -286,7 +286,7 @@ namespace XSharp.Project
             this.treatWarningsAsErrorsLineLabel.AccessibleRole = System.Windows.Forms.AccessibleRole.Separator;
             this.treatWarningsAsErrorsLineLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.treatWarningsAsErrorsLineLabel.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.treatWarningsAsErrorsLineLabel.ForeColor = System.Drawing.Color.Black;
+            this.treatWarningsAsErrorsLineLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.treatWarningsAsErrorsLineLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.treatWarningsAsErrorsLineLabel.Location = new System.Drawing.Point(126, 6);
             this.treatWarningsAsErrorsLineLabel.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
@@ -298,7 +298,7 @@ namespace XSharp.Project
             // 
             this.treatWarningsAsErrorsLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.treatWarningsAsErrorsLabel.AutoSize = true;
-            this.treatWarningsAsErrorsLabel.ForeColor = System.Drawing.Color.Black;
+            this.treatWarningsAsErrorsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.treatWarningsAsErrorsLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.treatWarningsAsErrorsLabel.Location = new System.Drawing.Point(0, 0);
             this.treatWarningsAsErrorsLabel.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
@@ -311,10 +311,10 @@ namespace XSharp.Project
             // 
             this.lblWarningLevel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblWarningLevel.AutoSize = true;
-            this.lblWarningLevel.ForeColor = System.Drawing.Color.Black;
+            this.lblWarningLevel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblWarningLevel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblWarningLevel.Location = new System.Drawing.Point(20, 198);
-            this.lblWarningLevel.Margin = new System.Windows.Forms.Padding(20, 11, 3, 3);
+            this.lblWarningLevel.Location = new System.Drawing.Point(20, 184);
+            this.lblWarningLevel.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
             this.lblWarningLevel.Name = "lblWarningLevel";
             this.lblWarningLevel.Size = new System.Drawing.Size(75, 13);
             this.lblWarningLevel.TabIndex = 13;
@@ -329,8 +329,8 @@ namespace XSharp.Project
             this.panelErrorsAndWarnings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.panelErrorsAndWarnings.Controls.Add(this.lblErrorsAndWarnings, 0, 0);
             this.panelErrorsAndWarnings.Controls.Add(this.lblErrorsAndWarningsLine, 1, 0);
-            this.panelErrorsAndWarnings.ForeColor = System.Drawing.Color.Black;
-            this.panelErrorsAndWarnings.Location = new System.Drawing.Point(0, 170);
+            this.panelErrorsAndWarnings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.panelErrorsAndWarnings.Location = new System.Drawing.Point(0, 164);
             this.panelErrorsAndWarnings.Margin = new System.Windows.Forms.Padding(0);
             this.panelErrorsAndWarnings.Name = "panelErrorsAndWarnings";
             this.panelErrorsAndWarnings.RowCount = 1;
@@ -343,7 +343,7 @@ namespace XSharp.Project
             // 
             this.lblErrorsAndWarnings.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblErrorsAndWarnings.AutoSize = true;
-            this.lblErrorsAndWarnings.ForeColor = System.Drawing.Color.Black;
+            this.lblErrorsAndWarnings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblErrorsAndWarnings.Location = new System.Drawing.Point(0, 0);
             this.lblErrorsAndWarnings.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.lblErrorsAndWarnings.Name = "lblErrorsAndWarnings";
@@ -355,7 +355,7 @@ namespace XSharp.Project
             // 
             this.lblErrorsAndWarningsLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblErrorsAndWarningsLine.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.lblErrorsAndWarningsLine.ForeColor = System.Drawing.Color.Black;
+            this.lblErrorsAndWarningsLine.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblErrorsAndWarningsLine.Location = new System.Drawing.Point(109, 6);
             this.lblErrorsAndWarningsLine.Name = "lblErrorsAndWarningsLine";
             this.lblErrorsAndWarningsLine.Size = new System.Drawing.Size(524, 1);
@@ -370,7 +370,7 @@ namespace XSharp.Project
             this.panelTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.panelTop.Controls.Add(this.lblGeneral, 0, 0);
             this.panelTop.Controls.Add(this.lblGeneralLine, 1, 0);
-            this.panelTop.ForeColor = System.Drawing.Color.Black;
+            this.panelTop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Margin = new System.Windows.Forms.Padding(0);
             this.panelTop.Name = "panelTop";
@@ -384,7 +384,7 @@ namespace XSharp.Project
             // 
             this.lblGeneral.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblGeneral.AutoSize = true;
-            this.lblGeneral.ForeColor = System.Drawing.Color.Black;
+            this.lblGeneral.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblGeneral.Location = new System.Drawing.Point(0, 0);
             this.lblGeneral.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.lblGeneral.Name = "lblGeneral";
@@ -396,7 +396,7 @@ namespace XSharp.Project
             // 
             this.lblGeneralLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGeneralLine.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.lblGeneralLine.ForeColor = System.Drawing.Color.Black;
+            this.lblGeneralLine.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblGeneralLine.Location = new System.Drawing.Point(50, 6);
             this.lblGeneralLine.Name = "lblGeneralLine";
             this.lblGeneralLine.Size = new System.Drawing.Size(583, 1);
@@ -404,10 +404,10 @@ namespace XSharp.Project
             // 
             // txtDefineConstants
             // 
-            this.txtDefineConstants.BackColor = System.Drawing.Color.White;
-            this.txtDefineConstants.ForeColor = System.Drawing.Color.Black;
-            this.txtDefineConstants.Location = new System.Drawing.Point(198, 24);
-            this.txtDefineConstants.Margin = new System.Windows.Forms.Padding(3, 11, 3, 3);
+            this.txtDefineConstants.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.txtDefineConstants.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.txtDefineConstants.Location = new System.Drawing.Point(198, 19);
+            this.txtDefineConstants.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.txtDefineConstants.Name = "txtDefineConstants";
             this.txtDefineConstants.Size = new System.Drawing.Size(300, 20);
             this.txtDefineConstants.TabIndex = 3;
@@ -415,9 +415,9 @@ namespace XSharp.Project
             // lblDefineConstants
             // 
             this.lblDefineConstants.AutoSize = true;
-            this.lblDefineConstants.ForeColor = System.Drawing.Color.Black;
-            this.lblDefineConstants.Location = new System.Drawing.Point(20, 24);
-            this.lblDefineConstants.Margin = new System.Windows.Forms.Padding(20, 11, 3, 3);
+            this.lblDefineConstants.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lblDefineConstants.Location = new System.Drawing.Point(23, 19);
+            this.lblDefineConstants.Margin = new System.Windows.Forms.Padding(23, 6, 3, 3);
             this.lblDefineConstants.Name = "lblDefineConstants";
             this.lblDefineConstants.Size = new System.Drawing.Size(140, 13);
             this.lblDefineConstants.TabIndex = 4;
@@ -427,10 +427,10 @@ namespace XSharp.Project
             // 
             this.lblDisabledWarnings.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblDisabledWarnings.AutoSize = true;
-            this.lblDisabledWarnings.ForeColor = System.Drawing.Color.Black;
+            this.lblDisabledWarnings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblDisabledWarnings.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblDisabledWarnings.Location = new System.Drawing.Point(20, 224);
-            this.lblDisabledWarnings.Margin = new System.Windows.Forms.Padding(20, 3, 3, 11);
+            this.lblDisabledWarnings.Location = new System.Drawing.Point(20, 210);
+            this.lblDisabledWarnings.Margin = new System.Windows.Forms.Padding(20, 3, 3, 6);
             this.lblDisabledWarnings.Name = "lblDisabledWarnings";
             this.lblDisabledWarnings.Size = new System.Drawing.Size(99, 13);
             this.lblDisabledWarnings.TabIndex = 15;
@@ -439,9 +439,9 @@ namespace XSharp.Project
             // cboWarningLevel
             // 
             this.cboWarningLevel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cboWarningLevel.BackColor = System.Drawing.Color.White;
+            this.cboWarningLevel.BackColor = System.Drawing.Color.WhiteSmoke;
             this.cboWarningLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboWarningLevel.ForeColor = System.Drawing.Color.Black;
+            this.cboWarningLevel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.cboWarningLevel.FormattingEnabled = true;
             this.cboWarningLevel.Items.AddRange(new object[] {
             "0",
@@ -450,8 +450,7 @@ namespace XSharp.Project
             "3",
             "4",
             "5"});
-            this.cboWarningLevel.Location = new System.Drawing.Point(198, 194);
-            this.cboWarningLevel.Margin = new System.Windows.Forms.Padding(3, 11, 3, 3);
+            this.cboWarningLevel.Location = new System.Drawing.Point(198, 180);
             this.cboWarningLevel.Name = "cboWarningLevel";
             this.cboWarningLevel.Size = new System.Drawing.Size(125, 21);
             this.cboWarningLevel.TabIndex = 16;
@@ -459,10 +458,10 @@ namespace XSharp.Project
             // txtDisabledWarnings
             // 
             this.txtDisabledWarnings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDisabledWarnings.BackColor = System.Drawing.Color.White;
-            this.txtDisabledWarnings.ForeColor = System.Drawing.Color.Black;
-            this.txtDisabledWarnings.Location = new System.Drawing.Point(198, 221);
-            this.txtDisabledWarnings.Margin = new System.Windows.Forms.Padding(3, 3, 3, 11);
+            this.txtDisabledWarnings.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.txtDisabledWarnings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.txtDisabledWarnings.Location = new System.Drawing.Point(198, 207);
+            this.txtDisabledWarnings.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
             this.txtDisabledWarnings.Name = "txtDisabledWarnings";
             this.txtDisabledWarnings.Size = new System.Drawing.Size(300, 20);
             this.txtDisabledWarnings.TabIndex = 17;
@@ -470,10 +469,10 @@ namespace XSharp.Project
             // txtOutputPath
             // 
             this.txtOutputPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtOutputPath.BackColor = System.Drawing.Color.White;
-            this.txtOutputPath.ForeColor = System.Drawing.Color.Black;
-            this.txtOutputPath.Location = new System.Drawing.Point(198, 398);
-            this.txtOutputPath.Margin = new System.Windows.Forms.Padding(3, 11, 3, 3);
+            this.txtOutputPath.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.txtOutputPath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.txtOutputPath.Location = new System.Drawing.Point(198, 364);
+            this.txtOutputPath.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.txtOutputPath.Name = "txtOutputPath";
             this.txtOutputPath.ReadOnly = true;
             this.txtOutputPath.Size = new System.Drawing.Size(300, 20);
@@ -483,10 +482,10 @@ namespace XSharp.Project
             // 
             this.btnOutputPathBrowse.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnOutputPathBrowse.AutoSize = true;
-            this.btnOutputPathBrowse.ForeColor = System.Drawing.Color.Black;
+            this.btnOutputPathBrowse.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.btnOutputPathBrowse.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnOutputPathBrowse.Location = new System.Drawing.Point(504, 397);
-            this.btnOutputPathBrowse.Margin = new System.Windows.Forms.Padding(3, 11, 0, 3);
+            this.btnOutputPathBrowse.Location = new System.Drawing.Point(504, 363);
+            this.btnOutputPathBrowse.Margin = new System.Windows.Forms.Padding(3, 6, 0, 3);
             this.btnOutputPathBrowse.Name = "btnOutputPathBrowse";
             this.btnOutputPathBrowse.Size = new System.Drawing.Size(26, 23);
             this.btnOutputPathBrowse.TabIndex = 29;
@@ -497,9 +496,9 @@ namespace XSharp.Project
             // 
             this.lblIntermediateOutputPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblIntermediateOutputPath.AutoSize = true;
-            this.lblIntermediateOutputPath.ForeColor = System.Drawing.Color.Black;
+            this.lblIntermediateOutputPath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblIntermediateOutputPath.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblIntermediateOutputPath.Location = new System.Drawing.Point(20, 431);
+            this.lblIntermediateOutputPath.Location = new System.Drawing.Point(20, 397);
             this.lblIntermediateOutputPath.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
             this.lblIntermediateOutputPath.Name = "lblIntermediateOutputPath";
             this.lblIntermediateOutputPath.Size = new System.Drawing.Size(127, 13);
@@ -510,9 +509,9 @@ namespace XSharp.Project
             // 
             this.txtXMLDocumentationFile.AccessibleName = "XML Document File Path";
             this.txtXMLDocumentationFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtXMLDocumentationFile.BackColor = System.Drawing.Color.White;
-            this.txtXMLDocumentationFile.ForeColor = System.Drawing.Color.Black;
-            this.txtXMLDocumentationFile.Location = new System.Drawing.Point(198, 455);
+            this.txtXMLDocumentationFile.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.txtXMLDocumentationFile.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.txtXMLDocumentationFile.Location = new System.Drawing.Point(198, 421);
             this.txtXMLDocumentationFile.Name = "txtXMLDocumentationFile";
             this.txtXMLDocumentationFile.ReadOnly = true;
             this.txtXMLDocumentationFile.Size = new System.Drawing.Size(300, 20);
@@ -521,9 +520,9 @@ namespace XSharp.Project
             // txtIntermediateOutputPath
             // 
             this.txtIntermediateOutputPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtIntermediateOutputPath.BackColor = System.Drawing.Color.White;
-            this.txtIntermediateOutputPath.ForeColor = System.Drawing.Color.Black;
-            this.txtIntermediateOutputPath.Location = new System.Drawing.Point(198, 427);
+            this.txtIntermediateOutputPath.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.txtIntermediateOutputPath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.txtIntermediateOutputPath.Location = new System.Drawing.Point(198, 393);
             this.txtIntermediateOutputPath.Name = "txtIntermediateOutputPath";
             this.txtIntermediateOutputPath.ReadOnly = true;
             this.txtIntermediateOutputPath.Size = new System.Drawing.Size(300, 20);
@@ -533,9 +532,9 @@ namespace XSharp.Project
             // 
             this.btnIntermediateOutputPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnIntermediateOutputPath.AutoSize = true;
-            this.btnIntermediateOutputPath.ForeColor = System.Drawing.Color.Black;
+            this.btnIntermediateOutputPath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.btnIntermediateOutputPath.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnIntermediateOutputPath.Location = new System.Drawing.Point(504, 426);
+            this.btnIntermediateOutputPath.Location = new System.Drawing.Point(504, 392);
             this.btnIntermediateOutputPath.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.btnIntermediateOutputPath.Name = "btnIntermediateOutputPath";
             this.btnIntermediateOutputPath.Size = new System.Drawing.Size(26, 23);
@@ -546,8 +545,8 @@ namespace XSharp.Project
             // chkPPO
             // 
             this.chkPPO.AutoSize = true;
-            this.chkPPO.ForeColor = System.Drawing.Color.Black;
-            this.chkPPO.Location = new System.Drawing.Point(23, 50);
+            this.chkPPO.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkPPO.Location = new System.Drawing.Point(23, 45);
             this.chkPPO.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkPPO.Name = "chkPPO";
             this.chkPPO.Size = new System.Drawing.Size(169, 17);
@@ -559,9 +558,9 @@ namespace XSharp.Project
             // 
             this.chkXMLDocumentationFile.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkXMLDocumentationFile.AutoSize = true;
-            this.chkXMLDocumentationFile.ForeColor = System.Drawing.Color.Black;
+            this.chkXMLDocumentationFile.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.chkXMLDocumentationFile.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.chkXMLDocumentationFile.Location = new System.Drawing.Point(23, 456);
+            this.chkXMLDocumentationFile.Location = new System.Drawing.Point(23, 422);
             this.chkXMLDocumentationFile.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkXMLDocumentationFile.Name = "chkXMLDocumentationFile";
             this.chkXMLDocumentationFile.Size = new System.Drawing.Size(140, 17);
@@ -572,9 +571,9 @@ namespace XSharp.Project
             // lblPlatformTarget
             // 
             this.lblPlatformTarget.AutoSize = true;
-            this.lblPlatformTarget.ForeColor = System.Drawing.Color.Black;
-            this.lblPlatformTarget.Location = new System.Drawing.Point(20, 81);
-            this.lblPlatformTarget.Margin = new System.Windows.Forms.Padding(20, 11, 3, 3);
+            this.lblPlatformTarget.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.lblPlatformTarget.Location = new System.Drawing.Point(20, 71);
+            this.lblPlatformTarget.Margin = new System.Windows.Forms.Padding(20, 6, 3, 3);
             this.lblPlatformTarget.Name = "lblPlatformTarget";
             this.lblPlatformTarget.Size = new System.Drawing.Size(79, 13);
             this.lblPlatformTarget.TabIndex = 7;
@@ -583,11 +582,11 @@ namespace XSharp.Project
             // comboPlatformTarget
             // 
             this.comboPlatformTarget.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.comboPlatformTarget.BackColor = System.Drawing.Color.White;
+            this.comboPlatformTarget.BackColor = System.Drawing.Color.WhiteSmoke;
             this.comboPlatformTarget.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboPlatformTarget.ForeColor = System.Drawing.Color.Black;
+            this.comboPlatformTarget.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.comboPlatformTarget.FormattingEnabled = true;
-            this.comboPlatformTarget.Location = new System.Drawing.Point(198, 73);
+            this.comboPlatformTarget.Location = new System.Drawing.Point(198, 68);
             this.comboPlatformTarget.Name = "comboPlatformTarget";
             this.comboPlatformTarget.Size = new System.Drawing.Size(133, 21);
             this.comboPlatformTarget.TabIndex = 7;
@@ -596,8 +595,8 @@ namespace XSharp.Project
             // 
             this.chkOptimize.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkOptimize.AutoSize = true;
-            this.chkOptimize.ForeColor = System.Drawing.Color.Black;
-            this.chkOptimize.Location = new System.Drawing.Point(23, 100);
+            this.chkOptimize.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkOptimize.Location = new System.Drawing.Point(23, 95);
             this.chkOptimize.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkOptimize.Name = "chkOptimize";
             this.chkOptimize.Size = new System.Drawing.Size(66, 17);
@@ -609,8 +608,8 @@ namespace XSharp.Project
             // 
             this.chkUseSharedCompilation.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUseSharedCompilation.AutoSize = true;
-            this.chkUseSharedCompilation.ForeColor = System.Drawing.Color.Black;
-            this.chkUseSharedCompilation.Location = new System.Drawing.Point(23, 123);
+            this.chkUseSharedCompilation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkUseSharedCompilation.Location = new System.Drawing.Point(23, 118);
             this.chkUseSharedCompilation.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkUseSharedCompilation.Name = "chkUseSharedCompilation";
             this.chkUseSharedCompilation.Size = new System.Drawing.Size(125, 17);
@@ -621,8 +620,8 @@ namespace XSharp.Project
             // chkPrefer32Bit
             // 
             this.chkPrefer32Bit.AutoSize = true;
-            this.chkPrefer32Bit.ForeColor = System.Drawing.Color.Black;
-            this.chkPrefer32Bit.Location = new System.Drawing.Point(504, 73);
+            this.chkPrefer32Bit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkPrefer32Bit.Location = new System.Drawing.Point(504, 68);
             this.chkPrefer32Bit.Name = "chkPrefer32Bit";
             this.chkPrefer32Bit.Size = new System.Drawing.Size(83, 17);
             this.chkPrefer32Bit.TabIndex = 8;
@@ -633,10 +632,10 @@ namespace XSharp.Project
             // 
             this.lblOutputPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblOutputPath.AutoSize = true;
-            this.lblOutputPath.ForeColor = System.Drawing.Color.Black;
+            this.lblOutputPath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblOutputPath.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblOutputPath.Location = new System.Drawing.Point(20, 402);
-            this.lblOutputPath.Margin = new System.Windows.Forms.Padding(20, 11, 3, 3);
+            this.lblOutputPath.Location = new System.Drawing.Point(20, 368);
+            this.lblOutputPath.Margin = new System.Windows.Forms.Padding(20, 6, 3, 3);
             this.lblOutputPath.Name = "lblOutputPath";
             this.lblOutputPath.Size = new System.Drawing.Size(66, 13);
             this.lblOutputPath.TabIndex = 25;
@@ -646,10 +645,10 @@ namespace XSharp.Project
             // 
             this.lblCommandLineOption.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCommandLineOption.AutoSize = true;
-            this.lblCommandLineOption.ForeColor = System.Drawing.Color.Black;
+            this.lblCommandLineOption.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblCommandLineOption.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblCommandLineOption.Location = new System.Drawing.Point(20, 154);
-            this.lblCommandLineOption.Margin = new System.Windows.Forms.Padding(20, 11, 3, 3);
+            this.lblCommandLineOption.Location = new System.Drawing.Point(20, 144);
+            this.lblCommandLineOption.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
             this.lblCommandLineOption.Name = "lblCommandLineOption";
             this.lblCommandLineOption.Size = new System.Drawing.Size(142, 13);
             this.lblCommandLineOption.TabIndex = 35;
@@ -659,9 +658,9 @@ namespace XSharp.Project
             // 
             this.txtCommandLineOption.AccessibleName = "";
             this.txtCommandLineOption.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCommandLineOption.BackColor = System.Drawing.Color.White;
-            this.txtCommandLineOption.ForeColor = System.Drawing.Color.Black;
-            this.txtCommandLineOption.Location = new System.Drawing.Point(198, 146);
+            this.txtCommandLineOption.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.txtCommandLineOption.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.txtCommandLineOption.Location = new System.Drawing.Point(198, 141);
             this.txtCommandLineOption.Name = "txtCommandLineOption";
             this.txtCommandLineOption.Size = new System.Drawing.Size(300, 20);
             this.txtCommandLineOption.TabIndex = 36;
@@ -670,9 +669,9 @@ namespace XSharp.Project
             // 
             this.chkSignAssembly.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkSignAssembly.AutoSize = true;
-            this.chkSignAssembly.ForeColor = System.Drawing.Color.Black;
+            this.chkSignAssembly.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.chkSignAssembly.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.chkSignAssembly.Location = new System.Drawing.Point(23, 554);
+            this.chkSignAssembly.Location = new System.Drawing.Point(23, 512);
             this.chkSignAssembly.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkSignAssembly.Name = "chkSignAssembly";
             this.chkSignAssembly.Size = new System.Drawing.Size(145, 17);
@@ -683,9 +682,9 @@ namespace XSharp.Project
             // 
             this.lblAssemblyOriginatorKeyFile.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblAssemblyOriginatorKeyFile.AutoSize = true;
-            this.lblAssemblyOriginatorKeyFile.ForeColor = System.Drawing.Color.Black;
+            this.lblAssemblyOriginatorKeyFile.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.lblAssemblyOriginatorKeyFile.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.lblAssemblyOriginatorKeyFile.Location = new System.Drawing.Point(20, 526);
+            this.lblAssemblyOriginatorKeyFile.Location = new System.Drawing.Point(20, 488);
             this.lblAssemblyOriginatorKeyFile.Margin = new System.Windows.Forms.Padding(20, 3, 3, 3);
             this.lblAssemblyOriginatorKeyFile.Name = "lblAssemblyOriginatorKeyFile";
             this.lblAssemblyOriginatorKeyFile.Size = new System.Drawing.Size(104, 13);
@@ -695,9 +694,9 @@ namespace XSharp.Project
             // txtAssemblyOriginatorKeyFile
             // 
             this.txtAssemblyOriginatorKeyFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtAssemblyOriginatorKeyFile.BackColor = System.Drawing.Color.White;
-            this.txtAssemblyOriginatorKeyFile.ForeColor = System.Drawing.Color.Black;
-            this.txtAssemblyOriginatorKeyFile.Location = new System.Drawing.Point(198, 522);
+            this.txtAssemblyOriginatorKeyFile.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.txtAssemblyOriginatorKeyFile.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.txtAssemblyOriginatorKeyFile.Location = new System.Drawing.Point(198, 484);
             this.txtAssemblyOriginatorKeyFile.Name = "txtAssemblyOriginatorKeyFile";
             this.txtAssemblyOriginatorKeyFile.Size = new System.Drawing.Size(300, 20);
             this.txtAssemblyOriginatorKeyFile.TabIndex = 39;
@@ -706,9 +705,9 @@ namespace XSharp.Project
             // 
             this.chkDelaySign.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDelaySign.AutoSize = true;
-            this.chkDelaySign.ForeColor = System.Drawing.Color.Black;
+            this.chkDelaySign.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.chkDelaySign.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.chkDelaySign.Location = new System.Drawing.Point(198, 554);
+            this.chkDelaySign.Location = new System.Drawing.Point(198, 512);
             this.chkDelaySign.Name = "chkDelaySign";
             this.chkDelaySign.Size = new System.Drawing.Size(113, 17);
             this.chkDelaySign.TabIndex = 40;
@@ -718,9 +717,9 @@ namespace XSharp.Project
             // 
             this.chkRegisterForComInterop.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRegisterForComInterop.AutoSize = true;
-            this.chkRegisterForComInterop.ForeColor = System.Drawing.Color.Black;
+            this.chkRegisterForComInterop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.chkRegisterForComInterop.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.chkRegisterForComInterop.Location = new System.Drawing.Point(23, 481);
+            this.chkRegisterForComInterop.Location = new System.Drawing.Point(23, 447);
             this.chkRegisterForComInterop.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkRegisterForComInterop.Name = "chkRegisterForComInterop";
             this.chkRegisterForComInterop.Size = new System.Drawing.Size(142, 17);
@@ -731,48 +730,51 @@ namespace XSharp.Project
             // 
             this.rbWarningNone.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.rbWarningNone.AutoSize = true;
-            this.rbWarningNone.ForeColor = System.Drawing.Color.Black;
+            this.rbWarningNone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.rbWarningNone.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.rbWarningNone.Location = new System.Drawing.Point(23, 276);
-            this.rbWarningNone.Margin = new System.Windows.Forms.Padding(23, 11, 3, 3);
+            this.rbWarningNone.Location = new System.Drawing.Point(23, 252);
+            this.rbWarningNone.Margin = new System.Windows.Forms.Padding(23, 6, 3, 3);
             this.rbWarningNone.Name = "rbWarningNone";
             this.rbWarningNone.Size = new System.Drawing.Size(51, 17);
             this.rbWarningNone.TabIndex = 19;
             this.rbWarningNone.Text = "&None";
+            this.rbWarningNone.CheckedChanged += new System.EventHandler(this.rbWarningNone_CheckedChanged);
             // 
             // rbWarningAll
             // 
             this.rbWarningAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.rbWarningAll.AutoSize = true;
-            this.rbWarningAll.ForeColor = System.Drawing.Color.Black;
+            this.rbWarningAll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.rbWarningAll.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.rbWarningAll.Location = new System.Drawing.Point(23, 299);
+            this.rbWarningAll.Location = new System.Drawing.Point(23, 275);
             this.rbWarningAll.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.rbWarningAll.Name = "rbWarningAll";
             this.rbWarningAll.Size = new System.Drawing.Size(36, 17);
             this.rbWarningAll.TabIndex = 20;
             this.rbWarningAll.Text = "A&ll";
+            this.rbWarningAll.CheckedChanged += new System.EventHandler(this.rbWarningAll_CheckedChanged);
             // 
             // rbWarningSpecific
             // 
             this.rbWarningSpecific.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.rbWarningSpecific.AutoSize = true;
-            this.rbWarningSpecific.ForeColor = System.Drawing.Color.Black;
+            this.rbWarningSpecific.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.rbWarningSpecific.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.rbWarningSpecific.Location = new System.Drawing.Point(23, 322);
-            this.rbWarningSpecific.Margin = new System.Windows.Forms.Padding(23, 3, 3, 11);
+            this.rbWarningSpecific.Location = new System.Drawing.Point(23, 298);
+            this.rbWarningSpecific.Margin = new System.Windows.Forms.Padding(23, 3, 3, 6);
             this.rbWarningSpecific.Name = "rbWarningSpecific";
             this.rbWarningSpecific.Size = new System.Drawing.Size(111, 17);
             this.rbWarningSpecific.TabIndex = 21;
             this.rbWarningSpecific.Text = "Specif&ic warnings:";
+            this.rbWarningSpecific.CheckedChanged += new System.EventHandler(this.rbWarningSpecific_CheckedChanged);
             // 
             // chkSuppressRCWarnings
             // 
             this.chkSuppressRCWarnings.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkSuppressRCWarnings.AutoSize = true;
-            this.chkSuppressRCWarnings.ForeColor = System.Drawing.Color.Black;
+            this.chkSuppressRCWarnings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.chkSuppressRCWarnings.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.chkSuppressRCWarnings.Location = new System.Drawing.Point(23, 353);
+            this.chkSuppressRCWarnings.Location = new System.Drawing.Point(23, 324);
             this.chkSuppressRCWarnings.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkSuppressRCWarnings.Name = "chkSuppressRCWarnings";
             this.chkSuppressRCWarnings.Size = new System.Drawing.Size(136, 17);
@@ -783,9 +785,9 @@ namespace XSharp.Project
             // 
             this.txtSpecificWarnings.AccessibleName = "Specific Warnings To Treat As Errors";
             this.txtSpecificWarnings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSpecificWarnings.BackColor = System.Drawing.Color.White;
-            this.txtSpecificWarnings.ForeColor = System.Drawing.Color.Black;
-            this.txtSpecificWarnings.Location = new System.Drawing.Point(198, 324);
+            this.txtSpecificWarnings.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.txtSpecificWarnings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.txtSpecificWarnings.Location = new System.Drawing.Point(198, 298);
             this.txtSpecificWarnings.Name = "txtSpecificWarnings";
             this.txtSpecificWarnings.Size = new System.Drawing.Size(300, 20);
             this.txtSpecificWarnings.TabIndex = 22;
@@ -794,10 +796,10 @@ namespace XSharp.Project
             // 
             this.btnKeyFile.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnKeyFile.AutoSize = true;
-            this.btnKeyFile.ForeColor = System.Drawing.Color.Black;
+            this.btnKeyFile.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.btnKeyFile.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnKeyFile.Location = new System.Drawing.Point(504, 525);
-            this.btnKeyFile.Margin = new System.Windows.Forms.Padding(3, 11, 0, 3);
+            this.btnKeyFile.Location = new System.Drawing.Point(504, 483);
+            this.btnKeyFile.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.btnKeyFile.Name = "btnKeyFile";
             this.btnKeyFile.Size = new System.Drawing.Size(26, 23);
             this.btnKeyFile.TabIndex = 44;

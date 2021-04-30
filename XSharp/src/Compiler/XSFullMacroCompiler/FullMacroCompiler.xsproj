@@ -156,4 +156,8 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
+	<Target Name="SignWithXSharpKey" AfterTargets="PostBuildEvent" Condition="'$(UseXSharpKey)' == 'true'">
+    <Exec Command="&quot;$(SDK40ToolsPath)sn.exe&quot;  -q -R $(TargetPath) $(AssemblyOriginatorKeyFile)" />
+  </Target>
+  
 </Project>

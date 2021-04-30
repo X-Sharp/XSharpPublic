@@ -2394,7 +2394,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitMacroScript([NotNull] XP.MacroScriptContext context)
         {
-            ExpressionSyntax e;
+            ExpressionSyntax e = null;
             if (context.CbExpr != null)
             {
                 e = context.CbExpr.Get<ExpressionSyntax>();
@@ -2402,21 +2402,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (context.Code != null)
             {
-                e = _syntaxFactory.ParenthesizedLambdaExpression(
-                    modifiers: default,
-                    parameterList: EmptyParameterList(),
-                    arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                    block: context.Code.Get<BlockSyntax>(),
-                    expressionBody: null);
+                var node = context.Code.CsNode;
+                var body = node as BlockSyntax;
+                var expr = node as ExpressionSyntax;
+                if (body != null || expr != null)
+                {
+                    e = _syntaxFactory.ParenthesizedLambdaExpression(
+                        modifiers: default,
+                        parameterList: EmptyParameterList(),
+                        arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                        block: body,
+                        expressionBody: expr);
+                }
             }
-            else /* should never happen! */
+            if (e == null)
             {
                 e = _syntaxFactory.ParenthesizedLambdaExpression(
                     modifiers: default,
                     parameterList: EmptyParameterList(),
                     arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                    block: MakeBlock(_syntaxFactory.EmptyStatement(attributeLists: default, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))),
-                    expressionBody: null);
+                    block: null,
+                    expressionBody: MakeDefault(objectType));
             }
             /*if (_options.HasRuntime)
             {
@@ -5894,7 +5900,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (isStatic)
             {
                 var currentclass = ClassEntities.Peek();
-                staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + CurrentEntity.ShortName+"$"+context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix(context);
+                var sName = _options.MacroScript ? "Xs$Macro" : CurrentEntity.ShortName;
+                staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + sName +"$"+context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix(context);
                 initName = staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix;
                 lockName = staticName + XSharpSpecialNames.StaticLocalLockFieldNameSuffix;
                 if (initExpr == null)
@@ -7808,7 +7815,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     localFunctions = new List<object>();
                 }
-                var fname = CurrentEntity.ShortName + XSharpSpecialNames.ParenExprSuffix+ (localFunctions.Count + 1).ToString();
+                string sname;
+                if (_options.MacroScript)
+                    sname = "Xs$macro";
+                else
+                    sname = CurrentEntity.ShortName;
+
+                var fname = sname + XSharpSpecialNames.ParenExprSuffix+ (localFunctions.Count + 1).ToString();
                 var id = SyntaxFactory.MakeIdentifier(fname);
                 var parnames = new List<string>();
                 var paramlist = new List<ParameterSyntax>();
@@ -8521,7 +8534,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.LiteralArray.Get<ExpressionSyntax>());
         }
 
-        protected ExpressionSyntax CreateInterPolatedStringExpression(IToken token)
+        protected ExpressionSyntax CreateInterPolatedStringExpression(IToken token, XSharpParserRuleContext context)
         {
             string text = token.Text;
             bool extended = false;
@@ -8576,7 +8589,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (inString && c != '\\' && !afterBackSlash)
                 {
                     sbCurrent.Append(c);
-                    last = c; 
+                    last = c;
                     continue;
                 }
                 else
@@ -8681,14 +8694,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int iparam = 0;
             string sMask = sbMask.ToString();
             ExpressionSyntax res;
+            bool allowDot = _options.HasOption(CompilerOption.AllowDotForInstanceMembers, context,PragmaOptions);
             foreach (var e in expressions)
             {
                 string extra;
                 string format = null;
                 string expr = e;
                 int pos = expr.IndexOf(":");
+                if (!allowDot)
+                {
+                    pos = expr.IndexOf("::");
+                }
                 if (pos > 0)
                 {
+
                     var lhs = expr.Substring(0, pos).ToUpper();
                     if (lhs == "SELF" || lhs == "SUPER" || lhs == "THIS")
                     {
@@ -8696,7 +8715,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        format = expr.Substring(pos);
+                        if (allowDot)
+                        {
+                            format = expr.Substring(pos);
+                        }
+                        else
+                        {
+                            format = expr.Substring(pos + 1);
+                        }
                         expr = expr.Substring(0, pos);
                     }
                 }
@@ -8840,7 +8866,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return;
 
                 case XP.INTERPOLATED_STRING_CONST:
-                    context.Put(CreateInterPolatedStringExpression(context.Token));
+                    context.Put(CreateInterPolatedStringExpression(context.Token, context));
                     return;
                 case XP.DATE_CONST:
                     elements = DecodeDateConst(context.Token.Text);
@@ -9709,6 +9735,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 tokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, new List<IToken>()));
                 tokenStream.Fill();
             }
+            // adjust line numbers in generated tokens
+            // this is needed because otherwise pragma options checks that use the line number will not work correctly
+            foreach (XSharpToken token in tokenStream.tokens)
+            {
+                token.Line += starttoken.Line - 1;
+            }
             var parser = new XSharpParser(tokenStream);
             parser.Options = _options;
             XSharpParserRuleContext tree = null;
@@ -9743,6 +9775,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 try
                 {
                     var transform = CreateWalker(parser);
+                    transform.PragmaOptions.AddRange(PragmaOptions);
                     // add our current entity so there is a context for memvars and fields
                     transform.Entities.Push(this.CurrentEntity);
                     walker.Walk(transform, tree);

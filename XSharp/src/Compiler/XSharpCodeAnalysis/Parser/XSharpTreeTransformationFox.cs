@@ -970,7 +970,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var token = new XSharpToken(XSharpParser.TEXT, sourceText);
                 token.Line = context.Start.Line;
                 token.Column = context.Start.Column;
-                stringExpr = CreateInterPolatedStringExpression(token);
+                stringExpr = CreateInterPolatedStringExpression(token, context);
             }
             else
             {
@@ -1195,7 +1195,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var token = new XSharpToken(XSharpParser.TEXT, sourceText);
                 token.Line = context.Start.Line;
                 token.Column = context.Start.Column;
-                expr = CreateInterPolatedStringExpression(token);
+                expr = CreateInterPolatedStringExpression(token, context);
             }
             else
             {

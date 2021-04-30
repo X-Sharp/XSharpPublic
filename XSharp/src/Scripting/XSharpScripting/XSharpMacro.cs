@@ -9,13 +9,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
     public static class XSharpMacro 
     {
-        public static readonly XSharpSpecificCompilationOptions XsCoreOptions = GetOptions((int) XSharpDialect.Core);
-        public static readonly XSharpSpecificCompilationOptions XsVoOptions = GetOptions((int)XSharpDialect.VO);
-        public static readonly XSharpSpecificCompilationOptions XsVulcanOptions = GetOptions((int)XSharpDialect.Vulcan);
-        public static readonly XSharpSpecificCompilationOptions XsFoxOptions = GetOptions((int)XSharpDialect.FoxPro);
-        public static readonly XSharpSpecificCompilationOptions XsXppOptions = GetOptions((int)XSharpDialect.XPP);
-        public static readonly XSharpSpecificCompilationOptions XsHbOptions = GetOptions((int)XSharpDialect.Harbour);
-
         public static XSharpSpecificCompilationOptions GetOptions(int numdialect)
         {
             var dialect = (XSharpDialect)numdialect;
@@ -44,6 +37,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
             result.Vo15 = notcore; // Missing types as USUAL
             result.Vo16 = notcore; // Generate Clipper constructors
             result.Fox1 = dialect == XSharpDialect.FoxPro; // Inherit from abstract class
+            result.AllowDotForInstanceMembers = dialect.AllowDotForInstanceMembers();
             //result.Fox2 = dialect == XSharpDialect.FoxPro; // Expose Locals
             result.Xpp1 = dialect == XSharpDialect.XPP; // Inherit from Custom class
             result.RuntimeAssemblies = RuntimeAssemblies.XSharpRT | RuntimeAssemblies.XSharpCore;

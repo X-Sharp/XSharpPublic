@@ -159,7 +159,7 @@ CLASS TestWithItem
         RETURN 42
     PROPERTY Nested AS USUAL GET TestWithItem{}
 END CLASS
-    
+
 CLASS CheckBox
     PROPERTY Checked AS LOGIC AUTO
 END CLASS
@@ -316,7 +316,7 @@ BEGIN NAMESPACE MacroCompilerTest
         Console.WriteLine("Executing macro ...")
         TRY
             //var cb := MCompile(src)
-            
+
             VAR cb := mc:Compile(src,TRUE, typeof(Functions):Module, OUT NULL, OUT NULL)
             VAR res := cb:EvalBlock(args)
             Console.WriteLine("res = {0}",res)
@@ -337,12 +337,12 @@ BEGIN NAMESPACE MacroCompilerTest
 
         TestMacro(mc, e"{|o|o:@@Checked}", Args(CheckBox{}), FALSE, typeof(LOGIC))
 
-        TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
-        TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(TRUE, "ABCDE"), "ABC", typeof(STRING))
-        TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(FALSE, "ABCDE"), "abcd", typeof(STRING))
-        TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), NULL, NULL)
+        //TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
+        //TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(TRUE, "ABCDE"), "ABC", typeof(STRING))
+        //TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(FALSE, "ABCDE"), "abcd", typeof(STRING))
+        //TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), NULL, NULL)
 
-        TestMacro(mc, e"{|a,b| testtest__() }", Args(1,2,3), NULL, NULL)
+        //TestMacro(mc, e"{|a,b| testtest__() }", Args(1,2,3), NULL, NULL)
         TestMacro(mc, e"{|a,b,c| a[b,c] }", Args({{42,43,44},{45,46,47}},1,1) ,42, typeof(LONG))
         // The next 2 items are for Github issue #238
         TestMacro(mc, e"{|a| a == 1 }", Args(1), TRUE, typeof(LOGIC))
@@ -355,7 +355,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|o| eval({|a| eval({|q|q*q},a)+1 },o) }", Args(5), 26, typeof(INT))
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(TRUE), 42, typeof(INT))
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(FALSE), -42, typeof(INT))
-        
+
         TestMacro(mc, e"{|| eval({||true}) }", Args(), true, typeof(logic))
         TestMacro(mc, e"{|o| eval({|a|a},o) }", Args(true), true, typeof(logic))
         TestMacro(mc, e"{|o| eval({|a|a},o) }", Args(false), false, typeof(logic))
@@ -625,7 +625,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "{|abc| Chr(65) + 'B'}", Args(), "AB", typeof(STRING))
         TestMacro(mc, '{|abc| Chr(65) + "BB"}', Args(), "ABB", typeof(STRING))
         TestMacro(mc, "{|abc| Chr(65):toString() + 'B'}", Args(), "AB", typeof(STRING))
-        TestMacro(mc, e"{|abc| (usual)\"ABC\" + Chr(123)}", Args(), "ABC"+Chr(123), typeof(STRING)) 
+        TestMacro(mc, e"{|abc| (usual)\"ABC\" + Chr(123)}", Args(), "ABC"+Chr(123), typeof(STRING))
         TestMacro(mc, e"0x1234", Args(), 0x1234, typeof(INT))
         TestMacro(mc, e"0b110011", Args(), 0b110011, typeof(INT))
         TestMacro(mc, e"0xFFFF", Args(), 0xFFFF, typeof(INT))
@@ -732,7 +732,7 @@ BEGIN NAMESPACE MacroCompilerTest
             ELSEIF t != NULL .AND. t:IsArray
                 LOCAL e := expect AS OBJECT
                 match := e:Length = res:Length .AND. t == res?:GetType()
-                LOCAL m := t:GetMethod("GetValue",<Type>{typeof(INT)}) AS System.Reflection.MethodInfo 
+                LOCAL M := t:GetMethod("GetValue",<Type>{typeof(INT)}) AS System.Reflection.MethodInfo
                 FOR VAR i := 1 TO e:Length
                     VAR ve := m:Invoke(e,<OBJECT>{i-1})
                     VAR vr := m:Invoke(res,<OBJECT>{i-1})

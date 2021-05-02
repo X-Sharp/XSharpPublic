@@ -8,11 +8,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Scripting
 {
     internal sealed class XSharpMacroCompiler : ScriptCompiler
     {
-        private static XSharpSpecificCompilationOptions xsOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.VO, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true };
-        private static ScriptCompiler[] compilers = { null, null };    // first = VO, second = Vulcan
+        private static readonly XSharpSpecificCompilationOptions xsOptions = new XSharpSpecificCompilationOptions() { Dialect = XSharpDialect.VO, NoStdDef = true, LateBinding = true, UndeclaredMemVars = true };
+        private static readonly ScriptCompiler[] compilers = { null, null };    // first = VO, second = Vulcan
 
-        private XSharpSpecificCompilationOptions xoptions;
-        private CSharpParseOptions options;
+        private readonly XSharpSpecificCompilationOptions xoptions;
+        private readonly CSharpParseOptions options;
         public static ScriptCompiler GetInstance(bool lVoStyleStrings)
         {
             ScriptCompiler sc = null;

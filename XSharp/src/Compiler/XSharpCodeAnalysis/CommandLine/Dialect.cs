@@ -45,10 +45,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        public static bool AllowXBaseVariables(this XSharpDialect dialect)
-        {
-            return SupportsMemvars(dialect);
-        }
         public static bool AllowFourLetterAbbreviations(this XSharpDialect dialect)
         {
             switch (dialect)

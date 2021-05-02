@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <UseXSharpKey>true</UseXSharpKey>
-    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.8.0.11</XSharpProjectversion>
     <SignAssembly>false</SignAssembly>
     <StrongNameKeyId />
     <AssemblyOriginatorKeyFile>$(Solutiondir)src\common\XSharp.snk</AssemblyOriginatorKeyFile>

@@ -248,8 +248,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             ImmutableArray<NamedTypeSymbol> namespaceOrTypeMembers;
             bool isTopLevel = scope.IsNamespace;
-
+#if XSHARP
+            Debug.Assert(!isTopLevel || XSharpString.Equals(scope.ToDisplayString(SymbolDisplayFormat.QualifiedNameOnlyFormat), emittedTypeName.NamespaceName));
+#else
             Debug.Assert(!isTopLevel || scope.ToDisplayString(SymbolDisplayFormat.QualifiedNameOnlyFormat) == emittedTypeName.NamespaceName);
+#endif
 
             if (emittedTypeName.IsMangled)
             {

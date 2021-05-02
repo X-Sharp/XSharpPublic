@@ -92,7 +92,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         private bool AllowOldStyleComments => Dialect.AllowOldStyleComments();
         private bool AllowFourLetterAbbreviations => Dialect.AllowFourLetterAbbreviations();
         private bool AllowSingleQuotedStrings => Dialect.AllowStringsWithSingleQuotes();
-        private bool AllowXBaseVariables => Dialect.AllowXBaseVariables();
+        private bool AllowXBaseVariables => Dialect.SupportsMemvars();
         public bool IsScript { get; set; }
         public bool IsMacroLexer { get; set; }
         // Properties that show what the contents of the Lexer buffer was

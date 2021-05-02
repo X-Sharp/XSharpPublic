@@ -21,10 +21,11 @@ prevent name conflicts when assemblies of both origin are in memory at the same 
 After retrieving this source code, you need to perform the following steps to be able to compile your XSharp Compiler:
 
 - Make sure you have VS 2019 or 2017 installed. The preferred edition is Enterprise.
+- Make sure you have Java JDK on your machine and that you have the Java binaries folder in your Path. Java can be downloaded from https://jdk.java.net/.
 - Goto the root of the repository
 - If you do not have Vs 2019 Enterprise you can set 2 environment variables to the VS version and edition you have installed
   SET VSVERSION=2019  (2017 also works)
-  SET VSEDITION=Enterprise (Professional, Community, BuildTools)
+  SET VSEDITION=Enterprise (or whichever edition you have installed i.e. Professional, Community, BuildTools)
 - Run the cmd file ContinuousIntegrationBuild.cmd 
   This will:
   - download a .Net Core version in the Roslyn\Binaries folder

@@ -1,47 +1,47 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING XSharp
 USING XSharp.RDD.Enums
 
-DEFINE _NULLFLAGS := "_NullFlags" 
+DEFINE _NULLFLAGS := "_NullFlags"
 
 // RecInfo defines
 /// <exclude />
-DEFINE DBRI_DELETED 	:= DbRecordInfo.DBRI_DELETED 
+DEFINE DBRI_DELETED 	:= DbRecordInfo.DBRI_DELETED
 /// <exclude />
-DEFINE DBRI_LOCKED 		:= DbRecordInfo.DBRI_LOCKED 		
+DEFINE DBRI_LOCKED 		:= DbRecordInfo.DBRI_LOCKED
 /// <exclude />
-DEFINE DBRI_RECSIZE		:= DbRecordInfo.DBRI_RECSIZE		
+DEFINE DBRI_RECSIZE		:= DbRecordInfo.DBRI_RECSIZE
 /// <exclude />
-DEFINE DBRI_RECNO		:= DbRecordInfo.DBRI_RECNO		
+DEFINE DBRI_RECNO		:= DbRecordInfo.DBRI_RECNO
 /// <exclude />
-DEFINE DBRI_UPDATED		:= DbRecordInfo.DBRI_UPDATED		
+DEFINE DBRI_UPDATED		:= DbRecordInfo.DBRI_UPDATED
 /// <exclude />
-DEFINE DBRI_BUFFPTR 	:= DbRecordInfo.DBRI_BUFFPTR 	
+DEFINE DBRI_BUFFPTR 	:= DbRecordInfo.DBRI_BUFFPTR
 /// <exclude />
-DEFINE DBRI_RAWRECORD   := DbRecordInfo.DBRI_RAWRECORD   
+DEFINE DBRI_RAWRECORD   := DbRecordInfo.DBRI_RAWRECORD
 /// <exclude />
-DEFINE DBRI_ENCRYPTED	:= DbRecordInfo.DBRI_ENCRYPTED	
+DEFINE DBRI_ENCRYPTED	:= DbRecordInfo.DBRI_ENCRYPTED
 /// <exclude />
-DEFINE DBRI_RAWMEMOS	:= DbRecordInfo.DBRI_RAWMEMOS	
+DEFINE DBRI_RAWMEMOS	:= DbRecordInfo.DBRI_RAWMEMOS
 /// <exclude />
-DEFINE DBRI_RAWDATA		:= DbRecordInfo.DBRI_RAWDATA		
+DEFINE DBRI_RAWDATA		:= DbRecordInfo.DBRI_RAWDATA
 /// <exclude />
-DEFINE DBRI_USER		:= DbRecordInfo.DBRI_USER		
+DEFINE DBRI_USER		:= DbRecordInfo.DBRI_USER
 
 
 // FieldInfo defines
 /// <exclude />
-DEFINE DBS_NAME					:= DbFieldInfo.DBS_NAME	
+DEFINE DBS_NAME					:= DbFieldInfo.DBS_NAME
 /// <exclude />
-DEFINE DBS_TYPE					:= DbFieldInfo.DBS_TYPE	
+DEFINE DBS_TYPE					:= DbFieldInfo.DBS_TYPE
 /// <exclude />
-DEFINE DBS_LEN					:= DbFieldInfo.DBS_LEN	
+DEFINE DBS_LEN					:= DbFieldInfo.DBS_LEN
 /// <exclude />
-DEFINE DBS_DEC					:= DbFieldInfo.DBS_DEC	
+DEFINE DBS_DEC					:= DbFieldInfo.DBS_DEC
 /// <exclude />
 DEFINE DBS_ALIAS				:= DbFieldInfo.DBS_ALIAS
 /// <exclude />
@@ -57,47 +57,47 @@ DEFINE DBS_COLUMNINFO           := DbFieldInfo.DBS_COLUMNINFO
 /// <exclude />
 DEFINE DBS_BLANK                := DbFieldInfo.DBS_BLANK
 /// <exclude />
-DEFINE DBS_ISNULL               := DbFieldInfo.DBS_ISNULL  
+DEFINE DBS_ISNULL               := DbFieldInfo.DBS_ISNULL
 /// <exclude />
-DEFINE DBS_COUNTER              := DbFieldInfo.DBS_COUNTER 
+DEFINE DBS_COUNTER              := DbFieldInfo.DBS_COUNTER
 /// <exclude />
-DEFINE DBS_STEP                 := DbFieldInfo.DBS_STEP    
+DEFINE DBS_STEP                 := DbFieldInfo.DBS_STEP
 /// <exclude />
-DEFINE DBS_BLOB_GET             := DbFieldInfo.DBS_BLOB_GET     
+DEFINE DBS_BLOB_GET             := DbFieldInfo.DBS_BLOB_GET
 /// <exclude />
-DEFINE DBS_BLOB_TYPE			:= DbFieldInfo.DBS_BLOB_TYPE	
+DEFINE DBS_BLOB_TYPE			:= DbFieldInfo.DBS_BLOB_TYPE
 /// <exclude />
-DEFINE DBS_BLOB_LEN				:= DbFieldInfo.DBS_BLOB_LEN		
+DEFINE DBS_BLOB_LEN				:= DbFieldInfo.DBS_BLOB_LEN
 /// <exclude />
-DEFINE DBS_BLOB_OFFSET			:= DbFieldInfo.DBS_BLOB_OFFSET	
+DEFINE DBS_BLOB_OFFSET			:= DbFieldInfo.DBS_BLOB_OFFSET
 /// <exclude />
-DEFINE DBS_BLOB_POINTER			:= DbFieldInfo.DBS_BLOB_POINTER	
+DEFINE DBS_BLOB_POINTER			:= DbFieldInfo.DBS_BLOB_POINTER
 /// <exclude />
-DEFINE DBS_BLOB_DIRECT_TYPE		:= DbFieldInfo.DBS_BLOB_DIRECT_TYPE		
+DEFINE DBS_BLOB_DIRECT_TYPE		:= DbFieldInfo.DBS_BLOB_DIRECT_TYPE
 /// <exclude />
-DEFINE DBS_BLOB_DIRECT_LEN		:= DbFieldInfo.DBS_BLOB_DIRECT_LEN		
+DEFINE DBS_BLOB_DIRECT_LEN		:= DbFieldInfo.DBS_BLOB_DIRECT_LEN
 /// <exclude />
 /// <inheritdoc cref="F:XSharp.RDD.Enums.DbFieldInfo.DBS_STRUCT"/>
-DEFINE DBS_STRUCT				:= DbFieldInfo.DBS_STRUCT				
+DEFINE DBS_STRUCT				:= DbFieldInfo.DBS_STRUCT
 /// <exclude />
-DEFINE DBS_PROPERTIES			:= DbFieldInfo.DBS_PROPERTIES			
+DEFINE DBS_PROPERTIES			:= DbFieldInfo.DBS_PROPERTIES
 /// <exclude />
-DEFINE DBS_USER					:= DbFieldInfo.DBS_USER					
+DEFINE DBS_USER					:= DbFieldInfo.DBS_USER
 
 
 // Scope defines
-DEFINE TOPSCOPE                := 0 
-DEFINE BOTTOMSCOPE             := 1 
+DEFINE TOPSCOPE                := 0
+DEFINE BOTTOMSCOPE             := 1
 
 //DbInfo Defines
 /// <exclude />
 DEFINE DBI_ISDBF 			:=  DbInfo.DBI_ISDBF 		 	// Logical: RDD support DBF file format?
 /// <exclude />
-DEFINE DBI_CANPUTREC 		:=  DbInfo.DBI_CANPUTREC 		// Logical: RDD support Putting Records? 
+DEFINE DBI_CANPUTREC 		:=  DbInfo.DBI_CANPUTREC 		// Logical: RDD support Putting Records?
 /// <exclude />
-DEFINE DBI_GETHEADERSIZE 	:= 	DbInfo.DBI_GETHEADERSIZE	// Numeric: Get header size of the file 
+DEFINE DBI_GETHEADERSIZE 	:= 	DbInfo.DBI_GETHEADERSIZE	// Numeric: Get header size of the file
 /// <exclude />
-DEFINE DBI_LASTUPDATE 		:= 	DbInfo.DBI_LASTUPDATE 		// Date:    Last date RDD file updated 
+DEFINE DBI_LASTUPDATE 		:= 	DbInfo.DBI_LASTUPDATE 		// Date:    Last date RDD file updated
 /// <exclude />
 DEFINE DBI_GETDELIMITER 	:= 	DbInfo.DBI_GETDELIMITER		// String:  Get default FIELD delimiter
 /// <exclude />
@@ -105,13 +105,13 @@ DEFINE DBI_SETDELIMITER 	:=  DbInfo.DBI_SETDELIMITER		// String:  Set default FI
 /// <exclude />
 DEFINE DBI_GETRECSIZE 		:= 	DbInfo.DBI_GETRECSIZE 		// Numeric: Get record size of the file
 /// <exclude />
-DEFINE DBI_GETLOCKARRAY 	:=  DbInfo.DBI_GETLOCKARRAY		// Array:   Get array of locked records 
+DEFINE DBI_GETLOCKARRAY 	:=  DbInfo.DBI_GETLOCKARRAY		// Array:   Get array of locked records
 /// <exclude />
 DEFINE DBI_TABLEEXT 		:=  DbInfo.DBI_TABLEEXT 		 // String:  Get table file extension
 /// <exclude />
 DEFINE DBI_FULLPATH 		:= 	DbInfo.DBI_FULLPATH 		// String: Full path to data file
 /// <exclude />
-DEFINE DBI_ISFLOCK 			:= 	DbInfo.DBI_ISFLOCK 			// Logic: Is there a file lock active? 
+DEFINE DBI_ISFLOCK 			:= 	DbInfo.DBI_ISFLOCK 			// Logic: Is there a file lock active?
 /// <exclude />
 DEFINE DBI_READONLY 		:= 	DbInfo.DBI_READONLY 		// Logic: is the file opened readonly
 /// <exclude />
@@ -127,13 +127,13 @@ DEFINE DBI_BOF 				:= 	DbInfo.DBI_BOF 				// Logic: Same as Bof()
 /// <exclude />
 DEFINE DBI_EOF 				:= 	DbInfo.DBI_EOF 				// Logic: Same as Eof()
 /// <exclude />
-DEFINE DBI_DBFILTER 		:= 	DbInfo.DBI_DBFILTER 		// String: Current Filter setting 
+DEFINE DBI_DBFILTER 		:= 	DbInfo.DBI_DBFILTER 		// String: Current Filter setting
 /// <exclude />
-DEFINE DBI_FOUND 			:= 	DbInfo.DBI_FOUND 			// Logic: Same as Found() 
+DEFINE DBI_FOUND 			:= 	DbInfo.DBI_FOUND 			// Logic: Same as Found()
 /// <exclude />
 DEFINE DBI_FCOUNT 			:= 	DbInfo.DBI_FCOUNT 			// Number: Number of fields per record
 /// <exclude />
-DEFINE DBI_LOCKCOUNT 		:= 	DbInfo.DBI_LOCKCOUNT 		// Number: Number of record locks  
+DEFINE DBI_LOCKCOUNT 		:= 	DbInfo.DBI_LOCKCOUNT 		// Number: Number of record locks
 /// <exclude />
 DEFINE DBI_VALIDBUFFER  	:= 	DbInfo.DBI_VALIDBUFFER		// Logic: Is the buffer Valid
 /// <exclude />
@@ -161,38 +161,38 @@ DEFINE DBI_NEWINDEXLOCK 	:= 	DbInfo.DBI_NEWINDEXLOCK 	// Logic:  Use new index l
 /// <exclude />
 DEFINE DBI_DOSCODEPAGE 		:= 	DbInfo.DBI_DOSCODEPAGE 		// Number: The DOS Codepage
 /// <exclude />
-DEFINE DBI_STRICTREAD  		:= DbInfo.DBI_STRICTREAD  	// Flag for avoiding RDD hierarchy and using a bigger buffer when indexing  
+DEFINE DBI_STRICTREAD  		:= DbInfo.DBI_STRICTREAD  	// Flag for avoiding RDD hierarchy and using a bigger buffer when indexing
 /// <exclude />
-DEFINE DBI_OPTIMIZE    		:= DbInfo.DBI_OPTIMIZE    	// Flag for whether to use query optimization             
+DEFINE DBI_OPTIMIZE    		:= DbInfo.DBI_OPTIMIZE    	// Flag for whether to use query optimization
 /// <exclude />
-DEFINE DBI_AUTOOPEN    		:= DbInfo.DBI_AUTOOPEN    	// Flag for automatically opening structural indexes      
+DEFINE DBI_AUTOOPEN    		:= DbInfo.DBI_AUTOOPEN    	// Flag for automatically opening structural indexes
 /// <exclude />
 DEFINE DBI_AUTOORDER   		:= DbInfo.DBI_AUTOORDER   	// When a structural index is opened, the order to be set 0 or 1
 /// <exclude />
 DEFINE DBI_AUTOSHARE   		:= DbInfo.DBI_AUTOSHARE   	// When a network is detected, open the index shared, otherwise open exclusively   0 = shared, 1 = exclusive
 /// <exclude />
-DEFINE DBI_DB_VERSION 		:= DbInfo.DBI_DB_VERSION 		
+DEFINE DBI_DB_VERSION 		:= DbInfo.DBI_DB_VERSION
 /// <exclude />
-DEFINE DBI_RDD_VERSION 		:= DbInfo.DBI_RDD_VERSION 		
+DEFINE DBI_RDD_VERSION 		:= DbInfo.DBI_RDD_VERSION
 /// <exclude />
-DEFINE DBI_RDD_LIST 		:= DbInfo.DBI_RDD_LIST 		
+DEFINE DBI_RDD_LIST 		:= DbInfo.DBI_RDD_LIST
 /// <exclude />
-DEFINE DBI_MEMOFIELD 		:= DbInfo.DBI_MEMOFIELD 	 	
+DEFINE DBI_MEMOFIELD 		:= DbInfo.DBI_MEMOFIELD
 /// <exclude />
-DEFINE DBI_VO_MACRO_SYNTAX	:= DbInfo.DBI_VO_MACRO_SYNTAX	
+DEFINE DBI_VO_MACRO_SYNTAX	:= DbInfo.DBI_VO_MACRO_SYNTAX
 /// <exclude />
-DEFINE DBI_RDD_OBJECT 		:= DbInfo.DBI_RDD_OBJECT 		
+DEFINE DBI_RDD_OBJECT 		:= DbInfo.DBI_RDD_OBJECT
 
 /* CA-Cl*pper documented for public use */
 
 /// <exclude />
-DEFINE DBI_BLOB_DIRECT_LEN     := DbInfo.BLOB_DIRECT_LEN 
+DEFINE DBI_BLOB_DIRECT_LEN     := DbInfo.BLOB_DIRECT_LEN
 /// <exclude />
 DEFINE DBI_BLOB_DIRECT_TYPE    := DbInfo.BLOB_DIRECT_TYPE
 /// <exclude />
-DEFINE DBI_BLOB_INTEGRITY      := DbInfo.BLOB_FILE_INTEGRITY  
+DEFINE DBI_BLOB_INTEGRITY      := DbInfo.BLOB_FILE_INTEGRITY
 /// <exclude />
-DEFINE DBI_BLOB_OFFSET         := DbInfo.BLOB_OFFSET     
+DEFINE DBI_BLOB_OFFSET         := DbInfo.BLOB_OFFSET
 /// <exclude />
 DEFINE DBI_BLOB_RECOVER        := DbInfo.BLOB_FILE_RECOVER
 
@@ -238,13 +238,13 @@ DEFINE DBI_ISTEMPORARY         := DbInfo.DBI_ISTEMPORARY     /* Is the table a t
 /// <exclude />
 DEFINE DBI_LOCKTEST            := DbInfo.DBI_LOCKTEST        /* record / file lock test */
 /// <exclude />
-DEFINE DBI_CODEPAGE_HB         := DbInfo.DBI_CODEPAGE_HB     /* Codepage used also defined by VO and Vulcan */ 
+DEFINE DBI_CODEPAGE_HB         := DbInfo.DBI_CODEPAGE_HB     /* Codepage used also defined by VO and Vulcan */
 /// <exclude />
-DEFINE DBI_TRANSREC            := DbInfo.DBI_TRANSREC         /* Is it destination table of currently processed COPY TO or APPEND FROM operation? */ 
+DEFINE DBI_TRANSREC            := DbInfo.DBI_TRANSREC         /* Is it destination table of currently processed COPY TO or APPEND FROM operation? */
 /// <exclude />
-DEFINE DBI_SETHEADER		   := DbInfo.DBI_SETHEADER		/* DBF header updating modes */ 
+DEFINE DBI_SETHEADER		   := DbInfo.DBI_SETHEADER		/* DBF header updating modes */
 /// <exclude />
-DEFINE DBI_QUERY			   := DbInfo.DBI_QUERY			/* if area represents result of a query, obtain expression of this query */ 
+DEFINE DBI_QUERY			   := DbInfo.DBI_QUERY			/* if area represents result of a query, obtain expression of this query */
 
 /* Harbour RECORD MAP (RM) support */
 
@@ -267,49 +267,49 @@ DEFINE DBI_RM_TEST             := DbInfo.DBI_RM_TEST       /* test if record is 
 /// <exclude />
 DEFINE DBI_RM_COUNT            := DbInfo.DBI_RM_COUNT      /* number of records set in record map */
 /// <exclude />
-DEFINE DBI_RM_HANDLE           := DbInfo.DBI_RM_HANDLE     /* get/set record map filter handle */ 
+DEFINE DBI_RM_HANDLE           := DbInfo.DBI_RM_HANDLE     /* get/set record map filter handle */
 
 
 
 // CDX and Comix Record List Support
 /// <exclude />
-DEFINE DBI_RL_AND 		:= DbInfo.DBI_RL_AND 		
+DEFINE DBI_RL_AND 		:= DbInfo.DBI_RL_AND
 /// <exclude />
-DEFINE DBI_RL_CLEAR 	:= DbInfo.DBI_RL_CLEAR 	
+DEFINE DBI_RL_CLEAR 	:= DbInfo.DBI_RL_CLEAR
 /// <exclude />
-DEFINE DBI_RL_COUNT 	:= DbInfo.DBI_RL_COUNT 	
+DEFINE DBI_RL_COUNT 	:= DbInfo.DBI_RL_COUNT
 /// <exclude />
-DEFINE DBI_RL_DESTROY 	:= DbInfo.DBI_RL_DESTROY 	
+DEFINE DBI_RL_DESTROY 	:= DbInfo.DBI_RL_DESTROY
 /// <exclude />
-DEFINE DBI_RL_EXFILTER 	:= DbInfo.DBI_RL_EXFILTER 	
+DEFINE DBI_RL_EXFILTER 	:= DbInfo.DBI_RL_EXFILTER
 /// <exclude />
-DEFINE DBI_RL_GETFILTER := DbInfo.DBI_RL_GETFILTER 
+DEFINE DBI_RL_GETFILTER := DbInfo.DBI_RL_GETFILTER
 /// <exclude />
-DEFINE DBI_RL_HASMAYBE 	:= DbInfo.DBI_RL_HASMAYBE 	
+DEFINE DBI_RL_HASMAYBE 	:= DbInfo.DBI_RL_HASMAYBE
 /// <exclude />
-DEFINE DBI_RL_LEN 		:= DbInfo.DBI_RL_LEN 		
+DEFINE DBI_RL_LEN 		:= DbInfo.DBI_RL_LEN
 /// <exclude />
-DEFINE DBI_RL_MAYBEEVAL := DbInfo.DBI_RL_MAYBEEVAL 
+DEFINE DBI_RL_MAYBEEVAL := DbInfo.DBI_RL_MAYBEEVAL
 /// <exclude />
-DEFINE DBI_RL_NEW 		:= DbInfo.DBI_RL_NEW 		
+DEFINE DBI_RL_NEW 		:= DbInfo.DBI_RL_NEW
 /// <exclude />
-DEFINE DBI_RL_NEWDUP 	:= DbInfo.DBI_RL_NEWDUP 	
+DEFINE DBI_RL_NEWDUP 	:= DbInfo.DBI_RL_NEWDUP
 /// <exclude />
-DEFINE DBI_RL_NEWQUERY 	:= DbInfo.DBI_RL_NEWQUERY 	
+DEFINE DBI_RL_NEWQUERY 	:= DbInfo.DBI_RL_NEWQUERY
 /// <exclude />
-DEFINE DBI_RL_NEXTRECNO := DbInfo.DBI_RL_NEXTRECNO 
+DEFINE DBI_RL_NEXTRECNO := DbInfo.DBI_RL_NEXTRECNO
 /// <exclude />
-DEFINE DBI_RL_NOT 		:= DbInfo.DBI_RL_NOT 		
+DEFINE DBI_RL_NOT 		:= DbInfo.DBI_RL_NOT
 /// <exclude />
-DEFINE DBI_RL_OR 		:= DbInfo.DBI_RL_OR 		
+DEFINE DBI_RL_OR 		:= DbInfo.DBI_RL_OR
 /// <exclude />
-DEFINE DBI_RL_PREVRECNO := DbInfo.DBI_RL_PREVRECNO 
+DEFINE DBI_RL_PREVRECNO := DbInfo.DBI_RL_PREVRECNO
 /// <exclude />
-DEFINE DBI_RL_SET 		:= DbInfo.DBI_RL_SET 		
+DEFINE DBI_RL_SET 		:= DbInfo.DBI_RL_SET
 /// <exclude />
-DEFINE DBI_RL_SETFILTER := DbInfo.DBI_RL_SETFILTER 
+DEFINE DBI_RL_SETFILTER := DbInfo.DBI_RL_SETFILTER
 /// <exclude />
-DEFINE DBI_RL_TEST 		:= DbInfo.DBI_RL_TEST 		
+DEFINE DBI_RL_TEST 		:= DbInfo.DBI_RL_TEST
 
 
 /// <exclude />
@@ -324,15 +324,15 @@ DEFINE DBI_GET_ACE_STMT_HANDLE   := DbInfo.DBI_GET_ACE_STMT_HANDLE
 
 // OrderInfo Defines
 /// <exclude />
-DEFINE DBOI_CONDITION 	:= DbOrder_Info.DBOI_CONDITION      // String: The order's conditional expression     
+DEFINE DBOI_CONDITION 	:= DbOrder_Info.DBOI_CONDITION      // String: The order's conditional expression
 /// <exclude />
-DEFINE DBOI_EXPRESSION 	:= DbOrder_Info.DBOI_EXPRESSION 	// String: The order's key expression             
+DEFINE DBOI_EXPRESSION 	:= DbOrder_Info.DBOI_EXPRESSION 	// String: The order's key expression
 /// <exclude />
-DEFINE DBOI_POSITION 	:= DbOrder_Info.DBOI_POSITION  	// Number: The current key position in scope and filter  
+DEFINE DBOI_POSITION 	:= DbOrder_Info.DBOI_POSITION  	// Number: The current key position in scope and filter
 /// <exclude />
-DEFINE DBOI_RECNO 		:= DbOrder_Info.DBOI_RECNO 		  	// Number: The current key position disregarding filters 
+DEFINE DBOI_RECNO 		:= DbOrder_Info.DBOI_RECNO 		  	// Number: The current key position disregarding filters
 /// <exclude />
-DEFINE DBOI_NAME 		:= DbOrder_Info.DBOI_NAME 		   	// String: The name of the order                      
+DEFINE DBOI_NAME 		:= DbOrder_Info.DBOI_NAME 		   	// String: The name of the order
 /// <exclude />
 DEFINE DBOI_NUMBER 		:= DbOrder_Info.DBOI_NUMBER 		 	// Number: The numeric position in the list of orders
 /// <exclude />
@@ -344,6 +344,8 @@ DEFINE DBOI_BAGEXT 		:= DbOrder_Info.DBOI_BAGEXT 		   	// String: The extension 
 /// <exclude />
 DEFINE DBOI_INDEXEXT  	:= DbOrder_Info.DBOI_INDEXEXT  	   // Alias
 /// <exclude />
+DEFINE DBOI_DEFBAGEXT   := DbOrder_Info.DBOI_DEFBAGEXT  	// Default index extension for RDD
+/// <exclude />
 DEFINE DBOI_ORDERCOUNT  := DbOrder_Info.DBOI_ORDERCOUNT     // Number: The count of ORDERS contained in an index file or in total
 /// <exclude />
 DEFINE DBOI_FILEHANDLE 	:= DbOrder_Info.DBOI_FILEHANDLE 		// IntPtr: The handle of the index
@@ -352,7 +354,7 @@ DEFINE DBOI_FILESTREAM 	:= DbOrder_Info.DBOI_FILESTREAM 		// Stream: The stream 
 /// <exclude />
 DEFINE DBOI_ISCOND 		:= DbOrder_Info.DBOI_ISCOND 			// Logic : Does the order have a FOR condition?
 /// <exclude />
-DEFINE DBOI_ISDESC 		:= DbOrder_Info.DBOI_ISDESC 			// Logic : Is the order DESCENDing? 
+DEFINE DBOI_ISDESC 		:= DbOrder_Info.DBOI_ISDESC 			// Logic : Is the order DESCENDing?
 /// <exclude />
 DEFINE DBOI_UNIQUE 		:= DbOrder_Info.DBOI_UNIQUE 			// Logic : Does the order have the UNIQUE attribute?
 
@@ -364,27 +366,27 @@ DEFINE DBOI_COLLATION 	:= DbOrder_Info.DBOI_COLLATION 			// String : Collation f
 /// <exclude />
 DEFINE DBOI_FULLPATH 	:= DbOrder_Info.DBOI_FULLPATH 	   	// String: The full path to the index file (Bag)
 /// <exclude />
-DEFINE DBOI_KEYTYPE 	:= DbOrder_Info.DBOI_KEYTYPE 	 	// The type of the order's key  
+DEFINE DBOI_KEYTYPE 	:= DbOrder_Info.DBOI_KEYTYPE 	 	// The type of the order's key
 /// <exclude />
 DEFINE DBOI_KEYSIZE 	:= DbOrder_Info.DBOI_KEYSIZE 	 	// Number: The length of the order's key
 /// <exclude />
 DEFINE DBOI_KEYCOUNT 	:= DbOrder_Info.DBOI_KEYCOUNT 	 	// Number: The count of keys in scope and filter
 /// <exclude />
-DEFINE DBOI_SETCODEBLOCK:= DbOrder_Info.DBOI_SETCODEBLOCK 	// Block : The codeblock that produces the key 
+DEFINE DBOI_SETCODEBLOCK:= DbOrder_Info.DBOI_SETCODEBLOCK 	// Block : The codeblock that produces the key
 /// <exclude />
-DEFINE DBOI_KEYDEC 		:= DbOrder_Info.DBOI_KEYDEC 		 	// Number: The # of decimals in a numeric key 
+DEFINE DBOI_KEYDEC 		:= DbOrder_Info.DBOI_KEYDEC 		 	// Number: The # of decimals in a numeric key
 /// <exclude />
 DEFINE DBOI_HPLOCKING 	:= DbOrder_Info.DBOI_HPLOCKING 	 	// Logic : Using High Performance locking for this order?
 /// <exclude />
-DEFINE DBOI_LOCKOFFSET 	:= DbOrder_Info.DBOI_LOCKOFFSET  	// Number: The offset used for logical locking 
+DEFINE DBOI_LOCKOFFSET 	:= DbOrder_Info.DBOI_LOCKOFFSET  	// Number: The offset used for logical locking
 /// <exclude />
-DEFINE DBOI_KEYADD 		:= DbOrder_Info.DBOI_KEYADD 		 	// Logic: Custom Index: Was Key added successfully? 
+DEFINE DBOI_KEYADD 		:= DbOrder_Info.DBOI_KEYADD 		 	// Logic: Custom Index: Was Key added successfully?
 /// <exclude />
-DEFINE DBOI_KEYDELETE 	:= DbOrder_Info.DBOI_KEYDELETE 		// Logic: Custom Index: Was Key Deletion successful? 
+DEFINE DBOI_KEYDELETE 	:= DbOrder_Info.DBOI_KEYDELETE 		// Logic: Custom Index: Was Key Deletion successful?
 /// <exclude />
-DEFINE DBOI_KEYVAL 		:= DbOrder_Info.DBOI_KEYVAL 			// Object: The value of the current key 
+DEFINE DBOI_KEYVAL 		:= DbOrder_Info.DBOI_KEYVAL 			// Object: The value of the current key
 /// <exclude />
-DEFINE DBOI_SCOPETOP 	:= DbOrder_Info.DBOI_SCOPETOP 		// Object: Get or Set the scope top    
+DEFINE DBOI_SCOPETOP 	:= DbOrder_Info.DBOI_SCOPETOP 		// Object: Get or Set the scope top
 /// <exclude />
 DEFINE DBOI_SCOPEBOTTOM := DbOrder_Info.DBOI_SCOPEBOTTOM	// Object: Get or Set the scope bottom
 /// <exclude />
@@ -392,15 +394,15 @@ DEFINE DBOI_SCOPETOPCLEAR := DbOrder_Info.DBOI_SCOPETOPCLEAR  	// None	 :
 /// <exclude />
 DEFINE DBOI_SCOPEBOTTOMCLEAR:= DbOrder_Info.DBOI_SCOPEBOTTOMCLEAR // None :
 /// <exclude />
-DEFINE DBOI_CUSTOM 		:= DbOrder_Info.DBOI_CUSTOM // Logic: Is this a Custom Index?  
+DEFINE DBOI_CUSTOM 		:= DbOrder_Info.DBOI_CUSTOM // Logic: Is this a Custom Index?
 /// <exclude />
-DEFINE DBOI_SKIPUNIQUE 	:= DbOrder_Info.DBOI_SKIPUNIQUE // Logic: Was a skip to adjacent unique Key successful?  
+DEFINE DBOI_SKIPUNIQUE 	:= DbOrder_Info.DBOI_SKIPUNIQUE // Logic: Was a skip to adjacent unique Key successful?
 /// <exclude />
 DEFINE DBOI_KEYSINCLUDED:= DbOrder_Info.DBOI_KEYSINCLUDED 	// Number: Number of keys in the index order
 /// <exclude />
 DEFINE DBOI_KEYNORAW 	:= DbOrder_Info.DBOI_KEYNORAW 	 // Number: The key number disregarding filters
 /// <exclude />
-DEFINE DBOI_KEYCOUNTRAW := DbOrder_Info.DBOI_KEYCOUNTRAW   // Number: The key count disregarding filter  
+DEFINE DBOI_KEYCOUNTRAW := DbOrder_Info.DBOI_KEYCOUNTRAW   // Number: The key count disregarding filter
 /// <exclude />
 DEFINE DBOI_OPTLEVEL 	:= DbOrder_Info.DBOI_OPTLEVEL 	 // Number: Optimization level for current query
 
@@ -414,7 +416,7 @@ DEFINE DBOI_AUTOOPEN   := DbOrder_Info.DBOI_AUTOOPEN    /* Flag for automaticall
 /// <exclude />
 DEFINE DBOI_AUTOORDER  := DbOrder_Info.DBOI_AUTOORDER   /* When a structural index is opened, the order to be set */
 /// <exclude />
-DEFINE DBOI_AUTOSHARE  := DbOrder_Info.DBOI_AUTOSHARE   /* When a network is detected, open the index shared, otherwise open exclusively   */ 
+DEFINE DBOI_AUTOSHARE  := DbOrder_Info.DBOI_AUTOSHARE   /* When a network is detected, open the index shared, otherwise open exclusively   */
 
 
 /* Harbour extensions */
@@ -496,10 +498,10 @@ DEFINE DBOI_INDEXPAGESIZE      := DbOrder_Info.DBOI_INDEXPAGESIZE      /* get in
 DEFINE DBOI_USER 				:= DbOrder_Info.DBOI_USER
 
 /// <exclude />
-DEFINE DBOI_DUMP 			:= DbOrder_Info.DBOI_DUMP                
+DEFINE DBOI_DUMP 			:= DbOrder_Info.DBOI_DUMP
 /// <exclude />
-DEFINE DBOI_VALIDATE 			:= DbOrder_Info.DBOI_VALIDATE            
-        
+DEFINE DBOI_VALIDATE 			:= DbOrder_Info.DBOI_VALIDATE
+
 // Advantage extensions
 
 /// <exclude />
@@ -529,108 +531,108 @@ DEFINE DBOI_HPLOCK_GATE := DbOrder_Info.DBOI_HPLOCK_GATE
 
 
 /// <exclude />
-DEFINE BLOB_INFO_HANDLE 	:= DbInfo.BLOB_INFO_HANDLE 	
+DEFINE BLOB_INFO_HANDLE 	:= DbInfo.BLOB_INFO_HANDLE
 /// <exclude />
-DEFINE BLOB_FILE_RECOVER 	:= DbInfo.BLOB_FILE_RECOVER 	
+DEFINE BLOB_FILE_RECOVER 	:= DbInfo.BLOB_FILE_RECOVER
 /// <exclude />
-DEFINE BLOB_FILE_INTEGRITY 	:= DbInfo.BLOB_FILE_INTEGRITY 	
+DEFINE BLOB_FILE_INTEGRITY 	:= DbInfo.BLOB_FILE_INTEGRITY
 /// <exclude />
-DEFINE BLOB_OFFSET 			:= DbInfo.BLOB_OFFSET 			
+DEFINE BLOB_OFFSET 			:= DbInfo.BLOB_OFFSET
 /// <exclude />
-DEFINE BLOB_POINTER 		:= DbInfo.BLOB_POINTER 		
+DEFINE BLOB_POINTER 		:= DbInfo.BLOB_POINTER
 /// <exclude />
-DEFINE BLOB_LEN 			:= DbInfo.BLOB_LEN 			
+DEFINE BLOB_LEN 			:= DbInfo.BLOB_LEN
 /// <exclude />
-DEFINE BLOB_TYPE 			:= DbInfo.BLOB_TYPE 			
+DEFINE BLOB_TYPE 			:= DbInfo.BLOB_TYPE
 /// <exclude />
-DEFINE BLOB_EXPORT 			:= DbInfo.BLOB_EXPORT 			
+DEFINE BLOB_EXPORT 			:= DbInfo.BLOB_EXPORT
 /// <exclude />
-DEFINE BLOB_ROOT_UNLOCK 	:= DbInfo.BLOB_ROOT_UNLOCK 	
+DEFINE BLOB_ROOT_UNLOCK 	:= DbInfo.BLOB_ROOT_UNLOCK
 /// <exclude />
-DEFINE BLOB_ROOT_PUT 		:= DbInfo.BLOB_ROOT_PUT 		
+DEFINE BLOB_ROOT_PUT 		:= DbInfo.BLOB_ROOT_PUT
 /// <exclude />
-DEFINE BLOB_ROOT_GET 		:= DbInfo.BLOB_ROOT_GET 		
+DEFINE BLOB_ROOT_GET 		:= DbInfo.BLOB_ROOT_GET
 /// <exclude />
-DEFINE BLOB_ROOT_LOCK 		:= DbInfo.BLOB_ROOT_LOCK 		
+DEFINE BLOB_ROOT_LOCK 		:= DbInfo.BLOB_ROOT_LOCK
 /// <exclude />
-DEFINE BLOB_IMPORT 			:= DbInfo.BLOB_IMPORT 			
+DEFINE BLOB_IMPORT 			:= DbInfo.BLOB_IMPORT
 /// <exclude />
-DEFINE BLOB_DIRECT_PUT 		:= DbInfo.BLOB_DIRECT_PUT 		
+DEFINE BLOB_DIRECT_PUT 		:= DbInfo.BLOB_DIRECT_PUT
 /// <exclude />
-DEFINE BLOB_DIRECT_GET 		:= DbInfo.BLOB_DIRECT_GET 		
+DEFINE BLOB_DIRECT_GET 		:= DbInfo.BLOB_DIRECT_GET
 /// <exclude />
-DEFINE BLOB_GET 			:= DbInfo.BLOB_GET 			
+DEFINE BLOB_GET 			:= DbInfo.BLOB_GET
 /// <exclude />
-DEFINE BLOB_DIRECT_EXPORT 	:= DbInfo.BLOB_DIRECT_EXPORT 	
+DEFINE BLOB_DIRECT_EXPORT 	:= DbInfo.BLOB_DIRECT_EXPORT
 /// <exclude />
-DEFINE BLOB_DIRECT_IMPORT 	:= DbInfo.BLOB_DIRECT_IMPORT 	
+DEFINE BLOB_DIRECT_IMPORT 	:= DbInfo.BLOB_DIRECT_IMPORT
 /// <exclude />
-DEFINE BLOB_NMODE 			:= DbInfo.BLOB_NMODE 			
+DEFINE BLOB_NMODE 			:= DbInfo.BLOB_NMODE
 /// <exclude />
 DEFINE BLOB_USER			:= DbInfo.BLOB_USER
 
 /// <include file="CoreComments.xml" path="Comments/BLOBImportExport/*" />
-DEFINE BLOB_EXPORT_APPEND 	:= 0 
+DEFINE BLOB_EXPORT_APPEND 	:= 0
 /// <include file="CoreComments.xml" path="Comments/BLOBImportExport/*" />
-DEFINE BLOB_EXPORT_OVERWRITE:= 1 
+DEFINE BLOB_EXPORT_OVERWRITE:= 1
 /// <include file="CoreComments.xml" path="Comments/BLOBImportExport/*" />
-DEFINE BLOB_IMPORT_COMPRESS := 1 
+DEFINE BLOB_IMPORT_COMPRESS := 1
 /// <include file="CoreComments.xml" path="Comments/BLOBImportExport/*" />
-DEFINE BLOB_IMPORT_ENCRYPT	:= 2 
+DEFINE BLOB_IMPORT_ENCRYPT	:= 2
 
 
 /* return values for DBOI_OPTLEVEL */
 
 /// <include file="CoreComments.xml" path="Comments/OptLevel/*" />
-DEFINE DBOI_OPTIMIZED_NONE       := 0 
+DEFINE DBOI_OPTIMIZED_NONE       := 0
 /// <include file="CoreComments.xml" path="Comments/OptLevel/*" />
-DEFINE DBOI_OPTIMIZED_PART       := 1 
+DEFINE DBOI_OPTIMIZED_PART       := 1
 /// <include file="CoreComments.xml" path="Comments/OptLevel/*" />
-DEFINE DBOI_OPTIMIZED_FULL       := 2 
+DEFINE DBOI_OPTIMIZED_FULL       := 2
 
 /* return values for DBOI_INDEXTYPE */
 
 /// <exclude />
-DEFINE DBOI_TYPE_UNDEF          := -1 
+DEFINE DBOI_TYPE_UNDEF          := -1
 /// <exclude />
-DEFINE DBOI_TYPE_NONE           :=  0 
+DEFINE DBOI_TYPE_NONE           :=  0
 /// <exclude />
-DEFINE DBOI_TYPE_NONCOMPACT     :=  1 
+DEFINE DBOI_TYPE_NONCOMPACT     :=  1
 /// <exclude />
-DEFINE DBOI_TYPE_COMPACT        :=  2 
+DEFINE DBOI_TYPE_COMPACT        :=  2
 /// <exclude />
-DEFINE DBOI_TYPE_COMPOUND       :=  3 
+DEFINE DBOI_TYPE_COMPOUND       :=  3
 
 /* constants for DBOI_SCOPEEVAL array parameter */
 
-DEFINE DBRMI_FUNCTION           := 1 
-DEFINE DBRMI_PARAM              := 2 
-DEFINE DBRMI_LOVAL              := 3 
-DEFINE DBRMI_HIVAL              := 4 
-DEFINE DBRMI_RESULT             := 5 
-DEFINE DBRMI_SIZE               := 5 
+DEFINE DBRMI_FUNCTION           := 1
+DEFINE DBRMI_PARAM              := 2
+DEFINE DBRMI_LOVAL              := 3
+DEFINE DBRMI_HIVAL              := 4
+DEFINE DBRMI_RESULT             := 5
+DEFINE DBRMI_SIZE               := 5
 
 /* Numeric DBF TYPES */
-DEFINE DB_DBF_STD              := 1 
-DEFINE DB_DBF_VFP              := 2 
+DEFINE DB_DBF_STD              := 1
+DEFINE DB_DBF_VFP              := 2
 
 
 /* Numeric MEMO TYPES */
-DEFINE DB_MEMO_NONE            := 0 
-DEFINE DB_MEMO_DBT             := 1 
-DEFINE DB_MEMO_FPT             := 2 
-DEFINE DB_MEMO_SMT             := 3 
+DEFINE DB_MEMO_NONE            := 0
+DEFINE DB_MEMO_DBT             := 1
+DEFINE DB_MEMO_FPT             := 2
+DEFINE DB_MEMO_SMT             := 3
 
 /* MEMO EXTENDED TYPES */
-DEFINE DB_MEMOVER_STD          := 1 
-DEFINE DB_MEMOVER_SIX          := 2 
-DEFINE DB_MEMOVER_FLEX         := 3 
-DEFINE DB_MEMOVER_CLIP         := 4 
+DEFINE DB_MEMOVER_STD          := 1
+DEFINE DB_MEMOVER_SIX          := 2
+DEFINE DB_MEMOVER_FLEX         := 3
+DEFINE DB_MEMOVER_CLIP         := 4
 
 
 /* LOCK SCHEMES */
 /// <exclude />
-DEFINE DB_DBFLOCK_DEFAULT      := 0 
+DEFINE DB_DBFLOCK_DEFAULT      := 0
 /// <exclude />
 DEFINE DB_DBFLOCK_CLIPPER      := 1   /* default Cl*pper locking scheme */
 /// <exclude />
@@ -642,39 +644,39 @@ DEFINE DB_DBFLOCK_HB32         := 4   /* Harbour hyper locking scheme for 32bit 
 /// <exclude />
 DEFINE DB_DBFLOCK_HB64         := 5   /* Harbour hyper locking scheme for 64bit file API */
 /// <exclude />
-DEFINE DB_DBFLOCK_CLIPPER2     := 6   /* extended Cl*pper locking scheme NTXLOCK2.OBJ */ 
+DEFINE DB_DBFLOCK_CLIPPER2     := 6   /* extended Cl*pper locking scheme NTXLOCK2.OBJ */
 
 
 // File Extensions
-DEFINE DBT_MEMOEXT             := ".DBT" 
-DEFINE FPT_MEMOEXT             := ".FPT" 
-DEFINE SMT_MEMOEXT             := ".SMT" 
-DEFINE DBV_MEMOEXT             := ".DBV" 
+DEFINE DBT_MEMOEXT             := ".DBT"
+DEFINE FPT_MEMOEXT             := ".FPT"
+DEFINE SMT_MEMOEXT             := ".SMT"
+DEFINE DBV_MEMOEXT             := ".DBV"
 
 // Blocks
 /// <exclude />
 DEFINE DBT_DEFBLOCKSIZE        := 512
 /// <exclude />
-DEFINE FPT_DEFBLOCKSIZE        := 64 
+DEFINE FPT_DEFBLOCKSIZE        := 64
 /// <exclude />
-DEFINE SMT_DEFBLOCKSIZE        := 32 
+DEFINE SMT_DEFBLOCKSIZE        := 32
 
 // Locks
-DEFINE FPT_LOCKPOS             := 0		
-DEFINE FPT_LOCKSIZE            := 1		
+DEFINE FPT_LOCKPOS             := 0
+DEFINE FPT_LOCKSIZE            := 1
 DEFINE FPT_ROOTBLOCK_OFFSET    := 536	 /* Clipper 5.3 ROOT data block offset */
 
-DEFINE SIX_ITEM_BUFSIZE        :=    14 
-DEFINE FLEX_ITEM_BUFSIZE       :=     8 
-DEFINE MAX_SIXFREEBLOCKS       :=    82 
-DEFINE MAX_FLEXFREEBLOCKS      :=   126 
-DEFINE FLEXGCPAGE_SIZE         :=  1010 
+DEFINE SIX_ITEM_BUFSIZE        :=    14
+DEFINE FLEX_ITEM_BUFSIZE       :=     8
+DEFINE MAX_SIXFREEBLOCKS       :=    82
+DEFINE MAX_FLEXFREEBLOCKS      :=   126
+DEFINE FLEXGCPAGE_SIZE         :=  1010
 
 
 // RDD Inheritance
-DEFINE RDT_FULL            :=  1	
-DEFINE RDT_TRANSFER        :=  2	
-DEFINE RDT_HIDDEN          :=  8	
+DEFINE RDT_FULL            :=  1
+DEFINE RDT_TRANSFER        :=  2
+DEFINE RDT_HIDDEN          :=  8
 
 
 /// <exclude />
@@ -685,7 +687,7 @@ DEFINE RDDI_CANPUTREC         := RddInfo.RDDI_CANPUTREC    /* Can this RDD Put R
 DEFINE RDDI_DELIMITER         := RddInfo.RDDI_DELIMITER    /* The field delimiter (as a string) */
 /// <exclude />
 DEFINE RDDI_SEPARATOR         := RddInfo.RDDI_SEPARATOR    /* The record separator (as a string) */
-							  
+
 /// <exclude />
 DEFINE RDDI_TABLEEXT          := RddInfo.RDDI_TABLEEXT     /* Default data file's file extension */
 /// <exclude />
@@ -696,7 +698,7 @@ DEFINE RDDI_ORDBAGEXT         := RddInfo.RDDI_ORDBAGEXT    /* Default multi tag 
 DEFINE RDDI_ORDEREXT          := RddInfo.RDDI_ORDEREXT     /* default single tag index's file extension */
 /// <exclude />
 DEFINE RDDI_ORDSTRUCTEXT      := RddInfo.RDDI_ORDSTRUCTEXT /* default single tag index's file extension */
-							  
+
 /// <exclude />
 DEFINE RDDI_LOCAL             := RddInfo.RDDI_LOCAL        /* Local file access? */
 /// <exclude />
@@ -792,7 +794,7 @@ DEFINE RDDI_INSERTID            := RddInfo.RDDI_INSERTID        /* last auto ins
 /// <exclude />
 DEFINE RDDI_AFFECTEDROWS        := RddInfo.RDDI_AFFECTEDROWS    /* number of affected rows after UPDATE */
 /// <exclude />
-DEFINE RDDI_QUERY               := RddInfo.RDDI_QUERY           /* last executed query */ 
+DEFINE RDDI_QUERY               := RddInfo.RDDI_QUERY           /* last executed query */
 
 /*
 /* "V" field types * /
@@ -837,7 +839,7 @@ DEFINE FPTIT_DUMMY        0xDEADBEAF
 
 DEFINE FPTIT_BINARY       0x0000
 
-DEFINE FPTIT_PICT         0x0000      
+DEFINE FPTIT_PICT         0x0000
 
 /* Picture * /
 
@@ -854,7 +856,7 @@ DEFINE FPTIT_SIX_LOG      0x0080      /* LOGIC * /
 
 DEFINE FPTIT_SIX_CHAR     0x0400      /* CHAR * /
 
-DEFINE FPTIT_SIX_ARRAY    0x8000      /* ARRAY * / 
+DEFINE FPTIT_SIX_ARRAY    0x8000      /* ARRAY * /
 */
 
 
@@ -863,83 +865,83 @@ DEFINE FPTIT_SIX_ARRAY    0x8000      /* ARRAY * /
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
 DEFINE EDB                 := Subcodes.EDB
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SEEK            := Subcodes.EDB_SEEK          
+DEFINE EDB_SEEK            := Subcodes.EDB_SEEK
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SKIP            := Subcodes.EDB_SKIP          
+DEFINE EDB_SKIP            := Subcodes.EDB_SKIP
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_GOTO            := Subcodes.EDB_GOTO          
+DEFINE EDB_GOTO            := Subcodes.EDB_GOTO
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SETRELATION     := Subcodes.EDB_SETRELATION   
+DEFINE EDB_SETRELATION     := Subcodes.EDB_SETRELATION
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_USE             := Subcodes.EDB_USE           
+DEFINE EDB_USE             := Subcodes.EDB_USE
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_CREATEINDEX     := Subcodes.EDB_CREATEINDEX   
+DEFINE EDB_CREATEINDEX     := Subcodes.EDB_CREATEINDEX
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SETORDER        := Subcodes.EDB_SETORDER      
+DEFINE EDB_SETORDER        := Subcodes.EDB_SETORDER
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SETINDEX        := Subcodes.EDB_SETINDEX      
+DEFINE EDB_SETINDEX        := Subcodes.EDB_SETINDEX
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_FIELDNAME       := Subcodes.EDB_FIELDNAME     
+DEFINE EDB_FIELDNAME       := Subcodes.EDB_FIELDNAME
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_BADALIAS        := Subcodes.EDB_BADALIAS      
+DEFINE EDB_BADALIAS        := Subcodes.EDB_BADALIAS
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_DUPALIAS        := Subcodes.EDB_DUPALIAS      
+DEFINE EDB_DUPALIAS        := Subcodes.EDB_DUPALIAS
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SETFILTER       := Subcodes.EDB_SETFILTER     
+DEFINE EDB_SETFILTER       := Subcodes.EDB_SETFILTER
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_CYCLICREL       := Subcodes.EDB_CYCLICREL     
+DEFINE EDB_CYCLICREL       := Subcodes.EDB_CYCLICREL
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_CREATETABLE     := Subcodes.EDB_CREATETABLE   
+DEFINE EDB_CREATETABLE     := Subcodes.EDB_CREATETABLE
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_RDDNOTFOUND     := Subcodes.EDB_RDDNOTFOUND   
+DEFINE EDB_RDDNOTFOUND     := Subcodes.EDB_RDDNOTFOUND
 // RESERVED EDB + 16
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_FIELDINDEX      := Subcodes.EDB_FIELDINDEX   
+DEFINE EDB_FIELDINDEX      := Subcodes.EDB_FIELDINDEX
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SELECT          := Subcodes.EDB_SELECT       
+DEFINE EDB_SELECT          := Subcodes.EDB_SELECT
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SYMSELECT       := Subcodes.EDB_SYMSELECT    
+DEFINE EDB_SYMSELECT       := Subcodes.EDB_SYMSELECT
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_TOTAL           := Subcodes.EDB_TOTAL        
+DEFINE EDB_TOTAL           := Subcodes.EDB_TOTAL
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_RECNO           := Subcodes.EDB_RECNO        
+DEFINE EDB_RECNO           := Subcodes.EDB_RECNO
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_EXPRESSION      := Subcodes.EDB_EXPRESSION   
+DEFINE EDB_EXPRESSION      := Subcodes.EDB_EXPRESSION
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_EXPR_WIDTH      := Subcodes.EDB_EXPR_WIDTH   
+DEFINE EDB_EXPR_WIDTH      := Subcodes.EDB_EXPR_WIDTH
 // RESERVED EDB + 24 - 29
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_DRIVERLOAD      := Subcodes.EDB_DRIVERLOAD      
+DEFINE EDB_DRIVERLOAD      := Subcodes.EDB_DRIVERLOAD
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_PARAM           := Subcodes.EDB_PARAM           
+DEFINE EDB_PARAM           := Subcodes.EDB_PARAM
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOAREAS         := Subcodes.EDB_NOAREAS         
+DEFINE EDB_NOAREAS         := Subcodes.EDB_NOAREAS
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOMEM           := Subcodes.EDB_NOMEM           
+DEFINE EDB_NOMEM           := Subcodes.EDB_NOMEM
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOFIELDS        := Subcodes.EDB_NOFIELDS        
+DEFINE EDB_NOFIELDS        := Subcodes.EDB_NOFIELDS
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_BAD_ERROR_INFO  := Subcodes.EDB_BAD_ERROR_INFO  
+DEFINE EDB_BAD_ERROR_INFO  := Subcodes.EDB_BAD_ERROR_INFO
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_WRONGFIELDNAME  := Subcodes.EDB_WRONGFIELDNAME  
+DEFINE EDB_WRONGFIELDNAME  := Subcodes.EDB_WRONGFIELDNAME
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_ORDDESTROY      := Subcodes.EDB_ORDDESTROY      
+DEFINE EDB_ORDDESTROY      := Subcodes.EDB_ORDDESTROY
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOINITFUNCTION  := Subcodes.EDB_NOINITFUNCTION  
+DEFINE EDB_NOINITFUNCTION  := Subcodes.EDB_NOINITFUNCTION
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_ERRORINIT       := Subcodes.EDB_ERRORINIT       
+DEFINE EDB_ERRORINIT       := Subcodes.EDB_ERRORINIT
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_DBSTRUCT        := Subcodes.EDB_DBSTRUCT        
+DEFINE EDB_DBSTRUCT        := Subcodes.EDB_DBSTRUCT
 
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOTABLE         := Subcodes.EDB_NOTABLE       
+DEFINE EDB_NOTABLE         := Subcodes.EDB_NOTABLE
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOORDER         := Subcodes.EDB_NOORDER       
+DEFINE EDB_NOORDER         := Subcodes.EDB_NOORDER
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
 DEFINE EDB_NODB            := Subcodes.EDB_NODB
 
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_ASSERTION       := Subcodes.EDB_ASSERTION     
+DEFINE EDB_ASSERTION       := Subcodes.EDB_ASSERTION
 
 // Xbase++ defines for DbScope()
 /// <include file="CoreComments.xml" path="Comments/ScopeInfo/*" />

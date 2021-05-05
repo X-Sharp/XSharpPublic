@@ -4574,7 +4574,7 @@ RETURN
 			RddSetDefault("DBFCDX")
 			cDbf := GetTempFileName()
 			DbfTests.CreateDatabase(cDbf , {{"FLD","C",10,0}} , {"a","b"} )
-			
+
 			LOCAL uRet AS USUAL
 			uRet := DbOrderInfo(DBOI_EXPRESSION)
 			Assert.True ( IsString(uRet) )
@@ -4587,11 +4587,11 @@ RETURN
 			Assert.True ( uRet == "" )
 
 			uRet := DbOrderInfo(DBOI_POSITION)
-			Assert.False( IsNumeric(uRet) )
+			Assert.True( IsNumeric(uRet) )
 			Assert.True ( uRet == 1 ) // that's what VO returns
 
 			uRet := DbOrderInfo(DBOI_RECNO)
-			Assert.False( IsNumeric(uRet) )
+			Assert.True( IsNumeric(uRet) )
 			Assert.True ( uRet == 1 ) // that's what VO returns
 
 			uRet := DbOrderInfo(DBOI_NAME)

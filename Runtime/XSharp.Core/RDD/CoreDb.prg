@@ -1196,7 +1196,7 @@ CLASS XSharp.CoreDb
             oRdd := CoreDb.CreateRDDInstance( oRegRDD:RddType, "XXTEMPXX" )
         ENDIF
         VAR info := DbOrderInfo{}
-        oRdd:OrderInfo(DBOI_BAGEXT, info)
+        oRdd:OrderInfo(DBOI_DEFBAGEXT, info)
         RETURN (STRING) info:Result
         })
 

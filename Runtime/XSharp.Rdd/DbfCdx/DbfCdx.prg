@@ -148,13 +148,19 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
 
                 BEGIN SWITCH nOrdinal
+                CASE DBOI_DEFBAGEXT
+                    info:Result := CdxOrderBag.CDX_EXTENSION
                 CASE DBOI_CONDITION
                     IF workOrder != NULL
                         info:Result := workOrder:Condition
+                    ELSE
+                        info:Result := ""
                     ENDIF
                 CASE DBOI_EXPRESSION
                     IF workOrder != NULL
                         info:Result := workOrder:Expression
+                    ELSE
+                        info:Result := ""
                     ENDIF
                 CASE DBOI_ORDERCOUNT
                     IF oBag == NULL
@@ -163,6 +169,7 @@ BEGIN NAMESPACE XSharp.RDD
                         info:Result := oBag:Tags:Count
                     ENDIF
                 CASE DBOI_POSITION
+                CASE DBOI_RECNO
                     VAR oState := SELF:_GetState()
                     IF workOrder == NULL
                         info:Result := SELF:RecNo
@@ -190,7 +197,11 @@ BEGIN NAMESPACE XSharp.RDD
                     info:Result := SELF:_indexList:OrderPos(workOrder)
                 CASE DBOI_BAGEXT
                     // according to the docs this should always return the default extension and not the actual extension
-                    info:Result := CdxOrderBag.CDX_EXTENSION
+                    IF workOrder != NULL
+                        info:Result := System.IO.Path.GetExtension(workOrder:OrderBag:FullPath)
+                    ELSE
+                        info:Result := ""
+                    ENDIF
                 CASE DBOI_FULLPATH
                     IF workOrder != NULL
                         info:Result := workOrder:OrderBag:FullPath
@@ -204,7 +215,7 @@ BEGIN NAMESPACE XSharp.RDD
                     IF info:Order IS LONG VAR nOrder
                         info:Result := SELF:_indexList:BagName(nOrder)
                     ELSEIF workOrder != NULL
-                            info:Result := workOrder:FileName
+                        info:Result := workOrder:FileName
                     ELSE
                         info:Result := ""
                     ENDIF

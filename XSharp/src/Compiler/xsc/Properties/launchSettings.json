@@ -2,8 +2,9 @@
   "profiles": {
     "xsc": {
       "commandName": "Project",
-      "commandLineArgs": "@LastXSharpResponseFile.Rsp ",
-      "workingDirectory": "c:\\download\\__test\\VOMDIApp13"
+      "commandLineArgs": "@app.Rsp ",
+      "workingDirectory": "C:\\XSharp\\Dev\\tests",
+      "nativeDebugging": false
     }
   }
 }

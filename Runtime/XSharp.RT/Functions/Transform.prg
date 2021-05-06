@@ -788,6 +788,7 @@ FUNCTION Transform( uValue AS USUAL, cSayPicture AS STRING ) AS STRING
     CASE __UsualType.Psz
         ret := TransformHelpers.TransformS( (STRING) uValue,  cSayPicture )
     CASE __UsualType.Void
+    CASE __UsualType.Symbol
         ret := ""
     OTHERWISE
         IF uValue:IsObject .AND. IsMethod( uValue, #Transform )

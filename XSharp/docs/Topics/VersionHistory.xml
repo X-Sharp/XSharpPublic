@@ -11,6 +11,39 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="NotesBox">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
+    <para styleclass="Heading1">Changes in 2.8.1.0 (Cahors)</para>
+    <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
+    <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed issues with interpolated strings inside scripts (#598, #622):</li>
+      <list id="113" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+        <li styleclass="Body Text">The script compiler now correctly sets the AllowDot compiler option from the current active dialect in the runtime (Core &amp; FoxPro: AllowDot = true)</li>
+        <li styleclass="Body Text">When compiling with DOT(.) as instance method separator then the &quot;:&quot; character is used inside interpolated strings to prefix the format string. </li>
+        <li styleclass="Body Text">When compiling with COLON (:) as instance method separator then the colon can not be used to separate expressions from the format string inside interpolated strings. In that case we now support a double colon (::) between the expression and the format string. For example</li>
+      </list>
+    </list>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> i </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">i := 42</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? i&quot;i = {i::F2}&quot; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// this diplays i with 2 decimals</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">WAIT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed an assertion error &apos;UnconvertedConditionalOperator&apos; (#616)</li>
+      <li styleclass="Body Text">You can now use DATE fields inside VOSTRUCT and UNION (#595)</li>
+      <li styleclass="Body Text">Fixed an assertion error in the compiler when the namespace &quot;xsharp&quot; is used (#618)</li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
+    <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">DbCloseArea() was returning TRUE even when no area was open. This was incompatible with VO. We are returning FALSE now.(#611)</li>
+      <li styleclass="Body Text">Macro compiler was not able to find functions in assemblies that were loaded dynamically (#607)</li>
+      <li styleclass="Body Text">When a DBF file was opened &quot;readonly&quot; and then an index was created, then a runtime error would happen when the file was closed, because the RDD was trying to set the &quot;production index&quot; flag in the DBF header. This flag is no longer set for files that are opened &quot;readonly&quot; (#610)</li>
+      <li styleclass="Body Text">Fixed an exception (that was caught) inside DbOrderInfo(DBOI_KEYCOUND) (#613)</li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
+    <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Todo comments were not always parsed correctly, They were also included when they were part of another word or when they were not the first word on the line. This has been fixed.(#617)</li>
+      <li styleclass="Body Text">Fix problem with saving dialect from General Page </li>
+      <li styleclass="Body Text">Fix problem that &quot;warnings as errors&quot; was not saved from the Build properties page (#621)</li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Installer</text></para>
+    <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">The installer was adding an incorrect version of XSharp.CodeAnalysis.dll to the Global Assembly Cache. This has been fixed.</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.8.0.0 (Cahors)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3">General</para>

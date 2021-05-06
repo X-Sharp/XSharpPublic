@@ -90144,7 +90144,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R759 - ParenExpression inside Codeblock
 
-ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION R760 - Update property types when types in parent have changed *************
 Application = R760 - Update property types when types in parent have changed
 IDEVersion = 1.06
@@ -94298,7 +94298,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R773 - AllowDot and Interpolated strings
 
-ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION R775 - Type Attributes cause compiler crash *************
 Application = R775 - Type Attributes cause compiler crash
 IDEVersion = 1.06

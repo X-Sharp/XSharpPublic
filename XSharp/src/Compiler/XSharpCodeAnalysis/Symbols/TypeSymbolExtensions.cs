@@ -437,20 +437,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool TypesChanged(this TypeSymbol type)
         {
+            // Disabled for now because we found a recursive loop when compiling Xs2Ado:
+            // With 2 types with each the [DefaultMember(..)] attribute
+            // and an override in the subclass.
+            // then the check for TypesChanged will go into an infinite loop because this gets called over and over again from
+            // the member signature comparer
             if (type is null)
                 return false;
-            var attrs = type.GetAttributes();
-            foreach (var attr in attrs)
-            {
-                var atype = attr.AttributeClass;
-                if (atype is { } && atype.Name == OurTypeNames.TypesChanged)
-                {
-                    return true;
-                }
-            }
-            var bt = type.BaseTypeNoUseSiteDiagnostics;
-            if (bt is { } && bt.SpecialType != SpecialType.System_Object)
-                return bt.TypesChanged();
+            //var attrs = type.GetAttributes();
+            //foreach (var attr in attrs)
+            //{
+            //    var atype = attr.AttributeClass;
+            //    if (atype is { } && atype.Name == OurTypeNames.TypesChanged)
+            //    {
+            //        return true;
+            //    }
+            //}
+            //var bt = type.BaseTypeNoUseSiteDiagnostics;
+            //if (bt is { } && bt.SpecialType != SpecialType.System_Object)
+            //    return bt.TypesChanged();
             return false;
         }
 

@@ -65,13 +65,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     {
                                         // Enum type? can be casted to Int32
                                         constant = ConstantValue.Create(arg.Value, SpecialType.System_Int32);
+                                        var netType = compilation.GetSpecialType(SpecialType.System_Int32);
+                                        return new BoundLiteral(syntax, constant, netType);
                                     }
                                     else
                                     {
                                         constant = ConstantValue.Create(arg.Value, arg.Type.SpecialType);
+                                        var netType = compilation.GetSpecialType(arg.Type.SpecialType);
+                                        return new BoundLiteral(syntax, constant, netType);
                                     }
-                                    var netType = compilation.GetSpecialType(arg.Type.SpecialType);
-                                    return new BoundLiteral(syntax, constant, netType);
                                 }
                                 break;
                             case 1:

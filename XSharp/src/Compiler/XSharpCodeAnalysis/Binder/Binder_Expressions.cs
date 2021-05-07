@@ -72,6 +72,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
+        internal BoundExpression Usual2Object(BoundExpression expression, SyntaxNode node, DiagnosticBag diagnostics)
+        {
+            if (expression.Type.IsUsualType())
+            {
+                expression = new BoundConversion(node, expression, Conversion.Boxing, false, false,
+                    conversionGroupOpt: null,
+                    constantValueOpt: null,
+                    type: GetSpecialType(SpecialType.System_Object, diagnostics, node));
+            }
+            return expression;
+        }
+
         private BoundExpression SubtractIndex(BoundExpression expr, DiagnosticBag diagnostics, SpecialType specialType)
         {
             expr = BindToNaturalType(expr, diagnostics, false);

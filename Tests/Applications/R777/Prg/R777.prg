@@ -1,3 +1,6 @@
+// R777 IS Pattern Check with USUAL values  
+// Also Switch Pattern Check with USUAL values
+// #https://github.com/X-Sharp/XSharpPublic/issues/636
 
 FUNCTION Start( ) AS VOID
 

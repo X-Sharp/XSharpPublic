@@ -31,7 +31,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 expression = BadExpression(expression.Syntax, expression);
             }
-
+#if XSHARP
+            if (expressionType.IsUsualType())
+            {
+                expression = Usual2Object(expression, node, diagnostics);
+                expressionType = expression.Type;
+            }
+#endif
             Debug.Assert(expression.Type is { });
             uint inputValEscape = GetValEscape(expression, LocalScopeDepth);
             BoundPattern pattern = BindPattern(node.Pattern, expression.Type, inputValEscape, permitDesignations: true, hasErrors, diagnostics, underIsPattern: true);

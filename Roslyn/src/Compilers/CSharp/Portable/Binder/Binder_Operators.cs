@@ -3158,11 +3158,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (operand.Type.IsUsualType())
             {
-                // this triggers the boxing of the contents of the usual into an object
-                operand = new BoundConversion(node, operand, Conversion.Boxing, false, false,
-                    conversionGroupOpt: default,
-                    constantValueOpt: default, 
-                    type: GetSpecialType(SpecialType.System_Object, diagnostics, node));
+                operand = Usual2Object(operand, node, diagnostics);
             }
 #endif
             if (!tryBindAsType(node.Right, out DiagnosticBag isTypeDiagnostics, out BoundTypeExpression typeExpression) &&

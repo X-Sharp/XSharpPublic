@@ -379,6 +379,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             var switchGoverningExpression = binder.BindRValueWithoutTargetType(node, diagnostics);
             var switchGoverningType = switchGoverningExpression.Type;
 
+#if XSHARP
+            if (switchGoverningType.IsUsualType())
+            {
+                switchGoverningExpression = Usual2Object(switchGoverningExpression, node, diagnostics);
+                switchGoverningType = switchGoverningExpression.Type;
+            }
+#endif
+
             if ((object)switchGoverningType != null && !switchGoverningType.IsErrorType())
             {
                 // SPEC:    The governing type of a switch statement is established by the switch expression.

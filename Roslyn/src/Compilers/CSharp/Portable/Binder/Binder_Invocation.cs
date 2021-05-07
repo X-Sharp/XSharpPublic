@@ -1410,7 +1410,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 if (!parameter.IsOptional && (defaultConstantValue == null || defaultConstantValue.IsBad))
                 {
-                    defaultValue = XsDefaultValue(parameter, syntax);
+                    defaultValue = XsDefaultValue(parameter, syntax, Compilation);
                     if (defaultValue != null)
                         return defaultValue;
                 }

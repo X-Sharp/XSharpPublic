@@ -83341,6 +83341,7 @@ ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
 ReferenceGAC = CLR4,Microsoft.CSharp,1,0,4.0.0.0
+ReferenceGAC = CLR4,mscorlib,1,0,4.0.0.0
 [R709 TEXT ENDText and MessageBox() Resources]
 [R709 TEXT ENDText and MessageBox() Native Resources]
 [R709 TEXT ENDText and MessageBox() License files]
@@ -89477,7 +89478,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO

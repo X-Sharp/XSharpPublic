@@ -43,7 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (i < parameters.Length && !parameters[i].IsParams)
                     {
                         var parameter = parameters[i];
-                        arguments[i] = XsDefaultValue(parameter, arg.Syntax);
+                        arguments[i] = XsDefaultValue(parameter, arg.Syntax, Compilation);
                     }
                     else
                     {
@@ -64,10 +64,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 
-        private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax)
+        private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax, CSharpCompilation compilation)
         {
             TypeSymbol parameterType = parameter.Type;
-            var defaultExpr = parameter.GetVODefaultParameter(syntax);
+            var defaultExpr = parameter.GetVODefaultParameter(syntax, compilation);
             if (defaultExpr == null)
                 return null;
             if (parameterType is NamedTypeSymbol nts && nts.ConstructedFrom.IsPszType())

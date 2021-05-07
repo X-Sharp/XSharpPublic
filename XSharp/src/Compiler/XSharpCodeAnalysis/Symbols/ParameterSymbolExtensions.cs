@@ -30,7 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return false;
         }
 
-        public static BoundExpression GetVODefaultParameter(this ParameterSymbol param, SyntaxNode syntax)
+        public static BoundExpression GetVODefaultParameter(this ParameterSymbol param, SyntaxNode syntax, CSharpCompilation compilation)
         {
             ConstantValue constant;
             if (param is { }) // prevent calling equals operator on ParameterSymbol
@@ -46,7 +46,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         if (arg.Value == null)
                             return new BoundDefaultExpression(syntax, param.Type);
                         int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
-                        if (desc == 0 && TypeSymbol.Equals(param.Type, param.DeclaringCompilation.PszType()))
+                        if (desc == 0 && TypeSymbol.Equals(param.Type, compilation.PszType()))
                         {
                             desc = 4;
                         }
@@ -85,9 +85,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 }
 
                                 constant = ConstantValue.Create(new DateTime(longValue));
-                                var dtType = param.DeclaringCompilation.GetSpecialType(SpecialType.System_DateTime);
+                                var dtType = compilation.GetSpecialType(SpecialType.System_DateTime);
                                 lit = new BoundLiteral(syntax, constant, dtType);
-                                ctor = param.DeclaringCompilation.DateType().GetConstructor(dtType);
+                                ctor = compilation.DateType().GetConstructor(dtType);
                                 if (ctor != null)
                                 {
                                     return new BoundObjectCreationExpression(syntax, ctor, lit);
@@ -97,9 +97,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             case 3:
                                 // Symbol, value should be a string literal or null
                                 constant = ConstantValue.Create(arg.DecodeValue<string>(SpecialType.System_String));
-                                strType = param.DeclaringCompilation.GetSpecialType(SpecialType.System_String);
+                                strType = compilation.GetSpecialType(SpecialType.System_String);
                                 lit = new BoundLiteral(syntax, constant, strType);
-                                ctor = param.DeclaringCompilation.SymbolType().GetConstructor(strType);
+                                ctor = compilation.SymbolType().GetConstructor(strType);
                                 if (ctor != null)
                                 {
                                     return new BoundObjectCreationExpression(syntax, ctor, lit);
@@ -110,9 +110,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             case 4:
                                 // Psz, value should be a string or null
                                 constant = ConstantValue.Create(arg.DecodeValue<string>(SpecialType.System_String));
-                                strType = param.DeclaringCompilation.GetSpecialType(SpecialType.System_String);
+                                strType = compilation.GetSpecialType(SpecialType.System_String);
                                 lit = new BoundLiteral(syntax, constant, strType);
-                                ctor = param.DeclaringCompilation.PszType().GetConstructor(strType);
+                                ctor = compilation.PszType().GetConstructor(strType);
                                 if (ctor != null)
                                 {
                                     return new BoundObjectCreationExpression(syntax, ctor, lit);
@@ -123,7 +123,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 // IntPtr, return value as IntPtr
                                 IntPtr p = new IntPtr(arg.DecodeValue<int>(SpecialType.System_Int32));
                                 constant = ConstantValue.Create(p);
-                                return new BoundLiteral(syntax, constant, param.DeclaringCompilation.GetSpecialType(SpecialType.System_IntPtr));
+                                return new BoundLiteral(syntax, constant, compilation.GetSpecialType(SpecialType.System_IntPtr));
                             default:
                                 return new BoundDefaultExpression(syntax, param.Type);
                         }

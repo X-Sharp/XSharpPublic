@@ -298,7 +298,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 var decoder = new MetadataDecoder(containingPEModule);
                 var elementType = decoder.GetTypeSymbolForSerializedType(elementTypeName);
 #if XSHARP
-                if (elementType.VoFixedBufferElementSizeInBytes() != 0)
+                if (elementType.VoFixedBufferElementSizeInBytes(this.DeclaringCompilation) != 0)
 #else
                 if (elementType.FixedBufferElementSizeInBytes() != 0)
 #endif

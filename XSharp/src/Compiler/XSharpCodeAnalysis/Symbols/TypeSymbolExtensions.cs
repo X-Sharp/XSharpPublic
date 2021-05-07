@@ -202,7 +202,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return 0;
         }
 
-        internal static int VoFixedBufferElementSizeInBytes(this TypeSymbol type)
+        internal static int VoFixedBufferElementSizeInBytes(this TypeSymbol type, CSharpCompilation compilation)
         {
             int elementSize = type.SpecialType.FixedBufferElementSizeInBytes();
             if (elementSize == 0)
@@ -210,6 +210,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 switch (type.Name)
                 {
                     case OurTypeNames.PszType:
+                        if (compilation?.Options.Platform == Platform.X86)
+                            elementSize = 4;
+                        else
+                            elementSize = 8;
+                        break;
                     case OurTypeNames.DateType:
                     case OurTypeNames.SymbolType:
                     case OurTypeNames.WinBoolType:
@@ -219,7 +224,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         if (type.SpecialType == SpecialType.System_IntPtr ||
                             type.SpecialType == SpecialType.System_UIntPtr ||
                             type.IsPointerType())
-                            elementSize = 4;
+                            if (compilation?.Options.Platform == Platform.X86)
+                                elementSize = 4;
+                            else
+                                elementSize = 8;
                         break;
 
                 }

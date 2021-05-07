@@ -111,7 +111,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
                                     if (DeclaringCompilation.Options.HasRuntime)
                                     {
-                                        elementSize =  elementType.VoFixedBufferElementSizeInBytes() ;
+                                        elementSize =  elementType.VoFixedBufferElementSizeInBytes(DeclaringCompilation);
                                     }
 #endif
                                     long totalSize = elementSize * 1L * int32Value;
@@ -192,7 +192,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
 				if ( DeclaringCompilation.Options.HasRuntime)
 				{
-                	elementSize =  elementType.VoFixedBufferElementSizeInBytes() ;
+                	elementSize =  elementType.VoFixedBufferElementSizeInBytes(DeclaringCompilation) ;
 				}
 #endif
                 const int alignment = 0;

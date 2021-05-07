@@ -1408,10 +1408,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal static ConstantValue GetConstantSizeOf(TypeSymbol type)
         {
 #if XSHARP
-            if (type.IsVoStructOrUnion())
+            if (type.IsVoStructOrUnion() && type.DeclaringCompilation != null && type.DeclaringCompilation.Options.Platform != Platform.AnyCpu)
             {
                 return ConstantValue.Create(type.VoStructOrUnionSizeInBytes());
-
             }
 #endif
             return ConstantValue.CreateSizeOf((type.GetEnumUnderlyingType() ?? type).SpecialType);
@@ -4724,7 +4723,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var memberNameMap = new HashSet<string>(XSharpString.Comparer);
 #else
             var memberNameMap = PooledHashSet<string>.GetInstance();
-#endif			
+#endif
             foreach (var memberInitializer in initializerSyntax.Expressions)
             {
                 BoundExpression boundMemberInitializer = BindInitializerMemberAssignment(

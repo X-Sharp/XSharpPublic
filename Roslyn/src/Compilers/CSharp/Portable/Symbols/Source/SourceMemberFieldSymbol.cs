@@ -539,10 +539,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     var elementType = ((PointerTypeSymbol)type.Type).PointedAtType;
                     int elementSize = elementType.FixedBufferElementSizeInBytes();
 #if XSHARP
-					if (DeclaringCompilation.Options.HasRuntime )
-					{
-	                    elementSize = elementType.VoFixedBufferElementSizeInBytes() ;
-					}
+                    if (DeclaringCompilation.Options.HasRuntime )
+                    {
+                        elementSize = elementType.VoFixedBufferElementSizeInBytes(DeclaringCompilation);
+                    }
 #endif
                     if (elementSize == 0)
                     {

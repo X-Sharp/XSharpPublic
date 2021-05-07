@@ -48,12 +48,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         int sz, elsz;
                         if (f.IsFixedSizeBuffer == true)
                         {
-                            elsz = (f.Type as PointerTypeSymbol).PointedAtType.VoFixedBufferElementSizeInBytes();
+                            elsz = (f.Type as PointerTypeSymbol).PointedAtType.VoFixedBufferElementSizeInBytes(DeclaringCompilation);
                             sz = f.FixedSize * elsz;
                         }
                         else
                         {
-                            sz = f.Type.VoFixedBufferElementSizeInBytes();
+                            sz = f.Type.VoFixedBufferElementSizeInBytes(DeclaringCompilation);
                             if ((f.Type as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true)
                             {
                                 elsz = (f.Type as SourceNamedTypeSymbol).VoStructElementSize;
@@ -64,10 +64,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             }
                             else if (f.Type.IsWinBoolType()
                                 || f.Type.IsSymbolType()
-                                || f.Type.IsPszType()
                                 || f.Type.IsDateType())
                             {
                                 elsz = sz = 4;
+                            }
+                            if ( f.Type.IsPszType())
+                            {
+                                if (DeclaringCompilation?.Options.Platform == Platform.X86)
+                                    elsz = sz = 4;
+                                else
+                                    elsz = sz = 8;
                             }
                             else
                             {

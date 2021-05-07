@@ -57,7 +57,7 @@ FUNCTION Start() AS VOID STRICT
 
 	MadnessClass{}:RunTest()
 
-	WAIT
+
 
 RETURN
 

@@ -4,7 +4,7 @@ FUNCTION Start( ) AS VOID
     System.Globalization.CultureInfo.CurrentCulture := System.Globalization.CultureInfo.GetCultureInfo("nl-nl")
     TestColon()
     TestDot()
-    WAIT	
+
 RETURN
 #pragma options("AllowDot", OFF)
 FUNCTION TestColon AS VOID

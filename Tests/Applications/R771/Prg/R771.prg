@@ -10,7 +10,14 @@ FUNCTION Start() AS VOID STRICT
     LOCAL dwOffset AS DWORD
     aQC := {1, 2}
     dwOffset := aQC[IIF(Upper(AllTrim("Test"))==Upper(AllTrim("TestB")),QC_QuoteChargeQuantity,QC_QuoteChargeQuantity)] //Compile crash
-    ? dwOffSet
-    wait	    
+    xAssert(dwOffset == 2)
 RETURN      
 
+
+
+PROC xAssert(l AS LOGIC)
+IF l
+	? "Assertion passed"
+ELSE
+	THROW Exception{"Incorrect result"}
+END IF

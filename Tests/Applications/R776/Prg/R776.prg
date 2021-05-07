@@ -27,8 +27,7 @@ FUNCTION Start() AS VOID STRICT
     dwSize := _SIZEOF(DARRAY_ROW)              
     ? dwSize
     xAssert(dwSize == 16)
-    WAIT
-
+ 
 	RETURN
 	
 	

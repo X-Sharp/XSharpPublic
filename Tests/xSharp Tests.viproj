@@ -44641,6 +44641,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,mscorlib,1,0,4.0.0.0
 [C398 - Problem with float default values and /vo14+ Resources]
 [C398 - Problem with float default values and /vo14+ Native Resources]
 [C398 - Problem with float default values and /vo14+ License files]

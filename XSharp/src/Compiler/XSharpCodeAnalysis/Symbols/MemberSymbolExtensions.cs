@@ -99,14 +99,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                 }
             }
-            var pars = method.GetParameters();
-            if (pars.Length != 1)
-                return false;
-            var par = pars[0];
-            if (par.Name == XSharpSpecialNames.ClipperArgs)
-                return true;
-            if (par.Name == VulcanSpecialNames.ClipperArgs)
-                return true;
+            if (method != null)
+            {
+                var pars = method.GetParameters();
+                if (pars.Length != 1)
+                    return false;
+                var par = pars[0];
+                if (par.Name == XSharpSpecialNames.ClipperArgs)
+                    return true;
+                if (par.Name == VulcanSpecialNames.ClipperArgs)
+                    return true;
+            }
             return false;
         }
     }

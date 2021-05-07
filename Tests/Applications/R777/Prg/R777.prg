@@ -4,15 +4,17 @@
 
 FUNCTION Start( ) AS VOID
 
-    LOCAL uValue := GetObject(2)
+    LOCAL uValue := GetObject(1)
     IF uValue IS Error VAR oError
         ? "Error", oError:Message
     ELSEIF uValue IS STRING VAR strValue
         ? "String", strValue
     ENDIF
     SWITCH uValue
-    CASE oError AS Error 
-        ? "Error", oError:Message
+    CASE oError AS Error WHEN oError:Message == "Error"
+        ? "Error 1", oError:Message
+    CASE oError AS Error WHEN oError:Message == "test"
+        ? "Error 2", oError:Message
     CASE strValue AS STRING 
         ? "String", strValue
     END SWITCH

@@ -1404,14 +1404,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var constantValue => constantValue
                 };
                 Debug.Assert((object?)defaultConstantValue != ConstantValue.Unset);
+
+                var callerSourceLocation = enableCallerInfo ? GetCallerLocation(syntax) : null;
+                BoundExpression defaultValue;
 #if XSHARP
                 if (!parameter.IsOptional && (defaultConstantValue == null || defaultConstantValue.IsBad))
                 {
-                    defaultConstantValue = XsDefaultValue(parameter);
+                    defaultValue = XsDefaultValue(parameter, syntax);
+                    if (defaultValue != null)
+                        return defaultValue;
                 }
-#endif
-                var callerSourceLocation = enableCallerInfo ? GetCallerLocation(syntax) : null;
-                BoundExpression defaultValue;
+#endif          
                 if (callerSourceLocation is object && parameter.IsCallerLineNumber)
                 {
                     int line = callerSourceLocation.SourceTree.GetDisplayLineNumber(callerSourceLocation.SourceSpan);

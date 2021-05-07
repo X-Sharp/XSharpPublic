@@ -43,15 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (i < parameters.Length && !parameters[i].IsParams)
                     {
                         var parameter = parameters[i];
-                        var defValue = XsDefaultValue(parameter);
-                        if (defValue != ConstantValue.Null)
-                        {
-                            arguments[i] = new BoundLiteral(arg.Syntax, defValue, parameter.Type);
-                        }
-                        else
-                        {
-                            arguments[i] = new BoundDefaultExpression(arg.Syntax, parameter.Type, false);
-                        }
+                        arguments[i] = XsDefaultValue(parameter, arg.Syntax);
                     }
                     else
                     {
@@ -72,16 +64,17 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 
-        private static ConstantValue XsDefaultValue(ParameterSymbol parameter)
+        private static BoundExpression XsDefaultValue(ParameterSymbol parameter, SyntaxNode syntax)
         {
             TypeSymbol parameterType = parameter.Type;
-            var defaultConstantValue = parameter.GetVODefaultParameter();
-            if (defaultConstantValue == null)
+            var defaultExpr = parameter.GetVODefaultParameter(syntax);
+            if (defaultExpr == null)
                 return null;
             if (parameterType is NamedTypeSymbol nts && nts.ConstructedFrom.IsPszType())
             {
 
-                if (defaultConstantValue.StringValue != null)
+
+                if (defaultExpr is BoundDefaultExpression)
                 {
                     // ToDo
                     // when the parameter is of type PSZ and there was a literal default string
@@ -104,10 +97,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Foo((__Psz) &䌤㘲␵$PSZ$_15_1);
                     // Nikos can you implement something like this ?
                     //
-                    defaultConstantValue = ConstantValue.Null;
+                    // defaultConstantValue = ConstantValue.Null;
                 }
             }
-            return defaultConstantValue;
+            return defaultExpr;
         }
         private BoundExpression BindXsInvocationExpression(
             InvocationExpressionSyntax node,

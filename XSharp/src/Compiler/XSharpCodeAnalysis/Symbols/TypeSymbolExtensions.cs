@@ -311,8 +311,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         }
 
-        public static ConstantValue GetVODefaultParameter(this ParameterSymbol param)
+        public static BoundExpression GetVODefaultParameter(this ParameterSymbol param, SyntaxNode syntax)
         {
+            ConstantValue constant;
             if (param is { }) // prevent calling equals operator on ParameterSymbol
             {
                 var attrs = param.GetAttributes();
@@ -321,9 +322,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     var atype = attr.AttributeClass;
                     if (atype.IsOurAttribute(OurTypeNames.DefaultParameterAttribute))
                     {
-                        int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
 
                         var arg = attr.CommonConstructorArguments[0];
+                        if (arg.Value == null)
+                            return new BoundDefaultExpression(syntax, param.Type);
+                        int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
+                        if (desc == 0 && TypeSymbol.Equals(param.Type, param.DeclaringCompilation.PszType()))
+                        {
+                            desc = 4; 
+                        }
+                        TypeSymbol strType;
+                        BoundLiteral lit;
+                        MethodSymbol ctor;
                         switch (desc)
                         {
                             case 0:
@@ -334,48 +344,80 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     if (arg.Type.SpecialType == SpecialType.None)
                                     {
                                         // Enum type? can be casted to Int32
-                                        return ConstantValue.Create(arg.Value, SpecialType.System_Int32);
+                                        constant = ConstantValue.Create(arg.Value, SpecialType.System_Int32);
                                     }
                                     else
-                                        return ConstantValue.Create(arg.Value, arg.Type.SpecialType);
+                                    {
+                                        constant = ConstantValue.Create(arg.Value, arg.Type.SpecialType);
+                                    }
+                                    return new BoundLiteral(syntax, constant, param.Type);
                                 }
-                                else
-                                    return ConstantValue.Null;
+                                break;
                             case 1:
-                                // NIL
-                                return ConstantValue.Null;
+                                // NIL. We should not get here.
+                                return new BoundDefaultExpression(syntax, param.Type);
                             case 2:
                                 // Date, value should be long of ticks. Return DateTime
-                                DateTime dt = new DateTime(arg.DecodeValue<long>(SpecialType.System_Int64));
-                                return ConstantValue.Create(dt);
+                                var longValue = arg.DecodeValue<long>(SpecialType.System_Int64);
+                                if (longValue == 0L)
+                                {
+                                    // Null_Date
+                                    return new BoundDefaultExpression(syntax, param.Type);
+                                }
+
+                                constant = ConstantValue.Create(new DateTime(longValue));
+                                var dtType = param.DeclaringCompilation.GetSpecialType(SpecialType.System_DateTime);
+                                lit = new BoundLiteral(syntax, constant, dtType);
+                                ctor = param.DeclaringCompilation.DateType().GetConstructor(dtType);
+                                if (ctor != null)
+                                {
+                                    return new BoundObjectCreationExpression(syntax, ctor, lit);
+                                }
+                                // if it fails then return an error value below
+                                break;
                             case 3:
                                 // Symbol, value should be a string literal or null
-                                if (arg.Value == null)
-                                    return ConstantValue.Null;
-                                else
-                                    return ConstantValue.Create(arg.DecodeValue<string>(SpecialType.System_String));
+                                constant = ConstantValue.Create(arg.DecodeValue<string>(SpecialType.System_String));
+                                strType = param.DeclaringCompilation.GetSpecialType(SpecialType.System_String);
+                                lit = new BoundLiteral(syntax, constant, strType);
+                                ctor = param.DeclaringCompilation.SymbolType().GetConstructor(strType);
+                                if (ctor != null)
+                                {
+                                    return new BoundObjectCreationExpression(syntax, ctor, lit);
+                                }
+                                // if it fails then return an error value below
+                                break;
+
                             case 4:
                                 // Psz, value should be a string or null
-                                if (arg.Value == null)
-                                    return ConstantValue.Null;
-                                else
-                                    return ConstantValue.Create(arg.DecodeValue<string>(SpecialType.System_String));
+                                constant = ConstantValue.Create(arg.DecodeValue<string>(SpecialType.System_String));
+                                strType = param.DeclaringCompilation.GetSpecialType(SpecialType.System_String);
+                                lit = new BoundLiteral(syntax, constant, strType);
+                                ctor = param.DeclaringCompilation.PszType().GetConstructor(strType);
+                                if (ctor != null)
+                                {
+                                    return new BoundObjectCreationExpression(syntax, ctor, lit);
+                                }
+                                // if it fails then return an error value below
+                                break;
                             case 5:
                                 // IntPtr, return value as IntPtr
-                                if (arg.Value == null)
-                                    return ConstantValue.Null;
-                                else
-                                {
-                                    IntPtr p = new IntPtr(arg.DecodeValue<int>(SpecialType.System_Int32));
-                                    return ConstantValue.Create(p);
-                                }
+                                IntPtr p = new IntPtr(arg.DecodeValue<int>(SpecialType.System_Int32));
+                                constant = ConstantValue.Create(p);
+                                return new BoundLiteral(syntax, constant, param.DeclaringCompilation.GetSpecialType(SpecialType.System_IntPtr));
                             default:
-                                return ConstantValue.Null;
+                                return new BoundDefaultExpression(syntax, param.Type);
                         }
                     }
                 }
             }
-            return ConstantValue.Bad;
+            return new BoundLiteral(syntax, ConstantValue.Bad, param.Type);
+        }
+
+        private static MethodSymbol GetConstructor(this TypeSymbol type, TypeSymbol paramType)
+        {
+            return (MethodSymbol)type.GetMembers(".ctor").Where(m => m.GetParameterCount() == 1 &&
+                                                TypeSymbol.Equals(m.GetParameterTypes()[0].Type, paramType)).FirstOrDefault();
         }
 
         public static bool HasMembers(this TypeSymbol type, string name)

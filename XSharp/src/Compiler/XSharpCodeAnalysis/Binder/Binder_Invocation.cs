@@ -70,6 +70,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             var defaultExpr = parameter.GetVODefaultParameter(syntax, compilation);
             if (defaultExpr == null)
                 return null;
+            if (!Equals(defaultExpr.Type, parameterType))
+            {
+                var implicitop = LocalRewriter.getImplicitOperatorByParameterType(parameterType, defaultExpr.Type);
+                if (implicitop != null)
+                {
+                    var args = ImmutableArray.Create(defaultExpr);
+                    var mcall = new BoundCall(syntax, null, implicitop, args, default, default, false, false, false, default, default, default, parameterType);
+                    return mcall;
+                }
+            }
             if (parameterType is NamedTypeSymbol nts && nts.ConstructedFrom.IsPszType())
             {
 

@@ -10,6 +10,7 @@ using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.Symbols;
 using Microsoft.CodeAnalysis;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -69,7 +70,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     {
                                         constant = ConstantValue.Create(arg.Value, arg.Type.SpecialType);
                                     }
-                                    return new BoundLiteral(syntax, constant, param.Type);
+                                    var netType = compilation.GetSpecialType(arg.Type.SpecialType);
+                                    return new BoundLiteral(syntax, constant, netType);
                                 }
                                 break;
                             case 1:

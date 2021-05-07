@@ -31,7 +31,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
-        private MethodSymbol getImplicitOperatorByParameterType(TypeSymbol srcType, TypeSymbol destType)
+        internal static MethodSymbol getImplicitOperatorByParameterType(TypeSymbol srcType, TypeSymbol destType)
         {
             var members = srcType.GetMembers(WellKnownMemberNames.ImplicitConversionName);
             foreach (MethodSymbol m in members)

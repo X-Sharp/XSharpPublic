@@ -94638,7 +94638,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R776 - Incorrect calculation of the size of the VOSTRUCT
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
 ; ************** APPLICATION R777 - IS check with USUAL variable *************
 Application = R777 - IS check with USUAL variable
 IDEVersion = 1.06

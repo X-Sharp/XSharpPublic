@@ -254,8 +254,8 @@ namespace XSharp.MacroCompiler.Preprocessor
             _children = null;
         }
 
-#endregion
-#region Constructors
+        #endregion
+        #region Constructors
         private static PPMatchRange Token(int pos)
         {
             return new PPMatchRange() { IsToken = true, Start = pos, Length = 1, _children = null };
@@ -264,7 +264,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             return new PPMatchRange() { Start = start, Length = end - start +1, _children = null};
         }
-#endregion
+        #endregion
         internal string GetDebuggerDisplay()
         {
             if (IsToken)
@@ -336,16 +336,14 @@ namespace XSharp.MacroCompiler.Preprocessor
             // check to see if this is already there
             if (_list.Count == _maxDepth)
             {
-// TODO nvk
-// _pp.addParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                _pp.Error(tokens[0], ErrorCode.PreProcessorRecursiveRule, rule.Name);
                 return true;
             }
             foreach (var item in _list)
             {
                 if (item.isDuplicate(rule, tokens))
                 {
-// TODO nvk
-// _pp.addParseError(new ParseErrorData(tokens[0], ErrorCode.ERR_PreProcessorRecursiveRule, rule.Name));
+                    _pp.Error(tokens[0], ErrorCode.PreProcessorRecursiveRule, rule.Name);
                     return true;
                 }
             }

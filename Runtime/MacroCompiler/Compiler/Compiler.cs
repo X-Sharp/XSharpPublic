@@ -81,7 +81,9 @@ namespace XSharp.MacroCompiler
             }
             catch (CompilationError e)
             {
-                return new CompilationResult(source, new CompilationError(e, source));
+                if (e.Location.Line == 0)
+                    e = new CompilationError(e, source);
+                return new CompilationResult(source, e);
             }
         }
 
@@ -95,7 +97,9 @@ namespace XSharp.MacroCompiler
             }
             catch (CompilationError e)
             {
-                return new CompilationResult(source, new CompilationError(e, source));
+                if (e.Location.Line == 0)
+                    e = new CompilationError(e, source);
+                return new CompilationResult(source, e);
             }
         }
 

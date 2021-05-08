@@ -1979,10 +1979,6 @@ namespace XSharp.MacroCompiler.Preprocessor
                 for (int i = s ; i <= e; i++)
                 {
                     var token = toks[i];
-// nvk                    if (i > start + 1 && token.HasTrivia)
-//                    {
-//                        res.AddRange(token.Trivia);
-//                    }
                     res.Add(token);
                 }
             }

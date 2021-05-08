@@ -74,6 +74,7 @@ namespace XSharp.MacroCompiler
         DuplicateDefineDiffWarning = Warning + 9007,
         ObsoleteIncludeWarning = Warning + 9008,
         EndOfPPLineExpected = 9009,
+        PreProcessorRecursiveRule = 9010,
 
         Internal = 9999,
         Warning = 10000,
@@ -146,8 +147,9 @@ namespace XSharp.MacroCompiler
             { ErrorCode.DuplicateDefineSame, "Duplicate #define" },
             { ErrorCode.PreProcessorWarning, "Pre-processor warning: {1}" },
             { ErrorCode.DuplicateDefineDiffWarning, "Symbol already defined" },
-            { ErrorCode.ObsoleteIncludeWarning, "Obsolete include" },
+            { ErrorCode.ObsoleteIncludeWarning, "Include '{0}' obsoleted by '{1}'" },
             { ErrorCode.EndOfPPLineExpected, "End of line expected" },
+            { ErrorCode.PreProcessorRecursiveRule, "Recursive pre-processor rule '{0}'" },
 
             { ErrorCode.Internal, "Internal error" },
             { ErrorCode.Warning, "Warning base" },
@@ -207,6 +209,11 @@ namespace XSharp.MacroCompiler
         internal static CompilationError Error(ErrorCode e, params object[] args) { return new CompilationError(e, args); }
         internal static CompilationError Error(int offset, ErrorCode e, params object[] args) { return new CompilationError(offset, e, args); }
         internal static CompilationError Error(SourceLocation loc, ErrorCode e, params object[] args) { return new CompilationError(loc, e, args); }
-        internal static CompilationError Error(Syntax.Token t, ErrorCode e, params object[] args) { return new CompilationError(t.start, e, args); }
+        internal static CompilationError Error(Syntax.Token t, ErrorCode e, params object[] args)
+        {
+            if (t.source?.SourceText != null)
+                return new CompilationError(new SourceLocation(t.source?.SourceText, t.start) { FileName = t.source.SourceName }, e, args);
+            return new CompilationError(t.start, e, args);
+        }
     }
 }

@@ -608,7 +608,7 @@ FUNCTION StrZero(nNumber AS USUAL,nLength AS INT) AS STRING
     IF ! ( nNumber:IsNumeric )
       THROW Error.DataTypeError( __FUNCTION__, NAMEOF(nNumber),1,nNumber)
     ENDIF
-    LOCAL cValue := Str2(nNumber, (DWORD) nLength) AS STRING
+    LOCAL cValue := Str3(nNumber, (DWORD) nLength, 0) AS STRING // Str3() and Str2() in VO have totally different behavior regarding decimal digits, rounding etc
     RETURN _PadZero(cValue)
 
 

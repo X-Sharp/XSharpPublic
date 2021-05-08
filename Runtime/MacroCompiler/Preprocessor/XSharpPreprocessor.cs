@@ -19,26 +19,6 @@ using XSharp.MacroCompiler.Syntax;
 
 namespace XSharp.MacroCompiler.Preprocessor
 {
-    internal class ParseErrorData
-    {
-        internal readonly Token Node;
-        internal readonly string FileName;
-        internal readonly ErrorCode Code;
-        internal readonly object[] Args;
-        internal ParseErrorData(string fileName, ErrorCode code, params object[] args) :
-            this(token: null, code: code, args: args)
-        {
-            FileName = fileName;
-        }
-        internal ParseErrorData(Token token, ErrorCode code, params object[] args)
-        {
-            FileName = null;
-            this.Node = token;
-            this.Code = code;
-            this.Args = args;
-        }
-    }
-
     internal class XSharpPreprocessor
     {
         static Dictionary<string, string> embeddedHeaders = null;
@@ -448,16 +428,17 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             _ppoStream = null;
         }
-        internal void addParseError(ParseErrorData error)
+        internal void Error(string fileName, ErrorCode code, params object[] args)
         {
-            if (!ErrorString.IsWarning(error.Code))
-            {
-                if (error.Node != null)
-                    throw Compilation.Error(new SourceLocation(error.Node.source.SourceText, error.Node.start), error.Code, error.Args);
-                if (error.FileName != null)
-                    throw Compilation.Error(new SourceLocation() { FileName = error.FileName }, error.Code, error.Args);
-            }
+            if (!ErrorString.IsWarning(code))
+                throw Compilation.Error(new SourceLocation() { FileName = fileName }, code, args);
         }
+        internal void Error(Token token, ErrorCode code, params object[] args)
+        {
+            if (!ErrorString.IsWarning(code))
+                throw token.Error(code, args);
+        }
+
         internal XSharpPreprocessor(Lexer lexer, MacroOptions options, string fileName, Encoding encoding)
         {
             PPIncludeFile.ClearOldIncludes();
@@ -500,7 +481,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }
                 catch (Exception e)
                 {
-                    addParseError(new ParseErrorData(fileName, ErrorCode.PreProcessorError, "Error processing PPO file: " + e.Message));
+                    Error(fileName, ErrorCode.PreProcessorError, "Error processing PPO file: " + e.Message);
                 }
             }
             // Add default IncludeDirs;
@@ -768,7 +749,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 if (string.Compare(x.SourceFileName , filename, true) == 0)
                 {
-                    addParseError(new ParseErrorData(symbol, ErrorCode.PreProcessorError, "Recursive include file ("+filename+") detected",filename));
+                    Error(symbol, ErrorCode.PreProcessorError, "Recursive include file ("+filename+") detected",filename);
                     return;
                 }
                 x = x.parent;
@@ -844,7 +825,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             if (line.Count < 2)
             {
                 var token = line[0];
-                addParseError(new ParseErrorData(token, ErrorCode.PreProcessorError, "Identifier expected"));
+                Error(token, ErrorCode.PreProcessorError, "Identifier expected");
                 return;
             }
             // token 1 is the Identifier
@@ -878,7 +859,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                         var newToken = line[0];
                         if (oldToken.source.SourceName != newToken.source.SourceName || oldToken.Location().Line != newToken.Location().Line)
                         {
-                            addParseError(new ParseErrorData(def, ErrorCode.DuplicateDefineSame, def.Text));
+                            Error(def, ErrorCode.DuplicateDefineSame, def.Text);
                         }
                         else
                         {
@@ -894,13 +875,13 @@ namespace XSharp.MacroCompiler.Preprocessor
                                         SourceSymbol = null
                                     };
                                 }
-// nvk...                                addParseError(new ParseErrorData(def, ErrorCode.PreProcessorWarning, "Duplicate define (" + defText + ") found because include file \""+includeName+"\" was included twice"));
+                                Error(def, ErrorCode.PreProcessorWarning, "Duplicate define (" + defText + ") found because include file \""+includeName+"\" was included twice");
                             }
                         }
                     }
                     else
                     {
-// mnk...                        addParseError(new ParseErrorData(def, ErrorCode.DuplicateDefineDiff, def.Text, cOld, cNew));
+                        Error(def, ErrorCode.DuplicateDefineDiffWarning, def.Text, cOld, cNew);
                     }
                 }
                 symbolDefines[def.Text] = line;
@@ -911,7 +892,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             else
             {
-                addParseError(new ParseErrorData(def, ErrorCode.PreProcessorError, "Identifier expected"));
+                Error(def, ErrorCode.PreProcessorError, "Identifier expected");
                 return;
             }
         }
@@ -938,7 +919,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             if (!ok)
             {
-                addParseError(new ParseErrorData(errToken, ErrorCode.PreProcessorError, "Identifier expected"));
+                Error(errToken, ErrorCode.PreProcessorError, "Identifier expected");
             }
         }
 
@@ -955,7 +936,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             udc = stripWs(udc);
             if (udc.Count < 3)
             {
-                addParseError(new ParseErrorData(udc[0], ErrorCode.PreProcessorError, "Invalid UDC: '" + udc.AsString() + "'"));
+                Error(udc[0], ErrorCode.PreProcessorError, "Invalid UDC: '" + udc.AsString() + "'");
                 return;
             }
             var cmd = udc[0];
@@ -967,12 +948,12 @@ namespace XSharp.MacroCompiler.Preprocessor
                 {
                     foreach (var s in errorMsgs)
                     {
-                        addParseError(new ParseErrorData(s.Token, ErrorCode.PreProcessorError, s.Message));
+                        Error(s.Token, ErrorCode.PreProcessorError, s.Message);
                     }
                 }
                 else
                 {
-                    addParseError(new ParseErrorData(cmd, ErrorCode.PreProcessorError, "Invalid directive '" + cmd.Text + "' (are you missing the => operator?)"));
+                    Error(cmd, ErrorCode.PreProcessorError, "Invalid directive '" + cmd.Text + "' (are you missing the => operator?)");
                 }
             }
             else
@@ -1041,7 +1022,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             string file = Path.GetFileName(includeFileName).ToLower();
             bool obsolete = false;
-//nvk            string assemblyName ;
+            string assemblyName = "";
             bool sdkdefs = _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.SdkDefines);
             switch (file)
             {
@@ -1051,48 +1032,47 @@ namespace XSharp.MacroCompiler.Preprocessor
                 case "directry.ch":
                 case "vosystemlibrary.vh":
                     obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
-//nvk                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.XSharpCore;
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.XSharpCore;
                     break;
                 case "voguiclasses.vh":
                     obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoGui);
-//nvk                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoGui;
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoGui;
                     break;
                 case "vointernetclasses.vh":
                     obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoInet);
-//nvk                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoInet;
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoInet;
                     break;
                 case "vorddclasses.vh":
                     obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoRdd);
-//nvk                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoRdd;
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoRdd;
                     break;
                 case "voreportclasses.vh":
                     obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoReport);
-//nvk                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoReport;
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoReport;
                     break;
                 case "vosqlclasses.vh":
                     obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoSql);
-//nvk                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoSql;
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoSql;
                     break;
                 case "vosystemclasses.vh":
                     obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoSystem);
-//nvk                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoSystem;
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoSystem;
                     break;
                 case "vowin32apilibrary.vh":
                     obsolete = sdkdefs || _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.VoWin32);
-//nvk                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoWin32;
+                    assemblyName = sdkdefs ? XSharpAssemblyNames.SdkDefines : XSharpAssemblyNames.VoWin32;
                     break;
                 case "class.ch":
                     obsolete = _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpXPP);
-//nvk                    assemblyName = XSharpAssemblyNames.XSharpXPP;
+                    assemblyName = XSharpAssemblyNames.XSharpXPP;
                     break;
                 default:
                     obsolete = false;
-//nvk                    assemblyName = "";
                    break;
             }
             if (obsolete)
             {
-// nvk...                addParseError(new ParseErrorData(token, ErrorCode.ObsoleteInclude, includeFileName, assemblyName+".dll"));
+                Error(token, ErrorCode.ObsoleteIncludeWarning, includeFileName, assemblyName+".dll");
             }
             return obsolete;
         }
@@ -1132,7 +1112,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }
                 catch (Exception e)
                 {
-                    addParseError(new ParseErrorData(fileNameToken, ErrorCode.PreProcessorError, "Error combining path " + p + " and filename  " + includeFileName + " " + e.Message));
+                    Error(fileNameToken, ErrorCode.PreProcessorError, "Error combining path " + p + " and filename  " + includeFileName + " " + e.Message);
                     continue;
                 }
                 if (File.Exists(fp))
@@ -1180,11 +1160,11 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 if (fileReadException != null)
                 {
-                    addParseError(new ParseErrorData(fileNameToken, ErrorCode.PreProcessorError, "Error Reading include file '" + includeFileName + "': " + fileReadException.Message));
+                    Error(fileNameToken, ErrorCode.PreProcessorError, "Error Reading include file '" + includeFileName + "': " + fileReadException.Message);
                 }
                 else
                 {
-                    addParseError(new ParseErrorData(fileNameToken, ErrorCode.PreProcessorError, "Include file not found: '" + includeFileName + "'"));
+                    Error(fileNameToken, ErrorCode.PreProcessorError, "Include file not found: '" + includeFileName + "'");
                 }
 
                 return false;
@@ -1342,7 +1322,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (line.Count > nMax)
             {
-                addParseError(new ParseErrorData(line[nMax], ErrorCode.EndOfPPLineExpected));
+                Error(line[nMax], ErrorCode.EndOfPPLineExpected);
             }
         }
         private void doRegionDirective(IList<Token> original)
@@ -1350,7 +1330,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var line = stripWs(original);
             if (line.Count < 2)
             {
-// nvk..                addParseError(new ParseErrorData(line[0], ErrorCode.PreProcessorWarning, "Region name expected"));
+                Error(line[0], ErrorCode.PreProcessorWarning, "Region name expected");
             }
             if (IsActive())
             {
@@ -1374,7 +1354,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 if (regions.Count > 0)
                     regions.Pop();
                 else
-                    addParseError(new ParseErrorData(token, ErrorCode.PreProcessorError, "#endregion directive without matching #region found"));
+                    Error(token, ErrorCode.PreProcessorError, "#endregion directive without matching #region found");
                 writeToPPO(original, true);
             }
             else
@@ -1390,7 +1370,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var line = stripWs(original);
             if (line.Count < 2)
             {
-                addParseError(new ParseErrorData(line[0], ErrorCode.PreProcessorError, "Identifier expected"));
+                Error(line[0], ErrorCode.PreProcessorError, "Identifier expected");
                 return;
             }
             if (IsActive())
@@ -1409,7 +1389,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var line = stripWs(original);
             if (line.Count < 2)
             {
-                addParseError(new ParseErrorData(line[0], ErrorCode.PreProcessorError, "Identifier expected"));
+                Error(line[0], ErrorCode.PreProcessorError, "Identifier expected");
                 return;
             }
             if (IsActive())
@@ -1448,9 +1428,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                 if (ln.SourceSymbol != null)
                     ln = ln.SourceSymbol;
                 if (nextType == TokenType.PP_WARNING)
-                    { } // nvk... addParseError(new ParseErrorData(ln, ErrorCode.WarningDirective, text));
+                    Error(ln, ErrorCode.WarningDirective, text);
                 else
-                    addParseError(new ParseErrorData(ln, ErrorCode.ErrorDirective, text));
+                    Error(ln, ErrorCode.ErrorDirective, text);
                 lastToken = ln;
             }
             else
@@ -1464,7 +1444,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var line = stripWs(original);
             if (line.Count < 2)
             {
-                addParseError(new ParseErrorData(line[0], ErrorCode.PreProcessorError, "Identifier expected"));
+                Error(line[0], ErrorCode.PreProcessorError, "Identifier expected");
                 return;
             }
             if (IsActive())
@@ -1486,7 +1466,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }
                 else
                 {
-                    addParseError(new ParseErrorData(def, ErrorCode.PreProcessorError, "Identifier expected"));
+                    Error(def, ErrorCode.PreProcessorError, "Identifier expected");
                 }
                 writeToPPO(original,  true);
 
@@ -1516,7 +1496,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             else
             {
-                addParseError(new ParseErrorData(Lt(), ErrorCode.PreProcessorError, "Unexpected #else"));
+                Error(Lt(), ErrorCode.PreProcessorError, "Unexpected #else");
             }
             checkForUnexpectedPPInput(line, 1);
         }
@@ -1539,7 +1519,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             else
             {
-                addParseError(new ParseErrorData(Lt(), ErrorCode.PreProcessorError, "Unexpected #endif"));
+                Error(Lt(), ErrorCode.PreProcessorError, "Unexpected #endif");
                 writeToPPO(line, true);
             }
             checkForUnexpectedPPInput(line, 1);
@@ -1550,7 +1530,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var line = stripWs(original);
             if (line.Count < 2)
             {
-                addParseError(new ParseErrorData(line[0], ErrorCode.PreProcessorError, "Filename expected"));
+                Error(line[0], ErrorCode.PreProcessorError, "Filename expected");
                 return;
             }
             if (IsActive())
@@ -1558,7 +1538,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 writeToPPO(original, true);
                 if (IncludeDepth() == MaxIncludeDepth)
                 {
-                    addParseError(new ParseErrorData(line[0], ErrorCode.PreProcessorError, "Reached max include depth: " + MaxIncludeDepth));
+                    Error(line[0], ErrorCode.PreProcessorError, "Reached max include depth: " + MaxIncludeDepth);
                 }
                 else
                 {
@@ -1571,7 +1551,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     }
                     else
                     {
-                        addParseError(new ParseErrorData(token, ErrorCode.PreProcessorError, "String literal expected"));
+                        Error(token, ErrorCode.PreProcessorError, "String literal expected");
                     }
                 }
             }
@@ -1604,12 +1584,12 @@ namespace XSharp.MacroCompiler.Preprocessor
                     }
                     else
                     {
-                        addParseError(new ParseErrorData(ln, ErrorCode.PreProcessorError, "String literal expected"));
+                        Error(ln, ErrorCode.PreProcessorError, "String literal expected");
                     }
                 }
                 else
                 {
-                    addParseError(new ParseErrorData(ln, ErrorCode.PreProcessorError, "Integer literal expected"));
+                    Error(ln, ErrorCode.PreProcessorError, "Integer literal expected");
                 }
             }
             else
@@ -1624,7 +1604,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             Debug.Assert(line?.Count > 0);
             var ln = line[0];
             writeToPPO(line, true);
-            addParseError(new ParseErrorData(ln, ErrorCode.PreProcessorError, "Unexpected UDC separator character found"));
+            Error(ln, ErrorCode.PreProcessorError, "Unexpected UDC separator character found");
         }
 
         private IList<Token> doNormalLine(IList<Token> line, bool write2PPO = true)
@@ -1938,12 +1918,12 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (defStates.Count > 0)
             {
-                addParseError(new ParseErrorData(Lt(), ErrorCode.EndifDirectiveExpected));
+                Error(Lt(), ErrorCode.EndifDirectiveExpected);
             }
             while (regions.Count > 0)
             {
                 var token = regions.Pop();
-                addParseError(new ParseErrorData(token, ErrorCode.EndRegionDirectiveExpected));
+                Error(token, ErrorCode.EndRegionDirectiveExpected);
             }
         }
 

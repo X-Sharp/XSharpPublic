@@ -55,15 +55,15 @@ FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD) AS USUAL
    IF ( nRowSubscript > 0 .AND. nRowSubscript <= ArrayName:Rows )
       RETURN nRowSubscript
    ENDIF
-   THROW ArgumentOutOfRangeException { nameof(nRowSubscript),"'nRowSubscript' number is out of range"}
+   THROW ArgumentOutOfRangeException { nameof(nRowSubscript),nRowSubscript, "'nRowSubscript' number is out of range"}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD, nColumnSubscript AS DWORD) AS USUAL
     IF ArrayName:MultiDimensional
         IF nRowSubscript == 0 .OR. nRowSubscript >  ArrayName:Rows
-           THROW ArgumentOutOfRangeException { nameof(nRowSubscript),"'nRowSubscript' number is out of range" }
+           THROW ArgumentOutOfRangeException { nameof(nRowSubscript), nRowSubscript, "'nRowSubscript' number is out of range" }
         ELSEIF nColumnSubscript == 0 .OR. nColumnSubscript > ArrayName:Columns
-           THROW ArgumentOutOfRangeException { nameof(nColumnSubscript),"'nColumnSubscript' number is out of range" }
+           THROW ArgumentOutOfRangeException { nameof(nColumnSubscript), nColumnSubscript, "'nColumnSubscript' number is out of range" }
         ENDIF
         nRowSubscript --
         RETURN ( nRowSubscript * ArrayName:Columns ) + nColumnSubscript

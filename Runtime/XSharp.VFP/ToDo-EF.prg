@@ -4,12 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/evl/*" />
-#pragma options("vo15", on)
-FUNCTION EVL( eExpression1, eExpression2 ) AS USUAL
-    THROW NotImplementedException{}
-    // RETURN NIL
+
 
 
 /// <summary>-- todo --</summary>
@@ -27,7 +22,7 @@ FUNCTION FontMetric( nAttribute , cFontName, nFontSize , cFontStyle) AS LONG
     // RETURN 0
 
 
-    
+
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fullpath/*" />

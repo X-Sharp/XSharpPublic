@@ -47,8 +47,12 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True(InsMode())
             InsMode(FALSE)
             Assert.False(InsMode())*/
-
-
+        [Fact, Trait("Category", "Other")];
+        METHOD TypeTests()  AS VOID
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+             Assert.True(type ( "x" ) == "U")
+            XSharp.RuntimeState.Dialect := XSharpDialect.VO
+             Assert.True(type ( "x" ) == "UE")
 
 	END CLASS
 

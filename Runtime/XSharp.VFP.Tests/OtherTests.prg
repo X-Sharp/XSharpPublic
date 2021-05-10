@@ -54,6 +54,17 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             XSharp.RuntimeState.Dialect := XSharpDialect.VO
              Assert.True(type ( "x" ) == "UE")
 
+        [Fact, Trait("Category", "Other")];
+        METHOD EVLTests()  AS VOID
+            Assert.True( EVL("","abc") == "abc")
+            Assert.True( EVL("abc","def") == "abc")
+            Assert.True( EVL("",123) == 123)
+            Assert.True( EVL("abc",123) == "abc")
+            Assert.True( EVL(0,123) == 123)
+            Assert.True( EVL(123,456) == 123)
+            Assert.True( EVL(NULL_DATE,ToDay()) == ToDay())
+            Assert.True( EVL(2000.01.01,ToDay()) == 2000.01.01)
+
 	END CLASS
 
 END NAMESPACE

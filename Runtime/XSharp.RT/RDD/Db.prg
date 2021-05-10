@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 // internal functions used by FieldBlock and FieldWBlock
@@ -11,57 +11,57 @@ USING System.Linq
 USING System.Collections.Generic
 
 
-INTERNAL FUNCTION _SelectFoxPro(uWorkArea) AS USUAL CLIPPER
+INTERNAL FUNCTION _SelectFoxPro(uWorkArea AS USUAL) AS USUAL
     LOCAL sSelect   AS DWORD
 	LOCAL sCurrent  AS DWORD
-    // handles an alias string or a uWorkArea number > 1 
-	IF IsString ( uWorkArea  ) .OR. ( IsNumeric ( uWorkArea )  .AND. uWorkArea > 1 ) 
-			
+    // handles an alias string or a uWorkArea number > 1
+	IF IsString ( uWorkArea  ) .OR. ( IsNumeric ( uWorkArea )  .AND. uWorkArea > 1 )
+
 		// Throws a exception if the uWorkArea number is > 4096 !
 		IF IsNumeric ( uWorkArea ) .AND. uWorkArea > RuntimeState.Workareas:FindEmptyArea( FALSE )
-			THROW ArgumentException{}				
-		ENDIF 	 
-			
-			
+			THROW ArgumentException{}
+		ENDIF
+
+
 		// note: No exception is thrown if a alias name doesn´t exist !
-			
+
 		sCurrent := VoDbGetSelect()  // save the current workarea
-			
-		sSelect := _Select(uWorkArea)  // activates temporary the area 
-			
-		// IF ! Used()		
+
+		sSelect := _Select(uWorkArea)  // activates temporary the area
+
+		// IF ! Used()
 		IF ! (sSelect) -> Used()
 			sSelect := 0
-		ENDIF 				
-			
-		VoDbSetSelect(INT(sCurrent))  // restore the workarea		 
-		
-	ELSE 		
-			
-		VAR lGetCurrentAreaNumber := ( PCount() == 1 .AND. IsNumeric( uWorkArea ) .AND. uWorkArea == 0 )
-		VAR lGetHighestUnusedAreaNumber := ( PCount() == 1 .AND. IsNumeric( uWorkArea ) .AND. uWorkArea == 1 )
-		
-		// handles Select(), Select(0), Select(1) and takes care of 
-		// the - not yet implemented - SET COMPATIBLE ON/OFF setting. 
-			
-		IF PCount() == 0 .OR. lGetHighestUnusedAreaNumber .OR. lGetCurrentAreaNumber 
-			
-			IF lGetHighestUnusedAreaNumber .OR. ( PCount() == 0 .AND. RuntimeState.GetValue<LOGIC>(Set.Compatible) )  
-				// get the number of the highest unused work area 
+		ENDIF
+
+		VoDbSetSelect(INT(sCurrent))  // restore the workarea
+
+	ELSE
+
+		VAR lGetCurrentAreaNumber := IsNumeric( uWorkArea ) .AND. uWorkArea == 0
+		VAR lGetHighestUnusedAreaNumber := IsNumeric( uWorkArea ) .AND. uWorkArea == 1
+
+		// handles Select(), Select(0), Select(1) and takes care of
+		// the - not yet implemented - SET COMPATIBLE ON/OFF setting.
+
+		IF IsNil(uWorkArea) .OR. lGetHighestUnusedAreaNumber .OR. lGetCurrentAreaNumber
+
+			IF lGetHighestUnusedAreaNumber .OR. ( IsNil(uWorkArea) .AND. RuntimeState.Compatible )
+				// get the number of the highest unused work area
 				sSelect := RuntimeState.Workareas:FindEmptyArea( FALSE )
-				
-			ELSE // Pcount()== 0 or lGetCurrentAreaNumber 
+
+			ELSE // Pcount()== 0 or lGetCurrentAreaNumber
 				sSelect := VoDbGetSelect()
-								
-			ENDIF 
-			
+
+			ENDIF
+
 		ELSE
-			// Throw a exception if uWorkArea is something else  	
+			// Throw a exception if uWorkArea is something else
 			THROW ArgumentException{}
-		ENDIF 
-			
-	ENDIF     
-    RETURN sSelect 
+		ENDIF
+
+	ENDIF
+    RETURN sSelect
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/select/*" />
@@ -92,28 +92,28 @@ FUNCTION _SelectString(uWorkArea AS STRING) AS DWORD
     	//  ------ added KHR : FoxPro allowes SELECT 10 which becomes DbSelectArea("10")
        // see https://github.com/X-Sharp/XSharpPublic/issues/236
         LOCAL nTemp := Val( uWorkArea ) AS LONG
-   	    IF nTemp:ToString() == uWorkArea 
+   	    IF nTemp:ToString() == uWorkArea
    	        nSelect := (DWORD) nTemp
-    	ENDIF 
+    	ENDIF
 
         // -------------------
     ENDIF
-        
+
     IF nSelect > 0 .OR. "0" == uWorkArea
         nSelect := VoDb.SetSelect((INT) nSelect)
     ELSE
         nSelect := (DWORD) VoDb.SymSelect(uWorkArea)
     ENDIF
     RETURN nSelect
-    
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/select/*" />
 FUNCTION _Select(uWorkArea) AS USUAL CLIPPER
     LOCAL nSelect           AS DWORD
     LOCAL xType             AS DWORD
-     
-    IF uWorkArea:IsNil 
-        RETURN  (INT) VoDb.GetSelect() 
+
+    IF uWorkArea:IsNil
+        RETURN  (INT) VoDb.GetSelect()
     ENDIF
     xType := UsualType(uWorkArea)
     SWITCH xType
@@ -128,13 +128,13 @@ FUNCTION _Select(uWorkArea) AS USUAL CLIPPER
         nSelect := 0
     END SWITCH
     RETURN nSelect
-    
+
 /// <exclude/>
 FUNCTION __FieldGetNum( fieldpos AS DWORD ) AS USUAL
     LOCAL ret := NIL AS USUAL
     VoDb.FieldGet( fieldpos, REF ret )
     RETURN ret
-    
+
 /// <exclude/>
 FUNCTION __FieldGetWaNum( workarea AS DWORD, fieldpos AS DWORD ) AS USUAL
     LOCAL ret := NIL AS USUAL
@@ -145,15 +145,15 @@ FUNCTION __FieldGetWaNum( workarea AS DWORD, fieldpos AS DWORD ) AS USUAL
         VoDb.FieldGet( fieldpos, REF ret )
     FINALLY
         RuntimeState.CurrentWorkarea := curArea
-    END TRY   
+    END TRY
     RETURN ret
-    
 
-    
+
+
 /// <exclude/>
 FUNCTION __FieldSetNum( fieldpos AS DWORD, uValue AS USUAL ) AS USUAL
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPut( fieldpos, uValue ))
-    
+
 /// <exclude/>
 FUNCTION __FieldSetWaNum( nArea AS DWORD, fieldpos AS DWORD, uValue AS USUAL ) AS USUAL
     LOCAL curArea AS DWORD
@@ -163,12 +163,12 @@ FUNCTION __FieldSetWaNum( nArea AS DWORD, fieldpos AS DWORD, uValue AS USUAL ) A
         _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPut( fieldpos, uValue ) )
     FINALLY
         RuntimeState.CurrentWorkarea := curArea
-    END TRY   
+    END TRY
     RETURN uValue
-    
 
-    
-    
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldblock/*" />
 FUNCTION FieldBlock(cFieldName AS STRING) AS CODEBLOCK
     LOCAL oCB  := NULL AS CODEBLOCK
@@ -181,26 +181,26 @@ FUNCTION FieldBlock(cFieldName AS STRING) AS CODEBLOCK
         ENDIF
     ENDIF
     RETURN oCB
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldblocksym/*" />
 FUNCTION FieldBlockSym(symFieldName AS SYMBOL) AS CODEBLOCK
-    RETURN FieldBlock(symFieldName)   
+    RETURN FieldBlock(symFieldName)
 
-   
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldwblock/*" />
 FUNCTION FieldWBlock(cFieldName AS STRING,dwWorkArea AS USUAL) AS CODEBLOCK
     RETURN {|x| IIF( x:IsNil, __FieldGetWa(dwWorkArea, cFieldName), __FieldSetWa(dwWorkArea, cFieldName, x)) }
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldwblocksym/*" />
 FUNCTION FieldWBlockSym(symFieldname AS SYMBOL,dwWorkArea AS DWORD) AS CODEBLOCK
     RETURN FieldWBlock(symFieldname, dwWorkArea)
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldgetalias/*" />
 FUNCTION FieldGetAlias(symAlias AS SYMBOL,symFieldName AS SYMBOL) AS USUAL
     RETURN FieldGetSelect(symAlias, symFieldName)
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldgetalias/*" />
 FUNCTION FieldGetSelect(symAlias AS USUAL,symFieldName AS SYMBOL) AS USUAL
     LOCAL nArea := RuntimeState.CurrentWorkarea AS DWORD
@@ -209,7 +209,7 @@ FUNCTION FieldGetSelect(symAlias AS USUAL,symFieldName AS SYMBOL) AS USUAL
     uValue := FieldGetSym(symFieldName)
     VoDb.SetSelect((INT) nArea)
     RETURN uValue
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldgetsym/*" />
 FUNCTION FieldGetSym(symField AS SYMBOL) AS USUAL
     LOCAL dwPos AS DWORD
@@ -217,17 +217,17 @@ FUNCTION FieldGetSym(symField AS SYMBOL) AS USUAL
     IF dwPos == 0
         THROW Error.VoDbError( EG_ARG, EDB_FIELDNAME,  <OBJECT>{symField}  )
     ENDIF
-    RETURN FieldGet( dwPos )  
-    
+    RETURN FieldGet( dwPos )
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldpossym/*" />
 FUNCTION FieldPosSym(sFieldName AS SYMBOL) AS DWORD
     RETURN FieldPos( (STRING) sFieldName )
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputalias/*" />
 FUNCTION FieldPutAlias(symAlias AS SYMBOL,symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
     RETURN FieldPutSelect(symAlias, symField, uNewValue)
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputsym/*" />
 FUNCTION FieldPutSym(symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
     LOCAL dwPos AS DWORD
@@ -236,16 +236,16 @@ FUNCTION FieldPutSym(symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
         THROW Error.VoDbError( EG_ARG, EDB_FIELDNAME,  <OBJECT>{symField}  )
     ENDIF
     RETURN FieldPut( dwPos ,uNewValue )
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputselect/*" />
 FUNCTION FieldPutSelect(symAlias AS USUAL,symField AS SYMBOL,uNewValue AS USUAL) AS USUAL
     LOCAL nArea AS DWORD
     nArea := @@Select(symAlias )
     RETURN FieldPutArea(nArea, symField, uNewValue)
-    
-    
+
+
     *----------------------------------------------------------------------------
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alias/*" />
 FUNCTION Alias(uWorkArea) AS STRING CLIPPER
     IF uWorkArea:IsNil
@@ -255,33 +255,33 @@ FUNCTION Alias(uWorkArea) AS STRING CLIPPER
         RETURN VoDb.Alias(uWorkArea)
     ENDIF
     RETURN (uWorkArea)->Alias()
-    
-    
+
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alias0sym/*" />
 FUNCTION Alias0Sym() AS SYMBOL
     RETURN (SYMBOL) Alias0()
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbappend/*" />
 FUNCTION DbAppend(lReleaseLocks) AS LOGIC CLIPPER
     LOCAL lRetCode  AS LOGIC
-    
+
     IF lReleaseLocks:IsNil
         lReleaseLocks := .T.
     ENDIF
-    
+
     lRetCode := VoDb.Append(lReleaseLocks)
-    
+
     IF !lRetCode
         //    No Error but NetErr gets set for compatibility reasons
         //    lRetCode := DoError("DbAppend")
         NetErr(.T.)
     ENDIF
-    
+
     RETURN lRetCode
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearindex/*" />
 FUNCTION DbClearIndex(uOrder, cIndexFile) AS LOGIC CLIPPER
     RETURN OrdListClear(cIndexFile, uOrder)
@@ -291,15 +291,15 @@ FUNCTION DbClearIndex(uOrder, cIndexFile) AS LOGIC CLIPPER
 FUNCTION DbCreate (   cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lOpen, acRDDs ) AS LOGIC CLIPPER
     LOCAL lKeep           AS LOGIC
     LOCAL lRetCode        AS LOGIC
-    
+
     IF aStruct == NIL
         aStruct := {}
     ENDIF
-    
+
     IF ! aStruct:IsArray
         RETURN .F.
     ENDIF
-    
+
     //
     // Get "lNew" and create "lKeep" for VoDbUseArea()
     // by Clipper's logic:
@@ -308,18 +308,18 @@ FUNCTION DbCreate (   cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lO
     //      .F. -   to open in current workarea
     //      NIL -   to close file after creating
     //
-    
+
     IF lNew == NIL
         lNew    := .T.
         lKeep   := .F.
     ELSE
         lKeep   := .T.
     ENDIF
-    
+
     IF lOpen == NIL
         lOpen := .F.
     ENDIF
-    
+
     LOCAL oDriver := cDriver AS OBJECT
     IF IsNil(cDriver)
         oDriver := RuntimeState.DefaultRDD
@@ -335,34 +335,34 @@ FUNCTION DbCreate (   cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lO
         THROW RuntimeState.LastRddError
     ENDIF
     RETURN lRetCode
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcreateindex/*" />
 FUNCTION DbCreateIndex(cIndexFile, cKeyValue, cbKeyValue, lUnique) AS LOGIC CLIPPER
     RETURN OrdCreate(cIndexFile, NIL, cKeyValue, cbKeyValue, lUnique)
-    
-    
-    
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcreateorder/*" />
 FUNCTION DbCreateOrder  (cOrder, cIndexFile, cKeyValue, cbKeyValue, lUnique) AS LOGIC CLIPPER
     RETURN OrdCreate(cIndexFile, cOrder, cKeyValue, cbKeyValue, lUnique)
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbdelete/*" />
 FUNCTION DbDelete () AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Delete() )
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbdeleteorder/*" />
 FUNCTION DbDeleteOrder(uOrder, cIndexFile) AS LOGIC CLIPPER
     IF uOrder:IsNumeric
         VoDb.OrderInfo(DBOI_NAME,"",uOrder, REF uOrder)
     ENDIF
-    
+
     RETURN OrdDestroy(uOrder, cIndexFile)
-    
-    
-    
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbeval/*" />
 FUNCTION DbEval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) AS LOGIC CLIPPER
     IF lRest:IsNil
@@ -372,23 +372,23 @@ FUNCTION DbEval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRe
     cbForCondition      := VoDb.ValidBlock(cbForCondition)
     cbWhileCondition    := VoDb.ValidBlock(cbWhileCondition)
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Eval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) )
-  
-     
-    
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbfieldinfo/*" />
 FUNCTION DbFieldInfo(kInfoType, nFieldPos, uNewSetting) AS USUAL CLIPPER
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldInfo(kInfoType, nFieldPos, REF uNewSetting))
     RETURN uNewSetting
-    
-    
-    
-    
+
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgoto/*" />
-FUNCTION DbGoto(uRecID AS USUAL) AS LOGIC 
+FUNCTION DbGoto(uRecID AS USUAL) AS LOGIC
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Goto(uRecID) )
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgoto/*" />
-FUNCTION DbGoto(uRecID AS USUAL, uArea AS USUAL) AS LOGIC 
+FUNCTION DbGoto(uRecID AS USUAL, uArea AS USUAL) AS LOGIC
     RETURN (uArea)->(DbGoto(uRecID))
 
 
@@ -406,23 +406,23 @@ FUNCTION DbInfo(kInfoType, uNewSetting) AS USUAL CLIPPER
         ENDIF
     ENDIF
     RETURN uNewSetting
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dblocate/*" />
 FUNCTION DbLocate(cbForCondition, cbWhileCondition, nNext, nRecord, lRest ) AS LOGIC CLIPPER
 
     LOCAL lRetCode  AS LOGIC
-    
+
     IF lRest:IsNil
         lRest := .F.
     ENDIF
-    
+
     IF cbWhileCondition:IsNil
         cbWhileCondition := {|| .T. }
     ELSE
         lRest := .T.
     ENDIF
-    
+
     IF nNext:IsNil
         nNext := 0
     ENDIF
@@ -430,25 +430,25 @@ FUNCTION DbLocate(cbForCondition, cbWhileCondition, nNext, nRecord, lRest ) AS L
     IF lRetCode
         lRetCode := VoDb.Found()
     ENDIF
-    
+
     RETURN lRetCode
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dborderinfo/*" />
 /// <seealso cref='XSharp.RDD.Enums.DbOrder_Info'>DbOrder_Info ENUM</seealso>
 FUNCTION DbOrderInfo(kInfoType,cIndexFile, uOrder, uNewSetting) AS USUAL CLIPPER
     LOCAL lKeyVal  := FALSE  AS LOGIC
-    
+
     IF !cIndexFile:IsString
         cIndexFile := ""
     ENDIF
-    
+
     IF uOrder:IsString
         IF SLen(uOrder) == 0
             uOrder := NIL
         ENDIF
     ENDIF
-    
+
     IF kInfoType == DBOI_KEYVAL
         lKeyVal  := .T.
         kInfoType := DBOI_EXPRESSION
@@ -463,110 +463,110 @@ FUNCTION DbOrderInfo(kInfoType,cIndexFile, uOrder, uNewSetting) AS USUAL CLIPPER
             ENDIF
         ENDIF
     ENDIF
-    
+
     RETURN uNewSetting
-    
-    
-    
-    
+
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrecordinfo/*" />
 /// <seealso cref='XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo ENUM</seealso>
 FUNCTION DbRecordInfo(kInfoType, uRecId, uNewValue) AS USUAL CLIPPER
     VoDb.RecordInfo(kInfoType, uRecId, REF uNewValue)
     RETURN uNewValue
-    
-    
-    
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrlock/*" />
 FUNCTION DbRLock(uRecId) AS USUAL CLIPPER
     RETURN VoDb.RLock(uRecId)
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrlocklist/*" />
 FUNCTION DbRLockList() AS ARRAY STRICT
     RETURN DbInfo(DBI_GETLOCKARRAY)
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrselect/*" />
 FUNCTION DbRSelect(nRelation) AS DWORD CLIPPER
 
     @@Default( REF nRelation, 0)
-    
+
     RETURN VoDb.RSelect(nRelation)
-    
-    
-    
-    
+
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrunlock/*" />
 FUNCTION DbRUnLock(uRecID) AS LOGIC CLIPPER
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Unlock(uRecID) )
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbselect/*" />
 FUNCTION DbSelect(nNew) AS DWORD CLIPPER
 
     LOCAL nOld := 0 AS DWORD
-    
+
     @@Default( REF nNew, 0)
-    
+
     VoDb.Select(nNew, REF nOld)
-    
+
     RETURN nOld
-    
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbselectarea/*" /> 
+
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbselectarea/*" />
 FUNCTION DbSelectArea(uArea) AS LOGIC CLIPPER
     LOCAL sSelect   AS SHORT
     sSelect := _Select(uArea)
     _DbThrowErrorOnFailure(__FUNCTION__, sSelect != 0)
     RETURN (sSelect > 0)
-    
-    
-    
-    
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetselect/*" /> 
+
+
+
+
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetselect/*" />
 FUNCTION DbSetSelect(nNewArea) AS DWORD CLIPPER
 
     @@Default( REF  nNewArea, 0)
-    
+
     RETURN (DWORD) VoDb.SetSelect(nNewArea)
-    
-    
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsymselect/*" /> 
+
+
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsymselect/*" />
 FUNCTION DbSymSelect(symAlias)  AS DWORD CLIPPER
     IF symAlias:IsNil
         symAlias := Alias0Sym()
     ENDIF
     EnforceType(symAlias, SYMBOL)
     RETURN (DWORD) VoDb.SymSelect(symAlias)
-    
-    
-    
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrelation/*" /> 
+
+
+
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrelation/*" />
 FUNCTION DbRelation(nRelation)  AS STRING CLIPPER
     LOCAL cRelText  := "" AS STRING
     @@Default(  REF nRelation, 1)
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Relation(nRelation, REF cRelText))
     RETURN cRelText
-    
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetdriver/*" /> 
+
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetdriver/*" />
 FUNCTION DbSetDriver(cNewSetting) AS STRING CLIPPER
     IF cNewSetting:IsString
         RETURN RddSetDefault(cNewSetting)
     ENDIF
     RETURN RddSetDefault()
-    
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetfilter/*" /> 
+
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetfilter/*" />
 FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
     LOCAL sCondition AS STRING
     LOCAL cbCond AS CODEBLOCK
@@ -609,11 +609,11 @@ FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
         cbCond := NULL
     ENDIF
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.SetFilter(cbCond, cCondition) )
-    
-    
-    
+
+
+
     *----------------------------------------------------------------------------
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetrelation/*" /> 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetrelation/*" />
 /// <param name="cName">An optional name for the relation. Defaults to ParentName + "_" + ChildName.</param>
 FUNCTION DbSetRelation  (xAlias, cbKey, cKey, cName) AS LOGIC CLIPPER
 
@@ -621,16 +621,16 @@ FUNCTION DbSetRelation  (xAlias, cbKey, cKey, cName) AS LOGIC CLIPPER
     LOCAL cAlias    AS STRING
     LOCAL cbRelation AS CODEBLOCK
     @@Default(REF cName, "")
-    
+
     IF xAlias:IsString
         nSelect := Val(xAlias)
-        
+
         IF nSelect = 0
             cAlias := xAlias
         ELSE
             cAlias := Alias(nSelect)
         ENDIF
-        
+
     ELSE
         cAlias := Alias(xAlias)
     ENDIF
@@ -649,24 +649,24 @@ FUNCTION DbSetRelation  (xAlias, cbKey, cKey, cName) AS LOGIC CLIPPER
         ENDIF
     ENDIF
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.SetRelation(cAlias, cbRelation, cKey, cName) )
-   
 
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbskip/*" /> 
+
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbskip/*" />
 FUNCTION DbSkip (nRecords) AS LOGIC CLIPPER
     IF nRecords:IsNil
         nRecords := 1
     ENDIF
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Skip(nRecords) )
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbusearea/*" /> 
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbusearea/*" />
 FUNCTION DbUseArea (lNewArea, cDriver, cDataFile, cAlias, lShared, lReadOnly, aStruct, cDelim,acRDDs ) AS LOGIC CLIPPER
     LOCAL lRetCode        AS LOGIC
     LOCAL rddList         AS _RddList
     LOCAL nTries          AS LONG
     LOCAL aRdds           AS ARRAY
-    
+
     @@Default( REF lNewArea, .F.)
     @@Default( REF cAlias, "")
     @@Default( REF lShared, !SetExclusive())
@@ -676,7 +676,7 @@ FUNCTION DbUseArea (lNewArea, cDriver, cDataFile, cAlias, lShared, lReadOnly, aS
     aRdds   := VoDb.RddList(cDriver, acRDDs)
     rddList := VoDb.AllocRddList(aRdds)
     DO WHILE .T.
-    
+
         IF !Empty(aStruct)
             lRetCode := DbCreate ( cDataFile, aStruct, aRdds, lNewArea,cAlias, cDelim, .T.)
         ELSE
@@ -692,10 +692,10 @@ FUNCTION DbUseArea (lNewArea, cDriver, cDataFile, cAlias, lShared, lReadOnly, aS
         ENDIF
     ENDDO
     RETURN lRetCode
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldput/*" /> 
-FUNCTION FieldPut (nFieldPos AS USUAL, uNewValue  AS USUAL) AS USUAL 
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldput/*" />
+FUNCTION FieldPut (nFieldPos AS USUAL, uNewValue  AS USUAL) AS USUAL
     LOCAL lResult AS LOGIC
     IF ! IsNumeric(nFieldPos)
         THROW Error.ArgumentError( __FUNCTION__, nameof(nFieldPos), __CavoStr(VOErrors.ARGNOTNUMERIC), 1 ,<OBJECT>{nFieldPos,uNewValue})
@@ -709,8 +709,8 @@ FUNCTION FieldPut (nFieldPos AS USUAL, uNewValue  AS USUAL) AS USUAL
         ENDIF
     ENDIF
     RETURN uNewValue
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldget/*" /> 
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldget/*" />
 FUNCTION FieldGet(nFieldPos) AS USUAL CLIPPER
     LOCAL xRetVal := NIL AS USUAL
     LOCAL lResult AS LOGIC
@@ -720,14 +720,14 @@ FUNCTION FieldGet(nFieldPos) AS USUAL CLIPPER
     lResult  := VoDb.FieldGet(nFieldPos, REF xRetVal)
     IF ! lResult
         IF RuntimeState.Dialect == XSharpDialect.XPP
-            xRetVal := NIL 
+            xRetVal := NIL
         ELSE
             DoError(__FUNCTION__)
         ENDIF
     ENDIF
     RETURN xRetVal
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldget/*" /> 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldget/*" />
 /// <summary>Read an array of bytes direct from the workarea buffer.</summary>
 /// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
 ///<returns>
@@ -760,8 +760,8 @@ FUNCTION FieldPutBytes(nFieldPos AS USUAL, aBytes AS BYTE[]) AS USUAL
     RETURN aBytes
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldgetarea/*" />     
-FUNCTION FieldGetArea(dwWorkArea AS DWORD, symFieldName AS SYMBOL) AS USUAL 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldgetarea/*" />
+FUNCTION FieldGetArea(dwWorkArea AS DWORD, symFieldName AS SYMBOL) AS USUAL
     LOCAL oldArea := VoDbGetSelect() AS DWORD
     LOCAL result := NIL  AS USUAL
     LOCAL dwPos AS DWORD
@@ -779,8 +779,8 @@ FUNCTION FieldGetArea(dwWorkArea AS DWORD, symFieldName AS SYMBOL) AS USUAL
     END TRY
     RETURN result
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputarea/*" />  
-FUNCTION FieldPutArea(dwWorkArea AS DWORD, symField AS SYMBOL, uNewValue AS USUAL) AS USUAL 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldputarea/*" />
+FUNCTION FieldPutArea(dwWorkArea AS DWORD, symField AS SYMBOL, uNewValue AS USUAL) AS USUAL
     LOCAL oldArea := VoDbGetSelect() AS DWORD
     LOCAL dwPos AS DWORD
     TRY
@@ -796,33 +796,33 @@ FUNCTION FieldPutArea(dwWorkArea AS DWORD, symField AS SYMBOL, uNewValue AS USUA
         VoDbSetSelect( (INT) oldArea)
     END TRY
     RETURN uNewValue
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />  
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />
 FUNCTION LUpdate()  AS DATE STRICT
     IF Used()
         RETURN DbInfo(DBI_LASTUPDATE)
     ENDIF
     RETURN NULL_DATE
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />  
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />
 FUNCTION LUpdate(uArea AS USUAL)  AS DATE STRICT
     RETURN (uArea)->(LUpdate())
-    
 
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddcount/*" />      
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddcount/*" />
 FUNCTION RddCount() AS DWORD CLIPPER
     RETURN VoDb.RddCount()
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddinfo/*" />      
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddinfo/*" />
 FUNCTION RddInfo(kInfoType, uNewSetting) AS USUAL CLIPPER
     VoDb.RddInfo(kInfoType, REF uNewSetting)
     RETURN uNewSetting
-    
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddlist/*" />   
+
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddlist/*" />
 FUNCTION RddList () AS ARRAY CLIPPER
     LOCAL aRddList := {}    AS ARRAY
     IF VoDb.RddCount() > 0
@@ -832,25 +832,25 @@ FUNCTION RddList () AS ARRAY CLIPPER
         NEXT
     ENDIF
     RETURN aRddList
-    
- /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbmemoext/*" />      
+
+ /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbmemoext/*" />
 FUNCTION DbMemoExt      (cDriver) AS STRING CLIPPER
     RETURN VoDb.MemoExt(cDriver)
-    
-    
+
+
 FUNCTION RddVersion     (nParm) AS USUAL CLIPPER
     IF !nParm:IsNumeric
         nParm := 0
     ENDIF
     RETURN DbInfo(DBI_RDD_VERSION, nParm)
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbmemofield/*" />      
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbmemofield/*" />
 FUNCTION DbMemoField (uField AS USUAL)  AS USUAL
     LOCAL n,i        AS DWORD
     LOCAL xRet       AS USUAL
     LOCAL nFields    AS DWORD
-    
+
     IF uField:IsNumeric
         n := uField
     ELSEIF uField:IsSymbol
@@ -867,12 +867,12 @@ FUNCTION DbMemoField (uField AS USUAL)  AS USUAL
             ENDIF
         NEXT
     ENDIF
-    
+
     xRet := DbInfo( DBI_MEMOFIELD, n )
-    
+
     RETURN xRet
-    
-    
+
+
 /// <exclude/>
 FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
 
@@ -880,17 +880,17 @@ FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
     LOCAL i,n           AS INT
     LOCAL nSelect       AS INT
     LOCAL aField        AS ARRAY
-    
+
     FIELD field_name, field_type, field_len, field_dec
-    
+
     nSelect := 0
-    
+
     @@Default( REF lNew, .F.)
-    
+
     IF ( Used() .AND. !lNew )
         VoDb.CloseArea()
     ENDIF
-    
+
     TRY
         IF ( Empty(cFile2) )
             DbCreate(cFile1,                ;
@@ -915,13 +915,13 @@ FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
                 AAdd( aStruct, aField )
                 VoDb.Skip(1)
             ENDDO
-            
+
             VoDb.CloseArea()
-            
+
             IF lNew
                 VoDb.SetSelect(nSelect)
             ENDIF
-            
+
             FOR i := 1 TO n
                 aField := aStruct[i]
                 IF aField[ DBS_TYPE] == "C" .AND. aField[DBS_DEC] != 0
@@ -930,19 +930,19 @@ FUNCTION _DbCreate(cFile1, cFile2, cDriver,lNew, cAlias)      AS LOGIC CLIPPER
             NEXT
             DbCreate(cFile1, aStruct, cDriver, lNew, cAlias )
         ENDIF
-        
+
     CATCH e AS RddError
         VoDb.CloseArea()
         e:FuncSym := __FUNCTION__
         THROW e
     END TRY
-    
+
     RETURN ( Used() )
-    
-    
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/afields/*" />   
+
+
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/afields/*" />
 FUNCTION AFields(acFieldNames, acTypes, anWidths, anDecimals)  AS DWORD CLIPPER
     LOCAL aStruct           AS ARRAY
     LOCAL siCount           AS DWORD
@@ -951,116 +951,116 @@ FUNCTION AFields(acFieldNames, acTypes, anWidths, anDecimals)  AS DWORD CLIPPER
     LOCAL lTypesOk  := .F.  AS LOGIC
     LOCAL lLensOk   := .F.  AS LOGIC
     LOCAL lDecsOk   := .F.  AS LOGIC
-    aStruct := DbStruct() 
+    aStruct := DbStruct()
     IF (Empty(aStruct))
         RETURN (0)
     ENDIF
-    
+
     siCount := ALen(aStruct)
-    
+
     IF UsualType(acFieldNames) == ARRAY
         siCount := Min(siCount, Len(acFieldNames) )
         lNamesOk := .T.
     ENDIF
-    
-    
+
+
     IF UsualType(acTypes) == ARRAY
         siCount := Min( siCount, Len(acTypes) )
         lTypesOk := .T.
     ENDIF
-    
-    
+
+
     IF UsualType(anWidths) == ARRAY
         siCount := Min( siCount, Len(anWidths) )
         lLensOk := .T.
     ENDIF
-    
-    
+
+
     IF UsualType(anDecimals) == ARRAY
         siCount := Min( siCount, Len(anDecimals) )
         lDecsOk := .T.
     ENDIF
-    
-    
+
+
     FOR si := 1 TO siCount
-    
+
         IF lNamesOk
             acFieldNames[si] := aStruct[si, DBS_NAME]
         ENDIF
-        
+
         IF lTypesOk
             acTypes[si] := aStruct[si, DBS_TYPE]
         ENDIF
-        
+
         IF lLensOk
             anWidths[si]  := aStruct[si, DBS_LEN]
         ENDIF
-        
+
         IF lDecsOk
             anDecimals[si]  := aStruct[si, DBS_DEC]
         ENDIF
-        
+
     NEXT
-    
-    
+
+
     RETURN siCount
-    
-    
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopystruct/*" />   
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopystruct/*" />
 FUNCTION DbCopyStruct(cTargetFile AS STRING, acStruct := NULL_ARRAY AS ARRAY) AS LOGIC STRICT
     RETURN DbCreate(cTargetFile, VoDb.FieldList(DbStruct(), acStruct, NULL_ARRAY) )
 
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopyxstruct/*" /> 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopyxstruct/*" />
 FUNCTION DbCopyXStruct(cTargetFile AS STRING) AS LOGIC STRICT
     LOCAL siSaveSel,n,i AS DWORD
     LOCAL aStruct       AS ARRAY
     LOCAL lRetCode  := FALSE AS LOGIC
-    
+
     FIELD field_name, field_type, field_len, field_dec
-    
+
     TRY
         IF !Used()
             THROW VoDb.DbCmdError(__FUNCTION__)
         ENDIF
-        
+
         aStruct := DbStruct()
-        
+
         n := Len(aStruct)
         siSaveSel := 0
         VoDb.Select(0, REF siSaveSel)
-        
+
         _DbCreate(cTargetFile)
-        
+
         FOR i := 1 TO n
-        
+
             IF aStruct[i, DBS_TYPE] == "C" .AND. aStruct[i, DBS_LEN] > 255
                 aStruct[i, DBS_DEC] := SHORT(aStruct[i, DBS_LEN] / 256)
                 aStruct[i, DBS_LEN] := aStruct[i, DBS_LEN] % 256
             ENDIF
-            
+
             lRetCode := DbAppend()
-            
+
             FieldPutSym(#field_name ,aStruct[i, DBS_NAME])
             FieldPutSym(#field_type ,aStruct[i, DBS_TYPE])
             FieldPutSym(#field_len  ,aStruct[i, DBS_LEN])
             FieldPutSym(#field_dec  , aStruct[i, DBS_DEC])
-            
+
         NEXT
-        
+
         IF (VoDb.GetSelect() <> siSaveSel)
             DbCloseArea()
             VoDb.SetSelect(INT(siSaveSel))
         ENDIF
-        
+
     CATCH e AS RddError
         e:FuncSym := __FUNCTION__
         THROW e
     END TRY
-    
+
     RETURN (lRetCode)
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbstruct/*" />
 FUNCTION DbStruct() AS ARRAY PASCAL
 
@@ -1069,16 +1069,16 @@ FUNCTION DbStruct() AS ARRAY PASCAL
     LOCAL nProps    AS DWORD
     LOCAL i,j       AS DWORD
     LOCAL aField    AS ARRAY
-    
+
     aStruct := {}
     nFCount := FCount()
-    
+
     IF !Used()
         THROW VoDb.DbCmdError(__FUNCTION__)
     ELSE
         FOR i := 1 UPTO nFCount
             aField := {}
-            
+
             LOCAL xNewVal := NIL AS USUAL
             _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldInfo(DBS_PROPERTIES, i, REF xNewVal))
             nProps:= (DWORD)  xNewVal
@@ -1086,12 +1086,12 @@ FUNCTION DbStruct() AS ARRAY PASCAL
                 _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldInfo(j, i, REF xNewVal))
                 AAdd(aField, xNewVal)
             NEXT
-            
+
             AAdd(aStruct, aField)
-            
+
         NEXT
     ENDIF
-    
+
     RETURN aStruct
 
 
@@ -1099,7 +1099,7 @@ FUNCTION DbStruct() AS ARRAY PASCAL
 FUNCTION DbStruct(uArea AS USUAL) AS ARRAY PASCAL
     RETURN (uArea)->(DbStruct())
 
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/indexhplock/*" />
 FUNCTION IndexHPLock(lNewSetting AS USUAL) AS LOGIC
     LOCAL lOld AS LOGIC
@@ -1108,7 +1108,7 @@ FUNCTION IndexHPLock(lNewSetting AS USUAL) AS LOGIC
         RuntimeState.HPLocking := (LOGIC) lNewSetting
     ENDIF
     RETURN lOld
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/newindexlock/*" />
 FUNCTION NewIndexLock(lNewSetting AS USUAL) AS LOGIC
     LOCAL lOld AS LOGIC
@@ -1117,13 +1117,13 @@ FUNCTION NewIndexLock(lNewSetting AS USUAL) AS LOGIC
         RuntimeState.NewIndexLock := (LOGIC) lNewSetting
     ENDIF
     RETURN lOld
-    
-    
-    
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/newlocks/*" />
 FUNCTION NewLocks() AS LOGIC
     RETURN RuntimeState.NewIndexLock
-    
+
 
 /// <exclude />
 FUNCTION __RDDList(cRddName AS STRING) AS ARRAY
@@ -1136,16 +1136,16 @@ FUNCTION __RDDList(cRddName AS STRING, aHidden AS ARRAY) AS ARRAY
 FUNCTION _AllocFieldNames(aStruct AS ARRAY) AS _FieldNames
     RETURN VoDb.AllocFieldNames(aStruct)
 
-/// <exclude />    
+/// <exclude />
 FUNCTION _FreeFieldNames(aNames AS _FieldNames) AS VOID
-    RETURN 
+    RETURN
 
-/// <exclude />    
+/// <exclude />
 FUNCTION __allocNames(aStruct AS ARRAY) AS _FieldNames
     RETURN VoDb.AllocFieldNames(aStruct)
 
 /// <exclude />
-FUNCTION __TargetFields(cAlias AS STRING, aFields AS ARRAY, list OUT _JoinList ) AS ARRAY 
+FUNCTION __TargetFields(cAlias AS STRING, aFields AS ARRAY, list OUT _JoinList ) AS ARRAY
     RETURN VoDb.TargetFields(cAlias, aFields, OUT list)
 
 
@@ -1188,7 +1188,7 @@ FUNCTION EmptyField( n AS DWORD ) AS LOGIC
         uLen := 0
         VoDbFieldInfo(DBS_LEN, n, REF uLen)
         nEnd := uLen + nOffset -1
-      
+
         FOR i := nOffset UPTO nEnd
             IF aRecord[i] != 32
                 lRet := FALSE

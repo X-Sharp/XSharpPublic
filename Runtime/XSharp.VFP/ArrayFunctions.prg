@@ -41,7 +41,7 @@ FUNCTION ALen(a AS __FoxArray, nArrayAttribute AS LONG) AS DWORD
         ELSE
             RETURN 0
         ENDIF
-    OTHERWISE      
+    OTHERWISE
         RETURN (DWORD) a:Count
     END SWITCH
 
@@ -51,17 +51,27 @@ FUNCTION ALen(a AS __FoxArray) AS DWORD
     RETURN ALen(a, 0)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aelement/*" />
-FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD, nColumnSubscript := 1 AS DWORD) AS USUAL
+FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD) AS USUAL
+   IF ( nRowSubscript > 0 .AND. nRowSubscript <= ArrayName:Rows )
+      RETURN nRowSubscript
+   ENDIF
+   THROW ArgumentOutOfRangeException { nameof(nRowSubscript),"'nRowSubscript' number is out of range"}
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aelement/*" />
+FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD, nColumnSubscript AS DWORD) AS USUAL
     IF ArrayName:MultiDimensional
-        RETURN ArrayName[nRowSubscript, nColumnSubscript]
-    ELSEIF nColumnSubscript == 1
-        RETURN ArrayName[nRowSubscript]
-    ELSE
-        THROW ArrayName:__GetDimensionError(2)
+        IF nRowSubscript == 0 .OR. nRowSubscript >  ArrayName:Rows
+           THROW ArgumentOutOfRangeException { nameof(nRowSubscript),"'nRowSubscript' number is out of range" }
+        ELSEIF nColumnSubscript == 0 .OR. nColumnSubscript > ArrayName:Columns
+           THROW ArgumentOutOfRangeException { nameof(nColumnSubscript),"'nColumnSubscript' number is out of range" }
+        ENDIF
+        nRowSubscript --
+        RETURN ( nRowSubscript * ArrayName:Columns ) + nColumnSubscript
     ENDIF
+THROW ArgumentException { "a one-dimensional array has no columns"}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adel/*" />
-FUNCTION ADel(ArrayName AS __FoxArray, nElementNumber AS DWORD, nDeleteType := 2 AS LONG) AS DWORD
+FUNCTION ADel(ArrayName AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 AS LONG) AS DWORD
     IF ! ArrayName:MultiDimensional
         ArrayName:Delete((LONG) nElementNumber)
     ELSE
@@ -111,7 +121,7 @@ FUNCTION AIns(ArrayName AS __FoxArray, nElementNumber AS DWORD, nInsertType := 1
         ENDIF
     ENDIF
     RETURN 0
-    
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asize/*" />
 FUNCTION ASize(ArrayName AS __FoxArray, nSize AS DWORD) AS __FoxArray
     ArrayName:Resize((LONG) nSize)

@@ -23,7 +23,7 @@ FUNCTION NVL( eExpression1, eExpression2) AS USUAL CLIPPER
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/evl/*" />
 FUNCTION EVL( eExpression1 AS USUAL, eExpression2  AS USUAL) AS USUAL
-    IF ! empty(eExpression1)
+    IF ! Empty(eExpression1)
         RETURN eExpression1
     ENDIF
     RETURN eExpression2

@@ -179,8 +179,8 @@
                 ( 2, 2)   L  .F. (element number 5)
                 ( 2, 3)   L  .F. (element number 6)
             </code>
-            An element can be referred to by its subscripts or its element number. The commands codeSTORE 'INVOICE' TO gaMyArray(2, 1)/code and
-            codeSTORE 'INVOICE' TO gaMyArray(4)/code both store the character string INVOICE to the same array element.<br/>
+            An element can be referred to by its subscripts or its element number. The commands <c>STORE 'INVOICE' TO gaMyArray(2, 1)</c> and
+            <c>STORE 'INVOICE' TO gaMyArray(4)</c> both store the character string INVOICE to the same array element.<br/>
             In one-dimensional arrays, an element number is identical to its single-row subscript. It isn't necessary to use AElement( ) with one-dimensional arrays.
         </remarks>
     </aelement>
@@ -1070,7 +1070,7 @@
                 ? BinToc(-100, "Fr")
             </code>
             You can use BinToc( ) to reduce the size of indexes for numeric fields containing integer data by passing a numeric eFlags parameter.
-            For example, a numeric field named codenPartCode/code might contain an integer value from 1 to 32,767, which corresponds to a parts classification code.
+            For example, a numeric field named <c>nPartCode</c> might contain an integer value from 1 to 32,767, which corresponds to a parts classification code.
             BinToc( ) lets you convert the value in the numeric field to a smaller character representation. For example,
             the following command creates an index with a two-character index key:
              <code language="X#">Index ON BinToc(nPartCode,2) TAG PartCode</code>
@@ -1605,7 +1605,7 @@
         <remarks>
             Note that CPConvert( ) isn't required for normal cross-platform functioning of the product.
             It is used strictly to access the underlying translation facilities of X#.
-            For example, if the variable codegcCharExpr/code contains a character that looks like on the Macintosh (in code page 10000)
+            For example, if the variable <c>gcCharExpr</c> contains a character that looks like on the Macintosh (in code page 10000)
             then CPConvert( ) will return a character that looks like  in Microsoft Windows (code page 1252):
              <code language="X#">CPConvert(10000, 1252, gcCharExpr)</code>
             For additional information on code pages and X#'s international support, see Code Pages Supported by X# and Developing International Applications.
@@ -2998,7 +2998,7 @@
             Specifies the name of the current open database or the field, named connection, table,
             or view in the current open database for which <b>DbGetProp( )</b> returns information.<br/>
             To return information about a field in a table or a view, preface the name of the field with the name of the table or view containing the field.
-            For example, to return information about the codecustid/code field in the codecustomer/code table, specify the following for cName:
+            For example, to return information about the <c>custid</c> field in the <c>customer</c> table, specify the following for cName:
              <code language="X#">customer.custid</code>
         </param>
         <param name="cType">
@@ -3439,7 +3439,7 @@
                         <note name="Note">
                             This property is available in X# 8.0 and later. Views created in X# 8.0 and later are not compatible with earlier versions.
                             Calling the <b>VALIDATE Database</b> command in a version prior to X# 8.0 on a database container with remote views created or modified in X# 8.0
-                            and later generate an error. Calling the codeVALIDATE Database RECOVER/code in a version prior to X# 8.0 removes the <b>AllowSimultaneousFetch</b>
+                            and later generate an error. Calling the <c>VALIDATE Database RECOVER</c> in a version prior to X# 8.0 removes the <b>AllowSimultaneousFetch</b>
                             property from any such views.
                         </note>
                     </description>
@@ -3682,7 +3682,7 @@
             Specifies the name of the current open database or the field, named connection, table,
             or view in the current open database for which <b>DbGetProp( )</b> returns information.<br/>
             To set a property for a field in a table or a view, preface the name of the field with the name of the table or view containing the field.
-            For example, to set a property for the codecustid/code field in the codecustomer/code table, specify the following for cName:
+            For example, to set a property for the <c>custid</c> field in the <c>customer</c> table, specify the following for cName:
              <code language="X#">customer.custid</code>
         </param>
         <param name="cType">
@@ -3897,24 +3897,10 @@
     </dropoffline>
     <evl>
         <param name="eExpression1">
-            Specifies an expression. eExpression1 can be any data type except the following:
-            <list type="bullet">
-                <term>
-                    General fields: If eExpression1 or eExpression2 represents a General field, EVL( ) returns an error,
-                    "Operation is invalid for a General field. (Error 1912)"
-                </term>
-                <term>Object references.</term>
-            </list>
+            Specifies an expression. eExpression1 can be any data type.
         </param>
         <param name="eExpression2">
-            Specifies an expression. eExpression2 can be any data type except the following:
-            <list type="bullet">
-                <term>
-                    General fields: If eExpression1 or eExpression2 represents a General field, EVL( ) returns an error,
-                    "Operation is invalid for a General field. (Error 1912)"
-                </term>
-                <term>Object references.</term>
-            </list>
+            Specifies an expression. eExpression1 can be any data type.
         </param>
         <summary>
             Returns a non-empty value from two expressions.<br/>
@@ -3923,14 +3909,17 @@
             The X# <b>Logical</b> value, False (.F.), and the <b>Numeric</b> value of 0 also evaluate to empty.
         </summary>
         <returns>
-            Character, Date, DateTime, Numeric, Currency, Logical, Object. <b>EVL( )</b> returns eExpression1 if it does not evaluate to an empty value;
+            Character, Date, DateTime, Numeric, Currency, Logical, Object. 
+            <b>EVL( )</b> returns eExpression1 if it does not evaluate to an empty value, 
             otherwise, it returns eExpresssion2.
         </returns>
         <example>
-            The following examples create the memory variables, codeglEmptyDate/code, which contains an empty <b>Date</b> value, and codeglEmptyNum/code,
+            The following examples create the memory variables, <code>glEmptyDate</code>, 
+            which contains an empty <b>Date</b> value, and <code>glEmptyNum</code>,
             which contains an empty <b>Numeric</b> value, 0.<br/>
-            When performing <b>EVL( )</b> with codeglEmptyDate/code, <b>EVL( )</b> returns an empty string ("") when evaluating codeglEmptyDate/code and an empty string,
-            and code"None"/code when evaluating codeglEmptyDate/code and code"None"/code.
+            When performing <b>EVL( )</b> with <code>glEmptyNum</code>, <b>EVL( )</b> returns an empty string ("") 
+            when evaluating <code>glEmptyNum</code> and an empty string,
+            and code"None"/code when evaluating <code>glEmptyNum</code> and <code>"None"</code>.
              <code language="X#">
                 STORE {  /  /  } TO glEmptyDate
                 ? EVL(glEmptyDate,"")
@@ -4536,12 +4525,12 @@
         </remarks>
         <examples>
             The following example demonstrates how you can use GetFldState( ) to determine if the contents of a field have changed. MultiLocks is set to ON,
-            a requirement for table buffering. The codecustomer/code table in the codetestdata/code database is opened,
+            a requirement for table buffering. The <c>customer</c> table in the <c>testdata</c> database is opened,
             and CursorSetProp( ) is then used to set the buffering mode to optimistic table buffering (5).
-            GetFldState( ) is issued to display a value (1) corresponding to the unmodified state of the codecust_id/code field before it is modified.
-            The codecust_id/code field is modified with Replace, and GetFldState( ) is issued again to display a value (2)
-            corresponding to the modified state of the codecust_id/code field. TableRevert( ) is used to return the table to its original state,
-            and GetFldState( ) is issued again to display a value (1) corresponding to the original state of the codecust_id/code field.
+            GetFldState( ) is issued to display a value (1) corresponding to the unmodified state of the <c>cust_id</c> field before it is modified.
+            The <c>cust_id</c> field is modified with Replace, and GetFldState( ) is issued again to display a value (2)
+            corresponding to the modified state of the <c>cust_id</c> field. TableRevert( ) is used to return the table to its original state,
+            and GetFldState( ) is issued again to display a value (1) corresponding to the original state of the <c>cust_id</c> field.
              <code language="X#">
                 Close Databases
                 Clear
@@ -4629,10 +4618,10 @@
                     This behavior occurs if you include a value for the nFontCharSet parameter.
                 </term>
                 <note name="Note">
-                    In versions of X# previous to X# 9.0, if you included a value of code0/code as the fourth argument to <b>GetFont()</b>,
+                    In versions of X# previous to X# 9.0, if you included a value of 0 as the fourth argument to <b>GetFont()</b>,
                     you received the same return information as if you did not include the fourth argument at all.  The script drop-down list was not enabled,
-                    and the return value contained only three types of font information. In X# 9.0, a value of code0/code explicitly indicates the numeric value
-                    corresponding to Western script.  The script drop-down list might also initially display Western if you specify code1/code for this value,
+                    and the return value contained only three types of font information. In X# 9.0, a value of 0 explicitly indicates the numeric value
+                    corresponding to Western script.  The script drop-down list might also initially display Western if you specify 1 for this value,
                     but only if Western is the default script for your regional settings.
                 </note>
                 <term>
@@ -4641,10 +4630,6 @@
             </list>
         </returns>
         <remarks>
-            You can abbreviate some X# commands and functions to four characters when conflicts with other commands and functions do not exist.
-            In the case of <b>GetFont( )</b> and <b>GetFile( )</b>, which both begin with the same four letters, precedence is given to <b>GetFile( )</b>; therefore,
-            issuing codeGETF( )/code displays the <b>Open</b> dialog box.
-            <br./>
             <list type="table">
                 <listheader>
                     <term>cFontStyle</term>
@@ -8110,7 +8095,7 @@
                     <b>UpdateCmd</b>, or <b>DeleteCmd</b> properties against the current cursor row or rows as appropriate.
                 </term>
                 <term>
-                    <b>TableUpdate( )</b> passes the value of codeGetFldState(1)/code to the following <b>CursorAdapter</b> events of each row affected:
+                    <b>TableUpdate( )</b> passes the value of <c>GetFldState(1)</c> to the following <b>CursorAdapter</b> events of each row affected:
                 </term>
                 <list type="bullet">
                     <term>BeforeInsert</term>
@@ -8864,7 +8849,7 @@
         <param name="cSchemaLocation">
             Specifies the name and location of the mapping schema, if it exists.
             <note name="Note">You must supply the mapping schema.</note>
-            For example, suppose you pass the a schema called codemySchema.xsd/code to cSchemaLocation, the UpdateGram created contains a mapping schema
+            For example, suppose you pass the a schema called <c>mySchema.xsd</c> to cSchemaLocation, the UpdateGram created contains a mapping schema
             attirbute as it appears in the following XML:
              <code language="X#">
                 &lt;ROOT xmlns:updg="urn:schemas-microsoft-com:xml-updategram"&gt;

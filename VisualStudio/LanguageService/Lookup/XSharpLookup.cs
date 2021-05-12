@@ -576,7 +576,7 @@ namespace XSharp.LanguageService
                         if (findConstructor)
                         {
                             result.Clear();
-                            result.AddRange(SearchConstructor(type, visibility));
+                            result.AddRange(SearchConstructor(type, visibility,location));
                             if (result.Count > 0)
                             {
                                 symbols.Push(result[0]);
@@ -594,19 +594,19 @@ namespace XSharp.LanguageService
                     // Do we already know in which Type we are ?
                     if (currentToken.Type == XSharpLexer.SELF)  // SELF(..)
                     {
-                        result.AddRange(SearchConstructor(currentType, visibility));
+                        result.AddRange(SearchConstructor(currentType, visibility, location));
                     }
                     else if (currentToken.Type == XSharpLexer.SUPER) // SUPER(..)
                     {
                         if (currentType is XSourceTypeSymbol source)
                         {
-                            var p = source.File.FindType(source.BaseType);
-                            result.AddRange(SearchConstructor(p, visibility));
+                            var p = source.File.FindType(source.BaseType, source.Namespace);
+                            result.AddRange(SearchConstructor(p, visibility, location));
                         }
                         else
                         {
                             var p = location.FindType(currentType.BaseType);
-                            result.AddRange(SearchConstructor(p, visibility));
+                            result.AddRange(SearchConstructor(p, visibility, location));
                         }
                     }
                     else if (startOfExpression)
@@ -893,7 +893,7 @@ namespace XSharp.LanguageService
         /// <param name="cType"></param>
         /// <param name="minVisibility"></param>
         /// <param name="foundElement"></param>
-        private static IList<IXMemberSymbol> SearchConstructor(IXTypeSymbol type, Modifiers minVisibility)
+        private static IList<IXMemberSymbol> SearchConstructor(IXTypeSymbol type, Modifiers minVisibility, XSharpSearchLocation location)
         {
             WriteOutputMessage($"--> SearchConstructorIn {type?.FullName}");
             var result = new List<IXMemberSymbol>();
@@ -901,9 +901,12 @@ namespace XSharp.LanguageService
             {
                 //
                 var xMethod = type.Members.Where(x => x.Kind == Kind.Constructor).FirstOrDefault();
-                if ((xMethod != null) && (xMethod.Visibility < minVisibility))
+                if (xMethod != null )
                 {
-                    xMethod = null;
+                    if (!xMethod.Visibility.IsVisible(minVisibility))
+                    {
+                        xMethod = null;
+                    }
                 }
                 if (xMethod != null)
                 {
@@ -1097,7 +1100,7 @@ namespace XSharp.LanguageService
                     type = EnsureComplete(type, location);
                 }
                 WriteOutputMessage($" SearchMembers {type?.FullName} , {name}");
-                result.AddRange(type.GetMembers(name, true).Where((m) => m.Visibility >= minVisibility));
+                result.AddRange(type.GetMembers(name, true).Where((m) => m.Visibility.IsVisible(minVisibility)));
                 if (result.Count() == 0 && !string.IsNullOrEmpty(type.BaseType))
                 {
                     if (minVisibility == Modifiers.Private)
@@ -1105,7 +1108,7 @@ namespace XSharp.LanguageService
                     IXTypeSymbol baseType;
                     if (type is XSourceTypeSymbol sourceType)
                     {
-                        baseType = sourceType.File.FindType(type.BaseType);
+                        baseType = sourceType.File.FindType(type.BaseType, type.Namespace);
                     }
                     else
                     {
@@ -1144,8 +1147,13 @@ namespace XSharp.LanguageService
                     var add = true;
                     if (staticOnly && !m.IsStatic)
                         add = false;
-                    if (add && m.Visibility < minVisibility)
-                        add = false;
+                    if (add && (m.Visibility == Modifiers.Internal || m.Visibility == Modifiers.ProtectedInternal))
+                    {
+                        if (m is IXSourceSymbol source && source.File.Project == location.Project)
+                            add = true;
+                        else if (!m.Visibility.IsVisible(minVisibility))
+                            add = false;
+                    }
                     if (add)
                     {
                         result.Add(m);
@@ -1160,7 +1168,7 @@ namespace XSharp.LanguageService
                     IXTypeSymbol baseType;
                     if (type is XSourceTypeSymbol sourceType)
                     {
-                        baseType = sourceType.File.FindType(baseTypeName);
+                        baseType = sourceType.File.FindType(baseTypeName, sourceType.Namespace);
                     }
                     else
                     {

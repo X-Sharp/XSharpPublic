@@ -805,7 +805,7 @@ namespace XSharp.LanguageService
                     if (tokens.SnapShot.Version != snapshot.Version)
                         return;
                 }
-                String currentNS = "";
+                string currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;

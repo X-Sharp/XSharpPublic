@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeDef        AS TypeDefinition GET _typeDef
 
      CONSTRUCTOR(typedef as TypeDefinition, asm as XAssembly)
-         SUPER(typedef:Name, GetKind(typedef), ConvertAttributes(typedef:Attributes), asm)  
+         SUPER(typedef:Name, GetKind(typedef), ConvertAttributes(typedef:Attributes), asm)
          SELF:_typeDef        := typedef
          SELF:_members        := List<XPEMemberSymbol>{}
          SELF:_children       := List<XPETypeSymbol>{}
@@ -40,9 +40,9 @@ BEGIN NAMESPACE XSharpModel
          ELSE
             SELF:BaseType     := ""
          ENDIF
-         SELF:OriginalTypeName := typedef:FullName   
+         SELF:OriginalTypeName := typedef:FullName
          IF typedef:HasGenericParameters
-            
+
             VAR cName          := SELF:Name
             VAR nsGeneric := FALSE
             VAR pos := cName:IndexOf('`')
@@ -54,8 +54,8 @@ BEGIN NAMESPACE XSharpModel
             IF pos > 0
                cName := cName:Substring(0,pos)
                SELF:ShortName := cName
-               SELF:_signature:ReadGenericParameters(typedef:GenericParameters)                  
-               cName += _signature:GetTypeParameterNames() 
+               SELF:_signature:ReadGenericParameters(typedef:GenericParameters)
+               cName += _signature:GetTypeParameterNames()
                IF nsGeneric
                   SELF:Namespace := cName
                ELSE
@@ -65,10 +65,10 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
 
 
-      
+
       PRIVATE STATIC METHOD GetKind(typedef as TypeDefinition) AS Kind
          IF typedef:BaseType != NULL
-            SWITCH typedef:BaseType:FullName 
+            SWITCH typedef:BaseType:FullName
             CASE "System.ValueType"
                RETURN Kind.Structure
             CASE "System.MulticastDelegate"
@@ -84,8 +84,8 @@ BEGIN NAMESPACE XSharpModel
             RETURN Kind.Interface
          ENDCASE
          RETURN Kind.Structure
-      
-      
+
+
       STATIC METHOD ConvertAttributes (attributes AS TypeAttributes) as Modifiers
          var modifiers := Modifiers.None
          var visattributes := _AND(attributes, TypeAttributes.VisibilityMask)
@@ -104,7 +104,7 @@ BEGIN NAMESPACE XSharpModel
          OTHERWISE
             modifiers := Modifiers.Public
          END SWITCH
-                 
+
          IF attributes:HasFlag(TypeAttributes.Abstract | TypeAttributes.Sealed)
             modifiers |= Modifiers.Static
          ELSEIF attributes:HasFlag(TypeAttributes.Abstract)
@@ -115,14 +115,14 @@ BEGIN NAMESPACE XSharpModel
          IF attributes:HasFlag(TypeAttributes.Import)
             modifiers |= Modifiers.External
          ENDIF
-         return modifiers         
-              
-       
+         RETURN modifiers
+
+
       INTERNAL STATIC METHOD AddMembers(aMembers AS  List<XPEMemberSymbol>, typedef AS TypeDefinition, parent AS XPETypeSymbol) AS VOID
-                
+
             IF typedef:HasMethods
                FOREACH VAR md IN typedef:Methods
-                  // filter 
+                  // filter
                   IF md:IsPrivate
                      LOOP
                   ENDIF
@@ -162,7 +162,7 @@ BEGIN NAMESPACE XSharpModel
                   IF fd:IsPrivate
                      LOOP
                   ENDIF
-                  VAR xField := XPEFieldSymbol{fd,parent:Assembly} 
+                  VAR xField := XPEFieldSymbol{fd,parent:Assembly}
                   aMembers:Add(xField)
                   xField:Parent := parent
                NEXT
@@ -172,13 +172,13 @@ BEGIN NAMESPACE XSharpModel
                   IF ed:AddMethod != NULL .AND. ed:AddMethod:IsPrivate
                      LOOP
                   ENDIF
-                  VAR xEvent := XPEEventSymbol{ed,parent:Assembly} 
+                  VAR xEvent := XPEEventSymbol{ed,parent:Assembly}
                   aMembers:Add(xEvent)
                   xEvent:Parent := parent
-                     
+
                NEXT
             ENDIF
-         
+
       INTERNAL METHOD Resolve() AS VOID
          IF ! SELF:_initialized .AND. SELF:_typeDef != NULL
                VAR aMembers := List<XPEMemberSymbol>{}
@@ -221,34 +221,40 @@ BEGIN NAMESPACE XSharpModel
                      IF ifType != NULL
                         AddMembers(aMembers, ifType, SELF)
                      ENDIF
-                     
+
                   NEXT
                ENDIF
               BEGIN LOCK SELF
-                  // now add to 
+                  // now add to
                   SELF:_members:Clear()
                   SELF:_members:AddRange(aMembers)
-              END LOCK               
-               
+              END LOCK
+
               SELF:_initialized := TRUE
          ENDIF
          RETURN
-      
-      
-      
+
+
+
       METHOD GetMembers(elementName AS STRING) AS IList<IXMemberSymbol>
          VAR tempMembers := List<IXMemberSymbol>{}
           IF elementName:StartsWith("@@")
                 elementName := elementName:Substring(2)
           ENDIF
-         SELF:Resolve()
-         if ! String.IsNullOrEmpty(elementName)
+          SELF:Resolve()
+          IF ! String.IsNullOrEmpty(elementName)
             tempMembers:AddRange(SELF:_members:Where ( {m => m.Name.StartsWith(elementName, StringComparison.OrdinalIgnoreCase) }))
-         ELSE
-            tempMembers:AddRange(SELF:_members)      
+          ELSE
+            tempMembers:AddRange(SELF:_members)
+          ENDIF
+         IF SELF:Kind ==  Kind.Enum
+            VAR fields := List<IXMemberSymbol>{}
+            fields:AddRange(tempMembers:Where( { m => m.Kind == Kind.Field} ))
+            tempMembers:Clear()
+            tempMembers:AddRange(fields)
          ENDIF
          RETURN tempMembers
-         
+
       METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMemberSymbol>
       IF elementName:StartsWith("@@")
             elementName := elementName:Substring(2)
@@ -261,8 +267,8 @@ BEGIN NAMESPACE XSharpModel
       ELSE
          RETURN SELF:GetMembers(elementName)
       ENDIF
-      
-      PROPERTY Members AS IList<IXMemberSymbol>  
+
+      PROPERTY Members AS IList<IXMemberSymbol>
          GET
             SELF:Resolve()
             VAR members := List<IXMemberSymbol>{}
@@ -270,31 +276,31 @@ BEGIN NAMESPACE XSharpModel
             RETURN members
          END GET
       END PROPERTY
-      
+
       PROPERTY XMembers AS IList<XPEMemberSymbol>
          GET
             SELF:Resolve()
             RETURN SELF:_members:ToArray()
          END GET
       END PROPERTY
-      
+
       PROPERTY FullName AS STRING   GET SELF:GetFullName()
-      
+
       PROPERTY Description AS STRING GET SELF:GetDescription()
-      
+
       PROPERTY IsNested  AS LOGIC GET SELF:Parent IS XPETypeSymbol
       PROPERTY IsGeneric as LOGIC GET _typeDef:HasGenericParameters
       PROPERTY IsStatic  AS LOGIC GET _typeDef:Attributes:HasFlag(TypeAttributes.Abstract |TypeAttributes.Sealed)
       PROPERTY Location AS STRING GET SELF:Assembly:DisplayName
-               
-      PROPERTY Children   AS IList<IXTypeSymbol> 
-         GET 
+
+      PROPERTY Children   AS IList<IXTypeSymbol>
+         GET
             return (IList<IXTypeSymbol> ) SELF:_children
          END GET
       END PROPERTY
-      
-      PROPERTY XChildren   AS IList<XPETypeSymbol>  
-         GET 
+
+      PROPERTY XChildren   AS IList<XPETypeSymbol>
+         GET
             BEGIN LOCK SELF
                return SELF:_children
             END LOCK
@@ -306,27 +312,27 @@ BEGIN NAMESPACE XSharpModel
                 SELF:Resolve()
                 RETURN _signature:Interfaces:ToArray()
             END GET
-      END PROPERTY            
-         
+      END PROPERTY
+
       PROPERTY BaseType AS STRING GET SELF:_signature:BaseType SET SELF:_signature:BaseType := @@value
 
 
       METHOD AddTypeParameter(name AS STRING) AS VOID
          SELF:_signature:AddTypeParameter(name)
-         
+
       METHOD AddConstraints(name AS STRING) AS VOID
          SELF:_signature:AddConstraints(name)
 
       PROPERTY TypeParameters as IList<STRING> GET SELF:_signature:TypeParameters:ToArray()
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
 
-      PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature() 
-      
+      PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature()
+
    METHOD ToString() AS STRING
       var result := i"{Kind} {Name}"
-      RETURN result      
-      
+      RETURN result
+
    END CLASS
-   
+
 END NAMESPACE
 

@@ -328,18 +328,7 @@ BEGIN NAMESPACE XSharpModel
 				END SWITCH
 				RETURN (LONG) imgK + (LONG)imgO
 
-        STATIC METHOD IsVisible(SELF ToCheck AS Modifiers, Wanted AS Modifiers) AS LOGIC
-            IF ToCheck >= Wanted
-                RETURN TRUE
-            ELSE
-                SWITCH ToCheck
-                CASE Modifiers.ProtectedInternal
-                CASE Modifiers.Internal
-                    RETURN TRUE
-                OTHERWISE
-                    RETURN FALSE
-                END SWITCH
-            ENDIF
+
 	END CLASS
 END NAMESPACE
 

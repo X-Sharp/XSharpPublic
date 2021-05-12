@@ -903,7 +903,7 @@ namespace XSharp.LanguageService
                 var xMethod = type.Members.Where(x => x.Kind == Kind.Constructor).FirstOrDefault();
                 if (xMethod != null )
                 {
-                    if (!xMethod.Visibility.IsVisible(minVisibility))
+                    if (!xMethod.IsVisible(minVisibility))
                     {
                         xMethod = null;
                     }
@@ -1100,7 +1100,7 @@ namespace XSharp.LanguageService
                     type = EnsureComplete(type, location);
                 }
                 WriteOutputMessage($" SearchMembers {type?.FullName} , {name}");
-                result.AddRange(type.GetMembers(name, true).Where((m) => m.Visibility.IsVisible(minVisibility)));
+                result.AddRange(type.GetMembers(name, true).Where((m) => m.IsVisible(minVisibility)));
                 if (result.Count() == 0 && !string.IsNullOrEmpty(type.BaseType))
                 {
                     if (minVisibility == Modifiers.Private)
@@ -1151,7 +1151,7 @@ namespace XSharp.LanguageService
                     {
                         if (m is IXSourceSymbol source && source.File.Project == location.Project)
                             add = true;
-                        else if (!m.Visibility.IsVisible(minVisibility))
+                        else if (!m.IsVisible(minVisibility))
                             add = false;
                     }
                     if (add)

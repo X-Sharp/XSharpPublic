@@ -386,7 +386,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
       ENDIF
 		aLines:Reverse()
 		FOREACH VAR cLine IN aLines
-			VAR cNew := VOWindowEditor.SubStituteTpl(cLine, cClass, oWindowDesign:cInitMethod)
+			VAR cNew := VOWindowEditor.SubStituteTpl(cLine, cClass, oWindowDesign:cInitParams)
 			oFile:Project:ProjectNode:DocumentInsertLine(oFile:FullPath, nLine, cNew)
 		NEXT
 		oFile:Project:ProjectNode:OpenElement(oFile:FullPath, nLine,1)

@@ -233,7 +233,7 @@ namespace XSharp.Project
             string documentationFile = "";
             if (chkXMLDocumentationFile.Checked)
             {
-                var asmName = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyName);
+                var asmName = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyName) ?? "NoName";
                 documentationFile = asmName + ".Xml";
             }
             var tag = "DocFile"; ;
@@ -264,7 +264,8 @@ namespace XSharp.Project
             }
             else
             {
-                var warn = ParentPropertyPage.GetProperty(XSharpProjectFileConstants.TreatWarningsAsErrors).ToLower();
+                var warn = ParentPropertyPage.GetProperty(XSharpProjectFileConstants.TreatWarningsAsErrors) ?? "false";
+                warn = warn.ToLower();
                 rbWarningSpecific.Checked = false;
                 rbWarningAll.Checked = warn == "true";
                 rbWarningNone.Checked = warn != "true";

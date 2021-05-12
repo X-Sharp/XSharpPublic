@@ -341,6 +341,10 @@ namespace XSharp.LanguageService
                             AddTypeNames(compList, _file.Project, filterText, location.Usings,true);
                             AddXSharpKeywordTypeNames(kwdList, filterText);
                             break;
+                        case CompletionState.InstanceMembers:
+                            showInstanceMembers = true;
+                            filterText = "";
+                            break;
                         default:
                             AddNamespaces(compList, _file.Project, filterText);
                             // It can be Type, FullyQualified
@@ -871,7 +875,7 @@ namespace XSharp.LanguageService
                             add = false;
                         if (add)
                         { 
-                            add = elt.Visibility.IsVisible(minVisibility);
+                            add = elt.IsVisible(minVisibility);
                         }
                         break;
                 }

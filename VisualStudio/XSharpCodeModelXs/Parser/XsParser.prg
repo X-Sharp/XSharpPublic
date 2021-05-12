@@ -2362,7 +2362,12 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             ENDIF
          END SWITCH
          IF result:Length > 0
-            result += ParseTypeSuffix()
+            VAR suffix := ParseTypeSuffix()
+            IF suffix:Trim() == "?"
+                result := "Nullable<"+result+">"
+            ELSE
+                result += suffix
+            ENDIF
          ENDIF
          RETURN result:Trim()
 
@@ -2371,7 +2376,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          IF SELF:La1 == XSharpLexer.PTR
             RETURN " "+SELF:ConsumeAndGet():GetText()
          ELSEIF SELF:La1 = XSharpLexer.QMARK
-            RETURN " "+SELF:ConsumeAndGet():GetText()
+            RETURN SELF:ConsumeAndGet():GetText()
          ELSEIF SELF:La1 == XSharpLexer.LBRKT
             VAR tokens := List<XSharpToken>{}
             tokens:Add(SELF:ConsumeAndGet())

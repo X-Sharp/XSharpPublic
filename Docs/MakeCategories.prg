@@ -146,8 +146,9 @@ FUNCTION WriteFunctionTopics() AS VOID
             IF match                     
                 VAR assembly := info:assembly:replace(".DLL","")    
                 VAR xml      := gsPath+info:assembly:replace(".DLL",".XML")
-                VAR sig := info:Signature 
-                sig := "M:"+Assembly+".Functions."+info:Name+sig    
+                VAR sig := info:Signature    
+                VAR funcClass := FunctionsClassName (assembly)
+                sig := "M:"+funcClass+"."+info:Name+sig    
                 VAR desc := ReadDescription(xml, sig,"c:\Program Files (x86)\XSharp\Assemblies\")                        
                 
                 sb:AppendLine("<row><entry><para>"+assembly+"</para></entry>")
@@ -163,6 +164,20 @@ FUNCTION WriteFunctionTopics() AS VOID
     NEXT
     
     RETURN
+
+FUNCTION FunctionsClassName(asmName AS STRING) AS STRING
+    IF !asmName:ToLower():EndsWith(".dll")
+        asmName += ".dll"
+    ENDIF
+    asmName := gsPath+asmName
+    VAR asm := Assembly.LoadFrom(asmName)
+    FOREACH attribute AS CustomAttributeData IN asm:GetCustomAttributesData()
+        IF attribute:AttributeType:Fullname == "XSharp.Internal.ClassLibraryAttribute"
+            VAR arg := attribute:ConstructorArguments[0]:Value
+            RETURN arg:ToString()
+        ENDIF                    
+    NEXT
+    RETURN ""
 
 FUNCTION ReadDescription(cXmlFile AS STRING, cSig AS STRING, cAltPath AS STRING) AS STRING
     LOCAL doc AS XmlDocument

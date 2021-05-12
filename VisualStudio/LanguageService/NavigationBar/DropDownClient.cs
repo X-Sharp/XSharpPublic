@@ -115,6 +115,7 @@ namespace XSharp.LanguageService
             if (sender is ITextView textView && _textViews.ContainsKey(textView))
             {
                 _activeView = textView;
+                Caret_PositionChanged(textView, new CaretPositionChangedEventArgs(textView, textView.Caret.Position, textView.Caret.Position));
             }
 
         }
@@ -669,9 +670,16 @@ namespace XSharp.LanguageService
             {
                 if (entity.File.FullPath == this._file.FullPath)
                 {
-                    var line = _activeView.TextSnapshot.GetLineFromLineNumber(entity.Range.StartLine);
-                    _activeView.Caret.MoveTo(line.Start, PositionAffinity.Predecessor);
-                    _activeView.ViewScroller.EnsureSpanVisible(line.Extent);
+                    IVsTextView textView = ThreadHelper.JoinableTaskFactory.Run(GetActiveTextViewAsync);
+                    if (textView != null)
+                    {
+                        textView.SetCaretPos(entity.Range.StartLine, 0);
+                        if (entity.Range.StartLine > 5)
+                            textView.SetTopLine(entity.Range.StartLine - 5);
+                        else
+                            textView.SetTopLine(0);
+                        textView.SendExplicitFocus();
+                    }
                 }
                 else
                 {
@@ -679,6 +687,13 @@ namespace XSharp.LanguageService
                 }
             }
             return VSConstants.S_OK;
+        }
+
+        private async Task<IVsTextView> GetActiveTextViewAsync( )
+        {
+            IVsTextManager textManager = await ServiceProvider.GetGlobalServiceAsync<SVsTextManager, IVsTextManager>();
+            ErrorHandler.ThrowOnFailure(textManager.GetActiveView(1, null, out IVsTextView activeView));
+            return activeView;
         }
 
         public int SetDropdownBar(IVsDropdownBar dropdownBar)

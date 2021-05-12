@@ -1238,6 +1238,11 @@ namespace XSharp.LanguageService
             if (file == null)
                 return false;
             var member = XSharpLookup.FindMember(lineNumber, file);
+            if (member != null && member.Range.StartLine == lineNumber)
+            {
+                // if we are at the start of an entity then do not start a signature session
+                return false;
+            }
             var currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
             string currentNS = "";
             if (currentNamespace != null)

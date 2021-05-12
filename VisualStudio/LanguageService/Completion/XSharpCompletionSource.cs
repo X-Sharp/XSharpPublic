@@ -986,7 +986,7 @@ namespace XSharp.LanguageService
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
                 string toAdd = "";
-                if (elt.Kind.HasParameters() && elt.Kind != Kind.Constructor)
+                if (elt.Kind.HasParameters() && elt.Kind != Kind.Constructor && !elt.Kind.IsProperty())
                 {
                     toAdd = "(";
                 }

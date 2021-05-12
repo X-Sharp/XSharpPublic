@@ -788,6 +788,11 @@ namespace XSharp.LanguageService
                     result.Add(AdjustGenericMember(xmember, symbols.Peek()));
                 }
             }
+            if (result.Count > 0 && result[0] is IXTypeSymbol xtype && state == CompletionState.Constructors)
+            {
+                result.Clear();
+                result.AddRange(xtype.GetMembers(".ctor"));
+            }
             return result;
         }
 

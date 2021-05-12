@@ -245,7 +245,7 @@ namespace XSharp.Project
         {
             base.BindProperties();
             this.chkXMLDocumentationFile.Checked = !string.IsNullOrEmpty(ParentPropertyPage.GetProperty("DocFile"));
-            var platform = ParentPropertyPage.GetProperty(XSharpProjectFileConstants.PlatformTarget);
+            var platform = ParentPropertyPage.GetProperty(XSharpProjectFileConstants.PlatformTarget) ?? "anycpu";
             if (string.Compare(platform, "anycpu",true) == 0)
             {
                 this.chkPrefer32Bit.Enabled = true;

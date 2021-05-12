@@ -44,9 +44,11 @@ BEGIN NAMESPACE XSharpModel
             vars:Insert(0, tm:DeclaringType )
          ELSE
             vars:Insert(0, tm:Name )
-         ENDIF 
-         vars:Append(XLiterals.AsKeyWord)
-         vars:Append(tm:TypeName)
+         ENDIF
+         IF (tm:Kind != Kind.@@Constructor)   
+            vars:Append(XLiterals.AsKeyWord)
+            vars:Append(tm:TypeName)
+         ENDIF
          RETURN vars:ToString()
       
       

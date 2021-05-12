@@ -657,7 +657,7 @@ namespace XSharp.LanguageService
                 }
                 else if (isId)
                 {
-                    if (startOfExpression || findType)
+                    if (startOfExpression || findType || findConstructor)
                     {
                         result.AddRange(SearchType(location, preFix + currentName));
                         if (result.Count > 0)

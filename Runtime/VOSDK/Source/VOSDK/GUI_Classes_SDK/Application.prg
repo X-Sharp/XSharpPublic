@@ -163,7 +163,7 @@ METHOD Exec(kExecType, uObject)
     LOCAL lNormalLoop AS LOGIC
     Default(@kExecType, EXECNORMAL)
     lNormalLoop := KExecType == EXECNORMAL
-    lObject := IsObject(uObject) .AND. IsMethod(uObject, #Active)
+    lObject := IsObject(uObject) .AND. IsMethod(uObject, "ACTIVE")
     IF lObject
         oObject := uObject
         oActive := SELF:FindMethod(oObject,"ACTIVE")

@@ -1,4 +1,5 @@
-#pragma options ("enforceself", on)
+GLOBAL DefaultSplitViewClassName := #__SplitView AS SYMBOL
+#pragma options ("enforceself", ON)
  /// <exclude />
 CLASS __SplitView INHERIT Control
 	PROTECT	dwDeferPaintCount	AS DWORD
@@ -9,29 +10,29 @@ CLASS __SplitView INHERIT Control
 
 
  /// <exclude />
-ACCESS Background 
-	
-	
+ACCESS Background
+
+
 	RETURN oBackgroundBrush
 
 
  /// <exclude />
-ASSIGN Background(oBrush) 
-	
-	
+ASSIGN Background(oBrush)
+
+
 
 
 	SELF:ChangeBackground(oBrush, SPLTCOLOR_WINDOW)
-	RETURN 
+	RETURN
 
 
  /// <exclude />
-METHOD ChangeBackground(oBrush, kWhere) 
+METHOD ChangeBackground(oBrush, kWhere)
 	LOCAL dwNewColor	AS DWORD
 
 
-	
-	
+
+
 
 
 	IF !IsInstanceOfUsual(oBrush, #Brush)
@@ -91,15 +92,15 @@ METHOD ChangeBackground(oBrush, kWhere)
 
 
  /// <exclude />
-METHOD Create() 
+METHOD Create()
 	//PP-031129 Flicker removal
 	LOCAL hOwner	 AS PTR
 	LOCAL oDevPoint AS Point
 	LOCAL hInst AS PTR
 
 
-	
-	
+
+
 
 
 	hInst := _GetInst()
@@ -159,7 +160,7 @@ METHOD Create()
 
 
  /// <exclude />
-ACCESS deferPaintCount 
+ACCESS deferPaintCount
 	// DHer: 18/12/2008
 RETURN SELF:dwDeferPaintCount
 
@@ -172,8 +173,8 @@ METHOD Destroy()  AS USUAL CLIPPER
 	LOCAL oPane   AS OBJECT
 
 
-	
-	
+
+
 
 
 	IF (oPanes != NULL_OBJECT)
@@ -203,7 +204,7 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
  /// <exclude />
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent)
 	LOCAL oSize 	AS Dimension
 	LOCAL lResize 	AS LOGIC
 	LOCAL oEvt := oEvent AS @@Event
@@ -229,7 +230,7 @@ METHOD Dispatch(oEvent)
 
 
  /// <exclude />
-METHOD GetAllPaneClients(aChildren) 
+METHOD GetAllPaneClients(aChildren)
 	//SE-060519
 	LOCAL aPanes  AS ARRAY
 	LOCAL liPane  AS LONGINT
@@ -264,10 +265,10 @@ METHOD GetAllPaneClients(aChildren)
 
 
  /// <exclude />
-METHOD GetPaneClient(nPane) 
+METHOD GetPaneClient(nPane)
 	LOCAL oRet AS OBJECT
-	
-	
+
+
 
 
 	// if nPane is a valid pane number, return the pane's client object
@@ -283,12 +284,12 @@ METHOD GetPaneClient(nPane)
 
 
  /// <exclude />
-METHOD GetPaneSize(nPane) 
+METHOD GetPaneSize(nPane)
 	LOCAL strucSize	IS _winSize
 
 
-	
-	
+
+
 
 
 	// if nPane is a valid pane number, return the pane's dimension	object
@@ -303,9 +304,9 @@ METHOD GetPaneSize(nPane)
 
 
  /// <exclude />
-METHOD Hide(nPane) 
-	
-	
+METHOD Hide(nPane)
+
+
 
 
 	// if nPane is supplied, hide the appropriate pane;
@@ -321,30 +322,30 @@ METHOD Hide(nPane)
 
 
  /// <exclude />
-ACCESS HorizontalAlign 
-	
-	
+ACCESS HorizontalAlign
+
+
 
 
 	RETURN _AND(SWS_HALIGN, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 1
 
 
  /// <exclude />
-ACCESS HorizontalDrag 
-	
-	
+ACCESS HorizontalDrag
+
+
 
 
 	RETURN _AND(SWS_NOHORZDRAG, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 0
 
 
  /// <exclude />
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment) 
+CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment)
 	LOCAL oWin AS Window
 
 
-	
-	
+
+
 
 
 	__LoadSplitWindowDLL() //SE-060520
@@ -358,7 +359,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAl
 
 
 	// the actual owner on a form will be the FormDialog
-	IF IsInstanceOf(oWin, #DataWindow) 
+	IF IsInstanceOf(oWin, #DataWindow)
 		// oWin := IVarGet(oWin, #__FormWindow)
 		oWin := Send(oWin, #__GetFormSurface)
 	ELSEIF IsInstanceOf(oWin, #__FormFrame)
@@ -379,20 +380,20 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAl
 	SELF:SetStyle(kAlignment)
 
 
-	RETURN 
+	RETURN
 
 
  /// <exclude />
-ACCESS Layout 
-	
-	
+ACCESS Layout
+
+
 
 
 	RETURN oPanes
 
 
  /// <exclude />
-ASSIGN Layout(oDimension) 
+ASSIGN Layout(oDimension)
    //SE-060520 S. Ebert
 	//Corrects a problem which occurs if you define Layout and the window height or width is 0.
    //Also a SplitWindow with SPLIT_HORZALIGN style is correctly displayed now in this case.
@@ -406,8 +407,8 @@ ASSIGN Layout(oDimension)
 	LOCAL hSplit   AS PTR
 
 
-	
-	
+
+
 
 
 	// store the dimensions of the window and create the
@@ -456,15 +457,15 @@ ASSIGN Layout(oDimension)
    SetWindowPos(hSplit, 0, 0, 0, sRect:Right, sRect:bottom, dwFlags)
 
 
-   RETURN 
+   RETURN
 
 
  /// <exclude />
-METHOD RestoreUpdate() 
+METHOD RestoreUpdate()
 
 
-	
-	
+
+
 
 
 	// decrement the deferred paint count
@@ -483,10 +484,10 @@ METHOD RestoreUpdate()
 
 
  /// <exclude />
-METHOD SetPaneClient(oWindow, nPane) 
+METHOD SetPaneClient(oWindow, nPane)
 	LOCAL dwStyles AS DWORD
-	
-	
+
+
 
 
 	//PP-030910 Bug 99
@@ -519,12 +520,12 @@ METHOD SetPaneClient(oWindow, nPane)
 
 
  /// <exclude />
-METHOD SetPaneSize(oDimension, nPane) 
+METHOD SetPaneSize(oDimension, nPane)
 	LOCAL strucSize IS _winSize
 
 
-	
-	
+
+
 
 
 	// if nPane is valid, return the size of the pane
@@ -545,9 +546,9 @@ METHOD SetPaneSize(oDimension, nPane)
 
 
  /// <exclude />
-METHOD Show(nPane) 
-	
-	
+METHOD Show(nPane)
+
+
 
 
 	// if nPane is supplied, show the appropriate pane;
@@ -563,47 +564,47 @@ METHOD Show(nPane)
 
 
  /// <exclude />
-ACCESS SplitBarBackground 
-	
-	
+ACCESS SplitBarBackground
+
+
 
 
 	RETURN oBarBrush
 
 
  /// <exclude />
-ASSIGN SplitBarBackground(oBrush) 
-	
-	
+ASSIGN SplitBarBackground(oBrush)
+
+
 
 
 	SELF:ChangeBackground(oBrush, SPLTCOLOR_BAR)
-	RETURN 
+	RETURN
 
 
  /// <exclude />
-ACCESS SplitBarFrameBackground 
-	
-	
+ACCESS SplitBarFrameBackground
+
+
 
 
 	RETURN oBarFrameBrush
 
 
  /// <exclude />
-ASSIGN SplitBarFrameBackground(oBrush) 
-	
-	
+ASSIGN SplitBarFrameBackground(oBrush)
+
+
 
 
 	SELF:ChangeBackground(oBrush, SPLTCOLOR_BARFRAME)
-	RETURN 
+	RETURN
 
 
  /// <exclude />
-METHOD SuspendUpdate() 
-	
-	
+METHOD SuspendUpdate()
+
+
 
 
 	// if the deferred paint count is 0, begin deferred painting
@@ -617,18 +618,18 @@ METHOD SuspendUpdate()
 
 
  /// <exclude />
-ACCESS VerticalAlign 
-	
-	
+ACCESS VerticalAlign
+
+
 
 
 	RETURN _AND(SWS_VALIGN, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 1
 
 
  /// <exclude />
-ACCESS VerticalDrag 
-	
-	
+ACCESS VerticalDrag
+
+
 
 
 	RETURN _AND(SWS_NOVERTDRAG, PCALL(gpfnSpltStyleGet, SELF:Handle())) == 0
@@ -645,7 +646,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
 
 	//PP-030828 Strong typing
  /// <exclude />
-	METHOD __ResizeSplitView() AS VOID STRICT 
+	METHOD __ResizeSplitView() AS VOID STRICT
 	//SE-050822 S. Ebert
 	//Corrects a two pixel horizontal sizing mismatch.
 	LOCAL rect   IS _WINRECT
@@ -690,7 +691,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
 // 	LOCAL nOffsetTop	 AS INT
 // 	LOCAL nOffsetBottom	AS INT
 //
-// 	
+//
 //
 // 	// resize the split view control to the canvas area of
 // 	// the window, adjusting for the tool bar and status bar
@@ -731,19 +732,19 @@ CLASS SplitWindow INHERIT ChildAppWindow
 
 
  /// <exclude />
-ACCESS __SplitView AS __SplitView STRICT 
+ACCESS __SplitView AS __SplitView STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN oSplitView
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.Background/*" />
-ACCESS Background 
-	
-	
+ACCESS Background
+
+
 	IF oSplitView != NULL_OBJECT
 		RETURN oSplitView:Background
 	ENDIF
@@ -751,23 +752,23 @@ ACCESS Background
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.Background/*" />
-ASSIGN Background(oBrush) 
-	
-	
+ASSIGN Background(oBrush)
+
+
 	RETURN oSplitView:Background := oBrush
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.ChangeBackground/*" />
-METHOD ChangeBackground(oBrush, kWhere) 
-	
-	
+METHOD ChangeBackground(oBrush, kWhere)
+
+
 	RETURN oSplitView:ChangeBackground(oBrush, kWhere)
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.Destroy/*" />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 
 
 	// if not in garbage collection, destroy the split view control
@@ -785,7 +786,7 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.Dispatch/*" />
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent)
 	LOCAL oEvt := oEvent AS @@Event
 	LOCAL oPane AS OBJECT
 
@@ -804,9 +805,9 @@ METHOD Dispatch(oEvent)
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.EnableStatusBar/*" />
-METHOD EnableStatusBar(lEnable) 
-	
-	
+METHOD EnableStatusBar(lEnable)
+
+
 
 
 	SUPER:EnableStatusBar(lEnable)
@@ -817,7 +818,7 @@ METHOD EnableStatusBar(lEnable)
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.GetAllChildren/*" />
-METHOD GetAllChildren() 
+METHOD GetAllChildren()
 	//RvdH 060519 Added, so all pane clients are also returned
 	//SE-060520
 	LOCAL aChildren AS ARRAY
@@ -833,27 +834,27 @@ METHOD GetAllChildren()
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.GetPaneClient/*" />
-METHOD GetPaneClient(nPane) 
-	
-	
+METHOD GetPaneClient(nPane)
+
+
 
 
 	RETURN oSplitView:GetPaneClient(nPane)
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.GetPaneSize/*" />
-METHOD GetPaneSize(nPane) 
-	
-	
+METHOD GetPaneSize(nPane)
+
+
 
 
 	RETURN oSplitView:GetPaneSize(nPane)
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.HidePane/*" />
-METHOD HidePane(nPane) 
-	
-	
+METHOD HidePane(nPane)
+
+
 
 
 	SELF:oSplitView:Hide(nPane)
@@ -863,25 +864,25 @@ METHOD HidePane(nPane)
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.HorizontalAlign/*" />
-ACCESS HorizontalAlign 
-	
-	
+ACCESS HorizontalAlign
+
+
 
 
 	RETURN oSplitView:HorizontalAlign
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.HorizontalDrag/*" />
-ACCESS HorizontalDrag 
-	
-	
+ACCESS HorizontalDrag
+
+
 
 
 	RETURN oSplitView:HorizontalDrag
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.ctor/*" />
-CONSTRUCTOR(oOwner, lHorizontalDrag, lVerticalDrag, kAlignment) 
+CONSTRUCTOR(oOwner, lHorizontalDrag, lVerticalDrag, kAlignment)
 	LOCAL oObject		AS OBJECT
 	LOCAL oBar			AS Control
 	LOCAL oPoint		AS Point
@@ -890,8 +891,8 @@ CONSTRUCTOR(oOwner, lHorizontalDrag, lVerticalDrag, kAlignment)
 	LOCAL nOffsetBottom	AS INT
 
 
-	
-	
+
+
 
 
 	IF IsObject(oOwner)
@@ -942,32 +943,32 @@ CONSTRUCTOR(oOwner, lHorizontalDrag, lVerticalDrag, kAlignment)
 	DEFAULT(@kAlignment, SPLIT_VERTALIGN )
 
 
-	oSplitView := __SplitView{SELF, 1000, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment}
+	oSplitView := CreateInstance(DefaultSplitViewClassName, SELF, 1000, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment)
 	oSplitView:Show()
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.Layout/*" />
-ACCESS Layout 
-	
-	
+ACCESS Layout
+
+
 
 
 	RETURN oSplitView:Layout
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.Layout/*" />
-ASSIGN Layout(oDimension) 
+ASSIGN Layout(oDimension)
    //SE-060520
 	RETURN oSplitView:Layout := oDimension
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.Resize/*" />
-METHOD Resize(oResizeEvent) 
-	
-	
+METHOD Resize(oResizeEvent)
+
+
 
 
 	SUPER:Resize(oResizeEvent)
@@ -978,37 +979,37 @@ METHOD Resize(oResizeEvent)
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.RestoreUpdate/*" />
-METHOD RestoreUpdate 
-	
-	
+METHOD RestoreUpdate
+
+
 
 
 	RETURN oSplitView:RestoreUpdate()
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.SetPaneClient/*" />
-METHOD SetPaneClient(oWindow, nPane) 
-	
-	
+METHOD SetPaneClient(oWindow, nPane)
+
+
 
 
 	RETURN oSplitView:SetPaneClient(oWindow, nPane)
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.SetPaneSize/*" />
-METHOD SetPaneSize(oDimension, nPane) 
+METHOD SetPaneSize(oDimension, nPane)
 	//SE-060518
-	
-	
+
+
 
 
 	RETURN oSplitView:SetPaneSize(oDimension, nPane)
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.Show/*" />
-METHOD Show(nShowState, nPane) 
-	
-	
+METHOD Show(nShowState, nPane)
+
+
 
 
 	SUPER:Show(nShowState)
@@ -1030,9 +1031,9 @@ METHOD Show(nShowState, nPane)
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.ShowPane/*" />
-METHOD ShowPane(nPane) 
-	
-	
+METHOD ShowPane(nPane)
+
+
 
 
 	SELF:oSplitView:Show(nPane)
@@ -1040,82 +1041,82 @@ METHOD ShowPane(nPane)
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.SplitBarBackground/*" />
-ACCESS SplitBarBackground 
-	
-	
+ACCESS SplitBarBackground
+
+
 
 
 	RETURN oSplitView:SplitBarBackground
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.SplitBarBackground/*" />
-ASSIGN SplitBarBackground(oBrush) 
-	
-	
+ASSIGN SplitBarBackground(oBrush)
+
+
 
 
 	RETURN oSplitView:SplitBarBackground := oBrush
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.SplitBarFrameBackground/*" />
-ACCESS SplitBarFrameBackground 
-	
-	
+ACCESS SplitBarFrameBackground
+
+
 
 
 	RETURN oSplitView:SplitBarFrameBackground
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.SplitBarFrameBackground/*" />
-ASSIGN SplitBarFrameBackground(oBrush) 
-	
-	
+ASSIGN SplitBarFrameBackground(oBrush)
+
+
 
 
 	RETURN oSplitView:SplitBarFrameBackground := oBrush
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.SuspendUpdate/*" />
-METHOD SuspendUpdate 
-	
-	
+METHOD SuspendUpdate
+
+
 
 
 	RETURN oSplitView:SuspendUpdate()
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.ToolBar/*" />
-ASSIGN ToolBar(oNewToolBar) 
-	
-	
+ASSIGN ToolBar(oNewToolBar)
+
+
 
 
 	SUPER:Toolbar := oNewToolBar
 	SELF:__ResizeSplitView()
 
 
-	RETURN 
+	RETURN
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.ToolBarHeightChanged/*" />
-METHOD ToolBarHeightChanged(oControlNotifyEvent) 
+METHOD ToolBarHeightChanged(oControlNotifyEvent)
    SELF:__ResizeSplitView()
    RETURN SELF
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.VerticalAlign/*" />
-ACCESS VerticalAlign 
-	
-	
+ACCESS VerticalAlign
+
+
 
 
 	RETURN oSplitView:VerticalAlign
 
 
 /// <include file="Gui.xml" path="doc/SplitWindow.VerticalDrag/*" />
-ACCESS VerticalDrag 
-	
-	
+ACCESS VerticalDrag
+
+
 
 
 	RETURN oSplitView:VerticalDrag

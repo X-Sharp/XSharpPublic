@@ -1,9 +1,10 @@
- /// <exclude />
+GLOBAL DefaultDDImpClassName := #__DDImp AS SYMBOL
+/// <exclude />
 CLASS __DDImp INHERIT DialogWindow
 
 
  /// <exclude />
-METHOD Default() 
+METHOD Default()
 	//PP-040410
 	SUPER:Default()
 	oParent:EventReturnValue := SELF:EventReturnValue
@@ -11,9 +12,9 @@ METHOD Default()
 
 
  /// <exclude />
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent)
 	//PP-040410
-    LOCAL liReturn AS LONG 
+    LOCAL liReturn AS LONG
 
 
     //  oEvent:oWindow := oParent
@@ -31,33 +32,33 @@ METHOD Dispatch(oEvent)
 
 
  /// <exclude />
-CONSTRUCTOR(oOwner, lModal, lChild) 
-   //SE-070906 Supports dialog styles in parameter lChild 
+CONSTRUCTOR(oOwner, lModal, lChild)
+   //SE-070906 Supports dialog styles in parameter lChild
    //for resizable DataDialogs
     LOCAL sTemplate AS _winDLGTEMPLATE
     LOCAL hgbl      AS PTR
 
 
     hgbl      := GlobalAlloc(GMEM_ZEROINIT, _SIZEOF(_winDLGTEMPLATE) + 48)
-    sTemplate := GlobalLock(hgbl)  
+    sTemplate := GlobalLock(hgbl)
 
 
     IF IsLogic(lChild) .AND. lChild
-       sTemplate:style := _OR(WS_CHILD,DS_3DLOOK,WS_VISIBLE) 
-    ELSE 
+       sTemplate:style := _OR(WS_CHILD,DS_3DLOOK,WS_VISIBLE)
+    ELSE
        sTemplate:style := _OR(DS_3DLOOK,WS_POPUP,WS_CAPTION,WS_SYSMENU,WS_DLGFRAME,WS_CLIPCHILDREN)
        IF IsLong(lChild)
           sTemplate:style := _OR(sTemplate:style, (LONGINT) lChild)
-       ENDIF   
+       ENDIF
     ENDIF
     sTemplate:cx := 1
-    sTemplate:cy := 1   
+    sTemplate:cy := 1
 
 
     GlobalUnlock(hgbl)
-    
-    
-    SUPER(oOwner, hgbl, lModal) 
+
+
+    SUPER(oOwner, hgbl, lModal)
     GlobalFree(hgbl)
 
 
@@ -70,18 +71,18 @@ CONSTRUCTOR(oOwner, lModal, lChild)
     oParent:SetHandle(hWnd)
 
 
-	RETURN 
+	RETURN
 
 
  /// <exclude />
-METHOD Show(kShowState) 
+METHOD Show(kShowState)
 	//LOCAL hParent := GetParent(hwnd) AS PTR
 	//local liX, liY as long
 	//local r is _winRECT
 
 
-	
-	
+
+
 
 
 	Default(@kShowState, SHOWCENTERED)

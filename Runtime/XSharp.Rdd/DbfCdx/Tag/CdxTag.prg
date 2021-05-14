@@ -767,7 +767,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 DO WHILE nPage != 0 .AND. nPage != -1
                     VAR oFree := SELF:GetPage(nPage) ASTYPE CdxTreePage
                     IF oFree != NULL
-                        nPage := oFree:NextFree
+                        nPage := oFree:LeftPtr
                         sbFree:AppendLine("Next free : "+ nPage:ToString("X8"))
                     ELSE
                         EXIT

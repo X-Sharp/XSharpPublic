@@ -32,12 +32,15 @@ namespace XSharp.MacroCompiler.Preprocessor
 #if VSPARSER
                 var strm = asm.GetManifestResourceStream("XSharp.VSParser.Preprocessor.StandardHeaders.resources");
 #else
-                var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.XSharp.Preprocessor.StandardHeaders.resources");
+                var strm = asm.GetManifestResourceStream("XSharp.MacroCompiler.Preprocessor.StandardHeaders.resources");
 #endif
-                var rdr = new System.Resources.ResourceReader(strm);
-                foreach (DictionaryEntry item in rdr)
+                if (strm != null)
                 {
-                    embeddedHeaders.Add((string)item.Key, (string)item.Value);
+                    var rdr = new System.Resources.ResourceReader(strm);
+                    foreach (DictionaryEntry item in rdr)
+                    {
+                        embeddedHeaders.Add((string)item.Key, (string)item.Value);
+                    }
                 }
             }
         }
@@ -178,7 +181,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 if (Eof() && parent != null)
                     return parent.La();
-                return Tokens.Get(Index).type;
+                return Tokens.Get(Index).Type;
             }
 
             internal Token Lt()
@@ -190,7 +193,7 @@ namespace XSharp.MacroCompiler.Preprocessor
 
             internal bool Eof()
             {
-                return Index >= Tokens.Size || Tokens.Get(Index).type == TokenType.EOF;
+                return Index >= Tokens.Size || Tokens.Get(Index).Type == TokenType.EOF;
             }
 
             internal bool Consume()
@@ -304,12 +307,12 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             macroDefines.Add("__ENTITY__", (token) => new Token(TokenType.STRING_CONST, "\"__ENTITY__\"") { SourceSymbol = token });  // Handled later in Transformation phase
             macroDefines.Add("__FILE__", (token) => new Token(TokenType.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"') { SourceSymbol = token });
-            macroDefines.Add("__LINE__", (token) => new Token(TokenType.INT_CONST, new SourceLocation(token.source.SourceText, token.start).Line.ToString()) { SourceSymbol = token });
+            macroDefines.Add("__LINE__", (token) => new Token(TokenType.INT_CONST, new SourceLocation(token.Source.SourceText, token.Start).Line.ToString()) { SourceSymbol = token });
             macroDefines.Add("__MODULE__", (token) => new Token(TokenType.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"') { SourceSymbol = token });
             macroDefines.Add("__FUNCTION__", (token) => new Token(TokenType.STRING_CONST, "\"__FUNCTION__\"") { SourceSymbol = token }); // Handled later in Transformation phase
             macroDefines.Add("__FUNCTIONS__", (token) => new Token(TokenType.STRING_CONST, "\"__FUNCTIONS__\"") { SourceSymbol = token }); // Handled later in Transformation phase
             macroDefines.Add("__SIG__", (token) => new Token(TokenType.STRING_CONST, "\"__SIG__\"") { SourceSymbol = token }); // Handled later in Transformation phase
-            macroDefines.Add("__SRCLOC__", (token) => new Token(TokenType.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line " + new SourceLocation(token.source.SourceText, token.start).Line.ToString() + '"') { SourceSymbol = token });
+            macroDefines.Add("__SRCLOC__", (token) => new Token(TokenType.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line " + new SourceLocation(token.Source.SourceText, token.Start).Line.ToString() + '"') { SourceSymbol = token });
 //nvk...            macroDefines.Add("__SYSDIR__", (token) => new Token(TokenType.STRING_CONST, '"' + options.SystemDir + '"') { SourceSymbol = token });
             macroDefines.Add("__TIME__", (token) => new Token(TokenType.STRING_CONST, '"' + DateTime.Now.ToString("HH:mm:ss") + '"') { SourceSymbol = token });
             macroDefines.Add("__UTCTIME__", (token) => new Token(TokenType.STRING_CONST, '"' + DateTime.Now.ToUniversalTime().ToString("HH:mm:ss") + '"') { SourceSymbol = token });
@@ -404,7 +407,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 foreach (var t in tokens)
                 {
                     // Copy the trivia from the original first symbol on the line so the UDC has the proper indentlevel
-                    if (first && t.SourceSymbol != null && t.SourceSymbol.HasTrivia && t.SourceSymbol.type == TokenType.UDC_KEYWORD)
+                    if (first && t.SourceSymbol != null && t.SourceSymbol.HasTrivia && t.SourceSymbol.Type == TokenType.UDC_KEYWORD)
                     {
                         bld.Append(t.SourceSymbol.TriviaAsText);
                     }
@@ -527,7 +530,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             var result = new List<Token>();
             Token t = Lt();
             List<Token> omitted = new List<Token>(); 
-            while (t.type != TokenType.EOF)
+            while (t.Type != TokenType.EOF)
             {
                 // read until the next EOS
                 var line = ReadLine(omitted);
@@ -548,7 +551,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     else
                         writeToPPO("");
                 }
-                if (t.channel == Channel.DEFOUTCHANNEL)
+                if (t.Channel == Channel.Default && line != null && line.Count > 0)
                     result.Add(t);
             }
             doEOFChecks();
@@ -559,11 +562,11 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             for (int i = 0; i < line.Count; i++)
             {
-                switch (line[i].channel)
+                switch (line[i].Channel)
                 {
-                    case Channel.DEFOUTCHANNEL:
-                    case Channel.PREPROCESSORCHANNEL:
-                        return line[i].type;
+                    case Channel.Default:
+                    case Channel.PreProcessor:
+                        return line[i].Type;
                     default:
                         break;
                 }
@@ -647,11 +650,11 @@ namespace XSharp.MacroCompiler.Preprocessor
             var res = new List<Token>();
             omitted.Clear();
             Token t = Lt();
-            while (t.type != TokenType.EOF)
+            while (t.Type != TokenType.EOF)
             {
                 if (t.IsEOS() && t.Text != ";")
                     break;
-                if (t.channel != Channel.HIDDENCHANNEL && t.channel != Channel.XMLDOCCHANNEL)
+                if (t.Channel != Channel.Hidden && t.Channel != Channel.XmlDoc)
                 {
                     var nt = FixToken(t);
                     res.Add(nt);
@@ -802,14 +805,14 @@ namespace XSharp.MacroCompiler.Preprocessor
 
         bool IsDefinedMacro(Token t)
         {
-            return (t.type == TokenType.MACRO) ? macroDefines.ContainsKey(t.Text) : false;
+            return (t.Type == TokenType.MACRO) ? macroDefines.ContainsKey(t.Text) : false;
         }
         static IList<Token> stripWs(IList<Token> line)
         {
             IList<Token> result = new List<Token>();
             foreach (var token in line)
             {
-                if (token.channel == Channel.DEFOUTCHANNEL || token.channel == Channel.PREPROCESSORCHANNEL)
+                if (token.Channel == Channel.Default || token.Channel == Channel.PreProcessor)
                 {
                     result.Add(token);
                 }
@@ -834,8 +837,8 @@ namespace XSharp.MacroCompiler.Preprocessor
             if (line.Count > 2)
             {
                 var first = line[2];
-                if (first.type == TokenType.LPAREN
-                    && first.start == def.end)
+                if (first.Type == TokenType.LPAREN
+                    && first.Start == def.end)
                 {
                     doUDCDirective(original, false);
                     return;
@@ -857,7 +860,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                         // check to see if the same file has been added twice
                         var oldToken = oldtokens[0];
                         var newToken = line[0];
-                        if (oldToken.source.SourceName != newToken.source.SourceName || oldToken.Location().Line != newToken.Location().Line)
+                        if (oldToken.Source.SourceName != newToken.Source.SourceName || oldToken.Location().Line != newToken.Location().Line)
                         {
                             Error(def, ErrorCode.DuplicateDefineSame, def.Text);
                         }
@@ -866,7 +869,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                             if (! _duplicateFile)
                             {
                                 _duplicateFile = true;
-                                var includeName = newToken.source.SourceName;
+                                var includeName = newToken.Source.SourceName;
                                 var defText = def.Text;
                                 if (inputs.Symbol != null)
                                 {
@@ -958,7 +961,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             else
             {
-                if (cmd.type == TokenType.PP_COMMAND)
+                if (cmd.Type == TokenType.PP_COMMAND)
                 {
                     // COMMAND and XCOMMAND can only match from beginning of line
                     cmdRules.Add(rule);
@@ -969,7 +972,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     // TRANSLATE and XTRANSLATE can also match from beginning of line
                     transRules.Add(rule);
                     _hasTransrules = true;
-                    if (cmd.type == TokenType.PP_DEFINE)
+                    if (cmd.Type == TokenType.PP_DEFINE)
                     {
                         rule.CaseInsensitive = _options.CaseSensitivePreprocessor == false;
                     }
@@ -1151,7 +1154,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 var baseName = Path.GetFileNameWithoutExtension(includeFileName).ToLower();
                 if (embeddedHeaders.TryGetValue(baseName, out var source))
                 {
-                    var reader = new StreamReader(source);
+                    var reader = new StringReader(source);
                     text = reader.ReadToEnd();
                     nfp = includeFileName;
                 }
@@ -1259,11 +1262,11 @@ namespace XSharp.MacroCompiler.Preprocessor
                     if (value?.Count == 1)
                     {
                         var deftoken = value[0];
-                        if (deftoken.type == TokenType.FALSE_CONST)
+                        if (deftoken.Type == TokenType.FALSE_CONST)
                         {
                             isdefined = false;
                         }
-                        else if (deftoken.type == TokenType.INT_CONST)
+                        else if (deftoken.Type == TokenType.INT_CONST)
                         {
                             isdefined = Convert.ToInt64(deftoken.Text) != 0;
                         }
@@ -1280,11 +1283,11 @@ namespace XSharp.MacroCompiler.Preprocessor
                         var value = macroDefines[define](token);
                         if (value != null)
                         {
-                            if (value.type == TokenType.FALSE_CONST)
+                            if (value.Type == TokenType.FALSE_CONST)
                             {
                                 isdefined = false;
                             }
-                            else if (value.type == TokenType.INT_CONST)
+                            else if (value.Type == TokenType.INT_CONST)
                             {
                                 isdefined = Convert.ToInt64(value.Text) != 0;
                             }
@@ -1304,14 +1307,14 @@ namespace XSharp.MacroCompiler.Preprocessor
             // But this will , since there are spaces around the token
             // System. Console .WriteLine("zxc")
             Debug.Assert(line?.Count > 0);
-            if (iPos > 0 && line[iPos-1].type == TokenType.DOT )
+            if (iPos > 0 && line[iPos-1].Type == TokenType.DOT )
             {
                 return false;
             }
             if (iPos < line.Count-1)
             {
                 var token = line[iPos + 1];
-                if (token.type == TokenType.DOT )
+                if (token.Type == TokenType.DOT )
                     return false;
             }
             return true;
@@ -1407,7 +1410,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         private void doErrorWarningDirective(IList<Token> original)
         {
             var line = stripWs(original);
-            TokenType nextType = line[0].type;
+            TokenType nextType = line[0].Type;
             if (IsActive())
             {
                 string text;
@@ -1421,9 +1424,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                 {
 
                     writeToPPO(original, true);
-                    int start = line[1].start;
+                    int start = line[1].Start;
                     int end = line[line.Count - 1].end;
-                    text = line[1].source.SourceText.Substring(start, end-start);
+                    text = line[1].Source.SourceText.Substring(start, end-start);
                 }
                 if (ln.SourceSymbol != null)
                     ln = ln.SourceSymbol;
@@ -1457,7 +1460,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     else
                         defStates.Push(!IsDefined(def.Text, def));
                 }
-                else if (def.type == TokenType.MACRO)
+                else if (def.Type == TokenType.MACRO)
                 {
                     if (isIfDef)
                         defStates.Push(IsDefinedMacro(def));
@@ -1543,7 +1546,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 else
                 {
                     var token = line[1];
-                    if (token.type == TokenType.STRING_CONST)
+                    if (token.Type == TokenType.STRING_CONST)
                     {
                         string fileName = token.Text.Substring(1, token.Text.Length - 2);
                         ProcessIncludeFile(fileName, token);
@@ -1570,7 +1573,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 writeToPPO(original, true);
                 var ln = line[1];
-                if (ln.type == TokenType.INT_CONST)
+                if (ln.Type == TokenType.INT_CONST)
                 {
 //nvk...                    inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options,null, null).Value - (ln.Line + 1);
 
@@ -1578,7 +1581,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     {
                         ln = line[2];
                     }
-                    if (ln.type == TokenType.STRING_CONST)
+                    if (ln.Type == TokenType.STRING_CONST)
                     {
                         inputs.SourceFileName = ln.Text.Substring(1, ln.Text.Length - 2);
                     }
@@ -1650,7 +1653,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     }
                     if (changed && result != null)
                     {
-//nvk...                        result = _lexer.ReclassifyTokens(result);
+                        result = _lexer.ReclassifyTokens(result);
                     }
                 }
             }
@@ -1720,7 +1723,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                             {
                                 var t2 = new Token(t)
                                 {
-                                    channel = Channel.DEFOUTCHANNEL,
+                                    Channel = Channel.Default,
                                     SourceSymbol = token
                                 };
                                 tempResult.Add(t2);
@@ -1731,13 +1734,13 @@ namespace XSharp.MacroCompiler.Preprocessor
                             // add a space so error messages look proper
                             var t2 = new Token(TokenType.WS, " <RemovedToken> ")
                             {
-                                channel = Channel.HIDDENCHANNEL,
+                                Channel = Channel.Hidden,
                                 SourceSymbol = token
                             };
                             tempResult.Add(t2);
                         }
                     }
-                    else if (token.type == TokenType.MACRO)
+                    else if (token.Type == TokenType.MACRO)
                     {
                         // Macros that cannot be found are changed to ID
                         Func<Token, Token> ft;
@@ -1819,7 +1822,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             separators = new List<Token>();
             foreach (var t in tokens)
             {
-                if (t.type == TokenType.EOS)
+                if (t.Type == TokenType.EOS)
                 {
                     current.TrimLeadingSpaces();
                     result.Add(current);
@@ -1900,7 +1903,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 // somerule => #Error 
                 result.TrimLeadingSpaces();
-                if (result[0].channel == Channel.PREPROCESSORCHANNEL)
+                if (result[0].Channel == Channel.PreProcessor)
                 { 
                     result = ProcessLine(result);
                     if (result == null)

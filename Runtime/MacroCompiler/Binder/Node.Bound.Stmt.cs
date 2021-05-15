@@ -84,7 +84,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            if (Token.type == TokenType.LPARAMETERS || Token.type == TokenType.PARAMETERS)
+            if (Token.Type == TokenType.LPARAMETERS || Token.Type == TokenType.PARAMETERS)
             {
                 for (int i = 0; i < VarDecls.Length; i++)
                 {
@@ -100,7 +100,7 @@ namespace XSharp.MacroCompiler.Syntax
             }
 
             // TODO: Handle STATIC
-            if (Token.type == TokenType.STATIC)
+            if (Token.Type == TokenType.STATIC)
                 throw Error(ErrorCode.NotSupported, "STATIC");
 
             for (int i = 0; i < VarDecls.Length; i++)
@@ -230,7 +230,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             foreach (var f in Fields)
             {
-                b.AddFieldAlias(f.value, Alias?.value);
+                b.AddFieldAlias(f.Value, Alias?.Value);
             }
             return null;
         }
@@ -303,7 +303,7 @@ namespace XSharp.MacroCompiler.Syntax
                 Step = LiteralExpr.Bound(Constant.Create(1));
             }
 
-            switch (Dir.type)
+            switch (Dir.Type)
             {
                 case TokenType.UPTO:
                     WhileExpr = BinaryExpr.Bound(Iter, Dir, Final, BinaryOperatorKind.LessThanOrEqual, b.Options.Binding);
@@ -638,10 +638,10 @@ namespace XSharp.MacroCompiler.Syntax
                 Type.RequireType();
                 if (!Compilation.Get(WellKnownTypes.System_Exception).IsAssignableFrom(Type.Symbol as TypeSymbol))
                     Type.ThrowError(ErrorCode.TypeMustDeriveFrom, Compilation.Get(WellKnownTypes.System_Exception).FullName);
-                ExVar = b.AddLocal(Name.value, Type.Symbol as TypeSymbol);
+                ExVar = b.AddLocal(Name.Value, Type.Symbol as TypeSymbol);
             }
             else if (Name != null)
-                ExVar = b.AddLocal(Name.value, Compilation.Get(NativeType.Object));
+                ExVar = b.AddLocal(Name.Value, Compilation.Get(NativeType.Object));
             else
                 ExVar = b.AddLocal(Compilation.Get(NativeType.Object));
             if (When != null)
@@ -719,7 +719,7 @@ namespace XSharp.MacroCompiler.Syntax
             if (Recover != null)
             {
                 b.OpenScope();
-                var rv = b.AddLocal(Name.value, b.ObjectType);
+                var rv = b.AddLocal(Name.Value, b.ObjectType);
                 b.Bind(ref Recover);
                 ExVar = b.AddLocal(Compilation.Get(WellKnownTypes.System_Exception));
                 Expr rvxw = MethodCallExpr.Bound(b, TypeCast.Bound(b, IdExpr.Bound(ExVar), Compilation.Get(WellKnownTypes.XSharp_Internal_WrappedException)), "get_Value", ArgList.Empty);
@@ -752,13 +752,13 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             // TODO: UNSAFE
-            if (Token.type == TokenType.UNSAFE) throw Error(ErrorCode.NotSupported, Token.type);
+            if (Token.Type == TokenType.UNSAFE) throw Error(ErrorCode.NotSupported, Token.Type);
 
             // TODO: CHECKED
-            if (Token.type == TokenType.CHECKED) throw Error(ErrorCode.NotSupported, Token.type);
+            if (Token.Type == TokenType.CHECKED) throw Error(ErrorCode.NotSupported, Token.Type);
 
             // TODO: UNCHECKED
-            if (Token.type == TokenType.UNCHECKED) throw Error(ErrorCode.NotSupported, Token.type);
+            if (Token.Type == TokenType.UNCHECKED) throw Error(ErrorCode.NotSupported, Token.Type);
 
             b.OpenScope();
             b.Bind(ref Stmt);
@@ -834,7 +834,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             // TODO: support FIXED when pointer support is added
-            throw Error(ErrorCode.NotSupported, Token.type);
+            throw Error(ErrorCode.NotSupported, Token.Type);
         }
     }
     internal partial class Script : Node

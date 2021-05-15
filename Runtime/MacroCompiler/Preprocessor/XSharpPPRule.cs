@@ -27,7 +27,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         internal PPRule(Token udc, IList<Token> tokens, out PPErrorMessages errorMessages, MacroOptions options)
         {
             _options = options;
-            switch (udc.type)
+            switch (udc.Type)
             {
                 case TokenType.PP_COMMAND:
                     if (udc.Text.ToLower() == "#command")
@@ -81,7 +81,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             for (int i = 0; i < tokens.Length - 1; i++)
             {
                 // Look for RPAREN
-                switch (tokens[i].type)
+                switch (tokens[i].Type)
                 {
                     case TokenType.LPAREN:
                         iParenLevel += 1;
@@ -138,7 +138,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }
                 else
                 {
-                    switch (token.type)
+                    switch (token.Type)
                     {
                         case TokenType.LPAREN:
                             matchTokens.Add(new PPMatchToken(token, PPTokenType.Token));
@@ -208,7 +208,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             for (int i = 0; i < tokens.Length; i++)
             {
                 // Must be => without whitespace
-                if (tokens[i].type == TokenType.UDCSEP)
+                if (tokens[i].Type == TokenType.UDCSEP)
                 {
                     iSeperatorPos = i;
                     break;
@@ -391,7 +391,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         }
         void addToDict(Dictionary<string, PPMatchToken> markers, PPMatchToken element)
         {
-            if (element.Token.IsName() || element.Token.type == TokenType.SYMBOL_CONST || element.IsWholeUDC)
+            if (element.Token.IsName() || element.Token.Type == TokenType.SYMBOL_CONST || element.IsWholeUDC)
             {
                 string name = element.Key.ToLower();
                 if (name == "udc" && !element.IsWholeUDC)
@@ -422,7 +422,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             for (int i = 0; i < max; i++)
             {
                 var token = matchTokens[i];
-                switch (token.type)
+                switch (token.Type)
                 {
 
                     case TokenType.LT:
@@ -445,7 +445,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                             // <#idMarker>
                             // duplicate so we can change the name
                             name = new Token(matchTokens[i + 1]); 
-                            name.value = name.Text.Substring(1);
+                            name.Value = name.Text.Substring(1);
                             element = new PPMatchToken(name, PPTokenType.MatchSingle);
                             result.Add(element);
                             addToDict(markers, element);
@@ -507,7 +507,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                             name = matchTokens[i + 1];
                             i += 3;
                             more = new List<Token>();
-                            while (i < max && matchTokens[i].type != TokenType.GT)
+                            while (i < max && matchTokens[i].Type != TokenType.GT)
                             {
                                 token = matchTokens[i];
                                 more.Add(token);            // we include the commas on purpose
@@ -693,7 +693,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         }
         bool canAddStopToken(IList<Token> stoptokens, Token token)
         {
-            if (token.type == TokenType.COMMA)
+            if (token.Type == TokenType.COMMA)
                 return false;
             foreach (var element in stoptokens)
             {
@@ -718,9 +718,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                 while (start < max)
                 {
                     token = tokens[start];
-                    if (token.type == TokenType.LBRKT)
+                    if (token.Type == TokenType.LBRKT)
                         ++nestlevel;
-                    if (token.type == TokenType.RBRKT)
+                    if (token.Type == TokenType.RBRKT)
                     {
                         --nestlevel;
                         if (nestlevel == 0)
@@ -740,7 +740,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             if (result == null || result.Count == 0)
             {
                 token = tokens[max - 1];
-                if (token.type == TokenType.RBRKT)
+                if (token.Type == TokenType.RBRKT)
                     addErrorMessage(lbrkt, "Empty Optional clause found");
                 else
                     missing = true;
@@ -760,25 +760,25 @@ namespace XSharp.MacroCompiler.Preprocessor
             for (int i = 0; i < resultTokens.Length; i++)
             {
                 var token = resultTokens[i];
-                if (token.source == lastTokenSource && token.index > lastTokenIndex + 1)
+                if (token.Source == lastTokenSource && token.Index > lastTokenIndex + 1)
                 {
                     // whitespace tokens have been skipped
                     var ppWs = new Token(token, TokenType.WS, " ");
-                    ppWs.channel = Channel.HIDDENCHANNEL;
+                    ppWs.Channel = Channel.Hidden;
                     result.Add(new PPResultToken(ppWs, PPTokenType.Token));
                 }
-                lastTokenIndex = token.index;
-                lastTokenSource = token.source;
-                switch (token.type)
+                lastTokenIndex = token.Index;
+                lastTokenSource = token.Source;
+                switch (token.Type)
                 {
                     case TokenType.NEQ2:
                         /*
                         * match #<idMarker>
                         */
                         if (i < resultTokens.Length - 3
-                            && resultTokens[i + 1].type == TokenType.LT
+                            && resultTokens[i + 1].Type == TokenType.LT
                             && resultTokens[i + 2].IsName()
-                            && resultTokens[i + 3].type == TokenType.GT)
+                            && resultTokens[i + 3].Type == TokenType.GT)
                         {
                             name = resultTokens[i + 2];
                             result.Add(new PPResultToken(name, PPTokenType.ResultDumbStringify));
@@ -791,7 +791,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                         break;
                     case TokenType.LT:
                         if (i < resultTokens.Length - 2
-                            && resultTokens[i + 2].type == TokenType.GT
+                            && resultTokens[i + 2].Type == TokenType.GT
                             && resultTokens[i + 1].IsName())
                         {
                             // <idMarker>
@@ -800,8 +800,8 @@ namespace XSharp.MacroCompiler.Preprocessor
                             i += 2;
                         }
                         else if (i < resultTokens.Length - 2
-                            && resultTokens[i + 1].type == TokenType.STRING_CONST
-                            && resultTokens[i + 2].type == TokenType.GT)
+                            && resultTokens[i + 1].Type == TokenType.STRING_CONST
+                            && resultTokens[i + 2].Type == TokenType.GT)
                         {
                             // <"idMarker">
                             var t = resultTokens[i + 1];
@@ -810,9 +810,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                             i += 2;
                         }
                         else if (i < resultTokens.Length - 4
-                            && resultTokens[i + 1].type == TokenType.LPAREN
-                            && resultTokens[i + 3].type == TokenType.RPAREN
-                            && resultTokens[i + 4].type == TokenType.GT
+                            && resultTokens[i + 1].Type == TokenType.LPAREN
+                            && resultTokens[i + 3].Type == TokenType.RPAREN
+                            && resultTokens[i + 4].Type == TokenType.GT
                             && resultTokens[i + 2].IsName())
                         {
                             // <(idMarker)>
@@ -821,9 +821,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                             i += 4;
                         }
                         else if (i < resultTokens.Length - 4
-                            && resultTokens[i + 1].type == TokenType.LCURLY
-                            && resultTokens[i + 3].type == TokenType.RCURLY
-                            && resultTokens[i + 4].type == TokenType.GT
+                            && resultTokens[i + 1].Type == TokenType.LCURLY
+                            && resultTokens[i + 3].Type == TokenType.RCURLY
+                            && resultTokens[i + 4].Type == TokenType.GT
                             && resultTokens[i + 2].IsName())
                         {
                             // <{idMarker}>
@@ -832,9 +832,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                             i += 4;
                         }
                         else if (i < resultTokens.Length - 4
-                            && resultTokens[i + 1].type == TokenType.DOT
-                            && resultTokens[i + 3].type == TokenType.DOT
-                            && resultTokens[i + 4].type == TokenType.GT
+                            && resultTokens[i + 1].Type == TokenType.DOT
+                            && resultTokens[i + 3].Type == TokenType.DOT
+                            && resultTokens[i + 4].Type == TokenType.GT
                             && resultTokens[i + 2].IsName())
                         {
                             // <.idMarker.>
@@ -1028,7 +1028,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 {
                     break;
                 }
-                switch (token.type)
+                switch (token.Type)
                 {
                     case TokenType.COMMA:
                     case TokenType.ID:
@@ -1154,7 +1154,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 while (iSource < tokens.Count && !done)
                 {
-                    switch (tokens[iSource].type)
+                    switch (tokens[iSource].Type)
                     {
                         case TokenType.LPAREN:
                         case TokenType.LBRKT:
@@ -1173,7 +1173,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                             // So second ID is only accepted after DOT
                             if (level == 0 && consumed > 0)
                             {
-                                var type = tokens[iSource].type;
+                                var type = tokens[iSource].Type;
 
                                 if (type == TokenType.ID || tokens[iSource].IsKeyword())
                                 {
@@ -1186,7 +1186,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                             }
                             break;
                     }
-                    lastType = tokens[iSource].type;
+                    lastType = tokens[iSource].Type;
                     consumed += 1;
                     if (!done)
                     { 
@@ -1219,7 +1219,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 var child = mToken.Tokens[iChild];
                 lastToken = child;
-                if (child.type == TokenType.COMMA)
+                if (child.Type == TokenType.COMMA)
                 {
                     iMatch = 0;
                 }
@@ -1232,7 +1232,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     }
                     // next token comma ?
                     var next = mToken.Tokens[iChild + 1];
-                    if (next.type == TokenType.COMMA)
+                    if (next.Type == TokenType.COMMA)
                     {
                         break;
                     }
@@ -1247,7 +1247,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             if (found)
             {
                 iEnd = iCurrent;
-                if (lastToken.type == TokenType.AMP)
+                if (lastToken.Type == TokenType.AMP)
                 {
                     // when the ampersand is the last token, then we also include the following token
                     // This happens when we match the rule
@@ -1295,7 +1295,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             while (iSource < tokens.Count)
             {
                 var token = tokens[iSource];
-                if (token.type != TokenType.COMMA)
+                if (token.Type != TokenType.COMMA)
                 {
                     stopTokenFound = IsStopToken(mToken, token);
                     if (stopTokenFound)
@@ -1350,7 +1350,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             Token ruleToken = mToken.Token;
             int iEnd;
             bool found = false;
-            while (sourceToken.type == TokenType.WS )
+            while (sourceToken.Type == TokenType.WS )
             {
                 iSource += 1;
                 if (iSource == tokens.Count)
@@ -1463,7 +1463,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         }
         int trimHiddenTokens(IList<Token> tokens, int start, int end)
         {
-            while (tokens[end].channel == Channel.HIDDENCHANNEL && start < end)
+            while (tokens[end].Channel == Channel.Hidden && start < end)
             {
                 end--;
             }
@@ -1520,7 +1520,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             // #command and #xcommand should match all tokens on the input line
             if (iSource < tokens.Count && (this.Type == PPUDCType.Command || this.Type == PPUDCType.XCommand))
             {
-                if (tokens[iSource].type != TokenType.EOS)
+                if (tokens[iSource].Type != TokenType.EOS)
                     return false;
             }
             // check to see if the remaining tokens are optional, when not, then there is no match
@@ -1552,7 +1552,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             // Since our token may be a clone, we change the Type of the source token
             foreach (var token in matchedWithToken)
             {
-                if (token.type == TokenType.ID)
+                if (token.Type == TokenType.ID)
                 {
 // nvk                    token.Original.type = TokenType.UDC_KEYWORD;
                 }
@@ -1619,12 +1619,12 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }
                 foreach (var t in result)
                 {
-                    if (t.channel == Channel.PREPROCESSORCHANNEL)
+                    if (t.Channel == Channel.PreProcessor)
                     {
                         // Leave PP commands alone so we can redirect input to #error or #warning
-                        if (t.type < TokenType.PP_FIRST || t.type > TokenType.PP_LAST)
+                        if (t.Type < TokenType.PP_FIRST || t.Type > TokenType.PP_LAST)
                         {
-                            t.channel = Channel.DEFOUTCHANNEL;
+                            t.Channel = Channel.Default;
                         }
                     }
                     t.SourceSymbol = source;
@@ -1645,21 +1645,21 @@ namespace XSharp.MacroCompiler.Preprocessor
                     if (token.IsKeyword())
                     {
                         // after ALIAS and DOT we change the token to an ID
-                        switch (lasttoken.type)
+                        switch (lasttoken.Type)
                         {
                             case TokenType.ALIAS:
                             case TokenType.ID:
-                                token.type = TokenType.ID;
+                                token.Type = TokenType.ID;
                                 // This makes sure that the token in the editor has the ID color
 // nvk                                token.Original.type = TokenType.ID; 
                                 break;
                         }
                     }
-                    if (token.type == TokenType.DOT)
+                    if (token.Type == TokenType.DOT)
                     {
                         // tokens before a DOT are changed to ID
                         // with the exception of the tokens listed below
-                        switch (lasttoken.type)
+                        switch (lasttoken.Type)
                         {
                             case TokenType.SELF:
                             case TokenType.SUPER:
@@ -1670,7 +1670,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                             default:
                                 if (lasttoken.IsKeyword())
                                 {
-                                    lasttoken.type = TokenType.ID;
+                                    lasttoken.Type = TokenType.ID;
                                     // This makes sure that the token in the editor has the ID color
 // nvk                                    lasttoken.Original.type = TokenType.ID;
                                 }
@@ -1758,10 +1758,10 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             if (end - start > 4)
             {
-                if (tokens[start].type == TokenType.LCURLY &&
-                    (tokens[start + 1].type == TokenType.PIPE ||
-                     tokens[start + 1].type == TokenType.OR) &&
-                    tokens[end].type == TokenType.RCURLY)
+                if (tokens[start].Type == TokenType.LCURLY &&
+                    (tokens[start + 1].Type == TokenType.PIPE ||
+                     tokens[start + 1].Type == TokenType.OR) &&
+                    tokens[end].Type == TokenType.RCURLY)
                 {
                     addBlockMarker = false;
                 }
@@ -1771,12 +1771,12 @@ namespace XSharp.MacroCompiler.Preprocessor
                 t = tokens[start];
                 nt = new Token(t, TokenType.LCURLY, "{")
                 {
-                    channel = Channel.DEFOUTCHANNEL
+                    Channel = Channel.Default
                 };
                 result.Add(nt);
                 nt = new Token(t, TokenType.OR, "||")
                 {
-                    channel = Channel.DEFOUTCHANNEL
+                    Channel = Channel.Default
                 };
                 result.Add(nt);
             }
@@ -1790,7 +1790,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 t = tokens[end];
                 nt = new Token(t, TokenType.RCURLY, "}")
                 {
-                    channel = Channel.DEFOUTCHANNEL
+                    Channel = Channel.Default
                 };
                 result.Add(nt);
             }
@@ -1830,7 +1830,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         bool matchAmpersandToken(IList<Token> tokens, int start, ref int end)
         {
             end= -1;
-            if (tokens.Count >= start+1 && tokens[start].type == TokenType.AMP )
+            if (tokens.Count >= start+1 && tokens[start].Type == TokenType.AMP )
             {
                 if (matchExpression(start + 1, tokens, null, out end))
                 {
@@ -1848,27 +1848,27 @@ namespace XSharp.MacroCompiler.Preprocessor
             var t1 = tokens[start];
             var t2 = tokens[start + 1];
             var t3 = tokens[start + 2];
-            if (t1.type == TokenType.ID && t2.type == TokenType.COLON && t2.start == t1.end)          // C: .....
+            if (t1.Type == TokenType.ID && t2.Type == TokenType.COLON && t2.Start == t1.end)          // C: .....
             {
                 current = start + 2;
             }
-            else if (t1.type == TokenType.DOT && t2.type == TokenType.BACKSLASH && t2.start == t1.end)    // .\ .... 
+            else if (t1.Type == TokenType.DOT && t2.Type == TokenType.BACKSLASH && t2.Start == t1.end)    // .\ .... 
             {
                 current = start + 2;
             }
-            else if (t1.type == TokenType.DOT && t2.type == TokenType.DOT && t3.type == TokenType.BACKSLASH
-                && t2.start == t1.end && t3.start == t2.end)    // ..\ .....
+            else if (t1.Type == TokenType.DOT && t2.Type == TokenType.DOT && t3.Type == TokenType.BACKSLASH
+                && t2.Start == t1.end && t3.Start == t2.end)    // ..\ .....
             {
                 current = start + 3;
             }
-            else if (t1.type == TokenType.BACKSLASH && t2.type == TokenType.BACKSLASH && t3.type == TokenType.ID
-                && t2.start == t1.end && t3.start == t2.end)    // \\Computer\ID .....
+            else if (t1.Type == TokenType.BACKSLASH && t2.Type == TokenType.BACKSLASH && t3.Type == TokenType.ID
+                && t2.Start == t1.end && t3.Start == t2.end)    // \\Computer\ID .....
             {
                 if (start < tokens.Count-5)
                 {
                     var t4 = tokens[start + 3];
                     var t5 = tokens[start + 4];
-                    if (t4.type == TokenType.BACKSLASH && t5.type == TokenType.ID || t5.IsKeyword())
+                    if (t4.Type == TokenType.BACKSLASH && t5.Type == TokenType.ID || t5.IsKeyword())
                     {
                         current = start + 5;
                     }
@@ -1888,12 +1888,12 @@ namespace XSharp.MacroCompiler.Preprocessor
             while (current < tokens.Count && !done)
             {
                 // embedded whitespace exits the loop
-                if (tokens[current].start > last.end)
+                if (tokens[current].Start > last.end)
                 {
                     break;
                 }
                 bool ok;
-                switch (tokens[current].type)
+                switch (tokens[current].Type)
                 {
                     case TokenType.BACKSLASH:
                         ok = true;
@@ -1970,7 +1970,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 sb.Append('"');
                 var t = new Token(toks[s], TokenType.STRING_CONST, sb.ToString())
                 {
-                    channel = Channel.DEFOUTCHANNEL
+                    Channel = Channel.Default
                 };
                 return t;
             }
@@ -2002,7 +2002,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                         // no match, then dumb stringify write an empty string
                         var nt = new Token(tokens[0], TokenType.NULL_STRING, "NULL_STRING")
                         {
-                            channel = Channel.DEFOUTCHANNEL
+                            Channel = Channel.Default
                         };
                         result.Add(nt);
                     }
@@ -2040,13 +2040,13 @@ namespace XSharp.MacroCompiler.Preprocessor
                         }
                         else
                         {
-                            if (tokens[start].type == TokenType.AMP )
+                            if (tokens[start].Type == TokenType.AMP )
                             {
                                 // do not include the &
                                 addTokens(result, tokens, start + 1, end);
                             }
-                            else if (tokens[start].type == TokenType.LPAREN &&
-                                tokens[end].type == TokenType.RPAREN)
+                            else if (tokens[start].Type == TokenType.LPAREN &&
+                                tokens[end].Type == TokenType.RPAREN)
                             {
                                 // do not include ( and )
                                 addTokens(result, tokens, start + 1, end - 1);
@@ -2123,7 +2123,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 Token t = tokens[range.Start];
                 t = new Token(t, TokenType.TRUE_CONST, ".T.")
                 {
-                    channel = Channel.DEFOUTCHANNEL
+                    Channel = Channel.Default
                 };
                 result.Add(t);
             }
@@ -2164,11 +2164,11 @@ namespace XSharp.MacroCompiler.Preprocessor
                 token = tokens[current];
                 if (braceLevel > 0)
                 {
-                    if (token.type == openBrace)
+                    if (token.Type == openBrace)
                     {
                         braceLevel += 1;
                     }
-                    else if (token.type == closeBrace)
+                    else if (token.Type == closeBrace)
                     {
                         braceLevel -= 1;
                     }
@@ -2180,11 +2180,11 @@ namespace XSharp.MacroCompiler.Preprocessor
                         lastToken = token;
                     }
                 }
-                else if (token.type == TokenType.WS)
+                else if (token.Type == TokenType.WS)
                 {
                     ;
                 }
-                else if (token.type == TokenType.COMMA)
+                else if (token.Type == TokenType.COMMA)
                 {
                     // expression can only have comma's when inside braces, parens or brackets
                     // so exit the loop
@@ -2193,7 +2193,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 // if Open brace, scan for close brace
                 else if (token.IsOpen(ref closeBrace))
                 {
-                    openBrace = token.type;
+                    openBrace = token.Type;
                     braceLevel++;
                 }
                 // check to see if we have 2 tokens that can follow

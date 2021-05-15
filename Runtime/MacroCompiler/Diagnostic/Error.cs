@@ -211,9 +211,9 @@ namespace XSharp.MacroCompiler
         internal static CompilationError Error(SourceLocation loc, ErrorCode e, params object[] args) { return new CompilationError(loc, e, args); }
         internal static CompilationError Error(Syntax.Token t, ErrorCode e, params object[] args)
         {
-            if (t.source?.SourceText != null)
-                return new CompilationError(new SourceLocation(t.source?.SourceText, t.start) { FileName = t.source.SourceName }, e, args);
-            return new CompilationError(t.start, e, args);
+            if (t.Source?.SourceText != null)
+                return new CompilationError(new SourceLocation(t.Source?.SourceText, t.Start) { FileName = t.Source.SourceName }, e, args);
+            return new CompilationError(t.Start, e, args);
         }
     }
 }

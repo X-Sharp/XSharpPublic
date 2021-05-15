@@ -36,12 +36,12 @@ namespace XSharp.MacroCompiler
 
         TokenType La()
         {
-            return _index < _Input.Count ? _Input[_index].type : TokenType.EOF;
+            return _index < _Input.Count ? _Input[_index].Type : TokenType.EOF;
         }
 
         TokenType La(int n)
         {
-            return (_index + n - 1) < _Input.Count ? _Input[_index + n - 1].type : TokenType.EOF;
+            return (_index + n - 1) < _Input.Count ? _Input[_index + n - 1].Type : TokenType.EOF;
         }
 
         bool Eoi()

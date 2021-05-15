@@ -201,7 +201,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
-            if (!b.Options.AllowDotAccess && Token.type == TokenType.DOT)
+            if (!b.Options.AllowDotAccess && Token.Type == TokenType.DOT)
                 ThrowError(ErrorCode.DotMemberAccess);
             b.Bind(ref Expr);
             Expr.RequireValue();

@@ -235,8 +235,8 @@ namespace XSharp.MacroCompiler.Preprocessor
                 case TokenType.ESCAPED_STRING_CONST:
                 case TokenType.INTERPOLATED_STRING_CONST:
                 case TokenType.INCOMPLETE_STRING_CONST:
+                case TokenType.TEXT_STRING_CONST:
 // TODO nvk
-// case TokenType.TEXT_STRING_CONST:
 // case TokenType.BRACKETED_STRING_CONST:
                     return true;
             }

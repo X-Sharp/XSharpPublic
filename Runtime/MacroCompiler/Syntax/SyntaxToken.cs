@@ -11,11 +11,11 @@ namespace XSharp.MacroCompiler.Syntax
 {
     internal enum Channel
     {
-        XMLDOCCHANNEL,
-        DEFOUTCHANNEL,
-        PREPROCESSORCHANNEL,
-        PRAGMACHANNEL,
-        HIDDENCHANNEL,
+        Default,
+        XmlDoc,
+        PreProcessor,
+        Pragma,
+        Hidden,
     };
 
     internal enum TokenType
@@ -195,8 +195,8 @@ namespace XSharp.MacroCompiler.Syntax
             if (index >= 0 && index < Tokens.Count)
             {
                 if (index == 0)
-                    return Tokens[index].start > 0;
-                return Tokens[index-1].end < Tokens[index].start;
+                    return Tokens[index].Start > 0;
+                return Tokens[index-1].end < Tokens[index].Start;
             }
             return false;
         }
@@ -205,10 +205,10 @@ namespace XSharp.MacroCompiler.Syntax
             if (index >= 0 && index < Tokens.Count)
             {
                 if (index == 0)
-                    return SourceText.Substring(0, Tokens[index].start);
+                    return SourceText.Substring(0, Tokens[index].Start);
                 var t1 = Tokens[index - 1];
                 var t2 = Tokens[index];
-                return SourceText.Substring(t1.end, t2.start - t1.end);
+                return SourceText.Substring(t1.end, t2.Start - t1.end);
             }
             return null;
         }
@@ -220,7 +220,7 @@ namespace XSharp.MacroCompiler.Syntax
                     return SourceText.Substring(Tokens[index].end, SourceText.Length - Tokens[index].end);
                 var t1 = Tokens[index];
                 var t2 = Tokens[index + 1];
-                return SourceText.Substring(t1.end, t2.start - t1.end);
+                return SourceText.Substring(t1.end, t2.Start - t1.end);
             }
             return null;
         }
@@ -228,43 +228,44 @@ namespace XSharp.MacroCompiler.Syntax
 
     internal class Token
     {
-        internal TokenType type;
-        internal TokenType subtype;
-        internal Channel channel;
-        internal int start;
-        internal int length;
-        internal string value;
-        internal TokenSource source = null;
-        internal int index = -1;
+        internal TokenType Type;
+        internal TokenType SubType;
+        internal Channel Channel;
+        internal int Start;
+        internal int Length;
+        internal string Value;
+        internal TokenSource Source = null;
+        internal int Index = -1;
         internal Token SourceSymbol = null;
         internal Token(TokenType type, TokenType subtype, int start, int length, string value, Channel channel)
         {
-            this.type = type;
-            this.subtype = subtype;
-            this.start = start;
-            this.length = length;
-            this.channel = channel;
-            this.value = value;
+            this.Type = type;
+            this.SubType = subtype;
+            this.Start = start;
+            this.Length = length;
+            this.Channel = channel;
+            this.Value = value;
         }
-        internal Token(Token o) : this(o.type, o.subtype, o.start, o.length, o.value, o.channel)
+        internal Token(Token o) : this(o.Type, o.SubType, o.Start, o.Length, o.Value, o.Channel)
         {
-            source = o.source;
-            index = o.index;
+            Source = o.Source;
+            Index = o.Index;
         }
-        internal Token(TokenType type) : this(type, TokenType.UNRECOGNIZED, -1, -1, type.ToString(), Channel.DEFOUTCHANNEL) { }
-        internal Token(TokenType type, string value) : this(type, TokenType.UNRECOGNIZED, -1, -1, value, Channel.DEFOUTCHANNEL) { }
-        internal Token(Token o, TokenType type, string value) : this(o) { this.type = type; this.value = value; }
-        internal static readonly Token None = new Token(TokenType.UNRECOGNIZED, TokenType.UNRECOGNIZED, -1, 0, null, Channel.DEFOUTCHANNEL);
-        internal int end => start + length;
-        public override string ToString() => ( !string.IsNullOrEmpty(value) ? value : TokenAttr.TokenText(type) ) ;
+        internal Token(TokenType type) : this(type, TokenType.UNRECOGNIZED, -1, -1, type.ToString(), Channel.Default) { }
+        internal Token(TokenType type, string value) : this(type, TokenType.UNRECOGNIZED, -1, -1, value, Channel.Default) { }
+        internal Token(Token o, TokenType type, string value) : this(o) { this.Type = type; this.Value = value; }
+        internal static readonly Token None = new Token(TokenType.UNRECOGNIZED, TokenType.UNRECOGNIZED, -1, 0, null, Channel.Default);
+        internal int end => Start + Length;
+        public override string ToString() => ( !string.IsNullOrEmpty(Value) ? Value : TokenAttr.TokenText(Type) ) ;
         internal CompilationError Error(ErrorCode e, params object[] args) => Compilation.Error(this, e, args);
-        internal string Text => source?.SourceText.Substring(start, length);
-        internal Token Prev => index == 0 ? null : index < 0 ? source.Tokens.Last() : source.Tokens[index - 1];
-        internal Token Next => index >= source.Tokens.Count-1 ? null : index < 0 ? null : source.Tokens[index + 1];
-        internal bool HasTrivia => source?.HasTextBefore(index) ?? false;
+        internal string SourceText => Source?.SourceText.Substring(Start, Length);
+        internal string Text => Value ?? SourceText;
+        internal Token Prev => Index == 0 ? null : Index < 0 ? Source.Tokens.Last() : Source.Tokens[Index - 1];
+        internal Token Next => Index >= Source.Tokens.Count-1 ? null : Index < 0 ? null : Source.Tokens[Index + 1];
+        internal bool HasTrivia => Source?.HasTextBefore(Index) ?? false;
         internal string TriviaAsText => LeadingWhitespace;
-        internal string LeadingWhitespace => source?.TextBefore(index);
-        internal string TrailingWhitespace => source?.TextAfter(index);
+        internal string LeadingWhitespace => Source?.TextBefore(Index);
+        internal string TrailingWhitespace => Source?.TextAfter(Index);
     }
 
     internal class TokenAttr
@@ -1027,6 +1028,6 @@ namespace XSharp.MacroCompiler.Syntax
                 }
             }
         }
-        internal static SourceLocation Location(this Token token) => new SourceLocation(token.source.SourceText, token.start);
+        internal static SourceLocation Location(this Token token) => new SourceLocation(token.Source.SourceText, token.Start);
     }
 }

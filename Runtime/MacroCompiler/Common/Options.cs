@@ -50,6 +50,7 @@ namespace XSharp.MacroCompiler
         public bool AllowFourLetterAbbreviations = false;
         public bool AllowOldStyleComments = true;
         public bool AllowSingleQuotedStrings = true;
+        public bool AllowBracketStrings = true;
         public bool AllowPackedDotOperators = true;
         public bool AllowMissingSyntax = true;
         public bool AllowExtraneousSyntax = true;

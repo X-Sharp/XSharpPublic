@@ -20,7 +20,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         internal static TokenType La(this Token[] tokens, int pos)
         {
             if (pos >= 0 && pos < tokens.Length)
-                return tokens[pos].type;
+                return tokens[pos].Type;
             return 0;
         }
         internal static bool IsName(this Token[] tokens, int pos)
@@ -48,7 +48,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         internal static void TrimLeadingSpaces(this IList<Token> tokens)
         {
             while (tokens.Count > 0 &&
-                tokens[0].channel == Channel.HIDDENCHANNEL)
+                tokens[0].Channel == Channel.Hidden)
             {
                 tokens.RemoveAt(0);
             }
@@ -59,7 +59,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             int i = 0;
             foreach (var token in tokens)
             {
-                if (token.channel != Channel.HIDDENCHANNEL)
+                if (token.Channel != Channel.Hidden)
                 {
                     sb.Append(i);
                     sb.Append(" ");
@@ -73,9 +73,9 @@ namespace XSharp.MacroCompiler.Preprocessor
 
         internal static string TrailingWs(this Token token)
         {
-            if (token == null || token.source == null)
+            if (token == null || token.Source == null)
                 return "";
-            var source = token.source.SourceText;
+            var source = token.Source.SourceText;
             if (source == null)
                 return "";
             var index = token.end;
@@ -182,19 +182,19 @@ namespace XSharp.MacroCompiler.Preprocessor
         }
         internal static bool IsName(this Token token)
         {
-            return token != null && (token.type == TokenType.ID
-                || (token.type > TokenType.FIRST_KEYWORD && token.type < TokenType.LAST_KEYWORD)
-                || (token.type > TokenType.FIRST_NULL && token.type < TokenType.LAST_NULL));
+            return token != null && (token.Type == TokenType.ID
+                || (token.Type > TokenType.FIRST_KEYWORD && token.Type < TokenType.LAST_KEYWORD)
+                || (token.Type > TokenType.FIRST_NULL && token.Type < TokenType.LAST_NULL));
         }
         internal static bool IsEOS(this Token token)
         {
-            return token != null && (token.type == TokenType.NL || token.type == TokenType.EOS);
+            return token != null && (token.Type == TokenType.NL || token.Type == TokenType.EOS);
         }
         internal static string FileName(this Token token)
         {
             if (token == null)
                 return "";
-            return token?.source?.SourceName;
+            return token?.Source?.SourceName;
         }
 
         internal static bool IsOptional(this PPTokenType type)
@@ -208,27 +208,27 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (token == null)
                 return false;
-            return token.type > TokenType.FIRST_CONSTANT && token.type < TokenType.LAST_CONSTANT;
+            return token.Type > TokenType.FIRST_CONSTANT && token.Type < TokenType.LAST_CONSTANT;
         }
 
         public static bool IsOperator(this Token token)
         {
-            return (token.type > TokenType.FIRST_OPERATOR && token.type < TokenType.LAST_OPERATOR);
+            return (token.Type > TokenType.FIRST_OPERATOR && token.Type < TokenType.LAST_OPERATOR);
         }
 
         public static bool IsKeyword(this Token token)
         {
-            return (token.type > TokenType.FIRST_KEYWORD && token.type < TokenType.LAST_KEYWORD)
-                || (token.type > TokenType.FIRST_NULL && token.type < TokenType.LAST_NULL);
+            return (token.Type > TokenType.FIRST_KEYWORD && token.Type < TokenType.LAST_KEYWORD)
+                || (token.Type > TokenType.FIRST_NULL && token.Type < TokenType.LAST_NULL);
         }
         public static bool IsIdentifier(this Token token)
         {
-            return token.type == TokenType.ID || token.subtype == TokenType.ID;
+            return token.Type == TokenType.ID || token.SubType == TokenType.ID;
         }
 
         public static bool IsString(this Token token)
         {
-            switch (token.type)
+            switch (token.Type)
             {
                 case TokenType.CHAR_CONST:
                 case TokenType.STRING_CONST:
@@ -247,7 +247,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (token == null)
                 return false;
-            switch (token.type)
+            switch (token.Type)
             {
                 case TokenType.ASSIGN_ADD:
                 case TokenType.ASSIGN_BITAND:
@@ -280,7 +280,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 return false;
             // see xsharp.g4 binaryExpression
             // tokens in same order 
-            switch (token.type)
+            switch (token.Type)
             {
                 case TokenType.EXP:
                 case TokenType.MULT:
@@ -319,7 +319,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (token == null)
                 return false;
-            switch (token.type)
+            switch (token.Type)
             {
                 case TokenType.PLUS:              // see xsharp.g4 prefixExpression
                 case TokenType.MINUS:
@@ -338,7 +338,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (token == null)
                 return false;
-            switch (token.type)
+            switch (token.Type)
             {
                 case TokenType.DEC:           // see xsharp.g4 postfixExpression
                 case TokenType.INC:
@@ -348,7 +348,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         }
         internal static bool IsWildCard(this Token token)
         {
-            switch (token.type)
+            switch (token.Type)
             {
                 case TokenType.QMARK:
                 case TokenType.MULT:
@@ -360,7 +360,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (token == null)
                 return false;
-            switch (token.type)
+            switch (token.Type)
             {
                 case TokenType.LBRKT:
                     closeType = TokenType.RBRKT;
@@ -379,7 +379,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (token == null)
                 return false;
-            switch (token.type)
+            switch (token.Type)
             {
                 case TokenType.RBRKT:
                 case TokenType.RCURLY:
@@ -426,7 +426,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (token == null)
                 return false;
-            switch (token.type)
+            switch (token.Type)
             {
                 case TokenType.DEC:
                 case TokenType.INC:
@@ -439,13 +439,13 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             if (token == null)
                 return false;
-            return token.type == TokenType.SEMI;
+            return token.Type == TokenType.SEMI;
         }
         internal static bool IsEndOfLine(this Token token)
         {
             if (token == null)
                 return false;
-            return token.type == TokenType.NL;
+            return token.Type == TokenType.NL;
         }
     }
 

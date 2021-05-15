@@ -293,7 +293,7 @@ namespace XSharp.MacroCompiler
             {
                 if (La() == TokenType.STATIC)
                     t = ConsumeAndGet();
-                if (t.type == TokenType.STATIC)
+                if (t.Type == TokenType.STATIC)
                     Require(La() != TokenType.VAR && La() != TokenType.IMPLIED, ErrorCode.NotSupported, "static implied variable");
                 if (La() == TokenType.IMPLIED)
                     t = ConsumeAndGet();
@@ -309,7 +309,7 @@ namespace XSharp.MacroCompiler
                 Require(La() != TokenType.STATIC, ErrorCode.NotSupported, "static implied variable");
             }
             Require(t, ErrorCode.Expected, TokenType.LOCAL);
-            bool implied = t.type == TokenType.VAR || t.type == TokenType.IMPLIED;
+            bool implied = t.Type == TokenType.VAR || t.Type == TokenType.IMPLIED;
 
 
             var vl = new List<VarDecl>();
@@ -365,7 +365,7 @@ namespace XSharp.MacroCompiler
             bool isIsType = false;
             if (!implied && ExpectAndGetAny(TokenType.AS, TokenType.IS) is Token t)
             {
-                isIsType = t.type == TokenType.IS;
+                isIsType = t.Type == TokenType.IS;
                 type = Require(ParseType(), ErrorCode.Expected, "type");
             }
 
@@ -408,7 +408,7 @@ namespace XSharp.MacroCompiler
                     }
                     break;
                 } while (true);
-                var rp = Expect(lp.type == TokenType.LBRKT ? TokenType.RBRKT : TokenType.RPAREN);
+                var rp = Expect(lp.Type == TokenType.LBRKT ? TokenType.RBRKT : TokenType.RPAREN);
                 Require(rp, ErrorCode.Expected, rp);
             }
 
@@ -652,7 +652,7 @@ namespace XSharp.MacroCompiler
         internal ForeachStmt ParseForeachStmt()
         {
             Token r = ExpectToken(TokenType.FOR) ?? RequireAndGet(TokenType.FOREACH);
-            if (r.type == TokenType.FOR)
+            if (r.Type == TokenType.FOR)
                 Require(TokenType.EACH);
 
             VarDecl v = null;

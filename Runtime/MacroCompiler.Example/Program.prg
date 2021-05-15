@@ -43,7 +43,7 @@ BEGIN NAMESPACE MacroCompilerTest
             "RETURN a+b+c"}),1,2,3)
         wait*/
 
-        var sc := CreateScriptCompiler()
+        /*var sc := CreateScriptCompiler()
         EvalMacro(sc, String.Join(e"\n",<STRING>{;
             "PARAMETERS a, b, c",;
             "#define AAA",;
@@ -51,7 +51,7 @@ BEGIN NAMESPACE MacroCompilerTest
             "RETURN 0",;
             "#endif",;
             "RETURN a+b+c"}),1,2,3)
-        wait
+        wait*/
 
         ParserTestsFox(CreateFoxScriptCompiler())
         ParserTests(CreateScriptCompiler())

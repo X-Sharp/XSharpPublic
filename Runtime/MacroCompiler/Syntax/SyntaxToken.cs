@@ -48,6 +48,7 @@ namespace XSharp.MacroCompiler.Syntax
 
 
         FIRST_POSITIONAL_KEYWORD,
+
         // New Vulcan Keywords (no 4 letter abbreviations) [entity]
         ABSTRACT, ANSI, AUTO, CONSTRUCTOR, DELEGATE, DESTRUCTOR, ENUM, EVENT, EXPLICIT, GET, IMPLEMENTS, INITONLY, INTERFACE, INTERNAL,
         NAMESPACE, NEW, OPERATOR, PARTIAL, PROPERTY, SEALED, SET, STRUCTURE, UNICODE, UNTIL, VALUE, VIRTUAL, VOSTRUCT,
@@ -69,7 +70,8 @@ namespace XSharp.MacroCompiler.Syntax
         AWAIT, ASYNC, ASTYPE, CHECKED, UNCHECKED,
 
         // Fox kws
-        M,
+        M, TEXT, ENDTEXT, ADDITIVE, TEXTMERGE, PRETEXT, FLAGS, NOSHOW,
+
         LAST_POSITIONAL_KEYWORD,
 
         // Predefined types
@@ -136,6 +138,8 @@ namespace XSharp.MacroCompiler.Syntax
         STRING_CONST, ESCAPED_STRING_CONST, INTERPOLATED_STRING_CONST, INCOMPLETE_STRING_CONST,
         STRING_CONST_SINGLE,
         BINARY_CONST,
+        // FoxPro
+        TEXT_STRING_CONST,
         LAST_CONSTANT,
 
         // Pre processor symbols [entity]
@@ -569,6 +573,13 @@ namespace XSharp.MacroCompiler.Syntax
                 // FoxPro keywords
                 {"PARAMETERS", TokenType.PARAMETERS},
                 {"LPARAMETERS", TokenType.LPARAMETERS},
+                {"TEXT", TokenType.TEXT},
+                {"ENDTEXT", TokenType.ENDTEXT},
+                {"ADDITIVE", TokenType.ADDITIVE},
+                {"TEXTMERGE", TokenType.TEXTMERGE},
+                {"PRETEXT", TokenType.PRETEXT},
+                {"FLAGS", TokenType.FLAGS},
+                {"NOSHOW", TokenType.NOSHOW},
             };
 
             var Keywords = new Dictionary<string, TokenType>

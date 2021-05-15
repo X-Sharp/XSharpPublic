@@ -1092,9 +1092,9 @@ namespace XSharp.MacroCompiler.Preprocessor
             {
                 dirs.Add(p);
             }
-            if (fileNameToken != null)
+            if (includeFileName != null)
             { 
-                var path = Path.GetDirectoryName(fileNameToken.Text);
+                var path = Path.GetDirectoryName(includeFileName);
                 if (! String.IsNullOrEmpty(path) && !dirs.Contains(path))
                     dirs.Add(path);
             }

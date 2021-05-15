@@ -174,6 +174,14 @@ namespace XSharp.MacroCompiler
                     throw Error(Lt(), ErrorCode.NotSupported, "WITH statement");
                 case TokenType.YIELD:
                     throw Error(Lt(), ErrorCode.NotSupported, "YIELD statement");
+                case TokenType.TEXT:
+                    if (_options.Dialect == XSharpDialect.FoxPro)
+                    {
+                        ParseFoxText();
+                    }
+                    else
+                        goto default;
+                    break;
                 default:
                     var l = ParseExprList();
                     if (l?.Exprs.Count > 0)
@@ -848,6 +856,30 @@ namespace XSharp.MacroCompiler
             Expect(TokenType.FIXED);
             Require(TokenType.EOS);
             return new UsingStmt(t, d, s);
+        }
+
+        internal void ParseFoxText()
+        {
+            var t = RequireAndGet(TokenType.TEXT);
+            if (Expect(TokenType.TO))
+            {
+                var n = RequireVarIdName();
+                var add = Expect(TokenType.ADDITIVE);
+                var merge = Expect(TokenType.TEXTMERGE);
+                var noshow = Expect(TokenType.NOSHOW);
+                Expr flags = null;
+                if (Expect(TokenType.FLAGS))
+                    flags = RequireExpression();
+                Expr pretext = null;
+                if (Expect(TokenType.PRETEXT))
+                    pretext = RequireExpression();
+            }
+            Require(TokenType.EOS);
+            if (La() == TokenType.INCOMPLETE_STRING_CONST)
+                throw Error(Lt(), ErrorCode.UnterminatedString);
+            Token s;
+            ExpectAndGet(TokenType.TEXT_STRING_CONST, out s);
+            Require(TokenType.ENDTEXT);
         }
     }
 }

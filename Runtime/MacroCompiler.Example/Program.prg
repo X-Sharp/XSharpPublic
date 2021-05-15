@@ -45,6 +45,7 @@ BEGIN NAMESPACE MacroCompilerTest
 
         /*var sc := CreateScriptCompiler()
         EvalMacro(sc, String.Join(e"\n",<STRING>{;
+            "#include ""c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"" ",;
             "PARAMETERS a, b, c",;
             "#define AAA",;
             "#ifdef AAA",;

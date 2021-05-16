@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -226,6 +227,7 @@ namespace XSharp.MacroCompiler.Syntax
         }
     }
 
+    [DebuggerDisplay("{Type} {Text}")]
     internal class Token
     {
         internal TokenType Type;

@@ -70,14 +70,14 @@ BEGIN NAMESPACE MacroCompilerTest
 
 FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     // Create test data file for the UDC test
-    DbCreate("Test",{{"TEST","C",10,0},{"TEST2","C",10,0}})
+    DbCreate("Test",{{"TEST1","C",10,0},{"TEST2","C",10,0}})
     DbUseArea(TRUE,,"TEST")
-    FOR VAR i := 1 TO 100
+    FOR VAR i := 1 TO 10
         DbAppend()
         FieldPut(1, StrZero(i,10,0))
         FieldPut(2, Repl(Chr(64+(DWORD)i),10))
     NEXT
-    DbCreateIndex("test","UPPER(Test)")
+    DbCreateIndex("test1","UPPER(Test1)")
     DbCreateIndex("test2","UPPER(Test2)")
     DbCloseArea()
 
@@ -91,5 +91,20 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     "ENDDO",;
     "CLOSE",;
     "RETURN NIL"}),1)
+    WAIT
+    XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+    sc := CreateFoxScriptCompiler()
+    EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    "#include ""XSharpDefs.xh"" ",;
+    "LPARAMETERS fileName",;
+    "LOCAL recCount",;
+    "USE (fileName)",;
+    "SCAN",;
+    " ? Test->Test1, Test->Test2",;
+    "ENDSCAN",;
+    "recCount = LastRec()",;
+    "CLOSE ",;
+    "RETURN NIL"}),"test")
+
     WAIT
     RETURN

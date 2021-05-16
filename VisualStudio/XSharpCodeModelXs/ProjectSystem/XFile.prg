@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharpModel
     [DebuggerDisplay("{FullPath,nq}")];
     CLASS XFile
         #region Fields
-        PROPERTY Id           AS INT64          AUTO      GET INTERNAL SET 
+        PROPERTY Id           AS INT64          AUTO      GET INTERNAL SET
         PRIVATE _globalType 	AS XSourceTypeSymbol
         PRIVATE _parsed			AS LOGIC
         PRIVATE _type			AS XFileType
@@ -38,7 +38,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_parsed := ! SELF:HasCode
             SELF:_project := project
 
-        PROPERTY CommentTasks AS IList<XCommentTask> AUTO 
+        PROPERTY CommentTasks AS IList<XCommentTask> AUTO
         PROPERTY EntityList   AS 	List<XSourceEntity> GET _entityList
         PROPERTY Dialect AS XSharpDialect GET _project:Dialect
         PROPERTY Virtual AS LOGIC AUTO
@@ -51,7 +51,7 @@ BEGIN NAMESPACE XSharpModel
                 SELF:_usings:Insert(0, "System")
             ENDIF
             RETURN
-            
+
 
         METHOD FirstMember() AS IXMemberSymbol
             IF (! SELF:HasCode)
@@ -188,9 +188,13 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
             ENDIF
 
-        METHOD FindType(typeName as STRING) AS IXTypeSymbol
-            RETURN SELF:Project:FindType(typeName, SELF:Usings)
-         
+        METHOD FindType(typeName AS STRING, nameSpace := "" AS STRING) AS IXTypeSymbol
+            VAR usings := SELF:Usings:ToList()
+            IF ! String.IsNullOrEmpty(nameSpace)
+                usings:Add(nameSpace)
+            ENDIF
+            RETURN SELF:Project:FindType(typeName, usings)
+
         METHOD SaveToDatabase() AS VOID
             IF ! SELF:Virtual
                XDatabase.Update(SELF)
@@ -198,8 +202,8 @@ BEGIN NAMESPACE XSharpModel
                IF ! SELF:Interactive
                   SELF:InitTypeList()
                ENDIF
-            ENDIF            
-         
+            ENDIF
+
         METHOD WaitParsing() AS VOID
             //
             IF SELF:HasCode
@@ -211,7 +215,7 @@ BEGIN NAMESPACE XSharpModel
                         BEGIN USING VAR walker := SourceWalker{SELF}
                             TRY
                                 walker:Parse(FALSE)
-                                
+
                             CATCH exception AS System.Exception
                                 XSolution.WriteException(exception)
                             END TRY
@@ -220,7 +224,7 @@ BEGIN NAMESPACE XSharpModel
                 END LOCK
                 //WriteOutputMessage("<<-- WaitParsing()")
             ENDIF
-            
+
        METHOD WriteOutputMessage(message AS STRING) AS VOID
             XSolution.WriteOutputMessage("XModel.File "+message)
 
@@ -277,16 +281,16 @@ BEGIN NAMESPACE XSharpModel
             END GET
         END PROPERTY
 
-        PROPERTY FullPath           AS STRING AUTO GET INTERNAL SET 
+        PROPERTY FullPath           AS STRING AUTO GET INTERNAL SET
         PROPERTY GlobalType         AS XSourceTypeSymbol GET SELF:_globalType
         PROPERTY HasCode            AS LOGIC GET SELF:IsSource .OR. SELF:IsXaml .OR. SELF:IsHeader
         PROPERTY HasParseErrors     AS LOGIC AUTO
-        PROPERTY Interactive        AS LOGIC AUTO 
+        PROPERTY Interactive        AS LOGIC AUTO
         PROPERTY IsHeader           AS LOGIC GET SELF:_type == XFileType.Header
         PROPERTY IsSource           AS LOGIC GET SELF:_type == XFileType.SourceCode
         PROPERTY IsXaml             AS LOGIC GET SELF:_type == XFileType.XAML
-        PROPERTY LastChanged        AS System.DateTime   AUTO GET INTERNAL SET 
-        PROPERTY Size               AS INT64              AUTO GET INTERNAL SET 
+        PROPERTY LastChanged        AS System.DateTime   AUTO GET INTERNAL SET
+        PROPERTY Size               AS INT64              AUTO GET INTERNAL SET
         PROPERTY Name               AS STRING GET System.IO.Path.GetFileNameWithoutExtension(SELF:FullPath)
         PROPERTY UpdatedOnDisk      AS LOGIC
             GET
@@ -340,16 +344,16 @@ BEGIN NAMESPACE XSharpModel
 
         PROPERTY Usings AS IList<STRING>
             GET
-                IF ! SELF:HasCode .or. _usings == NULL  
+                IF ! SELF:HasCode .OR. _usings == NULL
                     RETURN <STRING>{}
                 ENDIF
                 RETURN _usings:ToArray()
             END GET
          END PROPERTY
 
-        PROPERTY UsingsStr AS STRING 
+        PROPERTY UsingsStr AS STRING
             GET
-               if _usings == NULL 
+               IF _usings == NULL
                   return String.Empty
                endif
                var sb := System.Text.StringBuilder{}
@@ -359,7 +363,7 @@ BEGIN NAMESPACE XSharpModel
                   ENDIF
                   sb:Append(str)
                NEXT
-            
+
                RETURN sb:ToString()
             END GET
             SET
@@ -372,7 +376,7 @@ BEGIN NAMESPACE XSharpModel
 
         PROPERTY StaticUsingsStr AS STRING
             GET
-             if _usingStatics == NULL 
+             IF _usingStatics == NULL
                   return String.Empty
                endif
                  var sb := System.Text.StringBuilder{}
@@ -404,7 +408,7 @@ BEGIN NAMESPACE XSharpModel
 
         PUBLIC EVENT ContentsChanged AS Action
       #endregion
- 
+
     END CLASS
 
 END NAMESPACE

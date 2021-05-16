@@ -397,76 +397,6 @@ namespace XSharp.LanguageService
             return null;
         }
 
-        //private static string BuildTokenString(IList<IToken> tokens, int start = 0)
-        //{
-        //    var sb = new StringBuilder();
-        //    bool left = false, right = false;
-        //    int nested = 0;
-        //    bool done = false;
-        //    int leftToken = 0;
-        //    int rightToken = 0;
-        //    string leftStr = "";
-        //    string rightStr = "";
-        //    for (int i = start; i < tokens.Count && !done; i++)
-        //    {
-        //        var t = tokens[i];
-        //        switch (t.Type)
-        //        {
-        //            case XSharpLexer.LPAREN:
-        //                leftToken = t.Type;
-        //                rightToken = XSharpLexer.RPAREN;
-        //                leftStr = "(";
-        //                rightStr = ")";
-        //                break;
-        //            case XSharpLexer.LCURLY:
-        //                leftToken = t.Type;
-        //                rightToken = XSharpLexer.RCURLY;
-        //                leftStr = "{";
-        //                rightStr = "}";
-        //                break;
-        //            case XSharpLexer.LBRKT:
-        //                leftToken = t.Type;
-        //                rightToken = XSharpLexer.RBRKT;
-        //                leftStr = "[";
-        //                rightStr = "]";
-        //                break;
-        //        }
-        //        if (leftToken != 0)
-        //            break;
-        //    }
-        //    if (leftToken == 0 || rightToken == 0)
-        //        return "";
-        //    for (int i = start; i < tokens.Count && !done; i++)
-        //    {
-        //        var t = tokens[i];
-        //        if (t.Type == leftToken)
-        //        {
-        //            left = true;
-        //            nested++;
-        //        }
-        //        else if (t.Type == rightToken)
-        //        {
-        //            right = true;
-        //            nested--;
-        //            if (nested == 0)
-        //            {
-        //                done = true;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (!left)
-        //            {
-        //                sb.Append(t.Text);
-        //            }
-        //        }
-        //    }
-        //    if (left && right)
-        //    {
-        //        return sb.ToString() + leftStr + rightStr;
-        //    }
-        //    return "";
-        //}
 
         /// <summary>
         /// Retrieve the CompletionType based on :
@@ -495,40 +425,6 @@ namespace XSharp.LanguageService
             var startOfExpression = true;
             var findConstructor = true;
             XSharpToken currentToken = null;
-            var currentScopes = new List<string>();
-            IXSymbol scope;
-            scope = location.Member;
-            //Todo
-            while (scope != null)
-            {
-                string ns = "";
-                if (scope is XSourceTypeSymbol && !XSourceTypeSymbol.IsGlobalType(scope))
-                {
-                    ns = scope.FullName;
-                }
-                if (scope.Kind == Kind.Namespace)
-                {
-                    ns = scope.FullName;
-                }
-                if (ns?.Length > 0)
-                {
-                    var elements = ns.Split(".".ToCharArray());
-                    ns = "";
-                    for (int i = 0; i < elements.Length; i++)
-                    {
-                        if (i > 0)
-                            ns += "." + elements[i];
-                        else
-                            ns = elements[0];
-                        if (!currentScopes.Contains(ns))
-                        {
-                            currentScopes.Add(ns);
-                        }
-                    }
-                }
-                scope = scope.Parent;
-
-            }
             //
             if (location.Member == null)
             {
@@ -680,7 +576,7 @@ namespace XSharp.LanguageService
                         if (findConstructor)
                         {
                             result.Clear();
-                            result.AddRange(SearchConstructor(type, visibility));
+                            result.AddRange(SearchConstructor(type, visibility,location));
                             if (result.Count > 0)
                             {
                                 symbols.Push(result[0]);
@@ -698,19 +594,19 @@ namespace XSharp.LanguageService
                     // Do we already know in which Type we are ?
                     if (currentToken.Type == XSharpLexer.SELF)  // SELF(..)
                     {
-                        result.AddRange(SearchConstructor(currentType, visibility));
+                        result.AddRange(SearchConstructor(currentType, visibility, location));
                     }
                     else if (currentToken.Type == XSharpLexer.SUPER) // SUPER(..)
                     {
                         if (currentType is XSourceTypeSymbol source)
                         {
-                            var p = source.File.FindType(source.BaseType);
-                            result.AddRange(SearchConstructor(p, visibility));
+                            var p = source.File.FindType(source.BaseType, source.Namespace);
+                            result.AddRange(SearchConstructor(p, visibility, location));
                         }
                         else
                         {
                             var p = location.FindType(currentType.BaseType);
-                            result.AddRange(SearchConstructor(p, visibility));
+                            result.AddRange(SearchConstructor(p, visibility, location));
                         }
                     }
                     else if (startOfExpression)
@@ -718,6 +614,10 @@ namespace XSharp.LanguageService
                         // The first token in the list can be a Function or a Procedure
                         // Except if we already have a Type
                         result.AddRange(SearchFunction(location, currentName));
+                        if (currentType != null)
+                        {
+                            result.AddRange(SearchMethod(location, currentType, currentName, visibility, false));
+                        }
                         result.AddRange(SearchMethodStatic(location, currentName));
                         if (result.Count == 0)
                         {
@@ -757,7 +657,7 @@ namespace XSharp.LanguageService
                 }
                 else if (isId)
                 {
-                    if (startOfExpression || findType)
+                    if (startOfExpression || findType || findConstructor)
                     {
                         result.AddRange(SearchType(location, preFix + currentName));
                         if (result.Count > 0)
@@ -888,6 +788,11 @@ namespace XSharp.LanguageService
                     result.Add(AdjustGenericMember(xmember, symbols.Peek()));
                 }
             }
+            if (result.Count > 0 && result[0] is IXTypeSymbol xtype && state == CompletionState.Constructors)
+            {
+                result.Clear();
+                result.AddRange(xtype.GetMembers(".ctor"));
+            }
             return result;
         }
 
@@ -988,7 +893,7 @@ namespace XSharp.LanguageService
         /// <param name="cType"></param>
         /// <param name="minVisibility"></param>
         /// <param name="foundElement"></param>
-        private static IList<IXMemberSymbol> SearchConstructor(IXTypeSymbol type, Modifiers minVisibility)
+        private static IList<IXMemberSymbol> SearchConstructor(IXTypeSymbol type, Modifiers minVisibility, XSharpSearchLocation location)
         {
             WriteOutputMessage($"--> SearchConstructorIn {type?.FullName}");
             var result = new List<IXMemberSymbol>();
@@ -996,9 +901,12 @@ namespace XSharp.LanguageService
             {
                 //
                 var xMethod = type.Members.Where(x => x.Kind == Kind.Constructor).FirstOrDefault();
-                if ((xMethod != null) && (xMethod.Visibility < minVisibility))
+                if (xMethod != null )
                 {
-                    xMethod = null;
+                    if (!xMethod.IsVisible(minVisibility))
+                    {
+                        xMethod = null;
+                    }
                 }
                 if (xMethod != null)
                 {
@@ -1170,13 +1078,29 @@ namespace XSharp.LanguageService
             return result;
         }
 
+        private static IXTypeSymbol EnsureComplete(IXTypeSymbol type, XSharpSearchLocation location)
+        {
+            if (type is XSourceTypeSymbol srcType && srcType.IsPartial)
+            {
+
+                var newtype = location.FindType(type.Name);
+                if (newtype != null)
+                    return newtype;
+            }
+            return type;
+        }
+
         private static IEnumerable<IXMemberSymbol> SearchMembers(XSharpSearchLocation location, IXTypeSymbol type, string name, Modifiers minVisibility)
         {
             var result = new List<IXMemberSymbol>();
             if (type != null)
             {
+                if (type is XSourceTypeSymbol)
+                {
+                    type = EnsureComplete(type, location);
+                }
                 WriteOutputMessage($" SearchMembers {type?.FullName} , {name}");
-                result.AddRange(type.GetMembers(name, true).Where((m) => m.Visibility >= minVisibility));
+                result.AddRange(type.GetMembers(name, true).Where((m) => m.IsVisible(minVisibility)));
                 if (result.Count() == 0 && !string.IsNullOrEmpty(type.BaseType))
                 {
                     if (minVisibility == Modifiers.Private)
@@ -1184,7 +1108,7 @@ namespace XSharp.LanguageService
                     IXTypeSymbol baseType;
                     if (type is XSourceTypeSymbol sourceType)
                     {
-                        baseType = sourceType.File.FindType(type.BaseType);
+                        baseType = sourceType.File.FindType(type.BaseType, type.Namespace);
                     }
                     else
                     {
@@ -1211,6 +1135,11 @@ namespace XSharp.LanguageService
             var result = new List<IXMemberSymbol>();
             if (type != null)
             {
+                if (type is XSourceTypeSymbol )
+                {
+                    type = EnsureComplete(type, location);
+                }
+
                 WriteOutputMessage($" SearchMethodTypeIn {type.FullName} , {name}");
                 var tmp = type.GetMembers(name, true).Where(x => x.Kind.IsClassMethod(location.Dialect));
                 foreach (var m in tmp)
@@ -1218,8 +1147,13 @@ namespace XSharp.LanguageService
                     var add = true;
                     if (staticOnly && !m.IsStatic)
                         add = false;
-                    if (add && m.Visibility < minVisibility)
-                        add = false;
+                    if (add && (m.Visibility == Modifiers.Internal || m.Visibility == Modifiers.ProtectedInternal))
+                    {
+                        if (m is IXSourceSymbol source && source.File.Project == location.Project)
+                            add = true;
+                        else if (!m.IsVisible(minVisibility))
+                            add = false;
+                    }
                     if (add)
                     {
                         result.Add(m);
@@ -1234,7 +1168,7 @@ namespace XSharp.LanguageService
                     IXTypeSymbol baseType;
                     if (type is XSourceTypeSymbol sourceType)
                     {
-                        baseType = sourceType.File.FindType(baseTypeName);
+                        baseType = sourceType.File.FindType(baseTypeName, sourceType.Namespace);
                     }
                     else
                     {

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -145,8 +145,9 @@ INTERNAL FUNCTION __OpenErrorLog() AS IntPtr PASCAL
 	LOCAL cFile                     AS STRING
 	LOCAL cBuffer                   AS STRING
 	LOCAL hfRet                     AS IntPtr
-
-	cFile := WorkDir() + SetErrorLogFile()
+    LOCAL cFolder                   AS STRING
+    cFolder := System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly():Location)
+	cFile := System.IO.Path.Combine(cFolder, SetErrorLogFile())
 
 	hfRet := FOpen2(cFile, FO_WRITE)
 
@@ -167,7 +168,7 @@ INTERNAL FUNCTION __OpenErrorLog() AS IntPtr PASCAL
 				cBuffer :="SetDefault: " +GetDefault()
 				SetDefault("")
 			ENDIF
-			
+
 			//_IError(EG_ARG, .F., String2Psz(cBuffer))
 			? cBuffer
 		ENDIF
@@ -179,11 +180,11 @@ INTERNAL FUNCTION __OpenErrorLog() AS IntPtr PASCAL
 
 INTERNAL FUNCTION __WriteErrorLog (hf AS IntPtr, cMsg AS STRING, oError AS Error) AS VOID PASCAL
    LOCAL cExe		AS STRING
-   
+
 	FPutS(hf, "***********************ERROR********************************")
 	FPutS(hf, __VERSION__ )
 	FPutS(hf, DateTime.Now:ToString())
-	cExe	:= _ExecName() 
+	cExe	:= _ExecName()
 	FPutS(hf, "Application: " + cExe )
 	FPutS(hf, " " )
 	FPutS(hf, "Error message:" )

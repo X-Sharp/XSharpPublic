@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL PARTIAL SEALED CLASS CdxTag IMPLEMENTS IRddSortWriter
         PRIVATE _sorter AS CdxSortHelper
-        
+
         // Methods for Creating Indices
         INTERNAL METHOD Create(createInfo AS DbOrderCreateInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:_keySize > 0
                 SELF:AllocateBuffers()
             ENDIF
-            
+
             SELF:_Unique := createInfo:Unique
             SELF:_Ansi := SELF:_oRdd:_Ansi
             SELF:_Conditional := FALSE
@@ -89,6 +89,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_bag:FlushPages()
             GC.Collect()
             SELF:IsOpen := isOk
+            SELF:_mustCheckEof := TRUE
+            IF ! self:_Valid
+                isOk := FALSE
+            ENDIF
             RETURN isOk
 
 
@@ -176,7 +180,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Header:KeySize    := _keySize
             SELF:_Header:KeyExprPos := 0
             SELF:_Header:KeyExprLen := (WORD) (_KeyExpr:Length + 1)
-            SELF:_Header:ForExprPos := SELF:_Header:KeyExprLen 
+            SELF:_Header:ForExprPos := SELF:_Header:KeyExprLen
             SELF:_Header:KeyExpression := _KeyExpr
             VAR options := CdxOptions.Compact + CdxOptions.Tag
             IF SELF:_Unique
@@ -194,7 +198,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_Header.Options := options
             RETURN SELF:_Header:Write()
-            
+
         INTERNAL METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
 
             VAR type := SELF:_oRdd:_getUsualType(toConvert)
@@ -211,9 +215,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_sourcekeySize := SELF:_keySize := 0
                 RETURN FALSE
             END SWITCH
-            
+
             RETURN TRUE
-            
+
         PRIVATE METHOD _CondCreate(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
             LOCAL leadingOrder  := NULL AS CdxTag
             LOCAL lUseOrder     := FALSE AS LOGIC
@@ -227,7 +231,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL start         := 0 AS LONG
             LOCAL result        := FALSE AS LOGIC
             LOCAL includeRecord := TRUE AS LOGIC
-            
+
             start := ordCondInfo:StartRecNo
             IF ordCondInfo:Scoped
                 IF ordCondInfo:StartRecNo > 0
@@ -290,7 +294,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF SELF:_Conditional
                         includeRecord := SELF:_EvalBlock(ordCondInfo:ForBlock, TRUE)
                     ENDIF
-   
+
                     IF includeRecord
                         IF ! SELF:_sortGetRecord()
                             EXIT
@@ -312,7 +316,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF toDo != 0 .AND. done >= toDo
                         EXIT
                     ENDIF
-                    IF SELF:_oRdd:EoF 
+                    IF SELF:_oRdd:EoF
                         EXIT
                     ENDIF
                 ENDDO
@@ -349,7 +353,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ELSE
                     isOk := TRUE
                 ENDIF
-            CATCH 
+            CATCH
                 error := TRUE
                 isOk := FALSE
             END TRY
@@ -357,7 +361,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:ThrowException( Subcodes.ERDD_KEY_EVAL,Gencode.EG_DATATYPE, SELF:FileName)
             ENDIF
             RETURN isOk
-            
+
         INTERNAL METHOD _InitSort(lRecCount AS LONG) AS LOGIC
             LOCAL fType  := 0 AS DbFieldType
             LOCAL sortInfo AS DbSortInfo
@@ -395,10 +399,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL lRecCount AS LONG
             LOCAL result    AS LOGIC
             LOCAL hasBlock  AS LOGIC
-           
+
             evalCount := 0
             lRecCount := SELF:_oRdd:RecCount
-            // create sorthelper 
+            // create sorthelper
             SELF:_InitSort(lRecCount)
             IF lRecCount == 0
                 RETURN TRUE
@@ -424,11 +428,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 result := SELF:_oRdd:GoTo(SELF:_RecNo + 1)
             UNTIL ! (result .AND. SELF:_oRdd:_isValid)
             RETURN result
-            
+
             // IRddSortWriter Interface, used by RddSortHelper
         PUBLIC METHOD IRddSortWriter.WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
             RETURN _sorter:AddRecord(record:Recno, record:Data, record:Duplicate)
-            
+
         INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
             LOCAL lRecCount AS LONG
             lRecCount := SELF:_oRdd:RecCount
@@ -456,11 +460,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD Truncate() AS LOGIC
             // Find all pages of the tag and delete them
-            // then also delete the tag header and return everything to the OrderBag 
+            // then also delete the tag header and return everything to the OrderBag
             RETURN TRUE
-            
+
     END CLASS
-    
+
     INTERNAL SEALED CLASS CdxSortHelper INHERIT RddSortHelper
         INTERNAL PROPERTY SourceIndex    AS INT AUTO
         INTERNAL PROPERTY Ascii          AS LOGIC AUTO
@@ -487,7 +491,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
 //            ++Written
 //            IF Written % 1000 == 0
-//                ? "Written", written                
+//                ? "Written", written
 //            ENDIF
             RETURN TRUE
 
@@ -516,12 +520,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 DO WHILE oPage:HasRight
                     nPage := oPage:RightPtr
                     oPage := SELF:_tag:GetPage(nPage)
-                ENDDO                    
-                
+                ENDDO
+
                 oBranch:SetData(nLast, oLast:Recno, nPage, oLast:KeyBytes)
                 oBranch:Write()
             ENDDO
-                
+
             SELF:Clear()
             RETURN TRUE
 

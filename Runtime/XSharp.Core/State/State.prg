@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -25,7 +25,7 @@ CLASS XSharp.RuntimeState
 	PRIVATE INITONLY _thread AS Thread
 	PRIVATE STATIC _shutdown := FALSE AS LOGIC  // To prevent creating state when shutting down
 	// Static Methods and Constructor
-	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState> 
+	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState>
 	STATIC CONSTRUCTOR
 		initialState	:= RuntimeState{TRUE}
         detectDialect()
@@ -53,7 +53,7 @@ CLASS XSharp.RuntimeState
                         Dialect := XSharpDialect.Harbour
                     CASE "xpp"
                         Dialect := XSharpDialect.XPP
-                    END SWITCH                            
+                    END SWITCH
                 endif
             NEXT
         ENDIF
@@ -68,7 +68,7 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="Set" >Set Enum</seealso>
     PUBLIC PROPERTY Settings AS Dictionary<XSharp.Set, OBJECT> GET oSettings
 
-	PRIVATE CONSTRUCTOR(initialize AS LOGIC)       
+	PRIVATE CONSTRUCTOR(initialize AS LOGIC)
 		VAR oThread := Thread.CurrentThread
         SELF:_thread := oThread
 		oSettings := Dictionary<XSharp.Set, OBJECT>{}
@@ -111,15 +111,15 @@ CLASS XSharp.RuntimeState
         IF Thread.CurrentThread == initialState:_thread .OR. _shutdown
             RETURN initialState
         ENDIF
-		oNew := RuntimeState{FALSE}		
+		oNew := RuntimeState{FALSE}
 		BEGIN LOCK oSettings
 			// Copy all values from Current State to New state
-			FOREACH VAR element IN oSettings     
+			FOREACH VAR element IN oSettings
 				oNew:oSettings[element:Key] := element:Value
 			NEXT
 		END LOCK
-		RETURN oNew     
-		
+		RETURN oNew
+
 	/// <summary>Retrieve state name</summary>
 	/// <returns>String value, such as "State for Thread 123"</returns>IDb
 	PUBLIC PROPERTY Name AS STRING
@@ -146,7 +146,7 @@ CLASS XSharp.RuntimeState
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PUBLIC STATIC METHOD GetValue<T> (nSetting AS XSharp.Set) AS T
         IF _shutdown
-            // There is no RuntimeState when shutting down            
+            // There is no RuntimeState when shutting down
             RETURN DEFAULT(T)
         ENDIF
 		RETURN currentState:Value:_GetThreadValue<T>(nSetting);
@@ -170,7 +170,7 @@ CLASS XSharp.RuntimeState
 				RETURN (T) result
 			ENDIF
 		END LOCK
-		RETURN DEFAULT(T) 
+		RETURN DEFAULT(T)
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PRIVATE METHOD _SetThreadValue<T>(nSetting AS XSharp.Set, oValue AS T) AS T
 		LOCAL result AS T
@@ -182,7 +182,7 @@ CLASS XSharp.RuntimeState
 			ENDIF
 			oSettings[nSetting] := oValue
 		END LOCK
-		RETURN	result		 
+		RETURN	result
 
 	#region properties FROM the Vulcan RuntimeState that are emulated
 
@@ -190,7 +190,7 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionVO11 AS LOGIC AUTO
- 
+
 	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default value for this option is 'False'.</value>
@@ -218,7 +218,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The System.Reflection.Module for the main application.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    STATIC PROPERTY AppModule AS  System.Reflection.Module AUTO  
+    STATIC PROPERTY AppModule AS  System.Reflection.Module AUTO
 	#endregion
 
 	/// <summary>The last file found with File(). This is the name that FPathName() returns.</summary>
@@ -320,7 +320,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>The current Century setting (used in DATE &lt;-&gt; STRING conversions).</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="SetCentury" />
-    /// <seealso cref="Set.Century" /> 
+    /// <seealso cref="Set.Century" />
    STATIC PROPERTY Century AS LOGIC ;
         GET GetValue<LOGIC>(Set.Century);
         SET SetValue<LOGIC>(Set.Century, value)
@@ -329,12 +329,12 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="Set.CollationMode" />
     /// <seealso cref="OnCollationChanged" />
-    /// <remarks>Send an OnCollationChanged event when changed.</remarks>    
-   STATIC PROPERTY CollationMode AS CollationMode 
-        GET 
+    /// <remarks>Send an OnCollationChanged event when changed.</remarks>
+   STATIC PROPERTY CollationMode AS CollationMode
+        GET
 			RETURN GetValue<CollationMode>(Set.CollationMode)
 		END GET
-        SET 
+        SET
 			SetValue<CollationMode>(Set.CollationMode, value)
 			IF OnCollationChanged != NULL
 				OnCollationChanged(GetInstance(), EventArgs{})
@@ -443,13 +443,13 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="DosEncoding" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="OnCodePageChanged" />
-    /// <remarks>Sends an OnCodePageChanged event when changed.</remarks>    
-    STATIC PROPERTY DosCodePage AS LONG 
+    /// <remarks>Sends an OnCodePageChanged event when changed.</remarks>
+    STATIC PROPERTY DosCodePage AS LONG
         GET
             RETURN GetValue<LONG>(Set.DosCodepage)
 		END GET
-        SET 
-			SetValue<LONG>(Set.DosCodepage, value) 
+        SET
+			SetValue<LONG>(Set.DosCodepage, VALUE)
 			IF OnCodePageChanged != NULL
 				OnCodePageChanged(GetInstance(), EventArgs{})
 			ENDIF
@@ -628,12 +628,12 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="Set.WinCodepage" />
     /// <seealso cref="OnCodePageChanged" />
-    /// <remarks>Sends an OnCodePageChanged event when changed.</remarks>    
+    /// <remarks>Sends an OnCodePageChanged event when changed.</remarks>
     STATIC PROPERTY WinCodePage AS LONG
 	GET
 		RETURN GetValue<LONG>(Set.WinCodepage)
 	END GET
-	SET 
+	SET
         SetValue<LONG>(Set.WinCodepage, value)
 		IF OnCodePageChanged != NULL
 			OnCodePageChanged(GetInstance(), EventArgs{})
@@ -644,7 +644,7 @@ CLASS XSharp.RuntimeState
     /// <summary>The DOS Encoding. This is based on the corrent Win Codepage.</summary>
     /// <seealso cref="WinCodePage" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="O:StringCompare" />    
+    /// <seealso cref="O:StringCompare" />
     STATIC PROPERTY WinEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(WinCodePage)
 
@@ -717,27 +717,27 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.DateFormat, format)
  		SWITCH format
 		CASE "MM/DD/YY"
-		CASE "MM/DD/YYYY" 
-			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.American)	 
-		CASE "YY.MM.DD" 
+		CASE "MM/DD/YYYY"
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.American)
+		CASE "YY.MM.DD"
 		CASE "YYYY.MM.DD"
-			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.Ansi)	  
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.Ansi)
 		CASE "DD/MM/YY"
 		CASE "DD/MM/YYYY"
-            // What a laugh, the British & french have an identical format. 
-			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.British)	
+            // What a laugh, the British & french have an identical format.
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.British)
 		CASE "DD.MM.YY"
 		CASE "DD.MM.YYYY"
-			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.German)	
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.German)
 		CASE "DD-MM-YY"
 		CASE "DD-MM-YYYY"
-			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.Italian)	
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.Italian)
 		CASE "YY/MM/DD"
 		CASE "YYYY/MM/DD"
-			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.Japanese)	
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.Japanese)
 		CASE "MM-DD-YY"
 		CASE "MM-DD-YYYY"
-			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.USA)	
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.USA)
 		END SWITCH
 
     INTERNAL METHOD _SetTimeFormatSystem() AS VOID
@@ -752,7 +752,7 @@ CLASS XSharp.RuntimeState
 		ENDIF
 		SELF:_SetThreadValue(Set.AmPm, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
         SELF:_SetThreadValue(Set.Timeformat, dtInfo:LongTimePattern)
-       
+
     INTERNAL METHOD _SetDateFormatSystem() AS VOID
 		LOCAL format    AS STRING
         VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
@@ -772,7 +772,7 @@ CLASS XSharp.RuntimeState
 
 
     INTERNAL METHOD _SetDateCountry(country AS XSharp.DateCountry) AS VOID
-		
+
 		LOCAL format, year AS STRING
         IF country == XSharp.DateCountry.System
             SELF:_SetDateFormatSystem()
@@ -783,9 +783,9 @@ CLASS XSharp.RuntimeState
 				format := "MM/DD/" + year
 			CASE XSharp.DateCountry.Ansi
 				format := year + ".MM.DD"
-			CASE XSharp.DateCountry.British 
+			CASE XSharp.DateCountry.British
 			CASE XSharp.DateCountry.French
-                // What a laugh, the British & french have an identical format. 
+                // What a laugh, the British & french have an identical format.
 				format := "DD/MM/" + year
 			CASE XSharp.DateCountry.German
 				format := "DD.MM." + year
@@ -799,7 +799,7 @@ CLASS XSharp.RuntimeState
 				format := "MM/DD/" + year
 		    END SWITCH
 		    // this will adjust DateFormatNet, DateFormatEmpty etc, but also DateCountry again
-            SELF:_SetDateFormat(format) 
+            SELF:_SetDateFormat(format)
         ENDIF
         SELF:_SetThreadValue(Set.DateCountry, country)
         RETURN
@@ -815,24 +815,24 @@ CLASS XSharp.RuntimeState
 	GET
         LOCAL inst AS RuntimeState
         inst := GetInstance()
-		IF inst:_dataSession == NULL_OBJECT
+        IF inst:_dataSession == NULL_OBJECT
             LOCAL name AS STRING
-            var thread := System.Threading.Thread.CurrentThread
-            if String.IsNullOrEmpty(thread:Name)
+            VAR thread := System.Threading.Thread.CurrentThread
+            IF String.IsNullOrEmpty(thread:Name)
                 name := thread:ManagedThreadId:ToString()
-            else
+            ELSE
                 name := thread:Name
-            endif
-            if inst == initialState
-			    inst:_dataSession := DataSession{1, "Global datasession"}
-            else
+            ENDIF
+            IF inst == initialState
+                inst:_dataSession := DataSession{1, "Global datasession"}
+            ELSE
                 inst:_dataSession := DataSession{"DataSession for Thread "+name}
-            endif
-		ENDIF
-		RETURN inst:_dataSession
-	END GET
+            ENDIF
+        ENDIF
+        RETURN inst:_dataSession
+    END GET
     END PROPERTY
-        
+
     /// <summary>This method can be used to switch the active DataSession in the runtime state.</summary>
     /// <returns>The previous active datasession</returns>
     /// <param name="session">The datasession that needs to be set as the new active datasession</param>
@@ -848,18 +848,18 @@ CLASS XSharp.RuntimeState
     /// <exclude />
     STATIC METHOD PushCurrentWorkarea(dwArea AS DWORD) AS VOID
         RuntimeState.Workareas:PushCurrentWorkarea(dwArea)
-    /// <exclude />    
+    /// <exclude />
     STATIC METHOD PopCurrentWorkarea() AS DWORD
         RETURN RuntimeState.Workareas:PopCurrentWorkarea()
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE _collationTable AS BYTE[]
     /// <summary>Current collation table.</summary>
-    
+
 	PUBLIC STATIC PROPERTY CollationTable AS BYTE[]
 	GET
 		LOCAL coll AS BYTE[]
-		coll := GetInstance():_collationTable 
+		coll := GetInstance():_collationTable
 		IF coll == NULL .OR. coll :Length < 256
 			_SetCollation("Generic")
 			coll := GetInstance():_collationTable := GetValue<BYTE[]>(Set.CollationTable)
@@ -883,7 +883,7 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="IMacroCompiler" />
     PUBLIC STATIC PROPERTY MacroCompiler AS IMacroCompiler
         GET
-            IF _macrocompiler == NULL 
+            IF _macrocompiler == NULL
                 _LoadMacroCompiler()
             ENDIF
             RETURN _macrocompiler
@@ -892,7 +892,7 @@ CLASS XSharp.RuntimeState
             _macrocompiler := value
         END SET
     END PROPERTY
-        
+
     /// <summary>Active Macro compiler</summary>
     /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
     /// <seealso cref="IMacroCompiler2" />
@@ -900,7 +900,7 @@ CLASS XSharp.RuntimeState
         GET
             IF _macroresolver == NULL
                 IF _macrocompiler IS IMacroCompiler2 VAR mc
-                    _macroresolver := mc:Resolver 
+                    _macroresolver := mc:Resolver
                 ENDIF
             endif
             RETURN _macroresolver
@@ -911,7 +911,7 @@ CLASS XSharp.RuntimeState
                 mc:Resolver := value
             ENDIF
         END SET
-    END PROPERTY    
+    END PROPERTY
 	/// <summary>This event is thrown when one of the codepages of the runtimestate is changed</summary>
     /// <remarks>Clients can refresh cached information by registering to this event</remarks>
     /// <seealso cref="DosCodePage" />
@@ -940,7 +940,7 @@ CLASS XSharp.RuntimeState
                 ENDIF
             ELSE
                 // AssemblyHelper.Load will throw an exception
-                NOP 
+                NOP
 		    ENDIF
         ENDIF
         IF _macrocompilerType != NULL_OBJECT
@@ -976,7 +976,7 @@ CLASS XSharp.RuntimeState
         // Only when vo13 is off and SetExact = TRUE
         IF !RuntimeState.CompilerOptionVO13 .AND. RuntimeState.Exact
             RETURN String.Compare( strLHS,  strRHS)
-        ENDIF                            
+        ENDIF
         IF Object.ReferenceEquals(strLHS, strRHS)
             ret := 0
         ELSEIF strLHS == NULL
@@ -1016,7 +1016,7 @@ CLASS XSharp.RuntimeState
     STATIC METHOD StringCompareCollation(strLHS AS STRING, strRHS AS STRING) AS INT
        LOCAL ret AS INT
         // either exact or RHS longer than LHS
-        VAR mode := RuntimeState.CollationMode 
+        VAR mode := RuntimeState.CollationMode
         SWITCH mode
         CASE CollationMode.Windows
             IF IsRunningOnWindows()
@@ -1026,7 +1026,7 @@ CLASS XSharp.RuntimeState
             ENDIF
         CASE CollationMode.Clipper  // both Clipper and XPP use weight tables
         CASE CollationMode.Xpp
-            ret := XSharp.StringHelpers.CompareClipper(strLHS, strRHS) 
+            ret := XSharp.StringHelpers.CompareClipper(strLHS, strRHS)
         CASE CollationMode.Unicode
             ret := String.Compare(strLHS, strRHS)
         OTHERWISE
@@ -1042,7 +1042,7 @@ CLASS XSharp.RuntimeState
     /// <remarks>This method works on BYTE arrays and is used by the RDD system. <br/>
     /// This method respects the current setting of SetCollation(): <br/>
     /// - When the current collationmode is Clipper or Windows then no Ansi - Unicode conversions will be done.The comparisons will be done on the byte arrays.<br/>
-    /// - When the current collationmode is Unicode or Ordinal then the byte arrays will be converted to Unicode before the comparison is executed. 
+    /// - When the current collationmode is Unicode or Ordinal then the byte arrays will be converted to Unicode before the comparison is executed.
     /// </remarks>
     /// <seealso cref="WinEncoding" />
     /// <seealso cref="StringCompareCollation" />

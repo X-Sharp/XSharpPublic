@@ -4527,6 +4527,7 @@ RETURN
 			RddSetDefault("DBFCDX")
 			cDbf := GetTempFileName()
 			DbfTests.CreateDatabase(cDbf , {{"MEMOFLD","M",10,0}} )
+			DbUseArea( TRUE,,cDBF,,FALSE )
 			FOR LOCAL n := 1 AS INT UPTO 10
 				DbAppend()
 			NEXT
@@ -4540,6 +4541,84 @@ RETURN
 			NEXT
 
 			DbCloseArea()
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD DBClose_tests() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/611
+			Assert.False( DbCloseArea() )
+			Assert.True( DbCloseAll() )
+			Assert.False( DbCloseArea() )
+			Assert.True( DbCloseAll() )
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD ReadOnly_Test() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/610
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , {{"FLD","C",10,0}} , {"a","b"} )
+			DbCloseArea()
+
+			Assert.True( DbUseArea( TRUE,,cDBF,,FALSE,TRUE ) )
+			Assert.True( DbCreateIndex(cDbf,"FLD") )
+			Assert.True( DbCloseArea() )
+
+			Assert.True( DbUseArea(TRUE,"DBFCDX", cDbf , , TRUE) )
+			Assert.True( DbCloseArea() )
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD DbOrderInfo_withnoindex_Test() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/627
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , {{"FLD","C",10,0}} , {"a","b"} )
+
+			LOCAL uRet AS USUAL
+			uRet := DbOrderInfo(DBOI_EXPRESSION)
+			Assert.True ( IsString(uRet) )
+			Assert.False( IsNil(uRet) )
+			Assert.True ( uRet == "" )
+
+			uRet := DbOrderInfo(DBOI_CONDITION)
+			Assert.True ( IsString(uRet) )
+			Assert.False( IsNil(uRet) )
+			Assert.True ( uRet == "" )
+
+			uRet := DbOrderInfo(DBOI_POSITION)
+			Assert.True( IsNumeric(uRet) )
+			Assert.True ( uRet == 1 ) // that's what VO returns
+
+			uRet := DbOrderInfo(DBOI_RECNO)
+			Assert.True( IsNumeric(uRet) )
+			Assert.True ( uRet == 1 ) // that's what VO returns
+
+			uRet := DbOrderInfo(DBOI_NAME)
+			Assert.True ( uRet == "" )
+			uRet := DbOrderInfo(DBOI_BAGNAME)
+			Assert.True ( uRet == "" )
+			uRet := DbOrderInfo(DBOI_INDEXNAME)
+			Assert.True ( uRet == "" )
+			uRet := DbOrderInfo(DBOI_BAGEXT)
+			Assert.True ( uRet == "" )
+			uRet := DbOrderInfo(DBOI_INDEXEXT)
+			Assert.True ( uRet == "" )
+			uRet := DbOrderInfo(DBOI_FULLPATH)
+			Assert.True ( uRet == "" )
+
+			uRet := DbOrderInfo(DBOI_ORDERCOUNT)
+			Assert.True ( uRet == 0 )
+			uRet := DbOrderInfo(DBOI_KEYTYPE)
+			Assert.True ( uRet == 0 )
+			uRet := DbOrderInfo(DBOI_KEYSIZE)
+			Assert.True ( uRet == 0 )
+
+			uRet := DbOrderInfo(DBOI_ISCOND)
+			Assert.True ( uRet == FALSE )
+
+			DbCloseArea()
+
 
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING

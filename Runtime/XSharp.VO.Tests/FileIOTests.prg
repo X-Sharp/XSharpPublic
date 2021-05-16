@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -14,9 +14,9 @@ USING XUnit
 BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS FileIOTests
-	 
+
  		[Trait("Category", "File")];
-		[Fact]; 
+		[Fact];
 		METHOD FileTest() AS VOID
 			LOCAL hFile AS PTR
 			LOCAL cLine AS USUAL
@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			hFile := FCreate(cFile)
 			cLine := "line1"
 			FWriteLine(hFile, cLine)
-			cLine := "line2" 
+			cLine := "line2"
 			FWriteLine(hFile, cLine)
 			FClose(hFile)
 			cText := MemoRead(cFile)
@@ -35,6 +35,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(1, (INT) Alen(aFiles))
             aFiles := Directory(System.Environment.CurrentDirectory+"\*.txt")
             Assert.True( Alen(aFiles) >= 1)
+            // test readonly
+            hFile := FOpen("test.txt", FO_READ )
+            Assert.True(hFile != F_ERROR)
+            Assert.Equal(TRUE, FClose(hFile))
+
+
 			FErase(cFile)
             aFiles := Directory("test.txt")
             Assert.Equal(0, (INT) Alen(aFiles))

@@ -2368,7 +2368,8 @@ RETURN
 			FOR LOCAL i := 1 AS DWORD UPTO ALen ( aValues )
 				DbAppend()
 				FieldPut (1 , aValues[i])
-			NEXT
+            NEXT
+            DbGoTop()
 		RETURN
 			
 	END CLASS

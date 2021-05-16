@@ -133,6 +133,22 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(Space(2),      Transform( 0, "@z   " )  ) 
             Assert.Equal(Space(3),      Transform( 0, "@z   a" )  ) 
 
+        [Fact, Trait("Category", "TransForm")];
+        METHOD TransformSymbolTest AS VOID
+        	// VO behavior...
+            Assert.Equal("",     Transform( #somesymbol, "" )  )
+            Assert.Equal("",     Transform( #somesymbol, "@z " )  )
+            Assert.Equal("",     Transform( #somesymbol, "XXXXXXXXXXXXX" )  )
+            Assert.Equal("",     Transform( #somesymbol, "abc XXXXXXXXXXXXX def" )  )
+
+            LOCAL uSymbol AS USUAL
+            uSymbol := #somesymbol
+            Assert.Equal("",     Transform( uSymbol, "" )  )
+            Assert.Equal("",     Transform( uSymbol, "@z " )  )
+            Assert.Equal("",     Transform( uSymbol, "XXXXXXXXXXXXX" )  )
+            Assert.Equal("",     Transform( uSymbol, "abc XXXXXXXXXXXXX def" )  )
+
+
         [Fact, Trait("Category", "Unformat")];
         METHOD UnformatCTest AS VOID
             Assert.Equal("8161XV", Unformat("8161 XV", "@R! 9999 AA","C"))

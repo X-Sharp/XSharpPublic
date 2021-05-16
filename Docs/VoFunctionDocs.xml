@@ -26288,7 +26288,7 @@
         <returns>
         </returns>
         <remarks>
-            VODBOrdBagExt() is the same as calling DBOrderInfo(DBOI_BAGEXT).
+            VODBOrdBagExt() is the same as calling DBOrderInfo(DBOI_DEFBAGEXT).
         </remarks>
         <example>
         </example>
@@ -27657,19 +27657,24 @@
     <currentWorkareaParam>
         <span>
             By default, this function operates on the currently selected work area.  
-            It can be made to operate on an unselected work area by specifying it within an aliased expression or by calling the that accepts a workarea parameter (a workarea number or alias ).
+            It can be made to operate on an unselected work area by specifying 
+			it within an aliased expression or by calling the overload that accepts a workarea 
+			parameter (a workarea number or alias ).
         </span>
     </currentWorkareaParam>
     <currentWorkarea>
         <span>
             By default, this function operates on the currently selected work area.<br/>
-            It can be made to operate on an unselected work area by specifying it within an aliased expression
+            It can be made to operate on an unselected work area by specifying 
+			it within an aliased expression
         </span>
     </currentWorkarea>
     <cbwhile>
         <span>
-            A code block that defines another condition that each record must meet in order to be processed.  
-            As soon as a record is encountered that causes the condition to fail, the operation terminates.<br/>
+            A code block that defines another condition that each record must meet in order 
+			to be processed.  
+            As soon as a record is encountered that causes the condition to fail, the operation 
+			terminates.<br/>
 
             If no scope is specified, &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.<br/>
 

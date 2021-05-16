@@ -626,7 +626,7 @@
           App:Exec() again.  You should use this mechanism when you want to do some background processing
           while the application is idle.
         </pre></param>
-      <param name="oObject">** missing parameter documentation **</param>
+      <param name="uObject">DialogWindow object that controls the lifetime of the Exec() loop</param>
       <returns>
         A value of 0 indicates normal termination (no errors).  A non-zero value indicates abnormal termination.
       </returns>

@@ -647,8 +647,8 @@ namespace XSharp.MacroCompiler
                 var s = Lt();
                 var cb = ParseCodeblock();
                 var e = Lt();
-                var cbt = new Token(TokenType.CODEBLOCK, TokenType.LAST, s.start, e.start - s.start, null, Channel.DEFOUTCHANNEL);
-                cbt.value = _Lexer.GetText(cbt);
+                var cbt = new Token(TokenType.CODEBLOCK, TokenType.LAST, s.start, e.start - s.start, null, Channel.DEFOUTCHANNEL) { source = s.source };
+                cbt.value = cbt.Text;
                 return new CodeblockExpr(cbt, cb);
             }
             else

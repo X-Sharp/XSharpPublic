@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -19,8 +19,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 		METHOD IOTests() AS VOID
             // In the VO Dialect this is allowed with a non existing path
             XSharp.RuntimeState.Dialect := XSharpDialect.VO
-            var cOld := SetDefault()
-            var cNew := "C:\NonExistingFolder"
+            VAR cOld := SetDefault()
+            VAR cNew := "C:\NonExistingFolder"
             Assert.Equal(cOld, SetDefault(cNew))
             Assert.Equal(cNew, SetDefault())
 
@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 		[Fact, Trait("Category", "Other")];
         METHOD KeyboardTests() AS VOID
-            NumLock(TRUE)
+/*            NumLock(TRUE)
             Assert.True(NumLock())
             NumLock(FALSE)
             Assert.False(NumLock())
@@ -46,9 +46,24 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             InsMode(TRUE)
             Assert.True(InsMode())
             InsMode(FALSE)
-            Assert.False(InsMode())
+            Assert.False(InsMode())*/
+        [Fact, Trait("Category", "Other")];
+        METHOD TypeTests()  AS VOID
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+             Assert.True(type ( "x" ) == "U")
+            XSharp.RuntimeState.Dialect := XSharpDialect.VO
+             Assert.True(type ( "x" ) == "UE")
 
-
+        [Fact, Trait("Category", "Other")];
+        METHOD EVLTests()  AS VOID
+            Assert.True( EVL("","abc") == "abc")
+            Assert.True( EVL("abc","def") == "abc")
+            Assert.True( EVL("",123) == 123)
+            Assert.True( EVL("abc",123) == "abc")
+            Assert.True( EVL(0,123) == 123)
+            Assert.True( EVL(123,456) == 123)
+            Assert.True( EVL(NULL_DATE,ToDay()) == ToDay())
+            Assert.True( EVL(2000.01.01,ToDay()) == 2000.01.01)
 
 	END CLASS
 

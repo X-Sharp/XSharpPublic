@@ -99,6 +99,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("-00123,1", StrZero(-123.123,8,1) )
 			Assert.Equal("-0123,1", StrZero(-123.123,7,1) )
 
+			Assert.Equal("0000000001", StrZero(1.23 , 10) )
+			Assert.Equal("0000000002", StrZero(1.99 , 10) )
+			Assert.Equal("00013", StrZero(12.99 , 5) )
+			Assert.Equal("13", StrZero(12.99 , 2) )
+			Assert.Equal("*", StrZero(12.99 , 1) )
+			Assert.Equal("01", StrZero(1.0, 2) )
+			Assert.Equal("-0001", StrZero(-1.2345678 , 5) )
+			Assert.Equal("-0002", StrZero(-1.99 , 5) )
+
+
+
 		[Fact, Trait("Category", "Val")];
 		METHOD ValTest() AS VOID
 			LOCAL u AS USUAL

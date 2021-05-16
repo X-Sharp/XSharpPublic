@@ -72,8 +72,7 @@ namespace XSharp.Runtime
             {
                 throw m.Diagnostic;
             }
-            addsMemVars = m.CreatesAutoVars;
-            if (addsMemVars)
+            if (m.CreatesAutoVars)
             {
                 addsMemVars = false;
                 return new XSharp.MacroCompiler.ObjectMacro.MacroMemVarCodeblock(m.Macro, m.ParamCount);
@@ -92,21 +91,20 @@ namespace XSharp.Runtime
             }
             if (m.CreatesAutoVars)
                 return new XSharp.MacroCompiler.ObjectMacro.MacroMemVarCodeblock(m.Macro, m.ParamCount);
-            return new XSharp.MacroCompiler.ObjectMacro.MacroCodeblock(m.Macro, m.ParamCount);
+            else
+                return new XSharp.MacroCompiler.ObjectMacro.MacroCodeblock(m.Macro, m.ParamCount);
         }
 
         public _Codeblock CompileCodeblock(string macro, bool lAllowSingleQuotes, Module module)
         {
             var isCodeblock = macro.Replace(" ", "").StartsWith("{|");
-            var addsMemVars = false;
             UsualCompilation compiler = GetUsualCompiler(lAllowSingleQuotes);
             var m = compiler.Compile(macro);
             if (m.Diagnostic != null)
             {
                 throw m.Diagnostic;
             }
-            addsMemVars = m.CreatesAutoVars;
-            if (addsMemVars)
+            if (m.CreatesAutoVars)
                 return new XSharp.MacroCompiler.UsualMacro.MacroMemVarCodeblock(m.Macro, m.ParamCount, macro, isCodeblock);
             else
                 return new XSharp.MacroCompiler.UsualMacro.MacroCodeblock(m.Macro, m.ParamCount, macro, isCodeblock);
@@ -122,7 +120,8 @@ namespace XSharp.Runtime
             }
             if (m.CreatesAutoVars)
                 return new XSharp.MacroCompiler.UsualMacro.MacroMemVarCodeblock(m.Macro, m.ParamCount, macro, macro.Replace(" ", "").StartsWith("{|"));
-            return new XSharp.MacroCompiler.UsualMacro.MacroCodeblock(m.Macro, m.ParamCount, macro, macro.Replace(" ", "").StartsWith("{|"));
+            else
+                return new XSharp.MacroCompiler.UsualMacro.MacroCodeblock(m.Macro, m.ParamCount, macro, macro.Replace(" ", "").StartsWith("{|"));
         }
     }
 }

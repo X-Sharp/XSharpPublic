@@ -9,6 +9,7 @@ using System.Reflection.Emit;
 namespace XSharp.MacroCompiler
 {
     using Syntax;
+    using System.Reflection;
 
     internal enum BindAffinity
     {
@@ -45,6 +46,7 @@ namespace XSharp.MacroCompiler
         static List<ContainerSymbol> Usings = null;
         static List<ContainerSymbol> RuntimeFunctions = null;
         static Dictionary<Type, TypeSymbol> TypeCache = null;
+        static HashSet<Assembly> LoadedAssemblies = null;
 
         internal static StringComparer LookupComparer = StringComparer.OrdinalIgnoreCase;
 
@@ -65,6 +67,7 @@ namespace XSharp.MacroCompiler
         {
             Debug.Assert(delegateType.IsSubclassOf(typeof(Delegate)));
             BuildIndex();
+            AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoadEventHandler;
             ObjectType = FindType(objectType);
             DelegateType = delegateType;
             Options = options;
@@ -76,25 +79,20 @@ namespace XSharp.MacroCompiler
             return new Binder<T, R>(options);
         }
 
-        static internal void BuildIndex()
+        private static void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
         {
-            if (Global != null && Usings != null && TypeCache != null)
-                return;
-
-            var global = new NamespaceSymbol();
-            var usings = new List<ContainerSymbol>();
-            var rtFuncs = new List<ContainerSymbol>();
-            var typeCache = new Dictionary<Type, TypeSymbol>();
-
-            var usedSymbols = new HashSet<ContainerSymbol>();
-
-            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            if (!args.LoadedAssembly.IsDynamic && !LoadedAssemblies.Contains(args.LoadedAssembly))
             {
-                if (a.IsDynamic)
-                    continue;
-                var most_visible = a == System.Reflection.Assembly.GetEntryAssembly();
-                try
-                { 
+                LoadedAssemblies.Add(args.LoadedAssembly);
+                UpdateIndex(args.LoadedAssembly);
+            }
+        }
+
+        static void UpdateTypeCache(NamespaceSymbol global, Dictionary<Type, TypeSymbol> typeCache, Assembly a)
+        {
+            var most_visible = a == System.Reflection.Assembly.GetEntryAssembly();
+            try
+            {
                 var types = most_visible ? a.GetTypes() : a.GetExportedTypes();
 
                 // Build type lookup dictionary
@@ -111,7 +109,7 @@ namespace XSharp.MacroCompiler
                                 Symbol nn;
                                 if (!n.Members.TryGetValue(ns, out nn) || (!(nn is NamespaceSymbol) && most_visible))
                                 {
-                                    nn = new NamespaceSymbol(ns,n);
+                                    nn = new NamespaceSymbol(ns, n);
                                     n.Members[ns] = nn;
                                 }
                                 if (!(nn is NamespaceSymbol))
@@ -121,9 +119,7 @@ namespace XSharp.MacroCompiler
                         }
                     }
 
-                    Func<ContainerSymbol, Type, TypeSymbol> add_type = null;
-
-                    add_type = (ct, ty) =>
+                    TypeSymbol add_type(ContainerSymbol ct, Type ty)
                     {
                         if (ty.IsNested)
                         {
@@ -157,15 +153,111 @@ namespace XSharp.MacroCompiler
                         }
                     }*/
                 }
-                }
-                catch (Exception e)
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Error loading types from " + a.CodeBase + "\r" + e.Message);
+            }
+        }
+        static void UpdateUsings(List<ContainerSymbol> usings, List<ContainerSymbol> rtFuncs, Assembly a, HashSet<ContainerSymbol> usedSymbols = null)
+        {
+            if (usedSymbols == null)
+            {
+                usedSymbols = new HashSet<ContainerSymbol>();
+                foreach (var s in usings)
+                    if (!usedSymbols.Contains(s))
+                        usedSymbols.Add(s);
+            }
+            var cla = Compilation.Get(WellKnownTypes.XSharp_Internal_ClassLibraryAttribute);
+            var ina = Compilation.Get(WellKnownTypes.ImplicitNamespaceAttribute);
+            bool isXsRuntime = a.IsInXSharpRuntime();
+            var most_visible = a == System.Reflection.Assembly.GetEntryAssembly();
+            if (a.CustomAttributes != null)
+            {
+                foreach (var attr in a.CustomAttributes)
                 {
-                    System.Diagnostics.Debug.WriteLine("Error loading types from " + a.CodeBase + "\r" + e.Message);
+                    if (attr.AttributeType == ina.Type)
+                    {
+                        var args = attr.ConstructorArguments;
+                        if (args != null && args.Count == 1)
+                        {
+                            // first element is the default namespace
+                            var ns = args[0].Value.ToString();
+                            if (!string.IsNullOrEmpty(ns))
+                            {
+                                var s = LookupFullName(ns) as NamespaceSymbol;
+                                if (s != null && !usedSymbols.Contains(s))
+                                {
+                                    usedSymbols.Add(s);
+                                    usings.Add(s);
+                                }
+                            }
+                        }
+                    }
+                    else if (attr.AttributeType == cla.Type)
+                    {
+                        var args = attr.ConstructorArguments;
+                        if (args != null && args.Count == 2)
+                        {
+                            // first element is the Functions class
+                            var cls = args[0].Value.ToString();
+                            if (!string.IsNullOrEmpty(cls))
+                            {
+                                var s = LookupFullName(cls) as TypeSymbol;
+                                if (s != null)
+                                {
+                                    if (isXsRuntime && rtFuncs != null)
+                                    {
+                                        rtFuncs.Add(s);
+                                    }
+                                    else if (!usedSymbols.Contains(s))
+                                    {
+                                        usedSymbols.Add(s);
+                                        usings.Add(s);
+                                    }
+                                }
+                            }
+                            // second element is the default namespace
+                            var ns = args[1].Value.ToString();
+                            if (!string.IsNullOrEmpty(ns))
+                            {
+                                var s = LookupFullName(ns) as NamespaceSymbol;
+                                if (s != null && !usedSymbols.Contains(s))
+                                {
+                                    usedSymbols.Add(s);
+                                    usings.Add(s);
+                                }
+                            }
+                        }
+                    }
                 }
             }
+        }
+        static internal void BuildIndex()
+        {
+            if (Global != null && Usings != null && TypeCache != null)
+                return;
 
-            global = System.Threading.Interlocked.CompareExchange(ref Global, global, null);
-            typeCache = System.Threading.Interlocked.CompareExchange(ref TypeCache, typeCache, null);
+            var global = new NamespaceSymbol();
+            var usings = new List<ContainerSymbol>();
+            var rtFuncs = new List<ContainerSymbol>();
+            var typeCache = new Dictionary<Type, TypeSymbol>();
+
+            var usedSymbols = new HashSet<ContainerSymbol>();
+
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var loadedAssemblies = new HashSet<Assembly>(assemblies);
+
+            foreach (var a in assemblies)
+            {
+                if (a.IsDynamic)
+                    continue;
+                UpdateTypeCache(global, typeCache, a);
+            }
+
+            System.Threading.Interlocked.CompareExchange(ref Global, global, null);
+            System.Threading.Interlocked.CompareExchange(ref TypeCache, typeCache, null);
+            System.Threading.Interlocked.CompareExchange(ref LoadedAssemblies, loadedAssemblies, null);
 
             Compilation.InitializeNativeTypes();
             Compilation.InitializeWellKnownTypes();
@@ -185,77 +277,21 @@ namespace XSharp.MacroCompiler
             var ina = Compilation.Get(WellKnownTypes.ImplicitNamespaceAttribute);
             if (cla != null && ina != null)
             {
-                foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+                foreach (var a in assemblies)
                 {
                     if (a.IsDynamic)
                         continue;
-                    bool isXsRuntime = a.IsInXSharpRuntime();
-                    var most_visible = a == System.Reflection.Assembly.GetEntryAssembly();
-                    if (a.CustomAttributes != null)
-                    {
-                        foreach (var attr in a.CustomAttributes)
-                        {
-                            if (attr.AttributeType == ina.Type)
-                            {
-                                var args = attr.ConstructorArguments;
-                                if (args != null && args.Count == 1)
-                                {
-                                    // first element is the default namespace
-                                    var ns = args[0].Value.ToString();
-                                    if (!string.IsNullOrEmpty(ns))
-                                    {
-                                        var s = LookupFullName(ns) as NamespaceSymbol;
-                                        if (s != null && !usedSymbols.Contains(s))
-                                        {
-                                            usedSymbols.Add(s);
-                                            usings.Add(s);
-                                        }
-                                    }
-                                }
-                            }
-                            else if (attr.AttributeType == cla.Type)
-                            {
-                                var args = attr.ConstructorArguments;
-                                if (args != null && args.Count == 2)
-                                {
-                                    // first element is the Functions class
-                                    var cls = args[0].Value.ToString();
-                                    if (!string.IsNullOrEmpty(cls))
-                                    {
-                                        var s = LookupFullName(cls) as TypeSymbol;
-                                        if (s != null)
-                                        {
-                                            if (isXsRuntime)
-                                            {
-                                                rtFuncs.Add(s);
-                                            }
-                                            else if (!usedSymbols.Contains(s))
-                                            {
-                                                usedSymbols.Add(s);
-                                                usings.Add(s);
-                                            }
-                                        }
-                                    }
-                                    // second element is the default namespace
-                                    var ns = args[1].Value.ToString();
-                                    if (!string.IsNullOrEmpty(ns))
-                                    {
-                                        var s = LookupFullName(ns) as NamespaceSymbol;
-                                        if (s != null && !usedSymbols.Contains(s))
-                                        {
-                                            usedSymbols.Add(s);
-                                            usings.Add(s);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    UpdateUsings(usings, rtFuncs, a, usedSymbols);
                 }
             }
 
-            usings = System.Threading.Interlocked.CompareExchange(ref Usings, usings, null);
-            rtFuncs = System.Threading.Interlocked.CompareExchange(ref RuntimeFunctions, rtFuncs, null);
+            System.Threading.Interlocked.CompareExchange(ref Usings, usings, null);
+            System.Threading.Interlocked.CompareExchange(ref RuntimeFunctions, rtFuncs, null);
+        }
+        static void UpdateIndex(Assembly a)
+        {
+            UpdateTypeCache(Global, TypeCache, a);
+            UpdateUsings(Usings, RuntimeFunctions, a);
         }
 
         internal static TypeSymbol FindType(Type t)
@@ -347,7 +383,8 @@ namespace XSharp.MacroCompiler
                 v = Symbol.Join(v, u.Lookup(name));
             if (!v.HasFunctions())
             {
-                foreach (var u in RuntimeFunctions)
+                // prevent "Collection was modified" error
+                foreach (var u in RuntimeFunctions.ToArray())
                     v = Symbol.Join(v, u.Lookup(name));
             }
             return v;

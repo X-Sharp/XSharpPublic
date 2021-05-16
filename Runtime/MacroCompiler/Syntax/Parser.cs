@@ -12,9 +12,6 @@ namespace XSharp.MacroCompiler
 
     partial class Parser
     {
-        // Lexer to generate input
-        Lexer _Lexer;
-
         // Input source
         IList<Token> _Input;
 
@@ -26,10 +23,9 @@ namespace XSharp.MacroCompiler
         // State
         int _index = 0;
 
-        internal Parser(Lexer lexer, MacroOptions options)
+        internal Parser(IList<Token> input, MacroOptions options)
         {
-            _Lexer = lexer;
-            _Input = lexer.AllTokens();
+            _Input = input;
             _options = options;
         }
 

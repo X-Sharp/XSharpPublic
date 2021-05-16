@@ -63,7 +63,21 @@ namespace XSharp.MacroCompiler
         RequireReferenceType = 243,
         ValueNotConst = 244,
         ConstWithoutInitializer = 245,
-        Internal = 999,
+
+        PreProcessorError = 9000,
+        WarningDirective = Warning + 9001,
+        ErrorDirective = 9002,
+        EndifDirectiveExpected = 9003,
+        EndRegionDirectiveExpected = 9004,
+        DuplicateDefineSame = 9005,
+        PreProcessorWarning = Warning + 9006,
+        DuplicateDefineDiffWarning = Warning + 9007,
+        ObsoleteIncludeWarning = Warning + 9008,
+        EndOfPPLineExpected = 9009,
+        PreProcessorRecursiveRule = 9010,
+
+        Internal = 9999,
+        Warning = 10000,
     }
 
     internal class ErrorString
@@ -124,12 +138,28 @@ namespace XSharp.MacroCompiler
             { ErrorCode.RequireReferenceType, "Reference type required" },
             { ErrorCode.ValueNotConst, "Value must be a constant" },
             { ErrorCode.ConstWithoutInitializer, "CONST variable must have an initializer" },
+
+            { ErrorCode.PreProcessorError, "Pre-processor error: {1}" },
+            { ErrorCode.WarningDirective, "Warning: {0}" },
+            { ErrorCode.ErrorDirective, "Error: {0}" },
+            { ErrorCode.EndifDirectiveExpected, "#endif expected" },
+            { ErrorCode.EndRegionDirectiveExpected, "#endregion expected" },
+            { ErrorCode.DuplicateDefineSame, "Duplicate #define" },
+            { ErrorCode.PreProcessorWarning, "Pre-processor warning: {1}" },
+            { ErrorCode.DuplicateDefineDiffWarning, "Symbol already defined" },
+            { ErrorCode.ObsoleteIncludeWarning, "Include '{0}' obsoleted by '{1}'" },
+            { ErrorCode.EndOfPPLineExpected, "End of line expected" },
+            { ErrorCode.PreProcessorRecursiveRule, "Recursive pre-processor rule '{0}'" },
+
             { ErrorCode.Internal, "Internal error" },
+            { ErrorCode.Warning, "Warning base" },
         };
 
-        static internal string Get(ErrorCode e) { return _errorStrings[e]; }
+        static internal string Get(ErrorCode e) => _errorStrings[e];
 
-        static internal string Format(ErrorCode e, params object[] args) { return String.Format(_errorStrings[e], args); }
+        static internal string Format(ErrorCode e, params object[] args) => String.Format(_errorStrings[e], args);
+
+        static internal bool IsWarning(ErrorCode e) => e > ErrorCode.Warning;
 
 #if DEBUG
         static ErrorString()
@@ -161,9 +191,11 @@ namespace XSharp.MacroCompiler
         {
             get
             {
+                string errorType = ErrorString.IsWarning(Code) ? "warning" : "error";
+                int code = (int)Code % (int)ErrorCode.Warning;
                 return Location.Valid ?
-                      String.Format("Macrocompiler ({1},{2}): error XM{0:D4}: {3}", (int)Code, Location.Line, Location.Col, ErrorMessage)
-                    : String.Format("Macrocompiler error XM{0:D4}: {1}", (int)Code, ErrorMessage);
+                      String.Format("Macrocompiler {1}: {2} XM{0:D4}: {3}", code, Location.ToString(), errorType, ErrorMessage)
+                    : String.Format("Macrocompiler {1} XM{0:D4}: {2}", code, errorType, ErrorMessage);
             }
         }
         internal CompilationError(SourceLocation loc, ErrorCode e, params object[] args) { Code = e; Location = loc; ErrorMessage = ErrorString.Format(e, args); }
@@ -177,6 +209,11 @@ namespace XSharp.MacroCompiler
         internal static CompilationError Error(ErrorCode e, params object[] args) { return new CompilationError(e, args); }
         internal static CompilationError Error(int offset, ErrorCode e, params object[] args) { return new CompilationError(offset, e, args); }
         internal static CompilationError Error(SourceLocation loc, ErrorCode e, params object[] args) { return new CompilationError(loc, e, args); }
-        internal static CompilationError Error(Syntax.Token t, ErrorCode e, params object[] args) { return new CompilationError(t.start, e, args); }
+        internal static CompilationError Error(Syntax.Token t, ErrorCode e, params object[] args)
+        {
+            if (t.source?.SourceText != null)
+                return new CompilationError(new SourceLocation(t.source?.SourceText, t.start) { FileName = t.source.SourceName }, e, args);
+            return new CompilationError(t.start, e, args);
+        }
     }
 }

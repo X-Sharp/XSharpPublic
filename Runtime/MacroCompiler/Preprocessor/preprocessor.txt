@@ -1,0 +1,1133 @@
+Preprocessor specs
+
+
+#command LHS   => RHS
+#translate LHS => RHS
+#xcommand LHS   => RHS
+#xtranslate LHS => RHS
+
+The difference in Clipper #command and #xcommand is that the first allows 4 letter abbreviations and the second does not
+the same for #translate and #xtranslate
+
+
+Example:
+#command INDEX ON <key> TO <(file)>                                        ;
+         [FOR       <for>]                                                 ;
+         [<all:     ALL>]                                                  ;
+         [WHILE     <while>]                                               ;
+         [NEXT      <next>]                                                ;
+         [RECORD    <rec>]                                                 ;
+         [<rest:    REST>]                                                 ;
+         [EVAL      <eval> [EVERY  <every>]]                               ;
+         [OPTION    <eval> [STEP   <every>]]                               ;
+         [<unique:  UNIQUE>]                                               ;
+         [<ascend:  ASCENDING>]                                            ;
+         [<descend: DESCENDING>]                                           ;
+         [<cur:     USECURRENT>]                                           ;
+         [<cur:     SUBINDEX>]                                             ;
+         [<add:     ADDITIVE>]                                             ;
+         [<non:     NONCOMPACT>]                                           ;
+         [<custom:  CUSTOM>]                                               ;
+         [<custom:  EMPTY>]                                                ;
+      => ordCondSet( <"for">, <{for}>,                                     ;
+                     if( <.all.>, .t., NIL ),                              ;
+                     <{while}>,                                            ;
+                     <{eval}>, <every>,                                    ;
+                     RECNO(), <next>, <rec>,                               ;
+                     if( <.rest.>, .t., NIL ),                             ;
+                     if( (<.descend.> .AND. !<.ascend.>), .t., NIL ),      ;
+                     .f., NIL, <.cur.>, <.custom.>, <.non.>, <.add.>, NIL, ;
+                     <"while"> )                                           ;
+       ; dbCreateIndex( <(file)>, <"key">, <{key}>,                        ;
+                        if( <.unique.>, .t., NIL )  )
+
+and 
+#command DELETE TAG <(tag1)> [IN <(bag1)>]                                 ;
+         [, <(tagn)> [IN <(bagn)>]]                                        ;
+      => ordDestroy( <(tag1)>, <(bag1)> )                                  ;
+      [; ordDestroy( <(tagn)>, <(bagn)> )]
+
+
+and 
+
+#command LIST [<list,...>]                                              ;
+         [<off:OFF>]                                                    ;
+         [<toPrint: TO PRINTER>]                                        ;
+         [TO FILE <(toFile)>]                                           ;
+         [FOR <for>]                                                    ;
+         [WHILE <while>]                                                ;
+         [NEXT <next>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [ALL]                                                          ;
+                                                                        ;
+      => __dbList(                                                      ;
+                   <.off.>, { <{list}> }, .t.,                          ;
+                   <{for}>, <{while}>, <next>, <rec>, <.rest.>,         ;
+                   <.toPrint.>, <(toFile)>                              ;
+                 )
+
+
+Example of translation:
+
+	LIST FIRSTNAME, LASTNAME TO PRINTER WHILE LastName < "K"
+
+will become
+	__DbList(.F., { {||FIRSTNAME}, {||LASTNAME} }, .t., /* no for*/, 
+	         {||LastName < "K"},/* no next*/,/* no rec*/, .F., .T. ,/*no file*/)
+
+
+<.off.>		will be written as .F. because the optional marker is not found
+<{list}>	will be written as a list of codeblocks
+<.rest.>	will be written as .F.  because the optional marker is not found
+<.toPrint.> will be written as .T. because it matches the input
+<{for}>, <rec>, <(toFile)> will be omitted from the output
+
+of course the /* .. */ in the output for the parameters that are not matched is just here 
+for documentation purposes, but could also be generated if we wanted
+
+When scanning the list of tokens for the LIST it will continue until one of the tokens in the UDC is 
+found or until the end of the statement
+
+In the example above the [ALL] token is allowed but not included in the output
+
+
+#command rules may include #defines such as:
+
+#define  _DFSET(x, y)  Set( _SET_DATEFORMAT, if(__SetCentury(), x, y) )
+#command SET DATE [TO] AMERICAN         => _DFSET( "mm/dd/yyyy", "mm/dd/yy" )
+#command SET DATE [TO] ANSI             => _DFSET( "yyyy.mm.dd", "yy.mm.dd" )
+
+or one #command may trigger another
+
+#command SET COLOR TO [<*spec*>]        => SetColor( #<spec> )
+#command SET COLOR TO ( <c> )           => SetColor( <c> )
+#command SET COLOUR TO [<*spec*>]       => SET COLOR TO [<spec>]
+
+The last line maps SET COLOUR TO to one of the 2 preceding lines 
+
+Special markers on the LHS are called Match Markers
+Special markers on the RHS are called Result Markers
+
+Single semi colons in the definition are line continuation characters
+Double semi colons in the definition are line continuation characters and also output a single colon to the output
+
+
+Match Markers
+---------------------------------------------------------------------
+Match Marker             Name
+---------------------------------------------------------------------
+<idMarker>               Regular match marker
+<idMarker,...>           List match marker
+<idMarker:word list>     Restricted match marker
+<*idMarker*>             Wild match marker
+<(idMarker)>             Extended Expression match marker
+[....]					 Optional match clauses. Must be keyword followed by match marker
+						 Or a simple keyword
+---------------------------------------------------------------------
+
+Result Markers
+---------------------------------------------------------------------
+Result Marker     Name
+---------------------------------------------------------------------
+<idMarker>        Regular result marker
+#<idMarker>       Dumb stringify result marker
+<"idMarker">      Normal stringify result marker
+<(idMarker)>      Smart stringify result marker
+<{idMarker}>      Blockify result marker
+<.idMarker.>      Logify result marker
+---------------------------------------------------------------------
+
+Result markers must match matching Match markers. A result marker without a matching Match
+marker is considered an error
+
+
+Optional blocks may have a special syntax:
+
+#command SET RELATION            ;
+   [<adt:ADDITIVE>]              ;
+   [TO <key1> INTO <alias1>]     ;
+   [, [TO <keyn> INTO <aliasn>]] ;
+   => IF ! <.adt.> ; DBClearRelation() ; ENDIF ; DBSetRelation( <(alias1)>, <{key1}>, <"key1"> ) [; DBSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> )]
+
+In this case the TO <Key> INTO <alias> is repeated. The result block must be repeated for every optional block from the input.
+This only works if the optional match block in is nested ! The optional Repeat block should not be nested
+
+
+
+#command | #translate 
+ Specify a user-defined command or translation directive
+------------------------------------------------------------------------------
+ Syntax
+
+     #command   <matchPattern> => <resultPattern>
+     #translate   <matchPattern> => <resultPattern>
+
+ Arguments
+
+     <matchPattern> is the pattern the input text should match.
+
+     <resultPattern> is the text produced if a portion of input text
+     matches the <matchPattern>.
+
+     The => symbol between <matchPattern> and <resultPattern> is, along with
+     #command or #translate, a literal part of the syntax that must be
+     specified in a #command or #translate directive.  The symbol consists of
+     an equal sign followed by a greater than symbol with no intervening
+     spaces.  Do not confuse the symbol with the >= or the <= comparison
+     operators in the CA-Clipper language.
+
+ Description
+
+     #command and #translate are translation directives that define commands
+     and pseudofunctions.  Each directive specifies a translation rule.  The
+     rule consists of two portions:  a match pattern and a result pattern.
+     The match pattern matches a command specified in the program (.prg) file
+     and saves portions of the command text (usually command arguments) for
+     the result pattern to use.  The result pattern then defines what will be
+     written to the result text and how it will be written using the saved
+     portions of the matching input text.
+
+     #command and #translate are similar, but differ in the circumstance
+     under which their match patterns match input text.  A #command directive
+     matches only if the input text is a complete statement, while #translate
+     matches input text that is not a complete statement.  #command defines a
+     complete command and #translate defines clauses and pseudofunctions that
+     may not form a complete statement.  In general, use #command for most
+     definitions and #translate for special cases.
+
+     #command and #translate are similar to but more powerful than the
+     #define directive.  #define, generally, defines identifiers that control
+     conditional compilation and manifest constants for commonly used
+     constant values such as INKEY() codes.  Refer to any of the header files
+     in the \CLIP53\INCLUDE directory for examples of manifest constants
+     defined using #define.
+
+     #command and #translate directives have the same scope as the #define
+     directive.  The definition is valid only for the current program (.prg)
+     file unless defined in Std.ch or the header specified with the /U option
+     on the compiler command line.  If defined elsewhere, the definition is
+     valid from the line where it is specified to the end of the program
+     file.  Unlike #define, a #translate or #command definition cannot be
+     explicitly undefined.  The #undef directive has no effect on a #command
+     or #translate definition.
+
+     As the preprocessor encounters each source line preprocessor, it scans
+     for definitions in the following order of precedence: #define,
+     #translate, and #command.  When there is a match, the substitution is
+     made to the result text and the entire line is reprocessed until there
+     are no matches for any of the three types of definitions.  #command and
+     #translate rules are processed in stack-order (i.e., last in-first out,
+     with the most recently specified rule processed first).
+
+     In general, a command definition provides a way to specify an English
+     language statement that is, in fact, a complicated expression or
+     function call, thereby improving the readability of source code.  You
+     can use a command in place of an expression or function call to impose
+     order of keywords, required arguments, combinations of arguments that
+     must be specified together, and mutually exclusive arguments at compile
+     time rather than at runtime.  This can be important since procedures and
+     user-defined functions can now be called with any number of arguments,
+     forcing any argument checking to occur at runtime.  With command
+     definitions, the preprocessor handles some of this.
+
+     All commands in CA-Clipper are defined using the #command directive and
+     supplied in the standard header file, Std.ch, located in the
+     \CLIP53\INCLUDE directory.  The syntax rules of #command and #translate
+     facilitate the processing of all CA-Clipper and dBASE-style commands
+     into expressions and function calls.  This provides CA-Clipper
+     compatibility, as well as avenues of compatibility with other dialects.
+
+     When defining a command, there are several prerequisites to properly
+     specifying the command definition.  Many preprocessor commands require
+     more than one #command directive because mutually exclusive clauses
+     contain a keyword or argument.  For example, the @...GET command has
+     mutually exclusive VALID and RANGE clauses and is defined with a
+     different #command rule to implement each clause.
+
+     This also occurs when a result pattern contains different expressions,
+     functions, or parameter structures for different clauses specified for
+     the same command (e.g., the @...SAY command).  In Std.ch, there is a
+     #command rule for @...SAY specified with the PICTURE clause and another
+     for @...SAY specified without the PICTURE clause.  Each formulation of
+     the command is translated into a different expression.  Because
+     directives are processed in stack order, when defining more than one
+     rule for a command, place the most general case first, followed by the
+     more specific ones.  This ensures that the proper rule will match the
+     command specified in the program (.prg) file.
+
+     For more information and a general discussion of commands, refer to the
+     "Basic Concepts" chapter in the Programming and Utilities Guide.
+
+ Match Pattern
+
+     The <matchPattern> portion of a translation directive is the pattern the
+     input text must match.  A match pattern is made from one or more of the
+     following components, which the preprocessor tries to match against
+     input text in a specific way:
+
+     .  Literal values are actual characters that appear in the match
+        pattern.  These characters must appear in the input text, exactly as
+        specified to activate the translation directive.
+
+     .  Words are keywords and valid identifiers that are compared
+        according to the dBASE convention (case-insensitive, first four
+        letters mandatory, etc.).  The match pattern must start with a Word.
+
+        #xcommand and #xtranslate can recognize keywords of more than four
+        significant letters.
+
+     .  Match markers are label and optional symbols delimited by
+        angle brackets (<>) that provide a substitute (idMarker) to be used
+        in the <resultPattern> and identify the clause for which it is a
+        substitute.  Marker names are identifiers and must, therefore, follow
+        the CA-Clipper identifier naming conventions.  In short, the name
+        must start with an alphabetic or underscore character, which may be
+        followed by alphanumeric or underscore characters.
+
+        This table describes all match marker forms:
+
+        Match Markers
+        ---------------------------------------------------------------------
+        Match Marker             Name
+        ---------------------------------------------------------------------
+        <idMarker>               Regular match marker
+        <idMarker,...>           List match marker
+        <idMarker:word list>     Restricted match marker
+        <*idMarker*>             Wild match marker
+        <(idMarker)>             Extended Expression match marker
+        ---------------------------------------------------------------------
+
+        -  Regular match marker: Matches the next legal expression in the
+           input text.  The regular match marker, a simple label, is the most
+           general and, therefore, the most likely match marker to use for a
+           command argument.  Because of its generality, it is used with the
+           regular result marker, all of the stringify result markers, and
+           the blockify result marker.
+
+        -  List match marker: Matches a comma-separated list of legal
+           expressions.  If no input text matches the match marker, the
+           specified marker name contains nothing.  You must take care in
+           making list specifications because extra commas will cause
+           unpredictable and unexpected results.
+
+           The list match marker defines command clauses that have lists as
+           arguments.  Typically these are FIELDS clauses or expression lists
+           used by database commands.  When there is a match for a list match
+           marker, the list is usually written to the result text using either the
+           normal or smart stringify result marker.  Often, lists are written
+           as literal arrays by enclosing the result marker in curly ({ })
+           braces.
+
+        -  Restricted match marker: Matches input text to one of the
+           words in a comma-separated list.  If the input text does not match
+           at least one of the words, the match fails and the marker name
+           contains nothing.
+
+           A restricted match marker is generally used with the logify result
+           marker to write a logical value into the result text.  If there is
+           a match for the restricted match marker, the corresponding logify
+           result marker writes true (.T.) to the result text; otherwise, it
+           writes false (.F.).  This is particularly useful when defining
+           optional clauses that consist of a command keyword with no
+           accompanying argument.  Std.ch implements the REST clause of
+           database commands using this form.
+
+        -  Wild match marker: Matches any input text from the current
+           position to the end of a statement.  Wild match markers generally
+           match input that may not be a legal expression, such as #command
+           NOTE <*x*> in Std.ch, gather the input text to the end of the
+           statement, and write it to the result text using one of the
+           stringify result markers.
+
+        -  Extended expression match marker: Matches a regular or
+           extended expression, including a file name or path specification.
+           It is used with the smart stringify result marker to ensure that
+           extended expressions will not get stringified, while normal,
+           unquoted string file specifications will.
+
+     .  Optional match clauses are portions of the match pattern
+        enclosed in square brackets ([ ]).  They specify a portion of the
+        match pattern that may be absent from the input text.  An optional
+        clause may contain any of the components allowed within a
+        <matchPattern>, including other optional clauses.
+
+        Optional match clauses may appear anywhere and in any order in the
+        match pattern and still match input text.  Each match clause may
+        appear only once in the input text.  There are two types of optional
+        match clauses: one is a keyword followed by match marker, and the
+        other is a keyword by itself.  These two types of optional match
+        clauses can match all of the traditional command clauses typical of
+        the CA-Clipper command set.
+
+        Optional match clauses are defined with a regular or list match
+        marker to match input text if the clause consists of an argument or a
+        keyword followed by an argument (see the INDEX clause of the USE
+        command in Std.ch).  If the optional match clause consists of a
+        keyword by itself, it is matched with a restricted match marker (see
+        the EXCLUSIVE or SHARED clause of the USE command in Std.ch).
+
+        In any match pattern, you may not specify adjacent optional match
+        clauses consisting solely of match markers, without generating a
+        compiler error.  You may repeat an optional clause any number of
+        times in the input text, as long as it is not adjacent to any other
+        optional clause.  To write a repeated match clause to the result
+        text, use repeating result clauses in the <resultPattern> definition.
+
+Result Pattern
+
+     The <resultPattern> portion of a translation directive is the text the
+     preprocessor will produce if a piece of input text matches the
+     <matchPattern>.  <resultPattern> is made from one or more of the
+     following components:
+
+     .  Literal tokens are actual characters that are written directly
+        to the result text.
+
+     .  Words are CA-Clipper keywords and identifiers that are written
+        directly to the result text.
+
+     .  Result markers:  refer directly to a match marker name.  Input
+        text matched by the match marker is written to the result text via
+        the result marker.
+
+        This table lists the Result marker forms:
+
+        Result Markers
+        ---------------------------------------------------------------------
+        Result Marker     Name
+        ---------------------------------------------------------------------
+        <idMarker>        Regular result marker
+        #<idMarker>       Dumb stringify result marker
+        <"idMarker">      Normal stringify result marker
+        <(idMarker)>      Smart stringify result marker
+        <{idMarker}>      Blockify result marker
+        <.idMarker.>      Logify result marker
+        ---------------------------------------------------------------------
+
+        -  Regular result marker:  Writes the matched input text to the
+           result text, or nothing if no input text is matched.  Use this,
+           the most general result marker, unless you have special
+           requirements.  You can use it with any of the match markers, but
+           it almost always is used with the regular match marker.
+
+        -  Dumb stringify result marker:  Stringifies the matched input
+           text and writes it to the result text.  If no input text is
+           matched, it writes a null string ("").  If the matched input text
+           is a list matched by a list match marker, this result marker
+           stringifies the entire list and writes it to the result text.
+
+           This result marker writes output to result text where a string is
+           always required.  This is generally the case for commands where a
+           command or clause argument is specified as a literal value but the
+           result text must always be written as a string even if the
+           argument is not specified.
+
+        -  Normal stringify result marker:  Stringifies the matched input
+           text and writes it to the result text.  If no input text is
+           matched, it writes nothing to the result text.  If the matched
+           input text is a list matched by a list match marker, this result
+           marker stringifies each element in the list and writes it to the
+           result text.
+
+           The normal stringify result marker is most often used with the
+           blockify result marker to compile an expression while saving a
+           text image of the expression (See the SET FILTER condition and the
+           INDEX key expression in Std.ch).
+
+        -  Smart stringify result marker:  Stringifies matched input text
+           only if source text is enclosed in parentheses.  If no input text
+           matched, it writes nothing to the result text.  If the matched
+           input text is a list matched by a list match marker, this result
+           marker stringifies each element in the list (using the same
+           stringify rule) and writes it to the result text.
+
+           The smart stringify result marker is designed specifically to
+           support extended expressions for commands other than SETs with
+           <xlToggle> arguments.  Extended expressions are command syntax
+           elements that can be specified as literal text or as an expression
+           if enclosed in parentheses.  The <xcDatabase> argument of the USE
+           command is a typical example.  For instance, if the matched input
+           for the <xcDatabase> argument is the word Customer, it is written
+           to the result text as the string "Customer," but the expression
+           (cPath + cDatafile) would be written to the result text unchanged
+           (i.e., without quotes).
+
+        -  Blockify result marker: Writes matched input text as a code
+           block without any arguments to the result text.  For example, the
+           input text x + 3 would be written to the result text as {|| x +
+           3}.  If no input text is matched, it writes nothing to the result
+           text.  If the matched input text is a list matched by a list match
+           marker, this result marker blockifies each element in the list.
+
+           The blockify result marker used with the regular and list match
+           markers matches various kinds of expressions and writes them as
+           code blocks to the result text.  Remember that a code block is a
+           piece of compiled code to execute sometime later.  This is
+           important when defining commands that evaluate expressions more
+           than once per invocation.  When defining a command, you can use
+           code blocks to pass an expression to a function and procedure as
+           data rather than as the result of an evaluation.  This allows the
+           target routine to evaluate the expression whenever necessary.
+
+           In Std.ch, the blockify result marker defines database commands
+           where an expression is evaluated for each record.  Commonly, these
+           are field or expression lists, FOR and WHILE conditions, or key
+           expressions for commands that perform actions based on key values.
+
+        -  Logify result marker: Writes true (.T.) to the result text if
+           any input text is matched; otherwise, it writes false (.F.) to the
+           result text.  This result marker does not write the input text
+           itself to the result text.
+
+           The logify result marker is generally used with the restricted match
+           marker to write true (.T.) to the result text if an optional
+           clause is specified with no argument; otherwise, it writes false
+           (.F.).  In Std.ch, this formulation defines the EXCLUSIVE and
+           SHARED clauses of the USE command.
+
+     .  Repeating result clauses are portions of the <resultPattern>
+        enclosed by square brackets ([ ]).  The text within a repeating
+        clause is written to the result text as many times as it has input
+        text for any or all result markers within the clause.  If there is no
+        matching input text, the repeating clause is not written to the
+        result text.  Repeating clauses, however, cannot be nested.  If you
+        need to nest repeating clauses, you probably need an additional
+        #command rule for the current command.
+
+        Repeating clauses are the result pattern part of the #command
+        facility that create optional clauses which have arguments.  You can
+        match input text with any match marker other than the restricted
+        match marker and write to the result text with any of the
+        corresponding result markers.  Typical examples of this facility are
+        the definitions for the STORE and REPLACE commands in Std.ch.
+
+ Notes
+
+     .  Less than operator: If you specify the less than operator (<)
+        in the <resultPattern> expression, you must precede it with the
+        escape character (\).
+
+     .  Multistatement lines: You can specify more than one statement
+        as a part of the result pattern by separating each statement with a
+        semicolon.  If you specify adjacent statements on two separate lines,
+        the first statement must be followed by two semicolons.
+
+ Examples
+
+     These examples encompass many of the basic techniques you can use when
+     defining commands with the #command and #translate directives.  In
+     general, these examples are based on standard commands defined in
+     Std.ch.  Note, however, the functions specified in the example result
+     patterns are not the actual functions found in Std.ch, but fictitious
+     functions specified for illustration only.
+
+     .  This example defines the @...BOX command using regular match
+        markers with regular result markers:
+
+        #command  @ <top>, <left>, <bottom>, <right> BOX ;
+              <boxstring>;
+        =>;
+              CmdBox( <top>, <left>, <bottom>, ;
+              <right>,<boxstring> )
+
+     .  This example uses a list match marker with a regular result
+        marker to define the ? command:
+
+        #command ? [<list,...>] => QOUT(<list>)
+
+     .  This example uses a restricted match marker with a logify
+        result marker to implement an optional clause for a command
+        definition.  In this example, if the ADDITIVE clause is specified,
+        the logify result marker writes true (.T.) to the result text;
+        otherwise, it writes false (.F.):
+
+        #command RESTORE FROM <file> [<add: ADDITIVE>];
+        =>;
+              CmdRestore( <(file)>, <.add.> )
+
+     .  This example uses a list match marker with a smart stringify
+        result marker to write to the result text the list of fields
+        specified as the argument of a FIELDS clause.  In this example, the
+        field list is written as an array with each field name as an element
+        of the array:
+
+        #command COPY TO <file> [FIELDS <fields,...>];
+        =>;
+              CmdCopyAll( <(file)>, { <(fields)> } )
+
+     .  These examples use the wild match marker to define a command
+        that writes nothing to the result text.  Do this when attempting to
+        compile unmodified code developed in another dialect:
+
+        #command SET ECHO <*text*>    =>
+        #command SET TALK <*text*>    =>
+
+     .  These examples use wild match markers with dumb stringify
+        result markers to match command arguments specified as literals, then
+        write them to the result text as strings in all cases:
+
+        #command SET PATH TO <*path*>  =>  ;
+           SET( _SET_PATH, #<path> )
+        #command SET COLOR TO <*spec*> =>  SETCOLOR( #<spec> )
+
+     .  These examples use a normal result marker with the blockify
+        result marker to both compile an expression and save the text version
+        of it for later use:
+
+        #command SET FILTER TO <xpr>;
+        =>;
+              CmdSetFilter( <{xpr}>, <"xpr"> )
+
+        #command INDEX ON <key> TO <file>;
+        =>;
+              CmdCreateIndex( <(file)>, <"key">, <{key}> )
+
+     .  This example demonstrates how the smart stringify result
+        marker implements a portion of the USE command for those arguments
+        that can be specified as extended expressions:
+
+        #command USE <db> [ALIAS <a>];
+        =>;
+              CmdOpenDbf( <(db)>, <(a)> )
+
+     .  This example illustrates the importance of the blockify result
+        marker for defining a database command.  Here, the FOR and WHILE
+        conditions matched in the input text are written to the result text
+        as code blocks:
+
+        #command COUNT [TO <var>];
+              [FOR <for>] [WHILE <while>];
+              [NEXT <next>] [RECORD <rec>] [<rest:REST>] [ALL];
+        =>;
+              <var> := 0,;
+              DBEVAL( {|| <var>++}, <{for}>, <{while}>,;
+                 <next>, <rec>, <.rest.> )
+
+     .  In this example the USE command again demonstrates the types
+        of optional clauses with keywords in the match pattern.  one clause
+        is a keyword followed by a command argument, and the second is solely
+        a keyword:
+
+        #command USE <db> [<new: NEW>] [ALIAS <a>] ;
+              [INDEX <index,...>][<ex: EXCLUSIVE>] ;
+              [<sh: SHARED>] [<ro: READONLY>];
+        =>;
+              CmdOpenDbf(<(db)>, <(a)>, <.new.>,;
+                 IF(<.sh.> .OR. <.ex.>, !<.ex.>, NIL),;
+                    <.ro.>, {<(index)>})
+
+     .  This example uses the STORE command definition to illustrate
+        the relationship between an optional match clause and a repeating
+        result clause:
+
+        #command STORE <value> TO <var1> [, <varN> ];
+        =>;
+              <var1> := [ <varN> := ] <value>
+
+     .  This example uses #translate to define a pseudofunction:
+
+        #translate AllTrim(<cString>) => LTRIM(RTRIM(<cString>))
+
+
+
+#define
+ Define a manifest constant or pseudofunction
+------------------------------------------------------------------------------
+ Syntax
+
+     #define <idConstant> [<resultText>]
+     #define <idFunction>([<arg list>]) [<exp>]
+
+ Arguments
+
+     <idConstant> is the name of an identifier to define.
+
+     <resultText> is the optional replacement text to substitute whenever
+     a valid <idConstant> is encountered.
+
+     <idFunction> is a pseudofunction definition with an optional
+     argument list (<arg list>).  If you include <arg list>, it is delimited
+     by parentheses (()) immediately following <idFunction>.
+
+     <exp> is the replacement expression to substitute when the
+     pseudofunction is encountered.  Enclose this expression in parentheses
+     to guarantee precedence of evaluation when the pseudofunction is
+     expanded.
+
+     Note:  #define identifiers are case-sensitive, where #command and
+     #translate identifiers are not.
+
+ Description
+
+     The #define directive defines an identifier and, optionally, associates
+     a text replacement string.  If specified, replacement text operates much
+     like the search and replace operation of a text editor.  As each source
+     line from a program file is processed by the preprocessor, the line is
+     scanned for identifiers.  If a currently defined identifier is
+     encountered, the replacement text is substituted in its place.
+
+     Identifiers specified with #define follow most of the identifier naming
+     rules in CA-Clipper .  Defined identifiers can contain any combination
+     of alphabetic and numeric characters, including underscores.  Defined
+     identifiers, however, differ from other identifiers by being case-
+     sensitive.  As a convention, defined identifiers are specified in
+     uppercase to distinguish them from other identifiers used within a
+     program.  Additionally, identifiers are specified with a one or two
+     letter prefix to group similar identifiers together and guarantee
+     uniqueness.  Refer to one of the supplied header files in the
+     \CLIP53\INCLUDE directory for examples.
+
+     When specified, each definition must occur on a line by itself.  Unlike
+     statements, more than one directive cannot be specified on the same
+     source line.  You may continue a definition on a subsequent line by
+     employing a semicolon (;).  Each #define directive is specified followed
+     by one or more white space characters (spaces or tabs), a unique
+     identifier, and optional replacement text.  Definitions can be nested,
+     allowing one identifier to define another.
+
+     A defined identifier has lexical scope like a filewide static variable.  It
+     is only valid in the program (.prg) file in which it is defined unless
+     defined in Std.ch or the header file specified on the compiler command
+     line with the /U option.  Unlike a filewide static variable, a defined
+     identifier is visible from the point where it is defined in the program
+     file until it is either undefined, redefined, or the end of the program
+     file is reached.
+
+     You can redefine or undefine existing identifiers.  To redefine an
+     identifier, specify a new #define directive with the identifier and the
+     new replacement text as its arguments.  The current definition is then
+     overwritten with the new definition, and a compiler warning is issued in
+     case the redefinition is inadvertent.  To undefine an identifier,
+     specify an #undef directive with the identifier as its argument.
+     #define directives have three basic purposes:
+
+     .  To define a control identifier for #ifdef and #ifndef
+
+     .  To define a manifest constant--an identifier defined to
+        represent a constant value
+
+     .  To define a compiler pseudofunction
+
+     The following discussion expands these three purposes of the #define
+     directive in your program.
+
+ Preprocessor Identifiers
+
+     The most basic #define directive defines an identifier with no
+     replacement text.  You can use this type of identifier when you need to
+     test for the existence of an identifier with either the #ifdef or
+     #ifndef directives.  This is useful to either exclude or include code
+     for conditional compilation.  This type of identifier can also be
+     defined using the /D compiler option from the compiler command line.
+     See the examples below.
+
+ Manifest Constants
+
+     The second form of the #define directive assigns a name to a constant
+     value.  This form of identifier is referred to as a manifest constant.
+     For example, you can define a manifest constant for the INKEY() code
+     associated with a key press:
+
+     #define K_ESC   27
+     IF LASTKEY() = K_ESC
+        .
+        . <statements>
+        .
+     ENDIF
+
+     Whenever the preprocessor encounters a manifest constant while scanning
+     a source line, it replaces it with the specified replacement text.
+
+     Although you can accomplish this by defining a variable, there are
+     several advantages to using a manifest constant: the compiler generates
+     faster and more compact code for constants than for variables; and
+     variables have memory overhead where manifest constants have no runtime
+     overhead, thus saving memory and increasing execution speed.
+     Furthermore, using a variable to represent a constant value is
+     conceptually inconsistent.  A variable by nature changes and a constant
+     does not.
+
+     Use a manifest constant instead of a constant for several reasons.
+     First, it increases readability.  In the example above, the manifest
+     constant indicates more clearly the key being represented than does the
+     INKEY() code itself.  Second, manifest constants localize the definition
+     of constant values, thereby making changes easier to make, and
+     increasing reliability.  Third, and a side effect of the second reason,
+     is that manifest constants isolate implementation or environment
+     specifics when they are represented by constant values.
+
+     To further isolate the effects of change, manifest constants and other
+     identifiers can be grouped together into header files allowing you to
+     share identifiers between program (.prg) files, applications, and groups
+     of programmers.  Using this methodology, definitions can be standardized
+     for use throughout a development organization.  Merge header files into
+     the current program file by using the #include directive.
+
+     For examples of header files, refer to the supplied header files in the
+     \CLIP53\INCLUDE directory.
+
+ Compiler Pseudo-functions
+
+     In addition to defining constants as values, the #define directive can
+     also define pseudofunctions that are resolved at compile time.  A
+     pseudofunction definition is an identifier immediately followed by an
+     argument list, delimited by parentheses, and the replacement expression.
+     For example:
+
+     #define AREA(nLength, nWidth)      (nLength * nWidth)
+     #define SETVAR(x, y)               (x := y)
+     #define MAX(x, y)                  (IF(x > y, x, y))
+
+     Pseudofunctions differ from manifest constants by supporting arguments.
+     Whenever the preprocessor scans a source line and encounters a function
+     call that matches the pseudofunction definition, it substitutes the
+     function call with the replacement expression.  The arguments of the
+     function call are transported into the replacement expression by the
+     names specified in the argument list of the identifier definition.  When
+     the replacement expression is substituted for the pseudofunction, names
+     in the replacement expression are replaced with argument text.  For
+     example, the following invocations,
+
+     ? AREA(10, 12)
+     SETVAR(nValue, 10)
+     ? MAX(10, 9)
+
+     are replaced by :
+
+     ? (10 * 12)
+     nValue := 10
+     ? (IF(10 > 9, 10, 9)
+
+     It is important when defining pseudofunctions, that you enclose the
+     result expression in parentheses to enforce the proper order of
+     evaluation.  This is particularly important for numeric expressions.  In
+     pseudofunctions, you must specify all arguments.  If the arguments are
+     not specified, the function call is not expanded as a pseudofunction and
+     exits the preprocessor to the compiler as encountered.
+
+     Pseudofunctions do not entail the overhead of a function call and are,
+     therefore, generally faster.  They also use less memory.
+     Pseudofunctions, however, are more difficult to debug within the
+     debugger, have a scope different from declared functions and procedures,
+     do not allow skipped arguments, and are case-sensitive.
+
+     You can avoid some of these deficiencies by defining a pseudofunction
+     using the #translate directive.  #translate pseudofunctions are not case-
+     sensitive, allow optional arguments, and obey the dBASE four-letter
+     rule.  See the #translate directive reference in this chapter for more
+     information.
+
+ Examples
+
+     .  In this example a manifest constant conditionally controls the
+        compilation of debugging code:
+
+        #define DEBUG
+        .
+        . <statements>
+        .
+        #ifdef DEBUG
+           Assert(FILE("System.dbf"))
+        #endif
+
+     .  This example defines a manifest constant and substitutes it
+        for an INKEY() value:
+
+        #define K_ESC      27
+        .
+        . <statements>
+        .
+        IF INKEY() != K_ESC
+           DoIt()
+        ELSE
+           StopIt()
+        ENDIF
+
+     .  This example defines pseudofunctions for the standard
+        CA-Clipper functions, MAX() and ALLTRIM():
+
+        #define MAX(arg1, arg2)      (IF(arg1 > arg2, ;
+           arg1, arg2))
+        #define ALLTRIM(cString)   (RTRIM(LTRIM(cString)))
+        .
+        . <statements>
+        .
+        ? MAX(1, 2)
+        ? ALLTRIM("  Hello  ")
+
+
+ #error
+ Generate a compiler error and display a message
+------------------------------------------------------------------------------
+ Syntax
+
+     #error [<messageText>]
+
+ Arguments
+
+     <messageText> is the text of the message to be displayed.
+     <messageText> is a literal character string--do not enclose the message
+     in quotations unless you want them to appear as part of the display.
+
+ Description
+
+     #error causes the compiler to generate error number C2074.  If the
+     <messageText> parameter is specified, an error message is displayed.
+
+ Examples
+
+     .  This example displays an error message based on whether or not
+        a NETWORK identifier was defined:
+
+        #ifdef NETWORK
+           #error Network version not implemented.
+        #endif
+ #ifdef
+ Compile a section of code if an identifier is defined
+------------------------------------------------------------------------------
+ Syntax
+
+     #ifdef <identifier>
+        <statements>...
+     [#else]
+        <statements>...
+     #endif
+
+ Arguments
+
+     <identifier> is the name of a definition whose existence is being
+     verified.
+
+ Description
+
+     #ifdef...#endif lets you perform a conditional compilation.  It does
+     this by identifying a section of source code to be compiled if the
+     specified <identifier> is defined.  The <identifier> can be defined
+     using either the #define directive or the /D compiler option which lets
+     you define an identifier or manifest constant from the compiler command
+     line.
+
+     The #else directive specifies the code to compile if <identifier> is
+     undefined.  The #endif terminates the conditional compilation block.
+
+     Conditional compilation is particularly useful when maintaining many
+     different versions of the same program.  For example, the demo code and
+     full system code could be included in the same program file and
+     controlled by a single #define statement.
+
+ Examples
+
+     .  This code fragment is a general skeleton for conditional
+        compilation with #ifdef:
+
+        #define DEMO
+        .
+        . <statements>
+        .
+        #ifdef DEMO
+           <demo specific statements>
+        #endif
+
+     .  This example controls conditional compilation with an
+        identifier defined on the compiler command line with the /D option.
+
+        In DOS:
+
+        C>CLIPPER Myfile /DDEBUG
+
+        In the program (.prg) file:
+
+        #ifdef DEBUG
+           Assert(<some condition>)
+        #endif
+
+     .  This example defines a manifest constant to one value if it
+        does not exist and redefines it to another if it exists:
+
+        #ifdef M_MARGIN
+           #undef  M_MARGIN
+           #define M_MARGIN   15
+        #else
+           #define M_MARGIN   10
+        #endif
+#ifndef
+ Compile a section of code if an identifier is undefined
+------------------------------------------------------------------------------
+ Syntax
+
+     #ifndef <identifier>
+        <statements>...
+     [#else]
+        <statements>...
+     #endif
+
+ Arguments
+
+     <identifier> is the name of a definition whose absence is being
+     verified.
+
+ Description
+
+     #ifndef...#endif lets you perform conditional compilation by identifying
+     a section of source code to compile if the specified <identifier> is
+     undefined.
+
+     The #else directive specifies the code to compile if <identifier> is
+     defined.  The #endif terminates the conditional compilation block.
+
+ Examples
+
+     .  This code fragment is a general skeleton for conditional
+        compilation with #ifndef:
+
+        #define DEBUG
+        .
+        . <statements>
+        .
+        #ifndef DEBUG
+           <optimized version of code>
+        #else
+           <debugging version of code>
+        #endif
+
+     .  This example compiles a section of code if a specific
+        identifier is undefined.
+
+        In DOS:
+
+        C>CLIPPER Myfile
+
+        In the program (.prg) file:
+
+        #ifndef NODEBUG
+           Assert(<some condition>)
+        #endif
+
+     .  This example overrides a default definition in the program
+        (.prg) file using a manifest constant defined on the compiler command
+        line with the /D option
+
+        In DOS:
+
+        C>CLIPPER Myfile /DM_MARGIN=10
+
+        In the program (.prg) file:
+
+        #ifndef M_MARGIN
+           #define M_MARGIN   15
+        #endif
+
+
+ #stdout
+ Send literal text to the standard output device
+------------------------------------------------------------------------------
+ Syntax
+
+     #stdout [<messageText>]
+
+ Arguments
+
+     <messageText> is the text of the message to display.  <messageTest>
+     is a literal character string.  Do not enclose the message in quotation
+     marks unless you want them to appear as part of the display.
+
+ Description
+
+     #stdout causes the compiler to output the literal text to the standard
+     output device (stdout) during compilation.  If <messageText> is not
+     specified, a carriage return/line feed pair echoes to stdout.
+
+     Warning!  Manifest constants are not translated in #stdout.
+     Implementation is identical to #error with the following exceptions:
+     output is written to STDOUT and no compiler error is generated.
+
+ Examples
+
+     This example demonstrates use of #stdout:
+
+     #ifdef DEBUG
+        #stdout Compiling debugging version...
+     #endif
+
+     PROCEDURE Main()
+
+     ? "Hello world"
+     RETURN
+
+     #stdout End of "Hello World" program
+
+
+ #undef
+ Remove a #define macro definition
+------------------------------------------------------------------------------
+ Syntax
+
+     #undef <identifier>
+
+ Arguments
+
+     <identifier> is the name of the manifest constant or pseudofunction
+     to remove.
+
+ Description
+
+     #undef removes an identifier defined with the #define directive. After
+     an #undef, the specified identifier becomes undefined.  Use #undef to
+     remove an identifier before you redefine it with #define, preventing the
+     compiler warning that occurs when an existing identifier is redefined.
+     Also, use #undef to make conditional compilation specific to certain
+     sections of a program.
+
+ Examples
+
+     .  To define and then undefine a manifest constant and a
+        pseudofunction:
+
+        #define K_ESC  27
+        #define MAX(x, y)   IF(x > y, x, y)
+        .
+        . <statements>
+        .
+        #undef K_ESC
+        #undef MAX
+
+     .  To use #undef to undefine an identifier before redefining it:
+
+        #define DEBUG
+        .
+        . <statements>
+        .
+        #undef DEBUG
+        #define DEBUG   .T.
+
+     .  To undefine an identifier if it exists, and otherwise define
+        it for later portions of the program file:
+
+        #ifdef TEST
+           #undef TEST
+        #else
+           #define TEST
+        #endif
+
+#xcommand | #xtranslate
+ Specify a user-defined command or translation directive
+------------------------------------------------------------------------------
+ Syntax
+
+     #xcommand   <matchPattern> => <resultPattern>
+     #xtranslate <matchPattern> => <resultPattern>
+
+ Arguments
+
+     <matchPattern> is the pattern to match in the input text.
+
+     <resultPattern> is the text produced if a piece of input text
+     matches the <matchPattern>.
+
+ Description
+
+     The #xcommand and #xtranslate directives work like #command and
+     #translate except that they overcome the dBASE keyword length
+     limitation.  They are significant beyond the first four letters, limited
+     only by available memory.  All other rules apply.

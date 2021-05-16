@@ -14,7 +14,7 @@
     <NS>true</NS>
     <vo15>true</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.8.0.10</XSharpProjectversion>
+    <XSharpProjectversion>2.8.0.11</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -135,7 +135,6 @@
   <ItemGroup>
     <None Include="Credits.txt" />
     <None Include="functionsToImplement.txt" />
-    <None Include="NotUsedFunctions.xml" />
     <None Include="TestData\Categories.CDX" />
     <None Include="TestData\categories.dbf" />
     <None Include="TestData\categories.fpt" />

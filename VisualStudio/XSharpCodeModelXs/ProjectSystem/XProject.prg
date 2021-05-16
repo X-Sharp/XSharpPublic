@@ -120,7 +120,7 @@ BEGIN NAMESPACE XSharpModel
                VAR result := List<STRING>{}
                IF SELF:ParseOptions:ImplicitNamespace
                   FOREACH project AS XProject IN SELF:ReferencedProjects:ToArray()
-                     VAR ns := project:ProjectNode:ParseOptions:DefaultNamespace
+                     VAR ns := project:ProjectNode?:ParseOptions?:DefaultNamespace
                      IF ! String.IsNullOrEmpty(ns) .AND. result:IndexOf(ns) == -1
                         result:Add(ns)
                      ENDIF

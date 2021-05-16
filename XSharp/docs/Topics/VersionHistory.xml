@@ -11,34 +11,63 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="NotesBox">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
-    <para styleclass="Heading1">Changes in 2.8.1.0 (Cahors)</para>
+    <para styleclass="Heading1">Changes in 2.8.1.12 (Cahors)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Fixed issues with interpolated strings inside scripts (#598, #622):</li>
+      <li styleclass="Body Text">Fixed issues with interpolated strings (#598, #622):</li>
       <list id="113" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Body Text">The script compiler now correctly sets the AllowDot compiler option from the current active dialect in the runtime (Core &amp; FoxPro: AllowDot = true)</li>
         <li styleclass="Body Text">When compiling with DOT(.) as instance method separator then the &quot;:&quot; character is used inside interpolated strings to prefix the format string. </li>
         <li styleclass="Body Text">When compiling with COLON (:) as instance method separator then the colon can not be used to separate expressions from the format string inside interpolated strings. In that case we now support a double colon (::) between the expression and the format string. For example</li>
       </list>
     </list>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> i </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">i := 42</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? i&quot;i = {i::F2}&quot; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// this diplays i with 2 decimals</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">WAIT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> num </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">num := 42</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">? i&quot;num = {num::F2}&quot; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// this diplays </text><text style="font-weight:normal; font-style:normal; color:#000000;">num</text><text style="font-weight:bold; font-style:italic; color:#339966;"> with 2 decimals</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">WAIT</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></para>
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Fixed an assertion error &apos;UnconvertedConditionalOperator&apos; (#616)</li>
       <li styleclass="Body Text">You can now use DATE fields inside VOSTRUCT and UNION (#595)</li>
+      <li styleclass="Body Text">Fixed an assertion error &apos;UnconvertedConditionalOperator&apos; (#616)</li>
       <li styleclass="Body Text">Fixed an assertion error in the compiler when the namespace &quot;xsharp&quot; is used (#618)</li>
+      <li styleclass="Body Text">Fixed an &quot;failed to emit&quot; problem for methods defined in COM assemblies with default arguments and arguments passed by reference (#626)</li>
+      <li styleclass="Body Text">Fixed a problem with the handling of default parameters and method calls (#629)</li>
+      <li styleclass="Body Text">Fixed a problem where the _SizeOf() operator was not calculating the right size for a VOSTRUCT (#635). <br/>Please note that _SizeOf() can only be calculated at compile time when your application is compiled for x86 or x64 mode. When compiling for AnyCpu we will be calculating _SizeOf() at runtime.</li>
+      <li styleclass="Body Text">Fixed a problem where the &quot;IS Pattern&quot; was not always working correctly for variables of type USUAL (#636)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Implemented the FoxPro Evl() function (#389)</li>
       <li styleclass="Body Text">DbCloseArea() was returning TRUE even when no area was open. This was incompatible with VO. We are returning FALSE now.(#611)</li>
       <li styleclass="Body Text">Macro compiler was not able to find functions in assemblies that were loaded dynamically (#607)</li>
       <li styleclass="Body Text">When a DBF file was opened &quot;readonly&quot; and then an index was created, then a runtime error would happen when the file was closed, because the RDD was trying to set the &quot;production index&quot; flag in the DBF header. This flag is no longer set for files that are opened &quot;readonly&quot; (#610)</li>
       <li styleclass="Body Text">Fixed an exception (that was caught) inside DbOrderInfo(DBOI_KEYCOUND) (#613)</li>
+      <li styleclass="Body Text">Fixed a problem with the Workareas debug window (#625)</li>
+      <li styleclass="Body Text">DbOrderInfo() was returning incorrect values when an index was not abailable (#627)</li>
+      <li styleclass="Body Text">Fixed a problem with TransForm() and symbol arguments (#628)</li>
+      <li styleclass="Body Text">Fixed a problem with the StrZero function (#637)</li>
+      <li styleclass="Body Text">Fixed a problem with the AELement() function (#639)</li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">RDD System</text></para>
+    <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed a problem with indexes on workareas/cursors created with the SqlExec() function when the index expression contained &quot;nullable&quot; fields (#630)</li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Macrocompiler</text></para>
+    <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">The macro compiler had problems finding functions that were inside an assembly that was loaded later (#607)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Todo comments were not always parsed correctly, They were also included when they were part of another word or when they were not the first word on the line. This has been fixed.(#617)</li>
       <li styleclass="Body Text">Fix problem with saving dialect from General Page </li>
+      <li styleclass="Body Text">Quick info and Goto definition were not working for members inside the same class when they were not prefixed with SELF:</li>
+      <li styleclass="Body Text">Fix code completion for nullable types with the &apos;?&apos; syntax (#567)</li>
+      <li styleclass="Body Text">Methods combobox was not correctly synchronized (#602)</li>
+      <li styleclass="Body Text">Todo comments were not always parsed correctly, They were also included when they were part of another word or when they were not the first word on the line. This has been fixed.(#617)</li>
       <li styleclass="Body Text">Fix problem that &quot;warnings as errors&quot; was not saved from the Build properties page (#621)</li>
+      <li styleclass="Body Text">Fix problems that would start occurring after editor window was split (#641)</li>
+      <li styleclass="Body Text">After selecting a member of type &quot;Assign&quot; from the completion list the editor was incorrectly inserting a &apos;(&apos; character (#643)</li>
+      <li styleclass="Body Text">Typing &apos;(&apos; on the declaration line of an entity (function, method) would trigger parameter completion. This has been fixed.(#643)</li>
+      <li styleclass="Body Text">Parameter tips were not shown for Constructor calls (#645)</li>
+      <li styleclass="Body Text">Completion list was incorrectly including static members (#646)</li>
+      <li styleclass="Body Text">QuickInfo for external types was not including &quot;AS Type&quot; for the parameters (#647)</li>
+      <li styleclass="Body Text">Fixed a problem when resolving parser options for a project that was not yet completely loaded (#649)</li>
+      <li styleclass="Body Text">Local variables were not always recognized with their correct type in the editor (#651)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Installer</text></para>
     <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

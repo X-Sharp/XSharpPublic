@@ -2458,6 +2458,14 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
       PRIVATE METHOD ParseForLocalDeclaration() AS VOID
          VAR tokens := List<IToken>{}
          VAR firstToken := SELF:Lt1
+         SWITCH firstToken.Type
+         CASE XSharpLexer.LOCAL
+         CASE XSharpLexer.STATIC
+         CASE XSharpLexer.VAR
+            SELF:ParseDeclarationStatement()
+            RETURN
+         END SWITCH
+
          DO WHILE ! SELF:Eos()
             IF SELF:Matches(XSharpLexer.IMPLIED, XSharpLexer.VAR)
                IF SELF:IsId(SELF:La2)
@@ -2593,6 +2601,9 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             SELF:ReadLine()
             RETURN
          ENDIF
+         DO WHILE SELF:Eos() .AND. !SELF:Eoi()
+             Consume()
+         ENDDO
          SWITCH SELF:La1
          CASE XSharpLexer.FIELD
             IF !SELF:ParseFieldStatement()
@@ -2711,8 +2722,9 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             SELF:_locals:Add(xVar)
          NEXT
          FOREACH VAR xMissing IN missingTypes
-            xMissing:TypeName := XLiterals.UsualType
+            xMissing:TypeName := _missingType
          NEXT
+         SELF:ReadLine()   
          RETURN TRUE
 
       PRIVATE METHOD ParseLocalVar AS XSourceVariableSymbol
@@ -2741,7 +2753,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          VAR type     := SELF:ParseAsIsType()
          SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
          IF String.IsNullOrEmpty(type)
-            type := _missingType
+            type := XLiterals.NoType
          ENDIF
          VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type} {IsArray := lDim .OR. !String.IsNullOrEmpty(arraysub)}
          IF type:EndsWith("[]")

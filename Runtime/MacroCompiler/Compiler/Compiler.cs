@@ -138,6 +138,12 @@ namespace XSharp.MacroCompiler
                 tokens = pp.PreProcess();
             }
 #if DUMPTOKENS
+            var filteredTokens = tokens.Where(t => t.Channel == Channel.Default).ToList();
+            tokens.Clear();
+            foreach (var t in filteredTokens)
+            {
+                tokens.Add(t);
+            }
             foreach (var t in tokens)
             {
                 if (t.Type == TokenType.EOS)

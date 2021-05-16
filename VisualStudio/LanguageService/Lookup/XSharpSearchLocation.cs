@@ -21,6 +21,7 @@ namespace XSharp.LanguageService
         internal string CurrentNamespace { get; private set; }
         internal XFile File { get; private set; }
         internal XSourceMemberSymbol Member { get; private set; }
+        internal List<string> Usings { get; private set; }
         internal XSharpDialect Dialect
         {
             get
@@ -51,6 +52,7 @@ namespace XSharp.LanguageService
             LineNumber = lineNumber;
             Position = position;
             CurrentNamespace = currentNs;
+            Usings = GetUsings();
         }
 
         internal XSharpSearchLocation With( int newLine, int newPos)
@@ -64,20 +66,62 @@ namespace XSharp.LanguageService
         {
             var clone = (XSharpSearchLocation)this.MemberwiseClone();
             clone.CurrentNamespace = currentNs;
+            clone.Usings = clone.GetUsings();
             return clone;
         }
         internal XSharpSearchLocation With(XSourceMemberSymbol member)
         {
             var clone = (XSharpSearchLocation)this.MemberwiseClone();
             clone.Member = member;
+            clone.Usings = clone.GetUsings();
             return clone;
         }
         internal IXTypeSymbol FindType(string name)
         {
-            var usings = File.Usings.ToList();
-            if (!string.IsNullOrEmpty(CurrentNamespace))
-                usings.Add(CurrentNamespace);
-            return Project.FindType(name, usings);
+            var usings = Usings.ToList();
+             return Project.FindType(name, usings);
         }
+
+        private List<string> GetUsings()
+        {
+            IXSymbol scope;
+            scope = Member;
+            var scopes = new List<string>();
+            scopes.AddRange(File.Usings);
+            while (scope != null)
+            {
+                string ns = "";
+                if (scope is XSourceTypeSymbol && !XSourceTypeSymbol.IsGlobalType(scope))
+                {
+                    ns = scope.FullName;
+                }
+                if (scope.Kind == Kind.Namespace)
+                {
+                    ns = scope.FullName;
+                }
+                if (ns?.Length > 0)
+                {
+                    var elements = ns.Split(".".ToCharArray());
+                    ns = "";
+                    for (int i = 0; i < elements.Length; i++)
+                    {
+                        if (i > 0)
+                            ns += "." + elements[i];
+                        else
+                            ns = elements[0];
+                        if (!scopes.Contains(ns))
+                        {
+                            scopes.Add(ns);
+                        }
+                    }
+                }
+                scope = scope.Parent;
+            }
+            if (!string.IsNullOrEmpty(CurrentNamespace) && ! scopes.Contains(CurrentNamespace))
+                scopes.Add(CurrentNamespace);
+
+            return scopes;
+        }
+
     }
 }

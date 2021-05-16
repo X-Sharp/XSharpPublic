@@ -22,13 +22,13 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 	PROTECT oWindow AS Control
 	PROTECT aSelected AS ArrayList
 	PROTECT aAffected AS List<STRING>
-	
+
 	PROTECT oActionStart AS Point
 	PROTECT oActionEnd AS Point
 	PROTECT lMoved AS LOGIC
 	PROTECT nResizeGonia AS INT
-	
-	
+
+
 	PROTECT oDummy AS Button
 
 	PROTECT eCopyMode AS ViewMode
@@ -39,11 +39,11 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 	STATIC PROTECT oClipboard := DesignerClipboard{} AS DesignerClipboard
 	STATIC ACCESS Clipboard AS DesignerClipboard
 	RETURN oClipboard
-	
-	
+
+
 	CONSTRUCTOR(_oSurface AS Control , _oOptions AS WindowDesignerOptions , _oGrid AS DesignerGrid , _oToolBox AS ToolBox)
 		SUPER(_oSurface , _oOptions)
-		
+
 		SELF:oToolBox := _oToolBox
 		SELF:oGrid := _oGrid
 		SELF:oGrid:PropertyModified := PropertyUpdatedEventHandler{ SELF , @PropertyModifiedInGrid() }
@@ -55,13 +55,13 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		SELF:aSelected := ArrayList{}
 		SELF:aAffected := List<STRING>{}
 		SELF:aActions := ArrayList{}
-		
+
 		SELF:AddDummy()
-		
+
 		SELF:oTimer:Start()
 
 	RETURN
-		
+
 	ACCESS IsDirty AS LOGIC
 	RETURN SELF:nAction != SELF:nActionSaved
 
@@ -84,14 +84,14 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 
 
 	METHOD CanDoAction(eAction AS DesignerActionType) AS LOGIC
-		
+
 		IF SELF:lReadOnly
 			RETURN FALSE
 		ENDIF
-		
+
 		SWITCH eAction
-		CASE DesignerActionType.Cut 
-        CASE DesignerActionType.Copy 
+		CASE DesignerActionType.Cut
+        CASE DesignerActionType.Copy
 		CASE DesignerActionType.RemoveSelected
 			RETURN !SELF:oWindowDesign:lSelected .AND. SELF:aSelected:Count != 0
 		CASE DesignerActionType.Paste
@@ -106,7 +106,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 			RETURN SELF:aSelected:Count >= 3
 		END SWITCH
 	RETURN FALSE
-	
+
 	PROTECTED METHOD AddDummy() AS VOID
 		SELF:oDummy := Button{}
 		SELF:oDummy:Size := Size{0,0}
@@ -177,7 +177,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 			SELF:StatusBarMessage:Invoke(cText)
 		END IF
 	RETURN
-	
+
 	METHOD CreateNewWindow(cType AS STRING , cName AS STRING) AS LOGIC
 		LOCAL oTemplate AS VOControlTemplate
 		LOCAL oDesign AS DesignWindowItem
@@ -189,10 +189,10 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		IF oTemplate == NULL
 			RETURN FALSE
 		END IF
-		
+
 //		SELF:oStatusBar := StatusBar{}
 //		SELF:Surface:Controls:Add(SELF:oStatusBar)
-		
+
 		cGuid := Guid.NewGuid():ToString()
 		oDesign := (DesignWindowItem)SELF:StartAction(DesignerBasicActionType.Create , ActionData{cGuid , cType})
 		oDesign:Control:AllowDrop := TRUE
@@ -235,7 +235,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 			ENDIF
 		END IF
 	RETURN
-	
+
 	VIRTUAL METHOD TimerTicked(o AS OBJECT,e AS EventArgs) AS VOID
 //	PRIVATE METHOD TimerTicked(o AS OBJECT,e AS EventArgs) AS VOID // TODO: should be allowed?
 /*		IF SELF:eCurrent == WEDAction.None
@@ -248,7 +248,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 			ENDIF
 		ENDIF
 	RETURN
-	
+
 	PROTECTED VIRTUAL METHOD ControlPaint(o AS OBJECT , e AS PaintEventArgs) AS VOID
 		SELF:DrawGrid((Control)o , e)
 	RETURN
@@ -258,7 +258,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 			System.Windows.Forms.ControlPaint.DrawGrid(e:Graphics , e:ClipRectangle , SELF:oOptions:oGridSize , oControl:BackColor)
 		END IF
 	RETURN
-	
+
 	METHOD ShowCode() AS VOID
 		LOCAL oCode AS CodeContents
 		LOCAL t AS TextBox
@@ -266,7 +266,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		LOCAL n AS INT
 
 		oCode := SELF:GetCodeContents()
-		
+
 		f := Form{}
 		f:Size := Size{800 , 500}
 		f:ShowInTaskbar := FALSE
@@ -334,7 +334,7 @@ RETURN
 		LOCAL aConstructor AS List<STRING>
 		LOCAL aTabPages AS List<STRING>
 		LOCAL aRadioGroups AS List<STRING>
-		
+
 //		LOCAL rDivX , rDivY AS REAL8
 		LOCAL oFont AS Font
 		LOCAL oGraphics AS Graphics
@@ -345,7 +345,7 @@ RETURN
 		LOCAL oInfo AS UnitTranslateInfo
 		LOCAL cStyle AS STRING
 		LOCAL lFontUsed AS LOGIC
-		
+
 		LOCAL eViewMode AS ViewMode
 		LOCAL cColumnsInherit AS STRING
 		LOCAL cBrowserInherit AS STRING
@@ -399,7 +399,7 @@ RETURN
 			aDefines:Add(oDesign:GetVODefine(SELF:oWindowDesign:Name))
 			aDefineValues:Add((100 + n):ToString())
 		NEXT
-		
+
 		IF SELF:ViewMode != ViewMode.Auto
 			aColumns := SELF:GetAllColumnDesignItemsByIndex(TRUE)
 		END IF
@@ -423,7 +423,7 @@ RETURN
 			cLine += oRect:Width:ToString() + ", "
 			cLine += oRect:Height:ToString()
 			aResource:Add(cLine)
-			
+
 //			aResource:Add(e"STYLE WS_CHILD")
 			cStyle := oDesign:GetVOStylesString(VOStyle.Style)
 			aResource:Add( "STYLE " + cStyle)
@@ -471,12 +471,12 @@ RETURN
 			NEXT
 			aResource:Add("END")
 		END IF
-		
+
 		oProp := SELF:oWindowDesign:GetPropertyByMember("ExpCtls")
 		IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "YES"
 			lExpCtls := TRUE
 		ENDIF
-		
+
 
 // class declaration
 		cLine := "CLASS " + SELF:oWindowDesign:Name + " INHERIT " + SELF:oWindowDesign:InheritClassName
@@ -536,7 +536,7 @@ RETURN
 					END IF
 					cLine += "oTP" + oPageOptions:cName + " AS " + oPageOptions:cName
 					aClass:Add(cLine)
-					
+
 					cLine := e"\t"
 					cLine += "SELF:oTP" + oPageOptions:cName + " := " + oPageOptions:cName
 					cLine += "{SELF , " + /*(m - 1):ToString()*/"0" + "}"
@@ -560,7 +560,7 @@ RETURN
 		aClass:Add("")
 //		aClass:Add(e"\t//{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)")
 //		aClass:Add("")
-		
+
 
 
 // constructor
@@ -568,14 +568,15 @@ RETURN
 		IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "YES"
 			lPixPos := TRUE
 		ENDIF
-		
-		cLine := "CONSTRUCTOR(" + SELF:oWindowDesign:cInitMethod + e")"
+
+//		cLine := "CONSTRUCTOR(" + SELF:oWindowDesign:cInitMethod + e")"
+		cLine := "CONSTRUCTOR" + SELF:oWindowDesign:cInitMethod
 		aConstructor:Add(cLine)
 		aConstructor:Add("")
-		cLine := e"\tSELF:PreInit(" + SELF:oWindowDesign:cInitMethod + e")"
+		cLine := e"\tSELF:PreInit(" + SELF:oWindowDesign:cInitParams + e")"
 		aConstructor:Add(cLine)
 		aConstructor:Add("")
-		
+
 		IF SELF:HasRichEdit
 			aConstructor:Add(e"\tLoadLibrary(String2Psz(\"RICHED32.DLL\"))")
 			aConstructor:Add("")
@@ -642,7 +643,7 @@ RETURN
 		IF lFontUsed
 			aConstructor:Insert(1 , e"\tLOCAL oFont AS Font")
 		ENDIF
-		
+
 		FOR n := 0 UPTO aRadioGroups:Count - 1
 			aConstructor:Add(aRadioGroups[n])
 		NEXT
@@ -681,7 +682,7 @@ RETURN
 			cLine := e"\tSELF:Browser := " + cBrowserInherit + "{SELF}"
 			aConstructor:Add(cLine)
 			aConstructor:Add("")
-			
+
 //			FOR n := 0 UPTO aDesign:Count - 1
 //				oDesign := (DesignWindowItem)aDesign[n]
 			FOR n := 0 UPTO aColumns:Count - 1
@@ -690,9 +691,9 @@ RETURN
 					LOOP
 				ENDIF
 				LOCAL cColumn AS STRING
-				
+
 				cColumn := e"\tSELF:oDB" + oDesign:Name
-	
+
 				cLine := cColumn
 				cLine += " := "
 				cLine += cColumnsInherit
@@ -739,7 +740,7 @@ RETURN
 					cLine := cColumn + e":Caption := \"" + oProp:TextValue + e"\""
 					aConstructor:Add(cLine)
 				END IF
-				
+
 				oProp := oDesign:GetProperty("Block")
 				IF oProp != NULL .AND. !oProp:TextValue:Trim():Length == 0
 					cLine := cColumn + ":Block := " + oProp:TextValue:Trim()
@@ -750,18 +751,18 @@ RETURN
 					cLine := cColumn + ":BlockOwner := " + oProp:TextValue:Trim()
 					aConstructor:Add(cLine)
 				END IF
-				
+
 				cLine := e"\tSELF:Browser:AddColumn(SELF:oDB" + oDesign:Name + ")"
 				aConstructor:Add(cLine)
-				
+
 				aConstructor:Add("")
 			NEXT
-			
+
 			cLine := e"\tSELF:ViewAs(" + SELF:oWindowDesign:GetProperty("View As"):TextValue + ")"
 			aConstructor:Add(cLine)
 			aConstructor:Add("")
 		END IF
-		
+
 
 // subforms
 		FOR n := 0 UPTO aDesign:Count - 1
@@ -801,17 +802,17 @@ RETURN
 		FOR n := 0 UPTO aTabPages:Count - 1
 			aConstructor:Add(aTabPages[n])
 		NEXT
-		
+
 
 		aConstructor:Add("")
-		cLine := e"\tSELF:PostInit(" + SELF:oWindowDesign:cInitMethod + e")"
+		cLine := e"\tSELF:PostInit(" + SELF:oWindowDesign:cInitParams + e")"
 		aConstructor:Add(cLine)
 		aConstructor:Add("")
 		aConstructor:Add(e"RETURN")
 
 		aConstructor:Add("")
 //		aConstructor:Add("END CLASS")
-		
+
 	RETURN oCode
 
 	METHOD GetCodeContentsTyped() AS CodeContents
@@ -838,7 +839,7 @@ RETURN
 		LOCAL aConstructor AS List<STRING>
 		LOCAL aTabPages AS List<STRING>
 		LOCAL aRadioGroups AS List<STRING>
-		
+
 //		LOCAL rDivX , rDivY AS REAL8
 		LOCAL oFont AS Font
 		LOCAL oGraphics AS Graphics
@@ -849,7 +850,7 @@ RETURN
 		LOCAL oInfo AS UnitTranslateInfo
 		LOCAL cStyle AS STRING
 		LOCAL lFontUsed AS LOGIC
-		
+
 		LOCAL eViewMode AS ViewMode
 		LOCAL cColumnsInherit AS STRING
 		LOCAL cBrowserInherit AS STRING
@@ -903,7 +904,7 @@ RETURN
 			aDefines:Add(oDesign:GetVODefine(SELF:oWindowDesign:Name))
 			aDefineValues:Add((100 + n):ToString())
 		NEXT
-		
+
 		IF SELF:ViewMode != ViewMode.Auto
 			aColumns := SELF:GetAllColumnDesignItemsByIndex(TRUE)
 		END IF
@@ -927,7 +928,7 @@ RETURN
 			cLine += oRect:Width:ToString() + ", "
 			cLine += oRect:Height:ToString()
 			aResource:Add(cLine)
-			
+
 //			aResource:Add(e"STYLE WS_CHILD")
 			cStyle := oDesign:GetVOStylesString(VOStyle.Style)
 			aResource:Add( "STYLE " + cStyle)
@@ -975,12 +976,12 @@ RETURN
 			NEXT
 			aResource:Add("END")
 		END IF
-		
+
 		oProp := SELF:oWindowDesign:GetPropertyByMember("ExpCtls")
 		IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "YES"
 			lExpCtls := TRUE
 		ENDIF
-		
+
 
 // class declaration
 		cLine := "CLASS " + SELF:oWindowDesign:Name + " INHERIT " + SELF:oWindowDesign:InheritClassName
@@ -1040,7 +1041,7 @@ RETURN
 					END IF
 					cLine += "oTP" + oPageOptions:cName + " AS " + oPageOptions:cName
 					aClass:Add(cLine)
-					
+
 					cLine := e"\t"
 					cLine += "SELF:oTP" + oPageOptions:cName + " := " + oPageOptions:cName
 					cLine += "{SELF , " + /*(m - 1):ToString()*/"0" + "}"
@@ -1064,7 +1065,7 @@ RETURN
 		aClass:Add("")
 //		aClass:Add(e"\t//{{%UC%}} USER CODE STARTS HERE (do NOT remove this line)")
 //		aClass:Add("")
-		
+
 
 
 // constructor
@@ -1072,14 +1073,14 @@ RETURN
 		IF oProp != NULL .AND. oProp:TextValue:ToUpper() == "YES"
 			lPixPos := TRUE
 		ENDIF
-		
+
 		cLine := "CONSTRUCTOR(" + SELF:oWindowDesign:cInitMethod + e")"
 		aConstructor:Add(cLine)
 		aConstructor:Add("")
 		cLine := e"\tSELF:PreInit(" + SELF:oWindowDesign:cInitMethod + e")"
 		aConstructor:Add(cLine)
 		aConstructor:Add("")
-		
+
 		IF SELF:HasRichEdit
 			aConstructor:Add(e"\tLoadLibrary(String2Psz(\"RICHED32.DLL\"))")
 			aConstructor:Add("")
@@ -1104,7 +1105,7 @@ RETURN
 			cLine += String.Format(e"\tSUPER(oParent , ResourceID{{\"{0}\" , _GetInst()}} , {1})" , SELF:oWindowDesign:Name , cModal)
 		END CASE
 		aConstructor:Add(cLine)
-		
+
 		cStyle := oDesign:GetVOStylesString(VOStyle.Style)
 		cLine := String.Format(e"\tSELF:SetStyle({0}, TRUE)" , cStyle)
 		aConstructor:Add(cLine)
@@ -1119,7 +1120,7 @@ RETURN
 		ENDIF
 		cLine := String.Format(e"\tSELF:Font := Font{{{0}}}" , cFont)
 		aConstructor:Add(cLine)
-		
+
 		oWinRect := SELF:oWindowDesign:GetRect()
 		cLine := String.Format(e"\tSELF:Size := Dimension{{{0} , {1}}} " , oWinRect:Width , oWinRect:Height)
 		aConstructor:Add(cLine)
@@ -1175,7 +1176,7 @@ RETURN
 		IF lFontUsed
 			aConstructor:Insert(1 , e"\tLOCAL oFont AS Font")
 		ENDIF
-		
+
 		FOR n := 0 UPTO aRadioGroups:Count - 1
 			aConstructor:Add(aRadioGroups[n])
 		NEXT
@@ -1214,7 +1215,7 @@ RETURN
 			cLine := e"\tSELF:Browser := " + cBrowserInherit + "{SELF}"
 			aConstructor:Add(cLine)
 			aConstructor:Add("")
-			
+
 //			FOR n := 0 UPTO aDesign:Count - 1
 //				oDesign := (DesignWindowItem)aDesign[n]
 			FOR n := 0 UPTO aColumns:Count - 1
@@ -1223,9 +1224,9 @@ RETURN
 					LOOP
 				ENDIF
 				LOCAL cColumn AS STRING
-				
+
 				cColumn := e"\tSELF:oDB" + oDesign:Name
-	
+
 				cLine := cColumn
 				cLine += " := "
 				cLine += cColumnsInherit
@@ -1272,7 +1273,7 @@ RETURN
 					cLine := cColumn + e":Caption := \"" + oProp:TextValue + e"\""
 					aConstructor:Add(cLine)
 				END IF
-				
+
 				oProp := oDesign:GetProperty("Block")
 				IF oProp != NULL .AND. !oProp:TextValue:Trim():Length == 0
 					cLine := cColumn + ":Block := " + oProp:TextValue:Trim()
@@ -1283,18 +1284,18 @@ RETURN
 					cLine := cColumn + ":BlockOwner := " + oProp:TextValue:Trim()
 					aConstructor:Add(cLine)
 				END IF
-				
+
 				cLine := e"\tSELF:Browser:AddColumn(SELF:oDB" + oDesign:Name + ")"
 				aConstructor:Add(cLine)
-				
+
 				aConstructor:Add("")
 			NEXT
-			
+
 			cLine := e"\tSELF:ViewAs(" + SELF:oWindowDesign:GetProperty("View As"):TextValue + ")"
 			aConstructor:Add(cLine)
 			aConstructor:Add("")
 		END IF
-		
+
 
 // subforms
 		FOR n := 0 UPTO aDesign:Count - 1
@@ -1334,7 +1335,7 @@ RETURN
 		FOR n := 0 UPTO aTabPages:Count - 1
 			aConstructor:Add(aTabPages[n])
 		NEXT
-		
+
 
 		aConstructor:Add("")
 		cLine := e"\tSELF:PostInit(" + SELF:oWindowDesign:cInitMethod + e")"
@@ -1344,7 +1345,7 @@ RETURN
 
 		aConstructor:Add("")
 //		aConstructor:Add("END CLASS")
-		
+
 	RETURN oCode
 
 	METHOD GetCode(oDesign AS DesignWindowItem , cVar AS STRING , aCode AS List<STRING> , lFontUsed REF LOGIC) AS VOID
@@ -1360,7 +1361,7 @@ RETURN
 		IF SELF:oWindow == NULL .OR. SELF:oWindowDesign == NULL
 			RETURN
 		ENDIF
-		
+
 //		aMultiple := Dictionary<STRING,ArrayList>{}
 		aMultiple := SortedList<STRING,ArrayList>{}
 		FOR n := 0 UPTO oDesign:aProperties:Count - 1
@@ -1368,7 +1369,7 @@ RETURN
 //			IF oProp:eVOStyle == VOStyle.None  .and. !oProp:lNoCode .and. !oProp:IsAuto .and. oProp:Name[0] != '_'
 			IF oProp:eVOStyle == VOStyle.None  .AND. !oProp:lNoCode .AND. oProp:Name[0] != '_'
 
-				IF oProp:lMultiple 
+				IF oProp:lMultiple
 					IF oProp:nMultiPos != 0
 						IF aMultiple:ContainsKey(oProp:cMember)
 							aList := aMultiple[oProp:cMember]
@@ -1478,7 +1479,7 @@ RETURN
 				ENDIF
 			ENDIF
 		NEXT
-		
+
 		LOCAL m AS INT
 		LOCAL lAuto AS LOGIC
 		FOR n := 0 UPTO aMultiple:Count - 1
@@ -1499,11 +1500,11 @@ RETURN
 				aCode:Add(e"\t" + cVar + aMultiple:Keys[n] + " := " + cValue + e"")
 			END IF
 		NEXT
-		
+
 	RETURN
 
 	METHOD GetRadioGroupCode(oGroup AS DesignWindowItem , cGroup AS STRING , aRadioGroups AS List<STRING>) AS VOID
-		LOCAL oDesign AS DesignWindowItem 
+		LOCAL oDesign AS DesignWindowItem
 		LOCAL oProp AS VODesignProperty
 		LOCAL aRadios AS List<STRING>
 		LOCAL aDesign AS ArrayList
@@ -1512,9 +1513,9 @@ RETURN
 		LOCAL lAdded AS LOGIC
 		LOCAL cTabs AS STRING
 		LOCAL n AS INT
-		
+
 		aRadios := List<STRING>{}
-		
+
 		oRect := Rectangle{(INT)oGroup:GetProperty("_Left"):Value , (INT)oGroup:GetProperty("_Top"):Value , (INT)oGroup:GetProperty("_Width"):Value , (INT)oGroup:GetProperty("_Height"):Value}
 		aDesign := SELF:GetAllDesignItemsByCreationOrder()
 		FOR n := 0 UPTO aDesign:Count - 1
@@ -1547,7 +1548,7 @@ RETURN
 			aRadioGroups:Add(cTabs + "})")
 			aRadioGroups:Add("")
 		END IF
-		
+
 	RETURN
 
 	PROTECTED VIRTUAL METHOD ControlKeyDown(o AS OBJECT,e AS KeyEventArgs) AS VOID
@@ -1590,7 +1591,7 @@ RETURN
 				SELF:Undo()
 			CASE e:KeyData == Keys.Z + Keys.Control + Keys.Shift .OR. e:KeyData == Keys.Back + Keys.Alt + Keys.Shift
 				SELF:Redo()
-	
+
 			CASE e:KeyData == Keys.C + Keys.Control .OR. e:KeyData == Keys.Insert + Keys.Control
 				SELF:Copy()
 			CASE e:KeyData == Keys.V + Keys.Control .OR. e:KeyData == Keys.Insert + Keys.Shift
@@ -1652,18 +1653,18 @@ RETURN
 	METHOD SelectMainItem() AS VOID
 		SELF:DoAction(DesignerActionType.Select , SELF:oWindowDesign:cGuid)
 	RETURN
-	
+
 	ACCESS IsGridEnabled AS LOGIC
 	   RETURN oWindow != NULL .AND. oOptions:lShowGrid
-	   
+
 	ACCESS ViewMode AS ViewMode
 		LOCAL oProp AS DesignProperty
 		LOCAL eMode AS ViewMode
-		
+
 		IF SELF:oWindowDesign == NULL
 			RETURN ViewMode.Auto
 		ENDIF
-		
+
 		oProp := SELF:oWindowDesign:GetProperty("View As")
 		DO CASE
 		CASE oProp == NULL
@@ -1676,7 +1677,7 @@ RETURN
 			eMode := ViewMode.Auto
 		END CASE
 	RETURN eMode
-	   
+
 	METHOD ToggleGrid() AS VOID
 		IF SELF:oWindow == NULL .OR. SELF:oWindowDesign == NULL
 			RETURN
@@ -1733,7 +1734,7 @@ RETURN
 		IF SELF:lReadOnly
 			RETURN FALSE
 		ENDIF
-		
+
 		lVnfrmOnly := lVnfrmOnly .OR. SELF:lStandalone
 		IF cFileName:ToUpper():Contains("~AUTORECOVER")
 			lVnfrmOnly := TRUE // in case it isn't already
@@ -1741,11 +1742,11 @@ RETURN
 
 		SELF:ArrangeColumnsOrder(TRUE)
 		SELF:ArrangeControlOrder()
-		
+
 		oPrgStream := EditorStream{}
 		oVhStream := EditorStream{}
 		oRcStream := EditorStream{}
-		
+
 		oCode := SELF:GetCodeContents()
 		IF SELF:GetSaveFileStreams(cFileName , oVNFrmStream , oRCStream , oPrgStream , oVhStream , cVhName , lVnfrmOnly , lRcInSameFolder)
 //			SELF:SaveVNfrm(oVNFrmStream)
@@ -1779,7 +1780,7 @@ RETURN
 		LOCAL lSuccess AS LOGIC
 		LOCAL lError AS LOGIC
 		LOCAL nAt AS INT
-		
+
 		TRY
 
 			oFileInfo := FileInfo{cVNFrmFileName}
@@ -1796,7 +1797,7 @@ RETURN
 				cRCFileName := cAlternative
 				lRcInSameFolder := TRUE
 			ENDIF
-						
+
 			cFileName := cBaseName
 			nAt := cFileName:LastIndexOf('.')
 			IF nAt != -1 // strip out window name
@@ -1823,7 +1824,7 @@ RETURN
 					lError := TRUE
 				END IF
 			END IF
-			
+
 			lSuccess := FALSE
 			IF !lError
 				IF !lVnfrmOnly
@@ -1842,7 +1843,7 @@ RETURN
 				oVNFrmStream := File.Open(cVNFrmFileName , FileMode.Create , FileAccess.Write , FileShare.None)
 				lSuccess := TRUE
 			ENDIF
-			
+
 		CATCH e AS Exception
 
 			MessageBox.Show(e:Message , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Exclamation)
@@ -1866,7 +1867,7 @@ RETURN
 		END IF
 
 	RETURN lSuccess
-	
+
 	PROTECTED VIRTUAL METHOD PreviewControlKeyDown(o AS OBJECT,e AS PreviewKeyDownEventArgs) AS VOID
 
 		IF SELF:oWindow == NULL .OR. SELF:oWindowDesign == NULL
@@ -1887,7 +1888,7 @@ RETURN
 			SELF:DoMoveSelected(Direction.Right , e:Control .OR. e:Shift)
 		END CASE
 	RETURN
-	
+
 	PROTECTED VIRTUAL METHOD CreateControl(cControl AS STRING, oParent AS Control , cGuid AS STRING) AS DesignWindowItem
 		LOCAL oItem AS DesignWindowItem
 		oItem := DesignWindowItem{SELF , VOWindowEditorTemplate.Get(cControl)}
@@ -1915,8 +1916,8 @@ RETURN
 		ENDIF
 //		oItem:Control:BringToFront()
 	RETURN oItem
-	
-	
+
+
 	METHOD SetText(cText AS STRING) AS VOID
 //		SELF:oSurface:Parent:Text := cText
 	RETURN
@@ -1960,7 +1961,7 @@ RETURN
 						oColumn := SELF:GetDesignItemFromControl(oItem:Control:Controls[m])
 						IF oColumn != NULL
 							aItems:Add(oColumn)
-						ENDIF                 
+						ENDIF
 					NEXT
 				ENDIF
 			ENDIF
@@ -2020,19 +2021,19 @@ RETURN
 			ENDIF
 		NEXT
 	RETURN aItems
-		
+
 	VIRTUAL METHOD GoniaClicked(oSelector AS SelectorBitmap , e AS MouseEventArgs) AS VOID
 		IF SELF:lReadOnly
 			RETURN
 		ENDIF
 //		SELF:oDummy:Focus()
-		
+
 		IF SELF:ViewMode == ViewMode.Browse
 			IF oSelector:nGonia != 4 //.and. oSelector:nGonia != 8
 				RETURN
 			END IF
 		END IF
-	
+
 		SELF:oActionStart := Point{e:X , e:Y}
 		SELF:oActionEnd := SELF:oActionStart
 
@@ -2040,7 +2041,7 @@ RETURN
 		SELF:lMoved := FALSE
 		SELF:eCurrent := WEDAction.Resize
 		SELF:oSurface:Capture := TRUE
-		
+
 	RETURN
 
 	VIRTUAL METHOD ControlMouseDoubleClick(oItem AS DesignWindowItem , eButton AS MouseButtons , oPoint AS Point) AS VOID
@@ -2048,7 +2049,7 @@ RETURN
 			SELF:WriteCallback(oItem , "Click")
 		END IF
 	RETURN
-	
+
 	VIRTUAL METHOD ControlMouseDown(oItem AS DesignWindowItem , eButton AS MouseButtons , oPoint AS Point) AS VOID
 		LOCAL oTemp AS Point
 
@@ -2064,7 +2065,7 @@ RETURN
 					oTabControl := (DesignTabControl)oItem:Control
 //					oPoint := oTabControl:PointToClient(oPoint)
 //					MessageBox.Show(oPoint:ToString() , oPoint:ToString())
-//					IF oPoint:Y < 20 
+//					IF oPoint:Y < 20
 //					IF oTabControl:GetChildAtPoint(oPoint) != NULL
 					IF oTabControl:GetPageUnderPos(oTabControl:PointToClient(oPoint)) != -1
 						LOCAL nPage AS INT
@@ -2132,11 +2133,11 @@ RETURN
 	RETURN
 	VIRTUAL METHOD ControlMouseMove(oItem AS DesignWindowItem , eButton AS MouseButtons , oPoint AS Point) AS VOID
 		LOCAL oTemp AS Point
-		
+
 		IF SELF:oWindow == NULL .OR. SELF:oWindowDesign == NULL
 			RETURN
 		ENDIF
-		
+
 		IF SELF:eCurrent != WEDAction.None .AND. Control.MouseButtons == MouseButtons.None
 			SELF:eCurrent := WEDAction.None
 			RETURN
@@ -2152,7 +2153,7 @@ RETURN
 				SELF:DrawFrame()
 			END IF
 		ENDIF
-		
+
 		oTemp := SELF:oWindow:PointToClient(oPoint)
 		IF oItem != NULL
 			SELF:SetText(oTemp:X:ToString() + " , " + oTemp:Y:ToString())
@@ -2209,7 +2210,7 @@ RETURN
 		IF SELF:lReadOnly
 			RETURN
 		ENDIF
-		
+
 		DO CASE
 
 		CASE SELF:eCurrent == WEDAction.Move
@@ -2261,7 +2262,7 @@ RETURN
 						NEXT
 						SELF:EndAction()
 					END IF
-					
+
 				ELSE
 					SELF:BeginAction()
 /*					IF SELF:SelectionHasColumns()
@@ -2335,7 +2336,7 @@ RETURN
 			LOCAL oDesign AS DesignWindowItem
 			LOCAL lAdded AS LOGIC
 			LOCAL oControl AS Control
-			
+
 			aItems := SELF:GetAllDesignItems()
 			FOR n := 0 UPTO aItems:Count - 1
 				oDesign := (DesignWindowItem)aItems[n]
@@ -2347,7 +2348,7 @@ RETURN
 				y := oPoint:Y
 				xx := x + Math.Abs(SELF:oActionStart:X - SELF:oActionEnd:X)
 				yy := y + Math.Abs(SELF:oActionStart:Y - SELF:oActionEnd:Y)
-				
+
 				IF oDesign:lBrowseView
 					oControl := oDesign:Column
 				ELSE
@@ -2356,7 +2357,7 @@ RETURN
 				IF oControl == NULL .OR. !oControl:Visible
 					LOOP
 				ENDIF
-				
+
 				IF (XEditorSettings.PartialLasso .and. Control.ModifierKeys != Keys.Shift) .or. ;
 					(!XEditorSettings.PartialLasso .and. Control.ModifierKeys == Keys.Shift)
 					lInclude := oDesign:Control:Left <= xx .and. oDesign:Control:Top <= yy .and. oDesign:Control:Right >= x .and. oDesign:Control:Bottom >= y
@@ -2364,7 +2365,7 @@ RETURN
 					lInclude := oDesign:Control:Left >= x .and. oDesign:Control:Top >= y .and. oDesign:Control:Right <= xx .and. oDesign:Control:Bottom <= yy
 				ENDIF
 				//lInclude := oDesign:Control:Left >= x .AND. oDesign:Control:Top >= y .AND. oDesign:Control:Right <= xx .AND. oDesign:Control:Bottom <= yy
-	
+
 				IF lInclude
 					IF lAdded
 						SELF:DoAction(DesignerActionType.SelectAdd , oDesign:cGuid)
@@ -2377,7 +2378,7 @@ RETURN
 			SELF:EndAction()
 
 		END CASE
-		
+
 		SELF:PrintStatus()
 	RETURN
 
@@ -2477,14 +2478,14 @@ RETURN
 		y := Math.Min(SELF:oActionStart:Y , SELF:oActionEnd:Y)
 		xx := Math.Abs(SELF:oActionStart:X - SELF:oActionEnd:X)
 		yy := Math.Abs(SELF:oActionStart:Y - SELF:oActionEnd:Y)
-		
+
 		SELF:DoCreate(SELF:oToolBox:Selected , Point{x,y} , Size{xx,yy})
 	RETURN
 	PROTECTED VIRTUAL METHOD DoCreate(oTemplate AS VOControlTemplate , oPoint AS Point , oSize AS Size) AS VOID
 		LOCAL oDesign AS DesignWindowItem
 		LOCAL x,y,xx,yy AS INT
 		LOCAL cGuid AS STRING
-		
+
 		IF SELF:ViewMode == ViewMode.Browse
 			oTemplate := VOWindowEditorTemplate.Get("SINGLELINEEDIT")
 			IF oTemplate == NULL
@@ -2509,11 +2510,11 @@ RETURN
 			SELF:oToolBox:SelectPointer()
 			RETURN
 		END IF
-		
+
 		IF oTemplate == NULL
 			RETURN
 		ENDIF
-		
+
 		oPoint := SELF:oWindow:PointToClient(oPoint)
 		oPoint := SELF:PointToGrid(oPoint)
 		x := oPoint:X
@@ -2524,7 +2525,7 @@ RETURN
 		ENDIF
 		xx := oSize:Width
 		yy := oSize:Height
-		
+
 		SELF:BeginAction()
 
 		TRY
@@ -2556,7 +2557,7 @@ RETURN
 			ENDIF
 			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Width" , xx})
 			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Height" , yy})
-			
+
 			IF oDesign:IsTabControl
 				((DesignTabControl)oDesign:Control):AddPage()
 			ENDIF
@@ -2564,29 +2565,29 @@ RETURN
 		CATCH
 
 			Funcs.ErrorBox("Error creating control.")
-			
+
 		END TRY
 
 		SELF:EndAction()
-		
+
 		SELF:oToolBox:SelectPointer()
-		
+
 /*		SELF:UpdateFieldSpecProperties()
 		SELF:UpdateMenuProperties()
 		SELF:UpdateDBServerProperties()
-		
+
 		SELF:ArrangeCreationOrder()*/
-		
+
 	RETURN
 
 	PROTECTED METHOD GetNextName(cName AS STRING) AS STRING
 		LOCAL cBase AS STRING
 		LOCAL cNext AS STRING
-		
+
 		cNext := cName
-		
+
 		IF cName == "" .or. SELF:NameExists(cName)
-			
+
 			BEGIN SCOPE // new method
 				cBase := cName
 				LOCAL nIndex AS INT
@@ -2667,14 +2668,14 @@ RETURN
 	PROTECTED VIRTUAL METHOD AdjustResizeRect(oRect AS Rectangle , nDifX AS INT,nDifY AS INT , nGonia AS INT) AS Rectangle
 		LOCAL x1,x2,y1,y2 AS INT
 /*		LOCAL lGrid AS LOGIC
-	
+
 		lGrid := SELF:UseGrid*/
-	
+
 		x1 := oRect:Left
 		x2 := oRect:Right
 		y1 := oRect:Top
 		y2 := oRect:Bottom
-		
+
 		IF nGonia == 1 .OR. nGonia == 7 .OR. nGonia == 8
 			x1 += nDifX
 			IF x1 > x2
@@ -2735,11 +2736,11 @@ RETURN
 //			SELF:StartAction(DesignerActionType.Select , SELF:oWindowDesign:cGuid)
 			SELF:DoAction(DesignerActionType.Select , SELF:oWindowDesign:cGuid)
 		ENDIF
-	
+
 		SELF:nActionDepth --
-	
+
 		IF SELF:nActionDepth == 0
-	
+
 			IF SELF:lClearUndoBuffer
 				SELF:nAction := 0
 				SELF:aActions:Clear()
@@ -2756,11 +2757,11 @@ RETURN
 					oDesign:lDefault := lDefault
 				ENDIF
 			NEXT
-			
+
 			IF SELF:ViewMode == ViewMode.Browse
 				SELF:ArrangeColumnsOrder()
 			END IF
-			
+
 			FOR n := 0 UPTO SELF:aAffected:Count - 1
 				oDesign := SELF:GetDesignItemFromGuid(SELF:aAffected[n])
 				IF oDesign != NULL
@@ -2771,7 +2772,7 @@ RETURN
 					ENDIF*/
 				ENDIF
 			NEXT
-	
+
 			IF oAction != NULL .AND. oAction:aSelected:Count == 0
 				FOR n := 0 UPTO SELF:aSelected:Count - 1
 					oDesign := (DesignWindowItem)SELF:aSelected[n]
@@ -2780,8 +2781,8 @@ RETURN
 					ENDIF
 				NEXT
 			ENDIF
-	
-			
+
+
 			FOR n := 0 UPTO SELF:aSelected:Count - 1
 				oDesign  := (DesignWindowItem)SELF:aSelected[n]
 				IF oDesign:IsTabControl
@@ -2799,20 +2800,20 @@ RETURN
 						oDesign:GetProperty("_IsDataPage"):Value := IIF(oPage:lDataAware , 0 , 1)
 					ENDIF
 				ENDIF
-				
+
 				IF oDesign:Control:GetType() == TypeOf(DesignEmpty)
 					oDesign:Control:Invalidate()
 				ENDIF
-				
+
 			NEXT
-			
-			
+
+
 			SELF:oGrid:Fill(SELF:aSelected)
 			SELF:UpdateControlOrders()
 //			((DesignWindowItem)SELF:aSelected[ self:aSelected:Count - 1 ]):Control:BringToFront()
 //			((DesignWindowItem)SELF:aSelected[0]):AdjustSelectors()
 
-	
+
 /*			Application.DoEvents()
 			System.Threading.Thread.Sleep(20)
 			FOR n := 0 UPTO SELF:oWindow:Controls:Count - 1
@@ -2825,11 +2826,11 @@ RETURN
             IF SELF:IsDirtyChanged != NULL
                 SELF:IsDirtyChanged:Invoke(SELF , EventArgs{})
             ENDIF
-            
+
             SELF:PrintStatus()
-	
+
 		ENDIF
-	
+
 	RETURN
 
 	PROTECTED VIRTUAL METHOD UpdateControlOrders() AS VOID
@@ -2838,10 +2839,10 @@ RETURN
 		IF !oDesign:IsForm .AND. !oDesign:IsGroupBox .AND. !oDesign:IsColumn
 			oDesign:Control:BringToFront()
 		ENDIF
-		
+
 		AdjustGroupBoxesInForm(SELF:oWindow)
 	RETURN
-		
+
 	PROTECTED STATIC METHOD AdjustGroupBoxesInForm(oForm AS Control) AS VOID
 		LOCAL oBoxes AS SortedList<INT,Control>
 		LOCAL oControl AS Control
@@ -2900,7 +2901,7 @@ RETURN
 				oUndo:eAction := DesignerBasicActionType.Remove
 				oUndo:uData := ActionData{oDesign:cGuid}
 				oAction:aUndo:Add(oUndo)
-				
+
 				oRedo := DesignerBasicAction{TRUE}
 				oRedo:eAction := DesignerBasicActionType.Create
 				oRedo:uData := ActionData{cGuid , oDesign:cControl , cParent}
@@ -2914,7 +2915,7 @@ RETURN
 				END DO
 			ENDIF
 			SELF:AddAffected(oDesign)
-			
+
 		CASE eAction == DesignerBasicActionType.Remove
 			cGuid := uData:cGuid
 			oDesign := SELF:GetDesignItemFromGuid(cGuid)
@@ -2936,7 +2937,7 @@ RETURN
 				oUndo:eAction := DesignerBasicActionType.Create
 				oUndo:uData := ActionData{oDesign:cGuid , oDesign:cControl , "" , aProperties}
 				oAction:aUndo:Add(oUndo)
-				
+
 				oRedo := DesignerBasicAction{TRUE}
 				oRedo:eAction := DesignerBasicActionType.Remove
 				oRedo:uData := ActionData{oDesign:cGuid}
@@ -2953,7 +2954,7 @@ RETURN
 					oUndo:eAction := DesignerBasicActionType.SetProperty
 					oUndo:uData := ActionData{oDesign:cGuid , uData:cData , oProp:Value}
 					oAction:aUndo:Add(oUndo)
-					
+
 					oRedo := DesignerBasicAction{TRUE}
 					oRedo:eAction := DesignerBasicActionType.SetProperty
 					oRedo:uData := ActionData{oDesign:cGuid , uData:cData , uData:oData}
@@ -2963,7 +2964,7 @@ RETURN
 				SELF:PropertyGotUpdated(oDesign , oProp)
 				SELF:AddAffected(oDesign)
 			ENDIF
-	
+
 
 		CASE eAction == DesignerBasicActionType.SetIndex
 			oDesign := SELF:GetDesignItemFromGuid(uData:cGuid)
@@ -2976,7 +2977,7 @@ RETURN
 					oUndo:eAction := DesignerBasicActionType.SetProperty
 					oUndo:uData := ActionData{oDesign:cGuid , uData:cData , oProp:Value}
 					oAction:aUndo:Add(oUndo)
-					
+
 					oRedo := DesignerBasicAction{TRUE}
 					oRedo:eAction := DesignerBasicActionType.SetProperty
 					oRedo:uData := ActionData{oDesign:cGuid , uData:cData , uData:oData}
@@ -2984,7 +2985,7 @@ RETURN
 				ENDIF*/
 				SELF:AddAffected(oDesign)
 			ENDIF
-	
+
 		END CASE
 
 		oAction:lExecuted := TRUE
@@ -3050,8 +3051,8 @@ RETURN
 				END IF
 				SELF:DoAction(DesignerActionType.SelectAdd , oDesign:cGuid)
 			NEXT
-			
-			
+
+
 		CASE eAction == DesignerActionType.DeSelect
 //			oDesign := SELF:GetDesignItemFromGuid(cData)
 //			oDesign:lSelected := FALSE
@@ -3064,7 +3065,7 @@ RETURN
 					EXIT
 				ENDIF
 			NEXT
-			
+
 			SELF:AddAffected(oDesign)
 
 		CASE eAction == DesignerActionType.RemoveSelected
@@ -3138,7 +3139,7 @@ RETURN
 		LOCAL x,y,xx,yy,xs,ys AS INT
 		LOCAL cGuid AS STRING
 		LOCAL n AS INT
-		
+
 		oDesign := (DesignWindowItem) SELF:aSelected[SELF:aSelected:Count - 1]
 		oControl := oDesign:Control
 		x := oControl:Left
@@ -3165,7 +3166,7 @@ RETURN
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Left" , x + xs / 2 - oControl:Width / 2} )
 			CASE eAction == DesignerActionType.AlignCenterVert
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Top" , y + ys / 2 - oControl:Height / 2} )
-				
+
 			CASE eAction == DesignerActionType.ResizeAlignLeft
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Width" , oControl:Left + oControl:Width - x} )
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Left" , x} )
@@ -3176,7 +3177,7 @@ RETURN
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Top" , y} )
 			CASE eAction == DesignerActionType.ResizeAlignBottom
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Height" , yy - oControl:Top} )
-				
+
 			CASE eAction == DesignerActionType.SameHorSize
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Width" , xs} )
 			CASE eAction == DesignerActionType.SameVerSize
@@ -3184,15 +3185,15 @@ RETURN
 			CASE eAction == DesignerActionType.SameSize
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Width" , xs} )
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Height" , ys} )
-				
+
 			END CASE
 		NEXT
 		SELF:EndAction()
 	RETURN
-	
+
 	PRIVATE METHOD DoSpacingAction(eAction AS DesignerActionType) AS VOID
 		LOCAL oDesign AS DesignWindowItem
-		LOCAL oControl AS Control 
+		LOCAL oControl AS Control
 		LOCAL nX,nY,nXS,nYS AS INT
 		LOCAL nMaxX,nMinX,nMaxY,nMinY AS INT
 		LOCAL nTotalSize AS INT
@@ -3200,18 +3201,18 @@ RETURN
 		LOCAL n,nn AS INT
 		LOCAL oSorted AS SortedList
 		LOCAL lHorz AS LOGIC
-		
+
 		nMinX := 78686
 		nMinY := 78686
 		nMaxX := - 76757
 		nMaxY := - 76757
-		
+
 		lHorz := eAction == DesignerActionType.SpacingHorzEqual .OR. eAction == DesignerActionType.SpacingHorzRem .OR. ;
 				eAction == DesignerActionType.SpacingHorzInc .OR. eAction == DesignerActionType.SpacingHorzDec .OR. ;
 				eAction == DesignerActionType.CenterHorz
-		
+
 		oSorted := System.Collections.SortedList{SELF:aSelected:Count}
-	
+
 		FOR n := 0 UPTO SELF:aSelected:Count - 1
 			oDesign := (DesignWindowItem) SELF:aSelected[n]
 			oControl := oDesign:Control
@@ -3219,7 +3220,7 @@ RETURN
 			nY := oControl:Top
 			nXS := oControl:Width
 			nYS := oControl:Height
-			
+
 			IF nX < nMinX
 				nMinX := nX
 			ENDIF
@@ -3232,7 +3233,7 @@ RETURN
 			IF (nY + nYS) > nMaxY
 				nMaxY := nY + nYS
 			ENDIF
-			
+
 //			IF eAction == DesignerActionType.SpacingHorzEqual
 			IF lHorz
 				nTotalSize += nXS
@@ -3248,9 +3249,9 @@ RETURN
 		        END DO
 				oSorted:Add(nY , oDesign)
 			ENDIF
-			
+
 		NEXT
-		
+
 		IF eAction == DesignerActionType.CenterHorz .OR. eAction == DesignerActionType.CenterVert
 			SELF:BeginAction()
 			FOR n := 0 UPTO SELF:aSelected:Count - 1
@@ -3260,29 +3261,29 @@ RETURN
 				nY := oControl:Top
 				nXS := oControl:Width
 				nYS := oControl:Height
-				
+
 				DO CASE
 				CASE eAction == DesignerActionType.CenterHorz
 					nX := nX + (SELF:oWindow:ClientSize:Width / 2 - (nMinX + nMaxX) / 2)
 				CASE eAction == DesignerActionType.CenterVert
 					nY := nY + (SELF:oWindow:ClientSize:Height / 2 - (nMinY + nMaxY) / 2)
 				ENDCASE
-		
+
 				IF nX != oControl:Left
 					SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "_Left" , nX} )
 				ENDIF
 				IF nY != oControl:Top
 					SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "_Top" , nY} )
 				ENDIF
-			NEXT	
+			NEXT
 			SELF:EndAction()
-	
+
 		ELSE
-			
+
 			IF SELF:aSelected:Count < 3
 				RETURN
 			ENDIF
-			
+
 			oDesign := (DesignWindowItem)oSorted:GetByIndex(0)
 			oControl := oDesign:Control
 			IF lHorz
@@ -3295,7 +3296,7 @@ RETURN
 				CASE eAction == DesignerActionType.SpacingHorzRem
 					nSpacing := 0
 				END CASE
-				nn := oControl:Left + oControl:Width + nSpacing 
+				nn := oControl:Left + oControl:Width + nSpacing
 			ELSE
 				nSpacing := ((nMaxY - nMinY) - nTotalSize) / (SELF:aSelected:Count - 1)
 				DO CASE
@@ -3308,11 +3309,11 @@ RETURN
 				END CASE
 				nn := oControl:Top + oControl:Height + nSpacing
 			END IF
-			
+
 			IF nSpacing < 0
 				RETURN
 			ENDIF
-	
+
 			SELF:BeginAction()
 			FOR n := 1 UPTO oSorted:Count - 1
 				oDesign := (DesignWindowItem)oSorted:GetByIndex(n)
@@ -3326,18 +3327,18 @@ RETURN
 				ENDIF
 			NEXT
 			SELF:EndAction()
-	
+
 		END IF
-	
+
 	RETURN
 
 	PRIVATE METHOD AddColumn(oParent AS DesignWindowItem) AS VOID
 		LOCAL oDesign AS DesignWindowItem
 		LOCAL oTemplate AS VOControlTemplate
 		LOCAL cGuid AS STRING
-		
+
 		oTemplate := VOWindowEditorTemplate.Get("BDATACOLUMN")
-		
+
 		SELF:BeginAction()
 		cGuid := Guid.NewGuid():ToString()
 		oDesign := (DesignWindowItem)SELF:StartAction(DesignerBasicActionType.Create , ActionData{cGuid , oTemplate:cControl , oParent:cGuid})
@@ -3346,7 +3347,7 @@ RETURN
 		SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "Name" , SELF:GetNextName("bDataColumn")})
 		SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "_Width" , 100})
 		SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "Caption" , "bDataColumn"})
-/*		
+/*
 		IF oDesign:GetProperty("Caption") != NULL
 			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{cGuid , "Caption" , oTemplate:cStartText})
 		END IF
@@ -3368,7 +3369,7 @@ RETURN
 		SELF:EndAction()
 
 	RETURN
-	
+
 	VIRTUAL METHOD DoMoveSelected(eDirection AS Direction , lAlternate AS LOGIC) AS VOID
 		LOCAL oDesign AS DesignWindowItem
 		LOCAL x,y AS Int32
@@ -3376,18 +3377,18 @@ RETURN
 		LOCAL nOffsetY AS INT
 		LOCAL lGrid AS LOGIC
 		LOCAL n AS INT
-		
+
 		IF SELF:oWindowDesign:lSelected
 			RETURN
 		END IF
-		
+
 		FOR n := 0 UPTO SELF:aSelected:Count - 1
 			oDesign := (DesignWindowItem)SELF:aSelected[n]
 			IF oDesign:lLocked
 				RETURN
 			ENDIF
 		NEXT
-		
+
 		lGrid := SELF:oOptions:lUseGrid .XOR. lAlternate
 		IF lGrid
 			nOffsetX := SELF:oOptions:oGridSize:Width
@@ -3396,7 +3397,7 @@ RETURN
 			nOffsetX := 1
 			nOffsetY := 1
 		ENDIF
-		
+
 		SELF:BeginAction()
 		FOR n := 0 UPTO SELF:aSelected:Count - 1
 			oDesign := (DesignWindowItem)SELF:aSelected[n]
@@ -3448,20 +3449,20 @@ RETURN
 		IF SELF:oWindowDesign:lSelected .OR. SELF:aSelected:Count == 0
 			RETURN
 		ENDIF
-	
+
 		Clipboard:Clear()
 		FOR n := 0 UPTO SELF:aSelected:Count - 1
 			oDesign := (DesignWindowItem) SELF:aSelected[n]
 			SELF:CopyDesigner(oDesign , "")
 		NEXT
 		SELF:eCopyMode := SELF:ViewMode
-	
+
 	RETURN
 	PROTECTED VIRTUAL METHOD CopyDesigner(oDesign AS DesignWindowItem , cParent AS STRING) AS VOID
 		LOCAL oEntry AS DesignerClipboardEntry
 		LOCAL oProp AS VODesignProperty
 		LOCAL n AS INT
-	
+
 		oEntry := DesignerClipboardEntry{}
 		oEntry:cGuid := oDesign:cGuid
 		oEntry:cClass := oDesign:cControl
@@ -3476,19 +3477,19 @@ RETURN
 			ENDIF
 		NEXT
 		Clipboard:AddEntry(oEntry)
-		
+
 	RETURN
-	
+
 	VIRTUAL METHOD Paste() AS VOID
 		LOCAL oEntry AS DesignerClipboardEntry
 		LOCAL lNameConflict AS LOGIC
 		LOCAL cGuid AS STRING
 		LOCAL n,m AS INT
-	
+
 		IF SELF:lReadOnly
 			RETURN
 		ENDIF
-		
+
 		IF SELF:ViewMode == ViewMode.Browse .AND. SELF:eCopyMode != ViewMode.Browse
 			RETURN
 		END IF
@@ -3531,9 +3532,9 @@ RETURN
 		IF SELF:lReadOnly
 			RETURN
 		ENDIF
-		
+
 		oConMenu:=ContextMenu{}
-		
+
 		IF SELF:aSelected:Count > 1
 			oConMenu:MenuItems:Add(SELF:MakeMenuItem("Align Left",DesignerActionType.AlignLeft))
 			oConMenu:MenuItems:Add(SELF:MakeMenuItem("Align Right",DesignerActionType.AlignRight))
@@ -3553,12 +3554,12 @@ RETURN
 			oConMenu:MenuItems:Add(SELF:MakeMenuItem("Same Size",DesignerActionType.SameSize))
 			oConMenu:MenuItems:Add(SELF:MakeMenuItem("Same Horizontal Size",DesignerActionType.SameHorSize))
 			oConMenu:MenuItems:Add(SELF:MakeMenuItem("Same Vertical Size",DesignerActionType.SameVerSize))
-			
+
 /*			oConMenu:MenuItems:Add("-")
 			oItem := SELF:MakeMenuItem("Lock Controls",DesignerActionType.LockUnlock)
 			oItem:Checked := ((DesignControlForms)ATail(SELF:aSelected)):lLocked
 			oConMenu:MenuItems:Add(oItem)*/
-			
+
 			oConMenu:MenuItems:Add("-")
 			oConMenu:MenuItems:Add(SELF:MakeMenuItem("Cut",DesignerActionType.Cut))
 			oConMenu:MenuItems:Add(SELF:MakeMenuItem("Copy",DesignerActionType.Copy))
@@ -3567,9 +3568,9 @@ RETURN
 			END IF
 			oConMenu:MenuItems:Add("-")
 			oConMenu:MenuItems:Add(SELF:MakeMenuItem("Delete",DesignerActionType.RemoveSelected))
-	
+
 		ELSEIF !oDesign:IsForm
-	
+
 /*			IF oDesign:IsBrowser
 				oConMenu:MenuItems:Add(SELF:MakeMenuItem("Add Column",DesignerActionType.AddColumn))
 				oConMenu:MenuItems:Add("-")
@@ -3591,16 +3592,16 @@ RETURN
 			oConMenu:MenuItems:Add(SELF:MakeMenuItem("Delete",DesignerActionType.RemoveSelected))
 
 		ELSEIF oDesign:IsForm
-			
+
 			IF Clipboard:Count != 0
 				IF oConMenu:MenuItems:Count != 0
 					oConMenu:MenuItems:Add("-")
 				ENDIF
 				oConMenu:MenuItems:Add(SELF:MakeMenuItem("Paste",DesignerActionType.Paste))
 			END IF
-			
-		END IF		
-	
+
+		END IF
+
 		IF oConMenu:MenuItems:Count != 0
 			oPoint := SELF:oSurface:PointToClient(oPoint)
 			oConMenu:Show(SELF:oSurface , oPoint)
@@ -3683,7 +3684,7 @@ RETURN
 			ELSE
 				oDesign:Control:ResetBackColor()
 			ENDIF
-			
+
 		CASE oProp:cMember == "TextColor"
 			oColor := Color.Empty
 			IF oProp:Value != NULL .AND. oProp:Value:GetType() == TypeOf(Color)
@@ -3720,7 +3721,7 @@ RETURN
 			ENDIF
 		CASE oProp:cMember == "_Deleted"
 			oDesign:Control:Visible := SELF:ViewMode != ViewMode.Browse .AND. oDesign:Deleted == 0
-			
+
 		CASE oDesign:IsForm .AND. oProp:Name:ToUpper() == "VIEW AS"
 			IF !SELF:lLoading
 				SELF:HandleViewModeChange()
@@ -3728,13 +3729,13 @@ RETURN
 			ENDIF
 
 		END CASE
-		
+
 		IF oProp:eVOStyle != VOStyle.None
 			IF oDesign:Control:GetType():GetMethod("ApplyVOStyleProperty") != NULL
 				oDesign:Control:GetType():GetMethod("ApplyVOStyleProperty"):Invoke(oDesign:Control,<OBJECT>{oProp})
 			ENDIF
 		ENDIF
-		
+
 	RETURN
 
 	PROTECTED VIRTUAL METHOD AddAffected(oDesign AS DesignWindowItem) AS VOID
@@ -3742,7 +3743,7 @@ RETURN
 			SELF:aAffected:Add(oDesign:cGuid)
 		ENDIF
 	RETURN
-	
+
 	VIRTUAL METHOD GetDesignItemFromGuid(cGuid AS STRING) AS DesignWindowItem
 		LOCAL oDesign AS DesignWindowItem
 		LOCAL aItems AS ArrayList
@@ -3774,15 +3775,15 @@ RETURN
 		cLine := cLine:Replace("\r" , "")
 		cLine := cLine:Replace("\n" , "")
 	RETURN cLine
-	
+
 	METHOD PropertyModifiedInGrid(cProp AS STRING , oValue AS OBJECT) AS VOID
 		LOCAL oDesign AS DesignWindowItem
 		LOCAL n AS INT
-		
+
 		IF SELF:lReadOnly
 			RETURN
 		ENDIF
-		
+
 		IF cProp == NULL
 			IF SELF:aSelected:Count != 1
 				RETURN
@@ -3791,7 +3792,7 @@ RETURN
 			SELF:WriteCallback(oDesign , (STRING)oValue)
 			RETURN
 		END IF
-		
+
 		SELF:BeginAction()
 		FOR n := 0 UPTO SELF:aSelected:Count - 1
 			oDesign := (DesignWindowItem)SELF:aSelected[n]
@@ -3809,7 +3810,7 @@ RETURN
 			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , cProp , oValue})
 		NEXT
 		SELF:EndAction()
-		
+
 	RETURN
 
 	METHOD HandleViewModeChange() AS VOID
@@ -3855,7 +3856,7 @@ RETURN
 		END IF
 
 	RETURN
-	
+
 	METHOD Reset() AS VOID
 		LOCAL oDesign AS DesignWindowItem
 		IF SELF:oWindow == NULL .OR. SELF:oWindowDesign == NULL
@@ -3880,7 +3881,7 @@ RETURN
 		ENDIF
 
 		SELF:ClearUndoBuffer()
-		
+
 	RETURN
 	METHOD ClearUndoBuffer() AS VOID
 		SELF:aActions:Clear()
@@ -3899,7 +3900,7 @@ RETURN
 
 		aDesign := SELF:GetAllColumnDesignItems()
 		aSorted := SELF:GetAllColumnDesignItemsByIndex()
-		
+
 		IF !lForceUpdate
 			FOR n := 0 UPTO aSorted:Count - 1
 				oDesign := (DesignWindowItem)aSorted[n]
@@ -3907,12 +3908,12 @@ RETURN
 					lUpdate := TRUE
 					EXIT
 				END IF
-			NEXT		
+			NEXT
 			IF !lUpdate
 				RETURN
 			END IF
 		END IF
-		
+
 		FOR n := 0 UPTO aSorted:Count - 1
 			oDesign := (DesignWindowItem)aSorted[n]
 //			IF lForceUpdate
@@ -3971,7 +3972,7 @@ RETURN
 			ENDIF
 		NEXT
 	RETURN FALSE
-	
+
 	METHOD TestForm() AS VOID
 		LOCAL aDesign AS ArrayList
 		LOCAL oDesign AS DesignWindowItem
@@ -3983,7 +3984,7 @@ RETURN
 		IF SELF:oWindow == NULL .OR. SELF:oWindowDesign == NULL
 			RETURN
 		ENDIF
-		
+
 		oTest := Form{}
 		oTest:ClientSize := Size{ (INT)SELF:oWindowDesign:GetProperty("_Width"):Value , (INT)SELF:oWindowDesign:GetProperty("_Height"):Value}
 		oTest:Text := SELF:oWindowDesign:GetProperty("Caption"):TextValue
@@ -4046,15 +4047,15 @@ RETURN
 		NEXT
 		AdjustGroupBoxesInForm(oTest)
 		oTest:ShowDialog()
-		
+
 	RETURN
-	
+
     PROTECTED METHOD TestFormKeyDown(o AS OBJECT,e AS KeyEventArgs) AS VOID
     	IF e:KeyCode == Keys.Escape
 	    	((Form)o):Close()
     	END IF
     RETURN
-	
+
 	STATIC PROTECT aTpl AS ArrayList
 
 	METHOD GetTemplate(cName AS STRING) AS List<STRING>
@@ -4071,7 +4072,7 @@ RETURN
 			END IF
 		NEXT
 	RETURN NULL
-	
+
 	STATIC METHOD LoadTpl(cDirectory AS STRING) AS LOGIC
 		LOCAL oTemplate AS TemplateCode
 		LOCAL oStream AS StreamReader
@@ -4079,11 +4080,11 @@ RETURN
 		LOCAL cCavoWed AS STRING
       LOCAL cOrigDir AS STRING
 		LOCAL cLine AS STRING
-		
+
 		IF aTpl != NULL
 			RETURN TRUE
 		ENDIF
-		
+
       cOrigDir := cDirectory
         TRY
         	cCavoWed := cDirectory + "\Properties\CAVOWED.TPL"
@@ -4128,9 +4129,9 @@ RETURN
 		IF !System.IO.File.Exists(cCavoWed)
 			RETURN FALSE
 		ENDIF
-		
+
 		aTpl := ArrayList{}
-		
+
 		oStream := StreamReader{cCavoWed , System.Text.Encoding.Default}
 		DO WHILE oStream:Peek() != - 1
 			cLine := oStream:ReadLine():Trim()
@@ -4148,7 +4149,7 @@ RETURN
 		END DO
 		oStream:Close()
 	RETURN TRUE
-	
+
 END CLASS
 
 CLASS DesignWindowItem INHERIT DesignItem
@@ -4156,6 +4157,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 	EXPORT cFullClass AS STRING
 	EXPORT cWinClass AS STRING
 	EXPORT cInitMethod AS STRING
+    EXPORT cInitParams := "oWindow,iCtlID,oServer,uExtra" AS STRING
 	EXPORT lCreateResource AS LOGIC
 	PROTECT oControl AS Control
 	PROTECT aSelectors AS SelectorBitmap[]
@@ -4167,30 +4169,39 @@ CLASS DesignWindowItem INHERIT DesignItem
 	PROTECT oBIProp,oBSProp,oDelProp AS DesignProperty
 	EXPORT lForceCommandControl AS LOGIC
 	EXPORT cRawStyles AS STRING
-	
+
 	CONSTRUCTOR(_oDesigner AS VOWindowEditor , oTemplate AS VOControlTemplate)
 
 		SUPER(_oDesigner)
-		
+
 		LOCAL oProp,oTest AS VODesignProperty
 		LOCAL cProp AS STRING
 		LOCAL n,m,k AS INT
-		
+
 		IF oTemplate == NULL
 			oTemplate := VOWindowEditorTemplate.Get("PUSHBUTTON")
 		ENDIF
-		
+
 		SELF:cControl := oTemplate:cControl:ToUpper()
 		SELF:cWinClass := oTemplate:cWinClass
 		SELF:cFullClass := oTemplate:cFullClass
 		SELF:cInitMethod := oTemplate:cInitMethod
+		SELF:cInitParams := oTemplate:cInitMethod
+		n := SELF:cInitParams:IndexOf('(')
+		IF n != -1
+			SELF:cInitParams := SELF:cInitParams:Substring(n + 1)
+		END IF
+		n := SELF:cInitParams:LastIndexOf(')')
+		IF n != -1
+			SELF:cInitParams := SELF:cInitParams:Substring(0,n)
+		END IF
 		SELF:cRawStyles := oTemplate:cRawStyles
 		SELF:lCreateResource := oTemplate:lCreateResource
 		SELF:lForceCommandControl := oTemplate:lForceCommandControl
 		SELF:lForm := oTemplate:lForm
-		
+
 		SELF:cPrefix := "oDC"
-		
+
 		DO CASE
 //		CASE SELF:cControl == "DATAWINDOW"
 		CASE SELF:lForm
@@ -4271,7 +4282,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 		OTHERWISE
 			SELF:oControl := DesignEmpty{SELF}
 		END CASE
-		
+
 		IF SELF:lForceCommandControl
 			SELF:cPrefix := "oCC"
 		END IF
@@ -4285,16 +4296,16 @@ CLASS DesignWindowItem INHERIT DesignItem
 		IF SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT:RICHEDIT") == 0
 			SELF:lAccessAssign := FALSE
 		END IF
-				
+
 		SELF:aPages := oTemplate:aPages
-		
+
 		IF oTemplate:oSize:Width > 5 .AND. oTemplate:oSize:Height > 5
 			SELF:oControl:Size := oTemplate:oSize
 		ENDIF
-		
+
 		SELF:oControl:GotFocus += EventHandler{ SELF , @ControlGotFocus() }
 
-		SELF:aSelectors := SelectorBitmap[]{8}	
+		SELF:aSelectors := SelectorBitmap[]{8}
 		FOR n := 1 UPTO 8
 			SELF:aSelectors[n] := SelectorBitmap{SELF , n}
 		NEXT
@@ -4342,7 +4353,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 		CASE SELF:cFullClass:StartsWith("CONTROL:COMMONCONTROL:LISTVIEW")
 			SELF:AddHiddenStyle("LVS_OWNERDATA" , oTemplate)
 		END CASE
-			
+
 		LOCAL aPages AS List<STRING>
 		LOCAL cPage AS STRING
 		LOCAL cCaption AS STRING
@@ -4426,7 +4437,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 							EXIT
 						ENDIF
 					NEXT
-				
+
 /*					IF !lFound
 						DO CASE
 						CASE cProp:ToUpper() == "NAME"
@@ -4503,7 +4514,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 			oProp:cPage := "General"
 			SELF:aProperties:Insert(0 , oProp)
 		ENDIF
-		
+
 		oProp := VODesignProperty{"__Order" , "__Order" , "__Order" , PropertyType.Numeric}
 		oProp:cPage := "_Hidden"
 		SELF:AddProperty(oProp)
@@ -4524,11 +4535,11 @@ CLASS DesignWindowItem INHERIT DesignItem
 		SELF:oDelProp:cPage := "_Hidden"
 		SELF:AddProperty(SELF:oDelProp)
 //		END IF
-		
+
 		IF SELF:IsGroupBox
 			SELF:oControl:Paint += PaintEventHandler{ SELF , @ControlPaint() }
 		ENDIF
-		
+
 	RETURN
 
 	PROTECTED METHOD AddHiddenStyle(cName AS STRING , oTemplate AS VOControlTemplate) AS VOID
@@ -4566,7 +4577,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 			SELF:aSelectors[8]:Cursor := Cursors.SizeWE
 		END IF
 	RETURN
-	
+
 	ACCESS Name() AS STRING
 	RETURN SELF:GetProperty("Name"):Value:ToString()
 	ACCESS Caption() AS STRING
@@ -4576,7 +4587,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 			RETURN ""
 		ENDIF
 	RETURN oProp:TextValue
-	
+
 	ASSIGN BrowseIndex(nValue AS INT)
 		IF SELF:oBIProp != NULL
 			SELF:oBIProp:Value := nValue
@@ -4587,7 +4598,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 			RETURN (INT)SELF:oBIProp:Value
 		ENDIF
 	RETURN 0
-	
+
 /*	ASSIGN BrowseSize(nValue AS INT)
 		IF SELF:oBSProp != NULL
 			SELF:oBSProp:Value := nValue
@@ -4598,7 +4609,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 			RETURN (INT)SELF:oBSProp:Value
 		ENDIF
 	RETURN 0
-	
+
 /*	ASSIGN Deleted(nValue AS INT)
 		IF SELF:oDelProp != NULL
 			SELF:oDelProp:Value := nValue
@@ -4609,7 +4620,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 			RETURN (INT)SELF:oDelProp:Value
 		ENDIF
 	RETURN 0
-	
+
 	ACCESS InheritClassName AS STRING
 		LOCAL oProp AS VODesignProperty
 		oProp := SELF:GetPropertyByMember("InheritClassName")
@@ -4643,7 +4654,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 	VIRTUAL METHOD ControlGotFocus(o AS OBJECT , e AS EventArgs) AS VOID
 		((VOWindowEditor)SELF:oDesigner):ControlGotFocus()
 	RETURN
-	
+
 	VIRTUAL ACCESS IsForm() AS LOGIC
 	RETURN SELF:lForm
 	ACCESS IsGroupBox() AS LOGIC
@@ -4659,12 +4670,12 @@ CLASS DesignWindowItem INHERIT DesignItem
 	RETURN SELF:cFullClass:IndexOf("CONTROL:CUSTOMCONTROL:BBROWSER") == 0
 	ACCESS IsColumn() AS LOGIC
 	RETURN SELF:cFullClass:IndexOf("CONTROL:BDATACOLUMN") == 0
-	
+
 /*	VIRTUAL METHOD AddProperty(oProp AS VODesignProperty , oValue AS OBJECT) AS VOID
 		oProp:Value := oValue
 		SELF:AddProperty(oProp)
 	RETURN*/
-	
+
 	VIRTUAL METHOD PropertyValueSelected(cProp AS STRING , oValue AS OBJECT) AS VOID
 		LOCAL oProp AS VODesignProperty
 	    oProp := SELF:GetProperty(cProp)
@@ -4676,7 +4687,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 //	    	ENDIF
 	    ENDIF
 	RETURN
-	
+
 	VIRTUAL METHOD AdjustSelectors() AS VOID
 		LOCAL oControl AS Control
 		LOCAL x,y,xx,yy,xy AS INT
@@ -4689,16 +4700,16 @@ CLASS DesignWindowItem INHERIT DesignItem
 		ELSE
 			oControl := SELF:Control
 		END IF
-		
+
 		IF oControl == NULL .OR. ( ((VOWindowEditor)SELF:Designer):ViewMode != ViewMode.Browse .AND. SELF:Deleted == 1 )
 			FOR n := 1 UPTO 8
 				SELF:aSelectors[n]:Hide()
 			NEXT
 			RETURN
 		END IF
-		
+
 		SELF:ResetSelectors(SELF:lBrowseView)
-		
+
 		x := oControl:Location:X
 		y := oControl:Location:Y
 		xx := oControl:Width
@@ -4712,7 +4723,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 		IF SELF:IsComboBox
 			yy := (INT) SELF:GetProperty("_Height"):Value
 		ENDIF
-		
+
 		IF SELF:aSelectors[1]:Parent != SELF:oDesigner:Surface
 			FOR n := 1 UPTO 8
 				SELF:oDesigner:Surface:Controls:Add(SELF:aSelectors[n])
@@ -4729,13 +4740,13 @@ CLASS DesignWindowItem INHERIT DesignItem
 				SELF:aSelectors[n]:BackColor := Color.DarkBlue
 			ENDIF
 		NEXT
-		
+
 		oPoint := Point{x , y}
 		oPoint := oControl:Parent:PointToScreen(oPoint)
 		oPoint := SELF:oDesigner:Surface:PointToClient(oPoint)
 		x := oPoint:X
 		y := oPoint:Y
-		
+
 		SELF:aSelectors[1]:Location := Point{x - nOffset , y - nOffset}
 		SELF:aSelectors[2]:Location := Point{x + (xx - xy) / 2 , y - nOffset}
 		SELF:aSelectors[3]:Location := Point{x + xx - xy + nOffset, y - nOffset}
@@ -4749,7 +4760,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 			SELF:aSelectors[4]:BringToFront()
 		END IF
 	RETURN
-	
+
 	VIRTUAL ACCESS Control AS Control
 	RETURN SELF:oControl
 	VIRTUAL ACCESS Column AS DesignDataColumn
@@ -4830,7 +4841,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 				NEXT
 			ENDIF
 		NEXT
-		
+
 	RETURN cRet
 	METHOD GetVOStylesValue(eVOStyle AS VOStyle) AS DWORD
 		LOCAL oProp AS VODesignProperty
@@ -4870,29 +4881,29 @@ CLASS DesignWindowItem INHERIT DesignItem
 		LOCAL oItem AS VOWEDItem
 		LOCAL oProp AS VODesignProperty
 		LOCAL n,m AS INT
-		
+
 		oItem := VOWEDItem{}
 		oItem:cName := SELF:Name
 		oItem:nOrder := SELF:Order
 //		oItem:cControl := SELF:cControl
 		oItem:cControl := SELF:cFullClass
 		oItem:cCaption := SELF:Caption
-	
+
 		oItem:nLeft := (INT)SELF:GetProperty("_Left"):Value
 		oItem:nTop := (INT)SELF:GetProperty("_Top"):Value
 		oItem:nWidth := (INT)SELF:GetProperty("_Width"):Value
 		oItem:nHeight := (INT)SELF:GetProperty("_Height"):Value
 
 		oItem:nDeleted := (INT)SELF:GetProperty("_Deleted"):Value
-		
+
 		oItem:nBrowseIndex := SELF:BrowseIndex
 		oItem:nBrowseSize := SELF:BrowseSize
 
 		oItem:nNoSave := IIF(SELF:GetProperty("_GenCode"):TextValue:ToUpper() == "NO" , 1 , 0)
-		
+
 		oItem:dStyles := SELF:GetVOStylesValue(VOStyle.Style)
 		oItem:dExStyles := SELF:GetVOStylesValue(VOStyle.ExStyle)
-		
+
 		LOCAL cName , cValue AS STRING
 		FOR n := 0 UPTO SELF:aProperties:Count - 1
 			oProp := (VODesignProperty)SELF:aProperties[n]
@@ -4924,7 +4935,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 				oItem:aTabPages:Add(oTabControl:GetTabPageOptions(n))
 			NEXT
 		ENDIF
-		
+
 		oProp := (VODesignProperty)SELF:GetProperty("_DBInhFrom")
 		IF oProp != NULL .AND. !oProp:IsAuto
 			oItem:aProperties:Add("DBInhFrom" , oProp:TextValue)
@@ -4933,7 +4944,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 		IF oProp != NULL .AND. !oProp:IsAuto
 			oItem:aProperties:Add("DCInhFrom" , oProp:TextValue)
 		END IF
-		
+
 	RETURN oItem
 
 	ACCESS Order AS INT
@@ -4946,7 +4957,7 @@ CLASS DesignWindowItem INHERIT DesignItem
 			cRet := "<" + cRet + ">"
 		END IF
 	RETURN cRet
-		
+
 END CLASS
 
 
@@ -4966,12 +4977,12 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	PROTECT oCloneButton AS System.Windows.Forms.Button
 	PROTECT oGroupBox1 AS System.Windows.Forms.GroupBox
 	PROTECT oTypeListBox AS System.Windows.Forms.ListBox
-	
+
 	EXPORT cName AS STRING
 	EXPORT cCloneFrom := NULL AS STRING
    PROTECT xfile AS XFile
    PROTECT cDefaultFileName AS STRING
-	
+
 	CONSTRUCTOR(file AS XFile, cFileName AS STRING)
 
 		SUPER()
@@ -4982,14 +4993,14 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 
 
 		SELF:InitializeComponent()
-	
+
 		FOR n := 0 UPTO VOWindowEditorTemplate.Count - 1
 			oTemplate := VOWindowEditorTemplate.Get(n)
 			IF oTemplate:lForm .AND. oTemplate:cFullClass:Contains(":")
 				SELF:oTypeListBox:Items:Add(oTemplate:cControl)
 			END IF
 		NEXT
-		
+
 		IF SELF:oTypeListBox:Items:Count != 0
 			SELF:oTypeListBox:SelectedIndex := 0
       END IF
@@ -5001,7 +5012,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	RETURN
 
 	PROTECTED METHOD InitializeComponent() AS VOID
-	
+
 	SELF:oCancelButton := System.Windows.Forms.Button{}
 	SELF:oOKButton := System.Windows.Forms.Button{}
 	SELF:oCloneButton := System.Windows.Forms.Button{}
@@ -5031,7 +5042,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	SELF:oCancelButton:TabIndex := 2
 	SELF:oCancelButton:Text := "&Cancel"
 	SELF:Controls:Add(SELF:oCancelButton)
-	
+
 	SELF:oOKButton:Click += System.EventHandler{ SELF , @OKButtonClick() }
 	SELF:oOKButton:Location := System.Drawing.Point{8 , 202}
 	SELF:oOKButton:Name := "OKButton"
@@ -5039,7 +5050,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	SELF:oOKButton:TabIndex := 1
 	SELF:oOKButton:Text := "&OK"
 	SELF:Controls:Add(SELF:oOKButton)
-	
+
 	SELF:oCloneButton:Click += System.EventHandler{ SELF , @CloneButtonClick() }
 	SELF:oCloneButton:Location := System.Drawing.Point{8 , 8}
 	SELF:oCloneButton:Name := "CloneButton"
@@ -5047,14 +5058,14 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	SELF:oCloneButton:TabIndex := 3
 	SELF:oCloneButton:Text := "C&lone from another window"
 	SELF:Controls:Add(SELF:oCloneButton)
-	
+
 	SELF:oGroupBox1:SuspendLayout()
 	SELF:oGroupBox1:Location := System.Drawing.Point{8 , 33}
 	SELF:oGroupBox1:Name := "GroupBox1"
 	SELF:oGroupBox1:Size := System.Drawing.Size{158 , 164}
 	SELF:oGroupBox1:TabIndex := 0
 	SELF:Controls:Add(SELF:oGroupBox1)
-	
+
 
 	SELF:oTypeListBox:DoubleClick += System.EventHandler{ SELF , @TypeListBoxDoubleClick() }
 	SELF:oTypeListBox:Location := System.Drawing.Point{8 , 16}
@@ -5063,7 +5074,7 @@ INTERNAL CLASS WindowTypeSelectDlg INHERIT Form
 	SELF:oTypeListBox:Sorted := TRUE
 	SELF:oTypeListBox:TabIndex := 0
 	SELF:oGroupBox1:Controls:Add(SELF:oTypeListBox)
-	
+
 	SELF:oGroupBox1:ResumeLayout()
 	SELF:ResumeLayout()
 
@@ -5109,7 +5120,7 @@ CLASS WindowCloneSelectDlg INHERIT System.Windows.Forms.Form
 
 		SUPER()
 		SELF:InitializeForm()
-		
+
       VAR fileNames := file:Project:GetFilesOfType(XFileType.VOForm, TRUE)
       FOREACH VAR filename IN fileNames
          // Suppress the frm that we are adding !
@@ -5120,9 +5131,9 @@ CLASS WindowCloneSelectDlg INHERIT System.Windows.Forms.Form
 
 	RETURN
 	PRIVATE METHOD InitializeForm() AS VOID
-	
+
 	// IDE generated code (please DO NOT modify)
-	
+
 		SELF:oCancelButton := System.Windows.Forms.Button{}
 		SELF:oOKButton := System.Windows.Forms.Button{}
 		SELF:oFilesList := System.Windows.Forms.ListBox{}
@@ -5147,7 +5158,7 @@ CLASS WindowCloneSelectDlg INHERIT System.Windows.Forms.Form
 		SELF:oCancelButton:TabIndex := 2
 		SELF:oCancelButton:Text := "&Cancel"
 		SELF:Controls:Add(SELF:oCancelButton)
-		
+
 		SELF:oOKButton:Anchor := System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Bottom
 		SELF:oOKButton:Click += System.EventHandler{ SELF , @OKButtonClick() }
 		SELF:oOKButton:Location := System.Drawing.Point{12 , 355}
@@ -5156,7 +5167,7 @@ CLASS WindowCloneSelectDlg INHERIT System.Windows.Forms.Form
 		SELF:oOKButton:TabIndex := 1
 		SELF:oOKButton:Text := "&OK"
 		SELF:Controls:Add(SELF:oOKButton)
-		
+
 		SELF:oFilesList:Anchor := System.Windows.Forms.AnchorStyles.Top + System.Windows.Forms.AnchorStyles.Left + System.Windows.Forms.AnchorStyles.Right + System.Windows.Forms.AnchorStyles.Bottom
 		SELF:oFilesList:DoubleClick += EventHandler{ SELF , @OKButtonClick() }
 		SELF:oFilesList:Location := System.Drawing.Point{12 , 10}
@@ -5164,7 +5175,7 @@ CLASS WindowCloneSelectDlg INHERIT System.Windows.Forms.Form
 		SELF:oFilesList:Size := System.Drawing.Size{449 , 339}
 		SELF:oFilesList:TabIndex := 0
 		SELF:Controls:Add(SELF:oFilesList)
-		
+
 		SELF:ResumeLayout()
 
 	RETURN

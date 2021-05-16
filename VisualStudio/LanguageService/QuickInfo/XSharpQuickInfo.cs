@@ -220,10 +220,10 @@ namespace XSharp.LanguageService
                     len += text.Length;
 
                 }
-                if (var is XSourceParameterSymbol ssps)
+                if (var is IXParameterSymbol xps)
                 {
-                    list.addPair(ssps.ParamTypeDesc + " ", var.TypeName);
-                    len += ssps.ParamTypeDesc.Length + 1;
+                    list.addPair(xps.ParamTypeDesc + " ", var.TypeName);
+                    len += xps.ParamTypeDesc.Length + 1;
                 }
                 else if (var is XSourceVariableSymbol xsvs)
                 {
@@ -513,7 +513,7 @@ namespace XSharp.LanguageService
         {
             if (!String.IsNullOrEmpty(location))
             {
-                content.addPair("\r\rLocation:", " " + location);
+                content.addPair("\rLocation:", " " + location);
             }
         }
         static internal void addReturnType(this List<ClassifiedTextRun> content, string typeName)

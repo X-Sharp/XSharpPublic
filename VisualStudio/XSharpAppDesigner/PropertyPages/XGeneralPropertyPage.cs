@@ -95,11 +95,11 @@ namespace XSharp.Project
             {
                 var output = (OutputType)converterOutPut.ConvertFrom(value);
                 value = output.ToString();
-
             }
             else if (propertyName == XSharpProjectFileConstants.Dialect)
             {
                 var dialect = (Dialect)converterDialect.ConvertFrom(value);
+                value = dialect.ToString();
                 var strAllowdot = base.GetProperty(XSharpProjectFileConstants.Allowdot);
                 if (!string.IsNullOrEmpty(strAllowdot))
                 {
@@ -140,7 +140,11 @@ namespace XSharp.Project
             }
 
             ThreadHelper.ThrowIfNotOnUIThread();
-            base.SetProperty(propertyName, value);
+            var oldvalue = base.GetProperty(propertyName);
+            bool changed = value != oldvalue;
+
+            if (changed)
+                base.SetProperty(propertyName, value);
         }
 
         /// <summary>

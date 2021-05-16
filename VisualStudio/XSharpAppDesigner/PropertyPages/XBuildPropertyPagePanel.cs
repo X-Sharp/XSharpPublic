@@ -69,11 +69,12 @@ namespace XSharp.Project
         internal const string SuppressRCWarningsDescription = "Suppress warnings from the Native Resource Compiler about duplicate defines (RC4005)";
         internal const string captPlatFormTarget= "Platform Target";
         internal const string descPlatFormTarget = "Select the platform target when compiling this project. This should be AnyCPU, X86, x64,Arm or Itanium (/platform)";
-
         internal const string defaultOutputPath = @"bin\$(Configuration)\";
         internal const string defaultIntermediatePath = @"obj\$(Configuration)\";
 
-        
+        internal const string descSpecificWarnings = "Specific Warnings To Treat As Errors";
+
+
 
         #endregion
 
@@ -169,8 +170,11 @@ namespace XSharp.Project
             this.toolTip1.SetToolTip(lblWarningLevel, descWarningLevel);
             this.toolTip1.SetToolTip(cboWarningLevel, descWarningLevel);
 
-            this.txtSpecificWarnings.Tag = XSharpProjectFileConstants.SpecificWarnings;
-            this.toolTip1.SetToolTip(txtSpecificWarnings, descPlatFormTarget);
+            this.rbWarningAll.Tag = XSharpProjectFileConstants.TreatWarningsAsErrors + "|True";
+            this.rbWarningNone.Tag = XSharpProjectFileConstants.TreatWarningsAsErrors + "|False";
+            this.rbWarningSpecific.Tag = XSharpProjectFileConstants.TreatWarningsAsErrors + "|False";
+            this.txtSpecificWarnings.Tag = XSharpProjectFileConstants.WarningsAsErrors;
+            this.toolTip1.SetToolTip(txtSpecificWarnings, descSpecificWarnings);
 
             FillCombo(new PlatformConverter(), comboPlatformTarget);
 
@@ -229,7 +233,7 @@ namespace XSharp.Project
             string documentationFile = "";
             if (chkXMLDocumentationFile.Checked)
             {
-                var asmName = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyName);
+                var asmName = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyName) ?? "NoName";
                 documentationFile = asmName + ".Xml";
             }
             var tag = "DocFile"; ;
@@ -241,7 +245,7 @@ namespace XSharp.Project
         {
             base.BindProperties();
             this.chkXMLDocumentationFile.Checked = !string.IsNullOrEmpty(ParentPropertyPage.GetProperty("DocFile"));
-            var platform = ParentPropertyPage.GetProperty(XSharpProjectFileConstants.PlatformTarget);
+            var platform = ParentPropertyPage.GetProperty(XSharpProjectFileConstants.PlatformTarget) ?? "anycpu";
             if (string.Compare(platform, "anycpu",true) == 0)
             {
                 this.chkPrefer32Bit.Enabled = true;
@@ -250,7 +254,48 @@ namespace XSharp.Project
             {
                 this.chkPrefer32Bit.Enabled = false;
                 this.chkPrefer32Bit.Checked = false;
+            }
+            if (! string.IsNullOrEmpty(txtSpecificWarnings.Text))
+            {
+                rbWarningSpecific.Checked = true;
+                rbWarningAll.Checked = false;
+                rbWarningNone.Checked = false;
+                txtSpecificWarnings.Enabled = true;
+            }
+            else
+            {
+                var warn = ParentPropertyPage.GetProperty(XSharpProjectFileConstants.TreatWarningsAsErrors) ?? "false";
+                warn = warn.ToLower();
+                rbWarningSpecific.Checked = false;
+                rbWarningAll.Checked = warn == "true";
+                rbWarningNone.Checked = warn != "true";
+                txtSpecificWarnings.Enabled = false;
+            }
+        }
 
+        protected override void HandleControlValidated(object sender, EventArgs e)
+        {
+            base.HandleControlValidated(sender, e);
+            if (ParentPropertyPage.IsActive)
+            {
+                if (sender is RadioButton button && button.Checked)
+                {
+                    // clear the specific warnings in the parent
+                    var tag = (string)txtSpecificWarnings.Tag;
+                    if (sender == rbWarningAll)
+                    {
+                        this.ParentPropertyPage.SetProperty(tag, " ");
+                    }
+                    else if (sender == rbWarningNone)
+                    {
+                        this.ParentPropertyPage.SetProperty(tag, " ");
+                    }
+                    else
+                    {
+                        this.ParentPropertyPage.SetProperty(tag, txtSpecificWarnings.Text);
+
+                    }
+                }
             }
         }
 
@@ -260,6 +305,29 @@ namespace XSharp.Project
             showMacroDialog(txtAssemblyOriginatorKeyFile, descAssemblyOriginatorKeyFile,
                 "Key Files (*.snk; *.pfx)|*.snk;*.pfx|All files (*.*)|*.*");
 
+        }
+
+        private void enableControls()
+        {
+            if (ParentPropertyPage.IsActive)
+            {
+                txtSpecificWarnings.Enabled = rbWarningSpecific.Checked;
+            }
+
+        }
+        private void rbWarningSpecific_CheckedChanged(object sender, EventArgs e)
+        {
+            enableControls();
+        }
+
+        private void rbWarningNone_CheckedChanged(object sender, EventArgs e)
+        {
+            enableControls();
+        }
+
+        private void rbWarningAll_CheckedChanged(object sender, EventArgs e)
+        {
+            enableControls();
         }
     }
 }

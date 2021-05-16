@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -11,9 +11,9 @@ USING System.Collections.Generic
 
 
 BEGIN NAMESPACE XSharpModel
-   
+
    STATIC CLASS TypeMemberExtensions
-      
+
       STATIC METHOD GetProtoType(SELF tm as IXMemberSymbol) AS STRING
          VAR vars := StringBuilder{}
          IF tm:TypeParameters?:Count > 0
@@ -34,27 +34,29 @@ BEGIN NAMESPACE XSharpModel
                vars:Append("(")
                vars:Append(tm:ParameterList)
                vars:Append(")")
-            ENDIF 
+            ENDIF
          ENDIF
          IF tm:Kind == Kind.VODefine .OR. tm:Kind == Kind.EnumMember
             vars:Append(" "+tm:Value)
          ENDIF
-         
+
          IF ( tm:Kind == Kind.@@Constructor )
             vars:Insert(0, tm:DeclaringType )
          ELSE
             vars:Insert(0, tm:Name )
-         ENDIF 
-         vars:Append(XLiterals.AsKeyWord)
-         vars:Append(tm:TypeName)
+         ENDIF
+         IF (tm:Kind != Kind.@@Constructor)
+            vars:Append(XLiterals.AsKeyWord)
+            vars:Append(tm:TypeName)
+         ENDIF
          RETURN vars:ToString()
-      
-      
+
+
       STATIC METHOD GetDescription(SELF tm AS IXMemberSymbol) AS STRING
          VAR desc := tm:ModVis
          IF ( tm:IsStatic )
             desc += "STATIC "
-         ENDIF 
+         ENDIF
          IF (tm:Kind != Kind.Field)
             desc := desc + tm:Kind:ToDisplayString()
             IF (tm:Kind == Kind.VODefine)
@@ -62,20 +64,20 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
          ENDIF
          RETURN desc + " "+tm:GetProtoType()
-      
+
       STATIC METHOD GetFullName(SELF tm as IXMemberSymbol) AS STRING
          IF (tm:Parent != NULL)
             RETURN tm:Parent:FullName +"." + tm:Name
          ENDIF
          RETURN tm:Name
-         
+
       STATIC METHOD GetOverloads(SELF tm as IXMemberSymbol) AS IXMemberSymbol[]
          var result := List<IXMemberSymbol>{}
          IF tm:ParentType != NULL
             result:AddRange(tm:ParentType:GetMembers(tm.Name, TRUE))
          ENDIF
-         RETURN result:ToArray()         
-         
+         RETURN result:ToArray()
+
       STATIC METHOD GetXmlSignature(SELF tm as IXMemberSymbol) AS STRING
          local prefix as String
          local name   as String
@@ -156,9 +158,23 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          sb:Replace('&','@')  // Ampersand is not allowed in the string
          RETURN sb:ToString()
-      
+
+    STATIC METHOD IsVisible(SELF tm AS IXMemberSymbol, Wanted AS Modifiers) AS LOGIC
+            VAR vis := tm:Visibility
+            IF vis >= Wanted
+                RETURN TRUE
+            ELSE
+                SWITCH vis
+                CASE Modifiers.ProtectedInternal
+                CASE Modifiers.Internal
+                    RETURN tm IS IXSourceSymbol
+                OTHERWISE
+                    RETURN FALSE
+                END SWITCH
+            ENDIF
+
    END CLASS
-END NAMESPACE 
+END NAMESPACE
 
 
 

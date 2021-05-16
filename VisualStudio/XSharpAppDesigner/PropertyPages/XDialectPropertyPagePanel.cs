@@ -239,7 +239,7 @@ namespace XSharp.Project
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             base.BindProperties();
-            SetDialectOptions(ParentPropertyPage.GetProperty(XSharpProjectFileConstants.Dialect));
+            SetDialectOptions(ParentPropertyPage.GetProperty(XSharpProjectFileConstants.Dialect) ?? "Core");
         }
     }
 }

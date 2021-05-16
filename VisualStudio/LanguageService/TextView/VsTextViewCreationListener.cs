@@ -21,6 +21,7 @@ using Microsoft;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Outlining;
 using XSharpModel;
+using System.Collections.Generic;
 
 namespace XSharp.LanguageService
 {
@@ -77,24 +78,28 @@ namespace XSharp.LanguageService
         internal ITextStructureNavigatorSelectorService NavigatorService { get; set; }
         // the default key is the VS2019 key.
         internal static object dropDownBarKey = typeof(IVsCodeWindow);
+
+        internal static Dictionary<string, XSharpDropDownClient> _dropDowns = new Dictionary<string, XSharpDropDownClient>(StringComparer.OrdinalIgnoreCase);
+        internal static Dictionary<string, List<IWpfTextView>> _textViews = new Dictionary<string, List<IWpfTextView>>(StringComparer.OrdinalIgnoreCase);
+
+        private XSharpDropDownClient dropdown;
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             IVsTextLines textlines;
             IWpfTextView textView = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
             IVsTextBuffer textBuffer = EditorAdaptersFactoryService.GetBufferAdapter(textView.TextBuffer);
             textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument document);
-
             XFile file = null;
             textViewAdapter.GetBuffer(out textlines);
             if (textlines != null)
             {
+                string fileName = FilePathUtilities.GetFilePath(textlines);
                 Guid langId;
                 textlines.GetLanguageServiceID(out langId);
                 // Note that this may get called after the classifier has been instantiated
 
                 if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
                 {
-                    string fileName = FilePathUtilities.GetFilePath(textlines);
 
 
                     // Get XFile and assign it to the textbuffer
@@ -115,6 +120,7 @@ namespace XSharp.LanguageService
                     if (file != null)
                     {
                         file.Interactive = true;
+                        textView.Properties.AddProperty(typeof(XFile), file);
                     }
                     CommandFilter filter = new CommandFilter(textView, CompletionBroker, SignatureHelpBroker, BufferTagAggregatorFactoryService, this);
                     IOleCommandTarget next;
@@ -122,63 +128,76 @@ namespace XSharp.LanguageService
 
                     filter.Next = next;
                 }
-            }
-            // For VS 2017 we look for Microsoft.VisualStudio.Editor.Implementation.VsCodeWindowAdapter
-            // For VS 2019 we look for Microsoft.VisualStudio.TextManager.Interop.IVsCodeWindow
-            // Both implement IVsDropdownbarManager
-            IVsDropdownBarManager dropDownBarManager = null;
-            if (dropDownBarKey != null && textView.Properties.ContainsProperty(dropDownBarKey))
-            {
-                object window = textView.Properties.GetProperty(dropDownBarKey);
-                dropDownBarManager = window as IVsDropdownBarManager;
-            }
-            if (dropDownBarManager == null)
-            {
-                // look at all the properties to find the one that implements IVsDropdownBarManager
-                foreach (var property in textView.Properties.PropertyList)
+                // For VS 2017 we look for Microsoft.VisualStudio.Editor.Implementation.VsCodeWindowAdapter
+                // For VS 2019 we look for Microsoft.VisualStudio.TextManager.Interop.IVsCodeWindow
+                // Both implement IVsDropdownbarManager
+                IVsDropdownBarManager dropDownBarManager = null;
+                if (dropDownBarKey != null && textView.Properties.ContainsProperty(dropDownBarKey))
                 {
-                    if (property.Value is IVsDropdownBarManager manager)
+                    object window = textView.Properties.GetProperty(dropDownBarKey);
+                    dropDownBarManager = window as IVsDropdownBarManager;
+                }
+                if (dropDownBarManager == null)
+                {
+                    // look at all the properties to find the one that implements IVsDropdownBarManager
+                    foreach (var property in textView.Properties.PropertyList)
                     {
-                        dropDownBarKey = property.Key;  // remember key for next iteration
-                        dropDownBarManager = manager;
-                        break;
+                        if (property.Value is IVsDropdownBarManager manager)
+                        {
+                            dropDownBarKey = property.Key;  // remember key for next iteration
+                            dropDownBarManager = manager;
+                            break;
+                        }
+                    }
+                }
+                if (_dropDowns.ContainsKey(fileName))
+                {
+                    dropdown = _dropDowns[fileName];
+                    dropdown.addTextView(textView);
+                }
+                else if (dropDownBarManager != null)
+                {
+                    dropdown = new XSharpDropDownClient(dropDownBarManager, file);
+                    dropDownBarManager.RemoveDropdownBar();
+                    dropDownBarManager.AddDropdownBar(2, dropdown);
+                    _dropDowns.Add(fileName, dropdown);
+                    dropdown.addTextView(textView);
+                }
+                if (!_textViews.ContainsKey(fileName))
+                {
+                    _textViews.Add( fileName, new List<IWpfTextView>());
+                }
+                _textViews[fileName].Add(textView);
+                textView.Closed += TextView_Closed;
+            }
+        }
+
+        private void TextView_Closed(object sender, EventArgs e)
+        {
+            if (sender is IWpfTextView textView)
+            {
+                textView.Closed -= TextView_Closed;
+                if (textView.Properties.TryGetProperty<XFile>(typeof(XFile), out var xFile))
+                {
+                    var fileName = xFile.FullPath;
+                    var list = _textViews[fileName];
+                    if (list.Contains(textView))
+                    {
+                        list.Remove(textView);
+                    }
+                    if (list.Count == 0)
+                    {
+                        _textViews.Remove(fileName);
+                        _dropDowns.Remove(fileName);
                     }
                 }
             }
-            if (dropDownBarManager != null)
-            {
-                var dropDownClient = new XSharpDropDownClient(textView, file);
-                dropDownBarManager.RemoveDropdownBar();
-                dropDownBarManager.AddDropdownBar(2, dropDownClient);
-                textView.Properties.AddProperty(typeof(IVsDropdownBarManager), dropDownBarManager);
-                new TextViewClosedHandlerHelper(typeof(IVsDropdownBarManager), textView);
-            }
-
         }
+
         internal static bool IsOurSourceFile(string fileName)
         {
             return true;
         }
-        public class TextViewClosedHandlerHelper
-        {
-            private Type _targetType;
-
-            private ITextView _textView;
-
-            public TextViewClosedHandlerHelper(Type targetType, ITextView textView)
-            {
-                _targetType = targetType;
-                _textView = textView;
-                _textView.Closed += Run;
-            }
-
-            public void Run(object sender, EventArgs args)
-            {
-                _textView.Properties.RemoveProperty(_targetType);
-                _textView.Closed -= Run;
-            }
-        }
-
     }
 
 }

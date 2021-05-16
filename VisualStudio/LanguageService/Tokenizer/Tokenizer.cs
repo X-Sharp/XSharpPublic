@@ -15,6 +15,7 @@ namespace XSharp.LanguageService
     [Flags]
     public enum CompletionState
     {
+        None = 0,
         General = 1 << 0,
         Namespaces = 1 << 1,
         Types = 1 << 2,

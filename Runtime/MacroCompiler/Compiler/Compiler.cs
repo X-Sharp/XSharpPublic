@@ -140,7 +140,13 @@ namespace XSharp.MacroCompiler
 #if DUMPTOKENS
             foreach (var t in tokens)
             {
-                Console.WriteLine($"{t.Type} {t.Text}");
+                if (t.Type == TokenType.EOS)
+                    Console.WriteLine();
+                else
+                {
+                    Console.Write(t.Text+" ");
+                }
+
             }
 #endif
             var parser = new Parser(tokens, options);

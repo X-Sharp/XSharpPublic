@@ -191,6 +191,9 @@ namespace XSharp.LanguageService
             // Some exceptions are (pseudo) functions. These should not be formatted
             switch (token.Type)
             {
+                case XSharpLexer.UDC_KEYWORD:
+                    syncKeyword = XSettings.UDCKeywordCase;
+                    break;
                 case XSharpLexer.NAMEOF:
                 case XSharpLexer.SIZEOF:
                 case XSharpLexer.TYPEOF:
@@ -802,7 +805,7 @@ namespace XSharp.LanguageService
                     if (tokens.SnapShot.Version != snapshot.Version)
                         return;
                 }
-                String currentNS = "";
+                string currentNS = "";
                 if (currentNamespace != null)
                 {
                     currentNS = currentNamespace.Name;
@@ -1235,6 +1238,11 @@ namespace XSharp.LanguageService
             if (file == null)
                 return false;
             var member = XSharpLookup.FindMember(lineNumber, file);
+            if (member != null && member.Range.StartLine == lineNumber)
+            {
+                // if we are at the start of an entity then do not start a signature session
+                return false;
+            }
             var currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
             string currentNS = "";
             if (currentNamespace != null)

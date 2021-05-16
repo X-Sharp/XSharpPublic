@@ -145,7 +145,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get { return this.projectConfigs; }
         }
-
+        internal bool IsActive => active;
         // =========================================================================================
         // IPropertyPage Members
         // =========================================================================================
@@ -615,9 +615,15 @@ namespace Microsoft.VisualStudio.Project
         /// </returns>
         public virtual string GetProperty(string propertyName)
         {
+            if (propertyName.Contains("|"))
+            {
+                var items = propertyName.Split('|');
+                propertyName = items[0];
+            }
             ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, PerConfig);
             return property.GetValue(false, projectConfigs);
         }
+
 
         /// <summary>
         /// Gets a property value as a tri-state checkbox value.
@@ -647,10 +653,16 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="value">Value of the property.</param>
         public virtual void SetProperty(string propertyName, string value)
         {
+            string original = propertyName;
+            if (propertyName.Contains("|"))
+            {
+                var items = propertyName.Split('|');
+                propertyName = items[0];
+                value = items[1];
+            }
             ProjectProperty property = new ProjectProperty(this.ProjectMgr, propertyName, PerConfig);
             ThreadHelper.ThrowIfNotOnUIThread();
-
-            string oldValue = this.GetProperty(propertyName);
+            string oldValue = property.GetValue(false, projectConfigs);
             if (!String.Equals(value, oldValue, StringComparison.Ordinal))
             {
                 property.SetValue(value, projectConfigs);

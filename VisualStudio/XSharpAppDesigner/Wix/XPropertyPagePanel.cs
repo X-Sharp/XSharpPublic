@@ -122,17 +122,25 @@ namespace Microsoft.VisualStudio.Project
         {
             Control control = (Control)sender;
             string propertyName = (string)control.Tag;
+            string propertyValue = "";
             string value = null;
 
-            TextBox textBox = control as TextBox;
-            CheckBox checkBox = control as CheckBox;
-            ComboBox comboBox = control as ComboBox;
-
+            var textBox = control as TextBox;
             if (textBox != null && !textBox.Modified)
             {
                 return;
             }
 
+
+            var checkBox = control as CheckBox;
+            var comboBox = control as ComboBox;
+            var radioButton = control as RadioButton;
+
+            if (propertyName.Contains("|"))
+            {
+                var items = propertyName.Split('|');
+                propertyValue = items[1];
+            }
             string currentValue = this.ParentPropertyPage.GetProperty(propertyName);
             if (checkBox != null)
             {
@@ -166,9 +174,9 @@ namespace Microsoft.VisualStudio.Project
             {
                 value = this.ParentPropertyPage.Normalize(propertyName, control.Text);
             }
-            else
+            else if (radioButton != null)
             {
-                value = control.Text;
+                value = radioButton.Checked ? propertyValue : currentValue;
             }
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -188,6 +196,10 @@ namespace Microsoft.VisualStudio.Project
                     else if (comboBox != null)
                     {
                         comboBox.SelectedItem = currentValue;
+                    }
+                    else if (radioButton != null)
+                    {
+                        // do nothing
                     }
                     else
                     {
@@ -209,18 +221,13 @@ namespace Microsoft.VisualStudio.Project
             string propertyBinding = control.Tag as string;
             if (!String.IsNullOrEmpty(propertyBinding))
             {
-                CheckBox checkBox = control as CheckBox;
-                if (checkBox != null)
+                string value = this.ParentPropertyPage.GetProperty(propertyBinding);
+                switch (control)
                 {
-                    checkBox.CheckState = this.ParentPropertyPage.GetPropertyCheckState(propertyBinding);
-                }
-                else
-                {
-                    string value = this.ParentPropertyPage.GetProperty(propertyBinding);
-
-                    ComboBox comboBox = control as ComboBox;
-                    if (comboBox != null)
-                    {
+                    case CheckBox checkBox:
+                        checkBox.CheckState = this.ParentPropertyPage.GetPropertyCheckState(propertyBinding);
+                        break;
+                    case ComboBox comboBox:
                         int index = 0;
                         comboBox.SelectedIndex = -1;
                         foreach (string item in comboBox.Items)
@@ -232,14 +239,21 @@ namespace Microsoft.VisualStudio.Project
                             }
                             index++;
                         }
-                    }
-                    else
-                    {
+                        break;
+                    case RadioButton radioButton:
+                        var items = propertyBinding.Split('|');
+                        if (items.Length == 2)
+                        {
+                            value = this.ParentPropertyPage.GetProperty(items[0]);
+                            radioButton.Checked = string.Equals(value, items[1], StringComparison.OrdinalIgnoreCase);
+                        }
+                        break;
+                    default:
                         control.Text = (value != null ? value : String.Empty);
-                    }
+                        break;
                 }
-            }
 
+            }
             foreach (Control child in control.Controls)
             {
                 this.BindProperties(child);
@@ -251,36 +265,26 @@ namespace Microsoft.VisualStudio.Project
             string propertyBinding = control.Tag as string;
             if (propertyBinding != null)
             {
-                TextBox textBox = control as TextBox;
-                if (textBox != null)
+                switch (control)
                 {
-                    textBox.LostFocus += this.HandleTextBoxLostFocus;
-                    textBox.ModifiedChanged += this.HandleTextBoxModifiedChanged;
-                }
-                else
-                {
-                    CheckBox checkBox = control as CheckBox;
-                    if (checkBox != null)
-                    {
+                    case TextBox textBox:
+                        textBox.LostFocus += this.HandleTextBoxLostFocus;
+                        textBox.ModifiedChanged += this.HandleTextBoxModifiedChanged;
+                        break;
+                    case CheckBox checkBox:
                         checkBox.CheckStateChanged += this.HandleControlValidated;
-                    }
-                    else
-                    {
-                        ComboBox comboBox = control as ComboBox;
-                        if (comboBox != null)
-                        {
-                            comboBox.SelectedValueChanged += this.HandleControlValidated;
-                        }
-                        else
-                        {
-                            FoldersSelector selector = control as FoldersSelector;
-                            if (selector != null)
-                            {
-                                selector.FolderValidating += this.HandleControlValidating;
-                                selector.FoldersChanged += this.HandleControlValidated;
-                            }
-                        }
-                    }
+                        break;
+                    case ComboBox comboBox:
+                        comboBox.SelectedValueChanged += this.HandleControlValidated;
+                        break;
+                    case FoldersSelector selector:
+                        selector.FolderValidating += this.HandleControlValidating;
+                        selector.FoldersChanged += this.HandleControlValidated;
+                        break;
+                    case RadioButton radioButton:
+                        radioButton.CheckedChanged += this.HandleControlValidated;
+                        break;
+
                 }
             }
 

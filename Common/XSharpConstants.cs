@@ -196,6 +196,8 @@ namespace XSharp
         public const string UseNativeVersion = "UseNativeVersion";
         public const string UseSharedCompilation = "UseSharedCompilation";
         public const string VerboseOutput = "VerboseOutput";
+        public const string WarningsAsErrors = "WarningsAsErrors";
+        public const string WarningsNotAsErrors = "WarningsNotAsErrors";
         public const string Vo1 = "Vo1";
         public const string Vo2 = "Vo2";
         public const string Vo3 = "Vo3";

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using System;
@@ -20,10 +21,10 @@ namespace XSharp.LanguageService
     {
 
         static readonly  ImageList _imageList = new ImageList();
-
         private IVsDropdownBar _dropDownBar;
-
-        private ITextView _textView;
+        Dictionary<ITextView, ITextView> _textViews;
+        ITextView _activeView = null;
+        IVsDropdownBarManager _manager;
         XSourceEntity _lastSelected = null;
         XSourceEntity _lastType = null;
 
@@ -50,11 +51,10 @@ namespace XSharp.LanguageService
         }
 
 
-        public XSharpDropDownClient(ITextView textView, XFile file)
+        public XSharpDropDownClient(IVsDropdownBarManager manager, XFile file)
         {
-            _textView = textView;
-            _textView.Caret.PositionChanged += Caret_PositionChanged;
-            _textView.Closed += _textView_Closed;
+            _manager = manager;
+            _textViews = new Dictionary<ITextView, ITextView>();
             _file = file;
             if (file != null)
             {
@@ -72,6 +72,53 @@ namespace XSharp.LanguageService
             });
         }
 
+        internal void addTextView(ITextView textView)
+        {
+            if (! _textViews.ContainsKey(textView))
+            {
+                _textViews.Add(textView, textView);
+                textView.GotAggregateFocus += TextView_GotAggregateFocus;
+                textView.LostAggregateFocus += TextView_LostAggregateFocus;
+                textView.Closed += TextView_Closed;
+                textView.Caret.PositionChanged += Caret_PositionChanged;
+
+            }
+        }
+
+        private void TextView_Closed(object sender, EventArgs e)
+        {
+            if (sender is ITextView textView)
+            {
+                if (_textViews.ContainsKey(textView))
+                {
+                    textView.GotAggregateFocus -= TextView_GotAggregateFocus;
+                    textView.LostAggregateFocus -= TextView_LostAggregateFocus;
+                    textView.Closed -= TextView_Closed;
+                    textView.Caret.PositionChanged -= Caret_PositionChanged;
+                    _textViews.Remove(textView);
+                    _file.ContentsChanged -= _file_ContentsChanged;
+
+                }
+            }
+        }
+
+        private void TextView_LostAggregateFocus(object sender, EventArgs e)
+        {
+            if (sender is ITextView textView &&  textView == _activeView)
+            {
+                //_activeView = null;
+            }
+        }
+
+        private void TextView_GotAggregateFocus(object sender, EventArgs e)
+        {
+            if (sender is ITextView textView && _textViews.ContainsKey(textView))
+            {
+                _activeView = textView;
+                Caret_PositionChanged(textView, new CaretPositionChangedEventArgs(textView, textView.Caret.Position, textView.Caret.Position));
+            }
+
+        }
 
         private void _file_ContentsChanged()
         {
@@ -79,16 +126,6 @@ namespace XSharp.LanguageService
             {
                 await RefreshDropDownAsync(needsUI: true);
             });
-        }
-
-        private void _textView_Closed(object sender, EventArgs e)
-        {
-            _textView.Caret.PositionChanged -= Caret_PositionChanged;
-            _textView.Closed -= _textView_Closed;
-            if (_file != null)
-            {
-                _file.ContentsChanged -= _file_ContentsChanged;
-            }
         }
 
         private void validateSelections()
@@ -101,7 +138,7 @@ namespace XSharp.LanguageService
         private void Caret_PositionChanged(object sender, CaretPositionChangedEventArgs e)
         {
             int newLine = e.NewPosition.BufferPosition.GetContainingLine().LineNumber;
-            if (newLine != _lastLine)
+            if (newLine != _lastLine && _dropDownBar != null)
             {
                 SelectContainingMember(newLine);
                 _lastLine = newLine;
@@ -495,14 +532,17 @@ namespace XSharp.LanguageService
                     {
                         reloadCombos(_lastLine);
                     }
-                    int caretPosition = _textView.Caret.Position.BufferPosition.Position;
-                    if (!needsUI)
+                    if (_activeView != null)
                     {
+                        int caretPosition = _activeView.Caret.Position.BufferPosition.Position;
+                        if (!needsUI)
+                        {
+                            SelectContainingMember(caretPosition);
+                            return;
+                        }
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         SelectContainingMember(caretPosition);
-                        return;
                     }
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    SelectContainingMember(caretPosition);
                 }
             }
             catch (Exception)
@@ -628,9 +668,32 @@ namespace XSharp.LanguageService
             }
             if (entity != null)
             {
-                entity.OpenEditor();
+                if (entity.File.FullPath == this._file.FullPath)
+                {
+                    IVsTextView textView = ThreadHelper.JoinableTaskFactory.Run(GetActiveTextViewAsync);
+                    if (textView != null)
+                    {
+                        textView.SetCaretPos(entity.Range.StartLine, 0);
+                        if (entity.Range.StartLine > 5)
+                            textView.SetTopLine(entity.Range.StartLine - 5);
+                        else
+                            textView.SetTopLine(0);
+                        textView.SendExplicitFocus();
+                    }
+                }
+                else
+                {
+                    entity.OpenEditor();
+                }
             }
             return VSConstants.S_OK;
+        }
+
+        private async Task<IVsTextView> GetActiveTextViewAsync( )
+        {
+            IVsTextManager textManager = await ServiceProvider.GetGlobalServiceAsync<SVsTextManager, IVsTextManager>();
+            ErrorHandler.ThrowOnFailure(textManager.GetActiveView(1, null, out IVsTextView activeView));
+            return activeView;
         }
 
         public int SetDropdownBar(IVsDropdownBar dropdownBar)

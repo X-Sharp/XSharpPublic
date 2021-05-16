@@ -1,15 +1,16 @@
- /// <exclude />
+GLOBAL DefaultWindAppClassName := #__WindApp AS SYMBOL
+/// <exclude />
 CLASS __WindApp INHERIT AppWindow
 	PROTECT lTopApp AS LOGIC
 
 
  /// <exclude />
-METHOD Default(oEvent) 
+METHOD Default(oEvent)
 	LOCAL oEvt := oEvent AS @@Event
 
 
-	
-	
+
+
 	oParent:EventReturnValue := DefWindowProc(oEvt:hWnd, oEvt:uMsg, oEvt:wParam, oEvt:lParam)
 
 
@@ -17,13 +18,13 @@ METHOD Default(oEvent)
 
 
  /// <exclude />
-METHOD Dispatch(oEvent) 
+METHOD Dispatch(oEvent)
 	LOCAL oEvt := oEvent AS @@Event
 	LOCAL uMsg AS DWORD
 
 
-	
-	
+
+
 
 
 	oParent:EventReturnValue := 0L
@@ -68,15 +69,15 @@ METHOD Dispatch(oEvent)
 
 
  /// <exclude />
-CONSTRUCTOR(oOwner, lClientEdge) 
+CONSTRUCTOR(oOwner, lClientEdge)
 	LOCAL dwExStyle AS DWORD
 	LOCAL hParent := NULL_PTR AS PTR
 	LOCAL oParentOwner AS OBJECT
 	LOCAL o AS OBJECT
 
 
-	
-	
+
+
 
 
 	dwExStyle := IIF(lClientEdge, WS_EX_STATICEDGE, 0) //WS_EX_CONTROLPARENT)
@@ -125,16 +126,16 @@ CONSTRUCTOR(oOwner, lClientEdge)
 	ENDIF
 
 
-	RETURN 
+	RETURN
 
 
  /// <exclude />
-ASSIGN Menu(oNewMenu) 
-	RETURN 
+ASSIGN Menu(oNewMenu)
+	RETURN
 
 
  /// <exclude />
-METHOD SetOwner(oNewOwner) 
+METHOD SetOwner(oNewOwner)
 	// 2.5b new, otherwise event in subDWs are not properly handled
 	// called in __FormFrame:DataWindow:ASSIGN
 	// dummy not needed anymore
@@ -142,9 +143,9 @@ METHOD SetOwner(oNewOwner)
 
 
  /// <exclude />
-METHOD Show(kShowState) 
-	
-	
+METHOD Show(kShowState)
+
+
 
 
 	SUPER:Show(kShowState)
@@ -171,9 +172,9 @@ STATIC FUNCTION __WCRegisterWndAppWindow(hInst AS PTR) AS LOGIC
          WCWndAppWndProcDelegate := __WCWndAppWndProcDelegate{ NULL, @__WCWndAppWndProc() }
       ENDIF
 		wc:lpfnWndProc := System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate((System.Delegate) WCWndAppWndProcDelegate )
-#else		
+#else
 		wc:lpfnWndProc := PTR(_CAST, @__WCWndAppWndProc())
-#endif		
+#endif
 		wc:hInstance := hInst
 		wc:hIcon := LoadIcon(0, IDI_APPLICATION)
 		wc:hCursor := LoadCursor(0, IDC_Arrow)
@@ -187,12 +188,12 @@ STATIC FUNCTION __WCRegisterWndAppWindow(hInst AS PTR) AS LOGIC
 
 
 	RETURN lretVal
-	
-	
+
+
 #ifdef __VULCAN__
 /// <exclude/>
    DELEGATE __WCWndAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
-#endif	
+#endif
 
 
  /// <exclude />

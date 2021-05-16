@@ -1,4 +1,5 @@
- /// <exclude />
+GLOBAL DefaultDocAppClassName := #__DocApp AS SYMBOL
+/// <exclude />
 CLASS __DocApp INHERIT AppWindow
 	PROTECT oShellWin AS ShellWindow
 

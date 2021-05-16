@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DBFVFPSQL INHERIT DBFVFP
         PROTECT _table as DataTable
         PROTECT _phantomRow as DataRow
-        PROTECT _padStrings AS LOGIC
+        PROTECT _creatingIndex AS LOGIC
         PROTECT _incrementKey as LONG
         PROTECT _incrementColumn as DataColumn
         #region Overridden properties
@@ -30,10 +30,10 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR()
             SUPER()
             _incrementKey    := -1
-            _padStrings      := FALSE
+            _creatingIndex      := FALSE
             RETURN
 
-        /// <inheritdoc />  
+        /// <inheritdoc />
         OVERRIDE METHOD SetFieldExtent(nFields AS LONG) AS LOGIC
             VAR result := SUPER:SetFieldExtent(nFields)
             RETURN result
@@ -62,6 +62,8 @@ BEGIN NAMESPACE XSharp.RDD
 
         VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
             LOCAL result AS INT
+            // SUPER:FieldIndex uses a dictionary, so that is fast, If that fails then
+            // check again for colum names.
             result := SUPER:FieldIndex(fieldName)
             IF result == 0
                 FOREACH var oColumn in SELF:_Fields
@@ -71,19 +73,31 @@ BEGIN NAMESPACE XSharp.RDD
                 NEXT
             ENDIF
             RETURN result
-    
+
 
         OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
+            // nFldPos is 1 based, the RDD compiles with /az+
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
+                nFldPos -= 1
+                LOCAL result as OBJECT
                 IF !SELF:EoF
                     var row := _table:Rows[SELF:_RecNo -1]
-                    return row[nFldPos-1]
+                    result  := row[nFldPos]
+                ELSE
+                    result := _phantomRow[nFldPos]
                 ENDIF
-                RETURN _phantomRow[nFldPos-1]
+                IF result == DBNull.Value
+                    // The phantom row already is padded with trailing spaces
+                    result := _phantomRow[nFldPos]
+                ELSEIF _creatingIndex .and. result IS String var strResult
+                    result := strResult:PadRight(_Fields[nFldPos]:Length,' ')
+                ENDIF
+                RETURN result
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
-            
+
         OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+            // nFldPos is 1 based, the RDD compiles with /az+
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
                 var row := _table:Rows[SELF:_RecNo -1]
                 row[nFldPos-1] := oValue
@@ -96,6 +110,11 @@ BEGIN NAMESPACE XSharp.RDD
                 return _table
             END GET
             SET
+                // When we get here then the (temporary) DBFVFP table has already been created and opened
+                // and the fields are already read from the DBF header in the temporary table
+                // The SqlStatement:CreateFile() method whichs gets called from SqlExec()
+                // has the logic that creates the DBF from the Column properties
+                //
                 _table := value
                 SELF:_RecNo := 1
                 SELF:_RecCount   := _table:Rows:Count
@@ -107,6 +126,12 @@ BEGIN NAMESPACE XSharp.RDD
                 FOREACH oColumn as DataColumn in _table:Columns
                     var index := oColumn:Ordinal
                     LOCAL dbColumn := self:_Fields[index] as RddFieldInfo
+                    // use the BlankValue() from the RddFieldInfo class. One place to define blanks is enough
+                    var blank := dbColumn:BlankValue()
+                    if blank IS STRING VAR strBlank
+                        blank := strBlank:PadRight(dbColumn:Length, ' ')
+                    ENDIF
+                    SELF:_phantomRow[index] := blank
                     dbColumn:Caption     := oColumn:Caption
                     if oColumn:AutoIncrement
                         _incrementColumn := oColumn
@@ -125,7 +150,7 @@ BEGIN NAMESPACE XSharp.RDD
                 _oStream:SafeSetLength(lOffset+1)
                 // now set the file size and reccount in the header
             END SET
-        END PROPERTY            
+        END PROPERTY
 
         /// <inheritdoc />
         OVERRIDE METHOD Close() AS LOGIC
@@ -155,19 +180,19 @@ BEGIN NAMESPACE XSharp.RDD
         RETURN SUPER:Info(uiOrdinal, oNewValue)
 
     OVERRIDE METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
-        SELF:_padStrings := TRUE
+        SELF:_creatingIndex := TRUE
         VAR result := SUPER:OrderCreate(orderInfo)
-        SELF:_padStrings := FALSE
+        SELF:_creatingIndex := FALSE
         RETURN result
 
     OVERRIDE METHOD OrderListRebuild() AS LOGIC
-        SELF:_padStrings := TRUE
+        SELF:_creatingIndex := TRUE
         VAR result := SUPER:OrderListRebuild()
-        SELF:_padStrings := FALSE
+        SELF:_creatingIndex := FALSE
         RETURN result
 
 
-    END CLASS  
+    END CLASS
 
 END NAMESPACE
 

@@ -158,7 +158,7 @@ CONSTRUCTOR(oOwner, lManaged, lImpl)
 	IF (lImpl)
         IF (oImp == NULL_OBJECT)
             IF lMng .AND. IsInstanceOf(oParent,#ShellWindow) // create an MDI child
-                __DocApp{SELF} //This sets the oImp and hWnd variables
+                CreateInstance(DefaultDocAppClassname, SELF) //This sets the oImp and hWnd variables
                 SELF:EnableSystemMenu()
                 SELF:EnableBorder()
                 SELF:EnableMinBox()
@@ -167,7 +167,7 @@ CONSTRUCTOR(oOwner, lManaged, lImpl)
                 //SE-070904 no clientedge if oParent:Owner of a __FormFrame is a DialogWindow
                 //__WindApp{SELF, IsInstanceOf(SELF, #__FormFrame) .AND. IsInstanceOf(oParent, #DataWindow)}
                 lClientEdge := IsInstanceOf(SELF, #__FormFrame) .AND. IsInstanceOf(oParent, #DataWindow) .AND. ! IsInstanceOf(oParent:Owner, #DialogWindow)
-                __WindApp{SELF, lClientEdge }
+                CreateInstance(DefaultWindAppClassName,SELF, lClientEdge )
                 // if lManaged
                 // self:EnableBorder(WindowNonSizingBorder)
                 // endif

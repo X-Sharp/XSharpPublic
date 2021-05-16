@@ -19,7 +19,7 @@
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:VORDDClasses.Functions.DbSetRestoreWorkarea(XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>Get/Set the flag that determines if DbServer operations restore the current workarea </para></entry></row>
 <row><entry><para>XSharp.VORDDClasses</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VORDDClasses_Functions.DbSetRestoreWorkarea</codeEntityReference></para></entry>
+<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp_VORDDClasses.Functions.DbSetRestoreWorkarea</codeEntityReference></para></entry>
 <entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)</codeEntityReference></para></entry>

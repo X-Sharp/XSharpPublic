@@ -390,7 +390,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:ClearStack()
 
         PRIVATE METHOD _saveCurrentRecord( node AS CdxNode) AS VOID
-            IF SELF:_currentvalue:Recno != node:Recno .AND. ! SELF:RDD:EoF
+            IF SELF:_currentvalue:Recno != node:Recno .AND. ! SELF:RDD:EoF .AND. node:Recno > 0
                 SELF:_currentvalue:Recno := node:Recno
                 Array.Copy(node:KeyBytes, SELF:_currentvalue:Key, _keySize)
             ENDIF

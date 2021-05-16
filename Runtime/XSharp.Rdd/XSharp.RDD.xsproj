@@ -14,7 +14,7 @@
     <INS>true</INS>
     <NamedArgs>true</NamedArgs>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.8.0.11</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -173,7 +173,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Ads.xml" />
     <None Include="DbfCdx\CdxReadme.txt" />
     <None Include="DbfCdx\Pages\CdxDebug.xh" />
     <None Include="DbfCdx\Todo.txt" />

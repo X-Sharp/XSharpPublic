@@ -2523,7 +2523,7 @@ CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
 
 	IF dwDialogStyle > 0
 	   oParent := oOwner
-	   __DDImp{SELF, TRUE, dwDialogStyle}
+	   CreateInstance(DefaultDDImpClassName, SELF, TRUE, dwDialogStyle)
 	ENDIF
 
 
@@ -2592,7 +2592,7 @@ CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
 		oOwner:__RegisterSubForm(SELF)
 		hwnd := oFormFrame:Handle()
 	ELSE
-		oFormFrame := __FormFrame{SELF, oResID, !IsInstanceOf(oImp, #__DDIMP)}
+		oFormFrame := CreateInstance(DefaultFormFrameClassName,SELF, oResID, !IsInstanceOf(oImp, #__DDIMP))
     ENDIF
 	oSurface := oFormFrame:GetDialogWindow()
 

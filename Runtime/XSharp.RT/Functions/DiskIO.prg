@@ -182,19 +182,21 @@ INTERNAL STATIC METHOD AddFileInfo(aReturn AS ARRAY, oFile AS System.IO.FileInfo
 	
 INTERNAL STATIC METHOD AddDirectoryInfo( aReturn AS ARRAY, cDirectory AS STRING, nAttr AS DWORD, cName AS STRING ) AS VOID
 	TRY
-		LOCAL oDir := System.IO.DirectoryInfo{ cDirectory } AS DirectoryInfo
-		IF oDir:Exists
-			LOCAL lAdd      := TRUE AS LOGIC
-			VAR cAttribute  := DecodeAttributes(oDir:Attributes, nAttr, REF lAdd)
-			IF lAdd
-				cAttribute += "D"
-                VAR aFile := DirectoryHelper.FileSystemInfo2Array(oDir, cAttribute)
-                IF !String.IsNullOrEmpty(cName)
-                    aFile[F_NAME] := cName
-                ENDIF
-                AAdd(aReturn, aFile)
-			ENDIF
-		ENDIF
+        IF cDirectory:IndexOfAny(<CHAR> {c'?',c'*'}) == -1
+		    LOCAL oDir := System.IO.DirectoryInfo{ cDirectory } AS DirectoryInfo
+		    IF oDir:Exists
+			    LOCAL lAdd      := TRUE AS LOGIC
+			    VAR cAttribute  := DecodeAttributes(oDir:Attributes, nAttr, REF lAdd)
+			    IF lAdd
+				    cAttribute += "D"
+                    VAR aFile := DirectoryHelper.FileSystemInfo2Array(oDir, cAttribute)
+                    IF !String.IsNullOrEmpty(cName)
+                        aFile[F_NAME] := cName
+                    ENDIF
+                    AAdd(aReturn, aFile)
+			    ENDIF
+            ENDIF
+        ENDIF
 	CATCH 
 		NOP
 	END TRY   

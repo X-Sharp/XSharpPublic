@@ -71,7 +71,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		NEXT
 		RETURN aMethods:ToArray()
 
-    
+
 	STATIC METHOD FindClass(cName AS STRING) AS System.Type
 	    RETURN OOPHelpers.FindClass(cName, TRUE)
 
@@ -403,7 +403,10 @@ INTERNAL STATIC CLASS OOPHelpers
                     ENDIF
                 OTHERWISE
 	                result := oDefAttrib:Value
-                    result := Convert.ChangeType(result,oPar:ParameterType)
+                    // for usuals there is no need to convert.
+                    if oPar:ParameterType != typeof(USUAL)
+                        result := Convert.ChangeType(result,oPar:ParameterType)
+                    endif
                 END SWITCH
             END IF
         ENDIF
@@ -421,7 +424,7 @@ INTERNAL STATIC CLASS OOPHelpers
         ENDIF
         RETURN lResult
 
-    
+
 	STATIC METHOD ClassTree( t AS Type ) AS ARRAY
 		LOCAL aList := {} AS ARRAY
 		DO WHILE t != NULL
@@ -748,7 +751,7 @@ INTERNAL STATIC CLASS OOPHelpers
             THROW Error{e:GetInnerException()}
         END TRY
 
-    
+
     STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[]) AS LOGIC
         LOCAL lOk := OOPHelpers.SendHelper(oObject, cMethod, uArgs, OUT VAR result) AS LOGIC
         oObject := result   // get rid of warning

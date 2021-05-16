@@ -1,4 +1,5 @@
- /// <exclude />
+GLOBAL DefaultFormDialogClassName := #__FormDialogWindow AS SYMBOL
+/// <exclude />
 CLASS __FormDialogWindow INHERIT ModelessDialog
 	PROTECT oSubFormsParent AS __FormDialogWindow //
 	//PP-030627
@@ -6,36 +7,36 @@ CLASS __FormDialogWindow INHERIT ModelessDialog
 
 
  /// <exclude />
-METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT 
+METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT
 	//PP-030828 Strong typing
-	
-	
+
+
 
 
 	RETURN SELF:Owner:__CommandFromEvent(oEvent)
 
 
  /// <exclude />
-METHOD ButtonClick(oEvent) 
-	
-	
+METHOD ButtonClick(oEvent)
+
+
 	oParent:__DoValidate(oEvent:Control)
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD ButtonDoubleClick(oEvent) 
-	
-	
+METHOD ButtonDoubleClick(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD ControlNotify(oEvent) 
-	
-	
+METHOD ControlNotify(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	SELF:EventReturnValue := oParent:Owner:EventReturnValue
 	RETURN SELF
@@ -43,8 +44,8 @@ METHOD ControlNotify(oEvent)
 
  /// <exclude />
 METHOD Destroy()  AS USUAL CLIPPER
-	
-	
+
+
 	IF !InCollect()
 		oLastFocus := NULL_OBJECT
 	ENDIF
@@ -55,26 +56,26 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 
  /// <exclude />
-METHOD DrawBackground(hDC, oWindow) 
+METHOD DrawBackground(hDC, oWindow)
 	//PP-031129
 	RETURN oParent:Owner:DrawBackground(hdc, SELF)
 
 
  /// <exclude />
-METHOD EditChange(oEvent) 
-	
-	
+METHOD EditChange(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD EditFocusChange(oEvent) 
+METHOD EditFocusChange(oEvent)
 	LOCAL oControl AS OBJECT
 
 
-	
-	
+
+
 	oControl := oEvent:Control
 
 
@@ -99,31 +100,31 @@ METHOD EditFocusChange(oEvent)
 
 
  /// <exclude />
-METHOD EditScroll(oEvent) 
-	
-	
+METHOD EditScroll(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD Expose(oEvent) 
-	
-	
+METHOD Expose(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD FocusChange(oEvent) 
-	
-	
+METHOD FocusChange(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD GrowToParent() 
+METHOD GrowToParent()
 	LOCAL r IS _WinRECT
 
 
@@ -137,10 +138,10 @@ METHOD GrowToParent()
 
 
  /// <exclude />
-METHOD HelpRequest(oHelpRequestEvent) 
+METHOD HelpRequest(oHelpRequestEvent)
 	LOCAL cHelpContext AS STRING
-	
-	
+
+
 	IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent) ;
 		.and. SELF:HelpDisplay!=NULL_OBJECT;
 		.and. oHelpRequestEvent:Helptype==HELPCONTROL
@@ -161,49 +162,49 @@ METHOD HelpRequest(oHelpRequestEvent)
 
 
  /// <exclude />
-METHOD HorizontalScroll(oEvent) 
-	
-	
+METHOD HorizontalScroll(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD HorizontalSlide(oEvent) 
-	
-	
+METHOD HorizontalSlide(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD HorizontalSpin(oEvent) 
-	
-	
+METHOD HorizontalSpin(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-CONSTRUCTOR(oOwner, xResourceID) 
-	
-	
+CONSTRUCTOR(oOwner, xResourceID)
+
+
 
 
 	SUPER(oOwner, xResourceID, FALSE)
 
 
-	RETURN 
+	RETURN
 
 
  /// <exclude />
-METHOD IsValidWindow(hTestWnd,cClass) 
+METHOD IsValidWindow(hTestWnd,cClass)
 	LOCAL liStyle AS LONGINT
 
 
-	
-	
-	IF hTestWnd==0 .or. hWnd!=GetParent(hTestWnd);
+
+
+	IF hTestWnd==0 .OR. hWnd!=GetParent(hTestWnd);
 		.or. cClass=="Static";
 		.or. cClass=="ScrollBar"
 		RETURN FALSE
@@ -223,57 +224,57 @@ METHOD IsValidWindow(hTestWnd,cClass)
 
 
  /// <exclude />
-METHOD KeyDown(oEvent) 
-	
-	
+METHOD KeyDown(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD KeyUp(oEvent) 
-	
-	
+METHOD KeyUp(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD ListBoxClick(oEvent) 
-	
-	
+METHOD ListBoxClick(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD ListBoxSelect(oEvent) 
-	
-	
+METHOD ListBoxSelect(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD MouseButtonDoubleClick(oEvent) 
-	
-	
+METHOD MouseButtonDoubleClick(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD MouseButtonDown(oEvent) 
-	
-	
+METHOD MouseButtonDown(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD MouseButtonUp(oEvent) 
-	
-	
+METHOD MouseButtonUp(oEvent)
+
+
 
 
 	oParent:Owner:Dispatch(oEvent)
@@ -283,12 +284,12 @@ METHOD MouseButtonUp(oEvent)
 
 
  /// <exclude />
-METHOD MouseDrag(oEvent) 
+METHOD MouseDrag(oEvent)
 	LOCAL oObject AS OBJECT
 
 
-	
-	
+
+
 
 
 	oObject := oParent
@@ -301,17 +302,17 @@ METHOD MouseDrag(oEvent)
 
 
  /// <exclude />
-METHOD MouseMove(oEvent) 
-	
-	
+METHOD MouseMove(oEvent)
+
+
 	oParent:Owner:Dispatch(oEvent)
 	RETURN SELF
 
 
  /// <exclude />
-METHOD SetFocusToPrev() 
-	
-	
+METHOD SetFocusToPrev()
+
+
 
 
 	IF oLastFocus != NULL_OBJECT
@@ -326,9 +327,9 @@ METHOD SetFocusToPrev()
 
 
  /// <exclude />
-METHOD SetSubformParent(oNewParent) 
-	
-	
+METHOD SetSubformParent(oNewParent)
+
+
 
 
 	oSubFormsParent := oNewParent
@@ -342,9 +343,9 @@ METHOD SetSubformParent(oNewParent)
 
 
  /// <exclude />
-METHOD VerticalScroll(oEvent) 
-	
-	
+METHOD VerticalScroll(oEvent)
+
+
 
 
 	oParent:Owner:Dispatch(oEvent)
@@ -354,9 +355,9 @@ METHOD VerticalScroll(oEvent)
 
 
  /// <exclude />
-METHOD VerticalSlide(oEvent) 
-	
-	
+METHOD VerticalSlide(oEvent)
+
+
 
 
 	oParent:Owner:Dispatch(oEvent)
@@ -366,9 +367,9 @@ METHOD VerticalSlide(oEvent)
 
 
  /// <exclude />
-METHOD VerticalSpin(oEvent) 
-	
-	
+METHOD VerticalSpin(oEvent)
+
+
 
 
 	oParent:Owner:Dispatch(oEvent)

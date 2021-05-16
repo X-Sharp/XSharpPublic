@@ -1,4 +1,4 @@
-GLOBAL DefaultFormDialogClassName := #__FormDialogWindow AS SYMBOL
+GLOBAL DefaultFormFrameClassName := #__FormFrame AS SYMBOL
 
 
 #pragma options ("enforceself", on)
@@ -84,11 +84,11 @@ METHOD __ResizeParent() AS __FormFrame STRICT
 
 
         IF oParent IS AppWindow VAR oAppWnd
-		    IF (oAppWnd:StatusBar != NULL_OBJECT) 
+		    IF (oAppWnd:StatusBar != NULL_OBJECT)
 			    liStatusBarVOffset := oAppWnd:StatusBar:Size:Height
             ENDIF
         ELSE
-            IF (oParent:StatusBar != NULL_OBJECT) 
+            IF (oParent:StatusBar != NULL_OBJECT)
                 liStatusBarVOffset := oParent:StatusBar:Size:Height
             ENDIF
         ENDIF
@@ -644,7 +644,7 @@ METHOD CreateSubform(nResourceID, oResID)
 
 
 	// Create a new form object
-	oNewForm := __FormFrame{oFormDlg, oResID, TRUE, lBorder, TRUE}
+	oNewForm := CreateInstance(DefaultFormFrameClassName, oFormDlg, oResID, TRUE, lBorder, TRUE)
 
 
 	oNewForm:SBCreate := TRUE

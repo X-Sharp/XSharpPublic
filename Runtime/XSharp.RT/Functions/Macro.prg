@@ -153,6 +153,10 @@ RETURN TRUE
             cRet  := "UE"
         END TRY
     ENDIF
+    IF RuntimeState.Dialect == XSharpDialect.FoxPro .and. cRet == "UE"
+        cRet := "U"
+    ENDIF
+
 RETURN cRet
 
 

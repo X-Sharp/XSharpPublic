@@ -411,6 +411,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
         	Assert.Equal(#MYSYMBOL , (SYMBOL)o:DefaultParams4())
 
+        	Assert.Equal(TRUE, (LOGIC)o:DefaultParams5())
+        	Assert.Equal(TRUE, (LOGIC)o:DefaultParams6())
 
 		// TECH-6YD882O372, Runtime exception with inexact equals operator and NIL values
 		[Fact, Trait("Category", "StringUsual")];
@@ -593,6 +595,10 @@ CLASS AnotherClass
 	RETURN dValue
 	METHOD DefaultParams4(sValue := #MYSYMBOL AS SYMBOL) AS SYMBOL
 	RETURN sValue
+	METHOD DefaultParams5(uParam := NULL AS USUAL) AS LOGIC
+	RETURN IsNil(uParam)
+	METHOD DefaultParams6(uParam := NIL AS USUAL) AS LOGIC
+	RETURN IsNil(uParam)
 
 END CLASS
 

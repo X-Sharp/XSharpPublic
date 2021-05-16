@@ -30,13 +30,13 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROTECT _returnsRows     AS LOGIC
     PROTECT _hasOutParams    AS LOGIC
     PROTECT _lastException   AS System.Exception
-    
+
     PROPERTY Connected          AS LOGIC GET Connection:State == System.Data.ConnectionState.Open
     PROPERTY Connection         AS SQLConnection GET _oConnection
     PROPERTY Asynchronous       AS LOGIC  AUTO GET SET
     PROPERTY BatchMode          AS LOGIC  AUTO GET SET
     PROPERTY ConnectBusy        AS LOGIC  GET Connection:ConnectBusy
-    PROPERTY ConnectionString   AS STRING GET Connection:ConnectionString   
+    PROPERTY ConnectionString   AS STRING GET Connection:ConnectionString
     PROPERTY ConnectionTimeOut  AS LONG   GET Connection:ConnectionTimeOut  SET Connection:ConnectionTimeOut := Value
     PROPERTY CursorName         AS STRING AUTO GET SET
     PROPERTY DataSource         AS STRING GET Connection:DataSource         SET Connection:DataSource := Value
@@ -47,9 +47,9 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROPERTY LastException      AS System.Exception GET _lastException
     PROPERTY ODBChdbc           AS DbConnection GET SELF:Connection:NetConnection
     PROPERTY ODBChstmt          AS DbCommand    GET _oNetCommand
-    PROPERTY Password           AS STRING GET Connection:Password   
+    PROPERTY Password           AS STRING GET Connection:Password
     PROPERTY Shared             AS LOGIC  GET Connection:Shared             SET Connection:Shared := Value
-    PROPERTY UserId             AS STRING GET Connection:UserId     
+    PROPERTY UserId             AS STRING GET Connection:UserId
     PROPERTY PacketSize         AS LONG   GET Connection:PacketSize SET Connection:PacketSize := Value
     PROPERTY Prepared           AS LOGIC AUTO GET PRIVATE SET
     PROPERTY QueryTimeOut       AS LONG  GET _oNetCommand:CommandTimeout SET _oNetCommand:CommandTimeout := Value
@@ -78,7 +78,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         SELF:_oNetCommand:CommandTimeout := SELF:QueryTimeOut
         _oConnection:AddStatement(SELF)
         RETURN
-        
+
     PRIVATE METHOD _CloseReader() AS VOID
         IF _oLastDataReader != NULL
             _oLastDataReader:Close()
@@ -103,8 +103,8 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         nFields := aStruct:Count
         VAR cTemp := System.IO.Path.GetTempFileName()
         SELF:CloseArea(cCursorName)
-        // We do not use DBFVFPSQL because that driver deletes the file !
-        DbCreate(cTemp, aStruct, "DBFVFP", TRUE, cCursorName)  
+        // We do not use DBFVFPSQL to create the file because that driver deletes the file when it is closed.
+        DbCreate(cTemp, aStruct, "DBFVFP", TRUE, cCursorName)
         SELF:CloseArea(cCursorName)
         VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
@@ -136,19 +136,19 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             CASE "alter"
                 RETURN FALSE
             OTHERWISE
-                RETURN TRUE  //? 
+                RETURN TRUE  //?
             END SWITCH
         ENDIF
         RETURN FALSE
 
 
-    
+
     CONSTRUCTOR(cDataSource AS STRING, cUser AS STRING, cPassword AS STRING, lShared AS LOGIC)
         _oConnection    := SQLConnection{cDataSource, cUser, cPassword, lShared}
         SELF:SetDefaults()
         SELF:_AllocateCommand()
-        RETURN 
-        
+        RETURN
+
 
     CONSTRUCTOR(cConnectionString AS STRING, lShared AS LOGIC)
         _oConnection := SQLConnection{cConnectionString, lShared}
@@ -183,14 +183,14 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             DO WHILE SELF:_aSyncState == AsyncState.Cancelling
                 System.Threading.Thread.Sleep(500)
             ENDDO
-            SELF:ThreadComplete() 
+            SELF:ThreadComplete()
             BEGIN LOCK SELF
                 SELF:_aSyncState := AsyncState.Idle
             END LOCK
             RETURN TRUE
         ENDIF
         RETURN FALSE
-        
+
     METHOD Commit AS LOGIC
         SELF:_CloseReader()
         RETURN SELF:Connection:CommitTransaction()
@@ -280,13 +280,13 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             ENDIF
             LOCAL oValue        AS OBJECT
             IF SQLReflection.GetPropertyValue(SELF:ParamsObject,oParam:Name, OUT oValue)
-                IF oValue IS USUAL 
+                IF oValue IS USUAL
                     VAR uType := typeof(USUAL)
                     VAR mi    := uType:GetMethod("ToObject")
                     oValue    := mi:Invoke(NULL,<OBJECT>{oValue})
                 ENDIF
                 oDbParam:Value         := oValue
-                IF oValue IS STRING .AND. oParam:ByRef 
+                IF oValue IS STRING .AND. oParam:ByRef
                     oDbParam:Size := 4096
                 ENDIF
             ELSE
@@ -323,9 +323,9 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         ELSE
             SELF:CopyToCursor()
         ENDIF
-        RETURN SELF:_SaveResult(aInfo)        
+        RETURN SELF:_SaveResult(aInfo)
 
-        
+
     METHOD Execute(aInfo AS ARRAY) AS LONG
         SELF:BeginTransaction()
         IF SELF:Asynchronous
@@ -333,7 +333,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         ELSE
             SELF:CopyToCursor()
         ENDIF
-        RETURN SELF:_SaveResult(aInfo)        
+        RETURN SELF:_SaveResult(aInfo)
 
     PRIVATE METHOD CopyToInfo(aResult AS ARRAY, aInfo AS ARRAY) AS VOID
         IF aResult != NULL_ARRAY
@@ -416,7 +416,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         IF SELF:_aSyncState == AsyncState.Ready
             SELF:_aSyncState := AsyncState.Idle
         ENDIF
-        
+
     PRIVATE METHOD CopyToCursorAsync() AS VOID
         IF SELF:_returnsRows
             _aQueryResult := {}
@@ -462,7 +462,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             oRDD := NULL
         END TRY
         RETURN oRDD
-        
+
 
     PRIVATE METHOD CopyToCursor() AS VOID
         TRY
@@ -505,7 +505,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             ENDIF
         ENDDO
         _aQueryResult := result
-        RETURN 
+        RETURN
 
 
     METHOD MoreResults(cursorName AS STRING, aInfo AS ARRAY) AS LONG
@@ -513,25 +513,25 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             SELF:CursorName := cursorName
             SELF:_nextCursorNo := 0
         ENDIF
-        IF _oLastDataReader != NULL .and. ! _oLastDataReader:IsClosed .AND. _oLastDataReader:HasRows 
+        IF _oLastDataReader != NULL .and. ! _oLastDataReader:IsClosed .AND. _oLastDataReader:HasRows
             SELF:CopyToCursor(_oLastDataReader, _nextCursorNo)
             RETURN SELF:_SaveResult(aInfo)
         ENDIF
         ASize(aInfo,1)
         aInfo[1] := {{0, -1}}
         RETURN 0
-    
+
 
     PRIVATE METHOD GetNumRestrictions(cCollectionName AS STRING) AS LONG
         LOCAL nRestrictions := 0 AS LONG
         LOCAL oTable := SELF:Connection:NetConnection:GetSchema("MetadataCollections",NULL) AS DataTable
         FOREACH oRow AS DataRow IN oTable:Rows
 			IF String.Compare( (STRING)oRow:Item["CollectionName"], cCollectionName, StringComparison.OrdinalIgnoreCase) == 0
-				nRestrictions := (INT) oRow:Item["NumberOfRestrictions"] 
+				nRestrictions := (INT) oRow:Item["NumberOfRestrictions"]
 				EXIT
 			ENDIF
-        NEXT        
-        RETURN nRestrictions  
+        NEXT
+        RETURN nRestrictions
 
     PRIVATE METHOD CloseArea(cArea as STRING) AS VOID
         var nArea := VoDb.SymSelect(cArea)
@@ -553,23 +553,23 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             ENDIF
             list:Add(sType)
         NEXT
-        
+
         LOCAL filter AS STRING[]
         LOCAL oTables AS List<DataTable>
         LOCAL oTable AS DataTable
         LOCAL nRestrictions AS LONG
         oTables := List<DataTable>{}
-        
-        nRestrictions := SELF:GetNumRestrictions("Tables") 
+
+        nRestrictions := SELF:GetNumRestrictions("Tables")
         filter := STRING[]{nRestrictions}
         oTable := SELF:Connection:NetConnection:GetSchema("Tables", filter)
         oTables:Add(oTable)
-        
+
         nRestrictions := SELF:GetNumRestrictions("Views")
         filter := STRING[]{nRestrictions}
         oTable := SELF:Connection:NetConnection:GetSchema("Views", filter)
         oTables:Add(oTable)
-        
+
         LOCAL aStruct AS ARRAY
         aStruct := ArrayNew(5)
         aStruct[1] := {"TABLE_CAT","C:0",128,0}
@@ -625,13 +625,13 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             oRDD:PutValue(4, fieldInfo:Decimals)
             oRDD:GoCold()
         NEXT
-        RETURN TRUE        
-        
+        RETURN TRUE
+
    METHOD GetColumnsNative(cTableName AS STRING, cCursorName AS STRING) AS LOGIC
         LOCAL filter AS STRING[]
         LOCAL oTable AS DataTable
         LOCAL nRestrictions AS LONG
-        nRestrictions := SELF:GetNumRestrictions("Columns") 
+        nRestrictions := SELF:GetNumRestrictions("Columns")
         filter := STRING[]{nRestrictions}
         filter[3] := cTableName
         SELF:_CloseReader()
@@ -670,7 +670,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 oRDD:PutValue(i, oValues[i])
             NEXT
          NEXT
-       RETURN TRUE        
+       RETURN TRUE
 
    METHOD GetColumns(cTableName AS STRING, cType AS STRING, cCursorName AS STRING) AS LOGIC
         SELF:CursorName := cCursorName
@@ -687,10 +687,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     #endregion
 
 
-   
-    
 
-    
+
+
+
 
     METHOD ParseCommand(cCommand AS STRING, cParamChar AS CHAR, lIncludeParameterNameInQuery AS LOGIC) AS STRING
         LOCAL statements := List<STRING>{} AS List<STRING>
@@ -726,9 +726,9 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                         lParamByRef := TRUE
                     ENDIF
                 ELSE
-                    sb:Append(ch)    
+                    sb:Append(ch)
                 ENDIF
-                
+
             CASE c'?'
                 inParam := TRUE
                 lParamByRef := FALSE
@@ -769,7 +769,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         NEXT
         _returnsRows := returns
         RETURN result
-        
+
 
 
 
@@ -783,7 +783,7 @@ INTERNAL ENUM XSharp.VFP.AsyncState
     MEMBER Cancelled    := 4
     MEMBER Exception    := 5
 END ENUM
-    
+
 INTERNAL CLASS XSharp.VFP.SQLParameter
     PROPERTY Name   AS STRING AUTO GET PRIVATE SET
     PROPERTY ByRef  AS LOGIC  AUTO GET PRIVATE SET

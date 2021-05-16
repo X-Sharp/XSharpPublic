@@ -1,3 +1,4 @@
+#define DUMPTOKENS
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -136,6 +137,12 @@ namespace XSharp.MacroCompiler
                 var pp = new Preprocessor.XSharpPreprocessor(lexer, options, null, Encoding.Default);
                 tokens = pp.PreProcess();
             }
+#if DUMPTOKENS
+            foreach (var t in tokens)
+            {
+                Console.WriteLine($"{t.Type} {t.Text}");
+            }
+#endif
             var parser = new Parser(tokens, options);
             return parser.ParseScript();
         }

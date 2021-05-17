@@ -47,22 +47,28 @@ namespace XSharp.LanguageService
                 // 3) Properties or Fields
                 // 4) Globals and Defines
                 WriteOutputMessage($"--> FindIdentifier in {currentType.FullName}, {name} ");
-                if (location.Member.Kind.HasParameters())
+                var member = location.Member;
+                if (member.Kind.HasParameters())
                 {
-                    result.AddRange(location.Member.Parameters.Where(x => StringEquals(x.Name, name)));
+                    result.AddRange(member.Parameters.Where(x => StringEquals(x.Name, name)));
                 }
                 if (result.Count == 0)
                 {
                     // then Locals
                     // line numbers in the range are 1 based. currentLine = 0 based !
-                    if (location.Member.Kind.HasBody())
+                    if (member.Kind.HasBody())
                     {
-                        var local = location.Member.GetLocals(location).Where(x => StringEquals(x.Name, name) && x.Range.StartLine - 1 <= location.LineNumber).LastOrDefault();
+                        var local = member.GetLocals(location).Where(x => StringEquals(x.Name, name) && x.Range.StartLine - 1 <= location.LineNumber).LastOrDefault();
                         if (local != null)
                         {
                             result.Add(local);
                         }
                     }
+                }
+                foreach (XSourceVariableSymbol variable in result)
+                {
+                    if (variable.File == null)
+                        variable.File = member.File;
                 }
                 if (result.Count == 0)
                 {

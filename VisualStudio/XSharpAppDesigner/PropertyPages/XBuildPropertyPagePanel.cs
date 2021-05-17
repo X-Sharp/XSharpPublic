@@ -236,15 +236,14 @@ namespace XSharp.Project
                 var asmName = this.ParentPropertyPage.GetProperty(XSharpProjectFileConstants.AssemblyName) ?? "NoName";
                 documentationFile = asmName + ".Xml";
             }
-            var tag = "DocFile"; ;
-            this.ParentPropertyPage.SetProperty(tag, documentationFile);
+            this.ParentPropertyPage.SetProperty(XSharpProjectFileConstants.DocumentationFile, documentationFile);
             this.txtXMLDocumentationFile.Text = documentationFile;
         }
 
         protected internal override void BindProperties()
         {
             base.BindProperties();
-            this.chkXMLDocumentationFile.Checked = !string.IsNullOrEmpty(ParentPropertyPage.GetProperty("DocFile"));
+            this.chkXMLDocumentationFile.Checked = !string.IsNullOrEmpty(ParentPropertyPage.GetProperty(XSharpProjectFileConstants.DocumentationFile));
             var platform = ParentPropertyPage.GetProperty(XSharpProjectFileConstants.PlatformTarget) ?? "anycpu";
             if (string.Compare(platform, "anycpu",true) == 0)
             {

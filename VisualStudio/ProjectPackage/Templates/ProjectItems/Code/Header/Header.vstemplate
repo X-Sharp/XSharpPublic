@@ -5,12 +5,12 @@
     <Description>An empty Header File</Description>
     <TemplateID>XSharp.Header</TemplateID>
     <ProjectType>XSharp</ProjectType>
-    <Icon>Include.png</Icon>
+    <Icon>Header.png</Icon>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
-    <DefaultName>Header.vh</DefaultName> 
+    <DefaultName>Header.xh</DefaultName> 
   </TemplateData>
   <TemplateContent>
     <References/>
-    <ProjectItem OpenInEditor="true" ReplaceParameters="true">Header.vh</ProjectItem>
+    <ProjectItem OpenInEditor="true" ReplaceParameters="true">Header.xh</ProjectItem>
   </TemplateContent>
 </VSTemplate>

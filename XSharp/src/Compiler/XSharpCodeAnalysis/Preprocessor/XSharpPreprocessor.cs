@@ -1925,8 +1925,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // somerule => #Error 
                 result.TrimLeadingSpaces();
-                if (result[0].Channel == XSharpLexer.PREPROCESSORCHANNEL)
-                { 
+                if (result.Count > 0 && result[0].Channel == XSharpLexer.PREPROCESSORCHANNEL)
+                {
                     result = ProcessLine(result);
                     if (result == null)
                     {

@@ -78,8 +78,12 @@ namespace XSharp.LanguageService
         }
         internal IXTypeSymbol FindType(string name)
         {
-            var usings = Usings.ToList();
-             return Project.FindType(name, usings);
+            if (Project != null)
+            {
+                var usings = Usings.ToList();
+                return Project.FindType(name, usings);
+            }
+            return null;
         }
 
         private List<string> GetUsings()
@@ -87,7 +91,10 @@ namespace XSharp.LanguageService
             IXSymbol scope;
             scope = Member;
             var scopes = new List<string>();
-            scopes.AddRange(File.Usings);
+            if (File != null)
+            {
+                scopes.AddRange(File.Usings);
+            }
             while (scope != null)
             {
                 string ns = "";

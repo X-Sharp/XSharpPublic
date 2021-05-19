@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Collections
@@ -25,15 +25,15 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
         RETURN
 
 	/// <summary>Returns the number of parameters in the codeblock</summary>
-	PUBLIC VIRTUAL METHOD PCount AS INT 
+	PUBLIC VIRTUAL METHOD PCount AS INT
 		RETURN _pcount
-		
+
 	/// <summary>This constructor is used by the Compiler for compile time codeblocks.</summary>
 	/// <param name="pCount">Number of parameters defined in the compile time codeblock.</param>
 	[DebuggerStepThrough] ;
 	PROTECTED CONSTRUCTOR (pCount AS INT)
 		_pcount := pCount
-		
+
 	/// <summary>
 	/// Executes the codeblock.</summary>
 	/// <param name="args">Zero or more arguments to pass to the codeblock.</param>
@@ -43,8 +43,8 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 	/// <remarks>This method is abstract and is implemented in the derived class
 	/// created by the compiler.</remarks>
 	PUBLIC ABSTRACT METHOD Eval(args PARAMS CONST USUAL[] ) AS USUAL
-	
-	
+
+
 	/// <summary>
 	/// Eval method that can be called from code that does not "know" about the USUAL type.
 	/// </summary>
@@ -56,22 +56,22 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 		    uArgs := _ObjectArrayToUsualArray(args)
         ENDIF
 		RETURN SELF:Eval(uArgs)
-		
-		
+
+
 	/// <summary>
 	/// Return a string that contains the # of parameters for display in the debugger.
 	/// </summary>
 	PUBLIC OVERRIDE METHOD ToString() AS STRING
 		RETURN "{|" + SELF:_pcount:ToString() + "| ... }"
-		
+
 	// This method is used in the compiled codeblocks to get the arguments
 	// from the parameter list
 	/// <exclude />
 	PROTECTED STATIC METHOD _BlockArg( args AS CONST USUAL[], index AS CONST INT ) AS USUAL
 		RETURN IIF( index < args:Length, args[index + 1], NIL )
 		END CLASS
-		
-		
+
+
 /// <summary>Internal type that is the base class for macro compiled codeblocks.
 /// </summary>
 /// <seealso cref="ICodeblock"/>
@@ -80,7 +80,7 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 [DebuggerDisplay( "{_cMacro}", Type := "_Codeblock" )] ;
 PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 	/// <exclude />
-	PROTECT _innerBlock AS ICodeblock 
+	PROTECT _innerBlock AS ICodeblock
 	/// <exclude />
 	PROTECT _cMacro		AS STRING
 	/// <exclude />
@@ -106,7 +106,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 		_cMacro		:= cMacro
 		_lIsBlock   := lIsBlock
         _addsMemVars := lAddsMemvars
-		
+
 	/// <summary>
 	/// Executes the codeblock.</summary>
 	/// <param name="args">Zero or more arguments to pass to the codeblock.</param>
@@ -137,7 +137,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
             ENDIF
         END TRY
 		RETURN uRes
-		
+
 	/// <summary>
 	/// Returns the original string that was used to create the macro compiled codeblock.
 	/// </summary>
@@ -150,5 +150,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 
 	/// <summary>Was the codeblock created from a string that started with "{|" </summary>
 	PUBLIC PROPERTY IsBlock AS LOGIC GET _lIsBlock
+    INTERNAL METHOD SetString(cMacro AS STRING) AS VOID
+        SELF:_cMacro := cMacro
 END CLASS
 

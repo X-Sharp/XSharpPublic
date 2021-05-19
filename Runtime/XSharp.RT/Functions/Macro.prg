@@ -6,6 +6,7 @@
 USING System.Reflection
 USING System.Globalization
 USING System.Collections.Generic
+USING System.Text.RegularExpressions
 
 USING XSharp.Internal
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
@@ -51,17 +52,47 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
             XSharp.RuntimeState:MacroResolver := DefaultMacroAmbigousMatchResolver
         ENDIF
         LOCAL oResult AS XSharp._Codeblock
-        //cString := MPrepare(cString)
+        VAR cMacro := MPrepare(cString)
         IF oMC IS IMacroCompilerUsual VAR oMCU
-            oResult := oMCU:CompileCodeblock(cString, lAllowSingleQuotes, oMod)
+            oResult := oMCU:CompileCodeblock(cMacro, lAllowSingleQuotes, oMod)
+            oResult:SetString(cString)
         ELSE
             LOCAL iResult AS ICodeblock
-            iResult := oMC:Compile(cString, lAllowSingleQuotes, oMod, OUT VAR lIsCodeblock, OUT VAR addsMemVars)
+            iResult := oMC:Compile(cMacro, lAllowSingleQuotes, oMod, OUT VAR lIsCodeblock, OUT VAR addsMemVars)
             oResult := XSharp._Codeblock{iResult, cString, lIsCodeblock, addsMemVars}
+            oResult:SetString(cString)
         ENDIF
         RETURN oResult
     ENDIF
     RETURN NULL_OBJECT
+
+INTERNAL GLOBAL macroTokens AS Dictionary<STRING, STRING>
+
+INTERNAL FUNCTION MPrepare(cMacro AS STRING) AS STRING
+    // Replace ".or." and other strings when they are part of the macro
+    VAR pos := cMacro:IndexOf(c'.')
+    IF pos < 0
+        RETURN cMacro
+    ENDIF
+    // This is probably too much but it works
+    // and it does not fix MiXeD cased NaMeS
+    IF macroTokens == NULL
+        macroTokens := Dictionary<STRING, STRING>{}
+        macroTokens:Add("\.or\.", " .or. ")
+        macroTokens:Add("\.and\.", " .and. ")
+        macroTokens:Add("\.not\.", " .not. ")
+        macroTokens:Add("\.xor\.", " .xor. ")
+        macroTokens:Add("\.t\.", " .t. ")
+        macroTokens:Add("\.f\.", " .f. ")
+        macroTokens:Add("\.n\.", " .n. ")
+        macroTokens:Add("\.y\.", " .y. ")
+    ENDIF
+    VAR result := cMacro
+
+    FOREACH VAR replace IN macroTokens
+        result := Regex.Replace(result,replace:Key, replace:Value, RegexOptions.IgnoreCase)
+    NEXT
+    RETURN result
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />

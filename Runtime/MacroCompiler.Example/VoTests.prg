@@ -1,7 +1,7 @@
 ﻿// VoTests.prg
 // Created by    : nvk
 // Creation Date : 2/13/2021 3:57:40 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : I7
 
 
@@ -31,6 +31,10 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
 
+
+        TestMacro(mc, e"{|a,b| S_EnforceType(a,b), a}", Args(NIL,"N"), 0, typeof(INT))
+        TestMacro(mc, e"{|a,b| S_EnforceType(REF a,b), a}", Args(NIL,"N"), 0, typeof(INT))
+
         //TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
         TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
         TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(TRUE, "ABCDE"), "ABC", typeof(STRING))
@@ -52,7 +56,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(TRUE), 42, typeof(INT))
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(FALSE), -42, typeof(INT))
         TestMacro(mc, e"{|e| if( e = 1, 'true','false' ) ", Args(1), "true", typeof(String) )
-        
+
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         TestMacro(mc, e"{|| eval({||true}) }", Args(), true, typeof(logic))
         TestMacro(mc, e"{|o| eval({|a|a},o) }", Args(TRUE), TRUE, typeof(LOGIC))
@@ -384,7 +388,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "{|abc| Chr(65) + 'B'}", Args(), "AB", typeof(STRING))
         TestMacro(mc, '{|abc| Chr(65) + "BB"}', Args(), "ABB", typeof(STRING))
         TestMacro(mc, "{|abc| Chr(65):toString() + 'B'}", Args(), "AB", typeof(STRING))
-        TestMacro(mc, e"{|abc| (usual)\"ABC\" + Chr(123)}", Args(), "ABC"+Chr(123), typeof(STRING)) 
+        TestMacro(mc, e"{|abc| (usual)\"ABC\" + Chr(123)}", Args(), "ABC"+Chr(123), typeof(STRING))
         TestMacro(mc, e"0x1234", Args(), 0x1234, typeof(INT))
         TestMacro(mc, e"0b110011", Args(), 0b110011, typeof(INT))
         TestMacro(mc, e"0xFFFF", Args(), 0xFFFF, typeof(INT))

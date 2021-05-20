@@ -1008,6 +1008,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// Gets a value indicating whether this type has an EmbeddedAttribute or not.
         /// </summary>
         internal abstract bool HasCodeAnalysisEmbeddedAttribute { get; }
+#if XSHARP
+        internal virtual bool HasCompilerGeneratedAttribute => false;
+#endif
 
         internal static readonly Func<TypeWithAnnotations, bool> TypeWithAnnotationsIsNullFunction = type => !type.HasType;
 

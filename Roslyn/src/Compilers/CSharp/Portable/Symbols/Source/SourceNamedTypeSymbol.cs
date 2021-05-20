@@ -1232,7 +1232,7 @@ next:;
             }
         }
 #if XSHARP
-        internal bool HasCompilerGeneratedAttribute
+        internal override bool HasCompilerGeneratedAttribute
         {
             get
             {

@@ -146,6 +146,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             internal string lazyDefaultMemberName;
             internal NamedTypeSymbol lazyComImportCoClassType = ErrorTypeSymbol.UnknownResultType;
             internal ThreeState lazyHasEmbeddedAttribute = ThreeState.Unknown;
+#if XSHARP
+            internal ThreeState lazyHasCompilerGeneratedAttribute = ThreeState.Unknown;
+#endif
 
 #if DEBUG
             internal bool IsDefaultValue()
@@ -159,6 +162,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     !lazyContainsExtensionMethods.HasValue() &&
                     lazyDefaultMemberName == null &&
                     (object)lazyComImportCoClassType == (object)ErrorTypeSymbol.UnknownResultType &&
+#if XSHARP
+                    !lazyHasCompilerGeneratedAttribute.HasValue() &&
+#endif
                     !lazyHasEmbeddedAttribute.HasValue();
             }
 #endif
@@ -412,7 +418,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 return uncommon.lazyHasEmbeddedAttribute.Value();
             }
         }
+#if XSHARP
+        internal override bool HasCompilerGeneratedAttribute
+        {
+            get
+            {
+                var uncommon = GetUncommonProperties();
+                if (uncommon == s_noUncommonProperties)
+                {
+                    return false;
+                }
 
+                if (!uncommon.lazyHasCompilerGeneratedAttribute.HasValue())
+                {
+                    uncommon.lazyHasCompilerGeneratedAttribute = ContainingPEModule.Module.HasCompilerGeneratedAttribute(_handle).ToThreeState();
+                }
+
+                return uncommon.lazyHasCompilerGeneratedAttribute.Value();
+            }
+        }
+#endif
         internal override NamedTypeSymbol BaseTypeNoUseSiteDiagnostics
         {
             get

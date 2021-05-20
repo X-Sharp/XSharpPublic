@@ -1001,7 +1001,12 @@ namespace Microsoft.CodeAnalysis
         {
             return FindTargetAttribute(token, AttributeDescription.CodeAnalysisEmbeddedAttribute).HasValue;
         }
-
+#if XSHARP
+        internal bool HasCompilerGeneratedAttribute(EntityHandle token)
+        {
+            return FindTargetAttribute(token, AttributeDescription.CompilerGeneratedAttribute).HasValue;
+        }
+#endif
         internal bool HasDefaultMemberAttribute(EntityHandle token, out string memberName)
         {
             return HasStringValuedAttribute(token, AttributeDescription.DefaultMemberAttribute, out memberName);

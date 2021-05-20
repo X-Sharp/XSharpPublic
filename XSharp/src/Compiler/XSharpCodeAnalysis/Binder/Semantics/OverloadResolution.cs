@@ -448,12 +448,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-
             // generate warning that function takes precedence over static method
-            var ftype1 = m1.Member.ContainingType;
-            var ftype2 = m2.Member.ContainingType;
-            var func1 = ftype1.Name.EndsWith("Functions");
-            var func2 = ftype2.Name.EndsWith("Functions");
+            var func1 = m1.Member.IsStatic && m1.Member.ContainingType.IsFunctionsClass();
+            var func2 = m2.Member.IsStatic && m2.Member.ContainingType.IsFunctionsClass();
             if (func1 && !func2)
             {
                 result = BetterResult.Left;

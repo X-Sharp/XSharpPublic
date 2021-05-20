@@ -474,5 +474,8 @@ namespace Microsoft.CodeAnalysis
         internal static readonly AttributeDescription NativeIntegerAttribute = new AttributeDescription("System.Runtime.CompilerServices", "NativeIntegerAttribute", s_signaturesOfNativeIntegerAttribute);
         internal static readonly AttributeDescription ModuleInitializerAttribute = new AttributeDescription("System.Runtime.CompilerServices", "ModuleInitializerAttribute", s_signatures_HasThis_Void_Only);
         internal static readonly AttributeDescription UnmanagedCallersOnlyAttribute = new AttributeDescription("System.Runtime.InteropServices", "UnmanagedCallersOnlyAttribute", s_signatures_HasThis_Void_Only);
+#if XSHARP
+        internal static readonly AttributeDescription CompilerGeneratedAttribute = new AttributeDescription("System.Runtime.CompilerServices", "CompilerGeneratedAttribute", s_signatures_HasThis_Void_Only);
+#endif
     }
 }

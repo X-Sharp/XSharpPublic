@@ -895,7 +895,21 @@ next:;
 
                 return null;
             }
-
+#if XSHARP
+            if (CSharpAttributeData.IsTargetEarlyAttribute(arguments.AttributeType, arguments.AttributeSyntax, AttributeDescription.CompilerGeneratedAttribute))
+            {
+                boundAttribute = arguments.Binder.GetAttribute(arguments.AttributeSyntax, arguments.AttributeType, out hasAnyDiagnostics);
+                if (!boundAttribute.HasErrors)
+                {
+                    arguments.GetOrCreateData<CommonTypeEarlyWellKnownAttributeData>().HasCompilerGeneratedAttribute = true;
+                    if (!hasAnyDiagnostics)
+                    {
+                        return boundAttribute;
+                    }
+                }
+                return null;
+            }
+#endif
             if (CSharpAttributeData.IsTargetEarlyAttribute(arguments.AttributeType, arguments.AttributeSyntax, AttributeDescription.CodeAnalysisEmbeddedAttribute))
             {
                 boundAttribute = arguments.Binder.GetAttribute(arguments.AttributeSyntax, arguments.AttributeType, out hasAnyDiagnostics);
@@ -1217,6 +1231,17 @@ next:;
                 return data != null && data.HasComImportAttribute;
             }
         }
+#if XSHARP
+        internal bool HasCompilerGeneratedAttribute
+        {
+            get
+            {
+                CommonTypeEarlyWellKnownAttributeData data = this.GetEarlyDecodedWellKnownAttributeData();
+                return data != null && data.HasCompilerGeneratedAttribute;
+            }
+        }
+#endif
+
 
         internal override NamedTypeSymbol ComImportCoClass
         {
@@ -1555,7 +1580,7 @@ next:;
 #endif
         }
 
-        #endregion
+#endregion
 
         internal override NamedTypeSymbol AsNativeInteger()
         {

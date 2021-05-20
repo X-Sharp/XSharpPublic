@@ -21,6 +21,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             s_dictionary = new ConcurrentDictionary<string, XSharpTargetDLL>(XSharpString.Comparer);
         }
 
+        public static bool IsFunctionsClass(this NamedTypeSymbol type)
+        {
+            return type.IsStatic
+                && type is SourceNamedTypeSymbol snts
+                && snts.HasCompilerGeneratedAttribute
+                && type.Name.EndsWith(XSharpSpecialNames.FunctionsClass);
+        }
+
         public static bool IsOurAttribute(this NamedTypeSymbol atype, string name)
         {
             if (atype is { })

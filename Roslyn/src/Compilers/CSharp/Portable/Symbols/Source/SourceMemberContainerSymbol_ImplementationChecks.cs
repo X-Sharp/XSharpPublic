@@ -1401,6 +1401,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
 #if XSHARP
             var diagnosticAddedX = false;
+            var isFunction = hidingMember.IsStatic && hidingMember.ContainingType.IsFunctionsClass();
 #endif
 
             var hiddenMembers = overriddenOrHiddenMembers.HiddenMembers;
@@ -1434,8 +1435,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             (hiddenMember.IsAbstract || hiddenMember.IsVirtual || hiddenMember.IsOverride) &&
                             !IsShadowingSynthesizedRecordMember(hidingMember))
                         {
+#if XSHARP
+                            if (!isFunction)
+                            {
+                                diagnostics.Add(ErrorCode.WRN_NewOrOverrideExpected, hidingMemberLocation, hidingMember, hiddenMember);
+                                diagnosticAdded = true;
+                            }
+#else
                             diagnostics.Add(ErrorCode.WRN_NewOrOverrideExpected, hidingMemberLocation, hidingMember, hiddenMember);
                             diagnosticAdded = true;
+#endif
                         }
 
                         if (diagnosticAdded)
@@ -1447,7 +1456,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 if (!hidingMemberIsNew && !IsShadowingSynthesizedRecordMember(hidingMember) && !diagnosticAdded && !hidingMember.IsAccessor() && !hidingMember.IsOperator())
                 {
+#if XSHARP
+                    if (!isFunction)
+                    {
+                        diagnostics.Add(ErrorCode.WRN_NewRequired, hidingMemberLocation, hidingMember, hiddenMembers[0]);
+                    }
+#else
                     diagnostics.Add(ErrorCode.WRN_NewRequired, hidingMemberLocation, hidingMember, hiddenMembers[0]);
+#endif
                 }
 #if XSHARP
                 diagnosticAddedX = diagnosticAdded;

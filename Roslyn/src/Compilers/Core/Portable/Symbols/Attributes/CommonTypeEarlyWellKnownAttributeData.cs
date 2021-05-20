@@ -37,6 +37,26 @@ namespace Microsoft.CodeAnalysis
         }
         #endregion
 
+#if XSHARP
+        #region CompilerGeneratedAttribute
+        private bool _hasCompilerGeneratedAttribute;
+        public bool HasCompilerGeneratedAttribute
+        {
+            get
+            {
+                VerifySealed(expected: true);
+                return _hasCompilerGeneratedAttribute;
+            }
+            set
+            {
+                VerifySealed(expected: false);
+                _hasCompilerGeneratedAttribute = value;
+                SetDataStored();
+            }
+        }
+        #endregion
+#endif
+
         #region ComImportAttribute
         private bool _hasComImportAttribute;
         public bool HasComImportAttribute

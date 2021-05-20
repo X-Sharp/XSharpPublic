@@ -80,7 +80,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (symbol is MethodSymbol)
                     {
                         var ms = symbol as MethodSymbol;
-                        if (ms.IsStatic && ms.ContainingType.Name.EndsWith("Functions", XSharpString.Comparison))
+                        if (ms.IsStatic && ms.ContainingType.IsFunctionsClass())
                         {
                             SingleLookupResult single = new SingleLookupResult(LookupResultKind.Viable, ms, null);
                             functionResults.MergeEqual(single);

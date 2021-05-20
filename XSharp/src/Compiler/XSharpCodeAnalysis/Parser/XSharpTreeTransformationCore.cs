@@ -4253,6 +4253,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 m = m.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExplicitExtension));
             }
+            // method should have static modifier when it has a SELF parameter
+            if (context.ParamList._Params.Count > 0)
+            {
+                var par = context.ParamList._Params[0];
+                if (par.Modifiers._Tokens.Any(t => t.Type == XSharpParser.SELF))
+                {
+                    if (!context.Modifiers._Tokens.Any(t => t.Type == XSharpParser.STATIC))
+                    {
+                        m = m.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadExtensionMeth));
+                    }
+                }
+            }
             bool separateMethod = false;
             if (context.ClassId != null)
             {

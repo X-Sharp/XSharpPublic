@@ -78374,7 +78374,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C687 - Problems with undeclared vars/PUBLICs/PRIVATEs in VFP dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C688 - Another PUBLIC/PRIVATE FoxPro sample *************
 Application = C688 - Another PUBLIC/PRIVATE FoxPro sample
 IDEVersion = 1.06
@@ -78382,7 +78382,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = FoxPro

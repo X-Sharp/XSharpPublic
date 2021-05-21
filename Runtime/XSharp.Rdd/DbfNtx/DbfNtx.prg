@@ -144,7 +144,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF workOrder != NULL
                     info:Result := System.IO.Path.GetExtension(workOrder:FullPath)
                 ELSE
-                    info:Result := ""
+                    info:Result := NtxOrder.NTX_EXTENSION
                 ENDIF
             CASE DBOI_FULLPATH
                 IF workOrder != NULL

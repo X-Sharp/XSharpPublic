@@ -132,7 +132,15 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             SELF:_ReadNames(hIndex)
         ENDIF
         RETURN TRUE
-
+    PRIVATE METHOD GetDefaultIndexExt AS STRING
+        SWITCH oRDD:_TableType
+        CASE ACE.ADS_NTX
+            RETURN ".NTX"
+        CASE ACE.ADS_CDX
+            RETURN ".CDX"
+        OTHERWISE
+            RETURN ".ADI"
+        END SWITCH
         /// <inheritdoc />
     VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
         LOCAL hIndex AS IntPtr
@@ -151,17 +159,13 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         ENDIF
         BEGIN SWITCH nOrdinal
         CASE DBOI_DEFBAGEXT
-            IF SELF:oRDD:IsADT
-                info:Result :=  ".ADI"
-            ELSE
-                IF SELF:oRDD:_TableType == ACE.ADS_NTX
-                    info:Result :=  ".NTX"
-                ELSE
-                    info:Result :=  ".CDX"
-                ENDIF
-            ENDIF
+            info:Result := SELF:GetDefaultIndexExt()
         CASE DBOI_BAGEXT
-            info:Result := System.IO.Path.GetExtension(SELF:BagName)
+            IF hIndex == IntPtr.Zero
+                info:Result := SELF:GetDefaultIndexExt()
+            ELSE
+                info:Result := System.IO.Path.GetExtension(SELF:BagName)
+            ENDIF
 
         CASE DBOI_BAGNAME
             SELF:_ReadNames(hIndex)

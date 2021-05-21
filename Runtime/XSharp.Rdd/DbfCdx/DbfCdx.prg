@@ -200,7 +200,7 @@ BEGIN NAMESPACE XSharp.RDD
                     IF workOrder != NULL
                         info:Result := System.IO.Path.GetExtension(workOrder:OrderBag:FullPath)
                     ELSE
-                        info:Result := ""
+                        info:Result := CdxOrderBag.CDX_EXTENSION
                     ENDIF
                 CASE DBOI_FULLPATH
                     IF workOrder != NULL

@@ -581,11 +581,6 @@ FUNCTION SendClass( o , symMethod , symClassName ) AS USUAL CLIPPER
 	RETURN NIL
 	
 /// <exclude/>
-[ObsoleteAttribute( "'OClone()' is not supported and always returns NULL_OBJECT")] ;
-FUNCTION OClone(o AS OBJECT) AS OBJECT
-	RETURN NULL_OBJECT   
-	
-/// <exclude/>
 [ObsoleteAttribute( "'OMemSize()' is not supported and always returns 0")] ;
 FUNCTION OMemSize(o AS OBJECT) AS DWORD
 	RETURN 0  

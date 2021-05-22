@@ -48,14 +48,14 @@ BEGIN NAMESPACE MacroCompilerTest
         "RETURN a+b+c"}),1,2,3)
         wait
 
-        testUDC(sc)
-
-
         ParserTestsFox(CreateFoxScriptCompiler())
         ParserTests(CreateScriptCompiler())
         ScriptTests()
         VoTests(mc)
         FoxTests(fmc)
+
+        ResetOverrides()
+        testUDC(sc)
 
         RunPerf(mc, "Console.WriteLine(123)")
 
@@ -82,29 +82,43 @@ FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
     DbCloseArea()
 
 
-    EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
     "#include ""XSharpDefs.xh"" ",;
     "USE TEST",;
+    "i:=1",;
     "DO WHILE ! EOF()",;
-    " ? FieldGet(1), FieldGet(2)",;
+    " IF FieldGet(1) != StrZero(i,10,0)",;
+    "  RETURN false",;
+    " END",;
+    " IF FieldGet(2) != Repl(Chr(64+(DWORD)i),10)",;
+    "  RETURN false",;
+    " END",;
+    " i++",;
     " SKIP ",;
     "ENDDO",;
     "CLOSE",;
-    "RETURN NIL"}),1)
-    WAIT
+    "RETURN true"}), Args(1), TRUE, typeof(LOGIC))
+
     XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
     sc := CreateFoxScriptCompiler()
-    EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
     "#include ""XSharpDefs.xh"" ",;
     "LPARAMETERS fileName",;
     "LOCAL recCount",;
     "USE (fileName)",;
+    "i:=1",;
     "SCAN",;
-    " ? Test->Test1, Test->Test2",;
+    " IF Test->Test1 != StrZero(i,10,0)",;
+    "  RETURN false",;
+    " END",;
+    " IF Test->Test2 != Repl(Chr(64+(DWORD)i),10)",;
+    "  RETURN false",;
+    " END",;
+    " i++",;
     "ENDSCAN",;
     "recCount = LastRec()",;
     "CLOSE ",;
-    "RETURN NIL"}),"test")
+    "RETURN true"}),Args("test"), TRUE, typeof(LOGIC))
 
-    WAIT
     RETURN
+

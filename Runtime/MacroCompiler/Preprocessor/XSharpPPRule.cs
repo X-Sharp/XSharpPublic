@@ -760,13 +760,13 @@ namespace XSharp.MacroCompiler.Preprocessor
             for (int i = 0; i < resultTokens.Length; i++)
             {
                 var token = resultTokens[i];
-                if (token.Source == lastTokenSource && token.Index > lastTokenIndex + 1)
+/*nvk                if (token.Source == lastTokenSource && token.Index > lastTokenIndex + 1)
                 {
                     // whitespace tokens have been skipped
                     var ppWs = new Token(token, TokenType.WS, " ");
                     ppWs.Channel = Channel.Hidden;
                     result.Add(new PPResultToken(ppWs, PPTokenType.Token));
-                }
+                }*/
                 lastTokenIndex = token.Index;
                 lastTokenSource = token.Source;
                 switch (token.Type)

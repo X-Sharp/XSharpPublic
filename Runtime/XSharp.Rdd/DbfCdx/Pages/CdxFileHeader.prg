@@ -1,7 +1,7 @@
 // CdxBlock.prg
 // Created by    : fabri
 // Creation Date : 10/25/2018 10:43:18 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : FABPORTABLE
 
 USING System
@@ -10,7 +10,7 @@ USING System.Text
 USING System.IO
 USING System.Runtime.CompilerServices
 
-BEGIN NAMESPACE XSharp.RDD.CDX 
+BEGIN NAMESPACE XSharp.RDD.CDX
 
 	/// <summary>
 	/// The CdxHeader class. = Class that maps the File Header to memory
@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 	PRIVATE CONST CDXFILEHEADER_FREELIST	:= 0x04	AS WORD		// Byte offset to next free block
 
     PRIVATE _freeList       AS LONG
-    
+
     INTERNAL PROPERTY FreeList AS LONG ;
         GET IIF(_freeList >= 0, _freeList, 0) ;
         SET SELF:_SetLong(CDXFILEHEADER_FREELIST, VALUE), _freeList  := IIF(VALUE >= 0, VALUE, 0)
@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _freeList := 0
             _hot := TRUE
         ENDIF
- 
+
 
     INTERNAL OVERRIDE METHOD Read() AS LOGIC
         LOCAL lOk AS LOGIC
@@ -52,9 +52,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
         SUPER(bag, 0, "__ROOT__",NULL)
-        
 
-    INTERNAL PROPERTY RootVersion AS DWORD GET SELF:_GetDWord(CDXFILEHEADER_VERSION) SET SELF:_SetDWord(CDXFILEHEADER_VERSION, value)
+
+    INTERNAL PROPERTY RootVersion AS DWORD GET SELF:_GetDWordLE(CDXFILEHEADER_VERSION) SET SELF:_SetDWordLE(CDXFILEHEADER_VERSION, value)
 
         METHOD Initialize() AS VOID
             SELF:FreeList   := 0
@@ -66,5 +66,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:ForExprPos := 1
             SELF:ForExprLen := 1
             SELF:Generation := SELF:RootVersion
+
+        INTERNAL METHOD Dump() AS STRING
+            LOCAL oSb AS StringBuilder
+            oSb := StringBuilder{}
+            oSb:AppendLine("CDX Header for "+_bag:FullPath)
+            oSb:AppendLine("Options   : "+SELF:Options:ToString())
+            oSb:AppendLine("KeySize   : "+SELF:KeySize:ToString()+" (size of tag names)")
+            oSb:AppendLine("TagList at: 0x"+SELF:RootPage:ToString("X8"))
+            oSb:AppendLine("Freelist  : 0x"+SELF:FreeList:ToString("X8"))
+            oSb:AppendLine("Version   : "+SELF:RootVersion:ToString())
+            RETURN oSb:ToString()
 	END CLASS
-END NAMESPACE 
+END NAMESPACE

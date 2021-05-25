@@ -41,6 +41,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Handle AS IntPtr GET _hFile
         INTERNAL PROPERTY Stream AS FileStream GET _stream
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET IIF(_tagList == NULL, NULL, _tagList:Tags)
+        INTERNAL PROPERTY TagList AS CdxTagList GET _tagList
         INTERNAL PROPERTY Structural AS LOGIC AUTO
         INTERNAL PROPERTY Root      AS CdxFileHeader GET _root
         INTERNAL PROPERTY Encoding AS System.Text.Encoding GET _oRdd:_Encoding
@@ -394,7 +395,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN SELF:_stream:SafeReadAt(nPage, buffer)
 
         METHOD Read(oPage AS CdxPage) AS LOGIC
-            oPage:Generation := SELF:_root:RootVersion
+            IF SELF:_root != NULL
+                oPage:Generation := SELF:_root:RootVersion
+            ENDIF
             RETURN SELF:_stream:SafeReadAt(oPage:PageNo, oPage:Buffer, oPage:Buffer:Length)
 
         METHOD Write(oPage AS CdxPage) AS LOGIC

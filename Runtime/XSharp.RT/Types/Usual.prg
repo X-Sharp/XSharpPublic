@@ -11,14 +11,14 @@ USING System.Diagnostics
 USING System.Text
 USING XSharp.Internal
 // use these UDCs to remove the attributes when needed during debugging
-#define USEATTRIB
+#undef USEATTRIB
 #ifdef USEATTRIB
 #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
 #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
 #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
 #else
-#XTRANSLATE \[HIDDEN\] => 
-#XTRANSLATE \[INLINE\] => 
+#XTRANSLATE \[HIDDEN\] =>
+#XTRANSLATE \[INLINE\] =>
 #XTRANSLATE \[NODEBUG\] =>
 #endif
 BEGIN NAMESPACE XSharp
@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp
         IIndexer, ;
         IDisposable,;
         ISerializable
-         
+
         #region STATIC fields
         /// <exclude />
         [HIDDEN];
@@ -103,47 +103,47 @@ BEGIN NAMESPACE XSharp
         [NODEBUG] [INLINE];
         PRIVATE CONSTRUCTOR(@@Value  AS LOGIC)
             SELF(__UsualType.Logic)
-            SELF:_valueData:l		:= @@Value 
+            SELF:_valueData:l		:= @@Value
             RETURN
 
         [NODEBUG] [INLINE];
         PRIVATE CONSTRUCTOR(@@Value AS ARRAY)
             SELF(__UsualType.Array)
-            SELF:_refData			:= @@Value 
+            SELF:_refData			:= @@Value
             RETURN
 
         [NODEBUG] [INLINE];
         PRIVATE CONSTRUCTOR(@@Value  AS DATE)
             SELF(__UsualType.Date)
-            SELF:_valueData:d		:= @@Value 
+            SELF:_valueData:d		:= @@Value
             RETURN
 
         [NODEBUG] [INLINE];
         PRIVATE CONSTRUCTOR(@@Value  AS System.DateTime)
             SELF(__UsualType.DateTime)
-            SELF:_valueData:dt		:= @@Value 
+            SELF:_valueData:dt		:= @@Value
             RETURN
 
         [NODEBUG] [INLINE];
         PRIVATE CONSTRUCTOR(@@Value  AS LONG)
             SELF(__UsualType.Long)
-            _valueData:i			:= @@Value 
+            _valueData:i			:= @@Value
             RETURN
 
         [NODEBUG] [INLINE];
         PRIVATE CONSTRUCTOR(@@Value  AS INT64)
             SELF(__UsualType.Int64)
-            SELF:_valueData:i64		:= @@Value 
+            SELF:_valueData:i64		:= @@Value
             RETURN
 
         [NODEBUG] [INLINE];
         PRIVATE CONSTRUCTOR(@@Value  AS UINT64)
             IF @@Value < Int64.MaxValue
                 SELF(__UsualType.Int64)
-                SELF:_valueData:i64:= (INT64) @@Value 
+                SELF:_valueData:i64:= (INT64) @@Value
             ELSE
                 SELF(__UsualType.Float)
-                SELF:_valueData:r8 := @@Value 
+                SELF:_valueData:r8 := @@Value
             ENDIF
             RETURN
 
@@ -270,27 +270,27 @@ BEGIN NAMESPACE XSharp
 
                 OTHERWISE
                     IF vartype == typeof(__Usual)
-                        // boxed __Usual, the __CASTCLASS is a special compiler instruction 
+                        // boxed __Usual, the __CASTCLASS is a special compiler instruction
                         // that unboxes the Object into a usual
                         LOCAL u as USUAL
                         u := __CASTCLASS(USUAL, o)
                         SELF := u
-                    ELSEIF vartype == TYPEOF(ARRAY)  
+                    ELSEIF vartype == TYPEOF(ARRAY)
                         SELF:_flags				:= UsualFlags{__UsualType.Array}
                         SELF:_refData           := (ARRAY) o
-                    ELSEIF vartype == TYPEOF(DATE) 
+                    ELSEIF vartype == TYPEOF(DATE)
                         SELF:_flags				:= UsualFlags{__UsualType.Date}
                         SELF:_valueData:d		:= (DATE) o
-                    ELSEIF vartype == TYPEOF(SYMBOL) 
+                    ELSEIF vartype == TYPEOF(SYMBOL)
                         SELF:_flags				:= UsualFlags{__UsualType.Symbol}
                         SELF:_valueData:s		:= (SYMBOL) o
-                    ELSEIF vartype == TYPEOF(BINARY) 
+                    ELSEIF vartype == TYPEOF(BINARY)
                         SELF:_flags				:= UsualFlags{__UsualType.Binary}
                         SELF:_refData           := ((BINARY) o):Value
-                    ELSEIF vartype == TYPEOF(CURRENCY) 
+                    ELSEIF vartype == TYPEOF(CURRENCY)
                         SELF:_flags				:= UsualFlags{__UsualType.Currency}
                         SELF:_refData	 	    := ((Currency) o):Value
-                    ELSEIF vartype == TYPEOF(IntPtr) 
+                    ELSEIF vartype == TYPEOF(IntPtr)
                         SELF:_flags				:= UsualFlags{__UsualType.Ptr}
                         SELF:_valueData:p		:= (IntPtr) o
                     ELSEIF vartype == TYPEOF(System.Reflection.Pointer)
@@ -484,7 +484,7 @@ BEGIN NAMESPACE XSharp
         /// <summary>This property returns TRUE when the USUAL is of type String</summary>
         [HIDDEN];
         PUBLIC PROPERTY IsString		AS LOGIC [NODEBUG] GET _usualType == __UsualType.String
-            
+
         /// <summary>This property returns TRUE when the USUAL is passed by reference (not implemented yet)</summary>
         [HIDDEN];
         PUBLIC   PROPERTY IsByRef		AS LOGIC [NODEBUG] GET _isByRef
@@ -516,7 +516,7 @@ BEGIN NAMESPACE XSharp
                  ENDIF
                 SWITCH _usualType
                 CASE __UsualType.Array		; RETURN _arrayValue == NULL .OR. _arrayValue:Length == 0
-                CASE __UsualType.Binary	    ; RETURN _refData == NULL 
+                CASE __UsualType.Binary	    ; RETURN _refData == NULL
                 CASE __UsualType.Codeblock	; RETURN _codeblockValue == NULL
                 CASE __UsualType.Currency	; RETURN _currencyValue == 0
                 CASE __UsualType.Date		; RETURN _dateValue:IsEmpty
@@ -644,7 +644,7 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Decimal	; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) rhs:_decimalValue})
                     CASE __UsualType.Long		; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) rhs:_intValue})
                     CASE __UsualType.Int64		; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) rhs:_i64Value})
-                    OTHERWISE                           
+                    OTHERWISE
                         NOP	// uses comparison by type
                     END SWITCH
 
@@ -694,7 +694,7 @@ BEGIN NAMESPACE XSharp
                     OTHERWISE
                         NOP	// uses comparison by type
                     END SWITCH
-  
+
                 CASE __UsualType.Ptr
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN (_ptrValue:ToInt32()):CompareTo(rhs:_intValue)
@@ -724,7 +724,7 @@ BEGIN NAMESPACE XSharp
             IF SELF:IsObject
                LOCAL oValue AS OBJECT
                oValue := SELF:_refData
-               IF oValue IS IDisposable VAR oDisp 
+               IF oValue IS IDisposable VAR oDisp
                   oDisp:Dispose()
                ENDIF
             ENDIF
@@ -783,6 +783,17 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Decimal	; RETURN lhs:_decimalValue >  rhs:_decimalValue
                 OTHERWISE
                     THROW BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                END SWITCH
+
+            CASE __UsualType.Currency
+                SWITCH rhs:_usualType
+                CASE __UsualType.Long		; RETURN lhs:_currencyValue > rhs:_intValue
+                CASE __UsualType.Int64		; RETURN lhs:_currencyValue > rhs:_i64Value
+                CASE __UsualType.Float		; RETURN lhs:_currencyValue > (System.Decimal) rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_currencyValue > rhs:_currencyValue
+                CASE __UsualType.Decimal	; RETURN lhs:_currencyValue > rhs:_decimalValue
+                OTHERWISE
+                    THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
 
             CASE __UsualType.String
@@ -883,6 +894,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Decimal	; RETURN lhs:_decimalValue >= rhs:_decimalValue
                 OTHERWISE
                     THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+
                 END SWITCH
 
             CASE __UsualType.Currency
@@ -896,7 +908,8 @@ BEGIN NAMESPACE XSharp
                     THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
 
-            CASE __UsualType.String
+
+              CASE __UsualType.String
                 IF rhs:_usualType == __UsualType.String
                     RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) >= 0
                 ELSE
@@ -937,7 +950,7 @@ BEGIN NAMESPACE XSharp
                 ELSE
                     NOP // error below
                 ENDIF
-                                        
+
             OTHERWISE
                 THROW BinaryError(">=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
             END SWITCH
@@ -1046,7 +1059,7 @@ BEGIN NAMESPACE XSharp
                 ELSE
                     NOP // error below
                 ENDIF
- 
+
             OTHERWISE
                 THROW BinaryError("<", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
             END SWITCH
@@ -1083,13 +1096,14 @@ BEGIN NAMESPACE XSharp
                 OTHERWISE
                     THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
+
             CASE __UsualType.Float
                 SWITCH rhs:_usualType
-                CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_intValue             } 
-                CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_i64Value             } 
-                CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_r8Value              } 
+                CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_intValue}
+                CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_i64Value}
+                CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_r8Value}
                 CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value} <= FLOAT{(REAL8) rhs:_currencyValue }
-                CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value} <= FLOAT{(REAL8) rhs:_decimalValue } 
+                CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value} <= FLOAT{(REAL8) rhs:_decimalValue }
                 OTHERWISE
                     THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
@@ -1136,6 +1150,7 @@ BEGIN NAMESPACE XSharp
                 OTHERWISE
                     NOP // error below
                 END SWITCH
+
             CASE __UsualType.DateTime
                 SWITCH (rhs:_usualType)
                 CASE __UsualType.Date		; RETURN lhs:_dateTimeValue	<=  (DateTime) rhs:_dateValue
@@ -1143,6 +1158,7 @@ BEGIN NAMESPACE XSharp
                 OTHERWISE
                     NOP // error below
                 END SWITCH
+
            CASE __UsualType.Ptr
                 SWITCH (rhs:_usualType)
                 CASE __UsualType.Long	; RETURN lhs:_ptrValue:ToInt32() <= rhs:_intValue
@@ -1151,7 +1167,7 @@ BEGIN NAMESPACE XSharp
                 OTHERWISE
                     NOP // error below
                 END SWITCH
- 
+
            CASE __UsualType.Binary
                 IF rhs:_usualType == __UsualType.Binary
                     RETURN lhs:_binaryValue <= rhs:_binaryValue
@@ -1223,7 +1239,7 @@ BEGIN NAMESPACE XSharp
                     ELSE
                         NOP // error below
                     ENDIF
-  
+
                 CASE __UsualType.Long
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long		; RETURN SELF:_intValue == rhs:_intValue
@@ -1242,7 +1258,7 @@ BEGIN NAMESPACE XSharp
                         CASE __UsualType.Long		; RETURN _i64Value == (INT64) rhs:_intValue
                         CASE __UsualType.Int64		; RETURN _i64Value == rhs:_i64Value
                         CASE __UsualType.Float		; RETURN  FLOAT{(REAL8) _i64Value} == FLOAT{rhs:_r8Value}
-                        CASE __UsualType.Currency	; RETURN _i64Value == rhs:_currencyValue	
+                        CASE __UsualType.Currency	; RETURN _i64Value == rhs:_currencyValue
                         CASE __UsualType.Decimal	; RETURN _i64Value == rhs:_decimalValue
                         CASE __UsualType.Logic		; RETURN rhs:_logicValue == (SELF:_i64Value <> 0)
                         CASE __UsualType.Ptr        ; RETURN rhs:_ptrValue:ToInt64() == SELF:_i64Value
@@ -1255,7 +1271,7 @@ BEGIN NAMESPACE XSharp
                         CASE __UsualType.Long		; RETURN FLOAT{_r8Value} == FLOAT{(REAL8) rhs:_intValue}
                         CASE __UsualType.Int64		; RETURN FLOAT{_r8Value} == FLOAT{(REAL8) rhs:_i64Value}
                         CASE __UsualType.Float		; RETURN FLOAT{_r8Value} == FLOAT{ rhs:_r8Value}
-                        CASE __UsualType.Currency	; RETURN FLOAT{_r8Value} == FLOAT{ (REAL8) rhs:_currencyValue}	
+                        CASE __UsualType.Currency	; RETURN FLOAT{_r8Value} == FLOAT{ (REAL8) rhs:_currencyValue}
                         CASE __UsualType.Decimal	; RETURN FLOAT{_r8Value} == FLOAT{ (REAL8) rhs:_decimalValue}
                         OTHERWISE
                             NOP // error below
@@ -1354,7 +1370,7 @@ BEGIN NAMESPACE XSharp
                     ELSE
                         NOP // error below
                     ENDIF
-                    
+
                 OTHERWISE
                     THROW BinaryError(op, __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, SELF, rhs)
 
@@ -1419,7 +1435,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Currency	; RETURN u:_currencyValue -1
                 CASE __UsualType.Decimal	; RETURN u:_decimalValue - 1
                 CASE __UsualType.Date	    ; RETURN u:_dateValue -1
-                CASE __UsualType.DateTime   ; RETURN u:_dateTimeValue:AddDays(-1) 
+                CASE __UsualType.DateTime   ; RETURN u:_dateTimeValue:AddDays(-1)
                 OTHERWISE
                     THROW UnaryError("--", u)
                 END SWITCH
@@ -1659,7 +1675,7 @@ BEGIN NAMESPACE XSharp
 
                     CASE __UsualType.Currency
                         RETURN (CURRENCY) lhs:_intValue / rhs:_currencyValue
-                        
+
                    CASE __UsualType.Decimal
                         RETURN (System.Decimal) lhs:_intValue / rhs:_decimalValue
                     OTHERWISE
@@ -1717,7 +1733,7 @@ BEGIN NAMESPACE XSharp
                             res := lhs:_r8Value / (REAL8) rhs:_decimalValue
                         OTHERWISE
                             handled := FALSE
-                    
+
                         END SWITCH
                         IF handled
                             IF System.Double.IsNaN(res)  .or. System.Double.IsInfinity(res)
@@ -1965,7 +1981,7 @@ BEGIN NAMESPACE XSharp
 
             SWITCH u:_usualType
                 CASE __UsualType.Codeblock ; RETURN (CODEBLOCK) u:_codeblockValue
-                CASE __UsualType.Object    
+                CASE __UsualType.Object
                     IF u:_refData == NULL
                         RETURN NULL_CODEBLOCK
                     ENDIF
@@ -2023,7 +2039,7 @@ BEGIN NAMESPACE XSharp
             IF !u:_initialized
                RETURN IntPtr.Zero
             ENDIF
-            SWITCH u:_usualType 
+            SWITCH u:_usualType
             CASE __UsualType.Ptr		; RETURN u:_ptrValue
             CASE __UsualType.Long
                 IF u:_intValue == 0
@@ -2040,7 +2056,7 @@ BEGIN NAMESPACE XSharp
             OTHERWISE
                 THROW ConversionError(PTR, TYPEOF(IntPtr), u)
             END SWITCH
- 
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS PTR
@@ -2048,10 +2064,10 @@ BEGIN NAMESPACE XSharp
             IF !u:_initialized
                RETURN NULL_PTR
             ENDIF
-            SWITCH u:_usualType 
+            SWITCH u:_usualType
             CASE __UsualType.Ptr		; RETURN u:_ptrValue
             CASE __UsualType.Long		; RETURN (IntPtr) u:_intValue
-            CASE __UsualType.Int64		; RETURN (IntPtr) u:_i64Value                    
+            CASE __UsualType.Int64		; RETURN (IntPtr) u:_i64Value
             OTHERWISE
                 THROW ConversionError(PTR, TYPEOF(IntPtr), u)
             END SWITCH
@@ -2172,7 +2188,7 @@ BEGIN NAMESPACE XSharp
             CATCH ex AS OverflowException
                 THROW OverflowError(ex, "BYTE", TYPEOF(BYTE), u)
             END TRY
-            
+
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
             /// <remarks>When the usual contains a value that does not fit inside a SHORT an overflow error will be generated, just like in VO.</remarks>
@@ -2240,7 +2256,7 @@ BEGIN NAMESPACE XSharp
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
             /// <remarks>When the usual contains a value that does not fit inside a LONG an overflow error will be generated, just like in VO.</remarks>
-            
+
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS LONG
             TRY
@@ -2298,7 +2314,7 @@ BEGIN NAMESPACE XSharp
                     ENDIF
                CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Ptr
-                    // this strange behavior is needed to be compatible with VO. 
+                    // this strange behavior is needed to be compatible with VO.
                     IF IntPtr.Size == 4
                         RETURN u:_ptrValue:ToInt32()
                     ELSE
@@ -2314,7 +2330,7 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         /// <remarks>When the usual contains a value that does not fit inside a LONG (such as a UInt36.MaxValue) NO overflow error will be generated, just like in VO. <br/>
         /// This may seem not logical, but the VO SDK code is full of code that will not run if we change this behavior</remarks>
-            
+
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS INT64
             TRY
@@ -2334,19 +2350,19 @@ BEGIN NAMESPACE XSharp
                     IF RuntimeState.CompilerOptionVO11
                         RETURN Convert.ToInt64(u:_decimalValue )
                     ELSE
-                        RETURN (INT64) u:_decimalValue 
+                        RETURN (INT64) u:_decimalValue
                     ENDIF
                 CASE __UsualType.Currency
                     IF RuntimeState.CompilerOptionVO11
                         RETURN Convert.ToInt64((Decimal)u:_currencyValue )
                     ELSE
-                        RETURN (INT64) u:_currencyValue 
+                        RETURN (INT64) u:_currencyValue
                     ENDIF
                CASE __UsualType.Ptr
                      RETURN u:_ptrValue:ToInt64()
-   
+
                 CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
-  
+
                 OTHERWISE
                     THROW ConversionError(INT64, TYPEOF(INT64), u)
                 END SWITCH
@@ -2424,7 +2440,7 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         /// <remarks>When the usual contains a value that does not fit inside a DWORD (such as a -1) NO overflow error will be generated, just like in VO. <br/>
         /// This may seem not logical, but the VO SDK code is full of code that will not run if we change this behavior</remarks>
-            
+
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS DWORD
             TRY
@@ -2439,13 +2455,13 @@ BEGIN NAMESPACE XSharp
                     ELSE
                         RETURN UNCHECKED((DWORD) u:_i64Value)
                     ENDIF
-                CASE __UsualType.Float     
+                CASE __UsualType.Float
                     IF RuntimeState.CompilerOptionOVF
                         RETURN CHECKED((DWORD) u:_r8Value)
                     ELSE
                         RETURN UNCHECKED((DWORD) u:_r8Value)
                     ENDIF
-                CASE __UsualType.Decimal  
+                CASE __UsualType.Decimal
                     IF RuntimeState.CompilerOptionOVF
                         RETURN CHECKED((DWORD) u:_decimalValue)
                     ELSE
@@ -2459,13 +2475,13 @@ BEGIN NAMESPACE XSharp
                     ENDIF
                 CASE __UsualType.Logic    ; RETURN (DWORD) IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Ptr
-                    // this strange behavior is needed to be compatible with VO. 
+                    // this strange behavior is needed to be compatible with VO.
                     IF IntPtr.Size == 4
                         RETURN (DWORD) u:_ptrValue:ToInt32()
                     ELSE
                         THROW OverflowError(OverflowException{}, "LONG", TYPEOF(LONG), u)
                     ENDIF
- 
+
                 OTHERWISE
                     THROW ConversionError(DWORD, TYPEOF(DWORD), u)
                 END SWITCH
@@ -2476,7 +2492,7 @@ BEGIN NAMESPACE XSharp
            /// <include file="RTComments.xml" path="Comments/Operator/*" />
         /// <remarks>When the usual contains a value that does not fit inside a LONG (such as a -1) NO overflow error will be generated, just like in VO. <br/>
         /// This may seem not logical, but the VO SDK code is full of code that will not run if we change this behavior</remarks>
-            
+
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS UINT64
             TRY
@@ -2488,7 +2504,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Int64	; RETURN (UINT64) u:_i64Value
                 CASE __UsualType.Float	; RETURN (UINT64) u:_r8Value
                 CASE __UsualType.Currency; RETURN (UINT64) u:_currencyValue
-                CASE __UsualType.Decimal; RETURN (UINT64) u:_decimalValue 
+                CASE __UsualType.Decimal; RETURN (UINT64) u:_decimalValue
                 CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Ptr    ; RETURN (UINT64) u:_ptrValue:ToInt64()
 
@@ -2512,7 +2528,7 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Int64	; RETURN (REAL4) u:_i64Value
                     CASE __UsualType.Float	; RETURN (REAL4) u:_r8Value
                     CASE __UsualType.Currency; RETURN (REAL4) u:_currencyValue
-                    CASE __UsualType.Decimal; RETURN (REAL4) u:_decimalValue 
+                    CASE __UsualType.Decimal; RETURN (REAL4) u:_decimalValue
                     CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                     OTHERWISE
                         THROW ConversionError(REAL4, TYPEOF(REAL4), u)
@@ -2533,7 +2549,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Int64	; RETURN (REAL8) u:_i64Value
                 CASE __UsualType.Float	; RETURN (REAL8) u:_r8Value
                 CASE __UsualType.Currency; RETURN (REAL8) u:_currencyValue
-                CASE __UsualType.Decimal; RETURN (REAL8) u:_decimalValue 
+                CASE __UsualType.Decimal; RETURN (REAL8) u:_decimalValue
                 CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                 OTHERWISE
                     THROW ConversionError(REAL8, TYPEOF(REAL8), u)
@@ -2586,7 +2602,7 @@ BEGIN NAMESPACE XSharp
                 RETURN u:_binaryValue
             ELSEIF u:IsString
                 RETURN (Binary) u:_stringValue
-                
+
             ENDIF
             THROW ConversionError(__UsualType.Binary, TYPEOF(Binary), u)
             #endregion
@@ -2722,7 +2738,7 @@ BEGIN NAMESPACE XSharp
         [NODEBUG] [INLINE];
         STATIC OPERATOR TRUE(u AS USUAL) AS LOGIC
             RETURN (LOGIC) u
-            
+
        	/// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG] [INLINE];
         STATIC OPERATOR FALSE(u AS USUAL)AS LOGIC
@@ -2783,12 +2799,12 @@ BEGIN NAMESPACE XSharp
             /// <exclude />
         [NODEBUG];
         STATIC METHOD ToObject(u AS __Usual) AS OBJECT
-            IF !u:_initialized 
+            IF !u:_initialized
                 // Empty usuals are considered to be FALSE in the FoxPro dialect
                 IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
                     RETURN FALSE
                 ELSE
-                    RETURN NULL    
+                    RETURN NULL
                 ENDIF
             ENDIF
             SWITCH u:_usualType
@@ -2811,7 +2827,7 @@ BEGIN NAMESPACE XSharp
                 Debug.Fail( "Unhandled data type in Usual:ToObject()" )
             END SWITCH
             RETURN NULL_OBJECT
-                
+
             /// <inheritdoc />
         [NODEBUG];
         PUBLIC METHOD IConvertible.ToSByte(provider AS System.IFormatProvider) AS SByte
@@ -3020,7 +3036,7 @@ BEGIN NAMESPACE XSharp
             #endregion
 
         #region IIndexer
-		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
 		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
 		/// <returns>The element stored at the indicated location in the collection.</returns>
         /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
@@ -3087,14 +3103,14 @@ BEGIN NAMESPACE XSharp
 
         [NODEBUG];
         METHOD XppUsualIndex(index AS INT) AS USUAL
-            IF RuntimeState.Dialect  == XSharpDialect.XPP 
-                IF SELF:IsString 
+            IF RuntimeState.Dialect  == XSharpDialect.XPP
+                IF SELF:IsString
                     VAR s := SELF:_stringValue
                     IF index>= 0 .AND. index < s:Length
                         RETURN s:Substring(index, 1)
                     ENDIF
                     RETURN ""
-                ELSEIF  SELF:IsLong 
+                ELSEIF  SELF:IsLong
                     // xbase++ checks if the bit is set
                     LOCAL liValue   := SELF:_intValue AS LONG
                     LOCAL testValue := 1 << index AS LONG
@@ -3104,7 +3120,7 @@ BEGIN NAMESPACE XSharp
             THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
 
         #region IIndexedProperties
-		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
 		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
 		/// <returns>The element stored at the indicated location in the collection.</returns>
         /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
@@ -3130,7 +3146,7 @@ BEGIN NAMESPACE XSharp
                     VAR a := SELF:_arrayValue
                     RETURN a:__GetElement(index)
                 ENDIF
-                IF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP 
+                IF (SELF:IsString .OR. SELF:IsLong) .AND. RuntimeState.Dialect  == XSharpDialect.XPP
                     RETURN SELF:XppUsualIndex(index)
                 ENDIF
 
@@ -3139,12 +3155,12 @@ BEGIN NAMESPACE XSharp
                     var error := Error{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
                     THROW error
                 ENDIF
-                RETURN indexer[index]                    
+                RETURN indexer[index]
             END GET
             [NODEBUG];
             SET
                 IF SELF:IsArray
-                    VAR a := SELF:_arrayValue 
+                    VAR a := SELF:_arrayValue
                     a:__SetElement(value, index)
                     RETURN
                 ENDIF
@@ -3156,18 +3172,18 @@ BEGIN NAMESPACE XSharp
             END SET
         END PROPERTY
 
-		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="name"><include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /></param>
 		/// <returns>The element stored at the indicated location in the collection.</returns>
         /// <remarks>When the contents of the USUAL is not an array or does not name based indexing  then a runtime error is generated.</remarks>
 
-        PROPERTY SELF[name AS STRING] AS USUAL 
+        PROPERTY SELF[name AS STRING] AS USUAL
             GET
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL
                     THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
                 ENDIF
-                RETURN indexer[name]                    
+                RETURN indexer[name]
             END GET
             SET
                 VAR indexer := _refData ASTYPE IIndexedProperties
@@ -3190,7 +3206,7 @@ BEGIN NAMESPACE XSharp
             info:AddValue("Type",  SELF:Value:GetType():FullName)
             info:AddValue("Value", SELF:Value)
             RETURN
-            
+
         /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
         [NODEBUG];
         CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
@@ -3205,8 +3221,8 @@ BEGIN NAMESPACE XSharp
             VAR uTemp            := USUAL{oValue}
             SELF:_refData        := uTemp:_refData
             SELF:_valueData      := uTemp:_valueData
-            
-            #endregion  
+
+            #endregion
         #region Special methods used BY the compiler
         /// <summary>This method is used by the compiler for code that does an inexact comparison between two usuals.</summary>
         [NODEBUG];
@@ -3227,7 +3243,7 @@ BEGIN NAMESPACE XSharp
                     // Fox throws an error
                     THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
                 ELSE
-                    RETURN FALSE            // NIL is not equal to anything 
+                    RETURN FALSE            // NIL is not equal to anything
                 ENDIF
             ELSE
                 THROW BinaryError("=", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
@@ -3253,7 +3269,7 @@ BEGIN NAMESPACE XSharp
             /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
         [NODEBUG];
         STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
-            IF lhs:IsNil 
+            IF lhs:IsNil
                 IF RuntimeState.Dialect  == XSharpDialect.FoxPro
                     THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
                 ELSE

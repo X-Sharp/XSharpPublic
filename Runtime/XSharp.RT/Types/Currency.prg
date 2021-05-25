@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -20,29 +20,29 @@ BEGIN NAMESPACE XSharp
     /// <seealso cref="System.Decimal"/>
     [DebuggerDisplay("{ToDebugString(),nq}")];
     [Serializable];
-    PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,; 
+    PUBLIC STRUCTURE __Currency IMPLEMENTS IConvertible,;
         IFormattable, ;
         IComparable<__Currency>, ;
         IEquatable<__Currency>, ;
         IComparable,            ;
         ISerializable
-    
+
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE INITONLY _value AS System.Decimal
-        
+
         #region constructors
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
         /// <param name="r8">Real8 value to convert to a FLOAT</param>
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         CONSTRUCTOR (r8 AS REAL8)
             SELF:_value    := Math.Round((Decimal)r8,4)
-            
+
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
         CONSTRUCTOR (d AS System.Decimal)
-            SELF:_value    := Math.Round(d,4)            
+            SELF:_value    := Math.Round(d,4)
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         CONSTRUCTOR (f AS IFloat)
             SELF:_value		:= Math.Round((Decimal)f:Value,4)
 
@@ -50,9 +50,9 @@ BEGIN NAMESPACE XSharp
         #region Properties
         /// <summary>Decimal (System.Decimal) value</summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
-        PROPERTY @@Value    AS System.Decimal	GET _value			
+        PROPERTY @@Value    AS System.Decimal	GET _value
         #endregion
-        
+
         #region Equality Operators
         /// <inheritdoc />
         OVERRIDE METHOD Equals(rhs AS OBJECT  ) AS LOGIC
@@ -63,95 +63,95 @@ BEGIN NAMESPACE XSharp
                 result := FALSE
             ENDIF
             RETURN result
-            
+
         /// <inheritdoc />
         METHOD Equals(rhs AS CURRENCY ) AS LOGIC
             RETURN SELF:Value == rhs:Value
-            
+
             /// <inheritdoc />
         OVERRIDE METHOD GetHashCode() AS INT
             RETURN SELF:_value:GetHashCode()
-            
-            /// <exclude />	
+
+            /// <exclude />
         METHOD GetTypeCode() AS TypeCode
             RETURN TypeCode.Decimal
-            
-            
+
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR ==(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN lhs:Equals(rhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR !=(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN ! lhs:Equals(rhs)
             #endregion
-            
+
         #region Comparison Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN lhs:_value > rhs:_value
-            
-            
+
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR <(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN lhs:_value < rhs:_value
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR >=(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN lhs:_value >= rhs:_value
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR <=(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN lhs:_value <= rhs:_value
-            
+
             #endregion
-            
+
         #region Implicit Converters
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(b AS BYTE) AS CURRENCY
             RETURN CURRENCY{(Decimal) b}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(sb AS SByte) AS CURRENCY
             RETURN CURRENCY{(Decimal) sb}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(si AS SHORT) AS CURRENCY
             RETURN CURRENCY{(Decimal)si}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(w AS WORD) AS CURRENCY
             RETURN CURRENCY{(Decimal)w}
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
-            
+
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(i AS INT) AS CURRENCY
             RETURN CURRENCY{(Decimal)i}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(dw AS DWORD) AS CURRENCY
             RETURN CURRENCY{(Decimal)dw}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(i64 AS INT64) AS CURRENCY
             RETURN CURRENCY{(Decimal)i64}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(ui64 AS UINT64) AS CURRENCY
             RETURN CURRENCY{(Decimal)ui64}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(r4 AS REAL4) AS CURRENCY
             RETURN CURRENCY{(REAL8)r4}
-            
+
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(r8 AS REAL8) AS CURRENCY
@@ -166,17 +166,17 @@ BEGIN NAMESPACE XSharp
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(val AS System.Decimal) AS CURRENCY
             RETURN CURRENCY{val}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS REAL8
             RETURN (REAL8) c:_value
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS REAL4
             RETURN (REAL4) c:_value
-            
+
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
@@ -209,7 +209,7 @@ BEGIN NAMESPACE XSharp
                 RETURN Convert.ToInt16(c:_value)
             ENDIF
             RETURN (SHORT)c:_value
-            
+
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS WORD
@@ -232,92 +232,93 @@ BEGIN NAMESPACE XSharp
                 RETURN Convert.ToInt64(c:_value)
             ENDIF
             RETURN (INT64) c:_value
-            
+
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS UINT64
             RETURN (UINT64) c:_value
-            
+
             #endregion
-            
+
         #region Numeric Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR +(c  AS CURRENCY) AS CURRENCY
             RETURN c
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR -(c  AS CURRENCY) AS CURRENCY
-            RETURN -c
-            
+            RETURN CURRENCY{ -c:_value}
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR+(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
             RETURN lhs:Add(rhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR+(lhs AS CURRENCY, rhs AS USUAL) AS CURRENCY
             RETURN lhs:Add(rhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR+(lhs AS USUAL, rhs AS CURRENCY) AS CURRENCY
             RETURN rhs:Add(lhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR-(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
             RETURN lhs:Subtract(rhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR-(lhs AS CURRENCY, rhs AS USUAL) AS CURRENCY
             RETURN lhs:Subtract(rhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR-(lhs AS USUAL, rhs AS CURRENCY) AS CURRENCY
             // set decimals for LHS to 0, so max decmals is decimals right
-            RETURN CURRENCY{lhs}:Subtract(rhs)		
-            
+            RETURN CURRENCY{lhs}:Subtract(rhs)
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR*(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
             RETURN CURRENCY{ lhs:_value * rhs:_value}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR/(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
             RETURN CURRENCY{ lhs:_value / rhs:_value}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR%(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
             RETURN CURRENCY{ lhs:_value % rhs:_value}
-            
+
             #endregion
         #region Unary Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR ++ (c  AS CURRENCY) AS CURRENCY
             RETURN CURRENCY{c:_value+1}
-            
+
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR -- (c  AS CURRENCY) AS CURRENCY
             RETURN CURRENCY{c:_value-1}
             #endregion
-            
+
         #region Explicit casts. Used inside Transform
-        /// <exclude />	
+        /// <exclude />
         METHOD CastToInt() AS INT
             RETURN (INT)(SELF:_value)
-            
-            /// <exclude />	
+
+            /// <exclude />
         METHOD CastToInt64() AS INT64
             RETURN (INT64)(SELF:_value)
-            
+
             #endregion
         #region Add and Subtract
-        /// <exclude />	
+        /// <exclude />
         METHOD Add(rhs AS CURRENCY) AS CURRENCY
             RETURN CURRENCY{ SELF:_value + rhs:_value}
-            
-            /// <exclude />	
+
+            /// <exclude />
         METHOD Add(rhs AS USUAL) AS CURRENCY
             LOCAL result AS CURRENCY
             IF rhs:IsFloat
                 result := SELF:Add ( (CURRENCY) rhs)
-            ELSEIF rhs:IsDecimal 
+            ELSEIF rhs:IsDecimal
                 result := SELF:Add ( (System.Decimal) rhs)
             ELSEIF rhs:IsCurrency
                 result := SELF:Add ( (CURRENCY) rhs)
@@ -327,92 +328,92 @@ BEGIN NAMESPACE XSharp
                 THROW Error.ArgumentError(__ENTITY__,Nameof(rhs), "Argument is not numeric")
             ENDIF
             RETURN result
-            
-            
-            /// <exclude />	
+
+
+            /// <exclude />
         METHOD Subtract(rhs AS CURRENCY) AS CURRENCY
             RETURN CURRENCY{ SELF:_value - rhs:_value}
-            
-            /// <exclude />	
+
+            /// <exclude />
         METHOD Subtract(rhs AS USUAL) AS CURRENCY
             LOCAL result AS CURRENCY
             IF rhs:IsFloat
                 result := SELF:Subtract( (CURRENCY) rhs)
-            ELSEIF rhs:IsDecimal 
+            ELSEIF rhs:IsDecimal
                 result := SELF:Subtract( (System.Decimal) rhs)
             ELSEIF rhs:IsCurrency
                 result := SELF:Subtract( (CURRENCY) rhs)
             ELSEIF  rhs:IsLong
-                result := CURRENCY{ SELF:_value - (LONG) rhs}			
+                result := CURRENCY{ SELF:_value - (LONG) rhs}
             ELSE
                 THROW Error.ArgumentError(__ENTITY__,Nameof(rhs), "Argument is not numeric")
             ENDIF
             RETURN result
-            
-            
+
+
             #endregion
-            
+
         #region IConvertable
         /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToBoolean(provider AS System.IFormatProvider) AS LOGIC
             RETURN _value ==  0.0m
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToByte(provider AS System.IFormatProvider) AS BYTE
             RETURN ((IConvertible) _value):ToByte(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToChar(provider AS System.IFormatProvider) AS CHAR
             RETURN ((IConvertible) _value):ToChar(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToDateTime(provider AS System.IFormatProvider) AS System.DateTime
             RETURN ((IConvertible) _value):ToDateTime(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToDecimal(provider AS System.IFormatProvider) AS Decimal
             RETURN ((IConvertible) _value):ToDecimal(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToDouble(provider AS System.IFormatProvider) AS REAL8
             RETURN ((IConvertible) _value):ToDouble(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToInt16(provider AS System.IFormatProvider) AS SHORT
             RETURN ((IConvertible) _value):ToInt16(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToInt32(provider AS System.IFormatProvider) AS LONG
             RETURN ((IConvertible) _value):ToInt32(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToInt64(provider AS System.IFormatProvider) AS INT64
             RETURN ((IConvertible) _value):ToInt64(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToSByte(provider AS System.IFormatProvider) AS SByte
             RETURN ((IConvertible) _value):ToSByte(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToSingle(provider AS System.IFormatProvider) AS REAL4
             RETURN ((IConvertible) _value):ToSingle(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToType(conversionType AS System.Type, provider AS System.IFormatProvider) AS OBJECT
             RETURN ((IConvertible) _value):ToType(conversionType, provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToUInt16(provider AS System.IFormatProvider) AS WORD
             RETURN ((IConvertible) _value):ToUInt16(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToUInt32(provider AS System.IFormatProvider) AS DWORD
             RETURN ((IConvertible) _value):ToUInt32(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToUInt64(provider AS System.IFormatProvider) AS UINT64
             RETURN ((IConvertible) _value):ToUInt64(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToString(provider AS System.IFormatProvider) AS STRING
             RETURN ((IConvertible) _value):ToString(provider)
@@ -421,31 +422,31 @@ BEGIN NAMESPACE XSharp
         /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC OVERRIDE METHOD ToString() AS STRING
             RETURN SELF:ToString("0.0000")
-            
+
         /// <inheritdoc cref="System.Double.ToString"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
             RETURN _value:ToString(sFormat)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD ToString(format AS STRING, provider AS System.IFormatProvider) AS STRING
             RETURN ((IFormattable) _value):ToString(format, provider)
 
 
-        INTERNAL METHOD ToDebugString() AS STRING 
+        INTERNAL METHOD ToDebugString() AS STRING
             RETURN SELF:ToString("0.0000")
 
         #endregion
-            
+
         #region IComparable
         /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS CURRENCY) AS INT
             RETURN _value:CompareTo( rhs:_value)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS OBJECT) AS INT
             RETURN SELF:CompareTo( (CURRENCY) rhs)
             #endregion
-            
+
         #region ISerializable
         /// <inheritdoc/>
         PUBLIC METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
@@ -463,7 +464,7 @@ BEGIN NAMESPACE XSharp
         #endregion
 
 
-            
+
     END STRUCTURE
-    
+
 END NAMESPACE

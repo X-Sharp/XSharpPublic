@@ -206,7 +206,7 @@ BEGIN NAMESPACE XSharp.RDD
                     IF workOrder != NULL
                         info:Result := workOrder:OrderBag:FullPath
                     ELSE
-                        info:Result := ""
+                        info:Result := DBNull.Value
                     ENDIF
                 CASE DBOI_BAGCOUNT
                     info:Result := SELF:_indexList:BagCount
@@ -217,14 +217,14 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSEIF workOrder != NULL
                         info:Result := workOrder:FileName
                     ELSE
-                        info:Result := ""
+                        info:Result := DBNull.Value
                     ENDIF
 
                 CASE DBOI_NAME
                     IF workOrder != NULL
                         info:Result := workOrder:_orderName
                     ELSE
-                        info:Result := ""
+                        info:Result := DBNull.Value
                     ENDIF
                 CASE DBOI_COLLATION
                      info:Result := ""
@@ -306,10 +306,10 @@ BEGIN NAMESPACE XSharp.RDD
                             SELF:_dbfError(ex, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX, "DBFCDX.OrderInfo")
                         END TRY
                         IF !isOk
-                            info:Result := NULL
+                            info:Result := DBNull.Value
                         ENDIF
                     ELSE
-                        info:Result := NULL
+                        info:Result := DBNull.Value
                     ENDIF
                 CASE DBOI_SCOPETOPCLEAR
                 CASE DBOI_SCOPEBOTTOMCLEAR
@@ -326,14 +326,14 @@ BEGIN NAMESPACE XSharp.RDD
                         ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
                             oldValue := workOrder:BottomScope
                         ELSE
-                            oldValue := NULL
+                            oldValue := DBNull.Value
                         ENDIF
                         IF info:Result != NULL
                             workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                         ENDIF
                         info:Result := oldValue
                     ELSE
-                        info:Result := NULL
+                        info:Result := DBNull.Value
                     ENDIF
                 CASE DBOI_KEYADD
                     IF workOrder != NULL

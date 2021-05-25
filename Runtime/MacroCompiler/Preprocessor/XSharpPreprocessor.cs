@@ -1729,7 +1729,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                                 tempResult.Add(t2);
                             }
                         }
-                        else
+/*nvk                        else
                         {
                             // add a space so error messages look proper
                             var t2 = new Token(TokenType.WS, " <RemovedToken> ")
@@ -1738,7 +1738,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                                 SourceSymbol = token
                             };
                             tempResult.Add(t2);
-                        }
+                        }*/
                     }
                     else if (token.Type == TokenType.MACRO)
                     {

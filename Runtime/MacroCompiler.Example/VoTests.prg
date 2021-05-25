@@ -14,11 +14,7 @@ USING XSharp.MacroCompiler
 
 BEGIN NAMESPACE MacroCompilerTest
 
-    FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
-        Console.WriteLine("Running VO tests ...")
-        TestGlobals.tsi := teststruct{1}
-        TestGlobals.tci := testclass{1}
-
+    FUNCTION ResetOverrides() AS VOID
         // Reset overrides
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarPut)
@@ -31,6 +27,13 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
 
+
+    FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
+        Console.WriteLine("Running VO tests ...")
+        TestGlobals.tsi := teststruct{1}
+        TestGlobals.tci := testclass{1}
+
+        ResetOverrides()
 
         TestMacro(mc, e"{|a,b| S_EnforceType(a,b), a}", Args(NIL,"N"), 0, typeof(INT))
         TestMacro(mc, e"{|a,b| S_EnforceType(REF a,b), a}", Args(NIL,"N"), 0, typeof(INT))
@@ -564,3 +567,4 @@ BEGIN NAMESPACE MacroCompilerTest
         RETURN
 
 END NAMESPACE
+

@@ -137,24 +137,6 @@ namespace XSharp.MacroCompiler
                 var pp = new Preprocessor.XSharpPreprocessor(lexer, options, null, Encoding.Default);
                 tokens = pp.PreProcess();
             }
-#if DUMPTOKENS
-            var filteredTokens = tokens.Where(t => t.Channel == Channel.Default).ToList();
-            tokens.Clear();
-            foreach (var t in filteredTokens)
-            {
-                tokens.Add(t);
-            }
-            foreach (var t in tokens)
-            {
-                if (t.Type == TokenType.EOS)
-                    Console.WriteLine();
-                else
-                {
-                    Console.Write(t.Text+" ");
-                }
-
-            }
-#endif
             var parser = new Parser(tokens, options);
             return parser.ParseScript();
         }

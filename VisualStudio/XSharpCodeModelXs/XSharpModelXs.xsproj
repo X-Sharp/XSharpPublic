@@ -39,7 +39,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.8.0.9</XSharpProjectversion>
+    <XSharpProjectversion>2.8.1.12</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>true</NamedArgs>
@@ -97,13 +97,6 @@
       <AssemblyName>EnvDTE.dll</AssemblyName>
       <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\envdte.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-      <Name>Mono.Cecil</Name>
-      <AssemblyName>Mono.Cecil.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\External\Debug\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -199,6 +192,13 @@
       <Link>SQLite.Interop.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
+      <Name>XSharpMonoCecil</Name>
+      <Project>{c9e9f119-d5a7-493b-88c9-4b5dd5ad653f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

@@ -11,7 +11,7 @@ USING System.Diagnostics
 USING System.Text
 USING XSharp.Internal
 // use these UDCs to remove the attributes when needed during debugging
-#undef USEATTRIB
+#define USEATTRIB
 #ifdef USEATTRIB
 #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
 #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]

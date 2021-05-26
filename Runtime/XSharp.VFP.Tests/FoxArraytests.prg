@@ -259,5 +259,60 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True(IsLogic(aTwoDim [1,2]))
             Assert.True(IsLogic(aTwoDim [2,2]))
 
+        [Fact, Trait("Category", "FoxArray")];
+        METHOD ASubScriptTests() AS VOID
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+            LOCAL x, y AS DWORD
+            LOCAL aTest
+            DIMENSION aTest(4)
+
+             aTest[1] :=  'E'
+             aTest[2] :=  'F'
+             aTest[3] :=  'G'
+             aTest[4] :=  'H'
+            ShowArray(aTest)
+
+            ? aTest [ ASubscript ( aTest , 4 , 1) ] // "H"
+            ? aTest [ ASubscript ( aTest , 2 , 1) ] // "F"
+
+            Assert.True( "H" == (STRING) aTest [ASubscript ( aTest , 4 , 1)])
+            Assert.True( "F" == (STRING) aTest [ASubscript ( aTest , 2 , 1)])
+            // ? aTest [ ASubscript ( aTest , 4 ) ] // Fox and X# compile error - third param is missing
+
+            // ? ASubscript ( aTest , 8 , 1) // throws the exception 'nElementNumber' number is out of range
+            // ? ASubscript ( aTest , 4 , 2) // throws the exception "a one-dimensional array has no columns"
+
+            DIMENSION aTest(2,3)
+
+            /*
+
+            now the content OF the ARRAY looks like
+
+            aTest[1] [1,1] = E (C)
+            aTest[2] [1,2] = F (C)
+            aTest[3] [1,3] = G (C)
+            aTest[4] [2,1] = H (C)
+            aTest[5] [2,2] = .F. (NIL)
+            aTest[6] [2,3] = .F. (NIL)
+
+            */
+
+
+            x := ASubscript (aTest , 4 , 1 ) // Element 4 , 1 = get the corresponding row subscript
+            y := ASubscript (aTest , 4 , 2 ) // Element 4 , 2 = get the corresponding col subscript
+            ? "aTest ["+x:Tostring()+"," + y:Tostring()+ "] must show 'H':" , aTest [x,y]
+
+            Assert.True( "H" == (STRING) aTest [x,y])
+
+
+            x := ASubscript (aTest , 3 , 1 ) // Element 3 , 1 = get the corresponding row subscript
+            y := ASubscript (aTest , 3 , 2 ) // Element 3 , 2 = get the corresponding col subscript
+            ? "aTest ["+x:Tostring()+"," + y:Tostring()+ "] must show 'G':" , aTest [x,y]
+            Assert.True( "G" == (STRING) aTest [x,y])
+
+            x := ASubscript (aTest , 6 , 1 ) // Element 6 , 1 = get the corresponding row subscript
+            y := ASubscript (aTest , 6 , 2 ) // Element 6 , 2 = get the corresponding col subscript
+            ? "aTest ["+x:Tostring()+"," + y:Tostring()+ "] must show '.F.':" , aTest [x,y]
+            Assert.True( .F. == (LOGIC) aTest [x,y])
     END CLASS
 END NAMESPACE

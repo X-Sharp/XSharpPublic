@@ -86,26 +86,37 @@ FUNCTION ADel(ArrayName AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asubscript/*" />
 FUNCTION ASubScript(ArrayName AS __FoxArray, nElementNumber AS DWORD, nSubscript := 1 AS DWORD) AS DWORD
-    IF !ArrayName:MultiDimensional
-        IF nSubscript == 1 .and. nElementNumber <= (DWORD) ArrayName:Count
-            RETURN nElementNumber
-        ENDIF
-    ELSE
-       IF nElementNumber <= ArrayName:Rows * ArrayName:Columns
-            // assume an array of 5 * 3
-            // element 3 should be on row 1, column 3
-            // element 4 should be on row 2, column 1
-            // max element = 15
-           IF nSubscript == 1
-                // calculate the row
-                RETURN (DWORD) ArrayName:GetRow((LONG) nElementNumber)
-           ELSE
-                // calculate the column
-                RETURN (DWORD) ArrayName:GetColumn((LONG) nElementNumber)
-           ENDIF
-        ENDIF
+    IF nSubscript == 0 .OR. nSubscript > 2
+		THROW ArgumentOutOfRangeException { nameof(nSubscript), nSubscript, "'nSubscript' number is out of range" }
+	ELSEIF nElementNumber == 0 .OR. nElementNumber >  ArrayName:Count
+		THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, "'nElementNumber' number is out of range" }
+	ENDIF
+
+	IF ArrayName:MultiDimensional
+
+		IF nSubscript == 1
+
+			// calculate the row
+
+			// doesn't compile because GetRow() is a internal method
+			RETURN (DWORD) ArrayName:GetRow((LONG) nElementNumber)
+
+		ELSE
+			// calculate the column
+			RETURN (DWORD) ArrayName:GetColumn((LONG) nElementNumber)
+
+
+		ENDIF
+
+	ELSE
+
+		IF nSubscript == 2
+			THROW ArgumentException { "a one-dimensional array has no columns"}
+		ENDIF
+
+		RETURN nElementNumber
+
     ENDIF
-    RETURN 0
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
 FUNCTION AIns(ArrayName AS __FoxArray, nElementNumber AS DWORD, nInsertType := 1 AS DWORD) AS DWORD
@@ -201,3 +212,5 @@ END FUNCTION
 RETURN
 
 END FUNCTION
+
+

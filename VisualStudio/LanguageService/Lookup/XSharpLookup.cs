@@ -799,6 +799,17 @@ namespace XSharp.LanguageService
                 result.Clear();
                 result.AddRange(xtype.GetMembers(".ctor"));
             }
+            if (result.Count == 0)
+            {
+                var namespaces = location.Project.GetAssemblyNamespaces().Where(n => n == preFix);
+                if (namespaces.Count() > 0)
+                {
+                    var ns = namespaces.First();
+                    result.Add(new XSymbol(ns, Kind.Namespace, Modifiers.Public));
+                }
+                
+
+            }
             return result;
         }
 

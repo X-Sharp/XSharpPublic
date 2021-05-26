@@ -29,12 +29,14 @@ namespace XSharp.LanguageService
         private XSharpQuickInfoSourceProvider _provider;
         private ITextBuffer _textBuffer;
         private static readonly ImageId _icon = KnownMonikers.Class.ToImageId();
+        private XFile _file;
 
 
-        public XSharpQuickInfoSource(XSharpQuickInfoSourceProvider provider, ITextBuffer textBuffer)
+        public XSharpQuickInfoSource(XSharpQuickInfoSourceProvider provider, ITextBuffer textBuffer, XFile file)
         {
             _provider = provider;
             _textBuffer = textBuffer;
+            _file = file;
         }
 
         internal void WriteOutputMessage(string message)
@@ -49,8 +51,7 @@ namespace XSharp.LanguageService
 
         public async Task<QuickInfoItem> GetQuickInfoItemAsync(IAsyncQuickInfoSession session, CancellationToken cancellationToken)
         {
-            var file = _textBuffer.GetFile();
-            if (XSettings.DebuggerIsRunning || XSettings.DisableQuickInfo || file == null)
+            if (XSettings.DebuggerIsRunning || XSettings.DisableQuickInfo)
             {
                 await session.DismissAsync();
                 return null;
@@ -83,10 +84,10 @@ namespace XSharp.LanguageService
                 var lineSpan = _textBuffer.CurrentSnapshot.CreateTrackingSpan(line.Extent, SpanTrackingMode.EdgeInclusive);
 
                 var snapshot = session.TextView.TextBuffer.CurrentSnapshot;
-                XSourceMemberSymbol member = XSharpLookup.FindMember(lineNumber, file);
+                XSourceMemberSymbol member = XSharpLookup.FindMember(lineNumber, _file);
                 if (member == null)
                     return null;
-                XSourceTypeSymbol currentNamespace = XSharpTokenTools.FindNamespace(position, file);
+                XSourceTypeSymbol currentNamespace = XSharpTokenTools.FindNamespace(position, _file);
                 string currentNS = "";
                 if (currentNamespace != null)
                 {
@@ -140,8 +141,11 @@ namespace XSharp.LanguageService
                         }
                         else
                         {
-                            return null;
-                        }
+                            var qitm = new XAnalysis(element);
+                            AddImage(qiContent, qitm.Image);
+                            var description = new ClassifiedTextElement(qitm.WPFDescription);
+                            qiContent.Add(description);
+                    }
                     
                     var result = new ContainerElement(ContainerElementStyle.Wrapped, qiContent);
 
@@ -188,7 +192,11 @@ namespace XSharp.LanguageService
 
             public IAsyncQuickInfoSource TryCreateQuickInfoSource(ITextBuffer textBuffer)
             {
-                return new XSharpQuickInfoSource(this, textBuffer);
+                var file = textBuffer.GetFile();
+                if (file == null || file.XFileType != XFileType.SourceCode)
+                    return null;
+
+                return new XSharpQuickInfoSource(this, textBuffer, file);
             }
 
 
@@ -295,25 +303,24 @@ namespace XSharp.LanguageService
                     var content = new List<ClassifiedTextRun>();
 
                     string text;
-                    int len = 0;
-                    if (this.typeMember.Modifiers != Modifiers.None)
+                    if (this.typeMember.Modifiers != Modifiers.None )
                     {
                         text = XSettings.FormatKeyword(this.typeMember.ModifiersKeyword) + " ";
                         content.addKeyword(text);
-                        len += text.Length;
                     }
-                    text = XSettings.FormatKeyword(this.typeMember.VisibilityKeyword) + " ";
-                    len += text.Length;
-                    content.addKeyword(text);
+                    if (!this.typeMember.Kind.IsPPSymbol())
+                    {
+                        text = XSettings.FormatKeyword(this.typeMember.VisibilityKeyword) + " ";
+                        content.addKeyword(text);
+                    }
                     //
                     if (this.typeMember.Kind != XSharpModel.Kind.Field)
                     {
                         text = XSettings.FormatKeyword(this.typeMember.KindKeyword) + " ";
-                        len += text.Length;
                         content.addKeyword(text);
                     }
                     //
-                    content.AddRange(this.WPFPrototype(len));
+                    content.AddRange(this.WPFPrototype());
                     //
                     return content.ToArray();
                 }
@@ -331,7 +338,7 @@ namespace XSharp.LanguageService
             }
 
 
-            public ClassifiedTextRun[] WPFPrototype(int len)
+            public ClassifiedTextRun[] WPFPrototype()
             {
                 var content = new List<ClassifiedTextRun>();
                 string name = "";
@@ -348,20 +355,16 @@ namespace XSharp.LanguageService
                 if (this.typeMember.Kind.HasParameters())
                 {
                     content.addKeyword(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
-                    len += 1;
                     bool first = true;
                     foreach (var var in this.typeMember.Parameters)
                     {
                         if (!first)
                         {
                             content.addText(", ");
-                            len += 2;
                         }
                         first = false;
-                        checkLen(content, ref len);
                         int varlen;
                         addVarInfo(content, var, out varlen);
-                        len += varlen;
                     }
                     content.addKeyword(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
                 }
@@ -370,18 +373,10 @@ namespace XSharp.LanguageService
                 if (!String.IsNullOrEmpty(this.typeMember.Value))
                 {
                     var text = " := " + this.typeMember.Value;
-                    len += text.Length;
-                    checkLen(content, ref len);
-                    if (len == 0)
-                    {
-                        len = text.Length;
-                    }
                     content.addText(text);
                 }
                 if (this.typeMember.Kind.HasReturnType() && !String.IsNullOrEmpty(this.typeMember.TypeName))
                 {
-                    len += this.typeMember.TypeName.Length + 4;
-                    checkLen(content, ref len);
                     content.addReturnType(typeMember.TypeName);
                 }
 

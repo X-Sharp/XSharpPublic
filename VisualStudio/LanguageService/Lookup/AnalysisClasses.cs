@@ -18,17 +18,22 @@ using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace XSharp.LanguageService
 {
-    internal class XTypeAnalysis
+    internal class XAnalysis
     {
-        public string Name { get; private set; }
-        public bool IsStatic => Type.IsStatic;
-        public IXTypeSymbol Type { get; private set; }
-
+        public string Name { get; protected set; }
+        public IXSymbol symbol;
+        internal XAnalysis(IXSymbol sym)
+        {
+            if (sym == null)
+                return;
+            symbol = sym;
+            Name = sym.FullName;
+        }
         internal ImageMoniker Image
         {
             get
             {
-                switch (Type.Kind)
+                switch (symbol.Kind)
                 {
                     case Kind.Class:
                         return KnownMonikers.Class;
@@ -50,7 +55,98 @@ namespace XSharp.LanguageService
                 return KnownMonikers.None;
             }
         }
-        internal XTypeAnalysis(IXTypeSymbol typeInfo)
+        public string Prototype
+        {
+            get
+            {
+                return Name;
+                //
+            }
+        }
+        public StandardGlyphGroup GlyphGroup
+        {
+            get
+            {
+                StandardGlyphGroup imgG;
+                //
+                switch (symbol.Kind)
+                {
+                    case Kind.Class:
+                    default:
+                        imgG = StandardGlyphGroup.GlyphGroupClass;
+                        break;
+                    case Kind.Interface:
+                        imgG = StandardGlyphGroup.GlyphGroupInterface;
+                        break;
+                    case Kind.Enum:
+                        imgG = StandardGlyphGroup.GlyphGroupEnum;
+                        break;
+                    case Kind.Delegate:
+                        imgG = StandardGlyphGroup.GlyphGroupDelegate;
+                        break;
+
+                }
+                return imgG;
+            }
+        }
+        /// <summary>
+        /// Glyph Item used by CompletionList in CompletionSource
+        /// - See also GlyphGroup
+        ///  http://glyphlist.azurewebsites.net/standardglyphgroup/
+        /// </summary>
+        public StandardGlyphItem GlyphItem
+        {
+            get
+            {
+                StandardGlyphItem imgI;
+                //
+                switch (symbol.Visibility)
+                {
+                    case Modifiers.Public:
+                    default:
+                        imgI = StandardGlyphItem.GlyphItemPublic;
+                        break;
+                    case Modifiers.Protected:
+                        imgI = StandardGlyphItem.GlyphItemProtected;
+                        break;
+                    case Modifiers.Private:
+                        imgI = StandardGlyphItem.GlyphItemPrivate;
+                        break;
+                    case Modifiers.Internal:
+                        imgI = StandardGlyphItem.GlyphItemInternal;
+                        break;
+                    case Modifiers.ProtectedInternal:
+                        imgI = StandardGlyphItem.GlyphItemFriend;
+                        break;
+
+                }
+                //
+                return imgI;
+            }
+        }
+        public virtual ClassifiedTextRun[] WPFDescription
+        {
+            get
+            {
+                var content = new List<ClassifiedTextRun>();
+
+                content.addKeyword(XSettings.FormatKeyword(symbol.KindKeyword) + " ");
+                //
+                //
+                content.addText(Prototype);
+
+                //
+                return content.ToArray();
+            }
+
+        }
+    }
+    internal class XTypeAnalysis : XAnalysis
+    {
+        public bool IsStatic => Type.IsStatic;
+        public IXTypeSymbol Type { get; private set; }
+
+        internal XTypeAnalysis(IXTypeSymbol typeInfo) : base(typeInfo)
         {
             //
             if (typeInfo == null)
@@ -87,8 +183,7 @@ namespace XSharp.LanguageService
             }
         }
 
-   
-        public ClassifiedTextRun[] WPFDescription
+        public override ClassifiedTextRun[] WPFDescription
         {
             get
             {
@@ -123,77 +218,6 @@ namespace XSharp.LanguageService
                 return content.ToArray();
             }
 
-        }
-        public string Prototype
-        {
-            get
-            {
-                return Name;
-                //
-            }
-        }
-
-        public StandardGlyphGroup GlyphGroup
-        {
-            get
-            {
-                StandardGlyphGroup imgG;
-                //
-                switch (Type.Kind)
-                {
-                    case Kind.Class:
-                    default:
-                        imgG = StandardGlyphGroup.GlyphGroupClass;
-                        break;
-                    case Kind.Interface:
-                        imgG = StandardGlyphGroup.GlyphGroupInterface;
-                        break;
-                    case Kind.Enum:
-                        imgG = StandardGlyphGroup.GlyphGroupEnum;
-                        break;
-                    case Kind.Delegate:
-                        imgG = StandardGlyphGroup.GlyphGroupDelegate;
-                        break;
-
-                }
-                return imgG;
-            }
-        }
-
-        /// <summary>
-        /// Glyph Item used by CompletionList in CompletionSource
-        /// - See also GlyphGroup
-        ///  http://glyphlist.azurewebsites.net/standardglyphgroup/
-        /// </summary>
-        public StandardGlyphItem GlyphItem
-        {
-            get
-            {
-                StandardGlyphItem imgI;
-                //
-                switch (Type.Visibility)
-                {
-                    case Modifiers.Public:
-                    default:
-                        imgI = StandardGlyphItem.GlyphItemPublic;
-                        break;
-                    case Modifiers.Protected:
-                        imgI = StandardGlyphItem.GlyphItemProtected;
-                        break;
-                    case Modifiers.Private:
-                        imgI = StandardGlyphItem.GlyphItemPrivate;
-                        break;
-                    case Modifiers.Internal:
-                        imgI = StandardGlyphItem.GlyphItemInternal;
-                        break;
-                    case Modifiers.ProtectedInternal:
-                        imgI = StandardGlyphItem.GlyphItemFriend;
-                        break;
-
-                }
-                //
-                return imgI;
-            }
         }
 
     }

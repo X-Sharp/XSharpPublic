@@ -289,7 +289,10 @@ BEGIN NAMESPACE XSharpModel
                   EXIT
                ENDDO
                SELF:ReadLine()
-
+            ELSEIF aAttribs:Count > 0 .AND. La1 == XSharpLexer.EOS
+                // Add Attribute
+                VAR attribute := ParseAttribute(aAttribs)
+                _EntityList:Add(attribute)
             ELSEIF ParseBlock()
                NOP
             ELSE
@@ -353,6 +356,16 @@ BEGIN NAMESPACE XSharpModel
                 lastEntity:Range        := lastEntity:Range:WithEnd(LastToken)
                 lastEntity:Interval     := lastEntity:Interval:WithEnd(LastToken)
             ENDIF
+         ELSE
+             // Add at least one entity that represents the global namespace
+             SELF:GetSourceInfo(_tokens[0], _tokens[_tokens:Count-1], OUT VAR range, OUT VAR interval, OUT VAR source)
+
+             VAR xmember := XSourceMemberSymbol{_globalType:Name,Kind.Namespace, ;
+                Modifiers.Export, range, interval, "", FALSE}
+             xmember.File := _file
+             xmember.SourceCode := source
+             SELF:_EntityList:Add(xmember)
+             SELF:_globalType:AddMember(xmember)
          ENDIF
          IF ! lLocals
             _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
@@ -398,13 +411,51 @@ BEGIN NAMESPACE XSharpModel
             IF _PPBlockStack:Count > 0
                _PPBlockStack:Peek():Children:Add( XSourceBlock{SELF:Lt1,SELF:Lt2})
             ENDIF
+         CASE XSharpLexer.PP_DEFINE
+         CASE XSharpLexer.PP_UNDEF
+         CASE XSharpLexer.PP_COMMAND
+         CASE XSharpLexer.PP_TRANSLATE
+             VAR type := SELF:La1
+             VAR start := SELF:Lt1
+             VAR name  := SELF:Lt2:Text
+             VAR eol   := SELF:Lt2
+             DO WHILE SELF:La1 != XSharpLexer.EOS
+                eol := SELF:Lt1
+                SELF:Consume()
+             ENDDO
+             SELF:GetSourceInfo(start, eol, OUT VAR range, OUT VAR interval, OUT VAR source)
+             LOCAL kind AS Kind
+             SWITCH type
+             CASE XSharpLexer.PP_DEFINE
+                 kind := Kind.Define
+             CASE XSharpLexer.PP_UNDEF
+                 kind := Kind.Undefine
+             CASE XSharpLexer.PP_COMMAND
+                 kind := Kind.Command
+                 VAR cType := start:Text[1]
+                 IF cType == c'x' .OR. cType == c'X'
+                    kind := Kind.XCommand
+                 ENDIF
+             CASE XSharpLexer.PP_TRANSLATE
+                 kind := Kind.Translate
+                 VAR cType := start:Text[1]
+                 IF cType == c'x' .OR. cType == c'X'
+                    kind := Kind.XTranslate
+                 ENDIF
+             END SWITCH
+             VAR entity := XSourceMemberSymbol{name, kind, Modifiers.None,;
+                            range,interval,"",FALSE}
+             entity:SourceCode := source
+             entity:File := _file
+             _EntityList.Add(entity)
+             _globalType:AddMember(entity)
          OTHERWISE
             RETURN FALSE
          END SWITCH
          SELF:ReadLine()
          RETURN TRUE
 
-      PRIVATE METHOD ParseUsing() AS LOGIC
+        PRIVATE METHOD ParseUsing() AS LOGIC
 /*
 using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoperator)? Name=name EOS
                     ;
@@ -1124,6 +1175,16 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          RETURN ""
 
 
+      PRIVATE METHOD ParseAttribute(aAttribs AS IList<XSharpToken>) AS XSourceEntity
+            VAR name := SELF:TokensAsString(aAttribs, FALSE)
+            SELF:GetSourceInfo(aAttribs[0], aAttribs[aAttribs:Count-1], OUT VAR range, OUT VAR interval, OUT VAR source)
+            VAR entity := XSourceMemberSymbol{name, Kind.Attribute, Modifiers.None,;
+                            range,interval,"",FALSE}
+            entity.SourceCode := source
+            entity.File := _file
+            _globalType:AddMember(entity)
+            RETURN entity
+
       PRIVATE METHOD ParseOptionalClassClause() AS STRING
          IF SELF:La1 == XSharpLexer.CLASS
             SELF:Consume()
@@ -1144,7 +1205,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          ENDIF
          RETURN SELF:TokensAsString(Tokens)
 
-      PRIVATE METHOD TokensAsString(tokens AS IList<XSharpToken>) AS STRING
+      PRIVATE METHOD TokensAsString(tokens AS IList<XSharpToken>, lAddTrivia := TRUE AS LOGIC) AS STRING
          LOCAL sb AS StringBuilder
          IF (tokens == NULL .or. tokens:Count == 0)
             RETURN ""
@@ -1152,7 +1213,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          sb := StringBuilder{}
 
          FOREACH t AS XSharpToken IN tokens
-            IF t:HasTrivia
+            IF t:HasTrivia .AND. lAddTrivia
                 sb:Append(t:TriviaAsText)
             ENDIF
             IF t:Text:StartsWith("@@")
@@ -2724,7 +2785,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          FOREACH VAR xMissing IN missingTypes
             xMissing:TypeName := _missingType
          NEXT
-         SELF:ReadLine()   
+         SELF:ReadLine()
          RETURN TRUE
 
       PRIVATE METHOD ParseLocalVar AS XSourceVariableSymbol

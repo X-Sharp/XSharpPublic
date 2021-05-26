@@ -110,14 +110,29 @@ FUNCTION ASubScript(ArrayName AS __FoxArray, nElementNumber AS DWORD, nSubscript
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
 FUNCTION AIns(ArrayName AS __FoxArray, nElementNumber AS DWORD, nInsertType := 1 AS DWORD) AS DWORD
     IF !ArrayName:MultiDimensional
-        IF nInsertType == 1 .and. nElementNumber <= (DWORD) ArrayName:Count
-            ArrayName:Insert((LONG) nElementNumber)
-        ENDIF
+        IF nInsertType > 1
+			THROW ArgumentException { "a one-dimensional array has no columns"}
+		ELSEIF nElementNumber == 0 .OR. nElementNumber > (DWORD) ArrayName:Count
+			THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, "'nElementNumber' number is out of range" }
+		ENDIF
+
+		ArrayName:Insert((LONG) nElementNumber)
     ELSE
+        IF nInsertType > 2
+			THROW ArgumentOutOfRangeException { nameof(nInsertType), nInsertType, "'nInsertType' number is out of range" }
+		ENDIF
         IF nInsertType == 2
-            ArrayName:InsertColumn( (LONG) nElementNumber)
+            IF nElementNumber == 0 .OR. nElementNumber > (DWORD) ArrayName:Columns
+				THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, "'nElementNumber' number is out of range" }
+			ENDIF
+
+			ArrayName:InsertColumn( (LONG) nElementNumber)
         ELSE
-            ArrayName:InsertRow((LONG) nElementNumber)
+            IF nElementNumber == 0 .OR. nElementNumber > (DWORD) ArrayName:Rows
+				THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, "'nElementNumber' number is out of range" }
+			ENDIF
+
+			ArrayName:InsertRow((LONG) nElementNumber)
         ENDIF
     ENDIF
     RETURN 0
@@ -128,3 +143,61 @@ FUNCTION ASize(ArrayName AS __FoxArray, nSize AS DWORD) AS __FoxArray
     RETURN ArrayName
 
 
+
+/// <inheritdoc cref="ShowArray" />
+FUNCTION ShowFoxArray ( aTest AS __FoxArray , cPrefix := "" AS STRING ) AS VOID
+LOCAL i, j, dwCounter AS DWORD
+
+// todo: If AElement() works as expected, remove the dwCounter var
+
+	IF cPrefix:Length == 0
+		cPrefix := "a"
+	ENDIF
+
+
+	IF aTest:MultiDimensional
+
+		dwCounter := 0
+
+		FOR i := 1 TO ALen ( aTest , 1 )
+
+			FOR j := 1 TO ALen ( aTest , 2 )
+
+				dwCounter ++
+
+				? cPrefix + "[" + dwCounter:ToString() + "] [" + i:ToString() + "," + j:ToString() + "] = " + AsString ( aTest [i,j] ) + ;
+					 " " + GetElementValueType ( aTest[i,j] )
+
+				// todo: If AElement() works as expected, remove the code above and use the code below instead:
+				//
+				// ? cPrefix + "[" + AElement ( aTest , i , j ):ToString() + "] [" + i:ToString() + "," + j:ToString() + "] = " + AsString ( aTest [i,j] ) + ;
+				//	 " " + GetElementValueType ( aTest[i,j] )
+
+			NEXT
+
+		NEXT
+
+	ELSE
+
+		FOR i := 1 TO ALen ( aTest , 0 )
+
+			? cPrefix + "[" + i:ToString() + "] = " + AsString ( aTest [i] ) + " " + ;
+				GetElementValueType ( aTest[i] )
+
+		NEXT
+
+	ENDIF
+
+	LOCAL FUNCTION GetElementValueType( uValue AS USUAL ) AS STRING
+
+	IF IsNil ( uValue )
+		RETURN "(Nil)"
+	ELSE
+		RETURN "(" + ValType ( uValue ) + ")"
+	ENDIF
+
+END FUNCTION
+
+RETURN
+
+END FUNCTION

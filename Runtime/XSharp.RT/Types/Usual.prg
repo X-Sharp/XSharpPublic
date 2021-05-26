@@ -9,6 +9,7 @@ USING System.Runtime.CompilerServices
 USING System.Runtime.Serialization
 USING System.Diagnostics
 USING System.Text
+USING System.Collections
 USING XSharp.Internal
 // use these UDCs to remove the attributes when needed during debugging
 #define USEATTRIB
@@ -36,7 +37,8 @@ BEGIN NAMESPACE XSharp
         IIndexedProperties, ;
         IIndexer, ;
         IDisposable,;
-        ISerializable
+        ISerializable,;
+        IEnumerable
 
         #region STATIC fields
         /// <exclude />
@@ -713,6 +715,19 @@ BEGIN NAMESPACE XSharp
 
             #endregion
 
+        #region implementation IEnumerable
+        PUBLIC METHOD GetEnumerator() AS IEnumerator STRICT
+            IF SELF:IsArray
+                VAR ienum := _arrayValue:GetEnumerator()
+                RETURN ienum
+            ENDIF
+            IF SELF:IsObject .AND. SELF:_refData IS IEnumerable VAR oIEnum
+                RETURN oIEnum:GetEnumerator()
+            ENDIF
+            THROW NotSupportedException{"This usual type does not support Enumeration"}
+
+
+        #endregion
         #region implementation IComparable
         /// <summary>This method is needed to implement the IComparable interface.</summary>
         PUBLIC METHOD CompareTo(o AS OBJECT) AS LONG
@@ -3293,7 +3308,12 @@ BEGIN NAMESPACE XSharp
                     IF SELF:IsByRef
                         strValue += "ref "
                     ENDIF
-                    strValue += _usualType:ToString() + " )"
+                    IF _usualType == __UsualType.Object .AND. _refData != NULL
+                        LOCAL o := _refData  AS OBJECT
+                        strValue += o:GetType():Name +" )"
+                    ELSE
+                        strValue += _usualType:ToString() + " )"
+                    ENDIF
                 ENDIF
                 RETURN strValue
                 //return SELF:Value:ToString()

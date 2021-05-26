@@ -11,7 +11,7 @@ USING System.Diagnostics
 USING System.Reflection
 USING XSharp
 USING System.Runtime.Serialization
-BEGIN NAMESPACE XSharp 
+BEGIN NAMESPACE XSharp
 	/// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>
@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp
     [Serializable];
 	PUBLIC CLASS __ArrayBase<T> ;
         IMPLEMENTS INamedIndexer, IEnumerable<T>, ISerializable
-        
+
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PROTECTED INTERNAL _internalList AS List<T>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -119,13 +119,13 @@ BEGIN NAMESPACE XSharp
 
 
 		#region Indexers and TO GET / SET Elements.
-	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />  
+	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
 		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The element stored at the specified location in the array.</returns>
         PUBLIC VIRTUAL METHOD __GetElement(index AS INT) AS T
 			RETURN SELF:_internalList[ index ]
 
-	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />  
+	    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
 		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <param name='e'>New element to store in the array at the position specified</param>
         /// <returns>The new element</returns>
@@ -171,11 +171,11 @@ BEGIN NAMESPACE XSharp
                         ENDIF
                     END SWITCH
                 ENDIF
-                
+
             NEXT
 			RETURN NULL
 
-		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
 		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
 		/// <returns>The element stored at the indicated location in the collection.</returns>
 		PUBLIC PROPERTY SELF[index AS INT] AS T
@@ -195,7 +195,7 @@ BEGIN NAMESPACE XSharp
 			END SET
 		END PROPERTY
 
-        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
@@ -238,8 +238,8 @@ BEGIN NAMESPACE XSharp
 				ENDIF
 			END SET
 		END PROPERTY
-         
-		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
 		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <param name="name"><include file="RTComments.xml" path="Comments/NameBasedIndexParam/*" /></param>
 		/// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
@@ -438,7 +438,7 @@ BEGIN NAMESPACE XSharp
 			RETURN aResult:ToArray()
 
     #endregion
-            
+
         PROTECTED VIRTUAL METHOD DebuggerString() AS STRING
             LOCAL sb AS StringBuilder
             LOCAL cnt, tot AS LONG
@@ -463,7 +463,7 @@ BEGIN NAMESPACE XSharp
             sb:Append("}")
             RETURN sb:ToString()
 
-      
+
     #region ISerializable
         /// <inheritdoc/>
         PUBLIC VIRTUAL METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
@@ -475,7 +475,7 @@ BEGIN NAMESPACE XSharp
                 info:AddValue("Item"+i:ToString(), _internalList[i-1])
             NEXT
             RETURN
-            
+
         /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
         CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
             IF info == NULL
@@ -486,9 +486,9 @@ BEGIN NAMESPACE XSharp
             FOR VAR i := 1 TO count
                 _internalList:Add( (T) info:GetValue("Item"+i:ToString(), typeof(T)))
             NEXT
-            
-            
-            #endregion    
+
+
+            #endregion
 
 	END	CLASS
 END NAMESPACE

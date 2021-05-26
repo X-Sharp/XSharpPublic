@@ -79,10 +79,6 @@
     <Reference Include="Microsoft.Windows.Design.Host">
       <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Debug\Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -160,11 +156,6 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
-    <Content Include="..\..\External\Debug\Mono.Cecil.dll">
-      <Link>Mono.Cecil.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\External\Debug\SQLite.Interop.dll">
       <Link>SQLite.Interop.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -621,6 +612,12 @@
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>
       <Name>XSharpLanguageService</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
+      <Project>{c9e9f119-d5a7-493b-88c9-4b5dd5ad653f}</Project>
+      <Name>XSharpMonoCecil</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bBuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\ProjectBase\ProjectBase.csproj">

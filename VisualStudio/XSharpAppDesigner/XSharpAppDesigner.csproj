@@ -246,7 +246,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ProjectBase\ProjectBase.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c695}</Project>
-      <Name>Microsoft.VisualStudio.Project</Name>
+      <Name>ProjectBase</Name>
     </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>

@@ -63,7 +63,7 @@ $WINDIR$	The Windows folder.
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser", CodeBase = "XSharp.VsParser.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "Mono.Cecil", CodeBase = "Mono.Cecil.dll", Culture = "neutral", PublicKeyToken = "50cebf1cceb9d05e", Version = "0.11.2.0")]
+[assembly: ProvideCodeBase(AssemblyName = "XSharpMonoCecil", CodeBase = "XSharpMonoCecil.dll", Culture = "neutral", PublicKeyToken = "50cebf1cceb9d05e", Version = "0.11.3.0")]
 [assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite", CodeBase = "System.Data.SQLite.dll", Culture = "neutral", PublicKeyToken = "db937bc2d44ff139", Version = "1.0.113.0")]
 namespace XSharp.Project
 {

@@ -155,5 +155,109 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             FOR VAR i := 1 to ALen(a)
                 a[i] := i
             NEXT
+        [Fact, Trait("Category", "FoxArray")];
+        METHOD AinsTests() AS VOID
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+            DIMENSION aOneDim ( 4 )
+
+            aOneDim [1] := 1
+            aOneDim [2] := 2
+            aOneDim [3] := 3
+            aOneDim [4] := 4
+
+            ?
+
+            AIns ( aOneDim , 1 )
+            ShowArray ( aOneDim )
+            ?
+
+            AIns ( aOneDim , 1 , 1 )
+            ShowArray ( aOneDim )
+            ?
+
+            AIns ( aOneDim , 1 , 0 )
+            ShowArray ( aOneDim )
+            ?
+
+            AIns ( aOneDim , 1 )
+            ShowArray ( aOneDim )
+            ?
+            FOR VAR i := 1 TO ALen ( aOneDim )
+
+	            Assert.True(IsNil ( aOneDim[i] ))
+	            Assert.True(IsLogic ( aOneDim[i] ))
+            NEXT
+
+            ? "-------- two-dim array ----"
+            ?
+
+            DIMENSION aTwoDim ( 2, 4  )
+            FOR VAR i := 1 TO ALen (aTwoDim)
+               aTwoDim[i] := i
+            ENDFOR
+            ShowArray ( aTwoDim )
+            ?
+
+
+            // ----  There are 3 options to get this array content
+
+            /*
+
+            a[1] [1,1] = 1 (N)
+            a[2] [1,2] = 2 (N)
+            a[3] [1,3] = 3 (N)
+            a[4] [1,4] = 4 (N)
+            a[5] [2,1] = .F. (Nil)
+            a[6] [2,2] = .F. (Nil)
+            a[7] [2,3] = .F. (Nil)
+            a[8] [2,4] = .F. (Nil)
+
+            */
+
+            AIns ( aTwoDim , 2 , 1  )
+            ShowArray ( aTwoDim )
+            ?
+
+            AIns ( aTwoDim , 2 , 0  )
+            ShowArray ( aTwoDim )
+            ?
+
+            AIns ( aTwoDim , 2 )
+            ShowArray ( aTwoDim )
+
+            // ? AIns ( aTwoDim , 0 , 2 ) //  Exception: 'nElementNumber' number is out of range
+            // ? AIns ( aTwoDim , 0  ) //  Exception: 'nElementNumber' number is out of range
+            // ? AIns ( aTwoDim , 3  ) //  Exception: 'nElementNumber' number is out of range
+            // ? AIns ( aTwoDim , 2 , 4 ) // Exception 'nInsertType' number is out of range
+
+            // ------------------------
+
+            FOR VAR i := 1 TO ALen (aTwoDim)
+               aTwoDim[i] := i
+            ENDFOR
+
+            AIns ( aTwoDim , 1 , 2  )
+            Assert.True(IsNil(aTwoDim [1,1]))
+            Assert.True(IsNil(aTwoDim [2,1]))
+            Assert.True(IsLogic(aTwoDim [1,1]))
+            Assert.True(IsLogic(aTwoDim [2,1]))
+            /*
+            a[1] [1,1] = .F. (NIL)
+            a[2] [1,2] = 1 (N)
+            a[3] [1,3] = 2 (N)
+            a[4] [1,4] = 3 (N)
+            a[5] [2,1] = .F. (NIL)
+            a[6] [2,2] = 5 (N)
+            a[7] [2,3] = 6 (N)
+            a[8] [2,4] = 7 (N)
+            */
+            ShowArray ( aTwoDim )
+            ?
+            AIns ( aTwoDim , 2 , 2  )
+            Assert.True(IsNil(aTwoDim [1,2]))
+            Assert.True(IsNil(aTwoDim [2,2]))
+            Assert.True(IsLogic(aTwoDim [1,2]))
+            Assert.True(IsLogic(aTwoDim [2,2]))
+
     END CLASS
 END NAMESPACE

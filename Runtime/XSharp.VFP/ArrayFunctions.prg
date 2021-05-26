@@ -157,46 +157,23 @@ FUNCTION ASize(ArrayName AS __FoxArray, nSize AS DWORD) AS __FoxArray
 
 /// <inheritdoc cref="ShowArray" />
 FUNCTION ShowFoxArray ( aTest AS __FoxArray , cPrefix := "" AS STRING ) AS VOID
-LOCAL i, j, dwCounter AS DWORD
-
-// todo: If AElement() works as expected, remove the dwCounter var
+    LOCAL i, j AS DWORD
 
 	IF cPrefix:Length == 0
 		cPrefix := "a"
 	ENDIF
 
-
 	IF aTest:MultiDimensional
-
-		dwCounter := 0
-
 		FOR i := 1 TO ALen ( aTest , 1 )
-
 			FOR j := 1 TO ALen ( aTest , 2 )
-
-				dwCounter ++
-
-				? cPrefix + "[" + dwCounter:ToString() + "] [" + i:ToString() + "," + j:ToString() + "] = " + AsString ( aTest [i,j] ) + ;
-					 " " + GetElementValueType ( aTest[i,j] )
-
-				// todo: If AElement() works as expected, remove the code above and use the code below instead:
-				//
-				// ? cPrefix + "[" + AElement ( aTest , i , j ):ToString() + "] [" + i:ToString() + "," + j:ToString() + "] = " + AsString ( aTest [i,j] ) + ;
-				//	 " " + GetElementValueType ( aTest[i,j] )
-
+				 QOut(cPrefix + "[" + AElement ( aTest , i , j ):ToString() + "] [" + i:ToString() + "," + j:ToString() + "] = " + AsString ( aTest [i,j] ) + ;
+					 " " + GetElementValueType ( aTest[i,j] ))
 			NEXT
-
 		NEXT
-
 	ELSE
-
 		FOR i := 1 TO ALen ( aTest , 0 )
-
-			? cPrefix + "[" + i:ToString() + "] = " + AsString ( aTest [i] ) + " " + ;
-				GetElementValueType ( aTest[i] )
-
+			QOut( cPrefix + "[" + i:ToString() + "] = " + AsString ( aTest [i] ) + " " + GetElementValueType ( aTest[i] ))
 		NEXT
-
 	ENDIF
 
 	LOCAL FUNCTION GetElementValueType( uValue AS USUAL ) AS STRING

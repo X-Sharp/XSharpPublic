@@ -188,10 +188,12 @@ namespace XSharp.LanguageService
         private ITextBuffer m_textBuffer;
         private ISignatureHelpSession m_session;
         private ITrackingSpan m_applicableToSpan;
+        private XFile m_file;
 
-        public XSharpSignatureHelpSource(ITextBuffer textBuffer)
+        public XSharpSignatureHelpSource(ITextBuffer textBuffer, XFile file)
         {
             m_textBuffer = textBuffer;
+            m_file = file;
         }
         internal void Debug(string strMessage)
         {
@@ -209,11 +211,9 @@ namespace XSharp.LanguageService
                 XSharpModel.ModelWalker.Suspend();
                 ITextSnapshot snapshot = m_textBuffer.CurrentSnapshot;
                 int start, length;
-                XFile file;
                 int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
                 session.Properties.TryGetProperty(SignatureProperties.Start, out start);
                 session.Properties.TryGetProperty(SignatureProperties.Length, out length);
-                session.Properties.TryGetProperty(SignatureProperties.File, out file);
                 m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(new Span(start, length), SpanTrackingMode.EdgeInclusive, 0);
 
                 object elt = session.Properties.GetProperty(SignatureProperties.Element);
@@ -226,7 +226,7 @@ namespace XSharp.LanguageService
                         var names = new List<string>();
                         var proto = xMember.Prototype;
                         names.Add(proto);
-                        signatures.Add(CreateSignature(m_textBuffer, xMember, proto, ApplicableToSpan, xMember.Kind == XSharpModel.Kind.Constructor, file));
+                        signatures.Add(CreateSignature(m_textBuffer, xMember, proto, ApplicableToSpan, xMember.Kind == XSharpModel.Kind.Constructor, m_file));
                         var overloads = xMember.GetOverloads();
                         foreach (var member in overloads)
                         {
@@ -234,7 +234,7 @@ namespace XSharp.LanguageService
                             proto = member.Prototype;
                             if (!names.Contains(proto))
                             {
-                                signatures.Add(CreateSignature(m_textBuffer, member, proto, ApplicableToSpan, member.Kind == XSharpModel.Kind.Constructor, file));
+                                signatures.Add(CreateSignature(m_textBuffer, member, proto, ApplicableToSpan, member.Kind == XSharpModel.Kind.Constructor, m_file));
                                 names.Add(proto);
                             }
                         }
@@ -242,7 +242,7 @@ namespace XSharp.LanguageService
                     else if (element != null)
                     {
                         // Type ??
-                        signatures.Add(CreateSignature(m_textBuffer, null, element.Prototype, ApplicableToSpan, false, file));
+                        signatures.Add(CreateSignature(m_textBuffer, null, element.Prototype, ApplicableToSpan, false, m_file));
                     }
                     // why not ?
                     int paramCount = int.MaxValue;

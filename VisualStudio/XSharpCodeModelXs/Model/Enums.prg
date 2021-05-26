@@ -37,8 +37,8 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Union:=132
       MEMBER @@Local:=138
       MEMBER @@ValueType:=144
-      
-      // These items also have overlays      
+
+      // These items also have overlays
       MEMBER Intrinsic := 150
       MEMBER JSharpMethod := 156
       MEMBER JSharpField := 162
@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharpModel
       MEMBER JSharpInterface := 180
       MEMBER GroupError := 186
       MEMBER ExtensionMethod := 220
-      
+
       // These items have no overlays
       MEMBER BscFile := 191
       MEMBER Assembly := 192
@@ -75,7 +75,7 @@ BEGIN NAMESPACE XSharpModel
       MEMBER MaybeReference := 217
       MEMBER MaybeCaller := 218
       MEMBER MaybeCall := 219
-      
+
       MEMBER XmlAttribute := 226
       MEMBER XmlChild := 227
       MEMBER XmlDescendant := 228
@@ -88,9 +88,9 @@ BEGIN NAMESPACE XSharpModel
       MEMBER XmlDescendantCheck := 235
       MEMBER CompletionWarning := 236
       MEMBER GroupUnknown := 237
-      
+
    END ENUM
-   
+
    INTERNAL ENUM ImageListOverlay AS Int32
       MEMBER @@Internal:=1
       MEMBER @@ProtectedInternal:=2
@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@ImageListOverlayArrow:=5
       MEMBER @@Public:=0
    END ENUM
-   
+
    ENUM Kind AS Int32
       MEMBER @@Namespace   :=  0
       MEMBER @@Class       :=  1
@@ -134,8 +134,15 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@DbField     :=  30
       MEMBER @@LocalFunc   :=  31
       MEMBER @@LocalProc   :=  32
-   END ENUM                   
-   
+      MEMBER @@Attribute   :=  33
+      MEMBER @@Define      :=  34
+      MEMBER @@Undefine    :=  35
+      MEMBER @@Command     :=  36
+      MEMBER @@XCommand    :=  37
+      MEMBER @@Translate   :=  38
+      MEMBER @@XTranslate  :=  39
+   END ENUM
+
    [Flags];
    ENUM Modifiers AS LONG
       MEMBER @@None              := 0
@@ -146,7 +153,7 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Protected         := 1 << 3
       MEMBER @@Public            := 1 << 4
       MEMBER @@Export            := 1 << 4   // alias for Public
-      MEMBER @@VisibilityMask    := 0xFF
+      MEMBER @@VisibilityMask    := (1 << 5) -1
       MEMBER @@Abstract          := 1 << 5
       MEMBER @@New               := 1 << 6
       MEMBER @@Partial           := 1 << 7
@@ -168,9 +175,9 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Introduce         := 1 << 23            // Mapped to NEW
       MEMBER @@Sync              := 1 << 24            // Implemented in the method body
       MEMBER @@Class             := 1 << 25            // Mapped to STATIC
-      
+
    END ENUM
-   
+
    ENUM XFileType AS LONG
       MEMBER Unknown          :=-1
       MEMBER SourceCode       :=0
@@ -191,7 +198,7 @@ BEGIN NAMESPACE XSharpModel
       MEMBER Template         := 15       // tpl and inf
       MEMBER TextTemplate     := 16     // tt
    END ENUM
-   
+
    ENUM ParamType AS BYTE
       MEMBER @@As		   := 0
       MEMBER @@Ref      := 1
@@ -203,14 +210,14 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@As       := 0
       MEMBER @@Is       := 1
    END ENUM
-   
+
    ENUM CallingConvention
       MEMBER None          := 0
-      MEMBER @@Clipper     :=  XSharpLexer.CLIPPER 
-      MEMBER @@Strict      :=  XSharpLexer.STRICT  
-      MEMBER @@Pascal      :=  XSharpLexer.PASCAL  
-      MEMBER @@Aspen       :=  XSharpLexer.ASPEN   
-      MEMBER @@Wincall     :=  XSharpLexer.WINCALL 
+      MEMBER @@Clipper     :=  XSharpLexer.CLIPPER
+      MEMBER @@Strict      :=  XSharpLexer.STRICT
+      MEMBER @@Pascal      :=  XSharpLexer.PASCAL
+      MEMBER @@Aspen       :=  XSharpLexer.ASPEN
+      MEMBER @@Wincall     :=  XSharpLexer.WINCALL
       MEMBER @@Callback    :=  XSharpLexer.CALLBACK
       MEMBER @@Fastcall    :=  XSharpLexer.FASTCALL
       MEMBER @@Thiscall    :=  XSharpLexer.THISCALL
@@ -225,6 +232,6 @@ BEGIN NAMESPACE XSharpModel
         MEMBER OutParam     := 5     // Int32.TryParse("123", OUT VAR name)  // need to detect the type of the method and get the parametertype. Whole line until closing paren in the Expression
         MEMBER Using        := 6     // (BEGIN) USING VAR name := Expression   variation of VAR Name := Expression
     END ENUM
-   
+
 END NAMESPACE
 

@@ -668,9 +668,10 @@ namespace XSharp.LanguageService
             }
             if (entity != null)
             {
+                bool open = false;
                 if (entity.File.FullPath == this._file.FullPath)
                 {
-                    IVsTextView textView = ThreadHelper.JoinableTaskFactory.Run(GetActiveTextViewAsync);
+                    IVsTextView textView = ThreadHelper.JoinableTaskFactory.Run(GetActiveTextViewAsync); 
                     if (textView != null)
                     {
                         textView.SetCaretPos(entity.Range.StartLine, 0);
@@ -679,9 +680,10 @@ namespace XSharp.LanguageService
                         else
                             textView.SetTopLine(0);
                         textView.SendExplicitFocus();
+                        open = true;
                     }
                 }
-                else
+                if (! open)
                 {
                     entity.OpenEditor();
                 }

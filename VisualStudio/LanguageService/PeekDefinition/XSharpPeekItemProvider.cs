@@ -23,8 +23,11 @@ namespace XSharp.LanguageService
 
             if (XSettings.DisablePeekDefinition)
                 return null;
+            var file = textBuffer.GetFile();
+            if (file == null || file.XFileType != XFileType.SourceCode)
+                return null;
 
-            return textBuffer.Properties.GetOrCreateSingletonProperty(() => new XSharpPeekItemSource(textBuffer, _peekResultFactory));
+            return textBuffer.Properties.GetOrCreateSingletonProperty(() => new XSharpPeekItemSource(textBuffer, _peekResultFactory, file));
         }
     }
 }

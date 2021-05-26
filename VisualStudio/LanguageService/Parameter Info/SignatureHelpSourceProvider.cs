@@ -16,8 +16,11 @@ namespace XSharp.LanguageService
         {
             if (XSettings.DisableParameterInfo)
                 return null;
+            var file = textBuffer.GetFile();
+            if (file == null || file.XFileType != XFileType.SourceCode)
+                return null;
 
-            return new XSharpSignatureHelpSource(textBuffer);
+            return new XSharpSignatureHelpSource(textBuffer, file);
         }
     }
 }

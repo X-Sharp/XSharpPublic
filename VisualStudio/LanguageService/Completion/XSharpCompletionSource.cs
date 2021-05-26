@@ -37,8 +37,10 @@ namespace XSharp.LanguageService
 
         public ICompletionSource TryCreateCompletionSource(ITextBuffer textBuffer)
         {
-
-            return new XSharpCompletionSource(this, textBuffer, aggregator);
+            var file = textBuffer.GetFile();
+            if (file == null || file.XFileType != XFileType.SourceCode)
+                return null;
+            return new XSharpCompletionSource(this, textBuffer, aggregator, file);
         }
     }
 
@@ -66,11 +68,11 @@ namespace XSharp.LanguageService
             return false;
         }
 
-        public XSharpCompletionSource(XSharpCompletionSourceProvider provider, ITextBuffer buffer, IBufferTagAggregatorFactoryService aggregator)
+        public XSharpCompletionSource(XSharpCompletionSourceProvider provider, ITextBuffer buffer, IBufferTagAggregatorFactoryService aggregator, XFile file)
         {
             _provider = provider;
             _buffer = buffer;
-            _file = buffer.GetFile();
+            _file = file;
             // Currently, set as default, but should be VS Settings Based
             // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
             var prj = _file.Project.ProjectNode;

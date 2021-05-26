@@ -14,11 +14,11 @@ namespace XSharp.LanguageService
         private readonly IPeekResultFactory _peekResultFactory;
         private XFile _file;
 
-        public XSharpPeekItemSource(ITextBuffer textBuffer, IPeekResultFactory peekResultFactory)
+        public XSharpPeekItemSource(ITextBuffer textBuffer, IPeekResultFactory peekResultFactory, XFile file)
         {
             _textBuffer = textBuffer;
             _peekResultFactory = peekResultFactory;
-            _file = textBuffer.GetFile();
+            _file = file;
         }
 
         public void AugmentPeekSession(IPeekSession session, IList<IPeekableItem> peekableItems)

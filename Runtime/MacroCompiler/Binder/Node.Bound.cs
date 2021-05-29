@@ -631,11 +631,12 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class MethodCallExpr : Expr
     {
         protected Expr Self = null;
+        protected Expr WriteBack = null;
         internal override Node Bind(Binder b)
         {
             b.Bind(ref Expr, BindAffinity.Invoke);
             b.Bind(ref Args);
-            Symbol = b.BindMethodCall(Expr, Expr.Symbol, Args, out Self);
+            Symbol = b.BindMethodCall(Expr, Expr.Symbol, Args, out Self, out WriteBack);
             Datatype = Symbol.Type();
             if (Self?.Datatype.IsValueType == true)
             {
@@ -654,28 +655,30 @@ namespace XSharp.MacroCompiler.Syntax
             }
             return null;
         }
-        internal static MethodCallExpr Bound(Expr e, Symbol sym, Expr self, ArgList args)
+        internal static MethodCallExpr Bound(Expr e, Symbol sym, Expr self, ArgList args, Expr writeBack = null)
         {
-            return new MethodCallExpr(e, args) { Symbol = sym, Datatype = sym.Type(), Self = self };
+            return new MethodCallExpr(e, args) { Symbol = sym, Datatype = sym.Type(), Self = self, WriteBack = writeBack };
         }
         internal static MethodCallExpr Bound(Binder b, Expr e, Symbol sym, Expr self, ArgList args)
         {
             Expr boundSelf;
+            Expr writeBack;
             if (self != null)
                 e = new MemberAccessExpr(self, null, null);
-            var m = b.BindMethodCall(e, sym, args, out boundSelf);
-            return new MethodCallExpr(e, args) { Symbol = m, Datatype = m.Type(), Self = boundSelf };
+            var m = b.BindMethodCall(e, sym, args, out boundSelf, out writeBack);
+            return new MethodCallExpr(e, args) { Symbol = m, Datatype = m.Type(), Self = boundSelf, WriteBack = writeBack };
         }
         internal static MethodCallExpr Bound(Binder b, Expr e, string name, ArgList args)
         {
             Expr m = new IdExpr(name);
             Expr self;
+            Expr writeBack;
             var ms = b.BindMemberAccess(ref e, ref m, BindAffinity.Invoke);
             if (!(ms is MethodSymbol))
                 throw e.Error(ErrorCode.Internal);
             var expr = new MemberAccessExpr(e, e.Token, m) { Symbol = ms };
-            var sym = b.BindMethodCall(expr, ms, ArgList.Empty, out self);
-            return Bound(e, sym, self, ArgList.Empty);
+            var sym = b.BindMethodCall(expr, ms, ArgList.Empty, out self, out writeBack);
+            return Bound(e, sym, self, ArgList.Empty, writeBack);
         }
 }
     internal partial class CtorCallExpr : MethodCallExpr
@@ -685,14 +688,15 @@ namespace XSharp.MacroCompiler.Syntax
             b.Bind(ref Expr, BindAffinity.Type);
             Expr.RequireType();
             b.Bind(ref Args);
-            Symbol = b.BindCtorCall(Expr, Expr.Symbol, Args);
+            Symbol = b.BindCtorCall(Expr, Expr.Symbol, Args, out WriteBack);
             Datatype = Symbol.Type();
             return null;
         }
         internal static CtorCallExpr Bound(Binder b, TypeExpr type, ArgList args)
         {
-            var sym = b.BindCtorCall(type, type.Symbol, args);
-            return new CtorCallExpr(type, args) { Symbol = sym, Datatype = sym.Type() };
+            Expr writeBack;
+            var sym = b.BindCtorCall(type, type.Symbol, args, out writeBack);
+            return new CtorCallExpr(type, args) { Symbol = sym, Datatype = sym.Type(), WriteBack = writeBack };
         }
     }
     internal partial class IntrinsicCallExpr : MethodCallExpr

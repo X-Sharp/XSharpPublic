@@ -12,6 +12,9 @@ USING System.Text
 FUNCTION Args(args PARAMS OBJECT[]) AS OBJECT[]
     RETURN args
 
+FUNCTION ArgsU(args PARAMS USUAL[]) AS USUAL[]
+    RETURN args
+
 FUNCTION U(u AS USUAL) AS USUAL
     RETURN u
 
@@ -28,6 +31,10 @@ FUNCTION A(i REF OBJECT) AS INT
     VAR v := i ASTYPE INT? DEFAULT 0
     i := 1000 + v
     RETURN v
+
+FUNCTION IncrInt(i REF INT) AS INT
+    i := i+1
+    RETURN i
 
 FUNCTION AllTrim(cValue as STRING) AS STRING
     RETURN "MyAlltrim()"
@@ -321,4 +328,5 @@ FUNCTION S_EnforceType(uVar REF USUAL,cTyp AS STRING) AS VOID
         END SWITCH
     ENDIF
     RETURN
+
 

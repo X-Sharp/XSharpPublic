@@ -60,3 +60,4 @@ BEGIN NAMESPACE MacroCompilerTest
 
     END NAMESPACE
 
+

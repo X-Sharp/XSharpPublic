@@ -169,7 +169,8 @@ namespace XSharp.MacroCompiler
     {
         internal ConversionSymbol Conversion;
         internal TypeSymbol Type;
-        internal ConversionToTemp(ConversionSymbol conv, TypeSymbol type) : base(conv.Kind) { Conversion = conv; Type = type; }
+        internal LocalSymbol Local;
+        internal ConversionToTemp(ConversionSymbol conv, TypeSymbol type) : base(conv.Kind) { Conversion = conv; Type = type; Local = new LocalSymbol(Type); }
     }
 
     internal static class ConversionEasyOut

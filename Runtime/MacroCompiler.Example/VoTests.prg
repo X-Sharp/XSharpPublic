@@ -35,6 +35,7 @@ BEGIN NAMESPACE MacroCompilerTest
 
         ResetOverrides()
 
+        TestMacroU(mc, e"{|a,b| S_EnforceType(a,b), a}", ArgsU(NIL,"N"), 0, typeof(INT))
         TestMacro(mc, e"{|a,b| S_EnforceType(a,b), a}", Args(NIL,"N"), 0, typeof(INT))
         TestMacro(mc, e"{|a,b| S_EnforceType(REF a,b), a}", Args(NIL,"N"), 0, typeof(INT))
 

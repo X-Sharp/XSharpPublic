@@ -53,7 +53,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         BoundExpression XsCreateConversionNonIntegralNumeric(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
-            if (Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax))
+            if (Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax)
+                && expression.Type.SpecialType.IsNumericType() && targetType.SpecialType.IsNumericType())
             {
                 // call Convert.To..() to round the result
                 var mem = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Convert__ToInt32Double);
@@ -99,15 +100,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else
             {
-                // call (type) Expression to truncate the result
-                return CreateConversion(
-                    syntax: expression.Syntax,
-                    source: expression,
-                    conversion: conversion,
-                    isCast: false,
-                    conversionGroupOpt: null,
-                    destination: targetType,
-                    diagnostics: diagnostics);
+                return CreateXsConversion(expression, conversion, targetType, diagnostics);
             }
 
         }
@@ -124,6 +117,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
+        BoundExpression CreateXsConversion(BoundExpression expression, Conversion conversion, TypeSymbol targetType, DiagnosticBag diagnostics )
+        {
+            var result = CreateConversion(syntax: expression.Syntax,
+                                            source: expression,
+                                            conversion: conversion,
+                                            isCast: false,
+                                            conversionGroupOpt: null,
+                                            destination: targetType,
+                                            diagnostics: diagnostics);
+            result.WasCompilerGenerated = true;
+            return result;
+        }
         BoundExpression XsHandleExplicitConversion(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
             if (conversion.IsExplicit && !TypeSymbol.Equals(expression.Type, targetType))
@@ -131,27 +136,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // silently convert integral types
                 if (XsHasImplicitCast(expression, targetType, diagnostics))
                 {
+                    var sourceType = expression.Type;
                     BoundExpression result;
-                    if (targetType.IsIntegralType() && expression.Type.IsIntegralType())
+                    // Both integral, simple conversion
+                    if (targetType.IsIntegralType() && sourceType.IsIntegralType())
                     {
-
-
-                        result = CreateConversion(
-                            syntax: expression.Syntax,
-                            source: expression,
-                            conversion: conversion,
-                            isCast: false,
-                            conversionGroupOpt: null,
-                            destination: targetType,
-                            diagnostics: diagnostics);
+                        return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }
-                    else
+                    if (targetType.SpecialType.IsNumericType() &&
+                        (sourceType.IsObjectType() || sourceType.IsUsualType()) &&
+                        Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax))
+                    {
+                        return CreateXsConversion(expression, conversion, targetType, diagnostics);
+                    }
+                    else if (sourceType.SpecialType.IsNumericType())
                     {
                         result = XsCreateConversionNonIntegralNumeric(targetType, expression, diagnostics, conversion);
+                        result.WasCompilerGenerated = true;
+                        return result;
                     }
-                    result.WasCompilerGenerated = true;
-                    return result;
-
                 }
             }
             return null;

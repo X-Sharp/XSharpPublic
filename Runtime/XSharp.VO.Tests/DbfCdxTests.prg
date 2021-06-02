@@ -4595,17 +4595,17 @@ RETURN
 			Assert.True ( uRet == 1 ) // that's what VO returns
 
 			uRet := DbOrderInfo(DBOI_NAME)
-			Assert.True ( uRet == "" )
+			Assert.True ( uRet == NIL )
 			uRet := DbOrderInfo(DBOI_BAGNAME)
-			Assert.True ( uRet == "" )
+			Assert.True ( uRet == NIL )
 			uRet := DbOrderInfo(DBOI_INDEXNAME)
-			Assert.True ( uRet == "" )
+			Assert.True ( uRet == NIL )
 			uRet := DbOrderInfo(DBOI_BAGEXT)
-			Assert.True ( uRet == "" )
+			Assert.True ( uRet == ".CDX" )
 			uRet := DbOrderInfo(DBOI_INDEXEXT)
-			Assert.True ( uRet == "" )
+			Assert.True ( uRet == ".CDX" )
 			uRet := DbOrderInfo(DBOI_FULLPATH)
-			Assert.True ( uRet == "" )
+			Assert.True ( uRet == NIL )
 
 			uRet := DbOrderInfo(DBOI_ORDERCOUNT)
 			Assert.True ( uRet == 0 )

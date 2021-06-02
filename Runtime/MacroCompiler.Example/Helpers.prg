@@ -1,7 +1,7 @@
 ﻿// Helpers.prg
 // Created by    : nvk
 // Creation Date : 2/13/2021 4:00:44 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : I7
 
 
@@ -63,6 +63,81 @@ BEGIN NAMESPACE MacroCompilerTest
         END
         RETURN FALSE
 
+    FUNCTION TestMacroU(mc AS XSharp.Runtime.MacroCompiler, src AS STRING, args AS USUAL[], expect AS USUAL, t AS Type, ec := ErrorCode.NoError AS ErrorCode) AS LOGIC
+        TRY
+            TotalTests += 1
+            Console.Write("Test: '{0}' ", src)
+
+            //local isCb, memVars as logic
+            //VAR rtc := mc:Compile(src, true, null, ref isCb, ref memVars)
+            //VAR cb := XSharp._Codeblock{rtc, src, isCb, memVars}
+            VAR cb := mc:CompileCodeblock(src)
+
+            VAR res := cb:Eval(args)
+            LOCAL match AS LOGIC
+            IF IsArray(expect)
+                match := ALen(expect) = ALen(res)
+                FOR VAR i := 1 TO ALen(expect)
+                    IF expect[i] != ((ARRAY)res)[i]
+                        match := FALSE
+                    END
+                NEXT
+            ELSEIF t != NULL .AND. t:IsArray
+                LOCAL e := expect AS OBJECT
+                match := e:Length = res:Length .AND. t == res:GetType()
+                LOCAL m := t:GetMethod("GetValue",<Type>{typeof(INT)}) AS System.Reflection.MethodInfo
+                FOR VAR i := 1 TO e:Length
+                    VAR ve := m:Invoke(e,<OBJECT>{i-1})
+                    VAR vr := m:Invoke(res,<OBJECT>{i-1})
+                    IF !Object.Equals(ve,vr)
+                        match := FALSE
+                    END
+                NEXT
+            ELSEIF t == typeof(OBJECT)
+                match := TRUE
+            ELSE
+                TRY
+                    LOCAL r := res AS DYNAMIC
+                    LOCAL e := expect AS DYNAMIC
+                    match := r = e .OR. res = expect
+                CATCH
+                    match := res = expect
+                END
+            END
+            IF (ec == ErrorCode.NoError) .AND. (match) .AND. ((t == NULL) || (t == res:GetType()) || (t == typeof(OBJECT) .AND. res == NULL .AND. expect == NULL))
+                TotalSuccess += 1
+                Console.WriteLine("[OK]")
+                RETURN TRUE
+            ELSE
+                TotalFails += 1
+                Console.WriteLine("[FAIL] (res = {0}, type = {1}, no error)", res, res:GetType())
+                wait
+            END
+            RETURN FALSE
+        CATCH e AS CompilationError
+            IF e:@@Code == ec
+                TotalSuccess += 1
+                Console.WriteLine("[OK]")
+                RETURN TRUE
+            ELSE
+                TotalFails += 1
+                Console.WriteLine("[FAIL] ({0})", e:Message)
+                wait
+            END
+            RETURN FALSE
+        CATCH e AS Exception
+            IF t == e:GetType() .AND. e:Message == expect
+                TotalSuccess += 1
+                Console.WriteLine("[OK]")
+                RETURN TRUE
+            ELSE
+                TotalFails += 1
+                Console.WriteLine("[FAIL] (Exception: {0})", e:Message)
+                wait
+                RETURN FALSE
+            END
+        END
+
     FUNCTION TestMacro(mc AS XSharp.Runtime.MacroCompiler, src AS STRING, args AS OBJECT[], expect AS USUAL, t AS Type, ec := ErrorCode.NoError AS ErrorCode) AS LOGIC
         TRY
             TotalTests += 1
@@ -72,7 +147,7 @@ BEGIN NAMESPACE MacroCompilerTest
             //VAR rtc := mc:Compile(src, true, null, ref isCb, ref memVars)
             //VAR cb := XSharp._Codeblock{rtc, src, isCb, memVars}
             VAR cb := mc:Compile(src)
-            
+
             VAR res := cb:EvalBlock(args)
             LOCAL match AS LOGIC
             IF IsArray(expect)
@@ -85,7 +160,7 @@ BEGIN NAMESPACE MacroCompilerTest
             ELSEIF t != NULL .AND. t:IsArray
                 LOCAL e := expect AS OBJECT
                 match := e:Length = res:Length .AND. t == res?:GetType()
-                LOCAL m := t:GetMethod("GetValue",<Type>{typeof(INT)}) AS System.Reflection.MethodInfo 
+                LOCAL m := t:GetMethod("GetValue",<Type>{typeof(INT)}) AS System.Reflection.MethodInfo
                 FOR VAR i := 1 TO e:Length
                     VAR ve := m:Invoke(e,<OBJECT>{i-1})
                     VAR vr := m:Invoke(res,<OBJECT>{i-1})
@@ -211,3 +286,4 @@ BEGIN NAMESPACE MacroCompilerTest
         RETURN
 
 END NAMESPACE
+

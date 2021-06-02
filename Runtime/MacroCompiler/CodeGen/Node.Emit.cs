@@ -324,6 +324,8 @@ namespace XSharp.MacroCompiler.Syntax
             if (Self != null) Self.Emit(ilg);
             Args.Emit(ilg);
             Symbol.EmitGet(ilg);
+            if (WriteBack != null)
+                WriteBack.Emit(ilg, false);
             if (!preserve && Datatype.NativeType != NativeType.Void)
                 ilg.Emit(OpCodes.Pop);
         }
@@ -334,6 +336,8 @@ namespace XSharp.MacroCompiler.Syntax
         {
             Args.Emit(ilg);
             Symbol.EmitGet(ilg);
+            if (WriteBack != null)
+                WriteBack.Emit(ilg, false);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
         }

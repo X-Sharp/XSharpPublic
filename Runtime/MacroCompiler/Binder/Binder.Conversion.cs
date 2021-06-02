@@ -276,8 +276,15 @@ namespace XSharp.MacroCompiler
                     var inner = Conversion(expr, elem, options);
                     if (inner.Exists)
                     {
-                        var outer = ConversionSymbol.CreateByRef();
-                        return ConversionSymbol.Create(outer, new ConversionToTemp(inner, elem));
+                        if (expr.Symbol.HasRefAccess && inner.Kind == ConversionKind.Identity)
+                        {
+                            return ConversionSymbol.CreateByRef();
+                        }
+                        else
+                        {
+                            var outer = ConversionSymbol.CreateByRef();
+                            return ConversionSymbol.Create(outer, new ConversionToTemp(inner, elem));
+                        }
                     }
                 }
                 else

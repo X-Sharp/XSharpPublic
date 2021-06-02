@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
+using XSharp.MacroCompiler.Syntax;
 
 namespace XSharp.MacroCompiler
 {
@@ -153,6 +154,19 @@ namespace XSharp.MacroCompiler
                 return getter;
             }
             return null;
+        }
+
+        internal static bool IsIndirectRefConversion(this Symbol s) => (s is ConversionChain ch) && (ch.Conversion is ConversionByRef && ch.Previous is ConversionToTemp || ch.Conversion.IsIndirectRefConversion());
+        internal static LocalSymbol IndirectRefConversionTempLocal(this Symbol s) => ((s as ConversionChain)?.Previous as ConversionToTemp)?.Local ?? (s as ConversionChain)?.Conversion.IndirectRefConversionTempLocal();
+
+        internal static void AddExpr(ref Expr c, Expr e)
+        {
+            if (c == null)
+                c = e;
+            else if (c is ExprList el)
+                el.Exprs.Add(e);
+            else
+                c = new ExprList(new Expr[] { c, e });
         }
     }
 }

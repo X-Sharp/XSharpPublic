@@ -10,6 +10,7 @@ using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.Symbols;
 using Microsoft.CodeAnalysis;
 using System.Collections.Concurrent;
+using Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -23,10 +24,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool IsFunctionsClass(this NamedTypeSymbol type)
         {
-            return type.IsStatic
-                && type is SourceNamedTypeSymbol snts
-                && snts.HasCompilerGeneratedAttribute
-                && type.Name.EndsWith(XSharpSpecialNames.FunctionsClass);
+            if (type.IsStatic && type.Name.EndsWith(XSharpSpecialNames.FunctionsClass))
+            {
+                if (type is PENamedTypeSymbol || type is SourceNamedTypeSymbol)
+                    return type.HasCompilerGeneratedAttribute;
+            }
+            return false;
         }
 
         public static bool IsOurAttribute(this NamedTypeSymbol atype, string name)

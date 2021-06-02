@@ -9,8 +9,48 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 namespace Microsoft.CodeAnalysis.CSharp
 {
+
     internal partial class Binder
     {
+        internal BoundExpression XsBindUsualCollectionEnumerator(BoundExpression collection, DiagnosticBag diagnostics)
+        {
+            if (!collection.Type.IsUsualType())
+                return collection;
+            if (Compilation.Options.XSharpRuntime)
+            {
+                var rtfuncs = Compilation.GetWellKnownType(WellKnownType.XSharp_RT_Functions);
+                var syms = rtfuncs.GetMembers(ReservedNames.UsualEnumerator);
+                if (syms.Length == 1)
+                {
+                    var args = new List<BoundExpression>();
+                    args.Add(collection);
+                    var call = new BoundCall(syntax: collection.Syntax,
+                        receiverOpt: null,
+                        method: (MethodSymbol)syms[0],
+                        arguments: args.ToImmutableArray(),
+                        argumentNamesOpt: default,
+                        argumentRefKindsOpt: default,
+                        isDelegateCall: false,
+                        expanded: false,
+                        invokedAsExtensionMethod: false,
+                        argsToParamsOpt: default,
+                        defaultArguments: default,
+                        resultKind: LookupResultKind.Viable,
+                        type: Compilation.ArrayType(),
+                        hasErrors: false);
+                    return call;
+                }
+            }
+            return CreateConversion(
+                   syntax: collection.Syntax,
+                   source: collection,
+                   conversion: Conversion.ExplicitReference,
+                   isCast: false,
+                   conversionGroupOpt: null,
+                   destination: Compilation.ArrayType(),
+                   diagnostics: diagnostics);
+        }
+
         BoundExpression XsCreateConversionNonIntegralNumeric(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
             if (Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax))

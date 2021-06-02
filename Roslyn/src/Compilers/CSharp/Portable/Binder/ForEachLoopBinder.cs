@@ -203,6 +203,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Use the right binder to avoid seeing iteration variable
             BoundExpression collectionExpr = originalBinder.GetBinder(_syntax.Expression).BindRValueWithoutTargetType(_syntax.Expression, diagnostics);
 
+#if XSHARP
+            collectionExpr = originalBinder.XsBindUsualCollectionEnumerator(collectionExpr, diagnostics);
+#endif
             var builder = new ForEachEnumeratorInfo.Builder();
             TypeWithAnnotations inferredType;
             bool hasErrors = !GetEnumeratorInfoAndInferCollectionElementType(ref builder, ref collectionExpr, diagnostics, out inferredType);

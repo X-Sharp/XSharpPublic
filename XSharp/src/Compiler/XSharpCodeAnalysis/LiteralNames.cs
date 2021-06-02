@@ -241,6 +241,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string LocalsClear = "__LocalsClear";
         internal const string FoxRedim = "__FoxRedim";
         internal const string FoxFillArray = "__FoxFillArray";
+        internal const string UsualEnumerator = "__UsualEnumerator";
     }
     internal static class VulcanQualifiedFunctionNames
     {

@@ -95086,9 +95086,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R778 - Extension method must be statuc
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION R780 *************
-Application = R780
+ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
+; ************** APPLICATION R780 - Internal Compiler error for missing cast *************
+Application = R780 - Internal Compiler error for missing cast
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -95097,7 +95097,7 @@ Target = 0
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = VO
+Dialect = Core
 Folder = %ProjectPath%\Applications\R780\
 PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
@@ -95121,21 +95121,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R780 FileGroups]
-[R780 Files]
+[R780 - Internal Compiler error for missing cast FileGroups]
+[R780 - Internal Compiler error for missing cast Files]
 File = %AppPath%\Prg\R780.prg
 FileGUID = 5BF3D961-38B7-4AB5-A566-432DB384BD77
 FileType = Code
 CopyToBin = 0
-[R780 References]
+[R780 - Internal Compiler error for missing cast References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,mscorlib,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
-[R780 Resources]
-[R780 Native Resources]
-[R780 License files]
-[R780 General Options]
+[R780 - Internal Compiler error for missing cast Resources]
+[R780 - Internal Compiler error for missing cast Native Resources]
+[R780 - Internal Compiler error for missing cast License files]
+[R780 - Internal Compiler error for missing cast General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -95168,7 +95166,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R780 Configurations]
+[R780 - Internal Compiler error for missing cast Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -95197,11 +95195,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R780
+ENDApplication = R780 - Internal Compiler error for missing cast
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION R779 *************
-Application = R779
+ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
+; ************** APPLICATION R779 - Enumerating an array inside a usual *************
+Application = R779 - Enumerating an array inside a usual
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -95234,21 +95232,21 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R779 FileGroups]
-[R779 Files]
+[R779 - Enumerating an array inside a usual FileGroups]
+[R779 - Enumerating an array inside a usual Files]
 File = %AppPath%\Prg\R779.prg
 FileGUID = CA0DF1B6-B58D-45E4-9149-F54193AA0B89
 FileType = Code
 CopyToBin = 0
-[R779 References]
+[R779 - Enumerating an array inside a usual References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,mscorlib,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
-[R779 Resources]
-[R779 Native Resources]
-[R779 License files]
-[R779 General Options]
+[R779 - Enumerating an array inside a usual Resources]
+[R779 - Enumerating an array inside a usual Native Resources]
+[R779 - Enumerating an array inside a usual License files]
+[R779 - Enumerating an array inside a usual General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=1
@@ -95281,7 +95279,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R779 Configurations]
+[R779 - Enumerating an array inside a usual Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -95310,7 +95308,117 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R779
+ENDApplication = R779 - Enumerating an array inside a usual
+
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+; ************** APPLICATION R781 - No implicit conversion from Object to Decimal *************
+Application = R781 - No implicit conversion from Object to Decimal
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\R781\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R781
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 4FB9EBEF-81B0-4ED7-AF40-514D727C22AE
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R781 - No implicit conversion from Object to Decimal FileGroups]
+[R781 - No implicit conversion from Object to Decimal Files]
+File = %AppPath%\Prg\R781.prg
+FileGUID = 20BC9095-16B6-48B8-836C-5200E22D496F
+FileType = Code
+CopyToBin = 0
+[R781 - No implicit conversion from Object to Decimal References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+[R781 - No implicit conversion from Object to Decimal Resources]
+[R781 - No implicit conversion from Object to Decimal Native Resources]
+[R781 - No implicit conversion from Object to Decimal License files]
+[R781 - No implicit conversion from Object to Decimal General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R781 - No implicit conversion from Object to Decimal Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R781 - No implicit conversion from Object to Decimal
 [EndApplications]
 
 [Configurations]

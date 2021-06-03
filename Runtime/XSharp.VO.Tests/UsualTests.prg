@@ -51,7 +51,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u += 1.0m
 			Assert.Equal(5, (Decimal) u)
 
-            LOCAL u1, u2 as USUAL
+            LOCAL u1, u2 AS USUAL
             u1 := 1
             u2 := 0.5m
             Assert.Equal(2m, (System.Decimal)(u1 /u2 ))
@@ -67,14 +67,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
     [Fact, Trait("Category", "Usual")];
     METHOD UsualBinaryTests() AS VOID
-        local u as USUAL
-        local b as Binary
+        LOCAL u AS USUAL
+        LOCAL b AS Binary
         b := 0h1234
         u := b
-        Assert.Equal(true, u == b)
-        Assert.Equal(true, b == u)
+        Assert.Equal(TRUE, u == b)
+        Assert.Equal(TRUE, b == u)
         b := u
-        Assert.Equal(true, u == 0h1234)
+        Assert.Equal(TRUE, u == 0h1234)
         RETURN
         
 
@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u += 1.0m
 			Assert.Equal($5, (CURRENCY) u)
 
-            LOCAL u1, u2 as USUAL
+            LOCAL u1, u2 AS USUAL
             u1 := 1
             u2 := $0.5 
             Assert.Equal($2, (CURRENCY)(u1 /u2 ))
@@ -577,13 +577,23 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
         [Fact, Trait("Category", "usual to string tests")];
 		METHOD UsualShortCircuit() AS VOID
-			local u1, u2 as USUAL
-            u1 := true
+			LOCAL u1, u2 AS USUAL
+            u1 := TRUE
             u2 := 1
             Assert.Equal(TRUE, u1 .and. u2)
             u2 := 0
             Assert.Equal(FALSE, u1 .and. u2)
 
+		[Fact, Trait("Category", "usual to string tests")];
+		METHOD UsualForEachTests() AS VOID
+			LOCAL a AS USUAL
+			LOCAL c AS STRING
+            a := {1,2,3}
+            c := ""
+            FOREACH u AS USUAL IN a
+                c += AsString(u)
+            NEXT
+            Assert.Equal("123", c)
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

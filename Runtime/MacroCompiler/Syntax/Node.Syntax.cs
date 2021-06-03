@@ -38,13 +38,13 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class NativeTypeExpr : TypeExpr
     {
         internal TokenType Kind;
-        internal NativeTypeExpr(Token t) : base(t) { Kind = t.type; }
+        internal NativeTypeExpr(Token t) : base(t) { Kind = t.Type; }
         internal NativeTypeExpr(Token t, TokenType tt) : base(t) { Kind = tt; }
         public override string ToString() { return TokenText(Kind); }
     }
     internal partial class IdExpr : NameExpr
     {
-        internal IdExpr(Token t) : base(t, t.value, 0) { }
+        internal IdExpr(Token t) : base(t, t.Value, 0) { }
         internal IdExpr(string name) : base(null, name, 0) { }
         internal IdExpr WithName(string name) { Name = name; return this; }
     }
@@ -67,7 +67,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal Expr Left;
         internal TokenType Kind;
         internal Expr Right;
-        internal AssignExpr(Expr l, Token o, Expr r) : base(o) { Left = l; Kind = o.type; Right = r; }
+        internal AssignExpr(Expr l, Token o, Expr r) : base(o) { Left = l; Kind = o.Type; Right = r; }
         public override string ToString() { return "(" + Left.ToString() + TokenText(Kind) + Right.ToString() + ")"; }
     }
     internal partial class AssignOpExpr : AssignExpr
@@ -79,7 +79,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal Expr Left;
         internal TokenType Kind;
         internal Expr Right;
-        internal BinaryExpr(Expr l, Token o, Expr r) : base(o) { Left = l; Kind = o.type; Right = r; }
+        internal BinaryExpr(Expr l, Token o, Expr r) : base(o) { Left = l; Kind = o.Type; Right = r; }
         public override string ToString() { return "(" + Left.ToString() + TokenText(Kind) + Right.ToString() + ")"; }
     }
     internal partial class BinaryLogicExpr : BinaryExpr
@@ -90,7 +90,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal Expr Expr;
         internal TokenType Kind;
-        internal UnaryExpr(Expr e, Token o) : base(o) { Expr = e; Kind = o.type; }
+        internal UnaryExpr(Expr e, Token o) : base(o) { Expr = e; Kind = o.Type; }
         public override string ToString() { return "(" + TokenText(Kind) + Expr.ToString() + ")"; }
     }
     internal partial class PrefixExpr : UnaryExpr
@@ -105,8 +105,8 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal TokenType Kind;
         internal string Value;
-        internal LiteralExpr(Token t) : base(t) { Kind = t.type; Value = t.value; }
-        internal LiteralExpr(Token t, TokenType tt) : base(t) { Kind = tt; Value = t.value; }
+        internal LiteralExpr(Token t) : base(t) { Kind = t.Type; Value = t.Value; }
+        internal LiteralExpr(Token t, TokenType tt) : base(t) { Kind = tt; Value = t.Value; }
         public override string ToString() { return "'" + Value + "'"; }
     }
     internal partial class SelfExpr : Expr

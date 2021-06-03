@@ -1,7 +1,7 @@
 ﻿// VoTests.prg
 // Created by    : nvk
 // Creation Date : 2/13/2021 3:57:40 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : I7
 
 
@@ -14,11 +14,7 @@ USING XSharp.MacroCompiler
 
 BEGIN NAMESPACE MacroCompilerTest
 
-    FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
-        Console.WriteLine("Running VO tests ...")
-        TestGlobals.tsi := teststruct{1}
-        TestGlobals.tci := testclass{1}
-
+    FUNCTION ResetOverrides() AS VOID
         // Reset overrides
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarPut)
@@ -30,6 +26,18 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___popWorkarea)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
+
+
+    FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
+        Console.WriteLine("Running VO tests ...")
+        TestGlobals.tsi := teststruct{1}
+        TestGlobals.tci := testclass{1}
+
+        ResetOverrides()
+
+        TestMacroU(mc, e"{|a,b| S_EnforceType(a,b), a}", ArgsU(NIL,"N"), 0, typeof(INT))
+        TestMacro(mc, e"{|a,b| S_EnforceType(a,b), a}", Args(NIL,"N"), 0, typeof(INT))
+        TestMacro(mc, e"{|a,b| S_EnforceType(REF a,b), a}", Args(NIL,"N"), 0, typeof(INT))
 
         //TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
         TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
@@ -52,7 +60,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(TRUE), 42, typeof(INT))
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(FALSE), -42, typeof(INT))
         TestMacro(mc, e"{|e| if( e = 1, 'true','false' ) ", Args(1), "true", typeof(String) )
-        
+
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         TestMacro(mc, e"{|| eval({||true}) }", Args(), true, typeof(logic))
         TestMacro(mc, e"{|o| eval({|a|a},o) }", Args(TRUE), TRUE, typeof(LOGIC))
@@ -384,7 +392,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "{|abc| Chr(65) + 'B'}", Args(), "AB", typeof(STRING))
         TestMacro(mc, '{|abc| Chr(65) + "BB"}', Args(), "ABB", typeof(STRING))
         TestMacro(mc, "{|abc| Chr(65):toString() + 'B'}", Args(), "AB", typeof(STRING))
-        TestMacro(mc, e"{|abc| (usual)\"ABC\" + Chr(123)}", Args(), "ABC"+Chr(123), typeof(STRING)) 
+        TestMacro(mc, e"{|abc| (usual)\"ABC\" + Chr(123)}", Args(), "ABC"+Chr(123), typeof(STRING))
         TestMacro(mc, e"0x1234", Args(), 0x1234, typeof(INT))
         TestMacro(mc, e"0b110011", Args(), 0b110011, typeof(INT))
         TestMacro(mc, e"0xFFFF", Args(), 0xFFFF, typeof(INT))
@@ -454,7 +462,8 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a| TestByRef(a) }", Args("123"), "123", typeof(string))
         TestMacro(mc, "{ |x| (x)-1 } ",Args(2),1,typeof(int))
         TestMacro(mc, "{ || (int)(-5.1) } ",Args(),-5,typeof(int))
-
+        TestMacro(mc, '"#include ""c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"" "', Args(), "#include ""c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh"" ", typeof(string))
+        TestMacro(mc, "'#include ''c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh'' '", Args(), '#include ''c:\Program Files (x86)\XSharp\Include\XSharpDefs.xh'' ', typeof(string))
 
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
@@ -559,3 +568,4 @@ BEGIN NAMESPACE MacroCompilerTest
         RETURN
 
 END NAMESPACE
+

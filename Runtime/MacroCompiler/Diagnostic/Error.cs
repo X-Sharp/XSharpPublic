@@ -139,13 +139,13 @@ namespace XSharp.MacroCompiler
             { ErrorCode.ValueNotConst, "Value must be a constant" },
             { ErrorCode.ConstWithoutInitializer, "CONST variable must have an initializer" },
 
-            { ErrorCode.PreProcessorError, "Pre-processor error: {1}" },
+            { ErrorCode.PreProcessorError, "Pre-processor error: {0}" },
             { ErrorCode.WarningDirective, "Warning: {0}" },
             { ErrorCode.ErrorDirective, "Error: {0}" },
             { ErrorCode.EndifDirectiveExpected, "#endif expected" },
             { ErrorCode.EndRegionDirectiveExpected, "#endregion expected" },
             { ErrorCode.DuplicateDefineSame, "Duplicate #define" },
-            { ErrorCode.PreProcessorWarning, "Pre-processor warning: {1}" },
+            { ErrorCode.PreProcessorWarning, "Pre-processor warning: {0}" },
             { ErrorCode.DuplicateDefineDiffWarning, "Symbol already defined" },
             { ErrorCode.ObsoleteIncludeWarning, "Include '{0}' obsoleted by '{1}'" },
             { ErrorCode.EndOfPPLineExpected, "End of line expected" },
@@ -211,9 +211,9 @@ namespace XSharp.MacroCompiler
         internal static CompilationError Error(SourceLocation loc, ErrorCode e, params object[] args) { return new CompilationError(loc, e, args); }
         internal static CompilationError Error(Syntax.Token t, ErrorCode e, params object[] args)
         {
-            if (t.source?.SourceText != null)
-                return new CompilationError(new SourceLocation(t.source?.SourceText, t.start) { FileName = t.source.SourceName }, e, args);
-            return new CompilationError(t.start, e, args);
+            if (t.Source?.SourceText != null)
+                return new CompilationError(new SourceLocation(t.Source?.SourceText, t.Start) { FileName = t.Source.SourceName }, e, args);
+            return new CompilationError(t.Start, e, args);
         }
     }
 }

@@ -174,6 +174,14 @@ namespace XSharp.MacroCompiler
                     throw Error(Lt(), ErrorCode.NotSupported, "WITH statement");
                 case TokenType.YIELD:
                     throw Error(Lt(), ErrorCode.NotSupported, "YIELD statement");
+                case TokenType.TEXT:
+                    if (_options.Dialect == XSharpDialect.FoxPro)
+                    {
+                        ParseFoxText();
+                    }
+                    else
+                        goto default;
+                    break;
                 default:
                     var l = ParseExprList();
                     if (l?.Exprs.Count > 0)
@@ -285,7 +293,7 @@ namespace XSharp.MacroCompiler
             {
                 if (La() == TokenType.STATIC)
                     t = ConsumeAndGet();
-                if (t.type == TokenType.STATIC)
+                if (t.Type == TokenType.STATIC)
                     Require(La() != TokenType.VAR && La() != TokenType.IMPLIED, ErrorCode.NotSupported, "static implied variable");
                 if (La() == TokenType.IMPLIED)
                     t = ConsumeAndGet();
@@ -301,7 +309,7 @@ namespace XSharp.MacroCompiler
                 Require(La() != TokenType.STATIC, ErrorCode.NotSupported, "static implied variable");
             }
             Require(t, ErrorCode.Expected, TokenType.LOCAL);
-            bool implied = t.type == TokenType.VAR || t.type == TokenType.IMPLIED;
+            bool implied = t.Type == TokenType.VAR || t.Type == TokenType.IMPLIED;
 
 
             var vl = new List<VarDecl>();
@@ -357,7 +365,7 @@ namespace XSharp.MacroCompiler
             bool isIsType = false;
             if (!implied && ExpectAndGetAny(TokenType.AS, TokenType.IS) is Token t)
             {
-                isIsType = t.type == TokenType.IS;
+                isIsType = t.Type == TokenType.IS;
                 type = Require(ParseType(), ErrorCode.Expected, "type");
             }
 
@@ -400,7 +408,7 @@ namespace XSharp.MacroCompiler
                     }
                     break;
                 } while (true);
-                var rp = Expect(lp.type == TokenType.LBRKT ? TokenType.RBRKT : TokenType.RPAREN);
+                var rp = Expect(lp.Type == TokenType.LBRKT ? TokenType.RBRKT : TokenType.RPAREN);
                 Require(rp, ErrorCode.Expected, rp);
             }
 
@@ -644,7 +652,7 @@ namespace XSharp.MacroCompiler
         internal ForeachStmt ParseForeachStmt()
         {
             Token r = ExpectToken(TokenType.FOR) ?? RequireAndGet(TokenType.FOREACH);
-            if (r.type == TokenType.FOR)
+            if (r.Type == TokenType.FOR)
                 Require(TokenType.EACH);
 
             VarDecl v = null;
@@ -848,6 +856,30 @@ namespace XSharp.MacroCompiler
             Expect(TokenType.FIXED);
             Require(TokenType.EOS);
             return new UsingStmt(t, d, s);
+        }
+
+        internal void ParseFoxText()
+        {
+            var t = RequireAndGet(TokenType.TEXT);
+            if (Expect(TokenType.TO))
+            {
+                var n = RequireVarIdName();
+                var add = Expect(TokenType.ADDITIVE);
+                var merge = Expect(TokenType.TEXTMERGE);
+                var noshow = Expect(TokenType.NOSHOW);
+                Expr flags = null;
+                if (Expect(TokenType.FLAGS))
+                    flags = RequireExpression();
+                Expr pretext = null;
+                if (Expect(TokenType.PRETEXT))
+                    pretext = RequireExpression();
+            }
+            Require(TokenType.EOS);
+            if (La() == TokenType.INCOMPLETE_STRING_CONST)
+                throw Error(Lt(), ErrorCode.UnterminatedString);
+            Token s;
+            ExpectAndGet(TokenType.TEXT_STRING_CONST, out s);
+            Require(TokenType.ENDTEXT);
         }
     }
 }

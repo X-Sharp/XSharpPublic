@@ -16,7 +16,7 @@ FUNCTION __FoxFillArray(uArray AS USUAL, uValue AS USUAL) AS USUAL
     ENDIF
     RETURN uArray
 
-FUNCTION __FoxRedim(uCurrent AS USUAL, nRows AS DWORD, nCols := 1 AS DWORD) AS __FoxArray
+FUNCTION __FoxRedim(uCurrent AS USUAL, nRows AS DWORD, nCols := 0 AS DWORD) AS __FoxArray
     LOCAL result := NULL AS __FoxArray
     IF IsArray(uCurrent)
         LOCAL oldArray := uCurrent AS ARRAY
@@ -41,8 +41,10 @@ FUNCTION ALen(a AS __FoxArray, nArrayAttribute AS LONG) AS DWORD
         ELSE
             RETURN 0
         ENDIF
+    CASE 0
+            RETURN (DWORD) a:Count
     OTHERWISE
-        RETURN (DWORD) a:Count
+        THROW ArgumentOutOfRangeException { nameof(nArrayAttribute),nArrayAttribute, "'nArrayAttribute' number is out of range (expected 0, 1 or 2)"}
     END SWITCH
 
 
@@ -86,38 +88,64 @@ FUNCTION ADel(ArrayName AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asubscript/*" />
 FUNCTION ASubScript(ArrayName AS __FoxArray, nElementNumber AS DWORD, nSubscript := 1 AS DWORD) AS DWORD
-    IF !ArrayName:MultiDimensional
-        IF nSubscript == 1 .and. nElementNumber <= (DWORD) ArrayName:Count
-            RETURN nElementNumber
-        ENDIF
-    ELSE
-       IF nElementNumber <= ArrayName:Rows * ArrayName:Columns
-            // assume an array of 5 * 3
-            // element 3 should be on row 1, column 3
-            // element 4 should be on row 2, column 1
-            // max element = 15
-           IF nSubscript == 1
-                // calculate the row
-                RETURN (DWORD) ArrayName:GetRow((LONG) nElementNumber)
-           ELSE
-                // calculate the column
-                RETURN (DWORD) ArrayName:GetColumn((LONG) nElementNumber)
-           ENDIF
-        ENDIF
+    IF nSubscript == 0 .OR. nSubscript > 2
+		THROW ArgumentOutOfRangeException { nameof(nSubscript), nSubscript, "'nSubscript' number is out of range" }
+	ELSEIF nElementNumber == 0 .OR. nElementNumber >  ArrayName:Count
+		THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, "'nElementNumber' number is out of range" }
+	ENDIF
+
+	IF ArrayName:MultiDimensional
+
+		IF nSubscript == 1
+
+			// calculate the row
+
+			// doesn't compile because GetRow() is a internal method
+			RETURN (DWORD) ArrayName:GetRow((LONG) nElementNumber)
+
+		ELSE
+			// calculate the column
+			RETURN (DWORD) ArrayName:GetColumn((LONG) nElementNumber)
+
+
+		ENDIF
+
+	ELSE
+
+		IF nSubscript == 2
+			THROW ArgumentException { "a one-dimensional array has no columns"}
+		ENDIF
+
+		RETURN nElementNumber
+
     ENDIF
-    RETURN 0
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
 FUNCTION AIns(ArrayName AS __FoxArray, nElementNumber AS DWORD, nInsertType := 1 AS DWORD) AS DWORD
     IF !ArrayName:MultiDimensional
-        IF nInsertType == 1 .and. nElementNumber <= (DWORD) ArrayName:Count
-            ArrayName:Insert((LONG) nElementNumber)
-        ENDIF
+        IF nInsertType > 1
+			THROW ArgumentException { "a one-dimensional array has no columns"}
+		ELSEIF nElementNumber == 0 .OR. nElementNumber > (DWORD) ArrayName:Count
+			THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, "'nElementNumber' number is out of range" }
+		ENDIF
+
+		ArrayName:Insert((LONG) nElementNumber)
     ELSE
+        IF nInsertType > 2
+			THROW ArgumentOutOfRangeException { nameof(nInsertType), nInsertType, "'nInsertType' number is out of range" }
+		ENDIF
         IF nInsertType == 2
-            ArrayName:InsertColumn( (LONG) nElementNumber)
+            IF nElementNumber == 0 .OR. nElementNumber > (DWORD) ArrayName:Columns
+				THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, "'nElementNumber' number is out of range" }
+			ENDIF
+
+			ArrayName:InsertColumn( (LONG) nElementNumber)
         ELSE
-            ArrayName:InsertRow((LONG) nElementNumber)
+            IF nElementNumber == 0 .OR. nElementNumber > (DWORD) ArrayName:Rows
+				THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, "'nElementNumber' number is out of range" }
+			ENDIF
+
+			ArrayName:InsertRow((LONG) nElementNumber)
         ENDIF
     ENDIF
     RETURN 0
@@ -126,5 +154,42 @@ FUNCTION AIns(ArrayName AS __FoxArray, nElementNumber AS DWORD, nInsertType := 1
 FUNCTION ASize(ArrayName AS __FoxArray, nSize AS DWORD) AS __FoxArray
     ArrayName:Resize((LONG) nSize)
     RETURN ArrayName
+
+
+
+/// <inheritdoc cref="ShowArray" />
+FUNCTION ShowFoxArray ( aTest AS __FoxArray , cPrefix := "" AS STRING ) AS VOID
+    LOCAL i, j AS DWORD
+
+	IF cPrefix:Length == 0
+		cPrefix := "a"
+	ENDIF
+
+	IF aTest:MultiDimensional
+		FOR i := 1 TO ALen ( aTest , 1 )
+			FOR j := 1 TO ALen ( aTest , 2 )
+				 QOut(cPrefix + "[" + AsString(AElement ( aTest , i , j )) + "] [" + i:ToString() + "," + j:ToString() + "] = " + AsString ( aTest [i,j] ) + ;
+					 " " + GetElementValueType ( aTest[i,j] ))
+			NEXT
+		NEXT
+	ELSE
+		FOR i := 1 TO ALen ( aTest , 0 )
+			QOut( cPrefix + "[" + i:ToString() + "] = " + AsString ( aTest [i] ) + " " + GetElementValueType ( aTest[i] ))
+		NEXT
+	ENDIF
+
+	LOCAL FUNCTION GetElementValueType( uValue AS USUAL ) AS STRING
+
+	IF IsNil ( uValue )
+		RETURN "(Nil)"
+	ELSE
+		RETURN "(" + ValType ( uValue ) + ")"
+	ENDIF
+
+END FUNCTION
+
+RETURN
+
+END FUNCTION
 
 

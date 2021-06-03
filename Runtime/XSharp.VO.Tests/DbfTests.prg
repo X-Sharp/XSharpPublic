@@ -1525,6 +1525,24 @@ RETURN
 			aDbf := {{ "AGE" , "N" , 2 , 0 }}
 			
 			DbCreate( cDBF , aDbf)
+			IF File.Exists(cDbf +".cdx")
+				File.Delete(cDbf +".cdx")
+			END IF
+			IF File.Exists(cDbf +".ntx")
+				File.Delete(cDbf +".ntx")
+			END IF
+			
+			DbCloseAll()
+			DbUseArea(,"DBFNTX",cDBF,,FALSE)
+			Assert.True( DbOrderInfo(DBOI_INDEXEXT) == ".NTX")
+			Assert.True( DbOrderInfo(DBOI_BAGEXT) == ".NTX")
+			DbCloseArea()
+			DbUseArea(,"DBFCDX",cDBF,,FALSE)
+			Assert.True( DbOrderInfo(DBOI_INDEXEXT) == ".CDX")
+			Assert.True( DbOrderInfo(DBOI_BAGEXT) == ".CDX")
+			DbCloseArea()
+
+
 			DbUseArea(,"DBFNTX",cDBF,,FALSE)                    
 			FOR i := 1 UPTO ALen ( aValues )
 				DbAppend()

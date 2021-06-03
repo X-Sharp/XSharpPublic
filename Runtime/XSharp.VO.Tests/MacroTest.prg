@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -14,8 +14,8 @@ USING XUnit
 BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS MacroTests
-	 
-		[Fact, Trait("Category", "Macro")]; 
+
+		[Fact, Trait("Category", "Macro")];
 		METHOD Tests AS VOID
 			LOCAL cMacro AS STRING
 			LOCAL bMacro AS USUAL
@@ -62,16 +62,47 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
             RETURN
 
-  
-//		[Fact, Trait("Category", "Macro")]; 
+		[Fact, Trait("Category", "Macro")];
+		METHOD TestsWhitespace AS VOID
+			LOCAL cMacro AS STRING
+			LOCAL bMacro AS USUAL
+			LOCAL uValue AS USUAL
+            cMacro := ".t..and..f."
+            bMacro := MCompile(cMacro)
+            uValue := Eval(bMacro)
+            Assert.Equal(FALSE, (LOGIC) uValue)
+            cMacro := ".t..and..t."
+            bMacro := MCompile(cMacro)
+            uValue := Eval(bMacro)
+            Assert.Equal(TRUE, (LOGIC) uValue)
+            cMacro := ".t..or..f."
+            bMacro := MCompile(cMacro)
+            uValue := Eval(bMacro)
+            Assert.Equal(TRUE, (LOGIC) uValue)
+            cMacro := ".n..or..y."
+            bMacro := MCompile(cMacro)
+            uValue := Eval(bMacro)
+            Assert.Equal(TRUE, (LOGIC) uValue)
+            cMacro := ".n..and..y."
+            bMacro := MCompile(cMacro)
+            uValue := Eval(bMacro)
+            Assert.Equal(FALSE, (LOGIC) uValue)
+
+            cMacro := "{||.n..and..y.}"
+            bMacro := MCompile(cMacro)
+            uValue := Eval(bMacro)
+            Assert.Equal(FALSE, (LOGIC) uValue)
+
+
+//		[Fact, Trait("Category", "Macro")];
 //		METHOD FunctionOverloadTest AS VOID
 //			LOCAL cMacro AS STRING
 //			LOCAL bMacro AS USUAL
 //		    cMacro := "Left('abcdefg',2)" // should call my replacement function
 //			bMacro := MCompile(cMacro)
-//  
+//
 //            Assert.Equal("MyLeft", eval(bMacro))
-//  
+//
 //            RETURN
 
 	END CLASS

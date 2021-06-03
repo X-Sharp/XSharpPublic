@@ -430,5 +430,10 @@ FUNCTION _GetPrevInst AS IntPtr
 /// <remarks>This function can be used from anywhere in an application.
 /// A RETURN executed from the Start() function can also be used to QUIT an application.</remarks>
 FUNCTION _Quit() AS VOID
-    System.Diagnostics.Process.GetCurrentProcess():CloseMainWindow()
+    TRY
+        CoreDb.CloseAll()
+    CATCH
+        NOP // Ignore errors here, after all we are quitting
+    END TRY
+    System.Diagnostics.Process.GetCurrentProcess():Kill()
     RETURN

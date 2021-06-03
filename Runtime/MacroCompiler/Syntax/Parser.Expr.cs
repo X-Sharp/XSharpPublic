@@ -220,7 +220,7 @@ namespace XSharp.MacroCompiler
                 // TODO nvk: AMP Id=identifierName										#macro					// &id
                 case TokenType.ARGLIST:
                     if (_options.ParseStatements)
-                        throw Error(Lt(), ErrorCode.NotSupported, Lt()?.value);
+                        throw Error(Lt(), ErrorCode.NotSupported, Lt()?.Value);
                     else
                         goto default;
                 case TokenType.VO_AND:
@@ -423,7 +423,7 @@ namespace XSharp.MacroCompiler
 
             Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, ")");
 
-            switch (o.type)
+            switch (o.Type)
             {
                 case TokenType.VO_AND:
                 case TokenType.VO_OR:
@@ -439,7 +439,7 @@ namespace XSharp.MacroCompiler
                     Require(e.Exprs.Count == 1, ErrorCode.BadNumArgs, 1);
                     return new UnaryExpr(e.Exprs[0], o);
                 default:
-                    throw Error(ErrorCode.Unexpected, o.value);
+                    throw Error(ErrorCode.Unexpected, o.Value);
             }
         }
 
@@ -647,8 +647,8 @@ namespace XSharp.MacroCompiler
                 var s = Lt();
                 var cb = ParseCodeblock();
                 var e = Lt();
-                var cbt = new Token(TokenType.CODEBLOCK, TokenType.LAST, s.start, e.start - s.start, null, Channel.DEFOUTCHANNEL) { source = s.source };
-                cbt.value = cbt.Text;
+                var cbt = new Token(TokenType.CODEBLOCK, TokenType.LAST, s.Start, e.Start - s.Start, null, Channel.Default) { Source = s.Source };
+                cbt.Value = cbt.SourceText;
                 return new CodeblockExpr(cbt, cb);
             }
             else
@@ -718,7 +718,7 @@ namespace XSharp.MacroCompiler
                 {
                     Token o = ConsumeAndGet();
                     var field = Require(ParseId(), ErrorCode.Expected, "name");
-                    return (_options.AllowMemvarAlias && alias.Token.type == TokenType.M)
+                    return (_options.AllowMemvarAlias && alias.Token.Type == TokenType.M)
                         ? new MemvarExpr(new LiteralExpr(field.Token, TokenType.SYMBOL_CONST), o) as Expr
                         : new AliasExpr(new LiteralExpr(alias.Token, TokenType.SYMBOL_CONST), new LiteralExpr(field.Token, TokenType.SYMBOL_CONST), o);
                 }
@@ -988,13 +988,13 @@ namespace XSharp.MacroCompiler
             Oper _parse(Parser p, out Node n)
             {
                 n = new SyntaxToken(p.ConsumeAndGet());
-                Debug.Assert(n.Token.type == type);
+                Debug.Assert(n.Token.Type == type);
                 return this;
             }
             Oper _parse_alias(Parser p, out Node n)
             {
                 n = new SyntaxToken(p.ConsumeAndGet());
-                Debug.Assert(n.Token.type == type);
+                Debug.Assert(n.Token.Type == type);
                 return p.La() == TokenType.LPAREN || p.La() == TokenType.AMP ? this : AliasExpr;
             }
             Oper _parse_gt(Parser p, out Node n)
@@ -1002,11 +1002,11 @@ namespace XSharp.MacroCompiler
                 n = new SyntaxToken(p.ConsumeAndGet());
                 if (p.Expect(TokenType.GT))
                 {
-                    n.Token.type = TokenType.RSHIFT;
-                    Debug.Assert(n.Token.type == TokenType.RSHIFT);
+                    n.Token.Type = TokenType.RSHIFT;
+                    Debug.Assert(n.Token.Type == TokenType.RSHIFT);
                     return Opers[(int)TokenType.RSHIFT];
                 }
-                Debug.Assert(n.Token.type == type);
+                Debug.Assert(n.Token.Type == type);
                 return this;
             }
             Oper _parse_lt(Parser p, out Node n)
@@ -1014,11 +1014,11 @@ namespace XSharp.MacroCompiler
                 n = new SyntaxToken(p.ConsumeAndGet());
                 if (p.Expect(TokenType.LT))
                 {
-                    n.Token.type = TokenType.LSHIFT;
-                    Debug.Assert(n.Token.type == TokenType.LSHIFT);
+                    n.Token.Type = TokenType.LSHIFT;
+                    Debug.Assert(n.Token.Type == TokenType.LSHIFT);
                     return Opers[(int)TokenType.LSHIFT];
                 }
-                Debug.Assert(n.Token.type == type);
+                Debug.Assert(n.Token.Type == type);
                 return this;
             }
             Oper _parse_is_as(Parser p, out Node n)

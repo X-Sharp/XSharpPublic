@@ -198,7 +198,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			Assert.Equal("abc", (STRING) SysObject():Something )
 #pragma options ("lb", OFF)
+
+        [Fact, Trait("Category", "EmptyUsual")];
+		METHOD OClone_Tests() AS VOID
+			LOCAL o1,o2 AS CloneTest
+			o1 := CloneTest{123}
+			o1:nExport := 456
+			
+			o2 := (CloneTest) OClone(o1)
+			Assert.Equal(123 , o2:GetPrivate())
+			Assert.Equal("123" , o2:cExport)
+			Assert.Equal(456 , o2:nExport)
 		
+
 	END CLASS
 	
 	CLASS SysObjectTestClass
@@ -207,4 +219,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN TRUE
 	END CLASS
 
+	CLASS CloneTest
+		EXPORT nExport AS INT
+		EXPORT cExport AS STRING
+		PRIVATE nPrivate AS INT
+		CONSTRUCTOR(n AS INT)
+			SELF:nPrivate := n
+			SELF:cExport := n:ToString()
+	
+		METHOD GetPrivate() AS INT
+		RETURN SELF:nPrivate
+	END CLASS
 END NAMESPACE

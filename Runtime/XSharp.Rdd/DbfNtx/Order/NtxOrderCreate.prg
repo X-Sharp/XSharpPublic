@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -18,9 +18,9 @@ USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD.NTX
 
     INTERNAL DELEGATE ValueBlock( sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-    
+
     INTERNAL PARTIAL SEALED CLASS NtxOrder
-    
+
         // Methods for Creating Indices
         PUBLIC METHOD Create(createInfo AS DbOrderCreateInfo ) AS LOGIC
             LOCAL ordCondInfo AS DbOrderCondInfo
@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL orderInfo AS DbOrderInfo
             LOCAL hasForCond AS LOGIC
             LOCAL num AS WORD
-            
+
             ordCondInfo := SELF:_oRdd:OrderCondInfo
             IF String.IsNullOrEmpty(createInfo:BagName)
                 SELF:_oRdd:_dbfError(  Subcodes.EDB_CREATEINDEX, Gencode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
@@ -73,10 +73,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_currentvalue   := RddKeyData{_keySize}
                 SELF:_newvalue       := RddKeyData{_keySize}
             ENDIF
-            
+
             // 8 Bytes : PrevPage (4 bytes) + Recno (4 bytes)
             SELF:_entrySize := (WORD) (SELF:_keySize +  8)
-            
+
             num := (WORD) (  ( BUFF_SIZE - 4) / (SELF:_keySize + 10))
             SELF:_halfPage :=  (WORD) ((num - 1) / 2)
             SELF:_MaxEntry := (WORD) (SELF:_halfPage * 2)
@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             SELF:FileName := createInfo:BagName
-            
+
             TRY
                 SELF:_hFile    := FCreate2( SELF:FullPath,_OR(FC_NORMAL, FO_EXCLUSIVE))
                 SELF:_oStream  := FGetStream(SELF:_hFile)
@@ -130,10 +130,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         FErase(SELF:FileName)
                     ENDIF
                 ENDIF
-                 
+
             END TRY
             RETURN isOk
-            
+
         PRIVATE METHOD _HeaderCreate(lScoped AS LOGIC) AS LOGIC
             SELF:_Header := NtxHeader{ SELF, FGetStream(SELF:_hFile)}
             SELF:_Header:Signature              := NtxHeaderFlags.Default
@@ -156,15 +156,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF SELF:_Partial
                 SELF:_Header:Signature |= NtxHeaderFlags.Partial
             ENDIF
-            IF  XSharp.RuntimeState.NewIndexLock 
+            IF  XSharp.RuntimeState.NewIndexLock
                 SELF:_Header:Signature |= NtxHeaderFlags.NewLock
             ENDIF
             IF SELF:_HPLocking
                 SELF:_Header:Signature |= NtxHeaderFlags.HpLock
             ENDIF
 	    RETURN SELF:_Header:Write()
-	    
-            
+
+
         INTERNAL METHOD _determineSize(toConvert AS OBJECT ) AS LOGIC
             LOCAL expr AS STRING
             LOCAL nPos AS INT
@@ -190,7 +190,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ELSE
                         SELF:_keyDecimals := (WORD) (SELF:_keySize - nPos - 1)
                     ENDIF
-                    
+
                 CATCH //Exception
                     SELF:_keyDecimals := 0
                 END TRY
@@ -202,11 +202,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_keySize := 0
                 RETURN FALSE
             END SWITCH
-            
+
             RETURN TRUE
-            
-            
-            
+
+
+
         PRIVATE METHOD _CondCreate(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
             LOCAL leadingOrder  := NULL AS NtxOrder
             LOCAL lUseOrder     := FALSE AS LOGIC
@@ -220,7 +220,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL start         := 0 AS LONG
             LOCAL result        := FALSE AS LOGIC
             LOCAL includeRecord := TRUE AS LOGIC
-            
+
             start := ordCondInfo:StartRecNo
             IF ordCondInfo:Scoped
                 IF ordCondInfo:StartRecNo > 0
@@ -267,7 +267,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     RETURN result
                 ENDIF
             ENDIF
-            DO WHILE TRUE
+            DO WHILE !SELF:_oRdd:EoF
                 IF hasWhile
                     IF ! SELF:_EvalBlock(ordCondInfo:WhileBlock, TRUE)
                         EXIT
@@ -292,16 +292,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ENDIF
                 ENDIF
                 done++
-                IF lUseOrder 
+                IF lUseOrder
                     nextRecord := leadingOrder:_getNextKey(FALSE, SkipDirection.Forward)
                 ELSE
                     nextRecord := SELF:_RecNo + 1
                 ENDIF
                 SELF:_oRdd:__Goto( nextRecord)
                 IF toDo != 0 .AND. done >= toDo
-                    EXIT
-                ENDIF
-                IF SELF:_oRdd:EoF 
                     EXIT
                 ENDIF
             ENDDO
@@ -315,7 +312,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN TRUE
         PRIVATE METHOD _CreateEmpty() AS LOGIC
             LOCAL nLevel AS NtxLevel
-            
+
             SELF:_firstPageOffset := SELF:_fileSize
             SELF:_fileSize += BUFF_SIZE
             nLevel := NtxLevel{SELF}
@@ -323,7 +320,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             nLevel:Write(SELF:_firstPageOffset)
             SELF:ClearStack()
             RETURN TRUE
-            
+
         PRIVATE METHOD _EvalBlock(oBlock AS ICodeblock, lMustBeLogic AS LOGIC) AS LOGIC
             LOCAL isOk  := FALSE AS LOGIC
             LOCAL error := FALSE AS LOGIC
@@ -336,7 +333,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ELSE
                     isOk := TRUE
                 ENDIF
-            CATCH 
+            CATCH
                 error := TRUE
                 isOk := FALSE
             END TRY
@@ -344,7 +341,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRdd:_dbfError( Subcodes.ERDD_KEY_EVAL,Gencode.EG_DATATYPE, SELF:FileName)
             ENDIF
             RETURN isOk
-	    
+
         INTERNAL METHOD _CreateIndex() AS LOGIC
             LOCAL fType := 0 AS DbFieldType
             LOCAL sourceIndex := 0 AS LONG
@@ -357,7 +354,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL result AS LOGIC
             LOCAL ic AS NtxSortCompare
             LOCAL lAscii AS LOGIC
-            
+
             fType := 0
             sourceIndex := 0
             evalCount := 0
@@ -384,7 +381,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 	    ELSE
 	    	sourceIndex := -1
             ENDIF
-            
+
             sorting := RddSortHelper{SELF:_oRdd, sortInfo, lRecCount}
             sortInfo:Items[0]:Length := SELF:_keySize
             IF SELF:_keyExprType == __UsualType.String .OR. SELF:_keyExprType == __UsualType.Logic
@@ -441,7 +438,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_firstPageOffset := SELF:_oneItem:PageNo
             SELF:_nextUnusedPageOffset := 0
             VAR lpLevels := SELF:_levels
-            FOREACH level AS NtxLevel IN lpLevels 
+            FOREACH level AS NtxLevel IN lpLevels
                 IF level != NULL
                     IF level:PageOffset == 0
                         level:PageOffset := SELF:_outPageNo * BUFF_SIZE
@@ -453,15 +450,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_fileSize  := (LONG) _oStream:Length
             SELF:_levels := NULL
             RETURN result
-            
+
             // IRddSortWriter Interface, used by RddSortHelper
         METHOD IRddSortWriter.WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
             SELF:_oneItem:PageNo    := 0
             SELF:_oneItem:Recno     := record:Recno
             SELF:_oneItem:KeyBytes  := record:Data
             RETURN SELF:_placeItem(SELF:_oneItem)
-            
-            
+
+
         INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
             LOCAL Ok AS LOGIC
             Ok := SELF:_CreateEmpty()
@@ -480,12 +477,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             SELF:Flush()
             RETURN Ok
-            
+
         PRIVATE METHOD _initLevels(uiBOrder AS LONG , keyCount AS LONG ) AS LONG
             LOCAL level AS LONG
             LOCAL exp AS LONG
             LOCAL nLevel AS NtxLevel
-            
+
             level := 0
             exp := 1
             SELF:_levels := NtxLevel[]{ NTX_COUNT }
@@ -499,13 +496,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDDO
             SELF:_RecalcLevel(level - 1, keyCount, 1)
             RETURN level
-            
+
         PRIVATE METHOD _placeItem(lpNode AS NtxNode ) AS LOGIC
             LOCAL iLevel AS LONG
             LOCAL level AS NtxLevel
             LOCAL node AS NtxNode
             LOCAL page AS LONG
-            
+
             iLevel := 0
             level := SELF:_levels[0]
             DO WHILE iLevel < SELF:_levelsCount .AND. level:NodeCount >= level:Parents
@@ -531,10 +528,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_ResetLevel(iLevel - 1)
             ENDIF
             RETURN TRUE
-            
+
         PRIVATE METHOD _RecalcLevel(uiLevel AS LONG , lKeys AS LONG , uiBOrder AS LONG ) AS VOID
             LOCAL nLevel AS NtxLevel
-            
+
             nLevel := SELF:_levels[uiLevel]
             nLevel:Write(nLevel:PageOffset)
             nLevel:NodeCount := 0
@@ -549,10 +546,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF uiLevel > 0
                 SELF:_RecalcLevel(uiLevel - 1, nLevel:Keys - nLevel:Parents, nLevel:Parents + 1)
             ENDIF
-            
+
         PRIVATE METHOD _ResetLevel(uiLevel AS LONG ) AS VOID
             LOCAL nLevel AS NtxLevel
-            
+
             nLevel := SELF:_levels[uiLevel]
             nLevel:Write(nLevel:PageOffset)
             nLevel:NodeCount := 0
@@ -574,7 +571,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ENDIF
                 ENDIF
             ENDIF
-            
+
         PUBLIC METHOD Truncate() AS LOGIC
             SELF:_firstPageOffset := BUFF_SIZE
             SELF:_nextUnusedPageOffset := 0
@@ -585,9 +582,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_fileSize := BUFF_SIZE
             SELF:Flush()
             RETURN TRUE
-            
+
     END CLASS
-    
+
 END NAMESPACE
 
 

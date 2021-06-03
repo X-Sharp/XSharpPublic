@@ -97,7 +97,10 @@ namespace XSharp.MacroCompiler.Syntax
 
         internal static string StringValue(string text)
         {
-            return text.Substring(1, text.Length > 2 ? text.Length - 2 : 0);
+            if (text[0] == '"')
+                return text.Substring(1, text.Length > 2 ? text.Length - 2 : 0).Replace("\"\"","\"");
+            else
+                return text.Substring(1, text.Length > 2 ? text.Length - 2 : 0).Replace("''", "'");
         }
 
         internal static string EscapedStringValue(string text)

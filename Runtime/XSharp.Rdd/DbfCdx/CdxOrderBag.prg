@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     /// <summary>
     /// Orderbag = CDX file. Contains one or more orders = Tags
     /// </summary>
-    INTERNAL SEALED CLASS CdxOrderBag INHERIT BaseIndex 
+    INTERNAL SEALED CLASS CdxOrderBag INHERIT BaseIndex
 #region constants
     INTERNAL CONST CDX_EXTENSION := ".CDX" AS STRING
 
@@ -41,6 +41,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Handle AS IntPtr GET _hFile
         INTERNAL PROPERTY Stream AS FileStream GET _stream
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET IIF(_tagList == NULL, NULL, _tagList:Tags)
+        INTERNAL PROPERTY TagList AS CdxTagList GET _tagList
         INTERNAL PROPERTY Structural AS LOGIC AUTO
         INTERNAL PROPERTY Root      AS CdxFileHeader GET _root
         INTERNAL PROPERTY Encoding AS System.Text.Encoding GET _oRdd:_Encoding
@@ -50,9 +51,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_PageList := CdxPageList{SELF}
             SELF:_OpenInfo := oRDD:_OpenInfo
             SELF:_useFoxLock := XSharp.RuntimeState.GetValue<LOGIC>(Set.FoxLock)
-            
+
         #region RDD Overloads
-            /// <inheritdoc />		
+            /// <inheritdoc />
         METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
             THROW NotImplementedException{}
 
@@ -79,7 +80,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             IF String.IsNullOrEmpty(cTag)
                 // Exception ?
-                RETURN FALSE 
+                RETURN FALSE
             ENDIF
             VAR oTag := SELF:_FindTagByName(cTag)
             IF oTag != NULL_OBJECT
@@ -93,7 +94,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:AddTag(oTag)
             ENDIF
             RETURN lOk
-            
+
 
         METHOD AddTag(oTag AS CdxTag) AS LOGIC
             _tagList:Add(oTag)
@@ -165,10 +166,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
             /// <inheritdoc />
-        METHOD Seek(info AS DbSeekInfo) AS LOGIC		
+        METHOD Seek(info AS DbSeekInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
-        PROPERTY Found AS LOGIC	
+        PROPERTY Found AS LOGIC
             GET
                 THROW NotImplementedException{}
             END GET
@@ -205,7 +206,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:FullPath := cFullName
             SELF:_hFile    := FCreate(cFullName)
             SELF:_stream   := FGetStream(SELF:_hFile)
-            
+
             // Allocate Root Page
             _root   := CdxFileHeader{SELF}
             _root:Initialize()
@@ -358,7 +359,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nPage := SELF:_root:FreeList
                 VAR oPage := SELF:_PageList:GetPage(nPage, 0, NULL)
                 IF oPage IS CdxTreePage VAR tPage
-                    nNext := tPage:NextFree
+                    nNext := tPage:LeftPtr
                     IF nNext < 0
                         nNext := 0
                     ENDIF
@@ -377,9 +378,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN nPage
 
          METHOD AddFreePage(oPage AS CdxTreePage) AS LOGIC
-            var nPage := oPage:PageNo
+            VAR nPage := oPage:PageNo
             oPage:Clear()
-            oPage:NextFree     := SELF:_root:FreeList
+            oPage:LeftPtr   := SELF:_root:FreeList
+            oPage:RightPtr  := 0
             oPage:Write()
             SELF:_root:FreeList := nPage
             SELF:_root:Write()
@@ -390,11 +392,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN BYTE[]{CDXPAGE_SIZE *nSize}
 
         METHOD Read(nPage AS LONG, buffer AS BYTE[]) AS LOGIC
-            RETURN SELF:_stream:SafeReadAt(nPage, buffer) 
- 
+            RETURN SELF:_stream:SafeReadAt(nPage, buffer)
+
         METHOD Read(oPage AS CdxPage) AS LOGIC
-            oPage:Generation := SELF:_root:RootVersion
-            RETURN SELF:_stream:SafeReadAt(oPage:PageNo, oPage:Buffer, oPage:Buffer:Length) 
+            IF SELF:_root != NULL
+                oPage:Generation := SELF:_root:RootVersion
+            ENDIF
+            RETURN SELF:_stream:SafeReadAt(oPage:PageNo, oPage:Buffer, oPage:Buffer:Length)
 
         METHOD Write(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
@@ -430,7 +434,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:SetPage( page)
            ENDIF
            RETURN page
-  
+
          METHOD SetPage(page AS CdxPage) AS VOID
             SELF:_PageList:SetPage(page:PageNo, page)
 #ifdef DEBUG
@@ -446,7 +450,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nVersion := _root:RootVersion
                 SELF:Read(SELF:_root)
                 RETURN nVersion != _root:RootVersion
-                
+
             END GET
         END PROPERTY
 
@@ -478,8 +482,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 #region Common Locking code
         PRIVATE _useFoxLock     := FALSE AS LOGIC
-        PRIVATE _sharedLocks    := 0 AS LONG         
-        PRIVATE _exclusiveLocks := 0 AS LONG        
+        PRIVATE _sharedLocks    := 0 AS LONG
+        PRIVATE _exclusiveLocks := 0 AS LONG
         STATIC PRIVATE rand := Random{100} AS System.Random
 
         PRIVATE METHOD _LockRetry(nOffSet AS INT64, nLen AS INT64,sPrefix AS STRING) AS VOID
@@ -495,7 +499,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     var wait := 10 +rand:@@Next() % 50
                     System.Threading.Thread.Sleep(wait)
                 ENDIF
-            UNTIL result 
+            UNTIL result
             //DebOut32( "Locked " +nOffSet:ToString()+" "+nLen:ToString())
 
         PRIVATE METHOD _Unlock(nOffSet AS INT64, nLen AS INT64) AS LOGIC
@@ -524,7 +528,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             END LOCK
             RETURN TRUE
-            
+
 
         INTERNAL METHOD XLock() AS LOGIC
             IF !SELF:Shared
@@ -571,13 +575,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE METHOD _SLockFox() AS VOID
             SELF:_LockRetry(FoxSLockOfs, FoxSLockLen,"S")
-            RETURN 
+            RETURN
 
 
         PRIVATE METHOD _xLockFox() AS VOID
             SELF:_LockRetry(FoxXLockOfs, FoxXLockLen,"X")
-            RETURN 
-            
+            RETURN
+
 
         PRIVATE METHOD _UnLockFox() AS VOID
             IF SELF:_sharedLocks > 0
@@ -591,14 +595,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_UpdateRootVersion()
                     SELF:_Unlock(FoxXLockOfs, FoxXLockLen)
                 ENDIF
-            ENDIF    
+            ENDIF
             RETURN
 
     #endregion
     #region Comix Compatible locking
         PRIVATE _sLockGate      := 0 AS LONG        // For CmxLock
         PRIVATE _sLockOffSet    := 0 AS DWORD       // For CmxLock
-        PRIVATE _xLockedInOne   := FALSE AS LOGIC   
+        PRIVATE _xLockedInOne   := FALSE AS LOGIC
         INTERNAL _LockOffSet    := 0 AS LONG
         PRIVATE CONST SLockGateCount    := 10 AS LONG
         PRIVATE CONST ComixXLockOfs		:= 0xfffeffff AS INT64
@@ -626,11 +630,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_sLockOffSet := SELF:randNum()
             SELF:_LockRetry( _OR(ComixSLockOfs, _sLockOffSet),1,"S")
- 
+
         PRIVATE METHOD _xLockComix() AS VOID
             //Debout32("_xLockComix() ")
             SELF:_sLockGate := 0
-            Debug.Assert(_sharedLocks == 0)         
+            Debug.Assert(_sharedLocks == 0)
             IF ! SELF:_stream:SafeLock(ComixXLockOfs, ComixXLockLen+1)
                 SELF:_xLockedInOne := FALSE
                 SELF:_LockRetry(ComixXLockOfs, 1,"X")
@@ -638,9 +642,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 SELF:_xLockedInOne := TRUE
             ENDIF
- 
+
         PRIVATE METHOD _UnLockComix() AS VOID
-            
+
             IF SELF:_sharedLocks > 0
                 SELF:_sharedLocks -= 1
                 IF SELF:_sharedLocks == 0
@@ -649,7 +653,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSEIF SELF:_exclusiveLocks > 0
                 SELF:_exclusiveLocks -= 1
                 IF SELF:_exclusiveLocks == 0
-                    SELF:_UpdateRootVersion()                    
+                    SELF:_UpdateRootVersion()
                     IF SELF:_xLockedInOne
                         SELF:_Unlock(ComixXLockOfs, ComixXLockLen+1)
                     ELSE
@@ -657,9 +661,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:_Unlock(ComixSLockOfs, ComixXLockLen)
                     ENDIF
                 ENDIF
-            ENDIF    
+            ENDIF
             RETURN
-            
+
         PRIVATE METHOD _UpdateRootVersion() AS VOID
             var version := SELF:_root:RootVersion +1
             SELF:_root:RootVersion := version
@@ -668,12 +672,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_PageList:SetVersion(version)
 #endif
             SELF:_root:Write()
-            
+
     #endregion
 
 
-            
-            
+
+
 
 
 

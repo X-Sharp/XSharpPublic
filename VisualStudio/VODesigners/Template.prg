@@ -336,7 +336,7 @@ STATIC CLASS VOWindowEditorTemplate
 									nAt := cType:IndexOf("CLASS:")
 									oProp:cType := cType:Substring(nAt + 6)
 									oControl:aProperties:Add(oProp)
-								CASE cType:IndexOf(',') == -1
+								CASE cType:IndexOf(',') == -1 .AND. cType:Length != 0
 									IF cType[0] != '%'
 										oProp := VODesignProperty{cCaption , cCaption , cProp , cType}
 									ELSE

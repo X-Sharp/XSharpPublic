@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharp
     /// This type has methods and properties that normally are never directly called from user code.
     /// </summary>
     /// <seealso cref='IIndexer' />
-    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" /> 
+    /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
     //[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
     [DebuggerDisplay("{DebuggerString(),nq}")] ;
     [Serializable];
@@ -71,11 +71,11 @@ BEGIN NAMESPACE XSharp
         PUBLIC OVERRIDE METHOD GetObjectData(info AS SerializationInfo, context AS StreamingContext) AS VOID
             SUPER:GetObjectData(info, context)
             RETURN
-            
+
         /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
         CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
             SUPER(info, context)
-        #endregion    
+        #endregion
         INTERNAL STATIC METHOD ArrayCreate(dimensions PARAMS INT[] ) AS ARRAY
             LOCAL count := dimensions:Length AS INT
             IF count <= 0
@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharp
             LOCAL size AS DWORD
             LOCAL newArray AS ARRAY
             size := (DWORD) dimensions[currentDim]
-            newArray := ARRAY{size, TRUE} 
+            newArray := ARRAY{size, TRUE}
             IF currentDim != dimensions:Length
                 LOCAL nextDim := currentDim+1 AS INT
                 LOCAL index   := 1 AS INT
@@ -149,7 +149,7 @@ BEGIN NAMESPACE XSharp
             RETURN (ARRAY) SUPER:Clone()
 
 
-        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
         NEW VIRTUAL PUBLIC PROPERTY SELF[index AS INT] AS USUAL
@@ -162,7 +162,7 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
 
 
-        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
@@ -177,7 +177,7 @@ BEGIN NAMESPACE XSharp
 
 
 
-        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
         /// <param name="indices"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         /// <returns>The value of the property of the element stored at the indicated location in the array.</returns>
         VIRTUAL PUBLIC PROPERTY SELF[indices PARAMS INT[]] AS USUAL
@@ -234,12 +234,12 @@ BEGIN NAMESPACE XSharp
                     SELF:__CheckArrayElement(a, index2, nameof(index2),2)
                     RETURN a:_internalList [index2]
                 ELSEIF u:IsIndexed
-                    // not an array, so we call the index operation on the usual, 
+                    // not an array, so we call the index operation on the usual,
                     // this will handle special cases such as indexing a string for Xbase++
                     RETURN u[index2+1]
                 ENDIF
                 THROW __NotAnArray(nameof(index2), 2, <OBJECT>{index+1, index2+1})
-                
+
             CATCH as Exception
                 IF !SuppressArrayIndexErrors
                     THROW
@@ -265,12 +265,12 @@ BEGIN NAMESPACE XSharp
             firstDimension := TRUE
             TRY
                 LOCAL index as INT
-                
+
                 FOR i:= 1  UPTO length  -1 // walk all but the last level
                     currentArray := (ARRAY) u
                     index := indices[i]
                     SELF:__CheckArrayElement(currentArray, index, nameof(indices),1)
-                    u := currentArray:_internalList[ index ] 
+                    u := currentArray:_internalList[ index ]
                     firstDimension := FALSE
                     IF (OBJECT) u IS IIndexedProperties .AND. i == length-1
                         LOCAL o := (IIndexedProperties) (OBJECT) u AS IIndexedProperties
@@ -289,7 +289,7 @@ BEGIN NAMESPACE XSharp
 	                // Call the array operator on the usual class to support substring and bittest operations.
                     RETURN u[index +1]
                 ENDIF
-                
+
                 THROW __NotAnArray(nameof(indices), i, SELF:_adjustArguments(indices))
            CATCH as Exception
                 IF !SuppressArrayIndexErrors .or. firstDimension
@@ -301,7 +301,7 @@ BEGIN NAMESPACE XSharp
                 // but when aTest is not an array at all then it fails
                 RETURN NIL
             END TRY
-            
+
         PRIVATE METHOD _adjustArguments(indices AS INT[], u := NIL as USUAL) AS OBJECT[]
             VAR result := List<OBJECT>{}
             IF! u:IsNil
@@ -398,10 +398,10 @@ BEGIN NAMESPACE XSharp
        /// <summary>Implicit conversion to OBJECT[]. SubArrays become nested OBJECT[] arrays.</summary>
         STATIC OPERATOR IMPLICIT ( a AS __Array) AS OBJECT[]
             LOCAL aResult := List<OBJECT>{} AS List<OBJECT>
-            FOREACH VAR uElement IN a
+            FOREACH uElement AS USUAL IN a
                 IF uElement:IsArray
                     LOCAL aSubArray AS ARRAY
-                    aSubArray := uElement
+                    aSubArray := (ARRAY) uElement
                     aResult:Add( (OBJECT[]) aSubArray)
                 ELSE
                     aResult:Add(  (OBJECT) uElement)
@@ -451,10 +451,10 @@ BEGIN NAMESPACE XSharp
             RETURN
         /// <exclude/>
         PUBLIC METHOD Invoke(index PARAMS INT[]) AS USUAL
-            FOR VAR i := 1 UPTO index:Length 
+            FOR VAR i := 1 UPTO index:Length
                 index[i] -= 1
             NEXT
-            RETURN SELF:__GetElement(index)
+            RETURN SELF:__GetElement(index) 
 
         INTERNAL CLASS ArrayDebugView
             PRIVATE _value AS ARRAY
@@ -481,7 +481,7 @@ END NAMESPACE
 /// <example>
 /// // The following code does not throw a runtime error but displays NIL for u[1,1]
 /// // To get the same behavior in X# you need to call EnableArrayIndexCheck(FALSE)
-/// FUNCTION Start 
+/// FUNCTION Start
 /// LOCAL u AS USUAL
 /// u := {1,2,3}
 /// ? u[1,1]

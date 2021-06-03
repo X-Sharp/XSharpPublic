@@ -41,7 +41,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal VarDecl[] VarDecls;
         internal DeclStmt(Token t, VarDecl[] v) : base(t) { VarDecls = v; }
-        public override string ToString() => TokenText(Token.type) + " " + String.Join(", ", Array.ConvertAll(VarDecls, (x) => x.ToString()));
+        public override string ToString() => TokenText(Token.Type) + " " + String.Join(", ", Array.ConvertAll(VarDecls, (x) => x.ToString()));
     }
     internal partial class VarDecl : Node
     {
@@ -53,9 +53,9 @@ namespace XSharp.MacroCompiler.Syntax
         internal bool IsDim = false;
         internal bool IsIsType = false;
         internal VarDecl(Token t, string n, Expr[] asub, TypeExpr a, Expr i) : base(t) { Name = n; ArraySub = asub; Type = a; Initializer = i; }
-        internal VarDecl(Token t, Expr[] asub, TypeExpr a, Expr i) : this(t, t.value, asub, a, i) { }
-        internal VarDecl(Token t, TypeExpr a) : this(t, t.value, null, a, null) { }
-        internal VarDecl(Token t) : this(t, t.value, null, null, null) { }
+        internal VarDecl(Token t, Expr[] asub, TypeExpr a, Expr i) : this(t, t.Value, asub, a, i) { }
+        internal VarDecl(Token t, TypeExpr a) : this(t, t.Value, null, a, null) { }
+        internal VarDecl(Token t) : this(t, t.Value, null, null, null) { }
         public override string ToString() => (IsConst?"CONST ":"") + (IsDim?"DIM ":"") + Name +
             (ArraySub?.Length > 0 ?"["+String.Join(", ",Array.ConvertAll(ArraySub,(x)=>x.ToString()))+"]":"") +
             (Initializer!=null?" := "+Initializer.ToString():"") +
@@ -76,7 +76,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal Token[] Fields;
         internal Token Alias;
         internal FieldDeclStmt(Token[] fields, Token alias) : base(fields.First()) { Fields = fields; Alias = alias; }
-        public override string ToString() => "FIELD " + String.Join(", ", Array.ConvertAll(Fields, (x) => x.value)) + Alias != null ? " IN " + Alias.value : "";
+        public override string ToString() => "FIELD " + String.Join(", ", Array.ConvertAll(Fields, (x) => x.Value)) + Alias != null ? " IN " + Alias.Value : "";
     }
     internal partial class EmptyStmt : Stmt
     {
@@ -113,7 +113,7 @@ namespace XSharp.MacroCompiler.Syntax
         private ForStmt(Token t, Token dir, Expr final, Expr step, Stmt s) : base(t) { ForDecl = null; AssignExpr = null;  Dir = dir; Final = final; Step = step; Stmt = s; }
         internal ForStmt(Token t, AssignExpr a, Token dir, Expr final, Expr step, Stmt s) : this(t, dir, final, step, s) { AssignExpr = a; }
         internal ForStmt(Token t, VarDecl d, Token dir, Expr final, Expr step, Stmt s) : this(t, dir, final, step, s) { ForDecl = d; }
-        public override string ToString() => "FOR " + (AssignExpr?.ToString() ?? ((ForDecl is ImpliedVarDecl ? "VAR " : "LOCAL ") + ForDecl.ToString())) + " " + Dir.type + " " + Final + (Step != null ? " STEP " + Step : "") + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nEND FOR";
+        public override string ToString() => "FOR " + (AssignExpr?.ToString() ?? ((ForDecl is ImpliedVarDecl ? "VAR " : "LOCAL ") + ForDecl.ToString())) + " " + Dir.Type + " " + Final + (Step != null ? " STEP " + Step : "") + "\n  " + Stmt.ToString().Replace("\n", "\n  ") + "\nEND FOR";
     }
     internal partial class ForeachStmt : ForBaseStmt
     {
@@ -156,14 +156,14 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal Stmt Stmt;
         internal SwitchBlock(Token t, Stmt s) : base(t) { Stmt = s; }
-        public override string ToString() => Token.type + "\n  " + Stmt?.ToString().Replace("\n", "\n  ");
+        public override string ToString() => Token.Type + "\n  " + Stmt?.ToString().Replace("\n", "\n  ");
     }
     internal partial class SwitchBlockExpr : SwitchBlock
     {
         internal Expr Expr;
         internal Expr When;
         internal SwitchBlockExpr(Token t, Expr e, Expr when, Stmt s) : base(t, s) { Expr = e; When = when; }
-        public override string ToString() => Token.type + " " + Expr.ToString() + (When != null ? "WHEN " + When : "") + "\n  " + Stmt?.ToString().Replace("\n", "\n  ");
+        public override string ToString() => Token.Type + " " + Expr.ToString() + (When != null ? "WHEN " + When : "") + "\n  " + Stmt?.ToString().Replace("\n", "\n  ");
     }
     internal partial class SwitchBlockType : SwitchBlock
     {
@@ -171,7 +171,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal TypeExpr Type;
         internal Expr When;
         internal SwitchBlockType(Token t, Token n, TypeExpr type, Expr when, Stmt s) : base(t, s) { Name = n;  Type = type; When = when; }
-        public override string ToString() => Token.type + " " + Name + " AS " + Type + (When != null ? "WHEN " + When : "") + "\n  " + Stmt?.ToString().Replace("\n", "\n  ");
+        public override string ToString() => Token.Type + " " + Name + " AS " + Type + (When != null ? "WHEN " + When : "") + "\n  " + Stmt?.ToString().Replace("\n", "\n  ");
     }
 
     internal partial class ExitStmt : Stmt
@@ -246,7 +246,7 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal Stmt Stmt;
         internal ScopeStmt(Token t, Stmt s) : base(t) { Stmt = s; }
-        public override string ToString() => "BEGIN " + TokenText(Token.type) + "\n  " + String.Join("\n", Stmt.ToString()) + "END " + TokenText(Token.type);
+        public override string ToString() => "BEGIN " + TokenText(Token.Type) + "\n  " + String.Join("\n", Stmt.ToString()) + "END " + TokenText(Token.Type);
     }
 
     internal partial class LockStmt : Stmt

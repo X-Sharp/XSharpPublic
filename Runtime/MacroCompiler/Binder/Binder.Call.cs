@@ -11,11 +11,11 @@ namespace XSharp.MacroCompiler
 
     internal partial class Binder
     {
-        internal MemberSymbol BindMethodCall(Expr expr, Symbol symbol, ArgList args, out Expr self)
+        internal MemberSymbol BindMethodCall(Expr expr, Symbol symbol, ArgList args, out Expr self, out Expr writeBack)
         {
             OverloadResult ovRes = null;
 
-            var res = TryBindCall(expr, symbol, args, out self, ref ovRes, Options.Binding);
+            var res = TryBindCall(expr, symbol, args, out self, out writeBack, ref ovRes, Options.Binding);
 
             if (res != null)
                 return res;
@@ -23,8 +23,10 @@ namespace XSharp.MacroCompiler
             throw MethodCallBindError(expr, symbol, args, ovRes);
         }
 
-        internal Symbol BindCtorCall(Expr expr, Symbol symbol, ArgList args)
+        internal Symbol BindCtorCall(Expr expr, Symbol symbol, ArgList args, out Expr writeBack)
         {
+            writeBack = null;
+
             if ((symbol as TypeSymbol).IsValueType && args.Args.Count == 0)
             {
                 return new ObjectInitializerSymbol(symbol as TypeSymbol);
@@ -34,7 +36,7 @@ namespace XSharp.MacroCompiler
 
             OverloadResult ovRes = null;
 
-            var res = TryBindCall(null, symbol.Lookup(SystemNames.CtorName), args, out dummySelf, ref ovRes, Options.Binding);
+            var res = TryBindCall(null, symbol.Lookup(SystemNames.CtorName), args, out dummySelf, out writeBack, ref ovRes, Options.Binding);
 
             if (res != null)
                 return res;
@@ -99,9 +101,10 @@ namespace XSharp.MacroCompiler
             return res;
         }
 
-        internal MemberSymbol TryBindCall(Expr expr, Symbol symbol, ArgList args, out Expr self, ref OverloadResult ovRes, BindOptions options)
+        internal MemberSymbol TryBindCall(Expr expr, Symbol symbol, ArgList args, out Expr self, out Expr writeBack, ref OverloadResult ovRes, BindOptions options)
         {
             self = (expr as MemberAccessExpr)?.Expr;
+            writeBack = null;
 
             bool isStatic = self == null;
             var matching = new List<OverloadResult>();
@@ -136,7 +139,7 @@ namespace XSharp.MacroCompiler
 
             if (ovRes?.Unique == true)
             {
-                ApplyConversions(args, ovRes);
+                ApplyConversions(args, ovRes, out writeBack);
                 return ovRes.Symbol;
             }
             if (matching.Count > 1 && ovRes.Valid && Options.Resolver != null)
@@ -145,7 +148,7 @@ namespace XSharp.MacroCompiler
                 if (res != null)
                 {
                     ovRes = res;
-                    ApplyConversions(args, ovRes);
+                    ApplyConversions(args, ovRes, out writeBack);
                     return ovRes.Symbol;
                 }
             }
@@ -248,16 +251,29 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        static void ApplyConversions(ArgList args, OverloadResult ovRes)
+        static void ApplyConversions(ArgList args, OverloadResult ovRes, out Expr writeBack)
         {
+            writeBack = null;
             var parameters = ovRes.Parameters.Parameters;
             for (int i = 0; i < ovRes.FixedArgs; i++)
             {
                 var conv = ovRes.Conversions[i];
+                var e = args.Args[i].Expr;
                 if (conv.Kind != ConversionKind.Identity)
                     Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), conv);
                 if (conv is ConversionSymbolToConstant)
                     Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), BindOptions.Default);
+                if (conv.IsIndirectRefConversion() && e.Symbol?.HasSetAccess == true)
+                {
+                    // Handle writeBack
+                    Expr t = IdExpr.Bound(conv.IndirectRefConversionTempLocal());
+                    var wc = Conversion(t, e.Datatype, BindOptions.Default);
+                    if (wc.Exists)
+                    {
+                        Convert(ref t, e.Datatype, wc);
+                        SymbolExtensions.AddExpr(ref writeBack, AssignExpr.Bound(e, t, BindOptions.Default));
+                    }
+                }
             }
             if (ovRes.MissingArgs > 0)
             {

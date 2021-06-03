@@ -13,6 +13,24 @@ namespace XSharp.MacroCompiler
 
     partial class Lexer
     {
+        struct LexerState
+        {
+            internal TokenType LastToken;
+            internal int Index;
+            internal bool InDottedIdentifier;
+            internal bool HasEos;
+            internal bool InPp;
+            internal bool InTextBlock;
+            internal static LexerState Initial => new LexerState() {
+                LastToken = TokenType.NL,
+                Index = 0,
+                InDottedIdentifier = false,
+                HasEos = true,
+                InPp = false,
+                InTextBlock = false,
+            };
+        }
+
         // Input source
         string _Source;
 
@@ -20,11 +38,7 @@ namespace XSharp.MacroCompiler
         MacroOptions _options;
 
         // Lexer state
-        TokenType _lastToken = TokenType.NL;
-        int _index = 0;
-        bool _inDottedIdentifier = false;
-        bool _hasEos = true;
-        bool _inPp = false;
+        LexerState _s = LexerState.Initial;
 
         // Lexer stats
         internal bool HasPreprocessorTokens = false;
@@ -96,39 +110,39 @@ namespace XSharp.MacroCompiler
 
         char Lb()
         {
-            return _index > 0 ? _Source[_index-1] : (char)0;
+            return _s.Index > 0 ? _Source[_s.Index - 1] : (char)0;
         }
 
         char La()
         {
-            return _index < _Source.Length ? _Source[_index] : (char)0;
+            return _s.Index < _Source.Length ? _Source[_s.Index] : (char)0;
         }
 
         char La(int n)
         {
-            return (_index+n-1) < _Source.Length ? _Source[_index+n-1] : (char)0;
+            return (_s.Index + n-1) < _Source.Length ? _Source[_s.Index + n-1] : (char)0;
         }
 
         bool InRange(char c, char first, char last) => c >= first && c <= last;
 
         bool Eoi()
         {
-            return _index >= _Source.Length;
+            return _s.Index >= _Source.Length;
         }
 
         void Consume()
         {
-            _index++;
+            _s.Index++;
         }
 
         void Consume(int n)
         {
-            _index += n;
+            _s.Index += n;
         }
 
         void Rewind(int pos)
         {
-            _index = pos;
+            _s.Index = pos;
         }
 
         bool Expect(char c)
@@ -197,6 +211,15 @@ namespace XSharp.MacroCompiler
                 return true;
             }
             return false;
+        }
+
+        bool AssertText(string s)
+        {
+            int i = 0;
+            for(i = 0; i < s.Length; i++)
+                if (char.ToUpper(La(i+1)) != s[i])
+                    return false;
+            return true;
         }
 
         // copied from the Roslyn C# lexer
@@ -379,8 +402,7 @@ namespace XSharp.MacroCompiler
 
         internal void Reset()
         {
-            _lastToken = TokenType.NL;
-            _index = 0;
+            _s = LexerState.Initial;
         }
 
         internal IList<Token> AllTokens()
@@ -391,8 +413,8 @@ namespace XSharp.MacroCompiler
                 Token t;
                 while ((t = NextToken()) != null)
                 {
-                    t.source = source;
-                    t.index = source.Tokens.Count;
+                    t.Source = source;
+                    t.Index = source.Tokens.Count;
                     source.Tokens.Add(t);
                 }
                 Interlocked.CompareExchange(ref _tokenSource, source, null);
@@ -402,7 +424,7 @@ namespace XSharp.MacroCompiler
 
         internal string GetText(Token t)
         {
-            return _Source.Substring(t.start, t.length);
+            return _Source.Substring(t.Start, t.Length);
         }
 
         internal Token NextToken()
@@ -411,10 +433,10 @@ namespace XSharp.MacroCompiler
             {
                 do
                 {
-                    int start = _index;
+                    int start = _s.Index;
                     TokenType t = TokenType.UNRECOGNIZED;
                     TokenType st = TokenType.UNRECOGNIZED;
-                    Channel ch = Channel.DEFOUTCHANNEL;
+                    Channel ch = Channel.Default;
                     string value = null;
 
                     var c = La();
@@ -434,16 +456,16 @@ namespace XSharp.MacroCompiler
                     switch (t)
                     {
                         case TokenType.LBRKT:
-                            if (_options.AllowSingleQuotedStrings)
+                            if (_options.AllowBracketStrings)
                             { 
-                                if (_lastToken == TokenType.ID ||_lastToken == TokenType.RPAREN ||_lastToken == TokenType.RCURLY ||_lastToken == TokenType.RBRKT)
+                                if (_s.LastToken == TokenType.ID || _s.LastToken == TokenType.RPAREN || _s.LastToken == TokenType.RCURLY || _s.LastToken == TokenType.RBRKT || _s.InPp)
                                 {
                                     break;
                                 }
                                 t = TokenType.STRING_CONST;
                                 while (!Reach(']')) ;
                                 if (!Expect(']')) t = TokenType.INCOMPLETE_STRING_CONST;
-                                value = _Source.Substring(start, _index - start);
+                                value = _Source.Substring(start, _s.Index - start);
                             }
                             break;
 
@@ -453,7 +475,7 @@ namespace XSharp.MacroCompiler
                                 t = TokenType.DATETIME_CONST;
                                 while (!Reach('}')) ;
                                 if (!Expect('}')) t = TokenType.INCOMPLETE_STRING_CONST;
-                                value = _Source.Substring(start, _index - start);
+                                value = _Source.Substring(start, _s.Index - start);
                             }
                             break;
                         case TokenType.COLON:
@@ -470,7 +492,7 @@ namespace XSharp.MacroCompiler
                                 if (AllowOldStyleComments)
                                 {
                                     t = TokenType.SL_COMMENT;
-                                    ch = Channel.HIDDENCHANNEL;
+                                    ch = Channel.Hidden;
                                     while (!ReachEol()) ;
                                     break;
                                 }
@@ -499,18 +521,18 @@ namespace XSharp.MacroCompiler
                             else if (Expect('/'))
                             {
                                 t = TokenType.SL_COMMENT;
-                                ch = Channel.HIDDENCHANNEL;
+                                ch = Channel.Hidden;
                                 if (Expect('/'))
                                 {
                                     t = TokenType.DOC_COMMENT;
-                                    ch = Channel.XMLDOCCHANNEL;
+                                    ch = Channel.XmlDoc;
                                 }
                                 while (!ReachEol()) ;
                             }
                             else if (Expect('*'))
                             {
                                 t = TokenType.ML_COMMENT;
-                                ch = Channel.HIDDENCHANNEL;
+                                ch = Channel.Hidden;
                                 while (!Reach('*','/')) ;
                                 Expect('*', '/');
                             }
@@ -535,19 +557,19 @@ namespace XSharp.MacroCompiler
                             if (Expect('"'))
                             {
                                 t = TokenType.WS;
-                                ch = Channel.HIDDENCHANNEL;
+                                ch = Channel.Hidden;
                                 while (!Reach('"')) ;
                                 Expect('"');
                             }
                             break;
                         case TokenType.MULT:
-                            if (_lastToken == TokenType.NL)
+                            if (_s.LastToken == TokenType.EOS)
                             {
                                 t = TokenType.SL_COMMENT;
-                                ch = Channel.HIDDENCHANNEL;
+                                ch = Channel.Hidden;
                                 while (!ReachEol()) ;
                             }
-                            if (Expect('=')) t = TokenType.ASSIGN_MUL;
+                            else if (Expect('=')) t = TokenType.ASSIGN_MUL;
                             else if (Expect('*')) { t = TokenType.EXP; if (Expect('=')) t = TokenType.ASSIGN_EXP; }
                             break;
                         case TokenType.QMARK:
@@ -555,7 +577,7 @@ namespace XSharp.MacroCompiler
                             break;
                         case TokenType.EQ:
                             if (Expect('=')) t = TokenType.EEQ;
-                            else if (_options.ParseEntities && Expect('>')) t = TokenType.UDCSEP;
+                            else if (_options.ParseStatements && Expect('>')) t = TokenType.UDCSEP;
                             break;
                         case TokenType.NOT:
                             if (Expect('=')) t = TokenType.NEQ;
@@ -565,28 +587,28 @@ namespace XSharp.MacroCompiler
                             if (Expect('/','/'))
                             {
                                 t = TokenType.LINE_CONT;
-                                ch = Channel.HIDDENCHANNEL;
+                                ch = Channel.Hidden;
                                 while (!ReachEol()) ;
                             }
                             else if (AllowOldStyleComments && Expect('&', '&'))
                             {
                                 t = TokenType.LINE_CONT_OLD;
-                                ch = Channel.HIDDENCHANNEL;
+                                ch = Channel.Hidden;
                                 while (!ReachEol()) ;
                             }
                             if (ExpectEol())
                             {
                                 if (t == TokenType.SEMI) t = TokenType.LINE_CONT;
-                                ch = Channel.HIDDENCHANNEL;
+                                ch = Channel.Hidden;
                             }
-                            if (t == TokenType.SEMI && _index > start+1)
+                            if (t == TokenType.SEMI && _s.Index > start+1)
                             {
                                 Rewind(start + 1);
                             }
                             break;
                         case TokenType.DOT:
                             if (La() >= '0' && La() <= '9') goto case TokenType.REAL_CONST;
-                            if (!_inDottedIdentifier || AllowPackedDotOperators)
+                            if (!_s.InDottedIdentifier || AllowPackedDotOperators)
                             {
                                 if (La(2) == '.')
                                 {
@@ -610,7 +632,7 @@ namespace XSharp.MacroCompiler
                             if (c == '\r') Expect('\n');
                             break;
                         case TokenType.WS:
-                            ch = Channel.HIDDENCHANNEL;
+                            ch = Channel.Hidden;
                             while (ExpectAny(' ', '\t')) ;
                             break;
                         case TokenType.NEQ2:
@@ -618,7 +640,7 @@ namespace XSharp.MacroCompiler
                             {
                                 t = TokenType.SYMBOL_CONST;
                                 while (ExpectIdChar()) ;
-                                value = _Source.Substring(start, _index - start);
+                                value = _Source.Substring(start, _s.Index - start);
                                 {
                                     TokenType tt;
                                     if (SymIds.TryGetValue(value, out tt))
@@ -634,7 +656,7 @@ namespace XSharp.MacroCompiler
                                             t = tt;
                                             if (tt >= TokenType.PP_FIRST && t <= TokenType.PP_LAST)
                                             {
-                                                _inPp = true;
+                                                _s.InPp = true;
                                                 HasPreprocessorTokens = true;
                                                 switch (tt)
                                                 {
@@ -670,7 +692,7 @@ namespace XSharp.MacroCompiler
                                             }
                                             else if (tt == TokenType.PRAGMA)
                                             {
-                                                ch = Channel.PREPROCESSORCHANNEL;
+                                                ch = Channel.PreProcessor;
                                                 while (!ReachEol()) ;
                                             }
                                         }
@@ -697,17 +719,17 @@ namespace XSharp.MacroCompiler
                                 while (ExpectIdChar()) ;
                                 bool nokw = _Source[start] == '@';
                                 int idStart = nokw ? start + 2 : start;
-                                value = _Source.Substring(idStart, _index - idStart);
+                                value = _Source.Substring(idStart, _s.Index - idStart);
                                 if (!nokw)
                                 {
                                     TokenType tt;
                                     if (TryGetKeyword(value, out tt))
                                     {
                                         t = tt;
-                                        if (IsSoftKeyword(tt) || _inDottedIdentifier)
+                                        if (IsSoftKeyword(tt) || _s.InDottedIdentifier)
                                         { 
                                             st = TokenType.ID;
-                                            if (_lastToken == TokenType.COLON ||_lastToken == TokenType.DOT)
+                                            if (_s.LastToken == TokenType.COLON || _s.LastToken == TokenType.DOT)
                                                 t = TokenType.ID;
                                         }
                                     }
@@ -722,7 +744,7 @@ namespace XSharp.MacroCompiler
                                 if (Lb() == '_') t = TokenType.INVALID_NUMBER;
                                 if (Expect('.')) while (ExpectRange('0', '9') || Expect('_')) ;
                                 if (Lb() == '_') t = TokenType.INVALID_NUMBER;
-                                value = _Source.Substring(start, _index - start).Replace("_", "");
+                                value = _Source.Substring(start, _s.Index - start).Replace("_", "");
                             }
                             break;
                         case TokenType.INT_CONST:
@@ -754,7 +776,7 @@ namespace XSharp.MacroCompiler
                                 if (La() == 'E' || La() == 'e') goto case TokenType.REAL_CONST_EXP;
                                 ExpectAny('U', 'u', 'L', 'l');
                             }
-                            value = _Source.Substring(start, _index - start).Replace("_", "");
+                            value = _Source.Substring(start, _s.Index - start).Replace("_", "");
                             break;
                         case TokenType.REAL_CONST:
                             if (t != TokenType.INVALID_NUMBER) t = TokenType.REAL_CONST;
@@ -764,7 +786,7 @@ namespace XSharp.MacroCompiler
                             if (La() == 'E' || La() == 'e') goto case TokenType.REAL_CONST_EXP;
                             if (!ExpectAny('S', 's', 'D', 'd'))
                                 ExpectAny('M', 'm');
-                            value = _Source.Substring(start, _index - start).Replace("_", "");
+                            value = _Source.Substring(start, _s.Index - start).Replace("_", "");
                             break;
                         case TokenType.REAL_CONST_EXP:
                             if (La() == 'E' || La() == 'e')
@@ -781,11 +803,11 @@ namespace XSharp.MacroCompiler
                                     ExpectAny('S', 's', 'D', 'd');
                                 }
                             }
-                            value = _Source.Substring(start, _index - start).Replace("_","");
+                            value = _Source.Substring(start, _s.Index - start).Replace("_","");
                             break;
                         case TokenType.DATE_CONST:
                             {
-                                string s = _Source.Substring(start, _index - start);
+                                string s = _Source.Substring(start, _s.Index - start);
                                 int z0 = s.IndexOf('.');
                                 if (z0 > 0 && s.Length - z0 > 1 && s.Length - z0 <= 3 && s.Length <= 7)
                                 if (z0 > 0 && z0 <= 4 && s.Length > z0 + 1 && s.Length <= z0+3 && !s.Contains("_"))
@@ -796,42 +818,80 @@ namespace XSharp.MacroCompiler
                                     ExpectRange('0', '9');
                                 }
                             }
-                            value = _Source.Substring(start, _index - start);
+                            value = _Source.Substring(start, _s.Index - start);
                             break;
                         case TokenType.CHAR_CONST:
                             t = TokenType.CHAR_CONST;
                             if (La() == '\\' && La(3) == '\'') Consume(3);
                             else { while (!Reach('\'')) ; if (!Expect('\'')) t = TokenType.INCOMPLETE_STRING_CONST; }
-                            value = _Source.Substring(start, _index - start);
+                            value = _Source.Substring(start, _s.Index - start);
                             break;
                         case TokenType.STRING_CONST_SINGLE:
                             if (!AllowSingleQuotedStrings)
                                 goto case TokenType.CHAR_CONST;
                             t = TokenType.STRING_CONST;
-                            while (!Reach('\'')) ;
-                            if (!Expect('\'')) t = TokenType.INCOMPLETE_STRING_CONST;
-                            value = _Source.Substring(start, _index - start);
+                            do {
+                                while (!Reach('\'')) ;
+                                if (!Expect('\'')) t = TokenType.INCOMPLETE_STRING_CONST;
+                            } while (Expect('\''));
+                            value = _Source.Substring(start, _s.Index - start);
                             break;
                         case TokenType.STRING_CONST:
-                            while (!Reach('"')) ;
-                            if (!Expect('"')) t = TokenType.INCOMPLETE_STRING_CONST;
-                            value = _Source.Substring(start, _index - start);
+                            do {
+                                while (!Reach('"')) ;
+                                if (!Expect('"')) t = TokenType.INCOMPLETE_STRING_CONST;
+                            } while (Expect('"'));
+                            value = _Source.Substring(start, _s.Index - start);
                             break;
                         case TokenType.ESCAPED_STRING_CONST:
                             t = TokenType.ESCAPED_STRING_CONST;
                             while (!ReachEsc('"')) ;
                             if (!Expect('"')) t = TokenType.INCOMPLETE_STRING_CONST;
-                            value = _Source.Substring(start, _index - start);
+                            value = _Source.Substring(start, _s.Index - start);
                             break;
                         case TokenType.INTERPOLATED_STRING_CONST:
                             t = TokenType.INTERPOLATED_STRING_CONST;
                             while (!ReachEsc('"')) ;
                             if (!Expect('"')) t = TokenType.INCOMPLETE_STRING_CONST;
-                            value = _Source.Substring(start, _index - start);
+                            value = _Source.Substring(start, _s.Index - start);
                             break;
                     }
 
-                    if (!_inDottedIdentifier)
+                    bool endOfLine = t == TokenType.NL || t == TokenType.SEMI;
+                    bool startOfLine = _s.HasEos;
+
+                    /* Handle parsing of TEXT...ENDTEXT region (FoxPro) */
+                    if (_options.Dialect == XSharpDialect.FoxPro)
+                    {
+                        if (startOfLine && t == TokenType.TEXT)
+                        {
+                            _s.InTextBlock = true;
+                        }
+                        else if (startOfLine && _s.InTextBlock)
+                        {
+                            if (t != TokenType.ENDTEXT)
+                            {
+                                Rewind(start);
+                                while (!Eoi())
+                                {
+                                    while (ExpectAny(' ', '\t')) ;
+                                    if (AssertText("ENDTEXT")) break;
+                                    while (!ReachEol()) ;
+                                    while (ExpectAny('\r', '\n')) ;
+                                }
+                                ch = Channel.Default;
+                                t = TokenType.TEXT_STRING_CONST;
+                                st = TokenType.UNRECOGNIZED;
+                                value = _Source.Substring(start, _s.Index - start);
+                                if (Eoi())
+                                    t = TokenType.INCOMPLETE_STRING_CONST;
+                            }
+                            _s.InTextBlock = false;
+                        }
+                    }
+
+                    /* Update InDottedIdentifier state (handling of positional keyword in ID.ID constructs) */
+                    if (!_s.InDottedIdentifier)
                     {
                         // Check if the current token is a valid Identifier (starts with A..Z or _) and is followed by a DOT
                         // In that case we change the type from Keyword to ID
@@ -843,11 +903,11 @@ namespace XSharp.MacroCompiler
                             //    t = TokenType.ID;
                             //    st = TokenType.UNRECOGNIZED;
                             //}
-                            _inDottedIdentifier = true;
+                            _s.InDottedIdentifier = true;
                         }
                         else if (t == TokenType.ID)
                         {
-                            _inDottedIdentifier = true;
+                            _s.InDottedIdentifier = true;
                         }
                     }
                     else
@@ -856,64 +916,140 @@ namespace XSharp.MacroCompiler
                         {
                             t = TokenType.ID;
                             st = TokenType.UNRECOGNIZED;
-                            // keep _inDottedIdentifier true
+                            // keep _state.InDottedIdentifier true
                         }
                         else if (t != TokenType.DOT && t != TokenType.ID)
                         {
-                            _inDottedIdentifier = false;
+                            _s.InDottedIdentifier = false;
                         }
                     }
 
-                    if (t == TokenType.NL || t == TokenType.SEMI)
+                    /* Update HasEos state */
+                    if (endOfLine)
                     {
-                        if (_hasEos)
+                        if (startOfLine)
                         {
                             if (t == TokenType.SEMI)
                             {
-                                if (_lastToken != TokenType.SEMI)
-                                    ch = Channel.HIDDENCHANNEL;
+                                if (_s.LastToken != TokenType.SEMI)
+                                    ch = Channel.Hidden;
                             }
                             else
                             {
-                                ch = Channel.HIDDENCHANNEL;
+                                ch = Channel.Hidden;
                             }
                         }
                         else
                         {
                             t = TokenType.EOS;
-                            _hasEos = true;
+                            _s.HasEos = true;
                         }
                     }
-                    else if (_hasEos && ch == Channel.DEFOUTCHANNEL)
+                    else if (startOfLine && ch == Channel.Default)
                     {
-                        _hasEos = false;
+                        _s.HasEos = false;
                     }
 
-                    if (_inPp)
+                    /* Update InPp state (for preprocessor tokens) */
+                    if (_s.InPp)
                     {
-                        if (ch == Channel.DEFOUTCHANNEL)
+                        if (ch == Channel.Default)
                         {
-                            ch = Channel.PREPROCESSORCHANNEL;
+                            ch = Channel.PreProcessor;
                             if (t == TokenType.EOS)
-                                _inPp = false;
+                                _s.InPp = false;
                         }
                     }
 
-                    if (ch == Channel.DEFOUTCHANNEL || ch == Channel.PREPROCESSORCHANNEL)
+                    if (ch == Channel.Default || ch == Channel.PreProcessor)
                     {
-                        _lastToken = t;
-                        return new Token(t, st, start, _index - start, value, ch);
+                        _s.LastToken = t;
+                        return new Token(t, st, start, _s.Index - start, value, ch);
                     }
                 } while (!Eoi());
             }
-            if (!_hasEos)
+            if (!_s.HasEos)
             {
-                var ch = _inPp ? Channel.PREPROCESSORCHANNEL : Channel.DEFOUTCHANNEL;
-                _hasEos = true;
-                _inPp = false;
-                return new Token(TokenType.EOS, TokenType.UNRECOGNIZED, _index, 0, null, ch);
+                var ch = _s.InPp ? Channel.PreProcessor : Channel.Default;
+                _s.HasEos = true;
+                _s.InPp = false;
+                return new Token(TokenType.EOS, TokenType.UNRECOGNIZED, _s.Index, 0, null, ch);
             }
             return null;
+        }
+        internal IList<Token> ReclassifyTokens(IList<Token> tokens)
+        {
+            // Fix keywords
+            {
+                var lastType = TokenType.EOS;
+                Token last = null;
+                foreach (var token in tokens)
+                {
+                    // Some keywords may have been seen as identifier because they were
+                    // originally in the Preprocessor Channel and for example not on a start 
+                    // of a line or command
+                    if (token.Channel == Channel.Default)
+                    {
+                        findKeyWord(token, lastType);
+                    }
+                    // Identifier tokens before a DOT are never Keyword but always a type or field/property
+                    if (token.Type == TokenType.DOT)
+                    {
+                        if (last != null && isValidIdentifier(last))
+                        {
+                            last.Type = TokenType.ID;
+                        }
+                    }
+                    last = token;
+                    if (token.Channel == Channel.Default)
+                    {
+                        lastType = token.Type;
+                    }
+                }
+            }
+            return tokens;
+
+            bool isValidIdentifier(Token t)
+            {
+                if (t == null || t.Text?.Length == 0 || t.Type == TokenType.EOF)
+                    return false;
+
+                switch (t.Channel)
+                {
+                    case Channel.Hidden:
+                    case Channel.XmlDoc:
+                    case Channel.Default:
+                        return false;
+                    case Channel.PreProcessor:
+                    default:
+                        char fc = t.Text?[0] ?? (Char)0;
+                        return fc == '_' || (fc >= 'A' && fc <= 'Z') || (fc >= 'a' && fc <= 'z');
+                }
+            }
+
+            bool findKeyWord(Token token, TokenType lastToken)
+            {
+                if (token.Type == TokenType.ID && token.Channel == Channel.Default)
+                {
+                    TokenType tt;
+                    if (TryGetKeyword(token.Text, out tt))
+                    {
+                        if (IsSoftKeyword(tt) && (lastToken == TokenType.COLON || lastToken == TokenType.DOT))
+                        {
+                            // do nothing, no new keywords after colon or dot
+                        }
+                        else
+                        {
+                            token.Type = tt;
+                            if (IsSoftKeyword(tt))
+                                token.SubType = TokenType.ID;
+                        }
+                        return true;
+                    }
+                }
+                return false;
+            }
+
         }
     }
 }

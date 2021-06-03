@@ -118,6 +118,9 @@
       <Name>XSharp.RT</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Preprocessor\StandardHeaders.resx" />
+  </ItemGroup>
   <!-- On machines where the runtime output path exists the macro compiler will be copied to the runtime output folder  -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

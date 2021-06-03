@@ -19,28 +19,28 @@ FUNCTION _accept() AS STRING STRICT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_accept/*" />
 FUNCTION _accept( uValuePrompt AS STRING ) AS STRING
     LOCAL retval AS STRING
-    
+
     Console.WriteLine()
     Console.Write( uValuePrompt )
-    
+
     TRY
         retval := Console.ReadLine()
     CATCH AS System.InvalidOperationException
         retval := ""
     END TRY
-    
+
     RETURN IIF( retval == NULL, "", retval )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/cls/*" />
 FUNCTION cls() AS VOID STRICT
     Console.Clear()
     RETURN
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/col/*" />
 FUNCTION Col() AS SHORT STRICT
     RETURN (SHORT) Console.CursorLeft
-    
-    
+
+
 //INTERNAL FUNCTION PrintFileOpen(lAdditive as LOGIC) AS VOID
 //    PrintFileClose()
 //    var cPrintFile := RuntimeState.PrintFile
@@ -92,7 +92,7 @@ INTERNAL FUNCTION ConsoleWriteLine() AS VOID
     IF RuntimeState.Console
         Console.WriteLine()
     ENDIF
-RETURN      
+RETURN
 
 INTERNAL FUNCTION ConsoleWrite(cText as STRING) AS VOID
     IF RuntimeState.Console
@@ -202,15 +202,15 @@ FUNCTION _wait( uValuePrompt AS STRING ) AS STRING
         UnSafeNativeMethods.MessageBox(IntPtr.Zero,  uValuePrompt + chr(10) + chr(10) + "Wait", "Wait", MB_ICONEXCLAMATION| MB_TOPMOST )
         retval := ""
     END TRY
-    
+
     RETURN retval
-    
+
 /// <exclude/>
 
 FUNCTION DoEvents() AS VOID
     UnSafeNativeMethods.DoEvents()
-    
-    
+
+
 /// <summary>Dump the contents of an array to the terminal window</summary>
 /// <param name="aTest">Array to dump</param>
 /// <param name="cPrefix">Name to show before the array brackets. Defaults to 'a'</param>
@@ -223,34 +223,39 @@ FUNCTION ShowArray  (aTest as array, cPrefix := "" as STRING) AS VOID
     LOCAL x         AS USUAL
     LOCAL cOut      AS STRING
     LOCAL cOutTemp := "" AS STRING
-    
+    IF aTest:GetType():FullName:ToLower() == "xsharp.__foxarray"
+        _CallClipFunc(#ShowFoxArray, aTest, cPrefix)
+        RETURN
+    ENDIF
     IF cPrefix:Length == 0
         cPrefix := "a"
     ENDIF
-    
+
     n := ALen(aTest)
-    
+
     FOR i := 1 TO n
         cOut := cPrefix + "[" + NTrim(i) + "]"
         x    := aTest[i]
-        
+
         IF x:IsArray
             cOutTemp := cOut
         ENDIF
-        
+
         cOut += " = "
         cOut += AsString(x)
         cOut += " ("
         cOut += ValType(x)
         cOut += ")"
         QOut(cOut)
-        
+
         IF x:IsArray
             ShowArray(x, cOutTemp)
         ENDIF
-        
+
     NEXT
-    RETURN 
+    RETURN
+
+
 
 /// <summary>Dump the contents of an object to the terminal window</summary>
 /// <param name="oObject">Object to dump</param>
@@ -292,8 +297,8 @@ FUNCTION ShowPrivates(lCurrentOnly := FALSE AS LOGIC) AS VOID
     FOREACH var cElement in aNames
         ? PadR(cElement,nLen), MemVarGet(cElement)
     NEXT
-    RETURN 
-    
+    RETURN
+
 /// <summary>Dump the currently defined publics to the terminal window</summary>
 /// <returns>Nothing</returns>
 /// <remarks>This dumps the information to the terminal window.
@@ -312,12 +317,12 @@ FUNCTION ShowPublics() AS VOID
         ? PadR(cElement,nLen), MemVarGet(cElement)
     NEXT
     RETURN
-    
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/pause/*" />
 FUNCTION Pause() AS DWORD
     RETURN (DWORD) UnSafeNativeMethods.MessageBox(IntPtr.Zero, "Pause","Waiting",0)
-	
+
 
 FUNCTION GetColor() AS STRING
     RETURN ConsoleHelpers.ColNum2String(Console.ForegroundColor)+"/"+ConsoleHelpers.ColNum2String(Console.BackgroundColor)
@@ -329,7 +334,7 @@ FUNCTION SetColor(cNewColor as STRING) AS STRING
     IF IsString(cNewColor)
         var newColor := ConsoleHelpers.String2Color(cNewColor)
         nBack := _AND(newColor, 0xF0) >> 4
-        nFore := _AND(newColor, 0x0F) 
+        nFore := _AND(newColor, 0x0F)
         Console.ForegroundColor := (ConsoleColor) nFore
         Console.BackgroundColor := (ConsoleColor) nBack
     ENDIF
@@ -347,8 +352,8 @@ INTERNAL STATIC CLASS ConsoleHelpers
             RETURN aColors[bColor]
         ENDIF
         RETURN "?"
-    
-    
+
+
     INTERNAL STATIC METHOD String2Color(cColor AS STRING) AS BYTE
         LOCAL nColor        AS BYTE
         LOCAL nFore, nBack  AS BYTE
@@ -368,7 +373,7 @@ INTERNAL STATIC CLASS ConsoleHelpers
                 CASE c'B'
                 CASE c'b'
                     nColor += 1 // can be combined
-                CASE c'G'    
+                CASE c'G'
                 CASE c'g'
                     nColor += 2 // can be combined
                 CASE c'R'
@@ -378,14 +383,14 @@ INTERNAL STATIC CLASS ConsoleHelpers
                     nHigh  := 8 // flashing: not available, so intense
                 CASE c'+'
                     nHigh  := 8 // intense
-                CASE c'/' 
+                CASE c'/'
                     IF lFore
                         nFore 	:= nColor + nHigh
                         nColor	:= nHigh := 0
-                        lFore 	:= FALSE    
+                        lFore 	:= FALSE
                     ELSE
                         done := TRUE
-                    ENDIF    
+                    ENDIF
                 CASE c','
                     done := TRUE
                 OTHERWISE
@@ -397,9 +402,9 @@ INTERNAL STATIC CLASS ConsoleHelpers
             ENDIF
         NEXT
         nBack	   := nColor + nHigh
-        nColor := (nBack<< 4) + nFore 			
+        nColor := (nBack<< 4) + nFore
         RETURN nColor
-        
+
 END CLASS
 
 

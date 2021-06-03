@@ -285,7 +285,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ELSE
                     cbSkip := { =>SELF:_RecNo + 1}
                 ENDIF
-                DO WHILE TRUE
+                DO WHILE !_oRdd:EoF
                     IF hasWhile
                         IF ! SELF:_EvalBlock(ordCondInfo:WhileBlock, TRUE)
                             EXIT
@@ -314,9 +314,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     nextRecord := cbSkip()
                     SELF:_oRdd:__Goto( nextRecord)
                     IF toDo != 0 .AND. done >= toDo
-                        EXIT
-                    ENDIF
-                    IF SELF:_oRdd:EoF
                         EXIT
                     ENDIF
                 ENDDO

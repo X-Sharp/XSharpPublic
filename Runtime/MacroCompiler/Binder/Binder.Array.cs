@@ -70,9 +70,10 @@ namespace XSharp.MacroCompiler
                 }
             }
 
+            Expr writeBack;
             if (ovRes?.Unique == true)
             {
-                ApplyConversions(args, ovRes);
+                ApplyConversions(args, ovRes, out writeBack);
                 return ovRes.Symbol;
             }
             if (matching.Count > 1 && ovRes.Valid && Options.Resolver != null)
@@ -81,7 +82,7 @@ namespace XSharp.MacroCompiler
                 if (res != null)
                 {
                     ovRes = res;
-                    ApplyConversions(args, ovRes);
+                    ApplyConversions(args, ovRes, out writeBack);
                     return ovRes.Symbol;
                 }
             }

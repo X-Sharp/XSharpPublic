@@ -144,26 +144,26 @@ BEGIN NAMESPACE XSharp.RDD
                 IF workOrder != NULL
                     info:Result := System.IO.Path.GetExtension(workOrder:FullPath)
                 ELSE
-                    info:Result := ""
+                    info:Result := NtxOrder.NTX_EXTENSION
                 ENDIF
             CASE DBOI_FULLPATH
                 IF workOrder != NULL
                     info:Result := workOrder:FullPath
                 ELSE
-                    info:Result := ""
+                    info:Result := DBNull.Value
                 ENDIF
             CASE DBOI_BAGNAME
                 //CASE DBOI_INDEXNAME // alias
                 IF workOrder != NULL
                     info:Result := System.IO.Path.GetFileName(workOrder:FullPath)
                 ELSE
-                    info:Result := ""
+                    info:Result := DBNull.Value
                 ENDIF
             CASE DBOI_NAME
                 IF workOrder != NULL
                     info:Result := workOrder:OrderName
                 ELSE
-                    info:Result := ""
+                    info:Result := DBNull.Value
                 ENDIF
             CASE DBOI_FILEHANDLE
                 IF workOrder != NULL
@@ -230,7 +230,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF workOrder != NULL
                     info:Result := workOrder:KeyCodeBlock
                 ELSE
-                    info:Result := NULL
+                    info:Result := DBNull.Value
                 ENDIF
             CASE DBOI_KEYVAL
                 IF workOrder != NULL
@@ -242,7 +242,7 @@ BEGIN NAMESPACE XSharp.RDD
                         SELF:_dbfError(ex, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX, "DBFNTX.OrderInfo")
                     END TRY
                     IF !isOk
-                        info:Result := NULL
+                        info:Result := DBNull.Value
                     ENDIF
                 ELSE
                     info:Result := NULL
@@ -252,7 +252,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF workOrder != NULL
                     workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                 ENDIF
-                info:Result := NULL
+                info:Result := DBNull.Value
             CASE DBOI_SCOPETOP
             CASE DBOI_SCOPEBOTTOM
                 IF workOrder != NULL
@@ -262,14 +262,14 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
                         oldValue := workOrder:BottomScope
                     ELSE
-                        oldValue := NULL
+                        oldValue := DBNull.Value
                     ENDIF
                     IF info:Result != NULL
                         workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                     ENDIF
                     info:Result := oldValue
                 ELSE
-                    info:Result := NULL
+                    info:Result := DBNull.Value
                 ENDIF
             CASE DBOI_KEYADD
                 // Not Supported

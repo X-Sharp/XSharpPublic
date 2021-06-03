@@ -25,11 +25,19 @@ BEGIN NAMESPACE XSharp
     [DebuggerDisplay("{DebuggerString(),nq}")] ;
     PUBLIC SEALED CLASS __FoxArray INHERIT __Array IMPLEMENTS IIndexer
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
-        PRIVATE _nCols := 1 AS DWORD
+        PRIVATE _nCols := 0 AS DWORD
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
-        PROPERTY MultiDimensional AS LOGIC GET _nCols > 1
-        PROPERTY Columns AS LONG GET (LONG) _nCols
-        PROPERTY Rows    AS LONG GET _internalList:Count / (LONG) _nCols
+        PROPERTY MultiDimensional AS LOGIC GET _nCols > 0
+        PROPERTY Columns          AS LONG GET (LONG) _nCols
+        PROPERTY Rows             AS LONG
+            GET
+                IF SELF:MultiDimensional
+                    RETURN _internalList:Count / (LONG) _nCols
+                ELSE
+                    RETURN _internalList:Count
+                ENDIF
+            END GET
+        END PROPERTY
          /// <inheritdoc />
         CONSTRUCTOR()
             SUPER()
@@ -40,8 +48,9 @@ BEGIN NAMESPACE XSharp
 
 
         CONSTRUCTOR(nRows AS DWORD, nCols AS DWORD)
-            SUPER( nRows * nCols, TRUE)
             SELF:_nCols := nCols
+
+            SUPER( IIF(SELF:MultiDimensional, nRows *nCols, nRows ), TRUE)
 
             /// <inheritdoc />
         CONSTRUCTOR( elements AS OBJECT[] )
@@ -79,7 +88,7 @@ BEGIN NAMESPACE XSharp
         PUBLIC OVERRIDE METHOD __GetElement(indices PARAMS INT[] ) AS USUAL
             IF  indices:Length == 1
                 RETURN SUPER:__GetElement(indices[1])
-            ELSEIF indices:Length == 2 .and. SELF:_nCols > 1
+            ELSEIF indices:Length == 2 .AND. SELF:MultiDimensional
                 RETURN SELF:__GetElement(indices[1], indices[2])
             ELSE
                 VAR err     := Error.BoundError(ProcName(1),nameof(indices), 1, indices)
@@ -107,7 +116,7 @@ BEGIN NAMESPACE XSharp
         PUBLIC OVERRIDE METHOD __SetElement(u AS USUAL, indices PARAMS INT[] ) AS USUAL
             IF indices:Length == 1
                 RETURN SUPER:__SetElement(u, indices[1])
-            ELSEIF indices:Length == 2 .and. _nCols > 1
+            ELSEIF indices:Length == 2 .AND. SELF:MultiDimensional
                 RETURN SELF:__SetElement(u, indices[1], indices[2])
             ELSE
                 VAR err     := Error.BoundError(ProcName(1),"indices", 2, indices)
@@ -120,10 +129,10 @@ BEGIN NAMESPACE XSharp
             // Note that nRow and nColumn are already Zero based !
             // And also that FoxPro does not complain when you indicate a row number even
             // when the array is single dimensional. FoxPro then simply returns the element indicated with nColumn
-            IF SELF:_nCols > 1
+            IF SELF:MultiDimensional
                 RETURN (nRow * _nCols) + nColumn
             ELSE
-                RETURN nColumn
+                RETURN nRow
             ENDIF
 
         /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
@@ -203,10 +212,9 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
 
 
-        /// <summary>Redimension the array. Existing data will be saved if the # of cells in the new array &lt;= the # of cells in the old array. </summary>
-        METHOD ReDim(nRows AS DWORD, nCols := 1 AS DWORD) AS __FoxArray
-            _nCols := nCols
-            SELF:Resize( (INT) (nRows * nCols))
+        METHOD ReDim(nRows AS DWORD, nCols := 0 AS DWORD) AS __FoxArray
+            SELF:_nCols := nCols
+            SELF:Resize( (INT) IIF(SELF:MultiDimensional, nRows * nCols, nRows ))
             RETURN SELF
 
 
@@ -235,7 +243,7 @@ BEGIN NAMESPACE XSharp
         /// and the elements 3 &amp; 4, 7 &amp; 8, 11 &amp; 12 and 15 &amp; 16 are shifted to the left.
         /// New empty elements are inserted on locations 4,8,12 and 16.</remarks>
        METHOD DeleteColumn(nColumn AS INT) AS __FoxArray
-            IF SELF:_nCols > 1 .and. nColumn > 0 .and. nColumn <= _nCols
+            IF SELF:MultiDimensional .AND. nColumn > 0 .AND. nColumn <= _nCols
                 LOCAL nRowStart := 0 AS INT
                 LOCAL nColumns  := SELF:Columns AS LONG
                 DO WHILE nRowStart < SELF:_internalList:Count
@@ -292,7 +300,7 @@ BEGIN NAMESPACE XSharp
             // Make sure we have a multiple of the # of columns
             // Assume we have a 3 column array and we resize to 10
             // then we must make the size a multiple of 3, so it will become 12
-            IF SELF:_nCols != 1
+            IF SELF:MultiDimensional
                 VAR nDiff := newSize % SELF:Columns
                 IF nDiff != 0
                     newSize += (SELF:Columns - nDiff)
@@ -323,7 +331,7 @@ BEGIN NAMESPACE XSharp
             sb := StringBuilder{}
             sb:Append("FoxArray[")
             VAR nRows := SELF:Rows
-            IF _nCols == 1
+            IF ! SELF:MultiDimensional
                 sb:Append(_internalList:Count)
             ELSE
                 sb:Append(nRows)

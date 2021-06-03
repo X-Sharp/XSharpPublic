@@ -88,11 +88,13 @@ namespace XSharp.MacroCompiler
     {
         internal override void Emit(Expr expr, TypeSymbol type, ILGenerator ilg)
         {
-            Conversion.Emit(expr, type, ilg);
-            var loc = new LocalSymbol(Type);
-            loc.Declare(ilg);
-            loc.EmitSet(ilg);
-            Expr = IdExpr.Bound(loc);
+            if (Expr == null)
+            {
+                Conversion.Emit(expr, type, ilg);
+                Local.Declare(ilg);
+                Local.EmitSet(ilg);
+                Expr = IdExpr.Bound(Local);
+            }
         }
     }
 }

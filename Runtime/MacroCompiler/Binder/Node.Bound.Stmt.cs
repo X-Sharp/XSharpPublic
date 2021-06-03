@@ -587,9 +587,9 @@ namespace XSharp.MacroCompiler.Syntax
             var expr = IdExpr.Bound(b.Lookup(funcs, QOutName));
             var args = new ArgList(new List<Arg>(Exprs.Select(x => new Arg(x))));
             b.Bind(ref args);
-            Expr self;
-            var sym = b.BindMethodCall(expr, expr.Symbol, args, out self);
-            if (self != null)
+            Expr self, writeBack;
+            var sym = b.BindMethodCall(expr, expr.Symbol, args, out self, out writeBack);
+            if (self != null || writeBack != null)
                 throw Error(ErrorCode.Internal);
             QOutCall = MethodCallExpr.Bound(expr, sym, null, args);
             return null;

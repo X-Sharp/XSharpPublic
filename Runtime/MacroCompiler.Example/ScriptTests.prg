@@ -1,7 +1,7 @@
 ﻿// ScriptTests.prg
 // Created by    : neek
 // Creation Date : 3/6/2021 8:17:14 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : I7
 
 
@@ -332,6 +332,10 @@ FUNCTION ScriptTests AS VOID
         "local a[10,10]",;
         "a[10,10] := 123",;
         "RETURN a[1,1]"}),Args(), null, null)
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "VAR v := 0",;
+        "IncrInt(v)",;
+        "RETURN v"}), Args(), 1, typeof(INT))
 
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
     Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")
@@ -351,3 +355,70 @@ FUNCTION ScriptTests AS VOID
         "a:=123"}),Args(), 123, typeof(int))
 
     RETURN
+
+FUNCTION TestPreProcessor(sc AS XSharp.Runtime.MacroCompiler) AS VOID
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+    "#include ""XSharpDefs.xh"" ",;
+    "PARAMETERS a, b, c",;
+    "#define AAA",;
+    "#ifdef AAA",;
+    "RETURN 0",;
+    "#endif",;
+    "RETURN a+b+c"}),Args(1,2,3), 0, typeof(INT))
+
+    RETURN
+
+FUNCTION TestUDC(sc AS XSharp.Runtime.MacroCompiler) AS VOID
+    // Create test data file for the UDC test
+    DbCreate("Test",{{"TEST1","C",10,0},{"TEST2","C",10,0}})
+    DbUseArea(TRUE,,"TEST")
+    FOR VAR i := 1 TO 10
+        DbAppend()
+        FieldPut(1, StrZero(i,10,0))
+        FieldPut(2, Repl(Chr(64+(DWORD)i),10))
+    NEXT
+    DbCreateIndex("test1","UPPER(Test1)")
+    DbCreateIndex("test2","UPPER(Test2)")
+    DbCloseArea()
+
+
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+    "#include ""XSharpDefs.xh"" ",;
+    "USE TEST",;
+    "i:=1",;
+    "DO WHILE ! EOF()",;
+    " IF FieldGet(1) != StrZero(i,10,0)",;
+    "  RETURN false",;
+    " END",;
+    " IF FieldGet(2) != Repl(Chr(64+(DWORD)i),10)",;
+    "  RETURN false",;
+    " END",;
+    " i++",;
+    " SKIP ",;
+    "ENDDO",;
+    "CLOSE",;
+    "RETURN true"}), Args(1), TRUE, typeof(LOGIC))
+
+    XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+    sc := CreateFoxScriptCompiler()
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+    "#include ""XSharpDefs.xh"" ",;
+    "LPARAMETERS fileName",;
+    "LOCAL recCount",;
+    "USE (fileName)",;
+    "i:=1",;
+    "SCAN",;
+    " IF Test->Test1 != StrZero(i,10,0)",;
+    "  RETURN false",;
+    " END",;
+    " IF Test->Test2 != Repl(Chr(64+(DWORD)i),10)",;
+    "  RETURN false",;
+    " END",;
+    " i++",;
+    "ENDSCAN",;
+    "recCount = LastRec()",;
+    "CLOSE ",;
+    "RETURN true"}),Args("test"), TRUE, typeof(LOGIC))
+
+    RETURN
+

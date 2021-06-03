@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -14,9 +14,9 @@ FUNCTION ErrString(dwNewReturnCode AS DWORD) AS STRING
 		cResource := "RT_MSG_ERR_" + dwNewReturnCode:ToString()
 	ENDIF
 	RETURN Messages.GetString(cResource)
-	
-	
-	
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/doserrstring/*" />
 FUNCTION DosErrString(dwError AS DWORD) AS STRING
     RETURN System.ComponentModel.Win32Exception{ (INT) dwError }.Message
@@ -24,15 +24,14 @@ FUNCTION DosErrString(dwError AS DWORD) AS STRING
 
 
 
-/// <summary>
-/// </summary>
-/// <param name="dwType"></param>
+/// <summary>Return a descriptive name (in upper case) for a X# (Usual) Type</summary>
+/// <param name="dwType">Type number to check for</param>
 /// <returns>
 /// </returns>
 FUNCTION TypeString( nType AS DWORD ) AS STRING
    LOCAL ret AS STRING
-   SWITCH nType
-   CASE 0
+   SWITCH (__UsualType) nType
+   CASE __UsualType.Void
       ret := "NIL"
    CASE  __UsualType.Long
       ret := "LONGINT"
@@ -40,7 +39,7 @@ FUNCTION TypeString( nType AS DWORD ) AS STRING
       ret := "DATE"
    CASE  __UsualType.Float
       ret := "FLOAT"
-   CASE  4
+   CASE  __UsualType.Fixed
       ret := "FIXED"
    CASE  __UsualType.Array
       ret := "ARRAY"
@@ -92,5 +91,5 @@ FUNCTION TypeString( nType AS DWORD ) AS STRING
       ret := "INVALID"
    OTHERWISE
       ret := "UNKNOWN"
-   END SWITCH 
-   RETURN ret   
+   END SWITCH
+   RETURN ret

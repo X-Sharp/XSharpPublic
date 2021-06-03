@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp
     //[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
     [DebuggerDisplay("{DebuggerString(),nq}")] ;
     [Serializable];
-    PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializable, IEnumerable
+    PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializable
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         INTERNAL STATIC SuppressArrayIndexErrors := FALSE AS LOGIC  // used for Get_Element to emulate strange VO behaviour
@@ -454,10 +454,7 @@ BEGIN NAMESPACE XSharp
             FOR VAR i := 1 UPTO index:Length
                 index[i] -= 1
             NEXT
-            RETURN SELF:__GetElement(index)
-
-        PUBLIC METHOD GetEnumerator() AS IEnumerator STRICT
-            RETURN SELF:_internalList:GetEnumerator()
+            RETURN SELF:__GetElement(index) 
 
         INTERNAL CLASS ArrayDebugView
             PRIVATE _value AS ARRAY

@@ -1,4 +1,4 @@
-﻿USING System
+USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
@@ -141,7 +141,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             LOCAL a
             Dimension a(10)
             FillArray(a)
-            LOCAL u := a as USUAL
+            LOCAL u := a AS USUAL
             Assert.True(IsArray(u))
             Assert.True(u[1] == 1)
             Assert.True(u[10] == 10)
@@ -151,8 +151,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.True(u[5,2] == 10)
             //Assert.True(u[6,2] == 10)
 
-        STATIC METHOD FillArray(a as __FoxArray) as void
-            FOR VAR i := 1 to ALen(a)
+        STATIC METHOD FillArray(a AS __FoxArray) AS VOID
+            FOR VAR i := 1 TO ALen(a)
                 a[i] := i
             NEXT
         [Fact, Trait("Category", "FoxArray")];
@@ -314,5 +314,34 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             y := ASubscript (aTest , 6 , 2 ) // Element 6 , 2 = get the corresponding col subscript
             ? "aTest ["+x:Tostring()+"," + y:Tostring()+ "] must show '.F.':" , aTest [x,y]
             Assert.True( .F. == (LOGIC) aTest [x,y])
+
+        [Fact, Trait("Category", "FoxArray")];
+		ASYNC METHOD ALenTests() AS VOID
+            LOCAL arr
+			DIMENSION arr(1,1)
+            Assert.Equal(1U, ALen(arr,0))
+            Assert.Equal(1U, ALen(arr,1))
+            Assert.Equal(1U, ALen(arr,2))
+
+			DIMENSION arr(3,1)
+            Assert.Equal(3U, ALen(arr,0))
+            Assert.Equal(3U, ALen(arr,1))
+            Assert.Equal(1U, ALen(arr,2))
+
+			DIMENSION arr(1,3)
+            Assert.Equal(3U, ALen(arr,0))
+            Assert.Equal(1U, ALen(arr,1))
+            Assert.Equal(3U, ALen(arr,2))
+            Assert.Throws<ArgumentOutOfRangeException>( { => ALen(arr,3) == 3 })
+
+            DIMENSION arr(4,5)
+            Assert.Equal(20U, ALen(arr,0))
+            Assert.Equal(4U,  ALen(arr,1))
+            Assert.Equal(5U,  ALen(arr,2))
+
+            DIMENSION arr(100)
+            Assert.Equal(100U, ALen(arr,0))
+            Assert.Equal(100U, ALen(arr,1))
+            Assert.Equal(0U,   ALen(arr,2))
     END CLASS
 END NAMESPACE

@@ -10,6 +10,7 @@ USING System.Runtime.Serialization
 USING System.Diagnostics
 USING System.Text
 USING System.Collections
+
 USING XSharp.Internal
 // use these UDCs to remove the attributes when needed during debugging
 #define USEATTRIB
@@ -37,8 +38,7 @@ BEGIN NAMESPACE XSharp
         IIndexedProperties, ;
         IIndexer, ;
         IDisposable,;
-        ISerializable,;
-        IEnumerable
+        ISerializable
 
         #region STATIC fields
         /// <exclude />
@@ -715,19 +715,6 @@ BEGIN NAMESPACE XSharp
 
             #endregion
 
-        #region implementation IEnumerable
-        PUBLIC METHOD GetEnumerator() AS IEnumerator STRICT
-            IF SELF:IsArray
-                VAR ienum := _arrayValue:GetEnumerator()
-                RETURN ienum
-            ENDIF
-            IF SELF:IsObject .AND. SELF:_refData IS IEnumerable VAR oIEnum
-                RETURN oIEnum:GetEnumerator()
-            ENDIF
-            THROW NotSupportedException{"This usual type does not support Enumeration"}
-
-
-        #endregion
         #region implementation IComparable
         /// <summary>This method is needed to implement the IComparable interface.</summary>
         PUBLIC METHOD CompareTo(o AS OBJECT) AS LONG
@@ -1987,6 +1974,7 @@ BEGIN NAMESPACE XSharp
             END SWITCH
             THROW ConversionError(ARRAY, TYPEOF(ARRAY), u)
 
+
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [NODEBUG];
         STATIC OPERATOR IMPLICIT(u AS __Usual) AS CODEBLOCK
@@ -3000,16 +2988,17 @@ BEGIN NAMESPACE XSharp
             END GET
         END PROPERTY
         STATIC INTERNAL METHOD ConversionError(toTypeString AS STRING, toType AS System.Type, u AS __Usual) AS Error
-            VAR	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), toTypeString)
+            VAR	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(u:Type), toTypeString)
             VAR err			:= Error{Gencode.EG_DATATYPE,"USUAL", cMessage}
             err:ArgTypeReqType:= toType
             err:ArgNum		:= 1
+            err:ArgType     := u:Type
             err:FuncSym		:= "USUAL => "+toTypeString
             err:Args        := <OBJECT>{u}
             RETURN err
 
         STATIC INTERNAL METHOD ConversionError(typeNum AS DWORD, toType AS System.Type, u AS __Usual) AS Error
-            VAR	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(UsualType(u)), TypeString(DWORD(typeNum)))
+            VAR	cMessage	:= VO_Sprintf(VOErrors.USUALCONVERSIONERR, TypeString(u:Type), TypeString(DWORD(typeNum)))
             VAR err			:= Error{Gencode.EG_DATATYPE,"USUAL", cMessage}
             err:ArgTypeReqType:= toType
             err:ArgNum		:= 1
@@ -3019,7 +3008,7 @@ BEGIN NAMESPACE XSharp
             RETURN err
 
         STATIC INTERNAL METHOD OverflowError(ex AS OverflowException, toTypeString AS STRING, toType AS System.Type, u AS __Usual) AS Error
-            VAR message      := VO_Sprintf(VOErrors.USUALOVERFLOWERR, TypeString(UsualType(u)), toTypeString)
+            VAR message      := VO_Sprintf(VOErrors.USUALOVERFLOWERR, TypeString(u:Type), toTypeString)
             VAR err			 := Error{Gencode.EG_NUMOVERFLOW, "USUAL", message}
             err:ArgTypeReqType := toType
             err:ArgNum		 := 1

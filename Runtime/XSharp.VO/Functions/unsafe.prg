@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Runtime.InteropServices
@@ -15,19 +15,19 @@ USING System.Runtime.InteropServices
 /// </returns>
 UNSAFE	FUNCTION DoSendMail(hWndOwner AS IntPtr,cFiles AS STRING,fAsynchWork AS LOGIC) AS VOID
     /// THROW NotImplementedException{}
-    RETURN 
-    
-    
+    RETURN
+
+
  FUNCTION GetMimeType(sFileName AS STRING) AS STRING
     LOCAL sExt AS STRING
 	sExt := System.IO.Path.GetExtension(sFileName)
-    RETURN Microsoft.Win32.Registry.GetValue("HKEY_CLASSES_ROOT\"+sExt,"Content Type",""):ToString()  
-    
-    
+    RETURN Microsoft.Win32.Registry.GetValue("HKEY_CLASSES_ROOT\"+sExt,"Content Type",""):ToString()
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/showbitmap/*" />
 FUNCTION ShowBitmap(hWnd AS IntPtr,cFileName AS STRING,cTitle AS STRING) AS LOGIC
     RETURN VOBitmaps.Show(hWnd, cFileName, cTitle)
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/stretchbitmap/*" />
 FUNCTION StretchBitmap(hWnd AS IntPtr,cFileName AS STRING,cTitle AS STRING) AS LOGIC
     RETURN VOBitmaps.Stretch(hWnd, cFileName, cTitle)
@@ -102,10 +102,10 @@ INTERNAL _DLL FUNCTION GetStockObject( fnObject AS INT ) AS IntPtr PASCAL:GDI32.
 #define GMEM_MOVEABLE 0x0002
 #define SWP_NOMOVE    0x0002
 #define SWP_NOZORDER  0x0004
-#define DIB_PAL_COLORS 1 
-#define DIB_RGB_COLORS 0 
-#define SRCCOPY (DWORD) 0x00CC0020 
-#define BITSPIXEL 12 
+#define DIB_PAL_COLORS 1
+#define DIB_RGB_COLORS 0
+#define SRCCOPY (DWORD) 0x00CC0020
+#define BITSPIXEL 12
 #define DEFAULT_PALETTE 15
 #define RC_PALETTE 0x0100
 #define RASTERCAPS 38
@@ -127,7 +127,7 @@ INTERNAL VOSTRUCT RGBQUAD
     MEMBER rgbGreen    AS BYTE
     MEMBER rgbRed      AS BYTE
     MEMBER rgbReserved AS BYTE
-        
+
 INTERNAL VOSTRUCT BITMAPINFOHEADER
     MEMBER biSize          AS DWORD
     MEMBER biWidth         AS LONGINT
@@ -140,20 +140,20 @@ INTERNAL VOSTRUCT BITMAPINFOHEADER
     MEMBER biYPelsPerMeter AS LONGINT
     MEMBER biClrUsed       AS DWORD
     MEMBER biClrImportant  AS DWORD
-        
+
 INTERNAL VOSTRUCT RECT
     MEMBER left   AS LONGINT
     MEMBER top    AS LONGINT
     MEMBER right  AS LONGINT
     MEMBER bottom AS LONGINT
-        
+
 INTERNAL VOSTRUCT BITMAPFILEHEADER ALIGN 2
     MEMBER  bfType 		AS WORD
     MEMBER  bfSize 		AS DWORD
     MEMBER  bfReserved1 	AS WORD
     MEMBER  bfReserved2 	AS WORD
     MEMBER  bfOffBits 	AS DWORD
-        
+
 INTERNAL VOSTRUCT PAINTSTRUCT
     MEMBER hdc AS IntPtr
     MEMBER fErase AS INT // LOGIC
@@ -161,35 +161,35 @@ INTERNAL VOSTRUCT PAINTSTRUCT
     MEMBER fRestore AS INT // LOGIC
     MEMBER fIncUpdate AS INT // LOGIC
     MEMBER DIM rgbReserved[32] AS BYTE
-        
+
 INTERNAL VOSTRUCT BITMAPINFO
     MEMBER bmiHeader IS BITMAPINFOHEADER
     MEMBER DIM bmiColors[1] IS RGBQUAD
-        
+
 INTERNAL VOSTRUCT LOGPALETTE
     MEMBER palVersion    AS WORD
     MEMBER palNumEntries AS WORD
     MEMBER DIM palPalEntry[1] IS PALETTEENTRY
-        
+
 INTERNAL VOSTRUCT PALETTEENTRY
     MEMBER peRed   AS BYTE
     MEMBER peGreen AS BYTE
     MEMBER peBlue  AS BYTE
     MEMBER peFlags AS BYTE
-        
+
 INTERNAL CLASS VOBitmaps
     PROTECTED hDIBInfo AS IntPtr
     PROTECTED hDDBitmap AS IntPtr
     PROTECTED offBits AS WORD
     PROTECTED hOldBitmap AS IntPtr
     PROTECTED hMemDC AS IntPtr
-        
+
     STATIC METHOD Show(hWnd AS IntPtr,cFileName AS STRING,cTitle AS STRING) AS LOGIC
         RETURN Process(hWnd, cFileName, cTitle, FALSE)
-            
+
     STATIC METHOD Stretch(hWnd AS IntPtr,cFileName AS STRING,cTitle AS STRING) AS LOGIC
         RETURN Process(hWnd, cFileName, cTitle, TRUE)
-        
+
     STATIC METHOD Process(hWnd AS IntPtr, cFileName AS STRING, cTitle AS STRING, stretch AS LOGIC) AS LOGIC
         LOCAL bRet := FALSE AS LOGIC
         LOCAL oBitMap := VOBitmaps{} AS VOBitmaps
@@ -203,18 +203,18 @@ INTERNAL CLASS VOBitmaps
         ENDIF
         oBitMap:Free()
         RETURN bRet
-        
+
     PRIVATE METHOD Alloc() AS VOID
         SELF:hDIBInfo := GlobalAlloc(  GMEM_MOVEABLE, (DWORD)(sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD) ) )
         RETURN
-        
+
     PRIVATE METHOD Free() AS VOID
         IF SELF:hDIBInfo != IntPtr.Zero
             GlobalFree( SELF:hDIBInfo )
             SELF:hDIBInfo := IntPtr.Zero
         ENDIF
         RETURN
-        
+
     PRIVATE METHOD  InitDIB( hWnd AS IntPtr, wOperation AS WORD, cWinTitle AS STRING, cFileName AS STRING ) AS LOGIC
         LOCAL lpbi       AS BITMAPINFOHEADER
         LOCAL rectNew    IS RECT
@@ -222,105 +222,105 @@ INTERNAL CLASS VOBitmaps
         LOCAL rectWindow IS RECT
         LOCAL uiDeltaX   AS DWORD
         LOCAL uiDeltaY   AS DWORD
-        
+
         SELF:Alloc()
         IF ! SELF:ReadDIB( cFileName )
             RETURN FALSE
         ENDIF
-            
+
         lpbi :=  (BITMAPINFOHEADER PTR) GlobalLock( SELF:hDIBInfo )
-            
+
         SetWindowText( hWnd, cWinTitle )
-            
+
         IF wOperation == SETDIB
             rectNew:left	  := 0
             rectNew:top 	  := 0
             rectNew:right	  := (WORD)lpbi:biWidth
             rectNew:bottom	  := (WORD)lpbi:biHeight
-                
+
             GetClientRect( hWnd, @rectClient )
             GetWindowRect( hWnd, @rectWindow )
-                
+
             uiDeltaX := (DWORD) ( rectWindow:right -  rectWindow:left - rectClient:right )
             uiDeltaY := (DWORD) ( rectWindow:bottom - rectWindow:top - rectClient:bottom )
-                
+
             rectNew:bottom += (INT) uiDeltaY
             rectNew:right  += (INT) uiDeltaX
-                
+
             SetWindowPos( hWnd, NULL, 0, 0, rectNew:right - rectNew:left, rectNew:bottom - rectNew:top + 1,	SWP_NOMOVE | SWP_NOZORDER )
         ENDIF
-            
+
         InvalidateRect( hWnd, NULL, TRUE )
-            
+
         GlobalUnlock( SELF:hDIBInfo )
-            
+
         RETURN TRUE
-            
+
     PRIVATE METHOD ReadDIB( cDibFile AS STRING ) AS LOGIC
         LOCAL hf    := IntPtr.Zero  AS IntPtr
         LOCAL lpbi  := IntPtr.Zero  AS BITMAPINFOHEADER
         LOCAL bf                    IS BITMAPFILEHEADER
         LOCAL nNumColors            AS WORD
         LOCAL result := FALSE       AS LOGIC
-        TRY            
+        TRY
             hf := FOpen2( cDibFile, FO_READ + FO_DENYNONE )
-            
+
             IF hf == F_ERROR
-                THROW Error.VOError( EG_OPEN, "ReadDIB", "cDibFile", 2, { cDibFile } )   
+                THROW Error.VOError( EG_OPEN, "ReadDIB", "cDibFile", 2, { cDibFile } )
             ENDIF
-            
+
             lpbi := (BITMAPINFOHEADER PTR) GlobalLock( SELF:hDIBInfo )
-            
+
             IF sizeof( BITMAPFILEHEADER ) != FRead3( hf, @bf, sizeof( BITMAPFILEHEADER ) )
-                THROW Error.VOError( EG_READ, "ReadDIB", "cDibFile", 2, { cDibFile } )   
+                THROW Error.VOError( EG_READ, "ReadDIB", "cDibFile", 2, { cDibFile } )
             ENDIF
-            
+
             IF bf:bfType != 0x4d42   /* 'BM' */
-                THROW Error.VOError( EG_UNSUPPORTED, "ReadDIB", "cDibFile", 2, { cDibFile } )   
+                THROW Error.VOError( EG_UNSUPPORTED, "ReadDIB", "cDibFile", 2, { cDibFile } )
             ENDIF
-            
+
             IF sizeof( BITMAPINFOHEADER ) != FRead3( hf, lpbi, sizeof( BITMAPINFOHEADER ) )
-                THROW Error.VOError( EG_READ, "ReadDIB", "cDibFile", 2, { cDibFile } )   
+                THROW Error.VOError( EG_READ, "ReadDIB", "cDibFile", 2, { cDibFile } )
             ENDIF
-            
+
             nNumColors := (WORD) lpbi:biClrUsed
-            
+
             IF nNumColors == 0
                 IF lpbi:biBitCount != 24
                     nNumColors := (WORD) (1 << lpbi:biBitCount) /* standard size table */
                 ENDIF
             ENDIF
-            
+
             IF lpbi:biClrUsed == 0
                 lpbi:biClrUsed := (DWORD) nNumColors
             ENDIF
-            
+
             IF lpbi:biSizeImage == 0
                 lpbi:biSizeImage := (DWORD) ( ((((lpbi:biWidth * lpbi:biBitCount) + 31) & ~31) >> 3) * lpbi:biHeight)
             ENDIF
-            
+
             GlobalUnlock( SELF:hDIBInfo )
-            
+
             SELF:hDIBInfo := GlobalReAlloc( SELF:hDIBInfo, lpbi:biSize + nNumColors * sizeof(RGBQUAD) + lpbi:biSizeImage, 0 )
-            
+
             IF SELF:hDIBInfo == IntPtr.Zero
-                THROW Error.VOError( EG_MEM, "ReadDIB", "cDibFile", 2, { cDibFile } )   
+                THROW Error.VOError( EG_MEM, "ReadDIB", "cDibFile", 2, { cDibFile } )
             ENDIF
-            
+
             lpbi := (BITMAPINFOHEADER PTR) GlobalLock( SELF:hDIBInfo )
-            
+
             FRead3( hf, ((BYTE PTR) lpbi) + lpbi:biSize, nNumColors * sizeof( RGBQUAD ) )
-            
+
             SELF:offBits := (WORD) (lpbi:biSize + nNumColors * sizeof( RGBQUAD ) )
-            
+
             IF bf:bfOffBits != 0
                 FSeek3( hf, (INT) bf:bfOffBits, FS_SET )
             ENDIF
-            
+
             IF lpbi:biSizeImage == FRead3( hf, ((BYTE PTR) lpbi) + SELF:offBits, lpbi:biSizeImage )
                 result := TRUE
             ENDIF
-            
+
         FINALLY
             IF (SELF:hDIBInfo != IntPtr.Zero)
                 GlobalUnlock( SELF:hDIBInfo )
@@ -328,9 +328,9 @@ INTERNAL CLASS VOBitmaps
             IF hf != IntPtr.Zero .AND. hf !=F_ERROR
                 FClose( hf )
             ENDIF
-        END TRY    
+        END TRY
         RETURN result
-        
+
     PRIVATE METHOD PaintDIB( hWnd AS IntPtr, wOperation AS WORD, cDibFile AS STRING ) AS VOID
         LOCAL ps         IS PAINTSTRUCT
         LOCAL hDC        := IntPtr.Zero AS IntPtr
@@ -342,50 +342,50 @@ INTERNAL CLASS VOBitmaps
         LOCAL lpHeader  := NULL  AS BITMAPINFOHEADER
         LOCAL lpBmpInfo := NULL  AS BITMAPINFOHEADER
         LOCAL fError     := FALSE AS LOGIC
-            
+
         hDC 	:= BeginPaint( hWnd, @ps )
-            
+
         lpBmpInfo := (BITMAPINFOHEADER PTR) GlobalLock( SELF:hDIBInfo )
-            
+
         // Test for RC_PALETTE added my Meinhard, in order to fix bug with StretchBitmap()
         // Not sure why in VO the same code works correctly, without it..
         IF lpBmpInfo:biClrUsed != 0 .AND. ((GetDeviceCaps( hDC, RASTERCAPS ) ~ RC_PALETTE) == RC_PALETTE)
             hPalette := SELF:MakeDIBPalette( lpBmpInfo, hDC )
-                
+
             IF hPalette == IntPtr.Zero
                 fError := TRUE
             ENDIF
-                
+
             IF ! fError
                 hOldPal := SelectPalette( hDC, hPalette, FALSE )
-                    
+
                 RealizePalette( hDC )
-                    
+
                 IF lpBmpInfo:biBitCount < 24
                     lpHeader := SELF:MakeIndexHeader( lpBmpInfo )
-                        
+
                     IF lpHeader != IntPtr.Zero
                         fNewHeader := TRUE
                     ELSE
                         fError := TRUE
                     ENDIF
-                        
+
                     wDIBUse := DIB_PAL_COLORS
                 ELSE
                     lpHeader := lpBmpInfo
                     wDIBUse  := DIB_RGB_COLORS
                 ENDIF
-            ENDIF   
+            ENDIF
         ELSE
             lpHeader := lpBmpInfo
             wDIBUse  := DIB_RGB_COLORS
         ENDIF
-            
+
         IF ! fError
             SELF:hMemDC	  := CreateCompatibleDC( hDC )
             SELF:hDDBitmap  := CreateCompatibleBitmap( hDC, (WORD) lpBmpInfo:biWidth, (WORD) lpBmpInfo:biHeight )
             SELF:hOldBitmap := SelectObject( SELF:hMemDC, SELF:hDDBitmap )
-                
+
             IF wOperation == SETDIB
                 SetDIBitsToDevice( hDC,; 					// hDC
                     0,;								// DestX
@@ -399,7 +399,7 @@ INTERNAL CLASS VOBitmaps
                     ((BYTE PTR)lpBmpInfo) + SELF:offBits,;		   // lpBits
                     (BITMAPINFO PTR) lpHeader,;			// lpBitsInfo
                     wDIBUse )						// wUsage
-                    
+
             ELSEIF wOperation == STRETCHDIB
                 GetClientRect( hWnd, @Rectangle )
                 StretchDIBits( hDC, 0, 0, Rectangle:right, Rectangle:bottom,;
@@ -407,30 +407,30 @@ INTERNAL CLASS VOBitmaps
                     ((BYTE PTR)lpBmpInfo) + SELF:offBits,;
                     (BITMAPINFO PTR) lpHeader, wDIBUse, SRCCOPY )
             ENDIF
-                
+
             SelectPalette( hDC, hOldPal, FALSE )
-        ENDIF   
-            
+        ENDIF
+
         SelectObject( SELF:hMemDC, SELF:hOldBitmap )
         DeleteDC( SELF:hMemDC )
         DeleteObject( SELF:hDDBitmap )
-            
+
         SELF:hDDBitmap := IntPtr.Zero
         DeleteObject( hPalette )
         hPalette := IntPtr.Zero
-            
+
         EndPaint( hWnd, @ps )
-            
+
         IF fNewHeader
             MemFree( lpHeader )
         ENDIF
-            
+
         GlobalUnlock( SELF:hDIBInfo )
-            
+
         IF fError
-            THROW Error.VOError( EG_CORRUPTION, "PaintDIB", "cDibFile", 3, { cDibFile } )   
+            THROW Error.VOError( EG_CORRUPTION, "PaintDIB", "cDibFile", 3, { cDibFile } )
         ENDIF
-        
+
     PRIVATE METHOD  MakeDIBPalette( lpBmpInfo AS BITMAPINFOHEADER PTR, hDC AS IntPtr ) AS IntPtr
         LOCAL lpPal   := IntPtr.Zero AS LOGPALETTE
         LOCAL lpRGB   AS RGBQUAD
@@ -439,18 +439,18 @@ INTERNAL CLASS VOBitmaps
         TRY
             IF lpBmpInfo:biClrUsed != 0 .AND. lpBmpInfo:biBitCount < 24
                 lpPal := (LOGPALETTE PTR) MemAlloc( sizeof(LOGPALETTE) + (WORD)lpBmpInfo:biClrUsed * sizeof(PALETTEENTRY) )
-                    
+
                 IF lpPal == IntPtr.Zero
                     RETURN IntPtr.Zero
                 ENDIF
-                    
+
                 lpPal:palVersion	  := 0x300
                 lpPal:palNumEntries := (WORD) lpBmpInfo:biClrUsed
-                    
+
                 lpRGB := (RGBQUAD PTR)(lpBmpInfo + lpBmpInfo:biSize)
-                    
+
                 i := 0
-                    
+
                 DO WHILE i <  lpBmpInfo:biClrUsed
                     lpPal:palPalEntry[i + 1]:peRed      := lpRGB:rgbRed
                     lpPal:palPalEntry[i + 1]:peGreen    := lpRGB:rgbGreen
@@ -459,9 +459,9 @@ INTERNAL CLASS VOBitmaps
                     i++
                     lpRGB++
                 ENDDO
-                    
+
                 hLogPal := CreatePalette( (LOGPALETTE PTR) lpPal )
-                    
+
             ELSE
                 IF GetDeviceCaps( hDC, BITSPIXEL ) < 24
                     hLogPal := CreateHalftonePalette( hDC )
@@ -475,45 +475,51 @@ INTERNAL CLASS VOBitmaps
             ENDIF
         END TRY
         RETURN hLogPal
-            
+
     PRIVATE METHOD  MakeIndexHeader( lpBmpInfo AS BITMAPINFOHEADER PTR ) AS BITMAPINFOHEADER PTR
         LOCAL lpPalInfo := NULL AS BITMAPINFOHEADER PTR
         LOCAL lpTable AS WORD PTR
         LOCAL i AS DWORD
-            
+
         IF lpBmpInfo:biClrUsed != 0
             lpPalInfo := (BITMAPINFOHEADER PTR) MemAlloc((DWORD)  (WORD)lpBmpInfo:biSize + (WORD)lpBmpInfo:biClrUsed * sizeof(WORD) )
-                
+
             IF lpPalInfo != IntPtr.Zero
                 MemCopy( lpPalInfo, lpBmpInfo, sizeof( BITMAPINFOHEADER ) ) // *lpPalInfo := *lpBmpInfo;
                 lpTable := (WORD PTR)(lpPalInfo + lpPalInfo:biSize)
                 i := 0
                 DO WHILE i <  lpBmpInfo:biClrUsed
                     lpTable[1] := (WORD) i  // *lpTable++ := i
-                    lpTable++		   
+                    lpTable++
                     i++
                 ENDDO
             ENDIF
         ENDIF
-            
+
         RETURN lpPalInfo
-            
+
 END CLASS
-    
-END NAMESPACE    
-    
-    
+
+END NAMESPACE
+
+
 #endregion
 
 INTERNAL STATIC CLASS XSharp.Win32
-     CONST SW_SHOWNORMAL  := 1 AS LONG 
+     CONST SW_SHOWNORMAL  := 1 AS LONG
     [DllImport("kernel32.dll", CharSet := CharSet.Ansi )];
     STATIC INTERNAL METHOD WinExec(lpCmdLine AS STRING, uCmdShow AS DWORD) AS DWORD
     [DllImport("kernel32.dll" )];
-    STATIC INTERNAL METHOD GetCurrentProcess() AS IntPtr 
+    STATIC INTERNAL METHOD GetCurrentProcess() AS IntPtr
     [DllImport("kernel32.dll" )];
     STATIC INTERNAL METHOD VirtualQueryEx(hProcess AS IntPtr, lpAddress AS IntPtr, ;
         lpBuffer AS _WINMEMORY_BASIC_INFORMATION, dwLength AS DWORD) AS DWORD PASCAL
+    [DllImport("kernel32.dll")] ;
+    STATIC INTERNAL METHOD IsBadReadPtr(hMemory AS IntPtr, dwSize AS DWORD) AS LOGIC PASCAL
+    [DllImport("kernel32.dll")] ;
+    STATIC INTERNAL METHOD IsBadWritePtr(hMemory AS IntPtr, dwSize AS DWORD) AS LOGIC PASCAL
+    [DllImport("kernel32.dll")] ;
+    STATIC INTERNAL METHOD IsBadCodePtr(hMemory AS IntPtr, dwSize AS DWORD) AS LOGIC PASCAL
 
 
 

@@ -30,6 +30,16 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(1, Sign(1.2345))
             Assert.Equal(-1, Sign(-1.2345))
             Assert.Equal(0, Sign(0.0))
+            
+            c1 := $123.45
+            c1 := - c1
+            Assert.True(c1 == - $123.45)
+            Assert.True(c1 == $0 - $123.45)
+            Assert.True(c1 + $123.45 == $0.0)
+
+            Assert.True(Integer(c1) == -123)
+            Assert.True(Integer(-c1) == 123)
+            Assert.True(Integer($10.25) == 10)
 
             LOCAL u AS USUAL
             u := Val("$12345")

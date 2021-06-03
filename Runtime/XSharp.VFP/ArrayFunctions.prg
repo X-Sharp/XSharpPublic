@@ -16,7 +16,7 @@ FUNCTION __FoxFillArray(uArray AS USUAL, uValue AS USUAL) AS USUAL
     ENDIF
     RETURN uArray
 
-FUNCTION __FoxRedim(uCurrent AS USUAL, nRows AS DWORD, nCols := 1 AS DWORD) AS __FoxArray
+FUNCTION __FoxRedim(uCurrent AS USUAL, nRows AS DWORD, nCols := 0 AS DWORD) AS __FoxArray
     LOCAL result := NULL AS __FoxArray
     IF IsArray(uCurrent)
         LOCAL oldArray := uCurrent AS ARRAY
@@ -41,8 +41,10 @@ FUNCTION ALen(a AS __FoxArray, nArrayAttribute AS LONG) AS DWORD
         ELSE
             RETURN 0
         ENDIF
+    CASE 0
+            RETURN (DWORD) a:Count
     OTHERWISE
-        RETURN (DWORD) a:Count
+        THROW ArgumentOutOfRangeException { nameof(nArrayAttribute),nArrayAttribute, "'nArrayAttribute' number is out of range (expected 0, 1 or 2)"}
     END SWITCH
 
 
@@ -166,7 +168,7 @@ FUNCTION ShowFoxArray ( aTest AS __FoxArray , cPrefix := "" AS STRING ) AS VOID
 	IF aTest:MultiDimensional
 		FOR i := 1 TO ALen ( aTest , 1 )
 			FOR j := 1 TO ALen ( aTest , 2 )
-				 QOut(cPrefix + "[" + AElement ( aTest , i , j ):ToString() + "] [" + i:ToString() + "," + j:ToString() + "] = " + AsString ( aTest [i,j] ) + ;
+				 QOut(cPrefix + "[" + AsString(AElement ( aTest , i , j )) + "] [" + i:ToString() + "," + j:ToString() + "] = " + AsString ( aTest [i,j] ) + ;
 					 " " + GetElementValueType ( aTest[i,j] ))
 			NEXT
 		NEXT

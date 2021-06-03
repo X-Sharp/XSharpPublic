@@ -314,5 +314,23 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             y := ASubscript (aTest , 6 , 2 ) // Element 6 , 2 = get the corresponding col subscript
             ? "aTest ["+x:Tostring()+"," + y:Tostring()+ "] must show '.F.':" , aTest [x,y]
             Assert.True( .F. == (LOGIC) aTest [x,y])
+
+        [Fact, Trait("Category", "FoxArray")];
+		ASYNC METHOD ALenTests() AS VOID
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+            LOCAL arr
+            DIMENSION arr(1,1)
+            Assert.True(ALen(arr,0) == 1)
+            Assert.True(ALen(arr,1) == 1)
+            Assert.True(ALen(arr,2) == 1)
+            DIMENSION arr(3,1)
+            Assert.True(ALen(arr,0) == 3)
+            Assert.True(ALen(arr,1) == 3)
+            Assert.True(ALen(arr,2) == 1)
+            DIMENSION arr(1,3)
+            Assert.True(ALen(arr,0) == 3)
+            Assert.True(ALen(arr,1) == 1)
+            Assert.True(ALen(arr,2) == 3)
+            Assert.Throws<ArgumentOutOfRangeException>( { => ALen(arr,3) == 3 })
     END CLASS
 END NAMESPACE

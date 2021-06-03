@@ -43,7 +43,35 @@ namespace Microsoft.CodeAnalysis.CSharp
             return BetterResult.Neither;
         }
 
-
+        private BetterResult DetermineAssemblyPriority(AssemblySymbol asm1, AssemblySymbol asm2)
+        {
+            // Prefer overload in non core over core.
+            if (asm1.IsRTDLL(XSharpTargetDLL.Core))
+            {
+                if (!asm2.IsRTDLL(XSharpTargetDLL.Core))
+                {
+                    return BetterResult.Right;
+                }
+            }
+            if (asm2.IsRTDLL(XSharpTargetDLL.Core))
+            {
+                return BetterResult.Left;
+            }
+            // prefer overload in dialect specific over other assemblies
+            if (asm1.IsRTDLL(XSharpTargetDLL.VO) ||
+                asm1.IsRTDLL(XSharpTargetDLL.VFP) ||
+                asm1.IsRTDLL(XSharpTargetDLL.XPP))
+            {
+                return BetterResult.Left;
+            }
+            if (asm2.IsRTDLL(XSharpTargetDLL.VO) ||
+                asm2.IsRTDLL(XSharpTargetDLL.VFP) ||
+                asm2.IsRTDLL(XSharpTargetDLL.XPP))
+            {
+                return BetterResult.Right;
+            }
+            return BetterResult.Neither;
+        }
         private bool VOBetterFunctionMember<TMember>(
             MemberResolutionResult<TMember> m1,
             MemberResolutionResult<TMember> m2,
@@ -63,13 +91,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var asm2 = m2.Member.ContainingAssembly;
                 if (asm1 != asm2)
                 {
-                    // prefer XSharpCore over XSharpVO, so typed versions get preference over untyped versions
-                    //if (asm1.IsXSharpCore() && asm2.IsXSharpVO())
-                    //{
-                    //    result = BetterResult.Left;
-                    //    return true;
-                    //}
-                    // prefer non runtime over runtime to allow overriding built-in functions
+                    // prefer non runtime over runtime to allow customers to override built-in functions
                     if (asm1.IsRT() != asm2.IsRT())
                     {
                         if (asm1.IsRT())
@@ -83,41 +105,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return true;
                         }
                     }
-                    if (asm1.IsRTDLL(XSharpTargetDLL.Core))
+                    if (asm1.IsRT() && asm2.IsRT())
                     {
-                        if (asm2.IsRTDLL(XSharpTargetDLL.VFP))
-                        {
-                            result = BetterResult.Right;
+                        result = DetermineAssemblyPriority(asm1, asm2);
+                        if (result != BetterResult.Neither)
                             return true;
-                        }
-                        if (asm2.IsRTDLL(XSharpTargetDLL.XPP))
-                        {
-                            result = BetterResult.Right;
-                            return true;
-                        }
-                        if (asm2.IsRTDLL(XSharpTargetDLL.VO))
-                        {
-                            result = BetterResult.Right;
-                            return true;
-                        }
-                    }
-                    if (asm2.IsRTDLL(XSharpTargetDLL.Core))
-                    {
-                        if (asm1.IsRTDLL(XSharpTargetDLL.VFP))
-                        {
-                            result = BetterResult.Left;
-                            return true;
-                        }
-                        if (asm1.IsRTDLL(XSharpTargetDLL.XPP))
-                        {
-                            result = BetterResult.Left;
-                            return true;
-                        }
-                        if (asm1.IsRTDLL(XSharpTargetDLL.VO))
-                        {
-                            result = BetterResult.Left;
-                            return true;
-                        }
                     }
                     // prefer functions/method in the current assembly over external methods
                     if (asm1.IsFromCompilation(Compilation))

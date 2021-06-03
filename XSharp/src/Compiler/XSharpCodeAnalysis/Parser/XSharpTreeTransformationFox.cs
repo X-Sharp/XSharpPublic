@@ -34,7 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ContextAwareSyntax syntaxFactory, string fileName) :
                     base(parser, options, pool, syntaxFactory, fileName)
         {
-            _foxarrayType = GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
+            _foxarrayType = GenerateQualifiedName(XSharpQualifiedTypeNames.FoxArray);
 
         }
 
@@ -151,7 +151,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             base.EnterDimensionVar(context);
             var name = context.Id.GetText();
-            AddLocalName(name, context, false);
+            bool local = false;
+            if (context.Parent is XP.FoxDimensionDeclContext foxdimdecl)
+            {
+                local = foxdimdecl.T.Type == XP.LOCAL;
+            }
+            AddLocalName(name, context, local);
         }
 
         protected override ExpressionSyntax HandleFoxArrayAssign(XSharpParserRuleContext context, XSharpParserRuleContext Left, XSharpParserRuleContext Right)
@@ -189,21 +194,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFoxDimensionDecl([NotNull] XP.FoxDimensionDeclContext context)
         {
-            if (!_options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
-            {
-                context.AddError(new ParseErrorData(context, ErrorCode.ERR_FoxDimensionNeedsMemvars));
-            }
+            bool hasError = false;
             context.SetSequencePoint();
             var stmts = _pool.Allocate<StatementSyntax>();
             foreach (var dimvar in context._DimVars)
             {
                 var name = dimvar.Id.GetText();
                 MemVarFieldInfo fieldInfo = findVar(name);
-                if (context.T.Type == XP.LOCAL)
+
+                if (fieldInfo.IsLocal)
                 {
-                    var decl = GenerateLocalDecl(name, _foxarrayType, GenerateLiteralNull());
-                    decl.XNode = context;
-                    stmts.Add(decl);
+                    // declare local only the first time in a method/function
+                    if (!fieldInfo.IsFoxArray)
+                    {
+                        var decl = GenerateLocalDecl(name, _foxarrayType, GenerateLiteralNull());
+                        decl.XNode = context;
+                        stmts.Add(decl);
+                    }
+                }
+                else
+                {
+                    if (!_options.HasOption(CompilerOption.MemVars, context, PragmaOptions) && !hasError)
+                    {
+                        context.AddError(new ParseErrorData(context, ErrorCode.ERR_FoxDimensionNeedsMemvars));
+                        hasError = true;
+                    }
                 }
                 fieldInfo.IsFoxArray = true;
                 ArgumentListSyntax args;
@@ -211,7 +226,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ExpressionSyntax mcall;
                 if (fieldInfo.IsLocal)
                 {
-                    arg1 = MakeArgument(GenerateSimpleName(name));
+                    if (fieldInfo.Context.Parent == context)
+                    {
+                        arg1 = MakeArgument(GenerateNIL());
+                    }
+                    else
+                    {
+                        arg1 = MakeArgument(GenerateSimpleName(name));
+                    }
                 }
                 else
                 {

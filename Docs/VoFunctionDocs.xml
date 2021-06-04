@@ -27773,4 +27773,9 @@
         </returns>
 
     </_run>
+	<oclone>
+	  <summary>Duplicate an object`.</summary>
+       <param name="o">The variable to duplicate. </param>
+	   <returns>A reference to a new object with the same values as the original object.</returns>
+	</oclone>
 </Runtimefunctions>

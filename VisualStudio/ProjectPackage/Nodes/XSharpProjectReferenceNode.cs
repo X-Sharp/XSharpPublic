@@ -52,42 +52,12 @@ namespace XSharp.Project
         protected override bool CanAddReference(out CannotAddReferenceErrorMessage errorHandler, out ReferenceNode existingNode)
         {
             existingNode = null;
-
-            //If source project has designer files of subtype form and if the target output (assembly) does not exists
-            //show a dialog that tells the user to build the target project before the project reference can be added
-            if (!File.Exists(this.ReferencedProjectOutputPath) && HasFormItems())
-            {
-                errorHandler = new CannotAddReferenceErrorMessage(ShowProjectReferenceErrorMessage2);
-                return false;
-            }
-
             //finally we must evaluate the the rules applied on the base class
             if (!base.CanAddReference(out errorHandler, out existingNode))
             {
                 return false;
             }
-
             return true;
-        }
-
-        /// <summary>
-        /// Evaluates all file node children of the project and returns true if anyone has subtype set to Form
-        /// </summary>
-        /// <returns>true if a Filenode with subtype Form is found</returns>
-        private bool HasFormItems()
-        {
-            List<XSharpFileNode> nodes = new List<XSharpFileNode>();
-            this.ProjectMgr.FindNodesOfType<XSharpFileNode>(nodes);
-            foreach (XSharpFileNode node in nodes)
-            {
-                //Todo
-                // if (node.FileType.IsWinFormSubType || node.FileType.IsWinUserControl)
-                // {
-                //   return true;
-                //}
-
-            }
-            return false;
         }
 
         /// <summary>
@@ -115,23 +85,7 @@ namespace XSharp.Project
             }
         }
 
-        /// <summary>
-        /// Shows Visual Studio message box with error message regarding project to project reference. Target Project must be built before
-        /// adding the the project to project reference.
-        /// The message box is not show in case the method has been called from automation
-        /// </summary>
-        private void ShowProjectReferenceErrorMessage2()
-        {
-            if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
-            {
-                string message = "Error referencing project";
-                string title = string.Empty;
-                OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                Utilities.ShowMessageBox(this.ProjectMgr.Site, title, message, icon, buttons, defaultButton);
-            }
-        }
+       
         #region Dispose Methods
         protected override void Dispose(bool disposing)
         {

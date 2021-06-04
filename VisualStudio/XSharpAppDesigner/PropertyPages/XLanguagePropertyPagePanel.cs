@@ -24,7 +24,6 @@ namespace XSharp.Project
     internal partial class XLanguagePropertyPagePanel : XPropertyPagePanel
     {
 
-        //todo Conditionally enable/disable certain options
         #region Constants
         internal const string LanguageCaption = "Language";
         internal const string CMDCaption = "Extra Command Line Options";
@@ -190,25 +189,6 @@ namespace XSharp.Project
                 chkUndefined.Checked = false;
                 chkLB.Checked = false;
                 this.ParentPropertyPage.IsDirty = true;
-            }
-            switch (dialect)
-            {
-                case "core":
-                case "foxpro":
-                    if (!chkAllowDot.Checked)
-                    {
-                        chkAllowDot.Checked = true;
-                        this.ParentPropertyPage.IsDirty = true;
-                    }
-                    break; 
-                default:
-                    if (chkAllowDot.Checked)
-                    {
-                        chkAllowDot.Checked = false;
-                        this.ParentPropertyPage.IsDirty = true;
-                    }
-                    break;
-
             }
         }
 

@@ -160,7 +160,7 @@ namespace XSharp.Project
     {
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
-        private XSharpDocumentWatcher _documentWatcher;
+        //private XSharpDocumentWatcher _documentWatcher;
         private IErrorList _errorList = null;
         private ITaskList _taskList = null;
         //private XSharpProjectSelector _projectSelector = null;
@@ -237,7 +237,7 @@ namespace XSharp.Project
             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
             XSharp.Project.XSharpMenuItems.Initialize(this);
 
-            this._documentWatcher = new XSharpDocumentWatcher(this);
+            //this._documentWatcher = new XSharpDocumentWatcher(this);
             _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
             var tmp = await GetServiceAsync(typeof(SVsTaskList));
             if (tmp != null)

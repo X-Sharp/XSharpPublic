@@ -1433,8 +1433,8 @@ namespace Microsoft.VisualStudio.Project
 
 		public void Build(uint options, IVsOutputWindowPane output, string target)
 		{
-			// We want to refresh the references if we are building with the Build or Rebuild target.
-			bool shouldRepaintReferences = (target == null || target == MsBuildTarget.Build || target == MsBuildTarget.Rebuild);
+            // We want to refresh the references if we are building with the Build or Rebuild target.
+            bool shouldRepaintReferences = false; //  (target == null || target == MsBuildTarget.Build || target == MsBuildTarget.Rebuild);
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (!NotifyBuildBegin()) return;
@@ -1459,8 +1459,8 @@ namespace Microsoft.VisualStudio.Project
 			{
                 // Now repaint references if that is needed.
                 // We hardly rely here on the fact the ResolveAssemblyReferences target has been run as part of the build.
-                // One scenario to think at is when an assembly reference is renamed on disk thus becomming unresolvable,
-                // but msbuild can actually resolve it.
+                // One scenario to think at is when an assembly reference is renamed on disk thus becoming unresolvable,
+                // but MsBuild can actually resolve it.
                 // Another one if the project was opened only for browsing and now the user chooses to build or rebuild.
                 ThreadHelper.ThrowIfNotOnUIThread();
                 if (shouldRepaintReferences && result.IsSuccessful)

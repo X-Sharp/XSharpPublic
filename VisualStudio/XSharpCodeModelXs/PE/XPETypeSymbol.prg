@@ -247,15 +247,9 @@ BEGIN NAMESPACE XSharpModel
           ELSE
             tempMembers:AddRange(SELF:_members)
           ENDIF
-         IF SELF:Kind ==  Kind.Enum
-            VAR fields := List<IXMemberSymbol>{}
-            fields:AddRange(tempMembers:Where( { m => m.Kind == Kind.Field} ))
-            tempMembers:Clear()
-            tempMembers:AddRange(fields)
-         ENDIF
          RETURN tempMembers
 
-      METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMemberSymbol>
+      METHOD GetMembers(elementName AS STRING, lExact AS LOGIC) AS IList<IXMemberSymbol>
       IF elementName:StartsWith("@@")
             elementName := elementName:Substring(2)
       ENDIF

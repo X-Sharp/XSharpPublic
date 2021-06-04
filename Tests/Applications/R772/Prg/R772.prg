@@ -18,5 +18,9 @@ UNION utest
     MEMBER r8 AS REAL8
     MEMBER r4 AS REAL4
 
-
+FUNCTION Start() AS VOID
+    LOCAL s IS MyStruct
+    s:n := 42
+    s:u:l := 4242
+    RETURN
 

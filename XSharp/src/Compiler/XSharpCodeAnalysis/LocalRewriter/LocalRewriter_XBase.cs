@@ -36,39 +36,31 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return result;
             }
             var isString = value.Type is { } && value.Type.IsStringType();
-            var ctors = psz.Constructors;
-            foreach (var ctor in ctors)
+            MethodSymbol ctor;
+            if (isString)
             {
-                if (ctor.ParameterCount == 1) // there should only be constructors with one or zero parameters.
+                ctor = Binder.FindConstructor(psz, 1, _compilation.GetSpecialType(SpecialType.System_String));
+            }
+            else
+            {
+                ctor = Binder.FindConstructor(psz, 1, _compilation.GetSpecialType(SpecialType.System_IntPtr));
+            }
+            if (ctor != null)
+            {
+                if (value.Type.SpecialType != SpecialType.System_IntPtr)
                 {
-                    bool found = false;
-                    var partype = ctor.GetParameterTypes()[0];
-                    if (isString && partype != null && partype.Type.IsStringType())
-                    {
-                        found = true;
-                    }
-                    if (! isString && partype.SpecialType == SpecialType.System_IntPtr)
-                    {
-                        found = true;
-                        if (value.Type.SpecialType != SpecialType.System_IntPtr)
-                        {
-                            value = new BoundConversion(
-                                syntax: value.Syntax,
-                                operand: value,
-                                conversion:Conversion.Identity,
-                                @checked: false,
-                                explicitCastInCode: false,
-                                constantValueOpt: default,
-                                conversionGroupOpt: default,
-                                type: partype.Type,
-                                hasErrors: false);
-                        }
-                    }
-                    if (found)
-                    {
-                        return new BoundObjectCreationExpression(value.Syntax, ctor, new BoundExpression[] { value });
-                    }
+                    value = new BoundConversion(
+                        syntax: value.Syntax,
+                        operand: value,
+                        conversion: Conversion.Identity,
+                        @checked: false,
+                        explicitCastInCode: false,
+                        constantValueOpt: null,
+                        conversionGroupOpt: null,
+                        type: ctor.Parameters[0].Type,
+                        hasErrors: false);
                 }
+                return new BoundObjectCreationExpression(value.Syntax, ctor, new BoundExpression[] { value });
             }
             return value;
         }

@@ -287,6 +287,97 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     internal static class CompilerOptionDecoder
     {
+        public static bool NeedsRuntime(this CompilerOption option)
+        {
+            switch (option)
+            {
+                case CompilerOption.Vo5:
+                case CompilerOption.Vo6:
+                case CompilerOption.Vo7:
+                case CompilerOption.Vo11:
+                case CompilerOption.Vo12:
+                case CompilerOption.Vo13:
+                case CompilerOption.Vo14:
+                case CompilerOption.Vo15:
+                case CompilerOption.Vo16:
+                case CompilerOption.MemVars:
+                case CompilerOption.UndeclaredMemVars:
+                    return true;
+            }
+            return false;
+        }
+
+        internal static string Description(this CompilerOption option)
+        {
+            switch (option)
+            {
+                case CompilerOption.Overflow:
+                    return "Overflow Exceptions";
+                case CompilerOption.Vo1:
+                    return "Init() & Axit() methods mapped to constructor and destructor";
+                case CompilerOption.Vo2:
+                    return "Initialize Strings";
+                case CompilerOption.Vo3:
+                    return "All methods Virtual";
+                case CompilerOption.Vo4:
+                    return "Implicit signed/unsigned integer conversions";
+                case CompilerOption.Vo5:
+                    return "Implicit CLIPPER calling convention";
+                case CompilerOption.Vo6:
+                    return "Implicit pointer conversions";
+                case CompilerOption.Vo7:
+                    return "Implicit casts and Conversions";
+                case CompilerOption.Vo8:
+                    return "Compatible preprocessor";
+                case CompilerOption.Vo9:
+                    return "Allow missing return statements or missing return values";
+                case CompilerOption.Vo10:
+                    return "Compatible IIF expressions";
+                case CompilerOption.Vo11:
+                    return "Compatible numeric conversions";
+                case CompilerOption.Vo12:
+                    return "Clipper Integer divisions";
+                case CompilerOption.Vo13:
+                    return "VO Compatible string comparisons";
+                case CompilerOption.Vo14:
+                    return "Float literal Values";
+                case CompilerOption.Vo15:
+                    return "Allow untyped Locals and return types";
+                case CompilerOption.Vo16:
+                    return "Generate Clipper calling convention constructors for classes without constructor";
+                case CompilerOption.Xpp1:
+                    return "All classes inherit from XPP.Abstract";
+                case CompilerOption.Xpp2:
+                    break;
+                case CompilerOption.Fox1:
+                    return "All Classes inherit from unknown";
+                case CompilerOption.Fox2:
+                    break;
+                case CompilerOption.InitLocals:
+                    return "Initialize all local variables and fields";
+                case CompilerOption.NamedArgs:
+                    break;
+                case CompilerOption.ArrayZero:
+                    return "Use Zero Based Arrays";
+                case CompilerOption.LateBinding:
+                    return "Enable Late Binding";
+                case CompilerOption.ImplicitNamespace:
+                    return "Enable Implicit Namespace lookups";
+                case CompilerOption.MemVars:
+                    return "PRIVATE and or PUBLIC variables";
+                case CompilerOption.UndeclaredMemVars:
+                    return "Undeclared Memory Variables";
+                case CompilerOption.ClrVersion:
+                    break;
+                case CompilerOption.EnforceSelf:
+                    return "Instance Method calls inside a class require a SELF prefix";
+                case CompilerOption.AllowDotForInstanceMembers:
+                    return "Instance Dot operator for instance members"; ;
+                case CompilerOption.All:
+                    break;
+            }
+            return "";
+        }
         internal static CompilerOption Decode(string option)
         {
             switch (option.ToLower())

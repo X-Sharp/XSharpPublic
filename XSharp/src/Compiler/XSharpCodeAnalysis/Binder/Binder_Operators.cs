@@ -43,7 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // do not throw an warnings for IIF() expressions with types that are too big
             // for the LHS of the assignment
-            if (syntax.Kind() == SyntaxKind.ConditionalExpression)
+            if (syntax.Kind() == SyntaxKind.ConditionalExpression && targetType.IsIntegralType())
             {
                 return true;
             }
@@ -63,6 +63,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (targetType.IsIntegralType() && sourceType.IsIntegralType())
             {
                 // implicit casts are allowed when the compiler option is enabled
+                return Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, syntax);
+            }
+            if (sourceType.IsObjectType() && targetType.SpecialType.IsNumericType())
+            {
                 return Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, syntax);
             }
             return false;

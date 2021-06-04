@@ -400,7 +400,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (encode)
             {
-                options.ExplicitOptions |= CompilerOptionDecoder.Decode(name);
+               var option = CompilerOptionDecoder.Decode(name);
+               options.ExplicitOptions |= option;
             }
             return handled;
         }
@@ -589,53 +590,43 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (options.Vo5 && options.ExplicitOptions.HasFlag(CompilerOption.Vo5))
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo5", "Implicit CLIPPER calling convention", options.Dialect.ToString());
-                    options.Vo5 = false;
+                    OptionNotSupported(diagnostics, "vo5", CompilerOption.Vo5);
                 }
                 if (options.Vo6 && options.ExplicitOptions.HasFlag(CompilerOption.Vo6))
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo6", "Implicit pointer conversions", options.Dialect.ToString());
-                    options.Vo6 = false;
+                    OptionNotSupported(diagnostics, "vo6", CompilerOption.Vo6);
                 }
                 if (options.Vo7 && options.ExplicitOptions.HasFlag(CompilerOption.Vo7))
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo7", "Implicit casts and Conversions", options.Dialect.ToString());
-                    options.Vo7 = false;
+                    OptionNotSupported(diagnostics, "vo7", CompilerOption.Vo7);
                 }
                 if (options.Vo11 && options.ExplicitOptions.HasFlag(CompilerOption.Vo11))
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo11", "Compatible numeric conversions", options.Dialect.ToString());
-                    options.Vo11 = false;
+                    OptionNotSupported(diagnostics, "vo11", CompilerOption.Vo11);
                 }
                 if (options.Vo12 && options.ExplicitOptions.HasFlag(CompilerOption.Vo12))
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo12", "Clipper Integer divisions", options.Dialect.ToString());
-                    options.Vo12 = false;
+                    OptionNotSupported(diagnostics, "vo12", CompilerOption.Vo12);
                 }
                 if (options.Vo13 && options.ExplicitOptions.HasFlag(CompilerOption.Vo13))
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo13", "VO Compatible string comparisons", options.Dialect.ToString());
-                    options.Vo13 = false;
+                    OptionNotSupported(diagnostics, "vo13", CompilerOption.Vo13);
                 }
                 if (options.Vo14 && options.ExplicitOptions.HasFlag(CompilerOption.Vo14))
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo14", "Float literal Values", options.Dialect.ToString());
-                    options.Vo14 = false;
+                    OptionNotSupported(diagnostics, "vo14", CompilerOption.Vo14);
                 }
                 if (options.Vo15 && options.ExplicitOptions.HasFlag(CompilerOption.Vo15))
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo15", "Allow untyped Locals and return types", options.Dialect.ToString());
-                    options.Vo15 = false;
+                    OptionNotSupported(diagnostics, "vo15", CompilerOption.Vo15);
                 }
                 if (options.Vo16 && options.ExplicitOptions.HasFlag(CompilerOption.Vo16))
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo16", "Generate Clipper calling convention constructors for classes without constructor", options.Dialect.ToString());
-                    options.Vo16 = false;
+                    OptionNotSupported(diagnostics, "vo16", CompilerOption.Vo16);
                 }
                 if (options.MemVars && options.ExplicitOptions.HasFlag(CompilerOption.MemVars))
                 {
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "memvars", "PRIVATE and or PUBLIC variables", options.Dialect.ToString());
-                    options.Vo16 = false;
+                    OptionNotSupported(diagnostics, "memvars", CompilerOption.MemVars);
                 }
             }
             else
@@ -707,6 +698,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         private void OptionNotImplemented(List<Diagnostic> diagnostics, string option, string description)
         {
             AddDiagnostic(diagnostics, ErrorCode.WRN_CompilerOptionNotImplementedYet, option, description);
+        }
+        private void OptionNotSupported(List<Diagnostic> diagnostics, string opt, CompilerOption option)
+        {
+            AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, opt, option.Description(), options.Dialect.ToString());
+            options.SetOption(option, false);
         }
     }
 }

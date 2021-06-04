@@ -133,6 +133,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (conversion.IsExplicit && !TypeSymbol.Equals(expression.Type, targetType))
             {
+                if (expression.Kind == BoundKind.UnconvertedConditionalOperator)
+                {
+                    expression = BindToNaturalType(expression, diagnostics);
+                }
                 // silently convert integral types
                 if (XsHasImplicitCast(expression, targetType, diagnostics))
                 {
@@ -143,9 +147,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }
-                    if (targetType.SpecialType.IsNumericType() &&
-                        (sourceType.IsObjectType() || sourceType.IsUsualType()) &&
-                        Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax))
+                    if (Compilation.Options.HasRuntime && targetType.SpecialType.IsNumericType() && sourceType.IsObjectType() )
+                    {
+                        // To "silently" convert an object to a numeric we create a usual first and then rely
+                        // on the conversion routines for the USUAL type
+                        MethodSymbol ctor = FindConstructor(Compilation.UsualType(), 1, Compilation.GetSpecialType(SpecialType.System_Object));
+                        expression = new BoundObjectCreationExpression(expression.Syntax, ctor, expression);
+                        HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+                        conversion = Conversions.ClassifyImplicitConversionFromExpression(expression, targetType, ref useSiteDiagnostics);
+                        diagnostics.Add(expression.Syntax, useSiteDiagnostics);
+
+                        return CreateXsConversion(expression, conversion, targetType, diagnostics);
+                    }
+                    if (targetType.SpecialType.IsNumericType() && sourceType.IsUsualType() && Compilation.Options.HasRuntime)
                     {
                         return CreateXsConversion(expression, conversion, targetType, diagnostics);
                     }

@@ -563,34 +563,43 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination,DiagnosticBag diagnostics)
         {
-            TypeSymbol psz = Compilation.PszType();
+            NamedTypeSymbol psz = Compilation.PszType();
             if (source.Type is { } && source.Type.IsStringType() &&
                 Compilation.Options.HasRuntime &&
                 (destination.IsPszType() || destination.IsVoidPointer()))
             {
                 // Note this calls the constructor for __PSZ with a string.
                 // The allocated pointer inside the PSZ is never freed by Vulcan and X# !
-                MethodSymbol stringctor = null;
-                var ctors = psz.GetMembers(".ctor");
-                foreach (MethodSymbol ctor in ctors)
-                {
-                    var pars = ctor.GetParameters();
-                    if (pars.Length == 1 && pars[0].Type.IsStringType())
-                    {
-                        stringctor = ctor;
-                    }
-                }
+                MethodSymbol stringctor = FindConstructor(psz, 1, Compilation.GetSpecialType(SpecialType.System_String));
 
                 if (stringctor != null)
                 {
                     diagnostics.Add(ErrorCode.WRN_CompilerGeneratedPSZConversionGeneratesMemoryleak, syntax.Location);
-                    source = new BoundObjectCreationExpression(syntax, stringctor,  new BoundExpression[] { source });
+                    source = new BoundObjectCreationExpression(syntax, stringctor, new BoundExpression[] { source });
                     return true;
                 }
             }
             return false;
         }
 
+        internal static MethodSymbol FindConstructor(NamedTypeSymbol type, int parameterCount, TypeSymbol p1, TypeSymbol p2 = null)
+        {
+            foreach (MethodSymbol ctor in type.Constructors)
+            {
+                if (ctor.ParameterCount == parameterCount)
+                {
+                    if (parameterCount == 1 && Equals(ctor.Parameters[0].Type, p1))
+                    {
+                        return ctor;
+                    }
+                    if (parameterCount == 2 && Equals(ctor.Parameters[0].Type, p1) && Equals(ctor.Parameters[1].Type, p2))
+                    {
+                        return ctor;
+                    }
+                }
+            }
+            return null;
+        }
         /// <summary>
         /// Binds a simple identifier.
         /// </summary>

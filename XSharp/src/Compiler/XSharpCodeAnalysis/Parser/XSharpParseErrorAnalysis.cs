@@ -481,6 +481,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         opt = opt.Substring(1, opt.Length - 2);
                         var compopt = CompilerOptionDecoder.Decode(opt);
+                        if (compopt.NeedsRuntime() && ! _options.HasRuntime)
+                        {
+                            var errdata = new ParseErrorData(token,
+                                ErrorCode.ERR_CompilerOptionNotSupportedForDialect, opt,compopt.Description(), _options.Dialect);
+                            _parseErrors.Add(errdata);
+                        }
 
                         switch (compopt)
                         {

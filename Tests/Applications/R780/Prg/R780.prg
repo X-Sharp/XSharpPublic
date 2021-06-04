@@ -1,5 +1,6 @@
-// R780 - Internal error UnconvertedConditionalOperator in combination with VO11 compiler option
-#pragma options("vo11", ON)
+// R780 - Internal error UnconvertedConditionalOperator 
+// With the /vo7 compiler option it works in VO dialect without cast
+#pragma options("vo7", ON)
 FUNCTION Start AS VOID
     LOCAL oTest AS Test 
     LOCAL dResult AS decimal

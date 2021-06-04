@@ -107,6 +107,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         rewrittenOperand.WasCompilerGenerated = true;
                         return ConversionKind.Identity;
                     }
+                    if (rewrittenType.SpecialType == SpecialType.System_Decimal && _compilation.Options.XSharpRuntime)
+                    {
+                        MethodSymbol m = getImplicitOperatorByReturnType(usualType, _compilation.GetSpecialType(SpecialType.System_Decimal));
+                        rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                        rewrittenOperand.WasCompilerGenerated = true;
+                        return ConversionKind.Identity;
+                    }
 
                     if (rewrittenType.IsPointerType())
                     {

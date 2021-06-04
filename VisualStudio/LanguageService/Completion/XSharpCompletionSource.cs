@@ -57,7 +57,6 @@ namespace XSharp.LanguageService
         private XFile _file;
         private bool _showTabs;
         private bool _keywordsInAll;
-        private bool _dotUniversal;
         private IBufferTagAggregatorFactoryService aggregator;
         private XSharpDialect _dialect;
 
@@ -101,18 +100,7 @@ namespace XSharp.LanguageService
                     throw new ObjectDisposedException("XSharpCompletionSource");
                 _showTabs = XSettings.EditorCompletionListTabs;
                 _keywordsInAll = XSettings.EditorKeywordsInAll;
-                if (_dialect == XSharpDialect.FoxPro)
-                {
-                    _dotUniversal = true;
-                }
-                else if (_dialect == XSharpDialect.Core)
-                {
-                    _dotUniversal = XSettings.EditorUseDotAsUniversalSelector;
-                }
-                else
-                {
-                    _dotUniversal = false;
-                }
+
                 // Where does the StartSession has been triggered ?
                 ITextSnapshot snapshot = _buffer.CurrentSnapshot;
                 var triggerPoint = (SnapshotPoint)session.GetTriggerPoint(snapshot);
@@ -128,6 +116,7 @@ namespace XSharp.LanguageService
                 {
 
                 }
+                bool showInstanceMembers = (typedChar == ':') || _file.Project.ParseOptions.AllowDotForInstanceMembers;
                 // Reset the StopToken
                 this._stopToken = null;
                 // What is the character were it starts ?
@@ -244,15 +233,10 @@ namespace XSharp.LanguageService
                 }
                 // Special Phil
                 bool dotSelector = (typedChar == '.');
-                bool showInstanceMembers = (typedChar == ':');
                 //
-                if (dotSelector && _dotUniversal)
-                {
-                    showInstanceMembers = true;
-                }
                 // Alternative Token list (dot is a selector)
                 List<XSharpToken> altTokenList;
-                if (dotSelector && _dotUniversal)
+                if (showInstanceMembers)
                     altTokenList = XSharpTokenTools.GetTokenList(location, out state);
                 else
                     altTokenList = tokenList;
@@ -306,7 +290,7 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
-                    if (dotSelector && _dotUniversal)
+                    if (showInstanceMembers)
                     {
                         symbol = XSharpLookup.RetrieveElement(location, altTokenList, CompletionState.General).FirstOrDefault();
                         // Check for members, locals etc and convert the type of these to IXTypeSymbol
@@ -320,53 +304,49 @@ namespace XSharp.LanguageService
                 {
                     if (string.IsNullOrEmpty(filterText))
                     {
-                        filterText = TokenListAsString(tokenList,_stopToken);
+                        filterText = TokenListAsString(tokenList, _stopToken);
                         if (filterText.Length > 0 && !filterText.EndsWith("."))
                             filterText += ".";
                     }
-                    switch (state)
+                    if (state.HasFlag(CompletionState.Namespaces))
                     {
-                        case CompletionState.Namespaces:
+                        if (symbol is null)
+                        {
                             AddNamespaces(compList, _file.Project, filterText);
-                            break;
-                        case CompletionState.Namespaces|CompletionState.Types:
-                        case CompletionState.Types:
-                            if (state.HasFlag(CompletionState.Namespaces))
-                                AddNamespaces(compList, _file.Project, filterText);
+                        }
+                    }
+                    if (state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.Interfaces))
+                    {
+                        if (symbol is null)
+                        {
                             AddTypeNames(compList, _file.Project, filterText, location.Usings);
                             AddXSharpKeywordTypeNames(kwdList, filterText);
-                            break;
-                        case CompletionState.Namespaces | CompletionState.Interfaces:
-                        case CompletionState.Interfaces:
-                            if (state.HasFlag(CompletionState.Namespaces))
-                                AddNamespaces(compList, _file.Project, filterText);
-                            AddTypeNames(compList, _file.Project, filterText, location.Usings,true);
-                            AddXSharpKeywordTypeNames(kwdList, filterText);
-                            break;
-                        case CompletionState.InstanceMembers:
-                            showInstanceMembers = true;
-                            filterText = "";
-                            break;
-                        default:
-                            AddNamespaces(compList, _file.Project, filterText);
-                            // It can be Type, FullyQualified
-                            // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                            AddTypeNames(compList, _file.Project, filterText, location.Usings);
-                            //
-                            AddXSharpKeywordTypeNames(kwdList, filterText);
-                            // it can be a static Method/Property/Enum
-                            if (type != null)
-                            {
-                                // First we need to keep only the text AFTER the last dot
-                                int dotPos = filterText.LastIndexOf('.');
-                                filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
-                                BuildCompletionList(compList,type, Modifiers.Public, true, filterText);
-                            }
-                            break;
+                        }
+                    }
+                    if (state.HasFlag(CompletionState.StaticMembers))
+                    {
+                        if (type != null && symbol is IXTypeSymbol)
+                        {
+                            // First we need to keep only the text AFTER the last dot
+                            int dotPos = filterText.LastIndexOf('.');
+                            filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
+                            BuildCompletionList(compList, type, Modifiers.Public, true, filterText);
+                        }
+                    }
+                    if (state.HasFlag(CompletionState.InstanceMembers))
+                    {
+                        showInstanceMembers = true;
+                        filterText = "";
+
+                    }
+                    if (state.HasFlag(CompletionState.General))
+                    {
+                        AddNamespaces(compList, _file.Project, filterText);
+                        AddTypeNames(compList, _file.Project, filterText, location.Usings);
+                        AddXSharpKeywordTypeNames(kwdList, filterText);
                     }
                 }
-                //
-                if (showInstanceMembers)
+                if (showInstanceMembers && ! (symbol is IXTypeSymbol))
                 {
                     // Member call
                     if (type != null)
@@ -420,7 +400,7 @@ namespace XSharp.LanguageService
                         case XSharpLexer.IMPLEMENTS:
                             // It can be a namespace
                             AddNamespaces(compList, _file.Project, filterText);
-                            // TODO: add Interfaces only
+                            AddTypeNames(compList, _file.Project, filterText, location.Usings,true);
                             break;
                         default:
 
@@ -530,7 +510,7 @@ namespace XSharp.LanguageService
             //}
             // And what about Global Types in referenced Assemblies ?
             var found = file.Project.FindGlobalMembersInAssemblyReferences(filterText);
-            FillMembers(compList, found, Modifiers.Public, true);
+            FillMembers(compList, null, found, Modifiers.Public, true);
         }
         public static bool isGenerated(IXTypeSymbol type)
         {
@@ -605,7 +585,8 @@ namespace XSharp.LanguageService
 
         private bool IsHiddenMemberName(string realMemberName)
         {
-            if (realMemberName.Length > 2 && realMemberName.StartsWith("__", StringComparison.Ordinal) && XSettings.EditorHideAdvancedMembers)
+            if (realMemberName.Length > 2 && XSettings.EditorHideAdvancedMembers
+                && (realMemberName.StartsWith("__", StringComparison.Ordinal) || realMemberName.EndsWith("__", StringComparison.Ordinal)))
                 return true;
             // suppress SELF properties
             if (string.Compare(realMemberName, "self", StringComparison.Ordinal) == 0)
@@ -852,7 +833,7 @@ namespace XSharp.LanguageService
         /// <param name="members"></param>
         /// <param name="minVisibility"></param>
         /// <param name="staticOnly"></param>
-        private void FillMembers(XCompletionList compList, IEnumerable<IXMemberSymbol> members, Modifiers minVisibility, bool staticOnly)
+        private void FillMembers(XCompletionList compList, IXTypeSymbol type, IEnumerable<IXMemberSymbol> members, Modifiers minVisibility, bool staticOnly)
         {
             WriteOutputMessage($"FillMembers start, {members.Count()} members");
             foreach (var elt in members)
@@ -865,7 +846,7 @@ namespace XSharp.LanguageService
                 switch (elt.Kind)
                 {
                     case Kind.EnumMember:
-                        add = true;
+                        add = staticOnly;
                         break;
                     case Kind.Constructor:
                     case Kind.Destructor:
@@ -881,6 +862,8 @@ namespace XSharp.LanguageService
                         }
                         break;
                 }
+                if (type != null && elt.IsStatic && type.Kind == Kind.Enum && elt.DeclaringType != type.FullName && elt.Name != "HasFlag" )
+                    add = false;
                 if (!add)
                     continue;
                 //
@@ -903,7 +886,7 @@ namespace XSharp.LanguageService
         /// <param name="minVisibility"></param>
         private void FillMembers(XCompletionList compList, IXTypeSymbol xType, Modifiers minVisibility, bool staticOnly, string startWith)
         {
-            FillMembers(compList, xType.GetMembers(startWith), minVisibility, staticOnly);
+            FillMembers(compList, xType, xType.GetMembers(startWith), minVisibility, staticOnly);
         }
 
 
@@ -918,7 +901,7 @@ namespace XSharp.LanguageService
                 {
                     selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
                 }
-                FillMembers(compList, selection, Modifiers.Public, true);
+                FillMembers(compList, null, selection, Modifiers.Public, true);
                 foreach (var ifname in type.Interfaces)
                 {
                     var lifname = ifname;
@@ -940,7 +923,7 @@ namespace XSharp.LanguageService
                     {
                         selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
                     }
-                    FillMembers(compList, selection, Modifiers.Public, true);
+                    FillMembers(compList, null, selection, Modifiers.Public, true);
                 }
             }
             //WriteOutputMessage($"FillExtensions complete for type {sType.FullName}");

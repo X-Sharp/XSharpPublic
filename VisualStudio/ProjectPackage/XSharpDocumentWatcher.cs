@@ -16,6 +16,7 @@ namespace XSharp.Project
         private IVsRunningDocumentTable rdt = null;
         private List<uint> knownCookies;
 
+		// todo: we can probably delete this code.
         public XSharpDocumentWatcher(IServiceProvider provider)
         {
             this.provider = provider;
@@ -67,34 +68,6 @@ namespace XSharp.Project
 
         public int OnBeforeDocumentWindowShow(uint docCookie, int fFirstShow, IVsWindowFrame pFrame)
         {
-            // We want to make sure that we are not 'stealing' vulcans files
-            // so we check for a vulcan file before opening the window
-            // when it one of our files then we register the XFile object in the XSolution,
-            // when it is an orphaned file then it is registered in the OrphanedFiles Project
-            ThreadHelper.ThrowIfNotOnUIThread();
-            if (fFirstShow != 0)
-            {
-                if (knownCookies.Contains(docCookie))
-                {
-                    return VSConstants.S_OK;
-                }
-                knownCookies.Add(docCookie);
-                if (null != rdt)
-                {
-                    // Note that here we don't want to throw in case of error.
-                    uint flags;
-                    uint readLocks;
-                    uint writeLoks;
-                    string documentMoniker;
-                    IVsHierarchy hierarchy;
-                    uint itemId;
-                    IntPtr unkDocData;
-                    int hr = rdt.GetDocumentInfo(docCookie, out flags, out readLocks, out writeLoks,
-                                                 out documentMoniker, out hierarchy, out itemId, out unkDocData);
-                    // check to see if this is one our files.
-                    //VsTextViewCreationListener.IsOurSourceFile(documentMoniker);
-                }
-            }
             return VSConstants.S_OK;
         }
 

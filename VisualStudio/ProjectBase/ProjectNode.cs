@@ -3558,10 +3558,13 @@ namespace Microsoft.VisualStudio.Project
             options = this.GetProjectOptions(config);
 
 
-            if (options != null && this.buildProject != null)
+            if (options != null && this.buildProject != null )
             {
                 // Make sure the project configuration is set properly
+                var opts = this.options;
                 this.SetConfiguration(config);
+                this.options = opts;
+
             }
         }
 

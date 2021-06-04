@@ -431,6 +431,7 @@ namespace XSharp.LanguageService
             var startOfExpression = true;
             var findConstructor = true;
             XSharpToken currentToken = null;
+            IXTypeSymbol startType = null;
             //
             if (location.Member == null)
             {
@@ -495,6 +496,7 @@ namespace XSharp.LanguageService
             int stopAt = 0;
             var hasBracket = false;
             int count = -1;
+            startType = currentType;
             while (currentPos <= lastopentoken)
             {
                 result.Clear();
@@ -504,6 +506,8 @@ namespace XSharp.LanguageService
                     currentType = GetTypeFromSymbol(location, top);
                     count = symbols.Count;
                 }
+                if (startOfExpression)
+                    currentType = startType;
                 currentToken = tokenList[currentPos];
                 if (stopAt != 0 && currentToken.Type != stopAt)
                 {
@@ -517,16 +521,28 @@ namespace XSharp.LanguageService
                 {
                     case XSharpLexer.LPAREN:
                         currentPos += 1;
-                        stopAt = XSharpLexer.RPAREN;
+                        if (hasToken(tokenList, currentPos + 1, XSharpLexer.RPAREN))
+                        {
+                            stopAt = XSharpLexer.RPAREN;
+                        }
+                        startOfExpression = true;
                         continue;
                     case XSharpLexer.LCURLY:
                         currentPos += 1;
-                        stopAt = XSharpLexer.RCURLY;
+                        if (hasToken(tokenList, currentPos + 1, XSharpLexer.RCURLY))
+                        {
+                            stopAt = XSharpLexer.RCURLY;
+                        }
+                        startOfExpression = true;
                         continue;
                     case XSharpLexer.LBRKT:
                         currentPos += 1;
-                        stopAt = XSharpLexer.RBRKT;
+                        if (hasToken(tokenList, currentPos + 1, XSharpLexer.RBRKT))
+                        {
+                            stopAt = XSharpLexer.RBRKT;
+                        }
                         hasBracket = true;
+                        startOfExpression = true;
                         continue;
                     case XSharpLexer.RPAREN:
                     case XSharpLexer.RCURLY:
@@ -663,6 +679,8 @@ namespace XSharp.LanguageService
                 }
                 else if (isId)
                 {
+                    if (preFix == ".")
+                        preFix = "";
                     if (startOfExpression || findType || findConstructor)
                     {
                         result.AddRange(SearchType(location, preFix + currentName));
@@ -813,6 +831,15 @@ namespace XSharp.LanguageService
             return result;
         }
 
+        private static bool hasToken(IList<XSharpToken> tokens, int start, int lookfor)
+        {
+            for (int i = start; i < tokens.Count; i++)
+            {
+                if (tokens[i].Type == lookfor)
+                    return true;
+            }
+            return false;
+        }
         private static IXMemberSymbol AdjustGenericMember(IXMemberSymbol xmember, IXSymbol memberdefinition)
         {
             /*

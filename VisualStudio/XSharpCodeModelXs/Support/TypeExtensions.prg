@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharpModel
             SystemToXSharp:Add("System.Double", "REAL8")
             SystemToXSharp:Add("System.Int16", "SHORT")
             SystemToXSharp:Add("System.Int32", "INT")
-            
+
             SystemToXSharp:Add("System.Int64", "INT64")
             SystemToXSharp:Add("System.Object", "OBJECT")
             SystemToXSharp:Add("System.Single", "REAL4")
@@ -58,9 +58,6 @@ BEGIN NAMESPACE XSharpModel
             XSharpToSystem:Add("LONG", "System.Int32")
 
         STATIC METHOD GetSystemTypeName( SELF typename AS STRING, lXSharpNames AS LOGIC) AS STRING
-            //
-			// Todo: Rename to XSharp type names
-			//
             LOCAL lHandled := TRUE AS LOGIC
             IF lXSharpNames
                  SWITCH typename:ToLower()
@@ -127,7 +124,7 @@ BEGIN NAMESPACE XSharpModel
                    typeName := SystemToXSharp[typeName]
                ENDIF
             ENDIF
-            RETURN typeName         
+            RETURN typeName
 
     STATIC METHOD GetXSharpTypeName( SELF sysType AS Mono.Cecil.TypeReference) AS STRING
             LOCAL fullName AS STRING

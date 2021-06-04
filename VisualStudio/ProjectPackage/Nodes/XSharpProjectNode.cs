@@ -1796,8 +1796,17 @@ namespace XSharp.Project
         public override void SetConfiguration(ConfigCanonicalName config)
         {
             _config = config;
+            bool invalidate = false;
+            if (this.options is XSharpProjectOptions xopts)
+            {
+                if (xopts.ConfigCanonicalName != config)
+                    invalidate = true;
+            }
             base.SetConfiguration(config);
-            invalidateOptions();
+            if (invalidate)
+            {
+                invalidateOptions();
+            }
             if (this.designTimeAssemblyResolution == null)
             {
                 this.designTimeAssemblyResolution = new DesignTimeAssemblyResolution();
@@ -1861,6 +1870,15 @@ namespace XSharp.Project
         public override BuildResult Build(string target)
         {
             return Build(_config, target);
+        }
+
+        protected override void SetBuildConfigurationProperties(ConfigCanonicalName config)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var xoptions = this.options as XSharpProjectOptions;
+            if (xoptions != null && xoptions.ConfigCanonicalName == config)
+                return;
+            base.SetBuildConfigurationProperties(config);
         }
         public void ClearIntellisenseErrors(string fileName)
         {

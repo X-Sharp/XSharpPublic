@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -18,12 +18,12 @@ BEGIN NAMESPACE XSharp.IO
         PRIVATE _capacity as LONG
         PRIVATE _cacheMap AS Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>>
         PRIVATE _lruList  AS LinkedList<LRUCacheItem<K, V>>
-    
+
         INTERNAL CONSTRUCTOR (capacity as int)
             SELF:_capacity := capacity
             SELF:_cacheMap := Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>>{}
             SELF:_lruList  := LinkedList<LRUCacheItem<K, V>>{}
-            
+
         INTERNAL PROPERTY Values AS IList<V>
             GET
                 VAR result := List<V>{}
@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp.IO
                 RETURN result
             END GET
         END PROPERTY
-        
+
         [MethodImpl(MethodImplOptions.Synchronized)];
         INTERNAL METHOD Get (key as K) AS V
             LOCAL node as LinkedListNode<LRUCacheItem<K, V>>
@@ -46,7 +46,7 @@ BEGIN NAMESPACE XSharp.IO
                 return result
             ENDIF
         return default (V)
-        
+
         [MethodImpl(MethodImplOptions.Synchronized)] ;
         INTERNAL METHOD Add(key as K, val as V) AS V
             LOCAL old as V
@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp.IO
             _lruList:AddLast(node)
             _cacheMap.Add(key, node)
         RETURN old
-        
+
         PRIVATE METHOD RemoveFirst() AS V
             // Remove from LRUPriority
             var node := _lruList:First
@@ -68,7 +68,7 @@ BEGIN NAMESPACE XSharp.IO
             // Remove from cache
             _cacheMap:Remove(node:Value:Key)
         RETURN node:Value:Value
-        
+
         [MethodImpl(MethodImplOptions.Synchronized)];
         INTERNAL METHOD Remove(key as K) AS LOGIC
             IF _cacheMap:ContainsKey(key)
@@ -88,7 +88,7 @@ BEGIN NAMESPACE XSharp.IO
                 @@Value := v
         END CLASS
     END CLASS
-    
+
     /// <summary>This class was inspired by the DiskIO module in Visual Objects</summary>
     INTERNAL CLASS PageBuffers
         [DebuggerDisplay("{Key}")];
@@ -99,30 +99,30 @@ BEGIN NAMESPACE XSharp.IO
             INTERNAL Size       AS LONG
             INTERNAL Hot        AS LOGIC
             INTERNAL PROPERTY Key  AS STRING GET GetHash(Stream, Page)
-                
+
             INTERNAL STATIC METHOD GetHash(oStream as XsBufferedFileStream, nPage as INT64) AS STRING
                 RETURN  oStream:FileName:ToLower()+":"+nPage:ToString()
- 
+
         END CLASS
-        
-        STATIC PROTECTED cache                as LRUCache<STRING, FilePage>   
-        
+
+        STATIC PROTECTED cache                AS LRUCache<STRING, FilePage>
+
         STATIC CONSTRUCTOR
         cache                := LRUCache<STRING, FilePage> {512}
-        
-        
+
+
         INTERNAL STATIC METHOD __FindPage(oStream as XsBufferedFileStream, nPage as INT64, nSize as LONG) AS FilePage
             var key  := FilePage.GetHash(oStream, nPage)
-            var page := cache:Get(key)
-            if page == NULL
+            VAR page := cache:Get(key)
+            IF page == NULL
                 page := __AddPage(oStream, nPage, nSize)
                 IF !oStream:XRead(nPage, page:Buffer, nSize) != nSize
                     // Exception ?
                 ENDIF
-            endif
+            ENDIF
             return page
 
-        
+
         INTERNAL STATIC METHOD __AddPage(oStream as XsBufferedFileStream, nPage as INT64, nSize as LONG) AS FilePage
             VAR page := FilePage{}
             page:Stream := oStream
@@ -134,7 +134,7 @@ BEGIN NAMESPACE XSharp.IO
                 __WritePage(old)
             ENDIF
         RETURN page
-        
+
         INTERNAL STATIC METHOD __WritePage(page as FilePage) AS VOID
             if !page:Hot
                 RETURN
@@ -144,7 +144,7 @@ BEGIN NAMESPACE XSharp.IO
             ENDIF
             page:Hot := FALSE
         RETURN
-        
+
         STATIC METHOD PageFlush(oStream AS XsBufferedFileStream, lKeepData AS LOGIC) AS VOID
             FOREACH VAR page IN cache:Values:ToArray()
                 IF  page:Stream == oStream
@@ -154,30 +154,30 @@ BEGIN NAMESPACE XSharp.IO
                 ENDIF
             NEXT
         RETURN
-        
+
         STATIC METHOD PageRead(oStream as XsBufferedFileStream, nPage as INT64, nSize as LONG) AS Byte[]
             // Read a page from the buffer and mark it as referenced. No check for Size
             VAR page := __FindPage(oStream, nPage, nSize)
             RETURN page:Buffer
-        
+
         STATIC METHOD PageUpdate(oStream as XsBufferedFileStream, nPage as INT64, nSize as LONG) AS Byte[]
             // Read a page from the buffer and mark it as hot, No check for Size
             VAR page := __FindPage(oStream, nPage, nSize)
             page:Hot := TRUE
             RETURN page:Buffer
-            
+
     END CLASS
-    
+
     /// <summary>This class performs buffered IO to files opened exclusively</summary>
     CLASS XsBufferedFileStream INHERIT XsFileStream
-    
-        PUBLIC CONST BUFF_SIZE  := 1024 AS LONG
-        PUBLIC CONST BUFF_MASK  := 1023 AS LONG
+
+        PUBLIC CONST BUFF_SIZE  := 0x400 AS LONG
+        PUBLIC CONST BUFF_MASK  := 0x3FF AS LONG
         PROTECTED _length   AS INT64
         PROTECTED _position AS INT64
         PROTECTED _closed   AS LOGIC
         PROTECTED _callOriginalMethods AS LOGIC
-        
+
         CONSTRUCTOR(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions)
             SUPER(path, mode, faccess, share, bufferSize, options)
             SELF:_length := SUPER:Length
@@ -224,11 +224,11 @@ BEGIN NAMESPACE XSharp.IO
                 ENDIF
                 RETURN _length
             END GET
-            
+
         END PROPERTY
-        
+
         /// <inheritdoc />
-        
+
         PUBLIC OVERRIDE METHOD SetLength (newLength AS INT64) AS VOID
             IF SELF:_callOriginalMethods
                 SUPER:SetLength(newLength)
@@ -243,13 +243,13 @@ BEGIN NAMESPACE XSharp.IO
                 RETURN SUPER:Read(bytes, offset, count)
             ENDIF
             var pos         := SELF:Position
-            var page        := (INT64) _AND(pos , ~BUFF_MASK) 
+            VAR page        := (INT64) _AND(pos , ~BUFF_MASK)
             var pageoffset  := (LONG) _AND(pos , BUFF_MASK)
             var read    := 0
             DO WHILE read < count
                 VAR buffer       := PageBuffers.PageRead(SELF, page, BUFF_SIZE)
                 // we either read the rest of the page, or just the bytes needed
-                VAR onthispage := count - read 
+                VAR onthispage := count - read
                 if onthispage > (BUFF_SIZE - pageoffset)
                     onthispage := BUFF_SIZE - pageoffset
                 else
@@ -262,7 +262,7 @@ BEGIN NAMESPACE XSharp.IO
             ENDDO
             SELF:Position += count
         RETURN read
-        
+
         /// <inheritdoc />
         /// <remarks>This method overrides the normal behavior of the FileStream class and writed the data to an inmemory cache, when possible </remarks>
         PUBLIC OVERRIDE METHOD Write(bytes AS BYTE[] , offset AS INT, count AS INT) AS VOID
@@ -271,13 +271,13 @@ BEGIN NAMESPACE XSharp.IO
                 RETURN
             ENDIF
             VAR pos         := SELF:Position
-            var page        := (INT64) _AND(pos , ~BUFF_MASK) 
+            VAR page        := (INT64) _AND(pos , ~BUFF_MASK)
             var pageoffset  := (LONG) _AND(pos , BUFF_MASK)
             var written     := 0
             DO WHILE written < count
                 VAR buffer       := PageBuffers.PageUpdate(SELF, page, BUFF_SIZE)
                 // we either write the rest of the page, or just the bytes needed
-                VAR onthispage := count - written 
+                VAR onthispage := count - written
                 if onthispage > ( BUFF_SIZE - pageoffset)
                     onthispage :=  (BUFF_SIZE - pageoffset)
                 else
@@ -291,7 +291,7 @@ BEGIN NAMESPACE XSharp.IO
             SELF:Position += count
             SELF:_length := Math.Max(SELF:_length, pos+count)
         RETURN
-        
+
         /// <inheritdoc />
         /// <remarks>This method overrides the normal behavior of the FileStream class and writed the data to an inmemory cache, when possible </remarks>
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
@@ -300,14 +300,14 @@ BEGIN NAMESPACE XSharp.IO
                 RETURN
             ENDIF
             VAR pos             := SELF:Position
-            var page            := (INT64) _AND(pos , ~BUFF_MASK) 
+            VAR page            := (INT64) _AND(pos , ~BUFF_MASK)
             var pageoffset      := (LONG) _AND(pos , BUFF_MASK)
             VAR buffer          := PageBuffers.PageUpdate(SELF, page, BUFF_SIZE)
             buffer[pageoffset]  := b
             SELF:_length := Math.Max(SELF:_length, pos+1)
             SELF:Position += 1
         RETURN
-        
+
         /// <inheritdoc />
         /// <remarks>This method overrides the normal behavior of the FileStream class and flushes the cached data to disk before calling the parent Flush() method.</remarks>
         PUBLIC OVERRIDE METHOD Flush(lCommit as LOGIC) AS VOID
@@ -317,8 +317,8 @@ BEGIN NAMESPACE XSharp.IO
                 SUPER:SetLength(_length)
             ENDIF
             SELF:Position := _length
-        RETURN 
-        
+        RETURN
+
         /// <inheritdoc />
         /// <remarks>This method overrides the normal behavior of the FileStream class and flushes the cached data to disk before calling the parent Close() method.</remarks>
         PUBLIC OVERRIDE METHOD Close( ) AS VOID
@@ -331,7 +331,7 @@ BEGIN NAMESPACE XSharp.IO
             ENDIF
             SUPER:Close()
             RETURN
-        
+
         /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
             IF SELF:_callOriginalMethods
@@ -340,15 +340,15 @@ BEGIN NAMESPACE XSharp.IO
             var pos := self:Position
             SWITCH origin
             CASE SeekOrigin.Begin
-                 pos := offset   
+                 pos := offset
             CASE SeekOrigin.Current
-                 pos += offset   
+                 pos += offset
             CASE SeekOrigin.End
                  pos := offset + SELF:_length
             END SWITCH
             SELF:Position := pos
             return pos
-        
+
         END CLASS
- 
+
 END NAMESPACE

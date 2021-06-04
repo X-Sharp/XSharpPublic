@@ -24,7 +24,7 @@ FUNCTION UseBufferedFileStream(lUse AS LOGIC) AS LOGIC
 /// <summary>Retrieve the buffered File IO setting for the runtime</summary>
 /// <returns>Current setting for the buffered file IO</returns>
 FUNCTION UseBufferedFileStream() AS LOGIC
-    RETURN XsFileStream.UseBufferedFileStream  
+    RETURN XsFileStream.UseBufferedFileStream
 
 
 BEGIN NAMESPACE XSharp.IO
@@ -37,14 +37,14 @@ BEGIN NAMESPACE XSharp.IO
         CONSTRUCTOR(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions)
             SUPER(path, mode, faccess, share, bufferSize, options)
             SELF:FileName := path
-        /// <inheritdoc />    
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
             LOCAL result := -1 AS INT64
             STARTIO
             result := SUPER:Seek(offset, origin)
             ENDIO
             RETURN result
-        /// <inheritdoc />    
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD SetLength(length AS INT64 ) AS VOID
             STARTIO
             SUPER:SetLength(length)
@@ -91,7 +91,7 @@ BEGIN NAMESPACE XSharp.IO
         PUBLIC OVERRIDE METHOD Flush() AS VOID
             SELF:Flush(FALSE)
             RETURN
-            
+
         #region Construct the filestream
         /// <summary>Create a XsFileStream object on Windows and a normal FileStream object on other OS-es</summary>
         STATIC METHOD CreateFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
@@ -103,17 +103,17 @@ BEGIN NAMESPACE XSharp.IO
                 ENDIF
             ELSE
                 IF UseBufferedFileStream
-                    RETURN XsBufferedFileStream{path, mode, faccess, share, 0xFFFF, options}
+                    RETURN XsBufferedFileStream{path, mode, faccess, share, bufferSize, options}
                 ELSE
-                    RETURN XsFileStream{path, mode, faccess, share, 0xFFFF, options}
+                    RETURN XsFileStream{path, mode, faccess, share, bufferSize, options}
                 ENDIF
             ENDIF
-        
+
         INTERNAL STATIC METHOD CreateWin32FileStream(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
             RETURN XsWin32FileStream{path, mode, faccess, share, bufferSize, options}
         #endregion
-        
+
     END CLASS
-    
+
     END NAMESPACE
 

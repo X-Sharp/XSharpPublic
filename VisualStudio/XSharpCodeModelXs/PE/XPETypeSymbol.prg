@@ -123,7 +123,7 @@ BEGIN NAMESPACE XSharpModel
             IF typedef:HasMethods
                FOREACH VAR md IN typedef:Methods
                   // filter
-                  IF md:IsPrivate
+                  IF md:IsPrivate .OR. md:IsAssembly
                      LOOP
                   ENDIF
                   VAR kind := Kind.Method
@@ -202,12 +202,16 @@ BEGIN NAMESPACE XSharpModel
                   BEGIN LOCK SELF
                      SELF:_children := aChildren
                   END LOCK
-               ENDIF
+                ENDIF
                IF _typeDef:HasInterfaces
+                  VAR isCoClass := FALSE
+                  IF _typeDef:HasCustomAttributes
+                    isCoClass := _typeDef:CustomAttributes:FirstOrDefault( { x => x:AttributeType:FullName == "System.Runtime.InteropServices.CoClassAttribute"}) != NULL
+                  ENDIF
                   FOREACH VAR @@interface IN _typeDef:Interfaces
                      VAR ifname := @@interface:InterfaceType:FullName
                      // cecil returns System.Collections.Generic.IList`1<T> for the FullName
-                     var LtPos := ifname:IndexOf(c'<')
+                     VAR LtPos := ifname:IndexOf(c'<')
                      IF  LtPos > 0 .AND. ifname:Contains(c'`')
                           ifname := ifname:Substring(0, LtPos)
                      ENDIF
@@ -218,12 +222,12 @@ BEGIN NAMESPACE XSharpModel
                      // this is especially needed with AdoDb where the Connection interface
                      // has no members but inherits all its members from 2 other interfaces
                      VAR ifType := mod:GetType(ifname)
-                     IF ifType != NULL
+                     IF ifType != NULL .AND. isCoClass
                         AddMembers(aMembers, ifType, SELF)
                      ENDIF
 
                   NEXT
-               ENDIF
+                ENDIF
               BEGIN LOCK SELF
                   // now add to
                   SELF:_members:Clear()

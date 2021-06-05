@@ -249,6 +249,7 @@ namespace XSharp.LanguageService
                     // after these tokens we "restart" the list
                     case XSharpLexer.WS:
                     case XSharpLexer.EOS:
+                    case XSharpLexer.Eof:
                         continue;
                     case XSharpLexer.TO:
                     case XSharpLexer.UPTO:

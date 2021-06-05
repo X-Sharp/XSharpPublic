@@ -333,7 +333,7 @@ namespace XSharp.LanguageService
                             BuildCompletionList(compList, type, Modifiers.Public, true, filterText);
                         }
                     }
-                    if (state.HasFlag(CompletionState.InstanceMembers))
+                    if (state.HasFlag(CompletionState.InstanceMembers) &&  ! (symbol is IXTypeSymbol))
                     {
                         showInstanceMembers = true;
                         filterText = "";
@@ -799,11 +799,21 @@ namespace XSharp.LanguageService
                 sourceType.ForceComplete();
                 var baseType = sourceType.BaseType;
                 if (string.IsNullOrWhiteSpace(baseType))
-                    {
-                    baseType = "System.Object";
+                {
+                    if (type.Kind == Kind.Enum)
+                        baseType = "System.Enum";
+                    else if (type.Kind == Kind.Delegate)
+                        baseType = "System.Delegate";
+                    else
+                        baseType = "System.Object";
                 }
                 var parentType = sourceType.File.FindType(baseType, sourceType.Namespace);
-                BuildCompletionList(compList, parentType, Modifiers.Protected, staticOnly, startWith);
+                if (baseType == "System.Enum" && staticOnly)
+                {
+                    ; // do nothing
+                }
+                else
+                    BuildCompletionList(compList, parentType, Modifiers.Protected, staticOnly, startWith);
                 foreach (var ifname in sourceType.Interfaces)
                 {
                     var iftype = sourceType.File.FindType(ifname, sourceType.Namespace);

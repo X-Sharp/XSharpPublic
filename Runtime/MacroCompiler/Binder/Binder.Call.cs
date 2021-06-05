@@ -272,7 +272,6 @@ namespace XSharp.MacroCompiler
                     var conv = ovRes.Conversions[i];
                     var a = new Arg(LiteralExpr.Bound(((ConversionSymbolToConstant)conv).Constant));
                     Convert(ref a.Expr, FindType(parameters[i].ParameterType), BindOptions.Default);
-                    HandleArgWriteBack(conv, a.Expr, ref writeBack);
                     args.Args.Add(a);
                 }
             }

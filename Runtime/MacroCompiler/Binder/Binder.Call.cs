@@ -263,17 +263,7 @@ namespace XSharp.MacroCompiler
                     Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), conv);
                 if (conv is ConversionSymbolToConstant)
                     Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), BindOptions.Default);
-                if (conv.IsIndirectRefConversion() && e.Symbol?.HasSetAccess == true)
-                {
-                    // Handle writeBack
-                    Expr t = IdExpr.Bound(conv.IndirectRefConversionTempLocal());
-                    var wc = Conversion(t, e.Datatype, BindOptions.Default);
-                    if (wc.Exists)
-                    {
-                        Convert(ref t, e.Datatype, wc);
-                        SymbolExtensions.AddExpr(ref writeBack, AssignExpr.Bound(e, t, BindOptions.Default));
-                    }
-                }
+                HandleArgWriteBack(conv, e, ref writeBack);
             }
             if (ovRes.MissingArgs > 0)
             {
@@ -282,6 +272,7 @@ namespace XSharp.MacroCompiler
                     var conv = ovRes.Conversions[i];
                     var a = new Arg(LiteralExpr.Bound(((ConversionSymbolToConstant)conv).Constant));
                     Convert(ref a.Expr, FindType(parameters[i].ParameterType), BindOptions.Default);
+                    HandleArgWriteBack(conv, a.Expr, ref writeBack);
                     args.Args.Add(a);
                 }
             }
@@ -293,10 +284,26 @@ namespace XSharp.MacroCompiler
                 {
                     var conv = ovRes.Conversions[i];
                     Convert(ref args.Args[i].Expr, varArgType, conv);
+                    HandleArgWriteBack(conv, args.Args[i].Expr, ref writeBack);
                     varArgs.Add(args.Args[i].Expr);
                 }
                 while (args.Args.Count > ovRes.FixedArgs) args.Args.RemoveAt(args.Args.Count - 1);
                 args.Args.Add(new Arg(LiteralArray.Bound(varArgs, varArgType)));
+            }
+
+            void HandleArgWriteBack(ConversionSymbol conv, Expr e, ref Expr wb)
+            {
+                if (conv.IsIndirectRefConversion() && e.Symbol?.HasSetAccess == true)
+                {
+                    // Handle writeBack
+                    Expr t = IdExpr.Bound(conv.IndirectRefConversionTempLocal());
+                    var wc = Conversion(t, e.Datatype, BindOptions.Default);
+                    if (wc.Exists)
+                    {
+                        Convert(ref t, e.Datatype, wc);
+                        SymbolExtensions.AddExpr(ref wb, AssignExpr.Bound(e, t, BindOptions.Default));
+                    }
+                }
             }
         }
     }

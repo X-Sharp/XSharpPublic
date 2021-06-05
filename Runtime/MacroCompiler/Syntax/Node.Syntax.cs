@@ -261,7 +261,8 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class Arg : Node
     {
         internal Expr Expr;
-        internal Arg(Expr e) : base(e.Token) { Expr = e; }
+        internal RefKind RefKind;
+        internal Arg(Expr e, RefKind refKind = RefKind.None) : base(e.Token) { Expr = e; RefKind = refKind; }
         public override string ToString() { return Expr.ToString(); }
     }
     internal partial class ArgList : Node

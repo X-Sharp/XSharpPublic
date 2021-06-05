@@ -90,6 +90,10 @@ namespace XSharp.MacroCompiler
                 }
                 return ConversionSymbol.Create(ConversionKind.NoConversion);
             }
+            if (arg.RefKind == RefKind.Ref && !param.ParameterType.IsByRef)
+                return ConversionSymbol.Create(ConversionKind.NoConversion);
+            if (arg.RefKind == RefKind.Out && !param.ParameterType.IsByRef)
+                return ConversionSymbol.Create(ConversionKind.NoConversion);
             var conv = Conversion(arg.Expr, FindType(param.ParameterType), options);
             return conv;
         }

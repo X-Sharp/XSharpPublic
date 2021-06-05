@@ -545,7 +545,7 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\TextFile\TextFile.vstemplate">
     </ZipItem>
-    <Content Include="Templates\ProjectItems\Code\Header\Header.xh" />
+    <ZipItem Include="Templates\ProjectItems\Code\Header\Header.xh" />
     <ZipItem Include="Templates\ProjectItems\Code\Header\Header.vstemplate">
     </ZipItem>
     <Content Include="License.txt">

@@ -1,7 +1,5 @@
 @echo off
 set xsoldpath=%path%
-set xsdotnetpath=%~dp0\Binaries\Tools\dotnet
-set path=%xsdotnetpath%;%PATH%
 if "%VSVERSION%" == "" SET VSVERSION=2017
 if "%VSEDITION%" == "" SET VSEDITION=Enterprise
 set VsBatch="C:\Program Files (x86)\Microsoft Visual Studio\%VSVERSION%\%VSEDITION%\Common7\Tools\VsDevCmd.bat"
@@ -27,4 +25,6 @@ goto End
 echo Cannot locate VS 2017 MsBuild.exe
 goto end
 :End
+set path=%xsoldpath%
+set xsoldpath=
 

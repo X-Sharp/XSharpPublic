@@ -38,6 +38,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacroU(mc, e"{|a,b| S_EnforceType(a,b), a}", ArgsU(NIL,"N"), 0, typeof(INT))
         TestMacro(mc, e"{|a,b| S_EnforceType(a,b), a}", Args(NIL,"N"), 0, typeof(INT))
         TestMacro(mc, e"{|a,b| S_EnforceType(REF a,b), a}", Args(NIL,"N"), 0, typeof(INT))
+        TestMacro(mc, e"{|a,b| S_EnforceTypeC(REF a,b), a}", Args(NIL,"N"), 0, typeof(INT))
 
         //TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
         TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
@@ -568,4 +569,5 @@ BEGIN NAMESPACE MacroCompilerTest
         RETURN
 
 END NAMESPACE
+
 

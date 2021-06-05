@@ -329,4 +329,27 @@ FUNCTION S_EnforceType(uVar REF USUAL,cTyp AS STRING) AS VOID
     ENDIF
     RETURN
 
+FUNCTION S_EnforceTypeC(uVar,cTyp) CLIPPER
+    IF ValType(uVar) <> cTyp
+        SWITCH cTyp
+            CASE "C"
+                uVar := ""
+            CASE "N"
+                uVar := 0
+            CASE "D"
+                uVar := NULL_DATE
+            CASE "L"
+                uVar := FALSE
+            CASE "A"
+                uVar := {}
+            CASE "O"
+                uVar := NULL_OBJECT
+            CASE "#"
+                uVar := NULL_SYMBOL
+            CASE "U"
+                uVar := NIL
+        END SWITCH
+    ENDIF
+    RETURN NIL
+
 

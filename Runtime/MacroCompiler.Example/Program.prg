@@ -37,9 +37,6 @@ BEGIN NAMESPACE MacroCompilerTest
         "RETURN a+b+c"}),1,2,3)
         wait*/
 
-        //TestMacro(mc, e"{|a,b| S_EnforceType(a,b), a}", Args(NIL,"N"), 0, typeof(INT))
-        //wait
-
         ParserTestsFox(CreateFoxScriptCompiler())
         ParserTests(CreateScriptCompiler())
         ScriptTests()

@@ -66,10 +66,8 @@ namespace XSharp.Project
             this.chkPPO = new System.Windows.Forms.CheckBox();
             this.chkXMLDocumentationFile = new System.Windows.Forms.CheckBox();
             this.lblPlatformTarget = new System.Windows.Forms.Label();
-            this.comboPlatformTarget = new System.Windows.Forms.ComboBox();
             this.chkOptimize = new System.Windows.Forms.CheckBox();
             this.chkUseSharedCompilation = new System.Windows.Forms.CheckBox();
-            this.chkPrefer32Bit = new System.Windows.Forms.CheckBox();
             this.lblOutputPath = new System.Windows.Forms.Label();
             this.lblCommandLineOption = new System.Windows.Forms.Label();
             this.txtCommandLineOption = new System.Windows.Forms.TextBox();
@@ -84,6 +82,8 @@ namespace XSharp.Project
             this.chkSuppressRCWarnings = new System.Windows.Forms.CheckBox();
             this.txtSpecificWarnings = new System.Windows.Forms.TextBox();
             this.btnKeyFile = new System.Windows.Forms.Button();
+            this.comboPlatformTarget = new System.Windows.Forms.ComboBox();
+            this.chkPrefer32Bit = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.mainPanel.SuspendLayout();
             this.panelSigning.SuspendLayout();
@@ -510,10 +510,10 @@ namespace XSharp.Project
             this.txtXMLDocumentationFile.AccessibleName = "XML Document File Path";
             this.txtXMLDocumentationFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtXMLDocumentationFile.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.txtXMLDocumentationFile.Enabled = false;
             this.txtXMLDocumentationFile.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.txtXMLDocumentationFile.Location = new System.Drawing.Point(198, 421);
             this.txtXMLDocumentationFile.Name = "txtXMLDocumentationFile";
-            this.txtXMLDocumentationFile.ReadOnly = true;
             this.txtXMLDocumentationFile.Size = new System.Drawing.Size(300, 20);
             this.txtXMLDocumentationFile.TabIndex = 28;
             // 
@@ -579,18 +579,6 @@ namespace XSharp.Project
             this.lblPlatformTarget.TabIndex = 7;
             this.lblPlatformTarget.Text = "Platform Target";
             // 
-            // comboPlatformTarget
-            // 
-            this.comboPlatformTarget.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.comboPlatformTarget.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.comboPlatformTarget.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboPlatformTarget.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.comboPlatformTarget.FormattingEnabled = true;
-            this.comboPlatformTarget.Location = new System.Drawing.Point(198, 68);
-            this.comboPlatformTarget.Name = "comboPlatformTarget";
-            this.comboPlatformTarget.Size = new System.Drawing.Size(133, 21);
-            this.comboPlatformTarget.TabIndex = 7;
-            // 
             // chkOptimize
             // 
             this.chkOptimize.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -616,17 +604,6 @@ namespace XSharp.Project
             this.chkUseSharedCompilation.TabIndex = 34;
             this.chkUseSharedCompilation.Text = "Use Shared Compiler";
             this.chkUseSharedCompilation.UseVisualStyleBackColor = true;
-            // 
-            // chkPrefer32Bit
-            // 
-            this.chkPrefer32Bit.AutoSize = true;
-            this.chkPrefer32Bit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.chkPrefer32Bit.Location = new System.Drawing.Point(504, 68);
-            this.chkPrefer32Bit.Name = "chkPrefer32Bit";
-            this.chkPrefer32Bit.Size = new System.Drawing.Size(83, 17);
-            this.chkPrefer32Bit.TabIndex = 8;
-            this.chkPrefer32Bit.Text = "Prefer 32-bit";
-            this.chkPrefer32Bit.UseVisualStyleBackColor = true;
             // 
             // lblOutputPath
             // 
@@ -805,6 +782,29 @@ namespace XSharp.Project
             this.btnKeyFile.TabIndex = 44;
             this.btnKeyFile.Text = "...";
             this.btnKeyFile.Click += new System.EventHandler(this.btnKeyFile_Click);
+            // 
+            // comboPlatformTarget
+            // 
+            this.comboPlatformTarget.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.comboPlatformTarget.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.comboPlatformTarget.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboPlatformTarget.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.comboPlatformTarget.FormattingEnabled = true;
+            this.comboPlatformTarget.Location = new System.Drawing.Point(198, 68);
+            this.comboPlatformTarget.Name = "comboPlatformTarget";
+            this.comboPlatformTarget.Size = new System.Drawing.Size(133, 21);
+            this.comboPlatformTarget.TabIndex = 7;
+            // 
+            // chkPrefer32Bit
+            // 
+            this.chkPrefer32Bit.AutoSize = true;
+            this.chkPrefer32Bit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.chkPrefer32Bit.Location = new System.Drawing.Point(504, 68);
+            this.chkPrefer32Bit.Name = "chkPrefer32Bit";
+            this.chkPrefer32Bit.Size = new System.Drawing.Size(83, 17);
+            this.chkPrefer32Bit.TabIndex = 8;
+            this.chkPrefer32Bit.Text = "Prefer 32-bit";
+            this.chkPrefer32Bit.UseVisualStyleBackColor = true;
             // 
             // XBuildPropertyPagePanel
             // 

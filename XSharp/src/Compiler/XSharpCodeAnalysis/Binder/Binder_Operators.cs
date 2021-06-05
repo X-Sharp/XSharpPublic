@@ -43,7 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // do not throw an warnings for IIF() expressions with types that are too big
             // for the LHS of the assignment
-            if (syntax.Kind() == SyntaxKind.ConditionalExpression && targetType.IsIntegralType())
+            if (syntax.Kind() == SyntaxKind.ConditionalExpression && targetType.IsIntegralType() && sourceType.IsIntegralType())
             {
                 return true;
             }

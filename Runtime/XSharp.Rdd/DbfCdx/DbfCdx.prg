@@ -206,7 +206,7 @@ BEGIN NAMESPACE XSharp.RDD
                     IF workOrder != NULL
                         info:Result := workOrder:OrderBag:FullPath
                     ELSE
-                        info:Result := DBNull.Value
+                        info:Result := String.Empty
                     ENDIF
                 CASE DBOI_BAGCOUNT
                     info:Result := SELF:_indexList:BagCount
@@ -217,14 +217,14 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSEIF workOrder != NULL
                         info:Result := workOrder:FileName
                     ELSE
-                        info:Result := DBNull.Value
+                        info:Result :=String.Empty
                     ENDIF
 
                 CASE DBOI_NAME
                     IF workOrder != NULL
                         info:Result := workOrder:_orderName
                     ELSE
-                        info:Result := DBNull.Value
+                        info:Result := String.Empty
                     ENDIF
                 CASE DBOI_COLLATION
                      info:Result := ""

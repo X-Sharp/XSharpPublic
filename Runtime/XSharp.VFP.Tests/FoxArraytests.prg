@@ -9,7 +9,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         [Fact, Trait("Category", "FoxArray")];
 		ASYNC METHOD SimpleArrayTests() AS VOID
             XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
-            LOCAL a
+            LOCAL ARRAY a
             Dimension a(10)
             // You cannot assign an array to an element of a FOX array
             AWAIT Assert.ThrowsAsync<Error>( { => a[1] := {1,2,3} })

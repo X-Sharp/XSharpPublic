@@ -592,5 +592,10 @@ CLASS VOControlTemplate
 			END IF
 		ENDIF
 	RETURN
+	ACCESS ToolboxTitle AS STRING
+		IF .NOT. String.IsNullOrWhiteSpace(SELF:cTitle)
+			RETURN SELF:cTitle
+		END IF
+	RETURN SELF:cName
 
 END CLASS

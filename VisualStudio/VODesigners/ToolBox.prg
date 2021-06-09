@@ -24,7 +24,7 @@ INTERNAL CLASS ToolBoxButton INHERIT Button
 	CONSTRUCTOR(_oTemplate AS VOControlTemplate)
 		SUPER()
 		SELF:oTemplate := _oTemplate
-		SELF:Text := SELF:oTemplate:cName
+		SELF:Text := SELF:oTemplate:ToolboxTitle
 		SELF:Dock := DockStyle.Top
 		SELF:TextAlign := ContentAlignment.MiddleLeft
 		SELF:FlatStyle := FlatStyle.Flat
@@ -51,8 +51,8 @@ INTERNAL CLASS ToolBoxButton INHERIT Button
 			SELF:oDragPoint := Point.Empty
 		ENDIF
 	RETURN
-	
-	
+
+
 END CLASS
 
 CLASS ToolBox INHERIT Panel
@@ -69,16 +69,16 @@ CLASS ToolBox INHERIT Panel
 
 		SELF:AutoScroll := TRUE
 		SELF:Dock := DockStyle.Fill
-		
+
 		IF !VOWindowEditorTemplate.Loaded
 			RETURN
 		ENDIF
-		
+
 		LOCAL oAssembly AS Assembly
 		oAssembly := TypeOf(System.Windows.Forms.Form):Assembly
 		oImageList := ImageList{}
 		oImageList:TransparentColor := Color.Fuchsia
-		
+
 		FOR n := VOWindowEditorTemplate.Count - 1 DOWNTO 0
 			oTemplate := VOWindowEditorTemplate.Get(n)
 			IF (!oTemplate:lUse .or. oTemplate:lForm) //.and. n != 0
@@ -89,8 +89,8 @@ CLASS ToolBox INHERIT Panel
 			oButton:ImageList := oImageList
 			oButton:ImageIndex := oImageList:Images:Count - 1
 			oButton:Text := "   " + oButton:Text
-			
-			
+
+
 			oButton:Click += EventHandler{ SELF , @ButtonClicked() }
 			SELF:Controls:Add(oButton)
 		NEXT
@@ -130,7 +130,7 @@ CLASS ToolBox INHERIT Panel
 		oButton := ToolBoxButton{}
 		oButton:Click += EventHandler{ SELF , @ButtonClicked() }
 		SELF:Controls:Add(oButton)
-		
+
 		SELF:SetViewMode(ViewMode.Form)
 		SELF:SelectPointer()
 	RETURN
@@ -138,7 +138,7 @@ CLASS ToolBox INHERIT Panel
 		LOCAL cRet AS STRING
 		LOCAL cClass AS STRING
 		cClass := oTemplate:cFullClass:ToUpperInvariant()
-		DO CASE 
+		DO CASE
 		CASE cClass:StartsWith("CONTROL:CUSTOMCONTROL:BBROWSER")
 			cRet := "System.Windows.Forms.DataGridView.bmp"
 		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:BASELISTBOX:COMBOBOX")
@@ -157,7 +157,7 @@ CLASS ToolBox INHERIT Panel
 			cRet := "System.Windows.Forms.DateTimePicker.bmp"
 		CASE cClass:StartsWith("CONTROL:COMMONCONTROL:PROGRESSBAR")
 			cRet := "System.Windows.Forms.ProgressBar.bmp"
-		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:GROUPBOX") .or. ; 
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:GROUPBOX") .OR. ;
 			cClass:StartsWith("CONTROL:TEXTCONTROL:RADIOBUTTONGROUP")
 			cRet := "System.Windows.Forms.GroupBox.bmp"
 		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:FIXEDTEXT")
@@ -195,7 +195,7 @@ CLASS ToolBox INHERIT Panel
 			cRet := "System.Windows.Forms.Panel.bmp"
 		END CASE
 	RETURN cRet
-	
+
 	METHOD SetViewMode(eViewMode AS ViewMode) AS VOID
 		LOCAL n AS INT
 		IF eViewMode == ViewMode.Auto
@@ -209,7 +209,7 @@ CLASS ToolBox INHERIT Panel
 			SELF:Controls[SELF:Controls:Count - 2]:Visible := SELF:eCurrentMode == ViewMode.Browse
 		END IF
 	RETURN
-	
+
 	ACCESS Selected() AS VOControlTemplate
 		IF SELF:oCurrent == NULL
 			RETURN NULL
@@ -239,5 +239,5 @@ CLASS ToolBox INHERIT Panel
 		oButton:ForeColor := Color.Red
 		SELF:oCurrent := oButton
 	RETURN
-		
+
 END CLASS

@@ -153,7 +153,7 @@ namespace XSharp.MacroCompiler
         internal ConversionSymbol Conversion;
         internal ConversionSymbol Previous;
 
-        internal ConversionChain(ConversionSymbol conv, ConversionSymbol prev) : base(conv.Kind) { Conversion = conv; Previous = prev; }
+        internal ConversionChain(ConversionSymbol conv, ConversionSymbol prev) : base(conv.Kind == ConversionKind.Identity ? ConversionKind.ImplicitUserDefined : conv.Kind) { Conversion = conv; Previous = prev; }
 
         internal override bool IsExplicit { get { return Previous.IsExplicit || Conversion.IsExplicit; } }
         internal override bool IsImplicit { get { return Previous.IsImplicit || Conversion.IsImplicit; } }
@@ -170,7 +170,8 @@ namespace XSharp.MacroCompiler
         internal ConversionSymbol Conversion;
         internal TypeSymbol Type;
         internal LocalSymbol Local;
-        internal ConversionToTemp(ConversionSymbol conv, TypeSymbol type) : base(conv.Kind) { Conversion = conv; Type = type; Local = new LocalSymbol(Type); }
+        internal ConversionToTemp(ConversionSymbol conv, TypeSymbol type) : base(conv.Kind == ConversionKind.Identity ? ConversionKind.ImplicitUserDefined : conv.Kind) { Conversion = conv; Type = type; Local = new LocalSymbol(Type); }
+        internal ConversionToTemp(TypeSymbol type) : base(ConversionKind.ImplicitUserDefined) { Conversion = ConversionSymbol.Create(ConversionKind.Identity); Type = type; Local = new LocalSymbol(Type); }
     }
 
     internal static class ConversionEasyOut

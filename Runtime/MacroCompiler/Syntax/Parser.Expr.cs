@@ -739,10 +739,17 @@ namespace XSharp.MacroCompiler
 
         internal Arg ParseArg()
         {
+            RefKind refKind = RefKind.None;
+            if (Expect(TokenType.REF))
+                refKind = RefKind.Ref;
+            else if (Expect(TokenType.OUT))
+                refKind = RefKind.Out;
             var e = ParseExpression();
+            if (refKind != RefKind.None)
+                Require(e, ErrorCode.Expected, "expression");
             if (e == null)
                 return null;
-            return new Arg(e);
+            return new Arg(e, refKind);
         }
 
         internal ArgList ParseArgList(bool allowEmpty = true)

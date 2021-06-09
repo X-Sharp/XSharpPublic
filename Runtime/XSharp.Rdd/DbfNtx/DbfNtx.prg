@@ -102,20 +102,20 @@ BEGIN NAMESPACE XSharp.RDD
                 IF workOrder != NULL
                     info:Result := workOrder:Condition
                 ELSE
-                    info:Result := ""
+                    info:Result := DBNull.Value
                 ENDIF
             CASE DBOI_EXPRESSION
                 IF workOrder != NULL
                     info:Result := workOrder:Expression
                 ELSE
-                    info:Result := ""
+                    info:Result := DBNull.Value
                 ENDIF
             CASE DBOI_ORDERCOUNT
             CASE DBOI_BAGCOUNT
                 info:Result := SELF:_indexList:Count
             CASE DBOI_POSITION
                 IF workOrder == NULL
-                    info:Result := SELF:RecNo
+                    info:Result := 0
                 ELSE
                     isOk := workOrder:_getRecPos( REF result)
                     IF isOk
@@ -188,19 +188,19 @@ BEGIN NAMESPACE XSharp.RDD
                 IF workOrder != NULL
                     info:Result := workOrder:Conditional
                 ELSE
-                    info:Result := FALSE
+                    info:Result := DBNull.Value
                 ENDIF
             CASE DBOI_KEYTYPE
                 IF workOrder != NULL
                     info:Result := workOrder:KeyExprType
                 ELSE
-                    info:Result := 0
+                    info:Result := DBNull.Value
                 ENDIF
             CASE DBOI_KEYSIZE
                 IF workOrder != NULL
                     info:Result := workOrder:KeyLength
                 ELSE
-                    info:Result := 0
+                    info:Result := DBNull.Value
                 ENDIF
             CASE DBOI_KEYDEC
                 IF workOrder != NULL

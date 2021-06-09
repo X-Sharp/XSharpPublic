@@ -1,72 +1,33 @@
-﻿USING System
-USING System.Collections.Generic
-USING System.Linq
-USING System.Text
+﻿FUNCTION Start() AS VOID
+	LOCAL cDBF AS STRING
+	LOCAL aFields AS ARRAY
+	LOCAL i AS DWORD
+        LOCAL nStart, nElapsed AS FLOAT
+	RddSetDefault ( "DBFCDX" )
 
-FUNCTION Start() AS VOID
-LOCAL cbExpression AS USUAL
-LOCAL u1,u2 AS USUAL
-LOCAL cPath AS STRING
-LOCAL n AS INT
-cPath := "C:\test\"
+	cDbf := "C:\test\mytestxs"    // change the dbf to "C:\test\mytestVO"  to test in VO 2.8.
+	FErase ( cDbf + ".cdx" )
 
-RddSetDefault("DBFCDX")
-
-DbCreate(cPath + "parent" , {{"FLD" , "N" , 3 , 0}})
-DbCreate(cPath + "child" , {{"FLD" , "N" , 3 , 0}})
+	aFields := { { "LAST" , "C" , 20 , 0 } }
 
 
-DbUseArea(TRUE,"DBFCDX", cPath + "parent", "parent" , TRUE)
-parent->DbAppend()
-parent->FieldPut(1,3)
+	DbCreate( cDBF , AFields)
+	DbUseArea( ,,cDBF,,FALSE )
 
-DbUseArea(TRUE,"DBFCDX", cPath + "child", "child" , TRUE)
-child->DbCreateIndex(cPath + "child","FLD")
-FOR n := 1 UPTO 5
-child->DbAppend()
-child->FieldPut(1,n)
-NEXT
+        nStart := Seconds()
 
-cbExpression := &( "{ || FLD }")
-child->DbGoBottom()
-? "evaluate in bottom, must be 5:", child->Eval( cbExpression ) // 3
+       ? "start : " + ntrim(nStart)
 
-? parent->VoDbSetRelation("child" , cbExpression ,"FLD")
-parent->DbGoTop()
+	FOR i := 1 UPTO 1000000
+		DbAppend()
+        FIELDPUT(1, Str(i,10,0))
+	NEXT
 
-child->DbSkip(0) // this throws a runtime error in __FieldGet()
+       nElapsed := Seconds() - nStart
 
-? "Recno must be 3:",child->RecNo() 
-?
-? "evaluate after SetRelation(), must be 3:", child->Eval( cbExpression )
-? "Recno should be 3:", child->RecNo()
+       ? "Elapsed: " + NTrim(nElapsed) + " seconds"
 
-u1 := u2 := 3
-? child->VoDbOrderInfo( DBOI_SCOPETOP	 , "", NIL, REF u1 )
-? child->VoDbOrderInfo( DBOI_SCOPEBottom, "", NIL, REF u2 )
-parent->DbGoTop()
+	DbCloseArea()
 
-
-child->DbGoTop()
-? "recno after set scope, must be 3:", child->RecNo()
-
-? "Skipping forward, all must be 6 , FALSE, TRUE"
-child->DbSkip(+1)
-? child->RecNo() , child->Bof() , child->Eof()
-child->DbSkip(+1)
-? child->RecNo() , child->Bof() , child->Eof()
-child->DbSkip(+1)
-? child->RecNo() , child->Bof() , child->Eof()
-
-? "Skipping backward"
-child->DbSkip(-1)
-? child->RecNo() , child->Bof() , child->Eof() // must be 3, false, false
-child->DbSkip(-1)
-? child->RecNo() , child->Bof() , child->Eof() // must be 3, TRUE, false
-child->DbSkip(-1)
-? child->RecNo() , child->Bof() , child->Eof() // must be 3, TRUE, false
-child->DbSkip(-1)
-? child->RecNo() , child->Bof() , child->Eof() // must be 3, TRUE, false
-
-DbCloseAll()
-wait
+    wait
+RETURN

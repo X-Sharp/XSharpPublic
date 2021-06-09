@@ -4570,52 +4570,135 @@ RETURN
         [Fact, Trait("Category", "DBF")];
 		METHOD DbOrderInfo_withnoindex_Test() AS VOID
 			// https://github.com/X-Sharp/XSharpPublic/issues/627
+			// https://github.com/X-Sharp/XSharpPublic/issues/666
+			// https://github.com/X-Sharp/XSharpPublic/issues/684
+			
+			// Insane inconsistent VO behavior...
 			LOCAL cDbf AS STRING
 			RddSetDefault("DBFCDX")
 			cDbf := GetTempFileName()
 			DbfTests.CreateDatabase(cDbf , {{"FLD","C",10,0}} , {"a","b"} )
-
+			DbCloseArea()
+			
 			LOCAL uRet AS USUAL
-			uRet := DbOrderInfo(DBOI_EXPRESSION)
-			Assert.True ( IsString(uRet) )
-			Assert.False( IsNil(uRet) )
-			Assert.True ( uRet == "" )
 
-			uRet := DbOrderInfo(DBOI_CONDITION)
-			Assert.True ( IsString(uRet) )
-			Assert.False( IsNil(uRet) )
-			Assert.True ( uRet == "" )
+			uRet := DbOrderInfo(DBOI_NAME)       
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_BAGNAME)    
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_INDEXNAME)  
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_FULLPATH)   
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_EXPRESSION) 
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_CONDITION)  
+			Assert.True( IsNil(uRet) )
 
-			uRet := DbOrderInfo(DBOI_POSITION)
+			uRet := DbOrderInfo(DBOI_POSITION)   
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_RECNO)      
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_ORDERCOUNT) 
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_BAGEXT)      
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_INDEXEXT)    
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_KEYTYPE)    
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_KEYSIZE)    
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_ISCOND)     
+			Assert.True( IsNil(uRet) )
+
+			
+			DbUseArea(TRUE, "DBFNTX", cDbf)
+
+			uRet := DbOrderInfo(DBOI_NAME)       
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_BAGNAME)    
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_INDEXNAME)  
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_FULLPATH)   
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_EXPRESSION) // NIL in VO, empty string in X#
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_CONDITION)  // NIL in VO, empty string in X#
+			Assert.True( IsNil(uRet) )
+
+			uRet := DbOrderInfo(DBOI_POSITION)   // 0 in VO, 1 in X#
 			Assert.True( IsNumeric(uRet) )
-			Assert.True ( uRet == 1 ) // that's what VO returns
-
-			uRet := DbOrderInfo(DBOI_RECNO)
+			Assert.True( uRet == 0 )
+			uRet := DbOrderInfo(DBOI_RECNO)      
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_ORDERCOUNT) 
 			Assert.True( IsNumeric(uRet) )
-			Assert.True ( uRet == 1 ) // that's what VO returns
+			Assert.True( uRet == 0 )
 
-			uRet := DbOrderInfo(DBOI_NAME)
-			Assert.True ( uRet == NIL )
-			uRet := DbOrderInfo(DBOI_BAGNAME)
-			Assert.True ( uRet == NIL )
-			uRet := DbOrderInfo(DBOI_INDEXNAME)
-			Assert.True ( uRet == NIL )
-			uRet := DbOrderInfo(DBOI_BAGEXT)
-			Assert.True ( uRet == ".CDX" )
-			uRet := DbOrderInfo(DBOI_INDEXEXT)
-			Assert.True ( uRet == ".CDX" )
-			uRet := DbOrderInfo(DBOI_FULLPATH)
-			Assert.True ( uRet == NIL )
+			uRet := DbOrderInfo(DBOI_BAGEXT)      
+			Assert.True( IsString(uRet) )
+			Assert.True( uRet == ".NTX" )
+			uRet := DbOrderInfo(DBOI_INDEXEXT)    
+			Assert.True( IsString(uRet) )
+			Assert.True( uRet == ".NTX" )
+			uRet := DbOrderInfo(DBOI_KEYTYPE)    // NIL in VO, 0 in X#
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_KEYSIZE)    // NIL in VO, 0 in X#
+			Assert.True( IsNil(uRet) )
+			uRet := DbOrderInfo(DBOI_ISCOND)     // NIL in VO, .F. in X#
+			Assert.True( IsNil(uRet) )
+			
+			DbCloseArea()
 
-			uRet := DbOrderInfo(DBOI_ORDERCOUNT)
-			Assert.True ( uRet == 0 )
-			uRet := DbOrderInfo(DBOI_KEYTYPE)
-			Assert.True ( uRet == 0 )
-			uRet := DbOrderInfo(DBOI_KEYSIZE)
-			Assert.True ( uRet == 0 )
 
-			uRet := DbOrderInfo(DBOI_ISCOND)
-			Assert.True ( uRet == FALSE )
+			DbUseArea(TRUE, "DBFCDX", cDbf)
+
+			uRet := DbOrderInfo(DBOI_NAME)       // empty string in VO, NIL ,in X#
+			Assert.True( IsString(uRet) )
+			Assert.True( uRet = "" )
+			uRet := DbOrderInfo(DBOI_BAGNAME)    // empty string in VO, NIL ,in X#
+			Assert.True( IsString(uRet) )
+			Assert.True( uRet = "" )
+			uRet := DbOrderInfo(DBOI_INDEXNAME)  // empty string in VO, NIL ,in X#
+			Assert.True( IsString(uRet) )
+			Assert.True( uRet = "" )
+			uRet := DbOrderInfo(DBOI_FULLPATH)   // empty string in VO, NIL ,in X#
+			Assert.True( IsString(uRet) )
+			Assert.True( uRet = "" )
+			uRet := DbOrderInfo(DBOI_EXPRESSION) 
+			Assert.True( IsString(uRet) )
+			Assert.True( uRet = "" )
+			uRet := DbOrderInfo(DBOI_CONDITION)  
+			Assert.True( IsString(uRet) )
+			Assert.True( uRet = "" )
+
+			uRet := DbOrderInfo(DBOI_POSITION)   
+			Assert.True( IsNumeric(uRet) )
+			Assert.True( uRet == 1 )
+			uRet := DbOrderInfo(DBOI_RECNO)      
+			Assert.True( IsNumeric(uRet) )
+			Assert.True( uRet == 1 )
+			uRet := DbOrderInfo(DBOI_ORDERCOUNT) 
+			Assert.True( IsNumeric(uRet) )
+			Assert.True( uRet == 0 )
+
+			uRet := DbOrderInfo(DBOI_BAGEXT)      
+			Assert.True( IsString(uRet) )
+			Assert.True( uRet == ".CDX" )
+			uRet := DbOrderInfo(DBOI_INDEXEXT)    
+			Assert.True( IsString(uRet) )
+			Assert.True( uRet == ".CDX" )
+			uRet := DbOrderInfo(DBOI_KEYTYPE)    
+			Assert.True( IsNumeric(uRet) )
+			Assert.True( uRet == 0 )
+			uRet := DbOrderInfo(DBOI_KEYSIZE)    
+			Assert.True( IsNumeric(uRet) )
+			Assert.True( uRet == 0 )
+			uRet := DbOrderInfo(DBOI_ISCOND)     
+			Assert.True( IsLogic(uRet) )
+			Assert.True( uRet == FALSE )
 
 			DbCloseArea()
 

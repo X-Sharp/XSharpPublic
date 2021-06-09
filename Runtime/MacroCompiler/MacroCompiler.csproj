@@ -103,6 +103,7 @@
     <Compile Include="Syntax\Node.Syntax.cs" />
     <Compile Include="Syntax\Parser.Expr.cs" />
     <Compile Include="Syntax\Parser.Stmt.cs" />
+    <Compile Include="Syntax\Syntax.Semantic.cs" />
     <Compile Include="Syntax\SyntaxToken.cs" />
   </ItemGroup>
   <ItemGroup>

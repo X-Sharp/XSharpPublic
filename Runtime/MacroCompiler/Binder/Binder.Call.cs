@@ -251,7 +251,7 @@ namespace XSharp.MacroCompiler
             }
         }
 
-        static void ApplyConversions(ArgList args, OverloadResult ovRes, out Expr writeBack)
+        void ApplyConversions(ArgList args, OverloadResult ovRes, out Expr writeBack)
         {
             writeBack = null;
             var parameters = ovRes.Parameters.Parameters;
@@ -263,17 +263,7 @@ namespace XSharp.MacroCompiler
                     Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), conv);
                 if (conv is ConversionSymbolToConstant)
                     Convert(ref args.Args[i].Expr, FindType(parameters[i].ParameterType), BindOptions.Default);
-                if (conv.IsIndirectRefConversion() && e.Symbol?.HasSetAccess == true)
-                {
-                    // Handle writeBack
-                    Expr t = IdExpr.Bound(conv.IndirectRefConversionTempLocal());
-                    var wc = Conversion(t, e.Datatype, BindOptions.Default);
-                    if (wc.Exists)
-                    {
-                        Convert(ref t, e.Datatype, wc);
-                        SymbolExtensions.AddExpr(ref writeBack, AssignExpr.Bound(e, t, BindOptions.Default));
-                    }
-                }
+                HandleArgWriteBack(conv, e, ref writeBack);
             }
             if (ovRes.MissingArgs > 0)
             {
@@ -289,14 +279,59 @@ namespace XSharp.MacroCompiler
             {
                 var varArgs = new List<Expr>(ovRes.VarArgs);
                 var varArgType = FindType(parameters[ovRes.FixedArgs].ParameterType.GetElementType());
+                bool hasRefArgs = false;
                 for (int i = ovRes.FixedArgs; i < ovRes.FixedArgs + ovRes.VarArgs; i++)
                 {
                     var conv = ovRes.Conversions[i];
-                    Convert(ref args.Args[i].Expr, varArgType, conv);
-                    varArgs.Add(args.Args[i].Expr);
+                    var e = args.Args[i].Expr;
+                    Convert(ref e, varArgType, conv);
+                    varArgs.Add(e);
+                    if (args.Args[i].RefKind != RefKind.None)
+                        hasRefArgs = true;
+                }
+                var varArg = new Arg(LiteralArray.Bound(varArgs, varArgType));
+                if (hasRefArgs)
+                {
+                    var conv = ConversionSymbol.Create(ConversionSymbol.Create(ConversionKind.Identity), new ConversionToTemp(varArg.Expr.Datatype));
+                    Convert(ref varArg.Expr, varArg.Expr.Datatype, conv);
+                    for (int i = ovRes.FixedArgs; i < ovRes.FixedArgs + ovRes.VarArgs; i++)
+                    {
+                        if (args.Args[i].RefKind != RefKind.None)
+                            HandleVarArgWriteBack(conv, args.Args[i].Expr, i-ovRes.FixedArgs, ref writeBack);
+                    }
                 }
                 while (args.Args.Count > ovRes.FixedArgs) args.Args.RemoveAt(args.Args.Count - 1);
-                args.Args.Add(new Arg(LiteralArray.Bound(varArgs, varArgType)));
+                args.Args.Add(varArg);
+            }
+
+            void HandleArgWriteBack(ConversionSymbol conv, Expr e, ref Expr wb)
+            {
+                if (conv.IsIndirectRefConversion() && e.Symbol?.HasSetAccess == true)
+                {
+                    // Handle writeBack
+                    Expr t = IdExpr.Bound(conv.IndirectRefConversionTempLocal());
+                    var wc = Conversion(t, e.Datatype, BindOptions.Default);
+                    if (wc.Exists)
+                    {
+                        Convert(ref t, e.Datatype, wc);
+                        SymbolExtensions.AddExpr(ref wb, AssignExpr.Bound(e, t, BindOptions.Default));
+                    }
+                }
+            }
+            void HandleVarArgWriteBack(ConversionSymbol conv, Expr e, int i, ref Expr wb)
+            {
+                if (e.Symbol?.HasSetAccess == true)
+                {
+                    // Handle writeBack
+                    Expr t = IdExpr.Bound(conv.IndirectRefConversionTempLocal());
+                    t = ArrayAccessExpr.Bound(t, ArgList.Bound(LiteralExpr.Bound(Constant.Create(i+1))), this);
+                    var wc = Conversion(t, e.Datatype, BindOptions.Default);
+                    if (wc.Exists)
+                    {
+                        Convert(ref t, e.Datatype, wc);
+                        SymbolExtensions.AddExpr(ref wb, AssignExpr.Bound(e, t, BindOptions.Default));
+                    }
+                }
             }
         }
     }

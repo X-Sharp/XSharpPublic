@@ -45,30 +45,26 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BetterResult DetermineAssemblyPriority(AssemblySymbol asm1, AssemblySymbol asm2)
         {
-            // Prefer overload in non core over core.
-            if (asm1.IsRTDLL(XSharpTargetDLL.Core))
-            {
-                if (!asm2.IsRTDLL(XSharpTargetDLL.Core))
-                {
-                    return BetterResult.Right;
-                }
-            }
-            if (asm2.IsRTDLL(XSharpTargetDLL.Core))
-            {
-                return BetterResult.Left;
-            }
             // prefer overload in dialect specific over other assemblies
             if (asm1.IsRTDLL(XSharpTargetDLL.VO) ||
                 asm1.IsRTDLL(XSharpTargetDLL.VFP) ||
                 asm1.IsRTDLL(XSharpTargetDLL.XPP))
             {
-                return BetterResult.Left;
+                if (asm2.IsRTDLL(XSharpTargetDLL.Core) ||
+                    asm2.IsRTDLL(XSharpTargetDLL.RT))
+                {
+                    return BetterResult.Left;
+                }
             }
             if (asm2.IsRTDLL(XSharpTargetDLL.VO) ||
                 asm2.IsRTDLL(XSharpTargetDLL.VFP) ||
                 asm2.IsRTDLL(XSharpTargetDLL.XPP))
             {
-                return BetterResult.Right;
+                if (asm1.IsRTDLL(XSharpTargetDLL.Core) ||
+                    asm1.IsRTDLL(XSharpTargetDLL.RT))
+                {
+                    return BetterResult.Right;
+                }
             }
             return BetterResult.Neither;
         }

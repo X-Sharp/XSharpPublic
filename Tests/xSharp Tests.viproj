@@ -95649,7 +95649,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R783 - OBJECT -> Numeric conversions - VO Dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C780 - AccessViolationException with FRead() *************
 Application = C780 - AccessViolationException with FRead()
 IDEVersion = 1.06
@@ -95691,9 +95691,10 @@ FileGUID = E1FF366D-D5FD-4E4B-A0D8-ABA3A9FBCB65
 FileType = Code
 CopyToBin = 0
 [C780 - AccessViolationException with FRead() References]
+ReferenceGAC = CLR4,mscorlib,1,0,4.0.0.0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C780 - AccessViolationException with FRead() Resources]
 [C780 - AccessViolationException with FRead() Native Resources]
 [C780 - AccessViolationException with FRead() License files]

@@ -922,8 +922,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 bool leftIsConst = false;
                 bool rightIsConst = false;
                 type = GetExpressionType(e.Left, ref leftIsConst);
-                var _ = GetExpressionType(e.Right, ref rightIsConst);
+                var type2 = GetExpressionType(e.Right, ref rightIsConst);
                 isConst = leftIsConst && rightIsConst;
+                if (type != type2 && type.ToFullString() != type2.ToFullString())
+                {
+                    if (type == objectType)
+                    {
+                        type = type2;
+                    }
+                }
             }
             else if (expr is XP.AssignmentExpressionContext)
             {
@@ -935,8 +942,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 isConst = leftIsConst && rightIsConst;
                 if (type != type2 && type.ToFullString() != type2.ToFullString())
                 {
-                    // assign a known type to an undetermined LHS
-                    // then return the known type
                     if (type == objectType)
                     {
                         type = type2;
@@ -948,13 +953,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var e = expr as XP.PrefixExpressionContext;
                 type = GetExpressionType(e.Expr, ref isConst);
                 if (e.Op.Type == XP.ADDROF)
-                {
                     type = _syntaxFactory.PointerType(voidType, SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken));
-                }
                 else
-                {
                     type = GetExpressionType(e.Expr, ref isConst);
-                }
             }
             if (type == null)
             {

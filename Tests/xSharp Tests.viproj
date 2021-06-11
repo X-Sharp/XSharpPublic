@@ -95762,7 +95762,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C780 - AccessViolationException with FRead()
 
-ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION R784 - Ensure define is signed / unsigned as expected *************
 Application = R784 - Ensure define is signed / unsigned as expected
 IDEVersion = 1.06
@@ -95817,7 +95817,7 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=0
+VO4=1
 VO5=0
 VO6=0
 VO7=0

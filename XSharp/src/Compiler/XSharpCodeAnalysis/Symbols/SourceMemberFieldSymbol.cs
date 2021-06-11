@@ -4,15 +4,8 @@
 // See License.txt in the project root for license information.
 //
 #nullable disable
-using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
-using System.Threading;
-using Microsoft.CodeAnalysis.Text;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
@@ -22,7 +15,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal TypeWithAnnotations GetVOGlobalType(CSharpCompilation compilation, TypeSyntax typeSyntax, Binder binder, ConsList<FieldSymbol> fieldsBeingBound)
         {
             var xNode = this.SyntaxNode.XNode;
-            if (compilation.Options.HasOption(CompilerOption.ResolveTypedFunctionPointersToPtr,this.SyntaxNode))
+            if (compilation.Options.HasOption(CompilerOption.ResolveTypedFunctionPointersToPtr, this.SyntaxNode))
             {
                 XP.DatatypeContext dt = null;
                 if (xNode is XP.ClassvarContext &&
@@ -53,10 +46,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
             }
-            TypeSymbol type = default;
+            TypeSymbol type;
             if (xNode is XP.VodefineContext && !this.IsConst)
             {
-                var vodef = xNode as XP.VodefineContext;
                 DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
                 type = binder.BindType(typeSyntax, diagnostics).Type;
                 // parser could not determine the type
@@ -70,7 +62,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         type = initializerOpt.Type;
 
-                        if (!type.IsVoidPointer() && initializerOpt.ConstantValue != null && !this.IsConst)
+                        bool isConst = !type.IsVoidPointer() && initializerOpt.ConstantValue != null;
+                        if (! isConst)
+                        {
+                            if (initializerOpt is BoundFieldAccess bfa && bfa.FieldSymbol.IsConst)
+                            {
+                                isConst = true;
+                            }
+                        }
+
+                        if (isConst && !this.IsConst)
                         {
                             this._modifiers |= DeclarationModifiers.Const;
                             this._modifiers |= DeclarationModifiers.Static;
@@ -87,7 +88,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     type = compilation.GetSpecialType(SpecialType.System_Object);
                 }
                 //System.Diagnostics.Debug.WriteLine($"Looking for type of define {vodef.Name.ToString()}, found {type.ToString()}, const: {IsConst}");
-
                 return TypeWithAnnotations.Create(type);
             }
             return default;

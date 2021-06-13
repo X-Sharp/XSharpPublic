@@ -211,6 +211,120 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(456 , o2:nExport)
 		
 
+        [Fact, Trait("Category", "EmptyUsual")];
+		METHOD File_Tests() AS VOID
+			LOCAL hFile AS PTR
+			LOCAL cFileName AS STRING
+			LOCAL nResult AS DWORD
+			LOCAL cBuffer AS STRING
+			
+			cFileName := "test.txt"
+			hFile := FCreate(cFileName , FC_NORMAL)
+			Assert.True(FEof(hFile))
+			FWrite(hFile , "ABCDE" , 5)
+			Assert.True(FEof(hFile))
+
+			FSeek3(hFile, 1, FS_SET)
+			Assert.False(FEof(hFile))
+			nResult := FRead(hFile , REF cBuffer , 4)
+			Assert.Equal(4U , nResult)
+			Assert.Equal("BCDE" , cBuffer)
+			Assert.True(FEof(hFile))
+			
+			FSeek3(hFile, 1, FS_SET)
+			Assert.False(FEof(hFile))
+			nResult := FRead(hFile , REF cBuffer , 3)
+			Assert.Equal(3U , nResult)
+			Assert.Equal("BCD" , cBuffer)
+			Assert.False(FEof(hFile))
+			
+			FSeek3(hFile, 2, FS_SET)
+			Assert.False(FEof(hFile))
+			nResult := FRead(hFile , REF cBuffer , 100)
+			Assert.Equal(3U , nResult)
+			Assert.Equal(3 , cBuffer:Length)
+			Assert.Equal("CDE" , cBuffer)
+			Assert.True(FEof(hFile))
+
+			Assert.True( FClose(hFile) )
+			
+
+
+			hFile := FOpen(cFileName , FC_NORMAL)
+
+			nResult := FRead(hFile , REF cBuffer , 3)
+			Assert.Equal(3U , nResult)
+			Assert.Equal("ABC" , cBuffer)
+			Assert.False(FEof(hFile))
+
+			nResult := FRead(hFile , REF cBuffer , 3)
+			Assert.Equal(2U , nResult)
+			Assert.Equal("DE" , cBuffer)
+			Assert.True(FEof(hFile))
+
+			FSeek3(hFile, 1, FS_SET)
+			Assert.False(FEof(hFile))
+			nResult := FRead(hFile , REF cBuffer , 4)
+			Assert.Equal(4U , nResult)
+			Assert.Equal("BCDE" , cBuffer)
+			Assert.True(FEof(hFile))
+			
+			FSeek3(hFile, 1, FS_SET)
+			Assert.False(FEof(hFile))
+			nResult := FRead(hFile , REF cBuffer , 3)
+			Assert.Equal(3U , nResult)
+			Assert.Equal("BCD" , cBuffer)
+			Assert.False(FEof(hFile))
+			
+			FSeek3(hFile, 2, FS_SET)
+			Assert.False(FEof(hFile))
+			nResult := FRead(hFile , REF cBuffer , 100)
+			Assert.Equal(3U , nResult)
+			Assert.Equal(3 , cBuffer:Length)
+			Assert.Equal("CDE" , cBuffer)
+			Assert.True(FEof(hFile))
+
+			Assert.True( FClose(hFile) )
+
+			
+			hFile := FOpen(cFileName , FO_EXCLUSIVE)
+
+			nResult := FRead(hFile , REF cBuffer , 3)
+			Assert.Equal(3U , nResult)
+			Assert.Equal("ABC" , cBuffer)
+			Assert.False(FEof(hFile))
+
+			nResult := FRead(hFile , REF cBuffer , 3)
+			Assert.Equal(2U , nResult)
+			Assert.Equal("DE" , cBuffer)
+			Assert.True(FEof(hFile))
+
+			FSeek3(hFile, 1, FS_SET)
+			Assert.False(FEof(hFile))
+			nResult := FRead(hFile , REF cBuffer , 4)
+			Assert.Equal(4U , nResult)
+			Assert.Equal("BCDE" , cBuffer)
+			Assert.True(FEof(hFile))
+			
+			FSeek3(hFile, 1, FS_SET)
+			Assert.False(FEof(hFile))
+			nResult := FRead(hFile , REF cBuffer , 3)
+			Assert.Equal(3U , nResult)
+			Assert.Equal("BCD" , cBuffer)
+			Assert.False(FEof(hFile))
+			
+			FSeek3(hFile, 2, FS_SET)
+			Assert.False(FEof(hFile))
+			nResult := FRead(hFile , REF cBuffer , 100)
+			Assert.Equal(3U , nResult)
+			Assert.Equal(3 , cBuffer:Length)
+			Assert.Equal("CDE" , cBuffer)
+			Assert.True(FEof(hFile))
+
+			Assert.True( FClose(hFile) )
+
+			
+
 	END CLASS
 	
 	CLASS SysObjectTestClass

@@ -231,15 +231,7 @@ namespace XSharp.LanguageService
                         }
                     }
                 }
-                // Special Phil
                 bool dotSelector = (typedChar == '.');
-                //
-                // Alternative Token list (dot is a selector)
-                List<XSharpToken> altTokenList;
-                if (showInstanceMembers)
-                    altTokenList = XSharpTokenTools.GetTokenList(location, out state);
-                else
-                    altTokenList = tokenList;
 
                 // TODO: Based on the Project.Settings, we should add the Vulcan.VO namespace
                 int tokenType = XSharpLexer.UNRECOGNIZED;
@@ -288,18 +280,6 @@ namespace XSharp.LanguageService
                     }
                     session.Properties[XsCompletionProperties.Type] = type;
                 }
-                else
-                {
-                    if (showInstanceMembers)
-                    {
-                        symbol = XSharpLookup.RetrieveElement(location, altTokenList, CompletionState.General).FirstOrDefault();
-                        // Check for members, locals etc and convert the type of these to IXTypeSymbol
-                        if (symbol != null && symbol is IXTypeSymbol)
-                        {
-                            session.Properties[XsCompletionProperties.Type] = symbol;
-                        }
-                    }
-                }
                 if (dotSelector || state != CompletionState.None)
                 {
                     if (string.IsNullOrEmpty(filterText))
@@ -310,18 +290,12 @@ namespace XSharp.LanguageService
                     }
                     if (state.HasFlag(CompletionState.Namespaces))
                     {
-                        if (symbol is null)
-                        {
-                            AddNamespaces(compList, _file.Project, filterText);
-                        }
+                        AddNamespaces(compList, _file.Project, filterText);
                     }
                     if (state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.Interfaces))
                     {
-                        if (symbol is null)
-                        {
-                            AddTypeNames(compList, _file.Project, filterText, location.Usings);
-                            AddXSharpKeywordTypeNames(kwdList, filterText);
-                        }
+                        AddTypeNames(compList, _file.Project, filterText, location.Usings);
+                        AddXSharpKeywordTypeNames(kwdList, filterText);
                     }
                     if (state.HasFlag(CompletionState.StaticMembers))
                     {

@@ -28,7 +28,6 @@ namespace XSharp.LanguageService.OptionsPages
             _loading = true;
             chkCompletionListtabs.Checked = optionsPage.CompletionListTabs;
             chkKeywordsInAll.Checked = optionsPage.KeywordsInAll;
-            chkDotAsUniversalSelector.Checked = optionsPage.UseDotAsUniversalSelector;
             chkShowAfterChar.Checked = optionsPage.ShowAfterChar;
             //
             chkIncludeFields.Checked = optionsPage.IncludeFieldsInNavigationBars;
@@ -50,11 +49,6 @@ namespace XSharp.LanguageService.OptionsPages
         private void chkKeywordsInAll_CheckedChanged(object sender, EventArgs e)
         {
             optionsPage.KeywordsInAll = chkKeywordsInAll.Checked;
-        }
-
-        private void chkDotAsUniversalSelector_CheckedChanged(object sender, EventArgs e)
-        {
-            optionsPage.UseDotAsUniversalSelector = chkDotAsUniversalSelector.Checked;
         }
 
         private void chkIncludeFields_CheckedChanged(object sender, EventArgs e)

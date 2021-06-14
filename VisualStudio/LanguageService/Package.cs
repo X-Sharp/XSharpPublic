@@ -154,7 +154,6 @@ namespace XSharp.LanguageService
                 XSettings.EditorCompletionAutoPairs = _intellisensePage.AutoPairs;
                 XSettings.EditorCompletionListAfterEachChar = _intellisensePage.ShowAfterChar;
                 XSettings.EditorKeywordsInAll = _intellisensePage.KeywordsInAll;
-                XSettings.EditorUseDotAsUniversalSelector = _intellisensePage.UseDotAsUniversalSelector;
 
                 XSettings.EditorNavigationSorted = _intellisensePage.SortNavigationBars;
                 XSettings.EditorNavigationIncludeFields = _intellisensePage.IncludeFieldsInNavigationBars;

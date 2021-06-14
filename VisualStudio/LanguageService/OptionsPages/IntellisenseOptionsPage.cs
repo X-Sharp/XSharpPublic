@@ -22,8 +22,6 @@ namespace XSharp.LanguageService.OptionsPages
         public bool ExcludeMembersFromOtherFiles { get; set; }
         public bool KeywordsInAll { get; set; }
 
-        public bool UseDotAsUniversalSelector { get; set; }
-
         public bool ShowAfterChar { get; set; }
 
         public XSharpModel.KeywordCase KeywordCase { get; set; }

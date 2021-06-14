@@ -213,12 +213,12 @@ STATIC CLASS VOWindowEditorTemplate
 					nAt := cLine:IndexOf('=')
 					IF nAt != -1
 						cLeft := cLine:Substring(0 , nAt):ToUpper()
-						cRight := cLine:Substring(nAt + 1)
 						IF cLine:LastIndexOf(')') == -1
+							cRight := cLine:Substring(nAt + 1):Trim()
 							VOWindowEditorTemplate.aEnumTypes:Add(cLeft , cRight)
 						ELSE
 							nAt := cLine:LastIndexOf(')')
-							cRight := cLine:Substring(nAt + 1)
+							cRight := cLine:Substring(nAt + 1):Trim()
 							aPages := Funcs.SplitString(cRight , ',')
 /*							aPages := List<STRING>{}
 							DO WHILE cRight:Length != 0
@@ -238,7 +238,7 @@ STATIC CLASS VOWindowEditorTemplate
 					nAt := cLine:IndexOf('=')
 					IF nAt != -1
 						cLeft := cLine:Substring(0 , nAt):ToUpper()
-						cRight := cLine:Substring(nAt + 1)
+						cRight := cLine:Substring(nAt + 1):Trim()
 						DO CASE
 						CASE cLeft == "NAME"
 							oControl:cName := cRight
@@ -424,7 +424,7 @@ STATIC CLASS VOWindowEditorTemplate
 					nAt := cLine:IndexOf('=')
 					IF nAt != -1
 						cLeft := cLine:Substring(0 , nAt):ToUpper()
-						cRight := cLine:Substring(nAt + 1)
+						cRight := cLine:Substring(nAt + 1):Trim()
 						IF !VOWindowEditorTemplate.aAssignMap:ContainsKey(cLeft)
 							VOWindowEditorTemplate.aAssignMap:Add(cLeft , cRight)
 						ENDIF
@@ -592,5 +592,10 @@ CLASS VOControlTemplate
 			END IF
 		ENDIF
 	RETURN
+	ACCESS ToolboxTitle AS STRING
+		IF .NOT. String.IsNullOrWhiteSpace(SELF:cTitle)
+			RETURN SELF:cTitle
+		END IF
+	RETURN SELF:cName
 
 END CLASS

@@ -46,7 +46,6 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY IdentifierCase                     AS LOGIC AUTO
         PUBLIC STATIC PROPERTY UDCKeywordCase                     AS LOGIC AUTO
 
-        PUBLIC STATIC PROPERTY EditorUseDotAsUniversalSelector    AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorKeywordsInAll                AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorHideAdvancedMembers          AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorCompletionListTabs           AS LOGIC AUTO

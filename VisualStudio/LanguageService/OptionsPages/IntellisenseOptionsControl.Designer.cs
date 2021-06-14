@@ -36,7 +36,6 @@
             this.chkIncludeFields = new System.Windows.Forms.CheckBox();
             this.chkKeywordsInAll = new System.Windows.Forms.CheckBox();
             this.chkShowAfterChar = new System.Windows.Forms.CheckBox();
-            this.chkDotAsUniversalSelector = new System.Windows.Forms.CheckBox();
             this.chkAutoPairs = new System.Windows.Forms.CheckBox();
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
             this.chkExcludeMembersFromOtherfiles = new System.Windows.Forms.CheckBox();
@@ -54,7 +53,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(10, 99);
+            label1.Location = new System.Drawing.Point(10, 79);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(270, 13);
             label1.TabIndex = 6;
@@ -117,7 +116,7 @@
             // chkShowAfterChar
             // 
             this.chkShowAfterChar.AutoSize = true;
-            this.chkShowAfterChar.Location = new System.Drawing.Point(13, 80);
+            this.chkShowAfterChar.Location = new System.Drawing.Point(13, 60);
             this.chkShowAfterChar.Name = "chkShowAfterChar";
             this.chkShowAfterChar.Size = new System.Drawing.Size(246, 17);
             this.chkShowAfterChar.TabIndex = 2;
@@ -128,24 +127,10 @@
             this.chkShowAfterChar.UseVisualStyleBackColor = true;
             this.chkShowAfterChar.CheckedChanged += new System.EventHandler(this.chkShowAfterChar_CheckedChanged);
             // 
-            // chkDotAsUniversalSelector
-            // 
-            this.chkDotAsUniversalSelector.AutoSize = true;
-            this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 59);
-            this.chkDotAsUniversalSelector.Name = "chkDotAsUniversalSelector";
-            this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(355, 17);
-            this.chkDotAsUniversalSelector.TabIndex = 1;
-            this.chkDotAsUniversalSelector.Text = "Dot (.) triggers a completion list with also instance members (Core only)";
-            this.toolTip1.SetToolTip(this.chkDotAsUniversalSelector, "The FoxPro dialect always uses instance members after a DOT and all other dialect" +
-        "s except core will  only show static members after a dot and will show instance " +
-        "members after a colon (:).");
-            this.chkDotAsUniversalSelector.UseVisualStyleBackColor = true;
-            this.chkDotAsUniversalSelector.CheckedChanged += new System.EventHandler(this.chkDotAsUniversalSelector_CheckedChanged);
-            // 
             // chkAutoPairs
             // 
             this.chkAutoPairs.AutoSize = true;
-            this.chkAutoPairs.Location = new System.Drawing.Point(13, 140);
+            this.chkAutoPairs.Location = new System.Drawing.Point(13, 120);
             this.chkAutoPairs.Name = "chkAutoPairs";
             this.chkAutoPairs.Size = new System.Drawing.Size(316, 17);
             this.chkAutoPairs.TabIndex = 8;
@@ -188,12 +173,12 @@
             this.panel1.Controls.Add(this.grpCompletionListTabs);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(381, 343);
+            this.panel1.Size = new System.Drawing.Size(381, 303);
             this.panel1.TabIndex = 4;
             // 
             // btnShowMeTheMagic
             // 
-            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 295);
+            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 266);
             this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
             this.btnShowMeTheMagic.Size = new System.Drawing.Size(114, 23);
             this.btnShowMeTheMagic.TabIndex = 7;
@@ -207,7 +192,7 @@
             this.grpNavigationBars.Controls.Add(this.chkShowMembersOfCurrentType);
             this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
-            this.grpNavigationBars.Location = new System.Drawing.Point(3, 171);
+            this.grpNavigationBars.Location = new System.Drawing.Point(3, 152);
             this.grpNavigationBars.Name = "grpNavigationBars";
             this.grpNavigationBars.Size = new System.Drawing.Size(373, 109);
             this.grpNavigationBars.TabIndex = 6;
@@ -221,18 +206,17 @@
             this.grpCompletionListTabs.Controls.Add(label1);
             this.grpCompletionListTabs.Controls.Add(this.chkKeywordsInAll);
             this.grpCompletionListTabs.Controls.Add(this.chkShowAfterChar);
-            this.grpCompletionListTabs.Controls.Add(this.chkDotAsUniversalSelector);
             this.grpCompletionListTabs.Controls.Add(this.chkCompletionListtabs);
             this.grpCompletionListTabs.Location = new System.Drawing.Point(3, 3);
             this.grpCompletionListTabs.Name = "grpCompletionListTabs";
-            this.grpCompletionListTabs.Size = new System.Drawing.Size(373, 162);
+            this.grpCompletionListTabs.Size = new System.Drawing.Size(373, 144);
             this.grpCompletionListTabs.TabIndex = 4;
             this.grpCompletionListTabs.TabStop = false;
             this.grpCompletionListTabs.Text = "Completion Lists";
             // 
             // commitChars
             // 
-            this.commitChars.Location = new System.Drawing.Point(14, 115);
+            this.commitChars.Location = new System.Drawing.Point(14, 95);
             this.commitChars.Name = "commitChars";
             this.commitChars.Size = new System.Drawing.Size(286, 20);
             this.commitChars.TabIndex = 7;
@@ -246,7 +230,7 @@
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(386, 350);
+            this.Size = new System.Drawing.Size(386, 317);
             this.panel1.ResumeLayout(false);
             this.grpNavigationBars.ResumeLayout(false);
             this.grpNavigationBars.PerformLayout();
@@ -269,7 +253,6 @@
         internal System.Windows.Forms.TextBox commitChars;
         private System.Windows.Forms.CheckBox chkKeywordsInAll;
         private System.Windows.Forms.CheckBox chkShowAfterChar;
-        private System.Windows.Forms.CheckBox chkDotAsUniversalSelector;
         private System.Windows.Forms.CheckBox chkCompletionListtabs;
         private System.Windows.Forms.CheckBox chkExcludeMembersFromOtherfiles;
     }

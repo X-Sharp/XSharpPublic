@@ -982,7 +982,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         private const string _reservedName = "(\\b(nul|con|aux|prn)\\b)|(\\b((com|lpt)[0-9])\\b)";
-        private const string _invalidChars = "([\\/:*?\"<>|#%])";
+        private const string _invalidChars = "\\/:*?\"<>|";
         private const string _regexToUseForFileName = _reservedName + "|" + _invalidChars;
         private static Regex _unsafeFileNameCharactersRegex = new Regex(_regexToUseForFileName, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         private static Regex _unsafeCharactersRegex = new Regex(_invalidChars, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
@@ -1072,7 +1072,6 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Canonicalizes a file name, including:
         ///  - determines the full path to the file
-        ///  - casts to upper case
         /// Canonicalizing a file name makes it possible to compare file names using simple simple string comparison.
         ///
         /// Note: this method does not handle shared drives and UNC drives.
@@ -1085,9 +1084,6 @@ namespace Microsoft.VisualStudio.Project
             // Note: this will not handle UNC paths
             FileInfo fileInfo = new FileInfo(anyFileName);
             string fullPath = fileInfo.FullName;
-
-            // Cast to upper-case
-            //fullPath = fullPath.ToUpperInvariant();
 
             return fullPath;
         }
@@ -1129,24 +1125,14 @@ namespace Microsoft.VisualStudio.Project
             return true;
         }
 
-        /// <summary>
-        /// Retrives the configuration and the platform using the IVsSolutionBuildManager2 interface.
-        /// </summary>
-        /// <param name="serviceProvider">A service provider.</param>
-        /// <param name="hierarchy">The hierarchy whose configuration is requested.  This method calls into
-        /// native code and may be called on a background thread, so make sure the IVsHierarchy passed is
-        /// safe to use for that sort of interop.</param>
-        /// <param name="configuration">The name of the active configuration.</param>
-        /// <param name="platform">The name of the platform.</param>
-        /// <returns>true if successfull.</returns>
 		/// <summary>
-		/// Retrives the configuration and the platform using the IVsSolutionBuildManager2 interface.
+		/// Retrieves the configuration and the platform using the IVsSolutionBuildManager2 interface.
 		/// </summary>
 		/// <param name="serviceProvider">A service provider.</param>
 		/// <param name="hierarchy">The hierrachy whose configuration is requested.</param>
 		/// <param name="configuration">The name of the active configuration.</param>
 		/// <param name="platform">The name of the platform.</param>
-		/// <returns>true if successfull.</returns>
+		/// <returns>true if successful.</returns>
 		public static bool TryGetActiveConfigurationAndPlatform(System.IServiceProvider serviceProvider, IVsHierarchy hierarchy, out ConfigCanonicalName configCanonicalName)
 		{
 			if (serviceProvider == null)

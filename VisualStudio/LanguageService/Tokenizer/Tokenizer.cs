@@ -219,6 +219,7 @@ namespace XSharp.LanguageService
             // if the token appears after comma or paren then strip the tokens 
             // now look forward and find the first token that is on or after the triggerpoint
             var last = XSharpLexer.Eof;
+            bool allowdot = location.Project?.ParseOptions?.AllowDotForInstanceMembers ?? false;
             foreach (XSharpToken token in line)
             {
                 int open = 0;
@@ -315,7 +316,7 @@ namespace XSharp.LanguageService
                         if (!state.HasFlag(CompletionState.Namespaces))
                         {
                             state = CompletionState.Namespaces | CompletionState.Types | CompletionState.StaticMembers;
-                            if (XSettings.EditorUseDotAsUniversalSelector)
+                            if (allowdot)
                                 state |= CompletionState.InstanceMembers;
                         }
                         tokenList.Add(token);

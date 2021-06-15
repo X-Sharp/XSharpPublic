@@ -148,7 +148,7 @@ FUNCTION AIns(ArrayName AS __FoxArray, nElementNumber AS DWORD, nInsertType := 1
 			ArrayName:InsertRow((LONG) nElementNumber)
         ENDIF
     ENDIF
-    RETURN 0
+    RETURN 1
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asize/*" />
 FUNCTION ASize(ArrayName AS __FoxArray, nSize AS DWORD) AS __FoxArray

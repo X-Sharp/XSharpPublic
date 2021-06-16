@@ -12,7 +12,7 @@ USING LanguageService.SyntaxTree
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 BEGIN NAMESPACE XSharpModel
-   
+
    [DebuggerDisplay("{TypeName,nq} {MemberName,nq}")];
     CLASS XDbResult
       PROPERTY TypeName     AS STRING AUTO
@@ -24,16 +24,17 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ClassType    AS INT AUTO
       PROPERTY FileName     AS STRING AUTO
       PROPERTY Project      AS STRING AUTO
-      PROPERTY StartLine    AS INT AUTO 
+      PROPERTY StartLine    AS INT AUTO
       PROPERTY StartColumn  AS INT AUTO
       PROPERTY EndLine      AS INT AUTO
       PROPERTY EndColumn    AS INT AUTO
       PROPERTY Start        AS INT AUTO
       PROPERTY Stop         AS INT AUTO
       PROPERTY SourceCode   AS STRING AUTO
+      PROPERTY ReturnType   AS STRING AUTO
       PROPERTY XmlComments  AS STRING AUTO
       PROPERTY IdFile       AS INT64 AUTO
-      PROPERTY IdProject    AS INT64 AUTO     
+      PROPERTY IdProject    AS INT64 AUTO
       PROPERTY IdType       AS INT64 AUTO
       PROPERTY BaseTypeName aS STRING GET MemberName SET MemberName := value
       PROPERTY FullName     AS STRING  GET FileName SET FileName := value
@@ -45,6 +46,6 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Column       AS INT   GET StartColumn  SET StartColumn := value
       PROPERTY Modifiers   AS Modifiers    GET _AND(Attributes, ~Modifiers.VisibilityMask)
       PROPERTY Visibility  AS Modifiers    GET _AND(Attributes, Modifiers.VisibilityMask)
-         
+
     END CLASS
 END NAMESPACE

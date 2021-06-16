@@ -23,6 +23,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY SourceCode   AS STRING AUTO
       #region constructors
 
+
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, ;
             span AS TextRange, position AS TextInterval, returnType AS STRING, isStatic := FALSE AS LOGIC)
          SUPER(name, kind, attributes, span, position)
@@ -31,7 +32,7 @@ BEGIN NAMESPACE XSharpModel
          SELF:IsStatic     := isStatic
          SELF:_signature   := XMemberSignature{}
 
-      CONSTRUCTOR(sig as XMemberSignature, kind AS Kind, attributes AS Modifiers,  ;
+      CONSTRUCTOR(sig AS XMemberSignature, kind AS Kind, attributes AS Modifiers,  ;
             span AS TextRange, position AS TextInterval, isStatic := FALSE AS LOGIC)
          SUPER(sig:Id, kind, attributes, span, position)
          SELF:Parent       := NULL
@@ -42,6 +43,17 @@ BEGIN NAMESPACE XSharpModel
             par:Parent := SELF
          NEXT
          #endregion
+
+
+     STATIC METHOD FromDbResult( dbresult AS XDbResult, project AS XProject) AS XSourceMemberSymbol
+         LOCAL xmember AS XSourceMemberSymbol
+         VAR range    := TextRange{dbresult:StartLine,dbresult:StartColumn, dbresult:EndLine, dbresult:EndColumn}
+         VAR position := TextInterval{dbresult:Start, dbresult:Stop}
+         xmember := XSourceMemberSymbol{dbresult:MemberName, dbresult:Kind, dbresult:Attributes, range, position, dbresult:ReturnType, dbresult:Modifiers:HasFlag(Modifiers.Static)}
+         xmember:SourceCode  := dbresult:SourceCode
+         xmember:XmlComments := dbresult:XmlComments
+         xmember:File        := XFile{dbresult:FileName, project}
+         RETURN xmember
 
 
       METHOD AddParameters( list AS IList<XSourceParameterSymbol>) AS VOID

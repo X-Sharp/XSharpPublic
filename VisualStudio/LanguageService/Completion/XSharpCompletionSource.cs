@@ -318,6 +318,7 @@ namespace XSharp.LanguageService
                         AddNamespaces(compList, _file.Project, filterText);
                         AddTypeNames(compList, _file.Project, filterText, location.Usings);
                         AddXSharpKeywordTypeNames(kwdList, filterText);
+                        // Todo Add Global members from this project and from all global namespaces ?
                     }
                 }
                 if (showInstanceMembers && ! (symbol is IXTypeSymbol))

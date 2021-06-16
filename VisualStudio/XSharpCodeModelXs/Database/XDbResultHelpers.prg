@@ -1,7 +1,7 @@
 ﻿// XDbResultHelpers.prg
 // Created by    : fabri
 // Creation Date : 7/3/2020 8:45:05 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : FABPORTABLE
 
 
@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharpModel
     /// The XDbResultHelpers class.
     /// </summary>
     CLASS XDbResultHelpers
-        
+
         ///
         STATIC METHOD BuildTypesInFile( origin AS XFile, found AS IList<XDbResult>) AS IList<XSourceTypeSymbol>
             VAR result := List<XSourceTypeSymbol>{}
@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharpModel
                     IF idProject != -1 .AND. element:IdProject != idProject
                         LOOP
                     ENDIF
-                    idProject   := element:IdProject  
+                    idProject   := element:IdProject
                     VAR name    := element:TypeName
                     VAR idType  := element:IdType
                     VAR fileName := element:FileName
@@ -49,9 +49,9 @@ BEGIN NAMESPACE XSharpModel
             CATCH e AS Exception
                 XSolution.WriteOutputMessage("GetTypesInFile: "+ e:Message)
             END TRY
-        RETURN result		
-        
-        
+        RETURN result
+
+
         STATIC METHOD BuildFullTypesInFile( origin AS XFile, found AS IList<XDbResult>) AS IList<XSourceTypeSymbol>
             VAR result := List<XSourceTypeSymbol>{}
             LOCAL idProject := -1 AS INT64
@@ -62,7 +62,7 @@ BEGIN NAMESPACE XSharpModel
                     IF idProject != -1 .AND. element:IdProject != idProject
                         LOOP
                     ENDIF
-                    idProject   := element:IdProject  
+                    idProject   := element:IdProject
                     //
                     VAR name    := element:TypeName
                     VAR idType  := element:IdType
@@ -93,7 +93,7 @@ BEGIN NAMESPACE XSharpModel
                             IF xmembers:Count == members:Count
                                 LOCAL i AS INT
                                 FOR i := 0 TO members:Count-1
-                                    VAR xmember := (XSourceMemberSymbol) xmembers[i] 
+                                    VAR xmember := (XSourceMemberSymbol) xmembers[i]
                                     VAR melement := members[i]
                                     xmember:Range       := TextRange{melement:StartLine, melement:StartColumn, melement:EndLine, melement:EndColumn}
                                     xmember:Interval    := TextInterval{melement:Start, melement:Stop}
@@ -111,7 +111,7 @@ BEGIN NAMESPACE XSharpModel
             END TRY
             //
         RETURN result
-        
+
         STATIC METHOD BuildFullFuncsInFile( origin AS XFile, found AS IList<XDbResult>) AS IList<XSourceMemberSymbol>
             VAR result := List<XSourceMemberSymbol>{}
             LOCAL idProject := -1 AS INT64
@@ -149,8 +149,8 @@ BEGIN NAMESPACE XSharpModel
             CATCH e AS Exception
                 XSolution.WriteOutputMessage("BuildFullFuncsInFile: "+ e:Message)
             END TRY
-        RETURN result				
-        // Comes from XProject, would be worth to merge source ??? 			
+        RETURN result
+        // Comes from XProject, would be worth to merge source ???
         PRIVATE STATIC METHOD GetTypeSource(element AS XDbResult, members AS IList<XDbResult>) AS STRING
             VAR sb := StringBuilder{}
             IF element != NULL
@@ -163,7 +163,7 @@ BEGIN NAMESPACE XSharpModel
                         VAR source := xmember:SourceCode:ToLower():Replace('\t',' ')
                         IF source:Contains(" get") .OR. ;
                                 source:Contains(" set") .OR. ;
-                                source:Contains(" auto") 
+                                source:Contains(" auto")
                                 // single line
                             NOP
                         ELSE
@@ -172,7 +172,7 @@ BEGIN NAMESPACE XSharpModel
                     CASE Kind.Event
                         VAR source := xmember:SourceCode:ToLower():Replace('\t',' ')
                         IF source:Contains(" add") .OR. ;
-                                source:Contains(" remove") 
+                                source:Contains(" remove")
                                 // single line
                             NOP
                         ELSE
@@ -194,8 +194,8 @@ BEGIN NAMESPACE XSharpModel
                         sb:AppendLine("END STRUCTURE")
                     CASE Kind.Interface
                         sb:AppendLine("END INTERFACE")
-                END SWITCH         
+                END SWITCH
             ENDIF
-            RETURN sb:ToString()			
+            RETURN sb:ToString()
         END CLASS
 END NAMESPACE // global::XSharpCodeModel.Model

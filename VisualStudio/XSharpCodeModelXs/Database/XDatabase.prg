@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -17,8 +17,8 @@ BEGIN NAMESPACE XSharpModel
 	STATIC PRIVATE oConn   AS SQLiteConnection     // In memory database !
 	STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
 	STATIC PRIVATE currentFile AS STRING
-	PRIVATE CONST CurrentDbVersion := 0.6 AS System.Double
-		
+	PRIVATE CONST CurrentDbVersion := 0.7 AS System.Double
+
 		STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
 			LOCAL lValid := FALSE AS LOGIC
 			LOCAL oDiskDb AS SQLiteConnection
@@ -43,15 +43,15 @@ BEGIN NAMESPACE XSharpModel
 				RestoreFromDisk(oDiskDb, oConn)
 				oDiskDb:Close()
 			ENDIF
-		RETURN 
-		
+		RETURN
+
 		STATIC METHOD SaveDatabase(cFile AS STRING) AS LOGIC
 			IF IsDbOpen
 				SaveToDisk(oConn, cFile)
 				RETURN TRUE
 			ENDIF
 		RETURN FALSE
-		
+
 		STATIC METHOD CloseDatabase(cFile AS STRING) AS LOGIC
 			IF IsDbOpen
 				SaveToDisk(oConn, cFile)
@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			oConn := NULL
 		RETURN FALSE
-		
+
 		STATIC METHOD SetPragmas(oConn AS SQLiteConnection) AS VOID
 			IF ! IsDbOpen
 				RETURN
@@ -72,13 +72,13 @@ BEGIN NAMESPACE XSharpModel
 				oCmd:ExecuteNonQuery()
 			END LOCK
 		RETURN
-		
+
 		STATIC METHOD OpenFile(cFile AS STRING) AS SQLiteConnection
 			VAR db := SQLiteConnection{"Data Source="+cFile+";Version=3;"}
-			db:Open()    
+			db:Open()
 			SetPragmas(db)
 		RETURN db
-		
+
 		STATIC METHOD SaveToDisk(oConn AS SQLiteConnection, cFile AS STRING) AS VOID
 			IF ! IsDbOpen
 				RETURN
@@ -93,28 +93,28 @@ BEGIN NAMESPACE XSharpModel
 			oCmd:ExecuteNonQuery()
 			diskdb:Close()
 			lastWritten := DateTime.Now
-		RETURN         
-		
+		RETURN
+
 		STATIC METHOD RestoreFromDisk(oDiskDb AS SQLiteConnection, oConn AS SQLiteConnection) AS VOID
 			IF ! IsDbOpen
 				RETURN
 			ENDIF
 			oDiskDb:BackupDatabase(oConn, "main", "main", -1, NULL, 0)
 			lastWritten := DateTime.Now
-		RETURN         
-		
+		RETURN
+
 		STATIC METHOD CommitWhenNeeded() AS VOID
 			VAR ts := DateTime.Now - lastWritten
 			// Save to disk every 5 minutes
 			Log(i"Time since last backup {ts}")
 			IF ts:Minutes >= 5 .OR. ts:Hours > 0
-				LOCAL oBW AS BackgroundWorker    
+				LOCAL oBW AS BackgroundWorker
 				oBW := BackgroundWorker{}
 				oBW:DoWork += BackupInBackground
 				oBW:RunWorkerAsync()
-				
+
 		ENDIF
-		
+
 		STATIC METHOD BackupInBackground(sender AS OBJECT , args AS DoWorkEventArgs ) AS VOID
 			IF ! IsDbOpen
 				RETURN
@@ -135,7 +135,7 @@ BEGIN NAMESPACE XSharpModel
 			END LOCK
     		Log("Completed backup to "+currentFile)
 		RETURN
-		
+
 		STATIC METHOD CreateSchema(connection AS SQLiteConnection) AS VOID
 			BEGIN LOCK connection
 				VAR cmd := SQLiteCommand{"SELECT 1",connection}
@@ -149,7 +149,7 @@ BEGIN NAMESPACE XSharpModel
 				cmd:CommandText += "DROP TABLE IF EXISTS Assemblies ;"
 				cmd:CommandText += "DROP TABLE IF EXISTS ReferencedTypes ;"
 				cmd:CommandText += "DROP TABLE IF EXISTS CommentTasks ;"
-				cmd:ExecuteNonQuery()		
+				cmd:ExecuteNonQuery()
 				#endregion
 				#region Table Projects
 				VAR stmt	:= "Create Table Projects ("
@@ -158,7 +158,7 @@ BEGIN NAMESPACE XSharpModel
                 stmt	    += "CREATE UNIQUE INDEX Projects_Pk ON Projects (Id) ;"
 				stmt	    += "CREATE INDEX Projects_Name      ON Projects (ProjectFileName) "
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
+				cmd:ExecuteNonQuery()
 				#endregion
 				#region Table Files
 				stmt  		:= "CREATE TABLE Files ("
@@ -168,25 +168,25 @@ BEGIN NAMESPACE XSharpModel
                 stmt	    += "CREATE UNIQUE INDEX Files_Pk    ON Files (Id) ;"
 				stmt	    += "CREATE INDEX Files_Name         ON Files (FileName) "
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
+				cmd:ExecuteNonQuery()
 				#endregion
 				#region Table FilesPerProject
-				
+
 				stmt    := "CREATE TABLE FilesPerProject ("
-				stmt	+= " idFile integer NOT NULL, idProject integer NOT NULL, " 
-				stmt    += " PRIMARY KEY (idFile, idProject), " 
-				stmt	+= " FOREIGN KEY (idFile) 	  REFERENCES Files (Id)    ON DELETE CASCADE ON UPDATE CASCADE, " 
+				stmt	+= " idFile integer NOT NULL, idProject integer NOT NULL, "
+				stmt    += " PRIMARY KEY (idFile, idProject), "
+				stmt	+= " FOREIGN KEY (idFile) 	  REFERENCES Files (Id)    ON DELETE CASCADE ON UPDATE CASCADE, "
 				stmt    += " FOREIGN KEY (idProject) REFERENCES Projects (Id) ON DELETE CASCADE ON UPDATE CASCADE "
 				stmt	+= " ) ;"
 				stmt	+= "CREATE UNIQUE INDEX FilesPerProject_Pk  ON FilesPerProject (idFile, idProject); "
 				stmt	+= "CREATE INDEX FilesPerProject_File       ON FilesPerProject (idFile) ;"
 				stmt	+= "CREATE INDEX FilesPerProject_Project    ON FilesPerProject (idProject) "
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
+				cmd:ExecuteNonQuery()
 
 				#endregion
 				#region Table Types
-				
+
 				stmt  	:= "CREATE TABLE Types ("
 				stmt	+= " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
 				stmt    += " Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
@@ -199,16 +199,16 @@ BEGIN NAMESPACE XSharpModel
 				stmt	+= "CREATE INDEX Types_BaseTypeName ON Types (BaseTypeName); "
 				stmt	+= "CREATE INDEX Types_Kind         ON Types (Kind) "
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				
+				cmd:ExecuteNonQuery()
+
 				#endregion
 				#region Table Members
-				
+
 				stmt    := "CREATE TABLE Members ("
 				stmt	+= " Id integer NOT NULL PRIMARY KEY, IdType integer NOT NULL , IdFile integer NOT NULL, "
 				stmt	+= " Name text COLLATE NOCASE, Kind integer, Attributes integer NOT NULL, StartLine integer , StartColumn integer ,  "
-				stmt	+= " EndLine integer , EndColumn integer , Start integer , Stop integer , Sourcecode text , XmlComments text,"
-				stmt	+= " FOREIGN KEY (idType) REFERENCES Types (Id) ON DELETE CASCADE ON UPDATE CASCADE, " 
+				stmt	+= " EndLine integer , EndColumn integer , Start integer , Stop integer , Sourcecode text , XmlComments text,  ReturnType text, "
+				stmt	+= " FOREIGN KEY (idType) REFERENCES Types (Id) ON DELETE CASCADE ON UPDATE CASCADE, "
 				stmt    += " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
 				stmt	+= ");"
 				stmt	+= "CREATE UNIQUE INDEX Members_Pk  ON Members (Id); "
@@ -217,11 +217,11 @@ BEGIN NAMESPACE XSharpModel
 				stmt	+= "CREATE INDEX Members_File       ON Members (idFile); "
 				stmt	+= "CREATE INDEX Members_Kind       ON Members (Kind) "
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
+				cmd:ExecuteNonQuery()
+
 				#endregion
-				
-				
+
+
 				#region Table Assemblies
 				stmt  	:= "CREATE TABLE Assemblies ("
 				stmt	+= " Id integer NOT NULL PRIMARY KEY, Name text NOT NULL COLLATE NOCASE, AssemblyFileName text NOT NULL COLLATE NOCASE, "
@@ -231,8 +231,8 @@ BEGIN NAMESPACE XSharpModel
 				stmt	+= "CREATE INDEX Assemblies_Name        ON Assemblies (Name);"
 				stmt	+= "CREATE INDEX Assemblies_FileName    ON Assemblies (AssemblyFileName) "
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				
+				cmd:ExecuteNonQuery()
+
 				#endregion
 				#region Table ReferencedTypes
 				stmt  	:= "CREATE TABLE ReferencedTypes ("
@@ -246,9 +246,9 @@ BEGIN NAMESPACE XSharpModel
 				stmt	+= "CREATE INDEX ReferencedTypes_FullName       ON ReferencedTypes (FullName); "
 				stmt	+= "CREATE INDEX ReferencedTypes_Kind           ON ReferencedTypes (Kind); "
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		         
+				cmd:ExecuteNonQuery()
 				#endregion
-				
+
 				#region Table CommentTasks
 				stmt  	:=  "CREATE TABLE CommentTasks ("
 				stmt	+=  " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Line integer, Column integer, Priority integer,  "
@@ -258,63 +258,63 @@ BEGIN NAMESPACE XSharpModel
 				stmt	+= "CREATE UNIQUE INDEX CommentTasks_Pk ON ReferencedTypes (Id); "
                 stmt	+= "CREATE INDEX CommentTasks_File      ON CommentTasks (idFile) "
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()				
-				
-				
+				cmd:ExecuteNonQuery()
+
+
 				#endregion
 				cmd:Parameters:Clear()
-				
+
 				#region views
 				stmt := " CREATE VIEW ProjectFiles AS SELECT fp.IdFile, f.FileName, f.FileType, f.LastChanged, f.Size, fp.IdProject, p.ProjectFileName " + ;
 				" FROM Files f JOIN FilesPerProject fp ON f.Id = fp.IdFile JOIN Projects p ON fp.IdProject = P.Id"
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
+				cmd:ExecuteNonQuery()
+
 				stmt := "CREATE VIEW TypeMembers AS SELECT m.*, t.Name AS TypeName, t.Namespace, t.BaseTypeName, t.ClassType " + ;
 				"FROM members m JOIN Types t ON m.IdType = t.Id"
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
+				cmd:ExecuteNonQuery()
+
 				stmt := "CREATE VIEW ProjectTypes AS SELECT t.*, p.IdProject, p.FileName, p.ProjectFileName " +;
 				" FROM Types t  JOIN ProjectFiles p ON t.IdFile = p.IdFile "
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
-				
+				cmd:ExecuteNonQuery()
+
+
 				stmt := "CREATE VIEW ProjectMembers AS SELECT m.*, p.IdProject, p.FileName, p.ProjectFileName " +;
 				" FROM TypeMembers m  JOIN ProjectFiles p ON m.IdFile = p.IdFile "
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
+				cmd:ExecuteNonQuery()
+
 				stmt := "CREATE VIEW AssemblyTypes AS SELECT t.*, t.IdAssembly, a.AssemblyFileName " +;
 				" FROM ReferencedTypes t  JOIN Assemblies a ON t.IdAssembly = a.Id "
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
+				cmd:ExecuteNonQuery()
+
 				stmt := " CREATE VIEW ProjectCommentTasks AS SELECT c.*, pf.IdProject, pf.ProjectFileName, pf.FileName FROM CommentTasks c" + ;
-				" JOIN ProjectFiles pf ON c.IdFile = pf.IdFile JOIN Projects p ON pf.IdProject = p.Id" 
+				" JOIN ProjectFiles pf ON c.IdFile = pf.IdFile JOIN Projects p ON pf.IdProject = p.Id"
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
+				cmd:ExecuteNonQuery()
+
 				#endregion
-				
+
 				#region Table DB_Version
 				stmt  	:= 	"CREATE TABLE Db_Version ("
 				stmt	   += 	" Id integer NOT NULL PRIMARY KEY, Version REAL"
 				stmt	   +=  ")"
 				cmd:CommandText := stmt
-				cmd:ExecuteNonQuery()		
-				
+				cmd:ExecuteNonQuery()
+
 				stmt	:=  "INSERT INTO Db_version(Version) values ($version)"
 				cmd:CommandText := stmt
 				cmd:Parameters:Clear()
 				cmd:Parameters:AddWithValue("$version",CurrentDbVersion)
-				cmd:ExecuteNonQuery()		
+				cmd:ExecuteNonQuery()
 				#endregion
-				
+
 			END LOCK
 		RETURN
-		
+
 		STATIC METHOD ValidateSchema( connection AS SQLiteConnection) AS LOGIC
 			LOCAL lOk AS LOGIC
 			lOk := TRUE
@@ -324,7 +324,7 @@ BEGIN NAMESPACE XSharpModel
 					VAR stmt := "SELECT count(name) from sqlite_master WHERE type='table' AND name=$table"
 					cmd:CommandText := stmt
 					VAR tables := <STRING> {"Projects","FilesPerProject","Files", "Types", "Members", "Db_Version","Assemblies","ReferencedTypes","CommentTasks"}
-					FOREACH VAR table IN tables    
+					FOREACH VAR table IN tables
 						cmd:Parameters:Clear()
 						cmd:Parameters:AddWithValue("$table",table)
 						VAR num := (INT64) cmd:ExecuteScalar()
@@ -335,24 +335,24 @@ BEGIN NAMESPACE XSharpModel
                       NEXT
                       IF lOk
 						       cmd:CommandText := "SELECT Max(Version) from Db_version"
-                         var vers := (System.Double) 0.0 
+                         VAR vers := (System.Double) 0.0
                          TRY
 						          vers := (System.Double) cmd:ExecuteScalar()
                          CATCH  as Exception
-                            vers := (System.Double) 0.0 
+                            vers := (System.Double) 0.0
                          END TRY
 						       IF vers != CurrentDbVersion
 							       lOk := FALSE
-                         ENDIF			
+                         ENDIF
                       ENDIF
 					EXIT
-				ENDDO		
+				ENDDO
 			END LOCK
 			Log(i"Validate database schema: {lOk}")
-		RETURN lOk	         
-		
-		
-		
+		RETURN lOk
+
+
+
 		STATIC METHOD GetProjectNames() AS List<STRING>
 			VAR result := List<STRING>{}
 			IF IsDbOpen
@@ -363,14 +363,14 @@ BEGIN NAMESPACE XSharpModel
 						VAR name := rdr:GetString(0)
 						result:Add(name)
 					ENDDO
-				END LOCK  
+				END LOCK
 			ENDIF
 			Log(i"GetProjectNames returned {result.Count} names")
 			RETURN result
-			
-		#region CRUD projects      
+
+		#region CRUD projects
 		STATIC METHOD Read(oProject AS XProject) AS VOID
-			IF ! IsDbOpen .OR. String.IsNullOrEmpty(oProject:FileName)  
+			IF ! IsDbOpen .OR. String.IsNullOrEmpty(oProject:FileName)
 				RETURN
 			ENDIF
 			VAR file    := oProject:FileName
@@ -380,7 +380,7 @@ BEGIN NAMESPACE XSharpModel
 				USING VAR cmd := SQLiteCommand{"", oConn}
 				cmd:CommandText := "SELECT Id, ProjectFileName from Projects WHERE ProjectFileName = $file"
 				cmd:Parameters:AddWithValue("$file",file)
-				VAR lOk := FALSE 
+				VAR lOk := FALSE
 				BEGIN USING VAR rdr := cmd:ExecuteReader()
 				    IF rdr:Read()
 					    oProject:Id := rdr:GetInt64(0)
@@ -398,23 +398,23 @@ BEGIN NAMESPACE XSharpModel
 				CommitWhenNeeded()
 			ENDIF
 		RETURN
-		
+
 		STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
-			IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)  
+			IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)
 				RETURN
 			ENDIF
 			VAR file := cFileName
 			BEGIN LOCK oConn
 				USING VAR cmd := SQLiteCommand{"", oConn}
-				cmd:CommandText := "delete from Projects where ProjectFileName = $file" 
+				cmd:CommandText := "delete from Projects where ProjectFileName = $file"
 				cmd:Parameters:AddWithValue("$file",file)
 				cmd:ExecuteNonQuery()
 			END LOCK
 			CommitWhenNeeded()
-		#endregion        
-		
+		#endregion
+
 		#region CRUD files
-		
+
 		STATIC METHOD DeleteFile(cFileName AS STRING) AS VOID
 			IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)
 				RETURN
@@ -423,12 +423,12 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"Delete Project info for project {cFileName}")
 			BEGIN LOCK oConn
 				USING VAR cmd := SQLiteCommand{"", oConn}
-				cmd:CommandText := "DELETE FROM Files WHERE FileName = $file" 
+				cmd:CommandText := "DELETE FROM Files WHERE FileName = $file"
 				cmd:Parameters:AddWithValue("$file",file)
 				cmd:ExecuteNonQuery()
 			END LOCK
 		CommitWhenNeeded()
-		
+
 		STATIC METHOD Read(oFile AS XFile) AS VOID
 			IF ! IsDbOpen .OR. String.IsNullOrEmpty(oFile:FullPath)
 				RETURN
@@ -440,15 +440,15 @@ BEGIN NAMESPACE XSharpModel
 		" Id integer NOT NULL PRIMARY KEY, FileName text NOT NULL COLLATE NOCASE "
 		" FileType integer NOT NULL, LastChanged DateTime NOT NULL, Size integer, Usings text, StaticUsings text"
 		" )"
-		
+
 		"Create Table FilesPerProject ("
-		" idFile integer NOT NULL, idProject integer NOT NULL, " 
-		" PRIMARY KEY (idFile, idProject), " 
-		" FOREIGN KEY (idFile) 	  REFERENCES Files (Id)    ON DELETE CASCADE ON UPDATE CASCADE, " 
+		" idFile integer NOT NULL, idProject integer NOT NULL, "
+		" PRIMARY KEY (idFile, idProject), "
+		" FOREIGN KEY (idFile) 	  REFERENCES Files (Id)    ON DELETE CASCADE ON UPDATE CASCADE, "
 		" FOREIGN KEY (idProject) REFERENCES Projects (Id) ON DELETE CASCADE ON UPDATE CASCADE "
 		" )"
-		
-		
+
+
 		*/
 		LOCAL lUpdated := FALSE AS LOGIC
 		BEGIN LOCK oConn
@@ -456,7 +456,7 @@ BEGIN NAMESPACE XSharpModel
 				USING VAR cmd := SQLiteCommand{"", oConn}
 				cmd:CommandText := "SELECT Id, LastChanged, Size, Usings,StaticUsings FROM Files WHERE FileName = $file"
 				cmd:Parameters:AddWithValue("$file",file)
-				VAR lOk := FALSE 
+				VAR lOk := FALSE
 				BEGIN USING VAR rdr := cmd:ExecuteReader()
 					IF rdr:Read()
 						oFile:Id                := rdr:GetInt64(0)
@@ -491,14 +491,14 @@ BEGIN NAMESPACE XSharpModel
 			CATCH e AS Exception
 				Log("Exception: "+e:ToString())
 				Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
-				
+
 			END TRY
 		END LOCK
 		IF lUpdated
 			CommitWhenNeeded()
 		ENDIF
 		RETURN
-		
+
 		STATIC PRIVATE METHOD UpdateFileData(oFile AS XFile) AS VOID
 			IF ! IsDbOpen
 				RETURN
@@ -525,7 +525,7 @@ BEGIN NAMESPACE XSharpModel
 				END TRY
 			END LOCK
 		RETURN
-		
+
 		STATIC METHOD Update(oFile AS XFile) AS VOID
 			// No need to do this in the background.
 			// It is called on a background thread while editing
@@ -542,8 +542,8 @@ BEGIN NAMESPACE XSharpModel
 			UpdateFileData(oFile)
 			CommitWhenNeeded()
 		RETURN
-		
-		
+
+
 		STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
 			/*
 			"Create Table Types ("
@@ -563,13 +563,13 @@ BEGIN NAMESPACE XSharpModel
 				TRY
 						USING VAR oCmd := SQLiteCommand{"DELETE FROM Members WHERE IdFile = "+oFile:Id:ToString(), oConn}
 							oCmd:ExecuteNonQuery()
-							
+
 							oCmd:CommandText  := "DELETE FROM CommentTasks WHERE IdFile = "+oFile:Id:ToString()
-							oCmd:ExecuteNonQuery() 
-							
+							oCmd:ExecuteNonQuery()
+
 							oCmd:CommandText  := "DELETE FROM Types WHERE IdFile = "+oFile:Id:ToString()
 							oCmd:ExecuteNonQuery()
-							
+
 							oCmd:CommandText := "INSERT INTO Types (Name, IdFile, Namespace, Kind,  BaseTypeName, Attributes,  Sourcecode, XmlComments, " + ;
 							"                 StartLine,  StartColumn,  EndLine,  EndColumn,  Start,  Stop, ClassType) " +;
 							" VALUES ($name, $file, $namespace, $kind, $baseTypeName,  $attributes, $sourcecode, $xmlcomments, " +;
@@ -624,20 +624,20 @@ BEGIN NAMESPACE XSharpModel
 						" Id integer NOT NULL PRIMARY KEY, IdType integer NOT NULL , IdFile integer NOT NULL, "
 						" Name text COLLATE NOCASE, Kind integer , Attributes integer , "
 						" SourceCode text, XmlComments text, StartLine integer , StartColumn integer ,  "
-						" EndLine integer , EndColumn integer , Start integer , Stop integer , "
-						" FOREIGN KEY (idType) REFERENCES Types (Id) ON DELETE CASCADE ON UPDATE CASCADE, " 
+						" EndLine integer , EndColumn integer , Start integer , Stop integer , ReturnType text "
+						" FOREIGN KEY (idType) REFERENCES Types (Id) ON DELETE CASCADE ON UPDATE CASCADE, "
 						" FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
 						")"
 						*/
 						oCmd:CommandText := "INSERT INTO Members (idFile, idType, Name, Kind, Attributes, Sourcecode , XMLComments, " + ;
-						" StartLine, StartColumn, EndLine, EndColumn, Start, Stop) " +;
+						" StartLine, StartColumn, EndLine, EndColumn, Start, Stop, ReturnType) " +;
 						" VALUES ($file, $type, $name, $kind, $attributes,$sourcecode, $xmlcomments," + ;
-						"           $startline, $startcolumn, $endline, $endcolumn, $start, $stop) ;" +;
+						"           $startline, $startcolumn, $endline, $endcolumn, $start, $stop, $returntype) ;" +;
 						" SELECT last_insert_rowid()"
 						oCmd:Parameters:Clear()
 						pars := List<SQLiteParameter>{} { ;
 						oCmd:Parameters:AddWithValue("$file", oFile:Id),;
-						oCmd:Parameters:AddWithValue("$type", 0),;                      
+						oCmd:Parameters:AddWithValue("$type", 0),;
 						oCmd:Parameters:AddWithValue("$name", ""),;
 						oCmd:Parameters:AddWithValue("$kind", 0),;
 						oCmd:Parameters:AddWithValue("$attributes", 0),;
@@ -648,25 +648,27 @@ BEGIN NAMESPACE XSharpModel
 						oCmd:Parameters:AddWithValue("$start", 0),;
 						oCmd:Parameters:AddWithValue("$stop", 0),;
 						oCmd:Parameters:AddWithValue("$sourcecode", ""),;
-						oCmd:Parameters:AddWithValue("$xmlcomments", "")}
+						oCmd:Parameters:AddWithValue("$xmlcomments", ""),;
+                        oCmd:Parameters:AddWithValue("$returntype", "")}
 						FOREACH VAR typedef IN types
 							FOREACH VAR xmember IN typedef:XMembers
 								TRY
 										// file is constant
-										pars[ 0]:Value := oFile:Id
-										pars[ 1]:Value := typedef:Id
-										pars[ 2]:Value := xmember:Name
-										pars[ 3]:Value := (INT) xmember:Kind
-										pars[ 4]:Value := (INT) xmember:Attributes
-										pars[ 5]:Value := xmember:Range:StartLine
-										pars[ 6]:Value := xmember:Range:StartColumn
-										pars[ 7]:Value := xmember:Range:EndLine
-										pars[ 8]:Value := xmember:Range:EndColumn
-										pars[ 9]:Value := xmember:Interval:Start
-										pars[10]:Value := xmember:Interval:Stop
-										pars[11]:Value := xmember:SourceCode
-										pars[12]:Value := xmember:XmlComments
-										VAR id := (INT64) oCmd:ExecuteScalar()
+									pars[ 0]:Value := oFile:Id
+									pars[ 1]:Value := typedef:Id
+									pars[ 2]:Value := xmember:Name
+									pars[ 3]:Value := (INT) xmember:Kind
+									pars[ 4]:Value := (INT) xmember:Attributes
+									pars[ 5]:Value := xmember:Range:StartLine
+									pars[ 6]:Value := xmember:Range:StartColumn
+									pars[ 7]:Value := xmember:Range:EndLine
+									pars[ 8]:Value := xmember:Range:EndColumn
+									pars[ 9]:Value := xmember:Interval:Start
+									pars[10]:Value := xmember:Interval:Stop
+									pars[11]:Value := xmember:SourceCode
+									pars[12]:Value := xmember:XmlComments
+                                    pars[13]:Value := xmember:ReturnType
+									VAR id := (INT64) oCmd:ExecuteScalar()
 									xmember:Id := id
 								CATCH e AS Exception
 									Log("Exception: "+e:ToString())
@@ -696,6 +698,7 @@ BEGIN NAMESPACE XSharpModel
 							pars[10]:Value := xmember:Interval:Stop
 							pars[11]:Value := xmember:SourceCode
 							pars[12]:Value := xmember:XmlComments
+                            pars[13]:Value := xmember:ReturnType
 							VAR id := (INT64) oCmd:ExecuteScalar()
 						xmember:Id := id
 					CATCH e AS Exception
@@ -707,7 +710,7 @@ BEGIN NAMESPACE XSharpModel
 						Log("Column : "+xmember:Range:StartColumn:ToString())
 					END TRY
                   NEXT
-                  
+
 						oCmd:CommandText := "INSERT INTO CommentTasks (idFile, Line, Column, Priority,Comment) " +;
 						" VALUES ($file, $line, $column, $priority, $comment) ;" +;
 						" SELECT last_insert_rowid()"
@@ -730,13 +733,13 @@ BEGIN NAMESPACE XSharpModel
 					Log("Exception: "+e:ToString())
 					Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
 				END TRY
-				
+
 			END LOCK
 			RETURN
-			
+
 		#endregion
-		
-		
+
+
 		#region CRUD Assemblies
 		STATIC METHOD Read(oAssembly AS XAssembly) AS VOID
 			IF ! IsDbOpen .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
@@ -757,7 +760,7 @@ BEGIN NAMESPACE XSharpModel
 				USING VAR cmd := SQLiteCommand{"", oConn}
 				cmd:CommandText := "SELECT Id, Name, AssemblyFileName, LastChanged, Size from Assemblies where  AssemblyFileName = $file"
 				cmd:Parameters:AddWithValue("$file",file)
-				VAR lOk := FALSE 
+				VAR lOk := FALSE
 				BEGIN USING VAR rdr := cmd:ExecuteReader()
 				    IF rdr:Read()
 					    oAssembly:Id            := rdr:GetInt64(0)
@@ -778,17 +781,17 @@ BEGIN NAMESPACE XSharpModel
 				Log("Exception: "+e:ToString())
 				Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
 			END TRY
-			
+
 		END LOCK
 		IF lUpdated
 			CommitWhenNeeded()
 		ENDIF
 		RETURN
-		
+
 		STATIC METHOD Update(oAssembly AS XAssembly) AS VOID
 			IF ! IsDbOpen .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
 				RETURN
-			ENDIF   
+			ENDIF
 			Log(i"Update Assembly info for assembly {oAssembly.FileName}")
 			BEGIN LOCK oConn
 				TRY
@@ -820,7 +823,7 @@ BEGIN NAMESPACE XSharpModel
 						pars[6]:Value := (INT) typeref:Attributes
 						oCmd:ExecuteNonQuery()
 					NEXT
-							
+
 					oCmd:CommandText := "Update Assemblies set LastChanged = $last, Size = $size where id = "+oAssembly:Id:ToString()
 					VAR fi            := FileInfo{oAssembly:FileName}
 					oAssembly:LastChanged := fi:LastWriteTime
@@ -833,11 +836,11 @@ BEGIN NAMESPACE XSharpModel
 					Log("Exception: "+e:ToString())
 					Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
 				END TRY
-				
-			END LOCK         
+
+			END LOCK
 			RETURN
 		#endregion
-		
+
 		STATIC METHOD FindFunction(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			// search class members in the Types list
 			VAR result := List<XDbResult>{}
@@ -861,12 +864,12 @@ BEGIN NAMESPACE XSharpModel
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
+					END TRY
 				END LOCK
 			ENDIF
 			Log(i"FindFunction '{sName}' returns {result.Count} matches")
 		RETURN result
-		
+
 		STATIC METHOD FindGlobalOrDefine(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			// search class members in the Types list
 			VAR result := List<XDbResult>{}
@@ -886,12 +889,12 @@ BEGIN NAMESPACE XSharpModel
 					    ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
+					END TRY
 				END LOCK
 			ENDIF
 			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
-		RETURN result      
-		
+		RETURN result
+
 		STATIC METHOD GetTypes(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectTypes where name = $name AND IdProject in ("+sProjectIds+")"
 			VAR result := List<XDbResult>{}
@@ -906,12 +909,12 @@ BEGIN NAMESPACE XSharpModel
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
+					END TRY
 				END LOCK
 			ENDIF
 			Log(i"GetTypes '{sName}' returns {result.Count} matches")
-		RETURN result   
-		
+		RETURN result
+
 		STATIC METHOD GetTypesLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectTypes where name like $name AND IdProject in ("+sProjectIds+")"
 			VAR result := List<XDbResult>{}
@@ -927,12 +930,12 @@ BEGIN NAMESPACE XSharpModel
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
+					END TRY
 				END LOCK
 			ENDIF
 			Log(i"GetTypesLike '{sName}' returns {result.Count} matches")
-		RETURN result   
-		
+		RETURN result
+
 		STATIC METHOD GetCommentTasks(sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select Line, Column, Priority, Comment, FileName from " + ;
 			" ProjectCommentTasks where IdProject in ("+sProjectIds+") Order BY IdProject, IdFile "
@@ -947,12 +950,12 @@ BEGIN NAMESPACE XSharpModel
 					    ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
+					END TRY
 				END LOCK
 			ENDIF
 			Log(i"GetCommentTasks returns {result.Count} matches")
-		RETURN result     
-		
+		RETURN result
+
       STATIC METHOD GetFilesOfType(type as XFileType, sProjectIds as STRING) AS IList<STRING>
          VAR stmt := "Select distinct FileName from ProjectFiles where FileType = $type AND IdProject in ("+sProjectIds+")"
          VAR result := List<String>{}
@@ -967,11 +970,11 @@ BEGIN NAMESPACE XSharpModel
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
+					END TRY
 				END LOCK
-			ENDIF         
+			ENDIF
          RETURN result
-		
+
 		STATIC METHOD GetNamespaces(sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdProject in ("+sProjectIds+")"
 			VAR result := List<XDbResult>{}
@@ -990,15 +993,15 @@ BEGIN NAMESPACE XSharpModel
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
+					END TRY
 				END LOCK
 			ENDIF
 			Log(i"GetNameSpaces returns {result.Count} matches")
-		RETURN result     
-		
+		RETURN result
+
 		STATIC METHOD GetNamespacesInFile(sFileId AS STRING) AS IList<XDbResult>
 		RETURN GetNamespacesInFile( sFileId, FALSE )
-		
+
 		STATIC METHOD GetNamespacesInFile(sFileId AS STRING, keepEmptyName AS LOGIC ) AS IList<XDbResult>
 			VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdFile = "+sFileId
 			VAR result := List<XDbResult>{}
@@ -1012,7 +1015,7 @@ BEGIN NAMESPACE XSharpModel
 							IF rdr[0] != DBNull.Value
 								res:Kind         := Kind.Namespace
 								res:Namespace    := DbToString(rdr[0])
-								res:TypeName     := res:Namespace							
+								res:TypeName     := res:Namespace
 								IF !String.IsNullOrEmpty(res:Namespace) .OR. keepEmptyName
 									result:Add(res)
 								ENDIF
@@ -1020,12 +1023,12 @@ BEGIN NAMESPACE XSharpModel
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
+					END TRY
 				END LOCK
 			ENDIF
 			Log(i"GetNamespacesInFile returns {result.Count} matches")
-		RETURN result  			
-		
+		RETURN result
+
 		STATIC METHOD GetTypesInFile(sFileId AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectTypes where IdFile = "+sFileId
 			VAR result := List<XDbResult>{}
@@ -1039,12 +1042,12 @@ BEGIN NAMESPACE XSharpModel
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
+					END TRY
 				END LOCK
 			ENDIF
 			Log(i"GetTypesInFile returns {result.Count} matches")
 		RETURN result
-		
+
 		STATIC METHOD GetReferenceTypes(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from AssemblyTypes where (name like $name or fullname like  $name) AND idAssembly in ("+sAssemblyIds+")"
 			VAR result := List<XDbResult>{}
@@ -1057,18 +1060,18 @@ BEGIN NAMESPACE XSharpModel
 					    DO WHILE rdr:Read()
 					        result:Add(CreateRefTypeInfo(rdr))
 					    ENDDO
-					
+
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
+					END TRY
 				END LOCK
 			ENDIF
 			Log(i"GetReferenceTypes '{sName}' returns {result.Count} matches")
-		RETURN result         
-		
+		RETURN result
+
 		STATIC METHOD GetMembers(idType AS INT64) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()
-			stmt     += " order by idFile, idType" 
+			stmt     += " order by idFile, idType"
 			VAR result := List<XDbResult>{}
 			IF IsDbOpen
 				BEGIN LOCK oConn
@@ -1080,12 +1083,12 @@ BEGIN NAMESPACE XSharpModel
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
-					
+					END TRY
+
 				END LOCK
 			ENDIF
 			Log(i"GetMembers '{idType}' returns {result.Count} matches")
-		RETURN result  
+		RETURN result
 
         STATIC METHOD GetStartupClasses(projectFile as string) AS List<String>
             var result := List<String>{}
@@ -1105,15 +1108,15 @@ BEGIN NAMESPACE XSharpModel
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
-					
+					END TRY
+
 				END LOCK
 			ENDIF
             return result
 
 		STATIC METHOD GetMembers(idTypes AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectMembers where IdType IN ("+idTypes+") "
-			stmt     += " order by idFile, idType" 
+			stmt     += " order by idFile, idType"
 			VAR result := List<XDbResult>{}
 			IF IsDbOpen
 				BEGIN LOCK oConn
@@ -1125,16 +1128,16 @@ BEGIN NAMESPACE XSharpModel
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
-					
+					END TRY
+
 				END LOCK
 			ENDIF
 			Log(i"GetMembers '{idTypes}' returns {result.Count} matches")
-		RETURN result  
+		RETURN result
 
 
 		STATIC METHOD GetFunctions( sFileId AS STRING) AS IList<XDbResult>
-			// 
+			//
 			VAR result := List<XDbResult>{}
 			IF IsDbOpen
 				BEGIN LOCK oConn
@@ -1155,11 +1158,11 @@ BEGIN NAMESPACE XSharpModel
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
-					END TRY            
+					END TRY
 				END LOCK
 			ENDIF
 			Log(i"GetFunctions returns {result.Count} matches")
-		RETURN result			
+		RETURN result
 
 		STATIC METHOD CreateTypeInfo(rdr AS SQLiteDataReader) AS XDbResult
 			VAR res := XDbResult{}
@@ -1183,7 +1186,7 @@ BEGIN NAMESPACE XSharpModel
 			res:IdFile       := (INT64) rdr["IdFile"]
 			res:IdProject    := (INT64) rdr["IdProject"]
 		RETURN res
-		
+
 		STATIC METHOD CreateRefTypeInfo(rdr AS SQLiteDataReader) AS XDbResult
 			VAR res := XDbResult{}
 			res:TypeName     := DbToString(rdr["Name"])
@@ -1195,7 +1198,7 @@ BEGIN NAMESPACE XSharpModel
 			res:IdType       := (INT64) rdr["Id"]
 			res:IdAssembly   := (INT64) rdr["IdAssembly"]
 		RETURN res
-		
+
 		STATIC METHOD CreateCommentTask(rdr AS SQLiteDataReader) AS XDbResult
 			VAR res := XDbResult{}
 			res:Line         := DbToInt(rdr["Line"])
@@ -1204,8 +1207,8 @@ BEGIN NAMESPACE XSharpModel
 			res:Comment      := DbToString(rdr["Comment"])
 			res:FileName     := DbToString(rdr["FileName"])
 		RETURN res
-		
-		
+
+
 		STATIC METHOD CreateMemberInfo(rdr AS SQLiteDataReader) AS XDbResult
 			VAR res := XDbResult{}
 			res:TypeName     := DbToString(rdr["TypeName"])
@@ -1225,7 +1228,8 @@ BEGIN NAMESPACE XSharpModel
 			res:XmlComments  := DbToString(rdr["XmlComments"])
 			res:IdType       := (INT64) rdr["IdType"]
 			res:IdFile       := (INT64) rdr["IdFile"]
-			res:IdProject    := (INT64) rdr["IdProject"] 
+			res:IdProject    := (INT64) rdr["IdProject"]
+            res:ReturnType   := DbToString(rdr["ReturnType"])
 		RETURN res
 		STATIC METHOD DbToString(oValue AS OBJECT) AS STRING
 			IF oValue == DBNull.Value
@@ -1246,16 +1250,16 @@ BEGIN NAMESPACE XSharpModel
 				RETURN l
 			ENDIF
 		RETURN 0
-		
-		
+
+
 		STATIC PROPERTY IsDbOpen AS LOGIC GET oConn != NULL_OBJECT .AND.  oConn:State == ConnectionState.Open
-		
+
 		STATIC METHOD Log(cMessage AS STRING) AS VOID
 			IF XSettings.EnableDatabaseLog .AND. XSettings.EnableLogging
 				XSolution.WriteOutputMessage("XDatabase: "+cMessage)
 			ENDIF
 			RETURN
-			
+
 		END CLASS
-		
-END NAMESPACE   
+
+END NAMESPACE

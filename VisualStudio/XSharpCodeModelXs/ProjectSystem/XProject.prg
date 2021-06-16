@@ -704,38 +704,19 @@ BEGIN NAMESPACE XSharpModel
             // contain the members from the result collection
             LOCAL source AS STRING
             LOCAL file := NULL AS XFile
+            VAR members := List<XSourceMemberSymbol>{}
             FOREACH VAR element IN result
-                source         += element:SourceCode + e"\r\n"
-                IF (file == NULL)
-                    file       := XFile{element:FileName,SELF}
-                ENDIF
+                VAR xmember := XSourceMemberSymbol.FromDbResult(element, SELF)
+                source := element:SourceCode
+                members:Add(xmember)
+                file := xmember:File
             NEXT
-            file:Virtual   := TRUE
             VAR walker := SourceWalker{file}
-            walker:Parse(source, FALSE)
-            IF walker:EntityList:Count > 0
-                LOCAL  first := NULL AS XSourceMemberSymbol
-                FOREACH VAR xElement IN walker:EntityList
-                   IF xElement IS XSourceMemberSymbol VAR xmember
-                      IF first == NULL
-                          first := xmember
-                      ENDIF
-                      VAR element := result:FirstOrDefault( { e => e:SourceCode == xmember:SourceCode})
-                      IF element != NULL
-                          xmember:Range       := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
-                          xmember:Interval    := TextInterval{element:Start, element:Stop}
-                          IF element:FileName == file:FullPath
-                             xmember:File     := file
-                          ELSE
-                            xmember:File        := XFile{element:FileName,SELF}
-                          ENDIF
-                          xmember:XmlComments := element:XmlComments
-                          result:Remove(element)
-                      ENDIF
-                    ENDIF
-                NEXT
-                RETURN first
-            ENDIF
+            walker:Parse(source, TRUE)
+            VAR first := (XSourceMemberSymbol) walker:EntityList:First()
+            VAR parentType := (XSourceTypeSymbol) first:ParentType
+            parentType:SetMembers(members)
+            RETURN first
          ENDIF
          RETURN NULL
 
@@ -981,7 +962,13 @@ BEGIN NAMESPACE XSharpModel
             idProject      := oType:IdProject
             VAR name       := oType:TypeName
             VAR xElement      := walker:EntityList:First()
-            IF xElement IS XSourceTypeSymbol VAR xtype
+            LOCAL xtype AS XSourceTypeSymbol
+            IF xElement IS XSourceTypeSymbol VAR xE
+                xtype := xE
+            ELSEIF xElement IS XSourceMemberSymbol VAR xE2
+                xtype := (XSourceTypeSymbol) xE2:ParentType
+            ENDIF
+            IF xtype != NULL
                xtype:SetInterfaces(aIF)
                xtype:BaseType    := baseTypeName
                xtype:Range       := TextRange{oType:StartLine, oType:StartColumn, oType:EndLine, oType:EndColumn}

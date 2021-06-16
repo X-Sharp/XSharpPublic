@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -21,18 +21,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD IntLiteralTest() AS VOID
 			LOCAL dec AS DWORD
 			LOCAL thou AS DWORD
-	
+
 			dec := SetDecimalSep(Asc(","))
 			thou := SetThousandSep(Asc("."))
 			Assert.Equal(" 12.345,00" , Transform(12345.0, "999,999.99"))
 			// this fails:
 			Assert.Equal(" 12.345,00" , Transform(12345, "999,999.99"))
-	        
+
 			SetDecimalSep(Asc("."))
 			SetThousandSep(Asc(","))
 			Assert.Equal(" 12,345.00" , Transform(12345.0, "999,999.99"))
 			Assert.Equal(" 12,345.00" , Transform(12345, "999,999.99"))
-	
+
 			SetDecimalSep(dec)
 			SetThousandSep(thou)
 		RETURN
@@ -41,34 +41,34 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD SplitPathTests() AS VOID
 			LOCAL cDrive := "",cDir := "",cFile := "",cExt := "" AS STRING
 			SplitPath("C:\folder\file.ext" ,  REF cDrive , REF cDir , REF cFile , REF cExt)
-			
+
 			Assert.Equal("C:" , cDrive)
 			Assert.Equal("\folder\" , cDir)
-	
+
 			Assert.Equal("file" , cFile)
 			Assert.Equal(".ext" , cExt)
 		RETURN
-	
+
 		[Fact, Trait("Category", "SplitPathVO")];
 		METHOD SplitPathVO() AS VOID
 			LOCAL cPath ,cDrive ,cDir ,cFile ,cExt AS STRING
 			LOCAL pszDrive, pszDir AS PSZ
 			LOCAL pszFile, pszExt AS PSZ
-		
+
 			cPath := "C:\testfolder\testfile.prg"
-		
+
 			pszDrive := MemAlloc(2+1)
 			pszDir   := MemAlloc(255+1)
 			pszFile  := MemAlloc(255+1)
-			pszExt   := MemAlloc(7+1) 
-		
+			pszExt   := MemAlloc(7+1)
+
 			SplitPath( String2Psz(cPath), pszDrive, pszDir, pszFile, pszExt)
-		
+
 			cDrive := Psz2String(pszDrive)
 			cDir   := Psz2String(pszDir)
 			cFile  := Psz2String(pszFile)
 			cExt   := Psz2String(pszExt)
-		
+
 			MemFree(pszDrive)
 			MemFree(pszDir)
 			MemFree(pszFile)
@@ -80,7 +80,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("testfile" , cFile)
 			Assert.Equal(".prg" , cExt)
 		RETURN
-	
+
 		[Fact, Trait("Category", "Directory")];
 		METHOD DirectoryTests() AS VOID
 			Assert.Equal(0u , ALen(Directory("K:\drive does not exist")))
@@ -91,7 +91,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(1u , ALen(Directory("C:invalid:path","V")))
 			Assert.Equal(0u , ALen(Directory("N:")))
 			Assert.Equal(0u , ALen(Directory("N:","V")))
-	
+
 		[Fact, Trait("Category", "Empty")];
 		METHOD EmptyFuncTests() AS VOID
 			Assert.True(Empty(0))
@@ -101,19 +101,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(Empty(NULL_SYMBOL))
 			Assert.True(Empty(0000.00.00))
 			Assert.True(Empty({}))
-	
+
 			Assert.True(Empty(NULL_PTR))
 			LOCAL p AS PTR
 			p := NULL_PTR
 			Assert.True(Empty(p))
-	
+
 			Assert.True(Empty(NULL_PSZ))
 			LOCAL z AS PSZ
 			z := NULL_PSZ
 			Assert.True(Empty(z))
-			
-			
-	
+
+
+
 			Assert.False(Empty(1))
 			Assert.False(Empty(TRUE))
 			Assert.False(Empty("a"))
@@ -121,7 +121,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.False(Empty(#abc))
 			Assert.False(Empty(2000.01.01))
 			Assert.False(Empty({{}}))
-			
+
 			p := @p
 			Assert.False(Empty(p))
 			z := String2Psz("test")
@@ -151,7 +151,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             t := System.Collections.ArrayList{}
             Assert.True(IsObject(t))
 
-        [Fact, Trait("Category", "EmptyUsual")];
+        [Fact, Trait("Category", "UsualType")];
 		METHOD EmptyUsual_Tests() AS VOID
 			LOCAL u AS USUAL
 			EnforceType(REF u, STRING)
@@ -163,170 +163,59 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(u == "")
 			Assert.True(UsualType(u) == STRING)
 			EnforceType(u, STRING)
-			
+
 			Assert.True(EmptyUsual(STRING) == "")
 
 #pragma options ("lb", ON)
-        [Fact, Trait("Category", "EmptyUsual")];
+        [Fact, Trait("Category", "SysObject")];
 		METHOD SysObject_Test() AS VOID
 			LOCAL o AS OBJECT
 			o := SysObjectTestClass{}
-			
+
 			SysObject(o)
-			
+
 			Assert.Equal("test", (STRING) SysObject(o):Something )
 			SysObject(o):Something := "abc"
 			Assert.Equal(TRUE, (LOGIC)SysObject(o):SomeMethod())
-			
+
 			Assert.Equal("abc", (STRING) o:Something )
 			Assert.Equal(TRUE, (LOGIC)SysObject():SomeMethod())
-			
+
 			Assert.Equal("abc", (STRING) SysObject():Something )
 
 
 			LOCAL u AS USUAL
 			u := SysObjectTestClass{}
-			
+
 			SysObject(o)
-			
+
 			Assert.Equal("test", (STRING) SysObject(u):Something )
 			SysObject(u):Something := "abc"
 			Assert.Equal(TRUE, (LOGIC)SysObject(u):SomeMethod())
-			
+
 			Assert.Equal("abc", (STRING) u:Something )
 			Assert.Equal(TRUE, (LOGIC)SysObject():SomeMethod())
-			
+
 			Assert.Equal("abc", (STRING) SysObject():Something )
 #pragma options ("lb", OFF)
 
-        [Fact, Trait("Category", "EmptyUsual")];
+        [Fact, Trait("Category", "OClone")];
 		METHOD OClone_Tests() AS VOID
 			LOCAL o1,o2 AS CloneTest
 			o1 := CloneTest{123}
 			o1:nExport := 456
-			
+
 			o2 := (CloneTest) OClone(o1)
 			Assert.Equal(123 , o2:GetPrivate())
 			Assert.Equal("123" , o2:cExport)
 			Assert.Equal(456 , o2:nExport)
-		
-
-        [Fact, Trait("Category", "EmptyUsual")];
-		METHOD File_Tests() AS VOID
-			LOCAL hFile AS PTR
-			LOCAL cFileName AS STRING
-			LOCAL nResult AS DWORD
-			LOCAL cBuffer AS STRING
-			
-			cFileName := "test.txt"
-			hFile := FCreate(cFileName , FC_NORMAL)
-			Assert.True(FEof(hFile))
-			FWrite(hFile , "ABCDE" , 5)
-			Assert.True(FEof(hFile))
-
-			FSeek3(hFile, 1, FS_SET)
-			Assert.False(FEof(hFile))
-			nResult := FRead(hFile , REF cBuffer , 4)
-			Assert.Equal(4U , nResult)
-			Assert.Equal("BCDE" , cBuffer)
-			Assert.True(FEof(hFile))
-			
-			FSeek3(hFile, 1, FS_SET)
-			Assert.False(FEof(hFile))
-			nResult := FRead(hFile , REF cBuffer , 3)
-			Assert.Equal(3U , nResult)
-			Assert.Equal("BCD" , cBuffer)
-			Assert.False(FEof(hFile))
-			
-			FSeek3(hFile, 2, FS_SET)
-			Assert.False(FEof(hFile))
-			nResult := FRead(hFile , REF cBuffer , 100)
-			Assert.Equal(3U , nResult)
-			Assert.Equal(3 , cBuffer:Length)
-			Assert.Equal("CDE" , cBuffer)
-			Assert.True(FEof(hFile))
-
-			Assert.True( FClose(hFile) )
-			
 
 
-			hFile := FOpen(cFileName , FC_NORMAL)
 
-			nResult := FRead(hFile , REF cBuffer , 3)
-			Assert.Equal(3U , nResult)
-			Assert.Equal("ABC" , cBuffer)
-			Assert.False(FEof(hFile))
 
-			nResult := FRead(hFile , REF cBuffer , 3)
-			Assert.Equal(2U , nResult)
-			Assert.Equal("DE" , cBuffer)
-			Assert.True(FEof(hFile))
-
-			FSeek3(hFile, 1, FS_SET)
-			Assert.False(FEof(hFile))
-			nResult := FRead(hFile , REF cBuffer , 4)
-			Assert.Equal(4U , nResult)
-			Assert.Equal("BCDE" , cBuffer)
-			Assert.True(FEof(hFile))
-			
-			FSeek3(hFile, 1, FS_SET)
-			Assert.False(FEof(hFile))
-			nResult := FRead(hFile , REF cBuffer , 3)
-			Assert.Equal(3U , nResult)
-			Assert.Equal("BCD" , cBuffer)
-			Assert.False(FEof(hFile))
-			
-			FSeek3(hFile, 2, FS_SET)
-			Assert.False(FEof(hFile))
-			nResult := FRead(hFile , REF cBuffer , 100)
-			Assert.Equal(3U , nResult)
-			Assert.Equal(3 , cBuffer:Length)
-			Assert.Equal("CDE" , cBuffer)
-			Assert.True(FEof(hFile))
-
-			Assert.True( FClose(hFile) )
-
-			
-			hFile := FOpen(cFileName , FO_EXCLUSIVE)
-
-			nResult := FRead(hFile , REF cBuffer , 3)
-			Assert.Equal(3U , nResult)
-			Assert.Equal("ABC" , cBuffer)
-			Assert.False(FEof(hFile))
-
-			nResult := FRead(hFile , REF cBuffer , 3)
-			Assert.Equal(2U , nResult)
-			Assert.Equal("DE" , cBuffer)
-			Assert.True(FEof(hFile))
-
-			FSeek3(hFile, 1, FS_SET)
-			Assert.False(FEof(hFile))
-			nResult := FRead(hFile , REF cBuffer , 4)
-			Assert.Equal(4U , nResult)
-			Assert.Equal("BCDE" , cBuffer)
-			Assert.True(FEof(hFile))
-			
-			FSeek3(hFile, 1, FS_SET)
-			Assert.False(FEof(hFile))
-			nResult := FRead(hFile , REF cBuffer , 3)
-			Assert.Equal(3U , nResult)
-			Assert.Equal("BCD" , cBuffer)
-			Assert.False(FEof(hFile))
-			
-			FSeek3(hFile, 2, FS_SET)
-			Assert.False(FEof(hFile))
-			nResult := FRead(hFile , REF cBuffer , 100)
-			Assert.Equal(3U , nResult)
-			Assert.Equal(3 , cBuffer:Length)
-			Assert.Equal("CDE" , cBuffer)
-			Assert.True(FEof(hFile))
-
-			Assert.True( FClose(hFile) )
-
-			
 
 	END CLASS
-	
+
 	CLASS SysObjectTestClass
 		EXPORT Something := "test"
 		METHOD SomeMethod()
@@ -340,7 +229,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		CONSTRUCTOR(n AS INT)
 			SELF:nPrivate := n
 			SELF:cExport := n:ToString()
-	
+
 		METHOD GetPrivate() AS INT
 		RETURN SELF:nPrivate
 	END CLASS

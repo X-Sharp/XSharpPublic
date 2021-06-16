@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -11,9 +11,9 @@ USING XUnit
 
 BEGIN NAMESPACE XSharp.Core.Tests
 
-	CLASS FileSearchTests 
+	CLASS FileSearchTests
 
-		[Fact, Trait("Category", "File Search")]; 
+		[Fact, Trait("Category", "File Search")];
 		METHOD FileTest() AS VOID
 			LOCAL lOk AS LOGIC
 			LOCAL cName AS STRING
@@ -41,17 +41,20 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 
 		RETURN
-		[Fact, Trait("Category", "File Search")]; 
+		[Fact, Trait("Category", "File Search")];
 		METHOD File2Test() AS VOID
 			LOCAL cName AS STRING
 			LOCAL cName2 AS STRING
-			FErase("FOO.TXT")
-			Assert.Equal(FALSE, File("FOO.TXT"))
-			FClose(Fcreate("FOO.TXT"))
-			Assert.Equal(TRUE, File("FOO.TXT"))
+            LOCAL cFile AS STRING
+            cFile := TempFile("txt")
+			FErase(cFile)
+			Assert.Equal(FALSE, File(cFile))
+			FClose(Fcreate(cFile))
+			Assert.Equal(TRUE, File(cFile))
 			cName := FPathName()
 			Assert.Equal(FALSE, String.IsNullOrEmpty(cName))
-			Assert.Equal(TRUE, File("FO?.TXT"))
+            VAR cMask := cFile:Replace('-', '?')
+			Assert.Equal(TRUE, File(cMask))
 			cName2 := FPathName()
 			Assert.Equal(cName, cName2)
 			Assert.Equal(TRUE, File("XCOPY.EXE"))	// uses GetEnv("PATH")

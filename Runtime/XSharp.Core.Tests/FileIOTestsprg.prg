@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			LOCAL sText AS STRING 
 			LOCAL sToWrite AS STRING
 			LOCAL sFile AS STRING
-			sFile	 := "FileIo.txt"
+			sFile	 := TempFile("txt")
 			sToWrite := "This is a line of text"
 			hFile := FCreate2(sFile,FC_NORMAL)
 			assert.NotEqual(hFile, F_ERROR)

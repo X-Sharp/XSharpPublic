@@ -786,7 +786,10 @@ namespace XSharp.LanguageService
                     case XSharpLexer.COLON:
                     case XSharpLexer.DOT:
                     default:
-                        startOfExpression = false;
+                        if (XSharpLexer.IsOperator(lastToken.Type))
+                            startOfExpression = true;
+                        else
+                            startOfExpression = false;
                         break;
                 }
             }

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Globalization
@@ -13,7 +13,7 @@ FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
 	LOCAL bDest  AS BYTE[]
 	LOCAL bKey  AS BYTE[]
     LOCAL enc     AS Encoding
-    IF cSource?:Length == 0 .OR. cKey?:Length < 2
+    IF (cSource?:Length DEFAULT 0) == 0 .OR. (cKey?:Length DEFAULT 0) < 2
         RETURN cSource
     ENDIF
     enc         := StringHelpers.WinEncoding
@@ -34,7 +34,7 @@ FUNCTION CryptRaw(cSource AS STRING,cKey AS STRING) AS STRING
 	LOCAL bSource AS BYTE[]
 	LOCAL bDest  AS BYTE[]
 	LOCAL bKey  AS BYTE[]
-    IF cSource?:Length == 0 .OR. cKey?:Length < 2
+    IF (cSource?:Length DEFAULT 0) == 0 .OR. (cKey?:Length DEFAULT 0) < 2
         RETURN cSource
     ENDIF
     bSource     := BYTE[]{cSource:Length}
@@ -45,7 +45,7 @@ FUNCTION CryptRaw(cSource AS STRING,cKey AS STRING) AS STRING
     FOR LOCAL n := 1 AS INT UPTO cKey:Length
     	bKey[n] := unchecked( (BYTE)cKey[n-1] )
     NEXT
-    
+
     bDest := Crypt(bSource, bKey)
 
     LOCAL sDest AS StringBuilder
@@ -53,7 +53,7 @@ FUNCTION CryptRaw(cSource AS STRING,cKey AS STRING) AS STRING
     FOREACH b AS BYTE IN bDest
     	sDest:Append((Char)b)
     NEXT
-    
+
 	RETURN sDest:ToString()
 
 /// <summary>
@@ -73,7 +73,7 @@ FUNCTION Crypt(bSource AS BYTE[],bKey AS BYTE[]) AS BYTE[]
     LOCAL nPos     AS INT
     LOCAL nKeyPos  AS INT
     LOCAL bCurrent AS BYTE
-    IF bSource:Length == 0 .OR. bKey?:Length < 2
+    IF bSource:Length == 0 .OR. (bKey?:Length DEFAULT 0) < 2
         RETURN bSource
     ENDIF
     keyLen      := bKey:Length
@@ -112,7 +112,7 @@ FUNCTION Crypt(bSource AS BYTE[],bKey AS BYTE[]) AS BYTE[]
             bNibble := (BYTE)(uiCode2 & 0xFF)
 
             bNibble := (BYTE)( (bNibble << 1) | (bNibble >> 7) )
-            uiCode2 := (WORD)( (uiCode2 & 0xFF00) | bNibble ) 
+            uiCode2 := (WORD)( (uiCode2 & 0xFF00) | bNibble )
             uiCounter--
         ENDDO
         bDest[nPos] := (BYTE) (bCurrent ~ bNibble)

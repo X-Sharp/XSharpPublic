@@ -158,7 +158,7 @@ PUBLIC CLASS XSharp.Messages
 	STATIC METHOD GetString( name AS STRING, args PARAMS OBJECT[] ) AS STRING
 		VAR result := GetString(name)
 
-		IF args?:Length > 0
+		IF (args?:Length DEFAULT 0) > 0
 			result :=  String.Format( CultureInfo.CurrentCulture, result, args )
 		ENDIF
 		RETURN result

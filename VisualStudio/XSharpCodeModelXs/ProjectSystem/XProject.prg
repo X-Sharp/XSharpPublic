@@ -700,20 +700,41 @@ BEGIN NAMESPACE XSharpModel
          IF result:Count > 0
             // Get the source code and parse it into a member
             // we know that it will be of the globals class
-            VAR element    := result:First()
-            VAR source     := element:SourceCode
-            VAR file       := XFile{element:FileName,SELF}
+            // the global class that will be shared by the functions/globals will only
+            // contain the members from the result collection
+            LOCAL source AS STRING
+            LOCAL file := NULL AS XFile
+            FOREACH VAR element IN result
+                source         += element:SourceCode + e"\r\n"
+                IF (file == NULL)
+                    file       := XFile{element:FileName,SELF}
+                ENDIF
+            NEXT
             file:Virtual   := TRUE
             VAR walker := SourceWalker{file}
             walker:Parse(source, FALSE)
             IF walker:EntityList:Count > 0
-               VAR xElement      := walker:EntityList:First()
-               IF xElement IS XSourceMemberSymbol VAR xmember
-                  xmember:Range       := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
-                  xmember:Interval    := TextInterval{element:Start, element:Stop}
-                  xmember:XmlComments := element:XmlComments
-                  RETURN xmember
-               ENDIF
+                LOCAL  first := NULL AS XSourceMemberSymbol
+                FOREACH VAR xElement IN walker:EntityList
+                   IF xElement IS XSourceMemberSymbol VAR xmember
+                      IF first == NULL
+                          first := xmember
+                      ENDIF
+                      VAR element := result:FirstOrDefault( { e => e:SourceCode == xmember:SourceCode})
+                      IF element != NULL
+                          xmember:Range       := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
+                          xmember:Interval    := TextInterval{element:Start, element:Stop}
+                          IF element:FileName == file:FullPath
+                             xmember:File     := file
+                          ELSE
+                            xmember:File        := XFile{element:FileName,SELF}
+                          ENDIF
+                          xmember:XmlComments := element:XmlComments
+                          result:Remove(element)
+                      ENDIF
+                    ENDIF
+                NEXT
+                RETURN first
             ENDIF
          ENDIF
          RETURN NULL

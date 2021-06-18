@@ -4703,6 +4703,53 @@ RETURN
 			DbCloseArea()
 
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD FieldGet_After_Skip_zero() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/698
+			
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , {{"FLD","N",5,0}} , {1,2} )
+			DbCreateOrder("ORDER1", cDbf, "FLD")
+
+			DbGoTop()
+			DbSkip(-1)
+			Assert.True( Bof() )
+			Assert.True( FieldGet(1) == 1 )
+			Assert.Equal( 1U , RecNo() )
+
+			DbSkip(0)
+			Assert.True( Bof() )
+			Assert.True( FieldGet(1) == 1 )
+			Assert.Equal( 1U , RecNo() )
+
+
+			DbGoBottom()
+			Assert.False( Eof() )
+			Assert.True( FieldGet(1) == 2 )
+			Assert.Equal( 2U , RecNo() )
+
+			DbSkip(+1)
+			Assert.True( Eof() )
+			Assert.True( FieldGet(1) == 0 )
+			Assert.Equal( 3U , RecNo() )
+
+			DbSkip(0)
+			Assert.True( Eof() )
+			Assert.True( FieldGet(1) == 0 )
+			Assert.Equal( 3U , RecNo() )
+
+			DbSkip(+1)
+			Assert.True( Eof() )
+			Assert.True( FieldGet(1) == 0 )
+			Assert.Equal( 3U , RecNo() )
+
+			Assert.True( Eof() )
+
+			DbCloseArea()
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

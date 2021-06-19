@@ -4750,6 +4750,62 @@ RETURN
 			DbCloseArea()
 
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD Scope_Updating_From_another_woarkarea() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/699
+			
+			LOCAL cDbf AS STRING
+
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+			DbfTests.CreateDatabase(cDbf , {{"FLD","N",5,0}} , {1,2,3} )
+			DbCreateOrder("ORDER1", cDbf, "FLD")
+			DbCloseArea()
+
+			LOCAL nScope AS DWORD
+			nScope := 22
+			
+			DbUseArea(TRUE, "DBFCDX" , cDbf , "one" , TRUE)
+			DbUseArea(TRUE, "DBFCDX" , cDbf , "two" , TRUE)
+			
+			one->DbSetOrder( "ORDER1" )
+			one->DbOrderInfo(DBOI_SCOPETOP ,NIL ,NIL ,nScope)
+			one->DbOrderInfo(DBOI_SCOPEBOTTOM ,NIL,NIL , nScope)
+			
+			one->DbGoTop()
+			Assert.True( one->Eof() )
+			
+			two->DbAppend()
+			two->FieldPut( 1 , nScope )
+			two->DbCommit()
+			two->DbUnLock()
+			
+			LOCAL cRecords AS STRING
+
+			one->DbGoTop()
+			Assert.False( one->Eof() )
+			cRecords := ""
+			WHILE ! one->Eof()
+				cRecords += AsString( one->FieldGet( 1 ) )
+				one->DbSkip()
+			ENDDO
+			Assert.Equal( "22" , cRecords )
+
+			one->DbOrderInfo(DBOI_SCOPETOP ,NIL ,NIL ,nScope)
+			one->DbOrderInfo(DBOI_SCOPEBOTTOM ,NIL,NIL , nScope)
+			one->DbGoTop()
+			Assert.False( one->Eof() )
+			cRecords := ""
+			WHILE ! one->Eof()
+				cRecords += AsString( one->FieldGet( 1 ) )
+				one->DbSkip()
+			ENDDO
+			Assert.Equal( "22" , cRecords )
+			
+			one->DbCloseArea()
+			two->DbCloseArea()
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

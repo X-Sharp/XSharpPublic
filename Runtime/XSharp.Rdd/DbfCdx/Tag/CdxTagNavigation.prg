@@ -21,15 +21,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         // Methods for walking indices, so GoTop, GoBottom, Skip and Seek
         PRIVATE _mustCheckEof AS LOGIC
-        INTERNAL PROPERTY EmptyResultSet as LOGIC
+        INTERNAL PROPERTY EmptyResultSet AS LOGIC
             GET
                 IF !SELF:_Valid
                     SELF:_oRdd:_SetEOF(TRUE)
                     RETURN TRUE
                 ENDIF
-                IF _mustCheckEof .OR. SELF:_oRdd:MustForceRel
+                IF SELF:Shared .OR. _mustCheckEof .OR. SELF:_oRdd:MustForceRel
                     RETURN FALSE
                 ENDIF
+                SELF:_mustCheckEof := FALSE
                 RETURN SELF:_oRdd:EoF .AND. SELF:_oRdd:BoF
             END GET
         END PROPERTY
@@ -48,13 +49,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL locked AS LOGIC
             LOCAL result AS LOGIC
             IF SELF:EmptyResultSet
-                return TRUE
+                RETURN TRUE
             ENDIF
-            SELF:_mustCheckEof := FALSE
             locked := FALSE
             TRY
                 IF SELF:HasBottomScope
-                    IF SELF:_scopeEmpty
+                    IF SELF:_scopeEmpty .AND. ! SELF:Shared
                         RETURN TRUE
                     ENDIF
                     result := SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPEBOTTOM)
@@ -90,14 +90,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL locked AS LOGIC
             LOCAL result AS LOGIC
             IF SELF:EmptyResultSet
-                return TRUE
+                RETURN TRUE
             ENDIF
             locked := FALSE
-            SELF:_mustCheckEof := FALSE
             TRY
                 SELF:_oRdd:GoCold()
                 IF SELF:HasTopScope
-                    IF SELF:_scopeEmpty
+                    IF SELF:_scopeEmpty .AND. ! SELF:Shared
                         RETURN TRUE
                     ENDIF
                     result := SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPETOP)
@@ -152,7 +151,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRdd:Found := FALSE
                 RETURN TRUE
             ENDIF
-            SELF:_mustCheckEof := FALSE
             uiRealLen := 0
             byteArray := BYTE[]{ _keySize }
             // Convert the key to a byte Array
@@ -196,7 +194,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:EmptyResultSet
                 RETURN TRUE
             ENDIF
-            SELF:_mustCheckEof := FALSE
             // Default Position = Current Record
             IF nToSkip == 0
                 recno := SELF:_RecNo

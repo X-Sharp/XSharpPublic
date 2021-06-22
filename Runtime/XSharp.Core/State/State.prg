@@ -99,11 +99,11 @@ CLASS XSharp.RuntimeState
 		ENDIF
 		RETURN
     /// <exclude />
-//	DESTRUCTOR()
-//		// What do we need to clean ?
-//        IF oSettings != NULL
-//			oSettings:Clear()
-//		ENDIF
+	DESTRUCTOR()
+		// What do we need to clean ?
+        IF SELF == initialState
+            _shutdown := TRUE
+        ENDIF
 
 
 	PRIVATE METHOD Clone() AS RuntimeState

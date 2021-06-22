@@ -187,6 +187,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL recno AS LONG
             LOCAL isBof AS LOGIC
             LOCAL isEof AS LOGIC
+            LOCAL orgBof AS LOGIC
+            LOCAL orgEof AS LOGIC
             LOCAL locked AS LOGIC
             LOCAL orgToSkip AS INT
             LOCAL result := FALSE AS LOGIC
@@ -202,6 +204,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 recno := 0
             ENDIF
             forward := nToSkip > 0
+            orgBof := SELF:_oRdd:BoF
+            orgEof := SELF:_oRdd:EoF
             isBof := FALSE
             isEof := FALSE
             locked := FALSE
@@ -262,7 +266,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDIF
                 result := SELF:_oRdd:__Goto(recno)
-                IF recno == 0
+                IF orgToSkip == 0
+                    SELF:_oRdd:_SetBOF(orgBof)
+                    SELF:_oRdd:_SetEOF(orgEof)
+                ELSEIF recno == 0
                     IF forward
                         SELF:_oRdd:_SetEOF(TRUE)
                         SELF:_oRdd:_SetBOF(FALSE)

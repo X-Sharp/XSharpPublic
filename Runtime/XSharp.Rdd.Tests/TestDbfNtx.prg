@@ -1,7 +1,7 @@
 // TestDbfNtx.prg
 // Created by    : fabri
 // Creation Date : 9/16/2018 4:17:53 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : FABPORTABLE
 
 
@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL rddInfo AS RddFieldInfo[]
 			rddInfo := RddFieldInfo[]{fields:Length}
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL currentField AS RddFieldInfo
 				fieldInfo := fields[i]:Split( ',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
@@ -66,7 +66,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			RuntimeState.Workareas:CloseArea( dbInfo:WorkArea )
 			RETURN
-			
+
 		[Fact, Trait("DbfNtx", "Open")];
 		METHOD OpenDBFNtx() AS VOID
 			// ID,N,5,0;NAME,C,20,0
@@ -92,22 +92,22 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			RuntimeState.Workareas:CloseArea( dbInfo:WorkArea )
 			RETURN
-			
+
 		[Fact, Trait("DbfNtx", "Read")];
 		METHOD ReadDBFNtx() AS VOID
 			//
             InitTest()
 			SELF:CheckOrder( "TestNTX2" )
 			RETURN
-			
-			
+
+
 		[Fact, Trait("DbfNtx", "CreateAppend")];
 		METHOD CreateAppend() AS VOID
 			// Create the DBF, Define a Ntx, then add a some Data
             InitTest()
-            SELF:CreateAppendData( "CreateAppend" )
+            SELF:CreateAppendData( "CreateAppendX" )
 			// Now, Verify
-			SELF:CheckOrder( "CreateAppend" )
+			SELF:CheckOrder( "CreateAppendX" )
 
 		[Fact, Trait("DbfNtx", "CreateAppendSkipZero")];
 		METHOD CreateAppendSkipZero() AS VOID
@@ -120,8 +120,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			LOCAL myDBF AS DbfNtx
 			myDBF := DbfNtx{}
-			
-			VAR success := myDBF:Open( dbInfo ) 
+
+			VAR success := myDBF:Open( dbInfo )
 			Assert.Equal( TRUE, success )
 			// WE HAVE TO SET THE WORKAREA INFO !!!!
 			LOCAL area  := 0    AS DWORD
@@ -149,7 +149,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			Assert.Equal( oData1, oData2 )
 			//
 			RuntimeState.Workareas:CloseArea( area )
-			
+
 		METHOD CreateAppendData( baseFileName AS STRING ) AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
@@ -161,7 +161,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL rddInfo AS RddFieldInfo[]
 			rddInfo := RddFieldInfo[]{fields:Length}
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL currentField AS RddFieldInfo
 				fieldInfo := fields[i]:Split( ',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
@@ -191,7 +191,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL data := datas:Split( ';' ) AS STRING[]
 			//
 			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL elt := data[i]:Split( ',' ) AS STRING[]
 				myDBF:Append( FALSE )
 				myDBF:PutValue( 1, Convert.ToInt32(elt[__ARRAYBASE__] ))
@@ -201,9 +201,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			NEXT
 			//myDBF:Close()
 			RuntimeState.Workareas:CloseArea( dbInfo:WorkArea )
-			
+
 			RETURN
-			
+
 		[Fact, Trait("DbfNtx", "BigCreateAppend")];
 		METHOD BigCreateAppend() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
@@ -217,7 +217,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL rddInfo AS RddFieldInfo[]
 			rddInfo := RddFieldInfo[]{fields:Length}
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL currentField AS RddFieldInfo
 				fieldInfo := fields[i]:Split( ',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
@@ -248,7 +248,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//"ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
 			// 3000 samples
 			FOR VAR i := 1 TO 3000
-				// 
+				//
 				myDBF:Append( FALSE )
 				myDBF:PutValue( 1,  rnd:NEXT( 1, 5000 ))
 				myDBF:PutValue( 2,  LoremIpsum(20) )
@@ -260,7 +260,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// Now, Verify
 			SELF:CheckOrder( cSource)
 			RETURN
-			
+
 		// Read a DBF/NTX who's first Field is a Number used as Index Key
 		METHOD CheckOrder( baseFileName AS STRING ) AS VOID
 			//
@@ -269,7 +269,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL myDBF AS DbfNtx
 			myDBF := DbfNtx{}
             InitTest()
-			VAR success := myDBF:Open( dbInfo ) 
+			VAR success := myDBF:Open( dbInfo )
 			Assert.Equal( TRUE, success )
 			// WE HAVE TO SET THE WORKAREA INFO !!!!
 			LOCAL area  := 0    AS DWORD
@@ -292,7 +292,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			WHILE ! myDBF:EoF
 				//				Debug.Write( "---===---" + Environment.NewLine )
 				//				FOR VAR i := 1 TO myDBF:FIELDCount
-				//					// 
+				//					//
 				//					LOCAL oData AS OBJECT
 				//					oData := myDBF:GetValue( i )
 				//					LOCAL str AS STRING
@@ -314,7 +314,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			RuntimeState.Workareas:CloseArea( area )
 			//myDBF:Close()
 			RETURN
-			
-			
+
+
 	END CLASS
 END NAMESPACE // XSharp.RDD.Tests

@@ -803,8 +803,8 @@ BEGIN NAMESPACE XSharpModel
          RETURN myusings
 
 
-      PRIVATE _lastFound := NULL AS XSourceTypeSymbol
-      PRIVATE _lastName  := NULL AS STRING
+      HIDDEN _lastFound := NULL AS XSourceTypeSymbol
+      HIDDEN _lastName  := NULL AS STRING
 
       METHOD GetTypes( startWith AS STRING, usings AS IList<STRING>) AS IList<XSourceTypeSymbol>
          VAR result := XDatabase.GetTypesLike(startWith, SELF:DependentProjectList)

@@ -686,8 +686,14 @@
     </ZipItem>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.SDK">
+      <Version>15.0.1</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes">
       <Version>15.0.36</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Shell.15.0">
+      <Version>15.9.28307</Version>
     </PackageReference>
     <PackageReference Include="System.ComponentModel">
       <Version>4.3.0</Version>
@@ -697,9 +703,6 @@
     </PackageReference>
     <PackageReference Include="VSSDK.VSHelp">
       <Version>7.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="XSharp.VisualStudio.SDK">
-      <Version>15.9.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

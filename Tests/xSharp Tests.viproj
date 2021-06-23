@@ -96323,6 +96323,119 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = R787 - FoxPro Null_Date
+
+ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
+; ************** APPLICATION R788 - FoxPro LOCAL and Array *************
+Application = R788 - FoxPro LOCAL and Array
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = FoxPro
+Folder = %ProjectPath%\Applications\R788\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = An x# application using the X# runtime
+NameSpace = 
+Assembly = R788
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 3E5778A3-8B15-4112-A852-B15A801A8B20
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R788 - FoxPro LOCAL and Array FileGroups]
+[R788 - FoxPro LOCAL and Array Files]
+File = %AppPath%\Prg\R788.prg
+FileGUID = 767F14EA-B942-4EEE-92C5-49190008A1BD
+FileType = Code
+CopyToBin = 0
+[R788 - FoxPro LOCAL and Array References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.VFP.dll,1,1
+[R788 - FoxPro LOCAL and Array Resources]
+[R788 - FoxPro LOCAL and Array Native Resources]
+[R788 - FoxPro LOCAL and Array License files]
+[R788 - FoxPro LOCAL and Array General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R788 - FoxPro LOCAL and Array Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R788 - FoxPro LOCAL and Array
 [EndApplications]
 
 [Configurations]

@@ -205,7 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (fieldInfo.IsLocal)
                 {
                     // declare local only the first time in a method/function
-                    if (!fieldInfo.IsFoxArray)
+                    if (!fieldInfo.IsFoxArray && !fieldInfo.IsTrueLocal)
                     {
                         var decl = GenerateLocalDecl(name, _foxarrayType, GenerateLiteralNull());
                         decl.XNode = context;

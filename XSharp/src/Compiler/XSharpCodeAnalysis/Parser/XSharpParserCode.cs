@@ -413,6 +413,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 Fields.Add(info.Name, info);
                 if (info.Name != info.FullName)
                     Fields.Add(info.FullName, info);
+                info.IsTrueLocal = (context is LocalvarContext || context is ImpliedvarContext);
                 return info;
             }
             internal MemVarFieldInfo GetField(string Name)
@@ -1141,6 +1142,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool IsParameter { get; set; }
         public bool IsFoxArray { get; set; }
         public bool IsWritten { get; set; }
+        public bool IsTrueLocal { get; set; }
         public XSharpParserRuleContext Context { get; set; }
         internal MemVarFieldInfo(string name, string alias, bool filewidepublic = false)
         {

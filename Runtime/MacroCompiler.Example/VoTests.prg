@@ -35,6 +35,17 @@ BEGIN NAMESPACE MacroCompilerTest
 
         ResetOverrides()
 
+        // Test dotted AND and OR in combination with numbers
+        TestMacro(mc, e"{|| 1>2.and.3<4}", Args(), FALSE, TYPEOF(LOGIC))
+        TestMacro(mc, e"{|| 1>2.or.3<4}", Args(), TRUE, TYPEOF(LOGIC))
+        // Test new rules for REAL_CONST
+        TestMacro(mc, e"{|| .1e10}", Args(), 1.0e9, TYPEOF(FLOAT))
+        TestMacro(mc, e"{|| 1.e10}", Args(), 1.0e10, TYPEOF(FLOAT))
+        TestMacro(mc, e"{|| 1.e-10}", Args(), 1.0e-10, TYPEOF(FLOAT))
+        TestMacro(mc, e"{|| .1}", Args(), .1, TYPEOF(FLOAT))
+        TestMacro(mc, e"{|| 4.}", Args(), 4.0, TYPEOF(FLOAT))
+        TestMacro(mc, e"{|| 1.c}", Args(), "No exported variable", typeof(Error))
+
         TestMacroU(mc, e"{|a,b| S_EnforceType(a,b), a}", ArgsU(NIL,"N"), 0, typeof(INT))
         TestMacro(mc, e"{|a,b| S_EnforceType(a,b), a}", Args(NIL,"N"), 0, typeof(INT))
         TestMacro(mc, e"{|a,b| S_EnforceType(REF a,b), a}", Args(NIL,"N"), 0, typeof(INT))

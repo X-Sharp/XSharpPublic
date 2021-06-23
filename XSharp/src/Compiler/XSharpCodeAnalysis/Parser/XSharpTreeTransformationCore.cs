@@ -3674,7 +3674,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         /// <returns></returns>
         protected virtual ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype)
         {
-            if (_options.HasOption(CompilerOption.NullStrings,datatype, PragmaOptions)  && datatype != null)
+            if (_options.HasOption(CompilerOption.NullStrings, datatype, PragmaOptions)  && datatype != null)
             {
                 var isString = datatype.CsNode is PredefinedTypeSyntax pts
                     && pts.Keyword.Kind == SyntaxKind.StringKeyword;
@@ -5784,7 +5784,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected ExpressionSyntax GenerateDimArrayInitExpression(ref ArrayTypeSyntax arrayType, XP.ArraysubContext sub)
         {
-            InitializerExpressionSyntax init = null;
             var dims = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),arrayType, null);
             bool isstring = false;
             if (_options.HasOption(CompilerOption.NullStrings, sub, PragmaOptions) && arrayType.ElementType is PredefinedTypeSyntax pdt)
@@ -5798,53 +5797,102 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var rank = MakeArrayRankSpecifier(sub._ArrayIndex.Count);
             var returnType = _syntaxFactory.ArrayType(arrayType.ElementType, rank);
-            if (sub._ArrayIndex.Count == 1)
-            {
-                // for single dim indexes we inline the initialization
-                var l = _pool.AllocateSeparated<ExpressionSyntax>();
-                int dimensions = Int32.Parse(sub._ArrayIndex[0].GetText());
-                for (int i = 0; i < dimensions; i++)
-                {
-                    if (i > 0)
-                    {
-                        l.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                    }
-                    l.Add(GenerateLiteral(""));
-                }
-                init = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                    l.ToList(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
-                _pool.Free(l);
-                return _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword), arrayType, init);
-            }
-            // multi dim is not supported yet in X# runtime.
-            // Vulcan has StringArrayInit, but that does not return a string, so we have to generate a special function for this
-            // this function creates the array, initializes it and returns it.
-            // StringArrayInit has no return type because it can handle arrays of different dimensions
-            // 
+            bool singleDim = sub._ArrayIndex.Count == 1;
+
+            // either single dimension with non integer initializer or multi dim
             var funcname = "$" + ReservedNames.StringArrayInit + UniqueNameSuffix(sub);
             var stmts = _pool.Allocate<StatementSyntax>();
-            StatementSyntax stmt = GenerateLocalDecl(XSharpSpecialNames.ArrayName, returnType, dims);
+            var varname = GenerateSimpleName(XSharpSpecialNames.ArrayName);
+            StatementSyntax stmt;
+            stmt = GenerateLocalDecl(XSharpSpecialNames.ArrayName, returnType, dims);
             stmt.XNode = sub.Parent as XSharpParserRuleContext;
             stmt.XGenerated = true;
             stmts.Add(stmt);
-            var varname = GenerateSimpleName(XSharpSpecialNames.ArrayName);
-            var args = MakeArgumentList(MakeArgument(varname));
-            stmt = GenerateExpressionStatement(GenerateMethodCall(
-                _options.XSharpRuntime ?
-                XSharpQualifiedFunctionNames.StringArrayInit : 
-                VulcanQualifiedFunctionNames.StringArrayInit, args, true));
-            stmt.XNode = sub.Parent as XSharpParserRuleContext;
-            stmts.Add(stmt);
+            if (singleDim)
+            {
+                var zerobasedArray = _options.HasOption(CompilerOption.ArrayZero, sub, PragmaOptions);
+                // create for loop
+                stmt = GenerateLocalDecl(XSharpSpecialNames.LocalPrefix, intType);
+                stmt.XNode = sub.Parent as XSharpParserRuleContext;
+                stmt.XGenerated = true;
+                stmts.Add(stmt);
+                var name = GenerateSimpleName(XSharpSpecialNames.LocalPrefix);
+                var end = sub._ArrayIndex[0].Get<ExpressionSyntax>();
+                BinaryExpressionSyntax cond;
+                if (zerobasedArray)
+                {
+                    // Xs$Local < dim
+                    cond = _syntaxFactory.BinaryExpression(
+                                        SyntaxKind.LessThanExpression,
+                                        name,
+                                        SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
+                                        end);
+                }
+                else
+                {
+                    // Xs$Local <= dim
+                    cond = _syntaxFactory.BinaryExpression(
+                                        SyntaxKind.LessThanOrEqualExpression,
+                                        name,
+                                        SyntaxFactory.MakeToken(SyntaxKind.LessThanEqualsToken),
+                                        end);
+                }
+                // Xs$Local := 1 (or 0)
+                var init = MakeSimpleAssignment(name, GenerateLiteral(zerobasedArray ? 0 : 1));
+                init.XGenerated = true;
 
+                // Xs$Local++
+                cond.XGenerated = true;
+                var incr = _syntaxFactory.PostfixUnaryExpression(SyntaxKind.PostIncrementExpression,
+                    name, SyntaxFactory.MakeToken(SyntaxKind.PlusPlusToken));
+                incr.XGenerated = true;
+                // [Xs$Local]
+                var elementrank = _syntaxFactory.BracketedArgumentList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    MakeSeparatedList(MakeArgument(name)),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                // Xs$Array[Xs$Local]
+                var lhs = _syntaxFactory.ElementAccessExpression(varname, elementrank);
+                // Xs$Array[Xs$Local] := ""
+                var forbody = GenerateExpressionStatement(MakeSimpleAssignment(lhs, GenerateLiteral("")), true);
+                stmt = _syntaxFactory.ForStatement(
+                    default,
+                    SyntaxFactory.MakeToken(SyntaxKind.ForKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    null,
+                    MakeSeparatedList<ExpressionSyntax>(init),
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken),
+                    cond,
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken),
+                    MakeSeparatedList<ExpressionSyntax>(incr),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    forbody);
+                stmt.XGenerated = true;
+                stmts.Add(stmt);
+             }
+            else
+            {
+                // multi dim is not supported yet in X# runtime.
+                // Vulcan has StringArrayInit, but that does not return a string, so we have to generate a special function for this
+                // this function creates the array, initializes it and returns it.
+                // StringArrayInit has no return type because it can handle arrays of different dimensions
+                // 
+                var args = MakeArgumentList(MakeArgument(varname));
+                stmt = GenerateExpressionStatement(GenerateMethodCall(
+                    _options.XSharpRuntime ?
+                    XSharpQualifiedFunctionNames.StringArrayInit :
+                    VulcanQualifiedFunctionNames.StringArrayInit, args, true));
+                stmt.XNode = sub.Parent as XSharpParserRuleContext;
+                stmts.Add(stmt);
+
+            }
             stmt = GenerateReturn(varname, true);
             stmt.XNode = sub.Parent as XSharpParserRuleContext;
             stmts.Add(stmt);
             var body = MakeBlock(stmts);
             _pool.Free(stmts);
             var attributes = MakeCompilerGeneratedAttribute();
-            var modifiers = MakeList<SyntaxToken>(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword),
+            var modifiers = MakeList(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword),
                                                     SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
             var funcdecl = _syntaxFactory.MethodDeclaration(
                     attributeLists: attributes,

@@ -96437,7 +96437,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R788 - FoxPro LOCAL and Array
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
 ; ************** APPLICATION R789 - FoxPro Public Array *************
 Application = R789 - FoxPro Public Array
 IDEVersion = 1.06
@@ -96511,7 +96511,7 @@ FOX2=0
 XPP1=0
 LateBound=0
 Unsafe=0
-Undeclared=0
+Undeclared=1
 EnforceSelf=0
 UseNativeVersion=0
 MemVar=1

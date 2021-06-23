@@ -268,17 +268,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitDimensionVar([NotNull] XSharpParser.DimensionVarContext context)
         {
             // only comes here in the Fox dialect
-            if (context.DataType != null)
-            {
-                _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.WRN_FoxUnsupportedClause, "AS <DataType>"));
-            }
             if (context._Dims.Count > 2)
             {
-                _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.ERR_FoxDimensionDeclaration));
-            }
-            if (context.ClassLib != null)
-            {
-                _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.WRN_FoxUnsupportedClause, "OF <ClassLib>"));
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxDimensionDeclaration));
             }
         }
 
@@ -1006,7 +998,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return;
         }
-
+        public override void ExitXbasedecltype([NotNull] XSharpParser.XbasedecltypeContext context)
+        {
+            if (context.Type != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.Type, ErrorCode.WRN_FoxUnsupportedClause, "AS <DataType>"));
+            }
+            if (context.ClassLib != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.ClassLib, ErrorCode.WRN_FoxUnsupportedClause, "OF <ClassLib>"));
+            }
+        }
 
         public override void ExitAliasedExpression([NotNull] XSharpParser.AliasedExpressionContext context)
         {

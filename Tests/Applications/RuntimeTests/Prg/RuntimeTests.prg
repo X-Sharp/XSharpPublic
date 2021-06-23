@@ -21,17 +21,17 @@ FUNCTION Start() AS INT
  	 "C599", "C602", "C604", "C606", "C607", "C609", "C610", "C611", "C612", "C613", "C615", ;
  	 "C616", "C617", "C618", "C621", "C628", "C629", "C630", "C631", "C632", "C635", ;
 	 "C636", "C641", "C643", "C644", "C646", "C647", "C648", "C650", "C651", "C656", ;
-	 "C657", "C659", "C661", "C668", "C669", "C671", "C672", "C673", "C675", "C686", ; 
+	 "C657", "C659", "C661", "C668", "C669", "C671", "C672", "C673", "C675", "C686", ;
 	 "C689", "C697", "C698", "C699", "C707", "C709", "C710", "C711", "C712", "C714", ;
 	 "C717", "C718", "C323", "C728", "C738", "C739", "C740", "C741", "C742", "C743",;
-	 "C724", "C703", "C729", "C737", "C750", "C751", "C759", "C765", "C770","C780",; 
+	 "C724", "C703", "C729", "C737", "C750", "C751", "C759", "C765", "C770","C780",;
      "C781", ;
 	 "R678", "R681", "R690", "R698", "R699", "R700" ,"R701", "R702", "R710",;
-	 "R711", "R712", "R725", "R729", "R730", "R732","R735", "R736","R741",/*"R742",*/"R743",; 
+	 "R711", "R712", "R725", "R729", "R730", "R732","R735", "R736","R741",/*"R742",*/"R743",;
 	 "R750", "R751", "R752", "R753", "R754", "R755","R756", "R757","R759","R763", "R765",;
-	 "R771", "R772", "R773", "R774", "R776", "R777", "R779","R780","R782", "R787";
+	 "R771", "R772", "R773", "R774", "R776", "R777", "R779","R780","R782", "R787", "R788", "R789";
 	 }
-	 
+
 	#ifdef GUI
 	aTests:Add("C386")
 	aTests:Add("C541")
@@ -42,10 +42,10 @@ FUNCTION Start() AS INT
 	aTests:Remove("C479")
 	aTests:Remove("C521")
 	#endif
-	 
-	
+
+
 	// TODO Must fail: "C135"
-	
+
 	FOREACH cTest AS STRING IN aTests
 		TRY
 			IF DoTest(cTest)
@@ -75,7 +75,7 @@ RETURN nFail
 FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	LOCAL lSucces := FALSE AS LOGIC
 	LOCAL oAssembly AS Assembly
-	? "Running test" , cExe     
+	? "Running test" , cExe
 	IF cExe == "R753"
 	    NOP
 	ENDIF
@@ -90,7 +90,7 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	        EXIT
 	    ENDIF
 	NEXT
-	LOCAL oType AS Type      
+	LOCAL oType AS Type
     IF String.IsNullOrEmpty(cType)
         cType := cExe + ".Exe.Functions"
     ENDIF
@@ -98,12 +98,12 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 	IF oType == NULL // Core
 		oType := oAssembly:GetType("Functions")
 	END IF
-	LOCAL oMethod AS MethodInfo       
+	LOCAL oMethod AS MethodInfo
 
-	// todo: set the correct dialect by calling 
-	
+	// todo: set the correct dialect by calling
+
 	oMethod := oType:GetMethod("Start",BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
-	TRY                          
+	TRY
 	    IF oMethod == NULL
 	        ? "Could not find Start method in assembly "+oAssembly:GetName():FullName
     		lSucces := FALSE
@@ -116,7 +116,7 @@ FUNCTION DoTest(cExe AS STRING) AS LOGIC
 		#ifdef GUI
 		System.Windows.Forms.MessageBox.Show(e:ToString() , "Runtime test " + cExe + " failed:")
 		#endif
-	END TRY                                    
+	END TRY
 	VoDbCloseAll()
 RETURN lSucces
 

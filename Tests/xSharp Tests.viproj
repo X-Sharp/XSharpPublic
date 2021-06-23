@@ -96142,14 +96142,14 @@ FileType = Code
 CopyToBin = 0
 [R786 - Logical operators without spaces References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,
-ReferenceGAC = CLR4,XSharp.RT,1,0,
-ReferenceGAC = CLR4,XSharp.VO,1,0,
+ReferenceGAC = XSharp.Core,1,0,
+ReferenceGAC = XSharp.RT,1,0,
+ReferenceGAC = XSharp.VO,1,0,
 [R786 - Logical operators without spaces Resources]
 [R786 - Logical operators without spaces Native Resources]
 [R786 - Logical operators without spaces License files]
 [R786 - Logical operators without spaces General Options]
-Switches=/ppo
+Switches=
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0

@@ -422,6 +422,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return RewriteMemvarsWithByRefParams(node);
             }
+            if (rewriteUsuals && ! isClipperCall)
+            {
+                return XsAddNILParameters(node);
+            }
             if (!isClipperCall && !rewriteUsuals)
                 return null;
 

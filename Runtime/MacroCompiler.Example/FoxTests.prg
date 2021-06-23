@@ -1,7 +1,7 @@
 ﻿// FoxTests.prg
 // Created by    : nvk
 // Creation Date : 2/13/2021 3:55:51 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : I7
 
 
@@ -53,6 +53,13 @@ BEGIN NAMESPACE MacroCompilerTest
         // USUAL defaults to FALSE for FoxPro
         TestMacro(mc, e"{|a| a := default(usual) }", Args(8), FALSE, typeof(LOGIC))
         TestMacro(mc, e"{|a| a := NIL }", Args(8), FALSE, typeof(LOGIC))
+
+        // FoxPro Null_Date
+        TestMacro(mc, e"{|| { / / } }", Args(), NULL_DATE, typeof(DATE))
+        TestMacro(mc, e"{|| {//} }", Args(), NULL_DATE, typeof(DATE))
+        TestMacro(mc, e"{|| {..} }", Args(), NULL_DATE, typeof(DATE))
+        TestMacro(mc, e"{|| {--} }", Args(), NULL_DATE, typeof(DATE))
+
 
         // FoxPro dot access
         TestMacro(mc, e"{|| testclass{}.NString((byte)1) }", Args(), "child", typeof(STRING))

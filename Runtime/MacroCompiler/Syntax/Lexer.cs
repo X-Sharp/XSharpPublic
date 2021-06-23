@@ -124,6 +124,15 @@ namespace XSharp.MacroCompiler
         }
 
         bool InRange(char c, char first, char last) => c >= first && c <= last;
+        bool InList(int c, params int[] chars)
+        {
+            foreach (var c2 in chars)
+            {
+                if (c == c2)
+                    return true;
+            }
+            return false;
+        }
 
         bool Eoi()
         {
@@ -145,6 +154,30 @@ namespace XSharp.MacroCompiler
             _s.Index = pos;
         }
 
+        bool ExpectDelimited(string s)
+        {
+            if (La(0) == s[0])
+            {
+                // char 2 etc.
+                // they may be delimited with spaces
+                var j = 1;
+
+                for (int i = 1; i < s.Length; i++)
+                {
+                    var c = (char)La(j);
+                    while (c == ' ' || c == '\t')
+                    {
+                        j += 1;
+                        c = (char)La(j);
+                    }
+                    if (c != s[i])
+                        return false;
+                    j += 1;
+                }
+                return true;
+            }
+            return false;
+        }
         bool Expect(char c)
         {
             if (La() == c)
@@ -477,6 +510,21 @@ namespace XSharp.MacroCompiler
                                 if (!Expect('}')) t = TokenType.INCOMPLETE_STRING_CONST;
                                 value = _Source.Substring(start, _s.Index - start);
                             }
+                            if (_options.Dialect == XSharpDialect.FoxPro )
+                            {
+                                if (ExpectDelimited("{//}") ||
+                                    ExpectDelimited("{--}") ||
+                                    ExpectDelimited("{..}"))
+                                {
+                                    t = TokenType.NULL_DATE;
+                                    while (La() != '}')
+                                    {
+                                        Consume();
+                                    }
+                                    Consume();
+                                }
+                            }
+
                             break;
                         case TokenType.COLON:
                             if (Expect(':')) t = TokenType.COLONCOLON;
@@ -626,6 +674,10 @@ namespace XSharp.MacroCompiler
                                     else if (ExpectLower("not")) { Consume(); t = TokenType.LOGIC_NOT; }
                                     else if (ExpectLower("xor")) { Consume(); t = TokenType.LOGIC_XOR; }
                                 }
+                                else if (La(5) == '.' && _options.Dialect == XSharpDialect.FoxPro)
+                                {
+                                    if (ExpectLower("null")) { Consume(); t = TokenType.NULL; }
+                                }
                             }
                             break;
                         case TokenType.NL:
@@ -772,7 +824,18 @@ namespace XSharp.MacroCompiler
                                 while (ExpectRange('0', '9') || Expect('_')) ;
                                 if (Lb() == '_') t = TokenType.INVALID_NUMBER;
                                 c = La();
-                                if (c == '.') { Consume(); goto case TokenType.REAL_CONST; }
+                                var c2 = La(2);
+                                // only treat the dot as a trigger to a REAL_CONST when followed by a number or one of the characters
+                                // listed. This allows an expression such as "{||1>2.and.3<4}" to be compiled properly
+                                // the whitespace is needed for {|| 1. }
+                                // The '}' is needed for {|| 4.}"
+                                // and the '\0' is needed for &("1.")
+                                if (c == '.' && (InRange(c2, '0', '9')
+                                            || InList(c2, 'E','e',' ', '\t', '_', '\r', '\n','}', '\0')))
+                                {
+                                    Consume();
+                                    goto case TokenType.REAL_CONST;
+                                }
                                 if (La() == 'E' || La() == 'e') goto case TokenType.REAL_CONST_EXP;
                                 ExpectAny('U', 'u', 'L', 'l');
                             }

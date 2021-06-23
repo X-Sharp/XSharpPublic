@@ -33,10 +33,10 @@ namespace XSharp.LanguageService
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
                 result = await lang.GetServiceAsync(typeof(SVsXMLMemberIndexService));
+                if (result != null)
+                    _XMLMemberIndexService = (IVsXMLMemberIndexService)result;
             });
-            if (result != null)
-                _XMLMemberIndexService = (IVsXMLMemberIndexService)result;
-
+ 
             Assumes.Present(_XMLMemberIndexService);
             return;
         }

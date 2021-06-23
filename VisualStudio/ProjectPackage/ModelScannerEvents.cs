@@ -101,7 +101,12 @@ namespace XSharp.Project
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                EnvDTE80.DTE2 dte = ServiceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
+                var d = ServiceProvider.GetService(typeof(EnvDTE.DTE));
+                if (d == null)
+                {
+                    return;
+                }
+                EnvDTE80.DTE2 dte =  d as EnvDTE80.DTE2;
                 var docs = dte.Documents;
                 var windows = new List<EnvDTE.Window>();
                 foreach (EnvDTE.Document doc in docs)

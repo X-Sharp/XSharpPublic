@@ -274,6 +274,7 @@ namespace XSharp.Project
 
         protected override void HandleControlValidated(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             base.HandleControlValidated(sender, e);
             if (ParentPropertyPage.IsActive)
             {

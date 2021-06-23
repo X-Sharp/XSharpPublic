@@ -18,8 +18,8 @@ namespace XSharp
 #else
         internal const string Version = "2.8.0.0";
 #endif
-        internal const string FileVersion = "2.8.2.13";
-        internal const string ProductVersion = "2.8b GA";
+        internal const string FileVersion = "2.8.3.14";
+        internal const string ProductVersion = "2.8c GA";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2021";
 
@@ -33,7 +33,6 @@ namespace XSharp
         // Environment variable on _developers_ machine to override location of xsc.exe. 
         // This also enables the "magic" button on the tools-options dialog
         // and adds CRLF to the response file between the various commands to make it easier to read.
-        internal const string EnvironmentXSharpDev = "XSHARPDEV";       
-
+        internal const string EnvironmentXSharpDev = "XSHARPDEV";
     }
 }

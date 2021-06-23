@@ -53,6 +53,7 @@
     <Compile Remove="Assembly.cs" />
     <Compile Remove="CodeAnalysisResources.Designer.cs" />
     <Compile Remove="CommandLine\Compilation.cs" />
+    <Compile Remove="CSharpCompilation.cs" />
     <Compile Remove="ParserTest.cs" />
     <Compile Remove="Antlr4.Runtime\Misc\Array2DHashSet`1.cs" />
     <Compile Remove="Antlr4.Runtime\Misc\DoubleKeyMap`3.cs" />

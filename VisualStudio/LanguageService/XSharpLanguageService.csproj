@@ -167,11 +167,17 @@
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Language">
+      <Version>15.8.525</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK">
+      <Version>15.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf">
+      <Version>15.8.525</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
       <Version>16.9.31213.332</Version>
-    </PackageReference>
-    <PackageReference Include="XSharp.VisualStudio.SDK">
-      <Version>15.9.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

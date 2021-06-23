@@ -186,7 +186,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        internal BoundExpression RewriteLateBoundCallWithRefParams(BoundExpression loweredReceiver, string name, BoundDynamicInvocation node, ImmutableArray<BoundExpression> arguments)
+        internal BoundExpression RewriteLateBoundCallWithRefParams(BoundExpression loweredReceiver, string name,
+            BoundDynamicInvocation node, ImmutableArray<BoundExpression> arguments)
         {
             var convArgs = new ArrayBuilder<BoundExpression>();
             var usualType = _compilation.UsualType();
@@ -379,6 +380,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             bool isClipperCall = false;
             bool rewriteUsuals = false;
+            bool memVarsByReference = false;
             // some generated nodes do not have an invocation expression syntax node
             if (node.Arguments.Length > 0 && node.Syntax is InvocationExpressionSyntax ies)
             {
@@ -390,6 +392,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         rewriteUsuals = true;
                         break;
+                    }
+                    if (node.ArgumentRefKindsOpt != null && node.ArgumentRefKindsOpt.Length > i)
+                    {
+                        if (node.ArgumentRefKindsOpt[i].IsByRef() &&
+                            arg is BoundPropertyAccess bpa &&
+                            bpa.PropertySymbol is XsVariableSymbol)
+                        {
+                            memVarsByReference = true;
+                            break;
+                        }
                     }
                 }
                 if (!rewriteUsuals)
@@ -406,12 +418,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (node.Method.HasClipperCallingConvention())
                     isClipperCall = true;
             }
+            if (memVarsByReference && !isClipperCall)
+            {
+                return RewriteMemvarsWithByRefParams(node);
+            }
             if (!isClipperCall && !rewriteUsuals)
                 return null;
-            if (rewriteUsuals && !isClipperCall)
-            {
-                return XsAddNILParameters(node);
-            }
 
             BoundExpression rewrittenReceiver = VisitExpression(node.ReceiverOpt);
 
@@ -486,5 +498,87 @@ namespace Microsoft.CodeAnalysis.CSharp
             postExprs = exprs.ToImmutable();
             return rewrittenArguments;
         }
+        internal BoundExpression RewriteMemvarsWithByRefParams(BoundCall node)
+        {
+            var convArgs = new ArrayBuilder<BoundExpression>();
+            var usualType = _compilation.UsualType();
+            var arguments = node.Arguments;
+            foreach (var a in arguments)
+            {
+
+                if (a.Type is null && !a.Syntax.XIsCodeBlock)
+                {
+                    convArgs.Add(_factory.Default(usualType));
+                }
+                else
+                {
+                    convArgs.Add(a);
+                }
+            }
+
+
+            var temps = ImmutableArray.CreateBuilder<LocalSymbol>();
+            var preExprs = ImmutableArray.CreateBuilder<BoundExpression>();
+            var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
+            var argBoundTemps = new BoundLocal[arguments.Length];
+            var refKinds = new RefKind[arguments.Length];
+            var properties = new BoundPropertyAccess[arguments.Length];      // for xsVariableSymbols
+            var argumentRefKindsOpt = node.ArgumentRefKindsOpt;
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                var r = (!argumentRefKindsOpt.IsDefaultOrEmpty && i < argumentRefKindsOpt.Length) ? argumentRefKindsOpt[i] : RefKind.None;
+                refKinds[i] = r;
+            }
+
+            // keep track of the locals that need to be assigned back
+            checkRefKinds(arguments, refKinds, preExprs, rewrittenArgs, temps, argBoundTemps, properties, out var hasRef);
+            LocalSymbol callTemp = _factory.SynthesizedLocal(node.Type);
+            temps.Add(callTemp);
+            BoundLocal boundCallTemp = _factory.Local(callTemp);
+            var postExpr = ImmutableArray.CreateBuilder<BoundExpression>();
+            if (hasRef)
+            {
+                var args = ImmutableArray.CreateBuilder<BoundExpression>();
+                for (int i = 0; i < arguments.Length; i++)
+                {
+                    // checkRefKinds has updated rewrittenArgs for arguments by reference
+                    // and has created a constructor call for a usual by reference
+                    var e = rewrittenArgs[i];
+                    if (refKinds[i] == RefKind.Ref)
+                    {
+                        var argTemp = _factory.SynthesizedLocal(e.Type);
+                        temps.Add(argTemp);
+                        BoundLocal boundargTemp = _factory.Local(argTemp);
+                        BoundExpression ass = _factory.AssignmentExpression(boundargTemp, e);
+                        preExprs.Add(VisitExpression(ass));
+                        ass = _factory.AssignmentExpression(properties[i], boundargTemp);
+                        postExpr.Add(VisitExpression(ass));
+                        args.Add(boundargTemp);
+                    }
+                    else
+                    {
+                        args.Add(e);
+                    }
+                }
+                arguments = args.ToImmutable();
+                node = node.Update(arguments);
+            }
+            node = (BoundCall)VisitExpression(node);
+            BoundExpression callAssignment = _factory.AssignmentExpression(boundCallTemp, node);
+            var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
+            exprs.AddRange(preExprs);
+            exprs.Add(callAssignment);
+            exprs.AddRange(postExpr);
+
+            // the sequence now contains:
+            // save vars
+            // result = Call
+            // assign params by reference from temp back to 
+            // return result
+            return new BoundSequence(node.Syntax, temps.ToImmutable(), exprs.ToImmutableArray(), boundCallTemp, node.Type);
+
+
+        }
+
     }
 }

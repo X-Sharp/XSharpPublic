@@ -7,7 +7,7 @@ FUNCTION Start( ) AS VOID
 	LOCAL oFoo AS Foo
 	
 	LOCAL x = 0
-	PRIVATE p = 0
+	PRIVATE p 
 	
 	oFoo := Foo{}
 	

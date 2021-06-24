@@ -5762,12 +5762,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint();
             foreach (var lvCtx in context._LocalVars)
                 VisitLocalvar(lvCtx);
+            // do not make a block, otherwise locals will be scoped to that block!
             context.PutList(MakeList<StatementSyntax>(context._LocalVars));
         }
 
         public override void ExitVarLocalDecl([NotNull] XP.VarLocalDeclContext context)
         {
             context.SetSequencePoint();
+            // do not make a block, otherwise locals will be scoped to that block!
             context.PutList(MakeList<StatementSyntax>(context._ImpliedVars));
         }
 
@@ -5939,7 +5941,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             { 
                 varType.XVoIsDecl = true;
             }
-            if (isDim )
+            if (isDim ) 
             {
                 if (CurrentEntity != null)
                 { 

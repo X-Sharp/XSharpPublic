@@ -520,12 +520,13 @@ filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierN
 
 statement           : Decl=localdecl                        #declarationStmt
                     | Decl=localfuncproc                    #localFunctionStmt
-                    | Decl=xbasedecl                        #xbasedeclStmt
+                    | {!IsFox}? Decl=xbasedecl              #xbasedeclStmt  // Memvar declarations, not for FoxPro
                     | Decl=fielddecl                        #fieldStmt
+                    | {IsFox}? Decl=foxdecl                 #foxdeclStmt    // Memvar declarations FoxPro specific 
                     | DO? w=WHILE Expr=expression end=eos
                       StmtBlk=statementBlock 
                       ((e=END (DO|WHILE)? | e=ENDDO) eos)?	#whileStmt
-                    | NOP (LPAREN RPAREN )? end=eos								#nopStmt
+                    | NOP (LPAREN RPAREN )? end=eos					#nopStmt
                     | f=FOR
                         ( AssignExpr=expression
                         | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier Op=assignoperator Expr=expression
@@ -684,10 +685,6 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | Using=USING Static=STATIC? VAR ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*        end=eos #varLocalDecl
                    | Using=USING Static=STATIC? LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
-                    // FoxPro dimension statement
-                   | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos  #foxDimensionDecl
-                   | {IsFox}? T=LOCAL ARRAY DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos  #foxDimensionDecl
-                   | {IsFox}? T=PUBLIC ARRAY DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos  #foxDimensionDecl
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=varidentifier (LBRKT ArraySub=arraysub RBRKT)?  
@@ -702,38 +699,60 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
                    ;
 
 // Old Style xBase declarations
-// FoxPro allows PRIVATE M.Name The M is only lexed in the FoxPro dialect
-// We parse the M. Prefix in the xbasevar rule but ignore it.
-// note that in FoxPro PUBLIC, PARAMETERS and LPARAMETERS may have a type declaration. That is here the XT=xbasedecltype
-// In FoxPro PUBLIC can also have an ARRAY clause. This must be combined with array indices. We should check for that.
-// In FoxPro there is also PRIVATE ALL [Like skeleton | Except skeleton] This is not implemented yet
-
-xbasedecl           : T=MEMVAR Vars+=varidentifierName
-                      (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar 
-                    | T=(PARAMETERS|LPARAMETERS)    // PARAMETERS Foo, Bar  LPARAMETERS Foo AS Bar OF BarLib
-                      Vars+=varidentifierName XT=xbasedecltype?
-                      (COMMA Vars+=varidentifierName XT=xbasedecltype? )* end=eos
-                    | T=PRIVATE XVars+=xbasevar
-                      (COMMA XVars+=xbasevar)*  end=eos      // PRIVATE Foo := 123
-                    | T=PUBLIC XVars+=xbasevar 
-                      (COMMA XVars+=xbasevar )* end=eos   // PUBLIC Bar, PUBLIC MyArray[5,2]
+// FoxPro allows PRIVATE M.Name The M is only lexed in the FoxPro dialect. The varidentifierrule has the M DOT clause
+// Not for FoxPro !
+                    // This is only the list of names
+xbasedecl           : T=(MEMVAR|PARAMETERS) Vars+=varidentifierName
+                      (COMMA Vars+=varidentifierName  )* end=eos  // MEMVAR  Foo, Bar
+                      // This includes the optional initializer or array dimension
+                    | T=(PRIVATE|PUBLIC) XVars+=xbasevar
+                      (COMMA XVars+=xbasevar)*  end=eos      
                     ;  
 
-
-xbasedecltype       : AS Type=datatype (OF ClassLib=identifierName)?
-                    ;  // parseed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
-                    
-
+// For the variable list for Private and Public
 xbasevar            : (Amp=AMP)?  Id=varidentifierName
                           (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
-                      XT=xbasedecltype?
                     ;
 
+
+//
+// Only for the FoxPro dialect
+// LPARAMETERS may have AS Type clause
+// DIMENSION  may have AS Type clause and either parens or brackets (see DimensionVar)
+
+                    // This includes array indices and optional type per name
+foxdecl             : T=(DIMENSION|DECLARE) DimVars += dimensionVar
+                        (COMMA DimVars+=dimensionVar)*    end=eos
+                    // This has names, and no ampersand
+                    | T=(MEMVAR|PARAMETERS) Vars+=varidentifierName
+                        (COMMA Vars+=varidentifierName)*  end=eos      
+                    // This has names and optional types
+                    | T=LPARAMETERS Vars+=varidentifierName XT=xbasedecltype?
+                        (COMMA Vars+=varidentifierName XT=xbasedecltype? )* end=eos
+                    // This has names and optional ampersands
+                    | T=(PRIVATE|PUBLIC) XVars+=foxbasevar
+                        (COMMA XVars+=foxbasevar)*  end=eos      
+                    // Variations of LOCAL and PUBLIC with the ARRAY keyword
+                    | T=(LOCAL|PUBLIC) Ar=ARRAY DimVars += dimensionVar
+                        (COMMA DimVars+=dimensionVar)*    end=eos  
+                   ;
+
+                    // FoxPro dimension statement allows the AS Type per variable name
 dimensionVar        : Id=varidentifierName
                         ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
                         | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
                         (XT=xbasedecltype)?
                     ;
+
+xbasedecltype       : AS Type=datatype (OF ClassLib=identifierName)?
+                    ;  // parseed but ignored . FoxPro uses this only for intellisense. We can/should do that to in the editor
+                    
+
+// For the variable list for Private and Public
+foxbasevar          : (Amp=AMP)?  Id=varidentifierName
+                    ;
+
+
 
 localfuncproc       :  (Modifiers=localfuncprocModifiers)?   
                         LOCAL T=funcproctype Sig=signature

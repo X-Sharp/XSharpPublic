@@ -566,15 +566,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public override void ExitFoxDimensionDecl([NotNull] XSharpParser.FoxDimensionDeclContext context)
-        {
-            if (_options.Dialect != XSharpDialect.FoxPro)
-            {
-                NotInDialect(context, "Dimension statement");
-            }
-        }
-
-        public override void ExitFoxdll( XSharpParser.FoxdllContext context)
+        public override void ExitFoxdll(XSharpParser.FoxdllContext context)
         {
             if (_options.Dialect != XSharpDialect.FoxPro)
             {

@@ -152,12 +152,220 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             base.EnterDimensionVar(context);
             var name = context.Id.GetText();
-            bool local = false;
-            if (context.Parent is XP.FoxDimensionDeclContext foxdimdecl)
+            var local = false;
+            if (context.Parent is XP.FoxdeclContext foxdecl)
             {
-                local = foxdimdecl.T.Type == XP.LOCAL;
+                // should always be the case now.
+                local = foxdecl.T.Type == XP.LOCAL;
             }
             AddLocalName(name, context, local);
+        }
+
+        public override void EnterFoxdecl([NotNull] XP.FoxdeclContext context)
+        {
+            // use the Enter call to declare the memory variables
+            // The locals are generated in the ExitFoxdecl()
+            context.SetSequencePoint(context.end);
+            if (CurrentEntity == null)
+            {
+                return;
+            }
+            if (context.T.Type == XP.MEMVAR || context.T.Type == XP.PARAMETERS || context.T.Type == XP.LPARAMETERS)
+            {
+                var prefix = XSharpSpecialNames.ClipperParamPrefix;
+                if (context.T.Type != XP.LPARAMETERS)
+                {
+                    CurrentEntity.Data.HasMemVars = true;
+                    prefix = "M";
+                }
+                // List inside _Vars. 
+                foreach (var memvar in context._Vars)
+                {
+                    var name = memvar.Id.GetText();
+                    addFieldOrMemvar(name, prefix, memvar, context.T.Type == XP.PARAMETERS);
+                }
+            }
+            else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
+            {
+                CurrentEntity.Data.HasMemVars = true;
+                // List inside _XVars. 
+                foreach (var memvar in context._XVars)
+                {
+                    if (memvar.Amp == null) // normal PUBLIC Foo or PRIVATE Bar
+                    {
+                        var name = memvar.Id.GetText();
+                        addFieldOrMemvar(name, "M", memvar, false);
+                    }
+                    else // normal PUBLIC &varName or PRIVATE &varName
+                    {
+                        var name = memvar.Id.GetText() + ":" + memvar.Position.ToString();
+                        addFieldOrMemvar(name, "&", memvar, false);
+                    }
+                }
+            }
+            if (context.T.Type == XP.PARAMETERS || context.T.Type == XP.LPARAMETERS)
+            {
+                // Function must be clipper calling convention.
+                CurrentEntity.Data.HasClipperCallingConvention = true;
+                if (CurrentEntity.Data.HasParametersStmt || CurrentEntity.Data.HasLParametersStmt || CurrentEntity.Data.HasFormalParameters)
+                {
+                    // trigger error message by setting both
+                    // that way 2 x PARAMETERS or 2x LPARAMETERS will also trigger an error
+                    CurrentEntity.Data.HasParametersStmt = true;
+                    CurrentEntity.Data.HasLParametersStmt = true;
+                }
+                else
+                {
+                    CurrentEntity.Data.HasParametersStmt = (context.T.Type == XP.PARAMETERS);
+                    CurrentEntity.Data.HasLParametersStmt = (context.T.Type == XP.LPARAMETERS);
+                }
+            }
+        }
+
+        public override void ExitFoxdeclStmt([NotNull] XP.FoxdeclStmtContext context)
+        {
+            context.PutList(context.Decl.GetList<StatementSyntax>());
+        }
+
+        /*
+         *                  // This includes array indices and optional type per name
+        foxdecl             : T=(DIMENSION|DECLARE) DimVars += dimensionVar
+                                (COMMA DimVars+=dimensionVar)*    end=eos
+                            // This only has names and optional types
+                            | T=(LPARAMETERS|PARAMETERS) Vars+=varidentifierName XT=xbasedecltype?
+                                (COMMA Vars+=varidentifierName XT=xbasedecltype? )* end=eos
+                            // This only has a list of names
+                            | T=(MEMVAR|PRIVATE|PUBLIC) XVars+=foxbasevar
+                                (COMMA XVars+=foxbasevar)*  end=eos      
+                            // Variations of LOCAL and PUBLIC with the ARRAY keyword
+                            | T=(LOCAL|PUBLIC) ARRAY DimVars += dimensionVar
+                                (COMMA DimVars+=dimensionVar)*    end=eos  
+
+         */
+        public override void ExitFoxdecl([NotNull] XP.FoxdeclContext context)
+        {
+            context.SetSequencePoint(context.end);
+            var stmts = _pool.Allocate<StatementSyntax>();
+            bool hasError = false;
+            switch (context.T.Type)
+            {
+                case XP.DIMENSION:
+                case XP.DECLARE:
+                case XP.LOCAL:          // LOCAL ARRAY only !
+                    foreach (var dimvar in context._DimVars)
+                    {
+                        // call the runtime function to allocate the array
+                        // when the array is a LOCAL then the local declaration will also be added to the stmts list returned
+                        // all the statements will be 'anchored' to the foxdeclContext.
+                        var dimstmts = processDimensionVar(context, dimvar, ref hasError);
+                        foreach (var stmt in dimstmts)
+                        {
+                            stmts.Add(stmt);
+                        }
+                    }
+                    break;
+                case XP.MEMVAR:
+                    // Handled in the Enter method
+                    break;
+                case XP.PARAMETERS:
+                    int i = 0;
+                    foreach (var memvar in context._Vars)
+                    {
+                        // declare the memvar and fill it with the contents from the clipper params array
+                        var name = memvar.GetText();
+                        ++i;
+                        var exp = GenerateMemVarDecl(GenerateLiteral(name), true);
+                        stmts.Add(GenerateExpressionStatement(exp));
+
+                        var val = GenerateGetClipperParam(GenerateLiteral(i), context);
+                        exp = GenerateMemVarPut(GenerateLiteral(name), val);
+                        var stmt = GenerateExpressionStatement(exp);
+                        memvar.Put(stmt);
+                        stmts.Add(stmt);
+                    }
+                    break;
+                case XP.PRIVATE:
+                    foreach (var memvar in context._XVars)
+                    {
+                        // declare the private. FoxPro has no initializers 
+                        ExpressionSyntax varname;
+                        if (memvar.Amp != null) // PRIVATE &cVarName 
+                        {
+                            varname = getMacroNameExpression(memvar.Id.Id);
+                        }
+                        else // PRIVATE Bar
+                        {
+                            varname = GenerateLiteral(memvar.Id.Id.GetText());
+                        }
+
+                        var exp = GenerateMemVarDecl(varname, true);
+                        stmts.Add(GenerateExpressionStatement(exp));
+                    }
+                    // no need to assign a default. The runtime takes care of that
+                    break;
+                case XP.PUBLIC:
+                    if (context.Ar != null)
+                    {
+                        foreach (var dimvar in context._DimVars)
+                        {
+                            // declare the public and initialize it with a FoxPro array
+                            var varname = GenerateLiteral(dimvar.Id.Id.GetText());
+                            var exp = GenerateMemVarDecl(varname, false);
+                            stmts.Add(GenerateExpressionStatement(exp));
+                            var dimstmts = processDimensionVar(context, dimvar, ref hasError);
+                            foreach (var stmt in dimstmts)
+                            {
+                                stmts.Add(stmt);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var memvar in context._XVars)
+                        {
+                            // declare the public. FoxPro has no initializers
+                            ExpressionSyntax varname;
+                            if (memvar.Amp != null) // PUBLIC &cVarName 
+                            {
+                                varname = getMacroNameExpression(memvar.Id.Id);
+                            }
+                            else // PUBLIC Bar
+                            {
+                                varname = GenerateLiteral(memvar.Id.Id.GetText());
+                            }
+                            var exp = GenerateMemVarDecl(varname, true);
+                            stmts.Add(GenerateExpressionStatement(exp));
+                        }
+                    }
+                    break;
+
+                case XP.LPARAMETERS:
+                    // list inside Vars
+                    if (CurrentEntity?.isScript() == true)
+                    {
+                        // Inside scripts we will create local variables for the LPARAMETERS like this
+                        var prc = (XSharpParserRuleContext)context;
+                        int p_i = 1;
+                        foreach (var p in context._Vars)
+                        {
+                            var name = p.Id.GetText();
+                            var decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParam(GenerateLiteral(p_i), prc));
+                            decl.XGenerated = true;
+                            var variable = decl.Declaration.Variables[0];
+                            variable.XGenerated = true;
+                            stmts.Add(decl);
+                            p_i++;
+                        }
+                    }
+                    break;
+                default:
+                    Debug.Assert(false, "Unknown type in Foxdecl", "Type = " + context.T.Text);
+                    break;
+            }
+            // do not make a block, otherwise locals will be scoped to that block!
+            context.PutList<StatementSyntax>(stmts);
+            _pool.Free(stmts);
+
         }
 
         protected override ExpressionSyntax HandleFoxArrayAssign(XSharpParserRuleContext context, XSharpParserRuleContext Left, XSharpParserRuleContext Right)
@@ -192,29 +400,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitAssignmentExpression(context);
             return;
         }
-        public override void ExitFoxDimensionDecl([NotNull] XP.FoxDimensionDeclContext context)
-        {
-            bool hasError = false;
-            context.SetSequencePoint();
-            var stmts = _pool.Allocate<StatementSyntax>();
-            foreach (var dimvar in context._DimVars)
-            {
-                if (context.T.Type == XP.PUBLIC)
-                {
-                    var varname = GenerateLiteral(dimvar.Id.Id.GetText());
-                    var exp = GenerateMemVarDecl(varname, false);
-                    stmts.Add(GenerateExpressionStatement(exp));
-                }
-                var dimstmts = processDimensionVar(context, dimvar, ref hasError);
-                foreach (var stmt in dimstmts)
-                {
-                    stmts.Add(stmt);
-                }
-            }
-            context.PutList<StatementSyntax>(stmts);
-            _pool.Free(stmts);
-        }
-
         private IList<StatementSyntax> processDimensionVar(XSharpParserRuleContext context, XP.DimensionVarContext dimVar, ref bool hasError)
         {
             var name = dimVar.Id.GetText();

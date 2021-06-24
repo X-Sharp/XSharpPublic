@@ -11,7 +11,7 @@ using System.Diagnostics;
 using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
+using Antlr4.Runtime.Tree;  
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.PooledObjects;
@@ -1253,26 +1253,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         attributeLists: default,
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                     break;
-                case XP.LPARAMETERS:
-                    if (CurrentEntity?.isScript() == true)
-                    {
-                        var prc = (XSharpParserRuleContext)context;
-                        int p_i = 1;
-                        foreach (var p in context._Vars)
-                        {
-                            var name = p.Id.GetText();
-                            var decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParam(GenerateLiteral(p_i), prc));
-                            decl.XGenerated = true;
-                            var variable = decl.Declaration.Variables[0];
-                            variable.XGenerated = true;
-                            stmts.Add(decl);
-                            p_i++;
-                        }
-                        context.PutList(stmts.ToList());
-                    }
-                    else
-                        context.Put(_syntaxFactory.EmptyStatement(attributeLists: default, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-                    break;
                 default:
                     Debug.Assert(false, "Unknown type in XbaseDecl", "Type = " + context.T.Text);
                     break;
@@ -1942,7 +1922,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return null;
         }
 
-        private ExpressionSyntax getMacroNameExpression(XP.IdentifierNameContext nameContext)
+        protected ExpressionSyntax getMacroNameExpression(XP.IdentifierNameContext nameContext)
         {
             string name = nameContext.GetText();
             int pos = name.IndexOf('.');
@@ -3674,7 +3654,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private ExpressionSyntax GenerateGetClipperParam(ExpressionSyntax expr, XSharpParserRuleContext context)
+        protected ExpressionSyntax GenerateGetClipperParam(ExpressionSyntax expr, XSharpParserRuleContext context)
         {
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..

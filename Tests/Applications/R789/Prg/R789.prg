@@ -22,7 +22,8 @@ FUNCTION Start( ) AS VOID
 	RETURN 
 
 FUNCTION CreatePublicArray() AS VOID 
-    PUBLIC ARRAY pubarray [2,2] // AS __FOXARRAY 	//  creates always a none fox array
+    PUBLIC ARRAY pubarray [2,2]    // With ARRAY keyword and brackets
+    PUBLIC pubarray (2,2)          // Without ARRAY keyword and with parentheses
 	RETURN 	
 	
 	

@@ -733,7 +733,9 @@ foxdecl             : T=(DIMENSION|DECLARE) DimVars += dimensionVar
                     | T=(PRIVATE|PUBLIC) XVars+=foxbasevar
                         (COMMA XVars+=foxbasevar)*  end=eos      
                     // Variations of LOCAL and PUBLIC with the ARRAY keyword
-                    | T=(LOCAL|PUBLIC) Ar=ARRAY DimVars += dimensionVar
+                    | T=LOCAL Ar=ARRAY DimVars += dimensionVar
+                        (COMMA DimVars+=dimensionVar)*    end=eos  
+                    | T=PUBLIC (Ar=ARRAY)? DimVars += dimensionVar
                         (COMMA DimVars+=dimensionVar)*    end=eos  
                    ;
 

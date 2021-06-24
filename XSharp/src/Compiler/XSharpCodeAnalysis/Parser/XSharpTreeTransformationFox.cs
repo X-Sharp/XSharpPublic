@@ -304,8 +304,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // no need to assign a default. The runtime takes care of that
                     break;
                 case XP.PUBLIC:
-                    if (context.Ar != null)
+                    if (context._DimVars.Count > 0)
                     {
+                        // PUBLIC ARRAY
                         foreach (var dimvar in context._DimVars)
                         {
                             // declare the public and initialize it with a FoxPro array
@@ -319,7 +320,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                         }
                     }
-                    else
+                    else // context._XVars.Count > 0
                     {
                         foreach (var memvar in context._XVars)
                         {

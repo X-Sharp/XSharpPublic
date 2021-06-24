@@ -96550,7 +96550,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R789 - FoxPro Public Array
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C782 - Compiler error with PRIVATE/PUBLIC class vars defined mid class in core dialect *************
 Application = C782 - Compiler error with PRIVATE/PUBLIC class vars defined mid class in core dialect
 IDEVersion = 1.06

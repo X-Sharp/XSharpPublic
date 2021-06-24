@@ -96660,7 +96660,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C782 - Compiler error with PRIVATE/PUBLIC class vars defined mid class in core dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C783 - Problem with "1." literal expression syntax *************
 Application = C783 - Problem with "1." literal expression syntax
 IDEVersion = 1.06
@@ -96671,7 +96671,7 @@ Target = 0
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = VO
+Dialect = Core
 Folder = %ProjectPath%\Applications\C783\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -96703,8 +96703,6 @@ FileType = Code
 CopyToBin = 0
 [C783 - Problem with "1." literal expression syntax References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
 [C783 - Problem with "1." literal expression syntax Resources]
 [C783 - Problem with "1." literal expression syntax Native Resources]
 [C783 - Problem with "1." literal expression syntax License files]
@@ -96726,7 +96724,7 @@ VO10=0
 VO11=0
 VO12=0
 VO13=0
-VO14=1
+VO14=0
 VO16=0
 FOX1=0
 FOX2=0

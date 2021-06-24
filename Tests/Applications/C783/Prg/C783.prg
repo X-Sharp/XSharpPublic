@@ -1,3 +1,5 @@
+// C783 - Error with Real numbers
+// https://github.com/X-Sharp/XSharpPublic/issues/704
 FUNCTION Start( ) AS VOID
 ? 2/.1 // 20.0, OK
 xAssert(2/.1 == 20.0)

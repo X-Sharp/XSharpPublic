@@ -157,18 +157,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return La(1) == c;
         }
         static bool InRange(int c, int first, int last) => c >= first && c <= last;
-        static bool InList(int c, params int[] chars)
-        {
-            foreach (var c2 in chars)
-            {
-                if (c == c2)
-                    return true;
-            }
-            return false;
-        }
         static bool InList(int c, int c1, int c2)
         {
             if (c == c1 || c == c2)
+            {
+                return true;
+            }
+            return false;
+        }
+        static bool InList(int c, int c1, int c2, int c3, int c4)
+        {
+            if (c == c1 || c == c2 || c == c3 || c == c4)
             {
                 return true;
             }
@@ -551,8 +550,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return;
                 }
                 var la2 = La(2);
-                if (La(1) == '.' && (InRange(la2, '0', '9')
-                    || InList(la2, 'E', 'e', ' ', '\t', '_', '\r', '\n', '}', TokenConstants.Eof)))
+                if (La(1) == '.' && !InList(la2, 'A', 'a', 'O', 'o'))
                 {
                     // The '.' should not be followed by .and. or .or.
                     parseOne(REAL_CONST);

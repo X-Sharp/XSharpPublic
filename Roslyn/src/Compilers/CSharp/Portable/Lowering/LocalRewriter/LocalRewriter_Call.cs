@@ -148,6 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(node != null);
 
 #if XSHARP
+            node = XsReplaceDefaultUsual(node);
             var result = XsVisitCall(node);
             if (result != null)
             {

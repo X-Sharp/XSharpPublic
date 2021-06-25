@@ -342,58 +342,47 @@ namespace Microsoft.CodeAnalysis.CSharp
             return MakeExpressionWithInitializer(node.Syntax, rewrittenObjectCreation, node.InitializerExpressionOpt, node.Type);
         }
 
-        internal BoundNode XsAddNILParameters(BoundCall node)
+
+        internal BoundCall XsReplaceDefaultUsual(BoundCall node)
         {
-            var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>();
-            var locals = ImmutableArray.CreateBuilder<LocalSymbol>();
-            var pexprs = ImmutableArray.CreateBuilder<BoundExpression>();
-            var utype = _compilation.UsualType();
-            var flds = utype.GetMembers("_NIL");
-            var type = _factory.Type(utype);
-            var nil = _factory.Field(type, (FieldSymbol)flds[0]);
+            var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
+            bool rewritten = false;
             for (var i = 0; i < node.Arguments.Length; i++)
             {
                 var arg = node.Arguments[i];
                 if (arg.Kind == BoundKind.DefaultExpression && arg.Type.IsUsualType())
                 {
-                    var tempLocal = _factory.SynthesizedLocal(utype, node.Syntax);
-                    var local = _factory.Local(tempLocal);
-                    locals.Add(tempLocal);
-                    var assign = _factory.AssignmentExpression(local, nil);
-                    pexprs.Add(assign);
-                    rewrittenArgs.Add(local);
+                    var utype = _compilation.UsualType();
+                    var flds = utype.GetMembers("_NIL");
+                    var type = _factory.Type(utype);
+                    var nil = _factory.Field(type, (FieldSymbol)flds[0]);
+                    exprs.Add(nil);
+                    rewritten = true;
                 }
                 else
                 {
-                    rewrittenArgs.Add(arg);
+                    exprs.Add(arg);
                 }
             }
-            BoundExpression receiver = VisitExpression(node.ReceiverOpt);
-
-            var mcall = MakeCall(node, node.Syntax, receiver, node.Method, rewrittenArgs.ToImmutable(), node.ArgumentRefKindsOpt,
-                node.InvokedAsExtensionMethod, node.ResultKind, node.Type);
-            return Visit(new BoundSequence(node.Syntax, locals.ToImmutable(), pexprs.ToImmutable(), mcall, node.Type));
-
+            if (rewritten)
+            {
+                node = node.Update(exprs.ToImmutable());
+            }
+            return node;
         }
+
 
         internal BoundNode XsVisitCall(BoundCall node)
         {
             bool isClipperCall = false;
-            bool rewriteUsuals = false;
             bool memVarsByReference = false;
             // some generated nodes do not have an invocation expression syntax node
             if (node.Arguments.Length > 0 && node.Syntax is InvocationExpressionSyntax ies)
             {
-                // Adjust default arguments from Default(USUAL) to NIL
                 for (var i = 0; i < node.Arguments.Length; i++)
                 {
-                    var arg = node.Arguments[i];
-                    if (arg.Kind == BoundKind.DefaultExpression && arg.Type.IsUsualType())
-                    {
-                        rewriteUsuals = true;
-                        break;
-                    }
-                    if (node.ArgumentRefKindsOpt != null && node.ArgumentRefKindsOpt.Length > i)
+                   var arg = node.Arguments[i];
+                   if (node.ArgumentRefKindsOpt != null && node.ArgumentRefKindsOpt.Length > i)
                     {
                         if (node.ArgumentRefKindsOpt[i].IsByRef() &&
                             arg is BoundPropertyAccess bpa &&
@@ -404,17 +393,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                     }
                 }
-                if (!rewriteUsuals)
-                {
-                    var mcall = ies.XNode as XSharpParser.MethodCallContext;
-                    var dostmt = ies.XNode as XSharpParser.DoStmtContext;
-                    if (mcall == null && dostmt == null)
-                        return null;
-                    if (mcall != null && !mcall.HasRefArguments)
-                        return null;
-                    if (dostmt != null && !dostmt.HasRefArguments)
-                        return null;
-                }
+                var mcall = ies.XNode as XSharpParser.MethodCallContext;
+                var dostmt = ies.XNode as XSharpParser.DoStmtContext;
+                if (mcall == null && dostmt == null)
+                    return null;
+                if (mcall != null && !mcall.HasRefArguments)
+                    return null;
+                if (dostmt != null && !dostmt.HasRefArguments)
+                    return null;
                 if (node.Method.HasClipperCallingConvention())
                     isClipperCall = true;
             }
@@ -422,11 +408,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return RewriteMemvarsWithByRefParams(node);
             }
-            if (rewriteUsuals && ! isClipperCall)
-            {
-                return XsAddNILParameters(node);
-            }
-            if (!isClipperCall && !rewriteUsuals)
+            if (!isClipperCall )
                 return null;
 
             BoundExpression rewrittenReceiver = VisitExpression(node.ReceiverOpt);

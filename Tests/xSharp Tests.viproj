@@ -94907,8 +94907,8 @@ FileType = Code
 CopyToBin = 0
 [C779 - Internal compiler error with Default(USUAL) used as argument References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
 [C779 - Internal compiler error with Default(USUAL) used as argument Resources]
 [C779 - Internal compiler error with Default(USUAL) used as argument Native Resources]
 [C779 - Internal compiler error with Default(USUAL) used as argument License files]

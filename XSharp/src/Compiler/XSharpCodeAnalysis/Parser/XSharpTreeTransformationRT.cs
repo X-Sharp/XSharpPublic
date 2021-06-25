@@ -1597,6 +1597,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
+        public override void ExitDefaultExpression([NotNull] XP.DefaultExpressionContext context)
+        {
+            base.ExitDefaultExpression(context);
+            // replace Default(USUAL) with NIL
+            var type = context.Type.Get<TypeSyntax>();
+            if (type == _usualType)
+            { 
+                context.Put(GenerateNIL());
+            }
+        }
+
         public override void ExitDestructor([NotNull] XP.DestructorContext context)
         {
             var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? default;

@@ -3420,24 +3420,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // [ClipperCallingConvention(new string[] { "a", "b" })]
                     // make sure that existing attributes are not removed!
 
-                    bool localParameters = true;
                     if (context.Data.HasParametersStmt || context.Data.HasLParametersStmt)
                     {
-                        localParameters = false;
-                        foreach (var stmt in context.Statements._Stmts)
+                        foreach (var field in context.Data.Fields.Values)
                         {
-                            if (stmt is XP.XbasedeclStmtContext x)
+                            if (field.IsParameter && !parameternames.Contains(field.Name))
                             {
-                                var xdecl = x.xbasedecl();
-                                if (xdecl.T.Type == XP.PARAMETERS || xdecl.T.Type == XP.LPARAMETERS)
-                                {
-                                    localParameters = xdecl.T.Type == XP.LPARAMETERS;
-                                    foreach (var n in xdecl._Vars)
-                                    {
-                                        parameternames.Add(n.GetText());
-                                    }
-                                    break;
-                                }
+                                parameternames.Add(field.Name);
                             }
                         }
                     }

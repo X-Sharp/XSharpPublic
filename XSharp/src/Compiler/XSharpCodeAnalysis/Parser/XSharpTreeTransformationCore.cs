@@ -9769,8 +9769,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // do not include the standard defs here. These have already been processed at the file level
             var options = _options.WithNoStdDef(true);
             // add spaces to the offset of the first token in the result matches the offset of the "anchor"
-            var spaces = new string(' ', starttoken.StartIndex);
-            var lexer = XSharpLexer.Create(spaces+expression, _fileName, options);
+            var lexer = XSharpLexer.Create(expression, _fileName, options);
+            lexer.OffSet = starttoken.StartIndex;
             var parseErrors = ParseErrorData.NewBag();
             extraText = null;
             BufferedTokenStream tokenStream;

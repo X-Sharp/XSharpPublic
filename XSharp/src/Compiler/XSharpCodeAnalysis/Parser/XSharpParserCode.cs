@@ -1102,9 +1102,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     }
 
 #if !VSPARSER
+    [DebuggerDisplay("{_fieldType} {FullName}")]
     public class MemVarFieldInfo
     {
-        internal enum vartype
+        internal enum MemvarType
         {
             Memvar,
             Field,
@@ -1112,15 +1113,23 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             MacroMemvar,
             Local,
         }
-        private readonly vartype _varType;
-        internal vartype VarType => _varType;
+        [Flags]
+        enum FieldFlags : byte
+        {
+            IsFileWidePublic,
+            IsParameter,
+            IsFoxArray,
+            IsWritten,
+            IsTrueLocal
+        }
+        private readonly MemvarType _fieldType;
         public string Name { get; private set; }
         public string Alias { get; private set; }
         public string FullName
         {
             get
             {
-                if (VarType == vartype.MacroMemvar)
+                if (_fieldType == MemvarType.MacroMemvar)
                 {
                     var name = Name.Substring(0, Name.IndexOf(":"));
                     return Alias + "->" + name;
@@ -1136,13 +1145,43 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        public bool IsClipperParameter => _varType == vartype.ClipperParameter;
-        public bool IsFileWidePublic { get; private set; }
-        public bool IsLocal => VarType == vartype.Local;
-        public bool IsParameter { get; set; }
-        public bool IsFoxArray { get; set; }
-        public bool IsWritten { get; set; }
-        public bool IsTrueLocal { get; set; }
+        private FieldFlags _flags;
+        FieldFlags setFlag(FieldFlags oldFlag, FieldFlags newFlag, bool set)
+        {
+            if (set)
+                oldFlag |= newFlag;
+            else
+                oldFlag &= ~newFlag;
+            return oldFlag;
+        }
+        public bool IsClipperParameter => _fieldType == MemvarType.ClipperParameter;
+        public bool IsLocal => _fieldType == MemvarType.Local;
+        public bool IsFileWidePublic
+        {
+            get { return _flags.HasFlag(FieldFlags.IsFileWidePublic); }
+            set { _flags = setFlag(_flags, FieldFlags.IsFileWidePublic, value); }
+        }
+        public bool IsParameter
+        {
+            get { return _flags.HasFlag(FieldFlags.IsParameter); }
+            set { _flags = setFlag(_flags, FieldFlags.IsParameter, value); }
+        }
+        public bool IsFoxArray
+        {
+            get { return _flags.HasFlag(FieldFlags.IsFoxArray); }
+            set { _flags = setFlag(_flags, FieldFlags.IsFoxArray, value); }
+        }
+
+        public bool IsWritten
+        {
+            get { return _flags.HasFlag(FieldFlags.IsWritten); }
+            set { _flags = setFlag(_flags, FieldFlags.IsWritten, value); }
+        }
+        public bool IsTrueLocal
+        {
+            get { return _flags.HasFlag(FieldFlags.IsTrueLocal); }
+            set { _flags = setFlag(_flags, FieldFlags.IsTrueLocal, value); }
+        }
         public XSharpParserRuleContext Context { get; set; }
         internal MemVarFieldInfo(string name, string alias, bool filewidepublic = false)
         {
@@ -1157,38 +1196,38 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 switch (alias.ToUpper())
                 {
                  case "&":
-                        _varType = vartype.MacroMemvar;
+                        _fieldType = MemvarType.MacroMemvar;
                         Alias = XSharpSpecialNames.MemVarPrefix;
                         break;
                     case "M":
                     case "MEMV":
                     case "MEMVA":
                     case "MEMVAR":
-                        _varType = vartype.Memvar;
+                        _fieldType = MemvarType.Memvar;
                         Alias = XSharpSpecialNames.MemVarPrefix;
                         break;
                     case "FIELD":
                     case "_FIELD":
                         Alias = XSharpSpecialNames.FieldPrefix;
-                        _varType = vartype.Field;
+                        _fieldType = MemvarType.Field;
                         break;
                     default:
                         switch (alias)
                         {
                             case XSharpSpecialNames.ClipperParamPrefix:
-                                _varType = vartype.ClipperParameter;
+                                _fieldType = MemvarType.ClipperParameter;
                                 IsParameter = true;
                                 break;
                             case XSharpSpecialNames.MemVarPrefix:
-                                _varType = vartype.Memvar;
+                                _fieldType = MemvarType.Memvar;
                                 break;
                             case XSharpSpecialNames.LocalPrefix:
-                                _varType = vartype.Local;
+                                _fieldType = MemvarType.Local;
                                 Alias = null;
                                 break;
                             case XSharpSpecialNames.FieldPrefix:
                             default:
-                                _varType = vartype.Field;
+                                _fieldType = MemvarType.Field;
                                 break;
                         }
                         break;
@@ -1197,16 +1236,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             else
             {
                 Alias = XSharpSpecialNames.FieldPrefix;
-                _varType = vartype.Field;
+                _fieldType = MemvarType.Field;
             }
             IsFileWidePublic = filewidepublic;
         }
     }
 
-#endif
     internal static class RuleExtensions
     {
-#if !VSPARSER
+
         internal static bool isScript([NotNull] this XSharpParser.IEntityContext entitty) => entitty is XSharpParser.ScriptContext;
 
         internal static bool IsStatic(this InternalSyntax.ClassDeclarationSyntax classdecl)
@@ -1328,7 +1366,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             return null;
         }
-#endif
         internal static bool isInInterface([NotNull] this RuleContext context)
         {
             var parent = context.Parent;
@@ -1386,5 +1423,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             else
                 return parent.isInStructure();
         }
-    }
+}
+#endif
 }

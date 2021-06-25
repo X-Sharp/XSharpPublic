@@ -182,7 +182,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var memvar in context._Vars)
                 {
                     var name = memvar.Id.GetText();
-                    addFieldOrMemvar(name, prefix, memvar, context.T.Type == XP.PARAMETERS);
+                    addFieldOrMemvar(name, prefix, memvar, context.T.Type == XP.PARAMETERS || context.T.Type == XP.LPARAMETERS);
                 }
             }
             else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
@@ -1088,7 +1088,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(attributeLists);
             return ctor;
         }
-        
         #region TextMergeSupport
         private bool checkTextMergeDelimiters(string sourceText)
         {

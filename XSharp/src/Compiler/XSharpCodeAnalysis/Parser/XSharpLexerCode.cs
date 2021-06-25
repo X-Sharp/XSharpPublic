@@ -103,7 +103,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool HasPPMacros { get; private set; }
         public bool HasDocComments { get; private set; }
         public bool MustBeProcessed => HasPPMessages || HasPPUDCs || HasPPIncludes || HasPPMacros || HasPPIfdefs;
-
+        public int OffSet { get; set; } = 0;
         internal IList<ParseErrorData> LexErrors => _lexErrors;
         int LastToken => _lastToken.Type;
 
@@ -118,7 +118,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         readonly IList<XSharpToken> _trivia = new List<XSharpToken>();
 
         readonly System.Text.StringBuilder _textSb = new();
-        int _lineStartCharIndex;
         int _startCharIndex;
         int _startColumn;
         int _startLine;
@@ -160,14 +159,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         static bool InList(int c, int c1, int c2)
         {
             if (c == c1 || c == c2)
-            {
-                return true;
-            }
-            return false;
-        }
-        static bool InList(int c, int c1, int c2, int c3, int c4)
-        {
-            if (c == c1 || c == c2 || c == c3 || c == c4)
             {
                 return true;
             }
@@ -254,7 +245,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 // char 2 etc.
                 for (var i = 1; i < s.Length; i++)
                 {
-                    if (char.ToLower((char)La(i + 1)) != s[i])
+                    var c = La(i + 1);
+                    if (c == IntStreamConstants.Eof)
+                    {
+                        // this could happen when parsing a interpolated string with the contents "i"
+                        return false;
+                    }
+                    if (char.ToLower((char)c) != s[i])
                         return false;
                 }
                 return true;
@@ -268,8 +265,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         #endregion
         void parseInit()
         {
-            _lineStartCharIndex = InputStream.Index;
-            _startCharIndex = InputStream.Index;
+            _startCharIndex = InputStream.Index + OffSet;
             _startColumn = Interpreter.Column;
             _startLine = Interpreter.Line;
             _tokenType = -2;
@@ -373,7 +369,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 parseOne();
                 Interpreter.Line += 1;
                 Interpreter.Column = 0;
-                _lineStartCharIndex = InputStream.Index;
                 if (_onStartOfTextBlock)
                 {
                     // this happens in FoxPro dialect only, because only there the TEXT keyword is available
@@ -516,7 +511,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseType(INVALID_NUMBER);
                     return;
                 }
-                else if (InList(La(1), 'b', 'B'))
+                else if (ExpectAny('b', 'B'))
                 {
                     parseOne(BIN_CONST);
                     while (ExpectAny('0', '1', '_'))
@@ -549,10 +544,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseType(INVALID_NUMBER);
                     return;
                 }
-                var la2 = La(2);
-                if (La(1) == '.' && !InList(la2, 'A', 'a', 'O', 'o'))
+                if (La(1) == '.' && (!ExpectLower(".and.") && !ExpectLower(".or.")))
                 {
-                    // The '.' should not be followed by .and. or .or.
+                    // The '.' should not be the start of .and. or .or.
                     parseOne(REAL_CONST);
                     if (ExpectRange('0', '9'))
                     {
@@ -1198,7 +1192,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         {
                             goto case '\'';
                         }
-                        if (InList(La(2), 'i', 'I') && La(3) == '"') // interpolated escaped string
+                        if (ExpectLower("ei\"")) // escaped interpolated string
                         {
                             goto case '\'';
                         }
@@ -1209,7 +1203,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         {
                             goto case '\'';
                         }
-                        if (InList(La(2), 'e', 'E') && La(3) == '"') // interpolated escaped string
+                        if (ExpectLower("ie\"")) // interpolated escaped string
                         {
                             goto case '\'';
                         }

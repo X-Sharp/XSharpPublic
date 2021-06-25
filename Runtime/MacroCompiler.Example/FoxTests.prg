@@ -59,6 +59,12 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| {//} }", Args(), NULL_DATE, typeof(DATE))
         TestMacro(mc, e"{|| {..} }", Args(), NULL_DATE, typeof(DATE))
         TestMacro(mc, e"{|| {--} }", Args(), NULL_DATE, typeof(DATE))
+        TestMacro(mc, e"{|| 1<2.and.3<.4 }", Args(), FALSE, typeof(LOGIC))
+        TestMacro(mc, e"{|| 1<2. and .3<.4 }", Args(), TRUE, typeof(LOGIC))
+        TestMacro(mc, e"{|| 1<2 .and. 3<.4 }", Args(), FALSE, typeof(LOGIC))
+        TestMacro(mc, e"{|| 3<2.or.3<2 }", Args(), FALSE, typeof(LOGIC))
+        TestMacro(mc, e"{|| 3<2. or .3<2 }", Args(), TRUE, typeof(LOGIC))
+        TestMacro(mc, e"{|| 3<2 .or. 3<2 }", Args(), FALSE, typeof(LOGIC))
 
 
         // FoxPro dot access

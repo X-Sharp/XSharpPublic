@@ -124,15 +124,6 @@ namespace XSharp.MacroCompiler
         }
 
         bool InRange(char c, char first, char last) => c >= first && c <= last;
-        bool InList(int c, params int[] chars)
-        {
-            foreach (var c2 in chars)
-            {
-                if (c == c2)
-                    return true;
-            }
-            return false;
-        }
 
         bool Eoi()
         {
@@ -827,11 +818,7 @@ namespace XSharp.MacroCompiler
                                 var c2 = La(2);
                                 // only treat the dot as a trigger to a REAL_CONST when followed by a number or one of the characters
                                 // listed. This allows an expression such as "{||1>2.and.3<4}" to be compiled properly
-                                // the whitespace is needed for {|| 1. }
-                                // The '}' is needed for {|| 4.}"
-                                // and the '\0' is needed for &("1.")
-                                if (c == '.' && (InRange(c2, '0', '9')
-                                            || InList(c2, 'E','e',' ', '\t', '_', '\r', '\n','}', '\0')))
+                                if (c == '.' && (c2 != 'a' && c2 != 'o' && c2 != 'A' && c2 != 'O'))
                                 {
                                     Consume();
                                     goto case TokenType.REAL_CONST;

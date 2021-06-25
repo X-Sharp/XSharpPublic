@@ -1043,7 +1043,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 info.IsParameter = isParameter;
             }
         }
-
+        protected string CleanVarName(string name)
+        {
+            if (name.EndsWith("."))
+            {
+                name = name.Substring(0, name.Length - 1);
+            }
+            return name;
+        }
         public override void EnterXbasedecl([NotNull] XP.XbasedeclContext context)
         {
             // declare memvars
@@ -1059,7 +1066,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     foreach (var memvar in context._Vars)
                     {
-                        var name = memvar.Id.GetText();
+                        var name = CleanVarName(memvar.Id.GetText());
                         addFieldOrMemvar(name, "M", memvar, context.T.Type == XP.PARAMETERS);
                     }
                 }
@@ -1067,14 +1074,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     foreach (var memvar in context._XVars)
                     {
+                        var name = CleanVarName(memvar.Id.GetText());
                         if (memvar.Amp == null) // normal PUBLIC Foo or PRIVAYE Bar
                         {
-                            var name = memvar.Id.GetText();
                             addFieldOrMemvar(name, "M", memvar, false);
                         }
                         else // normal PUBLIC &varName or PRIVATE &varName
                         {
-                            var name = memvar.Id.GetText() + ":" + memvar.Position.ToString();
+                            name += ":" + memvar.Position.ToString();
                             addFieldOrMemvar(name, "&", memvar, false);
                         }
                     }
@@ -1084,7 +1091,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 foreach (var memvar in context._Vars)
                 {
-                    var name = memvar.Id.GetText();
+                    var name = CleanVarName(memvar.Id.GetText());
                     addFieldOrMemvar(name, XSharpSpecialNames.ClipperParamPrefix, memvar, true);
                 }
             }
@@ -1118,8 +1125,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         if (memvar.Amp == null)
                         {
-                            var name = memvar.Id.GetText();
-                            var mv = new MemVarFieldInfo(memvar.Id.GetText(), "M", true);
+                            var name = CleanVarName(memvar.Id.GetText());
+                            var mv = new MemVarFieldInfo(name, "M", true);
                             mv.Context = memvar;
                             _filewideMemvars.Add(mv.Name, mv);
                             GlobalEntities.FileWidePublics.Add(mv);
@@ -1133,7 +1140,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // MEMVAR
                     foreach (var memvar in context._Vars)
                     {
-                        var mv = new MemVarFieldInfo(memvar.Id.GetText(), "M", true);
+                        var name = CleanVarName(memvar.Id.GetText());
+                        var mv = new MemVarFieldInfo(name, "M", true);
                         mv.Context = memvar;
                         _filewideMemvars.Add(mv.Name, mv);
                     }
@@ -1153,6 +1161,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             MemVarFieldInfo memvar = null;
             // First look in the FileWide Memvars
+            name = CleanVarName(name);
             if (_options.SupportsMemvars)
             {
                 _filewideMemvars.TryGetValue(name, out memvar);

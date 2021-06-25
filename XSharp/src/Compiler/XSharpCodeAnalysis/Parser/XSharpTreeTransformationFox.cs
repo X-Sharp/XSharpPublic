@@ -38,55 +38,66 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _foxarrayType = GenerateQualifiedName(XSharpQualifiedTypeNames.FoxArray);
 
         }
-
+        XP.FuncprocContext _defaultEntity = null;
+        XP.FuncprocContext CreateDefaultEntity([NotNull] XP.FoxsourceContext context)
+        {
+            // Generate leading code for the file
+            // Function needs at least an Id and a Statement Block
+            // The rest is default
+            var name = System.IO.Path.GetFileNameWithoutExtension(_fileName);
+            var entity = new XP.EntityContext(context, 0);
+            var func = new XP.FuncprocContext(entity, 0);
+            var id = new XP.IdentifierContext(func, 0);
+            var token = new XSharpToken(XP.FUNCTION, "FUNCTION");
+            var sig = new XP.SignatureContext(func, 0);
+            sig.Id = id;
+            func.Sig = sig;
+            token.line = 1;
+            token.charPositionInLine = 1;
+            func.T = new XP.FuncproctypeContext(func, 0);
+            func.T.Token = token;
+            token = new XSharpToken(XP.ID, name);
+            token.line = 1;
+            token.charPositionInLine = 1;
+            id.Start = id.Stop = token;
+            sig.AddChild(sig.Id);
+            ExitIdentifier(id);    // Generate SyntaxToken 
+            if (string.Equals(name, _entryPoint, XSharpString.Comparison))
+            {
+                sig.Type = new XP.DatatypeContext(func, 0);
+                sig.Type.Start = new XSharpToken(XP.AS, "AS");
+                sig.Type.Stop = new XSharpToken(XP.VOID, "VOID");
+                sig.Type.Put(voidType);
+                sig.AddChild(sig.Type);
+            }
+            func.Attributes = new XP.AttributesContext(func, 0);
+            func.Attributes.PutList(MakeCompilerGeneratedAttribute());
+            func.StmtBlk = context.StmtBlk;
+            context.StmtBlk.parent = func;
+            func.Start = func.StmtBlk.Start;
+            func.Stop = func.StmtBlk.Stop;
+            func.AddChild(func.Sig);
+            func.AddChild(func.StmtBlk);
+            _defaultEntity = func;
+            return func;
+        }
         public override void EnterFoxsource([NotNull] XP.FoxsourceContext context)
         {
-            base._enterSource(context);
+            if (context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
+            {
+                var func = CreateDefaultEntity(context);
+                Entities.Push(func);
+            }
+            _enterSource(context);
         }
         public override void ExitFoxsource([NotNull] XP.FoxsourceContext context)
         {
             if (context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
             {
-                // Generate leading code for the file
-                // Function needs at least an Id and a Statement Block
-                // The rest is default
-                var name = System.IO.Path.GetFileNameWithoutExtension(_fileName);
-                var entity = new XP.EntityContext(context, 0);
-                var func = new XP.FuncprocContext(entity, 0);
-                var id = new XP.IdentifierContext(func, 0); 
-                var token = new XSharpToken(XP.FUNCTION, "FUNCTION");
-                var sig = new XP.SignatureContext(func, 0);
-                sig.Id = id;
-                func.Sig = sig;
-                token.line = 1;
-                token.charPositionInLine = 1;
-                func.T = new XP.FuncproctypeContext(func, 0);
-                func.T.Token = token;
-                token = new XSharpToken(XP.ID, name);
-                token.line = 1;
-                token.charPositionInLine = 1;
-                id.Start = id.Stop = token;
-                sig.AddChild(sig.Id);
-                ExitIdentifier(id);    // Generate SyntaxToken 
-                if (string.Equals(name, _entryPoint, XSharpString.Comparison))
-                {
-                    sig.Type = new XP.DatatypeContext(func,0);
-                    sig.Type.Start = new XSharpToken(XP.AS, "AS");
-                    sig.Type.Stop = new XSharpToken(XP.VOID, "VOID");
-                    sig.Type.Put(voidType);
-                    sig.AddChild(sig.Type);
-                }
-                func.Attributes = new XP.AttributesContext(func,0);
-                func.Attributes.PutList(MakeCompilerGeneratedAttribute());
-                func.StmtBlk = context.StmtBlk;
-                context.StmtBlk.parent = func;
-                func.Start = func.StmtBlk.Start;
-                func.Stop = func.StmtBlk.Stop;
-                func.AddChild(func.Sig);
-                func.AddChild(func.StmtBlk); 
-                Entities.Push(func);
+                var func = _defaultEntity;
                 ExitFuncproc(func);     // Generate function
                 Entities.Pop();
+                var entity = func.Parent as XP.EntityContext;
                 entity.Start = func.Start;
                 entity.Stop = func.Stop;
                 entity.AddChild(func);
@@ -127,9 +138,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void AddLocalName(string name, XSharpParserRuleContext context, bool local)
         {
             var fieldInfo = findVar(name);
-            var alias = local ? XSharpSpecialNames.LocalPrefix : XSharpSpecialNames.MemVarPrefix;
             if (fieldInfo == null)
             {
+                var alias = local ? XSharpSpecialNames.LocalPrefix : XSharpSpecialNames.MemVarPrefix;
                 addFieldOrMemvar(name, alias, context, false);
             }
         }
@@ -151,14 +162,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterDimensionVar([NotNull] XP.DimensionVarContext context)
         {
             base.EnterDimensionVar(context);
-            var name = context.Id.GetText();
+            var name = CleanVarName(context.Id.GetText());
             var local = false;
             if (context.Parent is XP.FoxdeclContext foxdecl)
             {
                 // should always be the case now.
                 local = foxdecl.T.Type == XP.LOCAL;
             }
-            AddLocalName(name, context, local);
+            var alias = local ? XSharpSpecialNames.LocalPrefix : XSharpSpecialNames.MemVarPrefix;
+            var field = findMemVar(name);
+            if (field == null)
+            {
+                if (context.Amp == null) // normal DIMENSION foo (1,2)
+                {
+                    addFieldOrMemvar(name, alias, context, false);
+                }
+                else // DIMENSION &foo(1,2)
+                {
+                    name += ":" + context.Position.ToString();
+                    addFieldOrMemvar(name, "&", context, false);
+                }
+            }
         }
 
         public override void EnterFoxdecl([NotNull] XP.FoxdeclContext context)
@@ -181,7 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // List inside _Vars. 
                 foreach (var memvar in context._Vars)
                 {
-                    var name = memvar.Id.GetText();
+                    var name = CleanVarName(memvar.Id.GetText());
                     addFieldOrMemvar(name, prefix, memvar, context.T.Type == XP.PARAMETERS || context.T.Type == XP.LPARAMETERS);
                 }
             }
@@ -191,14 +215,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // List inside _XVars. 
                 foreach (var memvar in context._XVars)
                 {
+                    var name = CleanVarName(memvar.Id.GetText());
                     if (memvar.Amp == null) // normal PUBLIC Foo or PRIVATE Bar
                     {
-                        var name = memvar.Id.GetText();
                         addFieldOrMemvar(name, "M", memvar, false);
                     }
                     else // normal PUBLIC &varName or PRIVATE &varName
                     {
-                        var name = memvar.Id.GetText() + ":" + memvar.Position.ToString();
+                        name += ":" + memvar.Position.ToString();
                         addFieldOrMemvar(name, "&", memvar, false);
                     }
                 }
@@ -403,7 +427,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         private IList<StatementSyntax> processDimensionVar(XSharpParserRuleContext context, XP.DimensionVarContext dimVar, ref bool hasError)
         {
-            var name = dimVar.Id.GetText();
+            var name = CleanVarName(dimVar.Id.GetText());
             var stmts = new List<StatementSyntax>();
             MemVarFieldInfo fieldInfo = findVar(name);
 

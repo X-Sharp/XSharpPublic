@@ -740,7 +740,7 @@ foxdecl             : T=(DIMENSION|DECLARE) DimVars += dimensionVar
                    ;
 
                     // FoxPro dimension statement allows the AS Type per variable name
-dimensionVar        : Id=varidentifierName
+dimensionVar        : (Amp=AMP)?  Id=varidentifierName 
                         ( LBRKT  Dims+=expression (COMMA Dims+=expression)* RBRKT
                         | LPAREN Dims+=expression (COMMA Dims+=expression)* RPAREN )
                         (XT=xbasedecltype)?
@@ -1404,6 +1404,7 @@ foxaddobjectclause  : (Attributes=attributes)? ADD OBJECT (Modifiers=classvarMod
                       end=eos
                     ;
 
-foxpemcomattrib     : DIMENSION Id=identifier LBRKT expression RBRKT end=eos
+foxpemcomattrib     : DIMENSION Id=identifier LBRKT  expression (COMMA expression)? RBRKT end=eos
+                    | DIMENSION Id=identifier LPAREN expression (COMMA expression)? RPAREN end=eos
                     | Id=identifier LBRKT expression RBRKT assignoperator expression end=eos
                     ;

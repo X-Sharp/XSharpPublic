@@ -94754,7 +94754,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R777 - IS check with USUAL variable
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C778 - Problem with Extension method not marked as STATIC *************
 Application = C778 - Problem with Extension method not marked as STATIC
 IDEVersion = 1.06
@@ -94864,7 +94864,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C778 - Problem with Extension method not marked as STATIC
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C779 - Internal compiler error with Default(USUAL) used as argument *************
 Application = C779 - Internal compiler error with Default(USUAL) used as argument
 IDEVersion = 1.06

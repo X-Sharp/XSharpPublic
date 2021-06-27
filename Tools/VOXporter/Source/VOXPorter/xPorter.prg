@@ -1323,10 +1323,16 @@ CLASS ApplicationDescriptor
 							LOCAL cResFileName AS STRING
 							cResFileName := oModule:PathValidName + "." + cName + ".rc"
 	                        VAR aContents := oPair:Value:GetContents():ToArray()
-	                        cRcSource     := aContents[1]
-	
+
+	                        LOCAL nLineWithResource := 1 AS INT
+	                        IF aContents[1]:StartsWith("#define") .and. aContents:Length >= 3 .and. aContents[3]:StartsWith("CREATEPROCESS_MANIFEST_RESOURCE_ID")
+	                        	// line 1 and 2 are #defines for CREATEPROCESS_MANIFEST_RESOURCE_ID and RC_RT_MANIFEST
+	                        	nLineWithResource := 3
+	                        END IF
+	                        
+	                        cRcSource     := aContents[nLineWithResource]
 							cRcSource := SELF:AdjustResource(cRcSource,cFolder,TRUE)
-							aContents[1] := cRcSource
+							aContents[nLineWithResource] := cRcSource
 	
 							File.WriteAllLines(cFolder + "\" + cResFileName , aContents , System.Text.Encoding.Default)
 							oModule:AddVSrc(cResFileName)
@@ -1415,7 +1421,10 @@ CLASS ApplicationDescriptor
             CASE "BITMAP"
             CASE "ICON"
             CASE "CURSOR"
+            CASE "RC_RT_MANIFEST"
                 lHasFile := TRUE
+            CASE "24" // RC_RT_MANIFEST
+                lHasFile := cLine:StartsWith("1 24") // "CREATEPROCESS_MANIFEST_RESOURCE_ID RC_RT_MANIFEST" with defines already replaced with literals
             OTHERWISE
                 lHasFile := FALSE
             END SWITCH
@@ -2686,7 +2695,9 @@ CLASS EntityDescriptor
 
 				END CASE
 
-				cLine += cWord:Replace(tag , "%") // bring back the original text, if we have not modified it
+				IF .not. (cWord == " " .and. nWord == 1 .and. aWords[0]:cWord:ToUpperInvariant() == "RESOURCE") // do not include the space after the removed RESOURCE token
+					cLine += cWord:Replace(tag , "%") // bring back the original text, if we have not modified it
+				ENDIF
 /*
 In resource headers like:
 

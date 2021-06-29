@@ -24,7 +24,6 @@ namespace XSharp.LanguageService
         InstanceMembers = 1 << 5,
         Constructors = 1 << 6,
         Brackets = 1 << 7,
-
     }
     /// <summary>
     /// Static class Tools. Offer services to get TokenList, Search members, ...
@@ -119,10 +118,10 @@ namespace XSharp.LanguageService
         }
 
 
-        internal static IList<XSharpToken> GetTokensUnderCursor(XSharpSearchLocation location, BufferedTokenStream tokens)
+        internal static IList<XSharpToken> GetTokensUnderCursor(XSharpSearchLocation location, BufferedTokenStream tokens, out CompletionState state)
         {
 
-            var result = GetTokenList(location, tokens, out var _, true);
+            var result = GetTokenList(location, tokens, out state, true);
             // Find "current" token
             if (result.Count > 0)
             {
@@ -294,6 +293,10 @@ namespace XSharp.LanguageService
                         break;
                     case XSharpLexer.USING:
                         state = CompletionState.Namespaces;
+                        break;
+
+                    case XSharpLexer.MEMBER:
+                        state = CompletionState.StaticMembers;
                         break;
 
                     case XSharpLexer.AS:

@@ -429,7 +429,7 @@ namespace XSharp.LanguageService
             IXTypeSymbol currentType = null;
             int currentPos = 0;
             var startOfExpression = true;
-            var findConstructor = true;
+            var findConstructor = false;
             XSharpToken currentToken = null;
             IXTypeSymbol startType = null;
             //
@@ -503,6 +503,7 @@ namespace XSharp.LanguageService
             var hasBracket = false;
             int count = -1;
             startType = currentType;
+            bool resetState = false;
             while (currentPos <= lastopentoken)
             {
                 result.Clear();
@@ -513,6 +514,8 @@ namespace XSharp.LanguageService
                     top.ResolvedType = currentType;
                     count = symbols.Count;
                 }
+                if (resetState)
+                    state = CompletionState.General;
                 if (startOfExpression)
                     currentType = startType;
                 currentToken = tokenList[currentPos];
@@ -559,7 +562,6 @@ namespace XSharp.LanguageService
                         continue;
                     case XSharpLexer.DOT:
                     case XSharpLexer.COLON:
-                        break;
                     default:
                         hasBracket = false;
                         break;
@@ -613,7 +615,26 @@ namespace XSharp.LanguageService
                         }
                     }
                 }
-                else if (literal)
+                if (state.HasFlag(CompletionState.StaticMembers) && ! findMethod && result.Count == 0)
+                {
+                    var props = SearchPropertyOrField(location, currentType, currentName, visibility).Where(m => m.IsStatic);
+                    result.AddRange(props);
+                    if (result.Count > 0)
+                    {
+                        symbols.Push(result[0]);
+                    }
+                }
+                if (state.HasFlag(CompletionState.InstanceMembers) && !findMethod && result.Count == 0)
+                {
+                    var props = SearchPropertyOrField(location, currentType, currentName, visibility).Where(m => !m.IsStatic);
+                    result.AddRange(props);
+                    if (result.Count > 0)
+                    {
+                        symbols.Push(result[0]);
+                    }
+                }
+
+                if (literal)
                 {
                     currentType = GetConstantType(currentToken, location.File);
                     symbols.Push(currentType);
@@ -688,7 +709,7 @@ namespace XSharp.LanguageService
                 {
                     if (preFix == ".")
                         preFix = "";
-                    if (startOfExpression || findType || findConstructor)
+                    if (result.Count == 0 && (startOfExpression || findType || findConstructor))
                     {
                         result.AddRange(SearchType(location, preFix + currentName));
                         if (result.Count > 0)
@@ -763,14 +784,24 @@ namespace XSharp.LanguageService
                     break;
                 }
                 currentToken = tokenList[currentPos];
+                resetState = true;
                 switch (currentToken.Type)
                 {
                     case XSharpLexer.DOT:
                         preFix += currentToken.Text;
                         currentPos += 1;
+                        state = CompletionState.StaticMembers;
+                        if (location.Project.ParseOptions.AllowDotForInstanceMembers)
+                            state |= CompletionState.InstanceMembers;
+                        resetState = false;
                         break;
 
                     case XSharpLexer.COLON:
+                        state = CompletionState.InstanceMembers;
+                        resetState = false;
+                        currentPos += 1;
+                        break;
+
                     case XSharpLexer.COLONCOLON:
                         currentPos += 1;
                         break;

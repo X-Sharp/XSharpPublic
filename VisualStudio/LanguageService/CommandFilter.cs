@@ -811,12 +811,12 @@ namespace XSharp.LanguageService
                     currentNS = currentNamespace.Name;
                 }
                 var location = new XSharpSearchLocation(member, snapshot, lineNumber, caretPos,currentNS);
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream);
+                var state = CompletionState.General;
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 var result = new List<IXSymbol>();
 
-                var state = CompletionState.General;
                 result.AddRange(XSharpLookup.RetrieveElement(location, tokenList,  state));
                 //
                 Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();

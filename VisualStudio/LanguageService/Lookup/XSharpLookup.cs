@@ -510,6 +510,7 @@ namespace XSharp.LanguageService
                 {
                     var top = symbols.Peek();
                     currentType = GetTypeFromSymbol(location, top);
+                    top.ResolvedType = currentType;
                     count = symbols.Count;
                 }
                 if (startOfExpression)
@@ -837,6 +838,56 @@ namespace XSharp.LanguageService
                 
 
             }
+            if (result.Count > 0)
+            {
+                var res = result[0];
+                if (res.Kind.IsClassMember(location.Project.Dialect))
+                {
+                    var member = res as IXMemberSymbol;
+                    var type = res.Parent as IXTypeSymbol;
+                    if (type != null && type.IsGeneric)
+                    {
+                        // find element on the stack that has this type
+                        IXSymbol symbol = null;
+                        foreach (var item in symbols)
+                        {
+                            if (item.ResolvedType == type)
+                            { 
+                                symbol = item;
+                                break;
+                            }
+                        }
+                        string[] elements = null;
+                        if (symbol is XSourceEntity xse && xse.GenericArgs != null)
+                        {
+                            elements = xse.GenericArgs.ToArray();
+                        }
+                        if (elements != null)
+                        {
+                            member = member.Clone();
+                            var typeParams = type.TypeParameters;
+                            // check to see if parameters or return value is one of the type parameters
+                            // if so, then check the symbols to see where the type is used and with which
+                            // concrete parameters
+                            int pos;
+                            foreach (var param in member.Parameters)
+                            {
+                                pos = typeParams.IndexOf(param.TypeName);
+                                if (pos >= 0)
+                                {
+                                    param.TypeName = elements[pos];
+                                }
+                            }
+                            pos = typeParams.IndexOf(member.TypeName);
+                            if (pos >= 0)
+                            {
+                                member.TypeName = elements[pos ];
+                            }
+                            result[0] = member;
+                        }
+                    }
+                }
+            }
             return result;
         }
 
@@ -897,7 +948,7 @@ namespace XSharp.LanguageService
                             realargs = xvar.GenericArgs;
                         }
                     }
-                    if (xvar.IsGeneric  && realargs.Count == typeParameters.Count)
+                    if (xvar.IsGeneric  && realargs.Length == typeParameters.Count)
                     {
                         pos = typeParameters.IndexOf(xmember.TypeName);
                         if (pos >=0)

@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharpModel
     /// <summary>Local Variable Symbol in the source</summary>
     [DebuggerDisplay("{DebuggerDisplay(),nq}")];
     CLASS XSourceVariableSymbol INHERIT XSourceEntity  IMPLEMENTS IXVariableSymbol, IXSourceSymbol
-        
+
         // Methods
         CONSTRUCTOR(parent AS XSourceEntity, name AS STRING, span AS TextRange, position AS TextInterval, typeName AS STRING)
             SUPER(name, Kind.Local, Modifiers.None, span, position)
@@ -24,12 +24,11 @@ BEGIN NAMESPACE XSharpModel
             IF parent != NULL
                 SELF:File           := parent:File
             ENDIF
-            SELF:CheckForGenericTypeName()
-            
+
         // Properties
-	
+
         PROPERTY Expression   AS IList<XSharpToken> AUTO GET INTERNAL SET
-	
+
         PROPERTY FullName     AS STRING GET SELF:TypeName
 
         PROPERTY Description  AS STRING
@@ -56,12 +55,12 @@ BEGIN NAMESPACE XSharpModel
                     RETURN XLiterals.AsKeyWord
                 OTHERWISE
                     RETURN XLiterals.IsKeyWord
-                END SWITCH                        
+                END SWITCH
             END GET
         END PROPERTY
-        
-        PROPERTY Prototype AS STRING 
-            GET 
+
+        PROPERTY Prototype AS STRING
+            GET
                VAR result := SUPER:Name
                IF SELF:Kind == Kind.DbField
                   IF !String.IsNullOrEmpty(SELF:Value)
@@ -97,7 +96,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN (IXVariableSymbol) SELF:MemberwiseClone()
 
     END CLASS
-         
+
 
 END NAMESPACE
 

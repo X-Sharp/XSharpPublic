@@ -345,6 +345,13 @@ namespace XSharp.LanguageService
                 if (!this.typeMember.Kind.IsGlobalTypeMember())
                 {
                     name = this.typeMember.Parent.Name;
+                    var pos = name.IndexOf("<");
+                    {
+                        if (pos > 0)
+                        {
+                            name = name.Substring(0, pos);
+                        }
+                    }
                     if (this.typeMember.IsStatic)
                         name += ".";
                     else

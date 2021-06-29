@@ -56,9 +56,10 @@ namespace XSharp.LanguageService
                     currentNS = currentNamespace.Name;
                 }
                 var location = new XSharpSearchLocation(member, snapshot, lineNumber, position, currentNS);
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream);
+                CompletionState state;
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
                 var result = new List<IXSymbol>();
-                result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General));
+                result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, state));
                 //
                 if (result.Count > 0 && result[0] is XSourceSymbol symbol)
                 {

@@ -469,11 +469,17 @@ namespace XSharp.LanguageService
             {
                 return null;
             }
-                // Context Type....
-                if (location.Member.Kind.IsClassMember(location.Dialect))
+            // Context Type....
+            if (location.Member.Kind.IsClassMember(location.Dialect))
             {
                 currentType = location.Member.ParentType;
                 symbols.Push(currentType);
+            }
+            else if (location.Member.Kind == Kind.EnumMember)
+            {
+                currentType = location.Member.ParentType;
+                symbols.Push(currentType);
+
             }
             Modifiers visibility = Modifiers.Private;
             int lastopentoken = tokenList.Count - 1;
@@ -1067,7 +1073,7 @@ namespace XSharp.LanguageService
         /// </returns>
         internal static IEnumerable<IXMemberSymbol> SearchPropertyOrField(XSharpSearchLocation location, IXTypeSymbol type, string name, Modifiers minVisibility)
         {
-            return SearchMembers(location, type, name, minVisibility).Where((m) => m.Kind.IsProperty() || m.Kind == Kind.Field || m.Kind == Kind.Event);
+            return SearchMembers(location, type, name, minVisibility).Where((m) => m.Kind.IsProperty() || m.Kind == Kind.Field || m.Kind == Kind.Event || m.Kind == Kind.EnumMember);
         }
 
         private static IEnumerable<IXSymbol> SearchDelegateCall(XSharpSearchLocation location, string currentName, IXTypeSymbol currentType, Modifiers visibility)

@@ -571,7 +571,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     //    addErrorMessage(token, "Closing bracket ']' found with missing '['");
                     //    break;
                     case XSharpLexer.BACKSLASH: // escape next token
-                        if (i < max)
+                        if (i < max-1)
                         {
                             i++;
                             token = matchTokens[i];
@@ -893,7 +893,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         break;
                     case XSharpLexer.BACKSLASH: // escape next token
-                        if (i < max)
+                        if (i < max-1)
                         {
                             i++;
                             token = resultTokens[i];

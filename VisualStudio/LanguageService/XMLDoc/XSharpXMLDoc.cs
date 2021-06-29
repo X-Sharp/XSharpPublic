@@ -33,14 +33,15 @@ namespace XSharp.LanguageService
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
                 result = await lang.GetServiceAsync(typeof(SVsXMLMemberIndexService));
-                if (result != null)
-                    _XMLMemberIndexService = (IVsXMLMemberIndexService)result;
+                _XMLMemberIndexService = (IVsXMLMemberIndexService)result;
             });
- 
             Assumes.Present(_XMLMemberIndexService);
             return;
         }
-
+        public static void Initialize()
+        {
+            ; // Do nothing. This just triggers the Class Constructor
+        }
         private static async Task LoadCoreDllAsync()
         {
             var node = @"HKEY_LOCAL_MACHINE\Software\XSharpBV\XSharp";

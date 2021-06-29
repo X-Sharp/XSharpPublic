@@ -1690,7 +1690,7 @@ eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
          ENDIF
          RETURN <XSourceEntity>{xMember}
 
-         HIDDEN _operatortokens := <LONG> {XSharpLexer.PLUS , XSharpLexer.MINUS , XSharpLexer.NOT , XSharpLexer.TILDE , XSharpLexer.INC, ;
+         PRIVATE _operatortokens := <LONG> {XSharpLexer.PLUS , XSharpLexer.MINUS , XSharpLexer.NOT , XSharpLexer.TILDE , XSharpLexer.INC, ;
                                             XSharpLexer.DEC ,XSharpLexer.TRUE_CONST ,XSharpLexer.FALSE_CONST , XSharpLexer.MULT , ;
                                             XSharpLexer.DIV ,XSharpLexer.MOD ,XSharpLexer.AMP ,XSharpLexer.PIPE ,XSharpLexer.LSHIFT ,XSharpLexer.RSHIFT, ;
                                             XSharpLexer.EEQ , XSharpLexer.NEQ , XSharpLexer.NEQ2 ,XSharpLexer.GT , XSharpLexer.LT ,;
@@ -1878,6 +1878,7 @@ enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assigno
          VAR xMember := XSourceMemberSymbol{id, Kind.EnumMember, _attributes, range, interval, type} {SingleLine := TRUE, @@Value := strValue}
          xMember:File := SELF:_file
          xMember:SourceCode := source
+         xMember:IsStatic := TRUE
          RETURN <XSourceEntity>{xMember}
 
          #endregion

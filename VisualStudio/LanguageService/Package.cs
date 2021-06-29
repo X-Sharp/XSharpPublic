@@ -200,7 +200,7 @@ namespace XSharp.LanguageService
 
             // register property changed event handler
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
+            XSharpXMLDocTools.Initialize();
             var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
             if (shell != null)
             {

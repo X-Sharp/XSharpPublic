@@ -39,6 +39,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsArray                 AS LOGIC AUTO
       PROPERTY Namespace  AS STRING AUTO
       PROPERTY FullName   AS STRING GET Name
+      PROPERTY ResolvedType AS IXTypeSymbol AUTO
             
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes as Modifiers)
          SELF:Name       := name

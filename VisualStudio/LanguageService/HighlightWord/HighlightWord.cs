@@ -124,7 +124,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
             try
             {
                 String selectedText = this.View.Selection.StreamSelectionSpan.GetText();
-                if (!string.IsNullOrEmpty(selectedText) && !string.IsNullOrWhiteSpace(selectedText))
+                if (!string.IsNullOrWhiteSpace(selectedText))
                 {
                     // where are we
                     SnapshotPoint currentRequest = this.View.Selection.Start.Position;
@@ -162,29 +162,31 @@ namespace XSharp.LanguageService.Editors.HighlightWord
                     SnapshotSpan currentWord = word.Span;
                     selectedWord = this.View.Selection.StreamSelectionSpan.SnapshotSpan;
 
-
                     //If this is the current word, and the caret moved within a word, we're done.
                     if (!(selectedWord.HasValue && currentWord == selectedWord))
                     {
                         return;
                     }
-                    //Find the new spans
-                    FindData findData = new FindData(currentWord.GetText(), currentWord.Snapshot);
-                    findData.FindOptions = FindOptions.WholeWord | FindOptions.MatchCase;
                     // Values are zero-based
                     SnapshotPoint point = View.Caret.Position.BufferPosition;
                     // Retrieve the XFile
                     XSharpModel.XFile xFile = this.View.TextBuffer.GetFile();
+                    XSourceMemberSymbol member = null;
                     if (xFile != null)
                     {
                         // Now, retrieve the current member
-                        var member = XSharpLookup.FindMemberAtPosition(point.Position, xFile);
-                        if (member == null)
-                            return;
-                        // Ok, so we now have the "range" of the Member, and will only select text in THIS member
+                        member = XSharpLookup.FindMemberAtPosition(point.Position, xFile);
+                    }
+                    //Find the new spans
+                    FindData findData = new FindData(currentWord.GetText(), currentWord.Snapshot);
+                    findData.FindOptions = FindOptions.WholeWord | FindOptions.MatchCase;
+
+                    // Ok, so we now have the "range" of the Member, and will only select text in THIS member
+                    // Get all the corresponding Words
+                    Collection<SnapshotSpan> allFound = TextSearchService.FindAll(findData);
+                    if (member != null && member.Interval.ContainsInclusive(currentRequest.Position ))
+                    {
                         SnapshotSpan memberSpan = new SnapshotSpan(currentWord.Snapshot, member.Interval.Start, member.Interval.Width);
-                        // Get all the corresponding Words
-                        Collection<SnapshotSpan> allFound = TextSearchService.FindAll(findData);
                         Collection<SnapshotSpan> memberFound = new Collection<SnapshotSpan>();
                         foreach (SnapshotSpan ssp in allFound)
                         {
@@ -192,11 +194,15 @@ namespace XSharp.LanguageService.Editors.HighlightWord
                             if (memberSpan.Contains(ssp))
                                 memberFound.Add(ssp);
                         }
-                        //
                         wordSpans.AddRange(memberFound);
-                        // Show please 
-                        SynchronousUpdate(new NormalizedSnapshotSpanCollection(wordSpans));
                     }
+                    else
+                    {
+                        wordSpans.AddRange(allFound);
+                    }
+                    // Show please 
+                    SynchronousUpdate(new NormalizedSnapshotSpanCollection(wordSpans));
+                    //}
                 }
             }
             catch (Exception ex)

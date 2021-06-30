@@ -647,7 +647,7 @@ namespace XSharp.LanguageService
             // We are looking for NameSpaces, in References
             if (startWith == null)
                 return;
-            var namespaces = project.GetAssemblyNamespaces();
+            var namespaces = project.AllNamespaces;
             // Calculate the length we must remove
             int startLen = 0;
             int dotPos = startWith.LastIndexOf('.');
@@ -704,7 +704,7 @@ namespace XSharp.LanguageService
             if (dotPos != -1)
                 startLen = dotPos + 1;
             // And our own Namespaces
-            var xsNamespaces = project.Namespaces;
+            var xsNamespaces = project.ProjectNamespaces;
             foreach (string nameSpace in xsNamespaces.Where(ns => nameStartsWith(ns, startWith)))
             {
                 string realNamespace = nameSpace;
@@ -845,7 +845,7 @@ namespace XSharp.LanguageService
                         { 
                             add = elt.IsVisible(minVisibility);
                         }
-                        if (staticOnly && elt.IsStatic )
+                        if (staticOnly && elt.IsStatic && type != null )
                         {
                             if (elt.Parent.FullName == "System.Object" && type.FullName != "System.Object")
                                 add = false;

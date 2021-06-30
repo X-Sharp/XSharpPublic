@@ -282,7 +282,7 @@ namespace XSharp.LanguageService
                 doc = XSharpXMLDocMember.GetMemberSummary(member, file.Project, out returns, out remarks);
             }
 
-            Debug("XSharpSignatureHelpSource.CreateSignature()");
+            Debug($"XSharpSignatureHelpSource.CreateSignature( {methodSig})");
             var sig = new XSharpVsSignature(textBuffer, methodSig, doc, null);
             var names = new List<string>();
             var descriptions = new List<string>();

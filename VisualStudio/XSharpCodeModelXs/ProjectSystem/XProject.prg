@@ -40,9 +40,11 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _dependentProjectList              AS STRING
       PRIVATE _dependentAssemblyList             AS STRING
       PRIVATE _name                              AS STRING
-      private _lastRefCheck                      AS DateTime
-      PUBLIC  FileWalkComplete						AS XProject.OnFileWalkComplete
-	  PUBLIC  ProjectWalkComplete					   AS XProject.OnProjectWalkComplete
+      PRIVATE _lastRefCheck                      AS DateTime
+
+      PRIVATE _cachedAllNamespaces               AS IList<STRING>
+      PUBLIC  FileWalkComplete				     AS XProject.OnFileWalkComplete
+	  PUBLIC  ProjectWalkComplete				 AS XProject.OnProjectWalkComplete
 
       #endregion
       #region Properties
@@ -156,9 +158,12 @@ BEGIN NAMESPACE XSharpModel
          SELF:_OtherFilesDict    := XFileDictionary{}
          SELF:_name              := System.IO.Path.GetFileNameWithoutExtension(project:Url)
          SELF:_lastRefCheck      := DateTime.MinValue
+         SELF:_cachedAllNamespaces   := NULL
+
          SELF:Loaded := TRUE
          SELF:FileWalkCompleted := FALSE
          XSolution.Add(SELF)
+
       PUBLIC METHOD Close() AS VOID
          ModelWalker.GetWalker():RemoveProject(SELF)
          XSolution.Remove(SELF)
@@ -169,6 +174,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE METHOD _clearTypeCache() AS VOID
          _ImplicitNamespaces    := NULL
          _dependentAssemblyList := NULL
+         _cachedAllNamespaces   := NULL
          RETURN
          #region AssemblyReferences
 
@@ -231,7 +237,7 @@ BEGIN NAMESPACE XSharpModel
                      SELF:_AssemblyReferences:Remove(asm)
                      EXIT
                   ENDIF
-               NEXT
+                NEXT
             ENDIF
 
          PRIVATE METHOD LoadReference(cDLL AS STRING) AS VOID
@@ -776,8 +782,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN type
 
-      METHOD GetAssemblyNamespaces() AS IList<STRING>
-         RETURN SystemTypeController.GetNamespaces(SELF:_AssemblyReferences)
+      PROPERTY AssemblyNamespaces AS IList<STRING> GET SystemTypeController.GetNamespaces(SELF:_AssemblyReferences)
 
       METHOD GetCommentTasks() AS IList<XCommentTask>
          VAR tasks := XDatabase.GetCommentTasks(SELF:Id:ToString())
@@ -1241,7 +1246,7 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
 
-      PROPERTY Namespaces AS IList<STRING>
+      PROPERTY ProjectNamespaces AS IList<STRING>
          GET
             VAR list := XDatabase.GetNamespaces(SELF:DependentProjectList)
             VAR result := List<STRING>{}
@@ -1250,7 +1255,26 @@ BEGIN NAMESPACE XSharpModel
             NEXT
             RETURN result
          END GET
-      END PROPERTY
+     END PROPERTY
+
+      PROPERTY AllNamespaces AS IList<STRING>
+         GET
+            IF _cachedAllNamespaces != NULL
+                RETURN _cachedAllNamespaces
+            ENDIF
+            VAR result := SELF:ProjectNamespaces
+            VAR asmNS  := SELF:AssemblyNamespaces
+            FOREACH ns AS STRING IN asmNS
+                IF !result:Contains(ns)
+                    result:Add(ns)
+                ENDIF
+            NEXT
+            _cachedAllNamespaces := result
+            RETURN result
+         END GET
+     END PROPERTY
+
+
 
       PROPERTY OtherFiles AS List<STRING> GET SELF:_OtherFilesDict:Keys:ToList()
 

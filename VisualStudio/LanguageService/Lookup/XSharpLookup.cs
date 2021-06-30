@@ -790,7 +790,7 @@ namespace XSharp.LanguageService
                     case XSharpLexer.DOT:
                         preFix += currentToken.Text;
                         currentPos += 1;
-                        state = CompletionState.StaticMembers;
+                        state = CompletionState.StaticMembers| CompletionState.Namespaces | CompletionState.Types;
                         if (location.Project.ParseOptions.AllowDotForInstanceMembers)
                             state |= CompletionState.InstanceMembers;
                         resetState = false;
@@ -823,9 +823,14 @@ namespace XSharp.LanguageService
                         break;
                     case XSharpLexer.COLON:
                     case XSharpLexer.DOT:
+                        startOfExpression = false;
+                        break;
                     default:
                         if (XSharpLexer.IsOperator(lastToken.Type))
+                        { 
                             startOfExpression = true;
+                            symbols.Clear();
+                        }
                         else
                             startOfExpression = false;
                         break;

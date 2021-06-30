@@ -938,13 +938,25 @@ namespace XSharp.LanguageService
                 include = true;
             for (int pos = 0; pos < tokenList.Count; pos++)
             {
+                var t = tokenList[pos];
                 if (include)
                 {
-                    retValue += tokenList[pos].Text;
+                    switch (t.Type)
+                    {
+                        case XSharpLexer.ID:
+                        case XSharpLexer.DOT:
+                        case XSharpLexer.COLON:
+                        case XSharpLexer.COLONCOLON:
+                        case XSharpLexer.LPAREN:
+                        case XSharpLexer.RPAREN:
+                            retValue += t.Text; 
+                            break;
+                    }
+                    
                 }
                 else
                 {
-                    include = tokenList[pos] == fromToken;
+                    include = (t == fromToken);
                 }
             }
             return retValue;

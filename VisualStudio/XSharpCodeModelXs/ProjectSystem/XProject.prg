@@ -1254,6 +1254,10 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY OtherFiles AS List<STRING> GET SELF:_OtherFilesDict:Keys:ToList()
 
+      METHOD ResetParseOptions(newOptions AS XSharpParseOptions) AS VOID
+         SELF:_parseOptions := newOptions
+         RETURN
+
       PROPERTY ParseOptions AS XSharpParseOptions
          GET
             IF SELF:_parseOptions == NULL

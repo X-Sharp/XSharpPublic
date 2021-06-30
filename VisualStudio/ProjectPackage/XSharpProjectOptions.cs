@@ -153,6 +153,7 @@ namespace XSharp.Project
                 }
 
             }
+            _prjNode.ProjectModel.ResetParseOptions(ParseOptions);
         }
 
     }

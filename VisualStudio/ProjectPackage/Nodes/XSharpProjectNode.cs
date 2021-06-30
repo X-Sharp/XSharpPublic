@@ -99,7 +99,7 @@ namespace XSharp.Project
         public XSharpProjectNode(XSharpProjectPackage package)
         {
             this.package = package;
-            _hasDialect = false;
+            _dialectIsCached = false;
             this.OnProjectPropertyChanged += XSharpProjectNode_OnProjectPropertyChanged;
             InitializeImageList();
 
@@ -120,7 +120,15 @@ namespace XSharp.Project
         private void XSharpProjectNode_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
         {
             if (string.Compare(e.PropertyName, "dialect", true) == 0)
-                _hasDialect = false;
+            {
+                var prop = e.NewValue;
+                if (!Enum.TryParse(prop, true, out _dialect))
+                {
+                    _dialect = XSharpDialect.Core;
+                }
+                _dialectIsCached = true;
+            }
+            this.options = null;
         }
 
 
@@ -1972,13 +1980,13 @@ namespace XSharp.Project
             projectModel = null;
             base.Dispose(disposing);
         }
-        private bool _hasDialect = false;
+        private bool _dialectIsCached = false;
         private XSharpDialect _dialect;
         public XSharpDialect Dialect
         {
             get
             {
-                if (_hasDialect)
+                if (_dialectIsCached)
                     return _dialect;
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
@@ -1988,7 +1996,7 @@ namespace XSharp.Project
                     {
                         _dialect = XSharpDialect.Core;
                     }
-                    _hasDialect = true;
+                    _dialectIsCached = true;
                     return _dialect;
                 });
             }

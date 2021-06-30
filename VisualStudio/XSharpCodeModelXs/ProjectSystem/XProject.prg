@@ -705,9 +705,10 @@ BEGIN NAMESPACE XSharpModel
             LOCAL source AS STRING
             LOCAL file := NULL AS XFile
             VAR members := List<XSourceMemberSymbol>{}
+            source := ""
             FOREACH VAR element IN result
                 VAR xmember := XSourceMemberSymbol.FromDbResult(element, SELF)
-                source := element:SourceCode
+                source += element:SourceCode+Environment.NewLine
                 members:Add(xmember)
                 file := xmember:File
             NEXT
@@ -715,7 +716,17 @@ BEGIN NAMESPACE XSharpModel
             walker:Parse(source, TRUE)
             VAR first := (XSourceMemberSymbol) walker:EntityList:First()
             VAR parentType := (XSourceTypeSymbol) first:ParentType
-            parentType:SetMembers(members)
+            VAR entities := List<XSourceMemberSymbol>{}
+            FOR VAR i := 0 TO walker:EntityList:Count -1
+                VAR entity := walker:EntityList[i]
+                IF entity IS XSourceMemberSymbol VAR xsms
+                    entities:Add(xsms)
+                    IF i < result:Count
+                        xsms:XmlComments := result[i]:XmlComments
+                    ENDIF
+                ENDIF
+            NEXT
+            parentType:SetMembers(entities)
             RETURN first
          ENDIF
          RETURN NULL

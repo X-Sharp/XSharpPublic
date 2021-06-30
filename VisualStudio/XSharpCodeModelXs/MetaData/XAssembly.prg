@@ -14,7 +14,8 @@ BEGIN NAMESPACE XSharpModel
    CLASS XAssembly
       // Fields
       PRIVATE _projects             AS List<XProject>
-      
+      PRIVATE _wasRead              AS LOGIC
+
       PROPERTY Id                   AS INT64 AUTO GET INTERNAL SET
       PROPERTY Types                AS Dictionary<STRING, XPETypeSymbol> AUTO
       PROPERTY ExtensionMethods     AS IList<XPEMemberSymbol> AUTO
@@ -29,25 +30,26 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsXSharp             AS LOGIC AUTO
       PROPERTY Loaded               AS LOGIC AUTO
       PROPERTY LastChanged          AS DateTime AUTO GET INTERNAL SET
-      PROPERTY Size                 AS INT64 AUTO GET INTERNAL SET    
+      PROPERTY Size                 AS INT64 AUTO GET INTERNAL SET
       PROPERTY DuplicateTypes       AS List<XPETypeSymbol> AUTO
       PROPERTY HasDuplicateTypes    AS LOGIC GET DuplicateTypes != NULL .AND. DuplicateTypes:Count > 0
-      
+
       STATIC CONSTRUCTOR
          RETURN
-         
-         
+
+
       // Methods
       CONSTRUCTOR()
          SUPER()
          SELF:_projects := List<XProject>{}
-         
-         
+
+
       CONSTRUCTOR(cFileName AS STRING, dModified AS System.DateTime)
          SELF()
          Id                   := -1
          FileName             := cFileName
          LastChanged          := dModified
+         _wasRead             := FALSE
          Size                 := 0
          SELF:Initialize()
          SELF:UpdateAssembly()
@@ -63,6 +65,7 @@ BEGIN NAMESPACE XSharpModel
          ExtensionDict        := NULL
          GlobalClassName      := ""
          ExtensionDict        := NULL
+         _wasRead             := FALSE
 
       METHOD Read() AS LOGIC
          VAR reader := AssemblyReader{FileName}
@@ -73,19 +76,19 @@ BEGIN NAMESPACE XSharpModel
          IF SELF:Size != fi:Length .OR. SELF:LastChanged != fi:LastWriteTime
             XDatabase.Update(SELF)
          ENDIF
-      
+         SELF:_wasRead := TRUE
          RETURN SELF:Loaded
 
-   
-         
+
+
       METHOD AddProject(project AS XProject) AS VOID
          IF ! SELF:_projects:Contains(project)
             SELF:_projects:Add(project)
          ENDIF
-         
+
       METHOD GetType(name AS STRING) AS XPETypeSymbol
-         
-         IF SELF:IsModifiedOnDisk .OR. SELF:Types:Count == 0
+
+         IF SELF:IsModifiedOnDisk .OR. ! SELF:_wasRead
             SELF:Read()
          ENDIF
          IF SELF:Types:ContainsKey(name)
@@ -96,12 +99,12 @@ BEGIN NAMESPACE XSharpModel
             IF String.Equals(name, found:TypeDef:FullName)
                RETURN found
             ENDIF
-               
+
             IF SELF:HasDuplicateTypes
                FOREACH VAR type IN DuplicateTypes
-                  IF String.Equals(type:FullName, name) 
+                  IF String.Equals(type:FullName, name)
                      RETURN type
-                  ENDIF                     
+                  ENDIF
                   IF String.Equals(type:TypeDef:FullName, name)
                      RETURN type
                   ENDIF
@@ -125,7 +128,7 @@ BEGIN NAMESPACE XSharpModel
                      FOREACH VAR type IN DuplicateTypes
                         IF String.Equals(type:FullName, fullName)
                            RETURN type
-                        ENDIF                     
+                        ENDIF
                         IF String.Equals(type:TypeDef:FullName, name)
                            RETURN type
                         ENDIF
@@ -138,19 +141,19 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN NULL
 
-            
-        
-         
+
+
+
       INTERNAL METHOD LoadAssembly()  AS VOID
          IF SELF:Exists
             SELF:Read()
          ENDIF
-         
+
        METHOD RemoveProject(project AS XProject) AS VOID
          IF SELF:_projects:Contains(project)
             SELF:_projects:Remove(project)
          ENDIF
-         
+
       METHOD Refresh() AS VOID
          IF SELF:Exists
             IF SELF:IsModifiedOnDisk
@@ -158,7 +161,7 @@ BEGIN NAMESPACE XSharpModel
                SELF:UpdateAssembly()
             ENDIF
          ENDIF
-         
+
       PRIVATE METHOD GetPropertySafe(type AS System.Type, obj AS OBJECT, PropName AS STRING) AS STRING
          FOREACH VAR prop IN type:GetProperties()
             IF String.Compare(prop:Name, PropName, StringComparison.OrdinalIgnoreCase) == 0
@@ -166,7 +169,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
          NEXT
          RETURN ""
-         
+
       INTERNAL METHOD UpdateAssembly() AS VOID
          IF SELF:Loaded
             RETURN
@@ -193,7 +196,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN Path.GetFileName(SELF:FileName)
          END GET
       END PROPERTY
-      
+
       INTERNAL STATIC METHOD _SafeExists(cFileName AS STRING) AS LOGIC
          LOCAL lExists := FALSE AS LOGIC
          TRY
@@ -206,15 +209,15 @@ BEGIN NAMESPACE XSharpModel
             lExists := FALSE
          END TRY
          RETURN lExists
-         
+
       PROPERTY Exists               AS LOGIC GET _SafeExists(SELF:FileName)
       PROPERTY HasProjects          AS LOGIC GET SELF:_projects:Count > 0
       PROPERTY IsModifiedOnDisk     AS LOGIC GET SELF:LastWriteTimeOnDisk != SELF:LastChanged
       PROPERTY LastWriteTimeOnDisk  AS DateTime GET IIF(SELF:Exists, File.GetLastWriteTime(SELF:FileName), DateTime.MinValue)
       PROPERTY RuntimeVersion       AS STRING   AUTO GET INTERNAL SET
       PROPERTY HasExtensions        AS LOGIC GET SELF:ExtensionMethods:Count > 0
-      
-      
+
+
       STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
          XSolution.WriteOutputMessage("XModel.XAssembly " +message )
 
@@ -228,9 +231,9 @@ BEGIN NAMESPACE XSharpModel
                result:AddRange(ExtensionDict[typeName])
             ENDIF
          ENDIF
-         
+
          RETURN result
-         
+
       METHOD BuildExtensionDict() AS VOID
          ExtensionDict := Dictionary<STRING, IList<IXMemberSymbol>> {StringComparer.OrdinalIgnoreCase}
          FOREACH ext AS IXMemberSymbol IN SELF:ExtensionMethods
@@ -244,9 +247,9 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
          NEXT
          RETURN
-         
+
 
    END CLASS
-   
+
 END NAMESPACE
 

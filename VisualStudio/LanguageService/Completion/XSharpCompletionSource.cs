@@ -845,6 +845,11 @@ namespace XSharp.LanguageService
                         { 
                             add = elt.IsVisible(minVisibility);
                         }
+                        if (staticOnly && elt.IsStatic )
+                        {
+                            if (elt.Parent.FullName == "System.Object" && type.FullName != "System.Object")
+                                add = false;
+                        }
                         break;
                 }
                 if (type != null && elt.IsStatic && type.Kind == Kind.Enum && elt.DeclaringType != type.FullName && elt.Name != "HasFlag" )

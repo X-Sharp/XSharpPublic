@@ -689,7 +689,15 @@ namespace XSharp.LanguageService
                     else if (currentType != null)
                     {
                         // Now, search for a Method. this will search the whole hierarchy
-                        result.AddRange(SearchMethod(location, currentType, currentName, visibility, false));
+                        // Respect the StaticMembers and InstanceMembers states
+                        if (state.HasFlag(CompletionState.StaticMembers))
+                        {
+                            result.AddRange(SearchMethod(location, currentType, currentName, visibility, true));
+                        }
+                        if (state.HasFlag(CompletionState.InstanceMembers))
+                        {
+                            result.AddRange(SearchMethod(location, currentType, currentName, visibility, false));
+                        }
                     }
                     if (result.Count > 0)
                     {

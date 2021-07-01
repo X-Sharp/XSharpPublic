@@ -43,7 +43,7 @@ INTERNAL CLASS DesignPushButton INHERIT Button
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		LOCAL cUpper AS STRING
@@ -68,7 +68,7 @@ INTERNAL CLASS DesignPushButton INHERIT Button
 	RETURN oParams
 	PROTECTED METHOD OnPaint(e AS PaintEventArgs) AS VOID
 		SUPER:OnPaint(e)
-		
+
 		IF SELF:oBrush == NULL .or. SELF:oBrush:Color != SELF:ForeColor
 			SELF:oBrush := SolidBrush{SELF:ForeColor}
 		END IF
@@ -96,7 +96,7 @@ INTERNAL CLASS DesignPushButton INHERIT Button
 		SWITCH cValue
 		CASE "LEFT"
 			SELF:oSF:Alignment := StringAlignment.Near
-		case "CENTER" 
+		CASE "CENTER"
         case "AUTO"
 			SELF:oSF:Alignment := StringAlignment.Center
 		CASE "RIGHT"
@@ -110,7 +110,7 @@ INTERNAL CLASS DesignPushButton INHERIT Button
 		SWITCH cValue
 		CASE "TOP"
 			SELF:oSF:LineAlignment := StringAlignment.Near
-		case "CENTER" 
+		CASE "CENTER"
         case "AUTO"
 			SELF:oSF:LineAlignment := StringAlignment.Center
 		CASE "BOTTOM"
@@ -128,9 +128,9 @@ INTERNAL CLASS DesignPushButton INHERIT Button
       CATCH
          NOP
 		END TRY
-		
+
 	RETURN
-	
+
 END CLASS
 
 INTERNAL CLASS DesignFixedText INHERIT Label
@@ -145,7 +145,7 @@ INTERNAL CLASS DesignFixedText INHERIT Label
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -194,7 +194,7 @@ INTERNAL CLASS DesignFixedText INHERIT Label
 				SELF:FlatStyle := FlatStyle.System
 			END IF
 			SELF:TextAlign := (ContentAlignment)(x*y)
-			
+
 		CASE IsVisibleStyle(oProp:Name)
 			SELF:UpdateStyles()
 		END CASE
@@ -219,7 +219,7 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		LOCAL cUpper AS STRING
@@ -246,7 +246,7 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
 	RETURN oParams
 	VIRTUAL PROTECTED METHOD OnPaint(e AS PaintEventArgs) AS VOID
 		SUPER:OnPaint(e)
-	
+
 		IF SELF:oBrush == NULL .or. SELF:oBrush:Color != SELF:ForeColor
 			SELF:oBrush := SolidBrush{SELF:ForeColor}
 		END IF
@@ -299,11 +299,15 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
         CATCH
             NOP
 		END TRY
-		
-		LOCAL lExLeft, lTextLeft, lCheckRight AS LOGIC
-		lExLeft := oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
-		lTextLeft := oItem:GetProperty("Text Left"):ValueLogic
-		lCheckRight := lExLeft .or. lTextLeft
+
+		LOCAL lExLeft := FALSE, lTextLeft := FALSE, lCheckRight := FALSE AS LOGIC
+        TRY
+		    lExLeft := oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
+		    lTextLeft := oItem:GetProperty("Text Left"):ValueLogic
+            lCheckRight := lExLeft .OR. lTextLeft
+        CATCH
+            NOP
+        END TRY
 
 		LOCAL oRect AS Rectangle
 		LOCAL CONST nCheckSize := 16 AS INT
@@ -313,13 +317,13 @@ INTERNAL CLASS DesignCheckBox INHERIT CheckBox
 		ELSE
 			oRect := Rectangle{nCheckSize,0,oRect:Width - nCheckSize, oRect:Height}
 		END IF
-		
+
 		TRY
 			e:Graphics:DrawString(Funcs.TranslateCaption(SELF:oItem:GetProperty("Caption"):TextValue , FALSE) , SELF:Font , SELF:oBrush , oRect , SELF:oSF)
         CATCH
             NOP
 		END TRY
-		
+
 	RETURN
 END CLASS
 
@@ -333,7 +337,7 @@ INTERNAL CLASS DesignRadioButton INHERIT RadioButton
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		LOCAL cUpper AS STRING
@@ -370,7 +374,7 @@ INTERNAL CLASS DesignEdit INHERIT TextBox
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -396,7 +400,7 @@ INTERNAL CLASS DesignComboBox INHERIT ComboBox
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -427,7 +431,7 @@ INTERNAL CLASS DesignListBox INHERIT ListBox
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -452,7 +456,7 @@ INTERNAL CLASS DesignListView INHERIT ListView
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -482,7 +486,7 @@ INTERNAL CLASS DesignTreeView INHERIT TreeView
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -507,7 +511,7 @@ INTERNAL CLASS DesignProgressBar INHERIT ProgressBar
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -532,7 +536,7 @@ INTERNAL CLASS DesignGroupBox INHERIT GroupBox
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -558,7 +562,7 @@ INTERNAL CLASS DesignMonthCalendar INHERIT MonthCalendar
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -584,7 +588,7 @@ INTERNAL CLASS DesignHorizontalScrollBar INHERIT HScrollBar
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -608,7 +612,7 @@ INTERNAL CLASS DesignVerticalScrollBar INHERIT VScrollBar
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -635,7 +639,7 @@ INTERNAL CLASS DesignHorizontalSlider INHERIT TrackBar
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -660,7 +664,7 @@ INTERNAL CLASS DesignVerticalSlider INHERIT TrackBar
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -686,7 +690,7 @@ INTERNAL CLASS DesignHorizontalSpinner INHERIT HScrollBar
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -710,7 +714,7 @@ INTERNAL CLASS DesignVerticalSpinner INHERIT VScrollBar
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -792,7 +796,7 @@ INTERNAL CLASS DesignTabControl INHERIT TabControl
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -820,7 +824,7 @@ INTERNAL CLASS DesignTabPage INHERIT TabPage
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 END CLASS
 
@@ -839,7 +843,7 @@ INTERNAL CLASS DesignbBrowser INHERIT Panel
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 END CLASS
 
@@ -870,71 +874,71 @@ CLASS DesignDataColumn INHERIT PictureBox
 
 		SELF:BackColor:=Color.White
 		SELF:BorderStyle:=BorderStyle.Fixed3D
-		
+
 		SELF:oSF_Right:=StringFormat{}
 		SELF:oSF_Right:Trimming:=StringTrimming.None
 		SELF:oSF_Right:FormatFlags:=StringFormatFlags.NoWrap + StringFormatFlags.DirectionRightToLeft
-		
+
 		SELF:oSF_Left:=StringFormat{}
 		SELF:oSF_Left:Trimming:=StringTrimming.None
 		SELF:oSF_Left:FormatFlags:=StringFormatFlags.NoWrap
-		
+
 		SELF:oSF_Center:=StringFormat{}
 		SELF:oSF_Center:Trimming:=StringTrimming.None
 		SELF:oSF_Center:FormatFlags:=StringFormatFlags.LineLimit
 		SELF:oSF_Center:Alignment:=StringAlignment.Center
-			
+
 		SELF:nHeaderHeight:=20
 		SELF:nRowHeight:=20
 		SELF:oBrushBlack:=SolidBrush{Color.Black}
 		SELF:oBrushWhite:=SolidBrush{Color.White}
 		SELF:oPenGray:=Pen{Color.FromArgb(152,152,152)}
-		
+
 		SELF:Width := 50
-		
+
 	RETURN
 	PROTECTED METHOD OnResize(e AS EventArgs) AS VOID
 		SUPER:OnResize(e)
 		SELF:Invalidate()
 	RETURN
-	
+
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	PROTECTED METHOD OnPaint(e AS PaintEventArgs) AS VOID
 		LOCAL x,y AS REAL4
 		LOCAL rLength AS REAL4
-		
+
 		SUPER:OnPaint(e)
-		
+
 		y:=REAL4(2.0)
 		e:Graphics:FillRectangle(SolidBrush{Color.FromKnownColor(KnownColor.Control)},0,0,SELF:Width,SELF:nHeaderHeight)
 		rLength := REAL4(SELF:Width)
-		
-		
+
+
 		e:Graphics:DrawLine(Pen{Color.White},REAL4(x+1.0),REAL4(1.0),REAL4(x+rLength-2.0),REAL4(1.0))
 		e:Graphics:DrawLine(Pen{Color.White},REAL4(x+2.0),REAL4(1.0),REAL4(x+2.0),REAL4(SELF:Height))
-		
+
 		e:Graphics:DrawLine(SELF:oPenGray,REAL4(x+rLength-1.0),REAL4(0),REAL4(x+rLength-1.0),REAL4(SELF:nHeaderHeight))
 		e:Graphics:DrawLine(SELF:oPenGray,REAL4(x+rLength-2.0),REAL4(1),REAL4(x+rLength-2.0),REAL4(SELF:nHeaderHeight))
-		
+
 		e:Graphics:DrawLine(SELF:oPenGray,REAL4(x+1.0),REAL4(SELF:nHeaderHeight-1),REAL4(x+rLength-2.0),REAL4(SELF:nHeaderHeight-1))
 		e:Graphics:DrawLine(SELF:oPenGray,REAL4(x+2.0),REAL4(SELF:nHeaderHeight-2),REAL4(x+rLength-2.0),REAL4(SELF:nHeaderHeight-2))
-		
+
 		e:Graphics:DrawString(SELF:oItem:Caption,;
 											SELF:Font,;
 											SELF:oBrushBlack,;
 											RectangleF{x,REAL4(4),rLength,REAL4(20)},;
 											SELF:oSF_Center)
-		
+
 		x+=rLength
 		e:Graphics:DrawLine(Pen{Color.Black},x,REAL4(0),x,REAL4(SELF:Height))
 		y:=REAL4(SELF:nHeaderHeight)
 		e:Graphics:DrawLine(Pen{Color.Black},REAL4(0),y,REAL4(SELF:Width),y)
 	RETURN
-	
+
 END CLASS
 
 INTERNAL CLASS DesignEmpty INHERIT Panel
@@ -954,7 +958,7 @@ INTERNAL CLASS DesignEmpty INHERIT Panel
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
 			SUPER:WndProc(REF m)
-		END IF		
+		END IF
 	RETURN
 	METHOD ApplyVOStyleProperty(oProp AS VODesignProperty) AS VOID
 		DO CASE
@@ -1075,14 +1079,14 @@ INTERNAL FUNCTION GetButtonAlignment(oItem AS DesignWindowItem , lText AS LOGIC)
 		SELF:FlatStyle := FlatStyle.System
 	END IF*/
 	eAlignment := (ContentAlignment)(x*y)
-	
+
 RETURN eAlignment
 
 INTERNAL FUNCTION IsVisibleStyle(cProp AS STRING) AS LOGIC
 	switch cProp:ToUpper()
-    case "BORDER" 
-    case "CLIENT EDGE" 
-    case "STATIC EDGE" 
+    CASE "BORDER"
+    CASE "CLIENT EDGE"
+    CASE "STATIC EDGE"
     case "MODAL FRAME"
         return true
     OTHERWISE

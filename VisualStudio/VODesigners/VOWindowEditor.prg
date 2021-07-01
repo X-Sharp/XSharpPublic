@@ -525,7 +525,7 @@ RETURN
 				LOCAL cSelectedTab := "" AS STRING
 				FOR m := 1 UPTO oTabControl:TabPages:Count
 					oPageOptions := oTabControl:GetTabPageOptions(m)
-					IF oPageOptions:cCaption == "Page" // TODO Should check if page window exists
+					IF String.IsNullOrWhiteSpace(oPageOptions:cName) .OR. oPageOptions:cCaption == "Page" // TODO Should check if page window exists
 						LOOP
 					ENDIF
 					cLine := e"\t"
@@ -1030,7 +1030,7 @@ RETURN
 				LOCAL cSelectedTab := "" AS STRING
 				FOR m := 1 UPTO oTabControl:TabPages:Count
 					oPageOptions := oTabControl:GetTabPageOptions(m)
-					IF oPageOptions:cCaption == "Page" // TODO Should check if page window exists
+					IF String.IsNullOrWhiteSpace(oPageOptions:cName) .OR. oPageOptions:cCaption == "Page" // TODO Should check if page window exists
 						LOOP
 					ENDIF
 					cLine := e"\t"

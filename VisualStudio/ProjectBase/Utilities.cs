@@ -981,11 +981,6 @@ namespace Microsoft.VisualStudio.Project
             return false;
         }
 
-        private const string _reservedName = "(\\b(nul|con|aux|prn)\\b)|(\\b((com|lpt)[0-9])\\b)";
-        private const string _invalidChars = "\\/:*?\"<>|";
-        private const string _regexToUseForFileName = _reservedName + "|" + _invalidChars;
-        private static Regex _unsafeFileNameCharactersRegex = new Regex(_regexToUseForFileName, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        private static Regex _unsafeCharactersRegex = new Regex(_invalidChars, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         /// <summary>
         /// Checks whether a file part contains valid characters. The file part can be any part of a non rooted path.
         /// </summary>
@@ -1017,10 +1012,10 @@ namespace Microsoft.VisualStudio.Project
             if(!String.IsNullOrEmpty(extension))
             {
                 // Check the extension first
-                bool isMatch = _unsafeCharactersRegex.IsMatch(extension);
-                if(isMatch)
+
+                if (extension.IndexOfAny(Path.GetInvalidFileNameChars()) > 0)
                 {
-                    return isMatch;
+                    return true;
                 }
 
                 // We want to verify here everything but the extension.
@@ -1033,13 +1028,7 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
 
-            // We verify CLOCK$ outside the regex since for some reason the regex is not matching the clock\\$ added.
-            if(String.Compare(fileNameToVerify, "CLOCK$", StringComparison.OrdinalIgnoreCase) == 0)
-            {
-                return true;
-            }
-
-            return _unsafeFileNameCharactersRegex.IsMatch(fileNameToVerify);
+            return fileNameToVerify.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0;
         }
 
         /// <summary>

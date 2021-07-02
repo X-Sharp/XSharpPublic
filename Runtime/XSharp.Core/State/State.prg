@@ -875,6 +875,9 @@ CLASS XSharp.RuntimeState
 	END SET
 	END PROPERTY
 
+    /// <summary>Active Script compiler. Gets assigned from the ExecScriptFast() function.</summary>
+    /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
+    STATIC PUBLIC PROPERTY ScriptCompiler AS IMacroCompiler AUTO := NULL
 	STATIC INTERNAL _macrocompilerType   AS System.Type
     STATIC INTERNAL _macrocompiler       AS IMacroCompiler
     STATIC INTERNAL _macroresolver       AS MacroCompilerResolveAmbiguousMatch

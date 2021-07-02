@@ -342,3 +342,33 @@ FUNCTION ExecScript( cExpression, eParameters ) AS USUAL CLIPPER
 
 
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
+FUNCTION ExecScriptFast( cExpression, eParameters ) AS USUAL CLIPPER
+    LOCAL result AS USUAL
+    IF RuntimeState.ScriptCompiler == NULL_OBJECT
+        VAR oMacroAsm := AssemblyHelper.Load("XSharp.MacroCompiler")
+        IF oMacroAsm != NULL_OBJECT
+            VAR oType    := oMacroAsm:GetType("XSharp.Runtime.MacroCompiler")
+            LOCAL prop AS PropertyInfo
+            IF oType != NULL
+                VAR oMI := oType:GetMethod("GetScriptCompiler")
+                VAR oArg := <OBJECT>{RuntimeState.Dialect}
+                IF oMI != NULL
+                    VAR oMC := oMI:Invoke(NULL,oArg)
+                    RuntimeState.ScriptCompiler := (IMacroCompiler) oMC
+                ENDIF
+            ENDIF
+        ENDIF
+    ENDIF
+    IF RuntimeState.ScriptCompiler IS IMacroCompilerUsual VAR compiler
+        VAR argTmp := List<USUAL>{}
+        argTmp:AddRange(_Args())
+        argTmp:RemoveAt(0)
+        VAR cb := compiler:CompileCodeblock(cExpression)
+        result  := cb:Eval(argTmp:ToArray())
+    ELSE
+        THROW Error{"Could not find the Script Compiler"}
+    ENDIF
+    RETURN result
+
+

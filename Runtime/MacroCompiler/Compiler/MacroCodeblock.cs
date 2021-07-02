@@ -69,7 +69,7 @@ namespace XSharp.MacroCompiler.UsualMacro
             int nLevel = __MemVarInit(true);
             try
             {
-                return base.Eval();
+                return base.Eval(args);
             }
             finally
             {

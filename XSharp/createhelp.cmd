@@ -1,5 +1,5 @@
 @echo off
-SET OUT=Binaries\Help\
+SET OUT=artifacts\Help\
 if exist %OUT%xsvulcan.cab del %OUT%xsvulcan.cab
 if exist %OUT%xsharp.cab del %OUT%xsharp.cab
 if exist %OUT%xsharp.mshc del %OUT%xsharp.mshc

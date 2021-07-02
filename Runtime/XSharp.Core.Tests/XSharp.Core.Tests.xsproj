@@ -34,7 +34,7 @@
     <VO15>false</VO15>
     <VO16>false</VO16>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.8.2.13</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
@@ -134,6 +134,7 @@
     <Compile Include="ErrorTests.prg" />
     <Compile Include="FileSearchTest.prg" />
     <Compile Include="OSTests.prg" />
+    <Compile Include="Support.prg" />
     <Compile Include="TimeTest.prg" />
     <Compile Include="ConversionTests.prg" />
     <Compile Include="DynamicTest.prg" />

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		s:= "Hello World    "
 		Assert.Equal("Hello World",AllTrim(s))
-				
+
 	RETURN
 
 	[Fact, Trait("Category", "String")];
@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		Assert.Equal((DWORD)32,Asc(VALUE))
 		Assert.Equal((DWORD)32,Asc(" "))
 		LOCAL nOld AS LONG
-		nOld := RuntimeState.WinCodePage 
+		nOld := RuntimeState.WinCodePage
 		RuntimeState.WinCodePage := 1253 // Greek
 		Assert.Equal((DWORD)235,Asc(e"\x03bb")) // Lower Lambda
 		RuntimeState.WinCodePage  := 1252 // Western Europea
@@ -123,7 +123,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		s := "aaa" + ((CHAR) 141):ToString() +Chr(10)+ "bbb"
 		Assert.Equal(1U, MLCount1(s))
 		Assert.Equal(2U, MLCount1(HardCR(s)))
-	
+
 
 	[Fact, Trait("Category", "String")];
 	METHOD InStrTest() AS VOID
@@ -167,8 +167,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	METHOD LeftTest() AS VOID
 
 		LOCAL s := "Hello World" AS STRING
-		LOCAL unassigned		 AS STRING		                  
-							  
+		LOCAL unassigned		 AS STRING
+
 		Assert.Equal("",Left(s,0))
 		Assert.Equal("H",Left(s,1))
 		Assert.Equal("Hello World",Left(s,99))
@@ -176,7 +176,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		Assert.Equal(NULL,Left(unassigned,0))
 		Assert.Equal(NULL,Left(unassigned,1))
 		Assert.Equal(NULL,Left(unassigned,99))
-				
+
 	RETURN
 #pragma warnings(165, default)
 	[Fact, Trait("Category", "String")];
@@ -343,7 +343,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  Assert.Equal("S530", SoundEx("Smythe") )
 
 	  RETURN
-   
+
    [Fact, Trait("Category", "String")];
    METHOD CharMixTest() AS VOID
 	  Assert.Equal("1234567890", CharMix("13579","24680"))
@@ -365,21 +365,21 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  Assert.Equal(2U, ATCLine("Second", test))
 	  Assert.Equal(3U, ATCLine("Third", test))
 	  Assert.Equal(0U, ATCLine("Fourth", test))
-	 
+
 	  RETURN
 
    [Fact, Trait("Category", "Memo")];
    METHOD MemLinesTest() AS VOID
 	  LOCAL test AS STRING
 	  test := e"first line\r\nsecond line\r\nthird line"
-	  Assert.Equal(3U, MemLines(test))     
-	  Assert.Equal(3U, MLCount1(test))     
+	  Assert.Equal(3U, MemLines(test))
+	  Assert.Equal(3U, MLCount1(test))
 	  Assert.Equal(0U, MemLines(""))
 	  Assert.Equal(1U, MemLines(" "))
 	  Assert.Equal(0U, MLCount1(""))
 	  Assert.Equal(1U, MLCount1(" "))
-	  Assert.Equal(0U, MemLines(NULL))  
-	  Assert.Equal(0U, MLCount1(NULL))  
+	  Assert.Equal(0U, MemLines(NULL))
+	  Assert.Equal(0U, MLCount1(NULL))
 	  RETURN
 
 
@@ -387,10 +387,12 @@ BEGIN NAMESPACE XSharp.Core.Tests
    [Fact, Trait("Category", "Memo")];
 	METHOD MemoTest() AS VOID
 		LOCAL sToWrite := "test" AS STRING
-		MemoWrit("MemoTest.txt", sToWrite)
-		VAR sText := MemoRead("MemoTest.txt")
+        LOCAL cFileName :=TempFile("txt") AS STRING
+		MemoWrit(cFileName, sToWrite)
+		VAR sText := MemoRead(cFileName)
 		Assert.Equal(sToWrite, sText)
-		
+        FErase(cFileName)
+
 
    [Fact, Trait("Category", "Conversion")];
 	METHOD Ansi2OemTest() AS VOID

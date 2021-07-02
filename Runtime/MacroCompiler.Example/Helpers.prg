@@ -214,17 +214,14 @@ BEGIN NAMESPACE MacroCompilerTest
         END
 
     FUNCTION CreateFoxScriptCompiler() AS XSharp.Runtime.MacroCompiler
-        var o := XSharp.MacroCompiler.MacroOptions.FoxPro
-        o:ParseMode := ParseMode.Statements
-        RETURN XSharp.Runtime.MacroCompiler{o}
+        RETURN XSharp.Runtime.MacroCompiler.GetScriptCompiler(XSharpDialect.FoxPro)
+
 
     FUNCTION CreateFoxMacroCompiler() AS XSharp.Runtime.MacroCompiler
         RETURN XSharp.Runtime.MacroCompiler{XSharp.MacroCompiler.MacroOptions.FoxPro}
 
     FUNCTION CreateScriptCompiler() AS XSharp.Runtime.MacroCompiler
-        var o := XSharp.MacroCompiler.MacroOptions.Default
-        o:ParseMode := ParseMode.Statements
-        RETURN XSharp.Runtime.MacroCompiler{o}
+        RETURN XSharp.Runtime.MacroCompiler.GetScriptCompiler(XSharpDialect.Core)
 
     FUNCTION CreateMacroCompiler() AS XSharp.Runtime.MacroCompiler
         Console.WriteLine("Creating macro compiler ...")

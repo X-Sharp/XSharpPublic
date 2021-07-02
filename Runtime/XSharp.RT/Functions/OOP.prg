@@ -1011,7 +1011,7 @@ FUNCTION ClassList() AS ARRAY
 
 FUNCTION ClassName(oObject AS OBJECT) AS STRING
     IF oObject != NULL
-	    RETURN oObject?:GetType():Name:ToUpper()
+	    RETURN oObject:GetType():Name:ToUpper()
     ENDIF
     RETURN ""
 
@@ -1020,7 +1020,7 @@ FUNCTION ClassName(oObject AS OBJECT) AS STRING
 
 FUNCTION ClassTree(oObject AS OBJECT) AS ARRAY
     IF oObject != NULL
-	    RETURN OOPHelpers.ClassTree(oObject?:GetType())
+	    RETURN OOPHelpers.ClassTree(oObject:GetType())
     ENDIF
     RETURN {}
 
@@ -1082,7 +1082,7 @@ FUNCTION ClassTreeClass(symClass AS STRING) AS ARRAY
 
 FUNCTION IsAccess(oObject AS OBJECT,symAccess AS STRING) AS LOGIC
     IF oObject != NULL
-	    VAR oProp := OOPHelpers.FindProperty(oObject?:GetType(), symAccess, TRUE, TRUE)
+	    VAR oProp := OOPHelpers.FindProperty(oObject:GetType(), symAccess, TRUE, TRUE)
 	    IF oProp != NULL_OBJECT
 		    RETURN oProp:CanRead
         ENDIF
@@ -1093,7 +1093,7 @@ FUNCTION IsAccess(oObject AS OBJECT,symAccess AS STRING) AS LOGIC
 
 FUNCTION IsAssign(oObject AS OBJECT,symAssign AS STRING) AS LOGIC
     IF oObject != NULL
-	    VAR oProp := OOPHelpers.FindProperty(oObject?:GetType(), symAssign, FALSE, TRUE)
+	    VAR oProp := OOPHelpers.FindProperty(oObject:GetType(), symAssign, FALSE, TRUE)
 	    IF oProp != NULL_OBJECT
 		    RETURN oProp:CanWrite
         ENDIF
@@ -1181,7 +1181,7 @@ FUNCTION IVarGetInfo(oObject AS OBJECT,symInstanceVar AS STRING) AS DWORD
 
 FUNCTION IsMethod(oObject AS OBJECT,symMethod AS STRING) AS LOGIC
 	IF oObject != NULL_OBJECT
-	    RETURN OOPHelpers.IsMethod(oObject?:GetType(), symMethod)
+	    RETURN OOPHelpers.IsMethod(oObject:GetType(), symMethod)
     ENDIF
     RETURN FALSE
 

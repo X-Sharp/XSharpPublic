@@ -46,7 +46,7 @@
     <VO15>true</VO15>
     <VO16>false</VO16>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.8.0.4</XSharpProjectversion>
+    <XSharpProjectversion>2.8.2.13</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
@@ -141,6 +141,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\XSharp.Core.Tests\Support.prg">
+      <Link>Support.prg</Link>
+    </Compile>
     <Compile Include="ArrayTests.prg" />
     <Compile Include="BinaryTests.prg" />
     <Compile Include="ConversionTests.prg" />

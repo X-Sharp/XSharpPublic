@@ -567,7 +567,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                     //    addErrorMessage(token, "Closing bracket ']' found with missing '['");
                     //    break;
                     case TokenType.BACKSLASH: // escape next token
-                        if (i < max)
+                        if (i < max-1)
                         {
                             i++;
                             token = matchTokens[i];
@@ -889,7 +889,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                         }
                         break;
                     case TokenType.BACKSLASH: // escape next token
-                        if (i < max)
+                        if (i < max-1)
                         {
                             i++;
                             token = resultTokens[i];

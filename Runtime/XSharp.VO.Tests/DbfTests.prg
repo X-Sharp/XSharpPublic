@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DBCreate_Tests() AS VOID
 			LOCAL aFields AS ARRAY
 			aFields := {{"TEST","C",10,0}}
-	
+
 			LOCAL cFileName_WithExt AS STRING
 			LOCAL cFileName_NoExt AS STRING
 			cFileName_NoExt := "DBCreate_Tests"
@@ -30,13 +30,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			END IF
 			Assert.True(  DbCreate(cFileName_NoExt , aFields , "DBFNTX")  )
 			Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
-			
+
 			IF System.IO.File.Exists(cFileName_WithExt)
 				System.IO.File.Delete(cFileName_WithExt)
 			END IF
 			Assert.True(  DbCreate(cFileName_WithExt , aFields , "DBFNTX")  )
 			Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
-	
+
 			cFileName_WithExt := cFileName_NoExt + ".none"
 			IF System.IO.File.Exists(cFileName_WithExt)
 				System.IO.File.Delete(cFileName_WithExt)
@@ -44,14 +44,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(  DbCreate(cFileName_WithExt , aFields , "DBFNTX")  )
 			Assert.True(  System.IO.File.Exists(cFileName_WithExt) )
 		RETURN
-	
+
 		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD DBAppend_Exclusive() AS VOID
 			LOCAL aFields AS ARRAY
 			LOCAL cFileName AS STRING
 			aFields := {{"TEST","C",10,0}}
 			cFileName := "DBAppend_Exclusive"
-	
+
 			Assert.True(  DbCreate(cFileName , aFields , "DBFNTX")  )
 			Assert.True(  DbUseArea(,"DBFNTX",cFileName,,FALSE) )
 			Assert.True(  RecCount() == 0 )
@@ -60,14 +60,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(  AllTrim(FieldGet(1)) == "test" )
 			Assert.True(  DbCloseArea() )
 		RETURN
-	
+
 		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD DBAppend_Shared() AS VOID
 			LOCAL aFields AS ARRAY
 			LOCAL cDbf AS STRING
 			aFields := {{"TEST","C",10,0}}
 			cDbf := __FUNCTION__
-	
+
 			Assert.True(  DbCreate(cDbf , aFields , "DBFNTX")  )
 			Assert.True(  DbUseArea(,"DBFNTX",cDbf,,TRUE) )
 			Assert.True(  RecCount() == 0 )
@@ -76,11 +76,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True(  AllTrim(FieldGet(1)) == "test" )
 			Assert.True(  DbCloseArea() )
 		RETURN
-	
+
 		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD DBAppend_more() AS VOID
 		LOCAL cDbf AS STRING
-			cDbf := "testappend.DbF"
+			cDbf := __FUNCTION__+".Dbf"
 			RddSetDefault( "DBFNTX" )
 			Assert.True(  DbCreate(cDbf , { {"TEST","C",10,0} }) )
 			// Appending in exclusive mode:
@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FieldPut(1, "test") // ok
 			Assert.True( AllTrim(FieldGet(1)) == "test" )
 			Assert.True( DbCloseArea() )
-	
+
 			// Appending in SHARED mode:
 			Assert.True( DbUseArea(, , cDbf , "alias2" , TRUE) )
 			Assert.True( RecCount() == 1 )
@@ -100,18 +100,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( AllTrim(FieldGet(1)) == "test2" )
 			Assert.True( DbCloseArea() )
 		RETURN
-	
+
 		[Fact, Trait("Category", "DBFFuncs")];
 		METHOD DBUseArea_same_file_twice() AS VOID
 		LOCAL cDbf AS STRING
 			RddSetDefault( "DBFNTX" )
-			cDbf := "testtwice.DbF"
+			cDbf := __FUNCTION__+".DbF"
 			Assert.True(  DbCreate(cDbf , { {"TEST","C",10,0} }) )
-	
+
 			// shared mode
 			Assert.True( DbUseArea(, , cDbf , , FALSE) )
 			Assert.True( DbCloseArea() )
-	
+
 			Assert.True( DbUseArea(, , cDbf , , FALSE) )
 			Assert.True( DbCloseArea() )
 		RETURN
@@ -120,26 +120,26 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		// TECH-K3TL5J8M7V
 		[Fact, Trait("Category", "DBF")];
 		METHOD VODBInfoTest() AS VOID
-			
+
 			LOCAL cFileName AS STRING
-			cFileName := "test.DBF"
+			cFileName := __FUNCTION__+".DBF"
 			DbCreate(cFileName , { {"CFIELD","C",10,0} })
-			DbUseArea(,,cFileName)
+			DbUseArea(,,cFileName,"TEST")
 			DbAppend()
-			
+
 			LOCAL u := NIL AS USUAL
 			VoDbSkip(-1)
-			
+
 			VoDbInfo(DBI_FULLPATH , REF u)
 			LOCAL c AS STRING
 			c := u
 			? c
-			Assert.True(c:EndsWith("test.DBF") .AND. c:Contains(":\"))
+			Assert.True(c:EndsWith(cFileName) .AND. c:Contains(":\"))
 			VoDbInfo(DBI_DB_VERSION , REF u)
 			Assert.True(SLen(u) > 1)
 			VoDbInfo(DBI_ALIAS , REF u)
 			Assert.Equal("TEST" , u)
-			
+
 			VoDbInfo(DBI_BOF , REF u)
 			Assert.Equal(TRUE , (LOGIC) u)
 			VoDbInfo(DBI_EOF , REF u)
@@ -150,7 +150,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(1, (LONG)  u)
 			VoDbInfo(DBI_READONLY , REF u)
 			Assert.Equal(FALSE,(LOGIC)  u)
-			
+
 			DbCloseArea()
 		RETURN
 
@@ -161,14 +161,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cDbf := GetTempFileName("testAppendShared")
 			RddSetDefault( "DBFNTX" )
 			DbCreate(cDbf , { {"TEST","C",10,0} })
-			
+
 //			Appending in exclusive mode:
 			DbUseArea(, , cDbf , "alias2" , FALSE)
 			Assert.True( DbAppend() )
 			Assert.Equal(  RecCount() ,1)
 			FieldPut(1, "test") // ok
 			DbCloseArea()
-			
+
 //			Appending in SHARED mode:
 			DbUseArea(, , cDbf , "alias2" , TRUE)
 			Assert.True( DbAppend() ) // returns true but does not append record
@@ -181,15 +181,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD AliasNameReuse() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := __FUNCTION__
-			
+
 			RddSetDefault( "DBFNTX" )
-			
+
 			DbCreate(cDbf , { {"TEST","C",10,0} })
-			
+
 //			opening and closing once
 			DbUseArea(, , cDbf , , FALSE)
 			DbCloseArea()
-			
+
 //			opening and closing again
 			Assert.True( DbUseArea(, , cDbf , , FALSE) )
 			Assert.True( DbCloseArea() )
@@ -224,15 +224,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbUseArea( , , cFileName , "tempalias")
 			DbAppend()
 			DbCloseArea()
-			
+
 			DbUseArea( , , cFileName)
 			FieldPut(1 , 46.11) // ! a float isn/t stored !
 			DbCommit()
 			Assert.Equal(46.11 , (FLOAT) FieldGet(1)) // runtime exception
 			DbCloseArea()
 		RETURN
-	
-	
+
+
 		// TECH-J61EXJ870D , FieldName() and FieldSym() throw an exception with incorrect field no
 		[Fact, Trait("Category", "DBF")];
 		METHOD FieldNameSym() AS VOID
@@ -247,9 +247,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(NULL_SYMBOL, FieldSym(0))
 			DbCloseArea()
 		RETURN
-	
-	
-	
+
+
+
 		// TECH-560ANYQI2P , DBRLockList() always returns zero
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBRLockListTest() AS VOID
@@ -271,13 +271,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(2, (INT) DbRLockList()[1])
 			DbCloseArea()
 		RETURN
-	
+
 		// TECH-34OWD3RR1Z , DBF problems with filters
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBFilter() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := GetTempFileName()
-			IF System.IO.File.Exists(cDbf) 
+			IF System.IO.File.Exists(cDbf)
 				System.IO.File.Delete(cDbf)
 			END IF
 			DbCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
@@ -292,7 +292,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(4 , (INT) RecCount())
 			Assert.Equal(4 , (INT) LastRec())
 			DbCloseArea()
-						
+
 			DbUseArea(,,cDbf)
 //			"Setting filter to GHI, should be one record:"
 //			"Instead, record 1 and 3 are shown"
@@ -306,7 +306,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				nCount ++
 			END DO
 			Assert.Equal(1 , nCount)
-			
+
 			DbGoBottom()
 			Assert.False( Eof() )
 			nCount := 0
@@ -317,7 +317,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				DbSkip(+1)
 			END DO
 			Assert.Equal(1 , nCount)
-			
+
 			DbCloseArea()
 		RETURN
 
@@ -330,17 +330,17 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCreate(cDbf, {{"CFIELD","C",10,0}}, "DBFNTX", TRUE)
 			DbAppend()
 			FieldPut(1, "ABC")
-			
+
 			l := DbRecordInfo( DBRI_RECNO ) // exception
 			Assert.True(l)
 			l := DbRecordInfo( DBRI_DELETED ) // exception
 			Assert.False(l)
 			l := DbRecordInfo( DBRI_LOCKED ) // exception
 			Assert.True(l)
-			
+
 			DbCloseArea()
 		RETURN
-		
+
 		// TECH-NVMBVB2Y44 , NullReferenceExpetion with DBFieldInfo()
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBFieldInfo_test() AS VOID
@@ -349,13 +349,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCreate(cDbf, {{"NFIELD","N",10,3}}, "DBFNTX", TRUE)
 			DbAppend()
 			FieldPut(1, 1.23)
-			
+
 			Assert.Equal("NFIELD",	DbFieldInfo( DBS_NAME , 1 ) ) // NullReferenceException
 			Assert.Equal("N",		DbFieldInfo( DBS_TYPE , 1 ) )
 			Assert.Equal(10,		(INT) DbFieldInfo( DBS_LEN , 1 ) )
 			Assert.Equal(3,			(INT) DbFieldInfo( DBS_DEC , 1 ) )
 			Assert.Equal(5,			(INT) DbFieldInfo( DBS_PROPERTIES , 1 ) )
-			
+
 			DbCloseArea()
 		RETURN
 
@@ -369,22 +369,22 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FieldPut(1, "ABC")
 			DbAppend()
 			FieldPut(1, "DEF")
-			
+
 			DbGoTop()
 			Assert.Equal(1, (INT) RecNo())
 			Assert.Equal(FALSE, Eof())
-			
+
 //			 Any of the below cause the record pointer to go EOF
 			Assert.False( DbRecordInfo(DBRI_DELETED , 0) )
 			DbRecordInfo(DBRI_BUFFPTR , 0)
 			DbRecordInfo(DBRI_RAWDATA , 0)
-			
+
 			Assert.Equal(1, (INT) RecNo())
 			Assert.Equal(FALSE, Eof())
-			
+
 			DbCloseArea()
 		RETURN
-	
+
 		// TECH-C6Y1L51V1O , DBContinue() not working correctly
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBContinue_test() AS VOID
@@ -397,25 +397,25 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FieldPut(1, 456)
 			DbAppend()
 			FieldPut(1, 789)
-			
+
 			DbGoTop()
 			Assert.True( DbLocate({||_FIELD->NFIELD > 300} , , , , TRUE) ) // DBSCOPEREST
 			Assert.True( Found() )
 			Assert.Equal(456.0 , (FLOAT)  FieldGet(1) )
-			
+
 //			DBContinue() returns TRUE (correct) but does not move record pointer at all
 			Assert.True( DbContinue() )
 			Assert.True( Found() )
 			Assert.Equal( 789.0 , (FLOAT)  FieldGet(1) )
-			
+
 			Assert.True( DbContinue() )
 			Assert.False( Found() )
 			Assert.Equal( 0.0 , (FLOAT) FieldGet(1) )
-			
+
 			Assert.True( DbContinue() )
 			Assert.False( Found() )
 			Assert.Equal( 0.0 , (FLOAT) FieldGet(1) )
-			
+
 			DbCloseArea()
 		RETURN
 
@@ -433,12 +433,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Shared_Ntx() AS VOID
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
-			
+
 			RddSetDefault("DBFNTX")
 
 			cDbf := GetTempFileName()
 			cNtx := cDbf + ".ntx"
-			
+
 			Assert.True( DbCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }}) )
 			Assert.True( DbUseArea(,,cDbf,,FALSE) )
 			Assert.True( DbAppend() )
@@ -446,11 +446,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( DbAppend() )
 			FieldPut ( 1 , "A")
 			Assert.True( DbCloseArea() )
-			
+
 			Assert.True( DbUseArea(,,cDbf,,TRUE) ) // ----- opening in SHARED mode
 			Assert.True( DbCreateIndex(cNtx , "CFIELD") ) // returns TRUE
 			Assert.True( DbCloseArea() )
-			
+
 			Assert.True( DbUseArea(,,cDbf,,FALSE) )
 			Assert.True( DbSetIndex(cNtx) )
 			DbGoTop()
@@ -473,7 +473,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbAppend()
 			FieldPut ( 1 , "A")
 			Assert.True( DbCloseArea() )
-			
+
 			Assert.True( DbUseArea(,,cDbf) )
 			LOCAL u AS USUAL
 			u := FieldGet(2) // it should be a NULL_DATE
@@ -493,10 +493,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL aResult AS ARRAY
 
 			RddSetDefault("DBFNTX")
-			
+
 			cDbf := GetTempFileName()
 			cNtx := cDbf + ".ntx"
-			
+
 			DbCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }})
 			DbUseArea(,,cDbf)
 			DbAppend()
@@ -508,11 +508,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbAppend()
 			FieldPut ( 1 , "K")
 			DbCloseArea()
-			
+
 			Assert.True( DbUseArea(,,cDbf) )
 			Assert.True( DbCreateIndex(cNtx , "CFIELD") )
 			Assert.True( DbCloseArea() )
-			
+
 			Assert.True( DbUseArea(,,cDbf,,FALSE) )
 			Assert.True( DbSetIndex(cNtx) )
 			aResult := GetRecords()
@@ -521,7 +521,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( aResult[2] == "DEF")
 			Assert.True( aResult[3] == "GHI")
 			Assert.True( aResult[4] == "K")
-			
+
 			DbGoTop()
 			DbSkip()
 			FieldPut(1,"HHH")
@@ -535,7 +535,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbGoTop()
 			DbSkip(2)
 			FieldPut(1,"DEF") // restore it
-			
+
 			Assert.True( DbCloseArea() )
 
 
@@ -547,7 +547,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( aResult[2] == "DEF")
 			Assert.True( aResult[3] == "GHI")
 			Assert.True( aResult[4] == "K")
-			
+
 			DbGoTop()
 			DbSkip()
 			Assert.True(RLock())
@@ -558,7 +558,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.True( aResult[2] == "GHI")
 			Assert.True( aResult[3] == "III")
 			Assert.True( aResult[4] == "K")
-			
+
 			Assert.True( DbCloseArea() )
 		RETURN
 
@@ -610,15 +610,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
             DbCloseAll()
 			cFileName := __FUNCTION__
 			Assert.True( DbCreate(cFileName, {{"FLD1","C",10,0}}) )
-			
+
 			Assert.True( DbUseArea ( TRUE , , cFileName , "a1") )
 			Assert.Equal( 1u , DbGetSelect() )
 			Assert.True( DbCloseArea() )
-			
+
 			Assert.True( DbUseArea ( TRUE , , cFileName , "a2") )
 			Assert.Equal( 1u , DbGetSelect() )
 			Assert.True( DbCloseArea() )
-			
+
 			Assert.True( DbUseArea ( TRUE , , cFileName , "a3") )
 			Assert.Equal( 1u , DbGetSelect() )
 			Assert.True( DbCloseArea() )
@@ -632,27 +632,27 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cFileName := __FUNCTION__
 			SetExclusive ( FALSE )
 			DbCreate ( cFileName , { {"id", "C", 5, 0} })
-		
+
 			DbUseArea ( , , cFileName )
 			DbAppend()
 			DbAppend()
 			DbAppend()
 			DbGoTop()
-			
+
 			Assert.True( DbRLock ( RecNo() ) )
 			Assert.True( DbRecordInfo ( DBRI_LOCKED ) ) // Should show TRUE
 			Assert.True( AScan ( DbRLockList() , RecNo() ) > 0 )
-			
+
 			DbSkip()
 //			record 2 - no lock
 			Assert.False( DbRecordInfo ( DBRI_LOCKED ) )
 			Assert.False( AScan ( DbRLockList() , RecNo() ) > 0 )
-			
+
 			DbSkip()
 			Assert.True( DbRLock ( RecNo() ) )
 			Assert.True( DbRecordInfo ( DBRI_LOCKED ) ) // Should show TRUE
 			Assert.True( AScan ( DbRLockList() , RecNo() ) > 0 )
-			
+
 			LOCAL a AS ARRAY
 			a:= DbRLockList()
 			Assert.Equal( 2 , (INT) ALen(a) )
@@ -661,7 +661,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
             FINALLY
 			DbCloseArea()
-			
+
 			SetExclusive ( TRUE ) // restore
             END TRY
 		RETURN
@@ -682,14 +682,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cFileName := __FUNCTION__
 
 			RddSetDefault("DBFNTX")
-			
+
 			DbCreate(cFileName, {{"FLD1","C",10,0}})
 			DbUseArea(,,cFileName,,FALSE)
 			DbCloseArea()
 
 //			exception here
 			Assert.True( DbCreate(cFileName, {{"FLD1","N",10,0}}) )
-			
+
 			Assert.True( DbUseArea(,,cFileName) )
 			DbAppend()
 			FieldPut(1 , -123)
@@ -702,9 +702,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBError_test() AS VOID
 			LOCAL cDbf AS STRING
-			
+
 			cDbf := __FUNCTION__
-			
+
 			DbCreate( cDbf , {{"CFIELD" , "C" , 10 , 0 }})
 			DbUseArea(,,cDbf,,TRUE)
 			Assert.True( DbAppend() )
@@ -727,12 +727,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD Ntx_SoftSeek_Test_Numeric() AS VOID
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
-			
+
 			RddSetDefault("DBFNTX")
 
 			cDbf := __FUNCTION__
 			cNtx := cDbf + ".ntx"
-			
+
 			DbCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
 			DbUseArea(,,cDbf,,FALSE)
 			DbAppend()
@@ -772,18 +772,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(TRUE, Eof())
             Assert.Equal(FALSE, Found())
             RETURN
-            
+
    		// TECH-9JPUGAOV3L , NTX problem with EoF after sequence of commands
 		[Fact, Trait("Category", "DBF")];
 		METHOD Ntx_SoftSeek_Test_String() AS VOID
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
-			
+
 			RddSetDefault("DBFNTX")
 
 			cDbf := __FUNCTION__
 			cNtx := cDbf + ".ntx"
-			
+
 			DbCreate( cDbf , {{"CFIELD" , "C" , 5 , 0 }})
 			DbUseArea(,,cDbf,,FALSE)
 			DbAppend()
@@ -825,7 +825,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(FALSE, Found())
 
 RETURN
-            
+
 
 
 		// TECH-9JPUGAOV3L , NTX problem with EoF after sequence of commands
@@ -833,12 +833,12 @@ RETURN
 		METHOD Ntx_Eof_test() AS VOID
 			LOCAL cDbf AS STRING
 			LOCAL cNtx AS STRING
-			
+
 			RddSetDefault("DBFNTX")
 
 			cDbf := __FUNCTION__
 			cNtx := cDbf + ".ntx"
-			
+
 			DbCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
 			DbUseArea(,,cDbf,,FALSE)
 			DbAppend()
@@ -847,7 +847,7 @@ RETURN
 			FieldPut(1,456)
 			DbCreateIndex(cNtx, "NFIELD")
 			DbCloseArea()
-			
+
 
 			// necessary sequence to reproduce the problem below
 			DbUseArea(,,cDbf,,FALSE)
@@ -878,30 +878,30 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBOrderInfo_DBOI_SETCODEBLOCK() AS VOID
 			LOCAL cDBF, cNTX AS STRING
-			
+
 			RddSetDefault("DBFNTX")
 
 			cDbf := __FUNCTION__
 			cNTX := cDBF + ".ntx"
-			
+
 			DbCreate( cDBF , {{"ID" , "C" , 5 , 0 }})
 			DbUseArea(,,cDBF)
-			
+
 			DbAppend()
 			FieldPut(1, "one")
-			
+
 			DbCreateIndex(cNTX , "Upper (ID)")
 			DbCloseArea()
-			
+
 			DbUseArea(,,cDBF)
 			DbSetIndex(cNTX)
-			
+
 			? "DBOI_SETCODEBLOCK" , DbOrderInfo( DBOI_SETCODEBLOCK )
-			
-			DbCloseArea()		
+
+			DbCloseArea()
 		RETURN
 
-		
+
 		// TECH-3NY78C93EK, OrdScope() not working
 		[Fact, Trait("Category", "DBF")];
 		METHOD OrdScope_test() AS VOID
@@ -915,14 +915,14 @@ RETURN
 			NEXT
 			DbCreateIndex(cDbf , "NFIELD")
 			DbCloseArea()
-			
+
 			DbUseArea(,"DBFNTX",cDbf) // 20 records
 			DbSetIndex ( cDbf )
 			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 20)
 			Assert.Equal( (INT) OrdScope(TOPSCOPE, 5) , 0) // returns the previous value
 			Assert.Equal( (INT) OrdScope(BOTTOMSCOPE, 10) , 0) // returns the previous value
 			DbGoTop()
-			
+
 			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 6) // still 20 - but must be 6
 			LOCAL nCount := 0 AS INT
 			DO WHILE ! Eof() // all 20 records are listed
@@ -935,16 +935,16 @@ RETURN
 			Assert.Equal( 10 , (INT) DbOrderInfo( DBOI_SCOPEBOTTOM ) ) // {(0x0000)0x00000000} CLASS
 			DbCloseArea()
 		RETURN
-		
+
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD OrdScope_test_with_Ordinal_Collation() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := __FUNCTION__
-			
+
 			LOCAL uCollation AS USUAL
 			uCollation := SetCollation(#ORDINAL)
-			
+
 			DbCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
 			DbUseArea(,"DBFNTX",cDbf)
 			FOR LOCAL n := 1 AS INT UPTO 20
@@ -953,18 +953,18 @@ RETURN
 			NEXT
 			DbCreateIndex(cDbf , "NFIELD")
 			DbCloseArea()
-			
+
 			DbUseArea(,"DBFNTX",cDbf)
 			DbSetIndex ( cDbf )
 			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 20)
 			Assert.Equal( (INT) UsualType( DbOrderInfo( DBOI_KEYCOUNT )  ) , 1) // first time returns 6
 			Assert.Equal( (INT) UsualType( DbOrderInfo( DBOI_KEYCOUNT )  ) , 1) // second time it returns 1 correctly
 			DbCloseArea()
-			
+
 			SetCollation(uCollation)
 		RETURN
-		
-		
+
+
 		// TECH-9TW65Q3XQE, NTX corruption with updating multiple fields and shared mode
 		[Fact, Trait("Category", "DBF")];
 		METHOD NTX_test() AS VOID
@@ -973,14 +973,14 @@ RETURN
 			LOCAL cDBF, cNTX AS STRING
 
 			RddSetDefault("DBFNTX")
-			
+
 			aValues := { "ssss" , "hhhh", "wwww" , "aaaa" }
 			cDbf := __FUNCTION__
 			cNTX := cDbf
 			DbCreate( cDBF , {{"LAST" , "C" , 20 , 0 } , ;
 								{"TEXT1" , "C" , 10 , 0 } , ;
 								{"NUM1" , "N" , 10 , 2 }})
-			
+
 			DbUseArea(,,cDBF,,FALSE)
 			FOR i := 1 UPTO ALen ( aValues )
 				DbAppend()
@@ -988,7 +988,7 @@ RETURN
 			NEXT
 			DbCreateIndex(cNTX, "Upper ( Last)")
 			DbCloseArea()
-			
+
 			DbUseArea(,,cDBF,,TRUE) // open shared !
 			DbSetIndex(cNTX)
 			DbGoTop()
@@ -1003,17 +1003,17 @@ RETURN
 			Assert.True( DbRLock ( RecNo() )  )
 			// "Replacing", AllTrim(FieldGet(1)), "with 'pppp'"
 			FieldPut ( 1 , "pppp" ) // Note: This is the index field
-				
+
 //	 this is what causes the problem, updating a second field
 //	 if this fieldput is put above the first one, then sample works correctly
 //	 either one of the fieldputs below cause the problem to surface
 			FieldPut ( 2 , "Eins" )
 			FieldPut ( 3 , 123.45 )
-			
+
 			DbCommit()
-			
+
 			DbRUnLock ( RecNo() )
-			
+
 			Assert.False( DbSeek( "AAAA" ) ) // must show .F.
 			Assert.True( DbSeek ("PPPP" ) ) // must show .T.
 			// "Record order now:"
@@ -1037,33 +1037,33 @@ RETURN
 			ENDDO
 			DbCloseArea()
 		RETURN
-	
-	
+
+
 		// TECH-4JX6H10741, DBOrderInfo( DBOI_KEYCOUNT ) returns NIL when record pointer is at EoF
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBOrderInfo_DBOI_KEYCOUNT() AS VOID
 			LOCAL cDbf AS STRING
-			LOCAL aValues AS ARRAY 
+			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD
-			
+
 			cDbf := __FUNCTION__
-			aValues := { 44 , 12, 34 , 21 }                                 
+			aValues := { 44 , 12, 34 , 21 }
 			DbCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })
-			DbUseArea(,"DBFNTX",cDBF,,FALSE) 
+			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			Assert.Equal(0 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
 			FOR i := 1 UPTO ALen ( aValues )
 				DbAppend()
-				FieldPut(1,aValues [i])  
-			NEXT 
+				FieldPut(1,aValues [i])
+			NEXT
 			Assert.Equal(0 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 0,  ok
-			DbCreateIndex(cDbf, "age" ) 
+			DbCreateIndex(cDbf, "age" )
 			Assert.Equal(4 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
-			DbGoTop() 
+			DbGoTop()
 			Assert.Equal(4 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
 			DO WHILE ! Eof()
-//			? FieldGet ( 1 ) 
+//			? FieldGet ( 1 )
 				DbSkip(1)
-			ENDDO 
+			ENDDO
 			Assert.Equal(4 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // NIL, should be 4
 			DbSkip(-1)
 			Assert.Equal(4 , (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 4, correct
@@ -1074,13 +1074,13 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD SetDeleted_FALSE() AS VOID
 			LOCAL cDbf AS STRING
-			LOCAL aValues AS ARRAY 
+			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD
-			
+
 			cDbf := __FUNCTION__
-		
+
 			SetDeleted(FALSE)
-			
+
 //			test also with those
 //			aValues := { "vaa" , "abba", "acb" , "aaab"  , "adab"  , "baac"  , "aeab"  , "baaAaa" }
 			aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
@@ -1088,13 +1088,13 @@ RETURN
 			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			FOR i := 1 UPTO ALen ( aValues )
 				DbAppend()
-				FieldPut(1,aValues [i])  
+				FieldPut(1,aValues [i])
 			NEXT
 			DbCloseArea()
-		
-			DbUseArea(,"DBFNTX",cDBF,,TRUE) 
+
+			DbUseArea(,"DBFNTX",cDBF,,TRUE)
 			Assert.Equal(0 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
-			DbCreateIndex(cDbf, "Upper(LAST)" ) 
+			DbCreateIndex(cDbf, "Upper(LAST)" )
 			Assert.Equal(5 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
 			// ? "Setting scope"
 			LOCAL u AS USUAL
@@ -1102,18 +1102,18 @@ RETURN
 			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL,  REF u )
 			u := "A"
 			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF  u )
-		
+
 			DbGoTop()
 			Assert.Equal(4 , (INT)RecNo())
 			DbGoBottom()
 			Assert.Equal(3 , (INT)RecNo())
-		
-			DbGoTop() 
-		
+
+			DbGoTop()
+
 			Assert.Equal(3 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
 			DO WHILE ! Eof()
 				DbSkip(1)
-			ENDDO 
+			ENDDO
 			Assert.Equal(3 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
 			DbCloseArea()
 
@@ -1125,13 +1125,13 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD SetDeleted_TRUE() AS VOID
 			LOCAL cDbf AS STRING
-			LOCAL aValues AS ARRAY 
+			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD
-			
+
 			cDbf := __FUNCTION__
-		
+
 			SetDeleted(TRUE)
-			
+
 //			test also with those
 //			aValues := { "vaa" , "abba", "acb" , "aaab"  , "adab"  , "baac"  , "aeab"  , "baaAaa" }
 			aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
@@ -1139,12 +1139,12 @@ RETURN
 			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			FOR i := 1 UPTO ALen ( aValues )
 				DbAppend()
-				FieldPut(1,aValues [i])  
-			NEXT 
-		
-			DbUseArea(,"DBFNTX",cDBF,,TRUE) 
+				FieldPut(1,aValues [i])
+			NEXT
+
+			DbUseArea(,"DBFNTX",cDBF,,TRUE)
 			Assert.Equal(0 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
-			DbCreateIndex(cDbf, "Upper(LAST)" ) 
+			DbCreateIndex(cDbf, "Upper(LAST)" )
 			Assert.Equal(5 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
 			// ? "Setting scope"
 			LOCAL u AS USUAL
@@ -1152,18 +1152,18 @@ RETURN
 			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL,  REF u )
 			u := "A"
 			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL,  REF u )
-		
+
 			DbGoTop()
 			Assert.Equal(4 , (INT)RecNo())
 			DbGoBottom()
 			Assert.Equal(3 , (INT)RecNo())
-		
-			DbGoTop() 
-		
+
+			DbGoTop()
+
 			Assert.Equal(3 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
 			DO WHILE ! Eof()
 				DbSkip(1)
-			ENDDO 
+			ENDDO
 			Assert.Equal(3 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
 			DbCloseArea()
 
@@ -1178,18 +1178,18 @@ RETURN
 			LOCAL i AS DWORD
 			LOCAL cDBF AS STRING
 			LOCAL cNTX AS STRING
-			aValues := { 44 , 12, 34 , 21 }                                
+			aValues := { 44 , 12, 34 , 21 }
 			cDbf := "TESTDBF"
 			cNTX := cDbf + ".ntx"
 			IF System.IO.File.Exists(cNtx)
 				System.IO.file.Delete(cNtx)
 			END IF
-			DbCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })                                        
+			DbCreate( cDBF , {{"AGE" , "N" , 3 , 0 } })
 			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			Assert.Equal(0, (INT)DbOrderInfo( DBOI_KEYCOUNT ) )   //  0  ok
 			FOR i := 1 UPTO ALen ( aValues )
 				DbAppend()
-				FieldPut(1,aValues [i]) 
+				FieldPut(1,aValues [i])
 			NEXT
 			Assert.Equal(0, (INT)DbOrderInfo( DBOI_KEYCOUNT ) ) //  0 ,ok
 			Assert.Equal(0, (INT)DbOrderInfo( DBOI_NUMBER ) )  //  -1,  but should show 0
@@ -1202,10 +1202,10 @@ RETURN
 			ENDDO
 
 			Assert.True( DbClearIndex( cNTX) )
-			
+
 			DbGoTop()
 			Assert.Equal(1, (INT)RecNo())
-			
+
 			Assert.True( DbSetIndex ( cNTX ) )
 
 			Assert.Equal(4, (INT) DbOrderInfo( DBOI_KEYCOUNT ) ) // 4, ok
@@ -1221,7 +1221,7 @@ RETURN
 			LOCAL cDbf AS STRING
 			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD
-			
+
 			cDbf := __FUNCTION__
 			aValues := { 1,4,2,3 }
 			DbCreate( cDBF , {{"NUM" , "N" ,5 , 0 } })
@@ -1231,11 +1231,11 @@ RETURN
 				FieldPut(1,aValues [i])
 			NEXT
 			DbGoTop()
-			
+
 			// DESCENDING = TRUE
 			Assert.True( DbSetOrderCondition(,,,,,,,,,,TRUE) )
 			Assert.True( DbCreateIndex(cDbf, "NUM" ) )
-			
+
 			DbGoTop()
 			aValues := { 4,3,2,1 }
 			LOCAL nCount := 0 AS INT
@@ -1244,7 +1244,7 @@ RETURN
 				Assert.Equal((INT)aValues[nCount] , (INT)FieldGet(1))
 				DbSkip()
 			END DO
-			
+
 			DbCloseArea()
 		RETURN
 
@@ -1254,9 +1254,9 @@ RETURN
 		METHOD Fields_Named_After_Funcs() AS VOID
 			LOCAL cDbf AS STRING
 			cDbf := __FUNCTION__
-			
+
 			DbCloseAll() // worakaroudn for previous test crashing
-			
+
 			DbCreate( cDBF , {{"LEFT" , "N" ,5 , 0 } , {"STR" , "C" ,5 , 0 } })
 			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			DbAppend()
@@ -1280,7 +1280,7 @@ RETURN
 		METHOD Uninitialized_fields() AS VOID
 			LOCAL cDbf AS STRING
 			DbCloseAll() // worakaroudn for previous test crashing
-			
+
 			cDbf := __FUNCTION__
 			DbCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
 			DbUseArea(,"DBFNTX",cDBF)
@@ -1288,7 +1288,7 @@ RETURN
 			FieldPut(1,1)
 			DbAppend() // no field assigned
 			DbCloseArea()
-			
+
 			DbUseArea(,"DBFNTX",cDBF)
 			Assert.True( DbCreateIndex(cDbf, "FIELDN" ) )
 			DbCloseArea()
@@ -1300,7 +1300,7 @@ RETURN
 		METHOD DBOrderInfo_DBOI_KEYTYPE() AS VOID
 			LOCAL cDbf AS STRING
 			DbCloseAll()
-			
+
 			cDbf := __FUNCTION__
 			DbCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } , ;
 			{"FIELDS" , "C" ,15 , 0 } , ;
@@ -1310,24 +1310,24 @@ RETURN
 			DbAppend()
 			FieldPut(1,1)
 			DbCloseArea()
-			
+
 			DbUseArea(,"DBFNTX",cDBF)
 			DbCreateIndex(cDbf, "FIELDN" )
 			Assert.Equal(3, (INT)DbOrderInfo( DBOI_KEYTYPE ) ) // 14 (), should be 3 (FLOAT)
 			DbCloseArea()
-			
+
 			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			DbCreateIndex(cDbf, "FIELDS" )
 			Assert.Equal(7, (INT)DbOrderInfo( DBOI_KEYTYPE ) ) // 18 (PTR), should be 7 (STRING)
-			
+
 			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			DbCreateIndex(cDbf, "FIELDD" )
 			Assert.Equal(2, (INT)DbOrderInfo( DBOI_KEYTYPE ) ) // 16, should be 2 (DATE)
-			
+
 			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			DbCreateIndex(cDbf, "FIELDL" )
 			Assert.Equal(8, (INT)DbOrderInfo( DBOI_KEYTYPE ) ) // 3 (FLOAT), should be 8
-			
+
 			DbCloseArea()
 		RETURN
 
@@ -1337,10 +1337,10 @@ RETURN
 		METHOD DBSetOrderCondition_with_FOR() AS VOID
 			LOCAL cDbf AS STRING
 			DbCloseAll()
-			
+
 			cDbf := __FUNCTION__
 			DbCreate( cDBF , {{"FIELDN" , "N" ,5 , 0 } })
-			DbUseArea(,"DBFNTX",cDBF) 
+			DbUseArea(,"DBFNTX",cDBF)
 			DbAppend()
 			FieldPut(1,1)
 			DbAppend()
@@ -1350,9 +1350,9 @@ RETURN
 			DbAppend()
 			FieldPut(1,3)
 			DbCloseArea()
-		
-			DbUseArea(,"DBFNTX",cDBF) 
-			
+
+			DbUseArea(,"DBFNTX",cDBF)
+
 			// Should show only 4,3, but it shows all records 4,3,2,1
 			DbSetOrderCondition( "FIELDN>2",{||_FIELD->FIELDN>2},,,,,,,,, TRUE)
 			DbCreateIndex(cDbf, "FIELDN" )
@@ -1367,13 +1367,13 @@ RETURN
 				END IF
 				DbSkip()
 			END DO
-		    
+
 			Assert.Equal(2 ,nCount)
-			
+
 			// Should both show true, but both return false
 			Assert.True( DbOrderInfo( DBOI_ISCOND ) )
 			Assert.True( DbOrderInfo( DBOI_ISDESC ) )
-			
+
 			DbCloseArea()
 		RETURN
 
@@ -1384,14 +1384,14 @@ RETURN
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
 			DbCloseAll()
-			
+
 			cDbf := __FUNCTION__
 			aDbf := {{ "AGE" , "N" , 2 , 0 }}
 			DbCreate( cDBF , aDbf)
-			
+
 			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			DbAppend()
-			
+
 			Assert.False( Found() )// FALSE, ok
 			Assert.True( DbSetFound( FALSE ) )
 			Assert.False( Found() ) // TRUE! wrong
@@ -1406,27 +1406,27 @@ RETURN
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
 			DbCloseAll()
-			
+
 			cDbf := __FUNCTION__
 			aDbf := {{ "AGE" , "N" , 2 , 0 }}
 			DbCreate( cDBF , aDbf)
-			
+
 		    DbCreate( cDBF , aDbf)
 		    DbUseArea(,"DBFNTX",cDBF,,FALSE)
-		   
+
 		    DbAppend()
-		   
+
 		    DbCloseArea()
-		   
+
 		    DbUseArea( TRUE ,"DBFNTX",cDBF,"AREA1" ,TRUE )
 		    DbUseArea( TRUE ,"DBFNTX",cDBF,"AREA2" ,TRUE )
-		    
+
 		    Assert.True( DbSelectArea ( "AREA1" ) )
 		    Assert.Equal("AREA1", Alias() )
 		    Assert.False( Found() )
 		    Assert.True( DbSetFound ( TRUE ) )
 		    Assert.True( Found() )
-		   
+
 		    Assert.True( DbSelectArea ( "AREA2" ) )
 		    Assert.Equal( "AREA2" , Alias() )
 		    Assert.False( Found() )
@@ -1445,26 +1445,26 @@ RETURN
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
 			DbCloseAll()
-			
+
 			cDbf := __FUNCTION__
 		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
 		    DbCreate( cDBF , aDbf)
 		    DbUseArea(,"DBFNTX",cDBF,,FALSE)
-		   
+
 		    DbAppend()
 		    FieldPut(1,1)
 		    DbCloseArea()
-		   
+
 		    DbUseArea( TRUE ,"DBFNTX",cDBF,"AREA1" ,TRUE )
 		    DbUseArea( TRUE ,"DBFNTX",cDBF,"AREA2" ,TRUE )
-		    
-		    DbSelectArea ( "AREA1" )  
+
+		    DbSelectArea ( "AREA1" )
 		    Assert.True( DbLocate({||_FIELD->AGE == 1}) )
 		    Assert.True( Found() )
-		   
-		    DbSelectArea ( "AREA2" )   
+
+		    DbSelectArea ( "AREA2" )
 		    Assert.False( Found() )
-		
+
 		    DbCloseAll()
 		RETURN
 
@@ -1475,7 +1475,7 @@ RETURN
 			LOCAL aDbf AS ARRAY
 			LOCAL cDbf AS STRING
 			DbCloseAll()
-			
+
 			cDbf := __FUNCTION__
 		    aDbf := {{ "AGE" , "N" , 2 , 0 }}
 			DbCreate( cDBF , aDbf)
@@ -1485,17 +1485,17 @@ RETURN
 			DbAppend()
 			DbAppend()
 			DbCloseArea()
-			
+
 			Assert.True( DbUseArea( TRUE ,"DBFNTX",cDBF,"AREA1" ,TRUE ) )// open shared
 			DbGoTop()
 			Assert.True( DbRLock ( RecNo() ) ) // lock first record
 			Assert.Equal( 1 , (INT) ALen ( DbRLockList() ) )
-			
+
 			Assert.True( DbUseArea( TRUE ,"DBFNTX",cDBF,"AREA2" ,TRUE ) ) // open shared
 			DbGoBottom()
 			Assert.True( DbRLock ( RecNo() ) ) // lock last record
 			Assert.Equal( 1 , (INT) ALen ( DbRLockList() ) )
-			
+
 			Assert.False( Flock() )
 			// what's the correct return value here??
 			// Assert.Equal( 0 , (INT) ALen ( DBRLockList() ) )
@@ -1509,9 +1509,9 @@ RETURN
 			LOCAL aDbf AS ARRAY
 			LOCAL cDBF AS STRING
 			LOCAL aValues AS ARRAY
-			LOCAL i AS DWORD       
+			LOCAL i AS DWORD
 			DbCloseAll()
-			
+
 			cDbf := __FUNCTION__
 
 			RddSetDefault("DBFNTX")
@@ -1520,10 +1520,10 @@ RETURN
 			Assert.True( IndexCount() == 0)
 			Assert.True( Upper(IndexExt()) ==  ".NTX")
 			Assert.True( DbOrderInfo(DBOI_INDEXEXT) == NIL )
-			
+
 			aValues := { 44 , 12, 34 , 21 }
 			aDbf := {{ "AGE" , "N" , 2 , 0 }}
-			
+
 			DbCreate( cDBF , aDbf)
 			IF File.Exists(cDbf +".cdx")
 				File.Delete(cDbf +".cdx")
@@ -1531,7 +1531,7 @@ RETURN
 			IF File.Exists(cDbf +".ntx")
 				File.Delete(cDbf +".ntx")
 			END IF
-			
+
 			DbCloseAll()
 			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			Assert.True( DbOrderInfo(DBOI_INDEXEXT) == ".NTX")
@@ -1543,19 +1543,19 @@ RETURN
 			DbCloseArea()
 
 
-			DbUseArea(,"DBFNTX",cDBF,,FALSE)                    
+			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			FOR i := 1 UPTO ALen ( aValues )
 				DbAppend()
 				FieldPut(1,aValues [i])
-			NEXT    
+			NEXT
 			DbCreateIndex( cDbf, "age" )
-			
+
 			Assert.Equal( "age" , (STRING) IndexKey() )
 			Assert.True( IndexOrd() == 1 )
 			Assert.True( IndexCount() == 1 )
 			Assert.True( Upper(IndexExt()) == ".NTX")
 			Assert.True( DbOrderInfo(DBOI_INDEXEXT) == ".NTX")
-			
+
 			DbCloseArea()
 		RETURN
 
@@ -1564,40 +1564,40 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD WorkareaNums_2() AS VOID
 			LOCAL cDBF AS STRING
-			LOCAL aFields AS ARRAY 
+			LOCAL aFields AS ARRAY
 			DbCloseAll()
-			
+
 			cDbf := __FUNCTION__
 
 			RddSetDefault("DBFNTX")
 
 		  	aFields := {{ "LAST"  , "C" ,  10 , 0 }  }
-		    		 
-			DbCreate( cDbf , aFields , "DBFNTX" ) 
-			DbUseArea( TRUE ,"DBFNTX",cDbf, "FOO1", TRUE) 		
+
+			DbCreate( cDbf , aFields , "DBFNTX" )
+			DbUseArea( TRUE ,"DBFNTX",cDbf, "FOO1", TRUE)
 			Assert.Equal(1 , (INT) DbGetSelect() ) // 1  ok
-			
-			DbUseArea( TRUE ,"DBFNTX",cDbf, "FOO2", TRUE) 		
+
+			DbUseArea( TRUE ,"DBFNTX",cDbf, "FOO2", TRUE)
 			Assert.Equal(2 , (INT) DbGetSelect() )
-		
-			DbUseArea( TRUE ,"DBFNTX",cDbf, "FOO3", TRUE) 		
+
+			DbUseArea( TRUE ,"DBFNTX",cDbf, "FOO3", TRUE)
 			Assert.Equal(3 , (INT) DbGetSelect() ) // 3  ok
-			
-			DbUseArea( TRUE ,"DBFNTX",cDbf, "FOO4", TRUE) 		
+
+			DbUseArea( TRUE ,"DBFNTX",cDbf, "FOO4", TRUE)
 			Assert.Equal(4 , (INT) DbGetSelect() )
-			
+
 			Assert.Equal(3 , (INT) DbSetSelect ( 3 ) ) // 3 ok
 
-			DbCloseAll() 
+			DbCloseAll()
 			Assert.Equal(1 , (INT) DbGetSelect() ) // Shows  3 instead of 1
 			Assert.Equal(1 , (INT) SELECT() )      // Shows  3 instead of 1
-			
-			DbUseArea( ,"DBFNTX",cDbf, "FOO1", TRUE) 		
+
+			DbUseArea( ,"DBFNTX",cDbf, "FOO1", TRUE)
 			Assert.Equal(1 , (INT) DbGetSelect() ) // shows 3 instead of 1
-			
-			DbUseArea( TRUE ,"DBFNTX",cDbf, "FOO2", TRUE) 	
+
+			DbUseArea( TRUE ,"DBFNTX",cDbf, "FOO2", TRUE)
 			Assert.Equal(2 , (INT) DbGetSelect() ) // shows 1 instead of 2 !
-			
+
 			DbCloseAll()
 		RETURN
 
@@ -1607,11 +1607,11 @@ RETURN
 		METHOD DBApp_test() AS VOID
 			LOCAL cDBF AS STRING
 			LOCAL cDBFto AS STRING
-			LOCAL aFields AS ARRAY 
+			LOCAL aFields AS ARRAY
 			LOCAL aValues AS ARRAY
-			LOCAL i AS DWORD       
+			LOCAL i AS DWORD
 			DbCloseAll()
-			
+
 			cDBF := __FUNCTION__+"from"
 			cDBFto := __FUNCTION__+"to"
 
@@ -1619,13 +1619,13 @@ RETURN
 
 			aFields := {{ "GRUPPE" , "C" , 30 , 0 } ,;
 			{ "ID" , "C" , 5 , 0 } }
-			
+
 			aValues := { { "Grp1" , "00001" } ,;
 			{ "Grp2" , "00002" } }
-			
+
 			DbCreate( cDbf , aFields , "DBFNTX" )
 			DbUseArea(,"DBFNTX",cDbf,,FALSE)
-			
+
 			FOR i := 1 UPTO ALen ( aValues )
 				DbAppend()
 				FieldPut ( 1 , aValues [ i , 1 ] )
@@ -1635,9 +1635,9 @@ RETURN
 //			 --------- create To.dbf ----------
 //			 error happens also without that
 			AAdd ( aFields , { "ID2", "N" , 5 , 0 } )
-			
-			
-			
+
+
+
 			DbCreate( cDbfTo , aFields , "DBFNTX" )
 			DbCloseAll()
 
@@ -1651,13 +1651,13 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD OrderScopeClear_test() AS VOID
 			LOCAL cDbf AS STRING
-			LOCAL aValues AS ARRAY 
+			LOCAL aValues AS ARRAY
 			LOCAL i AS DWORD
-			
+
 			cDBF := __FUNCTION__
-		
+
 			RddSetDefault("DBFNTX")
-		
+
 //			test also with those
 //			aValues := { "vaa" , "abba", "acb" , "aaab"  , "adab"  , "baac"  , "aeab"  , "baaAaa" }
 			aValues := { "vvv" , "abb", "acb" , "aaa"  , "bbb" }
@@ -1665,13 +1665,13 @@ RETURN
 			DbUseArea(,"DBFNTX",cDBF,,FALSE)
 			FOR i := 1 UPTO ALen ( aValues )
 				DbAppend()
-				FieldPut(1,aValues [i])  
+				FieldPut(1,aValues [i])
 			NEXT
 			DbCloseArea()
-		
-			DbUseArea(,"DBFNTX",cDBF,,TRUE) 
+
+			DbUseArea(,"DBFNTX",cDBF,,TRUE)
 			Assert.Equal(0 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
-			DbCreateIndex(cDbf, "Upper(LAST)" ) 
+			DbCreateIndex(cDbf, "Upper(LAST)" )
 			Assert.Equal(5 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
 			// ? "Setting scope"
 			LOCAL u AS USUAL
@@ -1679,38 +1679,38 @@ RETURN
 			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL,  REF u )
 			u := "A"
 			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL,  REF u )
-		
+
 			DbGoTop()
 			Assert.Equal(4 , (INT)RecNo())
 			DbGoBottom()
 			Assert.Equal(3 , (INT)RecNo())
-		
-			DbGoTop() 
-		
+
+			DbGoTop()
+
 			Assert.Equal(3 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
 			DO WHILE ! Eof()
 				DbSkip(1)
-			ENDDO 
+			ENDDO
 			Assert.Equal(3 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
-		
-		
-		
+
+
+
 			u := NIL
 			VoDbOrderInfo( DBOI_SCOPETOPCLEAR, "", NIL, REF u )
 			u := NIL
 			VoDbOrderInfo( DBOI_SCOPEBOTTOMCLEAR, "", NIL, REF u )
-			DbGoTop() 
-		
+			DbGoTop()
+
 			Assert.Equal(5 , (INT)DbOrderInfo( DBOI_KEYCOUNT ))
-			
+
 			LOCAL nCount := 0 AS INT
 			DO WHILE ! Eof()
 				nCount ++
 //				? FieldGet(1)
 				DbSkip(1)
-			ENDDO 
+			ENDDO
 			Assert.Equal(5 , nCount)
-		
+
 			DbCloseArea()
 		RETURN
 
@@ -1720,10 +1720,10 @@ RETURN
 		METHOD OrdIsUnique_test() AS VOID
 			LOCAL cDBF, cIndex AS STRING
 			LOCAL lUnique AS LOGIC
-			
+
 			RddSetDefault ( "DBFCDX" )
 			lUnique := SetUnique()
-			
+
 			cDBF := __FUNCTION__
 			cIndex := cDbf
 			CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 }} , { "a" , "d" , "f", "c" })
@@ -1735,13 +1735,13 @@ RETURN
 			Assert.False( OrdIsUnique() ) // always returns true !
 			Assert.False( DbOrderInfo(DBOI_UNIQUE ) ) // ok
 			Assert.False( DbOrderInfo(DBOI_ISDESC ) )
-			
+
 			OrdCondSet()
 //			Create a descend and unique order
 			OrdCondSet(,,,,,,,,,,TRUE)
 			SetUnique ( TRUE )
 			OrdCreate(cIndex, "ORDER2", "upper(LAST)", { || Upper ( _FIELD-> LAST) } )
-			
+
 			DbSetOrder ( 2 )
 			Assert.Equal( "ORDER2", OrdName() )
 			Assert.True( OrdIsUnique() ) // always returns true !
@@ -1795,14 +1795,14 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBMemoExt_test() AS VOID
 			LOCAL cDBF AS STRING
-			
+
 			RddSetDefault ( "DBFNTX" )
 			Assert.Equal(".DBT" , DbMemoExt() ) // NULL_STRING instead of ".DBT"
-			
+
 			cDBF := __FUNCTION__
 			DbCreate( cDBF , {{ "AGE" , "N" , 2 , 0 }})
 			DbCloseAll()
-			
+
 			DbUseArea( TRUE ,"DBFNTX",cDBF,"FOO1",TRUE)
 			Assert.Equal(".DBT" , DbMemoExt() ) // ".DBT" ok
 			DbCloseAll()
@@ -1811,11 +1811,11 @@ RETURN
 
 			RddSetDefault ( "DBFCDX" )
 			Assert.Equal(".FPT" , DbMemoExt() )
-			
+
 			FErase(cDbf + ".cdx")
 			DbCreate( cDBF , {{ "AGE" , "N" , 2 , 0 }})
 			DbCloseAll()
-			
+
 			DbUseArea( TRUE ,"DBFCDX",cDBF)
 			Assert.Equal(".FPT" , DbMemoExt() )
 			DbCloseAll()
@@ -1831,69 +1831,69 @@ RETURN
 			LOCAL cPfad AS STRING
 			LOCAL AFields, aValues AS ARRAY
 			LOCAL i AS DWORD
-			
+
 			cPfad := __FUNCTION__
 			cDBF1 := cPfad + "relation1"
 			cDBf2 := cPfad + "relation2"
 			FErase(cDBF1 + ".dbf")
 			FErase(cDBF2 + ".dbf")
-			
+
 			cINdex1 := cPfad + "relation1"
 			cINdex2 := cPfad + "relation2"
 			FErase(cINdex1 + ".ntx")
 			FErase(cINdex2 + ".ntx")
 //			 ------- create Parent DBF --------------
 			AFields := { { "ID" , "C" , 5 , 0 }}
-			
+
 			aValues := { "00002" , "00001" , "00003" }
-			
+
 			DbCreate( cDBF1 , AFields)
 			DbUseArea(,"DBFNTX",cDBF1 )
-			
+
 			FOR i := 1 UPTO ALen ( aValues )
 				DbAppend()
 				FieldPut ( 1 , aValues [ i ] )
 			NEXT
-			
+
 			DbCreateIndex( cINdex1, "ID" )
-			
+
 //			 ------- create Child DBF --------------
 			AFields := { { "ID" , "C" , 5 , 0 } , { "TEXT1" , "C" ,20 , 0 }}
 			aValues := { { "00002" , "Text1 00002" } , { "00001" , "Text2 00001" }, { "00001" , "Text1 00001"} ,;
 			{ "00001" , "Text3 00001" } , {"00003" , "Text1 00003" } , { "00002" , "Text2 00002"} ,;
 			{ "00003" , "Text3 00003" } , {"00002" , "Text3 00002" } , { "00001" , "Text4 00001"} ,;
 			{ "00003" , "Text2 00003" } , {"00003" , "Text4 00003" } }
-			
+
 			DbCreate( cDBf2 , AFields)
 			DbUseArea(,"DBFNTX",cDBf2 )
-			
+
 			FOR i := 1 UPTO ALen ( aValues )
 				DbAppend()
 				FieldPut ( 1 , aValues [ i , 1 ] )
 				FieldPut ( 2 , aValues [ i , 2 ] )
 			NEXT
-			
+
 			DbCreateIndex( cINdex2, "ID + TEXT1" )
-			
+
 			DbCloseAll()
-			
+
 //			 ------------------------
 //			 open Parent DBF
-			
+
 			DbUseArea(TRUE ,"DBFNTX",cDBF1 )
 			DbSetIndex( cINdex1 )
 			DbSetOrder ( 1 )
 			DbGoTop()
-			
+
 //			 open Child DBF
 			DbUseArea(TRUE,"DBFNTX",cDBf2 )
 			DbSetIndex( cINdex2 )
 			DbSetOrder ( 1 )
-			
+
 			DbSetSelect ( 1 )
 //			 set the relation to the common field ID
 			Assert.True( DbSetRelation(2, {|| _FIELD->ID } , "ID" ) )
-			
+
 			LOCAL nOuter, nInner AS INT
 			nOuter := 0
 			DO WHILE ! a->Eof()
@@ -1906,12 +1906,12 @@ RETURN
 					LOCAL c AS STRING
 					c := a->FieldGet( 1 ) + b->FieldGet ( 1 ) + b->FieldGet ( 2 )
 					Assert.Equal( String.Format("0000{0}0000{0}Text{1} 0000{0}         " , nOuter , nInner) , c )
-					
+
 					b->DbSkip(1)
 				ENDDO
 				a->DbSkip(1)
 			ENDDO
-			
+
 			DbCloseAll()
 		RETURN
 
@@ -1921,7 +1921,7 @@ RETURN
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBDelete_test() AS VOID
 			LOCAL cDBF AS STRING
-			
+
 			RddSetDefault("DBFNTX")
 
 			cDBF := __FUNCTION__
@@ -1930,15 +1930,15 @@ RETURN
 
 			DbUseArea(,"DBFNTX",cDBF )
 			DbCreateIndex(cDbf , "ID")
-			
+
 			DbGoTop()
 			Assert.Equal(1 , (INT) RecNo() )
 			Assert.Equal("     " , (STRING) FieldGet(1) )
-			
+
 			Assert.True( DbRLock() )
 			Assert.True( DbDelete())
 			Assert.True( DbUnLock())
-			
+
 			DbCloseArea()
 		RETURN
 
@@ -1950,15 +1950,15 @@ RETURN
 			LOCAL cDBF AS STRING
 			LOCAL aFields, aValues AS ARRAY
 			LOCAL i AS DWORD
-			
+
 			RddSetDefault("DBFNTX")
-			
+
 			cDBF := __FUNCTION__
 			FErase(cDbf + ".ntx")
-			
+
 			aValues := {"Gas" , "Abc", "Golden" , "Guru" , "Ddd" , "Aaa" , "Ggg"}
 			aFields := { {"CFIELD" , "C" , 10 , 0} }
-			
+
 			DbCreate(cDbf , aFields)
 			DbUseArea(,,cDBF , , FALSE)
 			DbCreateIndex(cDbf , "Upper(CFIELD)")
@@ -1966,38 +1966,38 @@ RETURN
 				DbAppend()
 				FieldPut(1, aValues[i])
 			NEXT
-			
+
 			DbGoTop()
 			Assert.Equal((INT) DbOrderInfo( DBOI_KEYCOUNT ) ,7 ) // 7, correct
-			
+
 			// Setting order scope
 			OrdScope(TOPSCOPE, "G")
 			OrdScope(BOTTOMSCOPE, "G")
 			DbGoTop()
-			
+
 			// VO: -2 with NTX, 4 with CDX
 			Assert.Equal((INT) DbOrderInfo( DBOI_KEYCOUNT ) ,4)
-			
+
 			Assert.True( DbSeek("G")    ) // TRUE, correct
 			Assert.True( DbSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
-			
+
 			// Clearing order scope
 			OrdScope(TOPSCOPE, NIL)
 			OrdScope(BOTTOMSCOPE, NIL)
 			Assert.Equal(  (INT) DbOrderInfo( DBOI_KEYCOUNT ) ,7)
 			Assert.True( DbSeek("G") )
 			Assert.True( DbSeek("GOLD") )
-			
+
 			// Setting order scope again
 			OrdScope(TOPSCOPE, "G")
 			OrdScope(BOTTOMSCOPE, "G")
 			DbGoTop()
 			// VO: -2 with NTX, 4 with CDX
 			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) ,4 )
-			
+
 			Assert.True( DbSeek("G")    ) // TRUE, correct
 			Assert.True( DbSeek("GOLD") ) // TRUE with NTX, FALSE with CDX. VO TRUE in both
-			
+
 			DbCloseArea()
 		RETURN
 
@@ -2010,15 +2010,15 @@ RETURN
 			cDBF := __FUNCTION__
 			FErase(cDbf + ".cdx")
 			FErase(cDbf + ".ntx")
-			
+
 			FOR LOCAL n := 1 AS INT UPTO 2
 				RddSetDefault ( IIF( n == 1 , "DBFNTX" , "DBFCDX" ) )
-				
+
 				DbCreate( cDBF , { { "LAST" , "C" , 20 , 0 }} )
 				DbUseArea(,,cDBF,,FALSE )
 				DbAppend()
 				FieldPut ( 1 , "test" )
-	
+
 				Assert.True( DbCreateIndex ( cDbf , "upper(LAST)" , { || Upper ( _FIELD->LAST) } ) )
 				Assert.Equal( 1 , (INT) OrdKeyCount(1) )
 				DbCloseArea()
@@ -2036,7 +2036,7 @@ RETURN
 			Assert.Equal(".DBT" , DbMemoExt() ) // ok ".DBT"
 			RddSetDefault ( "DBFCDX" )
 			Assert.Equal(".FPT" , DbMemoExt() ) // "" instead of ".FPT"
-			
+
 			RddSetDefault ( "DBFCDX" )
 			Assert.Equal(".FPT" , DbMemoExt ( "DBFCDX" ) ) // "" instead of ".FPT"
 			Assert.Equal(".DBT" , DbMemoExt ( "DBFNTX" ) ) // "" instead of ".DBT"
@@ -2044,10 +2044,10 @@ RETURN
 			RddSetDefault ( "DBFNTX" )
 			Assert.Equal(".FPT" , DbMemoExt ( "DBFCDX" ) ) // "" instead of ".FPT"
 			Assert.Equal(".DBT" , DbMemoExt ( "DBFNTX" ) ) // "" instead of ".DBT"
-			
+
 			cDBF := __FUNCTION__
 			DbCreate( cDBF ,  {{"VE" , "C" , 3 , 0 }})
-			
+
 			FErase(cDbf + ".cdx")
 
 			DbUseArea( TRUE,"DBFNTX",cDBF , "FOO1" , TRUE )
@@ -2055,7 +2055,7 @@ RETURN
 
 			DbUseArea( TRUE,"DBFCDX",cDBF , "FOO2" , TRUE )
 			Assert.Equal(".FPT" , (STRING) DbInfo ( DBI_MEMOEXT ) ) // returns "" instead of ".FPT"
-			
+
 			DbCloseAll()
 		RETURN
 
@@ -2067,15 +2067,15 @@ RETURN
 			LOCAL cDBF, cIndex AS STRING
 			LOCAL aFields, aValues AS ARRAY
 			LOCAL i AS DWORD
-			
+
 			RddSetDefault("DBFNTX")
 			aFields := { { "LAST" , "C" , 20 , 0 }}
 			aValues := { "b" , "c" , "d", "e" , "a" }
-			
+
 			cDBF := __FUNCTION__
 			cIndex := cDbf
 			FErase ( cIndex + IndexExt() )
-			
+
 			DbCreate( cDBF , AFields)
 			DbUseArea(,,cDBF)
 			FOR i := 1 UPTO ALen ( aValues )
@@ -2084,7 +2084,7 @@ RETURN
 			NEXT
 			DbCreateOrder ( "ORDER1" , cIndex , "upper(LAST)" , { || Upper (_FIELD->LAST) } )
 			DbCloseAll()
-			
+
 //			 When ".ntx" is added SetIndex() returns true
 //			 cIndex := cIndex + IndexExt()
 			DbUseArea(,,cDBF)
@@ -2097,7 +2097,7 @@ RETURN
         METHOD DbSeekFound_test() AS VOID
             LOCAL cPath, cDbf AS STRING
             RddSetDefault("DBFNTX")
-            
+
             cPath := System.IO.Path.GetTempPath()
             IF .NOT. cPath:EndsWith("\")
                 cPath += "\"
@@ -2131,8 +2131,8 @@ RETURN
                 Assert.True(Found())
             NEXT
             DbCloseArea()
-            
-		
+
+
 
 		// TECH-0YI914Z4I2, Problem opening dbf with dbt via SetDefault()
 		[Fact, Trait("Category", "DBF")];
@@ -2140,7 +2140,7 @@ RETURN
 			LOCAL cPath, cDbf AS STRING
 			LOCAL cDefault AS STRING
 			RddSetDefault("DBFNTX")
-			
+
 			cPath := System.IO.Path.GetTempPath()
 			IF .NOT. cPath:EndsWith("\")
 				cPath += "\"
@@ -2151,16 +2151,16 @@ RETURN
 			FErase(cPath + cDBF + ".cdx")
 			FErase(cPath + cDBF + ".dbt")
 			FErase(cPath + cDBF + ".fpt")
-			
+
 			cDefault := GetDefault()
 			SetDefault(cPath)
-			
+
 			Assert.True( DbCreate( cPath + cDbf , { { "ID" , "C" , 5 , 0 } , {"MEM" , "M" , 10 , 0}} ) )
 //			 System.IO.FileNotFoundException
 //			 Could not find file '<path_of_exe>\mydbf.DBT'.
 			Assert.True( DbUseArea(,,cDbf ) )
 			Assert.True( DbCloseArea()      )
-			
+
 			SetDefault(cDefault)
 		RETURN
 
@@ -2181,7 +2181,7 @@ RETURN
 			DbAppend()
 			DbAppend()
 			DbAppend()
-			
+
 			FOR LOCAL i := 1 AS DWORD UPTO 10
 				FOR LOCAL m := 1 AS DWORD UPTO 10
 					FOR LOCAL n := 65 AS DWORD UPTO 97
@@ -2226,7 +2226,7 @@ RETURN
 			DbGoto(1)
 			DbCloseArea()
 			Assert.True(File.GetLastWriteTime(cDbf + ".dbf") == dtDbf)
-			
+
 
 
 			RddSetDefault("DBFNTX")
@@ -2282,7 +2282,7 @@ RETURN
 			CreateDatabase(cDbf, {{"TEST","C",10,0}})
 			Assert.Equal(67, (INT)FileInfo{cDbf + ".dbf"}:Length)
 		RETURN
-			
+
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD TestBofWithOrdScope() AS VOID
@@ -2295,17 +2295,17 @@ RETURN
 			DbCreateIndex(cDbf , "CFIELD")
 			DbCloseArea()
 
-			DbUseArea( TRUE ,,cDBF )		
-			
+			DbUseArea( TRUE ,,cDBF )
+
 			OrdScope(TOPSCOPE, "S")
-			OrdScope(BOTTOMSCOPE, "S")	
-			
+			OrdScope(BOTTOMSCOPE, "S")
+
 			LOCAL cTest := "" AS STRING
-			DbGoTop() 
-			DO WHILE ! Eof() 
+			DbGoTop()
+			DO WHILE ! Eof()
 				cTest += AsString(RecNo())
-				DbSkip ( 1 ) 		
-			ENDDO   
+				DbSkip ( 1 )
+			ENDDO
 			cTest += AsString(RecNo())
 
 			Assert.Equal("12678" , cTest)
@@ -2313,7 +2313,7 @@ RETURN
 			Assert.Equal(8 , (INT)RecNo())
 			Assert.True(Eof())
 			Assert.False(Bof())
-			
+
 			DbSkip(-1)
 			Assert.Equal(7 , (INT)RecNo())
 			Assert.False(Eof())
@@ -2334,7 +2334,7 @@ RETURN
 			Assert.Equal(1 , (INT)RecNo())
 			Assert.False(Eof())
 			Assert.True(Bof())
-			
+
 			DbCloseArea()
 		RETURN
 
@@ -2349,7 +2349,7 @@ RETURN
 			DbCreateIndex(cDbf , "CFIELD")
 			DbCloseArea()
 
-			DbUseArea( TRUE ,,cDBF )		
+			DbUseArea( TRUE ,,cDBF )
 			Assert.True(OrdScope(TOPSCOPE, "S") == NIL)
 			Assert.True(OrdScope(BOTTOMSCOPE, "S") == NIL)
 			Assert.Equal("S", OrdScope(TOPSCOPE, "N"))
@@ -2389,6 +2389,6 @@ RETURN
             NEXT
             DbGoTop()
 		RETURN
-			
+
 	END CLASS
 END NAMESPACE

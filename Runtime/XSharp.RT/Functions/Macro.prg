@@ -52,7 +52,7 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
             XSharp.RuntimeState:MacroResolver := DefaultMacroAmbigousMatchResolver
         ENDIF
         LOCAL oResult AS XSharp._Codeblock
-        VAR cMacro := MPrepare(cString)
+        VAR cMacro := cString // MPrepare(cString)
         IF oMC IS IMacroCompilerUsual VAR oMCU
             oResult := oMCU:CompileCodeblock(cMacro, lAllowSingleQuotes, oMod)
             oResult:SetString(cString)
@@ -66,33 +66,33 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
     ENDIF
     RETURN NULL_OBJECT
 
-INTERNAL GLOBAL macroTokens AS Dictionary<STRING, STRING>
-
-INTERNAL FUNCTION MPrepare(cMacro AS STRING) AS STRING
-    // Replace ".or." and other strings when they are part of the macro
-    VAR pos := cMacro:IndexOf(c'.')
-    IF pos < 0
-        RETURN cMacro
-    ENDIF
-    // This is probably too much but it works
-    // and it does not fix MiXeD cased NaMeS
-    IF macroTokens == NULL
-        macroTokens := Dictionary<STRING, STRING>{}
-        macroTokens:Add("\.or\.", " .or. ")
-        macroTokens:Add("\.and\.", " .and. ")
-        macroTokens:Add("\.not\.", " .not. ")
-        macroTokens:Add("\.xor\.", " .xor. ")
-        macroTokens:Add("\.t\.", " .t. ")
-        macroTokens:Add("\.f\.", " .f. ")
-        macroTokens:Add("\.n\.", " .n. ")
-        macroTokens:Add("\.y\.", " .y. ")
-    ENDIF
-    VAR result := cMacro
-
-    FOREACH VAR replace IN macroTokens
-        result := Regex.Replace(result,replace:Key, replace:Value, RegexOptions.IgnoreCase)
-    NEXT
-    RETURN result
+//INTERNAL GLOBAL macroTokens AS Dictionary<STRING, STRING>
+//
+//INTERNAL FUNCTION MPrepare(cMacro AS STRING) AS STRING
+//    // Replace ".or." and other strings when they are part of the macro
+//    VAR pos := cMacro:IndexOf(c'.')
+//    IF pos < 0
+//        RETURN cMacro
+//    ENDIF
+//    // This is probably too much but it works
+//    // and it does not fix MiXeD cased NaMeS
+//    IF macroTokens == NULL
+//        macroTokens := Dictionary<STRING, STRING>{}
+//        macroTokens:Add("\.or\.", " .or. ")
+//        macroTokens:Add("\.and\.", " .and. ")
+//        macroTokens:Add("\.not\.", " .not. ")
+//        macroTokens:Add("\.xor\.", " .xor. ")
+//        macroTokens:Add("\.t\.", " .t. ")
+//        macroTokens:Add("\.f\.", " .f. ")
+//        macroTokens:Add("\.n\.", " .n. ")
+//        macroTokens:Add("\.y\.", " .y. ")
+//    ENDIF
+//    VAR result := cMacro
+//
+//    FOREACH VAR replace IN macroTokens
+//        result := Regex.Replace(result,replace:Key, replace:Value, RegexOptions.IgnoreCase)
+//    NEXT
+//    RETURN result
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />
@@ -340,5 +340,35 @@ FUNCTION ExecScript( cExpression, eParameters ) AS USUAL CLIPPER
     END TRY
     RETURN result
 
+
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
+FUNCTION ExecScriptFast( cExpression, eParameters ) AS USUAL CLIPPER
+    LOCAL result AS USUAL
+    IF RuntimeState.ScriptCompiler == NULL_OBJECT
+        VAR oMacroAsm := AssemblyHelper.Load("XSharp.MacroCompiler")
+        IF oMacroAsm != NULL_OBJECT
+            VAR oType    := oMacroAsm:GetType("XSharp.Runtime.MacroCompiler")
+            LOCAL prop AS PropertyInfo
+            IF oType != NULL
+                VAR oMI := oType:GetMethod("GetScriptCompiler")
+                VAR oArg := <OBJECT>{RuntimeState.Dialect}
+                IF oMI != NULL
+                    VAR oMC := oMI:Invoke(NULL,oArg)
+                    RuntimeState.ScriptCompiler := (IMacroCompiler) oMC
+                ENDIF
+            ENDIF
+        ENDIF
+    ENDIF
+    IF RuntimeState.ScriptCompiler IS IMacroCompilerUsual VAR compiler
+        VAR argTmp := List<USUAL>{}
+        argTmp:AddRange(_Args())
+        argTmp:RemoveAt(0)
+        VAR cb := compiler:CompileCodeblock(cExpression)
+        result  := cb:Eval(argTmp:ToArray())
+    ELSE
+        THROW Error{"Could not find the Script Compiler"}
+    ENDIF
+    RETURN result
 
 

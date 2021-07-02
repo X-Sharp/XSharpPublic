@@ -36,6 +36,24 @@ namespace XSharp.Runtime
             options.AllowSingleQuotedStrings = true;
         }
 
+        public static MacroCompiler GetScriptCompiler(XSharpDialect dialect = XSharpDialect.Core)
+        {
+            MacroOptions options;
+            switch (dialect)
+            {
+                case XSharpDialect.FoxPro:
+                    options = MacroOptions.FoxPro;
+                    break;
+                case XSharpDialect.VO:
+                    options = MacroOptions.VisualObjects;
+                    break;
+                default:
+                    options = MacroOptions.Default;
+                    break;
+            }
+            options.ParseMode = ParseMode.Statements;
+            return new MacroCompiler(options);
+        }
         public MacroOptions Options => options;
 
 

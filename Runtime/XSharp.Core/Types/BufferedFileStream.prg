@@ -97,74 +97,78 @@ BEGIN NAMESPACE XSharp.IO
             INTERNAL Page       AS INT64
             INTERNAL Buffer     AS Byte[]
             INTERNAL Size       AS LONG
+            INTERNAL Used       AS LONG
             INTERNAL Hot        AS LOGIC
             INTERNAL PROPERTY Key  AS STRING GET GetHash(Stream, Page)
 
             INTERNAL STATIC METHOD GetHash(oStream as XsBufferedFileStream, nPage as INT64) AS STRING
                 RETURN  oStream:FileName:ToLower()+":"+nPage:ToString()
 
+            INTERNAL CONSTRUCTOR (oStream AS XsBufferedFileStream, nPage AS INT64, nSize AS LONG)
+                SELF:Stream := oStream
+                SELF:Page   := nPage
+                SELF:Size   := nSize
+                SELF:Used   := 0
+                SELF:Hot    := FALSE
+                SELF:Buffer := BYTE[]{nSize}
+
         END CLASS
 
-        STATIC PROTECTED cache                AS LRUCache<STRING, FilePage>
+        STATIC PROTECTED cache AS LRUCache<STRING, FilePage>
 
         STATIC CONSTRUCTOR
-        cache                := LRUCache<STRING, FilePage> {512}
+            cache := LRUCache<STRING, FilePage> {512}
 
 
-        INTERNAL STATIC METHOD __FindPage(oStream as XsBufferedFileStream, nPage as INT64, nSize as LONG) AS FilePage
-            var key  := FilePage.GetHash(oStream, nPage)
+        INTERNAL STATIC METHOD GetPage(oStream AS XsBufferedFileStream, nPage AS INT64, nSize AS LONG) AS FilePage
+            VAR key  := FilePage.GetHash(oStream, nPage)
             VAR page := cache:Get(key)
             IF page == NULL
                 page := __AddPage(oStream, nPage, nSize)
-                IF !oStream:XRead(nPage, page:Buffer, nSize) != nSize
-                    // Exception ?
-                ENDIF
+                VAR bytesRead := oStream:XRead(nPage, page:Buffer, nSize)
+                page:Used     := bytesRead
+                // if bytesRead < nSize then we have reached EOF
             ENDIF
             return page
 
 
-        INTERNAL STATIC METHOD __AddPage(oStream as XsBufferedFileStream, nPage as INT64, nSize as LONG) AS FilePage
-            VAR page := FilePage{}
-            page:Stream := oStream
-            page:Page   := nPage
-            page:Size   := nSize
-            page:Buffer := Byte[]{nSize}
-            var old := cache:Add(page:Key, page)
-            IF old != NULL
+        INTERNAL STATIC METHOD __AddPage(oStream AS XsBufferedFileStream, nPage AS INT64, nSize AS LONG) AS FilePage
+            VAR page := FilePage{oStream, nPage, nSize}
+            VAR old  := cache:Add(page:Key, page)
+            IF old != NULL         // Cache is full, oldest page is returned and needs to written here
                 __WritePage(old)
             ENDIF
         RETURN page
 
         INTERNAL STATIC METHOD __WritePage(page as FilePage) AS VOID
-            if !page:Hot
+            IF !page:Hot
                 RETURN
             ENDIF
-            IF ! page:Stream:XWrite( page:Page, page:Buffer, page:Size)
+            VAR nSize := Math.Max(page:Size, page:Used)
+            IF ! page:Stream:XWrite( page:Page, page:Buffer, nSize)
                 THROW Exception{"Error writing to disk"}
             ENDIF
             page:Hot := FALSE
         RETURN
 
-        STATIC METHOD PageFlush(oStream AS XsBufferedFileStream, lKeepData AS LOGIC) AS VOID
-            FOREACH VAR page IN cache:Values:ToArray()
-                IF  page:Stream == oStream
+        STATIC METHOD WritePages(oStream AS XsBufferedFileStream) AS VOID
+            FOREACH VAR page IN cache:Values
+                IF page:Stream == oStream
                     __WritePage(page)
-                    // we can directly delete from the cache because cache:Values returns a new collection
-                    cache:Remove(page:Key)
                 ENDIF
             NEXT
         RETURN
 
-        STATIC METHOD PageRead(oStream as XsBufferedFileStream, nPage as INT64, nSize as LONG) AS Byte[]
-            // Read a page from the buffer and mark it as referenced. No check for Size
-            VAR page := __FindPage(oStream, nPage, nSize)
-            RETURN page:Buffer
 
-        STATIC METHOD PageUpdate(oStream as XsBufferedFileStream, nPage as INT64, nSize as LONG) AS Byte[]
-            // Read a page from the buffer and mark it as hot, No check for Size
-            VAR page := __FindPage(oStream, nPage, nSize)
-            page:Hot := TRUE
-            RETURN page:Buffer
+        STATIC METHOD FlushPages(oStream AS XsBufferedFileStream) AS VOID
+            WritePages(oStream)
+            FOREACH VAR page IN cache:Values:ToArray()
+                IF page:Stream == oStream
+                    // We can delete in the foreach loop because ToArray() creates a copy of the collection
+                    cache:Remove(page:Key)
+                ENDIF
+            NEXT
+        RETURN
 
     END CLASS
 
@@ -243,24 +247,30 @@ BEGIN NAMESPACE XSharp.IO
                 RETURN SUPER:Read(bytes, offset, count)
             ENDIF
             var pos         := SELF:Position
-            VAR page        := (INT64) _AND(pos , ~BUFF_MASK)
+            VAR pageNo      := (INT64) _AND(pos , ~BUFF_MASK)
             var pageoffset  := (LONG) _AND(pos , BUFF_MASK)
-            var read    := 0
-            DO WHILE read < count
-                VAR buffer       := PageBuffers.PageRead(SELF, page, BUFF_SIZE)
+            VAR read        := 0
+            VAR endOfPage   := FALSE
+            DO WHILE read < count .AND. ! endOfPage
+                VAR page         := PageBuffers.GetPage(SELF, pageNo, BUFF_SIZE)
+                VAR buffer       := page:Buffer
                 // we either read the rest of the page, or just the bytes needed
-                VAR onthispage := count - read
+                VAR onthispage   := count - read
                 if onthispage > (BUFF_SIZE - pageoffset)
                     onthispage := BUFF_SIZE - pageoffset
                 else
                     nop
-                endif
+                ENDIF
+                IF pageoffset + onthispage > page:Used
+                    onthispage := page:Used - pageoffset
+                    endOfPage := TRUE
+                ENDIF
                 System.Array.Copy(buffer, pageoffset, bytes, offset+read, onthispage)
-                page       += BUFF_SIZE
+                pageNo     += BUFF_SIZE
                 read       += onthispage
                 pageoffset := 0                 // we start the next page on byte 0
             ENDDO
-            SELF:Position += count
+            SELF:Position += read
         RETURN read
 
         /// <inheritdoc />
@@ -271,11 +281,12 @@ BEGIN NAMESPACE XSharp.IO
                 RETURN
             ENDIF
             VAR pos         := SELF:Position
-            VAR page        := (INT64) _AND(pos , ~BUFF_MASK)
+            VAR pageNo      := (INT64) _AND(pos , ~BUFF_MASK)
             var pageoffset  := (LONG) _AND(pos , BUFF_MASK)
             var written     := 0
             DO WHILE written < count
-                VAR buffer       := PageBuffers.PageUpdate(SELF, page, BUFF_SIZE)
+                VAR page         := PageBuffers.GetPage(SELF, pageNo, BUFF_SIZE)
+                VAR buffer       := page:Buffer
                 // we either write the rest of the page, or just the bytes needed
                 VAR onthispage := count - written
                 if onthispage > ( BUFF_SIZE - pageoffset)
@@ -284,7 +295,12 @@ BEGIN NAMESPACE XSharp.IO
                     nop
                 endif
                 System.Array.Copy(bytes, offset+written, buffer, pageoffset, onthispage)
-                page       += BUFF_SIZE
+                IF pageoffset + onthispage > page:Used
+                   page:Used  := pageoffset + onthispage
+                    Debug.Assert(page:Used <= page:Size)
+                ENDIF
+                page:Hot   := TRUE
+                pageNo     += BUFF_SIZE
                 written    += onthispage
                 pageoffset := 0                 // we start the next page on byte 0
             ENDDO
@@ -300,18 +316,19 @@ BEGIN NAMESPACE XSharp.IO
                 RETURN
             ENDIF
             VAR pos             := SELF:Position
-            VAR page            := (INT64) _AND(pos , ~BUFF_MASK)
+            VAR pageNo          := (INT64) _AND(pos , ~BUFF_MASK)
             var pageoffset      := (LONG) _AND(pos , BUFF_MASK)
-            VAR buffer          := PageBuffers.PageUpdate(SELF, page, BUFF_SIZE)
-            buffer[pageoffset]  := b
+            VAR page            := PageBuffers.GetPage(SELF, pageNo, BUFF_SIZE)
+            page:Buffer[pageoffset]  := b
+            page:Hot            := TRUE
             SELF:_length := Math.Max(SELF:_length, pos+1)
             SELF:Position += 1
         RETURN
 
         /// <inheritdoc />
         /// <remarks>This method overrides the normal behavior of the FileStream class and flushes the cached data to disk before calling the parent Flush() method.</remarks>
-        PUBLIC OVERRIDE METHOD Flush(lCommit as LOGIC) AS VOID
-            PageBuffers.PageFlush(SELF, TRUE)
+        PUBLIC OVERRIDE METHOD Flush(lCommit AS LOGIC) AS VOID
+            PageBuffers.WritePages(SELF)
             SUPER:Flush(lCommit)
             IF SUPER:Length != _length
                 SUPER:SetLength(_length)
@@ -323,7 +340,7 @@ BEGIN NAMESPACE XSharp.IO
         /// <remarks>This method overrides the normal behavior of the FileStream class and flushes the cached data to disk before calling the parent Close() method.</remarks>
         PUBLIC OVERRIDE METHOD Close( ) AS VOID
             IF ! SELF:_closed
-                PageBuffers.PageFlush(SELF, FALSE)
+                PageBuffers.FlushPages(SELF)
                 IF SUPER:Length != _length
                     SUPER:SetLength(_length)
                 ENDIF

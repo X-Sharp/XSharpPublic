@@ -439,7 +439,7 @@ constructorchain    : (SELF | SUPER)
 constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC ) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
-vodeclare           : DECLARE (ACCESS | ASSIGN | METHOD )  (~EOS)? eos
+vodeclare           : DECLARE (ACCESS | ASSIGN | METHOD )  (~EOS)+ eos
                     ;
 
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?

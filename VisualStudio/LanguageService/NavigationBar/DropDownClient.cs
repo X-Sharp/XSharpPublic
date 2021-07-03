@@ -312,7 +312,7 @@ namespace XSharp.LanguageService
                         {
                             foreach (var member in fullType.XMembers)
                             {
-                                if (string.Compare(member.File.FullPath, _file.FullPath, true) != 0)
+                                if (member.File != null && string.Compare(member.File.FullPath, _file.FullPath, true) != 0)
                                 {
                                     if (includeFields || (member.Kind != Kind.Field && member.Kind != Kind.VODefine))
                                     {

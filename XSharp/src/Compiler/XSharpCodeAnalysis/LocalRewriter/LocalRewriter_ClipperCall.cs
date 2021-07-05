@@ -347,10 +347,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
             bool rewritten = false;
+            var refArgs = node.ArgumentRefKindsOpt;
             for (var i = 0; i < node.Arguments.Length; i++)
             {
                 var arg = node.Arguments[i];
-                if (arg.Kind == BoundKind.DefaultExpression && arg.Type.IsUsualType())
+                bool byRef = (refArgs != null && refArgs.Length > i && refArgs[i].IsByRef());
+                if (! byRef && arg.Kind == BoundKind.DefaultExpression && arg.Type.IsUsualType())
                 {
                     var utype = _compilation.UsualType();
                     var flds = utype.GetMembers("_NIL");

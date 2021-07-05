@@ -80385,7 +80385,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R702
 
-ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
 ; ************** APPLICATION C703 - Name conflicts between memvars and class name *************
 Application = C703 - Name conflicts between memvars and class name
 IDEVersion = 1.06

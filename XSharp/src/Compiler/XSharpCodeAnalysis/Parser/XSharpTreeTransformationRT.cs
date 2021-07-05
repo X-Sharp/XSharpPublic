@@ -932,10 +932,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (_options.NoClipCall)
                 return MakeDefault(_usualType);
+            string name;
             if (_options.XSharpRuntime)
-                return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
+            {
+                name = XSharpQualifiedFunctionNames.UsualNIL;
+            }
             else
-                return GenerateQualifiedName(VulcanQualifiedFunctionNames.UsualNIL);
+            {
+                name = VulcanQualifiedFunctionNames.UsualNIL;
+            }
+            return GenerateQualifiedName(name);
         }
         protected override ExpressionSyntax GenerateMissingExpression(bool AddError)
         {

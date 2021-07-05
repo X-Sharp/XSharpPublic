@@ -1,14 +1,17 @@
-Function Start as void
-	local a,b as usual
+FUNCTION Start AS VOID
+	LOCAL a,b AS USUAL
 	a := 10
-	b := 20
+	b := 20    
+    	
 	Test(a,,@b)
 	xAssert(a == 10)
-	xAssert(b == 300)                                                                     
+	xAssert(b == 300)       
+	? __Usual._NIL:ToString()
+	xAssert( __Usual._NIL:ToString() == "NIL")
 	
 	
 	
-function Test(a as usual, b := NIL out usual, c := NIL out usual, d := NIL out usual)  as void
+FUNCTION Test(a AS USUAL, b := NIL OUT USUAL, c := NIL OUT USUAL, d := NIL AS USUAL)  AS VOID
 	a := 100
 	b := 200
 	c := 300

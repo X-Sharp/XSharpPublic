@@ -23,7 +23,7 @@ FUNCTION Start() AS INT
 	 "C636", "C641", "C643", "C644", "C646", "C647", "C648", "C650", "C651", "C656", ;
 	 "C657", "C659", "C661", "C668", "C669", "C671", "C672", "C673", "C675", "C686", ;
 	 "C689", "C697", "C698", "C699", "C707", "C709", "C710", "C711", "C712", "C714", ;
-	 "C717", "C718", "C323", "C728", "C738", "C739", "C740", "C741", "C742", "C743",;
+	 "C717", "C718", "C323", "C728", "C739", "C740", "C741", "C742", "C743",;
 	 "C724", "C703", "C729", "C737", "C750", "C751", "C759", "C765", "C770","C780",;
      "C781", ;
 	 "R678", "R681", "R690", "R698", "R699", "R700" ,"R701", "R702", "R710",;
@@ -36,6 +36,7 @@ FUNCTION Start() AS INT
 	#ifdef GUI
 	aTests:Add("C386")
 	aTests:Add("C541")
+	aTests:Add("C738")
 	aTests:Add("R705")
 	#else
 	// they use Environment.CurrentDirectory, which does not work under tthe automated tests. Need to find a better way

@@ -2,8 +2,11 @@
 // /ovf /fovf
 
 // correct error XS0221: Constant value '-1' cannot be converted to a 'word' 
-// (use 'unchecked' syntax to override)
-//DEFINE d1 := (WORD) -1
+// (use 'unchecked' syntax to override)    
+// The 'modern' Typecast syntax follows the overflow compiler options, so set overflow off now
+#pragma options("ovf", off)
+DEFINE d1 := (WORD) -1
+#pragma options("ovf", restore)
 
 // Still same error, despite using UNCKECKED, as suggested in the error message.
 // Note that the compiler reports an error on this only in vulcan dialect.
@@ -19,9 +22,10 @@ DEFINE d3 := WORD(-1)
 DEFINE d4 := WORD(_CAST,-1)
 
 FUNCTION Start() AS VOID
+? d1, d3
 ? d2,d4
 xAssert(d2 == 65535)
-xAssert(d4 == 65535)
+xAssert(d4 == 65535)   
 RETURN
 
 PROC xAssert(l AS LOGIC)

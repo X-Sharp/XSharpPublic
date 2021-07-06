@@ -1,7 +1,9 @@
 // C643. Problems with overflows of arithmetic between literals
 FUNCTION Start() AS VOID
 	LOCAL f AS FLOAT
-	LOCAL u AS USUAL
+	LOCAL u AS USUAL   
+	SetFixed(TRUE)
+	SetDigit(20)
 	? 2147483647 + 1
 	? 2147483647 + 1 == 2147483648
 	xAssert(2147483647 + 1 == 2147483648)

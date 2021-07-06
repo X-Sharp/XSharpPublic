@@ -17,7 +17,9 @@ jobs:
     runs-on: windows-2019 #Specify the OS to execute on
     
     steps:
-      - uses: actions/checkout@master #Clone the repository code at master
+      - uses: actions/checkout@v2
+        with:
+          ref: main
 #      - uses: actions/setup-dotnet@v1.7.2
 #        with:
 #           dotnet-version: '3.1.402' # SDK Version to use; should match version in global.json and build/Targets/Tools.props

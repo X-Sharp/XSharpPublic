@@ -3674,7 +3674,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         /// <returns></returns>
         protected virtual ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype)
         {
-            if (_options.HasOption(CompilerOption.NullStrings, datatype, PragmaOptions)  && datatype != null)
+            if (_options.HasOption(CompilerOption.NullStrings, datatype, PragmaOptions) && datatype != null)
             {
                 var isString = datatype.CsNode is PredefinedTypeSyntax pts
                     && pts.Keyword.Kind == SyntaxKind.StringKeyword;
@@ -8057,12 +8057,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = context.Expr.Get<ExpressionSyntax>();
             expr = MakeCastTo(context.Type.Get<TypeSyntax>(), expr);
             // If the expression is part of a CHECKED or UNCHECKED
-            // Syntax then there is no need to explicitely add the Checked
+            // Syntax then there is no need to explicitly add the Checked
             // for example C578: 
             // DEFINE d2 := unchecked ((WORD) -1)
-            if (_options.HasRuntime  && _options.TargetDLL  == XSharpTargetDLL.Other && !(context.Parent is XP.CheckedExpressionContext))
+            if (_options.HasRuntime && _options.TargetDLL == XSharpTargetDLL.Other && !(context.Parent is XP.CheckedExpressionContext))
             {
-                expr = MakeChecked(expr, _options.Overflow);
+                expr = MakeChecked(expr, _options.HasOption(CompilerOption.Overflow, context, PragmaOptions));
             }
             context.Put(expr);
         }
@@ -8156,7 +8156,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var destType = signed ? _intType : _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword));
                     expr = MakeCastTo(destType, expr);
                     expr = MakeChecked(expr, false);
-
                 }
             }
             if (mask != 0)

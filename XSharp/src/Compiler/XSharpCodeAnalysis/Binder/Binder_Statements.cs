@@ -240,7 +240,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax))
+            if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax) || //vo4
+                Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax)) //vo11
                 return;
 
             var rhsType = expression.Type;

@@ -126,6 +126,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.LateBinding:
                     return CheckOption(option, LateBinding, syntax);
 
+                case CompilerOption.Overflow:
+                    return CheckOption(option, CheckOverflow, syntax);
+
                 case CompilerOption.MemVars:
                     return CheckOption(option, MemVars, syntax);
 

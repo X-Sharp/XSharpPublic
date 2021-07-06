@@ -560,8 +560,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var res = BindVOBinaryOperator(node, diagnostics, ref left, ref right, opType);
                 if (res != null)
                     return res;
+                leftType = left.Type;
+                rightType = right.Type;
             }
-            bool integralTypes = ((object) leftType )!= null && ((object) rightType )!= null &&
+            bool integralTypes = ((object)leftType) != null && ((object)rightType) != null &&
                 leftType.IsIntegralType() && rightType.IsIntegralType();
             if (!integralTypes)
             {
@@ -638,7 +640,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 if (integralTypes && resultConstant != null && resultConstant.SpecialType.IsIntegralType() && expectedResultType.IsIntegralType())
                 {
-                    if (!TypeSymbol.Equals(resultType , expectedResultType))
+                    if (!TypeSymbol.Equals(resultType, expectedResultType))
                     {
                         resultConstant = XsConvertConstant(resultConstant, expectedResultType.SpecialType);
                     }
@@ -674,7 +676,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 hasErrors);
 
 #else
-            BoundExpression result = new BoundBinaryOperator(
+            BoundBinaryOperator result = new BoundBinaryOperator(
                            node,
                 resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
                 resultLeft,
@@ -686,21 +688,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultType,
                 hasErrors);
 
-            if (Compilation.Options.Dialect != XSharpDialect.Core && integralTypes && resultConstant == null)
+            if (integralTypes && Compilation.Options.Dialect != XSharpDialect.Core)
             {
-                // SHORT(_CAST, expression) has been converted to a _AND() operation. In that case we want the type of the RHS of the operation.
-                var chosenType = leftType;
-                if (resultLeft.ConstantValue != null || result.Syntax.XIsVoCast)
-                    chosenType = rightType;
-
-                if (resultType.IsIntegralType() && !TypeSymbol.Equals(resultType, chosenType))// C277 ByteValue >> 2 should not return int but byte.
-                {
-                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false,
-                        conversionGroupOpt: default,
-                        constantValueOpt: default,
-                        type: chosenType)
-                    { WasCompilerGenerated = true };
-                }
+                return XsHandleIntegralTypes(result,leftType, rightType);
             }
             return result;
 #endif
@@ -1282,7 +1272,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             result.Free();
 #if XSHARP
             // When failed, then try again if RHS is < 4 bytes. Some method in Vulcan have only overloads for Int32 and UInt32 and higher
-            if (!possiblyBest.HasValue && Compilation.Options.HasRuntime && ((object)right.Type )!= null)
+            if (!possiblyBest.HasValue && Compilation.Options.HasRuntime && ((object)right.Type) != null)
             {
                 var st = right.Type.SpecialType;
                 bool tryAgain = false;
@@ -1300,7 +1290,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         tryAgain = true;
                     }
                 }
-                if (! tryAgain && ((object)left.Type )!= null)
+                if (!tryAgain && ((object)left.Type) != null)
                 {
                     // convert LHS from 8 or 16 bits to 32 bits
                     st = left.Type.SpecialType;
@@ -2696,7 +2686,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultMethod,
                 resultKind,
                 resultType);
-            if (! TypeSymbol.Equals(resultType, operand.Type ))
+            if (!TypeSymbol.Equals(resultType, operand.Type))
             {
                 var newType = VOGetType(operand);
                 if (resultOperatorKind.IsUnaryMinus())

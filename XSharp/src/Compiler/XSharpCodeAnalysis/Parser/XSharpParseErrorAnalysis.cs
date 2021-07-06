@@ -473,7 +473,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         opt = opt.Substring(1, opt.Length - 2);
                         var compopt = CompilerOptionDecoder.Decode(opt);
-                        if (compopt.NeedsRuntime() && ! _options.HasRuntime)
+                        if (compopt.NeedsRuntime() && !_options.HasRuntime)
                         {
                             var errdata = new ParseErrorData(token,
                                 ErrorCode.ERR_CompilerOptionNotSupportedForDialect, opt,compopt.Description(), _options.Dialect);
@@ -482,6 +482,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                         switch (compopt)
                         {
+                            case CompilerOption.Overflow:
                             case CompilerOption.AllowDotForInstanceMembers:
                             case CompilerOption.ArrayZero:
                             case CompilerOption.InitLocals:

@@ -360,6 +360,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.MemVars: // memvar
                     return CheckOption(option, MemVars, context, options);
 
+                case CompilerOption.Overflow: // ovf
+                    return CheckOption(option, Overflow, context, options);
+
                 case CompilerOption.UndeclaredMemVars: // undeclared
                     return CheckOption(option, UndeclaredMemVars, context, options);
 

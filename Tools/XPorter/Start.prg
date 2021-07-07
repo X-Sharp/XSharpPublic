@@ -4,17 +4,17 @@
 // See License.txt in the project root for license information.
 //
 
-#using System.Windows.Forms
-#using System.Drawing
+USING System.Windows.Forms
+USING System.Drawing
 
 [STAThreadAttribute];
 FUNCTION Start(  ) AS INT
-	
+
 	LOCAL oForm AS frmXporter
-	
+
 	Application.EnableVisualStyles()
 	Application.DoEvents()
-	
+
 	oForm := frmXporter{}
 	Application.Run(oForm)
 

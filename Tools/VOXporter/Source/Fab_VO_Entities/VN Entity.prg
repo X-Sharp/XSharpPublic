@@ -1,6 +1,10 @@
-#include "GlobalDefines.vh"
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
-#using FabToolsNS
+USING FabToolsNS
 
 BEGIN NAMESPACE Fab_VO_Entities
 
@@ -24,16 +28,16 @@ CLASS	FabVNEntity	INHERIT FabEntityBase
 	PROTECT cBTime		AS	STRING
 
 
-/*    ACCESS CreateDate AS DATE  
+/*    ACCESS CreateDate AS DATE
     RETURN SELF:dCDate
 
 
-    ACCESS CreateTime AS STRING  
+    ACCESS CreateTime AS STRING
     RETURN SELF:cCTime*/
 
 
     CONSTRUCTOR( cName AS STRING, cProto AS STRING, oPrgFile AS FabVNFile, nStart AS LONG, nEnd AS LONG, ;
-                cClass AS STRING , cNSpace AS STRING, dDate1 AS OBJECT, cTime1 AS STRING, dDate2 AS OBJECT, cTime2 AS STRING )	
+                cClass AS STRING , cNSpace AS STRING, dDate1 AS OBJECT, cTime1 AS STRING, dDate2 AS OBJECT, cTime2 AS STRING )
     //p Constructor of a FabPRGEntity object.
     //a cName is the name in the form it appears in the AEF/MEF File\line
     //a cProto is the prototype as it appears in the AEF/MEF File\line
@@ -62,15 +66,15 @@ CLASS	FabVNEntity	INHERIT FabEntityBase
 	    //
 //	    SELF:cName := SELF:Info
 	    SELF:cName := "<disabled info>"
-    RETURN 
+    RETURN
 
-/*    ACCESS LastBuildDate AS DATE 	
+/*    ACCESS LastBuildDate AS DATE
     RETURN SELF:dBDate
 
-    ACCESS LastBuildTime AS STRING  	
+    ACCESS LastBuildTime AS STRING
     RETURN SELF:cBTime*/
 
-    ACCESS Source AS STRING  
+    ACCESS Source AS STRING
     //p Return the Source code associated with this entity.
     RETURN SELF:oOwner:ExportSource( SELF:nStartLine, SELF:nEndLine )
 
@@ -79,7 +83,7 @@ CLASS	FabVNEntity	INHERIT FabEntityBase
 
     VIRTUAL ACCESS NameSpace AS STRING
     RETURN SELF:cNameSpace
-    
+
 /*    ACCESS TypeSymbol AS STRING
     //p Return the type of the entity as a symbol.
     //r The type identify the entity as :\line
@@ -98,7 +102,7 @@ CLASS	FabVNEntity	INHERIT FabEntityBase
     RETURN cKeyword
 */
 /*
-        VIRTUAL ACCESS Info AS STRING 	
+        VIRTUAL ACCESS Info AS STRING
 	        LOCAL cEnt		AS	STRING
 	        LOCAL cTemp		AS	STRING
 	        LOCAL cProto	AS	STRING
@@ -156,27 +160,27 @@ CLASS	FabVNEntity	INHERIT FabEntityBase
 	        ENDIF
 	        //
         RETURN cEnt
-*/        
+*/
 /*        METHOD Test() AS VOID
             LOCAL x AS INT
             /// doc
             /// comment
             x := 10*/
 
-        
-        STATIC METHOD GetKeywords() AS STRING[]
+
+        STATIC METHOD GetEntityKeywords() AS STRING[]
             IF (FabVNEntity.__aKeywords == NULL )
                 FabVNEntity.InitEntityMarkers()
             ENDIF
         RETURN FabVNEntity.__VNaKeywords
 
-        PROTECT STATIC METHOD InitEntityMarkers() AS VOID
+        PRIVATE STATIC METHOD InitEntityMarkers() AS VOID
             //
             FabVNEntity.__VNaKeywords := <STRING>{ 	"BEGIN", "CLASS", "METHOD", "ACCESS", "ASSIGN", "PROPERTY", "CONSTRUCTOR", "DESTRUCTOR", ;
                                 "OPERATOR", "EVENT", ;
                                 "FUNCTION", "PROCEDURE", "FUNC", "PROC", "RESOURCE", "GLOBAL",;
 					            "DEFINE", "UNION", "VOSTRUCT", "STRUCTURE", "GLOBAL" }
-        RETURN    
+        RETURN
 
 
 END CLASS

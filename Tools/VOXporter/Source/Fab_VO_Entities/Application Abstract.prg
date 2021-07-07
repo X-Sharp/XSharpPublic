@@ -1,4 +1,9 @@
-#include "GlobalDefines.vh"
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 
 BEGIN NAMESPACE Fab_VO_Entities
 
@@ -8,92 +13,92 @@ BEGIN NAMESPACE Fab_VO_Entities
         //
         //
         //
-        CONSTRUCTOR()  
+        CONSTRUCTOR()
         SUPER()
         RETURN
 
-        VIRTUAL METHOD Close() AS VOID  
+        VIRTUAL METHOD Close() AS VOID
 
         RETURN
 
-/*        VIRTUAL ACCESS CreateDate AS DATE 	
+/*        VIRTUAL ACCESS CreateDate AS DATE
         RETURN NULL_DATE
 
 
-        VIRTUAL ACCESS CreateTime AS STRING 	
+        VIRTUAL ACCESS CreateTime AS STRING
         RETURN "00:00:00"*/
 
 
-        VIRTUAL ACCESS Description AS STRING  
+        VIRTUAL ACCESS Description AS STRING
         RETURN ""
 
 
-        VIRTUAL ACCESS ExeName AS STRING  
+        VIRTUAL ACCESS ExeName AS STRING
         RETURN ""
 
 
-        VIRTUAL METHOD ExportModule( cModName AS STRING, cFileName AS STRING ) AS LOGIC  
+        VIRTUAL METHOD ExportModule( cModName AS STRING, cFileName AS STRING ) AS LOGIC
         RETURN FALSE
 
 
-        VIRTUAL ACCESS FullPath AS STRING  
+        VIRTUAL ACCESS FullPath AS STRING
         RETURN ""
 
 
-        VIRTUAL  ASSIGN FullPath( cNew AS STRING )   
-        RETURN 
+        VIRTUAL  ASSIGN FullPath( cNew AS STRING )
+        RETURN
 
 
-        ACCESS IsApplication AS LOGIC  
+        ACCESS IsApplication AS LOGIC
         RETURN ( SELF:IsLibrary == FALSE ) .AND. ( SELF:IsDLL == FALSE )
 
 
-        VIRTUAL ACCESS IsDLL AS LOGIC  
+        VIRTUAL ACCESS IsDLL AS LOGIC
         RETURN FALSE
 
 
-        VIRTUAL ACCESS IsLibrary AS LOGIC  
+        VIRTUAL ACCESS IsLibrary AS LOGIC
         RETURN FALSE
 
-        VIRTUAL ACCESS	IsValid AS LOGIC 	
+        VIRTUAL ACCESS	IsValid AS LOGIC
         RETURN FALSE
 
 
-/*        VIRTUAL ACCESS LastBuildDate AS DATE 	
+/*        VIRTUAL ACCESS LastBuildDate AS DATE
         RETURN NULL_DATE
 
 
-        VIRTUAL ACCESS LastBuildTime AS STRING 	
+        VIRTUAL ACCESS LastBuildTime AS STRING
         RETURN "00:00:00"*/
 
 
-        VIRTUAL ACCESS LibraryNameList AS xARRAY  
+        VIRTUAL ACCESS LibraryNameList AS xARRAY
         RETURN xARRAY{}
 
 
-        VIRTUAL ACCESS	ModuleCount AS DWORD 	
+        VIRTUAL ACCESS	ModuleCount AS DWORD
         RETURN ALen( SELF:ModuleList )
 
 
-/*        VIRTUAL METHOD ModuleFind( cModName AS STRING ) AS OBJECT 	
+/*        VIRTUAL METHOD ModuleFind( cModName AS STRING ) AS OBJECT
         RETURN NULL_OBJECT*/
 
 
-        VIRTUAL ACCESS	ModuleList AS xARRAY 	
+        VIRTUAL ACCESS	ModuleList AS xARRAY
 //        RETURN NULL_ARRAY
         RETURN NULL
 
 
-/*        VIRTUAL ACCESS	ModuleNameList AS ARRAY 	
+/*        VIRTUAL ACCESS	ModuleNameList AS ARRAY
         RETURN NULL_ARRAY
 */
-        PROTECT VIRTUAL METHOD Scan() AS VOID 	
+        PROTECT VIRTUAL METHOD Scan() AS VOID
         RETURN
 
-        VIRTUAL METHOD	SortByName( ) AS VOID  
+        VIRTUAL METHOD	SortByName( ) AS VOID
         RETURN
 
-/*        VIRTUAL ACCESS UDCNameList AS ARRAY  
+/*        VIRTUAL ACCESS UDCNameList AS ARRAY
         RETURN {}*/
 
     END CLASS

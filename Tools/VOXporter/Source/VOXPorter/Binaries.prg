@@ -1,12 +1,12 @@
 // Note: The code here is much as possible 1:1 copied from very old original code in XIDE, in order to avoid introducing problems
 // Please do not adjust it to make it more readable/efficient, at least until we have made absolutely sure everything works as expected
 
-#using System.Windows.Forms
-#using System.Text
-#using System.Collections.Generic
-#using System.Collections
-#using System.IO
-#using System.Xml
+USING System.Windows.Forms
+USING System.Text
+USING System.Collections.Generic
+USING System.Collections
+USING System.IO
+USING System.Xml
 
 CLASS BinaryEntity
 
@@ -23,7 +23,7 @@ CLASS BinaryEntity
 		IF aItems == NULL .or. aItems:Count == 0
 			RETURN
 		END IF
-		
+
 		cWedFile := cPrg + ".wed"
 		oWriter := StreamWriter{cWedFile , TRUE , System.Text.Encoding.GetEncoding(0)}
 		oItem := aItems[0]
@@ -32,7 +32,7 @@ CLASS BinaryEntity
 		oWriter:WriteLine(cLine)
 		oWriter:WriteLine("GUID=" + NewGuid())
 		VOWEDItem.SaveItem(oWriter , oItem)
-		
+
 		oWriter:WriteLine("")
 		oWriter:WriteLine("SUBCONTROLSSTART")
 		FOR n := 1 UPTO aItems:Count - 1
@@ -46,7 +46,7 @@ CLASS BinaryEntity
 		oWriter:WriteLine("SUBCONTROLSEND")
 		oWriter:WriteLine("DESIGNEREND = " + cForm)
 		oWriter:WriteLine("")
-		
+
 		oWriter:Close()
 	RETURN
 
@@ -73,10 +73,10 @@ CLASS BinaryEntity
 						oItem := VOWEDItem.ReadVNFrmControl(oBinary)
 						aItems:Add(oItem)
 					END DO
-				CATCH 
+				CATCH
 					NOP
 				END TRY
-			CATCH 
+			CATCH
 				NOP
 			END TRY
 			oBinary:Close()
@@ -93,14 +93,14 @@ CLASS BinaryEntity
 		LOCAL oDesign AS VOWEDItem
 		LOCAL oNode AS XmlNode
 		LOCAL n AS INT
-		
+
 		aDesign := ReadWindowFromBytes(aBytes)
 		IF aDesign == NULL .or. aDesign:Count == 0
 			RETURN
 		END IF
-		
+
 		oStream := File.Create(cBinaryFileName)
-		
+
 		oDocument := XmlDocument{}
 		oDocument:AppendChild(oDocument:CreateXmlDeclaration("1.0" , "utf-8" , NULL))
 
@@ -112,12 +112,12 @@ CLASS BinaryEntity
 		oDesign := aDesign[0]
 		ApplyNameAttribute(oDocument , oMainNode , oDesign:Name)
 		oDesigners:AppendChild(oMainNode)
-		
+
 		oNode := oDocument:CreateElement("Window")
 		ApplyNameAttribute(oDocument , oNode , oDesign:Name)
 		oMainNode:AppendChild(oNode)
 		SaveWindowItemToXml(oDocument , oDesign , oNode)
-		
+
 		FOR n := 1 UPTO aDesign:Count - 1
 			oDesign := (VOWEDItem)aDesign[n]
 			oNode := oDocument:CreateElement("Control")
@@ -135,7 +135,7 @@ CLASS BinaryEntity
 	STATIC PRIVATE METHOD SaveWindowItemToXml(oDocument AS XmlDocument , oItem AS VOWEDItem , oParentNode AS XmlNode) AS LOGIC
 		LOCAL oGroupNode AS XmlNode
 		LOCAL n AS INT
-		
+
 		AppendElement(oDocument , oParentNode , "Name" , oItem:cName)
 		AppendElement(oDocument , oParentNode , "Class" , oItem:cControl)
 		AppendElement(oDocument , oParentNode , "Caption" , oItem:cCaption)
@@ -190,12 +190,12 @@ CLASS BinaryEntity
 		LOCAL aLines AS List<STRING>
 		LOCAL nByte AS BYTE
 		LOCAL n AS INT
-		
+
 		cWedFile := cPrg + ".wed"
-		
+
 		nPos := 1
 		cForm := VOMedItem.__ReadNextVNMnuString(aBytes , nPos)
-		
+
 		aLines := List<STRING>{}
 		TRY
 			DO WHILE TRUE
@@ -203,24 +203,24 @@ CLASS BinaryEntity
 				IF oItem == NULL
 					EXIT
 				ENDIF
-				
+
 				IF oItem:nDepth > nDepth
 					nDepth := oItem:nDepth
 					aLines:Add("")
 					aLines:Add("SUBCONTROLSSTART")
 					aLines:Add("")
 				ELSEIF oItem:nDepth < nDepth
-					DO WHILE oItem:nDepth < nDepth 
+					DO WHILE oItem:nDepth < nDepth
 						nDepth --
 						aLines:Add("")
 						aLines:Add("SUBCONTROLSEND")
 						aLines:Add("")
 					END DO
 				ENDIF
-				
+
 				aLines:Add("CONTROL=MENUITEM")
 				aLines:Add("GUID=" + NewGuid())
-				
+
 				aLines:Add("EventName=" + oItem:cEventName)
 				aLines:Add("Caption=" + oItem:cCaption)
 				aLines:Add("Description=" + oItem:cDescription)
@@ -233,22 +233,22 @@ CLASS BinaryEntity
 				aLines:Add("ButtonToolTip=" + oItem:cButtonTooltip)
 				aLines:Add("ButtonPos=" + oItem:nButtonPosition:ToString())
 			END DO
-		CATCH 
+		CATCH
 			NOP
 		END TRY
-		
+
 		FOR n := 1 UPTO nDepth
 			aLines:Add("")
 			aLines:Add("SUBCONTROLSEND")
 			aLines:Add("")
 		NEXT
-		
+
 		oWriter := StreamWriter{cWedFile , TRUE , System.Text.Encoding.GetEncoding(0)}
 		cLine := "DESIGNERSTART = VOMenu," + "Menu" + "," + cForm
 		oWriter:WriteLine(cLine)
 		oWriter:WriteLine("GUID=" + NewGuid())
 		oWriter:WriteLine("Name=" + cForm)
-		
+
 		nPos ++
 		IF nPos < aBytes:Length // some old vo apps have short vnmnu files
 			nByte := aBytes[nPos]
@@ -261,7 +261,7 @@ CLASS BinaryEntity
 				cLine += "Raised Toolbar"
 			ENDIF
 			oWriter:WriteLine(cLine)
-			
+
 			nPos += 2
 			nByte := aBytes[nPos]
 			cLine := "Show="
@@ -273,31 +273,31 @@ CLASS BinaryEntity
 				cLine += "Text and Icon"
 			ENDIF
 			oWriter:WriteLine(cLine)
-			
+
 			nPos += 3
 			oWriter:WriteLine("UseBands=" + iif(aBytes[nPos] >= 128 , "Yes" , "No"))
-			
+
 			IF aBytes:Length > nPos + 5 .and. aBytes[nPos + 1] == 5 .and. aBytes[nPos + 2] == 7 .and. aBytes[nPos + 3] == 76
 				nPos += 4
 				oWriter:WriteLine("Inherit=" + VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
 				oWriter:WriteLine("ToolbarInherit=" + VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
 			END IF
 		END IF
-		
+
 		oWriter:WriteLine("")
 		oWriter:WriteLine("SUBCONTROLSSTART")
 		oWriter:WriteLine("")
-		
+
 		FOR n := 0 UPTO aLines:Count - 1
 			oWriter:WriteLine(aLines[n])
 		NEXT
-		
-		oWriter:WriteLine("")                
+
+		oWriter:WriteLine("")
 		oWriter:WriteLine("SUBCONTROLSEND")
 		oWriter:WriteLine("")
 		oWriter:WriteLine("DESIGNEREND = " + cForm)
 		oWriter:WriteLine("")
-		
+
 		oWriter:Flush()
 		oWriter:Close()
 	RETURN
@@ -310,7 +310,7 @@ CLASS BinaryEntity
 		LOCAL nByte AS BYTE
 		LOCAL nPos AS INT
 		LOCAL n AS INT
-		
+
 		oDescr := VOMenuDescription{}
 		nPos := 1
 
@@ -359,7 +359,7 @@ CLASS BinaryEntity
 
 		nPos += 3
 		oItem:aProperties:Add("UseBands" , iif(aBytes[nPos] >= 128 , "Yes" , "No"))
-		
+
 		IF aBytes:Length > nPos + 5 .and. aBytes[nPos + 1] == 5 .and. aBytes[nPos + 2] == 7 .and. aBytes[nPos + 3] == 76
 			nPos += 4
 			oItem:aProperties:Add("Inherit" , VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
@@ -368,7 +368,7 @@ CLASS BinaryEntity
 			oItem:aProperties:Add("Inherit" , "")
 			oItem:aProperties:Add("ToolbarInherit" , "")
 		END IF
-		
+
 	RETURN oDescr
 
 	STATIC METHOD SaveMenuToXml(cBinaryFileName AS STRING, aBytes AS BYTE[]) AS VOID
@@ -379,7 +379,7 @@ CLASS BinaryEntity
 		SaveMenuToXml(oDescr , oDocument)
 		TRY
 			oDocument:Save(cBinaryFileName)
-		CATCH 
+		CATCH
 			NOP
 		END TRY
 	RETURN
@@ -387,7 +387,7 @@ CLASS BinaryEntity
 	STATIC PRIVATE METHOD SaveMenuToXml(oDescr AS VOMenuDescription , oDocument AS XmlDocument) AS VOID
 		LOCAL oDesigners AS XmlNode
 		LOCAL oMainNode AS XmlNode
-		
+
 		oDocument:AppendChild(oDocument:CreateXmlDeclaration("1.0" , "utf-8" , NULL))
 
 		oDesigners := oDocument:CreateElement("Designers")
@@ -405,7 +405,7 @@ CLASS BinaryEntity
 		LOCAL oSubNode , oItemsNode AS XmlNode
 		LOCAL oItem AS VOMenuItem
 		LOCAL n AS INT
-		
+
 		FOR n := 0 UPTO oParent:aProperties:Count - 1
 //			IF .not. oPair:Name:Name:EndsWith("ID")
 			IF oParent:aProperties:GetKey(n) != "MenuID"
@@ -464,12 +464,12 @@ CLASS VOWEDItem
 	EXPORT nDeleted AS INT
 	EXPORT dStyles AS DWORD
 	EXPORT dExStyles AS DWORD
-	
+
 	EXPORT aProperties AS NameValueCollection
 	EXPORT aTabPages AS List<VOTabPageOptions>
-	
+
 	PROPERTY Name AS STRING GET SELF:cName
-	
+
 	CONSTRUCTOR()
 		SUPER()
 		SELF:aProperties := NameValueCollection{}
@@ -500,7 +500,7 @@ CLASS VOWEDItem
 		FOR n := 0 UPTO oItem:aProperties:Count - 1
 			oStream:WriteLine(cSpace + "Property=" + oItem:aProperties:Get(n):Name + "=" + (STRING)oItem:aProperties:Get(n):Value)
 		NEXT
-		
+
 		IF oItem:aTabPages != NULL
 			LOCAL oPage AS VOTabPageOptions
 			FOR n := 0 UPTO oItem:aTabPages:Count - 1
@@ -532,11 +532,11 @@ CLASS VOWEDItem
 		LOCAL cName , cValue AS STRING
 		LOCAL cControl AS STRING
 		LOCAL oItem AS VOWEDItem
-		
+
 		oItem := VOWEDItem{}
 		oItem:cName := __ReadString(oReader , 63)
 		oItem:nOrder := (INT)oReader:ReadInt16()
-		
+
 		cControl := __ReadString(oReader , 65)
 		oItem:cClass := cControl
 		nAt := cControl:LastIndexOf(':')
@@ -545,7 +545,7 @@ CLASS VOWEDItem
 		ENDIF
 		oItem:cControl := cControl
 		oItem:cCaption := __ReadString(oReader , 65)
-	
+
 		nLeft := (INT)oReader:ReadInt16() + 1
 		nTop := (INT)oReader:ReadInt16() + 1
 		nRight := (INT)oReader:ReadInt16() + 1
@@ -554,7 +554,7 @@ CLASS VOWEDItem
 		oItem:nTop := nTop
 		oItem:nWidth := nRight - nLeft
 		oItem:nHeight := nBottom - nTop
-		
+
 		oItem:nDeleted := (INT)oReader:ReadInt16()
 		oItem:nBrowseIndex := (INT)oReader:ReadInt16()
 		oItem:nBrowseSize := (INT)oReader:ReadInt16()
@@ -562,7 +562,7 @@ CLASS VOWEDItem
 		oItem:nNoSave := (INT)oReader:ReadByte()
 		oItem:dStyles := oReader:ReadUInt32()
 		oItem:dExStyles := oReader:ReadUInt32()
-		
+
 		nPropLength := oReader:ReadUInt16()
 		oItem:aProperties := NameValueCollection{}
 		cName := "";cValue := ""
@@ -570,7 +570,7 @@ CLASS VOWEDItem
 		LOCAL lInValue AS LOGIC
 		LOCAL n AS INT
 		aBytes := oReader:ReadBytes(nPropLength)
-		
+
 		FOR n := 1 UPTO aBytes:Length
 			IF aBytes[n] == 0
 				oItem:aProperties:Add(cName , cValue)
@@ -625,7 +625,7 @@ CLASS VOWEDItem
 				oTabPage:lDataAware := oReader:ReadByte() == 89
 //				oReader:ReadByte()
 			NEXT
-			
+
 		ENDIF
 
 	RETURN oItem
@@ -654,18 +654,18 @@ CLASS VOMedItem
 	EXPORT oAccelerator AS MenuAccelerator
 	EXPORT lEnabled AS LOGIC
 	EXPORT lChecked AS LOGIC
-	
+
 	EXPORT nDepth AS INT
 	EXPORT nFlags AS INT
-	
+
 	EXPORT nButtonID AS INT
 	EXPORT cButtonID AS STRING
 	EXPORT cButtonCaption AS STRING
 	EXPORT cButtonTooltip AS STRING
 	EXPORT nButtonPosition AS INT
-	
+
 	EXPORT nMenuID AS INT
-	
+
 	CONSTRUCTOR()
 	RETURN
 
@@ -674,7 +674,7 @@ CLASS VOMedItem
 		LOCAL cValue AS STRING
 		LOCAL nValue AS INT
 		LOCAL nAt AS INT
-		
+
 		oItem := VOMedItem{}
 		IF aBytes[nPos + 1] < 48 .or. aBytes[nPos + 1] > 57
 			oItem:lMenu := TRUE
@@ -683,13 +683,13 @@ CLASS VOMedItem
 		END IF
 		cValue := __ReadNextVNMnuString(aBytes , nPos , FALSE)
 		oItem:nDepth := Funcs.Val(cValue)
-	
+
 		oItem:cCaption := __ReadNextVNMnuString(aBytes , nPos)
-	
+
 		cValue := __ReadNextVNMnuString(aBytes , nPos) // Menu ID
 //		oItem:cMenuID := cValue
 		oItem:nMenuID := Funcs.Val(cValue)
-	
+
 		cValue := __ReadNextVNMnuString(aBytes , nPos)
 		nAt := cValue:IndexOf('\t') + 1
 		IF nAt != 0
@@ -699,9 +699,9 @@ CLASS VOMedItem
 			oItem:cEventName := cValue:Trim()
 			oItem:cID := ""
 		END IF
-	
+
 		oItem:cDescription := __ReadNextVNMnuString(aBytes , nPos)
-	
+
 		oItem:cHelpID := __ReadNextVNMnuString(aBytes , nPos)
 
 		oItem:oAccelerator := __ReadNextVNMnuAccel(aBytes , nPos)
@@ -710,7 +710,7 @@ CLASS VOMedItem
 		nValue := Funcs.Val(cValue)
 		oItem:lEnabled := (nValue & 2) != 0
 		oItem:lChecked := (nValue & 1) != 0
-		
+
 		cValue := __ReadNextVNMnuString(aBytes , nPos , FALSE)
 		IF !cValue == "-1"
 			oItem:nButtonID := Funcs.Val(cValue)
@@ -722,7 +722,7 @@ CLASS VOMedItem
 		ELSE
 			oItem:cButtonID := ""
 		ENDIF
-	
+
 		cValue := __ReadNextVNMnuString(aBytes , nPos)
 		IF cValue:Length > 8
 			cValue := cValue:Substring(8)
@@ -730,7 +730,7 @@ CLASS VOMedItem
 			cValue := ""
 		ENDIF
 		oItem:cButtonCaption := cValue
-	
+
 		cValue := __ReadNextVNMnuString(aBytes , nPos)
 		IF cValue:Length > 8
 			cValue := cValue:Substring(8)
@@ -738,12 +738,12 @@ CLASS VOMedItem
 			cValue := ""
 		ENDIF
 		oItem:cButtonTooltip := cValue
-	
+
 		cValue := __ReadNextVNMnuString(aBytes , nPos , FALSE)
 		oItem:nButtonPosition := Funcs.Val(cValue)
-		
+
 	RETURN oItem
-		
+
 	STATIC METHOD __ReadNextVNMnuString(aBytes AS BYTE[] , nPos REF INT) AS STRING
 	RETURN __ReadNextVNMnuString(aBytes , nPos , TRUE)
 	STATIC METHOD __ReadNextVNMnuString(aBytes AS BYTE[] , nPos REF INT , lTranslate AS LOGIC) AS STRING
@@ -765,7 +765,7 @@ CLASS VOMedItem
 			END CASE
 			nPos ++
 		END DO
-		
+
 		IF oRead:Count > 0
 			IF lTranslate
 				LOCAL aRead AS BYTE[]
@@ -783,9 +783,9 @@ CLASS VOMedItem
 				cRet := oBuilder:ToString()
 			END IF
 		END IF
-		
+
 	RETURN cRet:Trim()
-	
+
 	STATIC METHOD __ReadNextVNMnuAccel(aBytes AS BYTE[] , nPos REF INT) AS MenuAccelerator
 		LOCAL cAccelerator AS STRING
 		LOCAL nAccelerator AS INT
@@ -795,11 +795,11 @@ CLASS VOMedItem
 		cAccelerator := ""
 		IF aBytes[nPos] == 10
 			nPos ++
-		END IF		
+		END IF
 		IF aBytes[nPos] == 13
 			nPos ++
 			RETURN MenuAccelerator{"" , FALSE , FALSE , FALSE}
-		END IF		
+		END IF
 		bModif := aBytes[nPos]
 		IF bModif >= 48 .and. bModif <= 55
 			nPos ++
@@ -845,17 +845,17 @@ CLASS VOMenuDescription
 
 	ACCESS Name AS STRING
 	RETURN SELF:cName
-	
+
 	ASSIGN InheritFrom(cValue AS STRING)
 		SELF:SetValue("Inherit" , cValue)
-	RETURN                         
+	RETURN
 	ASSIGN ToolbarInheritFrom(cValue AS STRING)
 		SELF:SetValue("ToolbarInherit" , cValue)
-	RETURN                         
+	RETURN
 	ASSIGN Ribbon(cValue AS STRING)
 		SELF:SetValue("Ribbon" , cValue)
-	RETURN                         
-	
+	RETURN
+
 	PROTECTED METHOD SetValue(cName AS STRING , cValue AS STRING) AS VOID
 		LOCAL n AS INT
 		FOR n := 0 UPTO SELF:oMainItem:aProperties:Count - 1
@@ -865,7 +865,7 @@ CLASS VOMenuDescription
 			END IF
 		NEXT
 		SELF:oMainItem:aProperties:Add(cName , cValue)
-	RETURN 
+	RETURN
 END CLASS
 
 CLASS VOMenuItem
@@ -876,26 +876,26 @@ CLASS VOMenuItem
 		SELF:aProperties := System.Collections.Specialized.NameValueCollection{}
 		SELF:aSubItems := ArrayList{}
 	RETURN
-			
+
 	STATIC METHOD __ReadVNMnuItem(aBytes AS BYTE[] , nPos REF INT) AS VOMenuItem
 		LOCAL nButtonID AS INT
 		LOCAL oItem AS VOMenuItem
 		LOCAL cValue AS STRING
 		LOCAL nValue AS INT
 		LOCAL nAt AS INT
-		
+
 		oItem := VOMenuItem{}
 		IF aBytes[nPos + 1] < 48 .or. aBytes[nPos + 1] > 57
 			RETURN NULL
 		END IF
 		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos , FALSE)
 		oItem:nDepth := Funcs.Val(cValue)
-	
+
 		oItem:aProperties:Add("Caption" , VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
-	
+
 		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos) // Menu ID
 //		oItem:nMenuID := Funcs.Val(cValue)
-	
+
 		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos)
 		nAt := cValue:IndexOf('\t') + 1
 		IF nAt != 0
@@ -905,7 +905,7 @@ CLASS VOMenuItem
 			oItem:aProperties:Add("EventName" , cValue:Trim())
 			oItem:aProperties:Add("ID" , "")
 		END IF
-	
+
 		oItem:aProperties:Add("Description" , VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
 		oItem:aProperties:Add("HelpContext" , VOMedItem.__ReadNextVNMnuString(aBytes , nPos))
 		oItem:aProperties:Add("Accelerator" , VOMedItem.__ReadNextVNMnuAccel(aBytes , nPos):ToString())
@@ -914,7 +914,7 @@ CLASS VOMenuItem
 		nValue := Funcs.Val(cValue)
 		oItem:aProperties:Add("Enabled" , iif((nValue & 2) != 0 , "Yes" , "No"))
 		oItem:aProperties:Add("Checked" , iif((nValue & 1) != 0 , "Yes" , "No"))
-		
+
 		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos , FALSE)
 		IF !cValue == "-1"
 			nButtonID := Funcs.Val(cValue)
@@ -926,7 +926,7 @@ CLASS VOMenuItem
 		ELSE
 			oItem:aProperties:Add("ButtonBmp" , "")
 		ENDIF
-	
+
 		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos)
 		IF cValue:Length > 8
 			cValue := cValue:Substring(8)
@@ -934,7 +934,7 @@ CLASS VOMenuItem
 			cValue := ""
 		ENDIF
 		oItem:aProperties:Add("ButtonCaption" , cValue)
-	
+
 		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos)
 		IF cValue:Length > 8
 			cValue := cValue:Substring(8)
@@ -942,10 +942,10 @@ CLASS VOMenuItem
 			cValue := ""
 		ENDIF
 		oItem:aProperties:Add("ButtonToolTip" , cValue)
-	
+
 		cValue := VOMedItem.__ReadNextVNMnuString(aBytes , nPos , FALSE)
 		oItem:aProperties:Add("ButtonPos" , cValue)
-		
+
 	RETURN oItem
 END CLASS
 
@@ -981,7 +981,7 @@ CLASS MenuAccelerator
 	SELF:lAlt := l
 	ACCESS IsEmpty AS LOGIC
 	RETURN SELF:cKey:Trim():Length == 0
-	
+
 	VIRTUAL METHOD ToString() AS STRING
 		LOCAL cRet AS STRING
 		IF SELF:IsEmpty
@@ -1022,7 +1022,7 @@ STATIC CLASS VOMenuProperties
 		FOR n := 0x60 UPTO 0x69 // N0..N9
 			oCollection:Add("Num " + (n - 0x60):ToString() , n)
 		NEXT
-		
+
 		oCollection:Add("Page Down" , (INT)0x21)
 		oCollection:Add("Page Up" , (INT)0x22)
 		oCollection:Add("End" , (INT)0x23)
@@ -1042,7 +1042,7 @@ STATIC CLASS VOMenuProperties
 		oCollection:Add("+" , (INT)0x6C)
 		oCollection:Add("-" , (INT)0x6D)
 		oCollection:Add("/" , (INT)0x6F)
-		
+
 		AccelKeys := oCollection
 
 
@@ -1264,7 +1264,7 @@ CLASS NameValueCollection
 
 	METHOD ContainsName(cName AS STRING) AS LOGIC
 	RETURN SELF:GetNameIndex(cName) != -1
-	
+
 	VIRTUAL ACCESS Count() AS INT
 	RETURN SELF:aCollection:Count
 END CLASS
@@ -1284,48 +1284,48 @@ STATIC CLASS Funcs
 	RETURN Funcs.SubStr(c , (INT)nStart , (INT)dwLen)
 	STATIC METHOD SubStr(c AS STRING , nStart AS INT , dwLen AS INT) AS STRING
 		LOCAL cReturn AS STRING
-		
+
 		cReturn := ""
-		
+
 		IF nStart == 0
 			nStart := 1
 		ENDIF
-		
+
 		IF nStart < 0
 			nStart := c:Length+nStart+1
 		ENDIF
-		
+
 		IF dwLen < 0
 			dwLen := c:Length
 		ENDIF
-		
+
 		IF nStart <= c:Length .and. nStart > 0
 			dwLen := Math.Min( c:Length - nStart + 1, dwLen )
 			cReturn := c:Substring( nStart - 1, dwLen )
 		ENDIF
-		
+
 	RETURN cReturn
-	
+
 	STATIC METHOD SubStr(c AS STRING , nStart AS DWORD) AS STRING
 	RETURN Funcs.SubStr(c , (INT)nStart)
 	STATIC METHOD SubStr(c AS STRING , nStart AS INT) AS STRING
 		LOCAL cReturn AS STRING
-		
+
 		cReturn := ""
-		
+
 		IF nStart == 0
 			nStart := 1
 		ENDIF
-		
+
 		IF nStart < 0
 			nStart := c:Length+nStart+1
 		ENDIF
-		
+
 		LOCAL nLength AS INT
 		IF nStart <= c:Length .and. nStart > 0
 			nLength := Math.Min( c:Length - nStart + 1, c:Length )
 			cReturn := c:Substring( nStart - 1, nLength )
 		ENDIF
-		
+
 	RETURN cReturn
 END CLASS

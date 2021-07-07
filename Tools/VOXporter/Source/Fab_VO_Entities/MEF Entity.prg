@@ -1,6 +1,11 @@
-#include "GlobalDefines.vh"
-#using System.IO
-#using FabToolsNS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+USING System.IO
+using FabToolsNS
 
 BEGIN NAMESPACE Fab_VO_Entities
 
@@ -12,13 +17,13 @@ CLASS	FabMEFEntity	INHERIT	FabEntityBase
 	PROTECT	PosSource	    AS  LONG
 	PROTECT lSize           AS  LONG
 	PROTECT oMS             AS  MemoryStream
-	
+
 	// Thanks to Paul Piko for these
 	PROTECT	dwLastBuild		AS	DWORD
-	PROTECT dwCreateTime	AS	DWORD	
+	PROTECT dwCreateTime	AS	DWORD
 
 
-/*    ACCESS CreateDate AS DATE  
+/*    ACCESS CreateDate AS DATE
 	    LOCAL dDate	AS	DATE
 	    //
 	    dDate := SToD( "19700101" )
@@ -26,14 +31,14 @@ CLASS	FabMEFEntity	INHERIT	FabEntityBase
     RETURN dDate
 
 
-    ACCESS CreateTime AS STRING  
+    ACCESS CreateTime AS STRING
 	    LOCAL cTime	AS	STRING
 	    //
 	    cTime := FabTools.TString( SELF:dwCreateTime % 86400 )
     RETURN cTime*/
 
 
-    CONSTRUCTOR( oInfoEnt AS FabEntInfo )	
+    CONSTRUCTOR( oInfoEnt AS FabEntInfo )
     //p Constructor of a FabMEFEntity object.
     //a cName is the name in the form it appears in the AEF/MEF File\line
     //a cProto is the prototype as it appears in the AEF/MEF File\line
@@ -58,28 +63,28 @@ CLASS	FabMEFEntity	INHERIT	FabEntityBase
 	    SELF:oMS := oInfoEnt:MemStream
 	    SELF:lSize := oInfoEnt:Size
 	    //
-    RETURN 
+    RETURN
 
-/*    ACCESS LastBuildDate AS DATE 	
+/*    ACCESS LastBuildDate AS DATE
 	    LOCAL dDate	AS	DATE
 	    //
-	    dDate := SToD( "19700101" ) 
+	    dDate := SToD( "19700101" )
 	    ddate := ddate + Integer( SELF:dwlastbuild / 86400 )
     RETURN dDate
 
 
-    ACCESS LastBuildTime AS STRING 	
+    ACCESS LastBuildTime AS STRING
 	    LOCAL cTime	AS	STRING
-	    //	
+	    //
 	    cTime := FabTools.TString( SELF:dwlastbuild % 86400 )
     RETURN cTime*/
 
 
-    ACCESS Source	AS STRING 	
+    ACCESS Source	AS STRING
     //p Return the Source code associated with this entity.
 	    LOCAL cSrc	AS	STRING
 	    //
-	    IF ( SELF:lSize != 0 )    
+	    IF ( SELF:lSize != 0 )
 	        SELF:oMS:Position := SELF:PosSource
 		    cSrc := FabTools.ReadPszString( SELF:oMS, SELF:lSize )
 	    ENDIF
@@ -103,7 +108,7 @@ CLASS	FabMEFEntity	INHERIT	FabEntityBase
 	    //
     RETURN cKeyword
 */
-/*        VIRTUAL ACCESS Info AS STRING 	
+/*        VIRTUAL ACCESS Info AS STRING
 	        LOCAL cEnt		AS	STRING
 	        LOCAL cTemp		AS	STRING
 	        LOCAL cProto	AS	STRING

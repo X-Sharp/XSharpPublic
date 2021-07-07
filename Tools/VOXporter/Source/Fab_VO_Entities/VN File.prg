@@ -1,7 +1,12 @@
-#include "GlobalDefines.vh"
-#using System.Collections.Generic
-#using System.IO
-#using FabToolsNS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+USING System.Collections.Generic
+USING System.IO
+USING FabToolsNS
 
 BEGIN NAMESPACE Fab_VO_Entities
 
@@ -9,7 +14,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 	// Init was done by a FileName
 	PROTECT	lFile			AS LOGIC
 	// Init / Last operation successful
-	PROTECT	lSuccess		AS LOGIC	
+	PROTECT	lSuccess		AS LOGIC
 	// Array with Entity Name, Prototype and Start
 	PROTECT	aEnt			AS xARRAY
 	// Date and Time of the File
@@ -19,12 +24,12 @@ BEGIN NAMESPACE Fab_VO_Entities
 	PROTECT cBTime			AS	STRING
 	// StringList with source code
 	PROTECT	oSource			AS	List<STRING>
-	
-	DESTRUCTOR()	
-	    SELF:Close()
-    RETURN 
 
-    METHOD Close() AS VOID  
+	DESTRUCTOR()
+	    SELF:Close()
+    RETURN
+
+    METHOD Close() AS VOID
 	    //
 	    SELF:oSource:Clear()
 	    //
@@ -32,7 +37,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 	    //
     RETURN
 
-    METHOD EntityFind( cEntity AS STRING, nType AS DWORD ) AS OBJECT  
+    METHOD EntityFind( cEntity AS STRING, nType AS DWORD ) AS OBJECT
 	    LOCAL nCpt		AS	DWORD
 	    LOCAL oEnt		AS	FabPRGEntity
 	    LOCAL lFound	AS	LOGIC
@@ -42,7 +47,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 		    IF ( Lower( oEnt:Name ) == Lower( cEntity ) )
 			    lFound := TRUE
 			    EXIT
-		    ENDIF			
+		    ENDIF
 	    NEXT
 	    IF !lFound
 		    oEnt := NULL_OBJECT
@@ -51,11 +56,11 @@ BEGIN NAMESPACE Fab_VO_Entities
     RETURN oEnt
 
 
-/*    VIRTUAL ACCESS	EntityList AS ARRAY 	
+/*    VIRTUAL ACCESS	EntityList AS ARRAY
     RETURN SELF:aEnt*/
 
 
-    METHOD ExportModule( cFileName AS STRING ) AS LOGIC  
+    METHOD ExportModule( cFileName AS STRING ) AS LOGIC
 	    LOCAL oFile	AS	StreamWriter
 	    LOCAL dwMax	AS	LONG
 	    LOCAL nCpt	AS	LONG
@@ -91,16 +96,16 @@ BEGIN NAMESPACE Fab_VO_Entities
     RETURN cSource
 
 
-    ACCESS FileName	AS STRING  
+    ACCESS FileName	AS STRING
     RETURN SELF:cName
 
 
-    ACCESS FullPath AS STRING  
+    ACCESS FullPath AS STRING
     RETURN SELF:cFilePath
 
-    CONSTRUCTOR( cFile AS STRING  ) 
+    CONSTRUCTOR( cFile AS STRING  )
 	    SUPER()
-	    
+
 	    LOCAL oFile	AS	StreamReader
 	    LOCAL cAll  AS  STRING
 	    LOCAL oFI   AS  FileInfo
@@ -127,14 +132,14 @@ BEGIN NAMESPACE Fab_VO_Entities
 		    SELF:Init( cFile, cAll, NULL, cCreate, NULL, cCreate )
 	    ENDIF
 	    //
-    RETURN 
+    RETURN
 
-    CONSTRUCTOR( cFile AS STRING, cSource AS STRING ) 
+    CONSTRUCTOR( cFile AS STRING, cSource AS STRING )
 	//
 	SUPER()
     SELF:Init( cFile, cSource, NULL, NULL, NULL, NULL )
 
-    CONSTRUCTOR( cFile AS STRING, cSource AS STRING, dCreate AS OBJECT,cCreate AS STRING,dBuild AS OBJECT,cBuild AS STRING ) 
+    CONSTRUCTOR( cFile AS STRING, cSource AS STRING, dCreate AS OBJECT,cCreate AS STRING,dBuild AS OBJECT,cBuild AS STRING )
 	//
 	SUPER()
     SELF:Init( cFile, cSource, dCreate, cCreate, dBuild, cBuild )
@@ -177,13 +182,13 @@ BEGIN NAMESPACE Fab_VO_Entities
 	    ENDIF
 	    */
 	    SELF:SortByName()
-    RETURN 
+    RETURN
 
-    ACCESS IsMef AS LOGIC 	
+    ACCESS IsMef AS LOGIC
     RETURN FALSE
 
 
-    ACCESS IsPrg AS LOGIC 	
+    ACCESS IsPrg AS LOGIC
     RETURN TRUE
 
 
@@ -207,8 +212,8 @@ BEGIN NAMESPACE Fab_VO_Entities
         LOCAL cProto        AS  STRING
         //
         nStart := -1
-        aEntKeyW := FabVNEntity.GetKeywords()
-        //					            
+        aEntKeyW := FabVNEntity.GetEntityKeywords()
+        //
         // ForEach Linge in the List<STRING>
         dwMax := SELF:oSource:Count
 	    FOR nCpt := 0 TO dwMax-1
@@ -275,9 +280,9 @@ BEGIN NAMESPACE Fab_VO_Entities
 		    // Known Keyword, so Start of an entity
 		    IF ( nPos > -1 )
 		        // Class !
-		        
+
 		        // NameSpace
-		        
+
 		        // Let's save the Prototype
 		        cProto := cLine
 	            //
@@ -295,12 +300,12 @@ BEGIN NAMESPACE Fab_VO_Entities
 				    nStart := nCpt
 			    ENDIF
 			ENDIF
-        NEXT		     
+        NEXT
     RETURN
-    
-    PROTECT x AS STRING 
-    
-    PROTECT METHOD Scan() AS VOID  
+
+    PROTECT x AS STRING
+
+    PROTECT METHOD Scan() AS VOID
 	    LOCAL nCpt		AS	LONG
 	    LOCAL nCpt2		AS	LONG
 	    LOCAL dwMax		AS	LONG
@@ -414,7 +419,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 			    cLine := cLine + cTemp
 		    ENDIF
 		    lContinue := FALSE
-		    // Keyword		
+		    // Keyword
 	    NEXT
 	    // if we have a Start and no End, we must use the end of File as End Marker
 	    IF ( nStart != 0 ) .AND. ( nEnd < nStart )
@@ -449,7 +454,7 @@ BEGIN NAMESPACE Fab_VO_Entities
 
         RETURN
 
-    PUBLIC METHOD	SortByName( ) AS VOID  
+    PUBLIC METHOD	SortByName( ) AS VOID
         LOCAL lOk   AS LOGIC
         LOCAL nCpt  AS LONG
         LOCAL nMax  AS LONG
@@ -477,9 +482,9 @@ BEGIN NAMESPACE Fab_VO_Entities
         //
         RETURN
 
-    ACCESS Success AS LOGIC 	
+    ACCESS Success AS LOGIC
     RETURN SELF:lSuccess
-    
+
 
 END CLASS
 

@@ -1,7 +1,8 @@
-#using System.Collections.Generic
-#using System.Collections
-#using System.Reflection
+USING System.Collections.Generic
+USING System.Collections
+USING System.Reflection
 
+#pragma warnings(219, off) // assigned but not used
 BEGIN NAMESPACE Xide
 
 CLASS BaseBuffer INHERIT LanguageBuffer

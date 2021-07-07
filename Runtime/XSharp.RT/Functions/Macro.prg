@@ -294,7 +294,7 @@ RETURN NULL
 INTERNAL GLOBAL _fullMacroCompiler AS Assembly
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
-FUNCTION ExecScript( cExpression, eParameters ) AS USUAL CLIPPER
+FUNCTION ExecScript( cExpression, eParameter1, eParameter2, eParameterN ) AS USUAL CLIPPER
     LOCAL result := NIL AS USUAL
     XSharp.RuntimeState.LastScriptError := NULL
     TRY
@@ -343,13 +343,12 @@ FUNCTION ExecScript( cExpression, eParameters ) AS USUAL CLIPPER
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
-FUNCTION ExecScriptFast( cExpression, eParameters ) AS USUAL CLIPPER
+FUNCTION ExecScriptFast( cExpression, eParameter1, eParameter2, eParameterN ) AS USUAL CLIPPER
     LOCAL result AS USUAL
     IF RuntimeState.ScriptCompiler == NULL_OBJECT
         VAR oMacroAsm := AssemblyHelper.Load("XSharp.MacroCompiler")
         IF oMacroAsm != NULL_OBJECT
             VAR oType    := oMacroAsm:GetType("XSharp.Runtime.MacroCompiler")
-            LOCAL prop AS PropertyInfo
             IF oType != NULL
                 VAR oMI := oType:GetMethod("GetScriptCompiler")
                 VAR oArg := <OBJECT>{RuntimeState.Dialect}

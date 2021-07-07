@@ -13,7 +13,7 @@
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.8.0.11</XSharpProjectversion>
+    <XSharpProjectversion>2.8.3.14</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -29,6 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>XSharp.RT.Xml</DocumentationFile>
     <DefineConstants>DEBUG;TRACE;RUNTIME;DOCUMENTATION</DefineConstants>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -127,10 +128,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <PreBuildEvent>copy $(SolutionDir)\Docs\RtComments.xml $(ProjectDir)\RtComments.Xml
     copy $(SolutionDir)\Docs\VOFunctionDocs.xml $(ProjectDir)\VOFunctionDocs.Xml
-    </PreBuildEvent>
+    copy $(SolutionDir)\Docs\VfpRuntimeDocs.xml $(ProjectDir)\VfpRuntimeDocs.Xml
+    copy $(SolutionDir)\Docs\VfpDocs.xml $(ProjectDir)\VfpDocs.Xml</PreBuildEvent>
     <PostBuildEvent>erase  $(ProjectDir)\RtComments.Xml
     erase  $(ProjectDir)\VOFunctionDocs.Xml
-    </PostBuildEvent>
+    erase  $(ProjectDir)\VfpRuntimeDocs.Xml
+    erase  $(ProjectDir)\VfpDocs.Xml</PostBuildEvent>
     <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

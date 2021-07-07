@@ -3,6 +3,9 @@
 // Creation Date : 2/13/2021 4:08:09 PM
 // Created for   :
 // WorkStation   : I7
+#pragma warnings (660, off)
+#pragma warnings (661, off)
+#pragma warnings (108, off)
 
 
 USING System

@@ -27,20 +27,20 @@ PROCEDURE Main()
     ? PosRepl("abcde","qrstuv")
     CATCH e AS Exception
         ? e:ToString()
-        
+
     END TRY
 WAIT
     RETURN
 
 FUNCTION MAINx(A,B,C) AS VOID clipper
     TRY
-    ? XSharp.RuntimeState.Dialect:ToString() 
+    ? XSharp.RuntimeState.Dialect:ToString()
     LOCAL uTest := NIL as usual
     SetCollationTable(2)
     SetDefault(@uTest, 123)
     ? uTest
 
-    ReportMemory("Before")    
+    ReportMemory("Before")
     FOR var nI := 1 to 100
         testCLassCreate()
     NEXT
@@ -101,20 +101,20 @@ function testDataObject() as VOID
   ? oDO:LastName                   // "Picard"
 
   /* Define a method via code block, execute
-   * the method 
+   * the method
    */
   oDO:DefineMethod( "print" , {|oSelf|QOut("Hello "+oSelf:LastName)} )
   ? "Call Print"
   oDO:print()                      // "Hello Picard"
 
   /* Add another member, redefine an existing
-   * method. Now implement the method using a 
+   * method. Now implement the method using a
    * function. Execute the method.
    */
   oDO:FirstName := "Jean-Luc"
   oDO:DefineMethod( "print", "displayname" )
   ? "Call Print (redefined)"
-  oDO:print( "," )  
+  oDO:print( "," )
 
 
 
@@ -136,15 +136,15 @@ CLASS TestMe
     EXPORT oCb as CodeBlock
 
     METHOD CallMe(a params usual[]) AS USUAL
-        return oCb:Eval(SELF)
+        RETURN oCb:Eval(SELF)
 
 
 
 END CLASS
 
-FUNCTION DisplayName(oSelf, cSeparator )
+FUNCTION DisplayName(oSelf AS OBJECT, cSeparator AS STRING) AS VOID
   ? oSelf:FirstName+cSeparator+" "+oSelf:LastName
-RETURN NIL
+RETURN
 
 
 FUNCTION SetDefault( uExpr as USUAL, uValue as USUAL) AS USUAL

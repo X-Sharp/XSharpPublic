@@ -1,4 +1,7 @@
-﻿
+﻿#pragma warnings(660, off) // == operator but no != operator
+#pragma warnings(661, off) // == operator but no GethashCode()
+#pragma warnings(108, off) // method hides another
+#pragma warnings(219, off) // variable assigned but not used
 USING System
 USING System.Collections.Generic
 USING System.Linq

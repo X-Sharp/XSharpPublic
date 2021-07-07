@@ -1,4 +1,9 @@
-#include "GlobalDefines.vh"
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 
 BEGIN NAMESPACE Fab_VO_Entities
 
@@ -9,35 +14,35 @@ BEGIN NAMESPACE Fab_VO_Entities
         //
         //
         //
-        CONSTRUCTOR()  
+        CONSTRUCTOR()
         SUPER()
         RETURN
 
-        VIRTUAL METHOD Close() AS VOID  
+        VIRTUAL METHOD Close() AS VOID
 
         RETURN
 
-/*        VIRTUAL ACCESS CreateDate AS DATE  
+/*        VIRTUAL ACCESS CreateDate AS DATE
         RETURN NULL_DATE
 
 
-        VIRTUAL ACCESS CreateTime AS STRING  
+        VIRTUAL ACCESS CreateTime AS STRING
         RETURN "00:00:00"*/
 
 
-        VIRTUAL ACCESS	EntityCount AS DWORD  
+        VIRTUAL ACCESS	EntityCount AS DWORD
         RETURN ALen( SELF:EntityList )
 
 
-        VIRTUAL METHOD EntityFind( cEntity AS STRING, nType AS DWORD ) AS OBJECT  
+        VIRTUAL METHOD EntityFind( cEntity AS STRING, nType AS DWORD ) AS OBJECT
         RETURN NULL_OBJECT
 
 
-        VIRTUAL ACCESS	EntityList AS xARRAY  
+        VIRTUAL ACCESS	EntityList AS xARRAY
         RETURN xARRAY{}
 
 
-        VIRTUAL ACCESS	EntityNameList AS xARRAY  
+        VIRTUAL ACCESS	EntityNameList AS xARRAY
 	        LOCAL nCpt	AS	DWORD
 	        LOCAL aTemp	AS	xARRAY
 	        LOCAL oEnt	AS	FabEntityBase
@@ -52,54 +57,54 @@ BEGIN NAMESPACE Fab_VO_Entities
         RETURN aTemp
 
 
-        VIRTUAL METHOD ExportModule( cFileName AS STRING ) AS LOGIC  
+        VIRTUAL METHOD ExportModule( cFileName AS STRING ) AS LOGIC
         RETURN FALSE
 
 
-        VIRTUAL ACCESS ExternalFile	AS STRING  
+        VIRTUAL ACCESS ExternalFile	AS STRING
         RETURN ""
 
-        VIRTUAL ACCESS ExternalSource AS STRING  
+        VIRTUAL ACCESS ExternalSource AS STRING
         RETURN ""
 
-        VIRTUAL ACCESS FullPath AS STRING  
+        VIRTUAL ACCESS FullPath AS STRING
         RETURN ""
 
-        VIRTUAL ASSIGN FullPath( cNew AS STRING )   
+        VIRTUAL ASSIGN FullPath( cNew AS STRING )
         SELF:cFilePath := cNew
 
-        VIRTUAL ACCESS IsExternal AS LOGIC  
+        VIRTUAL ACCESS IsExternal AS LOGIC
         RETURN FALSE
 
-        VIRTUAL ACCESS IsMef AS LOGIC  
+        VIRTUAL ACCESS IsMef AS LOGIC
         RETURN FALSE
 
-        VIRTUAL ACCESS IsPrg AS LOGIC  
+        VIRTUAL ACCESS IsPrg AS LOGIC
         RETURN FALSE
 
-        ACCESS IsValid AS LOGIC  
+        ACCESS IsValid AS LOGIC
         RETURN ( SELF:IsMef .OR. SELF:IsPrg )
 
 
-/*        VIRTUAL ACCESS LastBuildDate AS DATE 	
+/*        VIRTUAL ACCESS LastBuildDate AS DATE
         RETURN NULL_DATE
 
 
-        VIRTUAL ACCESS LastBuildTime AS STRING  
+        VIRTUAL ACCESS LastBuildTime AS STRING
         RETURN "00:00:00"*/
 
 
-        PROTECT VIRTUAL METHOD Scan( ) AS VOID  
+        PROTECT VIRTUAL METHOD Scan( ) AS VOID
 
         RETURN
 
-        PUBLIC VIRTUAL METHOD SortByName( ) AS VOID  
+        PUBLIC VIRTUAL METHOD SortByName( ) AS VOID
 
         RETURN
-        
+
         PROTECT METHOD ExpurgateLine( cLine REF STRING, lInComment REF LOGIC ) AS VOID
             // remove from the line all chars in comments
-            // 
+            //
 	        LOCAL dwMax		AS	DWORD
 	        LOCAL nCpt		AS	DWORD
 	        LOCAL cChar		AS	STRING
@@ -147,14 +152,14 @@ BEGIN NAMESPACE Fab_VO_Entities
 					        cTemp := SubStr( cTemp, 1, SLen( cTemp ) - 2 )
 					        LOOP
 				        ENDIF
-			        ENDIF						
+			        ENDIF
 		        ENDIF
 		        //
 	        NEXT
 	        //
 	        cLine := cTemp
         RETURN
-            
+
     END CLASS
 
 END NAMESPACE

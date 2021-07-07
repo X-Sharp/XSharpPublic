@@ -1,5 +1,10 @@
-// Class1.prg
-#using System.IO
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+using System.IO
 
 BEGIN NAMESPACE Fab_VO_Entities
 
@@ -37,17 +42,17 @@ BEGIN NAMESPACE Fab_VO_Entities
         ENT_PTR := 2
         ENT_SIZE := 5
         ENTPROTO := 0x004e
-        ENTSOURCE := 0x0041        
+        ENTSOURCE := 0x0041
    END ENUM
-   
+
     CLASS FabRecHeader
         PUBLIC uiType AS WORD
         PUBLIC ulLength AS DWORD
-        
+
         STATIC PUBLIC Size := 6 AS LONG
-        
+
     END CLASS
-    
+
     CLASS FabEntInfo
         PUBLIC Name         AS  STRING
         PUBLIC Pos          AS  LONG
@@ -57,7 +62,7 @@ BEGIN NAMESPACE Fab_VO_Entities
         PUBLIC MemStream    AS  MemoryStream
         PUBLIC Size         AS  LONG
         PUBLIC Type         AS  LONG
-        
+
         CONSTRUCTOR( oMS AS MemoryStream )
             SELF:Name := ""
             SELF:Pos := 0
@@ -67,11 +72,11 @@ BEGIN NAMESPACE Fab_VO_Entities
             SELF:MemStream := oMS
             SELF:Size := 0
         RETURN
-        
+
         ACCESS MustExport AS LOGIC
         RETURN .not. Empty(SELF:Proto) .or. SELF:Type == 3
-        
+
     END CLASS
-           
+
 END NAMESPACE // Fab_VO_Entities
-   
+

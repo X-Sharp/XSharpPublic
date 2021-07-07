@@ -1,11 +1,11 @@
-/*
-#include "GlobalDefines.vh"
-#include "VOSystemLibrary.vh"
-#include "VOWin32APILibrary.vh"
-*/
-//#include "GlobalDefines.vh"
-#using System.IO
-#using FabToolsNS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+USING System.IO
+using FabToolsNS
 
 BEGIN NAMESPACE Fab_VO_Entities
 
@@ -37,44 +37,44 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 	PROTECT aUDCs			AS	xARRAY
 	PROTECT cType			AS	STRING
 	PROTECT cExeName		AS	STRING
-	
+
 	EXPORT lOptionIntegerDivisions AS LOGIC
 	EXPORT lOptionOverflow AS LOGIC
 
 
-    DESTRUCTOR()	
+    DESTRUCTOR()
 	    SELF:Close()
-    RETURN 
+    RETURN
 
-    METHOD Close() AS VOID  
+    METHOD Close() AS VOID
 	    //
 	    SELF:oMS:Close()
 	    SELF:oFS:CLose()
 	    //
 	    SELF:lSuccess := FALSE
 	    //
-    RETURN 
+    RETURN
 
-/*    ACCESS CreateDate AS DATE 	
+/*    ACCESS CreateDate AS DATE
 	    LOCAL dDate	AS	DATE
 	    //
 	    dDate := SToD( "19700101" )
 	    ddate := ddate + Integer( SELF:dwCreateTime / 86400 )
     RETURN dDate
 
-    ACCESS CreateTime AS STRING 	
+    ACCESS CreateTime AS STRING
 	    LOCAL cTime	AS	STRING
 	    //
 	    cTime := TString( SELF:dwCreateTime % 86400 )
     RETURN cTime
 */
-    ACCESS Description AS STRING  
+    ACCESS Description AS STRING
     RETURN SELF:cDescription
 
-    ACCESS ExeName AS STRING  
+    ACCESS ExeName AS STRING
     RETURN SELF:cExeName
 
-    METHOD ExportModule( cModName AS STRING, cFileName AS STRING ) AS LOGIC  
+    METHOD ExportModule( cModName AS STRING, cFileName AS STRING ) AS LOGIC
         // TODO ExportModule
         /*
 	    LOCAL 	i 			AS INT
@@ -129,15 +129,15 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
     */
     RETURN FALSE
 
-    ACCESS FullPath AS STRING  
+    ACCESS FullPath AS STRING
     RETURN SELF:cFilePath
 
-    ASSIGN FullPath( cNew AS STRING )   
+    ASSIGN FullPath( cNew AS STRING )
     SELF:cFilePath := cNew
 
-    CONSTRUCTOR(cFile AS STRING) 
+    CONSTRUCTOR(cFile AS STRING)
 	    SUPER()
-	    
+
 	    LOCAL wVersion	AS WORD
 	    LOCAL br AS BinaryReader
 	    //
@@ -208,24 +208,24 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 	    SELF:Scan()
 	    SELF:cFilePath := cFile
 	    //
-    RETURN 
+    RETURN
 
-    ACCESS IsDLL AS LOGIC  
+    ACCESS IsDLL AS LOGIC
     RETURN ( SELF:cType == "D" )
 
 
-    ACCESS IsLibrary AS LOGIC  
+    ACCESS IsLibrary AS LOGIC
     RETURN ( SELF:cType == "L" )
 
-    ACCESS IsConsole AS LOGIC  
+    ACCESS IsConsole AS LOGIC
     RETURN ( SELF:cType == "C" )
 
 
-    ACCESS	IsValid AS LOGIC 	
+    ACCESS	IsValid AS LOGIC
     RETURN	SELF:lIsAef
 
 
-/*    ACCESS LastBuildDate AS DATE 	
+/*    ACCESS LastBuildDate AS DATE
 	    LOCAL dDate	AS	DATE
 	    //
 	    dDate := SToD( "19700101" )
@@ -233,7 +233,7 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
     RETURN dDate
 
 
-    ACCESS LastBuildTime AS STRING 	
+    ACCESS LastBuildTime AS STRING
 	    LOCAL cTime	AS	STRING
 	    //
 	    cTime := FabTools.TString( SELF:dwlastbuild % 86400 )
@@ -249,15 +249,15 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
     	NEXT
     RETURN oList
 
-    ACCESS LibraryNameList AS xARRAY  
+    ACCESS LibraryNameList AS xARRAY
     RETURN SELF:aLibs
 
 
-    ACCESS	ModuleCount AS DWORD 	
+    ACCESS	ModuleCount AS DWORD
     RETURN ALen( SELF:aMods )
 
 
-/*    METHOD ModuleFind( cModName AS STRING ) AS OBJECT 	
+/*    METHOD ModuleFind( cModName AS STRING ) AS OBJECT
 	    LOCAL 	i 			AS DWORD
 	    LOCAL	PosData		AS LONG
 	    LOCAL	oMEF		AS FabMEFFile
@@ -285,7 +285,7 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
     	NEXT
     RETURN oList
 
-    ACCESS	ModuleList AS xARRAY 	
+    ACCESS	ModuleList AS xARRAY
 	    LOCAL 	nCpt	AS	DWORD
 	    LOCAL 	nMax	AS	DWORD
 	    LOCAL 	aTemp	AS	xARRAY
@@ -307,7 +307,7 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
     RETURN aTemp
 
 
-/*    ACCESS	ModuleNameList AS ARRAY 	
+/*    ACCESS	ModuleNameList AS ARRAY
 	    LOCAL aTemp	AS	ARRAY
 	    //
 	    aTemp := {}
@@ -315,10 +315,10 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 	    //
     RETURN aTemp
 */
-    ACCESS Name	AS STRING  
+    ACCESS Name	AS STRING
     RETURN SELF:cName
 
-    PROTECT METHOD Scan() AS VOID 	
+    PROTECT METHOD Scan() AS VOID
 	    LOCAL aTemp		AS xARRAY
 	    LOCAL PosData   AS LONG
 	    LOCAL PosStart  AS LONG
@@ -354,7 +354,7 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 				    	/*? "range" , */br:ReadInt32()
 				    	/*? "overflow" , */SELF:lOptionOverflow := br:ReadInt32() == 1
 					ENDIF
-			    	
+
 			    CASE SELF:oRecHeader:uiType == FabVODefinitions.APPNAME
 				    // Application Name
 				    SELF:oMS:Position := PosData
@@ -389,7 +389,7 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 	                IF( b == 1) .or. b == 255
 	                	SELF:cType := "C"
 	                ENDIF
-	                
+
 			    CASE SELF:oRecHeader:uiType = FabVODefinitions.LIBFLG
     			    SELF:oMS:Position := PosData
 				    br := BinaryReader{ SELF:oMS }
@@ -450,20 +450,20 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 	    IF !Empty( aTemp[ 1 ] )
 		    AAdd( SELF:aMods, aTemp )
 	    ENDIF
-    RETURN 
+    RETURN
 
 
-    METHOD	SortByName( ) AS VOID  
+    METHOD	SortByName( ) AS VOID
 /*	    // Sort Entities by Names
 	    SELF:aMods := ASort( SELF:aMods, , , { |x,y| x[1] < y[ 1 ] } )
 	    //*/
     RETURN
 
-    ACCESS Success AS LOGIC 	
+    ACCESS Success AS LOGIC
     RETURN SELF:lSuccess
 
 
-/*    ACCESS UDCNameList AS ARRAY  
+/*    ACCESS UDCNameList AS ARRAY
     RETURN SELF:aUDCs*/
 
     PROTECT METHOD FillRecHeader() AS VOID
@@ -475,7 +475,7 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 	    SELF:oRecHeader:ulLength := br:ReadUInt32()
 	    //
     RETURN
-    
+
 END CLASS
 
 END NAMESPACE

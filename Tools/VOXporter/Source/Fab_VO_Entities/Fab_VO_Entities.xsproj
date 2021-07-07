@@ -36,7 +36,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.8.0.10</XSharpProjectversion>
+    <XSharpProjectversion>2.8.3.14</XSharpProjectversion>
     <Includepaths>$(SolutionDir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <Allowdot>True</Allowdot>
@@ -108,9 +108,6 @@
     <Compile Include="VN Entity.prg" />
     <Compile Include="VN File.prg" />
     <Compile Include="_xCompatinility.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="GlobalDefines.vh" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties" />

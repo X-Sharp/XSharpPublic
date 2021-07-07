@@ -7,8 +7,8 @@
 // This file defines the 'per assembly' attributes
 // The common attributes are defined in version.vh in the Include folder
 ////////////////////////////////////////////////////////////////////////////////
-#using System.Reflection
-#using System.Runtime.InteropServices
+USING System.Reflection
+using System.Runtime.InteropServices
 #include "constants.prg"
 #include "commonassemblyinfo.prg"
 

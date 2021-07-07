@@ -1,7 +1,12 @@
-//#include "GlobalDefines.vh"
-#using System.IO
-#using System.Text
-#using FabToolsNS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+USING System.IO
+USING System.Text
+USING FabToolsNS
 
 DEFINE BINARY_WED := 10
 DEFINE BINARY_MED := 16
@@ -44,7 +49,7 @@ CLASS Designer
 			aTemp[nIndex] := aBytes[n]
 			nIndex ++
 		NEXT
-		SELF:Bytes := aTemp      
+		SELF:Bytes := aTemp
 	PROPERTY MustExport AS LOGIC
 		GET
 			SWITCH SELF:Type
@@ -68,7 +73,7 @@ CLASS Designer
 			RETURN FALSE
 		END GET
 	END PROPERTY
-	PROPERTY Extension AS STRING 
+	PROPERTY Extension AS STRING
 		GET
 			SWITCH SELF:Type
 			CASE BINARY_WED
@@ -88,7 +93,7 @@ CLASS Designer
 			END SWITCH
 			RETURN ".bin"
 		END GET
-	END PROPERTY  
+	END PROPERTY
 	PROPERTY FileName AS STRING GET Name+Extension
 END CLASS
 
@@ -122,18 +127,18 @@ BEGIN NAMESPACE Fab_VO_Entities
 	    PROTECT ptrExtData		AS	LONG
 	    // Size of Data
 	    PROTECT	dwExtSize		AS	LONG
-	    // Start of MEF 
+	    // Start of MEF
 	    PROTECT PosBase         AS  LONG
 	    //
 	    PROTECT	oPrg			AS	FabPRGFile
 
 EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Collections.Generic.List<Designer>
 
-    DESTRUCTOR()	
+    DESTRUCTOR()
 	    SELF:Close()
-    RETURN 
+    RETURN
 
-    METHOD Close() AS VOID  
+    METHOD Close() AS VOID
 	    //
 	    IF SELF:lFile
 	        SELF:oMS:Close()
@@ -144,7 +149,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    //
     RETURN
 
-/*    VIRTUAL ACCESS CreateDate AS DATE  
+/*    VIRTUAL ACCESS CreateDate AS DATE
 	    LOCAL dDate	AS	DATE
 	    //
 	    dDate := SToD( "19700101" )
@@ -152,14 +157,14 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
     RETURN dDate
 
 
-    VIRTUAL ACCESS CreateTime AS STRING  
+    VIRTUAL ACCESS CreateTime AS STRING
 	    LOCAL cTime	AS	STRING
 	    //
 	    cTime := FabTools.TString( SELF:dwCreateTime % 86400 )
     RETURN cTime*/
 
 
-    METHOD EntityFind( cEntity AS STRING, nType AS DWORD ) AS OBJECT  
+    METHOD EntityFind( cEntity AS STRING, nType AS DWORD ) AS OBJECT
 	    LOCAL nCpt		AS	DWORD
 	    LOCAL oEnt		AS	FabMEFEntity
 	    LOCAL lFound	AS	LOGIC
@@ -184,14 +189,14 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
     	aList := SELF:EntityList
     	FOR LOCAL n := 1 AS DWORD UPTO ALen(aList)
     		oList:Add((FabMEFEntity)aList[n])
-    	NEXT  
+    	NEXT
     RETURN oList
 
-    VIRTUAL ACCESS	EntityList AS xARRAY  
+    VIRTUAL ACCESS	EntityList AS xARRAY
     RETURN SELF:aEnt
 
 
-    METHOD ExportModule( cFileName AS STRING ) AS LOGIC  
+    METHOD ExportModule( cFileName AS STRING ) AS LOGIC
     /*
 	    LOCAL	dw			AS DWORD
 	    LOCAL	RecHeader	IS AefRecHeader
@@ -243,11 +248,11 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
     RETURN FALSE
 
 
-    ACCESS ExternalFile AS STRING  
+    ACCESS ExternalFile AS STRING
     RETURN SELF:cExtName
 
 
-    ACCESS	ExternalSource AS STRING  
+    ACCESS	ExternalSource AS STRING
 	    LOCAL cData	AS	STRING
 	    LOCAL data  AS  BYTE[]
 	    LOCAL ToASCII AS Encoding
@@ -265,11 +270,11 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
     RETURN cData
 
 
-    ACCESS FullPath AS STRING  
+    ACCESS FullPath AS STRING
     RETURN SELF:cFilePath
 
 
-    CONSTRUCTOR( cFile AS STRING ) 
+    CONSTRUCTOR( cFile AS STRING )
 	    SUPER()
 	    LOCAL wVersion	AS WORD
 	    LOCAL br        AS BinaryReader
@@ -314,7 +319,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    ENDIF
 	    // Back to Original Pos
 	    SELF:oMS:Position := 0
-	    SELF:oMS:Position += FabRecHeader.Size  
+	    SELF:oMS:Position += FabRecHeader.Size
 	    //
 	    wVersion := (WORD)_AND( (DWORD)wVersion, _NOT(0x0080) )
 	    //
@@ -342,9 +347,9 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 		    SELF:oPRG := FabPRGFile{ SELF:ExternalFile, SELF:ExternalSource }
 		    SELF:aEnt := SELF:oPRG:EntityList
 	    ENDIF*/
-    RETURN 
+    RETURN
 
-    CONSTRUCTOR( oMemory AS MemoryStream, PosData AS LONG ) 
+    CONSTRUCTOR( oMemory AS MemoryStream, PosData AS LONG )
     //	LOCAL oError	AS	FabError
 	    //
 	    SUPER()
@@ -364,36 +369,36 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 		    SELF:oPRG := FabPRGFile{ SELF:ExternalFile, SELF:ExternalSource }
 		    SELF:aEnt := SELF:oPRG:EntityList
 	    ENDIF*/
-    RETURN 
+    RETURN
 
-    ACCESS IsExternal AS LOGIC 	
+    ACCESS IsExternal AS LOGIC
     RETURN !Empty( SELF:ExternalFile )
 
 
-    ACCESS	IsMef AS LOGIC  
+    ACCESS	IsMef AS LOGIC
     RETURN	SELF:lIsMef
 
 
-    ACCESS	IsPrg AS LOGIC 	
+    ACCESS	IsPrg AS LOGIC
     RETURN	FALSE
 
 
-/*    ACCESS LastBuildDate AS DATE 	
+/*    ACCESS LastBuildDate AS DATE
 	    LOCAL dDate	AS	DATE
 	    //
-	    dDate := SToD( "19700101" ) 
+	    dDate := SToD( "19700101" )
 	    ddate := ddate + Integer( SELF:dwlastbuild / 86400 )
     RETURN dDate
 
 
-    ACCESS LastBuildTime AS STRING 	
+    ACCESS LastBuildTime AS STRING
 	    LOCAL cTime	AS	STRING
 	    //
 	    cTime := TString( SELF:dwlastbuild % 86400 )
     RETURN cTime*/
 
 
-    PROTECT METHOD Scan() AS VOID 	
+    PROTECT METHOD Scan() AS VOID
 	    LOCAL lFirst	AS	LOGIC
 	    LOCAL oInfoTemp AS  FabEntInfo
 	    LOCAL PosData   AS LONG
@@ -477,7 +482,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 			    CASE SELF:oRecHeader:uiType == FabVODefinitions.ENTBODY
     // Last Entity Informations
 			        SELF:oMS:Position := PosData+29
-				    br := BinaryReader{ SELF:oMS }    
+				    br := BinaryReader{ SELF:oMS }
 				    //aTemp[ MEF_ENT_CREATETIME ] := Bin2DW( CHR( br:ReadByte() ) + CHR( br:ReadByte() ) + CHR( br:ReadByte() ) + CHR( br:ReadByte() ) )
 				    //aTemp[ MEF_ENT_LASTBUILD ] := Bin2DW( CHR( br:ReadByte() ) + CHR( br:ReadByte() ) + CHR( br:ReadByte() ) + CHR( br:ReadByte() ) )
 				    oInfoTemp:CreateTime := br:ReadUInt32()
@@ -503,14 +508,14 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 			    CASE SELF:oRecHeader:uiType == FabVODefinitions.ENTSOURCE
 				    // Source code
 				    oInfoTemp:Pos :=  PosData
-				    oInfoTemp:Size := (LONG)SELF:oRecHeader:ulLength 
-				    
+				    oInfoTemp:Size := (LONG)SELF:oRecHeader:ulLength
+
 				    IF nCurrentType == 16
 				    	br := BinaryReader{ SELF:oMS }
 					    aBytes := br:ReadBytes((LONG)SELF:oRecHeader:ulLength)
 					    oCurrentDesigner:Bytes := aBytes
 				    END IF
-				    
+
 			    CASE SELF:oRecHeader:uiType == FabVODefinitions.ENTPROTO
 				    // Prototype
 			        SELF:oMS:Position := PosData
@@ -546,7 +551,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    SELF:lSuccess := ( SELF:iEnt == ALen( SELF:aEnt ) )
     RETURN
 
-    PUBLIC METHOD	SortByName( ) AS VOID  
+    PUBLIC METHOD	SortByName( ) AS VOID
         LOCAL lOk   AS LOGIC
         LOCAL nCpt  AS LONG
         LOCAL nMax  AS LONG
@@ -574,7 +579,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
         //
         RETURN
 
-    ACCESS Success AS LOGIC  
+    ACCESS Success AS LOGIC
     RETURN SELF:lSuccess
 
     PROTECT METHOD FillRecHeader() AS VOID
@@ -586,7 +591,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    SELF:oRecHeader:ulLength := br:ReadUInt32()
 	    //
     RETURN
-    
+
 END CLASS
 
 END NAMESPACE

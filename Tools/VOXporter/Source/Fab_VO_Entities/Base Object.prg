@@ -1,5 +1,9 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
-#include "GlobalDefines.vh"
 
 BEGIN NAMESPACE Fab_VO_Entities
 
@@ -11,28 +15,28 @@ BEGIN NAMESPACE Fab_VO_Entities
 	    PROTECT cError	AS STRING
 	    PROTECT cName	AS STRING
 
-	    CONSTRUCTOR()  
+	    CONSTRUCTOR()
             SUPER()
         RETURN
 
-        ACCESS ErrorCode AS DWORD  
+        ACCESS ErrorCode AS DWORD
             //r The last Error, as a numerical value, that the object produces.
         RETURN SELF:dwError
 
 
-        ACCESS ErrorString AS STRING  
+        ACCESS ErrorString AS STRING
             //r The last Error, as a string value, that the object produces.
         RETURN SELF:cError
 
 
-        VIRTUAL ACCESS Name AS STRING  
+        VIRTUAL ACCESS Name AS STRING
             //r A String with the Name of the Object
         RETURN SELF:cName
 
 
-        VIRTUAL ACCESS Success AS LOGIC  
+        VIRTUAL ACCESS Success AS LOGIC
             //r A Logical Value indicating if the last operation with this object was error-free
-        RETURN ( SELF:dwError == WIN32SUCCESS )
+        RETURN ( SELF:dwError == 0 )
 
 
     END CLASS

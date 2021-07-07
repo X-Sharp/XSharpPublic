@@ -1,6 +1,10 @@
-#include "GlobalDefines.vh"
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 
-#using FabToolsNS
+USING FabToolsNS
 
 BEGIN NAMESPACE Fab_VO_Entities
 
@@ -20,15 +24,15 @@ CLASS	FabPRGEntity	INHERIT FabEntityBase
 	PROTECT cBTime		AS	STRING
 
 
-/*    ACCESS CreateDate AS DATE  
+/*    ACCESS CreateDate AS DATE
     RETURN SELF:dCDate
 
 
-    ACCESS CreateTime AS STRING  
+    ACCESS CreateTime AS STRING
     RETURN SELF:cCTime*/
 
 
-    CONSTRUCTOR( cName AS STRING, cProto AS STRING, oPrgFile AS FabPrgFile, nStart AS LONG, nEnd AS LONG, dDate1 AS OBJECT, cTime1 AS STRING, dDate2 AS OBJECT, cTime2 AS STRING )	
+    CONSTRUCTOR( cName AS STRING, cProto AS STRING, oPrgFile AS FabPrgFile, nStart AS LONG, nEnd AS LONG, dDate1 AS OBJECT, cTime1 AS STRING, dDate2 AS OBJECT, cTime2 AS STRING )
     //p Constructor of a FabPRGEntity object.
     //a cName is the name in the form it appears in the AEF/MEF File\line
     //a cProto is the prototype as it appears in the AEF/MEF File\line
@@ -54,17 +58,17 @@ CLASS	FabPRGEntity	INHERIT FabEntityBase
 	    //
 	    SELF:cName := SELF:Info
 
-    RETURN 
+    RETURN
 
-/*    ACCESS LastBuildDate AS DATE 	
+/*    ACCESS LastBuildDate AS DATE
     RETURN SELF:dBDate
 
 
-    ACCESS LastBuildTime AS STRING  	
+    ACCESS LastBuildTime AS STRING
     RETURN SELF:cBTime*/
 
 
-    ACCESS Source AS STRING  
+    ACCESS Source AS STRING
     //p Return the Source code associated with this entity.
     RETURN SELF:oOwner:ExportSource( SELF:nStartLine, SELF:nEndLine )
 
@@ -86,7 +90,7 @@ CLASS	FabPRGEntity	INHERIT FabEntityBase
 	    //
     RETURN cKeyword
 */
-/*        VIRTUAL ACCESS Info AS STRING 	
+/*        VIRTUAL ACCESS Info AS STRING
 	        LOCAL cEnt		AS	STRING
 	        LOCAL cTemp		AS	STRING
 	        LOCAL cProto	AS	STRING

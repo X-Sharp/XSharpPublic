@@ -1,7 +1,12 @@
-// FabTools.prg
-#using System
-#using System.IO
-#using System.Text
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+USING System
+USING System.IO
+using System.Text
 
 BEGIN NAMESPACE FabToolsNS
 
@@ -9,7 +14,7 @@ BEGIN NAMESPACE FabToolsNS
 
       CONSTRUCTOR()
          RETURN
-         
+
         STATIC METHOD GetToken( sString := "" AS STRING, nToken := 1 AS DWORD, cSep := " " AS STRING  ) AS STRING
         //g String,String Manipulation
         //l Extract a Token.
@@ -23,7 +28,7 @@ BEGIN NAMESPACE FabToolsNS
         Retrieve a Token in a delimited string, using a separator.
             FabGetToken( "Hello Visual Object World !", 2, " " )
             --> "Visual"
-        	
+
             The separator is a string( One or More )
 
         */
@@ -86,7 +91,7 @@ BEGIN NAMESPACE FabToolsNS
         LOCAL Work   AS DateTime
         LOCAL Unix   AS DateTime
         LOCAL Span   AS TimeSpan
-        // 
+        //
         Unix := DateTime{1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc}
         origin := DateTime{1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc}
         origin:AddSeconds(dwUnixTime)
@@ -94,7 +99,7 @@ BEGIN NAMESPACE FabToolsNS
         Span := Work - Unix
         //(DateTime.UtcNow - new DateTime(1970,1,1,0,0,0)).TotalSeconds
         RETURN (DWORD)Span:TotalSeconds
-        
+
         /*
 	        LOCAL PTRTZ 	IS 	_WINTIME_ZONE_INFORMATION
 	        LOCAL GMTBias 	AS 	LONG
@@ -176,7 +181,7 @@ BEGIN NAMESPACE FabToolsNS
 		        dwUnixTime := 0
 	        ENDIF
 	        //
-        RETURN dwUnixTime	
+        RETURN dwUnixTime
         */
 
 /*        STATIC METHOD TString( dwSeconds AS DWORD ) AS STRING
@@ -196,7 +201,7 @@ BEGIN NAMESPACE FabToolsNS
 	        cTime := StrZero( nHour, 2 ) + cSep + StrZero( nMin, 2 ) + cSep + StrZero( nSec, 2 )
 	        //
         RETURN cTime
-*/        
+*/
         STATIC METHOD ReadPSZString( oBr AS BinaryReader ) AS STRING
             LOCAL oSB    AS StringBuilder
             LOCAL i      AS INT
@@ -214,7 +219,7 @@ BEGIN NAMESPACE FabToolsNS
             NEXT
             Result := oSB:ToString()
         RETURN Result
-        
+
         STATIC METHOD ReadPSZString( oBr AS BinaryReader, BlocLength AS LONG ) AS STRING
             LOCAL oSB    AS StringBuilder
             LOCAL i      AS INT
@@ -249,7 +254,7 @@ BEGIN NAMESPACE FabToolsNS
             NEXT
             Result := oSB:ToString()
         RETURN Result
-        
+
         STATIC METHOD ReadPSZString( oS AS Stream, BlocLength AS LONG ) AS STRING
             LOCAL oSB    AS StringBuilder
             LOCAL oBr     AS BinaryReader
@@ -258,7 +263,7 @@ BEGIN NAMESPACE FabToolsNS
             LOCAL Data   AS System.Char[]
             //
             oBr := BinaryReader{ oS, ascenc }
-			//	    
+			//
             Data := oBr:ReadChars( BlocLength )
             //
             i := System.Array.IndexOf(Data, (Char)0)
@@ -271,7 +276,7 @@ BEGIN NAMESPACE FabToolsNS
             Result := oSB:ToString()
         RETURN Result
 
-/*        STATIC METHOD ExtractFileDir( FileName AS STRING) AS STRING   
+/*        STATIC METHOD ExtractFileDir( FileName AS STRING) AS STRING
         //g Files,Files Related Classes/Functions
         //p Extract FileDir info from FullPath String
         //l Extract FileDir info from FullPath String
@@ -297,7 +302,7 @@ BEGIN NAMESPACE FabToolsNS
 	        cResult := SubStr3( FileName, 1, wPos )
         RETURN cResult
 */
-/*        STATIC METHOD ExtractFileDrive( FileName AS STRING ) AS STRING  
+/*        STATIC METHOD ExtractFileDrive( FileName AS STRING ) AS STRING
         //g Files,Files Related Classes/Functions
         //p Extract FileDrive info from FullPath String
         //l Extract FileDrive info from FullPath String
@@ -416,8 +421,8 @@ BEGIN NAMESPACE FabToolsNS
 	        //
 	        cResult := SubStr3( FileName, 1, wPos )
         RETURN cResult
-               
+
    END CLASS
-   
+
 END NAMESPACE // Fab_VO_Entities
-   
+

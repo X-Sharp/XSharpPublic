@@ -1,10 +1,15 @@
-#include "GlobalDefines.vh"
-#using FabToolsNS
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+USING FabToolsNS
 
 BEGIN NAMESPACE Fab_VO_Entities
 
     CLASS FabEntityBase	INHERIT	FabIDEBaseObject
-        
+
         STATIC PROTECT __aKeywords AS xARRAY
         // This one will
         // Used by PRG Entity, PRG File, MEF Entity
@@ -13,11 +18,11 @@ BEGIN NAMESPACE Fab_VO_Entities
         PROTECT cProtoTmp	AS	STRING
         //
         //
-        CONSTRUCTOR()  
+        CONSTRUCTOR()
         SUPER()
         RETURN
 
-/*        ACCESS Accessibility AS SYMBOL  
+/*        ACCESS Accessibility AS SYMBOL
         //d Return the Accessibility of the entity as a symbol.
         //r The Accessibility returned can be:\line
         //r \tab #STATIC, #HIDDEN, #PROTECT\line
@@ -34,36 +39,36 @@ BEGIN NAMESPACE Fab_VO_Entities
 	        //
         RETURN String2Symbol( cVis )*/
 
-/*        VIRTUAL ACCESS CreateDate AS DATE  
+/*        VIRTUAL ACCESS CreateDate AS DATE
         RETURN NULL_DATE
 
 
-        VIRTUAL ACCESS CreateTime AS STRING  
+        VIRTUAL ACCESS CreateTime AS STRING
         RETURN ""*/
 
 
-        ACCESS DisplayName AS STRING 	
+        ACCESS DisplayName AS STRING
         RETURN SELF:Name
 
-        ACCESS DisplayNameLong AS STRING 	
+        ACCESS DisplayNameLong AS STRING
         RETURN SELF:Info
 
-        VIRTUAL ACCESS Info AS STRING 	
+        VIRTUAL ACCESS Info AS STRING
         RETURN ""
 
-        ACCESS IsVisible AS LOGIC  
+        ACCESS IsVisible AS LOGIC
         RETURN TRUE
 
 
-/*        VIRTUAL ACCESS LastBuildDate AS DATE  
+/*        VIRTUAL ACCESS LastBuildDate AS DATE
         RETURN NULL_DATE
 
 
-        VIRTUAL ACCESS LastBuildTime AS STRING  
+        VIRTUAL ACCESS LastBuildTime AS STRING
         RETURN ""*/
 
 
-/*        ACCESS Prototype AS STRING  
+/*        ACCESS Prototype AS STRING
         //p Return the prototype of the Entity
         //d Sometimes the keywords are shorten in the AEF/MEF file. This is due to the way you type it.
         //d As you can type FUNC instead of FUNCTION, this access will try to resolve all keywords so they appear in the complete form.
@@ -107,7 +112,7 @@ BEGIN NAMESPACE Fab_VO_Entities
         RETURN SELF:cPrototype
 */
 
-        VIRTUAL ACCESS Source AS STRING  
+        VIRTUAL ACCESS Source AS STRING
         RETURN ""
 
 
@@ -115,28 +120,28 @@ BEGIN NAMESPACE Fab_VO_Entities
         RETURN NULL
 
 
-        ACCESS VOPrototype AS STRING  
+        ACCESS VOPrototype AS STRING
         RETURN SELF:cProtoTmp
-        
+
         VIRTUAL ACCESS ClassName AS STRING
         RETURN ""
 
         VIRTUAL ACCESS NameSpace AS STRING
         RETURN ""
-        
+
         STATIC METHOD GetKeywords() AS xARRAY
             IF (FabEntityBase.__aKeywords == NULL )
-                FabEntityBase.InitEntityMarkers()
+                FabEntityBase.__InitEntityMarkers()
             ENDIF
 //        RETURN AClone( FabEntityBase.__aKeywords )
         RETURN FabEntityBase.__aKeywords
 
-        PROTECT STATIC METHOD InitEntityMarkers() AS VOID
+        PROTECT STATIC METHOD __InitEntityMarkers() AS VOID
             //
-/*            FabEntityBase.__aKeywords := xARRAY{ 	"CLASS", "METHOD", "ACCESS", 
+/*            FabEntityBase.__aKeywords := xARRAY{ 	"CLASS", "METHOD", "ACCESS",
             "ASSIGN", "INHERIT", ;
 					            "FUNCTION", "PROCEDURE", "RESOURCE", ;
-					            "STATIC", "DEFINE", "HIDDEN", "PROTECT", 
+					            "STATIC", "DEFINE", "HIDDEN", "PROTECT",
 					            "PROTECTED", "PRIVATE", "PUBLIC", "EXPORT", ;
 					            "UNION", "STRUCTURE", "TEXTBLOCK", "GLOBAL" }*/
 FabEntityBase.__aKeywords := xARRAY{}
@@ -164,7 +169,7 @@ FabEntityBase.__aKeywords:aAdd("GLOBAL")
         RETURN
 
     END CLASS
-    
+
 END NAMESPACE
 
 

@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-
+#pragma warnings(162, off) // unreachable code
 USING System.Windows.Forms
 USING System.Drawing
 USING System.Collections.Generic

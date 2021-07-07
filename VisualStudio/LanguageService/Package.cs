@@ -152,7 +152,7 @@ namespace XSharp.LanguageService
                 XSettings.EditorCompletionListTabs = _intellisensePage.CompletionListTabs;
                 XSettings.EditorCommitChars = _intellisensePage.CommitChars;
                 XSettings.EditorCompletionAutoPairs = _intellisensePage.AutoPairs;
-                XSettings.EditorCompletionListAfterEachChar = _intellisensePage.ShowAfterChar;
+                XSettings.EditorCompletionListAfterEachChar = false; // _intellisensePage.ShowAfterChar;
                 XSettings.EditorKeywordsInAll = _intellisensePage.KeywordsInAll;
 
                 XSettings.EditorNavigationSorted = _intellisensePage.SortNavigationBars;

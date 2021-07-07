@@ -36,6 +36,10 @@ namespace XSharp.LanguageService.OptionsPages
             commitChars.Text = optionsPage.CommitChars;
             chkAutoPairs.Checked = optionsPage.AutoPairs;
             chkExcludeMembersFromOtherfiles.Checked = optionsPage.ExcludeMembersFromOtherFiles;
+            // disabled for now
+            chkShowAfterChar.Enabled = false;
+            chkShowAfterChar.Checked = false;
+
             _loading = false;
 
         }

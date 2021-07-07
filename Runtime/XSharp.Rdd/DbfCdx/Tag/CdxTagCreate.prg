@@ -456,7 +456,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         INTERNAL METHOD Truncate() AS LOGIC
-            // Find all pages of the tag and delete them
+            // todo Find all pages of the tag and delete them
             // then also delete the tag header and return everything to the OrderBag
             RETURN TRUE
 

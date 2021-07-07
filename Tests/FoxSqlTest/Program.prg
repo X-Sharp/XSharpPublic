@@ -1,4 +1,5 @@
-﻿USING System
+﻿
+USING System
 USING System.Collections
 USING System.Collections.Generic
 USING System.Linq
@@ -12,12 +13,12 @@ USING System.Drawing
 FUNCTION Start() AS VOID STRICT
 TRY
     //TestInvalidSql()
-    TestProviders()
+    //TestProviders()
     //TestProvidersStringConnect()
     //TestBatch()
     //Test3Results()
     //testTransaction()
-    
+
     //testMetaData()
    //testDataTable()
     //testHandles()
@@ -30,13 +31,13 @@ TRY
     //testPG()
     //testExec2()
     //testFile()
-    
+
 CATCH e AS Exception
     ? MessageBox(e:ToString(), MB_ICONSTOP+MB_OK,"An error has occurred")
 END TRY
 WAIT
 RETURN
-
+/*
 FUNCTION TestFile() AS VOID
 	? File("C:\temp\abc.def")	// T in X#
 	? File("C:\temp\???.def")	// F
@@ -87,7 +88,7 @@ FOR VAR nProvider := 1 TO 3
     WAIT
     SqlDisconnect(nHandle)
 NEXT
-RETURN	
+RETURN
 
 FUNCTION TestProvidersStringConnect() AS VOID STRICT
 LOCAL nHandle AS LONG
@@ -104,7 +105,7 @@ FOR VAR nProvider := 1 TO 3
     ? SqlGetProp(nHandle,"connectstring" )
     SqlDisconnect(nHandle)
 NEXT
-RETURN	
+RETURN
 
 FUNCTION TestBatch() AS VOID
 LOCAL nHandle AS LONG
@@ -124,7 +125,7 @@ DO WHILE SqlMoreResults(nHandle,,aInfo) != 0
 ENDDO
 ? seconds() - f
 SqlDisconnect(nHandle)
-RETURN	
+RETURN
 
 FUNCTION Test3results() AS VOID
 LOCAL nHandle AS LONG
@@ -141,7 +142,7 @@ SQLExec(nHandle, "Select * from CursusGroepen;Select * from Bedrijven;Select * f
 ShowArray(aInfo)
 ? seconds() - f
 SqlDisconnect(nHandle)
-RETURN	
+RETURN
 
 
 FUNCTION TestTransaction() AS VOID
@@ -162,7 +163,7 @@ SQLExec(nHandle, "create table test(test int) ")
 ? seconds() - f
 SqlDisconnect(nHandle)
 Browse()
-RETURN	
+RETURN
 
 
 
@@ -185,7 +186,7 @@ DbCopy("C:\temp\TablesXNATSQL")
 ? seconds() - f
 
 SqlDisconnect(nHandle)
-RETURN	
+RETURN
 
 FUNCTION testDataTable() AS VOID
 LOCAL nHandle AS LONG
@@ -241,7 +242,7 @@ oForm:ShowDialog()
 //    IF oRow:RowState != DataRowState.Unchanged
 //        ?oRow:RecNo, oRow:RowState:ToString()
 //    ENDIF
-//NEXT    
+//NEXT
 
 RETURN
 
@@ -259,7 +260,7 @@ FUNCTION DataError(sender AS OBJECT, e AS DataGridViewDataErrorEventArgs) AS VOI
 LOCAL ex AS exception
 ex := e:Exception
 MessageBox(ex:Message,,"Invalid data")
-RETURN 
+RETURN
 
 
 
@@ -294,7 +295,7 @@ FOREACH element AS USUAL IN aInfo
     ? SqlDisconnect(element)
 NEXT
 
-RETURN	
+RETURN
 
 
 
@@ -320,7 +321,7 @@ ShowArray(aInfo)
 IF Used()
 Browse()
 ENDIF
-RETURN	
+RETURN
 
 
 
@@ -328,7 +329,7 @@ FUNCTION testConnect()
 LOCAL handle AS LONG
 TRY
     SqlSetFactory("ODBC")
-    ? sqlSetprop(0, "ConnectTimeOut", 1) 
+    ? sqlSetprop(0, "ConnectTimeOut", 1)
     ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
     handle := SqlStringConnect("Dsn=Northwind;")
     IF handle > 0
@@ -356,7 +357,7 @@ RETURN
 FUNCTION TestCopyTo AS VOID
     local handle
     SqlSetFactory("ODBC")
-    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
+    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1)
     ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
     handle := SqlStringConnect("Dsn=Northwind;")
     IF handle > 0
@@ -381,7 +382,7 @@ FUNCTION testDbSetOrder() AS VOID
 
 FUNCTION TestSqlParameters AS VOID
     SqlSetFactory("ODBC")
-    ? sqlSetprop(0, "ConnectTimeOut", 1) 
+    ? sqlSetprop(0, "ConnectTimeOut", 1)
     ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
     //SQLSetFactory("SQL")
     //LOCAL handle := SqlStringConnect("server=(LOCAL);trusted_connection=Yes;database=Northwind;")
@@ -438,3 +439,4 @@ FUNCTION TestInvalidSql()
 ENDIF
 return FALSE
 
+*/

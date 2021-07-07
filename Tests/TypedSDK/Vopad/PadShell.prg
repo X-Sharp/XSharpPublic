@@ -53,16 +53,16 @@ METHOD FileNew()
 	nCount++
 	
 
-method FileOpen() 
-	local oOD as OpenDialog
+METHOD FileOpen() 
+	LOCAL oOD AS OpenDialog
 
-	oOD := OpenDialog{self, ".\*.RTF"}
+	oOD := OpenDialog{SELF, ".\*.RTF"}
 	
 	oOD:SetFilter({"*.RTF", "*.TXT"}, {"Rich Edit Text", "TXT"}, 1)	
 	oOD:Show()	
-	if !Empty(oOD:FileName)
-		self:DoOpenFile(oOD:FileName, oOD:ReadOnly)
-	endif
+	IF !Empty(oOD:FileName)
+		SELF:DoOpenFile(oOD:FileName, oOD:ReadOnly)
+	ENDIF
 
 
 METHOD FilePrinterSetup() 
@@ -131,7 +131,7 @@ METHOD RemoveChild(oChild)
 	FOR n := 1 TO nAlen
 		IF SELF:aChildWindows[n] == oChild
 			ADel(SELF:aChildWindows, n)    
-			ASize(Self:aChildWindows, ALen(Self:aChildWindows)-1)
+			ASize(SELF:aChildWindows, ALen(SELF:aChildWindows)-1)
 		ENDIF
 	NEXT	
 		

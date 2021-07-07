@@ -88,7 +88,7 @@ FUNCTION BitClear (BinString AS BINARY, StartBit AS INT, BitCount AS INT) AS BIN
 
         ByteIndex := BitIndex / 8 + 1
         IF BETWEEN(ByteIndex, 1, Result.Length)
-            Result[ByteIndex] := _AND(Result[ByteIndex], _NOT(1 << BitIndex % 8))
+            Result[ByteIndex] := (BYTE) _AND(Result[ByteIndex],_NOT(1 << BitIndex % 8))
             BitIndex++
         ELSE
             THROW Error.ArgumentError(__FUNCTION__, nameof(StartBit),2)
@@ -148,7 +148,7 @@ FUNCTION BitNot (BinString AS BINARY, StartBit AS INT, BitCount := 1 AS INT) AS 
 
         ByteIndex := BitIndex / 8 + 1
         IF BETWEEN(ByteIndex, 1, Result.Length)
-            Result[ByteIndex] := _XOR(Result[ByteIndex], 1 << BitIndex % 8)
+            Result[ByteIndex] := (BYTE) _XOR(Result[ByteIndex], 1 << BitIndex % 8)
             BitIndex++
         ELSE
             THROW Error.ArgumentError(__FUNCTION__, nameof(StartBit),2)
@@ -263,7 +263,7 @@ FUNCTION BitSet (BinString AS BINARY, StartBit AS INT, BitCount AS INT) AS BINAR
 
         ByteIndex := BitIndex / 8 + 1
         IF BETWEEN(ByteIndex, 1, Result.Length)
-            Result[ByteIndex] := _OR(Result[ByteIndex], 1 << BitIndex % 8)
+            Result[ByteIndex] := (BYTE) _OR(Result[ByteIndex], 1 << BitIndex % 8)
             BitIndex++
         ELSE
             THROW Error.ArgumentError(__FUNCTION__, nameof(StartBit),2)

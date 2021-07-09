@@ -164,6 +164,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit">
+      <Version>15.0.75.152-pre</Version>
+    </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>
     </PackageReference>

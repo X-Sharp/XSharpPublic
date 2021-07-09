@@ -21,6 +21,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using MSBuild = Microsoft.Build.Evaluation;
 using XSharpModel;
+using Community.VisualStudio.Toolkit;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -262,10 +263,7 @@ namespace Microsoft.VisualStudio.Project
                 if(!(e is COMException) && !Utilities.IsInAutomationFunction(this.Site))
                 {
                     string title = null;
-                    OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                    OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                    OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                    Utilities.ShowMessageBox(this.Site, title, e.Message, icon, buttons, defaultButton);
+                    VS.MessageBox.ShowError(title, e.Message);
                 }
 
                 XSettings.DisplayException(e);
@@ -672,11 +670,7 @@ namespace Microsoft.VisualStudio.Project
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                EnvDTE.DTE dte = this.ProjectMgr.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
-                Debug.Assert(dte != null, "Could not get the automation object from the services exposed by this project");
-
-                if (dte == null)
-                    throw new InvalidOperationException();
+                
 
                 RegisteredProjectType registeredProjectType = RegisteredProjectType.CreateRegisteredProjectType(projectFactoryGuid);
                 Debug.Assert(registeredProjectType != null, "Could not read the registry setting associated to this project.");
@@ -750,10 +744,7 @@ namespace Microsoft.VisualStudio.Project
                     {
                         string message = (String.IsNullOrEmpty(e.Message)) ? SR.GetString(SR.NestedProjectFailedToReload, CultureInfo.CurrentUICulture) : e.Message;
                         string title = string.Empty;
-                        OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                        OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                        OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                        Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+                        VS.MessageBox.ShowError(title, message);
                     }
 
                     // Do not digest exception. let the caller handle it. If in a later stage this exception is not digested then the above messagebox is not needed.
@@ -815,10 +806,7 @@ namespace Microsoft.VisualStudio.Project
                 // Prompt to reload the nested project file. We use the moniker here since the filename from the event arg is canonicalized.
                 string message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.QueryReloadNestedProject, CultureInfo.CurrentUICulture), moniker);
                 string title = string.Empty;
-                OLEMSGICON icon = OLEMSGICON.OLEMSGICON_INFO;
-                OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNO;
-                OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                reload = (Utilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton) == NativeMethods.IDYES);
+                reload = VS.MessageBox.ShowConfirm(title, message);
             }
             ThreadHelper.ThrowIfNotOnUIThread();
 

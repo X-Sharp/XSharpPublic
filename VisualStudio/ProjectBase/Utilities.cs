@@ -23,6 +23,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -258,10 +259,7 @@ namespace Microsoft.VisualStudio.Project
                 if (!Utilities.IsInAutomationFunction(serviceProvider))
                 {
                     string title = null;
-                    OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                    OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                    OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                    Utilities.ShowMessageBox(serviceProvider, title, errorMessage, icon, buttons, defaultButton);
+                    VS.MessageBox.ShowError(title, errorMessage);
                 }
                 else
                 {
@@ -1219,42 +1217,7 @@ namespace Microsoft.VisualStudio.Project
                 return false;
             }
             return true;
-        }
-        /// <summary>
-        /// Use this instead of VsShellUtilities.ShowMessageBox because VSU uses ThreadHelper which
-        /// uses a private interface that can't be mocked AND goes to the global service provider.
-        /// </summary>
-        public static int ShowMessageBox(IServiceProvider serviceProvider, string message, string title, OLEMSGICON icon, OLEMSGBUTTON msgButton, OLEMSGDEFBUTTON defaultButton)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            IVsUIShell uiShell = serviceProvider.GetService(typeof(IVsUIShell)) as IVsUIShell;
-            Debug.Assert(uiShell != null, "Could not get the IVsUIShell object from the services exposed by this serviceprovider");
-            if (uiShell == null)
-            {
-                throw new InvalidOperationException();
-            }
-
-            Guid emptyGuid = Guid.Empty;
-            int result = 0;
-
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-                    0,
-                    ref emptyGuid,
-                    title,
-                    message,
-                    null,
-                    0,
-                    msgButton,
-                    defaultButton,
-                    icon,
-                    0,
-                    out result));
-            });
-            return result;
+ 
         }
 
     }

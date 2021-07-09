@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft;
 using Task = System.Threading.Tasks.Task;
+using Community.VisualStudio.Toolkit;
 
 namespace XSharp.LanguageService
 {
@@ -26,14 +27,9 @@ namespace XSharp.LanguageService
         static IVsXMLMemberIndex coreIndex = null;
         static XSharpXMLDocTools()
         {
-            var lang = XSharpLanguageService.Instance;
-            object result = null;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                result = await lang.GetServiceAsync(typeof(SVsXMLMemberIndexService));
-                _XMLMemberIndexService = (IVsXMLMemberIndexService)result;
+                _XMLMemberIndexService = await VS.GetServiceAsync<SVsXMLMemberIndexService,IVsXMLMemberIndexService>();
             });
             Assumes.Present(_XMLMemberIndexService);
             return;

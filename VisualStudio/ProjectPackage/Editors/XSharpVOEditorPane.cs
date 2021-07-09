@@ -22,6 +22,7 @@ using Microsoft.VisualStudio.Project;
 using XSharp.LanguageService;
 using XSharpModel;
 using System.Collections.Generic;
+using Community.VisualStudio.Toolkit;
 
 namespace XSharp.Project
 {
@@ -223,24 +224,10 @@ namespace XSharp.Project
             this.editorControl.StatusMessage = new StatusMessageDelegate(StatusBarMessageHandler);
         }
 
-        private IVsStatusbar oStatusBar;
+        
         void StatusBarMessageHandler(string cText)
         {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                if (this.oStatusBar == null)
-                {
-
-                    oStatusBar = (IVsStatusbar)GetService(typeof(IVsStatusbar));
-                }
-                if (this.oStatusBar != null)
-                {
-                    this.oStatusBar.SetText(cText);
-                }
-
-            });
-
+            VS.StatusBar.ShowMessageAsync(cText).FireAndForget();
         }
         void IsDirtyChangedHandler(object o, EventArgs e)
         {

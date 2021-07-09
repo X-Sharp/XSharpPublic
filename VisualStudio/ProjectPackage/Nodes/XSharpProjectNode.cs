@@ -38,6 +38,7 @@ using LanguageService.SyntaxTree;
 using System.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XSharp.LanguageService;
+using Community.VisualStudio.Toolkit;
 
 namespace XSharp.Project
 {
@@ -1440,7 +1441,7 @@ namespace XSharp.Project
         }
 
         #region IXSharpProject Interface
-        protected IVsStatusbar statusBar;
+        
 
         public void RunInForeGroundThread(Action a)
         {
@@ -1489,64 +1490,33 @@ namespace XSharp.Project
         }
 
 
-        private void getStatusBar()
-        {
-            if (statusBar == null && !lTriedToGetStatusBar)
-            {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
-                });
-                lTriedToGetStatusBar = true;
-            }
-        }
-
-        protected bool lTriedToGetStatusBar = false;
+        
+        
         public void SetStatusBarText(string msg)
         {
-            getStatusBar();
-            if (statusBar != null)
-            {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    statusBar.SetText(msg);
-                });
-            }
-
+            VS.StatusBar.ShowMessageAsync(msg).FireAndForget(true);
 
         }
         public void SetStatusBarAnimation(bool onoff, short idAnimation)
         {
-            try
-            {
-                /*
-                    SBAI_Index 	Value1 	Description
-                    SBAI_General 	0 	Standard animation icon.
-                    SBAI_Print 	1 	Animation when printing.
-                    SBAI_Save 	2 	Animation when saving files.
-                    SBAI_Deploy 	3 	Animation when deploying the solution.
-                    SBAI_Synch 	4 	Animation when synchronizing files over the network.
-                    SBAI_Build 	5 	Animation when building the solution.
-                    SBAI_Find 	6 	Animation when searching.
+            /*
+                SBAI_Index 	Value1 	Description
+                SBAI_General 	0 	Standard animation icon.
+                SBAI_Print 	1 	Animation when printing.
+                SBAI_Save 	2 	Animation when saving files.
+                SBAI_Deploy 	3 	Animation when deploying the solution.
+                SBAI_Synch 	4 	Animation when synchronizing files over the network.
+                SBAI_Build 	5 	Animation when building the solution.
+                SBAI_Find 	6 	Animation when searching.
 
-                    The values of SBAI_Index are taken from vsshell.idl.
-                */
-                getStatusBar();
-                if (statusBar != null)
-                {
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
-                    {
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        statusBar.Animation(onoff ? 1 : 0, idAnimation);
-                    });
-                }
-            }
-            catch //(Exception e)
-            {
-                //System.Diagnostics.Debug.WriteLine("Error showing animation " );
-            }
+                The values of SBAI_Index are taken from vsshell.idl.
+            */
+
+            if (onoff)
+                VS.StatusBar.StartAnimationAsync((StatusAnimation)idAnimation).FireAndForget(true);
+            else
+                VS.StatusBar.EndAnimationAsync((StatusAnimation)idAnimation).FireAndForget(true);
+
         }
 
 
@@ -1566,37 +1536,40 @@ namespace XSharp.Project
         }
         public void OpenElement(string file, int line, int column)
         {
-            IVsWindowFrame window;
             IVsTextView textView;
-            IVsUIHierarchy dummy1;
-            uint dummy2;
             try
             {
                 ThreadHelper.ThrowIfNotOnUIThread();
-                VsShellUtilities.OpenDocument(this.Site, file, VSConstants.LOGVIEWID_Code, out dummy1, out dummy2, out window, out textView);
-                if ((window != null) && (textView != null))
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    window.Show();
-                    //
-                    TextSpan span = new TextSpan();
-                    span.iStartLine = line - 1;
-                    span.iStartIndex = column - 1;
-                    span.iEndLine = line - 1;
-                    span.iEndIndex = column - 1;
-                    //
-                    textView.SetCaretPos(span.iStartLine, span.iStartIndex);
-                    textView.EnsureSpanVisible(span);
-                    if (span.iStartLine > 5)
-                        textView.SetTopLine(span.iStartLine - 5);
-                    else
-                        textView.SetTopLine(0);
-                }
+                    var view = await VS.Documents.OpenViaProjectAsync(file);
+                    textView = await VS.Documents.GetNativeTextViewAsync(file);
+                    if (textView != null)
+                    {
+                        
+                        //
+                        TextSpan span = new TextSpan();
+                        span.iStartLine = line - 1;
+                        span.iStartIndex = column - 1;
+                        span.iEndLine = line - 1;
+                        span.iEndIndex = column - 1;
+                        //
+                        textView.SetCaretPos(span.iStartLine, span.iStartIndex);
+                        textView.EnsureSpanVisible(span);
+                        if (span.iStartLine > 5)
+                            textView.SetTopLine(span.iStartLine - 5);
+                        else
+                            textView.SetTopLine(0);
+                    }
+                });
             }
             catch 
             {
                 ;
             }
         }
+
+       
 
         string _prefix = null;
 
@@ -1933,13 +1906,10 @@ namespace XSharp.Project
         #endregion
         public bool IsDocumentOpen(string documentName)
         {
+            
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(); IVsUIHierarchy hier;
-                uint itemid;
-                IVsWindowFrame windowFrame;
-                bool open = VsShellUtilities.IsDocumentOpen(this.Site, documentName, Guid.Empty, out hier, out itemid, out windowFrame);
-                return open;
+                return await VS.Documents.IsOpenAsync(documentName);
             });
         }
 

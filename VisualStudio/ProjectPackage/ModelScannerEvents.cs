@@ -12,6 +12,7 @@ using System.IO;
 
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
+using Community.VisualStudio.Toolkit;
 
 namespace XSharp.Project
 {
@@ -44,56 +45,61 @@ namespace XSharp.Project
             // Restart scanning. Was suspended on opening of project system
             // or closing of previous solution
             //
-            EnvDTE80.DTE2 dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
-            EnvDTE80.Solution2 solution = dte.Solution as EnvDTE80.Solution2;
-            var solutionFile = solution.FullName;
-            if (string.IsNullOrEmpty(solutionFile))
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                if (projectfiles.Count > 0)
+                var sol = await VS.Solution.GetCurrentSolutionAsync();
+                var solutionFile = sol.FileName;
+                if (string.IsNullOrEmpty(solutionFile))
                 {
-                    // open a project without solution.
-                    // assume solution name is the same as project name with different extension
-                    solutionFile = System.IO.Path.ChangeExtension(projectfiles[0], ".sln");
-                }
-
-            }
-            if (! string.IsNullOrEmpty(solutionFile))
-            {
-                XSharpModel.XSolution.Open(solutionFile);
-                XSharpProjectPackage.XInstance.SetCommentTokens();
-            }
-            projectfiles.Clear();
-
-            /*
-            Code below to detect items in solution folders
-            var projects = solution.Projects;
-            var folder1 = new Guid("{66A26720-8FB5-11D2-AA7E-00C04F688DDE}"); // = Project Folder
-            var folder2 = new Guid("{2150E333-8FDC-42A3-9474-1A3956D46DE8}"); // Solution Folder
-            foreach (var prj in projects)
-            {
-                var project = (EnvDTE.Project)prj;
-                var kind = new Guid(project.Kind);
-                var name = project.FullName;
-                if (kind == folder1 || kind == folder2)
-                {
-                    foreach (var item in project.ProjectItems)
+                    if (projectfiles.Count > 0)
                     {
-                        var prjItem = (EnvDTE.ProjectItem)item;
-                        if (prjItem.Object == null)
+                        // open a project without solution.
+                        // assume solution name is the same as project name with different extension
+                        solutionFile = Path.ChangeExtension(projectfiles[0], ".sln");
+                    }
+
+                }
+                if (!string.IsNullOrEmpty(solutionFile))
+                {
+                    XSharpModel.XSolution.Open(solutionFile);
+                    XSharpProjectPackage.XInstance.SetCommentTokens();
+                }
+                projectfiles.Clear();
+
+
+
+                /*
+                Code below to detect items in solution folders
+                var projects = solution.Projects;
+                var folder1 = new Guid("{66A26720-8FB5-11D2-AA7E-00C04F688DDE}"); // = Project Folder
+                var folder2 = new Guid("{2150E333-8FDC-42A3-9474-1A3956D46DE8}"); // Solution Folder
+                foreach (var prj in projects)
+                {
+                    var project = (EnvDTE.Project)prj;
+                    var kind = new Guid(project.Kind);
+                    var name = project.FullName;
+                    if (kind == folder1 || kind == folder2)
+                    {
+                        foreach (var item in project.ProjectItems)
                         {
-                            for (short i = 1; i <= prjItem.FileCount; i++)
+                            var prjItem = (EnvDTE.ProjectItem)item;
+                            if (prjItem.Object == null)
                             {
-                                var file = prjItem.FileNames[i];
-                                Debug.WriteLine(file);
+                                for (short i = 1; i <= prjItem.FileCount; i++)
+                                {
+                                    var file = prjItem.FileNames[i];
+                                    Debug.WriteLine(file);
+                                }
                             }
                         }
                     }
-                }
 
-            }
-            */
+                }
+                */
+            });
             return VSConstants.S_OK;
         }
+
 
         public override int OnQueryCloseSolution(object pUnkReserved, ref int cancel)
         {
@@ -106,7 +112,7 @@ namespace XSharp.Project
                 {
                     return;
                 }
-                EnvDTE80.DTE2 dte =  d as EnvDTE80.DTE2;
+                EnvDTE80.DTE2 dte = d as EnvDTE80.DTE2;
                 var docs = dte.Documents;
                 var windows = new List<EnvDTE.Window>();
                 foreach (EnvDTE.Document doc in docs)

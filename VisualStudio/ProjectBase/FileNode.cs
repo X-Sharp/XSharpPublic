@@ -24,6 +24,8 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using XSharpModel;
+using Community.VisualStudio.Toolkit;
+
 namespace Microsoft.VisualStudio.Project
 {
     internal class Transactional
@@ -886,15 +888,11 @@ namespace Microsoft.VisualStudio.Project
         {
             bool fileExist = IsFileOnDisk(this.Url);
             ThreadHelper.ThrowIfNotOnUIThread();
-
             if (!fileExist && showMessage && !Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
             {
                 string message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.ItemDoesNotExistInProjectDirectory, CultureInfo.CurrentUICulture), this.Caption);
                 string title = string.Empty;
-                OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                Utilities.ShowMessageBox(this.ProjectMgr.Site, title, message, icon, buttons, defaultButton);
+                VS.MessageBox.ShowError(title, message);
             }
 
             return fileExist;

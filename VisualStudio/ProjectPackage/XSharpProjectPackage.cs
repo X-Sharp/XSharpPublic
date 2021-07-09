@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using Microsoft;
 using Microsoft.VisualStudio.ComponentModelHost;
 using XSharpModel;
+using Community.VisualStudio.Toolkit;
 /*
 Substitution strings
 String	Description
@@ -65,6 +66,7 @@ $WINDIR$	The Windows folder.
 [assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharpMonoCecil", CodeBase = "XSharpMonoCecil.dll", Culture = "neutral", PublicKeyToken = "50cebf1cceb9d05e", Version = "0.11.3.0")]
 [assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite", CodeBase = "System.Data.SQLite.dll", Culture = "neutral", PublicKeyToken = "db937bc2d44ff139", Version = "1.0.113.0")]
+[assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
 namespace XSharp.Project
 {
 
@@ -311,11 +313,7 @@ namespace XSharp.Project
         internal int ShowMessageBox(string message)
         {
             string title = string.Empty;
-            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-
-            return Utilities.ShowMessageBox(this, message, title, icon, buttons, defaultButton);
+            return (int) VS.MessageBox.Show(title, message);
 
         }
 

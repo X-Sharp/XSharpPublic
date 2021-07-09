@@ -20,9 +20,11 @@ using XSharpModel;
 using Microsoft.Win32;
 using Microsoft;
 using Microsoft.VisualStudio.OLE.Interop;
+using Community.VisualStudio.Toolkit;
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
+[assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
 [assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser", CodeBase = "XSharp.VsParser.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
 namespace XSharp.LanguageService
@@ -33,6 +35,7 @@ namespace XSharp.LanguageService
     /// </summary>
     /// <remarks>
     ///
+    
     [Guid(GuidStrings.guidXSharpLanguageServicePkgString)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
@@ -318,7 +321,7 @@ namespace XSharp.LanguageService
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                m_debugger = await this.GetServiceAsync(typeof(SVsShellDebugger)) as IVsDebugger;
+                m_debugger = await VS.GetServiceAsync<SVsShellDebugger,IVsDebugger>();
                 if (m_debugger != null)
                 {
                     hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);

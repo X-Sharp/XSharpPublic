@@ -40,7 +40,7 @@ using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using System.Reflection;
 using XSharpModel;
-
+using Community.VisualStudio.Toolkit;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -2074,10 +2074,7 @@ namespace Microsoft.VisualStudio.Project
                     if (!Utilities.IsInAutomationFunction(this.Site))
                     {
                         string title = null;
-                        OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                        OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                        OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                        Utilities.ShowMessageBox(this.Site, title, errorMessage, icon, buttons, defaultButton);
+                        VS.MessageBox.ShowError(title, errorMessage);
                         return VSADDRESULT.ADDRESULT_Failure;
                     }
                     else
@@ -3818,10 +3815,7 @@ namespace Microsoft.VisualStudio.Project
                 if (!Utilities.IsInAutomationFunction(this.Site))
                 {
                     string title = null;
-                    OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                    OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                    OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                    Utilities.ShowMessageBox(this.Site, title, errorMessage, icon, buttons, defaultButton);
+                    VS.MessageBox.ShowError(title, errorMessage);
                     return VSConstants.OLE_E_PROMPTSAVECANCELLED;
                 }
 
@@ -3970,9 +3964,6 @@ namespace Microsoft.VisualStudio.Project
 
             string message = String.Empty;
             string title = String.Empty;
-            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
 
             // If the document is open then return error message.
             IVsUIHierarchy hier;
@@ -3985,7 +3976,7 @@ namespace Microsoft.VisualStudio.Project
             if (isOpen)
             {
                 message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.CannotAddFileThatIsOpenInEditor, CultureInfo.CurrentUICulture), Path.GetFileName(computedNewFileName));
-                Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+                VS.MessageBox.ShowError(title, message);
                 return VSConstants.E_ABORT;
             }
 
@@ -4008,10 +3999,6 @@ namespace Microsoft.VisualStudio.Project
 
          string message = String.Empty;
          string title = String.Empty;
-         OLEMSGICON icon = OLEMSGICON.OLEMSGICON_QUERY;
-         OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNO;
-         OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-
 
 
          HierarchyNode existingNode = this.ProjectMgr.FindChild(computedNewFileName);
@@ -4025,9 +4012,7 @@ namespace Microsoft.VisualStudio.Project
             message = SR.GetString(SR.FileAlreadyInProject, Path.GetFileName(computedNewFileName));
          }
             // File already exists in project... message box
-            ThreadHelper.ThrowIfNotOnUIThread();
-            int msgboxResult = Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
-         if (msgboxResult != NativeMethods.IDYES)
+         if (! VS.MessageBox.ShowConfirm(title, message))
          {
             return (int)OleConstants.OLECMDERR_E_CANCELED;
          }
@@ -4849,10 +4834,7 @@ namespace Microsoft.VisualStudio.Project
                         {
                             string message = SR.GetString(SR.CancelQueryEdit, path);
                             string title = string.Empty;
-                            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                            Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+                            VS.MessageBox.ShowError(title, message);
                         }
                         result = false;
                     }
@@ -5709,11 +5691,7 @@ namespace Microsoft.VisualStudio.Project
                     {
                         string message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.FileAlreadyExists, CultureInfo.CurrentUICulture), newFileName);
                         string title = string.Empty;
-                        OLEMSGICON icon = OLEMSGICON.OLEMSGICON_QUERY;
-                        OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNO;
-                        OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                        int messageboxResult = Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
-                        if (messageboxResult == NativeMethods.IDNO)
+                        if (!VS.MessageBox.ShowConfirm(title, message))
                         {
                             result[0] = VSADDRESULT.ADDRESULT_Cancel;
                             return (int)OleConstants.OLECMDERR_E_CANCELED;
@@ -5762,10 +5740,7 @@ namespace Microsoft.VisualStudio.Project
                {
                   string message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.LinkAlreadyExistsInProject, CultureInfo.CurrentUICulture), newFileName);
                   string title = string.Empty;
-                  OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                  OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                  OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                        Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+                  VS.MessageBox.ShowError(title, message);
                   result[0] = VSADDRESULT.ADDRESULT_Cancel;
                   return (int)OleConstants.OLECMDERR_E_CANCELED;
                }
@@ -7224,10 +7199,7 @@ namespace Microsoft.VisualStudio.Project
             if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
             {
                 string title = null;
-                OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                Utilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
+                VS.MessageBox.ShowError(title, errorMessage);
                 return VSConstants.S_OK;
             }
             else

@@ -5,6 +5,7 @@
 //
 namespace Microsoft.VisualStudio.Project
 {
+    using Community.VisualStudio.Toolkit;
     using Microsoft.VisualStudio.Shell;
     using System;
     using System.ComponentModel;
@@ -369,8 +370,7 @@ namespace Microsoft.VisualStudio.Project
                         // Don't retrigger Validation when losing focus due to the message box.
                         textBox.Modified = false;
                     }
-
-                    XHelperMethods.ShowErrorMessageBox(this.ParentPropertyPage.Site, ex.Message);
+                    VS.MessageBox.ShowError(null, ex.Message);
                     e.Cancel = true;
 
                     if (textBox != null)

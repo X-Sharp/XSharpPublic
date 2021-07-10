@@ -31,7 +31,11 @@ IF .not. File.ReadAllText(cChFile):Contains(AsString( Test("one argument")) )
 	THROW Exception{"Ppo file C479.ppo was not fully generated"}
 END IF
 
+Test("one argument")
+Test( 1 , "1" ,  ,  , {||TRUE} )
 Test("one argument");Test( 1 , "1" ,  ,  , {||TRUE} )
+Test("one argument")
+Test( 1 , "1" ,  ,  , {||FALSE} )
 Test("one argument");Test( 1 , "1" ,  ,  , {||FALSE} )
 // output in .ppo finishes here
 LOCAL nNotSeenInPpo AS INT

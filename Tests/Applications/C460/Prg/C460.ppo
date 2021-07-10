@@ -16,7 +16,21 @@ LOCAL GetList := {} AS ARRAY
 aFiller[ 1 ] := "Field1"
 aFiller[ 2 ] := "Field2"
 
+DevPos( 1 , 2 ) 
+ DevOut( "Filler             "  )
+DevPos( 1 , 2 ) ; DevOut( "Filler             "  )
+SetPos( Row() , Col()+1 ) 
+AAdd( GetList, _GET_( aFiller[1] , "aFiller[1]" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) 
+atail(Getlist):reader := {|x| zGEReader(x) } 
+atail(Getlist):cargo := ArrayCreate(4 ) 
+SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[1] , "aFiller[1]" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) 
+atail(getlist):cargo[ 2] := "Enter the filler"
+SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[1] , "aFiller[1]" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the filler"
 DevPos( 1 , 2 ) ; DevOut( "Filler             "  );SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[1] , "aFiller[1]" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the filler"
+SetPos(1976 , 2 ) 
+ Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[2] , aFiller[2] := x) }, "aFiller[2]" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) )
+SetPos(1976 , 2 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[2] , aFiller[2] := x) }, "aFiller[2]" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) )
+atail(getlist):cargo[ 2] := "Is this an active filler?"
 SetPos(1976 , 2 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[2] , aFiller[2] := x) }, "aFiller[2]" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) );atail(getlist):cargo[ 2] := "Is this an active filler?"
 
 xAssert(Row() == 1976)
@@ -26,11 +40,25 @@ xAssert(ALen(GetList) == 2)
 ASize(GetList , 0)
 
 // this one is ok:
+DevPos( 1 , 2 ) 
+ DevOut( "Filler             "  )
+DevPos( 1 , 2 ) ; DevOut( "Filler             "  )
+SetPos( Row() , Col()+1 ) 
+AAdd( GetList, _GET_( oFiller:Filler , "oFiller:Filler" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) 
+atail(Getlist):reader := {|x| zGEReader(x) } 
+atail(Getlist):cargo := ArrayCreate(4 ) 
+SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( oFiller:Filler , "oFiller:Filler" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) 
+atail(getlist):cargo[ 2] := "Enter the filler"
+SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( oFiller:Filler , "oFiller:Filler" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the filler"
 DevPos( 1 , 2 ) ; DevOut( "Filler             "  );SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( oFiller:Filler , "oFiller:Filler" , "@!" , {||Fillers->(zdbCheckKey(aFiller:Filler,"FillerFL"))} , {||aFiller:Mode=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the filler"
 
 xAssert(Row() == 1)
 
 // error XS9002: Parser: unexpected input '@'
+SetPos(1976 , 2 ) 
+ Aadd(GetList, zGECheckNew({|x| iif(x == nil, oFiller:Active , oFiller:Active := x) }, "oFiller:Active" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) )
+SetPos(1976 , 2 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, oFiller:Active , oFiller:Active := x) }, "oFiller:Active" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) )
+atail(getlist):cargo[ 2] := "Is this an active filler?"
 SetPos(1976 , 2 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, oFiller:Active , oFiller:Active := x) }, "oFiller:Active" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) );atail(getlist):cargo[ 2] := "Is this an active filler?"
 
 xAssert(Row() == 1976)

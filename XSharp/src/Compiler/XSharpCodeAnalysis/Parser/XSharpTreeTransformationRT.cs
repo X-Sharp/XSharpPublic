@@ -311,12 +311,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var memvar in filewidepublics)
                 {
                     var name = memvar.Name;
-                    var exp = GenerateMemVarDecl(GenerateLiteral(name), false);
+                    var exp = GenerateMemVarDecl(memvar.Context, GenerateLiteral(name), false);
                     stmts.Add(GenerateExpressionStatement(exp));
                     var context = memvar.Context as XSharpParser.XbasevarContext;
                     if (context.Expression != null)
                     {
-                        exp = GenerateMemVarPut(GenerateLiteral(name), context.Expression.Get<ExpressionSyntax>());
+                        exp = GenerateMemVarPut(context, GenerateLiteral(name), context.Expression.Get<ExpressionSyntax>());
                         stmts.Add(GenerateExpressionStatement(exp));
                     }
                     else if (context.ArraySub != null)
@@ -327,7 +327,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             args.Add(MakeArgument(index.Get<ExpressionSyntax>()));
                         }
                         var initializer = GenerateMethodCall(XSharpQualifiedFunctionNames.ArrayNew, MakeArgumentList(args.ToArray()), true);
-                        exp = GenerateMemVarPut(GenerateLiteral(name), initializer);
+                        exp = GenerateMemVarPut(context, GenerateLiteral(name), initializer);
                         stmts.Add(GenerateExpressionStatement(exp));
 
                     }
@@ -335,7 +335,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         // Assign FALSE to PUBLIC variables or TRUE when the name is CLIPPER
                         bool publicvalue = context.Id.GetText().ToUpper() == "CLIPPER";
-                        exp = GenerateMemVarPut(GenerateLiteral(name), GenerateLiteral(publicvalue));
+                        exp = GenerateMemVarPut(context, GenerateLiteral(name), GenerateLiteral(publicvalue));
                         stmts.Add(GenerateExpressionStatement(exp));
                     }
                 }
@@ -719,11 +719,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Expression Statement
 
-        protected virtual ExpressionSyntax HandleFoxArrayAssign(XSharpParserRuleContext context, XSharpParserRuleContext Left, XSharpParserRuleContext Right)
-        {
-            return null;
-        }
-
         protected override StatementSyntax HandleExpressionStmt(IList<XP.ExpressionContext> expressions)
         {
             var statements = _pool.Allocate<StatementSyntax>();
@@ -793,17 +788,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else if (left is XP.PrimaryExpressionContext pec && pec.Expr is XP.MacroNameContext macro)
                             {
-                                expr = GenerateMemVarPut(getMacroNameExpression(macro.Name), RHS);
+                                expr = GenerateMemVarPut(exprCtx, getMacroNameExpression(macro.Name), RHS);
                             }
                             else
                             {
-                                var binContext = (XP.BinaryExpressionContext)exprCtx;
-                                expr = HandleFoxArrayAssign(binContext, binContext.Left, binContext.Right);
-                                if (expr == null)
-                                {
-                                    expr = MakeSimpleAssignment(bin.Left, bin.Right);
-                                    RegisterParamAssign(bin.Left.XNode.GetText());
-                                }
+                                expr = MakeSimpleAssignment(bin.Left, bin.Right);
+                                RegisterParamAssign(bin.Left.XNode.GetText());
                             }
                         }
                         if (_options.Dialect != XSharpDialect.FoxPro)
@@ -831,16 +821,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region MemVar and Fields
-        internal ExpressionSyntax GenerateMemVarPut(ExpressionSyntax memvar, ExpressionSyntax right)
+        internal ExpressionSyntax GenerateMemVarPut(XSharpParserRuleContext context, ExpressionSyntax memvar, ExpressionSyntax right)
         {
             var arg1 = MakeArgument(memvar);
             var arg2 = MakeArgument(right);
             var args = MakeArgumentList(arg1, arg2);
-            var expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarPut, args, true);
+            var name = XSharpQualifiedFunctionNames.MemVarPut;
+            if (_options.Dialect == XSharpDialect.FoxPro && _options.HasOption(CompilerOption.FoxArrayAssign, context, PragmaOptions))
+            {
+                name = XSharpQualifiedFunctionNames.FoxMemVarPut;
+            }
+            var expr = GenerateMethodCall(name, args, true);
             return expr;
         }
 
-        internal ExpressionSyntax GenerateMemVarGet(ExpressionSyntax memvar)
+        internal ExpressionSyntax GenerateMemVarGet(XSharpParserRuleContext context, ExpressionSyntax memvar)
         {
             // this is now only used in the aliasedFieldLate rule.
             var arg1 = MakeArgument(memvar);
@@ -848,7 +843,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarGet, args, true);
             return expr;
         }
-        internal ExpressionSyntax GenerateMemVarDecl(ExpressionSyntax memvar, bool isprivate)
+        internal ExpressionSyntax GenerateMemVarDecl(XSharpParserRuleContext context, ExpressionSyntax memvar, bool isprivate)
         {
             var arg1 = MakeArgument(memvar);
             var arg2 = MakeArgument(GenerateLiteral(isprivate));
@@ -857,7 +852,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
-        internal ExpressionSyntax GenerateFieldGet(string alias, ExpressionSyntax field)
+        internal ExpressionSyntax GenerateFieldGet(XSharpParserRuleContext context, string alias, ExpressionSyntax field)
         {
             // this is now only used in the aliasedFieldLate rule.
             if (string.IsNullOrEmpty(alias))
@@ -871,14 +866,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (alias.ToUpper() == "M")
                 {
-                    return GenerateMemVarGet(field);
+                    return GenerateMemVarGet(context, field);
                 }
 
-                return GenerateFieldGetWa(GenerateLiteral(alias), field);
+                return GenerateFieldGetWa(context, GenerateLiteral(alias), field);
             }
         }
 
-        internal ExpressionSyntax GenerateFieldGetWa(ExpressionSyntax area, ExpressionSyntax field)
+        internal ExpressionSyntax GenerateFieldGetWa(XSharpParserRuleContext context, ExpressionSyntax area, ExpressionSyntax field)
         {
             ArgumentListSyntax args;
             var argField = MakeArgument(field);
@@ -889,13 +884,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
-        internal ExpressionSyntax GenerateFieldSetWa(ExpressionSyntax area, ExpressionSyntax field, ExpressionSyntax value)
+        internal ExpressionSyntax GenerateFieldSetWa(XSharpParserRuleContext context, ExpressionSyntax area, ExpressionSyntax field, ExpressionSyntax value)
         {
             ArgumentListSyntax args;
             var argField = MakeArgument(field);
             var argWA = MakeArgument(area);
             var argValue = MakeArgument(value);
             var method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldSetWa : VulcanQualifiedFunctionNames.FieldSetWa;
+            if (_options.Dialect == XSharpDialect.FoxPro && _options.HasOption(CompilerOption.FoxArrayAssign, context, PragmaOptions))
+            {
+                method = XSharpQualifiedFunctionNames.FoxFieldSetWa;
+            }
             args = MakeArgumentList(argWA, argField, argValue);
             return GenerateMethodCall(method, args, true);
 
@@ -1036,17 +1035,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(qtype);
         }
 
-        protected void addFieldOrMemvar(string name, string prefix, XSharpParserRuleContext context, bool isParameter)
+        protected MemVarFieldInfo addFieldOrMemvar(string name, string prefix, XSharpParserRuleContext context, bool isParameter)
         {
             if (CurrentEntity.Data.GetField(name) != null)
             {
                 context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
+                return null;
             }
             else
             {
 
                 var info = CurrentEntity.Data.AddField(name, prefix, context);
                 info.IsParameter = isParameter;
+                return info;
             }
         }
         protected string CleanVarName(string name)
@@ -1204,11 +1205,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var name = memvar.GetText();
                         ++i;
-                        var exp = GenerateMemVarDecl(GenerateLiteral(name), true);
+                        var exp = GenerateMemVarDecl(context, GenerateLiteral(name), true);
                         stmts.Add(GenerateExpressionStatement(exp));
 
                         var val = GenerateGetClipperParam(GenerateLiteral(i), context);
-                        exp = GenerateMemVarPut(GenerateLiteral(name), val);
+                        exp = GenerateMemVarPut(context, GenerateLiteral(name), val);
                         var stmt = GenerateExpressionStatement(exp);
                         memvar.Put(stmt);
                         stmts.Add(stmt);
@@ -1232,7 +1233,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             varname = GenerateLiteral(memvar.Id.Id.GetText());
                         }
 
-                        var exp = GenerateMemVarDecl(varname, isprivate);
+                        var exp = GenerateMemVarDecl(memvar, varname, isprivate);
                         stmts.Add(GenerateExpressionStatement(exp));
                         ExpressionSyntax initializer = null;
                         if (memvar.Expression != null)
@@ -1250,7 +1251,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         if (initializer != null)
                         {
-                            exp = GenerateMemVarPut(varname, initializer);
+                            exp = GenerateMemVarPut(context, varname, initializer);
 
                             var stmt = GenerateExpressionStatement(exp);
                             memvar.Put(stmt);
@@ -1855,17 +1856,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     field = GenerateIdentifier(fieldNodeLate.Field);
                 }
-                expr = GenerateFieldGetWa(area, field);
+                expr = GenerateFieldGetWa(context, area, field);
                 switch (Op.Type)
                 {
                     case XSharpLexer.INC:
                         expr = GenerateAddOne(expr);
-                        expr = GenerateFieldSetWa(area, field, expr);
+                        expr = GenerateFieldSetWa(context, area, field, expr);
                         context.Put(expr);
                         return;
                     case XSharpLexer.DEC:
                         expr = GenerateSubtractOne(expr);
-                        expr = GenerateFieldSetWa(area, field, expr);
+                        expr = GenerateFieldSetWa(context, area, field, expr);
                         context.Put(expr);
                         return;
                     case XSharpLexer.TILDE:
@@ -1921,12 +1922,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     field = GenerateIdentifier(fieldNodeLate.Field);
                 }
-                expr = GenerateFieldGetWa(area, field);
+                expr = GenerateFieldGetWa(context, area, field);
                 if (Op.Type == XSharpLexer.INC)
                     expr = GenerateAddOne(expr);
                 else
                     expr = GenerateSubtractOne(expr);
-                expr = GenerateFieldSetWa(area, field, expr);
+                expr = GenerateFieldSetWa(context, area, field, expr);
                 context.Put(expr);
                 return;
 
@@ -2019,13 +2020,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var id = macro.Name.Get<IdentifierNameSyntax>();
                 if (context.Op.Type == XP.ASSIGN_OP)
                 {
-                    expr = GenerateMemVarPut(getMacroNameExpression(macro.Name), right);
+                    expr = GenerateMemVarPut(context, getMacroNameExpression(macro.Name), right);
                 }
                 else
                 {
                     // left is already a MemVarGet
                     expr = _syntaxFactory.BinaryExpression(op, left, token, right);
-                    expr = GenerateMemVarPut(id, expr);
+                    expr = GenerateMemVarPut(context, id, expr);
                 }
                 context.Put(expr);
                 return;
@@ -2059,12 +2060,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 if (context.Op.Type == XP.ASSIGN_OP)
                 {
-                    expr = GenerateFieldSetWa(area, field, right);
+                    expr = GenerateFieldSetWa(context, area, field, right);
                 }
                 else
                 {
                     expr = _syntaxFactory.BinaryExpression(op, left, token, right);
-                    expr = GenerateFieldSetWa(area, field, expr);
+                    expr = GenerateFieldSetWa(context, area, field, expr);
                 }
                 context.Put(expr);
                 return;
@@ -4269,7 +4270,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // 3rd syntax, Area is an identifier, (area)->Name
                 var id = GenerateIdentifier(context.Area);
                 context.Area.Put(id);
-                context.Put(GenerateFieldGetWa(id, GenerateLiteral(fldName)));
+                context.Put(GenerateFieldGetWa(context, id, GenerateLiteral(fldName)));
             }
             else
             {
@@ -4300,7 +4301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var fieldName = context.Field.Get<ExpressionSyntax>();
             if (context.Area != null)
             {
-                context.Put(GenerateFieldGetWa(GenerateIdentifier(context.Area), fieldName));
+                context.Put(GenerateFieldGetWa(context, GenerateIdentifier(context.Area), fieldName));
             }
             else
             {
@@ -4309,7 +4310,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     alias = context.Alias.GetText();
                 }
-                context.Put(GenerateFieldGet(alias, fieldName));
+                context.Put(GenerateFieldGet(context, alias, fieldName));
             }
         }
 
@@ -4394,7 +4395,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_options.SupportsMemvars && context.Name.GetText().IndexOf(".") > 0)
             {
                 var id = getMacroNameExpression(context.Name);
-                var expr = GenerateMemVarGet(id);
+                var expr = GenerateMemVarGet(context, id);
                 context.Put(expr);
             }
             else

@@ -7,11 +7,79 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp
 {
 
     internal partial class Binder
     {
+        internal BoundExpression XsBindFoxArrayAssign(SyntaxNode node, BoundExpression op1, BoundExpression op2, DiagnosticBag diagnostics)
+        {
+            // nothing to do for Variable Symbols
+            bool needsWork = false;
+            if (op1.Type.IsUsualType() || op1.Type.Name.Contains("__FoxArray"))
+            {
+                needsWork = true;
+            }
+            if (needsWork && op1 is BoundPropertyAccess bpa && bpa.PropertySymbol is XsVariableSymbol)
+            {
+                needsWork = false;
+            }
+            if (needsWork && op2.Syntax.XNode is XP.DimensionVarContext)
+            {
+                needsWork = false;
+            }
+            if (!needsWork)
+            {
+                return op2;
+            }
+            var vfpfuncs = Compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions);
+            if (op1.Type.IsUsualType())
+            {
+                var syms1 = vfpfuncs.GetMembers(ReservedNames.FoxAssign);
+                var args = new List<BoundExpression>();
+                args.Add(CreateConversion(op1, Compilation.UsualType(), diagnostics));
+                args.Add(CreateConversion(op2, Compilation.UsualType(), diagnostics));
+                var call = new BoundCall(syntax: node,
+                        receiverOpt: null,
+                        method: (MethodSymbol)syms1[0],
+                        arguments: args.ToImmutableArray(),
+                        argumentNamesOpt: default,
+                        argumentRefKindsOpt: default,
+                        isDelegateCall: false,
+                        expanded: false,
+                        invokedAsExtensionMethod: false,
+                        argsToParamsOpt: default,
+                        defaultArguments: default,
+                        resultKind: LookupResultKind.Viable,
+                        type: Compilation.UsualType(),
+                        hasErrors: false);
+                op2 = call;
+            }
+            if (!op1.Type.IsUsualType())
+            {
+                var syms2 = vfpfuncs.GetMembers(ReservedNames.FoxFillArray);
+                var args = new List<BoundExpression>();
+                args.Add(CreateConversion(op1, Compilation.UsualType(), diagnostics));
+                args.Add(CreateConversion(op2, Compilation.UsualType(), diagnostics));
+                var call = new BoundCall(syntax: node,
+                        receiverOpt: null,
+                        method: (MethodSymbol)syms2[0],
+                        arguments: args.ToImmutableArray(),
+                        argumentNamesOpt: default,
+                        argumentRefKindsOpt: default,
+                        isDelegateCall: false,
+                        expanded: false,
+                        invokedAsExtensionMethod: false,
+                        argsToParamsOpt: default,
+                        defaultArguments: default,
+                        resultKind: LookupResultKind.Viable,
+                        type: Compilation.UsualType(),
+                        hasErrors: false);
+                op2 = call;
+            }
+            return op2;
+        }
         internal BoundExpression XsBindUsualCollectionEnumerator(BoundExpression collection, DiagnosticBag diagnostics)
         {
             if (!collection.Type.IsUsualType())

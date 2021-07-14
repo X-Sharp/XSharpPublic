@@ -664,17 +664,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         options.Fox1 = true;             // inherit from Custom
                     }
-                    //if (options.Fox2 && !options.MemVars)
-                    //{
-                    //    AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 must be combined /memvars");
-                    //}
+                    if (options.Fox2 && !options.MemVars)
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 must be combined /memvars");
+                    }
                 }
                 else
                 {
-                    if (options.Fox1 /*|| options.Fox2*/)
+                    if (options.Fox1 || options.Fox2)
                     {
-                        //AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox1 and /fox2 are only valid for the FoxPro dialect");
-                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox1 is only valid for the FoxPro dialect");
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox1 and /fox2 are only valid for the FoxPro dialect");
                     }
                 }
             }

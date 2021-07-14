@@ -23,6 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         NamedTypeSymbol? _arrayType = null;
         NamedTypeSymbol? _rtFuncsType = null;
         NamedTypeSymbol? _codeblockType = null;
+        NamedTypeSymbol? _vfpFunctionsType = null;
 
         internal NamedTypeSymbol GetRtType(WellKnownType xsName, WellKnownType vulName)
         {
@@ -92,6 +93,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 _rtFuncsType = GetRtType(WellKnownType.XSharp_RT_Functions, WellKnownType.VulcanRTFuncs_Functions);
             }
             return _rtFuncsType;
+        }
+        internal NamedTypeSymbol VFPFunctionsType()
+        {
+            if (_vfpFunctionsType is null)
+            {
+                _vfpFunctionsType = GetWellKnownType(WellKnownType.XSharp_VFP_Functions);
+            }
+            return _vfpFunctionsType;
         }
         #endregion
         #region uncached types 

@@ -1502,6 +1502,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (!op1.HasAnyErrors)
             {
+
+#if XSHARP
+                if (Compilation.Options.HasOption(CompilerOption.FoxArrayAssign, node))
+                {
+                    // convert op2 to methodcall __FoxAssign(op1, op2)
+                    op2 = XsBindFoxArrayAssign(node, op1, op2, diagnostics);
+                }
+#endif
                 // Build bound conversion. The node might not be used if this is a dynamic conversion
                 // but diagnostics should be reported anyways.
                 var conversion = GenerateConversionForAssignment(op1.Type, op2, diagnostics, isRefAssignment: isRef);

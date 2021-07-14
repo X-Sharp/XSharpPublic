@@ -187,7 +187,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             numericParams = false;
                             mustcast = true;
                         }
-                        else if ( cf.ImplementsInterface(indexerType, ref useSiteDiagnostics))
+                        else if (cf.ImplementsInterface(indexerType, ref useSiteDiagnostics))
                         {
                             cf = indexerType;
                             numericParams = true;
@@ -849,7 +849,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (xnode is AccessMemberContext amc && amc.IsFox)
                 {
                     isFoxMemberAccess = true;
-                    if (amc.HasMPrefix )
+                    if (amc.HasMPrefix)
                     {
                         memvarorfield = Compilation.Options.SupportsMemvars(node);
                         if (memvarorfield)
@@ -873,6 +873,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 string alias = null;
                 var get = GetCandidateMembers(type, ReservedNames.VarGet, LookupOptions.MustNotBeInstance, this);
                 var set = GetCandidateMembers(type, ReservedNames.VarPut, LookupOptions.MustNotBeInstance, this);
+                if (Compilation.Options.HasOption(CompilerOption.FoxArrayAssign,node))
+                {
+                    set = GetCandidateMembers(Compilation.VFPFunctionsType(), ReservedNames.FoxVarPut, LookupOptions.MustNotBeInstance, this);
+                }
                 if (memvarorfield)
                 {
                     // this is either:
@@ -890,6 +894,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             get = GetCandidateMembers(type, ReservedNames.MemVarGet, LookupOptions.MustNotBeInstance, this);
                             set = GetCandidateMembers(type, ReservedNames.MemVarPut, LookupOptions.MustNotBeInstance, this);
+                            if (Compilation.Options.HasOption(CompilerOption.FoxArrayAssign, node))
+                            {
+                                set = GetCandidateMembers(Compilation.VFPFunctionsType(), ReservedNames.FoxMemVarPut, LookupOptions.MustNotBeInstance, this);
+                            }
+
 
                         }
                         else if (parts[0] == XSharpSpecialNames.FieldPrefix)
@@ -901,6 +910,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             get = GetCandidateMembers(type, ReservedNames.FieldGetWa, LookupOptions.MustNotBeInstance, this);
                             set = GetCandidateMembers(type, ReservedNames.FieldSetWa, LookupOptions.MustNotBeInstance, this);
+                            if (Compilation.Options.HasOption(CompilerOption.FoxArrayAssign, node))
+                            {
+                                set = GetCandidateMembers(Compilation.VFPFunctionsType(), ReservedNames.FoxFieldSetWa, LookupOptions.MustNotBeInstance, this);
+                            }
                             alias = parts[0];
                         }
                     }

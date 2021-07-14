@@ -413,7 +413,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 Fields.Add(info.Name, info);
                 if (info.Name != info.FullName)
                     Fields.Add(info.FullName, info);
-                info.IsTrueLocal = (context is LocalvarContext || context is ImpliedvarContext);
                 return info;
             }
             internal MemVarFieldInfo GetField(string Name)
@@ -1117,10 +1116,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         enum FieldFlags : byte
         {
             IsFileWidePublic,
+            IsCreated,
             IsParameter,
-            IsFoxArray,
-            IsWritten,
-            IsTrueLocal
+            IsWritten
         }
         private readonly MemvarType _fieldType;
         public string Name { get; private set; }
@@ -1166,21 +1164,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             get { return _flags.HasFlag(FieldFlags.IsParameter); }
             set { _flags = setFlag(_flags, FieldFlags.IsParameter, value); }
         }
-        public bool IsFoxArray
-        {
-            get { return _flags.HasFlag(FieldFlags.IsFoxArray); }
-            set { _flags = setFlag(_flags, FieldFlags.IsFoxArray, value); }
-        }
-
         public bool IsWritten
         {
             get { return _flags.HasFlag(FieldFlags.IsWritten); }
             set { _flags = setFlag(_flags, FieldFlags.IsWritten, value); }
         }
-        public bool IsTrueLocal
+        public bool IsCreated
         {
-            get { return _flags.HasFlag(FieldFlags.IsTrueLocal); }
-            set { _flags = setFlag(_flags, FieldFlags.IsTrueLocal, value); }
+            get { return _flags.HasFlag(FieldFlags.IsCreated); }
+            set { _flags = setFlag(_flags, FieldFlags.IsCreated, value); }
         }
         public XSharpParserRuleContext Context { get; set; }
         internal MemVarFieldInfo(string name, string alias, bool filewidepublic = false)

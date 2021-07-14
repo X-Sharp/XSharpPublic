@@ -270,7 +270,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         Xpp2 = 1 << 18,
         Fox1 = 1 << 19,
         Fox2 = 1 << 20,
-        FoxExposeLocals = Fox2,
+        FoxArrayAssign = Fox2,
         InitLocals = 1 << 21,
         NamedArgs = 1 << 22,
         ArrayZero = 1 << 23,

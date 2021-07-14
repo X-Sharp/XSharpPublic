@@ -87742,7 +87742,7 @@ VO13=0
 VO14=0
 VO16=0
 FOX1=1
-FOX2=1
+FOX2=0
 XPP1=0
 LateBound=0
 Unsafe=0
@@ -96480,9 +96480,9 @@ FileType = Code
 CopyToBin = 0
 [R789 - FoxPro Public Array References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.Core.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.RT.dll,1,1
-ReferenceBrowse = C:\XSharp\DevRt\Binaries\Release\XSharp.VFP.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VFP.dll,1,1
 [R789 - FoxPro Public Array Resources]
 [R789 - FoxPro Public Array Native Resources]
 [R789 - FoxPro Public Array License files]
@@ -96507,7 +96507,7 @@ VO13=0
 VO14=0
 VO16=0
 FOX1=0
-FOX2=0
+FOX2=1
 XPP1=0
 LateBound=0
 Unsafe=0
@@ -97038,9 +97038,9 @@ FileType = Code
 CopyToBin = 0
 [C792 - VFP dialect incorrect code generated to assign value to parameter References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
 [C792 - VFP dialect incorrect code generated to assign value to parameter Resources]
 [C792 - VFP dialect incorrect code generated to assign value to parameter Native Resources]
 [C792 - VFP dialect incorrect code generated to assign value to parameter License files]

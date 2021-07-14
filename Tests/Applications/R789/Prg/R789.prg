@@ -2,7 +2,7 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/662
 //MEMVAR pubarray
 FUNCTION Start( ) AS VOID 
-
+    CreateLocalArray()
 	CreatePublicArray()
 	
 	IF IsArray ( pubarray )
@@ -16,7 +16,8 @@ FUNCTION Start( ) AS VOID
 		ENDIF		             
 		
 		?? ClassName ( pubarray )
-		
+		pubarray := 10
+        ? pubarray[1]
 	ENDIF 
 
 	RETURN 
@@ -33,3 +34,21 @@ IF .not. l
 END IF
 ? "Assertion passed"
 RETURN	
+
+
+FUNCTION CreateLocalArray() AS VOID
+    LOCAL ARRAY localarray[1]
+    LOCAL localvar   
+    DIMENSION localarray(10,10)        
+    ? localarray[1,1]
+    ? localarray[2]
+    ? localarray[3]
+    localarray := 5            
+    localvar := 5    
+    xAssert(localarray[1] == 5)
+    xAssert(localarray[2] == 5)  
+    ? localarray[1]
+    ? localarray[2]
+    ? localvar 
+    xAssert(localvar == 5)  
+    

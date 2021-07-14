@@ -1,6 +1,9 @@
 // R789 - FoxPro Public arrays
 // https://github.com/X-Sharp/XSharpPublic/issues/662
-//MEMVAR pubarray
+
+
+
+
 FUNCTION Start( ) AS VOID 
     CreateLocalArray()
 	CreatePublicArray()
@@ -51,4 +54,9 @@ FUNCTION CreateLocalArray() AS VOID
     ? localarray[2]
     ? localvar 
     xAssert(localvar == 5)  
-    
+    STORE 42 TO ARRAY localarray
+    xAssert(localarray[1,1] == 42)
+    xAssert(localarray[2,2] == 42)  
+    ? localarray[1,1]
+    ? localarray[2,2]
+

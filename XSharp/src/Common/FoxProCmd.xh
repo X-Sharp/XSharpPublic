@@ -21,6 +21,9 @@
 #translate FIELDS LIKE => LIKE
 #translate FIELDS EXCEPT => EXCEPT
 
+
+#xcommand STORE <value> TO ARRAY <VAR> => __FoxFillArray( <VAR>, <value> )
+
 // Scatter .. MEMVAR must be last !   
 
 #command SCATTER [FIELDS <f1> [,<fn> ] ] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>]  TO <arrayName> ;

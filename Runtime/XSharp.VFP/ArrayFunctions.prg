@@ -7,27 +7,7 @@
 USING XSharp.Internal
 
 
-FUNCTION __FoxFillArray(uArray AS USUAL, uValue AS USUAL) AS USUAL
-    IF IsArray(uArray)
-        LOCAL oldArray := uArray AS ARRAY
-        IF oldArray IS __FoxArray VAR foxArray
-            foxArray:__Fill(uValue)
-        ENDIF
-    ENDIF
-    RETURN uArray
 
-FUNCTION __FoxRedim(uCurrent AS USUAL, nRows AS DWORD, nCols := 0 AS DWORD) AS __FoxArray
-    LOCAL result := NULL AS __FoxArray
-    IF IsArray(uCurrent)
-        LOCAL oldArray := uCurrent AS ARRAY
-        IF oldArray IS __FoxArray VAR foxArray
-            result := foxArray:ReDim(nRows, nCols)
-        ENDIF
-    ENDIF
-    IF result == NULL
-        result := __FoxArray{nRows, nCols}
-    ENDIF
-    RETURN result
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />

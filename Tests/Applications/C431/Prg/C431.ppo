@@ -15,11 +15,12 @@
 //PP     END PROPERTY
 
 FUNCTION Start( ) AS VOID
-LOCAL n AS INT
+	LOCAL n AS INT
 	n := 10
 	? n
 	
-LOCAL n2 AS STRING
+	
+	LOCAL n2 AS STRING
 	n2 := "asd"
 	? n2
 	
@@ -27,7 +28,29 @@ LOCAL n2 AS STRING
 RETURN
 
 CLASS TestClass
-PRIVATE _n1 as INT ;property testprop1 as INT ;get;return self:_n1 ;end get;set;if self:_n1 <> value;self:_n1 := value;endif;end set; end property
+	PRIVATE _n1 as INT 
+	property testprop1 as INT 
+	get
+	return self:_n1 
+	end get
+	set
+	if self:_n1 <> value
+	self:_n1 := value
+	endif
+	end set
+	 end property
+	PRIVATE _n1 as INT ;property testprop1 as INT ;get;return self:_n1 ;end get;set;if self:_n1 <> value;self:_n1 := value;endif;end set; end property
+PRIVATE _n2 as INT 
+PROPERTY testprop2 AS INT 
+GET
+RETURN SELF:_n2 
+END GET
+SET
+IF SELF:_n2 <> VALUE
+SELF:_n2 := VALUE
+ENDIF
+END SET
+ END PROPERTY
 PRIVATE _n2 as INT ;PROPERTY testprop2 AS INT ;GET;RETURN SELF:_n2 ;END GET;SET;IF SELF:_n2 <> VALUE;SELF:_n2 := VALUE;ENDIF;END SET; END PROPERTY
 		
 	CONSTRUCTOR()

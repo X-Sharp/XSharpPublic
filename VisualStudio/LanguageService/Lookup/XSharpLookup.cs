@@ -78,17 +78,12 @@ namespace XSharp.LanguageService
                     {
                         result.AddRange(SearchPropertyOrField(location, currentType, name, visibility));
                     }
-                    // Find Defines and globals in this file
-                    if (result.Count == 0 && location.File.GlobalType != null)
-                    {
-                        result.AddRange(location.File.GlobalType.GetMembers(name, true));
-                    }
                     if (result.Count == 0)
                     {
-                        var type = location.File.Project.Lookup(XSharpModel.XLiterals.GlobalName);
-                        if (type != null)
+                        var glob = location.File.Project.FindGlobalOrDefine(name);
+                        if (glob != null)
                         {
-                            result.AddRange(type.GetMembers(name, true));
+                            result.Add(glob);
                         }
                     }
                     if (result.Count == 0)

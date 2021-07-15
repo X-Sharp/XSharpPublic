@@ -859,17 +859,17 @@ namespace XSharpDocs
 
         static public void editForTypeNames(string path)
         {
-            string delimiters = "(>|&lt;|\\(|to |, |value=\"|content=\")__"; // the start of all the delimiters
-            string Array = "Array";
-            string ArrayBase = "ArrayBase";
-            string Date = "Date";
-            string Float = "Float";
-            string FoxArray = "FoxArray";
-            string Symbol = "Symbol";
-            string Psz = "Psz";
-            string Usual = "Usual";
-            string Binary = "Binary";
-            string Currency = "Currency";
+            string delimiters = "(>|&lt;|\\(|to |, |value=\"|content=\")"; // the start of all the delimiters
+            string Array = "__Array";
+            string ArrayBase = "__ArrayBase";
+            string Date = "__Date";
+            string Float = "__Float";
+            string FoxArray = "__FoxArray";
+            string Symbol = "__Symbol";
+            string Psz = "__Psz";
+            string Usual = "__Usual";
+            string Binary = "__Binary";
+            string Currency = "__Currency";
             string ArrayReplace = "Array";
             string FoxArrayReplace = "FoxArray";
             string ArrayBaseReplace = "Array Of"; 
@@ -906,7 +906,27 @@ namespace XSharpDocs
                 }
                 else return replace.Value;
             });
-            if(newText != allText)
+            replacements.Clear();
+            replacements.Add("Int32", "Long");
+            replacements.Add("UInt32", "DWord");
+            replacements.Add("UInt16", "Word");
+            replacements.Add("Int16", "Short");
+            replacements.Add("Double", "Real8");
+            replacements.Add("Single", "Real4");
+            replacements.Add("Boolean", "Logic");
+
+            pattern = delimiters + "(" + string.Join(or, new List<string>(replacements.Keys).ToArray()) + ")";
+            regex = new Regex(pattern);
+            coll = regex.Matches(newText);
+            newText = regex.Replace(newText, replace =>
+            {
+                if (replacements.ContainsKey(replace.Groups[2].Value))
+                {
+                    return replace.Groups[1].Value + replacements[replace.Groups[2].Value];
+                }
+                else return replace.Value;
+            });
+            if (newText != allText)
             {
                 var writer = new StreamWriter(path);
                 writer.Write(newText);

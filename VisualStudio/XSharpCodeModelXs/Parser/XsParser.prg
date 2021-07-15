@@ -582,6 +582,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                result |= Modifiers.Async
             CASE XSharpLexer.CONST
                result |= Modifiers.Const
+               result |= Modifiers.Static
             CASE XSharpLexer.EXTERN
                result |= Modifiers.External
             CASE XSharpLexer.INITONLY
@@ -2064,6 +2065,9 @@ classVarList        : Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataTyp
          FOREACH VAR element IN aVars
             element:TypeName := sType
             element:Attributes := _attributes
+            IF _attributes:HasFlag(Modifiers.Static)
+                element:IsStatic := TRUE
+            ENDIF
             element:SourceCode += " AS "+ sType
          NEXT
          RETURN aVars

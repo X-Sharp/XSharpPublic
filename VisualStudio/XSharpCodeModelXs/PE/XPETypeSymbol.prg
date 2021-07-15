@@ -41,6 +41,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:BaseType     := ""
          ENDIF
          SELF:OriginalTypeName := typedef:FullName
+         SELF:_custatts := typedef:CustomAttributes
          IF typedef:HasGenericParameters
 
             VAR cName          := SELF:Name

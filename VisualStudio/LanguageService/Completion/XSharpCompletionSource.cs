@@ -112,10 +112,6 @@ namespace XSharp.LanguageService
                 session.Properties.TryGetProperty(XsCompletionProperties.Command, out cmd);
                 VSConstants.VSStd2KCmdID nCmdId = (VSConstants.VSStd2KCmdID)cmd;
                 session.Properties.TryGetProperty(XsCompletionProperties.Char, out typedChar);
-                if (typedChar == '\0')
-                {
-
-                }
                 bool showInstanceMembers = (typedChar == ':') || _file.Project.ParseOptions.AllowDotForInstanceMembers;
                 // Reset the StopToken
                 this._stopToken = null;
@@ -307,11 +303,16 @@ namespace XSharp.LanguageService
                             BuildCompletionList(compList, type, Modifiers.Public, true, filterText);
                         }
                     }
+                    if (type.IsVoStruct() && typedChar == '.' )
+                    {
+                        // vostruct or union in other assembly
+                        showInstanceMembers = true;
+                        filterText = "";
+                    }
                     if (state.HasFlag(CompletionState.InstanceMembers) &&  ! (symbol is IXTypeSymbol))
                     {
                         showInstanceMembers = true;
                         filterText = "";
-
                     }
                     if (state.HasFlag(CompletionState.General))
                     {

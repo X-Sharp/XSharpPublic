@@ -30,6 +30,9 @@ BEGIN NAMESPACE XSharpModel
          SELF:Parent       := NULL
          SELF:ReturnType   := returnType
          SELF:IsStatic     := isStatic
+         IF attributes:HasFlag(Modifiers.Static)
+             SELF:IsStatic := TRUE
+         ENDIF
          SELF:_signature   := XMemberSignature{}
 
       CONSTRUCTOR(sig AS XMemberSignature, kind AS Kind, attributes AS Modifiers,  ;
@@ -39,6 +42,9 @@ BEGIN NAMESPACE XSharpModel
          SELF:ReturnType   := sig:DataType
          SELF:IsStatic     := isStatic
          SELF:_signature   := sig
+         IF attributes:HasFlag(Modifiers.Static)
+             SELF:IsStatic := TRUE
+         ENDIF
          FOREACH var par in sig:Parameters
             par:Parent := SELF
          NEXT

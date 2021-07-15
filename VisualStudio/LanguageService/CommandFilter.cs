@@ -1230,7 +1230,7 @@ namespace XSharp.LanguageService
                     break;
             } while (ssp.Position > 0);
             //
-            caretPos = ssp.Position;
+            caretPos = ssp.Position-1; // exclude the LParen/LCurly
             // When we have a multi line source line this is the line where the open paren or open curly is
             int lineNumber = ssp.GetContainingLine().LineNumber; 
             var snapshot = this.TextView.TextBuffer.CurrentSnapshot;

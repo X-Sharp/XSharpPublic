@@ -18401,9 +18401,18 @@
             The number of times that &lt;cSearch&gt; appears in &lt;cTarget&gt;.
         </returns>
         <remarks>
-            Occurs2() is the same as Occurs() except Occurs2() returns a WORD.  See Occurs() for more information.
+            Occurs2() is the same as Occurs(). 
         </remarks>
         <example>
+            This example shows typical use of Occurs():
+            <code language="X#">
+                LOCAL cSearch AS STRING
+                LOCAL cTarget AS STRING
+                cSearch := "any"
+                cTarget := "Anything goes anyway anytime."
+                ? Occurs2(cSearch, cTarget)&#0009;&#0009;// 2
+                ? Occurs2("any","ANY any")&#0009;&#0009;// 1
+            </code>
         </example>
         <seealso cref='O:XSharp.Core.Functions.Occurs'>Occurs</seealso>
         <seealso cref='O:XSharp.Core.Functions.Occurs3'>Occurs3</seealso>

@@ -83,29 +83,26 @@ namespace XSharp.CodeDom
             if (context.STATIC().Length > 0)
                 this.classVarModifiers |= MemberAttributes.Static;
         }
-        public override void EnterClassVarList([NotNull] XSharpParser.ClassVarListContext context)
+        public override void EnterClassvars([NotNull] XSharpParser.ClassvarsContext context)
         {
             //
-            if (context.DataType != null && currentClass != null)
+            //
+            foreach (var varContext in context._Vars)
             {
-                var fieldType = BuildDataType(context.DataType);
-                //
-                foreach (var varContext in context._Var)
+                var field = new XCodeMemberField();
+                var fieldType = BuildDataType(varContext.DataType);
+                field.Name = varContext.Id.GetText();
+                field.Type = fieldType;
+                field.Attributes = this.classVarModifiers;
+                if (varContext.Initializer != null)
                 {
-                    var  field = new XCodeMemberField();
-                    field.Name = varContext.Id.GetText();
-                    field.Type = fieldType;
-                    field.Attributes = this.classVarModifiers;
-                    if (varContext.Initializer != null)
-                    {
-                        field.InitExpression = BuildExpression(varContext.Initializer, false);
-                    }
-                    FillCodeDomDesignerData(field, varContext.Start.Line, varContext.Start.Column);
-                    //
-                    FieldList[currentClass].Add(field);
+                    field.InitExpression = BuildExpression(varContext.Initializer, false);
                 }
+                FillCodeDomDesignerData(field, varContext.Start.Line, varContext.Start.Column);
                 //
+                FieldList[currentClass].Add(field);
             }
+            //
         }
 
 

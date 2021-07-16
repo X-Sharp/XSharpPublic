@@ -1817,23 +1817,43 @@ destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
 
       PRIVATE METHOD ParseClassVars() AS IList<XSourceEntity>
 /*
-classvars           : (Attributes=attributes)? (Modifiers=classvarModifiers)?
-                      Vars=classVarList
+classvars           : (Attributes=attributes)? Modifiers=classvarModifiers
+                      Vars+=classvar (COMMA Vars+=classvar)*
                       eos
                     ;
 */
-         VAR classvars := SELF:ParseClassVarList(Kind.Field)
+
          VAR result := List<XSourceEntity>{}
-         FOREACH VAR classvar IN classvars
-            classvar:SourceCode := classvar:ModVis +" "+classvar:SourceCode
-            IF SELF:CurrentType != NULL
-               SELF:CurrentType:AddMember(classvar)
-            ENDIF
-            result:Add(classvar)
-         NEXT
-         SELF:ReadLine()
+         VAR classVars := List<XSourceMemberSymbol>{}
+            VAR classVar := ParseClassVar(Kind.Field)
+            classVar:SourceCode := classVar:ModVis +" "+classVar:SourceCode
+            classVars:Add(classVar)
+            DO WHILE Expect(XSharpLexer.COMMA)
+                classVar := ParseClassVar(Kind.Field)
+                classVar:SourceCode := classVar:ModVis +" "+classVar:SourceCode
+                classVars:Add(classVar)
+            ENDDO
+            SELF:ReadLine()
+            CopyClassVarTypes(classVars)
+            result:AddRange(classVars)
          RETURN result
          #endregion
+
+     PRIVATE METHOD CopyClassVarTypes(classVars AS List<XSourceMemberSymbol>)  AS VOID
+         IF classVars:Count > 1
+            VAR type := ""
+                classVars:Reverse()
+                FOREACH VAR classVar IN classVars
+                    IF !classVar:IsTyped
+                        classVar:ReturnType := type
+                        classVar:SourceCode += " AS "+type
+                    ELSE
+                        type := classVar:ReturnType
+                    ENDIF
+                NEXT
+                classVars:Reverse()
+            ENDIF
+         RETURN
 
       #region Enum
       PRIVATE METHOD ParseEnum() AS IList<XSourceEntity>
@@ -1898,14 +1918,19 @@ voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Gl
             RETURN NULL
          ENDIF
          Expect(XSharpLexer.CONST)
-         VAR classvars := SELF:ParseClassVarList(Kind.VOGlobal)
-         VAR result    := List<XSourceEntity>{}
-         FOREACH VAR classvar IN classvars
-            classvar:SourceCode := classvar:ModVis+" GLOBAL "+classvar:SourceCode
-            result:Add(classvar)
-         NEXT
+         VAR result := List<XSourceEntity>{}
+         VAR classVars := List<XSourceMemberSymbol>{}
+         VAR classVar := ParseClassVar(Kind.VOGlobal)
+         classVar:SourceCode := classVar:ModVis+" GLOBAL "+ classVar:SourceCode
+         classVars:Add(classVar)
+        DO WHILE Expect(XSharpLexer.COMMA)
+            classVar := ParseClassVar(Kind.VOGlobal)
+            classVar:SourceCode := classVar:ModVis+" GLOBAL "+ classVar:SourceCode
+            classVars:Add(classVar)
+        ENDDO
          SELF:ReadLine()
-
+         CopyClassVarTypes(classVars)
+         result:AddRange(classVars)
          RETURN result
 
       PRIVATE METHOD ParseVoDefine() AS IList<XSourceEntity>
@@ -2049,36 +2074,13 @@ vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT
          #endregion
 
 
-      PRIVATE METHOD ParseClassVarList(eKind AS Kind)   AS IList<XSourceMemberSymbol>
-/*
-
-classVarList        : Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
-                    ;
-*/
-         LOCAL aVars  AS List<XSourceMemberSymbol>
-         LOCAL sType  AS STRING
-         aVars := List<XSourceMemberSymbol>{}
-         aVars:Add(ParseClassVar(eKind))
-         DO WHILE Expect(XSharpLexer.COMMA)
-            aVars:Add(ParseClassVar(eKind))
-         ENDDO
-         sType := SELF:ParseAsIsType()
-         FOREACH VAR element IN aVars
-            element:TypeName := sType
-            element:Attributes := _attributes
-            IF _attributes:HasFlag(Modifiers.Static)
-                element:IsStatic := TRUE
-            ENDIF
-            element:SourceCode += " AS "+ sType
-         NEXT
-         RETURN aVars
-
-
 
       PRIVATE METHOD ParseClassVar(eKind AS Kind) AS XSourceMemberSymbol
 /*
 
-classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Initializer=expression)?
+classvar            : (DIM=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
+                      (Op=assignoperator Initializer=expression)?
+                      (As=(AS | IS) DataType=datatype)?
                     ;
 */
          LOCAL isDim  := FALSE  AS LOGIC
@@ -2093,9 +2095,11 @@ classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? 
          IF ExpectAssignOp()
             sDefault := SELF:ParseExpression()
          ENDIF
+         VAR sType := SELF:ParseAsIsType()
          endToken := SELF:LastToken
          SELF:GetSourceInfo(startToken, endToken, OUT VAR range, OUT VAR interval, OUT VAR source)
-         VAR xMember   := XSourceMemberSymbol{sId,eKind, Modifiers.None, range,interval,""}
+         VAR xMember   := XSourceMemberSymbol{sId,eKind, SELF:_attributes, range,interval,sType}
+         xMember:ReturnType := sType
          xMember:SourceCode := source
          xMember:Value := sDefault
          IF isDim .OR. !String.IsNullOrEmpty(sBracket)

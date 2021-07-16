@@ -638,6 +638,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (cbc.Expr is XSharpParser.BinaryExpressionContext)
                     xnode = cbc.Expr as XSharpParser.BinaryExpressionContext;
             }
+            if (node.XNode is XSharpParser.ArrayElementContext actx)
+            {
+                xnode = actx.Expr as XSharpParser.BinaryExpressionContext;
+            }
             if (xnode == null)  // this may happen for example for nodes generated in the transformation phase
                 return;
             // check for Logic operations with Usual. If that is the case then add a conversion to the expression

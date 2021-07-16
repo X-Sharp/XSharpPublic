@@ -20,7 +20,7 @@ FUNCTION Start( ) AS VOID
 	? uResult
 	xAssert(uResult)
 	
-// compiler here incorrectly uses bitwise or/and
+    // compiler here incorrectly used bitwise or/and
 	uResult := {uFalse .or. uTrue}
 	xAssert(uResult[1])
 

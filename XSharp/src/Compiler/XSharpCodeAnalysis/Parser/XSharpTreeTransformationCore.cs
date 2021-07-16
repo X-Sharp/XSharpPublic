@@ -3430,10 +3430,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 varType.XVoIsDecl = true;
             }
-            if (isDim && ! isFixed)
-            {
-                varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));
-            }
             VariableDeclaratorSyntax variable = null;
             if (isDim)
             {
@@ -3477,6 +3473,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (variable == null) // normal variables and variables with ArraySub that have a generated initExpr above
             {
                 variable = GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr);
+            }
+            if (isDim && !isFixed)
+            {
+                varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));
             }
             var vardecl = _syntaxFactory.VariableDeclaration(
                             type: varType,

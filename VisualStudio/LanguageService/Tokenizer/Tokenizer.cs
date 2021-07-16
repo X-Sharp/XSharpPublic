@@ -433,7 +433,7 @@ namespace XSharp.LanguageService
                 }
             }
             // if the last token is followed by an "open" token
-            if (lastIncluded < line.Count-1 && line[lastIncluded].Type == XSharpLexer.ID)
+            if (lastIncluded != -1 && lastIncluded < line.Count-1 && line[lastIncluded].Type == XSharpLexer.ID)
             {
                 var token = line[lastIncluded + 1];
                 // Include open parens etc in the list as well

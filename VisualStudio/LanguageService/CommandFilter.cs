@@ -41,6 +41,7 @@ namespace XSharp.LanguageService
         readonly IBufferTagAggregatorFactoryService _aggregator;
         readonly List<int> _linesToSync;
         bool _suspendSync = false;
+        int currentLine = -1;
 
         private void registerClassifier()
         {
@@ -61,20 +62,21 @@ namespace XSharp.LanguageService
 
         }
 
-        private int currentLine
+        private int getCurrentLine()
         {
-            get
-            {
-                SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
-                ITextSnapshotLine line = caret.GetContainingLine();
-                return line.LineNumber;
-            }
+            SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
+            ITextSnapshotLine line = caret.GetContainingLine();
+            return line.LineNumber;
         }
         private void Classifier_ClassificationChanged(object sender, ClassificationChangedEventArgs e)
         {
             WriteOutputMessage("CommandFilter.ClassificationChanged()");
             if (_suspendSync)
                 return;
+            ApplyPendingChanges();
+        }
+        private void ApplyPendingChanges()
+        { 
             if (_settings.KeywordCase == KeywordCase.None)
             {
                 return;
@@ -92,7 +94,7 @@ namespace XSharp.LanguageService
                 {
                     lines = _linesToSync.ToArray();
                     _linesToSync.Clear();
-                    _linesToSync.Add(this.currentLine);
+                    _linesToSync.Add(this.getCurrentLine());
                     Array.Sort(lines);
                 }
 
@@ -240,7 +242,7 @@ namespace XSharp.LanguageService
                 // Remove the @@ marker
                 if (identifier.StartsWith("@@"))
                     identifier = identifier.Substring(2);
-                var lineNumber = currentLine;
+                var lineNumber = getCurrentLine();
                 var currentMember = XSharpLookup.FindMember(lineNumber, _file);
                 //
                 if (currentMember == null)
@@ -331,6 +333,13 @@ namespace XSharp.LanguageService
             {
                 return;
             }
+            if (line.LineNumber == getCurrentLine())
+            {
+                // Come back later.
+                registerLineForCaseSync(line.LineNumber);
+                return;
+            }
+
             WriteOutputMessage($"CommandFilter.formatLineCase({line.LineNumber + 1})");
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
@@ -339,9 +348,9 @@ namespace XSharp.LanguageService
             if (line.Length == 0)
                 return;
             var tokens = getTokensInLine(line);
-            if ( tokens.Count > 0 )
+            if (tokens.Count > 0)
             {
-                if ( tokens[0].StartIndex < lineStart )
+                if (tokens[0].StartIndex < lineStart)
                 {
                     // The Tokens are coming from a single-line parsing
                     // StartIndex is relative to the beginning of line
@@ -355,28 +364,7 @@ namespace XSharp.LanguageService
             }
             foreach (var token in tokens)
             {
-                if (currentLine == line.LineNumber)
-                {
-                    // do not update tokens touching or after the caret
-                    // after typing String it was already uppercasing even when I wanted to type StringComparer
-                    // now we wait until the user has typed an extra character. That will trigger another session.
-                    // (in this case the C, but it could also be a ' ' or tab and then it would match the STRING keyword)
-                    int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
-                    if (lineStart + token.StopIndex < caretPos - 1)
-                    {
-                        formatToken(editSession, lineStart, token);
-                    }
-                    else
-                    {
-                        // Come back later.
-                        registerLineForCaseSync(line.LineNumber);
-                        break;
-                    }
-                }
-                else
-                {
-                    formatToken(editSession, lineStart, token);
-                }
+                formatToken(editSession, lineStart, token);
             }
         }
 
@@ -705,7 +693,12 @@ namespace XSharp.LanguageService
                     if (handled) return VSConstants.S_OK;
                 }
             }
-
+            var line = getCurrentLine();
+            if (line != currentLine)
+            {
+                currentLine = line;
+                ApplyPendingChanges();
+            }
             return hresult;
         }
 

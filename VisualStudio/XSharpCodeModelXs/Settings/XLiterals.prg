@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -11,7 +11,7 @@ USING System.Linq
 USING LanguageService.CodeAnalysis.XSharp
 
 BEGIN NAMESPACE XSharpModel
-   
+
     ENUM KeywordCase
         MEMBER None := 0
         MEMBER Upper:= 1
@@ -44,11 +44,11 @@ BEGIN NAMESPACE XSharpModel
          CASE KeywordCase.Lower
             return kw2
         CASE KeywordCase.Title
-        OTHERWISE       
+        OTHERWISE
             return kw3
       END SWITCH
-            
-         
+
+
    STATIC PRIVATE _asKeyword1        AS STRING
    STATIC PRIVATE _asKeyword2        AS STRING
    STATIC PRIVATE _asKeyword3        AS STRING
@@ -90,12 +90,12 @@ BEGIN NAMESPACE XSharpModel
       OTHERWISE
          RETURN res
       END SWITCH
-   
+
    STATIC METHOD ToDisplayString(SELF kind as Kind) AS STRING
       VAR result := kind:DisplayName()
       SWITCH XSettings.KeywordCase
       CASE KeywordCase.Lower
-         RETURN kind:ToString():ToLower()
+         RETURN result:ToLower()
       CASE KeywordCase.Title
          IF result:Contains(" ")
             var parts := result:Split(<CHAR>{' '})
@@ -112,7 +112,7 @@ BEGIN NAMESPACE XSharpModel
       END SWITCH
 
    END CLASS
-   
+
 END NAMESPACE
 
 INTERNAL FUNCTION RemoveGenericParameters(typeName as STRING) AS STRING

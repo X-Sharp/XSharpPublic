@@ -5,7 +5,7 @@
 //
 USING System.Collections.Generic
 USING System.Collections
-
+#pragma options("vo3", off)
 
 INTERNAL ENUM EntityType AS Int32
 	MEMBER _None := -1

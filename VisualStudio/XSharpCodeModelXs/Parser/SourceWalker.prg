@@ -19,50 +19,51 @@ USING XSharp.Parser
 BEGIN NAMESPACE XSharpModel
     CLASS SourceWalker IMPLEMENTS IDisposable , VsParser.IErrorListener
         #region fields
-        PRIVATE _errors     AS IList<XError>            
+        PRIVATE _errors     AS IList<XError>
         PRIVATE _file       AS XFile
         PRIVATE _prjNode    AS IXSharpProject
         PRIVATE _tokenStream AS ITokenStream
-        PRIVATE _entities   AS IList<XSourceEntity> 
-        PRIVATE _blocks     AS IList<XSourceBlock>             
-        PRIVATE _locals     AS IList<XSourceVariableSymbol>           
+        PRIVATE _entities   AS IList<XSourceEntity>
+        PRIVATE _blocks     AS IList<XSourceBlock>
+        PRIVATE _locals     AS IList<XSourceVariableSymbol>
         PRIVATE _options    AS XSharpParseOptions
-            
+
         #endregion
         #region Properties
         PROPERTY HasParseErrors AS LOGIC AUTO
-        
+
         PRIVATE PROPERTY parseOptions AS XSharpParseOptions GET SELF:_prjNode:ParseOptions
-        
+
         PROPERTY TokenStream AS ITokenStream GET SELF:_tokenStream
-        
+
         PROPERTY StartPosition AS INT AUTO
         PROPERTY SourcePath AS STRING AUTO  // Save it because calculation the XAML source path is a bit expensive
-        
+
         PROPERTY EntityList AS IList<XSourceEntity> GET _entities
         PROPERTY BlockList  AS IList<XSourceBlock>   GET _blocks
         PROPERTY File AS XFile GET _file
-        
+        PROPERTY SaveToDisk AS LOGIC AUTO
         #endregion
-        
-        CONSTRUCTOR(file AS XFile)
+
+        CONSTRUCTOR(file AS XFile, lSaveResults := TRUE AS LOGIC )
             SUPER()
+            SELF:SaveToDisk := lSaveResults
             IF (file != NULL)
                 SELF:_file := file
                 SELF:_prjNode := SELF:_file?:Project?:ProjectNode
                 SELF:StartPosition := 0
                 SELF:SourcePath := SELF:_file:SourcePath
                 SELF:_options   := SELF:_file:Project:ParseOptions
-                SELF:_errors   := List<XError>{} 
-                SELF:_entities := List<XSourceEntity>{}  
-                SELF:_blocks   := List<XSourceBlock>{}             
-                SELF:_locals   := List<XSourceVariableSymbol>{}          
-                
+                SELF:_errors   := List<XError>{}
+                SELF:_entities := List<XSourceEntity>{}
+                SELF:_blocks   := List<XSourceBlock>{}
+                SELF:_locals   := List<XSourceVariableSymbol>{}
+
             ENDIF
-        
-        VIRTUAL METHOD Dispose() AS VOID 
+
+        VIRTUAL METHOD Dispose() AS VOID
         SELF:Dispose(TRUE)
-        
+
         PROTECTED VIRTUAL METHOD Dispose(disposing AS LOGIC) AS VOID
             IF disposing
                 //
@@ -70,13 +71,15 @@ BEGIN NAMESPACE XSharpModel
                 SELF:_file := NULL
                 SELF:_prjNode := NULL
                 SELF:_tokenStream := NULL
-                SELF:_entities := NULL
                 SELF:_blocks   := NULL
                 SELF:_locals   := NULL
-                
-        ENDIF
-        
-        
+            ENDIF
+            IF SELF:SaveToDisk
+               SELF:_entities := NULL
+            ENDIF
+
+
+
         METHOD Lex(cSource AS STRING) AS ITokenStream
             LOCAL lOk := FALSE AS LOGIC
             WriteOutputMessage("-->> Lex() "+SourcePath)
@@ -89,21 +92,21 @@ BEGIN NAMESPACE XSharpModel
                 END LOCK
             CATCH e AS Exception
                 WriteOutputMessage("Lex() Failed:")
-                WriteOutputMessage(SELF:SourcePath)                  
+                WriteOutputMessage(SELF:SourcePath)
                 WriteOutputMessage(e:ToString())
             END TRY
             WriteOutputMessage("<<-- Lex() "+SELF:SourcePath)
             RETURN stream
-            
+
         METHOD ParseLocals(source AS STRING, xmember AS XSourceMemberSymbol) AS List<XSourceVariableSymbol>
             // This is JUST the source of the method. The locations in the variables need to be adjusted
-            
+
             VAR owner := xmember:Parent
-            VAR startLine := xmember:Range:StartLine 
+            VAR startLine := xmember:Range:StartLine
             VAR startIndex := xmember:Interval:Start+1
             IF owner IS XSourceTypeSymbol VAR td .AND. td:Name != XLiterals.GlobalName .AND. td:Kind == Kind.Class
                 source := td:SourceCode + e"\r\n" + source
-                startLine   -= 1        
+                startLine   -= 1
                 startIndex  -= (td:SourceCode:Length +2)
                 IF td:ClassType == XSharpDialect.XPP
                     source += e"\r\nENDCLASS\r\n"
@@ -112,8 +115,8 @@ BEGIN NAMESPACE XSharpModel
                 ELSE
                     source += "\r\nEND CLASS\r\n"
                 ENDIF
-            ENDIF         
-            SELF:Parse(source, TRUE)         
+            ENDIF
+            SELF:Parse(source, TRUE)
             VAR result := List<XSourceVariableSymbol>{}
             FOREACH VAR xVar IN SELF:_locals
                 xVar:Range     := xVar:Range:AddLine(startLine)
@@ -121,30 +124,34 @@ BEGIN NAMESPACE XSharpModel
                 result:Add(xVar)
             NEXT
             RETURN result
-        
-        
-        
+
+
+
         METHOD ParseTokens(tokens AS ITokenStream , lIncludeRegions AS LOGIC, lIncludeLocals AS LOGIC) AS VOID
             WriteOutputMessage("-->> ParseTokens() "+SELF:SourcePath+" locals "+lIncludeLocals:ToString()+" )")
             TRY
-                    VAR parser := XsParser{_file, _options:Dialect}
-                    parser:Parse(tokens , lIncludeRegions, lIncludeLocals)
-                    SELF:_entities := parser:EntityList
-                    SELF:_blocks   := parser:BlockList
-                    SELF:_locals   := parser:Locals
-                
+                VAR parser := XsParser{_file, _options:Dialect}
+                parser:SaveToDisk := SELF:SaveToDisk
+                parser:Parse(tokens , lIncludeRegions, lIncludeLocals)
+                SELF:_entities := parser:EntityList
+                SELF:_blocks   := parser:BlockList
+                SELF:_locals   := parser:Locals
+
             CATCH e AS Exception
                 WriteOutputMessage("ParseTokens() Failed:")
                 WriteOutputMessage(SELF:SourcePath)
                 WriteOutputMessage(e:ToString())
             END TRY
             WriteOutputMessage("<<-- ParseTokens() "+SELF:SourcePath)
-            
-            
+
+        METHOD Parse(cSource AS STRING) AS VOID
+            SELF:Parse(cSource, FALSE)
+            RETURN
+
         METHOD Parse(lIncludeLocals AS LOGIC) AS VOID
             VAR cSource      := System.IO.File.ReadAllText(SELF:SourcePath)
             SELF:Parse(cSource, lIncludeLocals)
-            
+
         METHOD Parse(cSource AS STRING, lIncludeLocals AS LOGIC) AS VOID
             IF SELF:_file == NULL
                 RETURN
@@ -157,18 +164,18 @@ BEGIN NAMESPACE XSharpModel
                 WriteOutputMessage("Parse() Failed:")
                 WriteOutputMessage(SELF:SourcePath)
                 WriteOutputMessage(e:ToString())
-                
+
             END TRY
             WriteOutputMessage("<<-- Parse() "+SELF:SourcePath)
-            
+
             #region Errors
         VIRTUAL METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
         SELF:_errors:Add(XError{fileName, span, errorCode, message, args})
-        
+
         VIRTUAL METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
         SELF:_errors:Add(XWarning{fileName, span, errorCode, message, args})
-        
-        
+
+
         /*
         PRIVATE METHOD ShowErrorsAsync(syntaxRoot AS SyntaxNode) AS VOID
         LOCAL list AS List<XError>
@@ -206,10 +213,10 @@ BEGIN NAMESPACE XSharpModel
             IF XSettings.EnableParseLog .AND. XSettings.EnableLogging
                 XSolution.WriteOutputMessage("XModel.SourceWalker "+message)
             ENDIF
-            
+
         #endregion
-        
+
         END CLASS
-        
+
     END NAMESPACE
-    
+

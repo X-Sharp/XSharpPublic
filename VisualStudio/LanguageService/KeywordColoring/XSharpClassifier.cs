@@ -268,6 +268,7 @@ namespace XSharp.LanguageService
             if (tokens != null)
             {
                 Debug("Starting model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+                _sourceWalker.SaveToDisk = true;
                 _sourceWalker.ParseTokens(_tokens, true, false);
                 var regionTags = BuildRegionTags(_sourceWalker.EntityList, _sourceWalker.BlockList, snapshot, xsharpRegionStart, xsharpRegionStop);
                 lock (gate)

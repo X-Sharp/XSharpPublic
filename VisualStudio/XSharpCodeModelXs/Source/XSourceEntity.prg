@@ -69,9 +69,6 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
 
 
-
-
-
          #region Complexer properties
          // Properties
 
@@ -105,6 +102,12 @@ BEGIN NAMESPACE XSharpModel
                 SELF:GenericArgs := tmp:Split(<CHAR>{'<',',','>'}, StringSplitOptions.RemoveEmptyEntries)
             ELSE
                 SELF:GenericArgs := NULL
+            ENDIF
+
+        METHOD CopyValuesFrom(dbresult AS XDbResult) AS VOID
+            SUPER:CopyValuesFrom(dbresult)
+            IF String.IsNullOrEmpty(SELF:XmlComments)
+                SELF:XmlComments := dbresult:XmlComments
             ENDIF
 
 

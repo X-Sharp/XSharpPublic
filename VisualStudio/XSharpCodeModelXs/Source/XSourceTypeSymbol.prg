@@ -40,6 +40,11 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          SELF:File := oFile
 
+        CONSTRUCTOR(dbresult AS XDbResult, file AS XFile)
+            SELF(dbresult:TypeName, dbresult:Kind, dbresult:Attributes, dbresult:TextRange, dbresult:TextInterval, file)
+            SELF:CopyValuesFrom(dbresult)
+
+
          /// <summary>
             /// Duplicate the current Object, so we have the same properties in another object
             /// </summary>
@@ -122,7 +127,7 @@ BEGIN NAMESPACE XSharpModel
         SELF:_members:Clear()
         SELF:_members:AddRange(list)
         RETURN
-        
+
       METHOD GetMembers(elementName AS STRING) AS IList<IXMemberSymbol>
          VAR tempMembers := List<IXMemberSymbol>{}
           IF elementName:StartsWith("@@")
@@ -188,6 +193,13 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
          ENDIF
          RETURN clone
+
+     METHOD CopyValuesFrom(dbresult AS XDbResult) AS VOID
+         SUPER:CopyValuesFrom(dbresult)
+         SELF:Namespace  := dbresult:Namespace
+         SELF:Id         := dbresult:IdType
+         SELF:ClassType   := (XSharpDialect) dbresult:ClassType
+
 
       /// <summary>
       /// If this XSourceTypeSymbol is a Partial type, return a Copy of it, merged with all other informations

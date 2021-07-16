@@ -39,7 +39,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE  _lastToken     AS IToken
       PRIVATE  _collectLocals AS LOGIC
       PRIVATE  _collectBlocks AS LOGIC
-	   PRIVATE  _errors        AS IList<XError>
+      PRIVATE  _errors        AS IList<XError>
       PRIVATE  _globalType    AS XSourceTypeSymbol
       PRIVATE  _dialect       AS XSharpDialect
       PRIVATE  _xppVisibility AS Modifiers
@@ -76,9 +76,10 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY EntityList AS IList<XSourceEntity>  GET _EntityList
       PROPERTY BlockList  AS IList<XSourceBlock>    GET _BlockList
       PROPERTY Locals     AS IList<XSourceVariableSymbol> GET _locals
-
+      PROPERTY SaveToDisk AS LOGIC AUTO
 
       CONSTRUCTOR(oFile AS XFile, dialect AS XSharpDialect)
+          SELF:SaveToDisk := TRUE
          _errors        := List<XError>{}
          _usings        := List<STRING>{}
          _commentTasks  := List<XCommentTask>{}
@@ -367,7 +368,7 @@ BEGIN NAMESPACE XSharpModel
              SELF:_EntityList:Add(xmember)
              SELF:_globalType:AddMember(xmember)
          ENDIF
-         IF ! lLocals
+         IF ! lLocals .AND. SELF:SaveToDisk
             _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
             _file:SaveToDatabase()
          ENDIF

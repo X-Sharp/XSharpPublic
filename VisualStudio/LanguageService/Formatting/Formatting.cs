@@ -2315,6 +2315,12 @@ namespace XSharp.LanguageService
             {
                 return;
             }
+            if (line.LineNumber == getCurrentLine())
+            {
+                // Come back later.
+                registerLineForCaseSync(line.LineNumber);
+                return;
+            }
             WriteOutputMessage($"CommandFilter.formatLineCaseV2({line.LineNumber + 1})");
             //
             context.MoveTo(line.Start);
@@ -2324,28 +2330,7 @@ namespace XSharp.LanguageService
                 workOnLine = token.Line;
             while ( token != null )
             {
-                if (currentLine == line.LineNumber)
-                {
-                    // do not update tokens touching or after the caret
-                    // after typing String it was already uppercasing even when I wanted to type StringComparer
-                    // now we wait until the user has typed an extra character. That will trigger another session.
-                    // (in this case the C, but it could also be a ' ' or tab and then it would match the STRING keyword)
-                    int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
-                    if ( token.StopIndex < caretPos - 1)
-                    {
-                        formatToken(editSession, 0, token);
-                    }
-                    else
-                    {
-                        // Come back later.
-                        registerLineForCaseSync(line.LineNumber);
-                        break;
-                    }
-                }
-                else
-                {
-                    formatToken(editSession, 0, token);
-                }
+                formatToken(editSession, 0, token);
                 //
                 context.MoveToNext();
                 token = context.GetToken(true);

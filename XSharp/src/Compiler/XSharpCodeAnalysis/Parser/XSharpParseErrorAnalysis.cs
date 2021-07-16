@@ -1085,7 +1085,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool isDim = context.Dim != null;
             bool hasArraySub = context.ArraySub != null;
-            bool isFixed = (context.Parent.Parent as XSharpParser.ClassvarsContext)?.Modifiers?._FIXED != null;
+            bool isFixed = (context.Parent as XSharpParser.ClassvarsContext)?.Modifiers?._FIXED != null;
             if (isDim && !hasArraySub)
             {
                 _parseErrors.Add(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected));
@@ -1097,16 +1097,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!isDim && isFixed)
             {
                 _parseErrors.Add(new ParseErrorData(context.Id, ErrorCode.ERR_SyntaxError, "DIM"));
-            }
-        }
-        public override void ExitClassvars([NotNull] XSharpParser.ClassvarsContext context)
-        {
-            if (context.Vars._Var.Count > 0)
-            {
-                if (context.Modifiers == null)
-                {
-                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, "Classvar Modifier (EXPORT, PROTECTED, HIDDEN, PRIVATE, PUBLIC, INSTANCE, STATIC) expected"));
-                }
             }
         }
 

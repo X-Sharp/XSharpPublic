@@ -223,9 +223,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         private string GetTypedPtrName(IXParseTree xNode)
         {
             // GLobals and Instance variables are all of type ClassvarContext
-            if (xNode is XP.ClassvarContext && xNode.Parent is XP.ClassVarListContext cvl)
+            if (xNode is XP.ClassvarContext cvc)
             {
-                var pdtc = cvl.DataType as XP.PtrDatatypeContext;
+                var pdtc = cvc.DataType as XP.PtrDatatypeContext;
                 if (pdtc != null)
                     return pdtc.TypeName.GetText();
 

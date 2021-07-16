@@ -78,8 +78,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             var decl = bfa.FieldSymbol.DeclaringSyntaxReferences[0].GetSyntax();
                             if (decl?.XNode is XSharpParser.ClassvarContext cvc)
                             {
-                                var parent = cvc.Parent as XSharpParser.ClassVarListContext;
-                                makeRef = parent.As?.Type != XSharpParser.IS;
+                                makeRef = cvc.As?.Type != XSharpParser.IS;
                             }
                             if (decl?.XNode is XSharpParser.VostructmemberContext vmc)
                             {

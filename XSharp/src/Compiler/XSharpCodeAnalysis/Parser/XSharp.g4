@@ -189,8 +189,10 @@ using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoper
 
                     // [STATIC] GLOBAL [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
                     // STATIC          [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
-voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Global=GLOBAL (Const=CONST)? Vars=classVarList end=EOS 
-                    | (Attributes=attributes)? Static=STATIC (Const=CONST)? Vars=classVarList end=EOS
+voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Global=GLOBAL (Const=CONST)?
+                      Vars+=classvar (COMMA Vars+=classvar)* end=EOS 
+                    | (Attributes=attributes)? Static=STATIC (Const=CONST)?
+                      Vars+=classvar (COMMA Vars+=classvar)* end=EOS
                     ;
 
 
@@ -342,18 +344,17 @@ eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
 
 
 
-classvars           : (Attributes=attributes)? (Modifiers=classvarModifiers)?
-                      Vars=classVarList
+classvars           : (Attributes=attributes)? Modifiers=classvarModifiers
+                      Vars+=classvar (COMMA Vars+=classvar)*
                       eos
                     ;
 
 classvarModifiers   : ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
-classVarList        : Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
-                    ;
-
-classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Initializer=expression)?
+classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
+                      (Op=assignoperator Initializer=expression)?
+                      (As=(AS | IS) DataType=datatype)?
                     ;
 
 arraysub            : ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x][y

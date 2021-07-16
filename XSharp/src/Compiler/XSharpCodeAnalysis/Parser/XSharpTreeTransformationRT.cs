@@ -952,12 +952,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region ClassVars and LocalVars
-        protected override void VisitClassvar([NotNull] XP.ClassvarContext context)
+        protected override void VisitClassvar([NotNull] XP.ClassvarContext context, bool isFixed)
         {
-            base.VisitClassvar(context);
+            base.VisitClassvar(context, isFixed);
             if (context.ArraySub != null && context.Dim == null)
             {
-                var vd = context.Get<VariableDeclaratorSyntax>();
+                var vd = context.Get<VariableDeclarationSyntax>();
                 var initializer = GenerateVOArrayInitializer(context.ArraySub);
                 if (context.Initializer != null)
                 {
@@ -965,7 +965,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     initializer = initializer.WithAdditionalDiagnostics(
                             new SyntaxDiagnosticInfo(ErrorCode.ERR_VulcanArrayDimAndInit));
                 }
-                context.Put(GenerateVariable(vd.Identifier, initializer));
+                var variable = GenerateVariable(context.Id.GetText(), initializer);
+                vd = vd.Update(vd.Type, MakeSeparatedList(variable));
+                context.Put(vd);
             }
         }
 

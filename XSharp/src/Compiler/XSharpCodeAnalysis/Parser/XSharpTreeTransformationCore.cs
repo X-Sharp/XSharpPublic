@@ -2766,9 +2766,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (modifiers != null)
                 bStaticVisibility = modifiers.IsStaticVisible;
-
-            var m = entity.Get<MemberDeclarationSyntax>();
-            addGlobalEntity(m, bStaticVisibility);
+            if (entity is XP.VoglobalContext voglob)
+            {
+                foreach (var glob in voglob._Vars)
+                {
+                    var m = glob.Get<MemberDeclarationSyntax>();
+                    addGlobalEntity(m, bStaticVisibility);
+                }
+            }
+            else
+            {
+                var m = entity.Get<MemberDeclarationSyntax>();
+                addGlobalEntity(m, bStaticVisibility);
+            }
         }
         protected void ProcessNonGlobalEntity(XSharpParserRuleContext context, IXParseTree entity)
         {
@@ -3340,105 +3350,58 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
         }
 
+        public override void EnterClassvars([NotNull] XP.ClassvarsContext context)
+        {
+            XP.DatatypeContext t = null;
+            for (var i = context._Vars.Count - 1; i >= 0; i--)
+            {
+                var locCtx = context._Vars[i];
+                if (locCtx.DataType != null)
+                    t = locCtx.DataType;
+                else if (t != null)
+                    locCtx.DataType = t;
+            }
+        }
+
         public override void ExitClassvars([NotNull] XP.ClassvarsContext context)
         {
-            var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var varType = getDataType(context.Vars?.DataType);
-            bool isFixed = context.Modifiers?._FIXED != null;
-            varType.XVoDecl = true;
-            if (context.Vars?.As?.Type == XP.IS)
+            // Modifiers is mandatory for ClassVars. We want at least EXPORT or PUBLIC
+            bool isFixed = context.Modifiers._FIXED != null;
+            var atts = getAttributes(context.Attributes);
+            var mods = context.Modifiers.GetList<SyntaxToken>();
+
+            foreach (var varCtx in context._Vars)
             {
-                varType.XVoIsDecl = true;
-            }
-            foreach (var varCtx in context.Vars._Var)
-            {
-                bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
-                if (isDim)
-                {
-                    if (isFixed)
-                    {
-                        ClassEntities.Peek().Members.Add(_syntaxFactory.FieldDeclaration(
-                            attributeLists: getAttributes(context.Attributes),
-                            modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
-                            declaration: _syntaxFactory.VariableDeclaration(
-                                type: varType,
-                                variables: MakeSeparatedList(varCtx.Get<VariableDeclaratorSyntax>())),
-                            semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-                    }
-                    else
-                    {
-                        ClassEntities.Peek().Members.Add(_syntaxFactory.FieldDeclaration(
-                            attributeLists: getAttributes(context.Attributes),
-                            modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
-                            declaration: _syntaxFactory.VariableDeclaration(
-                                type: _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(varCtx.ArraySub._ArrayIndex.Count)),
-                                variables: MakeSeparatedList(varCtx.Get<VariableDeclaratorSyntax>())),
-                            semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-                    }
-                }
-                else
-                {
-                    if (varList.Count > 0)
-                        varList.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                    varList.Add(varCtx.Get<VariableDeclaratorSyntax>());
-                }
-            }
-            if (varList.Count > 0)
-            {
-                var decl = _syntaxFactory.VariableDeclaration(
-                        type: varType,
-                        variables: varList);
-                var attributeList = getAttributes(context.Attributes);
+                VisitClassvar(varCtx, isFixed);
                 if (_options.HasRuntime)
                 {
-
                     bool isInstance = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.INSTANCE);
                     if (isInstance)
                     {
                         var attr = _pool.Allocate<AttributeListSyntax>();
-                        attr.AddRange(attributeList);
+                        attr.AddRange(atts);
                         GenerateAttributeList(attr, _options.XSharpRuntime ? XSharpQualifiedTypeNames.IsInstance : VulcanQualifiedTypeNames.IsInstance);
-                        attributeList = attr.ToList();
+                        atts = attr.ToList();
                         _pool.Free(attr);
                     }
                 }
-
-                context.Put(_syntaxFactory.FieldDeclaration(
-                    attributeLists: attributeList,
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
-                    declaration: decl,
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-            }
-            _pool.Free(varList);
-        }
-
-        public override void ExitClassVarList([NotNull] XP.ClassVarListContext context)
-        {
-            foreach (var cvCtx in context._Var)
-            { 
-                VisitClassvar(cvCtx);
-            }
-            // Check for dwDim := 512 IS DWORD which will be parsed as
-            // dwDim := (512 IS DWORD)
-            if (context.DataType == null)
-            {
-                var last = context._Var.Last();
-                if (last.Initializer is XP.TypeCheckExpressionContext tcec)
-                {
-                    // expression was incorrectly parsed. Fix it here
-                    last.Initializer = tcec.Expr;
-                    context.As = tcec.Op;
-                    context.DataType = tcec.Type;
-                }
+                var vardecl = varCtx.Get<VariableDeclarationSyntax>();
+                var fielddecl = _syntaxFactory.FieldDeclaration(
+                    attributeLists: atts,
+                    modifiers: mods,
+                    declaration: vardecl,
+                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                var currentClass = ClassEntities.Peek();
+                currentClass.Members.Add(fielddecl);
             }
         }
 
- 
+
         public override void ExitClassvar([NotNull] XP.ClassvarContext context)
         {
             // nvk: Not handled here due to datatype, which is processed later
         }
-        protected virtual void VisitClassvar([NotNull] XP.ClassvarContext context)
+        protected virtual void VisitClassvar([NotNull] XP.ClassvarContext context, bool isFixed)
         {
             bool isDim = context.Dim != null && context.ArraySub != null;
             // make sure we do not initialize Interface and Structure members
@@ -3447,10 +3410,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // classvars is used in classmember, classmember is used in interface, class and structure
             var candefault = context.Parent.Parent is XP.VoglobalContext || context.isInClass();
             var initExpr = context.Initializer?.Get<ExpressionSyntax>();
-            bool isFixed = (context.Parent.Parent as XP.ClassvarsContext)?.Modifiers?._FIXED != null;
-            var dataType = ((XP.ClassVarListContext)context.Parent).DataType;
-            var varType = getDataType(dataType);
 
+            // Check for dwDim := 512 IS DWORD which will be parsed as
+            // dwDim := (512 IS DWORD)
+            if (context.DataType == null)
+            {
+                if (context.Initializer is XP.TypeCheckExpressionContext tcec)
+                {
+                    // expression was incorrectly parsed. Fix it here
+                    context.Initializer = tcec.Expr;
+                    context.As = tcec.Op;
+                    context.DataType = tcec.Type;
+                }
+            }
+            var dataType = context.DataType;
+            var varType = getDataType(dataType);
+            varType.XVoDecl = true;
+            if (context?.As?.Type == XP.IS)
+            {
+                varType.XVoIsDecl = true;
+            }
+            if (isDim && ! isFixed)
+            {
+                varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));
+            }
+            VariableDeclaratorSyntax variable = null;
             if (isDim)
             {
                 if (isFixed)
@@ -3460,19 +3444,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         initExpr = initExpr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_SyntaxError, "AS"));
                         context.Initializer.Put(initExpr);
                         context.Op.Put(initExpr);
-                        context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr));
+
+                        variable = GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr);
                     }
                     else
                     {
-                        context.Put(GenerateBuffer(context.Id.Get<SyntaxToken>(),
+                        variable = GenerateBuffer(context.Id.Get<SyntaxToken>(),
                             MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray())
-                            ));
+                            );
                     }
-                    return;
                 }
                 else
                 {
-                    var cvl = context.Parent as XP.ClassVarListContext;
                     if (initExpr == null)
                     {
                         var arrayType = _syntaxFactory.ArrayType(varType, context.ArraySub.Get<ArrayRankSpecifierSyntax>());
@@ -3480,15 +3463,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            if (context.Initializer != null)
+            else
             {
-                context.Initializer.SetSequencePoint();
+                if (context.Initializer != null)
+                {
+                    context.Initializer.SetSequencePoint();
+                }
+                else if (dataType != null && !isDim && candefault)
+                {
+                    initExpr = GenerateInitializer(dataType);
+                }
             }
-            else if (dataType != null && !isDim && candefault)
+            if (variable == null) // normal variables and variables with ArraySub that have a generated initExpr above
             {
-                initExpr = GenerateInitializer(dataType);
+                variable = GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr);
             }
-            context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr));
+            var vardecl = _syntaxFactory.VariableDeclaration(
+                            type: varType,
+                            variables: MakeSeparatedList(variable));
+            context.Put(vardecl);
         }
 
         #endregion
@@ -5430,73 +5423,44 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterVoglobal([NotNull] XP.VoglobalContext context)
         {
-            if (context.Const != null)
+            XP.DatatypeContext t = null;
+            for (var i = context._Vars.Count - 1; i >= 0; i--)
             {
-                if (context.Modifiers != null)
-                    context.Modifiers._Tokens.Add(context.Const);
-                else
-                {
-                    context.Modifiers = FixPosition(new XP.FuncprocModifiersContext(context, 0), context.Start);
-                    context.Modifiers.PutList(TokenList(SyntaxKind.ConstKeyword, SyntaxKind.PublicKeyword));
-                }
+                var locCtx = context._Vars[i];
+                if (locCtx.DataType != null)
+                    t = locCtx.DataType;
+                else if (t != null)
+                    locCtx.DataType = t;
             }
         }
 
         public override void ExitVoglobal([NotNull] XP.VoglobalContext context)
         {
-            var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var varType = getDataType(context.Vars.DataType);
             context.SetSequencePoint(context.end);
-            varType.XVoDecl = true;
-            if (context.Vars?.As?.Type == XP.IS)
-            {
-                varType.XVoIsDecl = true;
-            }
             SyntaxList<SyntaxToken> mods;
             if (context.Static == null)
-            { 
+            {
                 mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword);
             }
             else
             {
                 mods = TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword,SyntaxKind.InternalKeyword);
             }
-
-            foreach (var varCtx in context.Vars._Var)
+            bool isFixed = false;
+            var atts = getAttributes(context.Attributes);
+            foreach (var varCtx in context._Vars)
             {
-                bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
-                if (isDim)
-                {
-                    var global = _syntaxFactory.FieldDeclaration(
-                        attributeLists: getAttributes(context.Attributes),
-                        modifiers: mods,
-                        declaration: _syntaxFactory.VariableDeclaration(
-                            type: _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(varCtx.ArraySub._ArrayIndex.Count)),
-                            variables: MakeSeparatedList(varCtx.Get<VariableDeclaratorSyntax>())),
-                        semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                    context.Put(global);
-                    GlobalEntities.Globals.Add(global);
-                }
-                else
-                {
-                    if (varList.Count > 0)
-                        varList.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                    varList.Add(varCtx.Get<VariableDeclaratorSyntax>());
-                }
-            }
-            if (varList.Count > 0)
-            {
+                VisitClassvar(varCtx, isFixed);
+                var vardecl = varCtx.Get<VariableDeclarationSyntax>();
                 var global = _syntaxFactory.FieldDeclaration(
-                    attributeLists: getAttributes(context.Attributes),
+                    attributeLists: atts,
                     modifiers: mods,
-                    declaration: _syntaxFactory.VariableDeclaration(
-                        type: varType,
-                        variables: varList),
+                    declaration: vardecl,
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                varCtx.Put(global);
                 context.Put(global);
                 GlobalEntities.Globals.Add(global);
             }
-            _pool.Free(varList);
         }
 
         public override void EnterVodll([NotNull] XP.VodllContext context)

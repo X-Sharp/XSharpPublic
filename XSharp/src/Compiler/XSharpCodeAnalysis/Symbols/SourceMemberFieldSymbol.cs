@@ -25,11 +25,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             if (compilation.Options.HasOption(CompilerOption.ResolveTypedFunctionPointersToPtr,this.SyntaxNode))
             {
                 XP.DatatypeContext dt = null;
-                if (xNode is XP.ClassvarContext &&
-                    xNode.Parent is XP.ClassVarListContext)
+                if (xNode is XP.ClassvarContext cvc)
                 {
-                    var cvl = xNode.Parent as XP.ClassVarListContext;
-                    dt = cvl.DataType;
+                    dt = cvc.DataType;
                     // This is a typed PTR in a Class Var / VO Global
                 }
                 if (xNode is XP.VostructmemberContext smc)

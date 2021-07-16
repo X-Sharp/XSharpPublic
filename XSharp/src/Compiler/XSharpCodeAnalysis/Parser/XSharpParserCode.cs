@@ -785,9 +785,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             readonly EntityData data = new();
             public EntityData Data => data;
             public ParameterListContext Params => null;
-            public DatatypeContext ReturnType => this.Vars.DataType;
-            public String Name => this.Vars._Var.FirstOrDefault().Id.GetText();
-            public String ShortName => this.Vars._Var.FirstOrDefault().Id.GetText();
+            public DatatypeContext ReturnType => this._Vars.First().DataType;
+            public String Name => this._Vars.First().Id.GetText();
+            public String ShortName => this._Vars.First().Id.GetText();
             public FuncprocModifiersContext FuncProcModifiers => Modifiers;
         }
         public partial class FoxdllContext : IEntityContext, IGlobalEntityContext

@@ -713,13 +713,17 @@ BEGIN NAMESPACE XSharpModel
             VAR members := List<XSourceMemberSymbol>{}
             source := ""
             FOREACH VAR element IN result
-                VAR xmember := XSourceMemberSymbol.FromDbResult(element, SELF)
+                VAR xfile    := SELF:FindXFile(element:FileName)
+                IF xfile == NULL
+                    xfile := XSolution.FindFullPath(element:FileName)
+                ENDIF
+                VAR xmember := XSourceMemberSymbol{element, xfile}
                 source += element:SourceCode+Environment.NewLine
                 members:Add(xmember)
                 file := xmember:File
             NEXT
-            VAR walker := SourceWalker{file}
-            walker:Parse(source, TRUE)
+            VAR walker := SourceWalker{file, FALSE}
+            walker:Parse(source)
             VAR first := (XSourceMemberSymbol) walker:EntityList:First()
             VAR parentType := (XSourceTypeSymbol) first:ParentType
             VAR entities := List<XSourceMemberSymbol>{}
@@ -728,7 +732,8 @@ BEGIN NAMESPACE XSharpModel
                 IF entity IS XSourceMemberSymbol VAR xsms
                     entities:Add(xsms)
                     IF i < result:Count
-                        xsms:XmlComments := result[i]:XmlComments
+                        // copy location and xml comments
+                        xsms:CopyValuesFrom(result[i])
                     ENDIF
                 ENDIF
             NEXT
@@ -970,8 +975,8 @@ BEGIN NAMESPACE XSharpModel
             RETURN NULL
          ENDIF
          aFiles:Add(oType:IdFile, file)
-         VAR walker     := SourceWalker{file}
-         walker:Parse(source, TRUE) // we are not interested in locals but we also do not want to update the database here
+         VAR walker        := SourceWalker{file, FALSE}
+         walker:Parse(source) // we are not interested in locals but we also do not want to update the database here
          IF walker:EntityList:Count > 0
             namespace      := oType:Namespace
             fullTypeName   := oType:Namespace+"."+oType:TypeName
@@ -987,14 +992,11 @@ BEGIN NAMESPACE XSharpModel
             IF xtype != NULL
                xtype:SetInterfaces(aIF)
                xtype:BaseType    := baseTypeName
-               xtype:Range       := TextRange{oType:StartLine, oType:StartColumn, oType:EndLine, oType:EndColumn}
-               xtype:Interval    := TextInterval{oType:Start, oType:Stop}
+               xtype:CopyValuesFrom(oType)
                xtype:Namespace   := namespace
-               xtype:XmlComments := oType:XmlComments
                xtype:ClassType   := (XSharpDialect) oType:ClassType
-               xtype:XmlComments := cXmlComment
                VAR xmembers := xtype:XMembers:ToArray()
-               var dict := Dictionary<string, IList<XSourceMemberSymbol>>{}
+               VAR dict := Dictionary<STRING, IList<XSourceMemberSymbol>>{}
                FOREACH m as XSourceMemberSymbol in xmembers
                   var key := m:Kind:ToString()+" "+m:Name
                   if ! dict:ContainsKey(key)
@@ -1093,18 +1095,10 @@ BEGIN NAMESPACE XSharpModel
             IF fullTypeName:Length > 0 .AND. fullTypeName != element:Namespace+"."+element:TypeName
                LOOP
             ENDIF
-            fullTypeName := element:Namespace+"."+element:TypeName
-            idProject   := element:IdProject
-            VAR name    := element:TypeName
-            VAR idType  := element:IdType
-            VAR file       := XFile{element:FileName,SELF}
+            VAR file       := XSolution.FindFullPath(element:FileName)
             file:Virtual   := TRUE
             file:Id        := element:IdFile
-            VAR range    := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
-            VAR interval := TextInterval{element:Start, element:Stop}
-            VAR xtype := XSourceTypeSymbol{name, element:Kind,element:Attributes, range, interval, file}
-            xtype:Namespace := element:Namespace
-            xtype:Id  := element:IdType
+            VAR xtype := XSourceTypeSymbol{element, file}
             result:Add(xtype)
          NEXT
          RETURN result

@@ -50,16 +50,14 @@ BEGIN NAMESPACE XSharpModel
          NEXT
          #endregion
 
+    CONSTRUCTOR(dbresult AS XDbResult, file AS XFile)
+         SELF(dbresult:MemberName, dbresult:Kind, dbresult:Attributes, dbresult:TextRange, dbresult:TextInterval, dbresult:ReturnType, dbresult:Modifiers:HasFlag(Modifiers.Static))
+         SELF:File        := file
+         SELF:CopyValuesFrom(dbresult)
+         SELF:SourceCode  := dbresult:SourceCode
 
-     STATIC METHOD FromDbResult( dbresult AS XDbResult, project AS XProject) AS XSourceMemberSymbol
-         LOCAL xmember AS XSourceMemberSymbol
-         VAR range    := TextRange{dbresult:StartLine,dbresult:StartColumn, dbresult:EndLine, dbresult:EndColumn}
-         VAR position := TextInterval{dbresult:Start, dbresult:Stop}
-         xmember := XSourceMemberSymbol{dbresult:MemberName, dbresult:Kind, dbresult:Attributes, range, position, dbresult:ReturnType, dbresult:Modifiers:HasFlag(Modifiers.Static)}
-         xmember:SourceCode  := dbresult:SourceCode
-         xmember:XmlComments := dbresult:XmlComments
-         xmember:File        := XFile{dbresult:FileName, project}
-         RETURN xmember
+     STATIC METHOD FromDbResult( dbresult AS XDbResult, file AS XFile) AS XSourceMemberSymbol
+         RETURN XSourceMemberSymbol{dbresult, file}
 
 
       METHOD AddParameters( list AS IList<XSourceParameterSymbol>) AS VOID

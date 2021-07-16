@@ -183,7 +183,7 @@ namespace XSharp.LanguageService.Editors.BraceMatching
                         {
                             try
                             {
-                                var sourceWalker = new SourceWalker(xfile);
+                                var sourceWalker = new SourceWalker(xfile, false);
                                 string text = ssp.Snapshot.GetText();
                                 var length = Math.Min(member.Interval.Width, text.Length - member.Interval.Start);
                                 text = text.Substring(member.Interval.Start, length); //FM#081219 #2 - We are in a 'member'. For brace matching we should only ever need to look to the end of this member

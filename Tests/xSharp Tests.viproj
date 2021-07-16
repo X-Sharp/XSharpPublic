@@ -93623,7 +93623,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C771 - Various problems with compiling VFP code
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C772 - Runtime error with logic expression between USUALs in literal array #597 *************
 Application = C772 - Runtime error with logic expression between USUALs in literal array #597
 IDEVersion = 1.06
@@ -93666,7 +93666,7 @@ FileType = Code
 CopyToBin = 0
 [C772 - Runtime error with logic expression between USUALs in literal array #597 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C772 - Runtime error with logic expression between USUALs in literal array #597 Resources]
 [C772 - Runtime error with logic expression between USUALs in literal array #597 Native Resources]

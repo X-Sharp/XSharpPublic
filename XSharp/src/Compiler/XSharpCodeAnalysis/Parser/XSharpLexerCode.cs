@@ -1542,7 +1542,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
 
         #region Keywords and Preprocessor Lookup
-        private int fixPositionalKeyword(int keyword, int lastToken)
+        private int fixPositionalKeyword(int keyword, int lastToken, string text)
         {
             // after the following tokens we treat everything as ID
             switch (lastToken)
@@ -1585,6 +1585,26 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case LPARAMETERS:
                 case NOP:
                     if (!StartOfLine(lastToken))
+                    {
+                        return ID;
+                    }
+                    break;
+                case FUNCTION:
+                    if (text.Length == 4)
+                    {
+                        // if specified as FUNC then we want to make sure that it is not a type 
+                        if (!StartOfLine(lastToken) && !IsModifier(lastToken)
+                            && lastToken != RBRKT && lastToken != END
+                            && lastToken != LOCAL && lastToken != DLL)
+                        {
+                            return ID;
+                        }
+                    }
+                    break;
+                case ENUM:          //Should appear after EOS, END, Modifier, LBRKT or RBRKT
+                                    // Potential problem in the editor because Enum is also a type.
+                    if (!StartOfLine(lastToken) && !IsModifier(lastToken)
+                        && lastToken != RBRKT && lastToken != LBRKT && lastToken != END)
                     {
                         return ID;
                     }
@@ -1779,7 +1799,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                     else
                     {
-                        kwtype = fixPositionalKeyword(kwtype, lastToken);
+                        kwtype = fixPositionalKeyword(kwtype, lastToken, token.Text);
                         token.Type = kwtype;
                         if (kwtype == MACRO)
                         {

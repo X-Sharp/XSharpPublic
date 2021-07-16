@@ -152,12 +152,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 else
                 {
                     // remove generated Override Modifiers
+                    bool removed = false;
                     foreach (var token in node.Modifiers)
                     {
                         if (token.Kind == SyntaxKind.OverrideKeyword && token.XGenerated)
                         {
                             mods = mods & ~DeclarationModifiers.Override;
+                            removed = true;
                         }
+                    }
+                    if (!removed)
+                    {
+                        // the modifier was apparently added in code.
+                        // warn that the modifier was not needed.
+                        diagnostics.Add(ErrorCode.ERR_OverrideNotExpected, location, this.Name);
                     }
                     flags = new Flags(flags.MethodKind, mods, this.ReturnsVoid, flags.IsExtensionMethod, flags.IsNullableAnalysisEnabled, flags.IsMetadataVirtual(true));
                 }

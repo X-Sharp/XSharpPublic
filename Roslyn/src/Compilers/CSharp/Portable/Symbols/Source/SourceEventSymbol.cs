@@ -600,6 +600,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             else if (IsVirtual && ContainingType.IsSealed)
             {
 #if XSHARP
+                var syntax = this.DeclaringSyntaxReferences[0].GetSyntax();
                 // Disable warning when compiling with /vo3
                 if (!this.DeclaringCompilation.Options.VirtualInstanceMethods)
                 {

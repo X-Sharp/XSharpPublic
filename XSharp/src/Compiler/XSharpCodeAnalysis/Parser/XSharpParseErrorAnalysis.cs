@@ -492,7 +492,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case CompilerOption.UndeclaredMemVars:
                             // case "vo1": // Init/axit
                             case CompilerOption.Vo2:     // Initialize string variables with empty strings
-                            // case "vo3": // All methods Virtual
+                            case CompilerOption.Vo3:     // All instance members virtual
                             case CompilerOption.Vo4:     // SignedUnsignedConversion
                             case CompilerOption.Vo5:     // Implicit Clipper Calling convention
                             case CompilerOption.Vo6:     // ResolveTypedFunctionPointersToPtr
@@ -507,7 +507,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case CompilerOption.Vo15:    // Untyped allowed
                             case CompilerOption.Vo16:    // Add Clipper CC Missing constructors
                             // case "fox1": // Classes inherit from unknown
-                            case CompilerOption.Fox2:    // Expose local names to macro compiler
+                            case CompilerOption.Fox2:    // FoxPro array syntax
                                 //case "xpp1":    // classes inherit from XPP.Abstract
                                 //case "xpp2":    // strongly typed entry point
                                 context.Pragma = new PragmaOption(context, state, compopt);

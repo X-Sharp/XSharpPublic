@@ -97328,7 +97328,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R793 - Multiple Global types and Classvar types on a single line
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION R794 - OVERRIDE and NEW should raise error *************
 Application = R794 - OVERRIDE and NEW should raise error
 IDEVersion = 1.06

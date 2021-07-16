@@ -241,6 +241,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         Vo2 = 1 << 2,
         NullStrings = Vo2,
         Vo3 = 1 << 3,
+        VirtualInstanceMethods = Vo3,
         Vo4 = 1 << 4,
         SignedUnsignedConversion = Vo4,
         Vo5 = 1 << 5,

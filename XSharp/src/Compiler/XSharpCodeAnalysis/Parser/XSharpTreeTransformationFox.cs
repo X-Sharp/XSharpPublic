@@ -614,7 +614,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.SetSequencePoint(context.T.Token, context.end.Stop);
             var idName = context.Id.Get<SyntaxToken>();
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, context.TypeParameters != null);
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, false, false, context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var isStatic = mods.Any((int)SyntaxKind.StaticKeyword);
@@ -880,7 +880,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var list = MakeSeparatedList(GenerateVariable(fldName, null));
             var decl = _syntaxFactory.VariableDeclaration(type, list);
-            var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, true);
+            var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(modifiers, false, false, true);
             var fdecl = _syntaxFactory.FieldDeclaration(
                                     attributeLists: default,
                                     modifiers: mods,
@@ -927,7 +927,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var accessorList = _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         accessors, SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
             _pool.Free(accessors);
-            var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, false);
+            var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, false, false, false);
             var prop = _syntaxFactory.PropertyDeclaration(
                    attributeLists: default,
                    modifiers: mods,

@@ -893,7 +893,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers.AddCheckUnique(kw);
                 }
             }
-            if (_options.VirtualInstanceMethods && ! hasFinal)
+            if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions) && ! hasFinal)
             {
                 modifiers.FixDefaultVirtual();
             }

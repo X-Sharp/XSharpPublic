@@ -579,7 +579,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected SyntaxList<SyntaxToken> DefaultMethodModifiers(bool inInterface, bool inStructure, bool noOverride = false)
+        protected SyntaxList<SyntaxToken> DefaultMethodModifiers(XSharpParserRuleContext context, bool inInterface, bool inStructure, bool noOverride = false)
         {
             var rb = _pool.Allocate();
             if (!inInterface)
@@ -588,7 +588,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // structures do not get virtual or override modifiers
                 if (!inStructure && !noOverride)
                 {
-                    if (_options.VirtualInstanceMethods)
+                    if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions))
                         rb.FixDefaultVirtual();
                     else
                         rb.FixDefaultMethod();
@@ -1739,7 +1739,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (!AccMet.IsInInterface)
                 {
                     getMods.FixDefaultVisibility();
-                    if (_options.VirtualInstanceMethods && !AccMet.IsInStructure)
+                    if (_options.HasOption(CompilerOption.VirtualInstanceMethods,context, PragmaOptions) && !AccMet.IsInStructure)
                     {
                         getMods.FixDefaultVirtual();
                     }
@@ -1761,7 +1761,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (!((XSharpParserRuleContext)AssMet).isInInterface())
                 {
                     setMods.FixDefaultVisibility();
-                    if (_options.VirtualInstanceMethods && !((XSharpParserRuleContext)AssMet).isInStructure())
+                    var assign = (XSharpParserRuleContext) AssMet;
+                    if (_options.HasOption(CompilerOption.VirtualInstanceMethods, assign, PragmaOptions) && !assign.isInStructure())
                     {
                         setMods.FixDefaultVirtual();
                     }
@@ -3182,7 +3183,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken));
             }
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface(), context.isInStructure());
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, context.isInInterface(), context.isInStructure());
             //if (context.ExplicitIface != null)
             {
                 var m = _pool.Allocate();
@@ -3296,7 +3297,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     context.Put(_syntaxFactory.EventFieldDeclaration(
                         attributeLists: getAttributes(context.Attributes),
-                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface(), context.isInStructure()),
+                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, context.isInInterface(), context.isInStructure()),
                         eventKeyword: context.E.SyntaxKeyword(),
                         declaration: _syntaxFactory.VariableDeclaration(
                             getReturnType(context),
@@ -3497,7 +3498,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var isInStruct = context.isInStructure();
             var isAuto = context.Auto != null;
             var isMulti = context.Multi != null;
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface, context.isInStructure());
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, isInInterface, context.isInStructure());
             if (context.ExplicitIface != null)
             {
                 var m = _pool.Allocate();
@@ -4092,7 +4093,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.T.Start,context.end.Stop);
             var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface, context.isInStructure(), context.TypeParameters != null);
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, isInInterface, context.isInStructure(), context.TypeParameters != null);
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var isStatic = mods.Any((int)SyntaxKind.StaticKeyword);
@@ -5121,7 +5122,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
             bool genericParent = false;
-            // Membermodifiers are used for Methods and Properties
+            // Memberm odifiers are used for Methods and Properties
             if (context.Parent is XP.MethodContext mc)
             {
                 genericParent = mc.TypeParameters != null || mc._ConstraintsClauses.Count > 0;
@@ -5131,7 +5132,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!isInInterface)
             {
                 modifiers.FixDefaultVisibility();
-                if (_options.VirtualInstanceMethods && !context.isInStructure())
+                if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions) && !context.isInStructure())
                     modifiers.FixDefaultVirtual();
                 else if (!genericParent)
                 {

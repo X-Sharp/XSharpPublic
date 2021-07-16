@@ -369,6 +369,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.NullStrings: // vo2
                     return CheckOption(option, VONullStrings, context, options);
 
+                case CompilerOption.VirtualInstanceMethods: // /vo3
+                    return CheckOption(option, VirtualInstanceMethods, context, options);
+
                 case CompilerOption.ClipperCallingConvention: // vo5
                     return CheckOption(option, VOClipperCallingConvention, context, options);
 
@@ -392,6 +395,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case CompilerOption.FoxArrayAssign: // fox2
                     return CheckOption(option, FoxArrayAssign, context, options);
+
 
                 case CompilerOption.LateBinding:  // lb is handled in cde generation
                 case CompilerOption.SignedUnsignedConversion: // vo4

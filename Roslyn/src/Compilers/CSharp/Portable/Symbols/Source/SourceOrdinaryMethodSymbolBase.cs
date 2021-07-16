@@ -608,8 +608,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             else if (IsVirtual && ContainingType.IsSealed)
             {
 #if XSHARP
+                var syntax = this.DeclaringSyntaxReferences[0].GetSyntax();
                 // Disable warning when compiling with /vo3
-                if (!this.DeclaringCompilation.Options.VirtualInstanceMethods)
+                if (!this.DeclaringCompilation.Options.HasOption(CompilerOption.VirtualInstanceMethods, syntax))
                 {
                 // '{0}' is a new virtual member in sealed type '{1}'
                 diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);

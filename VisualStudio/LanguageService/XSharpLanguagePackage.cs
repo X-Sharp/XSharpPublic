@@ -38,7 +38,7 @@ namespace XSharp.LanguageService
     
     [Guid(GuidStrings.guidXSharpLanguageServicePkgString)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string,PackageAutoLoadFlags.BackgroundLoad)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName, IsAsyncQueryable = false)]//
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
@@ -197,6 +197,8 @@ namespace XSharp.LanguageService
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             instance = this;
+            ModelScannerEvents.Start();
+
             await base.InitializeAsync(cancellationToken, progress);
             _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
             Assumes.Present(_txtManager);
@@ -244,6 +246,11 @@ namespace XSharp.LanguageService
             }
             GetIntellisenseSettings();
         }
+
+        
+
+
+        
 
         protected override void Dispose(bool disposing)
         {

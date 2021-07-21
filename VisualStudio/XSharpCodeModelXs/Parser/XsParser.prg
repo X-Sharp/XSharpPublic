@@ -509,6 +509,9 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                     ;
 
 */
+         // Please note that in the editor we do not check the contents of the attributes.
+         // we simply parse LBRKT ... RBRKT groups until we find no more LBRKT
+
          VAR tokens := List<XSharpToken>{}
          DO WHILE SELF:La1 == XSharpLexer.LBRKT .AND. ! SELF:Eos()
             tokens:Add(SELF:ConsumeAndGet())
@@ -913,7 +916,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                      VAR id      := SELF:ParseIdentifier()
                      VAR strType := "System.Exception"
                      IF SELF:La1 == XSharpLexer.AS
-                         strType := SELF:ParseAsIsType()
+                         strType := SELF:ParseDataType(FALSE)
                      ENDIF
 
                      SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
@@ -1188,9 +1191,10 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             RETURN entity
 
       PRIVATE METHOD ParseOptionalClassClause() AS STRING
+         // parse the clause after a METHOD, ACCESS, ASSIGN, CONSTRUCTOR, DESTRUCTOR CLASS <Identifier>
          IF SELF:La1 == XSharpLexer.CLASS
             SELF:Consume()
-            RETURN SELF:ParseQualifiedName()
+            RETURN SELF:ParseIdentifier()
          ENDIF
          RETURN ""
 
@@ -1538,7 +1542,7 @@ delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?
 // method rule used inside and outside class members rule
 method              : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       T=methodtype (ExplicitIface=nameDot)? Sig=signature
-                      (CLASS (Namespace=nameDot)? ClassId=identifier)?      // Class Clause needed when entity and allowed when class member
+                      (CLASS ClassId=identifier)?      // Class Clause needed when entity and allowed when class member
                       vodummyclauses
                       end=eos
                       StmtBlk=statementBlock
@@ -1628,7 +1632,7 @@ propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
          ELSEIF Matches(XSharpLexer.LBRKT)
             aParams := SELF:ParseParameterList(TRUE, OUT VAR _)
          ENDIF
-         VAR sType := SELF:ParseAsIsType()
+         VAR sType := SELF:ParseDataType(FALSE)
          LOCAL lSingleLine AS LOGIC
          DO WHILE ! SELF:Eos()
             IF Matches(XSharpLexer.AUTO, XSharpLexer.GET,XSharpLexer.SET, XSharpLexer.UDCSEP)
@@ -1675,7 +1679,7 @@ eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
                     ;
 */
          VAR id := SELF:ParseQualifiedName()
-         VAR strType  := SELF:ParseAsIsType()
+         VAR strType  := SELF:ParseDataType(FALSE)
          LOCAL lSingleLine AS LOGIC
          DO WHILE ! SELF:Eos()
             IF Matches( XSharpLexer.ADD,XSharpLexer.REMOVE)
@@ -1692,18 +1696,8 @@ eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
          ENDIF
          RETURN <XSourceEntity>{xMember}
 
-         PRIVATE _operatortokens := <LONG> {XSharpLexer.PLUS , XSharpLexer.MINUS , XSharpLexer.NOT , XSharpLexer.TILDE , XSharpLexer.INC, ;
-                                            XSharpLexer.DEC ,XSharpLexer.TRUE_CONST ,XSharpLexer.FALSE_CONST , XSharpLexer.MULT , ;
-                                            XSharpLexer.DIV ,XSharpLexer.MOD ,XSharpLexer.AMP ,XSharpLexer.PIPE ,XSharpLexer.LSHIFT ,XSharpLexer.RSHIFT, ;
-                                            XSharpLexer.EEQ , XSharpLexer.NEQ , XSharpLexer.NEQ2 ,XSharpLexer.GT , XSharpLexer.LT ,;
-                                            XSharpLexer.GTE , XSharpLexer.LTE , XSharpLexer.AND , XSharpLexer.OR, XSharpLexer.IMPLICIT, XSharpLexer.EXPLICIT}  AS LONG[]
 
-
-      PRIVATE METHOD ParseOperator() AS IList<XSourceEntity>
-            IF ! Expect(XSharpLexer.OPERATOR)
-               RETURN NULL
-            ENDIF
-
+      PRIVATE METHOD IsOperatorToken(token AS INT) AS LOGIC
 /*
 overloadedOps       : Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | FALSE_CONST |
                               MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 |
@@ -1713,7 +1707,45 @@ overloadedOps       : Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONS
 
 conversionOps		: Token=( IMPLICIT | EXPLICIT )
                     ;
+*/
+            SWITCH token
+            CASE XSharpLexer.PLUS
+            CASE XSharpLexer.MINUS
+            CASE XSharpLexer.NOT
+            CASE XSharpLexer.TILDE
+            CASE XSharpLexer.INC
+            CASE XSharpLexer.DEC
+            CASE XSharpLexer.TRUE_CONST
+            CASE XSharpLexer.FALSE_CONST
+            CASE XSharpLexer.MULT
+            CASE XSharpLexer.DIV
+            CASE XSharpLexer.MOD
+            CASE XSharpLexer.AMP
+            CASE XSharpLexer.PIPE
+            CASE XSharpLexer.LSHIFT
+            CASE XSharpLexer.RSHIFT
+            CASE XSharpLexer.EEQ
+            CASE XSharpLexer.NEQ
+            CASE XSharpLexer.NEQ2
+            CASE XSharpLexer.GT
+            CASE XSharpLexer.LT
+            CASE XSharpLexer.GTE
+            CASE XSharpLexer.LTE
+            CASE XSharpLexer.AND
+            CASE XSharpLexer.OR
+            CASE XSharpLexer.IMPLICIT
+            CASE XSharpLexer.EXPLICIT
+            RETURN TRUE
+            END SWITCH
+            RETURN FALSE
 
+
+      PRIVATE METHOD ParseOperator() AS IList<XSourceEntity>
+            IF ! Expect(XSharpLexer.OPERATOR)
+               RETURN NULL
+            ENDIF
+
+/*
 operator_           : Attributes=attributes? Modifiers=operatorModifiers?
                       o1=OPERATOR (Operation=overloadedOps | Conversion=conversionOps) Gt=GT?
                       ParamList=parameterList
@@ -1728,14 +1760,14 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          LOCAL t1 AS IToken
          LOCAL t2 AS IToken
 
-         IF Matches(_operatortokens)
+         IF SELF:IsOperatorToken(SELF:La1)
             t1 := SELF:ConsumeAndGet()
          ENDIF
-         IF Matches (XSharpLexer.GT)
+         IF SELF:La1 == XSharpLexer.GT
             t2 := SELF:ConsumeAndGet()
          ENDIF
          VAR aParams     := SELF:ParseParameterList(FALSE, OUT VAR _)
-         VAR sType       := SELF:ParseAsIsType()
+         VAR sType       := SELF:ParseDataType(FALSE)
          SELF:ParseExpressionBody()
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
 
@@ -1755,7 +1787,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
 /*constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?
                       c1=CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
                         (CallingConvention=callingconvention)?
-                        (CLASS (Namespace=nameDot)? ClassId=identifier)?
+                        (CLASS ClassId=identifier)?
                         (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                         end=eos
                       (Chain=constructorchain)?
@@ -1768,7 +1800,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          ENDIF
          VAR id  := ".ctor"
          VAR aParams     := SELF:ParseParameterList(FALSE, OUT VAR _)
-         VAR asType      := SELF:ParseAsIsType()
+         VAR asType      := SELF:ParseDataType(FALSE)
          VAR callconv    := SELF:ParseCallingConvention()
          VAR classClause := SELF:ParseOptionalClassClause()
          SELF:ParseExpressionBody()
@@ -1787,7 +1819,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
 /*
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
                       d1=DESTRUCTOR (LPAREN RPAREN)?
-                      (CLASS (Namespace=nameDot)? ClassId=identifier)?
+                      (CLASS ClassId=identifier)?
                       (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock
@@ -1871,7 +1903,7 @@ enum_               : (Attributes=attributes)? (Modifiers=classModifiers)?
          VAR id := SELF:ParseQualifiedName()
          VAR type := ""
          IF Matches(XSharpLexer.AS)
-            type := SELF:ParseAsIsType()
+            type := SELF:ParseDataType(FALSE)
          ELSEIF Expect(XSharpLexer.INHERIT)
             type := SELF:ParseTypeName()
          ENDIF
@@ -1949,7 +1981,7 @@ vodefine            : (Modifiers=funcprocModifiers)?
          IF ExpectAssignOp()
             strValue := SELF:ParseExpression()
          ENDIF
-         VAR type := SELF:ParseAsIsType()
+         VAR type := SELF:ParseDataType(FALSE)
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
          SELF:ReadLine()
 
@@ -2060,7 +2092,7 @@ vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT
          IF isArray
             sBracket := SELF:ParseArraySub()
          ENDIF
-         VAR sType := SELF:ParseAsIsType()
+         VAR sType := SELF:ParseDataType(TRUE)
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
          SELF:ReadLine()
          IF isArray
@@ -2095,7 +2127,7 @@ classvar            : (DIM=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
          IF ExpectAssignOp()
             sDefault := SELF:ParseExpression()
          ENDIF
-         VAR sType := SELF:ParseAsIsType()
+         VAR sType := SELF:ParseDataType(TRUE)
          endToken := SELF:LastToken
          SELF:GetSourceInfo(startToken, endToken, OUT VAR range, OUT VAR interval, OUT VAR source)
          VAR xMember   := XSourceMemberSymbol{sId,eKind, SELF:_attributes, range,interval,sType}
@@ -2172,7 +2204,7 @@ signature             : Id=identifier
             oSig:Parameters:AddRange(params)
             oSig:IsExtension  := isSelf
          ENDIF
-         oSig:DataType       := SELF:ParseAsIsType()
+         oSig:DataType       := SELF:ParseDataType(FALSE)
          DO WHILE SELF:La1 == XSharpLexer.WHERE .AND. ! SELF:Eos()
             oSig:TypeParameterContraints:Add(SELF:ParseTypeParameterConstraints())
          ENDDO
@@ -2304,8 +2336,8 @@ signature             : Id=identifier
 
 
 
-      PRIVATE METHOD ParseAsIsType() AS STRING
-         IF SELF:La1 == XSharpLexer.AS .OR. SELF:La1 == XSharpLexer.IS
+      PRIVATE METHOD ParseDataType(lIsAllowed AS LOGIC) AS STRING
+         IF SELF:La1 == XSharpLexer.AS .OR. (SELF:La1 == XSharpLexer.IS .AND. lIsAllowed)
             SELF:Consume()
             RETURN SELF:ParseTypeName()
          ENDIF
@@ -2575,7 +2607,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             ELSEIF SELF:IsId(SELF:La1) .AND. SELF:La2 == XSharpLexer.AS
                VAR start := SELF:Lt1
                VAR id    := SELF:ParseIdentifier()
-               VAR type  := SELF:ParseAsIsType()
+               VAR type  := SELF:ParseDataType(FALSE)
                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
                VAR xVar := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, IIF(type == "", _missingType, type) }
                SELF:_locals:Add(xVar)
@@ -2632,7 +2664,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                Consume() // OUT
                IF SELF:IsId(SELF:La2) .AND. La3 == XSharpLexer.AS
                   VAR id   := SELF:ParseIdentifier()
-                  VAR type := SELF:ParseAsIsType()
+                  VAR type := SELF:ParseDataType(FALSE)
                   SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
                   VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, iif(type == "", _missingType, type)}
                   SELF:_locals:Add(xVar)
@@ -2654,7 +2686,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             ELSEIF LastToken:Type == XSharpLexer.CASE .and. SELF:IsId(SELF:La1) .and. SELF:La2 == XSharpLexer.AS       // CASE x as SomeType
                VAR start := SELF:Lt1
                VAR id    := SELF:ParseIdentifier()
-               VAR type  := SELF:ParseAsIsType()
+               VAR type  := SELF:ParseDataType(FALSE)
                SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
                VAR xVar     := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, iif(type == "", _missingType, type)}
                SELF:_locals:Add(xVar)
@@ -2821,7 +2853,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          IF ExpectAssignOp()
             expr       := SELF:ParseExpressionAsTokens()
          ENDIF
-         VAR type     := SELF:ParseAsIsType()
+         VAR type     := SELF:ParseDataType(TRUE)
          SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
          IF String.IsNullOrEmpty(type)
             type := XLiterals.NoType
@@ -2997,7 +3029,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ELSEIF SELF:La1 == XSharpLexer.LPAREN
             arraysub := SELF:ParseArraySubFox()
          ENDIF
-         VAR type := SELF:ParseAsIsType()
+         VAR type := SELF:ParseDataType(FALSE)
          SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
          IF String.IsNullOrEmpty(type)
             type := "ARRAY"
@@ -3243,7 +3275,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                      ids:Add(ParseIdentifier())
                   ENDDO
                ENDIF
-               VAR type := SELF:ParseAsIsType()
+               VAR type := SELF:ParseDataType(FALSE)
                SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT  source)
                SELF:ReadLine()
                FOREACH VAR id IN ids
@@ -3402,7 +3434,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                   DO WHILE SELF:Expect(XSharpLexer.COMMA)
                      ids:Add(SELF:ParseIdentifier())
                   ENDDO
-                  type := SELF:ParseAsIsType()
+                  type := SELF:ParseDataType(FALSE)
                ENDIF
                SELF:GetSourceInfo(_start, _lastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
                // eat all tokens
@@ -3453,7 +3485,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                   IF SELF:Expect(XSharpLexer.VAR)
                      propName := SELF:ParseIdentifier()
                   ENDIF
-                  VAR type := SELF:ParseAsIsType()
+                  VAR type := SELF:ParseDataType(FALSE)
                   SELF:GetSourceInfo(_start, _lastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
                   SELF:ReadLine()
                   VAR xmember := XSourceMemberSymbol{id+XLiterals.XppDeclaration, Kind.Property, _OR(_xppVisibility, _attributes), range, interval, type, isStatic}
@@ -3589,8 +3621,8 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
             VAR id      := SELF:ParseIdentifier()
             VAR aParams := SELF:ParseParameterList(FALSE, OUT VAR _)
             VAR type    := ""
-            IF Matches(XSharpLexer.AS)
-               type := SELF:ParseAsIsType()
+            IF SELF:La1 == XSharpLexer.AS
+               type := SELF:ParseDataType(FALSE)
             ENDIF
             SELF:GetSourceInfo(_start, _lastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
             SELF:ReadLine()
@@ -3646,8 +3678,8 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
             VAR id      := SELF:ParseIdentifier()
             VAR aParams := SELF:ParseParameterList(FALSE, OUT VAR _)
             VAR type    := ""
-            IF Matches(XSharpLexer.AS)
-               type := SELF:ParseAsIsType()
+            IF SELF:La1 == XSharpLexer.AS
+               type := SELF:ParseDataType(FALSE)
             ENDIF
             SELF:GetSourceInfo(_start, _lastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
             SELF:ReadLine()

@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharpModel
 	STATIC PRIVATE oConn   AS SQLiteConnection     // In memory database !
 	STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
 	STATIC PRIVATE currentFile AS STRING
-	PRIVATE CONST CurrentDbVersion := 0.7 AS System.Double
+	PRIVATE CONST CurrentDbVersion := 0.8 AS System.Double
 
 		STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
 			LOCAL lValid := FALSE AS LOGIC
@@ -156,7 +156,7 @@ BEGIN NAMESPACE XSharpModel
 				stmt     	+= " Id integer NOT NULL PRIMARY KEY, ProjectFileName text NOT NULL COLLATE NOCASE "
 				stmt		+= " ) ;"
                 stmt	    += "CREATE UNIQUE INDEX Projects_Pk ON Projects (Id) ;"
-				stmt	    += "CREATE INDEX Projects_Name      ON Projects (ProjectFileName) "
+				stmt	    += "CREATE INDEX Projects_Name      ON Projects (ProjectFileName); "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 				#endregion
@@ -166,7 +166,7 @@ BEGIN NAMESPACE XSharpModel
 				stmt     	+= " FileType integer NOT NULL, LastChanged DateTime NOT NULL, Size integer, Usings text, StaticUsings text"
 				stmt		+= " ) ;"
                 stmt	    += "CREATE UNIQUE INDEX Files_Pk    ON Files (Id) ;"
-				stmt	    += "CREATE INDEX Files_Name         ON Files (FileName) "
+				stmt	    += "CREATE INDEX Files_Name         ON Files (FileName); "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 				#endregion
@@ -175,12 +175,12 @@ BEGIN NAMESPACE XSharpModel
 				stmt    := "CREATE TABLE FilesPerProject ("
 				stmt	+= " idFile integer NOT NULL, idProject integer NOT NULL, "
 				stmt    += " PRIMARY KEY (idFile, idProject), "
-				stmt	+= " FOREIGN KEY (idFile) 	  REFERENCES Files (Id)    ON DELETE CASCADE ON UPDATE CASCADE, "
+				stmt	+= " FOREIGN KEY (idFile) 	 REFERENCES Files (Id)    ON DELETE CASCADE ON UPDATE CASCADE, "
 				stmt    += " FOREIGN KEY (idProject) REFERENCES Projects (Id) ON DELETE CASCADE ON UPDATE CASCADE "
 				stmt	+= " ) ;"
 				stmt	+= "CREATE UNIQUE INDEX FilesPerProject_Pk  ON FilesPerProject (idFile, idProject); "
 				stmt	+= "CREATE INDEX FilesPerProject_File       ON FilesPerProject (idFile) ;"
-				stmt	+= "CREATE INDEX FilesPerProject_Project    ON FilesPerProject (idProject) "
+				stmt	+= "CREATE INDEX FilesPerProject_Project    ON FilesPerProject (idProject); "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 
@@ -197,7 +197,8 @@ BEGIN NAMESPACE XSharpModel
 				stmt	+= "CREATE UNIQUE INDEX Types_Pk    ON Types (Id); "
 				stmt	+= "CREATE INDEX Types_Name         ON Types (Name); "
 				stmt	+= "CREATE INDEX Types_BaseTypeName ON Types (BaseTypeName); "
-				stmt	+= "CREATE INDEX Types_Kind         ON Types (Kind) "
+				stmt	+= "CREATE INDEX Types_Kind         ON Types (Kind); "
+                stmt	+= "CREATE INDEX Types_Namespace    ON Types (Namespace); "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 
@@ -215,7 +216,7 @@ BEGIN NAMESPACE XSharpModel
 				stmt	+= "CREATE INDEX Members_Name       ON Members (Name); "
 				stmt	+= "CREATE INDEX Members_Type       ON Members (idType); "
 				stmt	+= "CREATE INDEX Members_File       ON Members (idFile); "
-				stmt	+= "CREATE INDEX Members_Kind       ON Members (Kind) "
+				stmt	+= "CREATE INDEX Members_Kind       ON Members (Kind); "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 
@@ -229,7 +230,7 @@ BEGIN NAMESPACE XSharpModel
 				stmt	+= ") ;"
 				stmt	+= "CREATE UNIQUE INDEX Assemblies_Pk   ON Assemblies (Id);"
 				stmt	+= "CREATE INDEX Assemblies_Name        ON Assemblies (Name);"
-				stmt	+= "CREATE INDEX Assemblies_FileName    ON Assemblies (AssemblyFileName) "
+				stmt	+= "CREATE INDEX Assemblies_FileName    ON Assemblies (AssemblyFileName); "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 
@@ -245,6 +246,8 @@ BEGIN NAMESPACE XSharpModel
 				stmt	+= "CREATE INDEX ReferencedTypes_BaseTypeName   ON ReferencedTypes (BaseTypeName); "
 				stmt	+= "CREATE INDEX ReferencedTypes_FullName       ON ReferencedTypes (FullName); "
 				stmt	+= "CREATE INDEX ReferencedTypes_Kind           ON ReferencedTypes (Kind); "
+                stmt	+= "CREATE INDEX ReferencedTypes_Namespace      ON ReferencedTypes (Namespace); "
+
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 				#endregion
@@ -256,7 +259,7 @@ BEGIN NAMESPACE XSharpModel
 				stmt    +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
 				stmt	+= ") ;"
 				stmt	+= "CREATE UNIQUE INDEX CommentTasks_Pk ON ReferencedTypes (Id); "
-                stmt	+= "CREATE INDEX CommentTasks_File      ON CommentTasks (idFile) "
+                stmt	+= "CREATE INDEX CommentTasks_File      ON CommentTasks (idFile); "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 
@@ -280,6 +283,10 @@ BEGIN NAMESPACE XSharpModel
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 
+				stmt := " CREATE VIEW ProjectNamespaces AS Select distinct p.idProject, t.Namespace FROM Types t  Inner JOIN Files f ON t.idfile = f.id inner JOIN FilesPerProject p ON p.idFile = f.Id WHERE t.namespace != '' "
+				cmd:CommandText := stmt
+				cmd:ExecuteNonQuery()
+
 
 				stmt := "CREATE VIEW ProjectMembers AS SELECT m.*, p.IdProject, p.FileName, p.ProjectFileName " +;
 				" FROM TypeMembers m  JOIN ProjectFiles p ON m.IdFile = p.IdFile "
@@ -291,10 +298,15 @@ BEGIN NAMESPACE XSharpModel
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 
+				stmt := "CREATE VIEW AssemblyNamespaces AS select distinct T.IdAssembly, T.Namespace FROM ReferencedTypes T  "
+				cmd:CommandText := stmt
+				cmd:ExecuteNonQuery()
+
 				stmt := " CREATE VIEW ProjectCommentTasks AS SELECT c.*, pf.IdProject, pf.ProjectFileName, pf.FileName FROM CommentTasks c" + ;
 				" JOIN ProjectFiles pf ON c.IdFile = pf.IdFile JOIN Projects p ON pf.IdProject = p.Id"
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
+
 
 				#endregion
 
@@ -353,7 +365,7 @@ BEGIN NAMESPACE XSharpModel
 
 
 
-		STATIC METHOD GetProjectNames() AS List<STRING>
+		STATIC METHOD GetProjectFileNames() AS List<STRING>
 			VAR result := List<STRING>{}
 			IF IsDbOpen
 				BEGIN LOCK oConn
@@ -895,7 +907,7 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
 		RETURN result
 
-		STATIC METHOD GetTypes(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+		STATIC METHOD GetProjectTypes(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectTypes where name = $name AND IdProject in ("+sProjectIds+")"
 			VAR result := List<XDbResult>{}
 			IF IsDbOpen
@@ -912,10 +924,11 @@ BEGIN NAMESPACE XSharpModel
 					END TRY
 				END LOCK
 			ENDIF
-			Log(i"GetTypes '{sName}' returns {result.Count} matches")
+			Log(i"GetProjectTypes '{sName}' returns {result.Count} matches")
 		RETURN result
 
-		STATIC METHOD GetTypesLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+
+		STATIC METHOD GetProjectTypesLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectTypes where name like $name AND IdProject in ("+sProjectIds+")"
 			VAR result := List<XDbResult>{}
 			sName += "%"
@@ -933,7 +946,46 @@ BEGIN NAMESPACE XSharpModel
 					END TRY
 				END LOCK
 			ENDIF
-			Log(i"GetTypesLike '{sName}' returns {result.Count} matches")
+			Log(i"GetProjectTypesLike '{sName}' returns {result.Count} matches")
+		RETURN result
+        STATIC METHOD GetAssemblyTypes(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
+			VAR stmt := "Select * from AssemblyTypes where name = $name AND IdAssembly in ("+sAssemblyIds+")"
+			VAR result := List<XDbResult>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					TRY
+					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						oCmd:Parameters:AddWithValue("$name", sName)
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+							result:Add(CreateRefTypeInfo(rdr))
+						ENDDO
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+					END TRY
+				END LOCK
+			ENDIF
+			Log(i"GetAssemblyTypes '{sName}' returns {result.Count} matches")
+		RETURN result
+        STATIC METHOD GetAssemblyTypesLike(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
+			VAR stmt := "Select * from AssemblyTypes where name like $name AND IdAssembly in ("+sAssemblyIds+")"
+			VAR result := List<XDbResult>{}
+			sName += "%"
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					TRY
+						USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						oCmd:Parameters:AddWithValue("$name", sName)
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+							result:Add(CreateRefTypeInfo(rdr))
+						ENDDO
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+					END TRY
+				END LOCK
+			ENDIF
+			Log(i"GetAssemblyTypesLike '{sName}' returns {result.Count} matches")
 		RETURN result
 
 		STATIC METHOD GetCommentTasks(sProjectIds AS STRING) AS IList<XDbResult>
@@ -975,20 +1027,18 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
          RETURN result
 
-		STATIC METHOD GetNamespaces(sProjectIds AS STRING) AS IList<XDbResult>
-			VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdProject in ("+sProjectIds+")"
-			VAR result := List<XDbResult>{}
+		STATIC METHOD GetProjectNamespaces(sProjectIds AS STRING) AS IList<STRING>
+			VAR stmt := "Select Namespace from ProjectNamespaces where IdProject in ("+sProjectIds+")"
+			VAR result := List<STRING>{}
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
 						DO WHILE rdr:Read()
-							VAR res := XDbResult{}
-							res:Namespace    := DbToString(rdr[0])
-							res:TypeName     := res:Namespace
-							IF ! String.IsNullOrEmpty(res:Namespace)
-								result:Add(res)
+                            VAR ns := DbToString(rdr[0])
+							IF ! String.IsNullOrEmpty(ns)
+								result:Add(ns)
 							ENDIF
 						ENDDO
 					CATCH e AS Exception
@@ -996,14 +1046,37 @@ BEGIN NAMESPACE XSharpModel
 					END TRY
 				END LOCK
 			ENDIF
-			Log(i"GetNameSpaces returns {result.Count} matches")
+			Log(i"GetProjectNamespaces returns {result.Count} matches")
 		RETURN result
 
+		STATIC METHOD GetAssemblyNamespaces(sAssemblyIds AS STRING) AS IList<STRING>
+			VAR stmt := "Select Namespace from AssemblyNamespaces where IdAssembly in ("+sAssemblyIds+")"
+			VAR result := List<STRING>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					TRY
+						USING VAR oCmd := SQLiteCommand{stmt, oConn}
+						USING VAR rdr := oCmd:ExecuteReader()
+						DO WHILE rdr:Read()
+                            VAR ns := DbToString(rdr[0])
+							IF ! String.IsNullOrEmpty(ns)
+								result:Add(ns)
+							ENDIF
+						ENDDO
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+					END TRY
+				END LOCK
+			ENDIF
+			Log(i"GetAssemblyNamespaces returns {result.Count} matches")
+		RETURN result
+
+
 		STATIC METHOD GetNamespacesInFile(sFileId AS STRING) AS IList<XDbResult>
-		RETURN GetNamespacesInFile( sFileId, FALSE )
+		    RETURN GetNamespacesInFile( sFileId, FALSE )
 
 		STATIC METHOD GetNamespacesInFile(sFileId AS STRING, keepEmptyName AS LOGIC ) AS IList<XDbResult>
-			VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdFile = "+sFileId
+			VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace != '' and IdFile = "+sFileId
 			VAR result := List<XDbResult>{}
 			IF IsDbOpen
 				BEGIN LOCK oConn
@@ -1163,6 +1236,8 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			Log(i"GetFunctions returns {result.Count} matches")
 		RETURN result
+
+
 
 		STATIC METHOD CreateTypeInfo(rdr AS SQLiteDataReader) AS XDbResult
 			VAR res := XDbResult{}

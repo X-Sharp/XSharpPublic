@@ -91,7 +91,7 @@ namespace XSharp.Project
     // [PackageRegistration(UseManagedResourcesOnly = true)] <-- Standard Package loading
     // ++ Async Package
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
     // -- Async Package
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideProjectFactory(typeof(XSharpProjectFactory),
@@ -182,6 +182,7 @@ namespace XSharp.Project
         public XSharpProjectPackage() : base()
         {
             XInstance = this;
+            ModelScannerEvents.Start();
         }
 
         public void OpenInBrowser(string url)
@@ -214,7 +215,6 @@ namespace XSharp.Project
             XSettings.ShowMessageBox = ShowMessageBox;
 
             XSharpProjectPackage.instance = this;
-            base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             // The project selector helps to choose between MPF and CPS projects

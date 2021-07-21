@@ -116,6 +116,9 @@ FUNCTION __FieldGetWa( area AS USUAL, fieldName AS STRING ) AS USUAL
     IF area:IsString .AND. ((STRING) area):ToUpper() == "M"
         RETURN __MemVarGet(fieldName)
     ENDIF
+    IF area:IsSymbol .AND. ((STRING) area):ToUpper() == "M"
+        RETURN __MemVarGet(fieldName)
+    ENDIF
     LOCAL ret AS USUAL
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     LOCAL newArea := _Select( area ) AS DWORD
@@ -184,6 +187,9 @@ FUNCTION __FieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) AS 
         RETURN __FieldSet(fieldName,uValue)
     ENDIF
     IF area:IsString .AND. ((STRING) area):ToUpper() == "M"
+        RETURN __MemVarPut(fieldName,uValue)
+    ENDIF
+    IF area:IsSymbol .AND. ((STRING) area):ToUpper() == "M"
         RETURN __MemVarPut(fieldName,uValue)
     ENDIF
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD

@@ -45,6 +45,9 @@ FUNCTION __FoxFieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) 
     IF IsString(area) .AND. ((STRING) area):ToUpper() == "M"
         RETURN __FoxMemVarPut(fieldName,uValue)
     ENDIF
+    IF IsSymbol(area) .AND. ((STRING) area):ToUpper() == "M"
+        RETURN __FoxMemVarPut(fieldName,uValue)
+    ENDIF
     LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
     LOCAL newArea := _Select( area ) AS DWORD
     IF newArea > 0

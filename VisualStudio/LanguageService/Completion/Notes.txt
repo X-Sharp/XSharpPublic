@@ -1,0 +1,176 @@
+﻿Notes about Code completion
+===========================
+
+In the code below the Pipe character (|) is the caret
+
+Code completion involves several steps:
+
+1) Get the tokens on the current line
+2) Determine where the cursor is and determine the "completion state".
+   This state depends on the tokens before the cursor.
+   When the cursor is after a white space token then the token before the whitespace
+   triggers what gets shown. 
+   When the token is not after whitespace then we need to return the "filter text" 
+   
+3) When the cursor is after a Dot, Colon 
+
+Take for example a line of code such as 
+String.Com|
+In that case the filter will be "Com" and the State "Static Members". 
+The code that determines the completion state returns that the 'String' token is the last token that needs to be 
+used to determine the type for which static members must be included.
+In the example of 
+USING System.|
+The state that needs to be determines is "Namespaces and types". 
+The last token that is processed is then the 'System' namespace.
+
+The code that performs the type lookup can be the same code that is used for:
+- QuickInfo
+- Peek Definition
+- Goto Definition
+
+
+Possible completion states
+- Namespaces (after USING or USING STATIC)
+- Namespaces and Types (after AS, IS, REF, INHERIT)
+- Namespaces and Interfaces (after IMPLEMENTS)
+- Instance Members (after ':' or '.' when the allowdot compiler option is set)
+- Static Members (after '.'). This should also include enum members
+- Keywords (after BEGIN, END)
+- None ( after MEMBER, CLASS, INTERFACE, STRUCTURE. It does not make sense to complete a new name, 
+  maybe with the exception of a PARTIAL CLASS)
+- General (all other situations)
+
+
+Many tokens in the editor will force the "General" state. Examples are:
+- start of line
+- after a '(', '[', '{' ,'}'
+- operators such as '>', '<', ':=', '=='
+- tokens such as ')', '}', ']' will force the tokenlist to delete tokens to ease the type lookup
+  for example
+  Left ( somevar, 10 ) |
+  When the cursor is after the ')' delimiter, then the list can be cleared to
+  Left ( )
+  Of course when the code is like this and the cursor is after the comma Left ( somevar, | ) then the completion
+  state will be "General". The tokens on that line are then "irrelevant" to determine the completion list.
+  The only thing that is relevant then is the context of the entity where the cursor is. When the cursor is inside
+  a method or property then fields of the current class need to be included.
+  This may be complicated when the code is incomplete
+  CLASS Foo
+    EXPORT Bar AS STRING
+    EXPORT FooBar := |
+  
+  In this code the cursor is after the := operator so the state is general.
+  The 'problem' here is that the CLASS is incomplete (No END CLASS).
+  Still we should be able to determine that we are inside a class var declaration and therefore
+  the completion list should include the field 'Bar' and maybe also "SELF" and "SUPER".
+
+
+In the General state we may want to limit the options for performance. 
+In Tools/Options we can add an option to specify what needs to be shown
+- Locals
+- Fields in the current class and its parents
+- Globals
+- Defines
+- Types
+- Namespaces
+- Functions
+- Snippets
+- Keywords
+
+
+
+Keyword Pairs
+
+BEGIN 
+  NAMESPACE
+  SEQUENCE
+  LOCK
+  SCOPE
+  USING
+  UNSAFE
+  CHECKED
+  UNCHECKED
+  FIXED
+  SWITCH
+
+END 
+  NAMESPACE
+  SEQUENCE
+  LOCK
+  SCOPE
+  USING
+  UNSAFE
+  CHECKED
+  UNCHECKED
+  FIXED
+
+  CLASS
+  INTERFACE
+  STRUCTURE
+  FUNCTION
+  PROCEDURE
+  METHOD
+  ACCESS
+  ASSIGN
+  VOSTRUCT
+  UNION
+  ENUM
+  EVENT
+  PROPERTY
+  GET
+  SET
+  ADD
+  REMOVE
+  CONSTRUCTOR
+  DESTRUCTOR
+  OPERATOR
+  DO
+  WHILE
+  CASE
+  FOR
+  TRY
+  SWITCH
+  WITH
+
+  DEFINE // FoxPro
+
+
+DO
+    WHILE
+    CASE
+    SWITCH
+    Identifier (procedure name)
+
+LOCAL
+    IMPLIED
+    STATIC
+    FUNCTION
+    PROCEDURE
+    ARRAY (Foxpro)
+
+
+
+STATIC
+    Modifiers
+    LOCAL
+    FUNCTION
+    PROCEDURE
+    GLOBAL
+    CONST
+    DEFINE
+    Identifier
+
+_DLL
+    FUNCTION
+    PROCEDURE
+
+MEMBER
+    DIM
+    Identifier
+
+
+
+USING
+  STATIC
+

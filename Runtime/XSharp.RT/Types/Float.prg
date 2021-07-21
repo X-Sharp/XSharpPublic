@@ -550,7 +550,7 @@ BEGIN NAMESPACE XSharp
         #endregion
 
 
-        PUBLIC OVERRIDE METHOD ToDebugString() AS STRING
+        PUBLIC METHOD ToDebugString() AS STRING
             RETURN SELF:Value:ToString()
 
 

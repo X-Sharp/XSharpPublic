@@ -62,6 +62,7 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="BraceMatching\BraceMatching.cs" />
+    <Compile Include="Completion\CompletionState.cs" />
     <Compile Include="Formatting\EditorConfigSettings.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
     <Compile Include="LanguageService\XSharpSource.cs" />
     <Compile Include="Library\HierarchyListener.cs" />
+    <Compile Include="ModelScannerEvents.cs" />
     <Compile Include="NavigationBar\DropDownClient.cs" />
     <Compile Include="NavigationBar\XSharpTypeAndMemberDropDownBars.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
@@ -123,7 +125,7 @@
     <Compile Include="OptionsPages\XSharpSpecialOptions.Designer.cs">
       <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
     </Compile>
-    <Compile Include="Package.cs" />
+    <Compile Include="XSharpLanguagePackage.cs" />
     <Compile Include="Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Parameter Info\SignatureHelpSourceProvider.cs" />
     <Compile Include="PeekDefinition\XSharpDefinitionPeekItem.cs" />
@@ -201,7 +203,11 @@
     <Folder Include="LineSeparators\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Completion\Notes.txt" />
     <Content Include="LanguageService\LanguageService.vsct" />
+    <Content Include="Lookup\Notes.txt" />
+    <Content Include="Parameter Info\Notes.txt" />
+    <Content Include="QuickInfo\Notes.txt" />
     <Content Include="XSharpLanguageService.pkgdef" />
   </ItemGroup>
   <ItemGroup>

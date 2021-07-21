@@ -9,9 +9,11 @@ BEGIN NAMESPACE XSharpModel
 INTERNAL CLASS AssemblyReader
    PROTECT reader             AS AssemblyDefinition
    PROTECT _extensionMethods  AS List<MethodDefinition>
-   
+   PROTECT _nameSpaces        AS List<STRING>
+
    CONSTRUCTOR (cFileName AS STRING)
       TRY
+         _nameSpaces := List<STRING>{}
          IF File.Exists(cFileName)
             var resolver := AssemblyResolver{}
             resolver:AddSearchDirectory(System.IO.Path.GetDirectoryName(cFileName))
@@ -27,11 +29,11 @@ INTERNAL CLASS AssemblyReader
       if reader != NULL
          reader:Dispose()
       endif
-      
+
    METHOD Read(assembly as XAssembly) AS VOID
       IF SELF:reader != NULL
          _extensionMethods  := List<MethodDefinition>{}
-         
+
          assembly:FullName := reader:FullName
          IF reader:MainModule:HasAssemblyReferences
             FOREACH var refasm in reader:MainModule:AssemblyReferences
@@ -43,10 +45,10 @@ INTERNAL CLASS AssemblyReader
          FOREACH VAR module in reader:Modules
             FOREACH var type in module:Types
                SELF:AddType(type,assembly)
-            NEXT   
+            NEXT
          NEXT
-         FOREACH var att in reader:CustomAttributes
-            var type := att:AttributeType 
+         FOREACH VAR att IN reader:CustomAttributes
+            VAR type := att:AttributeType
     			SWITCH type:ToString():ToLower()
 				CASE "vulcan.internal.vulcanclasslibraryattribute"
             CASE "xsharp.internal.classlibraryattribute"
@@ -59,32 +61,33 @@ INTERNAL CLASS AssemblyReader
                   ENDIF
                   assembly:IsXSharp := TRUE
                ENDIF
-				CASE "vulcan.vulcanimplicitnamespaceattribute"
-				CASE "xsharp.implicitnamespaceattribute"
-					if att:ConstructorArguments:Count >= 1
-                  var ns := att:ConstructorArguments[0]:Value:ToString()
-						assembly:ImplicitNamespaces:Add(ns)
-                  assembly:IsXSharp := TRUE
-					ENDIF
+			CASE "vulcan.vulcanimplicitnamespaceattribute"
+			CASE "xsharp.implicitnamespaceattribute"
+			    IF att:ConstructorArguments:Count >= 1
+                    VAR ns := att:ConstructorArguments[0]:Value:ToString()
+				    assembly:ImplicitNamespaces:Add(ns)
+                    assembly:IsXSharp := TRUE
+			    ENDIF
    			END SWITCH
          NEXT
          foreach var md in _extensionMethods
             assembly:ExtensionMethods:Add( XPEMethodSymbol{md, assembly })
          next
          assembly:Loaded                 := TRUE
-         RETURN 
+         assembly:Namespaces             := _nameSpaces
+         RETURN
       ENDIF
-      RETURN    
-      
+      RETURN
+
    PRIVATE METHOD AddType(type as TypeDefinition, assembly as XAssembly) AS VOID
       VAR vis := _AND(type:Attributes, TypeAttributes.VisibilityMask )
-      IF vis == TypeAttributes.Public .OR. vis == TypeAttributes.NestedPublic 
+      IF vis == TypeAttributes.Public .OR. vis == TypeAttributes.NestedPublic
          VAR name := type:FullName
          VAR typeref := XPETypeSymbol{type, assembly}
          VAR ns := typeref:Namespace
          IF  ns:Length > 0
-            IF ! assembly:Namespaces:Contains(ns)
-               assembly:Namespaces:Add(ns)
+            IF ! _nameSpaces:Contains(ns)
+               _nameSpaces:Add(ns)
             ENDIF
          ENDIF
          IF ! assembly:Types:ContainsKey(name)
@@ -105,7 +108,7 @@ INTERNAL CLASS AssemblyReader
                FOREACH var child in type:NestedTypes
                   SELF:AddType(child,assembly)
                NEXT
-         ENDIF  
+         ENDIF
      ENDIF
      RETURN
    PRIVATE METHOD HasExtensionMethods(typedef as TypeDefinition) AS LOGIC
@@ -117,7 +120,7 @@ INTERNAL CLASS AssemblyReader
          NEXT
       ENDIF
       RETURN FALSE
-   
+
    PRIVATE METHOD LoadExtensionMethods(typedef as TypeDefinition) AS LOGIC
       FOREACH var md in typedef:Methods:Where( { m=> m:HasCustomAttributes} )
          foreach var custatt in md:CustomAttributes
@@ -128,16 +131,16 @@ INTERNAL CLASS AssemblyReader
          NEXT
       NEXT
       RETURN FALSE
-      
+
    PRIVATE CLASS AssemblyResolver IMPLEMENTS IAssemblyResolver, IDisposable
       PRIVATE INITONLY _directories := HashSet<string>{StringComparer.OrdinalIgnoreCase} AS HashSet<string>
-      
+
       PUBLIC METHOD AddSearchDirectory(directory AS string ) AS void
          SELF:_directories:Add(directory)
-         
+
       PUBLIC METHOD Resolve(name AS AssemblyNameReference ) AS AssemblyDefinition
          RETURN SELF:Resolve(name, ReaderParameters{})
-         
+
       PUBLIC METHOD Resolve(name AS AssemblyNameReference , parameters AS ReaderParameters ) AS AssemblyDefinition
          LOCAL assembly AS AssemblyDefinition
          //
@@ -146,23 +149,23 @@ INTERNAL CLASS AssemblyReader
             RETURN assembly
          ENDIF
          THROW AssemblyResolutionException{name}
-         
+
       PUBLIC METHOD Dispose() AS void
-         // Does nothing but is required 
+         // Does nothing but is required
          RETURN
-      
+
       PRIVATE METHOD SearchDirectory(name AS AssemblyNameReference , directories AS IEnumerable<string> , parameters AS ReaderParameters ) AS AssemblyDefinition
          LOCAL extensions  AS string[]
          LOCAL file        AS string
          //
          extensions := IIF((!name:IsWindowsRuntime) , <string> {".exe",".dll"} , <string>{".winmd",".dll"})
-         FOREACH directory AS string IN directories 
-            FOREACH extension AS string IN extensions 
+         FOREACH directory AS STRING IN directories
+            FOREACH extension AS STRING IN extensions
                file := Path.Combine(directory, name:Name + extension)
                IF File.Exists(file)
                   TRY
                      RETURN SELF:GetAssembly(file, parameters)
-                     
+
                   CATCH AS BadImageFormatException
                      RETURN NULL
                   END TRY
@@ -175,15 +178,15 @@ INTERNAL CLASS AssemblyReader
             RETURN SELF:GetAssembly(loc, parameters)
          ENDIF
          RETURN NULL
-         
+
       PRIVATE METHOD GetAssembly(file AS string , parameters AS ReaderParameters ) AS AssemblyDefinition
          IF parameters:AssemblyResolver == null
             parameters:AssemblyResolver := SELF
          ENDIF
          RETURN ModuleDefinition.ReadModule(file , parameters):Assembly
-         
-         
+
+
    END CLASS
-   
+
 END CLASS
 END NAMESPACE

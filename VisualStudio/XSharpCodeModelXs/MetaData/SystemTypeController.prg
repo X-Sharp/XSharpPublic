@@ -21,12 +21,12 @@ BEGIN NAMESPACE XSharpModel
 		STATIC PRIVATE assemblies  AS ConcurrentDictionary<STRING, XAssembly>
 		STATIC PRIVATE _mscorlib 	AS XAssembly
 		#endregion
-		
+
 		STATIC CONSTRUCTOR
 			assemblies := ConcurrentDictionary<STRING, XAssembly>{StringComparer.OrdinalIgnoreCase}
 			_mscorlib := NULL
 			RETURN
-			
+
 			#region properties
 			// Properties
 			STATIC PROPERTY AssemblyFileNames AS IList<STRING>
@@ -36,13 +36,13 @@ BEGIN NAMESPACE XSharpModel
 			END PROPERTY
 			STATIC PROPERTY mscorlib AS XAssembly GET _mscorlib SET _mscorlib := VALUE
 		#endregion
-		
+
 		// Methods
 		STATIC METHOD Clear() AS VOID
 			assemblies:Clear()
 			_mscorlib := NULL
 			//GC.Collect()
-		
+
 		STATIC METHOD FindAssemblyByLocation(location AS STRING) AS STRING
 			IF assemblies:ContainsKey(location)
 				RETURN assemblies:Item[location]:FullName
@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			NEXT
 			RETURN NULL
-		
+
 		STATIC METHOD FindAssemblyLocation(fullName AS STRING) AS STRING
 			LOCAL info AS XAssembly
 			FOREACH VAR pair IN assemblies
@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			NEXT
 			RETURN NULL
-		
+
       STATIC METHOD FindType(typeName as STRING, assemblyName as STRING) AS XPETypeSymbol
          VAR assemblies := List<XAssembly>{}
          var asm := FindAssembly(assemblyName)
@@ -165,16 +165,7 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 END TRY
 			RETURN result
-			
-		STATIC METHOD GetNamespaces(assemblies AS IList<XAssembly>) AS IList<STRING>
-			VAR list := List<STRING>{}
-			FOREACH VAR info IN assemblies
-				FOREACH str AS STRING IN info:Namespaces
-					list:AddUnique( str)
-				NEXT
-			NEXT
-			RETURN list:AsReadOnly()
-			
+
 		STATIC METHOD LoadAssembly(cFileName AS STRING) AS XAssembly
 			LOCAL info AS XAssembly
 			LOCAL lastWriteTime AS System.DateTime
@@ -201,8 +192,8 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			//WriteOutputMessage(">>-- LoadAssembly(string) "+cFileName)
 			RETURN info
-		
-		
+
+
 		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS XPETypeSymbol
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
@@ -216,13 +207,13 @@ BEGIN NAMESPACE XSharpModel
 				RETURN mscorlib:GetType(typeName)
          ENDIF
          RETURN NULL
-         
+
 		STATIC METHOD RemoveAssembly(cFileName AS STRING) AS VOID
 			LOCAL info AS XAssembly
 			IF assemblies:ContainsKey(cFileName)
 				assemblies:TryRemove(cFileName, OUT info)
 			ENDIF
-		
+
 		STATIC METHOD UnloadUnusedAssemblies() AS VOID
 			LOCAL unused AS List<STRING>
 			unused := List<STRING>{}
@@ -241,10 +232,10 @@ BEGIN NAMESPACE XSharpModel
 				mscorlib := NULL
 			ENDIF
 			//GC.Collect()
-		
+
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
-		
+
 		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<XAssembly>) AS IList<IXMemberSymbol>
 			// First Search for a system Type
          VAR pos := typeName:IndexOf('<')
@@ -252,7 +243,7 @@ BEGIN NAMESPACE XSharpModel
             typeName := typeName:Substring(0, pos)+"<>"
 
          ENDIF
-         VAR result := List<IXMemberSymbol>{} 
+         VAR result := List<IXMemberSymbol>{}
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
 				IF assembly:HasExtensions
@@ -261,8 +252,8 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			NEXT
 			RETURN result
-		
+
 	END CLASS
-	
+
 END NAMESPACE
 

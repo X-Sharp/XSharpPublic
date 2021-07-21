@@ -3030,6 +3030,7 @@ namespace XSharp.Project
                 case "usersourceitems":
                 case "windowsxaml":
                 case "csharp":
+                case "xsharp":
                     return true;
             }
             return false;

@@ -27,7 +27,6 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
 
-
     FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running VO tests ...")
         TestGlobals.tsi := teststruct{1}
@@ -44,7 +43,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| 1.e-10}", Args(), 1.0e-10, TYPEOF(FLOAT))
         TestMacro(mc, e"{|| .1}", Args(), .1, TYPEOF(FLOAT))
         TestMacro(mc, e"{|| 4.}", Args(), 4.0, TYPEOF(FLOAT))
-        TestMacro(mc, e"{|| 1.c}", Args(), "No exported variable", typeof(Error))
+        TestMacro(mc, e"{|| 1.c}", Args(), "Unexpected 'c'", typeof(Exception),ErrorCode.Unexpected)
 
         TestMacroU(mc, e"{|a,b| S_EnforceType(a,b), a}", ArgsU(NIL,"N"), 0, typeof(INT))
         TestMacro(mc, e"{|a,b| S_EnforceType(a,b), a}", Args(NIL,"N"), 0, typeof(INT))

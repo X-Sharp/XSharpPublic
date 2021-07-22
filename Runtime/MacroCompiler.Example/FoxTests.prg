@@ -44,11 +44,12 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGet, "MyFieldGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSet, "MyFieldSet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldGetWa, "MyFieldGetWa")
-        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSetWa, "MyFieldSetWa")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSetWa, "MyFoxFieldSetWa")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___pushWorkarea, "MyPushWa")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___popWorkarea, "MyPopWa")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
-        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyFoxMemVarPut")
+        Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarPut, "MyFoxVarPut")
 
         // USUAL defaults to FALSE for FoxPro
         TestMacro(mc, e"{|a| a := default(usual) }", Args(8), FALSE, typeof(LOGIC))
@@ -80,11 +81,11 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| TestGlobals.tsi.v1 }", Args(), 1, typeof(INT))
         TestMacro(mc, e"{|| TestGlobals.tci.v1 := 10, TestGlobals.tci.v1++, TestGlobals.tci.v1 }", Args(), 11, typeof(INT))
         TestMacro(mc, e"{|| DEVS.NIKOS}", Args(), "FieldGet(DEVS,NIKOS)", typeof(STRING))
-        TestMacro(mc, e"{|| DEVS.NIKOS := \"123\"}", Args(), "FieldSet(DEVS,NIKOS):123", typeof(STRING))
+        TestMacro(mc, e"{|| DEVS.NIKOS := \"123\"}", Args(), "FoxFieldSet(DEVS,NIKOS):123", typeof(STRING))
         TestMacro(mc, e"{|| M.NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
-        TestMacro(mc, e"{|| M.NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
+        TestMacro(mc, e"{|| M.NAME := \"Nikos\"}", Args(), "FoxMemVarPut(NAME):Nikos", typeof(STRING))
         TestMacro(mc, e"{|| @@M.NAME}", Args(), "FieldGet(M,NAME)", typeof(STRING))
-        TestMacro(mc, e"{|| @@M.NAME := \"Nikos\"}", Args(), "FieldSet(M,NAME):Nikos", typeof(STRING))
+        //TestMacro(mc, e"{|| @@M.NAME := \"Nikos\"}", Args(), "FoxFieldSet(M,NAME):Nikos", typeof(STRING))
         TestMacro(mc, e"{|| Alltrim('abc')}", Args(), "MyAlltrim()", typeof(STRING))
 
         // FoxPro literal dates and datetimes. For simplicity we return them all as DateTime

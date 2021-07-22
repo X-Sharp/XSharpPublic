@@ -203,11 +203,17 @@ global wag := "" as string
     FUNCTION MyVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
         RETURN wag + "VarPut(" + name +"):" + VALUE:ToString()
 
+    FUNCTION MyFoxVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
+        RETURN wag + "FoxVarPut(" + name +"):" + VALUE:ToString()
+
     FUNCTION MyMemVarGet(name AS STRING) AS USUAL
         RETURN "MemVarGet(" + name + ")"
 
     FUNCTION MyMemVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
         RETURN "MemVarPut(" + name +"):" + VALUE:ToString()
+
+    FUNCTION MyFoxMemVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
+        RETURN "FoxMemVarPut(" + name +"):" + VALUE:ToString()
 
     FUNCTION MyFieldGet(name AS STRING) AS USUAL
         RETURN wag + "FieldGet(" + name + ")"
@@ -215,11 +221,16 @@ global wag := "" as string
     FUNCTION MyFieldSet(name AS STRING, VALUE AS USUAL) AS USUAL
         RETURN wag + "FieldSet(" + name +"):" + VALUE:ToString()
 
+
+
     FUNCTION MyFieldGetWa(wa AS STRING, name AS STRING) AS USUAL
         RETURN "FieldGet(" + wa + "," + name + ")"
 
     FUNCTION MyFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
         RETURN "FieldSet(" + wa + "," + name +"):" + VALUE:ToString()
+
+    FUNCTION MyFoxFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
+        RETURN "FoxFieldSet(" + wa + "," + name +"):" + VALUE:ToString()
 
     FUNCTION MyPushWa(wa as usual) as void
         wag := wa + "->"

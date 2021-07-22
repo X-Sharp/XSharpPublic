@@ -152,7 +152,7 @@ BEGIN NAMESPACE MacroCompilerTest
             LOCAL match AS LOGIC
             IF IsArray(expect)
                 match := ALen(expect) = ALen(res)
-                FOR VAR i := 1 TO ALen(expect)
+                FOR VAR i := 1 TO XSharp.RT.Functions.ALen(expect)
                     IF expect[i] != ((ARRAY)res)[i]
                         match := FALSE
                     END

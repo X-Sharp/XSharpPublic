@@ -718,9 +718,14 @@ namespace XSharp.MacroCompiler
                 {
                     Token o = ConsumeAndGet();
                     var field = Require(ParseId(), ErrorCode.Expected, "name");
-                    return (_options.AllowMemvarAlias && alias.Token.Type == TokenType.M)
-                        ? new MemvarExpr(new LiteralExpr(field.Token, TokenType.SYMBOL_CONST), o) as Expr
-                        : new AliasExpr(new LiteralExpr(alias.Token, TokenType.SYMBOL_CONST), new LiteralExpr(field.Token, TokenType.SYMBOL_CONST), o);
+                    // M-> and MEMVAR-> should not become an AliasExpr
+                    if (alias.Token.Type == TokenType.MEMVAR ||
+                        (_options.AllowMemvarAlias && alias.Token.Type == TokenType.M) || 
+                        alias.Token.SourceText.ToUpper() == "M" )
+                    {
+                        return new MemvarExpr(new LiteralExpr(field.Token, TokenType.SYMBOL_CONST), o);
+                    }
+                    return new AliasExpr(new LiteralExpr(alias.Token, TokenType.SYMBOL_CONST), new LiteralExpr(field.Token, TokenType.SYMBOL_CONST), o);
                 }
                 else
                 {

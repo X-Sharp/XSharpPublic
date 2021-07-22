@@ -7,9 +7,6 @@
 USING XSharp.Internal
 
 
-
-
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
 FUNCTION ALen(a AS __FoxArray, nArrayAttribute AS LONG) AS DWORD
     SWITCH nArrayAttribute
@@ -29,9 +26,10 @@ FUNCTION ALen(a AS __FoxArray, nArrayAttribute AS LONG) AS DWORD
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
-FUNCTION ALen(a AS USUAL) AS DWORD
-    IF a IS __FoxArray
-        RETURN ALen(a, 0)
+/// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+FUNCTION ALen(a AS ARRAY) AS DWORD
+    IF a IS __FoxArray VAR foxArray
+        RETURN ALen(foxArray, 0)
     ELSE
         RETURN XSharp.RT.Functions.ALen(a)
     ENDIF
@@ -57,14 +55,19 @@ FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD, nColumnSubscr
 THROW ArgumentException { "a one-dimensional array has no columns"}
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/adel/*" />
-FUNCTION ADel(ArrayName AS __FoxArray, nElementNumber AS LONG, nDeleteType := 2 AS LONG) AS DWORD
-    IF ! ArrayName:MultiDimensional
-        ArrayName:Delete((LONG) nElementNumber)
+/// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+FUNCTION ADel(ArrayName AS ARRAY, nElementNumber AS LONG, nDeleteType := 2 AS LONG) AS DWORD
+    IF ! ArrayName IS __FoxArray VAR foxArray
+        XSharp.RT.Functions.ADel(ArrayName, (DWORD) nElementNumber )
+        RETURN 1
+    ENDIF
+    IF ! foxArray:MultiDimensional
+        foxArray:Delete((LONG) nElementNumber)
     ELSE
         IF nDeleteType == 2
-            ArrayName:DeleteColumn( (LONG) nElementNumber)
+            foxArray:DeleteColumn( (LONG) nElementNumber)
         ELSE
-            ArrayName:DeleteRow((LONG) nElementNumber)
+            foxArray:DeleteRow((LONG) nElementNumber)
         ENDIF
     ENDIF
     RETURN 1
@@ -105,39 +108,48 @@ FUNCTION ASubScript(ArrayName AS __FoxArray, nElementNumber AS DWORD, nSubscript
     ENDIF
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ains/*" />
-FUNCTION AIns(ArrayName AS __FoxArray, nElementNumber AS DWORD, nInsertType := 1 AS DWORD) AS DWORD
-    IF !ArrayName:MultiDimensional
+/// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+FUNCTION AIns(ArrayName AS ARRAY, nElementNumber AS DWORD, nInsertType := 1 AS DWORD) AS DWORD
+    IF ! ArrayName IS __FoxArray VAR foxArray
+        XSharp.RT.Functions.AIns(ArrayName, nElementNumber)
+        RETURN 1
+    ENDIF
+    IF !foxArray:MultiDimensional
         IF nInsertType > 1
 			THROW ArgumentException { "a one-dimensional array has no columns"}
 		ELSEIF nElementNumber == 0 .OR. nElementNumber > (DWORD) ArrayName:Count
 			THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, "'nElementNumber' number is out of range" }
 		ENDIF
 
-		ArrayName:Insert((LONG) nElementNumber)
+		foxArray:Insert((LONG) nElementNumber)
     ELSE
         IF nInsertType > 2
 			THROW ArgumentOutOfRangeException { nameof(nInsertType), nInsertType, "'nInsertType' number is out of range" }
 		ENDIF
         IF nInsertType == 2
-            IF nElementNumber == 0 .OR. nElementNumber > (DWORD) ArrayName:Columns
+            IF nElementNumber == 0 .OR. nElementNumber > (DWORD) foxArray:Columns
 				THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, "'nElementNumber' number is out of range" }
 			ENDIF
 
-			ArrayName:InsertColumn( (LONG) nElementNumber)
+			foxArray:InsertColumn( (LONG) nElementNumber)
         ELSE
-            IF nElementNumber == 0 .OR. nElementNumber > (DWORD) ArrayName:Rows
+            IF nElementNumber == 0 .OR. nElementNumber > (DWORD) foxArray:Rows
 				THROW ArgumentOutOfRangeException { nameof(nElementNumber), nElementNumber, "'nElementNumber' number is out of range" }
 			ENDIF
 
-			ArrayName:InsertRow((LONG) nElementNumber)
+			foxArray:InsertRow((LONG) nElementNumber)
         ENDIF
     ENDIF
     RETURN 1
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asize/*" />
-FUNCTION ASize(ArrayName AS __FoxArray, nSize AS DWORD) AS __FoxArray
-    ArrayName:Resize((LONG) nSize)
-    RETURN ArrayName
+/// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
+FUNCTION ASize(ArrayName AS ARRAY, nSize AS DWORD) AS ARRAY
+    IF ! ArrayName IS __FoxArray VAR foxArray
+        RETURN XSharp.RT.Functions.ASize(ArrayName, nSize)
+    ENDIF
+    foxArray:Resize((LONG) nSize)
+    RETURN foxArray
 
 
 
@@ -163,14 +175,13 @@ FUNCTION ShowFoxArray ( aTest AS __FoxArray , cPrefix := "" AS STRING ) AS VOID
 	ENDIF
 
 	LOCAL FUNCTION GetElementValueType( uValue AS USUAL ) AS STRING
+	    IF IsNil ( uValue )
+		    RETURN "(Nil)"
+	    ELSE
+		    RETURN "(" + ValType ( uValue ) + ")"
+	    ENDIF
 
-	IF IsNil ( uValue )
-		RETURN "(Nil)"
-	ELSE
-		RETURN "(" + ValType ( uValue ) + ")"
-	ENDIF
-
-END FUNCTION
+        END FUNCTION
 
 RETURN
 

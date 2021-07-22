@@ -4,9 +4,9 @@ USING System.Text
 // make sure this is compiled early bound !
 #pragma options ("lb", off)
 BEGIN NAMESPACE XSharp.VFP
-    INTERNAL DELEGATE __IsInDelimiterArray(tc2Check AS Char) AS LOGIC
-    INTERNAL DELEGATE __GetWordCountActive(tcString AS STRING) AS LONG
-	
+    //INTERNAL DELEGATE __IsInDelimiterArray(tc2Check AS Char) AS LOGIC
+    //INTERNAL DELEGATE __GetWordCountActive(tcString AS STRING) AS LONG
+
     INTERNAL DEFINE Asc_A_Low := 097 // Asc_A + 32
     INTERNAL DEFINE Asc_Z_Low := 122 // Asc_Z + 32
 
@@ -16,13 +16,13 @@ BEGIN NAMESPACE XSharp.VFP
         METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
         METHOD SetStru() AS VOID
     END INTERFACE
-               
+
     INTERNAL CLASS GetVfpDefault IMPLEMENTS IGetWord
         INTERNAL CONST _cSpace := c' '    AS Char // _Chr(ASC_BLANK)  Chr(032)[0]
         INTERNAL CONST _c_LinF := c'\n'   AS Char // _Chr(ASC_LF)     Chr(010)[0]
         INTERNAL CONST _c__Tab := c'\t'   AS Char // _Chr(ASC_Tab)    Chr(009)[0]
         * public const _c_CRet := c'\r'   as Char // _Chr(ASC_CR)     Chr(013)[0]
-    
+
         INTERNAL oParent AS GetWordHandler
 
         VIRTUAL METHOD GetWordCount(tcString AS STRING) AS LONG
@@ -33,9 +33,9 @@ BEGIN NAMESPACE XSharp.VFP
                 IF SELF:IsDelimiter(tcString[lnI])
                     //remove any delimiters following in row, like Space(2)
 			        DO WHILE lnI < lnSLast
-				        lnI := lnI + 1 
+				        lnI := lnI + 1
 	    		        IF !SELF:IsDelimiter(tcString[lnI])
-                            *-- we have next normal chars considered "in word" 
+                            *-- we have next normal chars considered "in word"
 		    		        lnCount := lnCount+1
 					        EXIT
 				        ENDIF
@@ -43,7 +43,7 @@ BEGIN NAMESPACE XSharp.VFP
 		        ENDIF
 	        NEXT
 	        RETURN lnCount
-        
+
         VIRTUAL METHOD GetWordNum(tcString AS STRING, tnWordNum AS INT) AS STRING
             *-- Checked: throws on .Null.
             *-- undocumented and differing vom vfp: if tnIndex is 0, return "" (as in vfp9)
@@ -61,7 +61,7 @@ BEGIN NAMESPACE XSharp.VFP
                     DO WHILE lnI < lnSLast
                         lnI := lnI+1
                         IF !SELF:IsDelimiter(tcString[lnI])
-                            *-- gets interesting... found a word 
+                            *-- gets interesting... found a word
                             IF tnWordNum=lnCount
                                 *-- if we start at a word and RefIndex is 1 we reach this here
                                 lnStop := lnI-1
@@ -79,7 +79,7 @@ BEGIN NAMESPACE XSharp.VFP
                                 RETURN tcString:Substring(lnStart, lnStop-lnStart)
                             ELSE
                                 *-- Add already found non-White
-                                lnI := lnStop - 1 
+                                lnI := lnStop - 1
                                 EXIT
                             ENDIF
                         ENDIF
@@ -92,8 +92,8 @@ BEGIN NAMESPACE XSharp.VFP
         VIRTUAL METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
             /// direct switch checking against constants
             /// ToDo: flagged version, flags set on SetDict? Measure setup time!
-            SWITCH  tc2Check 
-                CASE _cSpace 
+            SWITCH  tc2Check
+                CASE _cSpace
                 CASE _c_LinF
                 CASE _c__Tab
                     RETURN .t.
@@ -105,7 +105,7 @@ BEGIN NAMESPACE XSharp.VFP
             RETURN
 
         CONSTRUCTOR(toParent AS GetWordHandler) AS VOID
-             SELF:oParent := toParent 
+             SELF:oParent := toParent
              RETURN
         END Constructor
     END CLASS
@@ -114,15 +114,15 @@ BEGIN NAMESPACE XSharp.VFP
 
         OVERRIDE METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
             RETURN System:Char:IsWhiteSpace(tc2Check)
-        
+
         CONSTRUCTOR(toParent AS GetWordHandler) AS VOID
             SUPER(toParent)
     END CLASS
-    
+
     INTERNAL CLASS GetSingle INHERIT GetVfpDefault
-        *-- Single delimiter Comparison options        
+        *-- Single delimiter Comparison options
         PUBLIC cCmp AS Char
-        
+
         OVERRIDE METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
             RETURN SELF:cCmp:Equals(tc2Check)
 
@@ -133,7 +133,7 @@ BEGIN NAMESPACE XSharp.VFP
         CONSTRUCTOR(toParent AS GetWordHandler) AS VOID
             SUPER(toParent)
     END CLASS
-    
+
     INTERNAL CLASS GetSingleOpt INHERIT GetSingle
         // Direct call to Char:Equals without calling IsDelimiter gives sizable boost
         OVERRIDE METHOD GetWordCount(tcString AS STRING) AS LONG
@@ -144,9 +144,9 @@ BEGIN NAMESPACE XSharp.VFP
                 IF SELF:cCmp:Equals(tcString[lnI])
                     //remove any delimiters following in row, like Space(2)
 			        DO WHILE lnI < lnSLast
-				        lnI := lnI + 1 
+				        lnI := lnI + 1
 	    		        IF !SELF:cCmp:Equals(tcString[lnI])
-                            *-- we have next normal chars considered "in word" 
+                            *-- we have next normal chars considered "in word"
 		    		        lnCount := lnCount+1
 					        EXIT
 				        ENDIF
@@ -172,7 +172,7 @@ BEGIN NAMESPACE XSharp.VFP
                     DO WHILE lnI < lnSLast
                         lnI := lnI+1
                         IF !SELF:cCmp:Equals(tcString[lnI])
-                            *-- gets interesting... found a word 
+                            *-- gets interesting... found a word
                             IF tnWordNum=lnCount
                                 *-- if we start at a word and RefIndex is 1 we reach this here
                                 lnStop := lnI-1
@@ -190,7 +190,7 @@ BEGIN NAMESPACE XSharp.VFP
                                 RETURN tcString:Substring(lnStart, lnStop-lnStart)
                             ELSE
                                 *-- Add already found non-White
-                                lnI := lnStop - 1 
+                                lnI := lnStop - 1
                                 EXIT
                             ENDIF
                         ENDIF
@@ -204,7 +204,7 @@ BEGIN NAMESPACE XSharp.VFP
             SUPER(toParent)
 
     END CLASS
-    
+
     INTERNAL CLASS GetMultiple INHERIT GetVfpDefault
         *-- if not single char, DotNetWhite or VfpWhite:
         PRIVATE CONST _c_A126 := (Char) 126 AS Char // _Chr(ASC_Z_Low)  Chr(126)[0], cut off ~ TO be safe on 1 off
@@ -223,7 +223,7 @@ BEGIN NAMESPACE XSharp.VFP
             IF lnI<0
                 *-- it is GUARANTEED OBJECT below Ascii 126
                 *-- make certain, no index Error can slip in
-                RETURN SELF:alFlg[_i_ArOf + lnI]  
+                RETURN SELF:alFlg[_i_ArOf + lnI]
             ELSEIF SELF:nInDict>0
                 *-- guard for other alphabets
                 RETURN  SELF:hcCmp:ContainsKey(tc2Check)
@@ -264,34 +264,34 @@ BEGIN NAMESPACE XSharp.VFP
         CONSTRUCTOR(toParent AS GetWordHandler) AS VOID
             SUPER(toParent)
     END CLASS
-    
-    INTERNAL CLASS GetMoreLanguage INHERIT GetMultiple
-        *-- exchange with Range for Greek or Cyrillic alphabet
-        PRIVATE CONST _c_Up_A := c'A'    AS Char // _Chr(ASC_A)      Chr(065)[0]
-        PRIVATE CONST _c_Up_Z := c'Z'    AS Char // _Chr(ASC_Z)      Chr(090)[0]
-        PRIVATE CONST _c_Lw_a := c'a'    AS Char // _Chr(ASC_A_Low)  Chr(097)[0]
-        PRIVATE CONST _c_Lw_z := c'z'    AS Char // _Chr(ASC_Z_Low)  Chr(122)[0]
-        
-        OVERRIDE METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
-            *-- even better would be 1 Compare, then checking against known numeric range,
-            *-- or checking several ranges, perhaps even adding DotNet.IsWhiteSpace into the fray
-            *-- generating+compiling "specific" IsDelimiter() on the fly
-            *-- either generating whole class dynamic only predicate delegate IsDelimiter 
-            * local liCompared2BigAlpha := 
-           IF  tc2Check:CompareTo(_c_Lw_a)>=0 .and. tc2Check:CompareTo(_c_Lw_z)<=0    // lower letters first, AS ocurring more often
-                RETURN .f.
-            ELSEIF  tc2Check:CompareTo(_c_Up_A)>=0 .and. tc2Check:CompareTo(_c_Up_Z)<=0
-                RETURN .f.
-            ELSE //IF  .t. // SELF:isVfpWhiteSwitchChar(tc2Check)
-                /// Flag Check Version???
-                RETURN .t.
-            ENDIF
-            //RETURN  SELF:hcCmp:ContainsKey(tc2Check)
-        
-        CONSTRUCTOR(toParent AS GetWordHandler) AS VOID
-            SUPER(toParent)
-    END CLASS
-    
+
+//    INTERNAL CLASS GetMoreLanguage INHERIT GetMultiple
+//        *-- exchange with Range for Greek or Cyrillic alphabet
+//        PRIVATE CONST _c_Up_A := c'A'    AS Char // _Chr(ASC_A)      Chr(065)[0]
+//        PRIVATE CONST _c_Up_Z := c'Z'    AS Char // _Chr(ASC_Z)      Chr(090)[0]
+//        PRIVATE CONST _c_Lw_a := c'a'    AS Char // _Chr(ASC_A_Low)  Chr(097)[0]
+//        PRIVATE CONST _c_Lw_z := c'z'    AS Char // _Chr(ASC_Z_Low)  Chr(122)[0]
+//
+//        OVERRIDE METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
+//            *-- even better would be 1 Compare, then checking against known numeric range,
+//            *-- or checking several ranges, perhaps even adding DotNet.IsWhiteSpace into the fray
+//            *-- generating+compiling "specific" IsDelimiter() on the fly
+//            *-- either generating whole class dynamic only predicate delegate IsDelimiter
+//            * local liCompared2BigAlpha :=
+//           IF  tc2Check:CompareTo(_c_Lw_a)>=0 .and. tc2Check:CompareTo(_c_Lw_z)<=0    // lower letters first, AS ocurring more often
+//                RETURN .f.
+//            ELSEIF  tc2Check:CompareTo(_c_Up_A)>=0 .and. tc2Check:CompareTo(_c_Up_Z)<=0
+//                RETURN .f.
+//            ELSE //IF  .t. // SELF:isVfpWhiteSwitchChar(tc2Check)
+//                /// Flag Check Version???
+//                RETURN .t.
+//            ENDIF
+//            //RETURN  SELF:hcCmp:ContainsKey(tc2Check)
+//
+//        CONSTRUCTOR(toParent AS GetWordHandler) AS VOID
+//            SUPER(toParent)
+//    END CLASS
+//
 	INTERNAL CLASS GetWordHandler
 	    /// Single
         /// lMany:
@@ -301,7 +301,7 @@ BEGIN NAMESPACE XSharp.VFP
         PUBLIC iMethod := 0 AS INT
         PUBLIC lAuto := .t. AS LOGIC
         PRIVATE CONST Delimiters := e" \n\t" AS STRING
-        
+
         ///implemented as lazy loading in :SetActive, perhaps more DotNetStyle
         ///would be a property or access method creating an instance in member location slot
         ///when accessed and still .Null.
@@ -311,26 +311,26 @@ BEGIN NAMESPACE XSharp.VFP
         PRIVATE STATIC oSingle_Opt := NULL AS GetSingleOpt
         PRIVATE STATIC oMultipleCs := NULL AS GetMultiple
         INTERNAL oActiveObjc := NULL AS IGetWord // IGetWord AS common INTERFACE would be cleaner
-        
+
         *-- plus a few special methods to set different delimiters,
         *-- causing the object to "reoptimize" the code used to analyze/extract the string (
         PUBLIC METHOD SetDelimiter(tcDelimiter AS STRING) AS VOID
             *-- Somewhat ugly: here no option to set DotNetWhite or VfpDefault via "best" mode
             *-- of course setting :iMethod directly works, and "special" values
-            *-- like "" for vfpFeault and .Null. for DotNetWhite have their own messy code smell          
+            *-- like "" for vfpFeault and .Null. for DotNetWhite have their own messy code smell
             *-- what is missing for alines() ? Perhaps implement alines(taArr, tcString, tnFlags, tcCHAR_List as Char[]) overload?
-            *-- List of STRING Parameters, Flags: in own code Chr(13)+Chr(10) most often used "String" 
+            *-- List of STRING Parameters, Flags: in own code Chr(13)+Chr(10) most often used "String"
             SELF:cRawStr := tcDelimiter
             IF tcDelimiter:Length=1
                 IF SELF:iMethod <0
                     *-- guard for manual sets
                     SELF:iMethod := -SELF:iMethod
                 ELSE
-                    SELF:iMethod := 1                    
+                    SELF:iMethod := 1
                 ENDIF
             ELSEIF  tcDelimiter:Length=3 and tcDelimiter:IndexOf(GetVfpDefault:_cSpace)>=0 ;
                 and tcDelimiter:IndexOf(GetVfpDefault:_c_LinF)>=0 ;
-                and tcDelimiter:IndexOf(GetVfpDefault:_c__Tab)>=0 
+                and tcDelimiter:IndexOf(GetVfpDefault:_c__Tab)>=0
                 *-- ToDo: find most efficient check for Permutations of Tab, LF, Space(1)
                 *-- Will switcg over to correct subobject
                 *-- min() taking usuals not an option
@@ -346,12 +346,12 @@ BEGIN NAMESPACE XSharp.VFP
             IF SELF:lAuto
                 SELF:SetActive()
             ENDIF
-            
+
 
         PUBLIC METHOD SetActive() AS VOID
             // more elegant NullCheck+Create via property ?
             // Speed difference caused by property vs. field access ?
-            // Different ways to check for .Null.? 
+            // Different ways to check for .Null.?
             SWITCH SELF:iMethod
                 CASE  -4
                     IF oDotWhiteSp == NULL
@@ -369,7 +369,7 @@ BEGIN NAMESPACE XSharp.VFP
                     IF oSingleChar == NULL
                         oSingleChar := GetSingle{SELF}
                     ENDIF
-                    SELF:oActiveObjc :=  oSingleChar 
+                    SELF:oActiveObjc :=  oSingleChar
                 CASE 22
                     SELF:cRawStr := Delimiters
                     IF oVfpDefault == NULL
@@ -387,23 +387,23 @@ BEGIN NAMESPACE XSharp.VFP
                 END SWITCH
                 IF SELF:lAuto
                     *-- better imp via additional interface for 3(1)&37, 22/4 don't need empty method
-                    *-- no additional code as 1 inherits 3, but 
+                    *-- no additional code as 1 inherits 3, but
                     *-- then have to guard via call "as" plus check for returned null
                     SELF:SetStru()
                 ENDIF
             RETURN
-            
+
         INTERNAL METHOD SetStru() AS VOID
             SELF:oActiveObjc:SetStru()
-            
+
         INTERNAL METHOD isViaStr(tc2Check AS Char) AS LOGIC
             RETURN .t. // SELF:cRawStr:Contains((STRING) tc2Check)
 
 
-    CONSTRUCTOR()  
+    CONSTRUCTOR()
          *self:GetWordCount := self:GetWordCountMeth
          *self:GetWordNum := self:GetWordNumMeth
-         *self:IsDelimiter := Self:isVia1Char 
+         *self:IsDelimiter := Self:isVia1Char
          RETURN
 
 	END CLASS
@@ -438,7 +438,7 @@ INTERNAL FUNCTION GetWordCount( cString AS STRING, cDelimiters AS STRING, tnSwit
     LOCAL loSrch := GetWordHandler{} AS GetWordHandler
     IF tnSwitch<0
             loSrch:iMethod := tnSwitch
-    ENDIF            
+    ENDIF
     = loSrch:SetDelimiter(cDelimiters)
     tnSwitch := loSrch:iMethod
     tnSwitch := loSrch:iMethod

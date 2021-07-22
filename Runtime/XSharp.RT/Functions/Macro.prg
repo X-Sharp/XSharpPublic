@@ -55,12 +55,10 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
         VAR cMacro := cString // MPrepare(cString)
         IF oMC IS IMacroCompilerUsual VAR oMCU
             oResult := oMCU:CompileCodeblock(cMacro, lAllowSingleQuotes, oMod)
-            oResult:SetString(cString)
         ELSE
             LOCAL iResult AS ICodeblock
             iResult := oMC:Compile(cMacro, lAllowSingleQuotes, oMod, OUT VAR lIsCodeblock, OUT VAR addsMemVars)
             oResult := XSharp._Codeblock{iResult, cString, lIsCodeblock, addsMemVars}
-            oResult:SetString(cString)
         ENDIF
         RETURN oResult
     ENDIF

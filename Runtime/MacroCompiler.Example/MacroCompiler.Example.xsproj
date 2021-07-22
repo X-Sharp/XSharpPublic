@@ -42,7 +42,7 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>false</Nostandarddefs>
     <AssemblyOriginatorKeyFile>$(Solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
@@ -130,6 +130,11 @@
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj">
+      <Name>XSharp.VFP</Name>
+      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

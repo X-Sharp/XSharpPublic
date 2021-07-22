@@ -37,11 +37,11 @@ BEGIN NAMESPACE MacroCompilerTest
         "RETURN a+b+c"}),1,2,3)
         wait*/
 
-        ParserTestsFox(CreateFoxScriptCompiler())
-        ParserTests(CreateScriptCompiler())
-        ScriptTests()
-        TestPreProcessor(CreateScriptCompiler())
-        VoTests(mc)
+        //ParserTestsFox(CreateFoxScriptCompiler())
+        //ParserTests(CreateScriptCompiler())
+        //ScriptTests()
+        //TestPreProcessor(CreateScriptCompiler())
+        //VoTests(mc)
         FoxTests(fmc)
 
         ResetOverrides()

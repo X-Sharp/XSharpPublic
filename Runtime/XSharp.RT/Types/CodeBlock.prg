@@ -80,13 +80,13 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 [DebuggerDisplay( "{_cMacro}", Type := "_Codeblock" )] ;
 PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 	/// <exclude />
-	PROTECT _innerBlock AS ICodeblock
+	INITONLY PROTECT _innerBlock AS ICodeblock
 	/// <exclude />
-	PROTECT _cMacro		AS STRING
+	INITONLY PROTECT _cMacro		AS STRING
 	/// <exclude />
-	PROTECT _lIsBlock   AS LOGIC
+	INITONLY PROTECT _lIsBlock   AS LOGIC
 	/// <exclude />
-	PROTECT _addsMemVars AS LOGIC
+	INITONLY PROTECT _addsMemVars AS LOGIC
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];
     STATIC PRIVATE nullArgs AS OBJECT[]
@@ -150,7 +150,5 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
 
 	/// <summary>Was the codeblock created from a string that started with "{|" </summary>
 	PUBLIC PROPERTY IsBlock AS LOGIC GET _lIsBlock
-    INTERNAL METHOD SetString(cMacro AS STRING) AS VOID
-        SELF:_cMacro := cMacro
 END CLASS
 

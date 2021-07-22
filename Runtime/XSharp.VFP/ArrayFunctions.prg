@@ -29,8 +29,12 @@ FUNCTION ALen(a AS __FoxArray, nArrayAttribute AS LONG) AS DWORD
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
-FUNCTION ALen(a AS __FoxArray) AS DWORD
-    RETURN ALen(a, 0)
+FUNCTION ALen(a AS USUAL) AS DWORD
+    IF a IS __FoxArray
+        RETURN ALen(a, 0)
+    ELSE
+        RETURN XSharp.RT.Functions.ALen(a)
+    ENDIF
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD) AS USUAL

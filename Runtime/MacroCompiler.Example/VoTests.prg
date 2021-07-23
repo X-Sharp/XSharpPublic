@@ -480,6 +480,10 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
         TestMacro(mc, e"{|| M->NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
         TestMacro(mc, e"{|| M->NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
+        TestMacro(mc, e"{|| MEMVAR->NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
+        TestMacro(mc, e"{|| MEMVAR->NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
+        TestMacro(mc, e"{|| _MEMVAR->NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
+        TestMacro(mc, e"{|| _MEMVAR->NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
         TestMacro(mc, e"{|| M.NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
         TestMacro(mc, e"{|| M.NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
 

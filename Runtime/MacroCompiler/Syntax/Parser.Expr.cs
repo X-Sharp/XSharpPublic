@@ -720,7 +720,9 @@ namespace XSharp.MacroCompiler
                     var field = Require(ParseId(), ErrorCode.Expected, "name");
                     // M-> and MEMVAR-> should not become an AliasExpr
                     if (alias.Token.Type == TokenType.MEMVAR ||
-                        (_options.AllowMemvarAlias && alias.Token.Type == TokenType.M) || 
+                        alias.Token.Type == TokenType.M ||
+                        alias.Token.SourceText.ToUpper() == "MEMVAR" ||
+                        alias.Token.SourceText.ToUpper() == "_MEMVAR" ||
                         alias.Token.SourceText.ToUpper() == "M" )
                     {
                         return new MemvarExpr(new LiteralExpr(field.Token, TokenType.SYMBOL_CONST), o);

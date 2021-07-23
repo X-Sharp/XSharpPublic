@@ -6,17 +6,17 @@
             Encapsulate a Win32 console application.
         </summary>
         <remarks>
-            A noticeable difference between the implementation of the two libraries can be seen when starting an application from the command line.  A Terminal Lite application will get a new window allocated, while a Console Classes application runs in the same window in which it was started.  Depending on the command line setting, a Console Classes application can also run full screen, while a Terminal Lite application cannot.  Also, using the Console Classes does not require an additional runtime DLL to be distributed with your application.
-            <note type="tip">The application type has to be set to Console in the Application Options dialog box in order to run the application within the Win32 console.  Otherwise, a separate console window is created.  You can also use the Console class to create a separate console window in a regular Windows application, e.g., to output some debug information.</note>
+            A noticeable difference between the implementation of the two libraries can be seen when starting an application from the command line. A Terminal Lite application will get a new window allocated, while a Console Classes application runs in the same window in which it was started. Depending on the command line setting, a Console Classes application can also run full screen, while a Terminal Lite application cannot. Also, using the Console Classes does not require an additional runtime DLL to be distributed with your application.
+            <note type="tip">The application type has to be set to Console in the Application Options dialog box in order to run the application within the Win32 console. Otherwise, a separate console window is created. You can also use the Console class to create a separate console window in a regular Windows application, e.g., to output some debug information.</note>
         </remarks>
     </Console>
     <Console.ctor>
         <summary>
             Instantiate a new Console object.
         </summary>
-        <param name="lNew">A logical value forcing the allocation of a new console window, if set to TRUE.  The default is FALSE.</param>
+        <param name="lNew">A logical value forcing the allocation of a new console window, if set to TRUE. The default is FALSE.</param>
         <remarks>
-            The constructor allocates a new console window.  By default, or if the <paramref name="lNew" /> parameter is set to FALSE, X# first tries to use an already open console window, e.g., if the application was started from the command line.  If this fails, or if <paramref name="lNew" /> was set to TRUE, 
+            The constructor allocates a new console window. By default, or if the <paramref name="lNew" /> parameter is set to FALSE, X# first tries to use an already open console window, e.g., if the application was started from the command line. If this fails, or if <paramref name="lNew" /> was set to TRUE, 
             Console{} allocates and opens a new console window.
         </remarks>
         <example>
@@ -66,7 +66,7 @@
             Provide a method to de-instantiate a.
         </summary>
         <remarks>
-            This method can be used when a Console object is no longer needed.  Console:Destroy() de-instantiates the Console object, and allows you to close and free any resources that were opened or created by the object without waiting for the garbage collector.
+            This method can be used when a Console object is no longer needed. Console:Destroy() de-instantiates the Console object, and allows you to close and free any resources that were opened or created by the object without waiting for the garbage collector.
         </remarks>
         <returns>
             NIL
@@ -173,7 +173,7 @@
         </summary>
         <param name="sMsg">The string to be written to the console.</param>
         <remarks>
-            This method writes a string to the console.  The string is written at the current cursor position.
+            This method writes a string to the console. The string is written at the current cursor position.
         </remarks>
         <example>
             The following lines wait for, read, and echo console input.

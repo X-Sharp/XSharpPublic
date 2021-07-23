@@ -27,7 +27,7 @@
 /// <include file="Rdd.xml" path="doc/AdsSQLServer/*" />
 CLASS AdsSQLServer INHERIT DBServer
 /// <include file="Rdd.xml" path="doc/AdsSQLServer.ctor/*" />
-CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
+CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD )
     LOCAL cTemp AS STRING
     LOCAL cFileName AS STRING
 
@@ -44,7 +44,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
 
 
     // Call the DBServer init method which will execute the query
-    SUPER( cTemp, lShareMode, lReadOnlyMode, xDriver, aRdd )
+    SUPER( cTemp, lShareMode, lReadOnlyMode, xDriver, aRDD )
 
 
     // Now that the query is executed, fixup some member variables that couldn't

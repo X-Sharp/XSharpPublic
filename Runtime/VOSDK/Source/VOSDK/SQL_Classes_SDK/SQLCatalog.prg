@@ -91,7 +91,7 @@ CONSTRUCTOR( oSQLConnection )
 	RETURN
 
 
-/// <include file="SQL.xml" path="doc/SQLCatalogQuery.Prepare/*" />
+/// <exclude />
 METHOD Prepare()
 	RETURN TRUE
 

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -16,7 +16,7 @@ USING System.Runtime
 USING System.Runtime.ConstrainedExecution
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/frename/*" />	
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/frename/*" />
 FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 	LOCAL renamed := FALSE AS LOGIC
 	TRY
@@ -39,9 +39,9 @@ FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 		XSharp.IO.File.SetErrorState(e)
 	END TRY
 	RETURN renamed
-	
-	
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ferase/*" />	
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ferase/*" />
 FUNCTION FErase(cFileName AS STRING) AS LOGIC
 	LOCAL isDeleted := FALSE AS LOGIC
 	TRY
@@ -60,13 +60,13 @@ FUNCTION FErase(cFileName AS STRING) AS LOGIC
 		XSharp.IO.File.SetErrorState(e)
 	END TRY
 	RETURN isDeleted
-	
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcopy/*" />	
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcopy/*" />
 FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING) AS LOGIC
 	RETURN FCopy(cSourceFile, cTargetFile, TRUE)
 
 
-/// <inheritdoc cref="FCopy" />	
+/// <inheritdoc cref="FCopy" />
 /// <param name="lOverWrite">Should the target file be overwritten.</param>
 FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC) AS LOGIC
 	LOCAL IsCopied := FALSE AS LOGIC
@@ -80,24 +80,24 @@ FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC)
 	            BadFileParam(__FUNCTION__, nameof(cTargetFile), 2)
 	            RETURN FALSE
 	        ENDIF
-	
+
 		System.IO.File.Copy(cSourceFile,cTargetFile,lOverWrite)
 		IsCopied := TRUE
 	CATCH e AS Exception
 		XSharp.IO.File.SetErrorState(e)
 	END TRY
 	RETURN IsCopied
-	
-	
-	
+
+
+
 /// <summary><include file="VoFunctionDocs.xml" path="Runtimefunctions/splitpath/summary" /></summary>
 /// <returns><include file="VoFunctionDocs.xml" path="Runtimefunctions/splitpath/returns" /></returns>
 /// <remarks><include file="VoFunctionDocs.xml" path="Runtimefunctions/splitpath/remarks" /></remarks>
 /// <param name="cPath">The path name to break.</param>
-/// <param name="cDrive">The drive letter followed by a colon.  </param>
-/// <param name="cDir">The directories, including the trailing slash.  Forward slashes and backslashes both may be present in &lt;cPath&gt;.  Forward slashes (/) are converted to backslashes (\). </param>
-/// <param name="cName">The file name, without the extension.  </param>
-/// <param name="cExt">The extension, including the leading period.  </param>
+/// <param name="cDrive">The drive letter followed by a colon.  </param>
+/// <param name="cDir">The directories, including the trailing slash.  Forward slashes and backslashes both may be present in &lt;cPath&gt;.  Forward slashes (/) are converted to backslashes (\). </param>
+/// <param name="cName">The file name, without the extension.  </param>
+/// <param name="cExt">The extension, including the leading period.  </param>
 FUNCTION _SplitPath(cPath AS STRING, cDrive OUT STRING,cDir OUT STRING,cName OUT STRING,cExt OUT STRING) AS VOID
 	LOCAL nPos AS LONG
 	LOCAL cSep AS STRING
@@ -114,11 +114,11 @@ FUNCTION _SplitPath(cPath AS STRING, cDrive OUT STRING,cDir OUT STRING,cName OUT
 		cDrive := cPath:Substring(0, nPos+1)
 		cPath  := cPath:Substring(nPos + 1)
 	ENDIF
-	
+
 	IF cPath:Trim() != ""
 		cDir := Path.GetDirectoryName(cPath)
 	ENDIF
-	
+
 	IF String.IsNullOrEmpty( cDir )
 		IF cPath:StartsWith(cSep)
 			cDir := cSep
@@ -128,9 +128,9 @@ FUNCTION _SplitPath(cPath AS STRING, cDrive OUT STRING,cDir OUT STRING,cName OUT
 	ELSEIF ! cDir:EndsWith(cSep)
 		cDir += cSep
 	ENDIF
-	
+
 	cName := Path.GetFileNameWithoutExtension(cPath)
 	cExt  := Path.GetExtension(cPath)
-	
+
 	RETURN
-	
+

@@ -58,7 +58,7 @@ METHOD Append( lReleaseLocks AS LOGIC) AS LOGIC
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.AppendDB/*" />
-METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDriver, aRdd )  AS LOGIC CLIPPER
+METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDriver, aRDD )  AS LOGIC CLIPPER
 	LOCAL lRetCode 		AS LOGIC
 	LOCAL nNextCount 		AS LONGINT
 	LOCAL lRestOfFile 	AS LOGIC
@@ -120,7 +120,7 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 					nNextCount,  ;
 					,                     ;
 					lRestOfFile,   ;
-					cDriver, aRdd )
+					cDriver, aRDD )
 
 
 			ELSEIF lActiveScope
@@ -131,7 +131,7 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 					nStoredNextCount,  ;
 					,                               ;
 					lStoredRestOfFile,  ;
-					cDriver, aRdd )
+					cDriver, aRDD )
 
 
 			ELSE
@@ -142,7 +142,7 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 					,       ;
 					,       ;
 					,       ;
-					cDriver, aRdd )
+					cDriver, aRDD )
 			ENDIF
 
 

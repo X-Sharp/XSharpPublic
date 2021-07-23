@@ -82,9 +82,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <PreBuildEvent>Copy $(Solutiondir)Docs\Report.xml $(ProjectDir)\Report.Xml</PreBuildEvent>
-    <PostBuildEvent>Erase $(ProjectDir)\Report.Xml</PostBuildEvent>
-    <RunPostBuildEvent />
-  </PropertyGroup>
+<Import Project="..\VOSDKDocs.Targets" />
 </Project>

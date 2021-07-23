@@ -347,7 +347,7 @@ FUNCTION __OrdListClear()  AS LOGIC STRICT
 	LOCAL cDBF      AS STRING
 	LOCAL cAlias    AS STRING
 	LOCAL lShare    AS LOGIC
-	LOCAL aRdd      AS ARRAY
+	LOCAL aRDD      AS ARRAY
 	LOCAL rdds      AS _RddList
 	LOCAL i         AS DWORD
 	
@@ -355,9 +355,9 @@ FUNCTION __OrdListClear()  AS LOGIC STRICT
 		cDBF   := DbInfo(DBI_FULLPATH)
 		rdds   := DbInfo(DBI_RDD_LIST)
 		
-		aRdd := {}
+		aRDD := {}
 		FOR i := 1 TO rdds:uiRddCount
-			AAdd(aRdd, rdds:atomRddName[i] )
+			AAdd(aRDD, rdds:atomRddName[i] )
 		NEXT
 		
 		lShare := DbInfo(DBI_SHARED)
@@ -365,7 +365,7 @@ FUNCTION __OrdListClear()  AS LOGIC STRICT
 		lOpen := RddInfo(_SET_AUTOOPEN)
 		RddInfo(_SET_AUTOOPEN, .F.)
 		DbCloseArea()
-		lRet := DbUseArea(.F., aRdd, cDBF, cAlias, lShare)
+		lRet := DbUseArea(.F., aRDD, cDBF, cAlias, lShare)
 		RddInfo(_SET_AUTOOPEN, lOpen)
 	ELSE
 		lRet := .F.

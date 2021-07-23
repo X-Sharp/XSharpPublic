@@ -775,7 +775,7 @@ METHOD __SetupLocks( )  AS VOID STRICT
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd ) 
+CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD ) 
 	LOCAL dwCurrentWorkArea AS DWORD
 	LOCAL cFileName AS STRING
 	LOCAL w AS DWORD
@@ -911,7 +911,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
 		ENDIF
 
 
-		SELF:aRdds := __RddList( xDriver, aRdd )
+		SELF:aRdds := __RddList( xDriver, aRDD )
 		rddList := __AllocRddList( aRdds )
 
 

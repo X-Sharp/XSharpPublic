@@ -18,11 +18,11 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicPrope
 
     CONSTRUCTOR()
         SUPER()
-        _fields  := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase} 
-        _methods := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase} 
+        _fields  := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase}
+        _methods := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase}
 
     /// <summary>
-    /// Checks if the object has a particular member variable 
+    /// Checks if the object has a particular member variable
     /// </summary>
     /// <param name="cName">is a character string containing the symbolic identifier of a member variable.</param>
     /// <returns>The return value is .T. (true) if the object has the member variable &lt;cVarName&gt;, otherwise it returns .F. (false). </returns>
@@ -66,14 +66,14 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicPrope
             RETURN {}
         END SWITCH
         RETURN {}
-    
+
     /// <include file="XPPComments.xml" path="Comments/NoIvarPut/*" />
     OVERRIDE METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
         SELF:_fields[cName] := uValue
         RETURN
-        
+
     /// <include file="XPPComments.xml" path="Comments/NoIvarGet/*" />
-    OVERRIDE METHOD NoIvarGet(cName AS STRING) AS USUAL 
+    OVERRIDE METHOD NoIvarGet(cName AS STRING) AS USUAL
         IF SELF:_fields:ContainsKey(cName)
             RETURN SELF:_fields[cName]
         ENDIF
@@ -120,7 +120,7 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract IMPLEMENTS IDynamicPrope
         RETURN SELF
 
     /// <include file="XPPComments.xml" path="Comments/NoMethod/*" />
-   OVERRIDE METHOD NoMethod(uParams) AS USUAL CLIPPER
+    METHOD NoMethod(uParams) AS USUAL CLIPPER
         LOCAL aParams AS USUAL[]
         LOCAL cMethod AS STRING
         cMethod := RuntimeState.NoMethod

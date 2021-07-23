@@ -157,7 +157,7 @@ CLASS XSharp.XPP.ClassObject
     STATIC METHOD  IsInstanceofRuntimeClass(oObject AS OBJECT) AS LOGIC
         RETURN GetClassObject(oObject) != NULL_OBJECT
 
-    OVERRIDE METHOD HasIVar(cVar AS STRING) AS LOGIC
+    METHOD HasIVar(cVar AS STRING) AS LOGIC
         LOCAL oClass AS ClassObject
         oClass := GetClassObject(SELF)
         IF oClass != NULL

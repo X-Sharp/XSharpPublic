@@ -731,7 +731,7 @@ FUNCTION FieldGet(nFieldPos) AS USUAL CLIPPER
 /// <summary>Read an array of bytes direct from the workarea buffer.</summary>
 /// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
 ///<returns>
-/// The value of the field.  
+/// The value of the field.`
 /// IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldGetBytes() will generate an error.
 /// </returns>
 
@@ -749,7 +749,7 @@ FUNCTION FieldGetBytes(nFieldPos ) AS BYTE[] CLIPPER
 /// <param name="nFieldPos">The position OF the FIELD IN the database file structure.</param>
 /// <param name="aBytes">The value to write to the field</param>
 ///<returns>
-/// The value assigned TO the field.  
+/// The value assigned TO the field.
 /// IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldPutBytes() will generate an error.
 /// </returns>
 FUNCTION FieldPutBytes(nFieldPos AS USUAL, aBytes AS BYTE[]) AS USUAL

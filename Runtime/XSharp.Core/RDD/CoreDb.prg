@@ -1133,7 +1133,7 @@ CLASS XSharp.CoreDb
         /// <param name="uCobWhile"><include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" /></param>
         /// <param name="nNext">The number of records to process, starting with the current record.</param>
         /// <param name="uRecId">The number of the record to process.</param>
-        /// <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
+        /// <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBLocate() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1247,8 +1247,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Remove an order from an open index file.
         /// </summary>
-        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
-        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
+        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
+        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbDeleteOrder() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1305,8 +1305,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Open an index file and add specified orders to the order list in a work area.
         /// </summary>
-        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
-        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
+        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
+        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbSetIndex() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1334,8 +1334,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Remove orders from the order list in a work area and close associated index files.
         /// </summary>
-        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
-        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
+        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
+        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBClearIndex() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1383,8 +1383,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Set the controlling order for a work area.
         /// </summary>
-        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
-        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
+        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
+        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
         /// <param name="strPreviousOrder"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbSetOrder() but strongly typed.
@@ -1405,8 +1405,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Set the controlling order for a work area.
         /// </summary>
-        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
-        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
+        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
+        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
         /// <param name="strPreviousOrder">This parameter returns the previous order</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbSetOrder() but strongly typed.
@@ -1635,7 +1635,7 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Return the linking expression of a specified relation.
         /// </summary>
-        /// <param name="nPos">The position of the desired relation in the list of current work area relations.  The relations are numbered according to the order in which they were defined by relation setting.</param>
+        /// <param name="nPos">The position of the desired relation in the list of current work area relations.  The relations are numbered according to the order in which they were defined by relation setting.</param>
         /// <param name="pszRel">The linking expression defined to &lt;nRelation&gt;.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSetRelation().
@@ -1655,7 +1655,7 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Lock the current record.
         /// </summary>
-        /// <param name="uRecId">The ID (usually a record number) of the record to be locked.  If specified, record locks held by the current process are retained.  If not specified, all locks held by the current process are released and the current record is assumed.</param>
+        /// <param name="uRecId">The ID (usually a record number) of the record to be locked.  If specified, record locks held by the current process are retained.  If not specified, all locks held by the current process are released and the current record is assumed.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBRlock() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1679,7 +1679,7 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Return the work area number of a relation.
         /// </summary>
-        /// <param name="nPos">The position of the desired relation in the list of work area relations.  The relations are numbered according to the order in which they were defined by relation setting.</param>
+        /// <param name="nPos">The position of the desired relation in the list of work area relations.  The relations are numbered according to the order in which they were defined by relation setting.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBRSelect() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1930,7 +1930,7 @@ CLASS XSharp.CoreDb
         /// <param name="uCobWhile"><include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" /></param>
         /// <param name="nNext">The number of records to append, starting at the current record.</param>
         /// <param name="nRecno">The number of the record to append.</param>
-        /// <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
+        /// <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
         /// <param name="sortNames">The sort keys, specified as an _FieldNames object.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
     STATIC METHOD Sort(nDest AS DWORD,fieldNames AS _FieldNames,uCobFor AS ICodeblock,uCobWhile AS ICodeblock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,sortNames AS _FieldNames) AS LOGIC

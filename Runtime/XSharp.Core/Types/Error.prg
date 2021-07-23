@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -35,77 +35,77 @@ BEGIN NAMESPACE XSharp
     VIRTUAL PROPERTY Description		AS STRING AUTO := ""
     /// <summary>A string representing the argument supplied to an operator or function when an argument error occurs.</summary>
     VIRTUAL PROPERTY Arg				AS STRING AUTO := ""
-    PRIVATE  _ArgType			AS DWORD 
+    PRIVATE  _ArgType			AS DWORD
     /// <summary>A numeric value representing the data type of the argument that raised the error.</summary>
-    VIRTUAL PROPERTY ArgType			AS DWORD  
-      GET 
-        RETURN _ArgType 
+    VIRTUAL PROPERTY ArgType			AS DWORD
+      GET
+        RETURN _ArgType
       END GET
-      SET 
+      SET
         _ArgType := value
         _ArgTypeType := UsualTypeToType(value)
       END SET
     END PROPERTY
-    PRIVATE  _ArgTypeType 		:= NULL AS System.Type 
+    PRIVATE  _ArgTypeType 		:= NULL AS System.Type
     /// <summary>The system type representing the data type of the argument that raised the error.</summary>
-    VIRTUAL PROPERTY ArgTypeType		AS System.Type 
-      GET 
-        RETURN _ArgTypeType 
+    VIRTUAL PROPERTY ArgTypeType		AS System.Type
+      GET
+        RETURN _ArgTypeType
       END GET
-      SET 
+      SET
         _ArgTypeType := value
         _ArgType 	 := TypeToUsualType(value)
       END SET
     END PROPERTY
-    
-    PRIVATE _ArgTypeReq		AS DWORD 
+
+    PRIVATE _ArgTypeReq		AS DWORD
     /// <summary>A numeric value representing the expected type of the argument that raised the error.</summary>
-    VIRTUAL PROPERTY ArgTypeReq			AS DWORD 
-      GET 
-        RETURN _ArgTypeReq 
+    VIRTUAL PROPERTY ArgTypeReq			AS DWORD
+      GET
+        RETURN _ArgTypeReq
       END GET
-      SET 
+      SET
         _ArgTypeReq := value
         _ArgTypeReqType := UsualTypeToType(value)
       END SET
     END PROPERTY
-    PRIVATE  _ArgTypeReqType := NULL	AS System.Type 
+    PRIVATE  _ArgTypeReqType := NULL	AS System.Type
     /// <summary>The system type representing the expected type of the argument that raised the error.</summary>
-    VIRTUAL PROPERTY ArgTypeReqType		AS System.Type 
-      GET 
-        RETURN _ArgTypeReqType 
+    VIRTUAL PROPERTY ArgTypeReqType		AS System.Type
+      GET
+        RETURN _ArgTypeReqType
       END GET
-      SET 
+      SET
         _ArgTypeReqType := value
         _ArgTypeReq 	 := TypeToUsualType(value)
       END SET
     END PROPERTY
     /// <summary>A numeric value representing the type of the new result that the error handler substitutes for the operation that produced the error condition.</summary>
-    VIRTUAL PROPERTY SubstituteType     AS DWORD AUTO 
+    VIRTUAL PROPERTY SubstituteType     AS DWORD AUTO
     /// <summary>A numeric value representing the number of the argument supplied to an operator or function when an argument error occurs.</summary>
-    VIRTUAL PROPERTY ArgNum				AS DWORD AUTO 
+    VIRTUAL PROPERTY ArgNum				AS DWORD AUTO
     /// <summary>An object representing the SELF of the method in which the error occurred.</summary>
-    VIRTUAL PROPERTY MethodSelf			AS OBJECT AUTO 
+    VIRTUAL PROPERTY MethodSelf			AS OBJECT AUTO
     /// <summary>A symbol representing the calling function of the function in which the error occurred.</summary>
-    VIRTUAL PROPERTY CallFuncSym		AS STRING AUTO 
+    VIRTUAL PROPERTY CallFuncSym		AS STRING AUTO
     /// <summary>An array of the arguments supplied to an operator or function when an argument error occurs.</summary>
     VIRTUAL PROPERTY Args				AS OBJECT[] AUTO
     /// <summary>An integer numeric value representing the number of times the failed operation has been attempted.</summary>
     VIRTUAL PROPERTY Tries				AS INT AUTO := 0
     /// <summary>A logical value indicating whether the subsystem can perform default error recovery for the error condition.</summary>
-    VIRTUAL PROPERTY CanDefault         AS LOGIC AUTO 
+    VIRTUAL PROPERTY CanDefault         AS LOGIC AUTO
     /// <summary>A logical value indicating whether the subsystem can retry the operation that caused the error condition.</summary>
-    VIRTUAL PROPERTY CanRetry           AS LOGIC AUTO 
+    VIRTUAL PROPERTY CanRetry           AS LOGIC AUTO
     /// <summary>A logical value indicating whether a new result can be substituted for the operation that produced the error condition.</summary>
-    VIRTUAL PROPERTY CanSubstitute      AS LOGIC AUTO 
-    /// <summary>A string that describes the operation being attempted when the error occurred.</summary> 
+    VIRTUAL PROPERTY CanSubstitute      AS LOGIC AUTO
+    /// <summary>A string that describes the operation being attempted when the error occurred.</summary>
     VIRTUAL PROPERTY Operation          AS STRING AUTO := ""
     /// <summary>A value of 0 indicates that the error condition was not caused by an error from the operating system.</summary>
     VIRTUAL PROPERTY OSCode				AS DWORD AUTO := 0
     /// <summary>Descripion of the OSCode</summary>
     VIRTUAL PROPERTY OSCodeText			AS STRING GET IIF(OSCode == 0, "", DosErrString(OSCode))
     /// <summary>A numeric value representing the file handle supplied to a function when an file error occurs.</summary>
-    VIRTUAL PROPERTY FileHandle         AS DWORD AUTO 
+    VIRTUAL PROPERTY FileHandle         AS DWORD AUTO
     /// <summary>A numeric value representing a boundary condition for an operation (such as string overflow or array bound error).</summary>
     VIRTUAL PROPERTY MaxSize			AS DWORD AUTO
     /// <summary>A pointer to the function in which the error occurred.</summary>
@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp
     VIRTUAL PROPERTY Stack              AS STRING GET SELF:StackTrace SET SELF:StackTrace := Value
 
 	PRIVATE _StackTrace AS STRING
-    VIRTUAL PROPERTY StackTrace         AS STRING    
+    VIRTUAL PROPERTY StackTrace         AS STRING
     	GET
     		IF String.IsNullOrEmpty(SELF:_StackTrace)
     			RETURN SUPER:StackTrace
@@ -139,7 +139,7 @@ BEGIN NAMESPACE XSharp
             SELF:_StackTrace  := ErrorStack(2)
         ENDIF
         RETURN
-    
+
     /// <summary>Create an Error Object</summary>
     CONSTRUCTOR()
     SELF:setDefaultValues()
@@ -149,9 +149,9 @@ BEGIN NAMESPACE XSharp
     CONSTRUCTOR (msg AS STRING)
     SUPER(msg)
     SELF:setDefaultValues()
-    SELF:Description := msg 
+    SELF:Description := msg
     SELF:Gencode     := EG_EXCEPTION
-    RETURN 
+    RETURN
 
     /// <summary>Create an Error Object with the Innner Exception</summary>
     CONSTRUCTOR (ex AS Exception)
@@ -193,8 +193,8 @@ BEGIN NAMESPACE XSharp
     SELF:Arg         := cArgName
     SELF:ArgNum      := iArgNum
     SELF:Args		 := aArgs
-    
-    
+
+
     /// <summary>Create an Error Object for a Gencode and Argument Name.</summary>
     CONSTRUCTOR (dwGenCode AS DWORD, cArg AS STRING)
     SUPER(ErrString( dwGenCode ))
@@ -210,8 +210,8 @@ BEGIN NAMESPACE XSharp
     SELF:Gencode		:= dwGenCode
     SELF:Arg			:= cArg
     SELF:Description	:= cDescription
-    
-    
+
+
     /// <summary>Create an Error Object.</summary>
     CONSTRUCTOR (dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD)
     SUPER(ErrString( dwGenCode ))
@@ -222,7 +222,7 @@ BEGIN NAMESPACE XSharp
     SELF:Arg         := cArgName
     SELF:ArgNum      := iArgNum
     SELF:Description := ErrString( dwGenCode )
-    
+
     /// <summary>Create an Error Object.</summary>
     CONSTRUCTOR (dwGenCode AS DWORD, dwSubCode := 0 AS DWORD)
     SELF:setDefaultValues()
@@ -268,16 +268,16 @@ BEGIN NAMESPACE XSharp
       ENDIF
       IF SELF:Tries != 0
           sb:AppendLine(LangString(VOErrors.ERROR_TRIES) + SELF:Tries:ToString()    )
-     ENDIF              
+     ENDIF
       IF SELF:ArgType != 0
         sb:AppendLine(LangString(VOErrors.ERROR_ARGTYPE) 	+ TypeString(SELF:ArgType    ) )
-      ENDIF 
+      ENDIF
       IF SELF:ArgNum != 0
         sb:AppendLine(LangString(VOErrors.ERROR_ARGNUM) 	+ SELF:ArgNum:ToString()    )
       ENDIF
       IF ! String.IsNullOrEmpty(SELF:Arg)
         sb:AppendLine(LangString(VOErrors.ERROR_ARG)	+ SELF:Arg)
-      ENDIF 
+      ENDIF
       LOCAL cArgs AS STRING
       IF SELF:Args != NULL .AND. SELF:Args:Length > 0
             cArgs := "{"
@@ -295,7 +295,7 @@ BEGIN NAMESPACE XSharp
             NEXT
             cArgs += "}"
             sb:AppendLine(LangString(VOErrors.ERROR_ARGS)+ cArgs)
-      ENDIF 
+      ENDIF
       IF SELF:ArgTypeReqType != NULL
         sb:AppendLine(LangString(VOErrors.ERROR_ARGTYPE_REQ) + SELF:ArgTypeReqType:FullName)
       ENDIF
@@ -305,18 +305,18 @@ BEGIN NAMESPACE XSharp
       sb:AppendLine(LangString(VOErrors.ERROR_STACK))
       sb:AppendLine(SELF:StackTrace  )
       RETURN sb:ToString()
-      
-      
+
+
     /// <summary>Throw the error.</summary>
     VIRTUAL METHOD Throw AS VOID STRICT
         THROW SELF
-    
+
     #region STATIC methods TO construct an error
-    /// <exclude/>	
+    /// <exclude/>
     STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING) AS Error
     RETURN ArgumentError(cFuncName, name, description, 0)
-    
-    /// <exclude/>	
+
+    /// <exclude/>
     STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, iArgnum  AS DWORD, aArgs PARAMS OBJECT[]) AS Error
     VAR err			:= Error{XSharp.Gencode.EG_ARG, name, ErrString( EG_ARG )}
     err:FuncSym     := cFuncName
@@ -324,9 +324,9 @@ BEGIN NAMESPACE XSharp
     err:ArgNum		:= iArgnum
     err:Args		:= aArgs
     RETURN err
-    
-    
-    /// <exclude/>	
+
+
+    /// <exclude/>
     STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING, iArgnum AS DWORD) AS Error
     VAR err			:= Error{XSharp.Gencode.EG_ARG, name, description}
     err:FuncSym     := cFuncName
@@ -340,7 +340,7 @@ BEGIN NAMESPACE XSharp
         err:Args := aArgs
     RETURN err
 
-    /// <exclude/>	
+    /// <exclude/>
     STATIC METHOD WrapRawException( ex AS Exception ) AS Error
     LOCAL e AS Error
     if ex != null
@@ -351,8 +351,8 @@ BEGIN NAMESPACE XSharp
         e:Description := ErrString( EG_SEQUENCE ) + ":" + ex:Message
     endif
     RETURN e
-    
-    /// <exclude/>	
+
+    /// <exclude/>
     STATIC METHOD VOError( dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[] ) AS Error
         LOCAL e AS Error
         e:= Error{dwGenCode,cArgName}
@@ -360,17 +360,17 @@ BEGIN NAMESPACE XSharp
         e:ArgNum := iArgNum
         e:Args := aArgs
         e:Description := ErrString( dwGenCode )
-        RETURN e 
-    
-    /// <exclude/>	
+        RETURN e
+
+    /// <exclude/>
     STATIC METHOD VOError( ex AS Exception, dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[]  ) AS Error
     LOCAL e AS Error
     e			  := Error{ ex, cFuncName, cArgName, iArgNum, aArgs }
     e:Gencode     := dwGenCode
     e:Description := ErrString( dwGenCode )
     RETURN e
-    
-    /// <exclude/>	
+
+    /// <exclude/>
     STATIC METHOD VoDbError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING ) AS Error
     LOCAL e AS Error
     e := Error{dwGenCode, dwSubCode}
@@ -379,7 +379,7 @@ BEGIN NAMESPACE XSharp
     e:Description := ErrString( dwGenCode )
     RETURN e
 
-    /// <exclude/>	
+    /// <exclude/>
     STATIC METHOD VoDbError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e := Error{dwGenCode, dwSubCode}
@@ -393,7 +393,7 @@ BEGIN NAMESPACE XSharp
     RETURN e
 
 
-    /// <exclude/>	
+    /// <exclude/>
     STATIC METHOD VoDbError( dwGenCode AS DWORD, dwSubCode AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e			  := Error{dwGenCode, dwSubCode}
@@ -404,8 +404,8 @@ BEGIN NAMESPACE XSharp
         e:Arg := aArgs[0]:ToString()
     ENDIF
     RETURN e
-    
-    /// <exclude/>	
+
+    /// <exclude/>
     STATIC METHOD VoDbError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e := Error{dwGenCode, dwSubCode, cFuncName, cArgName, iArgNum}
@@ -417,32 +417,32 @@ BEGIN NAMESPACE XSharp
     ENDIF
     e:Args        := aArgs
     RETURN e
-    
-    /// <exclude/>	
+
+    /// <exclude/>
     STATIC METHOD DataTypeError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e			  := Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
     e:Gencode     := EG_DATATYPE
     e:Description := __CavoStr( VOErrors.DATATYPEERROR )
     RETURN e
-    
-    /// <exclude/>	
+
+    /// <exclude/>
     STATIC METHOD ArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, cDescription AS STRING, aArgs PARAMS OBJECT[]) AS Error
     LOCAL e AS Error
     e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
     e:Gencode     := EG_ARG
     e:Description := cDescription
     RETURN e
-    
-    /// <exclude/>	
+
+    /// <exclude/>
     STATIC METHOD NullArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD ) AS Error
     LOCAL e AS Error
     e := Error{ ArgumentNullException{} ,cFuncName, cArgName, iArgNum}
     e:Gencode     := EG_ARG
     e:Description := __CavoStr( VOErrors.ARGISNULL )
     RETURN e
-    
-    /// <exclude/>	
+
+    /// <exclude/>
     STATIC METHOD BoundError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e := Error{ ArgumentException{ErrString( EG_BOUND) } }
@@ -454,8 +454,8 @@ BEGIN NAMESPACE XSharp
     e:ArgNum      := iArgNum
     e:Args        := aArgs
     RETURN e
-    
-    
+
+
     #endregion
     /// <exclude />
     STATIC METHOD TypeToUsualType(oType AS System.Type) AS DWORD
@@ -514,11 +514,11 @@ BEGIN NAMESPACE XSharp
           RETURN __UsualType.Usual
         CASE "system.intptr"
           RETURN __UsualType.Ptr
-        
+
       END SWITCH
     END SWITCH
     RETURN __UsualType.Void
-    
+
     /// <exclude />
     STATIC METHOD UsualTypeToType(dwType AS DWORD) AS System.Type
     LOCAL typeName := NULL AS STRING
@@ -584,24 +584,22 @@ BEGIN NAMESPACE XSharp
         NEXT
     ENDIF
     RETURN NULL
-  
+
 
   STATIC METHOD GetInnerException( SELF e as Exception) AS Exception
-     IF e:InnerException != NULL 
-        DO WHILE e:InnerException != NULL 
+     IF e:InnerException != NULL
+        DO WHILE e:InnerException != NULL
             e := e:InnerException
             IF e IS XSharp.Error
                 EXIT
             ENDIF
         ENDDO
      ENDIF
-     RETURN e   
+     RETURN e
 END CLASS
 END NAMESPACE
 
-
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorbuild/*" /> 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorbuild/*" />
 FUNCTION ErrorBuild(pErrInfo AS Exception) AS XSharp.Error
 	RETURN  XSharp.Error{pErrInfo}
 

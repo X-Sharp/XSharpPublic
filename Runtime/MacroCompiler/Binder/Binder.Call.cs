@@ -142,6 +142,46 @@ namespace XSharp.MacroCompiler
                 ApplyConversions(args, ovRes, out writeBack);
                 return ovRes.Symbol;
             }
+            // Add automatic overload resolution
+            if (ovRes != null && ! ovRes.Unique && ovRes.Equivalent != null)
+            {
+                var ov1 = ovRes.Symbol;
+                var ov2 = ovRes.Equivalent.Symbol;
+                var func1 = ov1.DeclaringType.FullName;
+                var func2 = ov2.DeclaringType.FullName;
+
+                if (func1 != func2 && func1.StartsWith("XSharp") && func2.StartsWith("XSharp"))
+                {
+                    switch (func1)
+                    {
+                        case XSharpSpecialNames.XSharpVOFunctionsClass:
+                        case XSharpSpecialNames.XSharpDataFunctionsClass:
+                        case XSharpSpecialNames.XSharpVFPFunctionsClass:
+                        case XSharpSpecialNames.XSharpXPPFunctionsClass:
+                            // functions in specific runtime files override generic files
+                            return ovRes.Symbol;
+                        case XSharpSpecialNames.XSharpRTFunctionsClass:
+                            if (func2 == XSharpSpecialNames.XSharpCoreFunctionsClass)
+                                // functions in specific runtime files override generic files
+                                return ovRes.Symbol;
+                            break;
+                    }
+                    switch (func2)
+                    {
+                        case XSharpSpecialNames.XSharpVOFunctionsClass:
+                        case XSharpSpecialNames.XSharpDataFunctionsClass:
+                        case XSharpSpecialNames.XSharpVFPFunctionsClass:
+                        case XSharpSpecialNames.XSharpXPPFunctionsClass:
+                            // functions in specific runtime files override generic files
+                            return ovRes.Equivalent.Symbol;
+                        case XSharpSpecialNames.XSharpRTFunctionsClass:
+                            if (func1 == XSharpSpecialNames.XSharpCoreFunctionsClass)
+                                // functions in specific runtime files override generic files
+                                return ovRes.Equivalent.Symbol;
+                            break;
+                    }
+                }
+            }
             if (matching.Count > 1 && ovRes.Valid && Options.Resolver != null)
             {
                 var res = AskUserForCorrectOverload(matching, args);

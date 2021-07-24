@@ -207,17 +207,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <PreBuildEvent>copy $(SolutionDir)\Docs\RtComments.xml $(ProjectDir)\RtComments.Xml
-    copy $(SolutionDir)\Docs\VOFunctionDocs.xml $(ProjectDir)\VOFunctionDocs.Xml
-    copy $(SolutionDir)\Docs\VfpRuntimeDocs.xml $(ProjectDir)\VfpRuntimeDocs.Xml
-    copy $(SolutionDir)\Docs\VfpDocs.xml $(ProjectDir)\VfpDocs.Xml
-    </PreBuildEvent>
-    <PostBuildEvent>erase  $(ProjectDir)\RtComments.Xml
-    erase  $(ProjectDir)\VOFunctionDocs.Xml
-    erase  $(ProjectDir)\VfpRuntimeDocs.Xml
-    erase  $(ProjectDir)\VfpDocs.Xml
-    </PostBuildEvent>
-    <RunPostBuildEvent />
-  </PropertyGroup>
+<Import Project="..\XmlDoc.Targets" />
 </Project>

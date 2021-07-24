@@ -34,12 +34,6 @@ namespace XSharp.Runtime
         {
             options = o;
             options.AllowSingleQuotedStrings = true;
-            if (options.Dialect == XSharpDialect.FoxPro)
-            {
-                Compilation.Override(WellKnownMembers.XSharp_RT_Functions___FieldSetWa, XSharpQualifiedFunctionNames.FoxFieldSetWa);
-                Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, XSharpQualifiedFunctionNames.FoxMemVarPut);
-                Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, XSharpQualifiedFunctionNames.FoxVarPut);
-            }
         }
 
         public static MacroCompiler GetScriptCompiler(XSharpDialect dialect = XSharpDialect.Core)

@@ -158,9 +158,6 @@ namespace XSharp.MacroCompiler
         internal const string PushWorkarea = "global::VulcanRTFuncs.Functions.__pushWorkarea";
         internal const string PopWorkarea = "global::VulcanRTFuncs.Functions.__popWorkarea";
         internal const string Evaluate = "global::VulcanRTFuncs.Functions.Evaluate";
-        internal const string FoxFieldSetWa = "global::VulcanRTFuncs.Functions.__FoxFieldSetWa";
-        internal const string FoxMemVarPut = "global::VulcanRTFuncs.Functions.__FoxMemVarPut";
-        internal const string FoxVarPut = "global::VulcanRTFuncs.Functions.__FoxVarPut";
         //internal const string Default = "global::VulcanRTFuncs.Functions.Default";
         //internal const string Accept = "global::VulcanRTFuncs.Functions._accept";
         //internal const string Wait = "global::VulcanRTFuncs.Functions._wait";
@@ -205,9 +202,6 @@ namespace XSharp.MacroCompiler
         internal const string PushWorkarea = "global::XSharp.RT.Functions.__pushWorkarea";
         internal const string PopWorkarea = "global::XSharp.RT.Functions.__popWorkarea";
         internal const string Evaluate = "global::XSharp.RT.Functions.Evaluate";
-        internal const string FoxFieldSetWa = "global::XSharp.VFP.Functions.__FoxFieldSetWa";
-        internal const string FoxMemVarPut = "global::XSharp.VFP.Functions.__FoxMemVarPut";
-        internal const string FoxVarPut = "global::XSharp.VFP.Functions.__FoxVarPut";
     }
     internal static class OurAssemblyNames
     {

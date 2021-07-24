@@ -41,10 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Runtime\Runtime.Targets = Runtime\Runtime.Targets
 		Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg = Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg
 		Runtime\VOSDK\Source\VOSDK\VOSDK.Targets = Runtime\VOSDK\Source\VOSDK\VOSDK.Targets
-		Docs\VOSDK_Classes.xml = Docs\VOSDK_Classes.xml
+		Runtime\XmlDoc.Targets = Runtime\XmlDoc.Targets
 		Common\XSharpDefs.xh = Common\XSharpDefs.xh
-		Docs\XSharpVOSDK_Classes.xml = Docs\XSharpVOSDK_Classes.xml
-		Docs\XsRuntimeClasses.xml = Docs\XsRuntimeClasses.xml
 	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Core.Tests", "Runtime\XSharp.Core.Tests\XSharp.Core.Tests.xsproj", "{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}"

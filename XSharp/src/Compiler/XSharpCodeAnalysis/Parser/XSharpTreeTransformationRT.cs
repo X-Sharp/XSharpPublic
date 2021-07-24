@@ -827,10 +827,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg2 = MakeArgument(right);
             var args = MakeArgumentList(arg1, arg2);
             var name = XSharpQualifiedFunctionNames.MemVarPut;
-            if (_options.Dialect == XSharpDialect.FoxPro && _options.HasOption(CompilerOption.FoxArrayAssign, context, PragmaOptions))
-            {
-                name = XSharpQualifiedFunctionNames.FoxMemVarPut;
-            }
             var expr = GenerateMethodCall(name, args, true);
             return expr;
         }
@@ -891,10 +887,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var argWA = MakeArgument(area);
             var argValue = MakeArgument(value);
             var method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldSetWa : VulcanQualifiedFunctionNames.FieldSetWa;
-            if (_options.Dialect == XSharpDialect.FoxPro && _options.HasOption(CompilerOption.FoxArrayAssign, context, PragmaOptions))
-            {
-                method = XSharpQualifiedFunctionNames.FoxFieldSetWa;
-            }
             args = MakeArgumentList(argWA, argField, argValue);
             return GenerateMethodCall(method, args, true);
 
@@ -1669,7 +1661,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         if (!context.isInClass() && context.ClassId != null)
                         {
-                            var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), ctor, context.Namespace);
+                            var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), ctor);
                             context.Put(cls);
                         }
                         else
@@ -1693,7 +1685,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         if (!context.isInClass() && context.ClassId != null)
                         {
-                            var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), dtor, context.Namespace);
+                            var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), dtor);
                             context.Put(cls);
                         }
                         else

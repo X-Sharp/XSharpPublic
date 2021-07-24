@@ -200,7 +200,7 @@ voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Gl
 // method rule used inside and outside class members rule 
 method              : (Attributes=attributes)? (Modifiers=memberModifiers)?
                       T=methodtype (ExplicitIface=nameDot)? Sig=signature
-                      (CLASS (Namespace=nameDot)? ClassId=identifier)?      // Class Clause needed when entity and allowed when class member
+                      (CLASS ClassId=identifier)?      // Class Clause needed when entity and allowed when class member
                       vodummyclauses
                       end=eos
                       StmtBlk=statementBlock
@@ -423,7 +423,7 @@ classmember         : Member=method                                 #clsmethod
 constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?
                       c1=CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
                         (CallingConvention=callingconvention)? 
-                        (CLASS (Namespace=nameDot)? ClassId=identifier)?
+                        (CLASS ClassId=identifier)?
                         (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                         end=eos
                       (Chain=constructorchain)?
@@ -445,7 +445,7 @@ vodeclare           : DECLARE (ACCESS | ASSIGN | METHOD )  (~EOS)+ eos
 
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
                       d1=DESTRUCTOR (LPAREN RPAREN)? 
-                      (CLASS (Namespace=nameDot)? ClassId=identifier)?
+                      (CLASS ClassId=identifier)?
                       (UDCSEP ExpressionBody=expression)?               // New: Expression Body
                       end=eos
                       StmtBlk=statementBlock

@@ -3798,7 +3798,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return null;
         }
-        protected MemberDeclarationSyntax GenerateClassWrapper(SyntaxToken identifier, MemberDeclarationSyntax member, XP.NameDotContext namedot)
+        protected MemberDeclarationSyntax GenerateClassWrapper(SyntaxToken identifier, MemberDeclarationSyntax member)
         {
             // This method generates a class wrapper for standalone Methods with a Class Clause
             MemberDeclarationSyntax cls = _syntaxFactory.ClassDeclaration(
@@ -3813,10 +3813,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members: MakeList<MemberDeclarationSyntax>(member),
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                 semicolonToken: null);
-            if (namedot != null)
-            {
-                cls = AddNameSpaceToMember(namedot, cls);
-            }
             return cls;
         }
 
@@ -3910,7 +3906,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (!ctor.ContainsDiagnostics && genClass)
             {
-                var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), ctor, context.Namespace);
+                var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), ctor);
                 context.Put(cls);
             }
             else
@@ -3959,7 +3955,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (!dtor.ContainsDiagnostics && genClass)
             {
-                var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), dtor, context.Namespace);
+                var cls = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), dtor);
                 context.Put(cls);
             }
             else
@@ -4272,8 +4268,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         parentName = parent.Name;
                         string className;
                         className = context.ClassId.GetText();
-                        if (context.Namespace != null)
-                            className = context.Namespace.GetText() + className;
                         if (XSharpString.Compare(parentName, className) != 0)
                         {
                             m = m.WithAdditionalDiagnostics(
@@ -4310,13 +4304,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var prop = GenerateVoProperty(vop, cls);
                         mem = prop;
                         GlobalEntities.NeedsProcessing = true;
-                        m = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), mem, context.Namespace);
+                        m = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), mem);
                         cls.Put(m);
                     }
                     else
                     {
                         mem = m;
-                        m = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), mem, context.Namespace);
+                        m = GenerateClassWrapper(context.ClassId.Get<SyntaxToken>(), mem);
                         context.Put(m);
                     }
                     ce.Free();

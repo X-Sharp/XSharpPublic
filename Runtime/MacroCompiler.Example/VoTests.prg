@@ -382,7 +382,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b,c|DoTestC(a,b,c)}", Args(1, TRUE, testclass{222}), 222, typeof(INT))
         TestMacro(mc, e"{|a,b,c|DoTestS(a,b,c)}", Args(1, TRUE, teststruct{222}), 222, typeof(INT))
         TestMacro(mc, e"{|a| AScan(a, \"12\") }", Args({"135454","54376","123","53"}, NIL), 3, typeof(DWORD))
-        TestMacro(mc, e"{|a| ALen(a) }", Args({"1235454","54376","12","53"},NIL), 4, typeof(DWORD))
+        TestMacro(mc, e"{|a| XSharp.RT.Functions.ALen(a) }", Args({"1235454","54376","12","53"},NIL), 4, typeof(DWORD))
         //TestMacro(mc, e"{|a| (testclass)a }",Args(tci), tci, typeof(testclass))
         TestMacro(mc, e"{|a| ((int)a):GetHashCode() }", Args(8), 8, typeof(INT))
         TestMacro(mc, e"{|a| a:GetHashCode() }", Args(8), 8, typeof(INT))
@@ -583,5 +583,6 @@ BEGIN NAMESPACE MacroCompilerTest
         RETURN
 
 END NAMESPACE
+
 
 

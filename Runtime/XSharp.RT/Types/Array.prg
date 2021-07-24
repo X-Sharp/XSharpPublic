@@ -21,6 +21,8 @@ BEGIN NAMESPACE XSharp
     [DebuggerDisplay("{DebuggerString(),nq}")] ;
     [Serializable];
     PUBLIC CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer, ISerializable
+        PRIVATE CONST FoxArrayName := "XSharp.__FoxArray" AS STRING
+        INTERNAL PROPERTY __IsFoxArray AS LOGIC GET SELF:GetType():FullName == FoxArrayName
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         INTERNAL STATIC SuppressArrayIndexErrors := FALSE AS LOGIC  // used for Get_Element to emulate strange VO behaviour
@@ -454,7 +456,7 @@ BEGIN NAMESPACE XSharp
             FOR VAR i := 1 UPTO index:Length
                 index[i] -= 1
             NEXT
-            RETURN SELF:__GetElement(index) 
+            RETURN SELF:__GetElement(index)
 
         INTERNAL CLASS ArrayDebugView
             PRIVATE _value AS ARRAY

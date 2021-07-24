@@ -351,6 +351,9 @@ FUNCTION ACloneShallow<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T> WHERE T I
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
 FUNCTION ADel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     ARRAYNOTNULL aTarget
+    IF aTarget:__IsFoxArray
+        RETURN _CallClipFunc(#__FoxADel, aTarget, dwPosition, 2)
+    ENDIF
     aTarget:Delete((INT) dwPosition)
     RETURN aTarget
 
@@ -405,6 +408,9 @@ RETURN Repl("[]", ADim(a))
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ains/*" />
 FUNCTION AIns(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     ARRAYNOTNULL aTarget
+    IF aTarget:__IsFoxArray
+        _CallClipFunc(#__FoxAIns, aTarget, dwPosition, 1)
+    ENDIF
     aTarget:Insert((INT) dwPosition)
     RETURN aTarget
 
@@ -426,14 +432,12 @@ FUNCTION ALen<T>(aTarget AS __ArrayBase<T>) AS DWORD WHERE T IS NEW()
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alen/*" />
 FUNCTION ALen(aTarget AS ARRAY) AS DWORD
-    IF aTarget:GetType():FullName == "XSharp.__FoxArray"
+    IF aTarget == NULL
+        RETURN 0
+    ELSEIF aTarget:__IsFoxArray
         RETURN _CallClipFunc(#__FoxALen, aTarget)
     ENDIF
-    IF aTarget != NULL
-        RETURN aTarget:Length
-    ELSE
-        RETURN 0
-    ENDIF
+    RETURN aTarget:Length
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraydeprotect/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>

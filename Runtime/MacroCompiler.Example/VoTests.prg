@@ -31,6 +31,7 @@ BEGIN NAMESPACE MacroCompilerTest
         PRIVATE x
         VAR mc := CreateMacroCompiler()
         x := "a"
+        TestMacro(mc, "{||testfunc(x), x}", Args(), "b", typeof(STRING))
         TestMacro(mc, "{||testfunc(ref x), x}", Args(), "b", typeof(STRING))
 
     FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID

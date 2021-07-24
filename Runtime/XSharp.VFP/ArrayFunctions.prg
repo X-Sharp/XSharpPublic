@@ -27,12 +27,8 @@ FUNCTION ALen(a AS __FoxArray, nArrayAttribute AS LONG) AS DWORD
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/alen/*" />
 /// <remarks>The parameter to this function is a 'General Array'. The function decides at runtime if the array is a FoxPro array or a 'General' Array</remarks>
-FUNCTION ALen(a AS ARRAY) AS DWORD
-    IF a IS __FoxArray VAR foxArray
-        RETURN ALen(foxArray, 0)
-    ELSE
-        RETURN XSharp.RT.Functions.ALen(a)
-    ENDIF
+FUNCTION __FoxALen(a AS __FoxArray) AS DWORD
+    RETURN ALen(a, 0)
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION AElement(ArrayName AS __FoxArray, nRowSubscript AS DWORD) AS USUAL

@@ -318,7 +318,8 @@ global ErrorLevel := 1 as int
 GLOBAL TEST := 123
 DEFINE TEST2 := 123
 
-
+FUNCTION testfunc(y REF STRING) AS VOID
+    y := "b"
 
 FUNCTION S_EnforceType(uVar REF USUAL,cTyp AS STRING) AS VOID
     IF ValType(uVar) <> cTyp
@@ -365,5 +366,6 @@ FUNCTION S_EnforceTypeC(uVar,cTyp) CLIPPER
         END SWITCH
     ENDIF
     RETURN NIL
+
 
 

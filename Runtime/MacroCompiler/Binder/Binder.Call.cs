@@ -346,21 +346,24 @@ namespace XSharp.MacroCompiler
 
             void HandleArgWriteBack(ConversionSymbol conv, Expr e, ref Expr wb)
             {
-                if (conv.IsIndirectRefConversion() && e.Symbol?.HasSetAccess == true)
+                if (conv.IsIndirectRefConversion())
                 {
-                    // Handle writeBack
-                    Expr t = IdExpr.Bound(conv.IndirectRefConversionTempLocal());
-                    var wc = Conversion(t, e.Datatype, BindOptions.Default);
-                    if (wc.Exists)
+                    if (e.Symbol?.HasSetAccess == true || e is AutoVarExpr || e is AliasExpr)
                     {
-                        Convert(ref t, e.Datatype, wc);
-                        SymbolExtensions.AddExpr(ref wb, AssignExpr.Bound(e, t, BindOptions.Default));
+                        // Handle writeBack
+                        Expr t = IdExpr.Bound(conv.IndirectRefConversionTempLocal());
+                        var wc = Conversion(t, e.Datatype, BindOptions.Default);
+                        if (wc.Exists)
+                        {
+                            Convert(ref t, e.Datatype, wc);
+                            SymbolExtensions.AddExpr(ref wb, AssignExpr.Bound(e, t, BindOptions.Default));
+                        }
                     }
                 }
             }
             void HandleVarArgWriteBack(ConversionSymbol conv, Expr e, int i, ref Expr wb)
             {
-                if (e.Symbol?.HasSetAccess == true)
+                if (e.Symbol?.HasSetAccess == true || e is AutoVarExpr || e is AliasExpr)
                 {
                     // Handle writeBack
                     Expr t = IdExpr.Bound(conv.IndirectRefConversionTempLocal());

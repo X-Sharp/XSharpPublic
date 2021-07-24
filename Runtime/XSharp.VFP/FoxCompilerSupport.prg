@@ -8,14 +8,18 @@
 
 USING XSharp.Internal
 
+PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
+    VAR x := XSharp.MemVar{"InitTheClass",0}
+    x:Value := 42 // make sure the class constructor gets called
+    XSharp.MemVar.Put := __FoxMemVarPut
+    RETURN
 
-[NeedsAccessToLocals(TRUE)];
-FUNCTION __FoxMemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
-    VAR current :=  __MemVarGetSafe(cName)
+INTERNAL FUNCTION __FoxMemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
+    VAR current :=  XSharp.MemVar.GetSafe(cName)
     IF current IS __FoxArray .AND. ! uValue IS __FoxArray
         RETURN __FoxFillArray(current, uValue )
     ELSE
-        RETURN XSharp.MemVar.Put(cName, uValue)
+        RETURN XSharp.MemVar._Put(cName, uValue)
     ENDIF
 
 
@@ -28,40 +32,6 @@ FUNCTION __FoxAssign(uLHS AS USUAL, uValue AS USUAL) AS USUAL
     ENDIF
 
 
-
-[NeedsAccessToLocals(TRUE)];
-FUNCTION __FoxVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
-    IF FieldPos(cName) > 0
-        RETURN __FieldSet(cName, uValue)
-    ENDIF
-    RETURN __FoxMemVarPut(cName, uValue)
-
-
-
-FUNCTION __FoxFieldSetWa( area AS USUAL, fieldName AS STRING, uValue AS USUAL ) AS USUAL
-    IF IsNil(area)
-        RETURN __FieldSet(fieldName,uValue)
-    ENDIF
-    IF IsString(area) .AND. ((STRING) area):ToUpper() == "M"
-        RETURN __FoxMemVarPut(fieldName,uValue)
-    ENDIF
-    IF IsSymbol(area) .AND. ((STRING) area):ToUpper() == "M"
-        RETURN __FoxMemVarPut(fieldName,uValue)
-    ENDIF
-    LOCAL curArea := RuntimeState.CurrentWorkarea AS DWORD
-    LOCAL newArea := _Select( area ) AS DWORD
-    IF newArea > 0
-        RuntimeState.CurrentWorkarea := newArea
-        TRY
-            __FieldSet( fieldName, uValue )
-        FINALLY
-            RuntimeState.CurrentWorkarea := curArea
-        END TRY
-    ELSE
-        THROW Error.VoDbError( EG_ARG, EDB_BADALIAS, __FUNCTION__, nameof(area),1, <OBJECT>{area}  )
-    ENDIF
-    // Note: must return the same value passed in, to allow chained assignment expressions
-    RETURN uValue
 
 
 FUNCTION __FoxFillArray(uArray AS USUAL, uValue AS USUAL) AS USUAL

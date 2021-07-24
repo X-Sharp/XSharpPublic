@@ -205,11 +205,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string RunInitProcs = "RunInitProcs";
         internal const string VarGet = "__VarGet";
         internal const string VarPut = "__VarPut";
-        internal const string FoxVarPut = "__FoxVarPut";
         internal const string MemVarGetSafe = "__MemVarGetSafe";
         internal const string MemVarGet = "__MemVarGet";
         internal const string MemVarPut = "__MemVarPut";
-        internal const string FoxMemVarPut = "__FoxMemVarPut";
         internal const string MemVarRelease = "__MemVarRelease";
         internal const string MemVarInit = "__MemVarInit";
         internal const string MemVarDecl = "__MemVarDecl";
@@ -217,7 +215,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldSet = "__FieldSet";
         internal const string FieldGetWa = "__FieldGetWa";
         internal const string FieldSetWa = "__FieldSetWa";
-        internal const string FoxFieldSetWa = "__FoxFieldSetWa";
         internal const string FieldGetWaUndeclared = "__FieldGetWa2";
         internal const string FieldSetWaUndeclared = "__FieldSetWa2";
         internal const string PushWorkarea ="__pushWorkarea";
@@ -322,9 +319,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string TextSupport = GlobalVFP + ReservedNames.TextSupport;
         internal const string TextOut = GlobalVFP + ReservedNames.TextOut;
         internal const string TextMergeCheck = GlobalVFP + ReservedNames.TextMergeCheck;
-        internal const string FoxFieldSetWa = GlobalVFP + ReservedNames.FoxFieldSetWa;
-        internal const string FoxMemVarPut = GlobalVFP + ReservedNames.FoxMemVarPut;
-        internal const string FoxVarPut = GlobalVFP + ReservedNames.FoxVarPut;
     }
 
     internal static class VulcanAssemblyNames

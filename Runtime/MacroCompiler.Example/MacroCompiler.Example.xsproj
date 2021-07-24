@@ -42,12 +42,12 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
+    <XSharpProjectversion>2.8.1.12</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>false</Nostandarddefs>
     <AssemblyOriginatorKeyFile>$(Solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <NoWin32Manifest>False</NoWin32Manifest>
-    <Memvar>False</Memvar>
+    <Memvar>True</Memvar>
     <Undeclared>False</Undeclared>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">

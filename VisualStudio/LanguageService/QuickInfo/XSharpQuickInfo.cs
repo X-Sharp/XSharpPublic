@@ -65,6 +65,8 @@ namespace XSharp.LanguageService
                 ITextSnapshot currentSnapshot = null;
                 bool abort = !triggerPoint.HasValue;
                 var tokens = _textBuffer.GetTokens();
+                if (cancellationToken.IsCancellationRequested)
+                    return null;
                 if (! abort)
                 {
                     WriteOutputMessage($"Triggerpoint: {triggerPoint.Value.Position}");
@@ -93,11 +95,15 @@ namespace XSharp.LanguageService
                 {
                     currentNS = currentNamespace.Name;
                 }
+                if (cancellationToken.IsCancellationRequested)
+                    return null;
                 var location = new XSharpSearchLocation(member, snapshot, lineNumber, position, currentNS);
                 CompletionState state;
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 var lookupresult = new List<IXSymbol>();
+                if (cancellationToken.IsCancellationRequested)
+                    return null;
                 lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state,true));
 
                 //
@@ -147,7 +153,8 @@ namespace XSharp.LanguageService
                             var description = new ClassifiedTextElement(qitm.WPFDescription);
                             qiContent.Add(description);
                     }
-                    
+                    if (cancellationToken.IsCancellationRequested)
+                        return null;
                     var result = new ContainerElement(ContainerElementStyle.Wrapped, qiContent);
 
                     return new QuickInfoItem(lineSpan, result);

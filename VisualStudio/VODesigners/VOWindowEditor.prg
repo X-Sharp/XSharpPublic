@@ -3636,7 +3636,7 @@ RETURN
 		LOCAL oColor AS Color
 		DO CASE
 		CASE oProp:Name == "Caption"
-			IF oDesign:Control:GetType() == TypeOf(DesignPushButton) .or. oDesign:Control:GetType() == TypeOf(DesignCheckBox)
+			IF oDesign:Control:GetType() == TypeOf(DesignPushButton) .OR. oDesign:Control:GetType() == TypeOf(DesignCheckBox) .OR. oDesign:Control:GetType() == TypeOf(DesignRadioButton)
 				oDesign:Control:Text := ""
 				oDesign:Control:Invalidate()
 				RETURN
@@ -4011,7 +4011,7 @@ RETURN
 				oControl:Width := (INT)oDesign:GetProperty("_Width"):Value
 				oControl:Height := (INT)oDesign:GetProperty("_Height"):Value
 				IF oDesign:GetProperty("Caption") != NULL
-					oControl:Text := oDesign:GetProperty("Caption"):TextValue
+					oControl:Text := Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , FALSE)
 				ENDIF
 				oTest:Controls:Add(oControl)
 				DO CASE
@@ -4019,10 +4019,12 @@ RETURN
 					((CheckBox)oControl):CheckAlign := ((CheckBox)oDesign:Control):CheckAlign
 					((CheckBox)oControl):TextAlign := ((CheckBox)oDesign:Control):TextAlign
 					((CheckBox)oControl):Appearance := ((CheckBox)oDesign:Control):Appearance
+                    oControl:Text := ""
 				CASE oType == TypeOf(DesignRadioButton)
 					((RadioButton)oControl):CheckAlign := ((RadioButton)oDesign:Control):CheckAlign
 					((RadioButton)oControl):TextAlign := ((RadioButton)oDesign:Control):TextAlign
 					((RadioButton)oControl):Appearance := ((RadioButton)oDesign:Control):Appearance
+                    oControl:Text := ""
 				CASE oType == TypeOf(DesignPushButton)
 					((Button)oControl):FlatStyle := ((Button)oDesign:Control):FlatStyle
 					oControl:Text := ""

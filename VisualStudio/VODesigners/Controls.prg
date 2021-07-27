@@ -329,10 +329,13 @@ END CLASS
 
 INTERNAL CLASS DesignRadioButton INHERIT RadioButton
 	EXPORT oItem AS DesignWindowItem
+	PROTECT oBrush AS SolidBrush
+	PROTECT oSF AS StringFormat
 	EXPORT lTestMode AS LOGIC
 	CONSTRUCTOR(_oItem AS DesignWindowItem)
 		SUPER()
 		SELF:oItem := _oItem
+		SELF:oSF := StringFormat{}
 	RETURN
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		IF SELF:lTestMode .or. .not. WindowDesignerBase.HandleWndProc(SELF:oItem , REF m)
@@ -343,10 +346,11 @@ INTERNAL CLASS DesignRadioButton INHERIT RadioButton
 		LOCAL cUpper AS STRING
 		cUpper := oProp:Name:ToUpper()
 		DO CASE
-		CASE cUpper == "VERTICAL ALIGNMENT" .or. cUpper == "HORIZONTAL ALIGNMENT" .or. cUpper == "EXALIGNMENT" .or. cUpper == "TEXT LEFT"
+		CASE cUpper == "VERTICAL ALIGNMENT" .OR. cUpper == "HORIZONTAL ALIGNMENT" .OR. cUpper == "EXALIGNMENT" .OR. cUpper == "TEXT LEFT" .OR. cUpper == "MULTILINE"
 			TRY
 				SELF:TextAlign := GetButtonAlignment(SELF:oItem , TRUE)
 				SELF:CheckAlign := GetButtonAlignment(SELF:oItem , FALSE)
+                SELF:Invalidate()
          CATCH
             NOP
 			END TRY
@@ -361,6 +365,87 @@ INTERNAL CLASS DesignRadioButton INHERIT RadioButton
 		oParams := SUPER:CreateParams
 		Funcs.SetCreateParams(oParams , SELF:oItem)
 	RETURN oParams
+	VIRTUAL PROTECTED METHOD OnPaint(e AS PaintEventArgs) AS VOID
+		SUPER:OnPaint(e)
+
+		IF SELF:oBrush == NULL .OR. SELF:oBrush:Color != SELF:ForeColor
+			SELF:oBrush := SolidBrush{SELF:ForeColor}
+		END IF
+
+//		SELF:oSF:Trimming := StringTrimming.Character
+
+		TRY
+			IF SELF:oItem:GetProperty("Multiline"):ValueLogic
+				IF _AND(SELF:oSF:FormatFlags , StringFormatFlags.NoWrap) != 0
+					SELF:oSF:FormatFlags := (StringFormatFlags)_XOR(SELF:oSF:FormatFlags , StringFormatFlags.NoWrap)
+				END IF
+			ELSE
+				SELF:oSF:FormatFlags := StringFormatFlags.NoWrap
+			END IF
+		CATCH e1 AS Exception
+			SELF:oSF:FormatFlags := StringFormatFlags.NoWrap
+		END TRY
+
+		LOCAL cValue AS STRING
+		TRY
+			cValue := SELF:oItem:GetProperty("Horizontal Alignment"):TextValue:ToUpper()
+		CATCH e2 AS Exception
+			cValue := "AUTO"
+		END TRY
+		DO CASE
+		CASE cValue == "LEFT" .OR. cValue == "AUTO"
+			SELF:oSF:Alignment := StringAlignment.Near
+		CASE cValue == "CENTER"
+			SELF:oSF:Alignment := StringAlignment.Center
+		CASE cValue == "RIGHT"
+			SELF:oSF:Alignment := StringAlignment.Far
+		END CASE
+		TRY
+			cValue := SELF:oItem:GetProperty("Vertical Alignment"):TextValue:ToUpper()
+		CATCH e3 AS Exception
+			cValue := "AUTO"
+		END TRY
+		DO CASE
+		CASE cValue == "TOP"
+			SELF:oSF:LineAlignment := StringAlignment.Near
+		CASE cValue == "CENTER" .OR. cValue == "AUTO"
+			SELF:oSF:LineAlignment := StringAlignment.Center
+		CASE cValue == "BOTTOM"
+			SELF:oSF:LineAlignment := StringAlignment.Far
+		END CASE
+		TRY
+			IF SELF:oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
+				SELF:oSF:Alignment := StringAlignment.Far
+            END IF
+        CATCH
+            NOP
+		END TRY
+
+		LOCAL lExLeft := FALSE, lTextLeft := FALSE, lCheckRight := FALSE AS LOGIC
+        TRY
+		    lExLeft := oItem:GetProperty("ExAlignment"):TextValue:ToUpper() == "RIGHT"
+		    lTextLeft := oItem:GetProperty("Text Left"):ValueLogic
+            lCheckRight := lExLeft .OR. lTextLeft
+        CATCH
+            NOP
+        END TRY
+
+		LOCAL oRect AS Rectangle
+		LOCAL CONST nCheckSize := 16 AS INT
+		oRect := SELF:ClientRectangle
+		IF lCheckRight
+			oRect := Rectangle{0,0,oRect:Width - nCheckSize, oRect:Height}
+		ELSE
+			oRect := Rectangle{nCheckSize,0,oRect:Width - nCheckSize, oRect:Height}
+		END IF
+
+		TRY
+			e:Graphics:DrawString(Funcs.TranslateCaption(SELF:oItem:GetProperty("Caption"):TextValue , FALSE) , SELF:Font , SELF:oBrush , oRect , SELF:oSF)
+        CATCH
+            NOP
+		END TRY
+
+	RETURN
 END CLASS
 
 INTERNAL CLASS DesignEdit INHERIT TextBox

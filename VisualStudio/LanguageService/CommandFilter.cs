@@ -1162,10 +1162,11 @@ namespace XSharp.LanguageService
                 {
                     _completionSession.Properties.TryGetProperty(XsCompletionProperties.Type, out IXTypeSymbol type);
                     string method = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
+                    _completionSession.Properties.TryGetProperty(XsCompletionProperties.Char, out char triggerChar);
                     method = method.Substring(0, method.Length - 1);
                     _completionSession.Dismiss();
 
-                    StartSignatureSession(false, type, method);
+                    StartSignatureSession(false, type, method, triggerChar);
                 }
             }
             //
@@ -1188,7 +1189,7 @@ namespace XSharp.LanguageService
 
         #region Signature Session
 
-        bool StartSignatureSession(bool comma, IXTypeSymbol type = null, string methodName = null)
+        bool StartSignatureSession(bool comma, IXTypeSymbol type = null, string methodName = null, char triggerchar = '\0')
         {
             WriteOutputMessage("CommandFilter.StartSignatureSession()");
 
@@ -1246,7 +1247,8 @@ namespace XSharp.LanguageService
             IXMemberSymbol currentElement = null;
             if (type != null && methodName != null)
             {
-                currentElement = XSharpLookup.SearchMethod(location, type, methodName, XSharpModel.Modifiers.Private, false).FirstOrDefault();
+                var findStatic = triggerchar == '.';
+                currentElement = XSharpLookup.SearchMethod(location, type, methodName, XSharpModel.Modifiers.Private, findStatic).FirstOrDefault();
             }
             else
             {

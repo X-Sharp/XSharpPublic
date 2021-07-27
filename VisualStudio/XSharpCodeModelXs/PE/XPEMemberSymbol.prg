@@ -291,7 +291,7 @@ BEGIN NAMESPACE XSharpModel
                parType := ParamType.As
             ENDIF
             if oPar:HasCustomAttributes
-               defValue := SELF:DecodeCustomAttributes(oPar:CustomAttributes)
+               defValue := SELF:DecodeCustomAttributes(oPar:CustomAttributes, oPar:ParameterType)
             ENDIF
             var parRef := XPEParameterSymbol{self, name, type}
             parRef:OriginalTypeName := RemoveGenericParameters(oPar:ParameterType:FullName)
@@ -310,7 +310,7 @@ BEGIN NAMESPACE XSharpModel
          NEXT
          RETURN
 
-      METHOD DecodeCustomAttributes( attributes as Mono.Collections.Generic.Collection<CustomAttribute>) AS STRING
+      METHOD DecodeCustomAttributes( attributes as Mono.Collections.Generic.Collection<CustomAttribute>, oType as TypeReference) AS STRING
          local result as STRING
          local done   as LOGIC
          FOREACH var attr in attributes
@@ -358,6 +358,13 @@ BEGIN NAMESPACE XSharpModel
                         if arg1:Type:FullName == "System.String"
                            result := e"\""+result+e"\""
                         endif
+                     else
+                        switch oType:FullName
+                        case "System.String"
+                            return "NULL_STRING"
+                        otherwise
+                            return "NULL_OBJECT"
+                        end switch
                      endif
                   end switch
                   done := TRUE

@@ -1261,6 +1261,10 @@ namespace XSharp.LanguageService
                 var element = XSharpLookup.RetrieveElement(location, tokenList, state, true).FirstOrDefault();
                 if (element is IXMemberSymbol mem)
                     currentElement = mem;
+                else if (element is IXTypeSymbol xtype)
+                {
+                    currentElement = xtype.Members.Where(m => m.Kind == Kind.Constructor).FirstOrDefault();
+                }
                 
             }
             //

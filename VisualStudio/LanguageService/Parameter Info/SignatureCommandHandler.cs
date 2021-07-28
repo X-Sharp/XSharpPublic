@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Text;
 using XSharpModel;
 using Microsoft.VisualStudio.Editor;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
@@ -49,7 +50,8 @@ namespace XSharp.LanguageService
         readonly ITextView _textView;
         readonly ISignatureHelpBroker _signatureBroker;
         readonly IOleCommandTarget m_nextCommandHandler;
-        ISignatureHelpSession _signatureSession;
+        ISignatureHelpSession _signatureSession = null;
+        XSharpCompletionCommandHandler _completionCommandHandler = null;
         internal XSharpSignatureHelpCommandHandler(IVsTextView textViewAdapter, ITextView textView, ISignatureHelpBroker broker)
         {
             this._textView = textView;
@@ -139,6 +141,7 @@ namespace XSharp.LanguageService
                                     StartSignatureSession(false);
                                     break;
                                 case ',':
+                                    StartSignatureSession(true);
                                     break;
                                 case ':':
                                 case '.':
@@ -167,26 +170,27 @@ namespace XSharp.LanguageService
         }
         bool IsCompletionActive()
         {
-            return _textView.Properties.ContainsProperty("XCompletionSession");
+            if (_completionCommandHandler == null)
+                _completionCommandHandler = _textView.Properties.GetProperty<XSharpCompletionCommandHandler>(typeof(XSharpCompletionCommandHandler));
+            if (_completionCommandHandler != null)
+            {
+                return _completionCommandHandler.HasActiveSession;
+            }
+            return false;
+
         }
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
-        internal bool StartSignatureSession(bool comma, IXTypeSymbol type = null, string methodName = null, char triggerchar = '\0')
+        IXMemberSymbol findElementAt(bool comma, SnapshotPoint ssp, XSharpSearchLocation location)
         {
-            WriteOutputMessage("StartSignatureSession()");
-
-            if (_signatureSession != null)
-                return false;
-            int startLineNumber = this._textView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
-            SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
             // when coming from the completion list then there is no need to check a lot of stuff
             // we can then simply lookup the method and that is it.
             // Also no need to filter on visibility since that has been done in the completionlist already !
             // First, where are we ?
-            int caretPos;
+            IXMemberSymbol currentElement = null;
             int Level = 0;
             do
             {
@@ -209,27 +213,67 @@ namespace XSharp.LanguageService
                     break;
             } while (ssp.Position > 0);
             //
-            caretPos = ssp.Position - 1; // exclude the LParen/LCurly
+            if (ssp.Position > 0)
+            {
+                ssp -= 1;
+            }
             // When we have a multi line source line this is the line where the open paren or open curly is
-            int lineNumber = ssp.GetContainingLine().LineNumber;
-            var snapshot = this._textView.TextBuffer.CurrentSnapshot;
-            var file = this._textView.TextBuffer.GetFile();
-            if (file == null)
-                return false;
-            var member = XSharpLookup.FindMember(lineNumber, file);
-            if (member != null && member.Range.StartLine == lineNumber)
+
+            var member = _textView.FindMember(ssp);
+            if (member != null && member.Range.StartLine == ssp.GetContainingLine().LineNumber)
             {
                 // if we are at the start of an entity then do not start a signature session
-                return false;
+                return null;
             }
-            var currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
-            string currentNS = "";
-            if (currentNamespace != null)
+
+            // Then, the corresponding Type/Element if possible
+            // Check if we can get the member where we are
+
+            var tokenList = XSharpTokenTools.GetTokenList(location, out var state);
+            if (comma)
             {
-                currentNS = currentNamespace.Name;
+                bool hasOpenToken = false;
+                // check to see if there is a lparen or lcurly before the comma
+                foreach (var token in tokenList)
+                {
+                    if (token.Position > ssp.Position)
+                        break;
+                    switch (token.Type)
+                    {
+                        case XSharpLexer.LPAREN:
+                        case XSharpLexer.LCURLY:
+                            hasOpenToken = true;
+                            break;
+                    }
+                    if (hasOpenToken)
+                        break;
+                }
+                if (!hasOpenToken)
+                    return null;
             }
-            XSharpSearchLocation location = new XSharpSearchLocation(member, snapshot, lineNumber, caretPos, currentNS);
+            // We don't care of the corresponding Type, we are looking for the currentElement
+            var element = XSharpLookup.RetrieveElement(location, tokenList, state, true).FirstOrDefault();
+            if (element is IXMemberSymbol mem)
+                currentElement = mem;
+            else if (element is IXTypeSymbol xtype)
+            {
+                currentElement = xtype.Members.Where(m => m.Kind == Kind.Constructor).FirstOrDefault();
+            }
+            return currentElement;
+
+        }
+
+        internal bool StartSignatureSession(bool comma, IXTypeSymbol type = null, string methodName = null, char triggerchar = '\0')
+        {
+            WriteOutputMessage("StartSignatureSession()");
+
+            if (_signatureSession != null)
+                return false;
             IXMemberSymbol currentElement = null;
+            SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
+            var location = _textView.FindLocation(ssp);
+            if (location == null)
+                return false;
             if (type != null && methodName != null)
             {
                 var findStatic = triggerchar == '.';
@@ -237,61 +281,47 @@ namespace XSharp.LanguageService
             }
             else
             {
-
-                // Then, the corresponding Type/Element if possible
-                // Check if we can get the member where we are
-
-                var tokenList = XSharpTokenTools.GetTokenList(location, out var state);
-                // We don't care of the corresponding Type, we are looking for the currentElement
-                var element = XSharpLookup.RetrieveElement(location, tokenList, state, true).FirstOrDefault();
-                if (element is IXMemberSymbol mem)
-                    currentElement = mem;
-                else if (element is IXTypeSymbol xtype)
-                {
-                    currentElement = xtype.Members.Where(m => m.Kind == Kind.Constructor).FirstOrDefault();
-                }
-
+                currentElement = findElementAt(comma, ssp, location);
             }
+            if (currentElement == null)
+                return false;
+
+            SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
+            ITextSnapshot caretsnapshot = caret.Snapshot;
             //
-            if ((currentElement != null))
+            if (!_signatureBroker.IsSignatureHelpActive(_textView))
             {
+                _signatureSession = _signatureBroker.CreateSignatureHelpSession(_textView, caretsnapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
+            }
+            else
+            {
+                _signatureSession = _signatureBroker.GetSessions(_textView)[0];
+            }
 
-                SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
-                ITextSnapshot caretsnapshot = caret.Snapshot;
-                //
-                if (!_signatureBroker.IsSignatureHelpActive(_textView))
-                {
-                    _signatureSession = _signatureBroker.CreateSignatureHelpSession(_textView, caretsnapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
-                }
-                else
-                {
-                    _signatureSession = _signatureBroker.GetSessions(_textView)[0];
-                }
+            _signatureSession.Dismissed += OnSignatureSessionDismiss;
+            if (currentElement != null)
+            {
+                _signatureSession.Properties[SignatureProperties.Element] = currentElement;
+            }
 
-                _signatureSession.Dismissed += OnSignatureSessionDismiss;
-                if (currentElement != null)
-                {
-                    _signatureSession.Properties[SignatureProperties.Element] = currentElement;
-                }
+            _signatureSession.Properties[SignatureProperties.Line] = ssp.GetContainingLine().LineNumber;
+            _signatureSession.Properties[SignatureProperties.Start] = ssp.Position;
+            _signatureSession.Properties[SignatureProperties.Length] = _textView.Caret.Position.BufferPosition.Position - ssp.Position;
+            _signatureSession.Properties[SignatureProperties.File] = _textView.GetFile();
 
-                _signatureSession.Properties[SignatureProperties.Line] = startLineNumber;
-                _signatureSession.Properties[SignatureProperties.Start] = ssp.Position;
-                _signatureSession.Properties[SignatureProperties.Length] = _textView.Caret.Position.BufferPosition.Position - ssp.Position;
-                _signatureSession.Properties[SignatureProperties.File] = file;
-
-                try
-                {
-                    _signatureSession.Start();
-                }
-                catch (Exception e)
-                {
-                    WriteOutputMessage("Start Signature session failed:");
-                    XSettings.DisplayException(e);
-                }
+            try
+            {
+                _signatureSession.Start();
+            }
+            catch (Exception e)
+            {
+                WriteOutputMessage("Start Signature session failed:");
+                XSettings.DisplayException(e);
             }
             //
             return true;
         }
+        internal bool HasActiveSession => _signatureSession != null;
         bool CancelSignatureSession()
         {
             if (_signatureSession == null)

@@ -442,7 +442,7 @@ namespace XSharp.LanguageService
                 if (identifier.StartsWith("@@"))
                     identifier = identifier.Substring(2);
                 var lineNumber = getCurrentLine();
-                var currentMember = XSharpLookup.FindMember(lineNumber, _file);
+                var currentMember = _textView.FindMember();
                 //
                 if (currentMember == null)
                     return;

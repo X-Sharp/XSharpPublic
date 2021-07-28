@@ -57,20 +57,24 @@ namespace XSharp.LanguageService
                 return null;
             }
             var triggerPoint = session.GetTriggerPoint(_textBuffer.CurrentSnapshot);
+            if (triggerPoint == null)
+            {
+                await session.DismissAsync();
+                return null;
+            }
             try
             {
                 ModelWalker.Suspend();
-
+                var ssp = triggerPoint.Value;
                 // Map the trigger point down to our buffer.
-                ITextSnapshot currentSnapshot = null;
-                bool abort = !triggerPoint.HasValue;
+                ITextSnapshot currentSnapshot = ssp.Snapshot;
+                bool abort = false;
                 var tokens = _textBuffer.GetTokens();
                 if (cancellationToken.IsCancellationRequested)
                     return null;
                 if (! abort)
                 {
                     WriteOutputMessage($"Triggerpoint: {triggerPoint.Value.Position}");
-                    currentSnapshot = triggerPoint.Value.Snapshot;
                     // We don't want to lex the buffer. So get the tokens from the last lex run
                     // and when these are too old, then simply bail out
                     abort = tokens == null || tokens.SnapShot.Version != currentSnapshot.Version;
@@ -80,30 +84,15 @@ namespace XSharp.LanguageService
                     await session.DismissAsync();
                     return null;
                 }
-                var line = triggerPoint.Value.GetContainingLine();
-                var lineNumber = line.LineNumber;
-                var position = triggerPoint.Value.Position;
-                var lineSpan = _textBuffer.CurrentSnapshot.CreateTrackingSpan(line.Extent, SpanTrackingMode.EdgeInclusive);
-
-                var snapshot = session.TextView.TextBuffer.CurrentSnapshot;
-                XSourceMemberSymbol member = XSharpLookup.FindMember(lineNumber, _file);
-                if (member == null)
-                    return null;
-                XSourceTypeSymbol currentNamespace = XSharpTokenTools.FindNamespace(position, _file);
-                string currentNS = "";
-                if (currentNamespace != null)
-                {
-                    currentNS = currentNamespace.Name;
-                }
                 if (cancellationToken.IsCancellationRequested)
                     return null;
-                var location = new XSharpSearchLocation(member, snapshot, lineNumber, position, currentNS);
+                var location = _textBuffer.FindLocation(ssp);
                 CompletionState state;
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
-                var lookupresult = new List<IXSymbol>();
                 if (cancellationToken.IsCancellationRequested)
                     return null;
+                var lookupresult = new List<IXSymbol>();
                 lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state,true));
 
                 //
@@ -156,6 +145,8 @@ namespace XSharp.LanguageService
                     if (cancellationToken.IsCancellationRequested)
                         return null;
                     var result = new ContainerElement(ContainerElementStyle.Wrapped, qiContent);
+                    var line = ssp.GetContainingLine();
+                    var lineSpan = _textBuffer.CurrentSnapshot.CreateTrackingSpan(line.Extent, SpanTrackingMode.EdgeInclusive);
 
                     return new QuickInfoItem(lineSpan, result);
                 }
@@ -203,7 +194,6 @@ namespace XSharp.LanguageService
                 var file = textBuffer.GetFile();
                 if (file == null || file.XFileType != XFileType.SourceCode)
                     return null;
-
                 return new XSharpQuickInfoSource(this, textBuffer, file);
             }
 

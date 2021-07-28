@@ -799,7 +799,10 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            FillExtensions(compList, type, startWith);
+            if (! staticOnly)
+            {
+                FillExtensions(compList, type, startWith);
+            }
         }
 
 

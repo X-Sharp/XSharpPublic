@@ -148,21 +148,9 @@ namespace XSharp.LanguageService
                     return;
                 WriteOutputMessage("CommandFilter.GotoDefn()");
                 XSharpModel.ModelWalker.Suspend();
-                // First, where are we ?
 
-                var ssp = this.TextView.Caret.Position.BufferPosition;
-                // find next delimiter, so we will include the '{' or '(' in the search
                 
                 var snapshot = this.TextView.TextBuffer.CurrentSnapshot;
-                int caretPos = ssp.Position;
-                int lineNumber = ssp.GetContainingLine().LineNumber;
-                // Check if we can get the member where we are
-                var member = XSharpLookup.FindMember(lineNumber, file);
-                if (member == null)
-                    return;
-                var currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
-
-                // Then, the corresponding Type/Element if possible
 
                 // We don't want to lex the buffer. So get the tokens from the last lex run
                 // and when these are too old, then simply bail out
@@ -172,12 +160,8 @@ namespace XSharp.LanguageService
                     if (tokens.SnapShot.Version != snapshot.Version)
                         return;
                 }
-                string currentNS = "";
-                if (currentNamespace != null)
-                {
-                    currentNS = currentNamespace.Name;
-                }
-                var location = new XSharpSearchLocation(member, snapshot, lineNumber, caretPos,currentNS);
+                string currentNS = this.TextView.FindNamespace();
+                var location = TextView.FindLocation();
                 var state = CompletionState.General;
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
 

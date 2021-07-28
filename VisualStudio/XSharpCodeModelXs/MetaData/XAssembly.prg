@@ -89,7 +89,7 @@ BEGIN NAMESPACE XSharpModel
          IF SELF:IsModifiedOnDisk .OR. ! SELF:_wasRead
             SELF:Read()
          ENDIF
-         IF name:Contains(".") .AND. SELF:Types:ContainsKey(name)
+         IF SELF:Types:ContainsKey(name)
             VAR found := Types[name]
             IF String.Equals(name, found:FullName)
                RETURN found
@@ -110,7 +110,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             // no exact match in the duplicates. Return the type with not exact match
             RETURN found
-         ELSE // !name:Contains(".")
+         ELSE // Type not found
             // Todo: Use the Intellisense database instead of the Namespaces and Types collection.
             // when we do so we have to separate the ns out of the name
             // and look for all types that match in name.

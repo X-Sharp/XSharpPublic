@@ -55,7 +55,8 @@ namespace XSharp.LanguageService
         readonly IOleCommandTarget m_nextCommandHandler;
         readonly IBufferTagAggregatorFactoryService _aggregator;
         bool completionWasSelected = false;
-        CompletionSelectionStatus completionWas;
+        XSharpSignatureHelpCommandHandler _signatureCommandHandler = null;
+        //CompletionSelectionStatus completionWas;
 
         internal XSharpCompletionCommandHandler(IVsTextView textViewAdapter, ITextView textView,
             ICompletionBroker completionBroker, IBufferTagAggregatorFactoryService aggregator)
@@ -110,7 +111,7 @@ namespace XSharp.LanguageService
                             {
                                 if (completionWasSelected && (XSettings.EditorCommitChars.Contains(ch)))
                                 {
-                                    CompleteCompletionSession( true, ch);
+                                    handled = CompleteCompletionSession(true, ch); ;
                                 }
                                 else
                                 {
@@ -150,12 +151,12 @@ namespace XSharp.LanguageService
                     if (_completionSession.SelectedCompletionSet != null)
                     {
                         completionWasSelected = _completionSession.SelectedCompletionSet.SelectionStatus.IsSelected;
-                        if (completionWasSelected)
-                        {
-                            completionWas = _completionSession.SelectedCompletionSet.SelectionStatus;
-                        }
-                        else
-                            completionWas = null;
+                        //if (completionWasSelected)
+                        //{
+                        //    completionWas = _completionSession.SelectedCompletionSet.SelectionStatus;
+                        //}
+                        //else
+                        //    completionWas = null;
                     }
                 }
                 result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
@@ -265,7 +266,6 @@ namespace XSharp.LanguageService
 
         bool CancelCompletionSession()
         {
-            SetActive(false);
             if (_completionSession == null)
             {
                 return false;
@@ -276,8 +276,6 @@ namespace XSharp.LanguageService
 
         bool CompleteCompletionSession(bool force = false, char ch = ' ')
         {
-            bool showParameterTips = false;
-            SetActive(false);
             if (_completionSession == null)
             {
                 return false;
@@ -290,10 +288,7 @@ namespace XSharp.LanguageService
             WriteOutputMessage("CompleteCompletionSession()");
             if (_completionSession.SelectedCompletionSet != null)
             {
-                //if (completionWas != null)
-                //{
-                //    _completionSession.SelectedCompletionSet.SelectionStatus = completionWas;
-                //}
+                bool addDelim = false;
                 
                 if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
                 {
@@ -309,43 +304,21 @@ namespace XSharp.LanguageService
                 {
                     formatKeyword(completion);
                 }
-                showParameterTips = kind.HasParameters();
                 if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
                 {
 
                     if (XSettings.EditorCompletionAutoPairs)
                     {
                         caret = _completionSession.TextView.Caret;
+                        addDelim = true;
                         WriteOutputMessage(" --> select " + completion.InsertionText);
-                        if (completion.InsertionText.EndsWith("("))
+                        if (kind == Kind.Constructor)
                         {
-                            moveBack = true;
-                            completion.InsertionText += ")";
+                            completion.InsertionText += "{";
                         }
-                        else if (completion.InsertionText.EndsWith("{"))
+                        if (kind.HasParameters() && !completion.InsertionText.EndsWith("("))
                         {
-                            moveBack = true;
-                            completion.InsertionText += "}";
-                        }
-                        else if (completion.InsertionText.EndsWith("["))
-                        {
-                            moveBack = true;
-                            completion.InsertionText += "]";
-                        }
-                        else
-                        {
-                            if (kind == Kind.Constructor)
-                            {
-                                moveBack = true;
-                                completion.InsertionText += "{}";
-                                showParameterTips = true;
-                            }
-                            if (kind.HasParameters())
-                            {
-                                moveBack = true;
-                                completion.InsertionText += "()";
-                                showParameterTips = true;
-                            }
+                            completion.InsertionText += "(";
                         }
                     }
                     commit = true;
@@ -362,42 +335,46 @@ namespace XSharp.LanguageService
                         if (XSettings.EditorCompletionAutoPairs)
                         {
                             caret = _completionSession.TextView.Caret;
-                            if (ch == '(')
-                            {
-                                completion.InsertionText += ')';
-                                moveBack = true;
-                            }
-                            else if (ch == '{')
-                            {
-                                completion.InsertionText += '}';
-                                moveBack = true;
-                            }
-                            else if (ch == '[')
-                            {
-                                completion.InsertionText += ']';
-                                moveBack = true;
-                            }
+                            addDelim = true;
                         }
                     }
                     commit = true;
+                }
+                if (addDelim)
+                {
+                    if (completion.InsertionText.EndsWith("("))
+                    {
+                        moveBack = true;
+                        completion.InsertionText += ")";
+                    }
+                    else if (completion.InsertionText.EndsWith("{"))
+                    {
+                        moveBack = true;
+                        completion.InsertionText += "}";
+                    }
+                    else if (completion.InsertionText.EndsWith("["))
+                    {
+                        moveBack = true;
+                        completion.InsertionText += "]";
+                    }
+
                 }
             }
             if (commit)
             {
                 WriteOutputMessage(" --> Commit");
+                var session = _completionSession;
+                session.Properties.TryGetProperty(XsCompletionProperties.Type, out IXTypeSymbol type);
+                string method = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
+                session.Properties.TryGetProperty(XsCompletionProperties.Char, out char triggerChar);
                 _completionSession.Commit();
                 if (moveBack && (caret != null))
                 {
                     caret.MoveToPreviousCaretPosition();
                 }
-                if (showParameterTips && xscompletion != null)
+                if (method.Contains('('))
                 {
-                    // send command to editor to Signature Helper
-                    var sigHelper = _textView.Properties.GetProperty<XSharpSignatureHelpCommandHandler>(typeof(XSharpSignatureHelpCommandHandler));
-                    if (sigHelper != null)
-                    {
-                        sigHelper.StartSignatureSession(false, null, xscompletion.Value);
-                    }
+                    TriggerSignatureHelp(type, method, triggerChar);
                 }
                 return true;
             }
@@ -433,14 +410,13 @@ namespace XSharp.LanguageService
             }
 
             _completionSession.Dismissed += OnCompletionSessionDismiss;
-            _completionSession.Committed += OnCompletionSessionCommitted;
+            //_completionSession.Committed += OnCompletionSessionCommitted;
             _completionSession.SelectedCompletionSetChanged += _completionSession_SelectedCompletionSetChanged;
 
             _completionSession.Properties[XsCompletionProperties.Command] = nCmdId;
             _completionSession.Properties[XsCompletionProperties.Char] = typedChar;
             _completionSession.Properties[XsCompletionProperties.Type] = null;
             _completionSession.Properties[XsCompletionProperties.IncludeKeywords] = includeKeywords;
-            SetActive(true);
             try
             {
                 _completionSession.Start();
@@ -453,6 +429,8 @@ namespace XSharp.LanguageService
             return true;
         }
 
+        internal bool HasActiveSession => _completionSession != null;
+
         private void _completionSession_SelectedCompletionSetChanged(object sender, ValueChangedEventArgs<CompletionSet> e)
         {
             if (e.NewValue.SelectionStatus.IsSelected == false)
@@ -460,36 +438,32 @@ namespace XSharp.LanguageService
                 ;
             }
         }
-        private void SetActive(bool set)
-        {
-            if (_textView.Properties.ContainsProperty("XCompletionSession"))
-            {
-                if (!set)
-                    _textView.Properties.RemoveProperty("XCompletionSession");
-            }
-            else if (set)
-                _textView.Properties.AddProperty("XCompletionSession",1);
 
-        }
-
-        private void OnCompletionSessionCommitted(object sender, EventArgs e)
+        private void TriggerSignatureHelp(IXTypeSymbol type, string method, char triggerChar)
         {
             // it MUST be the case....
             WriteOutputMessage("OnCompletionSessionCommitted()");
 
-            if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
+            if (method.EndsWith("(") || method.EndsWith(")"))
             {
-                if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith("("))
-                {
-                    _completionSession.Properties.TryGetProperty(XsCompletionProperties.Type, out IXTypeSymbol type);
-                    string method = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
-                    _completionSession.Properties.TryGetProperty(XsCompletionProperties.Char, out char triggerChar);
+                   
+                if (method.EndsWith("()"))
+                    method = method.Substring(0, method.Length - 2);
+                else
                     method = method.Substring(0, method.Length - 1);
-                    _completionSession.Dismiss();
-                    
 
-                    //StartSignatureSession(false, type, method, triggerChar);
+
+                // send command to editor to Signature Helper
+                if (_signatureCommandHandler == null)
+                {
+                    _signatureCommandHandler = _textView.Properties.GetProperty<XSharpSignatureHelpCommandHandler>(typeof(XSharpSignatureHelpCommandHandler));
                 }
+                if (_signatureCommandHandler != null)
+                {
+                    _signatureCommandHandler.StartSignatureSession(true, type, method, triggerChar);
+                }
+
+                //
             }
             //
         }
@@ -502,7 +476,6 @@ namespace XSharp.LanguageService
             }
             //
             _completionSession.Dismissed -= OnCompletionSessionDismiss;
-            _completionSession.Committed -= OnCompletionSessionCommitted;
             _completionSession.SelectedCompletionSetChanged -= _completionSession_SelectedCompletionSetChanged;
             _completionSession = null;
         }

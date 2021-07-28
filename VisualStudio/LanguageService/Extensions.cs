@@ -6,6 +6,7 @@
 using LanguageService.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using System;
 using XSharpModel;
@@ -127,5 +128,77 @@ namespace XSharp.LanguageService
             }
             return file != null;
         }
+        internal static XSourceMemberSymbol FindMember(this ITextBuffer buffer, SnapshotPoint point)
+        {
+            var file = buffer.GetFile();
+            return XSharpLookup.FindMember(point.GetContainingLine().LineNumber, file);
+        }
+        internal static XSourceMemberSymbol FindMemberAtPosition(this ITextBuffer buffer, SnapshotPoint point)
+        {
+            var file = buffer.GetFile();
+            return XSharpLookup.FindMemberAtPosition(point.Position, file);
+        }
+        internal static XSharpSearchLocation FindLocation(this ITextBuffer buffer, SnapshotPoint point)
+        {
+            if (buffer == null)
+                return null;
+            int line = point.GetContainingLine().LineNumber;
+            var file = buffer.GetFile();
+            var snapshot = buffer.CurrentSnapshot;
+            var member = XSharpLookup.FindMember(line, file);
+            var ns = XSharpTokenTools.FindNamespace(point, file);
+            string currentNS = "";
+            if (ns != null)
+                currentNS = ns.FullName;
+            var location = new XSharpSearchLocation(member, snapshot, line, point, currentNS);
+            return location;
+        }
+
+        internal static XSourceMemberSymbol FindMember(this ITextView textview)
+        {
+            if (textview == null)
+                return null;
+            return FindMember(textview, textview.Caret.Position.BufferPosition);
+        }
+        internal static XSourceMemberSymbol FindMember(this ITextView textview, SnapshotPoint ssp )
+        {
+            if (textview == null)
+                return null;
+            if (ssp == null)
+            {
+                ssp = textview.Caret.Position.BufferPosition;
+            }
+            return textview.TextBuffer.FindMember(ssp);
+        }
+        internal static string FindNamespace(this ITextView textview)
+        {
+            if (textview == null)
+                return "";
+            var caretpos = textview.Caret.Position.BufferPosition.Position;
+            var file = textview.TextBuffer.GetFile();
+            var ns = XSharpTokenTools.FindNamespace(caretpos, file);
+            if (ns != null)
+                return ns.FullName;
+            return "";
+        }
+        internal static XSharpSearchLocation FindLocation(this ITextView textview)
+        {
+            if (textview == null)
+                return null;
+            return FindLocation(textview, textview.Caret.Position.BufferPosition);
+        }
+        internal static XSharpSearchLocation FindLocation(this ITextView textview, SnapshotPoint ssp)
+        {
+            return textview.TextBuffer.FindLocation(ssp);
+        }
+        internal static XFile GetFile(this ITextView textview)
+        {
+            if (textview != null && textview.TextBuffer != null)
+            {
+                return textview.TextBuffer.GetFile();
+            }
+            return null;
+        }
+
     }
 }

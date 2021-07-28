@@ -63,9 +63,11 @@
     </Compile>
     <Compile Include="BraceMatching\BraceMatching.cs" />
     <Compile Include="Completion\CompletionState.cs" />
+    <Compile Include="Completion\CompletionCommandHandler.cs" />
     <Compile Include="Formatting\EditorConfigSettings.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
+    <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Lookup\XSharpSearchLocation.cs" />
     <Compile Include="Lookup\XSharpLookup.cs" />
     <Compile Include="KeywordColoring\ClassificationDefinitions.cs" />
@@ -125,6 +127,7 @@
     <Compile Include="OptionsPages\XSharpSpecialOptions.Designer.cs">
       <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Parameter Info\SignatureCommandHandler.cs" />
     <Compile Include="XSharpLanguagePackage.cs" />
     <Compile Include="Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Parameter Info\SignatureHelpSourceProvider.cs" />

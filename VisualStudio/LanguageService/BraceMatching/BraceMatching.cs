@@ -7,12 +7,9 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using static XSharp.XSharpConstants;
-using XSharp.LanguageService;
 using Microsoft.VisualStudio.Text.Classification;
-using System.Collections.Immutable;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.CodeAnalysis.XSharp;
 using XSharpModel;
 
 namespace XSharp.LanguageService.Editors.BraceMatching

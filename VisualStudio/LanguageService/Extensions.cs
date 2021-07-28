@@ -55,7 +55,13 @@ namespace XSharp.LanguageService
             {
                 return file;
             }
-            return null;
+            var fileName = buffer.GetFileName();
+            file = XSolution.FindFile(fileName);
+            if (file != null)
+            {
+                buffer.Properties.AddProperty(typeof(XFile), file);
+            }
+            return file;
         }
 
         public static XSharpTokens GetTokens(this ITextBuffer buffer)

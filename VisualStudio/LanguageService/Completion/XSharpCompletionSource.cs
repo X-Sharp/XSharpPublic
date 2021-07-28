@@ -821,7 +821,9 @@ namespace XSharp.LanguageService
         /// <param name="staticOnly"></param>
         private void FillMembers(XCompletionList compList, IXTypeSymbol type, IEnumerable<IXMemberSymbol> members, Modifiers minVisibility, bool staticOnly)
         {
-            WriteOutputMessage($"FillMembers start, {members.Count()} members");
+            if (members.Count() == 0)
+                return;
+            WriteOutputMessage($"FillMembers {type?.FullName}: {members.Count()} members");
             foreach (var elt in members)
             {
                 bool add = true;
@@ -867,7 +869,6 @@ namespace XSharp.LanguageService
                 if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind, elt.Value)))
                     break;
             }
-            WriteOutputMessage($"FillMembers stop");
         }
         /// <summary>
         /// Add Members for our Types to the completionlist
@@ -883,7 +884,7 @@ namespace XSharp.LanguageService
 
         private void FillExtensions(XCompletionList compList, IXTypeSymbol type, string startWith)
         {
-            //WriteOutputMessage($"FillExtensions for type {type?.FullName}");
+            WriteOutputMessage($"FillExtensions for type {type?.FullName}");
             if (type != null)
             {
                 var extensions = _file.Project.GetExtensions(type.FullName);
@@ -892,7 +893,8 @@ namespace XSharp.LanguageService
                 {
                     selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
                 }
-                FillMembers(compList, null, selection, Modifiers.Public, true);
+                if (selection.Count() > 0)
+                    FillMembers(compList, null, selection, Modifiers.Public, true);
                 foreach (var ifname in type.Interfaces)
                 {
                     var lifname = ifname;
@@ -914,7 +916,8 @@ namespace XSharp.LanguageService
                     {
                         selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
                     }
-                    FillMembers(compList, null, selection, Modifiers.Public, true);
+                    if (selection.Count() > 0)
+                        FillMembers(compList, null, selection, Modifiers.Public, true);
                 }
             }
             //WriteOutputMessage($"FillExtensions complete for type {sType.FullName}");

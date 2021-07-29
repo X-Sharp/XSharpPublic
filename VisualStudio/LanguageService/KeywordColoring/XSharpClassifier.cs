@@ -293,6 +293,8 @@ namespace XSharp.LanguageService
             foreach (var entity in _sourceWalker.EntityList)
             {
                 var line = entity.Range.StartLine;
+                if (entity.StartOfXmlComments > 0 && !string.IsNullOrEmpty(entity.XmlComments))
+                    line = entity.StartOfXmlComments;
                 if (entity.SingleLine)
                 {
                     lineState.SetFlags(line, LineFlags.SingleLineEntity);

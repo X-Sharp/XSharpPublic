@@ -31,6 +31,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _typeName                AS STRING
       PROPERTY IsGeneric               AS LOGIC            GET GenericArgs != NULL
       PROPERTY GenericArgs             AS STRING[]         AUTO GET PRIVATE SET
+      PROPERTY StartOfXmlComments      AS LONG             AUTO
 
       #endregion
 

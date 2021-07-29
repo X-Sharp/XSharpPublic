@@ -16,3 +16,12 @@ IF .not. l
 END IF
 ? "Assertion passed"
 RETURN		
+
+
+
+CLASS TextCompiler
+
+	STATIC METHOD doSomething(cParam AS STRING, nParam := DWORD_DEFINE AS DWORD) AS VOID
+	RETURN
+
+END CLASS

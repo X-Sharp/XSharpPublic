@@ -71,7 +71,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         {
                             type = initializerOpt.Type;
                         }
-                        if (!type.IsVoidPointer() && initializerOpt.ConstantValue != null && !this.IsConst)
+                        if (!type.IsVoidPointer() && initializerOpt.ConstantValue != null
+                            && !this.IsConst && type.CanBeConst() && !type.IsObjectType())
                         {
                             this._modifiers |= DeclarationModifiers.Const;
                             this._modifiers |= DeclarationModifiers.Static;

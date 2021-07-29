@@ -12,6 +12,7 @@ DEFINE asarray := NULL_ARRAY AS ARRAY
 FUNCTION Start() AS VOID
 ? asint
 ? asusual
+? asobject
 ? asptr
 xAssert(asptr == NULL_PTR)
 xAssert(aspsz == NULL_PSZ)

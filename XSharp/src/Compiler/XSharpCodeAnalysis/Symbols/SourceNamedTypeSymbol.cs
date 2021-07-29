@@ -45,67 +45,66 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if (m.Kind == SymbolKind.Field)
                     {
                         var f = (FieldSymbol)m;
-                        int sz, elsz;
+                        int fieldSize, elementSize;
                         if (f.IsFixedSizeBuffer == true)
                         {
-                            elsz = (f.Type as PointerTypeSymbol).PointedAtType.VoFixedBufferElementSizeInBytes(DeclaringCompilation);
-                            sz = f.FixedSize * elsz;
+                            elementSize = (f.Type as PointerTypeSymbol).PointedAtType.VoFixedBufferElementSizeInBytes(DeclaringCompilation);
+                            fieldSize = f.FixedSize * elementSize;
                         }
                         else
                         {
-                            sz = f.Type.VoFixedBufferElementSizeInBytes(DeclaringCompilation);
+                            fieldSize = f.Type.VoFixedBufferElementSizeInBytes(DeclaringCompilation);
                             if ((f.Type as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true)
                             {
-                                elsz = (f.Type as SourceNamedTypeSymbol).VoStructElementSize;
+                                elementSize = (f.Type as SourceNamedTypeSymbol).VoStructElementSize;
                             }
                             else if (f.Type.IsVoStructOrUnion())
                             {
-                                elsz = f.Type.VoStructOrUnionLargestElementSizeInBytes();
+                                elementSize = f.Type.VoStructOrUnionLargestElementSizeInBytes();
                             }
                             else if (f.Type.IsWinBoolType()
                                 || f.Type.IsSymbolType()
                                 || f.Type.IsDateType())
                             {
-                                elsz = sz = 4;
+                                elementSize = fieldSize = 4;
                             }
                             if ( f.Type.IsPszType())
                             {
                                 if (DeclaringCompilation?.Options.Platform == Platform.X86)
-                                    elsz = sz = 4;
+                                    elementSize = fieldSize = 4;
                                 else
-                                    elsz = sz = 8;
+                                    elementSize = fieldSize = 8;
                             }
                             else
                             {
-                                elsz = sz;
+                                elementSize = fieldSize;
                             }
                         }
-                        if (sz != 0)
+                        if (fieldSize != 0)
                         {
-                            int al = align;
-                            if (elsz < al)
-                                al = elsz;
-                            if (voStructSize % al != 0)
-                            {
-                                voStructSize += al - (voStructSize % al);
-                            }
+                            if (fieldSize < align)
+                                fieldSize = align;
                             if (!f.TypeLayoutOffset.HasValue)
                             {
                                 // no explicit layout
-                                voStructSize += sz;
+                                voStructSize += fieldSize;
                             }
                             else
                             {
                                 // field offset is set: this is a union
-                                int fieldLen = sz + f.TypeLayoutOffset.Value;
+                                int fieldLen = fieldSize + f.TypeLayoutOffset.Value;
                                 if (fieldLen > voStructSize)
                                 {
                                     voStructSize = fieldLen;
                                 }
                             }
 
-                            if (voStructElementSize < elsz)
-                                voStructElementSize = elsz;
+                            if (voStructElementSize < elementSize)
+                                voStructElementSize = elementSize;
+                            if (voStructSize % align != 0)
+                            {
+                                voStructSize += align - (voStructSize % align);
+                            }
                         }
                     }
                 }

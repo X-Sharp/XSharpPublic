@@ -1,6 +1,10 @@
+// R795 Structure sizes not correctly aligned.
+// https://github.com/X-Sharp/XSharpPublic/issues/734
+// Note that the reference sizes are taken from VO 2.8 Sp3 and VO 2.8 Sp4
+
 FUNCTION Start() AS VOID STRICT
 
-
+    
 	? "unaligned"
 	Expected("EXCHG_PROTOCOL_HEAD:", _sizeof(EXCHG_PROTOCOL_HEAD), 28)
 	Expected("EXCHG_PROTOCOL_DPT:", _sizeof(EXCHG_PROTOCOL_DPT), 16)
@@ -21,7 +25,6 @@ FUNCTION Start() AS VOID STRICT
 	Expected("EXCHG_PROTOCOL_HEAD8:" , _sizeof(EXCHG_PROTOCOL_HEAD8),32)
 	Expected("EXCHG_PROTOCOL_DPT8:" , _sizeof(EXCHG_PROTOCOL_DPT8),24)
 	Expected("EXCHG_PROTOCOL_RECORD8:" , _sizeof(EXCHG_PROTOCOL_RECORD8),48)
-	WAIT
 
 	RETURN
 FUNCTION Expected (cDesc AS STRING, nSize1 AS DWORD, nSize2 AS DWORD) 
@@ -29,6 +32,7 @@ FUNCTION Expected (cDesc AS STRING, nSize1 AS DWORD, nSize2 AS DWORD)
 		? cDesc, "Ok"
 	ELSE
 		? cDesc, "Fail, Expected", nSize2, "actual", nSize1
+		THROW Exception{}
 	ENDIF
 RETURN NIL	
 

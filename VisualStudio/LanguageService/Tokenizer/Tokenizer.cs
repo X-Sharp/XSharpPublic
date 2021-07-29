@@ -475,7 +475,7 @@ namespace XSharp.LanguageService
 
                 if (eltType.Interval.ContainsInclusive(position))
                 {
-                    if (eltType.Kind.IsType())
+                    if (eltType.Kind.IsType() && eltType.Kind != Kind.Delegate)
                     {
                         found = eltType;
                     }

@@ -184,12 +184,22 @@ BEGIN NAMESPACE XSharpModel
             IF SELF:ParseUsing()
                LOOP
             ENDIF
+            LOCAL startOfTrivia := -1 as LONG
             aAttribs := SELF:ParseAttributes()
             VAR mods := SELF:ParseVisibilityAndModifiers()
             VAR vis  := _AND(mods, Modifiers.VisibilityMask)
             IF IsStartOfEntity(OUT VAR entityKind, mods)
                IF _hasXmlDoc
                   LOCAL cDoc := first:XmlComments AS STRING
+                  if first:HasTrivia
+                     foreach Var triv in first:Trivia
+                        if triv:Type == XSharpLexer.DOC_COMMENT
+                            startOfTrivia := triv:Line -1
+                            EXIT
+                        ENDIF
+                     NEXT
+                  ENDIF
+
                   cDoc := cDoc:Replace("///","")
                   IF ! String.IsNullOrEmpty(cDoc)
                      cXmlDoc := "<doc>"+cDoc+"</doc>"
@@ -213,10 +223,12 @@ BEGIN NAMESPACE XSharpModel
                      ENDIF
                      entity:File := _file
                      IF _hasXmlDoc
-                        entity:XmlComments := cXmlDoc
+                        entity:XmlComments   := cXmlDoc
+                        entity:StartOfXmlComments := startOfTrivia
                          if entity:Kind == Kind.Delegate .and. entity is XSourceTypeSymbol var xtype
                             var invoke := xtype:XMembers:First()
                             invoke:XmlComments := cXmlDoc
+                            invoke:StartOfXmlComments :=startOfTrivia
                          endif
                      ENDIF
                      IF aAttribs?:Count > 0
@@ -342,7 +354,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             last := type
          NEXT
-         IF last != NULL .AND. last:Range:StartLine == last:Range:EndLine
+         IF last != NULL .AND. last:Range:StartLine == last:Range:EndLine .and. ! last:SingleLine
             // adjust the end of the type with the start of the current line
             // find the last token in the stream
             VAR index := _tokens.Count -1
@@ -2130,7 +2142,7 @@ classvar            : (DIM=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
          VAR sType := SELF:ParseDataType(TRUE)
          endToken := SELF:LastToken
          SELF:GetSourceInfo(startToken, endToken, OUT VAR range, OUT VAR interval, OUT VAR source)
-         VAR xMember   := XSourceMemberSymbol{sId,eKind, SELF:_attributes, range,interval,sType}
+         VAR xMember   := XSourceMemberSymbol{sId,eKind, SELF:_attributes, range,interval,sType} {SingleLine := TRUE}
          xMember:ReturnType := sType
          xMember:SourceCode := source
          xMember:Value := sDefault
@@ -3235,9 +3247,8 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                ENDIF
                SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
                SELF:ReadLine()
-               VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval,"ARRAY"}
+               VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval,"ARRAY"} {SingleLine := TRUE}
                xMember:SourceCode := source
-               xMember:SingleLine := TRUE
                xMember:File := SELF:_file
                RETURN <XSourceEntity>{xMember}
             ELSEIF Matches(XSharpLexer.ID, XSharpLexer.FIELD)
@@ -3260,11 +3271,10 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                      VAR expr := SELF:ParseExpression()
                      SELF:GetSourceInfo(_start, LastToken, OUT VAR r1, OUT VAR i1, OUT source)
                      SELF:ReadLine()
-                     VAR xMember := XSourceMemberSymbol{ids:First(), Kind.Field, _attributes, r1, i1, _missingType}
+                     VAR xMember := XSourceMemberSymbol{ids:First(), Kind.Field, _attributes, r1, i1, _missingType} {SingleLine := TRUE}
                      xMember:SourceCode := source
                      xMember:Value      := expr
                      xMember:File := SELF:_file
-                     xMember:SingleLine := TRUE
                      RETURN <XSourceEntity>{xMember}
                ENDIF
                IF Matches(XSharpLexer.COMMA)
@@ -3279,7 +3289,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT  source)
                SELF:ReadLine()
                FOREACH VAR id IN ids
-                  VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval, type}
+                  VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval, type} {SingleLine := TRUE}
                   IF ids:Count == 1
                      xMember:SourceCode := source
                   ELSEIF String.IsNullOrEmpty(type)
@@ -3288,7 +3298,6 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                      xMember:SourceCode := "FIELD "+id +" AS "+type
                   ENDIF
                   xMember:File := SELF:_file
-                  xMember:SingleLine := TRUE
                   result:Add(xMember)
                NEXT
                RETURN result
@@ -3316,10 +3325,9 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                ENDDO
                SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
                SELF:ReadLine()
-               VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval, type}
+               VAR xMember := XSourceMemberSymbol{id, Kind.Field, _attributes, range, interval, type} {SingleLine := TRUE}
                xMember:SourceCode := source
                xMember:File := SELF:_file
-               xMember:SingleLine := TRUE
                RETURN <XSourceEntity>{xMember}
            ENDIF
             // ignore the COMATTRIB rule here
@@ -3445,12 +3453,11 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                SELF:ReadLine()
                VAR result := List<XSourceEntity>{}
                FOREACH VAR id IN ids
-                  VAR classvar := XSourceMemberSymbol{id, Kind.Field, _xppVisibility, range, interval, type, FALSE}
+                  VAR classvar := XSourceMemberSymbol{id, Kind.Field, _xppVisibility, range, interval, type, FALSE} {SingleLine := TRUE}
                   classvar:SourceCode := ie"{classvar.ModVis}: \r\n{ IIF(isStatic, \"STATIC\",\"\")} VAR {classvar.Name}"
                   IF SELF:CurrentType != NULL
                      SELF:CurrentType:AddMember(classvar)
                   ENDIF
-                  classvar:SingleLine := TRUE
                   result:Add(classvar)
                NEXT
                RETURN result

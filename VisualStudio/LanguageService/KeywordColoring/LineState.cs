@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XSharpModel;
+using System.Collections.Immutable;
 
 namespace XSharp.LanguageService
 {
@@ -55,5 +56,6 @@ namespace XSharp.LanguageService
             }
             return LineFlags.None;
         }
+        internal IDictionary<int, LineFlags> Lines => dict.ToImmutableDictionary();
     }
 }

@@ -34,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;NOASYNCCOMPLETION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CreateVsixContainer>False</CreateVsixContainer>
@@ -62,13 +62,23 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="BraceMatching\BraceMatching.cs" />
+    <Compile Include="Completion\CompletionHelpers.cs" />
     <Compile Include="Completion\CompletionState.cs" />
     <Compile Include="Completion\CompletionCommandHandler.cs" />
+    <Compile Include="Completion\XSharpCompletionSourceProvider.cs" />
+    <Compile Include="Completion\XSharpAsyncCompletionSource.cs" />
+    <Compile Include="Completion\XSharpAsyncCompletionSourceProvider.cs" />
     <Compile Include="Formatting\EditorConfigSettings.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="KeywordColoring\LineState.cs" />
+    <Compile Include="LineSeparators\GraphicsResult.cs" />
+    <Compile Include="LineSeparators\GraphicsTag.cs" />
+    <Compile Include="LineSeparators\ITextBugger.cs" />
+    <Compile Include="LineSeparators\LineSeparatorManager.cs" />
+    <Compile Include="LineSeparators\LineSeparatorProvider.cs" />
+    <Compile Include="LineSeparators\LineSeparatorTag.cs" />
     <Compile Include="Lookup\XSharpSearchLocation.cs" />
     <Compile Include="Lookup\XSharpLookup.cs" />
     <Compile Include="KeywordColoring\ClassificationDefinitions.cs" />
@@ -203,9 +213,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="LineSeparators\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Completion\Notes.txt" />
     <Content Include="LanguageService\LanguageService.vsct" />

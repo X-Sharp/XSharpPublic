@@ -183,6 +183,11 @@ namespace XSharp.LanguageService
             }
             return null;
         }
+        internal static XSharpLineState GetLineState(this ITextBuffer buffer)
+        {
+            buffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out var lineState);
+            return lineState;
+        }
 
     }
 }

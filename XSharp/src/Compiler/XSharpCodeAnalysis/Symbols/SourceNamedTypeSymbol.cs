@@ -24,19 +24,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         private readonly bool _isVoStructOrUnion = false;
 
-        internal bool IsSourceVoStructOrUnion { get { return _isVoStructOrUnion; } }
+        internal bool IsSourceVoStructOrUnion => _isVoStructOrUnion;
         private int _voStructSize = -1;
         private int _voStructElementSize = -1;
 
-        internal int VoStructSize { get { if (_voStructSize == -1) EvalVoStructMemberSizes(); return _voStructSize; } }
-        internal int VoStructElementSize { get { if (_voStructElementSize == -1) EvalVoStructMemberSizes(); return _voStructElementSize; } }
+        internal int VoStructSize
+        {
+            get
+            {
+                if (_voStructSize == -1)
+                    EvalVoStructMemberSizes();
+                return _voStructSize;
+            }
+        }
+        internal int VoStructElementSize
+        {
+            get
+            {
+                if (_voStructElementSize == -1)
+                    EvalVoStructMemberSizes();
+                return _voStructElementSize;
+            }
+        }
 
         private void EvalVoStructMemberSizes()
         {
             if (_isVoStructOrUnion && DeclaringCompilation.Options.HasRuntime)
             {
                 int voStructSize = 0;
-                int voStructElementSize = 0;
+                int largestElementSize = 0;
                 int align = this.Layout.Alignment;
                 if (align == 0)
                     align = 4;
@@ -56,24 +72,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             fieldSize = f.Type.VoFixedBufferElementSizeInBytes(DeclaringCompilation);
                             if ((f.Type as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true)
                             {
+                                // get the size of the largest element in the structure in source
                                 elementSize = (f.Type as SourceNamedTypeSymbol).VoStructElementSize;
                             }
                             else if (f.Type.IsVoStructOrUnion())
                             {
+                                // get the size of the largest element in the structure in a PE
                                 elementSize = f.Type.VoStructOrUnionLargestElementSizeInBytes();
                             }
-                            else if (f.Type.IsWinBoolType()
-                                || f.Type.IsSymbolType()
-                                || f.Type.IsDateType())
+                            else if (f.Type.IsWinBoolType() || f.Type.IsSymbolType() || f.Type.IsDateType())
                             {
+                                // these are all structures but their size is set to fixed 4 bytes.
                                 elementSize = fieldSize = 4;
                             }
-                            if ( f.Type.IsPszType())
+                            else if (f.Type.IsPszType())
                             {
                                 if (DeclaringCompilation?.Options.Platform == Platform.X86)
+                                {
                                     elementSize = fieldSize = 4;
+                                }
                                 else
+                                {
                                     elementSize = fieldSize = 8;
+                                }
                             }
                             else
                             {
@@ -99,8 +120,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 }
                             }
 
-                            if (voStructElementSize < elementSize)
-                                voStructElementSize = elementSize;
+                            if (largestElementSize < elementSize)
+                                largestElementSize = elementSize;
                             if (voStructSize % align != 0)
                             {
                                 voStructSize += align - (voStructSize % align);
@@ -109,12 +130,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                 }
                 _voStructSize = voStructSize;
-                _voStructElementSize = voStructElementSize;
+                _voStructElementSize = largestElementSize;
             }
         }
         internal SynthesizedAttributeData GetVoStructAttributeData()
         {
-            var syntax = ((CSharpSyntaxNode)declaration.SyntaxReferences.FirstOrDefault()?.GetSyntax());
             var attributeType = DeclaringCompilation.VOStructAttributeType();
             var int32type = DeclaringCompilation.GetSpecialType(SpecialType.System_Int32);
             var attributeConstructor = attributeType.GetMembers(".ctor").FirstOrDefault() as MethodSymbol;

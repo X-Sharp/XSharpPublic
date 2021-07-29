@@ -295,17 +295,6 @@ namespace XSharp.LanguageService
         ///     If Visual Studio's recognizes the given member and knows where its source code is, goes to the source code.
         ///     Otherwise, opens the "Find Symbols" ToolWindow.
         /// </summary>
-        public static void GotoMemberDefinition(string memberName, uint searchOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
-        {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            gotoDefinition(memberName, _LIB_LISTTYPE.LLT_MEMBERS, searchOptions);
-        }
-
-        public static void GotoClassDefinition(string typeName, uint searchOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
-        {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            gotoDefinition(typeName, _LIB_LISTTYPE.LLT_CLASSES, searchOptions);
-        }
 
         public static void FindSymbols(string memberName)
         {
@@ -360,19 +349,6 @@ namespace XSharp.LanguageService
             }
             return simpleLibrary;
         }
-
-        //private static bool tryGetSourceLocation(string memberName, out string fileName, out uint line, uint searchOptions)
-        //{
-        //    ThreadHelper.ThrowIfNotOnUIThread();
-        //    if (tryFindSymbol(memberName, out IVsSimpleObjectList2 list, _LIB_LISTTYPE.LLT_MEMBERS, searchOptions))
-        //    {
-        //        return HResult.Succeeded(list.GetSourceContextWithOwnership(0, out fileName, out line));
-        //    }
-
-        //    fileName = null;
-        //    line = 0;
-        //    return false;
-        //}
 
         /// <summary>
         ///     Tries to find a member (field/property/event/methods/etc).

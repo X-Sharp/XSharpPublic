@@ -1,4 +1,9 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using System;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
@@ -14,23 +19,19 @@ namespace XSharp.LanguageService.LineSeparators
     [TextViewRole(PredefinedTextViewRoles.Document)]
     internal class LineSeparatorAdornmentManagerProvider : IWpfTextViewCreationListener
     {
-
         [Import]
         private IViewTagAggregatorFactoryService tagAggregatorFactoryService = null;
+
         [Import]
-
         private IEditorFormatMapService editorFormatMapService = null;
-
 
         [Export(typeof(AdornmentLayerDefinition))]
         [Name(Constants.LanguageName + "LineSeparator")]
-        [Order(After = PredefinedAdornmentLayers.Caret)]
         [TextViewRole(PredefinedTextViewRoles.Document)]
         [ContentType(Constants.LanguageName)]
         [Order(After = PredefinedAdornmentLayers.Selection, Before = PredefinedAdornmentLayers.Squiggle)]
 
         public AdornmentLayerDefinition editorAdornmentLayer = null;
-
 
         public void TextViewCreated(IWpfTextView textView)
         {
@@ -41,6 +42,5 @@ namespace XSharp.LanguageService.LineSeparators
             buffer.Properties.AddProperty(typeof(LineSeparatorManager), lineSeparatorManager);
             return;
         }
-
     }
 }

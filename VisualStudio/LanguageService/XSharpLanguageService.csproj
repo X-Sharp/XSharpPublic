@@ -75,7 +75,6 @@
     <Compile Include="KeywordColoring\LineState.cs" />
     <Compile Include="LineSeparators\GraphicsResult.cs" />
     <Compile Include="LineSeparators\GraphicsTag.cs" />
-    <Compile Include="LineSeparators\ITextBugger.cs" />
     <Compile Include="LineSeparators\LineSeparatorManager.cs" />
     <Compile Include="LineSeparators\LineSeparatorProvider.cs" />
     <Compile Include="LineSeparators\LineSeparatorTag.cs" />

@@ -24,7 +24,6 @@ namespace XSharp.LanguageService
             if (_dispose != null)
             {
                 _dispose();
-
                 _dispose = null;
             }
         }

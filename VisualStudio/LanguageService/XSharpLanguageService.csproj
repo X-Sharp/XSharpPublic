@@ -68,6 +68,7 @@
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
+    <Compile Include="KeywordColoring\LineState.cs" />
     <Compile Include="Lookup\XSharpSearchLocation.cs" />
     <Compile Include="Lookup\XSharpLookup.cs" />
     <Compile Include="KeywordColoring\ClassificationDefinitions.cs" />

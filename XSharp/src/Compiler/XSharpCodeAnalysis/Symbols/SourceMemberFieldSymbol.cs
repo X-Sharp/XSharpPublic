@@ -19,6 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal partial class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
     {
+
         internal TypeWithAnnotations GetVOGlobalType(CSharpCompilation compilation, TypeSyntax typeSyntax, Binder binder, ConsList<FieldSymbol> fieldsBeingBound)
         {
             var xNode = this.SyntaxNode.XNode;
@@ -51,8 +52,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
             }
-            TypeSymbol type = default;
-            if (xNode is XP.VodefineContext && !this.IsConst)
+            TypeSymbol type;
+            if (xNode is XP.VodefineContext)
             {
                 var vodef = xNode as XP.VodefineContext;
                 DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
@@ -62,7 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var declarator = (VariableDeclaratorSyntax)this.DeclaringSyntaxReferences.AsSingleton().GetSyntax();
                 var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
                 var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
-                if (initializerOpt != null && !type.IsPszType())
+                if (initializerOpt != null && !type.IsPszType() && vodef.DataType == null)
                 {
                     if (initializerOpt.Type is { } && !initializerOpt.Type.IsErrorType())
                     {

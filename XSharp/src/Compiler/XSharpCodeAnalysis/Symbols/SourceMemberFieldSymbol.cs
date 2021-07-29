@@ -63,12 +63,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var declarator = (VariableDeclaratorSyntax)this.DeclaringSyntaxReferences.AsSingleton().GetSyntax();
                 var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
                 var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, RefKind.None, declarator.Initializer, declarator);
-                if (initializerOpt != null && !type.IsPszType() && vodef.DataType == null)
+                if (initializerOpt != null && !type.IsPszType())
                 {
                     if (initializerOpt.Type is { } && !initializerOpt.Type.IsErrorType())
                     {
-                        type = initializerOpt.Type;
-
+                        if (vodef.DataType == null)
+                        {
+                            type = initializerOpt.Type;
+                        }
                         if (!type.IsVoidPointer() && initializerOpt.ConstantValue != null && !this.IsConst)
                         {
                             this._modifiers |= DeclarationModifiers.Const;

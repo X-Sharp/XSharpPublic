@@ -99,7 +99,6 @@
     <Compile Include="Library\HierarchyListener.cs" />
     <Compile Include="ModelScannerEvents.cs" />
     <Compile Include="NavigationBar\DropDownClient.cs" />
-    <Compile Include="NavigationBar\XSharpTypeAndMemberDropDownBars.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="Library\Library.cs" />
     <Compile Include="Library\LibraryNode.cs" />
@@ -119,6 +118,12 @@
     <Compile Include="OptionsPages\FormattingOptionsControl.Designer.cs">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionsPages\OtherOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\OtherOptionsControl.Designer.cs">
+      <DependentUpon>OtherOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionsPages\IntellisenseOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -126,6 +131,9 @@
       <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionsPages\FormattingOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\OtherOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="OptionsPages\IntellisenseOptionsPage.cs">
@@ -201,6 +209,9 @@
   <ItemGroup>
     <EmbeddedResource Include="OptionsPages\FormattingOptionsControl.resx">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsPages\OtherOptionsControl.resx">
+      <DependentUpon>OtherOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\IntellisenseOptionsControl.resx">
       <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>

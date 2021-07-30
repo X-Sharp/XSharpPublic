@@ -117,35 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="100" xml:space="preserve">
-    <value>XSharp Files (*.prg, *.xs, *.?h, *.??frm, *.??mnu, *.??fs, *.??dbs);*.prg,*.xs,*.?h,*.??frm,*.??mnu,*.??fs,*.??dbs</value>
-    <comment>Filter for add existing item file dialog</comment>
-  </data>
-  <data name="102" xml:space="preserve">
-    <value>XSharp Files (*.prg, *.xs, *.?h, *.ppo, *.resx, *.rc, *.settings, *.??frm, *.??mnu, *.??fs, *.??dbs);*.prg,*.xs,*.?h,*.ppo,*.resx,*.rc,*.settings,*.??frm,*.??mnu,*.??fs,*.??dbs</value>
-    <comment>Filter for open file dialog</comment>
-  </data>
-  <data name="103" xml:space="preserve">
-    <value>XSharp Files (*.prg, *.xs, *.?h, *.resx, *.rc, *.xsd, *.xaml, *.xml, *.htm, *.html, *.css);*.prg,*.xs,*.?h,*.resx,*.rc,*.xsd,*.xaml,*.xml,*.htm,*.html,*.css</value>
-    <comment>Filter for find in files dialog (do not include binaries here)</comment>
-  </data>
-  <data name="1" xml:space="preserve">
-    <value>X#</value>
-    <comment>'Localized' Language name used on several dialogs. </comment>
-  </data>
-  <data name="3" xml:space="preserve">
-    <value>XSharp Items</value>
-  </data>
-  <data name="201" xml:space="preserve">
-    <value>Intellisense</value>
-    <comment>Caption of Intellisense Options page in Tools/Option/TextEditor/XSharp</comment>
-  </data>
-  <data name="202" xml:space="preserve">
-    <value>Formatting</value>
-    <comment>Caption of Formatting Options page in Tools/Option/TextEditor/XSharp</comment>
-  </data>
-  <data name="203" xml:space="preserve">
-    <value>Other</value>
-    <comment>Caption of Other Options page in Tools/Option/TextEditor/XSharp</comment>
-  </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
 </root>

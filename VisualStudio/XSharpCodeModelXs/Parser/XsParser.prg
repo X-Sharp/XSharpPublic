@@ -456,10 +456,10 @@ BEGIN NAMESPACE XSharpModel
                     kind := Kind.XTranslate
                  ENDIF
              END SWITCH
-             VAR entity := XSourceMemberSymbol{name, kind, Modifiers.None,;
-                            range,interval,"",FALSE}
+             VAR entity := XSourceMemberSymbol{name, kind, Modifiers.None, range,interval,"",FALSE}
              entity:SourceCode := source
              entity:File := _file
+             entity:SingleLine := TRUE
              _EntityList.Add(entity)
              _globalType:AddMember(entity)
          OTHERWISE
@@ -1197,8 +1197,9 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             SELF:GetSourceInfo(aAttribs[0], aAttribs[aAttribs:Count-1], OUT VAR range, OUT VAR interval, OUT VAR source)
             VAR entity := XSourceMemberSymbol{name, Kind.Attribute, Modifiers.None,;
                             range,interval,"",FALSE}
-            entity.SourceCode := source
-            entity.File := _file
+            entity:SourceCode := source
+            entity:File := _file
+            entity:SingleLine := TRUE
             _globalType:AddMember(entity)
             RETURN entity
 

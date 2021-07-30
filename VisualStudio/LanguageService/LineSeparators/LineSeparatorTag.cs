@@ -32,7 +32,7 @@ namespace XSharp.LanguageService
         /// <summary>
         /// Creates a very long line at the bottom of bounds.
         /// </summary>
-        public override GraphicsResult GetGraphics(IWpfTextView view, Geometry bounds, TextFormattingRunProperties format)
+        public override GraphicsResult GetGraphics(IWpfTextView view, Geometry bounds)
         {
             Initialize(view);
 

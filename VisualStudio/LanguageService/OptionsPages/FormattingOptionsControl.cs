@@ -86,15 +86,6 @@ namespace XSharp.LanguageService.OptionsPages
             formattingPage.AlignMethod = chkAlignMethod.Checked;
         }
 
-        private void Control_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_loading)
-            {
-            }
-
-        }
-
-
         private void multiFactor_TextChanged(object sender, EventArgs e)
         {
             int factor = 0;

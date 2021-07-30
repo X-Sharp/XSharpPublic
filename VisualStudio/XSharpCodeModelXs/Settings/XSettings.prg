@@ -70,6 +70,9 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EditorInsertFinalNewline         AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorTrimTrailingWhiteSpace     AS LOGIC AUTO
 
+        PUBLIC STATIC PROPERTY EditorShowDividers               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY EditorShowSingleLineDividers     AS LOGIC AUTO
+
         PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO
         PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO
         PUBLIC STATIC PROPERTY ShowMessageBox                   AS ShowMessageBox AUTO

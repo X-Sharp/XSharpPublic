@@ -35,6 +35,7 @@ namespace XSharp.LanguageService.LineSeparators
 
         public void TextViewCreated(IWpfTextView textView)
         {
+            // always setup the manager. Inside the manager we check to see if the dividers are enabled/disabled
             var buffer = textView.TextBuffer;
             if (buffer.Properties.TryGetProperty<LineSeparatorManager>(typeof(LineSeparatorManager), out var lineSeparatorManager))
                 return;

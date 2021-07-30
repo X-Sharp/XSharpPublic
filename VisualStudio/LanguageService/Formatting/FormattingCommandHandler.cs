@@ -61,19 +61,12 @@ namespace XSharp.LanguageService
 
         private void registerClassifier()
         {
-            if (_buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+            if (_classifier == null)
             {
-                if (_classifier == null)
+                if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out _classifier))
                 {
-                    if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out _classifier))
-                    {
-                        _classifier.ClassificationChanged += Classifier_ClassificationChanged;
-                    }
+                    _classifier.ClassificationChanged += Classifier_ClassificationChanged;
                 }
-            }
-            else
-            {
-                _classifier = null;
             }
 
         }

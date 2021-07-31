@@ -89509,7 +89509,7 @@ ExportResources = 0
 ExportImages = 0
 [R756 - Support constand value for _Sizeof for VOSTRUCT FileGroups]
 [R756 - Support constand value for _Sizeof for VOSTRUCT Files]
-File = %AppPath%\Prg\Start.prg
+File = %AppPath%\Prg\R756.prg
 FileGUID = D5334F26-AD77-49CC-861E-2FD95395FD31
 FileType = Code
 CopyToBin = 0

@@ -49,13 +49,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         private void EvalVoStructMemberSizes()
         {
+            /*
+             * When no alignment is specified then each element must be aligned on
+             * a memory boundary that is a multiple of its own size
+             * and the total size of the structure is a multiple of the size of 
+             * the largest element. If an element in a structure is a structure
+             * itself then the "Largest" element is determined by the size of the
+             * largest element of the sub structure
+             * When an alignment is specified then each element must be aligned on 
+             * a memory boundary that is a multiple of the specified boundary
+             * and the total size of the structure is a multiple of the size specified.
+             */
             if (_isVoStructOrUnion && DeclaringCompilation.Options.HasRuntime)
             {
                 int voStructSize = 0;
                 int largestElementSize = 0;
                 int align = this.Layout.Alignment;
-                if (align == 0)
-                    align = 4;
                 foreach (var m in GetMembers())
                 {
                     if (m.Kind == SymbolKind.Field)
@@ -103,8 +112,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         }
                         if (fieldSize != 0)
                         {
-                            if (fieldSize < align)
-                                fieldSize = align;
+                            var elementAlignment = align;
+                            if (elementAlignment == 0)
+                                elementAlignment = elementSize;
+                            if (voStructSize % elementAlignment != 0)
+                            {
+                                voStructSize += elementAlignment - (voStructSize % elementAlignment);
+                            }
+
                             if (!f.TypeLayoutOffset.HasValue)
                             {
                                 // no explicit layout
@@ -122,17 +137,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                             if (largestElementSize < elementSize)
                                 largestElementSize = elementSize;
-                            if (voStructSize % align != 0)
-                            {
-                                voStructSize += align - (voStructSize % align);
-                            }
+
                         }
                     }
                 }
+                if (align == 0)
+                {
+                    if (voStructSize % largestElementSize != 0)
+                    {
+                        voStructSize += largestElementSize - (voStructSize % largestElementSize);
+                    }
+                }
+                else if (align != 1)
+                {
+                    if (voStructSize % align != 0)
+                    {
+                        voStructSize += align - (voStructSize % align);
+                    }
+
+                }
                 _voStructSize = voStructSize;
                 _voStructElementSize = largestElementSize;
+
             }
         }
+
         internal SynthesizedAttributeData GetVoStructAttributeData()
         {
             var attributeType = DeclaringCompilation.VOStructAttributeType();

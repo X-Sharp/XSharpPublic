@@ -420,10 +420,10 @@
 
                 CLASS XApp INHERIT APP
                 METHOD Start()
-                 LOCAL oWin AS Window
+                LOCAL oWin AS Window
                 oWin := MyTopAppWin{SELF}
-                 oWin:Show()
-                 SELF:Exec()
+                oWin:Show()
+                SELF:Exec()
                 RETURN NIL
 
                 END CLASS
@@ -432,42 +432,42 @@
 
                 CONSTRUCTOR(oOwnerApp)
                 LOCAL lRetVal AS LONG
-                 SUPER(oOwnerApp)
-                 SELF:Menu := MyMenu{SELF}
-                 lRetVal := oOwnerApp:Run("Clock")
-                 SELF:Caption := "My Top App Window Application"
-                 SELF:WarningMessage("The return value of running CLOCK is :" +AsString(lRetVal))
+                SUPER(oOwnerApp)
+                SELF:Menu := MyMenu{SELF}
+                lRetVal := oOwnerApp:Run("Clock")
+                SELF:Caption := "My Top App Window Application"
+                SELF:WarningMessage("The return value of running CLOCK is :" +AsString(lRetVal))
                 RETURN
 
                 METHOD GetClock()
-                 SELF:Owner:Run("Clock")
+                SELF:Owner:Run("Clock")
                 RETURN NIL
 
                 METHOD GetHandle()
-                 SELF:WarningMessage("The handle of this app is :"+AsString(SELF:Handle()))
+                SELF:WarningMessage("The handle of this app is :"+AsString(SELF:Handle()))
                 RETURN NIL
 
                 METHOD GoQuit()
-                 SELF:Owner:Quit()
+                SELF:Owner:Quit()
                 RETURN NIL
                 END CLASS
 
                 CLASS MyMenu INHERIT Menu
                 CONSTRUCTOR(oOwner)
-                 SUPER(ResourceID{IDM_MYMENU})
-                 SELF:RegisterItem(IDM_MYMENU_CLOCK_ID, HyperLabel{#GetClock,,,})
-                 SELF:RegisterItem(IDM_MYMENU_GETHANDLE_ID, HyperLabel{#GetHandle,,,})
-                 SELF:RegisterItem(IDM_MYMENU_QUIT_ID, HyperLabel{#GoQuit,,,})
+                SUPER(ResourceID{IDM_MYMENU})
+                SELF:RegisterItem(IDM_MYMENU_CLOCK_ID, HyperLabel{#GetClock,,,})
+                SELF:RegisterItem(IDM_MYMENU_GETHANDLE_ID, HyperLabel{#GetHandle,,,})
+                SELF:RegisterItem(IDM_MYMENU_QUIT_ID, HyperLabel{#GoQuit,,,})
                 END CLASS
                 RESOURCE IDM_MYMENU MENU
                 BEGIN
-                 POPUP "&amp;Menu1"
-                 BEGIN
-                  MENUITEM "&amp;Clock", IDM_MYMENU_CLOCK_ID
-                  MENUITEM "&amp;Get App Handle", IDM_MYMENU_GETHANDLE_ID
-                  MENUITEM SEPARATOR
-                  MENUITEM "&amp;QUIT", IDM_MYMENU_QUIT_ID
-                 END
+                POPUP "&amp;Menu1"
+                BEGIN
+                MENUITEM "&amp;Clock", IDM_MYMENU_CLOCK_ID
+                MENUITEM "&amp;Get App Handle", IDM_MYMENU_GETHANDLE_ID
+                MENUITEM SEPARATOR
+                MENUITEM "&amp;QUIT", IDM_MYMENU_QUIT_ID
+                END
                 END
             </code>
         </example>
@@ -542,7 +542,7 @@
                 or the application decides to close by deliberately invoking the App:Quit() method.
                 When the application terminates, the thread of control exits from App:Exec() to the
                 next statement in your code. This is the default.
-                EXECWHILEEVENT	Tells the system to continue to execute the application only while there are still events queued. 
+                EXECWHILEEVENT	Tells the system to continue to execute the application only while there are still events queued.
                 Once the system has dispatched the last event in the queue, the thread of control exits from App:Exec().
                 This gives you the opportunity to do some processing and then start another event loop by invoking
                 App:Exec() again. You should use this mechanism when you want to do some background processing
@@ -804,10 +804,10 @@
             This example enables a WindowHorizontalScrollBar object and sets its range to 1-80, with a block size of 8:
             <code language="X#">
                 METHOD Init() CLASS MyAppWindow
-                 owhs := SELF:EnableHorizontalScroll(TRUE)
-                 owhs:Show()
-                 owhs:Range := Range{1,80} 
-                 owhs:BlockSize := 8
+                owhs := SELF:EnableHorizontalScroll(TRUE)
+                owhs:Show()
+                owhs:Range := Range{1,80}
+                owhs:BlockSize := 8
             </code>
         </example>
     </AppWindow.EnableHorizontalScroll>
@@ -838,20 +838,20 @@
             The following code enables a data window as a drop target and creates a new OLE object inside its OLEDrop handler. It also checks the name of the OLE object to allow only WordPad documents:
             <code language="X#">
                 METHOD EnableOLEDropTarget CLASS DropTargetDataWindow
-                 SELF:EnableOLEDropTarget(TRUE)
+                SELF:EnableOLEDropTarget(TRUE)
                 METHOD OLEDrop(oOLEDragEvent) CLASS MyChild
-                 LOCAL oOLE AS OLEObject
-                 LOCAL lRet AS LOGIC
-                 IF oOLEDragEvent:ObjectName == "WordPad Document"
-                  oOLE := OLEObject{SELF}
-                  oOLE:AllowInPlace := TRUE
-                  oOLE:AllowResize := TRUE
-                  IF oOLE:CreateFromOLEDragEvent(oOLEDragEvent)
-                    oOLE:Origin := oOLEDragEvent:Position
-                    oOLE:Show()
-                    oOLE:SetFocus()
-                  ENDIF
-                 ENDIF
+                LOCAL oOLE AS OLEObject
+                LOCAL lRet AS LOGIC
+                IF oOLEDragEvent:ObjectName == "WordPad Document"
+                oOLE := OLEObject{SELF}
+                oOLE:AllowInPlace := TRUE
+                oOLE:AllowResize := TRUE
+                IF oOLE:CreateFromOLEDragEvent(oOLEDragEvent)
+                oOLE:Origin := oOLEDragEvent:Position
+                oOLE:Show()
+                oOLE:SetFocus()
+                ENDIF
+                ENDIF
             </code>
         </example>
     </AppWindow.EnableOleDropTarget>
@@ -987,9 +987,9 @@
                 oOle:AllowResize   := TRUE
                 oOle:AutoSizeOnCreate := TRUE
                 IF (oOle:CreateFromOleDragEvent(oOleDragEvent))
-                 p := oOleDragEvent:Position
-                 SELF:SetupOLEObject(oOle, p)
-                 lRet := TRUE
+                p := oOleDragEvent:Position
+                SELF:SetupOLEObject(oOle, p)
+                lRet := TRUE
                 ENDIF
             </code><code language="X#">RETURN lRet</code>
         </example>
@@ -1002,9 +1002,9 @@
             The following example is from the OLE Container application in ...\SAMPLES\OLE\CONT:
             <code language="X#">
                 METHOD OLEInPlaceActivate() CLASS Container
-                 SELF:Owner:ToolBar:Hide()
-                 //self:Owner:StatusBar:Hide()
-                 RETURN SUPER:OLEInPlaceActivate()
+                SELF:Owner:ToolBar:Hide()
+                //self:Owner:StatusBar:Hide()
+                RETURN SUPER:OLEInPlaceActivate()
             </code>
         </example>
     </AppWindow.OLEInPlaceActivate>
@@ -1016,9 +1016,9 @@
             The following example is from the OLE Container application in ...\SAMPLES\OLE\CONT:
             <code language="X#">
                 METHOD OLEInPlaceDeactivate() CLASS Container
-                 SELF:Owner:ToolBar:Show()
-                 //self:Owner:StatusBar:Show()
-                 RETURN SUPER:OLEInPlaceDeactivate()
+                SELF:Owner:ToolBar:Show()
+                //self:Owner:StatusBar:Show()
+                RETURN SUPER:OLEInPlaceDeactivate()
             </code>
         </example>
     </AppWindow.OLEInPlaceDeactivate>
@@ -1048,23 +1048,23 @@
             This example optionally reacts to a report server closing event and ignores other events:
             <code language="X#">
                 METHOD ReportNotification(oRQ) CLASS AppWindow
-                 LOCAL oTB
-                 LOCAL Reply
-                 IF (oRQ:EventType == REPORTSERVERCLOSEEVENT)
-                  oTB := TextBox{SELF,"You closed";
-                    + oRQ:ReportServer,;
-                    "Should pending reports be attempted?"}
-                  oTB:TYPE := BUTTONYESNO + ;
-                    BOXICONQUESTIONMARK
-                  Reply := oTB:Show()
-                  oTB:Axit()
-                  IF (Reply == BOXREPLYNO)
-                    RETURN FALSE
-                  ENDIF     // Reply was BOXREPLYYES
-                 ENDIF
-                 RETURN TRUE   // De-queue any pending
-                        // commands which can cause
-                        // restart prompt
+                LOCAL oTB
+                LOCAL Reply
+                IF (oRQ:EventType == REPORTSERVERCLOSEEVENT)
+                oTB := TextBox{SELF,"You closed";
+                + oRQ:ReportServer,;
+                "Should pending reports be attempted?"}
+                oTB:TYPE := BUTTONYESNO + ;
+                BOXICONQUESTIONMARK
+                Reply := oTB:Show()
+                oTB:Axit()
+                IF (Reply == BOXREPLYNO)
+                RETURN FALSE
+                ENDIF     // Reply was BOXREPLYYES
+                ENDIF
+                RETURN TRUE   // De-queue any pending
+                // commands which can cause
+                // restart prompt
             </code>
         </example>
     </AppWindow.ReportNotification>
@@ -1087,9 +1087,9 @@
                 <item>
                     <term>SHOWNORMAL</term>
                     <description>
-                        Shows the window on its owner, in a size chosen by the owner. 
-                        If the owner is the desktop, the window appears quite large, but not filling the whole desktop. 
-                        You can control the window's size precisely, if you wish, by assigning to its Size and Origin variables. 
+                        Shows the window on its owner, in a size chosen by the owner.
+                        If the owner is the desktop, the window appears quite large, but not filling the whole desktop.
+                        You can control the window's size precisely, if you wish, by assigning to its Size and Origin variables.
                         The user can always re-size the window to their own requirements. This is the <b>default</b>.
                     </description>
                 </item>
@@ -1117,7 +1117,7 @@
         <returns>NIL</returns>
         <param name="oHL">The hyperlabel containing a description (HyperLabel:Description) for the status message or the status message as a string.</param>
         <param name="nType">
-            The constant value indicating the type and priority of the message to be displayed on the status bar. 
+            The constant value indicating the type and priority of the message to be displayed on the status bar.
             The highest priority message (MESSAGEMENU) always takes precedence over and replaces lower priority messages. See table in the remarks section for more info.
         </param>
         <remarks>
@@ -1149,7 +1149,7 @@
         </remarks>
     </AppWindow.StatusMessage>
     <AppWindow.SystemMenu>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </AppWindow.SystemMenu>
     <AppWindow.ToolBar>
         <summary>
@@ -1224,7 +1224,9 @@
         <param name="oOwnerWnd">The owner of the automation server.</param>
         <param name="sProgramID">The program ID of the automation server. The program ID is a string that uniquely identifies the automation server.</param>
         <param name="iResID">The resource ID of the automation server's type library. The default is 1.</param>
-        <param name="lASP">A flag specifying if the automation server is to be used as an ASP component. The default is TRUE, if <paramref name="oOwnerWnd" /> is a descendant of the ASPAppAbstract class; otherwise, FALSE.</param>
+        <param name="lASP">
+            A flag specifying if the automation server is to be used as an ASP component. The default is TRUE, if <paramref name="oOwnerWnd" /> is a descendant of the ASPAppAbstract class; otherwise, FALSE.
+        </param>
         <remarks>
             The Init() method instantiates a new automation Server object.
             <note type="tip">When creating OLE automation server applications in the IDE, you have to set the application properties on the OLE Server tab page in the Application Options dialog box to match the ProgID and class of your automation server.</note>
@@ -1281,23 +1283,70 @@
         <param name="lDataAware">A logical value specifying whether the list box is data aware.</param>
         <param name="nResourceID">The resource ID of the list box.</param>
         <remarks>
-            <pre>
-                Constant                  Windows API Constant
-                LBOXDISABLENOSCROLL       LBS_DISABLENOSCROLL
-                LBOXEXTENDEDSEL           LBS_EXTENDEDSEL
-                LBOXHASSTRINGS            LBS_HASSTRINGS
-                LBOXMULTICOLUMN           LBS_MULTICOLUMN
-                LBOXMULTIPLESEL           LBS_MULTIPLESEL
-                LBOXNOINTEGRALHEIGHT      LBS_NOINTEGRALHEIGHT
-                LBOXNOREDRAW              LBS_NOREDRAW
-                LBOXNOTIFY                LBS_NOTIFY
-                LBOXOWNERDRAWFIXED        LBS_OWNERDRAWFIXED
-                LBOXOWNERDRAWVARIABLE     LBS_OWNERDRAWVARIABLE
-                LBOXSORT                  LBS_SORT
-                LBOXSTANDARD              LBS_STANDARD
-                LBOXUSETABSTOPS           LBS_USETABSTOPS
-                LBOXWANTKEYBOARDINPUT     LBS_WANTKEYBOARDINPUT
-            </pre>
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Windows API Constant</description>
+                </listheader>
+                <item>
+                    <term>LBOXDISABLENOSCROLL</term>
+                    <description>LBS_DISABLENOSCROLL</description>
+                </item>
+                <item>
+                    <term>LBOXEXTENDEDSEL</term>
+                    <description>LBS_EXTENDEDSEL</description>
+                </item>
+                <item>
+                    <term>LBOXHASSTRINGS</term>
+                    <description>LBS_HASSTRINGS</description>
+                </item>
+                <item>
+                    <term>LBOXMULTICOLUMN</term>
+                    <description>LBS_MULTICOLUMN</description>
+                </item>
+                <item>
+                    <term>LBOXMULTIPLESEL</term>
+                    <description>LBS_MULTIPLESEL</description>
+                </item>
+                <item>
+                    <term>LBOXNOINTEGRALHEIGHT</term>
+                    <description>LBS_NOINTEGRALHEIGHT</description>
+                </item>
+                <item>
+                    <term>LBOXNOREDRAW</term>
+                    <description>LBS_NOREDRAW</description>
+                </item>
+                <item>
+                    <term>LBOXNOTIFY</term>
+                    <description>LBS_NOTIFY</description>
+                </item>
+                <item>
+                    <term>LBOXOWNERDRAWFIXED</term>
+                    <description>LBS_OWNERDRAWFIXED</description>
+                </item>
+                <item>
+                    <term>LBOXOWNERDRAWVARIABLE</term>
+                    <description>LBS_OWNERDRAWVARIABLE</description>
+                </item>
+                <item>
+                    <term>LBOXSORT</term>
+                    <description>LBS_SORT</description>
+                </item>
+                <item>
+                    <term>LBOXSTANDARD</term>
+                    <description>
+                        LBS_STANDARD
+                    </description>
+                </item>
+                <item>
+                    <term>LBOXUSETABSTOPS</term>
+                    <description>LBS_USETABSTOPS</description>
+                </item>
+                <item>
+                    <term>LBOXWANTKEYBOARDINPUT</term>
+                    <description>LBS_WANTKEYBOARDINPUT</description>
+                </item>
+            </list>
         </remarks>
     </BaseListBox.ctor>
     <BaseListBox.AddItem>
@@ -1320,13 +1369,13 @@
         </summary>
     </BaseListBox.Clear>
     <BaseListBox.CurrentItem>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </BaseListBox.CurrentItem>
     <BaseListBox.CurrentItemNo>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </BaseListBox.CurrentItemNo>
     <BaseListBox.CurrentText>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </BaseListBox.CurrentText>
     <BaseListBox.DeleteItem>
         <summary>
@@ -1480,7 +1529,7 @@
     </BitmapObject.Size>
     <BoundingBox>
         <summary>
-            Create a bounding box, which is a set of four numbers that represent the bottom-left and top-right corners of a rectangle. 
+            Create a bounding box, which is a set of four numbers that represent the bottom-left and top-right corners of a rectangle.
         </summary>
         <example>
             The following returns the smallest rectangle that encloses an EllipseObject object, in canvas coordinates:
@@ -1518,7 +1567,7 @@
         </returns>
     </BoundingBox.ConvertToScreen>
     <BoundingBox.Extent>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </BoundingBox.Extent>
     <BoundingBox.Height>
         <summary>
@@ -1554,7 +1603,7 @@
         <value>A numeric value representing the X coordinate of the right side of a bounding box, in canvas coordinates.</value>
     </BoundingBox.Right>
     <BoundingBox.Size>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </BoundingBox.Size>
     <BoundingBox.Top>
         <summary>
@@ -1681,9 +1730,7 @@
         </remarks>
     </Brush.ctor>
     <Brush.CreateNew>
-        <summary>**Missing documentation **</summary>
-        <param name="xColor">** missing parameter documentation **</param>
-        <param name="kHatchStyle">** missing parameter documentation **</param>
+        <exclude />
     </Brush.CreateNew>
     <Brush.Destroy>
         <summary>
@@ -1725,7 +1772,7 @@
         <param name="oDimension">The dimension of the button in canvas coordinates.</param>
         <param name="cText">The informational text to be printed in the button. By default, it is a NULL_STRING.</param>
         <param name="kStyle">
-            The style of the button, specified by a Windows API style constant. 
+            The style of the button, specified by a Windows API style constant.
             <note type="tip">Consult your Microsoft Win32 Software Development Kit documentation for detailed information about a particular Windows API style constant.</note>
         </param>
         <param name="lDataAware">A logical value specifying whether the button is data aware. If omitted, defaults to FALSE.</param>
@@ -1758,7 +1805,7 @@
         <value>An image object representing the icon or bitmap image that is displayed on a button.</value>
     </Button.Image>
     <Button.ImageList>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Button.ImageList>
     <Button.Modified>
         <summary>
@@ -1794,12 +1841,12 @@
             Create check boxes, which are controls that can be toggled on or off by a user (or for 3-state check boxes, to a third state).
         </summary>
         <remarks>
-            A check box allows the user to choose between 2 or 3 states. 
-            A 2-state check box allows a choice between a checked (ON) and unchecked (OFF) state. 
-            The choice is reflected in CheckBox:Value access, which may be TRUE or FALSE. 
-            A 3-state check box adds a third (UNDETERMINED) state, in which the box is dimmed. 
+            A check box allows the user to choose between 2 or 3 states.
+            A 2-state check box allows a choice between a checked (ON) and unchecked (OFF) state.
+            The choice is reflected in CheckBox:Value access, which may be TRUE or FALSE.
+            A 3-state check box adds a third (UNDETERMINED) state, in which the box is dimmed.
             The third state is indicated by CheckBox:Value being TRUE and by CheckBox:ValueChanged (which is normally TRUE) being FALSE.
-            A check box may be bound to a logical field in a server. 
+            A check box may be bound to a logical field in a server.
             Because of this, you can not directly bind a 3-state check box to a server; instead you must create a
             numeric or character field to store the 3-state information, and update it based on the status of
             the CheckBox:Value and CheckBox:ValueChanged accesses.
@@ -1866,7 +1913,7 @@
         </remarks>
     </CheckBox.Destroy>
     <CheckBox.Image>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </CheckBox.Image>
     <CheckBox.TextValue>
         <summary>
@@ -1968,18 +2015,18 @@
                 METHOD EnableOLEDropTarget CLASS DropTargetDataWindow
                 SUPER:EnableOLEDropTarget(TRUE)
                 METHOD OLEDrop(oOLEDragEvent) CLASS MyChild
-                 LOCAL oOLE AS OLEObject
-                 LOCAL lRet AS LOGIC
-                 IF oOLEDragEvent:ObjectName == "WordPad Document"
-                  oOLE := OLEObject{SELF}
-                  oOLE:AllowInPlace := TRUE
-                  oOLE:AllowResize := TRUE
-                  IF oOLE:CreateFromOLEDragEvent(oOLEDragEvent)
-                    oOLE:Origin := oOLEDragEvent:Position
-                    oOLE:Show()
-                    oOLE:SetFocus()
-                  ENDIF
-                 ENDIF
+                LOCAL oOLE AS OLEObject
+                LOCAL lRet AS LOGIC
+                IF oOLEDragEvent:ObjectName == "WordPad Document"
+                oOLE := OLEObject{SELF}
+                oOLE:AllowInPlace := TRUE
+                oOLE:AllowResize := TRUE
+                IF oOLE:CreateFromOLEDragEvent(oOLEDragEvent)
+                oOLE:Origin := oOLEDragEvent:Position
+                oOLE:Show()
+                oOLE:SetFocus()
+                ENDIF
+                ENDIF
             </code>
         </example>
     </ChildAppWindow.EnableOleDropTarget>
@@ -2000,7 +2047,7 @@
     </ChildAppWindow.ToolBar>
     <ClipBoard>
         <summary>
-            Create an object to refer to the Windows clipboard, which allows the sharing of text and bitmaps between different applications. 
+            Create an object to refer to the Windows clipboard, which allows the sharing of text and bitmaps between different applications.
         </summary>
         <remarks>
             Unlike DDE, the data transfer is almost always user-initiated, such as when the user of an application selects the Paste menu command.
@@ -2096,7 +2143,9 @@
         <summary>
             Retrieves a string from the clipboard.
         </summary>
-        <param name="nStringLength">The length of the string to be retrieved. If <paramref name="nStringLength" /> is zero or not specified, the complete clipboard contents is assumed.</param>
+        <param name="nStringLength">
+            The length of the string to be retrieved. If <paramref name="nStringLength" /> is zero or not specified, the complete clipboard contents is assumed.
+        </param>
         <returns>
             The string from the clipboard or NULL_STRING, if there is no string in the clipboard.
         </returns>
@@ -2279,7 +2328,7 @@
                 <item>
                     <term>BOXSIMPLE</term>
                     <description>
-                        A extended combo box with both an edit control and a list box that are visible at all times. The user can enter/edit text in the edit control, or choose items from the list box. 
+                        A extended combo box with both an edit control and a list box that are visible at all times. The user can enter/edit text in the edit control, or choose items from the list box.
                     </description>
                 </item>
             </list>
@@ -2340,13 +2389,10 @@
         <value>Integer value specifying the height of the embedded edit control.</value>
     </ComboBox.EditHeight>
     <ComboBox.EnableAutoComplete>
-        <summary>**Missing documentation **</summary>
-        <param name="dwFlags">** missing parameter documentation **</param>
+        <exclude />
     </ComboBox.EnableAutoComplete>
     <ComboBox.Font>
-        <summary>**Missing documentation **</summary>
-        <param name="oNewFont">** missing parameter documentation **</param>
-        <param name="lRescal">** missing parameter documentation **</param>
+<exclude />
     </ComboBox.Font>
     <ComboBox.Modified>
         <summary>
@@ -2355,10 +2401,10 @@
         <value>A logical value indicating whether an editable combo box is in the process of being modified. While you are typing in new text, or moving the highlighted selection, it is set to TRUE. When the focus shifts away from the combo box, ComboBox:Modified is reset to FALSE.</value>
     </ComboBox.Modified>
     <ComboBox.ReadOnly>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ComboBox.ReadOnly>
     <ComboBox.RemoveEditBalloonTip>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ComboBox.RemoveEditBalloonTip>
     <ComboBox.SetCueBanner>
         <summary>
@@ -2370,10 +2416,7 @@
         </remarks>
     </ComboBox.SetCueBanner>
     <ComboBox.ShowEditBalloonTip>
-        <summary>**Missing documentation **</summary>
-        <param name="cTitle">** missing parameter documentation **</param>
-        <param name="cText">** missing parameter documentation **</param>
-        <param name="dwIcon">** missing parameter documentation **</param>
+        <exclude />
     </ComboBox.ShowEditBalloonTip>
     <ComboBox.TextValue>
         <summary>
@@ -2447,7 +2490,7 @@
                 <item>
                     <term>BOXSIMPLE</term>
                     <description>
-                        A extended combo box with both an edit control and a list box that are visible at all times. The user can enter/edit text in the edit control, or choose items from the list box. 
+                        A extended combo box with both an edit control and a list box that are visible at all times. The user can enter/edit text in the edit control, or choose items from the list box.
                     </description>
                 </item>
             </list>
@@ -2505,15 +2548,13 @@
         <inheritdoc />
     </ComboBoxEx.Dispatch>
     <ComboBoxEx.EditHandle>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ComboBoxEx.EditHandle>
     <ComboBoxEx.GetExCBStyle>
-        <summary>**Missing documentation **</summary>
-        <param name="kExStyle">** missing parameter documentation **</param>
+        <exclude />
     </ComboBoxEx.GetExCBStyle>
     <ComboBoxEx.GetItemAttributes>
-        <summary>**Missing documentation **</summary>
-        <param name="uItemNumber">** missing parameter documentation **</param>
+        <exclude />
     </ComboBoxEx.GetItemAttributes>
     <ComboBoxEx.ImageList>
         <summary>
@@ -2522,8 +2563,7 @@
         <value>The ImageList object containing the images for the items in the ComboBoxEx object.</value>
     </ComboBoxEx.ImageList>
     <ComboBoxEx.InsertItem>
-        <summary>**Missing documentation **</summary>
-        <param name="uComboBoxExItem">** missing parameter documentation **</param>
+        <exclude />
     </ComboBoxEx.InsertItem>
     <ComboBoxEx.Length>
         <summary>
@@ -2532,13 +2572,10 @@
         <value>The length of the current text. Overrides the Length property of its parent class to provide the same functionality in this specialized class.</value>
     </ComboBoxEx.Length>
     <ComboBoxEx.SetExCBStyle>
-        <summary>**Missing documentation **</summary>
-        <param name="kExStyle">** missing parameter documentation **</param>
-        <param name="lEnable">** missing parameter documentation **</param>
+        <exclude />
     </ComboBoxEx.SetExCBStyle>
     <ComboBoxEx.SetItemAttributes>
-        <summary>**Missing documentation **</summary>
-        <param name="uComboBoxExItem">** missing parameter documentation **</param>
+        <exclude />
     </ComboBoxEx.SetItemAttributes>
     <ComboBoxExEndEditEvent>
         <summary>
@@ -2553,16 +2590,16 @@
         <inheritdoc />
     </ComboBoxExEndEditEvent.ctor>
     <ComboBoxExEndEditEvent.IsChanged>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ComboBoxExEndEditEvent.IsChanged>
     <ComboBoxExEndEditEvent.NewSelection>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ComboBoxExEndEditEvent.NewSelection>
     <ComboBoxExEndEditEvent.TextValue>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ComboBoxExEndEditEvent.TextValue>
     <ComboBoxExEndEditEvent.Why>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ComboBoxExEndEditEvent.Why>
     <ComboBoxExItem>
         <summary>
@@ -2656,7 +2693,7 @@
         <param name="oDimension">The dimension of the control in canvas coordinates.</param>
         <param name="cRegClass">String representing the control class (for example, 'Edit', 'ListBox', etc.)</param>
         <param name="kStyle">
-            Constant representing the style of the control, specified either by a X# style constant or a Windows API style constant. 
+            Constant representing the style of the control, specified either by a X# style constant or a Windows API style constant.
             Styles can be combined using the _Or() operator.
         </param>
         <param name="lDataAware">Logical value indicating whether the control is data-aware (TRUE) or not (FALSE). The default is FALSE.</param>
@@ -2724,10 +2761,10 @@
         </remarks>
     </Control.ControlID>
     <Control.Create>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Control.Create>
     <Control.DataField>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Control.DataField>
     <Control.Deactivate>
         <summary>
@@ -2787,13 +2824,14 @@
                 2.	Add an event handler function to your derived object. (This event handler should be called with the event when the event is received.)
                 3.	In general, the implementation of this event handler should call Default(). This keeps the same behavior as the base class, but it also allows other classes to provide useful event handlers for your new type of event, allowing you to provide a framework for other classes to use.
                 The base class Dispatch() method should be called in those cases where the received event is not handled by the customized dispatcher. For example:
-                <code language="X#">RETURN SUPER:Dispatch(<paramref name="oEvent" />)</code>
+                <code language="X#">
+                    RETURN SUPER:Dispatch(<paramref name="oEvent" />)
+                </code>
             </note>
         </remarks>
     </Control.Dispatch>
     <Control.Drop>
-        <summary>**Missing documentation **</summary>
-        <param name="oDragEvent">** missing parameter documentation **</param>
+        <exclude />
     </Control.Drop>
     <Control.Enable>
         <summary>
@@ -2876,7 +2914,7 @@
         </remarks>
     </Control.Handle>
     <Control.HandleAsDword>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Control.HandleAsDword>
     <Control.HasBorder>
         <summary>Check if a border  has been set for the control</summary>
@@ -2916,13 +2954,13 @@
         </remarks>
     </Control.HyperLabel>
     <Control.IsDestroyed>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Control.IsDestroyed>
     <Control.IsDisabled>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Control.IsDisabled>
     <Control.IsEditable>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Control.IsEditable>
     <Control.IsEnabled>
         <summary>
@@ -3152,7 +3190,7 @@
         </returns>
     </Control.PerformValidations>
     <Control.ReadOnly>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Control.ReadOnly>
     <Control.RegisterTimer>
         <summary>
@@ -3160,7 +3198,7 @@
         </summary>
         <param name="nInterval">Time interval, in seconds, between calls to the Timer() method of the control.</param>
         <param name="lOneTime">
-            Logical value indicating if the timer is called just once (TRUE), or multiple times (FALSE). 
+            Logical value indicating if the timer is called just once (TRUE), or multiple times (FALSE).
             If omitted, the default is FALSE.
         </param>
     </Control.RegisterTimer>
@@ -3261,7 +3299,7 @@
         </remarks>
     </Control.Status>
     <Control.Style>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Control.Style>
     <Control.SuspendUpdate>
         <summary>
@@ -3503,15 +3541,15 @@
                 We therefore strongly advise to store Event objects in a type local. This ensures that you will get the correct numeric type:
                 <code language="X#">
                     METHOD ControlNotify(oControlNotifyEvent) CLASS HelpAbout
-                     LOCAL oControl AS Control
-                     LOCAL oCNEvent AS ControlNotifyEvent
-                     oCNEvent := oControlNotifyEvent
-                     oControl := IIF(oCNEvent == NULL_OBJECT, NULL_OBJECT, oCNEvent:Control)
-                     SUPER:ControlNotify(oControlEvent)
-                     IF oCNEvent:NotifyCode == TVN_KEYDOWN
-                      // Do what you want to do
-                     ENDIF
-                     RETURN NIL
+                    LOCAL oControl AS Control
+                    LOCAL oCNEvent AS ControlNotifyEvent
+                    oCNEvent := oControlNotifyEvent
+                    oControl := IIF(oCNEvent == NULL_OBJECT, NULL_OBJECT, oCNEvent:Control)
+                    SUPER:ControlNotify(oControlEvent)
+                    IF oCNEvent:NotifyCode == TVN_KEYDOWN
+                    // Do what you want to do
+                    ENDIF
+                    RETURN NIL
                 </code>
             </note>
         </remarks>
@@ -3538,9 +3576,9 @@
             <code language="X#">
                 CLASS PbWindow INHERIT ControlWindow
                 METHOD Init(oWOwner,nResourceID) CLASS PbWindow
-                 LOCAL oPB AS OBJECT
-                 oPB := PushButton{oOwner,nResourceID}
-                 SUPER:Init(oPB)
+                LOCAL oPB AS OBJECT
+                oPB := PushButton{oOwner,nResourceID}
+                SUPER:Init(oPB)
             </code>
         </example>
     </ControlWindow.ctor>
@@ -3773,7 +3811,9 @@
         <param name="oOwner">The window that owns the data browser.</param>
         <param name="xID">The unique ID of the data browser (between 1 and 8000).</param>
         <param name="oPoint">The origin of the data browser in canvas coordinates. If not specified, (0,0) is used.</param>
-        <param name="oDimension">The dimension of the data browser in canvas coordinates. If not specified, the size of <paramref name="oOwner" /> is used.</param>
+        <param name="oDimension">
+            The dimension of the data browser in canvas coordinates. If not specified, the size of <paramref name="oOwner" /> is used.
+        </param>
         <param name="nResourceID">The resource ID of the data browser.</param>
         <remarks>
             When the owner window is a DataWindow object, the data browser occupies the full size of the data window frame window and changes size as the data window size changes.
@@ -4213,7 +4253,7 @@
         </remarks>
     </DataBrowser.Hide>
     <DataBrowser.NewRow>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataBrowser.NewRow>
     <DataBrowser.Notify>
         <summary>
@@ -4621,10 +4661,10 @@
         </example>
     </DataColumn.ChangeTextColor>
     <DataColumn.ClearStatus>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataColumn.ClearStatus>
     <DataColumn.DataField>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataColumn.DataField>
     <DataColumn.Destroy>
         <summary>
@@ -4635,11 +4675,10 @@
         </remarks>
     </DataColumn.Destroy>
     <DataColumn.DisableCellDraw>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataColumn.DisableCellDraw>
     <DataColumn.DrawCellData>
-        <summary>**Missing documentation **</summary>
-        <param name="uValue">** missing parameter documentation **</param>
+        <exclude />
     </DataColumn.DrawCellData>
     <DataColumn.EnableCellDraw>
         <summary>
@@ -4715,14 +4754,10 @@
         </remarks>
     </DataColumn.FieldSpec>
     <DataColumn.GetCaption>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataColumn.GetCaption>
     <DataColumn.GetEditObject>
-        <summary>**Missing documentation **</summary>
-        <param name="oOwner">** missing parameter documentation **</param>
-        <param name="iID">** missing parameter documentation **</param>
-        <param name="oPoint">** missing parameter documentation **</param>
-        <param name="oDim">** missing parameter documentation **</param>
+        <exclude />
     </DataColumn.GetEditObject>
     <DataColumn.GetModified>
         <summary>
@@ -4795,7 +4830,7 @@
         </returns>
     </DataColumn.PerformValidations>
     <DataColumn.PixelWidth>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataColumn.PixelWidth>
     <DataColumn.Server>
         <summary>
@@ -5145,7 +5180,7 @@
         </remarks>
     </DataServer>
     <DataServer.ctor>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataServer.ctor>
     <DataServer.Append>
         <summary>
@@ -5173,8 +5208,7 @@
         <value>A logical value indicating whether this data server is positioned at the beginning of the file, on the first record (TRUE if yes, FALSE if no).</value>
     </DataServer.BoF>
     <DataServer.Clients>
-        <summary>**Missing documentation **</summary>
-        <value>**Missing documentation **</value>
+        <exclude />
     </DataServer.Clients>
     <DataServer.Close>
         <summary>
@@ -5444,8 +5478,7 @@
         </remarks>
     </DataServer.GoTop>
     <DataServer.HLStatus>
-        <summary>**Missing documentation **</summary>
-        <value>**Missing documentation **</value>
+        <exclude />
     </DataServer.HLStatus>
     <DataServer.HyperLabel>
         <summary>
@@ -5518,7 +5551,7 @@
             Implement customized initialization code for the window.
         </summary>
         <remarks>
-            This method is used to customize the initialization code for a dataserver. 
+            This method is used to customize the initialization code for a dataserver.
             The customized initialization code will not be overridden by the generated default initialization code.
             A call to PostInit() is automatically generated at the end of the Init() method.
         </remarks>
@@ -5528,9 +5561,9 @@
             Implement customized initialization code for the server.
         </summary>
         <remarks>
-            This method is used to customize the initialization code for a server. 
+            This method is used to customize the initialization code for a server.
             The customized initialization code will not be overridden by the generated default initialization code.
-            A call to PreInit() is automatically generated at the beginning of the Init() method. 
+            A call to PreInit() is automatically generated at the beginning of the Init() method.
             The default implementation of PostInit() in this class is empty.
             <note type="tip">
                 In .Net it is normally not allowed or recommended to run code in a class before the parent constructor is called.
@@ -5704,12 +5737,12 @@
             Update this server with data from another server or table.
         </summary>
         <returns>
-            TRUE if successful; otherwise, FALSE, although even with FALSE, some records may have been updated. 
+            TRUE if successful; otherwise, FALSE, although even with FALSE, some records may have been updated.
             This can happen if the operation failed halfway through because of technical problems.
         </returns>
         <remarks>
             Sends a NotifyFileChange message upon completion.
-            There are two different formulations of the matching relationship between the two servers. 
+            There are two different formulations of the matching relationship between the two servers.
             If <paramref name="lRandomFlag" /> is TRUE, this server must be indexed on the specified key, but the other server can be in any order; if <paramref name="lRandomFlag" /> is not specified or is FALSE, both servers must be indexed or sorted on the specified key. If there is more than one record in this server with matching key fields, only the first one is updated.
         </remarks>
     </DataServer.Update>
@@ -5765,17 +5798,17 @@
             Construct a data window.
         </summary>
         <param name="oOwner">
-            The window that owns the data window. The following window types can be owners: 
+            The window that owns the data window. The following window types can be owners:
             ShellWindow, TopAppWindow, ChildAppWindow, DialogWindow, DataDialog, or another DataWindow.
             The behavior of the data window is determined by the type of its owner—see the discussion of
             Adaptive Behavior in the description of this class.
         </param>
         <param name="oSource">
-            The ID of the resource that defines the layout of the data window. 
+            The ID of the resource that defines the layout of the data window.
             If not specified, the data window automatically lays itself out when attached to a data server.
         </param>
         <param name="nResourceID">
-            The resource ID that specifies the location and size of the sub-data window. 
+            The resource ID that specifies the location and size of the sub-data window.
             Specifying this argument creates the new data window as a sub-data window on its owner data window
             (only data window owners can have sub-data windows). It should refer to a control defined in the
             resource entity of the owner data window.
@@ -5816,7 +5849,7 @@
             message to all of its clients, including this data window.
             DataWindow:Append() can fail for many reasons (for example, data entered in the window fails validation,
             record locks failed because another user controls the data server, or access to the database failed for
-            technical reasons). Use the DataWindow:Status property to determine the exact cause of the failure. 
+            technical reasons). Use the DataWindow:Status property to determine the exact cause of the failure.
             You might also want to check the feasibility of the operation beforehand, using methods like DataWindow:StatusOK().
         </remarks>
     </DataWindow.Append>
@@ -5868,7 +5901,7 @@
         <param name="oControlEvent">The ControlEvent object that describes which button was clicked.</param>
         <seealso cref="T:VO.ControlEvent" />
         <remarks>
-            Button click events are propagated to the data window's owner the same way as menu events. 
+            Button click events are propagated to the data window's owner the same way as menu events.
             For an in-depth discussion on command event propagation, refer to the Programmer's Guide.
             You must supply the code to turn a radio button on (and all the other radio buttons off)
             when a user clicks on a radio button. Similarly, you must also be sure to invert the state of a check box when it is clicked.
@@ -5884,14 +5917,14 @@
         <remarks>
             The "cancel" operation is very clear and easily understood and might be profitably used on
             data windows when they are created as MDI children (unconventional or not).
-            Note that a user might be unclear on exactly what transactions are discarded. 
+            Note that a user might be unclear on exactly what transactions are discarded.
             For example, if several records have been modified, the default implementation
-            of DataWindow:Cancel() discards changes only to the current record. 
+            of DataWindow:Cancel() discards changes only to the current record.
             You might want to label the button or menu command something else or provide a more comprehensive implementation.
             <note type="tip">
                 DataWindow:Cancel() disconnects itself from the data server using
-                DataServer:UnregisterClient() and tells the server that it can close itself if it has no other registered clients. 
-                Explicitly forcing the server to close from a window is not recommended, since this can create future problems. 
+                DataServer:UnregisterClient() and tells the server that it can close itself if it has no other registered clients.
+                Explicitly forcing the server to close from a window is not recommended, since this can create future problems.
                 Modifications to the application can attach other clients to the server, and any one window should not
                 disable other windows.
             </note>
@@ -5908,7 +5941,7 @@
         </summary>
         <param name="oFont">The new font to be used.</param>
         <param name="lUpdate">
-            Specify TRUE to resize and reposition all controls in this dialog window and change their fonts; otherwise, FALSE. 
+            Specify TRUE to resize and reposition all controls in this dialog window and change their fonts; otherwise, FALSE.
             If omitted, the default is FALSE.
         </param>
         <returns>
@@ -5945,7 +5978,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            In data windows, relations are used to manage relationships between windows that are linked to the same data server. 
+            In data windows, relations are used to manage relationships between windows that are linked to the same data server.
             Clearing a relation removes the link between the windows; in actuality, it clears the relations set for the data server to which this and any other windows are connected. Relations are set using DataWindow:SetRelation() and DataWindow:SetSelectiveRelation().
         </remarks>
     </DataWindow.ClearRelations>
@@ -5983,9 +6016,9 @@
             only to other data windows connected to the same server within the same application.
             DataWindow:Commit() can fail for many reasons, from a lack of capability in the server to lock conflicts to
             technical problems, such as network crashes. Use the DataServer:Status property to determine the exact cause of the failure.
-            You should also note that there is no guarantee that changes which have not been committed can be rolled back. 
+            You should also note that there is no guarantee that changes which have not been committed can be rolled back.
             The rollback capabilities depend on the particular data server implementation (for example, SQLSelect can usually
-            do it—depending on the particular SQL database in use—but DBServer cannot). 
+            do it—depending on the particular SQL database in use—but DBServer cannot).
             For details, please refer to the documentation on the specific server you intend to use.
         </remarks>
     </DataWindow.Commit>
@@ -6013,7 +6046,7 @@
                     <term>CCOPTIMISTIC</term>
                     <description>
                         No locks are maintained continuously except when appending—the record just appended is locked, and the lock is only
-                        released when moving off the record or explicitly calling the DataServer or DBServer Unlock() method. 
+                        released when moving off the record or explicitly calling the DataServer or DBServer Unlock() method.
                         For all other records, the record is reread from disk before any update is done. This is the <b>default</b>.
                     </description>
                 </item>
@@ -6036,11 +6069,17 @@
         <remarks>
             This can be used in two ways.
             The DataWindow and its Browser usually share the same ContextMenu and in this situation the assign can be used like this –
-            <code language="X#"><paramref name="oDataWindow" />:ContextMenu := MyContextMenu{}</code>
+            <code language="X#">
+                <paramref name="oDataWindow" />:ContextMenu := MyContextMenu{}
+            </code>
             If you want the context menus to be different you can now use code like this –
-            <code language="X#"><paramref name="oDataWindow" />:[ContextMenu,#FormView] := MyContextMenu{}</code>
+            <code language="X#">
+                <paramref name="oDataWindow" />:[ContextMenu,#FormView] := MyContextMenu{}
+            </code>
             to just set the FormView context menu, and this –
-            <code language="X#"><paramref name="oDataWindow" />:[ContextMenu,#BrowseView] := MyOtherContextMenu{}</code>
+            <code language="X#">
+                <paramref name="oDataWindow" />:[ContextMenu,#BrowseView] := MyOtherContextMenu{}
+            </code>
             to set the BrowseView context menu.
         </remarks>
     </DataWindow.ContextMenu>
@@ -6059,7 +6098,7 @@
         <seealso cref="T:VO.ControlFocusChangeEvent" />
     </DataWindow.ControlFocusChange>
     <DataWindow.Controls>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataWindow.Controls>
     <DataWindow.Copy>
         <summary>
@@ -6071,7 +6110,7 @@
         </remarks>
     </DataWindow.Copy>
     <DataWindow.CurrentControl>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataWindow.CurrentControl>
     <DataWindow.CurrentView>
         <summary>
@@ -6255,13 +6294,13 @@
             This example demonstrates how FocusChange() displays the cursor at the specified cursor position when focus is gained. If the focus is lost, the cursor is hidden:
             <code language="X#">
                 METHOD FocusChange(oFocusChangeEvt) CLASS MyDataWindow
-                 IF oFocusChangeEvt:GotFocus    // Gaining focus
-                  oMyCursor:Show()
-                  oMyCursor:ChangePos(oMyCursorPos)
-                 ELSE           // Losing focus
-                  oMyCursorPos := oMyCursor:GetPos()
-                  oMyCursor:Hide()
-                 ENDIF
+                IF oFocusChangeEvt:GotFocus    // Gaining focus
+                oMyCursor:Show()
+                oMyCursor:ChangePos(oMyCursorPos)
+                ELSE           // Losing focus
+                oMyCursorPos := oMyCursor:GetPos()
+                oMyCursor:Hide()
+                ENDIF
             </code>
         </example>
     </DataWindow.FocusChange>
@@ -6380,7 +6419,7 @@
         </remarks>
     </DataWindow.InsertObject>
     <DataWindow.IsDialog>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataWindow.IsDialog>
     <DataWindow.KeyDown>
         <summary>
@@ -6393,7 +6432,7 @@
         </summary>
     </DataWindow.KeyUp>
     <DataWindow.LastFocus>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataWindow.LastFocus>
     <DataWindow.LineTo>
         <summary>
@@ -6494,7 +6533,7 @@
         <value>The owner of the data window, which itself will be a Window object.</value>
     </DataWindow.Owner>
     <DataWindow.OwnerServer>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataWindow.OwnerServer>
     <DataWindow.PaintBoundingBox>
         <summary>
@@ -6579,7 +6618,7 @@
         </remarks>
     </DataWindow.QueryClose>
     <DataWindow.RadioGroups>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataWindow.RadioGroups>
     <DataWindow.RegisterConditionalControls>
         <summary>
@@ -6621,7 +6660,9 @@
             Search for a value in the data server connected to this data window based on a controlling search order and update the window based on the change.
         </summary>
         <param name="uValue">The value to search for. Its data type should be compatible with the controlling search order.</param>
-        <param name="lSoftSeek">Determines how the attached data server is positioned if the specified key value is not found: TRUE performs a soft seek; FALSE does not. If <paramref name="lSoftSeek" /> is omitted, the current SetSoftSeek() setting is used.</param>
+        <param name="lSoftSeek">
+            Determines how the attached data server is positioned if the specified key value is not found: TRUE performs a soft seek; FALSE does not. If <paramref name="lSoftSeek" /> is omitted, the current SetSoftSeek() setting is used.
+        </param>
         <returns>
             TRUE if successful; otherwise, FALSE. Note that a FALSE value can indicate either that the value was not found or that the server does not support this search operation. Use the DataWindow:Status property to determine the exact cause of a failure.
         </returns>
@@ -6640,15 +6681,10 @@
         <param name="oSize">The Dimension representing the size of the window.</param>
     </DataWindow.SetAlignStartSize>
     <DataWindow.SetContextMenu>
-        <summary>**Missing documentation **</summary>
-        <param name="oNewMenu">** missing parameter documentation **</param>
-        <param name="symView">** missing parameter documentation **</param>
+        <exclude />
     </DataWindow.SetContextMenu>
     <DataWindow.SetDialog>
-        <summary>**Missing documentation **</summary>
-        <param name="lResizable">** missing parameter documentation **</param>
-        <param name="lMaximizeBox">** missing parameter documentation **</param>
-        <param name="lMinimizeBox">** missing parameter documentation **</param>
+        <exclude />
     </DataWindow.SetDialog>
     <DataWindow.SetRelation>
         <summary>
@@ -6782,7 +6818,7 @@
         </example>
     </DataWindow.Status>
     <DataWindow.StatusBar>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataWindow.StatusBar>
     <DataWindow.StatusOK>
         <summary>
@@ -6794,10 +6830,10 @@
         </remarks>
     </DataWindow.StatusOK>
     <DataWindow.SubForms>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataWindow.SubForms>
     <DataWindow.Surface>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DataWindow.Surface>
     <DataWindow.symFormDialog>
         <exclude />
@@ -7077,10 +7113,10 @@
         </example>
     </DateTimePicker.Format>
     <DateTimePicker.IsNone>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DateTimePicker.IsNone>
     <DateTimePicker.IsTimePicker>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DateTimePicker.IsTimePicker>
     <DateTimePicker.MCBackgroundColor>
         <summary>
@@ -7125,15 +7161,13 @@
         <value>A Color object describing the color of the trailing and leading days, i.e., those not belonging to the current month, that appear on the MonthCalendar pop-up window, if the DateTimePicker is in date mode.</value>
     </DateTimePicker.MCTrailingTextColor>
     <DateTimePicker.NullFormat>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DateTimePicker.NullFormat>
     <DateTimePicker.ParentNotify>
-        <summary>**Missing documentation **</summary>
-        <param name="nCode">** missing parameter documentation **</param>
-        <param name="lParam">** missing parameter documentation **</param>
+        <exclude />
     </DateTimePicker.ParentNotify>
     <DateTimePicker.PerformValidations>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DateTimePicker.PerformValidations>
     <DateTimePicker.SelectedDate>
         <summary>
@@ -7148,9 +7182,7 @@
         <value>A string (format "HH:MM:SS") specifying the currently selected time.</value>
     </DateTimePicker.SelectedTime>
     <DateTimePicker.SetDateTime>
-        <summary>**Missing documentation **</summary>
-        <param name="dNewDate">** missing parameter documentation **</param>
-        <param name="sNewTime">** missing parameter documentation **</param>
+        <exclude />
     </DateTimePicker.SetDateTime>
     <DateTimePicker.TextValue>
         <summary>
@@ -7159,7 +7191,7 @@
         <value>The current value in string format. This is needed internally to allow the binding of a DateTimePicker control to a database field.</value>
     </DateTimePicker.TextValue>
     <DateTimePicker.Value>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DateTimePicker.Value>
     <DateTimeSelectionEvent>
         <summary>
@@ -7279,7 +7311,7 @@
         </returns>
     </DialogWindow.ChangeFont>
     <DialogWindow.ClipperKeys>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DialogWindow.ClipperKeys>
     <DialogWindow.ControlFocusChange>
         <summary>Provide a method that is invoked when the input focus changes to or from a control.</summary>
@@ -7362,33 +7394,33 @@
             As an example the programmer could use the following version which performs no action:
             <code language="X#">
                 METHOD ExecModal() CLASS DialogWindow
-                 RETURN NIL
+                RETURN NIL
             </code>
             Now the program control comes back immediately after calling the Show() method. This is very useful for cases where your code wants to control the windows dispatcher loop with the function ApplicationExec(EXECWHILEEVENT):
             <code language="X#">
                 METHOD xyz() CLASS xyz
-                 LOCAL oPDlg AS ProgressDialog // inherit from DialogWindow
+                LOCAL oPDlg AS ProgressDialog // inherit from DialogWindow
 
-                 oPDlg := ProgressDialog{SELF, "Processing is going on!"}
-                 oPDlg:Count := oServer:Reccount
-                 oPDlg:Show()
+                oPDlg := ProgressDialog{SELF, "Processing is going on!"}
+                oPDlg:Count := oServer:Reccount
+                oPDlg:Show()
 
-                 //ProgressDialog is modal, the user can do
-                 // nothing during the processing other than what
-                 // your code permits.
-                 //In this example you can abort the loop.
+                //ProgressDialog is modal, the user can do
+                // nothing during the processing other than what
+                // your code permits.
+                //In this example you can abort the loop.
 
-                 oServer:GoTop()
+                oServer:GoTop()
 
-                 DO WHILE oServer:EOF
-                   IF ! oPDlg:STEP() //FALSE if abort button is pressed
-                     EXIT
-                   ENDIF
-                   //do something
-                   oServer:Skip()
-                 ENDDO
+                DO WHILE oServer:EOF
+                IF ! oPDlg:STEP() //FALSE if abort button is pressed
+                EXIT
+                ENDIF
+                //do something
+                oServer:Skip()
+                ENDDO
 
-                 oPDlg:EndDialog()
+                oPDlg:EndDialog()
             </code>
         </example>
     </DialogWindow.ExecModal>
@@ -7411,8 +7443,8 @@
         </remarks>
     </DialogWindow.Handle>
     <DialogWindow.HelpRequest>
-        <summary>**Missing documentation **</summary>
-        <param name="oHelpRequestEvent">** missing parameter documentation **</param>
+        <exclude />
+        
     </DialogWindow.HelpRequest>
     <DialogWindow.HorizontalScroll>
         <summary>
@@ -7425,10 +7457,10 @@
         </remarks>
     </DialogWindow.HorizontalScroll>
     <DialogWindow.IsModal>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DialogWindow.IsModal>
     <DialogWindow.LastFocus>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DialogWindow.LastFocus>
     <DialogWindow.ListBoxClick>
         <summary>
@@ -7447,10 +7479,10 @@
         <seealso cref="T:VO.ControlEvent" />
     </DialogWindow.ListBoxSelect>
     <DialogWindow.Owner>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DialogWindow.Owner>
     <DialogWindow.PostShowDialog>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DialogWindow.PostShowDialog>
     <DialogWindow.Result>
         <summary>
@@ -7596,7 +7628,7 @@
         <param name="oOwner">The window that owns this drag-and-drop client.</param>
     </DragDropClient.ctor>
     <DragDropClient.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DragDropClient.Destroy>
     <DragDropClient.Dispatch>
         <inheritdoc />
@@ -7636,7 +7668,7 @@
         </remarks>
     </DragDropClient.Drop>
     <DragDropClient.Owner>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DragDropClient.Owner>
     <DragDropServer>
         <summary>
@@ -7659,7 +7691,7 @@
         </remarks>
     </DragDropServer.ctor>
     <DragDropServer.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </DragDropServer.Destroy>
     <DragDropServer.StartDrag>
         <summary>
@@ -7930,12 +7962,11 @@
         </remarks>
     </Edit.Cut>
     <Edit.Font>
-        <summary>**Missing documentation **</summary>
-        <param name="oNewFont">** missing parameter documentation **</param>
-        <param name="lRescal">** missing parameter documentation **</param>
+        <exclude />
+        
     </Edit.Font>
     <Edit.IsPassword>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Edit.IsPassword>
     <Edit.Margins>
         <summary>
@@ -7967,13 +7998,13 @@
         </summary>
         <value>A logical value specifying the read-only state of an edit control.</value>
         <remarks>
-            A logical value specifying the read-only state of an edit control. 
-            This property allows you to change the read-only state at runtime. 
+            A logical value specifying the read-only state of an edit control.
+            This property allows you to change the read-only state at runtime.
             Note that changing the ReadOnly style via Edit:SetStyle(ES_READONLY) is not respected by the edit control at runtime.
         </remarks>
     </Edit.ReadOnly>
     <Edit.SelectAll>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Edit.SelectAll>
     <Edit.SelectedText>
         <summary>
@@ -7991,10 +8022,10 @@
         </remarks>
     </Edit.Selection>
     <Edit.SelectNone>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Edit.SelectNone>
     <Edit.SetSelectionFocus>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Edit.SetSelectionFocus>
     <Edit.TextLimit>
         <summary>
@@ -8443,7 +8474,7 @@
         <summary>This is a compatibility method that is no longer used or needed.</summary>
     </EventContext.Override>
     <EventContext.SelfPtrStruc>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </EventContext.SelfPtrStruc>
     <ExplorerWindow>
         <summary>
@@ -8632,8 +8663,8 @@
         </remarks>
     </FixedIcon.Destroy>
     <FixedIcon.SetIcon>
-        <summary>**Missing documentation **</summary>
-        <param name="oIcon">** missing parameter documentation **</param>
+        <exclude />
+        
     </FixedIcon.SetIcon>
     s<FixedImage>
         <summary>
@@ -9083,10 +9114,10 @@
         </remarks>
     </Font.Bold>
     <Font.CharSet>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.CharSet>
     <Font.ClipPrecision>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.ClipPrecision>
     <Font.ConvPntToDim>
         <summary>
@@ -9102,9 +9133,8 @@
         </remarks>
     </Font.ConvPntToDim>
     <Font.Create>
-        <summary>**Missing documentation **</summary>
-        <param name="lPrinter">** missing parameter documentation **</param>
-        <param name="hdc">** missing parameter documentation **</param>
+        <exclude />
+        
     </Font.Create>
     <Font.Destroy>
         <summary>
@@ -9115,10 +9145,10 @@
         </remarks>
     </Font.Destroy>
     <Font.Escapement>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.Escapement>
     <Font.FaceName>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.FaceName>
     <Font.Handle>
         <summary>
@@ -9135,7 +9165,7 @@
         </remarks>
     </Font.Handle>
     <Font.Height>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.Height>
     <Font.Italic>
         <summary>
@@ -9162,13 +9192,13 @@
         </remarks>
     </Font.Normal>
     <Font.Orientation>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.Orientation>
     <Font.OutPrecision>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.OutPrecision>
     <Font.PitchAndFamily>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.PitchAndFamily>
     <Font.PitchFixed>
         <summary>
@@ -9189,17 +9219,17 @@
         </remarks>
     </Font.PitchVariable>
     <Font.PointSize>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.PointSize>
     <Font.Quality>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.Quality>
     <Font.Size>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.Size>
     <Font.SizeText>
-        <summary>**Missing documentation **</summary>
-        <param name="cString">** missing parameter documentation **</param>
+        <exclude />
+        
     </Font.SizeText>
     <Font.Strikethru>
         <summary>
@@ -9214,10 +9244,10 @@
         <value>A logical value determining whether a font is displayed in an underline typeface (TRUE if yes; otherwise, FALSE).</value>
     </Font.Underline>
     <Font.Weight>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.Weight>
     <Font.Width>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Font.Width>
     <FormattedTextObject>
         <summary>
@@ -9339,18 +9369,18 @@
             <code language="X#">
                 CLASS MyWindow INHERIT TopAppWindow
                 METHOD Init() CLASS MyWindow
-                 SUPER:Init()
-                 SELF:HelpDisplay := HelpDisplay{"mywind.hlp"}
+                SUPER:Init()
+                SELF:HelpDisplay := HelpDisplay{"mywind.hlp"}
                 METHOD MenuCommand(oMCE) CLASS MyWindow
-                 LOCAL nItemID := oMCE:ItemID
-                 DO CASE
-                 CASE nItemID = IDM_MENU_HELP_INDEX_ID
-                  SELF:HelpDisplay:Show("HelpIndex")
-                 CASE nItemID = IDM_MENU_HELP_USINGHELP_ID
-                  SELF:HelpDisplay:Show("HelpOnHelp")
-                 OTHERWISE
-                  SUPER:MenuCommand(oMCE)
-                 ENDCASE
+                LOCAL nItemID := oMCE:ItemID
+                DO CASE
+                CASE nItemID = IDM_MENU_HELP_INDEX_ID
+                SELF:HelpDisplay:Show("HelpIndex")
+                CASE nItemID = IDM_MENU_HELP_USINGHELP_ID
+                SELF:HelpDisplay:Show("HelpOnHelp")
+                OTHERWISE
+                SUPER:MenuCommand(oMCE)
+                ENDCASE
             </code>
         </example>
     </HelpDisplay>
@@ -9371,12 +9401,11 @@
         <exclude />
     </HelpDisplay.DefaultPageOnContents>
     <HelpDisplay.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </HelpDisplay.Destroy>
     <HelpDisplay.EnableHTMLHelp>
-        <summary>**Missing documentation **</summary>
-        <param name="lEnable">** missing parameter documentation **</param>
-        <param name="cPopUpTopic">** missing parameter documentation **</param>
+        <exclude />
+        
     </HelpDisplay.EnableHTMLHelp>
     <HelpDisplay.HelpError>
         <summary>
@@ -9422,7 +9451,7 @@
             The keyword to look up in the application help file. See table in the remarks section.
         </param>
         <param name="symLookupType">
-            Controls the lookup type. The default is HH_KEYWORD_LOOKUP. 
+            Controls the lookup type. The default is HH_KEYWORD_LOOKUP.
             Is used to call up Associative links in the help file. Associative Links are not displayed in the index, keywords are. For HTML Help only.
             The second parameter symLookupType can also be a PTR to a _winHelpInfo structure, which is sent with a WM_HELP message.
         </param>
@@ -9872,7 +9901,7 @@
         </remarks>
     </HotKeyRule>
     <HotKeyRule.ctor>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </HotKeyRule.ctor>
     <HotKeyRule.AltKeyInvalid>
         <summary>
@@ -10024,7 +10053,9 @@
         </summary>
         <param name="cFile">File name, including drive letter and path.</param>
         <param name="cType">Content type (e.g., 'image', 'text', or 'application').</param>
-        <param name="cSubType">Content subtype (e.g., 'jpeg' or 'gif' if <paramref name="cType" /> is 'image', 'zip' if <paramref name="cType" /> is 'application', or 'html' if <paramref name="cType" /> is 'text').</param>
+        <param name="cSubType">
+            Content subtype (e.g., 'jpeg' or 'gif' if <paramref name="cType" /> is 'image', 'zip' if <paramref name="cType" /> is 'application', or 'html' if <paramref name="cType" /> is 'text').
+        </param>
         <returns>
             File size in bytes if the file has been found; otherwise, 0.
         </returns>
@@ -10189,7 +10220,9 @@
             Retrieve a specified parameter from an argument list passed to that request.
         </summary>
         <param name="cValueName">String containing the name of the sought after parameter.</param>
-        <param name="nPosition">Integer value determining the occurrence of the parameter within the query string. The default value is 1, if <paramref name="nPosition" /> is not specified.</param>
+        <param name="nPosition">
+            Integer value determining the occurrence of the parameter within the query string. The default value is 1, if <paramref name="nPosition" /> is not specified.
+        </param>
         <returns>
             String containing the specified value, if successful; otherwise, NULL_STRING.
         </returns>
@@ -10366,7 +10399,9 @@
         </summary>
         <param name="cValueName">String containing the name of the parameter.</param>
         <param name="cValue">New value.</param>
-        <param name="nPosition">Integer value determining the occurrence of the parameter within the query string. The default value is 1, if <paramref name="nPosition" /> is not specified.</param>
+        <param name="nPosition">
+            Integer value determining the occurrence of the parameter within the query string. The default value is 1, if <paramref name="nPosition" /> is not specified.
+        </param>
         <returns>
             TRUE, if the value has been changed; otherwise, FALSE.
         </returns>
@@ -10483,7 +10518,9 @@
         </summary>
         <param name="nRequest">A DWORD value containing the HTTP Server Extension Request (HSER) type, which indicates the requested functions by the ISAPI application. Valid values are:</param>
         <param name="pBuffer">Pointer to the buffer that contains the primary argument required for the requested support function.</param>
-        <param name="nSize">Numeric value indicating the number of bytes available in the buffer. Defaults to the length of <paramref name="pBuffer" />.</param>
+        <param name="nSize">
+            Numeric value indicating the number of bytes available in the buffer. Defaults to the length of <paramref name="pBuffer" />.
+        </param>
         <param name="cData">String containing data for secondary arguments.</param>
         <returns>
             TRUE, if the value has been changed; otherwise, FALSE.
@@ -10630,7 +10667,9 @@
         </summary>
         <param name="cFile">File name, including drive letter and path.</param>
         <param name="cType">Content type (e.g., 'image', 'text', or 'application').</param>
-        <param name="cSubType">Content subtype (e.g., 'jpeg' or 'gif' if <paramref name="cType" /> is 'image', 'zip' if <paramref name="cType" /> is 'application', or 'html' if <paramref name="cType" /> is 'text').</param>
+        <param name="cSubType">
+            Content subtype (e.g., 'jpeg' or 'gif' if <paramref name="cType" /> is 'image', 'zip' if <paramref name="cType" /> is 'application', or 'html' if <paramref name="cType" /> is 'text').
+        </param>
         <returns>
             File size in bytes if the file has been found; otherwise, 0.
         </returns>
@@ -10949,7 +10988,9 @@
         </summary>
         <param name="nRequest">A DWORD value containing the Filter Request type, which indicates the requested functions. Valid values are:</param>
         <param name="pBuffer">Pointer to the buffer that contains the primary argument required for the requested support function.</param>
-        <param name="nSize">Numeric value indicating the number of bytes available in the buffer. Defaults to the size of <paramref name="pBuffer" /> + 1.</param>
+        <param name="nSize">
+            Numeric value indicating the number of bytes available in the buffer. Defaults to the size of <paramref name="pBuffer" /> + 1.
+        </param>
         <param name="cData">String containing data for secondary arguments.</param>
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -10987,7 +11028,9 @@
             Construct a hyperlabel.
         </summary>
         <param name="uName">The symbolic name that the program uses to refer to the object to which the hyperlabel attaches. For example, if the hyperlabel attaches to a menu command, the symbolic name is the method (of the window that owns the menu) that the system invokes when the user executes that menu command. If the hyperlabel attaches to a field, the symbol is the field's name. In other words, the symbolic name is only useful to the program. The other items, by contrast, are meaningful to the user.</param>
-        <param name="uCaption">The name of the object to which the hyperlabel attaches, as recognized by the user. If the object is a control, the caption is the name shown beside, or on, the control. If you supply the resource ID of a string, HyperLabel:Init() extracts the string. if not specified, the default is the same as <paramref name="symName" />, if provided; otherwise, NULL_STRING.</param>
+        <param name="uCaption">
+            The name of the object to which the hyperlabel attaches, as recognized by the user. If the object is a control, the caption is the name shown beside, or on, the control. If you supply the resource ID of a string, HyperLabel:Init() extracts the string. if not specified, the default is the same as <paramref name="symName" />, if provided; otherwise, NULL_STRING.
+        </param>
         <param name="uDescription">The purpose of the host object. For a control, the purpose tells the user what the control is for. By default, when a control gets focus, the system displays the control's hyperlabel's description upon the status bar. Similarly, when the user drags the mouse across the menu, each time a new command is highlighted, its hyperlabel's description appears in the status bar. If you supply the resource ID of a string, HyperLabel:Init() extracts the string. If not specified, the default is NULL_STRING.</param>
         <param name="uHelpContext">The string that uniquely identifies the place to jump in the hypertext help system. In the case of Windows, this is just the context name. The system uses the object's hyperlabel's help context to decide where to jump when the user asks for in-context help about the host object. If you supply the resource ID of a string, HyperLabel:Init() extracts the string. If not specified, the default is NULL_STRING.</param>
     </HyperLabel.ctor>
@@ -11158,10 +11201,10 @@
             </code><code language="X#">
                 METHOD	HTTPResponse 	CLASS ASPComponent
                 LOCAL cRet	AS STRING
-                 IF SELF:Application:_Lock()
-                 	cRet := SELF:Application:GetValue("GlobalVar")
-                   SELF:Application:_UnLock()
-                 ENDIF
+                IF SELF:Application:_Lock()
+                cRet := SELF:Application:GetValue("GlobalVar")
+                SELF:Application:_UnLock()
+                ENDIF
                 RETURN SELF:Response:_Write(cRet)
             </code>
             ASP code:
@@ -11179,7 +11222,9 @@
             Store the value of a variable into an IApplication object.
         </summary>
         <param name="cVarName">Name of the desired variable.</param>
-        <param name="xValue">The new value to assign to <paramref name="cVarName" />.</param>
+        <param name="xValue">
+            The new value to assign to <paramref name="cVarName" />.
+        </param>
         <returns>
             TRUE, if the value has been changed; otherwise, FALSE.
         </returns>
@@ -11280,7 +11325,7 @@
         </remarks>
     </Icon.Handle>
     <Icon.Size>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Icon.Size>
     <IDispatch>
         <summary>
@@ -11399,7 +11444,7 @@
         </remarks>
     </ImageList.CreateOverlayImage>
     <ImageList.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ImageList.Destroy>
     <ImageList.DragEnter>
         <summary>
@@ -11452,7 +11497,7 @@
         <value>The number of images in the ImageList object.</value>
     </ImageList.ImageCount>
     <ImageList.ImageSize>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ImageList.ImageSize>
     <InfoBox>
         <summary>
@@ -11526,7 +11571,7 @@
         <value>A long value representing the current IP address. This equals the IP address interpreted as a 4-byte integer.</value>
     </IPAddress.Address>
     <IPAddress.EditHandle>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </IPAddress.EditHandle>
     <IPAddress.Field1>
         <summary>
@@ -11580,7 +11625,7 @@
         </example>
     </IPAddress.TextValue>
     <IPAddress.Value>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </IPAddress.Value>
     <IpcClient>
         <summary>
@@ -11620,7 +11665,7 @@
                 METHOD ClientError(oICEE) CLASS MyClient
                 LOCAL Err := oICEE:ErrorType
                 DO CASE
-                 CASE Err == IPCSERVERNOTFOUND
+                CASE Err == IPCSERVERNOTFOUND
                 ...
             </code>
         </example>
@@ -11655,7 +11700,7 @@
         <param name="cCommand">The command to be executed by the server.</param>
     </IpcClient.Execute>
     <IpcClient.IdInst>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </IpcClient.IdInst>
     <IpcClient.RequestData>
         <summary>
@@ -11907,7 +11952,7 @@
         <param name="oIpcExecuteRequestEvent">Stores the topic name, item name, and the command name to be executed.</param>
     </IpcServer.ExecuteRequest>
     <IpcServer.idInst>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </IpcServer.idInst>
     <IpcServer.UpdateTopic>
         <summary>
@@ -11949,7 +11994,7 @@
         <param name="cItemString">The IPC item to be deleted.</param>
     </IpcTopic.DeleteItem>
     <IpcTopic.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </IpcTopic.Destroy>
     <IpcTopicData>
         <summary>
@@ -11970,13 +12015,13 @@
         </remarks>
     </IpcTopicData.ctor>
     <IpcTopicData.Data>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </IpcTopicData.Data>
     <IpcTopicData.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </IpcTopicData.Destroy>
     <IpcTopicData.Length>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </IpcTopicData.Length>
     <IpcTopicData.liLen>
         <exclude />
@@ -12050,16 +12095,16 @@
                 CLASS ASPComponent INHERIT IScriptingContext
             </code><code language="X#">
                 METHOD	HTTPResponse 	CLASS ASPComponent
-                 LOCAL oCookie	AS IReadCookie
-                 LOCAL aTemp	AS ARRAY
-                 LOCAL aRet	AS ARRAY
-                 LOCAL n,i		AS INT
-                 LOCAL cName	AS STRING
-                 LOCAL cRet	AS STRING
-                 oCookie := SELF:Request:GetCookies()
-                 IF oCookie == NULL_OBJECT
-                 	n   := oCookie:GetEnum()
-                 	aRet := ArrayCreate(n)
+                LOCAL oCookie	AS IReadCookie
+                LOCAL aTemp	AS ARRAY
+                LOCAL aRet	AS ARRAY
+                LOCAL n,i		AS INT
+                LOCAL cName	AS STRING
+                LOCAL cRet	AS STRING
+                oCookie := SELF:Request:GetCookies()
+                IF oCookie == NULL_OBJECT
+                n   := oCookie:GetEnum()
+                aRet := ArrayCreate(n)
                 FOR i := 1 TO n
                 aTemp := ArrayCreate(2)
                 cName := oCookie:GetName(i)
@@ -12121,7 +12166,9 @@
             Retrieve a value of the client certificate collection of an IRequest object.
         </summary>
         <param name="cVarName">Name of the certificate field.</param>
-        <param name="n">Position, if more than one variable with the same name, <paramref name="cVarName" />, exists within the collection. </param>
+        <param name="n">
+            Position, if more than one variable with the same name, <paramref name="cVarName" />, exists within the collection.
+        </param>
         <returns>
             A string value, if successful; otherwise, NULL_STRING.
         </returns>
@@ -12159,17 +12206,17 @@
                 CLASS ASPComponent INHERIT IScriptingContext
             </code><code language="X#">
                 METHOD	HTTPResponse 	CLASS ASPComponent
-                 LOCAL oCookie	AS IReadCookie
-                 LOCAL aTemp	AS ARRAY
-                 LOCAL aRet	AS ARRAY
-                 LOCAL n,i		AS INT
-                 LOCAL cName	AS STRING
-                 LOCAL cRet	AS STRING
-                 oCookie := SELF:Request:GetCookies()
+                LOCAL oCookie	AS IReadCookie
+                LOCAL aTemp	AS ARRAY
+                LOCAL aRet	AS ARRAY
+                LOCAL n,i		AS INT
+                LOCAL cName	AS STRING
+                LOCAL cRet	AS STRING
+                oCookie := SELF:Request:GetCookies()
                 IF oCookie == NULL_OBJECT
-                 ELSE
-                 	n   := oCookie:GetEnum()
-                 	aRet := ArrayCreate(n)
+                ELSE
+                n   := oCookie:GetEnum()
+                aRet := ArrayCreate(n)
                 FOR i := 1 UPTO n
                 aTemp := ArrayCreate(2)
                 cName := oCookie:GetName(i)
@@ -12202,7 +12249,9 @@
             Retrieve a form value of an IRequest object.
         </summary>
         <param name="cVarName">Name of the form field.</param>
-        <param name="n">Position, if more than one variable with the same name, <paramref name="cVarName" />, exists within the collection. </param>
+        <param name="n">
+            Position, if more than one variable with the same name, <paramref name="cVarName" />, exists within the collection.
+        </param>
         <returns>
             A string value, if successful; otherwise, NULL_STRING.
         </returns>
@@ -12259,8 +12308,8 @@
                 LOCAL aTemp   AS ARRAY
                 LOCAL cRet   AS STRING
 
-                 aTemp := SELF:Request:GetForms()
-                 cRet := GetHTTPValueTable(aTemp)
+                aTemp := SELF:Request:GetForms()
+                cRet := GetHTTPValueTable(aTemp)
                 RETURN SELF:Response:_Write(cRet)
             </code>
             HTML code:
@@ -12302,8 +12351,8 @@
             </code><code language="X#">
                 METHOD	HTTPResponse 	CLASS ASPComponent
                 LOCAL cRet   AS STRING
-                 cRet := SELF:Request:GetItem("Value1")
-                 RETURN SELF:Response:_Write("Value1=" + cRet)
+                cRet := SELF:Request:GetItem("Value1")
+                RETURN SELF:Response:_Write("Value1=" + cRet)
             </code>
             HTML code:
             <code language="X#">
@@ -12326,7 +12375,9 @@
             Retrieve a value of the HTTP request's query string.
         </summary>
         <param name="cVarName">Name of the variable.</param>
-        <param name="n">Position, if more than one variable with the same name, <paramref name="cVarName" />, exists within the collection. </param>
+        <param name="n">
+            Position, if more than one variable with the same name, <paramref name="cVarName" />, exists within the collection.
+        </param>
         <returns>
             A string value, if successful; otherwise, NULL_STRING.
         </returns>
@@ -12343,8 +12394,8 @@
             </code><code language="X#">
                 METHOD	HTTPResponse 	CLASS ASPComponent
                 LOCAL cRet   AS STRING
-                 cRet := SELF:Request:GetQueryString("Action")
-                 RETURN SELF:Response:_Write("Action=" + cRet)
+                cRet := SELF:Request:GetQueryString("Action")
+                RETURN SELF:Response:_Write("Action=" + cRet)
             </code>
             HTML code:
             <code language="X#">
@@ -12387,8 +12438,8 @@
                 LOCAL aTemp   AS ARRAY
                 LOCAL cRet   AS STRING
 
-                 aTemp := SELF:Request:GetQueryStrings()
-                 cRet := GetHTTPValueTable(aTemp)
+                aTemp := SELF:Request:GetQueryStrings()
+                cRet := GetHTTPValueTable(aTemp)
                 RETURN SELF:Response:_Write(cRet)
             </code>
             HTML code:
@@ -12396,7 +12447,7 @@
                 &lt;html&gt;
                 &lt;p&gt;
                 &lt;a href="response.asp?Action=TEST&amp;Display=Yes"&gt;
-                 Start
+                Start
                 &lt;/a&gt;&lt;/p&gt;
                 ...
                 &lt;/html&gt;
@@ -12444,16 +12495,16 @@
             </code><code language="X#">
                 METHOD	HTTPResponse 	CLASS ASPComponent
                 LOCAL cRet   AS STRING
-                 cRet := ;
-                 SELF:Request:GetServerVariable("PATH_TRANSLATED")
-                 RETURN SELF:Response:_Write("Path name: " + cRet)
+                cRet := ;
+                SELF:Request:GetServerVariable("PATH_TRANSLATED")
+                RETURN SELF:Response:_Write("Path name: " + cRet)
             </code>
             HTML code:
             <code language="X#">
                 &lt;html&gt;
                 &lt;p&gt;
                 &lt;a href="response.asp"&gt;
-                 Display Path
+                Display Path
                 &lt;/a&gt;&lt;/p&gt;
                 ...
                 &lt;/html&gt;
@@ -12489,8 +12540,8 @@
                 LOCAL aTemp   AS ARRAY
                 LOCAL cRet   AS STRING
 
-                 aTemp := SELF:Request:GetServerVariables()
-                 cRet := GetHTTPValueTable(aTemp)
+                aTemp := SELF:Request:GetServerVariables()
+                cRet := GetHTTPValueTable(aTemp)
                 RETURN SELF:Response:_Write(cRet)
             </code>
             HTML code:
@@ -12498,7 +12549,7 @@
                 &lt;html&gt;
                 &lt;p&gt;
                 &lt;a href="response.asp"&gt;
-                 Display Server Environment
+                Display Server Environment
                 &lt;/a&gt;&lt;/p&gt;
                 ...
                 &lt;/html&gt;
@@ -12605,7 +12656,9 @@
             Write a specified string the HTTP output.
         </summary>
         <param name="cOut">String containing the HTTP output.</param>
-        <param name="nSize">Number of bytes to write. If omitted, defaults to the length of <paramref name="cOut" />.</param>
+        <param name="nSize">
+            Number of bytes to write. If omitted, defaults to the length of <paramref name="cOut" />.
+        </param>
         <returns>
             TRUE, if the value has been changed; otherwise, FALSE.
         </returns>
@@ -12715,8 +12768,8 @@
                 LOCAL aTemp   AS ARRAY
                 LOCAL cRet   AS STRING
                 ...
-                 SELF:Response:PutContentType(/gif
-                 SELF:Response:PutContentType(text/html
+                SELF:Response:PutContentType(/gif
+                SELF:Response:PutContentType(text/html
             </code><code language="X#">	RETURN SELF:Response:_Write("Hello world")</code>
         </example>
     </IResponse.PutContentType>
@@ -12998,18 +13051,18 @@
                 PROCEDURE InitProc() _INIT 3
                 goASPComponent := ASPComponent{}
                 CLASS ASPComponent INHERIT IscriptingContext
-                 LOCAL p AS PTR 
+                LOCAL p AS PTR
             </code><code language="X#">
                 METHOD	OnStartPage(pDispatch)	CLASS ASPComponent
-                 IF SUPER:OnStartPage(pDispatch)
-                   SELF:p := MemAlloc(100)
-                 ENDIF
+                IF SUPER:OnStartPage(pDispatch)
+                SELF:p := MemAlloc(100)
+                ENDIF
                 METHOD	OnEndPage()		CLASS ASPComponent
-                 SUPER:OnEndPage()
-                 IF SELF:p != NULL_PTR
-                   MemFree(SELF:p)
-                   SELF:p := NULL_PTR
-                 ENDIF
+                SUPER:OnEndPage()
+                IF SELF:p != NULL_PTR
+                MemFree(SELF:p)
+                SELF:p := NULL_PTR
+                ENDIF
             </code>
             ASP code:
             <code language="X#">
@@ -13090,10 +13143,10 @@
             <code language="X#">
                 CLASS ASPComponent INHERIT IScriptingContext
                 METHOD	HTTPResponse 	CLASS ASPComponent
-                 LOCAL cEncode	AS STRING
-                 ...
+                LOCAL cEncode	AS STRING
+                ...
                 cEncode := SELF:Server:_HTMLEncode("&lt;/html&gt;")
-                	...
+                ...
             </code>
             produces the output (cEncode):
             <code language="X#">&amp;lt;/html&amp;gt;</code>
@@ -13115,10 +13168,10 @@
             <code language="X#">
                 CLASS ASPComponent INHERIT IScriptingContext
                 METHOD	HTTPResponse 	CLASS ASPComponent
-                 LOCAL cPath	AS STRING
-                 ...
+                LOCAL cPath	AS STRING
+                ...
                 cPath := SELF:Server:_MapPath("/cgi-bin")
-                	...
+                ...
             </code>
             produces the output (cPath):
             <code language="X#">c:\inetsrv\scripts</code>
@@ -13144,11 +13197,11 @@
             <code language="X#">
                 CLASS ASPComponent INHERIT IScriptingContext
                 METHOD	HTTPResponse 	CLASS ASPComponent
-                 LOCAL cEncode	AS STRING
-                 ...
+                LOCAL cEncode	AS STRING
+                ...
                 cEncode := SELF:Server:_URLEncode( ;
                 "X#")
-                	...
+                ...
             </code>
             produces the output (cEncode):
             <code language="X#">Visual+Objects</code>
@@ -13175,7 +13228,9 @@
         </returns>
         <remarks>
             This method sets the script time-out value of the IServer object in seconds.
-            <note type="tip">This property cannot be set to a value less than that specified in the registry settings. For example, if it is set to 60 and the registry setting contains the default value of 120 seconds, scripts will time out after 120 seconds. However, if <paramref name="nValue" /> were set to 200, the scripts would time out after 200 seconds.</note>
+            <note type="tip">
+                This property cannot be set to a value less than that specified in the registry settings. For example, if it is set to 60 and the registry setting contains the default value of 120 seconds, scripts will time out after 120 seconds. However, if <paramref name="nValue" /> were set to 200, the scripts would time out after 200 seconds.
+            </note>
         </remarks>
     </IServer.PutScriptTimeOut>
     <ISessionObject>
@@ -13368,7 +13423,9 @@
         </summary>
         <param name="cName">Name of the item to add to the cookie as STRING.</param>
         <param name="cValue">Value of the item to add to the cookie as STRING.</param>
-        <param name="aValue">Array with item values to add to the cookie. <paramref name="cName" /> is treated as the key name and the cookie as a dictionary cookie.</param>
+        <param name="aValue">
+            Array with item values to add to the cookie. <paramref name="cName" /> is treated as the key name and the cookie as a dictionary cookie.
+        </param>
         <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
@@ -13598,7 +13655,7 @@
         <value>A bounding box representing the smallest rectangle that completely encloses this LineObject object.</value>
     </LineObject.BoundingBox>
     <LineObject.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </LineObject.Destroy>
     <LineObject.Draw>
         <summary>
@@ -13749,7 +13806,7 @@
         </remarks>
     </ListBox.ClearSelection>
     <ListBox.Create>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ListBox.Create>
     <ListBox.CurrentItem>
         <summary>
@@ -13912,14 +13969,16 @@
         </returns>
     </ListBox.IsSelected>
     <ListBox.ItemCount>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ListBox.ItemCount>
     <ListBox.ListFiles>
         <summary>
             Fill a list box with the names of all files that match the specified path or file name.
         </summary>
         <param name="sStartDir">The path or file name of the starting directory.</param>
-        <param name="oFixedText">Set automatically to the fixed text of the drive/directory of <paramref name="sStartDir" />.</param>
+        <param name="oFixedText">
+            Set automatically to the fixed text of the drive/directory of <paramref name="sStartDir" />.
+        </param>
         <param name="FileTypes">One of the following constants indicating the attributes of the files to be displayed:</param>
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -14028,8 +14087,8 @@
         </remarks>
     </ListBox.SelectItem>
     <ListBox.SetTabs>
-        <summary>**Missing documentation **</summary>
-        <param name="aTabs">** missing parameter documentation **</param>
+        <exclude />
+        
     </ListBox.SetTabs>
     <ListBox.TextValue>
         <summary>
@@ -14242,7 +14301,7 @@
         </returns>
     </ListView.DeleteItem>
     <ListView.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ListView.Destroy>
     <ListView.DragDropEnabled>
         <summary>
@@ -14340,8 +14399,8 @@
         </returns>
     </ListView.GetColumn>
     <ListView.GetExLVStyle>
-        <summary>**Missing documentation **</summary>
-        <param name="kExStyle">** missing parameter documentation **</param>
+        <exclude />
+        
     </ListView.GetExLVStyle>
     <ListView.GetExStyle>
         <summary>
@@ -14387,23 +14446,23 @@
             <code language="X#">
                 nCount := SELF:oDClvClaims:ItemCount
                 FOR x := 1 UPTO nCount
-                 oLVI := SELF:oDClvClaims:GetItemAttributes(x)
-                 IF oLVI != NULL_OBJECT
-                   IF oLVI:Checked	// Using the "checkbox" property of a ListView set to YES
-                      nValue := oLVI:GetValue( #dSvcDate )
-                      SELF:oBillingsServer:GoTo( nValue )
-                       // do some processing here    
-                   DO CASE
-                   CASE cClaims == "P"
-                       oLVI:StateImageIndex := 1	// ImageList was predefined in a PostInit() method
-                   CASE cClaims == "X"
-                       oLVI:StateImageIndex := 2
-                   CASE cClaims == "S"
-                       oLVI:StateImageIndex := 6
-                   ENDCASE
-                   SELF:oDClvClaims:SetItemAttributes(oLVI)
-                   ENDIF
-                  ENDIF
+                oLVI := SELF:oDClvClaims:GetItemAttributes(x)
+                IF oLVI != NULL_OBJECT
+                IF oLVI:Checked	// Using the "checkbox" property of a ListView set to YES
+                nValue := oLVI:GetValue( #dSvcDate )
+                SELF:oBillingsServer:GoTo( nValue )
+                // do some processing here
+                DO CASE
+                CASE cClaims == "P"
+                oLVI:StateImageIndex := 1	// ImageList was predefined in a PostInit() method
+                CASE cClaims == "X"
+                oLVI:StateImageIndex := 2
+                CASE cClaims == "S"
+                oLVI:StateImageIndex := 6
+                ENDCASE
+                SELF:oDClvClaims:SetItemAttributes(oLVI)
+                ENDIF
+                ENDIF
                 NEXT x
             </code>
         </example>
@@ -14490,7 +14549,7 @@
         </example>
     </ListView.GetNextItem>
     <ListView.GetSelectedColumn>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ListView.GetSelectedColumn>
     <ListView.GetSelectedItem>
         <summary>
@@ -14650,13 +14709,21 @@
         <summary>
             Search the list view for a particular list view item.
         </summary>
-        <param name="uValue">The value to seek. <paramref name="kSeekType" /> must be LV_SEEKVALUE.</param>
-        <param name="cText">The string to seek. <paramref name="kSeekType" /> must be LV_SEEKTEXT.</param>
-        <param name="oPoint">The point in the client area of the list view at which the seek begins. The nearest list view item to this point in the direction specified by <paramref name="kSeekType" /> will be returned.</param>
+        <param name="uValue">
+            The value to seek. <paramref name="kSeekType" /> must be LV_SEEKVALUE.
+        </param>
+        <param name="cText">
+            The string to seek. <paramref name="kSeekType" /> must be LV_SEEKTEXT.
+        </param>
+        <param name="oPoint">
+            The point in the client area of the list view at which the seek begins. The nearest list view item to this point in the direction specified by <paramref name="kSeekType" /> will be returned.
+        </param>
         <param name="kSeekType">A constant that specifies what type of seek to perform. LV_SEEKVALUE causes a seek on a usual value. LV_SEEKTEXT causes a seek on a text string.  If the seek is on a Point object, this argument can be LV_SEEKUP or LV_SEEKDOWN to specify a search in the respective directions. In this case, if the argument is omitted, LV_SEEKDOWN is assumed.</param>
         <param name="nStart">The index of the list view item at which to begin the search. If omitted, the seek begins at the first item.</param>
         <param name="lWrap">A value of TRUE continues the search at the first list view item if no match is found. If omitted, the default is FALSE, which disables wrapping.</param>
-        <param name="lPartial">A value of TRUE produces a match if the list view item label begins with <paramref name="cText" />. If omitted, the default is FALSE, which disables partial seeking.</param>
+        <param name="lPartial">
+            A value of TRUE produces a match if the list view item label begins with <paramref name="cText" />. If omitted, the default is FALSE, which disables partial seeking.
+        </param>
         <returns>
             The list view item returned as a result of the seek.
         </returns>
@@ -14735,9 +14802,8 @@
         </returns>
     </ListView.SetColumnFormat>
     <ListView.SetExLVStyle>
-        <summary>**Missing documentation **</summary>
-        <param name="kExStyle">** missing parameter documentation **</param>
-        <param name="lEnable">** missing parameter documentation **</param>
+        <exclude />
+        
     </ListView.SetExLVStyle>
     <ListView.SetExStyle>
         <summary>
@@ -14793,23 +14859,23 @@
             <code language="X#">
                 nCount := SELF:oDClvClaims:ItemCount
                 FOR x := 1 UPTO nCount
-                 oLVI := SELF:oDClvClaims:GetItemAttributes(x)
-                 IF oLVI != NULL_OBJECT
-                   IF oLVI:Checked	// Using the "checkbox" property of a ListView set to YES
-                      nValue := oLVI:GetValue( #dSvcDate )
-                      SELF:oBillingsServer:GoTo( nValue )
-                       // do some processing here    
-                   DO CASE
-                   CASE cClaims == "P"
-                       oLVI:StateImageIndex := 1	// ImageList was predefined in a PostInit() method
-                   CASE cClaims == "X"
-                       oLVI:StateImageIndex := 2
-                   CASE cClaims == "S"
-                       oLVI:StateImageIndex := 3
-                   ENDCASE
-                   SELF:oDClvClaims:SetItemAttributes(oLVI)
-                   ENDIF
-                  ENDIF
+                oLVI := SELF:oDClvClaims:GetItemAttributes(x)
+                IF oLVI != NULL_OBJECT
+                IF oLVI:Checked	// Using the "checkbox" property of a ListView set to YES
+                nValue := oLVI:GetValue( #dSvcDate )
+                SELF:oBillingsServer:GoTo( nValue )
+                // do some processing here
+                DO CASE
+                CASE cClaims == "P"
+                oLVI:StateImageIndex := 1	// ImageList was predefined in a PostInit() method
+                CASE cClaims == "X"
+                oLVI:StateImageIndex := 2
+                CASE cClaims == "S"
+                oLVI:StateImageIndex := 3
+                ENDCASE
+                SELF:oDClvClaims:SetItemAttributes(oLVI)
+                ENDIF
+                ENDIF
                 NEXT x
             </code>
         </example>
@@ -14891,7 +14957,7 @@
         <value>A numeric value representing the index of the topmost visible item when the list view is in list view or report view.</value>
     </ListView.TopItem>
     <ListView.TrackSelection>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ListView.TrackSelection>
     <ListView.Update>
         <summary>
@@ -14984,7 +15050,7 @@
         <value>The FieldSpec object for the list view column.</value>
     </ListViewColumn.FieldSpec>
     <ListViewColumn.GetPixWidth>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ListViewColumn.GetPixWidth>
     <ListViewColumn.HyperLabel>
         <summary>
@@ -14999,10 +15065,10 @@
         <value>The symbolic name of the list view column.</value>
     </ListViewColumn.NameSym>
     <ListViewColumn.Owner>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ListViewColumn.Owner>
     <ListViewColumn.SetPixWidth>
-        <param name="dwPixWidth">** missing parameter documentation **</param>
+        
     </ListViewColumn.SetPixWidth>
     <ListViewColumn.Width>
         <summary>
@@ -15145,10 +15211,10 @@
         </summary>
     </ListViewItem.ctor>
     <ListViewItem.Checked>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ListViewItem.Checked>
     <ListViewItem.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ListViewItem.Destroy>
     <ListViewItem.Disabled>
         <summary>
@@ -15181,7 +15247,7 @@
             <code language="X#">
                 oLVI := SELF:oDClvClaims:GetItemAttributes( nItemNr )
                 IF oLVI != NULL_OBJECT
-                  cCity := oLVI:GetText( #cCity )
+                cCity := oLVI:GetText( #cCity )
                 ENDIF
             </code>
         </example>
@@ -15198,11 +15264,11 @@
             <code language="X#">
                 nCount := SELF:oDClvClaims:ItemCount
                 FOR x := 1 UPTO nCount
-                 oLVI := SELF:oDClvClaims:GetItemAttributes(x)
-                 IF oLVI != NULL_OBJECT
-                    nValue := oLVI:GetValue( #nItems )
+                oLVI := SELF:oDClvClaims:GetItemAttributes(x)
+                IF oLVI != NULL_OBJECT
+                nValue := oLVI:GetValue( #nItems )
                 nTotal += nValue
-                 ENDIF
+                ENDIF
                 NEXT x
             </code>
         </example>
@@ -15283,23 +15349,23 @@
             <code language="X#">
                 nCount := SELF:oDClvClaims:ItemCount
                 FOR x := 1 UPTO nCount
-                 oLVI := SELF:oDClvClaims:GetItemAttributes(x)
-                 IF oLVI != NULL_OBJECT
-                   IF oLVI:Checked	// Using the "checkbox" property of a ListView set to YES
-                      nValue := oLVI:GetValue( #dSvcDate )
-                      SELF:oBillingsServer:GoTo( nValue )
-                       // do some processing here    
-                   DO CASE
-                   CASE cClaims == "P"
-                       oLVI:StateImageIndex := 1	// ImageList was predefined in a PostInit() method
-                   CASE cClaims == "X"
-                       oLVI:StateImageIndex := 2
-                   CASE cClaims == "S"
-                       oLVI:StateImageIndex := 3
-                   ENDCASE
-                   SELF:oDClvClaims:SetItemAttributes(oLVI)
-                   ENDIF
-                  ENDIF
+                oLVI := SELF:oDClvClaims:GetItemAttributes(x)
+                IF oLVI != NULL_OBJECT
+                IF oLVI:Checked	// Using the "checkbox" property of a ListView set to YES
+                nValue := oLVI:GetValue( #dSvcDate )
+                SELF:oBillingsServer:GoTo( nValue )
+                // do some processing here
+                DO CASE
+                CASE cClaims == "P"
+                oLVI:StateImageIndex := 1	// ImageList was predefined in a PostInit() method
+                CASE cClaims == "X"
+                oLVI:StateImageIndex := 2
+                CASE cClaims == "S"
+                oLVI:StateImageIndex := 3
+                ENDCASE
+                SELF:oDClvClaims:SetItemAttributes(oLVI)
+                ENDIF
+                ENDIF
                 NEXT x
             </code>
         </example>
@@ -15532,8 +15598,8 @@
         <value>String representing the file name for log messages.</value>
     </LogFile.FName>
     <LogFile.Log2File>
-        <summary>**Missing documentation **</summary>
-        <value>**Missing documentation **</value>
+        <exclude />
+        
     </LogFile.Log2File>
     <LogFile.ServerPath>
         <summary>
@@ -15608,8 +15674,8 @@
         </remarks>
     </Menu.Accelerator>
     <Menu.AddChild>
-        <summary>**Missing documentation **</summary>
-        <param name="oMenu">** missing parameter documentation **</param>
+        <exclude />
+        
     </Menu.AddChild>
     <Menu.AppendItem>
         <summary>
@@ -15626,7 +15692,9 @@
             <paramref name="cNewItem" />	The text to appear as the new menu item.
             <paramref name="oHyperLabel" />	The hyperlabel containing the caption to appear as the new menu item.
             <paramref name="oSubMenu" />	The menu to appear for the new menu item. It is added as a submenu; this is how to construct hierarchical menus.
-            <note type="tip">If <paramref name="nItemID" /> is specified as MENUSEPARATOR, the second parameter is not needed.</note>
+            <note type="tip">
+                If <paramref name="nItemID" /> is specified as MENUSEPARATOR, the second parameter is not needed.
+            </note>
         </remarks>
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -15650,11 +15718,11 @@
         </remarks>
     </Menu.CheckItem>
     <Menu.Children>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Menu.Children>
     <Menu.DeleteChild>
-        <summary>**Missing documentation **</summary>
-        <param name="oMenu">** missing parameter documentation **</param>
+        <exclude />
+        
     </Menu.DeleteChild>
     <Menu.DeleteItem>
         <summary>
@@ -15674,7 +15742,7 @@
         </remarks>
     </Menu.Destroy>
     <Menu.DisableAutoUpdate>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Menu.DisableAutoUpdate>
     <Menu.DisableItem>
         <summary>
@@ -15704,11 +15772,11 @@
         </remarks>
     </Menu.EnableItem>
     <Menu.GetAutoUpdate>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Menu.GetAutoUpdate>
     <Menu.GetSubMenu>
-        <summary>**Missing documentation **</summary>
-        <param name="nIndex">** missing parameter documentation **</param>
+        <exclude />
+        
     </Menu.GetSubMenu>
     <Menu.Handle>
         <summary>
@@ -15750,7 +15818,7 @@
         </remarks>
     </Menu.InsertItem>
     <Menu.Items>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Menu.Items>
     <Menu.MakeMenuRtol>
         <summary>
@@ -15762,7 +15830,7 @@
         </remarks>
     </Menu.MakeMenuRtol>
     <Menu.MenuItems>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Menu.MenuItems>
     <Menu.Name>
         <summary>
@@ -15777,15 +15845,15 @@
         <param name="nItemID">The ID of the menu item.</param>
     </Menu.Name>
     <Menu.NameSym>
-        <summary>**Missing documentation **</summary>
-        <param name="nItemID">** missing parameter documentation **</param>
+        <exclude />
+        
     </Menu.NameSym>
     <Menu.PostInit>
         <summary>
             Implement customized initialization code for the window.
         </summary>
         <remarks>
-            This method is used to customize the initialization code for a dataserver. 
+            This method is used to customize the initialization code for a dataserver.
             The customized initialization code will not be overridden by the generated default initialization code.
             A call to PostInit() is automatically generated at the end of the Init() method.
         </remarks>
@@ -15795,9 +15863,9 @@
             Implement customized initialization code for the server.
         </summary>
         <remarks>
-            This method is used to customize the initialization code for a server. 
+            This method is used to customize the initialization code for a server.
             The customized initialization code will not be overridden by the generated default initialization code.
-            A call to PreInit() is automatically generated at the beginning of the Init() method. 
+            A call to PreInit() is automatically generated at the beginning of the Init() method.
             The default implementation of PostInit() in this class is empty.
             <note type="tip">
                 In .Net it is normally not allowed or recommended to run code in a class before the parent constructor is called.
@@ -15830,8 +15898,8 @@
         </remarks>
     </Menu.SetAutoUpdate>
     <Menu.SetParent>
-        <summary>**Missing documentation **</summary>
-        <param name="oMenu">** missing parameter documentation **</param>
+        <exclude />
+        
     </Menu.SetParent>
     <Menu.ShowAsPopup>
         <summary>
@@ -16020,16 +16088,16 @@
         <inheritdoc />
     </MinMaxInfoEvent.ctor>
     <MinMaxInfoEvent.MaxPosition>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </MinMaxInfoEvent.MaxPosition>
     <MinMaxInfoEvent.MaxSize>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </MinMaxInfoEvent.MaxSize>
     <MinMaxInfoEvent.MaxTrackSize>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </MinMaxInfoEvent.MaxTrackSize>
     <MinMaxInfoEvent.MinTrackSize>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </MinMaxInfoEvent.MinTrackSize>
     <ModelessDialog>
         <summary>
@@ -16270,7 +16338,7 @@
         </remarks>
     </MouseEvent.ButtonID>
     <MouseEvent.Height>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </MouseEvent.Height>
     <MouseEvent.IsControlButton>
         <summary>
@@ -16344,10 +16412,10 @@
         <value>A point, in canvas coordinates, representing the position of the mouse pointer on the window when this MouseEvent was generated.</value>
     </MouseEvent.Position>
     <MouseEvent.Size>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </MouseEvent.Size>
     <MouseEvent.Width>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </MouseEvent.Width>
     <MoveEvent>
         <summary>
@@ -16649,14 +16717,14 @@
                 oAppPrintOutNamedArg{#Background TRUE} ;
                 NamedArg{#PrintToFile TRUE} ;
                 NamedArg{#OutputFileName “C}
-                DO WHILE oAppBackgroundPrintingStatus 
+                DO WHILE oAppBackgroundPrintingStatus
                 ?
                 DoEvents
                 ENDDO
                 ?
                 oDocCloseFALSE
                 oAppQuit
-                wait 
+                wait
             </code><code language="X#">RETURN NIL</code>
         </example>
     </NamedArg>
@@ -16795,11 +16863,11 @@
                 oDoc := oDocs:Open("C:\Cavo28\whatsnew.rtf")
                 ? "Printing Document"
                 oApp:PrintOut(NamedArg{#Background, TRUE}, ;
-                 NamedArg{#PrintToFile, TRUE}, ;
-                 NamedArg{#OutputFileName, "C:\TEST.TXT"})
+                NamedArg{#PrintToFile, TRUE}, ;
+                NamedArg{#OutputFileName, "C:\TEST.TXT"})
                 DO WHILE oApp:BackgroundPrintingStatus != 0
-                 ? "."
-                 DoEvents()
+                ? "."
+                DoEvents()
                 ENDDO
                 ? "Closing WORD"
                 oDoc:Close(FALSE)
@@ -16956,10 +17024,10 @@
             The following example shows how an OleBinary object is used to pass the contents of a binary file to a server
             <code language="X#">
                 LOCAL oServer AS OBJECT
-                 LOCAL cData AS STRING
-                 oServer := OleAutoObject{"Some.Server"}
-                 cData := MemoRead("MyFile.bin")
-                 oServer:Upload("MyFile.bin", CreateInstance(#OleBinary, cData))
+                LOCAL cData AS STRING
+                oServer := OleAutoObject{"Some.Server"}
+                cData := MemoRead("MyFile.bin")
+                oServer:Upload("MyFile.bin", CreateInstance(#OleBinary, cData))
             </code>
         </example>
     </OleBinary>
@@ -17696,9 +17764,9 @@
                 IF !Empty(oOD:FileName)
                 SELF:Caption := oOD:FileName
                 FOR i:= 1 TO ALen(aOLEObjects)
-                  oOle := aOLEObjects[i]
-                  oOle:ExportToStorage(oOd:FileName, "CONTAINEROBJECT_"+AllTrim(AsString(i)))
-                 NEXT
+                oOle := aOLEObjects[i]
+                oOle:ExportToStorage(oOd:FileName, "CONTAINEROBJECT_"+AllTrim(AsString(i)))
+                NEXT
                 ENDIF
             </code>
         </example>
@@ -17729,16 +17797,16 @@
                 IF (!Empty(oOD:FileName) .and. GetStorageNames(oOD:FileName, aStgNames))
                 oCont := SELF:FileNew()
                 oCont:Caption := oOD:FileName
-                 IF (oCont != NULL_OBJECT)
+                IF (oCont != NULL_OBJECT)
                 FOR i:=1 TO ALen(aStgNames)
-                	  oOle := DraggableOleObject{oCont}
-                   IF (oOle:ImportFromStorage(oOD:Filename, aStgNames[i]))
-                	   oCont:SetupOLEObject(oOle, NIL, TRUE)
-                		 ELSE
-                   oOle:Destroy()
-                   ENDIF
-                	 NEXT
-                	ENDIF
+                oOle := DraggableOleObject{oCont}
+                IF (oOle:ImportFromStorage(oOD:Filename, aStgNames[i]))
+                oCont:SetupOLEObject(oOle, NIL, TRUE)
+                ELSE
+                oOle:Destroy()
+                ENDIF
+                NEXT
+                ENDIF
                 ENDIF
             </code>
         </example>
@@ -18005,7 +18073,7 @@
         <remarks>
             <pre>
                 Constant			Description
-                LINECLEAR			Invisible, which can be used to simplify the program logic. 
+                LINECLEAR			Invisible, which can be used to simplify the program logic.
                 This is a shortcut to changing a point position without calling the MoveTo() and LineTo()
                 functions (as in the code example under Pen class).
                 LINEDASHDOT		Alternating dash/dot pattern.
@@ -18077,7 +18145,7 @@
     </PieObject.Draw>
     <Point>
         <summary>
-            Create a point, which is used to describe a location on the canvas of a window. 
+            Create a point, which is used to describe a location on the canvas of a window.
         </summary>
         <remarks>
             The Point class does not interpret the coordinates—whether they are screen or canvas coordinates is context-dependent.
@@ -18094,8 +18162,8 @@
         <param name="nY">The y coordinate of the point. The default is 0.</param>
     </Point.ctor>
     <Point.ConvertToScreen>
-        <summary>**Missing documentation **</summary>
-        <param name="oWindow">** missing parameter documentation **</param>
+        <exclude />
+        
     </Point.ConvertToScreen>
     <Point.X>
         <summary>
@@ -18306,13 +18374,13 @@
         </example>
     </Printer.Abort>
     <Printer.Aborted>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Printer.Aborted>
     <Printer.BeginDoc>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Printer.BeginDoc>
     <Printer.CanvasArea>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Printer.CanvasArea>
     <Printer.Destroy>
         <summary>
@@ -18326,7 +18394,9 @@
         <summary>
             Return the handle for a printer.
         </summary>
-        <param name="ServiceID">The type of handle required. 0 is the only supported option and is the default if <paramref name="ServiceID" /> is omitted.</param>
+        <param name="ServiceID">
+            The type of handle required. 0 is the only supported option and is the default if <paramref name="ServiceID" /> is omitted.
+        </param>
         <returns>
             A handle describing the underlying system object.
         </returns>
@@ -18387,7 +18457,7 @@
         <param name="oRange">The range of pages to be printed. For example, to print pages 5 to 10 inclusive, specify Start(Range{5,10}). If omitted, Printer:PrinterExpose() is called until FALSE is returned.</param>
     </Printer.Start>
     <Printer.WindowArea>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Printer.WindowArea>
     <PrinterErrorEvent>
         <summary>
@@ -18994,7 +19064,7 @@
         </returns>
     </RadioButtonGroup.Button>
     <RadioButtonGroup.Buttons>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </RadioButtonGroup.Buttons>
     <RadioButtonGroup.Caption>
         <summary>
@@ -19154,7 +19224,7 @@
         </remarks>
     </RadioButtonGroup.Value>
     <RadioButtonGroup.Values>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </RadioButtonGroup.Values>
     <Range>
         <summary>
@@ -19169,8 +19239,8 @@
         <param name="nMax">The maximum value in the range. The default is 0.</param>
     </Range.ctor>
     <Range.IsInRange>
-        <summary>**Missing documentation **</summary>
-        <param name="nValue">** missing parameter documentation **</param>
+        <exclude />
+        
     </Range.IsInRange>
     <Range.Max>
         <summary>
@@ -19205,7 +19275,9 @@
         </summary>
         <param name="oPoint">The origin of the rectangle, in canvas coordinates.</param>
         <param name="oDimension">The dimension of the rectangle, in canvas coordinates.</param>
-        <param name="oPen">The pen to be used to draw the rectangle. By default, <paramref name="oPen" /> is set to NIL, which causes the current pen to be used.</param>
+        <param name="oPen">
+            The pen to be used to draw the rectangle. By default, <paramref name="oPen" /> is set to NIL, which causes the current pen to be used.
+        </param>
         <param name="oBrush">The brush to be used to fill the rectangle. If omitted, the default is NIL, which causes the current brush to be used.</param>
     </RectangleObject.ctor>
     <RectangleObject.Draw>
@@ -19766,7 +19838,7 @@
         </remarks>
     </ResourceFile.Destroy>
     <ResourceFile.Handle>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ResourceFile.Handle>
     <ResourceID>
         <summary>
@@ -19784,19 +19856,19 @@
             Construct a ResourceID object.
         </summary>
         <param name="xID">
-            The unique ID between 1 and 8000 of the resource ID or a string describing the resource. 
+            The unique ID between 1 and 8000 of the resource ID or a string describing the resource.
             Strings can only identify resource blocks, such as dialogs or menus. For individual controls, you must use numeric IDs.
         </param>
         <param name="xResourceFile">The resource file that includes the resource. The default is the current executable file.</param>
     </ResourceID.ctor>
     <ResourceID.Address>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ResourceID.Address>
     <ResourceID.Handle>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ResourceID.Handle>
     <ResourceID.ID>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ResourceID.ID>
     <ResourceString>
         <summary>
@@ -19908,7 +19980,7 @@
         </remarks>
     </RichEdit.CanPaste>
     <RichEdit.ControlFont>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </RichEdit.ControlFont>
     <RichEdit.EnableAdvancedTypography>
         <summary>
@@ -20077,7 +20149,9 @@
         </summary>
         <param name="nStart">Integer representing the indentation of the first line in the paragraph.</param>
         <param name="nRight">Integer representing the right margin of the paragraph.</param>
-        <param name="nOffset">Integer representing the indentation of the second line and subsequent lines, relative to <paramref name="nStart" />. If this value is positive, a hanging indent is created (first line is 'outdented' and the subsequent lines are indented). If this value is negative, the first line is indented and the subsequent lines are outdented.</param>
+        <param name="nOffset">
+            Integer representing the indentation of the second line and subsequent lines, relative to <paramref name="nStart" />. If this value is positive, a hanging indent is created (first line is 'outdented' and the subsequent lines are indented). If this value is negative, the first line is indented and the subsequent lines are outdented.
+        </param>
         <returns>
             TRUE, if successful; otherwise FALSE.
         </returns>
@@ -20313,7 +20387,7 @@
         <value>A string representing the text contents of the rich edit</value>
     </RichEdit.Value>
     <RichEdit.ValueAsText>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </RichEdit.ValueAsText>
     <RichEditCallback.ctor>
         <exclude />
@@ -20447,14 +20521,14 @@
         </summary>
         <value>A numeric value representing the block size of the scroll bar</value>
         <remarks>
-            A numeric value representing the block size of the scroll bar. 
+            A numeric value representing the block size of the scroll bar.
             The block size is used to calculate the new position of the thumb when a BLOCKINCREMENT or BLOCKDECREMENT ScrollEvent occurs,
             which is one of the event types recognized by the ScrollEvent:Type access.
             The BlockSize is initially set to 10, but may be modified at runtime to change the behavior of the scroll bar.
         </remarks>
     </ScrollBar.BlockSize>
     <ScrollBar.Create>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ScrollBar.Create>
     <ScrollBar.Destroy>
         <summary>
@@ -20465,7 +20539,7 @@
         </remarks>
     </ScrollBar.Destroy>
     <ScrollBar.Hide>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ScrollBar.Hide>
     <ScrollBar.Modified>
         <summary>
@@ -20474,7 +20548,7 @@
         <value>A logical value that is set to FALSE for a scroll bar since it does not contain text that can be edited.</value>
     </ScrollBar.Modified>
     <ScrollBar.PageSize>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ScrollBar.PageSize>
     <ScrollBar.Range>
         <summary>
@@ -20499,7 +20573,7 @@
         <param name="lNotifyOwner">Should the owner be notified? When TRUE then the owner receives a WM_HSCROLL or WM_VSCROLL with a wParam SB_THUMBTRACK and lParam contains the scrollbar handle.</param>
     </ScrollBar.SetThumbPosition>
     <ScrollBar.Show>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ScrollBar.Show>
     <ScrollBar.TextValue>
         <summary>
@@ -20507,8 +20581,8 @@
         </summary>
         <value>A string representing the thumb position of the scroll bar.</value>
         <remarks>
-            A string representing the thumb position of the scroll bar. For example, the value can be "42". 
-            The ScrollBar:TextValue assign also changes ScrollBar:ThumbPosition and ScrollBar:Value. 
+            A string representing the thumb position of the scroll bar. For example, the value can be "42".
+            The ScrollBar:TextValue assign also changes ScrollBar:ThumbPosition and ScrollBar:Value.
             If the value to be assigned is outside the allowable Min-Max range associated with the scroll bar, the value is modified so it is either the Min or Max value.
         </remarks>
     </ScrollBar.TextValue>
@@ -20518,8 +20592,8 @@
         </summary>
         <value>A numeric value (short integer) representing the current thumb position of the scroll bar.</value>
         <remarks>
-            A numeric value (short integer) representing the current thumb position of the scroll bar. 
-            For example, the value can be the number 42. The ThumbPosition assign also changes ScrollBar:TextValue and ScrollBar:Value. 
+            A numeric value (short integer) representing the current thumb position of the scroll bar.
+            For example, the value can be the number 42. The ThumbPosition assign also changes ScrollBar:TextValue and ScrollBar:Value.
             If the value to be assigned is outside the allowable range associated with the scroll bar, the value is modified so it is either the Min or Max value defined for the Range object. When the scroll bar is created, the ThumbPosition is initialized to 99, or if 99 exceeds the Max value, to the Max value.
         </remarks>
     </ScrollBar.ThumbPosition>
@@ -20529,13 +20603,13 @@
         </summary>
         <value>A numeric value representing the unit size currently associated with the scroll bar.</value>
         <remarks>
-            A numeric value representing the unit size currently associated with the scroll bar. 
+            A numeric value representing the unit size currently associated with the scroll bar.
             The unit size is used to calculate the new thumb position when a UNITINCREMENT or UNITDECREMENT ScrollEvent occurs.
             When a scroll bar is created, ScrollBar:UnitSize is initialized to 1. The ScrollBar:UnitSize can be changed at runtime to alter the behavior of the scroll bar.
         </remarks>
     </ScrollBar.UnitSize>
     <ScrollBar.Value>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ScrollBar.Value>
     <ScrollEvent>
         <summary>
@@ -20757,7 +20831,7 @@
         <value>A brush currently in use by the ShapeObject object to draw itself.</value>
     </ShapeObject.Brush>
     <ShapeObject.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ShapeObject.Destroy>
     <ShapeObject.Pen>
         <summary>
@@ -21046,8 +21120,8 @@
         <inheritdoc />
     </SingleLineEdit.Dispatch>
     <SingleLineEdit.FocusChange>
-        <summary>**Missing documentation **</summary>
-        <param name="oFocusChangeEvent">** missing parameter documentation **</param>
+        <exclude />
+        
     </SingleLineEdit.FocusChange>
     <SingleLineEdit.FocusSelect>
         <summary>
@@ -21145,7 +21219,7 @@
         </remarks>
     </SingleLineEdit.ScrollMode>
     <SingleLineEdit.TextValue>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </SingleLineEdit.TextValue>
     <SingleLineEdit.Undo>
         <inheritdoc />
@@ -21305,7 +21379,7 @@
         <inheritdoc />
     </SliderEvent.ctor>
     <SliderEvent.IsWindowScroll>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </SliderEvent.IsWindowScroll>
     <SliderEvent.Slider>
         <summary>
@@ -21340,7 +21414,7 @@
         <value>The client control of the spinner.</value>
     </Spinner.Client>
     <Spinner.IsHexBased>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Spinner.IsHexBased>
     <Spinner.Position>
         <summary>
@@ -21349,10 +21423,10 @@
         <value>The numeric value of the spinner.</value>
     </Spinner.Position>
     <Spinner.Range>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Spinner.Range>
     <Spinner.ThumbPosition>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </Spinner.ThumbPosition>
     <SpinnerEvent>
         <summary>
@@ -21504,7 +21578,7 @@
         </remarks>
     </SplitWindow.ChangeBackground>
     <SplitWindow.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </SplitWindow.Destroy>
     <SplitWindow.Dispatch>
         <inheritdoc />
@@ -21709,10 +21783,10 @@
             This example uses the Caption assign to set a title for an OpenFile dialog window:
             <code language="X#">
                 METHOD MyOpen() CLASS StandardShellWindow
-                 LOCAL oOpenDialog AS OpenDialog
-                 oOpenDialog:=OpenDialog{SELF}
-                 oOpenDialog:Caption:="My OpenFile Dialog"
-                 oOpenDialog:Show()
+                LOCAL oOpenDialog AS OpenDialog
+                oOpenDialog:=OpenDialog{SELF}
+                oOpenDialog:Caption:="My OpenFile Dialog"
+                oOpenDialog:Show()
             </code>
         </example>
     </StandardFileDialog.Caption>
@@ -21745,45 +21819,45 @@
             This example displays an OpenFile dialog with a filter which is set to display only DBFs and index files. Multiple file selection enables a user to select a DBF and an index. A DBServer object for the selected file(s) is created and returned to the caller.
             <code language="X#">
                 METHOD OpenDB() CLASS StandardShellWindow
-                 LOCAL oOpenDialog   AS OpenDialog
-                 LOCAL uFileName   AS USUAL
-                 LOCAL aoFileSpecs  := {}  AS ARRAY
-                 LOCAL lDone  := .F.  AS LOGIC
-                 LOCAL oDB   AS Dbserver
+                LOCAL oOpenDialog   AS OpenDialog
+                LOCAL uFileName   AS USUAL
+                LOCAL aoFileSpecs  := {}  AS ARRAY
+                LOCAL lDone  := .F.  AS LOGIC
+                LOCAL oDB   AS Dbserver
                 DO WHILE !lDone
-                 oOpenDialog:=OpenDialog{SELF}
-                 oOpenDialog:Caption:="Open DBF and Index"
-                 oOpenDialog:SetFilter ({"CUST*.*","ORD*.*","DET*.*"},;
-                            {"Customers", "Orders", "Details"})
-                 oOpenDialog:SetStyle(OFN_ALLOWMULTISELECT + OFN_HIDEREADONLY)
-                 oOpenDialog:InitialDirectory := "C:\CAVO2x\SAMPLES\GSTUTOR" 
-                 oOpenDialog:Show()
-                 uFileName := oOpenDialog:FileName
-                 IF IsArray(uFileName) .AND. ALen(uFileName) &gt; 2
-                  (TextBox{SELF,"File Selection Error",;
-                  "Too many files selected"+CRLF+;
-                  "Please select one DBF and one index"}):Show()
-                 ELSE
-                  lDone := .T.
-                 ENDIF
+                oOpenDialog:=OpenDialog{SELF}
+                oOpenDialog:Caption:="Open DBF and Index"
+                oOpenDialog:SetFilter ({"CUST*.*","ORD*.*","DET*.*"},;
+                {"Customers", "Orders", "Details"})
+                oOpenDialog:SetStyle(OFN_ALLOWMULTISELECT + OFN_HIDEREADONLY)
+                oOpenDialog:InitialDirectory := "C:\CAVO2x\SAMPLES\GSTUTOR"
+                oOpenDialog:Show()
+                uFileName := oOpenDialog:FileName
+                IF IsArray(uFileName) .AND. ALen(uFileName) &gt; 2
+                (TextBox{SELF,"File Selection Error",;
+                "Too many files selected"+CRLF+;
+                "Please select one DBF and one index"}):Show()
+                ELSE
+                lDone := .T.
+                ENDIF
                 ENDDO
-                 // Open the selected DBF and index file
-                 uFileName := oOpenDialog:FileName
-                 IF IsArray(uFileName)   // DBF and Index selected ?
-                  AEval(uFileName,{ | cFileName | AADD( ;
-                    aoFileSpecs, FileSpec{cFileName} ) } )
-                  IF aoFileSpecs[1]:Extension != ".DBF"
-                    aoFileSpecs[1]:= ArraySwap(aoFileSpecs, ;
-                           2, aoFileSpecs[1])
-                  ENDIF
-                  RDDSetDefault("DBF"+SUBSTR(aoFileSpecs[2]:;
-                     Extension, 2, 3) )
-                  oDB := DBServer{aoFileSpecs[1]}
-                  oDB:SetIndex(aoFileSpecs[2])
-                 ELSEIF LOGIC(_CAST, uFileName)   // Anything selected at all?
-                  AADD(aoFileSpecs,FileSpec{uFileName})
-                  oDB := DBServer{aoFileSpecs[1]}
-                 ENDIF
+                // Open the selected DBF and index file
+                uFileName := oOpenDialog:FileName
+                IF IsArray(uFileName)   // DBF and Index selected ?
+                AEval(uFileName,{ | cFileName | AADD( ;
+                aoFileSpecs, FileSpec{cFileName} ) } )
+                IF aoFileSpecs[1]:Extension != ".DBF"
+                aoFileSpecs[1]:= ArraySwap(aoFileSpecs, ;
+                2, aoFileSpecs[1])
+                ENDIF
+                RDDSetDefault("DBF"+SUBSTR(aoFileSpecs[2]:;
+                Extension, 2, 3) )
+                oDB := DBServer{aoFileSpecs[1]}
+                oDB:SetIndex(aoFileSpecs[2])
+                ELSEIF LOGIC(_CAST, uFileName)   // Anything selected at all?
+                AADD(aoFileSpecs,FileSpec{uFileName})
+                oDB := DBServer{aoFileSpecs[1]}
+                ENDIF
                 RETURN oDB
             </code>
         </example>
@@ -21814,15 +21888,15 @@
             This example sets the initial directory to "C:\CAVO2x\SAMPLES":
             <code language="X#">
                 METHOD MyOpen() CLASS StandardShellWindow
-                 LOCAL oOpenDialog AS OpenDialog
-                 oOpenDialog := OpenDialog{SELF}
-                 oOpenDialog:InitialDirectory := "C:\CAVO2x\SAMPLES"
-                 oOpenDialog:Show()
+                LOCAL oOpenDialog AS OpenDialog
+                oOpenDialog := OpenDialog{SELF}
+                oOpenDialog:InitialDirectory := "C:\CAVO2x\SAMPLES"
+                oOpenDialog:Show()
             </code>
         </example>
     </StandardFileDialog.InitialDirectory>
     <StandardFileDialog.NoPlacesBar>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </StandardFileDialog.NoPlacesBar>
     <StandardFileDialog.ReadOnly>
         <summary>
@@ -21875,12 +21949,12 @@
             This example removes the ReadOnly check box from the dialog window, allows multiple file selection and retains current directory setting in effect prior to the dialog:
             <code language="X#">
                 METHOD MyOpen() CLASS StandardShellWindow
-                 LOCAL oOpenDialog AS OpenDialog
-                 oOpenDialog:=OpenDialog{SELF}
-                 oOpenDialog:SetStyle(OFN_ALLOWMULTISELECT)
-                 oOpenDialog:SetStyle(OFN_NOCHANGEDIR)
-                 oOpenDialog:SetStyle(OFN_HIDEREADONLY)
-                 oOpenDialog:Show()
+                LOCAL oOpenDialog AS OpenDialog
+                oOpenDialog:=OpenDialog{SELF}
+                oOpenDialog:SetStyle(OFN_ALLOWMULTISELECT)
+                oOpenDialog:SetStyle(OFN_NOCHANGEDIR)
+                oOpenDialog:SetStyle(OFN_HIDEREADONLY)
+                oOpenDialog:Show()
             </code><note type="tip">If &lt;oStandardFileDialog&gt;:SetStyle(OFN_SHOWHELP) is used, a "Help" push button is created on the dialog box. A &lt;oStandardFileDialog&gt;:Help() method needs to be created to process the event associated with a user clicking on the "Help" button.</note>
         </example>
     </StandardFileDialog.SetStyle>
@@ -22087,7 +22161,7 @@
         <value>A string representing a message associated with a control to be displayed on the status bar. This message takes priority over the StatusBar:PermanentText message.</value>
     </StatusBar.ControlText>
     <StatusBar.Create>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </StatusBar.Create>
     <StatusBar.Destroy>
         <summary>
@@ -22169,8 +22243,8 @@
         <value>A string representing an error message to be displayed on the status bar. This message takes priority over the StatusBar:ControlText and StatusBar:PermanentText messages.</value>
     </StatusBar.ErrorText>
     <StatusBar.GetItem>
-        <summary>**Missing documentation **</summary>
-        <param name="symItemName">** missing parameter documentation **</param>
+        <exclude />
+        
     </StatusBar.GetItem>
     <StatusBar.GetItemBoundingBox>
         <summary>
@@ -22182,8 +22256,8 @@
         </returns>
     </StatusBar.GetItemBoundingBox>
     <StatusBar.GetTipText>
-        <summary>**Missing documentation **</summary>
-        <param name="symItemName">** missing parameter documentation **</param>
+        <exclude />
+        
     </StatusBar.GetTipText>
     <StatusBar.Handle>
         <summary>
@@ -22252,8 +22326,8 @@
         </remarks>
     </StatusBar.MenuText>
     <StatusBar.ODDrawItem>
-        <summary>**Missing documentation **</summary>
-        <param name="oEvent">** missing parameter documentation **</param>
+        <exclude />
+        
     </StatusBar.ODDrawItem>
     <StatusBar.Origin>
         <summary>
@@ -22297,9 +22371,9 @@
         </summary>
     </StatusBar.SetFocus>
     <StatusBar.SetIcon>
-        <summary>**Missing documentation **</summary>
-        <param name="oIcon">** missing parameter documentation **</param>
-        <param name="symItemName">** missing parameter documentation **</param>
+        <exclude />
+        
+        
     </StatusBar.SetIcon>
     <StatusBar.setmessage>
         <summary>
@@ -22325,14 +22399,12 @@
         <param name="symItemName">The name of the status bar item.</param>
     </StatusBar.SetText>
     <StatusBar.SetTipText>
-        <summary>**Missing documentation **</summary>
-        <param name="cTipText">** missing parameter documentation **</param>
-        <param name="symItemName">** missing parameter documentation **</param>
+        <exclude />
+        
     </StatusBar.SetTipText>
     <StatusBar.SetValue>
-        <summary>**Missing documentation **</summary>
-        <param name="uValue">** missing parameter documentation **</param>
-        <param name="symItemName">** missing parameter documentation **</param>
+        <exclude />
+        
     </StatusBar.SetValue>
     <StatusBar.Show>
         <summary>
@@ -22365,7 +22437,7 @@
         <value>A numeric value indicating the number of seconds a nonpermanent message is displayed on the status bar.</value>
     </StatusBar.TimeOut>
     <StatusBar.Timer>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </StatusBar.Timer>
     <StatusBar.Transient>
         <summary>
@@ -22442,7 +22514,7 @@
         </remarks>
     </StatusBarItem.Style>
     <StatusBarItem.Value>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </StatusBarItem.Value>
     <StatusBarItem.Width>
         <summary>
@@ -22471,9 +22543,8 @@
         <param name="oIcon">Optional Icon object to display</param>
     </StatusBarKeyItem.ctor>
     <StatusBarKeyItem.ODDrawItem>
-        <summary>**Missing documentation **</summary>
-        <param name="oEvent">** missing parameter documentation **</param>
-        <param name="oStatusBar">** missing parameter documentation **</param>
+        <exclude />
+        
     </StatusBarKeyItem.ODDrawItem>
     <StdSocket>
         <exclude />
@@ -22608,13 +22679,13 @@
         <param name="oControlNotifyEvent">The ControlNotifyEvent that occurred when the event happened.</param>
     </SysLinkSelectEvent.ctor>
     <SysLinkSelectEvent.ID>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </SysLinkSelectEvent.ID>
     <SysLinkSelectEvent.LinkIndex>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </SysLinkSelectEvent.LinkIndex>
     <SysLinkSelectEvent.URL>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </SysLinkSelectEvent.URL>
     <SystemMenu>
         <summary>
@@ -22646,7 +22717,7 @@
         </param>
     </SystemMenu.ctor>
     <SystemMenu.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </SystemMenu.Destroy>
     <TabControl>
         <summary>
@@ -22745,14 +22816,14 @@
         </remarks>
     </TabControl.Destroy>
     <TabControl.FocusNextPage>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TabControl.FocusNextPage>
     <TabControl.FocusPreviousPage>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TabControl.FocusPreviousPage>
     <TabControl.FocusTab>
-        <summary>**Missing documentation **</summary>
-        <param name="symTabName">** missing parameter documentation **</param>
+        <exclude />
+        
     </TabControl.FocusTab>
     <TabControl.GetCaption>
         <summary>
@@ -22764,12 +22835,12 @@
         </returns>
     </TabControl.GetCaption>
     <TabControl.GetPage>
-        <summary>**Missing documentation **</summary>
-        <param name="symPageName">** missing parameter documentation **</param>
+        <exclude />
+        
     </TabControl.GetPage>
     <TabControl.GetPageSymbol>
-        <summary>**Missing documentation **</summary>
-        <param name="uPageName">** missing parameter documentation **</param>
+        <exclude />
+        
     </TabControl.GetPageSymbol>
     <TabControl.GetTabBoundingBox>
         <summary>
@@ -22832,8 +22903,8 @@
         </returns>
     </TabControl.InsertTab>
     <TabControl.IsTabPage>
-        <summary>**Missing documentation **</summary>
-        <param name="xSymbolOrPosition">** missing parameter documentation **</param>
+        <exclude />
+        
     </TabControl.IsTabPage>
     <TabControl.Move>
         <inheritdoc />
@@ -22846,7 +22917,7 @@
         <param name="dwHeight">The amount of vertical padding (in pixels).</param>
     </TabControl.PadTabs>
     <TabControl.Pages>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TabControl.Pages>
     <TabControl.RemoveTabImage>
         <summary>
@@ -22924,10 +22995,10 @@
         </returns>
     </TabControl.SetTipText>
     <TabControl.Show>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TabControl.Show>
     <TabControl.TabCaption>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TabControl.TabCaption>
     <TabControl.TabCount>
         <summary>
@@ -22947,14 +23018,14 @@
             The following example handles a QueryClose event:
             <code language="X#">
                 METHOD QueryClose(oEvent) CLASS TopAppWindow
-                 oTB := TextBox{SELF, "Quit", "Do you really want to quit?"}
-                 oTB:TYPE := BOXICONQUESTIONMARK + BUTTONYESNO
-                 IF (oTB:Show() = BOXREPLYYES)
-                  RETURN TRUE // Quit application.
-                 ELSE
-                  RETURN FALSE
-                  // Don't quit the application.
-                 ENDIF
+                oTB := TextBox{SELF, "Quit", "Do you really want to quit?"}
+                oTB:TYPE := BOXICONQUESTIONMARK + BUTTONYESNO
+                IF (oTB:Show() = BOXREPLYYES)
+                RETURN TRUE // Quit application.
+                ELSE
+                RETURN FALSE
+                // Don't quit the application.
+                ENDIF
             </code>
         </example>
     </TextBox>
@@ -23164,7 +23235,7 @@
         <value>The font used to draw the text in the control.</value>
     </TextControl.ControlFont>
     <TextControl.Create>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TextControl.Create>
     <TextControl.CurrentText>
         <summary>
@@ -23173,11 +23244,11 @@
         <value>A string representing the text currently displayed in a text control.  For edit controls, including the edit box associated with simple and drop-down combo boxes, it contains the text currently appearing in the edit box. For fixed icon and group box controls, TextControl:CurrentText contains NULL_STRING.</value>
     </TextControl.CurrentText>
     <TextControl.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TextControl.Destroy>
     <TextControl.EnableAutoComplete>
-        <summary>**Missing documentation **</summary>
-        <param name="dwFlags">** missing parameter documentation **</param>
+        <exclude />
+        
     </TextControl.EnableAutoComplete>
     <TextControl.Font>
         <summary>
@@ -23318,13 +23389,13 @@
         <value>A bounding box representing the smallest rectangle (in the owner window's canvas coordinates) which encloses this TextObject object.</value>
     </TextObject.BoundingBox>
     <TextObject.Color>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TextObject.Color>
     <TextObject.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TextObject.Destroy>
     <TextObject.DisplayText>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TextObject.DisplayText>
     <TextObject.Draw>
         <summary>
@@ -23333,7 +23404,7 @@
         </summary>
     </TextObject.Draw>
     <TextObject.Font>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TextObject.Font>
     <ToolBar>
         <summary>
@@ -23519,16 +23590,8 @@
         </example>
     </ToolBar.AppendItem>
     <ToolBar.AppendSubItem>
-        <summary>**Missing documentation **</summary>
-        <param name="symTB">Symbolic name representing the toolbar to be used. Defaults to the main toolbar.</param>
-        <param name="nButtonID">** missing parameter documentation **</param>
-        <param name="nMenuItemID">** missing parameter documentation **</param>
-        <param name="oBmp">** missing parameter documentation **</param>
-        <param name="nPosition">** missing parameter documentation **</param>
-        <param name="cTitle">** missing parameter documentation **</param>
-        <param name="nImgCount">** missing parameter documentation **</param>
-        <param name="bState">** missing parameter documentation **</param>
-        <param name="bStyle">** missing parameter documentation **</param>
+        <exclude />
+        
     </ToolBar.AppendSubItem>
     <ToolBar.BandCount>
         <summary>
@@ -23639,7 +23702,7 @@
         </summary>
     </ToolBar.Configure>
     <ToolBar.Create>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ToolBar.Create>
     <ToolBar.DeleteItem>
         <summary>
@@ -23723,7 +23786,7 @@
         </remarks>
     </ToolBar.EnableItem>
     <ToolBar.Flat>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </ToolBar.Flat>
     <ToolBar.GapSize>
         <summary>
@@ -23732,7 +23795,7 @@
         <value>This property is no longer supported. It is included only for compatibility with existing X#1.0 code.</value>
     </ToolBar.GapSize>
     <ToolBar.GetButtonCount>
-        <summary>**Missing documentation **</summary>
+        <exclude />
         <param name="symTB">Symbolic name representing the toolbar to be used. Defaults to the main toolbar.</param>
     </ToolBar.GetButtonCount>
     <ToolBar.GetButtonDescription>
@@ -23763,13 +23826,12 @@
         </remarks>
     </ToolBar.GetImageList>
     <ToolBar.GetRows>
-        <summary>**Missing documentation **</summary>
+        <exclude />
         <param name="symTB">Symbolic name representing the toolbar to be used. Defaults to the main toolbar.</param>
     </ToolBar.GetRows>
     <ToolBar.GetState>
-        <summary>**Missing documentation **</summary>
-        <param name="nMenuItemID">** missing parameter documentation **</param>
-        <param name="symTB">Symbolic name representing the toolbar to be used. Defaults to the main toolbar.</param>
+        <exclude />
+        
     </ToolBar.GetState>
     <ToolBar.GetTipText>
         <summary>
@@ -24003,15 +24065,12 @@
         </remarks>
     </ToolBar.SetImageList>
     <ToolBar.SetRows>
-        <summary>**Missing documentation **</summary>
-        <param name="nRows">** missing parameter documentation **</param>
-        <param name="symTB">Symbolic name representing the toolbar to be used. Defaults to the main toolbar.</param>
+        <exclude />
+        
     </ToolBar.SetRows>
     <ToolBar.SetState>
-        <summary>**Missing documentation **</summary>
-        <param name="nMenuItemID">** missing parameter documentation **</param>
-        <param name="nState">** missing parameter documentation **</param>
-        <param name="symTB">Symbolic name representing the toolbar to be used. Defaults to the main toolbar.</param>
+        <exclude />
+        
     </ToolBar.SetState>
     <ToolBar.Show>
         <summary>
@@ -24022,9 +24081,8 @@
         </remarks>
     </ToolBar.Show>
     <ToolBar.ShowBand>
-        <summary>**Missing documentation **</summary>
-        <param name="iPos">** missing parameter documentation **</param>
-        <param name="lShow">** missing parameter documentation **</param>
+        <exclude />
+        
     </ToolBar.ShowBand>
     <ToolBar.ShowItem>
         <summary>
@@ -24175,7 +24233,7 @@
         </returns>
     </TreeView.DeleteItem>
     <TreeView.Destroy>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </TreeView.Destroy>
     <TreeView.DragDropEnabled>
         <summary>
@@ -25193,9 +25251,8 @@
         </remarks>
     </Window.AddTrayIcon>
     <Window.Animate>
-        <summary>**Missing documentation **</summary>
-        <param name="nTime">** missing parameter documentation **</param>
-        <param name="nFlags">** missing parameter documentation **</param>
+        <exclude />
+        
     </Window.Animate>
     <Window.AnimationStart>
         <summary>
@@ -25375,7 +25432,7 @@
         </summary>
         <param name="oControlNotifyEvent">The ControlNotifyEvent object that describes which control sent the notification.</param>
         <remarks>
-            This is a general method that is called whenever a common control sends a notification to its parent window. 
+            This is a general method that is called whenever a common control sends a notification to its parent window.
             In many cases, a more specific method is invoked in addition to this method in response to the notification.
             Notifiy codes that are not handled by this method are send to the Control:ParentNotify() method when this method is available.
         </remarks>
@@ -25410,8 +25467,8 @@
         <seealso cref="T:VO.Event" />
     </Window.Default>
     <Window.DeleteTrayIcon>
-        <summary>**Missing documentation **</summary>
-        <param name="dwID">** missing parameter documentation **</param>
+        <exclude />
+        
     </Window.DeleteTrayIcon>
     <Window.Destroy>
         <summary>
@@ -25455,7 +25512,7 @@
                 2.	Add an event handler function to your derived object. (This event handler should be called with the event when the event is received.)
                 3.	In general, the implementation of this event handler should call Default(). This keeps the same behavior as the base class, but it also
                 allows other classes to provide useful event handlers for your new type of event, allowing you to provide a framework for other classes to use.
-                The base class Dispatch() method should be called in those cases where the received event is not handled by the customized dispatcher. 
+                The base class Dispatch() method should be called in those cases where the received event is not handled by the customized dispatcher.
                 For example:
                 <code language="X#">RETURN SUPER:Dispatch(&lt;oEvent&gt;)</code>
             </note>
@@ -25469,7 +25526,7 @@
                     //	procedure call SELF:Default(oEvent)
                     // Assign the event return value to SELF:EventReturnValue,
                     //	the default value is 0l.
-                      SELF:EventReturnValue := 1l
+                    SELF:EventReturnValue := 1l
                 </code>
             </example>
         </remarks>
@@ -25997,19 +26054,19 @@
             Typical example below of using this method:
             <code language="X#">
                 METHOD ListBoxSelect(oControlEvent) CLASS TeamInfo
-                 LOCAL oControl AS Control
-                 LOCAL sSym AS SYMBOL
-                 oControl := IIf(oControlEvent == NULL_OBJECT, NULL_OBJECT, ;
-                          oControlEvent:Control)
-                 SUPER:ListBoxSelect(oControlEvent)
-                 //Put your changes here
-                 sSym  := oControl:nameSym
-                 IF sSym == #cbxTeamNumbers
-                   IF SELF:cLastTeamNr != SELF:oDCcbxTeamNumbers:Value
-                     SELF:cLastTeamNr := SELF:oDCcbxTeamNumbers:Value
-                     SELF:BreakDownTeamNumber( SELF:oDCcbxTeamNumbers:Value )
-                   ENDIF
-                 ENDIF
+                LOCAL oControl AS Control
+                LOCAL sSym AS SYMBOL
+                oControl := IIf(oControlEvent == NULL_OBJECT, NULL_OBJECT, ;
+                oControlEvent:Control)
+                SUPER:ListBoxSelect(oControlEvent)
+                //Put your changes here
+                sSym  := oControl:nameSym
+                IF sSym == #cbxTeamNumbers
+                IF SELF:cLastTeamNr != SELF:oDCcbxTeamNumbers:Value
+                SELF:cLastTeamNr := SELF:oDCcbxTeamNumbers:Value
+                SELF:BreakDownTeamNumber( SELF:oDCcbxTeamNumbers:Value )
+                ENDIF
+                ENDIF
             </code>
         </example>
         <returns>This method calls Window.Default() and returns the result of Window.Default()</returns>
@@ -26236,7 +26293,7 @@
         <remarks>
             Do not assume Window:MouseButtonUp() is called immediately after Window:MouseButtonDown(). Other MouseEvents can be generated during this time.
             In some cases, there may be no Window:MouseButtonUp() events directed to the window for a corresponding Window:MouseButtonDown().
-            This can occur if the mouse button is clicked while over the window, but released after the mouse has moved off the window. 
+            This can occur if the mouse button is clicked while over the window, but released after the mouse has moved off the window.
             Use Window:MouseTrapOn() to direct all MouseEvents to this window. <br />
             This event also detects if a MouseDrag was active and ends the drag.
 
@@ -26361,7 +26418,7 @@
             Implement customized initialization code for the window.
         </summary>
         <remarks>
-            This method is used to customize the initialization code for a window. 
+            This method is used to customize the initialization code for a window.
             The customized initialization code will not be overridden by the Window Editor's default initialization code.
             A call to PostInit() is automatically generated at the end of the Init() method.
             You can customize the code generation by changing the [PostInitCall] and [PostInit] sections
@@ -26374,9 +26431,9 @@
             Implement customized initialization code for the window.
         </summary>
         <remarks>
-            This method is used to customize the initialization code for a window. 
+            This method is used to customize the initialization code for a window.
             The customized initialization code will not be overridden by the Window Editor's default initialization code.
-            A call to PreInit() is automatically generated at the beginning of the Init() method. 
+            A call to PreInit() is automatically generated at the beginning of the Init() method.
             You can customize the code generation by changing the [PreInitCall] and [PreInit] sections
             in your CAVOWED.TPL file. Note that only class variables are accessible in the PreInit() method,
             no window controls are visible until the PostInit() method itself is called. <br />
@@ -26431,14 +26488,14 @@
             This example displays a message box to confirm that a user wants to quit the application. If a user chooses YES, TRUE is returned (otherwise, FALSE is returned).
             <code language="X#">
                 METHOD QueryClose(oEvent) CLASS TopAppWindow
-                 oTB := TextBox{SELF, "Quit", "Do you really want to quit?"}
-                 oTB:TYPE := BOXICONQUESTIONMARK + BUTTONYESNO
-                 IF (oTB:Show() = BOXREPLYYES)
-                  RETURN TRUE // Quit application.
-                 ELSE
-                  RETURN FALSE
-                  // Don't quit the application.
-                 END
+                oTB := TextBox{SELF, "Quit", "Do you really want to quit?"}
+                oTB:TYPE := BOXICONQUESTIONMARK + BUTTONYESNO
+                IF (oTB:Show() = BOXREPLYYES)
+                RETURN TRUE // Quit application.
+                ELSE
+                RETURN FALSE
+                // Don't quit the application.
+                END
             </code>
         </example>
     </Window.QueryClose>
@@ -26627,7 +26684,7 @@
         </summary>
         <param name="oHL">The hyperlabel containing a description (HyperLabel:Description) for the status message or the status message as a string.</param>
         <param name="ntype">
-            The constant value indicating the type and priority of the message to be displayed on the status bar. 
+            The constant value indicating the type and priority of the message to be displayed on the status bar.
             The highest priority message (MESSAGEMENU) always takes precedence over and replaces lower priority messages. See table in the remarks section for more info.
         </param>
         <returns>NIL</returns>
@@ -27018,8 +27075,8 @@
         </summary>
     </VOGUIClasses.Functions>
     <ApplicationExec>
-        <summary>**Missing documentation **</summary>
-        <param name="kExecType">** missing parameter documentation **</param>
+        <exclude />
+        
     </ApplicationExec>
     <DIBCreateFromFile>
         <summary>
@@ -27054,7 +27111,7 @@
                 METHOD Start() CLASS App
                 LOCAL oWin
                 AS MyWindow
-                LOCAL hf 
+                LOCAL hf
                 AS PTR
                 LOCAL nSize AS INT
                 LOCAL pDib
@@ -27071,8 +27128,8 @@
                 oWin:Show(SHOWCENTERED)
                 ENDIF
                 FClose(hf)
-                 SELF:Exec()
-                 oWin:Axit()
+                SELF:Exec()
+                oWin:Axit()
                 MemFree(pDib)
                 ENDIF
                 CLASS MyWindow INHERIT TopAppWindow
@@ -27081,15 +27138,15 @@
                 CONSTRUCTOR(oParent, xFile, nSize)
                 LOCAL pBmiH   AS _WINBITMAPINFO
                 LOCAL nHeight  AS INT
-                LOCAL nWidth 
+                LOCAL nWidth
                 AS INT
-                LOCAL oPOint 
+                LOCAL oPOint
                 AS POINT
-                LOCAL hWnd  
+                LOCAL hWnd
                 AS PTR
-                LOCAL cx   
+                LOCAL cx
                 AS INT
-                LOCAL cy   
+                LOCAL cy
                 AS INT
                 LOCAL cr    IS _WINRECT
                 LOCAL wr    IS _WINRECT
@@ -27243,9 +27300,9 @@
         <seealso cref="O:VOGUIClasses.Functions.IsThemeEnabled">IsThemeEnabled</seealso>
     </EnableAppVisualTheme>
     <EnableThemeDialogTexture>
-        <summary>**Missing documentation **</summary>
-        <param name="oWindow">** missing parameter documentation **</param>
-        <param name="dwStyle">** missing parameter documentation **</param>
+        <exclude />
+        
+        
     </EnableThemeDialogTexture>
     <GetAppObject>
         <summary>
@@ -27286,8 +27343,8 @@
         <seealso cref="O:VOGUIClasses.Functions.GetObjectByHandle">GetObjectByHandle</seealso>
     </GetFocusedObject>
     <GetFrameWidth>
-        <summary>**Missing documentation **</summary>
-        <param name="hWnd">** missing parameter documentation **</param>
+        <exclude />
+        
     </GetFrameWidth>
     <GetObjectByHandle>
         <summary>
@@ -27345,7 +27402,7 @@
         <summary>Get the current state of the Ctrl key.</summary>
     </IsControlPressed>
     <IsCtl3dEnabled>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </IsCtl3dEnabled>
     <IsShiftPressed>
         <summary>Get the current state of the Shift key.</summary>
@@ -27411,7 +27468,7 @@
         <exclude />
     </XSharp.ChildWinForm.Resize>
     <XSharp.ChildWinForm.WinForm>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </XSharp.ChildWinForm.WinForm>
     <XSharp.VOWinFormApp.ctor>
         <exclude />
@@ -27435,7 +27492,7 @@
         <exclude />
     </XSharp.WinFormVOWindow.Initialize>
     <XSharp.WinFormVOWindow.VOWindowHost>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </XSharp.WinFormVOWindow.VOWindowHost>
     <XSharp.WinFormVOWindowHost.ctor>
         <exclude />
@@ -27450,7 +27507,7 @@
         <exclude />
     </XSharp.WinFormVOWindowHost.AdjustVOWindow>
     <XSharp.WinFormVOWindowHost.ClassesNeedingTranslateTabToArrow>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </XSharp.WinFormVOWindowHost.ClassesNeedingTranslateTabToArrow>
     <XSharp.WinFormVOWindowHost.Close>
         <exclude />
@@ -27459,7 +27516,7 @@
         <exclude />
     </XSharp.WinFormVOWindowHost.Focus>
     <XSharp.WinFormVOWindowHost.HostingControl>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </XSharp.WinFormVOWindowHost.HostingControl>
     <XSharp.WinFormVOWindowHost.IsHostingDataWindow>
         <exclude />
@@ -27468,10 +27525,10 @@
         <exclude />
     </XSharp.WinFormVOWindowHost.ProcessDialogKey>
     <XSharp.WinFormVOWindowHost.VOWindow>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </XSharp.WinFormVOWindowHost.VOWindow>
     <XSharp.WinFormVOWindowHost.VOWindowClassName>
-        <summary>**Missing documentation **</summary>
+        <exclude />
     </XSharp.WinFormVOWindowHost.VOWindowClassName>
 
 </doc>

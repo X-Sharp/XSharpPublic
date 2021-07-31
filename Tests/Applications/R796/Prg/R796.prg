@@ -4,12 +4,28 @@
 FUNCTION Start() AS VOID STRICT
 
 	LOCAL oObj AS OBJECT
-	LOCAL st IS MYSTRUCT
+	LOCAL st1 IS MYSTRUCT
+	LOCAL st2 IS MYSTRUCT
+	LOCAL st3 IS MYSTRUCT
 	LOCAL oObj2 AS OBJECT
+
+	? "_SIZEOF(MYSTRUCT):", _SIZEOF(MYSTRUCT)
 
 	oObj := 42 
 	oObj2 := 424242
-	MemClear(@st, _SIZEOF(MYSTRUCT))
+	st1:dwVal1 := Uint32.MaxValue
+	st2:dwVal1 := Uint32.MaxValue
+	st3:dwVal1 := Uint32.MaxValue
+
+	MemClear(@st2, _SIZEOF(MYSTRUCT))
+
+	? st1:dwVal1
+	? st2:dwVal1
+	? st3:dwVal1
+	xAssert( st1:dwVal1 == Uint32.MaxValue)
+	xAssert( st2:dwVal1 == 0)
+	xAssert( st3:dwVal1 == Uint32.MaxValue)
+
 	xAssert( (INT) oObj == 42)
 	xAssert( (INT) oObj2 == 424242)
     ? oObj

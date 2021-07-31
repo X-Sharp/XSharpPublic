@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp
 	/// <seealso cref="T:XSharp.RDD.DbDate"/>
 	//[DebuggerTypeProxy(TYPEOF(DateDebugView))];
 	[DebuggerDisplay("{ToDebugString(),nq}", Type := "DATE" )];
-	[StructLayout(LayoutKind.Explicit,Pack := 1)];
+	[StructLayout(LayoutKind.Explicit, Size := 4)];
     [Serializable];
 	PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
 		System.IFormattable, ;

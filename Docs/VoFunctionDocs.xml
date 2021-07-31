@@ -12293,14 +12293,24 @@
         </param>
         <param name="kOrigin">
             One of the following constants indicating the starting location of the file pointer, telling where to start searching the file:<br/>
-
-            &#0009;Constant&#0009;Seeks From<br/>
-
-            &#0009;FS_END&#0009;End-of-file<br/>
-
-            &#0009;FS_RELATIVE&#0009;Current pointer position<br/>
-
-            &#0009;FS_SET&#0009;Beginning-of-file (default)&#0009;
+            <list type="table">
+                <listheader>
+                    <term>Constant</term>
+                    <description>Seeks from</description>
+                </listheader>
+                <item>
+                    <term>FS_END</term>
+                    <description>End-of-file   </description>
+                </item>
+                <item>
+                    <term>FS_RELATIVE</term>
+                    <description>Current pointer position  </description>
+                </item>
+                <item>
+                    <term>FS_SET</term>
+                    <description>Beginning-of-file </description>
+                </item>
+            </list>
         </param>
         <returns>
             The new position of the file pointer, relative to the beginning of the file (position 0).  (The original position of the file pointer does not matter.)

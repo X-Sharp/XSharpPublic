@@ -749,6 +749,8 @@ namespace XSharp.MacroCompiler
             RefKind refKind = RefKind.None;
             if (Expect(TokenType.REF))
                 refKind = RefKind.Ref;
+            else if (Expect(TokenType.ADDROF))
+                refKind = RefKind.Ref;
             else if (Expect(TokenType.OUT))
                 refKind = RefKind.Out;
             var e = ParseExpression();

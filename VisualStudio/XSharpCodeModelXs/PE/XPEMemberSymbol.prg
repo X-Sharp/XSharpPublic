@@ -328,7 +328,11 @@ BEGIN NAMESPACE XSharpModel
                   case 2   // Arg1 is date in ticks
                      var ticks := (Int64)  arg1:Value
                      var dt    := DateTime{ticks}
-                     result    := dt:ToString("yyyy.MM.dd")
+                     if dt == DateTime.MinValue
+                         result := "NULL_DATE"
+                     else
+                        result    := dt:ToString("yyyy.MM.dd")
+                     endif
                   case 3   // Arg1 is Symbol , when NULL then NULL_SYMBOL
                      var sym := (STRING)  arg1:Value
                      if (sym == NULL)

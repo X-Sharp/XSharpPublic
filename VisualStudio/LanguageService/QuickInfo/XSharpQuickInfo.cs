@@ -485,7 +485,14 @@ namespace XSharp.LanguageService
         {
             // add pair of KW - Text
             addKeyword(content, kw);
-            addText(content, text);
+            if (text.IsXSharpTypeName())
+            {
+                addKeyword(content, text);
+            }
+            else
+            {
+                addText(content, text);
+            }
         }
         static internal void addRemarks(this List<ClassifiedTextRun> content, string remarks)
         {

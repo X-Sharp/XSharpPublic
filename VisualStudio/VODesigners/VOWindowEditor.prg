@@ -458,6 +458,9 @@ RETURN
 				cLine += ((INT)(oRect:Top / rDivY)):ToString() + ", "
 				cLine += ((INT)(oRect:Width / rDivX)):ToString() + ", "
 				cLine += ((INT)(oRect:Height / rDivY)):ToString()*/
+				IF oDesign:IsComboBoxExDropDown .and. oRect:Height < 50
+					oRect:Height := oDesign:Control:Height * 6
+				END IF
 				oRect := Funcs.PixelsToUnits(oRect , oInfo)
 				cLine += oRect:Left:ToString() + ", "
 				cLine += oRect:Top:ToString() + ", "
@@ -4664,6 +4667,15 @@ CLASS DesignWindowItem INHERIT DesignItem
 			SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:RADIOGROUPBOX") == 0
 	ACCESS IsComboBox() AS LOGIC
 	RETURN SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BASELISTBOX:COMBOBOX") == 0
+	ACCESS IsComboBoxExDropDown() AS LOGIC
+		IF SELF:cFullClass:StartsWith("CONTROL:TEXTCONTROL:BASELISTBOX:COMBOBOX:COMBOBOXEX")
+			LOCAL oProp AS DesignProperty
+			oProp := SELF:GetProperty("ComboBox Type")
+			IF oProp != NULL .and. oProp:TextValue:ToUpper():StartsWith("DROP DOWN")
+				RETURN TRUE
+			END IF
+		END IF
+	RETURN FALSE
 	ACCESS IsSubForm() AS LOGIC
 	RETURN SELF:cFullClass:IndexOf("CONTROL:SUBDATAWINDOW") == 0
 	ACCESS IsTabControl() AS LOGIC

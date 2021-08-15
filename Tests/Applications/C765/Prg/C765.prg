@@ -12,6 +12,7 @@ XSharp.__Array.__Usual XSharp.__Array.__GetElement(System.Int32 index, System.In
 XSharp.__Array.__Usual XSharp.__Array.get_Item(System.Int32 index, System.Int32 index2)()   :  C:\xSharp\DevRt\Runtime\XSharp.RT\Types\Array.prg  :  170
 static System.Void C765.Exe.Functions.Start()()   :  C:\xSharp\Dev\Tests\Applications\C765\Prg\C765.prg  :  15
 */
+
 FUNCTION Start() AS VOID
 	DIMENSION aDim1[10]
 	aDim1[1] := 1
@@ -27,13 +28,16 @@ FUNCTION Start() AS VOID
 	aDim2[3,4] := 34
 	xAssert(aDim2[1,1] == 11)
 	xAssert(aDim2[3,4] == 34)
-
-	TestFox2_on()
+    IF XSharp.RuntimeState.CompilerOptionFox2
+	    TestFox2_on()
+	ELSE
 	?
 	TestFox2_off()
+	ENDIF
 RETURN
 
-#pragma options ("fox2" , on)
+//#pragma options ("fox2" , on)
+
 PROCEDURE TestFox2_on()
 ? "Fox2+, LOCAL:"
 LOCAL lon
@@ -53,7 +57,8 @@ pon = 123
 xAssert(IsArray(pon))
 xAssert(pon[20] == 123)
 
-#pragma options ("fox2" , off)
+
+
 PROCEDURE TestFox2_off()
 ? "Fox2-, LOCAL:"
 LOCAL loff // works ok

@@ -265,10 +265,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     string[] names = { XSharpSpecialNames.RTCompilerOptionOvf,
                                     XSharpSpecialNames.RTCompilerOptionVO11,
                                     XSharpSpecialNames.RTCompilerOptionVO13,
-                                    XSharpSpecialNames.RTDialect};
+                                    XSharpSpecialNames.RTCompilerOptionFox2,
+                                    XSharpSpecialNames.RTDialect,
+                    };
                     object[] values = { comp.Options.CheckOverflow ,
                                         comp.Options.VOArithmeticConversions,
                                         comp.Options.VOStringComparisons,
+                                        comp.Options.FoxArrayAssign,
                                         comp.Options.Dialect};
                     for (int n = 0; n < names.Length; n++)
                     {

@@ -186,6 +186,11 @@ CLASS XSharp.RuntimeState
 
 	#region properties FROM the Vulcan RuntimeState that are emulated
 
+	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default value for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionFox2 AS LOGIC AUTO
+
 	/// <summary>The current compiler setting for the VO11 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>

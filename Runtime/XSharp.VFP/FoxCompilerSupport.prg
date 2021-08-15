@@ -16,12 +16,13 @@ PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
 
 INTERNAL FUNCTION __FoxMemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     VAR current :=  XSharp.MemVar.GetSafe(cName)
-    IF current IS __FoxArray .AND. ! uValue IS __FoxArray
-        RETURN __FoxFillArray(current, uValue )
-    ELSE
-        RETURN XSharp.MemVar._Put(cName, uValue)
+    IF XSharp.RuntimeState.CompilerOptionFox2
+        IF current IS __FoxArray .AND. ! uValue IS __FoxArray 
+            RETURN __FoxFillArray(current, uValue )
+        ENDIF
     ENDIF
-
+    RETURN XSharp.MemVar._Put(cName, uValue)
+        
 
 [NeedsAccessToLocals(TRUE)];
 FUNCTION __FoxAssign(uLHS AS USUAL, uValue AS USUAL) AS USUAL

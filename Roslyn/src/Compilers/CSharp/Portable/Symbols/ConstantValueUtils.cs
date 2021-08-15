@@ -9,7 +9,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
-
+#if XSHARP
+using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+#endif
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal sealed class EvaluatedConstant
@@ -140,7 +142,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                      * so it has created a readonly field. The binder may be able to detect that it is a const so it will
                      * change the type from readonly field to a const
                      */
-                    if (boundValue.Syntax is ExpressionSyntax &&
+                    if (boundValue is not BoundLiteral &&
+                        boundValue.Syntax is ExpressionSyntax &&
+                        thisSymbol is SourceFieldSymbol fs && fs.GetNonNullSyntaxNode().XNode is not ClassvarContext &&
                         (constantValue == null || constantValue == ConstantValue.Bad))
                     {
                         //System.Diagnostics.Debug.WriteLine($" Bind field {thisSymbol.Name}");

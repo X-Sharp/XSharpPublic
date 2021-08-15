@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal partial class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
     {
-
+        string currentDefine = null; // to detect recursion
         internal TypeWithAnnotations GetVOGlobalType(CSharpCompilation compilation, TypeSyntax typeSyntax, Binder binder, ConsList<FieldSymbol> fieldsBeingBound)
         {
             var xNode = this.SyntaxNode.XNode;
@@ -57,6 +57,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 var vodef = xNode as XP.VodefineContext;
                 DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
+                // detect recursion
+                if (XSharpString.Equals(vodef.Id.GetText(), currentDefine))
+                {
+                    currentDefine = null;
+                    return default;
+                }
+                currentDefine = vodef.Id.GetText();
                 type = binder.BindType(typeSyntax, diagnostics).Type;
                 // parser could not determine the type
                 fieldsBeingBound = new ConsList<FieldSymbol>(this, fieldsBeingBound);
@@ -89,7 +96,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     type = compilation.GetSpecialType(SpecialType.System_Object);
                 }
                 //System.Diagnostics.Debug.WriteLine($"Looking for type of define {vodef.Name.ToString()}, found {type.ToString()}, const: {IsConst}");
-
+                currentDefine = null;
                 return TypeWithAnnotations.Create(type);
             }
             return default;

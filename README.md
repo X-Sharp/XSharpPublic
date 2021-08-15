@@ -47,7 +47,7 @@ Of course we welcome all additions, bug fixes etc.
 Additional notes:
 - to open the projects in Visual Studio, you MUST have the correct .Net Core version loaded on your machine 
   The version number for this SDK is specified in the global.json files inside the Roslyn and XSharp folders. 
-  At this moment this version is 2.1.500
+  At this moment this version is 5.0.103
   This version number matches the version number in Roslyn\build\Targets\Tools.props and Roslyn\build\Targets\Tools.props.
 - The CI build process for Roslyn does not use this setting. This process uses the version defined in Roslyn\build\Targets\Tools.props 
   and downloads a copy of .Net core into the Roslyn\Binaries\Tools\dotnet folder. The dotnet.exe file in this folder is used for the CI build.

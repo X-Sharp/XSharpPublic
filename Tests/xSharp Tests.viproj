@@ -97775,7 +97775,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R797 - Typed define has the wrong type
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C793 - Declared PUBLIC variables get created as PRIVATE in the FoxPro dialect *************
 Application = C793 - Declared PUBLIC variables get created as PRIVATE in the FoxPro dialect
 IDEVersion = 1.06
@@ -97818,9 +97818,9 @@ FileType = Code
 CopyToBin = 0
 [C793 - Declared PUBLIC variables get created as PRIVATE in the FoxPro dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
 [C793 - Declared PUBLIC variables get created as PRIVATE in the FoxPro dialect Resources]
 [C793 - Declared PUBLIC variables get created as PRIVATE in the FoxPro dialect Native Resources]
 [C793 - Declared PUBLIC variables get created as PRIVATE in the FoxPro dialect License files]
@@ -97888,7 +97888,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C793 - Declared PUBLIC variables get created as PRIVATE in the FoxPro dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C794 - Compiler crash with circular const assignment *************
 Application = C794 - Compiler crash with circular const assignment
 IDEVersion = 1.06
@@ -98041,9 +98041,9 @@ FileType = Code
 CopyToBin = 0
 [C795 - DBEval() problems in the FoxPro dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
 [C795 - DBEval() problems in the FoxPro dialect Resources]
 [C795 - DBEval() problems in the FoxPro dialect Native Resources]
 [C795 - DBEval() problems in the FoxPro dialect License files]
@@ -98154,8 +98154,8 @@ FileType = Code
 CopyToBin = 0
 [C796 - Compiler crash with incorrect function params in codeblock References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C796 - Compiler crash with incorrect function params in codeblock Resources]
 [C796 - Compiler crash with incorrect function params in codeblock Native Resources]
 [C796 - Compiler crash with incorrect function params in codeblock License files]
@@ -98266,8 +98266,8 @@ FileType = Code
 CopyToBin = 0
 [C797 - Failed to emit module with VAR and ARRAY of INT References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C797 - Failed to emit module with VAR and ARRAY of INT Resources]
 [C797 - Failed to emit module with VAR and ARRAY of INT Native Resources]
 [C797 - Failed to emit module with VAR and ARRAY of INT License files]

@@ -1028,6 +1028,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 type);
             context.Put(qtype);
         }
+        protected ExpressionSyntax GetAmpBasedName(IToken Amp, XP.IdentifierNameContext id)
+        {
+            if (Amp != null) // PUBLIC &cVarName 
+            {
+                return getMacroNameExpression(id);
+            }
+            else // PUBLIC Bar
+            {
+                return GenerateLiteral(id.GetText());
+            }
+        }
+
+        protected void AddAmpbasedMemvar(XSharpParserRuleContext context, string name, string alias, IToken amp)
+        {
+            name = CleanVarName(name);
+            if (amp == null) // normal DIMENSION foo (1,2)
+            {
+                addFieldOrMemvar(name, alias, context, false);
+            }
+            else // DIMENSION &foo(1,2)
+            {
+                name += ":" + context.Position.ToString();
+                addFieldOrMemvar(name, "&", context, false);
+            }
+        }
 
         protected MemVarFieldInfo addFieldOrMemvar(string name, string prefix, XSharpParserRuleContext context, bool isParameter)
         {
@@ -1075,16 +1100,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     foreach (var memvar in context._XVars)
                     {
-                        var name = CleanVarName(memvar.Id.GetText());
-                        if (memvar.Amp == null) // normal PUBLIC Foo or PRIVAYE Bar
-                        {
-                            addFieldOrMemvar(name, "M", memvar, false);
-                        }
-                        else // normal PUBLIC &varName or PRIVATE &varName
-                        {
-                            name += ":" + memvar.Position.ToString();
-                            addFieldOrMemvar(name, "&", memvar, false);
-                        }
+                        var name = memvar.Id.GetText();
+                        AddAmpbasedMemvar(memvar, name, "M", memvar.Amp);
                     }
                 }
             }
@@ -1215,18 +1232,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     bool isprivate = context.T.Type == XP.PRIVATE;
                     foreach (var memvar in context._XVars)
                     {
-                        ExpressionSyntax varname;
-                        if (memvar.Amp != null)
-                        {
-                            // PUBLIC &cVarName or PRIVATE &cVarName
-                            varname = getMacroNameExpression(memvar.Id.Id);
-                        }
-                        else
-                        {
-                            // PUBLIC Foo or PRIVATE Bar
-                            varname = GenerateLiteral(memvar.Id.Id.GetText());
-                        }
-
+                        var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
                         var exp = GenerateMemVarDecl(memvar, varname, isprivate);
                         stmts.Add(GenerateExpressionStatement(exp));
                         ExpressionSyntax initializer = null;

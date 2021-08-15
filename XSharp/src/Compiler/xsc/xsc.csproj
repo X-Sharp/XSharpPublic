@@ -52,9 +52,6 @@
     <Compile Include="$(SharedSource)ExitingTraceListener.cs">
       <Link>ExitingTraceListener.cs</Link>
     </Compile>
-    <Compile Include="$(SharedSource)Csc.cs">
-      <Link>Csc.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

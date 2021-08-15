@@ -174,15 +174,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var field = findVar(name);
             if (field == null)
             {
-                if (context.Amp == null) // normal DIMENSION foo (1,2)
-                {
-                    addFieldOrMemvar(name, alias, context, false);
-                }
-                else // DIMENSION &foo(1,2)
-                {
-                    name += ":" + context.Position.ToString();
-                    addFieldOrMemvar(name, "&", context, false);
-                }
+                AddAmpbasedMemvar(context, name, alias, context.Amp);
             }
         }
 
@@ -216,16 +208,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // List inside _XVars. 
                 foreach (var memvar in context._XVars)
                 {
-                    var name = CleanVarName(memvar.Id.GetText());
-                    if (memvar.Amp == null) // normal PUBLIC Foo or PRIVATE Bar
-                    {
-                        addFieldOrMemvar(name, "M", memvar, false);
-                    }
-                    else // normal PUBLIC &varName or PRIVATE &varName
-                    {
-                        name += ":" + memvar.Position.ToString();
-                        addFieldOrMemvar(name, "&", memvar, false);
-                    }
+                    var name = memvar.Id.GetText();
+                    AddAmpbasedMemvar(memvar, name, "M", memvar.Amp);
                 }
             }
             if (context.T.Type == XP.PARAMETERS || context.T.Type == XP.LPARAMETERS)
@@ -313,16 +297,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var memvar in context._XVars)
                     {
                         // declare the private. FoxPro has no initializers 
-                        ExpressionSyntax varname;
-                        if (memvar.Amp != null) // PRIVATE &cVarName 
-                        {
-                            varname = getMacroNameExpression(memvar.Id.Id);
-                        }
-                        else // PRIVATE Bar
-                        {
-                            varname = GenerateLiteral(memvar.Id.Id.GetText());
-                        }
-
+                        var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
                         var exp = GenerateMemVarDecl(memvar, varname, true);
                         stmts.Add(GenerateExpressionStatement(exp));
                     }
@@ -335,7 +310,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         foreach (var dimvar in context._DimVars)
                         {
                             // declare the public and initialize it with a FoxPro array
-                            var varname = GenerateLiteral(dimvar.Id.Id.GetText());
+                            var varname = GetAmpBasedName(dimvar.Amp, dimvar.Id.Id);
                             var exp = GenerateMemVarDecl(dimvar, varname, false);
                             stmts.Add(GenerateExpressionStatement(exp));
                             var dimstmts = processDimensionVar(context, dimvar, ref hasError);
@@ -350,16 +325,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         foreach (var memvar in context._XVars)
                         {
                             // declare the public. FoxPro has no initializers
-                            ExpressionSyntax varname;
-                            if (memvar.Amp != null) // PUBLIC &cVarName 
-                            {
-                                varname = getMacroNameExpression(memvar.Id.Id);
-                            }
-                            else // PUBLIC Bar
-                            {
-                                varname = GenerateLiteral(memvar.Id.Id.GetText());
-                            }
-                            var exp = GenerateMemVarDecl(memvar, varname, true);
+                            var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
+                            var exp = GenerateMemVarDecl(memvar, varname, false);
                             stmts.Add(GenerateExpressionStatement(exp));
                         }
                     }
@@ -393,7 +360,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(stmts);
 
         }
-
         private IList<StatementSyntax> processDimensionVar(XSharpParserRuleContext context, XP.DimensionVarContext dimVar, ref bool hasError)
         {
             var name = CleanVarName(dimVar.Id.GetText());

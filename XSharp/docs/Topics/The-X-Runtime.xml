@@ -13,7 +13,7 @@
     <para styleclass="Heading2">Introduction</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When we designed the X# compile and X# Runtime we had a few focus points in mind:</para>
-    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal">The language and runtime should be VO compatible whenever possible. We know that the Vulcan devteam made some decisions not to support certain features from VO, but we decided that we would like to be as compatible as technically possible.</li>
     </list>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -29,27 +29,27 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="4" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
-        <td style="width:21%;">
+        <td style="width:25%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Component</text></para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
         </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Language / dialect used</text></para>
+        <td style="width:133px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Dialect used</text></para>
         </td>
         <td style="width:15%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Framework Version</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
-        <td style="width:21%;">
+        <td style="width:25%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Core">XSharp.Core.DLL</link></para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal">This is the base DLL of the X# Runtime.</para>
         </td>
-        <td>
+        <td style="width:133px;">
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
@@ -57,13 +57,13 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:21%;">
+        <td style="width:25%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Data">XSharp.Data.DLL</link></para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal">This DLL contains support code for .Net SQL based data access and for SQL based cursors </para>
         </td>
-        <td>
+        <td style="width:133px;">
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
@@ -71,13 +71,13 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:21%;">
+        <td style="width:25%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RT">XSharp.RT.DLL</link></para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal">This DLL is required for all dialects apart from Core</para>
         </td>
-        <td>
+        <td style="width:133px;">
           <para styleclass="Normal">X# non - core</para>
         </td>
         <td>
@@ -85,13 +85,13 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:21%;">
-          <para styleclass="Normal">XSharp.RT.Debugger.DLL</para>
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RT_Debugger_DLL">XSharp.RT.Debugger.DLL</link></para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal">This DLL contains the functions and windows for the Runtime Debugger</para>
         </td>
-        <td>
+        <td style="width:133px;">
           <para styleclass="Normal">X# core</para>
         </td>
         <td>
@@ -99,13 +99,13 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:21%;">
+        <td style="width:25%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VO">XSharp.VO.DLL</link></para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal">This DLL adds features to the runtime that are needed for the VO and Vulcan &#160;dialects.</para>
         </td>
-        <td>
+        <td style="width:133px;">
           <para styleclass="Normal">X# VO and X# Vulcan</para>
         </td>
         <td>
@@ -113,13 +113,13 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:21%;">
+        <td style="width:25%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_XPP">XSharp.XPP.DLL</link></para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal">This DLL adds features to the runtime that are needed for the Xbase++ dialect.</para>
         </td>
-        <td>
+        <td style="width:133px;">
           <para styleclass="Normal">X# XPP</para>
         </td>
         <td>
@@ -127,13 +127,13 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:21%;">
+        <td style="width:25%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_VFP">XSharp.VFP.DLL</link></para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal">This DLL adds features to the runtime that are needed for the FoxPro dialect.</para>
         </td>
-        <td>
+        <td style="width:133px;">
           <para styleclass="Normal">X# FoxPro</para>
         </td>
         <td>
@@ -141,13 +141,13 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:21%;">
+        <td style="width:25%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Macrocompiler">XSharp.Macrocompiler.DLL</link></para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal">This DLL is the X# &quot;fast&quot; macro compiler.</para>
         </td>
-        <td>
+        <td style="width:133px;">
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
@@ -155,13 +155,13 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:21%;">
-          <para styleclass="Normal">XSharp.MacroCompiler.Full.DLL</para>
+        <td style="width:25%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_Macrocompiler_Full_DLL">XSharp.MacroCompiler.Full.DLL</link></para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal">This DLL is the X# &quot;full&quot; macro compiler.</para>
         </td>
-        <td>
+        <td style="width:133px;">
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
@@ -169,13 +169,13 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:21%;">
+        <td style="width:25%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RDD">XSharp.RDD.DLL</link></para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal">This DLL contains the various RDDs implemented for X#.</para>
         </td>
-        <td>
+        <td style="width:133px;">
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
@@ -183,8 +183,8 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:21%;">
-          <para styleclass="Normal">VO SDK Class libraries:<br/>VOConsoleClasses.dll</para>
+        <td style="width:25%;">
+          <para styleclass="Normal">VO SDK Class libs:<br/>VOConsoleClasses.dll</para>
           <para styleclass="Normal">VOGUIClasses.dll</para>
           <para styleclass="Normal">VOInternetClasses.dll</para>
           <para styleclass="Normal">VORDDClasses.dll</para>
@@ -193,10 +193,10 @@
           <para styleclass="Normal">VOSystemClasses.dll</para>
           <para styleclass="Normal">VOWin32APILibrary.dll</para>
         </td>
-        <td>
+        <td style="width:251px;">
           <para styleclass="Normal">These DLLs represent the class libraries from Visual Objects</para>
         </td>
-        <td>
+        <td style="width:133px;">
           <para styleclass="Normal">X# VO and X# Vulcan</para>
         </td>
         <td>
@@ -230,58 +230,5 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Description of Various Subsystems</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2" style="background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
-      <thead style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Subsystem</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Remarks</text></para>
-        </td>
-      </thead>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Body Text">Low Level File IO</para>
-        </td>
-        <td style="width:938px;">
-          <para styleclass="Normal">These functions are implemented in XSharp.Core. <br/>There is an important difference between the implementation in XSharp.Core when compared to VO.<br/>In VO the file handles returned from functions such as FCreate() and FOpen() are OS file handles. That means that you can also pass them directly to Win32 API Functions. In the X# Runtime that is no longer possible. <br/>We use .Net FileStream objects for the File IO. The File handler returned (which is of the IntPtr type) is a unique key into a table where we are storing these File IO objects. The keys are generated from random numbering. You can&apos;t and shouldn&apos;t rely on the values of these keys. </para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Body Text">Static Memory IO</para>
-        </td>
-        <td>
-          <para styleclass="Body Text">The static memory subsystem allocates memory using the Marshal.AllocHGlobal functionality. Each memory block has 2 guard blocks that contain information about the group number, size and a magic number. We have also implemented memory groups.<br/>Unlike in VO you cannot release all blocks in a group by simply closing the Memory Group. <br/>If you want to enumerate allocated blocks you should first call MemTrace(TRUE) to enable block tracing.<br/>Then create a function with the following prototype</para>
-          <para styleclass="Body Text"><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">FUNCTION MyMemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC</text></para>
-          <para styleclass="Body Text">Then call MemWalk and pass your function as parameter. The runtime will call your function and will pass in all memory blocks that have been allocated and not released yet.</para>
-          <para styleclass="Body Text"></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Body Text">Late Binding Support</para>
-        </td>
-        <td style="width:938px;">
-          <para styleclass="Body Text">The Runtime fully supports late binding. The late binding support still needs some optimizations.<br/>We recommend to only use this when necessary. New code should either use the DYNAMIC type or try to use early bound code as much as possible.</para>
-        </td>
-      </tr>
-    </table></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2">Combining the X# Runtime and Vulcan Runtime</para>
-    <para styleclass="Normal">Technically it is possible to include both the X# and the Vulcan runtime libraries in your application. When you do so then the compiler will assume that you want to use the X# implementations for the XBase types such as USUAL and DATE. If the compiler does not find the XSharp.Core and XSharp.VO assemblies then it will assume you want to map these types to the Vulcan runtime types.</para>
-    <para styleclass="Normal">So you can mix things. However if you want to call code in the Vulcan runtime DLLs you may have to use the fully qualified classnames or typenames.</para>
-    <para styleclass="Normal">And remember: there is no automatic translation between the X# types and Vulcan types. </para>
-    <para styleclass="Normal">If you want to convert an X# variable to a Vulcan variable you may have to cast it to an intermediate type &#160;first.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">Call Vulcans implementation of Left()</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cValue </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">cValue := VulcanRTFuncs.Functions.Left(&quot;abcdefg&quot;,2)</text></para>
-    <para styleclass="Normal">If you want to convert an X# usual to a Vulcan usual, cast to OBJECT</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> xUsual </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">USUAL</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> vUsual </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Vulcan.__Usual</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">xUsual := 10</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">vUsual := (OBJECT) xUsual</text></para>
-    <para styleclass="Normal">For dates you can do something similar. In that case you should cast the X# date to a DateTime.</para>
-    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> xDate </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> DATE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> vDate </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Vulcan.__VODate</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">xDate := ToDay() &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text><text style="font-weight:bold; font-style:italic; color:#339966;">// will call the X# implementation of ToDay()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">vDate := (System.DateTime) xDate</text></para>
   </body>
 </topic>

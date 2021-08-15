@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Subsystems of the X# Runtime</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Subsystems of the X# Runtime</para>
+    </header>
+    <para styleclass="Heading2">Description of Various Subsystems</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="2" style="background-color:none; head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+      <thead style="vertical-align:top">
+        <td style="width:143px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Subsystem</text></para>
+        </td>
+        <td style="width:797px;">
+          <para styleclass="Normal"><text style="font-weight:bold;">Remarks</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:143px;">
+          <para styleclass="Body Text">Low Level File IO</para>
+        </td>
+        <td style="width:797px;">
+          <para styleclass="Normal">These functions are implemented in XSharp.Core. <br/>There is an important difference between the implementation in XSharp.Core when compared to VO.<br/>In VO the file handles returned from functions such as FCreate() and FOpen() are OS file handles. That means that you can also pass them directly to Win32 API Functions. In the X# Runtime that is no longer possible. <br/>We use .Net FileStream objects for the File IO. The File handler returned (which is of the IntPtr type) is a unique key into a table where we are storing these File IO objects. The keys are generated from random numbering. You can&apos;t and shouldn&apos;t rely on the values of these keys. </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:143px;">
+          <para styleclass="Body Text">Static Memory IO</para>
+        </td>
+        <td style="width:797px;">
+          <para styleclass="Body Text">The static memory subsystem allocates memory using the Marshal.AllocHGlobal functionality. Each memory block has 2 guard blocks that contain information about the group number, size and a magic number. We have also implemented memory groups.<br/>Unlike in VO you cannot release all blocks in a group by simply closing the Memory Group. <br/>If you want to enumerate allocated blocks you should first call MemTrace(TRUE) to enable block tracing.<br/>Then create a function with the following prototype</para>
+          <para styleclass="Body Text"><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">FUNCTION MyMemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC</text></para>
+          <para styleclass="Body Text">Then call MemWalk and pass your function as parameter. The runtime will call your function and will pass in all memory blocks that have been allocated and not released yet.</para>
+          <para styleclass="Body Text"></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:143px;">
+          <para styleclass="Body Text">Late Binding Support</para>
+        </td>
+        <td style="width:797px;">
+          <para styleclass="Body Text">The Runtime fully supports late binding. The late binding support still needs some optimizations.<br/>We recommend to only use this when necessary. New code should either use the DYNAMIC type or try to use early bound code as much as possible.</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

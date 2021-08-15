@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Redistributing X#</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Redistributing X#</para>
+    </header>
+    <para styleclass="Normal">You are allowed to distribute the following XSharp DLLs with your projects:</para>
+    <para styleclass="Normal">You are also allowed to distribute the PDB files that come with these DLLs. </para>
+    <para styleclass="Normal">These PDB files may help in locating the line numbers where an error occurs.</para>
+    <para styleclass="Normal">These files can be found in the &lt;Program Files&gt;\XSharp\Redist folder on your machine.</para>
+    <para styleclass="Heading2">XSharp.Runtime</para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="13" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Name</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Needed for</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.CodeAnalysis.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Full macro compiler &amp; Scripting</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.Core.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">All dialects</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.Data.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">All dialects</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.MacroCompiler.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Macro compiler</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.MacroCompiler.Full.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Full Macro compiler</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.RT.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">All dialects</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.RT.Debugger.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">All dialects</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.RDD.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">All dialects</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.Scripting.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Full Macro compiler &amp; Scripting</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.VFP.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">FoxPro dialect</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.VO.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">VO and Vulcan dialect</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.XPP.dll</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Xbase++ Dialect</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2">VO Compatible SDK</para>
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="8" colcount="1">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Name</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">VOConsoleClasses.dll </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">VORDDClasses.dll </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">VOSQLClasses.dll </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">VOGUIClasses.dll </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">VOReportClasses.dll </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">VOSystemClasses.dll </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">VOWin32APILibrary.dll </para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2">Strongly Typed version of the VO SDK</para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="1">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Name</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.VOConsoleClasses.dll </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.VOGUIClasses.dll</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.VORDDClasses.dll</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.VOSQLClasses.dll</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.VOSystemClasses.dll</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The following files are needed by VOGUIClasses.dll when you use the DataBrowser or Splitwindow </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="13" colcount="1">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Name</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">CATO3CNT.DLL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">CATO3DAT.DLL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">CATO3MSK.DLL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">CATO3NBR.DLL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">CATO3SBR.DLL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">CATO3TBR.DLL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">CATO3TIM.DLL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">CATO3SPL.DLL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">MSVCRT.DLL </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">The following file is needed for image support in VOGUIClasses.DLL</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">CAPAINT.DLL</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2">XSharp Scripting</para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="1">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Name</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Xsi.exe</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.Scripting.dll</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">XSharp.CodeAnalysis.dll</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">These scripting files can all be found in the &lt;Program Files&gt;\XSharp\Bin folder</para>
+    <para styleclass="Heading2">Support files</para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="1">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Name</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Microsoft.DiaSymReader.Native.amd64.dll</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">Microsoft.DiaSymReader.Native.x86.dll</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">System.*.dll</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">These support files can all be found in the &lt;Program Files&gt;\XSharp\Bin folder</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

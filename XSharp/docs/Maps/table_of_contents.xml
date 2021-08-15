@@ -157,6 +157,9 @@
       <topicref type="topic" id="432589452071368" build="ALL" modified="2018-06-07T18:01:46.553Z" icon="0" href="Installation">
         <caption translate="true">Installation</caption>
       </topicref>
+      <topicref type="topic" id="444174437272376" build="ALL" modified="2021-08-09T14:16:08.764Z" icon="0" href="Redistributing-X">
+        <caption translate="true">Redistributing X#</caption>
+      </topicref>
       <topicref type="topic" id="423886741980303" build="ALL" modified="2017-05-17T10:10:08.820Z" icon="0" href="New-features">
         <caption translate="true">New language features </caption>
         <topicref type="topic" id="423997726350447" build="ALL" modified="2019-01-24T16:49:26.499Z" icon="0" href="new-feat-Anonymous-Methods">
@@ -366,6 +369,12 @@
         <topicref type="topic" id="439024339327177" build="ALL" modified="2020-03-12T10:14:29.685Z" icon="0" href="compat-Harbour">
           <caption translate="true">Harbour</caption>
         </topicref>
+      </topicref>
+      <topicref type="topic" id="444177324057011" build="ALL" modified="2021-08-09T14:42:25.203Z" icon="0" href="Subsystems-of-the-X-Runtime">
+        <caption translate="true">Subsystems of the X# Runtime</caption>
+      </topicref>
+      <topicref type="topic" id="444174639685775" build="ALL" modified="2021-08-09T14:41:33.872Z" icon="0" href="Combining-X-Runtime-and-Vulcan">
+        <caption translate="true">Combining X# Runtime and Vulcan Runtime</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="428725168955982" build="ALL" modified="2017-05-17T09:41:40.642Z" icon="0" href="X-Scripting">

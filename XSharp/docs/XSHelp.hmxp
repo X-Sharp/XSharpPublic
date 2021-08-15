@@ -156,7 +156,7 @@
       </tablestyleclass>
     </styleclasses>
     <config-group name="project">
-      <config-value name="title" translate="true">XSharp Bandol</config-value>
+      <config-value name="title" translate="true">XSharp</config-value>
       <config-value name="author" translate="true">XSharp BV</config-value>
       <config-value name="copyright" translate="true">© 2015- &lt;%YEAR%&gt; &lt;%AUTHOR%&gt;</config-value>
       <config-value name="versionmajor">2</config-value>

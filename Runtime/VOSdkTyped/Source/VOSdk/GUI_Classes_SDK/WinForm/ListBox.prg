@@ -82,7 +82,7 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOListBox
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 		
-	OVERRIDE METHOD SetVisualStyle AS VOID STRICT
+	VIRTUAL METHOD SetVisualStyle AS VOID STRICT
 		IF oProperties != NULL_OBJECT
 			LOCAL dwStyle AS LONG
 			dwStyle := oProperties:Style

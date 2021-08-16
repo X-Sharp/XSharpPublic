@@ -666,7 +666,9 @@ FUNCTION DbUseArea (lNewArea, cDriver, cDataFile, cAlias, lShared, lReadOnly, aS
     LOCAL rddList         AS _RddList
     LOCAL nTries          AS LONG
     LOCAL aRdds           AS ARRAY
-
+    IF PCount() == 0
+        RETURN DbCloseArea()
+    ENDIF
     @@Default( REF lNewArea, .F.)
     @@Default( REF cAlias, "")
     @@Default( REF lShared, !SetExclusive())

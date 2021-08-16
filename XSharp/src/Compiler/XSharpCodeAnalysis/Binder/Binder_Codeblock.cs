@@ -152,7 +152,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var operand = boundConv.Operand;
                         if (boundConv.Type.IsUsualType() && operand.Type.SpecialType == SpecialType.System_Void)
                         {
+                            var errors = diagnostics.ToReadOnly();
                             diagnostics.Clear();
+                            foreach (var error in errors)
+                            {
+                                if (error.Code != (int)ErrorCode.ERR_NoImplicitConv &&
+                                    error.Code != (int)ErrorCode.ERR_CantConvAnonMethReturns)
+                                    diagnostics.Add(error);
+                            }
                             for (int i = 0; i < block.Statements.Length - 1; i++)
                             {
                                 newlist.Add(block.Statements[i]);

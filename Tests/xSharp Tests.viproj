@@ -98111,7 +98111,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C795 - DBEval() problems in the FoxPro dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C796 - Compiler crash with incorrect function params in codeblock *************
 Application = C796 - Compiler crash with incorrect function params in codeblock
 IDEVersion = 1.06
@@ -98154,8 +98154,8 @@ FileType = Code
 CopyToBin = 0
 [C796 - Compiler crash with incorrect function params in codeblock References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C796 - Compiler crash with incorrect function params in codeblock Resources]
 [C796 - Compiler crash with incorrect function params in codeblock Native Resources]
 [C796 - Compiler crash with incorrect function params in codeblock License files]

@@ -4,11 +4,105 @@
 // See License.txt in the project root for license information.
 //
 
-
+USING System.Runtime.CompilerServices
+USING System.Collections.Generic
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/empty/*" />
 FUNCTION Empty(uValue AS USUAL) AS LOGIC
 	RETURN uValue:IsEmpty
+
+#region Empty Overloads
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For String values the 'emptyness' is determined by calling String.IsNullOrWhiteSpace()</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty(uValue AS STRING) AS LOGIC
+    RETURN String.IsNullOrWhiteSpace(uValue)
+    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For DATE values the 'emptyness' is determined by comparing to NULL_DATE</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty(uValue AS DATE) AS LOGIC
+    RETURN (uValue == NULL_DATE)
+    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For ARRAY values the 'emptyness' is determined by comparing to NULL_ARRAY and by checking if the length is 0</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty(uValue AS ARRAY) AS LOGIC
+    RETURN ((uValue?:Length ?? 0) == 0)
+    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />    
+/// <remarks>For ARRAY OF values the 'emptyness' is determined by comparing to NULL_ARRAY and by checking if the length is 0</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty<T>(uValue AS XSharp.__ArrayBase<T>) AS LOGIC
+    RETURN ((uValue?:Length ?? 0) == 0)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For T[] values the 'emptyness' is determined by comparing to NULL and by checking if the length is 0</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty<T>(uValue AS T[]) AS LOGIC
+    RETURN ((uValue?:Length ?? 0) == 0)
+    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For ICollection&lt;T&gt; values the 'emptyness' is determined by comparing to NULL and by checking if the Count is 0</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty<T>(uValue AS ICollection<T>) AS LOGIC
+    RETURN ((uValue?:Count ?? 0) == 0)
+    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For Object values the 'emptyness' is determined by Comparing to NULL_OBJECT and comparign to DBNull.Value</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty(uValue AS OBJECT) AS LOGIC
+    RETURN (uValue == NULL_OBJECT .OR. DBNull.Value:Equals(uValue)) // the latter clause is to be discussed
+    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For T values the 'emptyness' is determined by calling the Equals() operator and comparing to a DEFAULT(T)</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty<T>(uValue AS T) AS LOGIC WHERE T IS STRUCT
+    RETURN uValue:Equals(DEFAULT(T))
+    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For INT values the 'emptyness' is determined by comparing to 0</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty(uValue AS INT) AS LOGIC
+    RETURN (uValue == 0)
+    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For DWORD values the 'emptyness' is determined by comparing to 0</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty(uValue AS DWORD) AS LOGIC
+    RETURN (uValue == 0)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For LOGIC values the 'emptyness' is determined by comparing to FALSE</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty(uValue AS LOGIC) AS LOGIC
+    RETURN (uValue == FALSE)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For SYMBOL values the 'emptyness' is determined by comparing to NULL_SYMBOL</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty(uValue AS SYMBOL) AS LOGIC
+    RETURN (uValue == NULL_SYMBOL)
+    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For PSZ values the 'emptyness' is determined by comparing to NULL_PSZ and by checking the length with 0</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty(uValue AS PSZ) AS LOGIC
+    RETURN (uValue == NULL_PSZ .OR. uValue:Length == 0)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For PTR values the 'emptyness' is determined by comparing to NULL_PTR</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty(uValue AS PTR) AS LOGIC
+    RETURN (uValue == NULL_PTR)
+    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*" />
+/// <remarks>For DateTime values the 'emptyness' is determined by comparing to DEFAULT(DateTime)</remarks>
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION Empty(uValue AS DateTime) AS LOGIC
+    RETURN (uValue == DEFAULT(DateTime))    
+#endregion
+
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptyusual/*" />

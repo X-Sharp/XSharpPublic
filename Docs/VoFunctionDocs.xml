@@ -9038,6 +9038,26 @@
         <seealso cref='O:XSharp.RT.Functions.Len'>Len</seealso>
         <seealso cref='O:XSharp.Core.Functions.SLen'>SLen</seealso>
     </empty>
+    <emptytyped>
+        <summary>
+            Determine if the result of an expression is empty.
+        </summary>
+
+        <param name="uValue">
+            The value to check for 'emptyness'            
+        </param>
+        <returns>
+            TRUE if the expression results in an empty value; otherwise, FALSE.
+        </returns>
+
+
+        <seealso cref='O:XSharp.RT.Functions.ALen'>ALen</seealso>
+        <seealso cref='O:XSharp.RT.Functions.EmptyUsual'>EmptyUsual</seealso>
+        <seealso cref='O:XSharp.RT.Functions.IsNil'>IsNil</seealso>
+        <seealso cref='O:XSharp.Core.Functions.IsSpace'>IsSpace</seealso>
+        <seealso cref='O:XSharp.RT.Functions.Len'>Len</seealso>
+        <seealso cref='O:XSharp.Core.Functions.SLen'>SLen</seealso>
+    </emptytyped>
     <emptyfield>
         <summary>
             Determine if field number n in the current workarea is empty.

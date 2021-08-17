@@ -185,22 +185,7 @@ namespace XSharp.Project
             ModelScannerEvents.Start();
         }
 
-        public void OpenInBrowser(string url)
-        {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                IVsWebBrowsingService service = await GetServiceAsync(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
-                if (service != null)
-                {
-                    IVsWindowFrame frame = null;
-                    service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
-                    frame.Show();
-                }
-            });
-        }
-       
+      
 
         // XSharpLanguageService _langService = null;
         #region Overridden Implementation
@@ -230,8 +215,6 @@ namespace XSharp.Project
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
-            
-
             // editors for the binaries
             base.RegisterEditorFactory(new VOFormEditorFactory(this));
             base.RegisterEditorFactory(new VOMenuEditorFactory(this));
@@ -254,11 +237,7 @@ namespace XSharp.Project
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-
-
             GetEditorOptions();
-
-
         }
 
 
@@ -285,6 +264,9 @@ namespace XSharp.Project
             }).FileAndForget("GetEditorOptions");
 
         }
+        /// <summary>
+        /// Read the comment tokens from the Tools/Options dialog and pass them to the CodeModel assembly
+        /// </summary>
         public void SetCommentTokens()
         {
             var commentTokens = _taskList.CommentTokens;
@@ -297,14 +279,7 @@ namespace XSharp.Project
             XSharpModel.XSolution.SetCommentTokens(tokens);
         }
 
-        /// <summary>
-        /// Gets the settings stored in the registry for this package.
-        /// </summary>
-        /// <value>The settings stored in the registry for this package.</value>
-        public XPackageSettings Settings
-        {
-            get { return this.settings; }
-        }
+
         public override string ProductUserContext
         {
             get { return "XSharp"; }

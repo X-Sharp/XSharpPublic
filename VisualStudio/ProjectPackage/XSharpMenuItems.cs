@@ -22,15 +22,15 @@ namespace XSharp.Project
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int IdXporter = 0x0100;
-        public const int IdWebsite = 0x0101;
-        public const int IdOnlineHelp = 0x0102;
-        public const int IdVOXporter = 0x0103;
+        public const int IdXporter = PackageIds.idXporter;
+        public const int IdWebsite = PackageIds.idWebsite;
+        public const int IdOnlineHelp = PackageIds.idHelpOffLine;
+        public const int IdVOXporter = PackageIds.idVOXporter;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("b8210244-d368-416c-8130-a669ef4297f6");
+        public static readonly Guid CommandSet = new Guid(PackageGuids.guidXSharpProjectCmdSetString);
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -151,8 +151,23 @@ namespace XSharp.Project
             switch (cmd.CommandID.ID)
             {
                 case IdWebsite:
+                    string url = "https://www.xsharp.eu";
                     //System.Diagnostics.Process.Start("https://www.xsharp.eu");
-                    package.OpenInBrowser("https://www.xsharp.eu");
+                    {
+                        ThreadHelper.JoinableTaskFactory.Run(async delegate
+                        {
+                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                            IVsWebBrowsingService service = await package.GetServiceAsync(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
+                            if (service != null)
+                            {
+                                IVsWindowFrame frame = null;
+                                service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
+                                frame.Show();
+                            }
+                        });
+                    }
+
                     break;
                 case IdOnlineHelp:
                     string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;

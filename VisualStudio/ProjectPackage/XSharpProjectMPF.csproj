@@ -321,6 +321,8 @@
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <Generator>VsctGenerator</Generator>
+      <LastGenOutput>XSharpProjectPackage1.cs</LastGenOutput>
     </VSCTCompile>
     <Content Include="XSharpAppDesigner.pkgdef">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -352,6 +354,11 @@
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
+    <Compile Include="XSharpProjectPackage1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>XSharpProjectPackage.vsct</DependentUpon>
+    </Compile>
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
     <Compile Include="WPF\XSharpEventBindingProvider.cs" />

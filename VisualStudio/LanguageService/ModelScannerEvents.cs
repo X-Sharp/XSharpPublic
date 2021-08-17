@@ -37,15 +37,20 @@ namespace XSharp.LanguageService
         #region ctors
         public ModelScannerEvents()
         {
-            VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
-            VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
-            VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
-            VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
-            VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
-            VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
-            projectfiles = new List<string>();
-            changedProjectfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            XSharpModel.ModelWalker.Suspend();
+			ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
+                VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
+                VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
+                VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
+                VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
+                VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
+                projectfiles = new List<string>();
+                changedProjectfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                XSharpModel.ModelWalker.Suspend();
+            });
+
         }
 
         private void SolutionEvents_OnAfterOpenProject(object sender, Microsoft.VisualStudio.Shell.Events.OpenProjectEventArgs e)

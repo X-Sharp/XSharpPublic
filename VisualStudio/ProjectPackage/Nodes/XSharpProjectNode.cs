@@ -836,7 +836,7 @@ namespace XSharp.Project
                 //Debug.Assert(parent != null, "File dependent upon a non existing item or circular dependency. Ignoring the DependentUpon metadata");
                 if (parent == null)
                 {
-                    ShowMessageBox($"Cannot set dependency from \"{item.EvaluatedInclude}\" to \"{dependentOf}\"\r\nCannot find \"{dependentOf}\" in the project hierarchy");
+                    VS.MessageBox.Show($"Cannot set dependency from \"{item.EvaluatedInclude}\" to \"{dependentOf}\"\r\nCannot find \"{dependentOf}\" in the project hierarchy");
                 }
             }
 
@@ -2504,7 +2504,7 @@ namespace XSharp.Project
             }
             if (!hasImportDefaultProps || !hasImportTargets)
             {
-                ShowMessageBox($"Important <Imports> tags are missing in your projectfile: {filename}, your project will most likely not compile.");
+                VS.MessageBox.Show($"Important <Imports> tags are missing in your projectfile: {filename}, your project will most likely not compile.");
             }
             if (hasImportProps && hasImportTargets)
             {
@@ -2614,10 +2614,7 @@ namespace XSharp.Project
             return changed;
 
         }
-        internal int ShowMessageBox(string message)
-        {
-            return XSharpProjectPackage.XInstance.ShowMessageBox(message);
-        }
+  
 
         #region IVsProject5
         public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)

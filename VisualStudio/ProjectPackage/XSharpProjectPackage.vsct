@@ -45,6 +45,7 @@
       <Menu guid="guidVOFormEditorCmdSet" id="VOFormEditorToolbar" priority="0x1000" type="Toolbar">
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDocked</CommandFlag>
+        <CommandFlag>NoToolbarClose</CommandFlag>
         <Strings>
           <ButtonText>X# Toolbar</ButtonText>
         </Strings>
@@ -83,7 +84,7 @@
          <!--This will be on the ToolMenu in the ToolMenuGroup-->
       <Button guid="guidXSharpProjectCmdSet" id="idXporter" priority="0x0100" type="Button">
         <Parent guid="guidXSharpProjectCmdSet" id="idToolsMenuGroup" />
-        <Icon guid="guidImages" id="bmpXSharp" />
+        <Icon guid="guidImages" id="bmpSource" />
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
           <CommandName>&amp;Xport a Vulcan.NET Project</CommandName>
@@ -106,7 +107,8 @@
       </Button>
       <Button guid="guidXSharpProjectCmdSet" id="idWebsite" priority="0x0100" type="Button">
         <Parent guid="guidXSharpProjectCmdSet" id="idHelpMenuGroup" />
-        <Icon guid="guidImages" id="bmpXSharp" />
+        <Icon guid="guidImages" id="bmpSource" />
+        <CommandFlag>IconAndText</CommandFlag>
         <Strings>
           <ButtonText>XSharp Website</ButtonText>
           <ToolTipText>Opens XSharp Website</ToolTipText>
@@ -117,13 +119,13 @@
       </Button>
       <Button guid="guidXSharpProjectCmdSet" id="idHelpOffLine" priority="0x0100" type="Button">
         <Parent guid="guidXSharpProjectCmdSet" id="idHelpMenuGroup" />
-        <Icon guid="guidImages" id="bmpXSharp" />
+        <Icon guid="guidImages" id="bmpSource" />
+        <CommandFlag>IconAndText</CommandFlag>
         <Strings>
           <ButtonText>XSharp Documentation</ButtonText>
           <ToolTipText>Opens XSharp Documentation</ToolTipText>
           <CommandName>&amp;XSharp Documentation</CommandName>
           <CanonicalName>XSharp Documentation</CanonicalName>
-
         </Strings>
       </Button>
 
@@ -135,6 +137,7 @@
         <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>RouteToDocs</CommandFlag>
         <Strings>
           <CommandName>&amp;Show X# Grid</CommandName>
           <CanonicalName>Show X# Grid</CanonicalName>
@@ -182,7 +185,8 @@
             <CommandFlag>DefaultInvisible</CommandFlag>
             <CommandFlag>DefaultDisabled</CommandFlag>
             <CommandFlag>DynamicVisibility</CommandFlag>
-            <Strings>
+           <CommandFlag>RouteToDocs</CommandFlag>
+           <Strings>
                <CommandName>&amp;Show X# Grid</CommandName>
                <CanonicalName>Show X# Grid</CanonicalName>
                <ButtonText>&amp;Show X# Grid</ButtonText>
@@ -227,7 +231,7 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\XSharpProjectImageList.bmp" usedList="bmpPic1, bmpXSharp, bmpPic3, bmpPic4, bmpPic5, bmpPic6, bmpVO, bmpGrid, bmpTest,bmpProperties,bmpReference, bmpDanglingReference,bmpTabOrder"/>
+      <Bitmap guid="guidImages" href="Resources\XSharpProjectImageList.bmp" usedList="bmpProject, bmpSource, bmpForm, bmpServer, bmpFieldSpec, bmpMenu, bmpVO, bmpGrid, bmpTest,bmpProperties,bmpReference, bmpDanglingReference,bmpTabOrder"/>
     </Bitmaps>
   </Commands>
 
@@ -236,15 +240,6 @@
       <UsedCommand guid="guidVSStd97" id="cmdidCut"/>
       <UsedCommand guid="guidVSStd97" id="cmdidCopy"/>
       <UsedCommand guid="guidVSStd97" id="cmdidPaste"/>
-      <UsedCommand guid="guidVSStd2K" id="ECMD_EXCLUDEFROMPROJECT" />
-      <UsedCommand guid="guidVSStd2K" id="ECMD_ADDREFERENCE" />
-      <UsedCommand guid="guidVSStd2K" id="ECMD_ADDWEBREFERENCE" />
-      <UsedCommand guid="guidVSStd2K" id="ECMD_ADDWEBREFERENCECTX" />
-      <UsedCommand guid="guidVSStd2K" id="ECMD_UPDATEWEBREFERENCE" />
-      <UsedCommand guid="guidVSStd2K" id="ECMD_RUNCUSTOMTOOL" />
-      <UsedCommand guid="guidVSStd2K" id="ECMD_VIEWREFINOBJECTBROWSER" />
-      <UsedCommand guid="guidVSStd2K" id="ECMD_ADDREFERENCECTX" />
-      <UsedCommand guid="guidVSStd2K" id="cmdidCodeDefView" />
       
       <!-- // Format menu commands -->
       <UsedCommand guid="guidVSStd97" id="cmdidSizeToGrid"/>
@@ -320,12 +315,12 @@
     </GuidSymbol>
 
       <GuidSymbol name="guidImages" value="{9f1c712d-4803-4aff-9153-28b74c34e1bf}" >
-      <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpXSharp" value="2" />
-      <IDSymbol name="bmpPic3" value="3" />
-      <IDSymbol name="bmpPic4" value="4" />
-      <IDSymbol name="bmpPic5" value="5" />
-      <IDSymbol name="bmpPic6" value="6" />
+      <IDSymbol name="bmpProject" value="1" />
+      <IDSymbol name="bmpSource" value="2" />
+      <IDSymbol name="bmpForm" value="3" />
+      <IDSymbol name="bmpServer" value="4" />
+      <IDSymbol name="bmpFieldSpec" value="5" />
+      <IDSymbol name="bmpMenu" value="6" />
       <IDSymbol name="bmpVO" value="7" />
       <IDSymbol name="bmpGrid" value="8" />
       <IDSymbol name="bmpTest" value="9" />
@@ -333,18 +328,6 @@
       <IDSymbol name="bmpReference" value="11" />
       <IDSymbol name="bmpDanglingReference" value="12" />
       <IDSymbol name="bmpTabOrder" value="13" />
-      </GuidSymbol>
-      <!-- These predefined guids and symbols predefined in VS -->
-      <GuidSymbol name="guidVSStd2K" value="{1496a755-94de-11d0-8c3f-00c04fc2aae2}">
-         <IDSymbol name="cmdidCodeDefView" value="0x0786" />
-         <IDSymbol name="ECMD_ADDREFERENCE" value="0x0459" />
-         <IDSymbol name="ECMD_ADDREFERENCECTX" value="0x0465" />
-         <IDSymbol name="ECMD_ADDWEBREFERENCE" value="0x045A" />
-         <IDSymbol name="ECMD_ADDWEBREFERENCECTX" value="0x045B" />
-         <IDSymbol name="ECMD_EXCLUDEFROMPROJECT" value="0x0456" />
-         <IDSymbol name="ECMD_RUNCUSTOMTOOL" value="0x045D" />
-         <IDSymbol name="ECMD_UPDATEWEBREFERENCE" value="0x045C" />
-         <IDSymbol name="ECMD_VIEWREFINOBJECTBROWSER" value="0x045F" />
       </GuidSymbol>
 
       <GuidSymbol name="guidWinformsMenuGroup" value="{74D21312-2AEE-11D1-8BFB-00A0C90F26F7}" >

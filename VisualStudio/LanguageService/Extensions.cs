@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using LanguageService.CodeAnalysis.Text;
+using LanguageService.SyntaxTree;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
@@ -15,7 +16,13 @@ namespace XSharp.LanguageService
 {
     public static class Extensions
     {
-
+        public static string CleanText(this IToken token)
+        {
+            string result = token.Text;
+            if (result.StartsWith("@@"))
+                result = result.Substring(2);
+            return result;
+        }
         public static XsClassificationSpan ToClassificationSpan(this TextSpan span, ITextSnapshot snapshot, IClassificationType classificationType)
         {
             int start = span.Start;

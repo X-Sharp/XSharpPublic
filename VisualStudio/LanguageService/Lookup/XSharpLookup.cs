@@ -420,7 +420,7 @@ namespace XSharp.LanguageService
         /// <param name="foundElement"></param>
         /// <param name="stopAtOpenToken"></param>
         /// <returns></returns>
-        public static IEnumerable<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> tokenList, CompletionState state, bool stopAtOpenToken = false)
+        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> tokenList, CompletionState state, bool stopAtOpenToken = false)
         {
             //
 #if TRACE
@@ -467,13 +467,13 @@ namespace XSharp.LanguageService
                 if (XSettings.EnableTypelookupLog)
                     WriteOutputMessage(string.Format("Retrieve current Type : Member cannot be null."));
 #endif
-                        return null;
+                        return result;
                     }
                 }
             }
             if (location.Member == null)
             {
-                return null;
+                return result;
             }
             // Context Type....
             if (location.Member.Kind.IsClassMember(location.Dialect))
@@ -535,7 +535,7 @@ namespace XSharp.LanguageService
                     continue;
                 }
                 stopAt = 0;
-                var currentName = currentToken.Text;
+                var currentName = currentToken.CleanText();
                 var lastToken = currentToken;
                 switch (currentToken.Type)
                 {
@@ -703,11 +703,11 @@ namespace XSharp.LanguageService
                 }
                 else if (isId)
                 {
-                    if (result.Count == 0 && (startOfExpression || findType || findConstructor))
+                    if (result.Count == 0 && (startOfExpression || findType || findConstructor || qualifiedName))
                     {
                         // look for Namespaces
                         result.AddRange(SearchNamespaces(location, namespacePrefix + currentName));
-                        if (result.Count == 0)
+                        if (result.Count == 0 && (findType || findConstructor || qualifiedName))
                         {
                             result.AddRange(SearchType(location, namespacePrefix + currentName));
                         }

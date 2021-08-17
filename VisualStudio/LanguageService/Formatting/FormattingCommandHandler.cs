@@ -430,10 +430,7 @@ namespace XSharp.LanguageService
             }
             if (token.Type == XSharpLexer.ID && XSettings.IdentifierCase)
             {
-                var identifier = token.Text;
-                // Remove the @@ marker
-                if (identifier.StartsWith("@@"))
-                    identifier = identifier.Substring(2);
+                var identifier = token.CleanText();
                 var lineNumber = getCurrentLine();
                 var currentMember = _textView.FindMember();
                 //

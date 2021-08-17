@@ -652,7 +652,9 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          CASE XSharpLexer.BEGIN
                // namespace ?
             IF SELF:La2 == XSharpLexer.NAMESPACE
-               entityKind := Kind.Namespace
+                IF SELF:IsId(SELF:La3)
+                    entityKind := Kind.Namespace
+                ENDIF
             ENDIF
          CASE XSharpLexer.CLASS
             IF SELF:InXppClass
@@ -661,27 +663,45 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                ELSEIF SELF:La2 == XSharpLexer.VAR                                  // CLASS VAR for XPP
                   entityKind := Kind.Field
                ENDIF
-            ELSE
+            ELSEIF SELF:IsId(SELF:La2)
                entityKind := Kind.Class
             ENDIF
          CASE XSharpLexer.STRUCTURE
-            entityKind := Kind.Structure
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Structure
+            ENDIF
          CASE XSharpLexer.DELEGATE
-            entityKind := Kind.Delegate
+            IF SELF:IsId(SELF:La2)
+               entityKind := Kind.Delegate
+            ENDIF
          CASE XSharpLexer.INTERFACE
-            entityKind := Kind.Interface
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Interface
+            ENDIF
          CASE XSharpLexer.ENUM
-            entityKind := Kind.Enum
+            IF SELF:IsId(SELF:La2)
+               entityKind := Kind.Enum
+            ENDIF
          CASE XSharpLexer.EVENT
-            entityKind := Kind.Event
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Event
+            ENDIF
          CASE XSharpLexer.METHOD
-            entityKind := Kind.Method
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Method
+            ENDIF
          CASE XSharpLexer.ACCESS
-            entityKind := Kind.Access
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Access
+            ENDIF
          CASE XSharpLexer.ASSIGN
-            entityKind := Kind.Assign
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Assign
+            ENDIF
          CASE XSharpLexer.PROPERTY
-            entityKind := Kind.Property
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Property
+            ENDIF
          CASE XSharpLexer.OPERATOR
             entityKind := Kind.Operator
          CASE XSharpLexer.CONSTRUCTOR
@@ -701,22 +721,34 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                entityKind := Kind.Class
             ENDIF
          CASE XSharpLexer.VOSTRUCT
-            entityKind := Kind.VOStruct
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.VOStruct
+            ENDIF
          CASE XSharpLexer.UNION
-            entityKind := Kind.Union
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Union
+            ENDIF
          CASE XSharpLexer.MEMBER
-            entityKind := Kind.EnumMember
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.EnumMember
+            ENDIF
          CASE XSharpLexer.ADD
             // Todo handle Add Object clause inside Class.
             IF SELF:La2 == XSharpLexer.OBJECT
                entityKind := Kind.Field
             ENDIF
          CASE XSharpLexer.FUNCTION
-            entityKind := Kind.Function
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Function
+            ENDIF
          CASE XSharpLexer.PROCEDURE
-            entityKind := Kind.Procedure
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.Procedure
+            ENDIF
          CASE XSharpLexer.GLOBAL
-            entityKind := Kind.VOGlobal
+            IF SELF:IsId(SELF:La2)
+                entityKind := Kind.VOGlobal
+            ENDIF
          CASE XSharpLexer.DLL
             IF SELF:La2 == XSharpLexer.FUNCTION .OR. SELF:La2 == XSharpLexer.PROCEDURE
                entityKind := Kind.VODLL
@@ -1235,11 +1267,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             IF t:HasTrivia .AND. lAddTrivia
                 sb:Append(t:TriviaAsText)
             ENDIF
-            IF t:Text:StartsWith("@@")
-                sb:Append(t:Text:Substring(2))
-            ELSE
-                sb:Append(t:Text)
-            ENDIF
+            sb:Append(t:CleanText())
          NEXT
          RETURN sb:ToString():Trim()
 

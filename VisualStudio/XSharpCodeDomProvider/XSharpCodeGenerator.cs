@@ -1985,6 +1985,9 @@ namespace XSharp.CodeDom
                 case MemberAttributes.Assembly:
                     this.Output.Write(keywordINTERNAL);
                     break;
+                default:
+                    this.Output.Write(keywordPRIVATE);
+                    break;
             }
         }
         protected override void OutputMemberScopeModifier(MemberAttributes attributes)

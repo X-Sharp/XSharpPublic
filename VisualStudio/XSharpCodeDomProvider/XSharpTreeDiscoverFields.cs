@@ -25,7 +25,7 @@ namespace XSharp.CodeDom
 
         internal Stack<ParserRuleContext> classes;
         internal ParserRuleContext currentClass;
-        private MemberAttributes classVarModifiers;
+        
 
         internal XSharpFieldsDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
@@ -45,55 +45,69 @@ namespace XSharp.CodeDom
             // restore previous class 
             currentClass = classes.Pop();
         }
-        public override void EnterClassvarModifiers([NotNull] XSharpParser.ClassvarModifiersContext context)
+        public MemberAttributes decodeClassVarModifiers([NotNull] XSharpParser.ClassvarModifiersContext context)
         {
 
-            this.classVarModifiers = MemberAttributes.Public;
+            var classVarModifiers = MemberAttributes.Public;
             //
             ITerminalNode[] visibility;
             //
             visibility = context.INTERNAL();
             if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Assembly;
+                classVarModifiers = MemberAttributes.Assembly;
             //
             visibility = context.HIDDEN();
             if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Private;
+                classVarModifiers = MemberAttributes.Private;
             //
             visibility = context.PRIVATE();
             if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Private;
+                classVarModifiers = MemberAttributes.Private;
             //
             visibility = context.PROTECTED();
             if (visibility.Length > 0)
             {
                 visibility = context.INTERNAL();
                 if (visibility.Length > 0)
-                    this.classVarModifiers = MemberAttributes.FamilyOrAssembly;
+                    classVarModifiers = MemberAttributes.FamilyOrAssembly;
                 else
-                    this.classVarModifiers = MemberAttributes.Family;
+                    classVarModifiers = MemberAttributes.Family;
             }
             //
             visibility = context.EXPORT();
             if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Public;
+                classVarModifiers = MemberAttributes.Public;
             //
             if (context.CONST().Length > 0)
-                this.classVarModifiers |= MemberAttributes.Const;
+                classVarModifiers |= MemberAttributes.Const;
             if (context.STATIC().Length > 0)
-                this.classVarModifiers |= MemberAttributes.Static;
+                classVarModifiers |= MemberAttributes.Static;
+            return classVarModifiers;
         }
         public override void EnterClassvars([NotNull] XSharpParser.ClassvarsContext context)
         {
-            //
-            //
+            // PROTECT a,b as STRING
+            // copy type from b to a
+            var classVarModifiers = decodeClassVarModifiers(context.Modifiers);
+            if (context._Vars.Count > 1)
+            {
+                XSharpParser.DatatypeContext dtc = null; ;
+                foreach (var classvar in context._Vars.Reverse())
+                {
+                    if (classvar.DataType != null)
+                        dtc = classvar.DataType;
+                    else
+                        classvar.DataType = dtc;
+                }
+            }
+
             foreach (var varContext in context._Vars)
             {
                 var field = new XCodeMemberField();
                 var fieldType = BuildDataType(varContext.DataType);
                 field.Name = varContext.Id.GetText();
                 field.Type = fieldType;
-                field.Attributes = this.classVarModifiers;
+                field.Attributes = classVarModifiers;
                 if (varContext.Initializer != null)
                 {
                     field.InitExpression = BuildExpression(varContext.Initializer, false);

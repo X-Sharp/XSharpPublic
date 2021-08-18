@@ -177,8 +177,8 @@ namespace XSharp.Project
             {
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    return (IVsUIShell)GetService(typeof(SVsUIShell));
+                    var result = await VS.Services.GetUIShellAsync();
+                    return result;
                 });
             }
         }

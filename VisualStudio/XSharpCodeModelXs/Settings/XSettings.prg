@@ -77,7 +77,8 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO
         PUBLIC STATIC PROPERTY ShowMessageBox                   AS ShowMessageBox AUTO
 
-        PUBLIC STATIC PROPERTY DebuggerIsRunning                AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY DebuggerMode                AS DebuggerMode AUTO
+        PUBLIC STATIC PROPERTY DebuggerIsRunning           AS LOGIC GET DebuggerMode != DebuggerMode.Design
 
         PRIVATE STATIC METHOD NoOutput(message AS STRING) AS VOID
         RETURN

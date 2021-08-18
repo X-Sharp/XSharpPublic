@@ -39,7 +39,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.8.1.12</XSharpProjectversion>
+    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>true</NamedArgs>
@@ -100,14 +100,29 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139">
       <Name>System.Data.SQLite</Name>
       <AssemblyName>System.Data.SQLite.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <HintPath>..\..\External\Debug\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>System.Drawing.dll</AssemblyName>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.Xml</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>System.Xml.dll</AssemblyName>
     </Reference>
     <Reference Include="XSharp.VSParser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VSParser</Name>
@@ -127,6 +142,7 @@
     <Compile Include="Database\XDatabase.prg" />
     <Compile Include="Database\XDbResult.prg" />
     <Compile Include="Database\XDbResultHelpers.prg" />
+    <Compile Include="Model\ClassGenerator.prg" />
     <Compile Include="Model\CommentTask.prg" />
     <Compile Include="PE\XPEMemberSymbol.prg" />
     <Compile Include="PE\XPEParameterSymbol.prg" />

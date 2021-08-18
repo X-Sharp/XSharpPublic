@@ -15,6 +15,7 @@ using System.Linq;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft;
 using Microsoft.VisualStudio.Shell;
+using Community.VisualStudio.Toolkit;
 
 namespace XSharp.LanguageService
 {
@@ -162,7 +163,7 @@ namespace XSharp.LanguageService
                 }
                 string currentNS = this.TextView.FindNamespace();
                 var location = TextView.FindLocation();
-                var state = CompletionState.General;
+                var state = CompletionState.General| CompletionState.Types| CompletionState.Namespaces;
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
@@ -178,9 +179,23 @@ namespace XSharp.LanguageService
                     {
                         source.OpenEditor();
                     }
-                    else
+                    else if (element is XPETypeSymbol petype)
                     {
-                        openInObjectBrowser(element.FullName);
+                        var aLines = XClassCreator.Create(petype);
+                        var temp = System.IO.Path.GetTempFileName();
+                        temp = System.IO.Path.ChangeExtension(temp, "prg");
+                        System.IO.File.WriteAllLines(temp, aLines.ToArray());
+                        VS.Documents.OpenAsync(temp).FireAndForget();
+
+                    }
+                    else if (element is XPEMemberSymbol pemember)
+                    {
+                        var petype2 = pemember.Parent as XPETypeSymbol;
+                        var aLines = XClassCreator.Create(petype2);
+                        var temp = System.IO.Path.GetTempFileName();
+                        temp = System.IO.Path.ChangeExtension(temp, "prg");
+                        System.IO.File.WriteAllLines(temp, aLines.ToArray());
+                        VS.Documents.OpenAsync(temp).FireAndForget();
                     }
                     return;
                 }

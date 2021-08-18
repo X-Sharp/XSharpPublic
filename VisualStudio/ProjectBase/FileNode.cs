@@ -475,10 +475,10 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="path"></param>
         protected internal override void DeleteFromStorage(string path)
         {
-            if (File.Exists(path))
+            if (System.IO.File.Exists(path))
             {
-                File.SetAttributes(path, FileAttributes.Normal); // make sure it's not readonly.
-                File.Delete(path);
+                System.IO.File.SetAttributes(path, FileAttributes.Normal); // make sure it's not readonly.
+                System.IO.File.Delete(path);
             }
         }
 
@@ -855,7 +855,7 @@ namespace Microsoft.VisualStudio.Project
         {
             string moniker = this.GetMkDocument();
 
-            if (String.IsNullOrEmpty(moniker) || !File.Exists(moniker))
+            if (String.IsNullOrEmpty(moniker) || !System.IO.File.Exists(moniker))
             {
                 return false;
             }
@@ -906,7 +906,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>True if the file exist</returns>
         internal protected virtual bool IsFileOnDisk(string path)
         {
-            return File.Exists(path);
+            return System.IO.File.Exists(path);
         }
 
         /// <summary>
@@ -1070,7 +1070,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="newName">New name in storage</param>
         protected virtual void RenameInStorage(string oldName, string newName)
         {
-            File.Move(oldName, newName);
+            System.IO.File.Move(oldName, newName);
         }
 
         /// <summary>

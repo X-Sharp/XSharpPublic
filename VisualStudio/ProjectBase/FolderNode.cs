@@ -124,7 +124,7 @@ namespace Microsoft.VisualStudio.Project
 	            }
 
 	            // Verify that No Directory/file already exists with the new name on disk
-	            if(Directory.Exists(newPath) || File.Exists(newPath))
+	            if(Directory.Exists(newPath) || System.IO.File.Exists(newPath))
 	            {
 	                return ShowFileOrFolderAlreadExistsErrorMessage(newPath);
 	            }

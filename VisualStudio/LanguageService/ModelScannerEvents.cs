@@ -15,7 +15,7 @@ using Microsoft.VisualStudio.Shell;
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharpModel;
-
+using File = System.IO.File;
 
 namespace XSharp.LanguageService
 {
@@ -255,9 +255,9 @@ namespace XSharp.LanguageService
         private void SolutionEvents_OnAfterLoadProject(SolutionItem project)
         {
             var pszFileName = project.FullPath;
-            if (pszFileName != null && pszFileName.ToLower().EndsWith("xsproj") && System.IO.File.Exists(pszFileName))
+            if (pszFileName != null && pszFileName.ToLower().EndsWith("xsproj") && File.Exists(pszFileName))
             {
-                string xml = System.IO.File.ReadAllText(pszFileName);
+                string xml = File.ReadAllText(pszFileName);
                 var original = Path.ChangeExtension(pszFileName, ".original");
                 bool changed = false;
                 if (hasEnvironmentvariable)
@@ -272,9 +272,9 @@ namespace XSharp.LanguageService
                         }
                         
                         DeleteFileSafe(original);
-                        System.IO.File.Copy(pszFileName, original);
+                        File.Copy(pszFileName, original);
                         DeleteFileSafe(pszFileName);
-                        System.IO.File.WriteAllText(pszFileName, xml);
+                        File.WriteAllText(pszFileName, xml);
                         changed = true;
                     }
                 }
@@ -286,11 +286,11 @@ namespace XSharp.LanguageService
                     if (! changed)
                     {
                         DeleteFileSafe(original);
-                        System.IO.File.Copy(pszFileName, original);
+                        File.Copy(pszFileName, original);
                     }
                     xml = left + right;
                     DeleteFileSafe(pszFileName);
-                    System.IO.File.WriteAllText(pszFileName, xml);
+                    File.WriteAllText(pszFileName, xml);
                     changed = true;
                 }
                 if (changed)
@@ -304,10 +304,10 @@ namespace XSharp.LanguageService
         {
             try
             {
-                if (System.IO.File.Exists(fileName))
+                if (File.Exists(fileName))
                 {
-                    System.IO.File.SetAttributes(fileName, FileAttributes.Normal);
-                    System.IO.File.Delete(fileName);
+                    File.SetAttributes(fileName, FileAttributes.Normal);
+                    File.Delete(fileName);
 
                 }
             }

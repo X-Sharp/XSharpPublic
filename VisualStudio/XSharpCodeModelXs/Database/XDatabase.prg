@@ -11,6 +11,7 @@ USING System.Linq
 USING System.Data.Common
 USING System.Collections.Generic
 USING System.ComponentModel
+USING File := System.IO.File
 
 BEGIN NAMESPACE XSharpModel
 	STATIC CLASS XDatabase
@@ -23,12 +24,12 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL lValid := FALSE AS LOGIC
 			LOCAL oDiskDb AS SQLiteConnection
 			currentFile := cFileName
-			IF System.IO.File.Exists(cFileName)
+			IF File.Exists(cFileName)
 				oDiskDb := OpenFile(cFileName)
 				IF ! ValidateSchema(oDiskDb)
 						oDiskDb:Close()
 						oDiskDb:Dispose()
-					System.IO.File.Delete(cFileName)
+					File.Delete(cFileName)
 				ELSE
 					lValid := TRUE
 				ENDIF
@@ -83,9 +84,9 @@ BEGIN NAMESPACE XSharpModel
 			IF ! IsDbOpen
 				RETURN
 			ENDIF
-			IF System.IO.File.Exists(cFile)
-				System.IO.File.SetAttributes(cFile, FileAttributes.Normal)
-				System.IO.File.Delete(cFile)
+			IF File.Exists(cFile)
+				File.SetAttributes(cFile, FileAttributes.Normal)
+				File.Delete(cFile)
 			ENDIF
 			VAR diskdb := OpenFile(cFile)
 			oConn:BackupDatabase(diskdb, "main", "main", -1, NULL, 0)
@@ -518,7 +519,7 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"Update File info for file {oFile.FullPath}")
 			BEGIN LOCK oConn
 				TRY
-               IF System.IO.File.Exists(oFile:FullPath)  // for files from SCC the physical file does not always exist
+               IF File.Exists(oFile:FullPath)  // for files from SCC the physical file does not always exist
 					USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
 					oCmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = $size, Usings = $usings, StaticUsings = $staticUsings WHERE id = "+oFile:Id:ToString()
 					VAR fi            := FileInfo{oFile:FullPath}

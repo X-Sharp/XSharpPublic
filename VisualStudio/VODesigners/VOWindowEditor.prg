@@ -4093,14 +4093,14 @@ RETURN
       cOrigDir := cDirectory
         TRY
         	cCavoWed := cDirectory + "\Properties\CAVOWED.TPL"
-	        IF !System.IO.File.Exists(cCavoWed)
+	        IF !File.Exists(cCavoWed)
 		        cCavoWed := cDirectory + "\CAVOWED.TPL"
-				IF !System.IO.File.Exists(cCavoWed)
+				IF !File.Exists(cCavoWed)
 					cDirectory := Directory.GetParent(cDirectory):FullName
 					cCavoWed := cDirectory + "\CAVOWED.TPL"
-			        IF !System.IO.File.Exists(cCavoWed)
+			        IF !File.Exists(cCavoWed)
 			        	cCavoWed := cDirectory + "\Properties\CAVOWED.TPL"
-				        IF !System.IO.File.Exists(cCavoWed) .AND. Funcs.InstallTemplatesFolder != ""
+				        IF !File.Exists(cCavoWed) .AND. Funcs.InstallTemplatesFolder != ""
 				        	cCavoWed := Funcs.InstallTemplatesFolder  + "\CAVOWED.TPL"
 				        ENDIF
 			        ENDIF
@@ -4110,10 +4110,10 @@ RETURN
             NOP
         END TRY
 
-		IF !System.IO.File.Exists(cCavoWed)
+		IF !File.Exists(cCavoWed)
 			MessageBox.Show("File Cavowed.tpl was not found, please locate it on disk." , Resources.EditorName)
 		ENDIF
-		DO WHILE !System.IO.File.Exists(cCavoWed)
+		DO WHILE !File.Exists(cCavoWed)
 			LOCAL oDlg AS OpenFileDialog
 			oDlg := OpenFileDialog{}
 			oDlg:Filter := "CavoWED files (*.tpl)|*.tpl"
@@ -4131,7 +4131,7 @@ RETURN
 				RETURN FALSE
 			ENDIF
 		END DO
-		IF !System.IO.File.Exists(cCavoWed)
+		IF !File.Exists(cCavoWed)
 			RETURN FALSE
 		ENDIF
 

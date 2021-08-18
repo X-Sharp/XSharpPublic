@@ -16,7 +16,7 @@ using System.CodeDom;
 using System.Reflection;
 using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using System.Diagnostics;
-
+using System.IO;
 using XSharpModel;
 using System.Globalization;
 
@@ -39,11 +39,11 @@ namespace XSharp.CodeDom
 
         protected CodeExpression BuildSnippetExpression(String txt)
         {
-            if (!System.IO.File.Exists(SnippetsTxt))
-                System.IO.File.WriteAllText(SnippetsTxt, "");
-            string old = System.IO.File.ReadAllText(SnippetsTxt);
+            if (!File.Exists(SnippetsTxt))
+                File.WriteAllText(SnippetsTxt, "");
+            string old = File.ReadAllText(SnippetsTxt);
             old += "\n" + txt;
-            System.IO.File.WriteAllText(SnippetsTxt, old);
+            File.WriteAllText(SnippetsTxt, old);
             return new CodeSnippetExpression(txt);
         }
 

@@ -5,9 +5,7 @@
 //
 
 using System;
-using System.Collections;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.IO;
 using System.Globalization;
 using System.Windows.Forms;
@@ -19,11 +17,10 @@ using Microsoft.VisualStudio.Shell;
 using EnvDTE;
 using XSharp.VOEditors;
 using Microsoft.VisualStudio.Project;
-using XSharp.LanguageService;
 using XSharpModel;
 using System.Collections.Generic;
 using Community.VisualStudio.Toolkit;
-
+using File = System.IO.File;
 namespace XSharp.Project
 {
     /// <summary>
@@ -660,7 +657,7 @@ namespace XSharp.Project
                     this.isLoaded = true;
                     lSuccess = true;
 
-                    FileAttributes fileAttrs = System.IO.File.GetAttributes(filename);
+                    FileAttributes fileAttrs = File.GetAttributes(filename);
 
                     int isReadOnly = (int)fileAttrs & (int)FileAttributes.ReadOnly;
 
@@ -1076,7 +1073,7 @@ namespace XSharp.Project
                     // without prompting the user.
                     if (0 != (rggrfChange[i] & (int)_VSFILECHANGEFLAGS.VSFILECHG_Attr))
                     {
-                        FileAttributes fileAttrs = System.IO.File.GetAttributes(fileName);
+                        FileAttributes fileAttrs = File.GetAttributes(fileName);
                         int isReadOnly = (int)fileAttrs & (int)FileAttributes.ReadOnly;
                         SetReadOnly(isReadOnly != 0);
                     }
@@ -1143,7 +1140,7 @@ namespace XSharp.Project
                 // to "Read/Write" or vice versa while the ignore level was non-zero.
                 // This may happen when a file is checked in or out under source
                 // code control. We need to check here so we can update our caption.
-                FileAttributes fileAttrs = System.IO.File.GetAttributes(fileName);
+                FileAttributes fileAttrs = File.GetAttributes(fileName);
                 int isReadOnly = (int)fileAttrs & (int)FileAttributes.ReadOnly;
                 SetReadOnly(isReadOnly != 0);
             }

@@ -16,13 +16,12 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-
+using File = System.IO.File;
 namespace Microsoft.VisualStudio.Project
 {
     [CLSCompliant(false)]
@@ -124,7 +123,7 @@ namespace Microsoft.VisualStudio.Project
 	            }
 
 	            // Verify that No Directory/file already exists with the new name on disk
-	            if(Directory.Exists(newPath) || System.IO.File.Exists(newPath))
+	            if(Directory.Exists(newPath) || File.Exists(newPath))
 	            {
 	                return ShowFileOrFolderAlreadExistsErrorMessage(newPath);
 	            }

@@ -18,13 +18,9 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
-using System.Security.Policy;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -32,7 +28,7 @@ using Microsoft.Win32;
 using IServiceProvider = System.IServiceProvider;
 using MSBuild = Microsoft.Build.Evaluation;
 using VSRegistry = Microsoft.VisualStudio.Shell.VSRegistry;
-
+using File = System.IO.File;
 namespace Microsoft.VisualStudio.Project
 {
     public static class Utilities
@@ -1204,10 +1200,10 @@ namespace Microsoft.VisualStudio.Project
         {
             try
             {
-                if (System.IO.File.Exists(fileName))
+                if (File.Exists(fileName))
                 {
-                    System.IO.File.SetAttributes(fileName, FileAttributes.Normal);
-                    System.IO.File.Delete(fileName);
+                    File.SetAttributes(fileName, FileAttributes.Normal);
+                    File.Delete(fileName);
 
                 }
             }

@@ -23,8 +23,6 @@ using Microsoft.VisualStudio;
 using System.Diagnostics;
 using MSBuild = Microsoft.Build.Evaluation;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.VisualStudio.Shell.TableManager;
-using System.ComponentModel.Composition;
 
 using XSharpModel;
 using System.Linq;
@@ -33,12 +31,12 @@ using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
 using XSharp.CodeDom;
 using MBC = Microsoft.Build.Construction;
-using Microsoft;
 using LanguageService.SyntaxTree;
 using System.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XSharp.LanguageService;
 using Community.VisualStudio.Toolkit;
+using File = System.IO.File;
 
 namespace XSharp.Project
 {
@@ -635,9 +633,9 @@ namespace XSharp.Project
                 {
                     // Create a zero-length file if does not exist already.
                     //
-                    if (!System.IO.File.Exists(fullPath))
+                    if (!File.Exists(fullPath))
                     {
-                        System.IO.File.WriteAllText(fullPath, string.Empty);
+                        File.WriteAllText(fullPath, string.Empty);
                     }
                     fileNode = CreateFileNode(fileName);
                     if (fCreateInPropertiesFolder && propsFolder != null)
@@ -711,7 +709,7 @@ namespace XSharp.Project
         /// <param name="target">The target file.</param>
         public override void AddFileFromTemplate(string source, string target)
         {
-            if (!System.IO.File.Exists(source))
+            if (!File.Exists(source))
             {
                 throw new FileNotFoundException(string.Format("Template file not found: {0}", source));
             }
@@ -721,7 +719,7 @@ namespace XSharp.Project
                 string path = Path.GetDirectoryName(target);
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
-                System.IO.File.Copy(source, target, true);
+                File.Copy(source, target, true);
                 return;
             }
             // The class name is based on the new file name
@@ -787,7 +785,7 @@ namespace XSharp.Project
                 string childPath = Path.Combine(this.ProjectFolder, System.IO.Path.GetDirectoryName(key));
                 // check to see if they are in the same folder or not
                 string dependentFileName = Path.Combine(childPath, dependentOf);
-                inSameFolder = System.IO.File.Exists(dependentFileName);
+                inSameFolder = File.Exists(dependentFileName);
             }
 
             Debug.Assert(String.Compare(dependentOf, key, StringComparison.OrdinalIgnoreCase) != 0, "File dependent upon itself is not valid. Ignoring the DependentUpon metadata");
@@ -996,7 +994,7 @@ namespace XSharp.Project
                         var xnode = this.URLNodes[url] as XSharpFileNode;
                         if (xnode != null && !xnode.IsNonMemberItem)
                         {
-                            if (System.IO.File.Exists(url))
+                            if (File.Exists(url))
                             {
                                 //this.ProjectModel.AddFile(url);
                             	base.ObserveItem(url);
@@ -1271,7 +1269,7 @@ namespace XSharp.Project
                 var xnode = node as XSharpFileNode;
                 if (xnode != null && !xnode.IsNonMemberItem)
                 {
-                    if (System.IO.File.Exists(url))
+                    if (File.Exists(url))
                     {
                         this.ProjectModel.AddFile(url);
                         if (IsXamlFile(url))
@@ -2083,18 +2081,18 @@ namespace XSharp.Project
             {
                 var original = ModelScannerEvents.ChangedProjectFiles[this.Url];
                 ModelScannerEvents.ChangedProjectFiles.Remove(this.Url);
-                var changedSource = System.IO.File.ReadAllText(this.Url);
-                if (System.IO.File.Exists(original))
+                var changedSource = File.ReadAllText(this.Url);
+                if (File.Exists(original))
                 {
                     Utilities.DeleteFileSafe(this.Url);
-                    System.IO.File.Move(original, this.Url);
+                    File.Move(original, this.Url);
                 }
                 if (!this.QueryEditProjectFile(true))
                 {
                     return VSConstants.S_FALSE;
                 }
                 Utilities.DeleteFileSafe(this.Url);
-                System.IO.File.WriteAllText(Url,changedSource);
+                File.WriteAllText(Url,changedSource);
                 ok = false;
             }
             // we have added a projectversion property to makes checks easier in the future

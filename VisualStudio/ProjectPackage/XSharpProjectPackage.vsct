@@ -18,50 +18,49 @@
         </Strings>
       </Menu>
       <!--XSharp Submenu in Tools/Options -->
-      <Menu guid="guidProjectPackage" id="ExporterMenu" priority="0x0250" type="Menu" >
+      <Menu guid="guidProjectPackage" id="idExporterSubMenu" priority="0x0250" type="Menu" >
         <Parent guid="VSMainMenu" id="Tools.ExtensibilityGroup"/>
         <CommandFlag>IconAndText</CommandFlag>
-        <Icon guid="guidImages" id="bmpXSharp" />
         <Strings>
           <ButtonText>&amp;XSharp</ButtonText>
+          <CommandName>XSharp</CommandName>
         </Strings>
       </Menu>
       <!--XSharp Submenu in Tools/Options -->
-      <Menu guid="guidProjectPackage" id="DebuggerMenu" priority="0x0250" type="Menu" >
+      <Menu guid="guidProjectPackage" id="idDebuggerSubMenu" priority="0x0250" type="Menu" >
         <Parent guid="VSMainMenu" id="Window.NavigationGroup"/>
         <CommandFlag>IconAndText</CommandFlag>
-        <Icon guid="guidImages" id="bmpXSharp" />
         <Strings>
           <ButtonText>&amp;XSharp</ButtonText>
+          <CommandName>XSharp</CommandName>
         </Strings>
       </Menu>
     </Menus>
 
     <Groups>
-      <Group guid="guidProjectPackage" id="ExporterGroup" priority="0x0600">
-        <Parent guid="guidProjectPackage"  id="ExporterMenu"/>
+      <!--Group for the Exporter items in the Tools Menu-->
+      <Group guid="guidProjectPackage" id="idExporterGroup" priority="0x0600">
+        <Parent guid="guidProjectPackage"  id="idExporterSubMenu"/>
         <GroupFlag />
       </Group>
-      <Group guid="guidProjectPackage" id="DebuggerGroup" priority="0x0600">
-        <Parent guid="guidProjectPackage"  id="DebuggerMenu"/>
+      <!--Group for the Debugger Items-->
+      <Group guid="guidProjectPackage" id="idDebuggerGroup" priority="0x0600">
+        <Parent guid="guidProjectPackage"  id="idDebuggerSubMenu"/>
         <GroupFlag />
       </Group>
-
-      <Group guid="guidProjectPackage" id="idToolsMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
-      </Group>
-
+      <!--Group for the items in the Help Menu-->
       <Group guid="guidProjectPackage" id="idHelpMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_HELP" />
       </Group>
-
+      <!--Menu group for the Show Grid and Test-->
       <Group guid="guidProjectPackage" id="idViewMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_VIEW" />
       </Group>
-
+      <!--Group for the Show Grid and Test on the toolbar -->
       <Group guid="guidVOFormEditorCmdSet" id="VOFormEditorToolbarGroup" priority="0x0600">
         <Parent guid="guidVOFormEditorCmdSet" id="VOFormEditorToolbar" />
       </Group>
+      <!--Menu groups for items Solution Explorer -->
       <Group guid="guidProjectPackage" id="idProjectContextMenuGroup" priority="0x0200">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
       </Group>
@@ -81,7 +80,7 @@
 
       <!--This will be on the ToolMenu in the ToolMenuGroup-->
       <Button guid="guidProjectPackage" id="idXporter" priority="0x0100" type="Button">
-        <Parent guid="guidProjectPackage" id="ExporterGroup" />
+        <Parent guid="guidProjectPackage" id="idExporterGroup" />
         <Icon guid="guidImages" id="bmpXSharp" />
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
@@ -92,7 +91,7 @@
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idVOXporter" priority="0x0100" type="Button">
-        <Parent guid="guidProjectPackage" id="ExporterGroup" />
+        <Parent guid="guidProjectPackage" id="idExporterGroup" />
         <Icon guid="guidImages" id="bmpVO" />
         <CommandFlag>IconAndText</CommandFlag>
         <Strings>
@@ -104,7 +103,7 @@
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idFoxXporter" priority="0x0100" type="Button">
-        <Parent guid="guidProjectPackage" id="ExporterGroup" />
+        <Parent guid="guidProjectPackage" id="idExporterGroup" />
         <Icon guid="guidImages" id="bmpFoxPro" />
         <CommandFlag>IconAndText</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -191,7 +190,6 @@
       <Button guid="guidVOFormEditorCmdSet" id="cmdidShowGrid" priority="0x0400" type="Button">
         <Parent guid="guidVOFormEditorCmdSet" id="VOFormEditorToolbarGroup" />
         <Icon guid="guidImages" id="bmpGrid" />
-
         <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -235,41 +233,41 @@
 
       <!--Debugger buttons-->
       <Button guid="guidProjectPackage" id="idDbgWorkareaWindow" priority="0x0100" type="Button">
-        <Parent guid="guidProjectPackage" id="DebuggerGroup" />
+        <Parent guid="guidProjectPackage" id="idDebuggerGroup" />
+        <Icon guid="ImageCatalogGuid" id="AllFieldsInDatabase" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
-        <Icon guid="ImageCatalogGuid" id="AllFieldsInDatabase" />
         <Strings>
           <ButtonText>&amp;Workareas</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idDbgMemvarsWindow" priority="0x0200" type="Button">
-        <Parent guid="guidProjectPackage" id="DebuggerGroup" />
+        <Parent guid="guidProjectPackage" id="idDebuggerGroup" />
+        <Icon guid="ImageCatalogGuid" id="LocalsWindow" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
-        <Icon guid="ImageCatalogGuid" id="LocalsWindow" />
         <Strings>
           <ButtonText>&amp;Dynamic Memory Variables</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idDbgGlobalsWindow" priority="0x0300" type="Button">
-        <Parent guid="guidProjectPackage" id="DebuggerGroup" />
+        <Parent guid="guidProjectPackage" id="idDebuggerGroup" />
+        <Icon guid="ImageCatalogGuid" id="LocalsWindow" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
-        <Icon guid="ImageCatalogGuid" id="LocalsWindow" />
         <Strings>
           <ButtonText>&amp;Global Memory Variables</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidProjectPackage" id="idDbgSettingsWindow" priority="0x0400" type="Button">
-        <Parent guid="guidProjectPackage" id="DebuggerGroup" />
+        <Parent guid="guidProjectPackage" id="idDebuggerGroup" />
+        <Icon guid="ImageCatalogGuid" id="Settings" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
-        <Icon guid="ImageCatalogGuid" id="Settings" />
         <Strings>
           <ButtonText>&amp;Settings</ButtonText>
         </Strings>
@@ -310,11 +308,10 @@
       <IDSymbol name="idDbgSettingsWindow" value="0x0108" />
       <IDSymbol name="idConvertXSharpRuntime" value="0x0109" />
       <IDSymbol name="idAddDesignerFile" value="0x010A" />
-      <IDSymbol name="ExporterMenu" value="0x01030" />
-      <IDSymbol name="ExporterGroup" value="0x01040" />
-      <IDSymbol name="DebuggerMenu" value="0x01050" />
-      <IDSymbol name="DebuggerGroup" value="0x01060" />
-      <IDSymbol name="idToolsMenuGroup" value="0x1020" />
+      <IDSymbol name="idExporterSubMenu" value="0x01030" />
+      <IDSymbol name="idExporterGroup" value="0x01040" />
+      <IDSymbol name="idDebuggerSubMenu" value="0x01050" />
+      <IDSymbol name="idDebuggerGroup" value="0x01060" />
       <IDSymbol name="idHelpMenuGroup" value="0x1021" />
       <IDSymbol name="idViewMenuGroup" value="0x1022" />
       <IDSymbol name="idViewBarGroup" value="0x1023" />
@@ -353,22 +350,14 @@
       <IDSymbol name="cmdIdXsTabOrder" value="0x6005" />
     </GuidSymbol>
     <GuidSymbol name="guidVOFormEditorFactory" value="{FC9F8E69-F338-4FA6-ACA3-AA41E445849A}" />
-    <GuidSymbol name="guidVOMenuEditorCmdSet" value="{33ac76f1-2719-4565-94c8-7c6542b34a3e}" />
-    <GuidSymbol name="guidVOMenuEditorFactory" value="{E4AE4582-98AE-40C8-9E48-6F3BE61EBF79}" />
-
-    <GuidSymbol name="guidVOFieldSpecEditorCmdSet" value="{6b22eb29-d289-455b-94cd-9b2d6fe02103}" />
-    <GuidSymbol name="guidVOFieldSpecEditorFactory" value="{8C5D0BAE-7A69-437B-AD0E-1E1B89721EBD}" />
-
-
-    <GuidSymbol name="guidVODbServerEditorCmdSet" value="{d816dec6-0971-4576-844f-234501b8f52d}" />
-    <GuidSymbol name="guidVODbServerEditorFactory" value="{C7E4C5F6-98B8-4826-9000-6B9B94DC2D97}" />
 
   </Symbols>
   <!-- This section is where you can associate a command with a keyboard shortcut; this association is
-     valid within a specific UI context, that is when the shell is inside a specific mode, e.g. during
-      debugging, editing a file or when the user is using a specific designer. -->
+       valid within a specific UI context, that is when the shell is inside a specific mode, e.g. during
+       debugging, editing a file or when the user is using a specific designer. -->
   <!--
    <KeyBindings>
+   No keybindings here
    </KeyBindings>-->
   <VisibilityConstraints>
     <!--This makes the Window Editor Toolbar visible whenever the VO Window Editor has focus-->
@@ -383,7 +372,8 @@
 
     <!-- This enables the same key bindings as the Winforms editor when the VO Window Editor has focus -->
     <VisibilityItem guid="guidWinformsMenuGroup" id="IDG_IF_KEYBOARD" context="guidVOFormEditorFactory" />
-
+    
+    <!--This makes the Debugger windows only appear when debugging-->
     <VisibilityItem guid="guidProjectPackage"  id="idDbgGlobalsWindow" context="UICONTEXT_Debugging"/>
     <VisibilityItem guid="guidProjectPackage"  id="idDbgMemvarsWindow" context="UICONTEXT_Debugging"/>
     <VisibilityItem guid="guidProjectPackage"  id="idDbgSettingsWindow" context="UICONTEXT_Debugging"/>

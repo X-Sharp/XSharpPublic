@@ -106,6 +106,17 @@
     <Compile Include="Automation\OAXSharpProjectItem.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="Commands\CommandAddDesignerFile.cs" />
+    <Compile Include="Commands\CommandConvertXsRuntime.cs" />
+    <Compile Include="Commands\CommandViewWorkareas.cs" />
+    <Compile Include="Commands\CommandViewSettings.cs" />
+    <Compile Include="Commands\CommandViewMemVars.cs" />
+    <Compile Include="Commands\CommandViewGlobals.cs" />
+    <Compile Include="Commands\CommandXsWebsite.cs" />
+    <Compile Include="Commands\CommandXsHelp.cs" />
+    <Compile Include="Commands\CommandXPorter.cs" />
+    <Compile Include="Commands\CommandVoXPorter.cs" />
+    <Compile Include="Commands\XSharpBaseCommand.cs" />
     <Compile Include="ErrorList\TaskListManager.cs" />
     <Compile Include="ErrorList\TasksSnapShot.cs" />
     <Compile Include="ErrorList\TasksFactory.cs" />
@@ -350,7 +361,6 @@
     </ZipItem>
     <Compile Include="XSharpDocumentWatcher.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
-    <Compile Include="XSharpMenuItems.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
@@ -697,12 +707,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK">
       <Version>15.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes">
-      <Version>15.0.36</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.15.0">
-      <Version>15.9.28307</Version>
     </PackageReference>
     <PackageReference Include="System.ComponentModel">
       <Version>4.3.0</Version>

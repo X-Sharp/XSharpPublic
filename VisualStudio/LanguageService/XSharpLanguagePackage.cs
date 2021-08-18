@@ -350,7 +350,7 @@ namespace XSharp.LanguageService
                     // Get initial value
                     DBGMODE[] modeArray = new DBGMODE[1];
                     hr = m_debugger.GetMode(modeArray);
-                    XSettings.DebuggerIsRunning = modeArray[0] == DBGMODE.DBGMODE_Run;
+                    XSettings.DebuggerMode = (DebuggerMode)modeArray[0];
                 }
             });
         }
@@ -375,7 +375,7 @@ namespace XSharp.LanguageService
 
         public int OnModeChange(DBGMODE dbgmodeNew)
         {
-            XSettings.DebuggerIsRunning = dbgmodeNew != DBGMODE.DBGMODE_Design;
+            XSettings.DebuggerMode = (DebuggerMode)dbgmodeNew;
             return VSConstants.S_OK;
         }
 #endregion

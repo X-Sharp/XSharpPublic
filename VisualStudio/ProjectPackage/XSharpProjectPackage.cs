@@ -158,7 +158,7 @@ namespace XSharp.Project
 
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents,IVsDebuggerEvents
     {
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
@@ -207,7 +207,6 @@ namespace XSharp.Project
             //await _projectSelector.InitAsync(this);
 
 
-
             this.settings = new XPackageSettings(this);
 
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
@@ -220,7 +219,6 @@ namespace XSharp.Project
             base.RegisterEditorFactory(new VOMenuEditorFactory(this));
             base.RegisterEditorFactory(new VODBServerEditorFactory(this));
             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
-            XSharp.Project.XSharpMenuItems.Initialize(this);
 
             //this._documentWatcher = new XSharpDocumentWatcher(this);
             _errorList = await VS.GetRequiredServiceAsync<SVsErrorList, IErrorList>();
@@ -233,6 +231,7 @@ namespace XSharp.Project
             }
             GetEditorOptions();
             _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
+            await this.RegisterCommandsAsync();
         }
 
 
@@ -256,7 +255,7 @@ namespace XSharp.Project
                 XEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
                 XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
 
-            }).FileAndForget("GetEditorOptions");
+            }).FireAndForget();
 
         }
         /// <summary>
@@ -303,7 +302,10 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-
+        public int OnModeChange(DBGMODE dbgmodeNew)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

@@ -790,6 +790,7 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY AssemblyNamespaces AS IList<STRING>
          GET
+            SELF:ResolveReferences()
             RETURN XDatabase.GetAssemblyNamespaces(SELF:DependentAssemblyList)
          END GET
       END PROPERTY
@@ -1216,6 +1217,7 @@ BEGIN NAMESPACE XSharpModel
       #region Properties
       PROPERTY AssemblyReferences AS List<XAssembly>
          GET
+            SELF:ResolveReferences()
             RETURN SELF:_AssemblyReferences
          END GET
       END PROPERTY

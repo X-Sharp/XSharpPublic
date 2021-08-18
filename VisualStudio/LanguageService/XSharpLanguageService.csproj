@@ -90,7 +90,6 @@
     <Compile Include="Errors\XSharpErrorColorizer.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Formatting\Formatting.cs" />
-    <Compile Include="GuidStrings.cs" />
     <Compile Include="HighlightWord\HighlightWord.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\PkgCmdID.cs" />
@@ -188,7 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit">
-      <Version>15.0.75.152-pre</Version>
+      <Version>15.0.76.253-pre</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>

@@ -223,21 +223,16 @@ namespace XSharp.Project
             XSharp.Project.XSharpMenuItems.Initialize(this);
 
             //this._documentWatcher = new XSharpDocumentWatcher(this);
-            _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
-            var tmp = await GetServiceAsync(typeof(SVsTaskList));
-            if (tmp != null)
-            {
-                _taskList = (ITaskList)tmp;
-            }
+            _errorList = await VS.GetRequiredServiceAsync<SVsErrorList, IErrorList>();
+            _taskList = await VS.GetRequiredServiceAsync<SVsTaskList, ITaskList>();
 
-            _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
-
-            var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
+            var shell = await VS.GetRequiredServiceAsync<SVsShell, IVsShell>();
             if (shell != null)
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
             GetEditorOptions();
+            _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
         }
 
 

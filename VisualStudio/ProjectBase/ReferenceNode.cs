@@ -347,7 +347,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         protected virtual int ShowObjectBrowser()
         {
-            if(String.IsNullOrEmpty(this.Url) || !File.Exists(this.Url))
+            if(String.IsNullOrEmpty(this.Url) || !System.IO.File.Exists(this.Url))
             {
                 return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
             }

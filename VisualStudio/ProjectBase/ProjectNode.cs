@@ -914,7 +914,7 @@ namespace Microsoft.VisualStudio.Project
                     return this.isDirty;
                 }
 
-                return (this.isDirty || !File.Exists(document));
+                return (this.isDirty || !System.IO.File.Exists(document));
             }
         }
 
@@ -1258,7 +1258,7 @@ namespace Microsoft.VisualStudio.Project
       {
          get
          {
-            return (File.GetAttributes(filename) & FileAttributes.ReadOnly) != 0;
+            return (System.IO.File.GetAttributes(filename) & FileAttributes.ReadOnly) != 0;
          }
       }
       /// <summary>
@@ -1546,7 +1546,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             // Now check whether the original file is still there. It could have been renamed.
-            if (!File.Exists(this.Url))
+            if (!System.IO.File.Exists(this.Url))
             {
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.FileOrFolderCannotBeFound, CultureInfo.CurrentUICulture), this.ProjectFile));
             }
@@ -2321,7 +2321,7 @@ namespace Microsoft.VisualStudio.Project
                 // we also need to copy all the associated files with it.
                 if ((flags & (uint)__VSCREATEPROJFLAGS.CPF_CLONEFILE) == (uint)__VSCREATEPROJFLAGS.CPF_CLONEFILE)
                 {
-                    Debug.Assert(!String.IsNullOrEmpty(fileName) && File.Exists(fileName), "Invalid filename passed to load the project. A valid filename is expected");
+                    Debug.Assert(!String.IsNullOrEmpty(fileName) && System.IO.File.Exists(fileName), "Invalid filename passed to load the project. A valid filename is expected");
 
                     this.isNewProject = true;
 
@@ -3399,7 +3399,7 @@ namespace Microsoft.VisualStudio.Project
                 bool isFileSame = NativeMethods.IsSamePath(oldFile, newFile);
 
                 // If file already exist and is not the same file with different casing
-                if (!isFileSame && File.Exists(newFile))
+                if (!isFileSame && System.IO.File.Exists(newFile))
                 {
                     // Prompt the user for replace
                     string message = SR.GetString(SR.FileAlreadyExists, newFile);
@@ -3417,8 +3417,8 @@ namespace Microsoft.VisualStudio.Project
                     }
 
                     // Delete the destination file after making sure it is not read only
-                    File.SetAttributes(newFile, FileAttributes.Normal);
-                    File.Delete(newFile);
+                    System.IO.File.SetAttributes(newFile, FileAttributes.Normal);
+                    System.IO.File.Delete(newFile);
                 }
 
                 SuspendFileChanges fileChanges = new SuspendFileChanges(this.Site, this.filename);
@@ -3434,8 +3434,8 @@ namespace Microsoft.VisualStudio.Project
                     {
                         // Now that the new file name has been created delete the old one.
                         // TODO: Handle source control issues.
-                        File.SetAttributes(oldFile, FileAttributes.Normal);
-                        File.Delete(oldFile);
+                        System.IO.File.SetAttributes(oldFile, FileAttributes.Normal);
+                        System.IO.File.Delete(oldFile);
                     }
 
                     this.OnPropertyChanged(this, (int)__VSHPROPID.VSHPROPID_Caption, 0);
@@ -5627,7 +5627,7 @@ namespace Microsoft.VisualStudio.Project
                      {
                         int copyNumber = 0;
                         string originalFileName = newFileName;
-                        while (File.Exists(newFileName))
+                        while (System.IO.File.Exists(newFileName))
                         {
                            copyNumber++;
                            string fileNoExtension = Path.GetFileNameWithoutExtension(originalFileName);
@@ -5687,7 +5687,7 @@ namespace Microsoft.VisualStudio.Project
                 // If the file to be added is not in the same path copy it.
                 if (op != VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE && NativeMethods.IsSamePath(file, newFileName) == false)
                 {
-                    if ((!overwrite && !this.alreadyHandledOverwritePrompts) && File.Exists(newFileName))
+                    if ((!overwrite && !this.alreadyHandledOverwritePrompts) && System.IO.File.Exists(newFileName))
                     {
                         string message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.FileAlreadyExists, CultureInfo.CurrentUICulture), newFileName);
                         string title = string.Empty;
@@ -5907,7 +5907,7 @@ namespace Microsoft.VisualStudio.Project
                     }
                     else
                     {
-                        if (File.Exists(checkFile))
+                        if (System.IO.File.Exists(checkFile))
                         {
                             found = false;
                             break;

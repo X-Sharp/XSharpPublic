@@ -660,7 +660,7 @@ namespace XSharp.Project
                     this.isLoaded = true;
                     lSuccess = true;
 
-                    FileAttributes fileAttrs = File.GetAttributes(filename);
+                    FileAttributes fileAttrs = System.IO.File.GetAttributes(filename);
 
                     int isReadOnly = (int)fileAttrs & (int)FileAttributes.ReadOnly;
 
@@ -1076,7 +1076,7 @@ namespace XSharp.Project
                     // without prompting the user.
                     if (0 != (rggrfChange[i] & (int)_VSFILECHANGEFLAGS.VSFILECHG_Attr))
                     {
-                        FileAttributes fileAttrs = File.GetAttributes(fileName);
+                        FileAttributes fileAttrs = System.IO.File.GetAttributes(fileName);
                         int isReadOnly = (int)fileAttrs & (int)FileAttributes.ReadOnly;
                         SetReadOnly(isReadOnly != 0);
                     }
@@ -1143,7 +1143,7 @@ namespace XSharp.Project
                 // to "Read/Write" or vice versa while the ignore level was non-zero.
                 // This may happen when a file is checked in or out under source
                 // code control. We need to check here so we can update our caption.
-                FileAttributes fileAttrs = File.GetAttributes(fileName);
+                FileAttributes fileAttrs = System.IO.File.GetAttributes(fileName);
                 int isReadOnly = (int)fileAttrs & (int)FileAttributes.ReadOnly;
                 SetReadOnly(isReadOnly != 0);
             }

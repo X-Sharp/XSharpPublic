@@ -124,6 +124,10 @@ BEGIN NAMESPACE XSharpModel
 
 		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XPETypeSymbol
 			LOCAL result := NULL AS XPETypeSymbol
+            // Empty TypeName ???
+            IF String.IsNullOrEmpty( typeName )
+                RETURN result
+            ENDIF
 			TRY
                 IF XSettings.EnableTypelookupLog
 				WriteOutputMessage("--> FindType() "+typeName)

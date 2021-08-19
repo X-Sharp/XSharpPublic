@@ -38,7 +38,7 @@ namespace XSharp.LanguageService
     
     [Guid(GuidStrings.guidXSharpLanguageServicePkgString)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string,PackageAutoLoadFlags.BackgroundLoad)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName, IsAsyncQueryable = false)]//
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
@@ -86,6 +86,7 @@ namespace XSharp.LanguageService
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
     [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), LanguageName, null, "Intellisense", pageNameResourceId: "201")]  // keywordlistresourceid
     [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]       // keywordlistresourceid
+    [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Other", pageNameResourceId: "203")]       // keywordlistresourceid
     public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguageService instance;
@@ -111,6 +112,7 @@ namespace XSharp.LanguageService
 
         IntellisenseOptionsPage _intellisensePage;
         FormattingOptionsPage _formattingPage;
+        OtherOptionsPage _otherOptionsPage;
         internal void GetIntellisenseSettings()
         {
             if (_intellisensePage == null)
@@ -121,7 +123,11 @@ namespace XSharp.LanguageService
             {
                 _formattingPage = (FormattingOptionsPage)GetDialogPage(typeof(FormattingOptionsPage));
             }
-            if (_intellisensePage.SettingsChanged)
+            if (_otherOptionsPage == null)
+            {
+                _otherOptionsPage = (OtherOptionsPage)GetDialogPage(typeof(OtherOptionsPage));
+            }
+            //if (_intellisensePage.SettingsChanged)
             {
                 XSettings.EnableLogging = _intellisensePage.EnableOutputPane;
                 XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
@@ -178,18 +184,26 @@ namespace XSharp.LanguageService
                     XSettings.EditorIndentSize = (int) languagePreferences[0].uIndentSize;
                     XSettings.EditorTabsAsSpaces  = languagePreferences[0].fInsertTabs == 0;
                 }
-
-                XSettings.EditorIndentFactor = _formattingPage.MultiFactor;
-                XSettings.EditorFormatAlignDoCase = _formattingPage.AlignDoCase;
-                XSettings.EditorFormatAlignMethod = _formattingPage.AlignMethod;
-                XSettings.IdentifierCase = _formattingPage.IdentifierCase;
-                XSettings.UDCKeywordCase = _formattingPage.UdcCase;
-                XSettings.EditorTrimTrailingWhiteSpace = _formattingPage.TrimTrailingWhiteSpace;
-                XSettings.EditorInsertFinalNewline = _formattingPage.InsertFinalNewLine;
-                XSettings.KeywordCase = _formattingPage.KeywordCase;
+                //if (_formattingPage.SettingsChanged)
+                {
+                    XSettings.EditorIndentFactor = _formattingPage.MultiFactor;
+                    XSettings.EditorFormatAlignDoCase = _formattingPage.AlignDoCase;
+                    XSettings.EditorFormatAlignMethod = _formattingPage.AlignMethod;
+                    XSettings.IdentifierCase = _formattingPage.IdentifierCase;
+                    XSettings.UDCKeywordCase = _formattingPage.UdcCase;
+                    XSettings.EditorTrimTrailingWhiteSpace = _formattingPage.TrimTrailingWhiteSpace;
+                    XSettings.EditorInsertFinalNewline = _formattingPage.InsertFinalNewLine;
+                    XSettings.KeywordCase = _formattingPage.KeywordCase;
+                }
+                //if (_otherOptionsPage.SettingsChanged)
+                {
+                    XSettings.EditorShowDividers = _otherOptionsPage.ShowDividers;
+                    XSettings.EditorShowSingleLineDividers = _otherOptionsPage.ShowSingleLineDividers;
+                }
 
                 _formattingPage.SettingsChanged = false;
                 _intellisensePage.SettingsChanged = false;
+                _otherOptionsPage.SettingsChanged = false;
             }
             return ;
         }
@@ -197,6 +211,8 @@ namespace XSharp.LanguageService
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             instance = this;
+            ModelScannerEvents.Start();
+
             await base.InitializeAsync(cancellationToken, progress);
             _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
             Assumes.Present(_txtManager);
@@ -244,6 +260,11 @@ namespace XSharp.LanguageService
             }
             GetIntellisenseSettings();
         }
+
+        
+
+
+        
 
         protected override void Dispose(bool disposing)
         {
@@ -329,7 +350,7 @@ namespace XSharp.LanguageService
                     // Get initial value
                     DBGMODE[] modeArray = new DBGMODE[1];
                     hr = m_debugger.GetMode(modeArray);
-                    XSettings.DebuggerIsRunning = modeArray[0] == DBGMODE.DBGMODE_Run;
+                    XSettings.DebuggerMode = (DebuggerMode)modeArray[0];
                 }
             });
         }
@@ -354,7 +375,7 @@ namespace XSharp.LanguageService
 
         public int OnModeChange(DBGMODE dbgmodeNew)
         {
-            XSettings.DebuggerIsRunning = dbgmodeNew != DBGMODE.DBGMODE_Design;
+            XSettings.DebuggerMode = (DebuggerMode)dbgmodeNew;
             return VSConstants.S_OK;
         }
 #endregion

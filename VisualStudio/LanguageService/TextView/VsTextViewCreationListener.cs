@@ -5,21 +5,14 @@
 //
 using System;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Package;
-using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Operations;
-using Microsoft.VisualStudio.Text.Tagging;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Outlining;
 using XSharpModel;
 using System.Collections.Generic;
 
@@ -39,44 +32,15 @@ namespace XSharp.LanguageService
 
     internal class VsTextViewCreationListener : IVsTextViewCreationListener
     {
-        [Import]
-        internal IOutliningManagerService OutliningManagerService { get; set; }
-
-        [ImportMany]
-        internal ISmartIndentProvider[] SmartIndentProviders { get; set; }
 
         [Import]
         internal IVsEditorAdaptersFactoryService EditorAdaptersFactoryService { get; set; }
 
-        [Import]
-        internal ICompletionBroker CompletionBroker { get; set; }
-
-        [Import]
-        internal ITextStructureNavigatorSelectorService TextStructureNavigatorSelectorService { get; set; }
-
-        [Import]
-        internal ISignatureHelpBroker SignatureHelpBroker { get; set; }
-
-        [Import]
-        internal IBufferTagAggregatorFactoryService BufferTagAggregatorFactoryService { get; set; }
 
         [Import]
         internal Microsoft.VisualStudio.Shell.SVsServiceProvider ServiceProvider { get; set; }
 
-        [Import]
-        internal ITextEditorFactoryService TextEditorFactory { get; set; }
-
-        [Import]
-        internal ITextBufferFactoryService TextBufferFactory { get; set; }
-
-        [Import]
-        internal IContentTypeRegistryService ContentTypeRegistry { get; set; }
-        [Import]
-        internal ITextSearchService TextSearchService { get; set; }
-
-        [Import(typeof(ITextStructureNavigatorSelectorService))]
-        internal ITextStructureNavigatorSelectorService NavigatorService { get; set; }
-        // the default key is the VS2019 key.
+          // the default key is the VS2019 key.
         internal static object dropDownBarKey = typeof(IVsCodeWindow);
 
         internal static Dictionary<string, XSharpDropDownClient> _dropDowns = new Dictionary<string, XSharpDropDownClient>(StringComparer.OrdinalIgnoreCase);
@@ -122,7 +86,7 @@ namespace XSharp.LanguageService
                         file.Interactive = true;
                         textView.Properties.AddProperty(typeof(XFile), file);
                     }
-                    CommandFilter filter = new CommandFilter(textView, CompletionBroker, SignatureHelpBroker, BufferTagAggregatorFactoryService, this);
+                    CommandFilter filter = new CommandFilter(textView, this);
                     IOleCommandTarget next;
                     textViewAdapter.AddCommandFilter(filter, out next);
 

@@ -291,7 +291,7 @@ BEGIN NAMESPACE XSharpModel
                parType := ParamType.As
             ENDIF
             if oPar:HasCustomAttributes
-               defValue := SELF:DecodeCustomAttributes(oPar:CustomAttributes)
+               defValue := SELF:DecodeCustomAttributes(oPar:CustomAttributes, oPar:ParameterType)
             ENDIF
             var parRef := XPEParameterSymbol{self, name, type}
             parRef:OriginalTypeName := RemoveGenericParameters(oPar:ParameterType:FullName)
@@ -310,7 +310,7 @@ BEGIN NAMESPACE XSharpModel
          NEXT
          RETURN
 
-      METHOD DecodeCustomAttributes( attributes as Mono.Collections.Generic.Collection<CustomAttribute>) AS STRING
+      METHOD DecodeCustomAttributes( attributes as Mono.Collections.Generic.Collection<CustomAttribute>, oType as TypeReference) AS STRING
          local result as STRING
          local done   as LOGIC
          FOREACH var attr in attributes
@@ -328,7 +328,11 @@ BEGIN NAMESPACE XSharpModel
                   case 2   // Arg1 is date in ticks
                      var ticks := (Int64)  arg1:Value
                      var dt    := DateTime{ticks}
-                     result    := dt:ToString("yyyy.MM.dd")
+                     if dt == DateTime.MinValue
+                         result := "NULL_DATE"
+                     else
+                        result    := dt:ToString("yyyy.MM.dd")
+                     endif
                   case 3   // Arg1 is Symbol , when NULL then NULL_SYMBOL
                      var sym := (STRING)  arg1:Value
                      if (sym == NULL)
@@ -358,6 +362,13 @@ BEGIN NAMESPACE XSharpModel
                         if arg1:Type:FullName == "System.String"
                            result := e"\""+result+e"\""
                         endif
+                     else
+                        switch oType:FullName
+                        case "System.String"
+                            return "NULL_STRING"
+                        otherwise
+                            return "NULL_OBJECT"
+                        end switch
                      endif
                   end switch
                   done := TRUE

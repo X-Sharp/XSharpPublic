@@ -1,0 +1,40 @@
+﻿Notes about signature help / parameter info
+===========================================
+
+Parameter info is triggered by the '(' or '{' characters and also by the ',' character.
+To determine what needs to be shown we need to:
+
+- Get the tokens on the current line
+- Remove closed token pairs before the cursor
+- Determine the parameter position
+- Determine the type of the method/function before the open token
+
+
+Assume the following code (| is the caret)
+
+Left(Substring("abc",1,2),|)
+
+Then the process is this:
+- Determine the tokens before the caret
+  Left(Substring("abc",1,2),
+- Remove the closed pairs before the caret, including the pairs themselves
+  Left(Substring, 
+- determine the parameter position (1 comma, so 2nd parameter)
+- Fetch the Token before the open paren
+  Left
+- Find the Left() function(s)
+- Determine parameters of Left()
+
+
+Another example:
+oObject := SomeClass{SomeFunction(1,2,3),"abc"|
+oObject := SomeClass{SomeFunction,"abc",|
+parameter = 3
+find SomeClass constructor(s)
+Determine the parameters of SomeClass{}
+
+
+
+
+
+

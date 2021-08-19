@@ -764,7 +764,7 @@ namespace Microsoft.VisualStudio.Project
 
             HierarchyNode newNode = parentNode;
             // If the file/directory exist, add a node for it
-         if (addItemOp == VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE || File.Exists(targetPath))
+         if (addItemOp == VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE || System.IO.File.Exists(targetPath))
          {
             VSADDRESULT[] result = new VSADDRESULT[1];
             ErrorHandler.ThrowOnFailure(this.AddItem(parentNode.ID, addItemOp, name, 1, new string[] { targetPath }, IntPtr.Zero, result));
@@ -1376,7 +1376,7 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
                newItem.reference = projectReference;
                newItem.source = moniker;
                newItem.destination = destination;
-               newItem.destinationExists = File.Exists(destination);
+               newItem.destinationExists = System.IO.File.Exists(destination);
                newItem.isFolder = false;
                newItem.sourceDirMatchesDestDir = NativeMethods.IsSamePath(sourcedir, destdir);
 

@@ -7,12 +7,9 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using static XSharp.XSharpConstants;
-using XSharp.LanguageService;
 using Microsoft.VisualStudio.Text.Classification;
-using System.Collections.Immutable;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.CodeAnalysis.XSharp;
 using XSharpModel;
 
 namespace XSharp.LanguageService.Editors.BraceMatching
@@ -177,12 +174,12 @@ namespace XSharp.LanguageService.Editors.BraceMatching
                     if (xTokens.SnapShot.Version != ssp.Snapshot.Version)
                     {
                         // get source from the start of the file until the current entity
-                        var xfile = SourceBuffer.GetFile();
-                        var member = XSharpLookup.FindMemberAtPosition(ssp.Position, xfile);
+                        var member = SourceBuffer.FindMemberAtPosition(ssp);
                         if (member != null)
                         {
                             try
                             {
+                                var xfile = SourceBuffer.GetFile();
                                 var sourceWalker = new SourceWalker(xfile, false);
                                 string text = ssp.Snapshot.GetText();
                                 var length = Math.Min(member.Interval.Width, text.Length - member.Interval.Start);

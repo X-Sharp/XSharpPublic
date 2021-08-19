@@ -24,8 +24,6 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Xml;
 using EnvDTE;
-using Microsoft.Build.BackEnd;
-using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -41,6 +39,7 @@ using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using System.Reflection;
 using XSharpModel;
 using Community.VisualStudio.Toolkit;
+using File = System.IO.File;
 
 namespace Microsoft.VisualStudio.Project
 {

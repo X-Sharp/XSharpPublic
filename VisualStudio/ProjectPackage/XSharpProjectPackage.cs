@@ -91,7 +91,7 @@ namespace XSharp.Project
     // [PackageRegistration(UseManagedResourcesOnly = true)] <-- Standard Package loading
     // ++ Async Package
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
     // -- Async Package
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideProjectFactory(typeof(XSharpProjectFactory),
@@ -158,7 +158,7 @@ namespace XSharp.Project
 
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents,IVsDebuggerEvents
     {
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
@@ -182,24 +182,10 @@ namespace XSharp.Project
         public XSharpProjectPackage() : base()
         {
             XInstance = this;
+            ModelScannerEvents.Start();
         }
 
-        public void OpenInBrowser(string url)
-        {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                IVsWebBrowsingService service = await GetServiceAsync(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
-                if (service != null)
-                {
-                    IVsWindowFrame frame = null;
-                    service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
-                    frame.Show();
-                }
-            });
-        }
-       
+      
 
         // XSharpLanguageService _langService = null;
         #region Overridden Implementation
@@ -214,13 +200,11 @@ namespace XSharp.Project
             XSettings.ShowMessageBox = ShowMessageBox;
 
             XSharpProjectPackage.instance = this;
-            base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             // The project selector helps to choose between MPF and CPS projects
             //_projectSelector = new XSharpProjectSelector();
             //await _projectSelector.InitAsync(this);
-
 
 
             this.settings = new XPackageSettings(this);
@@ -230,35 +214,24 @@ namespace XSharp.Project
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
-            
-
             // editors for the binaries
             base.RegisterEditorFactory(new VOFormEditorFactory(this));
             base.RegisterEditorFactory(new VOMenuEditorFactory(this));
             base.RegisterEditorFactory(new VODBServerEditorFactory(this));
             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
-            XSharp.Project.XSharpMenuItems.Initialize(this);
 
             //this._documentWatcher = new XSharpDocumentWatcher(this);
-            _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
-            var tmp = await GetServiceAsync(typeof(SVsTaskList));
-            if (tmp != null)
-            {
-                _taskList = (ITaskList)tmp;
-            }
+            _errorList = await VS.GetRequiredServiceAsync<SVsErrorList, IErrorList>();
+            _taskList = await VS.GetRequiredServiceAsync<SVsTaskList, ITaskList>();
 
-            _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
-
-            var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
+            var shell = await VS.GetRequiredServiceAsync<SVsShell, IVsShell>();
             if (shell != null)
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-
-
             GetEditorOptions();
-
-
+            _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
+            await this.RegisterCommandsAsync();
         }
 
 
@@ -282,9 +255,12 @@ namespace XSharp.Project
                 XEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
                 XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
 
-            }).FileAndForget("GetEditorOptions");
+            }).FireAndForget();
 
         }
+        /// <summary>
+        /// Read the comment tokens from the Tools/Options dialog and pass them to the CodeModel assembly
+        /// </summary>
         public void SetCommentTokens()
         {
             var commentTokens = _taskList.CommentTokens;
@@ -297,14 +273,7 @@ namespace XSharp.Project
             XSharpModel.XSolution.SetCommentTokens(tokens);
         }
 
-        /// <summary>
-        /// Gets the settings stored in the registry for this package.
-        /// </summary>
-        /// <value>The settings stored in the registry for this package.</value>
-        public XPackageSettings Settings
-        {
-            get { return this.settings; }
-        }
+
         public override string ProductUserContext
         {
             get { return "XSharp"; }
@@ -333,7 +302,10 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-
+        public int OnModeChange(DBGMODE dbgmodeNew)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

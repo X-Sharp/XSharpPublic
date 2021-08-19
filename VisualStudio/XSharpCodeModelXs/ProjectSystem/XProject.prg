@@ -71,7 +71,8 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY DependentProjectList              AS STRING
          GET
-            IF String.IsNullOrEmpty(_dependentProjectList) .OR. _dependentProjectList == SELF:Id:ToString()
+            IF String.IsNullOrEmpty(_dependentProjectList) .OR. ;
+               (_dependentProjectList == SELF:Id:ToString() .AND. _ReferencedProjects:Count > 0)
                VAR result := ""
                result := SELF:Id:ToString()
                FOREACH VAR dependent IN _ReferencedProjects:ToArray()
@@ -128,11 +129,13 @@ BEGIN NAMESPACE XSharpModel
                      ENDIF
                   NEXT
                   FOREACH VAR asm IN SELF:AssemblyReferences:ToArray()
-                     FOREACH VAR ns IN asm:ImplicitNamespaces
-                        IF result:IndexOf(ns) == -1
-                           result:Add(ns)
-                        ENDIF
-                     NEXT
+                     IF asm:IsXSharp
+                         FOREACH VAR ns IN asm:ImplicitNamespaces
+                            IF result:IndexOf(ns) == -1
+                               result:Add(ns)
+                            ENDIF
+                         NEXT
+                      ENDIF
                   NEXT
                ENDIF
                _ImplicitNamespaces := result
@@ -327,9 +330,7 @@ BEGIN NAMESPACE XSharpModel
 
          METHOD AddProjectReference(url AS STRING) AS LOGIC
             IF ! String.IsNullOrEmpty(url)
-               SELF:_ImplicitNamespaces := NULL
-               SELF:_dependentAssemblyList := NULL
-               SELF:_dependentProjectList  := ""
+               SELF:_clearTypeCache()
                IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("Add XSharp ProjectReference "+url)
                ENDIF
@@ -787,7 +788,13 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN type
 
-      PROPERTY AssemblyNamespaces AS IList<STRING> GET SystemTypeController.GetNamespaces(SELF:_AssemblyReferences)
+      PROPERTY AssemblyNamespaces AS IList<STRING>
+         GET
+            SELF:ResolveReferences()
+            RETURN XDatabase.GetAssemblyNamespaces(SELF:DependentAssemblyList)
+         END GET
+      END PROPERTY
+
 
       METHOD GetCommentTasks() AS IList<XCommentTask>
          VAR tasks := XDatabase.GetCommentTasks(SELF:Id:ToString())
@@ -828,7 +835,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _lastName  := NULL AS STRING
 
       METHOD GetTypes( startWith AS STRING, usings AS IList<STRING>) AS IList<XSourceTypeSymbol>
-         VAR result := XDatabase.GetTypesLike(startWith, SELF:DependentProjectList)
+         VAR result := XDatabase.GetProjectTypesLike(startWith, SELF:DependentProjectList)
          result := FilterUsings(result,usings,startWith,TRUE)
          VAR types := SELF:GetTypeList(result)
          RETURN types
@@ -866,7 +873,7 @@ BEGIN NAMESPACE XSharpModel
          IF pos > 0
             typeName := typeName:Substring(0, pos)
          ENDIF
-         VAR result  := XDatabase.GetTypes(typeName, SELF:DependentProjectList)
+         VAR result  := XDatabase.GetProjectTypes(typeName, SELF:DependentProjectList)
          result      := FilterUsings(result,usings, typeName, FALSE)
 
          var tmp  := GetType(result)
@@ -1210,6 +1217,7 @@ BEGIN NAMESPACE XSharpModel
       #region Properties
       PROPERTY AssemblyReferences AS List<XAssembly>
          GET
+            SELF:ResolveReferences()
             RETURN SELF:_AssemblyReferences
          END GET
       END PROPERTY
@@ -1242,12 +1250,7 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY ProjectNamespaces AS IList<STRING>
          GET
-            VAR list := XDatabase.GetNamespaces(SELF:DependentProjectList)
-            VAR result := List<STRING>{}
-            FOREACH VAR db IN list
-               result:Add(db:Namespace)
-            NEXT
-            RETURN result
+            RETURN XDatabase.GetProjectNamespaces(SELF:DependentProjectList)
          END GET
      END PROPERTY
 
@@ -1258,17 +1261,24 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             VAR result := SELF:ProjectNamespaces
             VAR asmNS  := SELF:AssemblyNamespaces
-            FOREACH ns AS STRING IN asmNS
-                IF !result:Contains(ns)
-                    result:Add(ns)
-                ENDIF
-            NEXT
+            IF result:Count > asmNS:Count
+                FOREACH ns AS STRING IN asmNS
+                    IF !result:Contains(ns)
+                        result:Add(ns)
+                    ENDIF
+                NEXT
+            ELSE
+                FOREACH ns AS STRING IN result
+                    IF !asmNS:Contains(ns)
+                        asmNS:Add(ns)
+                    ENDIF
+                NEXT
+                result := asmNS
+            ENDIF
             _cachedAllNamespaces := result
             RETURN result
          END GET
-     END PROPERTY
-
-
+      END PROPERTY
 
       PROPERTY OtherFiles AS List<STRING> GET SELF:_OtherFilesDict:Keys:ToList()
 

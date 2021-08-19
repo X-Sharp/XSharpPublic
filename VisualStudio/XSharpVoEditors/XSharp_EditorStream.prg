@@ -101,7 +101,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 				lSuccess := oProject:ProjectNode:DocumentSetText(oFile:FullPath, source)
 		    ELSE
 		        // Write to disk
-		        System.IO.File.WriteAllText(oFile:FullPath, source)
+		        File.WriteAllText(oFile:FullPath, source)
 			ENDIF
 		ELSE
 			TRY

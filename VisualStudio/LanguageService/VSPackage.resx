@@ -144,4 +144,8 @@
     <value>Formatting</value>
     <comment>Caption of Formatting Options page in Tools/Option/TextEditor/XSharp</comment>
   </data>
+  <data name="203" xml:space="preserve">
+    <value>Other</value>
+    <comment>Caption of Other Options page in Tools/Option/TextEditor/XSharp</comment>
+  </data>
 </root>

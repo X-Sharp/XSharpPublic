@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace XSharp.LanguageService
     /// This type contains the location where a search has started. It is immutable
     /// If you want to change the line number or Position you will have to use the With() method to update these
     /// </summary>
+    [DebuggerDisplay("{Member.Name} {LineNumber}")]
     internal class XSharpSearchLocation
     {
         internal ITextSnapshot Snapshot { get; private set; }

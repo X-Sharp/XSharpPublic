@@ -25,6 +25,7 @@ using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using XSharpModel;
 using Community.VisualStudio.Toolkit;
+using File = System.IO.File;
 
 namespace Microsoft.VisualStudio.Project
 {

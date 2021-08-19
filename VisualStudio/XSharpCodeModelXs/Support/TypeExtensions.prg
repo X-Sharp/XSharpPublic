@@ -56,7 +56,9 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
             NEXT
             XSharpToSystem:Add("LONG", "System.Int32")
-
+        STATIC METHOD IsXSharpTypeName( SELF typeName as STRING) AS LOGIC
+            RETURN XSharpToSystem:ContainsKey(typeName)
+            
         STATIC METHOD GetSystemTypeName( SELF typename AS STRING, lXSharpNames AS LOGIC) AS STRING
             LOCAL lHandled := TRUE AS LOGIC
             IF lXSharpNames

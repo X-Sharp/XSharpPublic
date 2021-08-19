@@ -149,8 +149,10 @@ BEGIN NAMESPACE XSharpModel
             RETURN
 
         METHOD Parse(lIncludeLocals AS LOGIC) AS VOID
-            VAR cSource      := System.IO.File.ReadAllText(SELF:SourcePath)
-            SELF:Parse(cSource, lIncludeLocals)
+            IF System.IO.File.Exists(SELF:SourcePath)
+                VAR cSource      := System.IO.File.ReadAllText(SELF:SourcePath)
+                SELF:Parse(cSource, lIncludeLocals)
+            ENDIF
 
         METHOD Parse(cSource AS STRING, lIncludeLocals AS LOGIC) AS VOID
             IF SELF:_file == NULL

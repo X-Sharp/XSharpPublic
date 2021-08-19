@@ -1214,14 +1214,14 @@ CLASS FieldSpecCode
       cOrigDir := cDirectory
         TRY
         	cCavoWed := cDirectory + "\Properties\CAVOFED.TPL"
-	        IF !System.IO.File.Exists(cCavoWed)
+	        IF !File.Exists(cCavoWed)
 		        cCavoWed := cDirectory + "\CAVOFED.TPL"
-				IF !System.IO.File.Exists(cCavoWed)
+				IF !File.Exists(cCavoWed)
 					cDirectory := Directory.GetParent(cDirectory):FullName
 					cCavoWed := cDirectory + "\CAVOFED.TPL"
-			        IF !System.IO.File.Exists(cCavoWed)
+			        IF !File.Exists(cCavoWed)
 			        	cCavoWed := cDirectory + "\Properties\CAVOFED.TPL"
-				        IF !System.IO.File.Exists(cCavoWed) .and. Funcs.InstallTemplatesFolder != ""
+				        IF !File.Exists(cCavoWed) .and. Funcs.InstallTemplatesFolder != ""
 				        	cCavoWed := Funcs.InstallTemplatesFolder  + "\CAVOFED.TPL"
 				        ENDIF
 			        ENDIF
@@ -1230,10 +1230,10 @@ CLASS FieldSpecCode
          CATCH
             NOP
         END TRY
-		IF !System.IO.File.Exists(cCavoWed)
+		IF !File.Exists(cCavoWed)
 			MessageBox.Show("File Cavofed.tpl was not found, please locate it on disk." , Resources.EditorName)
 		ENDIF
-		DO WHILE !System.IO.File.Exists(cCavoWed)
+		DO WHILE !File.Exists(cCavoWed)
 			LOCAL oDlg AS OpenFileDialog
 			oDlg := OpenFileDialog{}
 			oDlg:Filter := "CavoFED files (*.tpl)|*.tpl"
@@ -1252,7 +1252,7 @@ CLASS FieldSpecCode
 			ENDIF
 		END DO
 	
-		IF System.IO.File.Exists(cCavoWed)
+		IF File.Exists(cCavoWed)
 			
 			SELF:Reset()
 		    oStream := System.IO.StreamReader{cCavoWed , System.Text.Encoding.GetEncoding(0)}

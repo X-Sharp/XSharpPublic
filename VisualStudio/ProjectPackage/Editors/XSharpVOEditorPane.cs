@@ -5,9 +5,7 @@
 //
 
 using System;
-using System.Collections;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.IO;
 using System.Globalization;
 using System.Windows.Forms;
@@ -19,11 +17,10 @@ using Microsoft.VisualStudio.Shell;
 using EnvDTE;
 using XSharp.VOEditors;
 using Microsoft.VisualStudio.Project;
-using XSharp.LanguageService;
 using XSharpModel;
 using System.Collections.Generic;
 using Community.VisualStudio.Toolkit;
-
+using File = System.IO.File;
 namespace XSharp.Project
 {
     /// <summary>
@@ -180,8 +177,8 @@ namespace XSharp.Project
             {
                 return ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    return (IVsUIShell)GetService(typeof(SVsUIShell));
+                    var result = await VS.Services.GetUIShellAsync();
+                    return result;
                 });
             }
         }

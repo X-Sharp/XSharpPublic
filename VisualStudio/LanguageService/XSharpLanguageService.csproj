@@ -34,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;NOASYNCCOMPLETION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CreateVsixContainer>False</CreateVsixContainer>
@@ -62,9 +62,22 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="BraceMatching\BraceMatching.cs" />
+    <Compile Include="Completion\CompletionHelpers.cs" />
+    <Compile Include="Completion\CompletionState.cs" />
+    <Compile Include="Completion\CompletionCommandHandler.cs" />
+    <Compile Include="Completion\XSharpCompletionSourceProvider.cs" />
+    <Compile Include="Completion\XSharpAsyncCompletionSource.cs" />
+    <Compile Include="Completion\XSharpAsyncCompletionSourceProvider.cs" />
     <Compile Include="Formatting\EditorConfigSettings.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
+    <Compile Include="Formatting\FormattingCommandHandler.cs" />
+    <Compile Include="KeywordColoring\LineState.cs" />
+    <Compile Include="LineSeparators\GraphicsResult.cs" />
+    <Compile Include="LineSeparators\GraphicsTag.cs" />
+    <Compile Include="LineSeparators\LineSeparatorManager.cs" />
+    <Compile Include="LineSeparators\LineSeparatorProvider.cs" />
+    <Compile Include="LineSeparators\LineSeparatorTag.cs" />
     <Compile Include="Lookup\XSharpSearchLocation.cs" />
     <Compile Include="Lookup\XSharpLookup.cs" />
     <Compile Include="KeywordColoring\ClassificationDefinitions.cs" />
@@ -77,15 +90,14 @@
     <Compile Include="Errors\XSharpErrorColorizer.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Formatting\Formatting.cs" />
-    <Compile Include="GuidStrings.cs" />
     <Compile Include="HighlightWord\HighlightWord.cs" />
     <Compile Include="LanguageService\ExpansionFunctions.cs" />
     <Compile Include="LanguageService\PkgCmdID.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
     <Compile Include="LanguageService\XSharpSource.cs" />
     <Compile Include="Library\HierarchyListener.cs" />
+    <Compile Include="ModelScannerEvents.cs" />
     <Compile Include="NavigationBar\DropDownClient.cs" />
-    <Compile Include="NavigationBar\XSharpTypeAndMemberDropDownBars.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="Library\Library.cs" />
     <Compile Include="Library\LibraryNode.cs" />
@@ -105,6 +117,12 @@
     <Compile Include="OptionsPages\FormattingOptionsControl.Designer.cs">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionsPages\OtherOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\OtherOptionsControl.Designer.cs">
+      <DependentUpon>OtherOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionsPages\IntellisenseOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -112,6 +130,9 @@
       <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionsPages\FormattingOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\OtherOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="OptionsPages\IntellisenseOptionsPage.cs">
@@ -123,7 +144,8 @@
     <Compile Include="OptionsPages\XSharpSpecialOptions.Designer.cs">
       <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
     </Compile>
-    <Compile Include="Package.cs" />
+    <Compile Include="Parameter Info\SignatureCommandHandler.cs" />
+    <Compile Include="XSharpLanguagePackage.cs" />
     <Compile Include="Parameter Info\SignatureHelpSource.cs" />
     <Compile Include="Parameter Info\SignatureHelpSourceProvider.cs" />
     <Compile Include="PeekDefinition\XSharpDefinitionPeekItem.cs" />
@@ -165,7 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit">
-      <Version>15.0.75.152-pre</Version>
+      <Version>15.0.76.253-pre</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>
@@ -187,6 +209,9 @@
     <EmbeddedResource Include="OptionsPages\FormattingOptionsControl.resx">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="OptionsPages\OtherOptionsControl.resx">
+      <DependentUpon>OtherOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\IntellisenseOptionsControl.resx">
       <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -197,11 +222,13 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="LineSeparators\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Completion\Notes.txt" />
     <Content Include="LanguageService\LanguageService.vsct" />
+    <Content Include="Lookup\Notes.txt" />
+    <Content Include="Parameter Info\Notes.txt" />
+    <Content Include="QuickInfo\Notes.txt" />
     <Content Include="XSharpLanguageService.pkgdef" />
   </ItemGroup>
   <ItemGroup>

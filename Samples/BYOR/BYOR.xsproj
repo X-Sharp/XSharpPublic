@@ -1,8 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <ProjectGuid>15c497eb-929b-4000-b6c3-b6c6e7e6aadf</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -13,7 +12,7 @@
     <Nologo>true</Nologo>
     <GenerateFullPaths>false</GenerateFullPaths>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.0</TargetFrameworkMoniker>
-    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <XSharpProjectExtensionsPath>$(XSharpMsBuildDir)\</XSharpProjectExtensionsPath>
     <Dialect>Vulcan</Dialect>
     <AZ>false</AZ>
     <LB>true</LB>
@@ -21,6 +20,8 @@
     <Unsafe>false</Unsafe>
     <INS>false</INS>
     <VO15>true</VO15>
+    <Nostandarddefs>true</Nostandarddefs>
+    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -40,8 +41,6 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <NoStandardDefs>true</NoStandardDefs>
-    <IncludePaths />
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
@@ -54,7 +53,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="VulcanRT">

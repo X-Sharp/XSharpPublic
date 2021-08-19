@@ -18,10 +18,8 @@ namespace XSharp.LanguageService.OptionsPages
 
         }
         internal FormattingOptionsPage formattingPage;
-        private bool _loading = false;
         internal void Initialize()
         {
-            _loading = true;
             grpCase.Enabled = true;
             switch (formattingPage.KeywordCase)
             {
@@ -46,8 +44,6 @@ namespace XSharp.LanguageService.OptionsPages
             chkInsertFinalNewLine.Checked = formattingPage.InsertFinalNewLine;
             chkTrimTrailngWhiteSpace.Checked = formattingPage.TrimTrailingWhiteSpace;
             multiFactor.Text = formattingPage.MultiFactor.ToString();
-            _loading = false;
-
         }
 
 
@@ -85,15 +81,6 @@ namespace XSharp.LanguageService.OptionsPages
         {
             formattingPage.AlignMethod = chkAlignMethod.Checked;
         }
-
-        private void Control_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_loading)
-            {
-            }
-
-        }
-
 
         private void multiFactor_TextChanged(object sender, EventArgs e)
         {

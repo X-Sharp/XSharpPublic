@@ -70,11 +70,15 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EditorInsertFinalNewline         AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorTrimTrailingWhiteSpace     AS LOGIC AUTO
 
+        PUBLIC STATIC PROPERTY EditorShowDividers               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY EditorShowSingleLineDividers     AS LOGIC AUTO
+
         PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO
         PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO
         PUBLIC STATIC PROPERTY ShowMessageBox                   AS ShowMessageBox AUTO
 
-        PUBLIC STATIC PROPERTY DebuggerIsRunning                AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY DebuggerMode                AS DebuggerMode AUTO
+        PUBLIC STATIC PROPERTY DebuggerIsRunning           AS LOGIC GET DebuggerMode != DebuggerMode.Design
 
         PRIVATE STATIC METHOD NoOutput(message AS STRING) AS VOID
         RETURN

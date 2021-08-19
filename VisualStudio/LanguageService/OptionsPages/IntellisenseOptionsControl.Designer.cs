@@ -173,12 +173,12 @@
             this.panel1.Controls.Add(this.grpCompletionListTabs);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(381, 303);
+            this.panel1.Size = new System.Drawing.Size(381, 315);
             this.panel1.TabIndex = 4;
             // 
             // btnShowMeTheMagic
             // 
-            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 266);
+            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 275);
             this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
             this.btnShowMeTheMagic.Size = new System.Drawing.Size(114, 23);
             this.btnShowMeTheMagic.TabIndex = 7;
@@ -194,7 +194,7 @@
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
             this.grpNavigationBars.Location = new System.Drawing.Point(3, 152);
             this.grpNavigationBars.Name = "grpNavigationBars";
-            this.grpNavigationBars.Size = new System.Drawing.Size(373, 109);
+            this.grpNavigationBars.Size = new System.Drawing.Size(373, 101);
             this.grpNavigationBars.TabIndex = 6;
             this.grpNavigationBars.TabStop = false;
             this.grpNavigationBars.Text = "Navigation Bars";
@@ -230,7 +230,7 @@
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(386, 317);
+            this.Size = new System.Drawing.Size(424, 371);
             this.panel1.ResumeLayout(false);
             this.grpNavigationBars.ResumeLayout(false);
             this.grpNavigationBars.PerformLayout();

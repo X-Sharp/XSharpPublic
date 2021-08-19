@@ -63,6 +63,7 @@ namespace XSharp.LanguageService
         private ITextSnapshot _snapshot;
         private XFile _file;
         private List<String> xtraKeywords;
+        private XSharpLineState lineState;
         #endregion
 
         #region Properties
@@ -90,6 +91,8 @@ namespace XSharp.LanguageService
             }
             _file = file;
             //
+            lineState = new XSharpLineState();
+            buffer.Properties.AddProperty(typeof(XSharpLineState), lineState);
             xtraKeywords = new List<string>();
             // Initialize our background workers
             _buffer.Changed += Buffer_Changed;
@@ -158,6 +161,7 @@ namespace XSharp.LanguageService
                 return;
             // verify if someone else did not classify this already
             XSharpTokens xTokens = _buffer.GetTokens();
+            lineState.Clear();
             ITokenStream tokens = null;
             Debug("Starting classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             tokens = _sourceWalker.Lex(snapshot.GetText());
@@ -270,6 +274,7 @@ namespace XSharp.LanguageService
                 Debug("Starting model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
                 _sourceWalker.SaveToDisk = true;
                 _sourceWalker.ParseTokens(_tokens, true, false);
+                RegisterEntityBoundaries();
                 var regionTags = BuildRegionTags(_sourceWalker.EntityList, _sourceWalker.BlockList, snapshot, xsharpRegionStart, xsharpRegionStop);
                 lock (gate)
                 {
@@ -282,6 +287,25 @@ namespace XSharp.LanguageService
         }
         #endregion
 
+        private void RegisterEntityBoundaries()
+        {
+            // Register the entity boundaries for the line separators
+            foreach (var entity in _sourceWalker.EntityList)
+            {
+                var line = entity.Range.StartLine;
+                if (entity.StartOfXmlComments > 0 && !string.IsNullOrEmpty(entity.XmlComments))
+                    line = entity.StartOfXmlComments;
+                if (entity.SingleLine)
+                {
+                    lineState.SetFlags(line, LineFlags.SingleLineEntity);
+                }
+                else
+                {
+                    lineState.SetFlags(line, LineFlags.EntityStart);
+                }
+
+            }
+        }
         private void DoRepaintRegions()
         {
             if (_buffer.Properties.ContainsProperty(typeof(XSharpOutliningTagger)))
@@ -423,9 +447,15 @@ namespace XSharp.LanguageService
                     break;
                 case XSharpLexer.DEFOUTCHANNEL:                // code in an inactive #ifdef
                     result = Token2ClassificationSpan(token, snapshot, xsharpInactiveType);
+                    lineState.SetFlags(token.Line-1, LineFlags.Inactive);
                     break;
                 case XSharpLexer.XMLDOCCHANNEL:
                 case XSharpLexer.Hidden:
+                    if (token.Type == XSharpLexer.LINE_CONT)
+                    {
+                        var line = token.Line;
+                        lineState.SetFlags(line, LineFlags.Continued);
+                    }
                     if (XSharpLexer.IsComment(token.Type))
                     {
                         result = Token2ClassificationSpan(token, snapshot, xsharpCommentType);
@@ -433,6 +463,19 @@ namespace XSharp.LanguageService
                         {
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStart));
                             regionTags.Add(Token2ClassificationSpan(token, snapshot, xsharpRegionStop));
+                            var startline = result.Span.Start.GetContainingLine().LineNumber;
+                            var endLine = result.Span.End.GetContainingLine().LineNumber;
+                            for (int i = startline; i <= endLine; i++)
+                            {
+                                lineState.SetFlags(i, LineFlags.MultiLineComments);
+                            }
+                        }
+                        else
+                        {
+                            if (token.Type == XSharpLexer.DOC_COMMENT)
+                                lineState.SetFlags(token.Line - 1, LineFlags.DocComments);
+                            else
+                                lineState.SetFlags(token.Line-1, LineFlags.SingleLineComments);
                         }
                     }
                     break;

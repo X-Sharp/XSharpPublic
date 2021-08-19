@@ -458,6 +458,9 @@ RETURN
 				cLine += ((INT)(oRect:Top / rDivY)):ToString() + ", "
 				cLine += ((INT)(oRect:Width / rDivX)):ToString() + ", "
 				cLine += ((INT)(oRect:Height / rDivY)):ToString()*/
+				IF oDesign:IsComboBoxExDropDown .and. oRect:Height < 50
+					oRect:Height := oDesign:Control:Height * 6
+				END IF
 				oRect := Funcs.PixelsToUnits(oRect , oInfo)
 				cLine += oRect:Left:ToString() + ", "
 				cLine += oRect:Top:ToString() + ", "
@@ -3636,7 +3639,7 @@ RETURN
 		LOCAL oColor AS Color
 		DO CASE
 		CASE oProp:Name == "Caption"
-			IF oDesign:Control:GetType() == TypeOf(DesignPushButton) .or. oDesign:Control:GetType() == TypeOf(DesignCheckBox)
+			IF oDesign:Control:GetType() == TypeOf(DesignPushButton) .OR. oDesign:Control:GetType() == TypeOf(DesignCheckBox) .OR. oDesign:Control:GetType() == TypeOf(DesignRadioButton)
 				oDesign:Control:Text := ""
 				oDesign:Control:Invalidate()
 				RETURN
@@ -4011,7 +4014,7 @@ RETURN
 				oControl:Width := (INT)oDesign:GetProperty("_Width"):Value
 				oControl:Height := (INT)oDesign:GetProperty("_Height"):Value
 				IF oDesign:GetProperty("Caption") != NULL
-					oControl:Text := oDesign:GetProperty("Caption"):TextValue
+					oControl:Text := Funcs.TranslateCaption( oDesign:GetProperty("Caption"):TextValue , FALSE)
 				ENDIF
 				oTest:Controls:Add(oControl)
 				DO CASE
@@ -4019,10 +4022,12 @@ RETURN
 					((CheckBox)oControl):CheckAlign := ((CheckBox)oDesign:Control):CheckAlign
 					((CheckBox)oControl):TextAlign := ((CheckBox)oDesign:Control):TextAlign
 					((CheckBox)oControl):Appearance := ((CheckBox)oDesign:Control):Appearance
+                    oControl:Text := ""
 				CASE oType == TypeOf(DesignRadioButton)
 					((RadioButton)oControl):CheckAlign := ((RadioButton)oDesign:Control):CheckAlign
 					((RadioButton)oControl):TextAlign := ((RadioButton)oDesign:Control):TextAlign
 					((RadioButton)oControl):Appearance := ((RadioButton)oDesign:Control):Appearance
+                    oControl:Text := ""
 				CASE oType == TypeOf(DesignPushButton)
 					((Button)oControl):FlatStyle := ((Button)oDesign:Control):FlatStyle
 					oControl:Text := ""
@@ -4088,14 +4093,14 @@ RETURN
       cOrigDir := cDirectory
         TRY
         	cCavoWed := cDirectory + "\Properties\CAVOWED.TPL"
-	        IF !System.IO.File.Exists(cCavoWed)
+	        IF !File.Exists(cCavoWed)
 		        cCavoWed := cDirectory + "\CAVOWED.TPL"
-				IF !System.IO.File.Exists(cCavoWed)
+				IF !File.Exists(cCavoWed)
 					cDirectory := Directory.GetParent(cDirectory):FullName
 					cCavoWed := cDirectory + "\CAVOWED.TPL"
-			        IF !System.IO.File.Exists(cCavoWed)
+			        IF !File.Exists(cCavoWed)
 			        	cCavoWed := cDirectory + "\Properties\CAVOWED.TPL"
-				        IF !System.IO.File.Exists(cCavoWed) .AND. Funcs.InstallTemplatesFolder != ""
+				        IF !File.Exists(cCavoWed) .AND. Funcs.InstallTemplatesFolder != ""
 				        	cCavoWed := Funcs.InstallTemplatesFolder  + "\CAVOWED.TPL"
 				        ENDIF
 			        ENDIF
@@ -4105,10 +4110,10 @@ RETURN
             NOP
         END TRY
 
-		IF !System.IO.File.Exists(cCavoWed)
+		IF !File.Exists(cCavoWed)
 			MessageBox.Show("File Cavowed.tpl was not found, please locate it on disk." , Resources.EditorName)
 		ENDIF
-		DO WHILE !System.IO.File.Exists(cCavoWed)
+		DO WHILE !File.Exists(cCavoWed)
 			LOCAL oDlg AS OpenFileDialog
 			oDlg := OpenFileDialog{}
 			oDlg:Filter := "CavoWED files (*.tpl)|*.tpl"
@@ -4126,7 +4131,7 @@ RETURN
 				RETURN FALSE
 			ENDIF
 		END DO
-		IF !System.IO.File.Exists(cCavoWed)
+		IF !File.Exists(cCavoWed)
 			RETURN FALSE
 		ENDIF
 
@@ -4662,6 +4667,15 @@ CLASS DesignWindowItem INHERIT DesignItem
 			SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:RADIOGROUPBOX") == 0
 	ACCESS IsComboBox() AS LOGIC
 	RETURN SELF:cFullClass:IndexOf("CONTROL:TEXTCONTROL:BASELISTBOX:COMBOBOX") == 0
+	ACCESS IsComboBoxExDropDown() AS LOGIC
+		IF SELF:cFullClass:StartsWith("CONTROL:TEXTCONTROL:BASELISTBOX:COMBOBOX:COMBOBOXEX")
+			LOCAL oProp AS DesignProperty
+			oProp := SELF:GetProperty("ComboBox Type")
+			IF oProp != NULL .and. oProp:TextValue:ToUpper():StartsWith("DROP DOWN")
+				RETURN TRUE
+			END IF
+		END IF
+	RETURN FALSE
 	ACCESS IsSubForm() AS LOGIC
 	RETURN SELF:cFullClass:IndexOf("CONTROL:SUBDATAWINDOW") == 0
 	ACCESS IsTabControl() AS LOGIC

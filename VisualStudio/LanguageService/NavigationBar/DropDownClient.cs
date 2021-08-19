@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using System;
@@ -9,11 +8,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XSharpModel;
 using MVP = Microsoft.VisualStudio.Package;
+using File = System.IO.File;
 namespace XSharp.LanguageService
 {
 
@@ -171,7 +170,7 @@ namespace XSharp.LanguageService
                 {
                     foreach (var file in _relatedFiles)
                     {
-                        var dt = System.IO.File.GetLastWriteTime(file);
+                        var dt = File.GetLastWriteTime(file);
                         if (dt > _lastFileChanged)
                         {
                             return true;
@@ -277,7 +276,7 @@ namespace XSharp.LanguageService
 
         private void AddSourceFile(string fileName)
         {
-            var changed = System.IO.File.GetLastWriteTime(fileName);
+            var changed = File.GetLastWriteTime(fileName);
             fileName = fileName.ToLower();
             if (!_relatedFiles.Contains(fileName))
             {

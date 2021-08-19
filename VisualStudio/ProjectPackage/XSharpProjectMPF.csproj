@@ -106,13 +106,23 @@
     <Compile Include="Automation\OAXSharpProjectItem.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="Commands\CommandAddDesignerFile.cs" />
+    <Compile Include="Commands\CommandConvertXsRuntime.cs" />
+    <Compile Include="Commands\CommandViewWorkareas.cs" />
+    <Compile Include="Commands\CommandViewSettings.cs" />
+    <Compile Include="Commands\CommandViewMemVars.cs" />
+    <Compile Include="Commands\CommandViewGlobals.cs" />
+    <Compile Include="Commands\CommandXsWebsite.cs" />
+    <Compile Include="Commands\CommandXsHelp.cs" />
+    <Compile Include="Commands\CommandXPorter.cs" />
+    <Compile Include="Commands\CommandVoXPorter.cs" />
+    <Compile Include="Commands\XSharpBaseCommand.cs" />
     <Compile Include="ErrorList\TaskListManager.cs" />
     <Compile Include="ErrorList\TasksSnapShot.cs" />
     <Compile Include="ErrorList\TasksFactory.cs" />
     <Compile Include="ErrorList\TaskListItem.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />
     <Compile Include="ErrorList\TaskListProvider.cs" />
-    <Compile Include="ModelScannerEvents.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
@@ -322,6 +332,8 @@
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <Generator>VsctGenerator</Generator>
+      <LastGenOutput>XSharpProjectPackage1.cs</LastGenOutput>
     </VSCTCompile>
     <Content Include="XSharpAppDesigner.pkgdef">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -349,10 +361,14 @@
     </ZipItem>
     <Compile Include="XSharpDocumentWatcher.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
-    <Compile Include="XSharpMenuItems.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
+    <Compile Include="XSharpProjectPackage1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>XSharpProjectPackage.vsct</DependentUpon>
+    </Compile>
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
     <Compile Include="WPF\XSharpEventBindingProvider.cs" />
@@ -687,16 +703,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit">
-      <Version>15.0.75.152-pre</Version>
+      <Version>15.0.76.253-pre</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK">
       <Version>15.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes">
-      <Version>15.0.36</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.15.0">
-      <Version>15.9.28307</Version>
     </PackageReference>
     <PackageReference Include="System.ComponentModel">
       <Version>4.3.0</Version>

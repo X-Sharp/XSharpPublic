@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          _sqldb    := Path.Combine(folder, "X#Model.xsdb")
          XDatabase.CreateOrOpenDatabase(_sqldb)
-         var dbprojectList := XDatabase.GetProjectNames()
+         VAR dbprojectList := XDatabase.GetProjectFileNames()
          FOREACH var project in _projects:Values
             XDatabase.Read(project)
             FOREACH VAR dbproject  in dbprojectList

@@ -16,13 +16,12 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-
+using File = System.IO.File;
 namespace Microsoft.VisualStudio.Project
 {
     [CLSCompliant(false)]

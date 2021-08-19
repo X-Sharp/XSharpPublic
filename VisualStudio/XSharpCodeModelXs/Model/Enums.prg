@@ -206,12 +206,14 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Params   := 3
       MEMBER @@In  	   := 4
    END ENUM
+
    ENUM LocalType as BYTE
       MEMBER @@As       := 0
       MEMBER @@Is       := 1
    END ENUM
 
    ENUM CallingConvention
+      // Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CALLBACK | FASTCALL | THISCALL)
       MEMBER None          := 0
       MEMBER @@Clipper     :=  XSharpLexer.CLIPPER
       MEMBER @@Strict      :=  XSharpLexer.STRICT

@@ -23,8 +23,6 @@ using Microsoft.VisualStudio;
 using System.Diagnostics;
 using MSBuild = Microsoft.Build.Evaluation;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.VisualStudio.Shell.TableManager;
-using System.ComponentModel.Composition;
 
 using XSharpModel;
 using System.Linq;
@@ -33,12 +31,12 @@ using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
 using XSharp.CodeDom;
 using MBC = Microsoft.Build.Construction;
-using Microsoft;
 using LanguageService.SyntaxTree;
 using System.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XSharp.LanguageService;
 using Community.VisualStudio.Toolkit;
+using File = System.IO.File;
 
 namespace XSharp.Project
 {
@@ -836,7 +834,7 @@ namespace XSharp.Project
                 //Debug.Assert(parent != null, "File dependent upon a non existing item or circular dependency. Ignoring the DependentUpon metadata");
                 if (parent == null)
                 {
-                    ShowMessageBox($"Cannot set dependency from \"{item.EvaluatedInclude}\" to \"{dependentOf}\"\r\nCannot find \"{dependentOf}\" in the project hierarchy");
+                    VS.MessageBox.Show($"Cannot set dependency from \"{item.EvaluatedInclude}\" to \"{dependentOf}\"\r\nCannot find \"{dependentOf}\" in the project hierarchy");
                 }
             }
 
@@ -998,13 +996,13 @@ namespace XSharp.Project
                         {
                             if (File.Exists(url))
                             {
-                                this.ProjectModel.AddFile(url);
+                                //this.ProjectModel.AddFile(url);
                             	base.ObserveItem(url);
                             }
                         }
                     }
                 }
-                this.ProjectModel.Walk();
+                //this.ProjectModel.Walk();
             }
         }
 
@@ -1543,7 +1541,8 @@ namespace XSharp.Project
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     var view = await VS.Documents.OpenViaProjectAsync(file);
-                    textView = await VS.Documents.GetNativeTextViewAsync(file);
+                    var docview = await VS.Documents.GetDocumentViewAsync(file);
+                    textView = await docview.TextView.ToIVsTextViewAsync();
                     if (textView != null)
                     {
                         
@@ -2504,7 +2503,7 @@ namespace XSharp.Project
             }
             if (!hasImportDefaultProps || !hasImportTargets)
             {
-                ShowMessageBox($"Important <Imports> tags are missing in your projectfile: {filename}, your project will most likely not compile.");
+                VS.MessageBox.Show($"Important <Imports> tags are missing in your projectfile: {filename}, your project will most likely not compile.");
             }
             if (hasImportProps && hasImportTargets)
             {
@@ -2614,10 +2613,7 @@ namespace XSharp.Project
             return changed;
 
         }
-        internal int ShowMessageBox(string message)
-        {
-            return XSharpProjectPackage.XInstance.ShowMessageBox(message);
-        }
+  
 
         #region IVsProject5
         public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)
@@ -3030,6 +3026,7 @@ namespace XSharp.Project
                 case "usersourceitems":
                 case "windowsxaml":
                 case "csharp":
+                case "xsharp":
                     return true;
             }
             return false;

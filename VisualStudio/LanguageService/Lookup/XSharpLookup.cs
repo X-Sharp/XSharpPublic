@@ -420,7 +420,7 @@ namespace XSharp.LanguageService
         /// <param name="foundElement"></param>
         /// <param name="stopAtOpenToken"></param>
         /// <returns></returns>
-        public static IEnumerable<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> tokenList, CompletionState state, bool stopAtOpenToken = false)
+        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> tokenList, CompletionState state, bool stopAtOpenToken = false)
         {
             //
 #if TRACE
@@ -467,13 +467,13 @@ namespace XSharp.LanguageService
                 if (XSettings.EnableTypelookupLog)
                     WriteOutputMessage(string.Format("Retrieve current Type : Member cannot be null."));
 #endif
-                        return null;
+                        return result;
                     }
                 }
             }
             if (location.Member == null)
             {
-                return null;
+                return result;
             }
             // Context Type....
             if (location.Member.Kind.IsClassMember(location.Dialect))
@@ -535,7 +535,7 @@ namespace XSharp.LanguageService
                     continue;
                 }
                 stopAt = 0;
-                var currentName = currentToken.Text;
+                var currentName = currentToken.CleanText();
                 var lastToken = currentToken;
                 switch (currentToken.Type)
                 {
@@ -594,7 +594,7 @@ namespace XSharp.LanguageService
                 }
                 var qualifiedName = false;
                 var findMethod = false;
-                var findType = state.HasFlag(CompletionState.Types);
+                var findType = state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.General);
                 var literal = XSharpLexer.IsConstant(currentToken.Type);
                 if (currentPos < lastopentoken && isId)
                 {
@@ -703,7 +703,18 @@ namespace XSharp.LanguageService
                 }
                 else if (isId)
                 {
-                    if (result.Count == 0 && (startOfExpression || findType || findConstructor))
+                    if (startOfExpression)
+                    {
+                        // Search in Parameters, Locals, Field and Properties
+                        if (currentName == "::" || currentName.ToLower() == "this")
+                            currentName = "SELF";
+                        result.AddRange(FindIdentifier(location, currentName, currentType, Modifiers.Private));
+                        if (result.Count > 0)
+                        {
+                            symbols.Push(result[0]);
+                        }
+                    }
+                    if (result.Count == 0 && (startOfExpression || findType || findConstructor || qualifiedName))
                     {
                         // look for Namespaces
                         result.AddRange(SearchNamespaces(location, namespacePrefix + currentName));
@@ -716,26 +727,12 @@ namespace XSharp.LanguageService
                             symbols.Push(result[0]);
                         }
                     }
-                    if (result.Count == 0)
+                    if (result.Count == 0 && startOfExpression)
                     {
-                        if (startOfExpression)
+                        result.AddRange(SearchPropertyOrField(location, currentType, currentName, visibility));
+                        if (result.Count > 0)
                         {
-                            // Search in Parameters, Locals, Field and Properties
-                            if (currentName == "::" || currentName.ToLower() == "this")
-                                currentName = "SELF";
-                            result.AddRange(FindIdentifier(location, currentName, currentType, Modifiers.Private));
-                            if (result.Count > 0)
-                            {
-                                symbols.Push(result[0]);
-                            }
-                        }
-                        else
-                        {
-                            result.AddRange(SearchPropertyOrField(location, currentType, currentName, visibility));
-                            if (result.Count > 0)
-                            {
-                                symbols.Push(result[0]);
-                            }
+                            symbols.Push(result[0]);
                         }
                     }
                 }

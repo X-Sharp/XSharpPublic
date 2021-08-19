@@ -36,27 +36,15 @@ namespace XSharp.LanguageService
                 {
                     return;
                 }
-                //
                 var triggerPoint = tp.Value;
-                // Make sure we include the  closing ( or {
-                var lineNumber = triggerPoint.GetContainingLine().LineNumber;
-                var position = triggerPoint.Position ;
-                //
-                // Check if we can get the member where we are
-                var member = XSharpLookup.FindMember(triggerPoint.GetContainingLine().LineNumber, _file);
-                var currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, _file);
-
-                var snapshot = _textBuffer.CurrentSnapshot;
-                var tokens = _textBuffer.GetTokens();
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
-                string currentNS = "";
-                if (currentNamespace != null)
-                {
-                    currentNS = currentNamespace.Name;
-                }
-                var location = new XSharpSearchLocation(member, snapshot, lineNumber, position, currentNS);
+                var location = _textBuffer.FindLocation(triggerPoint);
+                if (location == null)
+                    return;
+
                 CompletionState state;
+                var tokens = _textBuffer.GetTokens();
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
                 var result = new List<IXSymbol>();
                 result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, state));

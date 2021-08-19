@@ -8,10 +8,10 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.Drawing
 using System.IO
-
+using File := System.IO.File
 
 PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
-	
+
 	EXPORT oNameEdit AS TextBox
 	EXPORT oFileNameEdit AS TextBox
 	EXPORT oExportButton AS Button
@@ -25,22 +25,22 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	INTERNAL oEdit AS DBETextBox
 	EXPORT oMainDesign AS DBEDesignDBServer
 	EXPORT oLastDesign AS DBEDesignDBServer
-	
+
 	PROTECT oPanel AS DBServerSurface
 	PROTECT cDefaultFileName AS STRING
 	PROTECT cLoadedDir AS STRING
-	
+
 	PROTECT oPropertyUpdatedHandler AS PropertyUpdatedEventHandler
 	PROTECT oControlKeyPressedHandler AS ControlKeyPressedEventHandler
 	PROTECT oRetrieveClassNamesHandler AS RetrieveClassNamesEventHandler
-	
+
 	PROTECT aFilesToDelete AS List<STRING>
-	
+
 	STATIC PROTECT _Template AS DBServerCode
 
 	PROTECT aAvailableFieldSpecs AS ArrayList
 	PROTECT aFieldSpecsInModule AS ArrayList
-	
+
 	EXPORT lFillingOrders AS LOGIC
 
 	STATIC ACCESS Template AS DBServerCode
@@ -80,7 +80,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		SELF:oFieldList := SELF:oPanel:oFieldList
 
 		SELF:oMainDesign := DBEDesignDBServer{ DBServerItemType.DBServer , NULL , SELF}
-		
+
 		SELF:oNameEdit:GotFocus += EventHandler{SELF , @ItemGotFocus()}
 		SELF:oFileNameEdit:GotFocus += EventHandler{SELF , @ItemGotFocus()}
 		SELF:oExportButton:GotFocus += EventHandler{SELF , @ItemGotFocus()}
@@ -88,7 +88,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		SELF:oFieldList:GotFocus += EventHandler{SELF , @ItemGotFocus()}
 		SELF:oIndexList:GotFocus += EventHandler{SELF , @ItemGotFocus()}
 		SELF:oOrderList:GotFocus += EventHandler{SELF , @ItemGotFocus()}
-		
+
 		SELF:oNameEdit:LostFocus += EventHandler{SELF , @ItemLostFocus()}
 		SELF:oFileNameEdit:LostFocus += EventHandler{SELF , @ItemLostFocus()}
 		SELF:oExportButton:LostFocus += EventHandler{SELF , @ItemLostFocus()}
@@ -96,17 +96,17 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		SELF:oFieldList:LostFocus += EventHandler{SELF , @ItemLostFocus()}
 		SELF:oIndexList:LostFocus += EventHandler{SELF , @ItemLostFocus()}
 		SELF:oOrderList:LostFocus += EventHandler{SELF , @ItemLostFocus()}
-		
+
 		SELF:oNameEdit:KeyDown += KeyEventHandler{SELF , @EditKeyDown()}
 		SELF:oFileNameEdit:KeyDown += KeyEventHandler{SELF , @EditKeyDown()}
-		
+
 		SELF:oExportButton:Click += EventHandler{SELF , @ExportDbfClicked()}
 		SELF:oImportButton:Click += EventHandler{SELF , @ImportDbfClicked()}
 //		SELF:oExportButton:Enabled := FALSE
 		SELF:oNameEdit:ReadOnly := TRUE
 
 		SELF:oTimer:Start()
-		
+
 	RETURN
 
 	ACCESS Name AS STRING
@@ -120,11 +120,11 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	RETURN cRdd != String.Empty .and. cRdd != "DBFNTX"
 
 	METHOD CanDoAction(eAction AS DesignerActionType) AS LOGIC
-		
+
 		IF SELF:lReadOnly
 			RETURN FALSE
 		ENDIF
-		
+
 		DO CASE
 		CASE eAction == DesignerActionType.Undo
 			RETURN SELF:nAction >= 1
@@ -133,7 +133,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 
 		END CASE
 	RETURN FALSE
-		
+
     METHOD ShowHideTools(lShow AS LOGIC) AS VOID
     	LOCAL oGridForm AS Form
     	IF SELF:oGrid != NULL
@@ -189,7 +189,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				RETURN FALSE
 			END IF
 		NEXT
-		
+
 		aDesign := SELF:GetAllDesignItems(DBServerItemType.Index)
 		FOR n := 0 UPTO aDesign:Count - 1
 			oDesign := (DBEDesignDBServer)aDesign[n]
@@ -202,10 +202,10 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				RETURN FALSE
 			END IF
 		NEXT
-		
-		
+
+
 	RETURN TRUE
-	
+
 
 #define DBOI_EXPRESSION       2
 #define DBOI_NAME             5
@@ -234,7 +234,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL nType AS INT
 //		LOCAL d AS DWORD
 //		LOCAL n AS INT
-		
+
 		oDlg := OpenFileDialog{}
 		oDlg:Filter := "Dbf files (*.dbf)|*.dbf"
 		oDlg:Title := "Select dbf file to import"
@@ -243,7 +243,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			RETURN FALSE
 		END IF
 		cFileName := oDlg:FileName
-		
+
 		cDriver := SELF:oMainDesign:GetProperty("rdd"):TextValue:Trim():ToUpper()
 		IF cDriver == String.Empty
 			cDriver := "DBFNTX"
@@ -254,7 +254,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 //		FOR d := 1 UPTO FCount()
 //			AAdd(aStruct , {FieldName(d), DBFieldInfo(2,d), DBFieldInfo(3,d), DBFieldInfo(4,d)})
 //		NEXT
-		
+
 /*		aIndexes := {}
 		TRY
 			LOCAL nOrders AS INT
@@ -268,7 +268,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		CATCH
 			ASize(aIndexes , 0)
 		END TRY*/
-		
+
 		DBHelpers.DBH_DBCloseArea()
 
 		IF SELF:oFieldList:Items:Count != 0
@@ -282,13 +282,13 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		ENDIF
 
 		SELF:BeginAction()
-		
+
 		IF lDeleteOld
 			DO WHILE SELF:oFieldList:Items:Count != 0
 				SELF:StartAction(DesignerBasicActionType.Remove , ActionData{((DBEDesignListViewItem)SELF:oFieldList:Items[0]):oDesign:cGuid})
 			END DO
 		END IF
-		
+
 		FOREACH oRecord AS OBJECT[] IN aStruct
 			oDesign := (DBEDesignDBServer)SELF:StartAction(DesignerBasicActionType.Create , ActionData{NULL , SELF:oFieldList:Items:Count:ToString() , DBServerItemType.Field})
 			oDesign:InitValues((STRING)oRecord[1])
@@ -333,7 +333,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		END IF*/
 
 		SELF:EndAction()
-		
+
 	RETURN TRUE
 
 	METHOD ExportDbfClicked(o AS OBJECT , ee AS EventArgs) AS VOID
@@ -362,11 +362,11 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL cName AS STRING
 		LOCAL cType AS STRING
 		LOCAL n AS INT
-		
+
 		IF .not. SELF:CheckIfValid()
 			RETURN FALSE
 		END IF
-		
+
 		eResult := MessageBox.Show("Export dbf in ANSI format? (Select no for OEM)" , "Export dbf" , MessageBoxButtons.YesNoCancel , MessageBoxIcon.Question)
 		DO CASE
 		CASE eResult == DialogResult.Cancel
@@ -376,13 +376,13 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		CASE eResult == DialogResult.No
 			DBHelpers.DBH_SetAnsi(FALSE)
 		END CASE
-		
+
 		aDesign := SELF:GetAllIncludedFields()
 		cFileName := SELF:oMainDesign:GetProperty("FileName"):TextValue:Trim()
 		IF cFileName == ""
 			cFileName := SELF:oMainDesign:Name
 		ENDIF
-		
+
 		IF cFileName:Contains(":")
 			cFolder := FileInfo{cFileName}:DirectoryName
 		ELSE
@@ -400,7 +400,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				RETURN FALSE
 			END IF
 		END IF
-		
+
 		IF File.Exists(cFileName)
 			IF .not. Funcs.QuestionBox("File " + cFileName + " already exists. Overwrite ?" , "DBServer Editor")
 				RETURN FALSE
@@ -417,7 +417,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
             NOP
 			END TRY
 		END IF
-		
+
 		aFields := List<OBJECT>{}
 		FOR n := 0 UPTO aDesign:Count - 1
 			oDesign := (DBEDesignDBServer)aDesign[n]
@@ -440,7 +440,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 //			AAdd(aFields , {cName , cType , nLen , nDec})
 			aFields:Add(<OBJECT>{cName , cType , nLen , nDec})
 		NEXT
-		
+
 		cDriver := SELF:oMainDesign:GetProperty("rdd"):TextValue:Trim():ToUpper()
 		IF cDriver == String.Empty
 			cDriver := "DBFNTX"
@@ -459,7 +459,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		CATCH e AS Exception
 			Funcs.ErrorBox(e:Message , "Export to dbf failed.")
 		END TRY
-		
+
 		IF lSuccess .and. lImport
 			IF Funcs.QuestionBox("Import old data ?" , "Export To Dbf")
 				LOCAL oProgressBar AS ProgressBarForm
@@ -521,7 +521,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				END TRY
 			END IF
 		END IF
-		
+
 		IF lSuccess
 			SELF:BeginAction()
 			IF SELF:oFileNameEdit:Text != cFileName
@@ -599,12 +599,12 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL cName AS STRING
 		LOCAL cKey AS STRING
 		LOCAL n AS INT
-		
+
 		DBHelpers.DBH_RDDInfo(104,FALSE) // _SET_AUTOOPEN
 		TRY
 //			DBUseArea( , cDriver , cDbfFileName , , FALSE , FALSE)
 			DBHelpers.DBH_DBUseArea( cDriver , cDbfFileName )
-			
+
 			cFileName := oDesign:GetProperty("FileName"):TextValue
 			IF ! cFileName:Contains(":")
 				LOCAL cDirectory AS STRING
@@ -636,18 +636,18 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "filename" , cFileName})
 				SELF:EndAction()
 			END IF
-		
+
 		CATCH e AS Exception
-			
+
 			Funcs.ErrorBox("An error occured while exporting index file " + oDesign:GetProperty("filename"):TextValue + e"\r\n\r\n" + e:Message , "DBServer Editor")
-	
+
 		FINALLY
-	
+
 			DBHelpers.DBH_DBCloseArea()
-	
+
 		END TRY
 	RETURN lSuccess
-	
+
 	METHOD FillOrders() AS VOID
 		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL n AS INT
@@ -667,7 +667,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	METHOD PropertyGotUpdated(oDesign AS DBEDesignDBServer , oProp AS VODesignProperty) AS VOID
 		SELF:ApplyProperty(oDesign , oProp)
 	RETURN
-	
+
 	METHOD ApplyProperty(_oDesign AS DBEDesignDBServer , oProp AS VODesignProperty) AS VOID
 		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL n AS INT
@@ -733,7 +733,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				END IF
 
 			END CASE
-			
+
 			IF System.Array.IndexOf(<STRING>{"fldname","pos","included","caption","description","classname"} , oProp:Name) == -1
 				LOCAL oTestField AS DBEDesignDBServer
 				LOCAL aDesign AS ArrayList
@@ -746,7 +746,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 						END IF
 					END IF
 				NEXT
-				
+
 			END IF
 
 		CASE oDesign:eType == DBServerItemType.Index
@@ -770,7 +770,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			END CASE
 
 		END CASE
-		
+
 	RETURN
 
 	METHOD GetAllIncludedFields() AS ArrayList
@@ -783,7 +783,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				aDesign:Add(oDesign)
 			END IF
 		NEXT
-	RETURN aDesign		
+	RETURN aDesign
 
 	METHOD GetAllDesignItems(eType AS DBServerItemType) AS ArrayList
 		LOCAL aDesign := ArrayList{} AS ArrayList
@@ -809,13 +809,13 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				NEXT
 			NEXT
 		END SWITCH
-	RETURN aDesign		
+	RETURN aDesign
 
 	METHOD GetAllDesignItems() AS ArrayList
 		LOCAL aDesign := ArrayList{} AS ArrayList
 		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL n,m AS INT
-		
+
 		FOR n := 0 UPTO SELF:oFieldList:Items:Count - 1
 			aDesign:Add(((DBEDesignListViewItem)SELF:oFieldList:Items[n]):oDesign)
 		NEXT
@@ -886,11 +886,11 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		IF SELF:lLoading
 			RETURN
 		END IF
-		
+
 		IF !SELF:oSurface:ContainsFocus
 			SELF:ShowHideTools(FALSE)
 		ENDIF
-		
+
 		DO CASE
 		CASE o == SELF:oNameEdit
 			IF SELF:oNameEdit:Text:Trim() != SELF:oMainDesign:GetProperty("classname"):TextValue
@@ -902,9 +902,9 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			ENDIF
 		END CASE
 	RETURN
-	
+
 	METHOD ItemGotFocus(o AS OBJECT,e AS EventArgs) AS VOID
-		
+
 		IF SELF:lLoading
 			RETURN
 		END IF
@@ -948,7 +948,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL aSelected AS ArrayList
 		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL n AS INT
-		
+
 		IF cProp:ToUpper() == "TAG" .and. !SELF:MultipleOrdersSupported
 			RETURN
 		END IF
@@ -957,7 +957,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				RETURN
 			END IF
 		END IF*/
-		
+
 		aSelected := SELF:GetSelected()
 		SELF:BeginAction()
 		FOR n := 0 UPTO aSelected:Count - 1
@@ -965,7 +965,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , cProp , oValue})
 			IF cProp == "type"
 				LOCAL nLength,nDecimal AS INT
-				SWITCH (INT)oValue 
+				SWITCH (INT)oValue
 				CASE 0
 					nLength := 10
 					nDecimal := 0
@@ -1008,9 +1008,9 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL oAction AS DesignerBasicAction
 
 		SELF:nActionDepth --
-	
+
 		IF SELF:nActionDepth == 0
-	
+
 			IF SELF:lClearUndoBuffer
 				SELF:nAction := 0
 				SELF:aActions:Clear()
@@ -1019,21 +1019,21 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				oAction := (DesignerBasicAction)SELF:aActions[SELF:nAction - 1]
 				oAction:lGroup := TRUE
 			ENDIF
-	
+
 			IF SELF:oIndexList:SelectedItems:Count != 0
 				IF ((DBEDesignListViewItem)SELF:oIndexList:SelectedItems[0]):oDesign:aOrders:Count != SELF:oOrderList:Items:Count
 					SELF:FillOrders()
 				END IF
 			END IF
-	
+
 			SELF:DisplayProperties()
 
             IF SELF:IsDirtyChanged != NULL
                 SELF:IsDirtyChanged:Invoke(SELF , EventArgs{})
             ENDIF
-            
+
 		ENDIF
-	
+
 	RETURN
 
 	VIRTUAL METHOD DoBasicAction(oAction AS DesignerBasicAction , eAction AS DesignerBasicActionType , uData AS ActionData) AS OBJECT
@@ -1099,14 +1099,14 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				ELSE
 					oParent:aOrders:Insert(nIndex , oDesign)
 				END IF
-			END IF			
+			END IF
 			SELF:lDidAction := TRUE
 			IF !oAction:lExecuted
 				oUndo := DesignerBasicAction{TRUE}
 				oUndo:eAction := DesignerBasicActionType.Remove
 				oUndo:uData := ActionData{oDesign:cGuid}
 				oAction:aUndo:Add(oUndo)
-				
+
 				oRedo := DesignerBasicAction{TRUE}
 				oRedo:eAction := DesignerBasicActionType.Create
 				IF eType == DBServerItemType.Order .and. oParent != NULL
@@ -1152,7 +1152,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					END IF
 				END IF
 			END IF
-			
+
 			SELF:lDidAction := TRUE
 			IF !oAction:lExecuted
 				aProperties := NameValueCollection{}
@@ -1171,7 +1171,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					oUndo:uData := ActionData{oDesign:cGuid , nIndex:ToString() , oDesign:eType , aProperties}
 				END IF
 				oAction:aUndo:Add(oUndo)
-				
+
 				oRedo := DesignerBasicAction{TRUE}
 				oRedo:eAction := DesignerBasicActionType.Remove
 				oRedo:uData := ActionData{oDesign:cGuid}
@@ -1216,7 +1216,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					oUndo:eAction := DesignerBasicActionType.SetIndex
 					oUndo:uData := ActionData{oDesign:cGuid , uData:cData , n}
 					oAction:aUndo:Add(oUndo)
-					
+
 					oRedo := DesignerBasicAction{TRUE}
 					oRedo:eAction := DesignerBasicActionType.SetIndex
 					oRedo:uData := ActionData{oDesign:cGuid , uData:cData , uData:oData}
@@ -1224,7 +1224,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				ENDIF
 //				SELF:AddAffected(oDesign)
 			ENDIF
-	
+
 		CASE DesignerBasicActionType.SetProperty
 			oDesign := SELF:GetDesignItemFromGuid(uData:cGuid)
 			oProp := oDesign:GetProperty(uData:cData)
@@ -1235,7 +1235,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					oUndo:eAction := DesignerBasicActionType.SetProperty
 					oUndo:uData := ActionData{oDesign:cGuid , uData:cData , oProp:Value}
 					oAction:aUndo:Add(oUndo)
-					
+
 					oRedo := DesignerBasicAction{TRUE}
 					oRedo:eAction := DesignerBasicActionType.SetProperty
 					oRedo:uData := ActionData{oDesign:cGuid , uData:cData , uData:oData}
@@ -1245,7 +1245,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				SELF:PropertyGotUpdated(oDesign , oProp)
 //				SELF:AddAffected(oDesign)
 			ENDIF
-	
+
 		END SWITCH
 
 		oAction:lExecuted := TRUE
@@ -1284,7 +1284,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		SELF:oGrid:PropertyModified := SELF:oPropertyUpdatedHandler
 		SELF:oGrid:ControlKeyPressed := NULL*/
 	RETURN
-	
+
 	VIRTUAL METHOD Cut() AS VOID
 	RETURN
 	VIRTUAL METHOD Copy() AS VOID
@@ -1365,7 +1365,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL aValues AS NameValueCollection
 		LOCAL oProp AS DesignProperty
 		LOCAL cValue AS STRING
-		
+
 		aValues := NameValueCollection{}
 		FOR n := 0 UPTO SELF:oMainDesign:aProperties:Count - 1
 			oProp := (DesignProperty)SELF:oMainDesign:aProperties[n]
@@ -1394,7 +1394,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				IF cValue:Length == 0
 					cValue := "DBServer"
 				END IF
-				
+
 			OTHERWISE
 
 				cValue := Funcs.TranslateCaption(oProp:TextValue , TRUE , FALSE)
@@ -1402,26 +1402,26 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			END CASE
 			aValues:Add(oProp:Name , cValue)
 		NEXT
-		
+
 		SplitFilename(SELF:oMainDesign:GetProperty("filename"):TextValue:Trim() , dbfpath , dbfname)
 
 		aValues:Add("dbfpath" , dbfpath)
 		aValues:Add("dbfname" , dbfname)
-		
+
 		aValues:Add("fieldcount" , SELF:GetAllIncludedFields():Count:ToString())
 		aValues:Add("indexcount" , SELF:GetAllDesignItems(DBServerItemType.Index):Count:ToString())
 
 		aValues:Add("hlname" , SELF:oMainDesign:GetProperty("classname"):TextValue)
 		aValues:Add("declarations" , "")
-		
+
 		oCode := CodeContents{}
-		
+
 		FOR n := 0 UPTO VODBServerEditor.Template:aClass:Count - 1
 			cLine := VODBServerEditor.Template:aClass[n]
 			cLine := TranslateLine(cLine , aValues)
 			oCode:aClass:Add(cLine)
 		NEXT
-		
+
 		FOR n := 0 UPTO VODBServerEditor.Template:aInit:Count - 1
 			cLine := VODBServerEditor.Template:aInit[n]
 			cLine := TranslateLine(cLine , aValues)
@@ -1459,9 +1459,9 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				oCode:aAdditional[m]:Add(cLine)
 			NEXT
 		NEXT
-		
+
 	RETURN oCode
-	
+
 	INTERNAL METHOD TranslateMacro(eType AS DBServerItemType , oIndex AS DBEDesignDBServer) AS STRING
 		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL aDesign AS ArrayList
@@ -1502,7 +1502,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					ELSE
 						cValue := oProp:TextValue:Substring(0,1)
 					END IF
-					
+
 				CASE oProp:Name == "pos"
 					LOOP
 
@@ -1511,7 +1511,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				END CASE
 				aValues:Add(oProp:Name , cValue)
 			NEXT
-			
+
 			aValues:Add("pos" , (m+1):ToString())
 
 			DO CASE
@@ -1525,7 +1525,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				aValues:Add("indexname" , dbfname)
 				aValues:Add("dbfpath" , dbfpath)
 			END CASE
-			
+
 			cRet += TranslateLine(cMacro , aValues)
 
 			DO CASE
@@ -1535,9 +1535,9 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					cRet += " , ;" + ChrW(0)
 				END IF
 			END CASE
-			
+
 		NEXT
-		
+
 	RETURN cRet
 
 	INTERNAL STATIC METHOD TranslateLine(cLine AS STRING , aValues AS NameValueCollection) AS STRING
@@ -1552,7 +1552,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		IF !cLine:Contains("%")
 			RETURN cLine
 		END IF
-		
+
 		cUpper := cLine:ToUpper()
 		cRet := cLine
 		REPEAT
@@ -1566,7 +1566,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				IF nAt != -1
 					cRet := cLine:Substring(0 , nAt)
 					cValue := (STRING)oNameValue:Value
-					
+
 					// Ultra hack, template probably contains quotes that we need to remove
 					IF cValue:StartsWith("LoadResString") .and. cRet:EndsWith(e"\"")
 						cRet := cRet:Substring(0 , cRet:Length - 1)
@@ -1576,7 +1576,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 							END IF
 						END IF
 					END IF
-					
+
 					cRet += cValue
 					IF nAt + nLength < cLine:Length
 						cRet += cLine:Substring(nAt + nLength)
@@ -1587,9 +1587,9 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				END IF
 			NEXT
 		UNTIL ! lDidAction // in case there are multiple occurences of the same tag
-		
+
 	RETURN cRet
-	
+
 	INTERNAL STATIC METHOD TranslateLineToLines(cLine AS STRING , aLines AS List<STRING>) AS VOID
 		LOCAL cTemp AS STRING
 		LOCAL nAt AS INT
@@ -1617,7 +1617,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		END DO
 		aLines:Add(cLine)
 	RETURN
-	
+
 	INTERNAL STATIC METHOD SplitFilename(cFullPath AS STRING , cFolder REF STRING , cFileName REF STRING) AS VOID
 		LOCAL nAt AS INT
 		nAt := cFullPath:LastIndexOf('\\')
@@ -1650,7 +1650,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 
 	METHOD Open(cFileName AS STRING) AS LOGIC
 /*		LOCAL lSuccess AS LOGIC
-		
+
 		SELF:ReadAllAvailableFieldspecs(Funcs.GetModuleFilenameFromBinary(cFileName))
 		SELF:aFilesToDelete:Clear()
 
@@ -1688,7 +1688,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL lSuccess AS LOGIC
 		LOCAL lAutoRecover AS LOGIC
 		LOCAL n,m AS INT
-		
+
 		lAutoRecover := lVnfrmOnly .or. cFileName:ToUpper():Contains("~AUTORECOVER")
 
 		IF SELF:oFileNameEdit:Focused
@@ -1696,7 +1696,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oMainDesign:cGuid , "filename" , SELF:oFileNameEdit:Text:Trim()})
 			ENDIF
 		ENDIF
-		
+
 		IF lAutoRecover
 			TRY
 				SELF:SaveToXml(cFileName)
@@ -1717,7 +1717,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		ENDIF
 
 		oCode := SELF:GetCodeContents()
-		
+
         cModule := Funcs.GetModuleFilenameFromBinary(cFileName)
 		SELF:ReadAllAvailableFieldspecs(cModule)
 //		aFieldSpecs := VOFieldSpecEditor.ReadFieldSpecsInModule(cModule)
@@ -1778,13 +1778,13 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					SELF:SavePrg(oPrgStream , oCode , aCode)
 				END IF
 				lSuccess := TRUE
-	
+
 				IF !lVnfrmOnly
 					SELF:nActionSaved := SELF:nAction
 				END IF
 			END TRY
 		END IF
-		
+
 		IF lSuccess
 			FOR n := 0 UPTO SELF:aFilesToDelete:Count - 1
 				cFileName := SELF:aFilesToDelete[n]
@@ -1800,7 +1800,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			NEXT
 			SELF:aFilesToDelete:Clear()
 		END IF
-		
+
 	RETURN lSuccess
 */
 	RETURN TRUE
@@ -1808,7 +1808,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		LOCAL cPrgFileName AS STRING
 		LOCAL lSuccess AS LOGIC
 		LOCAL lError AS LOGIC
-		
+
 		TRY
 
 			cPrgFileName := Funcs.GetModuleFilenameFromBinary(cVNFrmFileName) + ".prg"
@@ -1819,7 +1819,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					lError := TRUE
 				END IF
 			END IF
-			
+
 			lSuccess := FALSE
 			IF !lError
 				IF !lVnfrmOnly
@@ -1829,7 +1829,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					lSuccess := TRUE
 				END IF
 			END IF
-			
+
 		CATCH e AS Exception
 
 			MessageBox.Show(e:Message , "Error saving DBServer" , MessageBoxButtons.OK , MessageBoxIcon.Exclamation)
@@ -1844,7 +1844,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		END IF
 
 	RETURN lSuccess
-	
+
 	STATIC METHOD IsNameValid(oDesign AS DBEDesignDBServer) AS LOGIC
 	RETURN IsNameValid(oDesign:Name , oDesign:eType)
 	STATIC METHOD IsNameValid(cName AS STRING , eType AS DBServerItemType) AS LOGIC
@@ -1950,12 +1950,12 @@ CLASS DBServerSurface INHERIT Panel
 		SELF:oFieldList:Columns:Add("Len",50,HorizontalAlignment.Right)
 		SELF:oFieldList:Columns:Add("Dec",50,HorizontalAlignment.Right)
 		SELF:oFieldList:Columns:Add("FieldSpec",180,HorizontalAlignment.Left)
-		
+
 		SELF:oIndexList:Columns:Add("Index",160,HorizontalAlignment.Left)
-		
+
 		SELF:oOrderList:Columns:Add("Order",110,HorizontalAlignment.Left)
 		SELF:oOrderList:Columns:Add("Key Expression",170,HorizontalAlignment.Left)
-		
+
 		SELF:oFieldList:FullRowSelect := TRUE
 		SELF:oIndexList:FullRowSelect := TRUE
 		SELF:oOrderList:FullRowSelect := TRUE
@@ -1969,7 +1969,7 @@ CLASS DBServerSurface INHERIT Panel
 		SELF:Location := Point{100,100}
 		SELF:ClientSize := Size{456,373}
 		SELF:Text := "Form"
-		
+
 		SELF:oGroupBox1:=GroupBox{}
 		SELF:oGroupBox1:Name := "GroupBox1"
 		SELF:oGroupBox1:Location := Point{8,8}
@@ -1978,7 +1978,7 @@ CLASS DBServerSurface INHERIT Panel
 		SELF:oGroupBox1:TabIndex := 0
 		SELF:oGroupBox1:FlatStyle := FlatStyle.System
 		SELF:Controls:Add(SELF:oGroupBox1)
-		
+
 		SELF:oExportButton:=Button{}
 		SELF:oExportButton:Name := "ExportButton"
 		SELF:oExportButton:Location := Point{452,40}
@@ -1987,7 +1987,7 @@ CLASS DBServerSurface INHERIT Panel
 		SELF:oExportButton:TabIndex := 4
 		SELF:oExportButton:FlatStyle := FlatStyle.System
 		SELF:oGroupBox1:Controls:Add(SELF:oExportButton)
-		
+
 		SELF:oImportButton:=Button{}
 		SELF:oImportButton:Name := "ImportButton"
 		SELF:oImportButton:Location := Point{452,16}
@@ -1996,9 +1996,9 @@ CLASS DBServerSurface INHERIT Panel
 		SELF:oImportButton:TabIndex := 3
 		SELF:oImportButton:FlatStyle := FlatStyle.System
 		SELF:oGroupBox1:Controls:Add(SELF:oImportButton)
-		
-		
-		
+
+
+
 		SELF:oNameEdit := TextBox{}
 		SELF:oNameEdit:Name := "NameEdit"
 		SELF:oNameEdit:Location := Point{88,16}
@@ -2027,7 +2027,7 @@ CLASS DBServerSurface INHERIT Panel
 		SELF:oLabel2:TabIndex := 2
 		SELF:oLabel2:TextAlign := ContentAlignment.BottomLeft
 		SELF:oGroupBox1:Controls:Add(SELF:oLabel2)
-		
+
 		SELF:oGroupBox3:=GroupBox{}
 		SELF:oGroupBox3:Name := "GroupBox3"
 		SELF:oGroupBox3:Location := Point{8,236}
@@ -2037,15 +2037,15 @@ CLASS DBServerSurface INHERIT Panel
 		SELF:oGroupBox3:Anchor := AnchorStyles.Left + AnchorStyles.Top + AnchorStyles.Bottom
 		SELF:oGroupBox3:FlatStyle := FlatStyle.System
 		SELF:Controls:Add(SELF:oGroupBox3)
-		
+
 		SELF:oFieldList:=DBEListView{DBServerItemType.Field , oDBServerEditor}
 		SELF:oFieldList:Name := "FieldList"
-		
+
 	SELF:oFieldList:Location := Point{16,20}
 //		SELF:oFieldList:Location := Point{16,50}
 	SELF:oFieldList:Size := Size{508,100}
 //		SELF:oFieldList:Size := Size{508,90}
-		
+
 		SELF:oFieldList:TabIndex := 0
 		SELF:oFieldList:Anchor := AnchorStyles.Left + AnchorStyles.Top + AnchorStyles.Bottom
 		SELF:oFieldList:View := View.Details
@@ -2062,7 +2062,7 @@ CLASS DBServerSurface INHERIT Panel
 		SELF:oGroupBox2:TabIndex := 1
 		SELF:oGroupBox2:FlatStyle := FlatStyle.System
 		SELF:Controls:Add(SELF:oGroupBox2)
-		
+
 		SELF:oIndexList:=DBEListView{DBServerItemType.Index , oDBServerEditor}
 		SELF:oIndexList:Name := "IndexList"
 		SELF:oIndexList:Location := Point{16,20}
@@ -2099,7 +2099,7 @@ CLASS DBEDesignDBServer INHERIT DesignItem
 		SUPER(_oEditor)
 
 		LOCAL oProp AS VODesignProperty
-		
+
 		SELF:aPages := List<STRING>{}
 		SELF:aPages:Add("General")
 		SELF:eType := _eType
@@ -2138,33 +2138,33 @@ CLASS DBEDesignDBServer INHERIT DesignItem
 			SELF:AddProperty(VODesignProperty{"classname" , "FieldSpec" , "" , PropertyType.Type , PropertyStyles.NoAuto + PropertyStyles.NoNULL})
 			SELF:AddProperty(VODesignProperty{"superclass" , "Inherit from" , "" , PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"hlname" , "FS Name" , "" , PropertyType.Text})
-	
+
 			SELF:AddProperty(VODesignProperty{"hlcaption" , "FS Caption" , "" , PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"hldescription" , "FS Description" , "" , PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"hlhelpcontext" , "FS Help Context" , "" , PropertyType.Text , PropertyStyles.NoAuto})
-	
+
 //			SELF:AddProperty(VODesignProperty{"Type","Type","Type","__fieldspecDataTypes",PropertyStyles.NoAuto})
 			oProp := VODesignProperty{"type","Type","Type","__fieldspecDataTypes"}
 			oProp:lNoAuto := TRUE
 			SELF:AddProperty(oProp)
 			SELF:AddProperty(VODesignProperty{"typediag","Type Diagnostic","Type Diagnostic",PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"typehelp","Type Help","",PropertyType.Text , PropertyStyles.NoAuto})
-	
-	
+
+
 			SELF:AddProperty(VODesignProperty{"len" , "Length" , "Length" , PropertyType.Numeric , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"lendiag","Length Diagnostic","",PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"lenhelp","Length Help","",PropertyType.Text , PropertyStyles.NoAuto})
-	
+
 			SELF:AddProperty(VODesignProperty{"dec" , "Decimal" , "Decimal" , PropertyType.Numeric , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"picture" , "Picture" , "Picture" , PropertyType.Text , PropertyStyles.NoAuto})
-		
+
 			SELF:AddProperty(VODesignProperty{"minlen","Min Length","",PropertyType.Numeric , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"minlendiag","Min Length Diagnostic","",PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"minlenhelp","Min Length Help","",PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"required","Required","","YESNO" , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"reqdiag","Required Diagnostic","",PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"reqhelp","Required Help","",PropertyType.Text , PropertyStyles.NoAuto})
-		
+
 			SELF:AddProperty(VODesignProperty{"minrange","Minimum","",PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"maxrange","Maximum","",PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"rangediag","Range Diagnostic","",PropertyType.Text , PropertyStyles.NoAuto})
@@ -2227,7 +2227,7 @@ CLASS DBEDesignDBServer INHERIT DesignItem
 		END CASE
 		SELF:oDesigner:EndAction()
 	RETURN
-	
+
 END CLASS
 
 
@@ -2251,7 +2251,7 @@ INTERNAL CLASS DBEListView INHERIT ListView
 		SELF:oEdit:AutoSize := FALSE
 		SELF:Controls:Add(SELF:oEdit)
 		SELF:AllowDrop := TRUE
-		
+
 		SELF:ContextMenu := ContextMenu{}
 		SELF:ContextMenu:Popup += EventHandler{ SELF , @ContextMenuPopUp() }
 		DO CASE
@@ -2316,7 +2316,7 @@ INTERNAL CLASS DBEListView INHERIT ListView
 			SELF:oDBEditor:ExportIndex(oItem:oDesign)
 		END IF
 	RETURN
-	
+
 	PROTECTED METHOD ProcessCmdKey(Msg REF Message,KeyData AS Keys) AS LOGIC
 		IF KeyData == Keys.Escape
 			RETURN FALSE
@@ -2327,11 +2327,11 @@ INTERNAL CLASS DBEListView INHERIT ListView
 		DO CASE
 		CASE e:Clicks==2 .and. e:Button==MouseButtons.Left
 			SELF:ShowEdit(FALSE)
-		CASE e:Clicks==1 .and. e:Button==MouseButtons.Left 
+		CASE e:Clicks==1 .and. e:Button==MouseButtons.Left
 			IF SELF:SelectedItems:Count == 1
 				SELF:oDragPoint := e:Location
 			END IF
-/*		CASE e:Clicks==1 .and. e:Button==MouseButtons.Left 
+/*		CASE e:Clicks==1 .and. e:Button==MouseButtons.Left
 			IF SELF:Items:Count==0
 				SELF:Append()
 			ELSEIF SELF:GetItemAt(e:X,e:Y) == NULL
@@ -2345,7 +2345,7 @@ INTERNAL CLASS DBEListView INHERIT ListView
 		DO CASE
 		CASE e:Clicks==2 .and. e:Button==MouseButtons.Left
 			SELF:ShowEdit(FALSE)
-		CASE e:Clicks==1 .and. e:Button==MouseButtons.Left 
+		CASE e:Clicks==1 .and. e:Button==MouseButtons.Left
 			IF SELF:Items:Count==0
 				SELF:Append()
 			ELSEIF SELF:GetItemAt(e:X,e:Y) == NULL
@@ -2392,11 +2392,11 @@ INTERNAL CLASS DBEListView INHERIT ListView
 		LOCAL n AS INT
 
 		SUPER:OnDragOver(e)
-		
+
 		IF SELF:oDragItem == NULL
 			RETURN
 		END IF
-		
+
 		oPoint := SELF:PointToClient(Point{e:X,e:Y})
 		oItem := (DBEDesignListViewItem)SELF:GetItemAt( oPoint:X , oPoint:Y )
 		IF oItem != NULL
@@ -2439,12 +2439,12 @@ INTERNAL CLASS DBEListView INHERIT ListView
 			SELF:oDBEditor:oLastDesign := ((DBEDesignListViewItem)SELF:SelectedItems[0]):oDesign
 			SELF:oDBEditor:DisplayProperties()
 		END IF
-		
+
 		IF SELF:eType == DBServerItemType.Index
 			SELF:oDBEditor:FillOrders()
 		ENDIF
 	RETURN
-	
+
 	PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
 		SUPER:OnKeyDown(e)
 		DO CASE
@@ -2477,7 +2477,7 @@ INTERNAL CLASS DBEListView INHERIT ListView
 			SELF:oDBEditor:ToggleInclude(oItem:oDesign)
 		END IF
 	RETURN
-	
+
 	METHOD Delete() AS VOID
 		LOCAL oItem AS DBEDesignListViewItem
 		IF SELF:SelectedItems:Count==0
@@ -2495,7 +2495,7 @@ INTERNAL CLASS DBEListView INHERIT ListView
 		IF SELF:lAppending .or. SELF:oItemEdit != NULL
 			RETURN
 		END IF
-		
+
 		IF SELF:eType == DBServerItemType.Order
 			IF SELF:oDBEditor:oIndexList:SelectedItems:Count == 0
 				RETURN
@@ -2504,7 +2504,7 @@ INTERNAL CLASS DBEListView INHERIT ListView
 				RETURN
 			ENDIF
 		ENDIF
-		
+
 		SELF:Items:Add(DBEDesignListViewItem{SELF:eType,SELF:oDBEditor})
 		SELF:SelectedItems:Clear()
 		SELF:Items[SELF:Items:Count-1]:Selected := TRUE
@@ -2517,7 +2517,7 @@ INTERNAL CLASS DBEListView INHERIT ListView
 		IF SELF:lAppending .or. SELF:oItemEdit != NULL
 			RETURN
 		END IF
-		
+
 		IF SELF:eType == DBServerItemType.Order
 			IF SELF:oDBEditor:oIndexList:SelectedItems:Count == 0
 				RETURN
@@ -2544,11 +2544,11 @@ INTERNAL CLASS DBEListView INHERIT ListView
 		IF SELF:lAppending .or. SELF:oItemEdit != NULL
 			RETURN
 		END IF
-		
+
 		IF SELF:eType == DBServerItemType.Order .and. !SELF:oDBEditor:MultipleOrdersSupported
 			RETURN
 		END IF
-		
+
 		IF SELF:SelectedItems:Count == 0
 			IF SELF:FocusedItem == NULL
 				RETURN
@@ -2568,7 +2568,7 @@ INTERNAL CLASS DBEListView INHERIT ListView
 		SELF:oEdit:Show(SELF)
 		SELF:oEdit:BringToFront()
 		SELF:oEdit:Focus()
-		
+
 	RETURN
 
 	METHOD CancelEdit() AS VOID
@@ -2598,11 +2598,11 @@ INTERNAL CLASS DBEListView INHERIT ListView
 	RETURN
 
 	METHOD AcceptEdit() AS VOID
-		
+
 		IF SELF:oItemEdit == NULL
 			RETURN
 		END IF
-		
+
 		IF ! VODBServerEditor.IsNameValid(SELF:oEdit:Text:Trim() , SELF:eType)
 			SELF:oItemEdit:Focused := TRUE
 			SELF:oItemEdit := NULL
@@ -2610,7 +2610,7 @@ INTERNAL CLASS DBEListView INHERIT ListView
 			SELF:lAppending := FALSE
 			RETURN
 		END IF
-		
+
 		IF SELF:lAppending
 			SELF:oDBEditor:BeginAction()
 			DO CASE
@@ -2624,7 +2624,7 @@ INTERNAL CLASS DBEListView INHERIT ListView
 				SELF:oItemEdit:oDesign := (DBEDesignDBServer)SELF:oDBEditor:StartAction(DesignerBasicActionType.Create , ActionData{NULL , SELF:oItemEdit:Index:ToString() , oItem:oDesign:cGuid})
 			END CASE
 			SELF:oItemEdit:oDesign:InitValues(SELF:oEdit:Text:Trim())
-			
+
 			IF SELF:eType == DBServerItemType.Index
 				IF SELF:oDBEditor:GetAllDesignItems(DBServerItemType.Index):Count == 1
 					IF (INT)SELF:oDBEditor:oMainDesign:GetProperty("order"):Value == 0
@@ -2637,7 +2637,7 @@ INTERNAL CLASS DBEListView INHERIT ListView
 				SELF:oDBEditor:StartAction(DesignerBasicActionType.SetProperty , ActionData{oOrder:cGuid , "tag" , VODBServerEditor.NameFromFilename(SELF:oEdit:Text:Trim())})
 				SELF:oDBEditor:FillOrders()
 			END IF
-			
+
 			SELF:oDBEditor:EndAction()
 		ELSE
 			DO CASE
@@ -2726,7 +2726,7 @@ CLASS DBEDesignListViewItem INHERIT ListViewItem
 			SELF:SubItems[1]:Text := SELF:oDesign:GetProperty("keyexp"):TextValue
 		END CASE
 	RETURN
-	
+
 END CLASS
 
 
@@ -2790,7 +2790,7 @@ CLASS DBServerCode
 	CONSTRUCTOR()
 		SELF:Reset()
 	RETURN
-	
+
 	INTERNAL METHOD Reset() AS VOID
 		SELF:aClass := List<STRING>{}
 		SELF:aInit := List<STRING>{}
@@ -2803,7 +2803,7 @@ CLASS DBServerCode
 		SELF:cIndexList := ""
 		SELF:cOrderList := ""
 	RETURN
-	
+
 	METHOD Read(cDirectory AS STRING) AS LOGIC
 		SELF:Reset()
 	RETURN SELF:ReadDed(cDirectory) .and. SELF:ReadFed(cDirectory)
@@ -2817,18 +2817,18 @@ CLASS DBServerCode
 		LOCAL lInMacros AS LOGIC
 		LOCAL cSection AS STRING
 		LOCAL nAt AS INT
-		
+
         cOrigDir := cDirectory
         TRY
         	cCavoWed := cDirectory + "\Properties\CAVODED.TPL"
-	        IF !System.IO.File.Exists(cCavoWed)
+	        IF !File.Exists(cCavoWed)
 		        cCavoWed := cDirectory + "\CAVODED.TPL"
-				IF !System.IO.File.Exists(cCavoWed)
+				IF !File.Exists(cCavoWed)
 					cDirectory := Directory.GetParent(cDirectory):FullName
 					cCavoWed := cDirectory + "\CAVODED.TPL"
-			        IF !System.IO.File.Exists(cCavoWed)
+			        IF !File.Exists(cCavoWed)
 			        	cCavoWed := cDirectory + "\Properties\CAVODED.TPL"
-				        IF !System.IO.File.Exists(cCavoWed) .and. Funcs.InstallTemplatesFolder != ""
+				        IF !File.Exists(cCavoWed) .and. Funcs.InstallTemplatesFolder != ""
 				        	cCavoWed := Funcs.InstallTemplatesFolder  + "\CAVODED.TPL"
 				        ENDIF
 			        ENDIF
@@ -2837,10 +2837,10 @@ CLASS DBServerCode
          CATCH
             NOP
         END TRY
-		IF !System.IO.File.Exists(cCavoWed)
+		IF !File.Exists(cCavoWed)
 			MessageBox.Show("File Cavoded.tpl was not found, please locate it on disk." , "DBServer Editor")
 		ENDIF
-		DO WHILE !System.IO.File.Exists(cCavoWed)
+		DO WHILE !File.Exists(cCavoWed)
 			LOCAL oDlg AS OpenFileDialog
 			oDlg := OpenFileDialog{}
 			oDlg:Filter := "CavoDED files (*.tpl)|*.tpl"
@@ -2858,11 +2858,11 @@ CLASS DBServerCode
 				RETURN FALSE
 			ENDIF
 		END DO
-	
-		IF ! System.IO.File.Exists(cCavoWed)
+
+		IF ! File.Exists(cCavoWed)
 			RETURN FALSE
 		ENDIF
-			
+
 	    oStream := System.IO.StreamReader{cCavoWed , System.Text.Encoding.GetEncoding(0)}
 		DO WHILE oStream:Peek()!=-1
 		    cLine := oStream:ReadLine()
@@ -2935,7 +2935,7 @@ CLASS DBServerCode
 		    ENDCASE
 		END DO
 		oStream:Close()
-	
+
 	RETURN TRUE
 
 	METHOD TranslateTokens(cMacro REF STRING) AS VOID
@@ -2945,7 +2945,7 @@ CLASS DBServerCode
 		cMacro := cMacro:Replace("\t" , Chr(9))
 		cMacro := cMacro:Replace(e"\\\"" , e"\"")
 	RETURN
-		
+
 	METHOD ReadFed(cDirectory AS STRING) AS LOGIC
 		LOCAL oStream AS System.IO.StreamReader
 		LOCAL cLine,cUpper AS STRING
@@ -2957,14 +2957,14 @@ CLASS DBServerCode
       cOrigDir := cDirectory
         TRY
         	cCavoWed := cDirectory + "\Properties\CAVOFED.TPL"
-	        IF !System.IO.File.Exists(cCavoWed)
+	        IF !File.Exists(cCavoWed)
 		        cCavoWed := cDirectory + "\CAVOFED.TPL"
-				IF !System.IO.File.Exists(cCavoWed)
+				IF !File.Exists(cCavoWed)
 					cDirectory := Directory.GetParent(cDirectory):FullName
 					cCavoWed := cDirectory + "\CAVOFED.TPL"
-			        IF !System.IO.File.Exists(cCavoWed)
+			        IF !File.Exists(cCavoWed)
 			        	cCavoWed := cDirectory + "\Properties\CAVOFED.TPL"
-				        IF !System.IO.File.Exists(cCavoWed) .and. Funcs.InstallTemplatesFolder != ""
+				        IF !File.Exists(cCavoWed) .and. Funcs.InstallTemplatesFolder != ""
 				        	cCavoWed := Funcs.InstallTemplatesFolder  + "\CAVOFED.TPL"
 				        ENDIF
 			        ENDIF
@@ -2973,10 +2973,10 @@ CLASS DBServerCode
          CATCH
             NOP
         END TRY
-		IF !System.IO.File.Exists(cCavoWed)
+		IF !File.Exists(cCavoWed)
 			MessageBox.Show("File Cavofed.tpl was not found, please locate it on disk." , "DBServer Editor")
 		ENDIF
-		DO WHILE !System.IO.File.Exists(cCavoWed)
+		DO WHILE !File.Exists(cCavoWed)
 			LOCAL oDlg AS OpenFileDialog
 			oDlg := OpenFileDialog{}
 			oDlg:Filter := "CavoFED files (*.tpl)|*.tpl"
@@ -2994,11 +2994,11 @@ CLASS DBServerCode
 				RETURN FALSE
 			ENDIF
 		END DO
-	
-		IF ! System.IO.File.Exists(cCavoWed)
+
+		IF ! File.Exists(cCavoWed)
 			RETURN FALSE
 		ENDIF
-			
+
 	    oStream := System.IO.StreamReader{cCavoWed , System.Text.Encoding.GetEncoding(0)}
 		DO WHILE oStream:Peek()!=-1
 		    cLine := oStream:ReadLine()
@@ -3023,9 +3023,9 @@ CLASS DBServerCode
 		    ENDCASE
 		END DO
 		oStream:Close()
-	
+
 	RETURN TRUE
-	
+
 END CLASS
 
 CLASS DBHelpers
@@ -3042,7 +3042,7 @@ CLASS DBHelpers
 	RETURN DbCreate(cFileName , aFields , cDriver)
 	STATIC METHOD DBH_DBCreateOrder(cName AS STRING, cFileName AS STRING, cKey AS STRING) AS LOGIC
 	RETURN DbCreateOrder(cName , cFileName , cKey)
-	
+
 	STATIC METHOD DBH_DBStruct() AS List<OBJECT>
 		LOCAL aStruct AS ARRAY
 		LOCAL aRet AS List<OBJECT>

@@ -11,7 +11,13 @@ USING System.Linq
 USING LanguageService.CodeAnalysis.XSharp
 
 BEGIN NAMESPACE XSharpModel
-
+    ENUM DebuggerMode
+        MEMBER Design := 0
+        MEMBER Break := 1
+        MEMBER Running := 2
+        MEMBER EditAndContinue := 0x10000000
+        MEMBER EditAndContinueMask := ~0x10000000
+    END ENUM
     ENUM KeywordCase
         MEMBER None := 0
         MEMBER Upper:= 1

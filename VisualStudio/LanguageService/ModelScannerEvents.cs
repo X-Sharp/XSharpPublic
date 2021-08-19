@@ -9,13 +9,13 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio;
 using IServiceProvider = System.IServiceProvider;
 using System.IO;
-using Task = System.Threading.Tasks.Task;
-
+using System.Threading;
 using Microsoft.VisualStudio.Shell;
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharpModel;
 using File = System.IO.File;
+using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.LanguageService
 {
@@ -65,7 +65,7 @@ namespace XSharp.LanguageService
             XSharpModel.XSolution.Close();
         }
 
-        private async void EnumChildren(SolutionItem obj, List<string> projects)
+        private async Task EnumChildrenAsync(SolutionItem obj, List<string> projects)
         {
             //System.Diagnostics.Debug.WriteLine(obj.Type.ToString() + " " + obj.Name);
             try
@@ -90,25 +90,25 @@ namespace XSharp.LanguageService
                             }
                             break;
                         case SolutionItemType.PhysicalFile:
-                            EnumChildren(child, projects);
+                            await EnumChildrenAsync(child, projects);
                             break;
                         case SolutionItemType.PhysicalFolder:
-                            EnumChildren(child, projects);
+                            await EnumChildrenAsync(child, projects);
                             break;
                         case SolutionItemType.MiscProject:
-                            EnumChildren(child, projects);
+                            await EnumChildrenAsync(child, projects);
                             break;
                         case SolutionItemType.VirtualProject:
-                            EnumChildren(child, projects);
+                            await EnumChildrenAsync(child, projects);
                             break;
                         case SolutionItemType.Solution:
-                            EnumChildren(child, projects);
+                            await EnumChildrenAsync(child, projects);
                             break;
                         case SolutionItemType.SolutionFolder:
-                            EnumChildren(child, projects);
+                            await EnumChildrenAsync(child, projects);
                             break;
                         case SolutionItemType.Unknown:
-                            EnumChildren(child, projects);
+                            await EnumChildrenAsync(child, projects);
                             break;
                     }
                 }
@@ -117,7 +117,7 @@ namespace XSharp.LanguageService
             {
                 System.Diagnostics.Debug.WriteLine(obj.Type.ToString() + " " + e.Message);
             }
-            return ;
+            return;
         }
 
         void addProjectFiles(XProject project, SolutionItem obj)
@@ -157,7 +157,7 @@ namespace XSharp.LanguageService
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 var sol = await VS.Solutions.GetCurrentSolutionAsync();
-                EnumChildren(obj, projects);
+                await EnumChildrenAsync(obj, projects);
             });
 
             if (string.IsNullOrEmpty(solutionFile))

@@ -478,8 +478,7 @@ namespace Microsoft.VisualStudio.Project
         {
             if (File.Exists(path))
             {
-                File.SetAttributes(path, FileAttributes.Normal); // make sure it's not readonly.
-                File.Delete(path);
+                Utilities.DeleteFileSafe(path);
             }
         }
 

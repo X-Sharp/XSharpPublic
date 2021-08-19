@@ -3,20 +3,21 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using System;
-using System.Diagnostics;
+using Community.VisualStudio.Toolkit;
+using Microsoft;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio;
+using System;
 using System.Collections.Generic;
-using XSharpModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft;
-using Microsoft.VisualStudio.Shell;
-using Community.VisualStudio.Toolkit;
-
+using XSharpModel;
+using File = System.IO.File;
 namespace XSharp.LanguageService
 {
     internal sealed partial class CommandFilter : IOleCommandTarget
@@ -134,10 +135,108 @@ namespace XSharp.LanguageService
             return hresult;
         }
 
+        private static void DeleteFolderRecursively(DirectoryInfo directory)
+        {
+            // Scan all files in the current path
+            foreach (FileInfo file in directory.GetFiles())
+            {
+                file.Attributes &= ~FileAttributes.ReadOnly;
+                file.Delete();
+            }
 
+            DirectoryInfo[] subDirectories = directory.GetDirectories();
 
+            // Scan the directories in the current directory and call this method 
+            // again to go one level into the directory tree
+            foreach (DirectoryInfo subDirectory in subDirectories)
+            {
+                DeleteFolderRecursively(subDirectory);
+                subDirectory.Attributes &= ~FileAttributes.ReadOnly;
+
+                subDirectory.Delete();
+            }
+        }
 
         #region Goto Definition
+        static string WorkFolder = null;
+        static Stream Semaphore = null;
+        const string folderName = "XSharp.Intellisense";
+        const string semName = "XSharp.Busy";
+        private void GotoSystemType(XPETypeSymbol petype, XPESymbol element)
+        {
+            var aLines = XClassCreator.Create(petype);
+            if (Semaphore == null)
+            {
+                // we create a semaphore file in the workfolder to make sure that if 2 copies of VS are running
+                // that we will not delete the files from the other copy
+                var tempFolder = Path.GetTempPath();
+                tempFolder = Path.Combine(tempFolder, folderName);
+                var semFile = Path.Combine(tempFolder, semName);
+                // clean up files from previous run
+                if (Directory.Exists(tempFolder))
+                {
+                    if (File.Exists(semFile))
+                    {
+                        try
+                        {
+                            File.Delete(semFile);
+                            DeleteFolderRecursively(new DirectoryInfo(tempFolder));
+                        }
+                        catch
+                        {
+                            // if deletion fails, other copy of VS is running, so do not delete the folder
+                        }
+                    }
+                }
+                if (!Directory.Exists(tempFolder))
+                {
+                    Directory.CreateDirectory(tempFolder);
+                }
+                WorkFolder = tempFolder;
+                Semaphore = File.Create(semFile);
+            }
+            var ns = petype.Namespace+"."+petype.Assembly.Version;
+            var name = petype.Name;
+            var nspath = Path.Combine(WorkFolder, ns);
+            if (! Directory.Exists(nspath))
+            {
+                Directory.CreateDirectory(nspath);
+            }
+            var temp = Path.Combine(nspath, petype.Name) + ".prg";
+            if (! File.Exists(temp))
+            {
+                File.WriteAllLines(temp, aLines.ToArray());
+                File.SetAttributes(temp, FileAttributes.ReadOnly);
+            }
+            var xFile = XSolution.AddOrphan(temp);
+            var walker = new SourceWalker(xFile, false);
+            walker.Parse(false);
+            var entities = walker.EntityList;
+            var line = 1;
+            foreach (var entity in entities)
+            {
+                if (entity.FullName == element.FullName)
+                {
+                    line = entity.Range.StartLine+1;
+                    break;
+                }
+            }
+            var file = this.TextView.TextBuffer.GetFile();
+            // Copy references to the Orphan file project so type lookup works as expected
+            var orphProject = XSolution.OrphanedFilesProject;
+            var project = file.Project;
+            if (project != orphProject)
+            {
+                orphProject.ClearAssemblyReferences();
+                foreach (var asm in project.AssemblyReferences)
+                {
+                    orphProject.AddAssemblyReference(asm.FileName);
+                }
+                project.ProjectNode.OpenElement(temp, line, 1);
+            }
+            VS.Documents.OpenInPreviewTabAsync(temp).FireAndForget();
+
+        }
         private void GotoDefn()
         {
             try
@@ -181,21 +280,13 @@ namespace XSharp.LanguageService
                     }
                     else if (element is XPETypeSymbol petype)
                     {
-                        var aLines = XClassCreator.Create(petype);
-                        var temp = System.IO.Path.GetTempFileName();
-                        temp = System.IO.Path.ChangeExtension(temp, "prg");
-                        System.IO.File.WriteAllLines(temp, aLines.ToArray());
-                        VS.Documents.OpenAsync(temp).FireAndForget();
+                        GotoSystemType(petype, petype);
 
                     }
                     else if (element is XPEMemberSymbol pemember)
                     {
                         var petype2 = pemember.Parent as XPETypeSymbol;
-                        var aLines = XClassCreator.Create(petype2);
-                        var temp = System.IO.Path.GetTempFileName();
-                        temp = System.IO.Path.ChangeExtension(temp, "prg");
-                        System.IO.File.WriteAllLines(temp, aLines.ToArray());
-                        VS.Documents.OpenAsync(temp).FireAndForget();
+                        GotoSystemType(petype2,pemember);
                     }
                     return;
                 }

@@ -607,19 +607,11 @@ namespace XSharp.LanguageService
                 {
                     var props = SearchPropertyOrField(location, currentType, namespacePrefix+currentName, visibility).Where(m => m.IsStatic);
                     result.AddRange(props);
-                    if (result.Count > 0)
-                    {
-                        symbols.Push(result[0]);
-                    }
                 }
                 if (state.HasFlag(CompletionState.InstanceMembers) && !findMethod && result.Count == 0)
                 {
                     var props = SearchPropertyOrField(location, currentType, namespacePrefix + currentName, visibility).Where(m => !m.IsStatic);
                     result.AddRange(props);
-                    if (result.Count > 0)
-                    {
-                        symbols.Push(result[0]);
-                    }
                 }
 
                 if (literal)
@@ -673,6 +665,11 @@ namespace XSharp.LanguageService
                         {
                             return result;
                         }
+                        if (result.Count > 0)
+                        {
+                            symbols.Push(result[0]);
+                        }
+
                     }
                     else if (currentType != null)
                     {
@@ -703,37 +700,41 @@ namespace XSharp.LanguageService
                 }
                 else if (isId)
                 {
+                    // Order:
+                    // 1) Locals and Parameters (only at start)
+                    // 2) Properties and Fields (only at start)
+                    // 3) Types
+                    // 4) Namespaces
+                    // Types first because when we have a nested type then the parent is also registered as a namespace
+                    // but we want to find the type of course
                     if (startOfExpression)
                     {
                         // Search in Parameters, Locals, Field and Properties
                         if (currentName == "::" || currentName.ToLower() == "this")
-                            currentName = "SELF";
-                        result.AddRange(FindIdentifier(location, currentName, currentType, Modifiers.Private));
-                        if (result.Count > 0)
                         {
-                            symbols.Push(result[0]);
+                            currentName = "SELF";
+                        }
+                        // 1) Locals and Parameters
+                        result.AddRange(FindIdentifier(location, currentName, currentType, Modifiers.Private));
+                        if (result.Count == 0)
+                        {
+                            // 2) Properties and Fields
+                            result.AddRange(SearchPropertyOrField(location, currentType, currentName, visibility));
                         }
                     }
                     if (result.Count == 0 && (startOfExpression || findType || findConstructor || qualifiedName))
                     {
-                        // look for Namespaces
-                        result.AddRange(SearchNamespaces(location, namespacePrefix + currentName));
+                        // 3) Types
+                        result.AddRange(SearchType(location, namespacePrefix + currentName));
                         if (result.Count == 0)
                         {
-                            result.AddRange(SearchType(location, namespacePrefix + currentName));
-                        }
-                        if (result.Count > 0)
-                        {
-                            symbols.Push(result[0]);
+                            // 4) Namespaces
+                            result.AddRange(SearchNamespaces(location, namespacePrefix + currentName));
                         }
                     }
-                    if (result.Count == 0 && startOfExpression)
+                    if (result.Count > 0)
                     {
-                        result.AddRange(SearchPropertyOrField(location, currentType, currentName, visibility));
-                        if (result.Count > 0)
-                        {
-                            symbols.Push(result[0]);
-                        }
+                        symbols.Push(result[0]);
                     }
                 }
                 // We have it
@@ -1211,9 +1212,10 @@ namespace XSharp.LanguageService
             var namespaces = location.Project.AllNamespaces;
             foreach (var ns in namespaces)
             {
-                if (ns.Equals(name, StringComparison.OrdinalIgnoreCase))
+                if (ns.StartsWith(name, StringComparison.OrdinalIgnoreCase))
                 {
-                    result.Add(new XSymbol(ns, Kind.Namespace, Modifiers.Public));
+                    result.Add(new XSymbol(name, Kind.Namespace, Modifiers.Public));
+                    break;
                 }
             }
             if (XSettings.EnableTypelookupLog)

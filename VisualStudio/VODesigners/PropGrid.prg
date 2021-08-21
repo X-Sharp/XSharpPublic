@@ -29,27 +29,27 @@ CLASS DesignerGrid INHERIT Panel
 	CONSTRUCTOR()
 		SUPER()
 
-		SELF:cPage := ""		
+		SELF:cPage := ""
 		SELF:oTabControl := TABCONTROL{}
 		SELF:oTabControl:Dock := DockStyle.Top
-		
+
 		SELF:oTabControl:Height := 25
 		SELF:oTabControl:SelectedIndexChanged += EventHandler{ SELF , @GridTabPageChanged() }
-		
+
 		SELF:oPanel := PropertyPanel{SELF}
 		SELF:oPanel:Dock := DockStyle.Fill
 		SELF:oPanel:oDummy:KeyDown += KeyEventHandler{ SELF , @PanelKeyDown() }
-		
+
 		LOCAL oContainer AS Panel
 		oContainer := Panel{}
 		oContainer:Dock := DockStyle.Fill
 		oContainer:AutoScroll := TRUE
 		oContainer:Controls:Add(SELF:oPanel)
 		oContainer:Controls:Add(SELF:oPanel:oDummy)
-		
+
 		SELF:Controls:Add(oContainer)
 		SELF:Controls:Add(SELF:oTabControl)
-		
+
 		SELF:oHierarchy := ComboBox{}
 		SELF:oHierarchy:DropDownStyle := ComboBoxStyle.DropDownList
 		SELF:oHierarchy:Dock := DockStyle.Top
@@ -65,7 +65,7 @@ CLASS DesignerGrid INHERIT Panel
 		LOCAL nPage , n AS INT
 		LOCAL oPage AS TabPage
 		LOCAL lFound AS LOGIC
-		
+
 		LOCAL aTemp AS List<STRING> // todo BIG, BAD, UGLY HACK!
 		LOCAL cPage AS STRING
 		LOCAL nAt AS INT
@@ -79,8 +79,8 @@ CLASS DesignerGrid INHERIT Panel
 			aTemp:Add(cPage)
 		NEXT
 		aPages := aTemp
-		
-		
+
+
 		nPage := 0
 		DO WHILE nPage < SELF:oTabControl:TabPages:Count
 			oPage := SELF:oTabControl:TabPages[nPage]
@@ -108,13 +108,13 @@ CLASS DesignerGrid INHERIT Panel
 				SELF:oTabControl:TabPages:Insert(n , aPages[n])
 			END IF
 		NEXT
-		
+
 		IF SELF:oTabControl:TabPages:Count == 0
 			SELF:cPage := ""
 		ELSE
 			SELF:cPage := SELF:oTabControl:SelectedTab:Text
 		ENDIF
-		
+
 	RETURN
 
 	METHOD GridTabPageChanged(o AS OBJECT,e AS EventArgs) AS VOID
@@ -128,7 +128,7 @@ CLASS DesignerGrid INHERIT Panel
 	METHOD UseHierarchy(lUse AS LOGIC) AS VOID
 		SELF:oHierarchy:Visible := lUse
 	RETURN
-	
+
 	METHOD HierarchyDropDown(o AS OBJECT,e AS EventArgs) AS VOID
 		LOCAL aDesign AS ArrayList
 		LOCAL cSelection AS STRING
@@ -160,7 +160,7 @@ CLASS DesignerGrid INHERIT Panel
 		LOCAL aProperties AS ArrayList
 		LOCAL lSkip AS LOGIC
 		LOCAL m AS INT
-		
+
 		SELF:oHierarchy:Items:Clear()
 
 		aProperties := ArrayList{}
@@ -174,7 +174,7 @@ CLASS DesignerGrid INHERIT Panel
 		oDesign := (DesignItem)SELF:aSelected[0]
 
 		SELF:SetPages(oDesign:aPages)
-		
+
 		IF SELF:aSelected:Count == 1
 			SELF:oHierarchy:Items:Add(oDesign:ToString())
 			SELF:oHierarchy:SelectedIndex := 0
@@ -212,7 +212,7 @@ CLASS DesignerGrid INHERIT Panel
 			SELF:PropertyModified:Invoke(cProp , oValue)
 		ENDIF
 	RETURN
-	
+
 END CLASS
 
 
@@ -238,7 +238,7 @@ CLASS PropertyPanel INHERIT PictureBox
 	PROTECT oGrid AS DesignerGrid
 	PROTECT oProperty AS VODesignProperty
 	EXPORT oDummy AS Button
-	
+
 	CONSTRUCTOR(_oGrid AS DesignerGrid)
 		SUPER()
 		SELF:oGrid := _oGrid
@@ -268,20 +268,20 @@ CLASS PropertyPanel INHERIT PictureBox
 		SELF:nSplit := 120
 		SELF:nItemHeight := SELF:oEdit:Height
 		SELF:Dock := DockStyle.Top
-	
+
 		SELF:oDummy := Button{}
 		SELF:oDummy:Size := Size{0 , SELF:nItemHeight - 2}
 		SELF:oDummy:PreviewKeyDown += PreviewKeyDownEventHandler{ SELF , @DummyPreviewKeyDown() }
-		
+
 		SELF:oToolTip := Tooltip{}
 		SELF:oBoldFont := Font{SELF:Font , FontStyle.Bold}
-		
+
 	RETURN
 
 	METHOD EventButtonClicked(o AS OBJECT,e AS EventArgs) AS VOID
 		SELF:oProperty := (VODesignProperty)SELF:aProperties[SELF:nCurY]
 		IF SELF:oProperty:cSpecialClass != NULL
-			SWITCH  SELF:oProperty:cSpecialClass 
+			SWITCH  SELF:oProperty:cSpecialClass
 			CASE "Color" //.or. SELF:oProperty:cSpecialClass == "Brush"
 				LOCAL oColorDlg AS ColorDialog
 				oColorDlg := ColorDialog{}
@@ -324,11 +324,11 @@ CLASS PropertyPanel INHERIT PictureBox
 					SELF:Invalidate()
 				ENDIF
 			END SWITCH
-			
+
 		ELSEIF SELF:oProperty:Type == PropertyType.Callback
-			
+
 			SELF:oGrid:SetProperty(NULL , SELF:oProperty:cMember)
-			
+
 		ENDIF
 	RETURN
 
@@ -347,7 +347,7 @@ CLASS PropertyPanel INHERIT PictureBox
 		SELF:Invalidate()
 		SELF:ShowButton()
 	RETURN
-	
+
 	PROTECTED METHOD OnResize(e AS EventArgs) AS VOID
 		SUPER:OnResize(e)
 		IF SELF:oEdit:Visible
@@ -364,9 +364,9 @@ CLASS PropertyPanel INHERIT PictureBox
 		LOCAL n AS INT
 		LOCAL x,y AS INT
 		LOCAL oFont AS Font
-		
+
 		SUPER:OnPaint(e)
-		
+
 		IF SELF:aProperties:Count == 0
 			RETURN
 		END IF
@@ -383,7 +383,7 @@ CLASS PropertyPanel INHERIT PictureBox
 				oBrush := SELF:oBrushBlack
 			ENDIF
 			oGraphics:DrawString(cText , oFont , oBrush , Rectangle{ 2 , n * SELF:nItemHeight + 5 , SELF:nSplit , SELF:nItemHeight -4 })
-			
+
 			cText := oProp:TextValue
 			IF cText == "" .and. !oProp:lNoAuto
 				cText := "<Auto>"
@@ -405,7 +405,7 @@ CLASS PropertyPanel INHERIT PictureBox
 				oBrush := SELF:oBrushWhite
 			ENDIF
 			oGraphics:DrawString(cText,oFont,oBrush, x, y)
-			
+
 			oGraphics:DrawLine(oBlackPen , 0 , (n + 1) * SELF:nItemHeight , SELF:Width , (n + 1) * SELF:nItemHeight)
 		NEXT
 		oGraphics:DrawLine(oBlackPen , SELF:nSplit , 0 , SELF:nSplit , n * SELF:nItemHeight)
@@ -413,7 +413,7 @@ CLASS PropertyPanel INHERIT PictureBox
 
 	PROTECTED METHOD DummyPreviewKeyDown(o AS OBJECT , e AS PreviewKeyDownEventArgs) AS VOID
 
-		SWITCH e:KeyData 
+		SWITCH e:KeyData
 		CASE Keys.Left
 			IF SELF:nCurX == 2
 				SELF:nCurX := 1
@@ -438,7 +438,7 @@ CLASS PropertyPanel INHERIT PictureBox
 			SELF:nCurY := 0
 		CASE Keys.Next
 			SELF:nCurY := SELF:aProperties:Count - 1
-		CASE Keys.Enter 
+		CASE Keys.Enter
         CASE Keys.F2
 			IF SELF:nCurX == 2
 				SELF:ShowControl()
@@ -446,27 +446,27 @@ CLASS PropertyPanel INHERIT PictureBox
 		END SWITCH
 		SELF:Invalidate()
 		SELF:ShowButton()
-		
+
 	RETURN
 
 	PROTECTED METHOD OnMouseDown(e AS MouseEventArgs) AS VOID
 		SUPER:OnMouseDown(e)
-	
+
 		SELF:oDummy:Focus()
-	
+
 		IF Math.Abs(e:X - SELF:nSplit) < 3
 			SELF:lMovingSplitter := TRUE
 			RETURN
 		END IF
-	
+
 		IF e:Y / SELF:nItemHeight > SELF:aProperties:Count
 			RETURN
 		END IF
-		
+
 		SELF:nCurX := iif(e:X < SELF:nSplit , 1 , 2)
 		SELF:nCurY := e:Y / SELF:nItemHeight
 		SELF:Invalidate()
-	
+
 		IF SELF:nCurX == 2 .or. e:Clicks == 2
 			SELF:ShowControl()
 		ENDIF
@@ -494,24 +494,24 @@ CLASS PropertyPanel INHERIT PictureBox
 			SELF:lMovingSplitter := FALSE
 		ENDIF
 	RETURN
-	
+
 	METHOD ShowControl() AS VOID
 		LOCAL n AS INT
 		IF SELF:nCurY >= SELF:aProperties:Count
 			RETURN
 		ENDIF
 		SELF:oProperty := (VODesignProperty)SELF:aProperties[SELF:nCurY]
-		
+
 		IF SELF:oProperty:cSpecialClass == "FillUsing" .or. SELF:oProperty:cSpecialClass == "__MenuAccelerator"
 			RETURN
 		ENDIF
-		
+
 		IF SELF:oProperty:lReadOnly
 			RETURN
 		END IF
-		
-		SWITCH SELF:oProperty:Type 
-		CASE PropertyType.Numeric 
+
+		SWITCH SELF:oProperty:Type
+		CASE PropertyType.Numeric
         CASE PropertyType.Text
 			SELF:oEdit:Text := SELF:oProperty:TextValue
 			SELF:oEdit:oProperty := SELF:oProperty
@@ -521,7 +521,7 @@ CLASS PropertyPanel INHERIT PictureBox
 			SELF:oEdit:Width := SELF:Width - SELF:nSplit
 			SELF:oEdit:Show(SELF:lMultiple , SELF:oProperty:Name != "validation") // HACK
 //		CASE SELF:oProperty:Type == PropertyType.Boolean .or. ;
-		CASE PropertyType.Enumerated 
+		CASE PropertyType.Enumerated
 	    CASE PropertyType.Type
 //			SELF:oCombo:DropDownStyle := ComboBoxStyle.DropDownList
 			SELF:oCombo:Location := Point{SELF:nSplit + 1 , SELF:nCurY * SELF:nItemHeight + 1}
@@ -572,16 +572,16 @@ CLASS PropertyPanel INHERIT PictureBox
 			SELF:oCombo:DroppedDown := TRUE
 		END SWITCH
 	RETURN
-	
+
 	METHOD ShowButton() AS VOID
 		LOCAL oProp AS DesignProperty
-	
+
 		IF SELF:nCurY < 0 .or. SELF:nCurY >= SELF:aProperties:Count
 			SELF:oButton:Hide()
 			RETURN
 		ENDIF
 		oProp := (DesignProperty)SELF:aProperties[SELF:nCurY]
-	
+
 		IF oProp:Type == PropertyType.Callback .or. oProp:cSpecialClass != NULL
 			SELF:oButton:Size := Size{SELF:nItemHeight + 1 , SELF:nItemHeight + 1}
 			SELF:oButton:Location := Point{SELF:Width - SELF:oButton:Width + 1 , SELF:nCurY * SELF:nItemHeight}
@@ -629,7 +629,7 @@ INTERNAL CLASS PropertyTextBox INHERIT TextBox
 		SELF:Show()
 		SELF:Focus()
 	RETURN
-	
+
 	PROTECTED METHOD OnKeyPress(e AS KeyPressEventArgs) AS VOID
 		IF e:KeyChar == (Char)13 .or. e:KeyChar == (Char)27
 			e:Handled := TRUE
@@ -726,7 +726,9 @@ RETURN
 PROTECTED METHOD OnSelectionChangeCommitted (e AS EventArgs) AS VOID
 	SUPER:OnSelectionChangeCommitted(e)
 	IF SELF:lCombined
-		SELF:Text := SELF:SelectedItem:ToString()
+        IF SELF:SelectedItem != NULL
+		    SELF:Text := SELF:SelectedItem:ToString()
+        ENDIF
 		RETURN
 	ENDIF
 	IF SELF:oProperty:lAllowNULL .or. !SELF:Text:Trim() == ""
@@ -802,12 +804,12 @@ CONSTRUCTOR(_oAccelerator AS MenuAccelerator)
 	SUPER()
 
 	SELF:InitializeForm()
-	
+
 	LOCAL n AS INT
 	FOR n := 0 UPTO VOMenuEditor.AccelKeys:Count - 1
 		SELF:oKeyComboBox:Items:Add(VOMenuEditor.AccelKeys:GetName(n))
 	NEXT
-	
+
 	IF !_oAccelerator:IsEmpty
 		SELF:oKeyComboBox:Text := _oAccelerator:Key
 		SELF:oControlCheckBox:Checked := _oAccelerator:Control
@@ -838,7 +840,7 @@ METHOD InitializeForm() AS VOID
 	SELF:oAutoButton:TabIndex := 2
 	SELF:oAutoButton:Text := "<&Auto>"
 	SELF:Controls:Add(SELF:oAutoButton)
-	
+
 	SELF:oOkButton := System.Windows.Forms.Button{}
 	SELF:oOkButton:Name := "OkButton"
 	SELF:oOkButton:Click += System.EventHandler{ SELF , @OKButtonClick() }
@@ -847,7 +849,7 @@ METHOD InitializeForm() AS VOID
 	SELF:oOkButton:TabIndex := 1
 	SELF:oOkButton:Text := "&OK"
 	SELF:Controls:Add(SELF:oOkButton)
-	
+
 	SELF:oCancelButton := System.Windows.Forms.Button{}
 	SELF:oCancelButton:Name := "CancelButton"
 	SELF:oCancelButton:Location := System.Drawing.Point{ 144 , 112 }
@@ -855,7 +857,7 @@ METHOD InitializeForm() AS VOID
 	SELF:oCancelButton:TabIndex := 3
 	SELF:oCancelButton:Text := "&Cancel"
 	SELF:Controls:Add(SELF:oCancelButton)
-	
+
 	SELF:oGroupBox1 := System.Windows.Forms.GroupBox{}
 	SELF:oGroupBox1:Name := "GroupBox1"
 	SELF:oGroupBox1:SuspendLayout()
@@ -863,7 +865,7 @@ METHOD InitializeForm() AS VOID
 	SELF:oGroupBox1:Size := System.Drawing.Size{ 200 , 95 }
 	SELF:oGroupBox1:TabIndex := 0
 	SELF:Controls:Add(SELF:oGroupBox1)
-	
+
 
 	SELF:oKeyComboBox := System.Windows.Forms.ComboBox{}
 	SELF:oKeyComboBox:Name := "KeyComboBox"
@@ -872,7 +874,7 @@ METHOD InitializeForm() AS VOID
 	SELF:oKeyComboBox:Size := System.Drawing.Size{ 96 , 21 }
 	SELF:oKeyComboBox:TabIndex := 0
 	SELF:oGroupBox1:Controls:Add(SELF:oKeyComboBox)
-	
+
 	SELF:oLabel1 := System.Windows.Forms.Label{}
 	SELF:oLabel1:Name := "Label1"
 	SELF:oLabel1:Location := System.Drawing.Point{ 16 , 24 }
@@ -880,7 +882,7 @@ METHOD InitializeForm() AS VOID
 	SELF:oLabel1:TabIndex := 1
 	SELF:oLabel1:Text := "Accel. Key :"
 	SELF:oGroupBox1:Controls:Add(SELF:oLabel1)
-	
+
 	SELF:oControlCheckBox := System.Windows.Forms.CheckBox{}
 	SELF:oControlCheckBox:Name := "ControlCheckBox"
 	SELF:oControlCheckBox:Location := System.Drawing.Point{ 16 , 56 }
@@ -888,7 +890,7 @@ METHOD InitializeForm() AS VOID
 	SELF:oControlCheckBox:TabIndex := 2
 	SELF:oControlCheckBox:Text := "Control"
 	SELF:oGroupBox1:Controls:Add(SELF:oControlCheckBox)
-	
+
 	SELF:oShiftCheckBox := System.Windows.Forms.CheckBox{}
 	SELF:oShiftCheckBox:Name := "ShiftCheckBox"
 	SELF:oShiftCheckBox:Location := System.Drawing.Point{ 88 , 56 }
@@ -896,7 +898,7 @@ METHOD InitializeForm() AS VOID
 	SELF:oShiftCheckBox:TabIndex := 3
 	SELF:oShiftCheckBox:Text := "Shift"
 	SELF:oGroupBox1:Controls:Add(SELF:oShiftCheckBox)
-	
+
 	SELF:oAltCheckBox := System.Windows.Forms.CheckBox{}
 	SELF:oAltCheckBox:Name := "AltCheckBox"
 	SELF:oAltCheckBox:Location := System.Drawing.Point{ 152 , 56 }
@@ -904,7 +906,7 @@ METHOD InitializeForm() AS VOID
 	SELF:oAltCheckBox:TabIndex := 4
 	SELF:oAltCheckBox:Text := "Alt"
 	SELF:oGroupBox1:Controls:Add(SELF:oAltCheckBox)
-	
+
 	SELF:oGroupBox1:ResumeLayout()
 	SELF:ResumeLayout()
 

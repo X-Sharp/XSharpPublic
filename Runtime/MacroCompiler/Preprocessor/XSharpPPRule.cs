@@ -1247,6 +1247,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             if (found)
             {
                 iEnd = iCurrent;
+                iSource = iEnd;
                 if (lastToken.Type == TokenType.AMP)
                 {
                     // when the ampersand is the last token, then we also include the following token
@@ -1257,7 +1258,6 @@ namespace XSharp.MacroCompiler.Preprocessor
                     if (lastToken == mToken.Tokens[mToken.Tokens.Length - 1] && tokens.Count > iEnd)
                     {
                         iEnd += 1;
-                        iSource = iEnd;
                     }
                 }
                 // truncate spaces at the end

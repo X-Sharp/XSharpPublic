@@ -131,6 +131,23 @@ namespace XSharp.Parser
             ReportErrors(parseErrors, listener);
             return tree != null;
         }
+        public static bool PreProcess(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener,
+                out ITokenStream tokens)
+        {
+            tokens = null;
+            var parseErrors = ParseErrorData.NewBag();
+            try
+            {
+                LexerHelper(sourceText, fileName, options, parseErrors, out _, out var ppStream);
+                tokens = ppStream;
+            }
+            catch (Exception)
+            {
+
+            }
+            ReportErrors(parseErrors, listener);
+            return tokens != null;
+        }
         public static bool Lex(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener, 
             out ITokenStream tokens)
         {

@@ -1251,6 +1251,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (found)
             {
                 iEnd = iCurrent;
+                iSource = iEnd;
                 if (lastToken.Type == XSharpLexer.AMP)
                 {
                     // when the ampersand is the last token, then we also include the following token
@@ -1261,7 +1262,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (lastToken == mToken.Tokens[mToken.Tokens.Length - 1] && tokens.Count > iEnd)
                     {
                         iEnd += 1;
-                        iSource = iEnd;
                     }
                 }
                 // truncate spaces at the end

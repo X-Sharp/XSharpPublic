@@ -108,6 +108,7 @@
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
+    <Compile Include="Commands\CommandViewRepo.cs" />
     <Compile Include="Commands\CommandViewWorkareas.cs" />
     <Compile Include="Commands\CommandViewSettings.cs" />
     <Compile Include="Commands\CommandViewMemVars.cs" />
@@ -359,6 +360,10 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WcfService\Service.prg">
     </ZipItem>
+    <Compile Include="RepositoryWindow\ToolWindows\RepositoryWindow.cs" />
+    <Compile Include="RepositoryWindow\ToolWindows\RepositoryWindowControl.xaml.cs">
+      <DependentUpon>RepositoryWindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="XSharpDocumentWatcher.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
@@ -718,7 +723,12 @@
       <Version>7.0.4</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="RepositoryWindow\ToolWindows\RepositoryWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>

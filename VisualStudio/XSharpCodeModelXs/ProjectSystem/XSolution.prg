@@ -18,7 +18,9 @@ BEGIN NAMESPACE XSharpModel
       STATIC PRIVATE _sqldb      AS STRING
       STATIC PRIVATE _commentTokens AS List<XCommentToken>
       STATIC PROPERTY IsClosing  AS LOGIC AUTO
-      
+
+      // OrphanedFiles Project is always open, so at least 1
+      STATIC PROPERTY HasProject AS  LOGIC GET _projects:Count > 1
       STATIC PROPERTY FileName AS STRING GET _fileName
       STATIC PROPERTY CommentTokens AS IList<XCommentToken> GET _commentTokens
       // Methods
@@ -69,11 +71,11 @@ BEGIN NAMESPACE XSharpModel
             NEXT
          endif
          ModelWalker.Start()
-         
+
       STATIC METHOD AddOrphan(fileName as STRING) AS XFile
             OrphanedFilesProject:AddFile(fileName)
             return OrphanedFilesProject:FindXFile(fileName)
-        
+
 
       INTERNAL STATIC METHOD Add(project AS XProject) AS LOGIC
          RETURN @@Add(project:Name, project)
@@ -88,7 +90,7 @@ BEGIN NAMESPACE XSharpModel
             XDatabase.Read(project)
          ENDIF
          RETURN lOk
-         
+
 
    STATIC METHOD Close() AS VOID
       IF IsOpen
@@ -96,7 +98,7 @@ BEGIN NAMESPACE XSharpModel
          ModelWalker.Suspend()
          ModelWalker.GetWalker():StopThread()
          XDatabase.CloseDatabase(_sqldb)
-         
+
          FOREACH VAR pair IN _projects:ToArray()
                var project := (XProject) pair:Value
                project:UnLoad()
@@ -107,7 +109,7 @@ BEGIN NAMESPACE XSharpModel
          _orphanedFilesProject := NULL
          _fileName  := NULL
       ENDIF
-      
+
       STATIC METHOD FileClose(fileName AS STRING) AS VOID
          IF FindFile(fileName):Project == _orphanedFilesProject
             _orphanedFilesProject:RemoveFile(fileName)
@@ -155,7 +157,7 @@ BEGIN NAMESPACE XSharpModel
 
       INTERNAL STATIC METHOD RenameProject(oldName AS STRING, newName AS STRING) AS VOID
          IF _projects:ContainsKey(oldName)
-            _projects:TryRemove(oldName, OUT VAR project)    
+            _projects:TryRemove(oldName, OUT VAR project)
             IF project != NULL
                _projects:TryAdd(newName, project)
             ENDIF
@@ -194,8 +196,8 @@ BEGIN NAMESPACE XSharpModel
             VAR project := _projects:First():Value
             project:ProjectNode:SetStatusBarAnimation(onOff, id)
          ENDIF
-         
-         
+
+
 
       // Properties
       STATIC PROPERTY OrphanedFilesProject AS XProject
@@ -206,8 +208,8 @@ BEGIN NAMESPACE XSharpModel
             RETURN _orphanedFilesProject
          END GET
       END PROPERTY
-      
-         
+
+
 
    END CLASS
 

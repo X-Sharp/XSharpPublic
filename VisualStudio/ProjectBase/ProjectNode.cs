@@ -3416,8 +3416,7 @@ namespace Microsoft.VisualStudio.Project
                     }
 
                     // Delete the destination file after making sure it is not read only
-                    File.SetAttributes(newFile, FileAttributes.Normal);
-                    File.Delete(newFile);
+                    Utilities.DeleteFileSafe(newFile);
                 }
 
                 SuspendFileChanges fileChanges = new SuspendFileChanges(this.Site, this.filename);
@@ -3433,8 +3432,7 @@ namespace Microsoft.VisualStudio.Project
                     {
                         // Now that the new file name has been created delete the old one.
                         // TODO: Handle source control issues.
-                        File.SetAttributes(oldFile, FileAttributes.Normal);
-                        File.Delete(oldFile);
+                        Utilities.DeleteFileSafe(oldFile);
                     }
 
                     this.OnPropertyChanged(this, (int)__VSHPROPID.VSHPROPID_Caption, 0);

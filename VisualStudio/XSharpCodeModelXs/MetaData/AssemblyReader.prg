@@ -35,6 +35,7 @@ INTERNAL CLASS AssemblyReader
          _extensionMethods  := List<MethodDefinition>{}
 
          assembly:FullName := reader:FullName
+         assembly:Version  := reader:MainModule:Assembly:Name:Version:ToString()
          IF reader:MainModule:HasAssemblyReferences
             FOREACH var refasm in reader:MainModule:AssemblyReferences
                assembly:ReferencedAssemblies:Add(refasm:FullName)

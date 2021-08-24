@@ -33,6 +33,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Size                 AS INT64 AUTO GET INTERNAL SET
       PROPERTY DuplicateTypes       AS List<XPETypeSymbol> AUTO
       PROPERTY HasDuplicateTypes    AS LOGIC GET DuplicateTypes != NULL .AND. DuplicateTypes:Count > 0
+      PROPERTY Version              AS STRING AUTO
 
       STATIC CONSTRUCTOR
          RETURN

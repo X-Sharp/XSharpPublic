@@ -1541,11 +1541,14 @@ namespace XSharp.Project
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     var view = await VS.Documents.OpenViaProjectAsync(file);
+                    if (view == null)
+                    {
+                        view = await VS.Documents.OpenAsync(file);
+                    }
                     var docview = await VS.Documents.GetDocumentViewAsync(file);
                     textView = await docview.TextView.ToIVsTextViewAsync();
                     if (textView != null)
                     {
-                        
                         //
                         TextSpan span = new TextSpan();
                         span.iStartLine = line - 1;

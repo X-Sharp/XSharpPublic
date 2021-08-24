@@ -44,9 +44,11 @@ CLASS XClassCreator
 	PROTECT aLines AS List<STRING>
 	PROTECT aNameSpaces AS SortedList<STRING,STRING>
 	PROTECT nSectionLine AS INT
+    PROTECT cLocation AS STRING
 
-	CONSTRUCTOR(oType AS Type)
+	CONSTRUCTOR(oType AS Type, cLocation AS STRING)
 		SELF:aLines := List<STRING>{}
+        SELF:cLocation := cLocation
 		SELF:aNameSpaces := SortedList<STRING,STRING>{}
 		SELF:CreateCode(oType)
 	RETURN
@@ -58,17 +60,46 @@ CLASS XClassCreator
         System.IO.File.Delete(temp)
         System.IO.File.Copy(file, temp)
         var bytes := System.IO.File.ReadAllBytes(temp)
-        System.IO.File.Delete(temp)
-        var assembly := Assembly.Load(bytes)
-        var type := assembly:GetExportedTypes():Where ( { t=> t:FullName == oPeType:FullName}):FirstOrDefault()
-        RETURN Create(type)
-
-	STATIC METHOD Create(oType AS Type) AS List<STRING>
-		TRY
-			var oCreator := XClassCreator{oType}
-			return  oCreator:GetLines()
+        LOCAL assembly as Assembly
+        TRY
+            assembly := Assembly.Load(bytes)
         CATCH
-            RETURN List<String>{}
+            assembly := NULL
+        END TRY
+
+        System.IO.File.Delete(temp)
+        IF assembly != NULL
+            var name := oPeType:FullName
+            if oPeType:TypeDef:IsNested
+                name := oPeType:TypeDef:DeclaringType:FullName
+            ENDIF
+            var type := assembly:GetType(name)
+            if (type == null ) // dependencies ?
+                TRY
+                    assembly := Assembly.LoadFrom(file)
+                    type := assembly:GetType(name)
+                CATCH
+                    assembly := NULL
+                END TRY
+            ENDIF
+            RETURN Create(type,file)
+        ENDIF
+        var result := List<String>{}
+        result:Add("// Could not load type information for type "+oPeType:FullName)
+        result:Add("// from assembly "+file)
+        result:Add("// ")
+        result:Add("// Please send the assembly to support@xsharp.eu for investigation")
+        return result
+
+	STATIC METHOD Create(oType AS Type, cLocation as STRING) AS List<STRING>
+		TRY
+			var oCreator := XClassCreator{oType, cLocation}
+			return  oCreator:GetLines()
+        CATCH e as Exception
+            var result := List<String>{}
+            result:Add("// Exception occurred during reading type information: ")
+            result:Add("// "+e:Message)
+            return result
 		END TRY
 
 
@@ -96,8 +127,12 @@ CLASS XClassCreator
 		SELF:nSectionLine := SELF:aLines:Count
 	RETURN
 	PROTECTED METHOD EndSection(nNest AS INT) AS VOID
-		IF SELF:nSectionLine != SELF:aLines:Count
+		IF SELF:nSectionLine+2 != SELF:aLines:Count
 			SELF:AddLine("" , nNest)
+        ELSE
+            DO WHILE SELF:aLines:Count > SELF:nSectionLine
+                SELF:aLines:RemoveAt(SELF:aLines:Count-1)
+            ENDDO
 		END IF
 	RETURN
 
@@ -118,7 +153,7 @@ CLASS XClassCreator
 
 		IF oType:IsSubclassOf(TypeOf(System.Delegate))
 			SELF:AddDelegate(oType , nNest)
-		ELSEIF oType:IsPublic
+		ELSEIF oType:IsPublic .or. oType:IsNested
 			SELF:AddType(oType , nNest)
 		END IF
 
@@ -139,7 +174,8 @@ CLASS XClassCreator
 
 		IF SELF:aLines:Count != 0
 			SELF:aLines:Insert(0 , "// Metadata taken from assembly: " + oType:Assembly:FullName)
-			SELF:aLines:Insert(1 , "")
+            SELF:aLines:Insert(1 , "// Location                    : " + SELF:cLocation)
+			SELF:aLines:Insert(2 , "")
 		END IF
 
 	RETURN
@@ -211,33 +247,46 @@ CLASS XClassCreator
 		ELSE
 			SELF:AddLine("" , nNest)
 
-			SELF:BeginSection()
-			AddFields(oType , BindingFlags.Static + BindingFlags.Public , nNest)
-			AddFields(oType , BindingFlags.Static + BindingFlags.NonPublic , nNest)
-			AddFields(oType , BindingFlags.Instance + BindingFlags.Public , nNest)
-			AddFields(oType , BindingFlags.Instance + BindingFlags.NonPublic , nNest)
-			SELF:EndSection(nNest)
-
-			SELF:BeginSection()
-			AddEvents(oType , BindingFlags.Static + BindingFlags.Public , nNest)
-			AddEvents(oType , BindingFlags.Static + BindingFlags.NonPublic , nNest)
-			AddEvents(oType , BindingFlags.Instance + BindingFlags.Public , nNest)
-			AddEvents(oType , BindingFlags.Instance + BindingFlags.NonPublic , nNest)
-			SELF:EndSection(nNest)
-
-			SELF:BeginSection()
-			AddProperties(oType , BindingFlags.Static + BindingFlags.NonPublic , nNest)
-			AddProperties(oType , BindingFlags.Static + BindingFlags.Public , nNest)
-			AddProperties(oType , BindingFlags.Instance + BindingFlags.NonPublic , nNest)
-			AddProperties(oType , BindingFlags.Instance + BindingFlags.Public , nNest)
-			SELF:EndSection(nNest)
-
-			SELF:BeginSection()
-			AddMethods(oType , BindingFlags.Static + BindingFlags.NonPublic , nNest)
-			AddMethods(oType , BindingFlags.Static + BindingFlags.Public , nNest)
-			AddMethods(oType , BindingFlags.Instance + BindingFlags.NonPublic , nNest)
-			AddMethods(oType , BindingFlags.Instance + BindingFlags.Public , nNest)
-			SELF:EndSection(nNest)
+            IF oType:GetFields():Length > 0
+			    SELF:BeginSection()
+                SELF:AddLine("#region Fields", nNest)
+			    AddFields(oType , BindingFlags.Static + BindingFlags.Public , nNest)
+			    AddFields(oType , BindingFlags.Static + BindingFlags.NonPublic , nNest)
+			    AddFields(oType , BindingFlags.Instance + BindingFlags.Public , nNest)
+			    AddFields(oType , BindingFlags.Instance + BindingFlags.NonPublic , nNest)
+                SELF:AddLine("#endregion Fields", nNest)
+			    SELF:EndSection(nNest)
+            ENDIF
+            IF oType:GetEvents():Length > 0
+			    SELF:BeginSection()
+                SELF:AddLine("#region Events", nNest)
+			    AddEvents(oType , BindingFlags.Static + BindingFlags.Public , nNest)
+			    AddEvents(oType , BindingFlags.Static + BindingFlags.NonPublic , nNest)
+			    AddEvents(oType , BindingFlags.Instance + BindingFlags.Public , nNest)
+			    AddEvents(oType , BindingFlags.Instance + BindingFlags.NonPublic , nNest)
+                SELF:AddLine("#endregion Event", nNest)
+			    SELF:EndSection(nNest)
+            ENDIF
+            IF oType:GetProperties():Length > 0
+			    SELF:BeginSection()
+                SELF:AddLine("#region Properties", nNest)
+			    AddProperties(oType , BindingFlags.Static + BindingFlags.NonPublic , nNest)
+			    AddProperties(oType , BindingFlags.Static + BindingFlags.Public , nNest)
+			    AddProperties(oType , BindingFlags.Instance + BindingFlags.NonPublic , nNest)
+			    AddProperties(oType , BindingFlags.Instance + BindingFlags.Public , nNest)
+                SELF:AddLine("#endregion Properties", nNest)
+			    SELF:EndSection(nNest)
+            ENDIF
+            IF oType:GetMethods():Length > 0
+			    SELF:BeginSection()
+                SELF:AddLine("#region Methods", nNest)
+			    AddMethods(oType , BindingFlags.Static + BindingFlags.NonPublic , nNest)
+			    AddMethods(oType , BindingFlags.Static + BindingFlags.Public , nNest)
+			    AddMethods(oType , BindingFlags.Instance + BindingFlags.NonPublic , nNest)
+			    AddMethods(oType , BindingFlags.Instance + BindingFlags.Public , nNest)
+                SELF:AddLine("#endregion Methods", nNest)
+			    SELF:EndSection(nNest)
+            ENDIF
 		END IF
 		nNest --
 
@@ -245,14 +294,16 @@ CLASS XClassCreator
 		LOCAL n AS INT
 		aNested := oType:GetNestedTypes(BindingFlags.Public)
 		IF aNested:Length != 0
+            SELF:AddLine("#region Nested Classes", nNest)
 			FOR n := 1 UPTO aNested:Length
 				SELF:AddLine("" , nNest)
 				IF aNested[n]:IsSubclassOf(TypeOf(System.Delegate))
 					SELF:AddDelegate(aNested[n] , nNest + 1)
-				ELSEIF aNested[n]:IsPublic
+				ELSE
 					SELF:AddType(aNested[n] , nNest + 1)
 				END IF
-			NEXT
+            NEXT
+            SELF:AddLine("#endregion Nested Classes", nNest)
 		END IF
 
 		SELF:AddLine("END " + cType , nNest)
@@ -312,14 +363,13 @@ CLASS XClassCreator
 	RETURN
 
 	PROTECTED METHOD AddFields(oType AS Type , eFlags AS BindingFlags , nNest AS INT) AS VOID
-		LOCAL aFieldInfo AS FieldInfo[]
-		LOCAL n AS INT
-		aFieldInfo := oType:GetFields(eFlags + BindingFlags.DeclaredOnly)
-		FOR n := 1 UPTO aFieldInfo:Length
+		VAR aFieldInfo := oType:GetFields(eFlags + BindingFlags.DeclaredOnly):ToList()
+        aFieldInfo:Sort( { a,b => String.Compare(a:Name, b:Name) })
+		FOREACH var oField in aFieldInfo
 			IF oType:IsEnum
-				SELF:AddLine("MEMBER " + AdjustKeyword(aFieldInfo[n]:Name) , nNest)
+				SELF:AddLine("MEMBER " + AdjustKeyword(oField:Name) , nNest)
 			ELSE
-				AddFieldCode(aFieldInfo[n] , nNest)
+				AddFieldCode(oField , nNest)
 			END IF
 		NEXT
 	RETURN
@@ -392,11 +442,10 @@ CLASS XClassCreator
 
 
 	PROTECTED METHOD AddEvents(oType AS Type , eFlags AS BindingFlags , nNest AS INT) AS VOID
-		LOCAL aEventInfo AS EventInfo[]
-		LOCAL n AS INT
-		aEventInfo := oType:GetEvents(eFlags + BindingFlags.DeclaredOnly)
-		FOR n := 1 UPTO aEventInfo:Length
-			AddEventCode(aEventInfo[n] , nNest)
+		VAR aEventInfo := oType:GetEvents(eFlags + BindingFlags.DeclaredOnly):ToList()
+        aEventInfo:Sort( { a,b => String.Compare(a:Name, b:Name)})
+		FOREACH var evtInfo in aEventInfo
+			AddEventCode(evtInfo , nNest)
 		NEXT
 	RETURN
 
@@ -440,11 +489,10 @@ CLASS XClassCreator
 
 
 	PROTECTED METHOD AddProperties(oType AS Type , eFlags AS BindingFlags , nNest AS INT) AS VOID
-		LOCAL aPropertyInfo AS PropertyInfo[]
-		LOCAL n AS INT
-		aPropertyInfo := oType:GetProperties(eFlags + BindingFlags.DeclaredOnly)
-		FOR n := 1 UPTO aPropertyInfo:Length
-			AddPropertyCode(aPropertyInfo[n] , nNest)
+		VAR aPropertyInfo := oType:GetProperties(eFlags + BindingFlags.DeclaredOnly):ToList()
+        aPropertyInfo:Sort({ a,b => String.Compare(a:Name, b:Name) })
+		FOREACH var oProp in aPropertyInfo
+			AddPropertyCode(oProp , nNest)
 		NEXT
 	RETURN
 
@@ -565,11 +613,11 @@ CLASS XClassCreator
 
 
 	PROTECTED METHOD AddMethods(oType AS Type , eFlags AS BindingFlags , nNest AS INT) AS VOID
-		LOCAL aMethodInfo AS MethodInfo[]
-		LOCAL n AS INT
-		aMethodInfo := oType:GetMethods(eFlags + BindingFlags.DeclaredOnly)
-		FOR n := 1 UPTO aMethodInfo:Length
-			AddMethodCode(aMethodInfo[n] , MethodType.Method , nNest)
+		VAR aMethodInfo := oType:GetMethods(eFlags + BindingFlags.DeclaredOnly):ToList()
+        aMethodInfo:Sort( { a,b => String.Compare(a:Name, b:Name) })
+
+		FOREACH Var mi in aMethodInfo
+			AddMethodCode(mi , MethodType.Method , nNest)
 		NEXT
 	RETURN
 
@@ -817,52 +865,7 @@ CLASS XClassCreator
 		ELSE
 			LOCAL cTypeName AS STRING
 			cTypeName := oType:FullName
-			DO CASE
-			CASE oType == TypeOf(STRING)
-				cType := "STRING"
-			CASE oType == TypeOf(OBJECT)
-				cType := "OBJECT"
-			CASE oType == TypeOf(INT)
-				cType := "INT"
-			CASE oType == TypeOf(VOID)
-				cType := "VOID"
-			CASE cTypeName == "Vulcan.__Usual"
-				cType := "USUAL"
-			CASE oType == TypeOf(INT64)
-				cType := "INT64"
-			CASE oType == TypeOf(BYTE)
-				cType := "BYTE"
-			CASE oType == TypeOf(SHORTINT)
-				cType := "SHORTINT"
-			CASE oType == TypeOf(WORD)
-				cType := "WORD"
-			CASE oType == TypeOf(DWORD)
-				cType := "DWORD"
-			CASE cTypeName == "Vulcan.__VOFloat"
-				cType := "FLOAT"
-			CASE oType == TypeOf(REAL4)
-				cType := "REAL4"
-			CASE oType == TypeOf(REAL8)
-				cType := "REAL8"
-			CASE oType == TypeOf(LOGIC)
-				cType := "LOGIC"
-			CASE cTypeName == "Vulcan.__VODate"
-				cType := "DATE"
-			CASE cTypeName == "Vulcan.__Psz"
-				cType := "PSZ"
-			CASE cTypeName == "Vulcan.Codeblock"
-				cType := "CODEBLOCK"
-			CASE cTypeName == "Vulcan._Codeblock"
-				cType := "_CODEBLOCK"
-			CASE cTypeName == "Vulcan.__Array"
-				cType := "ARRAY"
-			CASE cTypeName == "Vulcan.__Symbol"
-				cType := "SYMBOL"
-			CASE cTypeName == "System.Void*"
-				cType := "PTR"
-			OTHERWISE
-				cType := AdjustTypeName(oType , aNameSpaces)
-			END CASE
+            cType := cTypeName:GetXSharpTypeName()
 		END IF
 		cType := cType:Replace('+' , '.') // nested classes
 		cType := cType:Replace("&" , "") // by reference

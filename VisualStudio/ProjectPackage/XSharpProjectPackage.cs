@@ -156,11 +156,11 @@ namespace XSharp.Project
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
 
     [ProvideToolWindow(typeof(RepositoryWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
-    [ProvideToolWindowVisibility(typeof(RepositoryWindow.Pane), VSConstants.UICONTEXT.NoSolution_string)]
+    [ProvideToolWindowVisibility(typeof(RepositoryWindow.Pane), VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
 
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : ToolkitPackage, IVsShellPropertyEvents,IVsDebuggerEvents
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents,IVsDebuggerEvents
     {
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
@@ -278,7 +278,7 @@ namespace XSharp.Project
         }
 
 
-        public  string ProductUserContext
+        public override string ProductUserContext
         {
             get { return "XSharp"; }
         }

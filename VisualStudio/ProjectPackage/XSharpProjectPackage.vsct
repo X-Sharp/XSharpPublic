@@ -119,6 +119,7 @@
         <Icon guid="ImageCatalogGuid" id="ViewInBrowser" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <CommandName>View Repo</CommandName>
           <CanonicalName>View Repo</CanonicalName>
@@ -391,6 +392,7 @@
     <VisibilityItem guid="guidProjectPackage"  id="idDbgMemvarsWindow" context="UICONTEXT_Debugging"/>
     <VisibilityItem guid="guidProjectPackage"  id="idDbgSettingsWindow" context="UICONTEXT_Debugging"/>
     <VisibilityItem guid="guidProjectPackage"  id="idDbgWorkareaWindow" context="UICONTEXT_Debugging"/>
+    <VisibilityItem guid="guidProjectPackage"  id="idViewRepo" context="UICONTEXT_SolutionExists"/>
   </VisibilityConstraints>
 
 </CommandTable>

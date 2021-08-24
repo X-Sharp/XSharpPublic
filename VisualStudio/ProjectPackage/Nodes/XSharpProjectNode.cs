@@ -1890,7 +1890,7 @@ namespace XSharp.Project
                     return ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        return VsShellUtilities.IsSolutionBuilding(XSharpProjectPackage.Instance);
+                        return VsShellUtilities.IsSolutionBuilding(XSharpProjectPackage.XInstance);
                     });
 
                 }

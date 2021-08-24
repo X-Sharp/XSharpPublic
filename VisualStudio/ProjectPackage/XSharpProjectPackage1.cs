@@ -39,6 +39,7 @@ namespace XSharp.Project
         public const int idDbgSettingsWindow = 0x0108;
         public const int idConvertXSharpRuntime = 0x0109;
         public const int idAddDesignerFile = 0x010A;
+        public const int idViewRepo = 0x010B;
         public const int idExporterSubMenu = 0x1030;
         public const int idExporterGroup = 0x1040;
         public const int idDebuggerSubMenu = 0x1050;

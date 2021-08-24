@@ -114,6 +114,18 @@
           <ToolTipText>Converts FoxPro sourcecode to XSharp</ToolTipText>
         </Strings>
       </Button>
+      <Button guid="guidProjectPackage" id="idViewRepo" priority="0x0100" type="Button">
+        <Parent guid="guidProjectPackage" id="idExporterGroup" />
+        <Icon guid="ImageCatalogGuid" id="ViewInBrowser" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>IconAndText</CommandFlag>
+        <Strings>
+          <CommandName>View Repo</CommandName>
+          <CanonicalName>View Repo</CanonicalName>
+          <ButtonText>View Repo</ButtonText>
+          <ToolTipText>View Repo</ToolTipText>
+        </Strings>
+      </Button>      
       <Button guid="guidProjectPackage" id="idWebsite" priority="0x0100" type="Button">
         <Parent guid="guidProjectPackage" id="idHelpMenuGroup" />
         <Icon guid="guidImages" id="bmpXSharp" />
@@ -308,6 +320,7 @@
       <IDSymbol name="idDbgSettingsWindow" value="0x0108" />
       <IDSymbol name="idConvertXSharpRuntime" value="0x0109" />
       <IDSymbol name="idAddDesignerFile" value="0x010A" />
+      <IDSymbol name="idViewRepo" value="0x010B" />
       <IDSymbol name="idExporterSubMenu" value="0x01030" />
       <IDSymbol name="idExporterGroup" value="0x01040" />
       <IDSymbol name="idDebuggerSubMenu" value="0x01050" />

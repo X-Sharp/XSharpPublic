@@ -2068,11 +2068,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // Inexact matches are acceptable because we'll just generate bridge members - explicit implementations
                 // with exact signatures that delegate to the inexact match.  This happens automatically in
                 // SourceMemberContainerTypeSymbol.SynthesizeInterfaceMemberImplementation.
-#if XSHARP
-                return MemberSignatureComparer.CSharpImplicitImplementationComparer.Equals(interfaceMember, candidateMember, false);
-#else
                 return MemberSignatureComparer.CSharpImplicitImplementationComparer.Equals(interfaceMember, candidateMember);
-#endif
             }
             else
             {

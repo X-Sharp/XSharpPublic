@@ -98447,7 +98447,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C798 - Compiler crash overriding CLIPPER method with STRICT (when return type is strongly typed)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
 ; ************** APPLICATION R798 *************
 Application = R798
 IDEVersion = 1.06

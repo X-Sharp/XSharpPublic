@@ -340,15 +340,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         #region IEqualityComparer<Symbol> Members
 
-#if XSHARP
         public bool Equals(Symbol member1, Symbol member2)
-        {
-            return Equals(member1, member2, true);
-        }
-        public bool Equals(Symbol member1, Symbol member2, bool caseInsensitive)
-#else
-        public bool Equals(Symbol member1, Symbol member2)
-#endif
         {
             if (ReferenceEquals(member1, member2))
             {
@@ -369,22 +361,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 string name2 = ExplicitInterfaceHelpers.GetMemberNameWithoutInterfaceName(member2.Name);
 
 #if XSHARP
-                bool isNotEqual;
-                if (caseInsensitive)
-                {
-                    sawInterfaceInName1 = !XSharpString.Equals(name1, member1.Name);
-                    sawInterfaceInName2 = !XSharpString.Equals(name2, member2.Name);
-                    isNotEqual = (!XSharpString.Equals(name1, name2));
-                }
-                else
-                {
-                    sawInterfaceInName1 = name1 != member1.Name;
-                    sawInterfaceInName2 = name2 != member2.Name;
-                    isNotEqual = (name1 != name2);
-
-                }
-
-                if (isNotEqual)
+                sawInterfaceInName1 = !XSharpString.Equals(name1, member1.Name);
+                sawInterfaceInName2 = !XSharpString.Equals(name2, member2.Name);
+                if (!XSharpString.Equals(name1, name2))
 #else
                 sawInterfaceInName1 = name1 != member1.Name;
                 sawInterfaceInName2 = name2 != member2.Name;

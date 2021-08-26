@@ -10,6 +10,9 @@ using XSharp.MacroCompiler.Syntax;
 
 namespace XSharp.MacroCompiler.Preprocessor
 {
+    using XSharpLexer = TokenType;
+    using XSharpToken = Token;
+
     /// <summary>
     /// Base class for rule tokens
     /// </summary>
@@ -17,14 +20,14 @@ namespace XSharp.MacroCompiler.Preprocessor
     internal abstract class PPRuleToken
     {
         #region Fields
-        protected Token _token;
+        protected XSharpToken _token;
         protected PPTokenType _type;
         protected string _key;
         #endregion
         #region Properties
         internal int Index { get; set; }
         internal string Key { get { return _key; } }
-        internal Token Token { get { return _token; } }
+        internal XSharpToken Token { get { return _token; } }
         internal bool IsMarker
         {
             get
@@ -113,7 +116,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             return _type.ToString() + " " + SyntaxText;
         }
 
-        internal PPRuleToken(Token token, PPTokenType type)
+        internal PPRuleToken(XSharpToken token, PPTokenType type)
         {
             _token = token;
             _key = token.Text;
@@ -134,20 +137,20 @@ namespace XSharp.MacroCompiler.Preprocessor
         #region Properties
        // Restricted and Optional Markers may have more than one token
         // For restricted tokens this contains the list of possible match values
-        internal Token[] Tokens { get; set; }
+        internal XSharpToken[] Tokens { get; set; }
 		// StopTokens is an alias for Tokens.
         // For List and Repeated match markers the Tokens list contains the list of 
         // tokens that may the end of the list
-        internal Token[] StopTokens { get => Tokens; set => Tokens = value; }
+        internal XSharpToken[] StopTokens { get => Tokens; set => Tokens = value; }
         // For optional tokens this contains the list of tokens inside the option block
         internal PPMatchToken[] Children { get; set; }
         #endregion
-        internal PPMatchToken(Token token, PPTokenType type) : base(token, type)
+        internal PPMatchToken(XSharpToken token, PPTokenType type) : base(token, type)
         {
             Children = null;
             Index = -1;
         }
-        internal PPMatchToken(Token token, PPTokenType type, string key) : this(token, type)
+        internal PPMatchToken(XSharpToken token, PPTokenType type, string key) : this(token, type)
         {
             _key = key;
         }
@@ -166,11 +169,11 @@ namespace XSharp.MacroCompiler.Preprocessor
         internal PPMatchToken MatchMarker { get; set; }
         internal PPResultToken[] OptionalElements { get; set; }
         #endregion
-        internal PPResultToken(Token token, PPTokenType type) : base(token, type)
+        internal PPResultToken(XSharpToken token, PPTokenType type) : base(token, type)
         {
             MatchMarker = null;
         }
-        internal PPResultToken(Token token, PPTokenType type, string key) : this(token, type)
+        internal PPResultToken(XSharpToken token, PPTokenType type, string key) : this(token, type)
         {
             _key = key;
         }

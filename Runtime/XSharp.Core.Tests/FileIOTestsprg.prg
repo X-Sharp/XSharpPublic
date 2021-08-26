@@ -118,9 +118,9 @@ BEGIN NAMESPACE XSharp.Core.Tests
 					nCount ++
 					nRead := FRead(hFile,REF cBuffer,65530)
 					IF nCount == nExpectedCount
-						Assert.Equal(nRead, nSize % 65530)
+						Assert.Equal(nRead,  (DWORD) (nSize % 65530))
 					ELSE
-						Assert.Equal(nRead, 65530)
+						Assert.Equal(nRead, (DWORD) 65530)
 					END IF
 //					? nRead, cBuffer:Length, FEof(hFile)
 					IF nCount > nExpectedCount

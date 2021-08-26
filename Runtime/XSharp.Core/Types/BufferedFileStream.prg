@@ -262,7 +262,7 @@ BEGIN NAMESPACE XSharp.IO
                     nop
                 ENDIF
                 IF pageoffset + onthispage > page:Used
-                    onthispage := page:Used - pageoffset
+                    onthispage := Math.Max(page:Used - pageoffset, 0)
                     endOfPage := TRUE
                 ENDIF
                 System.Array.Copy(buffer, pageoffset, bytes, offset+read, onthispage)

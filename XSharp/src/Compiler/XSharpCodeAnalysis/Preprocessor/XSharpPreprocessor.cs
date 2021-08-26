@@ -40,10 +40,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #else
                 var strm = asm.GetManifestResourceStream("LanguageService.CodeAnalysis.XSharp.Preprocessor.StandardHeaders.resources");
 #endif
-                var rdr = new System.Resources.ResourceReader(strm);
-                foreach (DictionaryEntry item in rdr)
+                if (strm != null)
                 {
-                    embeddedHeaders.Add((string)item.Key, (string)item.Value);
+                	var rdr = new System.Resources.ResourceReader(strm);
+                	foreach (DictionaryEntry item in rdr)
+                	{
+	                    embeddedHeaders.Add((string)item.Key, (string)item.Value);
+                    }
                 }
             }
         }
@@ -151,7 +154,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             internal PPIncludeFile Clone()
             {
-                return new PPIncludeFile(FileName, Tokens, Text, MustBeProcessed); 
+                return new PPIncludeFile(FileName, (IList<IToken>)Tokens, Text, MustBeProcessed); 
             }
         }
 
@@ -432,7 +435,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             _ppoStream = null;
         }
-        internal void addParseError(ParseErrorData error)
+		internal void Error(XSharpToken token, ErrorCode error, params object[] args)
+		{
+			addParseError(new ParseErrorData(token, error, args));
+		}
+		
+        private void addParseError(ParseErrorData error)
         {
 #if !VSPARSER
             // use the filter mechanism in the compiler to only add errors that are not suppressed.
@@ -494,7 +502,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 catch (Exception e)
                 {
-                    addParseError(new ParseErrorData(fileName, ErrorCode.ERR_PreProcessorError, "Error processing PPO file: " + e.Message));
+                    var token = new XSharpToken(0);
+                    token.Text = fileName;
+                    Error(token, ErrorCode.ERR_PreProcessorError, "Error processing PPO file: " + e.Message);
                 }
             }
             // Add default IncludeDirs;
@@ -755,7 +765,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (string.Compare(x.SourceFileName , filename, true) == 0)
                 {
-                    addParseError(new ParseErrorData(symbol, ErrorCode.ERR_PreProcessorError, "Recursive include file ("+filename+") detected",filename));
+                    Error(symbol, ErrorCode.ERR_PreProcessorError, "Recursive include file ("+filename+") detected",filename);
                     return;
                 }
                 x = x.parent;
@@ -831,7 +841,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (line.Count < 2)
             {
                 var token = line[0];
-                addParseError(new ParseErrorData(token, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                Error(token, ErrorCode.ERR_PreProcessorError, "Identifier expected");
                 return;
             }
             // token 1 is the Identifier
@@ -847,7 +857,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return;
                 }
             }
-            if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
+            if (def.IsIdentifier() || def.IsKeyword())
             {
                 line.RemoveAt(0);  // remove #define
                 line.RemoveAt(0);  // remove ID
@@ -865,7 +875,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var newToken = line[0];
                         if (oldToken.TokenSource.SourceName != newToken.TokenSource.SourceName || oldToken.Line != newToken.Line)
                         {
-                            addParseError(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineSame, def.Text));
+                            Error(def, ErrorCode.WRN_DuplicateDefineSame, def.Text);
                         }
                         else
                         {
@@ -881,13 +891,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         SourceSymbol = null
                                     };
                                 }
-                                addParseError(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Duplicate define (" + defText + ") found because include file \""+includeName+"\" was included twice"));
+                                Error(def, ErrorCode.WRN_PreProcessorWarning, "Duplicate define (" + defText + ") found because include file \""+includeName+"\" was included twice");
                             }
                         }
                     }
                     else
                     {
-                        addParseError(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text, cOld, cNew));
+                        Error(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text, cOld, cNew);
                     }
                 }
                 symbolDefines[def.Text] = line;
@@ -898,7 +908,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                addParseError(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                Error(def, ErrorCode.ERR_PreProcessorError, "Identifier expected");
                 return;
             }
         }
@@ -913,7 +923,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ok = false;
             }
             XSharpToken def = line[1];
-            if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
+            if (def.IsIdentifier() || def.IsKeyword())
             {
                 if (symbolDefines.ContainsKey(def.Text))
                     symbolDefines.Remove(def.Text);
@@ -925,7 +935,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (!ok)
             {
-                addParseError(new ParseErrorData(errToken, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                Error(errToken, ErrorCode.ERR_PreProcessorError, "Identifier expected");
             }
         }
 
@@ -942,7 +952,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             udc = stripWs(udc);
             if (udc.Count < 3)
             {
-                addParseError(new ParseErrorData(udc[0], ErrorCode.ERR_PreProcessorError, "Invalid UDC: '" + udc.AsString() + "'"));
+                Error(udc[0], ErrorCode.ERR_PreProcessorError, "Invalid UDC: '" + udc.AsString() + "'");
                 return;
             }
             var cmd = udc[0];
@@ -954,12 +964,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     foreach (var s in errorMsgs)
                     {
-                        addParseError(new ParseErrorData(s.Token, ErrorCode.ERR_PreProcessorError, s.Message));
+                        Error(s.Token, ErrorCode.ERR_PreProcessorError, s.Message);
                     }
                 }
                 else
                 {
-                    addParseError(new ParseErrorData(cmd, ErrorCode.ERR_PreProcessorError, "Invalid directive '" + cmd.Text + "' (are you missing the => operator?)"));
+                    Error(cmd, ErrorCode.ERR_PreProcessorError, "Invalid directive '" + cmd.Text + "' (are you missing the => operator?)");
                 }
             }
             else
@@ -977,7 +987,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _hasTransrules = true;
                     if (cmd.Type == XSharpLexer.PP_DEFINE)
                     {
-                        rule.CaseInsensitive = _options.VOPreprocessorBehaviour;
+                        if (_options.VOPreprocessorBehaviour)
+                        {
+                            rule._flags |= PPRuleFlags.CaseInsensitive;
+                        }
                     }
                 }
                 if (_options.ShowDefs)
@@ -1075,7 +1088,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (obsolete)
             {
-                addParseError(new ParseErrorData(token, ErrorCode.WRN_ObsoleteInclude, includeFileName, assemblyName+".dll"));
+                Error(token, ErrorCode.WRN_ObsoleteInclude, includeFileName, assemblyName+".dll");
             }
             return obsolete;
         }
@@ -1096,7 +1109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 dirs.Add(p);
             }
             if (fileNameToken != null)
-            { 
+            {
                 var path = PathUtilities.GetDirectoryName(fileNameToken.SourceName);
                 if (! String.IsNullOrEmpty(path) && !dirs.Contains(path))
                     dirs.Add(path);
@@ -1115,7 +1128,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 catch (Exception e)
                 {
-                    addParseError(new ParseErrorData(fileNameToken, ErrorCode.ERR_PreProcessorError, "Error combining path " + p + " and filename  " + includeFileName + " " + e.Message));
+                    Error(fileNameToken, ErrorCode.ERR_PreProcessorError, "Error combining path " + p + " and filename  " + includeFileName + " " + e.Message);
                     continue;
                 }
                 if (File.Exists(fp))
@@ -1176,11 +1189,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (fileReadException != null)
                 {
-                    addParseError(new ParseErrorData(fileNameToken, ErrorCode.ERR_PreProcessorError, "Error Reading include file '" + includeFileName + "': " + fileReadException.Message));
+                    Error(fileNameToken, ErrorCode.ERR_PreProcessorError, "Error Reading include file '" + includeFileName + "': " + fileReadException.Message);
                 }
                 else
                 {
-                    addParseError(new ParseErrorData(fileNameToken, ErrorCode.ERR_PreProcessorError, "Include file not found: '" + includeFileName + "'"));
+                    Error(fileNameToken, ErrorCode.ERR_PreProcessorError, "Include file not found: '" + includeFileName + "'");
                 }
 
                 return false;
@@ -1329,7 +1342,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (iPos < line.Count-1)
             {
                 var token = line[iPos + 1];
-                if (token.Type == XSharpParser.DOT )
+                if (token.Type == XSharpLexer.DOT )
                     return false;
             }
             return true;
@@ -1340,7 +1353,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (line.Count > nMax)
             {
-                addParseError(new ParseErrorData(line[nMax], ErrorCode.ERR_EndOfPPLineExpected));
+                Error(line[nMax], ErrorCode.ERR_EndOfPPLineExpected);
             }
         }
         private void doRegionDirective(IList<XSharpToken> original)
@@ -1348,7 +1361,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var line = stripWs(original);
             if (line.Count < 2)
             {
-                addParseError(new ParseErrorData(line[0], ErrorCode.WRN_PreProcessorWarning, "Region name expected"));
+                Error(line[0], ErrorCode.WRN_PreProcessorWarning, "Region name expected");
             }
             if (IsActive())
             {
@@ -1372,7 +1385,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (regions.Count > 0)
                     regions.Pop();
                 else
-                    addParseError(new ParseErrorData(token, ErrorCode.ERR_PreProcessorError, "#endregion directive without matching #region found"));
+                    Error(token, ErrorCode.ERR_PreProcessorError, "#endregion directive without matching #region found");
                 writeToPPO(original, true);
             }
             else
@@ -1388,7 +1401,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var line = stripWs(original);
             if (line.Count < 2)
             {
-                addParseError(new ParseErrorData(line[0], ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                Error(line[0], ErrorCode.ERR_PreProcessorError, "Identifier expected");
                 return;
             }
             if (IsActive())
@@ -1407,7 +1420,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var line = stripWs(original);
             if (line.Count < 2)
             {
-                addParseError(new ParseErrorData(line[0], ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                Error(line[0], ErrorCode.ERR_PreProcessorError, "Identifier expected");
                 return;
             }
             if (IsActive())
@@ -1446,9 +1459,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (ln.SourceSymbol != null)
                     ln = ln.SourceSymbol;
                 if (nextType == XSharpLexer.PP_WARNING)
-                    addParseError(new ParseErrorData(ln, ErrorCode.WRN_WarningDirective, text));
+                    Error(ln, ErrorCode.WRN_WarningDirective, text);
                 else
-                    addParseError(new ParseErrorData(ln, ErrorCode.ERR_ErrorDirective, text));
+                    Error(ln, ErrorCode.ERR_ErrorDirective, text);
                 lastToken = ln;
             }
             else
@@ -1462,13 +1475,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var line = stripWs(original);
             if (line.Count < 2)
             {
-                addParseError(new ParseErrorData(line[0], ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                Error(line[0], ErrorCode.ERR_PreProcessorError, "Identifier expected");
                 return;
             }
             if (IsActive())
             {
                 var def = line[1];
-                if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
+                if (def.IsIdentifier() || def.IsKeyword())
                 {
                     if (isIfDef)
                         defStates.Push(IsDefined(def.Text,def));
@@ -1484,7 +1497,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    addParseError(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                    Error(def, ErrorCode.ERR_PreProcessorError, "Identifier expected");
                 }
                 writeToPPO(original,  true);
 
@@ -1514,7 +1527,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                addParseError(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #else"));
+                Error(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #else");
             }
             checkForUnexpectedPPInput(line, 1);
         }
@@ -1537,7 +1550,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                addParseError(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #endif"));
+                Error(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #endif");
                 writeToPPO(line, true);
             }
             checkForUnexpectedPPInput(line, 1);
@@ -1548,7 +1561,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var line = stripWs(original);
             if (line.Count < 2)
             {
-                addParseError(new ParseErrorData(line[0], ErrorCode.ERR_PreProcessorError, "Filename expected"));
+                Error(line[0], ErrorCode.ERR_PreProcessorError, "Filename expected");
                 return;
             }
             if (IsActive())
@@ -1556,7 +1569,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 writeToPPO(original, true);
                 if (IncludeDepth() == MaxIncludeDepth)
                 {
-                    addParseError(new ParseErrorData(line[0], ErrorCode.ERR_PreProcessorError, "Reached max include depth: " + MaxIncludeDepth));
+                    Error(line[0], ErrorCode.ERR_PreProcessorError, "Reached max include depth: " + MaxIncludeDepth);
                 }
                 else
                 {
@@ -1569,7 +1582,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        addParseError(new ParseErrorData(token, ErrorCode.ERR_PreProcessorError, "String literal expected"));
+                        Error(token, ErrorCode.ERR_PreProcessorError, "String literal expected");
                     }
                 }
             }
@@ -1609,12 +1622,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        addParseError(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
+                        Error(ln, ErrorCode.ERR_PreProcessorError, "String literal expected");
                     }
                 }
                 else
                 {
-                    addParseError(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Integer literal expected"));
+                    Error(ln, ErrorCode.ERR_PreProcessorError, "Integer literal expected");
                 }
             }
             else
@@ -1629,7 +1642,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             Debug.Assert(line?.Count > 0);
             var ln = line[0];
             writeToPPO(line, true);
-            addParseError(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Unexpected UDC separator character found"));
+            Error(ln, ErrorCode.ERR_PreProcessorError, "Unexpected UDC separator character found");
         }
 
         private IList<XSharpToken> doNormalLine(IList<XSharpToken> line, bool write2PPO = true)
@@ -1943,12 +1956,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (defStates.Count > 0)
             {
-                addParseError(new ParseErrorData(Lt(), ErrorCode.ERR_EndifDirectiveExpected));
+                Error(Lt(), ErrorCode.ERR_EndifDirectiveExpected);
             }
             while (regions.Count > 0)
             {
                 var token = regions.Pop();
-                addParseError(new ParseErrorData(token, ErrorCode.ERR_EndRegionDirectiveExpected));
+                Error(token, ErrorCode.ERR_EndRegionDirectiveExpected);
             }
         }
 

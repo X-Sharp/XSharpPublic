@@ -186,17 +186,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 clone[i] = new XSharpToken(tokens[i]);
             }
-            return clone ;
+            return clone;
         }
-        internal static bool IsName(this IToken token)
+        internal static bool IsName(this XSharpToken token)
         {
-            return token != null && (token.Type == XSharpLexer.ID  || XSharpLexer.IsKeyword(token.Type));
+            return token != null && (token.Type == XSharpLexer.ID  || token.IsKeyword());
         }
-        internal static bool IsEOS(this IToken token)
+        internal static bool IsEOS(this XSharpToken token)
         {
             return token != null && (token.Type == XSharpLexer.NL || token.Type == XSharpLexer.EOS);
         }
-        internal static string FileName(this IToken token)
+        internal static string FileName(this XSharpToken token)
         {
             if (token == null)
                 return "";
@@ -211,14 +211,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 type == PPTokenType.MatchWholeUDC;
         }
 
-        internal static bool IsLiteral(this IToken token)
+        internal static bool IsLiteral(this XSharpToken token)
         {
             if (token == null)
                 return false;
-            return XSharpLexer.IsConstant(token.Type);
+            return XSharpLexer.IsLiteral(token.Type);
         }
 
-        internal static bool NeedsLeft(this IToken token)
+        public static bool IsOperator(this XSharpToken token)
+        {
+            return XSharpLexer.IsOperator(token.Type);
+        }
+
+        public static bool IsKeyword(this XSharpToken token)
+        {
+            if (token == null)
+                return false;
+            return XSharpLexer.IsKeyword(token.Type);
+
+        }
+        public static bool IsIdentifier(this XSharpToken token)
+        {
+            if (token == null)
+                return false;
+            return token.Type == XSharpLexer.ID ;
+        }
+
+        public static bool IsString(this XSharpToken token)
+        {
+            if (token == null)
+                return false;
+            return XSharpLexer.IsString(token.Type);
+        }
+
+        internal static bool NeedsLeft(this XSharpToken token)
         {
             if (token == null)
                 return false;
@@ -245,11 +271,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return false;
             return token.IsBinary();
         }
-        internal static bool NeedsRight(this IToken token)
+        internal static bool NeedsRight(this XSharpToken token)
         {
             return token.IsBinary() || token.IsPrefix();
         }
-        internal static bool IsBinary(this IToken token)
+        internal static bool IsBinary(this XSharpToken token)
         {
             if (token == null)
                 return false;
@@ -293,7 +319,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        internal static bool IsPrefix(this IToken token)
+        internal static bool IsPrefix(this XSharpToken token)
         {
             if (token == null)
                 return false;
@@ -313,7 +339,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
         }
 
-        internal static bool IsPostFix(this IToken token)
+        internal static bool IsPostFix(this XSharpToken token)
         {
             if (token == null)
                 return false;
@@ -325,7 +351,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        internal static bool IsWildCard(this IToken token)
+        internal static bool IsWildCard(this XSharpToken token)
         {
             switch (token.Type)
             {
@@ -335,7 +361,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        internal static bool IsOpen(this IToken token, ref int closeType)
+        internal static bool IsOpen(this XSharpToken token, ref int closeType)
         {
             if (token == null)
                 return false;
@@ -354,7 +380,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             closeType = 0;
             return false;
         }
-        internal static bool IsClose(this IToken token)
+        internal static bool IsClose(this XSharpToken token)
         {
             if (token == null)
                 return false;
@@ -368,7 +394,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
         }
 
-        internal static bool IsPrimary(this IToken token)
+        internal static bool IsPrimary(this XSharpToken token)
         {
             if (token.IsName())
                 return true;
@@ -376,7 +402,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return true;
             return false;
         }
-        internal static bool IsPrimaryOrPrefix(this IToken token)
+        internal static bool IsPrimaryOrPrefix(this XSharpToken token)
         {
             if (token.IsPrimary())
                 return true;
@@ -388,7 +414,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
 
-        internal static bool CanJoin(this IToken token, IToken nextToken)
+        internal static bool CanJoin(this XSharpToken token, XSharpToken nextToken)
         {
             if (token == null )
             {
@@ -401,7 +427,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             return false;
         }
-        internal static bool IsNeutral(this IToken token)
+        internal static bool IsNeutral(this XSharpToken token)
         {
             if (token == null)
                 return false;
@@ -414,13 +440,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
         }
 
-        internal static bool IsEndOfCommand(this IToken token)
+        internal static bool IsEndOfCommand(this XSharpToken token)
         {
             if (token == null)
                 return false;
             return token.Type == XSharpLexer.SEMI;
         }
-        internal static bool IsEndOfLine(this IToken token)
+        internal static bool IsEndOfLine(this XSharpToken token)
         {
             if (token == null)
                 return false;
@@ -429,3 +455,4 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     }
 
 }
+

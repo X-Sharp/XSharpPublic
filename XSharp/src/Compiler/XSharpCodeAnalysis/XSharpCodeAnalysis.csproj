@@ -10,7 +10,7 @@
     <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
     <RootNamespace>LanguageService.CodeAnalysis.XSharp</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>1591,1573,1701,3021</NoWarn> 
+    <NoWarn>1591,1573,1701,3021,RS0016</NoWarn> 
     <!--<CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>-->
     <NoStdLib>true</NoStdLib>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>

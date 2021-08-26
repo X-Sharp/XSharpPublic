@@ -14,19 +14,32 @@ using System.Diagnostics;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    [Flags]
+    internal enum PPRuleFlags : byte
+    {
+        None = 0,
+        HasRepeats = 1 << 0,
+        HasOptionalResult = 1 << 1,
+        HasOptionalMatch = 1 << 2,
+        CaseInsensitive = 1 << 3
+    }
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal class PPRule
     {
-        readonly PPUDCType _type;
-        PPMatchToken[] _matchtokens;
-        PPMatchToken[] _matchTokensFlattened;
-        int tokenCount = 0;
-        PPResultToken[] _resulttokens;
-        PPErrorMessages _errorMessages;
-        internal bool CaseInsensitive = false;
-        internal bool hasRepeats = false;
-        internal bool hasOptionalResult = false;
-        private CSharpParseOptions _options;
+        private readonly PPUDCType _type;
+        private PPMatchToken[] _matchtokens;
+        private PPMatchToken[] _matchTokensFlattened;
+        private int tokenCount = 0;
+        private PPResultToken[] _resulttokens;
+        private readonly PPErrorMessages _errorMessages;
+        internal PPRuleFlags _flags;
+        internal bool CaseInsensitive => _flags.HasFlag(PPRuleFlags.CaseInsensitive);
+        internal bool hasRepeats => _flags.HasFlag(PPRuleFlags.HasRepeats);
+        internal bool hasOptionalResult => _flags.HasFlag(PPRuleFlags.HasOptionalResult);
+        internal bool hasOptionalMatch  => _flags.HasFlag(PPRuleFlags.HasOptionalMatch);
+        internal int firstOptionalMatchToken = -1;
+
+        private readonly CSharpParseOptions _options;
         internal PPUDCType Type { get { return _type; } }
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages, CSharpParseOptions options)
         {
@@ -291,7 +304,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 restoken.MatchMarker.IsRepeat = true;
                             }
                         }
-                        hasRepeats = true;
+                        _flags |= PPRuleFlags.HasRepeats ;
                     }
                 }
             }
@@ -539,6 +552,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                          * eat block nested
                          * [...]
                          */
+                        _flags |= PPRuleFlags.HasOptionalMatch;
+                        if (firstOptionalMatchToken == -1)
+                            firstOptionalMatchToken = i;
                         more = getNestedTokens(i, max, matchTokens);
                         if (more != null)
                         {
@@ -624,7 +640,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (marker.RuleTokenType.HasStopTokens() || marker.IsRepeat)
                     {
                         var stopTokens = new List<XSharpToken>();
-                        findStopTokens(mt, 1, stopTokens);
+                        if (hasOptionalMatch)
+                        {
+                            findStopTokens(mt, 1, stopTokens, false);
+                        }
+                        else
+                        {
+                            // stop tokens start after this token
+                            findStopTokens(mt, i + 1, stopTokens, true);
+                        }
                         marker.StopTokens = stopTokens.ToArray();
                     }
                     if (marker.IsOptional && !marker.IsWholeUDC)
@@ -854,6 +878,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         * [ ... ], 
                         * when nested then this is seen as a repeated result clause
                          */
+                        _flags |= PPRuleFlags.HasOptionalResult;
                         if (nestLevel == 0)
                         {
                             more = getNestedTokens(i, max, resultTokens);
@@ -881,7 +906,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         OptionalElements = nested
                                     };
                                     result.Add(element);
-                                    hasOptionalResult = true;
+                                    _flags |= PPRuleFlags.HasOptionalResult;
 
                                 }
 
@@ -1148,7 +1173,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 iSource = iend + 1;
                 found = true;
             }
-            else if (XSharpLexer.IsString(tokens[iStart].Type))
+            else if (tokens[iStart].IsString())
             {
                 matchInfo[mToken.Index].SetPos(iStart, iStart);
                 iSource = iSource + 1;
@@ -1314,7 +1339,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     iSource = iLastUsed+1;
                 }
                 // IsOperator included comma, ellipses etc.
-                else if (XSharpLexer.IsOperator(token.Type))
+                else if (token.IsOperator())
                 {
                     matches.Add(new Tuple<int, int>(iSource, iSource));
                     iSource += 1;
@@ -1558,6 +1583,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (token.Type == XSharpLexer.ID)
                 {
+                    // this makes sure that the matched ID keys a Keyword color in the editor
                     token.Original.Type = XSharpLexer.UDC_KEYWORD;
                 }
             }
@@ -1646,7 +1672,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (lasttoken != null)
                 {
-                    if (XSharpLexer.IsKeyword(token.Type))
+                    if (token.IsKeyword())
                     {
                         // after ALIAS and DOT we change the token to an ID
                         switch (lasttoken.Type)
@@ -1671,7 +1697,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 // leave alone
                                 break;
                             default:
-                                if (XSharpLexer.IsKeyword(lasttoken.Type))
+                                if (lasttoken.IsKeyword())
                                 {
                                     lasttoken.Type = XSharpLexer.ID;
                                     // This makes sure that the token in the editor has the ID color
@@ -1753,7 +1779,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (range.Length == 1)
             {
                 // for comma's and other separators
-                if (XSharpLexer.IsOperator(tokens[start].Type))
+                if (tokens[start].IsOperator())
                 {
                     result.Add(tokens[start]);
                     return;
@@ -1871,7 +1897,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var t4 = tokens[start + 3];
                     var t5 = tokens[start + 4];
-                    if (t4.Type == XSharpLexer.BACKSLASH && t5.Type == XSharpLexer.ID || XSharpLexer.IsKeyword(t5.Type))
+                    if (t4.Type == XSharpLexer.BACKSLASH && t5.Type == XSharpLexer.ID || t5.IsKeyword())
                     {
                         current = start + 5;
                     }
@@ -1914,7 +1940,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         hasdot = true;
                         break;
                     default:        // Part of the path may match a keyword, such as C:\Date\String\FileName.Dbf
-                        if (XSharpLexer.IsKeyword(tokens[current].Type))
+                        if (tokens[current].IsKeyword())
                         {
                             ok = true;
                             if (hasdot)
@@ -1947,7 +1973,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (range.Length == 1)
             {
                 // for comma's and other separators
-                if (XSharpLexer.IsOperator(tokens[start].Type))
+                if (tokens[start].IsOperator())
                 {
                     result.Add(tokens[start]);
                     return;
@@ -2036,7 +2062,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             // single token
                             var token = tokens[start];
-                            if (XSharpLexer.IsString(token.Type))
+                            if (token.IsString())
                             {
                                 result.Add(token);
                             }

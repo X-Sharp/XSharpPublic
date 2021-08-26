@@ -27,11 +27,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     {
         #region Static Helper Methods
         // Several Help methods that can be used for colorizing in an editor
-
         public static bool IsKeyword(int iToken)
         {
-            return iToken > FIRST_KEYWORD && iToken <
-                XSharpLexer.LAST_KEYWORD;
+            return iToken > FIRST_KEYWORD && iToken < LAST_KEYWORD;
         }
         public static bool IsOperator(int iToken)
         {
@@ -39,7 +37,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 || (iToken > PP_FIRST && iToken < PP_LAST)
                 || iToken == SEMI;
         }
-        public static bool IsConstant(int iToken)
+        public static bool IsLiteral(int iToken)
         {
             return (iToken > FIRST_CONSTANT && iToken < LAST_CONSTANT)
                 || (iToken > FIRST_NULL && iToken < LAST_NULL)

@@ -8,12 +8,14 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
+    [DebuggerDisplay("{DebuggerString(),nq} ")]
     public class XSharpToken : CommonToken, IFormattable
     {
         //internal string SourceFileName;
@@ -43,6 +45,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
             }
 
+        }
+        internal string DebuggerString()
+        {
+            var result = XSharpLexer.DefaultVocabulary.GetDisplayName(Type) + " " + Text.Trim();
+            if (Channel != Lexer.DefaultTokenChannel)
+            {
+                result += " (" + Channel.ToString() + ")";
+            }
+            return result;
         }
         public bool HasXmlComments => HasTrivia && Trivia.Any(t => t.Channel == XSharpLexer.XMLDOCCHANNEL);
         public IList<XSharpToken> Trivia { get; set; } = null;

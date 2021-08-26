@@ -14,7 +14,7 @@ IF NOT EXIST %ROOT%Bin\Release MKDIR %ROOT%Bin\Release
 COPY %XSRUNTIMEFOLDER%\*.* %ROOT%Bin\Debug
 COPY %XSRUNTIMEFOLDER%\*.* %ROOT%Bin\Release
 IF NOT EXIST %TESTDIR% MKDIR %TESTDIR%
-%XSCOMPILER% Automated\CompilerTests.prg /vo2 /out:%TESTDIR%\CompilerTests.exe /nowarn:165,9101 
+%XSCOMPILER% Automated\CompilerTests.prg /out:%TESTDIR%\CompilerTests.exe /nowarn:165,9101 
 %TESTDIR%\CompilerTests.exe
 SET XSFIXEDTESTS=False
 SET XSLOGFILE=%TESTDIR%\LogBroken.Log

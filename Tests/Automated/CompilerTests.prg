@@ -1,4 +1,5 @@
 // !!!!!!!!!!!!!!!!   compile with /vo2+   !!!!!!!!!!!!!!!!!!!
+#pragma options ("vo2", on)
 USING System
 USING System.IO
 USING System.Collections

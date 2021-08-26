@@ -9,7 +9,15 @@ USING System.Threading
 USING System.Diagnostics
 USING XSharp.RDD
 USING XSharp.RDD.Enums
-USING System.Runtime.CompilerServices
+
+
+
+BEGIN NAMESPACE System.Runtime.CompilerServices
+    INTERNAL STATIC CLASS IsExternalInit
+    END CLASS
+END NAMESPACE
+
+
 /// <summary>
 /// Container Class that holds the XSharp Runtime state
 /// </summary>
@@ -17,9 +25,22 @@ USING System.Runtime.CompilerServices
 /// Please note that unlike in Visual Objects and Vulcan.NET every thread has its own copy of the runtime state.<br/>
 /// The runtime state from a new thread is a copy of the state of the main thread at that moment.
 /// </remarks>
-
-
 CLASS XSharp.RuntimeState
+    /// <summary>Arguments that are sent to StateChanged event handlers</summary>
+    CLASS StateChangedEventArgs
+        /// <summary>Setting that was just changed</summary>
+        PROPERTY Setting  AS XSharp.Set AUTO GET INIT
+        /// <summary>Old value of the setting</summary>
+        PROPERTY OldValue AS OBJECT AUTO GET INIT
+        /// <summary">New value of the setting</summary>
+        PROPERTY NewValue AS OBJECT AUTO GET INIT
+        /// <summary">Set this to TRUE to cancel the State Change</summary>
+        PROPERTY Cancel AS LOGIC AUTO GET SET
+        INTERNAL CONSTRUCTOR()
+            RETURN
+    END CLASS
+    /// <summary>Delegate used for the StateChanged Event handler</summary>
+    DELEGATE StateChanged (e AS StateChangedEventArgs) AS VOID
 	// Static Fields
 	PRIVATE INITONLY STATIC initialState  AS RuntimeState
 	PRIVATE INITONLY _thread AS Thread
@@ -61,7 +82,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>Retrieve the runtime state for the current thread</summary>
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
-
+    PUBLIC STATIC EVENT OnStateChanged AS StateChanged
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE oSettings AS Dictionary<XSharp.Set, OBJECT>
     /// <summary>The dictionary that stores most of the settings in the runtime state. The key to the index is the number from the Set Enum</summary>
@@ -180,6 +201,13 @@ CLASS XSharp.RuntimeState
 			ELSE
 				result := DEFAULT(T)
 			ENDIF
+            IF OnStateChanged != NULL
+                VAR args := StateChangedEventArgs{} {Setting := nSetting, OldValue := oResult, NewValue := oValue, Cancel := FALSE}
+                OnStateChanged( args )
+                IF args:Cancel == TRUE
+                    RETURN result
+                ENDIF
+            ENDIF
 			oSettings[nSetting] := oValue
 		END LOCK
 		RETURN	result
@@ -1078,7 +1106,3 @@ CLASS XSharp.RuntimeState
         END SWITCH
         RETURN XSharp.StringHelpers.CompareOrdinal(aLHS, aRHS, nLen)
 END CLASS
-
-
-
-

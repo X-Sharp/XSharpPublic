@@ -1423,9 +1423,11 @@ namespace XSharp.MacroCompiler.Preprocessor
                 {
 
                     writeToPPO(original, true);
-                    int start = line[1].Start;
-                    int end = line[line.Count - 1].end;
-                    text = line[1].Source.SourceText.Substring(start, end-start);
+                    text = "";
+                    for (int i = 1; i < line.Count; i++)
+                    {
+                        text += line[i].Text;
+                    }
                 }
                 if (ln.SourceSymbol != null)
                     ln = ln.SourceSymbol;

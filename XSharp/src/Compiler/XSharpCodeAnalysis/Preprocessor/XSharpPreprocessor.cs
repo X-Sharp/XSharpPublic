@@ -1452,9 +1452,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
 
                     writeToPPO(original, true);
-                    int start = line[1].StartIndex;
-                    int end = line[line.Count - 1].StopIndex;
-                    text = line[1].TokenSource.InputStream.GetText(new Interval(start, end));
+                    text = "";
+                    for (int i = 1; i < line.Count; i++)
+                    {
+                        text += line[i].Text;
+                    }
                 }
                 if (ln.SourceSymbol != null)
                     ln = ln.SourceSymbol;

@@ -2,8 +2,8 @@
   "profiles": {
     "xsc": {
       "commandName": "Project",
-      "commandLineArgs": "@app.rsp",
-      "workingDirectory": "C:\\XSharp\\Dev\\tests",
+      "commandLineArgs": "c:\\XIDE\\Prg\\test.prg /nostddefs",
+      "workingDirectory": "c:\\XSharp\\dev\\tests",
       "nativeDebugging": false
     }
   }

@@ -360,19 +360,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 string name1 = ExplicitInterfaceHelpers.GetMemberNameWithoutInterfaceName(member1.Name);
                 string name2 = ExplicitInterfaceHelpers.GetMemberNameWithoutInterfaceName(member2.Name);
 
-#if XSHARP
-                sawInterfaceInName1 = !XSharpString.Equals(name1, member1.Name);
-                sawInterfaceInName2 = !XSharpString.Equals(name2, member2.Name);
-                if (!XSharpString.Equals(name1, name2))
-#else
                 sawInterfaceInName1 = name1 != member1.Name;
                 sawInterfaceInName2 = name2 != member2.Name;
 
+#if XSHARP
+                // In the code above we do a literal compare. GetMemberNameWithoutInterfaceName only
+                // strips of the interface prefix (if any)
+
+                // For interfaces the names must match otherwise we will get a runtime error
+                if (member1.ContainingType.IsInterface || member2.ContainingType.IsInterface)
+                {
+                    if (name1 != name2)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (!XSharpString.Equals(name1, name2))
+                    {
+                        return false;
+                    }
+                }
+#else
                 if (name1 != name2)
-#endif
                 {
                     return false;
                 }
+#endif
             }
 
             // NB: up to, and including, this check, we have not actually forced the (type) parameters

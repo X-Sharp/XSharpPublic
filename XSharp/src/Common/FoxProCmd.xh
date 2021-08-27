@@ -462,16 +462,8 @@
 #command CREATE DATABASE <(db)>                                          ;
         => XSharp.RDD.Dbc.Create( <(db)>)
 
-
-
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
         => __FoxAssert( <expression> , <"expression">, <cMessageText> )
-
-#command SET ASSERTS <x:ON,OFF>           =>  Set(Set.Asserts, upper(<(x)>)=="ON" )
-#command SET ASSERTS (<x>)                =>  Set(Set.Asserts, <x> )
-#command SET SAFETY <x:ON,OFF>            =>  Set(Set.Safety, upper(<(x)>)=="ON" )
-#command SET SAFETY (<x>)                 =>  Set(Set.Safety, <x> )
-
 
 // Unsupported commands
 

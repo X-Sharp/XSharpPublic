@@ -339,7 +339,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return false;
             }
         }
-
+#if XSHARP
+        internal bool Inferring = false;
+#endif
         private TypeWithAnnotations GetTypeSymbol()
         {
             var diagnostics = DiagnosticBag.GetInstance();
@@ -360,8 +362,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             if (isVar)
             {
+#if XSHARP
+                Inferring = true;
+#endif
                 var inferredType = InferTypeOfVarVariable(diagnostics);
-
+#if XSHARP
+                Inferring = false;
+#endif
                 // If we got a valid result that was not void then use the inferred type
                 // else create an error type.
                 if (inferredType.HasType &&

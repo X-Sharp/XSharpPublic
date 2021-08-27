@@ -1,4 +1,5 @@
-// 566. error XS0121: The call is ambiguous between the following methods or properties: 'Array.Sort<T>(T[], IComparer<T>)' and 'Array.Sort<T>(T[], Comparison<T>)'
+// 566. error XS0121: The call is ambiguous between the following methods or 
+// properties: 'Array.Sort<T>(T[], IComparer<T>)' and 'Array.Sort<T>(T[], Comparison<T>)'
 // error is reported only in VO/Vulcan dialect, there's no ambiguouity error when compiling in Core dialect.
 FUNCTION Start() AS VOID
 	LOCAL aRef AS INT[]

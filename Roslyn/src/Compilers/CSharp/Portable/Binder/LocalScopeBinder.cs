@@ -439,7 +439,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (localsMap.TryGetValue(name, out localSymbol))
                 {
 #if XSHARP
-                    if ((options & LookupOptions.MustBeInvocableIfMember) == 0 || localSymbol.Type.TypeKind == TypeKind.Delegate)
+                    // prevent recursion when we are inferring variables. 
+                    // Test case C797: VAR aLen := ALen(Aarray)
+                    var merge = (options & LookupOptions.MustBeInvocableIfMember) == 0;
+                    if (!merge && localSymbol is SourceLocalSymbol sls && !sls.Inferring)
+                    {
+                        merge = (localSymbol.Type.TypeKind == TypeKind.Delegate);
+                    }
+                    if (merge)
                     {
                         result.MergeEqual(originalBinder.CheckViability(localSymbol, arity, options, null, diagnose, ref useSiteDiagnostics, basesBeingResolved));
                     }

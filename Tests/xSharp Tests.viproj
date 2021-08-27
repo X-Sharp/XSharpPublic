@@ -98223,7 +98223,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C796 - Compiler crash with incorrect function params in codeblock
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C797 - Failed to emit module with VAR and ARRAY of INT *************
 Application = C797 - Failed to emit module with VAR and ARRAY of INT
 IDEVersion = 1.06
@@ -98266,8 +98266,8 @@ FileType = Code
 CopyToBin = 0
 [C797 - Failed to emit module with VAR and ARRAY of INT References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C797 - Failed to emit module with VAR and ARRAY of INT Resources]
 [C797 - Failed to emit module with VAR and ARRAY of INT Native Resources]
 [C797 - Failed to emit module with VAR and ARRAY of INT License files]
@@ -98335,7 +98335,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C797 - Failed to emit module with VAR and ARRAY of INT
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C798 - Compiler crash overriding CLIPPER method with STRICT (when return type is strongly typed) *************
 Application = C798 - Compiler crash overriding CLIPPER method with STRICT (when return type is strongly typed)
 IDEVersion = 1.06
@@ -98378,8 +98378,8 @@ FileType = Code
 CopyToBin = 0
 [C798 - Compiler crash overriding CLIPPER method with STRICT (when return type is strongly typed) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C798 - Compiler crash overriding CLIPPER method with STRICT (when return type is strongly typed) Resources]
 [C798 - Compiler crash overriding CLIPPER method with STRICT (when return type is strongly typed) Native Resources]
 [C798 - Compiler crash overriding CLIPPER method with STRICT (when return type is strongly typed) License files]
@@ -98447,7 +98447,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C798 - Compiler crash overriding CLIPPER method with STRICT (when return type is strongly typed)
 
-ApplicationGroup = E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION R798 *************
 Application = R798
 IDEVersion = 1.06

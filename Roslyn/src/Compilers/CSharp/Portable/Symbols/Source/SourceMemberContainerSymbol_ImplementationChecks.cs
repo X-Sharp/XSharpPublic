@@ -1230,6 +1230,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             TArg extraArgument,
             bool invokedAsExtensionMethod = false)
         {
+#if XSHARP
+            if (baseMethod.HasClipperCallingConvention() != overrideMethod.HasClipperCallingConvention())
+            {
+                // An error message has been generated elsewhere. No need to continue
+                return;
+            }
+#endif
             if (!PerformValidNullableOverrideCheck(compilation, baseMethod, overrideMethod))
             {
                 return;

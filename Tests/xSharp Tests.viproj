@@ -53868,7 +53868,7 @@ ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C477 - Runtime error when implementing an interface method with invorrect casing General Options]
 Switches=
 ZeroArrays=0
-CaseSensitive=0
+CaseSensitive=1
 ImplicitNamespace=0
 VO1=0
 VO2=0
@@ -65633,7 +65633,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C576 - Problem with STATIC classes and /vo16+
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C577 - Failed to emit module error with DEFINEs *************
 Application = C577 - Failed to emit module error with DEFINEs
 IDEVersion = 1.06

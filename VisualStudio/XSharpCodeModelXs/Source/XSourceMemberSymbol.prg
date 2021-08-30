@@ -77,8 +77,9 @@ BEGIN NAMESPACE XSharpModel
 
 
       #region Properties. Some are implemented as Extension methods, others forwarded to the signature
+
       PROPERTY Description AS STRING GET SELF:GetDescription()
- 		PROPERTY FullName AS STRING GET SELF:GetFullName()
+ 	  PROPERTY FullName AS STRING GET SELF:GetFullName()
 
       PROPERTY HasParameters     AS LOGIC GET _signature:HasParameters
       PROPERTY ParameterCount    AS INT   GET _signature:ParameterCount

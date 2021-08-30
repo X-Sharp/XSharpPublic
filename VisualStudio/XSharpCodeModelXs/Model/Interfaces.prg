@@ -21,6 +21,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsStatic     AS LOGIC     GET
       PROPERTY Prototype    AS STRING    GET
       PROPERTY IsArray      AS LOGIC GET
+      PROPERTY ElementType  AS STRING GET
       PROPERTY Namespace    AS STRING GET
       PROPERTY FullName     AS STRING GET
       PROPERTY ResolvedType AS IXTypeSymbol AUTO

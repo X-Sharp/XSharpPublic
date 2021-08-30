@@ -569,6 +569,10 @@ namespace XSharp.LanguageService
                     case XSharpLexer.RBRKT:
                         currentPos += 1;
                         hasBracket = (currentToken.Type == XSharpLexer.RBRKT);
+                        var top = symbols.Peek();
+                        var type = findElementType((XSourceEntity)top, location);
+                        if (type != null)
+                            symbols.Push(type);
                         continue;
                     case XSharpLexer.DOT:
                     case XSharpLexer.COLON:
@@ -742,37 +746,7 @@ namespace XSharp.LanguageService
                 {
                     var type = currentType;
                     var symbol = symbols.Peek();
-                    if (type.IsArray || type.FullName == "System.Array")
-                    {
-                        var typeName = symbol.TypeName;
-                        if (typeName.EndsWith("[]"))
-                        {
-                            typeName = typeName.Substring(0, typeName.Length - 2);
-                            var elementType = SearchType(location, typeName).FirstOrDefault();
-                            if (elementType != null)
-                            {
-                                symbols.Push(elementType);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var member = type.GetProperties().Where((p) => p.Parameters.Count > 0).FirstOrDefault();
-                        if (member != null)
-                        {
-                            var typeName = member.OriginalTypeName;
-                            if (type.IsGeneric)
-                            {
-                                var realargs = GetRealTypeParameters(symbol.TypeName);
-                                typeName = ReplaceTypeParameters(typeName, type.TypeParameters, realargs);
-                            }
-                            var elementType = SearchType(location, typeName).FirstOrDefault();
-                            if (elementType != null)
-                            {
-                                symbols.Push(elementType);
-                            }
-                        }
-                    }
+
                 }
                 currentPos += 1;
                 if (currentPos >= tokenList.Count)
@@ -923,6 +897,38 @@ namespace XSharp.LanguageService
             return result;
         }
 
+        private static IXTypeSymbol findElementType(XSourceEntity symbol, XSharpSearchLocation location)
+        {
+            if (symbol.IsArray)
+            {
+                var elementType = symbol.ElementType;
+                var p = location.FindType(elementType);
+                if (p != null)
+                    return p;
+            }
+            else
+            {
+                var type = symbol.ResolvedType;
+                if (type != null)
+                {
+                    var prop = type.GetProperties().Where((p) => p.Parameters.Count > 0).FirstOrDefault();
+                    if (prop != null)
+                    {
+                        var tn = prop.TypeName;
+                        if (type.IsGeneric)
+                        {
+                            var realargs = symbol.GenericArgs;
+                            tn = ReplaceTypeParameters(tn, type.TypeParameters, realargs);
+
+                        }
+                        var p = location.FindType(tn);
+                        if (p != null)
+                            return p;
+                    }
+                }
+            }
+            return null;
+        }
         private static bool hasToken(IList<XSharpToken> tokens, int start, int lookfor)
         {
             for (int i = start; i < tokens.Count; i++)

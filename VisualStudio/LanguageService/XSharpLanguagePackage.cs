@@ -110,6 +110,31 @@ namespace XSharp.LanguageService
             return null;
         }
 
+        private bool writeSetting(string name, int defvalue)
+        {
+            object result = defvalue;
+            try
+            {
+                var key = Microsoft.Win32.Registry.CurrentUser;
+                var subkey = key.OpenSubKey(Constants.RegistryKey, true);
+                if (subkey == null)
+                {
+                    subkey = key.CreateSubKey(Constants.RegistryKey, true);
+                }
+                subkey.SetValue(name, defvalue);
+                return true;
+            }
+            catch
+            {
+            }
+            return false;
+        }
+
+        private const string strKeywordCase = "KeywordCase";
+        private const string strPrivateKeyword = "PrivateKeyword";
+        private const string strPublicKeyword = "PublicKeyword";
+        private const string strUseTabs = "UseTabs";
+
         IntellisenseOptionsPage _intellisensePage;
         FormattingOptionsPage _formattingPage;
         OtherOptionsPage _otherOptionsPage;
@@ -199,12 +224,19 @@ namespace XSharp.LanguageService
                 {
                     XSettings.EditorShowDividers = _otherOptionsPage.ShowDividers;
                     XSettings.EditorShowSingleLineDividers = _otherOptionsPage.ShowSingleLineDividers;
+                    XSettings.CodeGeneratorShowXmlComments = _otherOptionsPage.ShowXmlComments;
+                    XSettings.CodeGeneratorPrivateStyle = (PrivateStyle) _otherOptionsPage.PrivateStyle;
+                    XSettings.CodeGeneratorPublicStyle = (PublicStyle)_otherOptionsPage.PublicStyle;
                 }
 
                 _formattingPage.SettingsChanged = false;
                 _intellisensePage.SettingsChanged = false;
                 _otherOptionsPage.SettingsChanged = false;
             }
+            writeSetting(strKeywordCase, (int)XSettings.KeywordCase);
+            writeSetting(strPrivateKeyword, (int)XSettings.CodeGeneratorPrivateStyle);
+            writeSetting(strPublicKeyword, (int)XSettings.CodeGeneratorPublicStyle);
+            writeSetting(strUseTabs, XSettings.EditorTabsAsSpaces ? 0 : 1);
             return ;
         }
 

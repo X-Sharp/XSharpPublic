@@ -34,19 +34,15 @@ namespace XSharp.CodeDom
         public XSharpCodeParser(IProjectTypeHelper projectNode)
         {
             this.FileName = "";
-            this.TabSize = 1;
             _projectNode = projectNode;
         }
         public XSharpCodeParser(IProjectTypeHelper projectNode, CodeTypeDeclaration formClass)
         {
             this.FileName = "";
-            this.TabSize = 1;
             _projectNode = projectNode;
             typeInMainFile = formClass;
         }
         public string FileName { get; set; }
-
-        public int TabSize { get; set; }
 
         CodeTypeDeclaration typeInMainFile = null;
         public override CodeCompileUnit Parse(TextReader codeStream)
@@ -81,10 +77,6 @@ namespace XSharp.CodeDom
             //
             try
             {
-                // Tab replace, in order to have the good position of Members (Line/col)
-                String TabSpace = new String(' ', TabSize);
-                source = source.Replace("\t", TabSpace);
-                //
                 var reporter = new ErrorIgnorer();
                 ITokenStream tokenStream;
                 LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext xtree;

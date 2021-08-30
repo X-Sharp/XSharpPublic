@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft;
 using Task = System.Threading.Tasks.Task;
 using Community.VisualStudio.Toolkit;
+using System.Text;
 
 namespace XSharp.LanguageService
 {
@@ -29,7 +30,7 @@ namespace XSharp.LanguageService
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                _XMLMemberIndexService = await VS.GetServiceAsync<SVsXMLMemberIndexService,IVsXMLMemberIndexService>();
+                _XMLMemberIndexService = await VS.GetServiceAsync<SVsXMLMemberIndexService, IVsXMLMemberIndexService>();
             });
             Assumes.Present(_XMLMemberIndexService);
             return;
@@ -146,6 +147,111 @@ namespace XSharp.LanguageService
 
     static public class XSharpXMLDocMember
     {
+        public static IEnumerable<string> MemoLines(this string str, int maxLength)
+        {
+            str = str.Replace("\r\n", "\r");
+            var tokens = str.Split(" \t".ToCharArray());
+            var result = "";
+            foreach (var token in tokens)
+            {
+                if (result.Length + token.Length + 1 > maxLength )
+                { 
+                    yield return result;
+                    result = "";
+                }
+                if (result.Length > 0)
+                    result += ' ';
+
+                if (token.Contains("\r"))
+                {
+                    var lhs = token.Substring(0, token.IndexOf('\r'));
+                    var rhs = token.Substring(token.IndexOf('\r') + 1);
+                    result += lhs;
+                    yield return result;
+                    result = rhs;
+                }
+                else
+                {
+                    result += token;
+                }
+            }
+            yield return result;
+        }
+        static string addXml(string token, string line)
+        {
+            var result = "";
+            result += $"<{token}>";
+            if (line.Length < 60)
+            {
+                result += line;
+                result += $"<\\{token}>\r\n";
+            }
+            else
+            {
+                foreach (var element in MemoLines(line, 70))
+                {
+                    result += "\r\n" + element;
+                }
+                result += $"\r\n<\\{token}>\r\n";
+            }
+            return result;
+        }
+        public static string GetDoc(XAssembly asm, IXSymbol symbol)
+        {
+            var file = XSharpXMLDocTools.GetXmlDocFile(asm, null);
+            string key=null;
+            if (symbol is IXTypeSymbol type)
+                key = type.XMLSignature;
+            else if (symbol is IXMemberSymbol member)
+                key = member.XMLSignature;
+            if (file == null)
+                return null;
+            if (!string.IsNullOrEmpty(key))
+            {
+                uint id = 0;
+                string xml = "";
+                return ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    StringBuilder sb = new StringBuilder();
+
+                    var result = file.ParseMemberSignature(key, out id);
+                    result = file.GetMemberXML(id, out xml);
+                    var summary = GetSummary(file, xml, out var returns, out var remarks);
+                    if (! String.IsNullOrWhiteSpace(summary))
+                    {
+                        sb.Append(addXml("summary", summary));
+                    }
+                    if (symbol is IXMemberSymbol member && member.Parameters.Count > 0)
+                    {
+                        var names = new List<string>();
+                        var desc = new List<string>();
+                        GetParameterInfo(file, xml, names, desc);
+                        if (names.Count > 0 && desc.Count > 0 && names.Count == desc.Count)
+                        {
+                            for (int i = 0; i < names.Count; i++)
+                            {
+                                var temp = addXml("param", desc[i]);
+                                temp = temp.Replace("<param>", $"<param name=\"{names[i]}\">");
+                                sb.Append(temp);
+                            }
+                        }
+                    }
+                    if (!String.IsNullOrWhiteSpace(returns))
+                    {
+                        sb.Append(addXml("returns", returns));
+                    }
+                    if (!String.IsNullOrWhiteSpace(remarks))
+                    {
+                        sb.Append(addXml("remarks", remarks));
+                    }
+                    return sb.ToString();
+                    
+                });
+            }
+            return null;
+
+        }
         static private string GetSummary(IVsXMLMemberIndex file, string xml, out string returns, out string remarks)
         {
             returns = remarks = "";

@@ -28,13 +28,11 @@ namespace XSharp.CodeDom
 
         // The Tab setting is shared by all instance of our CodeDomProvider
         protected IProjectTypeHelper _projectNode;
-        public static int TabSize { get; set; }
         public string FileName { get; set; }
 
         public XSharpCodeDomProvider()
         {
             this.xsGenerator = new XSharpCodeGenerator();
-            XSharpCodeDomProvider.TabSize = 1;
         }
 
         public override string FileExtension
@@ -62,7 +60,6 @@ namespace XSharp.CodeDom
         {
             var parser = new XSharpCodeParser(_projectNode)
             {
-                TabSize = XSharpCodeDomProvider.TabSize,
                 FileName = this.FileName
             };
             return parser;

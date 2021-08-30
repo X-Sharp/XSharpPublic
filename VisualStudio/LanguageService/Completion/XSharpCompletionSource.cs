@@ -277,7 +277,7 @@ namespace XSharp.LanguageService
                         showInstanceMembers = true;
                         filterText = "";
                     }
-                    if (state.HasFlag(CompletionState.InstanceMembers) && !(symbol is IXTypeSymbol))
+                    if (state.HasFlag(CompletionState.InstanceMembers) )
                     {
                         showInstanceMembers = true;
                         filterText = "";
@@ -290,7 +290,7 @@ namespace XSharp.LanguageService
                         // Todo Add Global members from this project and from all global namespaces ?
                     }
                 }
-                if (showInstanceMembers && !(symbol is IXTypeSymbol))
+                if (showInstanceMembers )
                 {
                     // Member call
                     if (type != null)

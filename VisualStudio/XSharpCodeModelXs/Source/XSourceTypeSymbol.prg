@@ -164,7 +164,7 @@ BEGIN NAMESPACE XSharpModel
         RETURN
 
       PROPERTY FullName  AS STRING   GET SELF:GetFullName()
-      PROPERTY IsGeneric as LOGIC   GET SELF:TypeName:EndsWith(">")
+      PROPERTY IsGeneric as LOGIC    GET SELF:TypeParameters:Count > 0
 
       /// <summary>
          /// Merge two XSourceTypeSymbol Objects : Used to create the resulting  XSourceTypeSymbol from 2 or more partial classes

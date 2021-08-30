@@ -2132,6 +2132,7 @@ vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT
          LOCAL sBracket AS STRING
          VAR isArray := Expect(XSharpLexer.DIM)
          VAR id := SELF:ParseQualifiedName()
+
          IF isArray
             sBracket := SELF:ParseArraySub()
          ENDIF
@@ -2475,12 +2476,18 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             result := SELF:ParseQualifiedName()
 
          CASE XSharpLexer.ARRAY
-         CASE XSharpLexer.CODEBLOCK
-         CASE XSharpLexer.DATE
-         CASE XSharpLexer.FLOAT
-         CASE XSharpLexer.PSZ
-         CASE XSharpLexer.SYMBOL
-         CASE XSharpLexer.USUAL
+            result :=  ConsumeAndGet():GetText()
+            IF SELF:La1 == XSharpLexer.OF
+               SELF:Consume()
+               var subtype := SELF:ParseTypeName()
+               result := "ARRAY<"+subtype+">"
+            ENDIF
+        CASE XSharpLexer.CODEBLOCK
+        CASE XSharpLexer.DATE
+        CASE XSharpLexer.FLOAT
+        CASE XSharpLexer.PSZ
+        CASE XSharpLexer.SYMBOL
+        CASE XSharpLexer.USUAL
             result :=  ConsumeAndGet():GetText()
         CASE XSharpLexer.BYTE
         CASE XSharpLexer.CHAR

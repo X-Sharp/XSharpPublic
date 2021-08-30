@@ -113,6 +113,7 @@ namespace XSharp.CodeDom
                     field.InitExpression = BuildExpression(varContext.Initializer, false);
                 }
                 FillCodeDomDesignerData(field, varContext.Start.Line, varContext.Start.Column);
+                writeTrivia(field, context);
                 //
                 FieldList[currentClass].Add(field);
             }

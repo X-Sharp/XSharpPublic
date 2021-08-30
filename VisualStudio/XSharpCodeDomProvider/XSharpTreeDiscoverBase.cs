@@ -1750,11 +1750,8 @@ namespace XSharp.CodeDom
                 trivia = context.GetEndingTrivia(_tokens);
             else
                 trivia = context.GetLeadingTrivia(_tokens);
-            if (!string.IsNullOrEmpty(trivia))
-            {
-                var key = end ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
-                o.UserData[key] = trivia;
-            }
+            var key = end ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
+            o.UserData[key] = trivia;
 
         }
         #endregion

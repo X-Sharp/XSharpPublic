@@ -73,6 +73,10 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EditorShowDividers               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorShowSingleLineDividers     AS LOGIC AUTO
 
+        PUBLIC STATIC PROPERTY CodeGeneratorShowXmlComments     AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CodeGeneratorPublicStyle         AS PublicStyle AUTO
+        PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
+
         PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO
         PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO
         PUBLIC STATIC PROPERTY ShowMessageBox                   AS ShowMessageBox AUTO

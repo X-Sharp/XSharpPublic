@@ -22,6 +22,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Value             AS STRING         AUTO
       PROPERTY OriginalTypeName  AS STRING         AUTO
       PROTECTED _custatts        AS Mono.Collections.Generic.Collection<CustomAttribute>
+      PROPERTY CustomAttributes AS Mono.Collections.Generic.Collection<CustomAttribute> GET _custatts
       #endregion
 
       PRIVATE STATIC nullUsings   as IList<String>

@@ -8,6 +8,7 @@ using System.Collections.Immutable;
 
 namespace XSharp.LanguageService
 {
+    [Flags]
     internal enum LineFlags
     {
         None = 0,

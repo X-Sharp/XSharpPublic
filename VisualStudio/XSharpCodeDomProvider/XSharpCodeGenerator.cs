@@ -33,6 +33,9 @@ namespace XSharp.CodeDom
         private List<String> _using;
         private int indentSave = 0;
         private int keywordCase;
+        private int privateKeyword;
+        private int publicKeyword;
+        private bool useTabs;
 
         private string keywordBEGIN;
         private string keywordEND;
@@ -45,7 +48,9 @@ namespace XSharp.CodeDom
         private string keywordENUM;
         private string keywordNAMESPACE;
         private string keywordPUBLIC;
+        private string keywordEXPORT;
         private string keywordPRIVATE;
+        private string keywordHIDDEN;
         private string keywordPROTECTED;
         private string keywordINTERNAL;
         private string keywordABSTRACT;
@@ -77,19 +82,27 @@ namespace XSharp.CodeDom
         private string keywordRETURN;
         private string keywordUSING;
         private string keywordTHROW;
+        private string keywordIF;
+        private string keywordELSE;
+        private string keywordENDIF;
         private bool mustEscape = true;
-
+        private string ws = " ";
+        private const string strKeywordCase = "KeywordCase";
+        private const string strPrivateKeyword = "PrivateKeyword";
+        private const string strPublicKeyword = "PublicKeyword";
+        private const string strUseTabs = "UseTabs";
+        private string lastTrivia = null;
         public XSharpCodeGenerator() : base()
         {
             this.selector = ":";
             this.staticSelector = ".";
             _using = new List<String>();
-            readkeywordCase();
+            readSettings();
         }
 
-        private void readkeywordCase()
+        private object getSetting(string name, int defvalue)
         {
-            object kwcase = 1;
+            object result = defvalue;
             try
             {
                 var key = Microsoft.Win32.Registry.CurrentUser;
@@ -98,18 +111,26 @@ namespace XSharp.CodeDom
                 {
                     subkey = key.CreateSubKey(Constants.RegistryKey, true);
                 }
-                kwcase = subkey.GetValue("KeywordCase");
-                if (kwcase == null)
+                result = subkey.GetValue(name);
+                if (result == null)
                 {
-                    subkey.SetValue("KeywordCase", 1);
-                    kwcase = 1;
+                    subkey.SetValue(name, defvalue);
+                    result = defvalue;
                 }
             }
             catch
             {
-                kwcase = 1;
+                result = defvalue;
             }
-            keywordCase = (Int32) kwcase;
+            return result;
+        }
+        private void readSettings()
+        {
+            keywordCase = (int) getSetting(strKeywordCase, 1);
+            privateKeyword = (int)getSetting(strPrivateKeyword, 0); // 0 = private, 1 = hidden
+            publicKeyword = (int)getSetting(strPublicKeyword, 0);   // 0 = public, 1 = export, 2 = none
+            useTabs = (int)getSetting(strUseTabs, 1) == 1;
+            ws = useTabs ? "\t" : " ";
             keywordBEGIN = formatKeyword("BEGIN ");
             keywordEND = formatKeyword("END ");
             keywordDELEGATE = formatKeyword("DELEGATE "); ;
@@ -121,7 +142,9 @@ namespace XSharp.CodeDom
             keywordENUM = formatKeyword("ENUM ");
             keywordNAMESPACE = formatKeyword("NAMESPACE ");
             keywordPUBLIC = formatKeyword("PUBLIC ");
+            keywordEXPORT = formatKeyword("EXPORT ");
             keywordPRIVATE = formatKeyword("PRIVATE ");
+            keywordHIDDEN = formatKeyword("HIDDEN ");
             keywordPROTECTED = formatKeyword("PROTECTED ");
             keywordINTERNAL = formatKeyword("INTERNAL ");
             keywordABSTRACT = formatKeyword("ABSTRACT ");
@@ -135,7 +158,7 @@ namespace XSharp.CodeDom
             keywordNULL = formatKeyword("NULL");
             keywordSELF = formatKeyword("SELF");
             keywordSUPER = formatKeyword("SUPER");
-            keywordSTRICT = formatKeyword("STRICT");
+            keywordSTRICT = " "+ formatKeyword("STRICT");
             keywordLOCAL = formatKeyword("LOCAL ");
             keywordCONSTRUCTOR = formatKeyword("CONSTRUCTOR");
             keywordMETHOD = formatKeyword("METHOD ");
@@ -153,6 +176,9 @@ namespace XSharp.CodeDom
             keywordRETURN = formatKeyword("RETURN");
             keywordUSING = formatKeyword("USING ");
             keywordTHROW = formatKeyword("THROW ");
+            keywordIF = formatKeyword("IF ");
+            keywordELSE = formatKeyword("ELSE");
+            keywordENDIF = formatKeyword("ENDIF");
         }
 
         private string formatKeyword(string keyword)
@@ -178,7 +204,10 @@ namespace XSharp.CodeDom
                 return keywordNULL;
             }
         }
-
+        private void writeAssignment()
+        {
+            this.Output.Write(ws+":="+ws);
+        }
         protected override string CreateEscapedIdentifier(string value)
         {
             // Is is a reserved Keyword ?
@@ -288,7 +317,7 @@ namespace XSharp.CodeDom
         protected override void GenerateAssignStatement(CodeAssignStatement e)
         {
             this.GenerateExpression(e.Left);
-            this.Output.Write(" := ");
+            this.writeAssignment();
             this.GenerateExpression(e.Right);
             // This one is set in GenerateIterationStatement
             if (!this.generatingForLoop)
@@ -300,7 +329,7 @@ namespace XSharp.CodeDom
         protected override void GenerateAttachEventStatement(CodeAttachEventStatement e)
         {
             this.GenerateEventReferenceExpression(e.Event);
-            this.Output.Write(" += ");
+            this.Output.Write(ws+"+="+ws);
             this.GenerateExpression(e.Listener);
             this.Output.WriteLine();
         }
@@ -333,7 +362,7 @@ namespace XSharp.CodeDom
         {
             string startLine = e.DocComment ? "///" : "//";
             this.Output.Write(startLine);
-            this.Output.Write(" ");
+            this.Output.Write(ws);
             string chars = e.Text;
             for (int i = 0; i < chars.Length; i++)
             {
@@ -365,9 +394,8 @@ namespace XSharp.CodeDom
 
         protected override void GenerateConditionStatement(CodeConditionStatement e)
         {
-            base.Output.Write("if (");
+            base.Output.Write(keywordIF );
             base.GenerateExpression(e.Condition);
-            base.Output.Write(")");
             base.Output.WriteLine();
             this.Indent++;
             base.GenerateStatements(e.TrueStatements);
@@ -375,13 +403,13 @@ namespace XSharp.CodeDom
             if (e.FalseStatements.Count > 0)
             {
                 base.Output.WriteLine();
-                base.Output.Write("else");
+                base.Output.Write(keywordELSE);
                 base.Output.WriteLine();
                 this.Indent++;
                 base.GenerateStatements(e.FalseStatements);
                 this.Indent--;
             }
-            base.Output.WriteLine("endif");
+            base.Output.WriteLine(keywordENDIF);
         }
 
         protected override void GenerateConstructor(CodeConstructor e, CodeTypeDeclaration c)
@@ -400,7 +428,7 @@ namespace XSharp.CodeDom
                     this.OutputMemberAccessModifier(e.Attributes);
                     base.Output.Write(keywordCONSTRUCTOR+"(");
                     this.OutputParameters(e.Parameters);
-                    base.Output.WriteLine(")  "+ keywordSTRICT);
+                    base.Output.WriteLine(")"+keywordSTRICT);
                     CodeExpressionCollection baseConstructorArgs = e.BaseConstructorArgs;
                     CodeExpressionCollection chainedConstructorArgs = e.ChainedConstructorArgs;
                     if (baseConstructorArgs.Count > 0)
@@ -408,7 +436,7 @@ namespace XSharp.CodeDom
                         this.Indent++;
                         base.Output.Write(keywordSUPER+"(");
                         this.OutputExpressionList(baseConstructorArgs);
-                        base.Output.WriteLine(");");
+                        base.Output.WriteLine(")");
                         this.Indent--;
                     }
                     else if (chainedConstructorArgs.Count > 0)
@@ -416,7 +444,7 @@ namespace XSharp.CodeDom
                         this.Indent++;
                         base.Output.Write(keywordSELF+"(");
                         this.OutputExpressionList(chainedConstructorArgs);
-                        base.Output.WriteLine(");");
+                        base.Output.WriteLine(")");
                         this.Indent--;
                     }
                     this.Indent++;
@@ -506,7 +534,7 @@ namespace XSharp.CodeDom
                     fqdn = e.PrivateImplementationType.BaseType + this.selector + fqdn;
                 }
                 this.OutputIdentifier(fqdn);
-                base.Output.Write(" "+ keywordAS);
+                base.Output.Write(" "+keywordAS);
                 this.OutputType(e.Type);
                 base.Output.WriteLine();
             }
@@ -554,7 +582,7 @@ namespace XSharp.CodeDom
                     this.OutputIdentifier(e.Name);
                     if (e.InitExpression != null)
                     {
-                        base.Output.Write(" := ");
+                        this.writeAssignment();
                         bool hasCode = e.InitExpression.UserData.Contains(XSharpCodeConstants.USERDATA_CODE);
                         if (fromDesigner || ! hasCode)
                         {
@@ -582,7 +610,7 @@ namespace XSharp.CodeDom
 
                     if (e.InitExpression != null)
                     {
-                        base.Output.Write(" := ");
+                        this.writeAssignment();
                         bool hasCode = e.InitExpression.UserData.Contains(XSharpCodeConstants.USERDATA_CODE);
                         if (fromDesigner || !hasCode)
                         {
@@ -695,6 +723,7 @@ namespace XSharp.CodeDom
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
                 writeTrivia(e.UserData);
+
                 // Do we have some Source Code pushed here by our Parser ??
                 // this code contains the method declaration line as well
                 if (!writeOriginalCode(e.UserData))
@@ -737,7 +766,7 @@ namespace XSharp.CodeDom
                     this.OutputParameters(e.Parameters);
                     base.Output.Write(") "+ keywordAS);
                     this.OutputType(e.ReturnType);
-                    base.Output.Write(" "+ keywordSTRICT);
+                    base.Output.Write(keywordSTRICT);
                     base.Output.WriteLine();
                     this.Indent++;
                     if (!this.IsCurrentInterface && ((e.Attributes & MemberAttributes.ScopeMask) != MemberAttributes.Abstract))
@@ -806,8 +835,19 @@ namespace XSharp.CodeDom
         protected override void GenerateCompileUnitStart(CodeCompileUnit e)
         {
             bool generateComment = true;
-            readkeywordCase();
+            readSettings();
             this.Options.BlankLinesBetweenMembers = false;
+            if (useTabs)
+            {
+                this.Options.IndentString = "\t";
+                if (this.Output is IndentedTextWriter itw)
+                {
+                    var field = typeof(IndentedTextWriter).GetField("tabString", BindingFlags.Instance|BindingFlags.NonPublic);
+                    if (field != null)
+                        field.SetValue(itw, "\t");
+
+                }
+            }
             _using.Clear();
             base.GenerateCompileUnitStart(e);
             if (e.UserData.Contains(XSharpCodeConstants.USERDATA_NOHEADER))
@@ -871,10 +911,19 @@ namespace XSharp.CodeDom
             base.Output.Write(keywordRETURN);
             if (e.Expression != null)
             {
-                base.Output.Write(" ");
+                base.Output.Write(ws);
                 base.GenerateExpression(e.Expression);
             }
             base.Output.WriteLine();
+        }
+
+
+        private bool _writeTrivia(string trivia)
+        {
+            var saveIndent = this.Indent;
+            this.Output.Write(trivia);
+            this.Indent = saveIndent;
+            return true;
         }
 
 
@@ -884,12 +933,21 @@ namespace XSharp.CodeDom
             key = ending ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
             if (userData.Contains(key))
             {
-                var saveIndent = this.Indent;
-                this.Indent = 0;
-                String trivia = userData[key] as string;
-                this.Output.Write(trivia);
-                this.Indent = saveIndent;
+                string trivia = userData[key] as string;
+                _writeTrivia(trivia);
+                var l1 = trivia.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var l2 = new List<string>();
+                foreach (var l in l1)
+                {
+                    if (!l.Trim().StartsWith("//"))
+                        l2.Add(l);
+                }
+                lastTrivia = String.Join("\r\n", l2);
                 return true;
+            }
+            else if (lastTrivia != null)
+            {
+                _writeTrivia(lastTrivia);
             }
             return false;
         }
@@ -1003,7 +1061,7 @@ namespace XSharp.CodeDom
                     this.OutputParameters(e.Parameters);
                     base.Output.Write("]");
                 }
-                base.Output.Write(" "+keywordAS);
+                base.Output.Write(" " + keywordAS);
                 this.OutputType(e.Type);
                 base.Output.WriteLine();
                 //
@@ -1075,7 +1133,7 @@ namespace XSharp.CodeDom
         protected override void GenerateRemoveEventStatement(CodeRemoveEventStatement e)
         {
             this.GenerateEventReferenceExpression(e.Event);
-            base.Output.Write(" -= ");
+            base.Output.Write(ws+"-="+ws);
             this.GenerateExpression(e.Listener);
             base.Output.WriteLine();
         }
@@ -1103,7 +1161,7 @@ namespace XSharp.CodeDom
             base.Output.Write(keywordTHROW);
             if (e.ToThrow != null)
             {
-                base.Output.Write(" ");
+                base.Output.Write(ws);
                 this.GenerateExpression(e.ToThrow);
             }
             base.Output.WriteLine();
@@ -1124,7 +1182,7 @@ namespace XSharp.CodeDom
                     CodeCatchClause catchSt = (CodeCatchClause)enumerator1.Current;
                     base.Output.Write(keywordCATCH);
                     this.OutputIdentifier(catchSt.LocalName);
-                    base.Output.Write(" "+ keywordAS);
+                    base.Output.Write(" " +keywordAS);
                     this.OutputType(catchSt.CatchExceptionType);
                     base.Output.WriteLine();
 
@@ -1256,7 +1314,7 @@ namespace XSharp.CodeDom
                         {
                             if (count == 0)
                             {
-                                base.Output.Write(" "+ keywordIMPLEMENTS);
+                                base.Output.Write(ws+ keywordIMPLEMENTS);
                             }
                             else
                             {
@@ -1267,7 +1325,7 @@ namespace XSharp.CodeDom
                         {
                             if (count == 0)
                             {
-                                base.Output.WriteLine(" ;");
+                                base.Output.WriteLine(ws+";");
                                 this.Indent++;
                                 base.Output.Write(keywordINHERIT);
                                 this.Indent--;
@@ -1283,14 +1341,14 @@ namespace XSharp.CodeDom
                             // but sometimes we may only have interfaces to IMPLEMENTs
                             if (count == 0)
                             {
-                                base.Output.WriteLine(" ;");
+                                base.Output.WriteLine(ws+";");
                                 this.Indent++;
                                 base.Output.Write(keywordINHERIT);
                                 this.Indent--;
                             }
                             else if (count == 1)
                             {
-                                base.Output.WriteLine(" ;");
+                                base.Output.WriteLine(ws+";");
                                 this.Indent++;
                                 base.Output.Write(keywordIMPLEMENTS);
                                 this.Indent--;
@@ -1327,10 +1385,10 @@ namespace XSharp.CodeDom
             this.OutputIdentifier(e.Name);
             if (e.InitExpression != null)
             {
-                base.Output.Write(" := ");
+                this.writeAssignment();
                 this.GenerateExpression(e.InitExpression);
             }
-            base.Output.Write(" "+keywordAS);
+            base.Output.Write(" " + keywordAS);
             this.OutputType(e.Type);
             if (!this.generatingForLoop)
             {
@@ -1780,7 +1838,7 @@ namespace XSharp.CodeDom
         protected override void ContinueOnNewLine(string st)
         {
             this.Output.Write(st);
-            this.Output.WriteLine( " ;" );
+            this.Output.WriteLine( ws+";" );
         }
 
         private void GenerateAttributes(CodeAttributeDeclarationCollection attributes)
@@ -1829,7 +1887,7 @@ namespace XSharp.CodeDom
                     this.GenerateAttributeDeclarationsEnd(attributes);
                     if (inLine)
                     {
-                        base.Output.Write(" ");
+                        base.Output.Write(ws);
                     }
                     else
                     {
@@ -1846,7 +1904,7 @@ namespace XSharp.CodeDom
             {
                 name = arg.Name;
                 this.OutputIdentifier(arg.Name);
-                this.Output.Write(":=");
+                this.writeAssignment();
                 arg.Name = null;
             }
             base.OutputAttributeArgument(arg);
@@ -1936,14 +1994,12 @@ namespace XSharp.CodeDom
                     base.Output.Write(keywordINTERNAL);
                     break;
 
-                case TypeAttributes.AutoLayout:
-                case TypeAttributes.Public:
-                case TypeAttributes.NestedPublic:
-                    base.Output.Write(keywordPUBLIC);
-                    break;
 
                 case TypeAttributes.NestedPrivate:
-                    base.Output.Write(keywordPRIVATE);
+                    if (privateKeyword == 0)
+                        base.Output.Write(keywordPRIVATE);
+                    else
+                        base.Output.Write(keywordHIDDEN);
                     break;
 
                 case TypeAttributes.NestedFamily:
@@ -1954,7 +2010,15 @@ namespace XSharp.CodeDom
                     base.Output.Write(keywordPROTECTED + keywordINTERNAL);
                     break;
                 default:
-                    base.Output.Write(keywordPUBLIC);
+                case TypeAttributes.AutoLayout:
+                case TypeAttributes.Public:
+                case TypeAttributes.NestedPublic:
+                    if (publicKeyword == 0)
+                        base.Output.Write(keywordPUBLIC);
+                    else if (publicKeyword == 1)
+                        base.Output.Write(keywordEXPORT);
+                    else
+                        base.Output.Write("");
                     break;
             }
         }
@@ -1971,10 +2035,13 @@ namespace XSharp.CodeDom
             switch ((attributes & MemberAttributes.AccessMask))
             {
                 case MemberAttributes.Public:
-                    this.Output.Write(keywordPUBLIC);
-                    break;
-                case MemberAttributes.Private:
-                    this.Output.Write(keywordPRIVATE);
+
+                    if (publicKeyword == 0)
+                        base.Output.Write(keywordPUBLIC);
+                    else if (publicKeyword == 1)
+                        base.Output.Write(keywordEXPORT);
+                    else 
+                        base.Output.Write("");
                     break;
                 case MemberAttributes.Family:
                     this.Output.Write(keywordPROTECTED);
@@ -1985,8 +2052,12 @@ namespace XSharp.CodeDom
                 case MemberAttributes.Assembly:
                     this.Output.Write(keywordINTERNAL);
                     break;
+                case MemberAttributes.Private:
                 default:
-                    this.Output.Write(keywordPRIVATE);
+                    if (privateKeyword == 0)
+                        base.Output.Write(keywordPRIVATE);
+                    else
+                        base.Output.Write(keywordHIDDEN);
                     break;
             }
         }

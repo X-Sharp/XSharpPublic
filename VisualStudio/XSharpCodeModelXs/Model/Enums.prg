@@ -100,6 +100,13 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Public:=0
    END ENUM
 
+   [Flags];
+   Enum AccessorKind
+        MEMBER @@Get        := 1 << 0
+        MEMBER @@Set        := 1 << 1
+        MEMBER @@Add        := 1 << 2
+        MEMBER @@Remove     := 1 << 3
+   END ENUM
    ENUM Kind AS Int32
       MEMBER @@Namespace   :=  0
       MEMBER @@Class       :=  1
@@ -236,4 +243,5 @@ BEGIN NAMESPACE XSharpModel
     END ENUM
 
 END NAMESPACE
-
+Function EscapeKeyword(sName as STRING) AS STRING
+    RETURN sName

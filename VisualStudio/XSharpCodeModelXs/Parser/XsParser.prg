@@ -811,8 +811,10 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                   IF mods == Modifiers.Public .OR. mods == Modifiers.Private
                      var txt := LastToken.Text.ToUpper()
                      if (txt == "PUBLIC" .or. txt == "PRIVATE")
-                     IF CurrentEntity IS XSourceMemberSymbol VAR xDef .AND. ! xDef:SingleLine .AND. CurrentEntity.Kind:HasBody()
-                        entityKind := Kind.Unknown
+                         IF CurrentEntity IS XSourceMemberSymbol VAR xDef .AND. ! xDef:SingleLine .AND. CurrentEntity.Kind:HasBody()
+                            if _file:Project:ParseOptions:SupportsMemvars
+                                entityKind := Kind.Unknown
+                            endif
                         ENDIF
                      ENDIF
                   ENDIF

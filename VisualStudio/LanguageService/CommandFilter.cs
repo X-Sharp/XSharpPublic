@@ -162,9 +162,16 @@ namespace XSharp.LanguageService
         static Stream Semaphore = null;
         const string folderName = "XSharp.Intellisense";
         const string semName = "XSharp.Busy";
+        private XAssembly asmName = null;
+        private string LookupXml(IXSymbol key)
+        {
+            return XSharpXMLDocMember.GetDoc(asmName, key);
+        }
         private void GotoSystemType(XPETypeSymbol petype, XPESymbol element)
         {
-            var aLines = XClassCreator.Create(petype);
+            asmName = petype.Assembly;
+            var aLines = XClassCreator.Create(petype,LookupXml);
+            asmName = null;
             if (Semaphore == null)
             {
                 // we create a semaphore file in the workfolder to make sure that if 2 copies of VS are running

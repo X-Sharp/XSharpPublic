@@ -25,16 +25,35 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN type:Name
 
-      STATIC METHOD GetMethods(SELF type as IXTypeSymbol) AS IXMemberSymbol[]
+
+      STATIC METHOD GetMethods(SELF type as IXTypeSymbol, declaredOnly := false AS LOGIC) AS IXMemberSymbol[]
+         if (declaredOnly)
+               return type:GetDeclaredMembers():Where( { m => m.Kind:IsMethod()}):ToArray()
+         endif
          return type:Members:Where( { m => m.Kind:IsMethod() }):ToArray()
+
+      STATIC METHOD GetDeclaredMembers( SELF type as IXTypeSymbol) AS IXMemberSymbol[]
+         return type:Members:Where( { m => m.Parent == type}):ToArray()
+
+      STATIC METHOD GetConstructors(SELF type as IXTypeSymbol, declaredOnly := false AS LOGIC) AS IXMemberSymbol[]
+         if (declaredOnly)
+               return type:GetDeclaredMembers():Where( { m => m.Kind == Kind.Constructor}):ToArray()
+         endif
+         return type:Members:Where( { m => m.Kind == Kind.Constructor}):ToArray()
 
       STATIC METHOD GetFields(SELF type as IXTypeSymbol) AS IXMemberSymbol[]
          return type:Members:Where( { m => m.Kind:IsField()}):ToArray()
 
-      STATIC METHOD GetEvents(SELF type as IXTypeSymbol) AS IXMemberSymbol[]
+      STATIC METHOD GetEvents(SELF type as IXTypeSymbol, declaredOnly := false AS LOGIC) AS IXMemberSymbol[]
+         if (declaredOnly)
+               return type:GetDeclaredMembers():Where( { m => m.Kind == Kind.Event}):ToArray()
+         endif
          return type:Members:Where( { m => m.Kind == Kind.Event}):ToArray()
 
-      STATIC METHOD GetProperties(SELF type as IXTypeSymbol) AS IXMemberSymbol[]
+      STATIC METHOD GetProperties(SELF type as IXTypeSymbol, declaredOnly := false AS LOGIC) AS IXMemberSymbol[]
+         if (declaredOnly)
+               return type:GetDeclaredMembers():Where( { m => m.Kind.IsProperty()}):ToArray()
+         endif
          return type:Members:Where( { m => m.Kind:IsProperty()}):ToArray()
 
       STATIC METHOD GetMethods(SELF type AS IXTypeSymbol, strName AS STRING) AS IXMemberSymbol[]
@@ -52,6 +71,8 @@ BEGIN NAMESPACE XSharpModel
             RETURN "T:"+peType:OriginalTypeName
          ENDIF
          RETURN "T:"+tm:FullName
+      STATIC METHOD IsPublic(SELF type as IXTypeSymbol) AS LOGIC
+            return type:Visibility >= Modifiers.Public
       STATIC METHOD IsVoStruct(SELF type AS IXTypeSymbol) AS LOGIC
         IF (type == NULL)
             RETURN FALSE

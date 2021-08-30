@@ -11,6 +11,7 @@ BEGIN NAMESPACE XSharpModel
 
    CLASS XPEPropertySymbol INHERIT XPEMemberSymbol
         PRIVATE _propdef      as PropertyDefinition
+        PROPERTY Accessors    AS AccessorKind AUTO
 
 		CONSTRUCTOR(def AS PropertyDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Property, Modifiers.Public,  asm)
@@ -29,7 +30,24 @@ BEGIN NAMESPACE XSharpModel
          IF def:HasCustomAttributes
             SELF:_custatts       := _propdef:CustomAttributes
          ENDIF
+         IF def:GetMethod != NULL
+            SELF:Accessors |= AccessorKind.Get
+         ENDIF
+         IF def:SetMethod != NULL
+            SELF:Accessors |= AccessorKind.Set
+         ENDIF
 
+    PROPERTY ClassGenText as STRING
+            GET
+                var result := SELF:VisibilityKeyword + " "
+                result += SELF:ModifiersKeyword + " "
+                result += SELF:KindKeyword + " "
+                result += SELF:Prototype
+                result += IIF(Accessors.HasFlag(AccessorKind.Get), " GET","")
+                result += IIF(Accessors.HasFlag(AccessorKind.Set), " SET","")
+                RETURN result:Replace("  ", " ")
+            END GET
+      END PROPERTY
 
       PROTECTED OVERRIDE METHOD Resolve() AS VOID
          IF ! _resolved
@@ -88,10 +106,21 @@ BEGIN NAMESPACE XSharpModel
          SUPER:Resolve()
          RETURN
 
+     PROPERTY ClassGenText as STRING
+            GET
+                var result := SELF:VisibilityKeyword + " "
+                result += SELF:ModifiersKeyword + " "
+                result += SELF:KindKeyword + " "
+                result += SELF:Prototype
+                RETURN result:Replace("  ", " ")
+            END GET
+      END PROPERTY
+
    END CLASS
 
    CLASS XPEEventSymbol INHERIT XPEMemberSymbol
         PRIVATE _eventdef     as EventDefinition
+        PROPERTY Accessors    AS AccessorKind AUTO
 
 		CONSTRUCTOR(def AS EventDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Event, Modifiers.Public,  asm)
@@ -109,11 +138,30 @@ BEGIN NAMESPACE XSharpModel
          IF def:HasCustomAttributes
             SELF:_custatts       := def:CustomAttributes
          ENDIF
+         IF def:AddMethod != NULL
+            SELF:Accessors |= AccessorKind.Add
+         ENDIF
+         IF def:RemoveMethod != NULL
+            SELF:Accessors |= AccessorKind.Remove
+         ENDIF
 
       PROTECTED OVERRIDE Method Resolve() AS VOID
          SUPER:Resolve()
          RETURN
-   END CLASS
+
+        PROPERTY ClassGenText as STRING
+            GET
+                var result := SELF:VisibilityKeyword + " "
+                result += SELF:ModifiersKeyword + " "
+                result += SELF:KindKeyword + " "
+                result += SELF:Prototype
+                result += IIF(Accessors.HasFlag(AccessorKind.Add), " ADD","")
+                result += IIF(Accessors.HasFlag(AccessorKind.Remove), " REMOVE","")
+                RETURN result:Replace("  ", " ")
+            END GET
+      END PROPERTY
+
+END CLASS
 
    CLASS XPEMethodSymbol  INHERIT XPEMemberSymbol
        PRIVATE _methoddef    as MethodDefinition
@@ -204,12 +252,29 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
 
             RETURN
+        PROPERTY ClassGenText as STRING
+            GET
+                var result := SELF:VisibilityKeyword + " "
+                result += SELF:ModifiersKeyword + " "
+                result += SELF:KindKeyword + " "
+                if (SELF:Kind == Kind.Constructor)
+                    var temp := SELF:Prototype
+                    temp := temp.Replace('}',')')
+                    var pos := temp.IndexOf('{')
+                    temp := "("+temp:Substring(pos+1)
+                    result += temp
+                ELSE
+                    result += SELF:Prototype
+                endif
+                RETURN result:Replace("  ", " ")
+            END GET
+      END PROPERTY
 
 
    END CLASS
 
    [DebuggerDisplay("{ToString(),nq}")];
-	CLASS XPEMemberSymbol     INHERIT XPESymbol IMPLEMENTS IXMemberSymbol
+	ABSTRACT CLASS XPEMemberSymbol     INHERIT XPESymbol IMPLEMENTS IXMemberSymbol
 		// Fields
         PROTECTED  _signature    AS XMemberSignature
         PROTECTED  _resolved    AS LOGIC
@@ -218,7 +283,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY  DeclaringType  AS STRING AUTO
         PROPERTY  Signature     AS XMemberSignature  GET _signature
         PROPERTY  IsGeneric    AS LOGIC GET _generic
-
+        ABSTRACT PROPERTY  ClassGenText      AS STRING GET
 
 		#region constructors
 

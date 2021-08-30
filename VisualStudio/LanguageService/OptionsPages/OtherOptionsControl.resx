@@ -120,4 +120,7 @@
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="chkShowXMLComments.ToolTip" xml:space="preserve">
+    <value>The X# language service generates a temporary source file when you do a Goto Defition on a type that is found in an external assembly. When you select this option then the generate code will NOT contain XML comments if the external assembly comes with a matching XML docmentation file</value>
+  </data>
 </root>

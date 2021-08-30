@@ -43,7 +43,6 @@ BEGIN NAMESPACE XSharpModel
          SELF:OriginalTypeName := typedef:FullName
          SELF:_custatts := typedef:CustomAttributes
          IF typedef:HasGenericParameters
-
             VAR cName          := SELF:Name
             VAR nsGeneric := FALSE
             VAR pos := cName:IndexOf('`')
@@ -65,7 +64,8 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
          ENDIF
 
-
+      INTERNAL METHOD AddChild(child as XPETypeSymbol) AS VOID
+            SELF:_children:Add(child)
 
       PRIVATE STATIC METHOD GetKind(typedef as TypeDefinition) AS Kind
          IF typedef:BaseType != NULL

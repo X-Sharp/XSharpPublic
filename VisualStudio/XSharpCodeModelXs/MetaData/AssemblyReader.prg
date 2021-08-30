@@ -45,7 +45,7 @@ INTERNAL CLASS AssemblyReader
          assembly:RuntimeVersion := reader:MainModule:RuntimeVersion
          FOREACH VAR module in reader:Modules
             FOREACH var type in module:Types
-               SELF:AddType(type,assembly)
+               SELF:AddType(type,assembly,null)
             NEXT
          NEXT
          FOREACH VAR att IN reader:CustomAttributes
@@ -80,11 +80,14 @@ INTERNAL CLASS AssemblyReader
       ENDIF
       RETURN
 
-   PRIVATE METHOD AddType(type as TypeDefinition, assembly as XAssembly) AS VOID
+   PRIVATE METHOD AddType(type as TypeDefinition, assembly as XAssembly, parentType as XPETypeSymbol) AS VOID
       VAR vis := _AND(type:Attributes, TypeAttributes.VisibilityMask )
       IF vis == TypeAttributes.Public .OR. vis == TypeAttributes.NestedPublic
          VAR name := type:FullName
          VAR typeref := XPETypeSymbol{type, assembly}
+         IF parentType != NULL
+             parentType:AddChild(typeref)
+         ENDIF
          VAR ns := typeref:Namespace
          IF  ns:Length > 0
             IF ! _nameSpaces:Contains(ns)
@@ -107,7 +110,7 @@ INTERNAL CLASS AssemblyReader
          endif
          if type:HasNestedTypes
                FOREACH var child in type:NestedTypes
-                  SELF:AddType(child,assembly)
+                  SELF:AddType(child,assembly, typeref)
                NEXT
          ENDIF
      ENDIF

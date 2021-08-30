@@ -575,32 +575,7 @@ namespace XSharp.Project
             {
                 if (_codeDomProvider == null)
                 {
-                    int tabSize = 1;
-                    try
-                    {
-                        //LanguageService.XSharpLanguageService lngServ = (LanguageService.XSharpLanguageService)ProjectMgr.GetService(typeof(LanguageService.XSharpLanguageService));
-                        //Microsoft.VisualStudio.Package.LanguagePreferences pref = lngServ.GetLanguagePreferences();
-                        //tabSize = pref.TabSize;
-                        /*
-                                                EnvDTE.DTE dte = (EnvDTE.DTE)ProjectMgr.GetService(typeof(EnvDTE.DTE));
-                                                EnvDTE.Properties props;
-                                                props = dte.Properties[ "Text Editor" , "XSharp"];
-                                                foreach (EnvDTE.Property temp in props)
-                                                {
-                                                    if (temp.Name.ToLower() == "tabsize")
-                                                    {
-                                                        tabSize = (int)temp.Value;
-                                                    }
-                                                }
-                        */
-                    }
-                    catch (Exception ex)
-                    {
-                        string msg = ex.Message;
-                    }
-                    //
                     _codeDomProvider = new VSXSharpCodeDomProvider(this);
-                    XSharpCodeDomProvider.TabSize = tabSize;
                 }
                 return _codeDomProvider;
             }

@@ -33,8 +33,6 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.chkSingleLineDividers = new System.Windows.Forms.CheckBox();
             this.chkShowDividers = new System.Windows.Forms.CheckBox();
-            this.grpOther = new System.Windows.Forms.GroupBox();
-            this.grpCodeGenerator = new System.Windows.Forms.GroupBox();
             this.chkShowXMLComments = new System.Windows.Forms.CheckBox();
             this.lblPublic = new System.Windows.Forms.Label();
             this.rbPublic = new System.Windows.Forms.RadioButton();
@@ -43,12 +41,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.rbPrivate = new System.Windows.Forms.RadioButton();
             this.rbHidden = new System.Windows.Forms.RadioButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.grpOther = new System.Windows.Forms.GroupBox();
+            this.grpCodeGenerator = new System.Windows.Forms.GroupBox();
             this.grpPrivate = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.grpOther.SuspendLayout();
             this.grpCodeGenerator.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.grpPrivate.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // chkSingleLineDividers
@@ -77,32 +77,6 @@
             this.chkShowDividers.UseVisualStyleBackColor = true;
             this.chkShowDividers.CheckedChanged += new System.EventHandler(this.chkShowDividers_CheckedChanged);
             // 
-            // grpOther
-            // 
-            this.grpOther.Controls.Add(this.chkSingleLineDividers);
-            this.grpOther.Controls.Add(this.chkShowDividers);
-            this.grpOther.Location = new System.Drawing.Point(3, 3);
-            this.grpOther.Name = "grpOther";
-            this.grpOther.Size = new System.Drawing.Size(401, 81);
-            this.grpOther.TabIndex = 1;
-            this.grpOther.TabStop = false;
-            this.grpOther.Text = "Other Options";
-            // 
-            // grpCodeGenerator
-            // 
-            this.grpCodeGenerator.Controls.Add(this.grpPrivate);
-            this.grpCodeGenerator.Controls.Add(this.groupBox1);
-            this.grpCodeGenerator.Controls.Add(this.label1);
-            this.grpCodeGenerator.Controls.Add(this.lblPublic);
-            this.grpCodeGenerator.Controls.Add(this.chkShowXMLComments);
-            this.grpCodeGenerator.Location = new System.Drawing.Point(3, 85);
-            this.grpCodeGenerator.Name = "grpCodeGenerator";
-            this.grpCodeGenerator.Size = new System.Drawing.Size(401, 138);
-            this.grpCodeGenerator.TabIndex = 3;
-            this.grpCodeGenerator.TabStop = false;
-            this.grpCodeGenerator.Text = "Code Generator";
-            this.grpCodeGenerator.Enter += new System.EventHandler(this.groupBox1_Enter);
-            // 
             // chkShowXMLComments
             // 
             this.chkShowXMLComments.AutoSize = true;
@@ -111,8 +85,9 @@
             this.chkShowXMLComments.Size = new System.Drawing.Size(341, 17);
             this.chkShowXMLComments.TabIndex = 2;
             this.chkShowXMLComments.Text = "Show XML comments in generated source code for Goto Definition";
-            this.toolTip1.SetToolTip(this.chkShowXMLComments, resources.GetString("chkShowXMLComments.ToolTip"));
+            this.toolTip1.SetToolTip(this.chkShowXMLComments, "The X# language service generates a temporary source file when you do a Goto Defition on a type that is found in an external assembly. When you select this option then the generate code will NOT contain XML comments if the external assembly comes with a matching XML documentation file");
             this.chkShowXMLComments.UseVisualStyleBackColor = true;
+            this.chkShowXMLComments.CheckedChanged += new System.EventHandler(this.chkShowXMLComments_CheckedChanged);
             // 
             // lblPublic
             // 
@@ -196,16 +171,31 @@
             this.rbHidden.UseVisualStyleBackColor = true;
             this.rbHidden.CheckedChanged += new System.EventHandler(this.rbHidden_CheckedChanged);
             // 
-            // groupBox1
+            // grpOther
             // 
-            this.groupBox1.Controls.Add(this.rbPublic);
-            this.groupBox1.Controls.Add(this.rbExport);
-            this.groupBox1.Controls.Add(this.rbNone);
-            this.groupBox1.Location = new System.Drawing.Point(169, 40);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(226, 29);
-            this.groupBox1.TabIndex = 10;
-            this.groupBox1.TabStop = false;
+            this.grpOther.Controls.Add(this.chkSingleLineDividers);
+            this.grpOther.Controls.Add(this.chkShowDividers);
+            this.grpOther.Location = new System.Drawing.Point(3, 3);
+            this.grpOther.Name = "grpOther";
+            this.grpOther.Size = new System.Drawing.Size(401, 81);
+            this.grpOther.TabIndex = 1;
+            this.grpOther.TabStop = false;
+            this.grpOther.Text = "Other Options";
+            // 
+            // grpCodeGenerator
+            // 
+            this.grpCodeGenerator.Controls.Add(this.grpPrivate);
+            this.grpCodeGenerator.Controls.Add(this.groupBox1);
+            this.grpCodeGenerator.Controls.Add(this.label1);
+            this.grpCodeGenerator.Controls.Add(this.lblPublic);
+            this.grpCodeGenerator.Controls.Add(this.chkShowXMLComments);
+            this.grpCodeGenerator.Location = new System.Drawing.Point(3, 85);
+            this.grpCodeGenerator.Name = "grpCodeGenerator";
+            this.grpCodeGenerator.Size = new System.Drawing.Size(401, 138);
+            this.grpCodeGenerator.TabIndex = 3;
+            this.grpCodeGenerator.TabStop = false;
+            this.grpCodeGenerator.Text = "Code Generator";
+            this.grpCodeGenerator.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // grpPrivate
             // 
@@ -216,6 +206,17 @@
             this.grpPrivate.Size = new System.Drawing.Size(230, 33);
             this.grpPrivate.TabIndex = 11;
             this.grpPrivate.TabStop = false;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.rbPublic);
+            this.groupBox1.Controls.Add(this.rbExport);
+            this.groupBox1.Controls.Add(this.rbNone);
+            this.groupBox1.Location = new System.Drawing.Point(169, 40);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(226, 29);
+            this.groupBox1.TabIndex = 10;
+            this.groupBox1.TabStop = false;
             // 
             // OtherOptionsControl
             // 
@@ -230,10 +231,10 @@
             this.grpOther.PerformLayout();
             this.grpCodeGenerator.ResumeLayout(false);
             this.grpCodeGenerator.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.grpPrivate.ResumeLayout(false);
             this.grpPrivate.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }

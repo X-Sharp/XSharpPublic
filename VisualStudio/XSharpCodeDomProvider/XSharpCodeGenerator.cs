@@ -921,6 +921,7 @@ namespace XSharp.CodeDom
         private bool _writeTrivia(string trivia)
         {
             var saveIndent = this.Indent;
+            this.Indent = 0;
             this.Output.Write(trivia);
             this.Indent = saveIndent;
             return true;

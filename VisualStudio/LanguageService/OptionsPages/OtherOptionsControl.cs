@@ -96,5 +96,6 @@ namespace XSharp.LanguageService.OptionsPages
         {
             optionsPage.PrivateStyle = 1;
         }
+
     }
 }

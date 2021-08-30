@@ -36,7 +36,6 @@ namespace XSharp.LanguageService
         [Import]
         internal IVsEditorAdaptersFactoryService EditorAdaptersFactoryService { get; set; }
 
-
         [Import]
         internal Microsoft.VisualStudio.Shell.SVsServiceProvider ServiceProvider { get; set; }
 
@@ -53,18 +52,16 @@ namespace XSharp.LanguageService
             IWpfTextView textView = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
             IVsTextBuffer textBuffer = EditorAdaptersFactoryService.GetBufferAdapter(textView.TextBuffer);
             textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument document);
-            XFile file = null;
             textViewAdapter.GetBuffer(out textlines);
             if (textlines != null)
             {
+                XFile file = null;
                 string fileName = FilePathUtilities.GetFilePath(textlines);
-                Guid langId;
-                textlines.GetLanguageServiceID(out langId);
+                textlines.GetLanguageServiceID(out var langId);
                 // Note that this may get called after the classifier has been instantiated
 
                 if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
                 {
-
 
                     // Get XFile and assign it to the textbuffer
                     if (!textView.TextBuffer.Properties.TryGetProperty(typeof(XFile), out file))
@@ -157,12 +154,6 @@ namespace XSharp.LanguageService
                 }
             }
         }
-
-        internal static bool IsOurSourceFile(string fileName)
-        {
-            return true;
-        }
     }
-
 }
 

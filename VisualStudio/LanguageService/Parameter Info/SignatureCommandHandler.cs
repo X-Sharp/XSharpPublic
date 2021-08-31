@@ -133,15 +133,15 @@ namespace XSharp.LanguageService
                                 case '(':
                                 case '{':
                                     CancelSignatureSession();
-                                    StartSignatureSession(false);
+                                    StartSignatureSession(false, triggerchar:typedChar);
                                     break;
                                 case ')':
                                 case '}':
                                     CancelSignatureSession();
-                                    StartSignatureSession(false);
+                                    StartSignatureSession(false, triggerchar: typedChar);
                                     break;
                                 case ',':
-                                    StartSignatureSession(true);
+                                    StartSignatureSession(true, triggerchar: typedChar);
                                     break;
                                 case ':':
                                 case '.':
@@ -236,7 +236,7 @@ namespace XSharp.LanguageService
                 // check to see if there is a lparen or lcurly before the comma
                 foreach (var token in tokenList)
                 {
-                    if (token.Position > ssp.Position)
+                    if (token.Position > location.Position)
                         break;
                     switch (token.Type)
                     {
@@ -271,6 +271,8 @@ namespace XSharp.LanguageService
                 return false;
             IXMemberSymbol currentElement = null;
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
+            if (triggerchar == '(' && ssp.GetChar() == ')')
+                ssp -= 1;
             var location = _textView.FindLocation(ssp);
             if (location == null)
                 return false;

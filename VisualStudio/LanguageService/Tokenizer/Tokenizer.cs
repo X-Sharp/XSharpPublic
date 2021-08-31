@@ -69,7 +69,7 @@ namespace XSharp.LanguageService
                 bufferText = bufferText.Substring(fromMember.Interval.Start, nWidth);
                 // Adapt the positions.
                 location = location.With(location.LineNumber - fromMember.Range.StartLine,
-                    location.Position - fromMember.Interval.Start + 1);
+                    location.Position - fromMember.Interval.Start );
             }
             else
             {

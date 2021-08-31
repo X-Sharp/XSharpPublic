@@ -73,6 +73,9 @@ BEGIN NAMESPACE XSharpModel
 
         STATIC METHOD GetSystemTypeName( SELF typename AS STRING, lXSharpNames AS LOGIC) AS STRING
             LOCAL lHandled := TRUE AS LOGIC
+            IF typename == null
+                return typename
+            ENDIF
             IF lXSharpNames
                 if XSharpToSystem:ContainsKey(typename)
                     return XSharpToSystem[typename]

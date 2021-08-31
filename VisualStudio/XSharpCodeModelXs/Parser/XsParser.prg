@@ -1528,7 +1528,7 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                NEXT
             ENDIF
             IF ! String.IsNullOrEmpty(parentType)
-               xType:BaseType := parentType
+               xType:BaseTypeName := parentType
             ENDIF
             xType:IsPartial := _attributes:HasFlag(Modifiers.Partial)
             IF constraints?:Count > 0
@@ -1952,7 +1952,7 @@ enum_               : (Attributes=attributes)? (Modifiers=classModifiers)?
          ENDIF
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
          SELF:ReadLine()
-         VAR xType := XSourceTypeSymbol{id, Kind.Enum, _attributes, range, interval, _file} {BaseType := type}
+         VAR xType := XSourceTypeSymbol{id, Kind.Enum, _attributes, range, interval, _file} {BaseTypeName := type}
          xType:SourceCode := source
          RETURN <XSourceEntity>{xType}
 
@@ -2608,15 +2608,13 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          RETURN TokensAsString(SELF:ParseExpressionAsTokens())
 
 
-      PRIVATE METHOD ParseForLocalDeclaration() AS VOID
+      PRIVATE METHOD ParseForLocalDeclaration() AS LOGIC
          VAR tokens := List<IToken>{}
          VAR firstToken := SELF:Lt1
          SWITCH firstToken.Type
          CASE XSharpLexer.LOCAL
          CASE XSharpLexer.STATIC
-         CASE XSharpLexer.VAR
-            SELF:ParseDeclarationStatement()
-            RETURN
+            RETURN SELF:ParseDeclarationStatement()
          END SWITCH
 
          DO WHILE ! SELF:Eos()
@@ -2688,7 +2686,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             ENDIF
             Consume()
          ENDDO
-         RETURN
+         RETURN TRUE
 
       PRIVATE METHOD ParseForLocals() AS VOID
          // Check for method call with OUT VAR or OUT id AS TYPE
@@ -2763,6 +2761,12 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                SELF:ReadLine()
             ENDIF
 
+         CASE XSharpLexer.FOREACH
+         CASE XSharpLexer.FOR
+            SELF:Consume()
+            IF ! SELF:ParseForLocalDeclaration()
+               SELF:ReadLine()
+            ENDIF
          CASE XSharpLexer.LOCAL
          CASE XSharpLexer.STATIC
          CASE XSharpLexer.VAR
@@ -3431,7 +3435,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                NEXT
             ENDIF
             IF ! String.IsNullOrEmpty(baseType)
-               xType:BaseType := baseType
+               xType:BaseTypeName := baseType
             ENDIF
             xType:IsPartial := _attributes:HasFlag(Modifiers.Partial)
             IF CurrentEntity != _globalType .AND. CurrentEntityKind:HasChildren()

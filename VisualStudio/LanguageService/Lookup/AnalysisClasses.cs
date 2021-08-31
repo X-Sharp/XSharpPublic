@@ -195,11 +195,6 @@ namespace XSharp.LanguageService
                 }
                 content.addKeyword(XSettings.FormatKeyword(Type.VisibilityKeyword) + " ");
                 //
-                if (IsStatic)
-                {
-                    content.addKeyword(XSettings.FormatKeyword("STATIC "));
-                }
-                //
                 if (Type.Kind != Kind.Field)
                 {
                     content.addKeyword(XSettings.FormatKeyword(Type.KindKeyword) + " ");

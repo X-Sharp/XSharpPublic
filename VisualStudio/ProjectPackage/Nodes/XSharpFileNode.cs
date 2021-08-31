@@ -202,7 +202,7 @@ namespace XSharp.Project
                             {
                                 while (type?.BaseType != null)
                                 {
-                                    var btName = type.BaseType;
+                                    var btName = type.BaseTypeName;
                                     SubType = typeNameToSubtype(btName);
                                     if (!String.IsNullOrEmpty(SubType))
                                         break;

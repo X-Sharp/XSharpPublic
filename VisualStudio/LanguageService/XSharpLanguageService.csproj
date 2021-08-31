@@ -180,6 +180,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
+      <Project>{c9e9f119-d5a7-493b-88c9-4b5dd5ad653f}</Project>
+      <Name>XSharpMonoCecil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>XSharpModelXs</Name>

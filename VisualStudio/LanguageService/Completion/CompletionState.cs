@@ -10,15 +10,15 @@ namespace XSharp.LanguageService
     public enum CompletionState
     {
         None = 0,
-        General = 1 << 0,
-        Namespaces = 1 << 1,
-        Types = 1 << 2,
-        Interfaces = 1 << 3,
-        StaticMembers = 1 << 4,
-        InstanceMembers = 1 << 5,
-        Constructors = 1 << 6,
-        Brackets = 1 << 7,
-        Keywords=1 << 8,
-        Snippets=1 << 9,
+        Namespaces = 1 << 0,
+        Types = 1 << 1,
+        Interfaces = 1 << 2,
+        StaticMembers = 1 << 3,
+        InstanceMembers = 1 << 4,
+        Constructors = 1 << 5,
+        Brackets = 1 << 6,
+        Keywords = 1 << 7,
+        Snippets = 1 << 8,
+        General = 1 << 9,
     }
 }

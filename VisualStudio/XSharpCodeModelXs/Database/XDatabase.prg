@@ -928,9 +928,8 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"GetProjectTypes '{sName}' returns {result.Count} matches")
 		RETURN result
 
-
 		STATIC METHOD GetProjectTypesLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
-			VAR stmt := "Select * from ProjectTypes where name like $name AND IdProject in ("+sProjectIds+")"
+			VAR stmt := "Select * from ProjectTypes where name like $name or namespace like $name AND IdProject in ("+sProjectIds+")"
 			VAR result := List<XDbResult>{}
 			sName += "%"
 			IF IsDbOpen

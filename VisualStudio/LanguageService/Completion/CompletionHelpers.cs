@@ -34,7 +34,7 @@ namespace XSharp.LanguageService
             _file = file;
             _settingIgnoreCase = ignoreCase;
         }
-        internal void AddUsingStaticMembers(XCompletionList compList, XFile file, string filterText)
+        internal void AddUsingStaticMembers(XSharpSearchLocation location, XCompletionList compList, XFile file, string filterText)
         {
             //
             //foreach (string staticType in file.AllUsingStatics)
@@ -43,7 +43,7 @@ namespace XSharp.LanguageService
             //}
             // And what about Global Types in referenced Assemblies ?
             var found = file.Project.FindGlobalMembersInAssemblyReferences(filterText);
-            FillMembers(compList, null, found, Modifiers.Public, true);
+            FillMembers(location, compList, null, found, Modifiers.Public, true);
         }
         public static bool isGenerated(IXTypeSymbol type)
         {
@@ -105,6 +105,7 @@ namespace XSharp.LanguageService
 
         }
 
+
         internal bool IsHiddenTypeName(string realTypeName)
         {
             if (realTypeName.Length > 2 && realTypeName.StartsWith("__", StringComparison.Ordinal) && XSettings.EditorHideAdvancedMembers)
@@ -158,11 +159,13 @@ namespace XSharp.LanguageService
             }
         }
 
-        internal void AddXSharpTypeNames(XCompletionList compList, XProject project, string startWith, IList<string> usings)
+        internal void AddXSharpTypeNames(XCompletionList compList, XProject project, string startWith, IList<string> usings, string NameToExclude = "")
         {
             var list = project.GetTypes(startWith, usings);
             foreach (var typeInfo in list)
             {
+                if (String.Compare(typeInfo.FullName, NameToExclude) == 0)
+                    continue;
 
                 // Then remove it
                 ImageSource icon = _glyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
@@ -317,14 +320,14 @@ namespace XSharp.LanguageService
         }
 
 
-        internal void BuildCompletionList(XCompletionList compList, IXTypeSymbol type, Modifiers minVisibility, bool staticOnly, string startWith)
+        internal void BuildCompletionList(XSharpSearchLocation location, XCompletionList compList, IXTypeSymbol type, Modifiers minVisibility, bool staticOnly, string startWith)
         {
             if (type == null)
             {
                 return;
             }
             //
-            FillMembers(compList, type, minVisibility, staticOnly, startWith);
+            FillMembers(location, compList, type, minVisibility, staticOnly, startWith);
             if (type is XSourceTypeSymbol sourceType)
             {
                 sourceType.ForceComplete();
@@ -344,19 +347,29 @@ namespace XSharp.LanguageService
                     ; // do nothing
                 }
                 else
-                    BuildCompletionList(compList, parentType, Modifiers.Protected, staticOnly, startWith);
+                    BuildCompletionList(location, compList, parentType, Modifiers.Protected, staticOnly, startWith);
                 foreach (var ifname in sourceType.Interfaces)
                 {
                     var iftype = sourceType.File.FindType(ifname, sourceType.Namespace);
                     if (iftype != null)
                     {
-                        BuildCompletionList(compList, iftype, Modifiers.Public, staticOnly, startWith);
+                        BuildCompletionList(location, compList, iftype, Modifiers.Public, staticOnly, startWith);
                     }
                 }
             }
+            if (type is XPETypeSymbol && type.Children.Count > 0)
+            {
+                AddTypeNames(compList, location.Project, type.FullName, location.Usings, false);
+            }
+            if (type is XSourceTypeSymbol)
+            {
+                var usings = location.Usings.ToList();
+                usings.Add(type.FullName);
+                AddXSharpTypeNames(compList, location.Project, type.FullName, usings, type.FullName);
+            }
             if (!staticOnly)
             {
-                FillExtensions(compList, type, startWith);
+                FillExtensions(location, compList, type, startWith);
             }
         }
         internal bool nameStartsWith(string name, string startWith)
@@ -375,7 +388,7 @@ namespace XSharp.LanguageService
         /// <param name="members"></param>
         /// <param name="minVisibility"></param>
         /// <param name="staticOnly"></param>
-        internal void FillMembers(XCompletionList compList, IXTypeSymbol type, IEnumerable<IXMemberSymbol> members, Modifiers minVisibility, bool staticOnly)
+        internal void FillMembers(XSharpSearchLocation location, XCompletionList compList, IXTypeSymbol type, IEnumerable<IXMemberSymbol> members, Modifiers minVisibility, bool staticOnly)
         {
             if (members.Count() == 0)
                 return;
@@ -432,13 +445,13 @@ namespace XSharp.LanguageService
         /// <param name="compList"></param>
         /// <param name="xType"></param>
         /// <param name="minVisibility"></param>
-        internal void FillMembers(XCompletionList compList, IXTypeSymbol xType, Modifiers minVisibility, bool staticOnly, string startWith)
+        internal void FillMembers(XSharpSearchLocation location, XCompletionList compList, IXTypeSymbol xType, Modifiers minVisibility, bool staticOnly, string startWith)
         {
-            FillMembers(compList, xType, xType.GetMembers(startWith), minVisibility, staticOnly);
+            FillMembers(location, compList, xType, xType.GetMembers(startWith), minVisibility, staticOnly);
         }
 
 
-        internal void FillExtensions(XCompletionList compList, IXTypeSymbol type, string startWith)
+        internal void FillExtensions(XSharpSearchLocation location, XCompletionList compList, IXTypeSymbol type, string startWith)
         {
             WriteOutputMessage($"FillExtensions for type {type?.FullName}");
             if (type != null)
@@ -450,7 +463,7 @@ namespace XSharp.LanguageService
                     selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
                 }
                 if (selection.Count() > 0)
-                    FillMembers(compList, null, selection, Modifiers.Public, true);
+                    FillMembers(location, compList, null, selection, Modifiers.Public, true);
                 foreach (var ifname in type.Interfaces)
                 {
                     var lifname = ifname;
@@ -473,7 +486,7 @@ namespace XSharp.LanguageService
                         selection = extensions.Where(x => nameStartsWith(x.Name, startWith));
                     }
                     if (selection.Count() > 0)
-                        FillMembers(compList, null, selection, Modifiers.Public, true);
+                        FillMembers(location, compList, null, selection, Modifiers.Public, true);
                 }
             }
             //WriteOutputMessage($"FillExtensions complete for type {sType.FullName}");

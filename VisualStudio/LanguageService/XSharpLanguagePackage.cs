@@ -84,9 +84,10 @@ namespace XSharp.LanguageService
                   @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
-    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), LanguageName, null, "Intellisense", pageNameResourceId: "201")]  // keywordlistresourceid
-    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]       // keywordlistresourceid
-    [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Other", pageNameResourceId: "203")]       // keywordlistresourceid
+    [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), LanguageName, null, "Intellisense", pageNameResourceId: "205")]  
+    [ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), LanguageName, null, "Settings Completion", pageNameResourceId: "204")]   
+    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]       
+    [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Other", pageNameResourceId: "203")]       
     public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
         private static XSharpLanguageService instance;

@@ -85,7 +85,7 @@
             this.chkShowXMLComments.Size = new System.Drawing.Size(341, 17);
             this.chkShowXMLComments.TabIndex = 2;
             this.chkShowXMLComments.Text = "Show XML comments in generated source code for Goto Definition";
-            this.toolTip1.SetToolTip(this.chkShowXMLComments, "The X# language service generates a temporary source file when you do a Goto Defition on a type that is found in an external assembly. When you select this option then the generate code will NOT contain XML comments if the external assembly comes with a matching XML documentation file");
+            this.toolTip1.SetToolTip(this.chkShowXMLComments, resources.GetString("chkShowXMLComments.ToolTip"));
             this.chkShowXMLComments.UseVisualStyleBackColor = true;
             this.chkShowXMLComments.CheckedChanged += new System.EventHandler(this.chkShowXMLComments_CheckedChanged);
             // 
@@ -191,7 +191,7 @@
             this.grpCodeGenerator.Controls.Add(this.chkShowXMLComments);
             this.grpCodeGenerator.Location = new System.Drawing.Point(3, 85);
             this.grpCodeGenerator.Name = "grpCodeGenerator";
-            this.grpCodeGenerator.Size = new System.Drawing.Size(401, 138);
+            this.grpCodeGenerator.Size = new System.Drawing.Size(401, 119);
             this.grpCodeGenerator.TabIndex = 3;
             this.grpCodeGenerator.TabStop = false;
             this.grpCodeGenerator.Text = "Code Generator";

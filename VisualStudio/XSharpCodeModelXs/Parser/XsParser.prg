@@ -265,11 +265,9 @@ BEGIN NAMESPACE XSharpModel
                            IF entity IS XSourceMemberSymbol VAR xMember .AND. xMember:Parent == NULL
                               xEnt:AddMember( xMember )
                            ENDIF
-                        ENDIF
-                        IF CurrentEntityKind:HasChildren() .AND. CurrentEntity IS XSourceTypeSymbol VAR xTypeDef
-                           IF entity IS XSourceTypeSymbol VAR xChild .AND. ! XSourceTypeSymbol.IsGlobalType(xTypeDef)
-                              xTypeDef:AddChild( xChild )
-                              xChild:Namespace := xTypeDef:FullName
+                           IF entity IS XSourceTypeSymbol VAR xChild .AND. ! XSourceTypeSymbol.IsGlobalType(xEnt)
+                              xEnt:AddChild( xChild )
+                              xChild:Namespace := xEnt:FullName
                            ENDIF
                         ENDIF
 

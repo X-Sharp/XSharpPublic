@@ -207,7 +207,8 @@ namespace XSharp.LanguageService
                 XSharpModel.XSolution.IsClosing = true;
                 XSharpModel.XSolution.Close();
                 // todo: use the method in the toolkit when it is available
-                var frames = await GetAllDocumentsAsync();
+                var frames = await VS.Windows.GetAllDocumentWindowsAsync();
+                
                 if (frames != null)
                 {
                     foreach (var frame in frames.ToList())
@@ -223,22 +224,22 @@ namespace XSharp.LanguageService
             return;
         }
         // use the method in the toolkit when it is available
-        private async Task<IEnumerable<WindowFrame>> GetAllDocumentsAsync()
-        {
-            await Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            IVsUIShell uiShell = await VS.Services.GetUIShellAsync();
-            ErrorHandler.ThrowOnFailure(uiShell.GetDocumentWindowEnum(out var docEnum));
-            IVsWindowFrame[] windowFrames = new IVsWindowFrame[1];
-            var frames = new List<WindowFrame>();
-            uint fetched = 0;
-            while (docEnum.Next(1, windowFrames, out fetched) == VSConstants.S_OK && fetched == 1)
-            {
-                var windowFrame = windowFrames[0];
-                var frame = new WindowFrame(windowFrame);
-                frames.Add(frame);
-            }
-            return frames;
-        }
+        //private async Task<IEnumerable<WindowFrame>> GetAllDocumentsAsync()
+        //{
+        //    await Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+        //    IVsUIShell uiShell = await VS.Services.GetUIShellAsync();
+        //    ErrorHandler.ThrowOnFailure(uiShell.GetDocumentWindowEnum(out var docEnum));
+        //    IVsWindowFrame[] windowFrames = new IVsWindowFrame[1];
+        //    var frames = new List<WindowFrame>();
+        //    uint fetched = 0;
+        //    while (docEnum.Next(1, windowFrames, out fetched) == VSConstants.S_OK && fetched == 1)
+        //    {
+        //        var windowFrame = windowFrames[0];
+        //        var frame = new WindowFrame(windowFrame);
+        //        frames.Add(frame);
+        //    }
+        //    return frames;
+        //}
 
         private void SolutionEvents_OnAfterCloseSolution()
         {

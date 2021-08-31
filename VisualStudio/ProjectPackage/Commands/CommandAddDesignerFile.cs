@@ -11,7 +11,7 @@ namespace XSharp.Project
     [Command(PackageIds.idAddDesignerFile)]
     internal sealed class CommandAddDesignerFile : BaseCommand<CommandAddDesignerFile>
     {
-        File currentFile = null;
+        PhysicalFile currentFile = null;
         protected override void BeforeQueryStatus(EventArgs e)
         {
             base.BeforeQueryStatus(e);
@@ -25,7 +25,7 @@ namespace XSharp.Project
             bool visible = false;
             foreach (var item in items)
             {
-                if (item is File file)
+                if (item is PhysicalFile file)
                 {
                     var subtype = await file.GetAttributeAsync(ProjectFileConstants.SubType);
                     if (subtype == ProjectFileAttributeValue.Form || subtype == ProjectFileAttributeValue.UserControl)

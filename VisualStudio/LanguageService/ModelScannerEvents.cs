@@ -46,12 +46,18 @@ namespace XSharp.LanguageService
                 VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
                 VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
                 VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
+                VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
                 VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
                 projectfiles = new List<string>();
                 changedProjectfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 XSharpModel.ModelWalker.Suspend();
             });
 
+        }
+
+        private void SolutionEvents_OnBeforeOpenProject(string obj)
+        {
+            checkProjectFile(obj);
         }
 
         private void DebuggerEvents_EnterRunMode(object sender, EventArgs e)
@@ -206,7 +212,6 @@ namespace XSharp.LanguageService
 
                 XSharpModel.XSolution.IsClosing = true;
                 XSharpModel.XSolution.Close();
-                // todo: use the method in the toolkit when it is available
                 var frames = await VS.Windows.GetAllDocumentWindowsAsync();
                 
                 if (frames != null)
@@ -223,23 +228,6 @@ namespace XSharp.LanguageService
             });
             return;
         }
-        // use the method in the toolkit when it is available
-        //private async Task<IEnumerable<WindowFrame>> GetAllDocumentsAsync()
-        //{
-        //    await Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-        //    IVsUIShell uiShell = await VS.Services.GetUIShellAsync();
-        //    ErrorHandler.ThrowOnFailure(uiShell.GetDocumentWindowEnum(out var docEnum));
-        //    IVsWindowFrame[] windowFrames = new IVsWindowFrame[1];
-        //    var frames = new List<WindowFrame>();
-        //    uint fetched = 0;
-        //    while (docEnum.Next(1, windowFrames, out fetched) == VSConstants.S_OK && fetched == 1)
-        //    {
-        //        var windowFrame = windowFrames[0];
-        //        var frame = new WindowFrame(windowFrame);
-        //        frames.Add(frame);
-        //    }
-        //    return frames;
-        //}
 
         private void SolutionEvents_OnAfterCloseSolution()
         {
@@ -257,11 +245,11 @@ namespace XSharp.LanguageService
         const string newText = @"$(XSharpMsBuildDir)";
         const string MsTestGuid = @"{3AC096D0-A1C2-E12C-1390-A8335801FDAB};";
 
-        private void SolutionEvents_OnAfterLoadProject(SolutionItem project)
+        private void checkProjectFile(string pszFileName)
         {
-            var pszFileName = project.FullPath;
             if (pszFileName != null && pszFileName.ToLower().EndsWith("xsproj") && File.Exists(pszFileName))
             {
+                projectfiles.Add(pszFileName);
                 string xml = File.ReadAllText(pszFileName);
                 var original = Path.ChangeExtension(pszFileName, ".original");
                 bool changed = false;
@@ -303,7 +291,6 @@ namespace XSharp.LanguageService
                     changedProjectfiles.Add(pszFileName, original);
                 }
             }
-            projectfiles.Add(pszFileName);
         }
         public static bool DeleteFileSafe(string fileName)
         {

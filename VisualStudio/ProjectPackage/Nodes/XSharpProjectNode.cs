@@ -1563,6 +1563,7 @@ namespace XSharp.Project
                         else
                             textView.SetTopLine(0);
                     }
+                    await VS.Documents.OpenInPreviewTabAsync(file);
                 });
             }
             catch 

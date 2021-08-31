@@ -28,7 +28,6 @@ namespace XSharp.LanguageService.OptionsPages
             _loading = true;
             chkCompletionListtabs.Checked = optionsPage.CompletionListTabs;
             chkKeywordsInAll.Checked = optionsPage.KeywordsInAll;
-            chkShowAfterChar.Checked = optionsPage.ShowAfterChar;
             //
             chkIncludeFields.Checked = optionsPage.IncludeFieldsInNavigationBars;
             chkSortNavBar.Checked = optionsPage.SortNavigationBars;
@@ -36,9 +35,6 @@ namespace XSharp.LanguageService.OptionsPages
             commitChars.Text = optionsPage.CommitChars;
             chkAutoPairs.Checked = optionsPage.AutoPairs;
             chkExcludeMembersFromOtherfiles.Checked = optionsPage.ExcludeMembersFromOtherFiles;
-            // disabled for now
-            chkShowAfterChar.Enabled = false;
-            chkShowAfterChar.Checked = false;
 
             _loading = false;
 
@@ -65,19 +61,8 @@ namespace XSharp.LanguageService.OptionsPages
             optionsPage.SortNavigationBars = chkSortNavBar.Checked;
         }
 
-        private void chkShowAfterChar_CheckedChanged(object sender, EventArgs e)
-        {
-            optionsPage.ShowAfterChar = chkShowAfterChar.Checked;
-        }
 
-        private void Control_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_loading)
-            {
-            }
-
-        }
-
+     
         private void btnShowMeTheMagic_Click(object sender, EventArgs e)
         {
             XSharpSpecialOptions form = new XSharpSpecialOptions();

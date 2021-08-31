@@ -196,7 +196,7 @@ BEGIN NAMESPACE XSharpModel
                     _baseType := SystemTypeController.FindType(SELF:BaseTypeName, SELF:Assembly:FullName)
                     if _baseType != NULL
                         _baseType:Resolve()
-                        VAR basemembers := _baseType:XMembers:Where( { m => m.Kind != Kind.Constructor .AND. m.Visibility != Modifiers.Private })
+                        VAR basemembers := _baseType:XMembers:Where( { m => m.Visibility != Modifiers.Private })
                         aMembers:AddRange( basemembers )
                     ENDIF
                 ENDIF
@@ -310,14 +310,16 @@ BEGIN NAMESPACE XSharpModel
 
         PROPERTY Children   AS IList<IXTypeSymbol>
             GET
-                return (IList<IXTypeSymbol> ) SELF:_children
+                var children := List<IXTypeSymbol>{}
+                children:AddRange(SELF:_children)
+                return children
             END GET
         END PROPERTY
 
         PROPERTY XChildren   AS IList<XPETypeSymbol>
             GET
                 BEGIN LOCK SELF
-                    return SELF:_children
+                    return SELF:_children:ToArray()
                 END LOCK
             END GET
         END PROPERTY

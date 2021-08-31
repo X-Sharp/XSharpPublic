@@ -268,7 +268,7 @@ namespace XSharp.LanguageService
                             // First we need to keep only the text AFTER the last dot
                             int dotPos = filterText.LastIndexOf('.');
                             filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
-                            helpers.BuildCompletionList(compList, type, Modifiers.Public, true, filterText);
+                            helpers.BuildCompletionList(location, compList, type, Modifiers.Public, true, filterText);
                         }
                     }
                     if (type.IsVoStruct() && typedChar == '.')
@@ -317,7 +317,7 @@ namespace XSharp.LanguageService
                             }
                         }
                         // Now, Fill the CompletionList with the available members, from there
-                        helpers.BuildCompletionList(compList, type, visibleAs, false, filterText);
+                        helpers.BuildCompletionList(location, compList, type, visibleAs, false, filterText);
                     }
                 }
                 //
@@ -362,10 +362,10 @@ namespace XSharp.LanguageService
                                 //}
                             }
                             // Now Add Functions and Procedures
-                            helpers.BuildCompletionList(compList, _file.Project.Lookup(XLiterals.GlobalName), Modifiers.Public, false, filterText);
+                            helpers.BuildCompletionList(location, compList, _file.Project.Lookup(XLiterals.GlobalName), Modifiers.Public, false, filterText);
                             foreach (var project in _file.Project.ReferencedProjects)
                             {
-                                helpers.BuildCompletionList(compList, project.Lookup(XLiterals.GlobalName), Modifiers.Public, false, filterText);
+                                helpers.BuildCompletionList(location, compList, project.Lookup(XLiterals.GlobalName), Modifiers.Public, false, filterText);
                             }
                             // and Add NameSpaces
                             helpers.AddNamespaces(compList, _file.Project, filterText);
@@ -374,7 +374,7 @@ namespace XSharp.LanguageService
                             //
                             helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
                             //
-                            helpers.AddUsingStaticMembers(compList, _file, filterText);
+                            helpers.AddUsingStaticMembers(location, compList, _file, filterText);
                             break;
                     }
                 }

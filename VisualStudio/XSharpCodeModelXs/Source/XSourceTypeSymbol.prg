@@ -252,7 +252,9 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Children   AS IList<IXTypeSymbol>
          GET
             BEGIN LOCK SELF:_children
-               return SELF:_children:ToArray()
+                var children := List<IXTypeSymbol>{}
+                children:AddRange(SELF:_children)
+                return children                
             END LOCK
          END GET
       END PROPERTY

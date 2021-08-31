@@ -512,6 +512,11 @@ namespace XSharp.LanguageService
                 stopAt = 0;
                 var currentName = currentToken.CleanText();
                 var lastToken = currentToken;
+                var nextType = 0;
+                if (currentPos < lastopentoken)
+                {
+                    nextType = tokenList[currentPos + 1].Type;
+                }
                 switch (currentToken.Type)
                 {
                     case XSharpLexer.LPAREN:
@@ -544,12 +549,27 @@ namespace XSharp.LanguageService
                     case XSharpLexer.RBRKT:
                         currentPos += 1;
                         hasBracket = (currentToken.Type == XSharpLexer.RBRKT);
-                        if (symbols.Count > 0 && hasBracket)
+                        if (symbols.Count > 0 && hasBracket )
                         {
-                            var top = symbols.Peek();
-                            var type = findElementType(top, location);
-                            if (type != null)
-                                symbols.Push(type);
+                            if (nextType == XSharpLexer.LCURLY)
+                            {
+                                // [] is followed by a ctor as in 
+                                // var aValue := string[]{
+                                var top = symbols.Peek();
+                                var typeName = top.FullName + "[]";
+                                var type = SearchType(location, typeName).FirstOrDefault();
+                                if (type != null)
+                                    symbols.Push(type);
+                                state = CompletionState.Constructors;
+                                resetState = false;
+                            }
+                            else
+                            {
+                                var top = symbols.Peek();
+                                var type = findElementType(top, location);
+                                if (type != null)
+                                    symbols.Push(type);
+                            }
                         }
                         continue;
                     case XSharpLexer.DOT:
@@ -578,9 +598,8 @@ namespace XSharp.LanguageService
                 var findMethod = false;
                 var findType = state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.General);
                 var literal = XSharpLexer.IsConstant(currentToken.Type);
-                if (currentPos < lastopentoken && isId)
+                if (isId)
                 {
-                    var nextType = tokenList[currentPos + 1].Type;
                     qualifiedName = nextType == XSharpLexer.DOT;
                     findMethod = nextType == XSharpLexer.LPAREN;
                     findConstructor = nextType == XSharpLexer.LCURLY;
@@ -871,7 +890,7 @@ namespace XSharp.LanguageService
                 if (p != null)
                     return p;
             }
-            if (symbol.TypeName.EndsWith("[]"))
+            if (symbol.TypeName != null && symbol.TypeName.EndsWith("[]"))
             {
                 return SearchType(location, symbol.TypeName.Substring(0, symbol.TypeName.Length - 2)).FirstOrDefault();
             }
@@ -1166,19 +1185,18 @@ namespace XSharp.LanguageService
             return result;
         }
 
-        //private static IEnumerable<IXMemberSymbol> SearchDelegate(XSharpSearchLocation location, string name)
-        //{
-        //        if (XSettings.EnableTypelookupLog)
-        //    WriteOutputMessage($"SearchDelegate in file {location.File.SourcePath} {name}");
-        //    var result = new List<IXMemberSymbol>();
-        //    var type = location.FindType(name);
-        //    if (type != null && type.Kind == Kind.Delegate)
-        //    {
-        //        result.AddRange(type.Members);
-        //    }
-        //    return result;
-        //}
-        //}
+        private static IEnumerable<IXSymbol> SearchNestedTypes(XSharpSearchLocation location, string name)
+        {
+            var result = new List<IXSymbol>();
+            var parent = SearchType(location, name).FirstOrDefault();
+            if (parent != null)
+            {
+                result.AddRange(parent.Children);
+            }
+            return result;
+        }
+
+
         private static IEnumerable<IXSymbol> SearchNamespaces(XSharpSearchLocation location, string name)
         {
             if (XSettings.EnableTypelookupLog)

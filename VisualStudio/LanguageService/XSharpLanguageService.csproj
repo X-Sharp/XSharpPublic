@@ -117,6 +117,12 @@
     <Compile Include="OptionsPages\FormattingOptionsControl.Designer.cs">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="OptionsPages\CompletionOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\CompletionOptionsControl.Designer.cs">
+      <DependentUpon>CompletionOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -130,6 +136,9 @@
       <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionsPages\FormattingOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\CompletionOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="OptionsPages\OtherOptionsPage.cs">
@@ -212,6 +221,9 @@
   <ItemGroup>
     <EmbeddedResource Include="OptionsPages\FormattingOptionsControl.resx">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OptionsPages\CompletionOptionsControl.resx">
+      <DependentUpon>CompletionOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\OtherOptionsControl.resx">
       <DependentUpon>OtherOptionsControl.cs</DependentUpon>

@@ -24,34 +24,34 @@ namespace XSharpDebugger
     public class XSharpType
     {
         // This defines how the types will be shown in the locals and auto window
+        internal static XSharpType Byte;
         internal static XSharpType Char ;
+        internal static XSharpType DWord;
+        internal static XSharpType Integer;
+        internal static XSharpType Int64;
+        internal static XSharpType Logic;
+        internal static XSharpType Object;
+        internal static XSharpType Ptr;
         internal static XSharpType Real4;
         internal static XSharpType Real8;
-        internal static XSharpType Ptr ;
         internal static XSharpType SByte ;
-        internal static XSharpType Integer ;
-        internal static XSharpType Int64 ;
         internal static XSharpType Short ;
-        internal static XSharpType Byte ;
-        internal static XSharpType Word ;
-        internal static XSharpType DWord;
-        internal static XSharpType UInt64 ;
-        internal static XSharpType String ;
-        internal static XSharpType Logic ;
+        internal static XSharpType String;
+        internal static XSharpType UInt64;
         internal static XSharpType Void ;
-        internal static XSharpType Object ;
+        internal static XSharpType Word;
 
-        internal static XSharpType Usual ;
+        internal static XSharpType Array;
+        internal static XSharpType ArrayBase;
+        internal static XSharpType Binary;
+        internal static XSharpType Currency;
         internal static XSharpType Date ;
         internal static XSharpType Float;
+        internal static XSharpType FoxArray;
+        internal static XSharpType Psz;
         internal static XSharpType Symbol ;
-        internal static XSharpType Array ;
-        internal static XSharpType ArrayBase;
-        internal static XSharpType Psz ;
-        internal static XSharpType Binary ;
-        internal static XSharpType Currency ;
-        internal static XSharpType FoxArray ;
-        internal static XSharpType Invalid ;
+        internal static XSharpType Usual;
+        internal static XSharpType Invalid;
 
         private static readonly Dictionary<XSharpType, ArrayType> s_arrayTypes = new Dictionary<XSharpType, ArrayType>();
         private static readonly Dictionary<XSharpType, ByRefType> s_byRefTypes = new Dictionary<XSharpType, ByRefType>();
@@ -84,69 +84,71 @@ namespace XSharpDebugger
                 KeywordCase = KeywordCase.None;
             }
 
+            Byte = new XSharpType("Byte");
             Char = new XSharpType("Char");
-            Real4 = new XSharpType("Real4");
-            Real8 = new XSharpType("Real8");
-            Ptr = new XSharpType("Ptr");
-            SByte = new XSharpType("Sbyte");
+            DWord = new XSharpType("Dword");
             Integer = new XSharpType("Int");
             Int64 = new XSharpType("Int64");
-            Short = new XSharpType("Short");
-            Byte = new XSharpType("Byte");
-            Word = new XSharpType("Word");
-            DWord = new XSharpType("Dword");
-            UInt64 = new XSharpType("Uint64");
-            String = new XSharpType("String");
             Logic = new XSharpType("Logic");
-            Void = new XSharpType("Void");
             Object = new XSharpType("Object");
+            Ptr = new XSharpType("Ptr");
+            Real4 = new XSharpType("Real4");
+            Real8 = new XSharpType("Real8");
+            SByte = new XSharpType("Sbyte");
+            Short = new XSharpType("Short");
+            String = new XSharpType("String");
+            UInt64 = new XSharpType("Uint64");
+            Void = new XSharpType("Void");
+            Word = new XSharpType("Word");
 
-            Usual = new XSharpType("Usual");
-            Date = new XSharpType("Date");
-            Float = new XSharpType("Float");
-            Symbol = new XSharpType("Symbol");
             Array = new XSharpType("Array");
             ArrayBase = new XSharpType("Array Of");
-            Psz = new XSharpType("Psz");
             Binary = new XSharpType("Binary");
             Currency = new XSharpType("Currency");
+            Date = new XSharpType("Date");
+            Float = new XSharpType("Float");
             FoxArray = new XSharpType("Foxarray");
             Invalid = new XSharpType("Invalid");
-
-            s_types.Add("System.SByte", XSharpType.SByte);
+            Psz = new XSharpType("Psz");
+            Symbol = new XSharpType("Symbol");
+            Usual = new XSharpType("Usual");
+            // types below are sorted by name
+            s_types.Add("System.Boolean", XSharpType.Logic);
+            s_types.Add("System.Byte", XSharpType.Byte);
+            s_types.Add("System.Char", XSharpType.Char);
+            s_types.Add("System.Double", XSharpType.Real8);
             s_types.Add("System.Int16", XSharpType.Short);
             s_types.Add("System.Int32", XSharpType.Integer);
             s_types.Add("System.Int64", XSharpType.Int64);
-            s_types.Add("System.Byte", XSharpType.Byte);
+            s_types.Add("System.IntPtr", XSharpType.Ptr);
+            s_types.Add("System.Object", XSharpType.Object);
+            s_types.Add("System.SByte", XSharpType.SByte);
+            s_types.Add("System.Single", XSharpType.Real4);
+            s_types.Add("System.String", XSharpType.String);
             s_types.Add("System.UInt16", XSharpType.Word);
             s_types.Add("System.UInt32", XSharpType.DWord);
             s_types.Add("System.UInt64", XSharpType.UInt64);
-            s_types.Add("System.Single", XSharpType.Real4);
-            s_types.Add("System.Double", XSharpType.Real8);
-            s_types.Add("System.Boolean", XSharpType.Logic);
             s_types.Add("System.Void", XSharpType.Void);
-            s_types.Add("System.IntPtr", XSharpType.Ptr);
-            s_types.Add("System.Char", XSharpType.Char);
-            s_types.Add("System.String", XSharpType.String);
-            s_types.Add("System.Object", XSharpType.Object);
-            s_types.Add("Vulcan.__Usual", XSharpType.Usual);
-            s_types.Add("Vulcan.__VODate", XSharpType.Date);
-            s_types.Add("Vulcan.__VOFloat", XSharpType.Float);
-            s_types.Add("Vulcan.__Symbol", XSharpType.Symbol);
+
             s_types.Add("Vulcan.__Array", XSharpType.Array);
             s_types.Add("Vulcan.__Psz", XSharpType.Psz);
-            s_types.Add("XSharp.__Usual", XSharpType.Usual);
-            s_types.Add("XSharp.__Date", XSharpType.Date);
-            s_types.Add("XSharp.__Float", XSharpType.Float);
-            s_types.Add("XSharp.__VODate", XSharpType.Date);
-            s_types.Add("XSharp.__VOFloat", XSharpType.Float);
-            s_types.Add("XSharp.__Symbol", XSharpType.Symbol);
+            s_types.Add("Vulcan.__Usual", XSharpType.Usual);
+            s_types.Add("Vulcan.__Symbol", XSharpType.Symbol);
+            s_types.Add("Vulcan.__VODate", XSharpType.Date);
+            s_types.Add("Vulcan.__VOFloat", XSharpType.Float);
+
             s_types.Add("XSharp.__Array", XSharpType.Array);
             s_types.Add("XSharp.__ArrayBase", XSharpType.ArrayBase);
-            s_types.Add("XSharp.__Psz", XSharpType.Psz);
             s_types.Add("XSharp.__Binary", XSharpType.Binary);
             s_types.Add("XSharp.__Currency", XSharpType.Currency);
+            s_types.Add("XSharp.__Date", XSharpType.Date);
             s_types.Add("XSharp.__FoxArray", XSharpType.FoxArray);
+            s_types.Add("XSharp.__Float", XSharpType.Float);
+            s_types.Add("XSharp.__Psz", XSharpType.Psz);
+            s_types.Add("XSharp.__Symbol", XSharpType.Symbol);
+            s_types.Add("XSharp.__Usual", XSharpType.Usual);
+            s_types.Add("XSharp.__VODate", XSharpType.Date);
+            s_types.Add("XSharp.__VOFloat", XSharpType.Float);
         }
 
         internal static string FormatKeyword(string keyword)

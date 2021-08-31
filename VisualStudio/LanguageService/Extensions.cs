@@ -141,7 +141,7 @@ namespace XSharp.LanguageService
             string currentNS = "";
             if (ns != null)
                 currentNS = ns.FullName;
-            var location = new XSharpSearchLocation(member, snapshot, line, point, currentNS);
+            var location = new XSharpSearchLocation(file, member, snapshot, line, point, currentNS);
             return location;
         }
 

@@ -328,7 +328,7 @@ namespace XSharp.LanguageService
             if (type is XSourceTypeSymbol sourceType)
             {
                 sourceType.ForceComplete();
-                var baseType = sourceType.BaseType;
+                var baseType = sourceType.BaseTypeName;
                 if (string.IsNullOrWhiteSpace(baseType))
                 {
                     if (type.Kind == Kind.Enum)
@@ -598,7 +598,7 @@ namespace XSharp.LanguageService
                 locals.Add(XVar);
                 if (member.ParentType.BaseType != null)
                 {
-                    XVar = new XSourceVariableSymbol(member, "SUPER", member.Range, member.Interval, member.ParentType.BaseType);
+                    XVar = new XSourceVariableSymbol(member, "SUPER", member.Range, member.Interval, member.ParentType.BaseTypeName);
                     XVar.File = walker.File;
                     locals.Add(XVar);
                 }

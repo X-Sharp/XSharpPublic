@@ -36,8 +36,10 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Children    AS IList<IXTypeSymbol> GET
       PROPERTY IsNested    AS LOGIC GET
       PROPERTY Members     AS IList<IXMemberSymbol> GET
+      PROPERTY AllMembers  AS IList<IXMemberSymbol> GET
       PROPERTY IsTyped     AS LOGIC  GET
-      PROPERTY BaseType    AS STRING GET
+      PROPERTY BaseType    AS IXTypeSymbol GET
+      PROPERTY BaseTypeName  AS STRING GET
       PROPERTY Interfaces  AS IList<STRING> GET
       PROPERTY IsGeneric   AS LOGIC GET
       PROPERTY OriginalTypeName  AS STRING GET

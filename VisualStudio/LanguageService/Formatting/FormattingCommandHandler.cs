@@ -445,7 +445,7 @@ namespace XSharp.LanguageService
                 if (element == null)
                 {
                     // then Locals
-                    var location = new XSharpSearchLocation(currentMember, null, lineNumber);
+                    var location = new XSharpSearchLocation(currentMember.File, currentMember, null, lineNumber);
                     var locals = currentMember.GetLocals(location);
                     if (locals != null)
                     {

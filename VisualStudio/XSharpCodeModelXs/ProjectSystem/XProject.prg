@@ -998,7 +998,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             IF xtype != NULL
                xtype:SetInterfaces(aIF)
-               xtype:BaseType    := baseTypeName
+               xtype:BaseTypeName    := baseTypeName
                xtype:CopyValuesFrom(oType)
                xtype:Namespace   := namespace
                xtype:ClassType   := (XSharpDialect) oType:ClassType

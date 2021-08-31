@@ -18,16 +18,18 @@ BEGIN NAMESPACE XSharpModel
    CLASS XSourceTypeSymbol INHERIT XSourceEntity IMPLEMENTS IXTypeSymbol
       PRIVATE _isPartial      AS LOGIC
       PRIVATE _members        AS List<XSourceMemberSymbol>
+      PRIVATE _basemembers    AS List<IXMemberSymbol>
+      PRIVATE _baseType       AS IXTypeSymbol
       PRIVATE _children       AS List<XSourceTypeSymbol>
       PRIVATE _signature      AS XTypeSignature
       PRIVATE _isClone        AS LOGIC
       PROPERTY SourceCode     AS STRING AUTO
       PROPERTY ShortName      AS STRING  GET IIF(!SELF:IsGeneric, SELF:Name, SELF:Name:Substring(0, SELF:Name:IndexOf("<")-1))
 
-
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, span AS TextRange, position AS TextInterval, oFile AS XFile)
          SUPER(name, kind, attributes, span, position)
          SELF:_members     := List<XSourceMemberSymbol>{}
+         SELF:_basemembers := List<IXMemberSymbol>{}
          SELF:_children    := List<XSourceTypeSymbol>{}
          SELF:_signature   := XTypeSignature{""}
          SELF:ClassType    := XSharpDialect.Core
@@ -52,7 +54,7 @@ BEGIN NAMESPACE XSharpModel
       CONSTRUCTOR( oOther AS XSourceTypeSymbol)
          SELF(oOther:Name, oOther:Kind, oOther:Attributes, oOther:Range, oOther:Interval, oOther:File)
          SELF:Parent    := oOther:Parent
-         SELF:BaseType  := oOther:BaseType
+         SELF:BaseTypeName  := oOther:BaseTypeName
          SELF:IsPartial := oOther:IsPartial
          SELF:IsStatic  := oOther:IsStatic
          SELF:Namespace := oOther:Namespace
@@ -115,10 +117,20 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
 
-      PROPERTY XMembers AS IList<XSourceMemberSymbol>
+        PROPERTY XMembers AS IList<XSourceMemberSymbol>
+            GET
+                RETURN SELF:_members:ToArray()
+            END GET
+        END PROPERTY
+
+      PROPERTY AllMembers AS IList<IXMemberSymbol>
          GET
+            SELF:ForceComplete()
             BEGIN LOCK SELF:_members
-               RETURN SELF:_members:ToArray()
+               VAR members := List<IXMemberSymbol>{}
+               members:AddRange(SELF:_members)
+               members:AddRange(SELF:_basemembers)
+               RETURN members:ToArray()
             END LOCK
          END GET
       END PROPERTY
@@ -132,8 +144,8 @@ BEGIN NAMESPACE XSharpModel
          VAR tempMembers := List<IXMemberSymbol>{}
           IF elementName:StartsWith("@@")
                 elementName := elementName:Substring(2)
-          ENDIF
-         if ! String.IsNullOrEmpty(elementName)
+         ENDIF
+         If ! String.IsNullOrEmpty(elementName)
             tempMembers:AddRange(SELF:_members:Where({ m => m.Name:StartsWith(elementName, StringComparison.OrdinalIgnoreCase)} ))
          ELSE
             tempMembers:AddRange(SELF:_members)
@@ -156,10 +168,16 @@ BEGIN NAMESPACE XSharpModel
         IF SELF:Attributes:HasFlag(Modifiers.Partial)
              // Find all other parts to find the base typename
              var oClone := SELF:Clone
-             SELF:_signature:BaseType := oClone:BaseType
+             SELF:_signature:BaseType := oClone:BaseTypeName
              var aIF := oClone:Interfaces:ToArray()
              SELF:SetInterfaces(aIF)
-
+        ENDIF
+        IF SELF:_baseType == NULL
+            SELF:_baseType := SELF:File:Project:FindType(SELF:BaseTypeName, SELF:File:Usings)
+            if self:_baseType != NULL
+                self:_basemembers:Clear()
+                self:_basemembers:AddRange(self:_baseType:AllMembers:Where( { m => m.Kind != Kind.Constructor .AND. m.Visibility != Modifiers.Private }))
+            endif
         ENDIF
         RETURN
 
@@ -186,8 +204,8 @@ BEGIN NAMESPACE XSharpModel
                IF clone:Parent == NULL .AND. otherType:Parent != NULL
                   clone:Parent := otherType:Parent
                ELSE
-                  IF String.IsNullOrEmpty(clone:BaseType) .AND. !String.IsNullOrEmpty(otherType:BaseType)
-                     clone:BaseType := otherType:BaseType
+                  IF String.IsNullOrEmpty(clone:BaseTypeName) .AND. !String.IsNullOrEmpty(otherType:BaseTypeName)
+                     clone:BaseTypeName := otherType:BaseTypeName
                   ENDIF
                ENDIF
             ENDIF
@@ -215,7 +233,8 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
 
-      PROPERTY BaseType          AS STRING GET SELF:_signature:BaseType SET SELF:_signature:BaseType := @@value
+      PROPERTY BaseType          AS IXTypeSymbol GET SELF:_baseType
+      PROPERTY BaseTypeName      AS STRING GET SELF:_signature:BaseType SET SELF:_signature:BaseType := @@value
       PROPERTY ComboPrototype    AS STRING GET SELF:FullName
       PROPERTY Description       AS STRING GET SELF:GetDescription()
       PROPERTY IsPartial         AS LOGIC  GET SELF:_isPartial SET SELF:_isPartial := VALUE

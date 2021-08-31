@@ -172,8 +172,8 @@ CLASS XClassCreator
         ELSE
             cLine += oType:FullName:Replace(cParentName+".","")
         ENDIF
-        IF ! String.IsNullOrWhiteSpace(oType:BaseType)
-            cLine += " INHERIT "+oType:BaseType
+        IF ! String.IsNullOrWhiteSpace(oType:BaseTypeName)
+            cLine += " INHERIT "+oType:BaseTypeName
         ENDIF
 		cInterfaces := SELF:GetInterfaces(oType)
 

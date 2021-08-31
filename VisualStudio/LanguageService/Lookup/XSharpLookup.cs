@@ -101,7 +101,7 @@ namespace XSharp.LanguageService
                         var type = ResolveImpliedType(location, xVar, currentType, visibility);
                         if (type != null)
                         {
-                            xVar.TypeName = type.FullName;
+                            xVar.TypeName = type.FullName.GetXSharpTypeName();
                         }
 
                     }
@@ -314,64 +314,60 @@ namespace XSharp.LanguageService
                 return SearchType(location, elementType.Substring(0, elementType.Length - 2)).FirstOrDefault();
             }
             var type = GetTypeFromSymbol(location, element);
-            if (type != null)
+            var etype = getElementType(type, location, element);
+
+            return etype;
+        }
+
+        private static IXTypeSymbol getElementType(IXTypeSymbol type, XSharpSearchLocation location, IXSymbol element)
+        {
+            string elementType;
+            type.ForceComplete();
+            if (type.IsArray)
             {
-                if (type.Name == "__Array" || type.Name == "__FoxArray")
+                elementType = type.ElementType;
+                var p = location.FindType(elementType);
+                if (p != null)
+                    return p;
+            }
+            var prop = type.GetProperties().Where((p) => p.Parameters.Count > 0).FirstOrDefault();
+            if (prop != null)
+            {
+                var typeName = prop.TypeName;
+                if (type.IsGeneric)
                 {
-                    type = SearchType(location, "__Usual").FirstOrDefault();
-                    return type;
-                }
-                // detect if the type has an implementation of:
-                // System.Collections.IEnumerator
-                // Array
-                //
-                type.ForceComplete();
-                var interfaces = type.Interfaces;
-                bool hasEnumerator = false;
-                foreach (var interf in interfaces)
-                {
-                    if (interf.EndsWith("IEnumerable", StringComparison.OrdinalIgnoreCase))
+                    var typeparams = type.TypeParameters;
+                    if (typeparams.Count > 0 && element is XSourceEntity xse)
                     {
-                        hasEnumerator = true;
-                        break;
-                    }
-                    else if (interf.EndsWith("IEnumerable`1", StringComparison.OrdinalIgnoreCase))
-                    {
-                        hasEnumerator = true;
-                        break;
-                    }
-                    else if (interf.EndsWith("IEnumerable<T>", StringComparison.OrdinalIgnoreCase))
-                    {
-                        hasEnumerator = true;
-                        break;
-                    }
-                }
-                if (hasEnumerator)
-                {
-                    var member = type.GetMembers("GetEnumerator").FirstOrDefault();
-                    var enumtype = SearchType(location, member.OriginalTypeName).FirstOrDefault();
-                    var current = enumtype.GetProperties("Current").FirstOrDefault();
-                    var typeName = current?.OriginalTypeName;
-                    if (type.IsGeneric)
-                    {
-                        var typeparams = type.TypeParameters;
-                        if (elementType != null && elementType.IndexOf('<') > 0)
+                        var genargs = xse.GenericArgs;
+                        var index = typeparams.IndexOf(typeName);
+                        if (index > -1 && index < genargs.Length)
                         {
-                            var realargs = GetRealTypeParameters(elementType);
-                            typeName = ReplaceTypeParameters(typeName, typeparams, realargs);
+                            typeName = genargs[index];
                         }
                     }
-                    type = SearchType(location, typeName).FirstOrDefault();
-                    return type;
                 }
-                else
-                {
-                    type = null;
-                }
+                var p = location.FindType(typeName);
+                if (p != null)
+                    return p;
 
             }
-            return type;
+            if (type.HasEnumerator())
+            {
+                var member = type.GetMembers("GetEnumerator").FirstOrDefault();
+                var enumtype = SearchType(location, member.OriginalTypeName).FirstOrDefault();
+                var current = enumtype.GetProperties("Current").FirstOrDefault();
+                elementType = current?.OriginalTypeName;
+                if (type.IsGeneric)
+                {
+                    var p = location.FindType(elementType);
+                    if (p != null)
+                        return p;
+                }
+            }
+            return null;
         }
+
         private static IXTypeSymbol ResolveImpliedOutParam(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
         {
             // TODO: Resolve type lookup Out Parameters
@@ -423,10 +419,6 @@ namespace XSharp.LanguageService
         public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> tokenList, CompletionState state, bool stopAtOpenToken = false)
         {
             //
-#if TRACE
-                Stopwatch stopWatch = new Stopwatch();
-                stopWatch.Start();
-#endif
             var result = new List<IXSymbol>();
             if (tokenList == null || tokenList.Count == 0)
                 return result;
@@ -440,39 +432,22 @@ namespace XSharp.LanguageService
             //
             if (location.Member == null)
             {
-                // try to find the first member in the file
-                if (location.File != null)
+                // This is a lookup outside code.
+                // Could be USING or USING STATIC statement.
+                // We allow the lookup of Namespaces or Types
+                // 
+                if (!state.HasFlag(CompletionState.Namespaces) && !state.HasFlag(CompletionState.Types))
+                    return result;
+                StringBuilder sb = new StringBuilder();
+                foreach (var token in tokenList)
                 {
-                    var elt = location.File.FindMemberAtRow(location.LineNumber);
-                    if (elt is XSourceMemberSymbol xms)
-                    {
-                        location = location.With(xms);
-                    }
-                    else if (elt is XSourceTypeSymbol)
-                    {
-                        // We might be in the Class Declaration !?
-                        if (state.HasFlag(CompletionState.Types))
-                        {
-                            if (tokenList.Count == 1)
-                            {
-                                currentToken = tokenList[currentPos];
-                            }
-                        }
-                    }
-                    //
-                    if (location.Member == null)
-                    {
-#if TRACE
-                    stopWatch.Stop();
-                if (XSettings.EnableTypelookupLog)
-                    WriteOutputMessage(string.Format("Retrieve current Type : Member cannot be null."));
-#endif
-                        return result;
-                    }
+                    sb.Append(token.Text);
                 }
-            }
-            if (location.Member == null)
-            {
+                if (state.HasFlag(CompletionState.Namespaces))
+                    result.AddRange(SearchNamespaces(location, sb.ToString()));
+                if (state.HasFlag(CompletionState.Types))
+                    result.AddRange(SearchType(location, sb.ToString()));
+
                 return result;
             }
             // Context Type....
@@ -634,12 +609,12 @@ namespace XSharp.LanguageService
                     {
                         if (currentType is XSourceTypeSymbol source)
                         {
-                            var p = source.File.FindType(source.BaseType, source.Namespace);
+                            var p = source.File.FindType(source.BaseTypeName, source.Namespace);
                             result.AddRange(SearchConstructor(p, visibility, location));
                         }
                         else
                         {
-                            var p = location.FindType(currentType.BaseType);
+                            var p = location.FindType(currentType.BaseTypeName);
                             result.AddRange(SearchConstructor(p, visibility, location));
                         }
                     }
@@ -805,19 +780,6 @@ namespace XSharp.LanguageService
                         break;
                 }
             }
-#if TRACE
-                //
-                stopWatch.Stop();
-                // Get the elapsed time as a TimeSpan value.
-                TimeSpan ts = stopWatch.Elapsed;
-                // Format and display the TimeSpan value.
-                string elapsedTime = string.Format("{0:00}h {1:00}m {2:00}.{3:00}s",
-                    ts.Hours, ts.Minutes, ts.Seconds,
-                    ts.Milliseconds / 10);
-            //
-                if (XSettings.EnableTypelookupLog)
-            WriteOutputMessage("XSharpTokenTools::RetrieveType : Done in " + elapsedTime);
-#endif
             result.Clear();
             if (symbols.Count > 0)
             {
@@ -1269,18 +1231,18 @@ namespace XSharp.LanguageService
                 if (XSettings.EnableTypelookupLog)
                     WriteOutputMessage($" SearchMembers {type?.FullName} , '{name}'");
                 result.AddRange(type.GetMembers(name, true).Where((m) => m.IsVisible(minVisibility)));
-                if (result.Count() == 0 && !string.IsNullOrEmpty(type.BaseType))
+                if (result.Count() == 0 && !string.IsNullOrEmpty(type.BaseTypeName))
                 {
                     if (minVisibility == Modifiers.Private)
                         minVisibility = Modifiers.Protected;
                     IXTypeSymbol baseType;
                     if (type is XSourceTypeSymbol sourceType)
                     {
-                        baseType = sourceType.File.FindType(type.BaseType, type.Namespace);
+                        baseType = sourceType.File.FindType(type.BaseTypeName, type.Namespace);
                     }
                     else
                     {
-                        baseType = location.FindType(type.BaseType);
+                        baseType = location.FindType(type.BaseTypeName);
                     }
                     result.AddRange(SearchMembers(location, baseType, name, minVisibility));
                 }
@@ -1334,7 +1296,7 @@ namespace XSharp.LanguageService
 
                 if (result.Count == 0 && type.FullName != "System.Object")
                 {
-                    var baseTypeName = type.BaseType ?? "System.Object";
+                    var baseTypeName = type.BaseTypeName ?? "System.Object";
                     if (minVisibility == Modifiers.Private)
                         minVisibility = Modifiers.Protected;
                     IXTypeSymbol baseType;

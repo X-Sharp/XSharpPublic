@@ -372,7 +372,9 @@ namespace XSharp.LanguageService
                         // clear the list to be sure
                         tokenList.Clear();
                         break;
-
+                    case XSharpLexer.NAMESPACE:
+                        state = CompletionState.Namespaces;
+                        break;
                     case XSharpLexer.COMMA:
                     case XSharpLexer.ASSIGN_OP:
                     case XSharpLexer.COLONCOLON:

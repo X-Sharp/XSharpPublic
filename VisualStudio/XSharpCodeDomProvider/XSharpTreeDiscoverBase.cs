@@ -122,7 +122,7 @@ namespace XSharp.CodeDom
             else
             {
                 // not in our class, maybe in a parent class
-                var parentType = findType(type.BaseType);
+                var parentType = findType(type.BaseTypeName);
                 return hasClassMember(parentType, name, mtype);
             }
             return result;
@@ -1602,7 +1602,7 @@ namespace XSharp.CodeDom
 
         protected IXTypeSymbol findParentType(IXTypeSymbol xtype)
         {
-            var name = simplifyType(xtype.BaseType);
+            var name = simplifyType(xtype.BaseTypeName);
             IList<string> usings;
             if (xtype is XSourceTypeSymbol xsts)
             {

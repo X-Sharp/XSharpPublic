@@ -612,7 +612,7 @@ BEGIN NAMESPACE XSharpModel
 										pars[1]:Value := oFile:Id
 										pars[2]:Value := typedef:Namespace
 										pars[3]:Value := (INT) typedef:Kind
-										pars[4]:Value := typedef:BaseType
+										pars[4]:Value := typedef:BaseTypeName
 										pars[5]:Value := (INT) typedef:Attributes
 										pars[6]:Value := typedef:SourceCode
 										pars[7]:Value := typedef:XmlComments

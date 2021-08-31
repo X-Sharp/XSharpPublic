@@ -27,16 +27,16 @@ BEGIN NAMESPACE XSharpModel
 
 
       STATIC METHOD GetMethods(SELF type as IXTypeSymbol, declaredOnly := false AS LOGIC) AS IXMemberSymbol[]
-         if (declaredOnly)
+         if declaredOnly
                return type:GetDeclaredMembers():Where( { m => m.Kind:IsMethod()}):ToArray()
          endif
-         return type:Members:Where( { m => m.Kind:IsMethod() }):ToArray()
+         return type:AllMembers:Where( { m => m.Kind:IsMethod() }):ToArray()
 
       STATIC METHOD GetDeclaredMembers( SELF type as IXTypeSymbol) AS IXMemberSymbol[]
          return type:Members:Where( { m => m.Parent == type}):ToArray()
 
       STATIC METHOD GetConstructors(SELF type as IXTypeSymbol, declaredOnly := false AS LOGIC) AS IXMemberSymbol[]
-         if (declaredOnly)
+         if declaredOnly
                return type:GetDeclaredMembers():Where( { m => m.Kind == Kind.Constructor}):ToArray()
          endif
          return type:Members:Where( { m => m.Kind == Kind.Constructor}):ToArray()
@@ -45,16 +45,16 @@ BEGIN NAMESPACE XSharpModel
          return type:Members:Where( { m => m.Kind:IsField()}):ToArray()
 
       STATIC METHOD GetEvents(SELF type as IXTypeSymbol, declaredOnly := false AS LOGIC) AS IXMemberSymbol[]
-         if (declaredOnly)
+         if declaredOnly
                return type:GetDeclaredMembers():Where( { m => m.Kind == Kind.Event}):ToArray()
          endif
-         return type:Members:Where( { m => m.Kind == Kind.Event}):ToArray()
+         return type:AllMembers:Where( { m => m.Kind == Kind.Event}):ToArray()
 
       STATIC METHOD GetProperties(SELF type as IXTypeSymbol, declaredOnly := false AS LOGIC) AS IXMemberSymbol[]
-         if (declaredOnly)
+         if declaredOnly
                return type:GetDeclaredMembers():Where( { m => m.Kind.IsProperty()}):ToArray()
          endif
-         return type:Members:Where( { m => m.Kind:IsProperty()}):ToArray()
+         return type:AllMembers:Where( { m => m.Kind:IsProperty()}):ToArray()
 
       STATIC METHOD GetMethods(SELF type AS IXTypeSymbol, strName AS STRING) AS IXMemberSymbol[]
          RETURN type:GetMembers(strName, TRUE):Where( { m=> m.Kind:IsMethod()}):ToArray()
@@ -87,6 +87,34 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
         END SWITCH
         RETURN FALSE
+       STATIC METHOD HasEnumerator(SELF type as IXTypeSymbol) AS LOGIC
+           var interfaces  := type.Interfaces
+           var hasEnumerator := false
+            foreach var interf in interfaces
+
+                if (interf.EndsWith("IEnumerable", StringComparison.OrdinalIgnoreCase))
+
+                    hasEnumerator := true
+                    exit
+
+                elseif (interf.EndsWith("IEnumerable`1", StringComparison.OrdinalIgnoreCase))
+
+                    hasEnumerator := true
+                    exit
+                elseif (interf.EndsWith("IEnumerable<T>", StringComparison.OrdinalIgnoreCase))
+
+                    hasEnumerator := true
+                    exit
+                endif
+            next
+            if hasEnumerator
+                return true
+            endif
+            if type:BaseType != NULL
+                RETURN type:BaseType:HasEnumerator()
+            ENDIF
+            RETURN FALSE
+
    END CLASS
 END NAMESPACE
 

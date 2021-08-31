@@ -172,7 +172,7 @@ BEGIN NAMESPACE XSharpModel
              var aIF := oClone:Interfaces:ToArray()
              SELF:SetInterfaces(aIF)
         ENDIF
-        IF SELF:_baseType == NULL
+        IF SELF:_baseType == NULL .and. SELF:BaseTypeName != NULL
             SELF:_baseType := SELF:File:Project:FindType(SELF:BaseTypeName, SELF:File:Usings)
             if self:_baseType != NULL
                 self:_basemembers:Clear()

@@ -544,10 +544,13 @@ namespace XSharp.LanguageService
                     case XSharpLexer.RBRKT:
                         currentPos += 1;
                         hasBracket = (currentToken.Type == XSharpLexer.RBRKT);
-                        var top = symbols.Peek();
-                        var type = findElementType((XSourceEntity)top, location);
-                        if (type != null)
-                            symbols.Push(type);
+                        if (symbols.Count > 0 && hasBracket)
+                        {
+                            var top = symbols.Peek();
+                            var type = findElementType(top, location);
+                            if (type != null)
+                                symbols.Push(type);
+                        }
                         continue;
                     case XSharpLexer.DOT:
                     case XSharpLexer.COLON:
@@ -859,7 +862,7 @@ namespace XSharp.LanguageService
             return result;
         }
 
-        private static IXTypeSymbol findElementType(XSourceEntity symbol, XSharpSearchLocation location)
+        private static IXTypeSymbol findElementType(IXSymbol symbol, XSharpSearchLocation location)
         {
             if (symbol.IsArray)
             {
@@ -867,6 +870,10 @@ namespace XSharp.LanguageService
                 var p = location.FindType(elementType);
                 if (p != null)
                     return p;
+            }
+            if (symbol.TypeName.EndsWith("[]"))
+            {
+                return SearchType(location, symbol.TypeName.Substring(0, symbol.TypeName.Length - 2)).FirstOrDefault();
             }
             else
             {
@@ -877,9 +884,9 @@ namespace XSharp.LanguageService
                     if (prop != null)
                     {
                         var tn = prop.TypeName;
-                        if (type.IsGeneric)
+                        if (type.IsGeneric && symbol is XSourceEntity xse)
                         {
-                            var realargs = symbol.GenericArgs;
+                            var realargs = xse.GenericArgs;
                             tn = ReplaceTypeParameters(tn, type.TypeParameters, realargs);
 
                         }

@@ -9,13 +9,13 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio;
 using IServiceProvider = System.IServiceProvider;
 using System.IO;
-using System.Threading;
-using Microsoft.VisualStudio.Shell;
+using System.Threading.Tasks;
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharpModel;
 using File = System.IO.File;
-using Task = System.Threading.Tasks.Task;
+using Shell = Microsoft.VisualStudio.Shell;
+using System.Linq;
 
 namespace XSharp.LanguageService
 {
@@ -40,9 +40,9 @@ namespace XSharp.LanguageService
         #region ctors
         public ModelScannerEvents()
         {
-			ThreadHelper.JoinableTaskFactory.Run(async delegate
+            Shell.ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                await Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
                 VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
                 VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
@@ -154,7 +154,7 @@ namespace XSharp.LanguageService
             // or closing of previous solution
             solutionFile = obj.FullPath;
             var projects = new List<string>();
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            Shell.ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 var sol = await VS.Solutions.GetCurrentSolutionAsync();
                 await EnumChildrenAsync(obj, projects);
@@ -184,7 +184,7 @@ namespace XSharp.LanguageService
         private void  SolutionEvents_OnBeforeCloseSolution()
         {
             bool hasXsProject = false;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            Shell.ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 var vsProjects = await VS.Solutions.GetAllProjectsAsync();
                 foreach (var prj in vsProjects)
@@ -201,41 +201,45 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            Shell.ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
 
                 XSharpModel.XSolution.IsClosing = true;
                 XSharpModel.XSolution.Close();
-
-
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                var rdt = await VS.GetServiceAsync<SVsRunningDocumentTable, IVsRunningDocumentTable>();
-                if (rdt.GetRunningDocumentsEnum(out var docenum) == 0)
+                // todo: use the method in the toolkit when it is available
+                var frames = await GetAllDocumentsAsync();
+                if (frames != null)
                 {
-                    docenum.Reset();
-                    
-                }
-                var uiShell = await VS.GetServiceAsync<SVsUIShell, IVsUIShell>();
-                ErrorHandler.ThrowOnFailure(uiShell.GetDocumentWindowEnum(out var windowFramesEnum));
-                IVsWindowFrame[] windowFrames = new IVsWindowFrame[1];
-                uint fetched;
-                var frames = new List<IVsWindowFrame>();
-                while (windowFramesEnum.Next(1, windowFrames, out fetched) == VSConstants.S_OK && fetched == 1)
-                {
-                    var windowFrame = windowFrames[0];
-                    var frame = new WindowFrame(windowFrame);
-                    if (frame.Caption.EndsWith("]"))
+                    foreach (var frame in frames.ToList())
                     {
-                        frames.Add(windowFrame);
+                        if (frame.Caption.EndsWith("]"))
+                        {
+                            // no need to save here. VS has shown a dialog with the dirty files already
+                            await frame.CloseFrameAsync(FrameCloseOption.NoSave);
+                        }
                     }
-                }
-                foreach (var frame in frames)
-                {
-                    frame.CloseFrame((uint)__FRAMECLOSE.FRAMECLOSE_SaveIfDirty);
                 }
             });
             return;
         }
+        // use the method in the toolkit when it is available
+        private async Task<IEnumerable<WindowFrame>> GetAllDocumentsAsync()
+        {
+            await Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            IVsUIShell uiShell = await VS.Services.GetUIShellAsync();
+            ErrorHandler.ThrowOnFailure(uiShell.GetDocumentWindowEnum(out var docEnum));
+            IVsWindowFrame[] windowFrames = new IVsWindowFrame[1];
+            var frames = new List<WindowFrame>();
+            uint fetched = 0;
+            while (docEnum.Next(1, windowFrames, out fetched) == VSConstants.S_OK && fetched == 1)
+            {
+                var windowFrame = windowFrames[0];
+                var frame = new WindowFrame(windowFrame);
+                frames.Add(frame);
+            }
+            return frames;
+        }
+
         private void SolutionEvents_OnAfterCloseSolution()
         {
             XSharpModel.XSolution.Close();

@@ -52,6 +52,7 @@ ApplicationGroup = R750-R799,E53B4BB3-0391-43DA-BD2E-CC1D2B02A8E9,715D7617-320E-
 ApplicationGroup = C750-C799,09F25645-7429-41B4-8D41-DFD5B355DD87,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C200-C249,AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C150-C199,EBE227D6-3F55-4251-A268-C654F38F1FAF,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C800-C849,54E26745-C95C-4FDB-98B2-2AF8DB1DED34,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = NEW,B9CFE839-D401-428D-94E9-E9D21E9F772D,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Known Incompatibilities with VO,40E29AF9-85EE-4D50-BADC-953EE318D423,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Broken,B7F6C4E3-31FD-40FC-B820-C57110817A58,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
@@ -97116,7 +97117,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = Core
@@ -98557,7 +98558,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R798
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 09F25645-7429-41B4-8D41-DFD5B355DD87
 ; ************** APPLICATION C799 - Late-bound method calls and OUT parameters *************
 Application = C799 - Late-bound method calls and OUT parameters
 IDEVersion = 1.06
@@ -98565,7 +98566,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -98600,8 +98601,8 @@ FileType = Code
 CopyToBin = 0
 [C799 - Late-bound method calls and OUT parameters References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C799 - Late-bound method calls and OUT parameters Resources]
 [C799 - Late-bound method calls and OUT parameters Native Resources]
 [C799 - Late-bound method calls and OUT parameters License files]
@@ -98677,7 +98678,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO

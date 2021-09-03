@@ -36,6 +36,8 @@ namespace XSharp.CodeDom
         private int privateKeyword;
         private int publicKeyword;
         private bool useTabs;
+        private int tabSize;
+        private int indentSize;
 
         private string keywordBEGIN;
         private string keywordEND;
@@ -87,10 +89,8 @@ namespace XSharp.CodeDom
         private string keywordENDIF;
         private bool mustEscape = true;
         private string ws = " ";
-        private const string strKeywordCase = "KeywordCase";
-        private const string strPrivateKeyword = "PrivateKeyword";
-        private const string strPublicKeyword = "PublicKeyword";
-        private const string strUseTabs = "UseTabs";
+        private string indentString = " ";
+        private string tabString = " ";
         private string lastTrivia = null;
         public XSharpCodeGenerator() : base()
         {
@@ -100,36 +100,17 @@ namespace XSharp.CodeDom
             readSettings();
         }
 
-        private object getSetting(string name, int defvalue)
-        {
-            object result = defvalue;
-            try
-            {
-                var key = Microsoft.Win32.Registry.CurrentUser;
-                var subkey = key.OpenSubKey(Constants.RegistryKey, true);
-                if (subkey == null)
-                {
-                    subkey = key.CreateSubKey(Constants.RegistryKey, true);
-                }
-                result = subkey.GetValue(name);
-                if (result == null)
-                {
-                    subkey.SetValue(name, defvalue);
-                    result = defvalue;
-                }
-            }
-            catch
-            {
-                result = defvalue;
-            }
-            return result;
-        }
+        
         private void readSettings()
         {
-            keywordCase = (int) getSetting(strKeywordCase, 1);
-            privateKeyword = (int)getSetting(strPrivateKeyword, 0); // 0 = private, 1 = hidden
-            publicKeyword = (int)getSetting(strPublicKeyword, 0);   // 0 = public, 1 = export, 2 = none
-            useTabs = (int)getSetting(strUseTabs, 1) == 1;
+            keywordCase = (int) Constants.GetSetting(Constants.RegistryKeywordCase, 1);
+            privateKeyword = (int)Constants.GetSetting(Constants.RegistryPrivateKeyword, 0); // 0 = private, 1 = hidden
+            publicKeyword = (int)Constants.GetSetting(Constants.RegistryPublicKeyword, 0);   // 0 = public, 1 = export, 2 = none
+            useTabs = (int)Constants.GetSetting(Constants.RegistryUseTabs, 1) == 1;
+            tabSize = (int)Constants.GetSetting(Constants.RegistryTabSize, 3) ;
+            indentSize = (int)Constants.GetSetting(Constants.RegistryIndentSize, 3);
+            indentString = new string(' ', indentSize);
+            tabString = new string(' ', tabSize);
             ws = useTabs ? "\t" : " ";
             keywordBEGIN = formatKeyword("BEGIN ");
             keywordEND = formatKeyword("END ");
@@ -837,17 +818,25 @@ namespace XSharp.CodeDom
             bool generateComment = true;
             readSettings();
             this.Options.BlankLinesBetweenMembers = false;
+            var tabStr = "";
             if (useTabs)
             {
                 this.Options.IndentString = "\t";
-                if (this.Output is IndentedTextWriter itw)
-                {
-                    var field = typeof(IndentedTextWriter).GetField("tabString", BindingFlags.Instance|BindingFlags.NonPublic);
-                    if (field != null)
-                        field.SetValue(itw, "\t");
-
-                }
+                tabStr = "\t";
             }
+            else
+            {
+                this.Options.IndentString = indentString;
+                tabStr = tabString;
+            }
+            // Hack to set the private field in the IndentedTextWriter
+            if (this.Output is IndentedTextWriter itw)
+            {
+                var field = typeof(IndentedTextWriter).GetField("tabString", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (field != null)
+                    field.SetValue(itw, tabStr);
+            }
+
             _using.Clear();
             base.GenerateCompileUnitStart(e);
             if (e.UserData.Contains(XSharpCodeConstants.USERDATA_NOHEADER))

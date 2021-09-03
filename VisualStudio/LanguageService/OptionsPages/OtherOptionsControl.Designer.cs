@@ -62,7 +62,6 @@
             this.toolTip1.SetToolTip(this.chkSingleLineDividers, "This applies to GLOBALs, DEFINEs, DELEGATES, CLASS Variables, MEMBERs of structur" +
         "es etc");
             this.chkSingleLineDividers.UseVisualStyleBackColor = true;
-            this.chkSingleLineDividers.CheckedChanged += new System.EventHandler(this.chkSingleLineDividers_CheckedChanged);
             // 
             // chkShowDividers
             // 
@@ -87,7 +86,6 @@
             this.chkShowXMLComments.Text = "Show XML comments in generated source code for Goto Definition";
             this.toolTip1.SetToolTip(this.chkShowXMLComments, resources.GetString("chkShowXMLComments.ToolTip"));
             this.chkShowXMLComments.UseVisualStyleBackColor = true;
-            this.chkShowXMLComments.CheckedChanged += new System.EventHandler(this.chkShowXMLComments_CheckedChanged);
             // 
             // lblPublic
             // 
@@ -110,7 +108,6 @@
             this.rbPublic.Text = "&Public";
             this.toolTip1.SetToolTip(this.rbPublic, "Use PUBLIC as modifier");
             this.rbPublic.UseVisualStyleBackColor = true;
-            this.rbPublic.CheckedChanged += new System.EventHandler(this.rbPublic_CheckedChanged);
             // 
             // rbExport
             // 
@@ -122,7 +119,6 @@
             this.rbExport.Text = "E&xport";
             this.toolTip1.SetToolTip(this.rbExport, "Use EXPORT as modifier");
             this.rbExport.UseVisualStyleBackColor = true;
-            this.rbExport.CheckedChanged += new System.EventHandler(this.rbExport_CheckedChanged);
             // 
             // rbNone
             // 
@@ -134,7 +130,6 @@
             this.rbNone.Text = "&None";
             this.toolTip1.SetToolTip(this.rbNone, "Use <no> modifier for public properties and methods");
             this.rbNone.UseVisualStyleBackColor = true;
-            this.rbNone.CheckedChanged += new System.EventHandler(this.rbNone_CheckedChanged);
             // 
             // label1
             // 
@@ -157,7 +152,6 @@
             this.rbPrivate.Text = "P&rivate";
             this.toolTip1.SetToolTip(this.rbPrivate, "Use PRIVATE as modifier");
             this.rbPrivate.UseVisualStyleBackColor = true;
-            this.rbPrivate.CheckedChanged += new System.EventHandler(this.rbPrivate_CheckedChanged);
             // 
             // rbHidden
             // 
@@ -169,7 +163,6 @@
             this.rbHidden.Text = "&Hidden";
             this.toolTip1.SetToolTip(this.rbHidden, "Use HIDDEN as modifier");
             this.rbHidden.UseVisualStyleBackColor = true;
-            this.rbHidden.CheckedChanged += new System.EventHandler(this.rbHidden_CheckedChanged);
             // 
             // grpOther
             // 
@@ -177,7 +170,7 @@
             this.grpOther.Controls.Add(this.chkShowDividers);
             this.grpOther.Location = new System.Drawing.Point(3, 3);
             this.grpOther.Name = "grpOther";
-            this.grpOther.Size = new System.Drawing.Size(401, 81);
+            this.grpOther.Size = new System.Drawing.Size(385, 81);
             this.grpOther.TabIndex = 1;
             this.grpOther.TabStop = false;
             this.grpOther.Text = "Other Options";
@@ -191,11 +184,10 @@
             this.grpCodeGenerator.Controls.Add(this.chkShowXMLComments);
             this.grpCodeGenerator.Location = new System.Drawing.Point(3, 85);
             this.grpCodeGenerator.Name = "grpCodeGenerator";
-            this.grpCodeGenerator.Size = new System.Drawing.Size(401, 119);
+            this.grpCodeGenerator.Size = new System.Drawing.Size(385, 119);
             this.grpCodeGenerator.TabIndex = 3;
             this.grpCodeGenerator.TabStop = false;
             this.grpCodeGenerator.Text = "Code Generator";
-            this.grpCodeGenerator.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // grpPrivate
             // 
@@ -203,7 +195,7 @@
             this.grpPrivate.Controls.Add(this.rbHidden);
             this.grpPrivate.Location = new System.Drawing.Point(165, 69);
             this.grpPrivate.Name = "grpPrivate";
-            this.grpPrivate.Size = new System.Drawing.Size(230, 33);
+            this.grpPrivate.Size = new System.Drawing.Size(207, 33);
             this.grpPrivate.TabIndex = 11;
             this.grpPrivate.TabStop = false;
             // 
@@ -214,7 +206,7 @@
             this.groupBox1.Controls.Add(this.rbNone);
             this.groupBox1.Location = new System.Drawing.Point(169, 40);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(226, 29);
+            this.groupBox1.Size = new System.Drawing.Size(203, 29);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             // 
@@ -226,7 +218,7 @@
             this.Controls.Add(this.grpCodeGenerator);
             this.Controls.Add(this.grpOther);
             this.Name = "OtherOptionsControl";
-            this.Size = new System.Drawing.Size(424, 278);
+            this.Size = new System.Drawing.Size(406, 218);
             this.grpOther.ResumeLayout(false);
             this.grpOther.PerformLayout();
             this.grpCodeGenerator.ResumeLayout(false);

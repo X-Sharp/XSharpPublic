@@ -667,6 +667,60 @@ BEGIN NAMESPACE XSharpModel
          RETURN result
 
 
+      METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
+        IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindGlobalMembersLike {name} Current Project {lCurrentProject}")
+        ENDIF
+         VAR result := List<IXMemberSymbol>{}
+         var projList := ""
+         if lCurrentProject
+            projList := SELF:Id:ToString()
+         ELSE
+            projList := SELF:DependentProjectList
+         ENDIF
+         var dbresult := XDatabase.FindGlobalOrDefineLike(name, projList)
+         LOCAL xFile := null as XFile
+         LOCAL cFile := "" AS STRING
+         foreach element as XDbResult in dbresult
+            if element:FileName != cFile
+                xFile := XSolution.FindFile(element:FileName)
+                cFile := element:FileName
+            endif
+            var xmember := XSourceMemberSymbol{element, xFile}
+            result:Add(xmember)
+         next
+         IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindGlobalMembersLike {name}, found {result.Count} occurences")
+         ENDIF
+         RETURN result
+
+    METHOD FindFunctionsLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
+        IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindFunctionsLike {name} Current Project {lCurrentProject}")
+        ENDIF
+         VAR result := List<IXMemberSymbol>{}
+         var projList := ""
+         if lCurrentProject
+            projList := SELF:Id:ToString()
+         ELSE
+            projList := SELF:DependentProjectList
+         ENDIF
+         var dbresult := XDatabase.FindFunctionLike(name, projList)
+         LOCAL xFile := NULL as XFile
+         LOCAL cFile := "" AS STRING
+         foreach element as XDbResult in dbresult
+            if element:FileName != cFile
+                xFile := XSolution.FindFile(element:FileName)
+                cFile := element:FileName
+            endif
+            var xmember := XSourceMemberSymbol{element, xFile}
+            result:Add(xmember)
+         next
+         IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindFunctionsLike {name}, found {result.Count} occurences")
+         ENDIF
+         RETURN result
+
 
       METHOD FindFunction(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMemberSymbol
          // we look in the project references and assembly references

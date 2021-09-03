@@ -37,16 +37,17 @@
             this.chkAlignDoCase = new System.Windows.Forms.CheckBox();
             this.chkTrimTrailngWhiteSpace = new System.Windows.Forms.CheckBox();
             this.chkInsertFinalNewLine = new System.Windows.Forms.CheckBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.grpCase = new System.Windows.Forms.GroupBox();
             this.chkSynchronizeUDCKeywords = new System.Windows.Forms.CheckBox();
             this.multiFactor = new System.Windows.Forms.TextBox();
+            this.chkIdentifierCase = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.grpCase = new System.Windows.Forms.GroupBox();
+            this.tbExample = new System.Windows.Forms.TextBox();
             this.grpKeywordCase = new System.Windows.Forms.GroupBox();
             this.rbTitle = new System.Windows.Forms.RadioButton();
             this.rbNone = new System.Windows.Forms.RadioButton();
             this.rbUpper = new System.Windows.Forms.RadioButton();
             this.rbLower = new System.Windows.Forms.RadioButton();
-            this.chkIdentifierCase = new System.Windows.Forms.CheckBox();
             label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.grpCase.SuspendLayout();
@@ -83,7 +84,6 @@
         "will have the same indent level as the method. Otherwise they will be indented o" +
         "ne level more.");
             this.chkAlignMethod.UseVisualStyleBackColor = true;
-            this.chkAlignMethod.CheckedChanged += new System.EventHandler(this.chkAlignMethod_CheckedChanged);
             // 
             // chkAlignDoCase
             // 
@@ -96,7 +96,6 @@
             this.toolTip1.SetToolTip(this.chkAlignDoCase, "When you select this then the CASE keywords will line up with the DO keyword from" +
         " a DO CASE statement or the SWITCH keyword from a SWITCH statement");
             this.chkAlignDoCase.UseVisualStyleBackColor = true;
-            this.chkAlignDoCase.CheckedChanged += new System.EventHandler(this.chkAlignDoCase_CheckedChanged);
             // 
             // chkTrimTrailngWhiteSpace
             // 
@@ -109,7 +108,6 @@
             this.toolTip1.SetToolTip(this.chkTrimTrailngWhiteSpace, "When you select this then all the lines will be \"trimmed\" when you save the file." +
         "");
             this.chkTrimTrailngWhiteSpace.UseVisualStyleBackColor = true;
-            this.chkTrimTrailngWhiteSpace.CheckedChanged += new System.EventHandler(this.chkTrimTrailngWhiteSpace_CheckedChanged);
             // 
             // chkInsertFinalNewLine
             // 
@@ -122,7 +120,41 @@
             this.toolTip1.SetToolTip(this.chkInsertFinalNewLine, "When you select this then the editor will add a CRLF after the last line of code " +
         "when needed.");
             this.chkInsertFinalNewLine.UseVisualStyleBackColor = true;
-            this.chkInsertFinalNewLine.CheckedChanged += new System.EventHandler(this.chkInsertFinalNewLine_CheckedChanged);
+            // 
+            // chkSynchronizeUDCKeywords
+            // 
+            this.chkSynchronizeUDCKeywords.AutoSize = true;
+            this.chkSynchronizeUDCKeywords.Location = new System.Drawing.Point(13, 59);
+            this.chkSynchronizeUDCKeywords.Name = "chkSynchronizeUDCKeywords";
+            this.chkSynchronizeUDCKeywords.Size = new System.Drawing.Size(191, 17);
+            this.chkSynchronizeUDCKeywords.TabIndex = 1;
+            this.chkSynchronizeUDCKeywords.Text = "Sychronize case of &UDC Keywords";
+            this.toolTip1.SetToolTip(this.chkSynchronizeUDCKeywords, "When you enable this option then User Defined keywords inside UDCs will follow th" +
+        "e capitalization rules for the built-in keywords");
+            this.chkSynchronizeUDCKeywords.UseVisualStyleBackColor = true;
+            // 
+            // multiFactor
+            // 
+            this.multiFactor.Location = new System.Drawing.Point(220, 143);
+            this.multiFactor.Margin = new System.Windows.Forms.Padding(2);
+            this.multiFactor.Name = "multiFactor";
+            this.multiFactor.Size = new System.Drawing.Size(27, 20);
+            this.multiFactor.TabIndex = 6;
+            this.multiFactor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip1.SetToolTip(this.multiFactor, "Specify the number of tab stops the editor should indent for multiline statements" +
+        "");
+            // 
+            // chkIdentifierCase
+            // 
+            this.chkIdentifierCase.AutoSize = true;
+            this.chkIdentifierCase.Enabled = false;
+            this.chkIdentifierCase.Location = new System.Drawing.Point(13, 82);
+            this.chkIdentifierCase.Name = "chkIdentifierCase";
+            this.chkIdentifierCase.Size = new System.Drawing.Size(171, 17);
+            this.chkIdentifierCase.TabIndex = 2;
+            this.chkIdentifierCase.Text = "&Identifier Case Synchronization";
+            this.toolTip1.SetToolTip(this.chkIdentifierCase, resources.GetString("chkIdentifierCase.ToolTip"));
+            this.chkIdentifierCase.UseVisualStyleBackColor = true;
             // 
             // panel1
             // 
@@ -134,6 +166,7 @@
             // 
             // grpCase
             // 
+            this.grpCase.Controls.Add(this.tbExample);
             this.grpCase.Controls.Add(this.chkSynchronizeUDCKeywords);
             this.grpCase.Controls.Add(this.chkInsertFinalNewLine);
             this.grpCase.Controls.Add(this.chkTrimTrailngWhiteSpace);
@@ -150,30 +183,18 @@
             this.grpCase.TabStop = false;
             this.grpCase.Text = "Document Formatting";
             // 
-            // chkSynchronizeUDCKeywords
+            // tbExample
             // 
-            this.chkSynchronizeUDCKeywords.AutoSize = true;
-            this.chkSynchronizeUDCKeywords.Location = new System.Drawing.Point(13, 59);
-            this.chkSynchronizeUDCKeywords.Name = "chkSynchronizeUDCKeywords";
-            this.chkSynchronizeUDCKeywords.Size = new System.Drawing.Size(191, 17);
-            this.chkSynchronizeUDCKeywords.TabIndex = 1;
-            this.chkSynchronizeUDCKeywords.Text = "Sychronize case of &UDC Keywords";
-            this.toolTip1.SetToolTip(this.chkSynchronizeUDCKeywords, "When you enable this option then User Defined keywords inside UDCs will follow th" +
-        "e capitalization rules for the built-in keywords");
-            this.chkSynchronizeUDCKeywords.UseVisualStyleBackColor = true;
-            this.chkSynchronizeUDCKeywords.CheckedChanged += new System.EventHandler(this.chkSynchronizeUDCKeywords_CheckedChanged);
-            // 
-            // multiFactor
-            // 
-            this.multiFactor.Location = new System.Drawing.Point(220, 143);
-            this.multiFactor.Margin = new System.Windows.Forms.Padding(2);
-            this.multiFactor.Name = "multiFactor";
-            this.multiFactor.Size = new System.Drawing.Size(27, 20);
-            this.multiFactor.TabIndex = 6;
-            this.multiFactor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip1.SetToolTip(this.multiFactor, "Specify the number of tab stops the editor should indent for multiline statements" +
-        "");
-            this.multiFactor.TextChanged += new System.EventHandler(this.multiFactor_TextChanged);
+            this.tbExample.BackColor = System.Drawing.Color.White;
+            this.tbExample.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbExample.ForeColor = System.Drawing.Color.Red;
+            this.tbExample.Location = new System.Drawing.Point(264, 27);
+            this.tbExample.Name = "tbExample";
+            this.tbExample.ReadOnly = true;
+            this.tbExample.Size = new System.Drawing.Size(103, 22);
+            this.tbExample.TabIndex = 9;
+            this.tbExample.TabStop = false;
+            this.tbExample.Text = "FUNCTION";
             // 
             // grpKeywordCase
             // 
@@ -198,7 +219,7 @@
             this.rbTitle.TabStop = true;
             this.rbTitle.Text = "&Title";
             this.rbTitle.UseVisualStyleBackColor = true;
-            this.rbTitle.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
+            this.rbTitle.CheckedChanged += new System.EventHandler(this.caseChanged);
             // 
             // rbNone
             // 
@@ -210,7 +231,7 @@
             this.rbNone.TabStop = true;
             this.rbNone.Text = "&None";
             this.rbNone.UseVisualStyleBackColor = true;
-            this.rbNone.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
+            this.rbNone.CheckedChanged += new System.EventHandler(this.caseChanged);
             // 
             // rbUpper
             // 
@@ -222,7 +243,7 @@
             this.rbUpper.TabStop = true;
             this.rbUpper.Text = "&UPPER";
             this.rbUpper.UseVisualStyleBackColor = true;
-            this.rbUpper.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
+            this.rbUpper.CheckedChanged += new System.EventHandler(this.caseChanged);
             // 
             // rbLower
             // 
@@ -234,20 +255,7 @@
             this.rbLower.TabStop = true;
             this.rbLower.Text = "&lower";
             this.rbLower.UseVisualStyleBackColor = true;
-            this.rbLower.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
-            // 
-            // chkIdentifierCase
-            // 
-            this.chkIdentifierCase.AutoSize = true;
-            this.chkIdentifierCase.Enabled = false;
-            this.chkIdentifierCase.Location = new System.Drawing.Point(13, 82);
-            this.chkIdentifierCase.Name = "chkIdentifierCase";
-            this.chkIdentifierCase.Size = new System.Drawing.Size(171, 17);
-            this.chkIdentifierCase.TabIndex = 2;
-            this.chkIdentifierCase.Text = "&Identifier Case Synchronization";
-            this.toolTip1.SetToolTip(this.chkIdentifierCase, resources.GetString("chkIdentifierCase.ToolTip"));
-            this.chkIdentifierCase.UseVisualStyleBackColor = true;
-            this.chkIdentifierCase.CheckedChanged += new System.EventHandler(this.chkIdentifierCase_CheckedChanged);
+            this.rbLower.CheckedChanged += new System.EventHandler(this.caseChanged);
             // 
             // FormattingOptionsControl
             // 
@@ -283,5 +291,6 @@
         private System.Windows.Forms.CheckBox chkInsertFinalNewLine;
         private System.Windows.Forms.CheckBox chkTrimTrailngWhiteSpace;
         private System.Windows.Forms.CheckBox chkSynchronizeUDCKeywords;
+        private System.Windows.Forms.TextBox tbExample;
     }
 }

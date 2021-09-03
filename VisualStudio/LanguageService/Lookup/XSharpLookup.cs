@@ -755,7 +755,7 @@ namespace XSharp.LanguageService
                 switch (currentToken.Type)
                 {
                     case XSharpLexer.DOT:
-                        currentPos += 1;
+                       currentPos += 1;
                         state = CompletionState.StaticMembers| CompletionState.Namespaces | CompletionState.Types;
                         if (location.Project.ParseOptions.AllowDotForInstanceMembers)
                             state |= CompletionState.InstanceMembers;

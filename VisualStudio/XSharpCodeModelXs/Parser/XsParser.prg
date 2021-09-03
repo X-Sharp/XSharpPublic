@@ -1996,7 +1996,7 @@ voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Gl
          VAR classVar := ParseClassVar(Kind.VOGlobal)
          classVar:SourceCode := classVar:ModVis+" GLOBAL "+ classVar:SourceCode
          classVars:Add(classVar)
-        DO WHILE Expect(XSharpLexer.COMMA)
+         DO WHILE Expect(XSharpLexer.COMMA)
             classVar := ParseClassVar(Kind.VOGlobal)
             classVar:SourceCode := classVar:ModVis+" GLOBAL "+ classVar:SourceCode
             classVars:Add(classVar)
@@ -2025,7 +2025,6 @@ vodefine            : (Modifiers=funcprocModifiers)?
          VAR type := SELF:ParseDataType(FALSE)
          SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
          SELF:ReadLine()
-
          VAR xMember := XSourceMemberSymbol{id, Kind.VODefine, _attributes, range,interval, type} {SingleLine := TRUE, @@Value := strValue}
          xMember:SourceCode := source
          xMember:File := SELF:_file

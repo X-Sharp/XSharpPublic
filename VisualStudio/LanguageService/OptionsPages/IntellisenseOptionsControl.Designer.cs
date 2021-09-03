@@ -42,6 +42,7 @@
             this.btnShowMeTheMagic = new System.Windows.Forms.Button();
             this.grpNavigationBars = new System.Windows.Forms.GroupBox();
             this.grpCompletionListTabs = new System.Windows.Forms.GroupBox();
+            this.btnReset = new System.Windows.Forms.Button();
             this.commitChars = new System.Windows.Forms.TextBox();
             label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
@@ -70,7 +71,6 @@
         "of the current selected type. Also the member names will no longer be prefixed w" +
         "ith the typenames.");
             this.chkShowMembersOfCurrentType.UseVisualStyleBackColor = true;
-            this.chkShowMembersOfCurrentType.CheckedChanged += new System.EventHandler(this.chkShowMembersOfCurrentType_CheckedChanged);
             // 
             // chkSortNavBar
             // 
@@ -84,7 +84,6 @@
         " sorted by name. Otherwise they will appear in the order in which they appear in" +
         " the source code.");
             this.chkSortNavBar.UseVisualStyleBackColor = true;
-            this.chkSortNavBar.CheckedChanged += new System.EventHandler(this.chkSortNavBar_CheckedChanged);
             // 
             // chkIncludeFields
             // 
@@ -97,7 +96,6 @@
             this.toolTip1.SetToolTip(this.chkIncludeFields, "When you enable this then the combo box on the right hand side of the navigation " +
         "bar will also include fields and defines");
             this.chkIncludeFields.UseVisualStyleBackColor = true;
-            this.chkIncludeFields.CheckedChanged += new System.EventHandler(this.chkIncludeFields_CheckedChanged);
             // 
             // chkKeywordsInAll
             // 
@@ -110,7 +108,6 @@
             this.toolTip1.SetToolTip(this.chkKeywordsInAll, "If you organize the Completion lists in tabs, this controls if keywords are added" +
         " to the main tab");
             this.chkKeywordsInAll.UseVisualStyleBackColor = true;
-            this.chkKeywordsInAll.CheckedChanged += new System.EventHandler(this.chkKeywordsInAll_CheckedChanged);
             // 
             // chkAutoPairs
             // 
@@ -123,7 +120,6 @@
             this.toolTip1.SetToolTip(this.chkAutoPairs, "After selecting a function, method or type from the completionlist this will auto" +
         "matically inser a closing token");
             this.chkAutoPairs.UseVisualStyleBackColor = true;
-            this.chkAutoPairs.CheckedChanged += new System.EventHandler(this.chkAutoPairs_CheckedChanged);
             // 
             // chkCompletionListtabs
             // 
@@ -136,7 +132,6 @@
             this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your comletionlists in tabs, to make it easier to find a method or" +
         " property in long completionlists");
             this.chkCompletionListtabs.UseVisualStyleBackColor = true;
-            this.chkCompletionListtabs.CheckedChanged += new System.EventHandler(this.chkCompletionListtabs_CheckedChanged);
             // 
             // chkExcludeMembersFromOtherfiles
             // 
@@ -149,7 +144,6 @@
             this.toolTip1.SetToolTip(this.chkExcludeMembersFromOtherfiles, "If you select this then the combox on the right hand side will only show members " +
         "of the current selected type and only from the current file.");
             this.chkExcludeMembersFromOtherfiles.UseVisualStyleBackColor = true;
-            this.chkExcludeMembersFromOtherfiles.CheckedChanged += new System.EventHandler(this.chkIncludeMembersFromOtherfiles_CheckedChanged);
             // 
             // panel1
             // 
@@ -186,6 +180,7 @@
             // 
             // grpCompletionListTabs
             // 
+            this.grpCompletionListTabs.Controls.Add(this.btnReset);
             this.grpCompletionListTabs.Controls.Add(this.chkAutoPairs);
             this.grpCompletionListTabs.Controls.Add(this.commitChars);
             this.grpCompletionListTabs.Controls.Add(label1);
@@ -198,14 +193,22 @@
             this.grpCompletionListTabs.TabStop = false;
             this.grpCompletionListTabs.Text = "Completion Lists";
             // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(310, 80);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(57, 23);
+            this.btnReset.TabIndex = 9;
+            this.btnReset.Text = "&Reset";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // commitChars
             // 
             this.commitChars.Location = new System.Drawing.Point(14, 79);
             this.commitChars.Name = "commitChars";
             this.commitChars.Size = new System.Drawing.Size(286, 20);
             this.commitChars.TabIndex = 7;
-            this.commitChars.Text = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
-            this.commitChars.TextChanged += new System.EventHandler(this.commitChars_TextChanged);
             // 
             // IntellisenseOptionsControl
             // 
@@ -238,5 +241,6 @@
         private System.Windows.Forms.CheckBox chkKeywordsInAll;
         private System.Windows.Forms.CheckBox chkCompletionListtabs;
         private System.Windows.Forms.CheckBox chkExcludeMembersFromOtherfiles;
+        private System.Windows.Forms.Button btnReset;
     }
 }

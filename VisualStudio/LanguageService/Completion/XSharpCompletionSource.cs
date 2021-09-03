@@ -89,7 +89,7 @@ namespace XSharp.LanguageService
                 session.Properties.TryGetProperty(XsCompletionProperties.Command, out cmd);
                 VSConstants.VSStd2KCmdID nCmdId = (VSConstants.VSStd2KCmdID)cmd;
                 session.Properties.TryGetProperty(XsCompletionProperties.Char, out typedChar);
-                bool showInstanceMembers = (typedChar == ':') || _file.Project.ParseOptions.AllowDotForInstanceMembers;
+                bool showInstanceMembers = (typedChar == ':') || ((typedChar == '.') && _file.Project.ParseOptions.AllowDotForInstanceMembers);
                 // Reset the StopToken
                 this._stopToken = null;
                 // What is the character were it starts ?
@@ -254,11 +254,16 @@ namespace XSharp.LanguageService
                     }
                     if (state.HasFlag(CompletionState.Namespaces))
                     {
-                        helpers.AddNamespaces(compList, _file.Project, filterText);
+                        helpers.AddNamespaces(compList, location, filterText);
                     }
-                    if (state.HasFlag(CompletionState.Types) || state.HasFlag(CompletionState.Interfaces))
+                    if (state.HasFlag(CompletionState.Interfaces))
                     {
-                        helpers.AddTypeNames(compList, _file.Project, filterText, location.Usings);
+                        helpers.AddTypeNames(compList, location, filterText,  afterDot:true, onlyInterfaces: true);
+                        helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
+                    }
+                    if (state.HasFlag(CompletionState.Types) )
+                    {
+                        helpers.AddTypeNames(compList, location, filterText, afterDot: true, onlyInterfaces: false);
                         helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
                     }
                     if (state.HasFlag(CompletionState.StaticMembers))
@@ -268,7 +273,7 @@ namespace XSharp.LanguageService
                             // First we need to keep only the text AFTER the last dot
                             int dotPos = filterText.LastIndexOf('.');
                             filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
-                            helpers.BuildCompletionList(location, compList, type, Modifiers.Public, true, filterText);
+                            helpers.BuildCompletionListMembers(location, compList, type, Modifiers.Public, true, filterText);
                         }
                     }
                     if (type.IsVoStruct() && typedChar == '.')
@@ -281,13 +286,6 @@ namespace XSharp.LanguageService
                     {
                         showInstanceMembers = true;
                         filterText = "";
-                    }
-                    if (state.HasFlag(CompletionState.General))
-                    {
-                        helpers.AddNamespaces(compList, _file.Project, filterText);
-                        helpers.AddTypeNames(compList, _file.Project, filterText, location.Usings);
-                        helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
-                        // Todo Add Global members from this project and from all global namespaces ?
                     }
                 }
                 if (showInstanceMembers )
@@ -317,7 +315,7 @@ namespace XSharp.LanguageService
                             }
                         }
                         // Now, Fill the CompletionList with the available members, from there
-                        helpers.BuildCompletionList(location, compList, type, visibleAs, false, filterText);
+                        helpers.BuildCompletionListMembers(location, compList, type, visibleAs, false, filterText);
                     }
                 }
                 //
@@ -327,59 +325,35 @@ namespace XSharp.LanguageService
                     {
                         case XSharpLexer.USING:
                             // It can be a namespace
-                            helpers.AddNamespaces(compList, _file.Project, filterText);
+                            helpers.AddNamespaces(compList, location, filterText);
                             break;
                         case XSharpLexer.AS:
                         case XSharpLexer.IS:
                         case XSharpLexer.REF:
                         case XSharpLexer.INHERIT:
                             // It can be a namespace
-                            helpers.AddNamespaces(compList, _file.Project, filterText);
+                            helpers.AddNamespaces(compList, location, filterText);
                             // It can be Type, FullyQualified
                             // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                            helpers.AddTypeNames(compList, _file.Project, filterText, location.Usings);
+                            helpers.AddTypeNames(compList, location, filterText, onlyInterfaces: false, afterDot: false);
                             //
                             helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
                             break;
                         case XSharpLexer.IMPLEMENTS:
                             // It can be a namespace
-                            helpers.AddNamespaces(compList, _file.Project, filterText);
-                            helpers.AddTypeNames(compList, _file.Project, filterText, location.Usings, true);
+                            helpers.AddNamespaces(compList, location, filterText);
+                            helpers.AddTypeNames(compList, location, filterText,onlyInterfaces: true, afterDot: false);
                             break;
                         default:
-
-                            if (member != null)
+                            if (state.HasFlag(CompletionState.General))
                             {
-                                // Fill with the context ( Parameters and Locals )
-                                helpers.BuildCompletionList(compList, member, filterText, location);
-                                helpers.AddXSharpKeywords(compList, filterText);
-                                // Context Type....
-                                //cType = new CompletionType(((XSourceTypeSymbol) (member.Parent)).Clone);
-                                //if (!cType.IsEmpty())
-                                //{
-                                //    // Get the members also
-                                //    BuildCompletionList(compList, type, Modifiers.Private, false, filterText);
-                                //}
+                                helpers.AddGenericCompletion(compList, location, filterText);
                             }
-                            // Now Add Functions and Procedures
-                            helpers.BuildCompletionList(location, compList, _file.Project.Lookup(XLiterals.GlobalName), Modifiers.Public, false, filterText);
-                            foreach (var project in _file.Project.ReferencedProjects)
-                            {
-                                helpers.BuildCompletionList(location, compList, project.Lookup(XLiterals.GlobalName), Modifiers.Public, false, filterText);
-                            }
-                            // and Add NameSpaces
-                            helpers.AddNamespaces(compList, _file.Project, filterText);
-                            // and Types
-                            helpers.AddTypeNames(compList, _file.Project, filterText, location.Usings);
-                            //
-                            helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
-                            //
-                            helpers.AddUsingStaticMembers(location, compList, _file, filterText);
                             break;
                     }
                 }
-                // Add Keywords to the ALL Tab ?
-                if ((kwdList.Count > 0) && _keywordsInAll)
+
+                if ((kwdList.Count > 0) && _keywordsInAll && XSettings.CompleteKeywords)
                 {
                     foreach (var item in kwdList.Values)
                         compList.Add(item);

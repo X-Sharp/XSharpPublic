@@ -36,12 +36,7 @@ namespace XSharp.LanguageService
         }
         internal void AddUsingStaticMembers(XSharpSearchLocation location, XCompletionList compList, XFile file, string filterText)
         {
-            //
-            //foreach (string staticType in file.AllUsingStatics)
-            //{
-            //    BuildCompletionList(compList, new CompletionType(staticType, file, ""), Modifiers.Public, true, filterText);
-            //}
-            // And what about Global Types in referenced Assemblies ?
+
             var found = file.Project.FindGlobalMembersInAssemblyReferences(filterText);
             FillMembers(location, compList, null, found, Modifiers.Public, true);
         }
@@ -49,11 +44,11 @@ namespace XSharp.LanguageService
         {
             return type.Name.IndexOf("$", StringComparison.Ordinal) > -1;
         }
-        internal void AddTypeNames(XCompletionList compList, XProject project, string startWith, List<string> usings, bool onlyInterfaces = false)
+        internal void AddTypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith,
+            bool onlyInterfaces = false, bool afterDot = false)
         {
             if (startWith == null)
                 return;
-
             // We are looking for NameSpaces, in References
             int startLen = 0;
             int dotPos = startWith.LastIndexOf('.');
@@ -62,51 +57,50 @@ namespace XSharp.LanguageService
             //
             // Resolve projects. This adds them also to the AssemblyReferences
             //
+            var project = location.Project;
             var sprjs = project.StrangerProjects;
             var prjs = project.ReferencedProjects;
 
 
-            foreach (var type in project.FindSystemTypesByName(startWith, usings.ToArray()))
+            foreach (var type in project.FindSystemTypesByName(startWith, location.Usings.ToArray()))
             {
                 if (isGenerated(type))
                     continue;
                 if (onlyInterfaces && type.Kind != Kind.Interface)
                     continue;
-                string realTypeName = type.FullName;
-                if (IsHiddenTypeName(realTypeName))
+                string fullName = type.FullName;
+                if (IsHiddenTypeName(fullName))
                 {
                     continue;
                 }
-                var typeAnalysis = new XTypeAnalysis(type);
-                // Nested Type ?
-                if (realTypeName.Contains("+"))
+                if (fullName.Contains("+"))
                 {
-                    realTypeName = realTypeName.Replace('+', '.');
+                    fullName = fullName.Replace('+', '.');
                 }
-                // remove the start
-                if (startLen > 0 && realTypeName.Length > startLen && realTypeName.StartsWith(startWith, StringComparison.OrdinalIgnoreCase))
-                    realTypeName = realTypeName.Substring(startLen);
+                var displayName = fullName;
                 // Do we have another part file
-                dotPos = realTypeName.LastIndexOf('.');
+                dotPos = fullName.LastIndexOf('.');
                 // Then remove it
                 if (dotPos > 0)
-                    realTypeName = realTypeName.Substring(dotPos + 1);
-                if (IsHiddenTypeName(realTypeName))
+                    displayName = displayName.Substring(dotPos + 1);
+                if (IsHiddenTypeName(displayName))
                     continue;
+                
+                if (!displayName.StartsWith(startWith) && !afterDot)
+                    continue;
+                var typeAnalysis = new XTypeAnalysis(type);
 
-                //
                 ImageSource icon = _glyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
-                if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Prototype, icon, null, Kind.Class, "")))
+                if (!compList.Add(new XSCompletion(displayName, displayName, typeAnalysis.Prototype, icon, null, Kind.Class, "")))
                     break;
             }
-            //
             // And our own Types
-            AddXSharpTypeNames(compList, project, startWith, usings.ToArray());
+            AddXSharpTypeNames(compList, location, startWith);
 
         }
 
 
-        internal bool IsHiddenTypeName(string realTypeName)
+        internal static bool IsHiddenTypeName(string realTypeName)
         {
             if (realTypeName.Length > 2 && realTypeName.StartsWith("__", StringComparison.Ordinal) && XSettings.EditorHideAdvancedMembers)
                 return true;
@@ -159,12 +153,14 @@ namespace XSharp.LanguageService
             }
         }
 
-        internal void AddXSharpTypeNames(XCompletionList compList, XProject project, string startWith, IList<string> usings, string NameToExclude = "")
+        internal void AddXSharpTypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith, IList<string> usings = null, string NameToExclude = "")
         {
-            var list = project.GetTypes(startWith, usings);
+            if (usings == null)
+                usings = location.Usings;
+            var list = location.Project.GetTypes(startWith, usings);
             foreach (var typeInfo in list)
             {
-                if (String.Compare(typeInfo.FullName, NameToExclude) == 0)
+                 if (String.Compare(typeInfo.FullName, NameToExclude) == 0)
                     continue;
 
                 // Then remove it
@@ -201,13 +197,82 @@ namespace XSharp.LanguageService
             }
         }
 
+        internal void AddGenericCompletion(XCompletionList compList, XSharpSearchLocation location, string startWith )
+        {
+            if (XSettings.CompleteLocals)
+            {
+                AddGenericLocals(compList, location, startWith);
+            }
+            if (XSettings.CompleteSelf)
+            {
+                AddGenericSelfMembers(compList, location, startWith);
+            }
+            if (XSettings.CompleteParent)
+            {
+                AddGenericInheritedMembers(compList, location, startWith);
+            }
+            if (XSettings.CompleteNamespaces)
+            {
+                AddNamespaces(compList, location, startWith);
+            }
+            if (XSettings.CompleteTypes)
+            {
+                AddTypeNames(compList, location, startWith);
+            }
+            if (XSettings.CompleteFunctions)
+            {
+                AddGenericFunctions(compList, location, startWith, true);
+            }
+            if (XSettings.CompleteFunctionsP)
+            {
+                AddGenericFunctions(compList, location, startWith, false);
+            }
+            if (XSettings.CompleteFunctionsA)
+            {
 
-        internal void AddNamespaces(XCompletionList compList, XProject project, string startWith)
+            }
+            if (XSettings.CompleteGlobals)
+            {
+                AddGenericGlobals(compList, location, startWith, true);
+            }
+            if (XSettings.CompleteGlobalsP)
+            {
+                AddGenericGlobals(compList, location, startWith, false);
+            }
+            if (XSettings.CompleteGlobalsA)
+            {
+
+            }
+            if (XSettings.CompleteSnippets)
+            {
+
+            }
+            if (XSettings.CompleteKeywords)
+            {
+                AddXSharpKeywords(compList, startWith);
+            }
+
+
+        }
+
+        internal void AddGenericGlobals(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
+        {
+            var found = location.Project.FindGlobalMembersLike(startWith, onlyProject);
+            FillMembers(location, compList, null, found, Modifiers.Public, false);
+        }
+        internal void AddGenericFunctions(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
+        {
+            var found = location.Project.FindFunctionsLike(startWith, onlyProject);
+            FillMembers(location, compList, null, found, Modifiers.Public, false);
+
+        }
+
+        internal void AddNamespaces(XCompletionList compList, XSharpSearchLocation location, string startWith)
         {
             // We are looking for NameSpaces, in References
             if (startWith == null)
                 return;
-            var namespaces = project.AllNamespaces;
+            var namespaces = location.Project.AllNamespaces;
             // Calculate the length we must remove
             int startLen = 0;
             int dotPos = startWith.LastIndexOf('.');
@@ -217,46 +282,43 @@ namespace XSharp.LanguageService
             ImageSource iconClass = _glyphService.GetGlyph(StandardGlyphGroup.GlyphGroupClass, StandardGlyphItem.GlyphItemPublic);
             foreach (string nameSpace in namespaces.Where(ns => nameStartsWith(ns, startWith)))
             {
-                string realNamespace = nameSpace;
+                string displayName = nameSpace;
                 // remove the start
                 if (startLen > 0)
-                    realNamespace = realNamespace.Substring(startLen);
+                    displayName = displayName.Substring(startLen);
                 // Do we have another part
-                dotPos = realNamespace.IndexOf('.');
+                dotPos = displayName.IndexOf('.');
                 // Then remove it
                 if (dotPos > 0)
-                    realNamespace = realNamespace.Substring(0, dotPos);
+                    displayName = displayName.Substring(0, dotPos);
                 //
                 XSCompletion item;
-                if (realNamespace.IndexOf("<") > 0)
+                if (! compList.ContainsKey(displayName))
                 {
-                    item = new XSCompletion(realNamespace, realNamespace, nameSpace, iconClass, null, Kind.Class, "");
+                    if (displayName.IndexOf("<") > 0)
+                    {
+                        item = new XSCompletion(displayName, displayName, nameSpace, iconClass, null, Kind.Class, "");
+                    }
+                    else
+                    {
+                        item = new XSCompletion(displayName, displayName, "Namespace " + nameSpace, icon, null, Kind.Namespace, "");
+                    }
+                    if (!compList.Add(item))
+                        break;
                 }
-                else
-                {
-                    item = new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null, Kind.Namespace, "");
-                }
-                if (!compList.Add(item))
-                    break;
             }
             //
             // And our own Namespaces
-            AddXSharpNamespaces(compList, project, startWith, icon);
+            AddXSharpNamespaces(compList, location, startWith, icon);
             // We should also add the external NameSpaces
-            var prjs = project.ReferencedProjects;
+            var prjs = location.Project.ReferencedProjects;
             foreach (var prj in prjs)
             {
-                AddXSharpNamespaces(compList, prj, startWith, icon);
+                AddXSharpNamespaces(compList, location, startWith, icon);
             }
-            // And Stranger Projects
-            //var sprjs = project.StrangerProjects;
-            //foreach (var prj in sprjs)
-            //{
-            //    AddStrangerNamespaces(compList, prj, startWith, icon);
-            //}
         }
 
-        internal void AddXSharpNamespaces(XCompletionList compList, XProject project, string startWith, ImageSource icon)
+        internal void AddXSharpNamespaces(XCompletionList compList, XSharpSearchLocation location, string startWith, ImageSource icon)
         {
             // Calculate the length we must remove
             int startLen = 0;
@@ -264,7 +326,7 @@ namespace XSharp.LanguageService
             if (dotPos != -1)
                 startLen = dotPos + 1;
             // And our own Namespaces
-            var xsNamespaces = project.ProjectNamespaces;
+            var xsNamespaces = location.Project.ProjectNamespaces;
             foreach (string nameSpace in xsNamespaces.Where(ns => nameStartsWith(ns, startWith)))
             {
                 string realNamespace = nameSpace;
@@ -280,37 +342,47 @@ namespace XSharp.LanguageService
                     break;
             }
         }
-        internal void BuildCompletionList(XCompletionList compList, XSourceMemberSymbol currentMember, string startWith, XSharpSearchLocation location)
+        internal void AddGenericLocals(XCompletionList compList, XSharpSearchLocation location, string startWith)
         {
-            if (currentMember == null)
+            if (location.Member == null)
             {
                 return;
             }
+            // We assume the calling code checks to see if this is allowed
             // First, look after Parameters
-            foreach (var paramVar in currentMember.Parameters.Where(p => nameStartsWith(p.Name, startWith)))
+            foreach (var paramVar in location.Member.Parameters.Where(p => nameStartsWith(p.Name, startWith)))
             {
-                //
                 ImageSource icon = _glyphService.GetGlyph(paramVar.getGlyphGroup(), paramVar.getGlyphItem());
                 if (!compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Prototype, icon, null, Kind.Parameter, "")))
                     break;
             }
             // Then, look for Locals
             // line numbers in the range are 1 based. currentLine = 0 based !
-            foreach (var localVar in currentMember.GetLocals(location).Where(l => nameStartsWith(l.Name, startWith) && l.Range.StartLine - 1 <= location.LineNumber))
+            foreach (var localVar in location.Member.GetLocals(location).Where(l => nameStartsWith(l.Name, startWith) && l.Range.StartLine - 1 <= location.LineNumber))
             {
-                //
                 ImageSource icon = _glyphService.GetGlyph(localVar.getGlyphGroup(), localVar.getGlyphItem());
                 if (!compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Prototype, icon, null, Kind.Local, "")))
                     break;
 
             }
+        }
+
+        internal void AddGenericSelfMembers(XCompletionList compList, XSharpSearchLocation location, string startWith )
+        {
+            if (location.Member == null)
+            {
+                return;
+            }
             // Ok, now look for Members of the Owner of the member... So, the class a Method
             //
+            // We assume the calling code checks to see if this is allowed
 
-            if (currentMember.Kind.IsClassMember(_dialect))
+            if (location.Member.Kind.IsClassMember(_dialect))
             {
-                var classElement = currentMember.Parent as XSourceTypeSymbol;
-                foreach (var member in classElement.GetMembers(startWith).Where(m => m.Kind == Kind.Field))
+                var type = location.Member.Parent as XSourceTypeSymbol;
+                if (type == null)
+                    return;
+                foreach (var member in type.GetMembers(startWith))
                 {
                     ImageSource icon = _glyphService.GetGlyph(member.getGlyphGroup(), member.getGlyphItem());
                     if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Prototype, icon, null, Kind.Field, "")))
@@ -320,7 +392,31 @@ namespace XSharp.LanguageService
         }
 
 
-        internal void BuildCompletionList(XSharpSearchLocation location, XCompletionList compList, IXTypeSymbol type, Modifiers minVisibility, bool staticOnly, string startWith)
+        internal void AddGenericInheritedMembers(XCompletionList compList, XSharpSearchLocation location, string startWith)
+        {
+            if (location.Member == null)
+            {
+                return;
+            }
+            if (location.Member.Kind.IsClassMember(_dialect))
+            {
+                var type = location.Member.Parent as XSourceTypeSymbol;
+                if (type == null)
+                    return;
+                type.ForceComplete();
+                var baseType = type.BaseType;
+                if (baseType == null)
+                    return;
+                foreach (var member in baseType.GetMembers(startWith))
+                {
+                    ImageSource icon = _glyphService.GetGlyph(member.getGlyphGroup(), member.getGlyphItem());
+                    if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Prototype, icon, null, Kind.Field, "")))
+                        break;
+                }
+            }
+        }
+
+        internal void BuildCompletionListMembers(XSharpSearchLocation location, XCompletionList compList, IXTypeSymbol type, Modifiers minVisibility, bool staticOnly, string startWith)
         {
             if (type == null)
             {
@@ -347,25 +443,27 @@ namespace XSharp.LanguageService
                     ; // do nothing
                 }
                 else
-                    BuildCompletionList(location, compList, parentType, Modifiers.Protected, staticOnly, startWith);
+                {
+                    BuildCompletionListMembers(location, compList, parentType, Modifiers.Protected, staticOnly, startWith);
+                }
                 foreach (var ifname in sourceType.Interfaces)
                 {
                     var iftype = sourceType.File.FindType(ifname, sourceType.Namespace);
                     if (iftype != null)
                     {
-                        BuildCompletionList(location, compList, iftype, Modifiers.Public, staticOnly, startWith);
+                        BuildCompletionListMembers(location, compList, iftype, Modifiers.Public, staticOnly, startWith);
                     }
                 }
             }
             if (type is XPETypeSymbol && type.Children.Count > 0)
             {
-                AddTypeNames(compList, location.Project, type.FullName, location.Usings, false);
+                AddTypeNames(compList, location, type.FullName, false);
             }
             if (type is XSourceTypeSymbol)
             {
                 var usings = location.Usings.ToList();
                 usings.Add(type.FullName);
-                AddXSharpTypeNames(compList, location.Project, type.FullName, usings, type.FullName);
+                AddXSharpTypeNames(compList, location, type.FullName, usings, type.FullName);
             }
             if (!staticOnly)
             {
@@ -403,7 +501,7 @@ namespace XSharp.LanguageService
                 switch (elt.Kind)
                 {
                     case Kind.EnumMember:
-                        add = staticOnly;
+                        add = true;
                         break;
                     case Kind.Constructor:
                     case Kind.Destructor:
@@ -411,7 +509,7 @@ namespace XSharp.LanguageService
                         add = false;
                         break;
                     default:
-                        if (elt.IsStatic != staticOnly)
+                        if (!elt.Kind.IsGlobalTypeMember() && elt.IsStatic != staticOnly)
                             add = false;
                         if (add)
                         {
@@ -424,7 +522,7 @@ namespace XSharp.LanguageService
                         }
                         break;
                 }
-                if (type != null && elt.IsStatic && type.Kind == Kind.Enum && elt.DeclaringType != type.FullName && elt.Name != "HasFlag")
+                if (type != null && type.Kind == Kind.Enum && elt.DeclaringType != null && elt.DeclaringType != type.FullName && elt.Name != "HasFlag")
                     add = false;
                 if (!add)
                     continue;

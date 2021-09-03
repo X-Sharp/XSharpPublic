@@ -20,7 +20,7 @@ using XSharpModel;
 using File = System.IO.File;
 namespace XSharp.LanguageService
 {
-    internal sealed partial class CommandFilter : IOleCommandTarget
+    internal sealed partial class GenericCommandHandler : IOleCommandTarget
     {
         public ITextView TextView { get; private set; }
         public IOleCommandTarget Next { get; set; }
@@ -36,7 +36,7 @@ namespace XSharp.LanguageService
             return line.LineNumber;
         }
  
-        public CommandFilter(IWpfTextView textView, VsTextViewCreationListener provider)
+        public GenericCommandHandler(IWpfTextView textView, GenericProvider provider)
         {
 
             m_provider = provider;
@@ -57,7 +57,7 @@ namespace XSharp.LanguageService
         }
   
 
-        private readonly VsTextViewCreationListener m_provider;
+        private readonly GenericProvider m_provider;
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {

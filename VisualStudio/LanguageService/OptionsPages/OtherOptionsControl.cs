@@ -1,31 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using XSharpModel;
 namespace XSharp.LanguageService.OptionsPages
 {
-    public partial class OtherOptionsControl : UserControl
+    public partial class OtherOptionsControl : XSUserControl
     {
         public OtherOptionsControl()
         {
             InitializeComponent();
+            chkShowDividers.Tag = nameof(OtherOptionsPage.ShowDividers);
+            chkSingleLineDividers.Tag = nameof(OtherOptionsPage.ShowSingleLineDividers);
+            chkShowXMLComments.Tag = nameof(OtherOptionsPage.ShowXmlComments);
+            rbExport.Tag = nameof(PublicStyle.Export);
+            rbPublic.Tag = nameof(PublicStyle.Public);
+            rbNone.Tag = nameof(PublicStyle.None);
+            rbPrivate.Tag = nameof(PrivateStyle.Private);
+            rbHidden.Tag = nameof(PrivateStyle.Hidden);
         }
-        internal OtherOptionsPage optionsPage;
-        private bool _loading = false;
-        internal void Initialize()
+        internal OtherOptionsPage OurOptionsPage => (OtherOptionsPage) optionPage;
+
+        internal override void ReadValues()
         {
-            _loading = true;
-            chkShowDividers.Checked = optionsPage.ShowDividers;
-            chkSingleLineDividers.Checked = optionsPage.ShowSingleLineDividers;
+            base.ReadValues();
             chkSingleLineDividers.Enabled = chkShowDividers.Checked;
-            chkShowXMLComments.Checked = optionsPage.ShowXmlComments;
-            switch (optionsPage.PublicStyle)
+
+            switch (OurOptionsPage.PublicStyle)
             {
                 case 1:
                     rbExport.Checked = true;
@@ -37,7 +36,7 @@ namespace XSharp.LanguageService.OptionsPages
                     rbPublic.Checked = true;
                     break;
             }
-            switch (optionsPage.PrivateStyle)
+            switch (OurOptionsPage.PrivateStyle)
             {
                 case 1:
                     rbHidden.Checked = true;
@@ -46,56 +45,36 @@ namespace XSharp.LanguageService.OptionsPages
                     rbPrivate.Checked = true;
                     break;
             }
-            _loading = false;
+        }
+        internal override void SaveValues()
+        {
+            base.SaveValues();
+            var controls = new RadioButton[] { rbExport, rbNone, rbPublic, rbPrivate, rbHidden };
+            foreach (var rb in controls)
+            {
+                var tag = rb.Tag;
+                if (tag is string strTag && rb.Checked)
+                {
+                    switch (strTag)
+                    {
+                        case nameof(PublicStyle.Export):
+                        case nameof(PublicStyle.Public):
+                        case nameof(PublicStyle.None):
+                            OurOptionsPage.PublicStyle = (int)(PublicStyle)Enum.Parse(typeof(PublicStyle), strTag);
+                            break;
+                        case nameof(PrivateStyle.Private):
+                        case nameof(PrivateStyle.Hidden):
+                            OurOptionsPage.PrivateStyle = (int)(PrivateStyle)Enum.Parse(typeof(PrivateStyle), strTag);
+                            break;
+                    }
+                }
+            }
 
         }
 
         private void chkShowDividers_CheckedChanged(object sender, EventArgs e)
         {
-            if (! _loading)
-                chkSingleLineDividers.Enabled = chkShowDividers.Checked;
-            optionsPage.ShowDividers = chkShowDividers.Checked;
+            chkSingleLineDividers.Enabled = chkShowDividers.Checked;
         }
-
-        private void chkSingleLineDividers_CheckedChanged(object sender, EventArgs e)
-        {
-            optionsPage.ShowSingleLineDividers = chkSingleLineDividers.Checked;
-        }
-
-        private void chkShowXMLComments_CheckedChanged(object sender, EventArgs e)
-        {
-            optionsPage.ShowXmlComments = chkShowXMLComments.Checked;
-        }
-
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void rbPublic_CheckedChanged(object sender, EventArgs e)
-        {
-            optionsPage.PublicStyle = 0;
-        }
-
-        private void rbExport_CheckedChanged(object sender, EventArgs e)
-        {
-            optionsPage.PublicStyle = 1;
-        }
-
-        private void rbNone_CheckedChanged(object sender, EventArgs e)
-        {
-            optionsPage.PublicStyle = 2;
-        }
-
-        private void rbPrivate_CheckedChanged(object sender, EventArgs e)
-        {
-            optionsPage.PrivateStyle = 0;
-        }
-
-        private void rbHidden_CheckedChanged(object sender, EventArgs e)
-        {
-            optionsPage.PrivateStyle = 1;
-        }
-
     }
 }

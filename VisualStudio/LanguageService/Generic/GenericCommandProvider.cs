@@ -18,19 +18,12 @@ using System.Collections.Generic;
 
 namespace XSharp.LanguageService
 {
-    // This code is used to determine if a file is opened inside a Vulcan project
-    // or another project.
-    // When the language service is set to our language service then we look for the file in the RDT
-    // and ask for a property where we know what X# returns. When then result is different then
-    // we assume it is a Vulcan file, and we will set the language service to that from Vulcan.
-    // You must make sure that the Project System package is also added as a MEF component to the vsixmanifest
-    // otherwise the Export will not work.
 
     [Export(typeof(IVsTextViewCreationListener))]
     [ContentType(Constants.LanguageName)]
     [TextViewRole(PredefinedTextViewRoles.Document)]
 
-    internal class VsTextViewCreationListener : IVsTextViewCreationListener
+    internal class GenericProvider: IVsTextViewCreationListener
     {
 
         [Import]
@@ -48,11 +41,10 @@ namespace XSharp.LanguageService
         private XSharpDropDownClient dropdown;
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
-            IVsTextLines textlines;
             IWpfTextView textView = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
             IVsTextBuffer textBuffer = EditorAdaptersFactoryService.GetBufferAdapter(textView.TextBuffer);
             textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument document);
-            textViewAdapter.GetBuffer(out textlines);
+            textViewAdapter.GetBuffer(out var textlines);
             if (textlines != null)
             {
                 XFile file = null;
@@ -83,7 +75,7 @@ namespace XSharp.LanguageService
                         file.Interactive = true;
                         textView.Properties.AddProperty(typeof(XFile), file);
                     }
-                    CommandFilter filter = new CommandFilter(textView, this);
+                    GenericCommandHandler filter = new GenericCommandHandler(textView, this);
                     IOleCommandTarget next;
                     textViewAdapter.AddCommandFilter(filter, out next);
 

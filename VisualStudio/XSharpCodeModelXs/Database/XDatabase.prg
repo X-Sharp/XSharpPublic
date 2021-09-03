@@ -854,15 +854,20 @@ BEGIN NAMESPACE XSharpModel
 			RETURN
 		#endregion
 
-		STATIC METHOD FindFunction(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
-			// search class members in the Types list
+        PRIVATE STATIC METHOD _FindFunctionWorker(sName AS STRING, sProjectIds AS STRING, lUseLike as LOGIC) AS IList<XDbResult>
 			VAR result := List<XDbResult>{}
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
 						USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-						oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
-						" AND Kind in ($kind1, $kind2, $kind3, $kind4,$kind5,$kind6) AND IdProject in ("+sProjectIds+")"
+                        var crit := "name = $name"
+                        if lUseLike
+                            sName += "%"
+                            crit := "name like $name"
+                        ENDIF
+						oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE " + crit + " AND TypeName = $typename " + ;
+						" AND Kind in ($kind1, $kind2, $kind3, $kind4,$kind5,$kind6) AND IdProject in ("+sProjectIds+") "+ ;
+                        " Order by FileName"
 						oCmd:Parameters:AddWithValue("$name", sName)
 						oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
 						oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
@@ -880,18 +885,35 @@ BEGIN NAMESPACE XSharpModel
 					END TRY
 				END LOCK
 			ENDIF
+            RETURN result
+
+		STATIC METHOD FindFunction(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+			// search class members in the Types list
+            var result := _FindFunctionWorker(sName, sProjectIds, FALSE)
 			Log(i"FindFunction '{sName}' returns {result.Count} matches")
 		RETURN result
 
-		STATIC METHOD FindGlobalOrDefine(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+        STATIC METHOD FindFunctionLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+			// search class members in the Types list
+            var result := _FindFunctionWorker(sName, sProjectIds, TRUE)
+			Log(i"FindFunctionLike '{sName}' returns {result.Count} matches")
+		RETURN result
+
+		STATIC METHOD _FindGlobalOrDefineWorker(sName AS STRING, sProjectIds AS STRING, lUseLike as LOGIC) AS IList<XDbResult>
 			// search class members in the Types list
 			VAR result := List<XDbResult>{}
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
 					    USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-					    oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
-					    " AND Kind in ($kind1, $kind2) AND IdProject in ("+sProjectIds+")"
+                        var crit := "name = $name"
+                        if lUseLike
+                            sName += "%"
+                            crit := "name like $name"
+                        ENDIF
+					    oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE "+crit+"  AND TypeName = $typename " + ;
+					    " AND Kind in ($kind1, $kind2) AND IdProject in ("+sProjectIds+")" +;
+                        " Order by FileName"
 					    oCmd:Parameters:AddWithValue("$name", sName)
 					    oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.VOGlobal)
 					    oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
@@ -906,6 +928,20 @@ BEGIN NAMESPACE XSharpModel
 				END LOCK
 			ENDIF
 			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
+		RETURN result
+
+
+		STATIC METHOD FindGlobalOrDefine(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+			// search class members in the Types list
+			VAR result := _FindGlobalOrDefineWorker(sName, sProjectIds, FALSE)
+			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
+		RETURN result
+
+
+        STATIC METHOD FindGlobalOrDefineLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+			// search class members in the Types list
+			VAR result := _FindGlobalOrDefineWorker(sName, sProjectIds, TRUE)
+			Log(i"FindGlobalOrDefineLike '{sName}' returns {result.Count} matches")
 		RETURN result
 
 		STATIC METHOD GetProjectTypes(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>

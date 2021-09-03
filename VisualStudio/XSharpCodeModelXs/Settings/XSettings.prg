@@ -77,6 +77,21 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY CodeGeneratorPublicStyle         AS PublicStyle AUTO
         PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
 
+        PUBLIC STATIC PROPERTY CompleteLocals                   AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteSelf                     AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteParent                   AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteNamespaces               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteTypes                    AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteKeywords                 AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteSnippets                 AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteGlobals                  AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteGlobalsP                 AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteGlobalsA                 AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteFunctions                AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteFunctionsP               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteFunctionsA               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY CompleteNumChars                 AS LONG AUTO
+
         PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO
         PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO
         PUBLIC STATIC PROPERTY ShowMessageBox                   AS ShowMessageBox AUTO

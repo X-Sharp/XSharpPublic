@@ -96,6 +96,7 @@ namespace XSharp.LanguageService
         private XSharpLibraryManager _libraryManager;
         private uint m_componentID;
         private IOleComponentManager _oleComponentManager = null;
+        internal bool optionWasChanged = false;
 
         public static XSharpLanguageService Instance
         {
@@ -111,34 +112,11 @@ namespace XSharp.LanguageService
             return null;
         }
 
-        private bool writeSetting(string name, int defvalue)
-        {
-            object result = defvalue;
-            try
-            {
-                var key = Microsoft.Win32.Registry.CurrentUser;
-                var subkey = key.OpenSubKey(Constants.RegistryKey, true);
-                if (subkey == null)
-                {
-                    subkey = key.CreateSubKey(Constants.RegistryKey, true);
-                }
-                subkey.SetValue(name, defvalue);
-                return true;
-            }
-            catch
-            {
-            }
-            return false;
-        }
-
-        private const string strKeywordCase = "KeywordCase";
-        private const string strPrivateKeyword = "PrivateKeyword";
-        private const string strPublicKeyword = "PublicKeyword";
-        private const string strUseTabs = "UseTabs";
 
         IntellisenseOptionsPage _intellisensePage;
         FormattingOptionsPage _formattingPage;
         OtherOptionsPage _otherOptionsPage;
+        CompletionOptionsPage _completionOptionsPage;
         internal void GetIntellisenseSettings()
         {
             if (_intellisensePage == null)
@@ -153,92 +131,107 @@ namespace XSharp.LanguageService
             {
                 _otherOptionsPage = (OtherOptionsPage)GetDialogPage(typeof(OtherOptionsPage));
             }
-            //if (_intellisensePage.SettingsChanged)
+            if (_completionOptionsPage == null)
             {
-                XSettings.EnableLogging = _intellisensePage.EnableOutputPane;
-                XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
-                XSettings.EnableCodeCompletionLog = _intellisensePage.EnableCodeCompletionLog;
-                XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
-                XSettings.EnableParameterLog = _intellisensePage.EnableParameterLog;
-                XSettings.EnableParseLog = _intellisensePage.EnableParserLog;
-                XSettings.EnableQuickInfoLog = _intellisensePage.EnableQuickInfoLog;
-                XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
-                XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
-
-                XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
-                XSettings.DisableBraceMatching = _intellisensePage.DisableBraceMatching;
-                XSettings.DisableCaseSynchronization = _intellisensePage.DisableCaseSynchronization;
-                XSettings.DisableClassViewObjectView = _intellisensePage.DisableClassViewObjectView;
-                XSettings.DisableCodeCompletion = _intellisensePage.DisableCodeCompletion;
-                XSettings.DisableEditorDropDowns = _intellisensePage.DisableEditorDropdowns;
-                XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
-                XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
-                XSettings.DisableGotoDefinition = _intellisensePage.DisableGotoDefinition;
-                XSettings.DisableHighLightWord = _intellisensePage.DisableHighLightWord;
-                XSettings.DisableLightBulb = _intellisensePage.DisableLightBulb;
-                XSettings.DisableParameterInfo = _intellisensePage.DisableParameterInfo;
-                XSettings.DisablePeekDefinition = _intellisensePage.DisablePeekDefinition;
-                XSettings.DisableQuickInfo = _intellisensePage.DisableQuickInfo;
-                XSettings.DisableRegions = _intellisensePage.DisableRegions;
-                XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
-                XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
-
-                //XSettings.EditorIndentSize
-                XSettings.EditorCompletionListTabs = _intellisensePage.CompletionListTabs;
-                XSettings.EditorCommitChars = _intellisensePage.CommitChars;
-                XSettings.EditorCompletionAutoPairs = _intellisensePage.AutoPairs;
-                XSettings.EditorCompletionListAfterEachChar = false; // _intellisensePage.ShowAfterChar;
-                XSettings.EditorKeywordsInAll = _intellisensePage.KeywordsInAll;
-
-                XSettings.EditorNavigationSorted = _intellisensePage.SortNavigationBars;
-                XSettings.EditorNavigationIncludeFields = _intellisensePage.IncludeFieldsInNavigationBars;
-                XSettings.EditorNavigationMembersOfCurrentTypeOnly = _intellisensePage.ShowMembersOfCurrentTypeOnly;
-                XSettings.EditorNavigationExcludeMembersFromOtherFiles = _intellisensePage.ExcludeMembersFromOtherFiles;
-                var languagePreferences = new LANGPREFERENCES3[1];
-                languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
-                int result = VSConstants.S_FALSE;
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    result =  _txtManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
-                });
-                if (result == VSConstants.S_OK)
-                {
-                    XSettings.EditorIndentStyle= (int) languagePreferences[0].IndentStyle;
-                    XSettings.EditorHideAdvancedMembers = languagePreferences[0].fHideAdvancedAutoListMembers != 0;
-                    XSettings.EditorTabSize = (int)languagePreferences[0].uTabSize;
-                    XSettings.EditorIndentSize = (int) languagePreferences[0].uIndentSize;
-                    XSettings.EditorTabsAsSpaces  = languagePreferences[0].fInsertTabs == 0;
-                }
-                //if (_formattingPage.SettingsChanged)
-                {
-                    XSettings.EditorIndentFactor = _formattingPage.MultiFactor;
-                    XSettings.EditorFormatAlignDoCase = _formattingPage.AlignDoCase;
-                    XSettings.EditorFormatAlignMethod = _formattingPage.AlignMethod;
-                    XSettings.IdentifierCase = _formattingPage.IdentifierCase;
-                    XSettings.UDCKeywordCase = _formattingPage.UdcCase;
-                    XSettings.EditorTrimTrailingWhiteSpace = _formattingPage.TrimTrailingWhiteSpace;
-                    XSettings.EditorInsertFinalNewline = _formattingPage.InsertFinalNewLine;
-                    XSettings.KeywordCase = _formattingPage.KeywordCase;
-                }
-                //if (_otherOptionsPage.SettingsChanged)
-                {
-                    XSettings.EditorShowDividers = _otherOptionsPage.ShowDividers;
-                    XSettings.EditorShowSingleLineDividers = _otherOptionsPage.ShowSingleLineDividers;
-                    XSettings.CodeGeneratorShowXmlComments = _otherOptionsPage.ShowXmlComments;
-                    XSettings.CodeGeneratorPrivateStyle = (PrivateStyle) _otherOptionsPage.PrivateStyle;
-                    XSettings.CodeGeneratorPublicStyle = (PublicStyle)_otherOptionsPage.PublicStyle;
-                }
-
-                _formattingPage.SettingsChanged = false;
-                _intellisensePage.SettingsChanged = false;
-                _otherOptionsPage.SettingsChanged = false;
+                _completionOptionsPage = (CompletionOptionsPage)GetDialogPage(typeof(CompletionOptionsPage));
             }
-            writeSetting(strKeywordCase, (int)XSettings.KeywordCase);
-            writeSetting(strPrivateKeyword, (int)XSettings.CodeGeneratorPrivateStyle);
-            writeSetting(strPublicKeyword, (int)XSettings.CodeGeneratorPublicStyle);
-            writeSetting(strUseTabs, XSettings.EditorTabsAsSpaces ? 0 : 1);
-            return ;
+            // Intellisense
+            XSettings.EnableLogging = _intellisensePage.EnableOutputPane;
+            XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
+            XSettings.EnableCodeCompletionLog = _intellisensePage.EnableCodeCompletionLog;
+            XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
+            XSettings.EnableParameterLog = _intellisensePage.EnableParameterLog;
+            XSettings.EnableParseLog = _intellisensePage.EnableParserLog;
+            XSettings.EnableQuickInfoLog = _intellisensePage.EnableQuickInfoLog;
+            XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
+            XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
+
+            XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
+            XSettings.DisableBraceMatching = _intellisensePage.DisableBraceMatching;
+            XSettings.DisableCaseSynchronization = _intellisensePage.DisableCaseSynchronization;
+            XSettings.DisableClassViewObjectView = _intellisensePage.DisableClassViewObjectView;
+            XSettings.DisableCodeCompletion = _intellisensePage.DisableCodeCompletion;
+            XSettings.DisableEditorDropDowns = _intellisensePage.DisableEditorDropdowns;
+            XSettings.DisableEntityParsing = _intellisensePage.DisableEntityParsing;
+            XSettings.DisableForeignProjectReferences = _intellisensePage.DisableForeignProjectReferences;
+            XSettings.DisableGotoDefinition = _intellisensePage.DisableGotoDefinition;
+            XSettings.DisableHighLightWord = _intellisensePage.DisableHighLightWord;
+            XSettings.DisableLightBulb = _intellisensePage.DisableLightBulb;
+            XSettings.DisableParameterInfo = _intellisensePage.DisableParameterInfo;
+            XSettings.DisablePeekDefinition = _intellisensePage.DisablePeekDefinition;
+            XSettings.DisableQuickInfo = _intellisensePage.DisableQuickInfo;
+            XSettings.DisableRegions = _intellisensePage.DisableRegions;
+            XSettings.DisableSyntaxHighlighting = _intellisensePage.DisableSyntaxColorization;
+            XSettings.DisableXSharpProjectReferences = _intellisensePage.DisableXSharpProjectReferences;
+
+            //XSettings.EditorIndentSize
+            XSettings.EditorCompletionListTabs = _intellisensePage.CompletionListTabs;
+            XSettings.EditorCommitChars = _intellisensePage.CommitChars;
+            XSettings.EditorCompletionAutoPairs = _intellisensePage.AutoPairs;
+            XSettings.EditorCompletionListAfterEachChar = false; // _intellisensePage.ShowAfterChar;
+            XSettings.EditorKeywordsInAll = _intellisensePage.KeywordsInAll;
+
+            XSettings.EditorNavigationSorted = _intellisensePage.SortNavigationBars;
+            XSettings.EditorNavigationIncludeFields = _intellisensePage.IncludeFieldsInNavigationBars;
+            XSettings.EditorNavigationMembersOfCurrentTypeOnly = _intellisensePage.ShowMembersOfCurrentTypeOnly;
+            XSettings.EditorNavigationExcludeMembersFromOtherFiles = _intellisensePage.ExcludeMembersFromOtherFiles;
+            var languagePreferences = new LANGPREFERENCES3[1];
+            languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
+            int result = VSConstants.S_FALSE;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                result = _txtManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
+            });
+            if (result == VSConstants.S_OK)
+            {
+                XSettings.EditorIndentStyle = (int)languagePreferences[0].IndentStyle;
+                XSettings.EditorHideAdvancedMembers = languagePreferences[0].fHideAdvancedAutoListMembers != 0;
+                XSettings.EditorTabSize = (int)languagePreferences[0].uTabSize;
+                XSettings.EditorIndentSize = (int)languagePreferences[0].uIndentSize;
+                XSettings.EditorTabsAsSpaces = languagePreferences[0].fInsertTabs == 0;
+            }
+            // Formatting
+            XSettings.EditorIndentFactor = _formattingPage.MultiFactor;
+            XSettings.EditorFormatAlignDoCase = _formattingPage.AlignDoCase;
+            XSettings.EditorFormatAlignMethod = _formattingPage.AlignMethod;
+            XSettings.IdentifierCase = _formattingPage.IdentifierCase;
+            XSettings.UDCKeywordCase = _formattingPage.UdcCase;
+            XSettings.EditorTrimTrailingWhiteSpace = _formattingPage.TrimTrailingWhiteSpace;
+            XSettings.EditorInsertFinalNewline = _formattingPage.InsertFinalNewLine;
+            XSettings.KeywordCase = _formattingPage.KeywordCase;
+
+            // Completion
+            XSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;
+            XSettings.CompleteSelf = _completionOptionsPage.CompleteSelf;
+            XSettings.CompleteParent = _completionOptionsPage.CompleteParent;
+            XSettings.CompleteNamespaces = _completionOptionsPage.CompleteNamespaces;
+            XSettings.CompleteTypes = _completionOptionsPage.CompleteTypes;
+            XSettings.CompleteKeywords = _completionOptionsPage.CompleteKeywords;
+            XSettings.CompleteSnippets = _completionOptionsPage.CompleteSnippets;
+            XSettings.CompleteGlobals = _completionOptionsPage.CompleteGlobals;
+            XSettings.CompleteGlobalsP = _completionOptionsPage.CompleteGlobalsP;
+            XSettings.CompleteGlobalsA = _completionOptionsPage.CompleteGlobalsA;
+            XSettings.CompleteFunctions = _completionOptionsPage.CompleteFunctions;
+            XSettings.CompleteFunctionsP = _completionOptionsPage.CompleteFunctionsP;
+            XSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
+            XSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
+            // Other
+            XSettings.EditorShowDividers = _otherOptionsPage.ShowDividers;
+            XSettings.EditorShowSingleLineDividers = _otherOptionsPage.ShowSingleLineDividers;
+            XSettings.CodeGeneratorShowXmlComments = _otherOptionsPage.ShowXmlComments;
+            XSettings.CodeGeneratorPrivateStyle = (PrivateStyle)_otherOptionsPage.PrivateStyle;
+            XSettings.CodeGeneratorPublicStyle = (PublicStyle)_otherOptionsPage.PublicStyle;
+
+            // Persist in registry for CodeDomProvider code generation
+            Constants.WriteSetting(Constants.RegistryKeywordCase, (int)XSettings.KeywordCase);
+            Constants.WriteSetting(Constants.RegistryPrivateKeyword, (int)XSettings.CodeGeneratorPrivateStyle);
+            Constants.WriteSetting(Constants.RegistryPublicKeyword, (int)XSettings.CodeGeneratorPublicStyle);
+            Constants.WriteSetting(Constants.RegistryUseTabs, XSettings.EditorTabsAsSpaces ? 0 : 1);
+            Constants.WriteSetting(Constants.RegistryTabSize, XSettings.EditorTabSize);
+            Constants.WriteSetting(Constants.RegistryIndentSize, XSettings.EditorIndentSize);
+            optionWasChanged = false;
+            return;
         }
 
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
@@ -361,7 +354,7 @@ namespace XSharp.LanguageService
             if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is bool lValue)
             {
                 // when modal window closes
-                if (!lValue)
+                if (!lValue && optionWasChanged)
                 {
                     GetIntellisenseSettings();
                 }

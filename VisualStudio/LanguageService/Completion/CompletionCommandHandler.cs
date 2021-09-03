@@ -199,8 +199,6 @@ namespace XSharp.LanguageService
         }
         private void completeCurrentToken(uint nCmdID, char ch)
         {
-            if (!XSettings.EditorCompletionListAfterEachChar)
-                return;
             SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
             if (cursorIsInStringorComment(caret))
             {
@@ -213,24 +211,19 @@ namespace XSharp.LanguageService
                 var lineText = line.GetText();
                 var pos = caret.Position - line.Start.Position;
                 int chars = 0;
-                bool done = false;
-                // count the number of characters in the current word. When > 2 then trigger completion
+                // count the number of characters in the current word. When > limit set in the options dialog then trigger completion
                 for (int i = pos - 1; i >= 0; i--)
                 {
-                    switch (lineText[i])
-                    {
-                        case ' ':
-                        case '\t':
-                            done = true;
-                            break;
-                    }
-                    if (done)
+                    var c = lineText[i];
+                    if (! char.IsLetterOrDigit(c) && c != '_' )
+                    { 
                         break;
+                    }
                     chars++;
-                    if (chars > 2)
+                    if (chars >= XSettings.CompleteNumChars)
                         break;
                 }
-                if (chars > 2)
+                if (chars >= XSettings.CompleteNumChars)
                 {
                     StartCompletionSession(nCmdID, '\0', true);
                 }
@@ -300,9 +293,17 @@ namespace XSharp.LanguageService
                 {
                     kind = xscompletion.Kind;
                 }
-                if (kind == Kind.Keyword)
+                switch (kind)
                 {
-                    formatKeyword(completion);
+                    case Kind.Keyword:
+                        formatKeyword(completion); ;
+                        break;
+                    case Kind.Class:
+                    case Kind.Structure:
+                    case Kind.Constructor:
+                        if (ch == '{' || ch == '}')
+                            completion.InsertionText += '{';
+                        break;
                 }
                 if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
                 {
@@ -367,12 +368,15 @@ namespace XSharp.LanguageService
                 session.Properties.TryGetProperty(XsCompletionProperties.Type, out IXTypeSymbol type);
                 string method = _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
                 session.Properties.TryGetProperty(XsCompletionProperties.Char, out char triggerChar);
+                if (triggerChar == '\0')
+                    triggerChar = ch;
                 _completionSession.Commit();
                 if (moveBack && (caret != null))
                 {
                     caret.MoveToPreviousCaretPosition();
                 }
-                if (method.Contains('('))
+                // if a method or constructor was chosen, then trigger the signature help
+                if (method.Contains('(') || method.Contains('{'))
                 {
                     TriggerSignatureHelp(type, method, triggerChar);
                 }
@@ -444,28 +448,35 @@ namespace XSharp.LanguageService
             // it MUST be the case....
             WriteOutputMessage("OnCompletionSessionCommitted()");
 
-            if (method.EndsWith("(") || method.EndsWith(")"))
+            if (triggerChar == '{' || triggerChar == '}')
             {
-                   
+                if (method.EndsWith("{}"))
+                    method = method.Substring(0, method.Length - 2);
+                else if (method.EndsWith("{"))
+                    method = method.Substring(0, method.Length - 1);
+                triggerChar = '{';
+            }
+            else
+            {
                 if (method.EndsWith("()"))
                     method = method.Substring(0, method.Length - 2);
-                else
+                else if (method.EndsWith("("))
                     method = method.Substring(0, method.Length - 1);
-
-
-                // send command to editor to Signature Helper
-                if (_signatureCommandHandler == null)
-                {
-                    _signatureCommandHandler = _textView.Properties.GetProperty<XSharpSignatureHelpCommandHandler>(typeof(XSharpSignatureHelpCommandHandler));
-                }
-                if (_signatureCommandHandler != null)
-                {
-                    _signatureCommandHandler.StartSignatureSession(true, type, method, triggerChar);
-                }
-
-                //
+                triggerChar = '(';
             }
+
+            // send command to editor to Signature Helper
+            if (_signatureCommandHandler == null)
+            {
+                _signatureCommandHandler = _textView.Properties.GetProperty<XSharpSignatureHelpCommandHandler>(typeof(XSharpSignatureHelpCommandHandler));
+            }
+            if (_signatureCommandHandler != null)
+            {
+                _signatureCommandHandler.StartSignatureSession(true, type, method, triggerChar);
+            }
+
             //
+        //
         }
 
         private void OnCompletionSessionDismiss(object sender, EventArgs e)

@@ -64,20 +64,7 @@ namespace XSharpDebugger
         {
             try
             {
-                // read case sync settings from registry. We cache this once. So if they switch the case
-                // then this will be reflected the next time they run VS.
-                var key = Microsoft.Win32.Registry.CurrentUser;
-                var subkey = key.OpenSubKey(Constants.RegistryKey, true);
-                if (subkey == null)
-                {
-                    subkey = key.CreateSubKey(Constants.RegistryKey);
-                }
-                var kwcase = subkey.GetValue("KeywordCase");
-                if (kwcase == null)
-                {
-                    subkey.SetValue("KeywordCase", 1);
-                }
-                KeywordCase = (KeywordCase)kwcase;
+                KeywordCase = (KeywordCase)Constants.GetSetting(Constants.RegistryKeywordCase, (int) KeywordCase.None);
             }
             catch
             {

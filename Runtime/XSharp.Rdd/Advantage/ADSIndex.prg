@@ -462,7 +462,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         LOCAL i AS LONG
         LOCAL numIndexes AS WORD
         LOCAL cIndexName AS STRING
-        IF SELF:oRDD:_SetPaths() != 0
+        IF SELF:oRDD:_SetPaths(EG_OPEN) != 0
             RETURN FALSE
         ENDIF
         SELF:oRDD:_SynchronizeSettings()

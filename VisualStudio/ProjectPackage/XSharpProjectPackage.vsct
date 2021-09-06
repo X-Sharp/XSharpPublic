@@ -102,6 +102,18 @@
 
         </Strings>
       </Button>
+      <Button guid="guidProjectPackage" id="idUDCTester" priority="0x0100" type="Button">
+        <Parent guid="guidProjectPackage" id="idExporterGroup" />
+        <Icon guid="ImageCatalogGuid" id="UserFunction" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>IconAndText</CommandFlag>
+        <Strings>
+          <CommandName>UDC tester</CommandName>
+          <CanonicalName>Start the UDC tester</CanonicalName>
+          <ButtonText>X# UDC Tester</ButtonText>
+          <ToolTipText>Starts the UDC tester</ToolTipText>
+        </Strings>
+      </Button>
       <Button guid="guidProjectPackage" id="idFoxXporter" priority="0x0100" type="Button">
         <Parent guid="guidProjectPackage" id="idExporterGroup" />
         <Icon guid="guidImages" id="bmpFoxPro" />
@@ -322,6 +334,7 @@
       <IDSymbol name="idConvertXSharpRuntime" value="0x0109" />
       <IDSymbol name="idAddDesignerFile" value="0x010A" />
       <IDSymbol name="idViewRepo" value="0x010B" />
+      <IDSymbol name="idUDCTester" value="0x010C" />
       <IDSymbol name="idExporterSubMenu" value="0x01030" />
       <IDSymbol name="idExporterGroup" value="0x01040" />
       <IDSymbol name="idDebuggerSubMenu" value="0x01050" />

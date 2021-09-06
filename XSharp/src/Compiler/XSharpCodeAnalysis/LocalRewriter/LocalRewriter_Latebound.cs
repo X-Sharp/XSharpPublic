@@ -44,6 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var allowLB = _compilation.Options.LateBindingOrFox(syntax);
             if (!allowLB || loweredReceiver.HasDynamicType())
                 return null;
+            _factory.Syntax = syntax;
             var nameExpr = _factory.Literal( name);
             if (IsFoxAccessMember(loweredReceiver, out var areaName))
             {
@@ -88,6 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression MakeVODynamicSetMember(BoundExpression loweredReceiver, string name, BoundExpression loweredValue)
         {
             var syntax = loweredReceiver.Syntax;
+            _factory.Syntax = syntax;
             var allowLB = _compilation.Options.LateBindingOrFox(syntax);
             if (!allowLB || loweredReceiver.HasDynamicType())
                 return null;
@@ -146,6 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // loweredReceiver.Parent.Parent.Syntax.XNode = MethodCallContext
             //
             var syntax = node.Syntax;
+            _factory.Syntax = syntax;
             var xnode = syntax.XNode as XSharpParser.MethodCallContext;
             if (!_compilation.Options.HasOption(CompilerOption.LateBinding, syntax))
             {
@@ -183,6 +186,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression MakeASend(BoundExpression loweredReceiver, string name, ImmutableArray<BoundExpression> args)
         {
             var convArgs = new ArrayBuilder<BoundExpression>();
+            _factory.Syntax = loweredReceiver.Syntax;
+
             var usualType = _compilation.UsualType();
             foreach (var a in args)
             {

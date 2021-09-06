@@ -127,6 +127,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (normalArg)
                     {
                         a = VisitExpression(a);
+                        _factory.Syntax = a.Syntax;
+
                         // SyntesizedLocals do not like Out, so we change it here to Ref
                         var rkind = refKinds[i];
                         if (rkind == RefKind.Out)

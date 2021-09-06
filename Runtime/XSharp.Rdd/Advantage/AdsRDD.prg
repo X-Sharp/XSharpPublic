@@ -34,8 +34,9 @@ CLASS XSharp.ADS.ADSRDD INHERIT Workarea
     INTERNAL _Ansi  AS LOGIC
     INTERNAL _HasMemo AS LOGIC
     INTERNAL _fieldCount AS LONG
-    INTERNAL _syncSettings AS LOGIC
-    INTERNAL _syncDeleted AS LOGIC
+    PRIVATE  _syncSettings AS LOGIC
+    PRIVATE  _syncDeleted  AS LOGIC
+    PRIVATE  _syncFolders  AS LOGIC
 
     
   #endregion
@@ -54,6 +55,7 @@ CONSTRUCTOR()
     SELF:_FileName       := String.Empty
     SELF:_syncDeleted    := TRUE
     SELF:_syncSettings   := TRUE
+    SELF:_syncFolders    := TRUE
     
 
     RuntimeState.StateChanged += StateChanged
@@ -61,12 +63,15 @@ CONSTRUCTOR()
 PRIVATE METHOD StateChanged(e AS StateChangedEventArgs) AS VOID
     SWITCH e:Setting
         CASE Set.Deleted
-            _syncDeleted := TRUE
+            SELF:_syncDeleted := TRUE
         CASE Set.DateFormat
         CASE Set.Decimals
         CASE Set.Exact
         CASE Set.Epoch
-            _syncSettings := TRUE
+            SELF:_syncSettings := TRUE
+        CASE Set.Default
+        CASE Set.Path
+            SELF:_syncFolders := TRUE
     END SWITCH
     RETURN
     #region Helper Methods that check for error conditions
@@ -318,12 +323,15 @@ PRIVATE METHOD _GetFieldInfo(strFieldDef REF STRING ) AS LOGIC
     NEXT
 RETURN TRUE
 
-INTERNAL METHOD _SetPaths() AS DWORD
-    IF !String.IsNullOrEmpty(SetDefault()) 
-        SELF:_CheckError(ACE.AdsSetDefault(SetDefault()),EG_OPEN)
-    ENDIF
-    IF !String.IsNullOrEmpty(SetPath()) 
-        SELF:_CheckError(ACE.AdsSetSearchPath(SetPath()),EG_OPEN)
+INTERNAL METHOD _SetPaths(dwGenCode AS DWORD) AS DWORD
+    IF _syncFolders
+        _syncFolders := FALSE
+        IF !String.IsNullOrEmpty(SetDefault()) 
+            SELF:_CheckError(ACE.AdsSetDefault(SetDefault()),dwGenCode)
+        ENDIF
+        IF !String.IsNullOrEmpty(SetPath()) 
+            SELF:_CheckError(ACE.AdsSetSearchPath(SetPath()),dwGenCode)
+        ENDIF
     ENDIF
 RETURN 0u
 
@@ -350,7 +358,7 @@ VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
     IF !info:Shared
         openmode |= (WORD) ACE.ADS_EXCLUSIVE
     ENDIF
-    IF SELF:_SetPaths() != 0
+    IF SELF:_SetPaths(EG_OPEN) != 0
         RETURN FALSE
     ENDIF
     IF SELF:_Connection != IntPtr.Zero
@@ -457,7 +465,7 @@ VIRTUAL METHOD Create(info AS DbOpenInfo) AS LOGIC
         RETURN FALSE
     ENDIF
     SELF:_CheckRDDInfo()
-    IF SELF:_SetPaths() != 0
+    IF SELF:_SetPaths(EG_CREATE) != 0
         RETURN FALSE
     ENDIF
     // both Clipper and XPP use weight tables

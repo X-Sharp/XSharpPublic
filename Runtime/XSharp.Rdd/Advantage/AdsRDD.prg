@@ -34,6 +34,8 @@ CLASS XSharp.ADS.ADSRDD INHERIT Workarea
     INTERNAL _Ansi  AS LOGIC
     INTERNAL _HasMemo AS LOGIC
     INTERNAL _fieldCount AS LONG
+    INTERNAL _syncSettings AS LOGIC
+    INTERNAL _syncDeleted AS LOGIC
 
     
   #endregion
@@ -50,11 +52,27 @@ CONSTRUCTOR()
     SELF:_Collation     := String.Empty
     SELF:_Driver        := "ADSRDD"
     SELF:_FileName       := String.Empty
+    SELF:_syncDeleted    := TRUE
+    SELF:_syncSettings   := TRUE
     
+
+    RuntimeState.StateChanged += StateChanged
+
+PRIVATE METHOD StateChanged(e AS StateChangedEventArgs) AS VOID
+    SWITCH e:Setting
+        CASE Set.Deleted
+            _syncDeleted := TRUE
+        CASE Set.DateFormat
+        CASE Set.Decimals
+        CASE Set.Exact
+        CASE Set.Epoch
+            _syncSettings := TRUE
+    END SWITCH
+    RETURN
     #region Helper Methods that check for error conditions
     
 INTERNAL STATIC METHOD _HasFlag(dw AS DWORD, flag AS DWORD) AS LOGIC
-RETURN _AND(dw, flag) == flag
+    RETURN _AND(dw, flag) == flag
 
 INTERNAL METHOD _CheckError(ulRetCode AS DWORD, dwGenCode := EG_NOCLASS AS DWORD, strFunction := "" AS STRING) AS LOGIC
     IF ulRetCode != 0
@@ -114,13 +132,20 @@ INTERNAL METHOD _SetEOF(lNewValue AS LOGIC) AS VOID
     ENDIF
 
 INTERNAL METHOD _SynchronizeVODeletedFlag() AS DWORD
-    RETURN ACE.AdsShowDeleted(IIF(RuntimeState.Deleted,(WORD)0 ,(WORD)1 ))
+    IF _syncDeleted
+        _syncDeleted := FALSE
+        RETURN ACE.AdsShowDeleted(IIF(RuntimeState.Deleted,(WORD)0 ,(WORD)1 ))
+    ENDIF
+    RETURN 0
 
 INTERNAL METHOD _SynchronizeSettings() AS VOID
-    ACE.AdsSetDateFormat(RuntimeState.DateFormat)
-    ACE.AdsSetExact((WORD) IIF(RuntimeState.Exact,1 , 0 ))
-    ACE.AdsSetDecimals((WORD)RuntimeState.Decimals )
-    ACE.AdsSetEpoch((WORD)RuntimeState.Epoch )
+    IF _syncSettings 
+        _syncSettings := FALSE
+        ACE.AdsSetDateFormat(RuntimeState.DateFormat)
+        ACE.AdsSetExact((WORD) IIF(RuntimeState.Exact,1 , 0 ))
+        ACE.AdsSetDecimals((WORD)RuntimeState.Decimals )
+        ACE.AdsSetEpoch((WORD)RuntimeState.Epoch )
+    ENDIF
 RETURN 
 
 INTERNAL METHOD _CheckRDDInfo() AS VOID
@@ -411,6 +436,7 @@ VIRTUAL METHOD Close() AS LOGIC
     SELF:_LockType := 0
     SELF:_TableType := 0
     SELF:Area  := 0
+    RuntimeState.StateChanged -= StateChanged
 RETURN result
 
     /// <inheritdoc />
@@ -1049,7 +1075,7 @@ VIRTUAL METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
         SELF:_CheckError(ACE.AdsSetDateFormat("MM/DD/YY"))
         SELF:_CheckError(ACE.AdsGetLastTableUpdate(SELF:_Table, aDate, REF DateLen))
         SELF:_CheckError(ACEUNPUB.AdsConvertStringToJulian(aDate, DateLen, OUT VAR julDate))
-        SELF:_SynchronizeSettings()
+        SELF:_CheckError(ACE.AdsSetDateFormat(RuntimeState.DateFormat))
         RETURN (LONG)julDate
         
     CASE DbInfo.DBI_GETLOCKARRAY

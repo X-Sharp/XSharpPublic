@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31613.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "UDCTester", "UDCTester.xsproj", "{F9579349-9B33-44A3-A615-D091AB45DBB8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9579349-9B33-44A3-A615-D091AB45DBB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9579349-9B33-44A3-A615-D091AB45DBB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9579349-9B33-44A3-A615-D091AB45DBB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9579349-9B33-44A3-A615-D091AB45DBB8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D876ACC5-C2EF-40DD-901B-3FC614B7427D}
+	EndGlobalSection
+EndGlobal

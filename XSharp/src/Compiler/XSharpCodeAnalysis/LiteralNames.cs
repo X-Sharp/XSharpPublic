@@ -26,6 +26,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string DateType = "__Date";
         internal const string VnDateType = "__VODate";
         internal const string WinBoolType = "__WinBool";
+        internal const string WinDateType = "__WinDate";
         internal const string VOStructAttribute = "VoStructAttribute";
         internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
         internal const string ActualTypeAttribute = "ActualTypeAttribute";
@@ -44,6 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Psz = "global::Vulcan.__Psz";
         internal const string Codeblock = "global::Vulcan.Codeblock";
         internal const string WinBool = "global::Vulcan.__WinBool";
+        internal const string WinDate = "global::System.UInt32";
         internal const string RuntimeState = "global::Vulcan.Runtime.State";
         internal const string ClipperCallingConvention = "global::Vulcan.Internal.ClipperCallingConventionAttribute";
         internal const string WrappedException = "global::Vulcan.Internal.VulcanWrappedException";
@@ -68,6 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Psz = "global::XSharp.__Psz";
         internal const string Codeblock = "global::XSharp.Codeblock";
         internal const string WinBool = "global::XSharp.__WinBool";
+        internal const string WinDate = "global::XSharp.__WinDate";
         internal const string RuntimeState = "global::XSharp.RuntimeState";
         internal const string ClipperCallingConvention = "global::XSharp.Internal.ClipperCallingConventionAttribute";
         internal const string WrappedException = "global::XSharp.Internal.WrappedException";

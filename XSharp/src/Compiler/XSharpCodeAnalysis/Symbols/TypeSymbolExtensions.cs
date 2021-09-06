@@ -113,6 +113,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return type is { } && type.Name == OurTypeNames.WinBoolType;
         }
+        internal static bool IsWinDateType(this TypeSymbol type)
+        {
+            return type is { } && type.Name == OurTypeNames.WinDateType;
+        }
+
         internal static bool IsDateType(this TypeSymbol type)
         {
             return type is { } && (type.Name == OurTypeNames.DateType || type.Name == OurTypeNames.VnDateType);
@@ -229,6 +234,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     case OurTypeNames.DateType:
                     case OurTypeNames.SymbolType:
                     case OurTypeNames.WinBoolType:
+                    case OurTypeNames.WinDateType:
                         elementSize = 4;
                         break;
                     default:

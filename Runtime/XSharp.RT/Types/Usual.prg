@@ -274,7 +274,7 @@ BEGIN NAMESPACE XSharp
                     IF vartype == typeof(__Usual)
                         // boxed __Usual, the __CASTCLASS is a special compiler instruction
                         // that unboxes the Object into a usual
-                        LOCAL u as USUAL
+                        LOCAL u AS USUAL
                         u := __CASTCLASS(USUAL, o)
                         SELF := u
                     ELSEIF vartype == TYPEOF(ARRAY)
@@ -291,10 +291,13 @@ BEGIN NAMESPACE XSharp
                         SELF:_refData           := ((BINARY) o):Value
                     ELSEIF vartype == TYPEOF(CURRENCY)
                         SELF:_flags				:= UsualFlags{__UsualType.Currency}
-                        SELF:_refData	 	    := ((Currency) o):Value
+                        SELF:_refData	 	    := ((CURRENCY) o):Value
                     ELSEIF vartype == TYPEOF(IntPtr)
                         SELF:_flags				:= UsualFlags{__UsualType.Ptr}
                         SELF:_valueData:p		:= (IntPtr) o
+                    ELSEIF vartype == TYPEOF(PSZ)
+                        SELF:_flags				:= UsualFlags{__UsualType.Psz}
+                        SELF:_refData	 	    := o:ToString()
                     ELSEIF vartype == TYPEOF(System.Reflection.Pointer)
                         SELF:_flags				:= UsualFlags{__UsualType.Ptr}
                         SELF:_valueData:p		:= IntPtr{System.Reflection.Pointer.Unbox(o)}
@@ -477,6 +480,9 @@ BEGIN NAMESPACE XSharp
         /// <summary>This property returns TRUE when the USUAL is of type Object</summary>
         [HIDDEN];
         PUBLIC PROPERTY IsObject		AS LOGIC [NODEBUG] GET _usualType == __UsualType.Object
+        /// <summary>This property returns TRUE when the USUAL is of type String</summary>
+        [HIDDEN];
+        PUBLIC PROPERTY IsPsz		   AS LOGIC [NODEBUG] GET _usualType == __UsualType.Psz
         /// <summary>This property returns TRUE when the USUAL is of type Ptr (IntPtr)</summary>
         [HIDDEN];
         PUBLIC PROPERTY IsPtr			AS LOGIC [NODEBUG] GET _usualType == __UsualType.Ptr
@@ -2121,7 +2127,8 @@ BEGIN NAMESPACE XSharp
                 RETURN NULL_PSZ
             ENDIF
             SWITCH u:_usualType
-            CASE __UsualType.Ptr	; RETURN PSZ{ u:_ptrValue }
+            CASE __UsualType.Psz	; RETURN PSZ{u:_stringValue}
+            CASE __UsualType.Ptr	; RETURN PSZ{u:_ptrValue }
             CASE __UsualType.String	; RETURN PSZ{u:_stringValue}
             OTHERWISE
                 THROW ConversionError(PSZ, TYPEOF(PSZ), u)
@@ -2824,6 +2831,7 @@ BEGIN NAMESPACE XSharp
             CASE __UsualType.Logic		; RETURN u:_logicValue
             CASE __UsualType.Object		; RETURN u:_refData
             CASE __UsualType.Ptr		; RETURN u:_ptrValue
+            CASE __UsualType.Psz		; RETURN u:_stringValue
             CASE __UsualType.String		; RETURN u:_stringValue
             CASE __UsualType.Symbol		; RETURN u:_symValue
             OTHERWISE

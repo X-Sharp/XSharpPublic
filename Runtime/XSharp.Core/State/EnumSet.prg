@@ -157,16 +157,16 @@ BEGIN NAMESPACE XSharp
         MEMBER ErrorLevel   := 81  // DWORD
         /// <summary>The codeblock set for the current error handler.</summary>
         MEMBER ErrorBlock   := 82  // Codeblock
-        /// <summary>The last error that occurred for a RDD operation.</summary>
-        MEMBER LastRddError := 84   // Exception object
+        // <summary>The last error that occurred for a RDD operation.</summary>
+        //MEMBER LastRddError := 84   // Exception object
         /// <summary>The last script error that occurred.</summary>
         MEMBER LastScriptError := 85   // Exception object
         /// <summary>The last file found with File()</summary>
         MEMBER LastFound    := 86   // Last file found with File()
-        /// <summary>The last File error code</summary>
-        MEMBER FileError    := 87   // Last File error code
-        /// <summary>The last File exception</summary>
-        MEMBER FileException:= 88   // Last File exception
+        // <summary>The last File error code</summary>
+        //MEMBER FileError    := 87   // Last File error code
+        // <summary>The last File exception</summary>
+        //MEMBER FileException:= 88   // Last File exception
 
         /// <summary>Determines the name of the current Delim RDD.</summary>
         MEMBER DelimRDD         := 89
@@ -185,9 +185,11 @@ BEGIN NAMESPACE XSharp
         // Vulcan RDDInfo Settings
         /// <summary></summary>
         MEMBER RddInfo		:= 100      // no value
-        /// <summary>Specifies how X# allocates disk space for the storage of memo fields.This is 64 for the FoxPro dialect and 32 for other dialects.</summary>
+        /// <summary>Specifies how X# allocates disk space for the storage of memo fields.
+        /// This is 64 for the FoxPro dialect and 32 for other dialects.</summary>
         MEMBER MemoBlockSize:= 101		// INT
-        /// <summary>Determines the current Default RDD. This is DBFVFP for the FoxPro dialect and DBFNTX for the other dialects.</summary>
+        /// <summary>Determines the current Default RDD. This is DBFVFP for the FoxPro dialect and
+        /// DBFNTX for the other dialects.</summary>
         MEMBER DefaultRdd	:= 102		// STRING
         /// <summary>Determines the current default Memofile extension.</summary>
         MEMBER MemoExt	    := 103		// STRING
@@ -205,7 +207,7 @@ BEGIN NAMESPACE XSharp
         MEMBER StrictRead   := 109		// LOGIC
         /// <summary></summary>
         MEMBER BlobCircref	:= 110		// LOGIC
-        /// <summary></summary>
+        /// <summary>Enables or disables Query Optimization.</summary>
         MEMBER Optimize     := 111		// LOGIC
         /// <summary>Should the FoxPro locking scheme be used for DBFCDX and DBFVFP files.</summary>
         MEMBER FoxLock      := 112		// LOGIC
@@ -221,7 +223,7 @@ BEGIN NAMESPACE XSharp
         MEMBER CollationMode:= 122		// CollationMode
 
         // 123 and 124 reserved
-        // FoxPro settings
+        // FoxPro settings 125 - 159, last used 144
         // Some settings are IDE specific, such as AutoSave, BrowseIME, Clock etc.
         // Others are windows regional settings, such as first day of week and currency symbol
         // these are not implemented
@@ -242,6 +244,7 @@ BEGIN NAMESPACE XSharp
         MEMBER Compatible       := 128
         // MEMBER Coverage
         // MEMBER CoverageFile
+        // MEMBER CpCompile
         // MEMBER CpDialog
         // MEMBER Currency
         // MEMBER CurrencySymbol
@@ -261,11 +264,12 @@ BEGIN NAMESPACE XSharp
         // MEMBER Fdow
         // MEMBER Fields            => not in Set() but Db.. function
         // MEMBER FieldsList        => not in Set() but Db.. function
-        /// <summary>FoxPro: Should CDX() and similar functions return full paths</summary>
+        // MEMBER Format            
+        /// <summary>FoxPro: Should CDX(),DBF() and similar functions return full paths</summary>
         MEMBER FullPath         := 132      // Logic
         // MEMBER Function
         // MEMBER FWeek
-        // MEMBER Headings
+        MEMBER Headings         := 144
         // MEMBER Help
         // MEMBER Hours
         // MEMBER Intensity
@@ -305,6 +309,7 @@ BEGIN NAMESPACE XSharp
         //MEMBER Resource
         /// <summary>Determines whether Visual FoxPro displays a dialog box before overwriting an existing file.</summary>
         MEMBER Safety           := 138  // Logic
+        // MEMBER Seconds
         /// <summary>Specifies the character that separates each group of three digits to the left of the decimal point when displaying a formatted numeric or currency value. </summary>
         MEMBER Separator        := Set.ThousandSep
         // MEMBER Skip          // SelectiveRelation
@@ -674,8 +679,6 @@ DEFINE _SET_MEMOWIDTH       := Set.MemoWidth
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_MULTILOCKS      := Set.MultiLocks
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_NEAR            := Set.Near
-/// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_NULL             := Set.Null
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_POINT            := Set.Point
@@ -864,7 +867,7 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.ThousandSep
         CASE Set.Timesep
         CASE Set.EpochYear
-        CASE Set.FileError
+        //CASE Set.FileError
         CASE Set.ErrorLevel     // DWORD
              RETURN 0U
         CASE Set.Decimals
@@ -884,9 +887,9 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.ErrorBlock     // Codeblock
             RETURN NULL
 
-        CASE Set.LastRddError       // Exception object
+        //CASE Set.LastRddError       // Exception object
         CASE Set.LastScriptError    // Exception object
-        CASE Set.FileException      // Exception object
+        //CASE Set.FileException      // Exception object
             RETURN NULL
 
         CASE Set.Intl

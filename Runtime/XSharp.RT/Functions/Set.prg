@@ -51,7 +51,7 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
                 RETURN SetDefault(newValue)
             ENDIF
         CASE Set.Path
-            // Special handling, clear path arrat
+            // Special handling, clear path array
             IF IsString(newValue) 
                 RETURN SetPath(newValue)
             ENDIF

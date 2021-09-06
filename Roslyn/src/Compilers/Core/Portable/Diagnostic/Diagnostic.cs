@@ -24,8 +24,11 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// The default warning level, which is also used for non-error diagnostics.
         /// </summary>
+#if XSHARP
+        internal const int DefaultWarningLevel = 5;
+#else
         internal const int DefaultWarningLevel = 4;
-
+#endif
         /// <summary>
         /// The warning level used for hidden and info diagnostics. Because these diagnostics interact with other editor features, we want them to always be produced unless /warn:0 is set.
         /// </summary>

@@ -11,7 +11,6 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Package;
 using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text;
 using XSharpModel;
 using System.Collections.Generic;
@@ -23,7 +22,7 @@ namespace XSharp.LanguageService
     [ContentType(Constants.LanguageName)]
     [TextViewRole(PredefinedTextViewRoles.Document)]
 
-    internal class GenericProvider: IVsTextViewCreationListener
+    internal class XSharpEditorCommandProvider: IVsTextViewCreationListener
     {
 
         [Import]
@@ -75,7 +74,7 @@ namespace XSharp.LanguageService
                         file.Interactive = true;
                         textView.Properties.AddProperty(typeof(XFile), file);
                     }
-                    GenericCommandHandler filter = new GenericCommandHandler(textView, this);
+                    var filter = new XSharpEditorCommandHandler(textView);
                     IOleCommandTarget next;
                     textViewAdapter.AddCommandFilter(filter, out next);
 

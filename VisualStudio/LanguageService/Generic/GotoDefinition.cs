@@ -1,140 +1,114 @@
-﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.
-// Licensed under the Apache License, Version 2.0.
-// See License.txt in the project root for license information.
-//
-using Community.VisualStudio.Toolkit;
-using Microsoft;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
+﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using XSharpModel;
 using File = System.IO.File;
+
 namespace XSharp.LanguageService
 {
-    internal sealed partial class GenericCommandHandler : IOleCommandTarget
+    class XSharpGotoDefinition
     {
-        public ITextView TextView { get; private set; }
-        public IOleCommandTarget Next { get; set; }
-
-        readonly XFile _file;
-
-
-
-        private int getCurrentLine()
+        internal static void GotoDefn(ITextView TextView)
         {
-            SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
-            ITextSnapshotLine line = caret.GetContainingLine();
-            return line.LineNumber;
-        }
- 
-        public GenericCommandHandler(IWpfTextView textView, GenericProvider provider)
-        {
-
-            m_provider = provider;
-
-
-            TextView = textView;
-            _file = textView.TextBuffer.GetFile();
-        }
-
- 
- 
-        internal void WriteOutputMessage(string strMessage)
-        {
-            if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
+            try
             {
-                XSettings.DisplayOutputMessage(strMessage);
-            }
-        }
-  
+                if (XSettings.DisableGotoDefinition)
+                    return;
+                var file = TextView.TextBuffer.GetFile();
+                if (file == null || file.XFileType != XFileType.SourceCode)
+                    return;
+                WriteOutputMessage("CommandFilter.GotoDefn()");
+                ModelWalker.Suspend();
 
-        private readonly GenericProvider m_provider;
 
-        public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
-        {
-            var cmdGrp = pguidCmdGroup;
-            bool done = false;
-            int result = 0;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                var snapshot = TextView.TextBuffer.CurrentSnapshot;
 
-                if (Microsoft.VisualStudio.Shell.VsShellUtilities.IsInAutomationFunction(m_provider.ServiceProvider))
+                // We don't want to lex the buffer. So get the tokens from the last lex run
+                // and when these are too old, then simply bail out
+                var tokens = TextView.TextBuffer.GetTokens();
+                if (tokens != null)
                 {
-                    done = true;
-                    result = Next.Exec(ref cmdGrp, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+                    if (tokens.SnapShot.Version != snapshot.Version)
+                        return;
                 }
-            });
-            if (done)
-                return result;
-            //
-            bool handled = false;
-            int hresult = VSConstants.S_OK;
+                string currentNS = TextView.FindNamespace();
+                var location = TextView.FindLocation();
+                var state = CompletionState.General | CompletionState.Types | CompletionState.Namespaces;
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
 
-            // 1. Pre-process
-            if (pguidCmdGroup == VSConstants.VSStd2K)
-            {
-                switch ((VSConstants.VSStd2KCmdID)nCmdID)
+                // LookUp for the BaseType, reading the TokenList (From left to right)
+                var result = new List<IXSymbol>();
+
+                result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed));
+                //
+                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+                if (result.Count > 0)
                 {
-                    case VSConstants.VSStd2KCmdID.HELPKEYWORD:
-                    case VSConstants.VSStd2KCmdID.HELP:
-                        break;
-                }
-            }
-            else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
-            {
-                switch ((VSConstants.VSStd97CmdID)nCmdID)
-                {
-                    case VSConstants.VSStd97CmdID.F1Help:
-                    case VSConstants.VSStd97CmdID.WindowHelp:
-                        //handled = true;
-                        //Todo RvdH Call X# Help
-                        break;
-                    
-                    case VSConstants.VSStd97CmdID.GotoDefn:
-                        GotoDefn();
-                        return VSConstants.S_OK;
-                }
-            }
-
-            // 2. Let others do their thing
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                hresult = Next.Exec(ref cmdGrp, nCmdID, nCmdexecopt, pvaIn, pvaOut);
-            });
-
-            if (ErrorHandler.Succeeded(hresult))
-            {
-                // 3. Post process
-                if (pguidCmdGroup == Microsoft.VisualStudio.VSConstants.VSStd2K)
-                {
-                    switch ((VSConstants.VSStd2KCmdID)nCmdID)
+                    var element = result[0];
+                    if (element is XSourceEntity source)
                     {
-  
-                        case VSConstants.VSStd2KCmdID.HELP:
-                        case VSConstants.VSStd2KCmdID.HELPKEYWORD:
-                            break;
-                        
+                        source.OpenEditor();
                     }
-                    //
-                    if (handled) return VSConstants.S_OK;
-                }
-            }
-            
-            return hresult;
-        }
+                    else if (element is XPETypeSymbol petype)
+                    {
+                        GotoSystemType(TextView, petype, petype);
 
+                    }
+                    else if (element is XPEMemberSymbol pemember)
+                    {
+                        var petype2 = pemember.Parent as XPETypeSymbol;
+                        GotoSystemType(TextView, petype2, pemember);
+                    }
+                    return;
+                }
+                //
+                if (tokenList.Count > 1)
+                {
+                    // try again with just the last element in the list
+                    var token = tokenList[tokenList.Count - 1];
+                    tokenList.Clear();
+                    tokenList.Add(token);
+                    location = location.With(currentNS);
+                    result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out notProcessed));
+                }
+                if (result.Count > 0)
+                {
+                    var element = result[0];
+                    if (element is XSourceEntity source)
+                        source.OpenEditor();
+                    //else
+                    //{
+                    //    openInObjectBrowser(element.FullName);
+                    //}
+                    //return;
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                WriteOutputMessage("Goto failed: ");
+                XSettings.DisplayException(ex);
+            }
+            finally
+            {
+                ModelWalker.Resume();
+            }
+        }
+#if NOTUSED
+       //private void openInObjectBrowser(string name)
+        //{
+        //    ThreadHelper.JoinableTaskFactory.Run(async delegate
+        //    {
+        //        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+        //        ObjectBrowserHelper.FindSymbols(name);
+        //    });
+        //    return;
+        //}
+#endif
         private static void DeleteFolderRecursively(DirectoryInfo directory)
         {
             // Scan all files in the current path
@@ -157,20 +131,19 @@ namespace XSharp.LanguageService
             }
         }
 
-        #region Goto Definition
         static string WorkFolder = null;
         static Stream Semaphore = null;
         const string folderName = "XSharp.Intellisense";
         const string semName = "XSharp.Busy";
-        private XAssembly asmName = null;
-        private string LookupXml(IXSymbol key)
+        private static XAssembly asmName = null;
+        private static string LookupXml(IXSymbol key)
         {
             return XSharpXMLDocMember.GetDoc(asmName, key);
         }
-        private void GotoSystemType(XPETypeSymbol petype, XPESymbol element)
+        private static void GotoSystemType(ITextView TextView, XPETypeSymbol petype, XPESymbol element)
         {
             asmName = petype.Assembly;
-            var aLines = XClassCreator.Create(petype,LookupXml);
+            var aLines = XClassCreator.Create(petype, LookupXml);
             asmName = null;
             if (Semaphore == null)
             {
@@ -202,15 +175,15 @@ namespace XSharp.LanguageService
                 WorkFolder = tempFolder;
                 Semaphore = File.Create(semFile);
             }
-            var ns = petype.Namespace+"."+petype.Assembly.Version;
+            var ns = petype.Namespace + "." + petype.Assembly.Version;
             var name = petype.Name;
             var nspath = Path.Combine(WorkFolder, ns);
-            if (! Directory.Exists(nspath))
+            if (!Directory.Exists(nspath))
             {
                 Directory.CreateDirectory(nspath);
             }
             var temp = Path.Combine(nspath, petype.Name) + ".prg";
-            if (! File.Exists(temp))
+            if (!File.Exists(temp))
             {
                 File.WriteAllLines(temp, aLines.ToArray());
                 File.SetAttributes(temp, FileAttributes.ReadOnly);
@@ -224,11 +197,11 @@ namespace XSharp.LanguageService
             {
                 if (entity.FullName == element.FullName)
                 {
-                    line = entity.Range.StartLine+1;
+                    line = entity.Range.StartLine + 1;
                     break;
                 }
             }
-            var file = this.TextView.TextBuffer.GetFile();
+            var file = TextView.TextBuffer.GetFile();
             // Copy references to the Orphan file project so type lookup works as expected
             var orphProject = XSolution.OrphanedFilesProject;
             var project = file.Project;
@@ -244,151 +217,18 @@ namespace XSharp.LanguageService
             VS.Documents.OpenInPreviewTabAsync(temp).FireAndForget();
 
         }
-        private void GotoDefn()
+
+
+        internal static void WriteOutputMessage(string strMessage)
         {
-            try
+            if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                if (XSettings.DisableGotoDefinition)
-                    return;
-                var file = this.TextView.TextBuffer.GetFile();
-                if (file == null || file.XFileType != XFileType.SourceCode)
-                    return;
-                WriteOutputMessage("CommandFilter.GotoDefn()");
-                XSharpModel.ModelWalker.Suspend();
-
-                
-                var snapshot = this.TextView.TextBuffer.CurrentSnapshot;
-
-                // We don't want to lex the buffer. So get the tokens from the last lex run
-                // and when these are too old, then simply bail out
-                var tokens = this.TextView.TextBuffer.GetTokens();
-                if (tokens != null)
-                {
-                    if (tokens.SnapShot.Version != snapshot.Version)
-                        return;
-                }
-                string currentNS = this.TextView.FindNamespace();
-                var location = TextView.FindLocation();
-                var state = CompletionState.General| CompletionState.Types| CompletionState.Namespaces;
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
-
-                // LookUp for the BaseType, reading the TokenList (From left to right)
-                var result = new List<IXSymbol>();
-
-                result.AddRange(XSharpLookup.RetrieveElement(location, tokenList,  state));
-                //
-                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-                if (result.Count > 0) 
-                {
-                    var element = result[0];
-                    if (element is XSourceEntity source)
-                    {
-                        source.OpenEditor();
-                    }
-                    else if (element is XPETypeSymbol petype)
-                    {
-                        GotoSystemType(petype, petype);
-
-                    }
-                    else if (element is XPEMemberSymbol pemember)
-                    {
-                        var petype2 = pemember.Parent as XPETypeSymbol;
-                        GotoSystemType(petype2,pemember);
-                    }
-                    return;
-                }
-                //
-                if (tokenList.Count > 1)
-                {
-                    // try again with just the last element in the list
-                    var token = tokenList[tokenList.Count - 1];
-                    tokenList.Clear();
-                    tokenList.Add(token);
-                    location = location.With(currentNS);
-                    result.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state));
-                }
-                if (result.Count > 0 )
-                {
-                    var element = result[0];
-                    if (element is XSourceEntity source)
-                        source.OpenEditor();
-                    else
-                    {
-                        openInObjectBrowser(element.FullName);
-                    }
-                    return;
-
-                }
-
+                XSettings.DisplayOutputMessage(strMessage);
             }
-            catch (Exception ex)
-            {
-                WriteOutputMessage("Goto failed: ");
-                XSettings.DisplayException(ex);
-            }
-            finally
-            {
-                XSharpModel.ModelWalker.Resume();
-            }
-        }
-
-        private void openInObjectBrowser(string name)
-        {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                ObjectBrowserHelper.FindSymbols(name);
-            });
-            return;
-        }
-
-       
-        #endregion
-
-
-
-         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
-        {
-            bool isSource = _file != null && _file.XFileType == XFileType.SourceCode;
-            if (pguidCmdGroup == VSConstants.VSStd2K)
-            {
-                switch ((VSConstants.VSStd2KCmdID)prgCmds[0].cmdID)
-                {
-                    case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
-                    case VSConstants.VSStd2KCmdID.COMPLETEWORD:
-                        if (isSource)
-                        {
-                            prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_ENABLED | (uint)OLECMDF.OLECMDF_SUPPORTED;
-                            return VSConstants.S_OK;
-                        }
-                        break;
-                }
-            }
-            else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
-            {
-                switch ((VSConstants.VSStd97CmdID)prgCmds[0].cmdID)
-                {
-                    case VSConstants.VSStd97CmdID.GotoDefn:
-                        if (isSource)
-                        {
-                            prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_ENABLED | (uint)OLECMDF.OLECMDF_SUPPORTED;
-                            return VSConstants.S_OK;
-                        }
-                        break;
-                }
-            }
-            int result = 0;
-            var cmdGroup = pguidCmdGroup;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                result = Next.QueryStatus(cmdGroup, cCmds, prgCmds, pCmdText);
-            });
-            return result;
         }
 
     }
-
+#if NOTUSED
 
     internal static class ObjectBrowserHelper
     {
@@ -447,20 +287,20 @@ namespace XSharp.LanguageService
         // Searching in the XSharp Library (Current Solution)
 
         // Searching in the XSharp Library (Current Solution)
-        private static IVsSimpleLibrary2 GetXSharpLibrary()
+        private static ivssimplelibrary2 getxsharplibrary()
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-            Guid guid = new Guid(XSharpConstants.Library);
-            IVsSimpleLibrary2 simpleLibrary = null;
+            microsoft.visualstudio.shell.threadhelper.throwifnotonuithread();
+            guid guid = new guid(xsharpconstants.library);
+            ivssimplelibrary2 simplelibrary = null;
             //
-            System.IServiceProvider provider = XSharpLanguageService.Instance;
-            // ProjectPackage already switches to UI thread inside GetService
-            if (provider.GetService(typeof(SVsObjectManager)) is IVsObjectManager2 mgr)
+            system.iserviceprovider provider = xsharplanguageservice.instance;
+            // projectpackage already switches to ui thread inside getservice
+            if (provider.getservice(typeof(svsobjectmanager)) is ivsobjectmanager2 mgr)
             {
-                ErrorHandler.ThrowOnFailure(mgr.FindLibrary(ref guid, out IVsLibrary2 _library));
-                simpleLibrary = _library as IVsSimpleLibrary2;
+                errorhandler.throwonfailure(mgr.findlibrary(ref guid, out ivslibrary2 _library));
+                simplelibrary = _library as ivssimplelibrary2;
             }
-            return simpleLibrary;
+            return simplelibrary;
         }
 
         /// <summary>
@@ -517,7 +357,7 @@ namespace XSharp.LanguageService
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             System.IServiceProvider provider = XSharpLanguageService.Instance;
-            bool result ;
+            bool result;
             // ProjectPackage already switches to UI thread inside GetService
             IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
             Assumes.Present(searcher);
@@ -530,7 +370,7 @@ namespace XSharp.LanguageService
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             System.IServiceProvider provider = XSharpLanguageService.Instance;
-            bool result ;
+            bool result;
             // ProjectPackage already switches to UI thread inside GetService
             IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
             Assumes.Present(searcher);
@@ -581,5 +421,6 @@ namespace XSharp.LanguageService
             return (v == VSConstants.S_OK);
         }
     }
-
+#endif
 }
+

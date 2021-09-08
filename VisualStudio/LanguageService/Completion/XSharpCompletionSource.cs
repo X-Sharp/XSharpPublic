@@ -48,11 +48,9 @@ namespace XSharp.LanguageService
             _provider = provider;
             _buffer = buffer;
             _file = file;
-            // Currently, set as default, but should be VS Settings Based
-            // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
             var prj = _file.Project.ProjectNode;
             _dialect = _file.Project.Dialect;
-            helpers = new CompletionHelpers(_dialect, provider.GlyphService, file, true);
+            helpers = new CompletionHelpers(_dialect, provider.GlyphService, file, !prj.ParseOptions.CaseSensitive);
             _stopToken = null;
             
             this.aggregator = aggregator;
@@ -204,7 +202,7 @@ namespace XSharp.LanguageService
                     tokenType = this._stopToken.Type;
                 }
 
-                var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General).FirstOrDefault();
+                var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed).FirstOrDefault();
                 var memberName = "";
                 // Check for members, locals etc and convert the type of these to IXTypeSymbol
                 if (symbol != null)
@@ -249,7 +247,7 @@ namespace XSharp.LanguageService
                     if (string.IsNullOrEmpty(filterText))
                     {
                         filterText = helpers.TokenListAsString(tokenList, _stopToken);
-                        if (filterText.Length > 0 && !filterText.EndsWith("."))
+                        if (filterText.Length > 0 && !filterText.EndsWith(".") && state != CompletionState.General)
                             filterText += ".";
                     }
                     if (state.HasFlag(CompletionState.Namespaces))
@@ -396,11 +394,7 @@ namespace XSharp.LanguageService
                 _disposed = true;
             }
         }
-
-
-
     }
-
 }
 
 

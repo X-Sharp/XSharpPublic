@@ -666,8 +666,45 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN result
 
+        METHOD FindGlobalsInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
+        IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindGlobalsInAssemblyReferences {name} ")
+        ENDIF
+         VAR result := List<IXMemberSymbol>{}
+         FOREACH VAR asm IN AssemblyReferences:ToArray()
+            IF !String.IsNullOrEmpty(asm:GlobalClassName)
+               VAR type := asm:GetType(asm.GlobalClassName)
+               IF type != NULL
+                  VAR fields := type:GetFields():Where ({m => m.Name.StartsWith(name)})
+                  result:AddRange(fields)
+               ENDIF
+            ENDIF
+         NEXT
+         IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindGlobalsInAssemblyReferences {name}, found {result.Count} occurences")
+         ENDIF
+        RETURN result
 
-      METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
+        METHOD FindFunctionsInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
+        IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindFunctionsInAssemblyReferences {name} ")
+        ENDIF
+         VAR result := List<IXMemberSymbol>{}
+         FOREACH VAR asm IN AssemblyReferences:ToArray()
+            IF !String.IsNullOrEmpty(asm:GlobalClassName)
+               VAR type := asm:GetType(asm.GlobalClassName)
+               IF type != NULL
+                  VAR methods := type:GetMethods():Where ({m => m.Name.StartsWith(name)})
+                  result:AddRange(methods)
+               ENDIF
+            ENDIF
+         NEXT
+         IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindFunctionsInAssemblyReferences {name}, found {result.Count} occurences")
+         ENDIF
+         RETURN result
+
+METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalMembersLike {name} Current Project {lCurrentProject}")
         ENDIF

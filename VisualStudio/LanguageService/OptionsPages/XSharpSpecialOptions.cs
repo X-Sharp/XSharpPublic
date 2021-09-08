@@ -77,7 +77,7 @@ namespace XSharp.LanguageService.OptionsPages
             _page.EnableQuickInfoLog = this.chkEnableQuickInfoLog.Checked;
             _page.EnableTypelookupLog = this.chkEnableTypeLookupLog.Checked;
             _page.EnableReferenceInfoLog = this.chkEnableReferenceLog.Checked;
-
+            XSharpLanguageService.Instance.optionWasChanged = true;
         }
 
     }

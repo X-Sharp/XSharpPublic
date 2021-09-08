@@ -93,7 +93,7 @@ namespace XSharp.LanguageService
                 if (cancellationToken.IsCancellationRequested)
                     return null;
                 var lookupresult = new List<IXSymbol>();
-                lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state,true));
+                lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state,out var notProcessed,true));
 
                 //
                 if (lookupresult.Count > 0)

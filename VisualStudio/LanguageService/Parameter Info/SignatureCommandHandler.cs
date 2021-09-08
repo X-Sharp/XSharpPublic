@@ -51,7 +51,9 @@ namespace XSharp.LanguageService
         readonly ISignatureHelpBroker _signatureBroker;
         readonly IOleCommandTarget m_nextCommandHandler;
         ISignatureHelpSession _signatureSession = null;
+#if !ASYNCCOMPLETION
         XSharpCompletionCommandHandler _completionCommandHandler = null;
+#endif
         internal XSharpSignatureHelpCommandHandler(IVsTextView textViewAdapter, ITextView textView, ISignatureHelpBroker broker)
         {
             this._textView = textView;
@@ -170,18 +172,20 @@ namespace XSharp.LanguageService
         }
         bool IsCompletionActive()
         {
+#if !ASYNCCOMPLETION
             if (_completionCommandHandler == null)
                 _completionCommandHandler = _textView.Properties.GetProperty<XSharpCompletionCommandHandler>(typeof(XSharpCompletionCommandHandler));
             if (_completionCommandHandler != null)
             {
                 return _completionCommandHandler.HasActiveSession;
             }
+#endif
             return false;
 
         }
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
             return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
         IXMemberSymbol findElementAt(bool comma, SnapshotPoint ssp, XSharpSearchLocation location)
@@ -252,7 +256,7 @@ namespace XSharp.LanguageService
                     return null;
             }
             // We don't care of the corresponding Type, we are looking for the currentElement
-            var element = XSharpLookup.RetrieveElement(location, tokenList, state, true).FirstOrDefault();
+            var element = XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true).FirstOrDefault();
             if (element is IXMemberSymbol mem)
                 currentElement = mem;
             else if (element is IXTypeSymbol xtype)

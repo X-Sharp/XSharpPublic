@@ -36,13 +36,6 @@ namespace XSharp.LanguageService
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             var cmdGrp = pguidCmdGroup;
-            int result = 0;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                result = Next.Exec(ref cmdGrp, nCmdID, nCmdexecopt, pvaIn, pvaOut);
-            });
-
             //
             bool handled = false;
             int hresult = VSConstants.S_OK;
@@ -74,7 +67,7 @@ namespace XSharp.LanguageService
             }
 
             // 2. Let others do their thing
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+           ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -100,7 +93,7 @@ namespace XSharp.LanguageService
                 }
             }
             
-            return hresult;
+           return hresult;
         }
 
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)

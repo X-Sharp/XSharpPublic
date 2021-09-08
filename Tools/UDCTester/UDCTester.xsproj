@@ -7,14 +7,14 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UDCTesterApp</RootNamespace>
-    <AssemblyName>XSharp.UDCTester</AssemblyName>
+    <AssemblyName>XUDCTester</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <vo15>false</vo15>
     <OutputName>WindowsFormsApplication2</OutputName>
-    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
+    <XSharpProjectversion>2.8.4.1</XSharpProjectversion>
     <StartupObject />
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <IncludePaths>$(SolutionDir)\Common</IncludePaths>

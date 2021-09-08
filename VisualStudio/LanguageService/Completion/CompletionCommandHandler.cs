@@ -14,7 +14,7 @@ using XSharpModel;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
-
+#if ! ASYNCCOMPLETION
 namespace XSharp.LanguageService
 {
     [Export(typeof(IVsTextViewCreationListener))]
@@ -454,7 +454,7 @@ namespace XSharp.LanguageService
                     method = method.Substring(0, method.Length - 2);
                 else if (method.EndsWith("{"))
                     method = method.Substring(0, method.Length - 1);
-                triggerChar = '{';
+                //triggerChar = '{';
             }
             else
             {
@@ -462,7 +462,7 @@ namespace XSharp.LanguageService
                     method = method.Substring(0, method.Length - 2);
                 else if (method.EndsWith("("))
                     method = method.Substring(0, method.Length - 1);
-                triggerChar = '(';
+                //triggerChar = '(';
             }
 
             // send command to editor to Signature Helper
@@ -547,3 +547,4 @@ namespace XSharp.LanguageService
         }
     }
 }
+#endif

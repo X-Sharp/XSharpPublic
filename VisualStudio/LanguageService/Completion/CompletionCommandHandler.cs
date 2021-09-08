@@ -56,7 +56,6 @@ namespace XSharp.LanguageService
         readonly IBufferTagAggregatorFactoryService _aggregator;
         bool completionWasSelected = false;
         XSharpSignatureHelpCommandHandler _signatureCommandHandler = null;
-        //CompletionSelectionStatus completionWas;
 
         internal XSharpCompletionCommandHandler(IVsTextView textViewAdapter, ITextView textView,
             ICompletionBroker completionBroker, IBufferTagAggregatorFactoryService aggregator)
@@ -83,25 +82,25 @@ namespace XSharp.LanguageService
             }
             else if (pguidCmdGroup == VSConstants.VSStd2K )
             {
-                switch ((VSConstants.VSStd2KCmdID)nCmdID)
+                switch (nCmdID)
                 {
-                    case VSConstants.VSStd2KCmdID.COMPLETEWORD:
-                    case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
-                    case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
+                    case (int) VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                    case (int)VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
+                    case (int)VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
                         // in this case we WANT to include keywords in the list
                         // when they type LOCA we want to include LOCAL as well
                         handled = StartCompletionSession(nCmdID, '\0', true);
                         break;
-                    case VSConstants.VSStd2KCmdID.RETURN:
+                    case (int)VSConstants.VSStd2KCmdID.RETURN:
                         handled = CompleteCompletionSession();
                         break;
-                    case VSConstants.VSStd2KCmdID.TAB:
+                    case (int)VSConstants.VSStd2KCmdID.TAB:
                         handled = CompleteCompletionSession( );
                         break;
-                    case VSConstants.VSStd2KCmdID.CANCEL:
+                    case (int)VSConstants.VSStd2KCmdID.CANCEL:
                         handled = CancelCompletionSession();
                         break;
-                    case VSConstants.VSStd2KCmdID.TYPECHAR:
+                    case (int)VSConstants.VSStd2KCmdID.TYPECHAR:
                         char ch = GetTypeChar(pvaIn);
                         if (_completionSession != null)
                         {
@@ -119,6 +118,7 @@ namespace XSharp.LanguageService
                                 }
                                 if ((ch == ':') || (ch == '.'))
                                 {
+                                    handled = false; // Allow the char to be typed to start new completion session for 
                                     StartCompletionSession(nCmdID, ch);
                                 }
                             }
@@ -131,10 +131,10 @@ namespace XSharp.LanguageService
             }
             else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
             {
-                switch ((VSConstants.VSStd97CmdID)nCmdID)
+                switch (nCmdID)
                 {
-                    case VSConstants.VSStd97CmdID.Undo:
-                    case VSConstants.VSStd97CmdID.Redo:
+                    case (int) VSConstants.VSStd97CmdID.Undo:
+                    case (int)VSConstants.VSStd97CmdID.Redo:
                         CancelCompletionSession();
                         break;
 
@@ -151,12 +151,6 @@ namespace XSharp.LanguageService
                     if (_completionSession.SelectedCompletionSet != null)
                     {
                         completionWasSelected = _completionSession.SelectedCompletionSet.SelectionStatus.IsSelected;
-                        //if (completionWasSelected)
-                        //{
-                        //    completionWas = _completionSession.SelectedCompletionSet.SelectionStatus;
-                        //}
-                        //else
-                        //    completionWas = null;
                     }
                 }
                 result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
@@ -166,13 +160,13 @@ namespace XSharp.LanguageService
                 if (pguidCmdGroup == VSConstants.VSStd2K)
                 {
 
-                    switch ((VSConstants.VSStd2KCmdID)nCmdID)
+                    switch (nCmdID)
                     {
-                        case VSConstants.VSStd2KCmdID.BACKSPACE:
+                        case (int)VSConstants.VSStd2KCmdID.BACKSPACE:
                             FilterCompletionSession('\0');
                             break;
 
-                        case VSConstants.VSStd2KCmdID.TYPECHAR:
+                        case (int)VSConstants.VSStd2KCmdID.TYPECHAR:
                             char ch = GetTypeChar(pvaIn);
                             if (_completionSession == null)
                             {

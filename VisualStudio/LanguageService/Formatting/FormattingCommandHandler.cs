@@ -96,23 +96,38 @@ namespace XSharp.LanguageService
             registerClassifier();
 
         }
+#if !ASYNCCOMPLETION
+        XSharpCompletionCommandHandler _completionCommandHandler = null;
+#endif
+        bool IsCompletionActive()
+        {
+#if !ASYNCCOMPLETION
+            if (_completionCommandHandler == null)
+                _completionCommandHandler = _textView.Properties.GetProperty<XSharpCompletionCommandHandler>(typeof(XSharpCompletionCommandHandler));
+            if (_completionCommandHandler != null)
+            {
+                return _completionCommandHandler.HasActiveSession;
+            }
+#endif
+            return false;
 
+        }
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             int result = VSConstants.S_OK;
-            bool handled = false;
             Guid cmdGroup = pguidCmdGroup;
+            bool completionActive = false; 
             registerClassifier();
             // 1. Pre-process
-            if (pguidCmdGroup == VSConstants.VSStd2K)
+            if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
             {
-                switch ((VSConstants.VSStd97CmdID)nCmdID)
+                switch (nCmdID)
                 {
-                    case VSConstants.VSStd97CmdID.Save:
-                    case VSConstants.VSStd97CmdID.SaveAs:
-                    case VSConstants.VSStd97CmdID.SaveProjectItem:
+                    case (int) VSConstants.VSStd97CmdID.Save:
+                    case (int)VSConstants.VSStd97CmdID.SaveAs:
+                    case (int)VSConstants.VSStd97CmdID.SaveProjectItem:
                         if (_settings.InsertFinalNewline || _settings.TrimTrailingWhiteSpace)
                         {
                             adjustWhiteSpace();
@@ -122,30 +137,29 @@ namespace XSharp.LanguageService
                         break;
                 }
             }
-            else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
+            else if (pguidCmdGroup == VSConstants.VSStd2K)
             {
-                switch ((VSConstants.VSStd97CmdID)nCmdID)
+                switch (nCmdID)
                 {
-
+                    case (int)VSConstants.VSStd2KCmdID.RETURN:
+                        completionActive = IsCompletionActive();
+                        break;
                     default:
                         break;
                 }
             }
             // 2. Let others do their thing
             // Let others do their thing
-            if (!handled)
-            {
-
-                result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
-            }           // 3. Post process
+            result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            // 3. Post process
             if (ErrorHandler.Succeeded(result) && !XSettings.DisableCodeCompletion)
             {
                 if (pguidCmdGroup == VSConstants.VSStd2K)
                 {
 
-                    switch ((VSConstants.VSStd2KCmdID)nCmdID)
+                    switch (nCmdID)
                     {
-                        case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
+                        case (int) VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
                             try
                             {
                                 lock (_linesToSync)
@@ -165,9 +179,9 @@ namespace XSharp.LanguageService
                             }
                             break;
 
-                        case VSConstants.VSStd2KCmdID.RETURN:
-                            FormatLine();
-                            handled = true;
+                        case (int)VSConstants.VSStd2KCmdID.RETURN:
+                            if (!completionActive)
+                                FormatLine();
                             break;
 
                         default:

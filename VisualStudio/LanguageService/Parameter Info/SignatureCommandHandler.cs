@@ -78,17 +78,17 @@ namespace XSharp.LanguageService
             }
             else if (pguidCmdGroup == VSConstants.VSStd2K )
             {
-                switch ((VSConstants.VSStd2KCmdID)nCmdID)
+                switch (nCmdID)
                 {
-                    case VSConstants.VSStd2KCmdID.PARAMINFO:
+                    case (int)VSConstants.VSStd2KCmdID.PARAMINFO:
                         StartSignatureSession(false);
                         break;
-                    case VSConstants.VSStd2KCmdID.COMPLETEWORD:
-                    case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
-                    case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
+                    case (int)VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                    case (int)VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
+                    case (int)VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
                         CancelSignatureSession();
                         break;
-                    case VSConstants.VSStd2KCmdID.BACKSPACE:
+                    case (int)VSConstants.VSStd2KCmdID.BACKSPACE:
                         if (_signatureSession != null)
                         {
                             int pos = _textView.Caret.Position.BufferPosition;
@@ -108,10 +108,10 @@ namespace XSharp.LanguageService
             }
             else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
             {
-                switch ((VSConstants.VSStd97CmdID)nCmdID)
+                switch (nCmdID)
                 {
-                    case VSConstants.VSStd97CmdID.Undo:
-                    case VSConstants.VSStd97CmdID.Redo:
+                    case (int)VSConstants.VSStd97CmdID.Undo:
+                    case (int)VSConstants.VSStd97CmdID.Redo:
                         CancelSignatureSession();
                         break;
                 }
@@ -125,10 +125,10 @@ namespace XSharp.LanguageService
                 if (pguidCmdGroup == VSConstants.VSStd2K)
                 {
 
-                    switch ((VSConstants.VSStd2KCmdID)nCmdID)
+                    switch (nCmdID)
                     {
 
-                        case VSConstants.VSStd2KCmdID.TYPECHAR:
+                        case (int) VSConstants.VSStd2KCmdID.TYPECHAR:
                             typedChar = (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
                             switch (typedChar)
                             {
@@ -152,15 +152,15 @@ namespace XSharp.LanguageService
 
                             }
                             break;
-                        case VSConstants.VSStd2KCmdID.RETURN:
+                        case (int)VSConstants.VSStd2KCmdID.RETURN:
                             if (!completionActive)
                             {
                                 CancelSignatureSession();
                             }
                             break;
 
-                        case VSConstants.VSStd2KCmdID.LEFT:
-                        case VSConstants.VSStd2KCmdID.RIGHT:
+                        case (int)VSConstants.VSStd2KCmdID.LEFT:
+                        case (int)VSConstants.VSStd2KCmdID.RIGHT:
                             MoveSignature();
                             break;
 

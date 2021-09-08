@@ -43,24 +43,24 @@ namespace XSharp.LanguageService
             // 1. Pre-process
             if (pguidCmdGroup == VSConstants.VSStd2K)
             {
-                switch ((VSConstants.VSStd2KCmdID)nCmdID)
+                switch (nCmdID)
                 {
-                    case VSConstants.VSStd2KCmdID.HELPKEYWORD:
-                    case VSConstants.VSStd2KCmdID.HELP:
+                    case (int)VSConstants.VSStd2KCmdID.HELPKEYWORD:
+                    case (int)VSConstants.VSStd2KCmdID.HELP:
                         break;
                 }
             }
             else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
             {
-                switch ((VSConstants.VSStd97CmdID)nCmdID)
+                switch (nCmdID)
                 {
-                    case VSConstants.VSStd97CmdID.F1Help:
-                    case VSConstants.VSStd97CmdID.WindowHelp:
+                    case (int)VSConstants.VSStd97CmdID.F1Help:
+                    case (int)VSConstants.VSStd97CmdID.WindowHelp:
                         //handled = true;
                         //Todo RvdH Call X# Help
                         break;
                     
-                    case VSConstants.VSStd97CmdID.GotoDefn:
+                    case (int)VSConstants.VSStd97CmdID.GotoDefn:
                         XSharpGotoDefinition.GotoDefn(TextView);
                         return VSConstants.S_OK;
                 }
@@ -79,11 +79,11 @@ namespace XSharp.LanguageService
                 // 3. Post process
                 if (pguidCmdGroup == Microsoft.VisualStudio.VSConstants.VSStd2K)
                 {
-                    switch ((VSConstants.VSStd2KCmdID)nCmdID)
+                    switch (nCmdID)
                     {
   
-                        case VSConstants.VSStd2KCmdID.HELP:
-                        case VSConstants.VSStd2KCmdID.HELPKEYWORD:
+                        case (int) VSConstants.VSStd2KCmdID.HELP:
+                        case (int) VSConstants.VSStd2KCmdID.HELPKEYWORD:
                             break;
                         
                     }
@@ -101,10 +101,10 @@ namespace XSharp.LanguageService
             bool isSource = _file != null && _file.XFileType == XFileType.SourceCode;
             if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
             {
-                switch ((VSConstants.VSStd97CmdID)prgCmds[0].cmdID)
+                switch (prgCmds[0].cmdID)
                 {
                     
-                    case VSConstants.VSStd97CmdID.GotoDefn:
+                    case (int) VSConstants.VSStd97CmdID.GotoDefn:
                         if (isSource && !XSettings.DisableGotoDefinition)
                         {
                             prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_ENABLED | (uint)OLECMDF.OLECMDF_SUPPORTED;

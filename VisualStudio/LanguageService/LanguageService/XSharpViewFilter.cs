@@ -35,23 +35,23 @@ namespace XSharp.LanguageService
         {
             if (Guid.Equals(guidCmdGroup, Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet2K))
             {
-                switch ((VSStd2KCmdID)nCmdId)
+                switch (nCmdId)
                 {
-                    case VSStd2KCmdID.INSERTSNIPPET:
-                    case VSStd2KCmdID.SURROUNDWITH:
+                    case (int) VSStd2KCmdID.INSERTSNIPPET:
+                    case (int)VSStd2KCmdID.SURROUNDWITH:
                         return (int)(OLECMDF.OLECMDF_SUPPORTED | OLECMDF.OLECMDF_ENABLED);
-                    case VSStd2KCmdID.CodeDefView:
+                    case (int)VSStd2KCmdID.CodeDefView:
                         return (int)OLECMDF.OLECMDF_INVISIBLE;
                 }
             }
             if (Guid.Equals(guidCmdGroup, Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet97))
             {
-                switch ((VSStd97CmdID)nCmdId)
+                switch (nCmdId)
                 {
-                    case VSStd97CmdID.GotoDefn:
+                    case (int)VSStd97CmdID.GotoDefn:
                         return (int)(OLECMDF.OLECMDF_SUPPORTED | OLECMDF.OLECMDF_LATCHED);
-                    case VSStd97CmdID.GotoDecl:
-                    case VSStd97CmdID.GotoRef:
+                    case (int)VSStd97CmdID.GotoDecl:
+                    case (int)VSStd97CmdID.GotoRef:
                         return (int)(OLECMDF.OLECMDF_SUPPORTED | OLECMDF.OLECMDF_INVISIBLE);
                 }
             }
@@ -63,9 +63,9 @@ namespace XSharp.LanguageService
         {
             if (Guid.Equals(guidCmdGroup, Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet2K))
             {
-                switch ((VSConstants.VSStd2KCmdID)nCmdId)
+                switch (nCmdId)
                 {
-                    case VSStd2KCmdID.INSERTSNIPPET:
+                    case (int)VSStd2KCmdID.INSERTSNIPPET:
                         {
                             ExpansionProvider ep = GetExpansionProvider();
                             if (this.TextView != null && ep != null)
@@ -75,7 +75,7 @@ namespace XSharp.LanguageService
                             return true;
                         }
 
-                    case VSStd2KCmdID.SURROUNDWITH:
+                    case (int)VSStd2KCmdID.SURROUNDWITH:
                         {
                             ExpansionProvider ep = GetExpansionProvider();
                             if (this.TextView != null && ep != null)
@@ -84,7 +84,7 @@ namespace XSharp.LanguageService
                             }
                         }
                         break;
-                    case VSStd2KCmdID.ECMD_LEFTCLICK:
+                    case (int)VSStd2KCmdID.ECMD_LEFTCLICK:
                         Source.OnCommand(TextView, (VSConstants.VSStd2KCmdID)nCmdId, '\0');
                         break;
                 }

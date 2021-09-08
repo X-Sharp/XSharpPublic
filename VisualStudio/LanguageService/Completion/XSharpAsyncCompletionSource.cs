@@ -39,6 +39,7 @@ namespace XSharp.LanguageService
         private IBufferTagAggregatorFactoryService aggregator;
         private XSharpDialect _dialect;
 
+
         internal static bool StringEquals(string lhs, string rhs)
         {
             if (string.Equals(lhs, rhs, StringComparison.OrdinalIgnoreCase))
@@ -66,14 +67,44 @@ namespace XSharp.LanguageService
                 XSettings.DisplayOutputMessage(strMessage);
             }
         }
-        public Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token)
+        public async Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token)
         {
-            throw new NotImplementedException();
+            switch (trigger.Reason)
+            {
+                case InitialTriggerReason.Invoke:
+                    break;
+                case InitialTriggerReason.InvokeAndCommitIfUnique:
+                    break;
+                case InitialTriggerReason.Insertion:
+                    return CompletionOnChar(trigger, triggerLocation, applicableToSpan, token);
+                case InitialTriggerReason.Deletion:
+                    return CompletionOnChar(trigger, triggerLocation, applicableToSpan, token);
+                case InitialTriggerReason.Snippets:
+                    break;
+            }
+            return null;
         }
+
+        private CompletionContext CompletionOnChar(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token)
+        {
+            switch (trigger.Character)
+            {
+                case ':':
+                case '.':
+                    //StartCompletionSession(nCmdID, ch);
+                    break;
+                default:
+                    //completeCurrentToken(nCmdID, ch);
+                    break;
+            }
+            return null;
+        }
+
+        
 
         public Task<object> GetDescriptionAsync(CompletionItem item, CancellationToken token)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token)
@@ -83,8 +114,8 @@ namespace XSharp.LanguageService
             applicableToSpan = lineSpan;
             return false;
         }
- 
-  
+
+
     }
 
 }

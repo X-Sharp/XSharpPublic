@@ -288,13 +288,14 @@ namespace XSharp.LanguageService
                     //todo what else ?
                     return null;
                 }
+                string notProcessed;
                 if (end.Count > 1)  // prefer type of end over type of start
                 {
-                    var res = RetrieveElement(location, end, CompletionState.General);
+                    var res = RetrieveElement(location, end, CompletionState.General, out notProcessed);
                     return GetTypeFromSymbol(location, res.FirstOrDefault());
                 }
                 // start must be > 1
-                var result = RetrieveElement(location, start, CompletionState.General);
+                var result = RetrieveElement(location, start, CompletionState.General, out notProcessed);
                 return GetTypeFromSymbol(location, result.FirstOrDefault());
             }
             return null;
@@ -303,7 +304,7 @@ namespace XSharp.LanguageService
         {
             // Resolve the VAR type of an element in a collection
             var tokenList = xVar.Expression;
-            var result = RetrieveElement(location, tokenList, CompletionState.General);
+            var result = RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed);
             var element = result.FirstOrDefault();
             if (element == null)
                 return null;
@@ -378,7 +379,7 @@ namespace XSharp.LanguageService
         {
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.Assignment || xVar.ImpliedKind == ImpliedKind.Using);
             var tokenList = xVar.Expression;
-            var result = RetrieveElement(location, tokenList, CompletionState.General);
+            var result = RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed);
             var element = result.FirstOrDefault();
             return GetTypeFromSymbol(location, element);
         }
@@ -416,9 +417,11 @@ namespace XSharp.LanguageService
         /// <param name="foundElement"></param>
         /// <param name="stopAtOpenToken"></param>
         /// <returns></returns>
-        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> tokenList, CompletionState state, bool stopAtOpenToken = false)
+        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> tokenList,
+            CompletionState state, out string notProcessed, bool stopAtOpenToken = false )
         {
             //
+            notProcessed = "";
             var result = new List<IXSymbol>();
             if (tokenList == null || tokenList.Count == 0)
                 return result;
@@ -488,6 +491,7 @@ namespace XSharp.LanguageService
             while (currentPos <= lastopentoken)
             {
                 result.Clear();
+                notProcessed = "";
                 if (symbols.Count > 0 && symbols.Count != count)
                 {
                     var top = symbols.Peek();
@@ -736,6 +740,10 @@ namespace XSharp.LanguageService
                     if (result.Count > 0)
                     {
                         symbols.Push(result[0]);
+                    }
+                    else
+                    {
+                        notProcessed = namespacePrefix + currentName;
                     }
                 }
                 // We have it

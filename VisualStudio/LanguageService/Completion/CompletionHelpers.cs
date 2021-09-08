@@ -8,16 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
-using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Utilities;
 using XSharpModel;
-using Microsoft.VisualStudio.Shell;
 using System.Windows.Media;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using Microsoft.VisualStudio;
 using LanguageService.CodeAnalysis.XSharp;
-using Microsoft.VisualStudio.Text.Tagging;
 
 namespace XSharp.LanguageService
 {
@@ -40,10 +35,6 @@ namespace XSharp.LanguageService
             var found = file.Project.FindGlobalMembersInAssemblyReferences(filterText);
             FillMembers(location, compList, null, found, Modifiers.Public, true);
         }
-        public static bool isGenerated(IXTypeSymbol type)
-        {
-            return type.Name.IndexOf("$", StringComparison.Ordinal) > -1;
-        }
         internal void AddTypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith,
             bool onlyInterfaces = false, bool afterDot = false)
         {
@@ -64,9 +55,7 @@ namespace XSharp.LanguageService
 
             foreach (var type in project.FindSystemTypesByName(startWith, location.Usings.ToArray()))
             {
-                if (isGenerated(type))
-                    continue;
-                if (onlyInterfaces && type.Kind != Kind.Interface)
+                 if (onlyInterfaces && type.Kind != Kind.Interface)
                     continue;
                 string fullName = type.FullName;
                 if (IsHiddenTypeName(fullName))
@@ -106,11 +95,13 @@ namespace XSharp.LanguageService
                 return true;
             if (realTypeName.IndexOf('$') >= 0)
                 return true;
+            if (realTypeName.IndexOf('<') >= 0)
+                return true;
             return false;
         }
 
 
-        internal bool IsHiddenMemberName(string realMemberName)
+        internal static bool IsHiddenMemberName(string realMemberName)
         {
             if (realMemberName.Length > 2 && XSettings.EditorHideAdvancedMembers
                 && (realMemberName.StartsWith("__", StringComparison.Ordinal) || realMemberName.EndsWith("__", StringComparison.Ordinal)))
@@ -120,11 +111,13 @@ namespace XSharp.LanguageService
                 return true;
             if (realMemberName.IndexOf('$') >= 0)
                 return true;
+            if (realMemberName.IndexOf('<') >= 0)
+                return true;
 
+            if (realMemberName == ".dtor")
+                return true;
             if (realMemberName.Length > 4)
             {
-                if (realMemberName == ".dtor")
-                    return true;
                 // event add
                 if (realMemberName.StartsWith("add_", StringComparison.Ordinal))
                     return true;
@@ -134,13 +127,18 @@ namespace XSharp.LanguageService
                 // property set
                 if (realMemberName.StartsWith("set_", StringComparison.Ordinal))
                     return true;
+            }
+            if (realMemberName.Length > 3)
+            {
                 // operator
                 if (realMemberName.StartsWith("op_", StringComparison.Ordinal))
                     return true;
             }
             // event remove
             if (realMemberName.Length > 7 && realMemberName.StartsWith("remove_", StringComparison.Ordinal))
+            {
                 return true;
+            }
             return false;
         }
 
@@ -229,7 +227,7 @@ namespace XSharp.LanguageService
             }
             if (XSettings.CompleteFunctionsA)
             {
-
+                AddGenericFunctionsAssemblies(compList, location, startWith, false);
             }
             if (XSettings.CompleteGlobals)
             {
@@ -241,18 +239,17 @@ namespace XSharp.LanguageService
             }
             if (XSettings.CompleteGlobalsA)
             {
+                AddGenericGlobalsAssemblies(compList, location, startWith, false);
 
             }
             if (XSettings.CompleteSnippets)
             {
-
+                // todo: Add Snippets
             }
             if (XSettings.CompleteKeywords)
             {
                 AddXSharpKeywords(compList, startWith);
             }
-
-
         }
 
         internal void AddGenericGlobals(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
@@ -260,11 +257,22 @@ namespace XSharp.LanguageService
             var found = location.Project.FindGlobalMembersLike(startWith, onlyProject);
             FillMembers(location, compList, null, found, Modifiers.Public, false);
         }
+        internal void AddGenericGlobalsAssemblies(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
+        {
+            var found = location.Project.FindGlobalsInAssemblyReferences(startWith);
+            FillMembers(location, compList, null, found, Modifiers.Public, false);
+        }
+
         internal void AddGenericFunctions(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
         {
             var found = location.Project.FindFunctionsLike(startWith, onlyProject);
             FillMembers(location, compList, null, found, Modifiers.Public, false);
 
+        }
+        internal void AddGenericFunctionsAssemblies (XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
+        {
+            var found = location.Project.FindFunctionsInAssemblyReferences(startWith);
+            FillMembers(location, compList, null, found, Modifiers.Public, false);
         }
 
         internal void AddNamespaces(XCompletionList compList, XSharpSearchLocation location, string startWith)

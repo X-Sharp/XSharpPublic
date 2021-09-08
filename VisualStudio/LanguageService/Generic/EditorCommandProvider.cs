@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+
 using System;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.OLE.Interop;
@@ -54,14 +55,14 @@ namespace XSharp.LanguageService
                 if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
                 {
 
-                    // Get XFile and assign it to the textbuffer
+                    // Get XFile and assign it to the TextBuffer
                     if (!textView.TextBuffer.Properties.TryGetProperty(typeof(XFile), out file))
                     {
-                        file = XSharpModel.XSolution.FindFile(fileName);
+                        file = XSolution.FindFile(fileName);
                         if (file == null)
                         {
                             XSolution.OrphanedFilesProject.AddFile(fileName);
-                            file = XSharpModel.XSolution.FindFile(fileName);
+                            file = XSolution.FindFile(fileName);
                         }
                         if (file != null)
                         {
@@ -102,6 +103,8 @@ namespace XSharp.LanguageService
                         }
                     }
                 }
+                // The same file may be open in multiple textViews
+                // these will share the same dropdown
                 if (_dropDowns.ContainsKey(fileName))
                 {
                     dropdown = _dropDowns[fileName];
@@ -126,6 +129,10 @@ namespace XSharp.LanguageService
 
         private void TextView_Closed(object sender, EventArgs e)
         {
+            // It is possible that the same file is open in 2 windows (split window)
+            // These will share the same dropdown.
+            // That is why when closing a textView we need to check to see if there are still textViews left
+            // for the same file.
             if (sender is IWpfTextView textView)
             {
                 textView.Closed -= TextView_Closed;

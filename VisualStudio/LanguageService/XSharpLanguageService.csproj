@@ -65,6 +65,8 @@
     <Compile Include="Completion\CompletionHelpers.cs" />
     <Compile Include="Completion\CompletionState.cs" />
     <Compile Include="Completion\CompletionCommandHandler.cs" />
+    <Compile Include="Completion\XSharpCompletionCommitManager.cs" />
+    <Compile Include="Completion\XSharpCompletionCommitManagerProvider.cs" />
     <Compile Include="Completion\XSharpCompletionSourceProvider.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSource.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSourceProvider.cs" />

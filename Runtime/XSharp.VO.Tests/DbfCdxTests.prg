@@ -4805,6 +4805,39 @@ RETURN
 			one->DbCloseArea()
 			two->DbCloseArea()
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestMemoCdx() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+
+			LOCAL FUNCTION GetLastByte() AS INT
+				LOCAL aBytes AS BYTE[]
+				aBytes := System.IO.File.ReadAllBytes(cDbf + ".fpt")
+				RETURN aBytes[aBytes:Length]
+			END FUNCTION
+
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{"CFIELD","C",1,0},{"MFIELD","M",10,0}} )
+			Assert.Equal(0, GetLastByte())
+
+			DbUseArea( TRUE ,,cDBF )
+			DbAppend()
+			FieldPut(2,"123")
+			DbCloseArea()
+
+			Assert.Equal(175, GetLastByte())
+			
+			DbUseArea( TRUE ,,cDBF )
+			DbGoBottom()
+			LOCAL c123 AS STRING
+			c123 := FieldGet(2)
+			Assert.Equal(3, c123:Length)
+			Assert.Equal("123", c123)
+			DbCloseArea()
+
+			Assert.Equal(175, GetLastByte())
+		RETURN
 
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING

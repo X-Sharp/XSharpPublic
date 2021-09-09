@@ -2357,6 +2357,41 @@ RETURN
 			DbCloseArea()
 		RETURN
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestMemoDbt() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/776
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+
+			LOCAL FUNCTION GetLastByte() AS INT
+				LOCAL aBytes AS BYTE[]
+				aBytes := System.IO.File.ReadAllBytes(cDbf + ".dbt")
+				RETURN aBytes[aBytes:Length]
+			END FUNCTION
+
+			RddSetDefault("DBFNTX")
+
+			CreateDatabase(cDbf, {{"CFIELD","C",1,0},{"MFIELD","M",10,0}} )
+			Assert.Equal(0, GetLastByte())
+
+			DbUseArea( TRUE ,,cDBF )
+			DbAppend()
+			FieldPut(2,"123")
+			DbCloseArea()
+
+			Assert.Equal(26, GetLastByte())
+			
+			DbUseArea( TRUE ,,cDBF )
+			DbGoBottom()
+			LOCAL c123 AS STRING
+			c123 := FieldGet(2)
+			Assert.Equal(3, c123:Length)
+			Assert.Equal("123", c123)
+			DbCloseArea()
+
+			Assert.Equal(26, GetLastByte())
+		RETURN
+
 
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING

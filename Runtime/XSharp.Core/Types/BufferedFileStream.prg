@@ -310,6 +310,7 @@ BEGIN NAMESPACE XSharp.IO
 
         RETURN
 
+        PRIVATE _temp := BYTE[]{1} AS BYTE[] 
         /// <inheritdoc />
         /// <remarks>This method overrides the normal behavior of the FileStream class and writed the data to an inmemory cache, when possible </remarks>
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
@@ -317,14 +318,8 @@ BEGIN NAMESPACE XSharp.IO
                 SUPER:WriteByte(b)
                 RETURN
             ENDIF
-            VAR pos             := SELF:Position
-            VAR pageNo          := (INT64) _AND(pos , ~BUFF_MASK)
-            var pageoffset      := (LONG) _AND(pos , BUFF_MASK)
-            VAR page            := PageBuffers.GetPage(SELF, pageNo, BUFF_SIZE)
-            page:Buffer[pageoffset]  := b
-            page:Hot            := TRUE
-            SELF:_length  := Math.Max(SELF:_length, pos+1)
-            SELF:Position := pos+1
+            _temp[0] := b
+            SELF:Write(_temp, 0, 1)
         RETURN
 
         /// <inheritdoc />

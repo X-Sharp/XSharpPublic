@@ -1,0 +1,956 @@
+[FORM]
+Assign01=Name,HyperLabel(%Name%,%Caption%,,)
+Assign02=Caption,HyperLabel(,lstring,,)
+Assign03=Description,HyperLabel(,,string,)
+Assign04=Help Context,HyperLabel(,,,string)
+Assign05=Clipper Keys,ClipperKeys(BOOL)
+Assign06=Large Icon,Icon(CLASS:ICON)
+Assign07=Small Icon,IconSm(CLASS:ICON)
+Assign08=Accelerator Table,Accelerator(CLASS:Accelerator)
+Assign09=Background Color,Background(COLOR)
+Assign10=Menu,Menu(CLASS:Menu)
+Assign11=Context Menu,ContextMenu(CLASS:Menu)
+Assign12=Help File Name,HelpDisplay(string)
+Assign13=Prevent Auto Layout,PreventAutoLayout(BOOL)
+Assign14=Defer USE,DeferUse(BOOL)
+Assign15=Quit On Close,QuitOnClose(BOOL)
+Assign16=Automated,Automated(BOOL)
+Assign17=Allow Server Close,AllowServerClose(BOOL)
+
+Method01=Activate,Activate(CODE:Activate)
+Method02=ButtonClick,ButtonClick(CODE:ButtonClick)
+Method03=ButtonDoubleClick,ButtonDoubleClick(CODE:ButtonDoubleClick)
+Method04=Close,Close(CODE:Close)
+Method05=Deactivate,Deactivate(CODE:Deactivate)
+Method06=Draw,Draw(CODE:Draw)
+Method07=EditChange,EditChange(CODE:EditChange)
+Method08=EditFocusChange,EditFocusChange(CODE:EditFocusChange)
+Method09=EditScroll,EditScroll(CODE:EditScroll)
+Method10=Expose,Expose(CODE:Expose)
+Method11=FocusChange,FocusChange(CODE:FocusChange)
+Method12=HelpRequest,HelpRequest(CODE:HelpRequest)
+Method13=HorizontalScroll,HorizontalScroll(CODE:HorizontalScroll)
+Method14=Keydown,Keydown(CODE:Keydown)
+Method15=Keyup,Keyup(CODE:Keyup)
+Method16=ListBoxClick,ListBoxClick(CODE:ListBoxClick)
+Method17=ListBoxSelect,Show(CODE:ListBoxSelect)
+Method18=MenuCommand,MenuCommand(CODE:MenuCommand)
+Method19=MenuInit,MenuInit(CODE:MenuInit)
+Method20=MenuSelect,MenuSelect(CODE:MenuSelect)
+Method21=MouseButtonDoubleClick,MouseButtonDoubleClick(CODE:MouseButtonDoubleClick)
+Method22=MouseButtonDown,MouseButtonDown(CODE:MouseButtonDown)
+Method23=MouseButtonUp,MouseButtonUp(CODE:MouseButtonUp)
+Method24=MouseDrag,MouseDrag(CODE:MouseDrag)
+Method25=MouseMove,MouseMove(CODE:MouseMove)
+Method26=Move,Move(CODE:Move)
+Method27=QueryClose,QueryClose(CODE:QueryClose)
+Method28=Resize,Resize(CODE:Resize)
+Method29=VerticalScroll,VerticalScroll(CODE:VerticalScroll)
+Method30=View As,ViewAs(VIEWS)
+Method31=Data Server,Use(CLASS:DBSERVER:+SQLTable:+JDataServer)
+Method32=Font,Font(FONT)
+Method33=Notify,Notify(CODE:Notify)
+Method34=PreValidate,PreValidate(CODE:PreValidate)
+Method35=HorizontalSlide,HorizontalSlide(CODE:HorizontalSlide)
+Method36=VerticalSlide,VerticalSlide(CODE:VerticalSlide)
+Method37=HorizontalSpin,HorizontalSpin(CODE:HorizontalSpin)
+Method38=VerticalSpin,VerticalSpin(CODE:VerticalSpin)
+Method39=PreInit Actions,PreInit(CODE:PreInit)
+Method40=PostInit Actions,PostInit(CODE:PostInit)
+Method41=StatusBar,EnableStatusBar(BOOL)
+Method42=AnimationStart,AnimationStart(CODE:AnimationStart)
+Method43=AnimationStop,AnimationStop(CODE:AnimationStop)
+Method44=RichEditDropFiles,RichEditDropFiles(CODE:RichEditDropFiles)
+Method45=RichEditProtected,RichEditProtected(CODE:RichEditProtected)
+Method46=RichEditSelChange,RichEditSelChange(CODE:RichEditSelectionChange)
+Method47=RichEditUndoLost,RichEditUndoLost(CODE:RichEditUndoLost)
+Method48=ListViewItemDrag,ListViewItemDrag(CODE:ListViewItemDrag)
+Method49=ListViewItemEdit,ListViewItemEdit(CODE:ListViewItemEdit)
+Method50=ListViewColumnClick,ListViewColumnClick(CODE:ListViewColumnClick)
+Method51=ListViewItemDelete,ListItemDelete(CODE:ListViewItemDelete)
+Method52=ListViewKeyDown,ListKeyDown(CODE:ListViewKeyDown)
+Method53=TreeViewMouseDown,TreeViewMouseButtonDown(CODE:TreeViewMouseButtonDown)
+Method54=ListViewMouseDown,ListViewMouseButtonDown(CODE:ListViewMouseButtonDown)
+Method55=TreeViewMouseDoubleClick,TreeViewMouseDoubleClick(CODE:TreeViewMouseButtonDoubleClick)
+Method56=ListViewMouseDoubleClick,ListViewMouseDoubleClick(CODE:ListViewMouseButtonDoubleClick)
+Method57=TabSelect,TabSelect(CODE:TabSelect)
+Method58=TabSelChanging,TabSelChanging(CODE:TabSelectionChanging)
+Method59=TabKeyDown,TabKeyDown(CODE:TabKeyDown)
+Method60=TreeViewItemDrag,TreeViewItemDrag(CODE:TreeViewItemDrag)
+Method61=TreeViewItemEdit,TreeViewItemEdit(CODE:TreeViewItemEdit)
+Method62=TreeViewItemDelete,TreeViewItemDelete(CODE:TreeViewItemDelete)
+Method63=TreeViewItemExpanded,TreeViewItemExpanded(CODE:TreeViewItemExpanded)
+Method64=TreeViewItemExpanding,TreeViewItemExpanding(CODE:TreeViewItemExpanding)
+Method65=TreeViewKeyDown,TreeViewKeyDown(CODE:TreeViewKeyDown)
+Method66=TreeViewSelChanged,TreeViewSelChanged(CODE:TreeViewSelectionChanged)
+Method67=TreeViewSelChanging,TreeViewSelChanging(CODE:TreeViewSelectionChanging)
+Method68=Class Declaration,ClassDeclaration(CODE:ClassDeclaration)
+Method69=MonthCalSelChanged,MonthCalSelChanged(CODE:MonthCalSelectionChanged)
+Method70=DateTimeSelChanged,DateTimeSelChanged(CODE:DateTimeSelectionChanged)
+Method90=No Access/Assign,NoAcc(LOGIC)
+Method91=Pixel Positions,PixPos(LOGIC)
+Method92=Export Controls,ExpCtls(LOGIC)
+
+WindowStyle01=Tab Key,WS_CHILD:WS_CHILD|DS_CONTROL(TABKEY)
+
+[FORM:DATAWINDOW]
+ContTitle=Data Window
+text=DataWindow Caption
+InitMethod=DATAWINDOW(oWindow,iCtlID,oServer,uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DataWindow)
+Name=MyDataWindow
+Size=420,320
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+HelpID=2065
+PropTabs=HyperLabel,DataWindow,Mouse Events,Window Events,Control Events,Menu Events,CommonControl Events,TreeView Events,ListView Events
+Assign18=Owner Alignment,OwnerAlignment(OWNERALIGNMENT)
+
+[FORM:DATADIALOG]
+ContTitle=Data Dialog
+text=DataDialog Caption
+InitMethod=DATADIALOG(oWindow,iCtlID,oServer,uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DataDialog)
+Name=MyDataDialog
+Size=400,240
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+HelpID=2490
+PropTabs=HyperLabel,DataDialog,Mouse Events,Window Events,Control Events,Menu Events,CommonControl Events,TreeView Events,ListView Events
+
+[FORM:DATAWINDOW:OLEDATAWINDOW]
+ContTitle=OLE Data Window
+text=OLE DataWindow Caption
+InitMethod=OLEDATAWINDOW(oWindow,iCtlID,oServer,uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:OleDataWindow)
+Name=MyOLEDataWindow
+Size=420,320
+DialogTemplate=1
+Position=5,5
+Style=WS_CHILD
+HelpID=2065
+PropTabs=HyperLabel,DataWindow,Mouse Events,Window Events,Control Events,Menu Events,CommonControl Events,TreeView Events,ListView Events
+
+
+[FORM:SHELLWINDOW]
+Assign01=Mouse Pointer,Pointer(CLASS:POINTER)
+Assign02=Menu,Menu(CLASS:Menu)
+Assign03=Help File Name,HelpDisplay(string)
+ContTitle=Shell Window
+text=ShellWindow Caption
+InitMethod=SHELLWINDOW(oParent,uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:ShellWindow)
+Name=TheShellWindow
+Size=400,300
+Position=5,5
+Style=WS_OVERLAPPEDWINDOW
+HelpID=2060
+PropTabs=HyperLabel,ShellWindow,Mouse Events,Window Events,Control Events,Menu Events
+
+[FORM:DIALOGWINDOW]
+Method01=Font,Font(FONT)
+Method02=Modeless,Modeless(LOGIC)
+Assign01=Background Color,Background(COLOR)
+Assign02=Mouse Pointer,Pointer(CLASS:POINTER)
+Assign03=Help File Name,HelpDisplay(string)
+WindowStyle01=Disabled,WS_DISABLED(BOOL)
+WindowStyle03=Clip Siblings,WS_CLIPSIBLINGS(BOOL)
+WindowStyle04=Local Edit,DS_LOCALEDIT(BOOL)
+WindowStyle05=Absolute Align,DS_ABSALIGN(BOOL)
+WindowStyle06=Clip Children,WS_CLIPCHILDREN(BOOL)
+WindowStyle09=System Modal,DS_SYSMODAL(BOOL)
+WindowStyle10=No Idle Message,DS_NOIDLEMSG(BOOL)
+WindowStyle11=Resizable,WS_THICKFRAME:DS_MODALFRAME(BOOL)
+WindowStyle12=Caption Bar,WS_NULL:WS_CAPTION:WS_CAPTION|WS_SYSMENU:WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX:WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX:WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX|WS_MAXIMIZEBOX(CAPTIONBAR)
+WindowStyle13=Fixed Font,DS_FIXEDSYS(BOOL)
+WindowStyle14=Position,WS_NULL:DS_CENTER:DS_CENTERMOUSE(DIALOGPOSITON)
+WindowStyle15=Type,WS_POPUP:WS_CHILD|DS_CONTROL(DIALOGTYPE)
+ContTitle=Dialog Window
+DialogTemplate=1
+text=Dialog Caption
+InitMethod=DialogWindow(oParent,uExtra)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DialogWindow)
+Name=TheDialog
+Size=400,240
+Position=5,5
+Style=DS_MODALFRAME|WS_POPUP|WS_CAPTION|WS_SYSMENU|DS_3DLOOK
+ExStyle=WS_EX_DLGMODALFRAME
+HelpID=2070
+PropTabs=HyperLabel,DlgWindow,DlgWndStyles:Styles,Mouse Events,Window Events,Control Events,CommonControl Events,TreeView Events,ListView Events,Menu Events
+
+[CONTROL]
+Assign01=Name,HyperLabel(%Name%,%Caption%,,)
+Assign02=Caption,HyperLabel(,lstring,,)
+Assign03=Description,HyperLabel(,,string,)
+Assign04=Help Context,HyperLabel(,,,string)
+Assign05=Background Color,Background(COLOR)
+Assign06=Context Menu,ContextMenu(CLASS:Menu)
+Assign07=Tooltip,TooltipText(string)
+Assign08=Owner Alignment,OwnerAlignment(OWNERALIGNMENT)
+WindowStyle01=Disabled,WS_DISABLED(BOOL)
+WindowStyle02=Tab Stop,WS_TABSTOP(BOOL)
+WindowStyle03=Group,WS_GROUP(BOOL)
+WindowStyle04=Border,WS_BORDER(BOOL)
+WindowStyle05=Vertical Scrollbar,WS_VSCROLL(BOOL)
+WindowStyle06=Horizontal Scrollbar,WS_HSCROLL(BOOL)
+WindowStyle07=Clip Siblings,WS_CLIPSIBLINGS(BOOL)
+ExWindowStyle01=Modal Frame,WS_EX_DLGMODALFRAME(BOOL)
+ExWindowStyle02=Static Edge,WS_EX_STATICEDGE(BOOL)
+ExWindowStyle03=Client Edge,WS_EX_CLIENTEDGE(BOOL)
+ExWindowStyle04=Transparent,WS_EX_TRANSPARENT(BOOL)
+ExWindowStyle05=Accept Files,WS_EX_ACCEPTFILES(BOOL)
+ExWindowStyle06=No Parent Notify,WS_EX_NOPARENTNOTIFY(BOOL)
+ExWindowStyle07=Right-To-Left Reading,WS_EX_RTLREADING(BOOL)
+ExWindowStyle08=ExAlignment,WS_EX_LEFT:WS_EX_RIGHT(EXALIGNMENT)
+
+[CONTROL:CUSTOMCONTROL]
+Assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+ContTitle=Custom Control
+Name=CustomControl
+ClassName=static
+OptClassName=_VOCustomControl
+Size=240,140
+HelpID=2915
+Style=WS_CHILD|WS_BORDER
+PropTabs=HyperLabel,GenCustCtrl:General,CustomCtlStyles:Styles,ExStyles
+InitMethod=CustomControl(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:CustomControl)
+
+[CONTROL:MULTIMEDIACONTAINER]
+Assign01=File Name,FileName(STRING)
+Assign02=Field Spec,FieldSpec(CLASS:FIELDSPEC)
+ContTitle=MulitMedia Container
+Name=MultiMediaContainer
+ClassName=__PTSTBCN__
+OptClassName=_VOMMContainer
+Size=240,140
+;HelpID=2915
+Style=WS_CHILD|WS_BORDER
+PropTabs=HyperLabel,GenMMCont:General,MMContStyles:Styles,ExStyles
+InitMethod=MultiMediaContainer(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:MultiMediaContainer)
+
+[CONTROL:OLEGEN]
+Assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+Assign02=AllowResize,AllowResize(BOOL)
+Assign03=AutoSizeOnCreate,AutoSizeOnCreate(BOOL)
+Assign04=ReadOnly,ReadOnly(BOOL)
+Assign05=AllowDocView,AllowDocView(BOOL)
+
+[CONTROL:OLEGEN:OLEOBJECT]
+Assign01=AllowInPlace,AllowInPlace(BOOL)
+Assign02=ActivateOnDblClk,ActivateOnDblClk(BOOL)
+Assign03=Field Spec,FieldSpec(CLASS:FIELDSPEC)
+ContTitle=OLE Object
+Name=OLEObject
+ClassName=__PTSTBCN__
+OptClassName=_VOOleContainer
+Size=240,140
+PropTabs=HyperLabel,GenOleObject:General,OLEObjStyles:Styles,ExStyles
+Style=WS_CHILD|WS_BORDER
+InitMethod=OLEObject(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:OLEObject)
+
+[CONTROL:OLEGEN:OLECONTROL]
+ContTitle=OLE Control
+Name=OLEControl
+ClassName=__PTSTBCN__
+OptClassName=_VOOleContainer
+Size=240,140
+Style=WS_CHILD
+HelpID=2290
+PropTabs=HyperLabel,GenOleControl:General,OCXProperties:Properties,OCXEvents:Events,OLEObjStyles:Styles,ExStyles
+InitMethod=OLEControl(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:OLEControl)
+
+[CONTROL:SUBDATAWINDOW]
+ContTitle=Sub-Data Window
+ClassName=__PSBDWN__
+Name=Sub_Form
+Size=240,140
+Style=WS_CHILD|WS_BORDER
+HelpID=2225
+PropTabs=GenSubData:General,SubDataStyles:Styles
+Method1=Relation String,RelationString(string)
+Method2=Order,Order(string)
+
+[CONTROL:FIXEDICON]
+Method01=Icon,SetIcon(CLASS:ICON)
+ContTitle=Fixed Icon
+ClassName=static
+Name=FixedIcon
+Size=32,32
+GenerateCode=1
+Style=WS_CHILD|SS_ICON|WS_BORDER
+HelpID=2205
+PropTabs=HyperLabel,GenFixedImage:General,FixedImageStyles:Styles,ExStyles
+InitMethod=FIXEDICON(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:FixedIcon)
+WindowStyle08=Real Size Image,SS_REALSIZEIMAGE(BOOL)
+WindowStyle09=Center Image,SS_CENTERIMAGE(BOOL)
+WindowStyle10=Right adjust,SS_RIGHTJUST(BOOL)
+
+[CONTROL:FIXEDBITMAP]
+Method01=Bitmap,SetBitmap(CLASS:BITMAP)
+ContTitle=Fixed Bitmap
+ClassName=static
+Name=FixedBitmap
+Size=64,64
+GenerateCode=1
+Style=WS_CHILD|SS_BITMAP|WS_BORDER
+HelpID=2565
+PropTabs=HyperLabel,GenFixedImage:General,FixedImageStyles:Styles,ExStyles
+InitMethod=FIXEDBITMAP(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:FixedBitmap)
+WindowStyle09=Center Image,SS_CENTERIMAGE(BOOL)
+WindowStyle10=Right adjust,SS_RIGHTJUST(BOOL)
+
+[CONTROL:SCROLLBAR]
+Assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+Assign02=Field Spec,FieldSpec(CLASS:FIELDSPEC)
+Assign03=Min Value,Range(numeric,)
+Assign04=Max Value,Range(,numeric)
+WindowStyle01=AutoSize,SBS_SIZEBOXTOPLEFTALIGN(BOOL)
+WindowStyle02=Size Grip,SBS_SIZEGRIP|SBS_SIZEBOXBOTTOMRIGHTALIGN(BOOL)
+
+[CONTROL:SCROLLBAR:HORIZONTALSCROLLBAR]
+ContTitle=Horizontal Scroll Bar
+ClassName=scrollbar
+Name=HorzScroll
+Size=140,20
+Style=WS_CHILD|SBS_HORZ
+HelpID=2215
+PropTabs=HyperLabel,GenScrollbar:General,ScrollBarStyles:Styles,ExStyles
+InitMethod=HorizontalScrollBar(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:HorizontalScrollBar)
+
+[CONTROL:SCROLLBAR:VERTICALSCROLLBAR]
+ContTitle=Vertical Scroll Bar
+ClassName=scrollbar
+Name=VertScroll
+Size=20,140
+Style=WS_CHILD|SBS_VERT
+HelpID=2220
+PropTabs=HyperLabel,GenScrollbar:General,ScrollBarStyles:Styles,ExStyles
+InitMethod=VerticalScrollBar(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:VerticalScrollBar)
+
+[CONTROL:TEXTCONTROL]
+Method01=Font,Font(FONT)
+Method02=Input Method Editor,Ime(OLOGIC)
+Assign01=Text Color,TextColor(COLOR)
+Assign02=Field Spec,FieldSpec(CLASS:FIELDSPEC)
+
+[CONTROL:TEXTCONTROL:EDIT]
+Assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+Assign02=Text Limit,TextLimit(numeric)
+WindowStyle09=Password,ES_PASSWORD(BOOL)
+WindowStyle10=Retain Selection,ES_NOHIDESEL(BOOL)
+WindowStyle11=OEM Conversion,ES_OEMCONVERT(BOOL)
+WindowStyle12=Auto HScroll,ES_AUTOHSCROLL(BOOL)
+WindowStyle13=Read Only,ES_READONLY(BOOL)
+WindowStyle14=Conversion,WS_NULL:ES_UPPERCASE:ES_LOWERCASE(EDITCONVERT)
+WindowStyle15=Numbers Only,ES_NUMBER(BOOL)
+WindowStyle19=Alignment,ES_LEFT:ES_CENTER:ES_RIGHT(EDITALIGN)
+
+[CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT]
+WindowStyle17=Auto VScroll,ES_AUTOVSCROLL(BOOL)
+WindowStyle18=Return Key,ES_WANTRETURN(BOOL)
+ContTitle=Multi-Line Edit
+ClassName=edit
+Name=MultiLineEdit
+Size=80,60
+Style=WS_CHILD|ES_MULTILINE|WS_TABSTOP|WS_BORDER|ES_AUTOVSCROLL|ES_AUTOHSCROLL|ES_WANTRETURN
+ExStyle=WS_EX_CLIENTEDGE
+HelpID=2190
+PropTabs=HyperLabel,GenEdit:General,MultiLineStyles:Styles,ExStyles
+InitMethod=MultiLineEdit(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:MultiLineEdit)
+
+[CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT]
+Assign01=Block,Block(string)
+Assign02=Block Owner,BlockOwner(STRING)
+Assign03=OverWrite,OverWrite(OVERWRITE)
+Assign04=Picture,Picture(STRING)
+Assign05=Scroll Mode,ScrollMode(SCRMODE)
+Assign06=Focus Select,FocusSelect(FSELECT)
+Assign07=Auto Focus Change,AutoFocusChange(BOOL)
+ContTitle=Single-Line Edit
+ClassName=edit
+Name=SingleLineEdit
+Size=80,20
+Style=WS_CHILD|WS_TABSTOP|WS_BORDER|ES_AUTOHSCROLL
+ExStyle=WS_EX_CLIENTEDGE
+HelpID=2185
+PropTabs=HyperLabel,GenSingleEdit:General,SingleLineStyles:Styles,ExStyles
+InitMethod=SingleLineEdit(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:SingleLineEdit)
+
+[CONTROL:TEXTCONTROL:BASELISTBOX]
+Assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+Assign02=Field Spec,FieldSpec(CLASS:FIELDSPEC)
+Assign03=Text Color,TextColor(COLOR)
+Method01=Fill Using,FillUsing( )
+
+[CONTROL:TEXTCONTROL:BASELISTBOX:LISTBOX]
+WindowStyle22=Sort,LBS_SORT(BOOL)
+WindowStyle23=Notify Parent,LBS_NOTIFY(BOOL)
+WindowStyle24=Use Tab Stops,LBS_USETABSTOPS(BOOL)
+WindowStyle25=No Redraw,LBS_NOREDRAW(BOOL)
+WindowStyle26=Multi Column,LBS_MULTICOLUMN(BOOL)
+WindowStyle27=No Integral Height,LBS_NOINTEGRALHEIGHT(BOOL)
+WindowStyle28=Want Keyboard Input,LBS_WANTKEYBOARDINPUT(BOOL)
+WindowStyle29=Multiple Selection,LBS_MULTIPLESEL(BOOL)
+WindowStyle30=Extended Selection,LBS_EXTENDEDSEL(BOOL)
+WindowStyle31=Disable if no Scroll,LBS_DISABLENOSCROLL(BOOL)
+WindowStyle32=Owner Draw,WS_NULL:LBS_OWNERDRAWFIXED:LBS_OWNERDRAWVARIABLE(OWNERDRAW)
+ContTitle=List Box
+ClassName=listbox
+Name=ListBox
+Size=80,80
+Style=WS_TABSTOP|WS_CHILD|WS_VSCROLL|LBS_NOTIFY|WS_BORDER|LBS_SORT|LBS_NOINTEGRALHEIGHT|LBS_DISABLENOSCROLL
+ExStyle=WS_EX_CLIENTEDGE
+HelpID=2160
+PropTabs=HyperLabel,GenListbox:General,ListBoxStyles:Styles,ExStyles
+InitMethod=ListBox(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:ListBox:-ComboBox)
+
+[CONTROL:TEXTCONTROL:BASELISTBOX:COMBOBOX]
+WindowStyle32=ComboBox Type,CBS_SIMPLE:CBS_DROPDOWN:CBS_DROPDOWNLIST(CBTYPE)
+WindowStyle33=Sort,CBS_SORT(BOOL)
+WindowStyle34=Auto HScroll,CBS_AUTOHSCROLL(BOOL)
+WindowStyle35=No Integral Height,CBS_NOINTEGRALHEIGHT(BOOL)
+WindowStyle36=OEM Convert,CBS_OEMCONVERT(BOOL)
+WindowStyle37=Disable if no Scroll,CBS_DISABLENOSCROLL(BOOL)
+WindowStyle38=OwnerDraw,WS_NULL:CBS_OWNERDRAWFIXED:CBS_OWNERDRAWVARIABLE(OWNERDRAW)
+ContTitle=Combo Box
+ClassName=combobox
+Name=ComboBox
+Size=80,120
+Style=WS_TABSTOP|WS_CHILD|CBS_DROPDOWN|WS_VSCROLL|CBS_SORT|CBS_DISABLENOSCROLL
+HelpID=2165
+PropTabs=HyperLabel,GenListbox:General,ComboBoxStyles:Styles,ExStyles
+InitMethod=combobox(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:ComboBox)
+
+
+[CONTROL:TEXTCONTROL:BUTTON]
+assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+assign02=Image,Image(CLASS:Icon:+Bitmap)
+WindowStyle06=Text Left,BS_LEFTTEXT(BOOL)
+WindowStyle07=Multiline,BS_MULTILINE(BOOL)
+WindowStyle08=Flat,BS_FLAT(BOOL)
+WindowStyle09=Horizontal Alignment,WS_NULL:BS_LEFT:BS_RIGHT:BS_CENTER(BUTTONHALIGN)
+WindowStyle10=Vertical Alignment,WS_NULL:BS_TOP:BS_BOTTOM:BS_VCENTER(BUTTONVALIGN)
+WindowStyle11=Image Type,WS_NULL:BS_ICON:BS_BITMAP:WS_NULL(BUTTONIMAGETYPE)
+WindowStyle12=Push Like,BS_PUSHLIKE(BOOL)
+
+[CONTROL:TEXTCONTROL:BUTTON:CHECKBOX]
+Assign01=Field Spec,FieldSpec(CLASS:FIELDSPEC)
+Assign02=Text Color,TextColor(COLOR)
+WindowStyle05=Selection,BS_CHECKBOX:BS_AUTOCHECKBOX:BS_3STATE:BS_AUTO3STATE(CBAUTOSTYLE)
+ContTitle=Check Box
+ClassName=button
+Name=CheckBox
+Text=CheckBox
+Size=120,18
+HelpID=2155
+Style=WS_TABSTOP|WS_CHILD|BS_AUTOCHECKBOX
+PropTabs=HyperLabel,GenCheckbox:General,CheckBoxStyles:Styles,ExStyles
+InitMethod=CheckBox(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:CheckBox)
+
+[CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON]
+WindowStyle04=Default Button,BS_DEFPUSHBUTTON(BOOL)
+Event01=Click Event,MyBtnName( )
+ContTitle=Push Button
+Type=CommandControl
+ClassName=button
+Name=PushButton
+text=Push
+Size=80,20
+Style=WS_CHILD|WS_TABSTOP
+PropTabs=HyperLabel,GenPushButton:General,PushButtonStyles:Styles,ExStyles
+HelpID=2170
+InitMethod=PushButton(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:PushButton)
+
+[CONTROL:TEXTCONTROL:BUTTON:RADIOBUTTON]
+Method01=Group Value,Value(numeric)
+Assign01=Text Color,TextColor(COLOR)
+WindowStyle07=AutoSelect,BS_AUTORADIOBUTTON:BS_RADIOBUTTON(BOOL)
+ContTitle=Radio Button
+Type=CommandControl
+ClassName=button
+Name=RadioButton
+text=RadioButton
+Size=120,18
+Style=WS_CHILD|BS_AUTORADIOBUTTON
+HelpID=2175
+PropTabs=HyperLabel,GenRadioButton:General,RadioButtonStyles:Styles,ExStyles
+InitMethod=RadioButton(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:RadioButton)
+
+[CONTROL:TEXTCONTROL:FIXEDTEXT]
+Assign01=Text Color,TextColor(COLOR)
+WindowStyle20=No Prefix,SS_NOPREFIX(BOOL)
+WindowStyle21=Alignment,SS_LEFT:SS_CENTER:SS_RIGHT:SS_SIMPLE:SS_LEFTNOWORDWRAP(FIXEDALIGN)
+WindowStyle22=Center vertically,SS_CENTERIMAGE(BOOL)
+ContTitle=Fixed Text
+InitMethod=FixedText(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:FixedText)
+ClassName=Static
+text=Fixed Text
+Name=FixedText
+Size=80,20
+Style=WS_CHILD
+HelpID=2210
+PropTabs=HyperLabel,GenFixedText:General,FixedTextStyles:Styles,ExStyles
+
+[CONTROL:TEXTCONTROL:GROUPBOX]
+assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+Assign02=Text Color,TextColor(COLOR)
+WindowStyle01=Flat,BS_FLAT(BOOL)
+ContTitle=Group Box
+ClassName=Button
+Text=GroupBox
+Name=GroupBox
+Size=100,80
+Style=WS_CHILD|BS_GROUPBOX|WS_GROUP
+HelpID=2200
+PropTabs=HyperLabel,GenGroupbox:General,GroupBoxStyles:Styles,ExStyles
+InitMethod=GroupBox(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:GroupBox:-RadioButtonGroup)
+
+[CONTROL:TEXTCONTROL:RADIOBUTTONGROUP]
+Assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+Assign02=Field Spec,FieldSpec(CLASS:FIELDSPEC)
+Assign03=Text Color,TextColor(COLOR)
+ContTitle=Radio Button Group
+ClassName=Button
+Text=RadioButtonGrp
+Name=RadioButtonGroup
+Size=100,80
+Style=WS_CHILD|BS_GROUPBOX|WS_GROUP
+PropTabs=HyperLabel,GenRadioButtonGroup:General,GroupBoxStyles:Styles,ExStyles
+HelpID=2180
+InitMethod=RadioButtonGroup(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:RadioButtonGroup)
+
+[CONTROL:COMMONCONTROL]
+Assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+Method01=Font,Font(FONT)
+
+[CONTROL:COMMONCONTROL:PROGRESSBAR]
+WindowStyle01=Smooth,PBS_SMOOTH(BOOL)
+WindowStyle02=Vertical,PBS_VERTICAL(BOOL)
+Assign01=Min Value,Range(numeric,)
+Assign02=Max Value,Range(,numeric)
+Assign03=Bar Color,BarColor(COLOR)
+Assign04=Background,BackgroundColor(COLOR)
+ContTitle=Progress Bar
+ClassName=msctls_progress32
+Name=ProgressBar
+Size=140,20
+Style=WS_CHILD
+HelpID=2260
+PropTabs=HyperLabel,GenProgBar:General,ProgressStyles:Styles,ExStylesNoStaticEdge:ExStyles
+InitMethod=ProgressBar(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:ProgressBar)
+
+[CONTROL:SCROLLBAR:SLIDER]
+WindowStyle38=Auto Ticks,TBS_AUTOTICKS(BOOL)
+WindowStyle39=No Ticks,TBS_NOTICKS(BOOL)
+WindowStyle40=Enable Selection Range,TBS_ENABLESELRANGE(BOOL)
+WindowStyle41=Fixed Length,TBS_FIXEDLENGTH(BOOL)
+WindowStyle42=No Thumb,TBS_NOTHUMB(BOOL)
+WindowStyle43=Tooltips,TBS_TOOLTIPS(BOOL)
+
+
+[CONTROL:SCROLLBAR:SLIDER:HORIZONTALSLIDER]
+ContTitle=Horizontal Slider
+ClassName=msctls_trackbar32
+Name=HorizontalSlider
+Size=100,30
+Style=WS_CHILD|TBS_AUTOTICKS
+HelpID=2265
+PropTabs=HyperLabel,GenScrollbar:General,SliderStyles:Styles,ExStyles
+InitMethod=HorizontalSlider(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:HorizontalSlider)
+
+[CONTROL:SCROLLBAR:SLIDER:VERTICALSLIDER]
+ContTitle=Vertical Slider
+ClassName=msctls_trackbar32
+Name=VerticalSlider
+Size=30,100
+Style=WS_CHILD|TBS_AUTOTICKS|TBS_VERT
+HelpID=2560
+PropTabs=HyperLabel,GenScrollbar:General,SliderStyles:Styles,ExStyles
+InitMethod=VerticalSlider(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:VerticalSlider)
+
+[CONTROL:SCROLLBAR:SPINNER]
+WindowStyle43=Wrap,UDS_WRAP(BOOL)
+WindowStyle44=Alignment,WS_NULL:UDS_ALIGNLEFT:UDS_ALIGNRIGHT(UPDOWNALIGN)
+WindowStyle45=Auto Buddy,UDS_AUTOBUDDY(BOOL)
+WindowStyle46=Arrow Keys,UDS_ARROWKEYS(BOOL)
+WindowStyle47=No Thousands,UDS_NOTHOUSANDS(BOOL)
+WindowStyle48=Set Buddy Int,UDS_SETBUDDYINT(BOOL)
+
+[CONTROL:SCROLLBAR:SPINNER:VERTICALSPINNER]
+ContTitle=Vertical Spinner
+ClassName=msctls_updown32
+Name=VerticalSpinner
+Size=20,30
+Style=WS_CHILD|UDS_AUTOBUDDY
+HelpID=2555
+PropTabs=HyperLabel,GenScrollbar:General,SpinnerStyles:Styles,ExStyles
+InitMethod=VerticalSpinner(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:VerticalSpinner)
+
+[CONTROL:SCROLLBAR:SPINNER:HORIZONTALSPINNER]
+ContTitle=Horizontal Spinner
+ClassName=msctls_updown32
+Name=HorizontalSpinner
+Size=30,20
+Style=WS_CHILD|UDS_AUTOBUDDY|UDS_HORZ
+HelpID=2555
+PropTabs=HyperLabel,GenScrollbar:General,SpinnerStyles:Styles,ExStyles
+InitMethod=HorizontalSpinner(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:HorizontalSpinner)
+
+[CONTROL:COMMONCONTROL:TABCONTROL]
+Assign01=AutoSize,AutoSize(BOOL)
+WindowStyle01=Force Icon Left,TCS_FORCEICONLEFT(BOOL)
+WindowStyle02=Force Label Left,TCS_FORCELABELLEFT(BOOL)
+WindowStyle03=Buttons,TCS_BUTTONS(BOOL)
+WindowStyle04=Multiline,TCS_MULTILINE(BOOL)
+WindowStyle05=Focus On Button Down,TCS_FOCUSONBUTTONDOWN(BOOL)
+WindowStyle06=Has ToolTips,TCS_TOOLTIPS(BOOL)
+WindowStyle07=Focus Never,TCS_FOCUSNEVER(BOOL)
+WindowStyle08=Tab Position,WS_NULL:TCS_VERTICAL:TCS_BOTTOM:TCS_VERTICAL|TCS_RIGHT(TABPOSITION)
+WindowStyle09=Hot Track,TCS_HOTTRACK(BOOL)
+ContTitle=Tab Control
+ClassName=SysTabControl32
+Name=TabControl
+Size=180,100
+Style=WS_CHILD
+HelpID=2280
+PropTabs=HyperLabel,GenTabControl:General,TCStyles:Styles,ExStyles
+InitMethod=TabControl(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:TabControl)
+
+[CONTROL:COMMONCONTROL:TREEVIEW]
+WindowStyle55=Has Buttons,TVS_HASBUTTONS(BOOL)
+WindowStyle56=Has Lines,TVS_HASLINES(BOOL)
+WindowStyle57=Lines at Root,TVS_LINESATROOT(BOOL)
+WindowStyle58=Disable Drag&Drop,TVS_DISABLEDRAGDROP(BOOL)
+WindowStyle59=Show Selection Always,TVS_SHOWSELALWAYS(BOOL)
+WindowStyle60=Edit Labels,TVS_EDITLABELS(BOOL)
+ContTitle=Tree View
+ClassName=SysTreeView32
+Name=TreeView
+Size=150,100
+Style=WS_CHILD|WS_BORDER|TVS_HASBUTTONS|TVS_HASLINES|TVS_LINESATROOT|TVS_EDITLABELS
+HelpID=2240
+PropTabs=HyperLabel,GenComControls:General,TVStyles:Styles,ExStyles
+InitMethod=TreeView(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:TreeView)
+
+[CONTROL:COMMONCONTROL:LISTVIEW]
+WindowStyle60=List View Type,LVS_ICON:LVS_SMALLICON:LVS_REPORT:LVS_LIST(LVTYPE)
+WindowStyle61=Single Selection,LVS_SINGLESEL(BOOL)
+WindowStyle62=Show Selection Always,LVS_SHOWSELALWAYS(BOOL)
+WindowStyle63=Sort,WS_NULL:LVS_SORTASCENDING:LVS_SORTDESCENDING(LVSORT)
+WindowStyle64=No Label Wrap,LVS_NOLABELWRAP(BOOL)
+WindowStyle65=Auto Arrange,LVS_AUTOARRANGE(BOOL)
+WindowStyle66=Edit Labels,LVS_EDITLABELS(BOOL)
+WindowStyle67=No Scroll,LVS_NOSCROLL(BOOL)
+WindowStyle68=Align Left,LVS_ALIGNLEFT(BOOL)
+WindowStyle69=No Column Header,LVS_NOCOLUMNHEADER(BOOL)
+WindowStyle70=No Sort Header,LVS_NOSORTHEADER(BOOL)
+Assign01=Background,BackgroundColor(COLOR)
+Assign02=Grid Lines,GridLines(BOOL)
+Assign03=Header Drag&Drop,HeaderDragDrop(BOOL)
+Assign04=Full Row Select,FullRowSelect(BOOL)
+Assign05=Checkboxes,CheckBoxes(BOOL)
+Assign06=Track Selection,TrackSelection(BOOL)
+ContTitle=List View
+ClassName=SysListView32
+Name=ListView
+Size=150,120
+Style=WS_CHILD|WS_BORDER|LVS_REPORT|LVS_EDITLABELS
+HelpID=2235
+PropTabs=HyperLabel,GenListView:General,LVStyles:Styles,LVExStyles:ExStyles
+InitMethod=ListView(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:ListView)
+
+[CONTROL:COMMONCONTROL:LISTVIEW:DATALISTVIEW]
+Assign01=Server,Server(CLASS:DBSERVER:+SQLTable)
+ContTitle=Data List View
+ClassName=SysListView32
+Name=DataListView
+Size=150,120
+Style=WS_CHILD|WS_BORDER|LVS_REPORT|WS_HSCROLL|LVS_SINGLESEL|LVS_SHOWSELALWAYS|LVS_OWNERDATA
+HelpID=2920
+PropTabs=HyperLabel,GenListView:General,DLVStyles:Styles,LVExStyles:ExStyles
+InitMethod=DataListView(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DataListView)
+
+[CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT:RICHEDIT]
+WindowStyle74=Save Selection,ES_SAVESEL(BOOL)
+WindowStyle75=Sunken,ES_SUNKEN(BOOL)
+WindowStyle76=Disable No Scroll,ES_DISABLENOSCROLL(BOOL)
+WindowStyle77=Align to Parent,ES_SELECTIONBAR(BOOL)
+Assign01=Background,BackgroundColor(COLOR)
+ContTitle=Rich Edit Control
+ClassName=RICHEDIT20A
+Name=RichEdit
+Size=100,100
+Style=WS_CHILD|WS_BORDER|ES_MULTILINE|ES_WANTRETURN|ES_AUTOVSCROLL
+HelpID=2245
+PropTabs=HyperLabel,GenRTFEdit:General,RichEditStyles:Styles,ExStylesNoClientEdge:ExStyles
+InitMethod=RichEdit(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:RichEdit)
+
+[CONTROL:TEXTCONTROL:HOTKEYEDIT]
+ContTitle=HotKey Edit
+ClassName=msctls_hotkey32
+Name=HotKeyEdit
+Size=90,20
+Style=WS_CHILD
+HelpID=2255
+PropTabs=HyperLabel,GenComControls:General,Styles,ExStylesNoClientEdge:ExStyles
+InitMethod=HotKeyEdit(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:HotKeyEdit)
+
+[CONTROL:COMMONCONTROL:ANIMATIONCONTROL]
+WindowStyle71=Center,ACS_CENTER(BOOL)
+WindowStyle72=Transparent Background,ACS_TRANSPARENT(BOOL)
+WindowStyle73=Auto Play,ACS_AUTOPLAY(BOOL)
+Method01=Resource,OpenResource(numeric)
+Assign01=AVI File,FileSpec(STRING)
+ContTitle=Animation Control
+ClassName=SysAnimate32
+Name=Animation
+Size=60,60
+Style=WS_CHILD|WS_BORDER
+HelpID=2250
+PropTabs=HyperLabel,GenAniControls:General,AnimStyles:Styles,ExStyles
+InitMethod=AnimationControl(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:AnimationControl)
+
+[CONTROL:TEXTCONTROL:DATETIMEPICKER]
+Assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+Assign02=Format,Format(STRING)
+WindowStyle01=Type,WS_NULL:DTS_LONGDATEFORMAT:DTS_TIMEFORMAT(DTPTYPE)
+WindowStyle02=App Can Parse,DTS_APPCANPARSE(BOOL)
+WindowStyle03=Right Align MC,DTS_RIGHTALIGN(BOOL)
+WindowStyle04=Show None,DTS_SHOWNONE(BOOL)
+WindowStyle05=Up-Down,DTS_UPDOWN(BOOL)
+ContTitle=Date Time Picker Control
+ClassName=SysDateTimePick32
+Name=DateTimePicker
+Size=85,22
+Style=WS_CHILD|DTS_TIMEFORMAT|WS_TABSTOP
+HelpID=2925
+PropTabs=HyperLabel,GenDTPick:General,DTPStyles:Styles,ExStylesNoClientEdge:ExStyles
+InitMethod=DateTimePicker(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:DateTimePicker)
+
+[CONTROL:TEXTCONTROL:MONTHCALENDAR]
+Assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+WindowStyle01=Day State,MCS_DAYSTATE(BOOL)
+WindowStyle02=Multi Select,MCS_MULTISELECT(BOOL)
+WindowStyle03=No Today,MCS_NOTODAY(BOOL)
+WindowStyle04=No Today Circle,MCS_NOTODAYCIRCLE(BOOL)
+WindowStyle05=Week Numbers,MCS_WEEKNUMBERS(BOOL)
+ContTitle=Month Calendar Control
+ClassName=SysMonthCal32
+Name=MonthCalendar
+Size=180,160
+Style=WS_CHILD|WS_TABSTOP
+ExStyle=WS_EX_CLIENTEDGE
+HelpID=2935
+PropTabs=HyperLabel,GenMonthCal:General,MCStyles:Styles,ExStyles
+InitMethod=MonthCalendar(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:MonthCalendar)
+
+[CONTROL:TEXTCONTROL:BASELISTBOX:COMBOBOX:COMBOBOXEX]
+ContTitle=ComboBoxEx
+ClassName=ComboBoxEx32
+Name=ComboBoxEx
+Size=80,120
+Style=WS_TABSTOP|WS_CHILD|CBS_DROPDOWN
+HelpID=2910
+PropTabs=HyperLabel,GenListbox:General,ComboBoxStyles:Styles,ExStyles
+InitMethod=comboboxex(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:ComboBoxEx)
+
+[CONTROL:TEXTCONTROL:IPADDRESS]
+Assign01=Use for Tooltip,UseHLforToolTip(BOOL)
+ContTitle=IP Address
+ClassName=SysIPAddress32
+Text=IPAddress
+Name=IPAddress
+Size=100,20
+Style=WS_CHILD|WS_TABSTOP
+HelpID=2930
+PropTabs=HyperLabel,GenIPAddress:General,Styles,ExStyles
+InitMethod=IPAddress(PARENT,ID,POSITION,SIZE)
+InheritClassName=Inherit from Class,InheritClassName(CLASS:IPAddress)
+
+[AssignMap]
+BackgroundColor=Color
+BarColor=Color
+Background=Brush
+TextLimit=
+TextColor=Color
+Caption=
+AllowInPlace=
+ActivateOnDblClk=
+AllowResize=
+AutoSizeOnCreate=
+ReadOnly=
+ClipperKeys=
+AutoSize=
+OverWrite=
+Picture=
+PreventAutoLayout=
+TooltipText=
+UseHLforTooltip=
+AllowDocView=
+DeferUse=
+GridLines=
+HeaderDragDrop=
+FullRowSelect=
+CheckBoxes=
+TrackSelection=
+QuitOnClose=
+Automated=
+Format=
+AllowServerClose=
+ScrollMode=
+FocusSelect=
+AutoFocusChange=
+OwnerAlignment=
+FileName=
+
+[StdProperties]
+;**** Types
+FONT=FONTSYSTEM8,FONTMODERN8,FONTMODERN10,FONTMODERN12,FONTSWISS8,FONTSWISS10,FONTSWISS12,FONTSWISS14,FONTSWISS18,FONTSWISS24,FONTROMAN8,FONTROMAN10,FONTROMAN12,FONTROMAN14,FONTROMAN18,FONTROMAN24
+BRUSH=BRUSHWHITE,BRUSHBLACK,BRUSHDARK,BRUSHMEDIUM,BRUSHLIGHT,BRUSHHOLLOW,BRUSHCLEAR
+COLOR=COLORBLACK,COLORBLUE,COLORCYAN,COLORGREEN,COLORMAGENTA,COLORRED,COLORYELLOW,COLORWHITE
+LOGIC=Yes
+BOOL=True,False
+OLOGIC=#ON,#OFF
+VIEWS=#FormView,#BrowseView
+BUTTONIMAGESTYLE=No Image,Icon,Bitmap
+BUTTONHALIGN=Auto,Left,Right,Center
+BUTTONVALIGN=Auto,Top,Bottom,Center
+BUTTONIMAGETYPE=No Image,Icon,Bitmap
+CBAUTOSTYLE=No AutoSelect,AutoSelect,3 State,AutoSelect 3 State
+EDITCONVERT=No Conversion,Uppercase,Lowercase
+EDITALIGN=Left,Center,Right
+FIXEDALIGN=Left,Center,Right,Simple,Left No Wrap,
+UPDOWNALIGN=No Alignment,Left,Right
+OWNERDRAW=No Ownerdraw,Fixed,Variable
+CBTYPE=Simple,Drop Down,Drop Down List
+LVTYPE=Icons,Small Icons,Report,List
+LVSORT=No Sort,Ascending,Descending
+CAPTIONBAR=No Caption Bar,Caption Bar Only,System Menu,Minimize Box,Maximize Box,Both Boxes
+DIALOGPOS=Auto,Center,Center Mouse
+DIALOGTYPE=Popup Dialog,Tab Page
+TABKEY=Form Only,Include Parent
+OVERWRITE=OVERWRITE_NEVER,OVERWRITE_ONKEY,OVERWRITE_ALWAYS
+SCRMODE=SCRMODE_FULL,SCRMODE_PART,SCRMODE_NO
+FSELECT=FSEL_ALL,FSEL_TRIM,FSEL_HOME,FSEL_END,FSEL_TRIMEND
+DTPTYPE=Short Date,Long Date,Time
+TABPOSITION=Top,Left,Bottom,Right
+EXALIGNMENT=Left,Right
+OWNERALIGNMENT=OA_LEFT,OA_TOP,OA_RIGHT,OA_BOTTOM,OA_CENTER,OA_LEFT_AUTOSIZE,OA_TOP_AUTOSIZE,OA_RIGHT_AUTOSIZE,OA_BOTTOM_AUTOSIZE,OA_FULL_SIZE,OA_X,OA_X_Y,OA_X_PY, OA_X_PY_PHEIGHT,OA_X_HEIGHT,OA_X_PHEIGHT,OA_PX,OA_PX_Y,OA_PX_Y_PWIDTH,OA_PX_PY_PHEIGHT,OA_PX_PY_PWIDTH_PHEIGHT,OA_PX_PWIDTH,OA_PX_PWIDTH_HEIGHT,OA_PX_PWIDTH_PHEIGHT,OA_PX_HEIGHT,OA_PX_PHEIGHT,OA_Y,OA_Y_WIDTH,OA_Y_PWIDTH,OA_PY,OA_PY_WIDTH_PHEIGHT,OA_PY_PWIDTH_PHEIGHT,OA_PY_PHEIGHT,OA_WIDTH,OA_WIDTH_HEIGHT,OA_WIDTH_PHEIGHT,OA_PWIDTH,OA_PWIDTH_HEIGHT,OA_PWIDTH_PHEIGHT,OA_HEIGHT,OA_PHEIGHT
+
+;**** Association between Tabs and methods/assigns/styles
+HyperLabel=(Hyperlabel Info)Caption,Name,Description,Help Context,Use for Tooltip
+DataWindow=(DataWindow Properties)Inherit from Class,_DBInhFrom,_DCInhFrom,Class Declaration,No Access/Assign,Export Controls,Pixel Positions,Automated,Large Icon,Small Icon,Accelerator Table,Background Color,Menu,Context Menu,Help File Name,View As,Clipper Keys,Tab Key,Data Server,Prevent Auto Layout,Allow Server Close,Defer USE,Quit On Close,Font,StatusBar,Notify,PreValidate,PreInit Actions,PostInit Actions,_Width,_Height,Owner Alignment
+DataDialog=(DataDialog Properties)Inherit from Class,_DBInhFrom,_DCInhFrom,Class Declaration,No Access/Assign,Export Controls,Pixel Positions,Automated,Large Icon,Small Icon,Accelerator Table,Background Color,Context Menu,Help File Name,View As,Clipper Keys,Data Server,Prevent Auto Layout,Allow Server Close,Defer USE,Font,Notify,PreValidate,PreInit Actions,PostInit Actions,_Width,_Height
+ShellWindow=(ShellWindow Properties)Inherit from Class,Class Declaration,Large Icon,Small Icon,Mouse Pointer,Menu,Context Menu,Help File Name,PreInit Actions,PostInit Actions,_Width,_Height
+DlgWindow=(DialogWindow Properties)Inherit from Class,Class Declaration,Type,Export Controls,Pixel Positions,Automated,Large Icon,Small Icon,Font,Modeless,Background Color,Mouse Pointer,Clipper Keys,Tab Key,Help File Name,PreInit Actions,PostInit Actions,_Width,_Height
+Mouse Events=(Window Mouse Events)MouseButtonDoubleClick,MouseButtonDown,MouseButtonUp,MouseDrag,MouseMove
+Window Events=(Windows Events)Activate,Close,Deactivate,Draw,Expose,FocusChange,HelpRequest,Move,QueryClose,Resize
+Menu Events=(Window Menu Events)MenuCommand,MenuInit,MenuSelect
+Control Events=(Window Control Events)ButtonClick,ButtonDoubleClick,EditChange,EditFocusChange,EditScroll,Keydown,Keyup,ListBoxClick,ListBoxSelect,HorizontalScroll,VerticalScroll,HorizontalSlide,VerticalSlide,HorizontalSpin,VerticalSpin
+CommonControl Events=(CommonControl Events)AnimationStart,AnimationStop,RichEditDropFiles,RichEditProtected,RichEditSelChange,RichEditUndoLost,TabSelect,TabSelChanging,TabKeyDown,MonthCalSelChanged,DateTimeSelChanged
+TreeView Events=(TreeView Events)TreeViewMouseDown,TreeViewMouseDoubleClick,TreeViewItemDrag,TreeViewItemEdit,TreeViewItemDelete,TreeViewItemExpanded,TreeViewItemExpanding,TreeViewKeyDown,TreeViewSelChanged,TreeViewSelChanging
+ListView Events=(ListView Events)ListViewItemDrag,ListViewItemEdit,ListViewColumnClick,ListViewItemDelete,ListViewKeyDown,ListViewMouseDown,ListViewMouseDoubleClick
+GenMultiSel=(General Multiple Selection Properties)Context Menu,Font,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenCustCtrl=(General CustomControl Properties)Inherit from Class,Context Menu,Tooltip,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenMMCont=(General MultiMedia Container Properties)Field Spec,Inherit from Class,Context Menu,Tooltip,_Visible,_GenCode,Owner Alignment,File Name,_Width,_Height,_Left,_Top
+GenSubData=(General SubDataWindow Properties)Name,Relation String,Order,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenPushButton=(General PushButton Properties)Click Event,Inherit from Class,Context Menu,Tooltip,Font,Input Method Editor,_Visible,_GenCode,Image,Owner Alignment,_Width,_Height,_Left,_Top
+GenRadioButton=(General RadioButton Properties)Group Value,Text Color,Background Color,Inherit from Class,Context Menu,Tooltip,Font,Input Method Editor,_Visible,_GenCode,Image,Owner Alignment,_Width,_Height,_Left,_Top
+GenCheckbox=(General CheckBox Properties)Field Spec,Text Color,Background Color,Inherit from Class,Context Menu,Tooltip,Font,Input Method Editor,_Visible,_GenCode,Image,Owner Alignment,_Width,_Height,_Left,_Top
+GenScrollbar=(General ScrollBar Properties)Field Spec,Min Value,Max Value,Background Color,Inherit from Class,Context Menu,Tooltip,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenEdit=(General Edit Properties)Field Spec,Text Limit,Text Color,Background Color,Inherit from Class,Context Menu,Tooltip,Font,Input Method Editor,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenSingleEdit=(General SinglelineEdit Properties)Block,Block Owner,Field Spec,Text Limit,Text Color,Background Color,Inherit from Class,Context Menu,Tooltip,Font,Picture,Overwrite,Scroll Mode,Focus Select,Auto Focus Change,Input Method Editor,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenListbox=(General ListBox Properties)Fill Using,Field Spec,Text Color,Background Color,Inherit from Class,Context Menu,Tooltip,Font,Input Method Editor,_GenCode,_Visible,Owner Alignment,_Width,_Height,_Left,_Top
+GenFixedText=(General FixedText Properties)Text Color,Background Color,Inherit from Class,Context Menu,Font,Input Method Editor,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenFixedImage=(General FixedImage Properties)Background Color,Inherit from Class,Context Menu,Icon,Bitmap,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenGroupbox=(General GroupBox Properties)Text Color,Background Color,Inherit from Class,Context Menu,Tooltip,Font,Input Method Editor,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenRadioButtonGroup=(General RadioButtonGroup Properties)Field Spec,Text Color,Background Color,Inherit from Class,Context Menu,Tooltip,Font,Input Method Editor,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenComControls=(General CommonControl Properties)Background Color,Inherit from Class,Context Menu,Tooltip,Font,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenAniControls=(General AnimationControl Properties)Background Color,Inherit from Class,Context Menu,Tooltip,Resource,AVI File,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenTabControl=(General TabControl Properties)Inherit from Class,Context Menu,Font,AutoSize,_Visible,_GenCode,_IsDataPage,_PageCaption,_PageName,Owner Alignment,_Width,_Height,_Left,_Top
+GenListView=(General CommonControl Properties)Background,Inherit from Class,Server,Context Menu,Tooltip,Font,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenProgBar=(General ProgressBar Properties)Inherit From Class,Context Menu,Tooltip,Background,Bar Color,Min Value,Max Value,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenRTFEdit=(General Edit Properties)Field Spec,Text Limit,Text Color,Background,Inherit from Class,Context Menu,Tooltip,Font,Input Method Editor,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenDTPick=(General Date Time Picker Properties)Field Spec,Text Color,Background Color,Inherit from Class,Context Menu,Tooltip,Font,Format,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenMonthCal=(General Month Calendar Properties)Field Spec,Text Color,Background,Inherit from Class,Context Menu,Tooltip,Font,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+GenOleObject=(General OLE Object Properties)Field Spec,Inherit from Class,Context Menu,Tooltip,_Visible,_GenCode,AllowInPlace,ActivateOnDblClk,AllowResize,AutoSizeOnCreate,ReadOnly,AllowDocView,Owner Alignment,_Width,_Height,_Left,_Top
+GenOleControl=(General OLE Control Properties)Inherit from Class,Context Menu,Tooltip,_Visible,_GenCode,AllowInPlace,ActivateOnDblClk,AllowResize,AutoSizeOnCreate,ReadOnly,Owner Alignment,_Width,_Height,_Left,_Top
+GenIPAddress=(General IPAddress Properties)Field Spec,Inherit from Class,Context Menu,ToolTip,Font,_Visible,_GenCode,Owner Alignment,_Width,_Height,_Left,_Top
+OCXProperties=(OLE Control Properties)_OCXPropertyPages,_OCXPropertyList
+OCXEvents=(OLE Control Events)_OCXEventList
+Styles=(Window Styles)Disabled,Tab Stop,Group
+ExStyles=(Extended Window Styles)Clip Siblings,Right-To-Left Reading,ExAlignment,No Parent Notify,Accept Files,Transparent,Client Edge,Static Edge,Modal Frame
+ExStylesNoStaticEdge=(Extended Window Styles)Clip Siblings,Right-To-Left Reading,ExAlignment,No Parent Notify,Accept Files,Transparent,Client Edge,Modal Frame
+ExStylesNoClientEdge=(Extended Window Styles)Clip Siblings,Right-To-Left Reading,ExAlignment,No Parent Notify,Accept Files,Transparent,Static Edge,Modal Frame
+SubDataStyles=(Sub Data Window Styles)Tab Stop,Border
+OLEObjStyles=(OLE Object Window Styles)Disabled,Tab Stop,Group,Border
+CustomCtlStyles=(Custom Control Window Styles)Disabled,Tab Stop,Group,Border
+MMContStyles=(MulitMedia Container Window Styles)Disabled,Tab Stop,Group,Border
+FixedTextStyles=(FixedText Window Styles)Disabled,Tab Stop,Group,Border,No Prefix,Alignment,Center vertically
+FixedImageStyles=(FixedImage Window Styles)Disabled,Tab Stop,Group,Border,Real Size Image,Center Image,Right adjust
+PushButtonStyles=(PushButton Window Styles)Disabled,Tab Stop,Group,Default Button,Multiline,Flat,Horizontal Alignment,Vertical Alignment,Image Type
+CheckBoxStyles=(CheckBox Window Styles)Disabled,Tab Stop,Group,Text Left,Selection,Multiline,Flat,Horizontal Alignment,Vertical Alignment,Push Like,Image Type
+RadioButtonStyles=(RadioButton Window Styles)Disabled,Tab Stop,Group,Text Left,Flat,AutoSelect,Multiline,Horizontal Alignment,Vertical Alignment,Push Like,Image Type
+GroupBoxStyles=(GroupBox Window Styles)Disabled,Tab Stop,Group,Flat
+ProgressStyles=(ProgressBar Styles)Disabled,Tab Stop,Group,Smooth,Vertical
+SingleLineStyles=(SingleLine Edit Window Styles)Disabled,Tab Stop,Group,Border,Password,Retain Selection,OEM Conversion,Auto HScroll,Read Only,Conversion,Numbers Only,Alignment
+MultiLineStyles=(MultiLine Edit Window Styles)Disabled,Tab Stop,Group,Border,Password,Retain Selection,OEM Conversion,Vertical Scrollbar,Horizontal Scrollbar,Auto VScroll,Auto HScroll,Return Key,Read Only,Conversion,Alignment
+ListBoxStyles=(ListBox Window Styles)Disabled,Tab Stop,Group,Border,Sort,Notify Parent,Vertical Scrollbar,Horizontal Scrollbar,Use Tab Stops,No Redraw,Multi Column,No Integral Height,Want Keyboard Input,Multiple Selection,Extended Selection,Disable if no Scroll,Owner Draw
+ComboBoxStyles=(ComboBox Window Styles)Disabled,Tab Stop,Group,ComboBox Type,Sort,Vertical Scrollbar,Auto HScroll,No Integral Height,OEM Convert,Disable if no Scroll,OwnerDraw
+ScrollBarStyles=(ScrollBar Window Styles)Disabled,Tab Stop,Group,AutoSize,Size Grip
+SliderStyles=(Slider Window Styles)Disabled,Tab Stop,Group,Auto Ticks,No Ticks,Enable Selection Range,Fixed Length,No Thumb,Tooltips
+SpinnerStyles=(Spinner Window Styles)Disabled,Tab Stop,Group,Wrap,Alignment,Auto Buddy,Set Buddy Int,Arrow Keys,No Thousands
+TCStyles=(TabControl Window Styles)Disabled,Tab Stop,Group,Force Icon Left,Force Label Left,Buttons,Multiline,Focus On Button Down,Has ToolTips,Focus Never,Tab Position,Hot Track
+TVStyles=(TreeView Window Styles)Disabled,Tab Stop,Group,Border,Has Buttons,Has Lines,Lines at Root,Disable Drag&Drop,Show Selection Always,Edit Labels
+LVStyles=(ListView Window Styles)Disabled,Tab Stop,Group,Border,List View Type,Single Selection,Show Selection Always,Sort,No Label Wrap,Auto Arrange,Edit Labels,No Scroll,Align Left,No Column Header,No Sort Header
+DLVStyles=(ListView Window Styles)Disabled,Tab Stop,Group,Border,Label Wrap,Edit Labels,No Scroll,Align Left,No Column Header,No Sort Header
+AnimStyles=(AnimationControl Window Styles)Disabled,Tab Stop,Border,Group,Center,Transparent Background,Auto Play
+RichEditStyles=(RichEdit Control Window Styles)Disabled,Tab Stop,Group,Border,Retain Selection,Vertical Scrollbar,Horizontal Scrollbar,Auto VScroll,Auto HScroll,Return Key,Read Only,Alignment,Save Selection,Sunken,Disable No Scroll,Align to Parent
+DlgWndStyles=(DialogWindow Styles)Disabled,Caption Bar,Clip Siblings,Clip Children,Absolute Align,System Modal,No Idle Message,Resizable,Position
+MCStyles=(Month Calendar Styles)Disabled,Tab Stop,Group,Day State,Multi Select,No Today,No Today Circle,Week Numbers
+DTPStyles=(Date Time Picker Styles)Disabled,Tab Stop,Group,Type,Right Align MC,Show None,Up-Down
+LVExStyles=(Extended ListView Styles)Clip Siblings,Right-To-Left Reading,No Parent Notify,Accept Files,Transparent,Client Edge,Static Edge,Modal Frame,Grid Lines,Full Row Select,Header Drag&Drop,Checkboxes,Track Selection
+
+[SupplementalFiles]
+File00=
+File01=
+File02=
+File03=
+File04=
+
+

@@ -11,7 +11,7 @@
     <Name>XSharp.VoEditors</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Core</Dialect>
+    <Dialect>Vulcan</Dialect>
     <OutputName>XSharp.VoEditors</OutputName>
     <StartupObject />
     <ApplicationIcon />
@@ -23,10 +23,10 @@
     <OVF>false</OVF>
     <Unsafe>false</Unsafe>
     <INS>false</INS>
-    <NS>false</NS>
+    <NS>true</NS>
     <VO1>false</VO1>
     <VO2>false</VO2>
-    <VO3>false</VO3>
+    <VO3>true</VO3>
     <VO4>false</VO4>
     <VO5>false</VO5>
     <VO6>false</VO6>
@@ -39,7 +39,11 @@
     <VO13>false</VO13>
     <VO14>false</VO14>
     <VO15>false</VO15>
-    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
+    <VO16>false</VO16>
+    <VulcanCompatibleResources>False</VulcanCompatibleResources>
+    <StartupObject />
+    <ApplicationIcon />
+    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
@@ -53,12 +57,11 @@
     <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <Optimize>false</Optimize>
     <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings>
-    </DisabledWarnings>
     <WarningLevel>4</WarningLevel>
+    <DisabledWarnings>165,649,168,170</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <CommandLineOption />
@@ -70,13 +73,14 @@
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <RegisterForComInterop>False</RegisterForComInterop>
+    <WarningsAsErrors />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Optimize>true</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
+    <DisabledWarnings>165,649,168,170</DisabledWarnings>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <CommandLineOption />
@@ -89,14 +93,22 @@
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="XSharp.Core, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Core</Name>
+      <AssemblyName>XSharp.Core.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="XSharp.RT, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Drawing</Name>
       <AssemblyName>System.Drawing.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Windows.Forms</Name>
-      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Xml" />
@@ -109,6 +121,34 @@
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="Actions.prg" />
+    <Compile Include="Designers\Base.prg" />
+    <Compile Include="Designers\ControlOrder.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Designers\Controls.prg" />
+    <Compile Include="Designers\Editor.prg" />
+    <Compile Include="Designers\EntityParser.prg" />
+    <Compile Include="Designers\FillUsing.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Designers\Funcs.prg" />
+    <Compile Include="Designers\Properties.prg" />
+    <Compile Include="Designers\PropGrid.prg" />
+    <Compile Include="Designers\Resources.prg" />
+    <Compile Include="Designers\Template.prg" />
+    <Compile Include="Designers\ToolBox.prg" />
+    <Compile Include="Designers\Various.prg" />
+    <Compile Include="Designers\VODBServerEditor.prg" />
+    <Compile Include="Designers\VODBServerEditorIO.prg" />
+    <Compile Include="Designers\VOEditorsShared.prg" />
+    <Compile Include="Designers\VOFieldSpecEditor.prg" />
+    <Compile Include="Designers\VOFieldSpecEditorIO.prg" />
+    <Compile Include="Designers\VOMenuEditor.prg" />
+    <Compile Include="Designers\VOMenuEditorIO.prg" />
+    <Compile Include="Designers\VOWEDControl.prg" />
+    <Compile Include="Designers\VOWindowEditor.prg" />
+    <Compile Include="Designers\VOWindowEditorIO.prg" />
+    <Compile Include="Designers\Win32.prg" />
     <Compile Include="DesignWindowItem.prg" />
     <Compile Include="Functions.prg" />
     <Compile Include="XSharp_DED.prg" />
@@ -121,17 +161,14 @@
     <Compile Include="XSharp_WED.prg" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Designers\" />
     <Folder Include="Properties\" />
+    <Folder Include="Templates\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodeGenerator\XSharpCodeGenerator.xsproj">
       <Name>XSharpCodeGenerator</Name>
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\VODesigners\VODesigners.xsproj">
-      <Name>VODesigners</Name>
-      <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
@@ -144,7 +181,14 @@
     <None Include="..\..\Common\BuildNumber.h">
       <Link>BuildNumber.h</Link>
     </None>
+    <None Include="Designers\Readme.txt" />
+    <None Include="Designers\VODesigners.xsproj" />
+    <None Include="Designers\VOWin32APILibrary.vh" />
     <None Include="Readme.txt" />
+    <None Include="Templates\cavoded.tpl" />
+    <None Include="Templates\cavofed.tpl" />
+    <None Include="Templates\cavowed.inf" />
+    <None Include="Templates\cavowed.tpl" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

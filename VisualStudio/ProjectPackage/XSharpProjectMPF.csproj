@@ -648,10 +648,6 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\VODesigners\VODesigners.xsproj">
-      <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
-      <Name>VODesigners</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XSharpAppDesigner\XSharpAppDesigner.csproj">
       <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe0}</Project>
       <Name>XSharpAppDesigner</Name>

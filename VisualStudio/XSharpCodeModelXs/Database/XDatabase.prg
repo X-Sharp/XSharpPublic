@@ -1,7 +1,7 @@
 ﻿//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
-// See License.txt in the project root for license information.
+// See License.txt in the project root f` license information.
 //
 
 USING System.Data.SQLite
@@ -18,7 +18,8 @@ BEGIN NAMESPACE XSharpModel
 	STATIC PRIVATE oConn   AS SQLiteConnection     // In memory database !
 	STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
 	STATIC PRIVATE currentFile AS STRING
-	PRIVATE CONST CurrentDbVersion := 0.8 AS System.Double
+    STATIC PROPERTY FileName as STRING GET currentFile
+	PRIVATE CONST CurrentDbVersion := 0.9 AS System.Double
 
 		STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
 			LOCAL lValid := FALSE AS LOGIC
@@ -38,10 +39,11 @@ BEGIN NAMESPACE XSharpModel
 			oConn:Open()
 			SetPragmas(oConn)
 			IF ! lValid
-					CreateSchema(oConn)
+				CreateSchema(oConn)
 				SaveToDisk(oConn,cFileName )
 			ELSE
 				RestoreFromDisk(oDiskDb, oConn)
+                DeleteOrphanFiles()
 				oDiskDb:Close()
 			ENDIF
 		RETURN
@@ -148,6 +150,7 @@ BEGIN NAMESPACE XSharpModel
 				cmd:CommandText += "DROP TABLE IF EXISTS Types ;"
 				cmd:CommandText += "DROP TABLE IF EXISTS Members ;"
 				cmd:CommandText += "DROP TABLE IF EXISTS Assemblies ;"
+				cmd:CommandText += "DROP TABLE IF EXISTS ReferencedGlobals ;"
 				cmd:CommandText += "DROP TABLE IF EXISTS ReferencedTypes ;"
 				cmd:CommandText += "DROP TABLE IF EXISTS CommentTasks ;"
 				cmd:ExecuteNonQuery()
@@ -253,13 +256,28 @@ BEGIN NAMESPACE XSharpModel
 				cmd:ExecuteNonQuery()
 				#endregion
 
+				#region Table ReferencedGlobals
+				stmt  	:= "CREATE TABLE ReferencedGlobals ("
+				stmt	+= " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, "
+				stmt    += " FullName text NOT NULL, Kind integer NOT NULL, Attributes integer NOT NULL, Sourcecode text, ReturnType text, "
+				stmt    += " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+				stmt	+= ") ;"
+				stmt	+= "CREATE UNIQUE INDEX ReferencedGlobals_Pk      ON ReferencedGlobals (Id); "
+				stmt	+= "CREATE INDEX ReferencedGlobals_Name           ON ReferencedGlobals (Name); "
+				stmt	+= "CREATE INDEX ReferencedGlobals_Kind           ON ReferencedGlobals (Kind); "
+
+				cmd:CommandText := stmt
+				cmd:ExecuteNonQuery()
+				#endregion
+
+
 				#region Table CommentTasks
 				stmt  	:=  "CREATE TABLE CommentTasks ("
 				stmt	+=  " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Line integer, Column integer, Priority integer,  "
 				stmt    +=  " Comment text NOT NULL, "
 				stmt    +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
 				stmt	+= ") ;"
-				stmt	+= "CREATE UNIQUE INDEX CommentTasks_Pk ON ReferencedTypes (Id); "
+				stmt	+= "CREATE UNIQUE INDEX CommentTasks_Pk ON CommentTasks (Id); "
                 stmt	+= "CREATE INDEX CommentTasks_File      ON CommentTasks (idFile); "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
@@ -299,7 +317,12 @@ BEGIN NAMESPACE XSharpModel
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 
-				stmt := "CREATE VIEW AssemblyNamespaces AS select distinct T.IdAssembly, T.Namespace FROM ReferencedTypes T  "
+				stmt := "CREATE VIEW AssemblyGlobals AS SELECT g.*, g.IdAssembly, a.AssemblyFileName " +;
+				" FROM ReferencedGlobals g  JOIN Assemblies a ON g.IdAssembly = a.Id "
+				cmd:CommandText := stmt
+				cmd:ExecuteNonQuery()
+
+                stmt := "CREATE VIEW AssemblyNamespaces AS select distinct T.IdAssembly, T.Namespace FROM ReferencedTypes T  "
 				cmd:CommandText := stmt
 				cmd:ExecuteNonQuery()
 
@@ -336,7 +359,7 @@ BEGIN NAMESPACE XSharpModel
 					USING VAR cmd  := SQLiteCommand{"SELECT 1", connection}
 					VAR stmt := "SELECT count(name) from sqlite_master WHERE type='table' AND name=$table"
 					cmd:CommandText := stmt
-					VAR tables := <STRING> {"Projects","FilesPerProject","Files", "Types", "Members", "Db_Version","Assemblies","ReferencedTypes","CommentTasks"}
+					VAR tables := <STRING> {"Projects","FilesPerProject","Files", "Types", "Members", "Db_Version","Assemblies","ReferencedTypes","CommentTasks", "ReferencedGlobals"}
 					FOREACH VAR table IN tables
 						cmd:Parameters:Clear()
 						cmd:Parameters:AddWithValue("$table",table)
@@ -364,7 +387,20 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"Validate database schema: {lOk}")
 		RETURN lOk
 
-
+        STATIC METHOD DeleteOrphanFiles() AS List<STRING>
+			VAR result := List<STRING>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+                    var project := XSolution.OrphanedFilesProject
+                    Read(project)
+					USING VAR cmd := SQLiteCommand{"Delete from FilesPerProject where IdProject = "+project:Id:ToString(), oConn}
+					cmd:ExecuteScalar()
+                    cmd:CommandText := "Delete from Files where Id not in (select IdFile from FilesPerProject)"
+					cmd:ExecuteScalar()
+				END LOCK
+			ENDIF
+			Log(i" Deleted OrphanFiles")
+			RETURN result
 
 		STATIC METHOD GetProjectFileNames() AS List<STRING>
 			VAR result := List<STRING>{}
@@ -411,6 +447,22 @@ BEGIN NAMESPACE XSharpModel
 				CommitWhenNeeded()
 			ENDIF
 		RETURN
+
+        STATIC METHOD GetFileNames(oProject AS XProject) AS List<STRING>
+			VAR result := List<STRING>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					USING VAR cmd := SQLiteCommand{"SELECT FileName from ProjectFiles where idProject = "+oProject:Id:ToString(), oConn}
+					USING VAR rdr := cmd:ExecuteReader()
+					DO WHILE rdr:Read()
+						VAR name := rdr:GetString(0)
+						result:Add(name)
+					ENDDO
+				END LOCK
+			ENDIF
+			Log(i"GetFileNames returned {result.Count} names")
+			RETURN result
+
 
 		STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
 			IF ! IsDbOpen .OR. String.IsNullOrEmpty(cFileName)
@@ -801,6 +853,22 @@ BEGIN NAMESPACE XSharpModel
 		ENDIF
 		RETURN
 
+        STATIC METHOD Delete(oAssembly as XAssembly) AS VOID
+			IF ! IsDbOpen .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
+				RETURN
+            ENDIF
+			BEGIN LOCK oConn
+				TRY
+					USING VAR oCmd := SQLiteCommand{"Delete From Assemblies where Id = "+oAssembly:Id:ToString(), oConn}
+					oCmd:ExecuteNonQuery()
+				CATCH e AS Exception
+					Log("Exception: "+e:ToString())
+					Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
+				END TRY
+			END LOCK
+			RETURN
+
+
 		STATIC METHOD Update(oAssembly AS XAssembly) AS VOID
 			IF ! IsDbOpen .OR. String.IsNullOrEmpty(oAssembly:FullName) .OR. String.IsNullOrEmpty(oAssembly:FileName)
 				RETURN
@@ -809,6 +877,13 @@ BEGIN NAMESPACE XSharpModel
 			BEGIN LOCK oConn
 				TRY
 					USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+                    LOCAL globalType := NULL as XPETypeSymbol
+                    LOCAL hasGlobalClass as LOGIC
+                    hasGlobalClass := !String.IsNullOrEmpty(oAssembly:GlobalClassName)
+                    oCmd:CommandText := "Delete From ReferencedTypes Where idAssembly = "+oAssembly:Id:ToString()
+                    oCmd:ExecuteNonQuery()
+                    oCmd:CommandText := "Delete From ReferencedGlobals Where idAssembly = "+oAssembly:Id:ToString()
+                    oCmd:ExecuteNonQuery()
 					// Updated TypeReferences
 					//	   "Create Table ReferencedTypes ("
 					//	   " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
@@ -835,7 +910,45 @@ BEGIN NAMESPACE XSharpModel
 						pars[5]:Value := typeref:BaseType
 						pars[6]:Value := (INT) typeref:Attributes
 						oCmd:ExecuteNonQuery()
+                        IF hasGlobalClass .and. typeref:FullName == oAssembly:GlobalClassName
+                            globalType := typeref
+                        ENDIF
 					NEXT
+                    IF globalType != NULL
+                        // "CREATE TABLE ReferencedGlobals ("
+                        // " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, "
+                        // " FullName text NOT NULL, Kind integer NOT NULL, Attributes integer NOT NULL, Sourcecode text, ReturnType text, "
+                        oCmd:CommandText := "INSERT INTO ReferencedGlobals(IdAssembly, Name, FullName, Kind, Attributes, Sourcecode, ReturnType) " + ;
+                                            " Values ($id, $name, $fullname, $kind, $attributes, $source, $return) "
+
+					    oCmd:Parameters:Clear()
+					    pars := List<SQLiteParameter>{} { ;
+					    oCmd:Parameters:AddWithValue("$id", 0),;
+					    oCmd:Parameters:AddWithValue("$name", ""),;
+					    oCmd:Parameters:AddWithValue("$fullname", ""),;
+					    oCmd:Parameters:AddWithValue("$kind", 0),;
+					    oCmd:Parameters:AddWithValue("$attributes", 0),;
+					    oCmd:Parameters:AddWithValue("$source", ""),;
+					    oCmd:Parameters:AddWithValue("$return", "")}
+                        FOREACH VAR xmember IN globalType:XMembers:Where( { m => m:Visibility == Modifiers.Public })
+						    pars[0]:Value := oAssembly:Id
+						    pars[1]:Value := xmember:Name
+						    pars[2]:Value := xmember:FullName
+						    pars[3]:Value := (int) xmember:Kind
+						    pars[4]:Value := (INT) xmember:Attributes
+                            if xmember:Kind == Kind.Field
+                                if xmember:Attributes:HasFlag(Modifiers.Const) .or. xmember:Attributes:HasFlag(Modifiers.InitOnly)
+                                    pars[5]:Value := "DEFINE " +xmember:GetProtoType()
+                                else
+                                    pars[5]:Value := "GLOBAL " +xmember:GetProtoType()
+                                endif
+                            else
+						        pars[5]:Value := xmember:KindKeyword + " " +xmember:GetProtoType()
+                            endif
+						    pars[6]:Value := xmember:TypeName
+						    oCmd:ExecuteNonQuery()
+					    NEXT
+                    ENDIF
 
 					oCmd:CommandText := "Update Assemblies set LastChanged = $last, Size = $size where id = "+oAssembly:Id:ToString()
 					VAR fi            := FileInfo{oAssembly:FileName}
@@ -931,18 +1044,57 @@ BEGIN NAMESPACE XSharpModel
 		RETURN result
 
 
-		STATIC METHOD FindGlobalOrDefine(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+
+		STATIC METHOD FindProjectGlobalOrDefine(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			// search class members in the Types list
 			VAR result := _FindGlobalOrDefineWorker(sName, sProjectIds, FALSE)
 			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
 		RETURN result
 
 
-        STATIC METHOD FindGlobalOrDefineLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+        STATIC METHOD FindProjectGlobalOrDefineLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			// search class members in the Types list
 			VAR result := _FindGlobalOrDefineWorker(sName, sProjectIds, TRUE)
 			Log(i"FindGlobalOrDefineLike '{sName}' returns {result.Count} matches")
 		RETURN result
+
+        STATIC METHOD _FindAssemblyWorker(sName AS STRING, sAssemblyIds AS STRING, nKind1 as Kind) AS IList<XDbResult>
+			// search class members in the Types list
+			VAR result := List<XDbResult>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					TRY
+					    USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+					    oCmd:CommandText := "SELECT * FROM AssemblyGlobals WHERE name like $name " + ;
+					    " AND Kind in ($kind1, $kind2) AND IdAssembly in ("+sAssemblyIds+")" +;
+                        " Order by FileName"
+					    oCmd:Parameters:AddWithValue("$name", sName)
+					    oCmd:Parameters:AddWithValue("$kind1", (INT) nKind1)
+					    oCmd:Parameters:AddWithValue("$kind2", (INT) nKind1)
+					    USING VAR rdr := oCmd:ExecuteReader()
+					    DO WHILE rdr:Read()
+						    result:Add(CreateAssemblyMemberInfo(rdr))
+					    ENDDO
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+					END TRY
+				END LOCK
+			ENDIF
+			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
+		RETURN result
+
+        STATIC METHOD FindAssemblyGlobalOrDefineLike(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
+			// search class members in the Types list
+			VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Function)
+			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
+
+            RETURN NULL
+
+        STATIC METHOD FindAssemblyFunctionLike(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
+			// search class members in the Types list
+			VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Field)
+			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
+            RETURN NULL
 
 		STATIC METHOD GetProjectTypes(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectTypes where name = $name AND IdProject in ("+sProjectIds+")"
@@ -1342,6 +1494,20 @@ BEGIN NAMESPACE XSharpModel
 			res:IdProject    := (INT64) rdr["IdProject"]
             res:ReturnType   := DbToString(rdr["ReturnType"])
 		RETURN res
+
+        STATIC METHOD CreateAssemblyMemberInfo(rdr AS SQLiteDataReader) AS XDbResult
+			VAR res := XDbResult{}
+			res:MemberName   := DbToString(rdr["Name"])
+			res:Kind         := (Kind) (INT64) rdr["Kind"]
+			res:Attributes   := (Modifiers) (INT64) rdr["Attributes"]
+			res:FileName     := DbToString(rdr["FileName"])
+            res:FullName     := DbToString(rdr["FullName"])
+			res:Assembly     := DbToString(rdr["AssemblyFileName"])
+			res:IdAssembly   := (INT64) rdr["IdAssembly"]
+			res:SourceCode   := DbToString(rdr["SourceCode"])
+            res:ReturnType   := DbToString(rdr["ReturnType"])
+		RETURN res
+
 		STATIC METHOD DbToString(oValue AS OBJECT) AS STRING
 			IF oValue == DBNull.Value
 				RETURN ""

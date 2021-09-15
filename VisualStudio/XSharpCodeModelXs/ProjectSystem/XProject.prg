@@ -194,25 +194,6 @@ BEGIN NAMESPACE XSharpModel
                END LOCK
             ENDIF
 
-//         METHOD AddAssemblyReference(reference AS VSLangProj.Reference) AS VOID
-//            //LOCAL assemblyInfo AS AssemblyInfo
-//            IF reference != NULL
-//               IF XSettings.EnableReferenceInfoLog
-//                  SELF:WriteOutputMessage("AddAssemblyReference (VSLangProj.Reference) "+reference:Path)
-//               ENDIF
-//               SELF:_clearTypeCache()
-//               IF ! XSettings.DisableAssemblyReferences
-//                  IF ! String.IsNullOrEmpty(reference:Path)
-//                     AddAssemblyReference(reference:Path)
-//                     //                        ELSE
-//                     //                            // create an assembly reference with the reference object and no real contents
-//                     //                            assemblyInfo := SystemTypeController.LoadAssembly(reference)
-//                     //                            SELF:_AssemblyReferences:Add(assemblyInfo)
-//                     //                            assemblyInfo:AddProject(SELF)
-//                  ENDIF
-//               ENDIF
-//            ENDIF
-
          METHOD ClearAssemblyReferences() AS VOID
             IF XSettings.EnableReferenceInfoLog
                SELF:WriteOutputMessage("ClearAssemblyReferences() ")
@@ -715,7 +696,7 @@ METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<
          ELSE
             projList := SELF:DependentProjectList
          ENDIF
-         var dbresult := XDatabase.FindGlobalOrDefineLike(name, projList)
+         var dbresult := XDatabase.FindProjectGlobalOrDefineLike(name, projList)
          LOCAL xFile := null as XFile
          LOCAL cFile := "" AS STRING
          foreach element as XDbResult in dbresult
@@ -787,7 +768,7 @@ METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<
          IF lRecursive
             projectIds    := SELF:DependentProjectList
          ENDIF
-         VAR result := XDatabase.FindGlobalOrDefine(name, projectIds)
+         VAR result := XDatabase.FindProjectGlobalOrDefine(name, projectIds)
          VAR xmember := GetGlobalMember(result)
          IF XSettings.EnableTypelookupLog
                WriteOutputMessage(ie"FindGlobalOrDefine {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\"} ")
@@ -1310,6 +1291,17 @@ METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<
          GET
             SELF:ResolveReferences()
             RETURN SELF:_AssemblyReferences
+         END GET
+      END PROPERTY
+
+      PROPERTY AssemblyReferenceNames AS IList<String>
+         GET
+            var result := List<String>{}
+            result:AddRange(SELF:_unprocessedAssemblyReferences)
+            FOREACH var reference in SELF:_AssemblyReferences
+                result:Add(reference:FileName)
+            NEXT
+            return result:ToArray()
          END GET
       END PROPERTY
 

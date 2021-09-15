@@ -145,6 +145,7 @@
          <Icon guid="ImageCatalogGuid" id="ViewInBrowser" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>IconAndText</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <CommandName>View Repo</CommandName>
@@ -153,7 +154,21 @@
           <ToolTipText>View Repo</ToolTipText>
           <LocCanonicalName>.XSharp.View.Repository</LocCanonicalName>
         </Strings>
-      </Button>      
+      </Button>
+      <Button guid="guidProjectPackage" id="idRebuildIntellisense" priority="0x0100" type="Button">
+        <Icon guid="ImageCatalogGuid" id="IntellisenseDatabase" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>IconAndText</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <CommandName>Rebuild Intellisense Database</CommandName>
+          <CanonicalName>Rebuild Intellisense Database</CanonicalName>
+          <ButtonText>Rebuild Intellisense Database</ButtonText>
+          <ToolTipText>Rebuild Intellisense Database</ToolTipText>
+          <LocCanonicalName>.XSharp.Rebuild.Intellisense</LocCanonicalName>
+        </Strings>
+      </Button>
       <Button guid="guidProjectPackage" id="idWebsite" priority="0x0100" type="Button">
         <Icon guid="guidImages" id="bmpXSharp" />
         <CommandFlag>IconAndText</CommandFlag>
@@ -304,6 +319,9 @@
     <CommandPlacement guid="guidProjectPackage" id="idViewRepo" priority="0x0100" >
       <Parent guid="guidProjectPackage" id="idExporterGroup" />
     </CommandPlacement>
+    <CommandPlacement guid="guidProjectPackage" id="idRebuildIntellisense" priority="0x0100" >
+      <Parent guid="guidProjectPackage" id="idExporterGroup" />
+    </CommandPlacement>
     <!--Context Menu-->
     <CommandPlacement guid="guidProjectPackage" id="idAddDesignerFile" priority="0x0100">
       <Parent guid="guidProjectPackage" id="idFileContextMenuGroup"/>
@@ -386,6 +404,7 @@
       <IDSymbol name="idAddDesignerFile" value="0x010A" />
       <IDSymbol name="idViewRepo" value="0x010B" />
       <IDSymbol name="idUDCTester" value="0x010C" />
+      <IDSymbol name="idRebuildIntellisense" value="0x010D" />
       <IDSymbol name="idExporterSubMenu" value="0x01030" />
       <IDSymbol name="idExporterGroup" value="0x01040" />
       <IDSymbol name="idDebuggerSubMenu" value="0x01050" />

@@ -980,6 +980,7 @@ namespace XSharp.Project
         public override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             base.OnAfterProjectOpen(sender, e);
+            XSharpProjectPackage.XInstance.SetCommentTokens();
 
             // initialize the parser
 

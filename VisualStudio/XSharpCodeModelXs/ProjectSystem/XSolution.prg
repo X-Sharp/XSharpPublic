@@ -56,8 +56,10 @@ BEGIN NAMESPACE XSharpModel
          _sqldb    := Path.Combine(folder, "X#Model.xsdb")
          XDatabase.CreateOrOpenDatabase(_sqldb)
          VAR dbprojectList := XDatabase.GetProjectFileNames()
+         var walker := ModelWalker.GetWalker()
          FOREACH var project in _projects:Values
             XDatabase.Read(project)
+            walker:AddProject(project)
             FOREACH VAR dbproject  in dbprojectList
                if String.Compare(dbproject, project:FileName, StringComparison.OrdinalIgnoreCase) == 0
                   dbprojectList:Remove(dbproject)
@@ -69,7 +71,8 @@ BEGIN NAMESPACE XSharpModel
             FOREACH var dbproject in dbprojectList
                XDatabase.DeleteProject(dbproject)
             NEXT
-         endif
+            endif
+
          ModelWalker.Start()
 
       STATIC METHOD AddOrphan(fileName as STRING) AS XFile
@@ -197,8 +200,6 @@ BEGIN NAMESPACE XSharpModel
             project:ProjectNode:SetStatusBarAnimation(onOff, id)
          ENDIF
 
-
-
       // Properties
       STATIC PROPERTY OrphanedFilesProject AS XProject
          GET
@@ -209,6 +210,25 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
 
+      STATIC METHOD RebuildIntellisense() AS VOID
+          VAR walker := ModelWalker.GetWalker()
+          TRY
+              ModelWalker.Suspend()
+              walker:Clear()
+              FOREACH VAR pair IN _projects
+                    LOCAL project := pair:Value as XProject
+                    XDatabase.Read(project)
+                    walker:AddProject(project)
+                    var ref := project:AssemblyReferenceNames
+                    project:ClearAssemblyReferences()
+                    foreach asmref as String in ref
+                        project:AddAssemblyReference(asmref)
+                    next
+                NEXT
+          FINALLY
+            ModelWalker.Start()
+            walker.Walk()
+          END TRY
 
 
    END CLASS

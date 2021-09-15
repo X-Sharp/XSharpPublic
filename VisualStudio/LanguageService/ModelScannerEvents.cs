@@ -179,7 +179,6 @@ namespace XSharp.LanguageService
             if (!string.IsNullOrEmpty(solutionFile))
             {
                 XSharpModel.XSolution.Open(solutionFile);
-                //XSharpProjectPackage.XInstance.SetCommentTokens();
             }
             projectfiles.Clear();
             return;

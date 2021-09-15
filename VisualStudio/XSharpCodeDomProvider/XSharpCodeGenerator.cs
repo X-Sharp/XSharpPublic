@@ -9,10 +9,8 @@ using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 // XSharpCodeGenerator
@@ -24,6 +22,30 @@ using System.IO;
 
 namespace XSharp.CodeDom
 {
+    internal class XSharpIndentedTextWriter : IndentedTextWriter
+    {
+        internal XSharpIndentedTextWriter(TextWriter writer, string tabString) : base(writer, tabString)
+        {
+
+        }
+        protected override void OutputTabs()
+        {
+            base.OutputTabs();
+        }
+        public override void Write(string s)
+        {
+            base.Write(s);
+        }
+        public override void WriteLine(string s)
+        {
+            base.WriteLine(s);
+        }
+        public override void WriteLine()
+        {
+            base.WriteLine();
+        }
+
+    }
     public partial class XSharpCodeGenerator : CodeCompiler
     {
         private bool generatingForLoop;
@@ -58,6 +80,7 @@ namespace XSharp.CodeDom
         private string keywordABSTRACT;
         private string keywordVIRTUAL;
         private string keywordSTATIC;
+        private string keywordCONST;
         private string keywordAS;
         private string keywordOUT;
         private string keywordREF;
@@ -100,7 +123,24 @@ namespace XSharp.CodeDom
             readSettings();
         }
 
-        
+        private void overrideTextWriter()
+        {
+            FieldInfo field = typeof(CodeGenerator).GetField("output", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+            var oldWriter = (IndentedTextWriter)field.GetValue(this);
+            if (! (oldWriter is XSharpIndentedTextWriter))
+            {
+                var writer = oldWriter.InnerWriter;
+                var newWriter = new XSharpIndentedTextWriter(writer, tabString);
+                try
+                {
+                    field.SetValue(this, newWriter);
+                }
+                catch
+                {
+
+                }
+            }
+        }
         private void readSettings()
         {
             keywordCase = (int) Constants.GetSetting(Constants.RegistryKeywordCase, 1);
@@ -131,6 +171,7 @@ namespace XSharp.CodeDom
             keywordABSTRACT = formatKeyword("ABSTRACT ");
             keywordVIRTUAL = formatKeyword("VIRTUAL ");
             keywordSTATIC = formatKeyword("STATIC ");
+            keywordCONST = formatKeyword("CONST ");
             keywordPARTIAL = formatKeyword("PARTIAL ");
             keywordSEALED = formatKeyword("SEALED ");
             keywordAS = formatKeyword("AS ");
@@ -460,15 +501,11 @@ namespace XSharp.CodeDom
         {
             // we must collect this and insert it at the end of the unit
             // so replace the output field in the parent class and restore it later
-            var writer = new StringWriter();
             FieldInfo field = typeof(CodeGenerator).GetField("output", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-            FieldInfo field2 = typeof(IndentedTextWriter).GetField("tabString", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-            IndentedTextWriter oldWriter = (IndentedTextWriter)field.GetValue(this);
-            String tabString = (String)field2.GetValue(oldWriter);
-            IndentedTextWriter newWriter = new IndentedTextWriter(writer, tabString); ;
+            var oldWriter = (IndentedTextWriter)field.GetValue(this);
+            this.overrideTextWriter();
             try
             {
-                field.SetValue(this, newWriter);
                 this.GenerateCommentStatements(e.Comments);
 
                 if (e.CustomAttributes.Count > 0)
@@ -485,7 +522,6 @@ namespace XSharp.CodeDom
             }
             finally
             {
-                entrypointCode = writer.GetStringBuilder().ToString();
                 field.SetValue(this, oldWriter);
             }
         }
@@ -608,6 +644,18 @@ namespace XSharp.CodeDom
                 }
             }
         }
+        protected override void OutputFieldScopeModifier(MemberAttributes attributes)
+        {
+            switch ((attributes & MemberAttributes.ScopeMask))
+            {
+                case MemberAttributes.Static:
+                    this.Output.Write(keywordSTATIC);
+                    return;
+                case MemberAttributes.Const:
+                    this.Output.Write(keywordCONST);
+                    return;
+            }
+        }
 
         protected override void GenerateFieldReferenceExpression(CodeFieldReferenceExpression e)
         {
@@ -661,7 +709,7 @@ namespace XSharp.CodeDom
             this.generatingForLoop = true;
             this.GenerateStatement(e.InitStatement);
             base.Output.WriteLine();
-            base.Output.Write(keywordDO+ keywordWHILE);
+            base.Output.Write(keywordDO + keywordWHILE);
             this.GenerateExpression(e.TestExpression);
             base.Output.WriteLine();
             this.generatingForLoop = false;
@@ -817,6 +865,7 @@ namespace XSharp.CodeDom
         {
             bool generateComment = true;
             readSettings();
+            this.overrideTextWriter();
             this.Options.BlankLinesBetweenMembers = false;
             var tabStr = "";
             if (useTabs)
@@ -1454,7 +1503,8 @@ namespace XSharp.CodeDom
             if (typeRef.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
             {
                 // some types with parsing problems have their definition saved as userdata
-                return typeRef.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
+                var res = typeRef.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
+                return res.TrimStart();
             }
 
             while (arrayElementType.ArrayElementType != null)
@@ -1693,6 +1743,8 @@ namespace XSharp.CodeDom
                 case CodeBinaryOperatorType.GreaterThanOrEqual:
                     this.Output.Write(">=");
                     return;
+                default:
+                    break;
             }
         }
 
@@ -2033,13 +2085,15 @@ namespace XSharp.CodeDom
                     else 
                         base.Output.Write("");
                     break;
-                case MemberAttributes.Family:
+                case MemberAttributes.Family: // A member that is accessible within the family of its class and derived classes.
                     this.Output.Write(keywordPROTECTED);
                     break;
-                case MemberAttributes.FamilyOrAssembly:
+                case MemberAttributes.FamilyOrAssembly: // A member that is accessible within its class, its derived classes in any assembly, and any class in the same assembly.
                     this.Output.Write(keywordPROTECTED + keywordINTERNAL);
                     break;
+                case MemberAttributes.FamilyAndAssembly: // A member that is accessible within its class, and derived classes in the same assembly
                 case MemberAttributes.Assembly:
+                    // C# maps these two both to Internal
                     this.Output.Write(keywordINTERNAL);
                     break;
                 case MemberAttributes.Private:
@@ -2078,6 +2132,8 @@ namespace XSharp.CodeDom
             }
             switch ((attributes & MemberAttributes.AccessMask))
             {
+                // Same rules as in C#
+                case MemberAttributes.Assembly:
                 case MemberAttributes.Family:
                 case MemberAttributes.Public:
                     this.Output.Write(keywordVIRTUAL);

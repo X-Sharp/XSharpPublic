@@ -45,44 +45,53 @@ namespace XSharp.CodeDom
             // restore previous class 
             currentClass = classes.Pop();
         }
+        //classvarModifiers   : (Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC
+        //                      | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+
+
         public MemberAttributes decodeClassVarModifiers([NotNull] XSharpParser.ClassvarModifiersContext context)
         {
 
-            var classVarModifiers = MemberAttributes.Public;
-            //
-            ITerminalNode[] visibility;
-            //
-            visibility = context.INTERNAL();
-            if (visibility.Length > 0)
-                classVarModifiers = MemberAttributes.Assembly;
-            //
-            visibility = context.HIDDEN();
-            if (visibility.Length > 0)
-                classVarModifiers = MemberAttributes.Private;
-            //
-            visibility = context.PRIVATE();
-            if (visibility.Length > 0)
-                classVarModifiers = MemberAttributes.Private;
-            //
-            visibility = context.PROTECTED();
-            if (visibility.Length > 0)
+            var visibility = MemberAttributes.Public;
+            var modifiers = (MemberAttributes)0;
+            foreach (var token in context._Tokens)
             {
-                visibility = context.INTERNAL();
-                if (visibility.Length > 0)
-                    classVarModifiers = MemberAttributes.FamilyOrAssembly;
-                else
-                    classVarModifiers = MemberAttributes.Family;
+                switch (token.Type)
+                {
+                    case XSharpLexer.INTERNAL:
+                        if (visibility == MemberAttributes.Family)
+                            visibility = MemberAttributes.FamilyOrAssembly;
+                        else
+                            visibility = MemberAttributes.Assembly;
+                        break;
+                    case XSharpLexer.HIDDEN:
+                    case XSharpLexer.PRIVATE:
+                        visibility = MemberAttributes.Private;
+                        break;
+                    case XSharpLexer.PUBLIC:
+                    case XSharpLexer.EXPORT:
+                        visibility = MemberAttributes.Public;
+                        break;
+                    case XSharpLexer.PROTECTED:
+                        if (visibility == MemberAttributes.Assembly)
+                            visibility = MemberAttributes.FamilyOrAssembly;
+                        else
+                            visibility = MemberAttributes.Family;
+                        break;
+                    case XSharpLexer.CONST:
+                        modifiers |= MemberAttributes.Const;
+                        break;
+                    case XSharpLexer.STATIC:
+                        modifiers |= MemberAttributes.Static;
+                        break;
+                    case XSharpLexer.INITONLY:
+                    case XSharpLexer.VOLATILE:
+                    case XSharpLexer.INSTANCE:
+                    case XSharpLexer.UNSAFE:
+                    case XSharpLexer.FIXED:
+                        break;
+                }
             }
-            //
-            visibility = context.EXPORT();
-            if (visibility.Length > 0)
-                classVarModifiers = MemberAttributes.Public;
-            //
-            if (context.CONST().Length > 0)
-                classVarModifiers |= MemberAttributes.Const;
-            if (context.STATIC().Length > 0)
-                classVarModifiers |= MemberAttributes.Static;
-            return classVarModifiers;
+            return visibility | modifiers;
         }
         public override void EnterClassvars([NotNull] XSharpParser.ClassvarsContext context)
         {

@@ -9,7 +9,7 @@
 USING XSharp.Internal
 
 PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
-    VAR x := XSharp.MemVar{"InitTheClass",0}
+    VAR x := XSharp.MemVar{"InitTheClass",0} 
     x:Value := 42 // make sure the class constructor gets called
     XSharp.MemVar.Put := __FoxMemVarPut
     RETURN
@@ -57,3 +57,33 @@ FUNCTION __FoxRedim(uCurrent AS USUAL, nRows AS DWORD, nCols := 0 AS DWORD) AS _
         result := __FoxArray{nRows, nCols}
     ENDIF
     RETURN result
+
+
+FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL, nIndex2 AS USUAL) AS USUAL
+    IF uValue IS  __FoxArray VAR fa
+        RETURN fa[nIndex1, nIndex2]
+    ENDIF
+    IF _HasClipFunc(cName)
+        RETURN _CallClipFunc(cName, {nIndex1, nIndex2})
+    ENDIF
+    IF XSharp.MemVar.TryGet(cName, OUT VAR _)
+        THROW Exception{i"Variable '{cName}' is not an array"}
+    ELSE
+        THROW Exception{i"Variable '{cName}' does not exist"}
+    ENDIF
+    
+
+
+FUNCTION __FoxArrayAccess(cName AS STRING, uValue AS USUAL, nIndex1 AS USUAL) AS USUAL
+    IF uValue IS  __FoxArray VAR fa
+        RETURN fa[nIndex1]
+    ENDIF
+    IF _HasClipFunc(cName)
+        RETURN _CallClipFunc(cName, {nIndex1})
+    ENDIF
+    IF XSharp.MemVar.TryGet(cName, OUT VAR _)
+        THROW Exception{i"Variable '{cName}' is not an array"}
+    ELSE
+        THROW Exception{i"Variable '{cName}' does not exist"}
+    ENDIF
+

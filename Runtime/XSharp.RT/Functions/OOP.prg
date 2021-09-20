@@ -1560,6 +1560,10 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 	ENDIF
 
 	RETURN  NIL
+FUNCTION _HasClipFunc(symFunction AS STRING) AS LOGIC
+	LOCAL aFuncs AS MethodInfo[]
+	aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
+    RETURN aFuncs:Length > 0
 
 
 /// <summary>Dynamically loads a library (dll) compiled with X#, running any _INIT procedures it may contain.</summary>

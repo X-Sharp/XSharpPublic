@@ -87968,11 +87968,11 @@ VO13=0
 VO14=0
 VO16=0
 FOX1=0
-FOX2=0
+FOX2=1
 XPP1=0
 LateBound=0
 Unsafe=0
-Undeclared=0
+Undeclared=1
 EnforceSelf=0
 UseNativeVersion=0
 MemVar=1
@@ -87991,7 +87991,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   DefineDebug=1
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=1
+  WarningsErrors=0
   ForceConsole=0
   ForceX86=0
   Optimize=0
@@ -99053,7 +99053,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 [R801 Native Resources]
 [R801 License files]
 [R801 General Options]
-Switches=/warn:5`
+Switches=`
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0

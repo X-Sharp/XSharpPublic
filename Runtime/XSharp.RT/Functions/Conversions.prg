@@ -307,15 +307,20 @@ FUNCTION Descend(uValue AS USUAL) AS USUAL
     RETURN uValue
 
 INTERNAL FUNCTION _descendingString(s AS STRING) AS STRING
-    VAR sb  := StringBuilder{s}
-    VAR nlen := s:Length-1
-    LOCAL i AS INT
-    FOR i := 0 TO nlen
-        IF sb[i] < 256
-            sb[i] := (CHAR) (255 - sb[i])
+    LOCAL encoding AS Encoding
+    IF RuntimeState.Ansi
+        encoding := StringHelpers.WinEncoding
+    ELSE
+        encoding := StringHelpers.DosEncoding
+    ENDIF
+    LOCAL bytes := encoding:GetBytes( s ) AS BYTE[]
+    LOCAL nlen := bytes:Length AS INT
+    FOR LOCAL i := 1 AS INT UPTO nlen
+        IF bytes[i] != 0
+            bytes[i] := (BYTE) ( (INT)256 - (INT)bytes[i] )
         ENDIF
     NEXT
-    RETURN sb:ToString()
+    RETURN encoding:GetString( bytes )
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/descend/*" />

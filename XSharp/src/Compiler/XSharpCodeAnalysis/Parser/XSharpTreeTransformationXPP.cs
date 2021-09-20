@@ -694,7 +694,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     methodCall = GenerateThisMethodCall(accName, args, true);
                 }
-                var stmt = GenerateExpressionStatement(methodCall);
+                var stmt = GenerateExpressionStatement(methodCall,method);
                 var block = MakeBlock(stmt);
                 block.XGenerated = true;
                 var accessor = _syntaxFactory.AccessorDeclaration(

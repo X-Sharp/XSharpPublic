@@ -43,6 +43,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return false;
         }
+        internal static bool IsPossibleArrayIndex(this TypeSymbol type)
+        {
+            return IsUsualType(type) || (type is { } && type.IsObjectType()) || type.GetSpecialTypeSafe().IsNumericType();
+
+        }
         internal static bool IsUsualType(this TypeSymbol type)
         {
             return type is { } && type.Name == OurTypeNames.UsualType;
@@ -77,6 +82,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal static bool IsFloatType(this TypeSymbol type)
         {
             return type is { } && (type.Name == OurTypeNames.FloatType || type.Name == OurTypeNames.VnFloatType);
+        }
+        internal static bool IsFoxArrayType(this TypeSymbol type)
+        {
+            return type is { } && type.Name == OurTypeNames.FoxArrayType;
         }
         internal static bool IsCurrencyType(this TypeSymbol type)
         {

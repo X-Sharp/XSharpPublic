@@ -272,7 +272,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     object[] values = { comp.Options.CheckOverflow ,
                                         comp.Options.VOArithmeticConversions,
                                         comp.Options.VOStringComparisons,
-                                        comp.Options.FoxArrayAssign,
+                                        comp.Options.FoxArraySupport,
                                         comp.Options.Dialect};
                     for (int n = 0; n < names.Length; n++)
                     {

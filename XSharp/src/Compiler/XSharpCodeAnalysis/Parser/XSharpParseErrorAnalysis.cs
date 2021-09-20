@@ -506,10 +506,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case CompilerOption.Vo14:    // Embed real constants as float
                             case CompilerOption.Vo15:    // Untyped allowed
                             case CompilerOption.Vo16:    // Add Clipper CC Missing constructors
+                                context.Pragma = new PragmaOption(context, state, compopt);
+                                break;
+                            //case "xpp1":    // classes inherit from XPP.Abstract
+                            //case "xpp2":    // strongly typed entry point
                             // case "fox1": // Classes inherit from unknown
                             case CompilerOption.Fox2:    // FoxPro array syntax
-                                //case "xpp1":    // classes inherit from XPP.Abstract
-                                //case "xpp2":    // strongly typed entry point
+                                if (_options.Dialect != XSharpDialect.FoxPro)
+                                    goto default;
                                 context.Pragma = new PragmaOption(context, state, compopt);
                                 break;
                             default:

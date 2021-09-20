@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case SyntaxKind.IdentifierName:
                 case SyntaxKind.GenericName:
 #if XSHARP
-                    return BindXSIdentifier((SimpleNameSyntax)node, invoked, diagnostics, bindMethod: true);
+                    return BindXSIdentifier((SimpleNameSyntax)node, invoked, indexed, diagnostics, bindMethod: true);
 #else
                     return BindIdentifier((SimpleNameSyntax)node, invoked, indexed, diagnostics);
 #endif

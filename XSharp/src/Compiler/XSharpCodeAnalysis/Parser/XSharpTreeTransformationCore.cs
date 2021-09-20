@@ -1358,11 +1358,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        protected ExpressionStatementSyntax GenerateExpressionStatement(ExpressionSyntax expr, bool markAsGenerated = false)
+        protected ExpressionStatementSyntax GenerateExpressionStatement(ExpressionSyntax expr, XSharpParserRuleContext context, bool markAsGenerated = false)
         {
             expr.XGenerated = markAsGenerated;
             var stmt = _syntaxFactory.ExpressionStatement(attributeLists: default, expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             stmt.XGenerated = markAsGenerated;
+            stmt.XNode = context;
             return stmt;
         }
 
@@ -2021,7 +2022,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         var name = AssMet.Id.GetText() + XSharpSpecialNames.AssignSuffix;
                         var mcall = GenerateThisMethodCall(name, MakeArgumentList(a.ToArray()), true);
-                        var stmt = GenerateExpressionStatement(mcall);
+                        var stmt = GenerateExpressionStatement(mcall,context);
                         block = MakeBlock(stmt);
                         block.XGenerated = true;
                     }
@@ -3261,7 +3262,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
                                             GenerateSimpleName(evtFldName),
                                             SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
-                                            GenerateSimpleName("value"))))
+                                            GenerateSimpleName("value")),context))
                                 ),
                             expressionBody: null,
                             semicolonToken: null);
@@ -3274,7 +3275,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 _syntaxFactory.AssignmentExpression(SyntaxKind.SubtractAssignmentExpression,
                                                     GenerateSimpleName(evtFldName),
                                                     SyntaxFactory.MakeToken(SyntaxKind.MinusEqualsToken),
-                                                    GenerateSimpleName("value"))))
+                                                    GenerateSimpleName("value")),context))
                                         ),
                                     expressionBody: null,
                                     semicolonToken: null);
@@ -5815,7 +5816,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // Xs$Array[Xs$Local]
                 var lhs = _syntaxFactory.ElementAccessExpression(varname, elementrank);
                 // Xs$Array[Xs$Local] := ""
-                var forbody = GenerateExpressionStatement(MakeSimpleAssignment(lhs, GenerateLiteral("")), true);
+                var forbody = GenerateExpressionStatement(MakeSimpleAssignment(lhs, GenerateLiteral("")), sub, true);
                 stmt = _syntaxFactory.ForStatement(
                     default,
                     SyntaxFactory.MakeToken(SyntaxKind.ForKeyword),
@@ -5842,7 +5843,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 stmt = GenerateExpressionStatement(GenerateMethodCall(
                     _options.XSharpRuntime ?
                     XSharpQualifiedFunctionNames.StringArrayInit :
-                    VulcanQualifiedFunctionNames.StringArrayInit, args, true));
+                    VulcanQualifiedFunctionNames.StringArrayInit, args, true), sub);
                 stmt.XNode = sub.Parent as XSharpParserRuleContext;
                 stmts.Add(stmt);
 
@@ -6013,8 +6014,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (initExpr != null && ! simpleInit)
                 {
                     var block = MakeBlock(MakeList<StatementSyntax>(
-                                        GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(staticName), initExpr)),
-                                        GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(initName), GenerateLiteral(false)))
+                                        GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(staticName), initExpr), context),
+                                        GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(initName), GenerateLiteral(false)), context)
                                         ));
                     decl.Add(GenerateIfStatement(
                         GenerateSimpleName(initName),
@@ -6900,7 +6901,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignmentOperatorExpected));
                         }
                     }
-                    var stmt = GenerateExpressionStatement(expr);
+                    var stmt = GenerateExpressionStatement(expr, exprCtx);
                     stmt.XNode = exprCtx;
                     statements.Add(stmt);
                 }
@@ -6976,7 +6977,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.Q.Type == XP.QMARK)
                 {
                     expr = GenerateMethodCall(SystemQualifiedNames.WriteLine);
-                    context.Put(GenerateExpressionStatement(expr));
+                    context.Put(GenerateExpressionStatement(expr,context));
                 }
                 else
                 {
@@ -7008,7 +7009,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
 
                 expr = GenerateMethodCall(SystemQualifiedNames.Write, arglist);
-                context.Put(GenerateExpressionStatement(expr));
+                context.Put(GenerateExpressionStatement(expr, context));
             }
         }
 
@@ -7243,7 +7244,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var stmts = _pool.Allocate<StatementSyntax>();
             foreach (var eCtx in context._Exprs)
             {
-                stmts.Add(GenerateExpressionStatement(eCtx.Get<ExpressionSyntax>()));
+                stmts.Add(GenerateExpressionStatement(eCtx.Get<ExpressionSyntax>(), context));
             }
             context.PutList(stmts.ToList());
             _pool.Free(stmts);
@@ -7374,7 +7375,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 argList = EmptyArgumentList();
             }
-            var stmt = GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.DebuggerBreak, argList));
+            var stmt = GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.DebuggerBreak, argList), context);
             var cond = MakeSimpleMemberAccess(
                         GenerateQualifiedName(SystemQualifiedNames.Debugger),
                         GenerateSimpleName("IsAttached"));
@@ -7591,7 +7592,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.ArgList.Put(argList);
             }
             var expr = GenerateMethodCall(name, argList);
-            context.Put(GenerateExpressionStatement(expr));
+            context.Put(GenerateExpressionStatement(expr, context));
         }
 
         private bool GenerateSLen(XP.MethodCallContext context)
@@ -7767,7 +7768,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var decl = GenerateLocalDecl("_", objectType);
                 statements.Add(decl);
                 var name = GenerateSimpleName("_");
-                statements.Add(GenerateExpressionStatement(MakeSimpleAssignment(name, GenerateLiteralNull())));
+                statements.Add(GenerateExpressionStatement(MakeSimpleAssignment(name, GenerateLiteralNull()), context));
                 foreach (var e in context._Exprs)
                 {
                     StatementSyntax stmt= null;
@@ -7805,7 +7806,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         if (expr != null)
                         { 
-                        stmt = GenerateExpressionStatement(expr);
+                        stmt = GenerateExpressionStatement(expr, context);
 
                         ctx.Put(stmt);
                         stmtctx = ctx;
@@ -9339,7 +9340,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var block = context.Code.CsNode as BlockSyntax;
             if (block == null)
             {
-                block = MakeBlock(GenerateExpressionStatement(context.Code.Get<ExpressionSyntax>()));
+                block = MakeBlock(GenerateExpressionStatement(context.Code.Get<ExpressionSyntax>(), context));
             }
             SyntaxList<SyntaxToken> modifiers = default;
             if (context.Async != null)

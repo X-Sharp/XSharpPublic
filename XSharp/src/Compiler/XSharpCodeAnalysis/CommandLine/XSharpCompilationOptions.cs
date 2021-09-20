@@ -53,7 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Strict { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
         public bool HasRuntime { get { return this.Dialect.NeedsRuntime(); } }
-        public bool FoxArrayAssign { get; private set; } = false;
+        public bool FoxArraySupport { get; private set; } = false;
         public XSharpTargetDLL TargetDLL { get; private set; }
         public bool UseNativeVersion { get; private set; } = false;
 
@@ -87,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //XPPInheritFromAbstract = opt.Xpp1;        // Handled in the parser
                 //XPPUntypedmain= opt.Xpp2;                 // Handled in the parser
                 //FoxInheritUnknown= opt.Fox1;              // Handled in the parser
-                FoxArrayAssign = opt.Fox2;
+                FoxArraySupport = opt.Fox2;
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
@@ -159,8 +159,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.StringComparisons: // vo13
                     return CheckOption(option, VOStringComparisons, syntax);
 
-                case CompilerOption.FoxArrayAssign: // fox2
-                    return CheckOption(option, FoxArrayAssign, syntax);
+                case CompilerOption.FoxArraySupport: // fox2
+                    return CheckOption(option, FoxArraySupport, syntax);
 
                 // other options are not handled or only handled during parsing
                 case CompilerOption.ClipperCallingConvention:   // Vo5
@@ -244,7 +244,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //VOFloatConstants = opt.VOFloatConstants; // vo14  // Handled in the parser
             //VOUntypedAllowed = opt.VOUntypedAllowed; // vo15  // Handled in the parser
             //VOClipperConstructors = opt.VOClipperConstructors; // vo16// Handled in the parser
-            FoxArrayAssign = opt.FoxArrayAssign;
+            FoxArraySupport = opt.FoxArraySupport;
             ConsoleOutput = opt.ConsoleOutput;
             UndeclaredMemVars = opt.UndeclaredMemVars;
             MemVars = opt.MemVars;

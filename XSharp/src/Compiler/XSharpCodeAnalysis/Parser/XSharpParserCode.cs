@@ -1236,8 +1236,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
     internal static class RuleExtensions
     {
-
-        internal static bool isScript([NotNull] this XSharpParser.IEntityContext entitty) => entitty is XSharpParser.ScriptContext;
+        internal static XSharpParserRuleContext Context([NotNull] this XSharpParser.IEntityContext entity) => (XSharpParserRuleContext)entity;
+        internal static bool isScript([NotNull] this XSharpParser.IEntityContext entity) => entity is XSharpParser.ScriptContext;
 
         internal static bool IsStatic(this InternalSyntax.ClassDeclarationSyntax classdecl)
         {

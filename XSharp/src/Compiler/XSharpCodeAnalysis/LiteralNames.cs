@@ -27,6 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string VnDateType = "__VODate";
         internal const string WinBoolType = "__WinBool";
         internal const string WinDateType = "__WinDate";
+        internal const string FoxArrayType = "__FoxArray";
         internal const string VOStructAttribute = "VoStructAttribute";
         internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
         internal const string ActualTypeAttribute = "ActualTypeAttribute";
@@ -208,6 +209,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // These are in the generated code
         internal const string RunInitProcs = "RunInitProcs";
         internal const string VarGet = "__VarGet";
+        internal const string VarGetSafe = "__VarGetSafe";
         internal const string VarPut = "__VarPut";
         internal const string MemVarGetSafe = "__MemVarGetSafe";
         internal const string MemVarGet = "__MemVarGet";
@@ -246,6 +248,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FoxRedim = "__FoxRedim";
         internal const string FoxAssign = "__FoxAssign";
         internal const string FoxFillArray = "__FoxFillArray";
+        internal const string FoxArrayAccess = "__FoxArrayAccess";
+        internal const string FoxArrayAccessByName = "__FoxArrayAccessByName";
         internal const string UsualEnumerator = "__UsualEnumerator";
     }
     internal static class VulcanQualifiedFunctionNames

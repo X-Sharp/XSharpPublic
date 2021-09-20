@@ -378,7 +378,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Fox1 = positive;
                     encode = true;
                     break;
-                case "fox2":       // Not used
+                case "fox2":       // FoxPro compatible array support
                     options.Fox2 = positive;
                     encode = true;
                     break;
@@ -663,10 +663,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (!options.ExplicitOptions.HasFlag(CompilerOption.Fox1))
                     {
                         options.Fox1 = true;             // inherit from Custom
-                    }
-                    if (options.Fox2 && !options.MemVars)
-                    {
-                        AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 must be combined /memvars");
                     }
                 }
                 else

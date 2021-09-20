@@ -1504,7 +1504,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
 
 #if XSHARP
-                if (Compilation.Options.HasOption(CompilerOption.FoxArrayAssign, node))
+                if (Compilation.Options.HasOption(CompilerOption.FoxArraySupport, node))
                 {
                     // convert op2 to methodcall __FoxAssign(op1, op2)
                     op2 = XsBindFoxArrayAssign(node, op1, op2, diagnostics);

@@ -284,11 +284,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var name = memvar.GetText();
                         ++i;
                         var exp = GenerateMemVarDecl(memvar, GenerateLiteral(name), true);
-                        stmts.Add(GenerateExpressionStatement(exp));
+                        exp.XNode = memvar;
+                        stmts.Add(GenerateExpressionStatement(exp, memvar, true));
 
                         var val = GenerateGetClipperParam(GenerateLiteral(i), context);
                         exp = GenerateMemVarPut(context, GenerateLiteral(name), val);
-                        var stmt = GenerateExpressionStatement(exp);
+                        var stmt = GenerateExpressionStatement(exp, memvar);
                         memvar.Put(stmt);
                         stmts.Add(stmt);
                     }
@@ -299,7 +300,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // declare the private. FoxPro has no initializers 
                         var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
                         var exp = GenerateMemVarDecl(memvar, varname, true);
-                        stmts.Add(GenerateExpressionStatement(exp));
+                        exp.XNode = memvar;
+                        stmts.Add(GenerateExpressionStatement(exp, memvar, true));
                     }
                     // no need to assign a default. The runtime takes care of that
                     break;
@@ -312,7 +314,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             // declare the public and initialize it with a FoxPro array
                             var varname = GetAmpBasedName(dimvar.Amp, dimvar.Id.Id);
                             var exp = GenerateMemVarDecl(dimvar, varname, false);
-                            stmts.Add(GenerateExpressionStatement(exp));
+                            exp.XNode = dimvar;
+                            stmts.Add(GenerateExpressionStatement(exp, dimvar, true));
                             var dimstmts = processDimensionVar(context, dimvar, ref hasError);
                             foreach (var stmt in dimstmts)
                             {
@@ -327,7 +330,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             // declare the public. FoxPro has no initializers
                             var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
                             var exp = GenerateMemVarDecl(memvar, varname, false);
-                            stmts.Add(GenerateExpressionStatement(exp));
+                            exp.XNode = memvar;
+                            stmts.Add(GenerateExpressionStatement(exp, memvar, true));
                         }
                     }
                     break;
@@ -416,7 +420,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 lhs = GenerateSimpleName(name);
             }
             var ass = MakeSimpleAssignment(lhs, mcall);
-            var stmt = GenerateExpressionStatement(ass);
+            var stmt = GenerateExpressionStatement(ass, context);
             stmt.XNode = dimVar;
             stmts.Add(stmt);
             return stmts;
@@ -877,7 +881,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_options.fox1)
             {
                 var call = GenerateThisMethodCall(XSharpSpecialNames.SetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName)), MakeArgument(GenerateSimpleName("value"))), true);
-                body = MakeBlock(GenerateExpressionStatement(call, true));
+                body = MakeBlock(GenerateExpressionStatement(call, context, true));
                 body.XGenerated = true;
             }
             accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration,
@@ -955,7 +959,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Generate code to initialize properties
                     var fldinit = cvi.Member;
                     var assign = fldinit.F.Get<ExpressionSyntax>();
-                    var stmt = GenerateExpressionStatement(assign);
+                    var stmt = GenerateExpressionStatement(assign, cvi);
                     stmt.XNode = fldinit.F;
                     stmts.Add(stmt);
                 }
@@ -968,14 +972,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var name = addobject.Id.GetText();
                     var prop = MakeSimpleMemberAccess(GenerateSelf(), GenerateSimpleName(name));
                     var assign = MakeSimpleAssignment(prop, create);
-                    var stmt = GenerateExpressionStatement(assign);
+                    var stmt = GenerateExpressionStatement(assign, fac);
                     stmt.XNode = addobject;
                     stmts.Add(stmt);
                     // AddObject(SELF:Property)
                     var arg1 = MakeArgument(GenerateLiteral(name));
                     var arg2 = MakeArgument(prop);
                     var mcall = GenerateThisMethodCall(XSharpSpecialNames.AddObject, MakeArgumentList(arg1, arg2));
-                    stmt = GenerateExpressionStatement(mcall);
+                    stmt = GenerateExpressionStatement(mcall, fac);
                     stmt.XNode = addobject;
                     stmts.Add(stmt);
 
@@ -990,7 +994,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // All Statements
                     var mac = MakeSimpleMemberAccess(GenerateSuper(), GenerateSimpleName(XSharpSpecialNames.InitProperties));
                     var superCall = _syntaxFactory.InvocationExpression(mac, EmptyArgumentList());
-                    var stmt = GenerateExpressionStatement(superCall,true);
+                    var stmt = GenerateExpressionStatement(superCall, context, true);
                     stmts.Insert(0, stmt);
                     var body = MakeBlock(stmts);
                     body.XGenerated = true;
@@ -1174,12 +1178,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, id, SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), call);
                 }
-                context.Put(GenerateExpressionStatement(assignExpr));
+                context.Put(GenerateExpressionStatement(assignExpr, context));
             }
             else
             {
                 // no assignment, simply call the TextSupport function
-                context.Put(GenerateExpressionStatement(call));
+                context.Put(GenerateExpressionStatement(call, context));
             }
             if (!delimitersOk)
             {
@@ -1382,7 +1386,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg1 = MakeConditional(cond, expr, GenerateLiteral(context.String.Text));
             var args = MakeArgumentList(MakeArgument(arg1), MakeArgument(arg2));
             var call = GenerateMethodCall(XSharpQualifiedFunctionNames.TextOut, args, true); 
-            var stmt = GenerateExpressionStatement(call);
+            var stmt = GenerateExpressionStatement(call, context);
             if (!delimitersOk)
                 stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_UnbalancedTextMergeOperators));
             context.Put(stmt);

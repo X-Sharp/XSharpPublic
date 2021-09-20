@@ -5375,7 +5375,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
 -vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor 
 -fox1[+|-]                     All FoxPro classes are assumed to inherit from the Custom class
--fox2[+|-]                     Allow FoxPro Arrays to be filled with a simple assignment
+-fox2[+|-]                     FoxPro Array support (fill with simple assignment, alow parenthesized array elements)
 -xpp1[+|-]                     All classes inherit from the Abstract class (default = OFF)
 -memvar[+|-]                   Should memory variables (PUBLIC and PRIVATE variables) be supported. 
                                This only works for the VO, XPP and Harbour dialects.

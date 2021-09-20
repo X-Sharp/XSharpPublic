@@ -2022,7 +2022,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         var name = AssMet.Id.GetText() + XSharpSpecialNames.AssignSuffix;
                         var mcall = GenerateThisMethodCall(name, MakeArgumentList(a.ToArray()), true);
-                        var stmt = GenerateExpressionStatement(mcall,context);
+                        var stmt = GenerateExpressionStatement(mcall, context);
                         block = MakeBlock(stmt);
                         block.XGenerated = true;
                     }
@@ -3262,7 +3262,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
                                             GenerateSimpleName(evtFldName),
                                             SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
-                                            GenerateSimpleName("value")),context))
+                                            GenerateSimpleName("value")), context))
                                 ),
                             expressionBody: null,
                             semicolonToken: null);
@@ -3275,7 +3275,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 _syntaxFactory.AssignmentExpression(SyntaxKind.SubtractAssignmentExpression,
                                                     GenerateSimpleName(evtFldName),
                                                     SyntaxFactory.MakeToken(SyntaxKind.MinusEqualsToken),
-                                                    GenerateSimpleName("value")),context))
+                                                    GenerateSimpleName("value")), context))
                                         ),
                                     expressionBody: null,
                                     semicolonToken: null);
@@ -5816,7 +5816,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // Xs$Array[Xs$Local]
                 var lhs = _syntaxFactory.ElementAccessExpression(varname, elementrank);
                 // Xs$Array[Xs$Local] := ""
-                var forbody = GenerateExpressionStatement(MakeSimpleAssignment(lhs, GenerateLiteral("")), sub, true);
+                var forbody = GenerateExpressionStatement(MakeSimpleAssignment(lhs, GenerateLiteral("")), sub);
                 stmt = _syntaxFactory.ForStatement(
                     default,
                     SyntaxFactory.MakeToken(SyntaxKind.ForKeyword),
@@ -6977,7 +6977,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.Q.Type == XP.QMARK)
                 {
                     expr = GenerateMethodCall(SystemQualifiedNames.WriteLine);
-                    context.Put(GenerateExpressionStatement(expr,context));
+                    context.Put(GenerateExpressionStatement(expr, context));
                 }
                 else
                 {

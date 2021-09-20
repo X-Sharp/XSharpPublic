@@ -301,7 +301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
                         var exp = GenerateMemVarDecl(memvar, varname, true);
                         exp.XNode = memvar;
-                        stmts.Add(GenerateExpressionStatement(exp, memvar, true));
+                        stmts.Add(GenerateExpressionStatement(exp, memvar));
                     }
                     // no need to assign a default. The runtime takes care of that
                     break;
@@ -315,7 +315,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var varname = GetAmpBasedName(dimvar.Amp, dimvar.Id.Id);
                             var exp = GenerateMemVarDecl(dimvar, varname, false);
                             exp.XNode = dimvar;
-                            stmts.Add(GenerateExpressionStatement(exp, dimvar, true));
+                            stmts.Add(GenerateExpressionStatement(exp, dimvar));
                             var dimstmts = processDimensionVar(context, dimvar, ref hasError);
                             foreach (var stmt in dimstmts)
                             {
@@ -331,7 +331,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var varname = GetAmpBasedName(memvar.Amp, memvar.Id.Id);
                             var exp = GenerateMemVarDecl(memvar, varname, false);
                             exp.XNode = memvar;
-                            stmts.Add(GenerateExpressionStatement(exp, memvar, true));
+                            stmts.Add(GenerateExpressionStatement(exp, memvar));
                         }
                     }
                     break;
@@ -881,7 +881,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_options.fox1)
             {
                 var call = GenerateThisMethodCall(XSharpSpecialNames.SetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName)), MakeArgument(GenerateSimpleName("value"))), true);
-                body = MakeBlock(GenerateExpressionStatement(call, context, true));
+                body = MakeBlock(GenerateExpressionStatement(call, context));
                 body.XGenerated = true;
             }
             accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration,
@@ -994,7 +994,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // All Statements
                     var mac = MakeSimpleMemberAccess(GenerateSuper(), GenerateSimpleName(XSharpSpecialNames.InitProperties));
                     var superCall = _syntaxFactory.InvocationExpression(mac, EmptyArgumentList());
-                    var stmt = GenerateExpressionStatement(superCall, context, true);
+                    var stmt = GenerateExpressionStatement(superCall, context);
                     stmts.Insert(0, stmt);
                     var body = MakeBlock(stmts);
                     body.XGenerated = true;

@@ -334,7 +334,7 @@
     <value>Aktion wird vom aktuellen RDD nicht unterstützt</value>
   </data>
   <data name="ERDD_WRITE_NTX" xml:space="preserve">
-    <value>Fehler beim Schreiben der NTX-Datei</value>
+    <value>Fehler beim Schreiben der Index-Datei</value>
   </data>
   <data name="ERDD_KEY_NOT_FOUND" xml:space="preserve">
     <value>Schlüssel nicht gefunden</value>

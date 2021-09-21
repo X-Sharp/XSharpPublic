@@ -334,7 +334,7 @@
     <value>Operacja nieobs³ugiwana przez aktualny RDD</value>
   </data>
   <data name="ERDD_WRITE_NTX" xml:space="preserve">
-    <value>B³¹d zapisu pliku NTX</value>
+    <value>B³¹d zapisu pliku indeks</value>
   </data>
   <data name="ERDD_KEY_NOT_FOUND" xml:space="preserve">
     <value>Nie znaleziono klucza</value>

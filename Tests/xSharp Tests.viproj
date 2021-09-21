@@ -99116,7 +99116,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R801
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C802 - Internal Compiler Error with multiple PRIVATE &varName commands *************
 Application = C802 - Internal Compiler Error with multiple PRIVATE &varName commands
 IDEVersion = 1.06
@@ -99159,8 +99159,8 @@ FileType = Code
 CopyToBin = 0
 [C802 - Internal Compiler Error with multiple PRIVATE &varName commands References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C802 - Internal Compiler Error with multiple PRIVATE &varName commands Resources]
 [C802 - Internal Compiler Error with multiple PRIVATE &varName commands Native Resources]
 [C802 - Internal Compiler Error with multiple PRIVATE &varName commands License files]

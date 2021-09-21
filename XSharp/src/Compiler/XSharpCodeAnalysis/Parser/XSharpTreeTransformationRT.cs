@@ -1052,6 +1052,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else // DIMENSION &foo(1,2)
             {
+                // Make name unique because they can use &name multiple times
                 name += ":" + context.Position.ToString();
                 addFieldOrMemvar(name, "&", context, false);
             }
@@ -1147,8 +1148,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (memvar.Amp == null)
                         {
                             var name = CleanVarName(memvar.Id.GetText());
-                            var mv = new MemVarFieldInfo(name, "M", true);
-                            mv.Context = memvar;
+                            var mv = new MemVarFieldInfo(name, "M", memvar, true);
                             _filewideMemvars.Add(mv.Name, mv);
                             GlobalEntities.FileWidePublics.Add(mv);
                         }
@@ -1162,8 +1162,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var memvar in context._Vars)
                     {
                         var name = CleanVarName(memvar.Id.GetText());
-                        var mv = new MemVarFieldInfo(name, "M", true);
-                        mv.Context = memvar;
+                        var mv = new MemVarFieldInfo(name, "M", memvar, true);
                         _filewideMemvars.Add(mv.Name, mv);
                     }
                 }
@@ -2088,7 +2087,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    fieldInfo = new MemVarFieldInfo(name, null);
+                    fieldInfo = new MemVarFieldInfo(name, "", context.Left);
                     field = MakeMemVarField(fieldInfo);
                 }
                 context.Left.Put(field);
@@ -4282,13 +4281,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //_FIELD->NAME, CUSTOMER-NAME, _FIELD->CUSTOMER->NAME
                 if (context.Alias == null)
                 {
-                    var info = new MemVarFieldInfo(fldName, null);
+                    var info = new MemVarFieldInfo(fldName, "", context);
                     context.Put(MakeMemVarField(info));
                 }
                 else
                 {
                     var alias = context.Alias.GetText();
-                    var info = new MemVarFieldInfo(fldName, alias);
+                    var info = new MemVarFieldInfo(fldName, alias, context);
                     context.Put(MakeMemVarField(info));
                 }
             }
@@ -4333,7 +4332,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string field = context.Expr.GetText();
                 var varName = field;
                 // assume it is a field
-                var info = new MemVarFieldInfo(varName, "");
+                var info = new MemVarFieldInfo(varName, "", context);
                 if (context.Id != null || context.Alias.IsIdentifier())
                 {
                     string name;
@@ -4341,7 +4340,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         name = context.Id.GetText();
                     else
                         name = context.Expr.GetText();
-                    info = new MemVarFieldInfo(varName, name);
+                    info = new MemVarFieldInfo(varName, name, context);
                     context.Put(MakeMemVarField(info));
                 }
                 else

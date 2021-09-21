@@ -408,11 +408,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     Fields = new Dictionary<string, MemVarFieldInfo>(XSharpString.Comparer);
                 }
-                var info = new MemVarFieldInfo(Name, Alias);
-                info.Context = context;
+                var info = new MemVarFieldInfo(Name, Alias, context);
                 Fields.Add(info.Name, info);
-                if (info.Name != info.FullName)
-                    Fields.Add(info.FullName, info);
+                if (!info.IsMacroMemvar)
+                {
+                    if (info.Name != info.FullName && !Fields.ContainsKey(info.FullName))
+                        Fields.Add(info.FullName, info);
+                }
                 return info;
             }
             internal MemVarFieldInfo GetField(string Name)
@@ -1104,7 +1106,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     [DebuggerDisplay("{_fieldType} {FullName}")]
     public class MemVarFieldInfo
     {
-        internal enum MemvarType
+        private enum MemvarType: byte
         {
             Memvar,
             Field,
@@ -1112,6 +1114,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             MacroMemvar,
             Local,
         }
+        public bool IsMemvar => _fieldType == MemvarType.Memvar;
+        public bool IsField => _fieldType == MemvarType.Field;
+        public bool IsClipperParameter => _fieldType == MemvarType.ClipperParameter;
+        public bool IsMacroMemvar => _fieldType == MemvarType.MacroMemvar;
+        public bool IsLocal => _fieldType == MemvarType.Local;
         [Flags]
         enum FieldFlags : byte
         {
@@ -1152,8 +1159,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 oldFlag &= ~newFlag;
             return oldFlag;
         }
-        public bool IsClipperParameter => _fieldType == MemvarType.ClipperParameter;
-        public bool IsLocal => _fieldType == MemvarType.Local;
         public bool IsFileWidePublic
         {
             get { return _flags.HasFlag(FieldFlags.IsFileWidePublic); }
@@ -1174,20 +1179,21 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             get { return _flags.HasFlag(FieldFlags.IsCreated); }
             set { _flags = setFlag(_flags, FieldFlags.IsCreated, value); }
         }
-        public XSharpParserRuleContext Context { get; set; }
-        internal MemVarFieldInfo(string name, string alias, bool filewidepublic = false)
+        public XSharpParserRuleContext Context { get; private set; }
+        internal MemVarFieldInfo(string name, string alias, XSharpParserRuleContext context, bool filewidepublic = false)
         {
             if (name.StartsWith("@@"))
                 name = name.Substring(2);
             Name = name;
             Alias = alias;
+            Context = context;
             if (!string.IsNullOrEmpty(alias))
             {
                 if (alias.StartsWith("@@"))
                     alias = alias.Substring(2);
                 switch (alias.ToUpper())
                 {
-                 case "&":
+                    case "&":
                         _fieldType = MemvarType.MacroMemvar;
                         Alias = XSharpSpecialNames.MemVarPrefix;
                         break;

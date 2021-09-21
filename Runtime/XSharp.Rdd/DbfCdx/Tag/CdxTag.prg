@@ -46,6 +46,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _sourcekeySize AS WORD
         PRIVATE _rootPage AS LONG
         PRIVATE _ordCondInfo AS DbOrderCondInfo
+        PRIVATE _keyBuffer := BYTE[]{8} AS BYTE[]
         INTERNAL _orderName AS STRING
         INTERNAL _Ansi AS LOGIC
         // Scopes
@@ -88,12 +89,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY KeyType        	AS INT GET SELF:_KeyExprType
         INTERNAL PROPERTY KeyCodeBlock      AS ICodeblock GET _KeyCodeBlock
         INTERNAL PROPERTY KeyLength         AS WORD GET SELF:_keySize
-        INTERNAL PROPERTY SourceKeyLength   AS WORD GET SELF:_sourcekeySize
         INTERNAL PROPERTY Partial        	AS LOGIC GET SELF:Custom
         INTERNAL PROPERTY Conditional       AS LOGIC GET SELF:_Conditional
         INTERNAL PROPERTY Custom         	AS LOGIC GET SELF:_Custom
         INTERNAL PROPERTY Unique         	AS LOGIC GET SELF:_Unique
         INTERNAL PROPERTY Signature      	AS BYTE AUTO
+        INTERNAL PROPERTY NullableKey       AS LOGIC AUTO
         INTERNAL PROPERTY Options        	AS CdxOptions AUTO
         INTERNAL PROPERTY LockOffSet     	AS LONG AUTO
         INTERNAL PROPERTY CurrentStack      AS CdxStackEntry GET  SELF:_stack:Top
@@ -218,15 +219,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
-            IF SELF:_KeyExprType == __UsualType.String
-                IF SELF:_Collation != NULL
-                    SELF:__Compare := _compareCollation
-                ELSE
-                    SELF:__Compare := _compareText
-                ENDIF
-            ELSE
-                SELF:__Compare := _compareBin
-            ENDIF
+ 
 
             // If the Key Expression contains only a Field Name
 
@@ -238,8 +231,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_SourceIndex := 0
             LOCAL isOk AS LOGIC
             IF SELF:_SingleField >= 0
-                SELF:_SourceIndex   := SELF:_oRdd:_Fields[_SingleField]:Offset
-                VAR fType           := SELF:_oRdd:_Fields[_SingleField]:FieldType
+                VAR fld := SELF:_oRdd:_Fields[_SingleField]
+                SELF:_SourceIndex   := fld:Offset
+                VAR fType           := fld:FieldType
                 SWITCH fType
                 CASE DbFieldType.Number
                     SELF:_sourcekeySize := SELF:_keySize   := 8
@@ -247,23 +241,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:Binary      := TRUE
                 CASE DbFieldType.Date
                     // CDX converts the Date to a Julian Number and stores that as a Real8 in the index
-                    SELF:_sourcekeySize := SELF:_keySize   := 8
+                    SELF:_sourcekeySize := 8
                     SELF:getKeyValue := _getDateFieldValue
                     SELF:Binary      := TRUE
                 CASE DbFieldType.Integer
-                    SELF:_sourcekeySize := SELF:_keySize   := 4
+                    SELF:_sourcekeySize := 4
                     SELF:getKeyValue := _getIntFieldValue
                     SELF:Binary      := TRUE
                 OTHERWISE
-                    SELF:_sourcekeySize := SELF:_keySize   := (WORD) SELF:_oRdd:_Fields[_SingleField]:Length
+                    SELF:_sourcekeySize := (WORD) fld:Length
                     SELF:getKeyValue := _getFieldValue
                     SELF:Binary      := FALSE
                     IF SELF:_Collation != NULL
                         SELF:_keySize := SELF:Header:KeySize
                         SELF:getKeyValue := _getFieldValueWithCollation
                     ENDIF
-
                 END SWITCH
+                SELF:NullableKey := fld:Flags:HasFlag(DBFFieldFlags.Nullable)
+                IF SELF:_keySize == 0
+                    SELF:_keySize := SELF:_sourcekeySize
+                    IF SELF:NullableKey
+                        SELF:_keySize += 1
+                    ENDIF
+                ENDIF
                 isOk := TRUE
             ELSE
                 SELF:_sourcekeySize := SELF:_keySize    := 0
@@ -278,6 +278,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDIF
             ENDIF
+           IF SELF:_KeyExprType == __UsualType.String
+                IF SELF:_Collation != NULL
+                    IF SELF:NullableKey
+                        SELF:__Compare := _compareCollationNull
+                    ELSE
+                        SELF:__Compare := _compareCollation
+                    ENDIF
+                ELSE
+                    IF SELF:NullableKey
+                        SELF:__Compare := _compareTextNull
+                    ELSE
+                        SELF:__Compare := _compareText
+                    ENDIF
+                ENDIF
+            ELSE
+                IF SELF:NullableKey
+                    SELF:__Compare := _compareBinNull
+                ELSE
+                    SELF:__Compare := _compareBin
+                ENDIF
+            ENDIF            
             IF ! isOk
                 RETURN FALSE
             ENDIF
@@ -344,6 +365,32 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR page := SELF:_bag:GetPage(nPage, SELF:_keySize, SELF)
             RETURN page ASTYPE CdxTreePage
 
+
+        INTERNAL STATIC METHOD _compareNullKeys(aLHS AS BYTE[], aRHS AS BYTE[], res OUT LONG) AS LOGIC
+            IF aLHS[0] != aRHS[0]
+                IF aLHS[0] == 0 // LHS is NULL .and. RHS NOT NULL
+                    res := -1
+                    RETURN TRUE
+                ELSE // RHS is NULL and LHS not NULL
+                    res := 1
+                    RETURN TRUE
+                ENDIF
+            ELSEIF aLHS[0] == 0 // Both keys are NULL
+                res := 0
+                RETURN TRUE
+            ENDIF
+            res := 0
+            RETURN FALSE
+            
+        INTERNAL STATIC METHOD _compareTextNull(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
+            IF aRHS == NULL
+                RETURN 0
+            ENDIF
+            IF _compareNullKeys(aLHS, aRHS, OUT VAR result)
+                RETURN result
+            ENDIF
+            RETURN _compareText(aLHS, aRHS, nLength, recnoLHS, recnoRHS)
+
         INTERNAL STATIC METHOD _compareText(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
             IF aRHS == NULL
                 RETURN 0
@@ -354,12 +401,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN result
 
-
+        INTERNAL STATIC METHOD _compareCollationNull(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
+            IF aRHS == NULL
+                RETURN 0
+            ENDIF            
+            IF _compareNullKeys(aLHS, aRHS, OUT VAR result)
+                RETURN result
+            ENDIF
+            RETURN _compareCollation(aLHS, aRHS, nLength, recnoLHS, recnoRHS)
+            
         INTERNAL STATIC METHOD _compareCollation(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
             RETURN _compareBin(aLHS, aRHS, nLength, recnoLHS, recnoRHS)
 
         INTERNAL STATIC METHOD _compareRecno(recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
-            IF recnoLHS == 0 .or. recnoRHS == 0
+            IF recnoLHS == 0 .OR. recnoRHS == 0
                 // no record to compare against
                 RETURN 0
             ENDIF
@@ -370,6 +425,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN 0
 
+        INTERNAL STATIC METHOD _compareBinNull(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
+            IF aRHS == NULL
+                RETURN 0
+            ENDIF            
+            IF _compareNullKeys(aLHS, aRHS, OUT VAR result)
+                RETURN result
+            ENDIF
+            RETURN _compareBin(aLHS, aRHS, nLength, recnoLHS, recnoRHS)
 
         INTERNAL STATIC METHOD _compareBin(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
             IF aRHS == NULL
@@ -446,7 +509,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 sLen := text:Length
             ENDIF
             resultLength := sLen
-            SELF:_Encoding:GetBytes( text, 0, sLen, buffer, 0)
+            IF SELF:NullableKey
+                buffer[0] := 128
+                SELF:_Encoding:GetBytes( text, 0, sLen, buffer, 1)
+            ELSE
+                SELF:_Encoding:GetBytes( text, 0, sLen, buffer, 0)
+            ENDIF
             IF SELF:_Collation != NULL
                 SELF:_Collation:Translate(buffer)
             ENDIF
@@ -782,19 +850,54 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
         // Methods to calculate keys. We have split these to optimize index creating
+
+        PRIVATE METHOD _getNullKey(byteArray AS BYTE[] ) AS LOGIC
+            LOCAL oCol   := (DbfColumn) SELF:_oRdd:_Fields[_SingleField] AS DbfColumn
+            LOCAL isNull := oCol:IsNull() AS LOGIC
+            IF (isNull)
+                FOR VAR i := 0 TO byteArray:Length-1
+                    byteArray[i] := 0
+                NEXT
+            ELSE
+                byteArray[0] := 128
+            ENDIF
+            RETURN isNull
         PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
-            DoubleToFoxOrder(Convert.ToDouble(oValue), byteArray)
+            LOCAL offSet := 0 AS LONG
+            IF SELF:NullableKey
+                IF SELF:_getNullKey(byteArray)
+                    RETURN TRUE
+                ENDIF
+                offSet := 1
+            ENDIF
+            DoubleToFoxOrder(Convert.ToDouble(oValue), _keyBuffer)
+            System.Array.Copy(_keyBuffer, 0, byteArray, offSet, 8)
             RETURN TRUE
 
        PRIVATE METHOD _getIntFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
-            LongToFoxOrder(Convert.ToInt32(oValue),byteArray)
+            LOCAL offSet := 0 AS LONG
+            IF SELF:NullableKey
+                IF SELF:_getNullKey(byteArray)
+                    RETURN TRUE
+                ENDIF
+                offSet := 1
+            ENDIF
+            LongToFoxOrder(Convert.ToInt32(oValue),_keyBuffer)
+            System.Array.Copy(_keyBuffer, 0, byteArray, offSet, 4)
             RETURN TRUE
 
 
         PRIVATE METHOD _getDateFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
+            LOCAL offSet := 0 AS LONG
+            IF SELF:NullableKey
+                IF SELF:_getNullKey(byteArray)
+                    RETURN TRUE
+                ENDIF
+                offSet := 1
+            ENDIF
             IF oValue IS IDate VAR valueDate
                 IF !valueDate:IsEmpty
                     oValue := DateTime{valueDate:Year, valueDate:Month, valueDate:Day}
@@ -804,14 +907,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             IF oValue IS DateTime VAR dt
                 VAR longValue  := _toJulian(dt)
-                DoubleToFoxOrder(Convert.ToDouble(longValue), byteArray)
+                DoubleToFoxOrder(Convert.ToDouble(longValue), _keyBuffer)
+                System.Array.Copy(_keyBuffer, 0, byteArray, offSet, 8)
                 RETURN TRUE
             ENDIF
             RETURN FALSE
 
         PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             SELF:_oRdd:Validate()
-            Array.Copy(SELF:_oRdd:RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
+            LOCAL offSet := 0 AS LONG
+            LOCAL toCopy := SELF:_keySize AS LONG
+            IF SELF:NullableKey
+                IF SELF:_getNullKey(byteArray)
+                    RETURN TRUE
+                ENDIF
+                offSet := 1
+                toCopy -= 1
+            ENDIF
+            System.Array.Copy(SELF:_oRdd:RecordBuffer, sourceIndex, byteArray, offSet, toCopy)
             RETURN TRUE
 
         PRIVATE METHOD _getFieldValueWithCollation(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC

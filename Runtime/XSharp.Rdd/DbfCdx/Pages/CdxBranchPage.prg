@@ -379,6 +379,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                NEXT
             ENDIF
            RETURN SELF:NumKeys
+#ifdef TESTCDX
 
         METHOD ValidateLevel() AS LOGIC
             VAR page := SELF
@@ -408,13 +409,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 childPage:ValidateLevel()
             ENDIF
             RETURN lOk
-
+#endif
         METHOD DumpKeys AS VOID
         Debug("Dump keys for branch page", SELF:PageNoX)
         FOREACH VAR Branch IN SELF:Keys
             Debug("Child", Branch:ChildPageX, "Rec", Branch:Recno, Branch:KeyText:Trim())
         NEXT
-
+#ifdef TESTCDX
         METHOD ValidateKeys() AS LOGIC
             LOCAL oLast := NULL AS CdxBranch
             LOCAL lOk := TRUE AS LOGIC
@@ -458,10 +459,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:HasRight
                     VAR leftNode  := SELF:Keys[SELF:NumKeys-1]
                     VAR rightPage := (CdxBranchPage) SELF:_tag:GetPage(SELF:RightPtr)
-                    VAR rightNode := rightPage:Keys[0]
-                    IF ! ValidateKeys(leftNode, rightNode)
-                       SELF:Debug("Corruption detected: Last key on our page is not < first key on right page", rightPage:PageNoX, leftNode:DebugString, rightNode:DebugString)
-                       lOk := FALSE
+                    IF rightPage:NumKeys > 0
+                        VAR rightNode := rightPage:Keys[0]
+                        IF ! ValidateKeys(leftNode, rightNode)
+                           SELF:Debug("Corruption detected: Last key on our page is not < first key on right page", rightPage:PageNoX, leftNode:DebugString, rightNode:DebugString)
+                           lOk := FALSE
+                        ENDIF
+//                    ELSE
+//                        System.Diagnostics.Debugger.Break()
                     ENDIF
                 ENDIF
             ENDIF
@@ -480,7 +485,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             SELF:ValidateSiblings()
             RETURN
-
+#endif
 
         INTERNAL METHOD IsDuplicate(nRecno AS LONG, nChildPage AS LONG, cKey AS BYTE[]) AS LOGIC
             IF SELF:NumKeys > 0
@@ -498,9 +503,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN FALSE
 
         INTERNAL OVERRIDE METHOD Write() AS LOGIC
+#ifdef TESTCDX
             IF ! SELF:ValidateKeys()
                SELF:_tag:ThrowException(Subcodes.ERDD_WRITE_NTX,Gencode.EG_CORRUPTION,  "CdxBranchPage.Write")
             ENDIF
+#endif
             RETURN SUPER:Write()
 
 

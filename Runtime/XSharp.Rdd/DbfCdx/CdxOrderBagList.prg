@@ -59,7 +59,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             RETURN isOk
-
+        INTERNAL METHOD _AddBag(oBag AS CdxOrderBag) AS VOID
+            _bags:Add(oBag)
+            RETURN 
         PRIVATE METHOD _CreateBag(info AS DbOrderCreateInfo) AS CdxOrderBag
             // Create new OrderBag on disk 
             LOCAL oBag AS CdxOrderBag

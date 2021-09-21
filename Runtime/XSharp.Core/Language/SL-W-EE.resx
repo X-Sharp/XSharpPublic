@@ -334,7 +334,7 @@
     <value>Trenutni RDD ne podpira te operacije</value>
   </data>
   <data name="ERDD_WRITE_NTX" xml:space="preserve">
-    <value>Napaka pri pisanju NTX datoteke</value>
+    <value>Napaka pri pisanju indeksne datoteke</value>
   </data>
   <data name="ERDD_KEY_NOT_FOUND" xml:space="preserve">
     <value>Ne najdem kljuèa</value>

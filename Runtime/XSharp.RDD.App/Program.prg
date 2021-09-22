@@ -11,15 +11,16 @@ USING XSharp.RDD.Tests
 
 BEGIN NAMESPACE XSharp.RDD.App
 
-    FUNCTION Start AS VOID
+    FUNCTION Start1 AS VOID
         LOCAL oDbfCdx AS DbfCdx
         VAR dbInfo := DbOpenInfo{ "c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\dbfs\TEST10K.DBF", "TEST10K", 1, FALSE, FALSE }
         oDbfCdx := DbfCdx{}
         oDbfCdx:Open(dbInfo)
+        WAIT
         RETURN
         
 
-	FUNCTION Startx() AS VOID
+	FUNCTION Start() AS VOID
 		//
 		CoreDb.UseArea(TRUE, "DBF", "customer.DBF", "CUSTOMER", TRUE, TRUE)
 		? CoreDb.Dbf()

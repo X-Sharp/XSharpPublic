@@ -1,25 +1,23 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
 using System;
-using XSharpModel;
 using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.Project
 {
-    [Command(PackageIds.idViewRepo)]
-    internal sealed class CommandViewRepo : BaseCommand<CommandViewRepo>
+    [Command(PackageIds.idFoxXporter)]
+    internal sealed class CommandFoxXPorter : BaseCommand<CommandFoxXPorter>
     {
-        //protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
-        //{
-        //    await RepositoryWindow.ShowAsync();
-        //}
-
+        protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
+        {
+            string xporterPath = Commands.GetXsPath(@"Bin\FoxXporter.exe");
+            await Commands.StartProcessAsync(xporterPath);
+        }
         protected override Task InitializeCompletedAsync()
         {
             Command.Supported = false;
             return base.InitializeCompletedAsync();
         }
-
         protected override void BeforeQueryStatus(EventArgs e)
         {
             //Command.Enabled = XSolution.HasProject;

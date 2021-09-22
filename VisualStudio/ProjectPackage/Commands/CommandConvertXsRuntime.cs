@@ -22,17 +22,17 @@ namespace XSharp.Project
             var path = project.FullPath;
             var xsproject = XSolution.FindProject(path);
             var isVulcan = false;
-            if (xsproject != null)
-            {
-                foreach (var asmref in xsproject.AssemblyReferences)
-                {
-                    if (asmref.FullName.Contains("Vulcan"))
-                    {
-                        isVulcan = true;
-                        break;
-                    }
-                }
-            }
+            //if (xsproject != null)
+            //{
+            //    foreach (var asmref in xsproject.AssemblyReferences)
+            //    {
+            //        if (asmref.FullName.Contains("Vulcan"))
+            //        {
+            //            isVulcan = true;
+            //            break;
+            //        }
+            //    }
+            //}
             Command.Visible = isVulcan;
         }
 

@@ -23,26 +23,26 @@ namespace XSharp.Project
             var items = await VS.Solutions.GetActiveItemsAsync();
 
             bool visible = false;
-            foreach (var item in items)
-            {
-                if (item is PhysicalFile file)
-                {
-                    var subtype = await file.GetAttributeAsync(ProjectFileConstants.SubType);
-                    if (subtype == ProjectFileAttributeValue.Form || subtype == ProjectFileAttributeValue.UserControl)
-                    {
-                        visible = true;
-                        currentFile = file;
-                        foreach (var child in file.Children)
-                        {
-                            if (child.FullPath.ToLower().EndsWith(".designer.prg"))
-                            {
-                                visible = false;
-                                currentFile = null;
-                            }
-                        }
-                    }
-                }
-            }
+            //foreach (var item in items)
+            //{
+            //    if (item is PhysicalFile file)
+            //    {
+            //        var subtype = await file.GetAttributeAsync(ProjectFileConstants.SubType);
+            //        if (subtype == ProjectFileAttributeValue.Form || subtype == ProjectFileAttributeValue.UserControl)
+            //        {
+            //            visible = true;
+            //            currentFile = file;
+            //            foreach (var child in file.Children)
+            //            {
+            //                if (child.FullPath.ToLower().EndsWith(".designer.prg"))
+            //                {
+            //                    visible = false;
+            //                    currentFile = null;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
             Command.Visible = visible;
             if (items.Count() != 1)
             {

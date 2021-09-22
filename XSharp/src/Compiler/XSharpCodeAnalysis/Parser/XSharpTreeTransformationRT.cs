@@ -929,13 +929,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string name;
             if (_options.XSharpRuntime)
             {
-                name = XSharpQualifiedFunctionNames.UsualNIL;
+                if (_options.Dialect == XSharpDialect.FoxPro)
+                {
+                    name = XSharpQualifiedFunctionNames.UsualNIL;
+                    return GenerateQualifiedName(name);
+                }
+                else
+                {
+                    return MakeDefault(_usualType);
+                }
             }
             else
             {
                 name = VulcanQualifiedFunctionNames.UsualNIL;
+                return GenerateQualifiedName(name);
             }
-            return GenerateQualifiedName(name);
         }
         protected override ExpressionSyntax GenerateMissingExpression(bool AddError)
         {

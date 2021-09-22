@@ -9,8 +9,9 @@ namespace XSharp.Project
     {
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
-            string xporterPath = Commands.GetXsPath(@"Bin\XUDCTester.exe");
-            await Commands.StartProcessAsync(xporterPath);
+            string udcPath = System.IO.Path.GetDirectoryName(typeof(CommandUDCTester).Assembly.Location);
+            udcPath = System.IO.Path.Combine(udcPath, "XUDCTester.exe");
+            await Commands.StartProcessAsync(udcPath);
         }
     }
 }

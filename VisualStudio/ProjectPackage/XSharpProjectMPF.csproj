@@ -115,6 +115,7 @@
     <Compile Include="Commands\CommandViewMemVars.cs" />
     <Compile Include="Commands\CommandViewGlobals.cs" />
     <Compile Include="Commands\CommandUDCTester.cs" />
+    <Compile Include="Commands\CommandFoxXPorter.cs" />
     <Compile Include="Commands\CommandXsWebsite.cs" />
     <Compile Include="Commands\CommandXsHelp.cs" />
     <Compile Include="Commands\CommandXPorter.cs" />

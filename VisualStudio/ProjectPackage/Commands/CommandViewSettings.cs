@@ -11,7 +11,7 @@ namespace XSharp.Project
     {
         protected override void BeforeQueryStatus(EventArgs e)
         {
-            Command.Enabled = XSettings.DebuggerMode == DebuggerMode.Break;
+            Command.Enabled = false; // XSettings.DebuggerMode == DebuggerMode.Break;
             base.BeforeQueryStatus(e);
         }
 

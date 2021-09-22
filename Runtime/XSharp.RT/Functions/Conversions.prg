@@ -467,7 +467,7 @@ FUNCTION Str(nNumber ,nLength ,nDecimals ) AS STRING CLIPPER
     ELSEIF nNumber:IsFloat
         LOCAL oFloat AS FLOAT
         oFloat := nNumber
-        IF oFloat:Digits != -1 .and. IsNil(nLength)
+        IF oFloat:Digits != -1 .and. nLength:IsNil
         	nLength := oFloat:Digits
         END IF
     END IF

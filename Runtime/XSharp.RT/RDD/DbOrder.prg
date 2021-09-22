@@ -408,7 +408,7 @@ FUNCTION OrdSetFocus(uOrder, cIndexFile) AS USUAL CLIPPER
     /// <seealso cref='DbClearScope' />
 
 FUNCTION DbScope(uScope) AS USUAL CLIPPER
-    IF IsNil(uScope)
+    IF uScope:IsNil
         uScope := OrdScope(TOPSCOPE)
         IF uScope:IsNil
             uScope := OrdScope(BOTTOMSCOPE)

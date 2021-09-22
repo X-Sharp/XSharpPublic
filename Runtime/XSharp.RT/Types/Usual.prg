@@ -594,7 +594,7 @@ BEGIN NAMESPACE XSharp
         PROPERTY @@Value AS OBJECT
             [NODEBUG] ;
             GET
-                IF (_usualType == __UsualType.Void)
+                IF _usualType == __UsualType.Void
                     RETURN "NIL"
                 ELSE
                     RETURN __Usual.ToObject(SELF)
@@ -2811,11 +2811,11 @@ BEGIN NAMESPACE XSharp
         STATIC METHOD ToObject(u AS __Usual) AS OBJECT
             IF !u:_initialized
                 // Empty usuals are considered to be FALSE in the FoxPro dialect
-                IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
-                    RETURN FALSE
-                ELSE
+                // IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
+                //     RETURN FALSE
+                // ELSE
                     RETURN NULL
-                ENDIF
+                // ENDIF
             ENDIF
             SWITCH u:_usualType
             CASE __UsualType.Array		; RETURN u:_arrayValue

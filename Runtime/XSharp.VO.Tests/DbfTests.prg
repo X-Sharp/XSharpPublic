@@ -2412,7 +2412,7 @@ RETURN
 			
 			alias2->DbGoto(1)
 			alias2->DbRLock()
-			cUpdate1 := "A long update that should be visible only in record 1"
+			cUpdate1 := Repl("A long update that should be visible only in record 1",10)
 			alias2->FieldPut(1, cUpdate1)
 //			alias2->DbCommit() // not making a difference
 //			alias2->DbUnLock()

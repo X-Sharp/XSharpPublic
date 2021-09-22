@@ -176,7 +176,6 @@ FUNCTION FieldBlock(cFieldName AS STRING) AS CODEBLOCK
     IF ! String.IsNullOrEmpty(cFieldName)
         nPos := FieldPos(cFieldName)
         IF nPos != 0
-            //oCB := MCompile("{|x| iif( IsNil(x), __FieldGetNum( "+nPos:ToString()+"), __FieldSetNum( "+nPos:ToString()+" , x)")
             oCB := {|x| IIF(x:IsNil, __FieldGetNum(nPos), __FieldSetNum(nPos, x))}
         ENDIF
     ENDIF

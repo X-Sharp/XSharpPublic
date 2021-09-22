@@ -44,9 +44,9 @@ INTERNAL FUNCTION _SelectFoxPro(uWorkArea AS USUAL) AS USUAL
 		// handles Select(), Select(0), Select(1) and takes care of
 		// the - not yet implemented - SET COMPATIBLE ON/OFF setting.
 
-		IF IsNil(uWorkArea) .OR. lGetHighestUnusedAreaNumber .OR. lGetCurrentAreaNumber
+		IF uWorkArea:IsNil .OR. lGetHighestUnusedAreaNumber .OR. lGetCurrentAreaNumber
 
-			IF lGetHighestUnusedAreaNumber .OR. ( IsNil(uWorkArea) .AND. RuntimeState.Compatible )
+			IF lGetHighestUnusedAreaNumber .OR. ( uWorkArea:IsNil .AND. RuntimeState.Compatible )
 				// get the number of the highest unused work area
 				sSelect := RuntimeState.Workareas:FindEmptyArea( FALSE )
 
@@ -292,7 +292,7 @@ FUNCTION DbCreate (   cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lO
     LOCAL lKeep           AS LOGIC
     LOCAL lRetCode        AS LOGIC
 
-    IF aStruct == NIL
+    IF aStruct:IsNil
         aStruct := {}
     ENDIF
 
@@ -309,19 +309,19 @@ FUNCTION DbCreate (   cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lO
     //      NIL -   to close file after creating
     //
 
-    IF lNew == NIL
+    IF lNew:IsNil
         lNew    := .T.
         lKeep   := .F.
     ELSE
         lKeep   := .T.
     ENDIF
 
-    IF lOpen == NIL
+    IF lOpen:IsNil
         lOpen := .F.
     ENDIF
 
     LOCAL oDriver := cDriver AS OBJECT
-    IF IsNil(cDriver)
+    IF cDriver:IsNil
         oDriver := RuntimeState.DefaultRDD
     ENDIF
     IF oDriver IS STRING

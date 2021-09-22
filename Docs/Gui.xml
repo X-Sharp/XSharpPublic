@@ -1369,13 +1369,13 @@
         </summary>
     </BaseListBox.Clear>
     <BaseListBox.CurrentItem>
-        <exclude />
+        <inheritdoc />
     </BaseListBox.CurrentItem>
     <BaseListBox.CurrentItemNo>
-        <exclude />
+        <inheritdoc />
     </BaseListBox.CurrentItemNo>
     <BaseListBox.CurrentText>
-        <exclude />
+        <inheritdoc />
     </BaseListBox.CurrentText>
     <BaseListBox.DeleteItem>
         <summary>
@@ -2761,7 +2761,9 @@
         </remarks>
     </Control.ControlID>
     <Control.Create>
-        <exclude />
+        <summary>
+            Creates the underlying Win32 control
+        </summary>
     </Control.Create>
     <Control.DataField>
         <exclude />
@@ -3190,7 +3192,9 @@
         </returns>
     </Control.PerformValidations>
     <Control.ReadOnly>
-        <exclude />
+        <summary>
+            Is the control readonly ?
+        </summary>
     </Control.ReadOnly>
     <Control.RegisterTimer>
         <summary>
@@ -14301,7 +14305,7 @@
         </returns>
     </ListView.DeleteItem>
     <ListView.Destroy>
-        <exclude />
+        <inheritdoc />
     </ListView.Destroy>
     <ListView.DragDropEnabled>
         <summary>
@@ -20528,7 +20532,7 @@
         </remarks>
     </ScrollBar.BlockSize>
     <ScrollBar.Create>
-        <exclude />
+        <inheritdoc />
     </ScrollBar.Create>
     <ScrollBar.Destroy>
         <summary>
@@ -20539,7 +20543,7 @@
         </remarks>
     </ScrollBar.Destroy>
     <ScrollBar.Hide>
-        <exclude />
+        <inheritdoc />
     </ScrollBar.Hide>
     <ScrollBar.Modified>
         <summary>
@@ -20573,7 +20577,7 @@
         <param name="lNotifyOwner">Should the owner be notified? When TRUE then the owner receives a WM_HSCROLL or WM_VSCROLL with a wParam SB_THUMBTRACK and lParam contains the scrollbar handle.</param>
     </ScrollBar.SetThumbPosition>
     <ScrollBar.Show>
-        <exclude />
+        <inheritdoc />
     </ScrollBar.Show>
     <ScrollBar.TextValue>
         <summary>
@@ -20609,7 +20613,7 @@
         </remarks>
     </ScrollBar.UnitSize>
     <ScrollBar.Value>
-        <exclude />
+        <inheritdoc />
     </ScrollBar.Value>
     <ScrollEvent>
         <summary>
@@ -21578,7 +21582,7 @@
         </remarks>
     </SplitWindow.ChangeBackground>
     <SplitWindow.Destroy>
-        <exclude />
+        <inheritdoc />
     </SplitWindow.Destroy>
     <SplitWindow.Dispatch>
         <inheritdoc />
@@ -23244,7 +23248,12 @@
         <value>A string representing the text currently displayed in a text control.  For edit controls, including the edit box associated with simple and drop-down combo boxes, it contains the text currently appearing in the edit box. For fixed icon and group box controls, TextControl:CurrentText contains NULL_STRING.</value>
     </TextControl.CurrentText>
     <TextControl.Destroy>
-        <exclude />
+        <summary>
+            Provide a method to de-instantiate any TextControl.Destroy object.
+        </summary>
+        <remarks>
+            This method can be used when a TextControl.Destroy object is no longer needed. TextControl.Destroy:Destroy() de-instantiates the Control object and allows you to close and free any resources that were opened or created by the object, without waiting for the garbage collector.
+        </remarks>
     </TextControl.Destroy>
     <TextControl.EnableAutoComplete>
         <exclude />

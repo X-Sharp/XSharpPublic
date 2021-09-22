@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp
         PRIVATE STATIC falseValue := __WinBool{0}	AS __WinBool
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE INITONLY _value AS INT			// 0 = false, 1 = true
-
+        /// <summary>Value as Logic</summary>
         PUBLIC PROPERTY @@Value AS LOGIC GET _value != 0
 
         PRIVATE CONSTRUCTOR(@@value AS INT)
@@ -44,33 +44,33 @@ BEGIN NAMESPACE XSharp
 
             
             #region Unary Operators
-         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+         /// <exclude />
          STATIC OPERATOR !(wb AS __WinBool) AS LOGIC
             RETURN wb:_value == 0
             #endregion
             
         #region Binary Operators
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         OPERATOR == (lhs AS __WinBool, rhs AS __WinBool) AS LOGIC
             RETURN lhs:_value == rhs:_value
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         OPERATOR != (lhs AS __WinBool, rhs AS __WinBool) AS LOGIC
             RETURN lhs:_value != rhs:_value
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         OPERATOR == (lhs AS __WinBool, rhs AS LOGIC) AS LOGIC
             RETURN IIF (rhs, lhs:_value != 0, lhs:_value == 0)
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         OPERATOR != (lhs AS __WinBool, rhs AS LOGIC) AS LOGIC
             RETURN IIF (rhs, lhs:_value == 0, lhs:_value != 0)
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         OPERATOR == (lhs AS LOGIC, rhs AS __WinBool) AS LOGIC
             RETURN IIF (lhs, rhs:_value != 0, rhs:_value == 0)
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         OPERATOR != (lhs AS LOGIC, rhs AS __WinBool) AS LOGIC
             RETURN IIF (lhs, rhs:_value == 0, rhs:_value != 0)
             
@@ -83,37 +83,37 @@ BEGIN NAMESPACE XSharp
             #endregion 
             
         #region Implicit Converters
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR IMPLICIT(wb AS __WinBool) AS LOGIC
             RETURN wb:_value != 0
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR IMPLICIT(u AS USUAL) AS __WinBool
             RETURN __WinBool{(LOGIC) u}
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR IMPLICIT(l AS LOGIC) AS __WinBool
             RETURN IIF(l, trueValue, falseValue)
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR IMPLICIT(wb AS __WinBool) AS USUAL
             RETURN wb:_value != 0
             
             #endregion
         #region Logical operators
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR &(lhs AS __WinBool, rhs AS __WinBool) AS __WinBool
             RETURN IIF( lhs:_value == 1 .AND. rhs:_value == 1, trueValue, falseValue)
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR |(lhs AS __WinBool, rhs AS __WinBool) AS __WinBool
             RETURN IIF(lhs:_value == 1 .OR. rhs:_value == 1, trueValue, falseValue)
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR TRUE(wb AS __WinBool ) AS LOGIC
             RETURN wb:_value == 1
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR FALSE(wb AS __WinBool )AS LOGIC
             RETURN wb:_value == 0
             

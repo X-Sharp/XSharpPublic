@@ -15,8 +15,9 @@ BEGIN NAMESPACE XSharp
     [Serializable];
     PUBLIC STRUCT __WinDate IMPLEMENTS ISerializable
         PRIVATE INITONLY _value AS DWORD			// Julian value 
-
+        /// <summary>Value as Date</summary>
         PUBLIC PROPERTY @@Value AS DATE => (DATE) _value
+        /// <summary>Value as Julian Number, 0 for NULL_DATE</summary>
         PUBLIC PROPERTY @@JulianValue AS INT => (INT) _value
 
         PRIVATE CONSTRUCTOR(@@value AS DWORD)
@@ -43,27 +44,27 @@ BEGIN NAMESPACE XSharp
             #endregion
             
         #region Binary Operators
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <exclude />
         OPERATOR == (lhs AS __WinDate, rhs AS __WinDate) AS LOGIC
             RETURN lhs:_value == rhs:_value
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         OPERATOR != (lhs AS __WinDate, rhs AS __WinDate) AS LOGIC
             RETURN lhs:_value != rhs:_value
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         OPERATOR == (lhs AS __WinDate, rhs AS DATE) AS LOGIC
             RETURN lhs:@@Value == rhs
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         OPERATOR != (lhs AS __WinDate, rhs AS DATE) AS LOGIC
             RETURN lhs:@@Value != rhs
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         OPERATOR == (lhs AS DATE, rhs AS __WinDate) AS LOGIC
             RETURN lhs == rhs:@@Value
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         OPERATOR != (lhs AS DATE, rhs AS __WinDate) AS LOGIC
             RETURN lhs != rhs:@@Value
             
@@ -76,19 +77,19 @@ BEGIN NAMESPACE XSharp
             #endregion 
             
         #region Implicit Converters
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR IMPLICIT(wd AS __WinDate) AS DATE
             RETURN wd:@@Value
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR IMPLICIT(u AS USUAL) AS __WinDate
             RETURN __WinDate{(DATE) u}
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR IMPLICIT(d AS DATE) AS __WinDate
             RETURN __WinDate{d}
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+            /// <exclude />
         STATIC OPERATOR IMPLICIT(wd AS __WinDate) AS USUAL
             RETURN wd:@@Value
             

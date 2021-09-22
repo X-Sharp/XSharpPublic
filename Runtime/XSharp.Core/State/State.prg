@@ -263,13 +263,11 @@ CLASS XSharp.RuntimeState
 	/// <summary>The last File IO error number</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="FError" />
-    /// <seealso cref="Set.FileError" />
     STATIC PROPERTY FileError AS DWORD AUTO
 
 	/// <summary>The last file IO Exception</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="FException" />
-    /// <seealso cref="Set.FileException" />
     STATIC PROPERTY FileException AS Exception AUTO
 
 	/// <summary>The current Alternate setting.</summary>
@@ -416,7 +414,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The default RDD.</summary>
     /// <remarks><note>This value is 'per thread' </note></remarks>
-    /// <seealso cref="RDDSetDefault" />
+    /// <seealso cref="RddSetDefault" />
     STATIC PROPERTY DefaultRDD AS STRING ;
         GET GetValue<STRING>(Set.DefaultRdd);
         SET SetValue<STRING>(Set.DefaultRdd, value)
@@ -558,7 +556,6 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>Last error that occurred in the RDD subsystem.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.LastRddError" />
     STATIC PROPERTY LastRddError AS Exception AUTO
 
 	/// <summary>Last Script error that occurred .</summary>
@@ -665,10 +662,10 @@ CLASS XSharp.RuntimeState
 	END SET
 	END PROPERTY
 
-    /// <summary>The DOS Encoding. This is based on the corrent Win Codepage.</summary>
+    /// <summary>The Windows Encoding. This is based on the corrent Win Codepage.</summary>
     /// <seealso cref="WinCodePage" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="O:StringCompare" />
+    /// <seealso cref="O:RuntimeState.StringCompare" />
     STATIC PROPERTY WinEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(WinCodePage)
 

@@ -26,7 +26,7 @@ METHOD Delete()
 	RETURN FALSE
 
 
-/// <exclude />
+/// <inheritdoc />
 METHOD Execute()
 
 

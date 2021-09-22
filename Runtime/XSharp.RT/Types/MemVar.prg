@@ -117,8 +117,13 @@ END CLASS
 [DebuggerDisplay("Memvar: {Name,nq}: {Value}")];
 PUBLIC CLASS XSharp.MemVar
     // Delegates for reading and writing
+    /// <param name="name">Name of the Memvar for which the value has to be retrieved</param>
+    /// <returns>The value of the memory variable. </returns>
     DELEGATE Getter(name AS STRING) AS USUAL
-    DELEGATE Putter(name AS STRING, VALUE AS USUAL) AS USUAL
+    /// <param name="name">Name of the Memvar for which the value has to be retrieved</param>
+    /// <param name="value">Value to assign to the memory variable</param>
+    /// <remarks>When the variable does not exist then a new memory variable may be created.</remarks>
+    DELEGATE Putter(name AS STRING, @@value AS USUAL) AS USUAL
 
     INTERNAL CLASS MemVarThreadInfo
         INTERNAL Levels AS Stack <MemVarLevel>
@@ -229,8 +234,8 @@ PUBLIC CLASS XSharp.MemVar
 
     /// <summary>Update a private variable. Does NOT add a new variable</summary>
     STATIC METHOD PrivatePut(name AS STRING, uValue AS USUAL) AS LOGIC
-        VAR curr := CheckCurrent()
-	    IF curr != NULL .AND. curr:TryGetValue(name, OUT VAR oMemVar)
+        VAR current := CheckCurrent()
+	    IF current != NULL .AND. current:TryGetValue(name, OUT VAR oMemVar)
 			oMemVar:Value := uValue
 			RETURN TRUE
         ENDIF
@@ -409,26 +414,31 @@ PUBLIC CLASS XSharp.MemVar
 #endregion
 #region Generic - Public and Private
     /// <summary>Add a public memvar or a private memvar to the current level.</summary>
-	STATIC METHOD Add(name AS STRING, _priv AS LOGIC) AS VOID
-		IF _priv
-			VAR curr := CheckCurrent()
-			IF curr != NULL .AND. !curr:ContainsKey(name)
+    /// <param name="cName">The name of the memory variable</param>
+    /// <param name="lPrivate">Should the variable be created as private</param>
+	STATIC METHOD Add(cName AS STRING, lPrivate AS LOGIC) AS VOID
+		IF lPrivate
+			VAR current := CheckCurrent()
+			IF current != NULL .AND. !current:ContainsKey(cName)
                 IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
-                    curr:Add(@@MemVar{name,FALSE})
+                    current:Add(@@MemVar{cName,FALSE})
                 ELSE
-				    curr:Add(@@MemVar{name,NIL})
+				    current:Add(@@MemVar{cName,NIL})
                 ENDIF
 			ENDIF
 		ELSE
             BEGIN LOCK Publics
-			    IF !Publics:ContainsKey(name)
-				    VAR oMemVar := @@MemVar{name,FALSE}        // publics are always initialized with FALSE
+			    IF !Publics:ContainsKey(cName)
+				    VAR oMemVar := @@MemVar{cName,FALSE}        // publics are always initialized with FALSE
 				    Publics:Add(oMemVar )
 			    ENDIF
             END LOCK
         ENDIF
 
     /// <summary>Try to retrieve the value of a local, private or public (in that order).</summary>
+    /// <param name="cName">The name of the memory variable</param>
+    /// <param name="uValue">Value of the variable, or NIL whe the variable does not exist.</param>
+    /// <returns>TRUE when the variable was found. Otherwise FALSE</returns>
     STATIC METHOD TryGet(cName AS STRING, uValue OUT USUAL) AS LOGIC
         // Local takes precedence over private
         IF LocalFind(cName, OUT uValue, OUT VAR _)
@@ -444,10 +454,13 @@ PUBLIC CLASS XSharp.MemVar
         ENDIF
         RETURN FALSE
 
-
+    /// <inheritdoc cref="M:XSharp.MemVar._GetSafe(System.String)"/>
     STATIC PUBLIC GetSafe AS Getter
     /// <summary>Get the value of a local, private or public (in that order). Returns NIL if the value does not exist.</summary>
-	STATIC METHOD _GetSafe(cName AS STRING) AS USUAL
+	/// <returns>The value of the memory variable or NIL when it does not exist.</returns>
+    /// <param name="cName">The name of the memory variable</param>
+    /// <remarks>When a private and a public exist with the same name then the private has preference</remarks>
+    STATIC METHOD _GetSafe(cName AS STRING) AS USUAL
         // Local takes precedence over private
         IF LocalFind(cName, OUT VAR uValue, OUT VAR _)
             RETURN uValue
@@ -463,8 +476,11 @@ PUBLIC CLASS XSharp.MemVar
         ENDIF
         RETURN NIL
 
+    /// <inheritdoc cref="M:XSharp.MemVar._Get(System.String)"/>
     STATIC PUBLIC @@Get AS Getter
     /// <summary>Get the value of a local, private or public (in that order). Throws an exception when the variable does not exist.</summary>
+    /// <returns>The value of the memory variable.</returns>
+    /// <param name="cName">The name of the memory variable</param>
 	STATIC METHOD _Get(cName AS STRING) AS USUAL
         // Local takes precedence over private
         IF LocalFind(cName, OUT VAR uValue, OUT VAR _)
@@ -482,9 +498,13 @@ PUBLIC CLASS XSharp.MemVar
         VAR err := Error.VOError(EG_NOVAR,"MemVarGet",nameof(cName),1, <OBJECT>{cName})
         THROW err
 
+    /// <inheritdoc cref="M:XSharp.MemVar._Put(System.String,XSharp.__Usual)"/>
     STATIC PUBLIC Put AS Putter
     /// <summary>Updates the value of a local, private or public (in that order).
     /// If the value does not exist than a new variable at the current level is created.</summary>
+    /// <returns>The value of the memory variable.</returns>
+    /// <param name="cName">The name of the memory variable.</param>
+    /// <param name="uValue">The value to assign.</param>
 	STATIC METHOD _Put(cName AS STRING, uValue AS USUAL) AS USUAL
         // Local takes precedence over private
         IF LocalFind(cName, OUT VAR _, OUT VAR level)
@@ -504,14 +524,15 @@ PUBLIC CLASS XSharp.MemVar
             END LOCK
 		ELSE
 			// memvar does not exist, then add it at the current level
-			VAR curr := CheckCurrent()
-            IF curr != NULL
-			    curr:Add(@@MemVar{cName,uValue})
+			VAR current := CheckCurrent()
+            IF current != NULL
+			    current:Add(@@MemVar{cName,uValue})
             ENDIF
 		ENDIF
 		RETURN uValue
 
-    /// <summary>Clear all memvar name/value pairs. Does not remove locals. Does not remove privates stack levels.</summary>
+    /// <summary>Clear all memvar name/value pairs.
+    /// Does not remove locals. Does not remove privates stack levels.</summary>
 	STATIC METHOD ClearAll() AS VOID
 		// Does not clear the privates stack levels
         BEGIN LOCK Publics
@@ -522,17 +543,18 @@ PUBLIC CLASS XSharp.MemVar
 		NEXT
 
     /// <summary>Clear a variable by name. Tries to clear a private first and when that is not found then a public</summary>
-    STATIC METHOD Clear(name AS STRING) AS LOGIC
-        // clear does not remove locals
-	    // assign nil to visible private. Does not really release the variable.
-		VAR oMemVar := PrivateFind(name)
+    /// <param name="cName">The name of the memory variable.</param>
+    /// <remarks>Clear does not remove the variable but sets its value to NIL.<br />
+    /// In the FoxPro dialect Clear does not clear local variables when these are visible.</remarks>
+    STATIC METHOD Clear(cName AS STRING) AS LOGIC
+		VAR oMemVar := PrivateFind(cName)
 		IF oMemVar == NULL
-            oMemVar := PublicFind(name)
+            oMemVar := PublicFind(cName)
 		ENDIF
         IF oMemVar != NULL
 			oMemVar:Value := NIL
 		ELSE
-			THROW Exception{"Variable "+name:ToString()+" does not exist"}
+			THROW Exception{"Variable "+cName+" does not exist"}
 		ENDIF
 		RETURN TRUE
 
@@ -542,9 +564,10 @@ PUBLIC CLASS XSharp.MemVar
 
 
     /// <summary>Find a public variable</summary>
-	STATIC METHOD PublicFind(name AS STRING) AS XSharp.MemVar
+    /// <param name="cName">The name of the memory variable.</param>
+	STATIC METHOD PublicFind(cName AS STRING) AS XSharp.MemVar
         BEGIN LOCK Publics
-		    IF Publics:TryGetValue(name, OUT VAR oMemVar)
+		    IF Publics:TryGetValue(cName, OUT VAR oMemVar)
 			    RETURN oMemVar
 		    ENDIF
         END LOCK
@@ -552,8 +575,10 @@ PUBLIC CLASS XSharp.MemVar
 
 
     /// <summary>Update a public variable. Does NOT create a new public when there is no variable with that name.</summary>
-	STATIC METHOD PublicPut(name AS STRING, uValue AS USUAL) AS LOGIC
-		VAR oMemVar := PublicFind(name)
+    /// <param name="cName">The name of the memory variable.</param>
+    /// <param name="uValue">The value to assign.</param>
+	STATIC METHOD PublicPut(cName AS STRING, uValue AS USUAL) AS LOGIC
+		VAR oMemVar := PublicFind(cName)
 		IF oMemVar != NULL
             BEGIN LOCK oMemVar
 			    oMemVar:Value := uValue

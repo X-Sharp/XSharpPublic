@@ -27,6 +27,7 @@ PROCEDURE Main AS VOID
     ? OrdCreate("test2","CITY","CITY")
     ? OrdCreate("test3","NAMECITY","NAME+CITY")
     ? DbClearIndex()
+    SetDeleted(TRUE)
     ? DbSetIndex("test1")
     ? DbSetIndex("test2")
     ? DbSetIndex("test3")

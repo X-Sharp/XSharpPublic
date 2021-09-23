@@ -43,12 +43,8 @@ BEGIN NAMESPACE XSharp
         #region STATIC fields
         /// <exclude />
         [HIDDEN];
-        PRIVATE INITONLY STATIC __NIL AS __Usual
+        PUBLIC INITONLY STATIC _NIL AS __Usual
         #endregion
-
-        /// <exclude />
-        PUBLIC STATIC PROPERTY _NIL AS USUAL GET __NIL
-        
 
         #region PRIVATE fields
         [HIDDEN];
@@ -63,9 +59,9 @@ BEGIN NAMESPACE XSharp
         /// <exclude />
         STATIC CONSTRUCTOR
             IF RuntimeState.Dialect  == XSharpDialect.FoxPro
-                __NIL := __Usual{__UsualType.Logic,FALSE}
+                _NIL := __Usual{__UsualType.Logic,FALSE}
             ELSE
-                __NIL := __Usual{__UsualType.Void}
+                _NIL := __Usual{__UsualType.Void}
             ENDIF
 			RETURN
 
@@ -193,7 +189,7 @@ BEGIN NAMESPACE XSharp
                    SELF(__UsualType.Object)
                 ENDIF
             ELSE
-                SELF := __NIL
+                SELF := _NIL
                 SELF:_flags:Initialized := TRUE
                 VAR vartype := o:GetType()
                 //  decode type from typecode

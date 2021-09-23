@@ -238,7 +238,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string AreaEval = "__AreaEval";
         internal const string ArrayNew = ".__ArrayNew";
         internal const string NullDate = ".NullDate";
-        internal const string NIL = "._NIL";
+        internal const string NIL = "_NIL";
         internal const string WrapRawExceptionVn = "._WrapRawException";
         internal const string WrapRawExceptionXs = ".WrapRawException";
         internal const string LocalPut = "__LocalPut";
@@ -261,7 +261,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldSet = VulcanRTFuncs + ReservedNames.FieldSet;
         internal const string FieldSetWa = VulcanRTFuncs + ReservedNames.FieldSetWa;
         internal const string NullDate = VulcanQualifiedTypeNames.Date + ReservedNames.NullDate;
-        internal const string UsualNIL = VulcanQualifiedTypeNames.Usual + ReservedNames.NIL;
+        internal const string UsualNIL = VulcanQualifiedTypeNames.Usual + "."+ReservedNames.NIL;
         internal const string PszRelease = CompilerServices + ReservedNames.String2PszRelease;
         internal const string String2Psz = CompilerServices + ReservedNames.String2Psz;
         internal const string StringArrayInit = CompilerServices + ReservedNames.StringArrayInit;
@@ -304,7 +304,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string MemVarRelease = GlobalRT + ReservedNames.MemVarRelease;
         internal const string MemVarDecl = GlobalRT + ReservedNames.MemVarDecl;
         internal const string NullDate = XSharpQualifiedTypeNames.Date + ReservedNames.NullDate;
-        internal const string UsualNIL = XSharpQualifiedTypeNames.Usual + ReservedNames.NIL;
+        internal const string UsualNIL = XSharpQualifiedTypeNames.Usual + "." + ReservedNames.NIL;
         internal const string PszRelease = CompilerServices + ReservedNames.String2PszRelease;
         internal const string String2Psz = CompilerServices + ReservedNames.String2Psz;
         internal const string StringArrayInit = CompilerServices + ReservedNames.StringArrayInit;

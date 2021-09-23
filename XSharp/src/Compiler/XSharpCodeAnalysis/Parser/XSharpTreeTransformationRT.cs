@@ -926,24 +926,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (_options.NoClipCall)
                 return MakeDefault(_usualType);
-            string name;
-            if (_options.XSharpRuntime)
+            if (_options.Dialect == XSharpDialect.FoxPro)
             {
-                if (_options.Dialect == XSharpDialect.FoxPro)
-                {
-                    name = XSharpQualifiedFunctionNames.UsualNIL;
-                    return GenerateQualifiedName(name);
-                }
-                else
-                {
-                    return MakeDefault(_usualType);
-                }
+                return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
             }
-            else
-            {
-                name = VulcanQualifiedFunctionNames.UsualNIL;
-                return GenerateQualifiedName(name);
-            }
+            return MakeDefault(_usualType);
         }
         protected override ExpressionSyntax GenerateMissingExpression(bool AddError)
         {

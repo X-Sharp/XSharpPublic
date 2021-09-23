@@ -926,11 +926,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (_options.NoClipCall)
                 return MakeDefault(_usualType);
-            if (_options.Dialect == XSharpDialect.FoxPro)
-            {
+            if (_options.XSharpRuntime)
                 return GenerateQualifiedName(XSharpQualifiedFunctionNames.UsualNIL);
-            }
-            return MakeDefault(_usualType);
+            else
+                return GenerateQualifiedName(VulcanQualifiedFunctionNames.UsualNIL);
+
         }
         protected override ExpressionSyntax GenerateMissingExpression(bool AddError)
         {
@@ -3958,7 +3958,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (item.Expr != null)
                         l.Add(item.Expr.Get<ExpressionSyntax>());
                     else
-                        l.Add(GenerateMissingExpression(false));
+                        l.Add(GenerateNIL());
 
                 }
                 exprs = l.ToList();

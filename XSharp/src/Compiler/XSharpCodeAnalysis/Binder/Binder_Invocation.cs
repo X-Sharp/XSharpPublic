@@ -209,16 +209,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return null;
                 }
             }
-            bool lhsOfAssignment = false;
-            lhsOfAssignment = (node.Parent is AssignmentExpressionSyntax aes && aes.Left == node);
-            if (node.Expression is SimpleNameSyntax simple && ! lhsOfAssignment)
+            bool lhsOfAssignment = node.Parent is AssignmentExpressionSyntax aes && aes.Left == node;
+            if (node.Expression is SimpleNameSyntax simple && !lhsOfAssignment)
             {
+                // If the invocationExpression binds to a method or function in the runtime
+                // then we NEVER see this as a parenthesized array access
+                var idMethod = BindXSIdentifier(simple, invoked: false, indexed: true, diagnostics: diagnostics, bindMethod: true,
+                        bindSafe: false);
+                if (idMethod != null && idMethod is BoundMethodGroup bmg)
+                {
+                    if (bmg.Methods.Length > 0 && bmg.Methods[0].ContainingAssembly.IsRT())
+                        return null;
+                }
                 var id1 = BindXSIdentifier(simple, invoked:false, indexed: true, diagnostics: diagnostics, bindMethod: false,
                     bindSafe: Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, node));
                 // id1 will be either bound to a declared local, public or private
                 // if undeclared locals are supported then Id1 may also find an undeclared local
                 if (id1 == null)
                     return null;
+
                 var args = new List<BoundExpression>();
                 string strName = simple.Identifier.Text;
                 if (id1 is BoundPropertyAccess bpa)

@@ -828,8 +828,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                             canModifyReadonly = true;
                         }
                     }
-
+#if XSHARP
+                    // Missing arguments get mapped to the __Usual._NIL which is readonly
+                    // Later we will generate a temporary local to handle this.
+                    if (!canModifyReadonly && !node.XIsMissingArgument)
+#else
                     if (!canModifyReadonly)
+#endif
                     {
                         ReportReadOnlyFieldError(fieldSymbol, node, valueKind, checkingReceiver, diagnostics);
                         return false;
@@ -3168,7 +3173,7 @@ moreArguments:
                     diagnostics.Add(ErrorCode.ERR_InternalError, node.Location);
                     return false;
 
-                    #region "cannot produce ref-like values"
+#region "cannot produce ref-like values"
                     //                case BoundKind.ThrowExpression:
                     //                case BoundKind.ArgListOperator:
                     //                case BoundKind.ArgList:
@@ -3196,9 +3201,9 @@ moreArguments:
                     //                case BoundKind.DeconstructionAssignmentOperator:
                     //                case BoundKind.EventAccess:
 
-                    #endregion
+#endregion
 
-                    #region "not expression that can produce a value"
+#region "not expression that can produce a value"
                     //                case BoundKind.FieldEqualsValue:
                     //                case BoundKind.PropertyEqualsValue:
                     //                case BoundKind.ParameterEqualsValue:
@@ -3262,9 +3267,9 @@ moreArguments:
                     //                case BoundKind.ConstantPattern:
                     //                case BoundKind.WildcardPattern:
 
-                    #endregion
+#endregion
 
-                    #region "not found as an operand in no-error unlowered bound tree"
+#region "not found as an operand in no-error unlowered bound tree"
                     //                case BoundKind.MaximumMethodDefIndex:
                     //                case BoundKind.InstrumentationPayloadRoot:
                     //                case BoundKind.ModuleVersionId:
@@ -3292,7 +3297,7 @@ moreArguments:
                     //                case BoundKind.OutDeconstructVarPendingInference:
                     //                case BoundKind.PseudoVariable:
 
-                    #endregion
+#endregion
             }
         }
 

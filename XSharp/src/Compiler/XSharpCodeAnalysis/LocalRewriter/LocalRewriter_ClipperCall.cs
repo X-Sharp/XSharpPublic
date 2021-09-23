@@ -350,49 +350,46 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         internal BoundCall XsReplaceDefaultUsual(BoundCall node)
         {
-            if (_compilation.Options.Dialect == XSharpDialect.FoxPro)
+            var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
+            bool rewritten = false;
+            var refArgs = node.ArgumentRefKindsOpt;
+            for (var i = 0; i < node.Arguments.Length; i++)
             {
-                var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
-                bool rewritten = false;
-                var refArgs = node.ArgumentRefKindsOpt;
-                for (var i = 0; i < node.Arguments.Length; i++)
+                var arg = node.Arguments[i];
+                bool byRef = (refArgs != null && refArgs.Length > i && refArgs[i].IsByRef());
+                if (!byRef && arg.Kind == BoundKind.DefaultExpression && arg.Type.IsUsualType())
                 {
-                    var arg = node.Arguments[i];
-                    bool byRef = (refArgs != null && refArgs.Length > i && refArgs[i].IsByRef());
-                    if (!byRef && arg.Kind == BoundKind.DefaultExpression && arg.Type.IsUsualType())
+                    var utype = _compilation.UsualType();
+                    var members = utype.GetMembers(ReservedNames.NIL);
+                    if (members.Length == 1)
                     {
-                        var utype = _compilation.UsualType();
-                        var members = utype.GetMembers(ReservedNames.NIL);
-                        if (members.Length == 1)
+                        switch (members[0])
                         {
-                            switch (members[0])
-                            {
-                                case FieldSymbol fs:
-                                    // before 2.9 this was a field
-                                    var type = _factory.Type(utype);
-                                    exprs.Add(_factory.Field(type, fs));
-                                    rewritten = true;
-                                    break;
-                                case PropertySymbol ps:
-                                    // starting with 2.9 this is a property
-                                    exprs.Add(_factory.Property(null, ps));
-                                    rewritten = true;
-                                    break;
-                                default:
-                                    exprs.Add(arg);
-                                    break;
-                            }
+                            case FieldSymbol fs:
+                                // before 2.9 this was a field
+                                var type = _factory.Type(utype);
+                                exprs.Add(_factory.Field(type, fs));
+                                rewritten = true;
+                                break;
+                            case PropertySymbol ps:
+                                // starting with 2.9 this is a property
+                                exprs.Add(_factory.Property(null, ps));
+                                rewritten = true;
+                                break;
+                            default:
+                                exprs.Add(arg);
+                                break;
                         }
                     }
-                    else
-                    {
-                        exprs.Add(arg);
-                    }
                 }
-                if (rewritten)
+                else
                 {
-                    node = node.Update(exprs.ToImmutable());
+                    exprs.Add(arg);
                 }
+            }
+            if (rewritten)
+            {
+                node = node.Update(exprs.ToImmutable());
             }
             return node;
         }

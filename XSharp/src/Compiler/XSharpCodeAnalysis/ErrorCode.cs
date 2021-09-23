@@ -2076,6 +2076,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ExpressionBodyClipperCallingConvention = 9104,
         WRN_PropertyTypeChangedInParentType = 9105,
         ERR_MethodSignatureChanged = 9106,
+        ERR_NILByRefOrOut = 9107, 
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

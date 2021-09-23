@@ -1125,7 +1125,7 @@
     <value>Operator '{0}' is ambiguous on an operand of type '{1}'</value>
   </data>
   <data name="ERR_InAttrOnOutParam" xml:space="preserve">
-    <value>An out parameter cannot have the In attribute</value>
+    <value>An OUT parameter cannot have the In attribute</value>
   </data>
   <data name="ERR_ValueCantBeNull" xml:space="preserve">
     <value>Cannot convert null to '{0}' because it is a non-nullable value type</value>
@@ -1506,13 +1506,13 @@
     <value>Member '{0}' cannot be accessed with an instance reference; qualify it with a type name instead</value>
   </data>
   <data name="ERR_ParamUnassigned" xml:space="preserve">
-    <value>The out parameter '{0}' must be assigned to before control leaves the current method</value>
+    <value>The OUT parameter '{0}' must be assigned to before control leaves the current method</value>
   </data>
   <data name="WRN_ParamUnassigned" xml:space="preserve">
-    <value>The out parameter '{0}' must be assigned to before control leaves the current method</value>
+    <value>The OUT parameter '{0}' must be assigned to before control leaves the current method</value>
   </data>
   <data name="WRN_ParamUnassigned_Title" xml:space="preserve">
-    <value>An out parameter must be assigned to before control leaves the method</value>
+    <value>An OUT parameter must be assigned to before control leaves the method</value>
   </data>
   <data name="ERR_InvalidArray" xml:space="preserve">
     <value>Invalid rank specifier: expected ',' or ']'</value>
@@ -1575,16 +1575,16 @@
     <value>A pointer must be indexed by only one value</value>
   </data>
   <data name="WRN_ByRefNonAgileField" xml:space="preserve">
-    <value>Using '{0}' as a ref or out value or taking its address may cause a runtime exception because it is a field of a marshal-by-reference class</value>
+    <value>Using '{0}' as a REF or OUT value or taking its address may cause a runtime exception because it is a field of a marshal-by-reference class</value>
   </data>
   <data name="WRN_ByRefNonAgileField_Title" xml:space="preserve">
-    <value>Using a field of a marshal-by-reference class as a ref or out value or taking its address may cause a runtime exception</value>
+    <value>Using a field of a marshal-by-reference class as a REF or OUT value or taking its address may cause a runtime exception</value>
   </data>
   <data name="ERR_AssgReadonlyStatic" xml:space="preserve">
     <value>A static readonly field cannot be assigned to (except in a static constructor or a variable initializer)</value>
   </data>
   <data name="ERR_RefReadonlyStatic" xml:space="preserve">
-    <value>A static readonly field cannot be used as a ref or out value (except in a static constructor)</value>
+    <value>A static readonly field cannot be used as a REF or OUT value (except in a static constructor)</value>
   </data>
   <data name="ERR_AssgReadonlyProp" xml:space="preserve">
     <value>Property or indexer '{0}' cannot be assigned to -- it is read only</value>
@@ -1605,7 +1605,7 @@
     <value>Cannot call an abstract base member: '{0}'</value>
   </data>
   <data name="ERR_RefProperty" xml:space="preserve">
-    <value>A property or indexer may not be passed as an out or ref parameter</value>
+    <value>A property or indexer may not be passed as an OUT or REF parameter</value>
   </data>
   <data name="ERR_ManagedAddr" xml:space="preserve">
     <value>Cannot take the address of, get the size of, or declare a pointer to a managed type ('{0}')</value>
@@ -1776,13 +1776,13 @@
     <value>Imported type '{0}' is invalid. It contains a circular base type dependency.</value>
   </data>
   <data name="ERR_UseDefViolationOut" xml:space="preserve">
-    <value>Use of unassigned out parameter '{0}'</value>
+    <value>Use of unassigned OUT parameter '{0}'</value>
   </data>
   <data name="WRN_UseDefViolationOut" xml:space="preserve">
-    <value>Use of unassigned out parameter '{0}'</value>
+    <value>Use of unassigned OUT parameter '{0}'</value>
   </data>
   <data name="WRN_UseDefViolationOut_Title" xml:space="preserve">
-    <value>Use of unassigned out parameter</value>
+    <value>Use of unassigned OUT parameter</value>
   </data>
   <data name="ERR_ArraySizeInDeclaration" xml:space="preserve">
     <value>Array size cannot be specified in a variable declaration (try initializing with a 'new' expression)</value>
@@ -1947,7 +1947,7 @@
     <value>A reference to a volatile field will not be treated as volatile</value>
   </data>
   <data name="WRN_VolatileByRef_Description" xml:space="preserve">
-    <value>A volatile field should not normally be used as a ref or out value, since it will not be treated as volatile. There are exceptions to this, such as when calling an interlocked API.</value>
+    <value>A volatile field should not normally be used as a REF or OUT value, since it will not be treated as volatile. There are exceptions to this, such as when calling an interlocked API.</value>
   </data>
   <data name="ERR_ComImportWithImpl" xml:space="preserve">
     <value>Since '{1}' has the ComImport attribute, '{0}' must be extern or abstract</value>
@@ -2468,7 +2468,7 @@ If such a class is used as a base class and if the deriving class defines a dest
     <value>'{0}' cannot implement interface member '{1}' in type '{2}' because it has an __arglist parameter</value>
   </data>
   <data name="ERR_IllegalRefParam" xml:space="preserve">
-    <value>ref and out are not valid in this context</value>
+    <value>REF and OUT are not valid in this context</value>
   </data>
   <data name="ERR_BadArgumentToAttribute" xml:space="preserve">
     <value>The argument to the '{0}' attribute must be a valid identifier</value>
@@ -2624,7 +2624,7 @@ If such a class is used as a base class and if the deriving class defines a dest
     <value>Interface marked with 'CoClassAttribute' not marked with 'ComImportAttribute'</value>
   </data>
   <data name="ERR_ConditionalWithOutParam" xml:space="preserve">
-    <value>Conditional member '{0}' cannot have an out parameter</value>
+    <value>Conditional member '{0}' cannot have an OUT parameter</value>
   </data>
   <data name="ERR_AccessorImplementingMethod" xml:space="preserve">
     <value>Accessor '{0}' cannot implement interface member '{1}' for type '{2}'. Use an explicit interface implementation.</value>
@@ -3169,7 +3169,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>The referenced file '{0}' is not an assembly</value>
   </data>
   <data name="ERR_RefLvalueExpected" xml:space="preserve">
-    <value>A ref or out value must be an assignable variable</value>
+    <value>A REF or OUT value must be an assignable variable</value>
   </data>
   <data name="ERR_BaseInStaticMeth" xml:space="preserve">
     <value>Keyword 'SUPER' is not available in a static method</value>
@@ -3442,7 +3442,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Cannot assign to '{0}' because it is read-only</value>
   </data>
   <data name="ERR_RefReadonlyLocal" xml:space="preserve">
-    <value>Cannot use '{0}' as a ref or out value because it is read-only</value>
+    <value>Cannot use '{0}' as a REF or OUT value because it is read-only</value>
   </data>
   <data name="ERR_CantUseRequiredAttribute" xml:space="preserve">
     <value>The RequiredAttribute attribute is not permitted on X# types</value>
@@ -3493,7 +3493,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Cannot return a value from an iterator. Use the yield return statement to return a value, or yield break to end the iteration.</value>
   </data>
   <data name="ERR_BadIteratorArgType" xml:space="preserve">
-    <value>Iterators cannot have ref, in or out parameters</value>
+    <value>Iterators cannot have REF, IN or OUT parameters</value>
   </data>
   <data name="ERR_BadIteratorReturn" xml:space="preserve">
     <value>The body of '{0}' cannot be an iterator block because '{1}' is not an iterator interface type</value>
@@ -3577,10 +3577,10 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Keyword, identifier, or string expected after verbatim specifier: @</value>
   </data>
   <data name="ERR_RefReadonly" xml:space="preserve">
-    <value>A readonly field cannot be used as a ref or out value (except in a constructor)</value>
+    <value>A readonly field cannot be used as a REF or OUT value (except in a constructor)</value>
   </data>
   <data name="ERR_RefReadonly2" xml:space="preserve">
-    <value>Members of readonly field '{0}' cannot be used as a ref or out value (except in a constructor)</value>
+    <value>Members of readonly field '{0}' cannot be used as a REF or OUT value (except in a constructor)</value>
   </data>
   <data name="ERR_AssgReadonly" xml:space="preserve">
     <value>A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)</value>
@@ -3589,10 +3589,10 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Members of readonly field '{0}' cannot be modified (except in a constructor or a variable initializer)</value>
   </data>
   <data name="ERR_RefReadonlyNotField" xml:space="preserve">
-    <value>Cannot use {0} '{1}' as a ref or out value because it is a readonly variable</value>
+    <value>Cannot use {0} '{1}' as a REF or OUT value because it is a readonly variable</value>
   </data>
   <data name="ERR_RefReadonlyNotField2" xml:space="preserve">
-    <value>Members of {0} '{1}' cannot be used as a ref or out value because it is a readonly variable</value>
+    <value>Members of {0} '{1}' cannot be used as a REF or OUT value because it is a readonly variable</value>
   </data>
   <data name="ERR_AssignReadonlyNotField" xml:space="preserve">
     <value>Cannot assign to {0} '{1}' because it is a readonly variable</value>
@@ -3610,19 +3610,19 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Fields of static readonly field '{0}' cannot be assigned to (except in a static constructor or a variable initializer)</value>
   </data>
   <data name="ERR_RefReadonlyStatic2" xml:space="preserve">
-    <value>Fields of static readonly field '{0}' cannot be used as a ref or out value (except in a static constructor)</value>
+    <value>Fields of static readonly field '{0}' cannot be used as a REF or OUT value (except in a static constructor)</value>
   </data>
   <data name="ERR_AssgReadonlyLocal2Cause" xml:space="preserve">
     <value>Cannot modify members of '{0}' because it is a '{1}'</value>
   </data>
   <data name="ERR_RefReadonlyLocal2Cause" xml:space="preserve">
-    <value>Cannot use fields of '{0}' as a ref or out value because it is a '{1}'</value>
+    <value>Cannot use fields of '{0}' as a REF or OUT value because it is a '{1}'</value>
   </data>
   <data name="ERR_AssgReadonlyLocalCause" xml:space="preserve">
     <value>Cannot assign to '{0}' because it is a '{1}'</value>
   </data>
   <data name="ERR_RefReadonlyLocalCause" xml:space="preserve">
-    <value>Cannot use '{0}' as a ref or out value because it is a '{1}'</value>
+    <value>Cannot use '{0}' as a REF or OUT value because it is a '{1}'</value>
   </data>
   <data name="WRN_ErrorOverride" xml:space="preserve">
     <value>{0}. See also error XS{1}.</value>
@@ -3739,7 +3739,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Source file has exceeded the limit of 16,707,565 lines representable in the PDB; debug information will be incorrect</value>
   </data>
   <data name="ERR_CantConvAnonMethNoParams" xml:space="preserve">
-    <value>Cannot convert anonymous method block without a parameter list to delegate type '{0}' because it has one or more out parameters</value>
+    <value>Cannot convert anonymous method block without a parameter list to delegate type '{0}' because it has one or more OUT parameters</value>
   </data>
   <data name="ERR_ConditionalOnNonAttributeClass" xml:space="preserve">
     <value>Attribute '{0}' is only valid on methods or attribute classes</value>
@@ -4000,7 +4000,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>The name '{0}' is not in scope on the right side of 'equals'.  Consider swapping the expressions on either side of 'equals'.</value>
   </data>
   <data name="ERR_QueryOutRefRangeVariable" xml:space="preserve">
-    <value>Cannot pass the range variable '{0}' as an out or ref parameter</value>
+    <value>Cannot pass the range variable '{0}' as an OUT or REF parameter</value>
   </data>
   <data name="ERR_QueryMultipleProviders" xml:space="preserve">
     <value>Multiple implementations of the query pattern were found for source type '{0}'.  Ambiguous call to '{1}'.</value>
@@ -4036,7 +4036,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>The best overloaded Add method '{0}' for the collection initializer has some invalid arguments</value>
   </data>
   <data name="ERR_ByRefParameterInExpressionTree" xml:space="preserve">
-    <value>An expression tree lambda may not contain a ref, in or out parameter</value>
+    <value>An expression tree lambda may not contain a REF, IN or OUT parameter</value>
   </data>
   <data name="ERR_VarArgsInExpressionTree" xml:space="preserve">
     <value>An expression tree lambda may not contain a method with variable arguments</value>
@@ -4045,7 +4045,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>An expression tree lambda may not contain a method</value>
   </data>
   <data name="ERR_InitializerAddHasParamModifiers" xml:space="preserve">
-    <value>The best overloaded method match '{0}' for the collection initializer element cannot be used. Collection initializer 'Add' methods cannot have ref or out parameters.</value>
+    <value>The best overloaded method match '{0}' for the collection initializer element cannot be used. Collection initializer 'Add' methods cannot have REF or OUT parameters.</value>
   </data>
   <data name="ERR_NonInvocableMemberCalled" xml:space="preserve">
     <value>Non-invocable member '{0}' cannot be used like a method.</value>
@@ -4057,9 +4057,9 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Member implements interface member with multiple matches at run-time</value>
   </data>
   <data name="WRN_MultipleRuntimeImplementationMatches_Description" xml:space="preserve">
-    <value>This warning can be generated when two interface methods are differentiated only by whether a particular parameter is marked with ref or with out. It is best to change your code to avoid this warning because it is not obvious or guaranteed which method is called at runtime.
+    <value>This warning can be generated when two interface methods are differentiated only by whether a particular parameter is marked with REF or with OUT. It is best to change your code to avoid this warning because it is not obvious or guaranteed which method is called at runtime.
 
-Although X# distinguishes between out and ref, the CLR sees them as the same. When deciding which method implements the interface, the CLR just picks one.
+Although X# distinguishes between OUT and REF, the CLR sees them as the same. When deciding which method implements the interface, the CLR just picks one.
 
 Give the compiler some way to differentiate the methods. For example, you can give them different names or provide an additional parameter on one of them.</value>
   </data>
@@ -4208,10 +4208,10 @@ Give the compiler some way to differentiate the methods. For example, you can gi
     <value>Identifier differing only in case is not CLS-compliant</value>
   </data>
   <data name="WRN_CLS_OverloadRefOut" xml:space="preserve">
-    <value>Overloaded method '{0}' differing only in ref or out, or in array rank, is not CLS-compliant</value>
+    <value>Overloaded method '{0}' differing only in REF or OUT, or in array rank, is not CLS-compliant</value>
   </data>
   <data name="WRN_CLS_OverloadRefOut_Title" xml:space="preserve">
-    <value>Overloaded method differing only in ref or out, or in array rank, is not CLS-compliant</value>
+    <value>Overloaded method differing only in REF or OUT, or in array rank, is not CLS-compliant</value>
   </data>
   <data name="WRN_CLS_OverloadUnnamed" xml:space="preserve">
     <value>Overloaded method '{0}' differing only by unnamed array types is not CLS-compliant</value>
@@ -4373,7 +4373,7 @@ Give the compiler some way to differentiate the methods. For example, you can gi
     <value>Async methods cannot have unsafe parameters or return types</value>
   </data>
   <data name="ERR_BadAsyncArgType" xml:space="preserve">
-    <value>Async methods cannot have ref, in or out parameters</value>
+    <value>Async methods cannot have REF, IN or OUT parameters</value>
   </data>
   <data name="ERR_BadAwaitWithoutAsync" xml:space="preserve">
     <value>The 'await' operator can only be used when contained within a method or lambda expression marked with the 'async' modifier</value>
@@ -4625,7 +4625,7 @@ You should consider suppressing the warning only if you're sure that you don't w
     <value>Default parameter value for '{0}' must be a compile-time constant</value>
   </data>
   <data name="ERR_RefOutDefaultValue" xml:space="preserve">
-    <value>A ref or out parameter cannot have a default value</value>
+    <value>A REF or OUT parameter cannot have a default value</value>
   </data>
   <data name="ERR_DefaultValueForExtensionParameter" xml:space="preserve">
     <value>Cannot specify a default value for the 'SELF' parameter</value>
@@ -4877,7 +4877,7 @@ You should consider suppressing the warning only if you're sure that you don't w
     <value>Embedded interop struct '{0}' can contain only public instance fields.</value>
   </data>
   <data name="ERR_WinRtEventPassedByRef" xml:space="preserve">
-    <value>A Windows Runtime event may not be passed as an out or ref parameter.</value>
+    <value>A Windows Runtime event may not be passed as an OUT or REF parameter.</value>
   </data>
   <data name="ERR_MissingMethodOnSourceInterface" xml:space="preserve">
     <value>Source interface '{0}' is missing method '{1}' which is required to embed event '{2}'.</value>
@@ -5730,10 +5730,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Fields of static readonly field '{0}' cannot be returned by writable reference</value>
   </data>
   <data name="ERR_RefReturnParameter" xml:space="preserve">
-    <value>Cannot return a parameter by reference '{0}' because it is not a ref or out parameter</value>
+    <value>Cannot return a parameter by reference '{0}' because it is not a REF or OUT parameter</value>
   </data>
   <data name="ERR_RefReturnParameter2" xml:space="preserve">
-    <value>Cannot return by reference a member of parameter '{0}' because it is not a ref or out parameter</value>
+    <value>Cannot return by reference a member of parameter '{0}' because it is not a REF or OUT parameter</value>
   </data>
   <data name="ERR_RefReturnLocal" xml:space="preserve">
     <value>Cannot return local '{0}' by reference because it is not a ref local</value>
@@ -5841,7 +5841,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>tuples</value>
   </data>
   <data name="ERR_MissingDeconstruct" xml:space="preserve">
-    <value>No suitable 'Deconstruct' instance or extension method was found for type '{0}', with {1} out parameters and a void return type.</value>
+    <value>No suitable 'Deconstruct' instance or extension method was found for type '{0}', with {1} OUT parameters and a void return type.</value>
   </data>
   <data name="ERR_DeconstructRequiresExpression" xml:space="preserve">
     <value>Deconstruct assignment requires an expression with a type on the right-hand-side.</value>
@@ -5880,10 +5880,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>out variable declaration</value>
   </data>
   <data name="ERR_ImplicitlyTypedOutVariableUsedInTheSameArgumentList" xml:space="preserve">
-    <value>Reference to an implicitly-typed out variable '{0}' is not permitted in the same argument list.</value>
+    <value>Reference to an implicitly-typed OUT variable '{0}' is not permitted in the same argument list.</value>
   </data>
   <data name="ERR_TypeInferenceFailedForImplicitlyTypedOutVariable" xml:space="preserve">
-    <value>Cannot infer the type of implicitly-typed out variable '{0}'.</value>
+    <value>Cannot infer the type of implicitly-typed OUT variable '{0}'.</value>
   </data>
   <data name="ERR_TypeInferenceFailedForImplicitlyTypedDeconstructionVariable" xml:space="preserve">
     <value>Cannot infer the type of implicitly-typed deconstruction variable '{0}'.</value>
@@ -5928,7 +5928,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Cannot reference 'System.Runtime.CompilerServices.TupleElementNamesAttribute' explicitly. Use the tuple syntax to define tuple names.</value>
   </data>
   <data name="ERR_ExpressionTreeContainsOutVariable" xml:space="preserve">
-    <value>An expression tree may not contain an out argument variable declaration.</value>
+    <value>An expression tree may not contain an OUT argument variable declaration.</value>
   </data>
   <data name="ERR_ExpressionTreeContainsDiscard" xml:space="preserve">
     <value>An expression tree may not contain a discard.</value>
@@ -6561,7 +6561,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>SyntaxTree is not part of the compilation</value>
   </data>
   <data name="ERR_OutVariableCannotBeByRef" xml:space="preserve">
-    <value>An out variable cannot be declared as a ref local</value>
+    <value>An OUT variable cannot be declared as a REF LOCAL</value>
   </data>
   <data name="ERR_MultipleAnalyzerConfigsInSameDir" xml:space="preserve">
     <value>Multiple analyzer config files cannot be in the same directory ('{0}').</value>
@@ -7640,5 +7640,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  <data name="ERR_FoxDimensionNeedsMemvars" xml:space="preserve">
     <value>FoxPro Array support requires the /memvar compiler option.</value>
   </data>
-
+  <data name="ERR_NILByRefOrOut" xml:space="preserve">
+   <value>The NIL value cannot be passed as an argument to a function or method that expects a REF or OUT value.</value>
+ </data> 
 </root>

@@ -1932,7 +1932,19 @@ moreArguments:
             }
             else
             {
+#if XSHARP
+                var error = ReadOnlyErrors[index];
+                if (error == ErrorCode.ERR_RefReadonlyStatic)
+                {
+                    if (field.Name == ReservedNames.NIL && field.ContainingType.IsUsualType())
+                    {
+                        error = ErrorCode.ERR_NILByRefOrOut;
+                    }
+                }
+                Error(diagnostics, error, node);
+#else
                 Error(diagnostics, ReadOnlyErrors[index], node);
+#endif
             }
         }
 

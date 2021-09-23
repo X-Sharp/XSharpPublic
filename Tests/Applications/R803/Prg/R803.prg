@@ -34,10 +34,7 @@ xAssert(TestMe(1.234m)        == FALSE)
 xAssert(TestMe($12.34)        == FALSE)
 xAssert(testMe(0h1234)        == FALSE)
 
-
-WAIT
 RETURN
-
 
 
 

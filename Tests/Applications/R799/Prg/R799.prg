@@ -36,7 +36,6 @@ FUNCTION Start( ) AS VOID
     uTest.d1 :=  (DWORD) 1901.01.01 
 #endif    
     XAssert(uTest.l1 == 2415386)
-    wait
 RETURN
 
 

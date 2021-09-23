@@ -18,6 +18,23 @@ FUNCTION Start AS VOID
 ? TestMe(1.234m)
 ? TestMe($12.34)
 ? testMe(0h1234)
+
+xAssert(Testme() == TRUE)
+xAssert(TestMe(1)           == FALSE)
+xAssert(testMe(Today())     == FALSE)
+xAssert(TestMe(1.1)         == FALSE)
+xAssert(testMe({1,2,3})       == FALSE)
+xAssert(testMe(Error{})       == FALSE)
+xAssert(TestMe("abc")         == FALSE)
+xAssert(testMe(TRUE)          == FALSE)
+xAssert(testMe(#symbol)       == FALSE)
+xAssert(testMe((INT64) 1234)  == FALSE)
+xAssert(testMe(DateTime())    == FALSE)
+xAssert(TestMe(1.234m)        == FALSE)
+xAssert(TestMe($12.34)        == FALSE)
+xAssert(testMe(0h1234)        == FALSE)
+
+
 WAIT
 RETURN
 
@@ -29,3 +46,10 @@ FUNCTION TestMe(val := NULL AS USUAL, lRef := NULL OUT USUAL) AS LOGIC
 lRef := TRUE
 RETURN val = NIL
 
+
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
+RETURN 

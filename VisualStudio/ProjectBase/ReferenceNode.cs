@@ -22,7 +22,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 using XSharpModel;
-
+using Community.VisualStudio.Toolkit;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -331,12 +331,7 @@ namespace Microsoft.VisualStudio.Project
 		protected void ShowReferenceErrorMessage(string message)
 		{
 			string title = string.Empty;
-			OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-			OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-			OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            Utilities.ShowMessageBox(this.ProjectMgr.Site, title, message, icon, buttons, defaultButton);
+            VS.MessageBox.ShowError(title, message);
 		}
 
 		/// <summary>
@@ -352,7 +347,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         protected virtual int ShowObjectBrowser()
         {
-            if(String.IsNullOrEmpty(this.Url) || !File.Exists(this.Url))
+            if(String.IsNullOrEmpty(this.Url) || !System.IO.File.Exists(this.Url))
             {
                 return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
             }

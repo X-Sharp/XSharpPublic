@@ -1,0 +1,143 @@
+///////////////////////////////////////////////////////////////////////////
+// FoxProSet.xh
+//
+// XSharp FoxPro Preprocessor Directives for Settings
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+// Caution: do not modify this file. It will be overwritten during product updates
+//
+#ifndef FOXPROSET_XH
+#define FOXPROSET_XH
+
+
+*******************************************************************************
+* SET commands for the environment
+*******************************************************************************
+
+#command  SET DIRECTORY TO <*path*>   => Set( Set.Default, <(path)> )
+#command  SET DIRECTORY TO            => Set( Set.Default, "" )
+
+*******************************************************************************
+* SET commands for the Old Get system and Console output
+*******************************************************************************
+
+#command SET BELL <x:ON,OFF,&>            =>  Set(Set.Bell, <(x)> )
+#command SET BELL (<x>)                   =>  Set(Set.Bell, <x> )
+
+#command SET CONFIRM <x:ON,OFF,&>         =>  Set(Set.Confirm, <(x)> )
+#command SET CONFIRM (<x>)                =>  Set(Set.Confirm, <x> )
+
+#command SET CURSOR <x:ON,OFF,&>         =>  Set(Set.Cursor, <(x)> )
+#command SET CURSOR (<x>)                =>  Set(Set.Cursor, <x> )
+
+#command  SET DELIMITERS <x:ON,OFF,&>    =>  Set( Set.Delimiters, <(x)> )
+#command  SET DELIMITERS (<x>)           =>  Set( Set.Delimiters, <x> )
+
+#command SET DELIMITERS TO <c>           =>  Set( Set.DelimChars, <c> )
+#command SET DELIMITERS TO DEFAULT       =>  Set( Set.DelimChars, "::" )
+#command SET DELIMITERS TO               =>  Set( Set.DelimChars, "::" )
+
+#command SET DEVICE TO <x:SCREEN,PRINTER>  =>  Set( Set.Device, <(x)> )
+#command SET DEVICE TO (<x>)               =>  Set( Set.Device, <x> )
+
+#command SET ESCAPE <x:ON,OFF,&>         =>  Set( Set.Escape, <(x)> )
+#command SET ESCAPE (<x>)                =>  Set( Set.Escape, <x> )
+
+*******************************************************************************
+* SET commands for Terminal IO
+*******************************************************************************
+
+#command SET SPACE <x:ON,OFF,&>          =>  Set( Set.Space, <(x)> )
+#command SET SPACE (<x>)                 =>  Set( Set.Space, <x> )
+
+#command SET HEADINGS <x:ON,OFF,&>       =>  Set( Set.Headings, <(x)> )
+#command SET HEADINGS (<x>)              =>  Set( Set.Headings, <x> )
+
+*******************************************************************************
+* SET commands for programming
+*******************************************************************************
+
+#command SET ASSERTS <x:ON,OFF,&>         =>  Set(Set.Asserts, <(x)> )
+#command SET ASSERTS (<x>)                =>  Set(Set.Asserts, <x> )
+
+#command SET FULLPATH <x:ON,OFF,&>        =>  Set(Set.FullPath, <(x)> )
+#command SET FULLPATH (<x>)               =>  Set(Set.FullPath, <x> )
+
+*******************************************************************************
+* SET commands for database access
+*******************************************************************************
+
+#command SET ANSI <x:ON,OFF,&>            =>  Set(Set.SqlAnsi, <(x)> )
+#command SET ANSI (<x>)                   =>  Set(Set.SqlAnsi, <x> )
+
+
+#command SET AUTOINCERROR <x:ON,OFF,&>    =>  Set(Set.AutoIncError, <(x)> )
+#command SET AUTOINCERROR (<x>)           =>  Set(Set.AutoIncError, <x> )
+
+#command SET BLOCKSIZE TO <nvalue>        =>  Set(Set.MemoBlockSize, <nvalue> )
+
+#command SET COLLATE TO <collation>       =>  Set(Set.CollateFox, <(collation)> )
+
+#command SET COMPATIBLE <x:ON,OFF,FOXPLUS,DB4,&> => Set(Set.Compatible, <(x)> )
+#command SET COMPATIBLE (<x>)                    => Set(Set.Compatible, <x> )
+
+#command SET LOCK <x:ON,OFF,&>            =>  Set(Set.Lock, <(x)> )
+#command SET LOCK (<x>)                   =>  Set(Set.Lock, <x> )
+
+#command SET MULTILOCKS <x:ON,OFF,&>      =>  Set(Set.MultiLocks, <(x)> )
+#command SET MULTILOCKS (<x>)             =>  Set(Set.MultiLocks, <x> )
+
+#command SET NEAR <x:ON,OFF,&>            =>  Set(Set.SoftSeek, <(x)> )
+#command SET NEAR (<x>)                   =>  Set(Set.SoftSeek, <x> )
+
+#command SET NULL <x:ON,OFF,&>            =>  Set(Set.Null, <(x)> )
+#command SET NULL (<x>)                   =>  Set(Set.Null, <x> )
+
+#command SET OPTIMIZE <x:ON,OFF,&>        =>  Set(Set.Optimize, <(x)> )
+#command SET OPTIMIZE (<x>)               =>  Set(Set.Optimize, <x> )
+
+#command SET SAFETY <x:ON,OFF,&>          =>  Set(Set.Safety, <(x)> )
+#command SET SAFETY (<x>)                 =>  Set(Set.Safety, <x> )
+
+#command SET SQLBUFFERING <x:ON,OFF,&>    =>  Set( Set.SqlBuffering, <(x)> )
+#command SET SQLBUFFERING (<x>)           =>  Set( Set.SqlBuffering, <x> )
+
+#command SET VARCHARMAPPING<x:ON,OFF,&>   =>  Set( Set.VarCharMapping, <(x)> )
+#command SET VARCHARMAPPING (<x>)         =>  Set( Set.VarCharMapping, <x> )
+
+*******************************************************************************
+* Unsupported (for now ?) commands
+*******************************************************************************
+
+
+#command __UNSUPPORTED__ <any> => #warning <(any)> " This command is not (yet) supported"
+
+#command SET <x:AUTOSAVE, BROWSEIME, CARRY, CLASSLIB, CLOCK>    <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:COVERAGE, CPCOMPILE, CPDIALOG, CURRENCY>        <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:DEBUG, DEBUGOUT, DEVELOPMENT>                   <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:DISPLAY, DOHISTORY, ECHO, ENGINEBEHAVIOR>       <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:EVENTLIST, EVENTTRACKING>                       <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:FDOW, FORMAT, FUNCTION, FWEEK>                  <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:HELP, HOURS, INTENSITY>                         <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:KEY, KEYCOMP, LIBRARY>                          <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:LOGERRORS, MACKEY, MARK, MESSAGE>               <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:NOCPTRANS, NOTIFY, NULLDISPLAY>                 <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:ODOMETER, OLEOBJECT>                            <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:PALETTE, PDSETUP, PROCEDURE>                    <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:READBORDER, REPORTBEHAVIOR, RESOURCE>           <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:SECONDS, SKIP, STATUS, STEP>                    <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:STRICTDATE, SYSFORMATS, SYSMENU>                <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:TABLEPROMPT,TABLEVALIDATE, TALK>                <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:TOPIC, TRBETWEEN, TYPEAHEAD>                    <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET <x:UDFPARAMS, VIEW, VOLUME, WINDOW>                <*any*> => __UNSUPPORTED__ <(udc)>
+
+#command SET COLOR OF SCHEME                                    <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET COLOR SET                                          <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET DATASESSION                                        <*any*> => __UNSUPPORTED__ <(udc)>
+#command SET TEXTMERGE DELIMITERS                               <*any*> => __UNSUPPORTED__ <(udc)>
+
+
+#endif
+

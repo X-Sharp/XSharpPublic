@@ -7,7 +7,7 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
 USING Xide
-USING XSharp.VODesigners
+
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
@@ -133,7 +133,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 
 	RETURN lSuccess
 
-	METHOD GetCodeContents() AS CodeContents 
+	NEW METHOD GetCodeContents() AS CodeContents 
 		VAR oCode := SUPER:GetCodeContents()
 		// remove IDM_MenuName
 		oCode:aDefines:RemoveAt(0)

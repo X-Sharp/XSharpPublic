@@ -100,6 +100,13 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Public:=0
    END ENUM
 
+   [Flags];
+   Enum AccessorKind
+        MEMBER @@Get        := 1 << 0
+        MEMBER @@Set        := 1 << 1
+        MEMBER @@Add        := 1 << 2
+        MEMBER @@Remove     := 1 << 3
+   END ENUM
    ENUM Kind AS Int32
       MEMBER @@Namespace   :=  0
       MEMBER @@Class       :=  1
@@ -206,12 +213,14 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Params   := 3
       MEMBER @@In  	   := 4
    END ENUM
+
    ENUM LocalType as BYTE
       MEMBER @@As       := 0
       MEMBER @@Is       := 1
    END ENUM
 
    ENUM CallingConvention
+      // Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CALLBACK | FASTCALL | THISCALL)
       MEMBER None          := 0
       MEMBER @@Clipper     :=  XSharpLexer.CLIPPER
       MEMBER @@Strict      :=  XSharpLexer.STRICT
@@ -234,4 +243,5 @@ BEGIN NAMESPACE XSharpModel
     END ENUM
 
 END NAMESPACE
-
+Function EscapeKeyword(sName as STRING) AS STRING
+    RETURN sName

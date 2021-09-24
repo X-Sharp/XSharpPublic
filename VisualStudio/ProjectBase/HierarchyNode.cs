@@ -1099,25 +1099,21 @@ namespace Microsoft.VisualStudio.Project
 
             // We walk the RDT looking for all running documents attached to this hierarchy and itemid. There
             // are cases where there may be two different editors (not views) open on the same document.
-            IEnumRunningDocuments pEnumRdt;
             ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsRunningDocumentTable pRdt = this.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
             Utilities.CheckNotNull(pRdt);
 
-            if(ErrorHandler.Succeeded(pRdt.GetRunningDocumentsEnum(out pEnumRdt)))
+            if(ErrorHandler.Succeeded(pRdt.GetRunningDocumentsEnum(out var pEnumRdt)))
             {
                 uint[] cookie = new uint[1];
-                uint fetched;
                 uint saveOptions = (uint)__VSSLNSAVEOPTIONS.SLNSAVEOPT_NoSave;
                 IVsHierarchy srpOurHier = node.projectMgr;
 
                 pEnumRdt.Reset();
-                while(VSConstants.S_OK == pEnumRdt.Next(1, cookie, out fetched))
+                while(VSConstants.S_OK == pEnumRdt.Next(1, cookie, out var fetched))
                 {
                     // Note we can pass NULL for all parameters we don't care about
-                    uint empty;
-                    string emptyStr;
                     IntPtr ppunkDocData = IntPtr.Zero;
                     IVsHierarchy srpHier;
                     uint itemid = VSConstants.VSITEMID_NIL;
@@ -1125,14 +1121,8 @@ namespace Microsoft.VisualStudio.Project
                     try
                     {
 	                    ErrorHandler.ThrowOnFailure(pRdt.GetDocumentInfo(
-	                                         cookie[0],
-	                                         out empty,
-	                                         out empty,
-	                                         out empty,
-	                                         out emptyStr,
-	                                         out srpHier,
-	                                         out itemid,
-	                                         out ppunkDocData));
+	                                         cookie[0],out _,out _,out _,out _,out srpHier,
+	                                         out itemid, out ppunkDocData));
 
 	                    // Is this one of our documents?
 	                    if(Utilities.IsSameComObject(srpOurHier, srpHier) && itemid == node.ID)

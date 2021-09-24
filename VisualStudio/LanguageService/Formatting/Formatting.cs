@@ -12,7 +12,7 @@ using LanguageService.CodeAnalysis.Text;
 
 namespace XSharp.LanguageService
 {
-    partial class CommandFilter
+    partial class XSharpFormattingCommandHandler
     {
 
 
@@ -168,7 +168,7 @@ namespace XSharp.LanguageService
             return null;
         }
 
-        static CommandFilter()
+        static XSharpFormattingCommandHandler()
         {
             getKeywords();
         }
@@ -216,7 +216,7 @@ namespace XSharp.LanguageService
         private void FormatLine()
         {
             //
-            SnapshotPoint caret = this.TextView.Caret.Position.BufferPosition;
+            SnapshotPoint caret = this._textView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
             // On what line are we ?
             bool alignOnPrev = false;
@@ -290,7 +290,7 @@ namespace XSharp.LanguageService
 
         private void FormatLineIndent(ITextEdit editSession, ITextSnapshotLine line, int desiredIndentation)
         {
-            //CommandFilter.WriteOutputMessage($"CommandFilterHelper.FormatLineIndent({line.LineNumber + 1})");
+            //CommandFilter.WriteOutputMessage($"FormatLineIndent({line.LineNumber + 1})");
             int tabSize = _settings.TabSize;
             bool useSpaces = _settings.TabsAsSpaces;
             int lineLength = line.Length;
@@ -342,7 +342,7 @@ namespace XSharp.LanguageService
 
         private void FormatDocument()
         {
-            WriteOutputMessage("CommandFilter.FormatDocument() -->>");
+            WriteOutputMessage("FormatDocument() -->>");
             if (!_buffer.CheckEditAccess())
             {
                 // can't edit !
@@ -509,7 +509,7 @@ namespace XSharp.LanguageService
                 FormatCaseForWholeBuffer();
             }
             //
-            WriteOutputMessage("CommandFilter.FormatDocument() <<--");
+            WriteOutputMessage("FormatDocument() <<--");
         }
 
         /// <summary>
@@ -1194,7 +1194,7 @@ namespace XSharp.LanguageService
         /// <returns></returns>
         private int getDesiredIndentation(ITextSnapshotLine line, ITextEdit editSession, bool alignOnPrev)
         {
-            WriteOutputMessage($"CommandFilter.getDesiredIndentation({line.LineNumber + 1})");
+            WriteOutputMessage($"getDesiredIndentation({line.LineNumber + 1})");
             try
             {
                 //
@@ -1593,7 +1593,7 @@ namespace XSharp.LanguageService
 
             }
 
-            internal FormattingContext(CommandFilter cf, ITextSnapshot snapshot)
+            internal FormattingContext(XSharpFormattingCommandHandler cf, ITextSnapshot snapshot)
             {
                 allTokens = cf.getTokensInLine(snapshot, 0, snapshot.Length);
                 if (allTokens.Count > 0)
@@ -1815,7 +1815,7 @@ namespace XSharp.LanguageService
 
         private void FormatDocumentV2()
         {
-            WriteOutputMessage("CommandFilter.FormatDocumentV2() -->>");
+            WriteOutputMessage("FormatDocumentV2() -->>");
             if (!_buffer.CheckEditAccess())
             {
                 // can't edit !
@@ -2016,7 +2016,7 @@ namespace XSharp.LanguageService
                 FormatCaseForWholeBuffer();
             }
             //
-            WriteOutputMessage("CommandFilter.FormatDocument() <<--");
+            WriteOutputMessage("FormatDocument() <<--");
         }
 
         //private int getLineLengthV2(ITextSnapshot snapshot, int start)
@@ -2315,7 +2315,13 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            WriteOutputMessage($"CommandFilter.formatLineCaseV2({line.LineNumber + 1})");
+            if (line.LineNumber == getCurrentLine())
+            {
+                // Come back later.
+                registerLineForCaseSync(line.LineNumber);
+                return;
+            }
+            WriteOutputMessage($"formatLineCaseV2({line.LineNumber + 1})");
             //
             context.MoveTo(line.Start);
             IToken token = context.GetToken(true);
@@ -2324,28 +2330,7 @@ namespace XSharp.LanguageService
                 workOnLine = token.Line;
             while ( token != null )
             {
-                if (currentLine == line.LineNumber)
-                {
-                    // do not update tokens touching or after the caret
-                    // after typing String it was already uppercasing even when I wanted to type StringComparer
-                    // now we wait until the user has typed an extra character. That will trigger another session.
-                    // (in this case the C, but it could also be a ' ' or tab and then it would match the STRING keyword)
-                    int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
-                    if ( token.StopIndex < caretPos - 1)
-                    {
-                        formatToken(editSession, 0, token);
-                    }
-                    else
-                    {
-                        // Come back later.
-                        registerLineForCaseSync(line.LineNumber);
-                        break;
-                    }
-                }
-                else
-                {
-                    formatToken(editSession, 0, token);
-                }
+                formatToken(editSession, 0, token);
                 //
                 context.MoveToNext();
                 token = context.GetToken(true);

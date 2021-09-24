@@ -102,4 +102,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
+<Import Project="..\XmlDoc.Targets" />  
 </Project>

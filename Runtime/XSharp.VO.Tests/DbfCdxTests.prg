@@ -4805,6 +4805,91 @@ RETURN
 			one->DbCloseArea()
 			two->DbCloseArea()
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestMemoCdx() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+
+			LOCAL FUNCTION GetLastByte() AS INT
+				LOCAL aBytes AS BYTE[]
+				aBytes := System.IO.File.ReadAllBytes(cDbf + ".fpt")
+				RETURN aBytes[aBytes:Length]
+			END FUNCTION
+
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{"CFIELD","C",1,0},{"MFIELD","M",10,0}} )
+			Assert.Equal(0, GetLastByte())
+
+			DbUseArea( TRUE ,,cDBF )
+			DbAppend()
+			FieldPut(2,"123")
+			DbCloseArea()
+
+			Assert.Equal(175, GetLastByte())
+			
+			DbUseArea( TRUE ,,cDBF )
+			DbGoBottom()
+			LOCAL c123 AS STRING
+			c123 := FieldGet(2)
+			Assert.Equal(3, c123:Length)
+			Assert.Equal("123", c123)
+			DbCloseArea()
+
+			Assert.Equal(175, GetLastByte())
+		RETURN
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestMemoCdx2() AS VOID
+			LOCAL cDbf, cUpdate1, cUpdate2 AS STRING
+			cDbf := GetTempFileName()
+
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{"MFIELD","M",10,0},{"CFIELD","C",10,0}}, {"rec1","rec2"})
+			DbCloseArea()
+			
+			DbUseArea(TRUE,,cDbf,"alias1",TRUE)
+			DbUseArea(TRUE,,cDbf,"alias2",TRUE)
+			alias1->DbAppend()
+			alias1->FieldPut(1,"rec3")
+//			alias1->DbCommit() // not making a difference
+//			alias1->DbUnLock()
+			
+			alias2->DbGoto(1)
+			alias2->DbRLock()
+			cUpdate1 := "A long update that should be visible only in record 1"
+			alias2->FieldPut(1, cUpdate1)
+//			alias2->DbCommit() // not making a difference
+//			alias2->DbUnLock()
+			                
+			DbCloseAll()
+			
+			
+			DbUseArea(TRUE,,cDbf,"alias1",TRUE)
+			DbGoTop()
+			Assert.Equal(cUpdate1, (STRING)FieldGet(1))
+			DbSkip()
+			Assert.Equal("rec2", (STRING)FieldGet(1))
+			DbGoBottom()
+			Assert.Equal("rec3", (STRING)FieldGet(1))
+			
+			// updating record 3 only...
+			cUpdate2 := "Putting a new value in record 3 only"
+			RLock()
+			FieldPut(1, cUpdate2)
+			
+			DbGoTop()
+			Assert.Equal(cUpdate1, (STRING)FieldGet(1))
+			DbSkip()
+			Assert.Equal("rec2", (STRING)FieldGet(1))
+			DbGoBottom()
+			Assert.Equal(cUpdate2, (STRING)FieldGet(1))
+			
+			DbCloseArea()
+
+		RETURN
 
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING

@@ -3,7 +3,7 @@
 // This file contains a subclass of the Windows.Forms.ListView control
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
-
+USING System.Collections
 USING System.Collections.Generic
 USING System.Windows.Forms
 USING VOSDK := XSharp.VO.SDK
@@ -35,9 +35,11 @@ CLASS VOListView INHERIT SWF.ListView IMPLEMENTS IVOListView
         RETURN
 
 
-    NEW PROPERTY Columns AS IList<IVOColumnHeader> GET (IList<IVOColumnHeader> ) SUPER:Columns
-    NEW PROPERTY Groups AS IList<SWF.ListViewGroup> GET (IList<SWF.ListViewGroup> ) SUPER:Groups
-	NEW PROPERTY Items AS IList<IVOListViewItem> GET (IList<IVOListViewItem>) SUPER:Items
+    NEW PROPERTY Columns AS IList GET SUPER:Columns
+    NEW PROPERTY Groups AS IList GET SUPER:Groups
+	NEW PROPERTY Items AS IList GET SUPER:Items
+    NEW PROPERTY SelectedItems AS IList GET SUPER:SelectedItems
+    NEW PROPERTY SelectedIndices AS IList GET SUPER:SelectedIndices
 	
 	#region Event Handlers		
 	
@@ -138,7 +140,7 @@ END CLASS
 
 CLASS VOColumnHeader INHERIT System.Windows.Forms.ColumnHeader IMPLEMENTS IVOColumnHeader
 	PROPERTY Column AS VOSDK.ListViewColumn AUTO
-	
+	PROPERTY Header AS System.Windows.Forms.ColumnHeader GET SELF
 	METHOD LinkTo(oColumn AS VOSDK.ListViewColumn) AS VOID STRICT
 		SELF:Column := oColumn
 		SELF:Tag	:= oColumn
@@ -155,8 +157,9 @@ END CLASS
 
 CLASS VOListViewItem INHERIT System.Windows.Forms.ListViewItem IMPLEMENTS IVOListViewItem
 	PROPERTY Item AS VOSDK.ListViewItem AUTO 
-	
-	
+	PROPERTY SWFItem AS OBJECT GET SELF
+    NEW PROPERTY Group AS OBJECT GET SUPER:Group SET SUPER:Group := VALUE
+	NEW PROPERTY SubItems AS IList GET SUPER:SubItems
 	METHOD LinkTo(oItem AS VOSDK.ListViewItem) AS VOID STRICT
 		SELF:Item  := oItem
 		SELF:Tag   := oItem

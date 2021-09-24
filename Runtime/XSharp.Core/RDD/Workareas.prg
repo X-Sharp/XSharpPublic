@@ -227,7 +227,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                 ENDIF
             END LOCK
         ENDIF
-        RETURN NULL
+        RETURN String.Empty
 
     ///<summary>Get RDD object for 1 based Workarea Number</summary>
     PUBLIC METHOD GetRDD( nArea AS DWORD) AS IRdd

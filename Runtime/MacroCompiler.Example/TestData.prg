@@ -3,6 +3,9 @@
 // Creation Date : 2/13/2021 4:08:09 PM
 // Created for   :
 // WorkStation   : I7
+#pragma warnings (660, off)
+#pragma warnings (661, off)
+#pragma warnings (108, off)
 
 
 USING System
@@ -200,11 +203,17 @@ global wag := "" as string
     FUNCTION MyVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
         RETURN wag + "VarPut(" + name +"):" + VALUE:ToString()
 
+    FUNCTION MyFoxVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
+        RETURN wag + "FoxVarPut(" + name +"):" + VALUE:ToString()
+
     FUNCTION MyMemVarGet(name AS STRING) AS USUAL
         RETURN "MemVarGet(" + name + ")"
 
     FUNCTION MyMemVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
         RETURN "MemVarPut(" + name +"):" + VALUE:ToString()
+
+    FUNCTION MyFoxMemVarPut(name AS STRING, VALUE AS USUAL) AS USUAL
+        RETURN "FoxMemVarPut(" + name +"):" + VALUE:ToString()
 
     FUNCTION MyFieldGet(name AS STRING) AS USUAL
         RETURN wag + "FieldGet(" + name + ")"
@@ -212,11 +221,16 @@ global wag := "" as string
     FUNCTION MyFieldSet(name AS STRING, VALUE AS USUAL) AS USUAL
         RETURN wag + "FieldSet(" + name +"):" + VALUE:ToString()
 
+
+
     FUNCTION MyFieldGetWa(wa AS STRING, name AS STRING) AS USUAL
         RETURN "FieldGet(" + wa + "," + name + ")"
 
     FUNCTION MyFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
         RETURN "FieldSet(" + wa + "," + name +"):" + VALUE:ToString()
+
+    FUNCTION MyFoxFieldSetWa(wa AS STRING, name AS STRING, VALUE AS USUAL) AS USUAL
+        RETURN "FoxFieldSet(" + wa + "," + name +"):" + VALUE:ToString()
 
     FUNCTION MyPushWa(wa as usual) as void
         wag := wa + "->"
@@ -304,7 +318,8 @@ global ErrorLevel := 1 as int
 GLOBAL TEST := 123
 DEFINE TEST2 := 123
 
-
+FUNCTION testfunc(y REF STRING) AS VOID
+    y := "b"
 
 FUNCTION S_EnforceType(uVar REF USUAL,cTyp AS STRING) AS VOID
     IF ValType(uVar) <> cTyp
@@ -351,5 +366,6 @@ FUNCTION S_EnforceTypeC(uVar,cTyp) CLIPPER
         END SWITCH
     ENDIF
     RETURN NIL
+
 
 

@@ -5,14 +5,17 @@
 //
 
 BEGIN NAMESPACE XSharp
-    /// <summary>This interface can be used to access any object with an indexer. This is mostly used for elements inside typed arrays of the 'ARRAY OF' class.
-    /// If you implement the interface on the elements you can use an array syntax to assess fields/properties in the elements of the array by name or ordinal.</summary>
+    /// <summary>This interface can be used to access any object with an indexer.
+    /// This is mostly used for elements inside typed arrays of the 'ARRAY OF' class.
+    /// If you implement the interface on the elements you can use an array syntax to
+    /// assess fields/properties in the elements of the array by name or ordinal.</summary>
     /// <seealso cref='INamedIndexer' />
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
     INTERFACE IIndexedProperties
     	/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         PROPERTY SELF[index AS INT   ] AS USUAL GET SET
+        /// <summary>Get/Set array elements with a name.</summary>
         /// <param name="name">Name which will be used to lookup a property</param>
         PROPERTY SELF[name  AS STRING] AS USUAL GET SET
     END INTERFACE
@@ -20,21 +23,26 @@ BEGIN NAMESPACE XSharp
     /// <summary> This interface is used to index a collection using the VO Array syntax.
     /// The interface is implemented by the ARRAY type in the runtime, but you can also use it for your custom types.</summary>
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
-    /// <seealso cref='__Array' />
+    /// <seealso cref='T:XSharp.__Array' />
     INTERFACE IIndexer
   		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         PUBLIC PROPERTY SELF[index PARAMS INT[]] AS USUAL GET SET
+  		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
         PUBLIC PROPERTY SELF[index AS INT] AS USUAL GET SET
-        PUBLIC PROPERTY SELF[index1 AS INT, index2 as INT] AS USUAL GET SET
+  		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
+        /// <param name="index1"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        PUBLIC PROPERTY SELF[index1 AS INT, index2 AS INT] AS USUAL GET SET
     END INTERFACE
 
     /// <summary>This interface is used to index a collection using a numeric and a string index and is implemented by the
     /// typed array class ('ARRAY OF'). If your elements inside the collection implement the IIndexProperties interface then
     /// the lookup of the property inside array element will be resolved with a call to the named indexer on that object.</summary>
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" />
-    /// <seealso cref='IIndexedProperties' />
-    /// <seealso cref='__ArrayBase`1' />
+    /// <seealso cref='T:XSharp.IIndexedProperties' />
+    /// <seealso cref='T:XSharp.__ArrayBase`1' />
     INTERFACE INamedIndexer
   		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" /> 
         /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
@@ -42,17 +50,30 @@ BEGIN NAMESPACE XSharp
         PUBLIC PROPERTY SELF[index AS INT, name AS STRING] AS USUAL GET SET
     END INTERFACE
 
+     /// <summary> This interface is used for objects that implement a special mechanism
+    /// for reading / writing properties at runtime.</summary>
+
     INTERFACE IDynamicProperties
+       /// <summary>Retrieve an array of the property names that exist.</summary>
         PUBLIC METHOD GetPropertyNames() AS STRING[]
+        /// <summary>Retrieve the value of a property by name.</summary>
+        /// <param name="cName">Property Name</param>
+        /// <returns>The current value of the property </returns>
+        /// <remarks>Accessing a property that does not exist will result in a runtime error.</remarks>
         PUBLIC METHOD NoIvarGet(cName AS STRING) AS USUAL 
+        /// <summary>Update the value of a property by name.</summary>
+        /// <param name="cName">Property Name</param>
+        /// <param name="uValue">New value of the property</param>
+        /// <remarks>Assigning a property that does not exist may result in a runtime error. <br/>
+        /// However the class may also decide to "silently" add the property.</remarks>
         PUBLIC METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID 
     END INTERFACE
 
     /// <summary>
     /// This interface defines and extension to the Macro compiler subsystem
     /// </summary>
-    /// <seealso cref="IMacroCompiler"/>
-    /// <seealso cref="IMacroCompiler2"/>
+    /// <seealso cref="T:XSharp.IMacroCompiler"/>
+    /// <seealso cref="T:XSharp.IMacroCompiler2"/>
     INTERFACE IMacroCompilerUsual 
         /// <summary>Compile a string into a runtime codeblock.</summary>
         /// <param name="macro">String to compile</param>
@@ -61,13 +82,13 @@ BEGIN NAMESPACE XSharp
         /// <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
         /// <param name="addsMemVars">will be set to TRUE when the macro contains code that may result in adding new MemVars).</param>
         /// <returns>A compiled codeblock</returns>
-        /// <seealso cref="_Codeblock"/>
+        /// <seealso cref="T:XSharp._Codeblock"/>
     	PUBLIC METHOD CompileCodeblock(macro AS STRING , lAllowSingleQuotes AS LOGIC, module AS System.Reflection.Module) AS XSharp._Codeblock
 
         /// <summary>Compile a string into a runtime codeblock.</summary>
 	    /// <param name="macro">String to compile</param>
 	    /// <returns>A compiled codeblock</returns>
-        /// <seealso cref="_Codeblock"/>
+        /// <seealso cref="T:XSharp._Codeblock"/>
         /// <remarks>This overload of the CompileCodeBlock assumes that single quotes are allowed, and that no memvars are used.</remarks>
         PUBLIC METHOD CompileCodeblock(macro AS STRING ) AS XSharp._Codeblock
        
@@ -76,6 +97,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>
     /// This interface Extended the ICodeblock interface and adds support for usual parameters and return values
     /// </summary>
+    /// <seealso cref="T:XSharp.ICodeblock"/>
     INTERFACE IRtCodeblock INHERIT ICodeblock
         /// <summary>Was the codeblock created from a string that started with "{|" </summary>  
         PROPERTY IsBlock AS LOGIC GET

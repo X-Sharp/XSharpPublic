@@ -8,6 +8,9 @@ using XSharp.MacroCompiler.Syntax;
 
 namespace XSharp.MacroCompiler.Preprocessor
 {
+    using XSharpLexer = TokenType;
+    using XSharpToken = Token;
+
     internal static class XSharpPPTokenExtensions
     {
         internal static void AddRange<T>(this IList<T> tokens, IList<T> toadd)
@@ -17,13 +20,13 @@ namespace XSharp.MacroCompiler.Preprocessor
                 tokens.Add(token);
             }
         }
-        internal static TokenType La(this Token[] tokens, int pos)
+        internal static TokenType La(this XSharpToken[] tokens, int pos)
         {
             if (pos >= 0 && pos < tokens.Length)
                 return tokens[pos].Type;
             return 0;
         }
-        internal static bool IsName(this Token[] tokens, int pos)
+        internal static bool IsName(this XSharpToken[] tokens, int pos)
         {
             if (pos >= 0 && pos < tokens.Length)
             {
@@ -45,7 +48,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         }
        
 
-        internal static void TrimLeadingSpaces(this IList<Token> tokens)
+        internal static void TrimLeadingSpaces(this IList<XSharpToken> tokens)
         {
             while (tokens.Count > 0 &&
                 tokens[0].Channel == Channel.Hidden)
@@ -155,7 +158,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             return new string(src, 0, idest);
         }
 
-        internal static string AsString(this IList<Token> tokens)
+        internal static string AsString(this IList<XSharpToken> tokens)
         {
             string result = "";
             if (tokens != null)
@@ -171,26 +174,24 @@ namespace XSharp.MacroCompiler.Preprocessor
             return TrimAllWithInplaceCharArray(result);
         }
 
-        internal static IList<Token> CloneArray(this IList<Token> tokens)
+        internal static IList<XSharpToken> CloneArray(this IList<XSharpToken> tokens)
         {
-            var clone = new Token[tokens.Count];
+            var clone = new XSharpToken[tokens.Count];
             for (int i = 0; i < tokens.Count; i++)
             {
-                clone[i] = new Token(tokens[i]);
+                clone[i] = new XSharpToken(tokens[i]);
             }
             return clone ;
         }
-        internal static bool IsName(this Token token)
+        internal static bool IsName(this XSharpToken token)
         {
-            return token != null && (token.Type == TokenType.ID
-                || (token.Type > TokenType.FIRST_KEYWORD && token.Type < TokenType.LAST_KEYWORD)
-                || (token.Type > TokenType.FIRST_NULL && token.Type < TokenType.LAST_NULL));
+            return token != null && (token.Type == XSharpLexer.ID  || token.IsKeyword());
         }
-        internal static bool IsEOS(this Token token)
+        internal static bool IsEOS(this XSharpToken token)
         {
-            return token != null && (token.Type == TokenType.NL || token.Type == TokenType.EOS);
+            return token != null && (token.Type == XSharpLexer.NL || token.Type == XSharpLexer.EOS);
         }
-        internal static string FileName(this Token token)
+        internal static string FileName(this XSharpToken token)
         {
             if (token == null)
                 return "";
@@ -204,19 +205,19 @@ namespace XSharp.MacroCompiler.Preprocessor
                 type == PPTokenType.MatchWholeUDC;
         }
 
-        internal static bool IsLiteral(this Token token)
+        internal static bool IsLiteral(this XSharpToken token)
         {
             if (token == null)
                 return false;
             return token.Type > TokenType.FIRST_CONSTANT && token.Type < TokenType.LAST_CONSTANT;
         }
 
-        public static bool IsOperator(this Token token)
+        public static bool IsOperator(this XSharpToken token)
         {
             return (token.Type > TokenType.FIRST_OPERATOR && token.Type < TokenType.LAST_OPERATOR);
         }
 
-        public static bool IsKeyword(this Token token)
+        public static bool IsKeyword(this XSharpToken token)
         {
             return (token.Type > TokenType.FIRST_KEYWORD && token.Type < TokenType.LAST_KEYWORD)
                 || (token.Type > TokenType.FIRST_NULL && token.Type < TokenType.LAST_NULL);
@@ -243,38 +244,38 @@ namespace XSharp.MacroCompiler.Preprocessor
             return false;
         }
 
-        internal static bool NeedsLeft(this Token token)
+        internal static bool NeedsLeft(this XSharpToken token)
         {
             if (token == null)
                 return false;
             switch (token.Type)
             {
-                case TokenType.ASSIGN_ADD:
-                case TokenType.ASSIGN_BITAND:
-                case TokenType.ASSIGN_BITOR:
-                case TokenType.ASSIGN_DIV:
-                case TokenType.ASSIGN_EXP:
-                case TokenType.ASSIGN_LSHIFT:
-                case TokenType.ASSIGN_MOD:
-                case TokenType.ASSIGN_MUL:
-                case TokenType.ASSIGN_OP:
-                case TokenType.ASSIGN_RSHIFT:
-                case TokenType.ASSIGN_SUB:
-                case TokenType.ASSIGN_XOR:
+                case XSharpLexer.ASSIGN_ADD:
+                case XSharpLexer.ASSIGN_BITAND:
+                case XSharpLexer.ASSIGN_BITOR:
+                case XSharpLexer.ASSIGN_DIV:
+                case XSharpLexer.ASSIGN_EXP:
+                case XSharpLexer.ASSIGN_LSHIFT:
+                case XSharpLexer.ASSIGN_MOD:
+                case XSharpLexer.ASSIGN_MUL:
+                case XSharpLexer.ASSIGN_OP:
+                case XSharpLexer.ASSIGN_RSHIFT:
+                case XSharpLexer.ASSIGN_SUB:
+                case XSharpLexer.ASSIGN_XOR:
                     return true;
-                case TokenType.COLON:
-                case TokenType.DOT:
+                case XSharpLexer.COLON:
+                case XSharpLexer.DOT:
                     return true;
             }
             if (token.IsPrefix())
                 return false;
             return token.IsBinary();
         }
-        internal static bool NeedsRight(this Token token)
+        internal static bool NeedsRight(this XSharpToken token)
         {
             return token.IsBinary() || token.IsPrefix();
         }
-        internal static bool IsBinary(this Token token)
+        internal static bool IsBinary(this XSharpToken token)
         {
             if (token == null)
                 return false;
@@ -282,114 +283,118 @@ namespace XSharp.MacroCompiler.Preprocessor
             // tokens in same order 
             switch (token.Type)
             {
-                case TokenType.EXP:
-                case TokenType.MULT:
-                case TokenType.DIV:
-                case TokenType.MOD:
-                case TokenType.PLUS:
-                case TokenType.MINUS:
-                case TokenType.LSHIFT:
-                case TokenType.RSHIFT:
-                case TokenType.LT:
-                case TokenType.LTE:
-                case TokenType.GT:
-                case TokenType.GTE:
-                case TokenType.EQ:
-                case TokenType.EEQ:
-                case TokenType.SUBSTR:
-                case TokenType.NEQ:
-                case TokenType.NEQ2:
-                case TokenType.AMP:
-                case TokenType.TILDE:
-                case TokenType.PIPE:
-                case TokenType.AND:
-                case TokenType.OR:
-                case TokenType.LOGIC_AND:
-                case TokenType.LOGIC_XOR:
-                case TokenType.LOGIC_OR:
+                case XSharpLexer.EXP:
+                case XSharpLexer.MULT:
+                case XSharpLexer.DIV:
+                case XSharpLexer.MOD:
+                case XSharpLexer.PLUS:
+                case XSharpLexer.MINUS:
+                case XSharpLexer.LSHIFT:
+                case XSharpLexer.RSHIFT:
+                case XSharpLexer.LT:
+                case XSharpLexer.LTE:
+                case XSharpLexer.GT:
+                case XSharpLexer.GTE:
+                case XSharpLexer.EQ:
+                case XSharpLexer.EEQ:
+                case XSharpLexer.SUBSTR:
+                case XSharpLexer.NEQ:
+                case XSharpLexer.NEQ2:
+                case XSharpLexer.AMP:
+                case XSharpLexer.TILDE:
+                case XSharpLexer.PIPE:
+                case XSharpLexer.AND:
+                case XSharpLexer.OR:
+                case XSharpLexer.LOGIC_AND:
+                case XSharpLexer.LOGIC_XOR:
+                case XSharpLexer.LOGIC_OR:
+                //case XSharpLexer.FOX_AND:
+                //case XSharpLexer.FOX_OR:
+                //case XSharpLexer.FOX_XOR:
                     return true;
-                case TokenType.COLON:
-                case TokenType.DOT:
-                case TokenType.ALIAS:
+                case XSharpLexer.COLON:
+                case XSharpLexer.DOT:
+                case XSharpLexer.ALIAS:
                     return true;
             }
             return false;
         }
-        internal static bool IsPrefix(this Token token)
+        internal static bool IsPrefix(this XSharpToken token)
         {
             if (token == null)
                 return false;
             switch (token.Type)
             {
-                case TokenType.PLUS:              // see xsharp.g4 prefixExpression
-                case TokenType.MINUS:
-                case TokenType.TILDE:
-                case TokenType.ADDROF:
-                case TokenType.DEC:
-                case TokenType.INC:
-                case TokenType.LOGIC_NOT:
-                case TokenType.NOT:
+                case XSharpLexer.PLUS:              // see xsharp.g4 prefixExpression
+                case XSharpLexer.MINUS:
+                case XSharpLexer.TILDE:
+                case XSharpLexer.ADDROF:
+                case XSharpLexer.DEC:
+                case XSharpLexer.INC:
+                case XSharpLexer.LOGIC_NOT:
+                //case XSharpLexer.FOX_NOT:
+                case XSharpLexer.NOT:
                     return true;
             }
             return false;
         }
 
-        internal static bool IsPostFix(this Token token)
+        internal static bool IsPostFix(this XSharpToken token)
         {
             if (token == null)
                 return false;
             switch (token.Type)
             {
-                case TokenType.DEC:           // see xsharp.g4 postfixExpression
-                case TokenType.INC:
+                case XSharpLexer.DEC:           // see xsharp.g4 postfixExpression
+                case XSharpLexer.INC:
                     return true;
             }
             return false;
         }
-        internal static bool IsWildCard(this Token token)
+        internal static bool IsWildCard(this XSharpToken token)
         {
             switch (token.Type)
             {
-                case TokenType.QMARK:
-                case TokenType.MULT:
+                case XSharpLexer.QMARK:
+                case XSharpLexer.MULT:
                     return true;
             }
             return false;
         }
-        internal static bool IsOpen(this Token token, ref TokenType closeType)
+        internal static bool IsOpen(this XSharpToken token, ref TokenType closeType)
         {
             if (token == null)
                 return false;
             switch (token.Type)
             {
-                case TokenType.LBRKT:
-                    closeType = TokenType.RBRKT;
+                case XSharpLexer.LBRKT:
+                    closeType = XSharpLexer.RBRKT;
                     return true;
-                case TokenType.LCURLY:
-                    closeType = TokenType.RCURLY;
+                case XSharpLexer.LCURLY:
+                    closeType = XSharpLexer.RCURLY;
                     return true;
-                case TokenType.LPAREN:
-                    closeType = TokenType.RPAREN;
+                case XSharpLexer.LPAREN:
+                    closeType = XSharpLexer.RPAREN;
                     return true;
             }
             closeType = 0;
             return false;
         }
-        internal static bool IsClose(this Token token)
+        internal static bool IsClose(this XSharpToken token)
         {
             if (token == null)
                 return false;
             switch (token.Type)
             {
-                case TokenType.RBRKT:
-                case TokenType.RCURLY:
-                case TokenType.RPAREN:
+                case XSharpLexer.RBRKT:
+                case XSharpLexer.RCURLY:
+                case XSharpLexer.RPAREN:
                     return true;
             }
             return false;
         }
 
-        internal static bool IsPrimary(this Token token)
+        internal static bool IsPrimary(this XSharpToken token)
         {
             if (token.IsName())
                 return true;
@@ -397,7 +402,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 return true;
             return false;
         }
-        internal static bool IsPrimaryOrPrefix(this Token token)
+        internal static bool IsPrimaryOrPrefix(this XSharpToken token)
         {
             if (token.IsPrimary())
                 return true;
@@ -409,7 +414,7 @@ namespace XSharp.MacroCompiler.Preprocessor
 
 
 
-        internal static bool CanJoin(this Token token, Token nextToken)
+        internal static bool CanJoin(this XSharpToken token, XSharpToken nextToken)
         {
             if (token == null )
             {
@@ -422,30 +427,30 @@ namespace XSharp.MacroCompiler.Preprocessor
 
             return false;
         }
-        internal static bool IsNeutral(this Token token)
+        internal static bool IsNeutral(this XSharpToken token)
         {
             if (token == null)
                 return false;
             switch (token.Type)
             {
-                case TokenType.DEC:
-                case TokenType.INC:
+                case XSharpLexer.DEC:
+                case XSharpLexer.INC:
                     return true;
             }
             return false;
         }
 
-        internal static bool IsEndOfCommand(this Token token)
+        internal static bool IsEndOfCommand(this XSharpToken token)
         {
             if (token == null)
                 return false;
-            return token.Type == TokenType.SEMI;
+            return token.Type == XSharpLexer.SEMI;
         }
-        internal static bool IsEndOfLine(this Token token)
+        internal static bool IsEndOfLine(this XSharpToken token)
         {
             if (token == null)
                 return false;
-            return token.Type == TokenType.NL;
+            return token.Type == XSharpLexer.NL;
         }
     }
 

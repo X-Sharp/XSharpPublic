@@ -22,6 +22,7 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE _fptHeader AS FptHeader
         PRIVATE _flexHeader AS FlexHeader
         PRIVATE _lockCount AS LONG
+        PRIVATE _nextFree   AS LONG
         INTERNAL CONST FPT_HEADER_SIZE          := 512 AS LONG
         INTERNAL CONST MIN_FOXPRO_BLOCKSIZE     := 32 AS LONG
         INTERNAL CONST FLEX_HEADER_OFFSET       := 512 AS LONG
@@ -43,19 +44,19 @@ BEGIN NAMESPACE XSharp.RDD
                 IF SELF:_lockCount == 0
                     DO WHILE ! SELF:_tryLock(0, 1, 10)
                         SELF:_lockCount := 1
-                        IF refreshHeaders
-                            IF SELF:ReadHeader()
-                                IF SELF:IsFlex
-                                    // Deal with indexes of deleted blocks
-                                ENDIF
-                            ELSE
-                                SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.LockHeader")
-                            ENDIF
-                        ENDIF
                     ENDDO
                     SELF:_lockCount := 1
                 ELSE
                     SELF:_lockCount += 1
+                ENDIF
+                IF refreshHeaders
+                    IF SELF:ReadHeader()
+                        IF SELF:IsFlex
+                            // Deal with indexes of deleted blocks
+                        ENDIF
+                    ELSE
+                        SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.LockHeader")
+                    ENDIF
                 ENDIF
             ELSE
                 SELF:_lockCount += 1
@@ -309,11 +310,11 @@ BEGIN NAMESPACE XSharp.RDD
             IF lNewBlock
                 IF SELF:LockHeader(TRUE)
                     LOCAL nPos AS LONG
-                    nPos := SELF:_fptHeader:NextFree * _blockSize
+                    nPos := _nextFree  * _blockSize
                     _oStream:SafeSetPos(nPos)
                     SELF:_WriteBlock(bytes)
                     VAR nFileSize := _oStream:Length
-                    SELF:_fptHeader:NextFree    := (LONG) nFileSize / _blockSize
+                    SELF:_nextFree    := (LONG) nFileSize / _blockSize
                     SELF:LastWrittenBlockNumber := (LONG) (nPos / _blockSize )
                     SELF:UnLockHeader(TRUE)
                 ENDIF
@@ -384,7 +385,7 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:Error(FException(), Subcodes.ERDD_CREATE_MEMO, Gencode.EG_WRITE, "FPTMemo.CreateMemFile")
                 ENDIF
                 SELF:_initContext()
-                SELF:_fptHeader:NextFree :=  SELF:RoundToBlockSize(_fptHeader:Size + _flexHeader:Size) / _blockSize
+                _nextFree :=  SELF:RoundToBlockSize(FPT_HEADER_SIZE + FLEX_HEADER_SIZE) / _blockSize
                 SELF:WriteHeader()
             ELSE
                 SELF:Error( FException(), ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE, "FPTMemo.CreateMemFile")
@@ -476,6 +477,8 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:Error(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "FPTMemo.Zap")
                 ENDIF
                 _oStream:SafeSetLength(0)
+                SELF:_fptHeader:Clear()
+                SELF:_flexHeader:Clear()
                 SELF:WriteHeader()
                 RETURN TRUE
             ELSE
@@ -491,6 +494,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.ReadHeader")
             ENDIF
             _blockSize := SELF:_fptHeader:BlockSize
+            _nextFree  := SELF:_fptHeader:NextFree
             // read Flex Header
             IF nFileLen >= 1024
                 IF ! SELF:_flexHeader:Read(SELF:_oStream)
@@ -508,11 +512,20 @@ BEGIN NAMESPACE XSharp.RDD
 
         METHOD WriteHeader() AS VOID
             IF SELF:IsOpen .AND. ! SELF:_oRdd:ReadOnly
+                IF SELF:_blockSize >= MIN_FOXPRO_BLOCKSIZE
+                    SELF:_fptHeader:BlockSize := _blockSize
+                ENDIF
+                SELF:_fptHeader:NextFree   := _nextFree
                 IF ! SELF:_fptHeader:Write(SELF:_oStream)
                     SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.WriteHeader")
                 ENDIF
                 // write flex header
                 IF SELF:IsFlex
+                    IF SELF:_blockSize >= MIN_FOXPRO_BLOCKSIZE
+                        SELF:_flexHeader:AltBlockSize := 0
+                    ELSE
+                        SELF:_flexHeader:AltBlockSize := SELF:_blockSize
+                    ENDIF
                     IF ! SELF:_flexHeader:Write(SELF:_oStream)
                         SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.WriteHeader")
                      ENDIF

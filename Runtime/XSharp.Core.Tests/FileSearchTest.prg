@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
             cFile := TempFile("txt")
 			FErase(cFile)
 			Assert.Equal(FALSE, File(cFile))
-			FClose(Fcreate(cFile))
+			FClose(FCreate(cFile))
 			Assert.Equal(TRUE, File(cFile))
 			cName := FPathName()
 			Assert.Equal(FALSE, String.IsNullOrEmpty(cName))
@@ -62,6 +62,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 			Assert.Equal(TRUE, File("XCOP*.EXE"))	// uses GetEnv("PATH")
 			cName2 := FPathName()
 			Assert.Equal(cName:ToLower(), cName2:ToLower())
+			FErase(cFile)
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

@@ -891,9 +891,13 @@ INTERNAL STATIC CLASS OOPHelpers
         FOR VAR nParam := 0 TO max
             LOCAL param := pars[nParam] AS ParameterInfo
             IF param:IsOut .OR. param:ParameterType:IsByRef
-                IF uArgs[nParam]:IsByRef
+                // We no longer check to see if the usual has the ByRef set.
+                // That really does not matter. If the calling code is not
+                // interested in the new value then they will not copy it back
+                // to the original value anyway
+                //IF uArgs[nParam]:IsByRef
                     uArgs[nParam] := oArgs[nParam]
-                ENDIF
+                //ENDIF
             ENDIF
         NEXT
 
@@ -1556,6 +1560,10 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 	ENDIF
 
 	RETURN  NIL
+FUNCTION _HasClipFunc(symFunction AS STRING) AS LOGIC
+	LOCAL aFuncs AS MethodInfo[]
+	aFuncs := OOPHelpers.FindClipperFunctions(symFunction)
+    RETURN aFuncs:Length > 0
 
 
 /// <summary>Dynamically loads a library (dll) compiled with X#, running any _INIT procedures it may contain.</summary>

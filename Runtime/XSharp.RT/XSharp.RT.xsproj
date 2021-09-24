@@ -13,7 +13,7 @@
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.8.0.11</XSharpProjectversion>
+    <XSharpProjectversion>2.8.4.1</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -29,6 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>XSharp.RT.Xml</DocumentationFile>
     <DefineConstants>DEBUG;TRACE;RUNTIME;DOCUMENTATION</DefineConstants>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -83,6 +84,7 @@
     <Compile Include="Types\ArrayBase.prg" />
     <Compile Include="Types\CompilerServices.prg" />
     <Compile Include="Types\Binary.prg" />
+    <Compile Include="Types\WinDate.prg" />
     <Compile Include="Types\Currency.prg" />
     <Compile Include="Types\Date.prg" />
     <Compile Include="Types\Float.prg" />
@@ -124,13 +126,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <PreBuildEvent>copy $(SolutionDir)\Docs\RtComments.xml $(ProjectDir)\RtComments.Xml
-    copy $(SolutionDir)\Docs\VOFunctionDocs.xml $(ProjectDir)\VOFunctionDocs.Xml
-    </PreBuildEvent>
-    <PostBuildEvent>erase  $(ProjectDir)\RtComments.Xml
-    erase  $(ProjectDir)\VOFunctionDocs.Xml
-    </PostBuildEvent>
-    <RunPostBuildEvent />
-  </PropertyGroup>
+  <Import Project="..\XmlDoc.Targets" />
 </Project>

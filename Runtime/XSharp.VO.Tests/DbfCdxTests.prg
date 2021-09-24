@@ -4891,6 +4891,40 @@ RETURN
 
 		RETURN
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestDescendOrderDeletedSeek_cdx() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL lDeleted AS LOGIC
+			cDbf := GetTempFileName()
+
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{ "FLD1", "C", 10, 0 }})
+
+			lDeleted := SetDeleted( TRUE )
+			
+			DbUseArea(TRUE,,cDbf)
+			DbCreateOrder( "ORDER1",cDbf, "FLD1")
+			FOR LOCAL nI := 1 AS INT UPTO 10
+				DbAppend()
+				FieldPut(1,Str(nI,10))
+			NEXT
+			DbSetOrder("ORDER1")
+			OrdDescend(,, TRUE)  // without orderdescend its work how expeced
+			
+			Assert.True( DbSeek( Str( 3, 10 ), FALSE ) )
+			Assert.Equal( 3U, RecNo() )
+		
+			Assert.True( DbDelete() )
+			
+			Assert.False( DbSeek( Str( 3, 10 ), FALSE ) )
+			Assert.Equal( 11U, RecNo() )
+		
+			DbCloseAll()
+			
+			SetDeleted( lDeleted )
+		RETURN
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

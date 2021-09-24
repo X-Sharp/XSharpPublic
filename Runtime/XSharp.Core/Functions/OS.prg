@@ -166,7 +166,7 @@ FUNCTION DiskSpace(nDrive AS INT) AS INT64
 	RETURN DiskSpace(cDisk)
 
 /// <inheritdoc cref="DiskSpace" />
-/// <param name="cDrive">The name of the drive as a string, for example "C:", "A:".   If you do not specify a drive, the Windows default is used.</param>
+/// <param name="cDrive">The name of the drive as a string, for example "C:", "A:". If you do not specify a drive, the Windows default is used.</param>
 FUNCTION DiskSpace(cDrive AS STRING) AS INT64
     LOCAL result AS INT64
     IF String.IsNullOrEmpty(cDrive)

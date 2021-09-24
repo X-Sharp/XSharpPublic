@@ -314,9 +314,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 // Once we are at the bottom level then we simply skip forward using the Right Pointers
                 IF topStack:Pos == page:NumKeys
+#ifdef TESTCDX
                     IF ! page:ValidateSiblings()
                         SELF:ThrowException(Subcodes.ERDD_INVALID_ORDER,Gencode.EG_CORRUPTION,  "CdxTag._getNextKey","Incorrect link between sibling pages for page: "+page:PageNoX)
                     ENDIF
+#endif
                     IF page:HasRight
                         VAR rightPtr := page:RightPtr
                         VAR newpage := SELF:GetPage(rightPtr)
@@ -762,10 +764,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                       isFixed := TRUE
                      _DebOut32("DBFCDX Fixed by moving last key from Left Sibling "+ oLeft:PageNoX)
                   ENDIF
-               ENDIF
+                ENDIF
+#ifdef TESTCDX                
                IF isFixed
                   branch:ValidateLevel()
-               ENDIF
+                ENDIF
+#endif                
                RETURN isFixed
 
 
@@ -822,7 +826,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     DO WHILE minPos < maxPos
                         foundPos := (WORD) ((minPos + maxPos) / 2)
                         node:Pos := foundPos
-                        VAR cmp := SELF:__Compare(node:KeyBytes, keyBuffer, keyLength, node:Recno,recNo)
+                        VAR nodeBytes := node:KeyBytes
+                        VAR cmp := SELF:__Compare(nodeBytes, keyBuffer, keyLength, node:Recno,recNo)
                         IF cmp >= 0
                             found := TRUE
                         ENDIF

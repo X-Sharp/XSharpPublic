@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <commonblocks>
+        <notify>
+            <span>
+                <list type="table">
+                    <listheader>
+                        <term>Constant</term>
+                        <description>Description</description>
+                    </listheader>
+                    <item>
+                        <term>NOTIFYAPPEND</term>
+                        <description>A blank record has been appended to the server; the server is still positioned on this new record, and its values have not been finalized.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLEARRELATION</term>
+                        <description>Not sent to a data browser.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLOSE</term>
+                        <description>The server intends to close itself.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCOMPLETION</term>
+                        <description>
+                            The server has completed some large operation that did not involve repositioning of the server or change to the data (such as reindexing). This gives the browser a chance to update visual indication to the user that some operation has been completed.  In this situation, <paramref name="uDescription" /> is the name of the method that was just completed, as a symbol.
+                        </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYDELETE</term>
+                        <description>The current record has been deleted, and the server is now positioned according to its rules for how a deletion is handled. The browser should refresh its display accordingly.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYFIELDCHANGE</term>
+                        <description>
+                            A field has changed. <paramref name="uDescription" /> is the field name as a symbol.  Note that the browser might not contain a column with the indicated name. The server knows only that it has a field of that name and that it changed, and it notifies all its clients in case they are interested.
+                        </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYFILECHANGE</term>
+                        <description>The server has executed some method that perform many changes to the data; all the browser's knowledge about the server and its data is potentially obsolete, and it should refresh all information from the server and all calculations that depend on the data or its position. </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOBOTTOM</term>
+                        <description>The server has moved to its last record. Many clients treat this merely as a record change, but the data browser can treat a positioning-to-the-end as a special case.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOTOP</term>
+                        <description>The server has moved to its first record. Many clients treat this merely as a record change, but the data browser can treat a positioning-to-the-top as a special case.</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYINTENTTOMOVE</term>
+                        <description>The server intends to make a move. (Note that the move may have been initiated by another client.) The browser should make sure that all its data is saved, if necessary, before the movement is done. The standard implementation checks validation status. If the browser contains data that is invalid, the user has a choice of correcting the errors or discarding the data. </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRECORDCHANGE</term>
+                        <description>
+                            The record position of the server has changed.  All clients are notified after any movement, so they can refresh their displays from the server. A browser needs to update its display intelligently, depending on how far the move was.  <paramref name="uDescription" /> might indicate the length of the move (the number of records). The browser can use this information for display optimization, but cannot rely on its availability.
+                        </description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRELATIONCHANGE</term>
+                        <description>Not sent to a data browser (relation changes among servers are transmitted to clients as file changes).</description>
+                    </item>
+                </list>
+                This Notify() method is at the heart of the automatic notification among linked browsers and servers, allowing any window to make a change to a field value or initiate a movement and also ensuring that all client windows reflect the change. Any class that is registered as a client of a server must respond intelligently to the Notify message.
+                As always with defined constants, you should never rely on the actual values of the constants—they will not necessarily stay the same. However, the constants do maintain their order:
+                <list type="table">
+                    <listheader>
+                        <term>Constant</term>
+                        <description>Description</description>
+                    </listheader>
+                    <item>
+                        <term>NOTIFYFIELDCHANGE</term>
+                        <description>Lowest</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLOSE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCOMPLETION</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYINTENTTOMOVE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRECORDCHANGE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOBOTTOM</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYGOTOP</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYDELETE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYAPPEND</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYFILECHANGE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYRELATIONCHANGE</term>
+                        <description>...</description>
+                    </item>
+                    <item>
+                        <term>NOTIFYCLEARRELATION</term>
+                        <description>Highest</description>
+                    </item>
+                </list>
+                Thus, you can reliably write:
+                <code language="X#">
+                    IF  kNotifyName &gt; NOTIFYINTENTTOMOVE;
+                    .AND. kNotifyName &lt; NOTIFYFILECHANGE
+                    ... // Only record level moves
+                    ENDIF
+                </code>
+            </span>
+        </notify>
+        <scopeparams>
+            <param name="aFieldList">An array of fields from the source file that are to be included. The default is all fields.</param>
+            <param name="cbForBlock">The condition evaluated for each record in the scope; if TRUE, the record is included in the processing. It provides the same functionality as the FOR clause of record processing commands.</param>
+            <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
+            <param name="cbWhileBlock">The condition evaluated for each record from the first record until the condition returns FALSE. It provides the same functionality as the WHILE clause of record processing commands.</param>
+            <param name="cbWhileCondition">
+                A code block that defines another condition that each record must meet in order
+                to be processed.
+                As soon as a record is encountered that causes the condition to fail, the operation
+                terminates.<br/>
+
+                If no scope is specified, <paramref name="cbWhileCondition" /> changes the default scope to <paramref name="lRest" />.<br/>
+
+                You define the scope using one of these three, mutually exclusive arguments.<br/>
+                The default is all records.
+            </param>
+            <param name="uScope">
+                The range of records to process, providing the same functionality as the ALL, REST and NEXT clauses of record processing commands.
+                <list type="table">
+                    <listheader>
+                        <term>Value</term>
+                        <description>Description</description>
+                    </listheader>
+                    <item>
+                        <term>DBSCOPEALL</term>
+                        <description>The scope is all the records in the table. This is the default, although if a WHILE condition is specified, the scope becomes DBSCOPEREST.</description>
+                    </item>
+                    <item>
+                        <term>DBSCOPEREST</term>
+                        <description>The scope is the remaining records in the table from the current position.</description>
+                    </item>
+                    <item>
+                        <term>&lt;nRecords&gt;</term>
+                        <description>
+                            The scope is the next <paramref name="nRecords" /> records.
+                        </description>
+                    </item>
+                </list>
+            </param>
+            <param name="cDriver">The name of the RDD that will service the data server. If not specified, the default RDD as determined by RDDSetDefault() is used.</param>
+            <param name="aRDD">
+                A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. This allows you to use RDDs with special capabilities, like encryption or decryption, for different data servers with different database drivers. These RDDs overlay special functions of the main RDD (specified with the <paramref name="cDriver" /> argument). If multiple RDDs (specified with this argument) implement the same function, the function associated with the last RDD in the list takes precedence. If <paramref name="aRdds" /> is omitted, no additional RDDs are assumed.
+            </param>
+        </scopeparams>
+        <acrdds>
+            <param name="acRDDs">
+                A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality.<br/>
+
+                This allows you to use RDDs with special capabilities, like encryption or decryption, in different work areas with different database drivers.  <br/>
+
+                These RDDs overlay special functions of the main RDD (specified with the <paramref name="cDriver" /> argument).<br/>
+                If multiple RDDs (specified with this argument) implement the same function, the function associated with the last RDD in the list takes precedence.  <br/>
+
+                If <paramref name="acRDDs" /> is omitted, no additional RDDs are assumed.
+            </param>
+        </acrdds>
+
+    </commonblocks>
+</doc>

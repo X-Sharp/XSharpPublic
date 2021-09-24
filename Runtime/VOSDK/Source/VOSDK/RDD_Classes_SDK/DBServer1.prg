@@ -63,7 +63,7 @@ METHOD Append( lReleaseLocks )
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.AppendDB/*" />
-METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDriver, aRdd )
+METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDriver, aRDD )
 	LOCAL lRetCode 		AS LOGIC
 	LOCAL nNextCount 		AS LONGINT
 	LOCAL lRestOfFile 	AS LOGIC
@@ -123,7 +123,7 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 						lRestOfFile := uScope
 					ENDIF
 				ENDIF
-    			//RvdH 061218 Added aRdd
+    			//RvdH 061218 Added aRDD
 				lRetCode := DBApp( cSource,  ;
 					aFieldNames,  ;
 					cbForBlock,  ;
@@ -131,11 +131,11 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 					nNextCount,  ;
 					,                     ;
 					lRestOfFile,   ;
-					cDriver, aRdd )
+					cDriver, aRDD )
 
 
 			ELSEIF lActiveScope
-				//RvdH 061218 Added aRdd
+				//RvdH 061218 Added aRDD
 				lRetCode := DBApp( cSource,  ;
 					aFieldNames,  ;
 					cbStoredForBlock,  ;
@@ -143,11 +143,11 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 					nStoredNextCount,  ;
 					,                               ;
 					lStoredRestOfFile,  ;
-					cDriver, aRdd )
+					cDriver, aRDD )
 
 
 			ELSE
-				//RvdH 061218 Added aRdd
+				//RvdH 061218 Added aRDD
 				lRetCode := DBApp( cSource,  ;
 					aFieldNames,  ;
 					,       ;
@@ -155,7 +155,7 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 					,       ;
 					,       ;
 					,       ;
-					cDriver, aRdd )
+					cDriver, aRDD )
 			ENDIF
 
 

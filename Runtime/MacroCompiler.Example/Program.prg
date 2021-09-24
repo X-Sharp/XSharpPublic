@@ -37,6 +37,7 @@ BEGIN NAMESPACE MacroCompilerTest
         "RETURN a+b+c"}),1,2,3)
         wait*/
 
+        TestByRefPriv()
         ParserTestsFox(CreateFoxScriptCompiler())
         ParserTests(CreateScriptCompiler())
         ScriptTests()
@@ -56,5 +57,4 @@ BEGIN NAMESPACE MacroCompilerTest
         Console.ReadKey()
 
     END NAMESPACE
-
 

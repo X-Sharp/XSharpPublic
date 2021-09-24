@@ -12,6 +12,7 @@ LEAF Page
                 0 - index node
                 1 - root node
                 2 - leaf node
+                4 - created in batch process
   02 - 03       Number of keys present (0, 1 or many)
   04 - 07       Pointer to the node directly to the left of current node (on same level; -1 if not present)
   08 - 11       Pointer to the node directly to right of the current node (on same level; -1 if not present)
@@ -51,6 +52,8 @@ LEAF Page
 
 
 */
+
+
 
 #define USEATTRIB
 #ifdef USEATTRIB
@@ -325,9 +328,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
         INTERNAL OVERRIDE METHOD Write() AS LOGIC
+#ifdef TESTCDX
             IF ! SELF:ValidateKeys()
                SELF:_tag:ThrowException(Subcodes.ERDD_WRITE_NTX,Gencode.EG_CORRUPTION,  "CdxLeafPage.Write")
             ENDIF
+#endif
             SELF:Compress()
             RETURN SUPER:Write()
 
@@ -586,7 +591,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Write()
             RETURN result
 
-
+#ifdef TESTCDX
         METHOD ValidateSiblings AS LOGIC
             LOCAL lOk := TRUE AS LOGIC
             IF SELF:NumKeys > 0
@@ -602,10 +607,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:HasRight
                     VAR leftNode  := SELF:Keys[SELF:NumKeys-1]
                     VAR rightPage := (CdxLeafPage) SELF:_tag:GetPage(SELF:RightPtr)
-                    VAR rightNode := rightPage:Keys[0]
-                    IF ! ValidateKeys(leftNode, rightNode)
-                       SELF:Debug("Corruption detected: Last key on our page is not < first key on right page", rightPage:PageNoX, leftNode:DebugString, rightNode:DebugString)
-                       lOk := FALSE
+                    IF rightPage:NumKeys > 0
+                        VAR rightNode := rightPage:Keys[0]
+                        IF ! ValidateKeys(leftNode, rightNode)
+                           SELF:Debug("Corruption detected: Last key on our page is not < first key on right page", rightPage:PageNoX, leftNode:DebugString, rightNode:DebugString)
+                           lOk := FALSE
+                        ENDIF
+//                    ELSE
+//                       System.Diagnostics.Debugger.Break()
                     ENDIF
                 ENDIF
             ENDIF
@@ -636,17 +645,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN lOk
 
         INTERNAL METHOD ValidateKeys(oLeft AS CdxLeaf, oRight AS CdxLeaf) AS LOGIC
-            LOCAL nDiff AS LONG
-            IF SELF:Tag == NULL
-                RETURN TRUE
-            ENDIF
-            nDiff := SELF:Tag:__Compare(oLeft:Key, oRight:Key, oLeft:Key:Length, oLeft:Recno, oRight:Recno)
-            IF nDiff == -1
-                RETURN TRUE
-            ELSEIF nDiff == 0 .AND. oLeft:Recno < oRight:Recno
-                RETURN TRUE
-            ENDIF
-            RETURN FALSE
+//            LOCAL nDiff AS LONG
+//            IF SELF:Tag == NULL
+//                RETURN TRUE
+//            ENDIF
+//            nDiff := SELF:Tag:__Compare(oLeft:Key, oRight:Key, oLeft:Key:Length, oLeft:Recno, oRight:Recno)
+//            IF nDiff == -1
+//                RETURN TRUE
+//            ELSEIF nDiff == 0 .AND. oLeft:Recno < oRight:Recno
+//                RETURN TRUE
+//            ENDIF
+//            RETURN FALSE
+            RETURN TRUE
 
         METHOD ValidateKeys() AS LOGIC
             LOCAL lOk := TRUE AS LOGIC
@@ -665,7 +675,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:NumKeys > 0
                 ValidateSiblings()
             ENDIF
-
+#endif
         INTERNAL METHOD Split(oPageR AS CdxLeafPage, action AS CdxAction) AS CdxAction
             DUMP("New", oPageR:PageNoX)
             VAR list      := _leaves
@@ -720,7 +730,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Tag:AdjustStack(SELF, oPageR, oPageR:NumKeys)
 #ifdef TESTCDX
             SELF:Write()
-            SELF:ValidateChain()
 #endif
             RETURN CdxAction.Ok
 

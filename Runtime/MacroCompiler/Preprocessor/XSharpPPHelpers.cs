@@ -10,6 +10,9 @@ using XSharp.MacroCompiler.Syntax;
 
 namespace XSharp.MacroCompiler.Preprocessor
 {
+    using XSharpLexer = TokenType;
+    using XSharpToken = Token;
+
 
     enum PPUDCType : byte
     {
@@ -116,7 +119,7 @@ namespace XSharp.MacroCompiler.Preprocessor
             list.Insert(0, rule);
         }
   
-        internal PPRule FindMatchingRule(IList<Token> tokens, out PPMatchRange[] matchInfo)
+        internal PPRule FindMatchingRule(IList<XSharpToken> tokens, out PPMatchRange[] matchInfo)
         {
             matchInfo = null;
             if (tokens?.Count > 0)
@@ -292,13 +295,13 @@ namespace XSharp.MacroCompiler.Preprocessor
         class PPUsedRule
         {
             PPRule _rule;
-            IList<Token> _tokens;
-            internal PPUsedRule(PPRule rule, IList<Token> tokens)
+            IList<XSharpToken> _tokens;
+            internal PPUsedRule(PPRule rule, IList<XSharpToken> tokens)
             {
                 _rule = rule;
                 _tokens = tokens;
             }
-            internal bool isDuplicate(PPRule rule, IList<Token> tokens)
+            internal bool isDuplicate(PPRule rule, IList<XSharpToken> tokens)
             {
                 if (_rule == rule && _tokens.Count == tokens.Count)
                 {
@@ -331,7 +334,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         /// <param name="rule"></param>
         /// <param name="tokens"></param>
         /// <returns>True when the rule with the same tokens list is found in the list</returns>
-        internal bool HasRecursion(PPRule rule, IList<Token> tokens)
+        internal bool HasRecursion(PPRule rule, IList<XSharpToken> tokens)
         {
             // check to see if this is already there
             if (_list.Count == _maxDepth)

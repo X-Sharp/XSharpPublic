@@ -44,9 +44,9 @@ INTERNAL FUNCTION _SelectFoxPro(uWorkArea AS USUAL) AS USUAL
 		// handles Select(), Select(0), Select(1) and takes care of
 		// the - not yet implemented - SET COMPATIBLE ON/OFF setting.
 
-		IF IsNil(uWorkArea) .OR. lGetHighestUnusedAreaNumber .OR. lGetCurrentAreaNumber
+		IF uWorkArea:IsNil .OR. lGetHighestUnusedAreaNumber .OR. lGetCurrentAreaNumber
 
-			IF lGetHighestUnusedAreaNumber .OR. ( IsNil(uWorkArea) .AND. RuntimeState.Compatible )
+			IF lGetHighestUnusedAreaNumber .OR. ( uWorkArea:IsNil .AND. RuntimeState.Compatible )
 				// get the number of the highest unused work area
 				sSelect := RuntimeState.Workareas:FindEmptyArea( FALSE )
 
@@ -176,7 +176,6 @@ FUNCTION FieldBlock(cFieldName AS STRING) AS CODEBLOCK
     IF ! String.IsNullOrEmpty(cFieldName)
         nPos := FieldPos(cFieldName)
         IF nPos != 0
-            //oCB := MCompile("{|x| iif( IsNil(x), __FieldGetNum( "+nPos:ToString()+"), __FieldSetNum( "+nPos:ToString()+" , x)")
             oCB := {|x| IIF(x:IsNil, __FieldGetNum(nPos), __FieldSetNum(nPos, x))}
         ENDIF
     ENDIF
@@ -292,7 +291,7 @@ FUNCTION DbCreate (   cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lO
     LOCAL lKeep           AS LOGIC
     LOCAL lRetCode        AS LOGIC
 
-    IF aStruct == NIL
+    IF aStruct:IsNil
         aStruct := {}
     ENDIF
 
@@ -309,19 +308,19 @@ FUNCTION DbCreate (   cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lO
     //      NIL -   to close file after creating
     //
 
-    IF lNew == NIL
+    IF lNew:IsNil
         lNew    := .T.
         lKeep   := .F.
     ELSE
         lKeep   := .T.
     ENDIF
 
-    IF lOpen == NIL
+    IF lOpen:IsNil
         lOpen := .F.
     ENDIF
 
     LOCAL oDriver := cDriver AS OBJECT
-    IF IsNil(cDriver)
+    IF cDriver:IsNil
         oDriver := RuntimeState.DefaultRDD
     ENDIF
     IF oDriver IS STRING
@@ -666,7 +665,9 @@ FUNCTION DbUseArea (lNewArea, cDriver, cDataFile, cAlias, lShared, lReadOnly, aS
     LOCAL rddList         AS _RddList
     LOCAL nTries          AS LONG
     LOCAL aRdds           AS ARRAY
-
+    IF PCount() == 0
+        RETURN DbCloseArea()
+    ENDIF
     @@Default( REF lNewArea, .F.)
     @@Default( REF cAlias, "")
     @@Default( REF lShared, !SetExclusive())
@@ -731,7 +732,7 @@ FUNCTION FieldGet(nFieldPos) AS USUAL CLIPPER
 /// <summary>Read an array of bytes direct from the workarea buffer.</summary>
 /// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
 ///<returns>
-/// The value of the field.  
+/// The value of the field.`
 /// IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldGetBytes() will generate an error.
 /// </returns>
 
@@ -749,7 +750,7 @@ FUNCTION FieldGetBytes(nFieldPos ) AS BYTE[] CLIPPER
 /// <param name="nFieldPos">The position OF the FIELD IN the database file structure.</param>
 /// <param name="aBytes">The value to write to the field</param>
 ///<returns>
-/// The value assigned TO the field.  
+/// The value assigned TO the field.
 /// IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldPutBytes() will generate an error.
 /// </returns>
 FUNCTION FieldPutBytes(nFieldPos AS USUAL, aBytes AS BYTE[]) AS USUAL

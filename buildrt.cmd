@@ -8,7 +8,11 @@ if "%libpath%" == "" goto NotFound
 if /i "%1" == "Debug" goto Ok
 if /i "%1" == "Release" goto Ok
 if /i "%1" == "Documentation" goto Ok
+if /i "%1" == "All" goto All
 goto Error
+:All
+for %%i in (Debug, Release, Documentation) do call buildRt %%i
+goto End
 :Ok
 Echo Building Runtime %1 Configuration
 if not "%XSHARPDEV%" == "" Echo Using X# development compiler in "%XSHARPDEV%"
@@ -18,7 +22,7 @@ if exist buildRt%1.log del buildRt%1.log
 rename msbuild1.log buildRt%1.log
 Goto End
 :Error
-echo Syntax: BuildRt Debug, BuildRt Release or BuildRt Documentation
+echo Syntax: BuildRt Debug, BuildRt Release, BuildRt Documentation or BuildRt All
 goto end
 :NotFound
 Echo Make sure you run this cmd file from a Developer prompt

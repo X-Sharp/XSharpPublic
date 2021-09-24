@@ -35,6 +35,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 oLeaf  := CdxLeafPage{_bag, -1, buffer, SELF:KeyLength}
                 oLeaf:InitBlank(SELF)
                 oLeaf:Write() // will give it a pagenumber
+                IF SELF:_inBatch
+                    oLeaf:PageType |= CdxPageType.Batch
+                ENDIF
                 #ifdef TESTCDX
                     IF LOGGING
                         oLeaf:Debug("New Leaf", oLeaf:PageNoX)
@@ -55,6 +58,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 oBranch := CdxBranchPage{_bag, -1, buffer, SELF:KeyLength}
                 oBranch:InitBlank(SELF)
                 oBranch:Tag    := SELF
+                IF SELF:_inBatch
+                    oBranch:PageType |= CdxPageType.Batch
+                ENDIF
                 oBranch:Write() // will give it a pagenumber
                 #ifdef TESTCDX
                     IF LOGGING

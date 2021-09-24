@@ -458,12 +458,15 @@ BEGIN NAMESPACE XSharp.RDD
                         EXIT
                     ENDIF
                 NEXT
+                /*
+                RvdH 2021-08-16 DO not delete the file. VO also does not DO that
                 LOCAL cIndex AS STRING
                 // Delete index because it may have incorrect index expressions
                 cIndex := System.IO.Path.ChangeExtension(SELF:FullPath, ".CDX")
                 IF System.IO.File.Exists(cIndex)
                     System.IO.File.Delete(cIndex)
                 ENDIF
+                */
                 IF lMemo
                     SELF:_Header:Version := DBFVersion.FoxPro2WithMemo
                 ELSE

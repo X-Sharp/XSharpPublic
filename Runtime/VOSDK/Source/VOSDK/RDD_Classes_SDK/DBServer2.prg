@@ -4,7 +4,7 @@ PARTIAL CLASS DbServer
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.CopyDB/*" />
-METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver, aRdd )
+METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cDriver, aRDD )
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
 	LOCAL nNextCount AS LONGINT
@@ -54,8 +54,8 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 			NEXT
 
 
-			IF Empty( cdriver )
-				cdriver := SELF:cRDDName
+			IF Empty( cDriver )
+				cDriver := SELF:cRDDName
 			ENDIF
 
 
@@ -80,8 +80,8 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 					nNextCount,  ;
 					NIL,  ;
 					lRestOfFile,  ;
-					cdriver,  ;
-					aRdd,  ;
+					cDriver,  ;
+					aRDD,  ;
 					aStruct )
 
 
@@ -93,8 +93,8 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 					nStoredNextCount,  ;
 					NIL ,  ;
 					lStoredRestOfFile,  ;
-					cdriver,  ;
-					aRdd,  ;
+					cDriver,  ;
+					aRDD,  ;
 					aStruct )
 
 
@@ -109,8 +109,8 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 						NIL,  ;
 						NIL,  ;
 						TRUE,  ;
-						cdriver,  ;
-						aRdd,  ;
+						cDriver,  ;
+						aRDD,  ;
 						aStruct )
 					siSelectionStatus := DBSELECTIONEOF
 					IF ! VODBGoBottom( )
@@ -134,8 +134,8 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 					NIL,  ;
 					NIL,  ;
 					NIL,  ;
-					cdriver,  ;
-					aRdd,  ;
+					cDriver,  ;
+					aRDD,  ;
 					aStruct )
 			ENDIF
 

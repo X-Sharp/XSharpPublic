@@ -54,12 +54,12 @@ FUNCTION __GetStringFromODBCType( ODBCType AS SHORTINT ) AS STRING STRICT
 
 
    SWITCH ODBCType
-   CASE SQL_INTEGER   
-   CASE SQL_SMALLINT  
-   CASE SQL_FLOAT     
-   CASE SQL_REAL      
-   CASE SQL_TINYINT   
-   CASE SQL_BIGINT    
+   CASE SQL_INTEGER
+   CASE SQL_SMALLINT
+   CASE SQL_FLOAT
+   CASE SQL_REAL
+   CASE SQL_TINYINT
+   CASE SQL_BIGINT
    CASE SQL_DOUBLE
       cType := "N"
 
@@ -76,13 +76,13 @@ FUNCTION __GetStringFromODBCType( ODBCType AS SHORTINT ) AS STRING STRICT
       cType := "C"
 
 
-   CASE SQL_NUMERIC 
+   CASE SQL_NUMERIC
    CASE SQL_DECIMAL
       cType := "N"
 
 
-   CASE SQL_LONGVARCHAR 
-   CASE SQL_LONGVARBINARY 
+   CASE SQL_LONGVARCHAR
+   CASE SQL_LONGVARBINARY
    CASE SQL_WLONGVARCHAR
       cType := "M"
 
@@ -179,10 +179,10 @@ FUNCTION MakeTimeStamp( dDate, nSeconds )
    cTimestamp := DToCSQL( dDate ) + " " + cTime
 
 
-   RETURN cTimestamp   
+   RETURN cTimestamp
 
 
-/// <include file="SQL.xml" path="doc/SQL_LEN_DATA_AT_EXEC/*" />
+ /// <exclude />
 FUNCTION  SQL_LEN_DATA_AT_EXEC( nLength AS INT ) AS INT STRICT
 
 
@@ -199,7 +199,7 @@ FUNCTION __SQLOutputDebug( cMsg AS STRING) AS VOID STRICT
       cLine := SubStr(cMsg ,I, 200)
       IF I > 1
          cLine := "  .." + cLine
-      ENDIF 
+      ENDIF
       DebOut32( cLine)
     NEXT
    RETURN
@@ -267,7 +267,7 @@ FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
 
    cDelims := "'"+e"\""+"["
    //Stripping out CRLF may be dangerous if they used end of line comments...
-   cWhitespace := " "+_CHR(9) //+CHR(10)+CHR(13)+CHR(141)     
+   cWhitespace := " "+_CHR(9) //+CHR(10)+CHR(13)+CHR(141)
 
 
    nSLen   := SLen(cString)
@@ -276,8 +276,8 @@ FUNCTION SqlDeleteWhiteSpace( cString AS STRING ) AS STRING STRICT
    IF (pWalk == NULL_PTR)
    	SQLThrowOutOfMemoryError()
    ENDIF
-   
-   
+
+
    pTWalk  := MemAlloc( nSLen+1 )                                 // f�rs zero terminated
    pTarget := PSZ(_CAST,pTWalk)                                   // merken zum freigeben
 
@@ -335,9 +335,9 @@ FUNCTION SQLThrowOutOfMemoryError() AS VOID STRICT
 	oError:Description:="Out of memory"
 	Eval(ErrorBlock(),oError)
 	RETURN
-	
-	
-/// <include file="SQL.xml" path="doc/_SLen/*" />
+
+
+ /// <exclude />
 FUNCTION _SLen( c AS STRING ) AS SHORTINT STRICT
    RETURN SHORTINT( _CAST, SLen( c ) )
 
@@ -403,14 +403,14 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
             sValue += LTrim(__Str( uData.fVal ))
 
 
-      CASE SQL_FLOAT 
+      CASE SQL_FLOAT
       CASE SQL_DOUBLE
 
 
             sValue += LTrim(__Str( uData.dVal ))
 
 
-      CASE SQL_DECIMAL 
+      CASE SQL_DECIMAL
       CASE SQL_NUMERIC
          uiLen := oSQLColumn:__FieldSpec:Length
 
@@ -478,8 +478,8 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
          sValue += __Str( fTemp )
 
 
-      CASE SQL_LONGVARCHAR 
-      CASE SQL_LONGVARBINARY 
+      CASE SQL_LONGVARCHAR
+      CASE SQL_LONGVARBINARY
       CASE SQL_WLONGVARCHAR
          cTemp  := Space( 10 )
          sValue += "'" + cTemp +"'"
@@ -513,9 +513,9 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
 FUNCTION SQLType2CType( nODBCType AS SHORTINT ) AS SHORTINT STRICT
 	LOCAL nType     AS SHORTINT
 	SWITCH nODBCType
-	CASE SQL_DATE 
-	CASE SQL_TIME 
-	CASE SQL_TIMESTAMP 
+	CASE SQL_DATE
+	CASE SQL_TIME
+	CASE SQL_TIMESTAMP
 	CASE SQL_LONGVARCHAR
 	CASE SQL_WLONGVARCHAR
 	CASE SQL_GUID
@@ -578,7 +578,7 @@ FUNCTION SqlIsBinaryType(nODBCType AS LONG) AS LOGIC
 FUNCTION SqlIsCharType(nODBCType AS LONG) AS LOGIC
    SWITCH nODBCType
     CASE SQL_LONGVARCHAR
-    CASE SQL_WLONGVARCHAR 
+    CASE SQL_WLONGVARCHAR
     CASE SQL_CHAR
     CASE SQL_VARCHAR
     CASE SQL_WCHAR
@@ -594,7 +594,7 @@ FUNCTION SqlIsLongType(nODBCType AS LONG) AS LOGIC
    CASE SQL_LONGVARCHAR
    CASE SQL_LONGVARBINARY
    CASE SQL_VARBINARY
-   CASE SQL_WLONGVARCHAR   
+   CASE SQL_WLONGVARCHAR
         RETURN TRUE
     END SWITCH
     RETURN FALSE

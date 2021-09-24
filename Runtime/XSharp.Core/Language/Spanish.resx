@@ -334,7 +334,7 @@
     <value>Operación no soportada por el RDD actual</value>
   </data>
   <data name="ERDD_WRITE_NTX" xml:space="preserve">
-    <value>Error al escribir archivo NTX</value>
+    <value>Error al escribir archivo de índice</value>
   </data>
   <data name="ERDD_KEY_NOT_FOUND" xml:space="preserve">
     <value>No se encuentra clave</value>

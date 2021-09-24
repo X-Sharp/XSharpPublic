@@ -370,9 +370,11 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         RETURN cName
 
     INTERNAL STATIC METHOD ValidBlock(uBlock AS USUAL, bDef := NULL AS ICodeblock) AS ICodeblock
-        LOCAL oBlock    := uBlock   AS OBJECT
-        IF oBlock IS ICodeblock
-            RETURN (ICodeblock) oBlock
+        IF !uBlock:IsNil
+            LOCAL oBlock    := uBlock   AS OBJECT
+            IF oBlock IS ICodeblock
+                RETURN (ICodeblock) oBlock
+            ENDIF
         ENDIF
         RETURN bDef
 

@@ -334,7 +334,7 @@
     <value>İşlem mevcut RDD tarafından desteklenmiyor</value>
   </data>
   <data name="ERDD_WRITE_NTX" xml:space="preserve">
-    <value>NTX dosyası hata kaydediyor</value>
+    <value>indeks dosyası hata kaydediyor</value>
   </data>
   <data name="ERDD_KEY_NOT_FOUND" xml:space="preserve">
     <value>Anahtar bulunamadı</value>

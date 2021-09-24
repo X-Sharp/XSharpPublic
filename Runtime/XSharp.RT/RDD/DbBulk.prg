@@ -300,7 +300,7 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, 
             IF aStruct:IsNil
                 aStruct := DbStruct()
             ENDIF
-            IF IsNil(acFields)
+            IF acFields:IsNil
                 acFields := NULL_ARRAY
             ENDIF
             aStruct := VoDb.FieldList(aStruct, acFields, NULL_ARRAY)

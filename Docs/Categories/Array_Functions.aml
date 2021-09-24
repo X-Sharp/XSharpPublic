@@ -34,11 +34,6 @@
 <entry><para>
             Delete an array element.
         </para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ADel(XSharp.__FoxArray,System.UInt32,System.Int32)</codeEntityReference></para></entry>
-<entry><para>
-            Deletes an element from a one-dimensional array, or a row or column from a two-dimensional array.
-        </para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ADim(XSharp.__Array)</codeEntityReference></para></entry>
 <entry><para>Calculate the # of dimensions in an array</para></entry></row>
@@ -192,9 +187,6 @@
 <entry><para>
             Grow or shrink an array.
         </para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.ASize(XSharp.__FoxArray,System.UInt32)</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ASort(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>
@@ -219,9 +211,6 @@
 <row><entry><para>XSharp.VFP</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.AUsed(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)</codeEntityReference></para></entry>
 <entry><para>-- todo --</para></entry></row>
-<row><entry><para>XSharp.VFP</para></entry>
-<entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.VFP.Functions.FoxArrayCreate</codeEntityReference></para></entry>
-<entry><para></para></entry></row>
 <row><entry><para>XSharp.RT</para></entry>
 <entry><para><codeEntityReference qualifyHint="false" autoUpgrade="true">M:XSharp.RT.Functions.ShowArray(XSharp.__Array,System.String)</codeEntityReference></para></entry>
 <entry><para>Dump the contents of an array to the terminal window</para></entry></row>

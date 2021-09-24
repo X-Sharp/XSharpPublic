@@ -12,7 +12,7 @@
     <AZ>true</AZ>
     <CS>true</CS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.8.0.11</XSharpProjectversion>
+    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -152,7 +152,6 @@
     <None Include="Collations\Spanish.collation" />
     <None Include="Collations\Swedish.collation" />
     <None Include="Collations\Uk.collation" />
-    <None Include="CoreComments.Xml" />
     <None Include="README.md" />
     <None Include="State\GetSet.xh" />
   </ItemGroup>
@@ -242,13 +241,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <PreBuildEvent>copy $(SolutionDir)\Docs\RtComments.xml $(ProjectDir)\RtComments.Xml
-    copy $(SolutionDir)\Docs\VOFunctionDocs.xml $(ProjectDir)\VOFunctionDocs.Xml
-    </PreBuildEvent>
-    <PostBuildEvent>erase  $(ProjectDir)\RtComments.Xml
-    erase  $(ProjectDir)\VOFunctionDocs.Xml
-    </PostBuildEvent>
-    <RunPostBuildEvent />
-  </PropertyGroup>
+  <Import Project="..\XmlDoc.Targets" />
 </Project>

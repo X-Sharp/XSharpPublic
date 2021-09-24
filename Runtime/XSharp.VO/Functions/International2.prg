@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Text
@@ -61,7 +61,7 @@ INTERNAL _DLL FUNCTION LoadStringW( hInst AS IntPtr, uID AS DWORD, lpBuffer AS S
 INTERNAL _DLL FUNCTION GetModuleHandleW( name AS STRING ) AS IntPtr PASCAL:Kernel32.GetModuleHandleW
 
 /// <summary>
-/// Extract a substring from a string — both the substring and the string can contain double-byte characters.
+/// Extract a substring from a string — both the substring and the string can contain double-byte characters.
 /// </summary>
 /// <param name="c"></param>
 /// <param name="iStart"></param>

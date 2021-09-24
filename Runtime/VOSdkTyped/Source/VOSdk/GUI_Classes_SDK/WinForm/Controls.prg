@@ -159,7 +159,7 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOGroupBox
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 		
-	OVERRIDE METHOD SetVisualStyle AS VOID STRICT
+	VIRTUAL METHOD SetVisualStyle AS VOID STRICT
 		IF oProperties != NULL_OBJECT
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF

@@ -93,7 +93,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
 
-                if (refKinds[i].IsWritableReference())
+                if (refKinds[i].IsWritableReference()) // Ref and Out
                 {
                     bool normalArg = true;
                     hasRef = true;
@@ -127,7 +127,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (normalArg)
                     {
                         a = VisitExpression(a);
-                        LocalSymbol la = _factory.SynthesizedLocal(a.Type, refKind: refKinds[i]);
+                        _factory.Syntax = a.Syntax;
+
+                        // SyntesizedLocals do not like Out, so we change it here to Ref
+                        var rkind = refKinds[i];
+                        if (rkind == RefKind.Out)
+                            rkind = RefKind.Ref;
+                        LocalSymbol la = _factory.SynthesizedLocal(a.Type, refKind: rkind);
                         temps.Add(la);
                         BoundLocal bla = _factory.Local(la);
                         var lasgn = _factory.AssignmentExpression(bla, a, isRef: true);
@@ -150,7 +156,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             exprs.Clear();
             for (int i = 0; i < arguments.Length; i++)
             {
-                if (refKinds[i].IsWritableReference())
+                if (refKinds[i].IsWritableReference()) // Ref and Out
                 {
                     BoundExpression idx = _factory.Literal(i);
                     var elem = _factory.ArrayAccess(boundPars, ImmutableArray.Create(idx));
@@ -245,7 +251,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // checkRefKinds has updated rewrittenArgs for arguments by reference
                         // and has created a constructor call for a usual by reference
                         var e = expressions[i];
-                        if (refKinds[i] == RefKind.Ref)
+                        if (refKinds[i].IsWritableReference()) // Ref and Out
                         {
                             exprs.Add(rewrittenArgs[i]);
                         }
@@ -351,14 +357,30 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var arg = node.Arguments[i];
                 bool byRef = (refArgs != null && refArgs.Length > i && refArgs[i].IsByRef());
-                if (! byRef && arg.Kind == BoundKind.DefaultExpression && arg.Type.IsUsualType())
+                if (!byRef && arg.Kind == BoundKind.DefaultExpression && arg.Type.IsUsualType())
                 {
                     var utype = _compilation.UsualType();
-                    var flds = utype.GetMembers("_NIL");
-                    var type = _factory.Type(utype);
-                    var nil = _factory.Field(type, (FieldSymbol)flds[0]);
-                    exprs.Add(nil);
-                    rewritten = true;
+                    var members = utype.GetMembers(ReservedNames.NIL);
+                    if (members.Length == 1)
+                    {
+                        switch (members[0])
+                        {
+                            case FieldSymbol fs:
+                                // before 2.9 this was a field
+                                var type = _factory.Type(utype);
+                                exprs.Add(_factory.Field(type, fs));
+                                rewritten = true;
+                                break;
+                            case PropertySymbol ps:
+                                // starting with 2.9 this is a property
+                                exprs.Add(_factory.Property(null, ps));
+                                rewritten = true;
+                                break;
+                            default:
+                                exprs.Add(arg);
+                                break;
+                        }
+                    }
                 }
                 else
                 {
@@ -531,7 +553,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // checkRefKinds has updated rewrittenArgs for arguments by reference
                     // and has created a constructor call for a usual by reference
                     var e = rewrittenArgs[i];
-                    if (refKinds[i] == RefKind.Ref)
+                    if (refKinds[i].IsWritableReference())// Ref and Out
                     {
                         var argTemp = _factory.SynthesizedLocal(e.Type);
                         temps.Add(argTemp);

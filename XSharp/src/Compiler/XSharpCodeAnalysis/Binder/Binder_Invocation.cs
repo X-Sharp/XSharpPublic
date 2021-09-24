@@ -22,7 +22,7 @@ using Microsoft.CodeAnalysis.PooledObjects;
 namespace Microsoft.CodeAnalysis.CSharp
 {
 
-     /// <summary>
+    /// <summary>
     /// This portion of the binder converts an <see cref="ExpressionSyntax"/> into a <see cref="BoundExpression"/>.
     /// </summary>
     internal partial class Binder
@@ -144,25 +144,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
                     // FoxPro allows () for array indexes
-                    //if (Compilation.Options.Dialect == XSharpDialect.FoxPro && analyzedArguments.Arguments.Count > 0)
-                    //{
-                    //    var nodeExpression = node.Expression;
-                    //    if (nodeExpression is SimpleNameSyntax simple)
-                    //    {
-                    //        var id = BindXSIdentifier(simple, false, diagnostics, false);
-                    //        if (id.Kind != BoundKind.MethodGroup)
-                    //        {
-                    //            return BindIndexerOrVOArrayAccess(node.Expression, id, analyzedArguments, diagnostics);
-                    //        }
-                    //    }
-                    //    var expression = BindExpression(node.Expression, diagnostics);
-                    //    if (expression.Kind != BoundKind.BadExpression)
-                    //    {
-                    //        var type = expression.Type;
-                    //        if (type.IsArrayType() || type.IsUsualType())
-                    //            return BindIndexerOrVOArrayAccess(node.Expression, expression, analyzedArguments, diagnostics);
-                    //    }
-                    //}
+                    if (Compilation.Options.HasOption(CompilerOption.FoxArraySupport, node))
+                    {
+                        result = BindFoxProArrayPossibleAccess(node, analyzedArguments, diagnostics);
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
 
                     BoundExpression boundExpression = BindMethodGroup(node.Expression, invoked: true, indexed: false, diagnostics: diagnostics);
                     boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
@@ -199,7 +188,70 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         }
 
-  
+        private BoundExpression BindFoxProArrayPossibleAccess(InvocationExpressionSyntax node, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
+        {
+            var xnode = node.XNode as XSharpParserRuleContext;
+
+            var argCount = analyzedArguments.Arguments.Count;
+            // Only array access for 1 or 2 arguments that have (possible) numeric indices
+            if (argCount == 0 || argCount > 2)
+                return null;
+            var arg = analyzedArguments.Arguments[0];
+            if (!arg.Type.IsPossibleArrayIndex())
+            {
+                return null;
+            }
+            if (argCount == 2)
+            {
+                arg = analyzedArguments.Arguments[1];
+                if (!arg.Type.IsPossibleArrayIndex())
+                {
+                    return null;
+                }
+            }
+            bool lhsOfAssignment = node.Parent is AssignmentExpressionSyntax aes && aes.Left == node;
+            if (node.Expression is SimpleNameSyntax simple && !lhsOfAssignment)
+            {
+                // If the invocationExpression binds to a method or function in the runtime
+                // then we NEVER see this as a parenthesized array access
+                var idMethod = BindXSIdentifier(simple, invoked: false, indexed: true, diagnostics: diagnostics, bindMethod: true,
+                        bindSafe: false);
+                if (idMethod != null && idMethod is BoundMethodGroup bmg)
+                {
+                    if (bmg.Methods.Length > 0 && bmg.Methods[0].ContainingAssembly.IsRT())
+                        return null;
+                }
+                var id1 = BindXSIdentifier(simple, invoked:false, indexed: true, diagnostics: diagnostics, bindMethod: false,
+                    bindSafe: Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, node));
+                // id1 will be either bound to a declared local, public or private
+                // if undeclared locals are supported then Id1 may also find an undeclared local
+                if (id1 == null)
+                    return null;
+
+                var args = new List<BoundExpression>();
+                string strName = simple.Identifier.Text;
+                if (id1 is BoundPropertyAccess bpa)
+                    strName = bpa.PropertySymbol.Name;
+                var name = ConstantValue.Create(strName);
+                args.Add(new BoundLiteral(node, name, Compilation.GetSpecialType(SpecialType.System_String)));
+                args.Add(id1);
+                args.AddRange(analyzedArguments.Arguments);
+                // Generate __FoxArrayAccess(name, value, dim1)
+                // or Generate __FoxArrayAccess(name, value, dim1, dim2)
+                var type = new BoundTypeExpression(node, null, Compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions));
+                return MakeInvocationExpression(node, type, ReservedNames.FoxArrayAccess, args.ToImmutableArray(), diagnostics);
+            }
+            var expression = BindExpression(node.Expression, diagnostics);
+            if (expression.Kind != BoundKind.BadExpression)
+            {
+                var type = expression.Type;
+                if (type.IsArrayType() || type.IsUsualType() || type.IsFoxArrayType())
+                {
+                    return BindIndexerOrVOArrayAccess(node.Expression, expression, analyzedArguments, diagnostics);
+                }
+            }
+            return null;
+        }
         private void BindPCall(InvocationExpressionSyntax node, DiagnosticBag diagnostics, AnalyzedArguments analyzedArguments)
         {
             if (node.XPCall && node.Expression is GenericNameSyntax)

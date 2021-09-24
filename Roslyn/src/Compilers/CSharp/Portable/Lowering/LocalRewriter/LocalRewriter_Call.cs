@@ -1180,7 +1180,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(node.TypeArgumentsOpt.IsDefault);
             var loweredReceiver = VisitExpression(node.Receiver);
 #if XSHARP
-            var expr =  MakeVODynamicGetMember(loweredReceiver, node.Name);
+            var expr = MakeVODynamicGetMember(loweredReceiver, node.Name);
             if (expr != null)
                 return expr;
 #endif

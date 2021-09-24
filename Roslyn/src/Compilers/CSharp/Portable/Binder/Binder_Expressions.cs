@@ -569,7 +569,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case SyntaxKind.IdentifierName:
                 case SyntaxKind.GenericName:
 #if XSHARP
-                    return BindXSIdentifier((SimpleNameSyntax)node, invoked, diagnostics, bindMethod: false);
+                    return BindXSIdentifier((SimpleNameSyntax)node, invoked, indexed, diagnostics, bindMethod: false);
 #else
                     return BindIdentifier((SimpleNameSyntax)node, invoked, indexed, diagnostics);
 #endif
@@ -6094,7 +6094,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var node = (IdentifierNameSyntax)left;
                 var valueDiagnostics = DiagnosticBag.GetInstance();
 #if XSHARP
-                var boundValue = BindXSIdentifier(node, invoked: false, diagnostics: valueDiagnostics, bindMethod: false);
+                var boundValue = BindXSIdentifier(node, invoked: false, indexed: false, diagnostics: valueDiagnostics, bindMethod: false);
 #else
                 var boundValue = BindIdentifier(node, invoked: false, indexed: false, diagnostics: valueDiagnostics);
 #endif

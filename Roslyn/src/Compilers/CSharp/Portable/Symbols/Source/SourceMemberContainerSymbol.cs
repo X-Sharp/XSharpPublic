@@ -2413,6 +2413,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             (f.Type.SpecialType == SpecialType.System_UIntPtr) ||
                             (f.Type as NamedTypeSymbol).IsPszType() ||
                             (f.Type as NamedTypeSymbol).IsWinBoolType() ||
+                            (f.Type as NamedTypeSymbol).IsWinDateType() ||
                             (f.Type as NamedTypeSymbol).IsSymbolType() ||
                             (f.Type as NamedTypeSymbol).IsDateType() ||
                             f.Type.FixedBufferElementSizeInBytes() != 0))

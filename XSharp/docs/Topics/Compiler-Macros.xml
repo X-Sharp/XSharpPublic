@@ -50,6 +50,10 @@
     <keyword>__XPP__</keyword>
     <keyword>__XPP1__</keyword>
     <keyword>__XSHARP__</keyword>
+    <keyword>__XSHARP_RT__</keyword>
+    <keyword>Compiler Macros</keyword>
+    <keyword>Macros</keyword>
+    <keyword>Preprocessor Macros</keyword>
   </keywords>
   <body>
     <header>

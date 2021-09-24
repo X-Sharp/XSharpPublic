@@ -127,7 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var arrayType = Compilation.ArrayType();
                 var usualType = Compilation.UsualType();
                 var cf = ((NamedTypeSymbol)expr.Type).ConstructedFrom;
-                if (cf.IsPszType() )
+                if (cf.IsPszType())
                 {
                     ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
                     foreach (var arg in analyzedArguments.Arguments)
@@ -146,7 +146,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // in VO the indexer for a PSZ starts with 1. In Vulcan with 0.
                         // we assume that all other dialects are closer to VO
                         if (Compilation.Options.Dialect != XSharpDialect.Vulcan)
-                        { 
+                        {
                             newarg = SubtractIndex(newarg, diagnostics,specialType);
                             newarg.WasCompilerGenerated = true;
                         }
@@ -606,8 +606,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindXSIdentifier(
             SimpleNameSyntax node,
             bool invoked,
+            bool indexed,
             DiagnosticBag diagnostics,
-            bool bindMethod
+            bool bindMethod,
+            bool bindSafe = false
             )
         {
             // This method replaced the standard C# BindIdentifier
@@ -616,9 +618,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //   and we also prefer to find DEFINES over PROPERTIES
             // - when invoked = TRUE then we do not return local variables, with the exception of delegates
             // - when invoked = FALSE then we do not return methods, with the exception of assigning event handlers
-
             bool preferStatic = bindMethod;
-
             Debug.Assert(node != null);
 
             // If the syntax tree is ill-formed and the identifier is missing then we've already
@@ -683,7 +683,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 options |= LookupOptions.MustNotBeMethod;
             }
-
+            var aes = node.Parent as AssignmentExpressionSyntax;
             if (preferStatic)
             {
                 bool instance = false;
@@ -691,13 +691,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     instance = node.IsInstanceMemberAccess(false);
                 }
-                else if (node.Parent is AssignmentExpressionSyntax)
+                else if (aes is { }  && aes.Left == node)
                 {
-                    var aes = node.Parent as AssignmentExpressionSyntax;
-                    if (aes.Left == node)
-                    {
-                        instance = true;
-                    }
+                    instance = true;
                 }
                 if (!instance)
                     options |= LookupOptions.MustNotBeInstance;
@@ -716,7 +712,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var name = node.Identifier.ValueText;
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-            var memvarorfield = name.IndexOf("->") >0;
+            var memvarorfield = name.IndexOf("->") > 0;
             // no need to look for our special names
             if (!memvarorfield)
             {
@@ -832,19 +828,30 @@ namespace Microsoft.CodeAnalysis.CSharp
                     members.Free();
                 }
             }
+
+
+            // make sure that we do not resolve to a function call when we do not look for methods
+            if (expression != null && !bindMethod && expression.Kind == BoundKind.MethodGroup && indexed)
+            {
+                expression = null;
+            }
+
             // undeclared variables are allowed when the dialect supports memvars and memvars are enabled
             // or in the 'full' macro compiler
+
+
             bool isFoxMemberAccess = false;
-            if (expression == null)
+            var xnode = node?.XNode as XSharpParserRuleContext;
+
+            if (expression == null && xnode != null)
             {
                 // Foxpro member access is transformed in 2 ways:
                 // M.SomeVar is transformed to a SomeVar NameExpression node. The AccessMember context is then connected to SomeVar
                 // The reason for this is that FoxPro also allows M. prefix for local variables.
                 // Customer.SomeVar is transformed to a MemberAccess node with a Customer Expression and a SomeVar name. The AccessMember is then the XNode of the parent.
-                var xnode = node?.XNode;
-                if (!(xnode is AccessMemberContext))
+                if (xnode is not AccessMemberContext)
                 {
-                    xnode = node?.Parent?.XNode;
+                    xnode = xnode.Parent as XSharpParserRuleContext;
                 }
                 if (xnode is AccessMemberContext amc && amc.IsFox)
                 {
@@ -872,8 +879,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool declared = false;
                 string alias = null;
                 var get = GetCandidateMembers(type, ReservedNames.VarGet, LookupOptions.MustNotBeInstance, this);
+                if (bindSafe)
+                {
+                    get = GetCandidateMembers(type, ReservedNames.VarGetSafe, LookupOptions.MustNotBeInstance, this);
+                }
                 var set = GetCandidateMembers(type, ReservedNames.VarPut, LookupOptions.MustNotBeInstance, this);
-                  if (memvarorfield)
+                if (memvarorfield)
                 {
                     // this is either:
                     // alias->fieldname
@@ -888,7 +899,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                         name = parts[1];
                         if (parts[0] == XSharpSpecialNames.MemVarPrefix)
                         {
-                            get = GetCandidateMembers(type, ReservedNames.MemVarGet, LookupOptions.MustNotBeInstance, this);
+                            if (bindSafe)
+                            {
+                                get = GetCandidateMembers(type, ReservedNames.MemVarGetSafe, LookupOptions.MustNotBeInstance, this);
+                            }
+                            else
+                            {
+                                get = GetCandidateMembers(type, ReservedNames.MemVarGet, LookupOptions.MustNotBeInstance, this);
+                            }
                             set = GetCandidateMembers(type, ReservedNames.MemVarPut, LookupOptions.MustNotBeInstance, this);
 
 
@@ -919,7 +937,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         warning = ErrorCode.WRN_UndeclaredCursor;
                     }
                 }
-                if (node.Parent is InvocationExpressionSyntax /*&& Compilation.Options.Dialect != XSharpDialect.FoxPro*/)
+                if (node.Parent is InvocationExpressionSyntax && !Compilation.Options.HasOption(CompilerOption.FoxArraySupport, node))
                 {
                     expression = null;
                 }

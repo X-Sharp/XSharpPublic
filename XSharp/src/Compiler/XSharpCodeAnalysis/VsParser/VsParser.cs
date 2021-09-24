@@ -64,17 +64,20 @@ namespace XSharp.Parser
             // do we need to preprocess?
             // we are not interested in the pp output but we want the pp to modify the tokens from the lexer
             // so we can show UDC keywords and inactive PP regions
-            if (lexer.HasPreprocessorTokens || !options.NoStdDef)
+            if (options.ParseLevel >= ParseLevel.Parse)
             {
-                var pp = new XSharpPreprocessor(lexer, tokens, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
-                var ppTokens = pp.PreProcess();
-                ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
+                if (lexer.HasPreprocessorTokens || !options.NoStdDef)
+                {
+                    var pp = new XSharpPreprocessor(lexer, tokens, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
+                    var ppTokens = pp.PreProcess();
+                    ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
+                }
+                else
+                {
+                    ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, stream.GetTokens()));
+                }
+                ppStream.Fill();
             }
-            else
-            {
-                ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, stream.GetTokens()));
-            }
-            ppStream.Fill();
             return tokens != null;
         }
 
@@ -159,7 +162,7 @@ namespace XSharp.Parser
             }
             catch (Exception)
             {
-                 
+                ;
             }
             ReportErrors(parseErrors, listener);
             return tokens != null;

@@ -33,6 +33,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return op2;
             }
+            if (op1.Kind is BoundKind.IndexerAccess)
+            {
+                return op2;
+            }
             var vfpfuncs = Compilation.GetWellKnownType(WellKnownType.XSharp_VFP_Functions);
             if (op1.Type.IsUsualType())
             {

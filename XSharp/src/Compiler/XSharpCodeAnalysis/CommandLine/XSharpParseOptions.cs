@@ -90,7 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool VOStringComparisons = false;
         private bool XPPInheritFromAbstract = false;
         private bool XPPUntypedmain = false;
-        private bool FoxArrayAssign = false;
+        private bool FoxArraySupport = false;
 
         #endregion
         public bool AllowDotForInstanceMembers { get; private set; }
@@ -165,7 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool xpp1 => XPPInheritFromAbstract;
         public bool xpp2 => XPPUntypedmain;
         public bool fox1 => FoxInheritUnknown;
-        public bool fox2 => FoxArrayAssign;
+        public bool fox2 => FoxArraySupport;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -215,7 +215,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 XPPInheritFromAbstract = opt.Xpp1;
                 XPPUntypedmain = opt.Xpp2;
                 FoxInheritUnknown = opt.Fox1;
-                FoxArrayAssign = opt.Fox2;
+                FoxArraySupport = opt.Fox2;
                 RuntimeAssemblies = opt.RuntimeAssemblies;
                 Overflow = opt.Overflow;
                 ConsoleOutput = opt.ConsoleOutput;
@@ -295,7 +295,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             XPPInheritFromAbstract = opt.XPPInheritFromAbstract; // xpp1
             XPPUntypedmain = opt.XPPUntypedmain;    // xpp2
             FoxInheritUnknown = opt.FoxInheritUnknown;  // fox1
-            FoxArrayAssign = opt.FoxArrayAssign;      // fox2
+            FoxArraySupport = opt.FoxArraySupport;      // fox2
 
             RuntimeAssemblies = opt.RuntimeAssemblies;
             Overflow = opt.Overflow;
@@ -393,8 +393,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.DefaultClipperContructors: // vo16
                     return CheckOption(option, VOClipperConstructors, context, options);
 
-                case CompilerOption.FoxArrayAssign: // fox2
-                    return CheckOption(option, FoxArrayAssign, context, options);
+                case CompilerOption.FoxArraySupport: // fox2
+                    return CheckOption(option, FoxArraySupport, context, options);
 
 
                 case CompilerOption.LateBinding:  // lb is handled in cde generation

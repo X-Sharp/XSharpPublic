@@ -20,7 +20,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     class XSharpTreeTransformationVO : XSharpTreeTransformationRT
     {
         private bool voStructHasDim;
-        private readonly string _winBoolType;
         protected override XSharpTreeTransformationCore CreateWalker(XSharpParser parser)
         {
             return new XSharpTreeTransformationVO(parser, _options, _pool, _syntaxFactory, _fileName);
@@ -30,14 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ContextAwareSyntax syntaxFactory, string fileName) :
             base(parser, options, pool, syntaxFactory, fileName)
         {
-            if (options.XSharpRuntime)
-            {
-                _winBoolType = XSharpQualifiedTypeNames.WinBool;
-            }
-            else
-            {
-                _winBoolType = VulcanQualifiedTypeNames.WinBool;
-            }
+            
         }
         public override void EnterVostruct([NotNull] XP.VostructContext context)
         {
@@ -104,7 +96,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (sdt.TypeName.NativeType.Token.Type == XP.LOGIC)
                     {
-                        varType = GenerateQualifiedName(_winBoolType);
+                        string winBoolType = _options.XSharpRuntime ? XSharpQualifiedTypeNames.WinBool : VulcanQualifiedTypeNames.WinBool;
+                        varType = GenerateQualifiedName(winBoolType);
+                    }
+                }
+                if (sdt.TypeName.XType != null)
+                {
+                    string winDateType = _options.XSharpRuntime ? XSharpQualifiedTypeNames.WinDate: VulcanQualifiedTypeNames.WinDate; // UInt32
+                    if (sdt.TypeName.XType.Token.Type == XP.DATE)
+                    {
+                        varType = GenerateQualifiedName(winDateType);
                     }
                 }
             }

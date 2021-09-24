@@ -62,6 +62,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
                 var block = ImmutableArray.CreateBuilder<BoundExpression>();
                 var usual = _compilation.UsualType();
+                _factory.Syntax = expression.Syntax;
+
                 foreach (var localsym in localsymbols)
                 {
                     var name = localsym.Name;

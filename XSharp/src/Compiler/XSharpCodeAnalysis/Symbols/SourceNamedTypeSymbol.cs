@@ -89,7 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 // get the size of the largest element in the structure in a PE
                                 elementSize = f.Type.VoStructOrUnionLargestElementSizeInBytes();
                             }
-                            else if (f.Type.IsWinBoolType() || f.Type.IsSymbolType() || f.Type.IsDateType())
+                            else if (f.Type.IsWinBoolType() || f.Type.IsSymbolType() || f.Type.IsDateType() || f.Type.IsWinDateType())
                             {
                                 // these are all structures but their size is set to fixed 4 bytes.
                                 elementSize = fieldSize = 4;

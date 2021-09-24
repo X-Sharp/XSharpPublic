@@ -29,6 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             var psz = _compilation.PszType();
             if (value.Type.IsUsualType())
             {
+                _factory.Syntax = value.Syntax;
                 var op = getImplicitOperatorByReturnType(value.Type, psz);
                 var result = _factory.StaticCall(value.Type, (MethodSymbol)op, value);
                 result.WasCompilerGenerated = true;
@@ -271,7 +272,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     object[] values = { comp.Options.CheckOverflow ,
                                         comp.Options.VOArithmeticConversions,
                                         comp.Options.VOStringComparisons,
-                                        comp.Options.FoxArrayAssign,
+                                        comp.Options.FoxArraySupport,
                                         comp.Options.Dialect};
                     for (int n = 0; n < names.Length; n++)
                     {

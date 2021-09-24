@@ -25,6 +25,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression MemVarFieldAccess(SyntaxNode syntax, XsVariableSymbol property, BoundPropertyAccess? bpa)
         {
             var getMethod = property.GetMethod;
+            _factory.Syntax = syntax;
+
             Debug.Assert( getMethod is { });
             if (property.HasAlias)
             {
@@ -45,6 +47,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private BoundExpression MemVarFieldAssign(SyntaxNode syntax, XsVariableSymbol property, BoundExpression rewrittenRight)
         {
+            _factory.Syntax = syntax;
+
             var setMethod = property.SetMethod;
             Debug.Assert(setMethod is { });
             if (property.HasAlias)

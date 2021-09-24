@@ -37,6 +37,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 || (iToken > PP_FIRST && iToken < PP_LAST)
                 || iToken == SEMI;
         }
+        public static bool IsConstant(int iToken)
+        {
+            return IsLiteral(iToken);
+        }
         public static bool IsLiteral(int iToken)
         {
             return (iToken > FIRST_CONSTANT && iToken < LAST_CONSTANT)

@@ -26,6 +26,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string DateType = "__Date";
         internal const string VnDateType = "__VODate";
         internal const string WinBoolType = "__WinBool";
+        internal const string WinDateType = "__WinDate";
+        internal const string FoxArrayType = "__FoxArray";
         internal const string VOStructAttribute = "VoStructAttribute";
         internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
         internal const string ActualTypeAttribute = "ActualTypeAttribute";
@@ -44,6 +46,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Psz = "global::Vulcan.__Psz";
         internal const string Codeblock = "global::Vulcan.Codeblock";
         internal const string WinBool = "global::Vulcan.__WinBool";
+        internal const string WinDate = "global::System.UInt32";
         internal const string RuntimeState = "global::Vulcan.Runtime.State";
         internal const string ClipperCallingConvention = "global::Vulcan.Internal.ClipperCallingConventionAttribute";
         internal const string WrappedException = "global::Vulcan.Internal.VulcanWrappedException";
@@ -68,6 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string Psz = "global::XSharp.__Psz";
         internal const string Codeblock = "global::XSharp.Codeblock";
         internal const string WinBool = "global::XSharp.__WinBool";
+        internal const string WinDate = "global::XSharp.__WinDate";
         internal const string RuntimeState = "global::XSharp.RuntimeState";
         internal const string ClipperCallingConvention = "global::XSharp.Internal.ClipperCallingConventionAttribute";
         internal const string WrappedException = "global::XSharp.Internal.WrappedException";
@@ -205,6 +209,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // These are in the generated code
         internal const string RunInitProcs = "RunInitProcs";
         internal const string VarGet = "__VarGet";
+        internal const string VarGetSafe = "__VarGetSafe";
         internal const string VarPut = "__VarPut";
         internal const string MemVarGetSafe = "__MemVarGetSafe";
         internal const string MemVarGet = "__MemVarGet";
@@ -233,7 +238,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string AreaEval = "__AreaEval";
         internal const string ArrayNew = ".__ArrayNew";
         internal const string NullDate = ".NullDate";
-        internal const string NIL = "._NIL";
+        internal const string NIL = "_NIL";
         internal const string WrapRawExceptionVn = "._WrapRawException";
         internal const string WrapRawExceptionXs = ".WrapRawException";
         internal const string LocalPut = "__LocalPut";
@@ -243,6 +248,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FoxRedim = "__FoxRedim";
         internal const string FoxAssign = "__FoxAssign";
         internal const string FoxFillArray = "__FoxFillArray";
+        internal const string FoxArrayAccess = "__FoxArrayAccess";
+        internal const string FoxArrayAccessByName = "__FoxArrayAccessByName";
         internal const string UsualEnumerator = "__UsualEnumerator";
     }
     internal static class VulcanQualifiedFunctionNames
@@ -254,7 +261,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FieldSet = VulcanRTFuncs + ReservedNames.FieldSet;
         internal const string FieldSetWa = VulcanRTFuncs + ReservedNames.FieldSetWa;
         internal const string NullDate = VulcanQualifiedTypeNames.Date + ReservedNames.NullDate;
-        internal const string UsualNIL = VulcanQualifiedTypeNames.Usual + ReservedNames.NIL;
+        internal const string UsualNIL = VulcanQualifiedTypeNames.Usual + "."+ReservedNames.NIL;
         internal const string PszRelease = CompilerServices + ReservedNames.String2PszRelease;
         internal const string String2Psz = CompilerServices + ReservedNames.String2Psz;
         internal const string StringArrayInit = CompilerServices + ReservedNames.StringArrayInit;
@@ -297,7 +304,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string MemVarRelease = GlobalRT + ReservedNames.MemVarRelease;
         internal const string MemVarDecl = GlobalRT + ReservedNames.MemVarDecl;
         internal const string NullDate = XSharpQualifiedTypeNames.Date + ReservedNames.NullDate;
-        internal const string UsualNIL = XSharpQualifiedTypeNames.Usual + ReservedNames.NIL;
+        internal const string UsualNIL = XSharpQualifiedTypeNames.Usual + "." + ReservedNames.NIL;
         internal const string PszRelease = CompilerServices + ReservedNames.String2PszRelease;
         internal const string String2Psz = CompilerServices + ReservedNames.String2Psz;
         internal const string StringArrayInit = CompilerServices + ReservedNames.StringArrayInit;

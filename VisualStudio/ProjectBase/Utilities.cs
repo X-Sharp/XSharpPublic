@@ -18,12 +18,9 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
-using System.Security.Policy;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.VisualStudio;
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -31,7 +28,7 @@ using Microsoft.Win32;
 using IServiceProvider = System.IServiceProvider;
 using MSBuild = Microsoft.Build.Evaluation;
 using VSRegistry = Microsoft.VisualStudio.Shell.VSRegistry;
-
+using File = System.IO.File;
 namespace Microsoft.VisualStudio.Project
 {
     public static class Utilities
@@ -61,27 +58,27 @@ namespace Microsoft.VisualStudio.Project
         public static string GetMsBuildPath(IServiceProvider serviceProvider, string version)
         {
             string msBuildPath = null;
-            using(RegistryKey root = VSRegistry.RegistryRoot(serviceProvider, __VsLocalRegistryType.RegType_Configuration, false))
+            using (RegistryKey root = VSRegistry.RegistryRoot(serviceProvider, __VsLocalRegistryType.RegType_Configuration, false))
             {
                 // Get the value from the registry
-                using(RegistryKey vsKey = root.OpenSubKey("MSBuild", false))
+                using (RegistryKey vsKey = root.OpenSubKey("MSBuild", false))
                 {
                     msBuildPath = (string)vsKey.GetValue("MSBuildBinPath", null);
                 }
             }
-			if (!string.IsNullOrEmpty(msBuildPath))
+            if (!string.IsNullOrEmpty(msBuildPath))
             {
                 return msBuildPath;
             }
 
             // The path to MSBuild was not found in the VisualStudio's registry hive, so try to
             // find it in the new MSBuild hive.
-			string registryPath = string.Format(CultureInfo.InvariantCulture, "Software\\Microsoft\\MSBuild\\ToolsVersions\\{0}", version);
-            using(Microsoft.Win32.RegistryKey msbuildKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(registryPath, false))
+            string registryPath = string.Format(CultureInfo.InvariantCulture, "Software\\Microsoft\\MSBuild\\ToolsVersions\\{0}", version);
+            using (Microsoft.Win32.RegistryKey msbuildKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(registryPath, false))
             {
                 msBuildPath = (string)msbuildKey.GetValue("MSBuildToolsPath", null);
             }
-			if (string.IsNullOrEmpty(msBuildPath))
+            if (string.IsNullOrEmpty(msBuildPath))
             {
                 string error = SR.GetString(SR.ErrorMsBuildRegistration, CultureInfo.CurrentUICulture);
                 throw new FileLoadException(error);
@@ -122,7 +119,7 @@ namespace Microsoft.VisualStudio.Project
 
             IVsExtensibility3 extensibility = serviceProvider.GetService(typeof(EnvDTE.IVsExtensibility)) as IVsExtensibility3;
 
-            if(extensibility == null)
+            if (extensibility == null)
             {
                 throw new InvalidOperationException();
             }
@@ -140,7 +137,7 @@ namespace Microsoft.VisualStudio.Project
         [CLSCompliant(false)]
         public static string CreateSemicolonDelimitedListOfStringFromGuids(Guid[] guids)
         {
-            if(guids == null || guids.Length == 0)
+            if (guids == null || guids.Length == 0)
             {
                 return String.Empty;
             }
@@ -148,7 +145,7 @@ namespace Microsoft.VisualStudio.Project
             // Create a StringBuilder with a pre-allocated buffer big enough for the
             // final string. 39 is the length of a GUID in the "B" form plus the final ';'
             StringBuilder stringList = new StringBuilder(39 * guids.Length);
-            for(int i = 0; i < guids.Length; i++)
+            for (int i = 0; i < guids.Length; i++)
             {
                 stringList.Append(guids[i].ToString("B"));
                 stringList.Append(";");
@@ -182,29 +179,37 @@ namespace Microsoft.VisualStudio.Project
             return guids.ToArray();
         }
 
-        internal static bool GuidEquals(string x, string y) {
+        internal static bool GuidEquals(string x, string y)
+        {
             Guid gx, gy;
             return Guid.TryParse(x, out gx) && Guid.TryParse(y, out gy) && gx == gy;
         }
 
-        internal static bool GuidEquals(Guid x, string y) {
+        internal static bool GuidEquals(Guid x, string y)
+        {
             Guid gy;
             return Guid.TryParse(y, out gy) && x == gy;
         }
 
-        public static void CheckNotNull(object value, string message = null) {
-            if(value == null) {
+        public static void CheckNotNull(object value, string message = null)
+        {
+            if (value == null)
+            {
                 throw new InvalidOperationException(message);
             }
         }
 
-        public static void ArgumentNotNull(string name, object value) {
-            if(value == null) {
+        public static void ArgumentNotNull(string name, object value)
+        {
+            if (value == null)
+            {
                 throw new ArgumentNullException(name);
             }
         }
-        public static void ArgumentNotNullOrEmpty(string name, string value) {
-            if(String.IsNullOrEmpty(value)) {
+        public static void ArgumentNotNullOrEmpty(string name, string value)
+        {
+            if (String.IsNullOrEmpty(value))
+            {
                 throw new ArgumentNullException(name);
             }
         }
@@ -218,23 +223,23 @@ namespace Microsoft.VisualStudio.Project
         public static void ValidateFileName(IServiceProvider serviceProvider, string filePath)
         {
             string errorMessage = String.Empty;
-            if(String.IsNullOrEmpty(filePath))
+            if (String.IsNullOrEmpty(filePath))
             {
                 errorMessage = SR.GetString(SR.ErrorInvalidFileName, CultureInfo.CurrentUICulture);
             }
-            else if(filePath.Length > NativeMethods.MAX_PATH)
+            else if (filePath.Length > NativeMethods.MAX_PATH)
             {
                 errorMessage = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.PathTooLong, CultureInfo.CurrentUICulture), filePath);
             }
-            else if(ContainsInvalidFileNameChars(filePath))
+            else if (ContainsInvalidFileNameChars(filePath))
             {
                 errorMessage = SR.GetString(SR.ErrorInvalidFileName, CultureInfo.CurrentUICulture);
             }
 
-            if(errorMessage.Length == 0)
+            if (errorMessage.Length == 0)
             {
                 string fileName = Path.GetFileName(filePath);
-                if(String.IsNullOrEmpty(fileName) || IsFileNameInvalid(fileName))
+                if (String.IsNullOrEmpty(fileName) || IsFileNameInvalid(fileName))
                 {
                     errorMessage = SR.GetString(SR.ErrorInvalidFileName, CultureInfo.CurrentUICulture);
                 }
@@ -243,7 +248,7 @@ namespace Microsoft.VisualStudio.Project
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
 
                     // If there is no filename or it starts with a leading dot issue an error message and quit.
-                    if(String.IsNullOrEmpty(fileNameWithoutExtension) || fileNameWithoutExtension[0] == '.')
+                    if (String.IsNullOrEmpty(fileNameWithoutExtension) || fileNameWithoutExtension[0] == '.')
                     {
                         errorMessage = SR.GetString(SR.FileNameCannotContainALeadingPeriod, CultureInfo.CurrentUICulture);
                     }
@@ -258,10 +263,7 @@ namespace Microsoft.VisualStudio.Project
                 if (!Utilities.IsInAutomationFunction(serviceProvider))
                 {
                     string title = null;
-                    OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                    OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                    OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                    Utilities.ShowMessageBox(serviceProvider, title, errorMessage, icon, buttons, defaultButton);
+                    VS.MessageBox.ShowError(title, errorMessage);
                 }
                 else
                 {
@@ -283,7 +285,7 @@ namespace Microsoft.VisualStudio.Project
         {
             CALPOLESTR calpolStr = new CALPOLESTR();
 
-            if(strings != null)
+            if (strings != null)
             {
                 // Demand unmanaged permissions in order to access unmanaged memory.
                 new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
@@ -296,7 +298,7 @@ namespace Microsoft.VisualStudio.Project
 
                 IntPtr ptr = calpolStr.pElems;
 
-                foreach(string aString in strings)
+                foreach (string aString in strings)
                 {
                     IntPtr tempPtr = Marshal.StringToCoTaskMemUni(aString);
                     Marshal.WriteIntPtr(ptr, tempPtr);
@@ -319,7 +321,7 @@ namespace Microsoft.VisualStudio.Project
         {
             CADWORD cadWord = new CADWORD();
 
-            if(flags != null)
+            if (flags != null)
             {
                 // Demand unmanaged permissions in order to access unmanaged memory.
                 new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
@@ -332,7 +334,7 @@ namespace Microsoft.VisualStudio.Project
 
                 IntPtr ptr = cadWord.pElems;
 
-                foreach(tagVsSccFilesFlags flag in flags)
+                foreach (tagVsSccFilesFlags flag in flags)
                 {
                     Marshal.WriteInt32(ptr, (int)flag);
                     ptr = new IntPtr(ptr.ToInt64() + size);
@@ -352,9 +354,9 @@ namespace Microsoft.VisualStudio.Project
         {
             ImageList ilist = new ImageList();
 
-            if(imageStream == null)
+            if (imageStream == null)
             {
-				Debug.Fail("ImageStream was null.");
+                Debug.Fail("ImageStream was null.");
                 return ilist;
             }
             ilist.ColorDepth = ColorDepth.Depth24Bit;
@@ -379,7 +381,7 @@ namespace Microsoft.VisualStudio.Project
             HandleRef hImageList = new HandleRef(null, intPtr);
             int count = UnsafeNativeMethods.ImageList_GetImageCount(hImageList);
 
-            if(count > 0)
+            if (count > 0)
             {
                 // Create a bitmap big enough to hold all the images
                 Bitmap b = new Bitmap(16 * count, 16);
@@ -391,14 +393,14 @@ namespace Microsoft.VisualStudio.Project
                 {
                     hDC = g.GetHdc();
                     HandleRef handleRefDC = new HandleRef(null, hDC);
-                    for(int i = 0; i < count; i++)
+                    for (int i = 0; i < count; i++)
                     {
                         UnsafeNativeMethods.ImageList_Draw(hImageList, i, handleRefDC, i * 16, 0, NativeMethods.ILD_NORMAL);
                     }
                 }
                 finally
                 {
-                    if(g != null && hDC != IntPtr.Zero)
+                    if (g != null && hDC != IntPtr.Zero)
                     {
                         g.ReleaseHdc(hDC);
                     }
@@ -456,17 +458,17 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="automationObject">The automation object.</param>
         /// <returns>The name of the active platform.</returns>
         public static string GetActivePlatformName(EnvDTE.Project automationObject)
-		{
+        {
             if (automationObject == null)
-			{
-				throw new ArgumentNullException("automationObject");
-			}
+            {
+                throw new ArgumentNullException("automationObject");
+            }
 
-			string currentPlatformName = string.Empty;
+            string currentPlatformName = string.Empty;
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (automationObject.ConfigurationManager != null)
-			{
+            {
                 try
                 {
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
@@ -484,10 +486,10 @@ namespace Microsoft.VisualStudio.Project
                     if (System.Diagnostics.Debugger.IsAttached)
                         Debug.WriteLine("Failed to get active platform because of {0}", ex);
                 }
-			}
+            }
 
             return currentPlatformName;
-		}
+        }
 
 
         /// <summary>
@@ -507,7 +509,7 @@ namespace Microsoft.VisualStudio.Project
             try
             {
                 // If we have 2 null, then they are not COM objects and as such "it's not the same COM object"
-                if(obj1 != null && obj2 != null)
+                if (obj1 != null && obj2 != null)
                 {
                     unknown1 = QueryInterfaceIUnknown(obj1);
                     unknown2 = QueryInterfaceIUnknown(obj2);
@@ -517,12 +519,12 @@ namespace Microsoft.VisualStudio.Project
             }
             finally
             {
-                if(unknown1 != IntPtr.Zero)
+                if (unknown1 != IntPtr.Zero)
                 {
                     Marshal.Release(unknown1);
                 }
 
-                if(unknown2 != IntPtr.Zero)
+                if (unknown2 != IntPtr.Zero)
                 {
                     Marshal.Release(unknown2);
                 }
@@ -544,7 +546,7 @@ namespace Microsoft.VisualStudio.Project
             IntPtr result;
             try
             {
-                if(objToQuery is IntPtr)
+                if (objToQuery is IntPtr)
                 {
                     unknown = (IntPtr)objToQuery;
                 }
@@ -562,7 +564,7 @@ namespace Microsoft.VisualStudio.Project
             }
             finally
             {
-                if(releaseIt && unknown != IntPtr.Zero)
+                if (releaseIt && unknown != IntPtr.Zero)
                 {
                     Marshal.Release(unknown);
                 }
@@ -580,23 +582,23 @@ namespace Microsoft.VisualStudio.Project
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0",
             Justification = "The name is validated.")]
         public static bool ContainsInvalidFileNameChars(string name)
-		{
+        {
             if (String.IsNullOrEmpty(name))
-			{
+            {
                 return true;
             }
 
             try
-			{
+            {
                 if (Path.IsPathRooted(name) && !name.StartsWith(@"\\", StringComparison.Ordinal))
-				{
+                {
                     string root = Path.GetPathRoot(name);
                     name = name.Substring(root.Length);
                 }
             }
-                // The Path methods used by ContainsInvalidFileNameChars return argument exception if the filePath contains invalid characters.
+            // The Path methods used by ContainsInvalidFileNameChars return argument exception if the filePath contains invalid characters.
             catch (ArgumentException)
-			{
+            {
                 return true;
             }
 
@@ -604,14 +606,14 @@ namespace Microsoft.VisualStudio.Project
 
             // This might be confusing bur Url.IsFile means that the uri represented by the name is either absolut or relative.
             if (uri.IsFile)
-			{
+            {
                 string[] segments = uri.Segments;
                 if (segments != null && segments.Length > 0)
-				{
+                {
                     foreach (string segment in segments)
-					{
+                    {
                         if (IsFilePartInValid(segment))
-						{
+                        {
                             return true;
                         }
                     }
@@ -621,17 +623,17 @@ namespace Microsoft.VisualStudio.Project
                     string filePart = Path.GetFileNameWithoutExtension(lastSegment);
                     // if the file is only an extension (.fob) then it's ok, otherwise we need to do the special checks.
                     if (filePart.Length != 0 && (IsFileNameAllGivenCharacter('.', filePart) || IsFileNameAllGivenCharacter(' ', filePart)))
-					{
+                    {
                         return true;
                     }
                 }
             }
-			else
-			{
+            else
+            {
                 // The assumption here is that we got a file name.
                 string filePart = Path.GetFileNameWithoutExtension(name);
                 if (IsFileNameAllGivenCharacter('.', filePart) || IsFileNameAllGivenCharacter(' ', filePart))
-				{
+                {
                     return true;
                 }
 
@@ -648,12 +650,12 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>True if the file is valid.</returns>
         public static bool IsFileNameInvalid(string fileName)
         {
-            if(String.IsNullOrEmpty(fileName))
+            if (String.IsNullOrEmpty(fileName))
             {
                 return true;
             }
 
-            if(IsFileNameAllGivenCharacter('.', fileName) || IsFileNameAllGivenCharacter(' ', fileName))
+            if (IsFileNameAllGivenCharacter('.', fileName) || IsFileNameAllGivenCharacter(' ', fileName))
             {
                 return true;
             }
@@ -677,11 +679,11 @@ namespace Microsoft.VisualStudio.Project
             where T : struct
         {
             EnumConverter converter = GetEnumConverter<T>();
-            if(converter == null)
+            if (converter == null)
             {
                 return null;
             }
-            if(converter.CanConvertTo(typeToConvert))
+            if (converter.CanConvertTo(typeToConvert))
             {
                 return converter.ConvertTo(null, culture, value, typeToConvert);
             }
@@ -704,22 +706,22 @@ namespace Microsoft.VisualStudio.Project
 
             returnValue = returnValue.GetValueOrDefault();
 
-            if(value == null)
+            if (value == null)
             {
                 return returnValue;
             }
 
             EnumConverter converter = GetEnumConverter<T>();
-            if(converter == null)
+            if (converter == null)
             {
                 return returnValue;
             }
 
-            if(converter.CanConvertFrom(value.GetType()))
+            if (converter.CanConvertFrom(value.GetType()))
             {
                 object converted = converter.ConvertFrom(null, culture, value);
 
-                if(converted != null && (converted is T))
+                if (converted != null && (converted is T))
                 {
                     returnValue = (T)converted;
                 }
@@ -741,7 +743,7 @@ namespace Microsoft.VisualStudio.Project
         {
             string convertToType = ConvertToType<T>(enumValue, typeof(string), culture) as string;
 
-            if(convertToType == null)
+            if (convertToType == null)
             {
                 return String.Empty;
             }
@@ -749,80 +751,80 @@ namespace Microsoft.VisualStudio.Project
             return convertToType;
         }
 
-		/// <summary>
-		/// Get the default global properties for a new project instance.
-		/// </summary>
-		/// <param name="provider">The service provider.</param>
-		/// <returns></returns>
-		private static IDictionary<string, string> GetProjectDefaultGlobalProperties(IServiceProvider provider)
-		{
-			Dictionary<string, string> properties = new Dictionary<string, string>();
-			string solutionDirectory = null;
-			string solutionFile = null;
-			string userOptionsFile = null;
-			string installDir = null;
+        /// <summary>
+        /// Get the default global properties for a new project instance.
+        /// </summary>
+        /// <param name="provider">The service provider.</param>
+        /// <returns></returns>
+        private static IDictionary<string, string> GetProjectDefaultGlobalProperties(IServiceProvider provider)
+        {
+            Dictionary<string, string> properties = new Dictionary<string, string>();
+            string solutionDirectory = null;
+            string solutionFile = null;
+            string userOptionsFile = null;
+            string installDir = null;
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (provider != null)
-			{
-				IVsSolution solution = provider.GetService(typeof(SVsSolution)) as IVsSolution;
-				if (solution != null)
-				{
-					// We do not want to throw. If we cannot set the solution related constants we set them to empty string.
-					solution.GetSolutionInfo(out solutionDirectory, out solutionFile, out userOptionsFile);
-				}
+            {
+                IVsSolution solution = provider.GetService(typeof(SVsSolution)) as IVsSolution;
+                if (solution != null)
+                {
+                    // We do not want to throw. If we cannot set the solution related constants we set them to empty string.
+                    solution.GetSolutionInfo(out solutionDirectory, out solutionFile, out userOptionsFile);
+                }
 
-				// DevEnvDir property
-				IVsShell shell = provider.GetService(typeof(SVsShell)) as IVsShell;
-				if (shell != null)
-				{
-					object installDirAsObject = null;
-					// We do not want to throw. If we cannot set the solution related constants we set them to empty string.
-					shell.GetProperty((int)__VSSPROPID.VSSPROPID_InstallDirectory, out installDirAsObject);
-					installDir = ((string)installDirAsObject);
-				}
-			}
+                // DevEnvDir property
+                IVsShell shell = provider.GetService(typeof(SVsShell)) as IVsShell;
+                if (shell != null)
+                {
+                    object installDirAsObject = null;
+                    // We do not want to throw. If we cannot set the solution related constants we set them to empty string.
+                    shell.GetProperty((int)__VSSPROPID.VSSPROPID_InstallDirectory, out installDirAsObject);
+                    installDir = ((string)installDirAsObject);
+                }
+            }
 
-			if (solutionDirectory == null)
-			{
-				solutionDirectory = String.Empty;
-			}
+            if (solutionDirectory == null)
+            {
+                solutionDirectory = String.Empty;
+            }
 
-			if (solutionFile == null)
-			{
-				solutionFile = String.Empty;
-			}
+            if (solutionFile == null)
+            {
+                solutionFile = String.Empty;
+            }
 
-			string solutionFileName = (solutionFile.Length == 0) ? String.Empty : Path.GetFileName(solutionFile);
-			string solutionName = (solutionFile.Length == 0) ? String.Empty : Path.GetFileNameWithoutExtension(solutionFile);
-			string solutionExtension = (solutionFile.Length == 0 || !Path.HasExtension(solutionFile)) ? String.Empty : Path.GetExtension(solutionFile);
+            string solutionFileName = (solutionFile.Length == 0) ? String.Empty : Path.GetFileName(solutionFile);
+            string solutionName = (solutionFile.Length == 0) ? String.Empty : Path.GetFileNameWithoutExtension(solutionFile);
+            string solutionExtension = (solutionFile.Length == 0 || !Path.HasExtension(solutionFile)) ? String.Empty : Path.GetExtension(solutionFile);
 
-			properties.Add(GlobalProperty.SolutionDir.ToString(), solutionDirectory);
-			properties.Add(GlobalProperty.SolutionPath.ToString(), solutionFile);
-			properties.Add(GlobalProperty.SolutionFileName.ToString(), solutionFileName);
-			properties.Add(GlobalProperty.SolutionName.ToString(), solutionName);
-			properties.Add(GlobalProperty.SolutionExt.ToString(), solutionExtension);
+            properties.Add(GlobalProperty.SolutionDir.ToString(), solutionDirectory);
+            properties.Add(GlobalProperty.SolutionPath.ToString(), solutionFile);
+            properties.Add(GlobalProperty.SolutionFileName.ToString(), solutionFileName);
+            properties.Add(GlobalProperty.SolutionName.ToString(), solutionName);
+            properties.Add(GlobalProperty.SolutionExt.ToString(), solutionExtension);
 
-			// Other misc properties
-			properties.Add(GlobalProperty.BuildingInsideVisualStudio.ToString(), "true");
+            // Other misc properties
+            properties.Add(GlobalProperty.BuildingInsideVisualStudio.ToString(), "true");
 
-			if (String.IsNullOrEmpty(installDir))
-			{
-				installDir = String.Empty;
-			}
-			else
-			{
-				// Ensure that we have traimnling backslash as this is done for the langproj macros too.
-				if (installDir[installDir.Length - 1] != Path.DirectorySeparatorChar)
-				{
-					installDir += Path.DirectorySeparatorChar;
-				}
-			}
+            if (String.IsNullOrEmpty(installDir))
+            {
+                installDir = String.Empty;
+            }
+            else
+            {
+                // Ensure that we have traimnling backslash as this is done for the langproj macros too.
+                if (installDir[installDir.Length - 1] != Path.DirectorySeparatorChar)
+                {
+                    installDir += Path.DirectorySeparatorChar;
+                }
+            }
 
-			properties.Add(GlobalProperty.DevEnvDir.ToString(), installDir);
+            properties.Add(GlobalProperty.DevEnvDir.ToString(), installDir);
 
-			return properties;
-		}
+            return properties;
+        }
 
         /// <summary>
         /// Initializes the in memory project. Sets BuildEnabled on the project to true.
@@ -842,11 +844,11 @@ namespace Microsoft.VisualStudio.Project
             List<MSBuild.Project> loadedProject = new List<MSBuild.Project>(buildEngine.GetLoadedProjects(fullProjectPath));
             MSBuild.Project buildProject = loadedProject != null && loadedProject.Count > 0 && loadedProject[0] != null ? loadedProject[0] : null;
 
-            if(buildProject == null)
+            if (buildProject == null)
             {
                 bool done = false;
-                for (int i = 0; i < 10 && ! done; i++)
-                { 
+                for (int i = 0; i < 10 && !done; i++)
+                {
                     try
                     {
                         // VS 2019 seems to cache the project files.
@@ -877,14 +879,14 @@ namespace Microsoft.VisualStudio.Project
             // If we have a build project that has been loaded with another file unload it.
             try
             {
-                if(exitingBuildProject != null && exitingBuildProject.ProjectCollection != null && !NativeMethods.IsSamePath(exitingBuildProject.FullPath, fullProjectPath))
+                if (exitingBuildProject != null && exitingBuildProject.ProjectCollection != null && !NativeMethods.IsSamePath(exitingBuildProject.FullPath, fullProjectPath))
                 {
                     buildEngine.UnloadProject(exitingBuildProject);
                 }
             }
             // We  catch Invalid operation exception because if the project was unloaded while we touch the ParentEngine the msbuild API throws.
             // Is there a way to figure out that a project was unloaded?
-            catch(InvalidOperationException)
+            catch (InvalidOperationException)
             {
             }
 
@@ -899,12 +901,12 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>The buildengine to use.</returns>
         internal static MSBuild.ProjectCollection InitializeMsBuildEngine(MSBuild.ProjectCollection existingEngine, IServiceProvider serviceProvider)
         {
-            if(serviceProvider == null)
+            if (serviceProvider == null)
             {
                 throw new ArgumentNullException("serviceProvider");
             }
 
-            if(existingEngine == null)
+            if (existingEngine == null)
             {
                 MSBuild.ProjectCollection buildEngine = MSBuild.ProjectCollection.GlobalProjectCollection;
                 return buildEngine;
@@ -950,13 +952,13 @@ namespace Microsoft.VisualStudio.Project
             object[] attributes = typeof(T).GetCustomAttributes(typeof(PropertyPageTypeConverterAttribute), true);
 
             // There should be only one PropertyPageTypeConverterAttribute defined on T
-            if(attributes != null && attributes.Length == 1)
+            if (attributes != null && attributes.Length == 1)
             {
 
                 Debug.Assert(attributes[0] is PropertyPageTypeConverterAttribute, "The returned attribute must be an attribute is PropertyPageTypeConverterAttribute");
                 PropertyPageTypeConverterAttribute converterAttribute = (PropertyPageTypeConverterAttribute)attributes[0];
 
-                if(converterAttribute.ConverterType.IsSubclassOf(typeof(EnumConverter)))
+                if (converterAttribute.ConverterType.IsSubclassOf(typeof(EnumConverter)))
                 {
                     return Activator.CreateInstance(converterAttribute.ConverterType) as EnumConverter;
                 }
@@ -972,8 +974,8 @@ namespace Microsoft.VisualStudio.Project
         {
             // A valid file name cannot be all "c" .
             int charFound = 0;
-            for(charFound = 0; charFound < fileName.Length && fileName[charFound] == c; ++charFound) ;
-            if(charFound >= fileName.Length)
+            for (charFound = 0; charFound < fileName.Length && fileName[charFound] == c; ++charFound) ;
+            if (charFound >= fileName.Length)
             {
                 return true;
             }
@@ -988,7 +990,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         private static bool IsFilePartInValid(string filePart)
         {
-            if(String.IsNullOrEmpty(filePart))
+            if (String.IsNullOrEmpty(filePart))
             {
                 return true;
             }
@@ -1004,12 +1006,12 @@ namespace Microsoft.VisualStudio.Project
                 extension = Path.GetExtension(filePart);
             }
             // We catch the ArgumentException because we want this method to return true if the filename is not valid. FilePart could be for example #�&%"�&"% and that would throw ArgumentException on GetExtension
-            catch(ArgumentException)
+            catch (ArgumentException)
             {
                 return true;
             }
 
-            if(!String.IsNullOrEmpty(extension))
+            if (!String.IsNullOrEmpty(extension))
             {
                 // Check the extension first
 
@@ -1022,7 +1024,7 @@ namespace Microsoft.VisualStudio.Project
                 // We cannot use GetFileNameWithoutExtension because it might be that for example (..\\filename.txt) is passed in asnd that should fail, since that is not a valid filename.
                 fileNameToVerify = filePart.Substring(0, filePart.Length - extension.Length);
 
-                if(String.IsNullOrEmpty(fileNameToVerify))
+                if (String.IsNullOrEmpty(fileNameToVerify))
                 {
                     return true;
                 }
@@ -1039,20 +1041,20 @@ namespace Microsoft.VisualStudio.Project
         public static void RecursivelyCopyDirectory(string source, string target)
         {
             // Make sure it doesn't already exist
-            if(Directory.Exists(target))
+            if (Directory.Exists(target))
                 throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.FileOrFolderAlreadyExists, CultureInfo.CurrentUICulture), target));
 
             Directory.CreateDirectory(target);
             DirectoryInfo directory = new DirectoryInfo(source);
 
             // Copy files
-            foreach(FileInfo file in directory.GetFiles())
+            foreach (FileInfo file in directory.GetFiles())
             {
                 file.CopyTo(Path.Combine(target, file.Name));
             }
 
             // Now recurse to child directories
-            foreach(DirectoryInfo child in directory.GetDirectories())
+            foreach (DirectoryInfo child in directory.GetDirectories())
             {
                 RecursivelyCopyDirectory(child.FullName, Path.Combine(target, child.Name));
             }
@@ -1085,7 +1087,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>true if the file is a template file</returns>
         public static bool IsTemplateFile(string fileName)
         {
-            if(String.IsNullOrEmpty(fileName))
+            if (String.IsNullOrEmpty(fileName))
             {
                 return false;
             }
@@ -1097,16 +1099,19 @@ namespace Microsoft.VisualStudio.Project
         /// Save dirty files
         /// </summary>
         /// <returns>Whether succeeded</returns>
-        public static bool SaveDirtyFiles() {
+        public static bool SaveDirtyFiles()
+        {
             ThreadHelper.ThrowIfNotOnUIThread();
 
             var rdt = ServiceProvider.GlobalProvider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-            if (rdt != null) {
+            if (rdt != null)
+            {
                 // Consider using (uint)(__VSRDTSAVEOPTIONS.RDTSAVEOPT_SaveIfDirty | __VSRDTSAVEOPTIONS.RDTSAVEOPT_PromptSave)
                 // when VS settings include prompt for save on build
                 var saveOpt = (uint)__VSRDTSAVEOPTIONS.RDTSAVEOPT_SaveIfDirty;
                 var hr = rdt.SaveDocuments(saveOpt, null, VSConstants.VSITEMID_NIL, VSConstants.VSCOOKIE_NIL);
-                if (hr == VSConstants.E_ABORT) {
+                if (hr == VSConstants.E_ABORT)
+                {
                     return false;
                 }
             }
@@ -1114,48 +1119,48 @@ namespace Microsoft.VisualStudio.Project
             return true;
         }
 
-		/// <summary>
-		/// Retrieves the configuration and the platform using the IVsSolutionBuildManager2 interface.
-		/// </summary>
-		/// <param name="serviceProvider">A service provider.</param>
-		/// <param name="hierarchy">The hierrachy whose configuration is requested.</param>
-		/// <param name="configuration">The name of the active configuration.</param>
-		/// <param name="platform">The name of the platform.</param>
-		/// <returns>true if successful.</returns>
-		public static bool TryGetActiveConfigurationAndPlatform(System.IServiceProvider serviceProvider, IVsHierarchy hierarchy, out ConfigCanonicalName configCanonicalName)
-		{
-			if (serviceProvider == null)
-			{
-				throw new ArgumentNullException("serviceProvider");
-			}
+        /// <summary>
+        /// Retrieves the configuration and the platform using the IVsSolutionBuildManager2 interface.
+        /// </summary>
+        /// <param name="serviceProvider">A service provider.</param>
+        /// <param name="hierarchy">The hierrachy whose configuration is requested.</param>
+        /// <param name="configuration">The name of the active configuration.</param>
+        /// <param name="platform">The name of the platform.</param>
+        /// <returns>true if successful.</returns>
+        public static bool TryGetActiveConfigurationAndPlatform(System.IServiceProvider serviceProvider, IVsHierarchy hierarchy, out ConfigCanonicalName configCanonicalName)
+        {
+            if (serviceProvider == null)
+            {
+                throw new ArgumentNullException("serviceProvider");
+            }
 
-			if (hierarchy == null)
-			{
-				throw new ArgumentNullException("hierarchy");
-			}
+            if (hierarchy == null)
+            {
+                throw new ArgumentNullException("hierarchy");
+            }
             ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsSolutionBuildManager2 solutionBuildManager = serviceProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
 
-			if (solutionBuildManager == null)
-			{
-				configCanonicalName = new ConfigCanonicalName();
-				return false;
-			}
+            if (solutionBuildManager == null)
+            {
+                configCanonicalName = new ConfigCanonicalName();
+                return false;
+            }
 
-			IVsProjectCfg[] activeConfigs = new IVsProjectCfg[1];
-			ErrorHandler.ThrowOnFailure(solutionBuildManager.FindActiveProjectCfg(IntPtr.Zero, IntPtr.Zero, hierarchy, activeConfigs));
+            IVsProjectCfg[] activeConfigs = new IVsProjectCfg[1];
+            ErrorHandler.ThrowOnFailure(solutionBuildManager.FindActiveProjectCfg(IntPtr.Zero, IntPtr.Zero, hierarchy, activeConfigs));
 
-			IVsProjectCfg activeCfg = activeConfigs[0];
+            IVsProjectCfg activeCfg = activeConfigs[0];
 
-			// Can it be that the activeCfg is null?
-			System.Diagnostics.Debug.Assert(activeCfg != null, "Cannot find the active configuration");
+            // Can it be that the activeCfg is null?
+            System.Diagnostics.Debug.Assert(activeCfg != null, "Cannot find the active configuration");
 
-			string canonicalName;
-			ErrorHandler.ThrowOnFailure(activeCfg.get_CanonicalName(out canonicalName));
-			configCanonicalName = new ConfigCanonicalName(canonicalName);
-			return true;
-		}
+            string canonicalName;
+            ErrorHandler.ThrowOnFailure(activeCfg.get_CanonicalName(out canonicalName));
+            configCanonicalName = new ConfigCanonicalName(canonicalName);
+            return true;
+        }
 
         /// <summary>
         /// Determines whether the shell is in command line mode.
@@ -1169,7 +1174,7 @@ namespace Microsoft.VisualStudio.Project
             ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsShell shell = serviceProvider.GetService(typeof(SVsShell)) as IVsShell;
-            if(shell == null)
+            if (shell == null)
             {
                 throw new InvalidOperationException();
             }
@@ -1180,36 +1185,36 @@ namespace Microsoft.VisualStudio.Project
             return ((bool)isInCommandLineModeAsObject);
         }
 
-		/// <summary>
-		/// Saves the dialog state in the solution
-		/// </summary>
-		/// <param name="serviceProvider">A reference to a Service Provider.</param>
-		/// <param name="projectLoadSecurityDialogState">The dialog state</param>
-		public static void SaveDialogStateInSolution(IServiceProvider serviceProvider, _ProjectLoadSecurityDialogState projectLoadSecurityDialogState)
-		{
-			if (serviceProvider == null)
-			{
-				throw new ArgumentNullException("serviceProvider");
-			}
+        /// <summary>
+        /// Saves the dialog state in the solution
+        /// </summary>
+        /// <param name="serviceProvider">A reference to a Service Provider.</param>
+        /// <param name="projectLoadSecurityDialogState">The dialog state</param>
+        public static void SaveDialogStateInSolution(IServiceProvider serviceProvider, _ProjectLoadSecurityDialogState projectLoadSecurityDialogState)
+        {
+            if (serviceProvider == null)
+            {
+                throw new ArgumentNullException("serviceProvider");
+            }
             ThreadHelper.ThrowIfNotOnUIThread();
 
             IVsSolution solution = serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
 
-			if (solution == null)
-			{
-				throw new InvalidOperationException();
-			}
+            if (solution == null)
+            {
+                throw new InvalidOperationException();
+            }
 
-			ErrorHandler.ThrowOnFailure(solution.SetProperty((int)__VSPROPID2.VSPROPID_ProjectLoadSecurityDialogState, projectLoadSecurityDialogState));
-		}
+            ErrorHandler.ThrowOnFailure(solution.SetProperty((int)__VSPROPID2.VSPROPID_ProjectLoadSecurityDialogState, projectLoadSecurityDialogState));
+        }
         public static bool DeleteFileSafe(string fileName)
         {
             try
             {
-                if (System.IO.File.Exists(fileName))
+                if (File.Exists(fileName))
                 {
-                    System.IO.File.SetAttributes(fileName, FileAttributes.Normal);
-                    System.IO.File.Delete(fileName);
+                    File.SetAttributes(fileName, FileAttributes.Normal);
+                    File.Delete(fileName);
 
                 }
             }
@@ -1219,43 +1224,8 @@ namespace Microsoft.VisualStudio.Project
                 return false;
             }
             return true;
+
         }
-        /// <summary>
-        /// Use this instead of VsShellUtilities.ShowMessageBox because VSU uses ThreadHelper which
-        /// uses a private interface that can't be mocked AND goes to the global service provider.
-        /// </summary>
-        public static int ShowMessageBox(IServiceProvider serviceProvider, string message, string title, OLEMSGICON icon, OLEMSGBUTTON msgButton, OLEMSGDEFBUTTON defaultButton)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            IVsUIShell uiShell = serviceProvider.GetService(typeof(IVsUIShell)) as IVsUIShell;
-            Debug.Assert(uiShell != null, "Could not get the IVsUIShell object from the services exposed by this serviceprovider");
-            if (uiShell == null)
-            {
-                throw new InvalidOperationException();
-            }
-
-            Guid emptyGuid = Guid.Empty;
-            int result = 0;
-
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-                    0,
-                    ref emptyGuid,
-                    title,
-                    message,
-                    null,
-                    0,
-                    msgButton,
-                    defaultButton,
-                    icon,
-                    0,
-                    out result));
-            });
-            return result;
-        }
-
+    
     }
 }

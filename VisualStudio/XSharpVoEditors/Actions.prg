@@ -6,7 +6,6 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
-USING XSharp.VODesigners
 BEGIN NAMESPACE XSharp.VOEditors
 
 	ENUM Actions

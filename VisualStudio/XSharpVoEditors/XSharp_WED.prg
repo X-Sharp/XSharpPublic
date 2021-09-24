@@ -7,7 +7,7 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
 USING Xide
-USING XSharp.VODesigners
+
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
@@ -65,7 +65,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		ENDIF
 		RETURN SUPER:Open(cFileName)
 
-	PROTECTED METHOD GetSaveFileStreams(cVNFrmFileName AS STRING , oVNFrmStream REF FileStream , ;
+	NEW PROTECTED METHOD GetSaveFileStreams(cVNFrmFileName AS STRING , oVNFrmStream REF FileStream , ;
 								oRCStream AS EditorStream , oPrgStream AS EditorStream , oVhStream AS EditorStream , ;
 								cVhName REF STRING , lVnfrmOnly AS LOGIC , lRcInSameFolder REF LOGIC) AS LOGIC
 		LOCAL cRCFileName AS STRING
@@ -314,9 +314,10 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	ACCESS XFile AS XSharpModel.XFile
 		LOCAL cPrgFileName AS STRING
 		cPrgFileName := Funcs.GetModuleFilenameFromBinary(SELF:cDefaultFileName) + ".prg"
+
 	RETURN XSharpModel.XSolution.FindFile(cPrgFileName)
 
-	PROTECTED VIRTUAL METHOD WriteCallback(oDesign AS DesignWindowItem , cName AS STRING) AS VOID
+	PROTECTED METHOD WriteCallback(oDesign AS DesignWindowItem , cName AS STRING) AS VOID
 		LOCAL oProject AS XSharpModel.XProject
 		LOCAL oFile AS XSharpModel.XFile
 		LOCAL oType AS XSharpModel.XSourceTypeSymbol

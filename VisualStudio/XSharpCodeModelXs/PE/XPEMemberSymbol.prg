@@ -11,7 +11,8 @@ BEGIN NAMESPACE XSharpModel
 
    CLASS XPEPropertySymbol INHERIT XPEMemberSymbol
         PRIVATE _propdef      as PropertyDefinition
-         
+        PROPERTY Accessors    AS AccessorKind AUTO
+
 		CONSTRUCTOR(def AS PropertyDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Property, Modifiers.Public,  asm)
 			SELF:Parent          := NULL
@@ -29,8 +30,25 @@ BEGIN NAMESPACE XSharpModel
          IF def:HasCustomAttributes
             SELF:_custatts       := _propdef:CustomAttributes
          ENDIF
-            
-         
+         IF def:GetMethod != NULL
+            SELF:Accessors |= AccessorKind.Get
+         ENDIF
+         IF def:SetMethod != NULL
+            SELF:Accessors |= AccessorKind.Set
+         ENDIF
+
+    PROPERTY ClassGenText as STRING
+            GET
+                var result := SELF:VisibilityKeyword + " "
+                result += SELF:ModifiersKeyword + " "
+                result += SELF:KindKeyword + " "
+                result += SELF:Prototype
+                result += IIF(Accessors.HasFlag(AccessorKind.Get), " GET","")
+                result += IIF(Accessors.HasFlag(AccessorKind.Set), " SET","")
+                RETURN result:Replace("  ", " ")
+            END GET
+      END PROPERTY
+
       PROTECTED OVERRIDE METHOD Resolve() AS VOID
          IF ! _resolved
             IF _propdef:HasParameters
@@ -43,7 +61,7 @@ BEGIN NAMESPACE XSharpModel
 
    CLASS XPEFieldSymbol INHERIT XPEMemberSymbol
         PRIVATE _fielddef     as FieldDefinition
-   
+
    STATIC METHOD ConvertAttributes (attributes AS FieldAttributes) as Modifiers
          var modifiers := Modifiers.None
          var visattributes := _AND(attributes, FieldAttributes.FieldAccessMask)
@@ -68,9 +86,9 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          IF attributes:HasFlag(FieldAttributes.Static)
             modifiers |= Modifiers.Static
-         ENDIF         
-          RETURN modifiers         
-         
+         ENDIF
+          RETURN modifiers
+
 		CONSTRUCTOR(def AS FieldDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Field, ConvertAttributes(def:Attributes),  asm)
          SELF:DeclaringType   := def:DeclaringType:GetXSharpTypeName()
@@ -88,11 +106,22 @@ BEGIN NAMESPACE XSharpModel
          SUPER:Resolve()
          RETURN
 
+     PROPERTY ClassGenText as STRING
+            GET
+                var result := SELF:VisibilityKeyword + " "
+                result += SELF:ModifiersKeyword + " "
+                result += SELF:KindKeyword + " "
+                result += SELF:Prototype
+                RETURN result:Replace("  ", " ")
+            END GET
+      END PROPERTY
+
    END CLASS
-   
+
    CLASS XPEEventSymbol INHERIT XPEMemberSymbol
         PRIVATE _eventdef     as EventDefinition
-         
+        PROPERTY Accessors    AS AccessorKind AUTO
+
 		CONSTRUCTOR(def AS EventDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Event, Modifiers.Public,  asm)
          SELF:DeclaringType         := def:DeclaringType:GetXSharpTypeName()
@@ -109,16 +138,35 @@ BEGIN NAMESPACE XSharpModel
          IF def:HasCustomAttributes
             SELF:_custatts       := def:CustomAttributes
          ENDIF
-        
+         IF def:AddMethod != NULL
+            SELF:Accessors |= AccessorKind.Add
+         ENDIF
+         IF def:RemoveMethod != NULL
+            SELF:Accessors |= AccessorKind.Remove
+         ENDIF
+
       PROTECTED OVERRIDE Method Resolve() AS VOID
          SUPER:Resolve()
          RETURN
-   END CLASS  
-   
+
+        PROPERTY ClassGenText as STRING
+            GET
+                var result := SELF:VisibilityKeyword + " "
+                result += SELF:ModifiersKeyword + " "
+                result += SELF:KindKeyword + " "
+                result += SELF:Prototype
+                result += IIF(Accessors.HasFlag(AccessorKind.Add), " ADD","")
+                result += IIF(Accessors.HasFlag(AccessorKind.Remove), " REMOVE","")
+                RETURN result:Replace("  ", " ")
+            END GET
+      END PROPERTY
+
+END CLASS
+
    CLASS XPEMethodSymbol  INHERIT XPEMemberSymbol
        PRIVATE _methoddef    as MethodDefinition
        PRIVATE _ccAttrib     AS Mono.Cecil.CustomAttribute
-         
+
    STATIC METHOD ConvertAttributes (attributes AS MethodAttributes) as Modifiers
          var modifiers := Modifiers.None
          var visattributes := _AND(attributes, MethodAttributes.MemberAccessMask)
@@ -157,9 +205,9 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          IF attributes:HasFlag(MethodAttributes.Static)
             modifiers |= Modifiers.Static
-         ENDIF         
-         return modifiers         
-         
+         ENDIF
+         RETURN modifiers
+
   		 CONSTRUCTOR(def AS MethodDefinition, asm AS XAssembly)
 			SUPER(def:Name, Kind.Method, ConvertAttributes(def:Attributes),  asm)
              SELF:DeclaringType   := def:DeclaringType:GetXSharpTypeName()
@@ -173,7 +221,7 @@ BEGIN NAMESPACE XSharpModel
              IF def:HasCustomAttributes
                 SELF:_custatts       := def:CustomAttributes
                 FOREACH VAR attr IN def:CustomAttributes
-                   SWITCH attr:AttributeType:FullName 
+                   SWITCH attr:AttributeType:FullName
                    CASE "System.Runtime.CompilerServices.ExtensionAttribute"
                       SELF:Signature:IsExtension := TRUE
                    CASE "XSharp.Internal.ClipperCallingConventionAttribute"
@@ -185,9 +233,9 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 IF def:HasGenericParameters
                     SELF:_generic := def:HasGenericParameters
-                    SELF:_signature:ReadGenericParameters(def:GenericParameters)          
-                ENDIF            
-         PROTECTED OVERRIDE METHOD Resolve() AS VOID         
+                    SELF:_signature:ReadGenericParameters(def:GenericParameters)
+                ENDIF
+         PROTECTED OVERRIDE METHOD Resolve() AS VOID
             IF ! _resolved
                // Add Generic parameters first so have that info when processing the parameters
                IF _methoddef:HasGenericParameters
@@ -202,27 +250,43 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
                SUPER:Resolve()
             ENDIF
-            
-            RETURN
 
-            
+            RETURN
+        PROPERTY ClassGenText as STRING
+            GET
+                var result := SELF:VisibilityKeyword + " "
+                result += SELF:ModifiersKeyword + " "
+                result += SELF:KindKeyword + " "
+                if (SELF:Kind == Kind.Constructor)
+                    var temp := SELF:Prototype
+                    temp := temp.Replace('}',')')
+                    var pos := temp.IndexOf('{')
+                    temp := "("+temp:Substring(pos+1)
+                    result += temp
+                ELSE
+                    result += SELF:Prototype
+                endif
+                RETURN result:Replace("  ", " ")
+            END GET
+      END PROPERTY
+
+
    END CLASS
 
    [DebuggerDisplay("{ToString(),nq}")];
-	CLASS XPEMemberSymbol     INHERIT XPESymbol IMPLEMENTS IXMemberSymbol
+	ABSTRACT CLASS XPEMemberSymbol     INHERIT XPESymbol IMPLEMENTS IXMemberSymbol
 		// Fields
-        PROTECTED  _signature    AS XMemberSignature 
+        PROTECTED  _signature    AS XMemberSignature
         PROTECTED  _resolved    AS LOGIC
         PROTECTED  _generic     AS LOGIC
-        PROTECTED _custatts    AS Mono.Collections.Generic.Collection<CustomAttribute>
         PROPERTY  SubType      AS Kind AUTO
-        PROPERTY  DeclaringType  AS STRING AUTO            
+        PROPERTY  DeclaringType  AS STRING AUTO
         PROPERTY  Signature     AS XMemberSignature  GET _signature
         PROPERTY  IsGeneric    AS LOGIC GET _generic
-        
+        ABSTRACT PROPERTY  ClassGenText      AS STRING GET
 
 		#region constructors
-		
+
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, asm AS XAssembly)
 			SUPER(name, kind, attributes,  asm)
          SELF:_signature      := XMemberSignature{}
@@ -230,29 +294,29 @@ BEGIN NAMESPACE XSharpModel
          SELF:_custatts       := NULL
          SELF:_generic        := FALSE
          RETURN
-      
+
 
       #endregion
 
       PROTECTED VIRTUAL METHOD Resolve() AS VOID
          IF SELF:_custatts != NULL
             FOREACH VAR custatt IN SELF:_custatts
-               SWITCH custatt:AttributeType:FullName 
+               SWITCH custatt:AttributeType:FullName
                CASE "System.Diagnostics.DebuggerBrowsableAttribute"
                   VAR cvalue := custatt:ConstructorArguments[0]
                   IF cvalue:Type:FullName == typeof(DebuggerBrowsableState):FullName
                      VAR state := (DebuggerBrowsableState) cvalue:Value
                      IF state == DebuggerBrowsableState.Never
-                        // hide these 
+                        // hide these
                         SELF:Attributes := _OR(SELF:Modifiers, Modifiers.Internal)
                      ENDIF
                   ENDIF
-               END SWITCH               
+               END SWITCH
             NEXT
          ENDIF
          SELF:_custatts := NULL
          RETURN
-         
+
       PRIVATE METHOD DoResolve() AS VOID
          IF ! self:_resolved
             SELF:Resolve()
@@ -271,7 +335,7 @@ BEGIN NAMESPACE XSharpModel
                SELF:_signature:Parameters:Add(parRef)
             NEXT
          endif
-         
+
 
       METHOD AddParameters (aPars as Mono.Collections.Generic.Collection<ParameterDefinition>) AS VOID
          SELF:_signature:Parameters:Clear()
@@ -284,38 +348,38 @@ BEGIN NAMESPACE XSharpModel
             LOCAL parType as ParamType
             IF oPar:IsOut .and. oPar:IsIn
                parType := ParamType.Ref
-            ELSEIF oPar:IsOut 
+            ELSEIF oPar:IsOut
                parType := ParamType.Out
             ELSEIF oPar:IsIn
                parType := ParamType.As
             ELSE
-               parType := ParamType.As               
+               parType := ParamType.As
             ENDIF
             if oPar:HasCustomAttributes
-               defValue := SELF:DecodeCustomAttributes(oPar:CustomAttributes)
+               defValue := SELF:DecodeCustomAttributes(oPar:CustomAttributes, oPar:ParameterType)
             ENDIF
             var parRef := XPEParameterSymbol{self, name, type}
             parRef:OriginalTypeName := RemoveGenericParameters(oPar:ParameterType:FullName)
             if defValue != NULL
                parRef:Value := defValue:ToString()
             ENDIF
-            IF parRef:OriginalTypeName:Contains("&") .and. parType == ParamType.As    
+            IF parRef:OriginalTypeName:Contains("&") .AND. parType == ParamType.As
                parType := ParamType.Ref
             ENDIF
             parRef:ParamType := parType
             IF parRef:OriginalTypeName:Contains("`")
                VAR count := SELF:TypeParameters:Count
                parRef:TypeName := parRef:OriginalTypeName:Replace("`"+count:ToString(),"")
-            ENDIF            
+            ENDIF
             SELF:_signature:Parameters:Add(parRef)
          NEXT
          RETURN
 
-      METHOD DecodeCustomAttributes( attributes as Mono.Collections.Generic.Collection<CustomAttribute>) AS STRING
+      METHOD DecodeCustomAttributes( attributes as Mono.Collections.Generic.Collection<CustomAttribute>, oType as TypeReference) AS STRING
          local result as STRING
          local done   as LOGIC
          FOREACH var attr in attributes
-               SWITCH attr:AttributeType:FullName 
+               SWITCH attr:AttributeType:FullName
                CASE "XSharp.Internal.DefaultParameterValueAttribute"
                CASE "Vulcan.Internal.DefaultParameterValueAttribute"
                   var arg1     := attr:ConstructorArguments[0]
@@ -329,7 +393,11 @@ BEGIN NAMESPACE XSharpModel
                   case 2   // Arg1 is date in ticks
                      var ticks := (Int64)  arg1:Value
                      var dt    := DateTime{ticks}
-                     result    := dt:ToString("yyyy.MM.dd")
+                     if dt == DateTime.MinValue
+                         result := "NULL_DATE"
+                     else
+                        result    := dt:ToString("yyyy.MM.dd")
+                     endif
                   case 3   // Arg1 is Symbol , when NULL then NULL_SYMBOL
                      var sym := (STRING)  arg1:Value
                      if (sym == NULL)
@@ -345,13 +413,13 @@ BEGIN NAMESPACE XSharpModel
                         result := psz1:ToString()
                      endif
                   case 5   // Arg1 is NULL_PTR
-                     var p := IntPtr{ (Int64) arg1:Value} 
+                     VAR p := IntPtr{ (INT64) arg1:Value}
                      if (p == IntPtr.Zero)
                         result := "NULL_PTR"
                      ELSE
                         result := "0x"+p:ToString("X")
                      ENDIF
-                     
+
                   case 0   // Normal .Net value
                      var obj := arg1:Value
                      if (obj != null)
@@ -359,17 +427,24 @@ BEGIN NAMESPACE XSharpModel
                         if arg1:Type:FullName == "System.String"
                            result := e"\""+result+e"\""
                         endif
+                     else
+                        switch oType:FullName
+                        case "System.String"
+                            return "NULL_STRING"
+                        otherwise
+                            return "NULL_OBJECT"
+                        end switch
                      endif
                   end switch
                   done := TRUE
-               END SWITCH    
+               END SWITCH
                if (done)
                   EXIT
                ENDIF
-               
+
          NEXT
          return result
-         
+
 
       METHOD AddTypeParameters(aPars AS Mono.Collections.Generic.Collection<GenericParameter>) AS VOID
          FOREACH typeParam AS Mono.Cecil.GenericParameter IN aPars
@@ -381,28 +456,28 @@ BEGIN NAMESPACE XSharpModel
 			#region Properties
       PROPERTY Description AS STRING GET SELF:GetDescription()
 
-		
+
 	  PROPERTY FullName AS STRING GET SELF:GetFullName()
-		
+
       PROPERTY IsStatic AS LOGIC GET SELF:Modifiers:HasFlag(Modifiers.Static)
       PROPERTY Location AS STRING GET SELF:Assembly:DisplayName
-      
-		PROPERTY HasParameters     AS LOGIC 
-         GET 
+
+		PROPERTY HasParameters     AS LOGIC
+         GET
             SELF:DoResolve()
             RETURN _signature:HasParameters
          END GET
       END PROPERTY
-      
-		PROPERTY ParameterCount    AS INT   
-         GET 
+
+		PROPERTY ParameterCount    AS INT
+         GET
             SELF:DoResolve()
             RETURN _signature:ParameterCount
          END GET
       END PROPERTY
 
-		PROPERTY ParameterList     AS STRING 
-         GET 
+		PROPERTY ParameterList     AS STRING
+         GET
             SELF:DoResolve()
             RETURN _signature:ParameterList
          END GET
@@ -414,8 +489,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
 
 
-      PROPERTY Parameters         AS IList<IXParameterSymbol> 
-         GET 
+      PROPERTY Parameters         AS IList<IXParameterSymbol>
+         GET
             SELF:DoResolve()
             RETURN _signature:Parameters:ToArray()
          END GET
@@ -423,17 +498,17 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY CallingConvention AS CallingConvention GET _signature:CallingConvention SET _signature:CallingConvention := @@value
 
-      PROPERTY ParentType     AS IXTypeSymbol GET SELF:Parent ASTYPE IXTypeSymbol		
-		PROPERTY Prototype      AS STRING 
-         GET 
+      PROPERTY ParentType     AS IXTypeSymbol GET SELF:Parent ASTYPE IXTypeSymbol
+		PROPERTY Prototype      AS STRING
+         GET
             SELF:DoResolve()
             RETURN SELF:GetProtoType()
          END GET
       END PROPERTY
-		
+
       PROPERTY IsExtension    AS LOGIC  GET _signature:IsExtension
-      PROPERTY XMLSignature   AS STRING 
-         GET 
+      PROPERTY XMLSignature   AS STRING
+         GET
             SELF:DoResolve()
             RETURN SELF:GetXmlSignature()
          END GET
@@ -459,6 +534,6 @@ BEGIN NAMESPACE XSharpModel
 
 		#endregion
 	END CLASS
-	
+
 END NAMESPACE
 

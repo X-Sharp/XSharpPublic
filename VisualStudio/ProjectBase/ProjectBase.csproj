@@ -225,6 +225,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit">
+      <Version>15.0.76.270-pre</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Build">
       <Version>15.9.20</Version>
     </PackageReference>

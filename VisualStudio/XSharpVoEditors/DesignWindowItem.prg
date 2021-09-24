@@ -9,7 +9,6 @@ USING System.Windows.Forms
 USING System.IO
 USING Xide
 USING XSharpModel
-using XSharp.VODesigners
 
 BEGIN NAMESPACE XSharp.VOEditors
 
@@ -19,7 +18,7 @@ CLASS XSharpDesignWindowItem inherit DesignWindowItem
 		SUPER(oDesigner , oTemplate)
 		
 
-	METHOD GetVOStylesString(eVOStyle as VOStyle ) as STRING
+	NEW METHOD GetVOStylesString(eVOStyle as VOStyle ) as STRING
 		LOCAL cResult := SUPER:GetVOStylesString(eVOStyle) AS STRING
 		LOCAL oXSharpDesigner as XSharp_VOWindowEditor
 		oXSharpDesigner := SELF:oDesigner astype XSharp_VOWindowEditor

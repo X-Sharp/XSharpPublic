@@ -27,7 +27,7 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 using System.Windows.Forms;
 using XSharpModel;
-
+using Community.VisualStudio.Toolkit;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -177,10 +177,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     string message = e.Message;
                     string title = string.Empty;
-                    OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                    OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                    OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                    Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+                    VS.MessageBox.Show(title, message);
                 }
 
                 returnValue = VSConstants.E_FAIL;
@@ -284,8 +281,7 @@ namespace Microsoft.VisualStudio.Project
             bool dirty = false;
             foreach(HierarchyNode node in this.ItemsDraggedOrCutOrCopied)
             {
-            DocumentManager manager = node.GetDocumentManager();
-                ThreadHelper.ThrowIfNotOnUIThread();
+                DocumentManager manager = node.GetDocumentManager();
 
                 if (manager != null)
             {
@@ -306,19 +302,17 @@ namespace Microsoft.VisualStudio.Project
             // Prompt to save if there are dirty docs
             string message = SR.GetString(SR.SaveModifiedDocuments, CultureInfo.CurrentUICulture);
             string title = string.Empty;
-            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_WARNING;
-            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNOCANCEL;
-            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-            int result = Utilities.ShowMessageBox(Site, title, message, icon, buttons, defaultButton);
-            switch(result)
+
+            var result = VS.MessageBox.Show(title, message, OLEMSGICON.OLEMSGICON_WARNING, OLEMSGBUTTON.OLEMSGBUTTON_YESNOCANCEL);
+            switch (result)
             {
-                case NativeMethods.IDYES:
+                case VSConstants.MessageBoxResult.IDYES:
                     break;
 
-                case NativeMethods.IDNO:
+                case VSConstants.MessageBoxResult.IDNO:
                     return VSConstants.S_OK;
 
-                case NativeMethods.IDCANCEL: goto default;
+                case VSConstants.MessageBoxResult.IDCANCEL: goto default;
 
                 default:
                     fCancelDrop = 1;
@@ -770,7 +764,7 @@ namespace Microsoft.VisualStudio.Project
 
             HierarchyNode newNode = parentNode;
             // If the file/directory exist, add a node for it
-         if (addItemOp == VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE || File.Exists(targetPath))
+         if (addItemOp == VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE || System.IO.File.Exists(targetPath))
          {
             VSADDRESULT[] result = new VSADDRESULT[1];
             ErrorHandler.ThrowOnFailure(this.AddItem(parentNode.ID, addItemOp, name, 1, new string[] { targetPath }, IntPtr.Zero, result));
@@ -1382,7 +1376,7 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
                newItem.reference = projectReference;
                newItem.source = moniker;
                newItem.destination = destination;
-               newItem.destinationExists = File.Exists(destination);
+               newItem.destinationExists = System.IO.File.Exists(destination);
                newItem.isFolder = false;
                newItem.sourceDirMatchesDestDir = NativeMethods.IsSamePath(sourcedir, destdir);
 
@@ -1428,10 +1422,7 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
                         if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
                         {
                             string title = null;
-                            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                            Utilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
+                            VS.MessageBox.ShowError(title, errorMessage);
                             return false;
                         }
                         else
@@ -1464,10 +1455,7 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
                         if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
                         {
                             string title = null;
-                            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                            Utilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
+                            VS.MessageBox.ShowError(title, errorMessage);
                             return false;
                         }
                         else

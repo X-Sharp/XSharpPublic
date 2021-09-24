@@ -9,7 +9,6 @@ if /i "%1" == "Debug" goto Ok
 if /i "%1" == "Release" goto Ok
 goto Error
 :Ok
-
 Echo Building VsIntegration and Tools %1 Configuration
 "%msbuilddir%msbuild" VsIntegration.sln  /fl1 /flp1:Append;Verbosity=diag /p:Configuration=%1 /p:Platform=x86     /t:Build  /m /v:q /nologo 
 "%msbuilddir%msbuild" Tools.sln 		   /fl2 /flp1:Append;Verbosity=diag /p:Configuration=%1 /p:Platform="Any CPU" /t:Build  /v:q /m /nologo 

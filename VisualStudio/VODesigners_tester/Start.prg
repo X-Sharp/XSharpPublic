@@ -1,6 +1,6 @@
 using System.Windows.Forms
 using System.Drawing
-using XSharp.VODesigners
+using XSharp.VOEditors
 using System.Collections.Generic
 
 

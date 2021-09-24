@@ -202,44 +202,7 @@ public static class XHelperMethods
          return formattedString;
       }
 
-      /// <summary>
-      /// Shows an error message box with an OK button using the correct flags and title and optionally formats the message.
-      /// </summary>
-      /// <param name="owner">The control that owns the message box.</param>
-      /// <param name="message">An unformatted message to show.</param>
-      /// <param name="args">The arguments to use for formatting the message.</param>
-        public static void ShowErrorMessageBox(IServiceProvider serviceProvider, string message, params object[] args)
-      {
-            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            ShowMessageBox(serviceProvider, buttons, icon, defaultButton, message, args);
-        }
-
-      /// <summary>
-      /// Shows a message box using the correct flags and title and optionally formats the message.
-      /// </summary>
-      /// <param name="owner">The control that owns the message box.</param>
-      /// <param name="buttons">The buttons to show.</param>
-      /// <param name="icon">The icon to show.</param>
-      /// <param name="defaultButton">Determines which button has the default focus.</param>
-      /// <param name="message">An unformatted message to show.</param>
-      /// <param name="args">The arguments to use for formatting the message.</param>
-        public static void ShowMessageBox(IServiceProvider serviceProvider, OLEMSGBUTTON buttons, OLEMSGICON icon, OLEMSGDEFBUTTON defaultButton, string message, params object[] args)
-      {
-         // format the message if required
-         if ( args != null && args.Length > 0 )
-         {
-            message = String.Format( CultureInfo.CurrentUICulture, message, args );
-         }
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            // show the message box
-            Utilities.ShowMessageBox(serviceProvider, message, String.Empty, icon, buttons, defaultButton);
-        }
-
+     
       /// <summary>
       /// Calls <see cref="Trace.Fail(string)"/> with a formatted message.
       /// </summary>

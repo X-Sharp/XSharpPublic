@@ -18,16 +18,18 @@ BEGIN NAMESPACE XSharpModel
    CLASS XSourceTypeSymbol INHERIT XSourceEntity IMPLEMENTS IXTypeSymbol
       PRIVATE _isPartial      AS LOGIC
       PRIVATE _members        AS List<XSourceMemberSymbol>
+      PRIVATE _basemembers    AS List<IXMemberSymbol>
+      PRIVATE _baseType       AS IXTypeSymbol
       PRIVATE _children       AS List<XSourceTypeSymbol>
       PRIVATE _signature      AS XTypeSignature
       PRIVATE _isClone        AS LOGIC
       PROPERTY SourceCode     AS STRING AUTO
       PROPERTY ShortName      AS STRING  GET IIF(!SELF:IsGeneric, SELF:Name, SELF:Name:Substring(0, SELF:Name:IndexOf("<")-1))
 
-
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, span AS TextRange, position AS TextInterval, oFile AS XFile)
          SUPER(name, kind, attributes, span, position)
          SELF:_members     := List<XSourceMemberSymbol>{}
+         SELF:_basemembers := List<IXMemberSymbol>{}
          SELF:_children    := List<XSourceTypeSymbol>{}
          SELF:_signature   := XTypeSignature{""}
          SELF:ClassType    := XSharpDialect.Core
@@ -40,6 +42,11 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          SELF:File := oFile
 
+        CONSTRUCTOR(dbresult AS XDbResult, file AS XFile)
+            SELF(dbresult:TypeName, dbresult:Kind, dbresult:Attributes, dbresult:TextRange, dbresult:TextInterval, file)
+            SELF:CopyValuesFrom(dbresult)
+
+
          /// <summary>
             /// Duplicate the current Object, so we have the same properties in another object
             /// </summary>
@@ -47,7 +54,7 @@ BEGIN NAMESPACE XSharpModel
       CONSTRUCTOR( oOther AS XSourceTypeSymbol)
          SELF(oOther:Name, oOther:Kind, oOther:Attributes, oOther:Range, oOther:Interval, oOther:File)
          SELF:Parent    := oOther:Parent
-         SELF:BaseType  := oOther:BaseType
+         SELF:BaseTypeName  := oOther:BaseTypeName
          SELF:IsPartial := oOther:IsPartial
          SELF:IsStatic  := oOther:IsStatic
          SELF:Namespace := oOther:Namespace
@@ -110,10 +117,20 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
 
-      PROPERTY XMembers AS IList<XSourceMemberSymbol>
+        PROPERTY XMembers AS IList<XSourceMemberSymbol>
+            GET
+                RETURN SELF:_members:ToArray()
+            END GET
+        END PROPERTY
+
+      PROPERTY AllMembers AS IList<IXMemberSymbol>
          GET
+            SELF:ForceComplete()
             BEGIN LOCK SELF:_members
-               RETURN SELF:_members:ToArray()
+               VAR members := List<IXMemberSymbol>{}
+               members:AddRange(SELF:_members)
+               members:AddRange(SELF:_basemembers)
+               RETURN members:ToArray()
             END LOCK
          END GET
       END PROPERTY
@@ -122,13 +139,13 @@ BEGIN NAMESPACE XSharpModel
         SELF:_members:Clear()
         SELF:_members:AddRange(list)
         RETURN
-        
+
       METHOD GetMembers(elementName AS STRING) AS IList<IXMemberSymbol>
          VAR tempMembers := List<IXMemberSymbol>{}
           IF elementName:StartsWith("@@")
                 elementName := elementName:Substring(2)
-          ENDIF
-         if ! String.IsNullOrEmpty(elementName)
+         ENDIF
+         If ! String.IsNullOrEmpty(elementName)
             tempMembers:AddRange(SELF:_members:Where({ m => m.Name:StartsWith(elementName, StringComparison.OrdinalIgnoreCase)} ))
          ELSE
             tempMembers:AddRange(SELF:_members)
@@ -151,15 +168,21 @@ BEGIN NAMESPACE XSharpModel
         IF SELF:Attributes:HasFlag(Modifiers.Partial)
              // Find all other parts to find the base typename
              var oClone := SELF:Clone
-             SELF:_signature:BaseType := oClone:BaseType
+             SELF:_signature:BaseType := oClone:BaseTypeName
              var aIF := oClone:Interfaces:ToArray()
              SELF:SetInterfaces(aIF)
-
+        ENDIF
+        IF SELF:_baseType == NULL .and. SELF:BaseTypeName != NULL
+            SELF:_baseType := SELF:File:Project:FindType(SELF:BaseTypeName, SELF:File:Usings)
+            if self:_baseType != NULL
+                self:_basemembers:Clear()
+                self:_basemembers:AddRange(self:_baseType:AllMembers:Where( { m => m.Kind != Kind.Constructor .AND. m.Visibility != Modifiers.Private }))
+            endif
         ENDIF
         RETURN
 
       PROPERTY FullName  AS STRING   GET SELF:GetFullName()
-      PROPERTY IsGeneric as LOGIC   GET SELF:TypeName:EndsWith(">")
+      PROPERTY IsGeneric as LOGIC    GET SELF:TypeParameters:Count > 0
 
       /// <summary>
          /// Merge two XSourceTypeSymbol Objects : Used to create the resulting  XSourceTypeSymbol from 2 or more partial classes
@@ -181,13 +204,20 @@ BEGIN NAMESPACE XSharpModel
                IF clone:Parent == NULL .AND. otherType:Parent != NULL
                   clone:Parent := otherType:Parent
                ELSE
-                  IF String.IsNullOrEmpty(clone:BaseType) .AND. !String.IsNullOrEmpty(otherType:BaseType)
-                     clone:BaseType := otherType:BaseType
+                  IF String.IsNullOrEmpty(clone:BaseTypeName) .AND. !String.IsNullOrEmpty(otherType:BaseTypeName)
+                     clone:BaseTypeName := otherType:BaseTypeName
                   ENDIF
                ENDIF
             ENDIF
          ENDIF
          RETURN clone
+
+     METHOD CopyValuesFrom(dbresult AS XDbResult) AS VOID
+         SUPER:CopyValuesFrom(dbresult)
+         SELF:Namespace  := dbresult:Namespace
+         SELF:Id         := dbresult:IdType
+         SELF:ClassType   := (XSharpDialect) dbresult:ClassType
+
 
       /// <summary>
       /// If this XSourceTypeSymbol is a Partial type, return a Copy of it, merged with all other informations
@@ -203,7 +233,8 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
 
-      PROPERTY BaseType          AS STRING GET SELF:_signature:BaseType SET SELF:_signature:BaseType := @@value
+      PROPERTY BaseType          AS IXTypeSymbol GET SELF:_baseType
+      PROPERTY BaseTypeName      AS STRING GET SELF:_signature:BaseType SET SELF:_signature:BaseType := @@value
       PROPERTY ComboPrototype    AS STRING GET SELF:FullName
       PROPERTY Description       AS STRING GET SELF:GetDescription()
       PROPERTY IsPartial         AS LOGIC  GET SELF:_isPartial SET SELF:_isPartial := VALUE
@@ -221,7 +252,9 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Children   AS IList<IXTypeSymbol>
          GET
             BEGIN LOCK SELF:_children
-               return SELF:_children:ToArray()
+                var children := List<IXTypeSymbol>{}
+                children:AddRange(SELF:_children)
+                return children                
             END LOCK
          END GET
       END PROPERTY

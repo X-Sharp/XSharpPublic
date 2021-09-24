@@ -1,9 +1,8 @@
-﻿
-
-USING System.Collections.Generic
+﻿USING System.Collections.Generic
 USING XSharpModel
 USING System.Windows.Forms
 USING System.IO
+USING File := System.IO.File
 STATIC CLASS XFuncs
 
 STATIC METHOD FindItemsOfType(oProject AS XProject, xType AS XFileType, aProjects := NULL  AS List<XProject>) AS List<XFile>
@@ -82,8 +81,8 @@ STATIC METHOD ErrorBox(cMessage AS STRING , cCaption AS STRING) AS VOID
 		oGenerator:AddLine("")
 
 	STATIC METHOD EnsureFileNodeExists(oXproject AS XSharpModel.XProject , fileName AS STRING) AS VOID
-		IF !System.IO.File.Exists(fileName)
-			System.IO.File.WriteAllText(fileName,"")
+		IF !File.Exists(fileName)
+			File.WriteAllText(fileName,"")
 		END IF
 		IF !oXProject:ProjectNode:HasFileNode(fileName)
 			oXProject:ProjectNode:AddFileNode(fileName)
@@ -94,10 +93,10 @@ STATIC METHOD ErrorBox(cMessage AS STRING , cCaption AS STRING) AS VOID
 			oXProject:ProjectNode:DeleteFileNode(cFile)
 		ENDIF
 		oXProject:RemoveFile(cFile)
-		IF System.IO.File.Exists(cFile)
+		IF File.Exists(cFile)
 			TRY
-                System.IO.File.SetAttributes(cFile, FileAttributes.Normal)
-				System.IO.File.Delete(cFile)
+                File.SetAttributes(cFile, FileAttributes.Normal)
+				File.Delete(cFile)
          CATCH
             NOP
 			END TRY

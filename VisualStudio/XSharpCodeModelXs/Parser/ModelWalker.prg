@@ -30,16 +30,16 @@ BEGIN NAMESPACE XSharpModel
       STATIC PRIVATE _walker AS ModelWalker
       PRIVATE _WalkerThread AS System.Threading.Thread
       STATIC PRIVATE suspendLevel  AS LONG
-      
+
       // Methods
-      
+
       STATIC CONSTRUCTOR
          suspendLevel := 0
-      
+
       PRIVATE  CONSTRUCTOR()
          SUPER()
-         
-      
+
+
       INTERNAL METHOD AddProject(xProject AS XProject) AS VOID
          //WriteOutputMessage("-->> AddProject() "+xProject:Name)
          BEGIN LOCK SELF
@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharpModel
                _projects:TryDequeue( OUT VAR _)
            ENDDO
 		   RETURN
-		   		   
+
    	  INTERNAL METHOD RemoveProject(xProject AS XProject) AS VOID
          //WriteOutputMessage("-->> RemoveProject() "+xProject:Name)
          BEGIN LOCK SELF
@@ -85,9 +85,9 @@ BEGIN NAMESPACE XSharpModel
          END LOCK
          IF (! SELF:IsWalkerRunning .AND. ! xProject:IsVsBuilding)
             SELF:Walk()
-         ENDIF         
+         ENDIF
          //WriteOutputMessage("<<-- RemoveProject()")
-      
+
       INTERNAL METHOD FileWalk(file AS XFile) AS VOID
          IF ! XSolution.IsOpen
             RETURN
@@ -98,7 +98,7 @@ BEGIN NAMESPACE XSharpModel
             BEGIN USING VAR walker := SourceWalker{file}
                TRY
                   walker:Parse(FALSE)
-                  
+
                CATCH e AS Exception
                   XSolution.WriteException(e)
                   walkFile := FALSE
@@ -109,8 +109,8 @@ BEGIN NAMESPACE XSharpModel
                END TRY
             END USING
          ENDIF
-         // 
-// Moved to SourceWalker:Parse(), then moved to XSParser:Parse()			
+         //
+// Moved to SourceWalker:Parse(), then moved to XSParser:Parse()
 //			IF walkFile
 //				TRY
 //					IF file:Project != NULL
@@ -123,20 +123,20 @@ BEGIN NAMESPACE XSharpModel
 //				END TRY
 //			ENDIF
          RETURN
-         
-      
+
+
       STATIC METHOD GetWalker() AS ModelWalker
          IF ModelWalker._walker == NULL
             ModelWalker._walker := ModelWalker{}
          ENDIF
          RETURN ModelWalker._walker
-      
+
       STATIC METHOD Start  AS VOID
          ModelWalker.suspendLevel  := 0
-      
+
       STATIC METHOD Resume() AS VOID
          ModelWalker.suspendLevel--
-      
+
       INTERNAL METHOD StopThread() AS VOID
          TRY
             IF SELF:_WalkerThread == NULL
@@ -152,7 +152,7 @@ BEGIN NAMESPACE XSharpModel
          END TRY
          SELF:_WalkerThread := NULL
          ModelWalker._walker := NULL
-      
+
       STATIC METHOD Suspend() AS VOID
          ModelWalker.suspendLevel++
          IF (ModelWalker._walker != NULL .AND. ModelWalker._walker:_projects:Count > 0)
@@ -161,7 +161,7 @@ BEGIN NAMESPACE XSharpModel
                project:ProjectNode:SetStatusBarText("")
             ENDIF
          ENDIF
-      
+
       METHOD Walk() AS VOID
          LOCAL start AS System.Threading.ThreadStart
          IF ModelWalker.suspendLevel <= 0 .AND. XSolution:IsOpen
@@ -175,13 +175,13 @@ BEGIN NAMESPACE XSharpModel
             CATCH exception AS System.Exception
                WriteOutputMessage("Cannot start Background walker Thread : ")
                XSolution.WriteException(exception)
-               
+
             END TRY
          ENDIF
-         
+
       INTERNAL iProcessed AS LONG
       INTERNAL aFiles AS STRING[]
-      
+
       PRIVATE METHOD Walker() AS VOID
          LOCAL project AS XProject
          LOCAL parallelOptions AS System.Threading.Tasks.ParallelOptions
@@ -231,13 +231,22 @@ BEGIN NAMESPACE XSharpModel
                   IF oFile:UpdatedOnDisk
                      XDatabase.Update(oFile)
                   ENDIF
-               NEXT
+                NEXT
+                // Delete files that do not exist anymore
+                var allfiles := XDatabase.GetFileNames(project)
+                foreach var fileName in allfiles
+                    if ! System.IO.File.Exists(fileName)
+                        XDatabase.DeleteFile(fileName)
+                    endif
+                next
+
+
                _currentProject:ProjectWalkComplete?:Invoke(_currentProject)
                _currentProject := NULL
                project:FileWalkCompleted := TRUE
             ENDDO
-            
-            
+
+
          ENDIF
          IF SELF:_projectsForTypeResolution:Count != 0 .AND. ! SELF:_projectsForTypeResolution:First():IsVsBuilding
             DO WHILE TRUE
@@ -247,7 +256,7 @@ BEGIN NAMESPACE XSharpModel
                   ENDIF
                   EXIT
                ENDIF
-               
+
                BEGIN LOCK SELF
                   IF SELF:_projectsForTypeResolution:Count == 0 .OR. ! SELF:_projectsForTypeResolution:TryDequeue( OUT project)
                      EXIT
@@ -257,9 +266,9 @@ BEGIN NAMESPACE XSharpModel
                project:ResolveReferences()
                WriteOutputMessage("<<-- Walker() Resolve types "+project:Name)
             ENDDO
-            
+
          ENDIF
-      
+
       PRIVATE METHOD walkOneFile(fileName AS STRING) AS VOID
          VAR project := _currentProject
          IF project:Loaded .AND. XSolution:IsOpen
@@ -268,7 +277,7 @@ BEGIN NAMESPACE XSharpModel
                System.Threading.Thread.Sleep(1000)
             ENDDO
             IF iProcessed % 10 == 0 .OR. iProcessed == aFiles:Length
-               XSolution.SetStatusBarText(String.Format("Walking {0} : Processing File {1} of {2}", project:Name, iProcessed, aFiles:Length)) 
+               XSolution.SetStatusBarText(String.Format("Walking {0} : Processing File {1} of {2}", project:Name, iProcessed, aFiles:Length))
             ENDIF
             VAR file := project:FindXFile(fileName)
             SELF:FileWalk(file)
@@ -277,11 +286,11 @@ BEGIN NAMESPACE XSharpModel
             ENDDO
          ENDIF
          RETURN
-         
+
       // Properties
       PROPERTY HasWork AS LOGIC GET SELF:_projects:Count > 0
       STATIC PROPERTY IsSuspended AS LOGIC GET ModelWalker.suspendLevel > 0
-      
+
       PROPERTY IsWalkerRunning AS LOGIC
          GET
             TRY
@@ -296,19 +305,19 @@ BEGIN NAMESPACE XSharpModel
             RETURN FALSE
          END GET
       END PROPERTY
-      
+
       STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
          IF XSettings.EnableParseLog
             XSolution.WriteOutputMessage("XModel.Walker "+message)
          ENDIF
-      
+
       METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
          RETURN
-         
+
       METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
          RETURN
-         
+
    END CLASS
-   
+
 END NAMESPACE
 

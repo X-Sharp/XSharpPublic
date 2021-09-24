@@ -144,4 +144,16 @@
     <value>Formatting</value>
     <comment>Caption of Formatting Options page in Tools/Option/TextEditor/XSharp</comment>
   </data>
+  <data name="203" xml:space="preserve">
+    <value>Other</value>
+    <comment>Caption of Other Options page in Tools/Option/TextEditor/XSharp</comment>
+  </data>
+  <data name="204" xml:space="preserve">
+    <value>Settings Completion</value>
+    <comment>Caption of Intellisense\Settings Options page in Tools/Option/TextEditor/XSharp</comment>
+  </data>
+  <data name="205" xml:space="preserve">
+    <value>General</value>
+    <comment>Caption of Intellisense\General Options page in Tools/Option/TextEditor/XSharp</comment>
+  </data>
 </root>

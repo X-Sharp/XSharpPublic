@@ -16,7 +16,7 @@ using System.CodeDom;
 using System.Reflection;
 using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using System.Diagnostics;
-
+using System.IO;
 using XSharpModel;
 using System.Globalization;
 
@@ -34,17 +34,21 @@ namespace XSharp.CodeDom
         internal Dictionary<ParserRuleContext, List<XCodeMemberField>> FieldList { get; set; }
         internal string SourceCode { get; set; }
         internal string CurrentFile { get; set; }
+#if DUMPSNIPPETS
         const string SnippetsTxt = @"D:\Snippets.txt";
+#endif
         protected IDictionary<string, IXTypeSymbol> _locals;          // used to keep track of local vars
 
-        protected CodeExpression BuildSnippetExpression(String txt)
+        protected CodeExpression BuildSnippetExpression(XSharpParserRuleContext context)
         {
-            if (!System.IO.File.Exists(SnippetsTxt))
-                System.IO.File.WriteAllText(SnippetsTxt, "");
-            string old = System.IO.File.ReadAllText(SnippetsTxt);
+#if DUMPSNIPPETS
+            if (!File.Exists(SnippetsTxt))
+                File.WriteAllText(SnippetsTxt, "");
+            string old = File.ReadAllText(SnippetsTxt);
             old += "\n" + txt;
-            System.IO.File.WriteAllText(SnippetsTxt, old);
-            return new CodeSnippetExpression(txt);
+            File.WriteAllText(SnippetsTxt, old);
+#endif
+            return new CodeSnippetExpression(context.SourceText());
         }
 
         internal XSharpBaseDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration otherType) : base()
@@ -59,7 +63,7 @@ namespace XSharp.CodeDom
 
         }
 
-        #region Members Cache
+#region Members Cache
         protected Dictionary<string, XMemberType> _members;  // member cache for our members and parent class members
         protected void addClassMember(XMemberType mtype)
         {
@@ -122,7 +126,7 @@ namespace XSharp.CodeDom
             else
             {
                 // not in our class, maybe in a parent class
-                var parentType = findType(type.BaseType);
+                var parentType = findType(type.BaseTypeName);
                 return hasClassMember(parentType, name, mtype);
             }
             return result;
@@ -180,7 +184,7 @@ namespace XSharp.CodeDom
         }
 
 
-        #endregion
+#endregion
 
         public override void EnterSource([NotNull] XSharpParser.SourceContext context)
         {
@@ -188,43 +192,48 @@ namespace XSharp.CodeDom
             source.Reset();
             _tokens = source.GetAllTokens();
         }
+        
 
+#region Helpers
+        /*
+         datatype           : ARRAY OF TypeName=typeName                                   #arrayOfType
+                            | TypeName=typeName PTR                                         #ptrDatatype
+                            | TypeName=typeName (Ranks+=arrayRank)+                         #arrayDatatype
+                            | TypeName=typeName                                             #simpleDatatype
+                            | TypeName=typeName QMARK                                       #nullableDatatype
+                            ;
 
-        #region Helpers
-
+         */
         protected XCodeTypeReference BuildDataType(XSharpParser.DatatypeContext context)
         {
-            //
-            // Datatype is ptrDatatype
-            // or arrayDatatype
-            // or simpleDatatype
-            // or nullableDatatype
-            // they all have a TypeName
             XSharpParser.TypeNameContext tn = null;
+            bool customType = false;
             if (context == null)
             {
                 return new XCodeTypeReference("USUAL");
             }
             var sName = context.GetText();
-            if (context is XSharpParser.PtrDatatypeContext)
+            if (context is XSharpParser.PtrDatatypeContext ptrData)
             {
-                XSharpParser.PtrDatatypeContext ptrData = (XSharpParser.PtrDatatypeContext)context;
                 tn = ptrData.TypeName;
             }
-            else if (context is XSharpParser.ArrayDatatypeContext)
+            else if (context is XSharpParser.ArrayDatatypeContext aData)
             {
-                XSharpParser.ArrayDatatypeContext aData = (XSharpParser.ArrayDatatypeContext)context;
                 tn = aData.TypeName;
             }
-            else if (context is XSharpParser.SimpleDatatypeContext)
+            else if (context is XSharpParser.SimpleDatatypeContext sdt)
             {
-                XSharpParser.SimpleDatatypeContext sdt = (XSharpParser.SimpleDatatypeContext)context;
                 tn = sdt.TypeName;
             }
-            else if (context is XSharpParser.NullableDatatypeContext)
+            else if (context is XSharpParser.NullableDatatypeContext ndc)
             {
-                XSharpParser.NullableDatatypeContext ndc = context as XSharpParser.NullableDatatypeContext;
                 tn = ndc.TypeName;
+            }
+            else if (context is XSharpParser.ArrayOfTypeContext atc)
+            {
+                tn = atc.TypeName;
+                sName = atc.SourceText();
+                customType = true;
             }
             XCodeTypeReference expr = null;
             if (tn != null)
@@ -247,7 +256,7 @@ namespace XSharp.CodeDom
                 expr = new XCodeTypeReference("System.Void");
             }
 
-            if (sName.Contains("[") || sName.Contains(">"))
+            if (sName.Contains("[") || sName.Contains(">") || customType)
             {
                 // work around to fix type problems with generics and arrays
                 expr.UserData[XSharpCodeConstants.USERDATA_CODE] = sName;
@@ -258,35 +267,33 @@ namespace XSharp.CodeDom
         protected CodeExpression BuildExpression(XSharpParser.ExpressionContext expression, bool right)
         {
             CodeExpression expr = null;
-            var source = expression.GetText();
+            var source = expression.SourceText();
             //
-            if (expression is XSharpParser.PrimaryExpressionContext) // xyz.SimpleName
+            if (expression is XSharpParser.PrimaryExpressionContext pec) // xyz.SimpleName
             {
-                expr = BuildPrimaryExpression((XSharpParser.PrimaryExpressionContext)expression);
+                expr = BuildPrimaryExpression(pec);
             }
-            else if (expression is XSharpParser.AccessMemberContext) // xyz.SimpleName
+            else if (expression is XSharpParser.AccessMemberContext amc) // xyz.SimpleName
             {
-                expr = BuildAccessMember(expression as XSharpParser.AccessMemberContext, right);
+                expr = BuildAccessMember(amc, right);
             }
-            else if (expression is XSharpParser.MethodCallContext)
+            else if (expression is XSharpParser.MethodCallContext mcc)
             {
-                expr = BuildMethodCall(expression as XSharpParser.MethodCallContext);
+                expr = BuildMethodCall(mcc);
             }
-            else if (expression is XSharpParser.TypeCastContext)
+            else if (expression is XSharpParser.TypeCastContext tc)
             {
-                var tc = expression as XSharpParser.TypeCastContext;
                 var name = tc.Type.GetCleanText();
                 var typeref = BuildTypeReference(name);
                 expr = BuildExpression(tc.Expr, true);
                 expr = new CodeCastExpression(typeref, expr);
             }
-            else if (expression is XSharpParser.BinaryExpressionContext)
+            else if (expression is XSharpParser.BinaryExpressionContext bec)
             {
-                expr = BuildBinaryExpression(expression as XSharpParser.BinaryExpressionContext);
+                expr = BuildBinaryExpression(bec);
             }
-            else if (expression is XSharpParser.PrefixExpressionContext)
+            else if (expression is XSharpParser.PrefixExpressionContext pref)
             {
-                var pref = expression as XSharpParser.PrefixExpressionContext;
                 if (pref.PLUS() != null)
                 {
                     expr = BuildExpression(pref.Expr, true);
@@ -297,7 +304,7 @@ namespace XSharp.CodeDom
                 }
                 else
                 {
-                    expr = BuildSnippetExpression(expression.GetText());
+                    expr = BuildSnippetExpression(expression);
                 }
             }
             // Unhandled expression types
@@ -310,7 +317,7 @@ namespace XSharp.CodeDom
             // AssignmentExpressionContext: Handled separately because CodeDom wants a Assign Statement. Check CreateAssignStatement below
             else
             {
-                expr = BuildSnippetExpression(expression.GetText());
+                expr = BuildSnippetExpression(expression);
             }
             //
             if (expr != null)
@@ -340,10 +347,10 @@ namespace XSharp.CodeDom
                 case XSharpLexer.ASSIGN_ADD:
                     // += Event Handler
                     // We will decode Left as CodeFieldReferenceExpression or CodePropertyReferenceExpression, but we need a CodeEventReferenceExpression
-                    if (left is CodeFieldReferenceExpression)
-                        cere = new XCodeEventReferenceExpression(((CodeFieldReferenceExpression)left).TargetObject, ((CodeFieldReferenceExpression)left).FieldName);
-                    else if (left is CodePropertyReferenceExpression)
-                        cere = new XCodeEventReferenceExpression(((CodePropertyReferenceExpression)left).TargetObject, ((CodePropertyReferenceExpression)left).PropertyName);
+                    if (left is CodeFieldReferenceExpression cfre)
+                        cere = new XCodeEventReferenceExpression(cfre.TargetObject, cfre.FieldName);
+                    else if (left is CodePropertyReferenceExpression cpre)
+                        cere = new XCodeEventReferenceExpression(cpre.TargetObject, cpre.PropertyName);
                     else if (left is CodeEventReferenceExpression)
                         cere = (CodeEventReferenceExpression)left;
                     if (cere != null)
@@ -351,17 +358,17 @@ namespace XSharp.CodeDom
                     break;
                 case XSharpLexer.ASSIGN_SUB:
                     // -= Event Handler
-                    if (left is CodeFieldReferenceExpression)
-                        cere = new XCodeEventReferenceExpression(((CodeFieldReferenceExpression)left).TargetObject, ((CodeFieldReferenceExpression)left).FieldName);
-                    else if (left is CodePropertyReferenceExpression)
-                        cere = new XCodeEventReferenceExpression(((CodePropertyReferenceExpression)left).TargetObject, ((CodePropertyReferenceExpression)left).PropertyName);
+                    if (left is CodeFieldReferenceExpression cfre1)
+                        cere = new XCodeEventReferenceExpression(cfre1.TargetObject, cfre1.FieldName);
+                    else if (left is CodePropertyReferenceExpression cpre1)
+                        cere = new XCodeEventReferenceExpression(cpre1.TargetObject, cpre1.PropertyName);
                     else if (left is CodeEventReferenceExpression)
                         cere = (CodeEventReferenceExpression)left;
                     if (cere != null)
                         stmt = new CodeRemoveEventStatement(cere, right);
                     break;
                 default:
-                    var snip = BuildSnippetExpression(exp.GetText());
+                    var snip = BuildSnippetExpression(exp);
                     stmt = new CodeExpressionStatement(snip);
                     break;
             }
@@ -376,7 +383,7 @@ namespace XSharp.CodeDom
             {
                 case XSharpParser.EXP:
                     // cannot be expressed in codedom
-                    return BuildSnippetExpression(be.GetText());
+                    return BuildSnippetExpression(be);
                 // MULT|DIV|MOD
                 case XSharpParser.MULT:
                     op = CodeBinaryOperatorType.Multiply;
@@ -399,7 +406,7 @@ namespace XSharp.CodeDom
                 case XSharpParser.LSHIFT:
                 case XSharpParser.RSHIFT:
                     // cannot be expressed in codedom
-                    return BuildSnippetExpression(be.GetText());
+                    return BuildSnippetExpression(be);
                 // LT | LTE | GT | GTE | EQ | EEQ | SUBSTR | NEQ | NEQ2
                 case XSharpParser.LT:
                     op = CodeBinaryOperatorType.LessThan;
@@ -423,7 +430,7 @@ namespace XSharp.CodeDom
                     break;
                 case XSharpParser.SUBSTR:
                     // cannot be expressed in codedom
-                    return BuildSnippetExpression(be.GetText());
+                    return BuildSnippetExpression(be);
                 // AMP
                 case XSharpParser.AMP:
                     op = CodeBinaryOperatorType.BitwiseAnd;
@@ -431,7 +438,7 @@ namespace XSharp.CodeDom
                 // TILDE
                 case XSharpParser.TILDE:
                     // cannot be expressed in codedom
-                    return BuildSnippetExpression(be.GetText());
+                    return BuildSnippetExpression(be);
                 // PIPE
                 case XSharpParser.PIPE:
                     op = CodeBinaryOperatorType.BitwiseOr;
@@ -449,7 +456,7 @@ namespace XSharp.CodeDom
                 // DEFAULT
                 case XSharpParser.DEFAULT:
                     // cannot be expressed in codedom
-                    return BuildSnippetExpression(be.GetText());
+                    return BuildSnippetExpression(be);
             }
             return new CodeBinaryOperatorExpression(l, op, r);
         }
@@ -494,9 +501,9 @@ namespace XSharp.CodeDom
             while (true)
             {
                 elements.Insert(0, element);
-                if (element.Expr is XSharpParser.AccessMemberContext)
+                if (element.Expr is XSharpParser.AccessMemberContext amc1)
                 {
-                    element = (XSharpParser.AccessMemberContext)element.Expr;
+                    element = amc1;
                 }
                 else
                 {
@@ -570,7 +577,7 @@ namespace XSharp.CodeDom
             }
             else
             {
-                lhs = BuildSnippetExpression(amc.GetText());
+                lhs = BuildSnippetExpression(amc);
             }
             return lhs;
         }
@@ -733,37 +740,16 @@ namespace XSharp.CodeDom
                 var lit = (XSharpParser.LiteralArrayExpressionContext)ctx;
                 expr = BuildLiteralArray(lit);
             }
-            else if (ctx is XSharpParser.LiteralArrayExpressionContext) // { expr [, expr] }
+            else if (ctx is XSharpParser.DelegateCtorCallContext delg)
             {
-                XSharpParser.LiteralArrayContext arr = ((XSharpParser.LiteralArrayExpressionContext)ctx).LiteralArray;
-                // Typed Array ?
-                if (arr.Type != null)
-                {
-                    List<CodeExpression> exprlist = new List<CodeExpression>();
-                    foreach (var Element in arr._Elements)
-                    {
-                        exprlist.Add(BuildExpression(Element.Expr, true));
-                    }
-                    expr = new CodeArrayCreateExpression(BuildDataType(arr.Type), exprlist.ToArray());
-                }
-                else
-                {
-                    expr = BuildSnippetExpression(arr.GetText());
-                }
-            }
-            else if (ctx is XSharpParser.DelegateCtorCallContext)
-            {
-                XSharpParser.DelegateCtorCallContext delg = (XSharpParser.DelegateCtorCallContext)ctx;
-                //
                 XCodeTypeReference ctr = BuildDataType(delg.Type);
                 CodeExpression ce = BuildExpression(delg.Obj, true);
                 //
                 expr = new CodeDelegateCreateExpression(BuildDataType(delg.Type), BuildExpression(delg.Obj, true), delg.Func.GetText());
 
             }
-            else if (ctx is XSharpParser.CtorCallContext)
+            else if (ctx is XSharpParser.CtorCallContext ctor)
             {
-                XSharpParser.CtorCallContext ctor = (XSharpParser.CtorCallContext)ctx;
                 XCodeTypeReference ctr = BuildDataType(ctor.Type);
                 List<CodeExpression> exprlist = new List<CodeExpression>();
                 if (ctor.ArgList != null)
@@ -776,14 +762,14 @@ namespace XSharp.CodeDom
                 }
                 expr = new CodeObjectCreateExpression(ctr.BaseType, exprlist.ToArray());
             }
-            else if (ctx is XSharpParser.TypeOfExpressionContext)
+            else if (ctx is XSharpParser.TypeOfExpressionContext toec)
             {
-                XCodeTypeReference ctr = BuildDataType(((XSharpParser.TypeOfExpressionContext)ctx).Type);
+                XCodeTypeReference ctr = BuildDataType(toec.Type);
                 expr = new CodeTypeOfExpression(ctr);
             }
-            else if (ctx is XSharpParser.NameExpressionContext)
+            else if (ctx is XSharpParser.NameExpressionContext nec)
             {
-                string name = ((XSharpParser.NameExpressionContext)ctx).Name.Id.GetCleanText();
+                string name = nec.Name.Id.GetCleanText();
                 // Sometimes, we will need to do it that way....
                 if (name.ToLower() == "self")
                 {
@@ -808,23 +794,20 @@ namespace XSharp.CodeDom
                 }
                 else
                 {
-                    var tr = BuildTypeReference(((XSharpParser.NameExpressionContext)ctx).Name.Id.GetCleanText());
+                    var tr = BuildTypeReference(nec.Name.Id.GetCleanText());
                     expr = new XCodeTypeReferenceExpression(tr);
                 }
             }
-            else if (ctx is XSharpParser.ParenExpressionContext)
+            else if (ctx is XSharpParser.ParenExpressionContext par)
             {
-                var par = ctx as XSharpParser.ParenExpressionContext;
                 expr = BuildExpression(par.Expr, true);
             }
-            else if (ctx is XSharpParser.TypeExpressionContext)
+            else if (ctx is XSharpParser.TypeExpressionContext typ)
             {
-                var typ = ctx as XSharpParser.TypeExpressionContext;
                 var name = typ.Type;
                 // NativeType, xBaseType, Name
-                if (name.Name is XSharpParser.QualifiedNameContext)
+                if (name.Name is XSharpParser.QualifiedNameContext qnc)
                 {
-                    var qnc = name.Name as XSharpParser.QualifiedNameContext;
                     var left = qnc.Left;
                     var right = qnc.Right;
                     var tr = new XCodeTypeReferenceExpression(left.GetCleanText());
@@ -832,7 +815,7 @@ namespace XSharp.CodeDom
                 }
                 else
                 {
-                    expr = BuildSnippetExpression(ctx.GetText());
+                    expr = BuildSnippetExpression(ctx);
                 }
             }
             else
@@ -855,7 +838,7 @@ namespace XSharp.CodeDom
             // MacroContext
             // ArgListExpressionContext
             {
-                expr = BuildSnippetExpression(ctx.GetText());
+                expr = BuildSnippetExpression(ctx);
             }
             return expr;
         }
@@ -879,17 +862,14 @@ namespace XSharp.CodeDom
             // When we cannot find a field then we always map something like
             // SELF:Controls:Add to a propertyReferenceExpression
             // Change it to a method call now
-            if (target is CodeMethodReferenceExpression)
+            if (target is CodeMethodReferenceExpression cmr)
             {
-                var cmr = target as CodeMethodReferenceExpression;
                 var lhs = cmr.TargetObject;
                 var methodName = cmr.MethodName;
                 expr = new CodeMethodInvokeExpression(lhs, methodName, exprlist.ToArray());
             }
-            else if (target is CodePropertyReferenceExpression)
+            else if (target is CodePropertyReferenceExpression cpr)
             {
-                // method call on a property
-                var cpr = target as CodePropertyReferenceExpression;
                 var lhs = cpr.TargetObject;
                 var methodName = cpr.PropertyName;
                 expr = new CodeMethodInvokeExpression(lhs, methodName, exprlist.ToArray());
@@ -996,7 +976,7 @@ namespace XSharp.CodeDom
                 case XSharpParser.DATE_CONST:
                 case XSharpParser.BINARY_CONST:
                 default:
-                    expr = BuildSnippetExpression(context.Token.Text);
+                    expr = BuildSnippetExpression(context);
                     break;
             }
             return expr;
@@ -1018,15 +998,13 @@ namespace XSharp.CodeDom
                    return new XCodeTypeReference(type);
                 }
             }
-            if (context is XSharpParser.QualifiedNameContext)
+            if (context is XSharpParser.QualifiedNameContext qual)
             {
-                XSharpParser.QualifiedNameContext qual = (XSharpParser.QualifiedNameContext)context;
                 expr = BuildName(qual.Left);
                 expr = BuildTypeReference(expr.BaseType + "." + BuildSimpleName(qual.Right).BaseType);
             }
-            else if (context is XSharpParser.SimpleOrAliasedNameContext)
+            else if (context is XSharpParser.SimpleOrAliasedNameContext alias)
             {
-                var alias = context as XSharpParser.SimpleOrAliasedNameContext;
                 var name = alias.Name as XSharpParser.AliasedNameContext;
 
                 //
@@ -1036,15 +1014,13 @@ namespace XSharp.CodeDom
                     expr = BuildSimpleName(al.Right);
                     expr = BuildTypeReference(al.Alias.GetText() + "::" + expr.BaseType);
                 }
-                else if (name is XSharpParser.GlobalQualifiedNameContext)
+                else if (name is XSharpParser.GlobalQualifiedNameContext gqn)
                 {
-                    var gqn = name as XSharpParser.GlobalQualifiedNameContext;
                     expr = BuildSimpleName(gqn.Right);
                     expr = BuildTypeReference("global::" + expr.BaseType);
                 }
-                else if (name is XSharpParser.IdentifierOrGenericNameContext)
+                else if (name is XSharpParser.IdentifierOrGenericNameContext id)
                 {
-                    var id = name as XSharpParser.IdentifierOrGenericNameContext;
                     expr = BuildSimpleName(id.Name);
                 }
             }
@@ -1102,9 +1078,13 @@ namespace XSharp.CodeDom
             //
             return retValue;
         }
+        // memberModifiers     : (Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT |
+        //                             INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN | OVERRIDE) )+
+
         protected MemberAttributes decodeMemberAttributes(IList<IToken> tokens)
         {
             MemberAttributes retValue = MemberAttributes.Public;
+            MemberAttributes modifiers = (MemberAttributes)0;
             bool bHasProtect = false;
             bool bHasInternal = false;
             foreach (var token in tokens)
@@ -1134,9 +1114,24 @@ namespace XSharp.CodeDom
                         //
                         retValue = MemberAttributes.Public;
                         break;
+                    case XSharpParser.STATIC:
+                        modifiers |= MemberAttributes.Static;
+                        break;
+                    case XSharpParser.ABSTRACT:
+                        modifiers |= MemberAttributes.Abstract;
+                        break;
+                    case XSharpParser.OVERRIDE:
+                        modifiers |= MemberAttributes.Override;
+                        break;
+                    case XSharpParser.SEALED:
+                        modifiers |= MemberAttributes.Final;
+                        break;
+                    case XSharpParser.NEW:
+                        modifiers |= MemberAttributes.New;
+                        break;
                 }
             }
-            return retValue;
+            return retValue | modifiers;
         }
         protected MemberAttributes ContextToMethodModifiers(XSharpParser.MemberModifiersContext modifiers)
         {
@@ -1246,9 +1241,8 @@ namespace XSharp.CodeDom
             // try to check if this literal has a Prefix
             try
             {
-                if ( context.Parent.Parent is XSharpParser.PrimaryExpressionContext )
+                if ( context.Parent.Parent is XSharpParser.PrimaryExpressionContext prim)
                 {
-                    var prim = context.Parent.Parent as XSharpParser.PrimaryExpressionContext;
                     if ( prim.Parent is XSharpParser.PrefixExpressionContext )
                     {
                         var pref = prim.Parent as XSharpParser.PrefixExpressionContext;
@@ -1602,7 +1596,7 @@ namespace XSharp.CodeDom
 
         protected IXTypeSymbol findParentType(IXTypeSymbol xtype)
         {
-            var name = simplifyType(xtype.BaseType);
+            var name = simplifyType(xtype.BaseTypeName);
             IList<string> usings;
             if (xtype is XSourceTypeSymbol xsts)
             {
@@ -1713,8 +1707,8 @@ namespace XSharp.CodeDom
             //
             return expr;
         }
-        #endregion
-        #region Common Methods
+#endregion
+#region Common Methods
         private XCodeNamespace _currentNamespace;
         public XCodeNamespace CurrentNamespace
         {
@@ -1750,13 +1744,40 @@ namespace XSharp.CodeDom
                 trivia = context.GetEndingTrivia(_tokens);
             else
                 trivia = context.GetLeadingTrivia(_tokens);
-            if (!string.IsNullOrEmpty(trivia))
-            {
-                var key = end ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
-                o.UserData[key] = trivia;
-            }
+            var key = end ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
+            o.UserData[key] = trivia;
 
         }
-        #endregion
+#endregion
+    }
+    internal static class ParserExtensions
+    {
+        internal static string SourceText(this XSharpParserRuleContext context)
+        {
+            StringBuilder result = new StringBuilder();
+            foreach (var token in context.children)
+            {
+                if (token is XSharpParserRuleContext rule)
+                {
+                    result.Append(rule.SourceText());
+                }
+                else if (token is XSharpToken xtoken)
+                {
+                    result.Append(xtoken.TriviaAsText);
+                    result.Append(xtoken.Text);
+                }
+                else if (token.Payload is XSharpToken xtoken2)
+                {
+                    result.Append(xtoken2.TriviaAsText);
+                    result.Append(xtoken2.Text);
+
+                }
+                else
+                {
+                    result.Append(token.GetText());
+                }
+            }
+            return result.ToString();
+        }
     }
 }

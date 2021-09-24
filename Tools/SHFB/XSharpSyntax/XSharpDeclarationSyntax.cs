@@ -382,6 +382,7 @@ namespace Microsoft.Ddue.Tools
 
                 case "T:Vulcan.__VODate":
                 case "T:XSharp.__VODate":
+                case "T:XSharp.__WinDate":
                 case "T:XSharp.__Date":
                     writer.WriteKeyword("DATE");
                     break;

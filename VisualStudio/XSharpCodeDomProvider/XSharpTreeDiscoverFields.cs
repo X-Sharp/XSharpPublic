@@ -25,7 +25,7 @@ namespace XSharp.CodeDom
 
         internal Stack<ParserRuleContext> classes;
         internal ParserRuleContext currentClass;
-        private MemberAttributes classVarModifiers;
+        
 
         internal XSharpFieldsDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
@@ -45,67 +45,88 @@ namespace XSharp.CodeDom
             // restore previous class 
             currentClass = classes.Pop();
         }
-        public override void EnterClassvarModifiers([NotNull] XSharpParser.ClassvarModifiersContext context)
+        //classvarModifiers   : (Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC
+        //                      | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+
+
+        public MemberAttributes decodeClassVarModifiers([NotNull] XSharpParser.ClassvarModifiersContext context)
         {
 
-            this.classVarModifiers = MemberAttributes.Public;
-            //
-            ITerminalNode[] visibility;
-            //
-            visibility = context.INTERNAL();
-            if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Assembly;
-            //
-            visibility = context.HIDDEN();
-            if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Private;
-            //
-            visibility = context.PRIVATE();
-            if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Private;
-            //
-            visibility = context.PROTECTED();
-            if (visibility.Length > 0)
+            var visibility = MemberAttributes.Public;
+            var modifiers = (MemberAttributes)0;
+            foreach (var token in context._Tokens)
             {
-                visibility = context.INTERNAL();
-                if (visibility.Length > 0)
-                    this.classVarModifiers = MemberAttributes.FamilyOrAssembly;
-                else
-                    this.classVarModifiers = MemberAttributes.Family;
-            }
-            //
-            visibility = context.EXPORT();
-            if (visibility.Length > 0)
-                this.classVarModifiers = MemberAttributes.Public;
-            //
-            if (context.CONST().Length > 0)
-                this.classVarModifiers |= MemberAttributes.Const;
-            if (context.STATIC().Length > 0)
-                this.classVarModifiers |= MemberAttributes.Static;
-        }
-        public override void EnterClassVarList([NotNull] XSharpParser.ClassVarListContext context)
-        {
-            //
-            if (context.DataType != null && currentClass != null)
-            {
-                var fieldType = BuildDataType(context.DataType);
-                //
-                foreach (var varContext in context._Var)
+                switch (token.Type)
                 {
-                    var  field = new XCodeMemberField();
-                    field.Name = varContext.Id.GetText();
-                    field.Type = fieldType;
-                    field.Attributes = this.classVarModifiers;
-                    if (varContext.Initializer != null)
-                    {
-                        field.InitExpression = BuildExpression(varContext.Initializer, false);
-                    }
-                    FillCodeDomDesignerData(field, varContext.Start.Line, varContext.Start.Column);
-                    //
-                    FieldList[currentClass].Add(field);
+                    case XSharpLexer.INTERNAL:
+                        if (visibility == MemberAttributes.Family)
+                            visibility = MemberAttributes.FamilyOrAssembly;
+                        else
+                            visibility = MemberAttributes.Assembly;
+                        break;
+                    case XSharpLexer.HIDDEN:
+                    case XSharpLexer.PRIVATE:
+                        visibility = MemberAttributes.Private;
+                        break;
+                    case XSharpLexer.PUBLIC:
+                    case XSharpLexer.EXPORT:
+                        visibility = MemberAttributes.Public;
+                        break;
+                    case XSharpLexer.PROTECTED:
+                        if (visibility == MemberAttributes.Assembly)
+                            visibility = MemberAttributes.FamilyOrAssembly;
+                        else
+                            visibility = MemberAttributes.Family;
+                        break;
+                    case XSharpLexer.CONST:
+                        modifiers |= MemberAttributes.Const;
+                        break;
+                    case XSharpLexer.STATIC:
+                        modifiers |= MemberAttributes.Static;
+                        break;
+                    case XSharpLexer.INITONLY:
+                    case XSharpLexer.VOLATILE:
+                    case XSharpLexer.INSTANCE:
+                    case XSharpLexer.UNSAFE:
+                    case XSharpLexer.FIXED:
+                        break;
                 }
-                //
             }
+            return visibility | modifiers;
+        }
+        public override void EnterClassvars([NotNull] XSharpParser.ClassvarsContext context)
+        {
+            // PROTECT a,b as STRING
+            // copy type from b to a
+            var classVarModifiers = decodeClassVarModifiers(context.Modifiers);
+            if (context._Vars.Count > 1)
+            {
+                XSharpParser.DatatypeContext dtc = null; ;
+                foreach (var classvar in context._Vars.Reverse())
+                {
+                    if (classvar.DataType != null)
+                        dtc = classvar.DataType;
+                    else
+                        classvar.DataType = dtc;
+                }
+            }
+
+            foreach (var varContext in context._Vars)
+            {
+                var field = new XCodeMemberField();
+                var fieldType = BuildDataType(varContext.DataType);
+                field.Name = varContext.Id.GetText();
+                field.Type = fieldType;
+                field.Attributes = classVarModifiers;
+                if (varContext.Initializer != null)
+                {
+                    field.InitExpression = BuildExpression(varContext.Initializer, false);
+                }
+                FillCodeDomDesignerData(field, varContext.Start.Line, varContext.Start.Column);
+                writeTrivia(field, context);
+                //
+                FieldList[currentClass].Add(field);
+            }
+            //
         }
 
 

@@ -10,13 +10,13 @@ USING System.IO
 USING Xide
 USING XSharpModel
 USING System.Reflection
-USING XSharp.VODesigners
+
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 	PROTECT oXProject AS XProject
 
 	CONSTRUCTOR(_oSurface AS Control , _oGrid AS DesignerGrid )
-		SUPER(_oSurface , _oGrid) 
+		SUPER(_oSurface , _oGrid)
 		oXProject  := NULL_OBJECT
 	RETURN
 
@@ -52,13 +52,13 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			SELF:GiveFocus()
 		ENDIF
 		RETURN lOk
-	METHOD GetAvailableFieldSpec(cFieldSpec AS STRING) AS FSEDesignFieldSpec
+	NEW METHOD GetAvailableFieldSpec(cFieldSpec AS STRING) AS FSEDesignFieldSpec
 		IF aAvailableFieldSpecs == NULL
 			aAvailableFieldSpecs  := ArrayList{}
 		ENDIF
 		FOREACH oFs AS FSEDesignFieldSpec IN aAvailableFieldSpecs
          if oFs?:Name != NULL
-			   IF String.Equals(oFS:Name, cFieldSpec, StringComparison.OrdinalIgnoreCase) 
+			   IF String.Equals(oFS:Name, cFieldSpec, StringComparison.OrdinalIgnoreCase)
 				   RETURN oFs
             ENDIF
          ENDIF
@@ -79,23 +79,23 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 				VAR aFS := VOFieldSpecEditor.OpenXML(cName, NULL)
 				SELF:aAvailableFieldSpecs:AddRange(aFs)
 				IF (lInModule)
-					SELF:aFieldSpecsInModule:AddRange(aFs)		
+					SELF:aFieldSpecsInModule:AddRange(aFs)
 				ENDIF
 			ELSE
 				LOCAL fs AS FSEDesignFieldSpec
 				fs := VOFieldSpecEditor.OPenVNFS(cName, (VOFieldSpecEditor) NULL)
 				SELF:aAvailableFieldspecs:Add(fs)
 				IF (lInModule)
-					SELF:aFieldSpecsInModule:Add(fs)		
+					SELF:aFieldSpecsInModule:Add(fs)
 				ENDIF
-			ENDIF			
+			ENDIF
 		NEXT
 
-	PROTECTED METHOD GetSaveFileStreams(cSrvFileName AS STRING , oPrgStream AS EditorStream, lVnfrmOnly AS LOGIC) AS LOGIC
+	NEW PROTECTED METHOD GetSaveFileStreams(cSrvFileName AS STRING , oPrgStream AS EditorStream, lVnfrmOnly AS LOGIC) AS LOGIC
 		LOCAL cPrgFileName AS STRING
 		LOCAL lSuccess AS LOGIC
 		LOCAL lError AS LOGIC
-		
+
 		TRY
 
 			cPrgFileName := Funcs.GetModuleFilenameFromBinary(cSrvFileName) + ".prg"
@@ -106,7 +106,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 					lError := TRUE
 				END IF
 			END IF
-			
+
 			lSuccess := FALSE
 			IF !lError
 				IF !lVnfrmOnly
@@ -116,7 +116,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 					lSuccess := TRUE
 				END IF
 			END IF
-			
+
 		CATCH e AS Exception
 
 			XFuncs.ErrorBox(e:Message )
@@ -131,7 +131,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		END IF
 
 	RETURN lSuccess
-	
+
 	METHOD Save(cFileName AS STRING , lSrvOnly AS LOGIC) AS LOGIC
 		LOCAL oPrgStream AS XSharp_EditorStream
 		LOCAL lSaveFieldSpecs := FALSE AS LOGIC
@@ -141,7 +141,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		LOCAL cModule AS STRING
 		LOCAL lSuccess := FALSE AS LOGIC
 		LOCAL lAutoRecover AS LOGIC
-		
+
 		lAutoRecover := lSrvOnly .OR. cFileName:ToUpper():Contains("~AUTORECOVER")
 
 		IF SELF:oFileNameEdit:Focused
@@ -149,7 +149,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:oMainDesign:cGuid , "filename" , SELF:oFileNameEdit:Text:Trim()})
 			ENDIF
 		ENDIF
-		
+
 		IF lAutoRecover
 			TRY
 				SELF:SaveToXml(cFileName)
@@ -172,7 +172,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		ENDIF
 
 		oCode := SELF:GetCodeContents()
-		
+
         cModule := Funcs.GetModuleFilenameFromBinary(cFileName)
 		SELF:ReadAllAvailableFieldspecs(cModule)
 		VAR aFieldSpecs := SELF:aFieldSpecsInModule
@@ -227,7 +227,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 					SELF:SavePrg(oPrgStream , oCode , aCode)
 				END IF
 				lSuccess := TRUE
-	
+
 				IF !lSrvOnly
 					SELF:nActionSaved := SELF:nAction
 				END IF
@@ -235,14 +235,14 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
             NOP
 			END TRY
 		END IF
-		
+
 		IF lSuccess
 			FOREACH cFile AS STRING IN SELF:aFilesToDelete
 				XFuncs.DeleteFile(oXProject, cFile)
 			NEXT
 			SELF:aFilesToDelete:Clear()
 		END IF
-		
+
 	RETURN lSuccess
 
 	METHOD ProcessExtraEntity(aLines AS List<STRING>, oGenerator AS CodeGenerator, cClass AS STRING, lAdd AS LOGIC) AS VOID
@@ -259,13 +259,13 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 				oGenerator:DeleteEntity(oEntity:eType , oEntity:cName , cClass )
 			ENDIF
 		END IF
-		RETURN 
+		RETURN
 
 	METHOD SavePrg(oStream AS XSharp_EditorStream , oCode AS CodeContents , aFieldSpecs AS ArrayList) AS LOGIC
 		LOCAL cName AS STRING
 		VAR oGenerator := CodeGenerator{oStream:Editor}
 		oGenerator:BeginCode()
-		
+
 		cName := SELF:oMainDesign:GetProperty("classname"):TextValue
 		oGenerator:WriteEntity(XIde.EntityType._Class , cName , cName , EntityOptions.AddUser, oCode:aClass)
 		oGenerator:WriteEntity(XIde.EntityType._Constructor,  cName , cName ,EntityOptions.None , oCode:aConstructor)
@@ -277,9 +277,9 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		NEXT
 		//
 		SELF:SaveAccessAssign(oGenerator , cName , SELF:oMainDesign:GetProperty("noaccass"):TextValue:ToUpper() == "YES")
-		
+
 		oGenerator:WriteEndClass(cName)
-		
+
 		FOREACH  oFieldSpec AS FSEDesignFieldSpec IN aFieldSpecs
 			oCode := VOFieldSpecEditor.GetCodeContents(oFieldSpec)
 			cName := oFieldSpec:GetProperty("classname"):TextValue
@@ -290,7 +290,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 
 		oGenerator:EndCode()
 		oStream:Save()
-		
+
 	RETURN TRUE
 	METHOD SaveAccessAssign(oGenerator AS CodeGenerator, cClass AS STRING , lNoAccAss AS LOGIC) AS VOID
 		LOCAL aValues AS NameValueCollection
@@ -298,7 +298,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 		LOCAL cValue AS STRING
 		LOCAL oMI AS MEthodInfo
 		LOCAL oType AS System.Type
-		
+
 		aDesign := SELF:GetAllDesignItems(DBServerItemType.Field)
 		oType := TYPEOF(VODbServerEditor)
 		oMI := oType:GetMethod("TranslateLine", BindingFlags.Static | BindingFlags.NonPublic )
@@ -322,7 +322,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 				END CASE
 				aValues:Add(oProp:Name , cValue)
 			NEXT
-			
+
 			cValue := oDesign:GetProperty("Type"):TextValue:ToUpper()
 			DO CASE
 			CASE cValue == "CHARACTER" .OR. cValue == "MEMO"
@@ -333,7 +333,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 				cValue := "USUAL"
 			END CASE
 			aValues:Add("usualtype" , cValue)
-			
+
 			FOREACH aTempEntity AS List<STRING> IN VODBServerEditor.Template:aAccessAssign
 				VAR aEntity := List<STRING>{}
 				FOREACH cLine AS STRING IN aTempEntity
@@ -349,7 +349,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 				SELF:ProcessExtraEntity(aEntity, oGenerator, cClass, !lDelete)
 			NEXT
 		NEXT
-		
+
 	RETURN
 END CLASS
 STATIC CLASS BufferExtensions
@@ -359,6 +359,6 @@ STATIC CLASS BufferExtensions
 				RETURN oLine:LastEntity
 			ENDIF
 			RETURN NULL_OBJECT
-			
+
 END CLASS
 END NAMESPACE

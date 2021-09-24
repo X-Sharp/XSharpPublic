@@ -21,9 +21,9 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ExtensionMethods     AS IList<XPEMemberSymbol> AUTO
       PROPERTY ExtensionDict        AS Dictionary<STRING, IList<IXMemberSymbol> > AUTO
       PROPERTY ImplicitNamespaces   AS IList<STRING> AUTO
-      PROPERTY Namespaces           AS IList<STRING> AUTO
+      // Namespaces property can be deleted once we do the name bases lookup in the database
+      INTERNAL PROPERTY Namespaces   AS IList<STRING> AUTO
       PROPERTY ReferencedAssemblies AS IList<STRING> AUTO
-      PROPERTY CustomAttributes     AS IList<STRING> AUTO
       PROPERTY GlobalClassName      AS STRING AUTO
       PROPERTY FullName             AS STRING AUTO
       PROPERTY FileName             AS STRING AUTO
@@ -33,6 +33,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Size                 AS INT64 AUTO GET INTERNAL SET
       PROPERTY DuplicateTypes       AS List<XPETypeSymbol> AUTO
       PROPERTY HasDuplicateTypes    AS LOGIC GET DuplicateTypes != NULL .AND. DuplicateTypes:Count > 0
+      PROPERTY Version              AS STRING AUTO
 
       STATIC CONSTRUCTOR
          RETURN
@@ -57,9 +58,7 @@ BEGIN NAMESPACE XSharpModel
      METHOD Initialize() AS VOID
          Types                := Dictionary<STRING, XPETypeSymbol>{StringComparer.OrdinalIgnoreCase}
          ImplicitNamespaces   := List<STRING>{}
-         Namespaces           := List<STRING>{}
          ReferencedAssemblies := List<STRING>{}
-         CustomAttributes     := List<STRING>{}
          DuplicateTypes       := NULL
          ExtensionMethods     := List<XPEMemberSymbol>{}
          ExtensionDict        := NULL
@@ -74,6 +73,7 @@ BEGIN NAMESPACE XSharpModel
          XDatabase:Read(SELF)
          VAR fi := FileInfo{FileName}
          IF SELF:Size != fi:Length .OR. SELF:LastChanged != fi:LastWriteTime
+            // update assembly info and type names in the database
             XDatabase.Update(SELF)
          ENDIF
          SELF:_wasRead := TRUE
@@ -87,7 +87,6 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
 
       METHOD GetType(name AS STRING) AS XPETypeSymbol
-
          IF SELF:IsModifiedOnDisk .OR. ! SELF:_wasRead
             SELF:Read()
          ENDIF
@@ -112,8 +111,15 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             // no exact match in the duplicates. Return the type with not exact match
             RETURN found
-         ENDIF
-         IF !name:Contains(".")
+         ELSE // Type not found
+            // Todo: Use the Intellisense database instead of the Namespaces and Types collection.
+            // when we do so we have to separate the ns out of the name
+            // and look for all types that match in name.
+            // then later we can match the typenames that we found with the ns that is part of the parameter
+            // the resulting type comes out of the collection based on the info we read from the database
+            // so any methods that we already cached are loaded.
+            // here we look in the database
+            // After we changed this then we can get rid of the Namespaces collection in the XAssembly class as well.
             FOREACH VAR ns IN SELF:Namespaces
                VAR fullName := ns+"."+name
                IF SELF:Types:ContainsKey(fullName)

@@ -17,6 +17,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Threading;
 using Microsoft.VisualStudio.Shell;
+using Community.VisualStudio.Toolkit;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -25,7 +26,7 @@ namespace Microsoft.VisualStudio.Project
     /// </summary>
     [ComVisible(true)]
     [CLSCompliant(false)]
-    public abstract class AsyncProjectPackage : Microsoft.VisualStudio.Shell.AsyncPackage
+    public abstract class AsyncProjectPackage : ToolkitPackage
     {
         public static AsyncProjectPackage Instance = null;
         #region fields

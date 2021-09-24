@@ -154,10 +154,10 @@ namespace XSharp.Project
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
-
+#if REPOWINDOW
     [ProvideToolWindow(typeof(RepositoryWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
     [ProvideToolWindowVisibility(typeof(RepositoryWindow.Pane), VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
-
+#endif
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
     public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents,IVsDebuggerEvents
@@ -190,7 +190,7 @@ namespace XSharp.Project
       
 
         // XSharpLanguageService _langService = null;
-        #region Overridden Implementation
+#region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -290,7 +290,7 @@ namespace XSharp.Project
 
         }
 
-        #endregion
+#endregion
         public int OnShellPropertyChange(int propid, object var)
         {
             // A modal dialog has been opened. Editor Options ?

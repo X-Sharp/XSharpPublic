@@ -3030,7 +3030,7 @@ END CLASS
 
 CLASS DBHelpers
 	STATIC METHOD DBH_DBUseArea(cDriver AS STRING, cDbfFileName AS STRING) AS LOGIC
-	RETURN DbUseArea(TRUE , cDriver , cDbfFileName , NIL , FALSE , FALSE)
+	RETURN DbUseArea(TRUE , cDriver , cDbfFileName , NULL , FALSE , FALSE)
 	STATIC METHOD DBH_DBUseArea(cDriver AS STRING, cDbfFileName AS STRING, cAlias AS STRING) AS LOGIC
 	RETURN DbUseArea(TRUE , cDriver , cDbfFileName , cAlias , FALSE , FALSE)
 	STATIC METHOD DBH_DBCreate(cFileName AS STRING, oFields AS List<OBJECT>, cDriver AS STRING) AS LOGIC

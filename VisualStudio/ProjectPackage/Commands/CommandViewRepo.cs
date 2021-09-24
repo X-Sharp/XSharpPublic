@@ -1,4 +1,5 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿#if REPOWINDOW
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
 using System;
 using XSharpModel;
@@ -17,6 +18,7 @@ namespace XSharp.Project
         protected override Task InitializeCompletedAsync()
         {
             Command.Supported = false;
+            Command.Visible = false;
             return base.InitializeCompletedAsync();
         }
 
@@ -28,3 +30,4 @@ namespace XSharp.Project
         }
     }
 }
+#endif

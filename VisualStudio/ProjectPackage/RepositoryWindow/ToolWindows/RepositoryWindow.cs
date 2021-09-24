@@ -1,4 +1,5 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿#if REPOWINDOW
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using System;
@@ -32,3 +33,4 @@ namespace XSharp.Project
         }
     }
 }
+#endif

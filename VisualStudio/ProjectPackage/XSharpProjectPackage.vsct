@@ -251,7 +251,7 @@
               <Icon guid="ImageCatalogGuid" id="DatabaseColumn" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>View &amp;Workareas</ButtonText>
         </Strings>
@@ -260,7 +260,7 @@
         <Icon guid="ImageCatalogGuid" id="LocalsWindow" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>View &amp;Dynamic Memory Variables</ButtonText>
         </Strings>
@@ -269,7 +269,7 @@
         <Icon guid="ImageCatalogGuid" id="LocalsWindow" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>View &amp;Global Memory Variables</ButtonText>
         </Strings>
@@ -278,7 +278,7 @@
         <Icon guid="ImageCatalogGuid" id="Settings" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
-        <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>View &amp;Settings</ButtonText>
         </Strings>

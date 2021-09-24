@@ -17,6 +17,7 @@ namespace XSharp.Project
 
         protected override Task InitializeCompletedAsync()
         {
+            Command.Enabled = false;
             Command.Supported = false;
             return base.InitializeCompletedAsync();
         }

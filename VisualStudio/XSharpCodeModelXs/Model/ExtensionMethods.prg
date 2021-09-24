@@ -8,11 +8,19 @@ USING System
 USING System.Linq
 USING System.Collections.Generic
 USING LanguageService.CodeAnalysis.XSharp
+USING LanguageService.SyntaxTree
 
 
 BEGIN NAMESPACE XSharpModel
 
     STATIC CLASS ExtensionMethods
+
+        STATIC METHOD CleanText(SELF token as IToken) AS STRING
+            var result := token:Text
+            if result:StartsWith("@@")
+                result := result:Substring(2)
+            ENDIF
+            RETURN result
 
         //		STATIC METHOD IsEmpty( SELF cType AS CompletionType) AS LOGIC
         //			RETURN cType == NULL .OR. ! cType:IsInitialized

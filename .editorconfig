@@ -46,5 +46,5 @@ trim_trailing_whitespace = false
 
 [*.prg]
 indent_style = space
-keyword_case = upper
+keyword_case = none
 identifier_case = false

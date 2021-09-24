@@ -35,7 +35,6 @@
             this.chkSortNavBar = new System.Windows.Forms.CheckBox();
             this.chkIncludeFields = new System.Windows.Forms.CheckBox();
             this.chkKeywordsInAll = new System.Windows.Forms.CheckBox();
-            this.chkShowAfterChar = new System.Windows.Forms.CheckBox();
             this.chkAutoPairs = new System.Windows.Forms.CheckBox();
             this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
             this.chkExcludeMembersFromOtherfiles = new System.Windows.Forms.CheckBox();
@@ -43,6 +42,7 @@
             this.btnShowMeTheMagic = new System.Windows.Forms.Button();
             this.grpNavigationBars = new System.Windows.Forms.GroupBox();
             this.grpCompletionListTabs = new System.Windows.Forms.GroupBox();
+            this.btnReset = new System.Windows.Forms.Button();
             this.commitChars = new System.Windows.Forms.TextBox();
             label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
@@ -53,7 +53,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(10, 79);
+            label1.Location = new System.Drawing.Point(10, 63);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(270, 13);
             label1.TabIndex = 6;
@@ -71,7 +71,6 @@
         "of the current selected type. Also the member names will no longer be prefixed w" +
         "ith the typenames.");
             this.chkShowMembersOfCurrentType.UseVisualStyleBackColor = true;
-            this.chkShowMembersOfCurrentType.CheckedChanged += new System.EventHandler(this.chkShowMembersOfCurrentType_CheckedChanged);
             // 
             // chkSortNavBar
             // 
@@ -85,7 +84,6 @@
         " sorted by name. Otherwise they will appear in the order in which they appear in" +
         " the source code.");
             this.chkSortNavBar.UseVisualStyleBackColor = true;
-            this.chkSortNavBar.CheckedChanged += new System.EventHandler(this.chkSortNavBar_CheckedChanged);
             // 
             // chkIncludeFields
             // 
@@ -98,7 +96,6 @@
             this.toolTip1.SetToolTip(this.chkIncludeFields, "When you enable this then the combo box on the right hand side of the navigation " +
         "bar will also include fields and defines");
             this.chkIncludeFields.UseVisualStyleBackColor = true;
-            this.chkIncludeFields.CheckedChanged += new System.EventHandler(this.chkIncludeFields_CheckedChanged);
             // 
             // chkKeywordsInAll
             // 
@@ -111,26 +108,11 @@
             this.toolTip1.SetToolTip(this.chkKeywordsInAll, "If you organize the Completion lists in tabs, this controls if keywords are added" +
         " to the main tab");
             this.chkKeywordsInAll.UseVisualStyleBackColor = true;
-            this.chkKeywordsInAll.CheckedChanged += new System.EventHandler(this.chkKeywordsInAll_CheckedChanged);
-            // 
-            // chkShowAfterChar
-            // 
-            this.chkShowAfterChar.AutoSize = true;
-            this.chkShowAfterChar.Location = new System.Drawing.Point(13, 60);
-            this.chkShowAfterChar.Name = "chkShowAfterChar";
-            this.chkShowAfterChar.Size = new System.Drawing.Size(246, 17);
-            this.chkShowAfterChar.TabIndex = 2;
-            this.chkShowAfterChar.Text = "Show Completion list after a character is typed.";
-            this.toolTip1.SetToolTip(this.chkShowAfterChar, "When you have typed 3 or more characters then a completionlist will be shown with" +
-        " keywords, type names, variable names etc based on the current location in the s" +
-        "ource code editor");
-            this.chkShowAfterChar.UseVisualStyleBackColor = true;
-            this.chkShowAfterChar.CheckedChanged += new System.EventHandler(this.chkShowAfterChar_CheckedChanged);
             // 
             // chkAutoPairs
             // 
             this.chkAutoPairs.AutoSize = true;
-            this.chkAutoPairs.Location = new System.Drawing.Point(13, 120);
+            this.chkAutoPairs.Location = new System.Drawing.Point(13, 104);
             this.chkAutoPairs.Name = "chkAutoPairs";
             this.chkAutoPairs.Size = new System.Drawing.Size(316, 17);
             this.chkAutoPairs.TabIndex = 8;
@@ -138,7 +120,6 @@
             this.toolTip1.SetToolTip(this.chkAutoPairs, "After selecting a function, method or type from the completionlist this will auto" +
         "matically inser a closing token");
             this.chkAutoPairs.UseVisualStyleBackColor = true;
-            this.chkAutoPairs.CheckedChanged += new System.EventHandler(this.chkAutoPairs_CheckedChanged);
             // 
             // chkCompletionListtabs
             // 
@@ -151,7 +132,6 @@
             this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your comletionlists in tabs, to make it easier to find a method or" +
         " property in long completionlists");
             this.chkCompletionListtabs.UseVisualStyleBackColor = true;
-            this.chkCompletionListtabs.CheckedChanged += new System.EventHandler(this.chkCompletionListtabs_CheckedChanged);
             // 
             // chkExcludeMembersFromOtherfiles
             // 
@@ -164,7 +144,6 @@
             this.toolTip1.SetToolTip(this.chkExcludeMembersFromOtherfiles, "If you select this then the combox on the right hand side will only show members " +
         "of the current selected type and only from the current file.");
             this.chkExcludeMembersFromOtherfiles.UseVisualStyleBackColor = true;
-            this.chkExcludeMembersFromOtherfiles.CheckedChanged += new System.EventHandler(this.chkIncludeMembersFromOtherfiles_CheckedChanged);
             // 
             // panel1
             // 
@@ -173,12 +152,12 @@
             this.panel1.Controls.Add(this.grpCompletionListTabs);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(381, 303);
+            this.panel1.Size = new System.Drawing.Size(381, 282);
             this.panel1.TabIndex = 4;
             // 
             // btnShowMeTheMagic
             // 
-            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 266);
+            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 249);
             this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
             this.btnShowMeTheMagic.Size = new System.Drawing.Size(114, 23);
             this.btnShowMeTheMagic.TabIndex = 7;
@@ -192,36 +171,44 @@
             this.grpNavigationBars.Controls.Add(this.chkShowMembersOfCurrentType);
             this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
             this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
-            this.grpNavigationBars.Location = new System.Drawing.Point(3, 152);
+            this.grpNavigationBars.Location = new System.Drawing.Point(3, 138);
             this.grpNavigationBars.Name = "grpNavigationBars";
-            this.grpNavigationBars.Size = new System.Drawing.Size(373, 109);
+            this.grpNavigationBars.Size = new System.Drawing.Size(373, 101);
             this.grpNavigationBars.TabIndex = 6;
             this.grpNavigationBars.TabStop = false;
             this.grpNavigationBars.Text = "Navigation Bars";
             // 
             // grpCompletionListTabs
             // 
+            this.grpCompletionListTabs.Controls.Add(this.btnReset);
             this.grpCompletionListTabs.Controls.Add(this.chkAutoPairs);
             this.grpCompletionListTabs.Controls.Add(this.commitChars);
             this.grpCompletionListTabs.Controls.Add(label1);
             this.grpCompletionListTabs.Controls.Add(this.chkKeywordsInAll);
-            this.grpCompletionListTabs.Controls.Add(this.chkShowAfterChar);
             this.grpCompletionListTabs.Controls.Add(this.chkCompletionListtabs);
             this.grpCompletionListTabs.Location = new System.Drawing.Point(3, 3);
             this.grpCompletionListTabs.Name = "grpCompletionListTabs";
-            this.grpCompletionListTabs.Size = new System.Drawing.Size(373, 144);
+            this.grpCompletionListTabs.Size = new System.Drawing.Size(373, 127);
             this.grpCompletionListTabs.TabIndex = 4;
             this.grpCompletionListTabs.TabStop = false;
             this.grpCompletionListTabs.Text = "Completion Lists";
             // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(310, 80);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(57, 23);
+            this.btnReset.TabIndex = 9;
+            this.btnReset.Text = "&Reset";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // commitChars
             // 
-            this.commitChars.Location = new System.Drawing.Point(14, 95);
+            this.commitChars.Location = new System.Drawing.Point(14, 79);
             this.commitChars.Name = "commitChars";
             this.commitChars.Size = new System.Drawing.Size(286, 20);
             this.commitChars.TabIndex = 7;
-            this.commitChars.Text = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
-            this.commitChars.TextChanged += new System.EventHandler(this.commitChars_TextChanged);
             // 
             // IntellisenseOptionsControl
             // 
@@ -230,7 +217,7 @@
             this.AutoScroll = true;
             this.Controls.Add(this.panel1);
             this.Name = "IntellisenseOptionsControl";
-            this.Size = new System.Drawing.Size(386, 317);
+            this.Size = new System.Drawing.Size(388, 293);
             this.panel1.ResumeLayout(false);
             this.grpNavigationBars.ResumeLayout(false);
             this.grpNavigationBars.PerformLayout();
@@ -252,8 +239,8 @@
         private System.Windows.Forms.CheckBox chkAutoPairs;
         internal System.Windows.Forms.TextBox commitChars;
         private System.Windows.Forms.CheckBox chkKeywordsInAll;
-        private System.Windows.Forms.CheckBox chkShowAfterChar;
         private System.Windows.Forms.CheckBox chkCompletionListtabs;
         private System.Windows.Forms.CheckBox chkExcludeMembersFromOtherfiles;
+        private System.Windows.Forms.Button btnReset;
     }
 }

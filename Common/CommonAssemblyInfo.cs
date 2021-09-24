@@ -14,14 +14,22 @@ using System.Reflection;
 #if DEBUG
 [assembly: Microsoft.CodeAnalysis.CommitHashAttribute("debug")]
 #else
-[assembly: Microsoft.CodeAnalysis.CommitHashAttribute("release")]
+#if PUBLIC
+    [assembly: Microsoft.CodeAnalysis.CommitHashAttribute("public")]
+#else
+    [assembly: Microsoft.CodeAnalysis.CommitHashAttribute("release")]
+#endif
 #endif
 #endif
 
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else
+#if PUBLIC
+[assembly: AssemblyConfiguration("Public")]
+#else
 [assembly: AssemblyConfiguration("Release")]
+#endif
 #endif	
 [assembly: AssemblyProduct(XSharp.Constants.Product)]
 [assembly: AssemblyCompany(XSharp.Constants.Company)]

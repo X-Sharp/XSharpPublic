@@ -1176,7 +1176,7 @@ CLASS ApplicationDescriptor
 			ENDIF
 
 			BEGIN SCOPE // designers
-				LOCAL oModuleFieldSpecs AS XSharp.VODesigners.VOFieldSpecDescription
+				LOCAL oModuleFieldSpecs AS XSharp.VOEditors.VOFieldSpecDescription
 				LOCAL aXideFieldSpecs AS List<STRING>
 				LOCAL aXideDBServers AS List<STRING>
 				LOCAL aFilesToDel AS List<STRING>
@@ -1184,7 +1184,7 @@ CLASS ApplicationDescriptor
 				LOCAL cPrg AS STRING
 				cModule := cFolder + "\" + oModule:PathValidName
 				cPrg := cModule + ".prg"
-				oModuleFieldSpecs := XSharp.VODesigners.VOFieldSpecDescription{}
+				oModuleFieldSpecs := XSharp.VOEditors.VOFieldSpecDescription{}
 				aXideFieldSpecs := List<STRING>{}
 				aXideDBServers := List<STRING>{}
 				aFilesToDel := List<STRING>{}
@@ -1200,13 +1200,13 @@ CLASS ApplicationDescriptor
 							oModuleFieldSpecs:LoadFromBinary(oDesigner:Bytes, oDesigner:Name)
 						ELSEIF oDesigner:Type == BINARY_FLD
 //							MessageBox.Show(oDesigner:Name , "FIELD")
-							XSharp.VODesigners.DBServerBinary.Add(oDesigner:Name , XSharp.VODesigners.DBServerItemType.Field , oDesigner:Bytes)
+							XSharp.VOEditors.DBServerBinary.Add(oDesigner:Name , XSharp.VOEditors.DBServerItemType.Field , oDesigner:Bytes)
 						ELSEIF oDesigner:Type == BINARY_IND
 //							MessageBox.Show(oDesigner:Name , "INDEX")
-							XSharp.VODesigners.DBServerBinary.Add(oDesigner:Name , XSharp.VODesigners.DBServerItemType.Index , oDesigner:Bytes)
+							XSharp.VOEditors.DBServerBinary.Add(oDesigner:Name , XSharp.VOEditors.DBServerItemType.Index , oDesigner:Bytes)
 						ELSEIF oDesigner:Type == BINARY_ORD
 //							MessageBox.Show(oDesigner:Name , "ORDER")
-							XSharp.VODesigners.DBServerBinary.Add(oDesigner:Name , XSharp.VODesigners.DBServerItemType.Order , oDesigner:Bytes)
+							XSharp.VOEditors.DBServerBinary.Add(oDesigner:Name , XSharp.VOEditors.DBServerItemType.Order , oDesigner:Bytes)
 						ELSEIF oDesigner:Type == BINARY_DED
 //							MessageBox.Show(oDesigner:Name , "DBSERVER")
 							aDBServers:Add(cBinary, oDesigner:Bytes)
@@ -1279,8 +1279,8 @@ CLASS ApplicationDescriptor
 				// DBServers:
 				IF xPorter.ExportToVS
 					FOREACH oDBServer AS KeyValuePair<STRING,BYTE[]> IN aDBServers
-						LOCAL oDBDescr AS XSharp.VODesigners.VODBServerDescription
-						oDBDescr := XSharp.VODesigners.VODBServerDescription.LoadFromBinary(oDBServer:Value)
+						LOCAL oDBDescr AS XSharp.VOEditors.VODBServerDescription
+						oDBDescr := XSharp.VOEditors.VODBServerDescription.LoadFromBinary(oDBServer:Value)
 						oDBDescr:SaveToDocument(oDBServer:Key)
 					NEXT
 				END IF

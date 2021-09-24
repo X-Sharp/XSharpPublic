@@ -1,0 +1,6 @@
+﻿Notes about QuickInfo
+=====================
+
+To retrieve QuickInfo we need to do:
+- Determine the token under the cursor and its type. General lookup options apply of course.
+- Fill a QuickInfo WPF tooltip

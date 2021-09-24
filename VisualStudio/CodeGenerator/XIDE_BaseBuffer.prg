@@ -1,7 +1,7 @@
 USING System.Collections.Generic
 USING System.Collections
 USING System.Reflection
-
+USING Xide
 #pragma warnings(219, off) // assigned but not used
 BEGIN NAMESPACE Xide
 

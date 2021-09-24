@@ -21,6 +21,7 @@ using Microsoft.Windows.Design.Host;
 
 using XSharp.Project;
 using Microsoft.VisualStudio.Project;
+using Community.VisualStudio.Toolkit;
 
 namespace XSharp.Project.WPF
 {
@@ -291,8 +292,8 @@ namespace XSharp.Project.WPF
             return;
         }
 
-        private static EnvDTE.DTE dte;
-        private static EnvDTE.DTE DTE
+        private static EnvDTE80.DTE2 dte;
+        private static EnvDTE80.DTE2 DTE
         {
             get
             {
@@ -300,8 +301,9 @@ namespace XSharp.Project.WPF
                 {
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
+
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+                        dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(EnvDTE80.DTE2)) as EnvDTE80.DTE2;
                     });
                 }
                 return dte;

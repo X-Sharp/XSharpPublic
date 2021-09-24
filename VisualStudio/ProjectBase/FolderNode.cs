@@ -15,13 +15,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio;
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-
+using File = System.IO.File;
 namespace Microsoft.VisualStudio.Project
 {
     [CLSCompliant(false)]
@@ -456,10 +456,7 @@ namespace Microsoft.VisualStudio.Project
             if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
             {
                 string title = null;
-                OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                Utilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
+                VS.MessageBox.ShowError(title, errorMessage);
                 return VSConstants.S_OK;
             }
             else

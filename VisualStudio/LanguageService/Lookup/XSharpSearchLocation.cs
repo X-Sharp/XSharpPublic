@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,13 +14,14 @@ namespace XSharp.LanguageService
     /// This type contains the location where a search has started. It is immutable
     /// If you want to change the line number or Position you will have to use the With() method to update these
     /// </summary>
+    [DebuggerDisplay("{Member.Name} {LineNumber}")]
     internal class XSharpSearchLocation
     {
         internal ITextSnapshot Snapshot { get; private set; }
         internal int Position { get; private set; }
         internal int LineNumber { get; private set; }
         internal string CurrentNamespace { get; private set; }
-        internal XFile File { get; private set; }
+        internal XFile File { get;  private set; }
         internal XSourceMemberSymbol Member { get; private set; }
         internal List<string> Usings { get; private set; }
         internal XSharpDialect Dialect
@@ -40,7 +42,7 @@ namespace XSharp.LanguageService
                 return null;
             }
         }
-        internal XSharpSearchLocation(XSourceMemberSymbol member, ITextSnapshot snapshot,
+        internal XSharpSearchLocation(XFile file, XSourceMemberSymbol member, ITextSnapshot snapshot,
             int lineNumber = 0, int position = 0, string currentNs= "")
         {
             Member = member;
@@ -48,6 +50,10 @@ namespace XSharp.LanguageService
             if (member != null)
             {
                 File = Member.File;
+            }
+            else
+            {
+                File = file;
             }
             LineNumber = lineNumber;
             Position = position;

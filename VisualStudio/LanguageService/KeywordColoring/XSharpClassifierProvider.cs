@@ -8,7 +8,6 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
-using XSharpModel;
 using Microsoft.VisualStudio.Text.Editor;
 
 namespace XSharp.LanguageService

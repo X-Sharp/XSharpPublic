@@ -8,7 +8,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING System.Diagnostics
-
+#pragma options("vo3", off)
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{Line}:{Column} {Comment,nq}")];
    SEALED CLASS XCommentTask

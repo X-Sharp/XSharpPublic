@@ -47,5 +47,18 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Modifiers   AS Modifiers    GET _AND(Attributes, ~Modifiers.VisibilityMask)
       PROPERTY Visibility  AS Modifiers    GET _AND(Attributes, Modifiers.VisibilityMask)
 
+      PROPERTY TextRange AS TextRange
+        GET
+            RETURN TextRange{SELF:StartLine, SELF:StartColumn, SELF:EndLine, SELF:EndColumn}
+        END GET
+      END PROPERTY
+
+      PROPERTY TextInterval AS TextInterval
+        GET
+            RETURN TextInterval{SELF:Start, SELF:Stop}
+        END GET
+      END PROPERTY
+
+
     END CLASS
 END NAMESPACE

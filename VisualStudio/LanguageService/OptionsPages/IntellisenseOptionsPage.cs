@@ -1,21 +1,14 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using XSharpModel;
 
 namespace XSharp.LanguageService.OptionsPages
 {
 
     [Guid(XSharpConstants.IntellisenseOptionsPageGuidString)]
     [SharedSettings("TextEditor.XSharp",false)]
-    class IntellisenseOptionsPage : DialogPage
+    public class IntellisenseOptionsPage : XSDialogPage<IntellisenseOptionsControl>
     {
-        public bool SettingsChanged { get; set; }
         public bool CompletionListTabs { get; set; }
         public String CommitChars { get; set; }
         public bool AutoPairs { get; set; }
@@ -56,17 +49,7 @@ namespace XSharp.LanguageService.OptionsPages
         public bool EnableReferenceInfoLog { get; set; }
 
         public bool HideAdvancemembers { get; set; } // not on control. Is already on another page.
-        protected override IWin32Window Window
-        {
-            get
-            {
-                IntellisenseOptionsControl page = new IntellisenseOptionsControl();
-                page.optionsPage = this;
-                page.Initialize();
-                return page;
-            }
-        }
-
+        
         private void SetDefaultCommitChars()
         {
             if (this.CommitChars == null || string.IsNullOrEmpty(this.CommitChars) )
@@ -86,7 +69,6 @@ namespace XSharp.LanguageService.OptionsPages
             {
                 this.CommitChars = "";
             }
-            SettingsChanged = true;
         }
         public override void SaveSettingsToStorage()
         {
@@ -94,7 +76,6 @@ namespace XSharp.LanguageService.OptionsPages
                 this.CommitChars = "<Empty>";
             SetDefaultCommitChars();
             base.SaveSettingsToStorage();
-            SettingsChanged = true;
         }
         public IntellisenseOptionsPage() 
         {

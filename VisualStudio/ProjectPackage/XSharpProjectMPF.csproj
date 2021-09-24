@@ -106,13 +106,27 @@
     <Compile Include="Automation\OAXSharpProjectItem.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="Commands\CommandAddDesignerFile.cs" />
+    <Compile Include="Commands\CommandConvertXsRuntime.cs" />
+    <Compile Include="Commands\CommandRebuildIntellisense.cs" />
+    <Compile Include="Commands\CommandViewRepo.cs" />
+    <Compile Include="Commands\CommandViewWorkareas.cs" />
+    <Compile Include="Commands\CommandViewSettings.cs" />
+    <Compile Include="Commands\CommandViewMemVars.cs" />
+    <Compile Include="Commands\CommandViewGlobals.cs" />
+    <Compile Include="Commands\CommandUDCTester.cs" />
+    <Compile Include="Commands\CommandFoxXPorter.cs" />
+    <Compile Include="Commands\CommandXsWebsite.cs" />
+    <Compile Include="Commands\CommandXsHelp.cs" />
+    <Compile Include="Commands\CommandXPorter.cs" />
+    <Compile Include="Commands\CommandVoXPorter.cs" />
+    <Compile Include="Commands\XSharpBaseCommand.cs" />
     <Compile Include="ErrorList\TaskListManager.cs" />
     <Compile Include="ErrorList\TasksSnapShot.cs" />
     <Compile Include="ErrorList\TasksFactory.cs" />
     <Compile Include="ErrorList\TaskListItem.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />
     <Compile Include="ErrorList\TaskListProvider.cs" />
-    <Compile Include="ModelScannerEvents.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
     <Compile Include="OptionsPages\BaseOptionsPage.cs">
@@ -322,6 +336,8 @@
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <Generator>VsctGenerator</Generator>
+      <LastGenOutput>XSharpProjectPackage1.cs</LastGenOutput>
     </VSCTCompile>
     <Content Include="XSharpAppDesigner.pkgdef">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -347,12 +363,20 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WcfService\Service.prg">
     </ZipItem>
+    <Compile Include="RepositoryWindow\ToolWindows\RepositoryWindow.cs" />
+    <Compile Include="RepositoryWindow\ToolWindows\RepositoryWindowControl.xaml.cs">
+      <DependentUpon>RepositoryWindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="XSharpDocumentWatcher.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
-    <Compile Include="XSharpMenuItems.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpOutputPane.cs" />
     <Compile Include="XSharpProjectOptions.cs" />
+    <Compile Include="XSharpProjectPackage1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>XSharpProjectPackage.vsct</DependentUpon>
+    </Compile>
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
     <Compile Include="WPF\XSharpEventBindingProvider.cs" />
@@ -626,10 +650,6 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\VODesigners\VODesigners.xsproj">
-      <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
-      <Name>VODesigners</Name>
-    </ProjectReference>
     <ProjectReference Include="..\XSharpAppDesigner\XSharpAppDesigner.csproj">
       <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe0}</Project>
       <Name>XSharpAppDesigner</Name>
@@ -686,14 +706,11 @@
     </ZipItem>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit">
+      <Version>15.0.76.270-pre</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK">
       <Version>15.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes">
-      <Version>15.0.36</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.15.0">
-      <Version>15.9.28307</Version>
     </PackageReference>
     <PackageReference Include="System.ComponentModel">
       <Version>4.3.0</Version>
@@ -705,7 +722,12 @@
       <Version>7.0.4</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="RepositoryWindow\ToolWindows\RepositoryWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>

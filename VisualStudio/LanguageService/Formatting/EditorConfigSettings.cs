@@ -4,14 +4,15 @@
 // See License.txt in the project root for license information.
 //
 using XSharpModel;
-using EditorConfig.Core;
 using System.Data.Common;
+using EditorConfig.Core;
 
 namespace XSharp.LanguageService
 {
-    internal sealed partial class CommandFilter
+    internal partial class XSharpFormattingCommandHandler
     {
-
+        EditorConfig.Core.FileConfiguration _configuration = null;
+        SourceCodeEditorSettings _settings = null;
         private const string KEYWORDCASE = "keyword_case";
         private const string IDENTIFIERCASE = "identifier_case";
         private const string UDCCASE = "udc_case";
@@ -21,11 +22,7 @@ namespace XSharp.LanguageService
         private const string UPPER = "upper";
         private const string LOWER = "lower";
         private const string TITLE = "title";
-        
 
-
-        EditorConfig.Core.FileConfiguration _configuration = null;
-        SourceCodeEditorSettings _settings = null;
 
         private void ReadSettings(string fileName)
         {
@@ -95,5 +92,6 @@ namespace XSharp.LanguageService
                 _buffer.Properties.RemoveProperty(typeof(SourceCodeEditorSettings));
             _buffer.Properties.AddProperty(typeof(SourceCodeEditorSettings), _settings);
         }
+
     }
 }

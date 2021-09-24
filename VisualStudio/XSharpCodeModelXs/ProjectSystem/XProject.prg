@@ -71,7 +71,8 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY DependentProjectList              AS STRING
          GET
-            IF String.IsNullOrEmpty(_dependentProjectList) .OR. _dependentProjectList == SELF:Id:ToString()
+            IF String.IsNullOrEmpty(_dependentProjectList) .OR. ;
+               (_dependentProjectList == SELF:Id:ToString() .AND. _ReferencedProjects:Count > 0)
                VAR result := ""
                result := SELF:Id:ToString()
                FOREACH VAR dependent IN _ReferencedProjects:ToArray()
@@ -128,11 +129,13 @@ BEGIN NAMESPACE XSharpModel
                      ENDIF
                   NEXT
                   FOREACH VAR asm IN SELF:AssemblyReferences:ToArray()
-                     FOREACH VAR ns IN asm:ImplicitNamespaces
-                        IF result:IndexOf(ns) == -1
-                           result:Add(ns)
-                        ENDIF
-                     NEXT
+                     IF asm:IsXSharp
+                         FOREACH VAR ns IN asm:ImplicitNamespaces
+                            IF result:IndexOf(ns) == -1
+                               result:Add(ns)
+                            ENDIF
+                         NEXT
+                      ENDIF
                   NEXT
                ENDIF
                _ImplicitNamespaces := result
@@ -190,25 +193,6 @@ BEGIN NAMESPACE XSharpModel
                   ENDIF
                END LOCK
             ENDIF
-
-//         METHOD AddAssemblyReference(reference AS VSLangProj.Reference) AS VOID
-//            //LOCAL assemblyInfo AS AssemblyInfo
-//            IF reference != NULL
-//               IF XSettings.EnableReferenceInfoLog
-//                  SELF:WriteOutputMessage("AddAssemblyReference (VSLangProj.Reference) "+reference:Path)
-//               ENDIF
-//               SELF:_clearTypeCache()
-//               IF ! XSettings.DisableAssemblyReferences
-//                  IF ! String.IsNullOrEmpty(reference:Path)
-//                     AddAssemblyReference(reference:Path)
-//                     //                        ELSE
-//                     //                            // create an assembly reference with the reference object and no real contents
-//                     //                            assemblyInfo := SystemTypeController.LoadAssembly(reference)
-//                     //                            SELF:_AssemblyReferences:Add(assemblyInfo)
-//                     //                            assemblyInfo:AddProject(SELF)
-//                  ENDIF
-//               ENDIF
-//            ENDIF
 
          METHOD ClearAssemblyReferences() AS VOID
             IF XSettings.EnableReferenceInfoLog
@@ -327,9 +311,7 @@ BEGIN NAMESPACE XSharpModel
 
          METHOD AddProjectReference(url AS STRING) AS LOGIC
             IF ! String.IsNullOrEmpty(url)
-               SELF:_ImplicitNamespaces := NULL
-               SELF:_dependentAssemblyList := NULL
-               SELF:_dependentProjectList  := ""
+               SELF:_clearTypeCache()
                IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("Add XSharp ProjectReference "+url)
                ENDIF
@@ -665,6 +647,97 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN result
 
+        METHOD FindGlobalsInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
+        IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindGlobalsInAssemblyReferences {name} ")
+        ENDIF
+         VAR result := List<IXMemberSymbol>{}
+         FOREACH VAR asm IN AssemblyReferences:ToArray()
+            IF !String.IsNullOrEmpty(asm:GlobalClassName)
+               VAR type := asm:GetType(asm.GlobalClassName)
+               IF type != NULL
+                  VAR fields := type:GetFields():Where ({m => m.Name.StartsWith(name)})
+                  result:AddRange(fields)
+               ENDIF
+            ENDIF
+         NEXT
+         IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindGlobalsInAssemblyReferences {name}, found {result.Count} occurences")
+         ENDIF
+        RETURN result
+
+        METHOD FindFunctionsInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
+        IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindFunctionsInAssemblyReferences {name} ")
+        ENDIF
+         VAR result := List<IXMemberSymbol>{}
+         FOREACH VAR asm IN AssemblyReferences:ToArray()
+            IF !String.IsNullOrEmpty(asm:GlobalClassName)
+               VAR type := asm:GetType(asm.GlobalClassName)
+               IF type != NULL
+                  VAR methods := type:GetMethods():Where ({m => m.Name.StartsWith(name)})
+                  result:AddRange(methods)
+               ENDIF
+            ENDIF
+         NEXT
+         IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindFunctionsInAssemblyReferences {name}, found {result.Count} occurences")
+         ENDIF
+         RETURN result
+
+METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
+        IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindGlobalMembersLike {name} Current Project {lCurrentProject}")
+        ENDIF
+         VAR result := List<IXMemberSymbol>{}
+         var projList := ""
+         if lCurrentProject
+            projList := SELF:Id:ToString()
+         ELSE
+            projList := SELF:DependentProjectList
+         ENDIF
+         var dbresult := XDatabase.FindProjectGlobalOrDefineLike(name, projList)
+         LOCAL xFile := null as XFile
+         LOCAL cFile := "" AS STRING
+         foreach element as XDbResult in dbresult
+            if element:FileName != cFile
+                xFile := XSolution.FindFile(element:FileName)
+                cFile := element:FileName
+            endif
+            var xmember := XSourceMemberSymbol{element, xFile}
+            result:Add(xmember)
+         next
+         IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindGlobalMembersLike {name}, found {result.Count} occurences")
+         ENDIF
+         RETURN result
+
+    METHOD FindFunctionsLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
+        IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindFunctionsLike {name} Current Project {lCurrentProject}")
+        ENDIF
+         VAR result := List<IXMemberSymbol>{}
+         var projList := ""
+         if lCurrentProject
+            projList := SELF:Id:ToString()
+         ELSE
+            projList := SELF:DependentProjectList
+         ENDIF
+         var dbresult := XDatabase.FindFunctionLike(name, projList)
+         LOCAL xFile := NULL as XFile
+         LOCAL cFile := "" AS STRING
+         foreach element as XDbResult in dbresult
+            if element:FileName != cFile
+                xFile := XSolution.FindFile(element:FileName)
+                cFile := element:FileName
+            endif
+            var xmember := XSourceMemberSymbol{element, xFile}
+            result:Add(xmember)
+         next
+         IF XSettings.EnableTypelookupLog
+            WriteOutputMessage(i"FindFunctionsLike {name}, found {result.Count} occurences")
+         ENDIF
+         RETURN result
 
 
       METHOD FindFunction(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMemberSymbol
@@ -695,7 +768,7 @@ BEGIN NAMESPACE XSharpModel
          IF lRecursive
             projectIds    := SELF:DependentProjectList
          ENDIF
-         VAR result := XDatabase.FindGlobalOrDefine(name, projectIds)
+         VAR result := XDatabase.FindProjectGlobalOrDefine(name, projectIds)
          VAR xmember := GetGlobalMember(result)
          IF XSettings.EnableTypelookupLog
                WriteOutputMessage(ie"FindGlobalOrDefine {name}, result {iif (xmember != NULL, xmember.FullName, \"not found\"} ")
@@ -713,13 +786,17 @@ BEGIN NAMESPACE XSharpModel
             VAR members := List<XSourceMemberSymbol>{}
             source := ""
             FOREACH VAR element IN result
-                VAR xmember := XSourceMemberSymbol.FromDbResult(element, SELF)
+                VAR xfile    := SELF:FindXFile(element:FileName)
+                IF xfile == NULL
+                    xfile := XSolution.FindFullPath(element:FileName)
+                ENDIF
+                VAR xmember := XSourceMemberSymbol{element, xfile}
                 source += element:SourceCode+Environment.NewLine
                 members:Add(xmember)
                 file := xmember:File
             NEXT
-            VAR walker := SourceWalker{file}
-            walker:Parse(source, TRUE)
+            VAR walker := SourceWalker{file, FALSE}
+            walker:Parse(source)
             VAR first := (XSourceMemberSymbol) walker:EntityList:First()
             VAR parentType := (XSourceTypeSymbol) first:ParentType
             VAR entities := List<XSourceMemberSymbol>{}
@@ -728,7 +805,8 @@ BEGIN NAMESPACE XSharpModel
                 IF entity IS XSourceMemberSymbol VAR xsms
                     entities:Add(xsms)
                     IF i < result:Count
-                        xsms:XmlComments := result[i]:XmlComments
+                        // copy location and xml comments
+                        xsms:CopyValuesFrom(result[i])
                     ENDIF
                 ENDIF
             NEXT
@@ -782,7 +860,13 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN type
 
-      PROPERTY AssemblyNamespaces AS IList<STRING> GET SystemTypeController.GetNamespaces(SELF:_AssemblyReferences)
+      PROPERTY AssemblyNamespaces AS IList<STRING>
+         GET
+            SELF:ResolveReferences()
+            RETURN XDatabase.GetAssemblyNamespaces(SELF:DependentAssemblyList)
+         END GET
+      END PROPERTY
+
 
       METHOD GetCommentTasks() AS IList<XCommentTask>
          VAR tasks := XDatabase.GetCommentTasks(SELF:Id:ToString())
@@ -823,7 +907,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _lastName  := NULL AS STRING
 
       METHOD GetTypes( startWith AS STRING, usings AS IList<STRING>) AS IList<XSourceTypeSymbol>
-         VAR result := XDatabase.GetTypesLike(startWith, SELF:DependentProjectList)
+         VAR result := XDatabase.GetProjectTypesLike(startWith, SELF:DependentProjectList)
          result := FilterUsings(result,usings,startWith,TRUE)
          VAR types := SELF:GetTypeList(result)
          RETURN types
@@ -861,7 +945,7 @@ BEGIN NAMESPACE XSharpModel
          IF pos > 0
             typeName := typeName:Substring(0, pos)
          ENDIF
-         VAR result  := XDatabase.GetTypes(typeName, SELF:DependentProjectList)
+         VAR result  := XDatabase.GetProjectTypes(typeName, SELF:DependentProjectList)
          result      := FilterUsings(result,usings, typeName, FALSE)
 
          var tmp  := GetType(result)
@@ -970,8 +1054,8 @@ BEGIN NAMESPACE XSharpModel
             RETURN NULL
          ENDIF
          aFiles:Add(oType:IdFile, file)
-         VAR walker     := SourceWalker{file}
-         walker:Parse(source, TRUE) // we are not interested in locals but we also do not want to update the database here
+         VAR walker        := SourceWalker{file, FALSE}
+         walker:Parse(source) // we are not interested in locals but we also do not want to update the database here
          IF walker:EntityList:Count > 0
             namespace      := oType:Namespace
             fullTypeName   := oType:Namespace+"."+oType:TypeName
@@ -986,15 +1070,12 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             IF xtype != NULL
                xtype:SetInterfaces(aIF)
-               xtype:BaseType    := baseTypeName
-               xtype:Range       := TextRange{oType:StartLine, oType:StartColumn, oType:EndLine, oType:EndColumn}
-               xtype:Interval    := TextInterval{oType:Start, oType:Stop}
+               xtype:BaseTypeName    := baseTypeName
+               xtype:CopyValuesFrom(oType)
                xtype:Namespace   := namespace
-               xtype:XmlComments := oType:XmlComments
                xtype:ClassType   := (XSharpDialect) oType:ClassType
-               xtype:XmlComments := cXmlComment
                VAR xmembers := xtype:XMembers:ToArray()
-               var dict := Dictionary<string, IList<XSourceMemberSymbol>>{}
+               VAR dict := Dictionary<STRING, IList<XSourceMemberSymbol>>{}
                FOREACH m as XSourceMemberSymbol in xmembers
                   var key := m:Kind:ToString()+" "+m:Name
                   if ! dict:ContainsKey(key)
@@ -1093,18 +1174,10 @@ BEGIN NAMESPACE XSharpModel
             IF fullTypeName:Length > 0 .AND. fullTypeName != element:Namespace+"."+element:TypeName
                LOOP
             ENDIF
-            fullTypeName := element:Namespace+"."+element:TypeName
-            idProject   := element:IdProject
-            VAR name    := element:TypeName
-            VAR idType  := element:IdType
-            VAR file       := XFile{element:FileName,SELF}
+            VAR file       := XSolution.FindFullPath(element:FileName)
             file:Virtual   := TRUE
             file:Id        := element:IdFile
-            VAR range    := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
-            VAR interval := TextInterval{element:Start, element:Stop}
-            VAR xtype := XSourceTypeSymbol{name, element:Kind,element:Attributes, range, interval, file}
-            xtype:Namespace := element:Namespace
-            xtype:Id  := element:IdType
+            VAR xtype := XSourceTypeSymbol{element, file}
             result:Add(xtype)
          NEXT
          RETURN result
@@ -1216,7 +1289,19 @@ BEGIN NAMESPACE XSharpModel
       #region Properties
       PROPERTY AssemblyReferences AS List<XAssembly>
          GET
+            SELF:ResolveReferences()
             RETURN SELF:_AssemblyReferences
+         END GET
+      END PROPERTY
+
+      PROPERTY AssemblyReferenceNames AS IList<String>
+         GET
+            var result := List<String>{}
+            result:AddRange(SELF:_unprocessedAssemblyReferences)
+            FOREACH var reference in SELF:_AssemblyReferences
+                result:Add(reference:FileName)
+            NEXT
+            return result:ToArray()
          END GET
       END PROPERTY
 
@@ -1248,12 +1333,7 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY ProjectNamespaces AS IList<STRING>
          GET
-            VAR list := XDatabase.GetNamespaces(SELF:DependentProjectList)
-            VAR result := List<STRING>{}
-            FOREACH VAR db IN list
-               result:Add(db:Namespace)
-            NEXT
-            RETURN result
+            RETURN XDatabase.GetProjectNamespaces(SELF:DependentProjectList)
          END GET
      END PROPERTY
 
@@ -1264,17 +1344,24 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             VAR result := SELF:ProjectNamespaces
             VAR asmNS  := SELF:AssemblyNamespaces
-            FOREACH ns AS STRING IN asmNS
-                IF !result:Contains(ns)
-                    result:Add(ns)
-                ENDIF
-            NEXT
+            IF result:Count > asmNS:Count
+                FOREACH ns AS STRING IN asmNS
+                    IF !result:Contains(ns)
+                        result:Add(ns)
+                    ENDIF
+                NEXT
+            ELSE
+                FOREACH ns AS STRING IN result
+                    IF !asmNS:Contains(ns)
+                        asmNS:Add(ns)
+                    ENDIF
+                NEXT
+                result := asmNS
+            ENDIF
             _cachedAllNamespaces := result
             RETURN result
          END GET
-     END PROPERTY
-
-
+      END PROPERTY
 
       PROPERTY OtherFiles AS List<STRING> GET SELF:_OtherFilesDict:Keys:ToList()
 

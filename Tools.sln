@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpSyntax", "Tools\SHFB\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpVs", "Tools\SHFB\XSharpVs\XSharpVs.csproj", "{770CC19A-4BF3-4755-A293-39E9B20739D7}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "UDCTester", "Tools\UDCTester\UDCTester.xsproj", "{F9579349-9B33-44A3-A615-D091AB45DBB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{770CC19A-4BF3-4755-A293-39E9B20739D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{770CC19A-4BF3-4755-A293-39E9B20739D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{770CC19A-4BF3-4755-A293-39E9B20739D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9579349-9B33-44A3-A615-D091AB45DBB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9579349-9B33-44A3-A615-D091AB45DBB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9579349-9B33-44A3-A615-D091AB45DBB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9579349-9B33-44A3-A615-D091AB45DBB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

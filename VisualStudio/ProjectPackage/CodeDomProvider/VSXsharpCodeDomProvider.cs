@@ -240,7 +240,6 @@ namespace XSharp.Project
                 }
                 // The problem here, is that we "may" have some new members, like EvenHandlers, and we need to update their position (line/col)
                 XSharpCodeParser parser = new XSharpCodeParser(_projectNode, formClass);
-                parser.TabSize = XSharpCodeDomProvider.TabSize;
                 parser.FileName = designerPrgFile;
                 CodeCompileUnit resultDesigner = parser.Parse(generatedSource);
                 CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindDesignerClass(resultDesigner);
@@ -324,7 +323,6 @@ namespace XSharp.Project
                     // Retrieve
                     string generatedSource = ddtr.ReadToEnd();
                     XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
-                    parser.TabSize = XSharpCodeDomProvider.TabSize;
                     if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_FILENAME))
                     {
                         parser.FileName = (string)compileUnit.UserData[XSharpCodeConstants.USERDATA_FILENAME];

@@ -21,6 +21,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsStatic     AS LOGIC     GET
       PROPERTY Prototype    AS STRING    GET
       PROPERTY IsArray      AS LOGIC GET
+      PROPERTY ElementType  AS STRING GET
       PROPERTY Namespace    AS STRING GET
       PROPERTY FullName     AS STRING GET
       PROPERTY ResolvedType AS IXTypeSymbol AUTO
@@ -35,8 +36,10 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Children    AS IList<IXTypeSymbol> GET
       PROPERTY IsNested    AS LOGIC GET
       PROPERTY Members     AS IList<IXMemberSymbol> GET
+      PROPERTY AllMembers  AS IList<IXMemberSymbol> GET
       PROPERTY IsTyped     AS LOGIC  GET
-      PROPERTY BaseType    AS STRING GET
+      PROPERTY BaseType    AS IXTypeSymbol GET
+      PROPERTY BaseTypeName  AS STRING GET
       PROPERTY Interfaces  AS IList<STRING> GET
       PROPERTY IsGeneric   AS LOGIC GET
       PROPERTY OriginalTypeName  AS STRING GET

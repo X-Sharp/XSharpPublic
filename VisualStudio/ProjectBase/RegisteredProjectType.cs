@@ -10,6 +10,8 @@
  * ***************************************************************************/
 
 using System;
+using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 using VSRegistry = Microsoft.VisualStudio.Shell.VSRegistry;
@@ -95,24 +97,24 @@ namespace Microsoft.VisualStudio.Project
         internal string GetVsTemplateFile(string templateFile)
         {
             // First see if this use the vstemplate model
-            if(!String.IsNullOrEmpty(DefaultProjectExtensionValue))
+            if (!String.IsNullOrEmpty(DefaultProjectExtensionValue))
             {
                 EnvDTE80.DTE2 dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
-                if(dte != null)
+                if (dte != null)
                 {
                     EnvDTE80.Solution2 solution = dte.Solution as EnvDTE80.Solution2;
-                    if(solution != null)
+                    if (solution != null)
                     {
                         string fullPath = solution.GetProjectTemplate(templateFile, DefaultProjectExtensionValue);
                         // The path returned by GetProjectTemplate can be in the format "path|FrameworkVersion=x.y|Language=xxx"
                         // where the framework version and language sections are optional.
                         // Here we are interested only in the full path, so we have to remove all the other sections.
                         int pipePos = fullPath.IndexOf('|');
-                        if(0 == pipePos)
+                        if (0 == pipePos)
                         {
                             return null;
                         }
-                        if(pipePos > 0)
+                        if (pipePos > 0)
                         {
                             fullPath = fullPath.Substring(0, pipePos);
                         }

@@ -30,6 +30,9 @@ BEGIN NAMESPACE XSharpModel
          SELF:Parent       := NULL
          SELF:ReturnType   := returnType
          SELF:IsStatic     := isStatic
+         IF attributes:HasFlag(Modifiers.Static)
+             SELF:IsStatic := TRUE
+         ENDIF
          SELF:_signature   := XMemberSignature{}
 
       CONSTRUCTOR(sig AS XMemberSignature, kind AS Kind, attributes AS Modifiers,  ;
@@ -39,21 +42,22 @@ BEGIN NAMESPACE XSharpModel
          SELF:ReturnType   := sig:DataType
          SELF:IsStatic     := isStatic
          SELF:_signature   := sig
+         IF attributes:HasFlag(Modifiers.Static)
+             SELF:IsStatic := TRUE
+         ENDIF
          FOREACH var par in sig:Parameters
             par:Parent := SELF
          NEXT
          #endregion
 
+    CONSTRUCTOR(dbresult AS XDbResult, file AS XFile)
+         SELF(dbresult:MemberName, dbresult:Kind, dbresult:Attributes, dbresult:TextRange, dbresult:TextInterval, dbresult:ReturnType, dbresult:Modifiers:HasFlag(Modifiers.Static))
+         SELF:File        := file
+         SELF:CopyValuesFrom(dbresult)
+         SELF:SourceCode  := dbresult:SourceCode
 
-     STATIC METHOD FromDbResult( dbresult AS XDbResult, project AS XProject) AS XSourceMemberSymbol
-         LOCAL xmember AS XSourceMemberSymbol
-         VAR range    := TextRange{dbresult:StartLine,dbresult:StartColumn, dbresult:EndLine, dbresult:EndColumn}
-         VAR position := TextInterval{dbresult:Start, dbresult:Stop}
-         xmember := XSourceMemberSymbol{dbresult:MemberName, dbresult:Kind, dbresult:Attributes, range, position, dbresult:ReturnType, dbresult:Modifiers:HasFlag(Modifiers.Static)}
-         xmember:SourceCode  := dbresult:SourceCode
-         xmember:XmlComments := dbresult:XmlComments
-         xmember:File        := XFile{dbresult:FileName, project}
-         RETURN xmember
+     STATIC METHOD FromDbResult( dbresult AS XDbResult, file AS XFile) AS XSourceMemberSymbol
+         RETURN XSourceMemberSymbol{dbresult, file}
 
 
       METHOD AddParameters( list AS IList<XSourceParameterSymbol>) AS VOID
@@ -73,8 +77,9 @@ BEGIN NAMESPACE XSharpModel
 
 
       #region Properties. Some are implemented as Extension methods, others forwarded to the signature
+
       PROPERTY Description AS STRING GET SELF:GetDescription()
- 		PROPERTY FullName AS STRING GET SELF:GetFullName()
+ 	  PROPERTY FullName AS STRING GET SELF:GetFullName()
 
       PROPERTY HasParameters     AS LOGIC GET _signature:HasParameters
       PROPERTY ParameterCount    AS INT   GET _signature:ParameterCount

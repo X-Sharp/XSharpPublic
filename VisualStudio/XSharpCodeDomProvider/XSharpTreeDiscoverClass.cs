@@ -154,18 +154,16 @@ namespace XSharp.CodeDom
                     foreach (XSharpParser.AttributeParamContext par in attr._Params)
                     {
                         var arg = new CodeAttributeArgument();
-                        if (par is XSharpParser.PropertyAttributeParamContext )
+                        if (par is XSharpParser.PropertyAttributeParamContext papc)
                         {
-                            var papc = par as XSharpParser.PropertyAttributeParamContext;
                             if (papc.Name != null)
                             {
                                 arg.Name = papc.Name.GetText();
                             }
                             arg.Value = BuildExpression(papc.Expr, false);
                         }
-                        else if (par is XSharpParser.ExprAttributeParamContext)
+                        else if (par is XSharpParser.ExprAttributeParamContext eapc)
                         {
-                            var eapc = par as XSharpParser.ExprAttributeParamContext;
                             arg.Value = BuildExpression(eapc.Expr, false);
                         }
                         codeattr.Arguments.Add(arg);
@@ -563,7 +561,7 @@ namespace XSharp.CodeDom
                 CodeMethodReturnStatement ret = new CodeMethodReturnStatement();
                 if (context.Expr != null)
                 {
-                    ret.Expression = BuildSnippetExpression(context.Expr.GetText());
+                    ret.Expression = BuildSnippetExpression(context.Expr);
                 }
                 initComponent.Statements.Add(ret);
             }
@@ -577,9 +575,9 @@ namespace XSharp.CodeDom
             {
                 CodeStatement stmt = new CodeStatement();
                 //
-                if (context._expression is XSharpParser.AssignmentExpressionContext)
+                if (context._expression is XSharpParser.AssignmentExpressionContext aec)
                 {
-                    stmt = CreateAssignStatement(context._expression as XSharpParser.AssignmentExpressionContext);
+                    stmt = CreateAssignStatement(aec);
                 }
                 else
                 {
@@ -651,9 +649,8 @@ namespace XSharp.CodeDom
         private IXTypeSymbol findType(CodeExpression expr)
         {
             IXTypeSymbol type;
-            if (expr is CodeFieldReferenceExpression)
+            if (expr is CodeFieldReferenceExpression cfr)
             {
-                var cfr = expr as CodeFieldReferenceExpression;
                 if (isField(cfr.FieldName) && (cfr.TargetObject is CodeThisReferenceExpression || cfr.TargetObject is CodeBaseReferenceExpression))
                 {
                     return getClassMemberType(cfr.FieldName, MemberTypes.Field);
@@ -666,9 +663,8 @@ namespace XSharp.CodeDom
                         return findType(f[0].OriginalTypeName);
                 }
             }
-            if (expr is CodePropertyReferenceExpression)
+            if (expr is CodePropertyReferenceExpression cpr)
             {
-                var cpr = expr as CodePropertyReferenceExpression;
                 if (isProperty(cpr.PropertyName) && (cpr.TargetObject is CodeThisReferenceExpression || cpr.TargetObject is CodeBaseReferenceExpression))
                 {
                     return getClassMemberType(cpr.PropertyName, MemberTypes.Property);
@@ -681,9 +677,8 @@ namespace XSharp.CodeDom
                         return findType(p[0].OriginalTypeName);
                 }
             }
-            if (expr is CodeMethodInvokeExpression)
+            if (expr is CodeMethodInvokeExpression cmi)
             {
-                var cmi = expr as CodeMethodInvokeExpression;
                 if (isMethod(cmi.Method.MethodName) && (cmi.Method.TargetObject is CodeThisReferenceExpression || cmi.Method.TargetObject is CodeBaseReferenceExpression))
                 {
                     return getClassMemberType(cmi.Method.MethodName, MemberTypes.Method);
@@ -697,9 +692,8 @@ namespace XSharp.CodeDom
                         return findType(m[0].OriginalTypeName);
                 }
             }
-            if (expr is CodeVariableReferenceExpression)
+            if (expr is CodeVariableReferenceExpression cvr)
             {
-                var cvr = expr as CodeVariableReferenceExpression;
                 if (_locals.ContainsKey(cvr.VariableName))
                     return _locals[cvr.VariableName];
             }

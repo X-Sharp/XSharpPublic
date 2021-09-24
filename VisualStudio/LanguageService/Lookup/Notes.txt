@@ -1,0 +1,79 @@
+﻿Notes about Type Lookup
+=======================
+
+When looking up type information we need to first determine the "Current Entity" and the "Current Type"
+And when looking for types we need to create a list of places where to look:
+
+- First we determine the "Current Entity" in the editor based on the caret or mouse position
+
+- When the "Current Entity" is a class member then the "Current Type" is the class in which
+  the caret or mouse cursor is located. Thus "Current type" may include a namespace when the class is inside
+  a namespace. It may even be a nested type. The "Current type" is used to look for identifiers such as 
+  fields and properties that are not prefixed with SELF or SUPER
+  The namespace of the class also needs to be added to the list of namespaces created from the
+  USING statements
+
+- When "Current Entity" is a global entity, such as a FUNCTION or GLOBAL then the "Current Type" is empty.
+  This is represented by the "Global Type"
+
+For the type lookup we create a list of places where to look:
+
+- USING statements at the start of the file that determine where to look for types. These are collected
+  in a 'usings list'
+
+- When the project has the option 'Prefix class with default namespace' set and when
+  the type is not inside a namespace we need to add the default namespace of the project
+  to the usings list (since the type will be prefixed by the compiler)
+
+- From each of the referenced projects and assemblies we get the list of ImplicitNamespaces.
+
+- When the caret or mouse cursor is in a "global" entity such as a function, procedure, global or define
+  then no additional namespaces need to be added to the usings list.
+
+Type lookup procedure
+
+- When the type or member that we lookup is inside a list of tokens, such as System.String.Compare
+  we perform a lookup from Left to Right. We start with the first token in the list and evaluate that token
+  in the "Current Context"
+
+"Global tokens" are handled like this:
+
+- Identifiers (Foo) that have no prefix we need to check for:
+  - Locals and Parameters in the "Current entity""
+  - Fields and Properties in the "Current Type"
+  - Defines and Globals in the current project
+  - Defines and Globals in referenced X# projects
+  - Defines and Globals in referenced external assemblies that have a "ClassLibrary" attributes
+  - Namespaces in the current project, referenced X# projects and referenced assemblies
+  - Types in the current project, referenced X# projects and referenced assemblies, using the "using list"
+
+- For Function calls (Foo() ) we need to check
+  - Functions and Procedures in the current project
+  - Functions and Procedures in referenced X# projects
+  - Functions and Procedures in referenced external assemblies that have a "ClassLibrary" attributes
+  - When the "Current Entity" is a class member then also 
+    Methods of the current type (this could be a instance method or class method inside the current class)
+  X# prefers Functions/Procedures over method calls, so do the lookup functions and procedures first.
+
+- For Instance Creation (Foo{} ) we need to check
+  - Types in the current project, using the "using list"
+  - Types in referenced X# projects, using the "using list" 
+  - Types in referenced assemblies, using the "using list"
+
+Things may get complicated when the type lookup finds an entity in another source file or even another X# project.
+To determine its return type or parameter type we need to build a 'usings list' to lookup that particular type 
+from the using statements in the file where the entity is declared and (when the entity is inside another project) 
+also consider the default namespace of that other project.
+
+When the type lookup finds an entity in a assembly reference (or a project in another language because these
+are handled like assembly references) then the typename returned should be a complete typename with namespace.
+
+
+To speed up things we may want to consider persisting (in memory)
+- List of Usings per XFile object (Store this in the database as property of the XFile ?)
+- List of External Functions classes per XProject (Should cleared when an assembly reference is added / deleted)
+- List of Namespaces per XProject
+- List of External namespaces per XProject (Should cleared when an assembly reference is added / deleted)
+- List of Namespaces per XAssembly (This is already in the intellisense database, because types are stored with their namespace)
+- List of Types per XAssembly (Is already persisted in the Intellisense database)
+

@@ -31,6 +31,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _typeName                AS STRING
       PROPERTY IsGeneric               AS LOGIC            GET GenericArgs != NULL
       PROPERTY GenericArgs             AS STRING[]         AUTO GET PRIVATE SET
+      PROPERTY StartOfXmlComments      AS LONG             AUTO
 
       #endregion
 
@@ -69,9 +70,6 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
 
 
-
-
-
          #region Complexer properties
          // Properties
 
@@ -105,6 +103,12 @@ BEGIN NAMESPACE XSharpModel
                 SELF:GenericArgs := tmp:Split(<CHAR>{'<',',','>'}, StringSplitOptions.RemoveEmptyEntries)
             ELSE
                 SELF:GenericArgs := NULL
+            ENDIF
+
+        METHOD CopyValuesFrom(dbresult AS XDbResult) AS VOID
+            SUPER:CopyValuesFrom(dbresult)
+            IF String.IsNullOrEmpty(SELF:XmlComments)
+                SELF:XmlComments := dbresult:XmlComments
             ENDIF
 
 

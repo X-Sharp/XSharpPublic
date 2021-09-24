@@ -2,7 +2,7 @@
 #using System.Collections
 
 begin namespace Xide
-    
+
 enum     EntityType as Int32 // todo need to add delegate, operator
         member _None
         member _Constructor
@@ -25,12 +25,12 @@ enum     EntityType as Int32 // todo need to add delegate, operator
         member _Operator
         member _Local
         member _Property
-        
+        MEMBER _IVar 
         member _Define
         member _Resource
         member _TextBlock
 end     enum
-    
+
     [Flags];
 enum         EntityModifiers as Int32
         member _None := 0
@@ -44,14 +44,14 @@ enum         EntityModifiers as Int32
         member _Partial := 128
         member _New := 256
 end     enum
-    
+
 enum     AccessLevel
         member @@Public := 0
         member @@Protected := 1
         member @@Hidden := 2
         member @@Internal := 4
 end     enum
-    
+
 class     EntityParamsObject
         export cName as string
         export cType as string
@@ -71,7 +71,7 @@ class     EntityParamsObject
         method Clone() as EntityParamsObject
             return (EntityParamsObject)self:MemberwiseClone()
 end             class
-    
+
 class     EntityObject
         export eType as EntityType
         export cName,cInherit,cRetType,cImplements as string
@@ -87,7 +87,7 @@ class     EntityObject
         export lPartial as logic
         export cClassType as string
         export lExtension as logic
-        
+
         constructor()
             super()
             self:cInherit := ""
@@ -95,7 +95,7 @@ class     EntityObject
             self:cRetType := ""
             self:cClassType := ""
             return
-            
+
         virtual method Clone() as EntityObject
             local oEntity as EntityObject
             oEntity := (EntityObject)self:MemberwiseClone()
@@ -112,9 +112,9 @@ class     EntityObject
                 next
             end if
             return oEntity
-            
+
         property HasParams as logic get aParams != null .and. aParams:Count != 0
-        
+
         method NamespacesEqual(_aNameSpaces as List<string>) as logic
             local n as int
             if self:aNameSpaces == null .or. self:aNameSpaces:Count != _aNameSpaces:Count
@@ -130,7 +130,7 @@ class     EntityObject
             local n as int
             if self:NamespacesEqual(_aNameSpaces)
                 return
-            end if 
+            end if
             if self:aNameSpaces == null
                 self:aNameSpaces := List<string>{_aNameSpaces:Count}
             end if
@@ -138,7 +138,7 @@ class     EntityObject
                 self:aNameSpaces:Add(_aNameSpaces[n])
             next
             return
-            
+
         access FullClassName as string
             local cRet as string
             cRet := self:cShortClassName
@@ -148,83 +148,83 @@ class     EntityObject
             return cRet
         access FullName as string
             local cRet as string
-            switch self:eType 
-            case EntityType._Class 
-            case EntityType._Interface 
+            switch self:eType
+            case EntityType._Class
+            case EntityType._Interface
             case EntityType._Structure
                 cRet := self:FullClassName
-            case EntityType._Access 
-            case EntityType._Assign 
-            case EntityType._Property 
-            case EntityType._Method 
-            case EntityType._Field 
+            case EntityType._Access
+            case EntityType._Assign
+            case EntityType._Property
+            case EntityType._Method
+            case EntityType._Field
             case EntityType._Event
                 cRet := self:FullClassName + "." + self:cName
-            case EntityType._Function 
-            case EntityType._Procedure 
+            case EntityType._Function
+            case EntityType._Procedure
             case EntityType._Global
                 cRet := self:cName
             case EntityType._Enum
                 cRet := self:FullClassName
             case EntityType._Delegate
                 cRet := self:FullClassName
-            case EntityType._VOStruct 
+            case EntityType._VOStruct
             case EntityType._Union
                 cRet := self:FullClassName
             otherwise
                 cRet := ""
             end switch
             return cRet
-            
+
         access IsType as logic
-            switch self:eType 
-            case EntityType._Class 
-            case EntityType._Structure 
-            case EntityType._VOStruct 
-            case EntityType._Union 
-            case EntityType._Interface 
-            case EntityType._Delegate 
+            switch self:eType
+            case EntityType._Class
+            case EntityType._Structure
+            case EntityType._VOStruct
+            case EntityType._Union
+            case EntityType._Interface
+            case EntityType._Delegate
             case EntityType._Enum
                 return true
             otherwise
                 return false
             end switch
-            
-            
+
+
         access IsClassOrMember as logic
-            switch self:eType 
-            case EntityType._Class 
-            case EntityType._Method 
-            case EntityType._Access 
-            case EntityType._Assign 
-            case EntityType._Property 
-            case EntityType._Constructor 
+            switch self:eType
+            case EntityType._Class
+            case EntityType._Method
+            case EntityType._Access
+            case EntityType._Assign
+            case EntityType._Property
+            case EntityType._Constructor
             case EntityType._Destructor
                 return true
             otherwise
                 return false
             end switch
-            
+
         access NonClass as logic
-            switch self:eType 
-                case EntityType._Function 
-            case EntityType._Procedure 
+            switch self:eType
+                case EntityType._Function
+            case EntityType._Procedure
                 case EntityType._Global
                     return true
                 otherwise
                     return false
                 end switch
-            
+
         access IsCode as logic
-            switch self:eType 
-            case EntityType._Function 
-            case EntityType._Procedure 
-            case EntityType._Access 
-            case EntityType._Assign 
-            case EntityType._Constructor 
-            case EntityType._Destructor 
-            case EntityType._Method 
-            case EntityType._Operator 
+            switch self:eType
+            case EntityType._Function
+            case EntityType._Procedure
+            case EntityType._Access
+            case EntityType._Assign
+            case EntityType._Constructor
+            case EntityType._Destructor
+            case EntityType._Method
+            case EntityType._Operator
             case EntityType._Property
                 return true
              otherwise
@@ -232,37 +232,37 @@ class     EntityObject
              end switch
         access IsVO as logic
             switch self:eType
-            case EntityType._Function 
-            case EntityType._Procedure 
-            case EntityType._VOStruct 
-            case EntityType._Union 
+            case EntityType._Function
+            case EntityType._Procedure
+            case EntityType._VOStruct
+            case EntityType._Union
             case EntityType._Global
                 return true
             otherwise
                 return false
             end switch
-            
+
          access IsFuncProc as logic
             switch self:eType
-            case EntityType._Function 
+            case EntityType._Function
             case EntityType._Procedure
                 return true
             otherwise
                 return false
             end switch
         access IsFuncProcGlobal as logic
-            switch self:eType 
-            case EntityType._Function 
-            case EntityType._Procedure 
+            switch self:eType
+            case EntityType._Function
+            case EntityType._Procedure
             case EntityType._Global
                 return true
             otherwise
                 return false
             end switch
-            
+
         access StringEntityType as string
             return self:eType:ToString():Substring(1):ToUpper()
-            
+
             method AddParam(cParam as string) as void
             if self:aParams == null
                 self:aParams := List<EntityParamsObject>{}
@@ -287,7 +287,7 @@ class     EntityObject
             end if
             oParam:cType := cType
             return
-            
+
             virtual method ToString() as string
             local cRet as string
             //		LOCAL n AS INT
@@ -304,7 +304,7 @@ class     EntityObject
                 cRet += " (" + self:cInherit + ") "
             end if
             return cRet
-            
+
 end class
-    
+
 end namespace

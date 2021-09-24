@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using Microsoft;
 using Microsoft.VisualStudio.ComponentModelHost;
 using XSharpModel;
+using Community.VisualStudio.Toolkit;
 /*
 Substitution strings
 String	Description
@@ -65,6 +66,7 @@ $WINDIR$	The Windows folder.
 [assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
 [assembly: ProvideCodeBase(AssemblyName = "XSharpMonoCecil", CodeBase = "XSharpMonoCecil.dll", Culture = "neutral", PublicKeyToken = "50cebf1cceb9d05e", Version = "0.11.3.0")]
 [assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite", CodeBase = "System.Data.SQLite.dll", Culture = "neutral", PublicKeyToken = "db937bc2d44ff139", Version = "1.0.113.0")]
+[assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
 namespace XSharp.Project
 {
 
@@ -89,7 +91,7 @@ namespace XSharp.Project
     // [PackageRegistration(UseManagedResourcesOnly = true)] <-- Standard Package loading
     // ++ Async Package
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
     // -- Async Package
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideProjectFactory(typeof(XSharpProjectFactory),
@@ -152,11 +154,13 @@ namespace XSharp.Project
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
-
-
+#if REPOWINDOW
+    [ProvideToolWindow(typeof(RepositoryWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.SolutionExplorer)]
+    [ProvideToolWindowVisibility(typeof(RepositoryWindow.Pane), VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
+#endif
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents,IVsDebuggerEvents
     {
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
@@ -180,27 +184,13 @@ namespace XSharp.Project
         public XSharpProjectPackage() : base()
         {
             XInstance = this;
+            ModelScannerEvents.Start();
         }
 
-        public void OpenInBrowser(string url)
-        {
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                IVsWebBrowsingService service = await GetServiceAsync(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
-                if (service != null)
-                {
-                    IVsWindowFrame frame = null;
-                    service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
-                    frame.Show();
-                }
-            });
-        }
-       
+      
 
         // XSharpLanguageService _langService = null;
-        #region Overridden Implementation
+#region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -211,14 +201,14 @@ namespace XSharp.Project
             XSettings.DisplayException = XSharpOutputPane.DisplayException;
             XSettings.ShowMessageBox = ShowMessageBox;
 
+            this.RegisterToolWindows();
+
             XSharpProjectPackage.instance = this;
-            base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             // The project selector helps to choose between MPF and CPS projects
             //_projectSelector = new XSharpProjectSelector();
             //await _projectSelector.InitAsync(this);
-
 
 
             this.settings = new XPackageSettings(this);
@@ -228,35 +218,24 @@ namespace XSharp.Project
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
-            
-
             // editors for the binaries
             base.RegisterEditorFactory(new VOFormEditorFactory(this));
             base.RegisterEditorFactory(new VOMenuEditorFactory(this));
             base.RegisterEditorFactory(new VODBServerEditorFactory(this));
             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
-            XSharp.Project.XSharpMenuItems.Initialize(this);
 
             //this._documentWatcher = new XSharpDocumentWatcher(this);
-            _errorList = await GetServiceAsync(typeof(SVsErrorList)) as IErrorList;
-            var tmp = await GetServiceAsync(typeof(SVsTaskList));
-            if (tmp != null)
-            {
-                _taskList = (ITaskList)tmp;
-            }
+            _errorList = await VS.GetRequiredServiceAsync<SVsErrorList, IErrorList>();
+            _taskList = await VS.GetRequiredServiceAsync<SVsTaskList, ITaskList>();
 
-            _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
-
-            var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
+            var shell = await VS.GetRequiredServiceAsync<SVsShell, IVsShell>();
             if (shell != null)
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-
-
             GetEditorOptions();
-
-
+            _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
+            await this.RegisterCommandsAsync();
         }
 
 
@@ -280,9 +259,12 @@ namespace XSharp.Project
                 XEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
                 XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
 
-            }).FileAndForget("GetEditorOptions");
+            }).FireAndForget();
 
         }
+        /// <summary>
+        /// Read the comment tokens from the Tools/Options dialog and pass them to the CodeModel assembly
+        /// </summary>
         public void SetCommentTokens()
         {
             var commentTokens = _taskList.CommentTokens;
@@ -295,14 +277,7 @@ namespace XSharp.Project
             XSharpModel.XSolution.SetCommentTokens(tokens);
         }
 
-        /// <summary>
-        /// Gets the settings stored in the registry for this package.
-        /// </summary>
-        /// <value>The settings stored in the registry for this package.</value>
-        public XPackageSettings Settings
-        {
-            get { return this.settings; }
-        }
+
         public override string ProductUserContext
         {
             get { return "XSharp"; }
@@ -311,15 +286,11 @@ namespace XSharp.Project
         internal int ShowMessageBox(string message)
         {
             string title = string.Empty;
-            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-
-            return Utilities.ShowMessageBox(this, message, title, icon, buttons, defaultButton);
+            return (int) VS.MessageBox.Show(title, message);
 
         }
 
-        #endregion
+#endregion
         public int OnShellPropertyChange(int propid, object var)
         {
             // A modal dialog has been opened. Editor Options ?
@@ -335,7 +306,10 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-
+        public int OnModeChange(DBGMODE dbgmodeNew)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

@@ -6,7 +6,6 @@
 USING System.Collections.Generic
 USING System.IO
 USING System.Text
-USING XSharp.VODesigners
 USING Xide
 USING XSharpModel
 
@@ -76,7 +75,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 		NEXT
 
 
-	METHOD Save() AS LOGIC
+	NEW METHOD Save() AS LOGIC
 		LOCAL lSuccess:= FALSE AS LOGIC
 		VAR aLines := SELF:oXSharpEditor:GetStringLines()
 		VAR sb := StringBuilder{aLines:Count * 80}
@@ -101,7 +100,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 				lSuccess := oProject:ProjectNode:DocumentSetText(oFile:FullPath, source)
 		    ELSE
 		        // Write to disk
-		        System.IO.File.WriteAllText(oFile:FullPath, source)
+		        File.WriteAllText(oFile:FullPath, source)
 			ENDIF
 		ELSE
 			TRY

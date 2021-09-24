@@ -23,8 +23,6 @@ using Microsoft.VisualStudio;
 using System.Diagnostics;
 using MSBuild = Microsoft.Build.Evaluation;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.VisualStudio.Shell.TableManager;
-using System.ComponentModel.Composition;
 
 using XSharpModel;
 using System.Linq;
@@ -33,11 +31,12 @@ using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
 using XSharp.CodeDom;
 using MBC = Microsoft.Build.Construction;
-using Microsoft;
 using LanguageService.SyntaxTree;
 using System.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XSharp.LanguageService;
+using Community.VisualStudio.Toolkit;
+using File = System.IO.File;
 
 namespace XSharp.Project
 {
@@ -835,7 +834,7 @@ namespace XSharp.Project
                 //Debug.Assert(parent != null, "File dependent upon a non existing item or circular dependency. Ignoring the DependentUpon metadata");
                 if (parent == null)
                 {
-                    ShowMessageBox($"Cannot set dependency from \"{item.EvaluatedInclude}\" to \"{dependentOf}\"\r\nCannot find \"{dependentOf}\" in the project hierarchy");
+                    VS.MessageBox.Show($"Cannot set dependency from \"{item.EvaluatedInclude}\" to \"{dependentOf}\"\r\nCannot find \"{dependentOf}\" in the project hierarchy");
                 }
             }
 
@@ -981,6 +980,7 @@ namespace XSharp.Project
         public override void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             base.OnAfterProjectOpen(sender, e);
+            XSharpProjectPackage.XInstance.SetCommentTokens();
 
             // initialize the parser
 
@@ -997,13 +997,13 @@ namespace XSharp.Project
                         {
                             if (File.Exists(url))
                             {
-                                this.ProjectModel.AddFile(url);
+                                //this.ProjectModel.AddFile(url);
                             	base.ObserveItem(url);
                             }
                         }
                     }
                 }
-                this.ProjectModel.Walk();
+                //this.ProjectModel.Walk();
             }
         }
 
@@ -1440,7 +1440,7 @@ namespace XSharp.Project
         }
 
         #region IXSharpProject Interface
-        protected IVsStatusbar statusBar;
+        
 
         public void RunInForeGroundThread(Action a)
         {
@@ -1489,64 +1489,33 @@ namespace XSharp.Project
         }
 
 
-        private void getStatusBar()
-        {
-            if (statusBar == null && !lTriedToGetStatusBar)
-            {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
-                });
-                lTriedToGetStatusBar = true;
-            }
-        }
-
-        protected bool lTriedToGetStatusBar = false;
+        
+        
         public void SetStatusBarText(string msg)
         {
-            getStatusBar();
-            if (statusBar != null)
-            {
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    statusBar.SetText(msg);
-                });
-            }
-
+            VS.StatusBar.ShowMessageAsync(msg).FireAndForget(true);
 
         }
         public void SetStatusBarAnimation(bool onoff, short idAnimation)
         {
-            try
-            {
-                /*
-                    SBAI_Index 	Value1 	Description
-                    SBAI_General 	0 	Standard animation icon.
-                    SBAI_Print 	1 	Animation when printing.
-                    SBAI_Save 	2 	Animation when saving files.
-                    SBAI_Deploy 	3 	Animation when deploying the solution.
-                    SBAI_Synch 	4 	Animation when synchronizing files over the network.
-                    SBAI_Build 	5 	Animation when building the solution.
-                    SBAI_Find 	6 	Animation when searching.
+            /*
+                SBAI_Index 	Value1 	Description
+                SBAI_General 	0 	Standard animation icon.
+                SBAI_Print 	1 	Animation when printing.
+                SBAI_Save 	2 	Animation when saving files.
+                SBAI_Deploy 	3 	Animation when deploying the solution.
+                SBAI_Synch 	4 	Animation when synchronizing files over the network.
+                SBAI_Build 	5 	Animation when building the solution.
+                SBAI_Find 	6 	Animation when searching.
 
-                    The values of SBAI_Index are taken from vsshell.idl.
-                */
-                getStatusBar();
-                if (statusBar != null)
-                {
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate
-                    {
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        statusBar.Animation(onoff ? 1 : 0, idAnimation);
-                    });
-                }
-            }
-            catch //(Exception e)
-            {
-                //System.Diagnostics.Debug.WriteLine("Error showing animation " );
-            }
+                The values of SBAI_Index are taken from vsshell.idl.
+            */
+
+            if (onoff)
+                VS.StatusBar.StartAnimationAsync((StatusAnimation)idAnimation).FireAndForget(true);
+            else
+                VS.StatusBar.EndAnimationAsync((StatusAnimation)idAnimation).FireAndForget(true);
+
         }
 
 
@@ -1566,37 +1535,45 @@ namespace XSharp.Project
         }
         public void OpenElement(string file, int line, int column)
         {
-            IVsWindowFrame window;
             IVsTextView textView;
-            IVsUIHierarchy dummy1;
-            uint dummy2;
             try
             {
                 ThreadHelper.ThrowIfNotOnUIThread();
-                VsShellUtilities.OpenDocument(this.Site, file, VSConstants.LOGVIEWID_Code, out dummy1, out dummy2, out window, out textView);
-                if ((window != null) && (textView != null))
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    window.Show();
-                    //
-                    TextSpan span = new TextSpan();
-                    span.iStartLine = line - 1;
-                    span.iStartIndex = column - 1;
-                    span.iEndLine = line - 1;
-                    span.iEndIndex = column - 1;
-                    //
-                    textView.SetCaretPos(span.iStartLine, span.iStartIndex);
-                    textView.EnsureSpanVisible(span);
-                    if (span.iStartLine > 5)
-                        textView.SetTopLine(span.iStartLine - 5);
-                    else
-                        textView.SetTopLine(0);
-                }
+                    var view = await VS.Documents.OpenViaProjectAsync(file);
+                    if (view == null)
+                    {
+                        view = await VS.Documents.OpenAsync(file);
+                    }
+                    var docview = await VS.Documents.GetDocumentViewAsync(file);
+                    textView = await docview.TextView.ToIVsTextViewAsync();
+                    if (textView != null)
+                    {
+                        //
+                        TextSpan span = new TextSpan();
+                        span.iStartLine = line - 1;
+                        span.iStartIndex = column - 1;
+                        span.iEndLine = line - 1;
+                        span.iEndIndex = column - 1;
+                        //
+                        textView.SetCaretPos(span.iStartLine, span.iStartIndex);
+                        textView.EnsureSpanVisible(span);
+                        if (span.iStartLine > 5)
+                            textView.SetTopLine(span.iStartLine - 5);
+                        else
+                            textView.SetTopLine(0);
+                    }
+                    await VS.Documents.OpenInPreviewTabAsync(file);
+                });
             }
             catch 
             {
                 ;
             }
         }
+
+       
 
         string _prefix = null;
 
@@ -1918,7 +1895,7 @@ namespace XSharp.Project
                     return ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        return VsShellUtilities.IsSolutionBuilding(XSharpProjectPackage.Instance);
+                        return VsShellUtilities.IsSolutionBuilding(XSharpProjectPackage.XInstance);
                     });
 
                 }
@@ -1933,13 +1910,10 @@ namespace XSharp.Project
         #endregion
         public bool IsDocumentOpen(string documentName)
         {
+            
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(); IVsUIHierarchy hier;
-                uint itemid;
-                IVsWindowFrame windowFrame;
-                bool open = VsShellUtilities.IsDocumentOpen(this.Site, documentName, Guid.Empty, out hier, out itemid, out windowFrame);
-                return open;
+                return await VS.Documents.IsOpenAsync(documentName);
             });
         }
 
@@ -2534,7 +2508,7 @@ namespace XSharp.Project
             }
             if (!hasImportDefaultProps || !hasImportTargets)
             {
-                ShowMessageBox($"Important <Imports> tags are missing in your projectfile: {filename}, your project will most likely not compile.");
+                VS.MessageBox.Show($"Important <Imports> tags are missing in your projectfile: {filename}, your project will most likely not compile.");
             }
             if (hasImportProps && hasImportTargets)
             {
@@ -2644,10 +2618,7 @@ namespace XSharp.Project
             return changed;
 
         }
-        internal int ShowMessageBox(string message)
-        {
-            return XSharpProjectPackage.XInstance.ShowMessageBox(message);
-        }
+  
 
         #region IVsProject5
         public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)
@@ -3060,6 +3031,7 @@ namespace XSharp.Project
                 case "usersourceitems":
                 case "windowsxaml":
                 case "csharp":
+                case "xsharp":
                     return true;
             }
             return false;

@@ -21,7 +21,7 @@
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
     <Includepaths>$(Solutiondir)common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
@@ -100,9 +100,9 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VODesigners\VODesigners.xsproj">
-      <Name>VODesigners</Name>
-      <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
+    <ProjectReference Include="..\XSharpVoEditors\XSharpVoEditors.xsproj">
+      <Name>XSharpVoEditors</Name>
+      <Project>{7619db88-6286-4ef1-8273-2a08cc8ac70e}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

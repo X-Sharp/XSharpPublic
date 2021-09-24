@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL STATIC KeyBitsTable AS Dictionary <WORD, BYTE>
         INTERNAL STATIC METHOD GetBits(wLength AS WORD) AS BYTE
             LOCAL bits AS BYTE
-            
+
             IF KeyBitsTable:TryGetValue(wLength, OUT bits)
                 RETURN bits
             ENDIF
@@ -64,9 +64,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     [DebuggerDisplay("Stack: {Count}")];
     INTERNAL SEALED CLASS CdxPageStack
         PRIVATE _pages AS List<CdxStackEntry>
-#ifdef DEBUG            
+#ifdef DEBUG
         PRIVATE _oldStack as List<CdxStackEntry>
-#endif        
+#endif
         INTERNAL CONSTRUCTOR(tag AS CdxTag)
             _pages := List<CdxStackEntry>{20}
 
@@ -105,7 +105,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
 
-        INTERNAL METHOD FindPage(nPage AS LONG) AS LONG     
+        INTERNAL METHOD FindPage(nPage AS LONG) AS LONG
             IF _pages:Count > 0
                 FOR VAR i := 0 TO _pages:Count -1
                     IF _pages[i]:Page:PageNo == nPage
@@ -133,7 +133,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                  RETURN TRUE
             ENDIF
             RETURN FALSE
-        
+
         INTERNAL METHOD InsertOnTop(newPage AS CdxTreePage) AS LOGIC
             _pages:Insert(0,CdxStackEntry{}{Page := newPage, Pos := 0})
              RETURN TRUE
@@ -145,7 +145,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN TRUE
             ENDIF
             RETURN FALSE
-            
+
         INTERNAL METHOD GetParent(oPage AS CdxTreePage) AS CdxTreePage
             VAR index := SELF:FindPage(oPage)
             IF index > 0
@@ -160,12 +160,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN index
             ENDIF
             RETURN -1
-            
+
         INTERNAL METHOD Clear() AS VOID
 #ifdef DEBUG
             SELF:_oldStack := List<CdxStackEntry>{}
             SELF:_oldStack:AddRange(SELF:_pages)
-#endif            
+#endif
             SELF:_pages:Clear()
             RETURN
     END CLASS
@@ -173,13 +173,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     [DebuggerDisplay("Action {Type}")];
     INTERNAL SEALED CLASS CdxAction
-        INTERNAL Type  	 AS CdxActionType 
-        INTERNAL PageNo  := -1 AS LONG   
-        INTERNAL PageNo2 := -1 AS LONG   
-        INTERNAL Pos   	 := -1  AS LONG    
-        INTERNAL Recno 	 := -1  AS LONG    
-        INTERNAL Key   	 := NULL AS BYTE[] 
-        INTERNAL ChildPage := -1 AS LONG  
+        INTERNAL Type  	 AS CdxActionType
+        INTERNAL PageNo  := -1 AS LONG
+        INTERNAL PageNo2 := -1 AS LONG
+        INTERNAL Pos   	 := -1  AS LONG
+        INTERNAL Recno 	 := -1  AS LONG
+        INTERNAL Key   	 := NULL AS BYTE[]
+        INTERNAL ChildPage := -1 AS LONG
         PRIVATE STATIC _Ok AS CdxAction
 
         STATIC CONSTRUCTOR
@@ -206,7 +206,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL STATIC METHOD InsertKey(oPage AS CdxTreePage, nPos AS LONG, nRecno AS LONG, bKey AS BYTE[]) AS CdxAction
             RETURN CdxAction{CdxActionType.InsertKey}{PageNo := oPage:PageNo, Pos := nPos,Recno := nRecno, Key := bKey}
-            
+
         INTERNAL STATIC METHOD DeletePage(oPage AS CdxTreePage) AS CdxAction
             RETURN CdxAction{CdxActionType.DeletePage}{PageNo := oPage:PageNo}
 

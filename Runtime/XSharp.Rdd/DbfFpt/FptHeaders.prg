@@ -32,13 +32,16 @@ INTERNAL CLASS FptHeader
     INTERNAL CONSTRUCTOR()
         SELF:Buffer := BYTE[]{FOXHEADER_LENGTH}
 
+    INTERNAL METHOD Clear() AS VOID
+        Array.Clear(SELF:Buffer, 0, FOXHEADER_LENGTH)
+    
     INTERNAL PROPERTY BlockSize AS WORD
         GET
             RETURN BuffToWordFox(Buffer, OFFSET_BLOCKSIZE)
         END GET
         SET
-            IF value >= FPTMemo.MIN_FOXPRO_BLOCKSIZE
-                WordToBuffFox(value, Buffer, OFFSET_BLOCKSIZE)
+            IF VALUE >= FPTMemo.MIN_FOXPRO_BLOCKSIZE
+                WordToBuffFox(VALUE, Buffer, OFFSET_BLOCKSIZE)
             ELSE
                 WordToBuffFox(0, Buffer, OFFSET_BLOCKSIZE)
             ENDIF
@@ -122,12 +125,22 @@ INTERNAL CLASS FlexHeader
     INTERNAL CONSTRUCTOR()
         SELF:Buffer := BYTE[]{FLEXHEADER_LENGTH}
 
-    METHOD Create() AS VOID
-        SELF:Signature := "FlexFile3"
+    INTERNAL METHOD Create() AS VOID
+        SELF:Clear()
+    INTERNAL METHOD Clear() AS VOID
+        Array.Clear(SELF:Buffer, 0, FLEXHEADER_LENGTH)
+        SELF:Buffer[0] := 70    // 'F';
+        SELF:Buffer[1] := 108   // 'l';        
+        SELF:Buffer[2] := 101   // 'e';
+        SELF:Buffer[3] := 120   // 'x';        
+        SELF:Buffer[4] := 70    // 'F';
+        SELF:Buffer[5] := 105   // 'i';        
+        SELF:Buffer[6] := 108   // 'l';
+        SELF:Buffer[7] := 101   // 'e';        
+        SELF:Buffer[8] := 51    // '3';
         SELF:MajorVersion := 2
         SELF:MinorVersion := 8
         SELF:IndexDefect  := FALSE
-
     INTERNAL PROPERTY Size AS LONG GET FLEXHEADER_LENGTH
 
     INTERNAL PROPERTY AltBlockSize  AS WORD  GET BuffToWord(SELF:Buffer, OFFSET_BLOCKSIZE)  SET WordToBuff(value, SELF:Buffer, OFFSET_BLOCKSIZE)
@@ -137,18 +150,18 @@ INTERNAL CLASS FlexHeader
     INTERNAL PROPERTY IndexLength   AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_INDEXLEN )  SET LongToBuff(value, SELF:Buffer, OFFSET_INDEXLEN )
     INTERNAL PROPERTY IndexLocation AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_INDEXLOC )  SET LongToBuff(value, SELF:Buffer, OFFSET_INDEXLOC )
     INTERNAL PROPERTY Root          AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_ROOT )      SET LongToBuff(value, SELF:Buffer, OFFSET_ROOT )
-    INTERNAL PROPERTY UpdateCount   AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_UPDATE )    SET LongToBuff(value, SELF:Buffer, OFFSET_UPDATE )
-    INTERNAL PROPERTY Signature     AS STRING
-        // We can use System.Text.Encoding.ASCII because the flexfile header has no special characters
-        GET
-            RETURN System.Text.Encoding.ASCII:GetString(SELF:Buffer,0, 9)
-        END GET
-        SET
-            VAR bytes := System.Text.Encoding.ASCII:GetBytes(value)
-            System.Array.Copy(bytes,0, Buffer, OFFSET_SIGNATURE, LEN_SIGNATURE)
-        END SET
-    END PROPERTY
-    
+    INTERNAL PROPERTY UpdateCount   AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_UPDATE )    SET LongToBuff(VALUE, SELF:Buffer, OFFSET_UPDATE )
+//    INTERNAL PROPERTY Signature     AS STRING
+//        // We can use System.Text.Encoding.ASCII because the flexfile header has no special characters
+//        GET
+//            RETURN System.Text.Encoding.ASCII:GetString(SELF:Buffer,0, 9)
+//        END GET
+//        SET
+//            VAR bytes := System.Text.Encoding.ASCII:GetBytes(value)
+//            System.Array.Copy(bytes,0, Buffer, OFFSET_SIGNATURE, LEN_SIGNATURE)
+//        END SET
+//    END PROPERTY
+//    
     INTERNAL METHOD Read(oStream AS FileStream) AS LOGIC
         local lOk := FALSE AS LOGIC
         DO WHILE ! lOk
@@ -181,7 +194,16 @@ INTERNAL CLASS FlexHeader
 
     INTERNAL PROPERTY Valid AS LOGIC
         GET
-            RETURN SELF:Signature == "FlexFile3"
+            RETURN  SELF:Buffer[0] == 70  .AND. ;    // 'F';
+                    SELF:Buffer[1] == 108 .AND. ;   // 'l';        
+                    SELF:Buffer[2] == 101 .AND. ;   // 'e';
+                    SELF:Buffer[3] == 120 .AND. ;   // 'x';        
+                    SELF:Buffer[4] == 70  .AND. ;   // 'F';
+                    SELF:Buffer[5] == 105 .AND. ;   // 'i';        
+                    SELF:Buffer[6] == 108 .AND. ;   // 'l';
+                    SELF:Buffer[7] == 101 .AND. ;   // 'e';        
+                    SELF:Buffer[8] == 51            // '3';
+
         END GET
     END PROPERTY
 END CLASS

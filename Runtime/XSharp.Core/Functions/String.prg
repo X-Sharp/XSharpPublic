@@ -475,12 +475,12 @@ FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	RETURN bDest
 
 /// <overloads>
-/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
 /// <seealso cref="Oem2AnsiA" />
 /// <seealso cref="Ansi2Oem" />
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oema/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
 /// <seealso cref="Ansi2OemBuff" />
 FUNCTION Ansi2OemA(cAnsiString REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
@@ -505,12 +505,12 @@ FUNCTION Ansi2OemA(bSource AS BYTE[]) AS VOID
 
 
 /// <overloads>
-/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
 /// <seealso cref="Ansi2Oem" />
 /// <seealso cref="Oem2AnsiA" />
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansi/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
 /// <seealso cref="Oem2AnsiBuff" />
 FUNCTION Oem2Ansi(cOemString AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
@@ -529,12 +529,12 @@ FUNCTION Oem2Ansi(bSource AS BYTE[]) AS BYTE[]
 	RETURN Oem2Ansi(bSource, bSource:Length)
 
 /// <overloads>
-/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
 /// <seealso cref="Oem2Ansi" />
 /// <seealso cref="Ansi2OemA" />
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansia/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
 FUNCTION Oem2AnsiA(cOemString REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -565,14 +565,14 @@ FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	RETURN bDest
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansibuff/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
 /// <seealso cref="Ansi2OemBuff" />
 FUNCTION Oem2AnsiBuff(pszTarget AS BYTE[],pszSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
 	OemToCharBuffA(pszSource, pszTarget, dwCount)
 	RETURN pszTarget
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oembuff/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
+/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
 /// <seealso cref="Oem2AnsiBuff" />
 FUNCTION Ansi2OemBuff(pszTarget AS BYTE[],pszSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
 	CharToOemBuffA(pszSource, pszTarget, dwCount)

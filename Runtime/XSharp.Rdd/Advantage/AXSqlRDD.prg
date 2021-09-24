@@ -65,7 +65,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
                 sName := openInfo:FileName
             ENDIF
         ENDIF
-	    IF SELF:_SetPaths() != 0
+	    IF SELF:_SetPaths(EG_OPEN) != 0
 		    RETURN FALSE
 	    ENDIF
 

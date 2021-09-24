@@ -5,7 +5,7 @@ USING VOSDK := XSharp.VO.SDK
 USING SWF   := System.Windows.Forms
 USING SD    := System.Drawing
 USING System.Collections.Generic
-
+USING System.Collections
 
 INTERFACE IVOUIObject
     PROPERTY ClientRectangle AS SD.Rectangle GET
@@ -254,17 +254,17 @@ END INTERFACE
 INTERFACE IVOListView INHERIT IVOControl, IVOControlInitialize
     PROPERTY AllowColumnReorder  AS LOGIC GET SET
     PROPERTY CheckBoxes AS LOGIC GET SET
-    PROPERTY Columns    AS IList<IVOColumnHeader> GET
     PROPERTY FullRowSelect AS LOGIC GET SET
     PROPERTY GridLines  AS LOGIC GET SET
     PROPERTY LargeImageList AS SWF.ImageList GET SET
     PROPERTY HeaderStyle AS SWF.ColumnHeaderStyle GET SET
     PROPERTY HotTracking AS LOGIC GET SET
-    PROPERTY Groups     AS IList<SWF.ListViewGroup> GET
-    PROPERTY Items      AS IList<IVOListViewItem> GET
+    PROPERTY Columns AS IList GET 
+    PROPERTY Groups AS IList GET 
+	PROPERTY Items AS IList GET
     PROPERTY ListViewItemSorter AS System.Collections.IComparer GET SET
-    PROPERTY SelectedItems AS SWF.ListView.SelectedListViewItemCollection GET
-    PROPERTY SelectedIndices AS SWF.ListView.SelectedIndexCollection GET
+    PROPERTY SelectedItems AS IList GET
+    PROPERTY SelectedIndices AS IList GET
     PROPERTY ShowGroups AS LOGIC GET SET
     PROPERTY SmallImageList AS SWF.ImageList GET SET
     PROPERTY Sorting    AS SWF.SortOrder GET SET
@@ -295,15 +295,16 @@ INTERFACE IVOListViewItem
     PROPERTY Checked    AS LOGIC GET SET
     PROPERTY Focused    AS LOGIC GET SET
     PROPERTY ForeColor  AS SD.Color GET SET
-    PROPERTY Group      AS System.Windows.Forms.ListViewGroup GET SET
+    PROPERTY Group      AS OBJECT GET SET
     PROPERTY ImageIndex AS LONG GET SET
     PROPERTY Index      AS LONG GET 
     PROPERTY IndentCount AS LONG GET SET
-    PROPERTY Item       AS VOSDK.ListViewItem GET SET         
+    PROPERTY Item       AS VOSDK.ListViewItem GET SET
+    PROPERTY SWFItem    AS OBJECT GET          
     PROPERTY Position   AS SD.Point GET SET
     PROPERTY Selected   AS LOGIC GET SET
     PROPERTY StateImageIndex AS LONG GET SET
-    PROPERTY SubItems   AS SWF.ListViewItem.ListViewSubItemCollection GET
+    PROPERTY SubItems   AS IList GET
     PROPERTY Tag        AS OBJECT GET SET
     METHOD EnsureVisible() AS VOID STRICT
     METHOD BeginEdit() AS VOID STRICT
@@ -319,6 +320,7 @@ INTERFACE IVOColumnHeader
     PROPERTY Text       AS STRING GET SET
     PROPERTY TextAlign  AS SWF.HorizontalAlignment GET SET
     PROPERTY Width      AS LONG GET SET
+    PROPERTY Header     AS System.Windows.Forms.ColumnHeader GET
     METHOD AutoResize(style AS System.Windows.Forms.ColumnHeaderAutoResizeStyle) AS VOID        
 END INTERFACE
 

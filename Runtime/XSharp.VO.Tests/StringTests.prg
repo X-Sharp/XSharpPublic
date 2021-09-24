@@ -16,7 +16,34 @@ USING XUnit
 BEGIN NAMESPACE XSharp.VO.Tests
 
 	CLASS StringTests
-	
+
+		[Fact, Trait("Category", "String")];
+		METHOD DescendTests() AS VOID
+            LOCAL cString AS STRING
+            LOCAL cDesc   AS STRING
+            cString := "the quick brown fox jumps over the lazy dog 1234567890"
+            cDesc   := Descend(cString)
+            Assert.Equal(cString:Length, cDesc:Length)
+            FOR VAR i := 1 TO Slen(cString)
+                Assert.Equal(Asc(Substr(cDesc,i,1)), 256 - Asc(Substr(cString,i,1)))
+            NEXT
+            cString := "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG !@#$%^&*()"
+            cDesc   := Descend(cString)
+            Assert.Equal(cString:Length, cDesc:Length)
+            FOR VAR i := 1 TO Slen(cString)
+                Assert.Equal(Asc(Substr(cDesc,i,1)), 256 - Asc(Substr(cString,i,1)))
+            NEXT
+            cString := ""
+            FOR VAR i := 128u TO 255u
+                cString += chr(i)
+             NEXT
+             cDesc   := Descend(cString)
+             Assert.Equal(cString:Length, cDesc:Length)
+             FOR VAR i := 1 TO Slen(cString)
+                 Assert.Equal(Asc(Substr(cDesc,i,1)), 256 - Asc(Substr(cString,i,1)))
+             NEXT     
+            RETURN
+
 		[Fact, Trait("Category", "String")];
 		METHOD MoreStringTests() AS VOID
 			Assert.Equal("          ", Transform("", "@R XXXXXXXXXX")        )

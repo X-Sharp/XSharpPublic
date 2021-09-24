@@ -9,7 +9,27 @@ USING System.Threading
 USING System.Diagnostics
 USING XSharp.RDD
 USING XSharp.RDD.Enums
-USING System.Runtime.CompilerServices
+
+
+
+BEGIN NAMESPACE System.Runtime.CompilerServices
+    INTERNAL STATIC CLASS IsExternalInit
+    END CLASS
+END NAMESPACE
+
+    /// <summary>Delegate used for the StateChanged Event handler</summary>
+DELEGATE XSharp.StateChanged (e AS StateChangedEventArgs) AS VOID
+/// <summary>Arguments that are sent to StateChanged event handlers</summary>
+CLASS XSharp.StateChangedEventArgs
+    /// <summary>Setting that was just changed</summary>
+    PROPERTY Setting  AS XSharp.Set AUTO GET INIT
+    /// <summary>Old value of the setting</summary>
+    PROPERTY OldValue AS OBJECT AUTO GET INIT
+    /// <summary">New value of the setting</summary>
+    PROPERTY NewValue AS OBJECT AUTO GET INIT
+    INTERNAL CONSTRUCTOR()
+        RETURN
+END CLASS
 /// <summary>
 /// Container Class that holds the XSharp Runtime state
 /// </summary>
@@ -17,9 +37,8 @@ USING System.Runtime.CompilerServices
 /// Please note that unlike in Visual Objects and Vulcan.NET every thread has its own copy of the runtime state.<br/>
 /// The runtime state from a new thread is a copy of the state of the main thread at that moment.
 /// </remarks>
-
-
 CLASS XSharp.RuntimeState
+    
 	// Static Fields
 	PRIVATE INITONLY STATIC initialState  AS RuntimeState
 	PRIVATE INITONLY _thread AS Thread
@@ -33,10 +52,10 @@ CLASS XSharp.RuntimeState
     PRIVATE STATIC METHOD detectDialect() AS VOID
         LOCAL asm := System.Reflection.Assembly.GetEntryAssembly() AS System.Reflection.Assembly
         VAR att := TYPEOF( XSharp.Internal.CompilerVersionAttribute )
-        if asm != null .and. asm:IsDefined(att, FALSE)
-            FOREACH var attr in asm:GetCustomAttributes(att, FALSE)
-                var compilerversion := (XSharp.Internal.CompilerVersionAttribute) attr
-                var vers := compilerversion:Version
+        IF asm != NULL .AND. asm:IsDefined(att, FALSE)
+            FOREACH VAR attr IN asm:GetCustomAttributes(att, FALSE)
+                VAR compilerversion := (XSharp.Internal.CompilerVersionAttribute) attr
+                VAR vers := compilerversion:Version
                 var pos := vers:IndexOf("dialect:")
                 if pos >= 0
                     vers := vers:Substring(pos + 8)
@@ -61,7 +80,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>Retrieve the runtime state for the current thread</summary>
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
-
+    PUBLIC STATIC EVENT StateChanged AS StateChanged
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE oSettings AS Dictionary<XSharp.Set, OBJECT>
     /// <summary>The dictionary that stores most of the settings in the runtime state. The key to the index is the number from the Set Enum</summary>
@@ -81,9 +100,11 @@ CLASS XSharp.RuntimeState
                     SELF:_SetThreadValue(nSet, def)
                 ENDIF
             NEXT
-            // The following were skipped above bcause of the NULL check
-            SELF:_SetThreadValue<Exception>(Set.FileException,NULL)
-            SELF:_SetThreadValue<Exception>(Set.LastRddError,NULL)
+            // Some values that are not in the dictionary
+            RuntimeState.FileException := NULL
+            RuntimeState.FileError     := 0
+            RuntimeState.LastRddError  := NULL
+            
             SELF:_SetThreadValue<Exception>(Set.Patharray,NULL)
             SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
 			IF IsRunningOnWindows()
@@ -180,11 +201,20 @@ CLASS XSharp.RuntimeState
 			ELSE
 				result := DEFAULT(T)
 			ENDIF
+            IF StateChanged != NULL
+                VAR args := StateChangedEventArgs{} {Setting := nSetting, OldValue := oResult, NewValue := oValue}
+                StateChanged( args )
+            ENDIF
 			oSettings[nSetting] := oValue
 		END LOCK
 		RETURN	result
 
 	#region properties FROM the Vulcan RuntimeState that are emulated
+
+	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default value for this option is 'False'.</value>
+	STATIC PROPERTY CompilerOptionFox2 AS LOGIC AUTO
 
 	/// <summary>The current compiler setting for the VO11 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
@@ -233,18 +263,12 @@ CLASS XSharp.RuntimeState
 	/// <summary>The last File IO error number</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="FError" />
-    /// <seealso cref="Set.FileError" />
-    STATIC PROPERTY FileError AS DWORD ;
-        GET GetValue<DWORD>(Set.FileError);
-        SET SetValue<DWORD>(Set.FileError, value)
+    STATIC PROPERTY FileError AS DWORD AUTO
 
 	/// <summary>The last file IO Exception</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="FException" />
-    /// <seealso cref="Set.FileException" />
-    STATIC PROPERTY FileException AS Exception ;
-        GET GetValue<Exception>(Set.FileException);
-        SET SetValue<Exception>(Set.FileException, value)
+    STATIC PROPERTY FileException AS Exception AUTO
 
 	/// <summary>The current Alternate setting.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -390,7 +414,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The default RDD.</summary>
     /// <remarks><note>This value is 'per thread' </note></remarks>
-    /// <seealso cref="RDDSetDefault" />
+    /// <seealso cref="RddSetDefault" />
     STATIC PROPERTY DefaultRDD AS STRING ;
         GET GetValue<STRING>(Set.DefaultRdd);
         SET SetValue<STRING>(Set.DefaultRdd, value)
@@ -532,10 +556,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>Last error that occurred in the RDD subsystem.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="Set.LastRddError" />
-    STATIC PROPERTY LastRddError AS Exception ;
-        GET GetValue<Exception>(Set.LastRddError);
-        SET SetValue<Exception>(Set.LastRddError, value)
+    STATIC PROPERTY LastRddError AS Exception AUTO
 
 	/// <summary>Last Script error that occurred .</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -641,10 +662,10 @@ CLASS XSharp.RuntimeState
 	END SET
 	END PROPERTY
 
-    /// <summary>The DOS Encoding. This is based on the corrent Win Codepage.</summary>
+    /// <summary>The Windows Encoding. This is based on the corrent Win Codepage.</summary>
     /// <seealso cref="WinCodePage" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="O:StringCompare" />
+    /// <seealso cref="O:RuntimeState.StringCompare" />
     STATIC PROPERTY WinEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(WinCodePage)
 
@@ -1073,7 +1094,3 @@ CLASS XSharp.RuntimeState
         END SWITCH
         RETURN XSharp.StringHelpers.CompareOrdinal(aLHS, aRHS, nLen)
 END CLASS
-
-
-
-

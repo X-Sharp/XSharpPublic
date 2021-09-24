@@ -16,6 +16,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     INTERNAL PARTIAL SEALED CLASS CdxTag IMPLEMENTS IRddSortWriter
         PRIVATE _sorter AS CdxSortHelper
+        PRIVATE _inBatch := FALSE AS LOGIC
 
         // Methods for Creating Indices
         INTERNAL METHOD Create(createInfo AS DbOrderCreateInfo ) AS LOGIC
@@ -139,6 +140,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             #ifdef SHOWTIMES
             ? DateTime.Now, "Write"
             #endif
+            SELF:_inBatch := TRUE
             IF isOk
                 SELF:_sorter:StartWrite()
                 isOk := _sorter:Write(SELF)
@@ -146,6 +148,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF isOk
                 SELF:_sorter:EndWrite()
             ENDIF
+            SELF:_inBatch := FALSE
             #ifdef SHOWTIMES
             ? DateTime.Now, "End"
             #endif
@@ -456,7 +459,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         INTERNAL METHOD Truncate() AS LOGIC
-            // Find all pages of the tag and delete them
+            // todo Find all pages of the tag and delete them
             // then also delete the tag header and return everything to the OrderBag
             RETURN TRUE
 

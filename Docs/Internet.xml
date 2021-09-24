@@ -11,36 +11,36 @@
         </remarks>
         <example>
             <code language="X#">
-                FUNCTION SMTPSendMail       (cServerIP      AS STRING,;
-                     cMailSubject   AS STRING,;
-                     xDestUser      AS USUAL,;
-                     xCCUser        AS USUAL,;
-                     cBody          AS STRING,;
-                     cFromAddress   AS STRING,;
-                     xAttachFile    AS USUAL,;
-                     cFromName      AS STRING,;
-                     xBCCUser       AS USUAL,;
-                     cCargo         AS STRING)   AS LOGIC PASCAL
-                  LOCAL oSmtp    AS CSMTP
-                  LOCAL lRet     AS LOGIC
-                  LOCAL oEmail   AS CEmail
-                  oEMail := CEmail{}
-                  oEmail:FromAddress   := cFromAddress
-                  oEmail:FromName      := cFromName
-                  oEmail:Cargo         := cCargo
-                  oEmail:Subject       := cMailSubject
-                  oEmail:DestList      := xDestUser
-                  oEmail:CCList        := xCCUser
-                  oEmail:BCCList       := xBCCUser
-                  oEmail:MailBody        := cBody
-                  IF !IsNil(xAttachFile)
-                     oEmail:AttachmentFileList := xAttachFile
-                  ENDIF
-                  oSmtp := CSmtp{oEmail}
-                  oSMtp:RemoteHost  := cServerIP
-                  oSmtp:TimeOut := 5000
-                  lRet := oSmtp:SendMail()
-                  RETURN lRet
+                FUNCTION SMTPSendMail       (cServerIP      AS STRING,;
+                     cMailSubject   AS STRING,;
+                     xDestUser      AS USUAL,;
+                     xCCUser        AS USUAL,;
+                     cBody          AS STRING,;
+                     cFromAddress   AS STRING,;
+                     xAttachFile    AS USUAL,;
+                     cFromName      AS STRING,;
+                     xBCCUser       AS USUAL,;
+                     cCargo         AS STRING)   AS LOGIC PASCAL
+                  LOCAL oSmtp    AS CSMTP
+                  LOCAL lRet     AS LOGIC
+                  LOCAL oEmail   AS CEmail
+                  oEMail := CEmail{}
+                  oEmail:FromAddress   := cFromAddress
+                  oEmail:FromName      := cFromName
+                  oEmail:Cargo         := cCargo
+                  oEmail:Subject       := cMailSubject
+                  oEmail:DestList      := xDestUser
+                  oEmail:CCList        := xCCUser
+                  oEmail:BCCList       := xBCCUser
+                  oEmail:MailBody        := cBody
+                  IF !IsNil(xAttachFile)
+                     oEmail:AttachmentFileList := xAttachFile
+                  ENDIF
+                  oSmtp := CSmtp{oEmail}
+                  oSMtp:RemoteHost  := cServerIP
+                  oSmtp:TimeOut := 5000
+                  lRet := oSmtp:SendMail()
+                  RETURN lRet
             </code>
             See Also
             CLASS CPop, CLASS CSmtp, Class CStorage
@@ -349,9 +349,9 @@
         <summary>
             Decode and save the specified encoded attachment of an e-mail as a local file.
         </summary>
-        <param name="cPath">The directory in which the file is to be saved.  If not specified, the attachment will be saved within the current directory.</param>
-        <param name="cFile">String containing a new file name for the attachment being saved.  If not specified, the attachment will be saved under the file name contained in the attachment e-mail header.</param>
-        <param name="n">Number specifying which of the multiple attachments should be decoded and saved as a file.  If not specified, the first attachment will be saved.</param>
+        <param name="cPath">The directory in which the file is to be saved.  If not specified, the attachment will be saved within the current directory.</param>
+        <param name="cFile">String containing a new file name for the attachment being saved.  If not specified, the attachment will be saved under the file name contained in the attachment e-mail header.</param>
+        <param name="n">Number specifying which of the multiple attachments should be decoded and saved as a file.  If not specified, the first attachment will be saved.</param>
         <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
@@ -397,7 +397,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            This method creates a string containing the date and time in a format that can be understood by all Internet servers.  The resulting string can be used via the TimeStamp access.
+            This method creates a string containing the date and time in a format that can be understood by all Internet servers.  The resulting string can be used via the TimeStamp access.
         </remarks>
     </CEmail.SetMailTime>
     <CEmail.Size>
@@ -461,9 +461,9 @@
         <summary>
             Construct a CFtp object instance.
         </summary>
-        <param name="cCaption">Name of the application or entity calling subsequent methods.  The default is 'VO Ftp Client'.</param>
-        <param name="n">Port number.  The default FTP port number is 21.</param>
-        <param name="lStat">Logical value specifying whether the CFtp:InternetStatus() method should be called for status callback notifications.  The default is TRUE.</param>
+        <param name="cCaption">Name of the application or entity calling subsequent methods.  The default is 'VO Ftp Client'.</param>
+        <param name="n">Port number.  The default FTP port number is 21.</param>
+        <param name="lStat">Logical value specifying whether the CFtp:InternetStatus() method should be called for status callback notifications.  The default is TRUE.</param>
     </CFtp.ctor>
     <CFtp.AccessType>
         <summary>
@@ -503,7 +503,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            This method can be used to close the connection made for the CFtp object instance.  If not specified, the connection will be automatically closed if the appropriate object instance goes out of scope.
+            This method can be used to close the connection made for the CFtp object instance.  If not specified, the connection will be automatically closed if the appropriate object instance goes out of scope.
         </remarks>
         <example>
             See the CFtp:ConnectRemote() example.
@@ -519,9 +519,9 @@
         <summary>
             Connect an application to a remote FTP server.
         </summary>
-        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  </param>
-        <param name="cID">String that contains the name of the user to log on.  If this parameter is NULL, the function uses the appropriate default ('anonymous').  For the FTP protocol, the default is anonymous.</param>
-        <param name="cPw">User's password as a string.  For anonymous login users, the user's e-mail name can be used as password.</param>
+        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  </param>
+        <param name="cID">String that contains the name of the user to log on.  If this parameter is NULL, the function uses the appropriate default ('anonymous').  For the FTP protocol, the default is anonymous.</param>
+        <param name="cPw">User's password as a string.  For anonymous login users, the user's e-mail name can be used as password.</param>
         <param name="lBypass">** missing parameter documentation **</param>
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -536,16 +536,16 @@
                 LOCAL oFTP AS CFtp
                 LOCAL lRet AS LOGIC
                 LOCAL aRet AS ARRAY
-                LOCAL i    AS INT
+                LOCAL i    AS INT
                 oFTP := CFtp{"VO Sample FTP Agent"}
                 IF oFTP:ConnectRemote("ftp.cai.com", ;
-                                     "anonymous",   ;
-                                     "Darth.Vader@starwars.com")
+                                     "anonymous",   ;
+                                     "Darth.Vader@starwars.com")
                 oFTP:SetCurDir("/pub/vo")
                 ? "Contents of Directory " + oFTP:GetCurDir()
                 aRet := oFTP:Directory("*.*")
                 FOR i := 1 UPTO ALen(aRet)
-                ?  aRet[i, F_NAME]
+                ?  aRet[i, F_NAME]
                 ?? ", Size: " + NTrim(aRet[i, F_SIZE])
                 ?? ", Date/Time: " + DToC(aRet[i, F_DATE]) + ;
                 "/" + aRet[i, F_TIME]
@@ -585,16 +585,16 @@
             Create an array of directory and file information about the remote FTP server.
         </summary>
         <param name="cFile">
-            The file specification for the search.  Besides a file name, this specification can include an optional drive, directory, and extension.
-            The file name and extension can include the standard wildcard characters (* and ?).  
-            If you do not specify a drive and directory, the Windows defaults are used.  If you do not specify any file name, '*.*' is assumed.
+            The file specification for the search.  Besides a file name, this specification can include an optional drive, directory, and extension.
+            The file name and extension can include the standard wildcard characters (* and ?).  
+            If you do not specify a drive and directory, the Windows defaults are used.  If you do not specify any file name, '*.*' is assumed.
         </param>
         <param name="nFlags">** missing parameter documentation **</param>
         <returns>
-            An array of subarrays, with each subarray containing information about each file matching &lt;cFileSpec&gt;.  The subarray elements are referenced as shown in the example under the CFtp:ConnectRemote() Method section.
+            An array of subarrays, with each subarray containing information about each file matching <paramref name="cFileSpec" />.  The subarray elements are referenced as shown in the example under the CFtp:ConnectRemote() Method section.
         </returns>
         <remarks>
-            This method returns information about files in the current or specified directory.  You can use it to perform actions on groups of files.
+            This method returns information about files in the current or specified directory.  You can use it to perform actions on groups of files.
         </remarks>
     </CFtp.Directory>
     <CFtp.Error>
@@ -624,13 +624,13 @@
         <summary>
             Receive a file from the FTP server.
         </summary>
-        <param name="cRemoteFile">Name of the remote file that has to be received.  </param>
-        <param name="cNewFile">String that contains the name of the file to create on the local system.  If not specified, &lt;cRemoteFile&gt; automatically becomes the name of the local file.</param>
-        <param name="lFailIfExists">Logical value indicating whether the method should proceed if a local file of the specified name already exists.  If &lt;lFailIfExists&gt; is TRUE and the local file exists, the GetFile() method fails.</param>
+        <param name="cRemoteFile">Name of the remote file that has to be received.  </param>
+        <param name="cNewFile">String that contains the name of the file to create on the local system.  If not specified, <paramref name="cRemoteFile" /> automatically becomes the name of the local file.</param>
+        <param name="lFailIfExists">Logical value indicating whether the method should proceed if a local file of the specified name already exists.  If <paramref name="lFailIfExists" /> is TRUE and the local file exists, the GetFile() method fails.</param>
         <param name="nFlags">
-            Flags that control how the function will handle the file download.  The first set of flag values indicates the conditions under which the transfer occurs.  These transfer type flags can be used in combination with the second set of flags that control caching.
+            Flags that control how the function will handle the file download.  The first set of flag values indicates the conditions under which the transfer occurs.  These transfer type flags can be used in combination with the second set of flags that control caching.
             The application can select one of these transfer type values:
-            The following flags handle how the caching of this file will be handled.  Any combination of the following flags can be used with the transfer type flag.
+            The following flags handle how the caching of this file will be handled.  Any combination of the following flags can be used with the transfer type flag.
             The possible values are:
         </param>
         <returns>
@@ -643,12 +643,12 @@
             The following receives the comprehensive list (00index.txt) of all files contained in the X# download section at ftp.cai.com:
             <code language="X#">
                 FUNC TestGetFile()
-                LOCAL oFTP  AS CFtp
+                LOCAL oFTP  AS CFtp
                 LOCAL cFile AS STRING
                 oFTP := CFtp{"VO Sample FTP Agent"}
                 IF oFTP:ConnectRemote("ftp.cai.com", ;
-                                     "anonymous",   ;
-                                     "Darth.Vader@starwars.com")
+                                     "anonymous",   ;
+                                     "Darth.Vader@starwars.com")
                 cFile := "00index.txt"
                 IF oFTP:SetCurDir("/pub/vo")
                 IF oFTP:GetFile(cFile)
@@ -666,8 +666,8 @@
                 RETURN
                 STATIC FUNC __RaiseFTPError (oFTP AS CFtp) AS INT ;
                 PASCAL
-                LOCAL cError    AS STRING
-                LOCAL nRet      AS INT
+                LOCAL cError    AS STRING
+                LOCAL nRet      AS INT
                 nRet := oFTP:Error
                 IF nRet &gt; 0
                 cError := oFTP:ErrorMsg
@@ -681,12 +681,12 @@
     </CFtp.GetFile>
     <CFtp.InternetStatus>
         <summary>
-            Method InternetStatus() is a callback placeholder to receive current status information for an FTP session.  It should be overloaded by subclasses to implement the desired behavior.
+            Method InternetStatus() is a callback placeholder to receive current status information for an FTP session.  It should be overloaded by subclasses to implement the desired behavior.
         </summary>
         <param name="nContext">Application-defined context value associated with the current class.</param>
-        <param name="nStatus">Status code that indicates the reason for calling.  It can be one of the following values: </param>
-        <param name="pStatusInfo">Address of a buffer that contains information pertinent to this call to the callback function.  </param>
-        <param name="nStatusLength">Size of the &lt;pStatusInfo&gt; buffer.  </param>
+        <param name="nStatus">Status code that indicates the reason for calling.  It can be one of the following values: </param>
+        <param name="pStatusInfo">Address of a buffer that contains information pertinent to this call to the callback function.  </param>
+        <param name="nStatusLength">Size of the <paramref name="pStatusInfo" /> buffer.  </param>
         <remarks>
             The InternetStatus() method can be used to receive different status information at any stage of an FTP transfer between the FTP client and server.
         </remarks>
@@ -694,11 +694,11 @@
             The following example demonstrates using the InternetStatus() method to notify every status change to the owner window:
             <code language="X#">
                 CLASS MyFTP INHERIT CFtp
-                  PROTECT oOwner   AS OBJECT
+                  PROTECT oOwner   AS OBJECT
                 METHOD Init(oParent, cCaption, n, lStat)CLASS MyFtp
-                  SUPER:Init(cCaption, n, lStat)
-                  SELF:oOwner := oParent
-                  RETURN SELF
+                  SUPER:Init(cCaption, n, lStat)
+                  SELF:oOwner := oParent
+                  RETURN SELF
                 METHOD InternetStatus( nContext, nStatus, ; pStatusInfo, nStatusLength ) CLASS MyFTP
                 //
                 // This method receives all Low Level FTP
@@ -708,41 +708,41 @@
                 LOCAL cMsg AS STRING
                 DO CASE
                 CASE nStatus == INTERNET_STATUS_RESOLVING_NAME
-                  cMsg := "Resolving Name ... "
+                  cMsg := "Resolving Name ... "
                 CASE nStatus == INTERNET_STATUS_NAME_RESOLVED
-                  cMsg := "Name resolved"
+                  cMsg := "Name resolved"
                 CASE nStatus == INTERNET_STATUS_CONNECTING_TO_SERVER
-                  cMsg := "Connecting to Server ... "
+                  cMsg := "Connecting to Server ... "
                 CASE nStatus == INTERNET_STATUS_CONNECTED_TO_SERVER
-                  cMsg := "Connected to Server"
+                  cMsg := "Connected to Server"
                 CASE nStatus == INTERNET_STATUS_SENDING_REQUEST
-                  cMsg := "Sending Request ... "
+                  cMsg := "Sending Request ... "
                 CASE nStatus == INTERNET_STATUS_REQUEST_SENT
-                  cMsg := "Request sent"
+                  cMsg := "Request sent"
                 CASE nStatus == INTERNET_STATUS_RECEIVING_RESPONSE
-                  cMsg := "Receiving response ..."
+                  cMsg := "Receiving response ..."
                 CASE nStatus == INTERNET_STATUS_RESPONSE_RECEIVED
-                  cMsg := "Response received"
+                  cMsg := "Response received"
                 CASE nStatus == INTERNET_STATUS_CTL_RESPONSE_RECEIVED
-                  cMsg := "CTL Response received"
+                  cMsg := "CTL Response received"
                 CASE nStatus == INTERNET_STATUS_PREFETCH
-                  cMsg := "Prefetch"
+                  cMsg := "Prefetch"
                 CASE nStatus == INTERNET_STATUS_CLOSING_CONNECTION
-                  cMsg := "Closing Connection ..."
+                  cMsg := "Closing Connection ..."
                 CASE nStatus == INTERNET_STATUS_CONNECTION_CLOSED
-                  cMsg := "Connection closed"
+                  cMsg := "Connection closed"
                 CASE nStatus == INTERNET_STATUS_HANDLE_CREATED
-                  cMsg := "Handle created"
-                  //      _DebOut32( "FTP Status : " + cMsg )
-                  RETURN
+                  cMsg := "Handle created"
+                  //      _DebOut32( "FTP Status : " + cMsg )
+                  RETURN
                 CASE nStatus == INTERNET_STATUS_HANDLE_CLOSING
-                  cMsg := "Closing handle ..."
+                  cMsg := "Closing handle ..."
                 CASE nStatus == INTERNET_STATUS_REQUEST_COMPLETE
-                  cMsg := "Request complete"
+                  cMsg := "Request complete"
                 CASE nStatus == INTERNET_STATUS_REDIRECT
-                  cMsg := "Redirect"
+                  cMsg := "Redirect"
                 OTHERWISE
-                  cMsg := "Unkown FTP Status"
+                  cMsg := "Unkown FTP Status"
                 ENDCASE
                 SELF:oOwner:FTPStatus := cMsg
                 RETURN NIL
@@ -754,22 +754,22 @@
             Initialize an application's use of the Win32 Internet functions.
         </summary>
         <param name="nFlags">
-            Flag that indicates various options affecting the behavior of the methods.  It can be a combination of these values:
+            Flag that indicates various options affecting the behavior of the methods.  It can be a combination of these values:
             INTERNET_FLAG_OFFLINE
-            Satisfy download operations on this handle through the persistent cache only.  If the item does not exist in the cache, the method returns an appropriate error code.
+            Satisfy download operations on this handle through the persistent cache only.  If the item does not exist in the cache, the method returns an appropriate error code.
             INTERNET_FLAG_ASYNC
             Future operations on this handle may fail with ERROR_IO_PENDING.
         </param>
-        <param name="xProxy">String containing the name of the proxy server to use if proxy access was specified.  If this parameter is NIL, the function reads proxy information from the registry.</param>
+        <param name="xProxy">String containing the name of the proxy server to use if proxy access was specified.  If this parameter is NIL, the function reads proxy information from the registry.</param>
         <param name="aProxyByPass">
-            Array with host names or IP addresses, or both, that are known locally.  Requests to these names are not routed through the proxy.  The strings can contain wildcards, such as {'157.55.*', '*int*'}, meaning any IP address starting with 157.55, or any name containing the substring 'int', will bypass the proxy.
-            If this array contains the '&lt;local&gt;' string as the only entry, the function bypasses any host name that does not contain a period.  For example, 'www.cai.com' would be routed to the proxy, whereas 'internet' would not.  If this parameter is NIL, the function reads the bypass list from the registry.
+            Array with host names or IP addresses, or both, that are known locally.  Requests to these names are not routed through the proxy.  The strings can contain wildcards, such as {'157.55.*', '*int*'}, meaning any IP address starting with 157.55, or any name containing the substring 'int', will bypass the proxy.
+            If this array contains the '&lt;local&gt;' string as the only entry, the function bypasses any host name that does not contain a period.  For example, 'www.cai.com' would be routed to the proxy, whereas 'internet' would not.  If this parameter is NIL, the function reads the bypass list from the registry.
         </param>
         <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            This method initializes internal data structures and prepares for future calls to CFtp methods.  It does not have to be called explicitly, because the CFtp:ConnectRemote() method internally calls this method, if necessary.
+            This method initializes internal data structures and prepares for future calls to CFtp methods.  It does not have to be called explicitly, because the CFtp:ConnectRemote() method internally calls this method, if necessary.
         </remarks>
     </CFtp.Open>
     <CFtp.OpenFile>
@@ -777,9 +777,9 @@
             Open a remote file for writing or reading.
         </summary>
         <param name="cRemoteFile">String containing the name of the file that has to be accessed on the remote system.</param>
-        <param name="nAccess">Numeric value determining the type of file access (GENERIC_READ or GENERIC_WRITE — not both).  The default is GENERIC_READ.</param>
+        <param name="nAccess">Numeric value determining the type of file access (GENERIC_READ or GENERIC_WRITE — not both).  The default is GENERIC_READ.</param>
         <param name="nFlags">
-            Conditions for operation with the specified file.  The application should select one transfer type and any of the flags that control how the caching of the file will be controlled.
+            Conditions for operation with the specified file.  The application should select one transfer type and any of the flags that control how the caching of the file will be controlled.
             The transfer type can be any one of the following values:
             The application can use one or more of the following values to control the caching of the file:
         </param>
@@ -787,7 +787,7 @@
             File handle, if successful; otherwise, NULL_PTR.
         </returns>
         <remarks>
-            The OpenFile() method initializes a remote file handle for subsequent file operations.  The handle remains open until calling the CloseFile() method, and it can be used to call functions like InternetReadFile() or InternetWriteFile(), InternetCloseHandle(), or FtpFindFirstFile().
+            The OpenFile() method initializes a remote file handle for subsequent file operations.  The handle remains open until calling the CloseFile() method, and it can be used to call functions like InternetReadFile() or InternetWriteFile(), InternetCloseHandle(), or FtpFindFirstFile().
         </remarks>
     </CFtp.OpenFile>
     <CFtp.PassWord>
@@ -804,19 +804,19 @@
     </CFtp.Proxy>
     <CFtp.ProxyBypass>
         <summary>
-            A string containing an optional list of host names or IP addresses, or both, that are known locally. Requests to these names are not routed through the proxy. The list can contain wildcards, such as "130.126.*.* *dev*", meaning that any IP address starting with 130.126 or any name containing the substring "dev" will bypass the proxy.
+            A string containing an optional list of host names or IP addresses, or both, that are known locally. Requests to these names are not routed through the proxy. The list can contain wildcards, such as "130.126.*.* *dev*", meaning that any IP address starting with 130.126 or any name containing the substring "dev" will bypass the proxy.
         </summary>
-        <value>A string containing an optional list of host names or IP addresses, or both, that are known locally. Requests to these names are not routed through the proxy. The list can contain wildcards, such as "130.126.*.* *dev*", meaning that any IP address starting with 130.126 or any name containing the substring "dev" will bypass the proxy.</value>
+        <value>A string containing an optional list of host names or IP addresses, or both, that are known locally. Requests to these names are not routed through the proxy. The list can contain wildcards, such as "130.126.*.* *dev*", meaning that any IP address starting with 130.126 or any name containing the substring "dev" will bypass the proxy.</value>
     </CFtp.ProxyBypass>
     <CFtp.PutFile>
         <summary>
             Store a file on the FTP server.
         </summary>
-        <param name="cLocalFile">Name of the local file that is to be sent to the remote FTP server.  </param>
-        <param name="cRemoteFile">String that contains the name of the file to create on the remote FTP server.  If not specified, &lt;cLocalFile&gt; automatically becomes the name of the remote file.</param>
-        <param name="lFailIfExists">Logical value indicating whether the method should proceed if a remote file of the specified name already exists.  If &lt;lFailIfExists&gt; is TRUE and the remote file exists, method PutFile() fails.</param>
+        <param name="cLocalFile">Name of the local file that is to be sent to the remote FTP server.  </param>
+        <param name="cRemoteFile">String that contains the name of the file to create on the remote FTP server.  If not specified, &lt;cLocalFile&gt; automatically becomes the name of the remote file.</param>
+        <param name="lFailIfExists">Logical value indicating whether the method should proceed if a remote file of the specified name already exists.  If <paramref name="lFailIfExists" /> is TRUE and the remote file exists, method PutFile() fails.</param>
         <param name="nFlags">
-            Flags that control how the function will handle the file upload and the conditions under which the transfers occur.  The application should select one transfer type and any of the flags that control how the caching of the file will be controlled.
+            Flags that control how the function will handle the file upload and the conditions under which the transfers occur.  The application should select one transfer type and any of the flags that control how the caching of the file will be controlled.
             The transfer type can be any one of the following values:
             The application can use one or more of the following values to control the caching of the file:
         </param>
@@ -830,12 +830,12 @@
             The following receives the comprehensive list (00index.txt) of all files contained in the X# download section at ftp.cai.com:
             <code language="X#">
                 FUNC TestGetFile()
-                LOCAL oFTP  AS CFtp
+                LOCAL oFTP  AS CFtp
                 LOCAL cFile AS STRING
                 oFTP := CFtp{"VO Sample FTP Agent"}
                 IF oFTP:ConnectRemote("ftp.cai.com", ;
-                                       "anonymous",   ;
-                                       "Darth.Vader@starwars.com")
+                                       "anonymous",   ;
+                                       "Darth.Vader@starwars.com")
                 cFile := "00index.txt"
                 IF oFTP:SetCurDir("/pub/vo")
                 IF oFTP:GetFile(cFile)
@@ -851,8 +851,8 @@
                 oFTP:CloseRemote()
                 RETURN
                 STATIC FUNC __RaiseFTPError (oFTP AS CFtp) AS INT PASCAL
-                LOCAL cError    AS STRING
-                LOCAL nRet      AS INT
+                LOCAL cError    AS STRING
+                LOCAL nRet      AS INT
                 nRet := oFTP:Error
                 IF nRet &gt; 0
                 cError := oFTP:ErrorMsg
@@ -1087,8 +1087,8 @@
             Sends a request to the server.
         </summary>
         <param name="cHeaders">Additional headers (optional).</param>
-        <param name="pData">Pointer to data of size &lt;nDataSize&gt; (optional).</param>
-        <param name="nDataSize">The size of the data in &lt;pData&gt; (optional but must be provided if &lt;pData&gt; is used).</param>
+        <param name="pData">Pointer to data of size <paramref name="nDataSize" /> (optional).</param>
+        <param name="nDataSize">The size of the data in <paramref name="pData" /> (optional but must be provided if <paramref name="pData" /> is used).</param>
         <returns>
             TRUE if the request is successful, otherwise FALSE.
         </returns>
@@ -1229,16 +1229,16 @@
             Base class for CPop, CSmtp and CNNTP classes.
         </summary>
         <remarks>
-            <br />Important!  CMailAbstract is an abstract class and should not be used directly — instead, use one of its subclasses.
-            This abstract class defines the common protocol — properties and behavior — used by the e-mail classes, CPop, CSmtp and CNNTP.
+            <br />Important!  CMailAbstract is an abstract class and should not be used directly — instead, use one of its subclasses.
+            This abstract class defines the common protocol — properties and behavior — used by the e-mail classes, CPop, CSmtp and CNNTP.
         </remarks>
     </CMailAbstract>
     <CMailAbstract.ctor>
         <summary>
             Construct a CMailAbstract object.
         </summary>
-        <param name="nPort">Port number at &lt;cHostNameOrIP&gt;.  The default value is IPPORT_SMTP (25).</param>
-        <param name="cServer">String containing the local name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  If NULL_STRING is specified, the local host name is assumed.</param>
+        <param name="nPort">Port number at <paramref name="cHostNameOrIP" />.  The default value is IPPORT_SMTP (25).</param>
+        <param name="cServer">String containing the local name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  If NULL_STRING is specified, the local host name is assumed.</param>
     </CMailAbstract.ctor>
     <CMailAbstract.Close>
         <summary>
@@ -1310,7 +1310,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            The RecvRemote() method receives data from a connected remote host.  Received data are stored to instance variable, SELF:cReply.
+            The RecvRemote() method receives data from a connected remote host.  Received data are stored to instance variable, SELF:cReply.
         </remarks>
     </CMailAbstract.RecvRemote>
     <CMailAbstract.RemoteHost>
@@ -1391,8 +1391,8 @@
             Base class for CEmail class.
         </summary>
         <remarks>
-            <br />Important!  CMessage is an abstract class and should not be used directly — instead, use one of its subclasses.
-            This abstract class defines the common protocol — properties and behaviour — used by the e-mail classes, CEmail.
+            <br />Important!  CMessage is an abstract class and should not be used directly — instead, use one of its subclasses.
+            This abstract class defines the common protocol — properties and behaviour — used by the e-mail classes, CEmail.
         </remarks>
     </CMessage>
     <CMessage.ctor>
@@ -1452,7 +1452,7 @@
             This method can be provided by the developer to implement unsupported code types.
         </summary>
         <remarks>
-            <br />Important!  This is a callback method used by X#.  Normally, it should not be called in your application code.
+            <br />Important!  This is a callback method used by X#.  Normally, it should not be called in your application code.
         </remarks>
         <param name="cPath">The path to use when saving the file.</param>
         <param name="cFile">The file name to use.</param>
@@ -1498,7 +1498,7 @@
             Retrieves information about attachment(s).
         </summary>
         <param name="c">The optional attachment string.</param>
-        <param name="lNewsGroupMessage">A logical flag indicating whether &lt;c&gt; is a news group message.</param>
+        <param name="lNewsGroupMessage">A logical flag indicating whether <paramref name="c" /> is a news group message.</param>
     </CMessage.GetAttachInfo>
     <CMessage.GetHeaderInfo>
         <summary>
@@ -1556,7 +1556,7 @@
         </summary>
         <param name="cPath">The optional directory in which the file will be saved.</param>
         <param name="cFile">The optional file name to save the attachment as.</param>
-        <param name="n">Which attachment to save.  If not specified, the first attachment will be saved.</param>
+        <param name="n">Which attachment to save.  If not specified, the first attachment will be saved.</param>
         <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
@@ -1696,7 +1696,7 @@
             Establishes a connection to an Internet Mail Server.
         </summary>
         <param name="cIP">The optional string containing the local name of an Internet server. The default is the local host name.</param>
-        <param name="n">The optional port number to use at cIP.  The default is IPPORT_SMTP (25).</param>
+        <param name="n">The optional port number to use at cIP.  The default is IPPORT_SMTP (25).</param>
         <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
@@ -1899,7 +1899,7 @@
         <summary>
             Construct a CPop object.
         </summary>
-        <param name="cServer">String containing the host name of a valid POP server.  Alternately, the string can contain the IP number of the POP server in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
+        <param name="cServer">String containing the host name of a valid POP server.  Alternately, the string can contain the IP number of the POP server in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
         <param name="cUserName">The user ID.</param>
         <param name="cPassword">The user's password.</param>
         <param name="nPort">** missing parameter documentation **</param>
@@ -1920,13 +1920,13 @@
         <summary>
             Establish a connection to the remote POP server.
         </summary>
-        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the POP server in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
-        <param name="n">Port number at &lt;cHostNameOrIP&gt;.  If not specified, the connection will be established to port SELF:RemotePort.  The default value is IPPORT_POP (110).</param>
+        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the POP server in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
+        <param name="n">Port number at <paramref name="cHostNameOrIP" />.  If not specified, the connection will be established to port SELF:RemotePort.  The default value is IPPORT_POP (110).</param>
         <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            This method establishes a connection to the specified remote mail server at port &lt;nPort&gt; or SELF:RemotePort.
+            This method establishes a connection to the specified remote mail server at port <paramref name="nPort" /> or SELF:RemotePort.
         </remarks>
     </CPop.connect>
     <CPop.DeleteMail>
@@ -1943,18 +1943,18 @@
         <example>
             The following function collects all waiting e-mail messages and deletes them from the remote POP server:
             <code language="X#">
-                FUNC POPGetMails (cServerIP  AS STRING,;
-                cUser      AS STRING,;
-                cPassW     AS STRING,;
-                lDelete    AS LOGIC ) AS ARRAY ;
+                FUNC POPGetMails (cServerIP  AS STRING,;
+                cUser      AS STRING,;
+                cPassW     AS STRING,;
+                lDelete    AS LOGIC ) AS ARRAY ;
                 PASCAL
-                LOCAL oPop  AS CPop
-                LOCAL aRet  AS ARRAY
-                LOCAL i,n   AS INT
+                LOCAL oPop  AS CPop
+                LOCAL aRet  AS ARRAY
+                LOCAL i,n   AS INT
                 oPop := CPop{cServerIP}
                 IF oPop:Logon(cUser, cPassW)
                 oPop:GetStatus()
-                n    := oPop:MailCount
+                n    := oPop:MailCount
                 aRet := oPop:ListMail()
                 IF lDelete
                 // Deleting all messages
@@ -2016,18 +2016,18 @@
         <example>
             The following function reads the specified e-mail messages from a remote POP server:
             <code language="X#">
-                FUNC POPReadMail (cServerIP  AS STRING,;
-                cUser      AS STRING,;
-                cPassW     AS STRING,;
-                nMail      AS INT ) AS ARRAY ;
+                FUNC POPReadMail (cServerIP  AS STRING,;
+                cUser      AS STRING,;
+                cPassW     AS STRING,;
+                nMail      AS INT ) AS ARRAY ;
                 PASCAL
-                LOCAL oPop  AS CPop
-                LOCAL aRet  AS ARRAY
-                LOCAL n     AS INT
+                LOCAL oPop  AS CPop
+                LOCAL aRet  AS ARRAY
+                LOCAL n     AS INT
                 oPop := CPop{cServerIP}
                 IF oPop:Logon(cUser, cPassW)
                 oPop:GetStatus()
-                n    := oPop:MailCount
+                n    := oPop:MailCount
                 IF nMail &lt;= n
                 IF oPop:GetMail(nMail)
                 aRet := ArrayCreate(3)
@@ -2138,7 +2138,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            This method receives data from the connected remote POP server.  Received data is stored to the ReplyString property.
+            This method receives data from the connected remote POP server.  Received data is stored to the ReplyString property.
         </remarks>
     </CPop.RecvRemote>
     <CPop.TotalBytes>
@@ -2318,36 +2318,36 @@
         </remarks>
         <example>
             <code language="X#">
-                FUNCTION SMTPSendMail       (cServerIP      AS STRING,;
-                     cMailSubject   AS STRING,;
-                     xDestUser      AS USUAL,;
-                     xCCUser        AS USUAL,;
-                     cBody          AS STRING,;
-                     cFromAddress   AS STRING,;
-                     xAttachFile    AS USUAL,;
-                     cFromName      AS STRING,;
-                     xBCCUser       AS USUAL,;
-                     cCargo         AS STRING)   AS LOGIC PASCAL
-                  LOCAL oSmtp    AS CSMTP
-                  LOCAL lRet     AS LOGIC
-                  LOCAL oEmail   AS CEmail
-                  oEMail := CEmail{}
-                  oEmail:FromAddress   := cFromAddress
-                  oEmail:FromName      := cFromName
-                  oEmail:Cargo         := cCargo
-                  oEmail:Subject       := cMailSubject
-                  oEmail:DestList      := xDestUser
-                  oEmail:CCList        := xCCUser
-                  oEmail:BCCList       := xBCCUser
-                  oEmail:MailBody        := cBody
-                  IF !IsNil(xAttachFile)
-                     oEmail:AttachmentFileList := xAttachFile
-                  ENDIF
-                  oSmtp := CSmtp{oEmail}
-                  oSMtp:RemoteHost  := cServerIP
-                  oSmtp:TimeOut := 5000
-                  lRet := oSmtp:SendMail()
-                  RETURN lRet
+                FUNCTION SMTPSendMail       (cServerIP      AS STRING,;
+                     cMailSubject   AS STRING,;
+                     xDestUser      AS USUAL,;
+                     xCCUser        AS USUAL,;
+                     cBody          AS STRING,;
+                     cFromAddress   AS STRING,;
+                     xAttachFile    AS USUAL,;
+                     cFromName      AS STRING,;
+                     xBCCUser       AS USUAL,;
+                     cCargo         AS STRING)   AS LOGIC PASCAL
+                  LOCAL oSmtp    AS CSMTP
+                  LOCAL lRet     AS LOGIC
+                  LOCAL oEmail   AS CEmail
+                  oEMail := CEmail{}
+                  oEmail:FromAddress   := cFromAddress
+                  oEmail:FromName      := cFromName
+                  oEmail:Cargo         := cCargo
+                  oEmail:Subject       := cMailSubject
+                  oEmail:DestList      := xDestUser
+                  oEmail:CCList        := xCCUser
+                  oEmail:BCCList       := xBCCUser
+                  oEmail:MailBody        := cBody
+                  IF !IsNil(xAttachFile)
+                     oEmail:AttachmentFileList := xAttachFile
+                  ENDIF
+                  oSmtp := CSmtp{oEmail}
+                  oSMtp:RemoteHost  := cServerIP
+                  oSmtp:TimeOut := 5000
+                  lRet := oSmtp:SendMail()
+                  RETURN lRet
             </code>
         </example>
     </CSmtp>
@@ -2355,7 +2355,7 @@
         <summary>
             Construct a CSmtp object.
         </summary>
-        <param name="oMail">A CEmail object.  If omitted, a generic (empty) CEmail object is created.</param>
+        <param name="oMail">A CEmail object.  If omitted, a generic (empty) CEmail object is created.</param>
         <param name="cServer">Name of the remote host that the class should connect to</param>
         <param name="nPort">Email port of the remote host that the class should connect to. Defaults to 25</param>
     </CSmtp.ctor>
@@ -2374,7 +2374,7 @@
             <code language="X#">
                 FUNC SmtpTest()
                 LOCAL oSmtp AS CSMTP
-                oSmtp   := CSMTP{"ServerCheck", "", "", "Check "}
+                oSmtp   := CSMTP{"ServerCheck", "", "", "Check "}
                 oSmtp:Timeout := 1000
                 oSmtp:Connect("mail2.cai.com")
                 oSmtp:CheckReply()
@@ -2389,13 +2389,13 @@
         <summary>
             Establish a connection to a remote SMTP server.
         </summary>
-        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45). </param>
-        <param name="nPort">Port number at &lt;cHostNameOrIP&gt;.  If not specified, the connection will be established to port SELF:RemotePort.  The default value is IPPORT_SMTP (25).</param>
+        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45). </param>
+        <param name="nPort">Port number at <paramref name="cHostNameOrIP" />.  If not specified, the connection will be established to port SELF:RemotePort.  The default value is IPPORT_SMTP (25).</param>
         <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            This method establishes a connection to the specified remote mail server at port &lt;nPort&gt; or SELF:RemotePort.
+            This method establishes a connection to the specified remote mail server at port <paramref name="nPort" /> or SELF:RemotePort.
         </remarks>
         <example>
             See the CSmtp:CheckReply() example.
@@ -2449,7 +2449,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            This method receives data from the connected remote mail server.  Received data is stored to the ReplyString property.
+            This method receives data from the connected remote mail server.  Received data is stored to the ReplyString property.
         </remarks>
     </CSmtp.RecvRemote>
     <CSmtp.SecureSMTP>
@@ -2489,7 +2489,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            This method sends the complete e-mail to the remote SMTP Server.  Based on the SELF:MailBody, SELF:AttachmentFile, SELF:DestList, SELF:CCList, SELF:FromAddress and SELF:RemoteHost values, the SendMail()method prepares all necessary data including header and control sequences, and calls the SELF:SendHeaderInfo(), SendMailBody() and SELF:SendAttachedFile() methods at different stages of that transaction.
+            This method sends the complete e-mail to the remote SMTP Server.  Based on the SELF:MailBody, SELF:AttachmentFile, SELF:DestList, SELF:CCList, SELF:FromAddress and SELF:RemoteHost values, the SendMail()method prepares all necessary data including header and control sequences, and calls the SELF:SendHeaderInfo(), SendMailBody() and SELF:SendAttachedFile() methods at different stages of that transaction.
         </remarks>
     </CSmtp.SendMail>
     <CSmtp.SendMailBody>
@@ -2515,7 +2515,7 @@
         <summary>
             Construct a CSocket object.
         </summary>
-        <param name="nType">The type of the newly created socket.  Valid values are:</param>
+        <param name="nType">The type of the newly created socket.  Valid values are:</param>
         <param name="xSocket">The socket number.</param>
         <param name="xSocketStatus">The socket status.</param>
     </CSocket.ctor>
@@ -2533,13 +2533,13 @@
             The following example implements a simple socket server function listening for first connections at port 7:
             <code language="X#">
                 FUNCTION ServerTest()
-                LOCAL oSocket   AS CSocket
-                LOCAL oSockMsg  AS CSocket
-                LOCAL cData     AS STRING
-                LOCAL cFrom     AS STRING
-                LOCAL nPort     AS INT
-                LOCAL lRet      AS LOGIC
-                oSocket  := CSocket{SOCK_STREAM}
+                LOCAL oSocket   AS CSocket
+                LOCAL oSockMsg  AS CSocket
+                LOCAL cData     AS STRING
+                LOCAL cFrom     AS STRING
+                LOCAL nPort     AS INT
+                LOCAL lRet      AS LOGIC
+                oSocket  := CSocket{SOCK_STREAM}
                 IF oSocket:bind(7, NULL_STRING, AF_INET)
                 oSocket:listen(1)
                 lRet := .F.
@@ -2563,8 +2563,8 @@
         <summary>
             Associate a local address with a socket.
         </summary>
-        <param name="nPort">Port number at &lt;cHostNameOrIP&gt;.</param>
-        <param name="cIP">String containing the local name of an Internet server. Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  If NULL_STRING is specified, the local host name is assumed.</param>
+        <param name="nPort">Port number at <paramref name="cHostNameOrIP" />.</param>
+        <param name="cIP">String containing the local name of an Internet server. Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).  If NULL_STRING is specified, the local host name is assumed.</param>
         <param name="nFamily">SHORTINT number specifying the Address Family. </param>
     </CSocket.bind>
     <CSocket.Close>
@@ -2586,13 +2586,13 @@
         <summary>
             Establish a connection of the socket instance to a peer.
         </summary>
-        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
-        <param name="nPort">Port number at &lt;cHostNameOrIP&gt;.</param>
+        <param name="cIP">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45).</param>
+        <param name="nPort">Port number at <paramref name="cHostNameOrIP" />.</param>
         <returns>
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            This method establishes a connection to the specified remote address at port &lt;nPort&gt;.
+            This method establishes a connection to the specified remote address at port <paramref name="nPort" />.
         </remarks>
         <example>
             The following example checks whether a remote SMTP server is currently available:
@@ -2604,9 +2604,9 @@
                 ? "Mail server currently not accessible"
                 ENDIF
                 FUNCTION CheckRemote (cServer AS STRING, nPort AS INT, ;
-                nTimeout AS INT); AS LOGIC  PASCAL
-                LOCAL oSocket   AS CSocket
-                LOCAL lRet      AS LOGIC
+                nTimeout AS INT); AS LOGIC  PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL lRet      AS LOGIC
                 oSocket := CSocket{SOCK_STREAM}
                 oSocket:TimeOut := nTimeout
                 lRet := oSocket:connect(cServer, nPort)
@@ -2629,7 +2629,7 @@
             TRUE if successful; otherwise, FALSE.
         </returns>
         <remarks>
-            Disconnect() can be used to close the connection made for the CSocket object instance.  If not specified, the connection will automatically be closed if the appropriate object instance goes out of scope.
+            Disconnect() can be used to close the connection made for the CSocket object instance.  If not specified, the connection will automatically be closed if the appropriate object instance goes out of scope.
         </remarks>
         <example>
             See the CSocket:Connect() example.
@@ -2680,17 +2680,17 @@
             String containing the received line, if successful; otherwise, NULL_STRING
         </returns>
         <remarks>
-            This method waits for data packages and extracts the first line from input data.  Besides this, GetLineFrom() extracts the IP address and port number associated with the received Data.  This method can be used by UDP sockets to retrieve datagram packages sent via the Internet.
+            This method waits for data packages and extracts the first line from input data.  Besides this, GetLineFrom() extracts the IP address and port number associated with the received Data.  This method can be used by UDP sockets to retrieve datagram packages sent via the Internet.
         </remarks>
         <example>
             The following example implements a simple socket server function listening for the first datagram package at port 7:
             <code language="X#">
-                FUNCTION ServerTest2()   AS VOID PASCAL
-                LOCAL oSocket   AS CSocket
-                LOCAL cData     AS STRING
-                LOCAL cFrom     AS STRING
-                LOCAL nPort     AS INT
-                oSocket  := CSocket{SOCK_DGRAM}
+                FUNCTION ServerTest2()   AS VOID PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cData     AS STRING
+                LOCAL cFrom     AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_DGRAM}
                 IF oSocket:bind(7, NULL_STRING, AF_INET)
                 oSocket:TimeOut := 10000
                 cData := oSocket:GetLineFrom(@cFrom, @nPort)
@@ -2741,24 +2741,24 @@
         <example>
             The following example implements a simple socket server function waiting for connection at port 7 and receiving all data from the client:
             <code language="X#">
-                FUNCTION ServerTest3()   AS VOID PASCAL
-                LOCAL oSocket   AS CSocket
-                LOCAL oSockMsg  AS CSocket
-                LOCAL cData     AS STRING
-                LOCAL cFrom     AS STRING
-                LOCAL nPort     AS INT
-                oSocket  := CSocket{SOCK_STREAM}
+                FUNCTION ServerTest3()   AS VOID PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL oSockMsg  AS CSocket
+                LOCAL cData     AS STRING
+                LOCAL cFrom     AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_STREAM}
                 IF oSocket:bind(7, NULL_STRING, AF_INET)
-                  oSocket:listen(1)
-                  oSockMsg := oSocket:accept()
-                  IF oSockMsg != NULL_OBJECT
-                  	   cData := oSockMsg:GetRaw()
-                  oSockMsg:GetPeerName(@cFrom, @nPort)
-                  ? "Data received from ", cFrom, ;
-                  ", Client 	port: ", NTrim(nPort)
-                  ? "Received data: ", cData
-                  ENDIF
-                  oSockMsg:Close()
+                  oSocket:listen(1)
+                  oSockMsg := oSocket:accept()
+                  IF oSockMsg != NULL_OBJECT
+                  	   cData := oSockMsg:GetRaw()
+                  oSockMsg:GetPeerName(@cFrom, @nPort)
+                  ? "Data received from ", cFrom, ;
+                  ", Client 	port: ", NTrim(nPort)
+                  ? "Received data: ", cData
+                  ENDIF
+                  oSockMsg:Close()
                 ENDIF
                 oSocket:Close()
                 RETURN
@@ -2782,24 +2782,24 @@
         <example>
             The following example implements a simple socket server function waiting for connection at port 7 and receiving all data from the client:
             <code language="X#">
-                FUNCTION ServerTest3()   AS VOID PASCAL
-                LOCAL oSocket   AS CSocket
-                LOCAL oSockMsg  AS CSocket
-                LOCAL cData     AS STRING
-                LOCAL cFrom     AS STRING
-                LOCAL nPort     AS INT
-                oSocket  := CSocket{SOCK_STREAM}
+                FUNCTION ServerTest3()   AS VOID PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL oSockMsg  AS CSocket
+                LOCAL cData     AS STRING
+                LOCAL cFrom     AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_STREAM}
                 IF oSocket:bind(7, NULL_STRING, AF_INET)
-                  oSocket:listen(1)
-                  oSockMsg := oSocket:accept()
-                  IF oSockMsg != NULL_OBJECT
-                  	   cData := oSockMsg:GetRaw()
-                  oSockMsg:GetPeerName(@cFrom, @nPort)
-                  ? "Data received from ", cFrom, ;
-                  ", Client 	port: ", NTrim(nPort)
-                  ? "Received data: ", cData
-                  ENDIF
-                  oSockMsg:Close()
+                  oSocket:listen(1)
+                  oSockMsg := oSocket:accept()
+                  IF oSockMsg != NULL_OBJECT
+                  	   cData := oSockMsg:GetRaw()
+                  oSockMsg:GetPeerName(@cFrom, @nPort)
+                  ? "Data received from ", cFrom, ;
+                  ", Client 	port: ", NTrim(nPort)
+                  ? "Received data: ", cData
+                  ENDIF
+                  oSockMsg:Close()
                 ENDIF
                 oSocket:Close()
                 RETURN
@@ -2821,15 +2821,15 @@
         <example>
             The following example demonstrates the use of this method:
             <code language="X#">
-                FUNCTION SimpleTest()   AS VOID PASCAL
-                LOCAL oSocket   AS CSocket
-                LOCAL cIP       AS STRING
-                LOCAL nPort     AS INT
-                oSocket  := CSocket{SOCK_STREAM}
+                FUNCTION SimpleTest()   AS VOID PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cIP       AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_STREAM}
                 IF oSocket:bind(7, NULL_STRING, AF_INET)
                 oSocket:GetSockName(@cIP, @nPort)
                 ? "Local IP ", cIP, ", port: ", NTrim(nPort)
-                ENDIF    
+                ENDIF    
                 oSocket:Close()
                 RETURN
             </code>
@@ -2875,11 +2875,11 @@
         <example>
             The following example demonstrates this method:
             <code language="X#">
-                FUNCTION ClientTest()   AS LOGIC PASCAL
-                LOCAL oSocket   AS CSocket
-                LOCAL cTo       AS STRING
-                LOCAL nPort     AS INT
-                oSocket  := CSocket{SOCK_STREAM}
+                FUNCTION ClientTest()   AS LOGIC PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cTo       AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_STREAM}
                 IF oSocket:connect( HostName(), 7)
                 IF oSocket:SendLine("Hello world") &gt; 0
                 oSocket:GetPeerName(@cTo, @nPort)
@@ -2896,22 +2896,22 @@
             Send data terminated by CRLF to a specific destination.
         </summary>
         <param name="cData">Data to be sent via the socket.</param>
-        <param name="cDest">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45). </param>
-        <param name="nRemPort">Port number at &lt;cHostNameOrIP&gt;.</param>
+        <param name="cDest">String containing the host name of an Internet server.  Alternately, the string can contain the IP number of the site in ASCII dotted-decimal format (for example, 11.22.3.45). </param>
+        <param name="nRemPort">Port number at <paramref name="cHostNameOrIP" />.</param>
         <returns>
             Number of data sent, if successful; otherwise, 0 (zero).
         </returns>
         <remarks>
-            This method sends a line to a destination without establishing a connection.  SendLine() can be used for UDP sockets to send datagram packages via the Internet.
+            This method sends a line to a destination without establishing a connection.  SendLine() can be used for UDP sockets to send datagram packages via the Internet.
         </remarks>
         <example>
             The following example demonstrates the use of this method:
             <code language="X#">
-                FUNCTION ClientTest1()   AS LOGIC PASCAL
-                LOCAL oSocket   AS CSocket
-                LOCAL cTo       AS STRING
-                LOCAL nPort     AS INT
-                oSocket  := CSocket{SOCK_DGRAM}
+                FUNCTION ClientTest1()   AS LOGIC PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cTo       AS STRING
+                LOCAL nPort     AS INT
+                oSocket  := CSocket{SOCK_DGRAM}
                 IF oSocket:SendLineTo("Hello world", HostName(), 7)
                 ? "Datagram package sent ... "
                 ENDIF
@@ -2936,22 +2936,22 @@
         <example>
             The following example demonstrates the use of this method:
             <code language="X#">
-                FUNCTION ClientTest2()  AS LOGIC PASCAL
-                LOCAL oSocket   AS CSocket
-                LOCAL cTo       AS STRING
-                LOCAL cData     AS STRING
-                LOCAL nSize     AS INT
-                LOCAL nPort     AS INT
+                FUNCTION ClientTest2()  AS LOGIC PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cTo       AS STRING
+                LOCAL cData     AS STRING
+                LOCAL nSize     AS INT
+                LOCAL nPort     AS INT
                 CLS
-                oSocket  := CSocket{SOCK_STREAM}
+                oSocket  := CSocket{SOCK_STREAM}
                 IF oSocket:connect( HostName(), 7)
-                  cData := MemoRead("Test.txt")
-                  nSize := SLen(cData)
-                  IF oSocket:SendRaw(PTR(_CAST, cData), nSize)
-                  oSocket:GetPeerName(@cTo, @nPort)
-                  	   ? "Data sent to ", cTo, ", port: ", ;
-                  		NTrim(nPort)
-                  ENDIF
+                  cData := MemoRead("Test.txt")
+                  nSize := SLen(cData)
+                  IF oSocket:SendRaw(PTR(_CAST, cData), nSize)
+                  oSocket:GetPeerName(@cTo, @nPort)
+                  	   ? "Data sent to ", cTo, ", port: ", ;
+                  		NTrim(nPort)
+                  ENDIF
                 ENDIF
                 oSocket:Close()
                 RETURN
@@ -2974,22 +2974,22 @@
         <example>
             The following example demonstrates the use of this method:
             <code language="X#">
-                FUNCTION ClientTest2()  AS LOGIC PASCAL
-                LOCAL oSocket   AS CSocket
-                LOCAL cTo       AS STRING
-                LOCAL cData     AS STRING
-                LOCAL nSize     AS INT
-                LOCAL nPort     AS INT
+                FUNCTION ClientTest2()  AS LOGIC PASCAL
+                LOCAL oSocket   AS CSocket
+                LOCAL cTo       AS STRING
+                LOCAL cData     AS STRING
+                LOCAL nSize     AS INT
+                LOCAL nPort     AS INT
                 CLS
-                oSocket  := CSocket{SOCK_STREAM}
+                oSocket  := CSocket{SOCK_STREAM}
                 IF oSocket:connect( HostName(), 7)
-                  cData := MemoRead("Test.txt")
-                  nSize := SLen(cData)
-                  IF oSocket:SendRaw(PTR(_CAST, cData), nSize)
-                  oSocket:GetPeerName(@cTo, @nPort)
-                  	   ? "Data sent to ", cTo, ", port: ", ;
-                  		NTrim(nPort)
-                  ENDIF
+                  cData := MemoRead("Test.txt")
+                  nSize := SLen(cData)
+                  IF oSocket:SendRaw(PTR(_CAST, cData), nSize)
+                  oSocket:GetPeerName(@cTo, @nPort)
+                  	   ? "Data sent to ", cTo, ", port: ", ;
+                  		NTrim(nPort)
+                  ENDIF
                 ENDIF
                 oSocket:Close()
                 RETURN
@@ -3176,7 +3176,7 @@
             This method returns a new empty CEMail object.
         </summary>
         <returns>
-            &lt;oMail&gt;	A new empty CEmail object.
+            <paramref name="oMail" />	A new empty CEmail object.
         </returns>
     </CStorage.CreateNewMail>
     <CStorage.LoadEMail>
@@ -3187,7 +3187,7 @@
         </summary>
         <param name="cId">Contains a unique identifier that describes the Email</param>
         <returns>
-            &lt;oEmail&gt;
+            <paramref name="oEmail" />
         </returns>
         <remarks>
             <note type="tip">
@@ -3296,7 +3296,7 @@
                     //Save oEMail with the current ID
                     //You should save the following
                     // 1.) oEMail:MailHeader for received mails, not for sent mails
-                    //     call oEMail:SetHeaderInfo() to create the MailHeader
+                    //     call oEMail:SetHeaderInfo() to create the MailHeader
                     // 2.) oEMail:Body
                     // 3.) oEMail:Html
                     // 4.) Call Self:SaveAttachments(oEMail)
@@ -3306,127 +3306,4 @@
             </note>
         </remarks>
     </CStorage.SaveEMail>
-    <commonblocks>
-        <notify>
-            <span>
-                <list type="table">
-                    <listheader>
-                        <term>Constant</term>
-                        <description>Description</description>
-                    </listheader>
-                    <item>
-                        <term>NOTIFYAPPEND</term>
-                        <description>A blank record has been appended to the server; the server is still positioned on this new record, and its values have not been finalized.</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYCLEARRELATION</term>
-                        <description>Not sent to a data browser.</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYCLOSE</term>
-                        <description>The server intends to close itself.</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYCOMPLETION</term>
-                        <description>The server has completed some large operation that did not involve repositioning of the server or change to the data (such as reindexing).  This gives the browser a chance to update visual indication to the user that some operation has been completed.   In this situation, &lt;uDescription&gt; is the name of the method that was just completed, as a symbol.</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYDELETE</term>
-                        <description>The current record has been deleted, and the server is now positioned according to its rules for how a deletion is handled.  The browser should refresh its display accordingly.</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYFIELDCHANGE</term>
-                        <description>A field has changed.  &lt;uDescription&gt; is the field name as a symbol.   Note that the browser might not contain a column with the indicated name.  The server knows only that it has a field of that name and that it changed, and it notifies all its clients in case they are interested.</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYFILECHANGE</term>
-                        <description>The server has executed some method that perform many changes to the data; all the browser's knowledge about the server and its data is potentially obsolete, and it should refresh all information from the server and all calculations that depend on the data or its position.  </description>
-                    </item>
-                    <item>
-                        <term>NOTIFYGOBOTTOM</term>
-                        <description>The server has moved to its last record.  Many clients treat this merely as a record change, but the data browser can treat a positioning-to-the-end as a special case.</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYGOTOP</term>
-                        <description>The server has moved to its first record.  Many clients treat this merely as a record change, but the data browser can treat a positioning-to-the-top as a special case.</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYINTENTTOMOVE</term>
-                        <description>The server intends to make a move.  (Note that the move may have been initiated by another client.) The browser should make sure that all its data is saved, if necessary, before the movement is done.  The standard implementation checks validation status.  If the browser contains data that is invalid, the user has a choice of correcting the errors or discarding the data.  </description>
-                    </item>
-                    <item>
-                        <term>NOTIFYRECORDCHANGE</term>
-                        <description>The record position of the server has changed.   All clients are notified after any movement, so they can refresh their displays from the server.  A browser needs to update its display intelligently, depending on how far the move was.   &lt;uDescription&gt; might indicate the length of the move (the number of records).  The browser can use this information for display optimization, but cannot rely on its availability.  </description>
-                    </item>
-                    <item>
-                        <term>NOTIFYRELATIONCHANGE</term>
-                        <description>Not sent to a data browser (relation changes among servers are transmitted to clients as file changes).</description>
-                    </item>
-                </list>
-                This Notify() method is at the heart of the automatic notification among linked browsers and servers, allowing any window to make a change to a field value or initiate a movement and also ensuring that all client windows reflect the change.  Any class that is registered as a client of a server must respond intelligently to the Notify message.
-                As always with defined constants, you should never rely on the actual values of the constants — they will not necessarily stay the same.  However, the constants do maintain their order:
-                <list type="table">
-                    <listheader>
-                        <term>Constant</term>
-                        <description>Description</description>
-                    </listheader>
-                    <item>
-                        <term>NOTIFYFIELDCHANGE</term>
-                        <description>Lowest</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYCLOSE</term>
-                        <description>...</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYCOMPLETION</term>
-                        <description>...</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYINTENTTOMOVE</term>
-                        <description>...</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYRECORDCHANGE</term>
-                        <description>...</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYGOBOTTOM</term>
-                        <description>...</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYGOTOP</term>
-                        <description>...</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYDELETE</term>
-                        <description>...</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYAPPEND</term>
-                        <description>...</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYFILECHANGE</term>
-                        <description>...</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYRELATIONCHANGE</term>
-                        <description>...</description>
-                    </item>
-                    <item>
-                        <term>NOTIFYCLEARRELATION</term>
-                        <description>Highest</description>
-                    </item>
-                </list>
-                Thus, you can reliably write:
-                <code language="X#">
-                    IF    kNotifyName &gt; NOTIFYINTENTTOMOVE;
-                    .AND. kNotifyName &lt; NOTIFYFILECHANGE
-                    ... // Only record level moves
-                    ENDIF
-                </code>
-            </span>
-        </notify>
-    </commonblocks>
 </doc>

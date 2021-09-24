@@ -29,7 +29,7 @@ CLASS AdsSQLServer INHERIT DbServer
 
 
 /// <include file="Rdd.xml" path="doc/AdsSQLServer.ctor/*" />
-CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd ) CLIPPER
+CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRDD ) CLIPPER
     LOCAL cTemp AS STRING
     LOCAL cFileName AS STRING
 
@@ -46,7 +46,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd ) CLIPPER
 
 
     // Call the DBServer init method which will execute the query
-    SUPER( cTemp, lShareMode, lReadOnlyMode, xDriver, aRdd )
+    SUPER( cTemp, lShareMode, lReadOnlyMode, xDriver, aRDD )
 
 
     // Now that the query is executed, fixup some member variables that couldn't

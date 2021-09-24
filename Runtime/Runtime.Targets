@@ -82,6 +82,5 @@
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
   </PropertyGroup>
-
 </Project>
 

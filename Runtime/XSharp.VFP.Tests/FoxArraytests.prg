@@ -5,6 +5,8 @@ USING System.Text
 USING XUnit
 BEGIN NAMESPACE XSharp.VFP.Tests
 
+#pragma warnings(1998, off)
+
 	CLASS FoxArrayTests
         [Fact, Trait("Category", "FoxArray")];
 		ASYNC METHOD SimpleArrayTests() AS VOID

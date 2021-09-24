@@ -19,6 +19,7 @@ namespace XSharp.MacroCompiler
         BitwiseComplement,
         True,
         False,
+        AddrOf,
     }
 
     internal partial class UnaryOperatorSymbol : TypedSymbol
@@ -89,6 +90,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.DEC:
                     return UnaryOperatorKind.Decrement;
                 case TokenType.ADDROF:
+                    return UnaryOperatorKind.AddrOf;
                 default:
                     return UnaryOperatorKind.Error;
             }
@@ -151,6 +153,8 @@ namespace XSharp.MacroCompiler
                     return "true";
                 case UnaryOperatorKind.False:
                     return "false";
+                case UnaryOperatorKind.AddrOf:
+                    return "@";
                 default:
                     return null;
             }

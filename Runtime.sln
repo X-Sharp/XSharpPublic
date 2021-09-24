@@ -6,11 +6,13 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-74CF-4618-9856-D89B3FCB6DA3}"
 	ProjectSection(SolutionItems) = preProject
 		Docs\Console.Xml = Docs\Console.Xml
+		Docs\CoreComments.Xml = Docs\CoreComments.Xml
 		Docs\gui.xml = Docs\gui.xml
 		Docs\Internet.xml = Docs\Internet.xml
 		Docs\rdd.xml = Docs\rdd.xml
 		Docs\Report.Xml = Docs\Report.Xml
 		Docs\RTComments.Xml = Docs\RTComments.Xml
+		Runtime\Runtime.Targets = Runtime\Runtime.Targets
 		Runtime\RuntimeFunctionsAndClasses.xlsx = Runtime\RuntimeFunctionsAndClasses.xlsx
 		Runtime\Docs\RuntimeSpecsV1.docx = Runtime\Docs\RuntimeSpecsV1.docx
 		Runtime\Docs\RuntimeSpecsV2.docx = Runtime\Docs\RuntimeSpecsV2.docx
@@ -18,16 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-7
 		Docs\System.Xml = Docs\System.Xml
 		Docs\VFPDocs.xml = Docs\VFPDocs.xml
 		Docs\VfpRuntimeDocs.xml = Docs\VfpRuntimeDocs.xml
-		Docs\VOConsoleClasses_manual.xml = Docs\VOConsoleClasses_manual.xml
 		Docs\VoFunctionDocs.xml = Docs\VoFunctionDocs.xml
-		Docs\VOGUIClasses_manual.xml = Docs\VOGUIClasses_manual.xml
-		Docs\VOInternetClasses_manual.xml = Docs\VOInternetClasses_manual.xml
-		Docs\VORDDClasses_manual.xml = Docs\VORDDClasses_manual.xml
-		Docs\VOReportClasses_manual.xml = Docs\VOReportClasses_manual.xml
-		Docs\VOSDK_Classes.xml = Docs\VOSDK_Classes.xml
-		Docs\VOSQLClasses_manual.xml = Docs\VOSQLClasses_manual.xml
-		Docs\VOSystemClasses_manual.xml = Docs\VOSystemClasses_manual.xml
-		Docs\XSharpVOSDK_Classes.xml = Docs\XSharpVOSDK_Classes.xml
+		Docs\VOSDK.Xml = Docs\VOSDK.Xml
 		Docs\XsRuntimeClasses.xml = Docs\XsRuntimeClasses.xml
 	EndProjectSection
 EndProject
@@ -47,10 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Runtime\Runtime.Targets = Runtime\Runtime.Targets
 		Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg = Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg
 		Runtime\VOSDK\Source\VOSDK\VOSDK.Targets = Runtime\VOSDK\Source\VOSDK\VOSDK.Targets
-		Docs\VOSDK_Classes.xml = Docs\VOSDK_Classes.xml
+		Runtime\XmlDoc.Targets = Runtime\XmlDoc.Targets
 		Common\XSharpDefs.xh = Common\XSharpDefs.xh
-		Docs\XSharpVOSDK_Classes.xml = Docs\XSharpVOSDK_Classes.xml
-		Docs\XsRuntimeClasses.xml = Docs\XsRuntimeClasses.xml
 	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Core.Tests", "Runtime\XSharp.Core.Tests\XSharp.Core.Tests.xsproj", "{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}"
@@ -136,10 +128,6 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Explorer", "Tests\TypedSDK\Explorer\Explorer.xsproj", "{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Pizza", "Tests\TypedSDK\Pizza\Pizza.xsproj", "{593E48A5-7BEA-4EEB-9302-D133BB98FF47}"
-EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOMDITyped", "Tests\TypedSDK\VOMDITyped\VOMDITyped.xsproj", "{1ACE06E9-81F8-4AB3-BDA5-C6EFF15E2267}"
-EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Vopad", "Tests\TypedSDK\Vopad\Vopad.xsproj", "{58AA6767-5191-4F90-A756-4584A4C42279}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TestBed", "Tests\BinaryTest\TestBed.xsproj", "{22F634C4-97C1-4347-8994-A4F89D100AFB}"
 EndProject
@@ -371,18 +359,6 @@ Global
 		{593E48A5-7BEA-4EEB-9302-D133BB98FF47}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{593E48A5-7BEA-4EEB-9302-D133BB98FF47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{593E48A5-7BEA-4EEB-9302-D133BB98FF47}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1ACE06E9-81F8-4AB3-BDA5-C6EFF15E2267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1ACE06E9-81F8-4AB3-BDA5-C6EFF15E2267}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1ACE06E9-81F8-4AB3-BDA5-C6EFF15E2267}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{1ACE06E9-81F8-4AB3-BDA5-C6EFF15E2267}.Documentation|Any CPU.Build.0 = Debug|Any CPU
-		{1ACE06E9-81F8-4AB3-BDA5-C6EFF15E2267}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1ACE06E9-81F8-4AB3-BDA5-C6EFF15E2267}.Release|Any CPU.Build.0 = Release|Any CPU
-		{58AA6767-5191-4F90-A756-4584A4C42279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58AA6767-5191-4F90-A756-4584A4C42279}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58AA6767-5191-4F90-A756-4584A4C42279}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{58AA6767-5191-4F90-A756-4584A4C42279}.Documentation|Any CPU.Build.0 = Debug|Any CPU
-		{58AA6767-5191-4F90-A756-4584A4C42279}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58AA6767-5191-4F90-A756-4584A4C42279}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22F634C4-97C1-4347-8994-A4F89D100AFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22F634C4-97C1-4347-8994-A4F89D100AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22F634C4-97C1-4347-8994-A4F89D100AFB}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
@@ -450,8 +426,6 @@ Global
 		{64603273-9D14-4557-A63B-C2FCB063B454} = {D10369A3-B01A-44C7-BBFB-AA6ACA7F05FC}
 		{0C4F4347-33C2-4A81-A1D5-306C46FDB0BD} = {64603273-9D14-4557-A63B-C2FCB063B454}
 		{593E48A5-7BEA-4EEB-9302-D133BB98FF47} = {64603273-9D14-4557-A63B-C2FCB063B454}
-		{1ACE06E9-81F8-4AB3-BDA5-C6EFF15E2267} = {64603273-9D14-4557-A63B-C2FCB063B454}
-		{58AA6767-5191-4F90-A756-4584A4C42279} = {64603273-9D14-4557-A63B-C2FCB063B454}
 		{22F634C4-97C1-4347-8994-A4F89D100AFB} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
 		{E6A86E45-AE23-4422-BBDB-F84BF9EF100E} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}
 		{4BC29963-3419-4D9A-A301-BB63870381AE} = {FBBE72BB-AF27-4F54-BB40-419574C1D018}

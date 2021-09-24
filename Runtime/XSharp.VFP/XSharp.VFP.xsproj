@@ -14,7 +14,7 @@
     <NS>true</NS>
     <vo15>true</vo15>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.8.0.11</XSharpProjectversion>
+    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
@@ -67,6 +67,7 @@
     <Compile Include="Database\DbFunctions.prg" />
     <Compile Include="Defines.prg" />
     <Compile Include="FileFunctions.prg" />
+    <Compile Include="FoxCompilerSupport.prg" />
     <Compile Include="GatherScatter.prg" />
     <Compile Include="GetWord.prg" />
     <Compile Include="Keyboard.prg" />
@@ -206,17 +207,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <PreBuildEvent>copy $(SolutionDir)\Docs\RtComments.xml $(ProjectDir)\RtComments.Xml
-    copy $(SolutionDir)\Docs\VOFunctionDocs.xml $(ProjectDir)\VOFunctionDocs.Xml
-    copy $(SolutionDir)\Docs\VfpRuntimeDocs.xml $(ProjectDir)\VfpRuntimeDocs.Xml
-    copy $(SolutionDir)\Docs\VfpDocs.xml $(ProjectDir)\VfpDocs.Xml
-    </PreBuildEvent>
-    <PostBuildEvent>erase  $(ProjectDir)\RtComments.Xml
-    erase  $(ProjectDir)\VOFunctionDocs.Xml
-    erase  $(ProjectDir)\VfpRuntimeDocs.Xml
-    erase  $(ProjectDir)\VfpDocs.Xml
-    </PostBuildEvent>
-    <RunPostBuildEvent />
-  </PropertyGroup>
+<Import Project="..\XmlDoc.Targets" />
 </Project>

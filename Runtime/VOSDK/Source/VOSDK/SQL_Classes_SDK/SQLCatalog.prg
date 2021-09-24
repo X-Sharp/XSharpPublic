@@ -26,7 +26,7 @@ METHOD Delete()
 	RETURN FALSE
 
 
-/// <exclude />
+/// <inheritdoc />
 METHOD Execute()
 
 
@@ -91,7 +91,7 @@ CONSTRUCTOR( oSQLConnection )
 	RETURN
 
 
-/// <include file="SQL.xml" path="doc/SQLCatalogQuery.Prepare/*" />
+/// <exclude />
 METHOD Prepare()
 	RETURN TRUE
 

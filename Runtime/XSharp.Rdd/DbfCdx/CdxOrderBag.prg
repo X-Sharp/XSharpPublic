@@ -76,6 +76,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 cTag := strOrder
             ELSE
                 cTag := Path.GetFileNameWithoutExtension(info:BagName)
+                IF cTag:Length > 10
+                    cTag := cTag:Substring(0, 10)
+                ENDIF
                 info:Order := cTag
             ENDIF
             IF String.IsNullOrEmpty(cTag)
@@ -83,11 +86,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             VAR oTag := SELF:_FindTagByName(cTag)
+            VAR lOk := TRUE
             IF oTag != NULL_OBJECT
-                SELF:_tagList:Remove(oTag)
+                VAR last := SELF:_tagList:Tags:Count == 1
+                SELF:Destroy(oTag)
+                IF last
+                    SELF:CreateBag(SELF:FullPath)
+                    SELF:_oRdd:_indexList:_AddBag(SELF)
+                ENDIF
             ENDIF
             oTag := CdxTag{SELF}
-            VAR lOk := oTag:Create(info)
+            lOk := oTag:Create(info)
             IF lOk
                 // Read the tag from disk to get all the normal stuff
                 oTag  := CdxTag{SELF,oTag:Header:PageNo, oTag:OrderName}

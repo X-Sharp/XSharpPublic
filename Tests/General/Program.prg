@@ -1,27 +1,25 @@
-﻿USING VO
+﻿FUNCTION Start AS VOID
 
-FUNCTION Start() AS VOID
-LOCAL ctest AS STRING
-TRY
-    cTest := "? 'Hello world'"
-    ExecScriptFast(cTest)
-    cTest :=String.Join(e"\n",<STRING>{;
-        "PARAMETERS a,b,c",;
-        "RETURN CallMe(a,b,c)"})
-    ? ExecScriptFast(cTest,1,2,3)
-    cTest :=String.Join(e"\n",<STRING>{;
-        "LPARAMETERS a,b,c",;
-        "RETURN CallMe(a,b,c)"})
-    ? ExecScriptFast(cTest,1,2,3)
-
-CATCH e AS Exception
-    ? e:ToString()
-    END TRY
-
-wait
+? Testme()
+? TestMe(1)
+? testMe(Today())
+? TestMe(1.1)
+? testMe({1,2,3})
+? testMe(Error{})
+? TestMe("abc")
+? testMe(TRUE)
+? testMe(#symbol)
+? testMe((INT64) 1234)
+? testMe(DateTime())
+? TestMe(1.234m)
+? TestMe($12.34)
+? testMe(0h1234)
+WAIT
 RETURN
 
 
-FUNCTION CallMe(a,b,c) AS USUAL
-    ? "Inside function, parameters received",a,b,c
-    RETURN a+b+c
+
+
+FUNCTION TestMe(val := NULL AS USUAL) AS LOGIC
+? val, ValType(val), UsualType(val)
+RETURN val = NIL

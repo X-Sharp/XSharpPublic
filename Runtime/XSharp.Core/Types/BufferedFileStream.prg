@@ -144,7 +144,7 @@ BEGIN NAMESPACE XSharp.IO
             IF !page:Hot
                 RETURN
             ENDIF
-            VAR nSize := Math.Max(page:Size, page:Used)
+            VAR nSize := Math.Min(page:Size, page:Used)
             IF ! page:Stream:XWrite( page:Page, page:Buffer, nSize)
                 THROW Exception{"Error writing to disk"}
             ENDIF
@@ -262,7 +262,7 @@ BEGIN NAMESPACE XSharp.IO
                     nop
                 ENDIF
                 IF pageoffset + onthispage > page:Used
-                    onthispage := page:Used - pageoffset
+                    onthispage := Math.Max(page:Used - pageoffset, 0)
                     endOfPage := TRUE
                 ENDIF
                 System.Array.Copy(buffer, pageoffset, bytes, offset+read, onthispage)
@@ -304,10 +304,13 @@ BEGIN NAMESPACE XSharp.IO
                 written    += onthispage
                 pageoffset := 0                 // we start the next page on byte 0
             ENDDO
-            SELF:Position += count
-            SELF:_length := Math.Max(SELF:_length, pos+count)
+            VAR newPos := pos + count
+            SELF:_length  := Math.Max(SELF:_length, newPos)
+            SELF:Position := newPos
+
         RETURN
 
+        PRIVATE _temp := BYTE[]{1} AS BYTE[] 
         /// <inheritdoc />
         /// <remarks>This method overrides the normal behavior of the FileStream class and writed the data to an inmemory cache, when possible </remarks>
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
@@ -315,14 +318,8 @@ BEGIN NAMESPACE XSharp.IO
                 SUPER:WriteByte(b)
                 RETURN
             ENDIF
-            VAR pos             := SELF:Position
-            VAR pageNo          := (INT64) _AND(pos , ~BUFF_MASK)
-            var pageoffset      := (LONG) _AND(pos , BUFF_MASK)
-            VAR page            := PageBuffers.GetPage(SELF, pageNo, BUFF_SIZE)
-            page:Buffer[pageoffset]  := b
-            page:Hot            := TRUE
-            SELF:_length := Math.Max(SELF:_length, pos+1)
-            SELF:Position += 1
+            _temp[0] := b
+            SELF:Write(_temp, 0, 1)
         RETURN
 
         /// <inheritdoc />

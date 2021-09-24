@@ -478,7 +478,7 @@ CLASS ListView INHERIT TextControl
 		LOCAL nIndex		AS LONG
 		LOCAL oListViewColumn AS ListViewColumn
 		IF nItem > 0 .and. nItem <= __ListView:Items:Count
-			oLvItem := __ListView:Items[nItem-1]
+			oLvItem := (IVOListViewItem) __ListView:Items[nItem-1]
 			IF oLvItem:Item != NULL_OBJECT
 				oListViewItem	:= oLvItem:Item
 			ELSE
@@ -497,7 +497,7 @@ CLASS ListView INHERIT TextControl
 	METHOD GetItemBoundingBox(nItem AS LONG) AS BoundingBox
 		LOCAL oItem AS IVOListViewItem
 		IF nItem < __ListView:Items:Count .and. nItem > 0
-			oItem := __ListView:Items[nItem-1]
+			oItem := (IVOListViewItem) __ListView:Items[nItem-1]
 			RETURN (BoundingBox) oItem:Bounds
 		ENDIF
 		RETURN NULL_OBJECT
@@ -505,7 +505,7 @@ CLASS ListView INHERIT TextControl
 	METHOD GetItemPosition(nItem AS LONG) AS Point
 		LOCAL oItem AS IVOListViewItem
 		IF nItem < __ListView:Items:Count .and. nItem > 0
-			oItem := __ListView:Items[nItem-1]
+			oItem := (IVOListViewItem) __ListView:Items[nItem-1]
 			RETURN (Point) oItem:Position
 		ENDIF
 		RETURN NULL_OBJECT
@@ -604,12 +604,12 @@ CLASS ListView INHERIT TextControl
 		IF ! SELF:ValidateControl()
 			RETURN FALSE
 		ENDIF
-		IF nInsertAfter == -1
-			__ListView:Columns:Add(oListViewColumn:__Header)
-		ELSE
-			__ListView:Columns:Insert(nInsertAfter, oListViewColumn:__Header)
-		ENDIF
 		oHeader := oListViewColumn:__Header
+		IF nInsertAfter == -1
+			__ListView:Columns:Add(oHeader:Header)
+		ELSE
+			__ListView:Columns:Insert(nInsertAfter, oHeader:Header)
+		ENDIF
 		oHeader:TextAlign := (System.Windows.Forms.HorizontalAlignment) oListViewColumn:Alignment
 		oListViewColumn:__Owner := SELF
 
@@ -628,12 +628,12 @@ CLASS ListView INHERIT TextControl
 
 		oListViewColumn := SELF:GetColumn(1)
 		cCaption := oLVItem:GetText(oListViewColumn:NameSym)
+		oListViewItem := oLVItem:__ListViewItem
 		IF nInsertAfter == -1
-			__ListView:Items:Add(oLVItem:__ListViewItem)
+			__ListView:Items:Add(oListViewItem:SWFItem)
 		ELSE
-			 __ListView:Items:Insert(nInsertAfter,oLVItem:__ListViewItem)
+			 __ListView:Items:Insert(nInsertAfter,oListViewItem:SWFItem)
 		ENDIF
-		oLIstViewItem := oLVItem:__ListViewItem
 		FOR dwIndex := 1 TO __ListView:Columns:Count
 			LOCAL IMPLIED oCol := __ListView:Columns[dwIndex-1]
 			oListViewColumn := oCol:Tag
@@ -645,7 +645,8 @@ CLASS ListView INHERIT TextControl
 				ENDIF
 			ENDIF
 			IF oListViewItem:SubItems:Count < dwIndex
-				oListViewItem:SubItems:Add(cCaption)
+                VAR subItem := System.Windows.Forms.ListViewItem.ListViewSubItem{oListViewItem:SWFItem, cCaption}
+				oListViewItem:SubItems:Add(subItem)
 			ELSE
 				oListViewItem:SubItems[dwIndex-1]:Text := cCaption
 			ENDIF
@@ -841,7 +842,7 @@ CLASS ListView INHERIT TextControl
 		//PP-030909
 		LOCAL oHeader AS IVOColumnHeader
 		IF nCol > 0 .and. nCol  <= __ListView:Columns:Count
-			oHeader := __ListView:Columns[nCol]
+			oHeader := (IVOColumnHeader) __ListView:Columns[nCol]
 			IF nImage != 0
 				oHeader:ImageIndex := nImage-1
 			ENDIF

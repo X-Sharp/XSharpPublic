@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Runtime.CompilerServices
@@ -70,7 +70,7 @@ FUNCTION MemTotal() AS DWORD
 [DebuggerDisplay("Group {ID}")];
 INTERNAL CLASS XSharp.MemGroup
 	EXPORT ID			AS DWORD
-	EXPORT Allocated	AS DWORD	
+	EXPORT Allocated	AS DWORD
 
 	CONSTRUCTOR(nID AS DWORD)
 		SELF:ID			:= nID
@@ -79,15 +79,15 @@ INTERNAL CLASS XSharp.MemGroup
 	METHOD Free() AS VOID
 		// Does nothing for now
 		// Could free the list of blocks allocated for this group
-		RETURN 
+		RETURN
 
 	METHOD Compact() AS VOID
 		// Does nothing for now
-		RETURN 
+		RETURN
 
 	METHOD ENUM() AS VOID
 		// Does nothing for now
-		RETURN 
+		RETURN
 
 END CLASS
 
@@ -111,7 +111,7 @@ FUNCTION MemGrpOpen() AS DWORD
 
 
 /// <inheritdoc cref="MemCAlloc" />
-/// <param name="wGroup">The group to which the newly allocated memory buffer will belong.  This group should have already been opened by MemGrpOpen().</param>
+/// <param name="wGroup">The group to which the newly allocated memory buffer will belong. This group should have already been opened by MemGrpOpen().</param>
 /// <include file="RTComments.xml" path="Comments/StaticMemory/*" />
 FUNCTION MemGrpCAlloc(wGroup AS DWORD,wItems AS DWORD,wBytes AS DWORD) AS IntPtr
 	RETURN FixedMemory.Alloc(wGroup, wItems * wBytes)
@@ -154,7 +154,7 @@ RETURN lOk
 
 #endregion
 
-#region Obsolete Memory functions    
+#region Obsolete Memory functions
 
 
 /// <exclude/>
@@ -188,7 +188,7 @@ RETURN result
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mematspecial/*" />
 FUNCTION MemAtSpecial( ptrBuffer AS IntPtr, dwCount AS DWORD ) AS DWORD
-	
+
 	LOCAL ret := 0 AS DWORD
 	IF ptrBuffer == IntPtr.Zero
 	   THROW Error.NullArgumentError( __FUNCTION__, NAMEOF(ptrBuffer), 1 )
@@ -287,12 +287,12 @@ FUNCTION MemCopyString( ptrDest AS IntPtr, cSource AS STRING, dwCount AS DWORD )
    VAR pszList := List<IntPtr>{}
    TRY
 	   VAR pszSrc := XSharp.Internal.CompilerServices.String2Psz(cSource,pszList)
-	   VAR srcLen := (DWORD) cSource:Length 
-   
+	   VAR srcLen := (DWORD) cSource:Length
+
 	   IF srcLen < dwCount
 		  FixedMemory.Set( ptrDest, 0, (INT) dwCount )
 	   ENDIF
-   
+
 		dwCount := Math.Min( srcLen, dwCount )
 		FixedMemory.Copy(ptrDest, pszSrc, (INT)dwCount)
    FINALLY
@@ -303,7 +303,7 @@ FUNCTION MemCopyString( ptrDest AS IntPtr, cSource AS STRING, dwCount AS DWORD )
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memdword/*" />
 FUNCTION MemDWord( ptrBuffer AS IntPtr, dwValue AS DWORD, dwCount AS DWORD ) AS IntPtr
 	LOCAL pDword AS DWORD PTR
-	LOCAL pRet   AS IntPtr 
+	LOCAL pRet   AS IntPtr
 	IF ptrBuffer == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(ptrBuffer), 1)
 	ENDIF
@@ -365,7 +365,7 @@ FUNCTION MemLower( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
 	ENDIF
-	pChr := (BYTE PTR) pMemory:ToPointer() 
+	pChr := (BYTE PTR) pMemory:ToPointer()
 	FOR VAR x := 1 TO dwCount
         IF pChr[x] >= c'A' .AND. pChr[x] <= c'Z'
 			pChr[x] |= (BYTE) 32
@@ -393,7 +393,7 @@ FUNCTION MemMove( ptrDest AS IntPtr, ptrSource AS IntPtr, dwCount AS DWORD ) AS 
             LOCAL src AS BYTE PTR
 	        dst := (BYTE PTR) ptrDest:ToPointer()
 	        src := (BYTE PTR) ptrSource:ToPointer()
-		    FOR VAR x := dwCount DOWNTO 1 
+		    FOR VAR x := dwCount DOWNTO 1
 			    dst[x] := src[x]
 		    NEXT
 	    ENDIF
@@ -436,7 +436,7 @@ FUNCTION MemUpper( pMemory AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	IF pMemory == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(pMemory), 1)
 	ENDIF
-    pChr := (BYTE PTR) pMemory:ToPointer() 
+    pChr := (BYTE PTR) pMemory:ToPointer()
 	FOR VAR x := 1 TO dwCount
         IF pChr[x] >= c'a' .AND. pChr[x] <= c'z'
 			pChr[x] -= (BYTE) 32
@@ -460,7 +460,7 @@ FUNCTION MemWord( ptrBuffer AS IntPtr, dwValue AS WORD, dwCount AS DWORD ) AS In
 		ENDIF
 	NEXT
 	RETURN pRet
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memwalk/*" />
 /// <remarks>Only memory blocks that were allocated while MemTrace was set to TRUE will be included.</remarks>
 FUNCTION MemWalk(pEnum AS MemWalker) AS LOGIC
@@ -472,7 +472,7 @@ FUNCTION MemWalk(pEnum AS MemWalker) AS LOGIC
 			EXIT
 		ENDIF
 	NEXT
-	RETURN lOk   
+	RETURN lOk
 
 
 #endregion

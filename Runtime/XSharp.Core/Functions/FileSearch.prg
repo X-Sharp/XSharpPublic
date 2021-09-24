@@ -19,18 +19,18 @@ INTERNAL STATIC CLASS XSharp.FileSearch
     STATIC Worker := FileSearchWorker AS FileSearcher
 
     CONST timeFormat := "HH:MM:ss" AS STRING
-    
+
     INTERNAL STATIC METHOD FFCount( filespec AS STRING , attributes AS DWORD ) AS DWORD
         FindFirst(filespec,attributes)
         RETURN (DWORD)foundEntries:Count
-        
+
     INTERNAL STATIC METHOD FindFirst( filespec AS STRING , attributes AS DWORD ) AS LOGIC
         LOCAL lRet := FALSE AS LOGIC
-       
+
         TRY
-            
+
             XSharp.IO.File.ClearErrorState()
-            
+
             // Split filespec in path and mask
             // when path is empty then path is current directory
             // make sure that we only search in the given path
@@ -50,13 +50,13 @@ INTERNAL STATIC CLASS XSharp.FileSearch
             ELSE
                 LOCAL oDirInfo AS DirectoryInfo
                 oDirInfo := DirectoryInfo{cPath}
-    
+
                 LOCAL files := oDirInfo:GetFiles(cMask) AS FileInfo[]
                 //VAR selectedFiles := FROM FileInfo IN files WHERE ( FileInfo:Attributes & (FileAttributes) (attributes + FA_NORMAL)) != 0 SELECT FileInfo
                 FOREACH file AS FileInfo IN files
                     foundEntries:Add(file)
                 NEXT
-    
+
                 IF (attributes & FA_DIRECTORY) == (DWORD) FA_DIRECTORY
                     LOCAL directories := oDirInfo:GetDirectories(cMask) AS FileSystemInfo[]
                     VAR selectedDirs := FROM DirectoryInfo IN directories WHERE (DirectoryInfo:Attributes & (FileAttributes) (attributes + FA_NORMAL) ) != 0 SELECT DirectoryInfo
@@ -72,16 +72,16 @@ INTERNAL STATIC CLASS XSharp.FileSearch
                 currentItem := enumerator:Current
             ENDIF
             lRet := foundEntries:Count > 0
-        
+
         CATCH oEx AS Exception
-            
+
             XSharp.IO.File.SetErrorState(oEx)
             lRet := FALSE
-            
+
         END TRY
 
     RETURN lRet
-        
+
     INTERNAL STATIC METHOD FindNext() AS LOGIC
         IF !isAtEnd
             isAtEnd := !enumerator:MoveNext()
@@ -90,7 +90,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
             ENDIF
         ENDIF
         RETURN !isAtEnd
-        
+
     INTERNAL STATIC METHOD FName() AS STRING
         LOCAL name := "" AS STRING
         IF !isAtEnd
@@ -103,7 +103,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
             ENDIF
         ENDIF
         RETURN name
-        
+
     INTERNAL STATIC METHOD FSize() AS DWORD
         LOCAL size := 0 AS INT
         IF !isAtEnd
@@ -118,7 +118,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
             ENDIF
         ENDIF
         RETURN (DWORD) size
-        
+
     INTERNAL STATIC METHOD FTime() AS STRING
         LOCAL time := "00:00:00" AS STRING
         IF !isAtEnd
@@ -129,7 +129,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
             ENDIF
         ENDIF
         RETURN  time
-        
+
     INTERNAL STATIC METHOD FDate() AS DateTime
         LOCAL time := DateTime.MinValue AS DateTime
         IF !isAtEnd
@@ -140,8 +140,8 @@ INTERNAL STATIC CLASS XSharp.FileSearch
             ENDIF
         ENDIF
         RETURN  time
-        
-        
+
+
     INTERNAL STATIC METHOD FAttrib() AS DWORD
         LOCAL attributes := 0x00000008 AS INT
         IF !isAtEnd
@@ -152,13 +152,13 @@ INTERNAL STATIC CLASS XSharp.FileSearch
             ENDIF
         ENDIF
         RETURN  (DWORD)attributes
-        
+
         END CLASS
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ffcount/*" />
 FUNCTION FFCount(pszFileSpec AS STRING,dwAttributes AS DWORD) AS DWORD
     RETURN XSharp.FileSearch.FFCount(pszFileSpec,dwAttributes)
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ffirst/*" />
 FUNCTION FFirst(pszFileSpec AS STRING,kAttributes AS DWORD) AS LOGIC
     RETURN XSharp.FileSearch.FindFirst(pszFileSpec,kAttributes)
@@ -167,20 +167,20 @@ FUNCTION FFirst(pszFileSpec AS STRING,kAttributes AS DWORD) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fattrib/*" />
 FUNCTION FAttrib() AS DWORD
     RETURN XSharp.FileSearch.FAttrib()
-    
-    
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fdate/*" />
 FUNCTION FDate() AS DateTime
     RETURN XSharp.FileSearch.FDate()
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fname/*" />
 FUNCTION FName() AS STRING
     RETURN XSharp.FileSearch.FName()
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fnext/*" />
 FUNCTION FNext() AS LOGIC
     RETURN XSharp.FileSearch.FindNext()
-    
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fsize/*" />
 FUNCTION FSize() AS DWORD
     RETURN XSharp.FileSearch.FSize()
@@ -250,7 +250,7 @@ FUNCTION File(cFileSpec AS STRING) AS LOGIC
         ELSE
             // wildcard, so use Directory.GetFiles()
             LOCAL files     AS STRING[]
-        
+
             IF Path.IsPathRooted(cFileSpec)
                 files := Directory.GetFiles( Path.GetDirectoryName( cFileSpec ), Path.GetFileName( cFileSpec ) )
                 IF files:Length > 0
@@ -283,11 +283,11 @@ FUNCTION File(cFileSpec AS STRING) AS LOGIC
     RETURN FALSE
 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/FPathName/*" />
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fpathname/*" />
 FUNCTION FPathName() AS STRING
     RETURN RuntimeState.LastFound
-    
-    
+
+
 INTERNAL FUNCTION __FileHelper(cPath AS STRING, cFileSpec AS STRING, lSavePath AS LOGIC) AS LOGIC
     LOCAL cTemp AS STRING
     LOCAL cFile AS STRING
@@ -308,8 +308,8 @@ INTERNAL FUNCTION __FileHelper(cPath AS STRING, cFileSpec AS STRING, lSavePath A
         RuntimeState.LastFound := cTemp
     ENDIF
     RETURN files:Length > 0
-    
-    
+
+
 INTERNAL FUNCTION __GetSearchPaths() AS STRING[]
 // Not found, now use the path settings from SetDefault and SetPath()
 // if SetPath() is empty then we look through the Environment variable Path

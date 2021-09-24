@@ -169,12 +169,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endif
             RETURN SUPER:Write()
 
-
+#ifdef TESTCDX
         ABSTRACT METHOD Validate AS VOID
         ABSTRACT METHOD ValidateKeys() AS LOGIC
         ABSTRACT METHOD ValidateLevel() AS LOGIC
         ABSTRACT METHOD ValidateSiblings() AS LOGIC
-
+#endif
         INTERNAL METHOD SetRoot() AS VOID
             SELF:PageType |= CdxPageType.Root
             SELF:LeftPtr := -1

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING XSharp
@@ -39,7 +39,7 @@ BEGIN NAMESPACE XSharp
         /// <summary>--- not used ---</summary>
         MEMBER Cancel      := 12		// LOGIC
         /// <summary>--- not used ---</summary>
-        MEMBER @@Debug     := 13	
+        MEMBER @@Debug     := 13
         /// <summary>--- not used ---</summary>
         MEMBER Typeahead   := 14		// INT
         /// <summary>Sets the colors used on the console output</summary>
@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp
         /// <summary></summary>
         MEMBER Delimiters  := 33		// STRING
         /// <summary>--- not used ---</summary>
-        MEMBER DelimChars  := 34		// STRING   
+        MEMBER DelimChars  := 34		// STRING
         /// <summary>--- not used ---</summary>
         MEMBER Wrap        := 35		// LOGIC
         /// <summary>--- not used ---</summary>
@@ -92,17 +92,17 @@ BEGIN NAMESPACE XSharp
         /// <summary></summary>
         MEMBER Neterr      	:= 40	// LOGIC
         /// <summary>The setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.</summary>
-        MEMBER Digits      	:= 41	// INT   
+        MEMBER Digits      	:= 41	// INT
         /// <summary>A string representing the morning extension for time strings in 12-hour format.</summary>
         MEMBER AmExt		:= 42	// STRING
         /// <summary>A string representing the evening extension for time strings in 12-hour format.</summary>
         MEMBER PmExt	    := 43	// STRING
         /// <summary>The setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.</summary>
-        MEMBER Ansi      	:= 44	// LOGIC 
+        MEMBER Ansi      	:= 44	// LOGIC
         /// <summary></summary>
-        MEMBER Yield     	:= 45	// LOGIC 
+        MEMBER Yield     	:= 45	// LOGIC
         /// <summary>The number of times certain lock operations are retried</summary>
-        MEMBER Locktries   	:= 46	// INT   
+        MEMBER Locktries   	:= 46	// INT
         /// <summary>The setting that determines whether time strings are in 12-hour or 24-hour format.</summary>
         MEMBER AmPm		    := 47	// LOGIC
         /// <summary>Determines whether the century portion of date expressions is displaid.</summary>
@@ -146,7 +146,7 @@ BEGIN NAMESPACE XSharp
         // 75 unused
         /// <summary>The last method called with a late bound send operator that was not found in the object that was used.</summary>
         MEMBER NoMethod		:= 76	// STRING
-        // 77 unused 
+        // 77 unused
         /// <summary>The current path setting as an array of strings.</summary>
         MEMBER Patharray    := 78	// String[]
         /// <summary>Determines the name of the current Nation DLL.</summary>
@@ -157,16 +157,16 @@ BEGIN NAMESPACE XSharp
         MEMBER ErrorLevel   := 81  // DWORD
         /// <summary>The codeblock set for the current error handler.</summary>
         MEMBER ErrorBlock   := 82  // Codeblock
-        /// <summary>The last error that occurred for a RDD operation.</summary>
-        MEMBER LastRddError := 84   // Exception object
+        // <summary>The last error that occurred for a RDD operation.</summary>
+        //MEMBER LastRddError := 84   // Exception object
         /// <summary>The last script error that occurred.</summary>
         MEMBER LastScriptError := 85   // Exception object
         /// <summary>The last file found with File()</summary>
         MEMBER LastFound    := 86   // Last file found with File()
-        /// <summary>The last File error code</summary>
-        MEMBER FileError    := 87   // Last File error code
-        /// <summary>The last File exception</summary>
-        MEMBER FileException:= 88   // Last File exception
+        // <summary>The last File error code</summary>
+        //MEMBER FileError    := 87   // Last File error code
+        // <summary>The last File exception</summary>
+        //MEMBER FileException:= 88   // Last File exception
 
         /// <summary>Determines the name of the current Delim RDD.</summary>
         MEMBER DelimRDD         := 89
@@ -185,9 +185,11 @@ BEGIN NAMESPACE XSharp
         // Vulcan RDDInfo Settings
         /// <summary></summary>
         MEMBER RddInfo		:= 100      // no value
-        /// <summary>Specifies how X# allocates disk space for the storage of memo fields.This is 64 for the FoxPro dialect and 32 for other dialects.</summary>
+        /// <summary>Specifies how X# allocates disk space for the storage of memo fields.
+        /// This is 64 for the FoxPro dialect and 32 for other dialects.</summary>
         MEMBER MemoBlockSize:= 101		// INT
-        /// <summary>Determines the current Default RDD. This is DBFVFP for the FoxPro dialect and DBFNTX for the other dialects.</summary>
+        /// <summary>Determines the current Default RDD. This is DBFVFP for the FoxPro dialect and
+        /// DBFNTX for the other dialects.</summary>
         MEMBER DefaultRdd	:= 102		// STRING
         /// <summary>Determines the current default Memofile extension.</summary>
         MEMBER MemoExt	    := 103		// STRING
@@ -196,16 +198,16 @@ BEGIN NAMESPACE XSharp
         /// <summary>Determines if the first index in the production CDX should be selected. Defaults to 0 for the FoxPro dialect and 1 for the other dialects.</summary>
         MEMBER AutoOrder    := 105		// 0 or 1
         /// <summary>Should High Performance NTX Locking be used for DBFNTX files.</summary>
-        MEMBER HpLocking    := 106      // LOGIC 
+        MEMBER HpLocking    := 106      // LOGIC
         /// <summary>Should the New Index Locking Scheme be used for DBFNTX files.</summary>
-        MEMBER NewIndexLock := 107      // LOGIC 
+        MEMBER NewIndexLock := 107      // LOGIC
         /// <summary></summary>
         MEMBER Autoshare    := 108		// 0 or 1
         /// <summary></summary>
         MEMBER StrictRead   := 109		// LOGIC
         /// <summary></summary>
         MEMBER BlobCircref	:= 110		// LOGIC
-        /// <summary></summary>
+        /// <summary>Enables or disables Query Optimization.</summary>
         MEMBER Optimize     := 111		// LOGIC
         /// <summary>Should the FoxPro locking scheme be used for DBFCDX and DBFVFP files.</summary>
         MEMBER FoxLock      := 112		// LOGIC
@@ -218,10 +220,10 @@ BEGIN NAMESPACE XSharp
         /// <summary>Determines the current DOS/OEM CodePage number</summary>
         MEMBER DosCodepage	:= 121		// Numeric
         /// <summary>Determines the current Collation mode (Windows, Clipper, Ordinal, Unicode, XPP)</summary>
-        MEMBER CollationMode:= 122		// CollationMode 
+        MEMBER CollationMode:= 122		// CollationMode
 
         // 123 and 124 reserved
-        // FoxPro settings
+        // FoxPro settings 125 - 159, last used 144
         // Some settings are IDE specific, such as AutoSave, BrowseIME, Clock etc.
         // Others are windows regional settings, such as first day of week and currency symbol
         // these are not implemented
@@ -229,21 +231,22 @@ BEGIN NAMESPACE XSharp
         MEMBER Asserts          := 125 // Logic
         /// <summary>Specifies whether attempts to update or insert values in a field with automatically incrementing values generate errors.</summary>
         MEMBER AutoIncError     := 126 // Logic
-        //MEMBER AutoSave         
-        //MEMBER BrowseIME        
-        //MEMBER Carry            
-        //MEMBER Clock            
-        //MEMBER ClockRowCol      
-        //MEMBER ColorScheme      
+        //MEMBER AutoSave
+        //MEMBER BrowseIME
+        //MEMBER Carry
+        //MEMBER Clock
+        //MEMBER ClockRowCol
+        //MEMBER ColorScheme
         //MEMBER ColorSet
         /// <summary>Specifies a collation sequence for character fields in subsequent indexing and sorting operations. Defaults to MACHINE</summary>
         MEMBER CollateFox       := 127
         /// <summary>Controls compatibility with Microsoft FoxBASE+ and other FoxPro languages.</summary>
         MEMBER Compatible       := 128
-        // MEMBER Coverage         
-        // MEMBER CoverageFile     
-        // MEMBER CpDialog         
-        // MEMBER Currency         
+        // MEMBER Coverage
+        // MEMBER CoverageFile
+        // MEMBER CpCompile
+        // MEMBER CpDialog
+        // MEMBER Currency
         // MEMBER CurrencySymbol
         /// <summary>Sets an open database as the current database or sets no current database.</summary>
         MEMBER Database         := 129 // string
@@ -261,20 +264,21 @@ BEGIN NAMESPACE XSharp
         // MEMBER Fdow
         // MEMBER Fields            => not in Set() but Db.. function
         // MEMBER FieldsList        => not in Set() but Db.. function
-        /// <summary>FoxPro: Should CDX() and similar functions return full paths</summary>
+        // MEMBER Format            
+        /// <summary>FoxPro: Should CDX(),DBF() and similar functions return full paths</summary>
         MEMBER FullPath         := 132      // Logic
         // MEMBER Function
         // MEMBER FWeek
-        // MEMBER Headings
+        MEMBER Headings         := 144
         // MEMBER Help
-        // MEMBER Hours            
+        // MEMBER Hours
         // MEMBER Intensity
         // MEMBER Key
         // MEMBER KeyComp
         // MEMBER Libary
         /// <summary>Enables or disables automatic file locking in certain commands.</summary>
         MEMBER Lock             := 133
-        // MEMBER LogErrors        
+        // MEMBER LogErrors
         // MEMBER MacKey
         // MEMBER MarkOf
         // MEMBER MarkTo
@@ -305,11 +309,12 @@ BEGIN NAMESPACE XSharp
         //MEMBER Resource
         /// <summary>Determines whether Visual FoxPro displays a dialog box before overwriting an existing file.</summary>
         MEMBER Safety           := 138  // Logic
+        // MEMBER Seconds
         /// <summary>Specifies the character that separates each group of three digits to the left of the decimal point when displaying a formatted numeric or currency value. </summary>
         MEMBER Separator        := Set.ThousandSep
         // MEMBER Skip          // SelectiveRelation
         // MEMBER SkipOf
-        // 
+        //
         /// <summary>FoxPro: Add Space between ? and ?? field expressions</summary>
         MEMBER Space            := 139    // Logic
         /// <summary>Specifies if data in a SQL - SELECT statement is based on buffered data or data written to disk.</summary>
@@ -325,17 +330,17 @@ BEGIN NAMESPACE XSharp
         // MEMBER TablePrompt
         // MEMBER TableValidate
         // MEMBER Talk
-        // 
+        //
         /// <summary>FoxPro: Is Textmerge enabled.</summary>
-        MEMBER TextMerge        := 142      // Logic 
+        MEMBER TextMerge        := 142      // Logic
         // MEMBER TextMergeDelimiters
         // MEMBER Topic
         // MEMBER TopicID
         // MEMBER TrBetween
         // MEMBER UdfParams
         /// <summary>Specifies how character data expressions are mapped to query result sets.</summary>
-        MEMBER VarCharMapping   := 143    // Logic 
-        
+        MEMBER VarCharMapping   := 143    // Logic
+
 
         // Xbase++ defines
         MEMBER CharSet          := 160
@@ -348,7 +353,7 @@ BEGIN NAMESPACE XSharp
         MEMBER SmartFilter      := 166
         MEMBER NullValue        := 167
         MEMBER Collation        := 168  // XPP Collation Number
-        MEMBER Lexical          := 169  // Not implemented 
+        MEMBER Lexical          := 169  // Not implemented
 
 
 
@@ -363,7 +368,7 @@ BEGIN NAMESPACE XSharp
         MEMBER Eof            :=  185               // Logic: Is Chr(26) written to end of text files
         MEMBER HardCommit     :=  186               // Logic: Forces Hard Commit in RDD system (whatever that me be..)
         MEMBER ForceOpt       :=  187               // LOGIC: Force Optimization
-        MEMBER DbfLockscheme  :=  188               // 
+        MEMBER DbfLockscheme  :=  188               //
         MEMBER Defextensions  :=  189               // Logic: Force Extensions for RDD and other output files. Not used yet
         MEMBER Eol            :=  190               // ENd of Line characters
         MEMBER Trimfilename   :=  191	            // Logic: Should filenames be trimmed in the IO system
@@ -371,9 +376,9 @@ BEGIN NAMESPACE XSharp
         MEMBER Hboutloginfo   :=  193               // String Info written to error log files
         MEMBER Codepage       :=  WinCodepage		// Remapped
         MEMBER Oscodepage     :=  DosCodepage	    // Remapped
-        MEMBER Timeformat     :=  196			
+        MEMBER Timeformat     :=  196
         MEMBER Dbcodepage     :=  197				// Map to Vulcan setting ?
-        
+
         // Start of user values
         MEMBER User           := 200
         // Advantage extensions
@@ -386,133 +391,133 @@ BEGIN NAMESPACE XSharp
         MEMBER Collation_name       := User+7
         MEMBER Sql_timeout          := User+8
         MEMBER Sql_parameters       := User+9
-        
+
     END ENUM
 END NAMESPACE
 #region Defines
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EXACT       := Set.Exact		
+DEFINE _SET_EXACT       := Set.Exact
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FIXED       := Set.Fixed 		
+DEFINE _SET_FIXED       := Set.Fixed
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DECIMALS    := Set.Decimals		
+DEFINE _SET_DECIMALS    := Set.Decimals
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DATEFORMAT  := Set.DateFormat  	
+DEFINE _SET_DATEFORMAT  := Set.DateFormat
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EPOCH       := Set.Epoch       	
+DEFINE _SET_EPOCH       := Set.Epoch
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_PATH        := Set.Path        	
+DEFINE _SET_PATH        := Set.Path
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEFAULT     := Set.Default     	
-    
+DEFINE _SET_DEFAULT     := Set.Default
+
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EXCLUSIVE   := Set.Exclusive   	
+DEFINE _SET_EXCLUSIVE   := Set.Exclusive
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SOFTSEEK    := Set.Softseek    	
+DEFINE _SET_SOFTSEEK    := Set.Softseek
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_UNIQUE      := Set.Unique      	
+DEFINE _SET_UNIQUE      := Set.Unique
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DELETED     := Set.Deleted     	
-    
+DEFINE _SET_DELETED     := Set.Deleted
+
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_Cancel      := Set.Cancel
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEBUG       := Set.Debug       	
+DEFINE _SET_DEBUG       := Set.Debug
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_TYPEAHEAD   := Set.Typeahead
-    
+
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_COLOR       := Set.Color       	
+DEFINE _SET_COLOR       := Set.Color
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CURSOR      := Set.Cursor      	
+DEFINE _SET_CURSOR      := Set.Cursor
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CONSOLE     := Set.Console     	
+DEFINE _SET_CONSOLE     := Set.Console
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_ALTERNATE   := Set.Alternate   	
+DEFINE _SET_ALTERNATE   := Set.Alternate
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_ALTFILE     := Set.AltFile
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEVICE      := Set.Device      	
+DEFINE _SET_DEVICE      := Set.Device
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_PRINTER     := Set.Printer     	
+DEFINE _SET_PRINTER     := Set.Printer
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_PRINTFILE   := Set.PrintFile   	
+DEFINE _SET_PRINTFILE   := Set.PrintFile
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MARGIN      := Set.Margin      	
-    
+DEFINE _SET_MARGIN      := Set.Margin
+
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_BELL        := Set.Bell        	
+DEFINE _SET_BELL        := Set.Bell
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CONFIRM     := Set.Confirm     	
+DEFINE _SET_CONFIRM     := Set.Confirm
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_ESCAPE      := Set.Escape      	
+DEFINE _SET_ESCAPE      := Set.Escape
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_INSERT      := Set.Insert      	
+DEFINE _SET_INSERT      := Set.Insert
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EXIT        := Set.Exit        	
+DEFINE _SET_EXIT        := Set.Exit
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_INTENSITY   := Set.Intensity  	
+DEFINE _SET_INTENSITY   := Set.Intensity
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SCOREBOARD  := Set.Scoreboard  	
+DEFINE _SET_SCOREBOARD  := Set.Scoreboard
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DELIMITERS  := Set.Delimiters  	
+DEFINE _SET_DELIMITERS  := Set.Delimiters
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DELIMCHARS  := Set.DelimChars  	
-    
+DEFINE _SET_DELIMCHARS  := Set.DelimChars
+
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_WRAP        := Set.Wrap        	
+DEFINE _SET_WRAP        := Set.Wrap
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MESSAGE     := Set.Message     	
+DEFINE _SET_MESSAGE     := Set.Message
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MCENTER     := Set.Mcenter     	
+DEFINE _SET_MCENTER     := Set.Mcenter
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SCROLLBREAK := Set.ScrollBreak 	
+DEFINE _SET_SCROLLBREAK := Set.ScrollBreak
 
 // 48 and 49 unused
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DIGITS      	:= Set.Digits      
+DEFINE _SET_DIGITS      	:= Set.Digits
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_NETERR      	:= Set.Neterr      
+DEFINE _SET_NETERR      	:= Set.Neterr
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_ANSI      		:= Set.Ansi      
+DEFINE _SET_ANSI      		:= Set.Ansi
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_YIELD     		:= Set.Yield     
+DEFINE _SET_YIELD     		:= Set.Yield
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_LOCKTRIES   	:= Set.Locktries   
+DEFINE _SET_LOCKTRIES   	:= Set.Locktries
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AMEXT			:= Set.AmExt	
+DEFINE _SET_AMEXT			:= Set.AmExt
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AMPM			:= Set.AmPm		   
+DEFINE _SET_AMPM			:= Set.AmPm
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_PMEXT	    	:= Set.PmExt	   
+DEFINE _SET_PMEXT	    	:= Set.PmExt
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CENTURY	    	:= Set.Century	   
+DEFINE _SET_CENTURY	    	:= Set.Century
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DIGITFIXED  	:= Set.DigitFixed  
+DEFINE _SET_DIGITFIXED  	:= Set.DigitFixed
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DECIMALSEP  	:= Set.DecimalSep  
+DEFINE _SET_DECIMALSEP  	:= Set.DecimalSep
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_THOUSANDSEP 	:= Set.ThousandSep 
+DEFINE _SET_THOUSANDSEP 	:= Set.ThousandSep
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_TIMESEP     	:= Set.Timesep     
+DEFINE _SET_TIMESEP     	:= Set.Timesep
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FIELDSTORE  	:= Set.Fieldstore  
+DEFINE _SET_FIELDSTORE  	:= Set.Fieldstore
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SCIENCE     	:= Set.Science     
+DEFINE _SET_SCIENCE     	:= Set.Science
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CPU				:= Set.Cpu			
+DEFINE _SET_CPU				:= Set.Cpu
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FLOATDELTA		:= Set.Floatdelta	
+DEFINE _SET_FLOATDELTA		:= Set.Floatdelta
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MATH			:= Set.Math			
+DEFINE _SET_MATH			:= Set.Math
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_INTERNATIONAL	:= Set.International
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_DATECOUNTRY		:= Set.DateCountry
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DICT			:= Set.Dict			
+DEFINE _SET_DICT			:= Set.Dict
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_INTL			:= Set.Intl		
+DEFINE _SET_INTL			:= Set.Intl
 
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_DEFAULTDIR      := Set.DefaultDir
@@ -520,9 +525,9 @@ DEFINE _SET_DEFAULTDIR      := Set.DefaultDir
 
 
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DELIMRDD         := Set.DelimRDD       
+DEFINE _SET_DELIMRDD         := Set.DelimRDD
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FIELDDELIMITER   := Set.FieldDelimiter 
+DEFINE _SET_FIELDDELIMITER   := Set.FieldDelimiter
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_RECORDDELIMITER  := Set.RecordDelimiter
 
@@ -532,101 +537,101 @@ DEFINE _SET_BLOB_CIRCULAR_ARRAY_REF := Set.BlobCircref
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_USER := Set.User
 
-    
+
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_COLLATIONMODE	:= Set.CollationMode	
+DEFINE _SET_COLLATIONMODE	:= Set.CollationMode
 
 // Vulcan RDDInfo Settings
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_RDDINFO				:= Set.RddInfo		
+DEFINE _SET_RDDINFO				:= Set.RddInfo
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_MEMOBLOCKSIZE		:= Set.MemoBlockSize
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEFAULTRDD			:= Set.DefaultRdd	
+DEFINE _SET_DEFAULTRDD			:= Set.DefaultRdd
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MEMOEXT	    		:= Set.MemoExt	    
+DEFINE _SET_MEMOEXT	    		:= Set.MemoExt
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AUTOOPEN    		:= Set.AutoOpen     
+DEFINE _SET_AUTOOPEN    		:= Set.AutoOpen
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AUTOORDER   		:= Set.AutoOrder    
+DEFINE _SET_AUTOORDER   		:= Set.AutoOrder
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_HPLOCKING   		:= Set.HpLocking    
+DEFINE _SET_HPLOCKING   		:= Set.HpLocking
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_HPLOCK      		:= Set.HpLocking
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_NEWINDEXLOCK		:= Set.NewIndexLock 
+DEFINE _SET_NEWINDEXLOCK		:= Set.NewIndexLock
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AUTOSHARE   		:= Set.Autoshare   
+DEFINE _SET_AUTOSHARE   		:= Set.Autoshare
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_STRICTREAD  		:= Set.StrictRead   
+DEFINE _SET_STRICTREAD  		:= Set.StrictRead
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_BLOBCIRCREF			:= Set.BlobCircref	
+DEFINE _SET_BLOBCIRCREF			:= Set.BlobCircref
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_OPTIMIZE    		:= Set.Optimize     
+DEFINE _SET_OPTIMIZE    		:= Set.Optimize
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FOXLOCK     		:= Set.FoxLock      
+DEFINE _SET_FOXLOCK     		:= Set.FoxLock
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_WINCODEPAGE			:= Set.WinCodepage	
+DEFINE _SET_WINCODEPAGE			:= Set.WinCodepage
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DOSCODEPAGE			:= Set.DosCodepage	
+DEFINE _SET_DOSCODEPAGE			:= Set.DosCodepage
 
 // Harbour extensions
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_LANGUAGE       :=  Set.Language      	
+DEFINE _SET_LANGUAGE       :=  Set.Language
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_IDLEREPEAT     :=  Set.IdleRepeat    	
+DEFINE _SET_IDLEREPEAT     :=  Set.IdleRepeat
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FILECASE       :=  Set.FileCase      	
+DEFINE _SET_FILECASE       :=  Set.FileCase
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DIRCASE        :=  Set.DirCase       	
+DEFINE _SET_DIRCASE        :=  Set.DirCase
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DIRSEPARATOR   :=  Set.DirSeparator  	
+DEFINE _SET_DIRSEPARATOR   :=  Set.DirSeparator
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EOF            :=  Set.Eof           	
+DEFINE _SET_EOF            :=  Set.Eof
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_HARDCOMMIT     :=  Set.HardCommit    	
+DEFINE _SET_HARDCOMMIT     :=  Set.HardCommit
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FORCEOPT       :=  Set.ForceOpt      	
+DEFINE _SET_FORCEOPT       :=  Set.ForceOpt
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DBFLOCKSCHEME  :=  Set.DbfLockscheme 	
+DEFINE _SET_DBFLOCKSCHEME  :=  Set.DbfLockscheme
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_DEFEXTENSIONS  :=  Set.Defextensions 	
+DEFINE _SET_DEFEXTENSIONS  :=  Set.Defextensions
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EOL            :=  Set.Eol           	
+DEFINE _SET_EOL            :=  Set.Eol
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_TRIMFILENAME   :=  Set.Trimfilename  	
+DEFINE _SET_TRIMFILENAME   :=  Set.Trimfilename
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_HBOUTLOG       :=  Set.Hboutlog      	
-/// <include file="CoreComments.xml" path="comments/Set/*" />
-DEFINE _SET_HBOUTLOGINFO   :=  Set.Hboutloginfo  	
-/// <include file="CoreComments.xml" path="comments/Set/*" />
-DEFINE _SET_CODEPAGE       :=  Set.Codepage      	
-/// <include file="CoreComments.xml" path="comments/Set/*" />
-DEFINE _SET_OSCODEPAGE     :=  Set.Oscodepage    	
-/// <include file="CoreComments.xml" path="comments/Set/*" />
-DEFINE _SET_TIMEFORMAT     :=  Set.Timeformat    	
-/// <include file="CoreComments.xml" path="comments/Set/*" />
-DEFINE _SET_DBCODEPAGE     :=  Set.Dbcodepage    	
-    
+DEFINE _SET_HBOUTLOG       :=  Set.Hboutlog
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_HBOUTLOGINFO   :=  Set.Hboutloginfo
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_CODEPAGE       :=  Set.Codepage
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_OSCODEPAGE     :=  Set.Oscodepage
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_TIMEFORMAT     :=  Set.Timeformat
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_DBCODEPAGE     :=  Set.Dbcodepage
+
 // Advantage additions
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_AXSLOCKING           := Set.Axslocking         
+DEFINE _SET_AXSLOCKING           := Set.Axslocking
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_RIGHTSCHECKING       := Set.Rightschecking     
+DEFINE _SET_RIGHTSCHECKING       := Set.Rightschecking
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_CONNECTION_HANDLE    := Set.Connection_handle  
+DEFINE _SET_CONNECTION_HANDLE    := Set.Connection_handle
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_EXACTKEYPOS          := Set.Exactkeypos        
+DEFINE _SET_EXACTKEYPOS          := Set.Exactkeypos
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SQL_QUERY            := Set.Sql_query          
+DEFINE _SET_SQL_QUERY            := Set.Sql_query
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_SQL_TABLE_PASSWORDS  := Set.Sql_table_passwords
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_COLLATION_NAME       := Set.Collation_name     
+DEFINE _SET_COLLATION_NAME       := Set.Collation_name
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SQL_PARAMETERS       :=  Set.Sql_parameters     
+DEFINE _SET_SQL_PARAMETERS       :=  Set.Sql_parameters
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SQL_TIMEOUT          :=  Set.Sql_timeout        
+DEFINE _SET_SQL_TIMEOUT          :=  Set.Sql_timeout
 
 
 // Xbase++ additions
@@ -658,7 +663,7 @@ DEFINE _SET_ASSERTS         := Set.Asserts
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_AUTOINCERROR    := Set.AutoIncError
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_COLLATEFOX := Set.CollateFox   
+DEFINE _SET_COLLATEFOX := Set.CollateFox
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_DATABASE        := Set.Database
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
@@ -666,17 +671,15 @@ DEFINE _SET_DATASESSION     := Set.DataSession
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_DEBUGOUT        := Set.DebugOut
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_FULLPATH        := Set.FullPath     
+DEFINE _SET_FULLPATH        := Set.FullPath
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_LOCK            := Set.Lock
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MEMOWIDTH       := Set.MemoWidth    
+DEFINE _SET_MEMOWIDTH       := Set.MemoWidth
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_MULTILOCKS      := Set.MultiLocks    
+DEFINE _SET_MULTILOCKS      := Set.MultiLocks
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_NEAR            := Set.Near
-/// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_NULL             := Set.Null   
+DEFINE _SET_NULL             := Set.Null
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_POINT            := Set.Point
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
@@ -684,21 +687,21 @@ DEFINE _SET_REFRESH          := Set.Refresh
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_REPROCESS        := Set.Reprocess
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SAFETY           := Set.Safety    
+DEFINE _SET_SAFETY           := Set.Safety
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_SEPARATOR        := Set.Separator
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SPACE           := Set.Space        
+DEFINE _SET_SPACE           := Set.Space
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_SQLANSI         := Set.SqlAnsi      
+DEFINE _SET_SQLANSI         := Set.SqlAnsi
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_SQLBUFFERING     := Set.SqlBuffering
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
-DEFINE _SET_TEXTMERGE        := Set.TextMerge    
+DEFINE _SET_TEXTMERGE        := Set.TextMerge
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_VARCHARMAPPING    := Set.VarCharMapping
 
-    
+
 #endregion
 
 
@@ -707,75 +710,75 @@ DEFINE MAX_PATH := 260
 
 INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
     SWITCH nSet
-        CASE Set.Exact       	
-        CASE Set.Fixed	   		
-        CASE Set.Softseek    	
-        CASE Set.Unique      	
-        CASE Set.Deleted     	
-        CASE Set.Cancel      	
-        CASE Set.Debug     
-        CASE Set.Alternate   	
-        CASE Set.Printer     	
-        CASE Set.Confirm     	
-        CASE Set.Escape      	
-        CASE Set.Insert      	
-        CASE Set.Exit        	
-        CASE Set.Intensity   	
-        CASE Set.Scoreboard  	
-        CASE Set.Wrap        	
-        CASE Set.Mcenter     	
-        CASE Set.ScrollBreak 	
-        CASE Set.Errorlog   	
-        CASE Set.Yield          
-        CASE Set.Neterr         
-        CASE Set.AmPm		    
-        CASE Set.Century	    
-        CASE Set.DigitFixed     
-        CASE Set.Fieldstore     
-        CASE Set.Science        
-        CASE Set.Dict           
-        CASE Set.HpLocking    
-        CASE Set.NewIndexLock 
-        CASE Set.StrictRead   
-        CASE Set.BlobCircref	
-        CASE Set.FoxLock      
-        CASE Set.HandleEvent 
-        CASE Set.Rushmore    
-        CASE Set.SmartFilter 
-        CASE Set.NullValue   
+        CASE Set.Exact
+        CASE Set.Fixed
+        CASE Set.Softseek
+        CASE Set.Unique
+        CASE Set.Deleted
+        CASE Set.Cancel
+        CASE Set.Debug
+        CASE Set.Alternate
+        CASE Set.Printer
+        CASE Set.Confirm
+        CASE Set.Escape
+        CASE Set.Insert
+        CASE Set.Exit
+        CASE Set.Intensity
+        CASE Set.Scoreboard
+        CASE Set.Wrap
+        CASE Set.Mcenter
+        CASE Set.ScrollBreak
+        CASE Set.Errorlog
+        CASE Set.Yield
+        CASE Set.Neterr
+        CASE Set.AmPm
+        CASE Set.Century
+        CASE Set.DigitFixed
+        CASE Set.Fieldstore
+        CASE Set.Science
+        CASE Set.Dict
+        CASE Set.HpLocking
+        CASE Set.NewIndexLock
+        CASE Set.StrictRead
+        CASE Set.BlobCircref
+        CASE Set.FoxLock
+        CASE Set.HandleEvent
+        CASE Set.Rushmore
+        CASE Set.SmartFilter
+        CASE Set.NullValue
         CASE Set.Lexical
         CASE Set.HardCommit
         // FoxPro
         CASE Set.Asserts
         CASE Set.Lock
         CASE Set.MultiLocks
-        CASE Set.SqlAnsi     
+        CASE Set.SqlAnsi
         CASE Set.SqlBuffering
         CASE Set.VarCharMapping
             RETURN FALSE
 
-        CASE Set.Ansi           
+        CASE Set.Ansi
         CASE Set.Bell
         CASE Set.Console
-        CASE Set.Exclusive   	
-        CASE Set.Optimize     
+        CASE Set.Exclusive
+        CASE Set.Optimize
         CASE Set.AutoOpen
         CASE Set.Defextensions
         CASE Set.ForceOpt
         CASE Set.Trimfilename
         // FoxPro
-        CASE Set.AutoIncError     
-        CASE Set.FullPath    
+        CASE Set.AutoIncError
+        CASE Set.FullPath
         CASE Set.Safety
-        CASE Set.Space       
-        CASE Set.TextMerge    
+        CASE Set.Space
+        CASE Set.TextMerge
 			RETURN TRUE
-       
+
        CASE Set.DirCase
        CASE Set.FileCase
 //            //#define HB_SET_CASE_MIXED  0
 //            //#define HB_SET_CASE_LOWER  1
-//            //#define HB_SET_CASE_UPPER  2        
+//            //#define HB_SET_CASE_UPPER  2
 //            SWITCH System.PlatformID
 //            CASE PlatformID.Unix
 //            CASE PlatformID.MacOSX
@@ -786,35 +789,35 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
 //            CASE PlatformID.Xbox
 //            END SWITCH
             RETURN 0
-        CASE Set.Typeahead   
-        CASE Set.Cursor      
-        CASE Set.Margin      
-        CASE Set.Message     
-        CASE Set.Cpu		
-        CASE Set.Math		
-        CASE Set.CharSet     
-        CASE Set.DevTimeOut  
-        CASE Set.Colormode   
+        CASE Set.Typeahead
+        CASE Set.Cursor
+        CASE Set.Margin
+        CASE Set.Message
+        CASE Set.Cpu
+        CASE Set.Math
+        CASE Set.CharSet
+        CASE Set.DevTimeOut
+        CASE Set.Colormode
         CASE Set.Collation
         CASE Set.IdleRepeat
             RETURN 0L
 
 
-        CASE Set.AutoOrder   
+        CASE Set.AutoOrder
             RETURN 1L
 
-        CASE Set.DateCountry 
+        CASE Set.DateCountry
             RETURN DateCountry.American
 
-        CASE Set.Autoshare   
+        CASE Set.Autoshare
             RETURN AutoShareMode.Auto
-            
-        CASE Set.Color       	
+
+        CASE Set.Color
            RETURN "W/N,N/W,N/N,N/N,N/W"
         CASE Set.DateFormat
             RETURN "MM/DD/YYYY"
 
-        CASE Set.DefaultRdd	
+        CASE Set.DefaultRdd
             RETURN "DBFNTX"
 
         CASE Set.Eol
@@ -824,20 +827,20 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
             RETURN "hb_out.log"
 
         CASE Set.Hboutloginfo
-        CASE Set.Path        	
-        CASE Set.AltFile     	
-        CASE Set.Device      	
-        CASE Set.PrintFile   	
-        CASE Set.DelimChars  	
-        CASE Set.AmExt		
-        CASE Set.PmExt	    
+        CASE Set.Path
+        CASE Set.AltFile
+        CASE Set.Device
+        CASE Set.PrintFile
+        CASE Set.DelimChars
+        CASE Set.AmExt
+        CASE Set.PmExt
         CASE Set.International
-        CASE Set.NatDLL		
-        CASE Set.NoMethod	
+        CASE Set.NatDLL
+        CASE Set.NoMethod
         CASE Set.DateFormatNet
         CASE Set.DateFormatEmpty
-        CASE Set.LastFound    
-        CASE Set.MemoExt	    
+        CASE Set.LastFound
+        CASE Set.MemoExt
         CASE Set.Language
         CASE Set.Timeformat
         // FoxPro
@@ -850,46 +853,46 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
 
         CASE Set.DirSeparator
             RETURN System.IO.Path.DirectorySeparatorChar:ToString()
-            
+
         CASE Set.Floatdelta
             RETURN 0.0000000000001
 
-        
+
         CASE Set.Patharray     // String[]
             RETURN (STRING[]) NULL
         CASE Set.CollationTable   // byte[]
             RETURN (BYTE[] ) NULL
 
-        CASE Set.DecimalSep  
-        CASE Set.ThousandSep 
-        CASE Set.Timesep     
-        CASE Set.EpochYear   
-        CASE Set.FileError   
+        CASE Set.DecimalSep
+        CASE Set.ThousandSep
+        CASE Set.Timesep
+        CASE Set.EpochYear
+        //CASE Set.FileError
         CASE Set.ErrorLevel     // DWORD
-             RETURN 0U         
-        CASE Set.Decimals    
-             RETURN 2U         
+             RETURN 0U
+        CASE Set.Decimals
+             RETURN 2U
 
-        CASE Set.Digits      
-        CASE Set.Locktries   
-             RETURN 10U         
+        CASE Set.Digits
+        CASE Set.Locktries
+             RETURN 10U
 
         CASE Set.MemoBlockSize
             RETURN (WORD) 32
 
-        CASE Set.Epoch       
-        CASE Set.EpochCent   
+        CASE Set.Epoch
+        CASE Set.EpochCent
              RETURN 1900U
-                
+
         CASE Set.ErrorBlock     // Codeblock
-            RETURN NULL        
-        
-        CASE Set.LastRddError       // Exception object
-        CASE Set.LastScriptError    // Exception object
-        CASE Set.FileException      // Exception object
             RETURN NULL
 
-        CASE Set.Intl           
+        //CASE Set.LastRddError       // Exception object
+        CASE Set.LastScriptError    // Exception object
+        //CASE Set.FileException      // Exception object
+            RETURN NULL
+
+        CASE Set.Intl
         CASE Set.CollationMode
             RETURN CollationMode.Windows
 
@@ -916,9 +919,9 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
             RETURN "DELIM"
 
         // 180 - 197 Harbour extensions, no value yet
-//        MEMBER FILECASE       :=  182			
-//        MEMBER DIRCASE        :=  183 
-//        MEMBER DBFLOCKSCHEME  :=  188 
+//        MEMBER FILECASE       :=  182
+//        MEMBER DIRCASE        :=  183
+//        MEMBER DBFLOCKSCHEME  :=  188
 //        MEMBER DBCODEPAGE     :=  197				// Map to Vulcan setting ?
 
 
@@ -943,7 +946,7 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
             RETURN "MACHINE"
         CASE Set.DataSession
             RETURN 1
-        CASE Set.MemoWidth   
+        CASE Set.MemoWidth
             RETURN 50
         CASE Set.Refresh
             RETURN 5.0

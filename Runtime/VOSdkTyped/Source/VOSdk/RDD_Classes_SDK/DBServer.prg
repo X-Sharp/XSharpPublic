@@ -717,12 +717,12 @@ METHOD __SetupLocks( )  AS VOID STRICT
 
 	RETURN
 /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-CONSTRUCTOR( cFile AS STRING, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRdd := NULL_ARRAY AS ARRAY)
-    SELF(FileSpec{cFile}, lShareMode, lReadOnlyMode , xDriver, aRdd ) 
+CONSTRUCTOR( cFile AS STRING, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRDD := NULL_ARRAY AS ARRAY)
+    SELF(FileSpec{cFile}, lShareMode, lReadOnlyMode , xDriver, aRDD ) 
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
-CONSTRUCTOR( oFS := NULL AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRdd := NULL_ARRAY AS ARRAY)
+CONSTRUCTOR( oFS := NULL AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRDD := NULL_ARRAY AS ARRAY)
 	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL cFileName AS STRING
 	LOCAL w AS DWORD
@@ -846,7 +846,7 @@ CONSTRUCTOR( oFS := NULL AS FileSpec, lShareMode := FALSE AS OBJECT, lReadOnlyMo
 		ENDIF
 
 
-		SELF:aRdds := __RDDList( xDriver, aRdd )
+		SELF:aRdds := __RDDList( xDriver, aRDD )
 		rddList := __AllocRddList( aRdds )
 
 

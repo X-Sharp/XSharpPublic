@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp
 	/// <seealso cref="T:XSharp.RDD.DbDate"/>
 	//[DebuggerTypeProxy(TYPEOF(DateDebugView))];
 	[DebuggerDisplay("{ToDebugString(),nq}", Type := "DATE" )];
-	[StructLayout(LayoutKind.Explicit,Pack := 1)];
+	[StructLayout(LayoutKind.Explicit, Size := 4)];
     [Serializable];
 	PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
 		System.IFormattable, ;
@@ -301,16 +301,22 @@ BEGIN NAMESPACE XSharp
 		#region Implicit and Explicit converters
 
 			/// <include file="RTComments.xml" path="Comments/Converter/*" />
-			STATIC OPERATOR EXPLICIT(dvalue AS DATE) AS DWORD
+			STATIC OPERATOR EXPLICIT(dValue AS DATE) AS DWORD
 				// convert to julian date like vo
 				// # of days since 1-1-1901 + 2415386
+                IF dValue:IsEmpty
+                    RETURN 0
+                ENDIF
 				LOCAL nDays AS DWORD
-				nDays := (DWORD) (dvalue:Value - _dtCalc):Days + CLIPPER_MIN_DATE
+				nDays := (DWORD) (dValue:Value - _dtCalc):Days + CLIPPER_MIN_DATE
 				RETURN nDays
 
 
 			/// <include file="RTComments.xml" path="Comments/Converter/*" />
 			STATIC OPERATOR EXPLICIT(dValue AS DATE) AS INT
+                IF dValue:IsEmpty
+                    RETURN 0
+                ENDIF
 				LOCAL nDays AS LONG
 				nDays := (INT) ((dValue:Value - _dtCalc):Days + CLIPPER_MIN_DATE)
 				RETURN nDays

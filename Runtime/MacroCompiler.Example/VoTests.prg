@@ -27,6 +27,13 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet)
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
 
+    FUNCTION TestByRefPriv() AS VOID
+        PRIVATE x
+        VAR mc := CreateMacroCompiler()
+        x := "a"
+        TestMacro(mc, "{||testfunc(x), x}", Args(), "b", typeof(STRING))
+        TestMacro(mc, "{||testfunc(ref x), x}", Args(), "b", typeof(STRING))
+        TestMacro(mc, "{||testfunc(@x), x}", Args(), "b", typeof(STRING))
 
     FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running VO tests ...")
@@ -44,7 +51,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| 1.e-10}", Args(), 1.0e-10, TYPEOF(FLOAT))
         TestMacro(mc, e"{|| .1}", Args(), .1, TYPEOF(FLOAT))
         TestMacro(mc, e"{|| 4.}", Args(), 4.0, TYPEOF(FLOAT))
-        TestMacro(mc, e"{|| 1.c}", Args(), "No exported variable", typeof(Error))
+        TestMacro(mc, e"{|| 1.c}", Args(), "Unexpected 'c'", typeof(Exception),ErrorCode.Unexpected)
 
         TestMacroU(mc, e"{|a,b| S_EnforceType(a,b), a}", ArgsU(NIL,"N"), 0, typeof(INT))
         TestMacro(mc, e"{|a,b| S_EnforceType(a,b), a}", Args(NIL,"N"), 0, typeof(INT))
@@ -383,7 +390,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b,c|DoTestC(a,b,c)}", Args(1, TRUE, testclass{222}), 222, typeof(INT))
         TestMacro(mc, e"{|a,b,c|DoTestS(a,b,c)}", Args(1, TRUE, teststruct{222}), 222, typeof(INT))
         TestMacro(mc, e"{|a| AScan(a, \"12\") }", Args({"135454","54376","123","53"}, NIL), 3, typeof(DWORD))
-        TestMacro(mc, e"{|a| ALen(a) }", Args({"1235454","54376","12","53"},NIL), 4, typeof(DWORD))
+        TestMacro(mc, e"{|a| XSharp.RT.Functions.ALen(a) }", Args({"1235454","54376","12","53"},NIL), 4, typeof(DWORD))
         //TestMacro(mc, e"{|a| (testclass)a }",Args(tci), tci, typeof(testclass))
         TestMacro(mc, e"{|a| ((int)a):GetHashCode() }", Args(8), 8, typeof(INT))
         TestMacro(mc, e"{|a| a:GetHashCode() }", Args(8), 8, typeof(INT))
@@ -434,7 +441,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, 'e"a\"bc" + e"def"', Args(), e"a\"bc" + e"def", typeof(string))
         TestMacro(mc, 'e"a\"bc" + e"d\\ef"', Args(), e"a\"bc" + e"d\\ef", typeof(string))
         TestMacro(mc, "SubStr3('Test', 1 , SLen('abc') + 1)", Args(), "Test", typeof(STRING)) // should raise warning
-        TestMacro(mc, "SubStr3('Test', 1 , Len('abc') - 1)", Args(), "Te", typeof(string)) // should raise warning
+        TestMacro(mc, "SubStr3('Test', 1 , Len('abc') - 1)", Args(), "Te", typeof(STRING)) // should raise warning
         TestMacro(mc, "TestInt32(TestDWord(1))", Args(), 1, typeof(int)) // should raise warning
         TestMacro(mc, "TestDWord(TestInt32(1))", Args(), 1, typeof(dword)) // should raise warning
         TestMacro(mc, e"{|a,b| a := \"abcdef\", a:(&b)() }", Args(8,"ToUpperInvariant"), "ABCDEF", typeof(STRING))
@@ -481,6 +488,10 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
         TestMacro(mc, e"{|| M->NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
         TestMacro(mc, e"{|| M->NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
+        TestMacro(mc, e"{|| MEMVAR->NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
+        TestMacro(mc, e"{|| MEMVAR->NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
+        TestMacro(mc, e"{|| _MEMVAR->NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
+        TestMacro(mc, e"{|| _MEMVAR->NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
         TestMacro(mc, e"{|| M.NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
         TestMacro(mc, e"{|| M.NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
 
@@ -580,5 +591,7 @@ BEGIN NAMESPACE MacroCompilerTest
         RETURN
 
 END NAMESPACE
+
+
 
 

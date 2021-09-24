@@ -334,7 +334,7 @@
     <value>Operace není podporována aktuálním RDD</value>
   </data>
   <data name="ERDD_WRITE_NTX" xml:space="preserve">
-    <value>Chyba zápisu do NTX souboru</value>
+    <value>Chyba zápisu do indexových souborù</value>
   </data>
   <data name="ERDD_KEY_NOT_FOUND" xml:space="preserve">
     <value>Klíè nenalezen</value>

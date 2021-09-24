@@ -34,6 +34,7 @@ namespace XSharp
         // This also enables the "magic" button on the tools-options dialog
         // and adds CRLF to the response file between the various commands to make it easier to read.
         internal const string EnvironmentXSharpDev = "XSHARPDEV";
+
         // Read Setting from Registry
         // Names of registry keys that contain settings used by code generation in the Code Generators
         // These are stored in the registry because the CodeDomProvider is also called "stand alone" from the
@@ -93,5 +94,6 @@ namespace XSharp
             return result;
         }
 		
+
     }
 }

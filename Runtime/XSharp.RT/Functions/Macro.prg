@@ -55,12 +55,10 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
         VAR cMacro := cString // MPrepare(cString)
         IF oMC IS IMacroCompilerUsual VAR oMCU
             oResult := oMCU:CompileCodeblock(cMacro, lAllowSingleQuotes, oMod)
-            oResult:SetString(cString)
         ELSE
             LOCAL iResult AS ICodeblock
             iResult := oMC:Compile(cMacro, lAllowSingleQuotes, oMod, OUT VAR lIsCodeblock, OUT VAR addsMemVars)
             oResult := XSharp._Codeblock{iResult, cString, lIsCodeblock, addsMemVars}
-            oResult:SetString(cString)
         ENDIF
         RETURN oResult
     ENDIF
@@ -102,7 +100,10 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
 /// <seealso cref="MCompile" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
-    FUNCTION MExec(oBlock AS CODEBLOCK) AS USUAL
+FUNCTION MExec(oBlock AS CODEBLOCK) AS USUAL
+IF oBlock IS XSharp._Codeblock VAR cb .AND. cb:IsBlock
+    RETURN oBlock
+ENDIF
 RETURN Eval(oBlock)
 
 
@@ -312,29 +313,29 @@ FUNCTION ExecScript( cExpression, eParameter1, eParameter2, eParameterN ) AS USU
         ENDIF
         IF _fullMacroCompiler != NULL_OBJECT
             LOCAL type := _fullMacroCompiler:GetType("XSharp_MacroCompiler_Full.Functions") AS System.Type
-            if (type != NULL)
-                var exec := type:GetMethod("_ExecScript")
-                var argTmp := List<USUAL>{}
+            IF (type != NULL)
+                VAR exec := type:GetMethod("_ExecScript")
+                VAR argTmp := List<USUAL>{}
                 argTmp:AddRange(_Args())
                 argTmp:RemoveAt(0)
-                if exec != null
-                    var args := OBJECT[]{2}
-                    args[1] := (String) cExpression
+                IF exec != NULL
+                    VAR args := OBJECT[]{2}
+                    args[1] := (STRING) cExpression
                     args[2] := argTmp:ToArray()
                     TRY
                         result := exec:Invoke(NULL, args)
-                    CATCH e as Exception
+                    CATCH e AS Exception
                         XSharp.RuntimeState.LastScriptError := e
                         THROW e
                     END TRY
                 ELSE
                     THROW Error{"Could not load function '_ExecScript' in type 'XSharp_MacroCompiler_Full.Functions'"}
-                endif
+                ENDIF
             ELSE
                 THROW Error{"Could not load type 'XSharp_MacroCompiler_Full.Functions' in XSharp.MacroCompiler.Full.dll"}
-            endif
+            ENDIF
         ENDIF
-    CATCH e as Exception
+    CATCH e AS Exception
         XSharp.RuntimeState.LastScriptError :=  e
         THROW e
     END TRY

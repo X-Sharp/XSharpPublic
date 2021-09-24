@@ -10,7 +10,7 @@ CLASS DataListView INHERIT ListView
 	PROTECT iCacheMax AS INT
 	PROTECT iCacheStart AS INT
 	PROTECT iCacheEnd AS INT
-	PROTECT lUseOrder AS LOGIC    
+	PROTECT lUseOrder AS LOGIC
 
     PROPERTY ControlType AS ControlType GET ControlType.DataListView
 
@@ -19,7 +19,7 @@ CLASS DataListView INHERIT ListView
 		oGrid:RetrieveVirtualItem	+= __RetrieveVirtualItems
 		oGrid:CacheVirtualItems	    += __CacheVirtualItems
 		oGrid:SearchForVirtualItem  += __SearchForVirtualItems
-		RETURN 
+		RETURN
 
 	PROTECTED METHOD __RetrieveVirtualItems(sender AS OBJECT, e AS RetrieveVirtualItemEventArgs) AS VOID
 		// e:Item
@@ -40,14 +40,14 @@ CLASS DataListView INHERIT ListView
 			oItem:SetValue(uValue, symCol)
 			sValue := oFs:Transform(uValue)
 			oItem:SetText(sValue, oColumn:NameSym)
-		NEXT		
+		NEXT
 		e:Item := (VOListViewItem) oItem:__ListViewItem
-		RETURN 
-		
+		RETURN
+
 	PROTECTED METHOD __CacheVirtualItems(sender AS OBJECT, e AS CacheVirtualItemsEventArgs ) AS VOID
-		// e:StartIndex 
+		// e:StartIndex
 		// e:EndIndex
-		RETURN 
+		RETURN
 
 	PROTECTED METHOD __SearchForVirtualItems(sender AS OBJECT, e AS SearchForVirtualItemEventArgs ) AS VOID
 		// Direction
@@ -58,12 +58,12 @@ CLASS DataListView INHERIT ListView
 		// StartIndex
 		// StartingPoint
 		// Text
-		RETURN 
+		RETURN
 
 	ACCESS __DataListView AS VODataListView
 		RETURN (VODataListView) oCtrl
-		
-	METHOD __AutoLayout() AS VOID STRICT 
+
+	METHOD __AutoLayout() AS VOID STRICT
 		//PP-030828 Strong typing
 		LOCAL oDF AS DataField
 		LOCAL oLVC AS ListViewColumn
@@ -91,11 +91,11 @@ CLASS DataListView INHERIT ListView
 		RETURN
 
 	[Obsolete];
-	METHOD __AutoResize() AS VOID STRICT 
+	METHOD __AutoResize() AS VOID STRICT
 		// Handled inside DataForm Class
 		RETURN
 
-	//METHOD __CacheHint(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT 
+	//METHOD __CacheHint(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 	//	LOCAL lpHint AS _winNMLVCACHEHINT
 	//	LOCAL iRecNoSave, i AS INT
 	//	LOCAL iDel AS INT
@@ -165,13 +165,13 @@ CLASS DataListView INHERIT ListView
 	ACCESS __ColumnCount AS LONG
 		RETURN SELF:__ListView:Columns:Count
 
-	//METHOD __FillCacheItem(iIndex AS INT) AS VOID STRICT 
+	//METHOD __FillCacheItem(iIndex AS INT) AS VOID STRICT
 	//	LOCAL j, cCols AS DWORD
 	//	LOCAL symCol AS SYMBOL
 	//	LOCAL oFS AS FieldSpec
 	//	LOCAL sVal AS STRING
 	//	LOCAL oCol AS ListViewColumn
-		
+
 
 	//	cCols := (DWORD) SELF:__ColumnCount
 	//	IF IsNil(aCache[iIndex])
@@ -190,7 +190,7 @@ CLASS DataListView INHERIT ListView
 	//	NEXT
 	//	RETURN
 
-	//METHOD __FindItem(oCtrlNotifyEvent AS ControlNotifyEvent) AS INT STRICT 
+	//METHOD __FindItem(oCtrlNotifyEvent AS ControlNotifyEvent) AS INT STRICT
 	//	//PP-030828 Strong typing
 	//	LOCAL fi AS _winNMLVFINDITEM
 	//	LOCAL iRet := -1 AS INT
@@ -207,7 +207,7 @@ CLASS DataListView INHERIT ListView
 
 	//	RETURN iRet
 
-	//METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT 
+	//METHOD __GetDispInfo(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 	//	LOCAL di AS _winLV_DISPINFO
 	//	LOCAL iOrderPos, iCol AS INT
 	//	LOCAL iLen AS DWORD
@@ -217,7 +217,7 @@ CLASS DataListView INHERIT ListView
 	//	LOCAL sVal AS STRING
 	//	LOCAL iRecNoSave AS INT
 	//	LOCAL oCol AS ListViewColumn
-		
+
 	//	IF (oDLVServer == NULL_OBJECT)
 	//		RETURN
 	//	ENDIF
@@ -246,7 +246,7 @@ CLASS DataListView INHERIT ListView
 	//			oCol := SELF:GetColumn(iCol)
 	//			symCol  := oCol:NameSym
 	//			oFS     := oCol:FieldSpec
-				
+
 	//			IF (oFS != NULL_OBJECT)
 	//				sVal := oFS:Transform(SELF:FIELDGET(symCol))
 	//			ELSE
@@ -269,14 +269,14 @@ CLASS DataListView INHERIT ListView
 
 	//	RETURN
 
-	ACCESS __GetServerCount() AS LONG STRICT 
+	ACCESS __GetServerCount() AS LONG STRICT
 		//PP-030828 Strong typing
 		IF lUseOrder
 			RETURN Send(oDLVServer, #OrderKeyCount)
 		ENDIF
 		RETURN oDLVServer:RecCount
 
-	METHOD __GetServerPos() AS INT STRICT 
+	METHOD __GetServerPos() AS INT STRICT
 		//PP-030828 Strong typing
 		LOCAL iRet AS INT
 
@@ -292,7 +292,7 @@ CLASS DataListView INHERIT ListView
 
 		RETURN iRet
 
-	//METHOD __ItemChanged(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT 
+	//METHOD __ItemChanged(oCtrlNotifyEvent AS ControlNotifyEvent) AS VOID STRICT
 	//	//PP-030828 Strong typing
 	//	LOCAL nmlv AS _winNM_LISTVIEW
 
@@ -304,11 +304,11 @@ CLASS DataListView INHERIT ListView
 	//	ENDIF
 	//	RETURN
 
-	METHOD __NotifyChanges(kNotify AS DWORD) AS USUAL STRICT 
-		
+	METHOD __NotifyChanges(kNotify AS DWORD) AS USUAL STRICT
+
 		RETURN NIL
 
-	METHOD __RecordChange(lDoSelect := NIL AS USUAL) AS VOID STRICT 
+	METHOD __RecordChange(lDoSelect := NIL AS USUAL) AS VOID STRICT
 		LOCAL oLvItem		AS IVOListViewItem
 		LOCAL iItem AS INT
 		DEFAULT lDoSelect TO  TRUE
@@ -322,7 +322,7 @@ CLASS DataListView INHERIT ListView
 		ENDIF
 		RETURN
 
-	METHOD __RefreshData() AS VOID STRICT 
+	METHOD __RefreshData() AS VOID STRICT
 		//LOCAL iOrderPos AS INT
 		//LOCAL iItem AS INT
 
@@ -334,14 +334,14 @@ CLASS DataListView INHERIT ListView
 
 		//iItem := SELF:__GetServerPos() - 1
 		//SELF:__ListView:RedrawItems(iItem, iItem, FALSE)
-		
+
 		RETURN
 
-	METHOD __RefreshField(uFieldName AS USUAL) AS VOID STRICT 
+	METHOD __RefreshField(uFieldName AS USUAL) AS VOID STRICT
 		SELF:__RefreshData()
 		RETURN
 
-	METHOD __SetServerPos(nOrderPos AS INT, lSuspendNotify := NIL AS USUAL) AS INT STRICT 
+	METHOD __SetServerPos(nOrderPos AS INT, lSuspendNotify := NIL AS USUAL) AS INT STRICT
 		LOCAL iRet AS INT
 
 		IF (oDLVServer == NULL_OBJECT)
@@ -369,10 +369,10 @@ CLASS DataListView INHERIT ListView
 
 		RETURN iRet
 
-	METHOD __StatusOK() AS OBJECT STRICT 
+	METHOD __StatusOK() AS OBJECT STRICT
 		RETURN NULL_OBJECT
 
-	METHOD __Unlink(oDS := NIL AS USUAL) AS VOSDK.Control  STRICT 
+	METHOD __Unlink(oDS := NIL AS USUAL) AS VOSDK.Control  STRICT
 		IF (oDLVServer != NULL_OBJECT)
 			oDLVServer:UnRegisterClient(SELF)
 			oDLVServer := NULL_OBJECT
@@ -391,15 +391,15 @@ CLASS DataListView INHERIT ListView
 		SELF:__Unlink()
 		RETURN SUPER:Destroy()
 
-	METHOD FIELDGET(nFieldPos) 
-		
+	METHOD FIELDGET(nFieldPos)
+
 
 		IF (oDLVServer != NULL_OBJECT)
 			RETURN oDLVServer:FIELDGET(nFieldPos)
 		ENDIF
 		RETURN NIL
 
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle) 
+	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 		LOCAL lUsedAsBrowser AS LOGIC
 		LOCAL nStyle			AS LONGINT
 
@@ -428,9 +428,9 @@ CLASS DataListView INHERIT ListView
 		iCacheEnd := 0
 		SELF:__ListView:VirtualMode := TRUE
 
-		RETURN 
+		RETURN
 
-	METHOD Notify(kNotification, uDescription) 
+	METHOD Notify(kNotification, uDescription)
 
 		IF lNoNotifies
 			IF kNotification == NOTIFYINTENTTOMOVE
@@ -496,14 +496,14 @@ CLASS DataListView INHERIT ListView
 			oDLVServer:GoTo(oDLVServer:RecNo)
 		ENDIF
 		SELF:__ListView:RedrawItems(0, dwItems, TRUE)
-		
-		RETURN 
+
+		RETURN
 
 	ACCESS Server as DataServer
 		RETURN oDLVServer
 
-	ASSIGN Server(oNewServer as DataServer)	
-		
+	ASSIGN Server(oNewServer as DataServer)
+
 
 		IF (oDLVServer != oNewServer)
 			IF (oDLVServer != NULL_OBJECT)
@@ -522,10 +522,10 @@ CLASS DataListView INHERIT ListView
 			SELF:Refresh()
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	METHOD Use(oNewServer) 
-		
+	METHOD Use(oNewServer)
+
 
 		SELF:Server := oNewServer
 

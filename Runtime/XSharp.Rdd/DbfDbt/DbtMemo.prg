@@ -163,9 +163,9 @@ BEGIN NAMESPACE XSharp.RDD
                 // No ! Fill the gap
                 IF ( toAdd > 0 )
                     toAdd := SELF:BlockSize - toAdd
-                    LOCAL dummy AS BYTE[]
-                    dummy := BYTE[]{ toAdd }
-                    _oStream:SafeWrite(dummy)
+                    LOCAL filler AS BYTE[]
+                    filler := BYTE[]{ toAdd }
+                    _oStream:SafeWrite(filler)
                     // so, new size is
                     fileSize := (LONG)_oStream:Length
                     

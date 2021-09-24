@@ -19,15 +19,16 @@ BEGIN NAMESPACE XSharp
     END INTERFACE
 
     /// <summary>
-	/// This delegate is used to decide between 2 ambigous methods or constructors
+	/// This delegate is used to decide between 2 ambigous methods, functions or constructors
 	/// </summary>
-    /// <param name="cSignature1">Signature of the first symbol</param>
-    /// <param name="cSignature2">Signature of the second symbol</param>
+    /// <param name="m1">MethodInfo of the first symbol</param>
+    /// <param name="m2">MethodInfo of the second symbol</param>
+    /// <param name="args">The types of the arguments that were passed to the method call</param>
     /// <returns>The delegate should return 1 when it wants to use the first symbol and 2 when it wants to use the second symbol or 0 when it does not want to use either symbol</returns>
     /// <seealso cref="IMacroCompiler2"/>
     /// <seealso cref="IMacroCompiler2"/>
     /// <seealso cref="SetMacroDuplicatesResolver"/>
-    DELEGATE MacroCompilerResolveAmbiguousMatch(m1 as MemberInfo, m2 as MemberInfo, args as System.Type[]) AS LONG
+    DELEGATE MacroCompilerResolveAmbiguousMatch(m1 AS MemberInfo, m2 AS MemberInfo, args AS System.Type[]) AS LONG
 
     /// <summary>
 	/// This interface extends the Macro compiler and adds a method that is called to decide between ambigous methods or constructors
@@ -35,7 +36,8 @@ BEGIN NAMESPACE XSharp
 	/// <seealso cref="SetMacroDuplicatesResolver"/>
 	/// <seealso cref="MacroCompilerResolveAmbiguousMatch"/>
 	INTERFACE IMacroCompiler2 INHERIT IMacroCompiler
-        PROPERTY Resolver as MacroCompilerResolveAmbiguousMatch GET SET
+        /// <summary>This property allows to set a delegate that may be used to resolve ambigous references</summary>
+        PROPERTY Resolver AS MacroCompilerResolveAmbiguousMatch GET SET
     END INTERFACE
 
 	/// <summary>

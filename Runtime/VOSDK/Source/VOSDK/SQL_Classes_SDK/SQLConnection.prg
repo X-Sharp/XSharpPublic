@@ -1681,11 +1681,8 @@ ASSIGN UserID( uVal )
 	RETURN SELF:cUser
 
 
-//RvdH 2010-12-03: Some extra accesses
 /// <include file="SQL.xml" path="doc/SQLConnection.ActiveStmts/*" />
 ACCESS ActiveStmts
-
-
 	RETURN aStmts
 
 

@@ -354,6 +354,7 @@ namespace XSharp.MacroCompiler.Syntax
                 {"LOCAL", TokenType.LOCAL},
                 {"LOOP", TokenType.LOOP},
                 {"MEMVAR", TokenType.MEMVAR},
+                {"_MEMVAR", TokenType.MEMVAR},
                 {"NEXT", TokenType.NEXT},
                 {"OF", TokenType.OF},
                 {"OTHERWISE", TokenType.OTHERWISE},
@@ -856,7 +857,7 @@ namespace XSharp.MacroCompiler.Syntax
             softKws[(int)TokenType.WITH] = true;
             softKws[(int)TokenType.WHEN] = true;
             softKws[(int)TokenType.CHAR] = true;
-            softKws[(int)TokenType.MEMVAR] = true;
+            //softKws[(int)TokenType.MEMVAR] = true;
             softKws[(int)TokenType.PARAMETERS] = true;
             softKws[(int)TokenType.LPARAMETERS] = true;
             softKws[(int)TokenType.DEFINE] = true;

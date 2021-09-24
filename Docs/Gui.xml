@@ -23239,7 +23239,7 @@
         <value>The font used to draw the text in the control.</value>
     </TextControl.ControlFont>
     <TextControl.Create>
-        <exclude />
+        <inheritdoc />
     </TextControl.Create>
     <TextControl.CurrentText>
         <summary>

@@ -3369,11 +3369,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // Modifiers is mandatory for ClassVars. We want at least EXPORT or PUBLIC
             bool isFixed = context.Modifiers._FIXED != null;
-            var atts = getAttributes(context.Attributes);
             var mods = context.Modifiers.GetList<SyntaxToken>();
 
             foreach (var varCtx in context._Vars)
             {
+                var atts = getAttributes(context.Attributes);
                 VisitClassvar(varCtx, isFixed);
                 if (_options.HasRuntime)
                 {

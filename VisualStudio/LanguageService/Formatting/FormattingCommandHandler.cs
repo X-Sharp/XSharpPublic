@@ -362,10 +362,13 @@ namespace XSharp.LanguageService
                         int counter = 0;
                         foreach (int nLine in lines)
                         {
-                            ITextSnapshotLine line = snapshot.GetLineFromLineNumber(nLine);
-                            formatLineCase(editSession, line);
-                        // when it takes longer than 2 seconds, then abort
-                        if (++counter > 100 && DateTime.Now > end)
+                            if (nLine < snapshot.LineCount && nLine >= 0)
+                            {
+                                ITextSnapshotLine line = snapshot.GetLineFromLineNumber(nLine);
+                                formatLineCase(editSession, line);
+                            }
+                            // when it takes longer than 2 seconds, then abort
+                            if (++counter > 100 && DateTime.Now > end)
                                 break;
                         }
                     }

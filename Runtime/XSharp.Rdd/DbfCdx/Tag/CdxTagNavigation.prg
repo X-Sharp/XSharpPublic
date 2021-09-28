@@ -1018,7 +1018,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 recno  := SELF:_locateKey(bSearchKey, padLen, IIF(seekInfo:SoftSeek , SearchMode.SoftSeek , SearchMode.Left),recno)
                 result := SELF:_oRdd:__Goto(recno)
                 IF activeFilter
+                    SELF:Descending := oldDescend   
                     SELF:_oRdd:SkipFilter(1)
+                    SELF:Descending := FALSE
                     recno := SELF:_RecNo
                 ENDIF
                 LOCAL found := FALSE AS LOGIC

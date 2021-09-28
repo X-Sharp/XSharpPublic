@@ -270,7 +270,7 @@ namespace XSharp.LanguageService
             {
                 var token = line[i];
                 int open = 0;
-
+                bool isNotLast = token.StopIndex < location.Position - 1;
                 if (token.StartIndex > location.Position)
                 {
                     break;
@@ -287,8 +287,13 @@ namespace XSharp.LanguageService
                     case XSharpLexer.UPTO:
                     case XSharpLexer.DOWNTO:
                     case XSharpLexer.IN:
-                        state = CompletionState.General;
                         tokenList.Clear();
+                        if (isNotLast) // there has to be a space after the token
+                        {
+                            state = CompletionState.General;
+                        }
+                        else
+                            state = CompletionState.None;
                         break;
                     case XSharpLexer.LCURLY:
                         state = CompletionState.Constructors;
@@ -318,17 +323,28 @@ namespace XSharp.LanguageService
                         open = XSharpLexer.LBRKT;
                         break;
                     case XSharpLexer.STATIC:        // These tokens are all before a namespace of a (namespace dot) type
-                        if (state == CompletionState.Namespaces)
-                            state |= CompletionState.Types;
+                        if (isNotLast) // there has to be a space after the token
+                        {
+                            if (state == CompletionState.Namespaces)
+                                state |= CompletionState.Types;
+                            else
+                                state = CompletionState.General;
+                        }
                         else
-                            state = CompletionState.General;
+                            state = CompletionState.None;
                         break;
                     case XSharpLexer.USING:
-                        state = CompletionState.Namespaces;
+                        if (isNotLast) // there has to be a space after the token
+                            state = CompletionState.Namespaces;
+                        else
+                            state = CompletionState.None;
                         break;
 
                     case XSharpLexer.MEMBER:
-                        state = CompletionState.StaticMembers;
+                        if (isNotLast) // there has to be a space after the token
+                            state = CompletionState.StaticMembers;
+                        else
+                            state = CompletionState.None;
                         break;
 
                     case XSharpLexer.AS:
@@ -336,12 +352,19 @@ namespace XSharp.LanguageService
                     case XSharpLexer.REF:
                     case XSharpLexer.INHERIT:
                         tokenList.Clear();
-                        state = CompletionState.Namespaces | CompletionState.Types;
+                        if (isNotLast) // there has to be a space after the token
+                            state = CompletionState.Namespaces | CompletionState.Types;
+                        else
+                            state = CompletionState.None;
                         break;
 
                     case XSharpLexer.IMPLEMENTS:
                         tokenList.Clear();
-                        state = CompletionState.Namespaces | CompletionState.Interfaces;
+                        if (isNotLast)
+                            state = CompletionState.Namespaces | CompletionState.Interfaces;
+                        else
+                            state = CompletionState.None;
+                        
                         break;
                     case XSharpLexer.COLON:
                         state = CompletionState.InstanceMembers;

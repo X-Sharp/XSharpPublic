@@ -8,8 +8,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
-using Microsoft.VisualStudio.Utilities;
-using System.Collections.Generic;
+using System;
 using XSharpModel;
 
 namespace XSharp.LanguageService
@@ -27,6 +26,8 @@ namespace XSharp.LanguageService
         private readonly object _lineSeperatorTagGate = new object();
         private readonly IEditorFormatMap _editorFormatMap;
         private XSharpClassifier _classifier;
+        private DateTime lastChange = DateTime.MinValue;
+        private TimeSpan interval = new TimeSpan(0, 0, 5);
 
         internal LineSeparatorManager(IWpfTextView textView, IViewTagAggregatorFactoryService aggregatorService, IEditorFormatMapService editorFormatMapService)
         {
@@ -38,8 +39,8 @@ namespace XSharp.LanguageService
             _editorFormatMap.FormatMappingChanged += FormatMappingChanged;
             _lineSeparatorTag = new LineSeparatorTag(_editorFormatMap);
             registerClassifier();
+            
         }
-
         private void registerClassifier()
         {
             if (_classifier == null)
@@ -54,9 +55,15 @@ namespace XSharp.LanguageService
 
         private void Classifier_ClassificationChanged(object sender, ClassificationChangedEventArgs e)
         {
+            if (DateTime.Now.Subtract(lastChange) < interval)
+            {
+                return;
+            }
+            lastChange = DateTime.Now;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                
                 Repaint();
             });
             return;

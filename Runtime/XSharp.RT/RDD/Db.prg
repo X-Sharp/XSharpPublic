@@ -364,12 +364,12 @@ FUNCTION DbDeleteOrder(uOrder, cIndexFile) AS LOGIC CLIPPER
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbeval/*" />
 FUNCTION DbEval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) AS LOGIC CLIPPER
-    IF lRest:IsNil
-        lRest := .F.
-    ENDIF
     cbExecute           := VoDb.ValidBlock(cbExecute,{||NIL})
     cbForCondition      := VoDb.ValidBlock(cbForCondition)
     cbWhileCondition    := VoDb.ValidBlock(cbWhileCondition)
+    nNext               := IIF(nNext:IsNumeric, nNext, 0)
+    nRecord             := IIF(nRecord:IsNumeric, nRecord, NULL_OBJECT)
+    lRest               := IIF(lRest:IsNil, .F., lRest)
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Eval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) )
 
 

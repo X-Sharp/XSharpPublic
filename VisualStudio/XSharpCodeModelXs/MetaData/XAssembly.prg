@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY Id                   AS INT64 AUTO GET INTERNAL SET
       PROPERTY Types                AS Dictionary<STRING, XPETypeSymbol> AUTO
+      PROPERTY GlobalMembers        AS Dictionary<STRING, XPEMemberSymbol> AUTO
       PROPERTY ExtensionMethods     AS IList<XPEMemberSymbol> AUTO
       PROPERTY ExtensionDict        AS Dictionary<STRING, IList<IXMemberSymbol> > AUTO
       PROPERTY ImplicitNamespaces   AS IList<STRING> AUTO
@@ -57,6 +58,7 @@ BEGIN NAMESPACE XSharpModel
 
      METHOD Initialize() AS VOID
          Types                := Dictionary<STRING, XPETypeSymbol>{StringComparer.OrdinalIgnoreCase}
+         GlobalMembers        := Dictionary<STRING, XPEMemberSymbol>{}
          ImplicitNamespaces   := List<STRING>{}
          ReferencedAssemblies := List<STRING>{}
          DuplicateTypes       := NULL

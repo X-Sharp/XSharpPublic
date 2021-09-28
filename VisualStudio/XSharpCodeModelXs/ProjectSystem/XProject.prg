@@ -24,6 +24,7 @@ BEGIN NAMESPACE XSharpModel
       // Fields
       PROTECTED _id    := -1                    AS INT64
       PRIVATE _AssemblyReferences					AS List<XAssembly>
+      PRIVATE _AssemblyDict					        AS Dictionary<INT64 ,XAssembly>
       PRIVATE _parseOptions := NULL					AS XSharpParseOptions
       PRIVATE _projectNode							   AS IXSharpProject
       PRIVATE _projectOutputDLLs						AS ConcurrentDictionary<STRING, STRING>
@@ -55,8 +56,10 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY DependentAssemblyList             AS STRING
          GET
             IF String.IsNullOrEmpty(_dependentAssemblyList)
+               _AssemblyDict := Dictionary<INT64, XAssembly>{}
                VAR result := ""
                FOREACH VAR assembly IN _AssemblyReferences:ToArray()
+                  _AssemblyDict:Add(assembly:Id, assembly)
                   IF result:Length > 0
                      result += ","
                   ENDIF
@@ -651,41 +654,37 @@ BEGIN NAMESPACE XSharpModel
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalsInAssemblyReferences {name} ")
         ENDIF
-         VAR result := List<IXMemberSymbol>{}
-         FOREACH VAR asm IN AssemblyReferences:ToArray()
-            IF !String.IsNullOrEmpty(asm:GlobalClassName)
-               VAR type := asm:GetType(asm.GlobalClassName)
-               IF type != NULL
-                  VAR fields := type:GetFields():Where ({m => m.Name.StartsWith(name)})
-                  result:AddRange(fields)
-               ENDIF
-            ENDIF
-         NEXT
+         var dbresult := XDatabase.FindAssemblyGlobalOrDefineLike(name, SELF:DependentAssemblyList)
+         var result := SELF:_MembersFromGlobalType(dbresult)
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalsInAssemblyReferences {name}, found {result.Count} occurences")
          ENDIF
-        RETURN result
+         RETURN result
 
         METHOD FindFunctionsInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindFunctionsInAssemblyReferences {name} ")
         ENDIF
-         VAR result := List<IXMemberSymbol>{}
-         FOREACH VAR asm IN AssemblyReferences:ToArray()
-            IF !String.IsNullOrEmpty(asm:GlobalClassName)
-               VAR type := asm:GetType(asm.GlobalClassName)
-               IF type != NULL
-                  VAR methods := type:GetMethods():Where ({m => m.Name.StartsWith(name)})
-                  result:AddRange(methods)
-               ENDIF
-            ENDIF
-         NEXT
+         var dbresult := XDatabase.FindAssemblyFunctionLike(name, SELF:DependentAssemblyList)
+         var result := SELF:_MembersFromGlobalType(dbresult)
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindFunctionsInAssemblyReferences {name}, found {result.Count} occurences")
          ENDIF
          RETURN result
 
-METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
+        PRIVATE METHOD _MembersFromGlobalType(dbresult as IList<XDbResult>) AS IList<IXMemberSymbol>
+         VAR result := List<IXMemberSymbol>{}
+         foreach var item in dbresult
+            if _AssemblyDict:TryGetValue(item:IdAssembly, out var asm)
+                IF asm:GlobalMembers:TryGetValue(item:SourceCode, out var pem)
+
+                    result:Add(pem)
+                endif
+            endif
+         next
+         RETURn result
+
+        METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalMembersLike {name} Current Project {lCurrentProject}")
         ENDIF

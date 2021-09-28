@@ -52,7 +52,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			SELF:GiveFocus()
 		ENDIF
 		RETURN lOk
-	NEW METHOD GetAvailableFieldSpec(cFieldSpec AS STRING) AS FSEDesignFieldSpec
+	METHOD GetAvailableFieldSpec(cFieldSpec AS STRING) AS FSEDesignFieldSpec
 		IF aAvailableFieldSpecs == NULL
 			aAvailableFieldSpecs  := ArrayList{}
 		ENDIF
@@ -91,7 +91,7 @@ CLASS XSharp_VODbServerEditor INHERIT VODbServerEditor
 			ENDIF
 		NEXT
 
-	NEW PROTECTED METHOD GetSaveFileStreams(cSrvFileName AS STRING , oPrgStream AS EditorStream, lVnfrmOnly AS LOGIC) AS LOGIC
+	PROTECTED METHOD GetSaveFileStreams(cSrvFileName AS STRING , oPrgStream AS EditorStream, lVnfrmOnly AS LOGIC) AS LOGIC
 		LOCAL cPrgFileName AS STRING
 		LOCAL lSuccess AS LOGIC
 		LOCAL lError AS LOGIC

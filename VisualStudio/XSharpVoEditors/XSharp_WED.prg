@@ -65,7 +65,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		ENDIF
 		RETURN SUPER:Open(cFileName)
 
-	NEW PROTECTED METHOD GetSaveFileStreams(cVNFrmFileName AS STRING , oVNFrmStream REF FileStream , ;
+	PROTECTED METHOD GetSaveFileStreams(cVNFrmFileName AS STRING , oVNFrmStream REF FileStream , ;
 								oRCStream AS EditorStream , oPrgStream AS EditorStream , oVhStream AS EditorStream , ;
 								cVhName REF STRING , lVnfrmOnly AS LOGIC , lRcInSameFolder REF LOGIC) AS LOGIC
 		LOCAL cRCFileName AS STRING

@@ -183,11 +183,7 @@ BEGIN NAMESPACE XSharp
         [NODEBUG];
         PUBLIC CONSTRUCTOR(o AS OBJECT)
             IF o == NULL_OBJECT
-                IF RuntimeState.Dialect == XSharpDialect.FoxPro
-                   SELF(__UsualType.Logic)
-                ELSE
-                   SELF(__UsualType.Object)
-                ENDIF
+                SELF(__UsualType.Object)
             ELSE
                 SELF := _NIL
                 SELF:_flags:Initialized := TRUE

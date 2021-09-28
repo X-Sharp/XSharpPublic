@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -36,7 +36,7 @@ STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oValue REF USUAL) AS 
 /// <inheritdoc cref="CoreDb.FieldInfo"/>
 STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oValue AS USUAL) AS LOGIC
     RETURN CoreDb.FieldInfo(nOrdinal, nFldPos, (OBJECT) oValue)
-    
+
 /// <inheritdoc cref="CoreDb.FieldGet"/>
 STATIC METHOD FieldGet(nPos AS DWORD,uRet REF USUAL) AS LOGIC
     LOCAL lResult AS LOGIC
@@ -74,7 +74,7 @@ STATIC METHOD Info(nOrdinal AS DWORD,oValue AS USUAL) AS LOGIC
 /// <remarks> <inheritdoc cref='CoreDb.OrderInfo'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.OrderInfo and CoreDb.OrderInfo is that VoDb.Info takes a USUAL parameter</note></remarks>
 STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,oValue REF USUAL) AS LOGIC
-    LOCAL oRet := oValue AS OBJECT   
+    LOCAL oRet := oValue AS OBJECT
     LOCAL result AS LOGIC
     result := CoreDb.OrderInfo(nOrdinal, cBagName,  uOrder, REF oRet)
     IF oRet == NULL
@@ -104,7 +104,7 @@ STATIC METHOD RddInfo(nOrdinal AS DWORD,uRet REF USUAL) AS LOGIC
 /// <remarks> <inheritdoc cref='CoreDb.RddInfo'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.RddInfo and CoreDb.RddInfo is that VoDb.RddInfo takes a USUAL parameter</note></remarks>
 STATIC METHOD RddInfo(nOrdinal AS DWORD,uValue AS USUAL) AS LOGIC
-    RETURN CoreDb.RddInfo(nOrdinal, (OBJECT) uValue) 
+    RETURN CoreDb.RddInfo(nOrdinal, (OBJECT) uValue)
 
 /// <inheritdoc cref='CoreDb.RecordInfo'/>
 /// <remarks> <inheritdoc cref='CoreDb.RecordInfo'/>
@@ -115,14 +115,14 @@ STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS USUAL,oValue REF USUAL) AS 
     lResult := CoreDb.RecordInfo(nOrdinal, oRecID, REF oRet)
     oValue := oRet
     RETURN lResult
-    
+
 /// <inheritdoc cref='CoreDb.RecordInfo'/>
 /// <remarks> <inheritdoc cref='CoreDb.RecordInfo'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.RecordInfo and CoreDb.RecordInfo is that VoDb.RecordInfo takes a USUAL parameter</note></remarks>
 STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS USUAL,oValue AS USUAL) AS LOGIC
     RETURN CoreDb.RecordInfo(nOrdinal, oRecID,  (OBJECT) oValue)
 
-   
+
 /// <inheritdoc cref='CoreDb.Select'/>
 /// <remarks> <inheritdoc cref='CoreDb.Select'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.Select and CoreDb.Select is that VoDb.Select takes a USUAL parameter</note></remarks>
@@ -133,7 +133,7 @@ STATIC METHOD Select(nNew AS DWORD,riOld OUT USUAL) AS LOGIC
     riOld := nOld
     RETURN lResult
 
- 
+
 /// <inheritdoc cref='CoreDb.SetFilter'/>
 /// <remarks> <note type="tip">The difference between VoDb.SetFilter and CoreDb.SetFilter is that VoDb.SetFilter takes a USUAL parameter</note></remarks>
 STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
@@ -144,10 +144,10 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         cb := NULL
     ENDIF
     RETURN CoreDb.SetFilter(cb, cFilter)
- 
 
-    INTERNAL STATIC METHOD ParamError(cFuncSym AS STRING, dwArgNum  AS DWORD ,   dwArgType AS DWORD) AS Error 
-    
+
+    INTERNAL STATIC METHOD ParamError(cFuncSym AS STRING, dwArgNum  AS DWORD ,   dwArgType AS DWORD) AS Error
+
         LOCAL oError    AS Error
         oError := Error{RuntimeState.LastRddError}
         oError:SubSystem    := "DBCMD"
@@ -160,10 +160,10 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         oError:ArgNum       := dwArgNum
         oError:FuncSym      := cFuncSym
         RETURN oError
-        
-    INTERNAL STATIC METHOD DbCmdError(cFuncSym AS STRING)  AS Error 
+
+    INTERNAL STATIC METHOD DbCmdError(cFuncSym AS STRING)  AS Error
         LOCAL oError    AS Error
-        oError := Error{RuntimeState.LastRddError}	
+        oError := Error{RuntimeState.LastRddError}
         oError:Gencode      := EG_NOTABLE
         oError:SubCode      := EDB_NOTABLE
         oError:SubSystem    := "DBCMD"
@@ -183,9 +183,9 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             ENDIF
         NEXT
         RETURN _FieldNames{aNames}
-        
-    INTERNAL STATIC METHOD TargetFields  (cAlias AS STRING, aNames AS ARRAY, oJoinList OUT _JoinList) AS ARRAY 
-    
+
+    INTERNAL STATIC METHOD TargetFields  (cAlias AS STRING, aNames AS ARRAY, oJoinList OUT _JoinList) AS ARRAY
+
         LOCAL aNew      AS ARRAY
         LOCAL cName     AS STRING
         LOCAL aStruct   AS ARRAY
@@ -194,13 +194,13 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         LOCAL siPos     AS DWORD
         LOCAL siSelect  AS DWORD
         LOCAL aFldList  AS ARRAY
-        
+
         aDbStruct := DbStruct()
         aStruct   := {}
         aFldList := {}
-        
+
         IF ( Empty(aNames) )
-        
+
             aNames     := {}
             nFields    := (INT) FCount()
             siSelect   := VoDb.GetSelect()
@@ -230,14 +230,14 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         siSelect := @@Select(cAlias)
         aDbStruct := DbStruct()
         nFields := (INT)Len(aNames)
-        
+
         FOR i := 1 TO nFields
             IF "->" $ aNames[i]
                 cName := SubStr2(aNames[i], At(">", aNames[i]) + 1)
             ELSE
                 cName :=  aNames[i]
             ENDIF
-            
+
             siPos := AScan(aDbStruct, {|a| a[DBS_NAME] == cName})
             IF siPos > 0 .AND. (AScan( aStruct, {|c|c[DBS_NAME]== cName }) == 0)
                 AAdd(aFldList, {siSelect, FieldPos(cName)})
@@ -251,16 +251,16 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             oJoinList:Fields[i]:Pos  := aFldList[i,2] - 1
         NEXT
         RETURN aStruct
-        
+
     INTERNAL STATIC METHOD  RddList( xDriver AS USUAL, aHidden AS USUAL ) AS ARRAY
-    
+
         LOCAL   nType   AS DWORD
         LOCAL   aRdds  := NULL_ARRAY AS ARRAY
         LOCAL   n       AS DWORD
         LOCAL   i       AS DWORD
         LOCAL   lFPT  := FALSE AS LOGIC
         LOCAL   lDbf    AS LOGIC
-        
+
         IF xDriver:IsArray
             nType := ARRAY
         ELSEIF xDriver:IsString
@@ -272,7 +272,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             xDriver := RddSetDefault()
             nType := STRING
         ENDIF
-        
+
         IF nType == ARRAY
             aRdds := xDriver
         ELSEIF nType == STRING
@@ -297,19 +297,19 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
                 lDbf := .F.
                 lFPT := .F.
             END SWITCH
-            
+
             IF lDbf
-                AAdd(aRdds, "DBF")  
+                AAdd(aRdds, "DBF")
             ENDIF
-            
+
             AAdd(aRdds, xDriver)
-            
+
             IF lFPT
                 AAdd(aRdds, "DBFCDX")
             ENDIF
-            
+
         ENDIF
-        
+
         IF UsualType(aHidden) == ARRAY
             n := ALen(aHidden)
             FOR i := 1 TO n
@@ -317,7 +317,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             NEXT
         ENDIF
         RETURN aRdds
-        
+
     INTERNAL STATIC METHOD AllocRddList(aNames AS ARRAY) AS _RddList
         VAR aList := List<STRING>{}
         FOREACH cName AS STRING IN aNames
@@ -350,7 +350,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             oList:Add(oFld)
         ENDIF
         RETURN oList:ToArray()
-        
+
     INTERNAL STATIC METHOD OrdScopeNum(nScope)  AS INT CLIPPER
         IF !nScope:IsNumeric
             nScope := 0
@@ -363,14 +363,14 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             nScope := 1
         ENDIF
         RETURN nScope
-        
-    INTERNAL STATIC METHOD WithoutAlias(cName AS STRING) AS STRING 
+
+    INTERNAL STATIC METHOD WithoutAlias(cName AS STRING) AS STRING
         cName   := SubStr(cName, At(">", cName) + 1 )
         cName   := Trim(Upper(cName))
         RETURN cName
 
-    INTERNAL STATIC METHOD ValidBlock(uBlock AS USUAL, bDef := NULL AS ICodeblock) AS ICodeblock
-        IF !uBlock:IsNil
+    INTERNAL STATIC METHOD ValidBlock(uBlock AS USUAL, bDef := NULL_CODEBLOCK AS ICodeblock) AS ICodeblock
+        IF uBlock:IsCodeblock .or. uBlock:IsObject
             LOCAL oBlock    := uBlock   AS OBJECT
             IF oBlock IS ICodeblock
                 RETURN (ICodeblock) oBlock
@@ -378,42 +378,42 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         ENDIF
         RETURN bDef
 
-INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS ARRAY) AS ARRAY 
-	
+INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS ARRAY) AS ARRAY
+
 	LOCAL aNew      AS ARRAY
 	LOCAL cobScan   AS CODEBLOCK
 	LOCAL cName     AS STRING
 	LOCAL n, i, j   AS DWORD
 	LOCAL lMatch	AS LOGIC
-	
-	
+
+
 	IF Empty(aNames)
 		RETURN (aStruct)
 	ENDIF
-	
+
 	//	UH 11/30/1998
 	IF Empty(aMatch)
 		lMatch := .F.
 	ELSE
 		lMatch := .T.
 	ENDIF
-	
+
 	aNew:= {}
 	n   := Len(aNames)
-	
+
 	FOR i := 1 TO n
 		AAdd(aNew, VoDb.WithoutAlias(AllTrim(aNames[i])))
 	NEXT
-	
+
 	aNames  := aNew
 	cName   := ""
 	aNew    := {}
 	cobScan := {|aFld| aFld[DBS_NAME] == cName}
-	
+
 	FOR i := 1 TO n
 		cName := aNames[i]
 		j := AScan(aStruct, cobScan)
-		
+
 		IF j > 0
 			IF lMatch
 				IF aMatch[i, DBS_TYPE] == aStruct[j, DBS_TYPE]
@@ -424,8 +424,8 @@ INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS A
 			ENDIF
 		ENDIF
 	NEXT
-	
+
 	RETURN aNew
 
 
-END CLASS    
+END CLASS

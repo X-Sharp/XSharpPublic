@@ -46,12 +46,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-       
 
         internal static void TrimLeadingSpaces(this IList<XSharpToken> tokens)
         {
             while (tokens.Count > 0 &&
-                tokens[0].Channel == XSharpLexer.Hidden)
+                tokens[0].Channel == TokenConstants.HiddenChannel)
             {
                 tokens.RemoveAt(0);
             }
@@ -62,7 +61,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int i = 0;
             foreach (var token in tokens)
             {
-                if (token.Channel != XSharpLexer.Hidden)
+                if (token.Channel != TokenConstants.HiddenChannel)
                 {
                     sb.Append(i);
                     sb.Append(" ");
@@ -179,6 +178,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return TrimAllWithInplaceCharArray(result);
         }
 
+        internal static IList<IToken> CloneArray(this IList<IToken> tokens)
+        {
+            var clone = new XSharpToken[tokens.Count];
+            for (int i = 0; i < tokens.Count; i++)
+            {
+                clone[i] = new XSharpToken(tokens[i]);
+            }
+            return clone;
+        }
         internal static bool IsName(this XSharpToken token)
         {
             return token != null && (token.Type == XSharpLexer.ID  || token.IsKeyword());

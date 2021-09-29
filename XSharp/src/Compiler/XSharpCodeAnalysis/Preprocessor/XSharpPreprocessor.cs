@@ -12,14 +12,12 @@ using System.IO;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
 using System.Collections.Immutable;
 using System.Collections.Concurrent;
 using Microsoft.CodeAnalysis;
 using System.Reflection;
-using System.Runtime;
 using System.Linq;
 using System.Collections;
 using System.Threading;
@@ -105,7 +103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 return file;
             }
-            internal static PPIncludeFile Add(string fileName, IList<XSharpToken> tokens, SourceText text, bool mustBeProcessed, ref bool newFile)
+            internal static PPIncludeFile Add(string fileName, IList<IToken> tokens, SourceText text, bool mustBeProcessed, ref bool newFile)
             {
                 PPIncludeFile file;
                 cache.TryGetValue(fileName, out file);
@@ -131,12 +129,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             internal DateTime LastWritten { get; private set; }
             internal string FileName { get; private set; }
-            internal IList<XSharpToken> Tokens { get; private set; }
+            internal IList<IToken> Tokens { get; private set; }
             internal SourceText Text { get; private set; }
             internal DateTime LastUsed { get; set; }
             internal bool MustBeProcessed { get; set; }
 
-            internal PPIncludeFile(string name, IList<XSharpToken> tokens, SourceText text, bool mustBeProcessed)
+            internal PPIncludeFile(string name, IList<IToken> tokens, SourceText text, bool mustBeProcessed)
             {
                 this.FileName = name;
                 this.Text = text;
@@ -155,8 +153,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             internal PPIncludeFile Clone()
             {
-                // No need to clone the tokens. The constructor does that already.
-                return new PPIncludeFile(FileName, Tokens, Text, MustBeProcessed); 
+                return new PPIncludeFile(FileName, Tokens, Text, MustBeProcessed);
             }
         }
 
@@ -172,9 +169,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal string SymbolName;
             internal XSharpToken Symbol;
             internal InputState parent;
-            //internal string MappedFileName;
-            //internal PPRule udc;
-
+  
             internal InputState(ITokenStream tokens)
             {
                 Tokens = tokens;
@@ -213,36 +208,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        XSharpLexer _lexer;
+        readonly XSharpLexer _lexer;
         readonly ITokenStream _lexerStream;
-        CSharpParseOptions _options;
+        readonly CSharpParseOptions _options;
 
-        Encoding _encoding;
+        readonly Encoding _encoding;
 
         readonly SourceHashAlgorithm _checksumAlgorithm;
 
-        IList<ParseErrorData> _parseErrors;
+        readonly IList<ParseErrorData> _parseErrors;
         bool _duplicateFile = false;
 
-        IList<string> includeDirs;
+        IList<string> _includeDirs;
 
-        Dictionary<string, IList<XSharpToken>> symbolDefines;
+        readonly Dictionary<string, IList<XSharpToken>> _symbolDefines;
 
-        readonly Dictionary<string, Func<XSharpToken, XSharpToken>> macroDefines = new (XSharpString.Comparer);
+        readonly Dictionary<string, Func<XSharpToken, XSharpToken>> _macroDefines = new (XSharpString.Comparer);
 
-        readonly Stack<bool> defStates = new();
-        readonly Stack<XSharpToken> regions = new();
+        readonly Stack<bool> _defStates = new();
+        readonly Stack<XSharpToken> _regions = new();
         readonly string _fileName = null;
         InputState inputs;
         IToken lastToken = null;
 
-        readonly PPRuleDictionary cmdRules = new();
-        readonly PPRuleDictionary transRules = new();
+        readonly PPRuleDictionary _cmdRules = new();
+        readonly PPRuleDictionary _transRules = new();
         bool _hasCommandrules = false;
         bool _hasTransrules = false;
-        int rulesApplied = 0;
-        readonly int defsApplied = 0;
-        readonly HashSet<string> activeSymbols = new();
+        int _rulesApplied = 0;
+        readonly int _defsApplied = 0;
+        readonly HashSet<string> _activeSymbols = new();
 
         readonly bool _preprocessorOutput = false;
         Stream _ppoStream;
@@ -251,104 +246,104 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public int MaxIncludeDepth { get; set; } = 16;
 
-        public int MaxSymbolDepth { get; set; } = 16;
+        //public int MaxSymbolDepth { get; set; } = 16;
 
         public int MaxUDCDepth { get; set; } = 256;
 
         public string StdDefs { get; set; } = string.Empty;
-        private void initStdDefines(CSharpParseOptions options, string fileName)
+        private void initStdDefines(string fileName)
         {
             // Note Macros such as __ENTITY__ and  __SIG__ are handled in the transformation phase
             // Make sure you also update the MACROs in XSharpLexerCode.cs !
-            macroDefines.Add("__ARRAYBASE__", (token) => new XSharpToken(XSharpLexer.INT_CONST, _options.HasOption(CompilerOption.ArrayZero, null, null) ? "0" : "1", token));
+            _macroDefines.Add("__ARRAYBASE__", (token) => new XSharpToken(XSharpLexer.INT_CONST, _options.HasOption(CompilerOption.ArrayZero, null, null) ? "0" : "1", token));
             if (_options.ClrVersion == 2)
-                macroDefines.Add("__CLR2__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                _macroDefines.Add("__CLR2__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
             if (_options.ClrVersion == 4)
-                macroDefines.Add("__CLR4__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-            macroDefines.Add("__CLRVERSION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"" + _options.ClrVersion.ToString() + ".0\"", token));
-            macroDefines.Add("__DATE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"', token));
-            macroDefines.Add("__DATETIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"', token));
+                _macroDefines.Add("__CLR4__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+            _macroDefines.Add("__CLRVERSION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"" + _options.ClrVersion.ToString() + ".0\"", token));
+            _macroDefines.Add("__DATE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"', token));
+            _macroDefines.Add("__DATETIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"', token));
             bool debug = false;
 #if VSPARSER
-            if (options.PreprocessorSymbolsUpper.Contains("DEBUG"))
+            if (_options.PreprocessorSymbolsUpper.Contains("DEBUG"))
                 debug = true;
-            if (options.PreprocessorSymbolsUpper.Contains("NDEBUG"))
+            if (_options.PreprocessorSymbolsUpper.Contains("NDEBUG"))
                 debug = false;
 #else
-            if (options.PreprocessorSymbolNames.Contains((name) => name.ToUpper() == "DEBUG"))
+            if (_options.PreprocessorSymbolNames.Contains((name) => name.ToUpper() == "DEBUG"))
                 debug = true;
-            if (options.PreprocessorSymbolNames.Contains((name) => name.ToUpper() == "NDEBUG"))
+            if (_options.PreprocessorSymbolNames.Contains((name) => name.ToUpper() == "NDEBUG"))
                 debug = false;
 #endif
             if (debug)
             {
-                macroDefines.Add("__DEBUG__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                _macroDefines.Add("__DEBUG__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
             }
-            macroDefines.Add("__DIALECT__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + options.Dialect.ToString() + '"', token));
+            _macroDefines.Add("__DIALECT__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.Dialect.ToString() + '"', token));
             switch (_options.Dialect)
             {
                 case XSharpDialect.Core:
-                    macroDefines.Add("__DIALECT_CORE__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                    _macroDefines.Add("__DIALECT_CORE__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
                     break;
                 case XSharpDialect.VO:
-                    macroDefines.Add("__DIALECT_VO__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-                    macroDefines.Add("__VO__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                    _macroDefines.Add("__DIALECT_VO__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                    _macroDefines.Add("__VO__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
                     break;
                 case XSharpDialect.Vulcan:
-                    macroDefines.Add("__DIALECT_VULCAN__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-                    macroDefines.Add("__VULCAN__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                    _macroDefines.Add("__DIALECT_VULCAN__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                    _macroDefines.Add("__VULCAN__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
                     break;
                 case XSharpDialect.Harbour:
-                    macroDefines.Add("__DIALECT_HARBOUR__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                    _macroDefines.Add("__DIALECT_HARBOUR__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
                     // Harbour always includes hbver.h . The macro is defined in that file.
                     //macroDefines.Add("__HARBOUR__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
                     break;
                 case XSharpDialect.XPP:
-                    macroDefines.Add("__DIALECT_XBASEPP__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-                    macroDefines.Add("__XPP__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.FileVersion + '"', token));
+                    _macroDefines.Add("__DIALECT_XBASEPP__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                    _macroDefines.Add("__XPP__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.FileVersion + '"', token));
                     break;
                 case XSharpDialect.FoxPro:
-                    macroDefines.Add("__DIALECT_FOXPRO__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                    _macroDefines.Add("__DIALECT_FOXPRO__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
                     break;
                 default:
                     break;
             }
-            macroDefines.Add("__ENTITY__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__ENTITY__\"", token));  // Handled later in Transformation phase
-            macroDefines.Add("__FILE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"', token));
-            macroDefines.Add("__LINE__", (token) => new XSharpToken(XSharpLexer.INT_CONST, token.Line.ToString(), token));
-            macroDefines.Add("__MODULE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"', token));
-            macroDefines.Add("__FUNCTION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__FUNCTION__\"", token)); // Handled later in Transformation phase
-            macroDefines.Add("__FUNCTIONS__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__FUNCTIONS__\"", token)); // Handled later in Transformation phase
-            macroDefines.Add("__SIG__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__SIG__\"", token)); // Handled later in Transformation phase
-            macroDefines.Add("__SRCLOC__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line " + token.Line.ToString() + '"', token));
-            macroDefines.Add("__SYSDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + options.SystemDir + '"', token));
-            macroDefines.Add("__TIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString("HH:mm:ss") + '"', token));
-            macroDefines.Add("__UTCTIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToUniversalTime().ToString("HH:mm:ss") + '"', token));
-            macroDefines.Add("__VERSION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.FileVersion + '"', token));
-            macroDefines.Add("__WINDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + options.WindowsDir + '"', token));
-            macroDefines.Add("__WINDRIVE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + options.WindowsDir?.Substring(0, 2) + '"', token));
-            macroDefines.Add("__XSHARP__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
-            if (options.XSharpRuntime)
+            _macroDefines.Add("__ENTITY__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__ENTITY__\"", token));  // Handled later in Transformation phase
+            _macroDefines.Add("__FILE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"', token));
+            _macroDefines.Add("__FUNCTION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__FUNCTION__\"", token)); // Handled later in Transformation phase
+            _macroDefines.Add("__FUNCTIONS__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__FUNCTIONS__\"", token)); // Handled later in Transformation phase
+            _macroDefines.Add("__LINE__", (token) => new XSharpToken(XSharpLexer.INT_CONST, token.Line.ToString(), token));
+            _macroDefines.Add("__MODULE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"', token));
+            _macroDefines.Add("__SIG__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__SIG__\"", token)); // Handled later in Transformation phase
+            _macroDefines.Add("__SRCLOC__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line " + token.Line.ToString() + '"', token));
+            _macroDefines.Add("__SYSDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.SystemDir + '"', token));
+            _macroDefines.Add("__TIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString("HH:mm:ss") + '"', token));
+            _macroDefines.Add("__UTCTIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToUniversalTime().ToString("HH:mm:ss") + '"', token));
+            _macroDefines.Add("__VERSION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.FileVersion + '"', token));
+            _macroDefines.Add("__WINDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir + '"', token));
+            _macroDefines.Add("__WINDRIVE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir?.Substring(0, 2) + '"', token));
+            _macroDefines.Add("__XSHARP__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+            if (_options.XSharpRuntime)
             {
-                macroDefines.Add("__XSHARP_RT__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+                _macroDefines.Add("__XSHARP_RT__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
             }
-            bool[] flags = { options.vo1,  options.vo2, options.vo3, options.vo4, options.vo5, options.vo6, options.vo7, options.vo8,
-                                options.vo9, options.vo10, options.vo11, options.vo12, options.vo13, options.vo14, options.vo15, options.vo16 };
+            bool[] flags = { _options.vo1,  _options.vo2, _options.vo3, _options.vo4, _options.vo5, _options.vo6, _options.vo7, _options.vo8,
+                                _options.vo9, _options.vo10, _options.vo11, _options.vo12, _options.vo13, _options.vo14, _options.vo15, _options.vo16 };
             for (int iOpt = 0; iOpt < flags.Length; iOpt++)
             {
                 string flagName = string.Format("__VO{0}__", iOpt + 1);
-                macroDefines.Add(flagName, (token) => new XSharpToken(flags[iOpt] ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
+                _macroDefines.Add(flagName, (token) => new XSharpToken(flags[iOpt] ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             }
-            macroDefines.Add("__XPP1__", (token) => new XSharpToken(options.xpp1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
-            macroDefines.Add("__XPP2__", (token) => new XSharpToken(options.xpp2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
-            macroDefines.Add("__FOX1__", (token) => new XSharpToken(options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
-            macroDefines.Add("__FOX2__", (token) => new XSharpToken(options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
-            if (!options.NoStdDef)
+            _macroDefines.Add("__XPP1__", (token) => new XSharpToken(_options.xpp1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
+            _macroDefines.Add("__XPP2__", (token) => new XSharpToken(_options.xpp2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
+            _macroDefines.Add("__FOX1__", (token) => new XSharpToken(_options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
+            _macroDefines.Add("__FOX2__", (token) => new XSharpToken(_options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
+            if (!_options.NoStdDef)
             {
                 // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//
                 // and automatically include it.
                 // read XsharpDefs.xh
-                StdDefs = options.StdDefs;
+                StdDefs = _options.StdDefs;
                 ProcessIncludeFile(StdDefs, null);
             }
         }
@@ -357,15 +352,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             DebugOutput("Preprocessor statistics");
             DebugOutput("-----------------------");
-            DebugOutput("# of #defines    : {0}", this.symbolDefines.Count);
-            DebugOutput("# of #translates : {0}", this.transRules.Count);
-            DebugOutput("# of #commands   : {0}", this.cmdRules.Count);
-            DebugOutput("# of macros      : {0}", this.macroDefines.Count);
-            DebugOutput("# of defines used: {0}", this.defsApplied);
-            DebugOutput("# of UDCs used   : {0}", this.rulesApplied);
+            DebugOutput("# of #defines    : {0}", _symbolDefines.Count);
+            DebugOutput("# of #translates : {0}", _transRules.Count);
+            DebugOutput("# of #commands   : {0}", _cmdRules.Count);
+            DebugOutput("# of macros      : {0}", _macroDefines.Count);
+            DebugOutput("# of defines used: {0}", _defsApplied);
+            DebugOutput("# of UDCs used   : {0}", _rulesApplied);
         }
 
-        private void _writeToPPO(String text, bool addCRLF)
+        private void _writeToPPO(string text, bool addCRLF)
         {
             // do not call t.Text when not needed.
             if (_preprocessorOutput)
@@ -466,21 +461,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _lexerStream = lexerStream;
             _options = options;
             _fileName = fileName;
-            if (_options.VOPreprocessorBehaviour)
+            if (_options.CaseSensitivePreprocessor)
             {
-                symbolDefines = new Dictionary<string, IList<XSharpToken>>(XSharpString.Comparer);
+                _symbolDefines = new Dictionary<string, IList<XSharpToken>>(/* case sensitive */);
             }
             else
             {
-                symbolDefines = new Dictionary<string, IList<XSharpToken>>(/* case sensitive */);
+                _symbolDefines = new Dictionary<string, IList<XSharpToken>>(StringComparer.OrdinalIgnoreCase);
             }
             _encoding = encoding;
             _checksumAlgorithm = checksumAlgorithm;
             _parseErrors = parseErrors;
-            includeDirs = new List<string>(options.IncludePaths);
+            _includeDirs = new List<string>(options.IncludePaths);
             if (!string.IsNullOrEmpty(fileName) && File.Exists(fileName))
             {
-                includeDirs.Add(Path.GetDirectoryName(fileName));
+                _includeDirs.Add(Path.GetDirectoryName(fileName));
                 var ppoFile = FileNameUtilities.ChangeExtension(fileName, ".ppo");
                 try
                 {
@@ -515,19 +510,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string[] paths = options.DefaultIncludeDir.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var path in paths)
                 {
-                    includeDirs.Add(path);
+                    _includeDirs.Add(path);
                 }
             }
 
             inputs = new InputState(lexerStream);
             // Add defines from the command line.
-            foreach (var symbol in options.PreprocessorSymbols)
+            if (options.PreprocessorSymbols != null)
             {
-                var tokens = new List<XSharpToken>();
-                symbolDefines[symbol] = tokens;
-            }
+	            foreach (var symbol in options.PreprocessorSymbols)
+	            {
+	                var tokens = new List<XSharpToken>();
+	                _symbolDefines[symbol] = tokens;
+	            }
+			}
 
-            initStdDefines(options, fileName);
+            initStdDefines(fileName);
         }
 
         internal void DebugOutput(string format, params object[] objects)
@@ -671,7 +669,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (t.IsEOS() && t.Text != ";")
                     break;
-                if (t.Channel != XSharpLexer.Hidden && t.Channel != XSharpLexer.XMLDOCCHANNEL)
+                if (t.Channel != TokenConstants.HiddenChannel && t.Channel != XSharpLexer.XMLDOCCHANNEL)
                 {
                     var nt = FixToken(t);
                     res.Add(nt);
@@ -736,7 +734,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             while (!inputs.Consume() && inputs.parent != null)
             {
                 if (inputs.isSymbol)
-                    activeSymbols.Remove(inputs.SymbolName);
+                    _activeSymbols.Remove(inputs.SymbolName);
                 inputs = inputs.parent;
             }
         }
@@ -782,7 +780,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             };
             if (s.isSymbol)
             {
-                activeSymbols.Add(s.SymbolName);
+                _activeSymbols.Add(s.SymbolName);
                 s.MappedLineDiff = inputs.MappedLineDiff;
             }
             inputs = s;
@@ -790,7 +788,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         bool IsActive()
         {
-            return defStates.Count == 0 || defStates.Peek();
+            return _defStates.Count == 0 || _defStates.Peek();
         }
 
         int IncludeDepth()
@@ -820,7 +818,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         bool IsDefinedMacro(XSharpToken t)
         {
-            return (t.Type == XSharpLexer.MACRO) ? macroDefines.ContainsKey(t.Text) : false;
+            return (t.Type == XSharpLexer.MACRO) ? _macroDefines.ContainsKey(t.Text) : false;
         }
         static IList<XSharpToken> stripWs(IList<XSharpToken> line)
         {
@@ -863,10 +861,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 line.RemoveAt(0);  // remove #define
                 line.RemoveAt(0);  // remove ID
-                if (symbolDefines.ContainsKey(def.Text))
+                if (_symbolDefines.ContainsKey(def.Text))
                 {
                     // check to see if this is a new definition or a duplicate definition
-                    var oldtokens = symbolDefines[def.Text];
+                    var oldtokens = _symbolDefines[def.Text];
                     var cOld = oldtokens.AsString();
                     var cNew = line.AsString();
                     def.SourceSymbol = null;    // make sure we point to the location in the include file when this happens  (and not to the location where we were included)
@@ -902,7 +900,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         Error(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text, cOld, cNew);
                     }
                 }
-                symbolDefines[def.Text] = line;
+                _symbolDefines[def.Text] = line;
                 if (_options.ShowDefs)
                 {
                     DebugOutput("{0}:{1} add DEFINE {2} => {3}", def.FileName(), def.Line, def.Text, line.AsString());
@@ -927,8 +925,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XSharpToken def = line[1];
             if (def.IsIdentifier() || def.IsKeyword())
             {
-                if (symbolDefines.ContainsKey(def.Text))
-                    symbolDefines.Remove(def.Text);
+                if (_symbolDefines.ContainsKey(def.Text))
+                    _symbolDefines.Remove(def.Text);
             }
             else
             {
@@ -979,17 +977,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (cmd.Type == XSharpLexer.PP_COMMAND)
                 {
                     // COMMAND and XCOMMAND can only match from beginning of line
-                    cmdRules.Add(rule);
+                    _cmdRules.Add(rule);
                     _hasCommandrules = true;
                 }
                 else
                 {
                     // TRANSLATE and XTRANSLATE can also match from beginning of line
-                    transRules.Add(rule);
+                    _transRules.Add(rule);
                     _hasTransrules = true;
                     if (cmd.Type == XSharpLexer.PP_DEFINE)
                     {
-                        if (_options.VOPreprocessorBehaviour)
+                        if (_options.CaseSensitivePreprocessor)
                         {
                             rule._flags |= PPRuleFlags.CaseInsensitive;
                         }
@@ -1039,7 +1037,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             string file = PathUtilities.GetFileName(includeFileName, true).ToLower();
             bool obsolete = false;
-            string assemblyName ;
+            string assemblyName = "";
             bool sdkdefs = _options.RuntimeAssemblies.HasFlag(RuntimeAssemblies.SdkDefines);
             switch (file)
             {
@@ -1085,7 +1083,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 default:
                     obsolete = false;
-                    assemblyName = "";
                    break;
             }
             if (obsolete)
@@ -1106,7 +1103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return true;
             }
             List<string> dirs = new List<string>() { PathUtilities.GetDirectoryName(_fileName) };
-            foreach (var p in includeDirs)
+            foreach (var p in _includeDirs)
             {
                 dirs.Add(p);
             }
@@ -1260,8 +1257,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             nfp = includeFile.FileName;
             if (_options.ParseLevel == ParseLevel.Complete || includeFile.MustBeProcessed || _lexer.HasPPIfdefs)
             {
-                var clone = new List<IToken>();
-                clone.AddRange(includeFile.Tokens);
+                var clone = includeFile.Tokens.CloneArray();
                 var tokenSource = new XSharpListTokenSource(_lexer, clone, nfp);
                 var tokenStream = new BufferedTokenStream(tokenSource);
                 tokenStream.Fill();
@@ -1278,24 +1274,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
         
-        private IList<XSharpToken> removeIncludeFileComments(IList<IToken> source)
+        private IList<IToken> removeIncludeFileComments(IList<IToken> source)
         {
-            List<XSharpToken> tokens = new List<XSharpToken>();
+            List<IToken> tokens = new List<IToken>();
             var aftercomment = false;
-            int lastToken = -1;
+            var lastToken = XSharpLexer.LAST;
             foreach (XSharpToken token in source)
             {
                 switch (token.Type)
                 {
                     case XSharpLexer.WS:
-                        lastToken = token.Type;
-                        continue;
                     case XSharpLexer.NL:
                         if (aftercomment || lastToken == XSharpLexer.NL)
                         {
+                            aftercomment = false;
                             lastToken = token.Type;
                             continue;
                         }
+                        aftercomment = false;
                         break;
                     default:
                         if (XSharpLexer.IsComment(token.Type))
@@ -1303,9 +1299,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             aftercomment = true;
                             continue;
                         }
+                        aftercomment = false;
                         break;
                 }
-                aftercomment = false;
                 tokens.Add(token);
                 lastToken = token.Type;
             }
@@ -1318,12 +1314,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Then #ifdef is FALSE
             // otherwise #ifdef is TRUE
             // and when there is more than one token, then #ifdef is also TRUE
-            bool isdefined= symbolDefines.ContainsKey(define);
-            if (isdefined )
+            bool isdefined = _symbolDefines.ContainsKey(define);
+            if (isdefined)
             {
-                if ( _options.VOPreprocessorBehaviour)
+                if (!_options.CaseSensitivePreprocessor)
                 {
-                    var value = symbolDefines[define];
+                    var value = _symbolDefines[define];
                     if (value?.Count == 1)
                     {
                         var deftoken = value[0];
@@ -1340,12 +1336,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                isdefined = macroDefines.ContainsKey(define);
-                if (isdefined )
+                isdefined = _macroDefines.ContainsKey(define);
+                if (isdefined)
                 {
-                    if (_options.VOPreprocessorBehaviour)
+                    if (!_options.CaseSensitivePreprocessor)
                     {
-                        var value = macroDefines[define](token);
+                        var value = _macroDefines[define](token);
                         if (value != null)
                         {
                             if (value.Type == XSharpLexer.FALSE_CONST)
@@ -1372,14 +1368,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // But this will , since there are spaces around the token
             // System. Console .WriteLine("zxc")
             Debug.Assert(line?.Count > 0);
-            if (iPos > 0 && line[iPos-1].Type == XSharpLexer.DOT )
+            if (iPos > 0 && line[iPos - 1].Type == XSharpLexer.DOT)
             {
                 return false;
             }
-            if (iPos < line.Count-1)
+            if (iPos < line.Count - 1)
             {
                 var token = line[iPos + 1];
-                if (token.Type == XSharpLexer.DOT )
+                if (token.Type == XSharpLexer.DOT)
                     return false;
             }
             return true;
@@ -1403,7 +1399,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (IsActive())
             {
                 var token = line[0];
-                regions.Push(token);
+                _regions.Push(token);
                 writeToPPO(original,  true);
             }
             else
@@ -1419,8 +1415,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (IsActive())
             {
                 var token = line[0];
-                if (regions.Count > 0)
-                    regions.Pop();
+                if (_regions.Count > 0)
+                    _regions.Pop();
                 else
                     Error(token, ErrorCode.ERR_PreProcessorError, "#endregion directive without matching #region found");
                 writeToPPO(original, true);
@@ -1523,16 +1519,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (def.IsIdentifier() || def.IsKeyword())
                 {
                     if (isIfDef)
-                        defStates.Push(IsDefined(def.Text,def));
+                        _defStates.Push(IsDefined(def.Text,def));
                     else
-                        defStates.Push(!IsDefined(def.Text, def));
+                        _defStates.Push(!IsDefined(def.Text, def));
                 }
                 else if (def.Type == XSharpLexer.MACRO)
                 {
                     if (isIfDef)
-                        defStates.Push(IsDefinedMacro(def));
+                        _defStates.Push(IsDefinedMacro(def));
                     else
-                        defStates.Push(!IsDefinedMacro(def));
+                        _defStates.Push(!IsDefinedMacro(def));
                 }
                 else
                 {
@@ -1543,7 +1539,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                defStates.Push(false);
+                _defStates.Push(false);
                 writeToPPO( "");
             }
             checkForUnexpectedPPInput(line, 2);
@@ -1554,15 +1550,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var line = stripWs(original);
             Debug.Assert(line?.Count > 0);
             writeToPPO(original, true);
-            if (defStates.Count > 0)
+            if (_defStates.Count > 0)
             {
-                bool a = defStates.Pop();
+                bool a = _defStates.Pop();
                 if (IsActive())
                 {
-                    defStates.Push(!a);
+                    _defStates.Push(!a);
                 }
                 else
-                    defStates.Push(false);
+                    _defStates.Push(false);
             }
             else
             {
@@ -1575,9 +1571,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var line = stripWs(original);
             Debug.Assert(line?.Count > 0);
-            if (defStates.Count > 0)
+            if (_defStates.Count > 0)
             {
-                defStates.Pop();
+                _defStates.Pop();
                 if (IsActive())
                 {
                     writeToPPO(original, true);
@@ -1783,7 +1779,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var token = line[i];
                     IList<XSharpToken> deflist = null;
-                    if (isDefineAllowed(line, i) && token.Text != null && symbolDefines.TryGetValue(token.Text, out deflist))
+                    if (isDefineAllowed(line, i) && token.Text != null && _symbolDefines.TryGetValue(token.Text, out deflist))
                     {
                         if (tempResult == null)
                         {
@@ -1808,7 +1804,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             // add a space so error messages look proper
                             var t2 = new XSharpToken(XSharpLexer.WS, " <RemovedToken> ")
                             {
-                                Channel = XSharpLexer.Hidden,
+                                Channel = TokenConstants.HiddenChannel,
                                 SourceSymbol = token
                             };
                             tempResult.Add(t2);
@@ -1818,7 +1814,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         // Macros that cannot be found are changed to ID
                         Func<XSharpToken, XSharpToken> ft;
-                        if (macroDefines.TryGetValue(token.Text, out ft))
+                        if (_macroDefines.TryGetValue(token.Text, out ft))
                         {
                             var nt = ft(token);
                             if (nt != null)
@@ -1859,7 +1855,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             while (temp.Count > 0)
             {
                 PPMatchRange[] matchInfo = null;
-                var rule = transRules.FindMatchingRule(temp, out matchInfo);
+                var rule = _transRules.FindMatchingRule(temp, out matchInfo);
                 if (rule != null)
                 {
                     temp = doReplace(temp, rule, matchInfo);
@@ -1923,7 +1919,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             while (true)
             {
                 PPMatchRange[] matchInfo = null;
-                var rule = cmdRules.FindMatchingRule(result, out matchInfo);
+                var rule = _cmdRules.FindMatchingRule(result, out matchInfo);
                 if (rule == null)
                 {
                     // nothing to do, so exit. Leave changed the way it is. This does not have to be the first iteration
@@ -1993,13 +1989,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private void doEOFChecks()
         {
-            if (defStates.Count > 0)
+            if (_defStates.Count > 0)
             {
                 Error(Lt(), ErrorCode.ERR_EndifDirectiveExpected);
             }
-            while (regions.Count > 0)
+            while (_regions.Count > 0)
             {
-                var token = regions.Pop();
+                var token = _regions.Pop();
                 Error(token, ErrorCode.ERR_EndRegionDirectiveExpected);
             }
         }
@@ -2010,7 +2006,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             Debug.Assert(line?.Count > 0);
             var res = rule.Replace(line, matchInfo);
-            rulesApplied += 1;
+            _rulesApplied += 1;
             var result = new List<XSharpToken>();
             result.AddRange(res);
             if (_options.Verbose)

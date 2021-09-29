@@ -134,7 +134,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var matchTokens = new List<PPMatchToken>();
             var resultTokens = new List<PPResultToken>();
             // inside a #define the tokens are case sensitive
-            var markers = new Dictionary<string, PPMatchToken>(_options.VOPreprocessorBehaviour ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+            var markers = new Dictionary<string, PPMatchToken>(_options.CaseSensitivePreprocessor ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
             bool hasSeenLParen = false;
             bool hasErrors = false;
             for (int i = 0; i < left.Length && !hasErrors; i++)
@@ -792,7 +792,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // whitespace tokens have been skipped
                     var ppWs = new XSharpToken(token, XSharpLexer.WS, " ");
-                    ppWs.Channel = ppWs.OriginalChannel = XSharpLexer.Hidden;
+                    ppWs.Channel = ppWs.OriginalChannel = TokenConstants.HiddenChannel;
                     result.Add(new PPResultToken(ppWs, PPTokenType.Token));
                 }
                 lastTokenIndex = token.TokenIndex;
@@ -1155,7 +1155,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         bool matchExtendedToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo, IList<XSharpToken> matchedWithToken)
         {
             int iStart = iSource;
-            var lastType = 0;
+            var lastType = XSharpLexer.LAST;
             var level = 0;
             var done = false;
             var consumed = 0;
@@ -1204,7 +1204,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 var type = tokens[iSource].Type;
 
-                                if (type == XSharpLexer.ID || XSharpLexer.IsKeyword(type))
+                                if (type == XSharpLexer.ID || tokens[iSource].IsKeyword())
                                 {
                                     done = lastType != XSharpLexer.DOT;
                                 }
@@ -1492,7 +1492,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         int trimHiddenTokens(IList<XSharpToken> tokens, int start, int end)
         {
-            while (tokens[end].Channel == XSharpLexer.Hidden && start < end)
+            while (tokens[end].Channel == TokenConstants.HiddenChannel && start < end)
             {
                 end--;
             }

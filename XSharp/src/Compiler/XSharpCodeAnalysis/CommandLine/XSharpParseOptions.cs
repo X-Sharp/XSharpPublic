@@ -124,6 +124,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VoInitAxitMethods { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
         public bool VOPreprocessorBehaviour { get; private set; }
+        public bool CaseSensitivePreprocessor { get => !VOPreprocessorBehaviour; set => VOPreprocessorBehaviour = !value; }
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
         public string DefaultNamespace { get; private set; } = "";

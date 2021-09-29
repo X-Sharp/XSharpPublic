@@ -179,15 +179,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return TrimAllWithInplaceCharArray(result);
         }
 
-        internal static IList<IToken> CloneArray(this IList<IToken> tokens)
-        {
-            var clone = new XSharpToken[tokens.Count];
-            for (int i = 0; i < tokens.Count; i++)
-            {
-                clone[i] = new XSharpToken(tokens[i]);
-            }
-            return clone;
-        }
         internal static bool IsName(this XSharpToken token)
         {
             return token != null && (token.Type == XSharpLexer.ID  || token.IsKeyword());

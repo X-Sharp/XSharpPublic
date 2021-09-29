@@ -20,6 +20,7 @@ using System.Collections.Concurrent;
 using Microsoft.CodeAnalysis;
 using System.Reflection;
 using System.Runtime;
+using System.Linq;
 using System.Collections;
 using System.Threading;
 
@@ -42,10 +43,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
                 if (strm != null)
                 {
-                	var rdr = new System.Resources.ResourceReader(strm);
-                	foreach (DictionaryEntry item in rdr)
-                	{
-	                    embeddedHeaders.Add((string)item.Key, (string)item.Value);
+                    var rdr = new System.Resources.ResourceReader(strm);
+                    foreach (DictionaryEntry item in rdr)
+                    {
+                        embeddedHeaders.Add((string)item.Key, (string)item.Value);
                     }
                 }
             }
@@ -104,7 +105,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 return file;
             }
-            internal static PPIncludeFile Add(string fileName, IList<IToken> tokens, SourceText text, bool mustBeProcessed, ref bool newFile)
+            internal static PPIncludeFile Add(string fileName, IList<XSharpToken> tokens, SourceText text, bool mustBeProcessed, ref bool newFile)
             {
                 PPIncludeFile file;
                 cache.TryGetValue(fileName, out file);
@@ -130,12 +131,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             internal DateTime LastWritten { get; private set; }
             internal string FileName { get; private set; }
-            internal ImmutableArray<IToken> Tokens { get; private set; }
+            internal IList<XSharpToken> Tokens { get; private set; }
             internal SourceText Text { get; private set; }
             internal DateTime LastUsed { get; set; }
             internal bool MustBeProcessed { get; set; }
 
-            internal PPIncludeFile(string name, IList<IToken> tokens, SourceText text, bool mustBeProcessed)
+            internal PPIncludeFile(string name, IList<XSharpToken> tokens, SourceText text, bool mustBeProcessed)
             {
                 this.FileName = name;
                 this.Text = text;
@@ -154,7 +155,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             internal PPIncludeFile Clone()
             {
-                return new PPIncludeFile(FileName, (IList<IToken>)Tokens, Text, MustBeProcessed); 
+                // No need to clone the tokens. The constructor does that already.
+                return new PPIncludeFile(FileName, Tokens, Text, MustBeProcessed); 
             }
         }
 
@@ -1241,7 +1243,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     DebugOutput("Lexed include file {0} milliseconds", (endTime - startTime).Milliseconds);
                 }
                 bool newFile = false;
-                includeFile = PPIncludeFile.Add(nfp, ct.GetTokens(), text, lexer.MustBeProcessed, ref newFile);
+                var tokens = removeIncludeFileComments(ct.GetTokens());
+                includeFile = PPIncludeFile.Add(nfp, tokens, text, lexer.MustBeProcessed, ref newFile);
                 if (_options.Verbose)
                 {
                     if (newFile)
@@ -1257,7 +1260,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             nfp = includeFile.FileName;
             if (_options.ParseLevel == ParseLevel.Complete || includeFile.MustBeProcessed || _lexer.HasPPIfdefs)
             {
-                var clone = includeFile.Tokens.CloneArray();
+                var clone = new List<IToken>();
+                clone.AddRange(includeFile.Tokens);
                 var tokenSource = new XSharpListTokenSource(_lexer, clone, nfp);
                 var tokenStream = new BufferedTokenStream(tokenSource);
                 tokenStream.Fill();
@@ -1273,7 +1277,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
 
         }
-
+        
+        private IList<XSharpToken> removeIncludeFileComments(IList<IToken> source)
+        {
+            List<XSharpToken> tokens = new List<XSharpToken>();
+            var aftercomment = false;
+            int lastToken = -1;
+            foreach (XSharpToken token in source)
+            {
+                switch (token.Type)
+                {
+                    case XSharpLexer.WS:
+                        lastToken = token.Type;
+                        continue;
+                    case XSharpLexer.NL:
+                        if (aftercomment || lastToken == XSharpLexer.NL)
+                        {
+                            lastToken = token.Type;
+                            continue;
+                        }
+                        break;
+                    default:
+                        if (XSharpLexer.IsComment(token.Type))
+                        {
+                            aftercomment = true;
+                            continue;
+                        }
+                        break;
+                }
+                aftercomment = false;
+                tokens.Add(token);
+                lastToken = token.Type;
+            }
+            return tokens;
+        }
         private bool IsDefined(string define, XSharpToken token)
         {
             // Handle /VO8 compiler option:

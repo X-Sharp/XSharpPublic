@@ -6,62 +6,27 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace System.Collections.Immutable
 {
-    public class ImmutableArray<T> : List<T>
-    {
-
-
-    }
-
     public static class IListExtensions
     {
-        public static ImmutableArray<T> ToImmutableArray<T>(this IList<T> source)
+        public static IList<T> ToImmutableArray<T>(this IList<T> source)
         {
-            ImmutableArray<T> result = new ImmutableArray<T>();
-            result.AddRange(source);
-            return result;
-
-        }
-        public static ImmutableArray<T> ToImmutableArray<T>(this T[] source)
-        {
-            ImmutableArray<T> result = new ImmutableArray<T>();
-            result.AddRange(source);
-            return result;
-
+            var list = new List<T>();
+            list.AddRange(source);
+            return list.AsReadOnly();
         }
 
-        public static ImmutableArray<string> ToImmutableArray<T>(this string[] source)
-        {
-            ImmutableArray<string> result = new ImmutableArray<string>();
-            result.AddRange(source);
-            return result;
-
-        }
-        public static IDictionary <T,U> ToImmutableDictionary<T,U>(this IDictionary<T,U> source)
-        {
-            var result = new Dictionary<T, U>();
-            foreach (var item in source)
-            {
-                result.Add(item.Key, item.Value);
-            }
-            return result;
-        }
         public static IDictionary<T, U> ToImmutableDictionary<T, U>(this IDictionary<T, U> source, IEqualityComparer<T> comparer)
         {
-            var result = new Dictionary<T, U>(comparer);
-            foreach (var item in source)
-            {
-                result.Add(item.Key, item.Value);
-            }
-            return result;
+            return new ReadOnlyDictionary<T, U>(source);
         }
     }
 }
-
 
 namespace Microsoft.CodeAnalysis.Text
 {

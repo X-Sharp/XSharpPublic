@@ -114,7 +114,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         SELF:Index := hIndex
         SELF:_ReadNames(hIndex)
         IF mustEval
-            ACE.AdsClearProgressCallback()
+            ACE.AdsClearCallbackFunction()
             SELF:_CallbackFn := NULL
         ENDIF
         SELF:_CheckError(result,EG_CREATE)

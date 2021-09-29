@@ -216,6 +216,12 @@ namespace XSharp.MacroCompiler.Preprocessor
         {
             return (token.Type > TokenType.FIRST_OPERATOR && token.Type < TokenType.LAST_OPERATOR);
         }
+        public static bool IsComment(this XSharpToken token)
+        {
+            return (token.Type == TokenType.SL_COMMENT ||
+                token.Type == TokenType.ML_COMMENT ||
+                token.Type == TokenType.DOC_COMMENT);
+        }
 
         public static bool IsKeyword(this XSharpToken token)
         {

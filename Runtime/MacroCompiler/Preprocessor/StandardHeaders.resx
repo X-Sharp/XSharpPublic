@@ -124,11 +124,11 @@
   <data name="foxprocmd" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\..\Common\FoxProCmd.xh;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="foxproset" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\Common\FoxProSet.xh;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="foxprosql" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\..\Common\FoxProSql.xh;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="foxproset" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\Common\FoxProSet.xh;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="memvar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\..\Common\memvar.xh;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

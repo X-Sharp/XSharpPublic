@@ -37,7 +37,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         internal bool hasOptionalResult => _flags.HasFlag(PPRuleFlags.HasOptionalResult);
         internal bool hasOptionalMatch  => _flags.HasFlag(PPRuleFlags.HasOptionalMatch);
         internal int firstOptionalMatchToken = -1;
-        private MacroOptions _options;
+        private readonly MacroOptions _options;
         internal PPUDCType Type { get { return _type; } }
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages, MacroOptions options)
         {
@@ -789,7 +789,7 @@ namespace XSharp.MacroCompiler.Preprocessor
 /*nvk                if (token.Source == lastTokenSource && token.Index > lastTokenIndex + 1)
                 {
                     // whitespace tokens have been skipped
-                    var ppWs = new Token(token, TokenType.WS, " ");
+                    var ppWs = new XSharpToken(token, TokenType.WS, " ");
                     ppWs.Channel = Channel.Hidden;
                     result.Add(new PPResultToken(ppWs, PPTokenType.Token));
                 }*/
@@ -1153,7 +1153,7 @@ namespace XSharp.MacroCompiler.Preprocessor
         bool matchExtendedToken(PPMatchToken mToken, IList<XSharpToken> tokens, ref int iSource, PPMatchRange[] matchInfo, IList<XSharpToken> matchedWithToken)
         {
             int iStart = iSource;
-            var lastType = TokenType.LAST;
+            var lastType = XSharpLexer.LAST;
             var level = 0;
             var done = false;
             var consumed = 0;
@@ -1679,7 +1679,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                             case XSharpLexer.ID:
                                 token.Type = XSharpLexer.ID;
                                 // This makes sure that the token in the editor has the ID color
-// nvk                                token.Original.type = TokenType.ID; 
+// nvk                                token.Original.type = XSharpLexer.ID; 
                                 break;
                         }
                     }
@@ -1698,9 +1698,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                             default:
                                 if (lasttoken.IsKeyword())
                                 {
-                                    lasttoken.Type = TokenType.ID;
+                                    lasttoken.Type = XSharpLexer.ID;
                                     // This makes sure that the token in the editor has the ID color
-// nvk                                    lasttoken.Original.type = TokenType.ID;
+// nvk                                    lasttoken.Original.type = XSharpLexer.ID;
                                 }
                                 break;
                         }

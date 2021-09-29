@@ -56,9 +56,9 @@ namespace XSharp.MacroCompiler.Preprocessor
   
     internal class PPErrorMessage
     {
-        internal Token Token { get; private set; }
+        internal XSharpToken Token { get; private set; }
         internal string Message { get; private set; }
-        internal PPErrorMessage(Token token, string message)
+        internal PPErrorMessage(XSharpToken token, string message)
         {
             Token = token;
             Message = message;

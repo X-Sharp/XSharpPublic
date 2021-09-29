@@ -2480,6 +2480,95 @@ RETURN
 		RETURN
 
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD SetDeleted_SetDeleted_and_OrdScope_Ntx() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL cDBF AS STRING
+
+			TRY
+
+			RddSetDefault("DBFNTX")
+			cDBF := GetTempFileName()
+
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } )
+			aValues := { "a1" , "a2", "a3" , "a4" , "a5" , "a6" ,"g1", "g2" , "g3" , "g4" , "g5" , "o1" , "o2" , "o3" , "o4" , "o5" , "u1", "u2","u3" , "u4" }
+
+			DbUseArea( ,,cDBF , , TRUE )
+
+			FOR LOCAL i := 1 AS INT UPTO ALen ( aValues )
+				DbAppend()
+				FieldPut ( 1 , aValues [ i ] )
+				IF InList ( Upper ( aValues [ i ] ) , "G1" , "G2" , "O5" )
+					DbDelete()
+				ENDIF
+			NEXT
+
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _FIELD->LAST) } )
+
+			DbSetOrder ( 1 )
+
+			OrdScope ( TOPSCOPE, "G" )
+			OrdScope ( BOTTOMSCOPE, "G" )
+//			OrdScope ( TOPSCOPE, "A" )
+//			OrdScope ( BOTTOMSCOPE, "G" )
+
+			Assert.Equal(5, (INT) OrdKeyCount() )
+
+			SetDeleted ( TRUE )  // no problem if set to FALSE
+
+			OrdDescend ( , , TRUE )
+			DbGoTop()
+
+			// SetDeleted(TRUE) causes a endless loop ...
+			LOCAL nCount := 0 AS INT
+			DO WHILE ! Eof()
+//				? AllTrim(FieldGet ( 1 ) ) , RecNo(), Eof(), Bof()
+				DbSkip ( 1 )
+				nCount ++
+				IF nCount > 100
+					THROW Exception{"Skip() loop never ends"}
+				END IF
+			ENDDO
+
+			Assert.Equal(3, (INT) OrdKeyCount() )
+
+
+			SetDeleted ( TRUE )
+			OrdDescend ( , , TRUE )
+			DbGoTop()
+			Assert.Equal(3, (INT) OrdKeyCount() )
+		
+			SetDeleted ( FALSE )
+			OrdDescend ( , , TRUE )
+			DbGoTop()
+			Assert.Equal(5, (INT) OrdKeyCount() )
+		
+			SetDeleted ( TRUE )
+			OrdDescend ( , , FALSE )
+			DbGoTop()
+			Assert.Equal(3, (INT) OrdKeyCount() )
+		
+			SetDeleted ( FALSE )
+			OrdDescend ( , , FALSE )
+			DbGoTop()
+			Assert.Equal(5, (INT) OrdKeyCount() )
+
+
+			DbCloseAll()
+
+			CATCH
+
+				THROW
+
+			FINALLY
+
+			SetDeleted(FALSE)
+
+			END TRY
+		RETURN
+
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
             STATIC nCounter AS LONG

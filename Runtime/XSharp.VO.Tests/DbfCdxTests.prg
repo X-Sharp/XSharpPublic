@@ -3025,7 +3025,29 @@ RETURN
 				END IF
 			ENDDO
 
-			Assert.Equal(3, (INT) OrdKeyCount() )
+			Assert.Equal(5, (INT) OrdKeyCount() )
+
+
+			SetDeleted ( TRUE )
+			OrdDescend ( , , TRUE )
+			DbGoTop()
+			Assert.Equal(5, (INT) OrdKeyCount() )
+		
+			SetDeleted ( FALSE )
+			OrdDescend ( , , TRUE )
+			DbGoTop()
+			Assert.Equal(5, (INT) OrdKeyCount() )
+		
+			SetDeleted ( TRUE )
+			OrdDescend ( , , FALSE )
+			DbGoTop()
+			Assert.Equal(5, (INT) OrdKeyCount() )
+		
+			SetDeleted ( FALSE )
+			OrdDescend ( , , FALSE )
+			DbGoTop()
+			Assert.Equal(5, (INT) OrdKeyCount() )
+
 
 			DbCloseAll()
 

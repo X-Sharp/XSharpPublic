@@ -14,10 +14,10 @@ USING LanguageService.CodeAnalysis.Text
 
 BEGIN NAMESPACE UDCTesterApp
 
-   PUBLIC PARTIAL CLASS UDCTester ;
-        INHERIT System.Windows.Forms.Form ;
-        IMPLEMENTS VSParser.IErrorListener
-        PRIVATE _errors AS List<STRING>
+   EXPORT PARTIAL CLASS UDCTester	;
+		INHERIT System.Windows.Forms.Form	;
+		IMPLEMENTS VSParser.IErrorListener
+        HIDDEN _errors AS List<STRING>
       PUBLIC CONSTRUCTOR()   STRICT//UDCTester
          SELF:InitializeComponent()
          SELF:ReadSettings()

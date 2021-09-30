@@ -91,6 +91,7 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY CompleteFunctionsP               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY CompleteFunctionsA               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY CompleteNumChars                 AS LONG AUTO
+        PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO
 
         PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO
         PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO
@@ -111,6 +112,8 @@ BEGIN NAMESPACE XSharpModel
             DisplayOutputMessage := NoOutput
             DisplayException     := NoException
             ShowMessageBox       := NoMessageBox
+            MaxCompletionEntries := 10000
+            CompleteNumChars     := 3
 
         STATIC METHOD FormatKeyword(sKeyword AS STRING) AS STRING
             RETURN FormatKeyword(sKeyword, XSettings.KeywordCase)

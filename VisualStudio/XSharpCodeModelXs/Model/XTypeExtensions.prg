@@ -11,6 +11,8 @@ USING System.Linq
 BEGIN NAMESPACE XSharpModel
 
    STATIC CLASS XTypeExtensions
+      STATIC METHOD IsGlobalType(SELF type as IXTypeSymbol) AS LOGIC
+          RETURN type:Name == XLiterals.GlobalName
       STATIC METHOD GetDescription(SELF type as IXTypeSymbol) AS STRING
          VAR modVis := type:ModVis
          IF  type:IsStatic

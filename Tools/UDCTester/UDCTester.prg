@@ -125,7 +125,6 @@ BEGIN NAMESPACE UDCTesterApp
         IF token:Type == XSharpLexer.WS .and. oSettings:HideWhitespace
             RETURN
         ENDIF
-        LOCAL bufstream := (AntlrInputStream) token:InputStream AS AntlrInputStream
         sb:Append(token:TokenIndex:ToString()+",")
         sb:Append(token:Channel:ToString()+",")
         sb:Append(token:Position:ToString()+",")

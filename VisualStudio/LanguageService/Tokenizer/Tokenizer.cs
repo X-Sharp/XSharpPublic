@@ -155,8 +155,13 @@ namespace XSharp.LanguageService
                             {
                                 done = true;
                             }
+                            if (token.Type == XSharpLexer.VAR)
+                            {
+                                done = true;
+                            }
                             else if (XSharpLexer.IsKeyword(token.Type) &&
-                                !XSharpLexer.IsPositionalKeyword(token.Type))
+                                !XSharpLexer.IsPositionalKeyword(token.Type)
+                                )
                             {
                                 done = true;
                             }

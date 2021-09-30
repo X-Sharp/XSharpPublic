@@ -983,7 +983,7 @@ BEGIN NAMESPACE XSharpModel
 						oCmd:Parameters:AddWithValue("$kind6", (INT) Kind.LocalProc)
 						oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                             var mem := CreateMemberInfo(rdr)
                             if lUseLike
                                 if mem:MemberName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
@@ -1033,7 +1033,7 @@ BEGIN NAMESPACE XSharpModel
 					    oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
 					    oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
 					    USING VAR rdr := oCmd:ExecuteReader()
-					    DO WHILE rdr:Read()
+					    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                             var mem := CreateMemberInfo(rdr)
                             if lUseLike
                                 if mem:MemberName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
@@ -1082,7 +1082,7 @@ BEGIN NAMESPACE XSharpModel
 					    oCmd:Parameters:AddWithValue("$name", sLike)
 					    oCmd:Parameters:AddWithValue("$kind1", (INT) nKind1)
 					    USING VAR rdr := oCmd:ExecuteReader()
-					    DO WHILE rdr:Read()
+					    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                             // extra filter because they may be seeking for "FO_" and we do not want the _ character to be seen as wildcard
                             var mem := CreateAssemblyMemberInfo(rdr)
                             if mem:MemberName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
@@ -1119,7 +1119,7 @@ BEGIN NAMESPACE XSharpModel
 					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						oCmd:Parameters:AddWithValue("$name", sName)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateTypeInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
@@ -1140,7 +1140,7 @@ BEGIN NAMESPACE XSharpModel
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						oCmd:Parameters:AddWithValue("$name", sLike)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                             var type := CreateTypeInfo(rdr)
                             if type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
 							    result:Add(type)
@@ -1162,7 +1162,7 @@ BEGIN NAMESPACE XSharpModel
 					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						oCmd:Parameters:AddWithValue("$name", sName)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateRefTypeInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
@@ -1182,7 +1182,7 @@ BEGIN NAMESPACE XSharpModel
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						oCmd:Parameters:AddWithValue("$name", sLike)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                             var type := CreateRefTypeInfo(rdr)
                             if type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
 							    result:Add(type)
@@ -1225,7 +1225,7 @@ BEGIN NAMESPACE XSharpModel
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
                         oCmd:Parameters:AddWithValue("$type",(INT) type)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                               result:Add(DbToString(rdr[0]))
 						ENDDO
 					CATCH e AS Exception
@@ -1243,7 +1243,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                             VAR ns := DbToString(rdr[0])
 							IF ! String.IsNullOrEmpty(ns)
 								result:Add(ns)
@@ -1265,7 +1265,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                             VAR ns := DbToString(rdr[0])
 							IF ! String.IsNullOrEmpty(ns)
 								result:Add(ns)
@@ -1291,7 +1291,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							VAR res := XDbResult{}
 							IF rdr[0] != DBNull.Value
 								res:Kind         := Kind.Namespace
@@ -1318,7 +1318,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateTypeInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
@@ -1339,10 +1339,12 @@ BEGIN NAMESPACE XSharpModel
 					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
 					    oCmd:Parameters:AddWithValue("$name", sLike)
 					    USING VAR rdr := oCmd:ExecuteReader()
-					    DO WHILE rdr:Read()
+					    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                             var type := CreateRefTypeInfo(rdr)
                             if type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
 					            result:Add(type)
+                            elseif type:FullName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+                                result:Add(type)
                             endif
 					    ENDDO
 
@@ -1363,7 +1365,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateMemberInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
@@ -1408,7 +1410,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateMemberInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
@@ -1438,7 +1440,7 @@ BEGIN NAMESPACE XSharpModel
 						oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.VODefine)
 						oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateMemberInfo(rdr))
 						ENDDO
 					CATCH e AS Exception

@@ -100,7 +100,7 @@
             // rbPublic
             // 
             this.rbPublic.AutoSize = true;
-            this.rbPublic.Location = new System.Drawing.Point(16, 8);
+            this.rbPublic.Location = new System.Drawing.Point(17, 8);
             this.rbPublic.Name = "rbPublic";
             this.rbPublic.Size = new System.Drawing.Size(54, 17);
             this.rbPublic.TabIndex = 4;
@@ -112,7 +112,7 @@
             // rbExport
             // 
             this.rbExport.AutoSize = true;
-            this.rbExport.Location = new System.Drawing.Point(76, 8);
+            this.rbExport.Location = new System.Drawing.Point(78, 8);
             this.rbExport.Name = "rbExport";
             this.rbExport.Size = new System.Drawing.Size(55, 17);
             this.rbExport.TabIndex = 5;
@@ -123,7 +123,7 @@
             // rbNone
             // 
             this.rbNone.AutoSize = true;
-            this.rbNone.Location = new System.Drawing.Point(137, 8);
+            this.rbNone.Location = new System.Drawing.Point(140, 9);
             this.rbNone.Name = "rbNone";
             this.rbNone.Size = new System.Drawing.Size(51, 17);
             this.rbNone.TabIndex = 6;
@@ -144,7 +144,7 @@
             // rbPrivate
             // 
             this.rbPrivate.AutoSize = true;
-            this.rbPrivate.Location = new System.Drawing.Point(20, 10);
+            this.rbPrivate.Location = new System.Drawing.Point(17, 10);
             this.rbPrivate.Name = "rbPrivate";
             this.rbPrivate.Size = new System.Drawing.Size(58, 17);
             this.rbPrivate.TabIndex = 8;
@@ -156,7 +156,7 @@
             // rbHidden
             // 
             this.rbHidden.AutoSize = true;
-            this.rbHidden.Location = new System.Drawing.Point(80, 10);
+            this.rbHidden.Location = new System.Drawing.Point(78, 10);
             this.rbHidden.Name = "rbHidden";
             this.rbHidden.Size = new System.Drawing.Size(59, 17);
             this.rbHidden.TabIndex = 9;
@@ -204,7 +204,7 @@
             this.groupBox1.Controls.Add(this.rbPublic);
             this.groupBox1.Controls.Add(this.rbExport);
             this.groupBox1.Controls.Add(this.rbNone);
-            this.groupBox1.Location = new System.Drawing.Point(169, 40);
+            this.groupBox1.Location = new System.Drawing.Point(165, 40);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(203, 29);
             this.groupBox1.TabIndex = 10;

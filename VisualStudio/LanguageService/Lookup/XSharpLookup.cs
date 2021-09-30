@@ -74,7 +74,7 @@ namespace XSharp.LanguageService
                 if (result.Count == 0)
                 {
                     // We can have a Property/Field of the current CompletionType
-                    if (currentType != null)
+                    if (currentType != null && !currentType.IsGlobalType())
                     {
                         result.AddRange(SearchPropertyOrField(location, currentType, name, visibility));
                     }

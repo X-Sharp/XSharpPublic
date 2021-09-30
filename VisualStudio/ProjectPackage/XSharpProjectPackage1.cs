@@ -42,6 +42,7 @@ namespace XSharp.Project
         public const int idViewRepo = 0x010B;
         public const int idUDCTester = 0x010C;
         public const int idRebuildIntellisense = 0x010D;
+        public const int idViewInDisassembler = 0x010E;
         public const int idExporterSubMenu = 0x1030;
         public const int idExporterGroup = 0x1040;
         public const int idDebuggerSubMenu = 0x1050;

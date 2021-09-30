@@ -24,7 +24,7 @@ namespace XSharp.LanguageService.OptionsPages
                     }
                     if (c is NumericUpDown number && val is int iValue)
                     {
-                        number.Value = iValue > 0 && iValue < 100 ? iValue : 3;
+                        number.Value = iValue >= number.Minimum && iValue < number.Maximum ? iValue : number.Minimum ;
                     }
                     if (c is TextBox tb)
                     {

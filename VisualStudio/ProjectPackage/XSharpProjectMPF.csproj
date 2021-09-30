@@ -107,6 +107,7 @@
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
+    <Compile Include="Commands\CommandViewInDisassembler.cs" />
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
     <Compile Include="Commands\CommandRebuildIntellisense.cs" />
     <Compile Include="Commands\CommandViewRepo.cs" />

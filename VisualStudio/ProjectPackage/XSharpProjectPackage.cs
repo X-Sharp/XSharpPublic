@@ -258,6 +258,7 @@ namespace XSharp.Project
                 XEditorSettings.MenuParentClass = options.MenuParentClass;
                 XEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
                 XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
+                XEditorSettings.Disassembler = options.Disassembler;
 
             }).FireAndForget();
 

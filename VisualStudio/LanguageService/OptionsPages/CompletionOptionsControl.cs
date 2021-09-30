@@ -20,6 +20,7 @@ namespace XSharp.LanguageService.OptionsPages
             chkFunctionsSource.Tag = nameof(CompletionOptionsPage.CompleteFunctionsP);
             chkFunctionsExternal.Tag = nameof(CompletionOptionsPage.CompleteFunctionsA);
             tbChars.Tag = nameof(CompletionOptionsPage.CompleteNumChars);
+            tbMaxEntries.Tag = nameof(CompletionOptionsPage.MaxCompletionEntries);
             this.rtfDescription.Text = String.Join(Environment.NewLine,
                 new string[] {
                 "Code Completion is triggered by special characters such as '.' and ':'",

@@ -65,6 +65,15 @@ BEGIN NAMESPACE XSharpModel
                   ENDIF
                   result += assembly:Id:ToString()
                NEXT
+               var core := SystemTypeController.mscorlib
+               if ! _AssemblyDict.ContainsKey(core:Id)
+                   _AssemblyDict:Add(core:Id, core)
+                   IF result:Length > 0
+                      result += ","
+                   ENDIF
+                   result += core:Id:ToString()
+                   _AssemblyReferences:Add(core)
+               ENDIF
                _dependentAssemblyList := result
             ENDIF
             RETURN _dependentAssemblyList
@@ -1329,10 +1338,16 @@ BEGIN NAMESPACE XSharpModel
             RETURN _name
          END GET
       END PROPERTY
-
+      PRIVATE _prjNameSpaces AS IList<STRING>
+      PRIVATE _lastNameSpaces := DateTime.MinValue AS DateTime
       PROPERTY ProjectNamespaces AS IList<STRING>
          GET
-            RETURN XDatabase.GetProjectNamespaces(SELF:DependentProjectList)
+            if _prjNameSpaces != NULL .and. DateTime.Now:Subtract(_lastNameSpaces) < TimeSpan{0,0,10}
+                return _prjNameSpaces
+            ENDIF
+            _prjNameSpaces := XDatabase.GetProjectNamespaces(SELF:DependentProjectList)
+            _lastNameSpaces     :=  DateTime.Now
+            return _prjNameSpaces
          END GET
      END PROPERTY
 

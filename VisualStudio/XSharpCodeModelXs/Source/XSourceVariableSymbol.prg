@@ -96,7 +96,14 @@ BEGIN NAMESPACE XSharpModel
             RETURN (IXVariableSymbol) SELF:MemberwiseClone()
 
     END CLASS
+    CLASS XSourceUndeclaredVariableSymbol INHERIT XSourceVariableSymbol
 
+        // Methods
+        CONSTRUCTOR(parent AS XSourceEntity, name AS STRING, span AS TextRange, position AS TextInterval)
+        SUPER(parent, name, span, position,"USUAL")
+        SELF:Kind := Kind.Undeclared
+
+    END CLASS
 
 END NAMESPACE
 

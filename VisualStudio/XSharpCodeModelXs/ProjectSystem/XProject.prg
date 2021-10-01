@@ -58,7 +58,7 @@ BEGIN NAMESPACE XSharpModel
             IF String.IsNullOrEmpty(_dependentAssemblyList)
                _AssemblyDict := Dictionary<INT64, XAssembly>{}
                VAR result := ""
-               FOREACH VAR assembly IN _AssemblyReferences:ToArray()
+               FOREACH VAR assembly IN SELF:AssemblyReferences:ToArray()
                   _AssemblyDict:Add(assembly:Id, assembly)
                   IF result:Length > 0
                      result += ","

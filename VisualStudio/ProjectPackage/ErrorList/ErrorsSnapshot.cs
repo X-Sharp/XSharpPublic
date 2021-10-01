@@ -87,7 +87,7 @@ namespace XSharp.Project
                         if (error.ErrorSource == ErrorSource.Build)
                             content = VSTASKCATEGORY.CAT_BUILDCOMPILE;
                         else
-                            content = VSTASKCATEGORY.CAT_CODESENSE; ;
+                            content = VSTASKCATEGORY.CAT_CODESENSE; 
                         return true;
                     case StandardTableKeyNames.BuildTool:
                         content = error.BuildTool;

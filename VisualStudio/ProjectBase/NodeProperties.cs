@@ -1116,7 +1116,7 @@ namespace Microsoft.VisualStudio.Project
                 string relativePath = project.GetRelativePath(this.Node.Url);
                 if (relativePath.EndsWith("\\"))
                     relativePath = relativePath.Substring(0, relativePath.Length - 1);
-                var result = parentName + "." + relativePath.Replace('\\', '.'); ;
+                var result = parentName + "." + relativePath.Replace('\\', '.'); 
                 if (!project.WizardIsRunning)
                 {
                     result = "global::" + result;

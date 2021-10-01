@@ -110,7 +110,7 @@ namespace XSharp.LanguageService
                             {
                                 if (completionWasSelected && (XSettings.EditorCommitChars.Contains(ch)))
                                 {
-                                    handled = CompleteCompletionSession(true, ch); ;
+                                    handled = CompleteCompletionSession(true, ch); 
                                 }
                                 else
                                 {
@@ -287,16 +287,38 @@ namespace XSharp.LanguageService
                 {
                     kind = xscompletion.Kind;
                 }
+                bool ctor = false;
+                // some tokens need to be added to the insertion text.
                 switch (kind)
                 {
                     case Kind.Keyword:
-                        formatKeyword(completion); ;
+                        formatKeyword(completion); 
                         break;
                     case Kind.Class:
                     case Kind.Structure:
                     case Kind.Constructor:
-                        if (ch == '{' || ch == '}')
-                            completion.InsertionText += '{';
+                        ctor = true;
+                        goto default;
+                    default:
+                        switch (ch)
+                        {
+                            case '{' when ctor:
+                            case '}' when ctor:
+                                if (!completion.InsertionText.EndsWith("{"))
+                                    completion.InsertionText += "{";
+                                break;
+                            case '\t': // Tab
+                            case '\r': // CR
+                            case '\n': // CR
+                            case '.': // DOT
+                            case ':': // COLON
+                                break;
+                            default:
+                                var s = ch.ToString();
+                                if (!completion.InsertionText.EndsWith(s))
+                                    completion.InsertionText += s;
+                                break;
+                        }
                         break;
                 }
                 if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))

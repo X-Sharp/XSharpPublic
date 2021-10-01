@@ -148,6 +148,7 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@XCommand    :=  37
       MEMBER @@Translate   :=  38
       MEMBER @@XTranslate  :=  39
+      MEMBER @@Undeclared  :=  40
    END ENUM
 
    [Flags];

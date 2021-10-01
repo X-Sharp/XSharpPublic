@@ -2803,7 +2803,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
 //                   // but the treetransformation will produce an error 9044 for STATIC implied
 //                   | STATIC=STATIC? VAR           ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  END=eos #varLocalDecl
 //                   | STATIC=STATIC LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  END=eos #varLocalDecl
-//                   | LO
+
 
          LOCAL lStatic AS LOGIC
          LOCAL lImplied := FALSE AS LOGIC
@@ -2967,8 +2967,6 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          CASE XSharpLexer.DIMENSION
          CASE XSharpLexer.DECLARE
             ParseFoxProDim()
-         CASE XSharpLexer.FIELD
-            ParseFieldStatement()
          END SWITCH
          RETURN TRUE
 

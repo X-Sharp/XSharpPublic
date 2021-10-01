@@ -11,7 +11,7 @@
 
 INTERNAL STATIC CLASS ArrayHelpers
 
-    STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, element  AS T , nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
+    STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, element  AS T , nStart AS LONG, nCount AS LONG) AS DWORD 
         LOCAL nItem AS LONG
         LOCAL nLen  AS LONG
         ARRAYNOTNULL aTarget
@@ -27,7 +27,7 @@ INTERNAL STATIC CLASS ArrayHelpers
         NEXT
         RETURN 0
 
-    STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, bAction AS @@Func<T, LOGIC> , nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
+    STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, bAction AS @@Func<T, LOGIC> , nStart AS LONG, nCount AS LONG) AS DWORD 
         LOCAL nItem AS LONG
         LOCAL nLen  AS LONG
         ARRAYNOTNULL aTarget
@@ -285,7 +285,7 @@ FUNCTION ArrayCreate(dwElements AS DWORD) AS ARRAY
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycreate/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ArrayCreate<T>(dwElements AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION ArrayCreate<T>(dwElements AS DWORD) AS __ArrayBase<T> 
     RETURN __ArrayBase<T>{dwElements,TRUE}
 
 
@@ -312,7 +312,7 @@ FUNCTION AAdd(aTarget AS ARRAY,uNewElement AS USUAL) AS USUAL
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION AAdd<T>(aTarget AS __ArrayBase<T>,uNewElement AS T) AS T WHERE T IS NEW()
+FUNCTION AAdd<T>(aTarget AS __ArrayBase<T>,uNewElement AS T) AS T 
     ARRAYNOTNULL aTarget
     aTarget:Add(uNewElement)
     RETURN uNewElement
@@ -326,7 +326,7 @@ FUNCTION AClone(aSource AS ARRAY) AS ARRAY
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aclone/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION AClone<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION AClone<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T> 
     IF aSource == NULL
         RETURN aSource
     END IF
@@ -342,7 +342,7 @@ FUNCTION ACloneShallow(aSource AS ARRAY) AS ARRAY
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acloneshallow/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ACloneShallow<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION ACloneShallow<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T> 
     IF aSource == NULL
         RETURN aSource
     END IF
@@ -360,7 +360,7 @@ FUNCTION ADel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ADel<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION ADel<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T> 
     ARRAYNOTNULL aTarget
     aTarget:Delete((INT) dwPosition)
     RETURN aTarget
@@ -373,7 +373,7 @@ FUNCTION ATrueDel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ATrueDel<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION ATrueDel<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T> 
     ARRAYNOTNULL aTarget
     aTarget:RemoveAt((INT) dwPosition)
     RETURN aTarget
@@ -416,14 +416,14 @@ FUNCTION AIns(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ains/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION AIns<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION AIns<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T>
     ARRAYNOTNULL aTarget
     aTarget:Insert((INT) dwPosition)
     RETURN aTarget
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alen/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ALen<T>(aTarget AS __ArrayBase<T>) AS DWORD WHERE T IS NEW()
+FUNCTION ALen<T>(aTarget AS __ArrayBase<T>) AS DWORD 
     IF aTarget != NULL
         RETURN aTarget:Length
     ELSE
@@ -441,7 +441,7 @@ FUNCTION ALen(aTarget AS ARRAY) AS DWORD
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraydeprotect/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ArrayDeProtect<T>(aTarget AS __ArrayBase<T>) AS LOGIC WHERE T IS NEW()
+FUNCTION ArrayDeProtect<T>(aTarget AS __ArrayBase<T>) AS LOGIC 
     ARRAYNOTNULL aTarget
     RETURN aTarget:Lock(FALSE)
 
@@ -457,7 +457,7 @@ FUNCTION ArrayGet(aTarget AS ARRAY,dwElement AS DWORD) AS USUAL
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayget/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ArrayGet<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD) AS T WHERE T IS NEW()
+FUNCTION ArrayGet<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD) AS T 
     ARRAYNOTNULL aTarget
     RETURN aTarget:__GetElement( (INT) dwElement-1)
 
@@ -468,13 +468,13 @@ FUNCTION ArrayProtect(aTarget AS ARRAY) AS LOGIC
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayprotect/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ArrayProtect<T>(aTarget AS __ArrayBase<T>) AS LOGIC WHERE T IS NEW()
+FUNCTION ArrayProtect<T>(aTarget AS __ArrayBase<T>) AS LOGIC 
     ARRAYNOTNULL aTarget
     RETURN aTarget:Lock(TRUE)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayput/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ArrayPut<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uValue AS T) AS T WHERE T IS NEW()
+FUNCTION ArrayPut<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uValue AS T) AS T 
     ARRAYNOTNULL aTarget
     aTarget:__SetElement(uValue, (INT)dwElement -1)
     RETURN uValue
@@ -498,7 +498,7 @@ FUNCTION ArrayStore(aSource AS ARRAY,Buff AS USUAL PTR,dwLen AS DWORD) AS DWORD
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraystore/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ArrayStore<T>(aSource AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) AS DWORD WHERE T IS NEW()
+FUNCTION ArrayStore<T>(aSource AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) AS DWORD 
     ARRAYNOTNULL aSource
     LOCAL i, nLen AS DWORD
     nLen := aSource:Length
@@ -516,7 +516,7 @@ FUNCTION ArraySwap(aTarget AS ARRAY,dwElement AS DWORD,uNewValue AS USUAL) AS US
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayswap/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ArraySwap<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uNewValue AS T) AS T  WHERE T IS NEW()
+FUNCTION ArraySwap<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uNewValue AS T) AS T  
     ARRAYNOTNULL aTarget
     RETURN aTarget:Swap((INT) dwElement, uNewValue)
 
@@ -567,21 +567,21 @@ FUNCTION AScanBinExact(aTarget AS ARRAY,uSearch AS USUAL) AS DWORD
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T) AS DWORD WHERE T IS NEW()
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T) AS DWORD 
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch,1, (INT) aTarget:Length)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
     /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
-FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD WHERE T IS NEW()
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD 
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScan( aTarget, act,1, (INT) aTarget:Length)
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DWORD WHERE T IS NEW()
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DWORD 
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, (INT) aTarget:Length- nStart +1)
 
@@ -589,7 +589,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DW
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
     /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
-FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG) AS DWORD WHERE T IS NEW()
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG) AS DWORD 
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScan( aTarget, act, nStart, (INT) aTarget:Length - nStart +1)
 
@@ -597,13 +597,13 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS L
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG, nCount AS LONG) AS DWORD 
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG, nCount  AS LONG) AS DWORD WHERE T IS NEW()
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG, nCount  AS LONG) AS DWORD 
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScan( aTarget, act, nStart, nCount)
 
@@ -615,7 +615,7 @@ FUNCTION ASize(aTarget AS ARRAY,dwLength AS DWORD) AS ARRAY
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asize/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ASize<T>(aTarget AS __ArrayBase<T>,dwLength AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION ASize<T>(aTarget AS __ArrayBase<T>,dwLength AS DWORD) AS __ArrayBase<T> 
     ARRAYNOTNULL aTarget
     aTarget:Resize((INT) dwLength)
     RETURN aTarget
@@ -628,7 +628,7 @@ FUNCTION ATail(aTarget AS ARRAY) AS USUAL
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atail/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ATail<T>(aTarget AS __ArrayBase<T>) AS T WHERE T IS NEW()
+FUNCTION ATail<T>(aTarget AS __ArrayBase<T>) AS T 
     ARRAYNOTNULL aTarget
     RETURN aTarget:Tail()
 
@@ -767,13 +767,13 @@ FUNCTION @@Array(wElementList PARAMS USUAL[]) AS ARRAY
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" />
 /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ArrayNew<T>(wElementList AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION ArrayNew<T>(wElementList AS DWORD) AS __ArrayBase<T> 
     RETURN __ArrayBase<T>{wElementList}
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ArrayNew<T>(wElementList AS INT) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION ArrayNew<T>(wElementList AS INT) AS __ArrayBase<T> 
     RETURN __ArrayBase<T>{(DWORD) wElementList}
 
 
@@ -870,7 +870,7 @@ INTERNAL STRUCTURE ArraySortComparer  IMPLEMENTS System.Collections.Generic.ICom
 
         END STRUCTURE
 
-INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generic.IComparer<T> WHERE T IS NEW()
+INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generic.IComparer<T> 
 
     PRIVATE _cb AS @@Func<T,T,LOGIC>
 
@@ -891,7 +891,7 @@ INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generi
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,nStart AS INT,nCount AS INT,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,nStart AS INT,nCount AS INT,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> 
     ARRAYNULL aTarget
     aTarget:Sort( nStart, nCount, ArraySortComparer<T, LOGIC> { cbOrder } )
     RETURN aTarget
@@ -899,27 +899,27 @@ FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,nStart AS INT,nCount AS INT,cbOrder
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> 
     ARRAYNULL aTarget
     aTarget:Sort( ArraySortComparer<T, LOGIC> { cbOrder } )
     RETURN aTarget
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
-FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>) AS __ArrayBase<T> 
     ARRAYNULL aArray
     RETURN AEval(aArray, cbBlock, 1, ALen(aArray) )
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
-FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD) AS __ArrayBase<T> 
     ARRAYNULL aArray
     RETURN AEval(aArray, cbBlock, nStart, ALen(aArray) - nStart +1)
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD,nCount  AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD,nCount  AS DWORD) AS __ArrayBase<T> 
     ARRAYNULL aArray
     LOCAL nEnd AS DWORD
     nEnd := nStart + nCount -1
@@ -975,21 +975,21 @@ FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock, nStart  AS USUAL ,nCount
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>) AS __ArrayBase<T> 
     ARRAYNULL aArray
     RETURN AEvalA(aArray, cbBlock, 1, ALen(aArray))
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DWORD) AS __ArrayBase<T> 
     ARRAYNULL aArray
     RETURN AEvalA(aArray, cbBlock, nStart, ALen(aArray) - nStart +1)
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
-FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DWORD, nCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DWORD, nCount AS DWORD) AS __ArrayBase<T> 
     ARRAYNULL aArray
     LOCAL nEnd  AS DWORD
     nEnd := nStart + nCount -1

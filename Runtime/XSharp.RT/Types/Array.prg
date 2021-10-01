@@ -288,7 +288,7 @@ BEGIN NAMESPACE XSharp
                    SELF:__CheckArrayElement(currentArray, index, nameof(indices),length)
                    RETURN currentArray:_internalList[ index ]
                 ELSEIF u:IsIndexed
-	                // Call the array operator on the usual class to support substring and bittest operations.
+                    // Call the array operator on the usual class to support substring and bittest operations.
                     RETURN u[index +1]
                 ENDIF
 
@@ -314,7 +314,7 @@ BEGIN NAMESPACE XSharp
             next
             return result:ToArray()
 
-        PROTECTED VIRTUAL METHOD DebuggerString() AS STRING
+        PROTECTED OVERRIDE METHOD DebuggerString() AS STRING
             LOCAL sb AS StringBuilder
             LOCAL cnt, tot AS LONG
             sb := StringBuilder{}
@@ -357,12 +357,12 @@ BEGIN NAMESPACE XSharp
         PUBLIC VIRTUAL METHOD __SetElement(u AS USUAL, index AS INT, index2 AS INT) AS USUAL
             IF SELF:CheckLock()
                 SELF:__CheckArrayElement(SELF, index, nameof(index),1)
-		        VAR uElement := SELF:_internalList[ index ]
+                VAR uElement := SELF:_internalList[ index ]
                 IF !uElement:IsArray
                     THROW __NotAnArray(nameof(index2), 3, <OBJECT>{u, index+1, index2+1})
                 ENDIF
                 LOCAL a := NULL as array
-    		    a := (ARRAY) uElement
+                a := (ARRAY) uElement
                 SELF:__CheckArrayElement(a, index2, nameof(index2),2)
                 a:_internalList [index2] := u
             ENDIF

@@ -78,6 +78,7 @@
       <li styleclass="Body Text">Fixed a problem with late bound calls and OUT parameters (#771)</li>
       <li styleclass="Body Text">Added a new __WinDate type that is used to store DATE values inside a VOSTRUCT or UNION. (#773)</li>
       <li styleclass="Body Text">Fixed several problems with FoxPro arrays</li>
+      <li styleclass="Body Text">Removed TypeConstraints on T for functions that manipulate __ArrayBase&lt;T&gt;</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">RDDs</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

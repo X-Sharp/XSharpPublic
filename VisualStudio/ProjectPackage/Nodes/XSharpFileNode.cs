@@ -206,7 +206,7 @@ namespace XSharp.Project
                                     SubType = typeNameToSubtype(btName);
                                     if (!String.IsNullOrEmpty(SubType))
                                         break;
-                                    type = mgr.ResolveExternalType(btName, usings); ;
+                                    type = mgr.ResolveExternalType(btName, usings); 
                                 }
                             }
                             else

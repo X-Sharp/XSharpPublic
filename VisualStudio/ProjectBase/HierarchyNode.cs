@@ -2356,7 +2356,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected internal virtual bool AllowPasteCommand()
         {
-            return false; ;
+            return false; 
         }
 
         /// <summary>

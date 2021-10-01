@@ -154,7 +154,7 @@ namespace XSharp.CodeDom
             ws = useTabs ? "\t" : " ";
             keywordBEGIN = formatKeyword("BEGIN ");
             keywordEND = formatKeyword("END ");
-            keywordDELEGATE = formatKeyword("DELEGATE "); ;
+            keywordDELEGATE = formatKeyword("DELEGATE "); 
             keywordCLASS = formatKeyword("CLASS ");
             keywordINHERIT = formatKeyword("INHERIT ");
             keywordIMPLEMENTS = formatKeyword("IMPLEMENTS ");

@@ -90,13 +90,13 @@ namespace Microsoft.VisualStudio.Project.Automation
         public virtual void Exec(prjExecCommand command, int bSuppressUI, object varIn, out object pVarOut)
         {
             Debug.Fail("VSProject.Exec not implemented");
-            throw new NotImplementedException(); ;
+            throw new NotImplementedException(); 
         }
 
         public virtual void GenerateKeyPairFiles(string strPublicPrivateFile, string strPublicOnlyFile)
         {
             Debug.Fail("VSProject.GenerateKeyPairFiles not implemented");
-            throw new NotImplementedException(); ;
+            throw new NotImplementedException(); 
         }
 
         public virtual string GetUniqueFilename(object pDispatch, string bstrRoot, string bstrDesiredExt)

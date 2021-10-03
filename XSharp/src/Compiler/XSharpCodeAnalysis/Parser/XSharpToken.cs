@@ -58,6 +58,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool HasXmlComments => HasTrivia && Trivia.Any(t => t.Channel == XSharpLexer.XMLDOCCHANNEL);
         public IList<XSharpToken> Trivia { get; set; } = null;
         public bool HasTrivia => Trivia?.Count > 0;
+        public string TextWithTrivia
+        {
+            get
+            {
+                return TriviaAsText + Text;
+            }
+        }
         public string TriviaAsText
         {
             get

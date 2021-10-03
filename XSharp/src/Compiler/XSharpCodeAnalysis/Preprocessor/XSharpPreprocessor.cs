@@ -407,7 +407,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 bool first = !prefix;
                 foreach (var t in tokens)
                 {
-                    // Copy the trivia from the original first symbol on the line so the UDC has the proper indentlevel
+                    // Copy the trivia from the original first symbol on the line so the UDC has the proper indent level
                     if (first && t.SourceSymbol != null && t.SourceSymbol.HasTrivia && t.SourceSymbol.Type == XSharpLexer.UDC_KEYWORD)
                     {
                         bld.Append(t.SourceSymbol.TriviaAsText);
@@ -432,11 +432,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             _ppoStream = null;
         }
-		internal void Error(XSharpToken token, ErrorCode error, params object[] args)
-		{
-			addParseError(new ParseErrorData(token, error, args));
-		}
-		
+        internal void Error(XSharpToken token, ErrorCode error, params object[] args)
+        {
+            addParseError(new ParseErrorData(token, error, args));
+        }
+        
         private void addParseError(ParseErrorData error)
         {
 #if !VSPARSER
@@ -518,12 +518,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Add defines from the command line.
             if (options.PreprocessorSymbols != null)
             {
-	            foreach (var symbol in options.PreprocessorSymbols)
-	            {
-	                var tokens = new List<XSharpToken>();
-	                _symbolDefines[symbol] = tokens;
-	            }
-			}
+                foreach (var symbol in options.PreprocessorSymbols)
+                {
+                    var tokens = new List<XSharpToken>();
+                    _symbolDefines[symbol] = tokens;
+                }
+            }
 
             initStdDefines(fileName);
         }
@@ -1488,7 +1488,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     text = "";
                     for (int i = 1; i < line.Count; i++)
                     {
-                        text += line[i].Text;
+                        text += line[i].TextWithTrivia;
                     }
                 }
                 if (ln.SourceSymbol != null)
@@ -1501,7 +1501,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                writeToPPO( "");
+                writeToPPO("");
             }
         }
 
@@ -1519,7 +1519,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (def.IsIdentifier() || def.IsKeyword())
                 {
                     if (isIfDef)
-                        _defStates.Push(IsDefined(def.Text,def));
+                        _defStates.Push(IsDefined(def.Text, def));
                     else
                         _defStates.Push(!IsDefined(def.Text, def));
                 }
@@ -1540,7 +1540,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 _defStates.Push(false);
-                writeToPPO( "");
+                writeToPPO("");
             }
             checkForUnexpectedPPInput(line, 2);
         }
@@ -1639,14 +1639,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (ln.Type == XSharpLexer.INT_CONST)
                 {
 #if !VSPARSER
-                    inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options,null, null).Value - (ln.Line + 1);
+                    inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options, null, null).Value - (ln.Line + 1);
 #else
                     if (Int32.TryParse(ln.Text, out var temp))
                     { 
                         inputs.MappedLineDiff = temp- (ln.Line + 1);
                     }
 #endif
-
                     if (line.Count > 2)
                     {
                         ln = line[2];
@@ -1729,11 +1728,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
+#if VSPARSER
+                // Set the channel so the text will appear "greyed out" in the editor
                 for (int i = 0; i < line.Count; i++)
                 {
                     var t = line[i];
                     t.Original.Channel = XSharpLexer.DEFOUTCHANNEL;
                 }
+#endif
                 line.Clear();
             }
             if (write2PPO)
@@ -1951,11 +1953,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         if (cmds[i].Count > 0)
                         {
-						    var res = ProcessLine(cmds[i]);
-							if (res == null)
-	                            cmds[i].Clear();
-							else
-								cmds[i] = res;
+                            var res = ProcessLine(cmds[i]);
+                            if (res == null)
+                                cmds[i].Clear();
+                            else
+                                cmds[i] = res;
 
                             foreach (var token in cmds[i])
                             {
@@ -2000,7 +2002,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        #endregion
+#endregion
 
         private List<XSharpToken> doReplace(IList<XSharpToken> line, PPRule rule, PPMatchRange[] matchInfo)
         {

@@ -323,6 +323,8 @@ CLASS PropertyPanel INHERIT PictureBox
 					SELF:SetProperty(oAccelDlg:oAccelerator)
 					SELF:Invalidate()
 				ENDIF
+            CASE "__menuToolBarButtons"
+                SELF:ShowButtonBmpPicker()
 			END SWITCH
 
 		ELSEIF SELF:oProperty:Type == PropertyType.Callback
@@ -404,7 +406,14 @@ CLASS PropertyPanel INHERIT PictureBox
 				oGraphics:FillRectangle(SELF:oBrushBlue , SELF:nSplit + 1 , SELF:nCurY * SELF:nItemHeight + 1 , SELF:Width - SELF:nSplit , SELF:nItemHeight - 1)
 				oBrush := SELF:oBrushWhite
 			ENDIF
+			IF oProp:oThumb != NULL
+				x := x + 20
+			ENDIF
 			oGraphics:DrawString(cText,oFont,oBrush, x, y)
+			IF oProp:oThumb != NULL
+				x := x - 20
+				oGraphics:DrawImage(oProp:oThumb , x + REAL4(1) , y - REAL4(2))
+			ENDIF
 
 			oGraphics:DrawLine(oBlackPen , 0 , (n + 1) * SELF:nItemHeight , SELF:Width , (n + 1) * SELF:nItemHeight)
 		NEXT
@@ -510,9 +519,8 @@ CLASS PropertyPanel INHERIT PictureBox
 			RETURN
 		END IF
 
-		SWITCH SELF:oProperty:Type
-		CASE PropertyType.Numeric
-        CASE PropertyType.Text
+		DO CASE
+		CASE SELF:oProperty:Type == PropertyType.Numeric .or. SELF:oProperty:Type == PropertyType.Text
 			SELF:oEdit:Text := SELF:oProperty:TextValue
 			SELF:oEdit:oProperty := SELF:oProperty
 /*			SELF:oEdit:lOnlyNumbers := SELF:oProperty:Type == PropertyType.Number
@@ -520,9 +528,13 @@ CLASS PropertyPanel INHERIT PictureBox
 			SELF:oEdit:Location := Point{SELF:nSplit + 1 , SELF:nCurY * SELF:nItemHeight + 1}
 			SELF:oEdit:Width := SELF:Width - SELF:nSplit
 			SELF:oEdit:Show(SELF:lMultiple , SELF:oProperty:Name != "validation") // HACK
+
+        CASE SELF:oProperty:cSpecialClass == "__menuToolBarButtons"
+            SELF:ShowButtonBmpPicker()
+
+
 //		CASE SELF:oProperty:Type == PropertyType.Boolean .or. ;
-		CASE PropertyType.Enumerated
-	    CASE PropertyType.Type
+		CASE SELF:oProperty:Type == PropertyType.Enumerated .or. SELF:oProperty:Type == PropertyType.Type
 //			SELF:oCombo:DropDownStyle := ComboBoxStyle.DropDownList
 			SELF:oCombo:Location := Point{SELF:nSplit + 1 , SELF:nCurY * SELF:nItemHeight + 1}
 			SELF:oCombo:Width := SELF:Width - SELF:nSplit
@@ -570,7 +582,7 @@ CLASS PropertyPanel INHERIT PictureBox
 			SELF:oCombo:oProperty := SELF:oProperty
 			SELF:oCombo:Show(SELF:lMultiple)
 			SELF:oCombo:DroppedDown := TRUE
-		END SWITCH
+		END CASE
 	RETURN
 
 	METHOD ShowButton() AS VOID
@@ -582,7 +594,7 @@ CLASS PropertyPanel INHERIT PictureBox
 		ENDIF
 		oProp := (DesignProperty)SELF:aProperties[SELF:nCurY]
 
-		IF oProp:Type == PropertyType.Callback .or. oProp:cSpecialClass != NULL
+        IF oProp:Type == PropertyType.Callback .or. oProp:cSpecialClass != NULL
 			SELF:oButton:Size := Size{SELF:nItemHeight + 1 , SELF:nItemHeight + 1}
 			SELF:oButton:Location := Point{SELF:Width - SELF:oButton:Width + 1 , SELF:nCurY * SELF:nItemHeight}
 			SELF:oButton:Show()
@@ -590,6 +602,25 @@ CLASS PropertyPanel INHERIT PictureBox
 			SELF:oButton:Hide()
 		ENDIF
 	RETURN
+
+	METHOD ShowButtonBmpPicker() AS VOID
+		LOCAL cRibbon := NULL AS STRING
+		TRY
+			cRibbon := ((VOMenuEditor)SELF:oGrid:oActiveDesigner):MainDesignItem:GetProperty("RibbonFilename"):TextValue
+        FINALLY
+		END TRY
+		IF String.IsNullOrWhiteSpace(cRibbon)
+			RibbonClass.SetActiveDefault()
+		ELSE
+			RibbonClass.SetActive(cRibbon)
+		END IF
+
+		LOCAL oButtonPicker AS ButtonBmpPicker
+		oButtonPicker := ButtonBmpPicker{}
+		IF oButtonPicker:ShowDialog() == DialogResult.OK
+            SELF:SetProperty(oButtonPicker:cButton)
+        END IF
+    RETURN
 
 	METHOD SetProperty(oValue AS OBJECT) AS VOID
 		SELF:oGrid:SetProperty(SELF:oProperty:Name , oValue)
@@ -930,3 +961,201 @@ RETURN
 
 END CLASS
 
+
+CLASS RibbonClass
+	PROTECT aBitmaps AS Bitmap[]
+	PROTECT oImageList AS ImageList
+//	PROTECT oTimeStamp AS DateTime
+	STATIC PROTECT oActive AS RibbonClass
+	STATIC PROTECT oDefault AS RibbonClass
+	STATIC PROTECT aRibbons AS SortedList<STRING,RibbonClass>
+
+	STATIC CONSTRUCTOR()
+		aRibbons := SortedList<STRING,RibbonClass>{}
+        LOCAL oBitmap AS Bitmap
+        LOCAL oStream AS System.IO.Stream
+        TRY
+            oStream :=  System.Reflection.Assembly.GetExecutingAssembly():GetManifestResourceStream("XSharp.VOEditors.cavotb.bmp")
+            oBitmap := Bitmap{oStream}
+        CATCH
+            oBitmap := Bitmap{2112,16}
+        END TRY
+//      #warning HARDCODED BITMAP!!!!!!!!!!!!!!!!!!
+//      RibbonClass.CreateDefault(System.Drawing.Bitmap{"c:\cavo\cavotb.bmp"})
+        RibbonClass.CreateDefault(System.Drawing.Bitmap{oBitmap})
+    RETURN
+
+	STATIC METHOD CreateDefault(oCavoTB AS Bitmap) AS VOID
+		oDefault := FromBitmap(oCavoTB)
+		oActive := oDefault
+	END METHOD
+	STATIC METHOD SetActiveDefault() AS VOID
+		oActive := oDefault
+	END METHOD
+
+	STATIC METHOD SetActive(cFileName AS STRING) AS VOID
+		LOCAL oRibbon AS RibbonClass
+		IF aRibbons:ContainsKey(cFileName)
+			oRibbon := aRibbons[cFileName]
+		ELSE
+			oRibbon := FromFile(cFileName)
+		END IF
+		oActive := oRibbon
+	END METHOD
+
+	STATIC PROPERTY Default AS RibbonClass GET oDefault
+
+	STATIC METHOD FromFile(cFileName AS STRING) AS RibbonClass
+		LOCAL oBitmap AS Bitmap
+		TRY
+			oBitmap := Bitmap{cFileName}
+		CATCH
+			RETURN RibbonClass.Default
+		END TRY
+	RETURN FromBitmap(oBitmap)
+	STATIC METHOD FromBitmap(oBitmap AS Bitmap) AS RibbonClass
+		LOCAL oRibbon AS RibbonClass
+		LOCAL oGraphics AS Graphics
+		LOCAL nLength AS INT
+
+		nLength := oBitmap:Width / 16
+
+		oRibbon := RibbonClass{}
+		oRibbon:aBitmaps := Bitmap[]{nLength} // 132
+		oRibbon:oImageList := ImageList{}
+
+		FOR LOCAL n := 1 AS INT UPTO nLength
+			oRibbon:aBitmaps[n] := Bitmap{16,16}
+			oGraphics := Graphics.FromImage(oRibbon:aBitmaps[n])
+			oGraphics:DrawImage(oBitmap , Rectangle{0 , 0 , 16 ,16} , Rectangle{(n-1) * 16 , 0 , 16 ,16 } , GraphicsUnit.Pixel )
+			oGraphics:Dispose()
+			oRibbon:oImageList:Images:Add(oRibbon:aBitmaps[n])
+		NEXT
+
+	RETURN oRibbon
+
+	STATIC PROPERTY Active AS RibbonClass GET oActive
+	METHOD GetBitmap(nBitmap AS INT) AS Bitmap
+		IF nBitmap > SELF:aBitmaps:Length
+			RETURN SELF:aBitmaps[1]
+		END IF
+	RETURN SELF:aBitmaps[nBitmap]
+	PROPERTY ImageList AS ImageList GET SELF:oImageList
+	PROPERTY BitmapsCount AS INT GET SELF:aBitmaps:Length
+
+END CLASS
+
+CLASS ButtonBmpPicker INHERIT System.Windows.Forms.Form
+
+	PROTECT oCancelButton AS System.Windows.Forms.Button
+	PROTECT oOkButton AS System.Windows.Forms.Button
+	PROTECT oAutoButton AS System.Windows.Forms.Button
+	PROTECT oButtonsList AS System.Windows.Forms.ListView
+
+// User code starts here (DO NOT remove this line)  ##USER##
+	EXPORT cButton AS STRING
+	CONSTRUCTOR()
+
+		SUPER()
+
+		LOCAL oItem AS ListViewItem
+		LOCAL oImageList AS ImageList
+		LOCAL n AS INT
+
+		SELF:InitializeForm()
+
+		SELF:oButtonsList:Columns:Add("Bitmap" , 150)
+
+		oImageList := RibbonClass.Active:ImageList
+		SELF:oButtonsList:SmallImageList := oImageList
+		FOR n := 1 UPTO RibbonClass.Active:BitmapsCount
+			oItem := ListViewItem{VOMenuEditor.VOMenuToolBar:Get(n - 1):Name}
+			oItem:ImageIndex := n - 1
+			SELF:oButtonsList:Items:Add(oItem)
+		NEXT
+	RETURN
+
+	METHOD InitializeForm() AS VOID
+
+//	 IDE generated code (please DO NOT modify)
+
+		SELF:Name := "ButtonBmpPicker"
+		SELF:SuspendLayout()
+		SELF:Location := System.Drawing.Point{100,100}
+		SELF:ClientSize := System.Drawing.Size{220,337}
+		SELF:AutoScaleDimensions := System.Drawing.SizeF{ 96 , 96 }
+		SELF:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Dpi
+		SELF:ControlBox := FALSE
+		SELF:FormBorderStyle := System.Windows.Forms.FormBorderStyle.FixedDialog
+		SELF:ShowInTaskbar := FALSE
+		SELF:StartPosition := System.Windows.Forms.FormStartPosition.CenterParent
+		SELF:Text := "Select Toolbar Button:"
+
+		SELF:oCancelButton := System.Windows.Forms.Button{}
+		SELF:oCancelButton:Name := "CancelButton"
+		SELF:oCancelButton:Location := System.Drawing.Point{ 145 , 309 }
+		SELF:oCancelButton:Size := System.Drawing.Size{ 64 , 23 }
+		SELF:oCancelButton:Text := "&Cancel"
+		SELF:oCancelButton:Click += System.EventHandler{ SELF , @CancelButtonClick() }
+		SELF:oCancelButton:TabIndex := 3
+		SELF:Controls:Add(SELF:oCancelButton)
+
+		SELF:oOkButton := System.Windows.Forms.Button{}
+		SELF:oOkButton:Name := "OKButton"
+		SELF:oOkButton:Location := System.Drawing.Point{ 76 , 309 }
+		SELF:oOkButton:Size := System.Drawing.Size{ 64 , 23 }
+		SELF:oOkButton:Text := "&OK"
+		SELF:oOkButton:Click += System.EventHandler{ SELF , @OKButtonClick() }
+		SELF:oOkButton:TabIndex := 2
+		SELF:Controls:Add(SELF:oOkButton)
+
+		SELF:oAutoButton := System.Windows.Forms.Button{}
+		SELF:oAutoButton:Name := "AutoButton"
+		SELF:oAutoButton:Location := System.Drawing.Point{ 8 , 309 }
+		SELF:oAutoButton:Size := System.Drawing.Size{ 64 , 23 }
+		SELF:oAutoButton:Text := "<&Auto>"
+		SELF:oAutoButton:Click += System.EventHandler{ SELF , @AutoButtonClick() }
+		SELF:oAutoButton:TabIndex := 1
+		SELF:Controls:Add(SELF:oAutoButton)
+
+		SELF:oButtonsList := System.Windows.Forms.ListView{}
+		SELF:oButtonsList:Name := "ButtonsList"
+		SELF:oButtonsList:Location := System.Drawing.Point{ 9 , 7 }
+		SELF:oButtonsList:Size := System.Drawing.Size{ 200 , 293 }
+		SELF:oButtonsList:FullRowSelect := TRUE
+		SELF:oButtonsList:HideSelection := FALSE
+		SELF:oButtonsList:MultiSelect := FALSE
+		SELF:oButtonsList:DoubleClick += System.EventHandler{ SELF , @ButtonsListDoubleClick() }
+		SELF:oButtonsList:View := System.Windows.Forms.View.Details
+		SELF:oButtonsList:TabIndex := 0
+		SELF:Controls:Add(SELF:oButtonsList)
+
+		SELF:ResumeLayout()
+
+		SELF:AcceptButton := SELF:oOkButton
+
+		SELF:CancelButton := SELF:oCancelButton
+
+	RETURN
+
+	METHOD ButtonsListDoubleClick(o AS OBJECT , e AS System.EventArgs) AS VOID
+		SELF:OK()
+	RETURN
+	METHOD CancelButtonClick(o AS OBJECT , e AS System.EventArgs) AS VOID
+		SELF:DialogResult := DialogResult.Cancel
+	RETURN
+	METHOD OKButtonClick(o AS OBJECT , e AS System.EventArgs) AS VOID
+		SELF:OK()
+	RETURN
+	METHOD AutoButtonClick(o AS OBJECT , e AS System.EventArgs) AS VOID
+		SELF:cButton := ""
+		SELF:DialogResult := DialogResult.OK
+	RETURN
+	METHOD OK() AS VOID
+		IF SELF:oButtonsList:SelectedItems:Count == 0
+			RETURN
+		ENDIF
+		SELF:cButton := SELF:oButtonsList:SelectedItems[0]:Text
+		SELF:DialogResult := DialogResult.OK
+	RETURN
+END CLASS

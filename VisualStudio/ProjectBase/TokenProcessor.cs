@@ -144,7 +144,7 @@ namespace Microsoft.VisualStudio.Project
                 File.WriteAllText(destination, buffer, encoding);
             }
             else
-                File.Copy(source, destination);
+                Utilities.CopyFileSafe(source, destination);
 
         }
 

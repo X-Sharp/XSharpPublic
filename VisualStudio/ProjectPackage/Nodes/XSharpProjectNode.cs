@@ -719,7 +719,7 @@ namespace XSharp.Project
                 string path = Path.GetDirectoryName(target);
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
-                File.Copy(source, target, true);
+                Utilities.CopyFileSafe(source, target);
                 return;
             }
             // The class name is based on the new file name

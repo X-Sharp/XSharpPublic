@@ -415,10 +415,10 @@ namespace XSharp.LanguageService
         /// <param name="tokenList"></param>
         /// <param name="state"></param>
         /// <param name="foundElement"></param>
-        /// <param name="stopAtOpenToken"></param>
+        /// <param name="forQuickinfo"></param>
         /// <returns></returns>
         public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> tokenList,
-            CompletionState state, out string notProcessed, bool stopAtOpenToken = false )
+            CompletionState state, out string notProcessed, bool forQuickinfo = false )
         {
             //
             notProcessed = "";
@@ -467,21 +467,6 @@ namespace XSharp.LanguageService
             }
             Modifiers visibility = Modifiers.Private;
             int lastopentoken = tokenList.Count - 1;
-            if (stopAtOpenToken)
-            {
-                for (int i = 0; i < tokenList.Count; i++)
-                {
-                    var token = tokenList[i];
-                    switch (token.Type)
-                    {
-                        case XSharpLexer.LPAREN:
-                        case XSharpLexer.LCURLY:
-                        case XSharpLexer.LBRKT:
-                            lastopentoken = i;
-                            break;
-                    }
-                }
-            }
             string namespacePrefix = "";
             int stopAt = 0;
             var hasBracket = false;
@@ -779,16 +764,19 @@ namespace XSharp.LanguageService
                         if (location.Project.ParseOptions.AllowDotForInstanceMembers)
                             state |= CompletionState.InstanceMembers;
                         resetState = false;
+                        startOfExpression = false;
                         break;
 
                     case XSharpLexer.COLON:
                         currentPos = nextPos + 1;
                         state = CompletionState.InstanceMembers;
                         resetState = false;
+                        startOfExpression = false;
                         break;
 
                     case XSharpLexer.COLONCOLON:
                         currentPos = nextPos + 1;
+                        startOfExpression = false;
                         break;
                     default:
                         currentPos += 1;
@@ -822,14 +810,23 @@ namespace XSharp.LanguageService
             if (!string.IsNullOrEmpty(notProcessed))
             {
                 result.Clear();
-                if (currentToken.Type == XSharpLexer.ID)
+                result.AddRange(SearchFunction(location, notProcessed));
+                if (result.Count == 0)
                 {
-                    var sym = new XSourceUndeclaredVariableSymbol(location.Member, notProcessed, location.Member.Range, location.Member.Interval);
-                    result.Add(sym);
+                    result.AddRange(SearchGlobalField(location, notProcessed));
+                }
+                if (result.Count == 0)
+                {
+                    if (currentToken.Type == XSharpLexer.ID)
+                    {
+                        var sym = new XSourceUndeclaredVariableSymbol(location.Member, notProcessed, location.Member.Range, location.Member.Interval);
+                        result.Add(sym);
+                    }
                 }
             }
             else if (result.Count == 0 && XSharpLexer.IsKeyword(currentToken.Type))
             {
+                currentToken.Text = XSettings.FormatKeyword(currentToken.Text);
                 var sym = new XSymbol(currentToken.Text, Kind.Keyword, Modifiers.Public);
                 result.Add(sym);
             }

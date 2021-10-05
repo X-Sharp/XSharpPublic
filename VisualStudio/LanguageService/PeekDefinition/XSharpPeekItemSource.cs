@@ -47,7 +47,7 @@ namespace XSharp.LanguageService
                 var tokens = _textBuffer.GetTokens();
                 var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
                 var result = new List<IXSymbol>();
-                result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed));
+                result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
                 //
                 if (result.Count > 0 && result[0] is XSourceSymbol symbol)
                 {

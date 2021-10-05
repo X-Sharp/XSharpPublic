@@ -92,10 +92,10 @@ namespace XSharp.LanguageService
                         handled = StartCompletionSession(nCmdID, '\0', true);
                         break;
                     case (int)VSConstants.VSStd2KCmdID.RETURN:
-                        handled = CompleteCompletionSession();
+                        handled = CompleteCompletionSession(' ');
                         break;
                     case (int)VSConstants.VSStd2KCmdID.TAB:
-                        handled = CompleteCompletionSession( );
+                        handled = CompleteCompletionSession('\t' );
                         break;
                     case (int)VSConstants.VSStd2KCmdID.CANCEL:
                         handled = CancelCompletionSession();
@@ -110,7 +110,7 @@ namespace XSharp.LanguageService
                             {
                                 if (completionWasSelected && (XSettings.EditorCommitChars.Contains(ch)))
                                 {
-                                    handled = CompleteCompletionSession(true, ch); 
+                                    handled = CompleteCompletionSession( ch); 
                                 }
                                 else
                                 {
@@ -261,7 +261,7 @@ namespace XSharp.LanguageService
             return true;
         }
 
-        bool CompleteCompletionSession(bool force = false, char ch = ' ')
+        bool CompleteCompletionSession(char ch )
         {
             if (_completionSession == null)
             {
@@ -340,7 +340,7 @@ namespace XSharp.LanguageService
                     }
                     commit = true;
                 }
-                else if (force)
+                else
                 {
                     if (completion != null)
                     {

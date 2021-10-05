@@ -102,19 +102,20 @@ namespace XSharp.LanguageService
 
             bool ok = Lex(bufferText, fileName, parseoptions, reporter, out tokenStream);
             var stream = tokenStream as BufferedTokenStream;
-            return GetTokenList(location, stream, out state, includeKeywords);
+            return GetTokenList(location, stream, out state, includeKeywords, false);
         }
 
 
-        internal static IList<XSharpToken> GetTokensUnderCursor(XSharpSearchLocation location, BufferedTokenStream tokens, out CompletionState state)
+        internal static IList<XSharpToken> GetTokensUnderCursor(XSharpSearchLocation location, BufferedTokenStream tokens,
+            out CompletionState state)
         {
 
-            var result = GetTokenList(location, tokens, out state, true);
+            var result = GetTokenList(location, tokens, out state, true, true);
             // Find "current" token
             if (result.Count > 0)
             {
-                var tokenUnderCursor = 0;
-                for (int i = 0; i < result.Count; i++)
+                var tokenUnderCursor = result.Count-1;
+                for (int i = result.Count -1; i >= 0; i--)
                 {
                     var token = result[i];
                     if (token.StartIndex <= location.Position && token.StopIndex >= location.Position)
@@ -123,9 +124,26 @@ namespace XSharp.LanguageService
                         break;
                     }
                 }
-                // now walk back in the list and find if there are '(', '{' or '[' before the first token.
-                // when there are then delete the tokens upto the
+                var selectedToken = result[tokenUnderCursor];
                 bool done = false;
+                if (XSharpLexer.IsKeyword(selectedToken.Type))
+                {
+                    result.Clear();
+                    result.Add(selectedToken);
+                    return result;
+                }
+                // When we are not on a Keyword then we need to walk back in the tokenlist to see
+                // if we can evaluate the expression
+                // This could be:
+                // System.String.Compare()   // static method cal or method call
+                // SomeVar:MethodCall()      // method call
+                // Left(...)                 // function call
+                // SomeId                    // local, global etc
+                // SomeType.Id               // Static property or normal property
+                // SomeVar:Id                // Instance field or property
+                // If the token list contains with a RCURLY, RBRKT or RPAREN
+                // Then strip everything until the matching LCURLY, LBRKT or LPAREN is found
+                
                 int lastToken = XSharpLexer.EOS;
                 for (int i = tokenUnderCursor; i >= 0; i--)
                 {
@@ -174,11 +192,11 @@ namespace XSharp.LanguageService
                     }
                     lastToken = token.Type;
                 }
+                done = false;
                 // now result has the list of tokens starting with the cursor
                 // we only keep:
                 // ID, DOT, COLON, LPAREN, LBRKT, RBRKT
                 // when we detect another token we truncate the list there
-                done = false;
                 if (result.Count > 0)
                 {
                     var lastType = result[0].Type;
@@ -248,7 +266,7 @@ namespace XSharp.LanguageService
         }
 
         internal static List<XSharpToken> GetTokenList(XSharpSearchLocation location, BufferedTokenStream tokens,
-            out CompletionState state, bool includeKeywords = false)
+            out CompletionState state, bool includeKeywords = false, bool underCursor = false)
         {
             var tokenList = new List<XSharpToken>();
             //
@@ -271,12 +289,14 @@ namespace XSharp.LanguageService
             var last = XSharpLexer.Eof;
             bool allowdot = location.Project?.ParseOptions?.AllowDotForInstanceMembers ?? false;
             var lastIncluded = -1;
+            var cursorPos = location.Position;
             for (int i = 0; i < line.Count; i++)
             {
                 var token = line[i];
                 int open = 0;
+                bool isHit = token.StartIndex <= cursorPos && token.StopIndex >= cursorPos && underCursor;
                 bool isNotLast = token.StopIndex < location.Position - 1;
-                if (token.StartIndex > location.Position)
+                if (token.StartIndex > cursorPos)
                 {
                     break;
                 }
@@ -292,13 +312,20 @@ namespace XSharp.LanguageService
                     case XSharpLexer.UPTO:
                     case XSharpLexer.DOWNTO:
                     case XSharpLexer.IN:
-                        tokenList.Clear();
-                        if (isNotLast) // there has to be a space after the token
+                        if (! isHit)
                         {
-                            state = CompletionState.General;
+                            tokenList.Clear();
+                            if (isNotLast) // there has to be a space after the token
+                            {
+                                state = CompletionState.General;
+                            }
+                            else
+                                state = CompletionState.None;
                         }
                         else
-                            state = CompletionState.None;
+                        {
+                            tokenList.Add(token);
+                        }
                         break;
                     case XSharpLexer.LCURLY:
                         state = CompletionState.Constructors;
@@ -356,7 +383,14 @@ namespace XSharp.LanguageService
                     case XSharpLexer.IS:
                     case XSharpLexer.REF:
                     case XSharpLexer.INHERIT:
-                        tokenList.Clear();
+                        if (!isHit)
+                        {
+                            tokenList.Clear();
+                        }
+                        else
+                        {
+                            tokenList.Add(token);
+                        }
                         if (isNotLast) // there has to be a space after the token
                             state = CompletionState.Namespaces | CompletionState.Types;
                         else
@@ -427,6 +461,7 @@ namespace XSharp.LanguageService
                         }
                         if (XSharpLexer.IsKeyword(token.Type) && includeKeywords)   // For code completion we want to include keywords
                         {
+                            token.Text = XSettings.FormatKeyword(token.Text);
                             tokenList.Add(token);
                         }
                         break;

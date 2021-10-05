@@ -39,13 +39,13 @@ namespace XSharp.LanguageService
                         default(ImageMoniker),
                         this.peekableItem._gotoElement.File.FullPath,
                         this.peekableItem._gotoElement.Range.StartLine ,
-                        this.peekableItem._gotoElement.Range.StartColumn ,
+                        this.peekableItem._gotoElement.Range.StartColumn-1 ,
                         this.peekableItem._gotoElement.Range.EndLine ,
-                        this.peekableItem._gotoElement.Range.EndColumn ,
+                        this.peekableItem._gotoElement.Range.EndColumn - 1,
                         this.peekableItem._gotoElement.Range.StartLine ,
-                        this.peekableItem._gotoElement.Range.StartColumn ,
+                        this.peekableItem._gotoElement.Range.StartColumn - 1,
                         this.peekableItem._gotoElement.Range.EndLine ,
-                        this.peekableItem._gotoElement.Range.EndColumn ,
+                        this.peekableItem._gotoElement.Range.EndColumn - 1,
                         false,
                         new Guid(XSharpConstants.EditorFactoryGuidString)
                     );

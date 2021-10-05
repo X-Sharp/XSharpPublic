@@ -90,7 +90,8 @@ namespace XSharp.LanguageService
                     //formatCaseForWholeBuffer();
                 }
             }
-            ReadSettings(_file.FullPath);
+            if (_file != null)
+                ReadSettings(_file.FullPath);
 
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
             registerClassifier();
@@ -293,7 +294,7 @@ namespace XSharp.LanguageService
         }
         private void registerLineForCaseSync(int line)
         {
-            if (!_suspendSync && _settings.KeywordCase != KeywordCase.None)
+            if (!_suspendSync && _settings != null && _settings.KeywordCase != KeywordCase.None)
             {
                 lock (_linesToSync)
                 {

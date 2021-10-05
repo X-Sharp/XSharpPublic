@@ -105,7 +105,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameterConstraintsList  AS STRING   GET SELF:_signature:TypeParameterConstraintsList
       PROPERTY Location                      AS STRING   GET SELF:File:FullPath
       PROPERTY OriginalTypeName              AS STRING   GET SELF:TypeName
-
+      PROPERTY IsFunctionsClass              AS LOGIC    GET SELF:Name == XLiterals.GlobalName
       METHOD ClearMembers() AS VOID
          SELF:_members:Clear()
 
@@ -254,7 +254,7 @@ BEGIN NAMESPACE XSharpModel
             BEGIN LOCK SELF:_children
                 var children := List<IXTypeSymbol>{}
                 children:AddRange(SELF:_children)
-                return children                
+                return children
             END LOCK
          END GET
       END PROPERTY

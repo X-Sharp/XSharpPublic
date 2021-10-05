@@ -620,7 +620,7 @@ BEGIN NAMESPACE XSharpModel
 			" FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
 			")"
 			*/
-			IF ! IsDbOpen
+			IF ! IsDbOpen .or. oFile:TypeList == null
 				RETURN
 			ENDIF
 			Log(i"Update File contents for file {oFile.FullPath}")
@@ -1244,7 +1244,7 @@ BEGIN NAMESPACE XSharpModel
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
                         // No limit on the # of Namespaces
-						DO WHILE rdr:Read() 
+						DO WHILE rdr:Read()
                             VAR ns := DbToString(rdr[0])
 							IF ! String.IsNullOrEmpty(ns)
 								result:Add(ns)

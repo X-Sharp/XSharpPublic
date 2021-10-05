@@ -34,8 +34,8 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _unprocessedProjectReferences		AS List<STRING>
       PRIVATE _unprocessedStrangerProjectReferences	AS List<STRING>
       PRIVATE _failedStrangerProjectReferences   AS List<STRING>
-      PRIVATE _OtherFilesDict							 AS XFileDictionary
-      PRIVATE _SourceFilesDict						 AS XFileDictionary
+      PRIVATE _OtherFilesDict					 AS XFileDictionary
+      PRIVATE _SourceFilesDict					 AS XFileDictionary
       PRIVATE _FunctionClasses                   AS List<STRING>
       PRIVATE _ImplicitNamespaces                AS List<STRING>
       PRIVATE _dependentProjectList              AS STRING
@@ -268,6 +268,7 @@ BEGIN NAMESPACE XSharpModel
                SELF:ProjectNode:SetStatusBarText("")
             ENDIF
             RETURN
+
 
          METHOD ResolveReferences() AS VOID
             IF SELF:hasUnprocessedReferences
@@ -593,7 +594,9 @@ BEGIN NAMESPACE XSharpModel
 
       #region 'Normal' Files
 
-
+      METHOD ZapFiles() AS VOID
+        SELF:_SourceFilesDict:Clear()
+        SELF:_OtherFilesDict:Clear()
       METHOD AddFile(filePath AS STRING) AS LOGIC
          LOCAL xamlCodeBehindFile AS STRING
          // DO NOT read the file ID from the database here.
@@ -1427,6 +1430,8 @@ BEGIN NAMESPACE XSharpModel
          CONSTRUCTOR()
             dict := ConcurrentDictionary<STRING, INT64>{StringComparer.OrdinalIgnoreCase}
 
+         METHOD Clear() AS VOID
+            SELF:dict:Clear()
          METHOD Add(fileName AS STRING) AS VOID
            IF !dict:ContainsKey(fileName)
                dict:TryAdd(fileName,-1)

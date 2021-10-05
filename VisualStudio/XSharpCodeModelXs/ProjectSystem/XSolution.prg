@@ -211,23 +211,30 @@ BEGIN NAMESPACE XSharpModel
       END PROPERTY
 
       STATIC METHOD RebuildIntellisense() AS VOID
-          VAR walker := ModelWalker.GetWalker()
           TRY
-              ModelWalker.Suspend()
-              walker:Clear()
+              ModelWalker.Stop()
               FOREACH VAR pair IN _projects
                     LOCAL project := pair:Value as XProject
                     XDatabase.Read(project)
-                    walker:AddProject(project)
-                    var ref := project:AssemblyReferenceNames
+                    var source := project:SourceFiles:ToArray()
+                    var other  := project:OtherFiles:ToArray()
+                    project:ZapFiles()
+                    foreach var srcFile in source
+                        project:AddFile(srcFile)
+                    next
+                    foreach var srcFile in other
+                        project:AddFile(srcFile)
+                    next
+                    var ref := project:AssemblyReferenceNames:ToArray()
                     project:ClearAssemblyReferences()
                     foreach asmref as String in ref
                         project:AddAssemblyReference(asmref)
                     next
+                    project:Walk()
+
                 NEXT
           FINALLY
             ModelWalker.Start()
-            walker.Walk()
           END TRY
 
 

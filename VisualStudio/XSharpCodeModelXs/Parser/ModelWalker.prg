@@ -137,6 +137,11 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD Resume() AS VOID
          ModelWalker.suspendLevel--
 
+      STATIC METHOD Stop AS VOID
+        ModelWalker.suspendLevel  := 1
+        GetWalker():StopThread()
+
+
       INTERNAL METHOD StopThread() AS VOID
          TRY
             IF SELF:_WalkerThread == NULL

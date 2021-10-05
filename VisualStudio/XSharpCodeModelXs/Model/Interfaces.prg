@@ -8,6 +8,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY KindKeyword AS STRING GET
       PROPERTY TypeName    AS STRING GET SET
       PROPERTY Parent      AS IXSymbol GET SET
+      PROPERTY IsPublic    AS LOGIC GET
+      PROPERTY IsExternalVisible AS LOGIC GET
    END INTERFACE
 
    /// <summary>Properties shared by all entities (types and members, internal and external) in the codemodel</summary>

@@ -73,8 +73,6 @@ BEGIN NAMESPACE XSharpModel
             RETURN "T:"+peType:OriginalTypeName
          ENDIF
          RETURN "T:"+tm:FullName
-      STATIC METHOD IsPublic(SELF type as IXTypeSymbol) AS LOGIC
-            return type:Visibility >= Modifiers.Public
       STATIC METHOD IsVoStruct(SELF type AS IXTypeSymbol) AS LOGIC
         IF (type == NULL)
             RETURN FALSE

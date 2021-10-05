@@ -9,7 +9,7 @@ GLOBAL gcTest AS STRING
 
 FUNCTION Start() AS VOID
 LOCAL cFileName AS STRING
-cFileName := "c:\test\testvfp"
+cFileName := "testvfp"
 DbCreate(cFileName , {{"FLD","N",5,0}})
 DbUseArea(,,cFileName)
 DbAppend()

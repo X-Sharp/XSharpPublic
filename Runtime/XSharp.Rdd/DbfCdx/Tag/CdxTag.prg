@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY RDD               AS DBFCDX GET _oRdd
         INTERNAL PROPERTY Condition         AS STRING GET _ForExpr
         INTERNAL PROPERTY OrderName         AS STRING GET _orderName
-	    INTERNAL PROPERTY Shared 	        AS LOGIC GET _bag:Shared
+        INTERNAL PROPERTY Shared 	        AS LOGIC GET _bag:Shared
         INTERNAL PROPERTY _RecNo 	        AS LONG GET _oRdd:RecNo
         INTERNAL PROPERTY FileName 	        AS STRING GET _bag:FullPath
         INTERNAL PROPERTY OrderBag          AS CdxOrderBag GET SELF:_bag
@@ -126,14 +126,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         // Constructor for Creation of tags
         INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag)
-	        SUPER()
+            SUPER()
             SELF:_InitFields(oBag)
 
 
 
         // Constructor for Opening of tags
         INTERNAL CONSTRUCTOR (oBag AS CdxOrderBag, nPage AS Int32, cName AS STRING)
-	        SUPER()
+            SUPER()
             SELF:_InitFields(oBag)
             SELF:_orderName := cName
             SELF:Page := nPage
@@ -157,7 +157,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
 
-	    INTERNAL METHOD Open() AS LOGIC
+        INTERNAL METHOD Open() AS LOGIC
             SELF:_oRdd:GoTo(1)
             SELF:_Hot := FALSE
             SELF:ClearStack()
@@ -219,7 +219,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
- 
+
 
             // If the Key Expression contains only a Field Name
 
@@ -298,7 +298,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ELSE
                     SELF:__Compare := _compareBin
                 ENDIF
-            ENDIF            
+            ENDIF
             IF ! isOk
                 RETURN FALSE
             ENDIF
@@ -381,7 +381,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             res := 0
             RETURN FALSE
-            
+
         INTERNAL STATIC METHOD _compareTextNull(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
             IF aRHS == NULL
                 RETURN 0
@@ -404,12 +404,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL STATIC METHOD _compareCollationNull(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
             IF aRHS == NULL
                 RETURN 0
-            ENDIF            
+            ENDIF
             IF _compareNullKeys(aLHS, aRHS, OUT VAR result)
                 RETURN result
             ENDIF
             RETURN _compareCollation(aLHS, aRHS, nLength, recnoLHS, recnoRHS)
-            
+
         INTERNAL STATIC METHOD _compareCollation(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
             RETURN _compareBin(aLHS, aRHS, nLength, recnoLHS, recnoRHS)
 
@@ -428,7 +428,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL STATIC METHOD _compareBinNull(aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG, recnoLHS AS LONG, recnoRHS AS LONG) AS LONG
             IF aRHS == NULL
                 RETURN 0
-            ENDIF            
+            ENDIF
             IF _compareNullKeys(aLHS, aRHS, OUT VAR result)
                 RETURN result
             ENDIF
@@ -559,11 +559,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL last AS LONG
             LOCAL count AS LONG
             LOCAL isLocked := FALSE AS LOGIC
+            LOCAL oldDescend := FALSE AS LOGIC
             LOCAL saveEmpty := SELF:_scopeEmpty AS LOGIC
             isOk := TRUE
             SELF:_bag:Flush()
             SELF:_oRdd:GoCold()
             oldRec := SELF:_RecNo
+            oldDescend := SELF:_Descending
+            SELF:_Descending := FALSE
             TRY
                 SELF:_scopeEmpty := FALSE
                 IF SELF:Shared
@@ -645,6 +648,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     isOk := SELF:UnLock()
                 ENDIF
                 SELF:_scopeEmpty := saveEmpty
+                SELF:_Descending := oldDescend
             END TRY
             RETURN isOk
 

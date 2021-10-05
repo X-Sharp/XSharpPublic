@@ -3025,27 +3025,39 @@ RETURN
 				END IF
 			ENDDO
 
+			SetDeleted ( FALSE )
+			OrdDescend ( , , FALSE )
+            // deleted = false and OrdDescend = False
+            // should result in 5 rows
 			Assert.Equal(5, (INT) OrdKeyCount() )
 
 
 			SetDeleted ( TRUE )
 			OrdDescend ( , , TRUE )
+            // deleted = TRUE and OrdDescend = TRUE
+            // should result in 3 rows because 2 deleted rows are not included
 			DbGoTop()
-			Assert.Equal(5, (INT) OrdKeyCount() )
-		
+			Assert.Equal(3, (INT) OrdKeyCount() )
+
 			SetDeleted ( FALSE )
 			OrdDescend ( , , TRUE )
+            // deleted = FALSE and OrdDescend = TRUE
+            // should result in 5 rows because deletion state is ignored
 			DbGoTop()
 			Assert.Equal(5, (INT) OrdKeyCount() )
-		
+
 			SetDeleted ( TRUE )
 			OrdDescend ( , , FALSE )
+            // deleted = TRUE and OrdDescend = FALSE
+            // should result in 3 rows because 2 deleted rows are not included
 			DbGoTop()
-			Assert.Equal(5, (INT) OrdKeyCount() )
-		
+			Assert.Equal(3, (INT) OrdKeyCount() )
+
 			SetDeleted ( FALSE )
 			OrdDescend ( , , FALSE )
 			DbGoTop()
+            // deleted = false and OrdDescend = False
+            // should result in 5 rows
 			Assert.Equal(5, (INT) OrdKeyCount() )
 
 
@@ -4849,7 +4861,7 @@ RETURN
 			DbCloseArea()
 
 			Assert.Equal(175, GetLastByte())
-			
+
 			DbUseArea( TRUE ,,cDBF )
 			DbGoBottom()
 			LOCAL c123 AS STRING
@@ -4871,24 +4883,24 @@ RETURN
 
 			DbfTests.CreateDatabase(cDbf, {{"MFIELD","M",10,0},{"CFIELD","C",10,0}}, {"rec1","rec2"})
 			DbCloseArea()
-			
+
 			DbUseArea(TRUE,,cDbf,"alias1",TRUE)
 			DbUseArea(TRUE,,cDbf,"alias2",TRUE)
 			alias1->DbAppend()
 			alias1->FieldPut(1,"rec3")
 //			alias1->DbCommit() // not making a difference
 //			alias1->DbUnLock()
-			
+
 			alias2->DbGoto(1)
 			alias2->DbRLock()
 			cUpdate1 := "A long update that should be visible only in record 1"
 			alias2->FieldPut(1, cUpdate1)
 //			alias2->DbCommit() // not making a difference
 //			alias2->DbUnLock()
-			                
+
 			DbCloseAll()
-			
-			
+
+
 			DbUseArea(TRUE,,cDbf,"alias1",TRUE)
 			DbGoTop()
 			Assert.Equal(cUpdate1, (STRING)FieldGet(1))
@@ -4896,19 +4908,19 @@ RETURN
 			Assert.Equal("rec2", (STRING)FieldGet(1))
 			DbGoBottom()
 			Assert.Equal("rec3", (STRING)FieldGet(1))
-			
+
 			// updating record 3 only...
 			cUpdate2 := "Putting a new value in record 3 only"
 			RLock()
 			FieldPut(1, cUpdate2)
-			
+
 			DbGoTop()
 			Assert.Equal(cUpdate1, (STRING)FieldGet(1))
 			DbSkip()
 			Assert.Equal("rec2", (STRING)FieldGet(1))
 			DbGoBottom()
 			Assert.Equal(cUpdate2, (STRING)FieldGet(1))
-			
+
 			DbCloseArea()
 
 		RETURN
@@ -4924,7 +4936,7 @@ RETURN
 			DbfTests.CreateDatabase(cDbf, {{ "FLD1", "C", 10, 0 }})
 
 			lDeleted := SetDeleted( TRUE )
-			
+
 			DbUseArea(TRUE,,cDbf)
 			DbCreateOrder( "ORDER1",cDbf, "FLD1")
 			FOR LOCAL nI := 1 AS INT UPTO 10
@@ -4933,17 +4945,17 @@ RETURN
 			NEXT
 			DbSetOrder("ORDER1")
 			OrdDescend(,, TRUE)  // without orderdescend its work how expeced
-			
+
 			Assert.True( DbSeek( Str( 3, 10 ), FALSE ) )
 			Assert.Equal( 3U, RecNo() )
-		
+
 			Assert.True( DbDelete() )
-			
+
 			Assert.False( DbSeek( Str( 3, 10 ), FALSE ) )
 			Assert.Equal( 11U, RecNo() )
-		
+
 			DbCloseAll()
-			
+
 			SetDeleted( lDeleted )
 		RETURN
 

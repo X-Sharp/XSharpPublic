@@ -54,6 +54,7 @@
       <li styleclass="Body Text">Fixed a problem with declared PUBLIC variables getting created as PRIVATE in the FoxPro dialect (#753)</li>
       <li styleclass="Body Text">Fixed a problem with using typed defines as default arguments (#718)</li>
       <li styleclass="Body Text">Fixed a problem with typed DEFINEs that could produce constants of the wrong type (#705)</li>
+      <li styleclass="Body Text">Fixed a problem with removing whitespace from #warning and #error directive texts (#798)</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
@@ -150,6 +151,9 @@
       <li styleclass="Body Text">Fixed several visual problems with VOWED controls in Design and Test mode (#741)</li>
       <li styleclass="Body Text">Fixed a VS crash when Alt-Tabbing out of the editors, with the Properties window having focus (#764)</li>
       <li styleclass="Body Text">Adjusted ComboBoxEx controls to have the same fixed height, as in VO. Also allowed the previous behavior, when the user has manually increased the height by more than 50 pixels, then this height is being used instead (#750)</li>
+      <li styleclass="Body Text">Added a bitmap thumbnail for the &quot;Button Bmp&quot; property of the Menu Editor in the Properties Window</li>
+      <li styleclass="Body Text">Added support for specifying a Ribbon in the Menu Editor. The ribbon (bitmap) to be used needs to be specified as a filename in the properties of the Menu&apos;s main item (#714)</li>
+      <li styleclass="Body Text">Fixed some issues with event code generation in the Window Editor (#441, #46)</li>
     </list>
     <para styleclass="Heading1"></para>
     <para styleclass="Heading1">Changes in 2.8.3.15 (Cahors)</para>

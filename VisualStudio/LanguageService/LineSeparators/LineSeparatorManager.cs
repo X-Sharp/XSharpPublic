@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using System.Collections.Immutable;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
@@ -39,7 +40,7 @@ namespace XSharp.LanguageService
             _editorFormatMap.FormatMappingChanged += FormatMappingChanged;
             _lineSeparatorTag = new LineSeparatorTag(_editorFormatMap);
             registerClassifier();
-            
+
         }
         private void registerClassifier()
         {
@@ -63,7 +64,7 @@ namespace XSharp.LanguageService
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                
+
                 Repaint();
             });
             return;
@@ -112,7 +113,7 @@ namespace XSharp.LanguageService
                 var add = false;
                 add = item.Value.HasFlag(LineFlags.EntityStart);
                 if (!add)
-                      add = singleLineDividers && item.Value.HasFlag(LineFlags.SingleLineEntity);
+                    add = singleLineDividers && item.Value.HasFlag(LineFlags.SingleLineEntity);
                 if (add)
                 {
                     var index = item.Key;

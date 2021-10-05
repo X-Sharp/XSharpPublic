@@ -22,7 +22,7 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
     [SD.DebuggerBrowsable(SD.DebuggerBrowsableState.Collapsed)] ;
     PRIVATE STATIC sessions    AS List<DataSession>
     [SD.DebuggerBrowsable(SD.DebuggerBrowsableState.Collapsed)] ;
-    PRIVATE STATIC timer       AS System.Timers.Timer
+    PROTECTED STATIC timer       AS System.Timers.Timer
     /// <summary>List of all open DataSessions</summary>
     PUBLIC STATIC PROPERTY Sessions   AS DataSession[] GET sessions:ToArray()
     #endregion
@@ -59,7 +59,7 @@ CLASS XSharp.RDD.DataSession INHERIT Workareas
          END TRY
          RETURN
 
-    PRIVATE STATIC METHOD OnTimer(source as OBJECT, e as System.Timers.ElapsedEventArgs) AS VOID
+    PROTECTED STATIC METHOD OnTimer(source as OBJECT, e as System.Timers.ElapsedEventArgs) AS VOID
         LOCAL deleted := NULL as List<DataSession>
         //
         // please note that the OnTimer runs on its own thread.

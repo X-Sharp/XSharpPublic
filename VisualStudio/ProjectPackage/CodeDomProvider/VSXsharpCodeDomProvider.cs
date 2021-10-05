@@ -6,15 +6,13 @@
 using Microsoft.VisualStudio.Shell.Design.Serialization;
 using System;
 using System.CodeDom;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Permissions;
 using System.Text;
-using System.Threading.Tasks;
 using XSharp.CodeDom;
 using System.CodeDom.Compiler;
 using Microsoft;
+using Microsoft.VisualStudio.Project;
 
 namespace XSharp.Project
 {
@@ -204,6 +202,19 @@ namespace XSharp.Project
                 MemoryStream inMemory = new MemoryStream();
                 StreamWriter designerStream = new StreamWriter(inMemory, Encoding.UTF8);
                 //
+                // Backup original Form file and Form.Designer file
+                //
+                if (File.Exists(prgFileName))
+                {
+                    var bak = Path.ChangeExtension(prgFileName, ".bak");
+                    Utilities.CopyFileSafe(prgFileName, bak);
+                }
+                if (File.Exists(designerPrgFile))
+                {
+                    var bak = Path.ChangeExtension(designerPrgFile, ".bak");
+                    Utilities.CopyFileSafe(designerPrgFile, bak);
+                }
+
                 base.GenerateCodeFromCompileUnit(designCCU, designerStream, options);
                 // and force Flush
                 designerStream.Flush();

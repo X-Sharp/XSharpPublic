@@ -1302,7 +1302,16 @@ namespace XSharp.LanguageService
 
                 if (XSettings.EnableTypelookupLog)
                     WriteOutputMessage($" SearchMethodTypeIn {type.FullName} , '{name}'");
-                var tmp = type.GetMembers(name, true).Where(x => x.Kind.IsClassMethod(location.Dialect));
+                IEnumerable<IXMemberSymbol> tmp;
+                if (type.IsFunctionsClass)
+                {
+                    tmp = type.GetMembers(name, true).Where(x => x.Kind == Kind.Function);
+                    staticOnly = false;
+                }
+                else
+                {
+                    tmp = type.GetMembers(name, true).Where(x => x.Kind.IsClassMethod(location.Dialect));
+                }
                 foreach (var m in tmp)
                 {
                     var add = true;

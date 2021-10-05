@@ -46,6 +46,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsGeneric   AS LOGIC GET
       PROPERTY OriginalTypeName  AS STRING GET
       PROPERTY Location    AS STRING GET
+      PROPERTY IsFunctionsClass as LOGIC GET
 
       METHOD   AddTypeParameter(name AS STRING) AS VOID
       METHOD   AddConstraints(name AS STRING) AS VOID

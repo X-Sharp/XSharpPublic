@@ -499,6 +499,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 SELF:MarkDbfHeader(info:FileName,FALSE)
             ENDIF
+
          PROTECTED METHOD MarkDbfHeader(cFileName as STRING, lForce as LOGIC) AS VOID
             VAR cExt  := CdxOrderBag.GetIndexExtFromDbfExt(cFileName)
             IF ! String.IsNullOrEmpty(cExt)
@@ -519,13 +520,10 @@ BEGIN NAMESPACE XSharp.RDD
 
         #endregion
 
-
-
         #REGION Move
 
         INTERNAL METHOD ReadRecord() AS LOGIC
             RETURN SELF:_readRecord()
-
 
         PUBLIC METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
@@ -590,7 +588,6 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             result := SUPER:GoTo(nRec)
             RETURN result
-
 
         PUBLIC METHOD SkipRaw( move AS LONG ) AS LOGIC
             BEGIN LOCK SELF

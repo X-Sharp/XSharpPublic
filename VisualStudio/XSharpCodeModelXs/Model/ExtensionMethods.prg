@@ -63,7 +63,12 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.XTranslate
                     RETURN "#xtranslate"
                 CASE Kind.Undeclared
-                    RETURN "UNDECLARED VARIABLE"
+                    var cName := "UNDECLARED VARIABLE"
+                    var walker := ModelWalker.GetWalker()
+                    IF walker != null .and. (walker:IsRunning .or. walker:HasWork)
+                        cName += " (building Intellisense database not completed"
+                    ENDIF
+                    RETURN cName
             END SWITCH
         RETURN elementKind:ToString()
 
@@ -369,6 +374,8 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Translate
                 CASE Kind.XTranslate
                     imgK := ImageListKind.Macro
+                CASE Kind.Keyword
+                    imgK := ImageListKind.Keyword
             END SWITCH
             SWITCH visibility
                 CASE Modifiers.Public

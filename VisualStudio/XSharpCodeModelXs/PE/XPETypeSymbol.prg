@@ -302,7 +302,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY FullName AS STRING   GET SELF:GetFullName()
 
         PROPERTY Description AS STRING GET SELF:GetDescription()
-
+        PROPERTY IsFunctionsClass as LOGIC GET SELF:Assembly != NULL .and. SELF:FullName == SELF:Assembly:GlobalClassName
         PROPERTY IsNested  AS LOGIC GET SELF:Parent IS XPETypeSymbol
         PROPERTY IsGeneric as LOGIC GET _typeDef:HasGenericParameters
         PROPERTY IsStatic  AS LOGIC GET _typeDef:Attributes:HasFlag(TypeAttributes.Abstract |TypeAttributes.Sealed)

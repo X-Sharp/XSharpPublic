@@ -58,6 +58,10 @@ BEGIN NAMESPACE XSharpModel
             IF String.IsNullOrEmpty(_dependentAssemblyList)
                _AssemblyDict := Dictionary<INT64, XAssembly>{}
                VAR result := ""
+               var core := SystemTypeController.mscorlib
+               if core != null
+                    result := core:Id:ToString()
+               ENDIF
                FOREACH VAR assembly IN SELF:AssemblyReferences:ToArray()
                   _AssemblyDict:Add(assembly:Id, assembly)
                   IF result:Length > 0
@@ -65,13 +69,8 @@ BEGIN NAMESPACE XSharpModel
                   ENDIF
                   result += assembly:Id:ToString()
                NEXT
-               var core := SystemTypeController.mscorlib
                if ! _AssemblyDict.ContainsKey(core:Id)
                    _AssemblyDict:Add(core:Id, core)
-                   IF result:Length > 0
-                      result += ","
-                   ENDIF
-                   result += core:Id:ToString()
                    _AssemblyReferences:Add(core)
                ENDIF
                _dependentAssemblyList := result

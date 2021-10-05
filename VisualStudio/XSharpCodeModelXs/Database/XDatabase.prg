@@ -1243,7 +1243,8 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                        // No limit on the # of Namespaces
+						DO WHILE rdr:Read() 
                             VAR ns := DbToString(rdr[0])
 							IF ! String.IsNullOrEmpty(ns)
 								result:Add(ns)
@@ -1265,7 +1266,8 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                        // No limit on the # of Namespaces
+						DO WHILE rdr:Read()
                             VAR ns := DbToString(rdr[0])
 							IF ! String.IsNullOrEmpty(ns)
 								result:Add(ns)
@@ -1291,7 +1293,8 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                        // No limit on the # of Namespaces
+						DO WHILE rdr:Read()
 							VAR res := XDbResult{}
 							IF rdr[0] != DBNull.Value
 								res:Kind         := Kind.Namespace

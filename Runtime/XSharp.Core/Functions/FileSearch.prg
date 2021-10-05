@@ -54,14 +54,19 @@ INTERNAL STATIC CLASS XSharp.FileSearch
                 LOCAL files := oDirInfo:GetFiles(cMask) AS FileInfo[]
                 //VAR selectedFiles := FROM FileInfo IN files WHERE ( FileInfo:Attributes & (FileAttributes) (attributes + FA_NORMAL)) != 0 SELECT FileInfo
                 FOREACH file AS FileInfo IN files
-                    foundEntries:Add(file)
+                    // extra check because sometimes short file names are matched where the long file name does not match
+                    IF Like(cMask,file:Name)
+                        foundEntries:Add(file)
+                    ENDIF
                 NEXT
 
                 IF (attributes & FA_DIRECTORY) == (DWORD) FA_DIRECTORY
                     LOCAL directories := oDirInfo:GetDirectories(cMask) AS FileSystemInfo[]
                     VAR selectedDirs := FROM DirectoryInfo IN directories WHERE (DirectoryInfo:Attributes & (FileAttributes) (attributes + FA_NORMAL) ) != 0 SELECT DirectoryInfo
                     FOREACH directory AS DirectoryInfo IN selectedDirs
-                        foundEntries:Add(directory)
+                        IF Like(cMask,directory:Name)
+                            foundEntries:Add(directory)
+                        ENDIF
                     NEXT
                 ENDIF
             ENDIF

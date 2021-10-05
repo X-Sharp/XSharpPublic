@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING XSharp.RDD.Enums
@@ -8,7 +8,7 @@ USING XSharp.RDD.Support
 /// <summary>Definition for the interface that each RDD must implement</summary>
 /// <seealso cref="T:XSharp.RDD.Workarea"/>
 INTERFACE XSharp.RDD.IRdd
-	// Navigation         
+	// Navigation
 	/// <summary>Evaluate a code block for each row.</summary>
 	/// <param name="info">object containing the information about which rows to visit.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
@@ -20,15 +20,15 @@ INTERFACE XSharp.RDD.IRdd
 
 	/// <summary>Position the cursor to the last logical row.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD GoBottom()						AS LOGIC   
+	METHOD GoBottom()						AS LOGIC
 
 	/// <summary>Position the cursor to a specific, physical row.</summary>
-	/// <param name="nRec">The row number of the new cursor position.</param>
+	/// <param name="nRec">The ONE based row number of the new cursor position.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD GoTo(nRec AS LONG)				AS LOGIC
 
 	/// <summary>Position the cursor to a specific, physical identity.</summary>
-	/// <param name="oRec">The row ID of the new cursor position.</param>
+	/// <param name="oRec">The ONE based row ID of the new cursor position.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD GoToId(oRec AS OBJECT)			AS LOGIC
 
@@ -47,7 +47,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Position the cursor regardless of scope and filter conditions.</summary>
 	/// <param name="nToSkip">The number of rows to skip.  If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
 	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD SkipRaw(nToSkip AS INT)			AS LOGIC 
+	METHOD SkipRaw(nToSkip AS INT)			AS LOGIC
 
 	/// <summary>Position the cursor relative to its current position within the current scope.</summary>
 	/// <param name="nToSkip">The number of rows to skip.  If this argument is positive, the cursor moves forward (toward the end-of-file).  If it is negative, the cursor moves backward (toward the beginning-of-file).</param>
@@ -62,11 +62,11 @@ INTERFACE XSharp.RDD.IRdd
 
 	/// <summary>Mark the row at the current cursor position for deletion.</summary>
 	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD Delete()							AS LOGIC   
+	METHOD Delete()							AS LOGIC
 
 	/// <summary>Retrieve the RDD's record buffer as array of bytes.</summary>
     /// <returns>Record buffer of the RDD. This is the original buffer, so changing this buffer may cause corruption !</returns>
-	METHOD GetRec()							AS BYTE[]  
+	METHOD GetRec()							AS BYTE[]
 
 	/// <summary>Physically remove rows marked for deletion.</summary>
 	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
@@ -76,7 +76,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <param name="aRec">The buffer containing the information that you want to write.</param>
 	/// <note>The buffer should have at least the # of bytes that matches the current record size.</note>
 	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-    METHOD PutRec(aRec AS BYTE[])			AS LOGIC 
+    METHOD PutRec(aRec AS BYTE[])			AS LOGIC
 
 	/// <summary>Remove the deletion marker from the row at the current cursor position.</summary>
 	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
@@ -84,52 +84,52 @@ INTERFACE XSharp.RDD.IRdd
 
 	/// <summary>Physically remove all rows from a table.</summary>
 	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-    METHOD Zap()							AS LOGIC   
-		
-	// Open and Close   
+    METHOD Zap()							AS LOGIC
+
+	// Open and Close
 	/// <summary>Close a table.</summary>
 	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD Close() 							AS LOGIC  
+	METHOD Close() 							AS LOGIC
 
 	/// <summary>Create a table.</summary>
 	/// <param name="info">object describing the file to create.</param>
 	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD Create(info AS DbOpenInfo)		AS LOGIC  
+	METHOD Create(info AS DbOpenInfo)		AS LOGIC
 
 	/// <summary>Open a table.</summary>
 	/// <param name="info">object describing the file to open.</param>
 	/// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD Open(info AS DbOpenInfo)			AS LOGIC
-		
-	// Filtering and Scoping 
+
+	// Filtering and Scoping
 	/// <summary>Clear the active filter condition.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD ClearFilter() 					AS LOGIC
 
 	/// <summary>Clear the active locate condition.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD ClearScope() 					AS LOGIC 
+	METHOD ClearScope() 					AS LOGIC
 
 	/// <summary>Goto the next record based on the corrent locate condition.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD Continue()						AS LOGIC     
+	METHOD Continue()						AS LOGIC
 
-	//METHOD CountScope(pOpt as PTR)		AS LONG 
+	//METHOD CountScope(pOpt as PTR)		AS LONG
 	/// <summary>Retrieve the active locate condition.</summary>
     /// <returns>The current scope information for the RDD.</returns>
-	METHOD GetScope()						AS DbScopeInfo 
+	METHOD GetScope()						AS DbScopeInfo
 
 	/// <summary>Set the filter condition.</summary>
     /// <param name="info">object containing the filter information.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD SetFilter(info AS DbFilterInfo)	AS LOGIC 
+	METHOD SetFilter(info AS DbFilterInfo)	AS LOGIC
 
 	/// <summary>Set the locate condition.</summary>
 	/// <param name="info">object containing the scope information.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD SetScope(info AS DbScopeInfo)	AS LOGIC
-		
-	// Fields                          
+
+	// Fields
 	/// <summary>Set the Number of Fields the AddField Method will add.</summary>
     /// <param name="fieldCount">Number of fields that will be added.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
@@ -148,7 +148,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Return the ONE based field index for a field name.</summary>
     /// <param name="fieldName">The name of the field in the database file structure. When the name is not found it will also check for a field alias with this name.</param>
     /// <returns>The ONE based position of the field in the database file structure.</returns>
-	METHOD FieldIndex(fieldName AS STRING)	AS LONG 
+	METHOD FieldIndex(fieldName AS STRING)	AS LONG
 
 	/// <summary>Retrieve and optionally change information about a column.</summary>
     /// <param name="nFldPos">The ONE based position of the field in the database file structure.</param>
@@ -166,25 +166,25 @@ INTERFACE XSharp.RDD.IRdd
     /// <param name="nFldPos">The ONE based position of the column whose info you want to obtain.</param>
     /// <returns>The Field information for the specified field.</returns>
     METHOD GetField(nFldPos AS LONG) AS RddFieldInfo
-	// Read & Write		
+	// Read & Write
 
-    /// <summary>Get a value for the specified column.</summary>	
+    /// <summary>Get a value for the specified column.</summary>
 	/// <param name="nFldPos">The ONE based position of the column whose value you want to obtain.</param>
     /// <returns>The value of the specified field.</returns>
 	METHOD GetValue(nFldPos AS LONG)		AS OBJECT
 
-    /// <summary>Get the value for a column and write (export) it to an external file.</summary>	
+    /// <summary>Get the value for a column and write (export) it to an external file.</summary>
 	/// <param name="nFldPos">ONE based position for which the value should be retrieved.</param>
 	/// <param name="fileName">Name of the file that needs to be written to.</param>
     /// <returns>TRUE when the operation succeeded. Otherwise FALSE to indicate a failure.</returns>
 	METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
 
-    /// <summary>Get the length of the for the specified column.</summary>	
+    /// <summary>Get the length of the for the specified column.</summary>
 	/// <param name="nFldPos">ONE based position for which the length should be retrieved.</param>
     /// <returns>The length of the value of the specified field.</returns>
 	METHOD GetValueLength(nFldPos AS LONG)	AS LONG
 
-    /// <summary>Flush the changes to the table, its indexes and memo file.</summary>	
+    /// <summary>Flush the changes to the table, its indexes and memo file.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     METHOD Flush() 							AS LOGIC
 
@@ -194,15 +194,15 @@ INTERFACE XSharp.RDD.IRdd
 
 	/// <summary>Mark a data buffer as hot, indicating that it needs to be written to the data store.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD GoHot()							AS LOGIC   
+	METHOD GoHot()							AS LOGIC
 
-	/// <summary>Write a value for a specified column</summary>	
+	/// <summary>Write a value for a specified column</summary>
 	/// <param name="nFldPos">ONE based position for which the value should be written.</param>
 	/// <param name="oValue">New value that needs to written to the table this column.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
 
-	/// <summary>Read (Import) a value from an external file and write it to the specified column.</summary>	
+	/// <summary>Read (Import) a value from an external file and write it to the specified column.</summary>
 	/// <param name="nFldPos">ONE based position for which the value should be written.</param>
 	/// <param name="fileName">Name of the file that needs to be read from.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
@@ -216,37 +216,37 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Add a newly appended row to the list of locked rows.</summary>
 	/// <param name="uiMode">An enum value specifying the kind of lock to acquire.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC  
+	METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC
 
 	/// <summary>Lock or unlock the header of a database file.</summary>
 	/// <param name="uiMode">An enum value specifying the kind of lock to acquire.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC  
+	METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
 
 	/// <summary>Perform a lock.</summary>
 	/// <param name="uiMode">An object specifying the kind of lock to acquire.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD Lock(uiMode REF DbLockInfo)		AS LOGIC 
+	METHOD Lock(uiMode REF DbLockInfo)		AS LOGIC
 
 	/// <summary>Release locks.</summary>
 	/// <param name="oRecId">The row number to unlock.  This argument is provided for drivers that support multiple row locks.  By convention, a value of zero indicates that all rows should be unlocked.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD UnLock(oRecId AS OBJECT)			AS LOGIC
-	
-	// Memo File Access
-	/// <summary>Close the memo file</summary>	
-    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD CloseMemFile() 					AS LOGIC    
 
-	/// <summary>Create the memo file</summary>	
+	// Memo File Access
+	/// <summary>Close the memo file</summary>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+	METHOD CloseMemFile() 					AS LOGIC
+
+	/// <summary>Create the memo file</summary>
 	/// <param name="info">object describing the file to create.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
 
-	/// <summary>Open the memo file </summary>	
+	/// <summary>Open the memo file </summary>
 	/// <param name="info">object describing the file to open.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD OpenMemFile(info AS DbOpenInfo) 		AS LOGIC   
+	METHOD OpenMemFile(info AS DbOpenInfo) 		AS LOGIC
 
 	// Indexes
 
@@ -258,12 +258,12 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Create a new index or tag.</summary>
 	/// <param name="info">An object containing information for order creation.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-    METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC	
-	
+    METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
+
 	/// <summary>Delete an index or tag.</summary>
 	/// <param name="info">An object containing information about the order to remove.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC    	
+	METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
 
 	/// <summary>Retrieve information about an index.</summary>
 	/// <param name="info">An object containing information about the order to retrieve the info for.</param>
@@ -289,20 +289,20 @@ INTERFACE XSharp.RDD.IRdd
 
 	/// <summary>Rebuild all indexes for the current Workarea.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD OrderListRebuild() AS LOGIC 
+	METHOD OrderListRebuild() AS LOGIC
 
 	/// <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
 	/// <param name="info">An object containing containing the necessary seek information.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     /// <remarks>The result of the actial seek operation is stored in the Found property of the RDD and the EOF property.</remarks>
 	METHOD Seek(info AS DbSeekInfo) AS LOGIC
-    	
+
 	// Relations
 
 	/// <summary>Report the initialization of a relation.</summary>
 	/// <param name="info">An object containing information about the relation</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD ChildEnd(info AS DbRelInfo)				AS LOGIC 
+	METHOD ChildEnd(info AS DbRelInfo)				AS LOGIC
 
 	/// <summary>Report the initialization of a relation.</summary>
 	/// <param name="info">An object containing information about the relation</param>
@@ -320,12 +320,12 @@ INTERFACE XSharp.RDD.IRdd
 
 	/// <summary>Force all pending relational seeks to be performed.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD ForceRel()								AS LOGIC  
+	METHOD ForceRel()								AS LOGIC
 
 	/// <summary>Retrieve the logical number of a related work area.</summary>
 	/// <param name="nRelNum">The ONE based relation number for which to obtain the logical number.</param>
     /// <returns>The area number of the relation.</returns>
-	METHOD RelArea(nRelNum AS DWORD)					AS DWORD 
+	METHOD RelArea(nRelNum AS DWORD)					AS DWORD
 
 	/// <summary>Evaluate a code block against the relation in a work area.</summary>
 	/// <param name="info">An object containing information about the relation</param>
@@ -340,7 +340,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Set a relation.</summary>
 	/// <param name="info">An object containing information about the relation</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD SetRel(info AS DbRelInfo)				AS LOGIC  
+	METHOD SetRel(info AS DbRelInfo)				AS LOGIC
 
 	/// <summary>Force relational movement in child work areas to synchronize them with the parent work area.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
@@ -361,7 +361,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <param name="info">An object containing information about the transfer of data.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     METHOD TransRec(info AS DbTransInfo) 			AS LOGIC
-    	
+
 	// Blob
 	/// <summary>Retrieve information about a memo column.</summary>
     /// <param name="nOrdinal">Specifies the type of information.</param>
@@ -374,19 +374,19 @@ INTERFACE XSharp.RDD.IRdd
 	METHOD Compile(sBlock AS STRING)				AS ICodeblock
 	/// <summary>Evaluate a code block.</summary>
 	/// <param name="sBlock">The code block to evaluate.</param>
-	METHOD EvalBlock(oBlock AS ICodeblock)			AS OBJECT	
+	METHOD EvalBlock(oBlock AS ICodeblock)			AS OBJECT
 
 	/// <summary>Retrieve and optionally change information about a work area.</summary>
     /// <param name="nOrdinal">Specifies the type of information.</param>
     /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
 
 	METHOD Info(nOrdinal AS LONG, oValue AS OBJECT) AS OBJECT
-	
+
 	/// <summary>Retrieve and optionally change information about a row.</summary>
     /// <param name="nOrdinal">Specifies the type of information.</param>
     /// <param name="oRecid">If specified (not null), then this parameter is used to specify for which object to retrieve the info.</param>
     /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
-	METHOD RecInfo( nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT  
+	METHOD RecInfo( nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
 
 	// Properties
 	/// <summary>Retrieve the alias name.</summary>
@@ -404,19 +404,19 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Is the Workarea opened Exclusively</summary>
 	PROPERTY Exclusive	AS LOGIC	GET
 	/// <summary>The # of fields in the current Workarea.</summary>
-	PROPERTY FieldCount AS LONG		GET 
+	PROPERTY FieldCount AS LONG		GET
 	/// <summary>The filter condition as a string.</summary>
-	PROPERTY FilterText	AS STRING	GET 
+	PROPERTY FilterText	AS STRING	GET
 	/// <summary>The outcome of the last search operation.</summary>
 	PROPERTY Found		AS LOGIC	GET SET
 	/// <summary>The number of rows.</summary>
 	PROPERTY RecCount	AS LONG		GET
 	/// <summary>The row identifier at the current cursor position.</summary>
-	PROPERTY RecId		AS OBJECT	GET		// Does not have to be numeric. 
+	PROPERTY RecId		AS OBJECT	GET		// Does not have to be numeric.
 	/// <summary>The physical row identifier at the current cursor position.</summary>
-	PROPERTY RecNo		AS LONG		GET   
+	PROPERTY RecNo		AS LONG		GET
 	/// <summary>Is the current Workarea opened Shared?</summary>
 	PROPERTY Shared		AS LOGIC	GET
-	
-END INTERFACE	
+
+END INTERFACE
 

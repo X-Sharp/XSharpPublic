@@ -505,7 +505,11 @@ namespace Microsoft.VisualStudio.Project
                     // Make the call to execute the wizard. This should cause AddNestedProjectFromTemplate to be
                     // called back with the correct set of parameters.
                     EnvDTE.IVsExtensibility extensibilityService = (EnvDTE.IVsExtensibility)GetService(typeof(EnvDTE.IVsExtensibility));
+#if DEV17
+                    EnvDTE.wizardResult result = extensibilityService.RunWizardFile(template, IntPtr.Zero, ref wizParams);
+#else
                     EnvDTE.wizardResult result = extensibilityService.RunWizardFile(template, 0, ref wizParams);
+#endif
                     if (result == EnvDTE.wizardResult.wizardResultFailure)
                         throw new COMException();
                 }
@@ -783,7 +787,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="e">Event args containing the file name that was updated.</param>
         private void OnNestedProjectFileChangedOnDisk(object sender, FileChangedOnDiskEventArgs e)
         {
-            #region Pre-condition validation
+#region Pre-condition validation
             Debug.Assert(e != null, "No event args specified for the FileChangedOnDisk event");
 
             // We care only about time change for reload.
@@ -798,7 +802,7 @@ namespace Microsoft.VisualStudio.Project
 
             this.GetMkDocument(e.ItemID, out moniker);
             Debug.Assert(NativeMethods.IsSamePath(moniker, e.FileName), " The file + " + e.FileName + " has changed but we could not retrieve the path for the item id associated to the path.");
-            #endregion
+#endregion
 
             bool reload = true;
             if(!Utilities.IsInAutomationFunction(this.Site))
@@ -817,6 +821,6 @@ namespace Microsoft.VisualStudio.Project
                 this.ReloadItem(e.ItemID, 0);
             }
         }
-        #endregion
+#endregion
     }
 }

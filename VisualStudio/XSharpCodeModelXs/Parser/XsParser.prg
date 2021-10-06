@@ -2914,6 +2914,13 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             xVar:IsArray := TRUE
          ENDIF
          xVar:Expression := expr
+         IF expr != NULL
+            var sb := StringBuilder{}
+            foreach var token in expr
+                sb:Append(token:TextWithTrivia)
+            next
+            xVar:Value := sb:ToString():Trim()
+         endif
          RETURN xVar
 
       PRIVATE METHOD ParseImpliedVar() AS XSourceVariableSymbol
@@ -3046,6 +3053,14 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          VAR xVar       := XSourceVariableSymbol{SELF:CurrentEntity, id, range, interval, type} {IsArray := !String.IsNullOrEmpty(arraysub)}
          xVar.Kind      := Kind.MemVar
          xVar:Expression := expr
+         if expr != NULL
+                var sb := StringBuilder{}
+                foreach var token in expr
+                    sb:Append(token:TextWithTrivia)
+                next
+                xVar:Value := sb:ToString()
+         endif
+
          RETURN xVar
 
 

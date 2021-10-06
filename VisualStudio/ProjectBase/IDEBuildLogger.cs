@@ -383,7 +383,11 @@ namespace Microsoft.VisualStudio.Project
                 {
                     while (this.outputQueue.TryDequeue(out output))
                     {
+#if DEV17
+                        ErrorHandler.ThrowOnFailure(output.Pane.OutputStringThreadSafe(output.Message));
+#else
                         ErrorHandler.ThrowOnFailure(output.Pane.OutputString(output.Message));
+#endif
                     }
                 }
             }

@@ -40,6 +40,10 @@
     </NuGetPackageImportStamp>
     <VsixType>v3</VsixType>
     <DeployExtension Condition=" '$(Configuration)' == 'Release' ">false</DeployExtension>
+    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+    <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
+    <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
+    <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
@@ -107,7 +111,6 @@
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs" />
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
-    <Compile Include="Commands\CommandViewInDisassembler.cs" />
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
     <Compile Include="Commands\CommandRebuildIntellisense.cs" />
     <Compile Include="Commands\CommandViewRepo.cs" />
@@ -130,9 +133,7 @@
     <Compile Include="ErrorList\TaskListProvider.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
-    <Compile Include="OptionsPages\BaseOptionsPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="OptionsPages\BaseOptionsPage.cs" />
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
@@ -171,20 +172,10 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
-    <Content Include="..\..\External\Debug\SQLite.Interop.dll">
-      <Link>SQLite.Interop.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\External\Debug\System.Collections.Immutable.dll">
       <Link>System.Collections.Immutable.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="..\..\External\Debug\System.Data.SQLite.dll">
-      <Link>System.Data.SQLite.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\External\Debug\System.Reflection.Metadata.dll">
       <Link>System.Reflection.Metadata.dll</Link>
@@ -192,12 +183,14 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Designers.pkgdef">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Editors\Todo.txt" />
     <Content Include="Snippets\SnippetsIndex.xml" />
-    <Content Include="Template.ico" />
+    <Content Include="Template.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <ZipProject Include="Templates\Projects\Windows\CoreWinFormApp\Form1.designer.prg" />
     <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.designer.prg" />
     <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.prg" />
@@ -334,30 +327,40 @@
       <LastGenOutput>TextTemplate.cs</LastGenOutput>
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.vstemplate" />
-    <Content Include="XSharp.png" />
+    <Content Include="x64\SQLite.Interop.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="x86\SQLite.Interop.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="XSharp.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>XSharpProjectPackage1.cs</LastGenOutput>
     </VSCTCompile>
     <Content Include="XSharpAppDesigner.pkgdef">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="XSharpDebugger.pkgdef">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="XSharpLanguageService.pkgdef">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="XSharpProjectCPS.pkgdef">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="XSharpVSIXLogo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <ZipItem Include="Templates\ProjectItems\WcfService\IService.prg">
@@ -400,7 +403,7 @@
     <Compile Include="CodeDomProvider\XSharpVSMDProvider.cs" />
     <Content Include="app.config">
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.xsdbs" />
@@ -574,15 +577,15 @@
     <ZipItem Include="Templates\ProjectItems\Code\Header\Header.vstemplate">
     </ZipItem>
     <Content Include="License.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="XSharp.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="XSharpDocument.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
@@ -708,13 +711,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit">
-      <Version>15.0.76.288-pre</Version>
+      <Version>15.0.76.270-pre</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK">
       <Version>15.0.1</Version>
     </PackageReference>
     <PackageReference Include="System.ComponentModel">
       <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite.Core">
+      <Version>1.0.115</Version>
     </PackageReference>
     <PackageReference Include="System.Design">
       <Version>4.0.0</Version>
@@ -729,6 +735,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>

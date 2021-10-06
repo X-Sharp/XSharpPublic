@@ -2147,8 +2147,11 @@ namespace Microsoft.VisualStudio.Project
                 try
                 {
                     Array contextParamsAsArray = contextParams;
-
+#if DEV17
+                    int result = ivsExtensibility.RunWizardFile(wizardToRun, dlgOwner, ref contextParamsAsArray, out wizResultAsInt);
+#else
                     int result = ivsExtensibility.RunWizardFile(wizardToRun, (int)dlgOwner, ref contextParamsAsArray, out wizResultAsInt);
+#endif
 
                     if (!ErrorHandler.Succeeded(result) && result != VSConstants.OLE_E_PROMPTSAVECANCELLED)
                     {
@@ -7433,7 +7436,11 @@ namespace Microsoft.VisualStudio.Project
                         Guid outputPaneGuid = VSConstants.GUID_BuildOutputWindowPane;
                         if (outputWindow.GetPane(ref outputPaneGuid, out outputPane) >= 0 && outputPane != null)
                         {
+#if DEV17
+                            Marshal.ThrowExceptionForHR(outputPane.OutputStringThreadSafe(message));
+#else
                             Marshal.ThrowExceptionForHR(outputPane.OutputString(message));
+#endif
                         }
                     }
 

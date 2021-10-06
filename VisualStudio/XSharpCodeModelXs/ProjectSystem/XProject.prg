@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _projectNode							   AS IXSharpProject
       PRIVATE _projectOutputDLLs						AS ConcurrentDictionary<STRING, STRING>
       PRIVATE _ReferencedProjects					AS List<XProject>
-      PRIVATE _StrangerProjects						AS List<EnvDTE.Project>
+      PRIVATE _StrangerProjects						AS List<Object>
       PRIVATE _unprocessedAssemblyReferences		AS List<STRING>
       PRIVATE _unprocessedProjectReferences		AS List<STRING>
       PRIVATE _unprocessedStrangerProjectReferences	AS List<STRING>
@@ -166,7 +166,7 @@ BEGIN NAMESPACE XSharpModel
          SELF:_failedStrangerProjectReferences     := List<STRING>{}
          SELF:_projectOutputDLLs := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
          SELF:_ReferencedProjects := List<XProject>{}
-         SELF:_StrangerProjects := List<EnvDTE.Project>{}
+         SELF:_StrangerProjects := List<Object>{}
          SELF:_projectNode := project
          SELF:_SourceFilesDict   := XFileDictionary{}
          SELF:_OtherFilesDict    := XFileDictionary{}
@@ -463,7 +463,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN NULL
 
-      PRIVATE METHOD GetStrangerOutputDLL(sProject AS STRING, p AS EnvDTE.Project) AS STRING
+      PRIVATE METHOD GetStrangerOutputDLL(sProject AS STRING, p AS Dynamic) AS STRING
          VAR outputFile := ""
          TRY
             VAR propType := saveGetProperty(p:Properties, "OutputType")
@@ -494,7 +494,7 @@ BEGIN NAMESPACE XSharpModel
 
       METHOD RemoveStrangerProjectReference(url AS STRING) AS LOGIC
          IF ! String.IsNullOrEmpty(url)
-            LOCAL prj AS EnvDTE.Project
+
             IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("RemoveStrangerProjectReference() "+url)
             ENDIF
@@ -509,7 +509,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
 
             SELF:RemoveProjectOutput(url)
-            prj := SELF:ProjectNode:FindProject(url)
+            var prj := SELF:ProjectNode:FindProject(url)
             IF prj != NULL .AND. SELF:_StrangerProjects:Contains(prj)
                SELF:_StrangerProjects:Remove(prj)
                RETURN TRUE
@@ -562,8 +562,7 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 existing := List<STRING>{}
                 FOREACH sProject AS STRING IN SELF:_unprocessedStrangerProjectReferences:ToArray()
-                   LOCAL p AS EnvDTE.Project
-                   p := SELF:ProjectNode:FindProject(sProject)
+                   VAR p := SELF:ProjectNode:FindProject(sProject)
                    IF (p != NULL)
                       SELF:_StrangerProjects:Add(p)
                       outputFile := SELF:GetStrangerOutputDLL(sProject, p)
@@ -1413,7 +1412,7 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
 
-      PROPERTY StrangerProjects AS IList<EnvDTE.Project>
+      PROPERTY StrangerProjects AS Object[]
          GET
             SELF:ResolveUnprocessedStrangerReferences()
             RETURN SELF:_StrangerProjects:ToArray()

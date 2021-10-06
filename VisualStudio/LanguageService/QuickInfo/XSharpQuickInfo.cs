@@ -209,12 +209,9 @@ namespace XSharp.LanguageService
             {
                 var name = var.Name;
                 var hasValue = !string.IsNullOrEmpty(var.Value);
-                if (var.Kind == Kind.DbField)
+                if (hasValue && var.Kind == Kind.DbField)
                 {
-                    if (hasValue)
-                    {
-                        name = var.Value + "->" + name;
-                    }
+                    name = var.Value + "->" + name;
                 }
                 list.addText(name + " ");
                 if (hasValue && var.Kind != Kind.DbField) // default value

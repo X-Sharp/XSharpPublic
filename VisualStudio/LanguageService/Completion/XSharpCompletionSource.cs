@@ -81,6 +81,13 @@ namespace XSharp.LanguageService
                 var triggerPoint = (SnapshotPoint)session.GetTriggerPoint(snapshot);
                 if (triggerPoint == null)
                     return;
+                // What is the character were it starts ?
+                var line = triggerPoint.GetContainingLine();
+                var triggerposinline = triggerPoint.Position - 2 - line.Start;
+                var afterChar = line.GetText()[triggerposinline];
+                if (afterChar == ' ' || afterChar == '\t')
+                    return;
+
                 // The "parameters" coming from CommandFilter
                 uint cmd;
                 char typedChar;
@@ -90,8 +97,7 @@ namespace XSharp.LanguageService
                 bool showInstanceMembers = (typedChar == ':') || ((typedChar == '.') && _file.Project.ParseOptions.AllowDotForInstanceMembers);
                 // Reset the StopToken
                 this._stopToken = null;
-                // What is the character were it starts ?
-                var line = triggerPoint.GetContainingLine();
+
                 ////////////////////////////////////////////
                 //
                 SnapshotSpan lineSpan = new SnapshotSpan(line.Start, line.Length);

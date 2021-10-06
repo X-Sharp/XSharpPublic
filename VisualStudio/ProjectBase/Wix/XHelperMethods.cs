@@ -727,11 +727,15 @@ public static class XHelperMethods
                 }
                 outputWindow.GetPane(ref guidGeneral, out windowPane);
             }
+#if DEV17
+            if (Microsoft.VisualStudio.ErrorHandler.Failed(windowPane.OutputStringThreadSafe(outputText)))
+#else        
             if (Microsoft.VisualStudio.ErrorHandler.Failed(windowPane.OutputString(outputText)))
+#endif
             {
                 XSettings.DisplayOutputMessage("Failed to write on the Output window");
             }
-            //
+                //
         }
 
 
@@ -740,8 +744,8 @@ public static class XHelperMethods
 
         /// <summary>
         /// WaitCursor internal class.
-      /// </summary>
-      private class WaitCursor : IDisposable
+        /// </summary>
+        private class WaitCursor : IDisposable
       {
          private Cursor currentCursor;
 
@@ -784,7 +788,7 @@ public static class XHelperMethods
    public static partial class OurNativeMethods
    {
         // This code was copied from the VB assembly
-        #region Enums
+#region Enums
         public enum ShFileOperationFlags : ushort
       {
          FOF_ALLOWUNDO = 64,
@@ -834,9 +838,9 @@ public static class XHelperMethods
          File,
          Directory
       }
-        #endregion
+#endregion
 
-        #region Public Methods
+#region Public Methods
         public static void ShellDelete(string FullPath, RecycleOption recycle, UICancelOption OnUserCancel, FileOrDirectory FileOrDirectory)
       {
          ShFileOperationFlags operationFlags = ShFileOperationFlags.FOF_SILENT| ShFileOperationFlags.FOF_NOCONFIRMATION;
@@ -846,9 +850,9 @@ public static class XHelperMethods
          }
          ShellFileOperation(SHFileOperationType.FO_DELETE, operationFlags, FullPath, null, OnUserCancel, FileOrDirectory);
       }
-        #endregion
+#endregion
 
-        #region Private Methods
+#region Private Methods
         public static void ShellFileOperation(SHFileOperationType OperationType, ShFileOperationFlags OperationFlags, string FullSource, string FullTarget, UICancelOption OnUserCancel, FileOrDirectory FileOrDirectory)
       {
          int num;
@@ -1071,7 +1075,7 @@ public static class XHelperMethods
          }
          throw new OperationCanceledException();
       }
-      #endregion
+#endregion
 
 
    }

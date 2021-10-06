@@ -95,9 +95,7 @@
     <Compile Include="DesignPropertyDescriptor.cs" />
     <Compile Include="DesignTimeAssemblyResolution.cs" />
     <Compile Include="DocumentManager.cs" />
-    <Compile Include="DontShowAgainDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="DontShowAgainDialog.cs" />
     <Compile Include="DontShowAgainDialog.Designer.cs">
       <DependentUpon>DontShowAgainDialog.cs</DependentUpon>
     </Compile>
@@ -105,9 +103,7 @@
     <Compile Include="FileChangeManager.cs" />
     <Compile Include="FileDocumentManager.cs" />
     <Compile Include="FileNode.cs" />
-    <Compile Include="fileoverwritedialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="fileoverwritedialog.cs" />
     <Compile Include="fileoverwritedialog.designer.cs">
       <DependentUpon>fileoverwritedialog.cs</DependentUpon>
     </Compile>
@@ -151,9 +147,7 @@
     <Compile Include="ReferenceNode.cs" />
     <Compile Include="RegisteredProjectType.cs" />
     <Compile Include="SelectionListener.cs" />
-    <Compile Include="SettingsPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="SettingsPage.cs" />
     <Compile Include="SingleFileGenerator.cs" />
     <Compile Include="SingleFileGeneratorFactory.cs" />
     <Compile Include="SolutionListener.cs" />
@@ -226,7 +220,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit">
-      <Version>15.0.76.288-pre</Version>
+      <Version>15.0.76.270-pre</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
       <Version>15.9.20</Version>

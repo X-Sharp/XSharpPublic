@@ -553,16 +553,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             // that being bound as !x.HasValue.
             //
 #if XSHARP
-            VOOperatorType opType = NeedsVOOperator(node, ref left, ref right);
+            VOOperatorType opType = NeedsVOOperator(node, ref left, ref right, diagnostics);
 
             if (opType != VOOperatorType.None)
             {
                 var res = BindVOBinaryOperator(node, diagnostics, ref left, ref right, opType);
                 if (res != null)
                     return res;
-                leftType = left.Type;
-                rightType = right.Type;
             }
+            leftType = left.Type;
+            rightType = right.Type;
+
             bool integralTypes = ((object)leftType) != null && ((object)rightType) != null &&
                 leftType.IsIntegralType() && rightType.IsIntegralType();
             if (!integralTypes)

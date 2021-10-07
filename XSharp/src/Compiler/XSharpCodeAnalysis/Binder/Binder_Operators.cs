@@ -411,7 +411,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
-        private VOOperatorType NeedsVOOperator(BinaryExpressionSyntax node, ref BoundExpression left, ref BoundExpression right)
+        private VOOperatorType NeedsVOOperator(BinaryExpressionSyntax node, ref BoundExpression left,
+            ref BoundExpression right, DiagnosticBag diagnostics)
         {
             // Check if a special XSharp binary operation is needed. This is needed when:
             //
@@ -433,6 +434,32 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol rightType = right.Type;
             var leftString = leftType.GetSpecialTypeSafe() == SpecialType.System_String;
             var rightString = rightType.GetSpecialTypeSafe() == SpecialType.System_String;
+            // Convert __WinDate to __Date to make sure that the Date rules are applied
+            // And do the same for __WinBool and System.Boolean
+            if (Compilation.Options.HasRuntime)
+            {
+                if (leftType.IsWinDateType())
+                {
+                    left = CreateConversion(left, Compilation.DateType(), diagnostics);
+                    leftType = left.Type;
+                }
+                else if (leftType.IsWinBoolType())
+                {
+                    left = CreateConversion(left, Compilation.GetSpecialType(SpecialType.System_Boolean), diagnostics);
+                    leftType = left.Type;
+                }
+
+                if (rightType.IsWinDateType())
+                {
+                    right = CreateConversion(right, Compilation.DateType(), diagnostics);
+                    rightType = right.Type;
+                }
+                else if (rightType.IsWinBoolType())
+                {
+                    right = CreateConversion(right, Compilation.GetSpecialType(SpecialType.System_Boolean), diagnostics);
+                    rightType = right.Type;
+                }
+            }
 
             if (Compilation.Options.HasRuntime && xnode != null)
             {

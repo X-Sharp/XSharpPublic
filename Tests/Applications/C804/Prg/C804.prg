@@ -1,14 +1,54 @@
-// 804. Problems with the new _WinDate structure
+// 804. Problems with the new _WinDate structure    
+// See https://github.com/X-Sharp/XSharpPublic/issues/773
+// Extended the example to also include LOGIC values inside a VOSTRUCT
+
+// Please note that the customers code assigns a LONG to a DWORD
+// So /vo must be enabled.
+#pragma options("vo4", ON)
 FUNCTION Start() AS VOID STRICT
 	LOCAL nDays AS DWORD
-	LOCAL dNow AS DATE
+	LOCAL dNow AS DATE    
+	LOCAL u AS USUAL
 	LOCAL ts IS TEST_STRUCT
 	
 	dNow := Today()
 	ts.dDate := Today()
-	nDays := dNow - ts.dDate // error XS0034: Operator '-' is ambiguous on operands of type 'DATE' and 'XSharp.__WinDate'
-	nDays := DWORD(_CAST, ts.dDate) // error XS0030: Cannot convert type 'XSharp.__WinDate' to 'dword'
+	ts.lLogic := TRUE
+	nDays := dNow - ts.dDate 
+    xAssert (nDays == 0)
+    xAssert(dNow == ts.dDate)
+	ts.dDate := Today() -1
+	nDays := dNow - ts.dDate 
+    xAssert (nDays == 1)     
+    xAssert(dNow == ts.dDate +1)
+    u := TRUE
+    xAssert(ts.lLogic == u)
+    xAssert(ts.lLogic == !FALSE)
+    xAssert(!ts.lLogic == FALSE)
+    xAssert(!ts.lLogic == !u)
 
+    u := 1
+    ? ts.dDate + u
+	ts.dDate := Today() +1
+	nDays := dNow - ts.dDate 
+    xAssert (nDays == -1)
+    xAssert (nDays == UInt32.MaxValue)
+
+	nDays := DWORD(_CAST, ts.dDate) 
+	? ts.dDate:JulianValue
+	? nDays
+	xAssert(nDays == ts.dDate:JulianValue)
+	
+	
 VOSTRUCT TEST_STRUCT
-	MEMBER dDate AS DATE
+	MEMBER dDate AS DATE     
+	MEMBER lLogic AS LOGIC
 
+
+
+PROC xAssert(l AS LOGIC) 
+IF .NOT. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"   
+RETURN 	

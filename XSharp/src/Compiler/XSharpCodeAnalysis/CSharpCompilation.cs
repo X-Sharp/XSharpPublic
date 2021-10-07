@@ -23,6 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         NamedTypeSymbol? _arrayType = null;
         NamedTypeSymbol? _rtFuncsType = null;
         NamedTypeSymbol? _codeblockType = null;
+        NamedTypeSymbol? _windateType = null;
         NamedTypeSymbol? _vfpFunctionsType = null;
 
         internal NamedTypeSymbol GetRtType(WellKnownType xsName, WellKnownType vulName)
@@ -85,6 +86,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 _codeblockType = GetRtType(WellKnownType.XSharp_Codeblock, WellKnownType.Vulcan_Codeblock);
             }
             return _codeblockType;
+        }
+        internal NamedTypeSymbol WinDateType()
+        {
+            if (_windateType is null)
+            {
+                _windateType = GetRtType(WellKnownType.XSharp___WinDate, WellKnownType.XSharp___WinDate);
+            }
+            return _windateType;
         }
         internal NamedTypeSymbol RuntimeFunctionsType()
         {

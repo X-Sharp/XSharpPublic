@@ -84,7 +84,7 @@
       </styleclass>
       <styleclass name="Code Example" parentclass="Normal" shortcut="24643">
         <style-set media="screen" type="para">margin-top:24px; margin-right:24px; margin-bottom:24px; margin-left:24px;</style-set>
-        <style-set media="screen" type="text">font-family:Consolas; font-size:10pt;</style-set>
+        <style-set media="screen" type="text">font-family:Consolas;</style-set>
       </styleclass>
       <styleclass name="Code with box" parentclass="Code Example" shortcut="16507">
         <style-set media="screen" type="para">margin-right:24px; margin-left:24px; border-style:single; border-width:1px; padding:10px;</style-set>
@@ -705,7 +705,7 @@
       <config-value name="template">$(HMSYS)Templates\Word\Word-Template-Simple-A4.docx</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.9.0)</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.9.0.1)</variable>
       <variable id="APP" type="text" translate="true">XSharp</variable>
     </variables>
     <helpcontext-numbers/>

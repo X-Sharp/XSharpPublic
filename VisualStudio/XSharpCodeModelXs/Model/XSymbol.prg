@@ -37,6 +37,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Prototype               AS STRING GET ""
       PROPERTY IsStatic                AS LOGIC AUTO
       PROPERTY IsArray                 AS LOGIC AUTO
+      PROPERTY IsPublic                AS LOGIC GET SELF:Visibility >= Modifiers.Public
+      PROPERTY IsExternalVisible       AS LOGIC GET SELF:Visibility >= Modifiers.Protected .or. SELF:Visibility == Modifiers.ProtectedInternal
       PROPERTY Namespace               AS STRING AUTO
       PROPERTY FullName                AS STRING GET Name
       PROPERTY ResolvedType            AS IXTypeSymbol AUTO

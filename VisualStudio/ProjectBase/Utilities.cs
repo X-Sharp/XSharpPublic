@@ -1226,6 +1226,24 @@ namespace Microsoft.VisualStudio.Project
             return true;
 
         }
-    
+        public static bool CopyFileSafe(string fileName, string targetName)
+        {
+            try
+            {
+                if (File.Exists(fileName))
+                {
+                    DeleteFileSafe(targetName);
+                }
+                File.Copy(fileName, targetName);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                return false;
+            }
+            return true;
+
+        }
+
     }
 }

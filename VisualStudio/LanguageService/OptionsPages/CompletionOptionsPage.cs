@@ -38,8 +38,7 @@ namespace XSharp.LanguageService.OptionsPages
         public bool CompleteFunctionsP { get; set; }
         [DefaultValue(true)]
         public bool CompleteFunctionsA { get; set; }
-       
-
+        
 
     }
 }

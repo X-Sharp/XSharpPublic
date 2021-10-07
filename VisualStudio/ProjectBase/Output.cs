@@ -68,7 +68,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual int get_DeploySourceURL(out string pbstrDeploySourceURL)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            string path = string.Empty; ;
+            string path = string.Empty; 
             if (this.project is XProjectNode)
             {
                 var xproject = project as XProjectNode;

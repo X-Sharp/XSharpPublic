@@ -43,7 +43,7 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <StartupObject />
     <ApplicationIcon />
-    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
+    <XSharpProjectversion>2.9.0.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
@@ -86,7 +86,7 @@
     <CommandLineOption />
     <PPO>false</PPO>
     <DefineConstants>TRACE</DefineConstants>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
@@ -181,6 +181,7 @@
     <None Include="..\..\Common\BuildNumber.h">
       <Link>BuildNumber.h</Link>
     </None>
+    <EmbeddedResource Include="cavotb.bmp" />
     <None Include="Designers\Readme.txt" />
     <None Include="Designers\VODesigners.xsproj" />
     <None Include="Designers\VOWin32APILibrary.vh" />

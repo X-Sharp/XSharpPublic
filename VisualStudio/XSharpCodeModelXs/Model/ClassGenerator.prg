@@ -121,7 +121,7 @@ CLASS XClassCreator
 
 		IF oType:Kind == Kind.Delegate
 			//SELF:AddDelegate(oType , nNest)
-		ELSEIF oType:IsPublic() .or. oType:IsNested
+		ELSEIF oType:IsPublic .or. oType:IsNested
 			SELF:AddType(oType , nNest)
 		END IF
 
@@ -151,6 +151,7 @@ CLASS XClassCreator
 	PROTECTED METHOD AddType(oType AS XPETypeSymbol , nNest AS INT, cParentName := "" AS STRING) AS VOID
 		LOCAL cLine AS STRING
 		LOCAL cInterfaces AS STRING
+        var isFunctionsClass := oType:IsFunctionsClass
         var aMethods := oType:GetMethods(TRUE):ToList()
         var aOperators := aMethods:Where( { m => m:Name:StartsWith("op_") }):ToList()
         var aSpecial   := aMethods:Where( ;
@@ -164,30 +165,36 @@ CLASS XClassCreator
         foreach var m in aSpecial
             aMethods:Remove(m)
         next
-        SELF:GetDoc(oType,nNest)
-        SELF:AddAttributes(oType, aLines, nNest)
-        cLine := oType:VisibilityKeyword+" "+oType:ModifiersKeyword+" "+ oType:KindKeyword + " "
-        IF String.IsNullOrEmpty(cParentName)
-            cLine += oType:FullName
+        local isVisible as @@Func<IXMemberSymbol, LOGIC>
+        isVisible := { m as IXMemberSymbol => m:IsExternalVisible}
+        IF isFunctionsClass
+            isVisible := { m as IXMemberSymbol => m:IsPublic}
         ELSE
-            cLine += oType:FullName:Replace(cParentName+".","")
-        ENDIF
-        IF ! String.IsNullOrWhiteSpace(oType:BaseTypeName)
-            cLine += " INHERIT "+oType:BaseTypeName
-        ENDIF
-		cInterfaces := SELF:GetInterfaces(oType)
+            SELF:GetDoc(oType,nNest)
+            SELF:AddAttributes(oType, aLines, nNest)
+            cLine := oType:VisibilityKeyword+" "+oType:ModifiersKeyword+" "+ oType:KindKeyword + " "
+            IF String.IsNullOrEmpty(cParentName)
+                cLine += oType:FullName
+            ELSE
+                cLine += oType:FullName:Replace(cParentName+".","")
+            ENDIF
+            IF ! String.IsNullOrWhiteSpace(oType:BaseTypeName)
+                cLine += " INHERIT "+oType:BaseTypeName
+            ENDIF
+    		cInterfaces := SELF:GetInterfaces(oType)
 
-		IF cInterfaces:Length != 0
-			IF oType:Kind == Kind.Interface
-				cLine += " INHERIT "
-			ELSE
-				cLine += " IMPLEMENTS "
-			END IF
-			cLine += cInterfaces
-		END IF
+		    IF cInterfaces:Length != 0
+			    IF oType:Kind == Kind.Interface
+				    cLine += " INHERIT "
+			    ELSE
+				    cLine += " IMPLEMENTS "
+			    END IF
+			    cLine += cInterfaces
+		    END IF
 
-		SELF:AddLine(cLine , nNest)
-		nNest ++
+    		SELF:AddLine(cLine , nNest)
+	    	nNest ++
+        ENDIF
 
 		IF oType:Kind == Kind.Enum
 			var fields := oType:GetFields()
@@ -220,7 +227,7 @@ CLASS XClassCreator
                 SELF:AddLine("#endregion Constructors", nNest)
 			    SELF:EndSection(nNest)
             ENDIF
-            coll := oType:GetFields()
+            coll := oType:GetFields():Where ( isVisible ):ToArray()
 
             IF coll:Length > 0
 			    SELF:BeginSection()
@@ -230,7 +237,7 @@ CLASS XClassCreator
                 SELF:AddLine("#endregion Fields", nNest)
 			    SELF:EndSection(nNest)
             ENDIF
-            coll := oType:GetEvents(TRUE)
+            coll := oType:GetEvents(TRUE):Where ( isVisible):ToArray()
             IF coll:Length > 0
 			    SELF:BeginSection()
                 SELF:AddLine("#region Events", nNest)
@@ -239,7 +246,7 @@ CLASS XClassCreator
 			    SELF:EndSection(nNest)
             ENDIF
 
-            coll := oType:GetProperties(TRUE)
+            coll := oType:GetProperties(TRUE):Where ( isVisible):ToArray()
             IF coll:Length > 0
 			    SELF:BeginSection()
                 SELF:AddLine("#region Properties", nNest)
@@ -248,31 +255,34 @@ CLASS XClassCreator
 			    SELF:EndSection(nNest)
             ENDIF
 
-            IF aMethods:Count > 0
+            coll := aMethods:Where( isVisible):ToArray()
+            IF coll:Length > 0
 			    SELF:BeginSection()
                 SELF:AddLine("#region Methods", nNest)
-                SELF:AddMemberLines(aMethods, nNest)
+                SELF:AddMemberLines(coll, nNest)
                 SELF:AddLine("#endregion Methods", nNest)
 			    SELF:EndSection(nNest)
             ENDIF
 		END IF
 		nNest --
 
-		VAR aNested := oType:XChildren:ToArray()
-		IF aNested:Length != 0
-            SELF:AddLine("#region Nested Classes", nNest)
-			FOREACH VAR oChild in aNested
-				SELF:AddLine("" , nNest)
-				IF oChild:Kind == Kind.Delegate
-					SELF:AddDelegate(oChild , nNest + 1, oType:FullName)
-				ELSE
-					SELF:AddType(oChild , nNest + 1, oType:FullName)
-				END IF
-            NEXT
-            SELF:AddLine("#endregion Nested Classes", nNest)
-		END IF
+        IF ! isFunctionsClass
+		    VAR aNested := oType:XChildren:Where({ t=> t:Visibility > Modifiers.Private}):ToArray()
+		    IF aNested:Length != 0
+                SELF:AddLine("#region Nested Classes", nNest)
+			    FOREACH VAR oChild in aNested
+				    SELF:AddLine("" , nNest)
+				    IF oChild:Kind == Kind.Delegate
+					    SELF:AddDelegate(oChild , nNest + 1, oType:FullName)
+				    ELSE
+					    SELF:AddType(oChild , nNest + 1, oType:FullName)
+				    END IF
+                NEXT
+                SELF:AddLine("#endregion Nested Classes", nNest)
+		    END IF
 //
-		SELF:AddLine("END " + oType:KindKeyword, nNest)
+		    SELF:AddLine("END " + oType:KindKeyword, nNest)
+        ENDIF
 
 	RETURN
 
@@ -281,6 +291,9 @@ CLASS XClassCreator
         coll:Sort( {a,b => String.Compare(a:Prototype, b:Prototype)})
         // static members
         FOREACH item AS XPEMemberSymbol in coll
+            if item.Name:IndexOf("$") >= 0
+                LOOP
+            ENDIF
             if item:Modifiers:HasFlag(Modifiers.Static)
                 SELF:GetDoc(item,nNest)
                 SELF:AddLine(item:ClassGenText, nNest)
@@ -288,6 +301,9 @@ CLASS XClassCreator
         NEXT
         // instance members
         FOREACH item AS XPEMemberSymbol in coll
+            if item.Name:IndexOf("$") >= 0
+                LOOP
+            ENDIF
             if !item:Modifiers:HasFlag(Modifiers.Static)
                 SELF:GetDoc(item,nNest)
                 SELF:AddLine(item:ClassGenText, nNest)

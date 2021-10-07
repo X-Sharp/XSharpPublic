@@ -83,23 +83,17 @@
     <Compile Include="IXsProjectDesigner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyPages\Enums.cs" />
-    <Compile Include="PropertyPages\XBuildPropertyPagePanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="PropertyPages\XBuildPropertyPagePanel.cs" />
     <Compile Include="PropertyPages\XBuildPropertyPagePanel.Designer.cs">
       <DependentUpon>XBuildPropertyPagePanel.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XBuildPropertyPage.cs" />
     <Compile Include="PropertyPages\XDebugPropertyPage.cs" />
-    <Compile Include="PropertyPages\XDebugPropertyPagePanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="PropertyPages\XDebugPropertyPagePanel.cs" />
     <Compile Include="PropertyPages\XDebugPropertyPagePanel.Designer.cs">
       <DependentUpon>XDebugPropertyPagePanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\XGeneralPropertyPagePanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="PropertyPages\XGeneralPropertyPagePanel.cs" />
     <Compile Include="PropertyPages\XGeneralPropertyPagePanel.Designer.cs">
       <DependentUpon>XGeneralPropertyPagePanel.cs</DependentUpon>
     </Compile>
@@ -107,83 +101,55 @@
     <Compile Include="PropertyPages\XLanguagePropertyPage.cs" />
     <Compile Include="PropertyPages\XGeneralPropertyPage.cs" />
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
-    <Compile Include="PropertyPages\XDialectPropertyPagePanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="PropertyPages\XDialectPropertyPagePanel.cs" />
     <Compile Include="PropertyPages\XDialectPropertyPagePanel.Designer.cs">
       <DependentUpon>XDialectPropertyPagePanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\XLanguagePropertyPagePanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="PropertyPages\XLanguagePropertyPagePanel.cs" />
     <Compile Include="PropertyPages\XLanguagePropertyPagePanel.Designer.cs">
       <DependentUpon>XLanguagePropertyPagePanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\XBuildEventsPropertyPagePanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="PropertyPages\XBuildEventsPropertyPagePanel.cs" />
     <Compile Include="PropertyPages\XBuildEventsPropertyPagePanel.Designer.cs">
       <DependentUpon>XBuildEventsPropertyPagePanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\XSharpMLEPropertyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="PropertyPages\XSharpMLEPropertyForm.cs" />
     <Compile Include="PropertyPages\XSharpMLEPropertyForm.Designer.cs">
       <DependentUpon>XSharpMLEPropertyForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyPages\XSharpSLEPropertyForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="PropertyPages\XSharpSLEPropertyForm.cs" />
     <Compile Include="PropertyPages\XSharpSLEPropertyForm.Designer.cs">
       <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Resources.cs" />
-    <Compile Include="Wix\FolderBrowserTextBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Wix\FolderBrowserTextBox.cs" />
     <Compile Include="Wix\FolderBrowserTextBox.Designer.cs">
       <DependentUpon>FolderBrowserTextBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Wix\FoldersSelector.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Wix\FoldersSelector.cs" />
     <Compile Include="Wix\FoldersSelector.Designer.cs">
       <DependentUpon>FoldersSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="Wix\projectproperty.cs" />
     <Compile Include="Wix\projectpropertyargumentexception.cs" />
     <Compile Include="Wix\PropertyValidator.cs" />
-    <Compile Include="Wix\XBuildEventEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Wix\XBuildEventEditor.cs" />
     <Compile Include="Wix\XBuildEventEditor.Designer.cs">
       <DependentUpon>XBuildEventEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Wix\XBuildEventEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Wix\XBuildEventEditorForm.cs" />
     <Compile Include="Wix\XBuildEventEditorForm.Designer.cs">
       <DependentUpon>XBuildEventEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Wix\XBuildEventTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Wix\XColorUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Wix\XBuildEventTextBox.cs" />
+    <Compile Include="Wix\XColorUserControl.cs" />
     <Compile Include="Wix\XColorUserControl.Designer.cs">
       <DependentUpon>XColorUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Wix\XGroupBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Wix\XGroupLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Wix\XGroupBox.cs" />
+    <Compile Include="Wix\XGroupLabel.cs" />
     <Compile Include="Wix\XPropertyPage.cs" />
-    <Compile Include="Wix\XPropertyPagePanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Wix\XPropertyPagePanel.cs" />
     <Compile Include="Wix\XPropertyPagePanel.Designer.cs">
       <DependentUpon>XPropertyPagePanel.cs</DependentUpon>
     </Compile>

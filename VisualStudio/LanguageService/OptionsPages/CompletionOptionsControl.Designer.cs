@@ -294,7 +294,7 @@
             this.Controls.Add(this.chkLocals);
             this.Controls.Add(this.label1);
             this.Name = "CompletionOptionsControl";
-            this.Size = new System.Drawing.Size(403, 272);
+            this.Size = new System.Drawing.Size(403, 305);
             ((System.ComponentModel.ISupportInitialize)(this.tbChars)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

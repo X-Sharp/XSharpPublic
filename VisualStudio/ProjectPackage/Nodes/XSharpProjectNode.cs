@@ -149,7 +149,11 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             lock (this)
             {
+#if DEV17
+                var task = (Microsoft.VisualStudio.Shell.TaskListItem)sender;
+#else
                 var task = (Microsoft.VisualStudio.Shell.Task)sender;
+#endif
                 this.OpenElement(task.Document, task.Line, task.Column);
             }
         }
@@ -183,9 +187,9 @@ namespace XSharp.Project
             AddCATIDMapping(typeof(XSharpDialectPropertyPage), typeof(XSharpDialectPropertyPage).GUID);
             AddCATIDMapping(typeof(XSharpDebugPropertyPage), typeof(XSharpDebugPropertyPage).GUID);
         }
-        #endregion
+#endregion
 
-        #region Properties
+#region Properties
 
         internal bool IsLoading => isLoading;
         /// <summary>
@@ -245,9 +249,9 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
 
-        #region Overriden implementation
+#region Overriden implementation
         /// <summary>
         /// Gets the project GUID.
         /// </summary>
@@ -719,7 +723,7 @@ namespace XSharp.Project
                 string path = Path.GetDirectoryName(target);
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
-                File.Copy(source, target, true);
+                Utilities.CopyFileSafe(source, target);
                 return;
             }
             // The class name is based on the new file name
@@ -1042,9 +1046,9 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
 
-        #region References Management Events
+#region References Management Events
 
         private void ReferencesEvents_ReferenceRemoved(Reference pReference)
         {
@@ -1072,10 +1076,10 @@ namespace XSharp.Project
                     ProjectModel.UpdateAssemblyReference(pReference.Path);
             }
         }
-        #endregion
+#endregion
 
 
-        #region Private implementation
+#region Private implementation
 
         private void CreateListManagers()
         {
@@ -1175,7 +1179,7 @@ namespace XSharp.Project
         {
             return new XSharpProjectNodeProperties(this);
         }
-        #endregion
+#endregion
 
 
         public XSharpModel.XProject ProjectModel
@@ -1207,7 +1211,11 @@ namespace XSharp.Project
         private void OnProjectWalkComplete(XProject xProject)
         {
             var tasks = this.ProjectModel.GetCommentTasks();
+#if DEV17
+            var list = new List<TaskItem>();
+#else
             var list = new List<Task>();
+#endif
             _taskListManager.Clear();
             foreach (var task in tasks)
             {
@@ -1219,7 +1227,11 @@ namespace XSharp.Project
         private void OnFileWalkComplete(XFile xfile)
         {
             var tasks = this.ProjectModel.GetCommentTasks();
+#if DEV17
+            var list = new List<TaskListItem>();
+#else
             var list = new List<Task>();
+#endif
             _taskListManager.Clear();
             foreach (var task in tasks)
             {
@@ -1351,7 +1363,8 @@ namespace XSharp.Project
             });
             return list;
         }
-        public EnvDTE.Project FindProject(string sProject)
+
+        public Object FindProject(string sProject)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -1439,7 +1452,7 @@ namespace XSharp.Project
             return (ext.EndsWith("proj", StringComparison.OrdinalIgnoreCase));
         }
 
-        #region IXSharpProject Interface
+#region IXSharpProject Interface
         
 
         public void RunInForeGroundThread(Action a)
@@ -1602,7 +1615,7 @@ namespace XSharp.Project
         }
         
 
-        #endregion
+#endregion
 
 
         protected override void Reload()
@@ -1669,7 +1682,7 @@ namespace XSharp.Project
             }
             return bOk;
         }
-        #region IProjectTypeHelper
+#region IProjectTypeHelper
         public IXTypeSymbol ResolveExternalType(string name, IList<string> usings)
         {
             switch (name.ToLower())
@@ -1715,8 +1728,8 @@ namespace XSharp.Project
         }
 
 
-        #endregion
-        #region IVsSingleFileGeneratorFactory
+#endregion
+#region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 
         // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on
@@ -1734,7 +1747,7 @@ namespace XSharp.Project
         }
         public int GetDefaultGenerator(string wszFilename, out string pbstrGenProgID)
         {
-            string temp = String.Empty; ;
+            string temp = String.Empty; 
             int result = VSConstants.S_FALSE;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
@@ -1771,9 +1784,9 @@ namespace XSharp.Project
             return VSConstants.S_FALSE;
 
         }
-        #endregion
+#endregion
 
-        #region IVsDesignTimeAssemblyResolution
+#region IVsDesignTimeAssemblyResolution
 
         private DesignTimeAssemblyResolution designTimeAssemblyResolution;
         private ConfigCanonicalName _config = new ConfigCanonicalName("Debug", "AnyCPU");
@@ -1828,8 +1841,8 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-        #endregion
-        #region TableManager
+#endregion
+#region TableManager
         //internal ITableManagerProvider tableManagerProvider { get; private set; }
         ErrorListManager _errorListManager = null;
         TaskListManager _taskListManager = null;
@@ -1907,7 +1920,7 @@ namespace XSharp.Project
                 return false;
             }
         }
-        #endregion
+#endregion
         public bool IsDocumentOpen(string documentName)
         {
             
@@ -2620,7 +2633,7 @@ namespace XSharp.Project
         }
   
 
-        #region IVsProject5
+#region IVsProject5
         public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)
         {
             var node = this.FindURL(pszMkDocument);
@@ -2690,7 +2703,7 @@ namespace XSharp.Project
             return false;
         }
 
-        #endregion
+#endregion
         /*
           public override int AddProjectReference()
           {
@@ -2717,7 +2730,7 @@ namespace XSharp.Project
                     return VSConstants.E_NOINTERFACE;
                }
           }
-          #region IVsReferenceManagerUser Members
+#region IVsReferenceManagerUser Members
 
           void IVsReferenceManagerUser.ChangeReferences(uint operation, IVsReferenceProviderContext changedContext)
           {
@@ -2752,9 +2765,9 @@ namespace XSharp.Project
                return this.GetProviderContexts();
           }
 
-          #endregion
+#endregion
 
-          #region IvsReferenceManagerUser implementation
+#region IvsReferenceManagerUser implementation
           protected virtual Array GetProviderContexts()
           {
                var referenceManager = this.GetService(typeof(SVsReferenceManager)) as IVsReferenceManager;
@@ -3005,7 +3018,7 @@ namespace XSharp.Project
                     return "Assembly files|*.dll";
                }
           }
-          #endregion
+#endregion
     */
     }
 

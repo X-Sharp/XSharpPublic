@@ -197,47 +197,47 @@ namespace XSharp.LanguageService
 
         internal void AddGenericCompletion(XCompletionList compList, XSharpSearchLocation location, string startWith )
         {
-            if (XSettings.CompleteLocals)
+            if (XSettings.CompleteLocals && compList.Count < XSettings.MaxCompletionEntries)
             {
                 AddGenericLocals(compList, location, startWith);
             }
-            if (XSettings.CompleteSelf)
+            if (XSettings.CompleteSelf && compList.Count < XSettings.MaxCompletionEntries)
             {
                 AddGenericSelfMembers(compList, location, startWith);
             }
-            if (XSettings.CompleteParent)
+            if (XSettings.CompleteParent && compList.Count < XSettings.MaxCompletionEntries)
             {
                 AddGenericInheritedMembers(compList, location, startWith);
             }
-            if (XSettings.CompleteNamespaces)
+            if (XSettings.CompleteNamespaces && compList.Count < XSettings.MaxCompletionEntries)
             {
                 AddNamespaces(compList, location, startWith);
             }
-            if (XSettings.CompleteTypes)
+            if (XSettings.CompleteTypes && compList.Count < XSettings.MaxCompletionEntries)
             {
                 AddTypeNames(compList, location, startWith);
             }
-            if (XSettings.CompleteFunctions)
+            if (XSettings.CompleteFunctions && compList.Count < XSettings.MaxCompletionEntries)
             {
                 AddGenericFunctions(compList, location, startWith, true);
             }
-            if (XSettings.CompleteFunctionsP)
+            if (XSettings.CompleteFunctionsP && compList.Count < XSettings.MaxCompletionEntries)
             {
                 AddGenericFunctions(compList, location, startWith, false);
             }
-            if (XSettings.CompleteFunctionsA)
+            if (XSettings.CompleteFunctionsA && compList.Count < XSettings.MaxCompletionEntries) 
             {
                 AddGenericFunctionsAssemblies(compList, location, startWith, false);
             }
-            if (XSettings.CompleteGlobals)
+            if (XSettings.CompleteGlobals && compList.Count < XSettings.MaxCompletionEntries)
             {
                 AddGenericGlobals(compList, location, startWith, true);
             }
-            if (XSettings.CompleteGlobalsP)
+            if (XSettings.CompleteGlobalsP && compList.Count < XSettings.MaxCompletionEntries)
             {
                 AddGenericGlobals(compList, location, startWith, false);
             }
-            if (XSettings.CompleteGlobalsA)
+            if (XSettings.CompleteGlobalsA && compList.Count < XSettings.MaxCompletionEntries)
             {
                 AddGenericGlobalsAssemblies(compList, location, startWith, false);
 

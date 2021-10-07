@@ -11,6 +11,8 @@ USING System.Linq
 BEGIN NAMESPACE XSharpModel
 
    STATIC CLASS XTypeExtensions
+      STATIC METHOD IsGlobalType(SELF type as IXTypeSymbol) AS LOGIC
+          RETURN type:Name == XLiterals.GlobalName
       STATIC METHOD GetDescription(SELF type as IXTypeSymbol) AS STRING
          VAR modVis := type:ModVis
          IF  type:IsStatic
@@ -71,8 +73,6 @@ BEGIN NAMESPACE XSharpModel
             RETURN "T:"+peType:OriginalTypeName
          ENDIF
          RETURN "T:"+tm:FullName
-      STATIC METHOD IsPublic(SELF type as IXTypeSymbol) AS LOGIC
-            return type:Visibility >= Modifiers.Public
       STATIC METHOD IsVoStruct(SELF type AS IXTypeSymbol) AS LOGIC
         IF (type == NULL)
             RETURN FALSE

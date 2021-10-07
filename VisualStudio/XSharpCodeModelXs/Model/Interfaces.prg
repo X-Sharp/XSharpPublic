@@ -8,6 +8,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY KindKeyword AS STRING GET
       PROPERTY TypeName    AS STRING GET SET
       PROPERTY Parent      AS IXSymbol GET SET
+      PROPERTY IsPublic    AS LOGIC GET
+      PROPERTY IsExternalVisible AS LOGIC GET
    END INTERFACE
 
    /// <summary>Properties shared by all entities (types and members, internal and external) in the codemodel</summary>
@@ -44,6 +46,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsGeneric   AS LOGIC GET
       PROPERTY OriginalTypeName  AS STRING GET
       PROPERTY Location    AS STRING GET
+      PROPERTY IsFunctionsClass as LOGIC GET
 
       METHOD   AddTypeParameter(name AS STRING) AS VOID
       METHOD   AddConstraints(name AS STRING) AS VOID

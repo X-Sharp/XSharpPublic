@@ -143,8 +143,7 @@ namespace XSharp.LanguageService
         private static void GotoSystemType(ITextView TextView, XPETypeSymbol petype, XPESymbol element)
         {
             asmName = petype.Assembly;
-            var aLines = XClassCreator.Create(petype, LookupXml);
-            asmName = null;
+            bool mustCreate = false;
             if (Semaphore == null)
             {
                 // we create a semaphore file in the workfolder to make sure that if 2 copies of VS are running
@@ -183,23 +182,45 @@ namespace XSharp.LanguageService
                 Directory.CreateDirectory(nspath);
             }
             var temp = Path.Combine(nspath, petype.Name) + ".prg";
-            if (!File.Exists(temp))
+            mustCreate = !File.Exists(temp);
+            if (mustCreate)
             {
-                File.WriteAllLines(temp, aLines.ToArray());
+                VS.StatusBar.ShowMessageAsync("Generating reference source for "+petype.FullName).FireAndForget();
+                VS.StatusBar.StartAnimationAsync(StatusAnimation.General).FireAndForget();
+                var aLines = XClassCreator.Create(petype, LookupXml);
+                File.WriteAllLines(temp, aLines,System.Text.Encoding.UTF8);
                 File.SetAttributes(temp, FileAttributes.ReadOnly);
+                VS.StatusBar.ClearAsync().FireAndForget();
+                VS.StatusBar.EndAnimationAsync(StatusAnimation.General).FireAndForget();
             }
             var xFile = XSolution.AddOrphan(temp);
             var walker = new SourceWalker(xFile, false);
             walker.Parse(false);
             var entities = walker.EntityList;
             var line = 1;
-            foreach (var entity in entities)
+            
+            if (petype.IsFunctionsClass)
             {
-                if (entity.FullName == element.FullName)
+                foreach (var entity in entities)
                 {
-                    line = entity.Range.StartLine + 1;
-                    break;
+                    if (entity.Prototype == element.Prototype)
+                    {
+                        line = entity.Range.StartLine + 1;
+                        break;
+                    }
                 }
+            }
+            else
+            {
+                foreach (var entity in entities)
+                {
+                    if (entity.FullName == element.FullName)
+                    {
+                        line = entity.Range.StartLine + 1;
+                        break;
+                    }
+                }
+
             }
             var file = TextView.TextBuffer.GetFile();
             // Copy references to the Orphan file project so type lookup works as expected

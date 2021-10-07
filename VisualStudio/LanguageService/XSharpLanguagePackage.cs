@@ -216,6 +216,7 @@ namespace XSharp.LanguageService
             XSettings.CompleteFunctionsP = _completionOptionsPage.CompleteFunctionsP;
             XSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
             XSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
+            //XSettings.MaxCompletionEntries = _completionOptionsPage.MaxCompletionEntries;
             // Other
             XSettings.EditorShowDividers = _otherOptionsPage.ShowDividers;
             XSettings.EditorShowSingleLineDividers = _otherOptionsPage.ShowSingleLineDividers;
@@ -445,7 +446,7 @@ namespace XSharp.LanguageService
                 _libraryManager.OnIdle();
 
             var walker = XSharpModel.ModelWalker.GetWalker();
-            if (walker != null && !walker.IsWalkerRunning && walker.HasWork)
+            if (walker != null && !walker.IsRunning && walker.HasWork)
             {
                 walker.Walk();
             }

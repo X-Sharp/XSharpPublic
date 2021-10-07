@@ -75,7 +75,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 		NEXT
 
 
-	NEW METHOD Save() AS LOGIC
+	METHOD Save() AS LOGIC
 		LOCAL lSuccess:= FALSE AS LOGIC
 		VAR aLines := SELF:oXSharpEditor:GetStringLines()
 		VAR sb := StringBuilder{aLines:Count * 80}

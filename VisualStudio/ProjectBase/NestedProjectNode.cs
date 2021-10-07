@@ -746,7 +746,7 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void LockRDTEntry()
         {
             // Define flags for the nested project document
-            _VSRDTFLAGS flags = _VSRDTFLAGS.RDT_VirtualDocument | _VSRDTFLAGS.RDT_ProjSlnDocument; ;
+            _VSRDTFLAGS flags = _VSRDTFLAGS.RDT_VirtualDocument | _VSRDTFLAGS.RDT_ProjSlnDocument; 
 
             // Request the RDT service
             ThreadHelper.ThrowIfNotOnUIThread();

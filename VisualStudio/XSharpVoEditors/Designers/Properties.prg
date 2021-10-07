@@ -140,7 +140,7 @@ CLASS VODesignProperty INHERIT DesignProperty
 		NEXT*/
 		LOCAL aValues AS List<STRING>
 		cValue := NULL
-		
+
 		IF aList != NULL
 			FOR n := 0 UPTO SELF:aEnumValues:Count - 1
 				aValues := Funcs.SplitString(SELF:aEnumValues[n]:ToUpper() , '|')
@@ -156,7 +156,7 @@ CLASS VODesignProperty INHERIT DesignProperty
 			SELF:Value := cValue
 			RETURN
 		ENDIF
-		
+
 		IF SELF:cEnumType == "BOOL"
 			SELF:Value := "FALSE"
 //			SELF:Value := SELF:aEnumTextValues[1]
@@ -201,7 +201,7 @@ CLASS VODesignProperty INHERIT DesignProperty
 	VIRTUAL ASSIGN Value(_oValue AS OBJECT)
 		LOCAL nAt AS INT
 		LOCAL n AS INT
-		
+
 		IF SELF:cSpecialClass != NULL
 			DO CASE
 			CASE _oValue:GetType() == TypeOf(System.Drawing.Font)
@@ -243,7 +243,7 @@ CLASS VODesignProperty INHERIT DesignProperty
                   NOP
 					END TRY
 					RETURN
-					
+
 				CASE SELF:cSpecialClass == "Color" //.or. SELF:cSpecialClass == "Brush"
 					IF cValue:Contains(" ")
 						LOCAL aRGB AS STRING[]
@@ -271,7 +271,7 @@ CLASS VODesignProperty INHERIT DesignProperty
                      NOP
 						END TRY
 						FOR n := 3 UPTO aFont:Length
-							SWITCH aFont[n]:ToUpper() 
+							SWITCH aFont[n]:ToUpper()
 							CASE "BOLD"
 								eStyle += FontStyle.Bold
 							CASE "ITALIC"
@@ -388,13 +388,27 @@ CLASS VODesignProperty INHERIT DesignProperty
 			END CASE
 		ENDIF
 	RETURN SUPER:SaveValue
-	
+
+	METHOD ApplyThumb() AS VOID
+		LOCAL cValue AS STRING
+		cValue := self:TextValue
+        SELF:oThumb := NULL
+		IF .not. String.IsNullOrWhiteSpace( cValue )
+			FOR LOCAL n := 1 AS INT UPTO VOMenuEditor.VOMenuToolBar:Count
+				IF VOMenuEditor.VOMenuToolBar:Get(n - 1):Name == cValue
+					SELF:oThumb := RibbonClass.Active:GetBitmap(n)
+					EXIT
+				END IF
+			NEXT
+        ENDIF
+    RETURN
+
 	METHOD ToString() AS STRING
 		IF SELF:eVOStyle == VOStyle.None
 			RETURN "Property " + SELF:Name
 		END IF
 	RETURN SELF:eVOStyle:ToString() + " " + SELF:Name
-	
+
 END CLASS
 
 
@@ -423,7 +437,8 @@ CLASS DesignProperty
 	EXPORT lNoCode AS LOGIC
 
 	EXPORT cSpecialClass AS STRING
-	
+    EXPORT oThumb AS Bitmap
+
 	CONSTRUCTOR(cName AS STRING,eType AS PropertyType,eStyle AS PropertyStyles)
 		SELF:_Init(cName,cName,eType,eStyle)
 	RETURN
@@ -480,7 +495,7 @@ CLASS DesignProperty
 				SELF:lNoAuto := FALSE
 			ENDIF
 		ENDIF
-		
+
 		cValues := SELF:cEnumValues
 		IF cValues != NULL
 			DO WHILE cValues:Length != 0
@@ -497,7 +512,7 @@ CLASS DesignProperty
 		DO WHILE SELF:aEnumTextValues:Count > SELF:aEnumValues:Count
 			SELF:aEnumValues:Add("")
 		END DO
-		
+
 	RETURN
 	METHOD _Init(cName AS STRING,cCaption AS STRING,eType AS PropertyType,_eStyle AS PropertyStyles) AS VOID
 		SELF:cPage := "General"
@@ -516,7 +531,7 @@ CLASS DesignProperty
 			SELF:cPage := "General"
 		ENDIF*/
 	RETURN
-	
+
 	METHOD ReadStyles(eStyle AS PropertyStyles) AS VOID
 		IF _And(INT(eStyle),INT(PropertyStyles.ReadOnly))!=0
 			SELF:lReadOnly := TRUE
@@ -536,7 +551,7 @@ CLASS DesignProperty
 		IF _And(INT(eStyle),INT(PropertyStyles.NoCode))!=0
 			SELF:lNoCode := TRUE
 		ENDIF
-		
+
 	RETURN
 
 	PROTECTED VIRTUAL METHOD PutEmptyValue() AS VOID
@@ -553,7 +568,7 @@ CLASS DesignProperty
 			SELF:oValue := 0
 		END CASE
 	RETURN
-	
+
 	VIRTUAL ACCESS Value() AS OBJECT
 	RETURN SELF:oValue
 	VIRTUAL ACCESS ValueLogic() AS LOGIC
@@ -596,10 +611,10 @@ CLASS DesignProperty
 			SELF:oValue := _oValue
 		END CASE
 	RETURN
-	
+
 	VIRTUAL ACCESS TextValue() AS STRING
 	RETURN SELF:GetTextValue(SELF:oValue)
-	
+
 	VIRTUAL METHOD GetTextValue(oTest AS OBJECT) AS STRING
 		LOCAL cRet AS STRING
 		LOCAL nValue AS INT
@@ -636,7 +651,7 @@ CLASS DesignProperty
 			cRet := ""
 		END CASE
 	RETURN cRet
-	
+
 	VIRTUAL ACCESS IsAuto AS LOGIC
 		DO CASE
 		CASE SELF:cSpecialClass != NULL .and. SELF:cSpecialClass == "FillUsing"

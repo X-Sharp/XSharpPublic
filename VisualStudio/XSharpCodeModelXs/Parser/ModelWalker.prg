@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharpModel
                SELF:_projects:Enqueue(xProject)
             ENDIF
          END LOCK
-         IF (! SELF:IsWalkerRunning .AND. ! xProject:IsVsBuilding)
+         IF (! SELF:IsRunning .AND. ! xProject:IsVsBuilding)
             SELF:Walk()
          ENDIF
 
@@ -83,7 +83,7 @@ BEGIN NAMESPACE XSharpModel
                NEXT
             ENDIF
          END LOCK
-         IF (! SELF:IsWalkerRunning .AND. ! xProject:IsVsBuilding)
+         IF (! SELF:IsRunning .AND. ! xProject:IsVsBuilding)
             SELF:Walk()
          ENDIF
          //WriteOutputMessage("<<-- RemoveProject()")
@@ -136,6 +136,11 @@ BEGIN NAMESPACE XSharpModel
 
       STATIC METHOD Resume() AS VOID
          ModelWalker.suspendLevel--
+
+      STATIC METHOD Stop AS VOID
+        ModelWalker.suspendLevel  := 1
+        GetWalker():StopThread()
+
 
       INTERNAL METHOD StopThread() AS VOID
          TRY
@@ -291,7 +296,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY HasWork AS LOGIC GET SELF:_projects:Count > 0
       STATIC PROPERTY IsSuspended AS LOGIC GET ModelWalker.suspendLevel > 0
 
-      PROPERTY IsWalkerRunning AS LOGIC
+      PROPERTY IsRunning AS LOGIC
          GET
             TRY
                IF SELF:_WalkerThread != NULL

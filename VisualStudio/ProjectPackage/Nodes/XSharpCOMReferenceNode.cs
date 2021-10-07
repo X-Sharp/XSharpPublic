@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Project;
 using System.Reflection;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Shell;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace XSharp.Project
 {
@@ -33,7 +34,7 @@ namespace XSharp.Project
             [MarshalAs(UnmanagedType.U4)] int lcid);
 
         [DllImport("oleaut32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
-        static extern int LoadTypeLib(string fileName, out ITypeLib typeLib);
+        static extern int LoadTypeLib(string fileName, out System.Runtime.InteropServices.ComTypes.ITypeLib typeLib);
 
 
 
@@ -218,8 +219,7 @@ namespace XSharp.Project
             typeLibPath = typeLibPath.Replace("\0", "");
             if (File.Exists(typeLibPath))
             {
-                ITypeLib itypelib;
-                int iresult = LoadTypeLib(typeLibPath, out itypelib);
+                int iresult = LoadTypeLib(typeLibPath, out var itypelib);
                 if (iresult == VSConstants.S_OK && itypelib != null)
                 {
                     System.Runtime.InteropServices.ComTypes.ITypeLib itl = itypelib as System.Runtime.InteropServices.ComTypes.ITypeLib;

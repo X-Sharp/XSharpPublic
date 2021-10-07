@@ -6,7 +6,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+
+#if DEV17
+[assembly: AssemblyTitle("XSharp.Debugger.17")]
+#else
 [assembly: AssemblyTitle("XSharp.Debugger")]
+#endif
 [assembly: AssemblyDescription("")]
 [assembly: ComVisible(false)]
 

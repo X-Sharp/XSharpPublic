@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD DocumentGetText(file AS STRING, IsOpen REF LOGIC) AS STRING
       METHOD DocumentInsertLine(fileName AS STRING, line AS LONG, text AS STRING) AS LOGIC
       METHOD DocumentSetText(fileName AS STRING, text AS STRING) AS LOGIC
-      METHOD FindProject(sProject AS STRING) AS EnvDTE.Project
+      METHOD FindProject(sProject AS STRING) AS Object
       METHOD GetIntellisenseErrorPos(fileName AS STRING) AS System.Collections.Generic.List<IXErrorPosition>
       METHOD HasFileNode(fileName AS STRING) AS LOGIC
       METHOD IsDocumentOpen(file AS STRING) AS LOGIC
@@ -30,7 +30,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD ShowIntellisenseErrors() AS VOID
       METHOD SynchronizeKeywordCase(code as STRING, fileName as STRING) AS STRING
       METHOD RunInForeGroundThread( a as Action) AS VOID
-      
+
          // Properties
       PROPERTY IntermediateOutputPath AS STRING GET
       PROPERTY IsVsBuilding AS LOGIC GET
@@ -40,14 +40,14 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY RootNameSpace AS STRING GET
       PROPERTY Url AS STRING GET
       PROPERTY Dialect as XSharpDialect GET
-      
+
    END INTERFACE
-      
+
    INTERFACE IXErrorPosition
       PROPERTY Column AS LONG GET SET
       PROPERTY Length AS LONG GET SET
       PROPERTY Line AS LONG GET SET
    END INTERFACE
-   
+
 END NAMESPACE
 

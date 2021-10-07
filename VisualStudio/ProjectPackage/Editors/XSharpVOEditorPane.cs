@@ -374,7 +374,158 @@ namespace XSharp.Project
 
         protected virtual void setupCommands()
         {
+            IMenuCommandService mcs = null;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                mcs = GetService(typeof(IMenuCommandService)) as IMenuCommandService;
+            });
+            if (null != mcs)
+            {
+                // Now create one object derived from MenuCommnad for each command defined in
+                // the .vsct file and add it to the command service.
+
+                // These are the commands that all custom editors support.
+                // The window editor has its own set
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Undo,
+                                new EventHandler(onUndo), new EventHandler(onQueryUndo));
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Redo,
+                                new EventHandler(onRedo), new EventHandler(onQueryRedo));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Copy,
+                                new EventHandler(onCopy), new EventHandler(onQueryCopy));
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Cut,
+                                new EventHandler(onCut), new EventHandler(onQueryCutOrDelete));
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Paste,
+                                new EventHandler(onPaste), new EventHandler(onQueryPaste));
+
+                // These two commands enable Visual Studio's default undo/redo toolbar buttons.  When these
+                // buttons are clicked it triggers a multi-level undo/redo (even when we are undoing/redoing
+                // only one action.  Note that we are not implementing the multi-level undo/redo functionality,
+                // we are just adding a handler for this command so these toolbar buttons are enabled (Note that
+                // we are just reusing the undo/redo command handlers).  To implement multi-level functionality
+                // we would need to properly handle these two commands as well as MultiLevelUndoList and
+                // MultiLevelRedoList.
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.MultiLevelUndo,
+                                new EventHandler(onUndo), new EventHandler(onQueryUndo));
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.MultiLevelRedo,
+                                new EventHandler(onRedo), new EventHandler(onQueryRedo));
+
+            }
         }
+
+        protected void onQueryCopy(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(Actions.Copy);
+        }
+
+
+        /// <summary>
+        /// Handler for our Copy command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        protected void onCopy(object sender, EventArgs e)
+        {
+            Copy();
+            editorControl.RecordCommand("Copy");
+        }
+
+
+
+        /// <summary>
+        /// Handler for our Cut command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        protected void onCut(object sender, EventArgs e)
+        {
+            Cut();
+            editorControl.RecordCommand("Cut");
+        }
+
+ 
+
+        /// <summary>
+        /// Handler for when we want to query the status of the cut or delete
+        /// commands.  If there is any selected text then it will set the
+        /// enabled property to true.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        protected void onQueryCutOrDelete(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(Actions.Cut);
+        }
+
+        /// <summary>
+        /// Handler for when we want to query the status of the paste command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        protected void onQueryPaste(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(Actions.Paste);
+        }
+
+        /// <summary>
+        /// Handler for our Paste command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        protected void onPaste(object sender, EventArgs e)
+        {
+            Paste();
+            editorControl.RecordCommand("Paste");
+        }
+
+        /// <summary>
+        /// Handler for when we want to query the status of the Undo command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        protected void onQueryUndo(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(Actions.Undo);
+        }
+
+        /// <summary>
+        /// Handler for our Undo command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        protected void onUndo(object sender, EventArgs e)
+        {
+            editorControl.Action(Actions.Undo);
+        }
+
+
+        /// <summary>
+        /// Handler for when we want to query the status of the Redo command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        protected void onQueryRedo(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(Actions.Redo);
+        }
+
+        /// <summary>
+        /// Handler for our Redo command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        protected void onRedo(object sender, EventArgs e)
+        {
+            editorControl.Action(Actions.Redo);
+        }
+
+
 
         protected void onQueryUnimplemented(object sender, EventArgs e)
         {
@@ -1600,77 +1751,18 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
         /// <param name="e">  Not used.</param>
-        private void onQueryCopy(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(Actions.Copy);
-        }
 
-        /// <summary>
-        /// Handler for our Copy command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onCopy(object sender, EventArgs e)
-        {
-            Copy();
-            editorControl.RecordCommand("Copy");
-        }
-
-        /// <summary>
-        /// Handler for when we want to query the status of the cut or delete
-        /// commands.  If there is any selected text then it will set the
-        /// enabled property to true.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onQueryCutOrDelete(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(Actions.Cut);
-        }
-
-        /// <summary>
-        /// Handler for our Cut command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onCut(object sender, EventArgs e)
-        {
-            Cut();
-            editorControl.RecordCommand("Cut");
-        }
 
         /// <summary>
         /// Handler for our Delete command.
         /// </summary>
-        private void onDelete(object sender, EventArgs e)
+        protected void onDelete(object sender, EventArgs e)
         {
             editorControl.Action(Actions.RemoveSelected);
             editorControl.RecordCommand("Delete");
         }
 
-        /// <summary>
-        /// Handler for when we want to query the status of the paste command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onQueryPaste(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(Actions.Paste);
-        }
 
-        /// <summary>
-        /// Handler for our Paste command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onPaste(object sender, EventArgs e)
-        {
-            Paste();
-            editorControl.RecordCommand("Paste");
-        }
 
         private void onQueryAlign(object sender, EventArgs e)
         {
@@ -1791,47 +1883,7 @@ namespace XSharp.Project
         }
 
 
-        /// <summary>
-        /// Handler for when we want to query the status of the Undo command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onQueryUndo(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(Actions.Undo);
-        }
 
-        /// <summary>
-        /// Handler for our Undo command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onUndo(object sender, EventArgs e)
-        {
-            editorControl.Action(Actions.Undo);
-        }
-
-        /// <summary>
-        /// Handler for when we want to query the status of the Redo command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onQueryRedo(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(Actions.Redo);
-        }
-
-        /// <summary>
-        /// Handler for our Redo command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onRedo(object sender, EventArgs e)
-        {
-            editorControl.Action(Actions.Redo);
-        }
 
 #endregion
 

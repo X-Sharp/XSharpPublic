@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharpModel
          //
          RETURN FALSE
          
-      METHOD FindProject(sProject AS STRING) AS Project
+      METHOD FindProject(sProject AS STRING) AS Object
          //
          RETURN NULL
          

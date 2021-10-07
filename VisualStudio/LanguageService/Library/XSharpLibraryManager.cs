@@ -407,7 +407,7 @@ namespace XSharp.LanguageService
                             tasks.Remove(task.FileName);
                         if (requests.Count == 0)
                         {
-                            forceRefresh = true; ;
+                            forceRefresh = true; 
                         }
                     }
                     if (0 == requests.Count)

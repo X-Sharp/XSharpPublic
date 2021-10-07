@@ -51,6 +51,8 @@ namespace XSharp.LanguageService
                         return KnownMonikers.Union;
                     case Kind.Namespace:
                         return KnownMonikers.Namespace;
+                    case Kind.Keyword:
+                        return KnownMonikers.IntellisenseKeyword;
                 }
                 return KnownMonikers.None;
             }

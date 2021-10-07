@@ -65,7 +65,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		ENDIF
 		RETURN SUPER:Open(cFileName)
 
-	NEW PROTECTED METHOD GetSaveFileStreams(cVNFrmFileName AS STRING , oVNFrmStream REF FileStream , ;
+	PROTECTED METHOD GetSaveFileStreams(cVNFrmFileName AS STRING , oVNFrmStream REF FileStream , ;
 								oRCStream AS EditorStream , oPrgStream AS EditorStream , oVhStream AS EditorStream , ;
 								cVhName REF STRING , lVnfrmOnly AS LOGIC , lRcInSameFolder REF LOGIC) AS LOGIC
 		LOCAL cRCFileName AS STRING
@@ -381,13 +381,14 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		oEditor:Load(oFile:FullPath)
       local nLine as LONG
       if oType != NULL
-		   nLine := oType:Range:EndLine -1
+           // Apparently oType:Range:EndLine returns the end line minus one, so we have to add one
+		   nLine := oType:Range:EndLine +1
       else
          nLine := aLines:Count-1
       ENDIF
-		aLines:Reverse()
-		FOREACH VAR cLine IN aLines
-			VAR cNew := VOWindowEditor.SubStituteTpl(cLine, cClass, oWindowDesign:cInitParams)
+		FOR LOCAL nTemplateLine :=  aLines:Count - 1 AS INT DOWNTO 0
+            LOCAL cLine := aLines[nTemplateLine] AS STRING
+			LOCAL cNew := VOWindowEditor.SubStituteTpl(cLine, cClass, oWindowDesign:cInitParams) AS STRING
 			oFile:Project:ProjectNode:DocumentInsertLine(oFile:FullPath, nLine, cNew)
 		NEXT
 		oFile:Project:ProjectNode:OpenElement(oFile:FullPath, nLine,1)

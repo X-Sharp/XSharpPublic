@@ -14,11 +14,10 @@ USING LanguageService.CodeAnalysis.Text
 
 BEGIN NAMESPACE UDCTesterApp
 
-   PUBLIC PARTIAL CLASS UDCTester ;
-        INHERIT System.Windows.Forms.Form ;
-        IMPLEMENTS VSParser.IErrorListener
-        PRIVATE _errors AS List<STRING>
-        PRIVATE lastFile AS STRING
+   EXPORT PARTIAL CLASS UDCTester	;
+		INHERIT System.Windows.Forms.Form	;
+		IMPLEMENTS VSParser.IErrorListener
+        HIDDEN _errors AS List<STRING>
       PUBLIC CONSTRUCTOR()   STRICT//UDCTester
          SELF:InitializeComponent()
          SELF:ReadSettings()
@@ -52,13 +51,11 @@ BEGIN NAMESPACE UDCTesterApp
             VAR options2  := XSharpParseOptions.FromVsValues(opt)
             XSharp.Parser.VsParser.Lex(source, "test.prg", options2, SELF, OUT VAR lextokenStream)
             _errors:Clear()
-            lastFile := ""
             SELF:WriteTokens((BufferedTokenStream) lextokenStream, Path.Combine(cFolder,"test.lextokens.csv"))
          ENDIF
 
          XSharp.Parser.VsParser.PreProcess(source, "test.prg", options, SELF, OUT VAR tokenStream)
          IF oSettings:WritePPTokens
-            lastFile := ""
             SELF:WriteTokens((BufferedTokenStream) tokenStream, Path.Combine(cFolder,"test.pptokens.csv"))
          ENDIF
             
@@ -127,11 +124,6 @@ BEGIN NAMESPACE UDCTesterApp
         ENDIF
         IF token:Type == XSharpLexer.WS .and. oSettings:HideWhitespace
             RETURN
-        ENDIF
-        LOCAL bufstream := (AntlrInputStream) token:InputStream AS AntlrInputStream
-        IF bufstream:SourceName != lastFile
-            sb:AppendLine(bufstream:SourceName)
-            lastFile := bufstream:SourceName
         ENDIF
         sb:Append(token:TokenIndex:ToString()+",")
         sb:Append(token:Channel:ToString()+",")

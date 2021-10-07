@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30320.27
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1684
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-74CF-4618-9856-D89B3FCB6DA3}"
 	ProjectSection(SolutionItems) = preProject
@@ -37,11 +37,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Common\commonAssemblyInfo.prg = Common\commonAssemblyInfo.prg
 		Common\Constants.cs = Common\Constants.cs
 		Common\constants.prg = Common\constants.prg
+		Common\CustomDefs.xh = Common\CustomDefs.xh
+		Common\dbcmd.xh = Common\dbcmd.xh
+		Common\FoxProCmd.xh = Common\FoxProCmd.xh
+		Common\FoxProSet.xh = Common\FoxProSet.xh
+		Common\FoxProSql.xh = Common\FoxProSql.xh
+		Common\GuidStrings.cs = Common\GuidStrings.cs
+		Common\memvar.xh = Common\memvar.xh
+		Common\NativeResourceDefines.xh = Common\NativeResourceDefines.xh
 		Runtime\README.md = Runtime\README.md
+		Common\README.md = Common\README.md
 		Runtime\Runtime.Targets = Runtime\Runtime.Targets
 		Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg = Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg
+		Common\set.xh = Common\set.xh
+		Common\version.xh = Common\version.xh
 		Runtime\VOSDK\Source\VOSDK\VOSDK.Targets = Runtime\VOSDK\Source\VOSDK\VOSDK.Targets
+		Common\XbasePPCmd.xh = Common\XbasePPCmd.xh
 		Runtime\XmlDoc.Targets = Runtime\XmlDoc.Targets
+		Common\XSharp.snk = Common\XSharp.snk
+		Common\XSharpConstants.cs = Common\XSharpConstants.cs
 		Common\XSharpDefs.xh = Common\XSharpDefs.xh
 	EndProjectSection
 EndProject

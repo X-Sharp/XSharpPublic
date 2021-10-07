@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -13,11 +13,11 @@ BEGIN NAMESPACE XSharp.RDD
 
     INTERNAL STRUCT ScopeInfo
         INTERNAL Buffer AS BYTE[]
-        INTERNAL Value  AS OBJECT
+        INTERNAL @@Value  AS OBJECT
         INTERNAL Size   AS LONG
-        INTERNAL PROPERTY IsSet  AS LOGIC GET Value != NULL
+        INTERNAL PROPERTY IsSet  AS LOGIC GET @@Value != NULL
         INTERNAL METHOD Clear() AS VOID
-            Value := NULL
+            @@Value := NULL
             Size  := 0
             RETURN
         INTERNAL METHOD SetBuffer(nSize AS LONG) AS VOID
@@ -28,31 +28,31 @@ BEGIN NAMESPACE XSharp.RDD
     INTERNAL ENUM SkipDirection
         MEMBER Backward := -1
         MEMBER Forward := 1
-        
+
     END ENUM
 
-	INTERNAL CLASS SortRecord
-		PRIVATE _data AS BYTE[]
-		PRIVATE _Recno AS LONG
+    INTERNAL CLASS SortRecord
+        PRIVATE _data AS BYTE[]
+        PRIVATE _Recno AS LONG
         INTERNAL PROPERTY Duplicate AS LOGIC AUTO
-		
-		INTERNAL PROPERTY Data AS BYTE[] GET _data
-		
-		INTERNAL PROPERTY Recno AS LONG GET _Recno
-		
-		INTERNAL CONSTRUCTOR(data AS BYTE[] , lRecno AS LONG )
-			SELF:_data  := (BYTE[])data:Clone()
-			SELF:_Recno := lRecno
+
+        INTERNAL PROPERTY Data AS BYTE[] GET _data
+
+        INTERNAL PROPERTY Recno AS LONG GET _Recno
+
+        INTERNAL CONSTRUCTOR(data AS BYTE[] , lRecno AS LONG )
+            SELF:_data  := (BYTE[])data:Clone()
+            SELF:_Recno := lRecno
             SELF:Duplicate := FALSE
-			
-	END CLASS
+
+    END CLASS
     INTERNAL ENUM SearchMode
         MEMBER Left
         MEMBER SoftSeek
         MEMBER Right
         MEMBER Bottom
         MEMBER Top
-        
+
     END ENUM
 
     // Rdd Stack item
@@ -62,12 +62,12 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL Page   AS LONG
         INTERNAL Pos    AS WORD
         INTERNAL Count  AS WORD
-        
+
         INTERNAL METHOD Clear() AS VOID
             SELF:Page := 0
             SELF:Count := 0
             SELF:Pos := 0
-            
+
     END CLASS
 
     INTERNAL CLASS RddKeyData
@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROPERTY Started AS LOGIC GET _start != 0
         METHOD Start() AS VOID
             _start := System.DateTime.Now.Ticks
-            
+
         METHOD TimeOut(cFileName as STRING, nOffSet as INT64, nLen as INT64) AS LOGIC
             IF  System.DateTime.Now.Ticks > _start + 300_000_000
                 THROW TimeoutException{i"Timeout locking file {cFileName} Offset {nOffSet} Len {nLen}"}

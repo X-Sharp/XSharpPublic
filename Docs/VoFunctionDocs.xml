@@ -21099,18 +21099,25 @@
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
         </param>
         <param name="cRecordNumberList">
-            Specifies that RLOCK( ) attempts to lock multiple records. The character expression cRecordNumberList specifies one or more record numbers, separated by commas, that RLOCK( ) attempts to lock. For example, to attempt record locks on the first four records in a table, cRecordNumberList should contain 1, 2, 3, 4.
+            Specifies that RLOCK( ) attempts to lock multiple records. 
+            The character expression cRecordNumberList specifies one or more record numbers, separated by commas, that RLOCK( ) attempts to lock. 
+            For example, to attempt record locks on the first four records in a table, cRecordNumberList should contain 1, 2, 3, 4.
         </param>
         <returns>
             TRUE if the record lock(s) is (are) obtained; otherwise, FALSE.<br/>
+            If you try to lock more than one record and one of them fails then 
+            locks that were successful are released again.<br/>
             An attempt to lock a record in an empty database returns TRUE.
         </returns>
         <remarks>
             If a database file is opened in shared mode, you must obtain a record lock before attempting any operation that writes to the database file.
             For each invocation of RLock(), there is one attempt to lock the target record, and the result is returned as a logical value.<br/>
             An attempt to obtain a record lock fails if another process currently has a file lock or record lock on the target record.
-            If RLock() is successful, the record is locked and other processes are prevented from updating the record until the lock is released.  RLock() provides a shared lock, allowing other users read-only access to the locked record while allowing only the current process to modify it.
-            A record lock remains in effect until you explicitly unlock it (with DBUnLock(), for example), close the database file, or attempt another file or record lock (with RLock() or DBRLock() without an argument).
+            If RLock() is successful, the record is locked and other processes are prevented from updating the record until the lock is released.  
+            RLock() provides a shared lock, allowing other users read-only access to the locked record while allowing only the current process to 
+            modify it.
+            A record lock remains in effect until you explicitly unlock it (with DBUnLock(), for example), close the database file, or 
+            attempt another file or record lock (with RLock() or DBRLock() without an argument).
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
             This feature is useful since RLock() does not automatically attempt a record lock for related files.
 

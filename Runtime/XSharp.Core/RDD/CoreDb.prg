@@ -1036,7 +1036,7 @@ CLASS XSharp.CoreDb
 
     STATIC METHOD  Header() AS LONG
         LOCAL oValue := NULL AS OBJECT
-	    IF CoreDb.Info(DBI_GETHEADERSIZE, REF oValue)
+        IF CoreDb.Info(DBI_GETHEADERSIZE, REF oValue)
             RETURN (LONG) oValue
         ENDIF
         RETURN 0
@@ -1294,7 +1294,7 @@ CLASS XSharp.CoreDb
             info:BagName := cBagName
             info:Order   := oOrder
             info:Result  := oTemp
-			oRdd:OrderInfo(nOrdinal, info)
+            oRdd:OrderInfo(nOrdinal, info)
             oTemp :=  info:Result
             RETURN TRUE
         })
@@ -1664,6 +1664,9 @@ CLASS XSharp.CoreDb
     STATIC METHOD RLock(uRecId AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+        IF oRdd:RecCount  == 0
+            RETURN TRUE
+        ENDIF
         LOCAL lockInfo AS DbLockInfo
         lockInfo := DbLockInfo{}
         lockInfo:RecId := uRecId

@@ -27,21 +27,15 @@ FUNCTION LineNo(nPos ) AS LONG
 FUNCTION LoadPicture( cFileName ) AS OBJECT
     THROW NotImplementedException{}
     // RETURN NULL_OBJECT
-    
+
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/locfile/*" />
-
+// Example: = LOCFILE("","PRG File:prg;Compiled:fxp;Backup:bak","Bestand")
 FUNCTION LocFile( cFileName , cFileExtensions , cFileNameCaption ) AS STRING
     THROW NotImplementedException{}
     // RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/lock/*" />
-
-FUNCTION Lock( cRecordNumberList, uArea) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/lookup/*" />
@@ -56,5 +50,5 @@ FUNCTION Lookup( ReturnField, eSearchExpression, SearchedField , cTagName) AS US
 FUNCTION MakeTransactable( uArea ) AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
-    
+
 

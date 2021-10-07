@@ -735,8 +735,8 @@ namespace XSharp.MacroCompiler.Preprocessor
                         tokens.Add(new XSharpToken(input.Get(i)));
                     }
                     string text = tokens.AsString();
-                    //if (text.Length > 20)
-                    //    text = text.Substring(0, 20) + "...";
+                    //if (text.Length > 30)
+                    //    text = text.Substring(0, 30) + "...";
                     DebugOutput("File {0} line {1}:", _fileName, symbol.Line);
                     DebugOutput("Input stack: Insert value of token Symbol {0}, {1} tokens => {2}", symbol.Text, input.Size - 1, text);
                 }
@@ -973,7 +973,9 @@ namespace XSharp.MacroCompiler.Preprocessor
                     if (cmd.Type == XSharpLexer.PP_DEFINE)
                     {
                         if (_options.CaseSensitivePreprocessor)
+                        {
                             rule._flags |= PPRuleFlags.CaseInsensitive;
+                        }
                     }
                 }
 /* nvk...                if (_options.ShowDefs)
@@ -1081,7 +1083,7 @@ namespace XSharp.MacroCompiler.Preprocessor
 
         private bool ProcessIncludeFile(string includeFileName, Token fileNameToken)
         {
-            string nfp = null;
+            string resolvedIncludeFileName = null;
             string text = null;
             Exception fileReadException = null;
             PPIncludeFile includeFile = null;
@@ -1092,12 +1094,13 @@ namespace XSharp.MacroCompiler.Preprocessor
             List<string> dirs = new List<string>() { Path.GetDirectoryName(_fileName) };
             foreach (var p in _includeDirs)
             {
-                dirs.Add(p);
+                if (!dirs.Contains(p))
+                   dirs.Add(p);
             }
             if (includeFileName != null)
             { 
                 var path = Path.GetDirectoryName(includeFileName);
-                if (! String.IsNullOrEmpty(path) && !dirs.Contains(path))
+                if (!string.IsNullOrEmpty(path) && !dirs.Contains(path))
                     dirs.Add(path);
             }
 /*nvk...            if (_options.Verbose)
@@ -1107,26 +1110,26 @@ namespace XSharp.MacroCompiler.Preprocessor
             foreach (var p in dirs)
             {
                 bool rooted = Path.IsPathRooted(includeFileName);
-                string fp;
+                string fullPath;
                 try
                 {
-                    fp = rooted || p == null ? includeFileName : Path.Combine(p, includeFileName);
+                    fullPath = rooted || p == null ? includeFileName : Path.Combine(p, includeFileName);
                 }
                 catch (Exception e)
                 {
                     Error(fileNameToken, ErrorCode.PreProcessorError, "Error combining path " + p + " and filename  " + includeFileName + " " + e.Message);
                     continue;
                 }
-                if (File.Exists(fp))
+                if (File.Exists(fullPath))
                 {
 /*Nvk...                    if (_options.Verbose)
                     {
-                        DebugOutput("Found include file on disk: {0}", fp);
+                        DebugOutput("Found include file on disk: {0}", fullPath);
                     }*/
-                    includeFile = PPIncludeFile.Get(fp);
+                    includeFile = PPIncludeFile.Get(fullPath);
                     if (includeFile != null)
                     {
-                        nfp = fp;
+                        resolvedIncludeFileName = fullPath;
                         text = includeFile.Text;
 /*nvk...                        if (_options.Verbose)
                         {
@@ -1136,18 +1139,18 @@ namespace XSharp.MacroCompiler.Preprocessor
                     }
                     else
                     {
-                        var ex = readFileContents(fp, out nfp, out text);
+                        var ex = readFileContents(fullPath, out resolvedIncludeFileName, out text);
                         if (ex != null && fileReadException == null)
                         {
                             fileReadException = ex;
                         }
                     }
-                    if (rooted || nfp != null)
+                    if (rooted || resolvedIncludeFileName != null)
                         break;
 
                 }
             }
-            if (nfp == null)
+            if (resolvedIncludeFileName == null)
             {
                 loadResources();
                 var baseName = Path.GetFileNameWithoutExtension(includeFileName).ToLower();
@@ -1155,10 +1158,10 @@ namespace XSharp.MacroCompiler.Preprocessor
                 {
                     var reader = new StringReader(source);
                     text = reader.ReadToEnd();
-                    nfp = includeFileName;
+                    resolvedIncludeFileName = includeFileName;
                 }
             }
-            if (nfp == null)
+            if (resolvedIncludeFileName == null)
             {
                 if (fileReadException != null)
                 {
@@ -1173,9 +1176,9 @@ namespace XSharp.MacroCompiler.Preprocessor
             }
             else
             {
-                if (!IncludedFiles.ContainsKey(nfp))
+                if (!IncludedFiles.ContainsKey(resolvedIncludeFileName))
                 {
-                    IncludedFiles.Add(nfp, text);
+                    IncludedFiles.Add(resolvedIncludeFileName, text);
                 }
             }
 /*nvk...            if (_options.ShowIncludes )
@@ -1184,12 +1187,12 @@ namespace XSharp.MacroCompiler.Preprocessor
                 if (fileNameToken != null)
                 {
                     fname = PathUtilities.GetFileName(fileNameToken.InputStream.SourceName);
-                    DebugOutput("{0} line {1} Include {2}", fname, fileNameToken.Line, nfp);
+                    DebugOutput("{0} line {1} Include {2}", fname, fileNameToken.Line, resolvedIncludeFileName);
                 }
                 else
                 {
-                    // Most likely the Standard Header file. Report for Line 0
-                    DebugOutput("{0} line {1} Include {2}", fname, 0, nfp);
+                    // Most likely the Standard Header file. 
+                    DebugOutput("{0} Include Standard Header file {1}", fname, resolvedIncludeFileName);
                 }
             }*/
 
@@ -1199,7 +1202,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 // now parse the stuff and insert in the cache
                 var startTime = DateTime.Now;
 
-                //var stream = new AntlrInputStream(text.ToString()) { name = nfp };
+                //var stream = new AntlrInputStream(text.ToString()) { name = resolvedIncludeFileName };
                 var lexer = new Lexer(text, _options);
                 var tokens = lexer.AllTokens();
 /*nvk...                foreach (var e in lexer.LexErrors)
@@ -1213,7 +1216,7 @@ namespace XSharp.MacroCompiler.Preprocessor
                 }*/
                 bool newFile = false;
                 tokens = removeIncludeFileComments(tokens);
-                includeFile = PPIncludeFile.Add(nfp, tokens, text, lexer.MustBeProcessed, ref newFile);
+                includeFile = PPIncludeFile.Add(resolvedIncludeFileName, tokens, text, lexer.MustBeProcessed, ref newFile);
 /*nvk...                if (_options.Verbose)
                 {
                     if (newFile)
@@ -1226,14 +1229,14 @@ namespace XSharp.MacroCompiler.Preprocessor
                     }
                 }*/
             }
-            nfp = includeFile.FileName;
+            resolvedIncludeFileName = includeFile.FileName;
             if (includeFile.MustBeProcessed || _lexer.HasPPIfdefs)
             {
                 var clone = includeFile.Tokens.CloneArray();
                 var tokenSource = new TokenSource(null);
                 tokenSource.Tokens.AddRange(clone);
-                tokenSource.SourceName = nfp;
-                InsertStream(nfp, tokenSource, fileNameToken);
+                tokenSource.SourceName = resolvedIncludeFileName;
+                InsertStream(resolvedIncludeFileName, tokenSource, fileNameToken);
             }
             else
             {

@@ -22,7 +22,7 @@
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
     <TargetFrameworkProfile />
     <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}</ProjectGuid>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -63,7 +63,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <NoWarn>1762</NoWarn>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -75,7 +75,7 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>VSTHRD010;VSSDK006;1762</NoWarn>
   </PropertyGroup>
   <ItemGroup>
@@ -113,6 +113,7 @@
     <Compile Include="Commands\CommandAddDesignerFile.cs" />
     <Compile Include="Commands\CommandConvertXsRuntime.cs" />
     <Compile Include="Commands\CommandRebuildIntellisense.cs" />
+    <Compile Include="Commands\CommandViewInDisassembler.cs" />
     <Compile Include="Commands\CommandViewRepo.cs" />
     <Compile Include="Commands\CommandViewWorkareas.cs" />
     <Compile Include="Commands\CommandViewSettings.cs" />
@@ -133,7 +134,9 @@
     <Compile Include="ErrorList\TaskListProvider.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
-    <Compile Include="OptionsPages\BaseOptionsPage.cs" />
+    <Compile Include="OptionsPages\BaseOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
@@ -327,11 +330,17 @@
       <LastGenOutput>TextTemplate.cs</LastGenOutput>
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.vstemplate" />
-    <Content Include="x64\SQLite.Interop.dll">
+    <None Include="VSGlobals.vsct">
+      <Generator>VsctGenerator</Generator>
+      <LastGenOutput>VSGlobals.cs</LastGenOutput>
+    </None>
+    <Content Include="$(OutDir)\x64\SQLite.Interop.dll">
+      <Link>x64\SQLite.Interop.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="x86\SQLite.Interop.dll">
+    <Content Include="$(OutDir)\x86\SQLite.Interop.dll">
+      <Link>x86\SQLite.Interop.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -371,6 +380,7 @@
     <Compile Include="RepositoryWindow\ToolWindows\RepositoryWindowControl.xaml.cs">
       <DependentUpon>RepositoryWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Resources.cs" />
     <Compile Include="XSharpDocumentWatcher.cs" />
     <Compile Include="XSharpFileDocumentManager.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
@@ -466,6 +476,10 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Internal\ResourceInternal\Resource.resX">
     </ZipItem>
+    <EmbeddedResource Include="Resources.resx">
+      <DependentUpon>Resources.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <SubType>Designer</SubType>

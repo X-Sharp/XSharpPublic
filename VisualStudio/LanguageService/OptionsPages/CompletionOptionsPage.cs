@@ -38,8 +38,6 @@ namespace XSharp.LanguageService.OptionsPages
         public bool CompleteFunctionsP { get; set; }
         [DefaultValue(true)]
         public bool CompleteFunctionsA { get; set; }
-        [DefaultValue(10000)]
-        public int MaxCompletionEntries { get; set; }
         
 
     }

@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Windows.Controls;
+using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using VSRegistry = Microsoft.VisualStudio.Shell.VSRegistry;
 namespace XSharp.LanguageService.OptionsPages
 {
     public partial class CompletionOptionsControl : XSUserControl
@@ -6,6 +11,7 @@ namespace XSharp.LanguageService.OptionsPages
         public CompletionOptionsControl()
         {
             InitializeComponent();
+            chkSnippets.Visible = false;
             chkFields.Tag = nameof(CompletionOptionsPage.CompleteSelf);
             chkLocals.Tag = nameof(CompletionOptionsPage.CompleteLocals);
             chkInherited.Tag = nameof(CompletionOptionsPage.CompleteParent);
@@ -20,7 +26,6 @@ namespace XSharp.LanguageService.OptionsPages
             chkFunctionsSource.Tag = nameof(CompletionOptionsPage.CompleteFunctionsP);
             chkFunctionsExternal.Tag = nameof(CompletionOptionsPage.CompleteFunctionsA);
             tbChars.Tag = nameof(CompletionOptionsPage.CompleteNumChars);
-            tbMaxEntries.Tag = nameof(CompletionOptionsPage.MaxCompletionEntries);
             this.rtfDescription.Text = String.Join(Environment.NewLine,
                 new string[] {
                 "Code Completion is triggered by special characters such as '.' and ':'",
@@ -33,8 +38,31 @@ namespace XSharp.LanguageService.OptionsPages
                 "and filling the list could be time consuming.",
                 "",
                 "On this page you can control where the editor will look for completion." });
+
         }
-        
+
+
+        internal override void ReadValues()
+        {
+            base.ReadValues();
+            object value = null;
+            // Set default values
+            var reg = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_UserSettings);
+            if (reg != null)
+            {
+                var key = reg.OpenSubKey("ApplicationPrivateSettings\\TextEditor\\XSharp");
+                if (key != null)
+                {
+                    value = key.GetValue("CompleteFunctions");
+                }
+            }
+            if (value == null)
+            {
+                tbChars.Value = 4;
+                checkbuttons(true);
+            }
+        }
+
 
         private void btnAll_Click(object sender, EventArgs e)
         {

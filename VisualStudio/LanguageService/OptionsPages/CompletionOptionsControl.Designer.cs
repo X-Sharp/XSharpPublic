@@ -49,10 +49,7 @@
             this.tbChars = new System.Windows.Forms.NumericUpDown();
             this.chkNamespaces = new System.Windows.Forms.CheckBox();
             this.chkTypes = new System.Windows.Forms.CheckBox();
-            this.tbMaxEntries = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.tbChars)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbMaxEntries)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -272,47 +269,11 @@
         "s");
             this.chkTypes.UseVisualStyleBackColor = true;
             // 
-            // tbMaxEntries
-            // 
-            this.tbMaxEntries.Location = new System.Drawing.Point(101, 272);
-            this.tbMaxEntries.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.tbMaxEntries.Minimum = new decimal(new int[] {
-            25,
-            0,
-            0,
-            0});
-            this.tbMaxEntries.Name = "tbMaxEntries";
-            this.tbMaxEntries.Size = new System.Drawing.Size(79, 20);
-            this.tbMaxEntries.TabIndex = 20;
-            this.toolTip1.SetToolTip(this.tbMaxEntries, "Maximum number of entries in the completionlist. When you set this too small you " +
-        "may not find what you are looking for in the completionlist.");
-            this.tbMaxEntries.Value = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(17, 274);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(64, 13);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "Max entries:";
-            this.toolTip1.SetToolTip(this.label3, "Maximum number of entries in completion lists");
-            // 
             // CompletionOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.Controls.Add(this.tbMaxEntries);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.chkTypes);
             this.Controls.Add(this.chkNamespaces);
             this.Controls.Add(this.tbChars);
@@ -335,7 +296,6 @@
             this.Name = "CompletionOptionsControl";
             this.Size = new System.Drawing.Size(403, 305);
             ((System.ComponentModel.ISupportInitialize)(this.tbChars)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbMaxEntries)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -363,7 +323,5 @@
         private System.Windows.Forms.NumericUpDown tbChars;
         private System.Windows.Forms.CheckBox chkNamespaces;
         private System.Windows.Forms.CheckBox chkTypes;
-        private System.Windows.Forms.NumericUpDown tbMaxEntries;
-        private System.Windows.Forms.Label label3;
     }
 }

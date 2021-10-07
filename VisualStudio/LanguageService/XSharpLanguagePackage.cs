@@ -216,7 +216,7 @@ namespace XSharp.LanguageService
             XSettings.CompleteFunctionsP = _completionOptionsPage.CompleteFunctionsP;
             XSettings.CompleteFunctionsA = _completionOptionsPage.CompleteFunctionsA;
             XSettings.CompleteNumChars = _completionOptionsPage.CompleteNumChars;
-            XSettings.MaxCompletionEntries = _completionOptionsPage.MaxCompletionEntries;
+            //XSettings.MaxCompletionEntries = _completionOptionsPage.MaxCompletionEntries;
             // Other
             XSettings.EditorShowDividers = _otherOptionsPage.ShowDividers;
             XSettings.EditorShowSingleLineDividers = _otherOptionsPage.ShowSingleLineDividers;

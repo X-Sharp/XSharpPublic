@@ -108,7 +108,11 @@ namespace XSharp.LanguageService
                                 FilterCompletionSession(ch);
                             else
                             {
-                                if (completionWasSelected && (XSettings.EditorCommitChars.Contains(ch)))
+                                if (ch == '=' && _completionSession.Properties.TryGetProperty(XsCompletionProperties.Char, out char triggerChar) && triggerChar == ':')
+                                {
+                                    CancelCompletionSession();
+                                }
+                                else if (completionWasSelected && (XSettings.EditorCommitChars.Contains(ch)))
                                 {
                                     handled = CompleteCompletionSession( ch); 
                                 }

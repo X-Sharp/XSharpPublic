@@ -83,10 +83,10 @@ namespace XSharp.LanguageService
                     return;
                 // What is the character were it starts ?
                 var line = triggerPoint.GetContainingLine();
-                var triggerposinline = triggerPoint.Position - 2 - line.Start;
-                var afterChar = line.GetText()[triggerposinline];
-                if (afterChar == ' ' || afterChar == '\t')
-                    return;
+                //var triggerposinline = triggerPoint.Position - 2 - line.Start;
+                //var afterChar = line.GetText()[triggerposinline];
+                //if (afterChar == ' ' || afterChar == '\t')
+                //    return;
 
                 // The "parameters" coming from CommandFilter
                 uint cmd;

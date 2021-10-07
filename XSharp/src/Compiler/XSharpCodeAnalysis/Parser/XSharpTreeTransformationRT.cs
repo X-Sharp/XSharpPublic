@@ -48,10 +48,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private Dictionary<string, FieldDeclarationSyntax> _literalSymbols;
         private Dictionary<string, Tuple<string, FieldDeclarationSyntax>> _literalPSZs;
-        #endregion
 
-        #region Static Fields
-        private static SyntaxList<AttributeListSyntax> _voClassAttribs = null;
+        private SyntaxList<AttributeListSyntax> _voClassAttribs = null;
         private ParameterListSyntax _clipperParams = null;
         private AttributeListSyntax _actualArgs = null;
 
@@ -122,7 +120,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal Dictionary<string, FieldDeclarationSyntax> LiteralSymbols => _literalSymbols;
         internal Dictionary<string, Tuple<string, FieldDeclarationSyntax>> LiteralPSZs => _literalPSZs;
-        internal static SyntaxList<AttributeListSyntax> VOClassAttribs { get { return _voClassAttribs; } }
+        internal SyntaxList<AttributeListSyntax> VOClassAttribs { get { return GetVOClassAttributes(); } }
 
         public override string GetGlobalClassName(XSharpTargetDLL targetDLL)
         {

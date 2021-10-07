@@ -167,19 +167,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal SyntaxClassEntities GlobalClassEntities;
         internal Stack<SyntaxClassEntities> ClassEntities = new();
         internal Stack<XP.IEntityContext> Entities = new();
-        #endregion
-
-        #region Static Fields
-        protected static TypeSyntax intType = null;
-        protected static TypeSyntax uintType = null;
-        protected static TypeSyntax floatType = null;
-        protected static TypeSyntax decimalType = null;
-        protected static TypeSyntax doubleType = null;
-        protected static TypeSyntax ulongType = null;
-        protected static TypeSyntax longType = null;
-        protected static TypeSyntax stringType = null;
-        protected static TypeSyntax voidType;
-        protected static TypeSyntax objectType;
+        protected TypeSyntax intType = null;
+        protected TypeSyntax uintType = null;
+        protected TypeSyntax floatType = null;
+        protected TypeSyntax decimalType = null;
+        protected TypeSyntax doubleType = null;
+        protected TypeSyntax ulongType = null;
+        protected TypeSyntax longType = null;
+        protected TypeSyntax stringType = null;
+        protected TypeSyntax voidType;
+        protected TypeSyntax objectType;
 
         static readonly object oGate = new();
         #endregion  

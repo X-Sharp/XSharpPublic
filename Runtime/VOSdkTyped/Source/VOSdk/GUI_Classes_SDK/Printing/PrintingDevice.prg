@@ -25,7 +25,7 @@ CLASS PrintingDevice INHERIT VObject
 		ENDIF
 		RETURN 
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		IF oSettings != NULL_OBJECT
 			oSettings := NULL_OBJECT
 		ENDIF		

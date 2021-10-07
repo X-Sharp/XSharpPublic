@@ -291,7 +291,7 @@ CLASS StatusBar INHERIT Control
 		RETURN 
 
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		aMessages := NULL_ARRAY
 		aItems := NULL_ARRAY
 		RETURN SUPER:Destroy()

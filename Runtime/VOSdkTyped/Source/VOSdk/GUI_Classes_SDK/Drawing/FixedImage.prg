@@ -5,7 +5,7 @@ PARTIAL ABSTRACT CLASS FixedImage INHERIT Control
 
     PROPERTY ControlType AS ControlType GET ControlType.FixedImage
 
-	CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID) 
+	CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID)
 		IF  IsInstanceOfUsual(uID,#ResourceID)
 			SUPER(uOwner,uID,,,,,FALSE)
 		ELSEIF IsLong(uID)
@@ -19,15 +19,15 @@ PARTIAL ABSTRACT CLASS FixedImage INHERIT Control
 			WCError{#Init,#FixedImage,__WCSTypeError}:@@Throw()
 		ENDIF
 
-		RETURN 
+		RETURN
 
 
 	ACCESS __Label AS IVOLabel
 		RETURN (IVOLabel) oCtrl
 
-	ABSTRACT METHOD __SetImage(uResId AS USUAL) AS OBJECT STRICT 
+	ABSTRACT METHOD __SetImage(uResId AS USUAL) AS OBJECT STRICT
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 
 		IF (oImage != NULL_OBJECT)
 			oImage:Destroy()

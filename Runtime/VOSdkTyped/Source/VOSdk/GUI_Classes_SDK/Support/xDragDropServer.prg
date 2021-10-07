@@ -80,7 +80,7 @@ METHOD __GetKeyState(bKey AS BYTE) AS LOGIC STRICT
 
 	RETURN FALSE
 
-METHOD Destroy()  AS USUAL CLIPPER
+METHOD Destroy()  AS USUAL STRICT
 	
 
 	IF !InCollect()

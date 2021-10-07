@@ -3,7 +3,7 @@ CLASS FormattedTextObject INHERIT TextObject
 	PROTECT wTabSize:=8 AS LONGINT       //RvdH 070205 changed from WORD to LONG 
 
 
-	CONSTRUCTOR(oPoint , cText, oFont, oColor) 
+	CONSTRUCTOR(oPoint as Point , cText as string, oFont as Font, oColor as Color) 
 		SUPER(oPoint, cText, oFont, oColor)
 		RETURN 
 

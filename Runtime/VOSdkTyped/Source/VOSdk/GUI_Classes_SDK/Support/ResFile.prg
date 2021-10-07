@@ -3,7 +3,7 @@
 CLASS ResourceFile INHERIT VObject
 	PROTECT hLib AS IntPtr
 
-METHOD Destroy() AS USUAL CLIPPER
+METHOD Destroy() AS USUAL STRICT
 	IF ((int) hLib >= 32)
 		GuiWin32.FreeLibrary(hLib)
 	ENDIF

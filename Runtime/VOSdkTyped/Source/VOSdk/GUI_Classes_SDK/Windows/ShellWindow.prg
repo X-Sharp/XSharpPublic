@@ -135,7 +135,7 @@ CLASS ShellWindow INHERIT AppWindow
 	
 	
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		// was at the end !!!
 		SUPER:Destroy()
 		

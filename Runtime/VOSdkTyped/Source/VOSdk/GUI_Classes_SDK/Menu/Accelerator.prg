@@ -143,7 +143,7 @@ CLASS Accelerator INHERIT VObject
 
 		RETURN NIL
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		IF hAccel != NULL_PTR
 			GuiWin32.DestroyAcceleratorTable(hAccel)
 			hAccel := NULL_PTR

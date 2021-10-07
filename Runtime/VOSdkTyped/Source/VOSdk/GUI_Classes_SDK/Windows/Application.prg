@@ -13,21 +13,21 @@ CLASS App INHERIT VObject
 	PROTECT hHelpCursor AS IntPtr
 	PROTECT oMsgFilter as MessageFilter
 
-	ACCESS __HelpCursor() AS IntPtr STRICT 
+	ACCESS __HelpCursor() AS IntPtr STRICT
 		LOCAL hRet AS IntPtr
 		BEGIN LOCK WC.CSApp
 			hRet := hHelpCursor
 		END LOCK
 		RETURN hRet
 
-	ACCESS __HelpWndHandle AS VOForm STRICT 
+	ACCESS __HelpWndHandle AS VOForm STRICT
 		LOCAL hRet AS VOForm
 		BEGIN LOCK WC.CSApp
 			hRet := oHelpWnd
 		END LOCK
 		RETURN hRet
 
-	METHOD __SetHelpWind(hHandle AS VOForm, wMode AS LONGINT) AS App STRICT 
+	METHOD __SetHelpWind(hHandle AS VOForm, wMode AS LONGINT) AS App STRICT
 
 		BEGIN LOCK WC.CSApp
 
@@ -53,20 +53,20 @@ CLASS App INHERIT VObject
 
 		RETURN SELF
 
-	ACCESS __WindowCount AS LONGINT STRICT 
+	ACCESS __WindowCount AS LONGINT STRICT
 		LOCAL lRet AS LONGINT
 		BEGIN LOCK WC.CSApp
 			lRet := liWindowCount
 		END LOCK
 		RETURN lRet
 
-	ASSIGN __WindowCount(nValue AS LONGINT)  STRICT 
+	ASSIGN __WindowCount(nValue AS LONGINT)  STRICT
 		BEGIN LOCK WC.CSApp
 			liWindowCount := nValue
 		END LOCK
-		RETURN 
+		RETURN
 
-	METHOD Exec(_kExecType) 
+	METHOD Exec(_kExecType)
 		IF PCount() > 0 .and. _kExecType == EXECWHILEEVENT
 			Application.DoEvents()
 		ELSE
@@ -88,7 +88,7 @@ CLASS App INHERIT VObject
 //		System.Windows.Forms.Application.ThreadException += System.Threading.ThreadExceptionEventHandler{SELF, @OnThreadException()}
 		System.Windows.Forms.Application.ApplicationExit += EventHandler{SELF, @OnApplicationExit()}
 //		System.AppDomain.CurrentDomain:UnHandledException += UnhandledExceptionEventHandler {SELF, @OnUnhandledException()}
-		RETURN 
+		RETURN
 
 	METHOD OnThreadException (sender AS OBJECT, t AS System.Threading.ThreadExceptionEventArgs) AS VOID
 		Debout32(t:Exception:Message+CRLF)
@@ -103,17 +103,17 @@ CLASS App INHERIT VObject
 		RETURN
 
 
-	METHOD Quit() 
+	METHOD Quit()
 		Application.Exit()
 		RETURN NIL
 
-	METHOD Run(sCommand) 
+	METHOD Run(sCommand)
 		GuiWin32.WinExec(sCommand, SW_SHOWNORMAL)
 		RETURN NIL
-	
+
 	METHOD BeforeDispatch(hWnd AS IntPtr, uMsg AS DWORD, wParam AS DWORD, lParam AS LONG) AS LOGIC STRICT
 		RETURN TRUE
-	
+
 	[Obsolete];
 	METHOD AfterDispatch(hWnd AS IntPtr, uMsg AS DWORD, wParam AS DWORD, lParam AS LONG) AS LOGIC STRICT
 		RETURN TRUE
@@ -122,13 +122,13 @@ CLASS App INHERIT VObject
 	METHOD GetDialogWindow() AS VOPanel STRICT
 		RETURN oDialogWnd
 
-	METHOD SetDialogWindow(oSurface AS OBJECT) AS VOID 
+	METHOD SetDialogWindow(oSurface AS OBJECT) AS VOID
 		IF oSurface == NULL_OBJECT
 			SELF:oDialogWnd := NULL_OBJECT
 		ELSEIF oSurface IS VOPanel
 			SELF:oDialogWnd := oSurface
 		ENDIF
-		RETURN 
+		RETURN
 
 	#region Obsolete Methods
 	[Obsolete];
@@ -146,23 +146,23 @@ CLASS App INHERIT VObject
 
 	[Obsolete];
 	METHOD SetAccel(hNewAccel AS IntPtr) AS VOID
-		RETURN 
+		RETURN
 
 	[Obsolete];
 	METHOD SetAccelWindow(hNewAccelWnd AS IntPtr) AS VOID
-		RETURN 
+		RETURN
 
 
 	[Obsolete];
 	METHOD SetMdiClientWindow(hNewMdiClientWnd AS IntPtr) AS VOID
-		RETURN 
+		RETURN
 
 
 	#endregion
 
-	
+
 END CLASS
- 
+
 GLOBAL glCAPaintInit := FALSE AS LOGIC
 
 //GLOBAL gpfnInitCommonControlsEx AS InitCommonControlsEx PTR
@@ -174,7 +174,7 @@ PROCEDURE __InitFunctionPointer() _INIT3
 
 GLOBAL oApp AS App
 
-
+/// <include file="Gui.xml" path="doc/ApplicationExec/*" />
 FUNCTION ApplicationExec(kExecType)
 	IF (oApp != NULL_OBJECT)
 		oApp:Exec(kExecType)
@@ -193,8 +193,8 @@ CLASS MessageFilter IMPLEMENTS System.Windows.Forms.IMessageFilter
 	CONSTRUCTOR (oA AS VOSDK.App)
 		SELF:oApp := oA
 		System.Windows.Forms.Application.AddMessageFilter(SELF)
-		
-		
+
+
 	METHOD PreFilterMessage(m REF System.Windows.Forms.Message) AS LOGIC
 		RETURN ! oApp:BeforeDispatch(m:HWnd, (DWORD) m:Msg, (DWORD) m:wParam, (INT) m:lParam)
 

@@ -7,9 +7,9 @@ CLASS TextObject INHERIT DrawObject
 	PROTECT cText  AS STRING
 
 
-	CONSTRUCTOR(oPoint AS Point, cText := NULL_STRING AS STRING, oFont := NULL_OBJECT AS Font, oColor := NULL_OBJECT AS Color) 
-		LOCAL dwColor AS DWORD
+	CONSTRUCTOR(oPoint AS Point, cText := NULL_STRING AS STRING, oFont := NULL_OBJECT AS Font, oColor := NULL_OBJECT AS Color)
 		SUPER(oPoint)
+	    LOCAL dwColor AS DWORD
 
 		IF cText != NULL_STRING
 			SELF:cText := cText
@@ -27,7 +27,7 @@ CLASS TextObject INHERIT DrawObject
 			SELF:oColor := Color{dwColor}
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	ACCESS BoundingBox  AS BoundingBox
 		LOCAL oOldFont AS Font
@@ -44,10 +44,10 @@ CLASS TextObject INHERIT DrawObject
 	ACCESS Color AS Color
 		RETURN oColor
 
-	ASSIGN Color(oNewColor AS Color) 
+	ASSIGN Color(oNewColor AS Color)
 		oColor := oNewColor
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		oFont := NULL_OBJECT
 		oColor := NULL_OBJECT
 		cText := NULL_STRING
@@ -58,12 +58,12 @@ CLASS TextObject INHERIT DrawObject
 	ACCESS DisplayText AS STRING
 		RETURN cText
 
-	ASSIGN DisplayText(cNewText AS STRING) 
+	ASSIGN DisplayText(cNewText AS STRING)
 
 		cText := cNewText
 	#ifdef DONOTINCLUDE
 
-	METHOD Draw() 
+	METHOD Draw()
 		LOCAL hDC AS PTR
 		LOCAL hLastRop AS PTR
 		LOCAL strucLogBrush IS _WinLogBrush
@@ -95,11 +95,11 @@ CLASS TextObject INHERIT DrawObject
 
 		RETURN NIL
 	#endif
-	
+
 	ACCESS Font AS VOSDK.Font
 		RETURN oFont
 
-	ASSIGN Font(oNewFont AS VOSDK.Font) 
+	ASSIGN Font(oNewFont AS VOSDK.Font)
 		oFont:=oNewFont
 
 

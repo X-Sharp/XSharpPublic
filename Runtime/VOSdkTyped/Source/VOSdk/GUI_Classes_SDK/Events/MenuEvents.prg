@@ -61,8 +61,8 @@ END CLASS
 
 CLASS MenuCommandEvent INHERIT MenuEvent
 	[DebuggerStepThrough];
-	CONSTRUCTOR(uMenu, uWindow, uItem) 
-		SUPER(uMenu, uWindow, uItem) 
+	CONSTRUCTOR(uMenu AS USUAL, uWin AS USUAL, uID AS USUAL) 
+		SUPER(uMenu, uWin, uID) 
 
 END CLASS
 CLASS MenuSelectEvent INHERIT MenuEvent

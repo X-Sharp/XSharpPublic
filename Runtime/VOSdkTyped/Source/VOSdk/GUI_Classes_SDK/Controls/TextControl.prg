@@ -175,7 +175,7 @@ CLASS TextControl INHERIT Control
 
 		RETURN 
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		oFont		:= NULL_OBJECT
 		oToolTip	:= NULL_OBJECT
 		SUPER:Destroy()

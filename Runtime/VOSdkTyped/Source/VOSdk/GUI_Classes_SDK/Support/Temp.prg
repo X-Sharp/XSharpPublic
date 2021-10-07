@@ -6,7 +6,7 @@ FUNCTION __DBCSEnabled() AS LOGIC
 	RETURN FALSE
 
 FUNCTION __ShowLastError()
-	// Todo: 
+	// Todo:
 	//LOCAL dwErr AS DWORD
 	//LOCAL lpMsgBuf AS PSZ
 
@@ -32,18 +32,25 @@ FUNCTION __ShowLastError()
 //FUNCTION IsShiftPressed()
 //	LOCAL keys AS System.Windows.Forms.Keys
 //	keys := System.Windows.Forms.Control.ModifierKeys
-//	RETURN (keys == System.Windows.Forms.Keys.Shift) 
+//	RETURN (keys == System.Windows.Forms.Keys.Shift)
 
 //FUNCTION IsControlPressed()
 //	LOCAL keys AS System.Windows.Forms.Keys
 //	keys := System.Windows.Forms.Control.ModifierKeys
-//	RETURN (keys == System.Windows.Forms.Keys.Control) 
+//	RETURN (keys == System.Windows.Forms.Keys.Control)
 
 //FUNCTION IsAltPressed()
 //	LOCAL keys AS System.Windows.Forms.Keys
 //	keys := System.Windows.Forms.Control.ModifierKeys
-//	RETURN (keys == System.Windows.Forms.Keys.Alt) 
+//	RETURN (keys == System.Windows.Forms.Keys.Alt)
 
 
 
 
+#ifdef DOCUMENTATION
+FUNCTION DebOut(uParam as USUAL) AS VOID
+RETURN
+FUNCTION CreateInstance( args PARAMS USUAL[]) AS USUAL
+RETURN NIL
+
+#endif

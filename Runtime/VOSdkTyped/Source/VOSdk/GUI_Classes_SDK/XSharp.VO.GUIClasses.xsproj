@@ -9,10 +9,10 @@
     <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
     <Name>XSharp.VO.GUIClasses</Name>
     <OutputName>XSharpGUIClasses</OutputName>
-    <XSharpProjectversion>2.7.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.9.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <LB>true</LB>
     <unsafe>true</unsafe>
     <CS>false</CS>
@@ -24,9 +24,7 @@
     <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
     <WarningLevel>4</WarningLevel>
@@ -35,7 +33,6 @@
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>
-    <DefineConstants />
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
     <RegisterForComInterop>False</RegisterForComInterop>
@@ -45,6 +42,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>XSharp.VO.GUIClasses.Xml</DocumentationFile>
+	<DisabledWarnings>165, 168, 1591,649,414,169,67,9015</DisabledWarnings>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

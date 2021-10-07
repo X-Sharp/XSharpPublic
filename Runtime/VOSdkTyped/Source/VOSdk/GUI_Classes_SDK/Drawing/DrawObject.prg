@@ -17,7 +17,7 @@ CLASS DrawObject INHERIT VObject
 	ACCESS BoundingBox AS BoundingBox
 		RETURN BoundingBox{Point{0,0},Dimension{0,0}}
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		oPoint := NULL_OBJECT
 		oWnd := NULL_OBJECT
 		SUPER:Destroy()

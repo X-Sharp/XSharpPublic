@@ -253,7 +253,7 @@ CLASS TreeView INHERIT TextControl
 		ENDIF
 		RETURN FALSE
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		oDragImageList := NULL_OBJECT
 		RETURN SUPER:Destroy()
 

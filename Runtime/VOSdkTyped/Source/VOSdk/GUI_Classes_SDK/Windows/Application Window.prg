@@ -39,7 +39,7 @@ CLASS AppWindow INHERIT Window
 		RETURN SELF
 	
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		
 		IF (oVertScroll != NULL_OBJECT)
 			oVertScroll:Destroy()

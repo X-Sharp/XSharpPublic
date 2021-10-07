@@ -169,7 +169,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal string SymbolName;
             internal XSharpToken Symbol;
             internal InputState parent;
-  
+
             internal InputState(ITokenStream tokens)
             {
                 Tokens = tokens;
@@ -223,7 +223,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         readonly Dictionary<string, IList<XSharpToken>> _symbolDefines;
 
-        readonly Dictionary<string, Func<XSharpToken, XSharpToken>> _macroDefines = new (XSharpString.Comparer);
+        readonly Dictionary<string, Func<XSharpToken, XSharpToken>> _macroDefines = new(XSharpString.Comparer);
 
         readonly Stack<bool> _defStates = new();
         readonly Stack<XSharpToken> _regions = new();
@@ -436,7 +436,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             addParseError(new ParseErrorData(token, error, args));
         }
-        
+
         private void addParseError(ParseErrorData error)
         {
 #if !VSPARSER
@@ -448,7 +448,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (d != null)
             {
-               _parseErrors.Add(error);
+                _parseErrors.Add(error);
             }
 #else
             _parseErrors.Add(error);
@@ -542,9 +542,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         /// <returns>Translated input stream</returns>
         internal IList<IToken> PreProcess()
         {
-            var result = new List<IToken>(); 
+            var result = new List<IToken>();
             XSharpToken t = Lt();
-            List<XSharpToken> omitted = new List<XSharpToken>(); 
+            List<XSharpToken> omitted = new List<XSharpToken>();
             while (t.Type != IntStreamConstants.Eof)
             {
                 // read until the next EOS
@@ -739,7 +739,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        void InsertStream(string filename, ITokenStream input, XSharpToken symbol )
+        void InsertStream(string filename, ITokenStream input, XSharpToken symbol)
         {
             if (_options.ShowDefs)
             {
@@ -751,8 +751,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         tokens.Add(new XSharpToken(input.Get(i)));
                     }
                     string text = tokens.AsString();
-                    //if (text.Length > 20)
-                    //    text = text.Substring(0, 20) + "...";
+                    if (text.Length > 30)
+                        text = text.Substring(0, 30) + "...";
                     DebugOutput("File {0} line {1}:", _fileName, symbol.Line);
                     DebugOutput("Input stack: Insert value of token Symbol {0}, {1} tokens => {2}", symbol.Text, input.Size - 1, text);
                 }
@@ -763,9 +763,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var x = inputs;
             while (x != null)
             {
-                if (string.Compare(x.SourceFileName , filename, true) == 0)
+                if (string.Compare(x.SourceFileName, filename, true) == 0)
                 {
-                    Error(symbol, ErrorCode.ERR_PreProcessorError, "Recursive include file ("+filename+") detected",filename);
+                    Error(symbol, ErrorCode.ERR_PreProcessorError, "Recursive include file (" + filename + ") detected", filename);
                     return;
                 }
                 x = x.parent;
@@ -879,7 +879,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            if (! _duplicateFile)
+                            if (!_duplicateFile)
                             {
                                 _duplicateFile = true;
                                 var includeName = newToken.SourceName;
@@ -891,7 +891,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         SourceSymbol = null
                                     };
                                 }
-                                Error(def, ErrorCode.WRN_PreProcessorWarning, "Duplicate define (" + defText + ") found because include file \""+includeName+"\" was included twice");
+                                Error(def, ErrorCode.WRN_PreProcessorWarning, "Duplicate define (" + defText + ") found because include file \"" + includeName + "\" was included twice");
                             }
                         }
                     }
@@ -1000,7 +1000,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 #if !VSPARSER
-        private Exception readFileContents( string fp, out string nfp, out SourceText text)
+        private Exception readFileContents(string fp, out string nfp, out SourceText text)
         {
             Exception ex = null;
             nfp = null;
@@ -1083,34 +1083,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 default:
                     obsolete = false;
-                   break;
+                    break;
             }
             if (obsolete)
             {
-                Error(token, ErrorCode.WRN_ObsoleteInclude, includeFileName, assemblyName+".dll");
+                Error(token, ErrorCode.WRN_ObsoleteInclude, includeFileName, assemblyName + ".dll");
             }
             return obsolete;
         }
 
         private bool ProcessIncludeFile(string includeFileName, XSharpToken fileNameToken)
         {
-            string nfp = null;
+            string resolvedIncludeFileName = null;
             SourceText text = null;
             Exception fileReadException = null;
             PPIncludeFile includeFile = null;
-            if (isObsoleteIncludeFile(includeFileName,fileNameToken))
+            if (isObsoleteIncludeFile(includeFileName, fileNameToken))
             {
                 return true;
             }
             List<string> dirs = new List<string>() { PathUtilities.GetDirectoryName(_fileName) };
             foreach (var p in _includeDirs)
             {
-                dirs.Add(p);
+                if (!dirs.Contains(p))
+                    dirs.Add(p);
             }
             if (fileNameToken != null)
             {
                 var path = PathUtilities.GetDirectoryName(fileNameToken.SourceName);
-                if (! String.IsNullOrEmpty(path) && !dirs.Contains(path))
+                if (!string.IsNullOrEmpty(path) && !dirs.Contains(path))
                     dirs.Add(path);
             }
             if (_options.Verbose)
@@ -1120,37 +1121,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var p in dirs)
             {
                 bool rooted = Path.IsPathRooted(includeFileName);
-                string fp;
+                string fullPath;
                 try
                 {
-                    fp = rooted || p == null ? includeFileName : Path.Combine(p, includeFileName);
+                    fullPath = rooted || p == null ? includeFileName : Path.Combine(p, includeFileName);
                 }
                 catch (Exception e)
                 {
                     Error(fileNameToken, ErrorCode.ERR_PreProcessorError, "Error combining path " + p + " and filename  " + includeFileName + " " + e.Message);
                     continue;
                 }
-                if (File.Exists(fp))
+                if (File.Exists(fullPath))
                 {
                     if (_options.Verbose)
                     {
-                        DebugOutput("Found include file on disk: {0}", fp);
+                        DebugOutput("Found include file on disk: {0}", fullPath);
                     }
-                    includeFile = PPIncludeFile.Get(fp);
+                    // get it from the cache, maybe we have read it before.
+                    includeFile = PPIncludeFile.Get(fullPath);
                     if (includeFile != null)
                     {
-                        nfp = fp;
+                        resolvedIncludeFileName = fullPath;
                         text = includeFile.Text;
                         if (_options.Verbose)
                         {
-                            DebugOutput("Include file retrieved from cache: {0}", fp);
+                            DebugOutput("Include file retrieved from cache: {0}", fullPath);
                         }
                         break;
                     }
                     else
                     {
 #if !VSPARSER
-                        var ex = readFileContents(fp, out nfp, out text);
+                        var ex = readFileContents(fullPath, out resolvedIncludeFileName, out text);
                         if (ex != null && fileReadException == null)
                         {
                             fileReadException = ex;
@@ -1159,9 +1161,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         Exception ex;
                         try
                         {
-                            var contents = System.IO.File.ReadAllText(fp);
+                            var contents = System.IO.File.ReadAllText(fullPath);
                             text = SourceText.From(contents);
-                            nfp = fp;
+                            resolvedIncludeFileName = fullPath;
                         }
                         catch (Exception e)
                         {
@@ -1169,22 +1171,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
 #endif
                     }
-                    if (rooted || nfp != null)
+                    if (rooted || resolvedIncludeFileName != null)
                         break;
 
                 }
             }
-            if (nfp == null)
+            if (resolvedIncludeFileName == null)
             {
                 loadResources();
                 var baseName = Path.GetFileNameWithoutExtension(includeFileName).ToLower();
                 if (embeddedHeaders.TryGetValue(baseName, out var source))
                 {
                     text = SourceText.From(source);
-                    nfp = includeFileName;
+                    resolvedIncludeFileName = includeFileName;
                 }
             }
-            if (nfp == null)
+            if (resolvedIncludeFileName == null)
             {
                 if (fileReadException != null)
                 {
@@ -1199,23 +1201,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                if (!IncludedFiles.ContainsKey(nfp))
+                if (!IncludedFiles.ContainsKey(resolvedIncludeFileName))
                 {
-                    IncludedFiles.Add(nfp, text);
+                    IncludedFiles.Add(resolvedIncludeFileName, text);
                 }
             }
-            if (_options.ShowIncludes )
+            if (_options.ShowIncludes)
             {
                 var fname = PathUtilities.GetFileName(this.SourceName);
                 if (fileNameToken != null)
                 {
                     fname = PathUtilities.GetFileName(fileNameToken.InputStream.SourceName);
-                    DebugOutput("{0} line {1} Include {2}", fname, fileNameToken.Line, nfp);
+                    DebugOutput("{0} line {1} Include {2}", fname, fileNameToken.Line, resolvedIncludeFileName);
                 }
                 else
                 {
-                    // Most likely the Standard Header file. Report for Line 0
-                    DebugOutput("{0} line {1} Include {2}", fname, 0, nfp);
+                    // Most likely the Standard Header file. 
+                    DebugOutput("{0} Include Standard Header file {1}", fname, resolvedIncludeFileName);
                 }
             }
 
@@ -1225,8 +1227,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // now parse the stuff and insert in the cache
                 var startTime = DateTime.Now;
 
-                var stream = new AntlrInputStream(text.ToString()) { name = nfp };
-                var lexer = new XSharpLexer(stream){ TokenFactory = XSharpTokenFactory.Default };
+                var stream = new AntlrInputStream(text.ToString()) { name = resolvedIncludeFileName };
+                var lexer = new XSharpLexer(stream) { TokenFactory = XSharpTokenFactory.Default };
                 lexer.Options = _options;
                 var ct = new CommonTokenStream(lexer);
                 ct.Fill();
@@ -1234,46 +1236,48 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     addParseError(e);
                 }
-                var endTime = DateTime.Now;
                 if (_options.Verbose)
                 {
+                    var endTime = DateTime.Now;
                     DebugOutput("Lexed include file {0} milliseconds", (endTime - startTime).Milliseconds);
                 }
                 bool newFile = false;
                 var tokens = removeIncludeFileComments(ct.GetTokens());
-                includeFile = PPIncludeFile.Add(nfp, tokens, text, lexer.MustBeProcessed, ref newFile);
+                includeFile = PPIncludeFile.Add(resolvedIncludeFileName, tokens, text, lexer.MustBeProcessed, ref newFile);
                 if (_options.Verbose)
                 {
                     if (newFile)
                     {
-                        DebugOutput("Added include file to cache {0}", nfp);
+                        DebugOutput("Added include file to cache {0}", resolvedIncludeFileName);
                     }
                     else
                     {
-                        DebugOutput("Bummer: include file was already added to cache by another thread {0}", nfp);
+                        DebugOutput("Bummer: include file was already added to cache by another thread {0}", resolvedIncludeFileName);
                     }
                 }
             }
-            nfp = includeFile.FileName;
+            resolvedIncludeFileName = includeFile.FileName;
             if (_options.ParseLevel == ParseLevel.Complete || includeFile.MustBeProcessed || _lexer.HasPPIfdefs)
             {
+                // Clone the array becayse we may be changing things, changing the channel for example
+                // This does not only clone the array but also clones every token.
                 var clone = includeFile.Tokens.CloneArray();
-                var tokenSource = new XSharpListTokenSource(_lexer, clone, nfp);
+                var tokenSource = new XSharpListTokenSource(_lexer, clone, resolvedIncludeFileName);
                 var tokenStream = new BufferedTokenStream(tokenSource);
                 tokenStream.Fill();
-                InsertStream(nfp, tokenStream, fileNameToken);
+                InsertStream(resolvedIncludeFileName, tokenStream, fileNameToken);
             }
             else
             {
                 if (_options.Verbose)
                 {
-                    DebugOutput("Skipping Include File in Parse Mode {0} line {1}:", nfp, fileNameToken.Line);
+                    DebugOutput("Skipping Include File in Parse Mode {0} line {1}:", resolvedIncludeFileName, fileNameToken.Line);
                 }
             }
             return true;
 
         }
-        
+
         private IList<IToken> removeIncludeFileComments(IList<IToken> source)
         {
             List<IToken> tokens = new List<IToken>();
@@ -1400,7 +1404,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var token = line[0];
                 _regions.Push(token);
-                writeToPPO(original,  true);
+                writeToPPO(original, true);
             }
             else
             {
@@ -1534,7 +1538,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     Error(def, ErrorCode.ERR_PreProcessorError, "Identifier expected");
                 }
-                writeToPPO(original,  true);
+                writeToPPO(original, true);
 
             }
             else
@@ -1844,7 +1848,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     hasChanged = true;
                 }
             }
-            return hasChanged; 
+            return hasChanged;
         }
 
         private bool doProcessTranslates(IList<XSharpToken> line, out IList<XSharpToken> result)
@@ -1909,7 +1913,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             result.Add(current);
             return result;
         }
-        private bool doProcessCommands(IList<XSharpToken> line, out IList<XSharpToken>  result)
+        private bool doProcessCommands(IList<XSharpToken> line, out IList<XSharpToken> result)
         {
             Debug.Assert(line?.Count > 0);
             line = stripWs(line);
@@ -2002,7 +2006,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-#endregion
+        #endregion
 
         private List<XSharpToken> doReplace(IList<XSharpToken> line, PPRule rule, PPMatchRange[] matchInfo)
         {

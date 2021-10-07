@@ -982,7 +982,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result += this.Type.ToString() + " ";
                     foreach (var token in _matchtokens)
                     {
-                        result += token.SyntaxText + " ";
+                        if (token.RuleTokenType != PPTokenType.MatchWholeUDC)
+                            result += token.SyntaxText + " ";
                     }
                     return result.Trim();
                 }

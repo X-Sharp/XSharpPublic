@@ -14,7 +14,7 @@ CLASS Font INHERIT VObject
 	STATIC PROTECT aFontNames AS System.Collections.Generic.Dictionary<STRING,STRING>
 	STATIC CONSTRUCTOR()
 		aFontNames := System.Collections.Generic.Dictionary<STRING,STRING>{}
-		
+
 
 	ACCESS __Font AS System.Drawing.Font
 		IF (oFont == NULL_OBJECT .or. SELF:bFontChanged)
@@ -30,38 +30,38 @@ CLASS Font INHERIT VObject
 		IF oFont != NULL_OBJECT
 			oFont:ToLogFont(oLogFont)
 			iPointSize := (INT) oFont:SizeInPoints
-		ENDIF		
+		ENDIF
 
 
-	ACCESS __FontCharSet AS INT STRICT 
+	ACCESS __FontCharSet AS INT STRICT
 		RETURN oLogFont:CharSet
 
-	ACCESS __FontFaceName AS STRING STRICT 
+	ACCESS __FontFaceName AS STRING STRICT
 		SELF:Create()
 		RETURN oFont:Name
 
-	ACCESS __FontHeight AS INT STRICT 
+	ACCESS __FontHeight AS INT STRICT
 		SELF:Create()
 		RETURN oLogFont:Height
 
-	ACCESS __FontPitchAndFamily AS INT STRICT 
+	ACCESS __FontPitchAndFamily AS INT STRICT
 		SELF:Create()
 		RETURN oLogFont:PitchAndFamily
 
-	ACCESS __PointSize AS INT STRICT 
+	ACCESS __PointSize AS INT STRICT
 		RETURN iPointSize
 
-	ACCESS PointSize AS INT STRICT 
+	ACCESS PointSize AS INT STRICT
 		RETURN iPointSize
 
-	ASSIGN __PointSize(x AS INT)  STRICT 
+	ASSIGN __PointSize(x AS INT)  STRICT
 		iPointSize := x
 		bFontChanged := TRUE
-	
+
 	ACCESS Bold AS LOGIC
 		RETURN oLogFont:Weight == FontWeight.Heavy
 
-	ASSIGN Bold(lfState AS LOGIC) 
+	ASSIGN Bold(lfState AS LOGIC)
 		LOCAL lfNewWeight AS WORD
 
 		IF lfState == TRUE
@@ -75,7 +75,7 @@ CLASS Font INHERIT VObject
 			bFontChanged := TRUE
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	ACCESS CharSet  AS BYTE
 		SELF:Create()
@@ -84,13 +84,13 @@ CLASS Font INHERIT VObject
 	ACCESS ClipPrecision AS BYTE
 		RETURN oLogFont:ClipPrecision
 
-	ASSIGN ClipPrecision(nNewClipPrecision AS BYTE) 
+	ASSIGN ClipPrecision(nNewClipPrecision AS BYTE)
 		IF oLogFont:ClipPrecision<>nNewClipPrecision
 			oLogFont:ClipPrecision := nNewClipPrecision
 			SELF:bFontChanged := TRUE
 		ENDIF
-		
-		RETURN 
+
+		RETURN
 
 	METHOD ConvPntToDim(nPntSize AS LONG, hDCConv AS IntPtr) AS Dimension
 		LOCAL hDC AS IntPtr
@@ -107,7 +107,7 @@ CLASS Font INHERIT VObject
 
 		RETURN wDim
 
-	METHOD Create(lPrinter, uhdc) 
+	METHOD Create(lPrinter, uhdc)
 		LOCAL oDim	  AS Dimension
 		LOCAL hdc	  AS IntPtr
 		DEFAULT(@lPrinter, FALSE)
@@ -121,10 +121,10 @@ CLASS Font INHERIT VObject
 		ENDIF
 
 		IF (oFont == NULL_OBJECT)
-			
+
 			IF oLogFont:Height == 0 .and. oLogFont:Height == 0 .and. iPointSize > 0
 				oDim 			:= SELF:ConvPntToDim(iPointSize, hdc)
-				oLogFont:Height	:= oDim:Height 
+				oLogFont:Height	:= oDim:Height
 				oLogFont:Width 	:= oDim:Width
 			ENDIF
 			IF lPrinter .AND. (hdc != NULL_PTR)
@@ -134,12 +134,12 @@ CLASS Font INHERIT VObject
 					oLogFont:Height := -GuiWin32.MulDiv(iPointSize, GuiWin32.GetDeviceCaps(hdc, LOGPIXELSY), 72)
 				ENDIF
 			ENDIF
-			
+
 			// Check if we know the font name
 			IF ! aFontNames:ContainsKey(oLogFont:FaceName)
 				oFont := System.Drawing.Font{oLogFont:FaceName, iPointSize, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point}
 				aFontNames:Add(oLogFont:FaceName, oFont:Name)
-				oFont:Dispose()		
+				oFont:Dispose()
 			ENDIF
 			oLogFont:FaceName := aFontNames[oLogFont:FaceName]
 			TRY
@@ -161,7 +161,7 @@ CLASS Font INHERIT VObject
 					nStyle |= System.Drawing.FontStyle.Strikeout
 				ENDIF
 				oFont := System.Drawing.Font{oLogFont:FaceName, (REAL4)(iPointSize),  nStyle, System.Drawing.GraphicsUnit.Point}
-				
+
 			CATCH   AS Exception
 				oFont := NULL_OBJECT
 			END TRY
@@ -176,10 +176,10 @@ CLASS Font INHERIT VObject
 
 		bFontChanged := FALSE
 		RETURN SELF
-	
 
-	METHOD Destroy() AS USUAL CLIPPER
-		
+
+	METHOD Destroy() AS USUAL STRICT
+
 		SUPER:Destroy()
 
 		IF (oFont != NULL_OBJECT)
@@ -203,16 +203,16 @@ CLASS Font INHERIT VObject
 	ACCESS Height AS INT
 		SELF:Create()
 		RETURN oLogFont:Height
-	
 
-	ASSIGN Height( liHeight  AS INT) 
+
+	ASSIGN Height( liHeight  AS INT)
 		IF oLogFont:Height != liHeight
 			SELF:bFontChanged := TRUE
 			oLogFont:Height:= liHeight
 		ENDIF
-		RETURN 
+		RETURN
 
-	CONSTRUCTOR(kFont, oDimension, sTypeFace) 
+	CONSTRUCTOR(kFont, oDimension, sTypeFace)
 		SUPER()
 		oLogFont := Font.LOGFONT{}
 		IF ! IsNil(kFont)
@@ -271,23 +271,23 @@ CLASS Font INHERIT VObject
 		ENDIF
 
 		bFontChanged := TRUE
-		RETURN 
+		RETURN
 
 	ACCESS Italic  AS LOGIC
 		RETURN oLogFont:Italic == 1
 
-	ASSIGN Italic(lfState AS LOGIC) 
+	ASSIGN Italic(lfState AS LOGIC)
 		IF oLogFont:Italic != iif(lfState,1,0)
 			oLogFont:Italic := iif(lfState,1,0)
 			bFontChanged := TRUE
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	ACCESS Light  AS LOGIC
 		RETURN oLogFont:Weight == FontWeight.Light
 
-	ASSIGN Light(lfState AS LOGIC) 
+	ASSIGN Light(lfState AS LOGIC)
 		LOCAL lfNewWeight AS WORD
 
 		IF lfState == TRUE
@@ -301,12 +301,12 @@ CLASS Font INHERIT VObject
 			bFontChanged := TRUE
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	ACCESS Normal  AS LOGIC
 		RETURN oLogFont:Weight == FontWeight.Normal
 
-	ASSIGN Normal(lfState AS LOGIC) 
+	ASSIGN Normal(lfState AS LOGIC)
 		LOCAL lfNewWeight AS WORD
 
 		IF lfState == TRUE
@@ -319,7 +319,7 @@ CLASS Font INHERIT VObject
 			bFontChanged := TRUE
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	ACCESS Orientation AS LONG
 		RETURN oLogFont:Orientation
@@ -327,14 +327,14 @@ CLASS Font INHERIT VObject
 	ACCESS OutPrecision  AS BYTE
 		RETURN oLogFont:OutPrecision
 
-	ASSIGN OutPrecision(nNewOutPrecision AS BYTE) 
+	ASSIGN OutPrecision(nNewOutPrecision AS BYTE)
 		IF oLogFont:OutPrecision<>nNewOutPrecision
 			oLogFont:OutPrecision := nNewOutPrecision
 			SELF:bFontChanged := TRUE
 		ENDIF
 
-		RETURN 
-	
+		RETURN
+
 	ACCESS PitchAndFamily AS BYTE
 		RETURN oLogFont:PitchAndFamily
 
@@ -350,20 +350,20 @@ CLASS Font INHERIT VObject
 			SELF:bFontChanged := TRUE
 		ENDIF
 
-		RETURN 
+		RETURN
 
 
 	ACCESS @@PitchFixed  AS LOGIC
 		RETURN !SELF:@@PitchVariable
 
-	ASSIGN @@PitchFixed(lfState AS LOGIC) 
+	ASSIGN @@PitchFixed(lfState AS LOGIC)
 		SELF:@@PitchVariable := ! lfState
-		RETURN 
+		RETURN
 
 	ACCESS @@PitchVariable AS LOGIC
 		RETURN _AND(oLogFont:PitchAndFamily, 0x03) == 2
 
-	ASSIGN @@PitchVariable(lfState AS LOGIC) 
+	ASSIGN @@PitchVariable(lfState AS LOGIC)
 		LOCAL lfNewPitchAndFamily AS BYTE
 
 		IF lfState == TRUE
@@ -377,7 +377,7 @@ CLASS Font INHERIT VObject
 			bFontChanged := TRUE
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	ACCESS Quality AS BYTE
 		RETURN oLogFont:Quality
@@ -385,7 +385,7 @@ CLASS Font INHERIT VObject
 	ACCESS Size AS LONG
 		RETURN SELF:iPointSize
 
-	METHOD SizeText(cString AS STRING)  AS Dimension 
+	METHOD SizeText(cString AS STRING)  AS Dimension
 		LOCAL oSize AS System.Drawing.Size
 		LOCAL oDim AS Dimension
 		oSize := System.Windows.Forms.TextRenderer.MeasureText(cString, oFont)
@@ -396,30 +396,30 @@ CLASS Font INHERIT VObject
 	ACCESS Strikethru  AS LOGIC
 		RETURN oLogFont:StrikeOut == 1
 
-	ASSIGN Strikethru(lfState AS LOGIC) 
+	ASSIGN Strikethru(lfState AS LOGIC)
 		IF oLogFont:StrikeOut != iif(lfState,1,0)
 			oLogFont:StrikeOut := iif(lfState,1,0)
 			bFontChanged := TRUE
 		ENDIF
-		RETURN 
+		RETURN
 
 	ACCESS Underline AS LOGIC
 		RETURN oLogFont:Underline == 1
 
-	ASSIGN Underline(lfState AS LOGIC) 
+	ASSIGN Underline(lfState AS LOGIC)
 		IF oLogFont:Underline != iif(lfState,1,0)
 			oLogFont:Underline := iif(lfState,1,0)
 			bFontChanged := TRUE
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	ACCESS Weight AS LONG
 		RETURN oLogFont:Weight
 
 	ACCESS Width  AS LONG
 		RETURN oLogFont:Width
-	
+
 	[StructLayout(LayoutKind.Sequential, CharSet:=System.Runtime.InteropServices.CharSet.Auto)];
 	INTERNAL CLASS LOGFONT
 		PUBLIC Height := 0         AS INT
@@ -439,13 +439,13 @@ CLASS Font INHERIT VObject
 		EXPORT FaceName := ""      AS STRING
 
 	END CLASS
-	
+
 	OPERATOR IMPLICIT ( f AS System.Drawing.Font) AS Font
 		RETURN Font{f}
 
 	OPERATOR IMPLICIT ( f AS Font ) AS System.Drawing.Font
 		RETURN f:__Font
-	
+
 	STATIC METHOD ConvertFont(family AS WORD) AS WORD STRICT
 		LOCAL retVal AS WORD
 
@@ -465,7 +465,7 @@ CLASS Font INHERIT VObject
 		ENDCASE
 
 		RETURN retVal
-	
+
 	STATIC METHOD GetStdFontScreenHeight(kStandardFont AS INT) AS INT STRICT
 		LOCAL hDC AS PTR
 		LOCAL iHeight AS INT
@@ -483,9 +483,9 @@ CLASS Font INHERIT VObject
 	ACCESS Punkte AS INT
 		RETURN iPointsize
 
-	ASSIGN Punkte( uValue  AS INT) 
+	ASSIGN Punkte( uValue  AS INT)
 		iPointsize := uValue
-	
+
 	#endregion
 	INTERNAL ENUM FontWeight
 		MEMBER Heavy := 700

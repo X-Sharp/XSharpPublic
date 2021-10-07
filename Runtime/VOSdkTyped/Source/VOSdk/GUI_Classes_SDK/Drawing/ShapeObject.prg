@@ -48,7 +48,7 @@ ACCESS Brush AS Brush
 ASSIGN Brush(oNewBrush AS Brush) 
 	oBrush:=oNewBrush
 
-METHOD Destroy() AS USUAL CLIPPER
+METHOD Destroy() AS USUAL STRICT
 
 	oDimension := NULL_OBJECT
 	oPen := NULL_OBJECT

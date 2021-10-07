@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1684
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31727.386
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-74CF-4618-9856-D89B3FCB6DA3}"
 	ProjectSection(SolutionItems) = preProject
@@ -303,8 +303,8 @@ Global
 		{223BE288-7390-48C2-8C3D-6742287962DC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
 		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{051D166B-3886-43FB-A3C6-6C6846EA6DF1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{91816960-EB2D-4E4A-AE67-4EDC5BD38940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

@@ -8,7 +8,7 @@ CLASS Icon INHERIT VObject
 		RETURN oIcon
 
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		IF ! oIcon == NULL_OBJECT
 			oIcon:Dispose()
 			oIcon := NULL_OBJECT
@@ -21,7 +21,7 @@ CLASS Icon INHERIT VObject
 	METHOD Handle() AS IntPtr STRICT
 		RETURN oIcon:Handle
 
-	CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight) 
+	CONSTRUCTOR(xResourceID, kLoadOption, iWidth, iHeight)
 		LOCAL hInst AS IntPtr
 		LOCAL oResourceID as ResourceID
 
@@ -51,7 +51,7 @@ CLASS Icon INHERIT VObject
 			ENDIF
 
 			hInst := oResourceID:Handle()
-			
+
 			TRY
 				LOCAL hIcon AS IntPtr
 				hIcon := GuiWin32.LoadImage(hInst, oResourceID:Address(), IMAGE_ICON, iWidth, iHeight, kLoadOption)
@@ -62,17 +62,17 @@ CLASS Icon INHERIT VObject
 			IF oIcon == NULL_OBJECT .and. !STRING.IsNullOrEmpty(oResourceID:Name)
 				LOCAL oBmp AS System.Drawing.Bitmap
 				TRY
-					oBmp := System.Drawing.Bitmap.FromResource(hInst, oResourceID:Name) 
+					oBmp := System.Drawing.Bitmap.FromResource(hInst, oResourceID:Name)
 					oIcon := System.Drawing.Icon.FromHandle(oBmp:GetHicon())
                 CATCH
                     NOP
 				END TRY
 			ENDIF
-	
-		ENDIF
-		RETURN 
 
-	ACCESS Size 
+		ENDIF
+		RETURN
+
+	ACCESS Size
 		RETURN (Dimension) oIcon:Size
 
 	METHOD FromFile(cFile AS STRING	) AS LOGIC

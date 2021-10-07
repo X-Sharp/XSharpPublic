@@ -14,7 +14,7 @@ CLASS RadioButton INHERIT Button
 	ACCESS __RadioButton AS IVORadioButton
 		RETURN (IVORadioButton ) oCtrl
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		IF oCtrl != NULL_OBJECT .and. !oCtrl:IsDisposed
 			lSavedPressed := SELF:Pressed
 		ENDIF

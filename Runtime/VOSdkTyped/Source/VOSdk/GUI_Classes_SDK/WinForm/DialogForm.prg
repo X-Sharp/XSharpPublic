@@ -7,15 +7,15 @@ CLASS VODialogForm INHERIT VOForm
 	PROTECT oResDlg			AS ResourceDialog
 	PROTECT lMustAdjust		AS LOGIC
 
-#region Properties    
-	PROPERTY Surface		AS VOPanel	GET oSurfacePanel 
-	PROPERTY InitialSize    AS System.Drawing.Size AUTO GET SET 
+#region Properties
+	PROPERTY Surface		AS VOPanel	GET oSurfacePanel
+	PROPERTY InitialSize    AS System.Drawing.Size AUTO GET SET
 	PROPERTY IsShown		AS LOGIC AUTO GET PRIVATE SET
 #endregion
 
 	CONSTRUCTOR(oWindow AS Window, oRes AS ResourceDialog)
-		SELF:oResDlg := oRes
 		SUPER(oWindow)
+		SELF:oResDlg := oRes
 		SELF:StartPosition	       := FormStartPosition.CenterParent
 		SELF:Text                  := "DialogForm"
 		IF oRes != NULL
@@ -24,16 +24,16 @@ CLASS VODialogForm INHERIT VOForm
 			SELF:lMustAdjust		:= _AND(oRes:Style, WS_SYSMENU|WS_MINIMIZEBOX|WS_MAXIMIZEBOX) != 0
 		ELSE
 			SELF:lMustAdjust := FALSE
-			SELF:Size				:= System.Drawing.Size{1,1} 
+			SELF:Size				:= System.Drawing.Size{1,1}
 		ENDIF
 		SELF:AutoSizeMode          := AutoSizeMode.GrowAndShrink
-		
+
 		oSurfacePanel              := GuiFactory.Instance:CreateSurfacePanel(oWindow)
 		oSurfacePanel:Visible      := TRUE
 		SELF:oSurfacePanel:Dock    := DockStyle.Fill
 		SELF:Controls:Add(oSurfacePanel)
-		
-				
+
+
 
 #region Winforms Method overrides
 
@@ -52,11 +52,11 @@ CLASS VODialogForm INHERIT VOForm
 			oFirst:Select()
 		ENDIF
 		((DialogWindow) Window):PostShowDialog()
-	
-	OVERRIDE PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 
+
+	OVERRIDE PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
-			IF SELF:oResDlg != NULL_OBJECT 
+			IF SELF:oResDlg != NULL_OBJECT
 				SELF:oResDlg:CopyCreateParams(result, TRUE)
 			ENDIF
 			RETURN result
@@ -66,10 +66,10 @@ CLASS VODialogForm INHERIT VOForm
 
 	OVERRIDE PROTECTED METHOD OnClosing( e AS CancelEventargs) AS VOID
 		SUPER:OnClosing(e )
-		
+
 	OVERRIDE PROTECTED METHOD OnVisibleChanged( e AS System.EventArgs) AS VOID
 		SUPER:OnVisibleChanged(e)
-		IF SELF:Visible 
+		IF SELF:Visible
 			// Fix problem of group boxes that cover other controls
 			SELF:oSurfacePanel:Prepare()
 			IF ! SELF:IsShown
@@ -84,7 +84,7 @@ CLASS VODialogForm INHERIT VOForm
 				SELF:IsShown := TRUE
 			ENDIF
 		ENDIF
-	RETURN 
+	RETURN
 
 	OVERRIDE PROTECTED METHOD OnSizeChanged(e AS EventArgs) AS VOID
 		SUPER:OnSizeChanged(e)
@@ -103,7 +103,7 @@ CLASS VODialogForm INHERIT VOForm
 		IF lSet
 			SELF:FormBorderStyle := FormBorderStyle.Sizable
 		ELSE
-			SELF:FormBorderStyle := FormBorderStyle.FixedDialog		
+			SELF:FormBorderStyle := FormBorderStyle.FixedDialog
 		ENDIF
 
 

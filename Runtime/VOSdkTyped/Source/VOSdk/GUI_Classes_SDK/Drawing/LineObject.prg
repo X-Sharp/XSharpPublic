@@ -27,7 +27,7 @@ CLASS LineObject INHERIT DrawObject
 		OrgY := oOrg:Y
 		RETURN BoundingBox{Point{Min(EndX,OrgX), Min(EndY,OrgY)}, Dimension{Abs(EndX-OrgX),Abs(EndY-OrgY)}}
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 	
 		oPen:=NULL_OBJECT
 		oEnd:=NULL_OBJECT

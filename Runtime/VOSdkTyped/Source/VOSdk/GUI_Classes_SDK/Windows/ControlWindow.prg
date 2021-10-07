@@ -15,7 +15,7 @@ CLASS ControlWindow INHERIT Window
 		RETURN oCtrl:ControlID
 
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		IF oCtrl:__IsValid
 			oCtrl:Destroy()
 		ENDIF

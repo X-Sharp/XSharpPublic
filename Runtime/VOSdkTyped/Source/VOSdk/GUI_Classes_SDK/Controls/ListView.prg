@@ -1243,7 +1243,7 @@ CLASS ListViewItem INHERIT VObject
 		ENDIF
 		RETURN 
 
-	METHOD Destroy() AS USUAL CLIPPER
+	METHOD Destroy() AS USUAL STRICT
 		aColumnText := NULL
 		aColumnValue := NULL
 		SUPER:Destroy()

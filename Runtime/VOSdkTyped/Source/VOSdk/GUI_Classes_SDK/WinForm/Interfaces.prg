@@ -119,7 +119,7 @@ INTERFACE IGuiObject
 	PROPERTY HyperLabel AS HyperLabel GET SET
 	PROPERTY NameSym	AS SYMBOL GET
     PROPERTY __Handle   AS IntPtr GET
-	METHOD   Destroy()	AS USUAL CLIPPER
+	METHOD   Destroy()	AS USUAL STRICT
     METHOD   Show()     AS VOID STRICT
     METHOD   Hide()     AS VOID STRICT
     METHOD   SetFocus() AS VOID STRICT

@@ -6,7 +6,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	PROTECT sCurrentView AS SYMBOL
 	PROTECT nCCMode AS INT
 	PROTECT nLastLock AS INT
-	
+
 	//PROTECT lKickingTheBucket AS LOGIC
 	PROTECT lChanged AS LOGIC
 	PROTECT lLinked AS LOGIC
@@ -21,12 +21,12 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	PROTECT lDeferUse AS LOGIC
 	PROTECT oDeferUseServer AS DataServer
 	PROTECT lAutoScroll AS LOGIC
-	
+
 	PROTECT aSubForms AS ARRAY
 	PROTECT aControls AS ARRAY
 	PROTECT aConditionalControls AS ARRAY
 	PROTECT aRadioGroups AS ARRAY
-	
+
 	//PROTECT oFormFrame AS __FormFrame
 	PROTECT oGBrowse AS DataBrowser
 
@@ -60,28 +60,28 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		SELF:oFrame	  := oDw:Frame
 		RETURN oDw
 
-	ACCESS __DataForm AS VODataForm 
+	ACCESS __DataForm AS VODataForm
 		RETURN (VODataForm) SELF:__Form
 
 
 	ACCESS __Frame AS IVOFramePanel
-		RETURN SELF:oFrame 
+		RETURN SELF:oFrame
 
 
 	[Obsolete];
-	METHOD __AdjustForm() AS VOID STRICT 
+	METHOD __AdjustForm() AS VOID STRICT
 		//Resizing happens automatically in the DataWinForm class
-		RETURN 
+		RETURN
 
 	[Obsolete];
-	METHOD __AdjustSurface() AS LOGIC STRICT 
+	METHOD __AdjustSurface() AS LOGIC STRICT
 		//Resizing happens automatically in the DataWinForm class
 		RETURN TRUE
 
-	ACCESS __aRadioGroups AS ARRAY STRICT 
+	ACCESS __aRadioGroups AS ARRAY STRICT
 		RETURN aRadioGroups
-	
-	METHOD __AutoCreateBrowser() AS DataWindow STRICT 
+
+	METHOD __AutoCreateBrowser() AS DataWindow STRICT
 		IF oGBrowse == NULL_OBJECT
 			IF symBrowserClass == #DataBrowser
 				oGBrowse := DataBrowser{SELF}
@@ -100,15 +100,15 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		CASE (sCurrentView == #FormView)
 			Send(oGBrowse ,#__NOTIFYChanges, GBNFY_VIEWASFORM)
 		END CASE
-		
+
 		IF (lLinked .and. oAttachedServer != NULL_OBJECT)
 			Send(oGBrowse, #Use, oAttachedServer)
 		ENDIF
-		
-		RETURN SELF
-	
 
-	METHOD __AutoLayout() AS DataWindow STRICT 
+		RETURN SELF
+
+
+	METHOD __AutoLayout() AS DataWindow STRICT
 		LOCAL cField AS STRING
 		LOCAL oDFField AS OBJECT
 		LOCAL liFieldLen AS LONGINT
@@ -130,10 +130,10 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		LOCAL lOleWarningShown := FALSE AS LOGIC
 		LOCAL lBidi := IsBiDi() AS LOGIC
 		LOCAL iMaxWidth AS INT
-		LOCAL iNewWidth AS INT 
+		LOCAL iNewWidth AS INT
 		LOCAL CoordinateSystem AS LOGIC
 		LOCAL iFontWidth AS INT
-		
+
 		IF lPreventAutoLayout
 			RETURN SELF
 		ENDIF
@@ -141,22 +141,22 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		CoordinateSystem := WC.CoordinateSystem
 		WC.CoordinateSystem := WC.WindowsCoordinates
 		SELF:oSurface:SuspendLayout()
-		
+
 		//RvdH 070415 limited iMMaxWidth to half the width of the desktop (and not two third)
 		iMaxWidth := System.Windows.Forms.Screen.GetWorkingArea(__Form):Width /2
-		
+
 		__DataForm:AutoLayout := TRUE
 		__DataForm:ResetMinSize()
-		
+
 		arUsedKeys := {}
-		
+
 		// get Textmetric through Font
-		// approx. - there is no width in font, use of VisualStyle Renderer Crashes in Windows Classic Scheme and getting the textmetrics through handle is not an option 
+		// approx. - there is no width in font, use of VisualStyle Renderer Crashes in Windows Classic Scheme and getting the textmetrics through handle is not an option
 		// since the window is shown when the handle is created
-		iFontWidth := SELF:oSurface:Font:Height 
+		iFontWidth := SELF:oSurface:Font:Height
 		editHeight := iFontWidth + 4
 		editGap := editHeight + 6
-		
+
 		// Find maximum field label size and number of lines
 		liFields := (LONG) oAttachedServer:FCount
 		FOR liField := 1 UPTO liFields
@@ -165,7 +165,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			IF (oDFField == NULL_OBJECT)
 				LOOP
 			ENDIF
-			
+
 			cType := oDFField:FieldSpec:ValType
 			IF (cType != "O") .OR. lOleAvail
 				liLines++
@@ -187,13 +187,13 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				lOleWarningShown := TRUE
 			ENDIF
 		NEXT //liStart
-		
+
 		//// Add the fields
 		liField := 0
 		maxEditSize := Min(iMaxWidth, (maxFldSize+1) * iFontWidth)
-		
+
 		oPoint := Point{IIF(lBidi, (25 + maxEditSize), 20), 0}
-		
+
 		FOR liStart:=1 UPTO liLines
 			// get next datafield
 			oDFField := NULL_OBJECT
@@ -201,23 +201,23 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				liField++
 				oDFField := SELF:oAttachedServer:DataField(liField)
 			ENDDO
-			
+
 			IF liField>liFields
 				EXIT
 			ENDIF
-			
+
 			// Create label
 			cType := oDFField:FieldSpec:ValType
-			
+
 			IF (cType != "O") .OR. lOleAvail
 				cField := __GetDFCaption(oDFField,arUsedKeys)
 				oPoint:Y := editGap * (liStart-1)
 				newControl := FixedText{SELF, (100 + liField), oPoint, oLabelDim, cField}
 				newControl:Show()
-				
+
 				// Create Data control
 				liFieldLen := __GetFSDefaultLength(oDFField:FieldSpec)
-				
+
 				// get the new width first (we need that for BiDi)
 				DO CASE
 				CASE cType=="L"
@@ -235,16 +235,16 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 						iNewWidth := (liFieldLen +1 ) * iFontWidth
 					ENDIF
 				ENDCASE
-				
+
 				IF (lBidi)
 					// s.b. We have to add this otherwise the "C" type fields overlap the text captions.
 					oPoint:X := 20 + maxEditSize - Min(iMaxWidth, iNewWidth)
 				ELSE
 					oPoint:X := 25 + maxLblSize
 				ENDIF
-				
+
 				oPoint:Y := editGap * (liStart-1)
-				
+
 				DO CASE
 				CASE cType=="L"
 					newControl := CheckBox{SELF, 200+liField, oPoint, Dimension{iNewWidth, editHeight}, " ", BS_AUTOCHECKBOX}
@@ -252,17 +252,17 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 					liStart += 1
 					oPoint:Y := editGap * (liLines - liStart + 1)
 					newControl := MultiLineEdit{SELF, 200+liField, oPoint, Dimension{iNewWidth, editHeight*2}, ES_AUTOVSCROLL}
-					#ifdef USE_OLEOBJECT	
+					#ifdef USE_OLEOBJECT
 				CASE cType=="O"
 					liStart += 6
 					oPoint:Y := editGap * (liLines - liStart + 1)
-					oOle := OleObject{ SELF, 200+liField, oPoint, Dimension{iNewWidth, editGap*6+editHeight}, TRUE} 
+					oOle := OleObject{ SELF, 200+liField, oPoint, Dimension{iNewWidth, editGap*6+editHeight}, TRUE}
 					newControl := oOle
 					oOle:AutoSizeOnCreate := FALSE
 					oOle:AllowInPlace:= !IsInstanceOf(SELF, #DataDialog) /*.and. IsInstanceOf(oParent, #ShellWindow)*/
 					oOle:ActivateOnDblClk:=  TRUE
 					oOle:AllowResize:=  TRUE
-					#endif				
+					#endif
 				CASE cType=="X"
 					liStart += 6
 					oPoint:Y := editGap * (liLines - liStart + 1)
@@ -280,7 +280,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				newControl:LinkDF(oAttachedServer, liField)
 				// Show it
 				newControl:Show()
-				
+
 				oPoint:X := IIF(lBidi, (25 + maxEditSize), 20)
 			ENDIF
 		NEXT
@@ -288,36 +288,36 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		lInAutoLayout := FALSE
 		WC.CoordinateSystem := CoordinateSystem
 		__DataForm:AdjustFrameSize()
-		
-		RETURN SELF
-	
 
-	METHOD __CheckConditionalControls() AS DataWindow STRICT 
+		RETURN SELF
+
+
+	METHOD __CheckConditionalControls() AS DataWindow STRICT
 		LOCAL idx, iLen AS DWORD
 		LOCAL oControl AS Control
 
 		iLen := ALen(aControls)
 		FOR idx :=1 TO iLen
-			oControl := aControls[idx] 
+			oControl := aControls[idx]
 			IF (oControl:Status != NULL_OBJECT)
 				EXIT
 			ENDIF
 		NEXT
-		
+
 		IF !IsNil(oHLStatus) .OR. (idx != (iLen+1))
 			SELF:DisableConditionalControls()
 		ELSE
 			SELF:EnableConditionalControls()
 		ENDIF
 		RETURN SELF
-	
 
-	METHOD __CheckRecordStatus() AS LOGIC STRICT 
+
+	METHOD __CheckRecordStatus() AS LOGIC STRICT
 		LOCAL oOldStatus AS HyperLabel
 		LOCAL oTempStatus AS HyperLabel
-		
+
 		oOldStatus := oHLStatus
-		
+
 		IF (IsNil(oAttachedServer))
 			oHLStatus := HyperLabel{#NoAttachedServer, #NoAttachedServer}
 		ELSE
@@ -351,19 +351,19 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			SELF:__UpdateStatus()
 			RETURN FALSE
 		ENDIF
-		
-		RETURN TRUE
-	
 
-	METHOD __Delete() AS LOGIC STRICT 
+		RETURN TRUE
+
+
+	METHOD __Delete() AS LOGIC STRICT
 		// DataWindow : Delete
 		// This method deletes the current record.
 		// Depending on the setting of SET DELETE, the record may or may not be still
 		// available for viewing. If SET DELETE is set to ON, the record will not be shown
 		// in subsequent browsing of the DataServer.
-		
+
 		LOCAL lRetCode := FALSE AS LOGIC
-		
+
 		oHLStatus:= NULL_OBJECT // assume success
 		IF oAttachedserver!=NULL_OBJECT
 			IF SELF:__CheckRecordStatus()
@@ -388,15 +388,15 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 		ENDIF
 		RETURN SELF:__UpdateStatus()
-	
-	
 
-	METHOD __DoValidate(oControl AS Control) AS DataWindow STRICT 
+
+
+	METHOD __DoValidate(oControl AS Control) AS DataWindow STRICT
 		//RH Check fore Server on control in stead of Server on window
 		LOCAL oServer AS DataServer
 		IF oControl is RadioButton
 			FOREACH oRBG AS RadioButtonGroup IN aRadioGroups
-			
+
 				IF oRBG:__IsElement( (RadioButton) oControl)
 					oControl:__Update()
 					oControl := oRBG
@@ -404,7 +404,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				ENDIF
 			NEXT //dwI
 		ENDIF
-		
+
 		IF oControl:Modified .or. oControl:ValueChanged
 			oControl:__Update()
 			IF oControl:ValueChanged
@@ -425,66 +425,66 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				SELF:PreValidate()
 			ENDIF
 		ENDIF
-		
+
 		RETURN SELF
-	
 
-	METHOD __EnableHelpCursor(lEnabled AS LOGIC) AS Window STRICT 
+
+	METHOD __EnableHelpCursor(lEnabled AS LOGIC) AS Window STRICT
 		RETURN SUPER:__EnableHelpCursor(lEnabled)
-	
 
-	METHOD __FindControl(symName AS SYMBOL) AS Control STRICT 
+
+	METHOD __FindControl(symName AS SYMBOL) AS Control STRICT
 		FOREACH oControl  AS Control IN aControls
 			IF oControl:NameSym == symName
 				RETURN oControl
 			ENDIF
 		NEXT  // dwI
-		
-		RETURN NULL_OBJECT
-	
 
-	METHOD __FindFieldSpec(SymName AS SYMBOL) AS FieldSpec STRICT 
+		RETURN NULL_OBJECT
+
+
+	METHOD __FindFieldSpec(SymName AS SYMBOL) AS FieldSpec STRICT
 		LOCAL oControl AS Control
 
 		IF (oControl := SELF:__FindControl(SymName)) != NULL_OBJECT
 			RETURN oControl:FieldSpec
 		ENDIF
-		
-		RETURN NULL_OBJECT
-	
 
-	METHOD __FindHyperLabel(SymName AS SYMBOL) AS HyperLabel STRICT 
+		RETURN NULL_OBJECT
+
+
+	METHOD __FindHyperLabel(SymName AS SYMBOL) AS HyperLabel STRICT
 		LOCAL oControl AS Control
-		
+
 		IF (oControl := SELF:__FindControl(SymName)) != NULL_OBJECT
 			RETURN oControl:HyperLabel
 		ENDIF
-		
-		RETURN NULL_OBJECT
-	
 
-	METHOD __Gather() AS LOGIC STRICT 
-		
+		RETURN NULL_OBJECT
+
+
+	METHOD __Gather() AS LOGIC STRICT
+
 		FOREACH oControl AS Control IN aControls
 			oControl:__Gather()
 		NEXT
-		
+
 		RETURN IsNil(oHLStatus)
-	
 
-	METHOD __GetFormSurface() AS VOSurfacePanel STRICT 
+
+	METHOD __GetFormSurface() AS VOSurfacePanel STRICT
 		RETURN oSurface
-	
 
-	METHOD __GetOLEObject(symMethod AS SYMBOL) AS DataWindow STRICT 
-		#ifdef USE_OLEOBJECT	
+
+	METHOD __GetOLEObject(symMethod AS SYMBOL) AS DataWindow STRICT
+		#ifdef USE_OLEOBJECT
 		//RvdH 030825 Methods moved from Ole Classes
 		LOCAL hFocus := GetFocus() AS PTR
 		LOCAL oOle AS OleObject
 		LOCAL dwI, dwCount AS DWORD
 		LOCAL oControl AS Control
 		LOCAL lRet AS LOGIC
-		
+
 		// neccessary???
 		//SE-060526
 		dwCount := ALen(aControls)
@@ -495,7 +495,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				EXIT
 			ENDIF
 		NEXT  // dwI
-		
+
 		IF IsInstanceOf(oControl, #OleObject)
 			oOle := OBJECT(_CAST, oControl)
 			oOle:DetachFromServer()
@@ -520,9 +520,9 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ENDIF
 		#endif
 		RETURN SELF
-	
 
-	METHOD __HandleScrolling(oEvent AS Event) AS DataWindow STRICT 
+
+	METHOD __HandleScrolling(oEvent AS Event) AS DataWindow STRICT
 		DO CASE
 		CASE oEvent IS ScrollEvent VAR oScroll
 			oScroll:ScrollBar:ThumbPosition := oScroll:Position
@@ -531,21 +531,21 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
         CASE oEvent IS SpinnerEvent VAR oSpin
 			oSpin:Spinner:ThumbPosition := oSpin:Value
             SELF:__DoValidate(oSpin:Spinner)
-            
+
 		CASE oEvent IS SliderEvent VAR oSlide
 			oSlide:Slider:ThumbPosition := oSlide:Position
             SELF:__DoValidate(oSlide:Slider)
 		ENDCASE
-	
-		RETURN SELF
-	
 
-	METHOD __RegisterFieldLinks(oDataServer AS DataServer) AS LOGIC STRICT 
+		RETURN SELF
+
+
+	METHOD __RegisterFieldLinks(oDataServer AS DataServer) AS LOGIC STRICT
 		LOCAL oDC AS Control
 		LOCAL dwIndex, dwControls AS DWORD
 		LOCAL siDF AS LONG
-		
-		
+
+
 		dwControls := ALen(aControls)
 		IF dwControls > 0
 			FOR dwIndex := 1 UPTO dwControls
@@ -565,24 +565,24 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				lLinked := TRUE
 			ENDIF
 		ENDIF
-		
+
 		IF lLinked
 			oDataServer:RegisterClient(SELF)
 		ENDIF
-		
-		RETURN lLinked
-	
 
-	METHOD __RegisterSubform(oSubForm AS DataWindow) AS DataWindow STRICT 
+		RETURN lLinked
+
+
+	METHOD __RegisterSubform(oSubForm AS DataWindow) AS DataWindow STRICT
 		AAdd(aSubForms, oSubForm)
 		SELF:oSurface:AddControl(oSubForm:__Frame)
 		// Set the parent of the __DataForm of the Subwindow to our parent
 		oSubForm:__DataForm:Owner := SELF:__DataForm:Owner
 		RETURN SELF
-	
 
-	METHOD __Scatter() AS DataWindow STRICT 
-		
+
+	METHOD __Scatter() AS DataWindow STRICT
+
 		IF (sCurrentView == #FormView)
 			FOREACH oControl AS Control IN aControls
 				oControl:__Scatter()
@@ -594,7 +594,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			lRecordDirty := FALSE
 			SELF:PreValidate()
 		ENDIF
-		
+
 		RETURN SELF
 
 
@@ -604,28 +604,28 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		IF oDC IS RadioButtonGroup
 			AAdd(aRadioGroups, oDC)
 		ENDIF
-		
+
 		IF __DataForm:AutoLayout .AND. !(oDC IS FixedText)
 			oDC:SetStyle(WS_TabStop)
 		ENDIF
 		AAdd(aControls, oDC)
-		
-		RETURN 
-	
+
+		RETURN
+
 
 	METHOD __SetupNonDataControl(oDC AS Control) AS VOID
         //DebOut(__FUNCTION__)
 		IF __DataForm:AutoLayout .AND. !(oDC IS FixedText)
 			oDC:SetStyle(WS_TabStop)
 		ENDIF
-		
-		RETURN 
-	
 
-	METHOD __StatusMessage(uDescription AS USUAL, nMode AS LONGINT) AS DataWindow STRICT 
+		RETURN
+
+
+	METHOD __StatusMessage(uDescription AS USUAL, nMode AS LONGINT) AS DataWindow STRICT
 		LOCAL uTemp AS USUAL
-		
-		
+
+
 		IF IsInstanceOfUsual(uDescription, #HyperLabel)
 			uTemp := uDescription:Description
 			IF Empty(uTemp) .OR. IsNil(uTemp)
@@ -634,34 +634,34 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ELSE
 			uTemp := uDescription
 		ENDIF
-		
+
 		// sTmp is now a symbol or String
-		
+
 		IF IsSymbol(uTemp)
 			uTemp := Symbol2String(uTemp)
 		ELSEIF IsNil(uTemp)
 			uTemp := NULL_STRING
 		ENDIF
-		
+
 		IF !IsString(uTemp)
 			uTemp := ResourceString{__WCSUnknownStatusMSG}:Value
 		ENDIF
 		SELF:@@StatusMessage(uTemp, nMode)
 		RETURN SELF
-	
 
-	ACCESS __SubForm AS LOGIC STRICT 
+
+	ACCESS __SubForm AS LOGIC STRICT
 		RETURN lSubForm
-	
-	
+
+
 	ACCESS __HasSurface AS LOGIC
 		RETURN TRUE
 
 	ACCESS __Surface AS IVOControlContainer
 		RETURN oSurface
 
-	METHOD __Unlink() AS LOGIC STRICT 
-		
+	METHOD __Unlink() AS LOGIC STRICT
+
 		IF oAttachedServer == NULL_OBJECT
 			RETURN FALSE
 		ENDIF
@@ -675,17 +675,17 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		oAttachedServer:UnRegisterClient(SELF, lAllowServerClose)
 		oAttachedServer := NULL_OBJECT
 		lLinked := FALSE
-		
-		RETURN TRUE
-	
 
-	METHOD __UnRegisterDataControl(oControl AS Control) AS DataWindow STRICT 
+		RETURN TRUE
+
+
+	METHOD __UnRegisterDataControl(oControl AS Control) AS DataWindow STRICT
 		LOCAL dwI, dwCount AS DWORD
-		
-		
+
+
 		// test???
 		//RETURN SELF
-		
+
 		dwCount := ALen(aControls)
 		FOR dwI := 1 UPTO dwCount
 			IF aControls[dwI] = oControl
@@ -694,7 +694,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				EXIT
 			ENDIF
 		NEXT  // dwI
-		
+
 		dwCount := ALen(aConditionalControls)
 		FOR dwI := 1 UPTO dwCount
 			IF aConditionalControls[dwI] = oControl
@@ -703,7 +703,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				EXIT
 			ENDIF
 		NEXT  // dwI
-		
+
 		dwCount := ALen(aRadioGroups)
 		FOR dwI := 1 UPTO dwCount
 			IF aRadioGroups[dwI] = oControl
@@ -712,15 +712,15 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				EXIT
 			ENDIF
 		NEXT  // dwI
-		
-		RETURN SELF
-	
 
-	METHOD __UnRegisterSubform(oSubForm AS OBJECT) AS DataWindow STRICT  
+		RETURN SELF
+
+
+	METHOD __UnRegisterSubform(oSubForm AS OBJECT) AS DataWindow STRICT
 		LOCAL dwI, dwCount AS DWORD
-		
-		
-		
+
+
+
 		dwCount := ALen(aSubForms)
 		FOR dwI := 1 UPTO dwCount
 			IF aSubForms[dwI] == oSubForm
@@ -729,11 +729,11 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				EXIT
 			ENDIF
 		NEXT  // dwI
-		
-		RETURN SELF
-	
 
-	METHOD __UpdateActiveObject() AS DataWindow STRICT 
+		RETURN SELF
+
+
+	METHOD __UpdateActiveObject() AS DataWindow STRICT
 		LOCAL oOle AS OBJECT
 		LOCAL i AS DWORD
 		LOCAL aObjects 	AS ARRAY
@@ -745,13 +745,13 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 		NEXT
 		RETURN SELF
-	
-	
 
-	METHOD __UpdateCurrent() AS DataWindow STRICT 
+
+
+	METHOD __UpdateCurrent() AS DataWindow STRICT
 		LOCAL oColumn AS OBJECT
-		
-		
+
+
 		IF (sCurrentView == #FormView)
 			IF oDCCurrentControl IS Control VAR oC  .AND. oC:Modified
 				SELF:__DoValidate(oDCCurrentControl)
@@ -763,10 +763,10 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 		ENDIF
 		RETURN SELF
-	
 
-	METHOD __UpdateStatus() AS LOGIC STRICT 
-		
+
+	METHOD __UpdateStatus() AS LOGIC STRICT
+
 		IF oHLStatus != NULL_OBJECT
 			IF IsInstanceOfUsual(oHLStatus, #HyperLabel)
 				SELF:__StatusMessage(ResourceString{__WCSError2}:Value + oHLStatus:Description, MESSAGEERROR)
@@ -775,13 +775,13 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ENDIF
 		// No error
 		SELF:__StatusMessage(NULL_STRING, MessageError)
-		
-		RETURN TRUE
-	
 
-	METHOD __VerifyDataServer(oDataServer AS USUAL) AS LOGIC STRICT 
+		RETURN TRUE
+
+
+	METHOD __VerifyDataServer(oDataServer AS USUAL) AS LOGIC STRICT
 		LOCAL dwParmType AS DWORD
-		
+
 		dwParmType := UsualType(oDataServer)
 		IF dwParmType == STRING
 			oAttachedServer := CreateInstance(String2Symbol("DBServer"), oDataServer)
@@ -801,7 +801,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ELSE
 			RETURN FALSE
 		ENDIF
-		
+
 		IF IsInstanceOf(oAttachedServer, #DBServer)
 			//Use the Used access and not the Status access because the last
 			//operation issued before the Use() method may have failed
@@ -818,28 +818,28 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				oHLStatus := oAttachedServer:Status
 			RETURN FALSE
 		ENDIF
-		
+
 		RETURN TRUE
-	
+
 	METHOD Activate (oEvent  AS Event)
 		IF (oFrame != NULL_OBJECT)
 			WC.AppSetDialogWindow(oFrame)
-		ENDIF	
+		ENDIF
 
 		RETURN SELF:Default(oEvent)
 
 
 	ACCESS AllowServerClose AS LOGIC
 		RETURN lAllowServerClose
-	
-	ASSIGN AllowServerClose(lNewVal as LOGIC) 
+
+	ASSIGN AllowServerClose(lNewVal as LOGIC)
 		lAllowServerClose := lNewVal
-	
+
 
 	METHOD Append() CLIPPER
 		// Adds new record to DataWindow
 		LOCAL lRetCode := FALSE AS LOGIC
-		
+
 		oHLStatus := NULL_OBJECT // assume success
 		IF (oAttachedServer != NULL_OBJECT) .AND. SELF:__CheckRecordStatus()
 			IF !(lRetCode := oAttachedServer:Append(TRUE))
@@ -850,73 +850,73 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				// The notification procedure will set up the controls
 			ENDIF
 		ENDIF
-		
+
 		RETURN lRetCode
-	
+
 
 	ACCESS AutoScroll  AS LOGIC
 		RETURN lAutoScroll
-	
 
-	ASSIGN AutoScroll(lNewValue AS LOGIC) 
+
+	ASSIGN AutoScroll(lNewValue AS LOGIC)
 		lAutoScroll := lNewValue
-	
+
 
 	ACCESS Background AS Brush
-		
+
 		//Only an optimization to avoid unneeded Window:PaintBackground() calls of
 		//the DataWindow object itself or the __FormFrame.
 		IF oSurface != NULL_OBJECT
 			RETURN Brush{(Color)oSurface:BackColor}
 		ENDIF
-		
-		RETURN NULL_OBJECT
-	
 
-	ASSIGN Background(oBrush as Brush) 
-		
+		RETURN NULL_OBJECT
+
+
+	ASSIGN Background(oBrush as Brush)
+
 		//Only an optimization to avoid unneeded Window:PaintBackground() calls of
 		//the DataWindow object itself or the __FormFrame.
-		IF oSurface != NULL_OBJECT 
+		IF oSurface != NULL_OBJECT
 			IF oBrush != NULL_OBJECT
 				oSurface:BackColor := oBrush:Color
 			ENDIF
 		ENDIF
-		
-		RETURN 
-	
+
+		RETURN
+
 
 	ACCESS Browser AS DataBrowser
 		IF IsInstanceOf(oGBrowse, #DataBrowser)
 			RETURN oGBrowse
 		ENDIF
 		RETURN NULL_OBJECT
-	
 
-	ASSIGN Browser(oDataBrowser AS DataBrowser) 
+
+	ASSIGN Browser(oDataBrowser AS DataBrowser)
 		oGBrowse := oDataBrowser
 		__DataForm:DataBrowser := oDataBrowser:__DataGridView
-		RETURN 
-	
+		RETURN
+
 	ACCESS BrowserClass  AS SYMBOL
 		RETURN symBrowserClass
-	
 
-	ASSIGN BrowserClass(symNewClass AS SYMBOL) 
+
+	ASSIGN BrowserClass(symNewClass AS SYMBOL)
 		symBrowserClass := symNewClass
-	
 
-	METHOD ButtonClick(oControlEvent AS ControlEvent) 
+
+	METHOD ButtonClick(oControlEvent AS ControlEvent)
 		LOCAL oButton AS Control
 		LOCAL oWindow AS Window
 		LOCAL dwI, dwCount AS DWORD
 		LOCAL oRBG AS RadioButtonGroup
 		LOCAL aRadioGrps AS ARRAY
 		LOCAL lUnchanged AS LOGIC
-		
-		
+
+
 		oButton := oControlEvent:Control
-		
+
 		IF IsInstanceOfUsual((OBJECT) oButton:Owner, #Window)
 			oWindow := (Window) oButton:Owner
 		ELSE
@@ -944,41 +944,41 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ENDIF
 		SUPER:ButtonClick(oControlEvent)
 		RETURN SELF
-	
 
-	METHOD Cancel() 
+
+	METHOD Cancel()
 		LOCAL lRetCode := FALSE AS LOGIC
 		lRetCode := TRUE
 		IF IsMethod(oAttachedServer,#Refresh)
 			lRetCode := Send(oAttachedServer,#Refresh)
 		ENDIF
 		SELF:EndWindow()
-		
-		RETURN lRetCode
-	
 
-	METHOD CanvasErase() 
-		
+		RETURN lRetCode
+
+
+	METHOD CanvasErase()
+
 		IF oSurface != NULL_OBJECT
 			oSurface:Invalidate()
 		ENDIF
 		RETURN SUPER:CanvasErase()
-	
 
-	ASSIGN Caption(sNewCaption AS STRING) 
+
+	ASSIGN Caption(sNewCaption AS STRING)
 		IF !lTopApp .AND. (lSubForm) // .or. !IsInstanceOf(oParent, #ShellWindow))
-			RETURN 
+			RETURN
 		ENDIF
 		SUPER:Caption := sNewCaption
-	
 
-	METHOD ChangeFont(uFont, lUpdate) 
+
+	METHOD ChangeFont(uFont, lUpdate)
 		LOCAL oFont AS Font
 		IF !IsInstanceOfUsual(uFont,#Font)
 			WCError{#ChangeFont,#DataWindow,__WCSTypeError,uFont,1}:@@Throw()
 		ENDIF
 		oFont := uFont
-		
+
 		IF !IsNil(lUpdate)
 			IF !IsLogic(lUpdate)
 				WCError{#ChangeFont,#DataWindow,__WCSTypeError,lUpdate,2}:@@Throw()
@@ -986,19 +986,19 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ELSE
 			lUpdate := FALSE
 		ENDIF
-		
+
 		SELF:Font := oFont
 		IF oSurface != NULL_OBJECT
 			oSurface:Font := oFont:__Font
 		ENDIF
-		
-		RETURN oFont
-	
 
-	METHOD CheckStatus() 
+		RETURN oFont
+
+
+	METHOD CheckStatus()
 		LOCAL oOldStatus AS OBJECT
-		
-		
+
+
 		oOldStatus := oHLStatus
 		IF !SELF:StatusOK()
 			IF sCurrentView == #FormView
@@ -1011,22 +1011,22 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				ENDIF
 			ENDIF
 		ENDIF
-		
+
 		// Prevalidate based on status change
 		IF (oHLStatus != oOldStatus)
 			SELF:PreValidate()
 		ENDIF
-		
+
 		IF (!IsNil(oHLStatus))
 			SELF:__UpdateStatus()
 			RETURN FALSE
 		ENDIF
-		
-		RETURN TRUE
-	
 
-	METHOD Clear() 
-		
+		RETURN TRUE
+
+
+	METHOD Clear()
+
 		IF sCurrentView == #FormView
 			IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
 				IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
@@ -1042,36 +1042,36 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				Send(oGBrowse, #Clear)
 			ENDIF
 		ENDIF
-		
-		RETURN SELF
-	
 
-	METHOD ClearRelations 
-		
+		RETURN SELF
+
+
+	METHOD ClearRelations
+
 		IF oAttachedServer!=NULL_OBJECT
 			RETURN Send(oAttachedServer,#ClearRelation)
 		ENDIF
 		RETURN FALSE
-	
 
-	ACCESS ClipperKeys 
-		
-		
-		
+
+	ACCESS ClipperKeys
+
+
+
 		RETURN FALSE
-	
 
-	ASSIGN ClipperKeys(lNewValue) 
-		
-		
-		
-		
-		RETURN	
-	
 
-	METHOD Close(oEvent) 
-		
-		
+	ASSIGN ClipperKeys(lNewValue)
+
+
+
+
+		RETURN
+
+
+	METHOD Close(oEvent)
+
+
 		IF (oAttachedServer != NULL_OBJECT)
 			IF lRecordDirty .AND. IsNil(oHLStatus )
 				IF IsMethod (oAttachedServer, #Commit) .AND. oAttachedServer:Commit()
@@ -1083,13 +1083,13 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		// Workaround for TreeView Control Loosing focus bug
 		//SetFocus(GuiWin32.GetParent(SELF:Handle()))
 		SUPER:Close(oEvent)
-		
-		RETURN TRUE
-	
 
-	METHOD Commit() 
+		RETURN TRUE
+
+
+	METHOD Commit()
 		LOCAL lRetCode := FALSE AS LOGIC
-		
+
 		oHLStatus:= NULL_OBJECT // assume success
 		IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus()
 			IF !(lRetCode:=oAttachedServer:Commit())
@@ -1099,28 +1099,28 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				lRecordDirty := FALSE
 			ENDIF
 		ENDIF
-		
-		RETURN lRetCode
-	
 
-	ACCESS ConcurrencyControl 
-		
-		
+		RETURN lRetCode
+
+
+	ACCESS ConcurrencyControl
+
+
 		IF IsNil(oAttachedServer)
 			RETURN SELF: nCCMode
 		ENDIF
-		
-		RETURN oAttachedServer:ConcurrencyControl
-	
 
-	ASSIGN ConcurrencyControl( nMode) 
+		RETURN oAttachedServer:ConcurrencyControl
+
+
+	ASSIGN ConcurrencyControl( nMode)
 		LOCAL newMode AS INT
-		
-		
+
+
 		IF IsString(nMode)
 			nMode := String2Symbol(nMode)
 		ENDIF
-		
+
 		IF IsSymbol(nMode)
 			DO CASE
 			CASE nMode == #ccNone
@@ -1141,13 +1141,13 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ELSE
 			WCError{#ConcurrencyControl,#DataWindow,__WCSTypeError,nMode,1}:@@Throw()
 		ENDIF
-		
+
 		SELF:nCCMode := newMode
 		IF oAttachedServer!=NULL_OBJECT
 			oAttachedServer:ConcurrencyControl:=nCCMode
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 
 	ASSIGN ContextMenu(oNewMenu as Menu)
 		SELF:SetContextMenu(oNewMenu, #Both)
@@ -1157,7 +1157,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	METHOD SetContextMenu(oNewMenu as Menu, symView as Symbol) as VOID
 		LOCAL lForm    AS LOGIC
 		LOCAL lBrowser AS LOGIC
-		
+
 		IF symView = #BrowseView
 			lBrowser := TRUE
 		ELSEIF symView = #FormView
@@ -1165,7 +1165,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ELSE
 			lForm := lBrowser := TRUE
 		ENDIF
-		
+
 		IF lForm
 			//Todo ?
 			//IF oSurface != NULL_OBJECT
@@ -1173,14 +1173,14 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			//ENDIF
 			SUPER:ContextMenu := oNewMenu
 		ENDIF
-		
+
 		IF lBrowser
 			IF oGBrowse != NULL_OBJECT
 				oGBrowse:ContextMenu := oNewMenu
 			ENDIF
 		ENDIF
-		
-		RETURN 
+
+		RETURN
 
 	ACCESS Controls AS ARRAY
 		// DHer: 18/12/2008
@@ -1193,19 +1193,19 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		LOCAL oRBG AS RadioButtonGroup
 		LOCAL oDCHyperLabel AS OBJECT
 		LOCAL oCFCE := oControlFocusChangeEvent AS  ControlFocusChangeEvent
-		
-		
+
+
 		IF oSurface != NULL_OBJECT
-			
+
 			oControl := oCFCE:Control
-			
+
 			IF oCFCE:GotFocus
-				
+
 				IF SELF:AutoScroll
 					oControl:__EnsureVisibity()
 				ENDIF
 				SELF:LastFocus := oControl
-				
+
 				WC.AppSetDialogWindow(SELF:oFrame)
 				IF ! oControl == NULL_OBJECT
 					IF IsInstanceOf(oControl, #RadioButton)
@@ -1219,10 +1219,10 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 							ENDIF
 						NEXT  // dwI
 					ENDIF
-					
+
 					// save active control
 					oDCCurrentControl := oControl
-					
+
 					// if there is an outstanding error on the control - display it
 					IF oDCCurrentControl:Status != NULL_OBJECT
 						IF IsString(oDCCurrentControl:Status:Description)
@@ -1232,10 +1232,10 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 						ENDIF
 					ENDIF
 					SELF:__StatusMessage(cMessage, MessageError)
-					
+
 					// Reset message for control
 					cMessage := NULL_STRING
-					
+
 					// SetUp Prompt
 					oDCHyperLabel := oDCCurrentControl:HyperLabel
 					IF oDCHyperLabel != NULL_OBJECT
@@ -1247,18 +1247,18 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 					SELF:__StatusMessage(NULL_STRING, MessageControl)
 					oDCCurrentControl := NULL_OBJECT
 				ENDIF
-				
+
 			ELSE
 				SELF:__DoValidate(oControl)
 			ENDIF
 		ENDIF
-		
+
 		RETURN NIL
-	
+
 
 	METHOD Copy() CLIPPER
-		
-		
+
+
 		IF (sCurrentView == #FormView)
 			IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
 				IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
@@ -1274,16 +1274,16 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				Send(oGBrowse, #Copy)
 			ENDIF
 		ENDIF
-		
+
 		RETURN SELF
-	
+
 
 	PROPERTY CurrentControl  as Object GET oDCCurrentControl SET oDCCurrentControl := Value
 
 	ACCESS CurrentView as Symbol
 		RETURN SELF:sCurrentView
 
-	METHOD Cut() 
+	METHOD Cut()
 		IF (sCurrentView == #FormView)
 			IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
 				IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
@@ -1299,16 +1299,16 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				Send(oGBrowse, #Cut)
 			ENDIF
 		ENDIF
-		
-		RETURN SELF
-	
 
-	METHOD DeActivate(oEvent AS Event) 
+		RETURN SELF
+
+
+	METHOD DeActivate(oEvent AS Event)
 		//RvdH 030825 Call to DeactivateAllOLEObjects moved to Window
 		RETURN SUPER:DeActivate(oEvent)
-	
 
-	METHOD DeactivateAllOLEObjects(oExcept) 
+
+	METHOD DeactivateAllOLEObjects(oExcept)
 		SUPER:DeactivateAllOLEObjects(oExcept)
 		IF !lTopApp .AND. IsMethod(SELF:Owner, #__AdjustClient)
 			SELF:Owner:__AdjustClient()
@@ -1316,41 +1316,41 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			//	SELF:__AdjustSurface()
 		ENDIF
 		RETURN SELF
-	
+
 
 	ACCESS DeferUse AS LOGIC
 		RETURN lDeferUse
-	
-	ASSIGN DeferUse(lNewVal AS LOGIC) 
+
+	ASSIGN DeferUse(lNewVal AS LOGIC)
 		lDeferUse := lNewVal
 		RETURN
-	
+
 	METHOD @@Delete() CLIPPER
 		LOCAL nRecno AS LONGINT
 		LOCAL nLastRec AS LONGINT
 		LOCAL fSQL AS LOGIC
 		LOCAL fBrowse AS LOGIC
 		LOCAL fRet AS LOGIC
-		
+
 		IF oAttachedServer != NULL_OBJECT
 			nRecno := oAttachedServer:Recno
 			nLastRec:= oAttachedServer:LASTREC
 			fBrowse := SELF:sCurrentView = #BROWSE
 			fSQL := IsInstanceOfUsual( oAttachedServer, #SQLSELECT)
-			
+
 		ENDIF
-		
+
 		fRet := SELF:__Delete()
-		
+
 		IF fSQL .AND. fRet
-			
-			
+
+
 			IF nLastRec < nRecno
 				SELF:GoTop()
 				SELF:GoBottom()
 				RETURN fRet
 			ENDIF
-			
+
 			IF oAttachedServer:EOF .AND. oAttachedServer:BOF
 				SELF:GoTop()
 			ELSE
@@ -1365,14 +1365,14 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				ENDIF
 			ENDIF
 		ENDIF
-		
-		RETURN(fRet)
-	
-	
 
-	METHOD DeleteValidated 
+		RETURN(fRet)
+
+
+
+	METHOD DeleteValidated
 		LOCAL lRetCode := FALSE AS LOGIC
-		
+
 		oHLStatus:= NULL_OBJECT // assume success
 		IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus()
 			IF !(lRetCode:=SELF:__Delete())
@@ -1381,27 +1381,27 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 		ENDIF
 		RETURN lRetCode
-	
 
-	METHOD Destroy() AS USUAL CLIPPER
+
+	METHOD Destroy() AS USUAL STRICT
 		LOCAL oSubForm AS Window
-		
+
 		IF oAttachedServer != NULL_OBJECT
 			SELF:__Unlink()
 		ENDIF
-		
+
 		IF lSubForm .and. IsMethod(oParent, #__UnRegisterSubForm)
 			oParent:__UnRegisterSubForm(SELF)
 		ENDIF
-		
+
 		// If this window has subforms destroy them first
 		DO WHILE ALen(aSubForms) > 0
-			oSubForm := aSubForms[1] 
+			oSubForm := aSubForms[1]
 			oSubForm:Close()
 			oSubForm:Destroy()
 		END DO
 		aSubForms := NULL_ARRAY
-		
+
 		IF oGBrowse != NULL_OBJECT
 			oGBrowse:__Unlink()
 			oGBrowse:Destroy()
@@ -1409,7 +1409,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ENDIF
 		IF WC.AppGetDialogWindow() == oFrame
 			WC.AppSetDialogWindow(NULL_OBJECT)
-		ENDIF	
+		ENDIF
 		IF oFrame != NULL_OBJECT
 			oFrame:CleanUp()
 			oFrame:Dispose()
@@ -1421,15 +1421,15 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			oSurface := NULL_OBJECT
 		ENDIF
 		aControls := NULL_ARRAY
-		
+
 		oDCCurrentControl := NULL_OBJECT
 		SELF:lValidFlag := FALSE
 		SELF:oLastFocus := NULL_OBJECT
-		
+
 		SUPER:Destroy()
-		
+
 		RETURN SELF
-	
+
 
 	METHOD DisableConditionalControls()
 		IF lControlsEnabled
@@ -1439,46 +1439,46 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			lControlsEnabled := FALSE
 		ENDIF
 		RETURN SELF
-	
 
-	METHOD Draw(oDrawObject) 
+
+	METHOD Draw(oDrawObject)
 		//  Todo Draw
 		IF oSurface != NULL_OBJECT
 			//oSurface:Draw(oDrawObject)
 		ENDIF
-		
+
 		RETURN SELF
 
-	METHOD EditChange(oControlEvent AS ControlEvent) 
+	METHOD EditChange(oControlEvent AS ControlEvent)
 		LOCAL oCurrentControl := NULL_OBJECT AS OBJECT
 		LOCAL oCE := oControlEvent AS ControlEvent
-		
+
 		oCurrentControl := oCE:Control
 		IF IsInstanceOfUsual(oCurrentControl, #ListBox) .OR. IsInstanceOfUsual(oCurrentControl, #IPAddress)
 			oCurrentControl:Modified := TRUE // mark it as modified
 		ENDIF
-		
+
 		IF (oDCCurrentControl == oCurrentControl)
 			SELF:__StatusMessage("", MessageError)
 		ENDIF
 		SUPER:EditChange(oControlEvent)
 		RETURN SELF
-	
-	METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent) 
+
+	METHOD EditFocusChange(oEditFocusChangeEvent AS EditFocusChangeEvent)
 		LOCAL uRetCode AS USUAL
 		LOCAL oEFCE AS EditFocusChangeEvent
-		oEFCE := oEditFocusChangeEvent 
+		oEFCE := oEditFocusChangeEvent
 		uRetCode := SUPER:EditFocusChange(oEFCE)
-		
+
 		IF !oEFCE:GotFocus
 			IF oEFCE:Control != NULL_OBJECT
 				oEFCE:Control:__Update()
 			ENDIF
 		ENDIF
-		
+
 		RETURN uRetCode
-	
-	METHOD EnableConditionalControls() 
+
+	METHOD EnableConditionalControls()
 		IF !lControlsEnabled
 			FOREACH oControl AS Control IN aConditionalControls
 				oControl:Enable()
@@ -1495,39 +1495,39 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
     METHOD EnableStatusBar(lEnable AS LOGIC) AS StatusBar
-		
-		
+
+
 		SUPER:EnableStatusBar(lEnable)
 
-		// No need to resize. __DataForm handles this 
+		// No need to resize. __DataForm handles this
 		RETURN SELF:StatusBar
-	
 
-	//METHOD EnableToolTips(lEnable) 
-	
-	
+
+	//METHOD EnableToolTips(lEnable)
+
+
 	//	RETURN oSurface:EnableToolTips(lEnable)
-	
 
-	METHOD Error(oErrorObj) 
+
+	METHOD Error(oErrorObj)
 		RETURN SELF
-	
 
-	METHOD Expose(oExposeEvent AS ExposeEvent) 
-		
-		
+
+	METHOD Expose(oExposeEvent AS ExposeEvent)
+
+
 		SUPER:Expose(oExposeEvent)
-		
+
 		RETURN SELF
-	
+
 
 	METHOD FieldGet(uFieldID AS USUAL)  AS USUAL
 		LOCAL oError AS USUAL
 		LOCAL oFieldObject AS OBJECT
         LOCAL uRetVal := NIL AS USUAL
-		
+
 		BEGIN SEQUENCE
-			
+
 			IF (sCurrentView == #BrowseView) .AND. IsMethod(oGBrowse, #GetColumn)
 				oFieldObject := Send(oGBrowse, #GetColumn, uFieldID)
 			ELSE
@@ -1539,7 +1539,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 					oFieldObject := SELF:__FindControl(String2Symbol(uFieldID))
 				ENDIF
 			ENDIF
-			
+
 			IF oFieldObject == NULL_OBJECT
 				IF oAttachedServer != NULL_OBJECT
 					uRetVal := oAttachedServer:FIELDGET(uFieldID)
@@ -1553,14 +1553,14 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ELSE
 				uRetVal := oFieldObject:Value
 			ENDIF
-			
+
 		RECOVER USING oError
-			
+
 			BREAK oError
-			
+
 		END SEQUENCE
 		RETURN uRetVal
-	
+
 
 	METHOD FieldPut(uFieldId AS USUAL, uNewValue AS USUAL) AS USUAL
 		// Retrieves the current value of the indicated string
@@ -1570,10 +1570,10 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		LOCAL oFieldObject AS USUAL
 		LOCAL dwFieldObject AS DWORD
         LOCAL uRetVal := NIL AS USUAL
-		
-		
+
+
 		BEGIN SEQUENCE
-			
+
 			IF (sCurrentView == #BrowseView) .AND. IsMethod(oGBrowse, #GetColumn)
 				oFieldObject := Send(oGBrowse, #GetColumn, uFieldId)
 			ELSE
@@ -1586,12 +1586,12 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				ELSEIF IsString(uFieldId)
 					oFieldObject := SELF:__FindControl(String2Symbol(uFieldId))
 				ENDIF
-				
+
 			ENDIF
 			IF dwFieldObject > 0
 				oFieldObject := aControls[dwFieldObject]
 			ENDIF
-			
+
 			// Field object should contain control or column
 			IF IsNil(oFieldObject)
 				IF oAttachedServer != NULL_OBJECT
@@ -1602,34 +1602,34 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ELSE
 			    uRetVal := oFieldObject:Value := uNewValue
 			ENDIF
-			
+
 		RECOVER USING oError
-			
+
 			BREAK oError
-			
+
 		END SEQUENCE
 		RETURN uRetVal
-	
 
-	METHOD FocusChange(oFocusChangeEvent AS FocusChangeEvent) 
+
+	METHOD FocusChange(oFocusChangeEvent AS FocusChangeEvent)
 		IF oFocusChangeEvent:GotFocus  .and. __DataForm != NULL_OBJECT
 			__DataForm:SetFocusToForm()
 		ENDIF
 		SUPER:FocusChange(oFocusChangeEvent)
 		RETURN SELF
-	
 
-	ASSIGN Foreground( oBrush AS Brush) 
+
+	ASSIGN Foreground( oBrush AS Brush)
 		SUPER:Foreground := oBrush
 		IF ( oSurface != NULL_OBJECT )
 			oSurface:ForeColor := oBrush:Color
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 
 	METHOD GoBottom() CLIPPER
 		LOCAL lRetCode := FALSE AS LOGIC
-		
+
 		oHLStatus:=NULL_OBJECT // assume success
 		IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus() // send data to Server
 			IF !(lRetCode:=oAttachedServer:GoBottom()) // if Skip is successful...
@@ -1638,11 +1638,11 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 		ENDIF
 		RETURN lRetCode
-	
 
-	METHOD GoTo( nRecNo ) 
+
+	METHOD GoTo( nRecNo )
 		LOCAL lRetCode := FALSE AS LOGIC
-		
+
 		oHLStatus:=NULL_OBJECT // assume success
 		IF(oAttachedServer!=NULL_OBJECT .AND. SELF:lValidFlag)
 			IF SELF:__CheckRecordStatus()
@@ -1653,11 +1653,11 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 		ENDIF
 		RETURN lRetCode
-	
+
 
 	METHOD GoTop() CLIPPER
 		LOCAL lRetCode := FALSE AS LOGIC
-		
+
 		oHLStatus:=NULL_OBJECT // assume success
 		IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus() // send data to Server
 			IF !(lRetCode:=oAttachedServer:GoTop()) // if Skip is unsuccessful...
@@ -1673,42 +1673,42 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ELSE
 			Super:Hide()
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 	ACCESS HyperLabel AS HyperLabel
 		RETURN SUPER:HyperLabel
 
-	ASSIGN HyperLabel (oHL AS HyperLabel) 
+	ASSIGN HyperLabel (oHL AS HyperLabel)
 		SUPER:HyperLabel := oHL
 		IF oHL != NULL_OBJECT
 			SELF:__Surface:Text := "Surface: "+oHL:Name
 			SELF:__Frame:Text	:= "Frame: "+oHL:Name
 		ENDIF
-	
 
-	METHOD HorizontalScroll(oScrollEvent AS ScrollEvent) 
+
+	METHOD HorizontalScroll(oScrollEvent AS ScrollEvent)
 		SELF:__HandleScrolling(oScrollEvent)
 		RETURN SELF:Default(oScrollEvent)
-	
 
-	METHOD HorizontalSlide(oSlideEvent AS SliderEvent) 
+
+	METHOD HorizontalSlide(oSlideEvent AS SliderEvent)
 		SELF:__HandleScrolling(oSlideEvent)
 		RETURN SELF:Default(oSlideEvent)
-	
-	METHOD HorizontalSpin(oSpinEvent AS SpinnerEvent) 
+
+	METHOD HorizontalSpin(oSpinEvent AS SpinnerEvent)
 		SELF:__HandleScrolling(oSpinEvent)
 		RETURN SELF:Default(oSpinEvent)
-	
-	CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)  
+
+	CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
 		LOCAL oResID AS ResourceID
 		LOCAL oObject AS OBJECT
 		LOCAL oDwOwner AS DataWindow
-		
+
 		DEFAULT(@oOwner, GetAppObject())
 		IF IsLong(nDialogStyle)
 			dwDialogStyle := nDialogStyle
-		ENDIF     
-		
+		ENDIF
+
 		IF dwDialogStyle > 0
 			oParent := oOwner
 			//__DDImp{SELF, TRUE, dwDialogStyle}
@@ -1753,7 +1753,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ELSE
 			SUPER(oOwner)
 		ENDIF
-		
+
 		IF IsObject(oOwner) .AND. IsMethod(oOwner, #HelpDisplay)
 			SELF:oCurrentHelp := oOwner:Helpdisplay
 		ENDIF
@@ -1769,26 +1769,26 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		lAllowServerClose := TRUE
 		aSubForms		:= {}
 		symBrowserClass := #DataBrowser
-		
-		IF lSubForm 
+
+		IF lSubForm
 			__DataForm:CreateSubForm(nResourceID,oDwOwner:ResourceDialog)
 			oDwOwner:__RegisterSubForm(SELF)
 		ENDIF
 		IF ( SELF:Background != NULL_OBJECT )
 			oSurface:BackColor := SELF:Background:Color
 		ENDIF
-		
+
 		//IF oContextMenu != NULL_OBJECT
 		//	oSurface:ContextMenu   := oContextMenu:__Menu
 		//ENDIF
-		
-		RETURN 
-	
 
-	METHOD InsertObject() 
+		RETURN
+
+
+	METHOD InsertObject()
 		//RvdH 030825 Method moved from Ole Classes
 		RETURN SELF:__GetOLEObject(#CreateFromInsertDialog)
-	
+
 	METHOD IsDialog()
 		//SE-070906
 		RETURN dwDialogStyle > 0
@@ -1805,7 +1805,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ENDIF
 		RETURN oLastFocus
 
-	ASSIGN LastFocus (oControl as Control) 
+	ASSIGN LastFocus (oControl as Control)
 		IF ! IsInstanceOf(oControl, #DataBrowser)
 			IF lSubForm
 				IF IsAssign(oParent, #LastFocus)
@@ -1814,19 +1814,19 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 			oLastFocus := oControl
 		ENDIF
-		RETURN 
-	
+		RETURN
 
-	METHOD LineTo(uPoint) 
+
+	METHOD LineTo(uPoint)
 		//Todo	LineTo
-		
+
 		IF (oSurface != NULL_OBJECT)
 			//oSurface:LineTo(uPoint)
 		ENDIF
 		RETURN SELF
-	
 
-	METHOD ListBoxClick(oControlEvent AS ControlEvent) 
+
+	METHOD ListBoxClick(oControlEvent AS ControlEvent)
 		LOCAL oListBox AS ListBox
 		LOCAL oCE := oControlEvent AS ControlEvent
 		oListBox := (OBJECT) oCE:Control
@@ -1834,9 +1834,9 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		SELF:__DoValidate(oListBox)
 		SUPER:ListBoxClick(oCE)
 		RETURN SELF
-	
 
-	METHOD ListBoxSelect(oControlEvent AS ControlEvent) 
+
+	METHOD ListBoxSelect(oControlEvent AS ControlEvent)
 		LOCAL oListBox AS BaseListBox
 		LOCAL oCE := oControlEvent AS ControlEvent
 		oListBox := (OBJECT) oCE:Control
@@ -1845,49 +1845,49 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		SELF:__DoValidate(oListBox)
 		SUPER:ListBoxSelect(oCE)
 		RETURN SELF
-	
-	ASSIGN Menu(oNewMenu AS VOSDK.Menu) 
+
+	ASSIGN Menu(oNewMenu AS VOSDK.Menu)
 		SUPER:Menu := oNewMenu
 		IF oParent IS ShellWindow
-			// No need to resize. __DataForm handles this 
+			// No need to resize. __DataForm handles this
 			//__DataForm:ResizeParent()
 		ENDIF
-		RETURN 
-	
+		RETURN
 
-	METHOD MouseButtonDown(oMouseEvent AS MouseEvent) 
+
+	METHOD MouseButtonDown(oMouseEvent AS MouseEvent)
 		//RvdH 030825 Method moved from Ole Classes
-		
+
 		SELF:DeactivateAllOLEObjects()
-		
+
 		RETURN SUPER:MouseButtonDown(oMouseEvent)
-	
+
 
 	METHOD MoveTo(oPoint AS Point)  AS Point
 		//Todo	 MoveTo
-		
+
 		IF (oSurface != NULL_OBJECT)
 			//oSurface:MoveTo(oPoint)
 		ENDIF
-		
-		RETURN oPoint
-	
 
-	METHOD Notify(kNotification, uDescription) 
+		RETURN oPoint
+
+
+	METHOD Notify(kNotification, uDescription)
 		LOCAL oTB AS OBJECT
 		LOCAL i, iLen AS INT
 		LOCAL lThisRecDeleted AS LOGIC
 		LOCAL oDF AS DataField
 		LOCAL oControl AS Control
-		
+
 		DO CASE
 		CASE (kNotification == NOTIFYCOMPLETION)
 			// Do nothing, __NotifyCompletion had no code in it
-			
+
 		CASE (kNotification == NOTIFYINTENTTOMOVE)
 			//RvdH MOved from OleDataWindow
 			SELF:DeactivateAllOLEObjects()
-			
+
 			IF (oAttachedServer == NULL_OBJECT)
 				RETURN TRUE
 			ENDIF
@@ -1905,16 +1905,16 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				ENDIF
 			ENDIF
 			RETURN TRUE
-			
+
 		CASE (kNotification == NOTIFYFILECHANGE)
 			SELF:__Scatter()
-			
+
 		CASE (kNotification == NOTIFYFIELDCHANGE)
 			lRecordDirty := TRUE
 			IF (sCurrentView == #FormView)
 				iLen := INT(ALen(aControls))
 				FOR i:= 1 TO iLen
-					oControl := aControls[i] 
+					oControl := aControls[i]
 					oDF := oControl:__DataField
 					IF (oDF != NULL_OBJECT) .AND. (oDF:NameSym == uDescription)
 						oControl:__Scatter()
@@ -1925,7 +1925,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				//	// Refresh current record and field from data Server
 				//	Send(oGBrowse, #__RefreshField, uDescription)
 			ENDIF
-			
+
 		CASE (kNotification == NOTIFYCLOSE)
 			// Data Server has closed
 			// if sCurrentView == #BrowseView
@@ -1943,7 +1943,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				oTB:Show()
 			ENDIF
 			SELF:__Unlink()
-			
+
 		CASE (kNotification == NOTIFYRECORDCHANGE) .OR. (kNotification == NOTIFYGOBOTTOM) .OR. ;
 			(kNotification == NOTIFYGOTOP) .OR. (kNotification == NOTIFYDELETE) .OR. (kNotification == NOTIFYAPPEND)
 			// record position has changed
@@ -1961,7 +1961,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
             oHLStatus := NULL_OBJECT
 			SELF:__Scatter()
-			
+
 			IF (kNotification == NOTIFYAPPEND)
 				//Set HLStatus for all controls
 				FOREACH oC AS Control IN aControls
@@ -1969,72 +1969,72 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				NEXT
 			ENDIF
 		END CASE
-		
-		RETURN SELF
-	
 
-	METHOD OK() 
-		
+		RETURN SELF
+
+
+	METHOD OK()
+
 		IF SELF:Commit()
 			SELF:EndWindow()
 			RETURN TRUE
 		ENDIF
 		RETURN FALSE
-	
 
-	METHOD OLEInPlaceActivate() 
+
+	METHOD OLEInPlaceActivate()
 		//RvdH 030825 Method moved from Ole Classes
 		LOCAL oTB AS ToolBar
-		
+
 		IF IsInstanceOf(oParent, #ShellWindow)
 			oTB := oParent:ToolBar
 		ELSE
 			oTB := SELF:ToolBar
 		ENDIF
-		
+
 		IF (oTB != NULL_OBJECT) .AND. oTB:IsVisible()
 			oTB:Hide()
 			lPendingToolBarShow := TRUE
 		ENDIF
-		
-		RETURN SUPER:OLEInPlaceActivate()
-	
 
-	METHOD OLEInPlaceDeactivate() 
+		RETURN SUPER:OLEInPlaceActivate()
+
+
+	METHOD OLEInPlaceDeactivate()
 		//RvdH 030825 Method moved from Ole Classes
 		LOCAL oTB AS ToolBar
-		
+
 		IF IsInstanceOf(oParent, #ShellWindow)
 			oTB := oParent:ToolBar
 		ELSE
 			oTB := SELF:ToolBar
 			//__DataForm:ResizeParent()
 		ENDIF
-		
+
 		IF (oTB != NULL_OBJECT) .AND. !oTB:IsVisible() .AND. lPendingToolBarShow
 			oTB:Show()
 		ENDIF
-		
+
 		lPendingToolBarShow := FALSE
-		
+
 		RETURN SUPER:OLEInPlaceDeactivate()
-	
+
 
 	ACCESS Origin AS Point
 		IF SELF:lSubForm
 			RETURN SELF:__Frame:Location
 		ENDIF
 		RETURN SUPER:Origin
-	
 
-	ASSIGN Origin(oPoint AS Point) 
+
+	ASSIGN Origin(oPoint AS Point)
 		IF SELF:lSubForm
 			SELF:__Frame:Location := oPoint
 		ELSE
 			SUPER:Origin:=oPoint
 		ENDIF
-	
-	ASSIGN OwnerAlignment(iNewVal AS USUAL) 
+
+	ASSIGN OwnerAlignment(iNewVal AS USUAL)
 		LOCAL lDone AS LOGIC
 		IF SELF:lSubForm
 			lDone := Control.OwnerAlignmentHandledByWinForms(__Frame, iNewVal)
@@ -2042,24 +2042,24 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		IF ! lDone
 			oParent:__AddAlign(SELF, iNewVal)
 		ENDIF
-		RETURN 			
+		RETURN
 
-	ACCESS OwnerServer 
+	ACCESS OwnerServer
 		IF IsInstanceOf(SELF:Owner, #DataWindow)
 			RETURN SELF:Owner:Server
 		ENDIF
 		RETURN NIL
-	
 
-	METHOD PaintBoundingBox(oBB,kPM) 
-		//Todo	 PaintBoundingBox	
+
+	METHOD PaintBoundingBox(oBB,kPM)
+		//Todo	 PaintBoundingBox
 		IF oSurface != NULL_OBJECT
 			//oSurface:PaintBackground(oBB,kPM)
 		ENDIF
 		RETURN SELF
-	
 
-	METHOD Paste() 
+
+	METHOD Paste()
 		IF sCurrentView == #FormView
 			IF IsInstanceOf(oDCCurrentControl, #SingleLineEdit) .OR. ;
 				IsInstanceOf(oDCCurrentControl, #MultiLineEdit) .OR. ;
@@ -2075,22 +2075,22 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				Send(oGBrowse, #Paste)
 			ENDIF
 		ENDIF
-		
-		RETURN SELF
-	
 
-	METHOD PasteSpecial() 
+		RETURN SELF
+
+
+	METHOD PasteSpecial()
 		//RvdH 030825 Method moved from Ole Classes
 		RETURN SELF:__GetOLEObject(#CreateFromPasteDialog)
-	
 
-	ASSIGN Pen(oPen as Pen) 
-		
+
+	ASSIGN Pen(oPen as Pen)
+
 		SUPER:Pen := oPen
 		IF oSurface != NULL_OBJECT
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 
 	ACCESS Pointer  AS Pointer
 		IF (sCurrentView == #FormView) .OR. !IsAccess(oGBrowse, #pointer)
@@ -2100,49 +2100,49 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ELSE
 			RETURN IVarGet(oGBrowse, #pointer)
 		ENDIF
-		
-		RETURN SUPER:Pointer
-	
 
-	ASSIGN Pointer(oPointer AS Pointer) 
+		RETURN SUPER:Pointer
+
+
+	ASSIGN Pointer(oPointer AS Pointer)
 		IF (oSurface != NULL_OBJECT)
 			oSurface:Cursor:=oPointer
 		ENDIF
 		IF IsAssign(oGBrowse, #databrowser)
 			IVarPut(oGBrowse, #pointer, oPointer)
 		ENDIF
-		RETURN 
-	
+		RETURN
 
-	METHOD PreValidate() 
-		
+
+	METHOD PreValidate()
+
 		//self:EnableConditionalControls()
 		SELF:__CheckConditionalControls()
 		RETURN SELF
-	
+
 
 	ACCESS PreventAutoLayout AS LOGIC
-		
-		
+
+
 		RETURN lPreventAutoLayout
-	
-	ASSIGN PreventAutoLayout(lNewValue AS LOGIC) 
-		
-		
+
+	ASSIGN PreventAutoLayout(lNewValue AS LOGIC)
+
+
 		lPreventAutoLayout := lNewValue
-		
-		RETURN 
-	
+
+		RETURN
+
 
 	METHOD QueryClose(oQCE AS Event) AS LOGIC
 		// If there are outstanding changes which have not
 		// been written to the dataServer - ask the user.
 		LOCAL oTB AS TextBox
-		
+
 		IF oAttachedServer==NULL_OBJECT
 			RETURN TRUE
 		ENDIF
-		
+
 		SELF:SetFocus()
 		IF !SELF:CheckStatus()
 			oTB := TextBox{ SELF,;
@@ -2153,94 +2153,94 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				RETURN FALSE
 			ENDIF
 		ENDIF
-		
+
 		RETURN TRUE
 
 	ACCESS RadioGroups AS ARRAY
 		// DHer: 18/12/2008
 		RETURN SELF:aRadioGroups
-	
+
 
 	METHOD RegisterConditionalControls(oCC)
 		//SE-060526
 		LOCAL dwI, dwCount AS DWORD
-		
-		
-		
+
+
+
 		dwCount := ALen(aConditionalControls)
 		FOR dwI := 1 UPTO dwCount
 			IF aConditionalControls[dwI] == oCC
 				RETURN SELF
 			ENDIF
-		NEXT  
+		NEXT
 		AAdd(aConditionalControls,oCC)
-		
+
 		RETURN SELF
-	
+
 
 	METHOD RePaint() AS VOID STRICT
 		IF oSurface != NULL_OBJECT
 			oSurface:Invalidate()
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 
 	METHOD RepaintBoundingBox(oBB AS BoundingBox) AS VOID STRICT
-		
+
 		IF (oSurface != NULL_OBJECT)
 			oSurface:Invalidate((System.Drawing.Rectangle) oBB)
 		ENDIF
-		
-		RETURN 
-	
 
-	METHOD Seek(uValue, lSoftSeek, lLast) 
+		RETURN
+
+
+	METHOD Seek(uValue, lSoftSeek, lLast)
 		LOCAL lRetCode := FALSE AS LOGIC
 		IF oAttachedServer!=NULL_OBJECT
 			oHLStatus := NULL_OBJECT // assume success
 			IF SELF:__CheckRecordStatus()
-				IF !(lRetCode := oAttachedServer:Seek(uValue, lSoftSeek, lLast))
+				IF !(lRetCode := Send(oAttachedServer,#Seek,uValue, lSoftSeek, lLast))
 					oHLStatus := oAttachedServer:Status
 					//oHLStatus := HyperLabel{#Seek, "Seek Failed, key not found"}
 					SELF:__UpdateStatus()
 				ENDIF
 			ENDIF
 		ENDIF
-		
+
 		RETURN lRetCode
-	
+
 
 	ACCESS Server as Object
 		RETURN oAttachedServer
-	
+
 	METHOD SetAlignStartSize(oSize AS Dimension)  AS VOID
 		Super:SetAlignStartSize(oSize)
-		RETURN 
+		RETURN
 
 	METHOD SetDialog(lResizable, lMaximizeBox, lMinimizeBox)
 		//can be used in PreInit() method or befor super:init()
 		IF oWnd == NULL_OBJECT
-			
+
 			dwDialogStyle := _OR(dwDialogStyle, WS_DLGFRAME)
-			
-			IF IsLogic(lResizable) .AND. lResizable 
+
+			IF IsLogic(lResizable) .AND. lResizable
 				dwDialogStyle := _OR(dwDialogStyle, WS_THICKFRAME)
 			ENDIF
-			IF IsLogic(lMaximizeBox) .AND. lMaximizeBox 
+			IF IsLogic(lMaximizeBox) .AND. lMaximizeBox
 				dwDialogStyle := _OR(dwDialogStyle, WS_MAXIMIZEBOX, WS_SYSMENU)
 			ENDIF
-			IF IsLogic(lMinimizeBox) .AND. lMinimizeBox 
+			IF IsLogic(lMinimizeBox) .AND. lMinimizeBox
 				dwDialogStyle := _OR(dwDialogStyle, WS_MINIMIZEBOX, WS_SYSMENU)
 			ENDIF
-			
-		ENDIF	
-		
-		RETURN SELF
-	
 
-	METHOD SetRelation( oDWChild, uRelation, cRelation ) 
+		ENDIF
+
+		RETURN SELF
+
+
+	METHOD SetRelation( oDWChild, uRelation, cRelation )
 		LOCAL lRetCode := FALSE AS LOGIC
-		
+
 		oHLStatus:=NULL_OBJECT // assume success
 		IF oAttachedServer!=NULL_OBJECT .AND. SELF:lValidFlag
 			IF SELF:__CheckRecordStatus()
@@ -2251,12 +2251,12 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 		ENDIF
 		RETURN lRetCode
-	
 
-	METHOD SetSelectiveRelation( oDWChild, uRelation, cRelation ) 
+
+	METHOD SetSelectiveRelation( oDWChild, uRelation, cRelation )
 		LOCAL lRetCode := FALSE AS LOGIC
-		
-		
+
+
 		oHLStatus := NULL_OBJECT // assume success
 		IF oAttachedServer != NULL_OBJECT .AND. SELF:lValidFlag
 			IF SELF:__CheckRecordStatus()
@@ -2266,11 +2266,11 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				ENDIF
 			ENDIF
 		ENDIF
-		
-		RETURN lRetCode
-	
 
-	
+		RETURN lRetCode
+
+
+
 	METHOD Show(nShowState AS LONG)  AS VOID
 
 		IF lDeferUse .AND. (oDeferUseServer != NULL_OBJECT)
@@ -2278,11 +2278,11 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			SELF:Use(oDeferUseServer)
 			oDeferUseServer := NULL_OBJECT
 		ENDIF
-		
+
 		IF (SELF:ToolBar != NULL_OBJECT)
 			SELF:ToolBar:Show()
 		ENDIF
-		
+
 		IF !lSubForm
 			IF SELF:lValidFlag
 				SUPER:Show(nShowState)
@@ -2291,20 +2291,20 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 		ELSE
 			SELF:__DataForm:ShowSubForm()
-		ENDIF		
-		
-		
-		RETURN 
-	
+		ENDIF
+
+
+		RETURN
+
 
 	ACCESS Size AS Dimension
 		IF SELF:lSubForm
 			RETURN SELF:__Frame:Size
 		ENDIF
 		RETURN SUPER:Size
-	
 
-	ASSIGN Size(oDimension AS Dimension) 
+
+	ASSIGN Size(oDimension AS Dimension)
 		IF SELF:lSubForm
 			SELF:__Frame:Size := oDimension
 			SELF:__Frame:DefinedSize := SELF:__Frame:Size
@@ -2314,9 +2314,9 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ENDIF
 
 
-	METHOD Skip(uRelativePosition) 
+	METHOD Skip(uRelativePosition)
 		LOCAL lRetCode := FALSE AS LOGIC
-		
+
 		oHLStatus := NULL_OBJECT // assume success
 		IF oAttachedServer != NULL_OBJECT .AND. SELF:__CheckRecordStatus()
 			IF !(lRetCode := oAttachedServer:Skip(uRelativePosition))
@@ -2324,37 +2324,37 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				SELF:__UpdateStatus()
 			ENDIF
 		ENDIF
-		
+
 		RETURN lRetCode
-	
+
 
 	METHOD SkipNext() CLIPPER
 		LOCAL lRetCode := FALSE AS LOGIC
-		
-		
+
+
 		lRetCode := SELF:Skip(1)
-		
+
 		IF lRetCode = TRUE .AND. oAttachedServer:EoF
 			SELF:GoBottom()
 		ENDIF
-		
+
 		RETURN lRetCode
-	
+
 
 	METHOD SkipPrevious() CLIPPER
-		
+
 		RETURN SELF:Skip(-1)
-	
+
 
 	ACCESS Status AS HyperLabel
-		
-		RETURN SELF:oHLStatus
-	
 
-	ASSIGN Status(oStatus AS HyperLabel) 
-		
+		RETURN SELF:oHLStatus
+
+
+	ASSIGN Status(oStatus AS HyperLabel)
+
 		oHLStatus := oStatus
-	
+
 
 	ACCESS StatusBar AS StatusBar
 		//SE-070906
@@ -2363,7 +2363,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			RETURN oStatusBar
 		ENDIF
 		RETURN SUPER:StatusBar
-	
+
 	ASSIGN StatusBar(oNewStatusBar AS StatusBar)
 		//SE-070906
 		IF dwDialogStyle > 0
@@ -2376,18 +2376,18 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ELSE
 			SELF:__DataForm:StatusBar := NULL_OBJECT
 		ENDIF
-		
+
 		RETURN
 
-	
+
 	METHOD StatusOK() AS LOGIC
 		LOCAL dwInvalidControl, iLen AS DWORD
-		
-		
+
+
 		oDCInvalidControl := NULL_OBJECT
 		oDCInvalidColumn := NULL_OBJECT
 		oHLStatus := NULL_OBJECT
-		
+
 		IF (oAttachedServer == NULL_OBJECT)
 			oHLStatus := HyperLabel{#NoAttachedServer, #NoAttachedServer}
 		ELSE
@@ -2418,42 +2418,42 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				ENDIF
 			ENDIF
 		ENDIF
-		
+
 		RETURN oHLStatus == NULL_OBJECT
 
-	ACCESS SubForms 
+	ACCESS SubForms
 		// DHer: 18/12/2008
 		RETURN SELF:aSubForms
-	
+
 	ACCESS Surface as VOPanel
 		// DHer: 18/12/2008
 		RETURN SELF:oSurface
 
 
-	METHOD TextPrint(cText, oPoint) 
-		// Todo	 TextPrint	
+	METHOD TextPrint(cText, oPoint)
+		// Todo	 TextPrint
 		IF oSurface != NULL_OBJECT
 			//oSurface:TextPrint(cText, oPoint)
 		ENDIF
 		RETURN SELF
-	
-	ASSIGN ToolBar(oNewToolBar AS ToolBar) 
-		
-		
+
+	ASSIGN ToolBar(oNewToolBar AS ToolBar)
+
+
 		SUPER:ToolBar := oNewToolBar
 		IF oNewToolBar != NULL_OBJECT
 			SELF:__DataForm:ToolBar := oNewToolBar:__ToolBar
 			//ELSE
 			//	SELF:__DataForm:ToolBar := NULL_OBJECT
-		ENDIF		
-		// No need to resize. __DataForm handles this 
-		RETURN 
-	
+		ENDIF
+		// No need to resize. __DataForm handles this
+		RETURN
 
 
-	METHOD Undo() 
-		
-		
+
+	METHOD Undo()
+
+
 		IF (sCurrentView == #FormView)
 			IF IsInstanceOf(oDCCurrentControl, #Edit)
 				oDCCurrentControl:Undo()
@@ -2464,27 +2464,27 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			ENDIF
 		ENDIF
 		RETURN SELF
-	
-	METHOD UndoAll() 
+
+	METHOD UndoAll()
 		IF oAttachedServer!=NULL_OBJECT
 			Send(oAttachedServer,#Refresh)
 		ENDIF
-		
+
 		RETURN NIL
-	
 
-	METHOD UpdateActiveObject() 
+
+	METHOD UpdateActiveObject()
 		RETURN SELF:__UpdateActiveObject()
-	
 
-	METHOD Use(oDataServer) 
+
+	METHOD Use(oDataServer)
 		LOCAL lRetCode := FALSE AS LOGIC
-		
+
 		IF lDeferUse .AND. IsInstanceOfUsual(oDataServer, #DATAServer)
 			oDeferUseServer := oDataServer
 			RETURN TRUE
 		ENDIF
-		
+
 		IF (oAttachedServer != oDataServer) .AND. (oAttachedServer != NULL_OBJECT)
 			SELF:__Unlink()
 			IF __DataForm:AutoLayout
@@ -2495,18 +2495,18 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				aControls := {}
 				aRadioGroups := {}
 				aConditionalControls := {}
-				
+
 				IF (oGBrowse != NULL_OBJECT)
 					oGBrowse:Destroy()
 					oGBrowse := NULL_OBJECT
 				ENDIF
 			ENDIF
 		ENDIF
-		
+
 		IF (oDataServer != NULL_OBJECT)
 			IF SELF:__VerifyDataServer(oDataServer)
 				oDataServer:RegisterClient(SELF)
-				
+
 				lRetCode := SELF:__RegisterFieldLinks(oDataServer)
 				IF (sCurrentView == #BrowseView)
 					IF (oGBrowse != NULL_OBJECT)
@@ -2530,33 +2530,33 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				SELF:lValidFlag := FALSE
 			ENDIF
 		ENDIF
-		
+
 		RETURN lRetCode
-	
+
 	METHOD ValidateRecord() CLIPPER
 		RETURN TRUE
 
 
-	METHOD VerticalScroll(oScrollEvent AS ScrollEvent) 
+	METHOD VerticalScroll(oScrollEvent AS ScrollEvent)
 		SELF:__HandleScrolling(oScrollEvent)
 		RETURN SELF:Default(oScrollEvent)
-	
 
-	METHOD VerticalSlide(oSlideEvent AS SliderEvent) 
+
+	METHOD VerticalSlide(oSlideEvent AS SliderEvent)
 		SELF:__HandleScrolling(oSlideEvent)
 		RETURN SELF:Default(oSlideEvent)
-	
 
-	METHOD VerticalSpin(oSpinEvent AS SpinnerEvent) 
+
+	METHOD VerticalSpin(oSpinEvent AS SpinnerEvent)
 		SELF:__HandleScrolling(oSpinEvent)
 		RETURN SELF:Default(oSpinEvent)
-	
 
-	METHOD ViewAs(symViewType as symbol) 
+
+	METHOD ViewAs(symViewType as symbol)
 		LOCAL oTextBox AS TextBox
-		#ifdef USE_OLEOBJECT	
+		#ifdef USE_OLEOBJECT
 		LOCAL oOleObj as OleObject
-		#endif	
+		#endif
 		LOCAL oControl AS Control
 		//RvdH 041123 Added call to __GetMyOleObjects to retrieve the objects
 
@@ -2565,7 +2565,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			RETURN SELF
 		ENDIF
 		SELF:DeactivateAllOLEObjects()
-		
+
 		// Save data in current view
 		IF lLinked
 			IF !SELF:__CheckRecordStatus() // check validation status
@@ -2583,7 +2583,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				ENDIF
 			ENDIF
 		ENDIF
-		
+
 		IF (symViewType == #BrowseView)
 			// Show as browser
 			// Hide form frame
@@ -2591,19 +2591,19 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			// flush changes to form so they are reflected in browser
 			TRY
 				sCurrentView := #ViewSwitch
-				#ifdef USE_OLEOBJECT			
+				#ifdef USE_OLEOBJECT
 				FOR i:=1 TO iLen
 					oOleObj := aObjects[i]
 					IF oOleObj:Server != NULL_OBJECT
-						
+
 						oOleObj:DetachFromServer()
 					ENDIF
 				NEXT
-				#endif			
+				#endif
 				SELF:__AutoCreateBrowser()
 				__DataForm:DataBrowser := oGBrowse:__DataGridView
             CATCH
-                NOP				
+                NOP
 			END TRY
 			sCurrentView := #BrowseView
 			IF oGBrowse != NULL_OBJECT
@@ -2625,7 +2625,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				LOCAL nControl AS LONG
 				nControl := 1
 				DO WHILE nControl <= aLen(aControls)
-					oControl := aControls[nControl] 
+					oControl := aControls[nControl]
 					IF ! IsInstanceOf(oControl,#FixedText) .and. ! IsInstanceOf(oControl,#GroupBox) .and. !IsInstanceOf(oControl,#Window)
 						oControl:SetFocus()
 						IF IsInstanceOf(oControl, #SingleLineEdit) .AND. oControl:IsEnabled()
@@ -2638,23 +2638,23 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 					nControl += 1
 				ENDDO
 			ENDIF
-			
+
 			sCurrentView := #FormView
 		ENDIF
 		SELF:__Scatter()
 		RETURN SELF
-	
+
 
 	METHOD ViewForm() CLIPPER
-		
+
 		SELF:ViewAs(#FormView)
 		RETURN SELF
 
 	METHOD ViewTable() CLIPPER
-		
+
 		SELF:ViewAs(#BrowseView)
 		RETURN SELF
-	
+
 	STATIC INTERNAL glUseColonInAutoLayoutCaptions := TRUE AS LOGIC
 END CLASS
 
@@ -2667,8 +2667,8 @@ FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
 	LOCAL cHotKey 	AS STRING
 	LOCAL dwI, dwCount AS DWORD
 	LOCAL i 			AS DWORD
-	
-	
+
+
 	//	IF (IsInstanceOfUsual(oDF, #DataField) .AND. (!IsNil(oDF:HyperLabel)))
 	IF !IsNil(oDF:HyperLabel)
 		cText := oDF:HyperLabel:Caption
@@ -2677,9 +2677,9 @@ FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
 	ELSE
 		cText := ResourceString{__WCSUnknown}:Value
 	ENDIF
-	
+
 	cText := Proper(cText) //RTrim(Left(cText, 1) + Lower(SubStr(cText, 2)))
-	
+
 	//	IF !IsNil(arUsedKeys)
 	IF (dwCount := ALen(arUsedKeys)) > 0
 		FOR i := 1 TO SLen(cText)
@@ -2697,7 +2697,7 @@ FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
 			ENDIF
 		NEXT
 	ENDIF
-	
+
 	IF DataWindow.glUseColonInAutoLayoutCaptions
 		IF !IsBiDi()
 			IF !(Right(cText, 1) == ":")
@@ -2709,21 +2709,21 @@ FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
 			ENDIF
 		ENDIF
 	ENDIF
-	
+
 	RETURN cText
 
 FUNCTION __GetFSDefaultLength(oFS AS USUAL) AS INT
 	LOCAL liRetVal, liExtra AS LONGINT
 	LOCAL uType AS USUAL
 	LOCAL cFunction AS STRING
-	
-	
+
+
 	IF !IsInstanceOfUsual(oFS, #FieldSpec)
 		liRetVal := 10
 	ELSE
 		liRetVal := oFS:Length
 		uType := oFS:UsualType
-		
+
 		DO CASE
 		CASE (uType == LOGIC)
 			liRetVal := Max(liRetVal, 3)
@@ -2760,11 +2760,11 @@ FUNCTION __GetFSDefaultLength(oFS AS USUAL) AS INT
 			ENDIF
 		ENDIF
 	ENDIF
-	
+
 	IF (oFS:Length > liRetVal)
 		RETURN oFS:Length
 	ENDIF
-	
+
 	RETURN liRetVal
 
 

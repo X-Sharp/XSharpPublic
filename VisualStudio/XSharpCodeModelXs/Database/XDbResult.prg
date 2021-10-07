@@ -13,7 +13,7 @@ USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 BEGIN NAMESPACE XSharpModel
 
-   [DebuggerDisplay("{TypeName,nq} {MemberName,nq}")];
+   [DebuggerDisplay("{DebuggerDisplay(),nq}")];
     CLASS XDbResult
       PROPERTY TypeName     AS STRING AUTO
       PROPERTY Namespace    AS STRING AUTO
@@ -58,7 +58,8 @@ BEGIN NAMESPACE XSharpModel
             RETURN TextInterval{SELF:Start, SELF:Stop}
         END GET
       END PROPERTY
-
+    INTERNAL METHOD DebuggerDisplay() AS STRING
+        RETURN SELF:TypeName + iif(String.IsNullOrEmpty(SELF:MemberName),""," "+SELF:MemberName)
 
     END CLASS
 END NAMESPACE

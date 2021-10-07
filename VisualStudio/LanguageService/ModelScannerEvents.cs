@@ -262,7 +262,6 @@ namespace XSharp.LanguageService
                             xml = xml.Substring(0, pos) + newText + xml.Substring(pos + oldText.Length);
                             pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
                         }
-                        
                         DeleteFileSafe(original);
                         File.Copy(pszFileName, original);
                         DeleteFileSafe(pszFileName);

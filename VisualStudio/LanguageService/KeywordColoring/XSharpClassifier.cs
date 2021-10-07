@@ -375,7 +375,7 @@ namespace XSharp.LanguageService
                 span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart);
                 regions.Add(span);
                 endPos = snapshot.GetLineFromPosition(endPos).Start;
-                nLineLength = snapshot.GetLineFromPosition(endPos).Length; ;
+                nLineLength = snapshot.GetLineFromPosition(endPos).Length; 
                 tokenSpan = new TextSpan(endPos, nLineLength);
                 span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop);
                 regions.Add(span);
@@ -952,7 +952,7 @@ namespace XSharp.LanguageService
                     var list = _parserRegions.ToList();
                     if (_lexerRegions != null)
                         list.AddRange(_lexerRegions);
-                    result = list; ;
+                    result = list; 
                 }
                 else if (_lexerRegions != null)
                 {

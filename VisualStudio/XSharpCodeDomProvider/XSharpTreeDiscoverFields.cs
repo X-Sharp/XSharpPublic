@@ -100,7 +100,7 @@ namespace XSharp.CodeDom
             var classVarModifiers = decodeClassVarModifiers(context.Modifiers);
             if (context._Vars.Count > 1)
             {
-                XSharpParser.DatatypeContext dtc = null; ;
+                XSharpParser.DatatypeContext dtc = null; 
                 foreach (var classvar in context._Vars.Reverse())
                 {
                     if (classvar.DataType != null)

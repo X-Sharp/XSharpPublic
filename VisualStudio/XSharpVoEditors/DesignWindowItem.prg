@@ -16,9 +16,9 @@ CLASS XSharpDesignWindowItem inherit DesignWindowItem
 
 	CONSTRUCTOR( oDesigner as VOWindowEditor, oTemplate as VOControlTemplate)
 		SUPER(oDesigner , oTemplate)
-		
 
-	NEW METHOD GetVOStylesString(eVOStyle as VOStyle ) as STRING
+
+	METHOD GetVOStylesString(eVOStyle as VOStyle ) as STRING
 		LOCAL cResult := SUPER:GetVOStylesString(eVOStyle) AS STRING
 		LOCAL oXSharpDesigner as XSharp_VOWindowEditor
 		oXSharpDesigner := SELF:oDesigner astype XSharp_VOWindowEditor

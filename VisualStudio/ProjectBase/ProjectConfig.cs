@@ -1219,8 +1219,12 @@ namespace Microsoft.VisualStudio.Project
 				bstrExe = targetInfo.bstrExe,
 				bstrPortName = targetInfo.bstrPortName,
 				bstrRemoteMachine = targetInfo.bstrRemoteMachine,
-				fSendToOutputWindow = targetInfo.fSendStdoutToOutputWindow,
-				guidLaunchDebugEngine = targetInfo.clsidCustom,
+#if DEV17
+                fSendToOutputWindow = targetInfo.fSendStdoutToOutputWindow != 0,
+#else
+                fSendToOutputWindow = targetInfo.fSendStdoutToOutputWindow,
+#endif
+                guidLaunchDebugEngine = targetInfo.clsidCustom,
 				LaunchFlags = targetInfo.grfLaunch,
 				dlo = (uint)targetInfo.dlo,
 			};
@@ -1234,7 +1238,7 @@ namespace Microsoft.VisualStudio.Project
 			actualTargets[0] = 1;
 			return VSConstants.S_OK;
 		}
-		#endregion
+#endregion
 
 
 
@@ -1255,19 +1259,19 @@ namespace Microsoft.VisualStudio.Project
     [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Buildable")]
     public class BuildableProjectConfig : IVsBuildableProjectCfg
     {
-        #region fields
+#region fields
         ProjectConfig config = null;
         EventSinkCollection callbacks = new EventSinkCollection();
-        #endregion
+#endregion
 
-        #region ctors
+#region ctors
         public BuildableProjectConfig(ProjectConfig config)
         {
             this.config = config;
         }
-        #endregion
+#endregion
 
-        #region IVsBuildableProjectCfg methods
+#region IVsBuildableProjectCfg methods
 
         public virtual int AdviseBuildStatusCallback(IVsBuildStatusCallback callback, out uint cookie)
         {
@@ -1381,9 +1385,9 @@ namespace Microsoft.VisualStudio.Project
 
             return VSConstants.E_NOTIMPL;
         }
-        #endregion
+#endregion
 
-        #region helpers
+#region helpers
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private bool NotifyBuildBegin()
@@ -1502,6 +1506,6 @@ namespace Microsoft.VisualStudio.Project
 				}
 			});
         }
-        #endregion
+#endregion
     }
 }

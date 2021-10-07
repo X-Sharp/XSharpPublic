@@ -18,16 +18,16 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 	EXPORT oMainNode AS DesignTreeNode
 
 	PROTECT cDefaultFileName AS STRING
-	
+
 	STATIC EXPORT Clipboard AS DesignerClipboard
-	
+
 	CONSTRUCTOR(_oSurface AS Control , _oGrid AS DesignerGrid)
 		SUPER(_oSurface)
 
 		IF VOMenuEditor.Clipboard == NULL
 			VOMenuEditor.Clipboard := DesignerClipboard{}
 		END IF
-		
+
 		SELF:oGrid := _oGrid
 		SELF:oGrid:PropertyModified := PropertyUpdatedEventHandler{ SELF , @PropertyModifiedInGrid() }
 		SELF:oGrid:ControlKeyPressed := ControlKeyPressedEventHandler{ SELF , @ControlKeyPressedInGrid() }
@@ -40,14 +40,14 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		SELF:oTree := MEditorTreeView{SELF}
 		SELF:oTree:GotFocus += EventHandler{ SELF , @TreeGotFocus() }
 		SELF:oTree:LostFocus += EventHandler{ SELF , @TreeLostFocus() }
-	
+
 		SELF:oMainNode := DesignTreeNode{999 , SELF}
 		SELF:oMainNode:ForeColor := Color.Red
 		SELF:oMainNode:NodeFont := Font{SELF:oTree:Font , FontStyle.Bold}
 		SELF:oTree:Nodes:Add(SELF:oMainNode)
 
 		SELF:oTimer:Start()
-		
+
 	RETURN
 
 	ACCESS IsDirty AS LOGIC
@@ -141,11 +141,11 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 	RETURN
 
 	METHOD CanDoAction(eAction AS DesignerActionType) AS LOGIC
-		
+
 		IF SELF:lReadOnly
 			RETURN FALSE
 		ENDIF
-		
+
 		SWITCH eAction
 		CASE DesignerActionType.Undo
 			RETURN SELF:nAction >= 1
@@ -175,9 +175,9 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		LOCAL n AS INT
 
 		SELF:nActionDepth --
-	
+
 		IF SELF:nActionDepth == 0
-	
+
 			IF SELF:lClearUndoBuffer
 				SELF:nAction := 0
 				SELF:aActions:Clear()
@@ -186,7 +186,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 				oAction := (DesignerBasicAction)SELF:aActions[SELF:nAction - 1]
 				oAction:lGroup := TRUE
 			ENDIF
-	
+
 			aSelected := SELF:GetSelected()
 			IF oAction != NULL .and. oAction:aSelected:Count == 0
 				FOR n := 0 UPTO aSelected:Count - 1
@@ -194,15 +194,15 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 					oAction:aSelected:Add(oDesign:cGuid)
 				NEXT
 			ENDIF
-	
+
 			SELF:DisplayProperties()
 
             IF SELF:IsDirtyChanged != NULL
                 SELF:IsDirtyChanged:Invoke(SELF , EventArgs{})
             ENDIF
-            
+
 		ENDIF
-	
+
 	RETURN
 
 	VIRTUAL METHOD DoBasicAction(oAction AS DesignerBasicAction , eAction AS DesignerBasicActionType , uData AS ActionData) AS OBJECT
@@ -238,7 +238,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 				oUndo:eAction := DesignerBasicActionType.Remove
 				oUndo:uData := ActionData{oDesign:cGuid}
 				oAction:aUndo:Add(oUndo)
-				
+
 				oRedo := DesignerBasicAction{TRUE}
 				oRedo:eAction := DesignerBasicActionType.Create
 				oRedo:uData := ActionData{cGuid , cParent , nIndex}
@@ -252,21 +252,21 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 				END DO
 			ENDIF
 //			SELF:AddAffected(oDesign)
-			
+
 		CASE DesignerBasicActionType.Remove
 			cGuid := uData:cGuid
 			oDesign := SELF:GetDesignItemFromGuid(cGuid)
 			nIndex := oDesign:oNode:Index
 			oParent := (DesignTreeNode)oDesign:oNode:Parent
 			cParent := oParent:oDesign:cGuid
-			
+
 			DO WHILE oDesign:oNode:Nodes:Count != 0
 				SELF:StartAction(DesignerBasicActionType.Remove , ActionData{((DesignTreeNode)oDesign:oNode:Nodes[0]):oDesign:cGuid})
 			END DO
-			
+
 			oDesign:oNode:Remove()
 			oDesign:lDeleted := TRUE
-			
+
 			SELF:lDidAction := TRUE
 			IF !oAction:lExecuted
 				aProperties := NameValueCollection{}
@@ -281,7 +281,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 				oUndo:eAction := DesignerBasicActionType.Create
 				oUndo:uData := ActionData{oDesign:cGuid , cParent , nIndex , aProperties}
 				oAction:aUndo:Add(oUndo)
-				
+
 				oRedo := DesignerBasicAction{TRUE}
 				oRedo:eAction := DesignerBasicActionType.Remove
 				oRedo:uData := ActionData{oDesign:cGuid}
@@ -300,7 +300,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 
 			nOldIndex := oDesign:oNode:Index
 			cOldParent := ((DesignTreeNode)oDesign:oNode:Parent):oDesign:cGuid
-			
+
 			oDesign:oNode:Remove()
 			oParent:Nodes:Insert(nIndex , oDesign:oNode)
 			SELF:lDidAction := TRUE
@@ -309,7 +309,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 				oUndo:eAction := DesignerBasicActionType.SetParent
 				oUndo:uData := ActionData{cGuid , cOldParent , nOldIndex}
 				oAction:aUndo:Add(oUndo)
-				
+
 				oRedo := DesignerBasicAction{TRUE}
 				oRedo:eAction := DesignerBasicActionType.SetParent
 				oRedo:uData := ActionData{cGuid , cParent , nIndex}
@@ -326,7 +326,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 					oUndo:eAction := DesignerBasicActionType.SetProperty
 					oUndo:uData := ActionData{oDesign:cGuid , uData:cData , oProp:Value}
 					oAction:aUndo:Add(oUndo)
-					
+
 					oRedo := DesignerBasicAction{TRUE}
 					oRedo:eAction := DesignerBasicActionType.SetProperty
 					oRedo:uData := ActionData{oDesign:cGuid , uData:cData , uData:oData}
@@ -336,7 +336,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 				SELF:PropertyGotUpdated(oDesign , oProp)
 //				SELF:AddAffected(oDesign)
 			ENDIF
-	
+
 		END SWITCH
 
 		oAction:lExecuted := TRUE
@@ -351,7 +351,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		LOCAL oDesign AS DesignMenuItem
 		LOCAL aSelected AS ArrayList
 		LOCAL n AS INT
-		
+
 		IF eAction == DesignerActionType.RemoveSelected
 			IF SELF:oTree:SelectedNode != NULL .and. SELF:oTree:SelectedNode:IsEditing
 				RETURN
@@ -367,7 +367,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 			SELF:oTree:SelectedNode := oDesign:oNode
 /*			oDesign:oNode:lSelected := TRUE
 			SELF:oTree:SetNodeColor(oDesign:oNode)*/
-			
+
 		CASE DesignerActionType.RemoveSelected
 			aSelected := SELF:GetSelected()
 			FOR n := 0 UPTO aSelected:Count - 1
@@ -376,7 +376,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 					SELF:StartAction(DesignerBasicActionType.Remove , ActionData{oDesign:cGuid})
 				END IF
 			NEXT
-			
+
 //			oDesign := SELF:GetDesignItemFromGuid(cGuid)
 /*			SELF:BeginAction()
 			DO WHILE oDesign:oNode:Nodes:Count != 0
@@ -431,7 +431,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		SELF:StartAction(DesignerBasicActionType.Remove , ActionData{((DesignTreeNode)SELF:oTree:SelectedNode):oDesign:cGuid})
 		SELF:EndAction()*/
 	RETURN
-	
+
 	METHOD CalculateFirstId() AS INT
 		LOCAL cName AS STRING
 		LOCAL nId AS INT
@@ -449,7 +449,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		LOCAL oDesign AS DesignMenuItem
 		LOCAL nMax , nID AS INT
 		LOCAL n AS INT
-		
+
 		nMax := (INT)SELF:oMainNode:oDesign:GetProperty("BaseID"):Value
 		aDesign := SELF:GetAllDesignItems()
 		FOR n := 0 UPTO aDesign:Count - 1
@@ -466,7 +466,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		SELF:Copy()
 		SELF:DoRemove()
 	RETURN
-	
+
 	METHOD Copy() AS VOID
 		LOCAL oEntry AS DesignerClipboardEntry
 		LOCAL n AS INT
@@ -488,7 +488,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		LOCAL oDesign AS DesignMenuItem
 		LOCAL oProp AS VODesignProperty
 		LOCAL n AS INT
-	
+
 		oDesign := oNode:oDesign
 		FOR n := 0 UPTO oDesign:aProperties:Count - 1
 			oProp := (VODesignProperty)oDesign:aProperties[n]
@@ -501,9 +501,9 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 			SELF:CopyNode((DesignTreeNode)oNode:Nodes[n] , oChildEntry)
 			oEntry:aSubEntries:Add(oChildEntry)
 		NEXT
-		
+
 	RETURN
-	
+
 	METHOD Paste() AS VOID
 		LOCAL oEntry AS DesignerClipboardEntry
 		LOCAL oParent AS DesignTreeNode
@@ -531,11 +531,11 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 	METHOD PropertyGotUpdated(oDesign AS DesignMenuItem , oProp AS VODesignProperty) AS VOID
 		SELF:ApplyProperty(oDesign , oProp)
 	RETURN
-	
+
 	METHOD ApplyProperty(_oDesign AS DesignMenuItem , oProp AS VODesignProperty) AS VOID
 		LOCAL oDesign AS DesignMenuItem
 		oDesign :=(DesignMenuItem)_oDesign
-		
+
 		SWITCH oProp:Name
 		CASE "Name"
 			IF oDesign:nType == 999
@@ -548,6 +548,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		CASE "Enabled"
 			SELF:oTree:SetNodeColor(oDesign:oNode)
 		CASE "ButtonBmp"
+			oProp:ApplyThumb()
 /*			LOCAL cValue AS STRING
 			cValue := oProp:TextValue_
 			IF !cValue == ""
@@ -556,14 +557,16 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 			ENDIF*/
             NOP
 		END SWITCH
-		
-		
+
+
 	RETURN
 
 	METHOD DisplayProperties() AS VOID
 		SELF:oGrid:Fill(SELF:GetSelected())
 	RETURN
-	
+
+	PROPERTY MainDesignItem AS DesignMenuItem GET SELF:oMainNode:oDesign
+
 	METHOD GetAllDesignItems() AS ArrayList
 		LOCAL oNode AS TreeNode
 		LOCAL aDesign := ArrayList{} AS ArrayList
@@ -616,7 +619,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		LOCAL n AS INT
 
 		oCode := SELF:GetCodeContents()
-		
+
 		f := Form{}
 		f:Size := Size{800 , 500}
 		f:ShowInTaskbar := FALSE
@@ -672,7 +675,7 @@ RETURN
 		LOCAL aResource AS List<STRING>
 		LOCAL aClass AS List<STRING>
 		LOCAL aConstructor AS List<STRING>
-		
+
 		LOCAL nMinPos , nMaxPos AS INT
 		LOCAL nPos AS INT
 		LOCAL lUseBands AS LOGIC
@@ -680,11 +683,11 @@ RETURN
 		LOCAL cInherit AS STRING
 		LOCAL cToolbarInherit AS STRING
 		LOCAL cEventName AS STRING
-		
+
 		LOCAL oAccelerator AS MenuAccelerator
 		LOCAL cAccelerator AS STRING
 		LOCAL lAccelerators AS LOGIC
-		
+
     	SELF:UpdateNames()
 		oCode := CodeContents{}
 		lAccelerators := SELF:HasAccelerators
@@ -693,7 +696,7 @@ RETURN
 
 		aDefines := oCode:aDefines
 		aDefineValues := oCode:aDefineValues
-		
+
 		oDesign := SELF:oMainNode:oDesign
 		aDefines:Add("IDM_" + oDesign:Name)
 		aDefineValues:Add(e"\"" + oDesign:Name + e"\"")
@@ -719,14 +722,14 @@ RETURN
 				END IF
 			END IF
 		NEXT
-		
-		
+
+
 
 // resource
 
 		IF lAccelerators
 			aResource := oCode:aAccelResource
-	
+
 			oDesign := SELF:oMainNode:oDesign
 			aResource:Add(oDesign:Name + "_Accelerator ACCELERATORS")
 			aResource:Add("BEGIN")
@@ -753,7 +756,7 @@ RETURN
 			NEXT
 			aResource:Add("END")
 		END IF
-		
+
 
 
 		aResource := oCode:aResource
@@ -763,7 +766,7 @@ RETURN
 		cMenuName := oDesign:Name
 		aResource:Add(SELF:oMainNode:Text + " MENU")
 		aResource:Add("BEGIN")
-		
+
 		FOR n := 0 UPTO aDesign:Count - 1
 			oDesign := (DesignMenuItem)aDesign[n]
 			oAccelerator := (MenuAccelerator)oDesign:GetProperty("Accelerator"):Value
@@ -816,7 +819,7 @@ RETURN
 
 
 // class declaration
-		
+
 		aClass := oCode:aClass
 
 		oDesign := SELF:oMainNode:oDesign
@@ -845,7 +848,7 @@ RETURN
 
 		IF lAccelerators
 			aConstructor := oCode:aAccelConstructor
-	
+
 			oDesign := SELF:oMainNode:oDesign
 			aConstructor:Add("CONSTRUCTOR()")
 			aConstructor:Add(e"\tSUPER( ResourceID { \"" + oDesign:Name + "_Accelerator" + e"\" , _GetInst( ) } )")
@@ -891,14 +894,14 @@ RETURN
 
 
 		FOR nDesign := 0 UPTO aDesign:Count - 1
-			
+
 			oDesign := (DesignMenuItem)aDesign[nDesign]
 			oNode := oDesign:oNode
-			
+
 			IF oDesign:IsSeparator
 				LOOP
 			ENDIF
-			
+
 			cLine := e"\tSELF:RegisterItem(" + oDesign:GetVODefine() + ", ;"
 			aConstructor:Add(cLine)
 			cEventName := oDesign:GetProperty("EventName"):TextValue:Trim()
@@ -912,7 +915,7 @@ RETURN
 			ELSE
 				cAccelerator := e"\t" + oAccelerator:ToString()
 			END IF
-			
+
 			cLine := e"\t\t"
 
 			IF cEventName:Trim():Length == 0
@@ -936,22 +939,22 @@ RETURN
 			cTemp := oDesign:GetProperty("HelpContext"):TextValue
 			cTemp := iif(cTemp == "" , "" , Funcs.TranslateCaption(cTemp , TRUE) )
 			cLine += cTemp + " }"
-		
+
 			IF oNode:Nodes:Count != 0
-	
+
 				LOCAL cNest AS STRING
 				LOCAL nNest AS INT
 				LOCAL oParent AS TreeNode
 				LOCAL aNest AS List<INT>
-				
+
 				aNest := List<INT>{}
-	
+
 				oParent := oNode
 				DO WHILE oParent:Parent != NULL
 					aNest:Add(oParent:Index)
 					oParent := oParent:Parent
 				END DO
-				
+
 				cNest := ""
 				FOR n := aNest:Count - 1 DOWNTO 0
 					nNest := aNest[n]
@@ -962,17 +965,17 @@ RETURN
 					ENDIF
 				NEXT
 				cLine := cLine + " , " + cNest
-	
+
 			ENDIF
-	
+
 			cLine += ")"
 			aConstructor:Add(cLine)
 			aConstructor:Add("")
-	
+
 		NEXT
 
 		#region AutoUpdate
-	
+
 		LOCAL nAutoUpdate AS INT
 		nAutoUpdate := SELF:AutoUpdateItem
 		IF nAutoUpdate != -1
@@ -992,8 +995,13 @@ RETURN
 		IF lToolBar
 			aConstructor:Add(e"\toTB := " + cToolbarInherit + "{}")
 			aConstructor:Add("")
-	
+
 			cLine := e"\toTB:ButtonStyle := "
+			LOCAL cRibbonInherit AS STRING
+			cRibbonInherit := oMainDesign:GetProperty("Ribbon"):TextValue:Trim()
+			IF .NOT. String.IsNullOrWhiteSpace(cRibbonInherit)
+				aConstructor:Add(e"\toTB:Bitmap := " + cRibbonInherit + "{}")
+			END IF
 			nToolBarShow := (INT)oMainDesign:GetProperty("Show"):Value
 			DO CASE
 			CASE nToolBarShow == 0
@@ -1004,7 +1012,7 @@ RETURN
 				cLine += "TB_TEXTANDICON"
 			END CASE
 			aConstructor:Add(cLine)
-	
+
 			IF (INT)oMainDesign:GetProperty("Toolbar"):Value == 1
 				cFlat := "TRUE"
 				aConstructor:Add(e"\toTB:Flat := TRUE")
@@ -1014,7 +1022,7 @@ RETURN
 			cLine := e"\toTB:EnableBands(" + iif(lUseBands , "TRUE" , "FALSE") + ")"
 			aConstructor:Add(cLine)
 			aConstructor:Add("")
-	
+
 			LOCAL cIdt , cCaption , cToolTip AS STRING
 			LOCAL lLastSeparator AS LOGIC
 			LOCAL oButton AS VOTBButton
@@ -1022,9 +1030,9 @@ RETURN
 			LOCAL aButtons AS ArrayList
 			LOCAL nIcons AS INT
 			aButtons := ArrayList{}
-			
+
 			FOR n := nMinPos UPTO nMaxPos
-	
+
 				lFound := FALSE
 				FOR nDesign := 0 UPTO aDesign:Count - 1
 					oDesign := (DesignMenuItem)aDesign[nDesign]
@@ -1050,9 +1058,9 @@ RETURN
 				IF !lFound
 					aButtons:Add(VOTBButton{})
 				ENDIF
-	
+
 			NEXT
-	
+
 			FOR n := aButtons:Count DOWNTO 1
 				oButton := (VOTBButton)aButtons[n - 1]
 				IF oButton:lSeparator .and. !lLastSeparator
@@ -1067,7 +1075,7 @@ RETURN
 					nIcons := 0
 				ENDIF
 			NEXT
-			
+
 			lLastSeparator := FALSE
 			FOR n := 1 UPTO aButtons:Count
 				oButton := (VOTBButton)aButtons[n-1]
@@ -1107,12 +1115,12 @@ RETURN
 						aConstructor:Add(cLine)
 					ENDIF
 				ENDIF
-				
+
 				aConstructor:Add("")
-	
+
 			NEXT
-			
-	
+
+
 			aConstructor:Add("")
 			aConstructor:Add(e"\tSELF:ToolBar := oTB")
 		ENDIF
@@ -1122,7 +1130,7 @@ RETURN
 		IF SELF:HasAccelerators
 			aConstructor:Add(e"\tSELF:Accelerator := " + SELF:oMainNode:oDesign:Name + "_Accelerator{ }")
 			aConstructor:Add("")
-		END IF        
+		END IF
 
 		FOR n := 0 UPTO aDesign:Count - 1
 			oDesign := (DesignMenuItem)aDesign[n]
@@ -1138,9 +1146,20 @@ RETURN
 		aConstructor:Add(e"\tSELF:PostInit()")
 		aConstructor:Add("")
 		aConstructor:Add(e"\tRETURN")
-		
+
 	RETURN oCode
 
+
+	METHOD AdjustButtonBmps() AS VOID
+        LOCAL aControls AS ArrayList
+	    aControls := SELF:GetAllDesignItems()
+	    FOREACH oDesign AS DesignMenuItem IN aControls
+            LOCAL oProp AS VODesignProperty
+            oProp := (VODesignProperty)oDesign:GetProperty("ButtonBmp")
+            IF oProp != null
+                oProp:ApplyThumb()
+            ENDIF
+		NEXT
 
 	METHOD Open(cFileName AS STRING) AS LOGIC
 		LOCAL lSuccess AS LOGIC
@@ -1150,6 +1169,14 @@ RETURN
 			IF SELF:oMainNode:oDesign:GetProperty("BaseID"):IsAuto
 				SELF:oMainNode:oDesign:GetProperty("BaseID"):Value := SELF:CalculateFirstId()
 			END IF
+   			LOCAL cRibbon AS STRING
+   			cRibbon := SELF:oMainNode:oDesign:GetProperty("RibbonFilename"):TextValue
+   			IF String.IsNullOrWhiteSpace(cRibbon)
+   				RibbonClass.SetActiveDefault()
+   			ELSE
+   				RibbonClass.SetActive(cRibbon)
+            END IF
+            SELF:AdjustButtonBmps()
 			SELF:GiveFocus()
 		ENDIF
 	RETURN lSuccess
@@ -1164,7 +1191,7 @@ RETURN
 		IF SELF:lReadOnly
 			RETURN FALSE
 		ENDIF
-		
+
 		lVnfrmOnly := lVnfrmOnly .or. SELF:lStandalone
 		IF cFileName:ToUpper():Contains("~AUTORECOVER")
 			lVnfrmOnly := TRUE // in case it isn't already
@@ -1174,7 +1201,7 @@ RETURN
 		oVhStream := EditorStream{}
 		oRcStream := EditorStream{}
 		oRcAccelStream := EditorStream{}
-		
+
 		oCode := SELF:GetCodeContents()
 		IF SELF:GetSaveFileStreams(cFileName , oVNFrmStream , oRCStream , oPrgStream , oVhStream , lVnfrmOnly , oRCAccelStream , cPathToVh)
 //			SELF:SaveVNmnu(oVNFrmStream)
@@ -1211,9 +1238,9 @@ RETURN
 		LOCAL nAt AS INT
 		LOCAL lAccelerators AS LOGIC
 		LOCAL lFound AS LOGIC
-		
+
 		lAccelerators := SELF:HasAccelerators
-		
+
 		TRY
 
 			oFileInfo := FileInfo{cVNFrmFileName}
@@ -1231,7 +1258,7 @@ RETURN
 				cRCFileName := cAlternative
 				cRCAccelFileName := cBaseDir + "\" + cBaseName + "_Accelerator.rc"
 			ENDIF
-			
+
 			cVhFileName := cBaseDir + "\GlobalDefines.vh"
 			cPathToVh := ""
 			TRY
@@ -1253,7 +1280,7 @@ RETURN
 			IF .not. lFound
 				cPathToVh := ""
 			END IF
-						
+
 			cFileName := cBaseName
 			nAt := cFileName:LastIndexOf('.')
 			IF nAt != -1 // strip out window name
@@ -1280,7 +1307,7 @@ RETURN
 					lError := TRUE
 				END IF
 			END IF
-			
+
 			lSuccess := FALSE
 			IF !lError
 				IF !lVnfrmOnly
@@ -1300,7 +1327,7 @@ RETURN
 				oVNFrmStream := File.Open(cVNFrmFileName , FileMode.Create , FileAccess.Write , FileShare.None)
 				lSuccess := TRUE
 			ENDIF
-			
+
 		CATCH e AS Exception
 
 			MessageBox.Show(e:Message , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Exclamation)
@@ -1339,9 +1366,9 @@ METHOD UpdateNames() AS VOID
 //	LOCAL n,m AS INT
 	LOCAL n AS INT
 	LOCAL nID AS INT
-	
+
 	nId := (INT)SELF:oMainNode:oDesign:GetProperty("BaseID"):Value
-	
+
 	aControls := SELF:GetAllDesignItems()
 	FOR n := 0 UPTO aControls:Count - 1
 		oDesign := (DesignMenuItem)aControls[n]
@@ -1362,18 +1389,18 @@ METHOD UpdateNames() AS VOID
 			ENDIF
 		END DO
 		oDesign:cNameID := cName
-		
+
 /*		IF (INT)oDesign:GetProperty("MenuID"):Value == 0
 			oDesign:GetProperty("MenuID"):Value := SELF:GetNewMenuID()
 		END IF*/
 		oDesign:GetProperty("MenuID"):Value := nId
 		nId ++
-		
+
 /*		IF !cName == cOrigName
 			oDesign:PropertyValueSelected("Name" , cName)
 		ENDIF*/
 	NEXT
-	
+
 RETURN
 
 INTERNAL METHOD AdjustName(cName AS STRING) AS STRING
@@ -1417,7 +1444,7 @@ INTERNAL METHOD RemoveDiacritics (s AS STRING) AS STRING
 	   LOCAL cChar := sNormalized[n] AS Char
        IF (CharUnicodeInfo.GetUnicodeCategory(cChar) != UnicodeCategory.NonSpacingMark )
           sb:Append(cChar)
-       ENDIF	   
+       ENDIF
 	NEXT
     RETURN sb:ToString()
 
@@ -1449,7 +1476,7 @@ INTERNAL METHOD GetNextNumName(cName AS STRING) AS STRING
 		nValue ++
 		cRet += nValue:ToString():PadLeft(4 , '0')
 	ENDIF
-	
+
 RETURN cRet
 
 METHOD GetNameFromTree(oNode AS TreeNode) AS STRING
@@ -1466,11 +1493,11 @@ RETURN cName
 	STATIC METHOD GetNextNode(oNode AS TreeNode , lIncludeChildren AS LOGIC) AS TreeNode
 		LOCAL oParent AS TreeNode
 		LOCAL oTree AS TreeView
-	
+
 		IF lIncludeChildren .and. oNode:Nodes:Count != 0
 			RETURN oNode:Nodes[0]
 		ENDIF
-	
+
 		oParent := oNode:Parent
 		IF oParent == NULL
 			oTree := oNode:TreeView
@@ -1480,11 +1507,11 @@ RETURN cName
 				RETURN oNode:NextNode
 			ENDIF
 		ENDIF
-	
+
 		IF oNode:Index != oParent:Nodes:Count - 1
 			RETURN oNode:NextNode
 		ENDIF
-	
+
 	RETURN GetNextNode(oParent , FALSE)
 
 END CLASS
@@ -1557,7 +1584,7 @@ CLASS MEditorTreeView INHERIT TreeView
 				SELF:nDragY:=e:Y
 				SELF:oDragNode := (DesignTreeNode)SELF:SelectedNode
 			END IF
-			
+
 		END CASE
 	RETURN
 	PROTECTED METHOD OnMouseMove(e AS MouseEventArgs) AS VOID
@@ -1581,14 +1608,14 @@ CLASS MEditorTreeView INHERIT TreeView
 	PROTECTED METHOD OnDragOver(e AS DragEventArgs) AS VOID
 		LOCAL oNode AS DesignTreeNode
 		LOCAL oTest AS TreeNode
-		
+
 		SUPER:OnDragOver(e)
 		e:Effect:=DragDropEffects.None
 		oNode:=(DesignTreeNode)SELF:GetNodeAt ( SELF:PointToClient(Point{e:X,e:Y}) )
 		IF oNode != NULL .and. oNode:Parent != NULL .and. SELF:oDragNode != NULL
 			SELF:SelectedNode := oNode
 			e:Effect:=DragDropEffects.Move
-			
+
 			oTest := oNode
 			DO WHILE oTest:Parent != NULL
 				oTest := oTest:Parent
@@ -1597,18 +1624,18 @@ CLASS MEditorTreeView INHERIT TreeView
 					RETURN
 				ENDIF
 			ENDDO
-			
+
 		END IF
 	RETURN
 	PROTECTED METHOD OnDragDrop(e AS DragEventArgs) AS VOID
 		LOCAL oNode AS DesignTreeNode
 		LOCAL oTest AS TreeNode
 		LOCAL lUp AS LOGIC
-		
+
 		SUPER:OnDragDrop(e)
 		oNode:=(DesignTreeNode)SELF:GetNodeAt ( SELF:PointToClient(Point{e:X,e:Y}) )
 		IF SELF:oDragNode!=NULL .and. oNode!=NULL .and. SELF:oDragNode!=oNode
-			
+
 			oTest := oNode
 			DO WHILE oTest:Parent != NULL
 				oTest := oTest:Parent
@@ -1618,7 +1645,7 @@ CLASS MEditorTreeView INHERIT TreeView
 					RETURN
 				ENDIF
 			ENDDO
-			
+
 			lUp := SELF:oDragNode:Bounds:Y < oNode:Bounds:Y
 /*			SELF:oDragNode:Parent:Nodes:Remove(SELF:oDragNode)
 			IF lUp
@@ -1637,7 +1664,7 @@ CLASS MEditorTreeView INHERIT TreeView
 			SELF:AllowDrop := FALSE
 		END IF
 	RETURN
-	
+
 	PROTECTED METHOD OnKeyPress(e AS KeyPressEventArgs) AS VOID
 		IF e:KeyChar == '\r'
 			e:Handled := TRUE
@@ -1657,17 +1684,17 @@ CLASS MEditorTreeView INHERIT TreeView
 			RETURN TRUE
 		END SWITCH
 	RETURN FALSE
-	
+
 	PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
 		SUPER:OnKeyDown(e)
-		
+
 		IF SELF:oEditor:StandAlone
 			DO CASE
 			CASE e:KeyCode==Keys.Z .and. e:Modifiers==Keys.Control
 				SELF:oEditor:Undo()
 			CASE e:KeyCode==Keys.Z .and. e:Modifiers==Keys.Control + Keys.Shift
 				SELF:oEditor:Redo()
-				
+
 			CASE e:KeyCode==Keys.X .and. e:Modifiers==Keys.Control
 				SELF:oEditor:Cut()
 			CASE e:KeyCode==Keys.C .and. e:Modifiers==Keys.Control
@@ -1676,7 +1703,7 @@ CLASS MEditorTreeView INHERIT TreeView
 				SELF:oEditor:Paste()
 			END CASE
 		END IF
-		
+
 		DO CASE
 		CASE e:KeyCode==Keys.Enter .and. e:Modifiers==Keys.None
 			SELF:AddNode()
@@ -1703,11 +1730,11 @@ CLASS MEditorTreeView INHERIT TreeView
 			SELF:oEditor:DoRemove()
 		ENDIF
 	RETURN
-	
+
 /*	METHOD DoMove(lUp AS LOGIC) AS VOID
 		LOCAL oNode,oParent AS TreeNode
 		LOCAL nIndex AS INT
-		
+
 		oNode := SELF:SelectedNode
 		IF oNode == NULL .or. oNode:Parent == NULL
 			RETURN
@@ -1717,7 +1744,7 @@ CLASS MEditorTreeView INHERIT TreeView
 		IF (lUp .and. nIndex == 0) .or. (!lUp .and. nIndex == oParent:Nodes:Count - 1)
 			RETURN
 		ENDIF
-		
+
 		oParent:Nodes:Remove(oNode)
 		IF lUp
 			oParent:Nodes:Insert(nIndex - 1 , oNode)
@@ -1725,7 +1752,7 @@ CLASS MEditorTreeView INHERIT TreeView
 			oParent:Nodes:Insert(nIndex + 1 , oNode)
 		ENDIF
 		SELF:SelectedNode := oNode
-		
+
 	RETURN*/
 /*
 	METHOD CanDoAction(eAction AS VOWEDActionType) AS LOGIC
@@ -1736,7 +1763,7 @@ CLASS MEditorTreeView INHERIT TreeView
 		IF oNode != NULL
 			oParent := (DesignTreeNode)oNode:Parent
 		ENDIF
-	
+
 		DO CASE
 		CASE eAction == VOWEDActionType.Promote
 			RETURN nIndex != 0 .and. oParent != NULL
@@ -1758,13 +1785,13 @@ CLASS MEditorTreeView INHERIT TreeView
 			RETURN oNode != NULL .and. oParent != NULL .and. oNode:Index != oParent:Nodes:Count - 1
 		END CASE
 	RETURN TRUE
-	
+
 */
 	METHOD CreateNewNode() AS DesignTreeNode
 		LOCAL oNode AS DesignTreeNode
 		oNode := DesignTreeNode{0 , SELF:oMEditor}
 	RETURN oNode
-			
+
 	METHOD AddNode() AS VOID
 		LOCAL oParent AS DesignTreeNode
 		LOCAL nIndex AS INT
@@ -1818,7 +1845,7 @@ CLASS MEditorTreeView INHERIT TreeView
 		SELF:SelectedNode := oNode
 		SELF:DeSelectAll()
 	RETURN
-	
+
 	METHOD UnTabIt() AS VOID
 		LOCAL oParent , oNode AS DesignTreeNode
 		LOCAL nIndex AS INT
@@ -1878,22 +1905,22 @@ CLASS MEditorTreeView INHERIT TreeView
 		ENDIF
 //	ENDIF
 	RETURN
-	
+
 	METHOD TreeViewContextMenuPopUp(o AS OBJECT,e AS EventArgs) AS VOID
 		LOCAL oItem AS MenuItem
 		LOCAL oNode AS DesignTreeNode
 		LOCAL lMultiple AS LOGIC
-		
+
 		SELF:ContextMenu:MenuItems:Clear()
-		
+
 		oNode := (DesignTreeNode)SELF:SelectedNode
 		IF oNode == NULL
 			RETURN
 		END IF
-		
+
 //		lMultiple := SELF:oMEditor:GetSelected():Count > 1
 		lMultiple := FALSE
-		
+
 		IF !lMultiple .and. oNode:Parent != NULL
 			oItem := MenuItem{"Cut" + ChrW(9) + "CTRL+X"}
 			oItem:Click += EventHandler{SELF , @ContextCut()}
@@ -1912,14 +1939,14 @@ CLASS MEditorTreeView INHERIT TreeView
 		IF SELF:ContextMenu:MenuItems:Count != 0
 			SELF:ContextMenu:MenuItems:Add("-")
 		END IF
-		
+
 		IF oNode:Parent == NULL
 			oItem:=MenuItem{"Add Subitem" + ChrW(9) + "Shift+Enter"}
 			oItem:Click+=EventHandler{SELF,@ContextAddSub()}
 			SELF:ContextMenu:MenuItems:Add(oItem)
 			RETURN
 		ENDIF
-		
+
 		oItem:=MenuItem{e"Promote\tTab"}
 		oItem:Click+=EventHandler{SELF,@ContextPromote()}
 		IF oNode:Index == 0
@@ -1932,13 +1959,13 @@ CLASS MEditorTreeView INHERIT TreeView
 			oItem:Enabled := FALSE
 		ENDIF
 		SELF:ContextMenu:MenuItems:Add(oItem)
-		
+
 		SELF:ContextMenu:MenuItems:Add("-")
-		
+
 		oItem:=MenuItem{e"Remove\tDel"}
 		oItem:Click+=EventHandler{SELF,@ContextRemove()}
 		SELF:ContextMenu:MenuItems:Add(oItem)
-		
+
 		SELF:ContextMenu:MenuItems:Add("-")
 		oItem:=MenuItem{e"Add Subitem\tShift+Enter"}
 		oItem:Click+=EventHandler{SELF,@ContextAddSub()}
@@ -1946,13 +1973,13 @@ CLASS MEditorTreeView INHERIT TreeView
 		oItem:=MenuItem{e"Add Item\tEnter"}
 		oItem:Click+=EventHandler{SELF,@ContextAdd()}
 		SELF:ContextMenu:MenuItems:Add(oItem)
-		
+
 		oItem:=MenuItem{e"Insert Item\tInsert"}
 		oItem:Click+=EventHandler{SELF,@ContextInsert()}
 		SELF:ContextMenu:MenuItems:Add(oItem)
-		
+
 	RETURN
-	
+
 	METHOD ContextPromote(o AS OBJECT,e AS EventArgs) AS VOID
 		SELF:TabIt()
 	RETURN
@@ -1971,7 +1998,7 @@ CLASS MEditorTreeView INHERIT TreeView
 	METHOD ContextInsert(o AS OBJECT,e AS EventArgs) AS VOID
 		SELF:InsertNode()
 	RETURN
-	
+
 	METHOD ContextCut(o AS OBJECT,e AS EventArgs) AS VOID
 		SELF:oEditor:Cut()
 	RETURN
@@ -2004,18 +2031,18 @@ CLASS DesignMenuItem INHERIT DesignItem
 	EXPORT nType AS INT
 	EXPORT lDeleted AS LOGIC
 	PROTECT oEditor AS VOMenuEditor
-	
+
 	EXPORT cNameID AS STRING
 	CONSTRUCTOR(_nType AS INT , _oNode AS DesignTreeNode , _oEditor AS VOMenuEditor)
 
 		SUPER(_oEditor)
 
 		LOCAL oProp AS VODesignProperty
-		
+
 		SELF:oEditor := _oEditor
 		SELF:oNode := _oNode
 		SELF:nType := _nType
-		
+
 		SELF:aPages := List<STRING>{}
 		SELF:aPages:Add("General")
 
@@ -2027,14 +2054,16 @@ CLASS DesignMenuItem INHERIT DesignItem
 			oProp := VODesignProperty{"Toolbar","Toolbar style","Toolbar","__menuTOOLBARSTYLE"}
 			oProp:lNoAuto := TRUE
 			SELF:AddProperty(oProp)
+			SELF:AddProperty(VODesignProperty{"Ribbon","Ribbon","Ribbon",PropertyType.Text , PropertyStyles.None})
+			SELF:AddProperty(VODesignProperty{"RibbonFilename","Ribbon filename","RibbonFilename",PropertyType.Text , PropertyStyles.None})
 			oProp := VODesignProperty{"Show","Show","Show","__menuSHOW"}
 			oProp:lNoAuto := TRUE
 			SELF:AddProperty(oProp)
 			SELF:AddProperty(VODesignProperty{"UseBands","Use Bands","UseBands","YESNO"})
 			SELF:AddProperty(VODesignProperty{"BaseID","BaseID","BaseID",PropertyType.Numeric})
-			
+
 		ELSE
-			
+
 			SELF:AddProperty(VODesignProperty{"EventName","Event Name","EventName",PropertyType.Text,PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"Caption","Caption","Caption",PropertyType.Text})
 			SELF:AddProperty(VODesignProperty{"Description","Description","Description",PropertyType.Text , PropertyStyles.NoAuto})
@@ -2047,7 +2076,11 @@ CLASS DesignMenuItem INHERIT DesignItem
 			oProp := VODesignProperty{"Checked","Init. Checked","Checked","YESNO"}
 			oProp:Value := 1
 			SELF:AddProperty(oProp)
-			SELF:AddProperty(VODesignProperty{"ButtonBmp","Button Bmp","ButtonBmp","__menuToolBarButtons" , PropertyStyles.NoAuto})
+			//SELF:AddProperty(VODesignProperty{"ButtonBmp","Button Bmp","ButtonBmp","__menuToolBarButtons" , PropertyStyles.NoAuto})
+			oProp := VODesignProperty{"ButtonBmp","Button Bmp","ButtonBmp","__menuToolBarButtons" , PropertyStyles.None}
+			oProp:cSpecialClass := "__menuToolBarButtons"
+			oProp:Value := ""
+			SELF:AddProperty(oProp)
 			SELF:AddProperty(VODesignProperty{"ButtonCaption","Button Caption","ButtonCaption",PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"ButtonToolTip","Button ToolTip","ButtonToolTip",PropertyType.Text , PropertyStyles.NoAuto})
 			SELF:AddProperty(VODesignProperty{"ButtonPos","Button Pos","ButtonPos",PropertyType.Numeric , PropertyStyles.NoAuto})
@@ -2057,9 +2090,9 @@ CLASS DesignMenuItem INHERIT DesignItem
 				oProp:cPage := "__Hidden"
 			END IF
 			SELF:AddProperty(oProp)
-			
+
 		END IF
-		
+
 	RETURN
 	VIRTUAL METHOD GetThumb() AS Bitmap
 	RETURN NULL
@@ -2095,7 +2128,7 @@ CLASS DesignMenuItem INHERIT DesignItem
 			ENDIF
 		NEXT
 	RETURN TRUE
-	
+
 	METHOD GetMenuID() AS STRING
 	RETURN SELF:GetProperty("MenuID"):TextValue
 	METHOD GetVODefine() AS STRING
@@ -2111,7 +2144,7 @@ CLASS DesignMenuItem INHERIT DesignItem
 /*		IF SELF:GetProperty("MenuID"):TextValue:Trim():Length == 0
 			SELF:GetProperty("MenuID"):Value := "30001"
 		END IF*/
-		
+
 		LOCAL n AS INT
 		LOCAL cTemp AS STRING
 		LOCAL cChar AS Char
@@ -2125,9 +2158,9 @@ CLASS DesignMenuItem INHERIT DesignItem
 			END IF
 		NEXT
 		cDefine := cTemp
-		
+
 	RETURN cDefine
-	
+
 	METHOD GetNestLevel() AS INT
 		LOCAL oNode AS TreeNode
 		LOCAL nLevel AS INT
@@ -2137,7 +2170,7 @@ CLASS DesignMenuItem INHERIT DesignItem
 			nLevel ++
 		END DO
 	RETURN nLevel
-	
+
 END CLASS
 
 
@@ -2153,7 +2186,7 @@ INTERNAL CLASS VOTBButton
 		SELF:lSeparator := TRUE
 	RETURN
 	CONSTRUCTOR(_cIdt AS STRING , _cCaption AS STRING , _cToolTip AS STRING)
-		SELF:cIdt := _cIdt    
+		SELF:cIdt := _cIdt
 		SELF:cCaption := _cCaption
 		SELF:cToolTip := _cToolTip
 	RETURN

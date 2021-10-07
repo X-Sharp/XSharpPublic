@@ -13,13 +13,13 @@ BEGIN NAMESPACE XSharpModel
    // A variable is strictly speaking not an entity
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
    CLASS XPEParameterSymbol INHERIT XSymbol IMPLEMENTS IXParameterSymbol
-      
+
       // Methods
       CONSTRUCTOR(parent AS IXMemberSymbol, name AS STRING, typeName AS STRING)
          SUPER(name, Kind.Parameter, Modifiers.Public)
          SELF:TypeName      := typeName
          SELF:Parent        := parent
-         
+
          // Properties
       PROPERTY Value        AS STRING AUTO
       PROPERTY IsArray      AS LOGIC AUTO
@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN result
          END GET
       END PROPERTY
-      
+
       PROPERTY IsParameter AS LOGIC GET TRUE
       PROPERTY FullName as STRING GET Name
       PROPERTY Namespace as STRING GET ""
@@ -57,8 +57,8 @@ BEGIN NAMESPACE XSharpModel
             END SWITCH
          END GET
       END PROPERTY
-      
-      
+
+
       PROPERTY ShortTypeName AS STRING
          GET
             VAR cType := SELF:TypeName
@@ -69,17 +69,17 @@ BEGIN NAMESPACE XSharpModel
             RETURN cType
          END GET
       END PROPERTY
-      
-      
-      METHOD DebuggerDisplay() AS STRING
+
+
+      INTERNAL METHOD DebuggerDisplay() AS STRING
          RETURN SELF:Name + " "+ParamTypeDesc+" "+SELF:TypeName
-         
+
       METHOD ForceComplete() as VOID
-      
+
          /*
          "Create Table Parameters ("
          " Id integer NOT NULL PRIMARY KEY, IdMember integer NOT NULL, Ordinal integer not null, "
-         " Name text NOT NULL COLLATE NOCASE, ParamKind integer NOT NULL, ParamType TEXT NOT NULL COLLATE NOCASE, " 
+         " Name text NOT NULL COLLATE NOCASE, ParamKind integer NOT NULL, ParamType TEXT NOT NULL COLLATE NOCASE, "
          " DefaultValue text, "
          */
 
@@ -88,7 +88,7 @@ BEGIN NAMESPACE XSharpModel
 
 
    END CLASS
-   
-   
+
+
 END NAMESPACE
 

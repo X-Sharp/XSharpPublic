@@ -620,7 +620,7 @@ BEGIN NAMESPACE XSharpModel
 			" FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
 			")"
 			*/
-			IF ! IsDbOpen
+			IF ! IsDbOpen .or. oFile:TypeList == null
 				RETURN
 			ENDIF
 			Log(i"Update File contents for file {oFile.FullPath}")
@@ -936,15 +936,7 @@ BEGIN NAMESPACE XSharpModel
 						    pars[2]:Value := xmember:FullName
 						    pars[3]:Value := (int) xmember:Kind
 						    pars[4]:Value := (INT) xmember:Attributes
-                            if xmember:Kind == Kind.Field
-                                if xmember:Attributes:HasFlag(Modifiers.Const) .or. xmember:Attributes:HasFlag(Modifiers.InitOnly)
-                                    pars[5]:Value := "DEFINE " +xmember:GetProtoType()
-                                else
-                                    pars[5]:Value := "GLOBAL " +xmember:GetProtoType()
-                                endif
-                            else
-						        pars[5]:Value := xmember:KindKeyword + " " +xmember:GetProtoType()
-                            endif
+                            pars[5]:Value := xmember:GetProtoType()
 						    pars[6]:Value := xmember:TypeName
 						    oCmd:ExecuteNonQuery()
 					    NEXT
@@ -969,19 +961,20 @@ BEGIN NAMESPACE XSharpModel
 
         PRIVATE STATIC METHOD _FindFunctionWorker(sName AS STRING, sProjectIds AS STRING, lUseLike as LOGIC) AS IList<XDbResult>
 			VAR result := List<XDbResult>{}
+            VAR sLike := sName
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
 						USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
                         var crit := "name = $name"
                         if lUseLike
-                            sName += "%"
+                            sLike += "%"
                             crit := "name like $name"
                         ENDIF
 						oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE " + crit + " AND TypeName = $typename " + ;
 						" AND Kind in ($kind1, $kind2, $kind3, $kind4,$kind5,$kind6) AND IdProject in ("+sProjectIds+") "+ ;
                         " Order by FileName"
-						oCmd:Parameters:AddWithValue("$name", sName)
+						oCmd:Parameters:AddWithValue("$name", sLike)
 						oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
 						oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
 						oCmd:Parameters:AddWithValue("$kind3", (INT) Kind.Method)
@@ -990,8 +983,15 @@ BEGIN NAMESPACE XSharpModel
 						oCmd:Parameters:AddWithValue("$kind6", (INT) Kind.LocalProc)
 						oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
-							result:Add(CreateMemberInfo(rdr))
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                            var mem := CreateMemberInfo(rdr)
+                            if lUseLike
+                                if mem:MemberName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+                                    result:Add(mem)
+                                endif
+                            else
+							    result:Add(mem)
+                            endif
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
@@ -1015,25 +1015,33 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD _FindGlobalOrDefineWorker(sName AS STRING, sProjectIds AS STRING, lUseLike as LOGIC) AS IList<XDbResult>
 			// search class members in the Types list
 			VAR result := List<XDbResult>{}
+            VAR sLike  := sName
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
 					    USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
                         var crit := "name = $name"
                         if lUseLike
-                            sName += "%"
+                            sLike += "%"
                             crit := "name like $name"
                         ENDIF
 					    oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE "+crit+"  AND TypeName = $typename " + ;
 					    " AND Kind in ($kind1, $kind2) AND IdProject in ("+sProjectIds+")" +;
                         " Order by FileName"
-					    oCmd:Parameters:AddWithValue("$name", sName)
+					    oCmd:Parameters:AddWithValue("$name", sLike)
 					    oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.VOGlobal)
 					    oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
 					    oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
 					    USING VAR rdr := oCmd:ExecuteReader()
-					    DO WHILE rdr:Read()
-						    result:Add(CreateMemberInfo(rdr))
+					    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                            var mem := CreateMemberInfo(rdr)
+                            if lUseLike
+                                if mem:MemberName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+                                    result:Add(mem)
+                                endif
+                            else
+						        result:Add(mem)
+                            endif
 					    ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
@@ -1061,19 +1069,25 @@ BEGIN NAMESPACE XSharpModel
         STATIC METHOD _FindAssemblyWorker(sName AS STRING, sAssemblyIds AS STRING, nKind1 as Kind) AS IList<XDbResult>
 			// search class members in the Types list
 			VAR result := List<XDbResult>{}
+            VAR sLike  := sName
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
+                        IF ! sLike:EndsWith("%")
+                            sLike += "%"
+                        ENDIF
 					    USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
 					    oCmd:CommandText := "SELECT * FROM AssemblyGlobals WHERE name like $name " + ;
-					    " AND Kind in ($kind1, $kind2) AND IdAssembly in ("+sAssemblyIds+")" +;
-                        " Order by FileName"
-					    oCmd:Parameters:AddWithValue("$name", sName)
+					    " AND Kind = $kind1 AND IdAssembly in ("+sAssemblyIds+")"
+					    oCmd:Parameters:AddWithValue("$name", sLike)
 					    oCmd:Parameters:AddWithValue("$kind1", (INT) nKind1)
-					    oCmd:Parameters:AddWithValue("$kind2", (INT) nKind1)
 					    USING VAR rdr := oCmd:ExecuteReader()
-					    DO WHILE rdr:Read()
-						    result:Add(CreateAssemblyMemberInfo(rdr))
+					    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                            // extra filter because they may be seeking for "FO_" and we do not want the _ character to be seen as wildcard
+                            var mem := CreateAssemblyMemberInfo(rdr)
+                            if mem:MemberName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+						        result:Add(mem)
+                            endif
 					    ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
@@ -1085,16 +1099,16 @@ BEGIN NAMESPACE XSharpModel
 
         STATIC METHOD FindAssemblyGlobalOrDefineLike(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
 			// search class members in the Types list
-			VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Function)
-			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
+			VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Field)
+			Log(i"FindAssemblyGlobalOrDefineLike '{sName}' returns {result.Count} matches")
 
-            RETURN NULL
+            RETURN result
 
         STATIC METHOD FindAssemblyFunctionLike(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
 			// search class members in the Types list
-			VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Field)
-			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
-            RETURN NULL
+			VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Function)
+			Log(i"FindAssemblyFunctionLike '{sName}' returns {result.Count} matches")
+            RETURN result
 
 		STATIC METHOD GetProjectTypes(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectTypes where name = $name AND IdProject in ("+sProjectIds+")"
@@ -1105,7 +1119,7 @@ BEGIN NAMESPACE XSharpModel
 					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						oCmd:Parameters:AddWithValue("$name", sName)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateTypeInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
@@ -1119,15 +1133,18 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD GetProjectTypesLike(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectTypes where name like $name or namespace like $name AND IdProject in ("+sProjectIds+")"
 			VAR result := List<XDbResult>{}
-			sName += "%"
+            var sLike := sName + "%"
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
-						oCmd:Parameters:AddWithValue("$name", sName)
+						oCmd:Parameters:AddWithValue("$name", sLike)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
-							result:Add(CreateTypeInfo(rdr))
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                            var type := CreateTypeInfo(rdr)
+                            if type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+							    result:Add(type)
+                            endif
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
@@ -1145,7 +1162,7 @@ BEGIN NAMESPACE XSharpModel
 					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						oCmd:Parameters:AddWithValue("$name", sName)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateRefTypeInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
@@ -1158,15 +1175,18 @@ BEGIN NAMESPACE XSharpModel
         STATIC METHOD GetAssemblyTypesLike(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from AssemblyTypes where name like $name AND IdAssembly in ("+sAssemblyIds+")"
 			VAR result := List<XDbResult>{}
-			sName += "%"
+			var sLike := sName + "%"
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
-						oCmd:Parameters:AddWithValue("$name", sName)
+						oCmd:Parameters:AddWithValue("$name", sLike)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
-							result:Add(CreateRefTypeInfo(rdr))
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                            var type := CreateRefTypeInfo(rdr)
+                            if type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+							    result:Add(type)
+                            endif
 						ENDDO
 					CATCH e AS Exception
 						Log("Exception: "+e:ToString())
@@ -1205,7 +1225,7 @@ BEGIN NAMESPACE XSharpModel
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
                         oCmd:Parameters:AddWithValue("$type",(INT) type)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
                               result:Add(DbToString(rdr[0]))
 						ENDDO
 					CATCH e AS Exception
@@ -1223,6 +1243,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
+                        // No limit on the # of Namespaces
 						DO WHILE rdr:Read()
                             VAR ns := DbToString(rdr[0])
 							IF ! String.IsNullOrEmpty(ns)
@@ -1245,6 +1266,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
+                        // No limit on the # of Namespaces
 						DO WHILE rdr:Read()
                             VAR ns := DbToString(rdr[0])
 							IF ! String.IsNullOrEmpty(ns)
@@ -1271,6 +1293,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
+                        // No limit on the # of Namespaces
 						DO WHILE rdr:Read()
 							VAR res := XDbResult{}
 							IF rdr[0] != DBNull.Value
@@ -1298,7 +1321,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateTypeInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
@@ -1312,14 +1335,20 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD GetReferenceTypes(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from AssemblyTypes where (name like $name or fullname like  $name) AND idAssembly in ("+sAssemblyIds+")"
 			VAR result := List<XDbResult>{}
+            var sLike  := sName+"%"
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
 					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
-					    oCmd:Parameters:AddWithValue("$name", sName+"%")
+					    oCmd:Parameters:AddWithValue("$name", sLike)
 					    USING VAR rdr := oCmd:ExecuteReader()
-					    DO WHILE rdr:Read()
-					        result:Add(CreateRefTypeInfo(rdr))
+					    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                            var type := CreateRefTypeInfo(rdr)
+                            if type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+					            result:Add(type)
+                            elseif type:FullName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+                                result:Add(type)
+                            endif
 					    ENDDO
 
 					CATCH e AS Exception
@@ -1339,7 +1368,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateMemberInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
@@ -1384,7 +1413,7 @@ BEGIN NAMESPACE XSharpModel
 					TRY
 						USING VAR oCmd := SQLiteCommand{stmt, oConn}
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateMemberInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
@@ -1414,7 +1443,7 @@ BEGIN NAMESPACE XSharpModel
 						oCmd:Parameters:AddWithValue("$kind5", (INT) Kind.VODefine)
 						oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
 						USING VAR rdr := oCmd:ExecuteReader()
-						DO WHILE rdr:Read()
+						DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
 							result:Add(CreateMemberInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
@@ -1500,7 +1529,6 @@ BEGIN NAMESPACE XSharpModel
 			res:MemberName   := DbToString(rdr["Name"])
 			res:Kind         := (Kind) (INT64) rdr["Kind"]
 			res:Attributes   := (Modifiers) (INT64) rdr["Attributes"]
-			res:FileName     := DbToString(rdr["FileName"])
             res:FullName     := DbToString(rdr["FullName"])
 			res:Assembly     := DbToString(rdr["AssemblyFileName"])
 			res:IdAssembly   := (INT64) rdr["IdAssembly"]

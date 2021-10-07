@@ -8,7 +8,7 @@ BEGIN NAMESPACE XSharpModel
         STATIC PROPERTY ShowGrid AS LOGIC AUTO := TRUE
         STATIC PROPERTY GridX AS INT AUTO   := 8
         STATIC PROPERTY GridY AS INT AUTO   := 8
-            
+
         STATIC PROPERTY PasteOffSetX AS LONG AUTO := 8
         STATIC PROPERTY PasteOffSetY AS LONG AUTO := 8
         STATIC PROPERTY PartialLasso AS LOGIC AUTO := FALSE
@@ -18,6 +18,8 @@ BEGIN NAMESPACE XSharpModel
         STATIC PROPERTY FieldSpecParentClass AS STRING AUTO := "FieldSpec"
         STATIC PROPERTY MenuParentClass AS STRING AUTO := "Menu"
         STATIC PROPERTY ToolbarParentClass AS STRING AUTO := "Menu"
+        STATIC PROPERTY Disassembler AS STRING AUTO := ""
+
     END CLASS
 
 END NAMESPACE

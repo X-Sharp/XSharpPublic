@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 	PROTECT oXProject AS XSharpModel.XProject
 	CONSTRUCTOR(_oSurface AS Control , _oGrid AS DesignerGrid )
-		SUPER(_oSurface , _oGrid) 
+		SUPER(_oSurface , _oGrid)
 	RETURN
 
 	METHOD Open(cFileName AS STRING) AS LOGIC
@@ -43,9 +43,9 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 		LOCAL lError AS LOGIC
 		LOCAL nAt AS INT
 		LOCAL lAccelerators AS LOGIC
-		
+
 		lAccelerators := SELF:HasAccelerators
-		
+
 		TRY
 
 			oFileInfo := FileInfo{cMnuName}
@@ -62,11 +62,11 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 			cRCFileName := cBaseDir + "\Resources\" + cBaseName + ".rc"
 			cRCAccelFileName := cBaseDir + "\Resources\" + cBaseName + "_Accelerator.rc"
 			cAlternative := cBaseDir + "\" + cBaseName + ".rc"
-			IF !File.Exists(cRCFileName) 
+			IF !File.Exists(cRCFileName)
 				cRCFileName := cAlternative
 				cRCAccelFileName := cBaseDir + "\" + cBaseName + "_Accelerator.rc"
 			ENDIF
-			
+
 			cFileName := cBaseName
 			nAt := cFileName:LastIndexOf('.')
 			IF nAt != -1 // strip out window name
@@ -77,11 +77,11 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 			IF !File.Exists(cPrgFileName) .and. File.Exists(cAlternative)
 				cPrgFileName := cAlternative
 			ENDIF
-			
+
 			lError := FALSE
 			IF !lMnuOnly
 				XFuncs.EnsureFileNodeExists(oXProject, cRCFileName)
-				IF lAccelerators 
+				IF lAccelerators
 					XFuncs.EnsureFileNodeExists(oXProject, cRCAccelFileName)
 				ENDIF
 				IF !File.Exists(cPrgFileName)
@@ -89,7 +89,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 					lError := TRUE
 				END IF
 			END IF
-			
+
 			lSuccess := FALSE
 			IF !lError
 				IF !lMnuOnly
@@ -108,7 +108,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 				oMnuStream := File.Open(cMnuName , FileMode.Create , FileAccess.Write , FileShare.None)
 				lSuccess := TRUE
 			ENDIF
-			
+
 		CATCH e AS Exception
 
 			XFuncs.ErrorBox(e:Message )
@@ -133,7 +133,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 
 	RETURN lSuccess
 
-	NEW METHOD GetCodeContents() AS CodeContents 
+	METHOD GetCodeContents() AS CodeContents
 		VAR oCode := SUPER:GetCodeContents()
 		// remove IDM_MenuName
 		oCode:aDefines:RemoveAt(0)
@@ -142,7 +142,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 			// remove IDA_MenuName
 			oCode:aDefines:RemoveAt(0)
 			oCode:aDefineValues:RemoveAt(0)
-		ENDIF	
+		ENDIF
 		RETURN oCode
 
 
@@ -155,7 +155,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 		IF SELF:lReadOnly
 			RETURN FALSE
 		ENDIF
-		
+
 		lMnuOnly := lMnuOnly .or. SELF:lStandalone
 		IF cFileName:ToUpper():Contains("~AUTORECOVER")
 			lMnuOnly := TRUE // in case it isn't already
@@ -164,7 +164,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 		oPrgStream		:= XSharp_EditorStream{}
 		oRcStream		:= XSharp_EditorStream{}
 		oRcAccelStream	:= XSharp_EditorStream{}
-		
+
 		oCode := SELF:GetCodeContents()
 
 		IF SELF:GetSaveFileStreams(cFileName , REF oMnuStream , oRCStream , oPrgStream, lMnuOnly , oRCAccelStream )
@@ -183,7 +183,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 	RETURN lSuccess
 
 
-	METHOD _WriteDefines(oGenerator AS CodeGenerator, oCode AS CodeContents ) AS VOID		
+	METHOD _WriteDefines(oGenerator AS CodeGenerator, oCode AS CodeContents ) AS VOID
 		// in x#, always add the #defines in the .rc header, no need to put them in a .vh anymore
 		FOR VAR nDef := 0 UPTO oCode:aDefines:Count - 1
 			oGenerator:AddLine("#define " +oCode:aDefines[nDef] +" "+ oCode:aDefineValues[nDef])
@@ -200,7 +200,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 			oGenerator:AddLine(cResource)
 		NEXT
 		oGenerator:AddLine("")
-		
+
 		IF oAccelStream:IsValid
 			oGenerator := CodeGenerator{oAccelStream:Editor}
 			oGenerator:BeginCode()

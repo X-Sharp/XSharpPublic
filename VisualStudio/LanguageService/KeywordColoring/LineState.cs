@@ -22,20 +22,23 @@ namespace XSharp.LanguageService
     }
     internal class XSharpLineState
     {
-        readonly private Dictionary<int, LineFlags> dict;
+        private Dictionary<int, LineFlags> dict;
         internal XSharpLineState()
         {
             dict = new Dictionary<int, LineFlags>();
         }
         internal void SetFlags(int line, LineFlags flags)
         {
-            if (dict.ContainsKey(line))
+            lock (dict)
             {
-                dict[line] |= flags;
-            }
-            else
-            {
-                dict.Add(line, flags);
+                if (dict.ContainsKey(line))
+                {
+                    dict[line] |= flags;
+                }
+                else
+                {
+                    dict.Add(line, flags);
+                }
             }
         }
         internal void RemoveFlags(int line, LineFlags flags)
@@ -47,7 +50,7 @@ namespace XSharp.LanguageService
         }
         internal void Clear()
         {
-            dict.Clear();
+            dict = new Dictionary<int, LineFlags>();
         }
         internal LineFlags GetFlags(int line)
         {
@@ -57,6 +60,23 @@ namespace XSharp.LanguageService
             }
             return LineFlags.None;
         }
-        internal IDictionary<int, LineFlags> Lines => dict.ToImmutableDictionary();
+        /// <summary>
+        /// Return a clone of the Lines array.
+        /// </summary>
+        internal IDictionary<int, LineFlags> Lines
+        {
+            get
+            {
+                var result = new Dictionary<int, LineFlags>();
+                lock (dict)
+                {
+                    foreach (var item in dict)
+                    {
+                        result.Add(item.Key, item.Value);
+                    }
+                }
+                return result;
+            }
+        }
     }
 }

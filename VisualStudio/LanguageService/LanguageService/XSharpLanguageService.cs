@@ -236,11 +236,13 @@ namespace XSharp.LanguageService
                         var vars = tm.GetLocals(location);
                         foreach (var v in vars)
                         {
-                            locals.Add(v.Name,  v);
+                            if (! locals.ContainsKey(v.Name))
+                                locals.Add(v.Name,  v);
                         }
                         foreach (var p in tm.Parameters)
                         {
-                            locals.Add(p.Name, p);
+                            if (!locals.ContainsKey(p.Name))
+                                locals.Add(p.Name, p);
                         }
                     }
                     addtokens(buffer, iLine , list, file, locals);

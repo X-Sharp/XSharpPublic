@@ -180,7 +180,7 @@ namespace Microsoft.VisualStudio.Project
 
         public string CleanURL(string url)
         {
-            return url.TrimEnd('\\'); ;
+            return url.TrimEnd('\\'); 
         }
         public void RemoveURL(HierarchyNode node)
         {

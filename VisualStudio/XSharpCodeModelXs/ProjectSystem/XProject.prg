@@ -24,17 +24,18 @@ BEGIN NAMESPACE XSharpModel
       // Fields
       PROTECTED _id    := -1                    AS INT64
       PRIVATE _AssemblyReferences					AS List<XAssembly>
+      PRIVATE _AssemblyDict					        AS Dictionary<INT64 ,XAssembly>
       PRIVATE _parseOptions := NULL					AS XSharpParseOptions
       PRIVATE _projectNode							   AS IXSharpProject
       PRIVATE _projectOutputDLLs						AS ConcurrentDictionary<STRING, STRING>
       PRIVATE _ReferencedProjects					AS List<XProject>
-      PRIVATE _StrangerProjects						AS List<EnvDTE.Project>
+      PRIVATE _StrangerProjects						AS List<Object>
       PRIVATE _unprocessedAssemblyReferences		AS List<STRING>
       PRIVATE _unprocessedProjectReferences		AS List<STRING>
       PRIVATE _unprocessedStrangerProjectReferences	AS List<STRING>
       PRIVATE _failedStrangerProjectReferences   AS List<STRING>
-      PRIVATE _OtherFilesDict							 AS XFileDictionary
-      PRIVATE _SourceFilesDict						 AS XFileDictionary
+      PRIVATE _OtherFilesDict					 AS XFileDictionary
+      PRIVATE _SourceFilesDict					 AS XFileDictionary
       PRIVATE _FunctionClasses                   AS List<STRING>
       PRIVATE _ImplicitNamespaces                AS List<STRING>
       PRIVATE _dependentProjectList              AS STRING
@@ -55,13 +56,23 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY DependentAssemblyList             AS STRING
          GET
             IF String.IsNullOrEmpty(_dependentAssemblyList)
+               _AssemblyDict := Dictionary<INT64, XAssembly>{}
                VAR result := ""
-               FOREACH VAR assembly IN _AssemblyReferences:ToArray()
+               var core := SystemTypeController.mscorlib
+               if core != null
+                    result := core:Id:ToString()
+               ENDIF
+               FOREACH VAR assembly IN SELF:AssemblyReferences:ToArray()
+                  _AssemblyDict:Add(assembly:Id, assembly)
                   IF result:Length > 0
                      result += ","
                   ENDIF
                   result += assembly:Id:ToString()
                NEXT
+               if ! _AssemblyDict.ContainsKey(core:Id)
+                   _AssemblyDict:Add(core:Id, core)
+                   _AssemblyReferences:Add(core)
+               ENDIF
                _dependentAssemblyList := result
             ENDIF
             RETURN _dependentAssemblyList
@@ -155,7 +166,7 @@ BEGIN NAMESPACE XSharpModel
          SELF:_failedStrangerProjectReferences     := List<STRING>{}
          SELF:_projectOutputDLLs := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
          SELF:_ReferencedProjects := List<XProject>{}
-         SELF:_StrangerProjects := List<EnvDTE.Project>{}
+         SELF:_StrangerProjects := List<Object>{}
          SELF:_projectNode := project
          SELF:_SourceFilesDict   := XFileDictionary{}
          SELF:_OtherFilesDict    := XFileDictionary{}
@@ -257,6 +268,7 @@ BEGIN NAMESPACE XSharpModel
                SELF:ProjectNode:SetStatusBarText("")
             ENDIF
             RETURN
+
 
          METHOD ResolveReferences() AS VOID
             IF SELF:hasUnprocessedReferences
@@ -451,7 +463,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN NULL
 
-      PRIVATE METHOD GetStrangerOutputDLL(sProject AS STRING, p AS EnvDTE.Project) AS STRING
+      PRIVATE METHOD GetStrangerOutputDLL(sProject AS STRING, p AS Dynamic) AS STRING
          VAR outputFile := ""
          TRY
             VAR propType := saveGetProperty(p:Properties, "OutputType")
@@ -482,7 +494,7 @@ BEGIN NAMESPACE XSharpModel
 
       METHOD RemoveStrangerProjectReference(url AS STRING) AS LOGIC
          IF ! String.IsNullOrEmpty(url)
-            LOCAL prj AS EnvDTE.Project
+
             IF XSettings.EnableReferenceInfoLog
                WriteOutputMessage("RemoveStrangerProjectReference() "+url)
             ENDIF
@@ -497,7 +509,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
 
             SELF:RemoveProjectOutput(url)
-            prj := SELF:ProjectNode:FindProject(url)
+            var prj := SELF:ProjectNode:FindProject(url)
             IF prj != NULL .AND. SELF:_StrangerProjects:Contains(prj)
                SELF:_StrangerProjects:Remove(prj)
                RETURN TRUE
@@ -550,8 +562,7 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 existing := List<STRING>{}
                 FOREACH sProject AS STRING IN SELF:_unprocessedStrangerProjectReferences:ToArray()
-                   LOCAL p AS EnvDTE.Project
-                   p := SELF:ProjectNode:FindProject(sProject)
+                   VAR p := SELF:ProjectNode:FindProject(sProject)
                    IF (p != NULL)
                       SELF:_StrangerProjects:Add(p)
                       outputFile := SELF:GetStrangerOutputDLL(sProject, p)
@@ -582,7 +593,9 @@ BEGIN NAMESPACE XSharpModel
 
       #region 'Normal' Files
 
-
+      METHOD ZapFiles() AS VOID
+        SELF:_SourceFilesDict:Clear()
+        SELF:_OtherFilesDict:Clear()
       METHOD AddFile(filePath AS STRING) AS LOGIC
          LOCAL xamlCodeBehindFile AS STRING
          // DO NOT read the file ID from the database here.
@@ -651,41 +664,37 @@ BEGIN NAMESPACE XSharpModel
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalsInAssemblyReferences {name} ")
         ENDIF
-         VAR result := List<IXMemberSymbol>{}
-         FOREACH VAR asm IN AssemblyReferences:ToArray()
-            IF !String.IsNullOrEmpty(asm:GlobalClassName)
-               VAR type := asm:GetType(asm.GlobalClassName)
-               IF type != NULL
-                  VAR fields := type:GetFields():Where ({m => m.Name.StartsWith(name)})
-                  result:AddRange(fields)
-               ENDIF
-            ENDIF
-         NEXT
+         var dbresult := XDatabase.FindAssemblyGlobalOrDefineLike(name, SELF:DependentAssemblyList)
+         var result := SELF:_MembersFromGlobalType(dbresult)
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalsInAssemblyReferences {name}, found {result.Count} occurences")
          ENDIF
-        RETURN result
+         RETURN result
 
         METHOD FindFunctionsInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindFunctionsInAssemblyReferences {name} ")
         ENDIF
-         VAR result := List<IXMemberSymbol>{}
-         FOREACH VAR asm IN AssemblyReferences:ToArray()
-            IF !String.IsNullOrEmpty(asm:GlobalClassName)
-               VAR type := asm:GetType(asm.GlobalClassName)
-               IF type != NULL
-                  VAR methods := type:GetMethods():Where ({m => m.Name.StartsWith(name)})
-                  result:AddRange(methods)
-               ENDIF
-            ENDIF
-         NEXT
+         var dbresult := XDatabase.FindAssemblyFunctionLike(name, SELF:DependentAssemblyList)
+         var result := SELF:_MembersFromGlobalType(dbresult)
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindFunctionsInAssemblyReferences {name}, found {result.Count} occurences")
          ENDIF
          RETURN result
 
-METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
+        PRIVATE METHOD _MembersFromGlobalType(dbresult as IList<XDbResult>) AS IList<IXMemberSymbol>
+         VAR result := List<IXMemberSymbol>{}
+         foreach var item in dbresult
+            if _AssemblyDict:TryGetValue(item:IdAssembly, out var asm)
+                IF asm:GlobalMembers:TryGetValue(item:SourceCode, out var pem)
+
+                    result:Add(pem)
+                endif
+            endif
+         next
+         RETURn result
+
+        METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<IXMemberSymbol>
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalMembersLike {name} Current Project {lCurrentProject}")
         ENDIF
@@ -1330,10 +1339,16 @@ METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<
             RETURN _name
          END GET
       END PROPERTY
-
+      PRIVATE _prjNameSpaces AS IList<STRING>
+      PRIVATE _lastNameSpaces := DateTime.MinValue AS DateTime
       PROPERTY ProjectNamespaces AS IList<STRING>
          GET
-            RETURN XDatabase.GetProjectNamespaces(SELF:DependentProjectList)
+            if _prjNameSpaces != NULL .and. DateTime.Now:Subtract(_lastNameSpaces) < TimeSpan{0,0,10}
+                return _prjNameSpaces
+            ENDIF
+            _prjNameSpaces := XDatabase.GetProjectNamespaces(SELF:DependentProjectList)
+            _lastNameSpaces     :=  DateTime.Now
+            return _prjNameSpaces
          END GET
      END PROPERTY
 
@@ -1397,7 +1412,7 @@ METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<
          END GET
       END PROPERTY
 
-      PROPERTY StrangerProjects AS IList<EnvDTE.Project>
+      PROPERTY StrangerProjects AS Object[]
          GET
             SELF:ResolveUnprocessedStrangerReferences()
             RETURN SELF:_StrangerProjects:ToArray()
@@ -1414,6 +1429,8 @@ METHOD FindGlobalMembersLike(name AS STRING, lCurrentProject AS LOGIC) AS IList<
          CONSTRUCTOR()
             dict := ConcurrentDictionary<STRING, INT64>{StringComparer.OrdinalIgnoreCase}
 
+         METHOD Clear() AS VOID
+            SELF:dict:Clear()
          METHOD Add(fileName AS STRING) AS VOID
            IF !dict:ContainsKey(fileName)
                dict:TryAdd(fileName,-1)

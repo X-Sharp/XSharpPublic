@@ -53,7 +53,7 @@ namespace Microsoft.VisualStudio.Project
         #region IConnectionPointContainer Members
         void IConnectionPointContainer.EnumConnectionPoints(out IEnumConnectionPoints ppEnum)
         {
-            throw new NotImplementedException(); ;
+            throw new NotImplementedException(); 
         }
         void IConnectionPointContainer.FindConnectionPoint(ref Guid riid, out IConnectionPoint ppCP)
         {

@@ -92,10 +92,10 @@ namespace XSharp.LanguageService
                         handled = StartCompletionSession(nCmdID, '\0', true);
                         break;
                     case (int)VSConstants.VSStd2KCmdID.RETURN:
-                        handled = CompleteCompletionSession();
+                        handled = CompleteCompletionSession(' ');
                         break;
                     case (int)VSConstants.VSStd2KCmdID.TAB:
-                        handled = CompleteCompletionSession( );
+                        handled = CompleteCompletionSession('\t' );
                         break;
                     case (int)VSConstants.VSStd2KCmdID.CANCEL:
                         handled = CancelCompletionSession();
@@ -108,9 +108,13 @@ namespace XSharp.LanguageService
                                 FilterCompletionSession(ch);
                             else
                             {
-                                if (completionWasSelected && (XSettings.EditorCommitChars.Contains(ch)))
+                                if (ch == '=' && _completionSession.Properties.TryGetProperty(XsCompletionProperties.Char, out char triggerChar) && triggerChar == ':')
                                 {
-                                    handled = CompleteCompletionSession(true, ch); ;
+                                    CancelCompletionSession();
+                                }
+                                else if (completionWasSelected && (XSettings.EditorCommitChars.Contains(ch)))
+                                {
+                                    handled = CompleteCompletionSession( ch); 
                                 }
                                 else
                                 {
@@ -261,7 +265,7 @@ namespace XSharp.LanguageService
             return true;
         }
 
-        bool CompleteCompletionSession(bool force = false, char ch = ' ')
+        bool CompleteCompletionSession(char ch )
         {
             if (_completionSession == null)
             {
@@ -287,16 +291,38 @@ namespace XSharp.LanguageService
                 {
                     kind = xscompletion.Kind;
                 }
+                bool ctor = false;
+                // some tokens need to be added to the insertion text.
                 switch (kind)
                 {
                     case Kind.Keyword:
-                        formatKeyword(completion); ;
+                        formatKeyword(completion); 
                         break;
                     case Kind.Class:
                     case Kind.Structure:
                     case Kind.Constructor:
-                        if (ch == '{' || ch == '}')
-                            completion.InsertionText += '{';
+                        ctor = true;
+                        goto default;
+                    default:
+                        switch (ch)
+                        {
+                            case '{' when ctor:
+                            case '}' when ctor:
+                                if (!completion.InsertionText.EndsWith("{"))
+                                    completion.InsertionText += "{";
+                                break;
+                            case '\t': // Tab
+                            case '\r': // CR
+                            case '\n': // CR
+                            case '.': // DOT
+                            case ':': // COLON
+                                break;
+                            default:
+                                var s = ch.ToString();
+                                if (!completion.InsertionText.EndsWith(s))
+                                    completion.InsertionText += s;
+                                break;
+                        }
                         break;
                 }
                 if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
@@ -318,7 +344,7 @@ namespace XSharp.LanguageService
                     }
                     commit = true;
                 }
-                else if (force)
+                else
                 {
                     if (completion != null)
                     {

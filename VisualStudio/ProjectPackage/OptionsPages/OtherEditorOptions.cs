@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.Win32;
+using System.ComponentModel;
 
 namespace XSharp.Project.Options
 {
@@ -31,6 +32,11 @@ namespace XSharp.Project.Options
         [Description("The parent class name used when no parent class is specified.")]
         [DefaultValue("FieldSpec")]
         public string FieldSpecParentClass { get; set; } = "FieldSpec";
+        [Category("Disassembler")]
+        [DisplayName("Program")]
+        [Description("The full path to the disassembler path to use.")]
+        public string Disassembler { get; set; } = "";
+
     }
 }
 

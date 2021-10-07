@@ -77,24 +77,25 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY CodeGeneratorPublicStyle         AS PublicStyle AUTO
         PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
 
-        PUBLIC STATIC PROPERTY CompleteLocals                   AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteSelf                     AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteParent                   AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteNamespaces               AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteTypes                    AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteKeywords                 AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteSnippets                 AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteGlobals                  AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteGlobalsP                 AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteGlobalsA                 AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteFunctions                AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteFunctionsP               AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteFunctionsA               AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY CompleteNumChars                 AS LONG AUTO
+        PUBLIC STATIC PROPERTY CompleteLocals                   AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteSelf                     AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteParent                   AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteNamespaces               AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteTypes                    AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteKeywords                 AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteSnippets                 AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteGlobals                  AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteGlobalsP                 AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteGlobalsA                 AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteFunctions                AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteFunctionsP               AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteFunctionsA               AS LOGIC AUTO := TRUE
+        PUBLIC STATIC PROPERTY CompleteNumChars                 AS LONG AUTO := 4
+        PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := 1000
 
-        PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO
-        PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO
-        PUBLIC STATIC PROPERTY ShowMessageBox                   AS ShowMessageBox AUTO
+        PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO := NoOutput
+        PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO := NoException
+        PUBLIC STATIC PROPERTY ShowMessageBox                   AS ShowMessageBox AUTO := NoMessageBox
 
         PUBLIC STATIC PROPERTY DebuggerMode                AS DebuggerMode AUTO
         PUBLIC STATIC PROPERTY DebuggerIsRunning           AS LOGIC GET DebuggerMode != DebuggerMode.Design
@@ -107,10 +108,6 @@ BEGIN NAMESPACE XSharpModel
         RETURN 0
 
 
-        STATIC CONSTRUCTOR
-            DisplayOutputMessage := NoOutput
-            DisplayException     := NoException
-            ShowMessageBox       := NoMessageBox
 
         STATIC METHOD FormatKeyword(sKeyword AS STRING) AS STRING
             RETURN FormatKeyword(sKeyword, XSettings.KeywordCase)

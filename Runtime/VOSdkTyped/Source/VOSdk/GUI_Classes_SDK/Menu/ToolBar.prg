@@ -950,7 +950,7 @@ CLASS ToolBar INHERIT Control
 
 		RETURN NIL
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		//PP-040417 from S Ebert
 		//SE-050729
 		//RvdH 0702056 Changed to use ToolBarChild

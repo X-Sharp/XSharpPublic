@@ -150,7 +150,7 @@ CLASS Menu INHERIT VObject
 		RETURN retVal
 
 	
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		oMenu			:= NULL_OBJECT	
 		aItem			:= NULL_ARRAY
 		aChildren		:= NULL_ARRAY

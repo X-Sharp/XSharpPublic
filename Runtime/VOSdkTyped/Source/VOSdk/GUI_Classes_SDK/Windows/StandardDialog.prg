@@ -211,7 +211,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		//PP-040101
 		oDlg:DefaultExt := cNew
 
-	METHOD Destroy() AS USUAL STRICT
+	NEW METHOD Destroy() AS USUAL STRICT
 		IF oDlg != null_OBJECT
 			oDlg:Dispose()
 			oDlg := NULL_OBJECT

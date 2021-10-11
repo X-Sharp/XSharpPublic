@@ -383,7 +383,7 @@ CLASS TabControl INHERIT TextControl
 		SELF:__AdjustIndices()
 		RETURN lRet
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		aPages := NULL_ARRAY
 		aTipsText := NULL_ARRAY
 		oCurrentPage := NULL_OBJECT

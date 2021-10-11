@@ -3,7 +3,7 @@
 CLASS Pen INHERIT VObject
 	HIDDEN hPen AS System.Drawing.Pen
 
-METHOD Destroy() AS USUAL STRICT
+METHOD Destroy() AS USUAL 
 	IF (hPen != NULL_OBJECT)
 		hPen:Dispose()
 		hPen := NULL_OBJECT

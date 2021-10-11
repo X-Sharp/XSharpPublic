@@ -47,6 +47,7 @@ namespace XSharp.LanguageService
                 VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
                 VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
+                VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
                 VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
                 projectfiles = new List<string>();
                 changedProjectfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -59,7 +60,10 @@ namespace XSharp.LanguageService
         {
             checkProjectFile(obj);
         }
-
+        private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project obj)
+        {
+            ;
+        }
         private void DebuggerEvents_EnterRunMode(object sender, EventArgs e)
         {
             throw new NotImplementedException();
@@ -158,30 +162,33 @@ namespace XSharp.LanguageService
         {
             // Restart scanning. Was suspended on opening of project system
             // or closing of previous solution
-            solutionFile = obj.FullPath;
-            var projects = new List<string>();
-            Shell.ThreadHelper.JoinableTaskFactory.Run(async delegate
+            if (obj != null)
             {
-                var sol = await VS.Solutions.GetCurrentSolutionAsync();
-                await EnumChildrenAsync(obj, projects);
-            });
-
-            if (string.IsNullOrEmpty(solutionFile))
-            {
-                if (projects.Count > 0)
+                solutionFile = obj.FullPath;
+                var projects = new List<string>();
+                Shell.ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
-                    // open a project without solution.
-                    // assume solution name is the same as project name with different extension
-                    solutionFile = Path.ChangeExtension(projects[0], ".sln");
-                }
+                    var sol = await VS.Solutions.GetCurrentSolutionAsync();
+                    await EnumChildrenAsync(obj, projects);
+                });
 
+                if (string.IsNullOrEmpty(solutionFile))
+                {
+                    if (projects.Count > 0)
+                    {
+                        // open a project without solution.
+                        // assume solution name is the same as project name with different extension
+                        solutionFile = Path.ChangeExtension(projects[0], ".sln");
+                    }
+
+                }
+                if (!string.IsNullOrEmpty(solutionFile))
+                {
+                    XSharpModel.XSolution.Open(solutionFile);
+                }
+                projectfiles.Clear();
+                return;
             }
-            if (!string.IsNullOrEmpty(solutionFile))
-            {
-                XSharpModel.XSolution.Open(solutionFile);
-            }
-            projectfiles.Clear();
-            return;
         }
 
   

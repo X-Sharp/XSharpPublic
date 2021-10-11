@@ -11,6 +11,7 @@ namespace XSharp.LanguageService.OptionsPages
             chkShowDividers.Tag = nameof(OtherOptionsPage.ShowDividers);
             chkSingleLineDividers.Tag = nameof(OtherOptionsPage.ShowSingleLineDividers);
             chkShowXMLComments.Tag = nameof(OtherOptionsPage.ShowXmlComments);
+            chkBackupForms.Tag = nameof(OtherOptionsPage.FormEditorMakeBackupFiles);
             rbExport.Tag = nameof(PublicStyle.Export);
             rbPublic.Tag = nameof(PublicStyle.Public);
             rbNone.Tag = nameof(PublicStyle.None);

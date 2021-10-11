@@ -72,6 +72,7 @@ BEGIN NAMESPACE XSharpModel
 
         PUBLIC STATIC PROPERTY EditorShowDividers               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorShowSingleLineDividers     AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY FormEditorMakeBackupFiles        AS LOGIC AUTO
 
         PUBLIC STATIC PROPERTY CodeGeneratorShowXmlComments     AS LOGIC AUTO
         PUBLIC STATIC PROPERTY CodeGeneratorPublicStyle         AS PublicStyle AUTO

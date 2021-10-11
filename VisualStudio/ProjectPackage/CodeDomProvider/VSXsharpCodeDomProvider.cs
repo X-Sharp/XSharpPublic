@@ -204,15 +204,18 @@ namespace XSharp.Project
                 //
                 // Backup original Form file and Form.Designer file
                 //
-                if (File.Exists(prgFileName))
+                if (XSharpModel.XSettings.FormEditorMakeBackupFiles)
                 {
-                    var bak = Path.ChangeExtension(prgFileName, ".bak");
-                    Utilities.CopyFileSafe(prgFileName, bak);
-                }
-                if (File.Exists(designerPrgFile))
-                {
-                    var bak = Path.ChangeExtension(designerPrgFile, ".bak");
-                    Utilities.CopyFileSafe(designerPrgFile, bak);
+                    if (File.Exists(prgFileName))
+                    {
+                        var bak = Path.ChangeExtension(prgFileName, ".bak");
+                        Utilities.CopyFileSafe(prgFileName, bak);
+                    }
+                    if (File.Exists(designerPrgFile))
+                    {
+                        var bak = Path.ChangeExtension(designerPrgFile, ".bak");
+                        Utilities.CopyFileSafe(designerPrgFile, bak);
+                    }
                 }
 
                 base.GenerateCodeFromCompileUnit(designCCU, designerStream, options);

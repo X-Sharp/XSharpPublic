@@ -20,6 +20,8 @@ namespace XSharp.LanguageService.OptionsPages
         public int PublicStyle { get; set; }
         [DefaultValue(0)]
         public int PrivateStyle { get; set; }
+        [DefaultValue(true)]
+        public bool FormEditorMakeBackupFiles { get; set; }
 
 
     }

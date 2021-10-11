@@ -45,6 +45,7 @@
             this.grpCodeGenerator = new System.Windows.Forms.GroupBox();
             this.grpPrivate = new System.Windows.Forms.GroupBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkBackupForms = new System.Windows.Forms.CheckBox();
             this.grpOther.SuspendLayout();
             this.grpCodeGenerator.SuspendLayout();
             this.grpPrivate.SuspendLayout();
@@ -166,11 +167,12 @@
             // 
             // grpOther
             // 
+            this.grpOther.Controls.Add(this.chkBackupForms);
             this.grpOther.Controls.Add(this.chkSingleLineDividers);
             this.grpOther.Controls.Add(this.chkShowDividers);
             this.grpOther.Location = new System.Drawing.Point(3, 3);
             this.grpOther.Name = "grpOther";
-            this.grpOther.Size = new System.Drawing.Size(385, 81);
+            this.grpOther.Size = new System.Drawing.Size(385, 96);
             this.grpOther.TabIndex = 1;
             this.grpOther.TabStop = false;
             this.grpOther.Text = "Other Options";
@@ -182,7 +184,7 @@
             this.grpCodeGenerator.Controls.Add(this.label1);
             this.grpCodeGenerator.Controls.Add(this.lblPublic);
             this.grpCodeGenerator.Controls.Add(this.chkShowXMLComments);
-            this.grpCodeGenerator.Location = new System.Drawing.Point(3, 85);
+            this.grpCodeGenerator.Location = new System.Drawing.Point(3, 105);
             this.grpCodeGenerator.Name = "grpCodeGenerator";
             this.grpCodeGenerator.Size = new System.Drawing.Size(385, 119);
             this.grpCodeGenerator.TabIndex = 3;
@@ -210,6 +212,18 @@
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             // 
+            // chkBackupForms
+            // 
+            this.chkBackupForms.AutoSize = true;
+            this.chkBackupForms.Location = new System.Drawing.Point(20, 70);
+            this.chkBackupForms.Name = "chkBackupForms";
+            this.chkBackupForms.Size = new System.Drawing.Size(237, 17);
+            this.chkBackupForms.TabIndex = 2;
+            this.chkBackupForms.Text = "&Backup source files in Windows Forms editor";
+            this.toolTip1.SetToolTip(this.chkBackupForms, "Backup the Form.prg and Form.Designer.Prg when making changes to forms in the Win" +
+        "dows Forms Editor");
+            this.chkBackupForms.UseVisualStyleBackColor = true;
+            // 
             // OtherOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -218,7 +232,7 @@
             this.Controls.Add(this.grpCodeGenerator);
             this.Controls.Add(this.grpOther);
             this.Name = "OtherOptionsControl";
-            this.Size = new System.Drawing.Size(406, 218);
+            this.Size = new System.Drawing.Size(406, 243);
             this.grpOther.ResumeLayout(false);
             this.grpOther.PerformLayout();
             this.grpCodeGenerator.ResumeLayout(false);
@@ -247,5 +261,6 @@
         private System.Windows.Forms.RadioButton rbHidden;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chkBackupForms;
     }
 }

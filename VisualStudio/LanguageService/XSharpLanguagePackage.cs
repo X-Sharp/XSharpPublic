@@ -223,6 +223,7 @@ namespace XSharp.LanguageService
             XSettings.CodeGeneratorShowXmlComments = _otherOptionsPage.ShowXmlComments;
             XSettings.CodeGeneratorPrivateStyle = (PrivateStyle)_otherOptionsPage.PrivateStyle;
             XSettings.CodeGeneratorPublicStyle = (PublicStyle)_otherOptionsPage.PublicStyle;
+            XSettings.FormEditorMakeBackupFiles = _otherOptionsPage.FormEditorMakeBackupFiles;
 
             // Persist in registry for CodeDomProvider code generation
             Constants.WriteSetting(Constants.RegistryKeywordCase, (int)XSettings.KeywordCase);

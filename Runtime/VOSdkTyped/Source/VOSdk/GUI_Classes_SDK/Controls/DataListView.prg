@@ -387,7 +387,7 @@ CLASS DataListView INHERIT ListView
 
 		RETURN SUPER:DeleteAll()
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		SELF:__Unlink()
 		RETURN SUPER:Destroy()
 

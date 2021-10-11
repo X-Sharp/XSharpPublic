@@ -1482,7 +1482,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ENDIF
 		RETURN SELF	
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		IF lAutomated
 			SELF:Automated := FALSE
 		ENDIF

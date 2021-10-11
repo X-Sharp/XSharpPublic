@@ -178,7 +178,7 @@ CLASS Font INHERIT VObject
 		RETURN SELF
 
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 
 		SUPER:Destroy()
 

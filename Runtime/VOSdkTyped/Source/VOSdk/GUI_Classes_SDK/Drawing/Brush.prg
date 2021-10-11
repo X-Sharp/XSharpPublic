@@ -61,7 +61,7 @@ CLASS Brush INHERIT VObject
 		ENDIF
 		RETURN SELF
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		
 		IF (oBrush != NULL_OBJECT)
 			oBrush:Dispose()

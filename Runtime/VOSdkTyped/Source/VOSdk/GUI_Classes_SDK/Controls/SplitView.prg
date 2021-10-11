@@ -280,7 +280,7 @@ CLASS SplitView INHERIT Control
 	ACCESS deferPaintCount 
 		RETURN SELF:dwDeferPaintCount
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		LOCAL liPane  AS LONGINT
 		LOCAL liCount AS LONGINT
 

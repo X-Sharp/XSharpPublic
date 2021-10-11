@@ -1726,7 +1726,7 @@ CLASS DataBrowser INHERIT VOSDK.Control
 	METHOD Default(oEvent) 
 		RETURN SELF
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		SELF:__EndEditField(0)
 		IF oCtrl != NULL_OBJECT
 			__DataGridView:RowEnter -=  OnRowEnter
@@ -2736,7 +2736,7 @@ CLASS DataColumn INHERIT VObject
 	ACCESS DataField AS SYMBOL
 		RETURN SELF:symDataField
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		IF SELF:oDataGridColumn != NULL_OBJECT
 			SELF:oDataGridColumn:Dispose()
 			GC.SuppressFinalize(SELF:oDataGridColumn)

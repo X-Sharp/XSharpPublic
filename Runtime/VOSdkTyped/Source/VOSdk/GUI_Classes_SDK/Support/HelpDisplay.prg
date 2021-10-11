@@ -52,7 +52,7 @@ CLASS HelpDisplay INHERIT VObject
 
 		RETURN TRUE
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		
 
 		IF (oWnd != NULL_OBJECT)

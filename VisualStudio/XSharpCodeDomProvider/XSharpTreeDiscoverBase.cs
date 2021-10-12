@@ -195,6 +195,21 @@ namespace XSharp.CodeDom
         
 
 #region Helpers
+
+        protected void AddMemberAttributes( CodeObject codeobject, MemberAttributes attributes, XSharpParserRuleContext context)
+        {
+            string sourceText = "";
+            if (context != null)
+            {
+                sourceText = context.SourceText(true);
+
+                if (!string.IsNullOrWhiteSpace(sourceText))
+                {
+                    codeobject.UserData[XSharpCodeConstants.USERDATA_MODIFIERS] = sourceText;
+                    codeobject.UserData[XSharpCodeConstants.USERDATA_ATTRIBUTES] = attributes;
+                }
+            }
+        }
         /*
          datatype           : ARRAY OF TypeName=typeName                                   #arrayOfType
                             | TypeName=typeName PTR                                         #ptrDatatype
@@ -1752,7 +1767,7 @@ namespace XSharp.CodeDom
     }
     internal static class ParserExtensions
     {
-        internal static string SourceText(this XSharpParserRuleContext context)
+        internal static string SourceText(this XSharpParserRuleContext context, bool noComments = false)
         {
             StringBuilder result = new StringBuilder();
             foreach (var token in context.children)
@@ -1763,13 +1778,27 @@ namespace XSharp.CodeDom
                 }
                 else if (token is XSharpToken xtoken)
                 {
-                    result.Append(xtoken.TriviaAsText);
-                    result.Append(xtoken.Text);
+                    if (! noComments)
+                    {
+                        result.Append(xtoken.TriviaAsText);
+                    }
+                    else
+                    {
+                        result.Append(xtoken.Text);
+                        result.Append(' ');
+                    }
                 }
                 else if (token.Payload is XSharpToken xtoken2)
                 {
-                    result.Append(xtoken2.TriviaAsText);
-                    result.Append(xtoken2.Text);
+                    if (!noComments)
+                    {
+                        result.Append(xtoken2.TriviaAsText);
+                    }
+                    else
+                    {
+                        result.Append(xtoken2.Text);
+                        result.Append(' ');
+                    }
 
                 }
                 else

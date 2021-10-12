@@ -430,6 +430,7 @@ namespace XSharp.CodeDom
             }
             //
             this.CurrentClass.Members.Add(newMethod);
+            AddMemberAttributes(newMethod, newMethod.Attributes, context.Modifiers);
             this.addClassMember(new XMemberType(newMethod.Name, MemberTypes.Method, false, returnType.BaseType));
 
         }
@@ -474,6 +475,7 @@ namespace XSharp.CodeDom
             }
             //
             this.CurrentClass.Members.Add(evt);
+            AddMemberAttributes(evt, evt.Attributes, context.Modifiers);
             this.addClassMember(new XMemberType(evt.Name, MemberTypes.Event, false, null, "Void"));
         }
 
@@ -493,6 +495,7 @@ namespace XSharp.CodeDom
                     ctor.Attributes |= MemberAttributes.Static;
             }
             FillCodeSource(ctor, context, _tokens);
+            AddMemberAttributes(ctor, ctor.Attributes, context.Modifiers);
             this.CurrentClass.Members.Add(ctor);
         }
 
@@ -606,46 +609,7 @@ namespace XSharp.CodeDom
             return local;
         }
 
-        /// <summary>
-        /// Resolve SELF:Name or SUPER:Name
-        /// </summary>
-        /// <param name="lhs"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        private CodeExpression ResolveSelfExpression(CodeExpression lhs, string name)
-        {
-            CodeExpression expr = null;
-            if (this.isField(name))
-            {
-                expr = new XCodeFieldReferenceExpression(lhs, name);
-            }
-            else if (this.isProperty(name))
-            {
-                expr = new XCodePropertyReferenceExpression(lhs, name);
-            }
-            else if (this.isMethod(name))
-            {
-                expr = new XCodeMethodReferenceExpression(lhs, name);
-            }
-            if (expr != null && _members.ContainsKey(name))
-            {
-                var inherited = _members[name].Inherited;
-                if (inherited)  // always valid for both SELF and SUPER
-                {
-                    return expr;
-                }
-                else if (lhs is CodeThisReferenceExpression)
-                {
-                    return expr;
-                }
-                else
-                {
-                    // LHS is Super and not an inherited member
-                    expr = null;
-                }
-            }
-            return expr;
-        }
+        
         private IXTypeSymbol findType(CodeExpression expr)
         {
             IXTypeSymbol type;
@@ -699,11 +663,6 @@ namespace XSharp.CodeDom
             }
             return null;
         }
-
-    
-
-
- 
 
 
     }

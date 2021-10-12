@@ -434,6 +434,29 @@ namespace XSharp.CodeDom
             base.Output.WriteLine(keywordENDIF);
         }
 
+        private void writeMemberAccessModifier(IDictionary UserData, MemberAttributes newAttributes, bool scope, bool field = false)
+        {
+            if (UserData.Contains(XSharpCodeConstants.USERDATA_MODIFIERS) &&
+                        UserData.Contains(XSharpCodeConstants.USERDATA_ATTRIBUTES))
+            {
+                var attrs = (MemberAttributes)UserData[XSharpCodeConstants.USERDATA_ATTRIBUTES];
+                if (attrs == newAttributes)
+                {
+                    base.Output.Write((string)UserData[XSharpCodeConstants.USERDATA_MODIFIERS]);
+                    return;
+                }
+            }
+            this.OutputMemberAccessModifier(newAttributes);
+            if (scope)
+            {
+               this.OutputMemberScopeModifier(newAttributes);
+            }
+            if (field)
+            {
+                this.OutputFieldScopeModifier(newAttributes);
+            }
+        }
+
         protected override void GenerateConstructor(CodeConstructor e, CodeTypeDeclaration c)
         {
             if (base.IsCurrentClass || base.IsCurrentStruct)
@@ -447,7 +470,7 @@ namespace XSharp.CodeDom
                     {
                         this.GenerateAttributes(e.CustomAttributes);
                     }
-                    this.OutputMemberAccessModifier(e.Attributes);
+                    writeMemberAccessModifier(e.UserData, e.Attributes, false);
                     base.Output.Write(keywordCONSTRUCTOR+"(");
                     this.OutputParameters(e.Parameters);
                     base.Output.WriteLine(")"+keywordSTRICT);
@@ -537,7 +560,7 @@ namespace XSharp.CodeDom
                 }
                 if (e.PrivateImplementationType == null)
                 {
-                    this.OutputMemberAccessModifier(e.Attributes);
+                    writeMemberAccessModifier(e.UserData, e.Attributes,false);
                 }
                 else
                 {
@@ -620,8 +643,7 @@ namespace XSharp.CodeDom
                         this.GenerateAttributes(e.CustomAttributes);
                     }
 
-                    this.OutputMemberAccessModifier(e.Attributes);
-                    this.OutputFieldScopeModifier(e.Attributes);
+                    writeMemberAccessModifier(e.UserData, e.Attributes, false, true);
 
                     this.OutputIdentifier(e.Name);
 
@@ -771,8 +793,7 @@ namespace XSharp.CodeDom
                     {
                         if (e.PrivateImplementationType == null)
                         {
-                            this.OutputMemberAccessModifier(e.Attributes);
-                            this.OutputMemberScopeModifier(e.Attributes);
+                            writeMemberAccessModifier(e.UserData, e.Attributes, true);
                         }
                         else
                         {
@@ -1077,8 +1098,7 @@ namespace XSharp.CodeDom
                 {
                     if (e.PrivateImplementationType == null)
                     {
-                        this.OutputMemberAccessModifier(e.Attributes);
-                        this.OutputMemberScopeModifier(e.Attributes);
+                        writeMemberAccessModifier(e.UserData, e.Attributes, true);
                     }
                     else
                     {

@@ -406,6 +406,8 @@ namespace XSharp.LanguageService
         }
 
 
+        
+
         /// <summary>
         /// Retrieve the CompletionType based on :
         ///  The Token list returned by GetTokenList()
@@ -417,22 +419,22 @@ namespace XSharp.LanguageService
         /// <param name="foundElement"></param>
         /// <param name="forQuickinfo"></param>
         /// <returns></returns>
-        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> tokenList,
+        public static IList<IXSymbol> RetrieveElement(XSharpSearchLocation location, IList<XSharpToken> xtokenList,
             CompletionState state, out string notProcessed, bool forQuickinfo = false )
         {
             //
             notProcessed = "";
             var result = new List<IXSymbol>();
-            if (tokenList == null || tokenList.Count == 0)
+            if (xtokenList == null || xtokenList.Count == 0)
                 return result;
+            var list = new XSharpTokenList(xtokenList);
             var symbols = new Stack<IXSymbol>();
             IXTypeSymbol currentType = null;
-            int currentPos = 0;
             var startOfExpression = true;
             var findConstructor = false;
             XSharpToken currentToken = null;
             IXTypeSymbol startType = null;
-            //
+
             if (location.Member == null)
             {
                 // This is a lookup outside code.
@@ -442,7 +444,7 @@ namespace XSharp.LanguageService
                 if (!state.HasFlag(CompletionState.Namespaces) && !state.HasFlag(CompletionState.Types))
                     return result;
                 StringBuilder sb = new StringBuilder();
-                foreach (var token in tokenList)
+                foreach (var token in xtokenList)
                 {
                     sb.Append(token.Text);
                 }
@@ -466,15 +468,18 @@ namespace XSharp.LanguageService
 
             }
             Modifiers visibility = Modifiers.Private;
-            int lastopentoken = tokenList.Count - 1;
             string namespacePrefix = "";
-            int stopAt = 0;
             var hasBracket = false;
             int count = -1;
             startType = currentType;
             bool resetState = false;
-            while (currentPos <= lastopentoken)
+            while (! list.Eoi())
             {
+                // after LPAREN, LCURLY and LBRKT we skip until we see the closing token
+                currentToken = list.ConsumeAndGet();
+                if (currentToken.Type == XSharpLexer.DOT ||
+                    currentToken.Type == XSharpLexer.COLON)
+                    startOfExpression = false;
                 result.Clear();
                 notProcessed = "";
                 if (symbols.Count > 0 && symbols.Count != count)
@@ -492,54 +497,52 @@ namespace XSharp.LanguageService
                     state = CompletionState.General;
                 if (startOfExpression)
                     currentType = startType;
-                currentToken = tokenList[currentPos];
-                if (stopAt != 0 && currentToken.Type != stopAt)
-                {
-                    currentPos += 1;
-                    continue;
-                }
-                stopAt = 0;
+                
+               
                 var currentName = currentToken.CleanText();
                 var lastToken = currentToken;
-                var nextType = 0;
-                if (currentPos < lastopentoken)
-                {
-                    nextType = tokenList[currentPos + 1].Type;
-                }
                 switch (currentToken.Type)
                 {
                     case XSharpLexer.LPAREN:
-                        currentPos += 1;
-                        if (hasToken(tokenList, currentPos + 1, XSharpLexer.RPAREN))
+                        if (list.Contains(XSharpLexer.RPAREN))
                         {
-                            stopAt = XSharpLexer.RPAREN;
+                            list.ConsumeUntilEndToken(XSharpLexer.RPAREN);
+
                         }
-                        startOfExpression = true;
+                        else
+                        {
+                            startOfExpression = true;
+                        }
                         continue;
                     case XSharpLexer.LCURLY:
-                        currentPos += 1;
-                        if (hasToken(tokenList, currentPos + 1, XSharpLexer.RCURLY))
+                        if (list.Contains(XSharpLexer.RCURLY))
                         {
-                            stopAt = XSharpLexer.RCURLY;
+                            list.ConsumeUntilEndToken(XSharpLexer.RCURLY);
                         }
-                        startOfExpression = true;
+                        else
+                        {
+                            startOfExpression = true;
+                        }
                         continue;
                     case XSharpLexer.LBRKT:
-                        currentPos += 1;
-                        if (hasToken(tokenList, currentPos + 1, XSharpLexer.RBRKT))
+                        if (list.Contains(XSharpLexer.RBRKT))
                         {
-                            stopAt = XSharpLexer.RBRKT;
+                            list.ConsumeUntilEndToken(XSharpLexer.RBRKT);
                         }
-                        hasBracket = true;
-                        startOfExpression = true;
+                        else
+                        {
+                            hasBracket = true;
+                            startOfExpression = true;
+                        }
                         continue;
                     case XSharpLexer.RPAREN:
                     case XSharpLexer.RCURLY:
                     case XSharpLexer.RBRKT:
-                        currentPos += 1;
                         hasBracket = (currentToken.Type == XSharpLexer.RBRKT);
                         if (symbols.Count > 0 && hasBracket )
                         {
+                            var nextType = list.La1;
+
                             if (nextType == XSharpLexer.LCURLY)
                             {
                                 // [] is followed by a ctor as in 
@@ -562,7 +565,23 @@ namespace XSharp.LanguageService
                         }
                         continue;
                     case XSharpLexer.DOT:
+                        state = CompletionState.StaticMembers | CompletionState.Namespaces | CompletionState.Types;
+                        if (location.Project.ParseOptions.AllowDotForInstanceMembers)
+                            state |= CompletionState.InstanceMembers;
+                        resetState = false;
+                        startOfExpression = false;
+                        continue;
+
                     case XSharpLexer.COLON:
+                        state = CompletionState.InstanceMembers;
+                        resetState = false;
+                        startOfExpression = false;
+                        continue;
+
+                    case XSharpLexer.COLONCOLON:
+                        startOfExpression = false;
+                        state = CompletionState.Namespaces;
+                        continue;
                     default:
                         hasBracket = false;
                         break;
@@ -572,14 +591,13 @@ namespace XSharp.LanguageService
                                   currentToken.Type == XSharpLexer.KWID ||
                                   currentToken.Type == XSharpLexer.COLONCOLON ||
                                   isType;
-                if (isId && currentPos < lastopentoken && tokenList[currentPos + 1].Type == XSharpLexer.LT)
+                if (isId && !list.Eoi() && list.La1 == XSharpLexer.LT)
                 {
-                    currentPos += 1;
-                    while (currentPos <= lastopentoken)
+                    list.Consume();
+                    while (! list.Eoi())
                     {
-                        var tokenNext = tokenList[currentPos];
+                        var tokenNext = list.ConsumeAndGet();
                         currentName += tokenNext.Text;
-                        currentPos += 1;
                         if (tokenNext.Type == XSharpLexer.GT)
                             break;
                     }
@@ -590,9 +608,9 @@ namespace XSharp.LanguageService
                 var literal = XSharpLexer.IsConstant(currentToken.Type);
                 if (isId)
                 {
-                    qualifiedName = nextType == XSharpLexer.DOT;
-                    findMethod = nextType == XSharpLexer.LPAREN;
-                    findConstructor = nextType == XSharpLexer.LCURLY;
+                    qualifiedName = list.La1 == XSharpLexer.DOT;
+                    findMethod = list.La1 == XSharpLexer.LPAREN;
+                    findConstructor = list.La1 == XSharpLexer.LCURLY;
                 }
                 if (state.HasFlag(CompletionState.StaticMembers) && ! findMethod && result.Count == 0)
                 {
@@ -652,7 +670,7 @@ namespace XSharp.LanguageService
                             result.AddRange(SearchMethod(location, type, currentName, visibility, false));
                         }
 
-                        if (currentPos == lastopentoken || currentPos == lastopentoken - 1)
+                        if (list.Eoi())
                         {
                             return result;
                         }
@@ -734,13 +752,7 @@ namespace XSharp.LanguageService
                 }
                 else
                 {
-                    // So it is not an ID. If it is the last token in the line then we
-                    // clear the result and the symbols
-                    if (currentPos == lastopentoken)
-                    {
-                        symbols.Clear();
-                        result.Clear();
-                    }
+                     //Do nothing
                 }
                 // We have it
                 if (hasBracket && symbols.Count > 0)
@@ -748,39 +760,6 @@ namespace XSharp.LanguageService
                     var type = currentType;
                     var symbol = symbols.Peek();
 
-                }
-                var nextPos = currentPos + 1;
-                if (nextPos >= tokenList.Count)
-                {
-                    break;
-                }
-                var nextToken = tokenList[nextPos];
-                resetState = true;
-                switch (nextToken.Type)
-                {
-                    case XSharpLexer.DOT:
-                        currentPos = nextPos + 1;
-                        state = CompletionState.StaticMembers| CompletionState.Namespaces | CompletionState.Types;
-                        if (location.Project.ParseOptions.AllowDotForInstanceMembers)
-                            state |= CompletionState.InstanceMembers;
-                        resetState = false;
-                        startOfExpression = false;
-                        break;
-
-                    case XSharpLexer.COLON:
-                        currentPos = nextPos + 1;
-                        state = CompletionState.InstanceMembers;
-                        resetState = false;
-                        startOfExpression = false;
-                        break;
-
-                    case XSharpLexer.COLONCOLON:
-                        currentPos = nextPos + 1;
-                        startOfExpression = false;
-                        break;
-                    default:
-                        currentPos += 1;
-                        break;
                 }
             }
             result.Clear();
@@ -797,6 +776,12 @@ namespace XSharp.LanguageService
             {
                 result.Clear();
                 result.AddRange(xtype.GetMembers(".ctor"));
+                if (result.Count == 0)
+                {
+                    var ctor = new XSourceMemberSymbol(".ctor", Kind.Constructor, Modifiers.Public, default, default, "",false);
+                    ctor.Parent = xtype;
+                    result.Add(ctor);
+                }
             }
             if (result.Count == 0)
             {
@@ -810,7 +795,7 @@ namespace XSharp.LanguageService
             if (!string.IsNullOrEmpty(notProcessed))
             {
                 result.Clear();
-                result.AddRange(SearchFunction(location, notProcessed));
+                //result.AddRange(SearchFunction(location, notProcessed));
                 if (result.Count == 0)
                 {
                     result.AddRange(SearchGlobalField(location, notProcessed));
@@ -861,19 +846,19 @@ namespace XSharp.LanguageService
                             // check to see if parameters or return value is one of the type parameters
                             // if so, then check the symbols to see where the type is used and with which
                             // concrete parameters
-                            int pos;
+                            int pos1;
                             foreach (var param in member.Parameters)
                             {
-                                pos = typeParams.IndexOf(param.TypeName);
-                                if (pos >= 0)
+                                pos1 = typeParams.IndexOf(param.TypeName);
+                                if (pos1 >= 0)
                                 {
-                                    param.TypeName = elements[pos];
+                                    param.TypeName = elements[pos1];
                                 }
                             }
-                            pos = typeParams.IndexOf(member.TypeName);
-                            if (pos >= 0)
+                            pos1 = typeParams.IndexOf(member.TypeName);
+                            if (pos1 >= 0)
                             {
-                                member.TypeName = elements[pos];
+                                member.TypeName = elements[pos1];
                             }
                             result[0] = member;
                         }
@@ -919,15 +904,7 @@ namespace XSharp.LanguageService
             }
             return null;
         }
-        private static bool hasToken(IList<XSharpToken> tokens, int start, int lookfor)
-        {
-            for (int i = start; i < tokens.Count; i++)
-            {
-                if (tokens[i].Type == lookfor)
-                    return true;
-            }
-            return false;
-        }
+        
         private static IXMemberSymbol AdjustGenericMember(IXMemberSymbol xmember, IXSymbol memberdefinition)
         {
             /*

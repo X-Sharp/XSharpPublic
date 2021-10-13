@@ -92,7 +92,7 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY CompleteFunctionsP               AS LOGIC AUTO := TRUE
         PUBLIC STATIC PROPERTY CompleteFunctionsA               AS LOGIC AUTO := TRUE
         PUBLIC STATIC PROPERTY CompleteNumChars                 AS LONG AUTO := 4
-        PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := 1000
+        PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := 25000
 
         PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO := NoOutput
         PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO := NoException

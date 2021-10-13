@@ -89,11 +89,13 @@ namespace XSharp.LanguageService
                 //    return;
 
                 // The "parameters" coming from CommandFilter
-                uint cmd;
-                char typedChar;
+                uint cmd = 0;
+                char typedChar = '\0';
+                bool autoType = false;                
                 session.Properties.TryGetProperty(XsCompletionProperties.Command, out cmd);
                 VSConstants.VSStd2KCmdID nCmdId = (VSConstants.VSStd2KCmdID)cmd;
                 session.Properties.TryGetProperty(XsCompletionProperties.Char, out typedChar);
+                session.Properties.TryGetProperty(XsCompletionProperties.AutoType, out autoType);
                 bool showInstanceMembers = (typedChar == ':') || ((typedChar == '.') && _file.Project.ParseOptions.AllowDotForInstanceMembers);
                 // Reset the StopToken
                 this._stopToken = null;
@@ -159,7 +161,7 @@ namespace XSharp.LanguageService
                 // We might be here due to a COMPLETEWORD command, so we have no typedChar
                 // but we "may" have a incomplete word like System.String.To
                 // Try to Guess what TypedChar could be
-                if (typedChar == '\0')
+                if (typedChar == '\0' && autoType)
                 {
                     if (tokenList.Count > 0)
                     {
@@ -184,14 +186,6 @@ namespace XSharp.LanguageService
                             {
                                 // So, we get the last Token as a Filter
                                 filterText = tokenList[tokenList.Count - 1].Text;
-                            }
-                            // but what could be the typedChar?
-                            if (tokenList.Count > 1)
-                            {
-                                extract = tokenList[tokenList.Count - 2].Text;
-                                typedChar = extract[extract.Length - 1];
-                                tokenList.RemoveAt(tokenList.Count - 1);
-                                //tokenLine = TokenListAsString(tokenList, 0);
                             }
                             // Include the filter as the text to replace
                             start -= filterText.Length;
@@ -233,7 +227,13 @@ namespace XSharp.LanguageService
                     else if (symbol is IXVariableSymbol xvar)
                     {
                         var typeName = "";
-                        if (xvar is XSourceVariableSymbol sourcevar)
+                        if (xvar is XSourceUndeclaredVariableSymbol)
+                        {
+                            type = null;
+                            state = CompletionState.General;
+                            filterText = xvar.Name;
+                        }
+                        else if (xvar is XSourceVariableSymbol sourcevar)
                         {
                             typeName = sourcevar.TypeName;
                             type = sourcevar.File.FindType(typeName);
@@ -246,9 +246,28 @@ namespace XSharp.LanguageService
                         }
                         memberName = xvar.Name;
                     }
+                    else if (symbol.Kind == Kind.Keyword)
+                    {
+                        filterText = symbol.Name;
+                    }
+                    if (type != null)
+                    {
+                        switch (type.FullName)
+                        {
+                            case XSharpTypeNames.XSharpUsual:
+                            case XSharpTypeNames.VulcanUsual:
+                            case XSharpTypeNames.SystemObject:
+                                type = null;
+                                break;
+                        }
+                    }
                     session.Properties[XsCompletionProperties.Type] = type;
                 }
-                if (dotSelector || state != CompletionState.None)
+                if (type == null)
+                {
+                    showInstanceMembers = false;
+                }
+                else if (dotSelector || state != CompletionState.None)
                 {
                     if (string.IsNullOrEmpty(filterText))
                     {
@@ -351,6 +370,7 @@ namespace XSharp.LanguageService
                         default:
                             if (state.HasFlag(CompletionState.General))
                             {
+                                filterText = notProcessed;
                                 helpers.AddGenericCompletion(compList, location, filterText);
                             }
                             break;

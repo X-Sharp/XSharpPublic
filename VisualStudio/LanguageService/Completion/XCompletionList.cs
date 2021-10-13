@@ -135,6 +135,7 @@ namespace XSharp.LanguageService
         public const string IncludeKeywords = nameof(IncludeKeywords);
         public const string Command = nameof(Command);
         public const string Overloads = nameof(Overloads);
+        public const string AutoType = nameof(AutoType);
 
     }
 

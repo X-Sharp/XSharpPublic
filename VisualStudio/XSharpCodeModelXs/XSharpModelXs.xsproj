@@ -154,6 +154,7 @@
     <Compile Include="Database\XDbResultHelpers.prg" />
     <Compile Include="Model\ClassGenerator.prg" />
     <Compile Include="Model\CommentTask.prg" />
+    <Compile Include="Parser\XSharpTokenList.prg" />
     <Compile Include="PE\XPEMemberSymbol.prg" />
     <Compile Include="PE\XPEParameterSymbol.prg" />
     <Compile Include="PE\XPESymbol.prg" />

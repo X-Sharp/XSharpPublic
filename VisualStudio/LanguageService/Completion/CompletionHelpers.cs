@@ -215,7 +215,7 @@ namespace XSharp.LanguageService
             }
             if (XSettings.CompleteTypes && compList.Count < XSettings.MaxCompletionEntries)
             {
-                AddTypeNames(compList, location, startWith);
+                 AddTypeNames(compList, location, startWith);
             }
             if (XSettings.CompleteFunctions && compList.Count < XSettings.MaxCompletionEntries)
             {
@@ -537,9 +537,9 @@ namespace XSharp.LanguageService
                 //
                 ImageSource icon = _glyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
                 string toAdd = "";
-                if (elt.Kind.HasParameters() && elt.Kind != Kind.Constructor && !elt.Kind.IsProperty())
+                if (elt.Kind.HasParameters() && elt.Kind != Kind.Constructor && !elt.Kind.IsProperty() && elt.Kind != Kind.Event)
                 {
-                    toAdd = "(";
+                   toAdd = "(";
                 }
                 if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Prototype, icon, null, elt.Kind, elt.Value)))
                     break;

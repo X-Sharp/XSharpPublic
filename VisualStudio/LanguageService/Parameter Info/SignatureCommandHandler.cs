@@ -140,10 +140,14 @@ namespace XSharp.LanguageService
                                 case ')':
                                 case '}':
                                     CancelSignatureSession();
-                                    StartSignatureSession(false, triggerchar: typedChar);
+                                    if (hasopenSignatureSession())
+                                    {
+                                        StartSignatureSession(false, triggerchar: typedChar);
+                                    }
                                     break;
                                 case ',':
-                                    StartSignatureSession(true, triggerchar: typedChar);
+                                     StartSignatureSession(true, triggerchar: typedChar);
+                                    //MoveSignature();
                                     break;
                                 case ':':
                                 case '.':
@@ -170,6 +174,38 @@ namespace XSharp.LanguageService
             }
             return result;
         }
+
+        bool hasopenSignatureSession()
+        {
+            SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
+            var level = 0;
+            bool done = false;
+            while (ssp.Position > 0 && ! done)
+            {
+                ssp = ssp - 1;
+                var ch = ssp.GetChar();
+                {
+                    switch (ch)
+                    {
+                        case '(':
+                        case '{':
+                            level += 1;
+                            break;
+                        case ')':
+                        case '}':
+                            level -= 1;
+                            break;
+                        case '\r':
+                        case '\n':
+                            done = true;
+                            break;
+
+                    }
+                }
+            }
+            return level > 0;
+        }
+
         bool IsCompletionActive()
         {
 #if !ASYNCCOMPLETION
@@ -234,6 +270,7 @@ namespace XSharp.LanguageService
             // Check if we can get the member where we are
 
             var tokenList = XSharpTokenTools.GetTokenList(location, out var state);
+            var lastOpen = -1;
             if (comma)
             {
                 bool hasOpenToken = false;
@@ -247,6 +284,7 @@ namespace XSharp.LanguageService
                         case XSharpLexer.LPAREN:
                         case XSharpLexer.LCURLY:
                             hasOpenToken = true;
+                            lastOpen = tokenList.IndexOf(token);
                             break;
                     }
                     if (hasOpenToken)
@@ -254,7 +292,9 @@ namespace XSharp.LanguageService
                 }
                 if (!hasOpenToken)
                     return null;
+                tokenList.RemoveRange(lastOpen + 1, tokenList.Count - lastOpen - 1);
             }
+            
             // We don't care of the corresponding Type, we are looking for the currentElement
             var element = XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true).FirstOrDefault();
             if (element is IXMemberSymbol mem)
@@ -275,10 +315,12 @@ namespace XSharp.LanguageService
                 return false;
             IXMemberSymbol currentElement = null;
             SnapshotPoint ssp = this._textView.Caret.Position.BufferPosition;
-            if (triggerchar == '(' && ssp.GetChar() == ')')
+            if (triggerchar == '(' && ssp.Position < ssp.Snapshot.Length && ssp.GetChar() == ')')
                 ssp -= 1;
             var location = _textView.FindLocation(ssp);
             if (location == null)
+                return false;
+            if (location.Member.Range.StartLine == location.LineNumber)
                 return false;
             if (type != null && methodName != null)
             {
@@ -310,8 +352,22 @@ namespace XSharp.LanguageService
                 _signatureSession.Properties[SignatureProperties.Element] = currentElement;
             }
 
-            _signatureSession.Properties[SignatureProperties.Line] = ssp.GetContainingLine().LineNumber;
-            _signatureSession.Properties[SignatureProperties.Start] = ssp.Position;
+            _signatureSession.Properties[SignatureProperties.Line] = location.LineNumber;
+            if (comma)
+            {
+                // calculate where the lparen before the comma is.
+                if (ssp.Position >= ssp.Snapshot.Length)
+                    ssp -= 1;
+                while (ssp.Position > 0 && ssp.GetChar() != '(' && ssp.GetChar() != '{')
+                {
+                    ssp = ssp - 1;
+                }
+                _signatureSession.Properties[SignatureProperties.Start] = ssp.Position;
+            }
+            else
+            {
+                _signatureSession.Properties[SignatureProperties.Start] = ssp.Position;
+            }
             _signatureSession.Properties[SignatureProperties.Length] = _textView.Caret.Position.BufferPosition.Position - ssp.Position;
             _signatureSession.Properties[SignatureProperties.File] = _textView.GetFile();
 

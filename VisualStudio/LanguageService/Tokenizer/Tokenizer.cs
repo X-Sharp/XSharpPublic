@@ -12,8 +12,8 @@ using static XSharp.Parser.VsParser;
 
 namespace XSharp.LanguageService
 {
-    
-    /// <summary>
+
+     /// <summary>
     /// Static class Tools. Offer services to get TokenList, Search members, ...
     /// </summary>
     ///
@@ -106,31 +106,32 @@ namespace XSharp.LanguageService
         }
 
 
-        internal static IList<XSharpToken> GetTokensUnderCursor(XSharpSearchLocation location, BufferedTokenStream tokens,
+        internal static IList<XSharpToken> GetTokensUnderCursor(XSharpSearchLocation location, BufferedTokenStream stream,
             out CompletionState state)
         {
 
-            var result = GetTokenList(location, tokens, out state, true, true);
+            var tokens = GetTokenList(location, stream, out state, true, true);
             // Find "current" token
-            if (result.Count > 0)
+            
+            if (tokens.Count > 0)
             {
-                var tokenUnderCursor = result.Count-1;
-                for (int i = result.Count -1; i >= 0; i--)
+                var tokenUnderCursor = tokens.Count-1;
+                for (int i = tokens.Count -1; i >= 0; i--)
                 {
-                    var token = result[i];
+                    var token = tokens[i];
                     if (token.StartIndex <= location.Position && token.StopIndex >= location.Position)
                     {
                         tokenUnderCursor = i;
                         break;
                     }
                 }
-                var selectedToken = result[tokenUnderCursor];
+                var selectedToken = tokens[tokenUnderCursor];
                 bool done = false;
                 if (XSharpLexer.IsKeyword(selectedToken.Type))
                 {
-                    result.Clear();
-                    result.Add(selectedToken);
-                    return result;
+                    tokens.Clear();
+                    tokens.Add(selectedToken);
+                    return tokens;
                 }
                 // When we are not on a Keyword then we need to walk back in the tokenlist to see
                 // if we can evaluate the expression
@@ -143,32 +144,45 @@ namespace XSharp.LanguageService
                 // SomeVar:Id                // Instance field or property
                 // If the token list contains with a RCURLY, RBRKT or RPAREN
                 // Then strip everything until the matching LCURLY, LBRKT or LPAREN is found
-                
-                int lastToken = XSharpLexer.EOS;
-                for (int i = tokenUnderCursor; i >= 0; i--)
+                var list = new XSharpTokenList(tokens);
+                tokens = new List<XSharpToken>();
+                while (! list.Eoi())
                 {
-                    var token = result[i];
+                    var token = list.ConsumeAndGet();
                     switch (token.Type)
                     {
                         case XSharpLexer.LCURLY:
-                        case XSharpLexer.LPAREN:
-                        case XSharpLexer.LBRKT:
-                            done = true;
-                            break;
-                        case XSharpLexer.RCURLY:
-                        case XSharpLexer.RPAREN:
-                        case XSharpLexer.RBRKT:
-                            if (lastToken != XSharpLexer.DOT && lastToken != XSharpLexer.COLON)
+                            tokens.Add(token);
+                            if (list.Contains(XSharpLexer.RCURLY))
                             {
-                                done = true;
+                                list.ConsumeUntilEndToken(XSharpLexer.RCURLY, out var endToken);
+                                tokens.Add(endToken);
+                            }
+                            break;
+                        case XSharpLexer.LPAREN:
+                            tokens.Add(token);
+                            if (list.Contains(XSharpLexer.RPAREN))
+                            {
+                                list.ConsumeUntilEndToken(XSharpLexer.RPAREN, out var endToken);
+                                tokens.Add(endToken);
+                            }
+                            break;
+                        case XSharpLexer.LBRKT:
+                            tokens.Add(token);
+                            if (list.Contains(XSharpLexer.RBRKT))
+                            {
+                                list.ConsumeUntilEndToken(XSharpLexer.RBRKT, out var endToken);
+                                tokens.Add(endToken);
                             }
                             break;
                         case XSharpLexer.DOT:
                         case XSharpLexer.COLON:
                         case XSharpLexer.SELF:
                         case XSharpLexer.SUPER:
+                            tokens.Add(token);
                             break;
                         default:
+                            tokens.Add(token);
                             if (XSharpLexer.IsOperator(token.Type))
                             {
                                 done = true;
@@ -185,24 +199,17 @@ namespace XSharp.LanguageService
                             }
                             break;
                     }
-                    if (done)
-                    {
-                        result.RemoveRange(0, i + 1);
-                        break;
-                    }
-                    lastToken = token.Type;
                 }
-                done = false;
                 // now result has the list of tokens starting with the cursor
                 // we only keep:
                 // ID, DOT, COLON, LPAREN, LBRKT, RBRKT
                 // when we detect another token we truncate the list there
-                if (result.Count > 0)
+                if (tokens.Count > 0)
                 {
-                    var lastType = result[0].Type;
-                    for (int i = tokenUnderCursor + 1; i < result.Count && !done; i++)
+                    var lastType = tokens[0].Type;
+                    for (int i = tokenUnderCursor + 1; i < tokens.Count && !done; i++)
                     {
-                        var token = result[i];
+                        var token = tokens[i];
                         switch (token.Type)
                         {
                             case XSharpLexer.ID:
@@ -211,14 +218,14 @@ namespace XSharp.LanguageService
                             case XSharpLexer.LPAREN:
                             case XSharpLexer.LCURLY:
                             case XSharpLexer.LBRKT:
-                                lastType = result[i].Type;
+                                lastType = tokens[i].Type;
                                 break;
                             case XSharpLexer.LT:
-                                int gtPos = findTokenInList(result, i + 1, XSharpLexer.GT);
+                                int gtPos = findTokenInList(tokens, i + 1, XSharpLexer.GT);
                                 if (lastType == XSharpLexer.ID && gtPos > 0)
                                 {
                                     gtPos += 1;
-                                    result.RemoveRange(gtPos, result.Count - gtPos);
+                                    tokens.RemoveRange(gtPos, tokens.Count - gtPos);
                                     done = true;
                                     break;
                                 }
@@ -227,7 +234,7 @@ namespace XSharp.LanguageService
                                     goto default;
                                 }
                             default:
-                                result.RemoveRange(i, result.Count - i);
+                                tokens.RemoveRange(i, tokens.Count - i);
                                 done = true;
                                 break;
                         }
@@ -235,21 +242,21 @@ namespace XSharp.LanguageService
                 }
             }
             // check for extra lparen, lcurly at the end
-            int count = result.Count;
+            int count = tokens.Count;
             if (count > 2)
             {
-                if (result[count-2].Type == XSharpLexer.LPAREN)
+                if (tokens[count-2].Type == XSharpLexer.LPAREN)
                 {
-                    switch (result[count - 1].Type)
+                    switch (tokens[count - 1].Type)
                     {
                         case XSharpLexer.LPAREN:
                         case XSharpLexer.LCURLY:
-                            result.RemoveAt(count - 1);
+                            tokens.RemoveAt(count - 1);
                             break;
                     }
                 }
             }
-            return result;
+            return tokens;
         }
 
         private static int findTokenInList(IList<XSharpToken> list, int startpos, int tokenToFind)

@@ -243,6 +243,46 @@ BEGIN NAMESPACE XSharpModel
         MEMBER Using        := 6     // (BEGIN) USING VAR name := Expression   variation of VAR Name := Expression
     END ENUM
 
+    STATIC CLASS XSharpTypeNames
+
+        PUBLIC CONST XSharpCodeblock := "XSharp._CodeBlock" AS STRING
+        PUBLIC CONST XSharpArray  := "XSharp.__Array" AS STRING
+        PUBLIC CONST XSharpBinary := "XSharp.__Binary" AS STRING
+        PUBLIC CONST XSharpCurr   := "XSharp.__Currency" AS STRING
+        PUBLIC CONST XSharpDate   := "XSharp.__Date" AS STRING
+        PUBLIC CONST XSharpFloat  := "XSharp.__Float" AS STRING
+        PUBLIC CONST XSharpPSZ    := "XSharp.__Psz" AS STRING
+        PUBLIC CONST XSharpSymbol := "XSharp.__Symbol" AS STRING
+        PUBLIC CONST XSharpUsual  := "XSharp.__Usual" AS STRING
+        PUBLIC CONST XSharpWinBool:= "XSharp.__WinBool" AS STRING
+        PUBLIC CONST XSharpWinDate:= "XSharp.__WinDate" AS STRING
+
+        PUBLIC CONST VulcanCodeblock := "Vulcan._CodeBlock" AS STRING
+        PUBLIC CONST VulcanArray  := "Vulcan.__Array" AS STRING
+        PUBLIC CONST VulcanDate   := "Vulcan.__VODate" AS STRING
+        PUBLIC CONST VulcanFloat  := "Vulcan.__VOFloat" AS STRING
+        PUBLIC CONST VulcanPSZ    := "Vulcan.__Psz" AS STRING
+        PUBLIC CONST VulcanSymbol := "Vulcan.__Symbol" AS STRING
+        PUBLIC CONST VulcanUsual  := "Vulcan.__Usual" AS STRING
+        PUBLIC CONST VulcanWinBool:= "Vulcan.__WinBool" AS STRING
+
+        PUBLIC CONST SystemBoolean:= "System.Boolean"   AS STRING
+        PUBLIC CONST SystemByte:= "System.Byte"         AS STRING
+        PUBLIC CONST SystemChar := "System.Char"        AS STRING
+        PUBLIC CONST SystemDouble:= "System.Double"     AS STRING
+        PUBLIC CONST SystemInt16:= "System.Int16"       AS STRING
+        PUBLIC CONST SystemInt32:= "System.Int32"       AS STRING
+        PUBLIC CONST SystemInt64:= "System.Int64"       AS STRING
+        PUBLIC CONST SystemObject:= "System.Object"     AS STRING
+        PUBLIC CONST SystemSingle:= "System.Single"     AS STRING
+        PUBLIC CONST SystemString:= "System.String"     AS STRING
+        PUBLIC CONST SystemUInt16:= "System.UInt16"     AS STRING
+        PUBLIC CONST SystemUInt32:= "System.UInt32"     AS STRING
+        PUBLIC CONST SystemUInt64:= "System.UInt64"     AS STRING
+        PUBLIC CONST SystemVoid := "System.Void"        AS STRING
+
+
+    END CLASS
 END NAMESPACE
 Function EscapeKeyword(sName as STRING) AS STRING
     RETURN sName

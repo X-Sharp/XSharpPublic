@@ -12,7 +12,6 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.IO;
-
 // XSharpCodeGenerator
 // Used by Designers (WPF and WinForms at least)
 // !!!WARNING !!! XSharp does support "." or ":" as selector...
@@ -48,11 +47,57 @@ namespace XSharp.CodeDom
     }
     public partial class XSharpCodeGenerator : CodeCompiler
     {
+        #region static members
+        internal static IDictionary<string, string> SystemToXSharp;
+
+        internal static IDictionary<string, string> XSharpToSystem;
+        static XSharpCodeGenerator()
+        {
+            SystemToXSharp = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            XSharpToSystem = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            SystemToXSharp.Add("System.Boolean", "LOGIC");
+            SystemToXSharp.Add("System.Byte", "BYTE");
+            SystemToXSharp.Add("System.Char", "CHAR");
+            SystemToXSharp.Add("System.Double", "REAL8");
+            SystemToXSharp.Add("System.Int16", "SHORT");
+            SystemToXSharp.Add("System.Int32", "INT");
+            SystemToXSharp.Add("System.Int64", "INT64");
+            SystemToXSharp.Add("System.Object", "OBJECT");
+            SystemToXSharp.Add("System.Single", "REAL4");
+            SystemToXSharp.Add("System.String", "STRING");
+            SystemToXSharp.Add("System.UInt16", "WORD");
+            SystemToXSharp.Add("System.UInt32", "DWORD");
+            SystemToXSharp.Add("System.UInt64", "UINT64");
+            SystemToXSharp.Add("System.Void", "VOID");
+            SystemToXSharp.Add("XSharp._CodeBlock", "CODEBLOCK");
+            SystemToXSharp.Add("XSharp.__Array", "ARRAY");
+            SystemToXSharp.Add("XSharp.__Binary", "BINARY");
+            SystemToXSharp.Add("XSharp.__Currency", "CURRENCY");
+            SystemToXSharp.Add("XSharp.__Date", "DATE");
+            SystemToXSharp.Add("XSharp.__Float", "FLOAT");
+            SystemToXSharp.Add("XSharp.__Psz", "PSZ");
+            SystemToXSharp.Add("XSharp.__Symbol", "SYMBOL");
+            SystemToXSharp.Add("XSharp.__Usual", "USUAL");
+            SystemToXSharp.Add("XSharp.__WinBool", "LOGIC");
+            SystemToXSharp.Add("XSharp.__WinDate", "DATE");
+
+            foreach (KeyValuePair<string, string> pair in SystemToXSharp)
+            {
+                if (!XSharpToSystem.ContainsKey(pair.Value))
+                {
+                    XSharpToSystem.Add(pair.Value, pair.Key);
+                }
+            }
+            XSharpToSystem.Add("LONG", "System.Int32");
+
+            return;
+        }
+        #endregion
         private bool generatingForLoop;
         private string selector;
         private string staticSelector;
         private string entrypointCode = null;
-        private List<String> _using;
+        private List<string> _using;
         private int indentSave = 0;
         private int keywordCase;
         private int privateKeyword;
@@ -1555,55 +1600,19 @@ namespace XSharp.CodeDom
             {
                 return "VOID";
             }
-            switch (baseType.ToLower(CultureInfo.InvariantCulture))
+            if (baseType.ToLower() == "system.object")
             {
-                case "system.int16":
-                    return formatKeyword("SHORT");
+                // keep because it is used as in System.Object.ReferenceEquals
+                return "System.Object";
+            }
 
-                case "system.uint16":
-                    return formatKeyword("WORD");
-
-                case "system.int32":
-                    return formatKeyword("INT");
-
-                case "system.uint32":
-                    return formatKeyword("DWORD");
-
-                case "system.int64":
-                    return formatKeyword("INT64");
-
-                case "system.uint64":
-                    return formatKeyword("UINT64");
-
-                case "system.string":
-                    return formatKeyword("STRING");
-
-                case "system.char":
-                    return formatKeyword("CHAR");
-
-                case "system.object":       // keep because it is used as in System.Object.ReferenceEquals
-                    return "System.Object";
-
-                case "system.boolean":
-                    return formatKeyword("LOGIC");
-
-                case "system.void":
-                    return formatKeyword("VOID");
-
-                case "system.byte":
-                    return formatKeyword("BYTE");
-
-                case "system.sbyte":
-                    return "System.SByte";
-
-                case "system.single":
-                    return formatKeyword("REAL4");
-
-                case "system.double":
-                    return formatKeyword("REAL8");
-
-                case "system.decimal":
-                    return formatKeyword("Decimal");
+            if (SystemToXSharp.ContainsKey(baseType))
+            {
+                return formatKeyword(SystemToXSharp[baseType]);
+            }
+            if (XSharpToSystem.ContainsKey(baseType))
+            {
+                return formatKeyword(baseType);
             }
             //
             StringBuilder sb = new StringBuilder(baseType.Length + 10);

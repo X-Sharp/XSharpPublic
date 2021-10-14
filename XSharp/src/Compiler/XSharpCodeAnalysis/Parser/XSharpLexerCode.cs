@@ -451,6 +451,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         void parseSymbol()
         {
+            // Todo: The VFP and Xbase++ dialect do not know
+            // the symbol type. So they see
+            // a#b as a # b
+            // where VO see this as
+            // a #b
+            // These dialects however SHOULD support #ifdef etc and VFP also #null
             var c = La(1);
             if (c > 0 && IsIdentifierStartCharacter((char)c))
             {

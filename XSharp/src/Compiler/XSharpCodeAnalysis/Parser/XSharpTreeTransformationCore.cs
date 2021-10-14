@@ -6296,7 +6296,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterWithBlock([NotNull] XP.WithBlockContext context)
         {
-            context.VarName = XSharpSpecialNames.WithVarName+ UniqueNameSuffix(context);
+            context.VarName = XSharpSpecialNames.WithVarName + UniqueNameSuffix(context);
         }
 
         public override void ExitWithBlock([NotNull] XP.WithBlockContext context)
@@ -6304,11 +6304,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var stmts = new List<StatementSyntax>();
             var declstmt = GenerateLocalDecl(context.VarName, _impliedType, context.Expr.Get<ExpressionSyntax>());
+            // For FoxPro we add a Push of the local to stack in the runtime
+            // and at the end of the block we pop that variable back off
+            // by doing that the variable is also available in code called from within the block
+            // we could only do that when external code is called. That is an optimization that we can do later.
+            // to make sure that that happens we also add a try finally
+            // begin scope
+            // local oWithObj := <Expression>
+            //    try
+            //       push oWithObj
+            //       [original block]
+            //    finally
+            //       pop
+            //    end try
+            // end scope
             stmts.Add(declstmt);
             BlockSyntax block = context.StmtBlk.Get<BlockSyntax>();
             stmts.AddRange(block.Statements.Nodes);
             context.Put(MakeBlock(stmts));
-        }                    
+        }
 
         #endregion
 
@@ -7178,13 +7192,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parent = context.Parent;
             while (parent != null && !(parent is XP.IEntityContext))
             {
-                if (parent is XP.WithBlockContext)
+                if (parent is XP.WithBlockContext wbc)
                 {
-                    break;
+                    return wbc;
                 }
                 parent = parent.Parent;
             }
-            return parent as XP.WithBlockContext;
+            return null;
         }
 
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
@@ -7204,6 +7218,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var VarName = GenerateSimpleName(wb.VarName);
                     context.Put(MakeSimpleMemberAccess(VarName, context.Name.Get<SimpleNameSyntax>()));
                 }
+                // todo Allow no parent for the FoxPro dialect
+                // replace the lhs with a call to a special runtime function 
                 else
                 {
                     var node = GenerateLiteral(0);
@@ -9573,7 +9589,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpLexer.CODEBLOCK:
                     context.Put(GenerateLiteral(9));
-                    break;      
+                    break;
                 case XSharpLexer.CURRENCY:                  // New in XSharp
                     context.Put(GenerateLiteral(28));
                     break;
@@ -9647,7 +9663,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
             }
         }
-        #endregion  
+        #endregion
 
  
         #region  object and collection initializers

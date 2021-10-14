@@ -251,6 +251,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FoxArrayAccess = "__FoxArrayAccess";
         internal const string FoxArrayAccessByName = "__FoxArrayAccessByName";
         internal const string UsualEnumerator = "__UsualEnumerator";
+        internal const string FoxPushWithBlock = "__FoxPushWithBlock";
+        internal const string FoxPopWithBlock = "__FoxPopWithBlock";
+        internal const string FoxGetWithExpression = "__FoxGetWithExpression";
     }
     internal static class VulcanQualifiedFunctionNames
     {

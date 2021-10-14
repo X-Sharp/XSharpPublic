@@ -23,6 +23,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             return dialect != XSharpDialect.Core;
         }
+
+        public static bool SupportsSymbols(this XSharpDialect dialect)
+        {
+            //switch (dialect)
+            //{
+            //    case XSharpDialect.VO:
+            //    case XSharpDialect.Vulcan:
+            //        return true;
+            //    default:
+            //        return false;
+            //}
+            return true;
+        }
+
         public static bool SupportsMemvars(this XSharpDialect dialect)
         {
             switch (dialect)

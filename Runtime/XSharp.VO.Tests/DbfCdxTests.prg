@@ -5006,6 +5006,46 @@ RETURN
 
 
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestDBSeek() AS VOID
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			
+			cDbf := GetTempFileName()
+			DbCreate(cDbf, {{"FLD1","C",3,0} , {"FLD2","C",3,0}})
+
+			DbUseArea(,,cDbf)
+			DbCreateIndex(cDbf,"FLD1+FLD2")
+			DbAppend()
+			FieldPut(1, "AAA") ; FieldPut(2, "abc")
+			DbAppend()
+			FieldPut(1, "BBB") ; FieldPut(2, "def")
+			DbAppend()
+			FieldPut(1, "DDD") ; FieldPut(2, "ghi")
+			DbAppend()
+			FieldPut(1, "AAA") ; FieldPut(2, "jkl")
+			
+			Assert.True ( DbSeek( "AAA" , , FALSE ) )
+			Assert.False( Eof() )
+			Assert.Equal( 1U, RecNo() )
+
+			Assert.True ( DbSeek( "AAA" , , TRUE ) )
+			Assert.False( Eof() )
+			Assert.Equal( 4U, RecNo() )
+	
+			Assert.False( DbSeek( "CCC" , , FALSE ) )
+			Assert.True ( Eof() )
+			Assert.Equal( 5U, RecNo() )
+
+			Assert.False( DbSeek( "CCC" , , TRUE ) )
+			Assert.True ( Eof() )
+			Assert.Equal( 5U, RecNo() )
+
+			DbCloseArea()
+
+
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

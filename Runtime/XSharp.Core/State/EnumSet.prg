@@ -223,7 +223,7 @@ BEGIN NAMESPACE XSharp
         MEMBER CollationMode:= 122		// CollationMode
 
         // 123 and 124 reserved
-        // FoxPro settings 125 - 159, last used 144
+        // FoxPro settings 125 - 159, last used 145
         // Some settings are IDE specific, such as AutoSave, BrowseIME, Clock etc.
         // Others are windows regional settings, such as first day of week and currency symbol
         // these are not implemented
@@ -264,7 +264,7 @@ BEGIN NAMESPACE XSharp
         // MEMBER Fdow
         // MEMBER Fields            => not in Set() but Db.. function
         // MEMBER FieldsList        => not in Set() but Db.. function
-        // MEMBER Format            
+        // MEMBER Format
         /// <summary>FoxPro: Should CDX(),DBF() and similar functions return full paths</summary>
         MEMBER FullPath         := 132      // Logic
         // MEMBER Function
@@ -340,7 +340,7 @@ BEGIN NAMESPACE XSharp
         // MEMBER UdfParams
         /// <summary>Specifies how character data expressions are mapped to query result sets.</summary>
         MEMBER VarCharMapping   := 143    // Logic
-
+        MEMBER WithStack        := 145
 
         // Xbase++ defines
         MEMBER CharSet          := 160
@@ -887,9 +887,8 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.ErrorBlock     // Codeblock
             RETURN NULL
 
-        //CASE Set.LastRddError       // Exception object
         CASE Set.LastScriptError    // Exception object
-        //CASE Set.FileException      // Exception object
+        CASE Set.WithStack
             RETURN NULL
 
         CASE Set.Intl

@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-// Please note that the VFP Docs speak about "Statement Handles" for connections and also 
+// Please note that the VFP Docs speak about "Statement Handles" for connections and also
 // about "statement handles" for statements. These are returned for example by SqlPrepare
 // In this code we speak about "connection handles" and "statement handles".
 
@@ -31,7 +31,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
     STATIC PRIVATE DefaultValues AS Dictionary<SQLProperty, OBJECT>
 
     STATIC INTERNAL PROPERTY DispLogin AS LONG GET SQLSupport.GetDefault<LONG>(SQLProperty.DispLogin)
-    
+
     STATIC CONSTRUCTOR
         Cache    := Dictionary<LONG, HandleCacheElement>{}
         UniqueId := 0
@@ -62,7 +62,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
             RETURN (T) DefaultValues[nDef]
         ENDIF
         RETURN DEFAULT (T)
-        
+
     STATIC METHOD FindStatement(nId AS LONG) AS OBJECT
         IF Cache:ContainsKey(nId)
             VAR element := Cache[nId]
@@ -76,7 +76,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
             aResult:Add(oElement:Value)
         NEXT
         RETURN aResult
-    
+
     STATIC METHOD AddStatement(oStmt AS SQLStatement) AS LONG
         VAR element := HandleCacheElement{}
         element:Number := ++UniqueId
@@ -84,7 +84,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         Cache:Add(element:Number, element)
         oStmt:Handle := element:Number
         RETURN element:Number
-        
+
 
     STATIC METHOD RemoveStatement(nId AS LONG) AS LOGIC
         IF Cache:ContainsKey(nId)
@@ -104,7 +104,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         LOCAL cNewProp AS STRING
         cNewProp := GetPartialEnumName(cProperty, typeof(SQLProperty))
         IF String.IsNullOrEmpty(cNewProp)
-            VAR cMessage := String.Format(__VfpStr(VFPErrors.PROPERTY_UNKNOWN), cProperty)
+            VAR cMessage := __VfpStr(VFPErrors.PROPERTY_UNKNOWN, cProperty)
             THROW Error{cMessage}
         ENDIF
         var nProperty := (SQLProperty) GetSQLProperty(cNewProp)
@@ -138,35 +138,35 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
                     oStmt:BatchMode := newVal
                     result := 1
                 ENDIF
- 
+
            CASE SQLProperty.ConnectBusy
                 //  Contains TRUE (.T.) IF a shared connection IS busy; OTHERWISE contains FALSE (.F.). Read-only.
                 result := oStmt:ConnectBusy
                 IF newValue != NULL    // Readonly
                     result := -1
                 ENDIF
-                
+
            CASE SQLProperty.ConnectString
                 // The login connection string. Read-only.
                 result := oStmt:ConnectionString
                 IF newValue != NULL    // Readonly
                     result := -1
                 ENDIF
-                
+
            CASE SQLProperty.ConnectTimeOut
                 result := oStmt:ConnectionTimeOut
                 IF newValue IS LONG VAR newVal
                     oStmt:ConnectionTimeOut := newVal
                     result := 1
                 ENDIF
-                
+
            CASE SQLProperty.DataSource
                 result := oStmt:DataSource
                 IF newValue IS STRING VAR newVal
                     oStmt:DataSource := newVal
                     result := 1
                 ENDIF
- 
+
            CASE SQLProperty.DisconnectRollback
               result := oStmt:DisconnectRollback
                IF newValue IS LOGIC VAR newVal
@@ -176,7 +176,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
 
            CASE SQLProperty.DispLogin // Contains a numeric value that determines when the ODBC Login dialog box IS displayed. DispLogin may assume the following values:
                 result := SQLSupport.DispLogin
-                    
+
 
            CASE SQLProperty.DispWarnings
                 result := oStmt:DispWarnings
@@ -206,7 +206,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
                     result := -1
                 ENDIF
            CASE SQLProperty.PacketSize
- 
+
                result := oStmt:PacketSize
                 IF newValue IS LONG VAR newVal
                    oStmt:PacketSize := newVal
@@ -218,20 +218,20 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
                 IF newValue != NULL    // Readonly
                     result := -1
                 ENDIF
-                
+
            CASE SQLProperty.QueryTimeOut
                 result := oStmt:QueryTimeOut
                 IF newValue IS LONG VAR newVal
                    oStmt:QueryTimeOut := newVal
                     result := 1
                 ENDIF
-                
+
            CASE SQLProperty.Shared
                 result := oStmt:Shared
                 IF newValue != NULL    // Readonly
                     result := -1
                 ENDIF
-                
+
            CASE SQLProperty.Transactions
                 result := oStmt:TransactionMode
                 IF newValue IS LONG VAR newVal
@@ -240,30 +240,30 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
                         result := 1
                     ENDIF
                 ENDIF
- 
+
            CASE SQLProperty.UserId
                 result := oStmt:UserId
                 IF newValue != NULL    // Readonly
                     result := -1
                 ENDIF
-                
+
            CASE SQLProperty.WaitTime
                 result := oStmt:WaitTime
                 IF newValue IS LONG VAR newVal
                    oStmt:WaitTime := newVal
                     result := 1
                 ENDIF
-        OTHERWISE 
-            result := -1            
+        OTHERWISE
+            result := -1
         END SWITCH
         RETURN result
 
-        
+
     // This method is located here so we can keep the  a table with oldname - newname pairs, so we do not have
     // to do this over and over again.
 
 
 
-    
+
 END CLASS
 

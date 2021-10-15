@@ -177,12 +177,10 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
     <Content Include="..\..\External\Debug\System.Collections.Immutable.dll">
       <Link>System.Collections.Immutable.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\..\External\Debug\System.Reflection.Metadata.dll">
       <Link>System.Reflection.Metadata.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Designers.pkgdef">
@@ -331,7 +329,6 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\TextTemplate\TextTemplate.vstemplate" />
     <None Include="VSGlobals.vsct">
-      <Generator>VsctGenerator</Generator>
       <LastGenOutput>VSGlobals.cs</LastGenOutput>
     </None>
     <Content Include="$(OutDir)\x64\SQLite.Interop.dll">

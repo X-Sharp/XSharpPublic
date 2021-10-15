@@ -26,9 +26,6 @@ namespace XSharp.LanguageService
         private ITextBuffer _buffer;
         private bool _disposed = false;
         private XSharpCompletionSourceProvider _provider;
-        // Keep a trace of the Context of the TokenList build
-        // This will be AS, IS, REF, USING, STATIC (USING STATIC), INHERIT, IMPLEMENTS etc.
-        private IToken _stopToken;
 
         private XFile _file;
         private bool _showTabs;
@@ -51,7 +48,6 @@ namespace XSharp.LanguageService
             var prj = _file.Project.ProjectNode;
             _dialect = _file.Project.Dialect;
             helpers = new CompletionHelpers(_dialect, provider.GlyphService, file, !prj.ParseOptions.CaseSensitive);
-            _stopToken = null;
             
             this.aggregator = aggregator;
         }
@@ -97,8 +93,6 @@ namespace XSharp.LanguageService
                 session.Properties.TryGetProperty(XsCompletionProperties.Char, out typedChar);
                 session.Properties.TryGetProperty(XsCompletionProperties.AutoType, out autoType);
                 bool showInstanceMembers = (typedChar == ':') || ((typedChar == '.') && _file.Project.ParseOptions.AllowDotForInstanceMembers);
-                // Reset the StopToken
-                this._stopToken = null;
 
                 ////////////////////////////////////////////
                 //
@@ -197,10 +191,6 @@ namespace XSharp.LanguageService
 
                 // TODO: Based on the Project.Settings, we should add the Vulcan.VO namespace
                 int tokenType = XSharpLexer.UNRECOGNIZED;
-                if (this._stopToken != null)
-                {
-                    tokenType = this._stopToken.Type;
-                }
 
                 var symbol = XSharpLookup.RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed).FirstOrDefault();
                 var memberName = "";
@@ -250,6 +240,10 @@ namespace XSharp.LanguageService
                     {
                         filterText = symbol.Name;
                     }
+                    else if (symbol.Kind == Kind.Namespace)
+                    {
+                        filterText = symbol.Name+".";
+                    }
                     if (type != null)
                     {
                         switch (type.FullName)
@@ -267,24 +261,24 @@ namespace XSharp.LanguageService
                 {
                     showInstanceMembers = false;
                 }
-                else if (dotSelector || state != CompletionState.None)
+                if ((dotSelector || state != CompletionState.None) )
                 {
                     if (string.IsNullOrEmpty(filterText))
                     {
-                        filterText = helpers.TokenListAsString(tokenList, _stopToken);
+                        filterText = helpers.TokenListAsString(tokenList);
                         if (filterText.Length > 0 && !filterText.EndsWith(".") && state != CompletionState.General)
                             filterText += ".";
                     }
-                    if (state.HasFlag(CompletionState.Namespaces))
+                    if (type == null && state.HasFlag(CompletionState.Namespaces))
                     {
                         helpers.AddNamespaces(compList, location, filterText);
                     }
-                    if (state.HasFlag(CompletionState.Interfaces))
+                    if (type == null && state.HasFlag(CompletionState.Interfaces))
                     {
                         helpers.AddTypeNames(compList, location, filterText,  afterDot:true, onlyInterfaces: true);
                         helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
                     }
-                    if (state.HasFlag(CompletionState.Types) )
+                    if (type == null && state.HasFlag(CompletionState.Types) )
                     {
                         helpers.AddTypeNames(compList, location, filterText, afterDot: true, onlyInterfaces: false);
                         helpers.AddXSharpKeywordTypeNames(kwdList, filterText);
@@ -368,16 +362,16 @@ namespace XSharp.LanguageService
                             helpers.AddTypeNames(compList, location, filterText,onlyInterfaces: true, afterDot: false);
                             break;
                         default:
-                            if (state.HasFlag(CompletionState.General))
-                            {
-                                filterText = notProcessed;
-                                helpers.AddGenericCompletion(compList, location, filterText);
-                            }
+                            //if (state.HasFlag(CompletionState.General))
+                            //{
+                            //    filterText = notProcessed;
+                            //    helpers.AddGenericCompletion(compList, location, filterText);
+                            //}
                             break;
                     }
                 }
 
-                if ((kwdList.Count > 0) && _keywordsInAll && XSettings.CompleteKeywords)
+                if ((kwdList.Count > 0) && _keywordsInAll /*&& XSettings.CompleteKeywords*/)
                 {
                     foreach (var item in kwdList.Values)
                         compList.Add(item);

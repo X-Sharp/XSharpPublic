@@ -195,62 +195,62 @@ namespace XSharp.LanguageService
             }
         }
 
-        internal void AddGenericCompletion(XCompletionList compList, XSharpSearchLocation location, string startWith )
-        {
-            if (XSettings.CompleteLocals && compList.Count < XSettings.MaxCompletionEntries)
-            {
-                AddGenericLocals(compList, location, startWith);
-            }
-            if (XSettings.CompleteSelf && compList.Count < XSettings.MaxCompletionEntries)
-            {
-                AddGenericSelfMembers(compList, location, startWith);
-            }
-            if (XSettings.CompleteParent && compList.Count < XSettings.MaxCompletionEntries)
-            {
-                AddGenericInheritedMembers(compList, location, startWith);
-            }
-            if (XSettings.CompleteNamespaces && compList.Count < XSettings.MaxCompletionEntries)
-            {
-                AddNamespaces(compList, location, startWith);
-            }
-            if (XSettings.CompleteTypes && compList.Count < XSettings.MaxCompletionEntries)
-            {
-                 AddTypeNames(compList, location, startWith);
-            }
-            if (XSettings.CompleteFunctions && compList.Count < XSettings.MaxCompletionEntries)
-            {
-                AddGenericFunctions(compList, location, startWith, true);
-            }
-            if (XSettings.CompleteFunctionsP && compList.Count < XSettings.MaxCompletionEntries)
-            {
-                AddGenericFunctions(compList, location, startWith, false);
-            }
-            if (XSettings.CompleteFunctionsA && compList.Count < XSettings.MaxCompletionEntries) 
-            {
-                AddGenericFunctionsAssemblies(compList, location, startWith, false);
-            }
-            if (XSettings.CompleteGlobals && compList.Count < XSettings.MaxCompletionEntries)
-            {
-                AddGenericGlobals(compList, location, startWith, true);
-            }
-            if (XSettings.CompleteGlobalsP && compList.Count < XSettings.MaxCompletionEntries)
-            {
-                AddGenericGlobals(compList, location, startWith, false);
-            }
-            if (XSettings.CompleteGlobalsA && compList.Count < XSettings.MaxCompletionEntries)
-            {
-                AddGenericGlobalsAssemblies(compList, location, startWith, false);
+        //internal void AddGenericCompletion(XCompletionList compList, XSharpSearchLocation location, string startWith )
+        //{
+        //    if (XSettings.CompleteLocals && compList.Count < XSettings.MaxCompletionEntries)
+        //    {
+        //        AddGenericLocals(compList, location, startWith);
+        //    }
+        //    if (XSettings.CompleteSelf && compList.Count < XSettings.MaxCompletionEntries)
+        //    {
+        //        AddGenericSelfMembers(compList, location, startWith);
+        //    }
+        //    if (XSettings.CompleteParent && compList.Count < XSettings.MaxCompletionEntries)
+        //    {
+        //        AddGenericInheritedMembers(compList, location, startWith);
+        //    }
+        //    if (XSettings.CompleteNamespaces && compList.Count < XSettings.MaxCompletionEntries)
+        //    {
+        //        AddNamespaces(compList, location, startWith);
+        //    }
+        //    if (XSettings.CompleteTypes && compList.Count < XSettings.MaxCompletionEntries)
+        //    {
+        //         AddTypeNames(compList, location, startWith);
+        //    }
+        //    if (XSettings.CompleteFunctions && compList.Count < XSettings.MaxCompletionEntries)
+        //    {
+        //        AddGenericFunctions(compList, location, startWith, true);
+        //    }
+        //    if (XSettings.CompleteFunctionsP && compList.Count < XSettings.MaxCompletionEntries)
+        //    {
+        //        AddGenericFunctions(compList, location, startWith, false);
+        //    }
+        //    if (XSettings.CompleteFunctionsA && compList.Count < XSettings.MaxCompletionEntries) 
+        //    {
+        //        AddGenericFunctionsAssemblies(compList, location, startWith, false);
+        //    }
+        //    if (XSettings.CompleteGlobals && compList.Count < XSettings.MaxCompletionEntries)
+        //    {
+        //        AddGenericGlobals(compList, location, startWith, true);
+        //    }
+        //    if (XSettings.CompleteGlobalsP && compList.Count < XSettings.MaxCompletionEntries)
+        //    {
+        //        AddGenericGlobals(compList, location, startWith, false);
+        //    }
+        //    if (XSettings.CompleteGlobalsA && compList.Count < XSettings.MaxCompletionEntries)
+        //    {
+        //        AddGenericGlobalsAssemblies(compList, location, startWith, false);
 
-            }
-            if (XSettings.CompleteSnippets)
-            {
-                // todo: Add Snippets
-            }
-            if (XSettings.CompleteKeywords)
-            {
-                AddXSharpKeywords(compList, startWith);
-            }
-        }
+        //    }
+        //    if (XSettings.CompleteSnippets)
+        //    {
+        //        // todo: Add Snippets
+        //    }
+        //    if (XSettings.CompleteKeywords)
+        //    {
+        //        AddXSharpKeywords(compList, startWith);
+        //    }
+        //}
 
         internal void AddGenericGlobals(XCompletionList compList, XSharpSearchLocation location, string startWith, bool onlyProject)
         {
@@ -645,33 +645,22 @@ namespace XSharp.LanguageService
         /// </summary>
         /// <param name="tokenList"></param>
         /// <returns></returns>
-        internal string TokenListAsString(List<XSharpToken> tokenList, IToken fromToken)
+        internal string TokenListAsString(List<XSharpToken> tokenList)
         {
             string retValue = "";
-            bool include = false;
-            if (fromToken == null)
-                include = true;
             for (int pos = 0; pos < tokenList.Count; pos++)
             {
                 var t = tokenList[pos];
-                if (include)
+                switch (t.Type)
                 {
-                    switch (t.Type)
-                    {
-                        case XSharpLexer.ID:
-                        case XSharpLexer.DOT:
-                        case XSharpLexer.COLON:
-                        case XSharpLexer.COLONCOLON:
-                        case XSharpLexer.LPAREN:
-                        case XSharpLexer.RPAREN:
-                            retValue += t.Text;
-                            break;
-                    }
-
-                }
-                else
-                {
-                    include = (t == fromToken);
+                    case XSharpLexer.ID:
+                    case XSharpLexer.DOT:
+                    case XSharpLexer.COLON:
+                    case XSharpLexer.COLONCOLON:
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.RPAREN:
+                        retValue += t.Text;
+                        break;
                 }
             }
             return retValue;

@@ -182,7 +182,7 @@ namespace XSharp.LanguageService
                                         StartCompletionSession(nCmdID, ch);
                                         break;
                                     default:
-                                        completeCurrentToken(nCmdID, ch);
+                                        //completeCurrentToken(nCmdID, ch);
                                         break;
                                 }
                             }
@@ -200,38 +200,39 @@ namespace XSharp.LanguageService
             
             return result;
         }
-        private void completeCurrentToken(uint nCmdID, char ch)
-        {
-            SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
-            if (cursorIsInStringorComment(caret))
-            {
-                return;
-            }
-            if (char.IsLetterOrDigit(ch) || ch == '_')
-            {
-                var line = caret.GetContainingLine();
 
-                var lineText = line.GetText();
-                var pos = caret.Position - line.Start.Position;
-                int chars = 0;
-                // count the number of characters in the current word. When > limit set in the options dialog then trigger completion
-                for (int i = pos - 1; i >= 0; i--)
-                {
-                    var c = lineText[i];
-                    if (! char.IsLetterOrDigit(c) && c != '_' )
-                    { 
-                        break;
-                    }
-                    chars++;
-                    if (chars >= XSettings.CompleteNumChars)
-                        break;
-                }
-                if (chars >= XSettings.CompleteNumChars)
-                {
-                    StartCompletionSession(nCmdID, '\0', true, true);
-                }
-            }
-        }
+        //private void completeCurrentToken(uint nCmdID, char ch)
+        //{
+        //    SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
+        //    if (cursorIsInStringorComment(caret))
+        //    {
+        //        return;
+        //    }
+        //    if (char.IsLetterOrDigit(ch) || ch == '_')
+        //    {
+        //        var line = caret.GetContainingLine();
+
+        //        var lineText = line.GetText();
+        //        var pos = caret.Position - line.Start.Position;
+        //        int chars = 0;
+        //        // count the number of characters in the current word. When > limit set in the options dialog then trigger completion
+        //        for (int i = pos - 1; i >= 0; i--)
+        //        {
+        //            var c = lineText[i];
+        //            if (! char.IsLetterOrDigit(c) && c != '_' )
+        //            { 
+        //                break;
+        //            }
+        //            chars++;
+        //            if (chars >= XSettings.CompleteNumChars)
+        //                break;
+        //        }
+        //        if (chars >= XSettings.CompleteNumChars)
+        //        {
+        //            StartCompletionSession(nCmdID, '\0', true, true);
+        //        }
+        //    }
+        //}
 
         private void FilterCompletionSession(char ch)
         {

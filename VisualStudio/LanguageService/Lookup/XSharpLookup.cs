@@ -582,6 +582,10 @@ namespace XSharp.LanguageService
                         startOfExpression = false;
                         state = CompletionState.Namespaces;
                         continue;
+                    case XSharpLexer.COMMA:
+                        startOfExpression = true;
+                        state = CompletionState.General;
+                        break;
                     default:
                         hasBracket = false;
                         break;
@@ -611,18 +615,17 @@ namespace XSharp.LanguageService
                     qualifiedName = list.La1 == XSharpLexer.DOT;
                     findMethod = list.La1 == XSharpLexer.LPAREN;
                     findConstructor = list.La1 == XSharpLexer.LCURLY;
+                    if (state.HasFlag(CompletionState.StaticMembers) && !findMethod && result.Count == 0)
+                    {
+                        var props = SearchPropertyOrField(location, currentType, namespacePrefix + currentName, visibility).Where(m => m.IsStatic);
+                        result.AddRange(props);
+                    }
+                    if (state.HasFlag(CompletionState.InstanceMembers) && !findMethod && result.Count == 0)
+                    {
+                        var props = SearchPropertyOrField(location, currentType, namespacePrefix + currentName, visibility).Where(m => !m.IsStatic);
+                        result.AddRange(props);
+                    }
                 }
-                if (state.HasFlag(CompletionState.StaticMembers) && ! findMethod && result.Count == 0)
-                {
-                    var props = SearchPropertyOrField(location, currentType, namespacePrefix+currentName, visibility).Where(m => m.IsStatic);
-                    result.AddRange(props);
-                }
-                if (state.HasFlag(CompletionState.InstanceMembers) && !findMethod && result.Count == 0)
-                {
-                    var props = SearchPropertyOrField(location, currentType, namespacePrefix + currentName, visibility).Where(m => !m.IsStatic);
-                    result.AddRange(props);
-                }
-
                 if (literal)
                 {
                     currentType = GetConstantType(currentToken, location.File);
@@ -741,25 +744,32 @@ namespace XSharp.LanguageService
                             result.AddRange(SearchNamespaces(location, namespacePrefix + currentName));
                         }
                     }
+                    if (result.Count == 0 && currentToken.Type == XSharpLexer.ID)
+                    {
+                        notProcessed = namespacePrefix + currentName;
+                        var sym = new XSourceUndeclaredVariableSymbol(location.Member, notProcessed, location.Member.Range, location.Member.Interval);
+                        result.Add(sym);
+                    }
                     if (result.Count > 0)
                     {
                         symbols.Push(result[0]);
                     }
-                    else 
-                    {
-                        notProcessed = namespacePrefix + currentName;
-                    }
+                }
+                else if (XSharpLexer.IsOperator(currentToken.Type))
+                {
+                    state = CompletionState.General;
+                    startOfExpression = true;
+                    
                 }
                 else
                 {
-                     //Do nothing
+                    //Do nothing
                 }
                 // We have it
                 if (hasBracket && symbols.Count > 0)
                 {
                     var type = currentType;
                     var symbol = symbols.Peek();
-
                 }
             }
             result.Clear();

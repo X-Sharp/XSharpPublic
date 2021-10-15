@@ -827,7 +827,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD FindSystemTypesByName(typeName AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
          usings := AdjustUsings(REF typeName, usings)
          VAR result := XDatabase.GetReferenceTypes(typeName, SELF:DependentAssemblyList )
-         result := FilterUsings(result,usings,typeName, FALSE)
+         result := FilterUsings(result,usings,typeName, TRUE)
          RETURN GetRefType(result)
 
       PRIVATE METHOD GetRefType(found AS IList<XDbResult>) AS IList<XPETypeSymbol>
@@ -903,9 +903,7 @@ BEGIN NAMESPACE XSharpModel
          IF pos > 0
             VAR ns   := typeName:Substring(0,pos)
             myusings:Add(ns)
-            IF ! typeName:EndsWith(".")
-               typeName := typeName:Substring(pos+1)
-            ENDIF
+            typeName := typeName:Substring(pos+1)
          ENDIF
          myusings:AddRange(usings)
          myusings:AddRange(SELF:ImplicitNamespaces)

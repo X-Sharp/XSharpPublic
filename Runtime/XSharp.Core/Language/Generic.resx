@@ -2745,7 +2745,7 @@
     <value>{0} param value is {1}, must be in the range {2}</value>
   </data>
   <data name="WITH_STACK_EMPTY" xml:space="preserve">
-    <value>WITH Expression stack is empty</value>
+    <value>No active WITH block found</value>
   </data>
   <data name="VARIABLE_NOT_ARRAY" xml:space="preserve">
     <value>Variable '{0}' is not an array</value>

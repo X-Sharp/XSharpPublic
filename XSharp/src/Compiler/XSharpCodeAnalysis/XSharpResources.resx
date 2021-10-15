@@ -7551,7 +7551,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Include file '{0}' will be skipped because its values are included in the assembly '{1}'.</value>
   </data>
   <data name="ERR_MissingWithStatement" xml:space="preserve">
-    <value>Cannot locate WITH statement for DOT/COLON expression without left hand side.</value>
+    <value>Cannot locate WITH block for member access expression without left hand side.</value>
+  </data>
+  <data name="WRN_MissingWithStatement" xml:space="preserve">
+    <value>Cannot locate WITH block for member access expression without left hand side. This will be resolved into a late bound call at runtime and may cause an exception when no active WITH block is found.</value>
   </data>
   <data name="ERR_CantCastPtrInAnyCpu" xml:space="preserve">
     <value>Cannot implicitly convert between '{0}' and 'PTR' in platform '{1}' because the size of 'PTR' cannot be determined at compile time.</value>

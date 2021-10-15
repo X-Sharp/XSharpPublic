@@ -91,6 +91,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool XPPInheritFromAbstract = false;
         private bool XPPUntypedmain = false;
         private bool FoxArraySupport = false;
+        private bool LateBinding = false;
 
         #endregion
         public bool AllowDotForInstanceMembers { get; private set; }
@@ -147,6 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public CSharpCommandLineArguments? CommandLineArguments { get; private set; }
         public TextWriter? ConsoleOutput { get; private set; } 
         public bool cs => CaseSensitive;
+        public bool lb => LateBinding;
         public bool vo1 => VoInitAxitMethods;
         public bool vo2 => VONullStrings;
         public bool vo3 => VirtualInstanceMethods;
@@ -217,6 +219,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 XPPUntypedmain = opt.Xpp2;
                 FoxInheritUnknown = opt.Fox1;
                 FoxArraySupport = opt.Fox2;
+                LateBinding = opt.LateBinding;
                 RuntimeAssemblies = opt.RuntimeAssemblies;
                 Overflow = opt.Overflow;
                 ConsoleOutput = opt.ConsoleOutput;
@@ -297,6 +300,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             XPPUntypedmain = opt.XPPUntypedmain;    // xpp2
             FoxInheritUnknown = opt.FoxInheritUnknown;  // fox1
             FoxArraySupport = opt.FoxArraySupport;      // fox2
+            LateBinding = opt.LateBinding;
 
             RuntimeAssemblies = opt.RuntimeAssemblies;
             Overflow = opt.Overflow;
@@ -398,7 +402,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CheckOption(option, FoxArraySupport, context, options);
 
 
-                case CompilerOption.LateBinding:  // lb is handled in cde generation
+                case CompilerOption.LateBinding:  // lb
+                    return CheckOption(option, LateBinding, context, options);
+
                 case CompilerOption.SignedUnsignedConversion: // vo4
                 case CompilerOption.ResolveTypedFunctionPointersToPtr: // vo6
                 case CompilerOption.CompatibleIIF:  // vo10

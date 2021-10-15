@@ -6304,23 +6304,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var stmts = new List<StatementSyntax>();
             var declstmt = GenerateLocalDecl(context.VarName, _impliedType, context.Expr.Get<ExpressionSyntax>());
-            // For FoxPro we add a Push of the local to stack in the runtime
-            // and at the end of the block we pop that variable back off
-            // by doing that the variable is also available in code called from within the block
-            // we could only do that when external code is called. That is an optimization that we can do later.
-            // to make sure that that happens we also add a try finally
-            // begin scope
-            // local oWithObj := <Expression>
-            //    try
-            //       push oWithObj
-            //       [original block]
-            //    finally
-            //       pop
-            //    end try
-            // end scope
-            stmts.Add(declstmt);
-            BlockSyntax block = context.StmtBlk.Get<BlockSyntax>();
-            stmts.AddRange(block.Statements.Nodes);
+            if (_options.Dialect == XSharpDialect.FoxPro)
+            {
+                // For FoxPro we add a Push of the local to stack in the runtime
+                // and at the end of the block we pop that variable back off
+                // by doing that the variable is also available in code called from within the block
+                // we could only do that when external code is called. That is an optimization that we can do later.
+                // to make sure that that happens we also add a try finally
+                // begin scope
+                // local oWithObj := <Expression>
+                //    try
+                //       push oWithObj
+                //       [original block]
+                //    finally
+                //       pop
+                //    end try
+                // end scope
+                var args = MakeArgumentList(MakeArgument(GenerateSimpleName(context.VarName)));
+                var mcall = GenerateMethodCall(ReservedNames.FoxPushWithBlock, args, true);
+                stmts.Add(GenerateExpressionStatement(mcall, context, true));
+                BlockSyntax block = context.StmtBlk.Get<BlockSyntax>();
+                stmts.AddRange(block.Statements.Nodes);
+                var tryblock = MakeBlock(stmts);
+                stmts.Clear();
+                mcall = GenerateMethodCall(ReservedNames.FoxPopWithBlock, true);
+                stmts.Add(GenerateExpressionStatement(mcall, context, true));
+                var finallyblock = MakeBlock(stmts);
+                var finkwd = SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword);
+                var trykwd = SyntaxFactory.MakeToken(SyntaxKind.TryKeyword);
+                var finallyClause = _syntaxFactory.FinallyClause(finkwd, finallyblock);
+                var trystmt = _syntaxFactory.TryStatement(default, trykwd, tryblock, default, finallyClause);
+                stmts.Clear();
+                stmts.Add(declstmt);
+                stmts.Add(trystmt);
+            }
+            else
+            {
+                stmts.Add(declstmt);
+                BlockSyntax block = context.StmtBlk.Get<BlockSyntax>();
+                stmts.AddRange(block.Statements.Nodes);
+            }
             context.Put(MakeBlock(stmts));
         }
 
@@ -7218,13 +7241,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var VarName = GenerateSimpleName(wb.VarName);
                     context.Put(MakeSimpleMemberAccess(VarName, context.Name.Get<SimpleNameSyntax>()));
                 }
-                // todo Allow no parent for the FoxPro dialect
-                // replace the lhs with a call to a special runtime function 
+                else if (_options.Dialect == XSharpDialect.FoxPro && _options.HasOption(CompilerOption.LateBinding, context, PragmaOptions))
+                {
+                    // replace the lhs with a call to a special runtime function 
+                    ExpressionSyntax expr = GenerateMethodCall(ReservedNames.FoxGetWithExpression, true);
+                    expr = MakeSimpleMemberAccess(expr, context.Name.Get<SimpleNameSyntax>());
+                    expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingWithStatement));
+                    context.Put(expr);
+                }
                 else
                 {
-                    var node = GenerateLiteral(0);
-                    node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingWithStatement));
-                    context.Put(node);
+                    var expr = GenerateLiteral(0);
+                    expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingWithStatement));
+                    context.Put(expr);
                 }
             }
             else

@@ -56,7 +56,7 @@
                 case ErrorCode.WRN_BadRefCompareLeft:
                 case ErrorCode.WRN_BadRefCompareRight:
                 case ErrorCode.WRN_PatternIsAmbiguous:
-                //case ErrorCode.WRN_PatternStaticOrInaccessible:
+                case ErrorCode.WRN_PatternNotPublicOrNotInstance:
                 case ErrorCode.WRN_PatternBadSignature:
                 case ErrorCode.WRN_SequentialOnPartialClass:
                 case ErrorCode.WRN_MainCantBeGeneric:
@@ -183,6 +183,7 @@
                 case ErrorCode.WRN_CallerFilePathParamForUnconsumedLocation:
                 case ErrorCode.WRN_CallerMemberNameParamForUnconsumedLocation:
                 case ErrorCode.WRN_MainIgnored:
+                case ErrorCode.WRN_StaticInAsOrIs:
                 case ErrorCode.WRN_DelaySignButNoKey:
                 case ErrorCode.WRN_InvalidVersionFormat:
                 case ErrorCode.WRN_CallerFilePathPreferredOverCallerMemberName:
@@ -211,6 +212,93 @@
                 case ErrorCode.WRN_AttributesOnBackingFieldsNotAvailable:
                 case ErrorCode.WRN_TupleBinopLiteralNameMismatch:
                 case ErrorCode.WRN_TypeParameterSameAsOuterMethodTypeParameter:
+                case ErrorCode.WRN_UnconsumedEnumeratorCancellationAttributeUsage:
+                case ErrorCode.WRN_UndecoratedCancellationTokenParameter:
+                case ErrorCode.WRN_SwitchExpressionNotExhaustive:
+                case ErrorCode.WRN_CaseConstantNamedUnderscore:
+                case ErrorCode.WRN_IsTypeNamedUnderscore:
+                case ErrorCode.WRN_GivenExpressionNeverMatchesPattern:
+                case ErrorCode.WRN_GivenExpressionAlwaysMatchesConstant:
+                case ErrorCode.WRN_SwitchExpressionNotExhaustiveWithUnnamedEnumValue:
+                case ErrorCode.WRN_ThrowPossibleNull:
+                case ErrorCode.WRN_ConvertingNullableToNonNullable:
+                case ErrorCode.WRN_NullReferenceAssignment:
+                case ErrorCode.WRN_NullReferenceReceiver:
+                case ErrorCode.WRN_NullReferenceReturn:
+                case ErrorCode.WRN_NullReferenceArgument:
+                case ErrorCode.WRN_UnboxPossibleNull:
+                case ErrorCode.WRN_DisallowNullAttributeForbidsMaybeNullAssignment:
+                case ErrorCode.WRN_NullabilityMismatchInTypeOnOverride:
+                case ErrorCode.WRN_NullabilityMismatchInReturnTypeOnOverride:
+                case ErrorCode.WRN_NullabilityMismatchInParameterTypeOnOverride:
+                case ErrorCode.WRN_NullabilityMismatchInParameterTypeOnPartial:
+                case ErrorCode.WRN_NullabilityMismatchInTypeOnImplicitImplementation:
+                case ErrorCode.WRN_NullabilityMismatchInReturnTypeOnImplicitImplementation:
+                case ErrorCode.WRN_NullabilityMismatchInParameterTypeOnImplicitImplementation:
+                case ErrorCode.WRN_NullabilityMismatchInTypeOnExplicitImplementation:
+                case ErrorCode.WRN_NullabilityMismatchInReturnTypeOnExplicitImplementation:
+                case ErrorCode.WRN_NullabilityMismatchInParameterTypeOnExplicitImplementation:
+                case ErrorCode.WRN_UninitializedNonNullableField:
+                case ErrorCode.WRN_NullabilityMismatchInAssignment:
+                case ErrorCode.WRN_NullabilityMismatchInArgument:
+                case ErrorCode.WRN_NullabilityMismatchInReturnTypeOfTargetDelegate:
+                case ErrorCode.WRN_NullabilityMismatchInParameterTypeOfTargetDelegate:
+                case ErrorCode.WRN_NullabilityMismatchInArgumentForOutput:
+                case ErrorCode.WRN_NullAsNonNullable:
+                case ErrorCode.WRN_NullableValueTypeMayBeNull:
+                case ErrorCode.WRN_NullabilityMismatchInTypeParameterConstraint:
+                case ErrorCode.WRN_MissingNonNullTypesContextForAnnotation:
+                case ErrorCode.WRN_NullabilityMismatchInConstraintsOnImplicitImplementation:
+                case ErrorCode.WRN_NullabilityMismatchInTypeParameterReferenceTypeConstraint:
+                case ErrorCode.WRN_NullabilityMismatchInExplicitlyImplementedInterface:
+                case ErrorCode.WRN_NullabilityMismatchInInterfaceImplementedByBase:
+                case ErrorCode.WRN_DuplicateInterfaceWithNullabilityMismatchInBaseList:
+                case ErrorCode.WRN_SwitchExpressionNotExhaustiveForNull:
+                case ErrorCode.WRN_ImplicitCopyInReadOnlyMember:
+                case ErrorCode.WRN_NullabilityMismatchInConstraintsOnPartialImplementation:
+                case ErrorCode.WRN_MissingNonNullTypesContextForAnnotationInGeneratedCode:
+                case ErrorCode.WRN_NullReferenceInitializer:
+                case ErrorCode.WRN_NullabilityMismatchInTypeParameterNotNullConstraint:
+                case ErrorCode.WRN_ParameterConditionallyDisallowsNull:
+                case ErrorCode.WRN_ShouldNotReturn:
+                case ErrorCode.WRN_TopLevelNullabilityMismatchInReturnTypeOnOverride:
+                case ErrorCode.WRN_TopLevelNullabilityMismatchInParameterTypeOnOverride:
+                case ErrorCode.WRN_TopLevelNullabilityMismatchInReturnTypeOnImplicitImplementation:
+                case ErrorCode.WRN_TopLevelNullabilityMismatchInParameterTypeOnImplicitImplementation:
+                case ErrorCode.WRN_TopLevelNullabilityMismatchInReturnTypeOnExplicitImplementation:
+                case ErrorCode.WRN_TopLevelNullabilityMismatchInParameterTypeOnExplicitImplementation:
+                case ErrorCode.WRN_DoesNotReturnMismatch:
+                case ErrorCode.WRN_MemberNotNull:
+                case ErrorCode.WRN_MemberNotNullWhen:
+                case ErrorCode.WRN_MemberNotNullBadMember:
+                case ErrorCode.WRN_ParameterDisallowsNull:
+                case ErrorCode.WRN_ConstOutOfRangeChecked:
+                case ErrorCode.WRN_GeneratorFailedDuringInitialization:
+                case ErrorCode.WRN_GeneratorFailedDuringGeneration:
+                case ErrorCode.WRN_GivenExpressionAlwaysMatchesPattern:
+                case ErrorCode.WRN_IsPatternAlways:
+                case ErrorCode.WRN_NullabilityMismatchInReturnTypeOnPartial:
+                case ErrorCode.WRN_ParameterNotNullIfNotNull:
+                case ErrorCode.WRN_ReturnNotNullIfNotNull:
+                case ErrorCode.WRN_SwitchExpressionNotExhaustiveWithWhen:
+                case ErrorCode.WRN_SwitchExpressionNotExhaustiveForNullWithWhen:
+                case ErrorCode.WRN_PrecedenceInversion:
+                case ErrorCode.WRN_AnalyzerReferencesFramework:
+                case ErrorCode.WRN_RecordEqualsWithoutGetHashCode:
+                case ErrorCode.WRN_RecordNamedDisallowed:
+                case ErrorCode.WRN_UnassignedThisAutoProperty:
+                case ErrorCode.WRN_UnassignedThis:
+                case ErrorCode.WRN_ParamUnassigned:
+                case ErrorCode.WRN_UseDefViolationProperty:
+                case ErrorCode.WRN_UseDefViolationField:
+                case ErrorCode.WRN_UseDefViolationThis:
+                case ErrorCode.WRN_UseDefViolationOut:
+                case ErrorCode.WRN_UseDefViolation:
+                case ErrorCode.WRN_SyncAndAsyncEntryPoints:
+                case ErrorCode.WRN_ParameterIsStaticClass:
+                case ErrorCode.WRN_ReturnTypeIsStaticClass:
+                case ErrorCode.WRN_UnreadRecordParameter:
+                case ErrorCode.WRN_DoNotCompareFunctionPointers:
                 case ErrorCode.WRN_UnsafeImplied:
                 case ErrorCode.WRN_PreProcessorWarning:
                 case ErrorCode.WRN_DuplicateDefineDiff:
@@ -251,6 +339,7 @@
                 case ErrorCode.WRN_TryWithoutCatch:
                 case ErrorCode.WRN_Unsupported:
                 case ErrorCode.WRN_PropertyTypeChangedInParentType:
+                case ErrorCode.WRN_MissingWithStatement:
                 case ErrorCode.WRN_XPPSuperIVarsAlwaysShared:
                 case ErrorCode.WRN_XPPFrozedNotSupported:
                 case ErrorCode.WRN_XPPVarIsInNotSupported:

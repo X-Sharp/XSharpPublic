@@ -9,6 +9,24 @@ using XSharpModel;
 
 namespace XSharp.CodeDom
 {
+
+    public static class CodeDomExtensions
+    {
+        public static bool HasSourceCode( this CodeObject e)
+        {
+            return e.UserData.Contains(XSharpCodeConstants.USERDATA_SOURCECODE);
+        }
+        public static string GetSourceCode(this CodeObject e)
+        {
+            if (e.HasSourceCode())
+            {
+                var result = (string)e.UserData[XSharpCodeConstants.USERDATA_SOURCECODE];
+                return result;
+            }
+            return "";
+        }
+    }
+
     /// <summary>
     /// Enhanced Type reference with System.Type property, since CodeTypeReference does not hold on to the type
     /// </summary>

@@ -593,6 +593,8 @@ namespace XSharp.LanguageService
                 bool isType = XSharpLexer.IsType(currentToken.Type);
                 var isId = currentToken.Type == XSharpLexer.ID ||
                                   currentToken.Type == XSharpLexer.KWID ||
+                                  currentToken.Type == XSharpLexer.SELF ||
+                                  currentToken.Type == XSharpLexer.SUPER ||
                                   currentToken.Type == XSharpLexer.COLONCOLON ||
                                   isType;
                 if (isId && !list.Eoi() && list.La1 == XSharpLexer.LT)

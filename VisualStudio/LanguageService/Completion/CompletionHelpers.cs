@@ -704,7 +704,7 @@ namespace XSharp.LanguageService
                 var XVar = new XSourceVariableSymbol(member, "SELF", member.Range, member.Interval, member.ParentName);
                 XVar.File = walker.File;
                 locals.Add(XVar);
-                if (member.ParentType.BaseType != null)
+                if (! String.IsNullOrEmpty(member.ParentType.BaseTypeName))
                 {
                     XVar = new XSourceVariableSymbol(member, "SUPER", member.Range, member.Interval, member.ParentType.BaseTypeName);
                     XVar.File = walker.File;

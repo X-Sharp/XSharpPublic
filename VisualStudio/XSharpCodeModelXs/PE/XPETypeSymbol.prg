@@ -183,6 +183,7 @@ BEGIN NAMESPACE XSharpModel
         ENDIF
 
         INTERNAL METHOD Resolve() AS VOID
+            local hasBaseMembers := FALSE as LOGIC
             IF !SELF:Assembly:Loaded
                 RETURN
             ENDIF
@@ -200,6 +201,7 @@ BEGIN NAMESPACE XSharpModel
                     if _baseType != NULL
                         _baseType:Resolve()
                         VAR basemembers := _baseType:XMembers:Where( { m => m.Visibility != Modifiers.Private })
+                        hasBaseMembers := basemembers:Count() > 0
                         aMembers:AddRange( basemembers )
                     ENDIF
                 ENDIF
@@ -244,8 +246,9 @@ BEGIN NAMESPACE XSharpModel
 
                     NEXT
                 ENDIF
-
-                SELF:_initialized := TRUE
+                if hasBaseMembers .or. String.IsNullOrEmpty(SELF:BaseTypeName)
+                    SELF:_initialized := TRUE
+                endif
             ENDIF
         RETURN
 
@@ -258,9 +261,9 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             SELF:Resolve()
             IF ! String.IsNullOrEmpty(elementName)
-                tempMembers:AddRange(SELF:_members:Where ( {m => m.Name.StartsWith(elementName, StringComparison.OrdinalIgnoreCase) }))
+                tempMembers:AddRange(SELF:_allmembers:Where ( {m => m.Name.StartsWith(elementName, StringComparison.OrdinalIgnoreCase) }))
             ELSE
-                tempMembers:AddRange(SELF:_members)
+                tempMembers:AddRange(SELF:_allmembers)
             ENDIF
             RETURN tempMembers
 
@@ -271,7 +274,7 @@ BEGIN NAMESPACE XSharpModel
             IF lExact
                 SELF:Resolve()
                 var result := List<IXMemberSymbol>{}
-                result:AddRange(SELF:_members:Where ( {m => m.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase) }))
+                result:AddRange(SELF:_allmembers:Where ( {m => m.Name.Equals(elementName, StringComparison.OrdinalIgnoreCase) }))
                 RETURN result
             ELSE
                 RETURN SELF:GetMembers(elementName)

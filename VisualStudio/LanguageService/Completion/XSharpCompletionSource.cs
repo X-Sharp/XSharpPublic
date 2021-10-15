@@ -226,7 +226,15 @@ namespace XSharp.LanguageService
                         else if (xvar is XSourceVariableSymbol sourcevar)
                         {
                             typeName = sourcevar.TypeName;
-                            type = sourcevar.File.FindType(typeName);
+                            if (sourcevar.ResolvedType != null)
+                            {
+                                type = sourcevar.ResolvedType;
+                                typeName = type.FullName;
+                            }
+                            else
+                            {
+                                type = sourcevar.File.FindType(typeName);
+                            }
 
                         }
                         else if (xvar is XPEParameterSymbol par)
@@ -263,7 +271,7 @@ namespace XSharp.LanguageService
                 }
                 if ((dotSelector || state != CompletionState.None) )
                 {
-                    if (string.IsNullOrEmpty(filterText))
+                    if (string.IsNullOrEmpty(filterText) && type ==null)
                     {
                         filterText = helpers.TokenListAsString(tokenList);
                         if (filterText.Length > 0 && !filterText.EndsWith(".") && state != CompletionState.General)

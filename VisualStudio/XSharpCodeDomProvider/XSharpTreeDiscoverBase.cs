@@ -195,7 +195,13 @@ namespace XSharp.CodeDom
         
 
 #region Helpers
-
+        /// <summary>
+        /// Save the original source for the attributes to the userdata, so Hidden, Export etc are
+        /// saved even when the code generator uses PRIVATE and PUBLIC
+        /// </summary>
+        /// <param name="codeobject"></param>
+        /// <param name="attributes"></param>
+        /// <param name="context"></param>
         protected void AddMemberAttributes( CodeObject codeobject, MemberAttributes attributes, XSharpParserRuleContext context)
         {
             string sourceText = "";
@@ -274,7 +280,7 @@ namespace XSharp.CodeDom
             if (sName.Contains("[") || sName.Contains(">") || customType)
             {
                 // work around to fix type problems with generics and arrays
-                expr.UserData[XSharpCodeConstants.USERDATA_CODE] = sName;
+                expr.UserData[XSharpCodeConstants.USERDATA_SOURCECODE] = sName;
             }
             return expr;
         }
@@ -337,7 +343,7 @@ namespace XSharp.CodeDom
             //
             if (expr != null)
             {
-                expr.UserData[XSharpCodeConstants.USERDATA_CODE] = source;
+                expr.UserData[XSharpCodeConstants.USERDATA_SOURCECODE] = source;
             }
             return expr;
         }
@@ -1041,6 +1047,31 @@ namespace XSharp.CodeDom
             }
             return expr;
         }
+
+        protected void ContextToClassAttributes(XCodeTypeDeclaration newClass, XSharpParser.ClassModifiersContext modifiers)
+        {
+            foreach (var t in modifiers._Tokens)
+            {
+                switch (t.Type)
+                {
+                    case XSharpParser.PARTIAL:
+                        newClass.IsPartial = true;
+                        break;
+                    case XSharpParser.SEALED:
+                        newClass.Attributes |= MemberAttributes.Final;
+                        break;
+                    case XSharpParser.ABSTRACT:
+                        newClass.Attributes |= MemberAttributes.Abstract;
+                        break;
+                    case XSharpParser.INTERNAL:
+                        newClass.Attributes |= MemberAttributes.Assembly;
+                        break;
+                    case XSharpParser.PUBLIC:
+                        newClass.Attributes |= MemberAttributes.Public;
+                        break;
+                }
+            }
+        }
         protected TypeAttributes ContextToClassModifiers(XSharpParser.ClassModifiersContext modifiers)
         {
             TypeAttributes retValue = TypeAttributes.Public;
@@ -1154,7 +1185,10 @@ namespace XSharp.CodeDom
         }
         protected MemberAttributes ContextToConstructorModifiers(XSharpParser.ConstructorModifiersContext modifiers)
         {
-            return decodeMemberAttributes(modifiers._Tokens);
+            var result = decodeMemberAttributes(modifiers._Tokens);
+            if (modifiers.STATIC().Length > 0)
+                result |= MemberAttributes.Static;
+            return result;
         }
 
         protected MemberAttributes ContextToEventModifiers(XSharpParser.MemberModifiersContext modifiers)
@@ -1200,11 +1234,17 @@ namespace XSharp.CodeDom
         }
 
 
+        /// <summary>
+        /// Save the location of the member in the UserData of the CodeObject, so the editor will open the right line when selecting an event.
+        /// </summary>
+        /// <param name="newElement"></param>
+        /// <param name="line"></param>
+        /// <param name="col"></param>
         protected void FillCodeDomDesignerData(CodeObject newElement, int line, int col)
         {
             CodeDomDesignerData data = new CodeDomDesignerData();
             //
-            data.CaretPosition = new System.Drawing.Point(col, line);
+            data.CaretPosition = new System.Drawing.Point(col-1, line);
             data.FileName = this.CurrentFile;
             // point is where the designer will try to focus if the
             // user wants to add event handler stuff.
@@ -1212,31 +1252,45 @@ namespace XSharp.CodeDom
             newElement.UserData[typeof(System.Drawing.Point)] = data.CaretPosition;
         }
 
-        protected void FillCodeSource(CodeObject element, ParserRuleContext context, IList<IToken> tokens)
+        /// <summary>
+        /// Save the source code for a member in the UserData of the CodeObject
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="context"></param>
+        /// <param name="tokens"></param>
+        protected void FillCodeSource(CodeObject element, ParserRuleContext context)
         {
-            StringBuilder prototype = new StringBuilder();
-            var index = ((XSharpToken) context.Start).OriginalTokenIndex;
-            var lastindex = ((XSharpToken)context.Stop).OriginalTokenIndex;
-            while (index > 0 && index < tokens.Count)
-            {
-                prototype.Append(tokens[index].Text);
-                if (index == lastindex)
-                    break;
-                index++;
-            }
-            element.UserData[XSharpCodeConstants.USERDATA_CODE] = prototype.ToString();
+            var source = GetRuleSource(context);
+            element.UserData[XSharpCodeConstants.USERDATA_SOURCECODE] = source;
             FillCodeDomDesignerData(element, context.Start.Line, context.Start.Column);
         }
 
-        protected CodeSnippetTypeMember CreateSnippetMember(ParserRuleContext context)
+
+        protected string GetRuleSource(ParserRuleContext context)
         {
-            // The original source code
             var xtoken = context.Start as XSharpToken;
             var start = xtoken.OriginalTokenIndex;
 
             var startIndex = _tokens[start].StartIndex;
             int length = context.Stop.StopIndex - startIndex + 1;
             string sourceCode = this.SourceCode.Substring(startIndex, length);
+            if (xtoken.HasTrivia)
+            {
+                var trivia = xtoken.TriviaAsText;
+                if (trivia.IndexOf('\r') >= 0 || trivia.IndexOf('\n') >0)
+                {
+                    trivia = trivia.Replace("\r", "");
+                    trivia = trivia.Replace("\n", "");
+                    sourceCode = trivia + sourceCode;
+                }
+            }
+            return sourceCode;
+        }
+
+        protected CodeSnippetTypeMember CreateSnippetMember(ParserRuleContext context)
+        {
+            // The original source code
+            string sourceCode = GetRuleSource(context);
             XCodeSnippetTypeMember snippet = new XCodeSnippetTypeMember(sourceCode);
             FillCodeDomDesignerData(snippet, context.Start.Line, context.Start.Column);
             return snippet;

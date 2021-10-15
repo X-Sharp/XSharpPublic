@@ -101,8 +101,8 @@ namespace XSharp.CodeDom
                 walker.Walk(discover, xtree);
                 //
                 ccu = discover.CodeCompileUnit;
-                ccu.UserData[XSharpCodeConstants.USERDATA_FILENAME] = this.FileName;
-                ccu.UserData[XSharpCodeConstants.USERDATA_CODE]     = source;
+                ccu.UserData[XSharpCodeConstants.USERDATA_FILENAME]   = this.FileName;
+                ccu.UserData[XSharpCodeConstants.USERDATA_SOURCECODE] = source;
             }
             catch ( Exception ex )
             {

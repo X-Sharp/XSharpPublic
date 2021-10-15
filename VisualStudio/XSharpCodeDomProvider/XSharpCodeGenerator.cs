@@ -105,6 +105,7 @@ namespace XSharp.CodeDom
         private bool useTabs;
         private int tabSize;
         private int indentSize;
+        private bool suppressCodeGen = false;
 
         private string keywordBEGIN;
         private string keywordEND;
@@ -509,7 +510,7 @@ namespace XSharp.CodeDom
                 // Do we have some Source Code pushed here by our Parser ??
                 // when so then that source code also includes the constructor line
                 writeTrivia(e.UserData);
-                if (!writeOriginalCode(e.UserData))
+                if (!writeOriginalCode(e))
                 {
                     if (e.CustomAttributes.Count > 0)
                     {
@@ -596,6 +597,8 @@ namespace XSharp.CodeDom
 
         protected override void GenerateEvent(CodeMemberEvent e, CodeTypeDeclaration c)
         {
+            if (suppressCodeGen)
+                return;
             if (!this.IsCurrentDelegate && !this.IsCurrentEnum)
             {
                 writeTrivia(e.UserData);
@@ -649,6 +652,8 @@ namespace XSharp.CodeDom
 
         protected override void GenerateField(CodeMemberField e)
         {
+            if (suppressCodeGen)
+                return;
             if (!this.IsCurrentDelegate && !this.IsCurrentInterface)
             {
                 bool fromDesigner = true;
@@ -668,14 +673,14 @@ namespace XSharp.CodeDom
                     if (e.InitExpression != null)
                     {
                         this.writeAssignment();
-                        bool hasCode = e.InitExpression.UserData.Contains(XSharpCodeConstants.USERDATA_CODE);
+                        bool hasCode = e.InitExpression.HasSourceCode();
                         if (fromDesigner || ! hasCode)
                         {
                             this.GenerateExpression(e.InitExpression);
                         }
                         else
                         {
-                            writeOriginalCode(e.InitExpression.UserData);
+                            writeOriginalCode(e.InitExpression);
                         }
                             
                     }
@@ -695,14 +700,14 @@ namespace XSharp.CodeDom
                     if (e.InitExpression != null)
                     {
                         this.writeAssignment();
-                        bool hasCode = e.InitExpression.UserData.Contains(XSharpCodeConstants.USERDATA_CODE);
+                        bool hasCode = e.InitExpression.HasSourceCode();
                         if (fromDesigner || !hasCode)
                         {
                             this.GenerateExpression(e.InitExpression);
                         }
                         else
                         {
-                            writeOriginalCode(e.InitExpression.UserData);
+                            writeOriginalCode(e.InitExpression);
                         }
                     }
                     base.Output.Write(" "+keywordAS);
@@ -786,13 +791,13 @@ namespace XSharp.CodeDom
             this.Indent--;
             base.Output.WriteLine(keywordENDDO);
         }
-        protected bool writeOriginalCode(IDictionary userData)
+        protected bool writeOriginalCode(CodeObject e)
         {
-            if (userData.Contains(XSharpCodeConstants.USERDATA_CODE))
+            if (e.HasSourceCode())
             {
                 var saveindent = this.Indent;
                 this.Indent = 0;
-                string sourceCode = userData[XSharpCodeConstants.USERDATA_CODE] as string;
+                string sourceCode = e.GetSourceCode();
                 this.Output.Write(sourceCode);
                 this.Indent = saveindent;
                 return true;
@@ -816,13 +821,17 @@ namespace XSharp.CodeDom
 
         protected override void GenerateMethod(CodeMemberMethod e, CodeTypeDeclaration c)
         {
+            if (suppressCodeGen)
+                return;
+
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
                 writeTrivia(e.UserData);
 
                 // Do we have some Source Code pushed here by our Parser ??
                 // this code contains the method declaration line as well
-                if (!writeOriginalCode(e.UserData))
+                // and also the body of the method
+                if (!writeOriginalCode(e))
                 {
                     if (e.CustomAttributes.Count > 0)
                     {
@@ -1131,6 +1140,11 @@ namespace XSharp.CodeDom
 
         protected override void GenerateProperty(CodeMemberProperty e, CodeTypeDeclaration c)
         {
+            // Inside the form editor Properties are parsed into
+            // Snippets, so this should normally not happen
+            if (suppressCodeGen)
+                return;
+
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
                 writeTrivia(e.UserData);
@@ -1250,6 +1264,8 @@ namespace XSharp.CodeDom
         protected override void GenerateSnippetMember(CodeSnippetTypeMember e)
         {
             // the base class resets indent for Snippet Members
+            if (suppressCodeGen)
+                return;
             this.Indent = this.indentSave;
             writeTrivia(e.UserData);
             base.Output.Write(e.Text);
@@ -1326,6 +1342,11 @@ namespace XSharp.CodeDom
 
         protected override void GenerateTypeEnd(CodeTypeDeclaration e)
         {
+            if (suppressCodeGen)
+            {
+                suppressCodeGen = false;
+                return;
+            }
             if (!this.IsCurrentDelegate)
             {
                 this.Indent--;
@@ -1355,8 +1376,34 @@ namespace XSharp.CodeDom
             }
         }
 
+        private void writeTypeModifiers(CodeTypeDeclaration e)
+        {
+            if (e.TypeAttributes.HasFlag(TypeAttributes.Sealed) )
+            {
+                base.Output.Write(keywordSEALED);
+            }
+            if (e.TypeAttributes.HasFlag( TypeAttributes.Abstract) )
+            {
+                base.Output.Write(keywordABSTRACT);
+            }
+            if (e.IsPartial)
+            {
+                base.Output.Write(keywordPARTIAL);
+            }
+        }
+
         protected override void GenerateTypeStart(CodeTypeDeclaration e)
         {
+
+            if (e.IsInterface || e.IsStruct || e.IsEnum)
+            {
+                if (e.HasSourceCode()  && writeOriginalCode(e))
+                {
+                    suppressCodeGen = true;
+                    return;
+                }
+            }
+            suppressCodeGen = false;
             writeTrivia(e.UserData);
             writeCodeBefore(e.UserData);
             if (e.CustomAttributes.Count > 0)
@@ -1368,10 +1415,7 @@ namespace XSharp.CodeDom
                 this.OutputTypeAttributes(e);
                 if (e.IsStruct)
                 {
-                    if (e.IsPartial)
-                    {
-                        base.Output.Write(keywordPARTIAL);
-                    }
+                    writeTypeModifiers(e);
                     base.Output.Write(keywordSTRUCTURE);
                 }
                 else if (e.IsEnum)
@@ -1380,21 +1424,10 @@ namespace XSharp.CodeDom
                 }
                 else if (e.IsClass)
                 {
-                    if ((e.TypeAttributes & TypeAttributes.Sealed) == TypeAttributes.Sealed)
-                    {
-                        base.Output.Write(keywordSEALED);
-                    }
-                    if ((e.TypeAttributes & TypeAttributes.Abstract) == TypeAttributes.Abstract)
-                    {
-                        base.Output.Write(keywordABSTRACT);
-                    }
-                    if (e.IsPartial)
-                    {
-                        base.Output.Write(keywordPARTIAL);
-                    }
+                    writeTypeModifiers(e);
                     base.Output.Write(keywordCLASS);
                 }
-                else
+                else if (e.IsInterface)
                 {
                     base.Output.Write(keywordINTERFACE);
                 }
@@ -1565,10 +1598,10 @@ namespace XSharp.CodeDom
                 str = "global::" ;
             }
             CodeTypeReference arrayElementType = typeRef;
-            if (typeRef.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
+            if (typeRef.HasSourceCode())
             {
                 // some types with parsing problems have their definition saved as userdata
-                var res = typeRef.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
+                var res = typeRef.GetSourceCode();
                 return res.TrimStart();
             }
 
@@ -2052,7 +2085,7 @@ namespace XSharp.CodeDom
 
         private void OutputTypeAttributes(CodeTypeDeclaration e)
         {
-            if ((e.Attributes & MemberAttributes.New) != ((MemberAttributes)0))
+            if (e.Attributes.HasFlag(MemberAttributes.New))
             {
                 //this.Output.Write("NEW ");
             }

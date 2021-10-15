@@ -33,17 +33,42 @@ namespace XSharp.CodeDom
             currentClass = null;
         }
 
-        public override void EnterClass_(XSharpParser.Class_Context context)
+        private void enterType(XSharpParserRuleContext context)
         {
-            // pop previous class
             classes.Push(currentClass);
             currentClass = context;
             FieldList.Add(context, new List<XCodeMemberField>());
+
+        }
+        private void exitType(XSharpParserRuleContext context)
+        {
+            currentClass = classes.Pop();
+
+        }
+        public override void EnterInterface_(XSharpParser.Interface_Context context)
+        {
+            enterType(context);
+        }
+        public override void ExitInterface_(XSharpParser.Interface_Context context)
+        {
+            exitType(context);
+            
+        }
+        public override void EnterStructure_(XSharpParser.Structure_Context context)
+        {
+            enterType(context);
+        }
+        public override void ExitStructure_(XSharpParser.Structure_Context context)
+        {
+            exitType(context);
+        }
+        public override void EnterClass_(XSharpParser.Class_Context context)
+        {
+            enterType(context);
         }
         public override void ExitClass_(XSharpParser.Class_Context context)
         {
-            // restore previous class 
-            currentClass = classes.Pop();
+            exitType(context);
         }
         //classvarModifiers   : (Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC
         //                      | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+
@@ -122,6 +147,7 @@ namespace XSharp.CodeDom
                     field.InitExpression = BuildExpression(varContext.Initializer, false);
                 }
                 FillCodeDomDesignerData(field, varContext.Start.Line, varContext.Start.Column);
+                // write original source for the attributes
                 AddMemberAttributes(field, classVarModifiers, context.Modifiers);
                 writeTrivia(field, context);
                 //

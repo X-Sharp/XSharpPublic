@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -79,12 +79,15 @@
       <li styleclass="Body Text">Added a new __WinDate type that is used to store DATE values inside a VOSTRUCT or UNION. (#773)</li>
       <li styleclass="Body Text">Fixed several problems with FoxPro arrays</li>
       <li styleclass="Body Text">Removed TypeConstraints on T for functions that manipulate __ArrayBase&lt;T&gt;</li>
+      <li styleclass="Body Text">Fixed a problem with Directory() including files that match by shortname but not by longname (#800)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">RDDs</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">When creating a new DBF with the DBFCDX driver an existing CDX file is not automatically deleted anymore (#603)</li>
       <li styleclass="Body Text">Fixed a problem with updating memo contents in DBFCDX (#782)</li>
       <li styleclass="Body Text">Fixed a runtime exception when creating DBFCDX index files with long filenames (#774)</li>
+      <li styleclass="Body Text">Fixed a problem with with DBSeek() with active OrderDescend() finding even deleted records</li>
+      <li styleclass="Body Text">Fixed a problem with a missing call to AdsClearCallbackFunction() in the ADS RDD in OrderCreate() (#794)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Macro compiler</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -116,6 +119,7 @@
       <li styleclass="Body Text">The various code generators inside VS now follow the capitalization rules from the source code editor.</li>
       <li styleclass="Body Text">The intellisense database now has views that return the unique namespaces in the source code and in the external assemblies</li>
       <li styleclass="Body Text">The X# specific menu points in the Tools menu have been moved to a separate submenut</li>
+      <li styleclass="Body Text">Added option for the WinForms designer to generate backup (.bak) files of form.prg and form.designer.prg files when saving (#799)</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

@@ -72,7 +72,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             /// <inheritdoc />
         METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
             LOCAL cTag AS STRING
-            IF info:Order IS STRING VAR strOrder
+            IF info:Order IS STRING VAR strOrder .and. ! String.IsNullOrWhiteSpace(strOrder)
                 cTag := strOrder
             ELSE
                 cTag := Path.GetFileNameWithoutExtension(info:BagName)

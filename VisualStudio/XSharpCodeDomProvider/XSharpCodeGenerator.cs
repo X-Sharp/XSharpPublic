@@ -480,15 +480,14 @@ namespace XSharp.CodeDom
             base.Output.WriteLine(keywordENDIF);
         }
 
-        private void writeMemberAccessModifier(IDictionary UserData, MemberAttributes newAttributes, bool scope, bool field = false)
+        private void writeMemberAccessModifier(CodeObject o, MemberAttributes newAttributes, bool scope, bool field = false)
         {
-            if (UserData.Contains(XSharpCodeConstants.USERDATA_MODIFIERS) &&
-                        UserData.Contains(XSharpCodeConstants.USERDATA_ATTRIBUTES))
+            if (o.HasModifiers())
             {
-                var attrs = (MemberAttributes)UserData[XSharpCodeConstants.USERDATA_ATTRIBUTES];
+                var attrs = o.GetMemberAttributes();
                 if (attrs == newAttributes)
                 {
-                    base.Output.Write((string)UserData[XSharpCodeConstants.USERDATA_MODIFIERS]);
+                    base.Output.Write(o.GetModifiers());
                     return;
                 }
             }
@@ -509,14 +508,14 @@ namespace XSharp.CodeDom
             {
                 // Do we have some Source Code pushed here by our Parser ??
                 // when so then that source code also includes the constructor line
-                writeTrivia(e.UserData);
+                writeTrivia(e);
                 if (!writeOriginalCode(e))
                 {
                     if (e.CustomAttributes.Count > 0)
                     {
                         this.GenerateAttributes(e.CustomAttributes);
                     }
-                    writeMemberAccessModifier(e.UserData, e.Attributes, false);
+                    writeMemberAccessModifier(e, e.Attributes, false);
                     base.Output.Write(keywordCONSTRUCTOR+"(");
                     this.OutputParameters(e.Parameters);
                     base.Output.WriteLine(")"+keywordSTRICT);
@@ -601,14 +600,14 @@ namespace XSharp.CodeDom
                 return;
             if (!this.IsCurrentDelegate && !this.IsCurrentEnum)
             {
-                writeTrivia(e.UserData);
+                writeTrivia(e);
                 if (e.CustomAttributes.Count > 0)
                 {
                     this.GenerateAttributes(e.CustomAttributes);
                 }
                 if (e.PrivateImplementationType == null)
                 {
-                    writeMemberAccessModifier(e.UserData, e.Attributes,false);
+                    writeMemberAccessModifier(e, e.Attributes,false);
                 }
                 else
                 {
@@ -657,12 +656,11 @@ namespace XSharp.CodeDom
             if (!this.IsCurrentDelegate && !this.IsCurrentInterface)
             {
                 bool fromDesigner = true;
-                if (e.UserData.Contains(XSharpCodeConstants.USERDATA_FROMDESIGNER))
-                {
-                    fromDesigner = (bool)e.UserData[XSharpCodeConstants.USERDATA_FROMDESIGNER];
-                }
-
-                writeTrivia(e.UserData);
+				if (e.HasFromDesigner())
+				{
+					fromDesigner = e.GetFromDesigner();
+				}
+                writeTrivia(e);
                 if (this.IsCurrentEnum)
                 {
                     if (e.CustomAttributes.Count > 0)
@@ -693,7 +691,7 @@ namespace XSharp.CodeDom
                         this.GenerateAttributes(e.CustomAttributes);
                     }
 
-                    writeMemberAccessModifier(e.UserData, e.Attributes, false, true);
+                    writeMemberAccessModifier(e, e.Attributes, false, true);
 
                     this.OutputIdentifier(e.Name);
 
@@ -826,7 +824,7 @@ namespace XSharp.CodeDom
 
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
-                writeTrivia(e.UserData);
+                writeTrivia(e);
 
                 // Do we have some Source Code pushed here by our Parser ??
                 // this code contains the method declaration line as well
@@ -847,7 +845,7 @@ namespace XSharp.CodeDom
                     {
                         if (e.PrivateImplementationType == null)
                         {
-                            writeMemberAccessModifier(e.UserData, e.Attributes, true);
+                            writeMemberAccessModifier(e, e.Attributes, true);
                         }
                         else
                         {
@@ -963,7 +961,7 @@ namespace XSharp.CodeDom
 
             _using.Clear();
             base.GenerateCompileUnitStart(e);
-            if (e.UserData.Contains(XSharpCodeConstants.USERDATA_NOHEADER))
+            if (e.GetNoHeader())
             {
                 generateComment = false;
             }
@@ -990,7 +988,7 @@ namespace XSharp.CodeDom
                 entrypointCode = null;
             }
             base.GenerateCompileUnitEnd(e);
-            writeTrivia(e.UserData, true);
+            writeTrivia(e, true);
 
         }
 
@@ -1041,13 +1039,13 @@ namespace XSharp.CodeDom
         }
 
 
-        private bool writeTrivia(IDictionary userData, bool ending = false)
+        private bool writeTrivia(CodeObject o, bool ending = false)
         {
             string key;
             key = ending ? XSharpCodeConstants.USERDATA_ENDINGTRIVIA : XSharpCodeConstants.USERDATA_LEADINGTRIVIA;
-            if (userData.Contains(key))
+            if (o.UserData.Contains(key))
             {
-                string trivia = userData[key] as string;
+                string trivia = o.UserData[key] as string;
                 _writeTrivia(trivia);
                 var l1 = trivia.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                 var l2 = new List<string>();
@@ -1066,11 +1064,11 @@ namespace XSharp.CodeDom
             return false;
         }
 
-        private void writeCodeBefore(IDictionary userData)
+        private void writeCodeBefore(CodeObject e)
         {
-            if (userData.Contains(XSharpCodeConstants.USERDATA_CODEBEFORE))
+            if (e.HasCodeBefore())
             {
-                string before = (string)userData[XSharpCodeConstants.USERDATA_CODEBEFORE];
+                string before = e.GetCodeBefore();
                 if (! before.Contains("<auto-generated>"))
                 {
                     this.Output.Write(before);
@@ -1080,11 +1078,11 @@ namespace XSharp.CodeDom
 
         protected override void GenerateNamespace(CodeNamespace e)
         {
-            writeTrivia(e.UserData);
+            writeTrivia(e);
             this.GenerateCommentStatements(e.Comments);
 
             // Generate Imports BEFORE the NameSpace
-            writeCodeBefore(e.UserData);
+            writeCodeBefore(e);
             //
             this.GenerateNamespaceStart(e);
             //this.Output.WriteLine("");
@@ -1107,8 +1105,8 @@ namespace XSharp.CodeDom
         {
             if (!_using.Contains(e.Namespace.ToLowerInvariant()))
             {
-                writeCodeBefore(e.UserData);
-                writeTrivia(e.UserData);
+                writeCodeBefore(e);
+                writeTrivia(e);
                 base.Output.Write(keywordUSING);
                 this.OutputIdentifier(e.Namespace);
                 base.Output.WriteLine();
@@ -1147,7 +1145,7 @@ namespace XSharp.CodeDom
 
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
-                writeTrivia(e.UserData);
+                writeTrivia(e);
                 if (e.CustomAttributes.Count > 0)
                 {
                     this.GenerateAttributes(e.CustomAttributes);
@@ -1157,7 +1155,7 @@ namespace XSharp.CodeDom
                 {
                     if (e.PrivateImplementationType == null)
                     {
-                        writeMemberAccessModifier(e.UserData, e.Attributes, true);
+                        writeMemberAccessModifier(e, e.Attributes, true);
                     }
                     else
                     {
@@ -1267,7 +1265,7 @@ namespace XSharp.CodeDom
             if (suppressCodeGen)
                 return;
             this.Indent = this.indentSave;
-            writeTrivia(e.UserData);
+            writeTrivia(e);
             base.Output.Write(e.Text);
         }
 
@@ -1327,7 +1325,7 @@ namespace XSharp.CodeDom
         {
             if (this.IsCurrentClass || this.IsCurrentStruct)
             {
-                writeTrivia(e.UserData);
+                writeTrivia(e);
                 if (e.CustomAttributes.Count > 0)
                 {
                     this.GenerateAttributes(e.CustomAttributes);
@@ -1351,7 +1349,7 @@ namespace XSharp.CodeDom
             {
                 this.Indent--;
                 
-                if( ! writeTrivia(e.UserData, true))
+                if( ! writeTrivia(e, true))
                 {
                     base.Output.WriteLine();
                 }
@@ -1404,8 +1402,8 @@ namespace XSharp.CodeDom
                 }
             }
             suppressCodeGen = false;
-            writeTrivia(e.UserData);
-            writeCodeBefore(e.UserData);
+            writeTrivia(e);
+            writeCodeBefore(e);
             if (e.CustomAttributes.Count > 0)
             {
                 this.GenerateAttributes(e.CustomAttributes);

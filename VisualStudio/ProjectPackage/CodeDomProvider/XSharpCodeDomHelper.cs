@@ -44,28 +44,29 @@ namespace XSharp.CodeDom
             {
                 // Do the same with the form
                 CodeNamespace nameSpace;
-                CodeTypeDeclaration className;
-                XSharpCodeDomHelper.HasPartialClass(compileUnit, out nameSpace, out className);
+                CodeTypeDeclaration formClass;
+                HasPartialClass(compileUnit, out nameSpace, out formClass);
                 // and merge only if ...
-                if ((String.Compare(designerNamespace.Name, nameSpace.Name, true) == 0) &&
-                    (String.Compare(designerClass.Name, className.Name, true) == 0))
+                if ((string.Compare(designerNamespace.Name, nameSpace.Name, true) == 0) &&
+                    (string.Compare(designerClass.Name, formClass.Name, true) == 0))
                 {
                     // Ok, same Namespace & same Class : Merge !
 
                     // So, the "main" class is...
-                    CodeTypeDeclaration mergedType = new CodeTypeDeclaration(className.Name);
+                    CodeTypeDeclaration mergedType = new CodeTypeDeclaration(formClass.Name);
                     // And does inherit from
-                    mergedType.BaseTypes.AddRange(className.BaseTypes);
-                    mergedType.TypeAttributes = className.TypeAttributes;
+                    mergedType.BaseTypes.AddRange(formClass.BaseTypes);
+                    mergedType.IsPartial = true;
+                    mergedType.TypeAttributes = formClass.TypeAttributes;
                     // Now, read members from each side, and put a stamp on each
                     foreach (CodeTypeMember member in designerClass.Members)
                     {
-                        member.UserData[XSharpCodeConstants.USERDATA_FROMDESIGNER] = true;
+                        member.SetFromDesigner(true);
                         mergedType.Members.Add(member);
                     }
-                    foreach (CodeTypeMember member in className.Members)
+                    foreach (CodeTypeMember member in formClass.Members)
                     {
-                        member.UserData[XSharpCodeConstants.USERDATA_FROMDESIGNER] = false;
+                        member.SetFromDesigner(false);
                         mergedType.Members.Add(member);
                     }
                     // A class is always in a NameSpace
@@ -74,6 +75,7 @@ namespace XSharp.CodeDom
                     // Now, add it to the CompileUnit
                     mergedCodeCompileUnit.Namespaces.Clear();
                     mergedCodeCompileUnit.Namespaces.Add(mergedNamespace);
+                    mergedCodeCompileUnit.SetMerged();
                     //
                 }
                 else
@@ -88,40 +90,6 @@ namespace XSharp.CodeDom
                 mergedCodeCompileUnit = designerCompileUnit;
             }
             return mergedCodeCompileUnit;
-        }
-
-        /// <summary>
-        /// Reading the CodeCompileUnit, enumerate all NameSpaces, enumerate All Types, searching for the first Class declaration
-        /// </summary>
-        /// <param name="ccu"></param>
-        /// <returns></returns>
-        public static CodeTypeDeclaration FindFirstClass(CodeCompileUnit ccu)
-        {
-            CodeNamespace namespaceName;
-            return FindFirstClass(ccu, out namespaceName);
-        }
-
-        public static CodeTypeDeclaration FindFirstClass(CodeCompileUnit ccu, out CodeNamespace namespaceName)
-        {
-            namespaceName = null;
-            CodeTypeDeclaration rstClass = null;
-            if (ccu != null)
-            {
-                foreach (CodeNamespace namespace2 in ccu.Namespaces)
-                {
-                    foreach (CodeTypeDeclaration declaration in namespace2.Types)
-                    {
-                        //  The first Type == The first Class declaration
-                        if (declaration.IsClass)
-                        {
-                            namespaceName = namespace2;
-                            rstClass = declaration;
-                            break;
-                        }
-                    }
-                }
-            }
-            return rstClass;
         }
 
         /// <summary>
@@ -204,7 +172,6 @@ namespace XSharp.CodeDom
             }
             return retValue;
         }
-
         /// <summary>
         /// Return the FileName with .Designer inserted
         /// </summary>
@@ -279,7 +246,7 @@ namespace XSharp.CodeDom
             {
                 WriteLine(value.Key.ToString() + "  = " + value.Value.ToString());
             }
-            CodeTypeDeclaration ctd = FindFirstClass(ccu);
+            CodeTypeDeclaration ctd = ccu.GetFirstClass();
             WriteLine(Line);
             Write("CodeTypeDeclaration : ");
             WriteLine(ctd.Name);

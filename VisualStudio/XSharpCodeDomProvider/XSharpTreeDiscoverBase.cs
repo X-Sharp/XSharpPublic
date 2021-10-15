@@ -211,8 +211,8 @@ namespace XSharp.CodeDom
 
                 if (!string.IsNullOrWhiteSpace(sourceText))
                 {
-                    codeobject.UserData[XSharpCodeConstants.USERDATA_MODIFIERS] = sourceText;
-                    codeobject.UserData[XSharpCodeConstants.USERDATA_ATTRIBUTES] = attributes;
+                   // Save original modifiers, so we can keep their preference
+                    codeobject.SetModifiers(attributes, sourceText);
                 }
             }
         }
@@ -280,7 +280,7 @@ namespace XSharp.CodeDom
             if (sName.Contains("[") || sName.Contains(">") || customType)
             {
                 // work around to fix type problems with generics and arrays
-                expr.UserData[XSharpCodeConstants.USERDATA_SOURCECODE] = sName;
+                expr.SetSourceCode(sName);
             }
             return expr;
         }
@@ -343,7 +343,7 @@ namespace XSharp.CodeDom
             //
             if (expr != null)
             {
-                expr.UserData[XSharpCodeConstants.USERDATA_SOURCECODE] = source;
+                expr.SetSourceCode(source);
             }
             return expr;
         }
@@ -1261,7 +1261,7 @@ namespace XSharp.CodeDom
         protected void FillCodeSource(CodeObject element, ParserRuleContext context)
         {
             var source = GetRuleSource(context);
-            element.UserData[XSharpCodeConstants.USERDATA_SOURCECODE] = source;
+            element.SetSourceCode(source);
             FillCodeDomDesignerData(element, context.Start.Line, context.Start.Column);
         }
 

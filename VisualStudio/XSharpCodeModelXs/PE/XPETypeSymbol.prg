@@ -183,6 +183,9 @@ BEGIN NAMESPACE XSharpModel
         ENDIF
 
         INTERNAL METHOD Resolve() AS VOID
+            IF !SELF:Assembly:Loaded
+                RETURN
+            ENDIF
             IF ! SELF:_initialized .AND. SELF:_typeDef != NULL
                 VAR aMembers := List<XPEMemberSymbol>{}
                 AddMembers(aMembers, SELF:_typeDef, SELF)

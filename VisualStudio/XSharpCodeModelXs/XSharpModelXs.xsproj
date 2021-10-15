@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.props" Condition="Exists('..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.props')" />
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
     <ProjectGuid>EED6843B-B727-4F08-AA32-CA0F48FDDE3F</ProjectGuid>
@@ -39,7 +40,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.9.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.9.0.1</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>true</NamedArgs>
@@ -91,6 +92,13 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
+    <Reference Include="Community.VisualStudio.Toolkit, Version=15.0.76.270, Culture=neutral, PublicKeyToken=79441d341a79572c">
+      <Name>Community.VisualStudio.Toolkit</Name>
+      <AssemblyName>Community.VisualStudio.Toolkit.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\lib\net46\Community.VisualStudio.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="EnvDTE">
       <Name>EnvDTE</Name>
       <SpecificVersion>False</SpecificVersion>
@@ -105,11 +113,6 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations">
-      <Name>System.ComponentModel.DataAnnotations</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.ComponentModel.DataAnnotations.dll</AssemblyName>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.115.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139">
@@ -118,16 +121,6 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <HintPath>..\..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.0\lib\net46\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing">
-      <Name>System.Drawing</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.Drawing.dll</AssemblyName>
-    </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Name>System.Windows.Forms</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
     </Reference>
     <Reference Include="System.Xml">
       <Name>System.Xml</Name>
@@ -215,6 +208,7 @@
     <None Include="..\..\Common\BuildNumber.h">
       <Link>BuildNumber.h</Link>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
@@ -246,4 +240,5 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
   </Target>
+  <Import Project="..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.targets" Condition="Exists('..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.targets')" />
 </Project>

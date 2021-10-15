@@ -38,6 +38,8 @@ using XSharp.LanguageService;
 using Community.VisualStudio.Toolkit;
 using File = System.IO.File;
 
+using VsParser = global::LanguageService.CodeAnalysis.XSharp;
+
 namespace XSharp.Project
 {
     /// <summary>
@@ -101,7 +103,6 @@ namespace XSharp.Project
             _dialectIsCached = false;
             this.OnProjectPropertyChanged += XSharpProjectNode_OnProjectPropertyChanged;
             InitializeImageList();
-
             InitializeCATIDs();
 
             // Used by (at least) the AddFromTemplate in order (for eg) to have Form1.Designer.Prg depending on Form1.prg
@@ -123,7 +124,7 @@ namespace XSharp.Project
                 var prop = e.NewValue;
                 if (!Enum.TryParse(prop, true, out _dialect))
                 {
-                    _dialect = XSharpDialect.Core;
+                    _dialect = VsParser.XSharpDialect.Core;
                 }
                 _dialectIsCached = true;
             }
@@ -1968,8 +1969,8 @@ namespace XSharp.Project
             base.Dispose(disposing);
         }
         private bool _dialectIsCached = false;
-        private XSharpDialect _dialect;
-        public XSharpDialect Dialect
+        private VsParser.XSharpDialect _dialect;
+        public VsParser.XSharpDialect Dialect
         {
             get
             {
@@ -1981,7 +1982,7 @@ namespace XSharp.Project
                     var prop = GetProjectProperty("Dialect");
                     if (!Enum.TryParse(prop, true, out _dialect))
                     {
-                        _dialect = XSharpDialect.Core;
+                        _dialect = VsParser.XSharpDialect.Core;
                     }
                     _dialectIsCached = true;
                     return _dialect;

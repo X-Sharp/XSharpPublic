@@ -258,7 +258,6 @@ namespace XSharp.LanguageService
                         {
                             case XSharpTypeNames.XSharpUsual:
                             case XSharpTypeNames.VulcanUsual:
-                            case XSharpTypeNames.SystemObject:
                                 type = null;
                                 break;
                         }

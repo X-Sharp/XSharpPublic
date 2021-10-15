@@ -170,7 +170,7 @@ namespace XSharp.Project
             }
             if (xfile != null)
             {
-                xfile.WaitParsing();
+                xfile.ParseContents();
             }
             // (something that inherits from system.windows.forms.form or system.windows.forms.usercontrol
             // We should do this with proper parsing. For now we simply test the first word after the INHERIT keyword

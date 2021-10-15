@@ -20,7 +20,6 @@ BEGIN NAMESPACE XSharpModel
         #region Fields
         PROPERTY Id           AS INT64          AUTO      GET INTERNAL SET
         PRIVATE _globalType 	AS XSourceTypeSymbol
-        PRIVATE _parsed			AS LOGIC
         PRIVATE _type			AS XFileType
         PRIVATE _typeList		AS Dictionary<STRING, XSourceTypeSymbol>
         PRIVATE _entityList	AS List<XSourceEntity>
@@ -35,7 +34,6 @@ BEGIN NAMESPACE XSharpModel
             SELF:FullPath := fullPath
             SELF:LastChanged := System.DateTime.MinValue
             SELF:_type := GetFileType(fullPath)
-            SELF:_parsed := ! SELF:HasCode
             SELF:_project := project
 
         PROPERTY CommentTasks AS IList<XCommentTask> AUTO
@@ -204,25 +202,27 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
             ENDIF
 
-        METHOD WaitParsing() AS VOID
+        METHOD ParseContents(cSource := "" AS STRING) AS VOID
             //
             IF SELF:HasCode
 
-                //WriteOutputMessage("-->> WaitParsing()")
+                //WriteOutputMessage("-->> ParseContents()")
                 BEGIN LOCK SELF
 
-                    IF ! SELF:Parsed
-                        BEGIN USING VAR walker := SourceWalker{SELF}
-                            TRY
+                    BEGIN USING VAR walker := SourceWalker{SELF}
+                        TRY
+                            if String.IsNullOrEmpty(cSource)
                                 walker:Parse(FALSE)
+                            else
+                                walker:Parse(cSource, FALSE)
+                            endif
 
-                            CATCH exception AS System.Exception
-                                XSolution.WriteException(exception)
-                            END TRY
-                        END USING
-                    ENDIF
+                        CATCH exception AS System.Exception
+                            XSolution.WriteException(exception)
+                        END TRY
+                    END USING
                 END LOCK
-                //WriteOutputMessage("<<-- WaitParsing()")
+                //WriteOutputMessage("<<-- ParseContents()")
             ENDIF
 
        METHOD WriteOutputMessage(message AS STRING) AS VOID
@@ -299,18 +299,6 @@ BEGIN NAMESPACE XSharpModel
             END GET
         END PROPERTY
 
-        PROPERTY Parsed AS LOGIC
-            GET
-                //WriteOutputMessage("-->> Parsed")
-                LOCAL flag AS LOGIC
-                BEGIN LOCK SELF
-
-                    flag := SELF:_parsed
-                END LOCK
-                //WriteOutputMessage("<<-- Parsed")
-                RETURN flag
-            END GET
-        END PROPERTY
 
         PROPERTY Project AS XProject
             GET
@@ -395,6 +383,12 @@ BEGIN NAMESPACE XSharpModel
                endif
             END SET
         END PROPERTY
+
+        METHOD LoadCurrentContents() AS VOID
+            LOCAL lIsOpen := FALSE AS LOGIC
+            var source := SELF:Project:ProjectNode:DocumentGetText(SELF:FullPath, REF lIsOpen)
+            SELF:ParseContents(source)
+            SELF:Interactive := TRUE
 
 
         PROPERTY XamlCodeBehindFile AS STRING

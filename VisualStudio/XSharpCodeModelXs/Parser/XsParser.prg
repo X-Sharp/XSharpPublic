@@ -417,12 +417,25 @@ BEGIN NAMESPACE XSharpModel
          CASE XSharpLexer.PP_UNDEF
          CASE XSharpLexer.PP_COMMAND
          CASE XSharpLexer.PP_TRANSLATE
+
              VAR type := SELF:La1
              VAR start := SELF:Lt1
              VAR name  := SELF:Lt2:Text
              VAR eol   := SELF:Lt2
+             var hasId := IsId(SELF:La2)
+             if SELF:La2 == XSharpLexer.BACKSLASH
+                eol   := SELF:Lt3
+                if ! hasId .and. IsId(eol:Type)
+                    name  := eol:Text
+                    hasId := TRUE
+                endif
+             ENDIF
              DO WHILE SELF:La1 != XSharpLexer.EOS
                 eol := SELF:Lt1
+                if ! hasId .and. IsId(eol:Type)
+                    name  := eol:Text
+                    hasId := TRUE
+                endif
                 SELF:Consume()
              ENDDO
              SELF:GetSourceInfo(start, eol, OUT VAR range, OUT VAR interval, OUT VAR source)
@@ -1102,6 +1115,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
       PRIVATE PROPERTY La3 AS INT => _list:La3
       PRIVATE PROPERTY Lt1 AS XSharpToken => _list:Lt1
       PRIVATE PROPERTY Lt2 AS XSharpToken => _list:Lt2
+      PRIVATE PROPERTY Lt3 AS XSharpToken => _list:Lt3
       PRIVATE PROPERTY LastToken AS XSharpToken => _list:LastToken
       PRIVATE METHOD La(nToken AS LONG) AS LONG => _list:La(nToken)
       PRIVATE METHOD Lt(nToken AS LONG) AS XSharpToken => _list:Lt(nToken)
@@ -2444,7 +2458,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             RETURN " "+SELF:ConsumeAndGetText()
          ELSEIF SELF:La1 = XSharpLexer.QMARK
             RETURN SELF:ConsumeAndGetText()
-         ELSEIF SELF:La1 == XSharpLexer.LBRKT
+         ELSEIF SELF:La1 == XSharpLexer.LBRKT .and. (SELF:La2 != XSharpLexer.ID .and. SELF:La2 != XSharpLexer.UDC_KEYWORD .and. ! XSharpLexer.IsKeyword(SELF:La2))
             VAR tokens := List<XSharpToken>{}
             tokens:Add(SELF:ConsumeAndGet())
             LOCAL openCount := 1 as LONG

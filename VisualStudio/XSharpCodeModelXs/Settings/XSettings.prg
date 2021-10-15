@@ -78,21 +78,21 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY CodeGeneratorPublicStyle         AS PublicStyle AUTO
         PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
 
-        PUBLIC STATIC PROPERTY CompleteLocals                   AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteSelf                     AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteParent                   AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteNamespaces               AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteTypes                    AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteKeywords                 AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteSnippets                 AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteGlobals                  AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteGlobalsP                 AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteGlobalsA                 AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteFunctions                AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteFunctionsP               AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteFunctionsA               AS LOGIC AUTO := TRUE
-        PUBLIC STATIC PROPERTY CompleteNumChars                 AS LONG AUTO := 4
-        PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := 25000
+//        PUBLIC STATIC PROPERTY CompleteLocals                   AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteSelf                     AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteParent                   AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteNamespaces               AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteTypes                    AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteKeywords                 AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteSnippets                 AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteGlobals                  AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteGlobalsP                 AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteGlobalsA                 AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteFunctions                AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteFunctionsP               AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteFunctionsA               AS LOGIC AUTO := TRUE
+//        PUBLIC STATIC PROPERTY CompleteNumChars                 AS LONG AUTO := 4
+        PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := Int32.MaxValue
 
         PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO := NoOutput
         PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO := NoException

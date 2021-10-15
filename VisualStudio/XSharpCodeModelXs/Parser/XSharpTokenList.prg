@@ -102,13 +102,13 @@ BEGIN NAMESPACE XSharpModel
            if result:StartsWith("@@")
                 result := result:Substring(2)
            endif
-           return result 
+           return result
         endif
         RETURN ""
 
       METHOD ConsumeUntilEndToken(nType as LONG) AS VOID
             SELF:ConsumeUntilEndToken(nType, OUT VAR _)
-      METHOD ConsumeUntilEndToken(nType as LONG, endToken OUT XSharpToken) AS VOID
+      METHOD ConsumeUntilEndToken(nType as LONG, endToken OUT XSharpToken) AS LOGIC
           LOCAL nested := 0 as LONG
           endToken := NULL
           DO WHILE ! Eoi()
@@ -126,9 +126,10 @@ BEGIN NAMESPACE XSharpModel
                 var t := SELF:ConsumeAndGet()
                 if nextType == nType .and. nested <= 0
                     endToken := t
-                    RETURN
+                    RETURN TRUE
                 ENDIF
-          ENDDO
+         ENDDO
+         RETURN FALSE
       METHOD ConsumeAndGetAny(nTypes PARAMS LONG[]) AS XSharpToken
          IF nTypes:Contains(SELF:La1)
             RETURN SELF:ConsumeAndGet()

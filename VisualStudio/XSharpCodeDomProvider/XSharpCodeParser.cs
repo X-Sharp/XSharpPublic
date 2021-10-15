@@ -101,10 +101,16 @@ namespace XSharp.CodeDom
                 walker.Walk(discover, xtree);
                 //
                 ccu = discover.CodeCompileUnit;
-                ccu.UserData[XSharpCodeConstants.USERDATA_FILENAME]   = this.FileName;
-                ccu.UserData[XSharpCodeConstants.USERDATA_SOURCECODE] = source;
+                var firstType = ccu.GetFirstClass();
+                if (firstType != null)
+                {
+                    // save a copy of the member list to the CCU
+                    ccu.SetMembers(firstType.Members);
+                }
+                // save file name & original source
+                ccu.SetFile(this.FileName, source);
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
                 if (System.Diagnostics.Debugger.IsAttached)
                     Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);

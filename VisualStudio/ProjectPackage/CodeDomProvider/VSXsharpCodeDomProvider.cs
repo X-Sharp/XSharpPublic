@@ -109,11 +109,11 @@ namespace XSharp.Project
                             // Now we have Two CodeCompileUnit, we must merge them
                             WriteOutputMessage("Start merge compile Units " + this.FileName);
                             mergedCompileUnit = XSharpCodeDomHelper.MergeCodeCompileUnit(compileUnit, designerCompileUnit);
-                            mergedCompileUnit.UserData[XSharpCodeConstants.USERDATA_HASDESIGNER] = true;
-                            mergedCompileUnit.UserData[XSharpCodeConstants.USERDATA_FILENAME] = prgFileName;
+                            mergedCompileUnit.SetFromDesigner(true);
+                            mergedCompileUnit.SetFile(prgFileName, "");
                             // Save CCU for GenerateCode operation, it will be faster and easier than to recreate it
-                            mergedCompileUnit.UserData[XSharpCodeConstants.USERDATA_CCU_FORM] = compileUnit;
-                            mergedCompileUnit.UserData[XSharpCodeConstants.USERDATA_CCU_DESIGNER] = designerCompileUnit;
+                            mergedCompileUnit.SetFormCCU(compileUnit);
+                            mergedCompileUnit.SetDesignerCCU(designerCompileUnit);
                             WriteOutputMessage("End merge compile Units " + this.FileName);
                             return mergedCompileUnit;
                         }
@@ -141,43 +141,59 @@ namespace XSharp.Project
         public override void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer, CodeGeneratorOptions options)
         {
             // Does that CodeCompileUnit comes from a "Merged" unit ?
-            if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_HASDESIGNER))
+            if (compileUnit.IsMerged())
             {
                 // Retrieve the Form Class
-                CodeTypeDeclaration designerClass = XSharpCodeDomHelper.FindDesignerClass(compileUnit);
+                CodeTypeDeclaration combinedClass = XSharpCodeDomHelper.FindDesignerClass(compileUnit);
                 // and retrieve the filename of the prg file
-                String prgFileName = (string)compileUnit.UserData[XSharpCodeConstants.USERDATA_FILENAME];
+                string prgFileName = compileUnit.GetFileName();
                 // Build the Designer FileName
-                String designerPrgFile = XSharpCodeDomHelper.BuildDesignerFileName(prgFileName);
+                string designerPrgFile = XSharpCodeDomHelper.BuildDesignerFileName(prgFileName);
                 // Retrieve Both CodeCompileUnit
-                CodeCompileUnit formCCU = (CodeCompileUnit)compileUnit.UserData[XSharpCodeConstants.USERDATA_CCU_FORM];
-                CodeCompileUnit designCCU = (CodeCompileUnit)compileUnit.UserData[XSharpCodeConstants.USERDATA_CCU_DESIGNER];
+                CodeCompileUnit formCCU = compileUnit.GetFormCCU();
+                CodeCompileUnit designCCU = compileUnit.GetDesignerFormCCU();
+                var formMembers = new CodeTypeMemberCollection(formCCU.GetMembers());
+                foreach (CodeObject m in formMembers)
+                {
+                    m.Setwritten(false);
+                }
                 // suppress generating the "generated code" header in the form.prg
-                formCCU.UserData[XSharpCodeConstants.USERDATA_NOHEADER] = true;
-                //
-                CodeTypeDeclaration formClass = XSharpCodeDomHelper.FindFirstClass(formCCU);
-                CodeTypeDeclaration designClass = XSharpCodeDomHelper.FindFirstClass(designCCU);
+                formCCU.SetNoHeader();
+
+                CodeTypeDeclaration formClass = formCCU.GetFirstClass();
+                CodeTypeDeclaration designClass = designCCU.GetFirstClass();
                 // Now, remove the members
-                CopyClassProperties(designerClass, formClass);
-                CopyClassProperties(designerClass, designClass);
+                CopyClassProperties(combinedClass, formClass);
+                CopyClassProperties(combinedClass, designClass);
+                combinedClass.IsPartial = true;
                 formClass.Members.Clear();
                 designClass.Members.Clear();
                 // Now, split the members
-                foreach (CodeTypeMember ctm in designerClass.Members)
+                // And make sure no members are deleted
+                foreach (CodeTypeMember ctm in combinedClass.Members)
                 {
                     // Was it a member that we have found in the original merged CodeCompileUnits ?
-                    if (ctm.UserData.Contains(XSharpCodeConstants.USERDATA_FROMDESIGNER))
+                    if (ctm.HasFromDesigner())
                     {
-                        if ((bool)ctm.UserData[XSharpCodeConstants.USERDATA_FROMDESIGNER])
+                        if (ctm.GetFromDesigner())
                         {
                             // Comes from the Designer.prg file
                             // so go back to Designer.prg
                             designClass.Members.Add(ctm);
+                            ctm.Setwritten(true);
                         }
                         else
                         {
                             // Comes from the original Form file
                             formClass.Members.Add(ctm);
+                            foreach (CodeTypeMember member in formMembers)
+                            {
+                                if (member == ctm)
+                                {
+                                    member.Setwritten( true);
+                                    break;
+                                }
+                            }
                         }
                     }
                     else
@@ -187,13 +203,25 @@ namespace XSharp.Project
                         if (ctm is CodeMemberMethod)
                         {
                             formClass.Members.Add(ctm);
+                            ctm.Setwritten(true);
                         }
                         else
                         {
                             designClass.Members.Add(ctm);
+                            ctm.Setwritten(true);
                         }
                     }
                 }
+
+                // Check for members that are not written
+                foreach (CodeTypeMember member in formMembers)
+                {
+                    if (!member.Waswritten())
+                    {
+                        formClass.Members.Add(member);
+                    }
+                }
+
                 // now, we must save both CodeCompileUnit
                 // The received TextWriter is pointing to the Form
                 // so we must create our own TextWriter for the Designer
@@ -264,7 +292,7 @@ namespace XSharp.Project
                     designClass.Members.Clear();
                     foreach (CodeTypeMember ctm in resultClass.Members)
                     {
-                        ctm.UserData[XSharpCodeConstants.USERDATA_FROMDESIGNER] = true;
+                        ctm.SetFromDesigner(true);
                         designClass.Members.Add(ctm);
                     }
                 }
@@ -291,7 +319,7 @@ namespace XSharp.Project
                 // Don't forget to set the name of the file where the source is...
                 parser.FileName = prgFileName;
                 resultDesigner = parser.Parse(generatedSource);
-                resultClass = XSharpCodeDomHelper.FindFirstClass(resultDesigner);
+                resultClass = resultDesigner.GetFirstClass();
                 // just to be sure...
                 if (resultClass != null)
                 {
@@ -299,7 +327,7 @@ namespace XSharp.Project
                     formClass.Members.Clear();
                     foreach (CodeTypeMember ctm in resultClass.Members)
                     {
-                        ctm.UserData[XSharpCodeConstants.USERDATA_FROMDESIGNER] = false;
+                        ctm.SetFromDesigner(false);
                         formClass.Members.Add(ctm);
                     }
                 }
@@ -307,22 +335,16 @@ namespace XSharp.Project
                 // We have updated the file and the types that are stored inside each CCU that have been merged in compileUnit
                 //XSharpCodeDomHelper.MergeCodeCompileUnit(compileUnit, formCCU, designCCU);
                 // And update...
-                designerClass.Members.Clear();
-                foreach (CodeTypeMember m in designClass.Members)
-                {
-                    designerClass.Members.Add(m);
-                }
-                foreach (CodeTypeMember m in formClass.Members)
-                {
-                    designerClass.Members.Add(m);
-                }
+                combinedClass.Members.Clear();
+                combinedClass.Members.AddRange(designClass.Members);
+                combinedClass.Members.AddRange(formClass.Members);
             }
             else
             {
                 // suppress generating the "generated code" header
                 if (writer is  DocDataTextWriter)       // Form Editor
                 {
-                    compileUnit.UserData[XSharpCodeConstants.USERDATA_NOHEADER] = true;
+                    compileUnit.SetNoHeader();
                 }
                 base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
                 writer.Flush();
@@ -330,20 +352,20 @@ namespace XSharp.Project
                 // Now, we must re-read it and parse again
                 if (writer is DocDataTextWriter)
                 {
-                    CodeTypeDeclaration formClass = XSharpCodeDomHelper.FindFirstClass(compileUnit);
+                    CodeTypeDeclaration formClass = compileUnit.GetFirstClass();
                     IServiceProvider provider = (DocDataTextWriter)writer;
                     DocData docData = (DocData)provider.GetService(typeof(DocData));
                     DocDataTextReader ddtr = new DocDataTextReader(docData);
                     // Retrieve
                     string generatedSource = ddtr.ReadToEnd();
                     XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
-                    if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_FILENAME))
+                    if (compileUnit.HasFileName())
                     {
-                        parser.FileName = (string)compileUnit.UserData[XSharpCodeConstants.USERDATA_FILENAME];
+                        parser.FileName = compileUnit.GetFileName();
                     }
                     generatedSource = _projectNode.SynchronizeKeywordCase(generatedSource, parser.FileName);
                     CodeCompileUnit resultCcu = parser.Parse(generatedSource);
-                    CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindFirstClass(resultCcu);
+                    CodeTypeDeclaration resultClass = resultCcu.GetFirstClass();
                     // just to be sure...
                     if (resultClass != null)
                     {

@@ -13,8 +13,9 @@ USING XSharp.Internal
 USING System.Collections.Generic
 
 PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
-    VAR x := XSharp.MemVar{"InitTheClass",0}
-    x:Value := 42 // make sure the class constructor gets called
+    // make sure the class constructor gets called
+    VAR x := XSharp.MemVar{"InitTheClass",42}
+    x:Value := 43   // assign a value to suppress the warning about an unused var
     XSharp.MemVar.Put := __FoxMemVarPut
     RETURN
 
@@ -109,10 +110,18 @@ FUNCTION __FoxPopWithBlock() AS OBJECT
     if stack:Count > 0
         return stack:Pop()
     ENDIF
-    THROW Error{__VfpStr(VFPErrors.WITH_STACK_EMPTY)}
+    var error := Error{__VfpStr(VFPErrors.WITH_STACK_EMPTY)}
+    error:Gencode := EG_NULLVAR
+    error:FuncSym := ProcName(1)
+    error:StackTrace := ErrorStack(1)
+    THROW error
 FUNCTION __FoxGetWithExpression() AS OBJECT
     LOCAL stack := __GetFoxWithStack() as Stack<OBJECT>
     if stack:Count > 0
         return stack:Peek()
     ENDIF
-    THROW Error{__VfpStr(VFPErrors.WITH_STACK_EMPTY)}
+    var error := Error{__VfpStr(VFPErrors.WITH_STACK_EMPTY)}
+    error:Gencode := EG_NULLVAR
+    error:FuncSym := ProcName(1)
+    error:StackTrace := ErrorStack(1)
+    THROW error

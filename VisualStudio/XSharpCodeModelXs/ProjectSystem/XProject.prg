@@ -14,7 +14,7 @@ USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
 USING System.Diagnostics
 USING System.Reflection
-
+USING Community.VisualStudio.Toolkit
 
 #pragma options ("az", ON)
 BEGIN NAMESPACE XSharpModel
@@ -45,13 +45,14 @@ BEGIN NAMESPACE XSharpModel
 
       PRIVATE _cachedAllNamespaces               AS IList<STRING>
       PUBLIC  FileWalkComplete				     AS XProject.OnFileWalkComplete
-	  PUBLIC  ProjectWalkComplete				 AS XProject.OnProjectWalkComplete
+      PUBLIC  ProjectWalkComplete				 AS XProject.OnProjectWalkComplete
 
       #endregion
       #region Properties
       PROPERTY Id   AS INT64                     GET _id INTERNAL SET _id := value
       PROPERTY FileWalkCompleted                 AS LOGIC AUTO
       PROPERTY FileName                          AS STRING GET iif (_projectNode != null, _projectNode:Url, "")
+      PROPERTY HasFiles                          AS LOGIC GET _SourceFilesDict:Keys:Count > 0 .or. _OtherFilesDict:Keys:Count > 0
 
       PROPERTY DependentAssemblyList             AS STRING
          GET
@@ -613,8 +614,45 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN TRUE
 
+      METHOD FindProjectInSolution( oItem as SolutionItem) AS Community.VisualStudio.Toolkit.Project
+            FOREACH item as SolutionItem in oItem:Children
+                if item:Type == SolutionItemType.Project .and. String.Compare(item:FullPath, SELF:FileName, true) == 0
+                    var project := (Community.VisualStudio.Toolkit.Project) item
+                    return project
+                endif
+                var result := FindProjectInSolution(item)
+                if result != NULL
+                   return result
+                endif
+            NEXT
+            return null
+
+
+      METHOD EnumFiles(oItem as SolutionItem, files as List<String>) AS VOID
+           FOREACH item as SolutionItem in oItem:Children
+                SWITCH item:Type
+                CASE SolutionItemType.Project
+                CASE SolutionItemType.PhysicalFile
+                    files:Add(item:FullPath)
+                END SWITCH
+                EnumFiles(item, files)
+           NEXT
+
+	  PRIVATE METHOD LoadFiles() AS VOID
+        var solution := VS.Solutions:GetCurrentSolution()
+        var project  :=FindProjectInSolution(solution)
+        if project != NULL
+             var files := List<String>{}
+             EnumFiles(project, files)
+             FOREACH var file in files
+                 SELF:AddFile(file)
+             NEXT
+        endif
 
       METHOD FindXFile(fullPath AS STRING) AS XFile
+         IF ! SELF:HasFiles
+		 	SELF:LoadFiles()
+         ENDIF
          IF ! String.IsNullOrEmpty(fullPath)
             VAR file := SELF:_SourceFilesDict:Find(fullPath,SELF)
             IF file == NULL
@@ -939,7 +977,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN Lookup(typeName, usings)
 
       METHOD Lookup(typeName AS STRING, usings AS IList<STRING>) AS XSourceTypeSymbol
-      	 // lookup Type definition in this project and X# projects referenced by this project
+         // lookup Type definition in this project and X# projects referenced by this project
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"Lookup {typeName}")
          ENDIF
@@ -972,12 +1010,12 @@ BEGIN NAMESPACE XSharpModel
          RETURN _lastFound
 
       METHOD LookupReferenced(typeName AS STRING) AS XSourceTypeSymbol
-      	 // lookup Type definition in X# projects referenced by this project
+         // lookup Type definition in X# projects referenced by this project
          VAR usings := List<STRING>{}
          RETURN Lookup(typeName, usings)
 
       METHOD LookupReferenced(typeName AS STRING, usings AS IList<STRING>) AS XSourceTypeSymbol
-   	   // Is now identical to Lookup()
+       // Is now identical to Lookup()
          RETURN Lookup(typeName, usings)
 
       METHOD FilterUsings(list AS IList<XDbResult> , usings AS IList<STRING>, typeName AS STRING, partial AS LOGIC) AS IList<XDbResult>
@@ -1291,7 +1329,7 @@ BEGIN NAMESPACE XSharpModel
 
       PUBLIC DELEGATE OnFileWalkComplete(xFile AS XFile) AS VOID
 
-	  PUBLIC DELEGATE OnProjectWalkComplete( xProject AS XProject ) AS VOID
+      PUBLIC DELEGATE OnProjectWalkComplete( xProject AS XProject ) AS VOID
 
       #region Properties
       PROPERTY AssemblyReferences AS List<XAssembly>

@@ -14,7 +14,8 @@ USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
 USING System.Diagnostics
 USING System.Reflection
-USING Community.VisualStudio.Toolkit
+USING CVT := Community.VisualStudio.Toolkit
+USING Microsoft.VisualStudio.Shell
 
 #pragma options ("az", ON)
 BEGIN NAMESPACE XSharpModel
@@ -266,7 +267,7 @@ BEGIN NAMESPACE XSharpModel
                NEXT
                SELF:_clearTypeCache()
                ENDIF
-               SELF:ProjectNode:SetStatusBarText("")
+               XSolution.SetStatusBarText("")
             ENDIF
             RETURN
 
@@ -282,7 +283,7 @@ BEGIN NAMESPACE XSharpModel
                IF XSettings.EnableReferenceInfoLog
                   SELF:WriteOutputMessage("<<-- ResolveReferences()")
                ENDIF
-               SELF:ProjectNode:SetStatusBarText(String.Format("Loading referenced types for project {0}", SELF:Name))
+               XSolution.SetStatusBarText(String.Format("Loading referenced types for project {0}", SELF:Name))
 
                TRY
                   SELF:ResolveUnprocessedAssemblyReferences()
@@ -614,45 +615,39 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN TRUE
 
-      METHOD FindProjectInSolution( oItem as SolutionItem) AS Community.VisualStudio.Toolkit.Project
-            FOREACH item as SolutionItem in oItem:Children
-                if item:Type == SolutionItemType.Project .and. String.Compare(item:FullPath, SELF:FileName, true) == 0
-                    var project := (Community.VisualStudio.Toolkit.Project) item
-                    return project
-                endif
-                var result := FindProjectInSolution(item)
-                if result != NULL
-                   return result
-                endif
-            NEXT
-            return null
 
-
-      METHOD EnumFiles(oItem as SolutionItem, files as List<String>) AS VOID
-           FOREACH item as SolutionItem in oItem:Children
+      ASYNC METHOD EnumFiles(oItem as CVT.SolutionItem, files as List<String>) AS VOID
+           await ThreadHelper.JoinableTaskFactory:SwitchToMainThreadAsync()
+           FOREACH item as CVT.SolutionItem in oItem:Children
                 SWITCH item:Type
-                CASE SolutionItemType.Project
-                CASE SolutionItemType.PhysicalFile
+                CASE CVT.SolutionItemType.Project
+                CASE CVT.SolutionItemType.PhysicalFile
                     files:Add(item:FullPath)
                 END SWITCH
                 EnumFiles(item, files)
            NEXT
 
-	  PRIVATE METHOD LoadFiles() AS VOID
-        var solution := VS.Solutions:GetCurrentSolution()
-        var project  :=FindProjectInSolution(solution)
-        if project != NULL
-             var files := List<String>{}
-             EnumFiles(project, files)
-             FOREACH var file in files
-                 SELF:AddFile(file)
-             NEXT
-        endif
+      PRIVATE ASYNC METHOD LoadFiles() AS VOID
+        await ThreadHelper.JoinableTaskFactory:SwitchToMainThreadAsync()
+        var projects := AWAIT CVT.VS.Solutions.GetAllProjectsAsync()
+        FOREACH project AS CVT.Project in projects
+            if project:FullPath == SELF:FileName
+                var files := List<string>{}
+                EnumFiles(project, files)
+                FOREACH var file in files
+                    SELF:AddFile(file)
+                NEXT
+                EXIT
+            ENDIF
+        NEXT
+      METHOD ForceLoaded() AS VOID
+         IF ! SELF:HasFiles
+            SELF:LoadFiles()
+         ENDIF
+
 
       METHOD FindXFile(fullPath AS STRING) AS XFile
-         IF ! SELF:HasFiles
-		 	SELF:LoadFiles()
-         ENDIF
+        SELF:ForceLoaded()
          IF ! String.IsNullOrEmpty(fullPath)
             VAR file := SELF:_SourceFilesDict:Find(fullPath,SELF)
             IF file == NULL
@@ -1432,7 +1427,6 @@ BEGIN NAMESPACE XSharpModel
             RETURN SELF:_parseOptions
          END GET
       END PROPERTY
-      PROPERTY IsVsBuilding AS LOGIC GET IIF(SELF:_projectNode == NULL, FALSE, SELF:_projectNode:IsVsBuilding)
       PROPERTY ProjectNode AS IXSharpProject GET SELF:_projectNode
 
       PROPERTY ReferencedProjects AS IList<XProject>
@@ -1496,6 +1490,8 @@ BEGIN NAMESPACE XSharpModel
             RETURN FALSE
          PROPERTY Keys AS ICollection<STRING> GET dict:Keys
       END CLASS
+
+
 
    END CLASS
 

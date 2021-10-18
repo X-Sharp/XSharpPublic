@@ -27,17 +27,18 @@ namespace XSharp.CodeDom
         /// <param name="compileUnit"></param>
         /// <param name="designerCompileUnit"></param>
         /// <returns></returns>
-        internal static CodeCompileUnit MergeCodeCompileUnit(CodeCompileUnit compileUnit, CodeCompileUnit designerCompileUnit)
+         static XCodeCompileUnit ToXCodeCompileUnit(CodeCompileUnit unit)
         {
-            return MergeCodeCompileUnit(null, compileUnit, designerCompileUnit);
+            if (unit is XCodeCompileUnit xccu)
+                return xccu;
+            return new XCodeCompileUnit(unit);
         }
 
-        internal static CodeCompileUnit MergeCodeCompileUnit(CodeCompileUnit mergedCodeCompileUnit, CodeCompileUnit compileUnit, CodeCompileUnit designerCompileUnit)
+        internal static XMergedCodeCompileUnit MergeCodeCompileUnit( XCodeCompileUnit compileUnit, XCodeCompileUnit designerCompileUnit)
         {
             // Create the merged CodeCompileUnit
-            if ( mergedCodeCompileUnit == null )
-                mergedCodeCompileUnit = new CodeCompileUnit();
-            //
+            var mergedCodeCompileUnit = new XMergedCodeCompileUnit();
+
             CodeNamespace designerNamespace;
             CodeTypeDeclaration designerClass = FindDesignerClass(designerCompileUnit, out designerNamespace);
             if (designerClass != null)
@@ -53,7 +54,7 @@ namespace XSharp.CodeDom
                     // Ok, same Namespace & same Class : Merge !
 
                     // So, the "main" class is...
-                    CodeTypeDeclaration mergedType = new CodeTypeDeclaration(formClass.Name);
+                    XCodeTypeDeclaration mergedType = new XCodeTypeDeclaration(formClass.Name);
                     // And does inherit from
                     mergedType.BaseTypes.AddRange(formClass.BaseTypes);
                     mergedType.IsPartial = true;
@@ -70,26 +71,24 @@ namespace XSharp.CodeDom
                         mergedType.Members.Add(member);
                     }
                     // A class is always in a NameSpace
-                    CodeNamespace mergedNamespace = new CodeNamespace(nameSpace.Name);
+                    XCodeNamespace mergedNamespace = new XCodeNamespace(nameSpace.Name);
                     mergedNamespace.Types.Add(mergedType);
                     // Now, add it to the CompileUnit
                     mergedCodeCompileUnit.Namespaces.Clear();
                     mergedCodeCompileUnit.Namespaces.Add(mergedNamespace);
-                    mergedCodeCompileUnit.SetMerged();
                     //
                 }
                 else
                 {
                     // Something went wrong, return the designer CodeCompileUnit
-                    mergedCodeCompileUnit = designerCompileUnit;
+                    mergedCodeCompileUnit = new XMergedCodeCompileUnit(designerCompileUnit);
                 }
             }
-            else
-            {
-                // Sorry, no designer class
-                mergedCodeCompileUnit = designerCompileUnit;
-            }
+            mergedCodeCompileUnit.FormUnit = compileUnit;
+            mergedCodeCompileUnit.FileName = compileUnit.FileName;
+            mergedCodeCompileUnit.DesignerUnit = designerCompileUnit;
             return mergedCodeCompileUnit;
+
         }
 
         /// <summary>

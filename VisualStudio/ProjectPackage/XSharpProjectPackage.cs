@@ -241,9 +241,10 @@ namespace XSharp.Project
             GetEditorOptions();
             _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
             await this.RegisterCommandsAsync();
+            
         }
 
-
+               
 
         public void GetEditorOptions()
         {

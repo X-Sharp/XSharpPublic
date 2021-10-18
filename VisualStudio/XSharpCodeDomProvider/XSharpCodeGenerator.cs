@@ -961,7 +961,7 @@ namespace XSharp.CodeDom
 
             _using.Clear();
             base.GenerateCompileUnitStart(e);
-            if (e.GetNoHeader())
+            if (e is XCodeCompileUnit xcu && ! xcu.GenerateHeader)
             {
                 generateComment = false;
             }

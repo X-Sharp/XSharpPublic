@@ -494,11 +494,16 @@ namespace XSharp.LanguageService
                     }
                 }
                 if (resetState)
+                {
                     state = CompletionState.General;
+                }
                 if (startOfExpression)
+                {
                     currentType = startType;
-                
-               
+                    namespacePrefix = "";
+                }
+
+
                 var currentName = currentToken.CleanText();
                 var lastToken = currentToken;
                 switch (currentToken.Type)
@@ -620,12 +625,14 @@ namespace XSharp.LanguageService
                     if (state.HasFlag(CompletionState.StaticMembers) && !findMethod && result.Count == 0)
                     {
                         var props = SearchPropertyOrField(location, currentType, namespacePrefix + currentName, visibility).Where(m => m.IsStatic);
-                        result.AddRange(props);
+                        if (props != null)
+                            result.AddRange(props);
                     }
                     if (state.HasFlag(CompletionState.InstanceMembers) && !findMethod && result.Count == 0)
                     {
                         var props = SearchPropertyOrField(location, currentType, namespacePrefix + currentName, visibility).Where(m => !m.IsStatic);
-                        result.AddRange(props);
+                        if (props != null)
+                            result.AddRange(props);
                     }
                 }
                 if (literal)
@@ -638,19 +645,25 @@ namespace XSharp.LanguageService
                     // Do we already know in which Type we are ?
                     if (currentToken.Type == XSharpLexer.SELF)  // SELF(..)
                     {
-                        result.AddRange(SearchConstructor(currentType, visibility, location));
+                        var ctors = SearchConstructor(currentType, visibility, location);
+                        if (ctors != null)
+                            result.AddRange(ctors);
                     }
                     else if (currentToken.Type == XSharpLexer.SUPER) // SUPER(..)
                     {
                         if (currentType is XSourceTypeSymbol source)
                         {
                             var p = source.File.FindType(source.BaseTypeName, source.Namespace);
-                            result.AddRange(SearchConstructor(p, visibility, location));
+                            var ctors = SearchConstructor(p, visibility, location);
+                            if (ctors != null)
+                                result.AddRange(ctors);
                         }
                         else
                         {
                             var p = location.FindType(currentType.BaseTypeName);
-                            result.AddRange(SearchConstructor(p, visibility, location));
+                            var ctors = SearchConstructor(p, visibility, location);
+                            if (ctors != null)
+                                result.AddRange(ctors);
                         }
                     }
                     else if (startOfExpression)
@@ -660,30 +673,32 @@ namespace XSharp.LanguageService
                         result.AddRange(SearchFunction(location, currentName));
                         if (currentType != null)
                         {
-                            result.AddRange(SearchMethod(location, currentType, currentName, visibility, false));
+                            var meths = SearchMethod(location, currentType, currentName, visibility, false);
+                            if (meths != null)
+                                result.AddRange(meths);
                         }
                         result.AddRange(SearchMethodStatic(location, currentName));
                         if (result.Count == 0)
                         {
                             // Foo() could be a delegate call where Foo is a local or Field
-                            result.AddRange(SearchDelegateCall(location, currentName, currentType, visibility));
+                            var delgs = SearchDelegateCall(location, currentName, currentType, visibility);
+                            if (delgs != null)
+                                result.AddRange(delgs);
                         }
                         if (result.Count == 0)
                         {
                             // Foo() can be a method call inside the current class
                             var type = location?.Member?.ParentType ?? currentType;
-                            result.AddRange(SearchMethod(location, type, currentName, visibility, false));
+                            var meths = SearchMethod(location, type, currentName, visibility, false);
+                            if (meths != null)
+                                result.AddRange(meths);
+
                         }
 
                         if (list.Eoi())
                         {
                             return result;
                         }
-                        if (result.Count > 0)
-                        {
-                            symbols.Push(result[0]);
-                        }
-
                     }
                     else if (currentType != null)
                     {
@@ -691,25 +706,29 @@ namespace XSharp.LanguageService
                         // Respect the StaticMembers and InstanceMembers states
                         if (state.HasFlag(CompletionState.StaticMembers))
                         {
-                            result.AddRange(SearchMethod(location, currentType, currentName, visibility, true));
+                            var meths = SearchMethod(location, currentType, currentName, visibility, true);
+                            if (meths != null)
+                                result.AddRange(meths);
                         }
                         if (state.HasFlag(CompletionState.InstanceMembers))
                         {
-                            result.AddRange(SearchMethod(location, currentType, currentName, visibility, false));
+                            var meths = SearchMethod(location, currentType, currentName, visibility, false);
+                            if (meths != null)
+                                result.AddRange(meths);
                         }
                     }
-                    if (result.Count > 0)
-                    {
-                        symbols.Push(result[0]);
-                    }
+                    
                     if (result.Count == 0)
                     {
                         // Could it be Static Method with "Using Static"
-                        result.AddRange(SearchMethodStatic(location, currentName));
-                        if (result.Count > 0)
-                        {
-                            symbols.Push(result[0]);
-                        }
+                        var mstatic = SearchMethodStatic(location, currentName);
+                        if (mstatic != null)
+                            result.AddRange(mstatic);
+                    }
+                    // method found ?
+                    if (result.Count > 0)
+                    {
+                        symbols.Push(result[0]);
                     }
                 }
                 else if (isId)
@@ -729,22 +748,34 @@ namespace XSharp.LanguageService
                             currentName = "SELF";
                         }
                         // 1) Locals and Parameters
-                        result.AddRange(FindIdentifier(location, currentName, currentType, Modifiers.Private));
+                        var locals = FindIdentifier(location, currentName, currentType, Modifiers.Private);
+                        if (locals != null)
+                            result.AddRange(locals);
                         if (result.Count == 0)
                         {
                             // 2) Properties and Fields
-                            result.AddRange(SearchPropertyOrField(location, currentType, currentName, visibility));
+                            var fldsprops = SearchPropertyOrField(location, currentType, currentName, visibility);
+                            if (fldsprops != null)
+                                result.AddRange(fldsprops);
                         }
                     }
                     if (result.Count == 0 && (startOfExpression || findType || findConstructor || qualifiedName))
                     {
                         // 3) Types
-                        result.AddRange(SearchType(location, namespacePrefix + currentName));
+                        var types = SearchType(location, namespacePrefix + currentName);
+                        if (types != null)
+                        {
+                            result.AddRange(types);
+                        }
                         if (result.Count == 0)
                         {
                             // 4) Namespaces
-                            result.AddRange(SearchNamespaces(location, namespacePrefix + currentName));
+                            var namespaces = SearchNamespaces(location, namespacePrefix + currentName);
+                            if (namespaces != null)
+                                result.AddRange(namespaces);
                         }
+                        if (result.Count > 0)
+                            namespacePrefix = "";
                     }
                     if (result.Count == 0 && currentToken.Type == XSharpLexer.ID)
                     {
@@ -752,6 +783,7 @@ namespace XSharp.LanguageService
                         var sym = new XSourceUndeclaredVariableSymbol(location.Member, notProcessed, location.Member.Range, location.Member.Interval);
                         result.Add(sym);
                     }
+                    // id found ?
                     if (result.Count > 0)
                     {
                         symbols.Push(result[0]);

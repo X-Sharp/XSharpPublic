@@ -1261,6 +1261,8 @@ namespace XSharp.CodeDom
         protected void FillCodeSource(CodeObject element, ParserRuleContext context)
         {
             var source = GetRuleSource(context);
+            if (element.HasLeadingTrivia())
+                source = source.TrimStart();
             element.SetSourceCode(source);
             FillCodeDomDesignerData(element, context.Start.Line, context.Start.Column);
         }

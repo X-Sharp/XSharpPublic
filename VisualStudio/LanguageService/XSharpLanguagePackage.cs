@@ -289,6 +289,8 @@ namespace XSharp.LanguageService
                 int hr = _oleComponentManager.FRegisterComponent(this, crinfo, out m_componentID);
             }
             GetIntellisenseSettings();
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            XSolution.LoadAllProjects();
         }
 
         

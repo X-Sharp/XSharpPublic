@@ -50,7 +50,7 @@ namespace XSharp.CodeDom
             CodeCompileUnit ccu;
             if (codeStream == null)
             {
-                ccu = new CodeCompileUnit();
+                ccu = new XCodeCompileUnit();
             }
             else
             {
@@ -105,10 +105,11 @@ namespace XSharp.CodeDom
                 if (firstType != null)
                 {
                     // save a copy of the member list to the CCU
-                    ccu.SetMembers(firstType.Members);
+                    ccu.Members = firstType.Members;
                 }
                 // save file name & original source
-                ccu.SetFile(this.FileName, source);
+                ccu.FileName = this.FileName;
+                ccu.Source = source;
             }
             catch (Exception ex)
             {

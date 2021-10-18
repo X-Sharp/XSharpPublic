@@ -3407,7 +3407,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // context.Parent = classvarList
             // classvarList is used in VOGLobal, classvars
             // classvars is used in classmember, classmember is used in interface, class and structure
-            var candefault = context.Parent.Parent is XP.VoglobalContext || context.isInClass();
+            var candefault = context.Parent is XP.VoglobalContext || context.isInClass();
             var initExpr = context.Initializer?.Get<ExpressionSyntax>();
 
             // Check for dwDim := 512 IS DWORD which will be parsed as

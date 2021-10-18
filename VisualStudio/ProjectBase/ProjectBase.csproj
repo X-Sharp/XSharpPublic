@@ -95,7 +95,9 @@
     <Compile Include="DesignPropertyDescriptor.cs" />
     <Compile Include="DesignTimeAssemblyResolution.cs" />
     <Compile Include="DocumentManager.cs" />
-    <Compile Include="DontShowAgainDialog.cs" />
+    <Compile Include="DontShowAgainDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DontShowAgainDialog.Designer.cs">
       <DependentUpon>DontShowAgainDialog.cs</DependentUpon>
     </Compile>
@@ -103,7 +105,9 @@
     <Compile Include="FileChangeManager.cs" />
     <Compile Include="FileDocumentManager.cs" />
     <Compile Include="FileNode.cs" />
-    <Compile Include="fileoverwritedialog.cs" />
+    <Compile Include="fileoverwritedialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="fileoverwritedialog.designer.cs">
       <DependentUpon>fileoverwritedialog.cs</DependentUpon>
     </Compile>
@@ -147,7 +151,9 @@
     <Compile Include="ReferenceNode.cs" />
     <Compile Include="RegisteredProjectType.cs" />
     <Compile Include="SelectionListener.cs" />
-    <Compile Include="SettingsPage.cs" />
+    <Compile Include="SettingsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SingleFileGenerator.cs" />
     <Compile Include="SingleFileGeneratorFactory.cs" />
     <Compile Include="SolutionListener.cs" />
@@ -220,31 +226,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit">
-      <Version>15.0.76.270-pre</Version>
+      <Version>15.0.76.300-pre</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
       <Version>15.9.20</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Tasks.Core">
       <Version>15.9.20</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>15.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes">
-      <Version>15.0.36</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop">
-      <Version>7.10.6073</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime">
-      <Version>12.1.30329.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Threading">
-      <Version>15.8.209</Version>
-    </PackageReference>
-    <PackageReference Include="System.ComponentModel">
-      <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Design">
       <Version>4.0.0</Version>

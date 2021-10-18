@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.props" Condition="Exists('..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.props')" />
+  <Import Project="..\..\packages\Community.VisualStudio.Toolkit.15.0.76.300-pre\build\Community.VisualStudio.Toolkit.props" Condition="Exists('..\..\packages\Community.VisualStudio.Toolkit.15.0.76.300-pre\build\Community.VisualStudio.Toolkit.props')" />
   <Import Project="..\..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.4\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.4\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props')" />
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
@@ -93,12 +93,12 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="Community.VisualStudio.Toolkit, Version=15.0.76.270, Culture=neutral, PublicKeyToken=79441d341a79572c">
+    <Reference Include="Community.VisualStudio.Toolkit, Version=15.0.76.300, Culture=neutral, PublicKeyToken=79441d341a79572c">
       <Name>Community.VisualStudio.Toolkit</Name>
       <AssemblyName>Community.VisualStudio.Toolkit.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\lib\net46\Community.VisualStudio.Toolkit.dll</HintPath>
+      <HintPath>..\..\packages\Community.VisualStudio.Toolkit.15.0.76.300-pre\lib\net46\Community.VisualStudio.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>EnvDTE</Name>
@@ -722,6 +722,7 @@
     <None Include="..\..\Common\BuildNumber.h">
       <Link>BuildNumber.h</Link>
     </None>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -757,11 +758,11 @@
     <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.27\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.27\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets'))" />
     <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.16.3.52\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.16.3.52\build\Microsoft.VisualStudio.Threading.Analyzers.targets'))" />
     <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.16.3.14\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.16.3.14\build\Microsoft.VisualStudio.SDK.Analyzers.targets'))" />
-    <Error Condition="!Exists('..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.props'))" />
-    <Error Condition="!Exists('..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Community.VisualStudio.Toolkit.15.0.76.300-pre\build\Community.VisualStudio.Toolkit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Community.VisualStudio.Toolkit.15.0.76.300-pre\build\Community.VisualStudio.Toolkit.props'))" />
+    <Error Condition="!Exists('..\..\packages\Community.VisualStudio.Toolkit.15.0.76.300-pre\build\Community.VisualStudio.Toolkit.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Community.VisualStudio.Toolkit.15.0.76.300-pre\build\Community.VisualStudio.Toolkit.targets'))" />
   </Target>
   <Import Project="..\..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.27\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.27\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets')" />
   <Import Project="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.16.3.52\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.16.3.52\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
   <Import Project="..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.16.3.14\build\Microsoft.VisualStudio.SDK.Analyzers.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.16.3.14\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" />
-  <Import Project="..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.targets" Condition="Exists('..\..\packages\Community.VisualStudio.Toolkit.15.0.76.270-pre\build\Community.VisualStudio.Toolkit.targets')" />
+  <Import Project="..\..\packages\Community.VisualStudio.Toolkit.15.0.76.300-pre\build\Community.VisualStudio.Toolkit.targets" Condition="Exists('..\..\packages\Community.VisualStudio.Toolkit.15.0.76.300-pre\build\Community.VisualStudio.Toolkit.targets')" />
 </Project>

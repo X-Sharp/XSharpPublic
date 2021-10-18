@@ -43,7 +43,7 @@ namespace XSharp.Project
         internal const string VO16Caption = "Generate Clipper constructors";
         internal const string XPP1Caption = "Inherit from Abstract class";
         internal const string FOX1Caption = "Inherit from Custom class";
-        internal const string FOX2Caption = "Locals visible to macrocompiler.";
+        internal const string FOX2Caption = "Compatible Array Handling";
         internal const string VO1Description = "Allow Init() and Axit() as aliases for Constructor/Destructor (/vo1)";
         internal const string VO2Description = "Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0. When enabled this will initialize local string variables regardless of the setting of 'initialize locals' setting from the Language page.";
         internal const string VO3Description = "Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)";
@@ -62,7 +62,7 @@ namespace XSharp.Project
         internal const string VO16Description = "Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.(/vo16)";
         internal const string XPP1Description = "All classes without parent class inherit from the XPP Abstract class.(/xpp1)";
         internal const string FOX1Description = "All classes are assumed to inherit from the Custom class. This also affects the way in which properties are processed by the compiler.(/fox1)";
-        internal const string FOX2Description = "Make local variables visible to the macro compiler. This may be needed for SQL queries with embedded parameters or the ampersand (&) operator. Use with care because this will generate quite some extra code.(/fox2)";
+        internal const string FOX2Description = "FoxPro compatible array handling (Allows parenthesized arrays and assigning a single value to an array to fill all elements). WARNING Allowing parenthesized arrays may slow down the execution of your program !(/fox2)";
         internal const string CatCompatibility = "All dialects";
         internal const string CatNotCore = "Not in Core dialect";
         internal const string XPPCompatibility = "Xbase++ Compatibility";
@@ -98,6 +98,7 @@ namespace XSharp.Project
             this.chkVO15.Text = VO15Caption;
             this.chkVO16.Text = VO16Caption;
             this.chkFox1.Text = FOX1Caption;
+            this.chkFox2.Text = FOX2Caption;
             this.chkXPP1.Text = XPP1Caption;
             this.chkVO1.Tag = XSharpProjectFileConstants.Vo1;
             this.chkVO2.Tag = XSharpProjectFileConstants.Vo2;
@@ -116,6 +117,7 @@ namespace XSharp.Project
             this.chkVO15.Tag = XSharpProjectFileConstants.Vo15;
             this.chkVO16.Tag = XSharpProjectFileConstants.Vo16;
             this.chkFox1.Tag = XSharpProjectFileConstants.Fox1;
+            this.chkFox2.Tag = XSharpProjectFileConstants.Fox2;
             this.chkXPP1.Tag = XSharpProjectFileConstants.Xpp1;
             toolTip1.SetToolTip(chkVO1, VO1Description);
             toolTip1.SetToolTip(chkVO2, VO2Description);
@@ -135,6 +137,7 @@ namespace XSharp.Project
             toolTip1.SetToolTip(chkVO16, VO16Description);
 
             toolTip1.SetToolTip(chkFox1, FOX1Description);
+            toolTip1.SetToolTip(chkFox2, FOX2Description);
             toolTip1.SetToolTip(chkXPP1, XPP1Description);
             this.lblAllDialects.Text = CatCompatibility;
             this.lblNotInCore.Text = CatNotCore;
@@ -159,10 +162,12 @@ namespace XSharp.Project
                         if (e.NewValue.ToLower() == "foxpro")
                         {
                             chkFox1.Checked = true;
+                            chkFox2.Checked = true;
                         }
                         else
                         {
                             chkFox1.Checked = false;
+                            chkFox2.Checked = false;
                         }
                         EnableDialectOptions(e.NewValue);
                     }
@@ -178,6 +183,7 @@ namespace XSharp.Project
         {
             dialect = dialect.ToLower();
             chkFox1.Enabled = dialect == "foxpro";
+            chkFox2.Enabled = dialect == "foxpro";
             chkXPP1.Enabled = dialect == "xpp";
             bool core = dialect == "core";
             chkVO5.Enabled = !core;
@@ -205,6 +211,8 @@ namespace XSharp.Project
             }
             if (!chkFox1.Enabled )
                 chkFox1.Checked = false;
+            if (!chkFox2.Enabled)
+                chkFox2.Checked = false;
             if (!chkXPP1.Enabled )
                 chkXPP1.Checked = false;
         }

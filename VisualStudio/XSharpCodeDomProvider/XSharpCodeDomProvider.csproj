@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ReadMe-MachineConfig.txt" />
+    <Content Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">

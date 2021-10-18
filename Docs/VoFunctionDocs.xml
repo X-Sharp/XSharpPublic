@@ -9046,6 +9046,9 @@
         <param name="uValue">
             The value to check for 'emptyness'            
         </param>
+        <param name="oObject">
+            The value to check for 'emptyness'            
+        </param>
         <returns>
             TRUE if the expression results in an empty value; otherwise, FALSE.
         </returns>

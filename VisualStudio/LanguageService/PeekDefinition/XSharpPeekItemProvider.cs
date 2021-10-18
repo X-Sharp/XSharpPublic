@@ -9,7 +9,7 @@ namespace XSharp.LanguageService
     [Export(typeof(IPeekableItemSourceProvider))]
     [ContentType( LanguageName)]
     [Name("XSharp Class Peekable Item Provider")]
-    [SupportsStandaloneFiles(false)]
+    [SupportsStandaloneFiles(true)]
     class XSharpPeekItemProvider : IPeekableItemSourceProvider
     {
 

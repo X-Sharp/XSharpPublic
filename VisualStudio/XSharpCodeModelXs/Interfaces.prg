@@ -23,17 +23,13 @@ BEGIN NAMESPACE XSharpModel
       METHOD FindProject(sProject AS STRING) AS Object
       METHOD GetIntellisenseErrorPos(fileName AS STRING) AS System.Collections.Generic.List<IXErrorPosition>
       METHOD HasFileNode(fileName AS STRING) AS LOGIC
-      METHOD IsDocumentOpen(file AS STRING) AS LOGIC
       METHOD OpenElement(file AS STRING, line AS LONG, column AS LONG) AS VOID
-      METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
-      METHOD SetStatusBarText(message AS STRING) AS VOID
       METHOD ShowIntellisenseErrors() AS VOID
       METHOD SynchronizeKeywordCase(code as STRING, fileName as STRING) AS STRING
       METHOD RunInForeGroundThread( a as Action) AS VOID
 
          // Properties
       PROPERTY IntermediateOutputPath AS STRING GET
-      PROPERTY IsVsBuilding AS LOGIC GET
       PROPERTY OutputFile AS STRING GET
       PROPERTY ParseOptions AS XSharpParseOptions GET
       PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET

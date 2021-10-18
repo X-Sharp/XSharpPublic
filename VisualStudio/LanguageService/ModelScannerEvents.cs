@@ -187,6 +187,7 @@ namespace XSharp.LanguageService
                     XSharpModel.XSolution.Open(solutionFile);
                 }
                 projectfiles.Clear();
+                XSolution.LoadAllProjects();
                 return;
             }
         }
@@ -232,6 +233,7 @@ namespace XSharp.LanguageService
                     }
                 }
             });
+
             return;
         }
 

@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharpModel
                SELF:_projects:Enqueue(xProject)
             ENDIF
          END LOCK
-         IF (! SELF:IsRunning .AND. ! xProject:IsVsBuilding)
+         IF (! SELF:IsRunning .AND. ! XSolution.IsVsBuilding)
             SELF:Walk()
          ENDIF
 
@@ -83,7 +83,7 @@ BEGIN NAMESPACE XSharpModel
                NEXT
             ENDIF
          END LOCK
-         IF (! SELF:IsRunning .AND. ! xProject:IsVsBuilding)
+         IF (! SELF:IsRunning .AND. ! XSolution.IsVsBuilding)
             SELF:Walk()
          ENDIF
          //WriteOutputMessage("<<-- RemoveProject()")
@@ -163,7 +163,7 @@ BEGIN NAMESPACE XSharpModel
          IF (ModelWalker._walker != NULL .AND. ModelWalker._walker:_projects:Count > 0)
             LOCAL project := NULL AS XProject
             IF ModelWalker._walker:_projects:TryPeek(REF project)
-               project:ProjectNode:SetStatusBarText("")
+               XSolution.SetStatusBarText("")
             ENDIF
          ENDIF
 
@@ -191,7 +191,7 @@ BEGIN NAMESPACE XSharpModel
          LOCAL project AS XProject
          LOCAL parallelOptions AS System.Threading.Tasks.ParallelOptions
          project := NULL
-         IF SELF:_projects:Count != 0 .AND. ! SELF:_projects:First():IsVsBuilding
+         IF SELF:_projects:Count != 0 .AND. ! XSolution.IsVsBuilding
             DO WHILE TRUE
                IF ModelWalker.suspendLevel > 0
                   IF project != NULL
@@ -253,7 +253,7 @@ BEGIN NAMESPACE XSharpModel
 
 
          ENDIF
-         IF SELF:_projectsForTypeResolution:Count != 0 .AND. ! SELF:_projectsForTypeResolution:First():IsVsBuilding
+         IF SELF:_projectsForTypeResolution:Count != 0 .AND. ! XSolution:IsVsBuilding
             DO WHILE TRUE
                IF ModelWalker.suspendLevel > 0
                   IF project != NULL
@@ -278,7 +278,7 @@ BEGIN NAMESPACE XSharpModel
          VAR project := _currentProject
          IF project:Loaded .AND. XSolution:IsOpen
             iProcessed++
-            DO WHILE (project:ProjectNode:IsVsBuilding)
+            DO WHILE (XSolution:IsVsBuilding)
                System.Threading.Thread.Sleep(1000)
             ENDDO
             IF iProcessed % 10 == 0 .OR. iProcessed == aFiles:Length

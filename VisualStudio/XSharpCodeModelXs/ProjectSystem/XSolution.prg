@@ -8,6 +8,9 @@ USING System.Collections.Generic
 USING System.IO
 USING System.Linq
 USING System
+USING CVT := Community.VisualStudio.Toolkit
+USING Microsoft.VisualStudio.Shell
+
 BEGIN NAMESPACE XSharpModel
    STATIC CLASS XSolution
       // Fields
@@ -23,12 +26,36 @@ BEGIN NAMESPACE XSharpModel
       STATIC PROPERTY HasProject AS  LOGIC GET _projects:Count > 1
       STATIC PROPERTY FileName AS STRING GET _fileName
       STATIC PROPERTY CommentTokens AS IList<XCommentToken> GET _commentTokens
+      static INTERNAL IsVsBuilding := false AS LOGIC
       // Methods
       STATIC CONSTRUCTOR
          _projects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase}
          CreateOrphanedFilesProject()
          IsClosing   := FALSE
          _commentTokens := List < XCommentToken >{}
+        CVT.VS.Events.BuildEvents.ProjectBuildStarted += BuildEvents_ProjectBuildStarted
+        CVT.VS.Events.BuildEvents.ProjectBuildDone += BuildEvents_ProjectBuildDone
+        CVT.VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted
+        CVT.VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone
+
+        PRIVATE STATIC METHOD BuildEvents_SolutionBuildStarted(sender as OBJECT, e as EventArgs ) AS VOID
+         XSolution.IsVsBuilding := true
+         ModelWalker.Suspend()
+
+       PRIVATE STATIC METHOD BuildEvents_SolutionBuildDone(result as LOGIC ) AS VOID
+         XSolution.IsVsBuilding := false
+         ModelWalker.Resume()
+
+       PRIVATE STATIC METHOD BuildEvents_ProjectBuildDone(obj  as CVT.ProjectBuildDoneEventArgs) AS VOID
+            NOP
+            RETURN
+
+       PRIVATE STATIC METHOD BuildEvents_ProjectBuildStarted (obj  as CVT.Project) AS VOID
+           if obj != NULL_OBJECT
+            XSolution.SetStatusBarText(i"Building {obj.Name}...")
+           ENDIF
+           RETURN
+
 
       STATIC METHOD SetCommentTokens( aTokens AS IList<XCommentToken>) AS VOID
          _commentTokens:Clear()
@@ -189,17 +216,14 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
 
       STATIC METHOD SetStatusBarText(cText AS STRING) AS VOID
-         IF _projects:Count > 0
-            VAR project := _projects:First():Value
-            project:ProjectNode:SetStatusBarText(cText)
-         ENDIF
+         CVT.VS.StatusBar.ShowMessageAsync(cText):FireAndForget(TRUE)
 
       STATIC METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
-         IF _projects:Count > 0
-            VAR project := _projects:First():Value
-            project:ProjectNode:SetStatusBarAnimation(onOff, id)
-         ENDIF
-
+        if onOff
+            CVT.VS.StatusBar.StartAnimationAsync((CVT.StatusAnimation) id):FireAndForget(TRUE)
+        ELSE
+            CVT.VS.StatusBar.EndAnimationAsync((CVT.StatusAnimation) id):FireAndForget(TRUE)
+        ENDIF
       // Properties
       STATIC PROPERTY OrphanedFilesProject AS XProject
          GET
@@ -236,7 +260,12 @@ BEGIN NAMESPACE XSharpModel
           FINALLY
             ModelWalker.Start()
           END TRY
+        STATIC METHOD LoadAllProjects() AS VOID
+            foreach var item in _projects
+                LOCAL project := item:Value as XProject
+                project:ForceLoaded()
 
+            next
 
    END CLASS
 

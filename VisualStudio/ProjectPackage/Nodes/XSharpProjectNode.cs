@@ -1505,33 +1505,7 @@ namespace XSharp.Project
 
         
         
-        public void SetStatusBarText(string msg)
-        {
-            VS.StatusBar.ShowMessageAsync(msg).FireAndForget(true);
-
-        }
-        public void SetStatusBarAnimation(bool onoff, short idAnimation)
-        {
-            /*
-                SBAI_Index 	Value1 	Description
-                SBAI_General 	0 	Standard animation icon.
-                SBAI_Print 	1 	Animation when printing.
-                SBAI_Save 	2 	Animation when saving files.
-                SBAI_Deploy 	3 	Animation when deploying the solution.
-                SBAI_Synch 	4 	Animation when synchronizing files over the network.
-                SBAI_Build 	5 	Animation when building the solution.
-                SBAI_Find 	6 	Animation when searching.
-
-                The values of SBAI_Index are taken from vsshell.idl.
-            */
-
-            if (onoff)
-                VS.StatusBar.StartAnimationAsync((StatusAnimation)idAnimation).FireAndForget(true);
-            else
-                VS.StatusBar.EndAnimationAsync((StatusAnimation)idAnimation).FireAndForget(true);
-
-        }
-
+        
 
         public string IntermediateOutputPath
         {
@@ -1906,11 +1880,7 @@ namespace XSharp.Project
             {
                 try
                 {
-                    return ThreadHelper.JoinableTaskFactory.Run(async delegate
-                    {
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        return VsShellUtilities.IsSolutionBuilding(XSharpProjectPackage.XInstance);
-                    });
+                    return false;
 
                 }
                 catch (Exception e)

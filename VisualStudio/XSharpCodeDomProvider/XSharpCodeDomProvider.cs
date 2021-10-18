@@ -86,12 +86,18 @@ namespace XSharp.CodeDom
             }
         }
 
-
+		
+		XCodeCompileUnit ToXCodeCompileUnit(CodeCompileUnit unit)
+		{
+		if (unit is XCodeCompileUnit xccu)
+                return xccu;
+            return new XCodeCompileUnit(unit);
+		}
+		
         // Called by the WinForm designer at load time
         public override CodeCompileUnit Parse(TextReader codeStream)
         {
-            CodeCompileUnit compileUnit = null;
-            compileUnit = base.Parse(codeStream);
+            var compileUnit = ToXCodeCompileUnit(base.Parse(codeStream));
             //
 #if WRITE2LOGFILE
             string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);

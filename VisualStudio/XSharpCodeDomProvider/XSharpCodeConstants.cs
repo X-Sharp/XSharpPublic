@@ -13,42 +13,23 @@ namespace XSharp.CodeDom
         public static string USERDATA_LEADINGTRIVIA = "XSharp:LeadingTrivia"; // string
         public static string USERDATA_ENDINGTRIVIA = "XSharp:EndingTrivia"; // string
         public static string USERDATA_CODEBEFORE = "XSharp:CodeBefore"; // string
-        public static string USERDATA_FILENAME = "XSharp:FileName"; // String
-        public static string USERDATA_CCU_FORM = "XSharp:Form"; // CodeCompileUnit
-        public static string USERDATA_CCU_DESIGNER = "XSharp:Designer"; // CodeCompileUnit
-        public static string USERDATA_MERGED = "XSharp:Merged"; // Logical value
         public static string USERDATA_FROMDESIGNER = "XSharp:FromDesigner";// Logical value
         public static string USERDATA_MODIFIERS = "XSharp:Modifiers"; // string
         public static string USERDATA_ATTRIBUTES = "XSharp:Attributes"; // MemberAttributes
         public static string USERDATA_NOHEADER = "XSharp:NoHeader"; // Logical
         public static string USERDATA_WASWRITTEN = "XSharp:Waswritten"; // Logical value
-        public static string USERDATA_MEMBERLIST = "XSharp:MemberList"; // CodeMemberList
 
-        public static bool HasFileName( this CodeCompileUnit unit)
+
+        public static bool HasLeadingTrivia(this CodeObject e)
         {
-            return unit.UserData.Contains(USERDATA_FILENAME);
+            return e.UserData.Contains(USERDATA_LEADINGTRIVIA);
         }
-        public static string GetFileName(this CodeCompileUnit unit)
+        public static bool HasEndingTrivia(this CodeObject e)
         {
-            if (unit.HasFileName())
-                return (string)unit.UserData[USERDATA_FILENAME];
-            return "";
+            return e.UserData.Contains(USERDATA_ENDINGTRIVIA);
         }
-        public static CodeTypeMemberCollection GetMembers(this CodeCompileUnit unit)
-        {
-            if (unit.UserData.Contains(USERDATA_MEMBERLIST))
-                return (CodeTypeMemberCollection)unit.UserData[USERDATA_MEMBERLIST];
-            return new CodeTypeMemberCollection();
-        }
-        public static void SetMembers(this CodeCompileUnit unit, CodeTypeMemberCollection members)
-        {
-            unit.UserData[USERDATA_MEMBERLIST] = new CodeTypeMemberCollection(members);
-        }
-        public static void SetFile(this CodeCompileUnit unit, string file, string source)
-        {
-            unit.UserData[USERDATA_FILENAME] = file;
-            unit.UserData[USERDATA_SOURCECODE] = source;
-        }
+
+
         public static bool HasSourceCode(this CodeObject e)
         {
             return e.UserData.Contains(USERDATA_SOURCECODE);
@@ -84,45 +65,20 @@ namespace XSharp.CodeDom
                 return (bool) o.UserData[USERDATA_NOHEADER] ;
             return false;
         }
-        public static void SetMerged(this CodeObject o)
-        {
-            o.UserData[USERDATA_MERGED] = true;
-        }
-        public static bool IsMerged(this CodeObject o)
-        {
-            return o.UserData.Contains(USERDATA_MERGED);
-        }
+       
+        
         public static void SetFromDesigner(this CodeObject o, bool set)
         {
             o.UserData[USERDATA_FROMDESIGNER] = set;
         }
-        public static void SetFormCCU(this CodeCompileUnit o, CodeCompileUnit form)
-        {
-            o.UserData[USERDATA_CCU_FORM] = form;
-        }
-        public static CodeCompileUnit GetFormCCU(this CodeCompileUnit o )
-        {
-            if (o.UserData.Contains(USERDATA_CCU_FORM))
-                return o.UserData[USERDATA_CCU_FORM] as CodeCompileUnit;
-            return null;
-        }
-        public static void SetDesignerCCU(this CodeCompileUnit o, CodeCompileUnit form)
-        {
-            o.UserData[USERDATA_CCU_DESIGNER] = form;
-        }
-        public static CodeCompileUnit GetDesignerFormCCU(this CodeCompileUnit o)
-        {
-            if (o.UserData.Contains(USERDATA_CCU_DESIGNER))
-                return o.UserData[USERDATA_CCU_DESIGNER] as CodeCompileUnit;
-            return null;
-        }
-        public static bool Waswritten(this CodeObject o)
+        
+        public static bool WasWritten(this CodeObject o)
         {
             if (o.UserData.Contains(USERDATA_WASWRITTEN))
                 return (bool)o.UserData[USERDATA_WASWRITTEN];
             return false;
         }
-        public static void Setwritten(this CodeObject o, bool value)
+        public static void SetWritten(this CodeObject o, bool value)
         {
             o.UserData[USERDATA_WASWRITTEN] = value;
         }

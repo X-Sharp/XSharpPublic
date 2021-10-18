@@ -1383,7 +1383,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN lRetCode
 
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		LOCAL oSubForm AS Window
 
 		IF oAttachedServer != NULL_OBJECT

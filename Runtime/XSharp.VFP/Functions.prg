@@ -14,13 +14,13 @@ USING System.Collections.Generic
 FUNCTION CreateObject(cClassName, _args ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
     RETURN CreateInstance(_ARGS())
-    
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/createobjectex/*" />
 FUNCTION CreateObjectEx(cClsIdOrcProgId, cComputerName , cIID ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
     RETURN CreateInstance(_ARGS())
-    
-    
+
+
 INTERNAL PROCEDURE RddInit() AS VOID _INIT3
     // Make sure that the VFP dialect has the DBFVFP driver as default RDD
     RddSetDefault("DBFVFP")
@@ -32,7 +32,7 @@ INTERNAL PROCEDURE RddInit() AS VOID _INIT3
     RuntimeState.AutoOrder := 0
     RuntimeState.Eof :=  TRUE
     RuntimeState.MemoBlockSize := 64
-RETURN 
+RETURN
 
 
 
@@ -54,12 +54,12 @@ Function SetFoxCollation(cCollation as STRING) AS STRING
     ELSE
         local oError as Error
         oError := Error.ArgumentError(__FUNCTION__, nameof(cCollation), 1, {cCollation})
-        oError:Description := "Collating sequence '"+cCollation+"' is not found"
+        oError:Description := __VfpStr(VFPErrors.COLLATION_NOT_FOUND, cCollation)
         oError:Throw()
     ENDIF
     RETURN cOld
-    
-    
+
+
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/icase/*" />
 
 function ICase(lCondition, eResult, lCondition2, eResult2, eOtherwiseResult) as usual CLIPPER
@@ -69,7 +69,7 @@ function ICase(lCondition, eResult, lCondition2, eResult2, eOtherwiseResult) as 
     for var nI := 1 to nCount-1 step 2
         local cond := _GetFParam(nI) as logic
         if cond
-            return _GetFParam(nI+1) 
+            return _GetFParam(nI+1)
         endif
     next
     // no conditions are met, if the # of parameters is odd then return the last value
@@ -83,9 +83,9 @@ function ICase(lCondition, eResult, lCondition2, eResult2, eOtherwiseResult) as 
     ENDIF
     // when they call this function with < 2 parameters then we have no idea what return type they expect...
     return NIL
-    
-    
-FUNCTION __VfpStr( resid AS DWORD ) AS STRING
+
+
+FUNCTION __VfpStr( resid AS DWORD , args PARAMS OBJECT[]) AS STRING
     // Strings are stored in a Managed resource with a name
     // the name matches the enum names
     // convert the id to the enum and get its name
@@ -93,37 +93,39 @@ FUNCTION __VfpStr( resid AS DWORD ) AS STRING
     LOCAL strMessage AS STRING
     strId := Enum.GetName( TYPEOF(VFPErrors) , resid)
     IF !String.IsNullOrEmpty(strId)
-            strMessage := XSharp.Messages.GetString( strId )
-            IF String.IsNullOrEmpty( strMessage )
-                strMessage := ": canot load string resource '" + strId + "'"
+        strMessage := XSharp.Messages.GetString( strId )
+        IF String.IsNullOrEmpty( strMessage )
+            strMessage := ": canot load string resource '" + strId + "'"
+        ELSEIF args != null .and. args:Length > 0
+            strMessage := String.Format(strMessage, args)
         ENDIF
     ELSE
         strMessage := "Cannot find string for error number "+resid:ToString()
     ENDIF
     RETURN strMessage
-    
-    
-    
-    
+
+
+
+
 /// <include file="VFPDocs.xml" path="Runtimefunctions/vartype/*" />
 FUNCTION VarType( eExpression AS USUAL) AS STRING
     RETURN VarType(eExpression, FALSE)
-    
-    
+
+
 /// <include file="VFPDocs.xml" path="Runtimefunctions/vartype/*" />
 FUNCTION VarType( eExpression AS USUAL, lNullDataType AS LOGIC) AS STRING
     IF IsNil(eExpression) .AND. ! lNullDataType
         RETURN "X"
     ENDIF
     RETURN ValType(eExpression)
-    
-    
-    
+
+
+
 FUNCTION DbCopyFox(cTargetFile, cType, aFields, includedFields, excludedFields, cbForCondition, ;
     cbWhileCondition, nNext,nRecord, lRest, nCodePage, cDbName, cLongTableName, lCdx, lNoOptimize)   AS LOGIC CLIPPER
     local cOutPutType as STRING
     LOCAL result as LOGIC
-    cOutPutType := cType       
+    cOutPutType := cType
     var fields := __BuildFieldList(aFields, includedFields, excludedFields, TRUE)
     var acFields := {}
     foreach var cField in fields
@@ -133,26 +135,26 @@ FUNCTION DbCopyFox(cTargetFile, cType, aFields, includedFields, excludedFields, 
     TRY
     SWITCH cOutPutType:ToLower()
         CASE "csv"
-            RuntimeState.DelimRDD := "CSV"  
+            RuntimeState.DelimRDD := "CSV"
             if String.IsNullOrEmpty(System.IO.Path.GetExtension(cTargetFile))
                 cTargetFile += ".csv"
             endif
-            result := DbCopyDelim (cTargetFile, ",", acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)   
+            result := DbCopyDelim (cTargetFile, ",", acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
         CASE "sdf"
             if String.IsNullOrEmpty(System.IO.Path.GetExtension(cTargetFile))
                 cTargetFile += ".txt"
             endif
-            result := DbCopySDF(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)   
+            result := DbCopySDF(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
         CASE "dbf"
             result := DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
         CASE "foxplus"
         CASE "fox2x"
             result := DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,"DBFCDX")
-            
+
         OTHERWISE
             // Other Formats
             // DIF,MOD,SYLK,WK1,WKS,WR1,WRK,XLS,XL5
-            Throw NotSupportedException{"The output format "+cOutPutType+" is not available yet"}
+            Throw NotSupportedException{__VfpStr(VFPErrors.INVALID_FORMAT, "output", cOutPutType)}
         END SWITCH
     FINALLY
         RuntimeState.DelimRDD   := cDelim
@@ -169,19 +171,19 @@ FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, aFields, includedFields, ex
         AAdd(acFields, cField)
     NEXT
     IF IsString(cDelim)
-        VAR sDelim := Upper(cDelim) 
+        VAR sDelim := Upper(cDelim)
         if sDelim == "\TAB"
-    	    cDelim := e"\t"
+            cDelim := e"\t"
         elseif sDelim == "\BLANK"
-    	    cDelim := " "
-        endif 
+            cDelim := " "
+        endif
     ENDIF
     if !IsString(cChar)
-    	cChar := e"\""
+        cChar := e"\""
     ENDIF
     RuntimeState.StringDelimiter := cChar
-	RETURN DbCopyDelim(cTargetFile, cDelim, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
-	
+    RETURN DbCopyDelim(cTargetFile, cDelim, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
+
 
 
 
@@ -204,7 +206,7 @@ INTERNAL FUNCTION DbCopyToArraySingleRecord(aFields as IList<string> ) AS ARRAY
 
 FUNCTION DbAppendFromArray(aValues, aFieldList, cIncludedFields, cExcludedFields, cbForCondition) AS LOGIC CLIPPER
     IF ! IsArray(aValues)
-        THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues),"Argument should be a multidimensional array" , 1, {aValues})
+        THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.MULTI_DIM_EXPECTED,nameof(aValues))  , 1, {aValues})
     ENDIF
     VAR aFields := __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, FALSE)
     LOCAL oForCondition   := NULL   AS ICodeblock
@@ -215,11 +217,11 @@ FUNCTION DbAppendFromArray(aValues, aFieldList, cIncludedFields, cExcludedFields
     IF ALen(aValues) > 0
         FOREACH var u in (ARRAY) aValues
             IF !IsArray(u)
-                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), "Argument should be a multidimensional array", 1, {aValues})
+                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.MULTI_DIM_EXPECTED,nameof(aValues)), 1, {aValues})
             ENDIF
             local aElement := u as ARRAY
             IF ALen(aElement) < aFields:Count
-                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), "Not enough elements in sub array", 1, {u})
+                THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.SUBARRAY_TOO_SMALL ) , 1, {u})
             ENDIF
             DbAppend()
             // Todo Evaluate FOR clause
@@ -240,32 +242,32 @@ FUNCTION DbAppendFromArray(aValues, aFieldList, cIncludedFields, cExcludedFields
 
 
 FUNCTION DbAppFox(cSourceFile, cType, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, cSheet, nCodePage, lNoOptimize) AS USUAL CLIPPER
-    local cOutPutType as STRING
+    local cInPutType as STRING
     LOCAL result as LOGIC
-    cOutPutType := cType       
+    cInPutType := cType
     var cDelim := RuntimeState.DelimRDD
     TRY
-        SWITCH cOutPutType:ToLower()
+        SWITCH cInPutType:ToLower()
         CASE "dbf"
             result := DbApp(cSourceFile, aFields, cbForCondition, cbWhileCondition, nNext, nRecord,lRest)
-        CASE "csv"  
-            RuntimeState.DelimRDD := "CSV"  
+        CASE "csv"
+            RuntimeState.DelimRDD := "CSV"
             if String.IsNullOrEmpty(System.IO.Path.GetExtension(cSourceFile))
                 cSourceFile += ".csv"
             endif
             result := DbAppDelim(cSourceFile, ",", aFields, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
-        CASE "sdf"  
+        CASE "sdf"
             if String.IsNullOrEmpty(System.IO.Path.GetExtension(cSourceFile))
                 cSourceFile += ".txt"
             endif
-            result := DbAppSdf(cSourceFile, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)   
+            result := DbAppSdf(cSourceFile, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
         CASE "foxplus"
         CASE "fox2x"
             result := DbApp(cSourceFile, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,"DBFCDX")
         OTHERWISE
             // Other Formats
             // DIF,MOD,SYLK,WK1,WKS,WR1,WRK,XLS,XL5, XL8
-            Throw NotSupportedException{"The input format "+cOutPutType+" is not available yet"}         
+            Throw NotSupportedException{__VfpStr(VFPErrors.INVALID_FORMAT, "input", cInPutType)}
         END SWITCH
     FINALLY
         RuntimeState.DelimRDD   := cDelim
@@ -275,15 +277,15 @@ return result
 
 FUNCTION DbAppDelimFox (cTargetFile, cDelim, cChar, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, nCodePage, lNoOptimize)   AS LOGIC CLIPPER
     IF IsString(cDelim)
-        VAR sDelim := Upper(cDelim) 
+        VAR sDelim := Upper(cDelim)
         if sDelim == "\TAB"
-    	    cDelim := e"\t"
+            cDelim := e"\t"
         elseif sDelim == "\BLANK"
-    	    cDelim := " "
-        endif 
+            cDelim := " "
+        endif
     ENDIF
     if !IsString(cChar)
-    	cChar := e"\""
+        cChar := e"\""
     ENDIF
     RuntimeState.StringDelimiter := cChar
-	RETURN DbAppDelim(cTargetFile, cDelim, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)
+    RETURN DbAppDelim(cTargetFile, cDelim, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest)

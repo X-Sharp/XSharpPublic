@@ -1178,6 +1178,7 @@ CLASS XSharp.CoreDb
             oRegRDD:Load()
             oRdd := CoreDb.CreateRDDInstance( oRegRDD:RddType, "XXTEMPXX" )
         ENDIF
+        // Note that we do not close oRDD here. When it was crated the GC will throw it away
         RETURN (STRING) oRdd:Info(DBI_MEMOEXT, NULL)
         })
         /// <summary>

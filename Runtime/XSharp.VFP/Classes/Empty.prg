@@ -18,15 +18,15 @@ USING XSharp.Internal
 [DebuggerTypeProxy(TYPEOF(EmptyDebugView))];
 CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
 
-    PROTECTED _Properties AS Dictionary<STRING, USUAL> 
+    PROTECTED _Properties AS Dictionary<STRING, USUAL>
     PROTECTED _Attributes AS Dictionary<STRING, Tuple<PropertyVisibility, STRING> >
-    
+
     CONSTRUCTOR()
         _Properties := Dictionary<STRING, USUAL>{StringComparer.OrdinalIgnoreCase}
         _Attributes := Dictionary<STRING, Tuple<PropertyVisibility, STRING> >{StringComparer.OrdinalIgnoreCase}
         SELF:__InitCompileTimeProperties()
         RETURN
-        
+
     METHOD __InitCompileTimeProperties() AS VOID
         VAR aProps := SELF:GetType():GetProperties()
         FOREACH VAR oProp IN aProps
@@ -35,8 +35,8 @@ CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
             SELF:__AddProperty(oProp:Name, NIL, nVis)
         NEXT
         RETURN
-        
-        
+
+
         #region Property related
     INTERNAL METHOD __AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC CLIPPER
         local cName as STRING
@@ -93,8 +93,8 @@ CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
         RETURN FALSE
 
         #endregion
-        
-    
+
+
     #region IDynamicProperties
     VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID
         IF _Properties:ContainsKey( cName)
@@ -102,15 +102,15 @@ CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
         ELSE
             THROW PropertyNotFoundException{cName}
         ENDIF
-        RETURN 
-        
-    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL 
+        RETURN
+
+    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL
         IF _Properties:ContainsKey(cName)
             RETURN _Properties[cName]
         ELSE
             THROW PropertyNotFoundException{cName}
         ENDIF
-	
+
     VIRTUAL METHOD GetPropertyNames() AS STRING[]
         return _Properties:Keys:ToArray()
     #endregion
@@ -121,14 +121,14 @@ CLASS XSharp.VFP.Empty IMPLEMENTS XSharp.IDynamicProperties
         ELSE
             THROW PropertyNotFoundException{cName}
         ENDIF
-        
+
     PROTECTED METHOD _SetProperty(cName AS STRING, uValue AS USUAL) AS VOID
         IF _Properties:ContainsKey(cName)
             _Properties[cName] := uValue
         ELSE
             THROW PropertyNotFoundException{cName}
         ENDIF
-        
+
     #endregion
 
     INTERNAL CLASS EmptyDebugView
@@ -162,7 +162,7 @@ END CLASS
 PUBLIC CLASS XSharp.VFP.PropertyNotFoundException INHERIT Exception
     PUBLIC PROPERTY PropertyName AS STRING AUTO GET PRIVATE SET
     PUBLIC CONSTRUCTOR(name as STRING)
-        SUPER("Property '"+name+"' not found")
+        SUPER(__VfpStr(VFPErrors.PROPERTY_NOT_FOUND, name))
         SELF:PropertyName := name
         RETURN
 END CLASS

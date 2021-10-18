@@ -8,7 +8,7 @@ CLASS Icon INHERIT VObject
 		RETURN oIcon
 
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		IF ! oIcon == NULL_OBJECT
 			oIcon:Dispose()
 			oIcon := NULL_OBJECT

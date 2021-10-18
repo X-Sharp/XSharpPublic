@@ -3,7 +3,7 @@
 CLASS ResourceFile INHERIT VObject
 	PROTECT hLib AS IntPtr
 
-METHOD Destroy() AS USUAL STRICT
+METHOD Destroy() AS USUAL 
 	IF ((int) hLib >= 32)
 		GuiWin32.FreeLibrary(hLib)
 	ENDIF
@@ -14,11 +14,11 @@ METHOD Destroy() AS USUAL STRICT
 METHOD Handle() AS IntPtr STRICT
 	RETURN hLib
 
-CONSTRUCTOR(sName AS STRING) 
+CONSTRUCTOR(sName AS STRING)
 	LOCAL rsCaption AS ResourceString
 	LOCAL rsFormat AS ResourceString
 	LOCAL sMessage AS STRING
-	
+
 	SUPER()
 
 	hLib := GuiWin32.LoadLibrary(sName)
@@ -29,7 +29,7 @@ CONSTRUCTOR(sName AS STRING)
 		System.Windows.Forms.MessageBox.Show(sMessage, rsCaption:Value)
 	ENDIF
 
-	RETURN 
+	RETURN
 
 END CLASS
 

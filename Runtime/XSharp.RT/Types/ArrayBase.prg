@@ -289,16 +289,19 @@ BEGIN NAMESPACE XSharp
 
         #region Insert and Delete elements
         /// <exclude />
-        PUBLIC VIRTUAL METHOD Add(u AS T) AS VOID
+		PRIVATE METHOD __Add(u as T) AS VOID
             IF SELF:CheckLock()
                 _internalList:Add(u)
             ENDIF
+
+        PUBLIC VIRTUAL METHOD Add(u AS T) AS VOID
+			SELF:__Add(u)
             RETURN
 
         /// <exclude />
         PUBLIC METHOD Delete(position AS INT) AS __ArrayBase<T>
             SELF:RemoveAt(position)
-            SELF:Add(SELF:DefaultValue)
+            SELF:__Add(SELF:DefaultValue)
             RETURN SELF
 
         /// <exclude />

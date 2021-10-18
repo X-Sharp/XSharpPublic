@@ -14,7 +14,7 @@
 //     [FIELDS] FieldList | LIKE Skeleton | EXCEPT Skeleton]
 //   [MEMO]
 
-// APPEND FROM ARRAY ArrayName [FOR lExpression] 
+// APPEND FROM ARRAY ArrayName [FOR lExpression]
 // [FIELDS] FieldList | LIKE Skeleton | EXCEPT Skeleton
 
 // THere are several variations of these commands:
@@ -22,7 +22,7 @@
 // 2) Skeleton of fields to be INcluded
 // 3) Skeleton of fields to be EXcluded
 // 4) no fields
-// 5) MEMO clause which includes MEMO fields in the gather/scatter 
+// 5) MEMO clause which includes MEMO fields in the gather/scatter
 // Note that LIKE and EXCEPT can be combined
 // APPEND FROM ARRAY aMyArray FIELDS LIKE A*,P* EXCEPT PARTNO*
 // SCATTER FIELDS LIKE A*,P* EXCEPT PARTNO* TO myArray
@@ -36,10 +36,10 @@
 // The targets/source  of the Scatter/Gather can be:
 //  1) Array
 //  2) MemVar
-//  3) Object (Add Property). Creates a new object with Scatter. 
+//  3) Object (Add Property). Creates a new object with Scatter.
 //  SCATTER NAME oTest BLANK gets translated to something like oTest := __ScatterObject(...)
 
-USING System.Collections.Generic  
+USING System.Collections.Generic
 USING System.Diagnostics
 USING System.Reflection
 USING XSharp.RDD.Support
@@ -48,12 +48,12 @@ USING XSharp.RDD.Support
 INTERNAL STRUCTURE NameValuePair
     INTERNAL Name  as STRING
     INTERNAL @@Value AS USUAL
-END STRUCTURE	
+END STRUCTURE
 
 INTERNAL FUNCTION __GetFieldValues(aFieldList AS ARRAY, cIncludedFields AS STRING, ;
     cExcludedFields AS STRING, lIncludeMemo AS LOGIC, lBlank AS LOGIC) AS NameValuePair[]
     var fields :=  __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
-    var values := List<NameValuePair>{}	
+    var values := List<NameValuePair>{}
     FOREACH var cName in fields
         VAR uValue := __FieldGet(cName)
         if lBlank
@@ -73,16 +73,16 @@ INTERNAL FUNCTION __BuildFieldList(aFieldList AS ARRAY, cIncludedFields AS STRIN
     LOCAL lAll as LOGIC
     if ALen(aFieldList) > 0
         IF !String.IsNullOrEmpty(cIncludedFields) .or. !String.IsNullOrEmpty(cExcludedFields)
-            Throw Error.ArgumentError(__FUNCTION__, "FIELDNAMES", i"You cannot combine both a field list and an include mask")
+            Throw Error.ArgumentError(__FUNCTION__, "FIELDNAMES", __VfpStr(VFPErrors.INVALID_FIELD_SPEC))
         ENDIF
     ENDIF
     lAll := ALen(aFieldList) == 0 .and. String.IsNullOrEmpty(cIncludedFields)
     LOCAL fCount as DWORD
     fCount := FCount()
-    FOR VAR nFld := 1u to fCount 
+    FOR VAR nFld := 1u to fCount
         LOCAL lInclude AS LOGIC
         LOCAL cType := NIL as USUAL
-        VoDb.FieldInfo(DBS_TYPE, nFld,@cType) 
+        VoDb.FieldInfo(DBS_TYPE, nFld,@cType)
         SWITCH (STRING) cType
             CASE "M"
                 lInclude := lIncludeMemo
@@ -101,44 +101,44 @@ INTERNAL FUNCTION __BuildFieldList(aFieldList AS ARRAY, cIncludedFields AS STRIN
                 allfields:Add(oFld:Name:ToUpperInvariant())
             ENDIF
         ENDIF
-    NEXT			    	
+    NEXT
     IF lAll
-        selected:AddRange(allfields)  
+        selected:AddRange(allfields)
     ELSEIF ALen(aFieldList) > 0
         FOREACH cName AS STRING in aFieldList
             var cField := cName:ToUpper()
             IF allfields:IndexOf(cField) == -1
-                Throw Error.ArgumentError(__FUNCTION__, "FIELDNAME", i"Field '{cName}' does not exist")
+                Throw Error.ArgumentError(__FUNCTION__, "FIELDNAME", __VfpStr(VFPErrors.INVALID_FIELDNAME, cField))
             ENDIF
             selected:Add(cField)
         NEXT
     ENDIF
-    IF ! String.IsNullOrEmpty(cIncludedFields)  
+    IF ! String.IsNullOrEmpty(cIncludedFields)
         VAR aElements := __GetAllElements(cIncludedFields)
         FOREACH VAR cElement IN aElements
             FOREACH VAR cField in allfields
                 IF selected:IndexOf(cField) == -1
-                    IF Like(cElement, cField) 
+                    IF Like(cElement, cField)
                         selected:Add(cField)
                     ENDIF
                 ENDIF
             NEXT
         NEXT
     ENDIF
-    IF ! String.IsNullOrEmpty(cExcludedFields)  
-        allfields:Clear()                       
+    IF ! String.IsNullOrEmpty(cExcludedFields)
+        allfields:Clear()
         // now we only process the names that were selected before
         allfields:AddRange(selected)
         selected:Clear()
-        VAR aElements := __GetAllElements(cExcludedFields)	
+        VAR aElements := __GetAllElements(cExcludedFields)
         FOREACH VAR cElement IN aElements
             FOREACH VAR cField in allfields
-                IF !Like(cElement, cField) 
+                IF !Like(cElement, cField)
                     selected:Add(cField)
                 ENDIF
             NEXT
         NEXT
-    ENDIF 
+    ENDIF
 return selected
 
 FUNCTION __ScatterMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank) AS LOGIC CLIPPER
@@ -148,9 +148,9 @@ FUNCTION __ScatterMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeM
         __MemVarPut(oField:Name, oField:Value)
     NEXT
     RETURN TRUE
-    
-    
-    
+
+
+
 FUNCTION __GatherMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo) AS LOGIC CLIPPER
     VAR aFields := __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
     FOREACH var cField in aFields
@@ -158,7 +158,7 @@ FUNCTION __GatherMemVar(aFieldList, cIncludedFields, cExcludedFields, lIncludeMe
     NEXT
     RETURN TRUE
     #pragma options ("az", on)
-    
+
 FUNCTION __ScatterArray(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank) AS ARRAY CLIPPER
     VAR aFields := __GetFieldValues(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)
     VAR aResult := {}
@@ -166,11 +166,11 @@ FUNCTION __ScatterArray(aFieldList, cIncludedFields, cExcludedFields, lIncludeMe
         AAdd(aResult, oField:Value)
     NEXT
     RETURN aResult
-    
-    
+
+
 FUNCTION __GatherArray(uSource, aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo) AS LOGIC CLIPPER
     VAR aFields := __BuildFieldList(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
-    VAR current := 0    
+    VAR current := 0
     IF ! IsArray(uSource)
         RETURN FALSE
     ENDIF
@@ -180,26 +180,26 @@ FUNCTION __GatherArray(uSource, aFieldList, cIncludedFields, cExcludedFields, lI
         if aSource:Length > current
             __FieldSet(cField, aSource[current++])
             found    := TRUE
-            
+
         endif
     NEXT
     RETURN found
-    
+
     #pragma options ("az", default)
-    
+
 FUNCTION __ScatterObject(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank, cObject, lAdditive) AS OBJECT CLIPPER
-    VAR aFields := __GetFieldValues(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)    
+    VAR aFields := __GetFieldValues(aFieldList, cIncludedFields, cExcludedFields, lIncludeMemo, lBlank)
     LOCAL oResult := NULL_OBJECT as OBJECT
     IF !IsLogic(lAdditive)
         lAdditive := FALSE
     ENDIF
-    IF IsString(cObject) .and. lAdditive     
+    IF IsString(cObject) .and. lAdditive
         TRY
                 LOCAL uObject := VarGet(cObject) AS USUAL
                 IF IsObject(uObject)
                     oResult := uObject
             ENDIF
-        CATCH                
+        CATCH
             oResult := NULL_OBJECT
         END TRY
     ENDIF
@@ -216,19 +216,19 @@ FUNCTION __ScatterObject(aFieldList, cIncludedFields, cExcludedFields, lIncludeM
         NEXT
     ENDIF
     RETURN oResult
-    
-    
+
+
 FUNCTION __GatherObject(oObject, cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo ) AS LOGIC CLIPPER
-    VAR aFields := __BuildFieldList(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)    
+    VAR aFields := __BuildFieldList(cFieldList, cIncludedFields, cExcludedFields, lIncludeMemo)
     LOCAL oLocal as OBJECT
     IF ! IsObject(oObject)
         RETURN FALSE
     ENDIF
     oLocal := oObject
     IF oLocal IS XSharp.IDynamicProperties VAR oDynamic
-        var props := List<String>{} 
+        var props := List<String>{}
         props:AddRange(oDynamic:GetPropertyNames())
-        FOREACH var cField in aFields           
+        FOREACH var cField in aFields
             if props:IndexOf(cField:ToUpper()) >= 0
                 var value := oDynamic:NoIvarGet(cField)
                 __FieldSet(cField, value)
@@ -237,10 +237,10 @@ FUNCTION __GatherObject(oObject, cFieldList, cIncludedFields, cExcludedFields, l
     ELSE
         FOREACH var cField in aFields
             var value := IVarGet(oLocal, cField)
-            __FieldSet(cField, value)            
+            __FieldSet(cField, value)
         NEXT
     ENDIF
     RETURN TRUE
-    
+
 
 

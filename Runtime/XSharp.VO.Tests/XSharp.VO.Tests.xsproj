@@ -46,7 +46,7 @@
     <VO15>true</VO15>
     <VO16>false</VO16>
     <TargetFrameworkProfile />
-    <XSharpProjectversion>2.8.4.1</XSharpProjectversion>
+    <XSharpProjectversion>2.9.0.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>true</Nostandarddefs>
   </PropertyGroup>
@@ -150,6 +150,7 @@
     <Compile Include="CodeBlockTest.prg" />
     <Compile Include="ClipperCallingTests.prg" />
     <Compile Include="ArrayBaseTests.prg" />
+    <Compile Include="EmptyTests.prg" />
     <Compile Include="WinDateTest.prg" />
     <Compile Include="CurrencyTests.prg" />
     <Compile Include="DbfCdxTests.prg" />

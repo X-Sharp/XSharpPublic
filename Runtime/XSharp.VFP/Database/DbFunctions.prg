@@ -11,11 +11,11 @@
 /// <seealso cref="DbcField" />
 FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS USUAL
     IF ! Dbc.IsValidObjectType(cType)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), "Database object type '"+cType+"' is invalid")
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.INVALID_DB_OBJECT, cType))
     ENDIF
     IF ! Dbc.IsValidPropertyName(cProperty)
 
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty), "Database property name '"+cProperty+"' is invalid")
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty), __VfpStr(VFPErrors.INVALID_DB_PROPERTY_NAME, cProperty))
     ENDIF
     VAR oDb := Dbc.GetCurrent()
     IF oDb == NULL_OBJECT
@@ -34,10 +34,10 @@ FUNCTION DbGetProp( cName AS STRING, cType AS STRING, cProperty AS STRING)  AS U
 /// <seealso cref="DbcField" />
 FUNCTION DbSetProp(cName AS STRING, cType AS STRING, cProperty AS STRING, ePropertyValue AS USUAL)
     IF ! Dbc.IsValidObjectType(cType)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), "Database object type '"+cType+"' is invalid")
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cType), __VfpStr(VFPErrors.INVALID_DB_OBJECT, cType))
     ENDIF
     IF ! Dbc.IsValidPropertyName(cProperty)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty), "Database property name '"+cProperty+"' is invalid")
+        THROW Error.ArgumentError(__FUNCTION__, nameof(cProperty),  __VfpStr(VFPErrors.INVALID_DB_PROPERTY_NAME, cProperty))
     ENDIF
     VAR oDb := Dbc.GetCurrent()
     IF oDb == NULL_OBJECT

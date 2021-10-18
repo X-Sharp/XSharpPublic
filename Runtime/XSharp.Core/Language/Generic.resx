@@ -2744,7 +2744,54 @@
   <data name="INVALID_RANGE" xml:space="preserve">
     <value>{0} param value is {1}, must be in the range {2}</value>
   </data>
+  <data name="WITH_STACK_EMPTY" xml:space="preserve">
+    <value>No active WITH block found</value>
+  </data>
+  <data name="VARIABLE_NOT_ARRAY" xml:space="preserve">
+    <value>Variable '{0}' is not an array</value>
+  </data>
+  <data name="VARIABLE_DOES_NOT_EXIST" xml:space="preserve">
+    <value>Variable '{0}' does not exist</value>
+  </data>
+  <data name="ONE_DIM_NO_COLUMNS" xml:space="preserve">
+    <value>a one-dimensional array has no columns</value>
+  </data>
+  <data name="ATTRIBUTE_OUT_OF_RANGE" xml:space="preserve">
+    <value>'{0}' number is out of range</value>
+  </data>
+  <data name="PROPERTY_NOT_FOUND" xml:space="preserve">
+    <value>Property '{0}' not found</value>
+  </data>
+    <data name="MULTI_DIM_EXPECTED" xml:space="preserve">
+    <value>Argument '{0}' should be a multidimensional array</value>
+  </data>
+  <data name="SUBARRAY_TOO_SMALL" xml:space="preserve">
+    <value>Not enough elements in sub array</value>
+  </data>
+  <data name="COLLATION_NOT_FOUND" xml:space="preserve">
+    <value>Collating sequence '{0}' is not found</value>
+  </data>
+  <data name="INVALID_FORMAT" xml:space="preserve">
+    <value>The {0} format '{1}' is not available yet</value>
+  </data>
+  <data name="INVALID_DB_OBJECT" xml:space="preserve">
+    <value>Database object type '{0}' is invalid</value>
+  </data>
+  <data name="INVALID_DB_PROPERTY_NAME" xml:space="preserve">
+    <value>Database property name '{0}' is invalid</value>
+  </data>
+  <data name="INVALID_FIELD_SPEC" xml:space="preserve">
+    <value>You cannot combine both a field list and an include mask</value>
+  </data>
+  <data name="INVALID_FIELDNAME" xml:space="preserve">
+    <value>Field '{0}' does not exist</value>
+  </data>
   
+
+
+
+
+
   <!-- End of FoxPro runtime-->
   
 

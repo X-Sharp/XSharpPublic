@@ -1051,7 +1051,7 @@ namespace XSharp.Project
 
 #region References Management Events
 
-        private void ReferencesEvents_ReferenceRemoved(Reference pReference)
+        private void ReferencesEvents_ReferenceRemoved(VSLangProj.Reference pReference)
         {
             if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                 (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
@@ -1061,14 +1061,14 @@ namespace XSharp.Project
             }
         }
 
-        private void ReferencesEvents_ReferenceAdded(Reference pReference)
+        private void ReferencesEvents_ReferenceAdded(VSLangProj.Reference pReference)
         {
             ProjectModel.AddAssemblyReference(pReference.Path);
             //
             ProjectModel.ResolveReferences();
         }
 
-        private void ReferencesEvents_ReferenceChanged(Reference pReference)
+        private void ReferencesEvents_ReferenceChanged(VSLangProj.Reference pReference)
         {
             if ((pReference.Type == prjReferenceType.prjReferenceTypeAssembly) ||
                 (pReference.Type == prjReferenceType.prjReferenceTypeActiveX))
@@ -1245,7 +1245,7 @@ namespace XSharp.Project
         {
             // Add all references to the Type Controller
             ProjectModel.ClearAssemblyReferences();
-            foreach (Reference reference in this.VSProject.References)
+            foreach (VSLangProj.Reference reference in this.VSProject.References)
             {
                 // Our project references should not be added as AssemblyReference
                 if (reference is OAProjectReference)

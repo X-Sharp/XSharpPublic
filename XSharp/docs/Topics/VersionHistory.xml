@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -11,7 +11,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
-    <para styleclass="Heading1">Changes in 2.9.0.0 (Cahors)</para>
+    <para styleclass="Heading1">Changes in 2.9.0.1 (Cahors)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -30,6 +30,7 @@
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">When you create a VOSTRUCT or UNION that contains a DATE field, then the compiler will now use the new __WinDate structure that is binary compatible with how DATE values are stored inside a VOSTRUCT or UNION in Visual Objects (#773)</li>
       <li styleclass="Body Text">It is now possible to use parentheses for (instead of brackets) accessing ARRAY elements in the FoxPro dialect. The compiler option /fox2 must be enabled for that to work (#746)</li>
+      <li styleclass="Body Text">We have added support (for the FoxPro dialect only) for accessing WITH block expressions inside code of a calling function / method. So you can type .SomeProperty and access the property that belongs to a WITH BLOCK expression inside the calling code. To use this Late Binding must be enabled, since the compiler does not know the type of the expression from the calling code (#811).</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>
@@ -64,6 +65,7 @@
       <li styleclass="Body Text">We have added a new (internal) type __WinDate that is used when you store a DATE value into a VoStruct or Union. This field is binary compatible with the Julian date that VO stores inside structures and unions.</li>
       <li styleclass="Body Text">We have added an entry to the RuntimeState in which the compiler stores the current /fox2 compiler setting for the main app.</li>
       <li styleclass="Body Text">Added runtime support to support filling FoxPro arrays by assigning a single value. </li>
+      <li styleclass="Body Text">We have added support (for the FoxPro dialect only) for accessing WITH block expressions inside code of a calling function / method. So you can type .SomeProperty and acces the property that belongs to a WITH BLOCK expression inside the calling code. To use this Late Binding must be enabled, since the compiler does not know the type of the expression from the calling code (#811).</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading3">Bug Fixes</para>
@@ -146,6 +148,7 @@
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The code generator for Windows Forms was replacing tab characters with spaces. This has been fixed.(#438)</li>
       <li styleclass="Body Text">Fixed a problem with the Form Designer corrupting code that contains EXPORT ARRAY OF &lt;type&gt;</li>
+      <li styleclass="Body Text">Fixed a problem with the Form Designer that when removing an event handler in the editor, some code was deleted (#812)</li>
     </list>
     <para styleclass="Heading3">VO-Compatible Editors</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -157,7 +160,6 @@
       <li styleclass="Body Text">Added support for specifying a Ribbon in the Menu Editor. The ribbon (bitmap) to be used needs to be specified as a filename in the properties of the Menu&apos;s main item (#714)</li>
       <li styleclass="Body Text">Fixed some issues with event code generation in the Window Editor (#441, #46)</li>
     </list>
-    <para styleclass="Heading1"></para>
     <para styleclass="Heading1">Changes in 2.8.3.15 (Cahors)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>

@@ -21,46 +21,47 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="Docs\XsRuntimeClasses.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Rdd.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RDD.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.Debugger.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.Debugger.Xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSQLClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.Xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.Xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSQLClasses.Xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.Xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOGUIClasses.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.GUIClasses.Xml" /></DocumentationSources>
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Rdd.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RDD.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.Debugger.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.Debugger.Xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSQLClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.Xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOConsoleClasses.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VORDDClasses.Xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSQLClasses.Xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOSystemClasses.Xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VOGUIClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.GUIClasses.Xml" />
+    </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
     <HelpFileVersion>2.9.0.1</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -72,12 +73,12 @@
     <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013XSharp</PresentationStyle>
-    <CleanIntermediates>False</CleanIntermediates>
+    <CleanIntermediates>True</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <IndentHtml>False</IndentHtml>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
-    <VisibleItems>Attributes, ExplicitInterfaceImplementations, ProtectedInternalAsProtected, PublicCompilerGenerated, NonBrowsable</VisibleItems>
+    <VisibleItems>Attributes, ExplicitInterfaceImplementations, PublicCompilerGenerated, NonBrowsable</VisibleItems>
     <ApiFilter />
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="True" />
@@ -93,23 +94,40 @@
       <NamespaceSummaryItem name="XSharp.RDD.Support" isDocumented="True">This namespace contains several helper types used by the RDD system.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.Core" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.Core DLL.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.RT" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.RT.DLL.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.RT.Debugger" isDocumented="True">This namespace contains the Functions class that has the functions to show the Runtime Debugger windows.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.XPP" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.XPP.DLL.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.VFP" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.VFP DLL.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.ADS" isDocumented="True">This namespace contains several types used by the Advantage RDDs in the RDD system.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.Data" isDocumented="True">This namespace contains several types used in the XSharp runtime to access data through the Ado.Net Data providers.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.Debugger" isDocumented="True">This namespace containes several windows that can be used to inspect the Runtime State and open workareas/cursors at runtime.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VO" isDocumented="True">
-        The VO Namespace contains all the VO SDK Classes, such as DbServer, DataWindow, SQLSelect etc.&lt;br/&gt;
+        This namespace contains all the VO SDK Classes, such as DbServer, DataWindow, SQLSelect etc.&lt;br/&gt;
         If you enable the compiler option to search inside "Implicit Namespaces" (/ins) then you will not have to include a USING VO statement in your code. &lt;br/&gt;
         The compiler will then automatically find the classes. &lt;br/&gt;
         The Runtime will also respect these implicit namespaces, so CreateInstance(#DbServer) will also be able to find the DbServer class inside the VO namespace.
       </NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.VO" isDocumented="True">
+        This namespace contains strongly typed versions of the VO SDK Classes, such as DbServer, DataWindow, SQLSelect etc.&lt;br/&gt;
+        If you enable the compiler option to search inside "Implicit Namespaces" (/ins) then you will not have to include 
+		a USING XSharp.VO statement in your code. &lt;br/&gt;
+        The compiler will then automatically find the classes in this namespace. &lt;br/&gt;
+        The Runtime will also respect these implicit namespaces, 
+		so CreateInstance(#DbServer) will also be able to find the DbServer class inside the XSharp.VO namespace.
+      </NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp" isDocumented="True">The XSharp namespace holds the new classes that are used in Hybrid applications, such as ChildWinForm, VOWinFormApp etc. 
       These classes were originally created by Paul Piko for Vulcan.Net and are included with his permission.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="VOGUIClasses" isDocumented="True">The VOGUIClasses namespaces contains the functions class with the functions and defines from the VOGUIClasses assembly</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="VOInternetClasses" isDocumented="True">The VOInternetClasses namespaces contains the functions class with the functions and defines from the VOInternetClasses assembly</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="VORDDClasses" isDocumented="True">The VORDDClasses namespaces contains the functions class with the functions and defines from the VORDDClasses assembly</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="VOSQLClasses" isDocumented="True">The VOSQLClasses namespaces contains the functions class with the functions and defines from the VOSQLClasses assembly</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="VOSystemClasses" isDocumented="True">The VOSystemClasses namespaces contains the functions class with the functions and defines from the VOSystemClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VOConsoleClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOConsoleClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VOGUIClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOGUIClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VOInternetClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOInternetClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VORDDClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VORDDClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VOReportClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOReportClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VOSQLClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOSQLClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VOSystemClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOSystemClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp_VOConsoleClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VOConsoleClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp_VOGUIClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VOGUIClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp_VORDDClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VORDDClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp_VOSQLClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VOSQLClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp_VOSystemClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VOSystemClasses assembly</NamespaceSummaryItem>
     </NamespaceSummaries>
     <ComponentConfigurations>
       <ComponentConfig id="Syntax Component" enabled="True">
@@ -178,16 +196,7 @@
       <PlugInConfig id="XSharp Function Output" enabled="True">
         <configuration />
       </PlugInConfig>
-      <PlugInConfig id="XPath Reflection File Filter" enabled="True">
-        <configuration>
-          <expressions>
-            <expression>//api[starts-with(apidata/@name,"$")]</expression>
-            <expression>//api[contains(@id,"XSharp.ADS.ACE")]</expression>
-            <expression>//api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression>
-          </expressions>
-        </configuration>
-      </PlugInConfig>
-    </PlugInConfigurations>
+<PlugInConfig id="XPath Reflection File Filter" enabled="True"><configuration><expressions><expression>//api[starts-with(apidata/@name,"$")]</expression><expression>//api[contains(@id,"XSharp.ADS.ACE")]</expression><expression>//api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression></expressions></configuration></PlugInConfig></PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime and VO SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2021 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b 1993-2020 Computer Associates.</CopyrightText>
@@ -212,11 +221,17 @@
       &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_XPP_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.XPP.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
       &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VFP_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.VFP.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
       &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_Data_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.Data.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
+      &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VOConsoleClasses_Functions.htm&amp;quot%3b&amp;gt%3bVOConsoleClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
       &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VOGUIClasses_Functions.htm&amp;quot%3b&amp;gt%3bVOGUIClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
       &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VOInternetClasses_Functions.htm&amp;quot%3b&amp;gt%3bVOInternetClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
       &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VORDDClasses_Functions.htm&amp;quot%3b&amp;gt%3bVORDDClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
       &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VOSQLClasses_Functions.htm&amp;quot%3b&amp;gt%3bVOSQLClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
       &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_VOSystemClasses_Functions.htm&amp;quot%3b&amp;gt%3bVOSystemClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
+      &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VOConsoleClasses_Functions.htm&amp;quot%3b&amp;gt%3bXSharp_VOConsoleClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
+      &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VOGUIClasses_Functions.htm&amp;quot%3b&amp;gt%3bXSharp_VOGUIClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
+      &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VORDDClasses_Functions.htm&amp;quot%3b&amp;gt%3bXSharp_VORDDClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
+      &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VOSQLClasses_Functions.htm&amp;quot%3b&amp;gt%3bXSharp_VOSQLClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
+      &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VOSystemClasses_Functions.htm&amp;quot%3b&amp;gt%3bXSharp_VOSystemClasses.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
       &amp;lt%3b/list&amp;gt%3b
       There is no need to do anything special when writing code. The compiler will automatically resolve function calls, such as:
       &amp;lt%3bc&amp;gt%3bLeft%28cString,10%29 &amp;lt%3b/c&amp;gt%3b and will generate the following output  &amp;lt%3bc&amp;gt%3bXSharp.Core.Functions.Left%28cString,10%29&amp;lt%3b/c&amp;gt%3b.

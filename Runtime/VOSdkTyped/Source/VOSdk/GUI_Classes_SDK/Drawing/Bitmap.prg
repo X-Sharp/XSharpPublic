@@ -19,7 +19,7 @@ CLASS Bitmap INHERIT VObject
 		RETURN 
 		
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		
 		IF (oImage != NULL_OBJECT)
 			oImage:Dispose()

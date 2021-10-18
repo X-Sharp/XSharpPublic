@@ -3,7 +3,7 @@
 //
 // XSharp FoxPro Preprocessor Directives
 //
-// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 // Caution: do not modify this file. It will be overwritten during product updates
@@ -24,13 +24,13 @@
 
 #xcommand STORE <value> TO ARRAY <VAR> => __FoxFillArray( <VAR>, <value> )
 
-// Scatter .. MEMVAR must be last !   
+// Scatter .. MEMVAR must be last !
 
 #command SCATTER [FIELDS <f1> [,<fn> ] ] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>]  TO <arrayName> ;
           => <arrayName> := __ScatterArray(  {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>, <.blank.>  )
 
 // Note that the objectName parameter is passed as a string because objectName may not have been created yet (when it is a MEMVAR).
-// For SCATTER NAME to work with LOCALS and the ADDITIVE clause we therefore need to enable /fox2. 
+// For SCATTER NAME to work with LOCALS and the ADDITIVE clause we therefore need to enable /fox2.
 
 #command SCATTER [FIELDS <f1> [,<fn> ]] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>]  NAME <objectName> [<add: ADDITIVE>];
           => <objectName> := __ScatterObject( {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>, <.blank.> , <"objectName">,  <.add.>)
@@ -75,7 +75,7 @@
 
 **  Todo FoxPro [[DatabaseName!] TableName | SQLViewName | ?]
 **  [IN nWorkArea | cTableAlias] [ONLINE] [ADMIN] [AGAIN]
-**  [NOREQUERY [nDataSessionNumber]] [NODATA] 
+**  [NOREQUERY [nDataSessionNumber]] [NODATA]
 **  [INDEX IndexFileList | ? [ORDER [nIndexNumber | IDXFileName | [TAG] TagName [OF CDXFileName] [ASCENDING | DESCENDING]]]]
 **  [CONNSTRING cConnectionString | nStatementHandle ]
 
@@ -99,7 +99,7 @@
 **   [COMPACT] [ASCENDING | DESCENDING] [UNIQUE | CANDIDATE] [ADDITIVE]
 
 #command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>]  => dbSeek( <xpr> , <.soft.>, <.lst.>)
-** Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING 
+** Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING
 
 
 #command COPY STRUCTURE EXTENDED TO <(file)>                      		;
@@ -123,7 +123,7 @@
       [; DbSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> )]
 
 ** Todo: Add Tag Clause
-** Todo: IN <area> which should prefix the calls to DbSetRelation 
+** Todo: IN <area> which should prefix the calls to DbSetRelation
 
 
 #command SORT  TO <(file)>  [ON <fields,...>]                           ;
@@ -154,8 +154,8 @@
                  {|| <v1> := <v1> + <x1> [, <vn> := <vn> + <xn> ]},     ;
                  <{for}>, <{while}>, <next>, <rec>, <.rest.>            ;
                )
-** Todo FoxPro Nooptimize clause 
-** Todo FoxPro [TO ARRAY ArrayName]   
+** Todo FoxPro Nooptimize clause
+** Todo FoxPro [TO ARRAY ArrayName]
 
 #command AVERAGE   <x1> [, <xn>]  TO  <v1> [, <vn>]                     ;
          [FOR <for>]                                                    ;
@@ -175,8 +175,8 @@
                                                                         ;
        ; <v1> := <v1> / M->__Avg [; <vn> := <vn> / M->__Avg ]
 
-** Todo FoxPro Nooptimize clause 
-** Todo FoxPro [TO ARRAY ArrayName]   
+** Todo FoxPro Nooptimize clause
+** Todo FoxPro [TO ARRAY ArrayName]
 
 
 */
@@ -201,7 +201,7 @@
 #command SKIP <n> 		<x:IN,ALIAS> <(a)>     => (<(a)>) -> ( DbSkip(<n>) )
 
 #command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>] <x:IN,ALIAS> <(a)>  => (<(a)>) -> (DbSeek( <xpr> , <.soft.>, <.lst.>))
-** Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING 
+** Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING
 
 #command SET FILTER TO  <x:IN,ALIAS> <(a)>        => (<(a)>) -> (DbClearFilter())
 #command SET FILTER TO <xpr> <x:IN,ALIAS> <(a)>   => (<(a)>) -> (DbSetFilter( <{xpr}>, <"xpr"> ))
@@ -262,7 +262,7 @@
                ))
 
 #command RECALL  <x:IN,ALIAS> <(a)>                =>  (<(a)>) -> (DbRecall())
-			   
+
 ** Todo: Add FoxPro NoOptimize clause
 
 ** Commands without IN/ALIAS clause
@@ -275,9 +275,9 @@
          [<rest:REST>]     ;
          [ALL]             ;
                            ;
-      => IIF( <.FOR.>, DbLocate( <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> ), DbLocate( {||TRUE}, <{WHILE}>, <NEXT>, <rec>, <.rest.> ) ); DO WHILE found() 
+      => IIF( <.FOR.>, DbLocate( <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> ), DbLocate( {||TRUE}, <{WHILE}>, <NEXT>, <rec>, <.rest.> ) ); DO WHILE found()
 
-** Todo FoxPro Nooptimize clause 
+** Todo FoxPro Nooptimize clause
 
 #command ENDSCAN => DbContinue(); ENDDO
 #command END SCAN => DbContinue(); ENDDO
@@ -297,11 +297,11 @@
                                                                         ;
       => <arrayName> := DbCopyToArray(                                  ;
                         {<(f1)>[, <(fn)> ]}, #<include>, #<exclude>,    ;
-                        <{for}>, <{while}>, <next>, <rec>, <.rest.>     ;
+                        <{for}>, <{while}>, <next>, <rec>, <.rest.>,    ;
                         <.noopt.>                                       ;
                         )
-** Todo FoxPro clauses  
-** [ [WITH] CDX ] | [ [WITH] PRODUCTION ] [NOOPTIMIZE] 
+** Todo FoxPro clauses
+** [ [WITH] CDX ] | [ [WITH] PRODUCTION ] [NOOPTIMIZE]
 ** Implementation of CSV,SDF,FOXPLUS, FOX2X is implemented. Rest not yet.
 
 
@@ -367,21 +367,6 @@
                         <nCodePage>, <.noopt.>                          ;
                         )
 
-#command COPY TO ARRAY <arrayName> [FIELDS <f1> [,<fn> ] ]              ;
-         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
-         [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
-         [<noopt: NOOPTIMIZE>]                                          ;
-         [ALL]                                                          ;
-                                                                        ;
-      => <arrayName> := DbCopyToArray(                                  ;
-                        {<(f1)>[, <(fn)> ]}, #<include>, #<exclude>,    ;
-                        <{for}>, <{while}>, <next>, <rec>, <.rest.>     ;
-                        <.noopt.>                                       ;
-                        )
 
 #command APPEND FROM <(file)>                                           ;
          [FIELDS <fields,...>]                                          ;
@@ -396,7 +381,7 @@
                                                                         ;
       => DbAppDelimFox(                                                 ;
                        <(file)>, <(delim)>, <char>,       ;
-                       { <(fields)> }, <{FOR}>, <{WHILE}>, <NEXT>,      ;                       
+                       { <(fields)> }, <{FOR}>, <{WHILE}>, <NEXT>,      ;
                        <rec>, <.rest.>                                  ;
                      )
 
@@ -414,7 +399,7 @@
                                                                         ;
       => DbAppDelimFox(                                                 ;
                        <(file)>, "\" + #<tab>,  ,                       ;
-                       { <(fields)> }, <{FOR}>, <{WHILE}>, <NEXT>,      ;                       
+                       { <(fields)> }, <{FOR}>, <{WHILE}>, <NEXT>,      ;
                        <rec>, <.rest.>                                  ;
                      )
 

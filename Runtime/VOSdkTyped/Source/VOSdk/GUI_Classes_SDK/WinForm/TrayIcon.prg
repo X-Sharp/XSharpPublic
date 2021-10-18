@@ -21,7 +21,7 @@ CLASS VOTrayIcon INHERIT VObject
 		oIcon:BalloonTipShown   += OnBalloonShown
 		oIcon:BalloonTipClosed  += OnBalloonClosed
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		oIcon:Visible := FALSE
 		oIcon:Dispose()
 		RETURN SELF	

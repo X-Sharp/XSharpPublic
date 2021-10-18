@@ -37,7 +37,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
 		oSplitView:ChangeBackground(oBrush, kWhere)
 		RETURN SELF
 
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		// if not in garbage collection, destroy the split view control
 		IF oSplitView != NULL_OBJECT
 			oSplitView:Destroy()

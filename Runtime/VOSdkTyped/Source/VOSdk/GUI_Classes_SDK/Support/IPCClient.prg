@@ -86,7 +86,7 @@ METHOD DataUpdate(oIpcDataUpdateEvent)
 	
 	RETURN SELF
 
-METHOD Destroy() AS USUAL STRICT
+METHOD Destroy() AS USUAL 
 	/*
 	LOCAL i, dwLen AS DWORD
 	LOCAL hConv AS PTR

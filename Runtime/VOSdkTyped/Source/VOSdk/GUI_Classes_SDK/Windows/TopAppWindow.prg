@@ -32,7 +32,7 @@ CLASS TopAppWindow INHERIT AppWindow
 
 		RETURN 
 	
-	METHOD Destroy() AS USUAL STRICT
+	METHOD Destroy() AS USUAL 
 		SUPER:Destroy()
 		// Tests if this is the last TopAppWindow
 		IF (oApp != NULL_OBJECT)

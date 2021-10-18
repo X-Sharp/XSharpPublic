@@ -4960,6 +4960,92 @@ RETURN
 		RETURN
 
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestFieldPutBytes_cdx() AS VOID
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			
+			cDbf := GetTempFileName()
+			DbCreate(cDbf, {{"FLD1","C",10,0},{"MEMO1","M",10,0}})
+			
+			DbUseArea(,,cDbf)
+			DbAppend()
+			FieldPutBytes( 1, <BYTE>{1,2,3,4,5} )
+			FieldPutBytes( 2, <BYTE>{6,7,8} )
+			
+			LOCAL a AS BYTE[]
+			a := FieldGetBytes(1)
+			Assert.Equal(5, a:Length)
+			FOR LOCAL n := 1 AS INT UPTO 5
+				Assert.Equal((BYTE)n, a[n])
+			NEXT
+			
+			a := FieldGetBytes(2)
+			Assert.Equal(3, a:Length)
+			FOR LOCAL n := 1 AS INT UPTO 3
+				Assert.Equal((BYTE)(n+5), a[n])
+			NEXT
+			
+			a := BYTE[]{10_000}
+			FOR LOCAL n := 1 AS INT UPTO a:Length
+				a[n] := (BYTE)(n % 256)
+			NEXT
+			FieldPutBytes( 2, a )
+			a := FieldGetBytes(2)
+			Assert.Equal(10_000, a:Length)
+			LOCAL lSame := TRUE AS LOGIC
+			FOR LOCAL n := 1 AS INT UPTO 10_000
+				IF a[n] != (BYTE)(n % 256)
+					lSame := FALSE
+					EXIT
+				END IF
+			NEXT
+			Assert.True( lSame )			
+			
+			DbCloseArea()
+
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestDBSeek() AS VOID
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			
+			cDbf := GetTempFileName()
+			DbCreate(cDbf, {{"FLD1","C",3,0} , {"FLD2","C",3,0}})
+
+			DbUseArea(,,cDbf)
+			DbCreateIndex(cDbf,"FLD1+FLD2")
+			DbAppend()
+			FieldPut(1, "AAA") ; FieldPut(2, "abc")
+			DbAppend()
+			FieldPut(1, "BBB") ; FieldPut(2, "def")
+			DbAppend()
+			FieldPut(1, "DDD") ; FieldPut(2, "ghi")
+			DbAppend()
+			FieldPut(1, "AAA") ; FieldPut(2, "jkl")
+			
+			Assert.True ( DbSeek( "AAA" , , FALSE ) )
+			Assert.False( Eof() )
+			Assert.Equal( 1U, RecNo() )
+
+			Assert.True ( DbSeek( "AAA" , , TRUE ) )
+			Assert.False( Eof() )
+			Assert.Equal( 4U, RecNo() )
+	
+			Assert.False( DbSeek( "CCC" , , FALSE ) )
+			Assert.True ( Eof() )
+			Assert.Equal( 5U, RecNo() )
+
+			Assert.False( DbSeek( "CCC" , , TRUE ) )
+			Assert.True ( Eof() )
+			Assert.Equal( 5U, RecNo() )
+
+			DbCloseArea()
+
+
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

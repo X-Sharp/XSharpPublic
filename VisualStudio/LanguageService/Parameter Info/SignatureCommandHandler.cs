@@ -225,12 +225,13 @@ namespace XSharp.LanguageService
             ThreadHelper.ThrowIfNotOnUIThread();
             return m_nextCommandHandler.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
-        IXMemberSymbol findElementAt(bool comma, SnapshotPoint ssp, XSharpSearchLocation location)
+        IXMemberSymbol findElementAt(bool comma, SnapshotPoint ssp, XSharpSignatureProperties props)
         {
             // when coming from the completion list then there is no need to check a lot of stuff
             // we can then simply lookup the method and that is it.
             // Also no need to filter on visibility since that has been done in the completionlist already !
             // First, where are we ?
+            var location = props.Location;
             IXMemberSymbol currentElement = null;
             int Level = 0;
             do
@@ -298,7 +299,24 @@ namespace XSharp.LanguageService
             // We don't care of the corresponding Type, we are looking for the currentElement
             var element = XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true).FirstOrDefault();
             if (element is IXMemberSymbol mem)
+            {
                 currentElement = mem;
+                if (currentElement.Kind == Kind.Constructor)
+                {
+                    bool done = false;
+                    for (int i = tokenList.Count -1; ! done && i > 0; i--)
+                    {
+                        var token = tokenList[i];
+                        switch (token.Type)
+                        {
+                            case XSharpLexer.LPAREN:
+                            case XSharpLexer.LCURLY:
+                                props.triggerToken = tokenList[i - 1].Text;
+                                break;
+                        }
+                    }
+                }
+            }
             else if (element is IXTypeSymbol xtype)
             {
                 currentElement = xtype.Members.Where(m => m.Kind == Kind.Constructor).FirstOrDefault();
@@ -322,7 +340,10 @@ namespace XSharp.LanguageService
                 return false;
             if (location.Member.Range.StartLine == location.LineNumber)
                 return false;
-            
+
+            var props = new XSharpSignatureProperties(location);
+            props.triggerChar = triggerchar;
+
             if (type != null && methodName != null)
             {
                 var findStatic = triggerchar == '.';
@@ -330,11 +351,11 @@ namespace XSharp.LanguageService
             }
             else
             {
-                currentElement = findElementAt(comma, ssp, location);
+                currentElement = findElementAt(comma, ssp, props);
             }
             if (currentElement == null)
                 return false;
-            
+
             SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
             ITextSnapshot caretsnapshot = caret.Snapshot;
             //
@@ -346,7 +367,6 @@ namespace XSharp.LanguageService
             {
                 _signatureSession = _signatureBroker.CreateSignatureHelpSession(_textView, caretsnapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
             }
-            var props = new XSharpSignatureProperties(location);
             _signatureSession.Properties[typeof(XSharpSignatureProperties)] = props;
 
             if (location.Member.Kind.IsGlobalTypeMember())

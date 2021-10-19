@@ -48,7 +48,8 @@ BEGIN NAMESPACE XSharpModel
          IF (tm:Kind != Kind.@@Constructor)
             vars:Append(XLiterals.AsKeyWord)
             vars:Append(tm:TypeName)
-         ENDIF
+          ENDIF
+
          RETURN vars:ToString()
 
 
@@ -160,7 +161,7 @@ BEGIN NAMESPACE XSharpModel
          sb:Replace('&','@')  // Ampersand is not allowed in the string
          RETURN sb:ToString()
 
-    STATIC METHOD IsVisible(SELF tm AS IXMemberSymbol, Wanted AS Modifiers) AS LOGIC
+        STATIC METHOD IsVisible(SELF tm AS IXMemberSymbol, Wanted AS Modifiers) AS LOGIC
             VAR vis := tm:Visibility
             IF vis >= Wanted
                 RETURN TRUE
@@ -173,6 +174,22 @@ BEGIN NAMESPACE XSharpModel
                     RETURN FALSE
                 END SWITCH
             ENDIF
+
+        STATIC METHOD IsMethodVisibleInSubclass(SELF m as IXMemberSymbol) AS LOGIC
+            IF m.Visibility > Modifiers.Private .and. m.Kind != Kind.Constructor
+                if m:Name:Length > 4 .and. m:Kind == Kind.Method
+                    SWITCH m:Name:Substring(0,4)
+                    CASE "set_"
+                    CASE "get_"
+                    CASE "add_"
+                        RETURN FALSE
+                    CASE "remo"
+                        RETURN ! m:Name:StartsWith("remove_")
+                    END SWITCH
+                endif
+                RETURN TRUE
+            ENDIF
+            RETURN FALSE
 
    END CLASS
 END NAMESPACE

@@ -16,9 +16,9 @@ BEGIN NAMESPACE XSharpModel
     [DebuggerDisplay("{ToString(),nq}")];
     CLASS XPETypeSymbol INHERIT XPESymbol IMPLEMENTS IXTypeSymbol
         PRIVATE _baseType       AS XPETypeSymbol
-        PRIVATE _members        AS List<XPEMemberSymbol>
-        PRIVATE _allmembers     AS List<XPEMemberSymbol>
-        PRIVATE _children       AS List<XPETypeSymbol>
+        PRIVATE _members        AS IList<XPEMemberSymbol>
+        PRIVATE _allmembers     AS IList<XPEMemberSymbol>
+        PRIVATE _children       AS IList<XPETypeSymbol>
         PRIVATE _signature      AS XTypeSignature
         PRIVATE _typeDef        AS TypeDefinition
         PRIVATE _initialized   := FALSE  AS LOGIC
@@ -28,8 +28,8 @@ BEGIN NAMESPACE XSharpModel
         CONSTRUCTOR(typedef as TypeDefinition, asm as XAssembly)
             SUPER(typedef:Name, GetKind(typedef), ConvertAttributes(typedef:Attributes), asm)
             SELF:_typeDef        := typedef
-            SELF:_members        := List<XPEMemberSymbol>{}
-            SELF:_allmembers     := List<XPEMemberSymbol>{}
+            SELF:_members        := XPEMemberSymbol[]{0}
+            SELF:_allmembers     := XPEMemberSymbol[]{0}
             SELF:_children       := List<XPETypeSymbol>{}
             SELF:_signature      := XTypeSignature{"System.Object"}
             SELF:Namespace       := typedef:Namespace
@@ -183,17 +183,16 @@ BEGIN NAMESPACE XSharpModel
         ENDIF
 
         INTERNAL METHOD Resolve() AS VOID
-            local hasBaseMembers := FALSE as LOGIC
             IF !SELF:Assembly:Loaded
                 RETURN
             ENDIF
             IF ! SELF:_initialized .AND. SELF:_typeDef != NULL
                 VAR aMembers := List<XPEMemberSymbol>{}
+                LOCAL hasbasemembers as LOGIC
                 AddMembers(aMembers, SELF:_typeDef, SELF)
                 BEGIN LOCK SELF
                     // now add to
-                    SELF:_members:Clear()
-                    SELF:_members:AddRange(aMembers)
+                    SELF:_members := aMembers:ToArray()
                 END LOCK
                 // Get methods from parent class(es), recursively
                 if SELF:Assembly != NULL .and. ! String.IsNullOrEmpty(SELF:BaseTypeName)
@@ -201,15 +200,14 @@ BEGIN NAMESPACE XSharpModel
                     if _baseType != NULL
                         // do not inherit private members from the base class
                         // and also no constructors
-                        VAR basemembers := _baseType:XMembers:Where( { m => m.Visibility != Modifiers.Private .and. m.Kind != Kind.Constructor })
-                        hasBaseMembers := basemembers:Count() > 0
+                        VAR basemembers := _baseType:XMembers:Where( { m => m:IsMethodVisibleInSubclass()})
+                        hasbasemembers := basemembers:Count() > 0
                         aMembers:AddRange( basemembers )
                     ENDIF
                 ENDIF
                 BEGIN LOCK SELF
                     // now add to
-                    SELF:_allmembers:Clear()
-                    SELF:_allmembers:AddRange(aMembers)
+                    SELF:_allmembers := aMembers:ToArray()
                 END LOCK
 
                 // nested children ?
@@ -247,7 +245,7 @@ BEGIN NAMESPACE XSharpModel
 
                     NEXT
                 ENDIF
-                if hasBaseMembers .or. String.IsNullOrEmpty(SELF:BaseTypeName)
+                if hasbasemembers  .or. String.IsNullOrEmpty(SELF:BaseTypeName)
                     SELF:_initialized := TRUE
                 endif
             ENDIF

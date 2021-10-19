@@ -645,7 +645,7 @@ namespace XSharp.LanguageService
                     // Do we already know in which Type we are ?
                     if (currentToken.Type == XSharpLexer.SELF)  // SELF(..)
                     {
-                        var ctors = SearchConstructor(currentType, Modifiers.Private, location);
+                        var ctors = SearchConstructors(currentType, Modifiers.Private);
                         if (ctors != null)
                             result.AddRange(ctors);
                     }
@@ -654,14 +654,14 @@ namespace XSharp.LanguageService
                         if (currentType is XSourceTypeSymbol source)
                         {
                             var p = source.File.FindType(source.BaseTypeName, source.Namespace);
-                            var ctors = SearchConstructor(p, Modifiers.Protected, location);
+                            var ctors = SearchConstructors(p, Modifiers.Protected);
                             if (ctors != null)
                                 result.AddRange(ctors);
                         }
                         else
                         {
                             var p = location.FindType(currentType.BaseTypeName);
-                            var ctors = SearchConstructor(p, Modifiers.Protected, location);
+                            var ctors = SearchConstructors(p, Modifiers.Protected);
                             if (ctors != null)
                                 result.AddRange(ctors);
                         }
@@ -819,12 +819,18 @@ namespace XSharp.LanguageService
             if (result.Count > 0 && result[0] is IXTypeSymbol xtype && state == CompletionState.Constructors)
             {
                 result.Clear();
-                var ctors = SearchConstructor(xtype, Modifiers.Public, location);
-                if (result.Count == 0)
+                var ctors = SearchConstructors(xtype, Modifiers.Public);
+                if (ctors.Count == 0 && xtype is XSourceTypeSymbol)
                 {
                     var ctor = new XSourceMemberSymbol(XLiterals.ConstructorName, Kind.Constructor, Modifiers.Public, default, default, "",false);
                     ctor.Parent = xtype;
+                    ctor.DeclaringType = xtype.FullName;
+
                     result.Add(ctor);
+                }
+                else
+                {
+                    result.AddRange(ctors);
                 }
             }
             if (result.Count == 0)
@@ -1046,7 +1052,7 @@ namespace XSharp.LanguageService
         /// <param name="cType"></param>
         /// <param name="minVisibility"></param>
         /// <param name="foundElement"></param>
-        private static IList<IXMemberSymbol> SearchConstructor(IXTypeSymbol type, Modifiers minVisibility, XSharpSearchLocation location)
+        private static IList<IXMemberSymbol> SearchConstructors(IXTypeSymbol type, Modifiers minVisibility)
         {
             if (XSettings.EnableTypelookupLog)
                 WriteOutputMessage($"--> SearchConstructorIn {type?.FullName}");
@@ -1054,18 +1060,8 @@ namespace XSharp.LanguageService
             if (type != null)
             {
                 //
-                var xMethod = type.Members.Where(x => x.Kind == Kind.Constructor).FirstOrDefault();
-                if (xMethod != null )
-                {
-                    if (!xMethod.IsVisible(minVisibility))
-                    {
-                        xMethod = null;
-                    }
-                }
-                if (xMethod != null)
-                {
-                    result.Add(xMethod);
-                }
+                var ctors = type.Members.Where(x => x.Kind == Kind.Constructor && x.IsVisible(minVisibility));
+                result.AddRange(ctors);
             }
             return result;
         }

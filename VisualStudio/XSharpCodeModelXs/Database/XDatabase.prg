@@ -1153,6 +1153,29 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			Log(i"GetProjectTypesLike '{sName}' returns {result.Count} matches")
 		RETURN result
+
+        STATIC METHOD GetProjectTypesInNamespace(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+			VAR stmt := "Select * from ProjectTypes where namespace = $name AND idProject in ("+sProjectIds+")"
+			VAR result := List<XDbResult>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					TRY
+					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
+					    oCmd:Parameters:AddWithValue("$name", sName)
+					    USING VAR rdr := oCmd:ExecuteReader()
+					    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                            var type := CreateTypeInfo(rdr)
+                            result:Add(type)
+					    ENDDO
+
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+					END TRY
+				END LOCK
+			ENDIF
+			Log(i"GetProjectTypesInNamespace '{sName}' returns {result.Count} matches")
+		RETURN result
+
         STATIC METHOD GetAssemblyTypes(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
 			VAR stmt := "Select * from AssemblyTypes where name = $name AND IdAssembly in ("+sAssemblyIds+")"
 			VAR result := List<XDbResult>{}
@@ -1194,6 +1217,31 @@ BEGIN NAMESPACE XSharpModel
 				END LOCK
 			ENDIF
 			Log(i"GetAssemblyTypesLike '{sName}' returns {result.Count} matches")
+		RETURN result
+        STATIC METHOD GetAssemblyTypesInNamespace(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
+			VAR stmt := "Select * from AssemblyTypes where namespace = $name AND idAssembly in ("+sAssemblyIds+")"
+			VAR result := List<XDbResult>{}
+			IF IsDbOpen
+				BEGIN LOCK oConn
+					TRY
+					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
+					    oCmd:Parameters:AddWithValue("$name", sName)
+					    USING VAR rdr := oCmd:ExecuteReader()
+					    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
+                            var type := CreateRefTypeInfo(rdr)
+                            if type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+					            result:Add(type)
+                            elseif type:FullName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
+                                result:Add(type)
+                            endif
+					    ENDDO
+
+					CATCH e AS Exception
+						Log("Exception: "+e:ToString())
+					END TRY
+				END LOCK
+			ENDIF
+			Log(i"GetAssemblyTypesInNamespace '{sName}' returns {result.Count} matches")
 		RETURN result
 
 		STATIC METHOD GetCommentTasks(sProjectIds AS STRING) AS IList<XDbResult>
@@ -1332,32 +1380,6 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"GetTypesInFile returns {result.Count} matches")
 		RETURN result
 
-		STATIC METHOD GetReferenceTypes(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
-			VAR stmt := "Select * from AssemblyTypes where (name like $name or fullname like  $name) AND idAssembly in ("+sAssemblyIds+")"
-			VAR result := List<XDbResult>{}
-            var sLike  := sName+"%"
-			IF IsDbOpen
-				BEGIN LOCK oConn
-					TRY
-					    USING VAR oCmd := SQLiteCommand{stmt, oConn}
-					    oCmd:Parameters:AddWithValue("$name", sLike)
-					    USING VAR rdr := oCmd:ExecuteReader()
-					    DO WHILE rdr:Read() .and. result:Count < XSettings.MaxCompletionEntries
-                            var type := CreateRefTypeInfo(rdr)
-                            if type:TypeName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
-					            result:Add(type)
-                            elseif type:FullName:StartsWith(sName, StringComparison.OrdinalIgnoreCase)
-                                result:Add(type)
-                            endif
-					    ENDDO
-
-					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
-					END TRY
-				END LOCK
-			ENDIF
-			Log(i"GetReferenceTypes '{sName}' returns {result.Count} matches")
-		RETURN result
 
 		STATIC METHOD GetMembers(idType AS INT64) AS IList<XDbResult>
 			VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()

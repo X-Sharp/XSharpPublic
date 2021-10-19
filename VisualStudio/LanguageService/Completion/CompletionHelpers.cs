@@ -38,44 +38,64 @@ namespace XSharp.LanguageService
         internal void AddTypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith,
             bool onlyInterfaces = false, bool afterDot = false)
         {
+
             if (startWith == null)
                 return;
-            // We are looking for NameSpaces, in References
-            int startLen = 0;
-            int dotPos = startWith.LastIndexOf('.');
-            if (dotPos != -1)
-                startLen = dotPos + 1;
-            //
-            // Resolve projects. This adds them also to the AssemblyReferences
-            //
-            var project = location.Project;
-            var sprjs = project.StrangerProjects;
-            var prjs = project.ReferencedProjects;
+            // PE Types
+            AddPETypeNames(compList, location, startWith, onlyInterfaces, afterDot);
+            // Find Source Types
+            AddSourceTypeNames(compList, location, startWith, onlyInterfaces, afterDot);
+
+            // And our own Types
+            AddXSharpTypeNames(compList, location, startWith);
+
+        }
 
 
-            foreach (var type in project.FindSystemTypesByName(startWith, location.Usings.ToArray()))
+        bool isHiddenTypeSymbol(IXTypeSymbol type, out string displayName)
+        {
+            string fullName = type.FullName;
+            displayName = fullName;
+            if (IsHiddenTypeName(fullName))
             {
-                 if (onlyInterfaces && type.Kind != Kind.Interface)
+                return true;
+            }
+            if (fullName.Contains("+"))
+            {
+                fullName = fullName.Replace('+', '.');
+            }
+            displayName = fullName;
+            // Do we have another part file
+            var dotPos = fullName.LastIndexOf('.');
+            // Then remove it
+            if (dotPos > 0)
+                displayName = displayName.Substring(dotPos + 1);
+            if (IsHiddenTypeName(displayName))
+                return true;
+            return false;
+        }
+
+        internal void AddPETypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith,
+            bool onlyInterfaces = false, bool afterDot = false)
+        {
+            
+            IList<XPETypeSymbol> types;
+            if (afterDot)
+                types = location.Project.GetAssemblyTypesInNamespace(startWith, location.Usings.ToArray());
+            else
+            {
+                // where is this called ?
+                types = new List < XPETypeSymbol >();
+            }
+
+            foreach (var type in types)
+            {
+                if (onlyInterfaces && type.Kind != Kind.Interface)
                     continue;
-                string fullName = type.FullName;
-                if (IsHiddenTypeName(fullName))
-                {
+                if (isHiddenTypeSymbol(type, out var displayName))
                     continue;
-                }
-                if (fullName.Contains("+"))
-                {
-                    fullName = fullName.Replace('+', '.');
-                }
-                var displayName = fullName;
-                // Do we have another part file
-                dotPos = fullName.LastIndexOf('.');
-                // Then remove it
-                if (dotPos > 0)
-                    displayName = displayName.Substring(dotPos + 1);
-                if (IsHiddenTypeName(displayName))
-                    continue;
-                
-                if (!displayName.StartsWith(startWith) && !afterDot)
+
+                if (!afterDot && !displayName.StartsWith(startWith) )
                     continue;
                 var typeAnalysis = new XTypeAnalysis(type);
 
@@ -83,12 +103,36 @@ namespace XSharp.LanguageService
                 if (!compList.Add(new XSCompletion(displayName, displayName, typeAnalysis.Prototype, icon, null, Kind.Class, "")))
                     break;
             }
-            // And our own Types
-            AddXSharpTypeNames(compList, location, startWith);
-
         }
+        internal void AddSourceTypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith,
+            bool onlyInterfaces = false, bool afterDot = false)
+        {
+            IList<XSourceTypeSymbol> types;
+            if (afterDot)
+            {
+                types = location.Project.GetProjectTypesInNamespace(startWith, location.Usings.ToArray());
+            }
+            else
+            {
+                // where is this called ?
+                types = new List<XSourceTypeSymbol>();
+            }
+            foreach (var type in types)
+            {
+                if (onlyInterfaces && type.Kind != Kind.Interface)
+                    continue;
+                if (isHiddenTypeSymbol(type, out var displayName))
+                    continue;
 
+                if (!afterDot && !displayName.StartsWith(startWith) )
+                    continue;
+                var typeAnalysis = new XTypeAnalysis(type);
 
+                ImageSource icon = _glyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
+                if (!compList.Add(new XSCompletion(displayName, displayName, typeAnalysis.Prototype, icon, null, Kind.Class, "")))
+                    break;
+            }
+        }
         internal static bool IsHiddenTypeName(string realTypeName)
         {
             if (realTypeName.Length > 2 && realTypeName.StartsWith("__", StringComparison.Ordinal) && XSettings.EditorHideAdvancedMembers)

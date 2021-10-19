@@ -857,30 +857,45 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN NULL
 
-      METHOD FindSystemTypesByName(typeName AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
-         usings := AdjustUsings(REF typeName, usings)
-         VAR result := XDatabase.GetReferenceTypes(typeName, SELF:DependentAssemblyList )
-         result := FilterUsings(result,usings,typeName, TRUE)
-         RETURN GetRefType(result)
+      METHOD GetProjectTypesInNamespace(namespace AS STRING, usings AS IList<STRING>) AS IList<XSourceTypeSymbol>
+         if namespace.EndsWith(".")
+            namespace := namespace.Substring(0, namespace.Length-1)
+         ENDIF
+         VAR result := XDatabase.GetProjectTypesInNamespace(namespace, SELF:DependentProjectList )
+         // convert the database objects to the SourceTypeSymbols
+         return GetSourceTypes(result)
 
-      PRIVATE METHOD GetRefType(found AS IList<XDbResult>) AS IList<XPETypeSymbol>
+      METHOD GetAssemblyTypesInNamespace(namespace AS STRING, usings AS IList<STRING>) AS IList<XPETypeSymbol>
+         if namespace.EndsWith(".")
+            namespace := namespace.Substring(0, namespace.Length-1)
+         ENDIF
+         VAR result := XDatabase.GetAssemblyTypesInNamespace(namespace, SELF:DependentAssemblyList )
+         // convert the database objects to the PeTypeSymbols
+         RETURN GetPETypes(result)
+
+      PRIVATE METHOD GetPETypes(found AS IList<XDbResult>) AS IList<XPETypeSymbol>
          LOCAL IdAssembly := -1 AS INT64
          LOCAL fullTypeName:= ""  AS STRING
          VAR result := List<XPETypeSymbol>{}
+         LOCAL lastAsm := NULL as XAssembly
          FOREACH VAR element IN found
             // Skip types found in another project
             fullTypeName := element:FullName
             IdAssembly   := element:IdAssembly
             VAR name    := element:TypeName
             VAR idType  := element:IdType
-            FOREACH VAR asm IN SELF:AssemblyReferences
-               IF asm:Id == IdAssembly
-                  IF asm:Types:ContainsKey(fullTypeName)
-                     result:Add(asm:Types[fullTypeName])
-                  ENDIF
-                  EXIT
-               ENDIF
-            NEXT
+            if (lastAsm == null .or. lastAsm:Id != IdAssembly)
+                lastAsm := NULL
+                FOREACH VAR asm IN SELF:AssemblyReferences
+                   IF asm:Id == IdAssembly
+                        lastAsm := asm
+                        EXIT
+                   ENDIF
+                NEXT
+            ENDIF
+            if lastAsm != null .and. lastAsm:Types:ContainsKey(fullTypeName)
+                result:Add(lastAsm:Types[fullTypeName])
+            ENDIF
          NEXT
          RETURN result
 
@@ -949,8 +964,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD GetTypes( startWith AS STRING, usings AS IList<STRING>) AS IList<XSourceTypeSymbol>
          VAR result := XDatabase.GetProjectTypesLike(startWith, SELF:DependentProjectList)
          result := FilterUsings(result,usings,startWith,TRUE)
-         VAR types := SELF:GetTypeList(result)
-         RETURN types
+         RETURN SELF:GetSourceTypes(result)
 
       METHOD ClearCache(file as XFile) AS VOID
          IF SELF:_lastFound != NULL
@@ -1201,7 +1215,7 @@ BEGIN NAMESPACE XSharpModel
          return lhs == rhs
 
 
-      PRIVATE METHOD GetTypeList(found AS IList<XDbResult>) AS IList<XSourceTypeSymbol>
+      PRIVATE METHOD GetSourceTypes(found AS IList<XDbResult>) AS IList<XSourceTypeSymbol>
          VAR result        := List<XSourceTypeSymbol>{}
          LOCAL idProject   := -1 AS INT64
          LOCAL fullTypeName:= ""  AS STRING

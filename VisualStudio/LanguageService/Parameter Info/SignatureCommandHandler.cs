@@ -14,6 +14,7 @@ using XSharpModel;
 using Microsoft.VisualStudio.Editor;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
+
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 namespace XSharp.LanguageService
 {
@@ -259,8 +260,7 @@ namespace XSharp.LanguageService
             }
             // When we have a multi line source line this is the line where the open paren or open curly is
 
-            var member = _textView.FindMember(ssp);
-            if (member != null && member.Range.StartLine == ssp.GetContainingLine().LineNumber)
+            if (location.Member != null && location.Member.Range.StartLine == ssp.GetContainingLine().LineNumber)
             {
                 // if we are at the start of an entity then do not start a signature session
                 return null;
@@ -322,10 +322,11 @@ namespace XSharp.LanguageService
                 return false;
             if (location.Member.Range.StartLine == location.LineNumber)
                 return false;
+            
             if (type != null && methodName != null)
             {
                 var findStatic = triggerchar == '.';
-                currentElement = XSharpLookup.SearchMethod(location, type, methodName, XSharpModel.Modifiers.Private, findStatic).FirstOrDefault();
+                currentElement = XSharpLookup.SearchMethod(location, type, methodName, Modifiers.Private, findStatic).FirstOrDefault();
             }
             else
             {
@@ -333,26 +334,31 @@ namespace XSharp.LanguageService
             }
             if (currentElement == null)
                 return false;
-
+            
             SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
             ITextSnapshot caretsnapshot = caret.Snapshot;
             //
-            if (!_signatureBroker.IsSignatureHelpActive(_textView))
-            {
-                _signatureSession = _signatureBroker.CreateSignatureHelpSession(_textView, caretsnapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
-            }
-            else
+            if (_signatureBroker.IsSignatureHelpActive(_textView))
             {
                 _signatureSession = _signatureBroker.GetSessions(_textView)[0];
             }
-
-            _signatureSession.Dismissed += OnSignatureSessionDismiss;
-            if (currentElement != null)
+            else
             {
-                _signatureSession.Properties[SignatureProperties.Element] = currentElement;
+                _signatureSession = _signatureBroker.CreateSignatureHelpSession(_textView, caretsnapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
             }
+            var props = new XSharpSignatureProperties(location);
+            _signatureSession.Properties[typeof(XSharpSignatureProperties)] = props;
 
-            _signatureSession.Properties[SignatureProperties.Line] = location.LineNumber;
+            if (location.Member.Kind.IsGlobalTypeMember())
+            {
+                props.Visibility = Modifiers.Public;
+            }
+            else
+            {
+                props.Visibility = Modifiers.Protected;
+            }
+            _signatureSession.Dismissed += OnSignatureSessionDismiss;
+            props.Element = currentElement;
             if (comma)
             {
                 // calculate where the lparen before the comma is.
@@ -362,14 +368,13 @@ namespace XSharp.LanguageService
                 {
                     ssp = ssp - 1;
                 }
-                _signatureSession.Properties[SignatureProperties.Start] = ssp.Position;
+                props.Start = ssp.Position;
             }
             else
             {
-                _signatureSession.Properties[SignatureProperties.Start] = ssp.Position;
+                props.Start = ssp.Position;
             }
-            _signatureSession.Properties[SignatureProperties.Length] = _textView.Caret.Position.BufferPosition.Position - ssp.Position;
-            _signatureSession.Properties[SignatureProperties.File] = _textView.GetFile();
+            props.Length = _textView.Caret.Position.BufferPosition.Position - ssp.Position;
 
             try
             {
@@ -403,8 +408,9 @@ namespace XSharp.LanguageService
         {
             if (_signatureSession == null)
                 return false;
-
-            _signatureSession.Properties.TryGetProperty(SignatureProperties.Start, out int start);
+            if (! _signatureSession.Properties.TryGetProperty(typeof(XSharpSignatureProperties), out XSharpSignatureProperties props))
+                return false;
+            var start = props.Start;
             int pos = this._textView.Caret.Position.BufferPosition.Position;
 
             ((XSharpVsSignature)_signatureSession.SelectedSignature).ComputeCurrentParameter(pos - start - 1);

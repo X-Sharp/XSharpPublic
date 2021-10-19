@@ -645,7 +645,7 @@ namespace XSharp.LanguageService
                     // Do we already know in which Type we are ?
                     if (currentToken.Type == XSharpLexer.SELF)  // SELF(..)
                     {
-                        var ctors = SearchConstructor(currentType, visibility, location);
+                        var ctors = SearchConstructor(currentType, Modifiers.Private, location);
                         if (ctors != null)
                             result.AddRange(ctors);
                     }
@@ -654,14 +654,14 @@ namespace XSharp.LanguageService
                         if (currentType is XSourceTypeSymbol source)
                         {
                             var p = source.File.FindType(source.BaseTypeName, source.Namespace);
-                            var ctors = SearchConstructor(p, visibility, location);
+                            var ctors = SearchConstructor(p, Modifiers.Protected, location);
                             if (ctors != null)
                                 result.AddRange(ctors);
                         }
                         else
                         {
                             var p = location.FindType(currentType.BaseTypeName);
-                            var ctors = SearchConstructor(p, visibility, location);
+                            var ctors = SearchConstructor(p, Modifiers.Protected, location);
                             if (ctors != null)
                                 result.AddRange(ctors);
                         }
@@ -819,10 +819,10 @@ namespace XSharp.LanguageService
             if (result.Count > 0 && result[0] is IXTypeSymbol xtype && state == CompletionState.Constructors)
             {
                 result.Clear();
-                result.AddRange(xtype.GetMembers(".ctor"));
+                var ctors = SearchConstructor(xtype, Modifiers.Public, location);
                 if (result.Count == 0)
                 {
-                    var ctor = new XSourceMemberSymbol(".ctor", Kind.Constructor, Modifiers.Public, default, default, "",false);
+                    var ctor = new XSourceMemberSymbol(XLiterals.ConstructorName, Kind.Constructor, Modifiers.Public, default, default, "",false);
                     ctor.Parent = xtype;
                     result.Add(ctor);
                 }

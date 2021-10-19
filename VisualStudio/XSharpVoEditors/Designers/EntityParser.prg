@@ -50,9 +50,9 @@ CLASS EntityParser
 				ELSE
 					DO CASE
 					CASE oInfo:eType == EntityType._Constructor
-						cName := ".ctor"
+						cName := XLiterals.ConstructorName
 					CASE oInfo:eType == EntityType._Destructor
-						cName := ".dtor"
+						cName := XLiterals.DestructorName
 					OTHERWISE
 						cName := oInfo:cName
 					END CASE
@@ -143,5 +143,5 @@ CLASS EntityParser
 		END CASE
 	RETURN eRet
 */
-END CLASS	
+END CLASS
 

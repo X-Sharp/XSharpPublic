@@ -138,7 +138,7 @@ BEGIN NAMESPACE XSharpModel
                             LOOP
                         ELSEIF name:StartsWith("op_")
                             kind := Kind.Operator
-                        ELSEIF name:StartsWith(".ctor")
+                        ELSEIF name:StartsWith(XLiterals.ConstructorName)
                             kind := Kind.Constructor
                         ENDIF
                     ENDIF
@@ -199,8 +199,9 @@ BEGIN NAMESPACE XSharpModel
                 if SELF:Assembly != NULL .and. ! String.IsNullOrEmpty(SELF:BaseTypeName)
                     _baseType := SystemTypeController.FindType(SELF:BaseTypeName, SELF:Assembly:FullName)
                     if _baseType != NULL
-                        _baseType:Resolve()
-                        VAR basemembers := _baseType:XMembers:Where( { m => m.Visibility != Modifiers.Private })
+                        // do not inherit private members from the base class
+                        // and also no constructors
+                        VAR basemembers := _baseType:XMembers:Where( { m => m.Visibility != Modifiers.Private .and. m.Kind != Kind.Constructor })
                         hasBaseMembers := basemembers:Count() > 0
                         aMembers:AddRange( basemembers )
                     ENDIF

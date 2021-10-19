@@ -195,8 +195,8 @@ namespace XSharp.Project
                             {
                                 if (member == ctm)
                                 {
-                                    ctm.SetWritten(true);
-                                    formMembers.Remove(ctm);
+                                    member.SetWritten(true);
+                                    formMembers.Remove(member);
                                     break;
                                 }
                             }

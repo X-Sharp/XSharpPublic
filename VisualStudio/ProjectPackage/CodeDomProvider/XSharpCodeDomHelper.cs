@@ -3,18 +3,10 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using LanguageService.CodeAnalysis.XSharp;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using LanguageService.SyntaxTree;
 using System;
 using System.CodeDom;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using XSharpModel;
 
 namespace XSharp.CodeDom
 {
@@ -27,13 +19,6 @@ namespace XSharp.CodeDom
         /// <param name="compileUnit"></param>
         /// <param name="designerCompileUnit"></param>
         /// <returns></returns>
-         static XCodeCompileUnit ToXCodeCompileUnit(CodeCompileUnit unit)
-        {
-            if (unit is XCodeCompileUnit xccu)
-                return xccu;
-            return new XCodeCompileUnit(unit);
-        }
-
         internal static XMergedCodeCompileUnit MergeCodeCompileUnit( XCodeCompileUnit compileUnit, XCodeCompileUnit designerCompileUnit)
         {
             // Create the merged CodeCompileUnit

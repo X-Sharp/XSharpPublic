@@ -1278,12 +1278,18 @@ namespace XSharp.CodeDom
             string sourceCode = this.SourceCode.Substring(startIndex, length);
             if (xtoken.HasTrivia)
             {
-                var trivia = xtoken.TriviaAsText;
-                if (trivia.IndexOf('\r') >= 0 || trivia.IndexOf('\n') >0)
+                var sb = new StringBuilder();
+                foreach (var t in xtoken.Trivia)
                 {
-                    trivia = trivia.Replace("\r", "");
-                    trivia = trivia.Replace("\n", "");
-                    sourceCode = trivia + sourceCode;
+                    if (t.Line == xtoken.Line)
+                    {
+                        sb.Append(t.Text);
+                    }
+                }
+                if (sb.Length > 0)
+                {
+                    sb.Append(sourceCode);
+                    sourceCode = sb.ToString();
                 }
             }
             return sourceCode;

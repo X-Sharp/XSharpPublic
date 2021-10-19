@@ -71,15 +71,16 @@ BEGIN NAMESPACE XSharpModel
       METHOD AddMember(oMember AS XSourceMemberSymbol) AS VOID
          BEGIN LOCK SELF:_members
             SELF:_members:Add(oMember)
-            oMember:Parent := SELF
-
+            oMember:Parent        := SELF
+            oMember:DeclaringType := SELF:FullName
          END LOCK
 
       METHOD AddMembers(members AS IEnumerable<XSourceMemberSymbol>) AS VOID
          BEGIN LOCK SELF:_members
             FOREACH VAR oMember IN members
                SELF:_members:Add(oMember)
-               oMember:Parent := SELF
+               oMember:Parent        := SELF
+               oMember:DeclaringType := SELF:FullName
             NEXT
          END LOCK
 
@@ -176,7 +177,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_baseType := SELF:File:Project:FindType(SELF:BaseTypeName, SELF:File:Usings)
             if self:_baseType != NULL
                 self:_basemembers:Clear()
-                self:_basemembers:AddRange(self:_baseType:AllMembers:Where( { m => m.Kind != Kind.Constructor .AND. m.Visibility != Modifiers.Private }))
+                self:_basemembers:AddRange(self:_baseType:AllMembers:Where( { m => m:IsMethodVisibleInSubclass() }) )
             endif
         ENDIF
         RETURN

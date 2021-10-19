@@ -14,6 +14,8 @@ namespace XSharp.LanguageService
         internal IXMemberSymbol Element { get; set; }
         internal int Length { get; set; }
         internal Modifiers Visibility { get; set; }
+        internal char triggerChar { get; set; }
+        internal string triggerToken { get; set; }
         internal XSharpSearchLocation Location { get; set; }
         internal XSharpSignatureProperties(XSharpSearchLocation location)
         {
@@ -205,6 +207,20 @@ namespace XSharp.LanguageService
                 XSettings.DisplayOutputMessage(strMessage);
             }
         }
+
+        private string getProto(IXMemberSymbol xMember, XSharpSignatureProperties props)
+        {
+            var proto = xMember.Prototype;
+            // Adjust SELF() and SUPER: remove typename and replace {} with ()
+            if (xMember.Kind == Kind.Constructor && props.triggerChar == '(')
+            {
+                var parlist = proto.Substring(proto.IndexOf('{')+1);
+                parlist = parlist.Substring(0, parlist.Length - 1);
+                proto = props.triggerToken + "("+parlist+")";
+            }
+            return proto;
+        }
+
         public void AugmentSignatureHelpSession(ISignatureHelpSession session, IList<ISignature> signatures)
         {
             try
@@ -226,7 +242,7 @@ namespace XSharp.LanguageService
                     if (elt is IXMemberSymbol xMember)
                     {
                         var names = new List<string>();
-                        var proto = xMember.Prototype;
+                        var proto = getProto(xMember, props);
                         names.Add(proto);
                         signatures.Add(CreateSignature(m_textBuffer, xMember, proto, ApplicableToSpan, xMember.Kind == XSharpModel.Kind.Constructor, m_file));
                         var overloads = xMember.GetOverloads();
@@ -236,7 +252,7 @@ namespace XSharp.LanguageService
                             if (member.Visibility < props.Visibility)
                                 continue;
                             // prevent duplicate prototypes in the list  (when a child has overriden a method)
-                            proto = member.Prototype;
+                            proto = getProto(member, props);
                             if (!names.Contains(proto))
                             {
                                 signatures.Add(CreateSignature(m_textBuffer, member, proto, ApplicableToSpan, member.Kind == XSharpModel.Kind.Constructor, m_file));
@@ -304,15 +320,7 @@ namespace XSharp.LanguageService
             // 1 : param1 AS TYPE1
             // 2 : param2 AS TYPE2
             // 3 : AS TYPE3
-            string[] pars;
-            if (isCtor)
-            {
-                pars = methodSig.Split(new char[] { '{', ',', '}' });
-            }
-            else
-            {
-                pars = methodSig.Split(new char[] { '(', ',', ')' });
-            }
+            var pars = methodSig.Split(new char[] { '(', '{', ',', '}',')' });
             List<IParameter> paramList = new List<IParameter>();
             int locusSearchStart = 0;
             // i = 1 to skip the MethodName; Length-1 to Skip the ReturnType

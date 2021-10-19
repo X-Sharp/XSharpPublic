@@ -41,8 +41,10 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
 
          IF ( tm:Kind == Kind.@@Constructor )
+            // System.Exception{params}
             vars:Insert(0, tm:DeclaringType )
-         ELSE
+          ELSE
+            // Compare(params)
             vars:Insert(0, tm:Name )
          ENDIF
          IF (tm:Kind != Kind.@@Constructor)

@@ -8,14 +8,17 @@ using XSharpModel;
 
 namespace XSharp.LanguageService
 {
-    internal static class SignatureProperties
+    internal class XSharpSignatureProperties
     {
-        internal const string Line = nameof(Line);
-        internal const string Start = nameof(Start);
-        internal const string Element = nameof(Element);
-        internal const string Length = nameof(Length);
-        internal const string Comma = nameof(Comma);
-        internal const string File = nameof(File);
+        internal int Start { get; set; }
+        internal IXMemberSymbol Element { get; set; }
+        internal int Length { get; set; }
+        internal Modifiers Visibility { get; set; }
+        internal XSharpSearchLocation Location { get; set; }
+        internal XSharpSignatureProperties(XSharpSearchLocation location)
+        {
+            Location = location;
+        }
     }
     internal class XSharpVsParameter : IParameter
     {
@@ -210,13 +213,12 @@ namespace XSharp.LanguageService
                 m_session = session;
                 XSharpModel.ModelWalker.Suspend();
                 ITextSnapshot snapshot = m_textBuffer.CurrentSnapshot;
-                int start, length;
+                XSharpSignatureProperties props;
                 int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
-                session.Properties.TryGetProperty(SignatureProperties.Start, out start);
-                session.Properties.TryGetProperty(SignatureProperties.Length, out length);
-                m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(new Span(start, length), SpanTrackingMode.EdgeInclusive, 0);
+                session.Properties.TryGetProperty(typeof(XSharpSignatureProperties) , out props);
+                m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(new Span(props.Start, props.Length), SpanTrackingMode.EdgeInclusive, 0);
 
-                object elt = session.Properties.GetProperty(SignatureProperties.Element);
+                object elt = props.Element;
                 if (elt is IXSymbol)
                 {
                     IXMemberSymbol element = elt as IXMemberSymbol;
@@ -228,8 +230,11 @@ namespace XSharp.LanguageService
                         names.Add(proto);
                         signatures.Add(CreateSignature(m_textBuffer, xMember, proto, ApplicableToSpan, xMember.Kind == XSharpModel.Kind.Constructor, m_file));
                         var overloads = xMember.GetOverloads();
+                        
                         foreach (var member in overloads)
                         {
+                            if (member.Visibility < props.Visibility)
+                                continue;
                             // prevent duplicate prototypes in the list  (when a child has overriden a method)
                             proto = member.Prototype;
                             if (!names.Contains(proto))

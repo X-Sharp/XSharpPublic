@@ -114,7 +114,7 @@ namespace XSharp.LanguageService
             if (realMemberName.IndexOf('<') >= 0)
                 return true;
 
-            if (realMemberName == ".dtor")
+            if (realMemberName == XLiterals.DestructorName)
                 return true;
             if (realMemberName.Length > 4)
             {

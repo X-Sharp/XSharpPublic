@@ -86,7 +86,8 @@ BEGIN NAMESPACE XSharpModel
     STATIC PROPERTY RefKeyWord			AS STRING  GET Choose(_refKeyword1,_refKeyword2,_refKeyword3)
     STATIC PROPERTY OutKeyWord			AS STRING  GET Choose(_outKeyword1, _outKeyword2, _outKeyword3)
     STATIC PROPERTY ParamsKeyWord		AS STRING  GET Choose(_paramsKeyword1, _paramsKeyword2,_paramsKeyword3)
-
+    CONST PUBLIC ConstructorName := ".ctor" AS STRING
+    CONST PUBLIC DestructorName := ".dtor" AS STRING
     CONST PUBLIC GlobalName := "(Global Scope)" AS STRING
     CONST PUBLIC VarType := "$VAR$" AS STRING
     CONST PUBLIC UsualType := "USUAL" AS STRING

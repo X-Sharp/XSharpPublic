@@ -1770,7 +1770,7 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          IF ! Expect(XSharpLexer.CONSTRUCTOR)
             RETURN NULL
          ENDIF
-         VAR id  := ".ctor"
+         VAR id  := XLiterals.ConstructorName
          VAR aParams     := SELF:ParseParameterList(FALSE, OUT VAR _)
          VAR asType      := SELF:ParseDataType(FALSE)
          VAR callconv    := SELF:ParseCallingConvention()
@@ -1803,7 +1803,7 @@ destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
             RETURN NULL
          ENDIF
 
-         VAR id  := ".dtor"
+         VAR id  := XLiterals.DestructorName
          IF SELF:La1 == XSharpLexer.LPAREN .AND. SELF:La2 == XSharpLexer.RPAREN
             Consume()
             Consume()

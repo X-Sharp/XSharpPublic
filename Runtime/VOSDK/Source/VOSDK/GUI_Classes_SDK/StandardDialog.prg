@@ -1371,6 +1371,7 @@ FUNCTION __LoadComDlgDLL()
 
 
 #ifdef __VULCAN__
+/// <exclude/>
    DELEGATE __StdFileHookDelegate( hWnd AS PTR, msg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LOGIC
 #endif
 
@@ -1423,6 +1424,7 @@ FUNCTION __StdFileHook(hWnd AS PTR, msg AS DWORD, wParam AS DWORD, lParam AS LON
 
 
 #ifdef __VULCAN__
+/// <exclude/>
    DELEGATE __FolderDialogCallBackDelegate( hWnd AS PTR, uMsg AS DWORD, lParam AS LONGINT, lpData AS LONGINT ) AS INT
 #endif
 

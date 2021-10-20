@@ -847,6 +847,7 @@ FUNCTION __SetChildFontProc (hWnd AS PTR, lParam AS LONGINT) AS LOGIC /* WINCALL
 	MemFree(ptrBuf)
 	RETURN TRUE // continue enumerating
 #ifdef __VULCAN__
+/// <exclude/>
    INTERNAL DELEGATE __ShowControlProcDelegate( hWnd AS PTR, lParam AS LONGINT ) AS LOGIC
 #endif
 

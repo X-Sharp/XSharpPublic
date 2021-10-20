@@ -141,6 +141,7 @@ STATIC FUNCTION __WCRegisterTopAppWindow(hInst AS PTR) AS LOGIC
 	
 	
 #ifdef __VULCAN__
+/// <exclude/>
    DELEGATE __WCTopAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
 #endif	
 

@@ -423,22 +423,24 @@ BEGIN NAMESPACE XSharp
             offSet-=1
             sourceLen-=1
             targetLen-=1
-            IF start < sourceLen
-                FOR x := start UPTO sourceLen
-                    aTarget:_internalList[offSet] := aSource:_internalList[ x]
-                    offSet++
-                    IF offSet > targetLen
-                        EXIT
-                    ENDIF
-                NEXT
-            ELSE
-                FOR x := start DOWNTO sourceLen
-                    aTarget:_internalList[offSet] := aSource:_internalList[x]
-                    offSet++
-                    IF offSet > targetLen
-                        EXIT
-                    ENDIF
-                NEXT
+            if start > 0 .and. sourceLen > 0
+                IF start < sourceLen
+                    FOR x := start UPTO sourceLen
+                        aTarget:_internalList[offSet] := aSource:_internalList[ x]
+                        offSet++
+                        IF offSet > targetLen
+                            EXIT
+                        ENDIF
+                    NEXT
+                ELSE
+                    FOR x := start DOWNTO sourceLen
+                        aTarget:_internalList[offSet] := aSource:_internalList[x]
+                        offSet++
+                        IF offSet > targetLen
+                            EXIT
+                        ENDIF
+                    NEXT
+                ENDIF
             ENDIF
             RETURN
 

@@ -11,7 +11,7 @@ USING System.Runtime.Serialization
 
 BEGIN NAMESPACE XSharp
 	/// <summary>Internal type that implements the VO Compatible DATE type in UNIONs and VOSTRUCTs</summary>
-    [DebuggerDisplay("WinDate({ToString(),nq})", Type := "LOGIC")];
+    [DebuggerDisplay("WinDate({ToString(),nq})", Type := "DATE")];
     [Serializable];
     PUBLIC STRUCT __WinDate IMPLEMENTS ISerializable
         PRIVATE INITONLY _value AS DWORD			// Julian value

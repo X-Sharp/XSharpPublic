@@ -11,7 +11,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
-    <para styleclass="Heading1">Changes in 2.9.0.1 (Cahors)</para>
+    <para styleclass="Heading1">Changes in 2.9.0.2 (Cahors)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -65,7 +65,6 @@
       <li styleclass="Body Text">We have added a new (internal) type __WinDate that is used when you store a DATE value into a VoStruct or Union. This field is binary compatible with the Julian date that VO stores inside structures and unions.</li>
       <li styleclass="Body Text">We have added an entry to the RuntimeState in which the compiler stores the current /fox2 compiler setting for the main app.</li>
       <li styleclass="Body Text">Added runtime support to support filling FoxPro arrays by assigning a single value. </li>
-      <li styleclass="Body Text">We have added support (for the FoxPro dialect only) for accessing WITH block expressions inside code of a calling function / method. So you can type .SomeProperty and acces the property that belongs to a WITH BLOCK expression inside the calling code. To use this Late Binding must be enabled, since the compiler does not know the type of the expression from the calling code (#811).</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading3">Bug Fixes</para>
@@ -90,6 +89,7 @@
       <li styleclass="Body Text">Fixed a runtime exception when creating DBFCDX index files with long filenames (#774)</li>
       <li styleclass="Body Text">Fixed a problem with with DBSeek() with active OrderDescend() finding even deleted records</li>
       <li styleclass="Body Text">Fixed a problem with a missing call to AdsClearCallbackFunction() in the ADS RDD in OrderCreate() (#794)</li>
+      <li styleclass="Body Text">Fixed a problem with VODBOrdCreate function failing it the cOrder parameter contains an empty string (#809)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Macro compiler</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -104,7 +104,7 @@
       </list>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
-    <para styleclass="Normal">In this build we have started to use the &quot;Community toolkit for Visual Studio extensions&quot; that you can find on Github,. This toolkit contains &quot;best practices&quot; for code for VS Extension writers, like we are. As a result more code is now running asynchronously which should result in better performance.</para>
+    <para styleclass="Normal">In this build we have started to use the &quot;Community toolkit for Visual Studio extensions&quot; that you can find on GitHub. This toolkit contains &quot;best practices&quot; for code for VS Extension writers, like we are. As a result more code is now running asynchronously which should result in better performance.</para>
     <para styleclass="Normal">We have also started to remove 32 bit specific code that would become a problem when migrating to VS 2022 which is a 64 bits version if Visual Studio that is expected to ship in November 2021.</para>
     <para styleclass="Heading3">New features</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -149,6 +149,7 @@
       <li styleclass="Body Text">The code generator for Windows Forms was replacing tab characters with spaces. This has been fixed.(#438)</li>
       <li styleclass="Body Text">Fixed a problem with the Form Designer corrupting code that contains EXPORT ARRAY OF &lt;type&gt;</li>
       <li styleclass="Body Text">Fixed a problem with the Form Designer that when removing an event handler in the editor, some code was deleted (#812)</li>
+      <li styleclass="Body Text">Fixed a problem with the Form Designer converting EXPORT, INSTANCE and HIDDEN keywords to PUBLIC and PRIVATE (#802)</li>
     </list>
     <para styleclass="Heading3">VO-Compatible Editors</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

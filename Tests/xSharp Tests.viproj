@@ -99676,6 +99676,231 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = C805 - ICE with _Or() in DEFINE and combination of BYTE/DWORD conversions
+
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
+; ************** APPLICATION C806 - Initialization of string globals and iVars with /vo2 *************
+Application = C806 - Initialization of string globals and iVars with /vo2
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C806\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C806
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 70C3EBBC-3C0B-42E2-BB6B-511A42F9B374
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C806 - Initialization of string globals and iVars with /vo2 FileGroups]
+[C806 - Initialization of string globals and iVars with /vo2 Files]
+File = %AppPath%\Prg\C806.prg
+FileGUID = 9C588EC6-8F46-4B59-BD76-8F47028E86BE
+FileType = Code
+CopyToBin = 0
+[C806 - Initialization of string globals and iVars with /vo2 References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceProject = 5FDADAA3-5E99-42D1-9159-68BECC17A389,1,0,C806_helper
+[C806 - Initialization of string globals and iVars with /vo2 Resources]
+[C806 - Initialization of string globals and iVars with /vo2 Native Resources]
+[C806 - Initialization of string globals and iVars with /vo2 License files]
+[C806 - Initialization of string globals and iVars with /vo2 General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=1
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C806 - Initialization of string globals and iVars with /vo2 Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C806 - Initialization of string globals and iVars with /vo2
+
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
+; ************** APPLICATION C806_helper *************
+Application = C806_helper
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 2
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C806_helper\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = C806_helper
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 5FDADAA3-5E99-42D1-9159-68BECC17A389
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C806_helper FileGroups]
+[C806_helper Files]
+File = %AppPath%\Prg\C806_helper.prg
+FileGUID = DA45D06B-276A-4CD9-8FBF-3AE56E50107E
+FileType = Code
+CopyToBin = 0
+[C806_helper References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+[C806_helper Resources]
+[C806_helper Native Resources]
+[C806_helper License files]
+[C806_helper General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=1
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C806_helper Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C806_helper
 [EndApplications]
 
 [Configurations]

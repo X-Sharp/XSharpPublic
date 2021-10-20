@@ -3404,9 +3404,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool isDim = context.Dim != null && context.ArraySub != null;
             // make sure we do not initialize Interface and Structure members
-            // context.Parent = classvarList
-            // classvarList is used in VOGLobal, classvars
+            // context.Parent = VOGlobal or classvars
             // classvars is used in classmember, classmember is used in interface, class and structure
+            // only globals and classes can have a default. Structures can't and interfaces also can't
             var candefault = context.Parent is XP.VoglobalContext || context.isInClass();
             var initExpr = context.Initializer?.Get<ExpressionSyntax>();
 

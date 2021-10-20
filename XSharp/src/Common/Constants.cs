@@ -18,7 +18,7 @@ namespace XSharp
 #else
         internal const string Version = "2.9.0.0";
 #endif
-        internal const string FileVersion = "2.9.0.1";
+        internal const string FileVersion = "2.9.0.2";
         internal const string ProductVersion = "2.9 GA";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2021";

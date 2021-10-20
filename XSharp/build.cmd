@@ -19,6 +19,7 @@ SET XSHARPBUILDNESTED=1
 call Build Debug
 call Build Release
 call Build Public
+call BuildMacroCompiler.cmd
 SET XSHARPBUILDNESTED=
 Goto End
 :Ok

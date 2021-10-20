@@ -721,7 +721,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         bool canAddStopToken(IList<XSharpToken> stoptokens, XSharpToken token)
         {
-            if (token.Type == XSharpLexer.COMMA)
+            if (token.Type == XSharpLexer.COMMA) 
                 return false;
             foreach (var element in stoptokens)
             {
@@ -730,7 +730,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return false;
                 }
             }
-            return true;
+            return token.Type == XSharpLexer.ID || XSharpLexer.IsKeyword(token.Type);
         }
         List<XSharpToken> getNestedTokens(int start, int max, XSharpToken[] tokens)
         {
@@ -1249,11 +1249,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var child = mToken.Tokens[iChild];
                 lastToken = child;
-                if (child.Type == XSharpLexer.COMMA)
-                {
-                    iMatch = 0;
-                }
-                else if (tokenEquals(child, tokens[iCurrent]))
+                if (tokenEquals(child, tokens[iCurrent]))
                 {
                     iMatch += 1;
                     if (iChild == iLast) // No token following this one
@@ -1580,15 +1576,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // Now mark the tokens that were matched with tokens in the UDC with the keyword color
             // Since our token may be a clone, we change the Type of the source token
-            foreach (var token in matchedWithToken)
+#if VSPARSER
+            for (int match = 0; match < _matchtokens.Length; match++)
             {
-                if (token.Type == XSharpLexer.ID)
+                var mt = _matchtokens[match];
+                switch (mt.RuleTokenType)
                 {
-                    // this makes sure that the matched ID keys a Keyword color in the editor
-                    token.Original.Type = XSharpLexer.UDC_KEYWORD;
+                    case PPTokenType.Token:
+                    case PPTokenType.MatchRestricted:
+                        var info = matchInfo[match];
+                        if (!info.Empty)
+                        {
+                            for (var iPos = info.Start; iPos <= info.End; iPos++)
+                            {
+                                var token = tokens[iPos];
+                                token = token.Original;
+                                if (token.Type == XSharpLexer.ID)
+                                    token.Type = XSharpLexer.UDC_KEYWORD;
+                            }
+                        }
+                        break;
                 }
             }
-
+#endif
             return true;
 
         }

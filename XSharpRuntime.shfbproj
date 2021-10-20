@@ -63,7 +63,7 @@
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.GUIClasses.Xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.9.0.1</HelpFileVersion>
+    <HelpFileVersion>2.9.0.2</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -106,7 +106,7 @@
         The compiler will then automatically find the classes. &lt;br/&gt;
         The Runtime will also respect these implicit namespaces, so CreateInstance(#DbServer) will also be able to find the DbServer class inside the VO namespace.
       </NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.VO" isDocumented="True">
+      <NamespaceSummaryItem name="XSharp.VO.SDK" isDocumented="True">
         This namespace contains strongly typed versions of the VO SDK Classes, such as DbServer, DataWindow, SQLSelect etc.&lt;br/&gt;
         If you enable the compiler option to search inside "Implicit Namespaces" (/ins) then you will not have to include 
 		a USING XSharp.VO statement in your code. &lt;br/&gt;
@@ -196,7 +196,16 @@
       <PlugInConfig id="XSharp Function Output" enabled="True">
         <configuration />
       </PlugInConfig>
-<PlugInConfig id="XPath Reflection File Filter" enabled="True"><configuration><expressions><expression>//api[starts-with(apidata/@name,"$")]</expression><expression>//api[contains(@id,"XSharp.ADS.ACE")]</expression><expression>//api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression></expressions></configuration></PlugInConfig></PlugInConfigurations>
+      <PlugInConfig id="XPath Reflection File Filter" enabled="True">
+        <configuration>
+          <expressions>
+            <expression>//api[starts-with(apidata/@name,"$")]</expression>
+            <expression>//api[contains(@id,"XSharp.ADS.ACE")]</expression>
+            <expression>//api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression>
+          </expressions>
+        </configuration>
+      </PlugInConfig>
+    </PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime and VO SDK Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
     <CopyrightText>Copyright &amp;#169%3b 2015-2021 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b 1993-2020 Computer Associates.</CopyrightText>

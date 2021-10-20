@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -89,7 +89,7 @@
       <li styleclass="Body Text">Fixed a runtime exception when creating DBFCDX index files with long filenames (#774)</li>
       <li styleclass="Body Text">Fixed a problem with with DBSeek() with active OrderDescend() finding even deleted records</li>
       <li styleclass="Body Text">Fixed a problem with a missing call to AdsClearCallbackFunction() in the ADS RDD in OrderCreate() (#794)</li>
-      <li styleclass="Body Text">Fixed a problem wit VODBOrdCreate function failing it the cOrder parameter contains an empty string (#809)</li>
+      <li styleclass="Body Text">Fixed a problem with VODBOrdCreate function failing it the cOrder parameter contains an empty string (#809)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Macro compiler</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -104,7 +104,7 @@
       </list>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
-    <para styleclass="Normal">In this build we have started to use the &quot;Community toolkit for Visual Studio extensions&quot; that you can find on Github,. This toolkit contains &quot;best practices&quot; for code for VS Extension writers, like we are. As a result more code is now running asynchronously which should result in better performance.</para>
+    <para styleclass="Normal">In this build we have started to use the &quot;Community toolkit for Visual Studio extensions&quot; that you can find on GitHub. This toolkit contains &quot;best practices&quot; for code for VS Extension writers, like we are. As a result more code is now running asynchronously which should result in better performance.</para>
     <para styleclass="Normal">We have also started to remove 32 bit specific code that would become a problem when migrating to VS 2022 which is a 64 bits version if Visual Studio that is expected to ship in November 2021.</para>
     <para styleclass="Heading3">New features</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

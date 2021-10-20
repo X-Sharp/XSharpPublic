@@ -61,3 +61,4 @@ echo Could not find batch file %VsBatch%
 set path=%xsoldpath%
 set xsoldpath=
 set xsdotnetpath=
+call BuildMacroCompiler.cmd

@@ -837,6 +837,7 @@ STATIC FUNCTION _VOOLERegisterStatusCallback(pCallBackFunc AS PTR) AS LOGIC STRI
 
 
 #ifdef __VULCAN__
+/// <exclude/>
    DELEGATE __WCQueryCloseEnumFuncDelegate( hWnd AS PTR, lParam AS LONGINT ) AS LONGINT
 #endif
 
@@ -847,6 +848,7 @@ FUNCTION __WCQueryCloseEnumFunc(hWnd AS PTR, lParam AS LONGINT) AS LONGINT /* WI
 
 
 #ifdef __VULCAN__
+/// <exclude/>
    DELEGATE __WCShellWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
 #endif
 

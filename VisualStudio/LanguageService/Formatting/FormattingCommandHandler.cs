@@ -325,7 +325,7 @@ namespace XSharp.LanguageService
         }
         private void ApplyPendingChanges()
         {
-            if (_settings.KeywordCase == KeywordCase.None)
+            if (_settings == null || _settings.KeywordCase == KeywordCase.None)
             {
                 return;
             }

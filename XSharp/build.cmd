@@ -19,6 +19,7 @@ SET XSHARPBUILDNESTED=1
 call Build Debug
 call Build Release
 call Build Public
+call BuildMacroCompiler.cmd
 SET XSHARPBUILDNESTED=
 Goto End
 :Ok
@@ -61,4 +62,3 @@ echo Could not find batch file %VsBatch%
 set path=%xsoldpath%
 set xsoldpath=
 set xsdotnetpath=
-call BuildMacroCompiler.cmd

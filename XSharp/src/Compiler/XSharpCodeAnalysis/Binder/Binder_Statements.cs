@@ -25,6 +25,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 needsWork = false;
             }
+            if (needsWork && (op1 is BoundObjectInitializerMember || op1 is BoundDynamicObjectInitializerMember))
+            {
+                needsWork = false;
+            }
             if (needsWork && op2.Syntax.XNode is XP.DimensionVarContext)
             {
                 needsWork = false;

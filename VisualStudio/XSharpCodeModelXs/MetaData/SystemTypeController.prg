@@ -81,11 +81,10 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD FindType(typeName as STRING, assemblyName as STRING) AS XPETypeSymbol
          VAR assemblies := List<XAssembly>{}
          var asm := FindAssembly(assemblyName)
-         IF asm != null
-            assemblies:Add(asm)
+         IF asm != null .and. asm:Loaded
             FOREACH var name in asm:ReferencedAssemblies
                var asm2 := FindAssembly(name)
-               if asm2 != null
+               if asm2 != null .and. asm2:Loaded
                   assemblies:Add(asm2)
                endif
             NEXT

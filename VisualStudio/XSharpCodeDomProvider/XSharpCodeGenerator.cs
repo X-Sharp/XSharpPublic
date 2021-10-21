@@ -96,7 +96,6 @@ namespace XSharp.CodeDom
         private bool generatingForLoop;
         private string selector;
         private string staticSelector;
-        private string entrypointCode = null;
         private List<string> _using;
         private int indentSave = 0;
         private int keywordCase;
@@ -161,6 +160,8 @@ namespace XSharp.CodeDom
         private string indentString = " ";
         private string tabString = " ";
         private string lastTrivia = null;
+        private CodeEntryPointMethod entryPoint = null;
+        private CodeTypeDeclaration entryPointType = null;
         public XSharpCodeGenerator() : base()
         {
             this.selector = ":";
@@ -567,31 +568,29 @@ namespace XSharp.CodeDom
 
         protected override void GenerateEntryPointMethod(CodeEntryPointMethod e, CodeTypeDeclaration c)
         {
-            // we must collect this and insert it at the end of the unit
-            // so replace the output field in the parent class and restore it later
-            FieldInfo field = typeof(CodeGenerator).GetField("output", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-            var oldWriter = (IndentedTextWriter)field.GetValue(this);
-            this.overrideTextWriter();
-            try
-            {
-                this.GenerateCommentStatements(e.Comments);
+            // save the parameters and delay the code generation until the end of the 
+            // compile unit, where ImplementEntryPointMethod() is called
+            entryPoint = e;
+            entryPointType = c;
+            return;
+        }
+        private void ImplementEntryPointMethod(CodeEntryPointMethod e, CodeTypeDeclaration c)
+        { 
+            if (e == null || c == null)
+                return;
+            this.GenerateCommentStatements(e.Comments);
 
-                if (e.CustomAttributes.Count > 0)
-                {
-                    this.GenerateAttributes(e.CustomAttributes);
-                }
-                base.Output.Write(keywordFUNCTION+" Start() "+ keywordAS);
-                this.OutputType(e.ReturnType);
-                base.Output.WriteLine();
-                this.Indent++;
-                this.GenerateStatements(e.Statements);
-                this.Indent--;
-                base.Output.WriteLine();
-            }
-            finally
+            if (e.CustomAttributes.Count > 0)
             {
-                field.SetValue(this, oldWriter);
+                this.GenerateAttributes(e.CustomAttributes);
             }
+            base.Output.Write(keywordFUNCTION+" Start() "+ keywordAS);
+            this.OutputType(e.ReturnType);
+            base.Output.WriteLine();
+            this.Indent++;
+            this.GenerateStatements(e.Statements);
+            this.Indent--;
+            base.Output.WriteLine();
         }
 
         protected override void GenerateEvent(CodeMemberEvent e, CodeTypeDeclaration c)
@@ -937,6 +936,8 @@ namespace XSharp.CodeDom
         protected override void GenerateCompileUnitStart(CodeCompileUnit e)
         {
             bool generateComment = true;
+            entryPoint = null;
+            entryPointType = null;
             readSettings();
             this.overrideTextWriter();
             this.Options.BlankLinesBetweenMembers = false;
@@ -982,11 +983,12 @@ namespace XSharp.CodeDom
         }
         protected override void GenerateCompileUnitEnd(CodeCompileUnit e)
         {
-            if (!String.IsNullOrEmpty(entrypointCode))
+            if (entryPoint != null && entryPointType != null)
             {
-                this.Output.Write(entrypointCode);
-                entrypointCode = null;
+                ImplementEntryPointMethod(entryPoint, entryPointType);
             }
+            entryPoint = null;
+            entryPointType = null;
             base.GenerateCompileUnitEnd(e);
             writeTrivia(e, true);
 

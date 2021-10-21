@@ -38,7 +38,38 @@ FUNCTION Start() AS VOID STRICT
 	? ts.dDate:JulianValue
 	? nDays
 	xAssert(nDays == ts.dDate:JulianValue)
+
+AnotherTest()
+
+PROCEDURE AnotherTest()
+	LOCAL nDays AS DWORD
+	LOCAL ts IS TEST_STRUCT
 	
+	nDays := 10
+	ts.dDate := Today()
+	ts.dDate += ( nDays - 1 ) // Error XS0034 Operator '+=' IS ambiguous ON operands OF type 'XSharp.__WinDate' and 'dword'
+	ts.dDate -= ( nDays - 1 ) // Error XS0034 Operator '-=' IS ambiguous ON operands OF type 'XSharp.__WinDate' and 'dword'
+	ts.dDate += 1 // Error XS0029 Cannot implicitly convert type 'int' TO 'XSharp.__WinDate'
+	ts.dDate -= 1 // Error XS0029 Cannot implicitly convert type 'int' TO 'XSharp.__WinDate'
+	ts.dDate++ // Error XS0035 Operator '++' is ambiguous on an operand of type 'XSharp.__WinDate'
+	ts.dDate-- // Error XS0035 Operator '--' is ambiguous on an operand of type 'XSharp.__WinDate'
+	
+	xAssert(ts.dDate == Today())
+	ts.dDate += 1
+	xAssert(ts.dDate == Today() + 1)
+	
+	LOCAL dStart, dEnd AS DATE
+	dStart := Today()
+	dEnd := dStart + 1
+	
+	FOR ts.dDate := dStart UPTO dEnd // Error XS0029 Cannot implicitly convert type 'int' TO 'XSharp.__WinDate'
+		? ts.dDate
+		IF ts.dDate == dStart
+			xAssert(ts.dDate == Today())
+		ELSE
+			xAssert(ts.dDate == Today() + 1)
+		END IF
+	NEXT
 	
 VOSTRUCT TEST_STRUCT
 	MEMBER dDate AS DATE     

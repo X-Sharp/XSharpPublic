@@ -46,14 +46,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         public XSharpDialect Dialect { get; internal set; } = XSharpDialect.Core;
         public string WindowsDir { get; internal set; } = _windir;
         public string SystemDir { get; internal set; } = _sysdir;
-        public string IncludePaths { get; internal set; } = "";
+        public string IncludePaths { get; internal set; } = string.Empty;
         public bool ImplicitNameSpace { get; internal set; } = false;
         public bool InitLocals { get; internal set; } = false;
         public bool LateBinding { get; internal set; } = false;
         public bool AllowNamedArguments { get; internal set; } = false;
         public bool NoClipCall { get; internal set; } = false;
         public bool NoStdDef { get; internal set; } = false;
-        public string NameSpace { get; set; } = "";
+        public string NameSpace { get; set; } = string.Empty;
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool PreProcessorOutput { get; internal set; } = false;
         public bool SaveAsCSharp { get; internal set; } = false;
@@ -61,7 +61,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ShowDefs { get; internal set; } = false;
         public bool EnforceSelf { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
-        public string StdDefs { get; internal set; } = "XSharpDefs.xh";
+        public string StdDefs { get; internal set; } = string.Empty;
         public XSharpTargetDLL TargetDLL { get; internal set; } = XSharpTargetDLL.Other;
         public bool Verbose { get; internal set; } = false;
         public bool Vo1 { get; internal set; } = false;

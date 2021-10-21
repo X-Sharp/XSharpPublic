@@ -21,7 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         HasRepeats = 1 << 0,
         HasOptionalResult = 1 << 1,
         HasOptionalMatch = 1 << 2,
-        CaseInsensitive = 1 << 3
+        VOPreprocessorBehaviour = 1 << 3
     }
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal class PPRule
@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private PPResultToken[] _resulttokens;
         private readonly PPErrorMessages _errorMessages;
         internal PPRuleFlags _flags;
-        internal bool CaseInsensitive => _flags.HasFlag(PPRuleFlags.CaseInsensitive);
+        internal bool VOPreprocessorBehaviour => _flags.HasFlag(PPRuleFlags.VOPreprocessorBehaviour);
         internal bool hasRepeats => _flags.HasFlag(PPRuleFlags.HasRepeats);
         internal bool hasOptionalResult => _flags.HasFlag(PPRuleFlags.HasOptionalResult);
         internal bool hasOptionalMatch  => _flags.HasFlag(PPRuleFlags.HasOptionalMatch);
@@ -133,8 +133,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // This is done inline since it is much simpler then for a UDC
             var matchTokens = new List<PPMatchToken>();
             var resultTokens = new List<PPResultToken>();
-            // inside a #define the tokens are case sensitive
-            var markers = new Dictionary<string, PPMatchToken>(_options.CaseSensitivePreprocessor ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
+            // inside a #define the tokens are case sensitive, depending in the /vo8 option
+            var markers = new Dictionary<string, PPMatchToken>(_options.VOPreprocessorBehaviour ? XSharpString.Comparer : StringComparer.Ordinal);
             bool hasSeenLParen = false;
             bool hasErrors = false;
             for (int i = 0; i < left.Length && !hasErrors; i++)
@@ -215,6 +215,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         bool parseRuleTokens(XSharpToken udc, XSharpToken[] tokens)
         {
             int iSeperatorPos = -1;
+            // Inside #command, #translate etc the markers are always case insensitive
             var markers = new Dictionary<string, PPMatchToken>(StringComparer.OrdinalIgnoreCase);
 
             if (tokens?.Length == 0)
@@ -246,7 +247,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // Check to see if all result tokens have been matched
                 // Unmatched Match tokens is fine (they may be deleted from the output)
-
                 foreach (var r in _resulttokens)
                 {
                     if (r.IsMarker && r.MatchMarker == null)
@@ -1021,25 +1021,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         bool stringEquals(string lhs, string rhs)
         {
+            // #command, #translate, #xcommand and #xtranslate are always case insensitive
+            // for #define this depends on the setting of /vo8
             var mode = StringComparison.OrdinalIgnoreCase;
-            if (this.Type == PPUDCType.Define && !CaseInsensitive)
+            if (this.Type == PPUDCType.Define && this.VOPreprocessorBehaviour)
             {
                 mode = StringComparison.Ordinal;    // case sensitive
             }
             if (lhs?.Length <= 4)
             {
-                return String.Equals(lhs, rhs, mode);
+                return string.Equals(lhs, rhs, mode);
             }
             switch (this.Type)
             {
                 case PPUDCType.Command:
                 case PPUDCType.Translate:
                     // dBase/Clipper syntax 4 characters is enough
-                    return String.Compare(lhs, 0, rhs, 0, Math.Max(rhs.Length,4) , mode) == 0;
+                    return string.Compare(lhs, 0, rhs, 0, Math.Max(rhs.Length, 4), mode) == 0;
                 case PPUDCType.XCommand:
                 case PPUDCType.XTranslate:
                 case PPUDCType.Define:
-                    return String.Equals(lhs, rhs, mode);
+                    return string.Equals(lhs, rhs, mode);
             }
             return false;
         }

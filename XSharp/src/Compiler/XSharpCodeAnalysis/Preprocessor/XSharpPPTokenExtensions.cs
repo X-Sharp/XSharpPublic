@@ -189,7 +189,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal static bool IsName(this XSharpToken token)
         {
-            return token != null && (token.Type == XSharpLexer.ID  || token.IsKeyword());
+            return token.IsIdentifier() || token.IsKeyword();
         }
         internal static bool IsEOS(this XSharpToken token)
         {
@@ -233,7 +233,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (token == null)
                 return false;
-            return token.Type == XSharpLexer.ID ;
+            return token.Type == XSharpLexer.ID || token.Type == XSharpLexer.KWID;
         }
 
         public static bool IsString(this XSharpToken token)

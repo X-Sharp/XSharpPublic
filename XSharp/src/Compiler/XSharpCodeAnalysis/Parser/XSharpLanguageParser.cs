@@ -213,16 +213,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 BufferedTokenStream ppStream = null;
                 try
                 {
-                    // Check for #pragma in the lexerTokenStream
+                    // Do we need to preprocess ?
                     _lexerTokenStream.Fill();
 
-                    if (!_options.MacroScript)
+                    var mustPreprocess = true;
+                    if (_options.MacroScript)
                     {
-                        pp = new XSharpPreprocessor(lexer, _lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
+                        mustPreprocess = false;
                     }
-                    var mustPreprocess = !_options.MacroScript && (lexer.HasPreprocessorTokens || !_options.NoStdDef);
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(_options.StdDefs))
+                        {
+                            // alternate header file defined
+                            mustPreprocess = true;
+                        }
+                        else if (!_options.NoStdDef)
+                        {
+                            // normal standard header file (will be set later)
+                            mustPreprocess = true;
+                        }
+                        else
+                        {
+                            mustPreprocess = lexer.HasPreprocessorTokens ||
+                                _options.PreprocessorSymbols.Length > 0;
+                        }
+                    }
                     if (mustPreprocess)
                     {
+                        pp = new XSharpPreprocessor(lexer, _lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
                         var ppTokens = pp.PreProcess();
                         ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
                     }

@@ -340,10 +340,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _macroDefines.Add("__FOX2__", (token) => new XSharpToken(_options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             if (!_options.NoStdDef)
             {
-                // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//
+                // when the compiler option nostddefs is not set:
+                // read XSharpDefs.xh from the XSharp Include folder,
+                // unless they have overridden the standard header file
                 // and automatically include it.
                 // read XsharpDefs.xh
                 StdDefs = _options.StdDefs;
+                if (string.IsNullOrWhiteSpace(StdDefs))
+                {
+                    StdDefs = global::XSharp.Constants.StandardHeaderFile;
+                }
                 ProcessIncludeFile(StdDefs, null);
             }
         }
@@ -461,13 +467,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _lexerStream = lexerStream;
             _options = options;
             _fileName = fileName;
-            if (_options.CaseSensitivePreprocessor)
+            if (_options.VOPreprocessorBehaviour)
             {
-                _symbolDefines = new Dictionary<string, IList<XSharpToken>>(/* case sensitive */);
+                // with /vo8 or /vo8+  the comparison rules for defines will match the /cs rules!
+                _symbolDefines = new Dictionary<string, IList<XSharpToken>>(XSharpString.Comparer);
             }
             else
             {
-                _symbolDefines = new Dictionary<string, IList<XSharpToken>>(StringComparer.OrdinalIgnoreCase);
+                // without /vo8 or with /vo8- the defines are always case sensitive
+                _symbolDefines = new Dictionary<string, IList<XSharpToken>>(/* case sensitive */);
             }
             _encoding = encoding;
             _checksumAlgorithm = checksumAlgorithm;
@@ -985,12 +993,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // TRANSLATE and XTRANSLATE can also match from beginning of line
                     _transRules.Add(rule);
                     _hasTransrules = true;
-                    if (cmd.Type == XSharpLexer.PP_DEFINE)
+                    if (cmd.Type == XSharpLexer.PP_DEFINE && _options.VOPreprocessorBehaviour)
                     {
-                        if (_options.CaseSensitivePreprocessor)
-                        {
-                            rule._flags |= PPRuleFlags.CaseInsensitive;
-                        }
+                        rule._flags |= PPRuleFlags.VOPreprocessorBehaviour;
+
                     }
                 }
                 if (_options.ShowDefs)
@@ -1321,8 +1327,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isdefined = _symbolDefines.ContainsKey(define);
             if (isdefined)
             {
-                if (!_options.CaseSensitivePreprocessor)
+                if (_options.VOPreprocessorBehaviour)
                 {
+                    // With VO Compatible preprocessor behavior we return the logical value
+                    // so a #define FOO FALSE will not match #ifdef
                     var value = _symbolDefines[define];
                     if (value?.Count == 1)
                     {
@@ -1343,7 +1351,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 isdefined = _macroDefines.ContainsKey(define);
                 if (isdefined)
                 {
-                    if (!_options.CaseSensitivePreprocessor)
+                    // With VO Compatible preprocessor behavior we return the logical value
+                    // so a #define FOO FALSE will not match #ifdef
+                    if (_options.VOPreprocessorBehaviour)
                     {
                         var value = _macroDefines[define](token);
                         if (value != null)
@@ -1376,13 +1386,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 return false;
             }
-            if (iPos < line.Count - 1)
+            // The only tokens that may match a define are IDs and Keywords
+            // Whitespace, operators and literals will never match a define
+            XSharpToken token = line[iPos];
+            if (token.IsIdentifier() || token.IsKeyword())
             {
-                var token = line[iPos + 1];
-                if (token.Type == XSharpLexer.DOT)
-                    return false;
+                if (iPos < line.Count - 1)
+                {
+                    token = line[iPos + 1];
+                    if (token.Type == XSharpLexer.DOT)
+                        return false;
+                }
+                return true;
             }
-            return true;
+            return false;
         }
         #region Preprocessor Directives
 

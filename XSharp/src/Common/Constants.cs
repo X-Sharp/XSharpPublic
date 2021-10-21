@@ -18,8 +18,8 @@ namespace XSharp
 #else
         internal const string Version = "2.9.0.0";
 #endif
-        internal const string FileVersion = "2.9.0.2";
-        internal const string ProductVersion = "2.9 GA";
+        internal const string FileVersion = "2.9.1.0";
+        internal const string ProductVersion = "2.9a GA";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2021";
 
@@ -34,5 +34,6 @@ namespace XSharp
         // This also enables the "magic" button on the tools-options dialog
         // and adds CRLF to the response file between the various commands to make it easier to read.
         internal const string EnvironmentXSharpDev = "XSHARPDEV";
+        internal const string StandardHeaderFile = "XSharpDefs.xh";
     }
 }

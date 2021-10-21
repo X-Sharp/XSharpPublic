@@ -103,7 +103,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public XSharpTargetDLL TargetDLL { get; private set; }
         public bool DebugEnabled { get; private set; }
         public XSharpDialect Dialect { get; private set; }
-        public string DefaultIncludeDir { get; private set; } = "";
+        public string DefaultIncludeDir { get; private set; } = string.Empty;
         public string WindowsDir { get; private set; } = "";
         public string SystemDir { get; private set; } = "";
         public bool NoStdDef { get; private set; }
@@ -116,7 +116,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
         public bool Strict { get; private set; }
-        public string StdDefs { get; private set; } = "";
+        public string StdDefs { get; private set; } = string.Empty;
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOArithmeticConversions { get; private set; }
@@ -125,7 +125,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VoInitAxitMethods { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
         public bool VOPreprocessorBehaviour { get; private set; }
-        public bool CaseSensitivePreprocessor { get => !VOPreprocessorBehaviour; set => VOPreprocessorBehaviour = !value; }
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
         public string DefaultNamespace { get; private set; } = "";

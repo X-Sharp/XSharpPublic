@@ -13,7 +13,8 @@ namespace XSharp.Project
 {
     class XSharpOutputPane
     {
-        static OutputWindowPane pane;
+        static OutputWindowPane pane = null;
+        static bool busy = false;
 
         internal static void DisplayException(Exception e)
         {
@@ -27,11 +28,16 @@ namespace XSharp.Project
         {
             if (!XSharpModel.XSettings.EnableLogging)
                 return;
-            if (pane == null)
+            if (! busy && pane == null)
             {
+                busy = true;
                 pane = await VS.Windows.CreateOutputWindowPaneAsync("XSharp - Debug Window", false);
+                busy = false;
             }
-            pane.WriteLineAsync(message).FireAndForget(true);
+            if (pane != null)
+            {
+                await pane.WriteLineAsync(message);
+            }
 
         }
     }

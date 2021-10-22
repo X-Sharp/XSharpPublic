@@ -721,16 +721,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         bool canAddStopToken(IList<XSharpToken> stoptokens, XSharpToken token)
         {
-            if (token.Type == XSharpLexer.COMMA) 
+            if (token.Type == XSharpLexer.COMMA)
                 return false;
             foreach (var element in stoptokens)
             {
+                // do not add tokens that are already in the list.
                 if (tokenEquals(element, token))
                 {
                     return false;
                 }
             }
-            return token.Type == XSharpLexer.ID || XSharpLexer.IsKeyword(token.Type);
+            // At this moment we do not allow constants or NULL to be a stop token
+            return token.IsIdentifier() || token.IsOperator() || token.IsKeyword();
         }
         List<XSharpToken> getNestedTokens(int start, int max, XSharpToken[] tokens)
         {

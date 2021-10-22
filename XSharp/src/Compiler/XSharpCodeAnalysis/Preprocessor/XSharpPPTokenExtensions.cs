@@ -221,7 +221,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return XSharpLexer.IsOperator(token.Type);
         }
-
+		public static bool IsComment(this XSharpToken token)
+        {
+            if (token == null)
+                return false;
+            return XSharpLexer.IsComment(token.Type);
+        }
         public static bool IsKeyword(this XSharpToken token)
         {
             if (token == null)

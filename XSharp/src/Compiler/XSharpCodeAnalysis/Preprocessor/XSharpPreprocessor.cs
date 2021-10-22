@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 #nullable disable
-#define UDCSUPPORT
+#define FULLCOMPILER
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -219,7 +219,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         readonly IList<ParseErrorData> _parseErrors;
         bool _duplicateFile = false;
 
-        IList<string> _includeDirs;
+        readonly IList<string> _includeDirs;
 
         readonly Dictionary<string, IList<XSharpToken>> _symbolDefines;
 
@@ -236,12 +236,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         bool _hasCommandrules = false;
         bool _hasTransrules = false;
         int _rulesApplied = 0;
-        readonly int _defsApplied = 0;
         readonly HashSet<string> _activeSymbols = new();
-
+#if FULLCOMPILER
+        readonly int _defsApplied = 0;
         readonly bool _preprocessorOutput = false;
         Stream _ppoStream;
-
+#endif
         internal Dictionary<string, SourceText> IncludedFiles = new(CaseInsensitiveComparison.Comparer);
 
         public int MaxIncludeDepth { get; set; } = 16;
@@ -256,14 +256,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Note Macros such as __ENTITY__ and  __SIG__ are handled in the transformation phase
             // Make sure you also update the MACROs in XSharpLexerCode.cs !
             _macroDefines.Add("__ARRAYBASE__", (token) => new XSharpToken(XSharpLexer.INT_CONST, _options.HasOption(CompilerOption.ArrayZero, null, null) ? "0" : "1", token));
+#if FULLCOMPILER
             if (_options.ClrVersion == 2)
                 _macroDefines.Add("__CLR2__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
             if (_options.ClrVersion == 4)
                 _macroDefines.Add("__CLR4__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
             _macroDefines.Add("__CLRVERSION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"" + _options.ClrVersion.ToString() + ".0\"", token));
+#endif
             _macroDefines.Add("__DATE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"', token));
             _macroDefines.Add("__DATETIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"', token));
             bool debug = false;
+#if FULLCOMPILER
 #if VSPARSER
             if (_options.PreprocessorSymbolsUpper.Contains("DEBUG"))
                 debug = true;
@@ -275,6 +278,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_options.PreprocessorSymbolNames.Contains((name) => name.ToUpper() == "NDEBUG"))
                 debug = false;
 #endif
+#endif
+
             if (debug)
             {
                 _macroDefines.Add("__DEBUG__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
@@ -316,17 +321,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _macroDefines.Add("__MODULE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"', token));
             _macroDefines.Add("__SIG__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, "\"__SIG__\"", token)); // Handled later in Transformation phase
             _macroDefines.Add("__SRCLOC__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line " + token.Line.ToString() + '"', token));
-            _macroDefines.Add("__SYSDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.SystemDir + '"', token));
             _macroDefines.Add("__TIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString("HH:mm:ss") + '"', token));
             _macroDefines.Add("__UTCTIME__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToUniversalTime().ToString("HH:mm:ss") + '"', token));
             _macroDefines.Add("__VERSION__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.FileVersion + '"', token));
-            _macroDefines.Add("__WINDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir + '"', token));
-            _macroDefines.Add("__WINDRIVE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir?.Substring(0, 2) + '"', token));
             _macroDefines.Add("__XSHARP__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
+#if MACROCOMPILER
+             _macroDefines.Add("__XSHARP_RT__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST) { SourceSymbol = token });
+#else
             if (_options.XSharpRuntime)
             {
                 _macroDefines.Add("__XSHARP_RT__", (token) => new XSharpToken(XSharpLexer.TRUE_CONST, token));
             }
+            _macroDefines.Add("__SYSDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.SystemDir + '"', token));
+            _macroDefines.Add("__WINDIR__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir + '"', token));
+            _macroDefines.Add("__WINDRIVE__", (token) => new XSharpToken(XSharpLexer.STRING_CONST, '"' + _options.WindowsDir?.Substring(0, 2) + '"', token));
             bool[] flags = { _options.vo1,  _options.vo2, _options.vo3, _options.vo4, _options.vo5, _options.vo6, _options.vo7, _options.vo8,
                                 _options.vo9, _options.vo10, _options.vo11, _options.vo12, _options.vo13, _options.vo14, _options.vo15, _options.vo16 };
             for (int iOpt = 0; iOpt < flags.Length; iOpt++)
@@ -338,6 +346,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _macroDefines.Add("__XPP2__", (token) => new XSharpToken(_options.xpp2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             _macroDefines.Add("__FOX1__", (token) => new XSharpToken(_options.fox1 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
             _macroDefines.Add("__FOX2__", (token) => new XSharpToken(_options.fox2 ? XSharpLexer.TRUE_CONST : XSharpLexer.FALSE_CONST, token));
+
             if (!_options.NoStdDef)
             {
                 // when the compiler option nostddefs is not set:
@@ -352,8 +361,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 ProcessIncludeFile(StdDefs, null);
             }
+#endif
+        }
+#if MACROCOMPILER
+        partial void writeToPPO(string text, bool addCRLF = false);
+        partial void writeToPPO(IList<XSharpToken> tokens, bool addCRLF = false, bool ignore = false);
+
+        internal void Error(string fileName, ErrorCode code, params object[] args)
+        {
+            if (!ErrorString.IsWarning(code))
+                throw Compilation.Error(new SourceLocation() { FileName = fileName }, code, args);
         }
 
+        internal void Error(Token token, ErrorCode code, params object[] args)
+        {
+            if (!ErrorString.IsWarning(code))
+                throw token.Error(code, args);
+        }
+#endif
+#if FULLCOMPILER
         internal void DumpStats()
         {
             DebugOutput("Preprocessor statistics");
@@ -442,7 +468,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             addParseError(new ParseErrorData(token, error, args));
         }
-
+ 
         private void addParseError(ParseErrorData error)
         {
 #if !VSPARSER
@@ -460,6 +486,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _parseErrors.Add(error);
 #endif
         }
+#endif
         internal XSharpPreprocessor(XSharpLexer lexer, ITokenStream lexerStream, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
             PPIncludeFile.ClearOldIncludes();
@@ -484,6 +511,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!string.IsNullOrEmpty(fileName) && File.Exists(fileName))
             {
                 _includeDirs.Add(Path.GetDirectoryName(fileName));
+#if FULLCOMPILER
                 var ppoFile = FileNameUtilities.ChangeExtension(fileName, ".ppo");
                 try
                 {
@@ -511,6 +539,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     token.Text = fileName;
                     Error(token, ErrorCode.ERR_PreProcessorError, "Error processing PPO file: " + e.Message);
                 }
+#endif
             }
             // Add default IncludeDirs;
             if (!string.IsNullOrEmpty(options.DefaultIncludeDir))
@@ -538,10 +567,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal void DebugOutput(string format, params object[] objects)
         {
+#if FULLCOMPILER
             if (_options.ConsoleOutput != null)
             {
                 _options.ConsoleOutput.WriteLine("PP: " + format, objects);
             }
+#endif
         }
 
         /// <summary>
@@ -718,16 +749,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         XSharpToken FixToken(XSharpToken token)
         {
+#if ! MACROCOMPILER
             if (inputs.MappedLineDiff != 0)
                 token.MappedLine = token.Line + inputs.MappedLineDiff;
-            //if (!string.IsNullOrEmpty(inputs.MappedFileName))
-            //    token.MappedFileName = inputs.MappedFileName;
-            //if (!string.IsNullOrEmpty(inputs.SourceFileName))
-            //    token.SourceFileName = inputs.SourceFileName;
+#endif
             if (inputs.isSymbol)
             {
                 token.SourceSymbol = GetSourceSymbol();
-                //token.SourceFileName = (token.SourceSymbol as XSharpToken).SourceFileName;
             }
             return token;
         }
@@ -749,6 +777,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         void InsertStream(string filename, ITokenStream input, XSharpToken symbol)
         {
+#if FULLCOMPILER
             if (_options.ShowDefs)
             {
                 if (symbol != null)
@@ -767,6 +796,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     DebugOutput("Input stack: Insert Stream {0}, # of tokens {1}", filename, input.Size - 1);
             }
+#endif
             // Detect recursion
             var x = inputs;
             while (x != null)
@@ -909,10 +939,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
                 _symbolDefines[def.Text] = line;
+#if FULLCOMPILER
                 if (_options.ShowDefs)
                 {
                     DebugOutput("{0}:{1} add DEFINE {2} => {3}", def.FileName(), def.Line, def.Text, line.AsString());
                 }
+#endif
             }
             else
             {
@@ -999,10 +1031,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     }
                 }
+#if FULLCOMPILER
                 if (_options.ShowDefs)
                 {
                     DebugOutput("{0}:{1} add {2} {3}", cmd.FileName(), cmd.Line, cmd.Type == XSharpLexer.PP_DEFINE ? "DEFINE" : "UDC", rule.Name);
                 }
+#endif
             }
         }
 #if !VSPARSER
@@ -1120,10 +1154,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (!string.IsNullOrEmpty(path) && !dirs.Contains(path))
                     dirs.Add(path);
             }
+#if FULLCOMPILER
             if (_options.Verbose)
             {
                 DebugOutput("Process include file: {0}", includeFileName);
             }
+#endif
             foreach (var p in dirs)
             {
                 bool rooted = Path.IsPathRooted(includeFileName);
@@ -1139,20 +1175,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 if (File.Exists(fullPath))
                 {
+#if FULLCOMPILER
                     if (_options.Verbose)
                     {
                         DebugOutput("Found include file on disk: {0}", fullPath);
                     }
+#endif
                     // get it from the cache, maybe we have read it before.
                     includeFile = PPIncludeFile.Get(fullPath);
                     if (includeFile != null)
                     {
                         resolvedIncludeFileName = fullPath;
                         text = includeFile.Text;
+#if FULLCOMPILER
                         if (_options.Verbose)
                         {
                             DebugOutput("Include file retrieved from cache: {0}", fullPath);
                         }
+#endif
                         break;
                     }
                     else
@@ -1212,6 +1252,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     IncludedFiles.Add(resolvedIncludeFileName, text);
                 }
             }
+#if FULLCOMPILER
             if (_options.ShowIncludes)
             {
                 var fname = PathUtilities.GetFileName(this.SourceName);
@@ -1226,6 +1267,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     DebugOutput("{0} Include Standard Header file {1}", fname, resolvedIncludeFileName);
                 }
             }
+#endif
 
             if (includeFile == null)
             {
@@ -1242,14 +1284,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     addParseError(e);
                 }
+#if FULLCOMPILER
                 if (_options.Verbose)
                 {
                     var endTime = DateTime.Now;
                     DebugOutput("Lexed include file {0} milliseconds", (endTime - startTime).Milliseconds);
                 }
+#endif
                 bool newFile = false;
                 var tokens = removeIncludeFileComments(ct.GetTokens());
                 includeFile = PPIncludeFile.Add(resolvedIncludeFileName, tokens, text, lexer.MustBeProcessed, ref newFile);
+#if FULLCOMPILER
                 if (_options.Verbose)
                 {
                     if (newFile)
@@ -1261,6 +1306,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         DebugOutput("Bummer: include file was already added to cache by another thread {0}", resolvedIncludeFileName);
                     }
                 }
+#endif
             }
             resolvedIncludeFileName = includeFile.FileName;
             if (_options.ParseLevel == ParseLevel.Complete || includeFile.MustBeProcessed || _lexer.HasPPIfdefs)
@@ -1273,6 +1319,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 tokenStream.Fill();
                 InsertStream(resolvedIncludeFileName, tokenStream, fileNameToken);
             }
+#if FULLCOMPILER
             else
             {
                 if (_options.Verbose)
@@ -1280,6 +1327,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     DebugOutput("Skipping Include File in Parse Mode {0} line {1}:", resolvedIncludeFileName, fileNameToken.Line);
                 }
             }
+#endif
             return true;
 
         }
@@ -1492,7 +1540,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void doErrorWarningDirective(IList<XSharpToken> original)
         {
             var line = stripWs(original);
-            int nextType = line[0].Type;
+            var nextType = line[0].Type;
             if (IsActive())
             {
                 string text;
@@ -2032,6 +2080,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _rulesApplied += 1;
             var result = new List<XSharpToken>();
             result.AddRange(res);
+#if FULLCOMPILER
             if (_options.Verbose)
             {
                 int lineNo;
@@ -2045,6 +2094,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 DebugOutput("   Input : {0}", line.AsString());
                 DebugOutput("   Output: {0}", res.AsString());
             }
+#endif
             return result;
         }
     }

@@ -409,7 +409,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                     }
                     eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                    if (!parseErrors.IsEmpty())
+                    if (!parseErrors.IsEmpty() && pp != null)
                     {
                         eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
                     }
@@ -430,7 +430,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.Globals = treeTransform.GlobalEntities.Globals;
                     result.PragmaWarnings = treeTransform.GlobalEntities.PragmaWarnings;
                     result.PragmaOptions = treeTransform.GlobalEntities.PragmaOptions;
-                    result.IncludedFiles = pp?.IncludedFiles;
+                    if (pp != null)
+                    {
+                        result.IncludedFiles = pp.IncludedFiles;
+                    }
+                    else
+                    {
+                        result.IncludedFiles = new Dictionary<string, SourceText>();
+                    }
                     result.FileWidePublics = treeTransform.GlobalEntities.FileWidePublics;
                     result.HasPCall = treeTransform.GlobalEntities.HasPCall;
                     result.NeedsProcessing = treeTransform.GlobalEntities.NeedsProcessing;

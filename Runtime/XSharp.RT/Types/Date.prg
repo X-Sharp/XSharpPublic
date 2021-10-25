@@ -484,9 +484,9 @@ BEGIN NAMESPACE XSharp
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
 			METHOD Subtract(days AS USUAL) AS USUAL
 				IF days:IsInteger
-					RETURN SELF:Subtract( -(INT64) days)
+					RETURN SELF:Subtract( (INT64) days)
 				ELSEIF days:IsNumeric
-					 RETURN SELF:Subtract( -(REAL8) days)
+					 RETURN SELF:Subtract( (REAL8) days)
 				ELSEIF days:IsDate
 					 RETURN SELF:Subtract( (DATE) days)
 				ELSE

@@ -24,6 +24,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _initialized   := FALSE  AS LOGIC
         PROPERTY ShortName      AS STRING       AUTO GET INTERNAL SET
         PROPERTY TypeDef        AS TypeDefinition GET _typeDef
+        PROPERTY GenericName    AS STRING AUTO
 
         CONSTRUCTOR(typedef as TypeDefinition, asm as XAssembly)
             SUPER(typedef:Name, GetKind(typedef), ConvertAttributes(typedef:Attributes), asm)
@@ -304,8 +305,14 @@ BEGIN NAMESPACE XSharpModel
             END GET
         END PROPERTY
 
-        PROPERTY FullName AS STRING   GET SELF:GetFullName()
-
+        PROPERTY FullName  AS STRING
+            GET
+                IF SELF:IsGeneric .and. String.IsNullOrEmpty(SELF:GenericName)
+                    SELF:GenericName :=  SELF:_GetGenericName()
+                ENDIF
+                RETURN SELF:GetFullName()
+            END GET
+        END PROPERTY
         PROPERTY Description AS STRING GET SELF:GetDescription()
         PROPERTY IsFunctionsClass as LOGIC GET SELF:Assembly != NULL .and. SELF:FullName == SELF:Assembly:GlobalClassName
         PROPERTY IsNested  AS LOGIC GET SELF:Parent IS XPETypeSymbol
@@ -348,6 +355,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_signature:AddConstraints(name)
 
         PROPERTY TypeParameters as IList<STRING> GET SELF:_signature:TypeParameters:ToArray()
+        PROPERTY TypeParameterList as STRING GET SELF:_signature:TypeParameterList
         PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
 
         PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature()

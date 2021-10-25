@@ -38,8 +38,12 @@ FUNCTION Start() AS VOID STRICT
 	? ts.dDate:JulianValue
 	? nDays
 	xAssert(nDays == ts.dDate:JulianValue)
+	
+	u := Today()
+	ts.dDate := u
+	xAssert(ts.dDate == Today())
 
-AnotherTest()
+	AnotherTest()
 
 PROCEDURE AnotherTest()
 	LOCAL nDays AS DWORD

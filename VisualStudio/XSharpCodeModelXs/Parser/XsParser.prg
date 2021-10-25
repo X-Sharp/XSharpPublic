@@ -342,21 +342,21 @@ BEGIN NAMESPACE XSharpModel
               typelist:Add(type:FullName, type)
             ENDIF
             last := type
-         NEXT
+            NEXT
+         VAR lasttoken := _tokens[_tokens.Count -1]
          IF last != NULL .AND. last:Range:StartLine == last:Range:EndLine .and. ! last:SingleLine
             // adjust the end of the type with the start of the current line
             // find the last token in the stream
-            VAR index := _tokens.Count -1
-            VAR token := _tokens[index]
-            last:Range     := last:Range:WithEnd(token)
-            last:Interval  := last:Interval:WithEnd(token)
+
+            last:Range     := last:Range:WithEnd(lasttoken)
+            last:Interval  := last:Interval:WithEnd(lasttoken)
          ENDIF
          Log(i"Completed, found {_EntityList.Count} entities and {typelist.Count} types")
          IF SELF:_EntityList:Count > 0
             VAR lastEntity          := SELF:_EntityList:Last()
             if ! lastEntity:Kind:IsClassMember(_dialect)
-                lastEntity:Range        := lastEntity:Range:WithEnd(LastToken)
-                lastEntity:Interval     := lastEntity:Interval:WithEnd(LastToken)
+                lastEntity:Range        := lastEntity:Range:WithEnd(lasttoken)
+                lastEntity:Interval     := lastEntity:Interval:WithEnd(lasttoken)
             ENDIF
          ELSE
              // Add at least one entity that represents the global namespace

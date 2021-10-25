@@ -42,14 +42,26 @@ namespace XSharp.LanguageService
                     currentType = location.Member.ParentType;
                 }
                 // we search in the order:
-                // 1) Parameters (for entities with parameters)
-                // 2) Locals (for entities with locals)
-                // 3) Properties or Fields
-                // 4) Globals and Defines
+                // 1) Type parameters
+                // 2) Parameters (for entities with parameters)
+                // 3) Locals (for entities with locals)
+                // 4) Properties or Fields
+                // 5) Globals and Defines
                 if (XSettings.EnableTypelookupLog)
                     WriteOutputMessage($"--> FindIdentifier in {currentType.FullName}, '{name}' ");
                 var member = location.Member;
-                if (member.Kind.HasParameters())
+                if (currentType.TypeParameters.Count > 0 && currentType is XSourceTypeSymbol source)
+                {
+                    foreach (var param in currentType.TypeParameters)
+                    {
+                        if (StringEquals(param, name) )
+                        {
+                            var sym = new XSourceTypeParameterSymbol(source, name, source.Range, source.Interval);
+                            result.Add(sym);
+                        }
+                    }
+                }
+                if (result.Count == 0 && member.Kind.HasParameters())
                 {
                     result.AddRange(member.Parameters.Where(x => StringEquals(x.Name, name)));
                 }

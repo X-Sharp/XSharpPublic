@@ -220,9 +220,10 @@ namespace XSharp.LanguageService
                     list.addText(text);
 
                 }
-                if (var is IXParameterSymbol xps)
+                if (var is IXParameterSymbol xps )
                 {
-                    list.addPair(xps.ParamTypeDesc + " ", var.TypeName);
+                    if (var.Kind == Kind.Parameter)
+                        list.addPair(xps.ParamTypeDesc + " ", var.TypeName);
                 }
                 else if (var is XSourceVariableSymbol xsvs)
                 {
@@ -340,7 +341,7 @@ namespace XSharp.LanguageService
                 if (!this.typeMember.Kind.IsGlobalTypeMember())
                 {
                     name = this.typeMember.Parent.Name;
-                    var pos = name.IndexOf("<");
+                    var pos = name.IndexOfAny(new char[]{ '`','<'});
                     {
                         if (pos > 0)
                         {

@@ -107,10 +107,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         rewrittenOperand.WasCompilerGenerated = true;
                         return ConversionKind.Identity;
                     }
-                    // USUAL -> WINDATE, use DATE as intermediate type
                     if (rewrittenType.IsWinDateType())
                     {
-                        MethodSymbol m = getImplicitOperatorByReturnType(usualType, _compilation.DateType());
+                        MethodSymbol m = getImplicitOperatorByParameterType(_compilation.WinDateType(), _compilation.GetWellKnownType(WellKnownType.XSharp___Usual));
                         rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
                         rewrittenOperand.WasCompilerGenerated = true;
                         return ConversionKind.Identity;
@@ -181,7 +180,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 rewrittenOperand = MakeConversionNode(rewrittenOperand, rewrittenType, @checked: true, acceptFailingConversion: false);
                                 conversionKind = ConversionKind.ImplicitReference;
                             }
-                            else
+                            else if (! rewrittenType.IsWinDateType())
                             {
                                 conversionKind = ConversionKind.Unboxing;
                             }
@@ -206,7 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return ConversionKind.Identity;
 
                     }
-                    if (rewrittenType.IsObjectType() ||rewrittenType.IsUsualType())
+                    if (rewrittenType.IsObjectType() || rewrittenType.IsUsualType())
                     {
                         return ConversionKind.Boxing;
 
@@ -241,6 +240,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             return conversionKind;
+
         }
     }
 }

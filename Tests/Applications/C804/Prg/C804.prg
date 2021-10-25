@@ -33,7 +33,6 @@ FUNCTION Start() AS VOID STRICT
 	nDays := dNow - ts.dDate 
     xAssert (nDays == -1)
     xAssert (nDays == UInt32.MaxValue)
-
 	nDays := DWORD(_CAST, ts.dDate) 
 	? ts.dDate:JulianValue
 	? nDays
@@ -47,16 +46,22 @@ FUNCTION Start() AS VOID STRICT
 
 PROCEDURE AnotherTest()
 	LOCAL nDays AS DWORD
-	LOCAL ts IS TEST_STRUCT
+	LOCAL ts IS TEST_STRUCT   
 	
 	nDays := 10
 	ts.dDate := Today()
-	ts.dDate += ( nDays - 1 ) // Error XS0034 Operator '+=' IS ambiguous ON operands OF type 'XSharp.__WinDate' and 'dword'
-	ts.dDate -= ( nDays - 1 ) // Error XS0034 Operator '-=' IS ambiguous ON operands OF type 'XSharp.__WinDate' and 'dword'
-	ts.dDate += 1 // Error XS0029 Cannot implicitly convert type 'int' TO 'XSharp.__WinDate'
-	ts.dDate -= 1 // Error XS0029 Cannot implicitly convert type 'int' TO 'XSharp.__WinDate'
-	ts.dDate++ // Error XS0035 Operator '++' is ambiguous on an operand of type 'XSharp.__WinDate'
-	ts.dDate-- // Error XS0035 Operator '--' is ambiguous on an operand of type 'XSharp.__WinDate'
+	ts.dDate += ( nDays - 1 ) 
+	XAssert(ts.dDate = Today() + 9)
+	ts.dDate -= ( nDays - 1 )      
+	XAssert(ts.dDate = Today() )
+	ts.dDate += 1              
+	XAssert(ts.dDate = Today() + 1)
+	ts.dDate -= 1 
+	XAssert(ts.dDate = Today() )
+	ts.dDate++                 
+    XAssert(ts.dDate = Today() + 1)
+	ts.dDate-- 
+    XAssert(ts.dDate = Today())
 	
 	xAssert(ts.dDate == Today())
 	ts.dDate += 1
@@ -66,7 +71,7 @@ PROCEDURE AnotherTest()
 	dStart := Today()
 	dEnd := dStart + 1
 	
-	FOR ts.dDate := dStart UPTO dEnd // Error XS0029 Cannot implicitly convert type 'int' TO 'XSharp.__WinDate'
+	FOR ts.dDate := dStart UPTO dEnd 
 		? ts.dDate
 		IF ts.dDate == dStart
 			xAssert(ts.dDate == Today())
@@ -85,5 +90,5 @@ PROC xAssert(l AS LOGIC)
 IF .NOT. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
 END IF
-? "Assertion passed"   
+? "Assertion passed"
 RETURN 	

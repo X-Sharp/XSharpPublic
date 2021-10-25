@@ -701,7 +701,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                 entityKind := Kind.Assign
             ENDIF
          CASE XSharpLexer.PROPERTY
-            IF SELF:IsId(SELF:La2)
+            IF SELF:IsId(SELF:La2) .or. SELF:La2 == XSharpLexer.SELF
                 entityKind := Kind.Property
             ENDIF
          CASE XSharpLexer.OPERATOR
@@ -1447,7 +1447,7 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
             // read to EndOfLine
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
             SELF:ReadLine()
-            if typePars:Count > 0
+            if typePars != null && typePars:Count > 0
                 id += "`"+typePars:Count:ToString()
             endif
             VAR xType := XSourceTypeSymbol{id, kind, _attributes, range, interval, _file}

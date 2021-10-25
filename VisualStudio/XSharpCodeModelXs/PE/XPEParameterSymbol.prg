@@ -29,7 +29,6 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY OriginalTypeName as STRING AUTO
       PROPERTY Description  AS STRING
          GET
-            //
             LOCAL prefix AS STRING
             prefix := "PARAMETER "
             VAR result := prefix + SELF:Prototype
@@ -84,11 +83,10 @@ BEGIN NAMESPACE XSharpModel
          */
 
         METHOD Clone() AS IXVariableSymbol
-            RETURN (IXVariableSymbol) SELF:MemberwiseClone()
+            RETURN (XPEParameterSymbol) SELF:MemberwiseClone()
 
 
    END CLASS
-
 
 END NAMESPACE
 

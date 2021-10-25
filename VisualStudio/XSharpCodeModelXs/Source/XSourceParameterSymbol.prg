@@ -13,11 +13,11 @@ BEGIN NAMESPACE XSharpModel
     /// <summary>Parameter Symbol in the source</summary>
     [DebuggerDisplay("{DebuggerDisplay(),nq}")];
     CLASS XSourceParameterSymbol INHERIT XSourceVariableSymbol IMPLEMENTS IXParameterSymbol
-    
+
         CONSTRUCTOR(parent AS XSourceEntity, name AS STRING, span AS TextRange, position AS TextInterval, parameterType AS STRING)
             SUPER(parent, name, span, position, parameterType)
             SELF:Kind := Kind.Parameter
-        
+
       PROPERTY IsParameter AS LOGIC GET TRUE
       PROPERTY ParamType AS ParamType AUTO
       PROPERTY ParamTypeDesc AS STRING
@@ -42,7 +42,13 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN result
 
- 
+
     END CLASS
-    
+    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
+   CLASS XSourceTypeParameterSymbol INHERIT XSourceParameterSymbol
+        CONSTRUCTOR(parent AS XSourceEntity, name AS STRING, span AS TextRange, position AS TextInterval)
+            SUPER(parent, name, span, position, "")
+            SELF:Kind := Kind.TypeParameter
+
+   END CLASS
 END NAMESPACE

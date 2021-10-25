@@ -25,6 +25,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _isClone        AS LOGIC
       PROPERTY SourceCode     AS STRING AUTO
       PROPERTY ShortName      AS STRING  GET IIF(!SELF:IsGeneric, SELF:Name, SELF:Name:Substring(0, SELF:Name:IndexOf("<")-1))
+      PROPERTY GenericName    AS STRING AUTO
 
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, span AS TextRange, position AS TextInterval, oFile AS XFile)
          SUPER(name, kind, attributes, span, position)
@@ -101,7 +102,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY InterfaceList AS STRING                   GET SELF:_signature:InterfaceList
       PROPERTY IsGlobal    AS LOGIC                      GET SELF:Name == XLiterals.GlobalName
       PROPERTY TypeParameters as IList<STRING>           GET SELF:_signature:TypeParameters:ToArray()
-      PROPERTY TypeParametersList AS STRING              GET SELF:_signature:TypeParametersList
+      PROPERTY TypeParameterList AS STRING               GET SELF:_signature:TypeParameterList
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
       PROPERTY TypeParameterConstraintsList  AS STRING   GET SELF:_signature:TypeParameterConstraintsList
       PROPERTY Location                      AS STRING   GET SELF:File:FullPath
@@ -182,7 +183,14 @@ BEGIN NAMESPACE XSharpModel
         ENDIF
         RETURN
 
-      PROPERTY FullName  AS STRING   GET SELF:GetFullName()
+      PROPERTY FullName  AS STRING
+            GET
+                IF SELF:IsGeneric .and. String.IsNullOrEmpty(SELF:GenericName)
+                    SELF:GenericName :=  SELF:_GetGenericName()
+                ENDIF
+                RETURN SELF:GetFullName()
+            END GET
+      END PROPERTY
       PROPERTY IsGeneric as LOGIC    GET SELF:TypeParameters:Count > 0
 
       /// <summary>

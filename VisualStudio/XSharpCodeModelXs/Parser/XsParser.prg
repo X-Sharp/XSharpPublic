@@ -1447,7 +1447,9 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
             // read to EndOfLine
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
             SELF:ReadLine()
-
+            if typePars:Count > 0
+                id += "`"+typePars:Count:ToString()
+            endif
             VAR xType := XSourceTypeSymbol{id, kind, _attributes, range, interval, _file}
             xType:SourceCode := source
 
@@ -2503,12 +2505,14 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
 
          DO WHILE ! SELF:Eos() .AND. ! done
             SWITCH SELF:La1
-               CASE XSharpLexer.LPAREN
-               CASE XSharpLexer.LBRKT
+            CASE XSharpLexer.LT
+            CASE XSharpLexer.LPAREN
+            CASE XSharpLexer.LBRKT
             CASE XSharpLexer.LCURLY
                nested++
-               CASE XSharpLexer.RPAREN
-               CASE XSharpLexer.RBRKT
+            CASE XSharpLexer.GT
+            CASE XSharpLexer.RPAREN
+            CASE XSharpLexer.RBRKT
             CASE XSharpLexer.RCURLY
                   nested--
 

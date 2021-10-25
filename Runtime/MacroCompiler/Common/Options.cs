@@ -74,7 +74,7 @@ namespace XSharp.MacroCompiler
         public ParseMode ParseMode = ParseMode.Expression;
 
         public bool PreProcessor = true;
-        public bool CaseSensitivePreprocessor = false;
+        public bool VOPreprocessorBehaviour = false;
         public List<string> IncludePaths = null;
         public string DefaultIncludeDir = null;
         public List<string> PreprocessorSymbols = null;

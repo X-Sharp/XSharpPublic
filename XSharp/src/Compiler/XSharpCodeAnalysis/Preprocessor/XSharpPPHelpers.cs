@@ -6,9 +6,8 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using Antlr4.Runtime;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
@@ -53,7 +52,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
 
     }
-  
+
     internal class PPErrorMessage
     {
         internal XSharpToken Token { get; private set; }
@@ -70,7 +69,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal class PPRules : List<PPRule>
     {
         internal string Key { get; private set; }
-        internal PPRules(string key): base()
+        internal PPRules(string key) : base()
         {
             Key = key;
         }
@@ -118,7 +117,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             list.Insert(0, rule);
         }
-  
+
         internal PPRule FindMatchingRule(IList<XSharpToken> tokens, out PPMatchRange[] matchInfo)
         {
             matchInfo = null;
@@ -153,19 +152,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     /// <summary>
     /// This struct holds the start and end location of the tokens in the source 
     /// that match a match marker in a UDC
-    /// Some special meanings are for:
-    /// _start = 0 : Empty
-    /// _start = -1: Missing optional token
-    /// _start = -2: Token
     /// It may also hold a list of MatchRanges, which is the case for List markers
     /// or Repeated markers
     /// </summary>
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal struct PPMatchRange
     {
-
         #region Fields
-        private IList<PPMatchRange> _children ;
+        private IList<PPMatchRange> _children;
         #endregion
         #region Properties
         internal bool IsList { get { return _children != null; } }
@@ -215,7 +209,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (start == this.End + 1)
                 {
-                    Length += (end-start)+1;
+                    Length += (end - start) + 1;
                 }
                 else
                 {
@@ -249,7 +243,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _children.Add(Token(pos));
             }
         }
-        internal void  SetSkipped()
+        internal void SetSkipped()
         {
             Start = -1;
             Length = 0;
@@ -257,17 +251,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _children = null;
         }
 
-#endregion
-#region Constructors
+        #endregion
+        #region Constructors
         private static PPMatchRange Token(int pos)
         {
             return new PPMatchRange() { IsToken = true, Start = pos, Length = 1, _children = null };
         }
-        private static PPMatchRange Create( int start, int end)
+        private static PPMatchRange Create(int start, int end)
         {
-            return new PPMatchRange() { Start = start, Length = end - start +1, _children = null};
+            return new PPMatchRange() { Start = start, Length = end - start + 1, _children = null };
         }
-#endregion
+        #endregion
         internal string GetDebuggerDisplay()
         {
             if (IsToken)
@@ -279,12 +273,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (Start == 0 && Length == 0)
                 return "Empty";
-            if (Start == -1 && Length == 0 )
+            if (Start == -1 && Length == 0)
                 return "Skipped Optional marker";
             if (_children != null)
                 return $"List ({Children.Count}) {Start},{End}";
             else
-                return $"{Start},{End}"; 
+                return $"{Start},{End}";
         }
     }
     /// <summary>
@@ -294,8 +288,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         class PPUsedRule
         {
-            PPRule _rule;
-            IList<XSharpToken> _tokens;
+            readonly PPRule _rule;
+            readonly IList<XSharpToken> _tokens;
             internal PPUsedRule(PPRule rule, IList<XSharpToken> tokens)
             {
                 _rule = rule;
@@ -319,9 +313,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return false;
             }
         }
-        List<PPUsedRule> _list;
-        XSharpPreprocessor _pp;
-        int _maxDepth;
+
+        readonly List<PPUsedRule> _list;
+        readonly XSharpPreprocessor _pp;
+        readonly int _maxDepth;
         internal PPUsedRules(XSharpPreprocessor pp, int maxDepth)
         {
             _list = new List<PPUsedRule>();

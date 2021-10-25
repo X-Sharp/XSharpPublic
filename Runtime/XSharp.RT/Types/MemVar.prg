@@ -139,7 +139,7 @@ PUBLIC CLASS XSharp.MemVar
                     IF Depth > _isSystem:Length
                         _isSystem:Length := Depth+32
                     ENDIF
-                    _isSystem:Set(Depth-1, VALUE)
+                    _isSystem:@@Set(Depth-1, VALUE)
                 ENDIF
             END SET
             GET
@@ -147,7 +147,7 @@ PUBLIC CLASS XSharp.MemVar
                     IF Depth > _isSystem:Length
                         _isSystem:Length := Depth+32
                     ENDIF
-                    RETURN _isSystem:Get(Depth-1)
+                    RETURN _isSystem:@@Get(Depth-1)
                 ENDIF
                 // Public Level
                 RETURN FALSE
@@ -249,12 +249,11 @@ PUBLIC CLASS XSharp.MemVar
 
     /// <summary>Find a private variable. Try on the current level on the stack first and when not found then walk the stack.</summary>
 	STATIC METHOD PrivateFind(name AS STRING) AS XSharp.MemVar
-        VAR curr := MemVarLevels:Peek()
+        VAR curr := CheckCurrent()
 		IF curr != NULL .AND. curr:TryGetValue(name, OUT VAR oMemVar)
 			RETURN oMemVar
 		ENDIF
         RETURN GetHigherLevelPrivate(name)
-
 
     /// <summary>Release a private variable</summary>
 	STATIC METHOD Release(name AS STRING) AS VOID
@@ -326,6 +325,9 @@ PUBLIC CLASS XSharp.MemVar
 
     /// <summary>Get the total number of unique private variable names.</summary>
 	STATIC METHOD PrivatesCount(lCurrentOnly := FALSE AS LOGIC) AS INT
+	    IF MemVarLevels:Count() == 0
+	        RETURN 0
+	    ENDIF
 		RETURN _GetUniquePrivates(lCurrentOnly):Count
 
 

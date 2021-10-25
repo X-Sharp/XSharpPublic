@@ -64,17 +64,22 @@ namespace XSharp.MacroCompiler
         ValueNotConst = 244,
         ConstWithoutInitializer = 245,
 
-        PreProcessorError = 9000,
-        WarningDirective = Warning + 9001,
-        ErrorDirective = 9002,
-        EndifDirectiveExpected = 9003,
-        EndRegionDirectiveExpected = 9004,
-        DuplicateDefineSame = 9005,
-        PreProcessorWarning = Warning + 9006,
-        DuplicateDefineDiffWarning = Warning + 9007,
-        ObsoleteIncludeWarning = Warning + 9008,
-        EndOfPPLineExpected = 9009,
-        PreProcessorRecursiveRule = 9010,
+
+        // RvdH renamed so we have less differences between the compiler and the macro compiler
+
+        ERR_PreProcessorError = 9000,
+        WRN_WarningDirective = Warning + 9001,
+        ERR_ErrorDirective = 9002,
+        ERR_EndifDirectiveExpected = 9003,
+        ERR_EndRegionDirectiveExpected = 9004,
+        WRN_DuplicateDefineSame = Warning + 9005,
+        WRN_PreProcessorWarning = Warning + 9006,
+        WRN_DuplicateDefineDiff = Warning + 9007,
+        WRN_ObsoleteInclude = Warning + 9008,
+        ERR_EndOfPPLineExpected = 9009,
+        ERR_PreProcessorRecursiveRule = 9010,
+
+
 
         Internal = 9999,
         Warning = 10000,
@@ -139,17 +144,17 @@ namespace XSharp.MacroCompiler
             { ErrorCode.ValueNotConst, "Value must be a constant" },
             { ErrorCode.ConstWithoutInitializer, "CONST variable must have an initializer" },
 
-            { ErrorCode.PreProcessorError, "Pre-processor error: {0}" },
-            { ErrorCode.WarningDirective, "Warning: {0}" },
-            { ErrorCode.ErrorDirective, "Error: {0}" },
-            { ErrorCode.EndifDirectiveExpected, "#endif expected" },
-            { ErrorCode.EndRegionDirectiveExpected, "#endregion expected" },
-            { ErrorCode.DuplicateDefineSame, "Duplicate #define" },
-            { ErrorCode.PreProcessorWarning, "Pre-processor warning: {0}" },
-            { ErrorCode.DuplicateDefineDiffWarning, "Symbol already defined" },
-            { ErrorCode.ObsoleteIncludeWarning, "Include '{0}' obsoleted by '{1}'" },
-            { ErrorCode.EndOfPPLineExpected, "End of line expected" },
-            { ErrorCode.PreProcessorRecursiveRule, "Recursive pre-processor rule '{0}'" },
+            { ErrorCode.ERR_PreProcessorError, "Pre-processor error: {0}" },
+            { ErrorCode.WRN_WarningDirective, "Warning: {0}" },
+            { ErrorCode.ERR_ErrorDirective, "Error: {0}" },
+            { ErrorCode.ERR_EndifDirectiveExpected, "#endif expected" },
+            { ErrorCode.ERR_EndRegionDirectiveExpected, "#endregion expected" },
+            { ErrorCode.WRN_DuplicateDefineDiff, "Duplicate #define" },
+            { ErrorCode.WRN_PreProcessorWarning, "Pre-processor warning: {0}" },
+            { ErrorCode.WRN_DuplicateDefineSame, "Symbol already defined" },
+            { ErrorCode.WRN_ObsoleteInclude, "Include '{0}' obsoleted by '{1}'" },
+            { ErrorCode.ERR_EndOfPPLineExpected, "End of line expected" },
+            { ErrorCode.ERR_PreProcessorRecursiveRule, "Recursive pre-processor rule '{0}'" },
 
             { ErrorCode.Internal, "Internal error" },
             { ErrorCode.Warning, "Warning base" },
@@ -165,7 +170,7 @@ namespace XSharp.MacroCompiler
         static ErrorString()
         {
             var errors = (ErrorCode[])Enum.GetValues(typeof(ErrorCode));
-            Debug.Assert(errors.Length == _errorStrings.Count);
+            Debug.Assert(errors.Length== _errorStrings.Count);
             foreach (var e in errors)
             {
                 string v;

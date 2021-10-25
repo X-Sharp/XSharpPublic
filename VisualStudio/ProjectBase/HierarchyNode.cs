@@ -634,7 +634,14 @@ namespace Microsoft.VisualStudio.Project
         {
             Utilities.ArgumentNotNull("node", node);
 
-            this.projectMgr.ItemIdMap.Remove(node);
+            try
+            {
+                this.projectMgr.ItemIdMap.Remove(node);
+            }
+            catch
+            {
+
+            }
 
             HierarchyNode last = null;
             for(HierarchyNode n = this.firstChild; n != null; n = n.nextSibling)

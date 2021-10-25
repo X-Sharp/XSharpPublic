@@ -485,7 +485,7 @@ namespace XSharp.LanguageService
             int count = -1;
             startType = currentType;
             bool resetState = false;
-            while (! list.Eoi())
+           while (! list.Eoi())
             {
                 // after LPAREN, LCURLY and LBRKT we skip until we see the closing token
                 currentToken = list.ConsumeAndGet();
@@ -521,36 +521,14 @@ namespace XSharp.LanguageService
                 switch (currentToken.Type)
                 {
                     case XSharpLexer.LPAREN:
-                        if (list.Contains(XSharpLexer.RPAREN))
-                        {
-                            list.ConsumeUntilEndToken(XSharpLexer.RPAREN);
-
-                        }
-                        else
-                        {
-                            startOfExpression = true;
-                        }
+                        startOfExpression = true;
                         continue;
                     case XSharpLexer.LCURLY:
-                        if (list.Contains(XSharpLexer.RCURLY))
-                        {
-                            list.ConsumeUntilEndToken(XSharpLexer.RCURLY);
-                        }
-                        else
-                        {
-                            startOfExpression = true;
-                        }
+                        startOfExpression = true;
                         continue;
                     case XSharpLexer.LBRKT:
-                        if (list.Contains(XSharpLexer.RBRKT))
-                        {
-                            list.ConsumeUntilEndToken(XSharpLexer.RBRKT);
-                        }
-                        else
-                        {
-                            hasBracket = true;
-                            startOfExpression = true;
-                        }
+                        hasBracket = true;
+                        startOfExpression = true;
                         continue;
                     case XSharpLexer.RPAREN:
                     case XSharpLexer.RCURLY:

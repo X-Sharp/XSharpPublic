@@ -87,7 +87,7 @@ FUNCTION ReadCommandLine(asParams AS STRING[]) AS VOID
 			CASE cUpper:StartsWith("/NOWARNING")
 				NoWarningScreen := TRUE
 			END CASE
-		CATCH 
+		CATCH
 			NOP
 		END TRY
 	NEXT
@@ -133,7 +133,7 @@ FUNCTION ReadIni() AS VOID
 									ENDIF
 								END IF
 							NEXT
-						CATCH 
+						CATCH
 							NOP
 						END TRY
 					CASE "USEWINFORMSIVARPREFIX"
@@ -168,7 +168,7 @@ FUNCTION ReadIni() AS VOID
 				NEXT
 			ENDIF
 		END IF
-	CATCH 
+	CATCH
 		NOP
 	END TRY
 
@@ -222,7 +222,7 @@ FUNCTION ShowWarningScreen() AS VOID
 	TRY
 		oForm := WarningDialog{File.ReadAllText("ReadMe.rtf")}
 		oForm:ShowDialog()
-	CATCH 
+	CATCH
 		NOP
 	END TRY
 RETURN
@@ -236,7 +236,7 @@ CLASS VOFolder
 		LOCAL lValid := FALSE AS LOGIC
 		TRY
 			lValid := .NOT. (String.IsNullOrEmpty(_scFolder) .OR. .NOT. Directory.Exists(_scFolder))
-		CATCH 
+		CATCH
 			NOP
 		END TRY
 	RETURN lValid
@@ -306,7 +306,7 @@ CLASS xPorter
 		FOREACH cKeyword AS STRING IN gaNewKeywordsInXSharp
 			NewKeywordsInXSharp:Add(cKeyword:ToUpper(),cKeyword)
 		NEXT
-		
+
 
 		TRY
 			LOCAL oAssembly AS Assembly
@@ -339,7 +339,7 @@ CLASS xPorter
 				_aSDKDefines:Add("VOVER_DEVELOPMENT", e"\"\"")
 				_aSDKDefines:Add("VOVER_DEVWEBSITE", e"\"\"")
 				_aSDKDefines:Add("VOVER_WEBSITE", e"\"\"")
-			CATCH 
+			CATCH
 				NOP
 			END TRY
 		CATCH e AS Exception
@@ -427,7 +427,7 @@ CLASS xPorter
 		xPorter.uiForm:SetProgressText("Reading module " + cMefFile)
 
 		oSource := System.Text.StringBuilder{}
-		
+
 		oMef := Fab_VO_Entities.FabMEFFile{cMefFile}
 		IF xPorter.Options:SortEntitiesByName
 			oMef:SortByName()
@@ -442,7 +442,7 @@ CLASS xPorter
 			oSource:Append(oEntity:Source + e"\r\n")
 		NEXT
 		cCode := oSource:ToString()
-		
+
 		aCode := cCode:ToString():Split(<STRING>{e"\r\n" , e"\r" , e"\n"} , StringSplitOptions.None)
 		oModule := ModuleDescriptor{oMef:Name , NULL , aCode}
 
@@ -456,7 +456,7 @@ CLASS xPorter
 
 		IF oModule:Generated
 			xPorter.Message("  Generating module :" , oModule:Name)
-			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.Default)
+			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.UTF8)
 		END IF
 	RETURN TRUE
 
@@ -465,10 +465,10 @@ CLASS xPorter
 		Directory.CreateDirectory(cOutputFolder)
 
 		xPorter.Message("Reading file " + cPrgFile)
-		
+
 		LOCAL oModule := NULL AS ModuleDescriptor
 		LOCAL aCode AS STRING[]
-		
+
 		aCode := File.ReadAllLines(cPrgFile, Encoding.Default)
 		oModule := ModuleDescriptor{FileInfo{cPrgFile}:Name , NULL , aCode}
 
@@ -480,7 +480,7 @@ CLASS xPorter
 
 		IF oModule:Generated
 			xPorter.Message("  Generating module :" , oModule:Name)
-			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName, oCode:GetContents() , System.Text.Encoding.Default)
+			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName, oCode:GetContents() , System.Text.Encoding.UTF8)
 		END IF
 	RETURN TRUE
 
@@ -489,16 +489,16 @@ CLASS xPorter
 		Directory.CreateDirectory(cOutputFolder)
 
 		xPorter.Message("Reading code from CLipboard")
-		
+
 		LOCAL oModule := NULL AS ModuleDescriptor
 		LOCAL aCode AS STRING[]
-		
+
 		LOCAL cClipboard := "" AS STRING
 		TRY
 			IF Clipboard.ContainsText()
 				cClipboard := Clipboard.GetText()
 			END IF
-		CATCH 
+		CATCH
 			NOP
 		END TRY
 		LOCAL cUpper AS STRING
@@ -507,7 +507,7 @@ CLASS xPorter
 			ShowWarning("Clipboard does not contain VO code")
 			RETURN FALSE
 		ENDIF
-		
+
 		aCode := cClipboard:Split(<STRING>{e"\r\n" , e"\r" , e"\n"} , StringSplitOptions.None)
 		IF String.IsNullOrEmpty( FileInfo{cPrgFile}:Extension )
 			cPrgFile += ".prg"
@@ -522,7 +522,7 @@ CLASS xPorter
 
 		IF oModule:Generated
 			xPorter.Message("  Generating module :" , oModule:Name)
-			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName, oCode:GetContents() , System.Text.Encoding.Default)
+			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName, oCode:GetContents() , System.Text.Encoding.UTF8)
 			TRY
 				LOCAL sCode AS StringBuilder
 				sCode := StringBuilder{}
@@ -531,7 +531,7 @@ CLASS xPorter
 					sCode:Append(e"\r\n")
 				NEXT
 				Clipboard.SetText(sCode:ToString())
-			CATCH 
+			CATCH
 				NOP
 			END TRY
 		END IF
@@ -624,7 +624,7 @@ CLASS VOProjectDescriptor
 				File.Copy(SDKDefines_FileName , SELF:_cSolution_SDKDefines_Filename)
 			END IF
 		END IF
-		
+
 		IF xPorter.GenerateWinForms
 			Directory.CreateDirectory(SELF:WinFormsFolder)
 			Directory.CreateDirectory(SELF:WinFormsFolder + "\tmp")
@@ -766,7 +766,7 @@ CLASS ApplicationDescriptor
 	PROTECT _lOptionIntDiv AS LOGIC
 
 	PROTECT _oProject AS VOProjectDescriptor
-	
+
 	PROTECT _lIsWinForms AS LOGIC
 	PROTECT _cAppSubFolder AS STRING
 
@@ -825,8 +825,8 @@ CLASS ApplicationDescriptor
 
 	EXPORT xPortOptions AS xPorterOptions
 
-	PROPERTY AppFolder AS STRING 
-		GET 
+	PROPERTY AppFolder AS STRING
+		GET
 			IF SELF:_cAppSubFolder == NULL
 				SELF:_cAppSubFolder := SELF:PathValidName
 			END IF
@@ -859,7 +859,7 @@ CLASS ApplicationDescriptor
 					lAddAsDll := TRUE
 				END IF
 			END IF
-		CATCH 
+		CATCH
 			NOP
 		END TRY
 		IF .NOT. lAddAsDll
@@ -1160,7 +1160,7 @@ CLASS ApplicationDescriptor
 
 			IF oModule:Generated
 				xPorter.Message("  Generating module :" , oModule:Name)
-				File.WriteAllLines(cFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.Default)
+				File.WriteAllLines(cFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.UTF8)
 			END IF
 
 			IF xPorter.ExportToXide
@@ -1170,7 +1170,7 @@ CLASS ApplicationDescriptor
 					IF File.Exists(cWedFile)
 						File.Delete(cWedFile)
 					END IF
-				CATCH 
+				CATCH
 					NOP
 				END TRY
 			ENDIF
@@ -1188,7 +1188,7 @@ CLASS ApplicationDescriptor
 				aXideFieldSpecs := List<STRING>{}
 				aXideDBServers := List<STRING>{}
 				aFilesToDel := List<STRING>{}
-				
+
 				LOCAL aDBServers AS SortedList<STRING,BYTE[]>
 				aDBServers := SortedList<STRING,BYTE[]>{}
 
@@ -1246,7 +1246,7 @@ CLASS ApplicationDescriptor
 									File.WriteAllBytes(cBinary , oDesigner:Bytes)
 									aFilesToDel:Add(cBinary)
 								END CASE
-							CATCH 
+							CATCH
 								NOP
 							END TRY
 						END IF
@@ -1263,7 +1263,7 @@ CLASS ApplicationDescriptor
 						END IF
 					ENDIF
 				NEXT
-				
+
 				// FieldSpecs:
 				IF .not. oModuleFieldSpecs:IsEmpty
 					IF xPorter.ExportToVS
@@ -1275,7 +1275,7 @@ CLASS ApplicationDescriptor
 						VOFieldSpecEditor.ProjectImportVNFs(cPrg , aXideFieldSpecs:ToArray())
 					END IF
 				END IF
-				
+
 				// DBServers:
 				IF xPorter.ExportToVS
 					FOREACH oDBServer AS KeyValuePair<STRING,BYTE[]> IN aDBServers
@@ -1329,11 +1329,11 @@ CLASS ApplicationDescriptor
 	                        	// line 1 and 2 are #defines for CREATEPROCESS_MANIFEST_RESOURCE_ID and RC_RT_MANIFEST
 	                        	nLineWithResource := 3
 	                        END IF
-	                        
+
 	                        cRcSource     := aContents[nLineWithResource]
 							cRcSource := SELF:AdjustResource(cRcSource,cFolder,TRUE)
 							aContents[nLineWithResource] := cRcSource
-	
+
 							File.WriteAllLines(cFolder + "\" + cResFileName , aContents , System.Text.Encoding.Default)
 							oModule:AddVSrc(cResFileName)
 						END IF
@@ -1370,13 +1370,13 @@ CLASS ApplicationDescriptor
 	                            	VAR cLine := SELF:AdjustResource(cLinex, cFolder , FALSE)
 	                                aResult:Add(cLine)
 	                            NEXT
-								File.WriteAllLines(cFolder + "\" + cResFileName , aResult , System.Text.Encoding.Default)
+								File.WriteAllLines(cFolder + "\" + cResFileName , aResult , System.Text.Encoding.UTF8)
 								oModule:AddXIDErc(cResFileName)
 							END IF
-	
+
 							IF .NOT. oWedResources:IsEmpty()
 								cResFileName := oModule:PathValidName + ".prg.rc"
-								File.WriteAllLines(cFolder + "\" + cResFileName , oWedResources:GetContents() , System.Text.Encoding.Default)
+								File.WriteAllLines(cFolder + "\" + cResFileName , oWedResources:GetContents() , System.Text.Encoding.UTF8)
 							END IF
 	/*					ELSE // otherwise make it simple:
 							oXideResources:Combine(oWedResources)
@@ -1774,17 +1774,17 @@ CLASS ModuleDescriptor
 	PROPERTY IsDesignerChild AS LOGIC AUTO
 
 	PROPERTY Designers AS List<Designer> GET SELF:_aDesigners
-	
+
 	METHOD SetDummyApp() AS VOID
 		SELF:_oApp := ApplicationDescriptor{"Dummy",NULL}
 	RETURN
-	
+
 
 	METHOD HasDefine(cDefine AS STRING) AS LOGIC
 	RETURN SELF:_aDefines:ContainsKey(cDefine)
 	METHOD GetDefineValue(cDefine AS STRING) AS STRING
 	RETURN SELF:_aDefines[cDefine]
-	
+
 	PROTECTED METHOD Adjust_VXP_Tags(aCode AS STRING[]) AS VOID
 		FOR LOCAL n := 1 AS INT UPTO aCode:Length
 			LOCAL cLine, cUpper AS STRING
@@ -1838,9 +1838,9 @@ CLASS ModuleDescriptor
 				NEXT
 			END IF
 		NEXT
-		
+
 	RETURN FALSE
-	
+
 	METHOD FindClass(cName AS STRING) AS ClassDescriptor
 		FOREACH oClass AS ClassDescriptor IN SELF:_aClasses
 			IF oClass:Name:ToUpper() == cName:ToUpper()
@@ -2069,7 +2069,7 @@ CLASS ClassDescriptor
 		END IF
 		oEntity:ClassDesc := SELF
 	RETURN
-	
+
 	METHOD DeclareNonPublicIVar(cIVar AS STRING) AS VOID
 		IF .not. SELF:_aNonPublicIVars:ContainsKey(cIVar:ToUpper())
 			SELF:_aNonPublicIVars:Add(cIVar:ToUpper() , cIVar)
@@ -2246,7 +2246,7 @@ CLASS EntityDescriptor
 			LOCAL cCallBack := NULL AS STRING
 			LOCAL lAddEndif := FALSE AS LOGIC
 			LOCAL cLine AS STRING
-			
+
 			IF xPorter.Options:IgnoreCodeInside_ifdef_endif .and. .not. (oLine:lInAmpersand .or. oLine:lInBlockComment)
 				LOCAL lDoIgnore := FALSE AS LOGIC
 				LOCAL cLower AS STRING
@@ -2482,7 +2482,7 @@ CLASS EntityDescriptor
 //					MessageBox.Show(oNextWord:cWord , "Callback!")
 					cCallBack := oNextWord:cWord
 				CASE lInNonPublicIVar
-					IF .not. String.IsNullOrWhiteSpace(cWord) 
+					IF .not. String.IsNullOrWhiteSpace(cWord)
 						IF oWord:eSubStatus == WordSubStatus.TextReserved .and. cWordUpper == "AS"
 							lInNonPublicIVar := FALSE
 						ELSEIF Char.IsLetter(cWord[0])
@@ -2549,10 +2549,10 @@ CLASS EntityDescriptor
 		cLine := sLine:ToString()
 
 	RETURN cLine
-	
+
 	PROTECTED METHOD PrefixIVar(cWord AS STRING) AS STRING
 	RETURN "_" + cWord
-	
+
 	PROTECTED METHOD ClassHasNonPublicIVar(cWord AS STRING) AS LOGIC
 		IF SELF:ClassDesc != NULL .and. SELF:ClassDesc:HasNonPublicIVar(cWord)
 			RETURN TRUE
@@ -2872,7 +2872,7 @@ FUNCTION SafeFileExists(cFileName AS STRING) AS LOGIC
 	LOCAL lRet := FALSE AS LOGIC
 	TRY
 		lRet := File.Exists(cFileName)
-	CATCH 
+	CATCH
 		NOP
 	END TRY
 RETURN lRet
@@ -2880,14 +2880,14 @@ FUNCTION SafeFolderExists(cFolder AS STRING) AS LOGIC
 	LOCAL lRet := FALSE AS LOGIC
 	TRY
 		lRet := Directory.Exists(cFolder)
-	CATCH 
+	CATCH
 		NOP
 	END TRY
 RETURN lRet
 PROCEDURE SafeFileDelete(cFileName AS STRING)
 	TRY
 		File.Delete(cFileName)
-	CATCH 
+	CATCH
 		NOP
 	END TRY
 RETURN
@@ -2897,7 +2897,7 @@ PROCEDURE SafeDirectoryDelete(cFolder AS STRING)
 			SafeFileDelete(cFileName)
 		NEXT
 		Directory.Delete(cFolder)
-	CATCH 
+	CATCH
 		NOP
 	END TRY
 RETURN

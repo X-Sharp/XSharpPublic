@@ -178,21 +178,31 @@ FUNCTION ASize(ArrayName AS ARRAY, nSize AS DWORD) AS ARRAY
 /// <inheritdoc cref="ShowArray" />
 FUNCTION ShowFoxArray ( aTest AS __FoxArray , cPrefix := "" AS STRING ) AS VOID
     LOCAL i, j AS DWORD
-
+    LOCAL cLDelim as STRING
+    LOCAL cRDelim as STRING
     IF cPrefix:Length == 0
         cPrefix := "a"
+    ENDIF
+    IF XSharp.RuntimeState.CompilerOptionFox2
+        cLDelim := "("
+        cRDelim := ")"
+    ELSE
+        cLDelim := "["
+        cRDelim := "]"
     ENDIF
 
     IF aTest:MultiDimensional
         FOR i := 1 TO ALen ( aTest , 1 )
             FOR j := 1 TO ALen ( aTest , 2 )
-                 QOut(cPrefix + "[" + AsString(AElement ( aTest , i , j )) + "] [" + i:ToString() + "," + j:ToString() + "] = " + AsString ( aTest [i,j] ) + ;
-                     " " + GetElementValueType ( aTest[i,j] ))
+                 //var line := i"{cPrefix}{cLDelim}{AElement ( aTest , i , j )}{cRDelim} {cLDelim}{i},{j}{cRDelim} {aTest[i,j]} {GetElementValueType ( aTest[i,j] )}"
+                 var line := i"{cPrefix}{cLDelim}{i},{j}{cRDelim} = {aTest[i,j]} {GetElementValueType ( aTest[i,j] )}"
+                 QOut(line)
             NEXT
         NEXT
     ELSE
         FOR i := 1 TO ALen ( aTest , 0 )
-            QOut( cPrefix + "[" + i:ToString() + "] = " + AsString ( aTest [i] ) + " " + GetElementValueType ( aTest[i] ))
+            var line := i"{cPrefix}{cLDelim}{i}{cRDelim} = {aTest[i]}  {GetElementValueType ( aTest[i] )}"
+            QOut(line)
         NEXT
     ENDIF
 

@@ -61,7 +61,7 @@ STATIC CLASS WinFormsConverter
 
 			LOCAL oWriter := NULL AS StreamWriter
 			IF xPorter.ExportToXide
-				oWriter := StreamWriter{cPrg + ".wed" , FALSE , Encoding.UTF8}
+				oWriter := StreamWriter{cPrg + ".wed" , FALSE , Encoding.Default}
 				oWriter:WriteLine(String.Format("DESIGNERSTART = Form,Form,{0}" , oMainWed:Name ) )
 				oWriter:WriteLine(String.Format("GUID={0}" , Guid.NewGuid():ToString()) )
 				oWriter:WriteLine(String.Format("Name={0}" , oMainWed:Name) )

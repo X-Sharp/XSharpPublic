@@ -62,6 +62,7 @@ namespace XSharp.CodeDom
     class XSharpClassDiscover : XSharpBaseDiscover
     {
         private XCodeMemberMethod initComponent;
+        public Stack<XCodeTypeDeclaration> CurrentTypeStack { get; protected set; }
 
         public XSharpClassDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
@@ -70,6 +71,7 @@ namespace XSharp.CodeDom
             // The default Namespace, so we can work if none is provided... :)
             this.CurrentNamespace = new XCodeNamespace("");
             this.CodeCompileUnit.Namespaces.Add(this.CurrentNamespace);
+            CurrentTypeStack = new Stack<XCodeTypeDeclaration>();
 
             // If we have some Nested Namespaces, we will need to keep track
             this.NamespaceStack = new Stack<XCodeNamespace>();
@@ -215,28 +217,34 @@ namespace XSharp.CodeDom
             }
         }
 
-        public override void EnterClass_(XSharpParser.Class_Context context)
+        private void pushCurrentType(XCodeTypeDeclaration newClass)
         {
-            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
-            
-            CurrentClass = newClass;
-            addAttributes(newClass, context.Attributes);
-            // and push into the Namespace
-            CurrentNamespace.Types.Add(newClass);
-            // That's a Class
-            newClass.IsClass = true;
-            writeTrivia(newClass, context);
-            //
-            if (context.Modifiers == null)
+            if (CurrentType != null)
             {
-                newClass.TypeAttributes = System.Reflection.TypeAttributes.Public;
+                CurrentTypeStack.Push(CurrentType);
+                CurrentType.Members.Add(newClass);
             }
             else
             {
-                ContextToClassAttributes(newClass, context.Modifiers);
-                // What Visibility ?
-                newClass.TypeAttributes = ContextToClassModifiers(context.Modifiers);
+                CurrentNamespace.Types.Add(newClass);
             }
+            CurrentType = newClass;
+        }
+       
+
+        public override void EnterClass_(XSharpParser.Class_Context context)
+        {
+            base.EnterClass_(context);
+            XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
+            newClass.IsClass = true;
+
+            pushCurrentType(newClass);
+            addAttributes(newClass, context.Attributes);
+            writeTrivia(newClass, context);
+
+            ContextToTypeAttributes(newClass, context.Modifiers);
+            ContextToTypeModifiers(newClass, context.Modifiers);
+
             // INHERIT from ?
             if (context.BaseType != null)
             {
@@ -254,13 +262,17 @@ namespace XSharp.CodeDom
 
         public override void EnterEnum_([NotNull] XSharpParser.Enum_Context context)
         {
+            base.EnterEnum_(context);
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
             newClass.IsEnum = true;
-            CurrentClass = newClass;
+
+            pushCurrentType(newClass);
             addAttributes(newClass, context.Attributes);
-            // and push into the Namespace
-            CurrentNamespace.Types.Add(newClass);
             writeTrivia(newClass, context);
+            ContextToTypeModifiers(newClass, context.Modifiers);
+            ContextToTypeAttributes(newClass, context.Modifiers);
+
+
             ClearMembers();
             addFields(newClass, context);
             FillCodeSource(newClass, context);
@@ -268,27 +280,21 @@ namespace XSharp.CodeDom
 
         public override void ExitEnum_([NotNull] XSharpParser.Enum_Context context)
         {
+            base.ExitEnum_(context);
             closeType(null);
         }
         public override void EnterInterface_([NotNull] XSharpParser.Interface_Context context)
         {
+            base.EnterInterface_(context);
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
             newClass.IsInterface = true;
-            // Set as Current working Class
-            CurrentClass = newClass;
+
+            pushCurrentType(newClass);
             addAttributes(newClass, context.Attributes);
-            // and push into the Namespace
-            CurrentNamespace.Types.Add(newClass);
             writeTrivia(newClass, context);
-            //
-            if (context.Modifiers == null)
-            {
-                newClass.TypeAttributes = System.Reflection.TypeAttributes.Public;
-            }
-            else
-            {
-                ContextToClassAttributes(newClass, context.Modifiers);
-            }
+
+            ContextToTypeModifiers(newClass, context.Modifiers);
+            ContextToTypeAttributes(newClass, context.Modifiers);
 
             // Interfaces
             addInterfaces(newClass, context._Parents);
@@ -301,25 +307,16 @@ namespace XSharp.CodeDom
         }
         public override void EnterStructure_(XSharpParser.Structure_Context context)
         {
+            base.EnterStructure_(context);
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
-            // Set as Current working Class
-            CurrentClass = newClass;
-            addAttributes(newClass, context.Attributes);
-            // and push into the Namespace
-            CurrentNamespace.Types.Add(newClass);
-            // That's a Class
             newClass.IsStruct = true;
+
+            pushCurrentType(newClass);
+            addAttributes(newClass, context.Attributes);
             writeTrivia(newClass, context);
             //
-            if (context.Modifiers == null)
-            {
-                newClass.TypeAttributes = System.Reflection.TypeAttributes.Public;
-            }
-            else
-            {
-                ContextToClassAttributes(newClass, context.Modifiers);
-                newClass.TypeAttributes = ContextToStructureModifiers(context.Modifiers);
-            }
+            ContextToTypeAttributes(newClass, context.Modifiers);
+            ContextToTypeModifiers(newClass, context.Modifiers);
 
             // Interfaces
             addInterfaces(newClass, context._Implements);
@@ -340,25 +337,37 @@ namespace XSharp.CodeDom
                 if (lastmember != null)
                 {
                     // collect trivia after last member
-                    writeTrivia(CurrentClass, lastmember, true);
+                    writeTrivia(CurrentType, lastmember, true);
                 }
             }
             ClearMembers();
+            if (CurrentTypeStack.Count > 0)
+            {
+                CurrentType = CurrentTypeStack.Pop();
+            }
+            else
+            {
+                CurrentType = null;
+            }
         }
         public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)
         {
             closeType(context._Members);
+            base.ExitStructure_(context);
         }
 
         public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
         {
             closeType(context._Members);
+            base.ExitClass_(context);
         }
 
         public override void ExitInterface_([NotNull] XSharpParser.Interface_Context context)
         {
             closeType(context._Members);
+            base.ExitInterface_(context);
         }
+
 
         public override void EnterMethod([NotNull] XSharpParser.MethodContext context)
         {
@@ -426,7 +435,7 @@ namespace XSharp.CodeDom
                 }
             }
             //
-            this.CurrentClass.Members.Add(newMethod);
+            this.CurrentType.Members.Add(newMethod);
             // write original source for the attributes
             AddMemberAttributes(newMethod, newMethod.Attributes, context.Modifiers);
             this.addClassMember(new XMemberType(newMethod.Name, MemberTypes.Method, false, returnType.BaseType));
@@ -472,7 +481,7 @@ namespace XSharp.CodeDom
                 }
             }
             //
-            this.CurrentClass.Members.Add(evt);
+            this.CurrentType.Members.Add(evt);
             // write original source for the attributes
             AddMemberAttributes(evt, evt.Attributes, context.Modifiers);
             this.addClassMember(new XMemberType(evt.Name, MemberTypes.Event, false, null, "Void"));
@@ -492,7 +501,7 @@ namespace XSharp.CodeDom
             FillCodeSource(ctor, context);
             // write original source for the attributes
             AddMemberAttributes(ctor, ctor.Attributes, context.Modifiers);
-            this.CurrentClass.Members.Add(ctor);
+            this.CurrentType.Members.Add(ctor);
         }
 
         public override void EnterDestructor([NotNull] XSharpParser.DestructorContext context)
@@ -501,7 +510,7 @@ namespace XSharp.CodeDom
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
             writeTrivia(snippet, context);
-            this.CurrentClass.Members.Add(snippet);
+            this.CurrentType.Members.Add(snippet);
         }
 
         public override void EnterProperty([NotNull] XSharpParser.PropertyContext context)
@@ -510,7 +519,7 @@ namespace XSharp.CodeDom
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
             writeTrivia(snippet, context);
-            this.CurrentClass.Members.Add(snippet);
+            this.CurrentType.Members.Add(snippet);
         }
 
         public override void EnterOperator_([NotNull] XSharpParser.Operator_Context context)
@@ -519,7 +528,7 @@ namespace XSharp.CodeDom
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
             writeTrivia(snippet, context);
-            this.CurrentClass.Members.Add(snippet);
+            this.CurrentType.Members.Add(snippet);
         }
 
         public override void EnterLocalvar([NotNull] XSharpParser.LocalvarContext context)

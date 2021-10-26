@@ -162,6 +162,7 @@ namespace XSharp.CodeDom
         private string lastTrivia = null;
         private CodeEntryPointMethod entryPoint = null;
         private CodeTypeDeclaration entryPointType = null;
+        private int nestedLevel = 0;
         public XSharpCodeGenerator() : base()
         {
             this.selector = ":";
@@ -938,6 +939,7 @@ namespace XSharp.CodeDom
             bool generateComment = true;
             entryPoint = null;
             entryPointType = null;
+            nestedLevel = 0;
             readSettings();
             this.overrideTextWriter();
             this.Options.BlankLinesBetweenMembers = false;
@@ -1342,7 +1344,8 @@ namespace XSharp.CodeDom
 
         protected override void GenerateTypeEnd(CodeTypeDeclaration e)
         {
-            if (suppressCodeGen)
+            nestedLevel -= 1;
+            if (suppressCodeGen && nestedLevel == 0)
             {
                 suppressCodeGen = false;
                 return;
@@ -1403,7 +1406,11 @@ namespace XSharp.CodeDom
                     return;
                 }
             }
-            suppressCodeGen = false;
+            if (nestedLevel == 0)
+            {
+                suppressCodeGen = false;
+            }
+            nestedLevel += 1;
             writeTrivia(e);
             writeCodeBefore(e);
             if (e.CustomAttributes.Count > 0)
@@ -1917,7 +1924,6 @@ namespace XSharp.CodeDom
                 case GeneratorSupport.EntryPointMethod:
                 case GeneratorSupport.GenericTypeDeclaration:
                 case GeneratorSupport.GenericTypeReference:
-                //case GeneratorSupport.GotoStatements;
                 case GeneratorSupport.MultidimensionalArrays:
                 case GeneratorSupport.MultipleInterfaceMembers:
                 case GeneratorSupport.NestedTypes:
@@ -1931,6 +1937,8 @@ namespace XSharp.CodeDom
                 case GeneratorSupport.TryCatchStatements:
                 case GeneratorSupport.Win32Resources:
                     return true;
+                case GeneratorSupport.GotoStatements:
+                    return false;
                 default:
                     break;
             }

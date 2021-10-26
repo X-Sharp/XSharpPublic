@@ -23,53 +23,13 @@ namespace XSharp.CodeDom
     internal class XSharpFieldsDiscover : XSharpBaseDiscover
     {
 
-        internal Stack<ParserRuleContext> classes;
-        internal ParserRuleContext currentClass;
         
 
         internal XSharpFieldsDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
-            classes = new Stack<ParserRuleContext>();
-            currentClass = null;
         }
 
-        private void enterType(XSharpParserRuleContext context)
-        {
-            classes.Push(currentClass);
-            currentClass = context;
-            FieldList.Add(context, new List<XCodeMemberField>());
-
-        }
-        private void exitType(XSharpParserRuleContext context)
-        {
-            currentClass = classes.Pop();
-
-        }
-        public override void EnterInterface_(XSharpParser.Interface_Context context)
-        {
-            enterType(context);
-        }
-        public override void ExitInterface_(XSharpParser.Interface_Context context)
-        {
-            exitType(context);
-            
-        }
-        public override void EnterStructure_(XSharpParser.Structure_Context context)
-        {
-            enterType(context);
-        }
-        public override void ExitStructure_(XSharpParser.Structure_Context context)
-        {
-            exitType(context);
-        }
-        public override void EnterClass_(XSharpParser.Class_Context context)
-        {
-            enterType(context);
-        }
-        public override void ExitClass_(XSharpParser.Class_Context context)
-        {
-            exitType(context);
-        }
+ 
         //classvarModifiers   : (Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC
         //                      | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+
 
@@ -151,7 +111,7 @@ namespace XSharp.CodeDom
                 AddMemberAttributes(field, classVarModifiers, context.Modifiers);
                 writeTrivia(field, context);
                 //
-                FieldList[currentClass].Add(field);
+                FieldList[currentContext].Add(field);
             }
             //
         }

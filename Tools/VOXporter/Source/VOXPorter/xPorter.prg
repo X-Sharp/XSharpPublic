@@ -1370,13 +1370,13 @@ CLASS ApplicationDescriptor
 	                            	VAR cLine := SELF:AdjustResource(cLinex, cFolder , FALSE)
 	                                aResult:Add(cLine)
 	                            NEXT
-								File.WriteAllLines(cFolder + "\" + cResFileName , aResult , System.Text.Encoding.UTF8)
+								File.WriteAllLines(cFolder + "\" + cResFileName , aResult , System.Text.Encoding.Default)
 								oModule:AddXIDErc(cResFileName)
 							END IF
 
 							IF .NOT. oWedResources:IsEmpty()
 								cResFileName := oModule:PathValidName + ".prg.rc"
-								File.WriteAllLines(cFolder + "\" + cResFileName , oWedResources:GetContents() , System.Text.Encoding.UTF8)
+								File.WriteAllLines(cFolder + "\" + cResFileName , oWedResources:GetContents() , System.Text.Encoding.Default)
 							END IF
 	/*					ELSE // otherwise make it simple:
 							oXideResources:Combine(oWedResources)

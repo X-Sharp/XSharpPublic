@@ -61,7 +61,7 @@ STATIC CLASS WinFormsConverter
 
 			LOCAL oWriter := NULL AS StreamWriter
 			IF xPorter.ExportToXide
-				oWriter := StreamWriter{cPrg + ".wed" , FALSE , Encoding.Default}
+				oWriter := StreamWriter{cPrg + ".wed" , FALSE , Encoding.UTF8}
 				oWriter:WriteLine(String.Format("DESIGNERSTART = Form,Form,{0}" , oMainWed:Name ) )
 				oWriter:WriteLine(String.Format("GUID={0}" , Guid.NewGuid():ToString()) )
 				oWriter:WriteLine(String.Format("Name={0}" , oMainWed:Name) )
@@ -112,7 +112,7 @@ STATIC CLASS WinFormsConverter
 			aCode:Add( String.Format(e"RETURN" ) )
 			aCode:Add( String.Format(e"" ) )
 
-			oWriter := StreamWriter{cPrg , FALSE , Encoding.Default}
+			oWriter := StreamWriter{cPrg , FALSE , Encoding.UTF8}
 			oWriter:WriteLine("BEGIN NAMESPACE " + cNameSpace)
 			oWriter:WriteLine("")
 			oWriter:WriteLine(cClassDeclCode)
@@ -127,7 +127,7 @@ STATIC CLASS WinFormsConverter
 			cFileName := FileInfo{cWed}:Name:Replace(".wed","")
 			cPrg := cAppFolder + "\" + cFileName + ".Designer.prg"
 			oApp:AddModule(cFileName + ".Designer", ""):IsDesignerChild := TRUE
-			oWriter := StreamWriter{cPrg , FALSE , Encoding.Default}
+			oWriter := StreamWriter{cPrg , FALSE , Encoding.UTF8}
 			oWriter:WriteLine("BEGIN NAMESPACE " + cNameSpace)
 			oWriter:WriteLine("")
 			oWriter:WriteLine(cClassDeclCode)

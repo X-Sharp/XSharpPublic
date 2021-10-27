@@ -406,7 +406,8 @@ METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
 			isOK := SELF:_lockDBFFile( )
 		ELSE
 			isOK := TRUE
-		ENDIF
+        ENDIF
+        lockInfo:Result := isOK
 	END LOCK
 RETURN isOK
 

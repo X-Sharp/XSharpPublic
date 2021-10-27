@@ -11,42 +11,57 @@
 #ifndef FOXPROCMD_XH
 #define FOXPROCMD_XH
 
-#xcommand ENDPROC [<*any*>] => END PROCEDURE
 #xcommand ENDFUNC [<*any*>] => END FUNCTION
-#xcommand ENDWITH [<*any*>] => END WITH
+#xcommand ENDPROC [<*any*>] => END PROCEDURE
+#xcommand ENDSCAN [<*any*>] => END SCAN
 #xcommand ENDTRY  [<*any*>] => END TRY
-
-// Replace FIELDS LIKE and FIELDS EXCEPT with single words to make matching expressions easier
-
-#translate FIELDS LIKE => LIKE
-#translate FIELDS EXCEPT => EXCEPT
+#xcommand ENDWITH [<*any*>] => END WITH
 
 
 #xcommand STORE <value> TO ARRAY <VAR> => __FoxFillArray( <VAR>, <value> )
 
-// Scatter .. MEMVAR must be last !
+// Rules for FIELD matches that are used in several other commands
+// Note that the FoxPro fiels rule is difference because of the memo clause
 
-#command SCATTER [FIELDS <f1> [,<fn> ] ] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>]  TO <arrayName> ;
-          => <arrayName> := __ScatterArray(  {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>, <.blank.>  )
+#translate FIELDS <f1> [,<fn> ]  [<memo: MEMO>]   => ;
+           __DBFIELDLIST__ __DbFieldList( {<(f1)>[, <(fn)> ]}, <.memo.>)
+
+// FIELDS LIKE and optionally EXCEPT
+#translate FIELDS LIKE <%include%>  [EXCEPT <%exclude%>]  [<memo: MEMO>] => ;
+            __DBFIELDWILD__  __DbFieldWild(#<include>, #<exclude>, <.memo.>)
+
+// FIELDS EXCEPT
+#translate FIELDS EXCEPT <%exclude%>   [<memo: MEMO>] => ;
+            __DBFIELDWILD__  __DbFieldList(/*flds*/, /*include*/, #<exclude>, <.memo.>)
+
+// FIELDS EXCEPT .. LIKE is reversed
+#translate FIELDS EXCEPT <%exclude%>  LIKE <%include%>   => ;
+           FIELDS LIKE <include>    EXCEPT <exclude>
+
+// scatter to array
+#command SCATTER [__DBFIELDLIST__ <fldlist>] [__DBFIELDWILD__ <fldwild> ] [<blank: BLANK>] TO <arrayName> ;
+          => <arrayName> := __ScatterArray( iif( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.blank.> )
 
 // Note that the objectName parameter is passed as a string because objectName may not have been created yet (when it is a MEMVAR).
-// For SCATTER NAME to work with LOCALS and the ADDITIVE clause we therefore need to enable /fox2.
+// For SCATTER NAME to work with LOCALS and the ADDITIVE clause we have marked __ScatterObject with the
+// attribute that it needs access to locals
 
-#command SCATTER [FIELDS <f1> [,<fn> ]] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>]  NAME <objectName> [<add: ADDITIVE>];
-          => <objectName> := __ScatterObject( {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>, <.blank.> , <"objectName">,  <.add.>)
+#command SCATTER [__DBFIELDLIST__ <fldlist>] [__DBFIELDWILD__ <fldwild> ] [<blank: BLANK>] NAME <objectName> [<add: ADDITIVE>];
+          => <objectName> := __ScatterObject( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.blank.> , <"objectName">,  <.add.>)
 
-#command SCATTER [FIELDS <f1> [,<fn> ]] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] [<blank: BLANK>] MEMVAR ;
-          => __ScatterMemVar( {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>, <.blank.>  )
+// SCATTER MemVar must be last. DO NOT USE TO MEMBER !
+#command SCATTER [__DBFIELDLIST__ <fldlist>] [__DBFIELDWILD__ <fldwild> ] [<blank: BLANK>] MEMVAR ;
+          =>  __ScatterMemVar( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>), <.blank.> )
 
+#command GATHER FROM <arrayName> [__DBFIELDLIST__ <fldlist>] [__DBFIELDWILD__ <fldwild> ]  ;
+          => __GatherArray(<arrayName>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
 
-#command GATHER FROM <arrayName> [FIELDS <f1> [,<fn> ]] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
-          => __GatherArray(<arrayName>, {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>)
+#command GATHER FROM NAME <objectName> [__DBFIELDLIST__ <fldlist>] [__DBFIELDWILD__ <fldwild> ]  ;
+          => __GatherObject(<objectName>, IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
 
-#command GATHER FROM NAME <objectName> [FIELDS <f1> [,<fn> ]] [LIKE <%include%>] [EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
-          => __GatherObject(<objectName>, {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>)
-
-#command GATHER FROM MEMVAR [FIELDS <f1> [,<fn> ]] [LIKE <%include%>] [ EXCEPT <%exclude%> ]  [<memo: MEMO>] ;
-          => __GatherMemVar( {<(f1)>[, <(fn)> ]} ,  #<include>, #<exclude> , <.memo.>)
+//GATHER MemVar must be last, otherwise the compiler thinks that MEMVAR is the name of an array
+#command GATHER FROM MEMVAR [__DBFIELDLIST__ <fldlist>] [__DBFIELDWILD__ <fldwild> ]  ;
+          => __GatherMemVar( IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>) )
 
 
 ***
@@ -82,7 +97,6 @@
 #command SET INDEX TO [ <(index1)> [, <(indexn)>]]                      ;
                                                                         ;
       => DbClearIndex()                                                 ;
-                                                                        ;
       [; DbSetIndex( <(index1)> )]                                      ;
       [; DbSetIndex( <(indexn)> )]
 
@@ -106,8 +120,8 @@
       => DbCopyXStruct( <(file)> )
 ** FoxPro clauses [DATABASE DatabaseName [NAME LongTableName]] [FIELDS FieldList]
 
-#command COPY STRUCTURE TO <(file)> [FIELDS <fields,...>]           ;
-      => DbCopyStruct( <(file)>, { <(fields)> } )
+#command COPY STRUCTURE TO <(file)> [__DBFIELDLIST__ <fldlist>]           ;
+      => DbCopyStruct( <(file)>, <!fldlist!> )
 ** FoxPro clauses [[WITH] CDX | [WITH] PRODUCTION]  [DATABASE cDatabaseName [NAME cTableName]]
 
 
@@ -127,57 +141,58 @@
 
 
 #command SORT  TO <(file)>  [ON <fields,...>]                           ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [<asc:ASCENDING>]                                              ;
+         [<desc:DESCENDING>]                                            ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nNext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [_DBFIELDLIST_ <fldlist>]                                      ;
          [ALL]                                                          ;
                                                                         ;
-      => DbSort(                                                        ;
+      => DbSortFox(                                                        ;
                    <(file)>, { <(fields)> },                            ;
-                   <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>          ;
-                 )
-** Todo FoxPro Nooptimize clause and [ASCENDING | DESCENDING] clauses
-** Todo Fields Like, Fields Except
+                   <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, <.noopt.>;
+                 , IIF(<.asc.> .OR. <.desc.>, <.desc.>, NIL),
+                   <!fldlist!> )
 
-#command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>] ]                         ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+#command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>] ]                       ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nNext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => <v1> := [ <vn> := ] 0                                          ;
        ; DbEval(                                                        ;
                  {|| <v1> := <v1> + <x1> [, <vn> := <vn> + <xn> ]},     ;
-                 <{for}>, <{while}>, <next>, <rec>, <.rest.>            ;
+                 <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, <.noopt.> ;
                )
-** Todo FoxPro Nooptimize clause
 ** Todo FoxPro [TO ARRAY ArrayName]
 
 #command AVERAGE   <x1> [, <xn>]  TO  <v1> [, <vn>]                     ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nNext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => M->__Avg := <v1> := [ <vn> := ] 0                              ;
-                                                                        ;
        ; DbEval(                                                        ;
                  {|| M->__Avg := M->__Avg + 1,                          ;
                  <v1> := <v1> + <x1> [, <vn> := <vn> + <xn>] },         ;
-                 <{for}>, <{while}>, <next>, <rec>, <.rest.>            ;
+                 <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>, <.noopt.> ;
                )                                                        ;
                                                                         ;
        ; <v1> := <v1> / M->__Avg [; <vn> := <vn> / M->__Avg ]
 
-** Todo FoxPro Nooptimize clause
 ** Todo FoxPro [TO ARRAY ArrayName]
-
 
 */
 
@@ -189,7 +204,7 @@
 #command PACK <x:IN,ALIAS> <(a)>                => (<(a)>) -> (DbPack())
 #command ZAP  <x:IN,ALIAS> <(a)>                => (<(a)>) -> (DbZap())
 #command UNLOCK [RECORD <rcd>]  <x:IN,ALIAS> <(a)> => (<(a)>) -> (DbUnlock(<rcd>))
-#command COMMIT <x:IN,ALIAS> <(a)>                => (<(a)>) -> (DbCommit())
+#command COMMIT <x:IN,ALIAS> <(a)>              => (<(a)>) -> (DbCommit())
 
 #command GOTO <n>  		<x:IN,ALIAS> <(a)>     => (<(a)>) -> (DbGoto(<n>))
 #command GO <n>   		<x:IN,ALIAS> <(a)>     => (<(a)>) -> (DbGoto(<n>))
@@ -212,107 +227,58 @@
        ;    (<(a)>) -> (DbSetFilter( <{x}>, <(x)> ))                      ;
        ; END
 
-#command REPLACE   <f1> WITH <x1> [, <fn> WITH <xn>]                    ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
-         [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
-         [ALL]                                                          ;
-         <x:IN,ALIAS> <(a)>                                               ;
-      => (<(a)>) -> ( DbEval(                                             ;
-                 {|| _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>]},    ;
-                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
-               ))
-** Todo: Add FoxPro NoOptimize clause
-
-#command REPLACE <f1> WITH <v1> [, <fN> WITH <vN> ]   <x:IN,ALIAS> <(a)>   ;
-      => (<(a)>) -> ( _FIELD-><f1> := <v1>) [; (<(a)>) -> ( _FIELD-><fN> := <vN> )]
 
 
-#command DELETE                                                         ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
-         [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
-         [ALL]                                                          ;
-         <x:IN,ALIAS> <(a)>                                               ;
-      => (<(a)>) -> (DbEval(                                                        ;
-                 {|| DbDelete()},                                       ;
-                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
-               ))
-
-** Todo: Add FoxPro NoOptimize clause
 
 
-#command DELETE  <x:IN,ALIAS> <(a)>                =>  (<(a)>) -> (DbDelete())
 
-#command RECALL                                                         ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
-         [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
-         [ALL]                                                          ;
-         <x:IN,ALIAS> <(a)>                                               ;
-      => (<(a)>) -> (DbEval(                                                        ;
-                 {|| DbRecall()},                                       ;
-                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
-               ))
 
-#command RECALL  <x:IN,ALIAS> <(a)>                =>  (<(a)>) -> (DbRecall())
-
-** Todo: Add FoxPro NoOptimize clause
 
 ** Commands without IN/ALIAS clause
 
 #command SCAN              ;
-         [FOR <FOR>]       ;
-         [WHILE <WHILE>]   ;
-         [NEXT <NEXT>]     ;
+         [FOR <lfor>]       ;
+         [WHILE <lwhile>]   ;
+         [NEXT <nnext>]     ;
          [RECORD <rec>]    ;
          [<rest:REST>]     ;
+         [<noopt: NOOPTIMIZE>] ;
          [ALL]             ;
                            ;
-      => IIF( <.FOR.>, DbLocate( <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> ), DbLocate( {||TRUE}, <{WHILE}>, <NEXT>, <rec>, <.rest.> ) ); DO WHILE found()
+      => IIF( <.lfor.>, DbLocate( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> ), DbLocate( {||TRUE}, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> ) ); DO WHILE found()
 
-** Todo FoxPro Nooptimize clause
-
-#command ENDSCAN => DbContinue(); ENDDO
 #command END SCAN => DbContinue(); ENDDO
 
 
 
 
-#command COPY TO ARRAY <arrayName> [FIELDS <f1> [,<fn> ] ]              ;
-         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+#command COPY TO ARRAY <arrayName>                                      ;
+         [__DBFIELDLIST__ <fldlist>] [__DBFIELDWILD__ <fldwild> ]       ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nNext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => <arrayName> := DbCopyToArray(                                  ;
-                        {<(f1)>[, <(fn)> ]}, #<include>, #<exclude>,    ;
-                        <{for}>, <{while}>, <next>, <rec>, <.rest.>,    ;
+                        iif( <.fldlist.>, <!fldlist!>, <!fldwild!>),    ;
+                        <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>,    ;
                         <.noopt.>                                       ;
                         )
 ** Todo FoxPro clauses
-** [ [WITH] CDX ] | [ [WITH] PRODUCTION ] [NOOPTIMIZE]
+** [ [WITH] CDX ] | [ [WITH] PRODUCTION ]
 ** Implementation of CSV,SDF,FOXPLUS, FOX2X is implemented. Rest not yet.
 
 
 #command COPY TO <(file)>                                               ;
          [DATABASE <dbname> [NAME <longtablename>]]                     ;
          [WITH] [<cdx: CDX, PRODUCTION> ]                               ;
-         [FIELDS <f1> [,<fn> ] ]                                        ;
-         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [__DBFIELDLIST__ <fldlist>] [__DBFIELDWILD__ <fldwild> ]       ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nNext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -321,17 +287,17 @@
          [AS <nCodePage>]                                               ;
       =>  DbCopyFox(                                                    ;
                         <(file)>, iif( <.type.>,#<type>,"DBF"),         ;
-                        {<(f1)>[, <(fn)> ]}, <(include)>, <(exclude)> , ;
-                        <{for}>, <{while}>, <next>, <rec>, <.rest.>,    ;
+                        iif( <.fldlist.>, <!fldlist!>, <!fldwild!>),    ;
+                        <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>,    ;
                         <nCodePage>, <(dbname)>, <(longtablename)>,     ;
                         <.cdx.>, <.noopt.>                              ;
                       )
 
-#command COPY TO <(file)>  [FIELDS <f1> [,<fn> ] ]                      ;
-         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+#command COPY TO <(file)>                                               ;
+         [__DBFIELDLIST__ <fldlist>] [__DBFIELDWILD__ <fldwild> ]       ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nNext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -342,16 +308,16 @@
                                                                         ;
       => DbCopyDelimFox(                                                ;
                         <(file)>, <(delim)>,<char>,                     ;
-                        {<(f1)>[, <(fn)> ]}, #<include>, #<exclude>,    ;
-                        <{for}>, <{while}>, <next>, <rec>, <.rest.>,    ;
+                        iif( <.fldlist.>, <!fldlist!>, <!fldwild!>),    ;
+                        <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>,    ;
                         <nCodePage>, <.noopt.>                          ;
                         )
 
-#command COPY TO <(file)>  [FIELDS <f1> [,<fn> ] ]                      ;
-         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+#command COPY TO <(file)>                                               ;
+         [__DBFIELDLIST__ <fldlist>] [__DBFIELDWILD__ <fldwild> ]       ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nNext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [<noopt: NOOPTIMIZE>]                                          ;
@@ -362,17 +328,17 @@
                                                                         ;
       => DbCopyDelimFox(                                                ;
                         <(file)>, "\" + #<tab>, /* no char */ ,         ;
-                        {<(f1)>[, <(fn)> ]}, #<include>, #<exclude>,    ;
-                        <{for}>, <{while}>, <next>, <rec>, <.rest.>,    ;
+                        IIF( <.fldlist.>, <!fldlist!>, <!fldwild!>),    ;
+                        <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.>,    ;
                         <nCodePage>, <.noopt.>                          ;
                         )
 
 
 #command APPEND FROM <(file)>                                           ;
-         [FIELDS <fields,...>]                                          ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [__DBFIELDLIST__ <fldlist>]                                    ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nNext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
@@ -380,17 +346,17 @@
          [WITH CHARACTER <char>]                                        ;
                                                                         ;
       => DbAppDelimFox(                                                 ;
-                       <(file)>, <(delim)>, <char>,       ;
-                       { <(fields)> }, <{FOR}>, <{WHILE}>, <NEXT>,      ;
+                       <(file)>, <(delim)>, <char>,                     ;
+                       <fldlist>, <{lfor}>, <{lwhile}>, <nNext>,           ;
                        <rec>, <.rest.>                                  ;
                      )
 
 
 #command APPEND FROM <(file)>                                           ;
-         [FIELDS <fields,...>]                                          ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [__DBFIELDLIST__ <fldlist>]                                    ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nNext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
@@ -399,16 +365,16 @@
                                                                         ;
       => DbAppDelimFox(                                                 ;
                        <(file)>, "\" + #<tab>,  ,                       ;
-                       { <(fields)> }, <{FOR}>, <{WHILE}>, <NEXT>,      ;
+                       <fldlist>, <{lfor}>, <{lwhile}>, <nNext>,           ;
                        <rec>, <.rest.>                                  ;
                      )
 
 
 #command APPEND FROM <(file)>                                           ;
-         [FIELDS <fields,...>]                                          ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [__DBFIELDLIST__ <fldlist>]                                    ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nNext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
@@ -417,20 +383,17 @@
          [AS <nCodePage>]                                               ;
                                                                         ;
       => DbAppFox(                                                      ;
-                     <(file)>, iif( <.type.>,#<type>,"DBF"),{<(fields)>},;
-                     <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> ,      ;
+                     <(file)>, iif( <.type.>,#<type>,"DBF"),<fldlist>,  ;
+                     <{lfor}>, <{lwhile}>, <nNext>, <rec>, <.rest.> ,      ;
                      <(sheet)>, <nCodePage>                             ;
                    )
 
 
 
-#command APPEND FROM ARRAY <arrayName> [FIELDS <f1> [,<fn> ] ]          ;
-         [LIKE <%include%>] [EXCEPT <%exclude%> ]                       ;
-         [FOR <for>]                                                    ;
+#command APPEND FROM ARRAY <arrayName> [_DBFIELDLIST_ <fldlist>]        ;
+         [FOR <FOR>]                                                    ;
                                                                         ;
-      => DbAppendFromArray(<arrayName>,                  ;
-                        {<(f1)>[, <(fn)> ]}, #<include>, #<exclude>,    ;
-                        <{for}> )
+      => DbAppendFromArray(<arrayName>, <fldlist>, <{FOR}> )
 
 
 #command OPEN DATABASE <(db)>                                            ;
@@ -450,14 +413,14 @@
 #command ASSERT <expression> [MESSAGE <cMessageText>]  ;
         => __FoxAssert( <expression> , <"expression">, <cMessageText> )
 
-// Unsupported commands
+// Unsupported (combinations) of commands
 
-#command SCATTER [<options,...>] FIELDS <f1> [<otherfields,...>] <clause:LIKE,EXCEPT>  <*otherclause*> => __FIELDSERROR__
-#command GATHER  [<options,...>] FIELDS <f1> [<otherfields,...>] <clause:LIKE,EXCEPT>  <*otherclause*> => __FIELDSERROR__
-#command COPY    [<options,...>] FIELDS <f1> [<otherfields,...>] <clause:LIKE,EXCEPT>  <*otherclause*> => __FIELDSERROR__
-#command APPEND  [<options,...>] FIELDS <f1> [<otherfields,...>] <clause:LIKE,EXCEPT>  <*otherclause*> => __FIELDSERROR__
 
-#command __FIELDSERROR__ => #error You cannot combine both a field list and an wildcard mask in a statement
+#command <cmd:SCATTER,GATHER,COPY> <*clauses*> __DBFIELDLIST__ <aFields> ;
+         <*optionalclauses*> <clause:LIKE,EXCEPT>  <*otherclause*> =>  ;
+        #error You cannot combine Fields List and Wildcards in a command
+
+
 
 #include "FoxProSql.xh"
 #endif

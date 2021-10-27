@@ -7707,7 +7707,7 @@
             If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
         </param>
         <param name="acFields">The sort keys, specified as an array of field names.  You may optionally add, after the field name, /A (to sort in dictionary order), /C (to ignore capitalization), or /D (to sort in descending order). The default setting is /A.</param>
-        <param name="lNoOpt" >Disable (Rushmore) optimizations</param>
+        <param name="lNoOpt" >Disable (Rushmore) optimizations (not supported yet).</param>
         <param name="lDesc">Should the default sort order be Descending</param>
 
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />

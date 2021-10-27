@@ -7707,6 +7707,9 @@
             If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
         </param>
         <param name="acFields">The sort keys, specified as an array of field names.  You may optionally add, after the field name, /A (to sort in dictionary order), /C (to ignore capitalization), or /D (to sort in descending order). The default setting is /A.</param>
+        <param name="lNoOpt" >Disable (Rushmore) optimizations</param>
+        <param name="lDesc">Should the default sort order be Descending</param>
+
         <include file="VOSDK.xml" path="doc/commonblocks/scopeparams/*" />
         <returns>
             TRUE if successful; otherwise, FALSE.
@@ -7714,22 +7717,31 @@
         <remarks>
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
             DBSort() copies records from the current work area to another database file in sorted order.  
-            X# sorts character fields in accordance with the ASCII value of each character within the string.  
-            Numeric fields are sorted in numeric order, date fields are sorted chronologically, and logical fields are sorted with TRUE as the high value.  
+            X# sorts character fields in accordance with the ASCII value of each character 
+            within the string.  
+            Numeric fields are sorted in numeric order, date fields are sorted chronologically, 
+            and logical fields are sorted with TRUE as the high value.  
             Memo fields cannot be sorted.
-            DBSort() performs as much of its operation as possible in memory, then it spools to a uniquely named temporary disk file.<br/>
+            DBSort() performs as much of its operation as possible in memory, then it spools 
+            to a uniquely named temporary disk file.<br/>
             This temporary file can be as large as the size of the source database file.  
-            Note also that DBSort() uses up three file handles: the source database file, the target database file, and the temporary file.
+            Note also that DBSort() uses up three file handles: the source database file, 
+            the target database file, and the temporary file.
             If the database is opened in shared mode, you must lock the file to be sorted with FLock().
             DBSort() is the functional equivalent of the SORT command.
             <note type="tip">
-                Deleted Source Records:
-                &#0009;If SetDeleted() is TRUE, VODBSort() copies deleted records to the target database file; however, the deleted records do not retain their deleted status.  No record is marked for deletion in the target file regardless of its status in the source file.
-                &#0009;If SetDeleted() is FALSE, deleted records are not copied to the target database file.  Similarly, filtered records are ignored during a sort and are not included in the target file.
+                Deleted Source Records: <br/>
+                If SetDeleted() is TRUE, VODBSort() copies deleted records to the target database file; 
+                however, the deleted records do not retain their deleted status.  
+                No record is marked for deletion in the target file regardless of its status in the source file.<br/>
+                If SetDeleted() is FALSE, deleted records are not copied to the target database file.  
+                Similarly, filtered records are ignored during a sort and are not included in the target 
+                file.<br/>
             </note>
         </remarks>
         <example>
-            The following example sorts a database on two fields (ignoring case) and uses it as the current file:
+            The following example sorts a database on two fields (ignoring case) and uses 
+            it as the current file:
             <code language="X#">
                 IF DBSort("sortdb.dbf", {"Last/C", "First/C"})
                 &#0009;DBCloseArea()
@@ -7749,7 +7761,8 @@
         </param>
 
         <returns>
-            The structure of the database file in an array whose length is equal to the number of fields in the database file.<br/>
+            The structure of the database file in an array whose length is equal to the number 
+            of fields in the database file.<br/>
             Each element of the array is a subarray containing information for one field.<br/>
             The subarrays have the following format:
             Constant&#0009;Attribute&#0009;
@@ -7758,15 +7771,19 @@
             DBS_LEN&#0009;nLength&#0009;
             DBS_DEC&#0009;nDecimals&#0009;
             DBS_ALIAS&#0009;cAlias&#0009;
-            If there is no database file in use in the work area, DBStruct() will generate a runtime error.
+            If there is no database file in use in the work area, DBStruct() will generate 
+            a runtime error.
         </returns>
         <remarks>
-            DBStruct() operates like COPY STRUCTURE EXTENDED by creating an array of structure information rather than a database file of structure information.<br/>
-            There is another function, DBCreate(), that can create a database file from the structure array.
+            DBStruct() operates like COPY STRUCTURE EXTENDED by creating an array of structure 
+            information rather than a database file of structure information.<br/>
+            There is another function, DBCreate(), that can create a database file from 
+            the structure array.
             <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
         </remarks>
         <example>
-            This example opens two database files, then creates an array containing the database structure using DBStruct() within an aliased expression.<br/>
+            This example opens two database files, then creates an array containing the 
+            database structure using DBStruct() within an aliased expression.<br/>
             The field attributes are then listed using AEval():
             <code language="X#">
                 LOCAL aStruct

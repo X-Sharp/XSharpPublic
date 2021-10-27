@@ -38,7 +38,7 @@ END CLASS
 /// The runtime state from a new thread is a copy of the state of the main thread at that moment.
 /// </remarks>
 CLASS XSharp.RuntimeState
-    
+
 	// Static Fields
 	PRIVATE INITONLY STATIC initialState  AS RuntimeState
 	PRIVATE INITONLY _thread AS Thread
@@ -47,6 +47,8 @@ CLASS XSharp.RuntimeState
 	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState>
 	STATIC CONSTRUCTOR
 		initialState	:= RuntimeState{TRUE}
+        AutoLock        := DoNothing
+        AutoUnLock      := DoNothing
         detectDialect()
 
     PRIVATE STATIC METHOD detectDialect() AS VOID
@@ -104,7 +106,7 @@ CLASS XSharp.RuntimeState
             RuntimeState.FileException := NULL
             RuntimeState.FileError     := 0
             RuntimeState.LastRddError  := NULL
-            
+
             SELF:_SetThreadValue<Exception>(Set.Patharray,NULL)
             SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
 			IF IsRunningOnWindows()
@@ -875,8 +877,20 @@ CLASS XSharp.RuntimeState
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE _collationTable AS BYTE[]
-    /// <summary>Current collation table.</summary>
 
+
+    /// <summary>Delegate that gets called to automatically lock a record in the FoxPro dialect.</summary>
+    STATIC AutoLock   AS AutoLockMethod
+    /// <summary>Delegate that gets called to automatically unlock a record in the FoxPro dialect.</summary>
+    STATIC AutoUnLock AS AutoLockMethod
+    /// <exclude />
+    DELEGATE AutoLockMethod() as Void
+
+    /// <exclude />
+    STATIC METHOD DoNothing() AS VOID
+        RETURN
+
+    /// <summary>Current collation table.</summary>
 	PUBLIC STATIC PROPERTY CollationTable AS BYTE[]
 	GET
 		LOCAL coll AS BYTE[]

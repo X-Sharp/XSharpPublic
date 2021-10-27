@@ -685,18 +685,20 @@ FUNCTION DbSort(	cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,
 FUNCTION DbTrans(wTarget, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) AS LOGIC CLIPPER
 
 	LOCAL fldNames  AS _FieldNames
-
+    LOCAL rest     AS LOGIC
 	IF !cbWhileCondition:IsNil
-		lRest := .T.
+		rest := .T.
 	ENDIF
 
 	IF lRest:IsNil
-		lRest := .F.
+		rest := .F.
+    ELSE
+        rest := lRest
 	ENDIF
 
 	fldNames := VoDb.AllocFieldNames(aStruct)
 
-	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDbTrans(wTarget, fldNames, cbForCondition, cbWhileCondition, nNext, nRecord, lRest))
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDbTrans(wTarget, fldNames, cbForCondition, cbWhileCondition, nNext, nRecord, rest))
 
 
 /// <exclude />
@@ -706,6 +708,7 @@ FUNCTION __DbPushOptimize(lNoOpt as USUAL) AS LOGIC
         RETURN DbInfo(DBI_OPTIMIZE, !lNoOptimize)
     ENDIF
     RETURN DbInfo(DBI_OPTIMIZE)
+
 /// <exclude />
 FUNCTION __DbPopOptimize(lNoOpt as USUAL, lOldOpt as LOGIC) AS VOID
     IF ! IsNil(lNoOpt)
@@ -727,36 +730,45 @@ FUNCTION DbTotal(cTargetFile, cbKey, acFields,  cbForCondition, cbWhileCondition
 	LOCAL kEval         AS USUAL
 	LOCAL lRetCode      := FALSE   AS LOGIC
 	LOCAL fldNames      AS _FieldNames
-
+    LOCAL cbWhile       AS CodeBlock
+    LOCAL cbFor         AS CodeBlock
+    LOCAL rest          AS LOGIC
+    local iNext     := 0  AS LONG
 
 
 	IF cbWhileCondition:IsNil
-		cbWhileCondition := {|| .T.}
-	ELSE
-		lRest := .T.
+		cbWhile := {|| .T.}
+    ELSE
+        cbWhile := cbWhileCondition
+		rest := .T.
 	ENDIF
 
 	IF cbForCondition:IsNil
-		cbForCondition := {|| .T.}
+		cbFor := {|| .T.}
+    ELSE
+        cbFor := cbForCondition
 	ENDIF
 
 	IF lRest:IsNil
-		lRest := .F.
+        rest := FALSE
+    ELSE
+		rest := lRest
 	ENDIF
 	siTo   := 0
 
 	IF !nRecord:IsNil
 		DbGoto(nRecord)
-		nNext := 1
+		iNext := 1
 	ELSE
 
 		IF nNext:IsNil
-			nNext := -1
-		ELSE
-			lRest := .T.
+			iNext := -1
+        ELSE
+            iNext := nNext
+			rest := .T.
 		ENDIF
 
-		IF !lRest
+		IF !rest
 			DbGoTop()
 		ENDIF
 
@@ -805,7 +817,7 @@ FUNCTION DbTotal(cTargetFile, cbKey, acFields,  cbForCondition, cbWhileCondition
 
 		n := Len(aFldNum)
 
-		DO WHILE ( (!Eof()) .AND. nNext != 0 .AND. Eval(cbWhileCondition) )
+		DO WHILE ( (!Eof()) .AND. iNext != 0 .AND. Eval(cbWhile) )
 
 			lSomething := .F.
 
@@ -813,8 +825,8 @@ FUNCTION DbTotal(cTargetFile, cbKey, acFields,  cbForCondition, cbWhileCondition
 
 			kEval := Eval(cbKey)
 
-			DO WHILE ( nNext-- != 0 .AND. Eval(cbWhileCondition) .AND. kEval = Eval(cbKey) )
-				IF ( Eval(cbForCondition) )
+			DO WHILE ( iNext-- != 0 .AND. Eval(cbWhile) .AND. kEval = Eval(cbKey) )
+				IF ( Eval(cbFor) )
 					IF ( !lSomething )
 						//	CollectForced()
 						lRetCode := VoDbTransRec(siTo, fldNames)

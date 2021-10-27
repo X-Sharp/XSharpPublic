@@ -10,6 +10,8 @@
 
 
 USING XSharp.Internal
+USING XSharp.RDD
+USING XSharp.RDD.Support
 USING System.Collections.Generic
 
 PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
@@ -17,7 +19,36 @@ PROCEDURE RegisterFoxMemVarSupport AS VOID INIT3
     VAR x := XSharp.MemVar{"InitTheClass",42}
     x:Value := 43   // assign a value to suppress the warning about an unused var
     XSharp.MemVar.Put := __FoxMemVarPut
+    XSharp.RuntimeState.AutoLock    := __FoxAutoLock
+    XSharp.RuntimeState.AutoUnLock  := __FoxAutoUnLock
+RETURN
+
+
+// Automatically lock a record in the FoxPro dialect
+FUNCTION __FoxAutoLock() AS VOID
+    LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+    IF oRdd:Shared
+        VAR locked := oRdd:RecInfo(DBRI_LOCKED, NULL, NULL)
+        IF locked IS LOGIC var lIsLocked .and. ! lIsLocked
+            VAR lockInfo    := DbLockInfo{}
+            lockInfo:Method := DbLockInfo.LockMethod.Exclusive
+            lockInfo:RecId  := oRdd:RecNo
+            oRdd:Lock(lockInfo)
+            IF ! lockInfo:Result
+                NOP
+            ENDIF
+        ENDIF
+    ENDIF
     RETURN
+
+// Automatically unlock a record in the FoxPro dialect
+FUNCTION __FoxAutoUnLock() AS VOID
+    LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+    IF oRdd:Shared
+        oRdd:UnLock(oRdd:RecNo)
+    ENDIF
+    RETURN
+
 
 INTERNAL FUNCTION __FoxMemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     VAR current :=  XSharp.MemVar.GetSafe(cName)
@@ -105,6 +136,7 @@ FUNCTION __FoxPushWithBlock(oVar as OBJECT) AS VOID
     LOCAL stack := __GetFoxWithStack() as Stack<OBJECT>
     stack:Push(oVar)
     RETURN
+
 FUNCTION __FoxPopWithBlock() AS OBJECT
     LOCAL stack := __GetFoxWithStack() as Stack<OBJECT>
     if stack:Count > 0
@@ -115,6 +147,7 @@ FUNCTION __FoxPopWithBlock() AS OBJECT
     error:FuncSym := ProcName(1)
     error:StackTrace := ErrorStack(1)
     THROW error
+
 FUNCTION __FoxGetWithExpression() AS OBJECT
     LOCAL stack := __GetFoxWithStack() as Stack<OBJECT>
     if stack:Count > 0

@@ -146,7 +146,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
     RETURN CoreDb.SetFilter(cb, cFilter)
 
 
-    INTERNAL STATIC METHOD ParamError(cFuncSym AS STRING, dwArgNum  AS DWORD ,   dwArgType AS DWORD) AS Error
+    INTERNAL STATIC METHOD ParamError(cFuncSym AS STRING, dwArgNum  AS DWORD , dwArgType AS DWORD, cArgName := "" AS STRING) AS Error
 
         LOCAL oError    AS Error
         oError := Error{RuntimeState.LastRddError}
@@ -158,6 +158,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         oError:CanSubstitute := .F.
         oError:ArgType      := dwArgType
         oError:ArgNum       := dwArgNum
+        oError:Arg          := cArgName
         oError:FuncSym      := cFuncSym
         RETURN oError
 

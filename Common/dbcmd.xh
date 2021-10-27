@@ -3,7 +3,7 @@
 //
 // XSharp Database commands
 //
-// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 // IMPORTANT:  Functions beginning with an underscore
@@ -16,6 +16,11 @@
 #ifndef DBCMD_XH
 
 #define DBCMD_XH
+
+// rule for Fields, used in several other rules
+
+#translate FIELDS <f1> [,<fn> ]   => ;
+           __DBFIELDLIST__  {<(f1)>[, <(fn)> ]}
 
 
 ****
@@ -93,56 +98,55 @@
        ; END
 
 #command REPLACE [ <f1> WITH <x1> [, <fn> WITH <xn>] ]                  ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nnext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => DbEval(                                                        ;
-                 {|| _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>]},    ;
-                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
+                 {||DbAutoLock(), _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>], DbAutoUnLock()},    ;
+                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
-** Todo: Add FoxPro NoOptimize clause
 
 #command REPLACE <f1> WITH <v1> [, <fN> WITH <vN> ]                     ;
-      => _FIELD-><f1> := <v1> [; _FIELD-><fN> := <vN>]
+      => DbAutoLock(); _FIELD-><f1> := <v1> [; _FIELD-><fN> := <vN>]; DbAutoUnLock()
 
 #command DELETE                                                         ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nnext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => DbEval(                                                        ;
-                 {|| DbDelete()},                                       ;
-                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
+                 {|| DbAutoLock(), DbDelete(), DbAutoUnLock()},                                       ;
+                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
-#command DELETE                 =>  DbDelete()
-
-** Todo: Add FoxPro NoOptimize clause
-
+#command DELETE                 =>  DbAutoLock(); DbDelete(); DbAutoUnLock()
 
 #command RECALL                                                         ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => DBEval(                                                        ;
-                 {|| DbRecall()},                                       ;
-                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
+                 {|| DbAutoLock(), DbRecall(), DbAutoUnLock()},                                       ;
+                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
-			   
-** Todo: Add FoxPro NoOptimize clause
-#command RECALL                 =>  DbRecall()
+
+
+#command RECALL                 =>  DbAutoLock(); DbRecall(); DbAutoUnLock()
 
 #command FIND <*text*>          => DbSeek( <(text)> )
 #command FIND := <xpr>          => ( find := <xpr> )
@@ -151,16 +155,15 @@
 #command CONTINUE               => DbContinue()
 
 #command LOCATE                                                         ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
-      => DbLocate( <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> )
-
-** Todo: Add FoxPro NoOptimize clause
+      => DbLocate( <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> )
 
 #command SET RELATION TO        => DbClearRelation()
 
@@ -192,126 +195,128 @@
 #ifndef __DIALECT_FOXPRO__
 
 #command COPY TO <(file)>   DELIMITED [WITH <*delim*>]                  ;
-         [FIELDS <fields,...>]                                          ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [__DBFIELDLIST__ <fields>]                                     ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => DbCopyDelim(                                                   ;
-                        <(file)>, <(delim)>, { <(fields)> },            ;
-                        <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>     ;
+                        <(file)>, <(delim)>, <fields> ,                 ;
+                        <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>  ;
                       )
 
-
 #command COPY TO <(file)> SDF                                           ;
-         [FIELDS <fields,...>]                                          ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [__DBFIELDLIST__ <fields>]                                     ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nnext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => DbCopySDF(                                                     ;
-                      <(file)>, { <(fields)> },                         ;
-                      <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>       ;
+                      <(file)>, <fields>,                               ;
+                      <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>    ;
                     )
 
-
 #command COPY TO <(file)>                                               ;
-         [FIELDS <fields,...>]                                          ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [__DBFIELDLIST__ <fields>]                                     ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nnext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
          [VIA <rdd>]                                                    ;
          [INHERIT <hdnlist,...>]                                        ;
                                                                         ;
       => DbCopy(                                                        ;
-                   <(file)>, { <(fields)> },                            ;
-                   <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>          ;
-		   <rdd>, { <(hdnlist)> } )
+                   <(file)>, <fields>,                                  ;
+                   <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>       ;
+		   <rdd>, { <(hdnlist)> }, <.noopt.>)
+
 
 #command APPEND FROM <(file)> DELIMITED [WITH <*delim*>]                ;
-         [FIELDS <fields,...>]                                          ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [__DBFIELDLIST__ <fields>]                                     ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
       => DbAppDelim(                                                    ;
-                       <(file)>, <(delim)>, { <(fields)> },             ;
-                       <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>      ;
+                       <(file)>, <(delim)>, <fields>,                   ;
+                       <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>   ;
                      )
 
 
 #command APPEND FROM <(file)> SDF                                       ;
-         [FIELDS <fields,...>]                                          ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [__DBFIELDLIST__ <fields>]                                     ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
       => DbAppSDF(                                                      ;
-                     <(file)>, { <(fields)> },                          ;
-                     <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>        ;
+                     <(file)>, <fields>,                                ;
+                     <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>     ;
                    )
 
 
 #command APPEND FROM <(file)>                                          ;
-         [FIELDS <fields,...>]                                          ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [__DBFIELDLIST__ <fields>]                                     ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nnext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
          [VIA <rdd>]                                                    ;
                                                                         ;
       => DbApp(                                                         ;
-                  <(file)>, { <(fields)> },                             ;
-                  <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>, <rdd>    ;
+                  <(file)>, <fields>,                                   ;
+                  <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <rdd>    ;
                 )
 
 #endif
 
 #command SORT  TO <(file)>  [ON <fields,...>]                           ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nnext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => DbSort(                                                        ;
-                   <(file)>, { <(fields)> },                            ;
-                   <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>          ;
+                   <(file)>, <fields>,                                  ;
+                   <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.> ;
                  )
 
 #command TOTAL TO <(file)> ON <key>                                     ;
-         [FIELDS <fields,...>]                                          ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [__DBFIELDLIST__ <fields>]                                     ;
+         [FOR <lfor>]                                                    ;
+         [WHILE <lwhile>]                                                ;
+         [NEXT <nnext>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => DbTotal(                                                       ;
-                    <(file)>, <{key}>, { <(fields)> },                  ;
-                    <{for}>, <{while}>, <next>, <rec>, <.rest.>         ;
+                    <(file)>, <{key}>, <fields>,                        ;
+                    <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>       ;
                   )
-
-** Todo FoxPro Nooptimize clause 
 
 
 #command UPDATE  FROM <(alias)>  [ON <key>]                             ;
@@ -325,58 +330,61 @@
 
 
 #command JOIN  WITH <(alias)>  [TO <file>]                              ;
-         [FIELDS <fields,...>]                                          ;
-         [FOR <for>]                                                    ;
+         [__DBFIELDLIST__ <fields>]                                     ;
+         [<noopt: NOOPTIMIZE>]                                          ;
+         [FOR <lfor>]                                                   ;
                                                                         ;
-      => DbJoin( <(alias)>, <(file)>, { <(fields)> }, <{for}> )
-** Todo FoxPro Nooptimize clause 
+      => DbJoin( <(alias)>, <(file)>, <fields>, <{lfor}>,<.noopt.> )
 
-#command COUNT TO <var>                                                 ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+
+#command COUNT TO <xvar>                                                ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
-      => <var> := 0                                                     ;
+      => <xvar> := 0                                                    ;
        ; DbEval(                                                        ;
-                 {|| <var> := <var> + 1},                               ;
-                 <{for}>, <{while}>, <next>, <rec>, <.rest.>            ;
+               {|| <xvar> += 1},                                        ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
-** Todo FoxPro Nooptimize clause 
 
-#command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>] ]                         ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+#command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>] ]                       ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => <v1> := [ <vn> := ] 0                                          ;
        ; DbEval(                                                        ;
-                 {|| <v1> := <v1> + <x1> [, <vn> := <vn> + <xn> ]},     ;
-                 <{for}>, <{while}>, <next>, <rec>, <.rest.>            ;
+               {|| <v1> += <x1> [, <vn> += <xn> ]},                     ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )
 
 #command AVERAGE   <x1> [, <xn>]  TO  <v1> [, <vn>]                     ;
-         [FOR <for>]                                                    ;
-         [WHILE <while>]                                                ;
-         [NEXT <next>]                                                  ;
+         [FOR <lfor>]                                                   ;
+         [WHILE <lwhile>]                                               ;
+         [NEXT <nnext>]                                                 ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
+         [<noopt: NOOPTIMIZE>]                                          ;
          [ALL]                                                          ;
                                                                         ;
       => M->__Avg := <v1> := [ <vn> := ] 0                              ;
                                                                         ;
        ; DbEval(                                                        ;
-                 {|| M->__Avg := M->__Avg + 1,                          ;
-                 <v1> := <v1> + <x1> [, <vn> := <vn> + <xn>] },         ;
-                 <{for}>, <{while}>, <next>, <rec>, <.rest.>            ;
+               {|| M->__Avg += 1,                                       ;
+               <v1> += <x1> [, <vn> += <xn>] },                         ;
+               <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
                )                                                        ;
                                                                         ;
-       ; <v1> := <v1> / M->__Avg [; <vn> := <vn> / M->__Avg ]
+       ; <v1> /= M->__Avg [; <vn> /= M->__Avg ]
 
 
 // NOTE:  CLOSE <alias> must precede the others

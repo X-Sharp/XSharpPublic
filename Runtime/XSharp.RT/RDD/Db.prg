@@ -363,14 +363,19 @@ FUNCTION DbDeleteOrder(uOrder, cIndexFile) AS LOGIC CLIPPER
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbeval/*" />
-FUNCTION DbEval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) AS LOGIC CLIPPER
+FUNCTION DbEval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest, lNoOpt) AS LOGIC CLIPPER
     cbExecute           := VoDb.ValidBlock(cbExecute,{||NIL})
     cbForCondition      := VoDb.ValidBlock(cbForCondition)
     cbWhileCondition    := VoDb.ValidBlock(cbWhileCondition)
     nNext               := IIF(nNext:IsNumeric, nNext, 0)
     nRecord             := IIF(nRecord:IsNumeric, nRecord, NULL_OBJECT)
     lRest               := IIF(lRest:IsNil, .F., lRest)
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Eval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) )
+    VAR lOldOpt := __DbPushOptimize(lNoOpt)
+    TRY
+        RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Eval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) )
+    FINALLY
+        __DbPopOptimize(lNoOpt, lOldOpt)
+    END TRY
 
 
 
@@ -408,7 +413,7 @@ FUNCTION DbInfo(kInfoType, uNewSetting) AS USUAL CLIPPER
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dblocate/*" />
-FUNCTION DbLocate(cbForCondition, cbWhileCondition, nNext, nRecord, lRest ) AS LOGIC CLIPPER
+FUNCTION DbLocate(cbForCondition, cbWhileCondition, nNext, nRecord, lRest, lNoOpt ) AS LOGIC CLIPPER
 
     LOCAL lRetCode  AS LOGIC
 
@@ -425,7 +430,12 @@ FUNCTION DbLocate(cbForCondition, cbWhileCondition, nNext, nRecord, lRest ) AS L
     IF nNext:IsNil
         nNext := 0
     ENDIF
-    lRetCode := _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Locate(VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), nNext, nRecord, lRest))
+    VAR lOldOpt := __DbPushOptimize(lNoOpt)
+    TRY
+        lRetCode := _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Locate(VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), nNext, nRecord, lRest))
+    FINALLY
+        __DbPopOptimize(lNoOpt, lOldOpt)
+    END TRY
     IF lRetCode
         lRetCode := VoDb.Found()
     ENDIF
@@ -1200,4 +1210,11 @@ FUNCTION EmptyField( n AS DWORD ) AS LOGIC
         lRet := FALSE
     ENDIF
    RETURN lRet
+
+
+FUNCTION DbAutoLock() AS VOID
+    RETURN
+
+FUNCTION DbAutoUnLock() AS VOID
+    RETURN
 

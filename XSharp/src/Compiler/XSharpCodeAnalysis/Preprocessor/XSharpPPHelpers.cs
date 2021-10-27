@@ -45,7 +45,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         ResultSmartStringify = 0x84,         // <(idMarker)>         
         ResultBlockify = 0x85,               // <{idMarker}>         
         ResultLogify = 0x86,                 // <.idMarker.>
-        ResultOptional = 0x87,               // [....]               
+        ResultOrNil = 0x87,                  // <!idMarker!>
+        ResultOptional = 0x88,               // [....]               
 
     }
     internal class PPErrorMessages : List<PPErrorMessage>
@@ -104,7 +105,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // find element that matches the first token and insert at the front of the list
             // so rules defined later override rules defined first
-            string key = rule.LookupKey;
+            if (rule.hasMultiKeys)
+            {
+                foreach (var key in rule.Keys)
+                {
+                    addrule(key, rule);
+                }
+            }
+            else
+            {
+                string key = rule.LookupKey;
+                addrule(key, rule);
+            }
+        }
+
+        private void addrule(string key, PPRule rule)
+        {
             PPRules list;
             if (_rules.ContainsKey(key))
             {
@@ -117,6 +133,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             list.Insert(0, rule);
         }
+
 
         internal PPRule FindMatchingRule(IList<XSharpToken> tokens, out PPMatchRange[] matchInfo)
         {

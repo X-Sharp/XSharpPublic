@@ -36,7 +36,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal bool hasOptionalResult => _flags.HasFlag(PPRuleFlags.HasOptionalResult);
         internal bool hasOptionalMatch => _flags.HasFlag(PPRuleFlags.HasOptionalMatch);
         internal int firstOptionalMatchToken = -1;
-
+        internal bool hasMultiKeys => _matchtokens.Length > 0 && _matchtokens[0].RuleTokenType == PPTokenType.MatchRestricted;
         private readonly CSharpParseOptions _options;
         internal PPUDCType Type { get { return _type; } }
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages, CSharpParseOptions options)
@@ -338,7 +338,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-
+        bool canAbbreviate => _type == PPUDCType.Command || _type == PPUDCType.Translate;
         bool isRepeatToken(string left, string right, bool first = true)
         {
             if (left.EndsWith("n", StringComparison.OrdinalIgnoreCase))
@@ -870,7 +870,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             result.Add(new PPResultToken(name, PPTokenType.ResultLogify));
                             i += 4;
                         }
-
+                        else if (i < resultTokens.Length - 4
+                            && resultTokens[i + 1].Type == XSharpLexer.NOT
+                            && resultTokens[i + 3].Type == XSharpLexer.NOT
+                            && resultTokens[i + 4].Type == XSharpLexer.GT
+                            && resultTokens[i + 2].IsName())
+                        {
+                            // <!idMarker!>
+                            name = resultTokens[i + 2];
+                            result.Add(new PPResultToken(name, PPTokenType.ResultOrNil));
+                            i += 4;
+                        }
                         break;
                     case XSharpLexer.LBRKT:
                         /*
@@ -948,7 +958,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string key = this.Key;
                 if (key.Length > 4)
                 {
-                    if (_type == PPUDCType.Command || _type == PPUDCType.Translate)
+                    if (canAbbreviate)
                     {
                         key = key.Substring(0, 4);
                     }
@@ -970,6 +980,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                     return "(Empty)";
+            }
+        }
+        internal string[] Keys
+        {
+            get
+            {
+                if (!hasMultiKeys)
+                {
+                    return new string[] { this.Key };
+                }
+                var result = new List<string>();
+                foreach (var token in _matchtokens[0].Tokens)
+                {
+                    var key = token.Text.ToUpperInvariant();
+                    if (key.Length > 4)
+                    {
+                        if (canAbbreviate)
+                        {
+                            key = key.Substring(0, 4);
+                        }
+                    }
+                    result.Add(key);
+                }
+                return result.ToArray();
             }
         }
         internal string Name
@@ -1094,6 +1128,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var optional = mToken.Children;
             bool optfound = false;
+            bool wasmatched = false;
             int iOriginal = iSource;
             int iChild = 0;
             PPMatchRange[] copyMatchInfo = new PPMatchRange[matchInfo.Length];
@@ -1114,8 +1149,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             FIELD-><fldN> := <valN>]  }, __EBCB(<for>), __EBCB(<whl>), <nxt>, <rcd>, <.rst.>)
 
                      **/
-                    if (!mchild.IsOptional)
+                    if (!mchild.IsOptional && !wasmatched)
+                    {
+                        // the comma is not optional. But do not mark the comma as not found when there no repeat group at all
                         optfound = false;
+                    }
                     break;
                 }
                 else
@@ -1127,13 +1165,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // and when the key ends with 'n' and the previous key ends with '1' then there may be more
                         // repeated groups. In that case keep matching the optional group.
                         iChild = 0;
+                        wasmatched = true;
                     }
                 }
             }
             if (optfound)
             {
                 Array.Copy(copyMatchInfo, matchInfo, matchInfo.Length);
-                if (!mToken.IsRepeat)
+                if (!mToken.IsRepeat || wasmatched)
                 {
                     iRule += 1;
                 }
@@ -1604,10 +1643,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal IList<XSharpToken> Replace(IList<XSharpToken> tokens, PPMatchRange[] matchInfo)
         {
             Debug.Assert(matchInfo.Length == tokenCount);
-            return Replace(_resulttokens, tokens, matchInfo, 0);
+            return Replace(_resulttokens, tokens, matchInfo);
 
         }
-        internal IList<XSharpToken> Replace(PPResultToken[] resulttokens, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, int offset)
+        internal IList<XSharpToken> Replace(PPResultToken[] resulttokens, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, int offset = 0, bool isLast = true)
         {
             Debug.Assert(matchInfo.Length == tokenCount);
             List<XSharpToken> result = new List<XSharpToken>();
@@ -1626,6 +1665,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         blockifyResult(resultToken, tokens, matchInfo, result, offset);
                         break;
                     case PPTokenType.ResultRegular:
+                    case PPTokenType.ResultOrNil:
                         regularResult(resultToken, tokens, matchInfo, result, offset);
                         break;
                     case PPTokenType.ResultSmartStringify:
@@ -1640,7 +1680,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             // we need to determine the tokens at the end of the tokens list that are not matched 
             // in the results and then copy these to the result as well
-            if (offset == 0)
+            if (isLast)
             {
                 var source = tokens[0];
                 if (source.SourceSymbol != null)
@@ -1741,13 +1781,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         int repeats = mm.MatchCount;
                         for (int i = 0; i < repeats; i++)
                         {
-                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo, i);
+                            var block = Replace(resultToken.OptionalElements, tokens, matchInfo, i, false);
                             result.AddRange(block);
                         }
                     }
                     else
                     {
-                        var block = Replace(resultToken.OptionalElements, tokens, matchInfo, 0);
+                        var block = Replace(resultToken.OptionalElements, tokens, matchInfo);
                         result.AddRange(block);
                     }
                 }
@@ -1775,6 +1815,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var token = tokens[i];
                     result.Add(token);
                 }
+            }
+            else if (resultToken.RuleTokenType == PPTokenType.ResultOrNil)
+            {
+                var NilToken = new XSharpToken(XSharpLexer.NIL, "NIL");
+                result.Add(NilToken);
             }
             return;
         }

@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -14,7 +14,9 @@ USING XUnit
 BEGIN NAMESPACE XSharp.VFP.Tests
 
 	CLASS DateTests
-	
+	    STATIC CONSTRUCTOR
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+
 		[Fact, Trait("Category", "Date and Time")];
 		METHOD ConversionTests() AS VOID
             LOCAL d AS DATE
@@ -28,8 +30,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal(d, TTod(dt))
             dt := DateTime{2020,1,1}
             Assert.True( DToT(d)== dt)
-            
-            
+
+
 		[Fact, Trait("Category", "Date and Time")];
             METHOD QuarterTests() AS VOID
             Assert.Equal( Quarter ( ConDate ( 2020, 1 , 1  ) ) , 1 )
@@ -43,7 +45,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal( Quarter ( ConDate ( 2020, 9 , 1  ) ) , 3 )
             Assert.Equal( Quarter ( ConDate ( 2020, 10 , 1 ) ) , 4 )
             Assert.Equal( Quarter ( ConDate ( 2020, 11 , 1 ) ) , 4 )
-            Assert.Equal( Quarter ( ConDate ( 2020, 12 , 1 ) ) , 4 ) 
+            Assert.Equal( Quarter ( ConDate ( 2020, 12 , 1 ) ) , 4 )
 
             Assert.Equal( Quarter ( ConDate ( 2020, 1 , 1  ) , 1 ), 1 )
             Assert.Equal( Quarter ( ConDate ( 2020, 2 , 1  ) , 1 ), 1 )
@@ -56,13 +58,13 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal( Quarter ( ConDate ( 2020, 9 , 1  ) , 1) ,3  )
             Assert.Equal( Quarter ( ConDate ( 2020, 10 , 1  ) , 1), 4 )
             Assert.Equal( Quarter ( ConDate ( 2020, 11 , 1  ) , 1), 4 )
-            Assert.Equal( Quarter ( ConDate ( 2020, 12 , 1  ) , 1), 4 ) 
+            Assert.Equal( Quarter ( ConDate ( 2020, 12 , 1  ) , 1), 4 )
 
             Assert.Equal( Quarter ( ConDate ( 2000, 9 , 23  ) , 1  ) ,3  )
             Assert.Equal( Quarter ( ConDate ( 2000, 9 , 23  ) , 2  ) ,3  )
             Assert.Equal( Quarter ( ConDate ( 2000, 9 , 23  ) , 3  ) ,3  )
             Assert.Equal( Quarter ( ConDate ( 2000, 9 , 23  ) , 4  ) ,2  )
-            Assert.Equal( Quarter ( ConDate ( 2000, 9 , 23  ) , 5  ) ,2 )	 
+            Assert.Equal( Quarter ( ConDate ( 2000, 9 , 23  ) , 5  ) ,2 )
             Assert.Equal( Quarter ( ConDate ( 2000, 9 , 23  ) , 6  ) ,2  )
             Assert.Equal( Quarter ( ConDate ( 2000, 9 , 23  ) , 7  ) ,1  )
             Assert.Equal( Quarter ( ConDate ( 2000, 9 , 23  ) , 8  ) ,1  )
@@ -79,7 +81,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             Assert.Equal( Quarter ( ConDate ( 2018, 9, 14    ), 4) ,2   )
             Assert.Equal( Quarter ( ConDate ( 2018, 10, 14    ), 4), 3  )
             Assert.Equal( Quarter ( ConDate ( 2018, 12, 14    ), 4), 3  )
-                                                                   
+
             Assert.Equal( Quarter ( {^2000-9-23}, 7 ) , 1)
             Assert.Equal( Quarter ( NULL_DATE ) , 0)
             Assert.Equal( Quarter ( DateTime{} ) , 0  )
@@ -105,7 +107,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 Assert.Equal(Week(2013.01.05,1,1)  , 1)    // Sunday, 1st week has jan 1
                 Assert.Equal(Week(2013.01.05,2,1)  , 1)    // Sunday, 1st week has 4 days
                 Assert.Equal(Week(2013.01.05,3,1)  , 53)    // Sunday, 1st week has 7 days
-           
+
 
 
 

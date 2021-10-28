@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -14,13 +14,16 @@ USING XUnit
 BEGIN NAMESPACE XSharp.VFP.Tests
 
 	CLASS EmptyTests
+	    STATIC CONSTRUCTOR
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+
         [Fact, Trait("Category", "Empty Class")];
 		METHOD EmptyClasstests() AS VOID
             local o as Object
             o := XSharp.VFP.Empty{}
             Assert.Throws( typeof(XSharp.VFP.PropertyNotFoundException), { => o:NonExistingProperty := 123 })
             try
-                o:NonExistingProperty := 123 
+                o:NonExistingProperty := 123
             catch e as exception
                 ? e
             end try

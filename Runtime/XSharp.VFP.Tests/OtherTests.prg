@@ -15,6 +15,10 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 	CLASS OtherTests
 
+	    STATIC CONSTRUCTOR
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+
+
 		[Fact, Trait("Category", "Other")];
 		METHOD IOTests() AS VOID
             // In the VO Dialect this is allowed with a non existing path

@@ -8,39 +8,42 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 #pragma warnings(1998, off)
 
 	CLASS FoxArrayTests
+        PRIVATE STATIC gate := Object{} AS OBJECT
+        STATIC CONSTRUCTOR
+            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+
         [Fact, Trait("Category", "FoxArray")];
 		ASYNC METHOD SimpleArrayTests() AS VOID
-            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
             LOCAL ARRAY a(1)
             Dimension a(10)
             // You cannot assign an array to an element of a FOX array
             AWAIT Assert.ThrowsAsync<Error>( { => a[1] := {1,2,3} })
 
-            Assert.True( IsNil(a[1]) )
-            Assert.True( IsNil(a[2]))
+            Assert.True( IsNil(a[1]),__LINE__:ToString())
+            Assert.True( IsNil(a[2]),__LINE__:ToString())
             FillArray(a)
-            Assert.True( a[1] == 1 )
-            Assert.True( a[2] == 2)
+            Assert.True( a[1] == 1 ,__LINE__:ToString())
+            Assert.True( a[2] == 2,__LINE__:ToString())
             a:Redim(5,2)
-            Assert.True( a[1,1] == 1 )
-            Assert.True( a[1,2] == 2)
-            Assert.True( a[2,1] == 3)
-            Assert.True( a[5,2] == 10)
+            Assert.True( a[1,1] == 1 ,__LINE__:ToString())
+            Assert.True( a[1,2] == 2,__LINE__:ToString())
+            Assert.True( a[2,1] == 3,__LINE__:ToString())
+            Assert.True( a[5,2] == 10,__LINE__:ToString())
             // Alen with nArrayAttribute
             Assert.Equal(5U,  ALen(a,1) )
             Assert.Equal(2U,  ALen(a,2) )
             Assert.Equal(10U,  ALen(a) )
             // AElement = returns element number
-            Assert.True( AElement(a, 1,1) == 1)
-            Assert.True( AElement(a, 1,2) == 2)
-            Assert.True( AElement(a, 2,1) == 3)
-            Assert.True( AElement(a, 2,2) == 4)
-            Assert.True( AElement(a, 3,1) == 5)
-            Assert.True( AElement(a, 3,2) == 6)
-            Assert.True( AElement(a, 4,1) == 7)
-            Assert.True( AElement(a, 4,2) == 8)
-            Assert.True( AElement(a, 5,1) == 9)
-            Assert.True( AElement(a, 5,2) == 10)
+            Assert.True( AElement(a, 1,1) == 1,__LINE__:ToString())
+            Assert.True( AElement(a, 1,2) == 2,__LINE__:ToString())
+            Assert.True( AElement(a, 2,1) == 3,__LINE__:ToString())
+            Assert.True( AElement(a, 2,2) == 4,__LINE__:ToString())
+            Assert.True( AElement(a, 3,1) == 5,__LINE__:ToString())
+            Assert.True( AElement(a, 3,2) == 6,__LINE__:ToString())
+            Assert.True( AElement(a, 4,1) == 7,__LINE__:ToString())
+            Assert.True( AElement(a, 4,2) == 8,__LINE__:ToString())
+            Assert.True( AElement(a, 5,1) == 9,__LINE__:ToString())
+            Assert.True( AElement(a, 5,2) == 10,__LINE__:ToString())
             // Now delete column 1
             FillArray(a)
             Assert.Equal(1U,  ADel(a, 1, 2) )
@@ -159,8 +162,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             NEXT
         [Fact, Trait("Category", "FoxArray")];
         METHOD AinsTests() AS VOID
-            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
-            DIMENSION aOneDim ( 4 )
+            LOCAL ARRAY aOneDim ( 4 )
 
             aOneDim [1] := 1
             aOneDim [2] := 2
@@ -186,8 +188,8 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             ?
             FOR VAR i := 1 TO ALen ( aOneDim )
 
-	            Assert.True(IsNil ( aOneDim[i] ))
-	            Assert.True(IsLogic ( aOneDim[i] ))
+	            Assert.True(IsNil ( aOneDim[i] ),AsString(aOneDim[i]))
+	            Assert.True(IsLogic ( aOneDim[i] ),AsString(aOneDim[i]))
             NEXT
 
             ? "-------- two-dim array ----"
@@ -239,6 +241,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             ENDFOR
 
             AIns ( aTwoDim , 1 , 2  )
+
             Assert.True(IsNil(aTwoDim [1,1]))
             Assert.True(IsNil(aTwoDim [2,1]))
             Assert.True(IsLogic(aTwoDim [1,1]))
@@ -256,14 +259,13 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             ShowArray ( aTwoDim )
             ?
             AIns ( aTwoDim , 2 , 2  )
-            Assert.True(IsNil(aTwoDim [1,2]))
-            Assert.True(IsNil(aTwoDim [2,2]))
-            Assert.True(IsLogic(aTwoDim [1,2]))
-            Assert.True(IsLogic(aTwoDim [2,2]))
+            Assert.True(IsNil(aTwoDim [1,2]),__LINE__:ToString())
+            Assert.True(IsNil(aTwoDim [2,2]),__LINE__:ToString())
+            Assert.True(IsLogic(aTwoDim [1,2]),__LINE__:ToString())
+            Assert.True(IsLogic(aTwoDim [2,2]),__LINE__:ToString())
 
         [Fact, Trait("Category", "FoxArray")];
         METHOD ASubScriptTests() AS VOID
-            XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
             LOCAL x, y AS DWORD
             LOCAL ARRAY aTest(1)
             DIMENSION aTest(4)

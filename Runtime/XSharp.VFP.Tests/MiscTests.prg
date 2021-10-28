@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -14,7 +14,9 @@ USING XUnit
 BEGIN NAMESPACE XSharp.VFP.Tests
 
 	CLASS MiscTests
-	
+		STATIC CONSTRUCTOR
+        XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+
 		[Fact, Trait("Category", "String")];
 		METHOD Various() AS VOID
             Assert.Equal(TRUE, IsMouse())

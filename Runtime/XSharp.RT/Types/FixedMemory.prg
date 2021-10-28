@@ -261,11 +261,23 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
     INTERNAL STATIC METHOD Copy( pDestination AS IntPtr, pSource AS IntPtr, iCount AS INT ) AS IntPtr
         // No pointer validation for speed. Should be done in wrapper function
-        //_memCopyDelegate(pDestination, pSource, dwCount)
-        // use a temporary buffer since the pointers may overlap
-        local bTemp := BYTE[]{iCount} AS BYTE[]
-        Marshal.Copy(pSource, bTemp, 0, iCount)
-        Marshal.Copy(bTemp, 0,  pDestination, iCount)
+        // check if we need a temporary buffer when the pointers overlap
+        LOCAL lDirect as LOGIC
+        if pSource:ToInt64()+iCount < pDestination:ToInt64()
+            // source is completely before destination
+            lDirect := TRUE
+        elseif pDestination:ToInt64()+iCount < pSource:ToInt64()
+            lDirect := TRUE
+        ELSE // buffers Overlap
+            lDirect := FALSE
+        ENDIF
+        IF lDirect
+            Buffer.MemoryCopy(pSource, pDestination, iCount, iCount)
+        ELSE
+            local bTemp := BYTE[]{iCount} AS BYTE[]
+            Marshal.Copy(pSource, bTemp, 0, iCount)
+            Marshal.Copy(bTemp, 0,  pDestination, iCount)
+        ENDIF
         RETURN pDestination
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)];

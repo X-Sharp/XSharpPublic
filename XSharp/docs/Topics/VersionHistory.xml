@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -11,6 +11,32 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1">Changes in 2.9.1.0 (Cahors)</para>
+    <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
+    <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>
+    <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed a problem introduced in 2.9.0.2 with define symbols not respecting the /cs compiler option (#816)</li>
+      <li styleclass="Body Text">Fixed an internal compiler error with assignment expressions inside object initializers when /dox2 is enabled (#817)</li>
+      <li styleclass="Body Text">Fixed some problems with DATEs in VOSTRUCTs (#773)</li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Visual Studio Integration</text></para>
+    <para styleclass="Heading3">Bug Fixes</para>
+    <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed a problem introduced in 2.9.0.2 with code generation for WPF projects (#820)</li>
+      <li styleclass="Body Text">Fixed a VS freezing problem after building (#819)</li>
+      <li styleclass="Body Text">Fixed some problems with code collapsing and the navigation bar (#825)</li>
+      <li styleclass="Body Text">Fixed a problem with the form designer emitting invalid code when the form prg contains nested classes (#828)</li>
+      <li styleclass="Body Text">Fixed a problem with code completion showing the wrong members when opened just left to a closing paren (#826)</li>
+      <li styleclass="Body Text">Fixed a VS crash when clicking on a generic class (#827)</li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
+    <para styleclass="Heading3">Bug Fixes</para>
+    <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed a problem with _PrivateCount() throwing an InvalidateOperationException (#801)</li>
+      <li styleclass="Body Text">Fixed a problem with member completion in the editor sometimes showing methods of the wrong type (#740)</li>
+    </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Changes in 2.9.0.2 (Cahors)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
@@ -143,6 +169,8 @@
         <li styleclass="Body Text">Nested classes were not always handled correctly by the intellisense (#745)</li>
         <li styleclass="Body Text">Fixed a problem in the type lookup of variables declared with ARRAY OF &lt;something&gt; (#749)</li>
         <li styleclass="Body Text">The Editor could sometimes &quot;freeze&quot; when the buffer contained invalid code (#751)</li>
+        <li styleclass="Body Text">Non-existing namespaces would produce a bogus completion list (#760)</li>
+        <li styleclass="Body Text">Fixed an editor exception in some cases when typing invalid code (#791)</li>
       </list>
     </list>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

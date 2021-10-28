@@ -198,17 +198,17 @@ BEGIN NAMESPACE XSharp
         NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL
             RETURN SUPER:Swap(position, element)
 
-        PROTECTED METHOD __CheckArrayElement(a as ARRAY, index AS INT, name as string, pos as int) AS VOID
+        PROTECTED METHOD __CheckArrayElement(a AS ARRAY, index AS INT, name AS STRING, pos AS INT) AS VOID
             IF index < 0 .OR. index >= a:_internalList:Count
                 VAR err := Error.BoundError(ProcName(1),name, (DWORD) pos, {index+1})
                 err:Stack   := ErrorStack(1)
-                var length := a:_internalList:Count
+                VAR length := a:_internalList:Count
                 err:Description := i"Bound error: Index ({index+1}) exceeds length of (Sub)Array ({length})"
                 THROW err
             ENDIF
             RETURN
 
-        PRIVATE STATIC METHOD __NotAnArray(name as string , pos as INT, args as OBJECT[]) AS Exception
+        PRIVATE STATIC METHOD __NotAnArray(name AS STRING , pos AS INT, args AS OBJECT[]) AS Exception
             VAR err         := Error.BoundError(ProcName(1),name, (DWORD) pos, args)
             err:Description := "Bound error: "+VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)
             err:Stack   := ErrorStack(1)
@@ -242,7 +242,7 @@ BEGIN NAMESPACE XSharp
                 ENDIF
                 THROW __NotAnArray(nameof(index2), 2, <OBJECT>{index+1, index2+1})
 
-            CATCH as Exception
+            CATCH AS Exception
                 IF !SuppressArrayIndexErrors
                     THROW
                 ENDIF
@@ -262,11 +262,11 @@ BEGIN NAMESPACE XSharp
             LOCAL currentArray AS ARRAY
             LOCAL i AS INT
             LOCAL u AS USUAL
-            LOCAL firstDimension as LOGIC
+            LOCAL firstDimension AS LOGIC
             u := SELF
             firstDimension := TRUE
             TRY
-                LOCAL index as INT
+                LOCAL index AS INT
 
                 FOR i:= 1  UPTO length  -1 // walk all but the last level
                     currentArray := (ARRAY) u
@@ -293,7 +293,7 @@ BEGIN NAMESPACE XSharp
                 ENDIF
 
                 THROW __NotAnArray(nameof(indices), i, SELF:_adjustArguments(indices))
-           CATCH as Exception
+           CATCH AS Exception
                 IF !SuppressArrayIndexErrors .or. firstDimension
                     THROW
                 ENDIF
@@ -304,15 +304,15 @@ BEGIN NAMESPACE XSharp
                 RETURN NIL
             END TRY
 
-        PRIVATE METHOD _adjustArguments(indices AS INT[], u := NIL as USUAL) AS OBJECT[]
+        PRIVATE METHOD _adjustArguments(indices AS INT[], u := NIL AS USUAL) AS OBJECT[]
             VAR result := List<OBJECT>{}
             IF! u:IsNil
                 result:Add(u)
             ENDIF
-            foreach var index in indices
+            FOREACH VAR index IN indices
                 result:Add(index+1)
-            next
-            return result:ToArray()
+            NEXT
+            RETURN result:ToArray()
 
         PROTECTED OVERRIDE METHOD DebuggerString() AS STRING
             LOCAL sb AS StringBuilder
@@ -361,7 +361,7 @@ BEGIN NAMESPACE XSharp
                 IF !uElement:IsArray
                     THROW __NotAnArray(nameof(index2), 3, <OBJECT>{u, index+1, index2+1})
                 ENDIF
-                LOCAL a := NULL as array
+                LOCAL a := NULL AS ARRAY
                 a := (ARRAY) uElement
                 SELF:__CheckArrayElement(a, index2, nameof(index2),2)
                 a:_internalList [index2] := u
@@ -380,7 +380,7 @@ BEGIN NAMESPACE XSharp
                 LOCAL length := indices:Length AS INT
                 LOCAL currentArray := SELF AS ARRAY
                 FOR VAR i := 1 UPTO length-1
-                    var index := indices[i]
+                    VAR index := indices[i]
                     SELF:__CheckArrayElement(currentArray, index, nameof(indices),i+1)
                     LOCAL uArray := currentArray:_internalList[index] AS USUAL
                     IF (OBJECT) u IS IIndexedProperties .AND. i == length-1
@@ -419,22 +419,18 @@ BEGIN NAMESPACE XSharp
             start AS LONG, sourceLen AS LONG, offSet AS LONG, targetLen AS LONG ) AS VOID
             LOCAL x AS LONG
             // Adjust
-            start-=1
-            offSet-=1
-            sourceLen-=1
-            targetLen-=1
-            if start > 0 .and. sourceLen > 0
+            IF start > 0 .and. sourceLen > 0
                 IF start < sourceLen
                     FOR x := start UPTO sourceLen
-                        aTarget:_internalList[offSet] := aSource:_internalList[ x]
-                        offSet++
-                        IF offSet > targetLen
+                        IF offSet > targetLen 
                             EXIT
                         ENDIF
+                        aTarget:_internalList[offSet-1] := aSource:_internalList[ x -1]
+                        offSet++
                     NEXT
                 ELSE
                     FOR x := start DOWNTO sourceLen
-                        aTarget:_internalList[offSet] := aSource:_internalList[x]
+                        aTarget:_internalList[offSet-1] := aSource:_internalList[x-1]
                         offSet++
                         IF offSet > targetLen
                             EXIT
@@ -493,8 +489,8 @@ END NAMESPACE
 /// RETURN TRUE
 /// </example>
 
-FUNCTION EnableArrayIndexCheck(lCheck as LOGIC) AS LOGIC
-    LOCAL lOld as LOGIC
+FUNCTION EnableArrayIndexCheck(lCheck AS LOGIC) AS LOGIC
+    LOCAL lOld AS LOGIC
     lOld := ! XSharp.__Array.SuppressArrayIndexErrors
     XSharp.__Array.SuppressArrayIndexErrors := !lCheck
     RETURN lOld

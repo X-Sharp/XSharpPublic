@@ -1,7 +1,7 @@
 // TestDBF.prg
 // Created by    : fabri
 // Creation Date : 4/24/2018 5:21:57 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : FABPORTABLE
 
 
@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 	/// The TestDBF class.
 	/// </summary>
 	CLASS TestDBF
-	
+
 		[Fact, Trait("Dbf", "Open")];
 		METHOD OpenDBF() AS VOID
 			// CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
@@ -29,18 +29,18 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			myDBF:Close()
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Open")];
 		METHOD OpenDBFErr() AS VOID
 			VAR dbInfo := DbOpenInfo{ "noFile.DBF", "noFile", 1, FALSE, FALSE }
 			//
 			VAR myDBF := DBF{}
-			
+
 			Assert.Throws( typeof(XSharp.RDD.RddError), {=> myDBF:Open( dbInfo ) })
 			//
 			myDBF:Close()
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Close")];
 		METHOD CloseDBF() AS VOID
 			// CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
@@ -52,7 +52,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				Assert.Equal( TRUE, myDBF:Close() )
 			ENDIF
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Fields")];
 		METHOD CheckFields() AS VOID
 			VAR fields := <STRING>{ "CUSTNUM", "FIRSTNAME", "LASTNAME","ADDRESS","CITY","STATE","ZIP", "PHONE", "FAX" }
@@ -61,7 +61,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
 			//
 			VAR myDBF := DBF{}
-			IF myDBF:Open( dbInfo ) 
+			IF myDBF:Open( dbInfo )
 				//
 				// Right number of Fields ?
 				Assert.Equal(Fields:Length, myDBF:FieldCount)
@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:Close()
 			ENDIF
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Fields")];
 		METHOD CheckFieldNames() AS VOID
 			VAR fields := <STRING>{ "CUSTNUM", "FIRSTNAME", "LASTNAME","ADDRESS","CITY","STATE","ZIP", "PHONE", "FAX" }
@@ -81,7 +81,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
 			//
 			VAR myDBF := DBF{}
-			IF myDBF:Open( dbInfo ) 
+			IF myDBF:Open( dbInfo )
 				//
 				// Right number of Fields ?
 				Assert.Equal(Fields:Length, myDBF:FieldCount)
@@ -93,16 +93,16 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:Close()
 			ENDIF
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Fields")];
 		METHOD CheckFieldInfo() AS VOID
 			VAR fieldDefs := "CUSTNUM,N,5,0;FIRSTNAME,C,10,0;LASTNAME,C,10,0;ADDRESS,C,25,0;CITY,C,15,0;STATE,C,2,0;ZIP,C,5,0;PHONE,C,13,0;FAX,C,13,0"
 			VAR fields := fieldDefs:Split( ';' )
 			//
-			VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ "customer.DBF", "", 1, FALSE, FALSE }
 			//
 			VAR myDBF := DBF{}
-			IF myDBF:Open( dbInfo ) 
+			IF myDBF:Open( dbInfo )
 				//
 				// Right number of Fields ?
 				Assert.Equal(fields:Length, myDBF:FieldCount)
@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:Close()
 			ENDIF
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Fields")];
 		METHOD CheckFieldValue() AS VOID
 			VAR values := <OBJECT>{ 2, "Robert", "Evans","732 Johnson Street","New York","NY","11501", "(212)764-1246", "(212)764-1877" }
@@ -127,10 +127,10 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
 			//
 			VAR myDBF := DBF{}
-			IF myDBF:Open( dbInfo ) 
+			IF myDBF:Open( dbInfo )
 				//
 				FOR VAR i := 2 TO myDBF:FIELDCount
-					// 
+					//
 					LOCAL tmp AS STRING
 					tmp := (STRING)myDBF:GetValue( i )
 					Assert.Equal( values[i], tmp:Trim() )
@@ -139,14 +139,14 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:Close()
 			ENDIF
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Append")];
 		METHOD CheckAppend() AS VOID
 			//
 			VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
-			IF myDBF:Open( dbInfo ) 
+			IF myDBF:Open( dbInfo )
 				//
 				LOCAL nbrBefore := myDBF:RecCount AS LONG
 				//
@@ -157,13 +157,13 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:Close()
 			ENDIF
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "AppendData")];
 		METHOD CheckAppendData() AS VOID
 			VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
-			IF myDBF:Open( dbInfo ) 
+			IF myDBF:Open( dbInfo )
 				//
 				LOCAL nbrBefore := myDBF:RecCount AS LONG
 				//
@@ -180,13 +180,13 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:Close()
 			ENDIF
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Move")];
 		METHOD CheckSkip() AS VOID
 			VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
 			//
 			VAR myDBF := DBF{}
-			IF myDBF:Open( dbInfo ) 
+			IF myDBF:Open( dbInfo )
 				// Start Pos
 				Assert.Equal( 1, myDBF:RecNo )
 				Assert.Equal( FALSE, myDBF:Bof )
@@ -211,13 +211,13 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:Close()
 			ENDIF
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "DeleteRecall")];
 		METHOD CheckDeleteRecall() AS VOID
-			VAR dbInfo := DbOpenInfo{ "customer.DBF", "customer", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ "customer.DBF", "", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
-			IF myDBF:Open( dbInfo ) 
+			IF myDBF:Open( dbInfo )
 				// Move to Bottom
 				myDBF:GoBottom()
 				Assert.Equal( myDBF:RecCount, myDBF:RecNo )
@@ -254,7 +254,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:Close()
 			ENDIF
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Fields")];
 		METHOD CheckAddFields() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,10,0;BIRTHDAY,D,8,0" AS STRING
@@ -268,7 +268,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			LOCAL fieldInfo AS STRING[]
 			FOR VAR i := 1 TO myDBF:FIELDCount
-				// 
+				//
 				LOCAL currentField AS RddFieldInfo
 				fieldInfo := fields[i]:Split( ',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
@@ -288,7 +288,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			NEXT
 			//
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Fields")];
 		METHOD CheckCreateFields() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,10,0;BIRTHDAY,D,8,0" AS STRING
@@ -300,7 +300,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL rddInfo AS RddFieldInfo[]
 			rddInfo := RddFieldInfo[]{fields:Length}
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL currentField AS RddFieldInfo
 				fieldInfo := fields[i]:Split( ',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
@@ -323,7 +323,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			NEXT
 			//
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Create")];
 		METHOD CheckCreateDBF() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
@@ -335,7 +335,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL rddInfo AS RddFieldInfo[]
 			rddInfo := RddFieldInfo[]{fields:Length}
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL currentField AS RddFieldInfo
 				fieldInfo := fields[i]:Split( ',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
@@ -357,14 +357,14 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CheckCreateAppendDBF(cFileName AS STRING) AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ cFileName, "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ cFileName, "", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			LOCAL fieldInfo AS STRING[]
 			LOCAL rddInfo AS RddFieldInfo[]
 			rddInfo := RddFieldInfo[]{fields:Length}
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL currentField AS RddFieldInfo
 				fieldInfo := fields[i]:Split( ',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
@@ -382,7 +382,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL data := datas:Split( ';' ) AS STRING[]
 			//
 			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL elt := data[i]:Split( ',' ) AS STRING[]
 				myDBF:Append( FALSE )
 				myDBF:PutValue( 1, Convert.ToInt32(elt[__ARRAYBASE__] ))
@@ -394,7 +394,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// Now, Verify
 			myDBF:Open( dbInfo )
 			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL tmp AS STRING
 				LOCAL elt := data[i]:Split( ',' ) AS STRING[]
 				Assert.Equal( Convert.ToInt32(elt[__ARRAYBASE__] ),  Convert.ToInt32( myDBF:GetValue(1) ))
@@ -405,7 +405,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				LOCAL dt := DateTime.MinValue AS DateTime
 				o := myDBF:GetValue(4)
 				IF ( o IS DbDate )
-                    VAR db := (DbDate) o 
+                    VAR db := (DbDate) o
 					dt := DateTime{ db:Year, db:Month, db:Day}
 				ENDIF
 				Assert.Equal( DateTime.Now.ToString("yyyyMMdd"), dt:ToString("yyyyMMdd") )
@@ -414,7 +414,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			myDBF:Close()
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "CreateBigAppend")];
 		METHOD CheckCreateBigAppendDBF() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
@@ -426,7 +426,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL rddInfo AS RddFieldInfo[]
 			rddInfo := RddFieldInfo[]{fields:Length}
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL currentField AS RddFieldInfo
 				fieldInfo := fields[i]:Split( ',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
@@ -444,14 +444,14 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//"ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
 			// 3000 samples
 			FOR VAR i := 1 TO 3000
-				// 
+				//
 				myDBF:Append( FALSE )
 				myDBF:PutValue( 1,  rnd:NEXT( 1, 5000 ))
 				myDBF:PutValue( 2,  LoremIpsum(20) )
 				myDBF:PutValue( 3,  rnd:NEXT(0,2) == 1 )
 				myDBF:PutValue( 4, DateTime.Now )
 			NEXT
-			// 
+			//
 			myDBF:Append( FALSE )
 			myDBF:PutValue( 1,  rnd:NEXT( 1, 5000 ))
 			myDBF:PutValue( 2,  LoremIpsum(20) )
@@ -460,7 +460,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//myDBF:Close()
 			myDBF:Close()
 			RETURN
-			
+
 		[Fact, Trait("Dbf", "Zap")];
 		METHOD CheckZap() AS VOID
 			//
@@ -469,7 +469,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			VAR dbInfo := DbOpenInfo{ "XMenTestF.DBF", "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
-			IF myDBF:Open( dbInfo ) 
+			IF myDBF:Open( dbInfo )
 				//
 				//LOCAL nbrBefore := myDBF:RecCount AS LONG
 				//
@@ -479,8 +479,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				//
 				myDBF:Close()
 			ENDIF
-			RETURN            
-			
+			RETURN
+
 		[Fact, Trait("Dbf", "Zap")];
 		METHOD CheckZapAppend() AS VOID
 			//
@@ -489,7 +489,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			VAR dbInfo := DbOpenInfo{ "XMenTestG.DBF", "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
-			IF myDBF:Open( dbInfo ) 
+			IF myDBF:Open( dbInfo )
 				//
 				//LOCAL nbrBefore := myDBF:RecCount AS LONG
 				//
@@ -501,7 +501,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				//
 				Assert.Equal(  1, myDBF:RecCount )
 				// Now, Add some Data
-				// "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" 
+				// "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
 				myDBF:PutValue( 1, 5 )
 				myDBF:PutValue( 2, "Fabrice" )
 				Assert.Equal( 5, Convert.ToInt32(myDBF:GetValue( 1 ) ))
@@ -509,17 +509,17 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				//
 				myDBF:Close()
 			ENDIF
-			RETURN  
-			
+			RETURN
+
 		[Fact, Trait("Dbf", "Pack")];
 		METHOD CheckPack() AS VOID
 			//
 			SELF:CheckCreateAppendDBF("XMenTestH.DBF")
 			//
-			VAR dbInfo := DbOpenInfo{ "XMenTestH.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ "XMenTestH.DBF", "", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
-			IF myDBF:Open( dbInfo ) 
+			IF myDBF:Open( dbInfo )
 				// Delete the First
 				myDBF:GoTop()
 				myDBF:Delete()
@@ -535,8 +535,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				//
 				myDBF:Close()
 			ENDIF
-			RETURN 
-			
+			RETURN
+
 		[Fact, Trait("Dbf", "CreateWithMemo")];
 		METHOD CheckCreateDBFMemo() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
@@ -548,7 +548,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL rddInfo AS RddFieldInfo[]
 			rddInfo := RddFieldInfo[]{fields:Length}
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL currentField AS RddFieldInfo
 				fieldInfo := fields[i]:Split( ',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
@@ -564,8 +564,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			LOCAL isFile := System.IO.File.Exists( "XMenTestI.DBT" ) AS LOGIC
 			Assert.Equal( TRUE, isFile  )
-			RETURN           
-			
+			RETURN
+
 		[Fact, Trait("Dbf", "CreateAppendDBT")];
 		METHOD CheckCreateAppendDBFDBT() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
@@ -577,7 +577,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL rddInfo AS RddFieldInfo[]
 			rddInfo := RddFieldInfo[]{fields:Length}
 			FOR VAR i := __ARRAYBASE__ TO fields:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL currentField AS RddFieldInfo
 				fieldInfo := fields[i]:Split( ',' )
 				currentField := RddFieldInfo{ fieldInfo[DBS_NAME], fieldInfo[DBS_TYPE], Convert.ToInt32(fieldInfo[DBS_LEN]), Convert.ToInt32(fieldInfo[DBS_DEC]) }
@@ -592,10 +592,10 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//"ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
 			LOCAL datas := "1,Professor Xavier,T;2,Wolverine,T;3,Tornade,F;4,Cyclops,T;5,Diablo,T" AS STRING
 			LOCAL data := datas:Split( ';' ) AS STRING[]
-			VAR Memos := List<STRING>{} 
+			VAR Memos := List<STRING>{}
 			//
 			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL elt := data[i]:Split( ',' ) AS STRING[]
 				myDBF:Append( FALSE )
 				myDBF:PutValue( 1, Convert.ToInt32(elt[__ARRAYBASE__] ))
@@ -609,7 +609,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// Now, Verify
 			myDBF:Open( dbInfo )
 			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
-				// 
+				//
 				LOCAL elt := data[i]:Split( ',' ) AS STRING[]
 				Assert.Equal( Convert.ToInt32(elt[__ARRAYBASE__] ), Convert.ToInt32(myDBF:GetValue(1) ))
 				LOCAL tmp AS STRING
@@ -635,9 +635,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			NEXT
 			//
 			myDBF:Close()
-			RETURN  
-			
-			
+			RETURN
+
+
 		[Fact, Trait("Dbf", "ModifyDBT")];
 		METHOD CheckModifyDBT() AS VOID
 			// Create and put some Data
@@ -645,11 +645,11 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// Now Modify in the same space
 			VAR dbInfo := DbOpenInfo{ "XMenTestJ.DBF", "XMenTest", 1, FALSE, FALSE }
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
-			VAR Memos := List<STRING>{} 
+			VAR Memos := List<STRING>{}
 			// Now, Modify the Memo
 			myDBF:Open( dbInfo )
 			WHILE !myDBF:EoF
-				// 
+				//
 				Memos:Add( LoremIpsum( 600 ) )
 				myDBF:PutValue( 5, Memos[ Memos:Count -1 ] )
 				myDBF:Skip(1)
@@ -660,7 +660,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL i := __ARRAYBASE__ AS LONG
 			myDBF:Open( dbInfo )
 			WHILE !myDBF:EoF
-				// 
+				//
 				LOCAL temp1 AS STRING
 				LOCAL temp2 AS STRING
 				temp1 :=  Memos[ i - __ARRAYBASE__ ]
@@ -672,8 +672,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			ENDDO
 			//
 			myDBF:Close()
-			RETURN  
-			
+			RETURN
+
 		[Fact, Trait("Dbf", "ModifyDBT_2")];
 		METHOD CheckModifyDBT_2() AS VOID
 			// Create and put some Data
@@ -681,7 +681,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// Now Modify in the same space
 			VAR dbInfo := DbOpenInfo{ "XMenTestJ.DBF", "XMenTest", 1, FALSE, FALSE }
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
-			VAR Memos := List<STRING>{} 
+			VAR Memos := List<STRING>{}
 			// Now, Modify the Memo
 			myDBF:Open( dbInfo )
 			WHILE !myDBF:EoF
@@ -696,7 +696,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL i := __ARRAYBASE__ AS LONG
 			myDBF:Open( dbInfo )
 			WHILE !myDBF:EoF
-				// 
+				//
 				LOCAL temp1 AS STRING
 				LOCAL temp2 AS STRING
 				temp1 :=  Memos[ i - __ARRAYBASE__ ]
@@ -708,7 +708,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			ENDDO
 			//
 			myDBF:Close()
-			RETURN  
-			
+			RETURN
+
 	END CLASS
 END NAMESPACE // XSharp.RDD.Tests

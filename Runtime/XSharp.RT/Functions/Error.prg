@@ -30,6 +30,16 @@ FUNCTION ErrorBlock() AS USUAL STRICT
 	RETURN cbOld
 
 
+
+FUNCTION ErrorExec(pErrInfo AS Exception) AS USUAL
+    local cbError as CODEBLOCK
+    local oError  as XSharp.Error
+    cbError := ErrorBlock()
+	oError := ErrorBuild(XSharp.Error{pErrInfo})
+    RETURN cbError:Eval(oError)
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorblock/*" />
 FUNCTION ErrorBlock(cbNewSetting AS CODEBLOCK) AS USUAL
 	LOCAL cbOld AS CODEBLOCK

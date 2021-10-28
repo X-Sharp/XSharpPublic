@@ -99453,7 +99453,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C803 - Compiler error with two INSTANCE vars defined in the same line
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C804 - Problems with the new _WinDate structure *************
 Application = C804 - Problems with the new _WinDate structure
 IDEVersion = 1.06
@@ -100237,7 +100237,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C809 - Program hangs with incorrect late bound call
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C810 - _PrivateCount() throws an InvalidateOperationException *************
 Application = C810 - _PrivateCount() throws an InvalidateOperationException
 IDEVersion = 1.06
@@ -100349,7 +100349,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C810 - _PrivateCount() throws an InvalidateOperationException
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C811 - Problems with ACopy() function *************
 Application = C811 - Problems with ACopy() function
 IDEVersion = 1.06
@@ -100392,8 +100392,8 @@ FileType = Code
 CopyToBin = 0
 [C811 - Problems with ACopy() function References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C811 - Problems with ACopy() function Resources]
 [C811 - Problems with ACopy() function Native Resources]
 [C811 - Problems with ACopy() function License files]

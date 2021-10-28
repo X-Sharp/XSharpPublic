@@ -1,7 +1,7 @@
 // 810. _PrivateCount() throws an InvalidateOperationException
 // https://github.com/X-Sharp/XSharpPublic/issues/801
 FUNCTION Start() AS VOID
-
+_MClear()   // clear all variables. This is needed when running in the test suite
 ? _PublicCount()  // ok , 0
 ? _PrivateCount() 
 xAssert(_PublicCount() == 0)

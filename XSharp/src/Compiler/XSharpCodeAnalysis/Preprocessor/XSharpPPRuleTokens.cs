@@ -98,8 +98,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case PPTokenType.ResultLogify:
                         sResult = "<." + Key + ".>";
                         break;
-                    case PPTokenType.ResultOrNil:
-                        sResult = "<#" + Key + "#>";
+                    case PPTokenType.ResultNotEmpty:
+                        sResult = "<!" + Key + "!>";
                         break;
 
                     default:

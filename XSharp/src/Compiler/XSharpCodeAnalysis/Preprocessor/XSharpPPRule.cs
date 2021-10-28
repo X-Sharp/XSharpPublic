@@ -878,7 +878,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             // <!idMarker!>
                             name = resultTokens[i + 2];
-                            result.Add(new PPResultToken(name, PPTokenType.ResultOrNil));
+                            result.Add(new PPResultToken(name, PPTokenType.ResultNotEmpty));
                             i += 4;
                         }
                         break;
@@ -1665,7 +1665,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         blockifyResult(resultToken, tokens, matchInfo, result, offset);
                         break;
                     case PPTokenType.ResultRegular:
-                    case PPTokenType.ResultOrNil:
+                    case PPTokenType.ResultNotEmpty:
                         regularResult(resultToken, tokens, matchInfo, result, offset);
                         break;
                     case PPTokenType.ResultSmartStringify:
@@ -1816,7 +1816,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     result.Add(token);
                 }
             }
-            else if (resultToken.RuleTokenType == PPTokenType.ResultOrNil)
+            else if (resultToken.RuleTokenType == PPTokenType.ResultNotEmpty)
             {
                 var NilToken = new XSharpToken(XSharpLexer.NIL, "NIL");
                 result.Add(NilToken);

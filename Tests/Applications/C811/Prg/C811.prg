@@ -47,25 +47,25 @@ aSrc := { 1 }
 aDest := { 0,0,0 }
 ACopy(aSrc, aDest, 2, 2, 2)
 xAssert(A2S(aDest) == "010")
-
 aSrc := { 1,2,3,4 }
 aDest := { 0,0 }
 ACopy(aSrc, aDest, 2, 3, 1)
+? __LINE__
 xAssert(A2S(aDest) == "23")
-
 aSrc := { 1,2,3,4 }
 aDest := { 0,0,0,0,0 }
 ACopy(aSrc, aDest, 2, 3, 3)
+? __LINE__ ,A2S(aDest)
 xAssert(A2S(aDest) == "00234")
-
 aSrc := { 1,2,3,4 }
 aDest := { 0,0,0,0,0 }
 ACopy(aSrc, aDest, 2, 3, 2)
+? __LINE__ ,A2S(aDest)
 xAssert(A2S(aDest) == "02340")
-
 aSrc := { 1,2,3,4 }
 aDest := { 0,0 }
 ACopy(aSrc, aDest, 2, 3, 2)
+? __LINE__
 xAssert(A2S(aDest) == "02")
 
 aSrc := { 1,2,3,4 }

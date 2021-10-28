@@ -13,7 +13,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Specify a user-defined translation directive</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code Example"> &#160; &#160; #translate &#160; <tab />&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;<br/> &#160; &#160; #xtranslate &#160; &lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; #translate &#160; &#160;&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; #xtranslate &#160; &lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</text></para>
     <para styleclass="Normal"><snippet src="Command-translate" inline="false"/></para>
   </body>
 </topic>

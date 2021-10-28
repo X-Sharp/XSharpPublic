@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>command-translate</title>
+  <keywords>
+    <keyword>=&gt;</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">command-translate</para>
@@ -11,7 +14,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Code Example">&lt;resultPattern&gt;</text> is the text produced if a portion of input text matches the &lt;matchPattern&gt;.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The =&gt; symbol between &lt;matchPattern&gt; and &lt;resultPattern&gt; is, along with#command or #translate, a literal part of the syntax that must be specified in a #command or #translate directive. &#160;The symbol consists of an equal sign followed by a greater than symbol with no intervening spaces. &#160;Do not confuse the symbol with the &gt;= or the &lt;= comparison operators in the xBase language.</para>
+    <para styleclass="Normal">The =&gt; symbol between &lt;matchPattern&gt; and &lt;resultPattern&gt; is, along with #command or #translate, a literal part of the syntax that must be specified in a #command or #translate directive. &#160;The symbol consists of an equal sign followed by a greater than symbol with no intervening spaces. &#160;Do not confuse the symbol with the &gt;= or the &lt;= comparison operators in the xBase language.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading2">Description</text></para>
     <para styleclass="Normal">#command and #translate are translation directives that define commands and pseudofunctions. &#160;Each directive specifies a translation rule. &#160;The rule consists of two portions: &#160;a match pattern and a result pattern.</para>
@@ -30,229 +33,18 @@
     <para styleclass="Normal">When defining a command, there are several prerequisites to properly specifying the command definition. &#160;Many preprocessor commands require more than one #command directive because mutually exclusive clauses contain a keyword or argument. &#160;For example, the @...GET command has mutually exclusive VALID and RANGE clauses and is defined with a different #command rule to implement each clause.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This also occurs when a result pattern contains different expressions, functions, or parameter structures for different clauses specified for the same command (e.g., the @...SAY command). &#160;In Std.ch, there is a #command rule for @...SAY specified with the PICTURE clause and another for @...SAY specified without the PICTURE clause. &#160;Each formulation of the command is translated into a different expression. &#160;</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Because directives are processed in stack order, when defining more than one rule for a command, place the most general case first, followed by the more specific ones. This ensures that the proper rule will match the command specified in the program (.prg) file.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Because directives are processed in stack order, when defining more than one rule for a command, place the most general case first, followed by the more specific ones. &#160;This ensures that the proper rule will match the command specified in the program (.prg) file.</para>
-    <para styleclass="Heading2">Match Pattern</para>
-    <para styleclass="Normal">The &lt;matchPattern&gt; portion of a translation directive is the pattern the input text must match. &#160;A match pattern is made from one or more of the following components, which the preprocessor tries to match against input text in a specific way:</para>
+    <para styleclass="Normal"><text styleclass="Heading2">Match Markers</text></para>
     <para styleclass="Normal"></para>
-    <list id="46" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Literal values are actual characters that appear in the match pattern. &#160;These characters must appear in the input text, exactly as specified to activate the translation directive.</li>
-    </list>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp_Match-Markers">See the topic about Match Markers for a detailed discussion</link></para>
     <para styleclass="Normal"></para>
-    <list id="47" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Words are keywords and valid identifiers that are compared according to the dBASE convention (case-insensitive, first four letters mandatory, etc.). &#160;The match pattern must start with a Word.</li>
-    </list>
+    <para styleclass="Normal"><text styleclass="Heading2">Result Markers</text></para>
     <para styleclass="Normal"></para>
-    <list id="48" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">#xcommand and #xtranslate can recognize keywords of more than four significant letters.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="49" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Match markers are label and optional symbols delimited by angle brackets (&lt;&gt;) that provide a substitute (idMarker) to be used in the &lt;resultPattern&gt; and identify the clause for which it is a substitute. &#160;Marker names are identifiers and must, therefore, follow the xBase identifier naming conventions. &#160;In short, the name must start with an alphabetic or underscore character, which may be followed by alphanumeric or underscore characters.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">This table describes all match marker forms:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="2" style="width:auto;">
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Match Marker </text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Name</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">&lt;idMarker&gt; </para>
-        </td>
-        <td>
-          <para styleclass="Normal">Regular match marker</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">&lt;idMarker,...&gt; </para>
-        </td>
-        <td>
-          <para styleclass="Normal">List match marker</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">&lt;idMarker:word list&gt;</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Restricted match marker</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"> &lt;*idMarker*&gt;</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Wild match marker</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">&lt;(idMarker)&gt;</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Extended Expression match marker</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">&lt;#idMarker&gt;</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Single match marker. </para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">&lt;%idMarker%&gt;</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Wildcard match marker</para>
-        </td>
-      </tr>
-    </table></para>
-    <para styleclass="Normal"></para>
-    <list id="50" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Regular match marker</text>: Matches the next legal expression in the input text. &#160;The regular match marker, a simple label, is the most general and, therefore, the most likely match marker to use for a command argument. &#160;Because of its generality, it is used with the regular result marker, all of the stringify result markers, and the blockify result marker.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="51" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">List match marker</text>: Matches a comma-separated list of legal expressions. &#160;If no input text matches the match marker, the specified marker name contains nothing. &#160;You must take care in making list specifications because extra commas will cause unpredictable and unexpected results.<br/><br/>The list match marker defines command clauses that have lists as arguments. &#160;Typically these are FIELDS clauses or expression lists used by database commands. &#160;When there is a match for a list match marker, the list is usually written to the result text using either the normal or smart stringify result marker. &#160;Often, lists are written as literal arrays by enclosing the result marker in curly ({ }) braces.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="52" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Restricted match marker</text>: Matches input text to one of the words in a comma-separated list. &#160;If the input text does not match at least one of the words, the match fails and the marker name contains nothing.<br/><br/>A restricted match marker is generally used with the logify result marker to write a logical value into the result text. &#160;If there is a match for the restricted match marker, the corresponding logify result marker writes true (.T.) to the result text; otherwise, it writes false (.F.). &#160;This is particularly useful when defining optional clauses that consist of a command keyword with no accompanying argument. &#160;Std.ch implements the REST clause of database commands using this form.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="53" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Wild match marker</text>: Matches any input text from the current position to the end of a statement. &#160;Wild match markers generally match input that may not be a legal expression, such as <br/>#command NOTE &lt;*x*&gt; in Clippers Std.ch, gather the input text to the end of thestatement, and write it to the result text using one of the stringify result markers.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="53" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Single match marker. </text>Matches all consecutive tokens until a whitespace token.</li>
-    </list>
-    <para styleclass="Normal">&#32;</para>
-    <list id="53" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Wildcard match marker</text>: Matches a list of tokens that are an Id, Comma, ? or *. This can be used in commands such as SAVE ALL LIKE a*,b*</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="27" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Extended expression match marker</text>: Matches a regular orextended expression, including a file name or path specification. It is used with the smart stringify result marker to ensure that extended expressions will not get stringified, while normal, unquoted string file specifications will.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="28" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Optional match clauses </text>are portions of the match pattern enclosed in square brackets ([ ]). &#160;They specify a portion of the match pattern that may be absent from the input text. &#160;An optional clause may contain any of the components allowed within a &lt;matchPattern&gt;, including other optional clauses. <br/><br/>Optional match clauses may appear anywhere and in any order in the match pattern and still match input text. &#160;Each match clause may appear only once in the input text. &#160;There are two types of optional match clauses: one is a keyword followed by match marker, and the other is a keyword by itself. &#160;These two types of optional match clauses can match all of the traditional command clauses typical ofthe xBase command set.<br/><br/>Optional match clauses are defined with a regular or list match marker to match input text if the clause consists of an argument or a keyword followed by an argument (see the INDEX clause of the USE command in Std.ch). &#160;If the optional match clause consists of a keyword by itself, it is matched with a restricted match marker (see the EXCLUSIVE or SHARED clause of the USE command in Std.ch).<br/><br/>In any match pattern, you may not specify adjacent optional match clauses consisting solely of match markers, without generating a compiler error. &#160;You may repeat an optional clause any number of times in the input text, as long as it is not adjacent to any other optional clause. &#160;To write a repeated match clause to the result text, use repeating result clauses in the &lt;resultPattern&gt; definition.</li>
-    </list>
-    <para styleclass="Heading2">Result Pattern</para>
-    <para styleclass="Normal">The &lt;resultPattern&gt; portion of a translation directive is the text the preprocessor will produce if a piece of input text matches the &lt;matchPattern&gt;. &#160;&lt;resultPattern&gt; is made from one or more of the following components:</para>
-    <para styleclass="Normal"></para>
-    <list id="29" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Literal tokens </text>are actual characters that are written directly to the result text.<br/></li>
-      <li styleclass="Normal"><text style="font-weight:bold;">Words </text>are xBase &#160;keywords and identifiers that are written directly to the result text.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="29" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Result markers</text>: &#160;refer directly to a match marker name. &#160;Input text matched by the match marker is written to the result text via the result marker.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">This table lists the Result marker forms:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="7" colcount="2" style="width:auto;">
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;">Result Marker</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text style="font-weight:bold;"> Name</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">&lt;idMarker&gt; </para>
-        </td>
-        <td>
-          <para styleclass="Normal">Regular result marker</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"> #&lt;idMarker&gt;</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Dumb stringify result marker</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"> &lt;&quot;idMarker&quot;&gt;</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Normal stringify result marker</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">&lt;(idMarker)&gt; </para>
-        </td>
-        <td>
-          <para styleclass="Normal">Smart stringify result marker</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"> &lt;{idMarker}&gt;</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Blockify result marker</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">&lt;.idMarker.&gt; </para>
-        </td>
-        <td>
-          <para styleclass="Normal">Logify result marker</para>
-        </td>
-      </tr>
-    </table></para>
-    <para styleclass="Normal"></para>
-    <list id="30" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Regular result marker:</text> &#160;Writes the matched input text to the result text, or nothing if no input text is matched. &#160;Use this, the most general result marker, unless you have special requirements. &#160;You can use it with any of the match markers, but it almost always is used with the regular match marker.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="31" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Dumb stringify result marker</text>: &#160;Stringifies the matched input text and writes it to the result text. &#160;If no input text is matched, it writes a null string (&quot;&quot;). &#160;If the matched input text is a list matched by a list match marker, this result marker stringifies the entire list and writes it to the result text.<br/><br/>This result marker writes output to result text where a string is always required. &#160;This is generally the case for commands where a command or clause argument is specified as a literal value but the result text must always be written as a string even if the argument is not specified.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="32" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Normal stringify result marker</text>: &#160;Stringifies the matched input text and writes it to the result text. &#160;If no input text is matched, it writes nothing to the result text. &#160;If the matched input text is a list matched by a list match marker, this result marker stringifies each element in the list and writes it to the result text.<br/><br/>The normal stringify result marker is most often used with the blockify result marker to compile an expression while saving a text image of the expression (See the SET FILTER condition and the INDEX key expression in Std.ch).</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="33" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Smart stringify result marker</text>: &#160;Stringifies matched input text only if source text is enclosed in parentheses. &#160;If no input text matched, it writes nothing to the result text. &#160;If the matched input text is a list matched by a list match marker, this result marker stringifies each element in the list (using the same stringify rule) and writes it to the result text.<br/><br/>The smart stringify result marker is designed specifically to support extended expressions for commands other than SETs with &lt;xlToggle&gt; arguments. &#160;Extended expressions are command syntax elements that can be specified as literal text or as an expression if enclosed in parentheses. &#160;The &lt;xcDatabase&gt; argument of the USE command is a typical example. &#160;For instance, if the matched input for the &lt;xcDatabase&gt; argument is the word Customer, it is written to the result text as the string &quot;Customer,&quot; but the expression (cPath + cDatafile) would be written to the result text unchanged (i.e., without quotes).</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="34" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Blockify result marker</text>: Writes matched input text as a code block without any arguments to the result text. &#160;For example, the input text x + 3 would be written to the result text as {|| x + 3}. &#160;If no input text is matched, it writes nothing to the result text. &#160;If the matched input text is a list matched by a list match marker, this result marker blockifies each element in the list.<br/><br/>The blockify result marker used with the regular and list match markers matches various kinds of expressions and writes them as code blocks to the result text. &#160;Remember that a code block is a piece of compiled code to execute sometime later. &#160;This is important when defining commands that evaluate expressions more than once per invocation. &#160;When defining a command, you can use code blocks to pass an expression to a function and procedure as data rather than as the result of an evaluation. &#160;This allows the target routine to evaluate the expression whenever necessary.<br/><br/>In Std.ch, the blockify result marker defines database commands where an expression is evaluated for each record. &#160;Commonly, these are field or expression lists, FOR and WHILE conditions, or key expressions for commands that perform actions based on key values.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="35" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Logify result marker</text>: Writes true (.T.) to the result text if any input text is matched; otherwise, it writes false (.F.) to the result text. &#160;This result marker does not write the input text itself to the result text.<br/><br/>The logify result marker is generally used with the restricted match marker to write true (.T.) to the result text if an optional clause is specified with no argument; otherwise, it writes false (.F.). &#160;In Std.ch, this formulation defines the EXCLUSIVE and SHARED clauses of the USE command.</li>
-    </list>
-    <para styleclass="Normal"></para>
-    <list id="36" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text style="font-weight:bold;">Repeating result clauses </text>are portions of the &lt;resultPattern&gt; enclosed by square brackets ([ ]). &#160;The text within a repeating clause is written to the result text as many times as it has input text for any or all result markers within the clause. &#160;If there is no matching input text, the repeating clause is not written to the result text. &#160;Repeating clauses, however, cannot be nested. &#160;If you need to nest repeating clauses, you probably need an additional <br/>#command rule for the current command.<br/><br/>Repeating clauses are the result pattern part of the #command facility that create optional clauses which have arguments. &#160;You can match input text with any match marker other than the restricted match marker and write to the result text with any of the corresponding result markers. &#160;Typical examples of this facility are the definitions for the STORE and REPLACE commands in Std.ch.</li>
-    </list>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Command">See the topic about Result Markers for a detailed discussion</link></para>
     <para styleclass="Heading2"> Notes</para>
-    <list id="37" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text style="font-weight:bold;">Less than operator</text>: If you specify the less than operator (&lt;) in the &lt;resultPattern&gt; expression, you must precede it with the escape character (\).</li>
       <li styleclass="Normal"><text style="font-weight:bold;">Multistatement lines</text>: You can specify more than one statement as a part of the result pattern by separating each statement with a semicolon. &#160;If you specify adjacent statements on two separate lines, the first statement must be followed by two semicolons.</li>
     </list>

@@ -104,6 +104,9 @@ FUNCTION WorkDir() AS STRING
 	LOCAL cPath AS STRING
 	LOCAL asm   AS System.Reflection.Assembly
 	asm := System.Reflection.Assembly.GetEntryAssembly()
+    if asm == null // during unit tests
+        asm := System.Reflection.Assembly.GetExecutingAssembly()
+    endif
 	cPath := asm:Location
 	cPath := Path.GetDirectoryName(cPath)
 	IF cPath[cPath:Length-1] !=  Path.DirectorySeparatorChar

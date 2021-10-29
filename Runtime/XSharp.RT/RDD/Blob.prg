@@ -71,7 +71,11 @@ FUNCTION BLOBImport (nFieldPos, cSourceFile)  AS LOGIC CLIPPER
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobrootget/*" />
 FUNCTION BLOBRootGet() AS USUAL STRICT
-	RETURN VoDb.Info( BLOB_ROOT_GET , BlobData{})
+    LOCAL uValue := BlobData{} AS USUAL
+	IF VoDb.Info( BLOB_ROOT_GET,  REF uValue)
+        RETURN uValue
+    ENDIF
+    RETURN NIL
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobrootlock/*" />

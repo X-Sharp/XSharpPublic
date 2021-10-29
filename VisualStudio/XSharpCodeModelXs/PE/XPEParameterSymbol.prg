@@ -22,7 +22,6 @@ BEGIN NAMESPACE XSharpModel
 
          // Properties
       PROPERTY Value        AS STRING AUTO
-      PROPERTY IsArray      AS LOGIC AUTO
       PROPERTY TypeName     AS STRING AUTO
       PROPERTY IsTyped      AS LOGIC GET TRUE
       PROPERTY IsStatic     AS LOGIC GET FALSE

@@ -96,7 +96,7 @@ BEGIN NAMESPACE XSharpModel
                    ENDIF
                    VAR cType := variable:ShortTypeName
                    IF variable:IsTyped .AND. variable:ParamType != ParamType.As
-                      parameters += variable:ParamTypeDesc + cType
+                      parameters += variable:ParamTypeDesc:TrimStart() + cType
                    ELSE
                       parameters += cType
                    ENDIF

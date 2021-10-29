@@ -691,9 +691,13 @@ BEGIN NAMESPACE XSharp.RDD
                     oResult := FALSE
                 ENDIF
             CASE DbInfo.BLOB_ROOT_LOCK
-                NOP
+                IF SELF:_isFlex
+                    oResult := SELF:_flexHeader:RootLock()
+                ENDIF
             CASE DbInfo.BLOB_ROOT_UNLOCK
-                NOP
+                IF SELF:_isFlex
+                    oResult := SELF:_flexHeader:RootUnLock()
+                ENDIF
             OTHERWISE
                 NOP
             END SWITCH

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -12,7 +12,77 @@ USING System.Runtime.InteropServices
 USING System.IO
 USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD
-INTERNAL CLASS FptHeader
+INTERNAL ABSTRACT CLASS FptHeader
+    PROTECT Buffer AS BYTE[]
+    PROTECT _oRDD  AS DBF
+    PROTECT _oStream as FileStream
+    PROTECT _nOffSet as LONG
+    PROTECT _nLength AS LONG
+    INTERNAL PROPERTY Stream   AS FileStream GET _oStream SET _oStream := value
+    INTERNAL PROPERTY ReadOnly as LOGIC GET _oRDD:ReadOnly
+    INTERNAL PROPERTY Shared   as LOGIC GET _oRDD:Shared
+    INTERNAL CONSTRUCTOR(oRDD as DBF, nOffSet as LONG, nLength as LONG)
+        SELF:_oRDD := oRDD
+        SELF:Buffer := BYTE[]{nLength}
+        SELF:_nOffSet := nOffSet
+        SELF:_nLength := nLength
+        SELF:_oStream := NULL
+
+    INTERNAL VIRTUAL METHOD Clear() AS VOID
+        Array.Clear(SELF:Buffer, 0, SELF:Buffer:Length)
+
+    INTERNAL METHOD Read() AS LOGIC
+        local lOk := FALSE AS LOGIC
+        IF _oStream != NULL
+            DO WHILE ! lOk
+                _oStream:SafeSetPos(_nOffSet)
+                lOk := _oStream:SafeRead(Buffer, _nLength)
+                IF ! lOk
+                    if _oStream:Length < _nOffSet+_nLength
+                        EXIT
+                    ENDIF
+                    System.Threading.Thread.Sleep(5)
+                ENDIF
+            ENDDO
+        ENDIF
+        RETURN lOk
+    INTERNAL METHOD Write() AS LOGIC
+        local lOk := FALSE AS LOGIC
+        IF _oStream != NULL
+            DO WHILE ! lOk
+                _oStream:SafeSetPos(_nOffSet)
+                lOk := _oStream:SafeWrite(Buffer)
+                IF ! lOk
+                    if _oStream:Length < _nOffSet + _nLength
+                        EXIT
+                    ENDIF
+                    System.Threading.Thread.Sleep(5)
+                ENDIF
+            ENDDO
+        ENDIF
+        RETURN lOk
+        STATIC PRIVATE rand := Random{100} AS System.Random
+
+     PROTECTED METHOD _LockRetry(nOffSet AS INT64, nLen AS INT64) AS VOID
+        LOCAL result := FALSE AS LOGIC
+        var timer := LockTimer{}
+        timer:Start()
+        REPEAT
+            result := SELF:_oStream:SafeLock(nOffSet, nLen)
+            IF ! result
+
+                IF timer:TimeOut(SELF:_oRDD:Memo:FullPath, nOffSet, nLen)
+                    RETURN
+                ENDIF
+                var wait := 10 +rand:@@Next() % 50
+                System.Threading.Thread.Sleep(wait)
+            ENDIF
+        UNTIL result
+    PROTECTED METHOD _Unlock(nOffSet AS INT64, nLen AS INT64) AS LOGIC
+            VAR res := SELF:_oStream:SafeUnlock(nOffSet, nLen)
+            RETURN res
+END CLASS
+INTERNAL CLASS FoxHeader INHERIT FptHeader
     // FoxPro memo Header:
     // Byte offset  Description
     // 00 - 03      Location of next free block
@@ -21,20 +91,17 @@ INTERNAL CLASS FptHeader
     // 08 - 511     Unused
     // Note numbers are in FOX notation: Integers stored with the most significant byte first.
 
-    PRIVATE Buffer AS BYTE[]
     INTERNAL CONST OFFSET_NEXTFREE  := 0 AS LONG
     INTERNAL CONST OFFSET_UNUSED    := 4 AS LONG
     INTERNAL CONST OFFSET_BLOCKSIZE := 6 AS LONG
     INTERNAL CONST FOXHEADER_LENGTH := 512 AS LONG
     INTERNAL CONST FOXHEADER_OFFSET := 0 AS LONG
-    
-    INTERNAL PROPERTY Size AS LONG GET FOXHEADER_LENGTH
-    INTERNAL CONSTRUCTOR()
-        SELF:Buffer := BYTE[]{FOXHEADER_LENGTH}
 
-    INTERNAL METHOD Clear() AS VOID
-        Array.Clear(SELF:Buffer, 0, FOXHEADER_LENGTH)
-    
+    INTERNAL CONSTRUCTOR(oRDD as DBF)
+        SUPER(oRDD,FOXHEADER_OFFSET, FOXHEADER_LENGTH)
+
+
+
     INTERNAL PROPERTY BlockSize AS WORD
         GET
             RETURN BuffToWordFox(Buffer, OFFSET_BLOCKSIZE)
@@ -64,39 +131,12 @@ INTERNAL CLASS FptHeader
         END SET
     END PROPERTY
 
-    INTERNAL METHOD Read(oStream AS FileStream) AS LOGIC
-        local lOk := FALSE AS LOGIC
-        DO WHILE ! lOk
-            oStream:SafeSetPos(FOXHEADER_OFFSET)
-            lOk := oStream:SafeRead(Buffer)
-            IF ! lOk
-                if oStream:Length < FOXHEADER_LENGTH
-                    EXIT
-                ENDIF
-                System.Threading.Thread.Sleep(5)
-            ENDIF
-        ENDDO
-        RETURN lOk
-
-    INTERNAL METHOD Write(oStream AS FileStream) AS LOGIC
-        local lOk := FALSE AS LOGIC
-        DO WHILE ! lOk
-            oStream:SafeSetPos(FOXHEADER_OFFSET)
-            lOk := oStream:SafeWrite(Buffer)
-            IF ! lOk
-                if oStream:Length < FOXHEADER_LENGTH
-                    EXIT
-                ENDIF
-                System.Threading.Thread.Sleep(5)
-            ENDIF
-        ENDDO
-        RETURN lOk
 
 
 END CLASS
 
 
-INTERNAL CLASS FlexHeader
+INTERNAL CLASS FlexHeader INHERIT FptHeader
     // FlexFile Header starts as 512. Following positions are relative from pos 512
     // 00 - 08      Header "FlexFile3"
     // 09 - 09      Version Major
@@ -108,7 +148,8 @@ INTERNAL CLASS FlexHeader
     // 24 - 27      Root Pointer
     // 28 - 29      Alternative Block Size (allows block sizes < 32)
 
-    PRIVATE Buffer AS BYTE[]
+    PRIVATE _RootLocked as LOGIC
+
     INTERNAL CONST FLEXHEADER_OFFSET := 512 AS LONG
     INTERNAL CONST FLEXHEADER_LENGTH := 512 AS LONG
     INTERNAL CONST OFFSET_SIGNATURE :=  0 AS LONG
@@ -121,27 +162,27 @@ INTERNAL CLASS FlexHeader
     INTERNAL CONST OFFSET_UPDATE    := 20 AS LONG
     INTERNAL CONST OFFSET_ROOT      := 24 AS LONG
     INTERNAL CONST OFFSET_BLOCKSIZE := 28 AS LONG
-    
-    INTERNAL CONSTRUCTOR()
-        SELF:Buffer := BYTE[]{FLEXHEADER_LENGTH}
+
+    INTERNAL CONSTRUCTOR(oRDD as DBF)
+        SUPER(oRDD, FLEXHEADER_OFFSET, FLEXHEADER_LENGTH)
 
     INTERNAL METHOD Create() AS VOID
         SELF:Clear()
-    INTERNAL METHOD Clear() AS VOID
-        Array.Clear(SELF:Buffer, 0, FLEXHEADER_LENGTH)
+    INTERNAL OVERRIDE METHOD Clear() AS VOID
+        SUPER:Clear()
         SELF:Buffer[0] := 70    // 'F';
-        SELF:Buffer[1] := 108   // 'l';        
+        SELF:Buffer[1] := 108   // 'l';
         SELF:Buffer[2] := 101   // 'e';
-        SELF:Buffer[3] := 120   // 'x';        
+        SELF:Buffer[3] := 120   // 'x';
         SELF:Buffer[4] := 70    // 'F';
-        SELF:Buffer[5] := 105   // 'i';        
+        SELF:Buffer[5] := 105   // 'i';
         SELF:Buffer[6] := 108   // 'l';
-        SELF:Buffer[7] := 101   // 'e';        
+        SELF:Buffer[7] := 101   // 'e';
         SELF:Buffer[8] := 51    // '3';
         SELF:MajorVersion := 2
         SELF:MinorVersion := 8
         SELF:IndexDefect  := FALSE
-    INTERNAL PROPERTY Size AS LONG GET FLEXHEADER_LENGTH
+
 
     INTERNAL PROPERTY AltBlockSize  AS WORD  GET BuffToWord(SELF:Buffer, OFFSET_BLOCKSIZE)  SET WordToBuff(value, SELF:Buffer, OFFSET_BLOCKSIZE)
     INTERNAL PROPERTY MajorVersion  AS BYTE  GET SELF:Buffer[OFFSET_MAJOR]                  SET SELF:Buffer[OFFSET_MAJOR] := value
@@ -151,61 +192,38 @@ INTERNAL CLASS FlexHeader
     INTERNAL PROPERTY IndexLocation AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_INDEXLOC )  SET LongToBuff(value, SELF:Buffer, OFFSET_INDEXLOC )
     INTERNAL PROPERTY Root          AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_ROOT )      SET LongToBuff(value, SELF:Buffer, OFFSET_ROOT )
     INTERNAL PROPERTY UpdateCount   AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_UPDATE )    SET LongToBuff(VALUE, SELF:Buffer, OFFSET_UPDATE )
-//    INTERNAL PROPERTY Signature     AS STRING
-//        // We can use System.Text.Encoding.ASCII because the flexfile header has no special characters
-//        GET
-//            RETURN System.Text.Encoding.ASCII:GetString(SELF:Buffer,0, 9)
-//        END GET
-//        SET
-//            VAR bytes := System.Text.Encoding.ASCII:GetBytes(value)
-//            System.Array.Copy(bytes,0, Buffer, OFFSET_SIGNATURE, LEN_SIGNATURE)
-//        END SET
-//    END PROPERTY
-//    
-    INTERNAL METHOD Read(oStream AS FileStream) AS LOGIC
-        local lOk := FALSE AS LOGIC
-        DO WHILE ! lOk
-            oStream:SafeSetPos(FLEXHEADER_OFFSET)
-            lOk := oStream:SafeRead(Buffer, FLEXHEADER_LENGTH)
-            IF ! lOk
-                if oStream:Length < FLEXHEADER_OFFSET + FLEXHEADER_LENGTH
-                    EXIT
-                ENDIF
-                System.Threading.Thread.Sleep(5)
-            ENDIF
-        ENDDO
-        RETURN lOk
 
-
-    INTERNAL METHOD Write(oStream AS FileStream) AS LOGIC
-        local lOk := FALSE AS LOGIC
-        DO WHILE ! lOk
-            oStream:SafeSetPos(FLEXHEADER_OFFSET)
-            lOk := oStream:SafeWrite(Buffer)
-            IF ! lOk
-                if oStream:Length < FLEXHEADER_OFFSET + FLEXHEADER_LENGTH
-                    EXIT
-                ENDIF
-                System.Threading.Thread.Sleep(5)
-            ENDIF
-        ENDDO
-        RETURN lOk
-        
 
     INTERNAL PROPERTY Valid AS LOGIC
         GET
             RETURN  SELF:Buffer[0] == 70  .AND. ;    // 'F';
-                    SELF:Buffer[1] == 108 .AND. ;   // 'l';        
+                    SELF:Buffer[1] == 108 .AND. ;   // 'l';
                     SELF:Buffer[2] == 101 .AND. ;   // 'e';
-                    SELF:Buffer[3] == 120 .AND. ;   // 'x';        
+                    SELF:Buffer[3] == 120 .AND. ;   // 'x';
                     SELF:Buffer[4] == 70  .AND. ;   // 'F';
-                    SELF:Buffer[5] == 105 .AND. ;   // 'i';        
+                    SELF:Buffer[5] == 105 .AND. ;   // 'i';
                     SELF:Buffer[6] == 108 .AND. ;   // 'l';
-                    SELF:Buffer[7] == 101 .AND. ;   // 'e';        
+                    SELF:Buffer[7] == 101 .AND. ;   // 'e';
                     SELF:Buffer[8] == 51            // '3';
 
         END GET
     END PROPERTY
+    METHOD RootLock() AS LOGIC
+        IF SELF:Shared
+             _LockRetry(FLEXHEADER_OFFSET+OFFSET_ROOT,sizeof(LONG))
+             SELF:_RootLocked := TRUE
+             RETURN TRUE
+        ENDIF
+        RETURN TRUE
+
+    METHOD RootUnLock() AS LOGIC
+        IF SELF:Shared .and. SELF:_RootLocked
+             SELF:_Unlock(FLEXHEADER_OFFSET+OFFSET_ROOT,sizeof(LONG))
+             SELF:_RootLocked := FALSE
+             RETURN TRUE
+        ENDIF
+        RETURN TRUE
+
 END CLASS
 
 END NAMESPACE

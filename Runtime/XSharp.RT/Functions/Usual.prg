@@ -89,7 +89,7 @@ FUNCTION Empty(oObject AS OBJECT) AS LOGIC
         CASE TypeCode.Object WHEN oObject IS IDate VAR oDat
             RETURN oDat:IsEmpty
         CASE TypeCode.Object WHEN oObject IS IFloat VAR oFl
-            RETURN Empty(oFl)
+            RETURN Empty(oFl:Value)
         CASE TypeCode.Object WHEN oObject IS SYMBOL VAR oSym
             RETURN Empty(oSym)
         CASE TypeCode.Object WHEN oObject IS PSZ VAR oPsz

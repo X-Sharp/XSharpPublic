@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -59,11 +59,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         IF CoreDb.RddInfo(_SET_SQL_QUERY, REF query) .and. query is STRING
             sName := (STRING) query
         ELSE
-            IF (openInfo:Extension != ".DBF")
-                sName := openInfo:FileName + openInfo:Extension
-            ELSE
-                sName := openInfo:FileName
-            ENDIF
+            sName := openInfo:FullName
         ENDIF
 	    IF SELF:_SetPaths(EG_OPEN) != 0
 		    RETURN FALSE
@@ -125,13 +121,13 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         SELF:Alias   := openInfo:Alias
 	    SELF:Area    := openInfo:Workarea
         RETURN SUPER:RecordMovement()
- 
+
 
 	/// <inheritdoc />
    VIRTUAL METHOD RecInfo( uiOrdinal AS INT, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
     LOCAL isLive AS BYTE
     LOCAL recNum AS DWORD
-    IF uiOrdinal != DbRecordInfo.DBRI_UPDATED  
+    IF uiOrdinal != DbRecordInfo.DBRI_UPDATED
         RETURN SUPER:RecInfo(uiOrdinal, iRecID, oNewValue)
     ENDIF
     IF ACEUNPUB.AdsSqlPeekStatement(SUPER:_Table, OUT isLive) == 0 .AND. isLive == 0

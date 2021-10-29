@@ -200,6 +200,22 @@ BEGIN NAMESPACE XSharp.RDD
                 IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
                     oResult := _oFptMemo:BlobInfo(nOrdinal, oBlob)
                 ENDIF
+            CASE DbInfo.BLOB_ROOT_GET
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := _oFptMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbInfo.BLOB_ROOT_PUT
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := _oFptMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbInfo.BLOB_ROOT_LOCK
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := _oFptMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+            CASE DbInfo.BLOB_ROOT_UNLOCK
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := _oFptMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
             OTHERWISE
                 oResult := SUPER:Info(nOrdinal, oNewValue)
             END SWITCH

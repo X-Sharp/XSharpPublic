@@ -1,7 +1,7 @@
 ﻿// AbstractMemo.prg
 // Created by    : robert
 // Creation Date : 4/1/2020 10:21:25 AM
-// Created for   : 
+// Created for   :
 // WorkStation   : ARTEMIS
 
 
@@ -21,17 +21,17 @@ BEGIN NAMESPACE XSharp.RDD
         STATIC PROPERTY DefExt AS STRING AUTO
         STATIC CONSTRUCTOR
             DefExt := DBT_MEMOEXT
-        
+
         INTERNAL CONST HeaderSize := 512 AS LONG
-        
+
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
             SELF:_oRdd := oRDD
-            
+
         VIRTUAL PROTECTED METHOD _initContext() AS VOID
             SELF:_blockSize := DBT_DEFBLOCKSIZE
             SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
-            
+
             /// <inheritdoc />
         METHOD GetValue(nFldPos AS INT) AS OBJECT
             LOCAL blockNbr AS LONG
@@ -42,7 +42,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF ( blockNbr > 0 )
                 // Get the raw Length of the Memo
                 blockLen := SELF:_getValueLength( nFldPos )
-                IF blockLen > 0 
+                IF blockLen > 0
                     memoBlock := BYTE[]{ blockLen }
                     // Where do we start ?
                     LOCAL iOffset := blockNbr * SELF:BlockSize AS LONG
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp.RDD
                     _oStream:SafeSetPos( iOffset)
                     // Max 512 Blocks
                     LOCAL isOk AS LOGIC
-                    isOk := _oStream:SafeRead(memoBlock) 
+                    isOk := _oStream:SafeRead(memoBlock)
                     IF ( !isOk )
                         memoBlock := NULL
                     ENDIF
@@ -58,22 +58,22 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             // At this level, the return value is the raw Data, in BYTE[]
             RETURN memoBlock
-            
+
             /// <inheritdoc />
         METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
             THROW NotImplementedException{}
-            
+
             /// <inheritdoc />
         METHOD GetValueLength(nFldPos AS INT) AS INT
             RETURN SELF:_getValueLength( nFldPos )
-            
+
             // Do the calculation for the MemoLength
         VIRTUAL PROTECTED METHOD _getValueLength(nFldPos AS INT) AS INT
             LOCAL blockNbr AS LONG
             LOCAL blockLen := 0 AS LONG
             // Where does the block start ?
             blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
-            IF ( blockNbr > 0 ) 
+            IF ( blockNbr > 0 )
                 // File Open ?
                 LOCAL isOk := ( SELF:_hFile != F_ERROR ) AS LOGIC
                 IF isOk
@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharp.RDD
                     LOCAL iOffset := blockNbr * SELF:BlockSize AS LONG
                     // Go to the blockNbr position
                     _oStream:SafeSetPos( iOffset)
-                    // 
+                    //
                     LOCAL sizeRead := 1 AS LONG
                     LOCAL endPos := -1 AS LONG
                     WHILE ( sizeRead > 0 ) .AND. ( endPos == - 1 )
@@ -106,7 +106,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN blockLen
-            
+
             /// <inheritdoc />
         VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             LOCAL objType AS System.Type
@@ -143,16 +143,16 @@ BEGIN NAMESPACE XSharp.RDD
             newBlock := TRUE
             // Where are currently stored the datas ?
             blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
-            IF ( blockNbr > 0 ) 
+            IF ( blockNbr > 0 )
                 // Existing block ? What is it's current raw length ?
                 blockLen := SELF:_getValueLength( nFldPos )
-                IF blockLen > 0 
+                IF blockLen > 0
                     // Compare the number of Blocks : Do we need more blocks ?
                     newBlock := ( memoBlock:Length / SELF:_blockSize ) > ( blockLen / SELF:BlockSize )
                 ENDIF
             ENDIF
             IF newBlock
-                IF SELF:Shared 
+                IF SELF:Shared
                     locked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries )
                 ENDIF
                 // Go to the end of end, where we will add the new data
@@ -168,7 +168,7 @@ BEGIN NAMESPACE XSharp.RDD
                     _oStream:SafeWrite(filler)
                     // so, new size is
                     fileSize := (LONG)_oStream:Length
-                    
+
                 ENDIF
                 // The new block Number to write to is (I supposed we should use NextAvailableBlock, no ?)
                 blockNbr := fileSize / SELF:BlockSize
@@ -202,17 +202,27 @@ BEGIN NAMESPACE XSharp.RDD
             // Now, update the information in the DBF, look at PutValue() in the DbfDbt Class
             SELF:LastWrittenBlockNumber := (LONG) blockNbr
             RETURN isOk
-            
+
             /// <inheritdoc />
         VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
             THROW NotImplementedException{}
-            
-        
-            
+
+        /// <summary>Return the extension set with Set.MemoExt or default extension</summary>
+        PRIVATE METHOD _GetExtension() AS STRING
+            VAR cExt := RuntimeState.GetValue<STRING>(Set.MemoExt)
+            IF ! String.IsNullOrEmpty(cExt)
+                IF ! cExt.StartsWith(".")
+                    cExt := "."+cExt
+                    RuntimeState.SetValue(Set.MemoExt, cExt)
+                ENDIF
+                RETURN cExt
+            ENDIF
+            RETURN DefExt
+
             /// <inheritdoc />
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             LOCAL isOk      AS LOGIC
-            SELF:Extension := DefExt
+            SELF:Extension := SELF:_GetExtension()
             isOk := SUPER:CreateMemFile(info)
             IF isOk
 
@@ -232,11 +242,11 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             //
             RETURN isOk
-            
+
             /// <inheritdoc />
         VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
-            SELF:Extension  := DefExt
+            SELF:Extension  := SELF:_GetExtension()
             isOk := SUPER:OpenMemFile(info)
             IF isOk
                 SELF:_initContext()
@@ -246,9 +256,9 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             //
             RETURN isOk
-            
+
         PROPERTY NextAvailableBlock 	 AS LONG
-            GET 
+            GET
                LOCAL nBlock := 0 AS LONG
                IF SELF:IsOpen
                     LOCAL _memoBlock AS BYTE[]
@@ -256,16 +266,16 @@ BEGIN NAMESPACE XSharp.RDD
                     _memoBlock := BYTE[]{4}
                     VAR savedPos := _oStream:Position
                     _oStream:SafeSetPos(0)
-                    
-                    IF  _oStream:SafeRead(_memoBlock ) 
+
+                    IF  _oStream:SafeRead(_memoBlock )
                         nBlock := BitConverter.ToInt32( _memoBlock, 0)
                     ENDIF
                     _oStream:SafeSetPos(savedPos)
                 ENDIF
                 RETURN nBlock
             END GET
-            
-            SET 
+
+            SET
                  IF SELF:IsOpen
                     LOCAL _memoBlock AS BYTE[]
                     _memoBlock := BYTE[]{4}
@@ -276,9 +286,9 @@ BEGIN NAMESPACE XSharp.RDD
                     _oStream:SafeSetPos(savedPos)
                 ENDIF
             END SET
-            
+
         END PROPERTY
-        
+
         // Place a lock : <nOffset> indicate where the lock should be; <nLong> indicate the number bytes to lock
         // If it fails, the operation is tried <nTries> times, waiting 1ms between each operation.
         // Return the result of the operation
@@ -287,7 +297,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF ! SELF:IsOpen
                 RETURN FALSE
             ENDIF
-  
+
             REPEAT
                 locked := _oStream:SafeLock(nOffset, nLong)
                 IF ! locked
@@ -302,7 +312,7 @@ BEGIN NAMESPACE XSharp.RDD
             UNTIL ( locked .OR. (nTries==0) )
             //
             RETURN locked
-            
+
         PROTECTED METHOD _unlock( nOffset AS INT64, nLong AS LONG ) AS LOGIC
             LOCAL unlocked AS LOGIC
             //
@@ -314,7 +324,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:Error(FException(), Subcodes.ERDD_UNLOCKED, Gencode.EG_UNLOCKED, "DBFDBT._unlock")
             ENDIF
             RETURN unlocked
-            
+
         VIRTUAL METHOD Zap() AS LOGIC
             IF SELF:IsOpen
                 IF SELF:Shared
@@ -330,8 +340,8 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN FALSE
             ENDIF
 
-            
-      END CLASS    
-    
-END NAMESPACE    
+
+      END CLASS
+
+END NAMESPACE
 

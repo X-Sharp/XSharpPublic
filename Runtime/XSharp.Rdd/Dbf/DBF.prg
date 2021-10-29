@@ -897,10 +897,9 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 		SELF:_OpenInfo:Extension := _Extension
         //
 	ENDIF
-	SELF:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
     //
 	SELF:_Hot := FALSE
-	SELF:_FileName := SELF:_OpenInfo:FileName
+	SELF:_FileName := SELF:_OpenInfo:FullName
 	SELF:_Alias := SELF:_OpenInfo:Alias
 	SELF:_Shared := SELF:_OpenInfo:Shared
 	SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
@@ -1048,13 +1047,11 @@ METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
 	IF String.IsNullOrEmpty(SELF:_OpenInfo:Extension)
 		SELF:_OpenInfo:Extension := _Extension
 	ENDIF
-	SELF:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
-    //
 	SELF:_Hot := FALSE
-	SELF:_FileName := SELF:_OpenInfo:FileName
+	SELF:_FileName := SELF:_OpenInfo:FullName
 	IF File(SELF:_FileName)
 		SELF:_FileName := FPathName()
-		SELF:_OpenInfo:FileName := SELF:_FileName
+		SELF:_OpenInfo:FullName := SELF:_FileName
 	ENDIF
 	SELF:_Alias := SELF:_OpenInfo:Alias
 	SELF:_Shared := SELF:_OpenInfo:Shared

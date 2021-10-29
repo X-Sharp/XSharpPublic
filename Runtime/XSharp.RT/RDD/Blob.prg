@@ -71,12 +71,12 @@ FUNCTION BLOBImport (nFieldPos, cSourceFile)  AS LOGIC CLIPPER
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobrootget/*" />
 FUNCTION BLOBRootGet() AS USUAL STRICT
-	RETURN VoDb.Info( BLOB_ROOT_GET , NIL)
+	RETURN VoDb.Info( BLOB_ROOT_GET , BlobData{})
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobrootlock/*" />
 FUNCTION BLOBRootLock() AS USUAL STRICT
-	RETURN VoDb.Info( BLOB_ROOT_LOCK, NIL )
+	RETURN VoDb.Info( BLOB_ROOT_LOCK, BlobData{} )
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobrootput/*" />
 FUNCTION BLOBRootPut(uBLOB) AS USUAL CLIPPER
@@ -85,7 +85,7 @@ FUNCTION BLOBRootPut(uBLOB) AS USUAL CLIPPER
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobrootunlock/*" />
 FUNCTION BLOBRootUnlock()  AS USUAL STRICT
-	RETURN VoDb.Info( BLOB_ROOT_UNLOCK, NIL )
+	RETURN VoDb.Info( BLOB_ROOT_UNLOCK, BlobData{} )
 
 
 FUNCTION DbBlobInfo(nOrdinal, nPos, xNewVal) AS USUAL CLIPPER

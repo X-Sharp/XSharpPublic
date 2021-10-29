@@ -115,7 +115,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 // Check that we have a FullPath
                 IF Path.GetDirectoryName(SELF:_fullPath):Length == 0
                     // Get the path from the RDD's open info
-                    VAR cPath := Path.GetDirectoryName(SELF:_oRdd:_OpenInfo:FileName)
+                    VAR cPath := Path.GetDirectoryName(SELF:_oRdd:_OpenInfo:FullName)
                     IF String.IsNullOrEmpty(cPath)
                         cPath := SELF:_oRdd:FileName
                         cPath := Path.GetDirectoryName(cPath)

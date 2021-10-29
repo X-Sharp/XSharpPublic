@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -13,9 +13,9 @@ USING XSharp.RDD
 
 BEGIN NAMESPACE XSharp.RDD.Support
 
-/// <summary>Helper class to store the scope and codeblock for a DbEval() operation. </summary> 
-CLASS DbEvalInfo  
-	
+/// <summary>Helper class to store the scope and codeblock for a DbEval() operation. </summary>
+CLASS DbEvalInfo
+
 	/// <summary>A code block to be evaluated with DbEval() on each row of the work area that is in the range defined by ScopeInfo.  </summary>
 	PUBLIC Block	 AS ICodeblock
 
@@ -25,20 +25,20 @@ CLASS DbEvalInfo
     CONSTRUCTOR()
         SELF:ScopeInfo := DbScopeInfo{}
         RETURN
-END CLASS 
+END CLASS
 
 
-/// <summary>Helper class to store a filter condition for a table.</summary> 
+/// <summary>Helper class to store a filter condition for a table.</summary>
 CLASS DbFilterInfo
 	/// <summary>A string representing the source code for itmCobExpr.</summary>
 	PUBLIC FilterText	AS STRING
-	
+
 	/// <summary>A code block representing the condition that is evaluated at each cursor location.  If the result of the evaluation is FALSE, the cursor location requested is invalid according to the current filter condition.</summary>
 	PUBLIC FilterBlock	AS ICodeblock
-	
+
 	/// <summary>A flag that is TRUE if a filter is active.</summary>
 	PUBLIC Active		AS LOGIC
-	
+
 	/// <summary>A flag that is TRUE if a filter is optimized.</summary>
 	PUBLIC Optimized	AS LOGIC
 
@@ -48,7 +48,7 @@ CLASS DbFilterInfo
 		SELF:FilterText	 := String.Empty
 		SELF:Active		 := FALSE
 		SELF:Optimized	 := FALSE
-		RETURN   
+		RETURN
 
 	///<summary>Clone the filter object.</summary>
 	METHOD Clone AS DbFilterInfo
@@ -59,7 +59,7 @@ CLASS DbFilterInfo
 		oClone:Optimized   := SELF:Optimized
 		oClone:Active	   := FALSE
 		RETURN oClone
-        
+
     /// <summary>Construct a DbFilterInfo object.</summary>
     CONSTRUCTOR
         SELF:Clear()
@@ -69,31 +69,31 @@ CLASS DbFilterInfo
         IF SELF:FilterBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:FilterText)
             SELF:FilterBlock := oRDD:Compile(SELF:FilterText)
         ENDIF
-END CLASS 
+END CLASS
 
-/// <summary>Helper structure to store information needed to lock a row or table for exclusive access.</summary>                 
-STRUCTURE DbLockInfo 
+/// <summary>Helper structure to store information needed to lock a row or table for exclusive access.</summary>
+STRUCTURE DbLockInfo
 	/// <summary>An Item indicating the ID of the row to lock.  This member is meaningful only if Method is set to EXCLUSIVE or MULTIPLE. </summary>
 	PUBLIC RecId		AS OBJECT
-	 
+
 	/// <summary>A constant indicating the type of lock to obtain.  The possible values are of the Lockmethod enum. </summary>
 	PUBLIC @@Method AS LockMethod
-	
+
 	/// <summary>A flag that is TRUE if the lock operation was successful.</summary>
 	PUBLIC Result		AS LOGIC
 	/// <summary>List of possible Locking Methods </summary>
-	ENUM LockMethod 
+	ENUM LockMethod
 		/// <summary>Lock a row, releasing currently locked rows.</summary>
 		MEMBER Exclusive := 1
 		/// <summary>Lock a row, maintaining currently locked rows.</summary>
 		MEMBER Multiple  := 2
 		/// <summary>Lock a table, releasing locks currently held.</summary>
 		MEMBER File 	 := 3
-	END ENUM	
+	END ENUM
 END STRUCTURE
 
-/// <summary>Helper class to store information needed to open a table.</summary> 
-CLASS DbOpenInfo  
+/// <summary>Helper class to store information needed to open a table.</summary>
+CLASS DbOpenInfo
 	/// <summary>Should the table be opened Readonly?</summary>
 	PUBLIC ReadOnly 	AS LOGIC
 	/// <summary>Should the table be opened Shared?</summary>
@@ -102,18 +102,28 @@ CLASS DbOpenInfo
 	PUBLIC Alias		AS STRING
 	/// <summary>The extension for the table that must be opened.</summary>
 	PUBLIC Extension    AS STRING
-	/// <summary>The filename (optionally includig a path) for the table that must be opened.</summary>
+	/// <summary>The filename (optionally includig a path) for the table that must be opened. Does not have an extension.</summary>
 	PUBLIC FileName		AS STRING
 	/// <summary>Workarea number in which the table will be opened.</summary>
-	PUBLIC Workarea		AS DWORD    
+	PUBLIC Workarea		AS DWORD
     /// <summary>Construct a DbOpenInfo object.</summary>
-	
+
+	/// <summary>The full name (filename + extension) of the file.</summary>
+    PUBLIC PROPERTY FullName AS STRING
+        GET
+            RETURN FileName + Extension
+        END GET
+        SET
+            SELF:FileName  :=Path.ChangeExtension(value,null)
+            SELF:Extension :=Path.GetExtension( value )
+        END SET
+    END PROPERTY
+
 	CONSTRUCTOR()
-        SUPER()		
+        SUPER()
     /// <summary>Construct a DbOpenInfo object.</summary>
 	CONSTRUCTOR(sFileName AS STRING, sAlias AS STRING, dwWorkarea AS DWORD, lShared AS LOGIC, lReadOnly AS LOGIC)
-		FileName 	:= sFileName
-        Extension   := Path.GetExtension(sFileName)
+		SELF:FullName := sFileName
 		IF String.IsNullOrEmpty( sAlias )
 			Alias := Path.GetFileNameWithoutExtension( sFileName )
 		ELSE
@@ -123,7 +133,7 @@ CLASS DbOpenInfo
 		Shared		:= lShared
 		ReadOnly	:= lReadOnly
 	/// <summary>Return the numeric FileMode based on the Shared and Readonly flags </summary>
-	PUBLIC PROPERTY FileMode AS DWORD 
+	PUBLIC PROPERTY FileMode AS DWORD
 	GET
 		LOCAL nMode AS DWORD
 		nMode := FO_COMPAT
@@ -142,10 +152,10 @@ CLASS DbOpenInfo
 	END PROPERTY
     PUBLIC METHOD Clone() AS DbOpenInfo
         RETURN (DbOpenInfo) SELF:MemberwiseClone()
-END CLASS  
+END CLASS
 
-/// <summary>Helper class to store information needed to create a conditional order.</summary> 
-CLASS DbOrderCondInfo   
+/// <summary>Helper class to store information needed to create a conditional order.</summary>
+CLASS DbOrderCondInfo
 	/// <summary> A flag that is TRUE if one or more valid conditions have been specified in the structure. </summary>
 	PUBLIC Active			AS LOGIC
 	/// <summary> A flag that is TRUE if open orders should remain open while the new order is being created. </summary>
@@ -157,11 +167,11 @@ CLASS DbOrderCondInfo
 	/// <summary> A flag that is TRUE if the order should be created in descending order. </summary>
 	PUBLIC @@Descending     AS LOGIC
 	/// <summary>A code block defining the expression to evaluate every StepSize rows during the creation of the order.  The code block referenced should return a logical value: TRUE indicates that creation of the order should continue normally, and FALSE indicates that order creation should terminate. </summary>
-	PUBLIC EvalBlock		AS ICodeblock 
+	PUBLIC EvalBlock		AS ICodeblock
 	/// <summary>A code block defining the for condition to use for the creation and maintenance of the order.</summary>
-	PUBLIC ForBlock			AS ICodeblock 
+	PUBLIC ForBlock			AS ICodeblock
 	/// <summary>A string defining the for condition to use for the creation and maintenance of the order.</summary>
-	PUBLIC ForExpression	AS STRING    
+	PUBLIC ForExpression	AS STRING
 	/// <summary>The number of rows to process for order creation.</summary>
 	PUBLIC NextCount		AS LONG
 	/// <summary>A flag that is TRUE if the for condition may NOT be optimized,</summary>
@@ -181,7 +191,7 @@ CLASS DbOrderCondInfo
 	/// <summary>A code block defining the while condition to use for the creation of the order.  An empty value indicates that no while condition is being imposed.</summary>
 	PUBLIC WhileBlock		AS ICodeblock
 	/// <summary>A string defining the for while condition to use for the creation and maintenance of the order.</summary>
-	PUBLIC WhileExpression	AS STRING    
+	PUBLIC WhileExpression	AS STRING
 
     METHOD Compile(oRDD AS IRdd) AS VOID
         IF SELF:WhileBlock == NULL .AND. ! String.IsNullOrWhiteSpace(SELF:WhileExpression)
@@ -211,8 +221,8 @@ CLASS DbOrderCondInfo
 
 END CLASS
 
-/// <summary>Helper class to store information needed to create a new order.</summary> 
-CLASS DbOrderCreateInfo 
+/// <summary>Helper class to store information needed to create a new order.</summary>
+CLASS DbOrderCreateInfo
 	/// <summary>The index file name.</summary>
 	PUBLIC BagName		AS STRING
 	/// <summary>The order name or number to create in BagName.</summary>
@@ -239,8 +249,8 @@ CLASS DbOrderCreateInfo
 
 END CLASS
 
-/// <summary>Helper class to store information needed to open/address an order.</summary> 
-CLASS DbOrderInfo  
+/// <summary>Helper class to store information needed to open/address an order.</summary>
+CLASS DbOrderInfo
 	/// <summary>A flag that is TRUE if all tags of the index file must be opened.</summary>
 	PUBLIC AllTags		AS LOGIC
 	/// <summary>A code block containing the key expression defining the order imposed on the work area.</summary>
@@ -254,16 +264,16 @@ CLASS DbOrderInfo
 
     METHOD Clone() AS DbOrderInfo
         RETURN (DbOrderInfo) SELF:MemberwiseClone()
-    PROPERTY IsEmpty AS LOGIC 
+    PROPERTY IsEmpty AS LOGIC
         GET
             IF String.IsNullOrEmpty(BagName)
-                IF Order == NULL 
+                IF Order == NULL
                     RETURN TRUE
                 ELSEIF Order IS LONG VAR nOrder
-                    RETURN nOrder == 0 
+                    RETURN nOrder == 0
                 ELSEIF Order IS STRING VAR cOrder
                     RETURN String.IsNullOrEmpty(cOrder)
-                ELSEIF RuntimeState.Dialect == XSharpDialect.FoxPro .AND. Order IS LOGIC VAR lValue 
+                ELSEIF RuntimeState.Dialect == XSharpDialect.FoxPro .AND. Order IS LOGIC VAR lValue
                     // VFP NIL is represented by a logic FALSE
                     RETURN ! lValue
                 ENDIF
@@ -273,14 +283,14 @@ CLASS DbOrderInfo
     END PROPERTY
 END CLASS
 
-/// <summary>Helper class to store a list of relational information.</summary> 
-CLASS DbRelInfo 
+/// <summary>Helper class to store a list of relational information.</summary>
+CLASS DbRelInfo
 	/// <summary>The expression used to reposition the cursor of the child table when this relation is resolved.</summary>
 	PUBLIC Key			AS STRING
 	/// <summary>A code block used to reposition the cursor of the child table when this relation is resolved.</summary>
 	PUBLIC Block		AS ICodeblock
 	/// <summary>A reference to the child RDD for the relation.</summary>
-	PUBLIC Child		AS IRdd	
+	PUBLIC Child		AS IRdd
 	/// <summary>A reference to the parent RDD for the relation.</summary>
 	PUBLIC Parent		AS IRdd
 
@@ -293,11 +303,11 @@ CLASS DbRelInfo
 
     METHOD Clone() AS DbRelInfo
         RETURN (DbRelInfo) SELF:MemberwiseClone()
-    
+
 END CLASS
 
-/// <summary>Helper class to store references to all of the scope clause expressions. </summary> 
-CLASS DbScopeInfo 
+/// <summary>Helper class to store references to all of the scope clause expressions. </summary>
+CLASS DbScopeInfo
 	/// <summary>A flag that is TRUE if a process should ignore duplicate key values.</summary>
 	PUBLIC IgnoreDuplicates AS LOGIC
 	/// <summary>A flag that is TRUE if a process should ignore any filter condition imposed on the current work area. </summary>
@@ -309,18 +319,18 @@ CLASS DbScopeInfo
 	/// <summary>A string representing the conditional for clause.  A for condition is, essentially, a filter that hides rows for which the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
 	PUBLIC ForExpression	AS STRING
 	/// <summary>A flag that is TRUE if the last row of the current scope is required. </summary>
-	PUBLIC Last				AS LOGIC 
+	PUBLIC Last				AS LOGIC
 	/// <summary>Permits continuation of a process for the next lNext rows, while obeying for and while clauses.</summary>
 	PUBLIC NextCount		AS LONG
 	/// <summary>Permits continuation of a process for a single row number, while obeying for and while clauses.</summary>
 	PUBLIC RecId			AS OBJECT
 	/// <summary>A flag that is TRUE if a process should continue stepping through data from the current work area cursor position until logical end-of-file. </summary>
-	PUBLIC Rest				AS LOGIC    
+	PUBLIC Rest				AS LOGIC
 	/// <summary>A code block representing the conditional while clause.  A while condition permits continuation of a process that steps through rows until the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
 	PUBLIC WhileBlock		AS ICodeblock
 	/// <summary>A string representing the conditional while clause.  A while condition permits continuation of a process that steps through rows until the condition evaluates to FALSE.  The string value is provided for storage, while the code block is provided as a parameter for the EvalBlock() method.</summary>
 	PUBLIC WhileExpression	AS STRING
-    
+
 	/// <summary>Construct a DbScopeInfo object.</summary>
 	CONSTRUCTOR()
 		SELF:Clear()
@@ -352,7 +362,7 @@ CLASS DbScopeInfo
         ENDIF
 END CLASS
 
-/// <summary>Helper structure to store information needed to perform a seek operation </summary> 
+/// <summary>Helper structure to store information needed to perform a seek operation </summary>
 STRUCTURE DbSeekInfo
 	/// <summary>A flag that is TRUE if the last occurrence of the specified key value is to be sought, rather than the first.</summary>
 	PUBLIC Last 	AS LOGIC
@@ -362,8 +372,8 @@ STRUCTURE DbSeekInfo
 	PUBLIC Value AS OBJECT
 END STRUCTURE
 
-/// <summary>Helper class to store information needed to perform a physical sort. </summary> 
-CLASS DbSortInfo 
+/// <summary>Helper class to store information needed to perform a physical sort. </summary>
+CLASS DbSortInfo
 	/// <summary>A DbTransInfo object holding the destination work area, column transfer information, and scoping information for the Sort() method. </summary>
 	PUBLIC TransInfo  AS DbTransInfo
 	/// <summary>An array of DbSortItem structures defining the key values for the sort.  Note that the key values are processed in the order that they appear in this array. </summary>
@@ -377,8 +387,8 @@ CLASS DbSortInfo
         RETURN
 END CLASS
 
-/// <summary>Helper structure to store information about a single sort key value. </summary> 
-STRUCTURE DbSortItem  
+/// <summary>Helper structure to store information about a single sort key value. </summary>
+STRUCTURE DbSortItem
 	/// <summary>A one-based index indicating the column on which the sort is based. </summary>
 	PUBLIC FieldNo 	AS LONG
 	/// <summary>The offset of the field in the Workarea buffer.</summary>
@@ -387,13 +397,13 @@ STRUCTURE DbSortItem
 	PUBLIC Length	AS LONG
 	/// <summary>One or more constants that function as sort optimization and control flags.
     /// They are passed to your RDD Sort() routine from the high-level wrapper function for the DBSort() function.</summary>
-	PUBLIC Flags	AS  DbSortFlags  
+	PUBLIC Flags	AS  DbSortFlags
 
 END STRUCTURE
 
 
-/// <summary>Helper class to store information needed for the global transfer of data items from one work area to another. </summary> 
-CLASS DbTransInfo  
+/// <summary>Helper class to store information needed for the global transfer of data items from one work area to another. </summary>
+CLASS DbTransInfo
 	/// <summary>A DbScopeInfo object describing the limits of the scope of the transfer. </summary>
 	PUBLIC Scope		AS DbScopeInfo
 	/// <summary>The source work area. </summary>
@@ -414,12 +424,12 @@ CLASS DbTransInfo
         SELF:Flags := DbTransInfoFlags.None
 END CLASS
 
-/// <summary>Helper structure to store information about a single piece of data (usually a column) to transfer from one work area to another.</summary> 
+/// <summary>Helper structure to store information about a single piece of data (usually a column) to transfer from one work area to another.</summary>
 STRUCTURE DbTransItem
 	/// <summary>A one-based field index in the source work area. </summary>
 	PUBLIC Source 		AS LONG
 	/// <summary>A one-based field index in the destination work area. </summary>
-	PUBLIC Destination 	AS LONG	
+	PUBLIC Destination 	AS LONG
 END STRUCTURE
 
 
@@ -496,7 +506,7 @@ STATIC CLASS RDDExtensions
         CASE DbFieldType.NullFlags
             RETURN TRUE
         END SWITCH
-        RETURN FALSE        
+        RETURN FALSE
 END CLASS
 END NAMESPACE
 
@@ -543,7 +553,7 @@ STRUCTURE _RddList
     EXPORT atomRddName AS STRING[]
     /// <summary>Number of names in the list.</summary>
     PROPERTY uiRddCount AS DWORD GET (DWORD) atomRddName:Length
-        
+
     /// <summary>Construct _RddList from class Tree.</summary>
     CONSTRUCTOR(oRDD AS Workarea)
         VAR names := List<STRING>{}
@@ -564,6 +574,6 @@ STRUCTURE _RddList
     CONSTRUCTOR(aNames AS STRING[])
         atomRddName := aNames
         RETURN
-            
+
 END STRUCTURE
 END NAMESPACE

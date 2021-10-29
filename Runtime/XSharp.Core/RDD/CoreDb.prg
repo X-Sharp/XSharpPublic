@@ -588,15 +588,10 @@ CLASS XSharp.CoreDb
             ENDIF
             IF ret
                 LOCAL dboi := DbOpenInfo{} AS DbOpenInfo
-                dboi:FileName  := Path.ChangeExtension( cName, NULL )
-                IF cName:EndsWith(".")
-                    dboi:Extension := "."
-                ELSE
-                    dboi:Extension := Path.GetExtension( cName )
-                ENDIF
+                dboi:FullName  := cName
                 var path := System.IO.Path.GetDirectoryName(cName)
-                path          := CoreDb.AdjustPath(path)
-                dboi:FileName := System.IO.Path.Combine(path, System.IO.Path.GetFileName(dboi:FileName))
+                path           := CoreDb.AdjustPath(path)
+                dboi:FullName  := System.IO.Path.Combine(path, System.IO.Path.GetFileName(dboi:FullName))
                 dboi:Shared    := FALSE
                 dboi:ReadOnly  := FALSE
                 dboi:Alias     := cAlias
@@ -2174,9 +2169,7 @@ CLASS XSharp.CoreDb
                     LOCAL uiArea AS DWORD
                     uiArea := Workareas:CurrentWorkareaNO
                     var path := Path.GetDirectoryName(cName)
-                    dboi:FileName    := System.IO.Path.Combine(path, System.IO.Path.GetFileNameWithoutExtension(cName))
-                    dboi:FileName    := Path.Combine(path,Path.GetFileNameWithoutExtension(cName))
-                    dboi:Extension   := Path.GetExtension( cName )
+                    dboi:FullName    := Path.Combine(path, System.IO.Path.GetFileNameWithoutExtension(cName))
                     dboi:Shared      := lShare
                     dboi:ReadOnly    := lReadOnly
                     dboi:Alias       := cAlias

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -27,17 +27,17 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL PROPERTY FieldSeparator    AS STRING GET _Separator SET _Separator := VALUE
         INTERNAL PROPERTY StringDelimiter   AS STRING GET _Delimiter SET _Delimiter := VALUE
         INTERNAL PROPERTY RecordSeparator   AS STRING GET _RecordSeparator SET _RecordSeparator := VALUE
-        
+
         STATIC PRIVATE  culture := CultureInfo.InvariantCulture AS CultureInfo
         PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
         INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
-        
+
         #region abstract methods, must be implemented in subclass
         ABSTRACT PROTECTED METHOD _getLastRec()  AS LONG
         ABSTRACT PROTECTED METHOD _writeRecord() AS LOGIC
         ABSTRACT PROTECTED METHOD _readRecord() AS LOGIC
         #endregion
-        
+
         #region worker methods
         PROTECTED METHOD _prepareFields AS VOID
             SELF:_fieldData     := OBJECT[]{SELF:_Fields:Length}
@@ -46,8 +46,8 @@ BEGIN NAMESPACE XSharp.RDD
                 nSize += fld:Length
             next
             SELF:_RecordLength := nSize
-            
-        
+
+
         PROTECTED METHOD _getFieldValue(oField AS RddFieldInfo, sValue AS STRING) AS OBJECT
             SWITCH oField:FieldType
                 CASE DbFieldType.Character   // C
@@ -69,8 +69,8 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                     SELF:_txtError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                 CASE DbFieldType.Logic
-                    return sValue[0] == 'T' .or. sValue[0] == 'Y'                
-                    
+                    return sValue[0] == 'T' .or. sValue[0] == 'Y'
+
                 CASE DbFieldType.Number         // 'N'
                 CASE DbFieldType.Float          // 'F'
                 CASE DbFieldType.Double         // 'B'
@@ -88,8 +88,8 @@ BEGIN NAMESPACE XSharp.RDD
                     NOP
             END SWITCH
             return NULL
-            
-        
+
+
         PROTECTED METHOD _getFieldString(oField AS RddFieldInfo, oValue AS OBJECT) AS STRING
             LOCAL sValue := "" as STRING
             SWITCH oField:FieldType
@@ -101,7 +101,7 @@ BEGIN NAMESPACE XSharp.RDD
                     if oValue IS IDate var oDate
                         VAR oDt := DateTime{oDate:Year, oDate:Month, oDate:Day}
                         sValue := DtToS(oDt)
-                        
+
                     elseif oValue is DateTime var oDt
                         sValue := DtToS(oDt)
                     else
@@ -118,14 +118,14 @@ BEGIN NAMESPACE XSharp.RDD
                     elseif oValue is DateTime var oDt2
                         oDt := oDt2
                     else
-                        oDt := DateTime.MinValue 
+                        oDt := DateTime.MinValue
                         SELF:_txtError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                     endif
                     sValue := DtToS(oDt)
                 CASE DbFieldType.Logic
-                    
+
                     IF oValue is LOGIC VAR logValue
-                        sValue := iif(logValue,"T","F") 
+                        sValue := iif(logValue,"T","F")
                     ELSE
                         SELF:_txtError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                     ENDIF
@@ -152,18 +152,18 @@ BEGIN NAMESPACE XSharp.RDD
                     NOP
             END SWITCH
             RETURN sValue
-        
+
         Protected Method _WriteString(strValue as STRING) AS LOGIC
             if strValue:Length > SELF:_Buffer:Length
                 SELF:_Buffer := Byte[]{strValue:Length }
             ENDIF
             SELF:_Encoding:GetBytes(strValue, 0, strValue:Length, _Buffer, 0)
             RETURN FWrite3(SELF:_hFile, _Buffer, (DWORD) strValue:Length) == (DWORD) strValue:Length
-            
+
         #endregion
         /// <inheritdoc />
         CONSTRUCTOR
-            SUPER()                     
+            SUPER()
             SELF:_hFile          := IntPtr.Zero
             SELF:_TransRec 		 := TRUE
             SELF:_RecordLength 	 := 0
@@ -176,15 +176,15 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_Buffer        := Byte[]{512}
             SELF:_Writing       := FALSE
             SELF:_Separator     := ","
-            
-            
+
+
             /// <inheritdoc />
         METHOD GoBottom() AS LOGIC
             RETURN FALSE
-            
-            
+
+
             /// <inheritdoc />
-        METHOD GoTop() AS LOGIC 
+        METHOD GoTop() AS LOGIC
             IF SELF:IsOpen
                 BEGIN LOCK SELF
                     FSeek3(SELF:_hFile, 0, FS_SET)
@@ -196,8 +196,8 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN TRUE
             ENDIF
             RETURN FALSE
-            
-            
+
+
             /// <inheritdoc />
         METHOD Skip(nToSkip AS INT) AS LOGIC
             IF SELF:_Recno <= SELF:_Reccount
@@ -209,8 +209,8 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:EoF := TRUE
                 RETURN FALSE
             ENDIF
-            
-            
+
+
             /// <inheritdoc />
         METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
             LOCAL isOK as LOGIC
@@ -219,36 +219,36 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_fieldData := OBJECT[]{SELF:_Fields:Length}
             ENDIF
             RETURN isOK
-            
-            
-            
-        METHOD Close() 			AS LOGIC  
+
+
+
+        METHOD Close() 			AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
             IF SELF:IsOpen
                 isOk := SELF:GoCold()
                 IF SELF:_Writing .and.  RuntimeState.Eof
                     FWrite(SELF:_hFile,_chr(26),1)
                 ENDIF
-                IF isOk 
+                IF isOk
                     IF !SELF:_ReadOnly
                         SELF:Flush()
                     ENDIF
                     //
                     TRY
                         isOk := FClose( SELF:_hFile )
-                        
+
                         isOk := SUPER:Close() .AND. isOk
                     CATCH ex AS Exception
                         isOk := FALSE
-                        SELF:_txtError(ex, Subcodes.ERDD_CLOSE_FILE,Gencode.EG_CLOSE,  "TEXTRDD.Close") 
-                        
+                        SELF:_txtError(ex, Subcodes.ERDD_CLOSE_FILE,Gencode.EG_CLOSE,  "TEXTRDD.Close")
+
                     END TRY
                     SELF:_hFile := F_ERROR
                 ENDIF
             ENDIF
             RETURN isOk
-            
-            
+
+
         PRIVATE METHOD _DetermineCodePage() AS LOGIC
             LOCAL codePage AS LONG
             IF XSharp.RuntimeState.Ansi
@@ -257,26 +257,25 @@ BEGIN NAMESPACE XSharp.RDD
             ELSE
                 SELF:_Ansi := FALSE
                 codePage := XSharp.RuntimeState.DosCodePage
-            ENDIF        
-            SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
+            ENDIF
+            SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage )
             return TRUE
-            
+
         /// <inheritdoc />
-        METHOD Create(info AS DbOpenInfo) AS LOGIC  
+        METHOD Create(info AS DbOpenInfo) AS LOGIC
             LOCAL isOK AS LOGIC
             isOK := FALSE
-            IF SELF:_Fields:Length == 0 
+            IF SELF:_Fields:Length == 0
                 RETURN FALSE
             ENDIF
             SELF:_OpenInfo := info
-            SELF:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
             //
             SELF:_Hot := FALSE
-            SELF:_FileName := SELF:_OpenInfo:FileName
+            SELF:_FileName := SELF:_OpenInfo:FullName
             SELF:_Alias := SELF:_OpenInfo:Alias
             SELF:_Shared := SELF:_OpenInfo:Shared
             SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
-            
+
             //
             SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
             IF SELF:IsOpen
@@ -289,7 +288,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             SELF:_Writing  := TRUE
             RETURN isOK
-            
+
             /// <inheritdoc />
         METHOD Open(info AS DbOpenInfo) AS LOGIC
             LOCAL isOK AS LOGIC
@@ -297,13 +296,10 @@ BEGIN NAMESPACE XSharp.RDD
             isOK := FALSE
             SELF:_OpenInfo := info
             SELF:_Hot := FALSE
-            IF !String.IsNullOrEmpty(SELF:_OpenInfo:Extension)
-                SELF:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
-            ENDIF
-            SELF:_FileName := SELF:_OpenInfo:FileName
+            SELF:_FileName := SELF:_OpenInfo:FullName
             IF File(SELF:_FileName)
                 SELF:_FileName := FPathName()
-                SELF:_OpenInfo:FileName := SELF:_FileName
+                SELF:_OpenInfo:FullName := SELF:_FileName
             ENDIF
             SELF:_Alias := SELF:_OpenInfo:Alias
             SELF:_Shared := SELF:_OpenInfo:Shared
@@ -324,11 +320,11 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_txtError( ex, ERDD.OPEN_FILE, XSharp.Gencode.EG_OPEN )
             ENDIF
             RETURN isOK
-            
+
             /// <inheritdoc />
         METHOD Flush() 			AS LOGIC
             RETURN FFlush(SELF:_hFile)
-            
+
             /// <inheritdoc />
         METHOD GoCold()			AS LOGIC
             IF SELF:_Hot
@@ -336,7 +332,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_Hot := FALSE
             ENDIF
             RETURN TRUE
-            
+
             /// <inheritdoc />
         METHOD GetValue(nFldPos AS INT) AS OBJECT
             // Subclass fills the _fieldData list
@@ -346,7 +342,7 @@ BEGIN NAMESPACE XSharp.RDD
                 endif
             endif
             RETURN NULL
-            
+
             /// <inheritdoc />
         METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             // Subclass persists the _fieldData list
@@ -355,7 +351,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_Hot := TRUE
             ENDIF
             RETURN TRUE
-            
+
             /// <inheritdoc />
         METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
             SWITCH nOrdinal
@@ -379,16 +375,16 @@ BEGIN NAMESPACE XSharp.RDD
                         SELF:RecordSeparator := (STRING) oNewValue
                     ENDIF
                     RETURN result
-                    
+
                 case DBI_GETDELIMITER
                     return SELF:_Delimiter
                 CASE DBI_CANPUTREC
                     RETURN FALSE
             END SWITCH
             return SUPER:Info(nOrdinal, oNewValue)
-            
+
             // Properties
-            
+
             /// <inheritdoc />
         PROPERTY Deleted 	AS LOGIC GET 	FALSE
         /// <inheritdoc />
@@ -398,30 +394,30 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc />
         PROPERTY RecNo		AS LONG 	GET _Recno
         /// <inheritdoc />
-        VIRTUAL PROPERTY Driver AS STRING GET "TEXTRDD" 
-        
-        
+        VIRTUAL PROPERTY Driver AS STRING GET "TEXTRDD"
+
+
         INTERNAL METHOD _txtError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
             SELF:_txtError(ex, iSubCode, iGenCode, String.Empty, ex?:Message, XSharp.Severity.ES_ERROR)
-        
+
         INTERNAL METHOD _txtError(iSubCode AS DWORD, iGenCode AS DWORD) AS VOID
             SELF:_txtError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, XSharp.Severity.ES_ERROR)
-        
+
         INTERNAL METHOD _txtError(ex AS Exception,iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD) AS VOID
             SELF:_txtError(ex, iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
-        
+
         INTERNAL METHOD _txtError(iSubCode AS DWORD, iGenCode AS DWORD, iSeverity AS DWORD) AS VOID
             SELF:_txtError(NULL, iSubCode, iGenCode, String.Empty, String.Empty, iSeverity)
-        
+
         INTERNAL METHOD _txtError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
             SELF:_txtError(NULL, iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
-        
+
         INTERNAL METHOD _txtError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
             SELF:_txtError(ex, iSubCode, iGenCode, strFunction, String.Empty, XSharp.Severity.ES_ERROR)
-        
+
         INTERNAL METHOD _txtError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING) AS VOID
             SELF:_txtError(NULL, iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR)
-        
+
         INTERNAL METHOD _txtError(ex AS Exception, iGenCode AS DWORD, iSubCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD) AS VOID
             LOCAL oError AS RddError
             //
@@ -441,10 +437,10 @@ BEGIN NAMESPACE XSharp.RDD
             RuntimeState.LastRddError := oError
             //
             THROW oError
-            
-            
-            
-        
+
+
+
+
     END CLASS
 END NAMESPACE
 

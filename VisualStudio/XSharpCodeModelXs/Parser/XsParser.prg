@@ -2183,6 +2183,12 @@ signature             : Id=identifier
             oSig:TypeParameterContraints:Add(SELF:ParseTypeParameterConstraints())
          ENDDO
          oSig:CallingConvention  := SELF:ParseCallingConvention()
+         IF oSig:CallingConvention == CallingConvention.Clipper
+             FOREACH var parameter in oSig:Parameters
+                 parameter:TypeName := XLiterals.UsualType
+                 parameter:ParamType := ParamType.As
+             NEXT
+         ENDIF
          SELF:ParseExpressionBody()
          RETURN oSig
 
@@ -2229,9 +2235,6 @@ signature             : Id=identifier
             VAR atts := SELF:TokensAsString(ParseAttributes())
             VAR sId   := ""
             VAR sTypeName := ""
-            IF _file:Project:ParseOptions:VOUntypedAllowed
-                sTypeName := "USUAL"
-            ENDIF
             IF SELF:La1 == XSharpLexer.SELF
                isSelf := TRUE
                Consume()
@@ -2249,24 +2252,17 @@ signature             : Id=identifier
                   Consume()
                ENDIF
                sTypeName := SELF:ParseTypeName()
+            ELSE
+                IF _file:Project:ParseOptions:VOUntypedAllowed
+                    sTypeName := "USUAL"
+                ENDIF
             ENDIF
             LOCAL variable AS XSourceParameterSymbol
             VAR endToken := SELF:LastToken
             SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
             variable := XSourceParameterSymbol{CurrentEntity, sId, range,interval, sTypeName}
             IF token != NULL
-               SWITCH token:Type
-               CASE XSharpLexer.AS
-                  variable:ParamType := ParamType.As
-               CASE XSharpLexer.IN
-                  variable:ParamType := ParamType.In
-               CASE XSharpLexer.OUT
-                  variable:ParamType := ParamType.Out
-               CASE XSharpLexer.REF
-                  variable:ParamType := ParamType.Ref
-               CASE XSharpLexer.PARAMS
-                  variable:ParamType := ParamType.Params
-               END SWITCH
+               variable:ParamType := (ParamType) token.Type
             ENDIF
             IF defaultExpr != NULL
                variable:Value := SELF:TokensAsString(defaultExpr)

@@ -91,7 +91,7 @@ BEGIN NAMESPACE XSharpModel
       END INTERFACE
 
     INTERFACE IXParameterSymbol   INHERIT IXVariableSymbol
-      PROPERTY ParamType      AS ParamType  GET
+      PROPERTY ParamType      AS ParamType  GET SET
       PROPERTY ParamTypeDesc  AS STRING GET
     END INTERFACE
 

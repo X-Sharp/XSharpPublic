@@ -404,6 +404,9 @@ BEGIN NAMESPACE XSharp
         #region operators
         /// <summary>Implicitely convert an array of USUALs to a typed array. Note that the usuals must contain a value of the correct type.</summary>
         STATIC OPERATOR IMPLICIT ( a AS ARRAY) AS __ArrayBase<T>
+            IF a == NULL
+                RETURN NULL
+            ENDIF
             VAR aResult := __ArrayBase<T>{}
             LOCAL oErr AS Error
             FOREACH VAR u IN a

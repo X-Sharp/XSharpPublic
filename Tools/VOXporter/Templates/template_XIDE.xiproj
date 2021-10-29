@@ -2,7 +2,7 @@
 PROJECT = %solutionname%
 OutputFolder = %solutionfolder%\Bin\
 GUID = %solutionguid%
-PrgEncoding = Default
+PrgEncoding = UTF8
 SupportCF = 0
 NoAppFileCreate = 0
 

@@ -2168,8 +2168,8 @@ CLASS XSharp.CoreDb
                     LOCAL dboi := DbOpenInfo{} AS DbOpenInfo
                     LOCAL uiArea AS DWORD
                     uiArea := Workareas:CurrentWorkareaNO
-                    var path := Path.GetDirectoryName(cName)
-                    dboi:FullName    := Path.Combine(path, System.IO.Path.GetFileNameWithoutExtension(cName))
+                    var path         := Path.GetDirectoryName(cName)
+                    dboi:FullName    := Path.Combine(path, System.IO.Path.GetFileName(cName))
                     dboi:Shared      := lShare
                     dboi:ReadOnly    := lReadOnly
                     dboi:Alias       := cAlias

@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp.RDD
                         SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, "DBFDBT.Info")
                     END TRY
                 ENDIF
-			CASE DbInfo.DBI_MEMOTYPE
+            CASE DbInfo.DBI_MEMOTYPE
                 oResult := DB_MEMO_DBT
             CASE DbInfo.DBI_MEMOVERSION
                 oResult := DB_MEMOVER_STD

@@ -1,7 +1,7 @@
 ﻿// AbstractMemo.prg
 // Created by    : robert
 // Creation Date : 4/1/2020 10:21:25 AM
-// Created for   : 
+// Created for   :
 // WorkStation   : ARTEMIS
 
 
@@ -22,13 +22,14 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _lockScheme AS DbfLocking
         PROTECT _blockSize  AS WORD
         PROTECT _oRdd       AS DBF
-        
-        PROPERTY IsOpen     AS LOGIC GET SELF:_hFile != F_ERROR  .AND. SELF:_hFile != IntPtr.Zero      
+
+        PROPERTY IsOpen     AS LOGIC GET SELF:_hFile != F_ERROR  .AND. SELF:_hFile != IntPtr.Zero
         PROPERTY Shared     AS LOGIC GET _Shared
         PROPERTY Encoding   AS Encoding GET SELF:_oRdd:_Encoding
         PROPERTY Extension  AS STRING AUTO GET SET
+        OVERRIDE PROPERTY FullPath   AS STRING GET FileName
         VIRTUAL PROPERTY BlockSize 	AS WORD GET SELF:_blockSize SET SELF:_blockSize := value
-            
+
        CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
             SELF:_oRdd  := oRDD
@@ -45,7 +46,7 @@ BEGIN NAMESPACE XSharp.RDD
                 isOk := TRUE
             ENDIF
             RETURN isOk
-            
+
         /// <inheritdoc />
         VIRTUAL METHOD CloseMemFile( ) AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
@@ -65,7 +66,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOk
 
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
-            SELF:FileName  := System.IO.Path.ChangeExtension( info:FileName, SELF:Extension )
+            SELF:FileName  := System.IO.Path.ChangeExtension( info:FullName, SELF:Extension )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
             SELF:_hFile     := FCreate( SELF:FileName)
@@ -73,16 +74,16 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SELF:IsOpen
 
        VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
-            SELF:FileName  := System.IO.Path.ChangeExtension( info:FileName, SELF:Extension )
+            SELF:FileName  := System.IO.Path.ChangeExtension( info:FullName, SELF:Extension )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
             SELF:_hFile     := FOpen(SELF:FileName, info:FileMode)
             SELF:_oStream   := FGetStream(_hFile)
             RETURN SELF:IsOpen
-   
+
      METHOD Error(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID
         SELF:_oRdd:_dbfError(ex, iSubCode, iGenCode,strFunction)
-        
+
     END CLASS
-END NAMESPACE    
+END NAMESPACE
 

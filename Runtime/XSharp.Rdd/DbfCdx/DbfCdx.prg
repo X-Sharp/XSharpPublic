@@ -489,15 +489,15 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN lOk
 
         PROTECTED METHOD OpenProductionIndex(info AS DbOpenInfo) AS VOID
-            VAR cExt  := CdxOrderBag.GetIndexExtFromDbfExt(info:FileName)
+            VAR cExt  := CdxOrderBag.GetIndexExtFromDbfExt(info:FullName)
             IF ! String.IsNullOrEmpty(cExt)
-                VAR cCdxFileName := System.IO.Path.ChangeExtension(info:FileName, cExt)
+                VAR cCdxFileName := System.IO.Path.ChangeExtension(info:FullName, cExt)
                 IF System.IO.File.Exists(cCdxFileName)
                     LOCAL orderinfo := DbOrderInfo{} AS DbOrderInfo
                     orderinfo:BagName := cCdxFileName
                     SELF:_indexList:Add(orderinfo, TRUE)
                 ENDIF
-                SELF:MarkDbfHeader(info:FileName,FALSE)
+                SELF:MarkDbfHeader(info:FullName,FALSE)
             ENDIF
 
          PROTECTED METHOD MarkDbfHeader(cFileName as STRING, lForce as LOGIC) AS VOID

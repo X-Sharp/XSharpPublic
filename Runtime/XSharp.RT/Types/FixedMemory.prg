@@ -258,15 +258,14 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
         RETURN pMemory
 
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)];
     INTERNAL STATIC METHOD Copy( pDestination AS IntPtr, pSource AS IntPtr, iCount AS INT ) AS IntPtr
         // No pointer validation for speed. Should be done in wrapper function
         // check if we need a temporary buffer when the pointers overlap
         LOCAL lDirect as LOGIC
-        if pSource:ToInt64()+iCount < pDestination:ToInt64()
+        if pSource + iCount < pDestination
             // source is completely before destination
             lDirect := TRUE
-        elseif pDestination:ToInt64()+iCount < pSource:ToInt64()
+        elseif pDestination + iCount < pSource
             lDirect := TRUE
         ELSE // buffers Overlap
             lDirect := FALSE
@@ -280,15 +279,37 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
         ENDIF
         RETURN pDestination
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)];
     INTERNAL STATIC METHOD Set( pMemory AS IntPtr, b AS BYTE, iCount AS INT) AS IntPtr
-        // No pointer validation for speed. Should be done in wrapper function
-        //_memSetDelegate(pMemory, b, dwCount)
-        //RETURN pMemory
-        VAR pByte := (BYTE PTR) pMemory
-        FOR VAR i := 1 to iCount
-            pByte[i] :=b
-        NEXT
+        // Write 8 bytes at the same time when possible
+        VAR pInt64 := (INT64 PTR) pMemory
+        IF iCount > 24
+            LOCAL i64 AS INT64
+            // The most common values that we are using are 0 (MemAlloc), 255 (MemFree) and 32 (for strings)
+            SWITCH b
+            CASE 0
+                i64 := 0
+            CASE 255
+                i64 := -1
+            CASE 32
+                i64 := 0x2020202020202020
+            OTHERWISE
+                i64 := BitConverter.ToInt64( <Byte>{b,b,b,b,b,b,b,b},0)
+            END SWITCH
+            // copy 8 bytes per iteration
+            DO WHILE iCount >= 8
+                pInt64[1] := i64
+                pInt64 += 1
+                iCount -= 8
+            ENDDO
+        ENDIF
+        IF iCount > 0
+            VAR pByte  := (BYTE PTR) pInt64
+            DO WHILE iCount > 0
+                pByte[1] := b
+                pByte += 1
+                iCount -= 1
+            ENDDO
+        ENDIF
         RETURN pMemory
 
 

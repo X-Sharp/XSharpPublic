@@ -7,6 +7,9 @@ USING XSharp.RDD.Support
 /// <summary>This interface defines the mimimum methods that a RDD that supports memos should implement.</summary>
 INTERFACE XSharp.RDD.IMemo
 
+    // Properties
+
+    PROPERTY FullPath as STRING GET
 	// Read & Write
 	/// <summary>Get a value from a memo file for the specified column.</summary>
 	/// <param name="nFldPos">1 based column number for which the value should be retrieved.</param>

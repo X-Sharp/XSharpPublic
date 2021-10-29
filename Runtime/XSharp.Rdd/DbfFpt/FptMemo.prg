@@ -20,17 +20,11 @@ BEGIN NAMESPACE XSharp.RDD
 
     INTERNAL CLASS FPTMemo INHERIT AbstractMemo IMPLEMENTS IMemo
         PROTECT _isFlex     AS LOGIC
-        PRIVATE _blockData AS BYTE[]
-        PRIVATE _fptHeader AS FptHeader
+        PRIVATE _foxHeader  AS FoxHeader
         PRIVATE _flexHeader AS FlexHeader
-        PRIVATE _lockCount AS LONG
+        PRIVATE _lockCount  AS LONG
         PRIVATE _nextFree   AS LONG
-        INTERNAL CONST FPT_HEADER_SIZE          := 512 AS LONG
         INTERNAL CONST MIN_FOXPRO_BLOCKSIZE     := 32 AS LONG
-        INTERNAL CONST FLEX_HEADER_OFFSET       := 512 AS LONG
-        INTERNAL CONST FLEX_HEADER_SIZE         := 512 AS LONG
-        INTERNAL CONST VERSION_MAJOR := 2   AS LONG
-        INTERNAL CONST VERSION_MINOR := 8   AS LONG
 
         PRIVATE _hotHeader AS LOGIC
 
@@ -45,22 +39,22 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE METHOD LockHeader(refreshHeaders AS LOGIC) AS LOGIC
             LOCAL lOk := TRUE AS LOGIC
             IF SELF:Shared
-                    IF SELF:_lockCount == 0
-                            DO WHILE ! SELF:_tryLock(0, 1, 10)
-                                SELF:_lockCount := 1
-                            ENDDO
+                IF SELF:_lockCount == 0
+                    DO WHILE ! SELF:_tryLock(0, 1, 10)
                         SELF:_lockCount := 1
-                    ELSE
-                        SELF:_lockCount += 1
-                    ENDIF
-                    IF refreshHeaders
-                        IF SELF:ReadHeader()
-                                IF SELF:IsFlex
-                                    // Deal with indexes of deleted blocks
-                            ENDIF
-                        ELSE
-                            SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.LockHeader")
+                    ENDDO
+                    SELF:_lockCount := 1
+                ELSE
+                    SELF:_lockCount += 1
+                ENDIF
+                IF refreshHeaders
+                    IF SELF:ReadHeader()
+                        IF SELF:IsFlex
+                            // Deal with indexes of deleted blocks
                         ENDIF
+                    ELSE
+                        SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.LockHeader")
+                    ENDIF
                 ENDIF
             ELSE
                 SELF:_lockCount += 1
@@ -73,21 +67,21 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_hotHeader := TRUE
             ENDIF
             IF SELF:_lockCount <= 1
-                    IF SELF:_hotHeader
-                        SELF:WriteHeader()
+                IF SELF:_hotHeader
+                    SELF:WriteHeader()
+                ENDIF
+                IF SELF:Shared
+                    _oStream:Flush()
+                    IF ! SELF:_unlock(0,1)
                     ENDIF
-                    IF SELF:Shared
-                        _oStream:Flush()
-                        IF ! SELF:_unlock(0,1)
-                        ENDIF
-                    ENDIF
+                ENDIF
                 SELF:_lockCount := 0
             ELSE
                 SELF:_lockCount -= 1
             ENDIF
         RETURN TRUE
 
-        PRIVATE METHOD GetMemoExtFromDbfExt(cDbfName AS STRING) AS STRING
+        PRIVATE METHOD _GetMemoExtFromDbfExt(cDbfName AS STRING) AS STRING
             SWITCH System.IO.Path.GetExtension(cDbfName:ToLower())
             CASE ".vcx"         // Control Library
                 RETURN ".VCT"
@@ -104,14 +98,21 @@ BEGIN NAMESPACE XSharp.RDD
             CASE ".dbc"         // database container
                 RETURN ".dct"
             END SWITCH
+            VAR cExt := RuntimeState.GetValue<STRING>(Set.MemoExt)
+            IF ! String.IsNullOrEmpty(cExt)
+                IF ! cExt.StartsWith(".")
+                    cExt := "."+cExt
+                    RuntimeState.SetValue(Set.MemoExt, cExt)
+                ENDIF
+                RETURN cExt
+            ENDIF
         RETURN DefExt
 
 
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
-            SELF:_blockData := BYTE[]{8}
-            SELF:_fptHeader   := FptHeader{}
-            SELF:_flexHeader  := FlexHeader{}
+            SELF:_foxHeader   := FoxHeader{oRDD}
+            SELF:_flexHeader  := FlexHeader{oRDD}
             SELF:_lockCount   := 0
             SELF:ExportMode   := BLOB_EXPORT_APPEND
 
@@ -123,7 +124,7 @@ BEGIN NAMESPACE XSharp.RDD
                 //SELF:BlockSize := FPT_DEFBLOCKSIZE
                 SELF:BlockSize := Convert.ToUInt16(XSharp.RuntimeState.MemoBlockSize)
                 SELF:WriteHeader()
-        ENDIF
+            ENDIF
 
 
         ///<summary>Return the raw data of a block including the 8 byte token </summary>
@@ -219,9 +220,8 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE METHOD _GetBlockLen(blockNbr AS LONG) AS LONG
             LOCAL blockLen := 0 AS INT
             IF SELF:_setBlockPos(blockNbr)
-                LOCAL token AS FtpMemoToken
-                token := FtpMemoToken{SELF:_blockData}
-                IF token:Read(SELF:_oStream)
+                VAR token := FlexMemoToken{NULL, _oStream}
+                IF token:Read()
                     blockLen     := token:Length+8
                 ELSE
                     blockLen     := -1
@@ -233,35 +233,28 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc />
 
         PRIVATE METHOD WriteFiller(nToWrite AS LONG, lDeleted AS LOGIC) AS VOID
-            LOCAL filler AS BYTE[]
             LOCAL fillByte AS BYTE
             LOCAL lIsVfp   AS LOGIC
             lIsVfp   := SELF:_oRdd IS DBFVFP
             fillByte := (BYTE) IIF(lDeleted, 0xF0, IIF(lIsVfp, 0x00, 0xAF))
-            filler := BYTE[]{ nToWrite}
-            IF fillByte != 0x00
-                FOR VAR i := 0 TO nToWrite-1
-                    filler[i] := fillByte
-                NEXT
-            ENDIF
-            IF ! _oStream:SafeWrite(filler)
-                SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.WriteFiller")
-            ENDIF
+            FOR VAR i := 1 TO nToWrite
+                IF ! _oStream:SafeWriteByte(fillByte)
+                    SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.WriteFiller")
+                ENDIF
+            NEXT
         RETURN
 
         PROTECTED INTERNAL METHOD DeleteBlock(blockNbr AS LONG) AS VOID
             // Todo: add deleted block to FlexFile deleted blocks list
             IF SELF:_setBlockPos(blockNbr)
-                VAR block := BYTE[]{8}
-                _oStream:SafeRead(block, 8)
-                LOCAL token AS FtpMemoToken
-                token := FtpMemoToken{block}
+                VAR token := FlexMemoToken{NULL, _oStream}
+                token:Read()
                 token:DataType := FlexFieldType.Delete
                 // Adjust the length to the whole of the block. Flexfile also does that
                 token:Length   := SELF:_RoundToBlockSize(token:Length +8)  - 8
                 IF SELF:LockHeader(TRUE)
                     SELF:_setBlockPos(blockNbr)
-                    IF ! _oStream:SafeWrite(block, 8)
+                    IF ! token:Write()
                         SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.DeleteBlock")
                     ENDIF
                     // Clear the data. FlexFiles does not do that, but I think it's better to clean up.
@@ -348,7 +341,7 @@ BEGIN NAMESPACE XSharp.RDD
                 fileName := FPathName()
                 bFile := System.IO.File.ReadAllBytes(fileName)
                 VAR bData := BYTE[] { bFile:Length+8}
-                VAR token := FtpMemoToken{bData}
+                VAR token := FlexMemoToken{bData, _oStream}
                 IF bFile:Length > UInt16.MaxValue
                     token:DataType := FlexFieldType.StringLong
                 ELSE
@@ -400,19 +393,20 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc />
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             LOCAL isOk      AS LOGIC
-            SELF:Extension := SELF:GetMemoExtFromDbfExt(info:FileName)
+            SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
             isOk := SUPER:CreateMemFile(info)
             IF isOk
-
-                IF ! SELF:_fptHeader:Write(SELF:_oStream)
+                SELF:_flexHeader:Stream := _oStream
+                SELF:_foxHeader:Stream  := _oStream
+                IF ! SELF:_foxHeader:Write()
                     SELF:Error(FException(), Subcodes.ERDD_CREATE_MEMO, Gencode.EG_WRITE, "FPTMemo.CreateMemFile")
                 ENDIF
                 SELF:_flexHeader:Create()
-                IF ! SELF:_flexHeader:Write(SELF:_oStream)
+                IF ! SELF:_flexHeader:Write()
                     SELF:Error(FException(), Subcodes.ERDD_CREATE_MEMO, Gencode.EG_WRITE, "FPTMemo.CreateMemFile")
                 ENDIF
                 SELF:_initContext()
-                _nextFree :=  SELF:_RoundToBlockSize(FPT_HEADER_SIZE + FLEX_HEADER_SIZE) / _blockSize
+                _nextFree :=  SELF:_RoundToBlockSize(FoxHeader.FOXHEADER_LENGTH + FlexHeader.FLEXHEADER_LENGTH) / _blockSize
                 SELF:WriteHeader()
             ELSE
                 SELF:Error( FException(), ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE, "FPTMemo.CreateMemFile")
@@ -423,9 +417,11 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc />
         VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
-            SELF:Extension := SELF:GetMemoExtFromDbfExt(info:FileName)
+            SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
             isOk := SUPER:OpenMemFile(info)
             IF isOk
+                SELF:_flexHeader:Stream := _oStream
+                SELF:_foxHeader:Stream  := _oStream
                 // Per default, Block Size if 512
                 IF SELF:LockHeader(FALSE)
                     SELF:_initContext()
@@ -445,7 +441,7 @@ BEGIN NAMESPACE XSharp.RDD
             SET
                 _blockSize := value
                 IF value >= MIN_FOXPRO_BLOCKSIZE
-                    SELF:_fptHeader:BlockSize := value
+                    SELF:_foxHeader:BlockSize := value
                 ENDIF
                 IF SELF:_isFlex
                     IF value >= MIN_FOXPRO_BLOCKSIZE
@@ -504,7 +500,7 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:Error(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "FPTMemo.Zap")
                 ENDIF
                 _oStream:SafeSetLength(0)
-                SELF:_fptHeader:Clear()
+                SELF:_foxHeader:Clear()
                 SELF:_flexHeader:Clear()
                 SELF:WriteHeader()
                 RETURN TRUE
@@ -517,14 +513,14 @@ BEGIN NAMESPACE XSharp.RDD
             VAR savedPos := _oStream:Position
             VAR nFileLen := _oStream:Length
 
-            IF ! SELF:_fptHeader:Read(SELF:_oStream)
+            IF ! SELF:_foxHeader:Read()
                 SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.ReadHeader")
             ENDIF
-            _blockSize := SELF:_fptHeader:BlockSize
-            _nextFree  := SELF:_fptHeader:NextFree
+            _blockSize := SELF:_foxHeader:BlockSize
+            _nextFree  := SELF:_foxHeader:NextFree
             // read Flex Header
             IF nFileLen >= 1024
-                IF ! SELF:_flexHeader:Read(SELF:_oStream)
+                IF ! SELF:_flexHeader:Read()
                     SELF:Error(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.ReadHeader")
                 ENDIF
                 _isFlex := SELF:_flexHeader:Valid
@@ -540,10 +536,10 @@ BEGIN NAMESPACE XSharp.RDD
         METHOD WriteHeader() AS VOID
             IF SELF:IsOpen .AND. ! SELF:_oRdd:ReadOnly
                 IF SELF:_blockSize >= MIN_FOXPRO_BLOCKSIZE
-                    SELF:_fptHeader:BlockSize := _blockSize
+                    SELF:_foxHeader:BlockSize := _blockSize
                 ENDIF
-                SELF:_fptHeader:NextFree   := _nextFree
-                IF ! SELF:_fptHeader:Write(SELF:_oStream)
+                SELF:_foxHeader:NextFree   := _nextFree
+                IF ! SELF:_foxHeader:Write()
                     SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.WriteHeader")
                 ENDIF
                 // write flex header
@@ -553,7 +549,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSE
                         SELF:_flexHeader:AltBlockSize := SELF:_blockSize
                     ENDIF
-                    IF ! SELF:_flexHeader:Write(SELF:_oStream)
+                    IF ! SELF:_flexHeader:Write()
                         SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.WriteHeader")
                     ENDIF
                 ENDIF
@@ -564,9 +560,8 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE METHOD _GetBlockType(blockNbr as LONG) AS STRING
             LOCAL cDataType := "?" as STRING
             IF SELF:_setBlockPos(blockNbr)
-                LOCAL token AS FtpMemoToken
-                token := FtpMemoToken{SELF:_blockData}
-                IF token:Read(SELF:_oStream)
+                VAR token := FlexMemoToken{NULL, _oStream}
+                IF token:Read()
                     cDataType := "N"
                     SWITCH token:DataType
 
@@ -674,6 +669,31 @@ BEGIN NAMESPACE XSharp.RDD
                 blockNr := oBlobInfo:Pointer
                 bData   := SELF:EncodeValue(oBlobInfo:Data)
                 oResult := SELF:_putBlock(blockNr, bData)
+            CASE DbInfo.BLOB_ROOT_GET
+                oResult := NULL
+                IF SELF:_isFlex
+                    blockNr := SELF:_flexHeader:Root
+                    if blockNr != 0
+                        bData   := SELF:_getBlock(blockNr)
+                        oResult := SELF:DecodeValue(bData)
+                    endif
+
+                ENDIF
+            CASE DbInfo.BLOB_ROOT_PUT
+                IF SELF:_isFlex
+                    bData   := SELF:EncodeValue(oBlobInfo:Data)
+                    blockNr := SELF:_flexHeader:Root
+                    blockNr := SELF:_putBlock(blockNr, bData)
+                    SELF:_flexHeader:Root := blockNr
+                    SELF:WriteHeader()
+                    oResult := TRUE
+                ELSE
+                    oResult := FALSE
+                ENDIF
+            CASE DbInfo.BLOB_ROOT_LOCK
+                NOP
+            CASE DbInfo.BLOB_ROOT_UNLOCK
+                NOP
             OTHERWISE
                 NOP
             END SWITCH
@@ -683,9 +703,8 @@ BEGIN NAMESPACE XSharp.RDD
        INTERNAL METHOD DecodeValue(bData AS BYTE[]) AS OBJECT
             // bData includes the header
             LOCAL encoding  AS Encoding
-            LOCAL token AS FtpMemoToken
             LOCAL offset AS LONG
-            token := FtpMemoToken{bData}
+            VAR token := FlexMemoToken{bData, _oStream}
             encoding := SELF:_oRdd:_Encoding //ASCIIEncoding{}
             SWITCH token:DataType
             CASE FlexFieldType.Array16
@@ -893,10 +912,10 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN aValues
 
         /// <summary>Encode a value into a FTP block</summary>
-        /// <param name="oValue">The value to encode</param>
+        /// <param name="oValue">The value to encode. Allowed are at this moment, String, Logic and byte[]</param>
         /// <returns>Byte array including the 8 byte header with the block length and type</returns>
         INTERNAL METHOD EncodeValue(oValue AS OBJECT) AS BYTE[]
-            LOCAL token AS FtpMemoToken
+            LOCAL token AS FlexMemoToken
             LOCAL otc AS TypeCode
             LOCAL oType AS System.Type
             LOCAL bData AS BYTE[]
@@ -908,17 +927,27 @@ BEGIN NAMESPACE XSharp.RDD
             SWITCH otc
             CASE TypeCode.String
                 VAR sValue := (STRING) oValue
-                bData := BYTE[] { sValue:Length+8}
-                token := FtpMemoToken{bData}
+                bData := BYTE[] { sValue:Length+FlexMemoToken.TokenLength}
+                token := FlexMemoToken{bData, _oStream}
                 token:DataType := FlexFieldType.String
                 token:Length   := sValue:Length
                 VAR bytes := SELF:_oRdd:_Encoding:GetBytes(sValue)
-                System.Array.Copy(bytes,0, bData,8, bytes:Length)
+                System.Array.Copy(bytes,0, bData,FlexMemoToken.TokenLength, bytes:Length)
                 RETURN bData
+            CASE TypeCode.Object
+                IF oValue IS BYTE[] VAR bytes
+                    // Store as Picture Type in the FPT
+                    bData := BYTE[] { bytes:Length+FlexMemoToken.TokenLength}
+                    token := FlexMemoToken{bData, _oStream}
+                    token:DataType := FlexFieldType.Picture
+                    token:Length   := bytes:Length
+                    System.Array.Copy(bytes,0, bData,FlexMemoToken.TokenLength, bytes:Length)
+                    RETURN bData
+                ENDIF
             CASE TypeCode.Boolean
                 VAR lValue := (LOGIC) oValue
-                bData := BYTE[] { 8}
-                token := FtpMemoToken{bData}
+                bData := BYTE[] {FlexMemoToken.TokenLength}
+                token := FlexMemoToken{bData, _oStream}
                 token:Length := 0
                 token:DataType := IIF(lValue, FlexFieldType.LogicTrue, FlexFieldType.LogicFalse)
                 RETURN bData

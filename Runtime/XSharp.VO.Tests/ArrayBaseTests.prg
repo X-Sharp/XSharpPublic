@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
     CLASS ArrayBaseTests
         // Normal non indexed developer
-        CLASS Developer 
+        CLASS Developer
             PROPERTY FirstName AS STRING AUTO
             PROPERTY LastName AS STRING AUTO
             CONSTRUCTOR()
@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             FirstName := cFirst
             LastName  := cLast
 		/// <summary>Implicitely convert a typed array to an array of USUALs.</summary>
-            
+
         END CLASS
         // Special indexed developer
         CLASS DeveloperIndexed INHERIT Developer IMPLEMENTS IIndexedProperties
@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
                     CASE 1
                         LastName := value
                     END SWITCH
-                    RETURN 
+                    RETURN
                 END SET
             END PROPERTY
             PROPERTY SELF[name AS STRING] AS USUAL
@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
                     CASE "lastname"
                         LastName := value
                     END SWITCH
-                    RETURN 
+                    RETURN
                 END SET
             END PROPERTY
         END CLASS
@@ -79,12 +79,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
             RETURN aDevs
         METHOD BuildIndexedArray() AS ARRAY OF DeveloperIndexed
             LOCAL aDevs AS ARRAY OF DeveloperIndexed
+            aDevs := NULL_ARRAY
             aDevs := {}
             AADD(aDevs, DeveloperIndexed{"Chris","Pyrgas"})
             AADD(aDevs, DeveloperIndexed{"Nikos","Kokkalis"})
-            RETURN aDevs            
+            RETURN aDevs
         [Trait("Category", "ArrayBase")];
-        [Fact]; 
+        [Fact];
         METHOD TestIndices AS VOID
             VAR aDevs := SELF:BuildArray()
             Assert.Equal( 2 , (INT) ALen(aDevs))
@@ -98,9 +99,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal("Kokkalis", aDevs[2,"LastName"])
             Assert.ThrowsAny<Error>({ => aDevs[1,"First"] })
             Assert.ThrowsAny<Error>({ => aDevs[3,"FirstName"] })
-            
+
         [Trait("Category", "ArrayBase")];
-        [Fact]; 
+        [Fact];
         METHOD TestSort AS VOID
             VAR aDevs := SELF:BuildArray()
             ASort(aDevs, {x, y => x:LastName <= y:LastName})
@@ -109,19 +110,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
             ASort(aDevs, {x, y => x:FirstName <= y:FirstName})
             Assert.Equal("Chris", aDevs[1]:FirstName)
             Assert.Equal("Nikos", aDevs[2]:FirstName)
-            
+
         [Trait("Category", "ArrayBase")];
-        [Fact]; 
+        [Fact];
         METHOD TestEval AS VOID
             VAR aDevs := SELF:BuildArray()
             LOCAL result AS STRING
             result := ""
             Aeval(aDevs, { x => result += x:FirstName})
             Assert.Equal("ChrisNikos", result)
-            
-            
+
+
         [Trait("Category", "ArrayBase")];
-        [Fact]; 
+        [Fact];
         METHOD TestScan AS VOID
             VAR aDevs := SELF:BuildArray()
             Assert.Equal(1, (INT) AScan(aDevs, { x => X:FirstName == "Chris" .AND. x:LastName == "Pyrgas"}))
@@ -129,10 +130,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(0, (INT) AScan(aDevs, { x => X:FirstName == "Fabrice" .AND. x:LastName == "Foray"}))
             VAR chris := aDevs[1]
             Assert.Equal(1, (INT) Ascan(adevs, chris))
-            
-            
+
+
         [Trait("Category", "ArrayBase")];
-        [Fact]; 
+        [Fact];
         METHOD TestIndices2 AS VOID
             VAR aDevs := SELF:BuildIndexedArray()
             Assert.Equal("Chris", aDevs[1,1])
@@ -144,7 +145,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal("CHRIS", aDevs[1,"firstname"])
 
 //        [Trait("Category", "ArrayBase")];
-//        [Fact]; 
+//        [Fact];
 //        METHOD testAscan2 AS VOID
 //            VAR aDevs := BuildIndexedArray()
 //            Assert.Equal(1, (INT) AScan(aDevs, { |x| x[1] := "Chris" }))

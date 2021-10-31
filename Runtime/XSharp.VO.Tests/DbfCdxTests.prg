@@ -5045,6 +5045,72 @@ RETURN
 
 
 
+#warning disabled BLOBDirectPut_Test, seems to corrupt memory?
+/*		[Fact, Trait("Category", "DBF")];
+		METHOD BLOBDirectPut_Test() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aStruct AS ARRAY
+			LOCAL nRecSize, nBlockNo AS INT
+			LOCAL pRecord, pField AS BYTE PTR
+			LOCAL aRecordBuf AS BYTE[]
+
+			RddSetDefault("DBFCDX")
+			
+			cDbf := GetTempFileName()
+			DbCreate(cDbf, { { "DATA", "M", 10, 0, "DATA" } })
+
+			DbUseArea(,,cDbf)
+			nRecSize := DbInfo(DBI_GETRECSIZE)
+			pRecord := MemAlloc((DWORD)nRecSize)
+			#define ASC_SP 32
+			pRecord[1] := ASC_SP
+			aRecordBuf := BYTE[]{ nRecSize }
+		
+			// record 1
+			pField := pRecord + 1
+			nBlockNo := BLOBDirectPut(0, "record 1")
+			MemCopyString(pField, Str(nBlockNo, 10, 0), 10)
+			DbAppend()
+			System.Runtime.InteropServices.Marshal.Copy((IntPtr)pRecord, aRecordBuf, 0, nRecSize)
+			VoDbRecordPut(aRecordBuf)
+		
+			// record 2 (several blocks)
+			pField := pRecord + 1
+			nBlockNo := BLOBDirectPut(0, Replicate("a", 100))
+			MemCopyString(pField, Str(nBlockNo, 10, 0), 10)
+			DbAppend()
+			System.Runtime.InteropServices.Marshal.Copy((IntPtr)pRecord, aRecordBuf, 0, nRecSize)
+			VoDbRecordPut(aRecordBuf)
+		
+			// record 3
+			pField := pRecord + 1
+			nBlockNo := BLOBDirectPut(0, "record 3")
+			MemCopyString(pField, Str(nBlockNo, 10, 0), 10)
+			DbAppend()
+			System.Runtime.InteropServices.Marshal.Copy((IntPtr)pRecord, aRecordBuf, 0, nRecSize)
+			VoDbRecordPut(aRecordBuf)
+		
+			VoDbCommit()
+			VoDbCloseArea()
+			MemFree(pRecord)
+		
+			// TEST
+			Assert.IsTrue( DbUseArea(TRUE, "DBFCDX", cDbf, "MEMOTEST", FALSE, FALSE) )
+			VoDbGoTop()
+			Assert.IsTrue( !VoDbEof() )
+			Assert.Equal( "record 1", STRING( FieldGetSym(#DATA) ) )
+			VoDbSkip(1)
+			Assert.IsTrue( !VoDbEof() )
+			Assert.Equal( Replicate("a", 100), STRING( FieldGetSym(#DATA) ) )
+			VoDbSkip(1)
+			Assert.IsTrue( !VoDbEof() )
+			Assert.Equal( "record 3", STRING( FieldGetSym(#DATA) ) )
+			VoDbSkip(1)
+			Assert.IsTrue( VoDbEof() )
+			VoDbCloseArea()*/
+
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

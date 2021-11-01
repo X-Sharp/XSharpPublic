@@ -5007,7 +5007,7 @@ RETURN
 
 
 		[Fact, Trait("Category", "DBF")];
-		METHOD TestDBSeek() AS VOID
+		METHOD TestDBSeek() AS VOID // https://github.com/X-Sharp/XSharpPublic/issues/807
 			LOCAL cDbf AS STRING
 			RddSetDefault("DBFCDX")
 			
@@ -5045,9 +5045,8 @@ RETURN
 
 
 
-#warning disabled BLOBDirectPut_Test, seems to corrupt memory?
-/*		[Fact, Trait("Category", "DBF")];
-		METHOD BLOBDirectPut_Test() AS VOID
+		[Fact, Trait("Category", "DBF")];
+		METHOD BLOBDirectPut_Test() AS VOID // https://github.com/X-Sharp/XSharpPublic/issues/832
 			LOCAL cDbf AS STRING
 			LOCAL aStruct AS ARRAY
 			LOCAL nRecSize, nBlockNo AS INT
@@ -5107,7 +5106,7 @@ RETURN
 			Assert.Equal( "record 3", STRING( FieldGetSym(#DATA) ) )
 			VoDbSkip(1)
 			Assert.IsTrue( VoDbEof() )
-			VoDbCloseArea()*/
+			VoDbCloseArea()
 
 
 

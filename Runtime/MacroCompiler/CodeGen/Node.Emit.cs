@@ -479,6 +479,29 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Pop);
         }
     }
+    internal partial class MacroExpr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Expr.Emit(ilg);
+            MethodSymbol m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions_Evaluate) as MethodSymbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+    }
+
+    internal partial class MacroId
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            Id.Emit(ilg);
+            MethodSymbol m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___VarGet) as MethodSymbol;
+            ilg.Emit(OpCodes.Call, m.Method);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
+        }
+    }
     internal partial class MemvarExpr : Expr
     {
         internal override void Emit(ILGenerator ilg, bool preserve)

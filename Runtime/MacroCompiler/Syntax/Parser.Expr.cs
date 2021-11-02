@@ -87,6 +87,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.VO_OR:
                 case TokenType.VO_XOR:
                 case TokenType.VO_NOT:
+                case TokenType.AMP:
                     return true;
                 case TokenType.ARGLIST:
                     return _options.ParseStatements;
@@ -215,9 +216,8 @@ namespace XSharp.MacroCompiler
                 case TokenType.FIELD:
                     return ParseFieldAlias();
                 // TODO nvk: PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
-                // TODO nvk: Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
-                // TODO nvk: AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
-                // TODO nvk: AMP Id=identifierName										#macro					// &id
+                case TokenType.AMP:
+                    return ParseMacroExpression();
                 case TokenType.ARGLIST:
                     if (_options.ParseStatements)
                         throw Error(Lt(), ErrorCode.NotSupported, Lt()?.Value);
@@ -701,6 +701,29 @@ namespace XSharp.MacroCompiler
                 Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, ")");
 
                 return new IifExpr(c, et, ef, o);
+            }
+            return null;
+        }
+
+        internal Expr ParseMacroExpression()
+        {
+            // AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
+            // AMP Id=identifierName		                                #macro					// &id
+
+            Token o;
+            if (ExpectAndGet(TokenType.AMP, out o))
+            {
+                if (Expect(TokenType.LPAREN))
+                {
+                    var e = ParseExpression();
+                    Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, ")");
+                    return new MacroExpr(e, o);
+                }
+                else
+                {
+                    var id = Require(ParseId(), ErrorCode.Expected, "name");
+                    return new MacroId(id, o);
+                }
             }
             return null;
         }

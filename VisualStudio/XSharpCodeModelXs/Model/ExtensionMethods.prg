@@ -368,6 +368,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.MemVar
                 CASE Kind.DbField
                 CASE Kind.Undeclared
+                CASE Kind.TypeParameter
                     imgK := ImageListKind.Local
                 CASE Kind.Command
                 CASE Kind.XCommand

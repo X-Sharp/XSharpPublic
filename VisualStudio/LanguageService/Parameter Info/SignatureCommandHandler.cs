@@ -233,32 +233,6 @@ namespace XSharp.LanguageService
             // First, where are we ?
             var location = props.Location;
             IXMemberSymbol currentElement = null;
-            int Level = 0;
-            do
-            {
-                ssp = ssp - 1;
-                char leftCh = ssp.GetChar();
-                bool done = false;
-                switch (leftCh)
-                {
-                    case ')':
-                    case '}':
-                        Level += 1;
-                        break;
-                    case '(':
-                    case '{':
-                        Level -= 1;
-                        done = Level < 0;
-                        break;
-                }
-                if (done)
-                    break;
-            } while (ssp.Position > 0);
-            //
-            if (ssp.Position > 0)
-            {
-                ssp -= 1;
-            }
             // When we have a multi line source line this is the line where the open paren or open curly is
 
             if (location.Member != null && location.Member.Range.StartLine == ssp.GetContainingLine().LineNumber)
@@ -266,34 +240,101 @@ namespace XSharp.LanguageService
                 // if we are at the start of an entity then do not start a signature session
                 return null;
             }
-
             // Then, the corresponding Type/Element if possible
             // Check if we can get the member where we are
 
             var tokenList = XSharpTokenTools.GetTokenList(location, out var state);
-            var lastOpen = -1;
-            if (comma)
+            while (tokenList.Count > 0)
             {
-                bool hasOpenToken = false;
-                // check to see if there is a lparen or lcurly before the comma
-                foreach (var token in tokenList)
+                var last = tokenList[tokenList.Count - 1];
+                if (last.Position > ssp.Position)
                 {
-                    if (token.Position > location.Position)
-                        break;
-                    switch (token.Type)
+                    tokenList.RemoveAt(tokenList.Count - 1);
+                }
+                else if (last.Position == ssp.Position )
+                {
+                    bool delete = false;
+                    switch (last.Type)
                     {
-                        case XSharpLexer.LPAREN:
+                        case XSharpLexer.COMMA:
+                            delete = props.triggerChar != ',';
+                            break;
                         case XSharpLexer.LCURLY:
-                            hasOpenToken = true;
-                            lastOpen = tokenList.IndexOf(token);
+                            delete = props.triggerChar != ',' && props.triggerChar != '{';
+                            break;
+                        case XSharpLexer.LPAREN:
+                            delete = props.triggerChar != ',' && props.triggerChar != '(';
+                            break;
+                        case XSharpLexer.RPAREN:
+                            if (props.triggerChar == ')')
+                                delete = props.triggerPosition != last.Position;
+                            else
+                                delete = true;
+                            break;
+                        case XSharpLexer.RCURLY:
+                            if (props.triggerChar == '}')
+                                delete = props.triggerPosition != last.Position;
+                            else
+                                delete = true;
+                            break;
+                        default:
+                            delete = true;
                             break;
                     }
-                    if (hasOpenToken)
+                    if (delete)
+                    {
+                        tokenList.RemoveAt(tokenList.Count - 1);
+                    }
+                    else
                         break;
                 }
-                if (!hasOpenToken)
-                    return null;
-                tokenList.RemoveRange(lastOpen + 1, tokenList.Count - lastOpen - 1);
+                else 
+                {
+                    break;
+                }
+            }
+            if (comma)
+            {
+                // check to see if there is a lparen or lcurly before the comma
+                bool done = false;
+                int nested = 0;
+                while (tokenList.Count > 0 && ! done)
+                {
+                    var token = tokenList[tokenList.Count-1];
+                    bool delete = false;
+                    switch (token.Type)
+                    {
+                        case XSharpLexer.RPAREN:
+                        case XSharpLexer.RBRKT:
+                        case XSharpLexer.RCURLY:
+                            nested += 1;
+                            delete = true;
+                            break;
+                        case XSharpLexer.LBRKT:
+                            nested -= 1;
+                            delete = true;
+                            break;
+                        case XSharpLexer.LPAREN:
+                        case XSharpLexer.LCURLY:
+                            nested -= 1;
+                            if (nested < 0)
+                            {
+                                done = true;
+                            }
+                            else
+                            {
+                                delete = true;
+                            }
+                            break;
+                        default:
+                            delete = true;
+                            break;
+                    }
+                    if (delete)
+                    {
+                        tokenList.RemoveAt(tokenList.Count - 1);
+                    }
+                }
             }
             
             // We don't care of the corresponding Type, we are looking for the currentElement
@@ -343,6 +384,7 @@ namespace XSharp.LanguageService
 
             var props = new XSharpSignatureProperties(location);
             props.triggerChar = triggerchar;
+            props.triggerPosition = this._textView.Caret.Position.BufferPosition.Position;
 
             if (type != null && methodName != null)
             {

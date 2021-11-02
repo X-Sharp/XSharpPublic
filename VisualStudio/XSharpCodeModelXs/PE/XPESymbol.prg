@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharpModel
       #region Simple Properties
       PROPERTY Assembly AS XAssembly               AUTO
 
-      PROPERTY Prototype AS STRING                 GET SELF:Name
+      PROPERTY Prototype         AS STRING         GET SELF:Name
       PROPERTY SingleLine        AS LOGIC          AUTO
       PROPERTY Value             AS STRING         AUTO
       PROPERTY OriginalTypeName  AS STRING         AUTO

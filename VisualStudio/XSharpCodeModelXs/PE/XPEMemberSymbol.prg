@@ -484,7 +484,7 @@ END CLASS
       END PROPERTY
 
       PROPERTY TypeParameters as IList<STRING>           GET SELF:_signature:TypeParameters:ToArray()
-      PROPERTY TypeParametersList AS STRING              GET SELF:_signature:TypeParametersList
+      PROPERTY TypeParameterList AS STRING               GET SELF:_signature:TypeParameterList
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
       PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
 

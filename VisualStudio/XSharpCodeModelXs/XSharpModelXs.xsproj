@@ -41,7 +41,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.9.0.1</XSharpProjectversion>
+    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <NamedArgs>true</NamedArgs>
@@ -515,7 +515,8 @@
       <Name>Microsoft.Win32.Primitives</Name>
       <AssemblyName>Microsoft.Win32.Primitives.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+      <HintPath>
+      </HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />

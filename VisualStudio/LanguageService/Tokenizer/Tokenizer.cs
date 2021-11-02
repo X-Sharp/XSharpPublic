@@ -304,7 +304,8 @@ namespace XSharp.LanguageService
             while (!done && ! list.Eoi() )
             {
                 var token = list.ConsumeAndGet();
-                int open = 0;
+                int openToken = 0;
+                XSharpToken closeToken = null;
                 bool isHit = token.StartIndex <= cursorPos && token.StopIndex >= cursorPos && underCursor;
                 bool isNotLast = token.StopIndex < location.Position - 1;
                 if (token.StartIndex > cursorPos)
@@ -381,16 +382,20 @@ namespace XSharp.LanguageService
                         result.Add(token);
                         break;
                     case XSharpLexer.RCURLY:
-                        result.Add(token);
-                        open = XSharpLexer.LCURLY;
-                        break;
                     case XSharpLexer.RPAREN:
-                        result.Add(token);
-                        open = XSharpLexer.LPAREN;
-                        break;
                     case XSharpLexer.RBRKT:
                         result.Add(token);
-                        open = XSharpLexer.LBRKT;
+                        // delete everything between parens, curly braces and brackets closing token before cursor pos
+                        if (token.Position < location.Position)
+                        {
+                            closeToken = token;
+                            if (token.Type == XSharpLexer.RCURLY)
+                                openToken = XSharpLexer.LCURLY;
+                            else if (token.Type == XSharpLexer.RPAREN)
+                                openToken = XSharpLexer.LPAREN;
+                            else if (token.Type == XSharpLexer.RBRKT)
+                                openToken = XSharpLexer.LBRKT;
+                        }
                         break;
                     case XSharpLexer.STATIC:        // These tokens are all before a namespace of a (namespace dot) type
                         if (isNotLast) // there has to be a space after the token
@@ -512,52 +517,40 @@ namespace XSharp.LanguageService
                         break;
                 }
                 last = token.Type;
-                // if we just read a close token then find the matching open token in the list and remove everything in between
-                if (open != 0)
+                // remove everything between parens, curly braces or brackets when the closing token is before the cursor
+                if (openToken != 0 && closeToken != null)
                 {
                     var iLast = result.Count - 1;
+                    int count = 0;
+                    while (iLast >= 0 && result[iLast] != closeToken)
+                    {
+                       iLast--;
+                    }
+                    int closeType = closeToken.Type;
                     while (iLast >= 0)
                     {
-                        if (result[iLast].Type == open)
+                        var type = result[iLast].Type;
+                        if (type == closeType)
                         {
-                            if (iLast < result.Count - 1)
+                            count += 1;
+                        }
+                        else if ( type == openToken )
+                        {
+                            count -= 1;
+                            if (count == 0)
                             {
-                                result.RemoveRange(iLast + 1, result.Count - iLast - 2);
+                                if (iLast < result.Count - 1)
+                                {
+                                    result.RemoveRange(iLast + 1, result.Count - iLast - 2);
+                                }
+                                break;
                             }
-                            break;
                         }
                         iLast -= 1;
                     }
                 }
             }
-            // if the last token is followed by an "open" token
-            //if (lastIncluded != -1 && lastIncluded < line.Count-1 && line[lastIncluded].Type == XSharpLexer.ID)
-            //{
-            //    var token = line[lastIncluded + 1];
-            //    // Include open parens etc in the list as well
-            //    switch (token.Type)
-            //    {
-
-            //        case XSharpLexer.LPAREN:
-            //        case XSharpLexer.LCURLY:
-            //        case XSharpLexer.LBRKT:
-            //            tokenList.Add(token);
-            //            break;
-            //        case XSharpLexer.LT:
-            //            var gtPos = findTokenInList(line, lastIncluded + 1, XSharpLexer.GT);
-            //            if (gtPos > 0)
-            //            {
-            //                for (int i = lastIncluded + 1; i <= gtPos; i++)
-            //                {
-            //                    var element = line[i];
-            //                    tokenList.Add(element);
-            //                }
-            //            }
-            //            break;
-            //    }
-
-            //}
-
+            
             // when the list ends with a comma, drop the ending comma. Why ?
             if (result.Count > 0)
             {
@@ -567,7 +560,7 @@ namespace XSharp.LanguageService
                     result.RemoveAt(result.Count - 1);
                 }
             }
-            return result;
+           return result;
         }
  
         public static XSourceTypeSymbol FindNamespace(int position, XFile file)

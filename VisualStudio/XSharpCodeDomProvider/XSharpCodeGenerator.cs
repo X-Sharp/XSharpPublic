@@ -96,7 +96,6 @@ namespace XSharp.CodeDom
         private bool generatingForLoop;
         private string selector;
         private string staticSelector;
-        private string entrypointCode = null;
         private List<string> _using;
         private int indentSave = 0;
         private int keywordCase;
@@ -105,7 +104,6 @@ namespace XSharp.CodeDom
         private bool useTabs;
         private int tabSize;
         private int indentSize;
-        private bool suppressCodeGen = false;
 
         private string keywordBEGIN;
         private string keywordEND;
@@ -161,12 +159,19 @@ namespace XSharp.CodeDom
         private string indentString = " ";
         private string tabString = " ";
         private string lastTrivia = null;
+        private CodeEntryPointMethod entryPoint = null;
+        private CodeTypeDeclaration entryPointType = null;
+        private Stack<CodeTypeDeclaration> types;
+        private bool hasSource;
+        private bool Nested => types.Count > 1;
+        private bool SuppressCodeGen => Nested || hasSource;
         public XSharpCodeGenerator() : base()
         {
             this.selector = ":";
             this.staticSelector = ".";
             _using = new List<String>();
             readSettings();
+            types = new Stack<CodeTypeDeclaration>();
         }
 
         private void overrideTextWriter()
@@ -504,6 +509,12 @@ namespace XSharp.CodeDom
 
         protected override void GenerateConstructor(CodeConstructor e, CodeTypeDeclaration c)
         {
+            if (SuppressCodeGen)
+                return;
+            if (e.HasSourceCode() && writeOriginalCode(e))
+            {
+                return;
+            }
             if (base.IsCurrentClass || base.IsCurrentStruct)
             {
                 // Do we have some Source Code pushed here by our Parser ??
@@ -567,37 +578,39 @@ namespace XSharp.CodeDom
 
         protected override void GenerateEntryPointMethod(CodeEntryPointMethod e, CodeTypeDeclaration c)
         {
-            // we must collect this and insert it at the end of the unit
-            // so replace the output field in the parent class and restore it later
-            FieldInfo field = typeof(CodeGenerator).GetField("output", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-            var oldWriter = (IndentedTextWriter)field.GetValue(this);
-            this.overrideTextWriter();
-            try
-            {
-                this.GenerateCommentStatements(e.Comments);
+            // save the parameters and delay the code generation until the end of the 
+            // compile unit, where ImplementEntryPointMethod() is called
+            entryPoint = e;
+            entryPointType = c;
+            return;
+        }
+        private void ImplementEntryPointMethod(CodeEntryPointMethod e, CodeTypeDeclaration c)
+        { 
+            if (e == null || c == null)
+                return;
+            this.GenerateCommentStatements(e.Comments);
 
-                if (e.CustomAttributes.Count > 0)
-                {
-                    this.GenerateAttributes(e.CustomAttributes);
-                }
-                base.Output.Write(keywordFUNCTION+" Start() "+ keywordAS);
-                this.OutputType(e.ReturnType);
-                base.Output.WriteLine();
-                this.Indent++;
-                this.GenerateStatements(e.Statements);
-                this.Indent--;
-                base.Output.WriteLine();
-            }
-            finally
+            if (e.CustomAttributes.Count > 0)
             {
-                field.SetValue(this, oldWriter);
+                this.GenerateAttributes(e.CustomAttributes);
             }
+            base.Output.Write(keywordFUNCTION+" Start() "+ keywordAS);
+            this.OutputType(e.ReturnType);
+            base.Output.WriteLine();
+            this.Indent++;
+            this.GenerateStatements(e.Statements);
+            this.Indent--;
+            base.Output.WriteLine();
         }
 
         protected override void GenerateEvent(CodeMemberEvent e, CodeTypeDeclaration c)
         {
-            if (suppressCodeGen)
+            if (SuppressCodeGen)
                 return;
+            if (e.HasSourceCode() && writeOriginalCode(e))
+            {
+                return;
+            }
             if (!this.IsCurrentDelegate && !this.IsCurrentEnum)
             {
                 writeTrivia(e);
@@ -648,69 +661,86 @@ namespace XSharp.CodeDom
                 base.Output.WriteLine();
             }
         }
-
-        protected override void GenerateField(CodeMemberField e)
+        private void writeEnumMember(CodeMemberField e)
         {
-            if (suppressCodeGen)
-                return;
-            if (!this.IsCurrentDelegate && !this.IsCurrentInterface)
+            bool fromDesigner = true;
+            if (e.HasFromDesigner())
             {
-                bool fromDesigner = true;
-				if (e.HasFromDesigner())
-				{
-					fromDesigner = e.GetFromDesigner();
-				}
-                writeTrivia(e);
-                if (this.IsCurrentEnum)
+                fromDesigner = e.GetFromDesigner();
+            }
+            writeTrivia(e);
+            if (e.CustomAttributes.Count > 0)
+            {
+                this.GenerateAttributes(e.CustomAttributes);
+            }
+            this.OutputIdentifier(e.Name);
+            if (e.InitExpression != null)
+            {
+
+                bool hasCode = e.InitExpression.HasSourceCode();
+                if (fromDesigner || !hasCode)
                 {
-                    if (e.CustomAttributes.Count > 0)
-                    {
-                        this.GenerateAttributes(e.CustomAttributes);
-                    }
-                    this.OutputIdentifier(e.Name);
-                    if (e.InitExpression != null)
-                    {
-                        this.writeAssignment();
-                        bool hasCode = e.InitExpression.HasSourceCode();
-                        if (fromDesigner || ! hasCode)
-                        {
-                            this.GenerateExpression(e.InitExpression);
-                        }
-                        else
-                        {
-                            writeOriginalCode(e.InitExpression);
-                        }
-                            
-                    }
-                    base.Output.WriteLine();
+                    this.writeAssignment();
+                    this.GenerateExpression(e.InitExpression);
                 }
                 else
                 {
-                    if (e.CustomAttributes.Count > 0)
-                    {
-                        this.GenerateAttributes(e.CustomAttributes);
-                    }
+                    writeOriginalCode(e.InitExpression, true);
+                }
 
-                    writeMemberAccessModifier(e, e.Attributes, false, true);
+            }
+            base.Output.WriteLine();
+        }
+        protected void writeNormalField(CodeMemberField e)
+        {
+            bool fromDesigner = true;
+            if (e.HasFromDesigner())
+            {
+                fromDesigner = e.GetFromDesigner();
+            }
+            writeTrivia(e);
+            if (e.CustomAttributes.Count > 0)
+            {
+                this.GenerateAttributes(e.CustomAttributes);
+            }
 
-                    this.OutputIdentifier(e.Name);
+            writeMemberAccessModifier(e, e.Attributes, false, true);
 
-                    if (e.InitExpression != null)
-                    {
-                        this.writeAssignment();
-                        bool hasCode = e.InitExpression.HasSourceCode();
-                        if (fromDesigner || !hasCode)
-                        {
-                            this.GenerateExpression(e.InitExpression);
-                        }
-                        else
-                        {
-                            writeOriginalCode(e.InitExpression);
-                        }
-                    }
-                    base.Output.Write(" "+keywordAS);
-                    this.OutputType(e.Type);
-                    base.Output.WriteLine();
+            this.OutputIdentifier(e.Name);
+
+            if (e.InitExpression != null)
+            {
+                bool hasCode = e.InitExpression.HasSourceCode();
+                this.writeAssignment();
+                if (fromDesigner || !hasCode)
+                {
+                    this.GenerateExpression(e.InitExpression);
+                }
+                else
+                {
+                    writeOriginalCode(e.InitExpression, true);
+                }
+            }
+            base.Output.Write(" " + keywordAS);
+            this.OutputType(e.Type);
+            base.Output.WriteLine();
+
+        }
+
+        protected override void GenerateField(CodeMemberField e)
+        {
+            if (SuppressCodeGen)
+                return;
+
+            if (!this.IsCurrentDelegate && !this.IsCurrentInterface)
+            {
+                if (this.IsCurrentEnum)
+                {
+                    writeEnumMember(e);
+                }
+                else
+                {
+                    writeNormalField(e);
                 }
             }
         }
@@ -789,13 +819,17 @@ namespace XSharp.CodeDom
             this.Indent--;
             base.Output.WriteLine(keywordENDDO);
         }
-        protected bool writeOriginalCode(CodeObject e)
+        protected bool writeOriginalCode(CodeObject e, bool trim = false)
         {
             if (e.HasSourceCode())
             {
                 var saveindent = this.Indent;
                 this.Indent = 0;
+                if (e.HasLeadingTrivia())
+                    writeTrivia(e, false);
                 string sourceCode = e.GetSourceCode();
+                if (trim)
+                    sourceCode = sourceCode.Trim();
                 this.Output.Write(sourceCode);
                 this.Indent = saveindent;
                 return true;
@@ -819,9 +853,12 @@ namespace XSharp.CodeDom
 
         protected override void GenerateMethod(CodeMemberMethod e, CodeTypeDeclaration c)
         {
-            if (suppressCodeGen)
+            if (SuppressCodeGen)
                 return;
-
+            if (e.HasSourceCode() && writeOriginalCode(e))
+            {
+                return;
+            }
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
                 writeTrivia(e);
@@ -937,6 +974,9 @@ namespace XSharp.CodeDom
         protected override void GenerateCompileUnitStart(CodeCompileUnit e)
         {
             bool generateComment = true;
+            entryPoint = null;
+            entryPointType = null;
+            types = new Stack<CodeTypeDeclaration>();
             readSettings();
             this.overrideTextWriter();
             this.Options.BlankLinesBetweenMembers = false;
@@ -982,11 +1022,12 @@ namespace XSharp.CodeDom
         }
         protected override void GenerateCompileUnitEnd(CodeCompileUnit e)
         {
-            if (!String.IsNullOrEmpty(entrypointCode))
+            if (entryPoint != null && entryPointType != null)
             {
-                this.Output.Write(entrypointCode);
-                entrypointCode = null;
+                ImplementEntryPointMethod(entryPoint, entryPointType);
             }
+            entryPoint = null;
+            entryPointType = null;
             base.GenerateCompileUnitEnd(e);
             writeTrivia(e, true);
 
@@ -1140,9 +1181,12 @@ namespace XSharp.CodeDom
         {
             // Inside the form editor Properties are parsed into
             // Snippets, so this should normally not happen
-            if (suppressCodeGen)
+            if (SuppressCodeGen)
                 return;
-
+            if (e.HasSourceCode() && writeOriginalCode(e))
+            {
+                return;
+            }
             if ((this.IsCurrentClass || this.IsCurrentStruct) || this.IsCurrentInterface)
             {
                 writeTrivia(e);
@@ -1262,8 +1306,6 @@ namespace XSharp.CodeDom
         protected override void GenerateSnippetMember(CodeSnippetTypeMember e)
         {
             // the base class resets indent for Snippet Members
-            if (suppressCodeGen)
-                return;
             this.Indent = this.indentSave;
             writeTrivia(e);
             base.Output.Write(e.Text);
@@ -1323,6 +1365,9 @@ namespace XSharp.CodeDom
 
         protected override void GenerateTypeConstructor(CodeTypeConstructor e)
         {
+            if (SuppressCodeGen)
+                return;
+
             if (this.IsCurrentClass || this.IsCurrentStruct)
             {
                 writeTrivia(e);
@@ -1340,38 +1385,38 @@ namespace XSharp.CodeDom
 
         protected override void GenerateTypeEnd(CodeTypeDeclaration e)
         {
-            if (suppressCodeGen)
+            if (!SuppressCodeGen)
             {
-                suppressCodeGen = false;
-                return;
-            }
-            if (!this.IsCurrentDelegate)
-            {
-                this.Indent--;
-                
-                if( ! writeTrivia(e, true))
+                if (!this.IsCurrentDelegate)
                 {
+                    this.Indent--;
+
+                    if (!writeTrivia(e, true))
+                    {
+                        base.Output.WriteLine();
+                    }
+                    base.Output.Write(keywordEND);
+                    if (e.IsClass)
+                    {
+                        base.Output.Write(keywordCLASS);
+                    }
+                    else if (e.IsStruct)
+                    {
+                        base.Output.Write(keywordSTRUCTURE);
+                    }
+                    else if (e.IsInterface)
+                    {
+                        base.Output.Write(keywordINTERFACE);
+                    }
+                    else if (e.IsEnum)
+                    {
+                        base.Output.Write(keywordENUM);
+                    }
                     base.Output.WriteLine();
                 }
-                base.Output.Write(keywordEND);
-                if (e.IsClass)
-                {
-                    base.Output.Write(keywordCLASS);
-                }
-                else if (e.IsStruct)
-                {
-                    base.Output.Write(keywordSTRUCTURE);
-                }
-                else if (e.IsInterface)
-                {
-                    base.Output.Write(keywordINTERFACE);
-                }
-                else if (e.IsEnum)
-                {
-                    base.Output.Write(keywordENUM);
-                }
-                base.Output.WriteLine();
             }
+            types.Pop();
+            hasSource = false;
         }
 
         private void writeTypeModifiers(CodeTypeDeclaration e)
@@ -1393,15 +1438,12 @@ namespace XSharp.CodeDom
         protected override void GenerateTypeStart(CodeTypeDeclaration e)
         {
 
-            if (e.IsInterface || e.IsStruct || e.IsEnum)
+            types.Push(e);
+            hasSource = e.HasSourceCode();
+            if (e.HasSourceCode()  && writeOriginalCode(e))
             {
-                if (e.HasSourceCode()  && writeOriginalCode(e))
-                {
-                    suppressCodeGen = true;
-                    return;
-                }
+                return;
             }
-            suppressCodeGen = false;
             writeTrivia(e);
             writeCodeBefore(e);
             if (e.CustomAttributes.Count > 0)
@@ -1503,14 +1545,21 @@ namespace XSharp.CodeDom
             }
             else
             {
-                CodeTypeDelegate delegate1 = (CodeTypeDelegate)e;
-                base.Output.Write(keywordDELEGATE);
-                this.OutputIdentifier(e.Name);
-                base.Output.Write("(");
-                this.OutputParameters(delegate1.Parameters);
-                base.Output.Write(") "+keywordAS);
-                this.OutputType(delegate1.ReturnType);
-                base.Output.WriteLine();
+                if (e.HasSourceCode())
+                {
+                    writeOriginalCode(e);
+                }
+                else
+                {
+                    CodeTypeDelegate delegate1 = (CodeTypeDelegate)e;
+                    base.Output.Write(keywordDELEGATE);
+                    this.OutputIdentifier(e.Name);
+                    base.Output.Write("(");
+                    this.OutputParameters(delegate1.Parameters);
+                    base.Output.Write(") " + keywordAS);
+                    this.OutputType(delegate1.ReturnType);
+                    base.Output.WriteLine();
+                }
             }
         }
 
@@ -1915,7 +1964,6 @@ namespace XSharp.CodeDom
                 case GeneratorSupport.EntryPointMethod:
                 case GeneratorSupport.GenericTypeDeclaration:
                 case GeneratorSupport.GenericTypeReference:
-                //case GeneratorSupport.GotoStatements;
                 case GeneratorSupport.MultidimensionalArrays:
                 case GeneratorSupport.MultipleInterfaceMembers:
                 case GeneratorSupport.NestedTypes:
@@ -1929,6 +1977,8 @@ namespace XSharp.CodeDom
                 case GeneratorSupport.TryCatchStatements:
                 case GeneratorSupport.Win32Resources:
                     return true;
+                case GeneratorSupport.GotoStatements:
+                    return false;
                 default:
                     break;
             }

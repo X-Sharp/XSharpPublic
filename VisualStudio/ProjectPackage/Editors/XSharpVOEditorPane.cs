@@ -293,7 +293,7 @@ namespace XSharp.Project
                         FileChangeTrigger = null;
                     }
 
-                    SetFileChangeNotification(null, false);
+                    SetFileChangeNotification(fileName, false);
 
                     if (editorControl != null)
                     {
@@ -1305,7 +1305,7 @@ namespace XSharp.Project
         {
             get
             {
-                if (vsFileChangeEx != null)
+                if (vsFileChangeEx == null)
                 {
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {

@@ -238,36 +238,32 @@ namespace XSharp.Project
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-            GetEditorOptions();
             _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
             await this.RegisterCommandsAsync();
-            
+            await GetEditorOptionsAsync();
+
         }
 
-               
 
-        public void GetEditorOptions()
+
+        public async Task<bool> GetEditorOptionsAsync()
         {
-            System.Threading.Tasks.Task.Run(async () =>
-            {
-                var woptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
-                XEditorSettings.ShowGrid = woptions.ShowGrid;
-                XEditorSettings.GridX = woptions.GridX;
-                XEditorSettings.GridY = woptions.GridY;
-                XEditorSettings.PasteOffSetX = woptions.PasteOffSetX;
-                XEditorSettings.PasteOffSetY = woptions.PasteOffSetY;
-                XEditorSettings.PartialLasso = woptions.PartialLasso;
+            var woptions = await Options.WindowEditorOptions.GetLiveInstanceAsync();
+            XEditorSettings.ShowGrid = woptions.ShowGrid;
+            XEditorSettings.GridX = woptions.GridX;
+            XEditorSettings.GridY = woptions.GridY;
+            XEditorSettings.PasteOffSetX = woptions.PasteOffSetX;
+            XEditorSettings.PasteOffSetY = woptions.PasteOffSetY;
+            XEditorSettings.PartialLasso = woptions.PartialLasso;
 
-                var options = await Options.OtherEditorOptions.GetLiveInstanceAsync();
-                XEditorSettings.DbServerDefaultRDD = options.DbServerDefaultRDD;
-                XEditorSettings.DbServerParentClass = options.DbServerParentClass;
-                XEditorSettings.MenuParentClass = options.MenuParentClass;
-                XEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
-                XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
-                XEditorSettings.Disassembler = options.Disassembler;
-
-            }).FireAndForget();
-
+            var options = await Options.OtherEditorOptions.GetLiveInstanceAsync();
+            XEditorSettings.DbServerDefaultRDD = options.DbServerDefaultRDD;
+            XEditorSettings.DbServerParentClass = options.DbServerParentClass;
+            XEditorSettings.MenuParentClass = options.MenuParentClass;
+            XEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
+            XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
+            XEditorSettings.Disassembler = options.Disassembler;
+            return true;
         }
         /// <summary>
         /// Read the comment tokens from the Tools/Options dialog and pass them to the CodeModel assembly
@@ -307,7 +303,7 @@ namespace XSharp.Project
                 if (!(bool)var)
                 {
                     SetCommentTokens();
-                    GetEditorOptions();
+                    GetEditorOptionsAsync().FireAndForget();
                 }
             }
             return VSConstants.S_OK;

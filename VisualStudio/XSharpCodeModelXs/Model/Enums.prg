@@ -149,6 +149,7 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@Translate   :=  38
       MEMBER @@XTranslate  :=  39
       MEMBER @@Undeclared  :=  40
+      MEMBER @@TypeParameter  :=  41
    END ENUM
 
    [Flags];
@@ -207,17 +208,17 @@ BEGIN NAMESPACE XSharpModel
       MEMBER TextTemplate     := 16     // tt
    END ENUM
 
-   ENUM ParamType AS BYTE
-      MEMBER @@As		   := 0
-      MEMBER @@Ref      := 1
-      MEMBER @@Out	   := 2
-      MEMBER @@Params   := 3
-      MEMBER @@In  	   := 4
+   ENUM ParamType
+      MEMBER @@As		:= XSharpLexer.AS
+      MEMBER @@Ref      := XSharpLexer.REF
+      MEMBER @@Out	    := XSharpLexer.OUT
+      MEMBER @@Params   := XSharpLexer.PARAMS
+      MEMBER @@In  	    := XSharpLexer.IN
    END ENUM
 
-   ENUM LocalType as BYTE
-      MEMBER @@As       := 0
-      MEMBER @@Is       := 1
+   ENUM LocalType
+      MEMBER @@As       := XSharpLexer.AS
+      MEMBER @@Is       := XSharpLexer.IS
    END ENUM
 
    ENUM CallingConvention

@@ -112,7 +112,7 @@ STATIC CLASS WinFormsConverter
 			aCode:Add( String.Format(e"RETURN" ) )
 			aCode:Add( String.Format(e"" ) )
 
-			oWriter := StreamWriter{cPrg , FALSE , Encoding.Default}
+			oWriter := StreamWriter{cPrg , FALSE , Encoding.UTF8}
 			oWriter:WriteLine("BEGIN NAMESPACE " + cNameSpace)
 			oWriter:WriteLine("")
 			oWriter:WriteLine(cClassDeclCode)
@@ -127,7 +127,7 @@ STATIC CLASS WinFormsConverter
 			cFileName := FileInfo{cWed}:Name:Replace(".wed","")
 			cPrg := cAppFolder + "\" + cFileName + ".Designer.prg"
 			oApp:AddModule(cFileName + ".Designer", ""):IsDesignerChild := TRUE
-			oWriter := StreamWriter{cPrg , FALSE , Encoding.Default}
+			oWriter := StreamWriter{cPrg , FALSE , Encoding.UTF8}
 			oWriter:WriteLine("BEGIN NAMESPACE " + cNameSpace)
 			oWriter:WriteLine("")
 			oWriter:WriteLine(cClassDeclCode)

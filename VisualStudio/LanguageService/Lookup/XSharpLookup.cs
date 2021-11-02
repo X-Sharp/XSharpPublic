@@ -42,14 +42,26 @@ namespace XSharp.LanguageService
                     currentType = location.Member.ParentType;
                 }
                 // we search in the order:
-                // 1) Parameters (for entities with parameters)
-                // 2) Locals (for entities with locals)
-                // 3) Properties or Fields
-                // 4) Globals and Defines
+                // 1) Type parameters
+                // 2) Parameters (for entities with parameters)
+                // 3) Locals (for entities with locals)
+                // 4) Properties or Fields
+                // 5) Globals and Defines
                 if (XSettings.EnableTypelookupLog)
                     WriteOutputMessage($"--> FindIdentifier in {currentType.FullName}, '{name}' ");
                 var member = location.Member;
-                if (member.Kind.HasParameters())
+                if (currentType.TypeParameters.Count > 0 && currentType is XSourceTypeSymbol source)
+                {
+                    foreach (var param in currentType.TypeParameters)
+                    {
+                        if (StringEquals(param, name) )
+                        {
+                            var sym = new XSourceTypeParameterSymbol(source, name, source.Range, source.Interval);
+                            result.Add(sym);
+                        }
+                    }
+                }
+                if (result.Count == 0 && member.Kind.HasParameters())
                 {
                     result.AddRange(member.Parameters.Where(x => StringEquals(x.Name, name)));
                 }
@@ -473,7 +485,7 @@ namespace XSharp.LanguageService
             int count = -1;
             startType = currentType;
             bool resetState = false;
-            while (! list.Eoi())
+           while (! list.Eoi())
             {
                 // after LPAREN, LCURLY and LBRKT we skip until we see the closing token
                 currentToken = list.ConsumeAndGet();
@@ -509,36 +521,14 @@ namespace XSharp.LanguageService
                 switch (currentToken.Type)
                 {
                     case XSharpLexer.LPAREN:
-                        if (list.Contains(XSharpLexer.RPAREN))
-                        {
-                            list.ConsumeUntilEndToken(XSharpLexer.RPAREN);
-
-                        }
-                        else
-                        {
-                            startOfExpression = true;
-                        }
+                        startOfExpression = true;
                         continue;
                     case XSharpLexer.LCURLY:
-                        if (list.Contains(XSharpLexer.RCURLY))
-                        {
-                            list.ConsumeUntilEndToken(XSharpLexer.RCURLY);
-                        }
-                        else
-                        {
-                            startOfExpression = true;
-                        }
+                        startOfExpression = true;
                         continue;
                     case XSharpLexer.LBRKT:
-                        if (list.Contains(XSharpLexer.RBRKT))
-                        {
-                            list.ConsumeUntilEndToken(XSharpLexer.RBRKT);
-                        }
-                        else
-                        {
-                            hasBracket = true;
-                            startOfExpression = true;
-                        }
+                        hasBracket = true;
+                        startOfExpression = true;
                         continue;
                     case XSharpLexer.RPAREN:
                     case XSharpLexer.RCURLY:
@@ -822,7 +812,7 @@ namespace XSharp.LanguageService
                 var ctors = SearchConstructors(xtype, Modifiers.Public);
                 if (ctors.Count == 0 && xtype is XSourceTypeSymbol)
                 {
-                    var ctor = new XSourceMemberSymbol(XLiterals.ConstructorName, Kind.Constructor, Modifiers.Public, default, default, "",false);
+                    var ctor = new XSourceMemberSymbol(XLiterals.ConstructorName, Kind.Constructor, Modifiers.Public, location.Member.Range, location.Member.Interval, "",false);
                     ctor.Parent = xtype;
                     ctor.DeclaringType = xtype.FullName;
 

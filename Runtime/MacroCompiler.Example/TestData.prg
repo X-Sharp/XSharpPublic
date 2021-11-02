@@ -321,6 +321,21 @@ DEFINE TEST2 := 123
 FUNCTION testfunc(y REF STRING) AS VOID
     y := "b"
 
+FUNCTION testfunclate(y) AS VOID
+    y := "b"
+
+CLASS TestRefCall
+
+METHOD testmethod(y REF STRING) AS VOID
+    y := "b"
+
+METHOD testmethodlate(y) AS VOID
+    y := "b"
+
+
+END CLASS
+
+
 FUNCTION S_EnforceType(uVar REF USUAL,cTyp AS STRING) AS VOID
     IF ValType(uVar) <> cTyp
         SWITCH cTyp

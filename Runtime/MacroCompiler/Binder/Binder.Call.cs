@@ -206,6 +206,7 @@ namespace XSharp.MacroCompiler
                     args.Args.Add(obj);
                     args.Args.Add(name);
                     args.Args.Add(arguments);
+                    // todo: Check for ref arguments and handle writeback from arguments array
                     return Compilation.Get(WellKnownMembers.XSharp_RT_Functions___InternalSend);
                 }
                 else if (symbol is DynamicSymbol symbolDynamic)
@@ -220,6 +221,7 @@ namespace XSharp.MacroCompiler
                     args.Args.Add(obj);
                     args.Args.Add(name);
                     args.Args.Add(arguments);
+                    // todo: Check for ref arguments and handle writeback from arguments array
                     return Compilation.Get(WellKnownMembers.XSharp_RT_Functions___InternalSend);
                 }
                 else if (symbol.Type()?.IsUsualOrObject() == true)
@@ -233,6 +235,7 @@ namespace XSharp.MacroCompiler
                     args.Args.Add(obj);
                     args.Args.Add(name);
                     args.Args.Add(arguments);
+                    // todo: Check for ref arguments and handle writeback from arguments array
                     return Compilation.Get(WellKnownMembers.XSharp_RT_Functions___InternalSend);
                 }
             }

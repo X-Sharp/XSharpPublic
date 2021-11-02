@@ -944,6 +944,7 @@ namespace XSharp.MacroCompiler.Syntax
                 v[(int)TokenType.DEC] = "--";
 
                 // Unary & binary operators
+                v[(int)TokenType.AMP] = "&";
                 v[(int)TokenType.PLUS] = "+";
                 v[(int)TokenType.MINUS] = "-";
                 v[(int)TokenType.DIV] = "/";

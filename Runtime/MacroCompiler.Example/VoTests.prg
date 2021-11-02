@@ -32,15 +32,35 @@ BEGIN NAMESPACE MacroCompilerTest
         VAR mc := CreateMacroCompiler()
         x := "a"
         TestMacro(mc, "{||testfunc(x), x}", Args(), "b", typeof(STRING))
+        x := "a"
         TestMacro(mc, "{||testfunc(ref x), x}", Args(), "b", typeof(STRING))
+        x := "a"
         TestMacro(mc, "{||testfunc(@x), x}", Args(), "b", typeof(STRING))
+        x := "a"
+        TestMacro(mc, "{||testfunclate(x), x}", Args(), "a", typeof(STRING))
+        x := "a"
+        TestMacro(mc, "{||testfunclate(ref x), x}", Args(), "b", typeof(STRING))
+        x := "a"
+        TestMacro(mc, "{||testfunclate(@x), x}", Args(), "b", typeof(STRING))
+        var c := TestRefCall{}
+        x := "a"
+        TestMacro(mc, "{|c|c:testmethod(x), x}", Args(c), "b", typeof(STRING))
+        x := "a"
+        TestMacro(mc, "{|c|c:testmethod(@x), x}", Args(c), "b", typeof(STRING))
+        x := "a"
+        TestMacro(mc, "{|c|c:testmethod(ref x), x}", Args(c), "b", typeof(STRING))
 
+
+        WAIT
     FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running VO tests ...")
         TestGlobals.tsi := teststruct{1}
         TestGlobals.tci := testclass{1}
 
         ResetOverrides()
+
+        // test embedded macro expression
+        TestMacro(mc, e"{|| &('1+2') }", Args(), 3, TYPEOF(LONG))
 
         // Test dotted AND and OR in combination with numbers
         TestMacro(mc, e"{|| 1>2.and.3<4}", Args(), FALSE, TYPEOF(LOGIC))

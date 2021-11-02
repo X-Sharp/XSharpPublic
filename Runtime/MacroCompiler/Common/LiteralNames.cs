@@ -157,7 +157,7 @@ namespace XSharp.MacroCompiler
         internal const string Chr = "global::VulcanRTFuncs.Functions.Chr";
         internal const string PushWorkarea = "global::VulcanRTFuncs.Functions.__pushWorkarea";
         internal const string PopWorkarea = "global::VulcanRTFuncs.Functions.__popWorkarea";
-        internal const string Evaluate = "global::VulcanRTFuncs.Functions.Evaluate";
+        internal const string Evaluate = "global::VulcanRTFuncs.Functions.Evaluate$(System.String)";
         //internal const string Default = "global::VulcanRTFuncs.Functions.Default";
         //internal const string Accept = "global::VulcanRTFuncs.Functions._accept";
         //internal const string Wait = "global::VulcanRTFuncs.Functions._wait";
@@ -201,7 +201,7 @@ namespace XSharp.MacroCompiler
         internal const string StringAlloc = "global::XSharp.RT.Functions.StringAlloc";
         internal const string PushWorkarea = "global::XSharp.RT.Functions.__pushWorkarea";
         internal const string PopWorkarea = "global::XSharp.RT.Functions.__popWorkarea";
-        internal const string Evaluate = "global::XSharp.RT.Functions.Evaluate";
+        internal const string Evaluate = "global::XSharp.RT.Functions.Evaluate$(System.String)";
     }
     internal static class OurAssemblyNames
     {

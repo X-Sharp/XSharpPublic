@@ -4964,28 +4964,28 @@ RETURN
 		METHOD TestFieldPutBytes_cdx() AS VOID
 			LOCAL cDbf AS STRING
 			RddSetDefault("DBFCDX")
-			
+
 			cDbf := GetTempFileName()
 			DbCreate(cDbf, {{"FLD1","C",10,0},{"MEMO1","M",10,0}})
-			
+
 			DbUseArea(,,cDbf)
 			DbAppend()
 			FieldPutBytes( 1, <BYTE>{1,2,3,4,5} )
 			FieldPutBytes( 2, <BYTE>{6,7,8} )
-			
+
 			LOCAL a AS BYTE[]
 			a := FieldGetBytes(1)
 			Assert.Equal(5, a:Length)
 			FOR LOCAL n := 1 AS INT UPTO 5
 				Assert.Equal((BYTE)n, a[n])
 			NEXT
-			
+
 			a := FieldGetBytes(2)
 			Assert.Equal(3, a:Length)
 			FOR LOCAL n := 1 AS INT UPTO 3
 				Assert.Equal((BYTE)(n+5), a[n])
 			NEXT
-			
+
 			a := BYTE[]{10_000}
 			FOR LOCAL n := 1 AS INT UPTO a:Length
 				a[n] := (BYTE)(n % 256)
@@ -5000,8 +5000,8 @@ RETURN
 					EXIT
 				END IF
 			NEXT
-			Assert.True( lSame )			
-			
+			Assert.True( lSame )
+
 			DbCloseArea()
 
 
@@ -5010,7 +5010,7 @@ RETURN
 		METHOD TestDBSeek() AS VOID // https://github.com/X-Sharp/XSharpPublic/issues/807
 			LOCAL cDbf AS STRING
 			RddSetDefault("DBFCDX")
-			
+
 			cDbf := GetTempFileName()
 			DbCreate(cDbf, {{"FLD1","C",3,0} , {"FLD2","C",3,0}})
 
@@ -5024,7 +5024,7 @@ RETURN
 			FieldPut(1, "DDD") ; FieldPut(2, "ghi")
 			DbAppend()
 			FieldPut(1, "AAA") ; FieldPut(2, "jkl")
-			
+
 			Assert.True ( DbSeek( "AAA" , , FALSE ) )
 			Assert.False( Eof() )
 			Assert.Equal( 1U, RecNo() )
@@ -5032,7 +5032,7 @@ RETURN
 			Assert.True ( DbSeek( "AAA" , , TRUE ) )
 			Assert.False( Eof() )
 			Assert.Equal( 4U, RecNo() )
-	
+
 			Assert.False( DbSeek( "CCC" , , FALSE ) )
 			Assert.True ( Eof() )
 			Assert.Equal( 5U, RecNo() )
@@ -5054,7 +5054,7 @@ RETURN
 			LOCAL aRecordBuf AS BYTE[]
 
 			RddSetDefault("DBFCDX")
-			
+
 			cDbf := GetTempFileName()
 			DbCreate(cDbf, { { "DATA", "M", 10, 0, "DATA" } })
 
@@ -5064,7 +5064,7 @@ RETURN
 			#define ASC_SP 32
 			pRecord[1] := ASC_SP
 			aRecordBuf := BYTE[]{ nRecSize }
-		
+
 			// record 1
 			pField := pRecord + 1
 			nBlockNo := BLOBDirectPut(0, "record 1")
@@ -5072,7 +5072,7 @@ RETURN
 			DbAppend()
 			System.Runtime.InteropServices.Marshal.Copy((IntPtr)pRecord, aRecordBuf, 0, nRecSize)
 			VoDbRecordPut(aRecordBuf)
-		
+
 			// record 2 (several blocks)
 			pField := pRecord + 1
 			nBlockNo := BLOBDirectPut(0, Replicate("a", 100))
@@ -5080,7 +5080,7 @@ RETURN
 			DbAppend()
 			System.Runtime.InteropServices.Marshal.Copy((IntPtr)pRecord, aRecordBuf, 0, nRecSize)
 			VoDbRecordPut(aRecordBuf)
-		
+
 			// record 3
 			pField := pRecord + 1
 			nBlockNo := BLOBDirectPut(0, "record 3")
@@ -5088,24 +5088,24 @@ RETURN
 			DbAppend()
 			System.Runtime.InteropServices.Marshal.Copy((IntPtr)pRecord, aRecordBuf, 0, nRecSize)
 			VoDbRecordPut(aRecordBuf)
-		
+
 			VoDbCommit()
 			VoDbCloseArea()
 			MemFree(pRecord)
-		
+
 			// TEST
-			Assert.IsTrue( DbUseArea(TRUE, "DBFCDX", cDbf, "MEMOTEST", FALSE, FALSE) )
+			Assert.True( DbUseArea(TRUE, "DBFCDX", cDbf, "MEMOTEST", FALSE, FALSE) )
 			VoDbGoTop()
-			Assert.IsTrue( !VoDbEof() )
+			Assert.True( !VoDbEof() )
 			Assert.Equal( "record 1", STRING( FieldGetSym(#DATA) ) )
 			VoDbSkip(1)
-			Assert.IsTrue( !VoDbEof() )
+			Assert.True( !VoDbEof() )
 			Assert.Equal( Replicate("a", 100), STRING( FieldGetSym(#DATA) ) )
 			VoDbSkip(1)
-			Assert.IsTrue( !VoDbEof() )
+			Assert.True( !VoDbEof() )
 			Assert.Equal( "record 3", STRING( FieldGetSym(#DATA) ) )
 			VoDbSkip(1)
-			Assert.IsTrue( VoDbEof() )
+			Assert.True( VoDbEof() )
 			VoDbCloseArea()
 
 

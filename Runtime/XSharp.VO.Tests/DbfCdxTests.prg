@@ -5094,18 +5094,18 @@ RETURN
 			MemFree(pRecord)
 		
 			// TEST
-			Assert.IsTrue( DbUseArea(TRUE, "DBFCDX", cDbf, "MEMOTEST", FALSE, FALSE) )
+			Assert.True( DbUseArea(TRUE, "DBFCDX", cDbf, "MEMOTEST", FALSE, FALSE) )
 			VoDbGoTop()
-			Assert.IsTrue( !VoDbEof() )
+			Assert.True( !VoDbEof() )
 			Assert.Equal( "record 1", STRING( FieldGetSym(#DATA) ) )
 			VoDbSkip(1)
-			Assert.IsTrue( !VoDbEof() )
+			Assert.True( !VoDbEof() )
 			Assert.Equal( Replicate("a", 100), STRING( FieldGetSym(#DATA) ) )
 			VoDbSkip(1)
-			Assert.IsTrue( !VoDbEof() )
+			Assert.True( !VoDbEof() )
 			Assert.Equal( "record 3", STRING( FieldGetSym(#DATA) ) )
 			VoDbSkip(1)
-			Assert.IsTrue( VoDbEof() )
+			Assert.True( VoDbEof() )
 			VoDbCloseArea()
 
 

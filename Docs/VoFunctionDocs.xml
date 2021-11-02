@@ -571,7 +571,7 @@
             AEval() is similar to DBEval() which executes code for each record of a database file.<br/>
             Like DBEval(), AEval() can be used as a primitive for the construction of iteration commands for both simple and complex array structures.
             <note type="tip">
-                In Visual Objects and Vulcan.Net 2 different functions were introduced: AEval() and AEvalOld(). The difference between these functions was that AEval() was only calling the codeblock with one parameter (the element in the array), where AEvalOld() was also passing in a second parameter (the array index). Inside X# this difference no longer exists. So AEval() and AEvalOld() are doing the same thing in X#.
+                In Visual Objects 2 different functions were introduced: AEval() and AEvalOld(). The difference between these functions was that AEval() was only calling the codeblock with one parameter (the element in the array), where AEvalOld() was also passing in a second parameter (the array index). Inside X# this difference no longer exists. So AEval() and AEvalOld() are doing the same thing in X#.
             </note>
         </remarks>
         <example>
@@ -670,7 +670,7 @@
             AEvalOld() is similar to DBEval() which executes code for each record of a database file.<br/>
             Like DBEval(), AEvalOld() can be used as a primitive for the construction of iteration commands for both simple and complex array structures.
             <note type="tip">
-                In Visual Objects and Vulcan.Net 2 different functions were introduced: AEval() and AEvalOld(). The difference between these functions was that AEval() was only calling the codeblock with one parameter (the element in the array), where AEvalOld() was also passing in a second parameter (the array index). Inside X# this difference no longer exists. So AEval() and AEvalOld() are doing the same thing in X#.
+                In Visual Objects 2 different functions were introduced: AEval() and AEvalOld(). The difference between these functions was that AEval() was only calling the codeblock with one parameter (the element in the array), where AEvalOld() was also passing in a second parameter (the array index). Inside X# this difference no longer exists. So AEval() and AEvalOld() are doing the same thing in X#.
             </note>
         </remarks>
         <example>

@@ -1,11 +1,11 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
 USING System.Runtime.InteropServices
-
+/// <exclude />
 STATIC CLASS XSharp.Conversions
 
 // Convert from Big endian to Little Endian and Back
@@ -29,7 +29,7 @@ STATIC METHOD WordToBuff(wValue AS WORD, buffer AS BYTE[], nOffSet AS LONG) AS V
     nValue:wordValue := wValue
     buffer[nOffSet+0]   := nValue:b1
     buffer[nOffSet+1]   := nValue:b2
-   
+
 STATIC METHOD BuffToShort(buffer AS BYTE[], nOffSet AS LONG) AS SHORT
    LOCAL siValue as SHORT
     BEGIN UNCHECKED
@@ -43,7 +43,7 @@ STATIC METHOD BuffToWord(buffer AS BYTE[], nOffSet AS LONG) AS WORD
         wValue := (WORD) _OR( buffer[nOffSet]  , buffer[nOffSet+1] << 8 )
     END UNCHECKED
     RETURN wValue
-    
+
 STATIC METHOD WordToBuffFox(wValue AS Word, buffer AS BYTE[], nOffSet AS LONG) AS VOID
     LOCAL nValue := __WordStruct{} AS __WordStruct
     nValue:wordValue := wValue
@@ -57,13 +57,13 @@ STATIC METHOD BuffToWordFox(buffer AS BYTE[], nOffSet AS LONG) AS WORD
     END UNCHECKED
     RETURN wValue
 
-    
+
 STATIC METHOD ShortToBuffFox(siValue AS SHORT, buffer AS BYTE[], nOffSet AS LONG) AS VOID
     LOCAL nValue := __WordStruct{} AS __WordStruct
     nValue:shortValue := siValue
     buffer[nOffSet+1]   := nValue:b1
     buffer[nOffSet+0]   := nValue:b2
-    
+
 // Read Short from buffer in Big Endian format
 STATIC METHOD BuffToShortFox( buffer AS BYTE[], nOffSet AS LONG) AS SHORT
     local siValue as short
@@ -76,8 +76,8 @@ STATIC METHOD BuffToDword(buffer AS BYTE[], nOffSet AS LONG) AS DWORD
     dwValue := (DWORD) _OR(buffer[nOffSet] , buffer[nOffSet+1] <<8 , buffer[nOffSet+2] <<16 , buffer[nOffSet+3] << 24)
     END UNCHECKED
     RETURN dwValue
-       
-    
+
+
 STATIC METHOD BuffToLong(buffer AS BYTE[], nOffSet AS LONG) AS LONG
     local liValue as LONG
     liValue := _OR(buffer[nOffSet] , buffer[nOffSet+1] <<8 , buffer[nOffSet+2] <<16 , buffer[nOffSet+3] << 24)
@@ -91,7 +91,7 @@ STATIC METHOD LongToBuff(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) AS 
     buffer[nOffSet+2] := nValue:b3
     buffer[nOffSet+3] := nValue:b4
     RETURN liValue
-    
+
 
 // Read Long from buffer in Big Endian format
 STATIC METHOD BuffToLongFox( buffer AS BYTE[], nOffSet AS LONG) AS LONG
@@ -107,7 +107,7 @@ STATIC METHOD BuffToDwordFox(buffer AS BYTE[], nOffSet AS LONG) AS DWORD
     RETURN dwValue
 
 
-    
+
 STATIC METHOD LongToBuffFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) AS LONG
     LOCAL nValue := __LongStruct{} AS __LongStruct
     nValue:longValue := liValue
@@ -125,7 +125,7 @@ STATIC METHOD LongToFoxOrder(liValue AS LONG, buffer AS BYTE[]) AS VOID
     ELSE
         buffer[0] := (BYTE) _AND(buffer[0],  ~0x80)
     ENDIF
-    RETURN 
+    RETURN
 
 // Convert Fox Real8 number to 8 byte Index format
 STATIC METHOD DoubleToFoxOrder(r8Value AS REAL8, buffer AS BYTE[]) AS VOID
@@ -154,6 +154,7 @@ STATIC METHOD DWordToBuffFox(dwValue AS DWORD, buffer AS BYTE[], nOffSet AS LONG
     RETURN dwValue
 
 
+/// <exclude />
 [StructLayout(LayoutKind.Explicit)];
 STRUCTURE __WordStruct
     [FieldOffset(0)]  PUBLIC shortValue AS Int16
@@ -164,7 +165,8 @@ STRUCTURE __WordStruct
         shortValue := 0
     RETURN
 END STRUCTURE
-    
+
+/// <exclude />
 [StructLayout(LayoutKind.Explicit)];
 STRUCTURE __LongStruct
     [FieldOffset(0)]  PUBLIC longValue  AS Int32
@@ -176,9 +178,9 @@ STRUCTURE __LongStruct
     METHOD Clear() AS VOID
         longValue := 0
     RETURN
-        
+
 END STRUCTURE
-    
+/// <exclude />
 [StructLayout(LayoutKind.Explicit)];
 PUBLIC STRUCTURE __DoubleStruct
     [FieldOffset(0)]  PUBLIC doubleValue  AS REAL8
@@ -193,18 +195,18 @@ PUBLIC STRUCTURE __DoubleStruct
     METHOD Clear() AS VOID
         doubleValue := 0
         RETURN
-        
-        
+
+
     METHOD SaveToIndex(buffer AS BYTE[]) AS VOID
         IF _AND(b1, 0x80) != 0
-            SELF:b1 := ~SELF:b1     
-            SELF:b2 := ~SELF:b2 
-            SELF:b3 := ~SELF:b3 
-            SELF:b4 := ~SELF:b4 
-            SELF:b5 := ~SELF:b5 
-            SELF:b6 := ~SELF:b6 
-            SELF:b7 := ~SELF:b7 
-            SELF:b8 := ~SELF:b8 
+            SELF:b1 := ~SELF:b1
+            SELF:b2 := ~SELF:b2
+            SELF:b3 := ~SELF:b3
+            SELF:b4 := ~SELF:b4
+            SELF:b5 := ~SELF:b5
+            SELF:b6 := ~SELF:b6
+            SELF:b7 := ~SELF:b7
+            SELF:b8 := ~SELF:b8
         ELSE
             b1 |= 0x80
         ENDIF

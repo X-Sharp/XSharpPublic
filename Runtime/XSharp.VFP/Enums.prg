@@ -54,7 +54,9 @@ ENUM XSharp.VFP.PropertyVisibility
    MEMBER Hidden    := 3
 END ENUM
 
-
+/// <summary>List of error codes used in the XSharp VTP support. <br />
+/// Each error code represents a translatable string in the string table inside XSharp.Core.
+/// </summary>
 
 ENUM XSharp.VFPErrors
     // Make sure that the member names do not collide with the member names inside the VOErrors Enum

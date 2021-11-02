@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -13,8 +13,9 @@ USING System.Data
 USING System.Reflection
 
 BEGIN NAMESPACE XSharp
+    /// <exclude />
     STATIC CLASS SQLHelpers
-    
+
     STATIC PRIVATE INITONLY aFieldNames AS System.Collections.Generic.Dictionary<STRING, STRING>
         STATIC CONSTRUCTOR
         aFieldNames   := System.Collections.Generic.Dictionary<STRING, STRING>{}
@@ -29,7 +30,7 @@ BEGIN NAMESPACE XSharp
             TC      := Type.GetTypeCode(oType)
             nDec    := 0
             SWITCH TC
-                CASE TypeCode.String 
+                CASE TypeCode.String
                     cType   := "C"
                     nLen    := nSize
                     // Automatically Convert Long Strings to Memos
@@ -38,15 +39,15 @@ BEGIN NAMESPACE XSharp
                         cType   := "M"
                     ENDIF
                     result := DbColumnInfo{columnName,cType,nLen ,0 }
-                    
+
                 CASE TypeCode.Boolean
                     result := DbColumnInfo{columnName,"L",1 ,0 }
-                    
+
                 CASE TypeCode.Decimal
                     result := DbColumnInfo{columnName,"Y",16 ,4 }
                     result:NumericScale     := 16
                     result:NumericPrecision := 4
-                    
+
                 CASE TypeCode.Double
                 CASE TypeCode.Single
                     nDec := 1
@@ -71,35 +72,35 @@ BEGIN NAMESPACE XSharp
                     result := DbColumnInfo{columnName,"N",nLen ,nDec }
                     result:NumericScale     := nScale
                     result:NumericPrecision := nPrec
-                    
+
                 CASE TypeCode.Int32		// -2147483647 - 2147483648 (2^31)
                     result := DbColumnInfo{columnName,"I",4 ,0}
                     IF IsAutoInc
                         result:Flags |= DBFFieldFlags.AutoIncrement
                     ENDIF
-                    
+
                 CASE TypeCode.Int64		// - 9223372036854775807 - 9223372036854775808 (2^63)
                     result := DbColumnInfo{columnName,"N",21 ,0}
-                    
+
                 CASE TypeCode.Int16	// -32767 - 32768 (2^15)
                     result := DbColumnInfo{columnName,"N",6 ,0}
-                    
+
                 CASE TypeCode.Byte
                     result := DbColumnInfo{columnName,"N",4 ,0}
-                    
+
                 CASE TypeCode.SByte	// 0 - 255 	(2^8)
                     result := DbColumnInfo{columnName,"N",3 ,0}
-                    
+
                 CASE TypeCode.UInt16	// 0 - 65535 (2^16)
                     result := DbColumnInfo{columnName,"N",5 ,0}
-                    
+
                 CASE TypeCode.UInt32		// 0 - 4294836225 (2^32)
                     result := DbColumnInfo{columnName,"N",10 ,0}
-                    
+
                 CASE TypeCode.UInt64	// 0 - 18445618199572250625 (2^64)
                     nLen := 20
                     result := DbColumnInfo{columnName,"N",nLen ,0}
-                    
+
                 CASE TypeCode.DateTime
                     nLen 	:= 8
                     IF nPrec <= 10
@@ -108,13 +109,13 @@ BEGIN NAMESPACE XSharp
                         cType   := "T"
                     ENDIF
                     result  := DbColumnInfo{columnName,cType,nLen ,0}
-                    
+
                 CASE TypeCode.Object
                     IF oType == typeof(BYTE[])
                             cType   := "P"
                             nLen 	:= 4
                             result  := DbColumnInfo{columnName,cType,nLen ,0}
-                        
+
                     ELSE
                         LOCAL lIsDate := FALSE AS LOGIC
                         LOCAL oMems AS MethodInfo[]
@@ -131,7 +132,7 @@ BEGIN NAMESPACE XSharp
                         IF ! lFound
                             LOCAL cTypeName AS STRING
                             cTypeName := oType:Name:ToUpperInvariant()
-                            lIsDate     := cTypeName:Contains("DATE") 
+                            lIsDate     := cTypeName:Contains("DATE")
                         ENDIF
                         IF lIsDate
                                 cType   := "D"
@@ -141,7 +142,7 @@ BEGIN NAMESPACE XSharp
                             nLen 	:= 10
                         ENDIF
                         result := DbColumnInfo{columnName,cType,nLen ,0}
-                    ENDIF			
+                    ENDIF
                 OTHERWISE
                     cType := "C"
                     nLen 	:= nSize
@@ -150,7 +151,7 @@ BEGIN NAMESPACE XSharp
                         nLen  := 4
                     ENDIF
                     result := DbColumnInfo{columnName,cType,nLen ,0}
-                    
+
             END SWITCH
             IF lAllowNull
                 result:Flags |= DBFFieldFlags.Nullable
@@ -160,14 +161,14 @@ BEGIN NAMESPACE XSharp
             result:Name         := MakeFieldNameUnique(cFldName, aFieldNames)
             result:Alias        := result:Name
             result:DotNetType   := oType
-        RETURN result 
-            
+        RETURN result
+
 
         STATIC METHOD GetColumnInfoFromSchemaRow(oColumn AS DataColumn, aFieldNames AS IList<STRING>) AS DbColumnInfo
             RETURN GetColumnInfo(aFieldNames, oColumn:ColumnName, oColumn:DataType, oColumn:MaxLength, -1,-1, oColumn:AutoIncrement, oColumn:AllowDBNull)
-        
-        
-        
+
+
+
         STATIC METHOD GetColumnInfoFromSchemaRow(schemaRow AS DataRow, aFieldNames AS IList<STRING>) AS DbColumnInfo
             VAR columnName  := schemaRow["ColumnName"]:ToString( )
             VAR oType       := (Type) schemaRow["DataType"]
@@ -177,8 +178,8 @@ BEGIN NAMESPACE XSharp
             VAR lAuto       := (LOGIC)schemaRow["IsAutoIncrement"]
             VAR lNull       := (LOGIC)schemaRow["AllowDBNull"]
             RETURN GetColumnInfo(aFieldNames, columnName, oType, nSize ,nScale, nPrec, lAuto, lNull)
-                   
-        
+
+
         STATIC METHOD  CleanupColumnName( cColumnName AS  STRING ) AS STRING
             LOCAL sb AS System.Text.StringBuilder
             LOCAL lLastWasOk AS LOGIC
@@ -186,7 +187,7 @@ BEGIN NAMESPACE XSharp
             LOCAL cWork		AS STRING
             IF aFieldNames:ContainsKey(cColumnName)
                 RETURN aFieldNames[cColumnName]
-            ENDIF		
+            ENDIF
             // return only allowed characters
             sb  := System.Text.StringBuilder{}
             // When the column is an expresion like CONCAT( foo, bar)
@@ -223,20 +224,20 @@ BEGIN NAMESPACE XSharp
                         lLastWasOk := FALSE
                     ENDIF
                 NEXT
-            ENDIF	
+            ENDIF
             IF sb:Length > 1
                 DO WHILE sb[sb:Length-1] == c'_'
                     sb:Remove(sb:Length-1,1)
                 ENDDO
-            ENDIF	
+            ENDIF
             IF sb:Length == 0
-                cResult := "EXPR" 
-            ELSE	
+                cResult := "EXPR"
+            ELSE
                 cResult := sb:ToString()
             ENDIF
             aFieldNames:Add(cColumnName, cResult)
         RETURN cResult
-        
+
         STATIC METHOD MakeFieldNameUnique(cName AS STRING, aFldNames AS IList<STRING> ) AS STRING
             LOCAL dwPos, dwFld AS LONG
             LOCAL cNewname		 AS STRING
@@ -250,7 +251,7 @@ BEGIN NAMESPACE XSharp
                 ENDDO
             ELSE
                 // remove column prefixes
-                dwPos := cName:IndexOf(".")+1 
+                dwPos := cName:IndexOf(".")+1
                 IF dwPos > 0
                     cName := cName:Substring(dwPos)
                 ENDIF
@@ -271,6 +272,6 @@ BEGIN NAMESPACE XSharp
                 cName 	:= cNewname
             ENDIF
             aFldNames:Add(cName)
-            RETURN cName          
+            RETURN cName
         END CLASS
 END NAMESPACE

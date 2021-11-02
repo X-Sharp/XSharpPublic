@@ -11,24 +11,24 @@ USING System.Diagnostics
 /// <summary>
 /// Write information to the Debug Terminal Program
 /// </summary>
-/// <returns>
-/// </returns>
-FUNCTION	DebOut()	AS	VOID CLIPPER
-	LOCAL C AS STRING
-	LOCAL X AS DWORD
-	C:=""
-	FOR X:=1 UPTO PCount()
-		IF X<>1
-			C+=", "
-		END
-		C+=AsString(_GetFParam(X))
-	NEXT
-	DebOut32(C)
+/// <param name="args">List of values to display on the debug terminal</param>
+
+FUNCTION DebOut( args PARAMS USUAL[]) AS VOID 
+	var  sb := System.Text.StringBuilder{}
+	if args != NULL .and. args:Length > 0
+		FOREACH var arg in args
+			IF sb:Length > 0
+				sb:Append(", ")
+			END
+			sb:Append(AsString(arg))
+		NEXT
+		DebOut32(sb:ToString())
+	endif
 	RETURN
 
 
 /// <summary>
-/// Check whether a break occurs within the BEGIN SEQUENCE...END construct.
+/// Check if a BEGIN SEQUENCE...END construct is active.
 /// </summary>
 /// <returns>
 /// </returns>

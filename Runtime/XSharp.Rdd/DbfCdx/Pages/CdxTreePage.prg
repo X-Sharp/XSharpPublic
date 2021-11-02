@@ -190,7 +190,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
        INTERNAL METHOD AddRightSibling(oNewRight AS CdxTreePage) AS VOID
             Debug.Assert(oNewRight != NULL_OBJECT)
-            //DUMP( SELF:PageType:ToString(), oNewRight:PageNo:ToString("X") )
+            DUMP( SELF:PageType:ToString(), oNewRight:PageNo:ToString("X") )
             IF oNewRight != NULL_OBJECT
                 LOCAL  oOldRight := NULL AS CdxTreePage
                 oNewRight:LeftPtr  := SELF:PageNo

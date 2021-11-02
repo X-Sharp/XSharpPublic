@@ -10,7 +10,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT oWnd AS VOForm
 	PROTECT dwStyle AS LONG
 	PROTECT dwExStyle AS LONG
-	
+
 	PROTECT cCaption AS STRING
 	PROTECT oMenu AS Menu
 	PROTECT oIcon AS Icon
@@ -29,7 +29,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT oDragDropClient AS DragDropClient
 	//PROTECT oDragDropServer AS DragDropServer
 	PROTECT oToolBar AS ToolBar
-	
+
 	PROTECT DCInitialized AS LOGIC
 	PROTECT DCPenInUse AS LOGIC
 	PROTECT DCPenNeeded AS LOGIC
@@ -39,7 +39,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT DCFontNeeded AS LOGIC
 	PROTECT hDC AS IntPtr
 	PROTECT hDCPaint AS IntPtr
-	
+
 	PROTECT oCurrentHelp AS HelpDisplay
 	PROTECT lHelpOn AS LOGIC
 	PROTECT lHelpCursorOn AS LOGIC
@@ -48,7 +48,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT dwTimerCount AS INT
 	PROTECT dwTimerInterval AS INT
 	PROTECT lTimerRegistered AS LOGIC
-	
+
 	//PROTECT lDragActive AS LOGIC
 	//PROTECT oDragImageList AS VOSDK.ImageList
 	PROTECT hDragSingleCursor AS IntPtr
@@ -57,11 +57,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT aDelayedAlignes		AS ARRAY
 	PROTECT lDelayAlignment		as LOGIC
 	PROTECT lAutomated			AS LOGIC
-	
+
 	PROTECT oMinSize AS Dimension
 	PROTECT oTrayIcon AS VOTrayIcon
-	
-	
+
+
 	PROPERTY EventReturnValue AS LONGINT AUTO
 
 	PROTECT oResourceDialog AS ResourceDialog	// Class that holds the decoded version of the Win32 resource
@@ -85,12 +85,12 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN SELF:__Form:TopMost
 	ACCESS __IsValid AS LOGIC STRICT
 		RETURN SELF:oWnd != NULL_OBJECT .and. ! SELF:oWnd:IsDisposed
-	
+
 	ACCESS __HasSurface AS LOGIC
 		RETURN SELF:__Surface != oWnd
-		
+
 	ACCESS __Surface AS IVOControlContainer STRICT
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			LOCAL IMPLIED aList := oWnd:GetAllControls()
 			FOREACH oC AS OBJECT IN aList
 				IF oc IS IVOPanel
@@ -99,11 +99,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			NEXT
 		ENDIF
 		RETURN oWnd
-        
+
 	METHOD __SetupDataControl(oDC AS VOSDK.Control) AS VOID
-		RETURN 
-	
-	METHOD __AddAlign(oControl AS IGUIObject, iType AS USUAL) AS LOGIC STRICT 
+		RETURN
+
+	METHOD __AddAlign(oControl AS IGUIObject, iType AS USUAL) AS LOGIC STRICT
 		LOCAL dwI, dwCount AS DWORD
 		LOCAL lDelete      AS LOGIC
 		LOCAL lOldAlign    AS LOGIC
@@ -115,18 +115,18 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			aadd(aDelayedAlignes, {(OBJECT)oControl, iType})
 			RETURN TRUE
 		ENDIF
-		
+
 		lOldAlign := ! IsPtr(iType) .AND. (INT) iType <= OA_FULL_SIZE
-		
+
 		//PP-031129 Additional owner alignment options
 		IF ! lOldAlign
 			//Null_Object calls SetAlignStartSize() in init mode,
 			//means that only the first call sets the AlignStartSize.
 			SELF:SetAlignStartSize(NULL_OBJECT)
 		ENDIF
-		
+
 		lDelete := (IsLong(iType) .AND. (INT) iType = OA_NO)
-		
+
 		//SE-060525
 		dwCount := ALen(aAlignes)
 		lFound  := FALSE
@@ -142,9 +142,9 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				dwI := 0
 				EXIT //SE-070919 bug fix
 			ENDIF
-		NEXT 
-		
-		
+		NEXT
+
+
 		IF !lFound
 			// Add Control to the array
 			LOCAL oRect AS System.Drawing.Rectangle
@@ -162,14 +162,14 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			ENDIF
 			AAdd(aAlignes, {(OBJECT)oControl, iType, oRect:left, oRect:top, oRect:Width, oRect:Height})
 		ENDIF
-		
+
 		//IF lOldAlign
 		//	SELF:__AlignControls()
 		//ENDIF
-		
+
 		RETURN TRUE
-	
-	METHOD __AddTool(oControl AS VOSDK.Control) AS LOGIC STRICT 
+
+	METHOD __AddTool(oControl AS VOSDK.Control) AS LOGIC STRICT
 		//LOCAL cMessage AS STRING
 		//SELF:EnableToolTips(TRUE)
 		//cMessage := oControl:ToolTipText
@@ -183,7 +183,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//ENDIF
 
 		RETURN TRUE
-	
+
 	METHOD __ShowToolTip(oControl AS VOSDK.Control) AS VOID STRICT
 		LOCAL cMessage AS STRING
 		cMessage := oControl:ToolTipText
@@ -196,14 +196,14 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oPanel:ShowToolTip((System.Windows.Forms.Control) oControl:__Control, cMessage)
 		ENDIF
 
-	METHOD __AlignControl(	oCtl AS IVOUIObject, nX AS LONG, nY AS LONG, nW AS LONG, nH AS LONG) AS VOID 
+	METHOD __AlignControl(	oCtl AS IVOUIObject, nX AS LONG, nY AS LONG, nW AS LONG, nH AS LONG) AS VOID
 		oCtl:Location := System.Drawing.Point{nX, nY}
 		oCtl:Size     := System.Drawing.Size{nW, nH}
 		RETURN
 
 
-	METHOD __AlignControls() AS Window STRICT 
-		
+	METHOD __AlignControls() AS Window STRICT
+
 		//PP-030828 Strong typing
 		//PP-031129 Additional owner alignment options
 		//PP-040914 Update from S Ebert
@@ -211,27 +211,27 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//          Factor/Divisor-Mode is switched on, if the alignment parameter which
 		//          was assigned to Control:OwnerAlignment is a PTR (pointer) value.
 		//          The type PTR is used here to recognize the Factor/Divisor-Mode.
-		//          Then the PTR value becomes casted to a DWORD. The 32Bit value is 
+		//          Then the PTR value becomes casted to a DWORD. The 32Bit value is
 		//          divided in to 8 4bit values, each can represent a value between 0 and 15
-		//          (0x0 and 0xF). The 8 4bit values are ordered in this way: 
+		//          (0x0 and 0xF). The 8 4bit values are ordered in this way:
 		//
 		//          Pos    8      7      6      5       4       3      2      1
 		//                  Height        Width         Y-Position     X-Position
-		//          0x  Factor,Divisor Factor,Divisor Factor,Divisor Factor,Divisor	
+		//          0x  Factor,Divisor Factor,Divisor Factor,Divisor Factor,Divisor
 		//
-		//          If you use a 32hex OwnerAlignment value you can write it like here  
-		//                                               
+		//          If you use a 32hex OwnerAlignment value you can write it like here
+		//
 		//          Control:OwnerAlignment := PTR(_CAST, 0x00001111) (same as OA_X_Y)
-		//                                                      
+		//
 		//          The hex value has the following format:
-		
+
 		//          0x00001111
 		//            HHWWYYXX   (H=Height, W=Width, Y=Y-Position, X=X-Position)
 		//            FDFDFDFD   (F=Factor, D=Divisor)
 		//
 		//          a Value of 00 means no alignment for X,Y,With or Height depending on its
 		//          position in the 32 bit hex value.
-		//          
+		//
 		//          IF you use the Factor/Divisor-Mode you can't use the proportinal alignment
 		//          simultaneously for this control (window).
 		LOCAL oRect		 AS System.Drawing.Rectangle
@@ -242,13 +242,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		LOCAL oOwnerSize AS Dimension
 		// Original Sizes
 		LOCAL iWinRefWidth		AS INT
-		LOCAL iWinRefHeight		AS INT	
+		LOCAL iWinRefHeight		AS INT
 		LOCAL iCtlRefWidth      AS INT
-		LOCAL iCtlRefHeight     AS INT	
+		LOCAL iCtlRefHeight     AS INT
 		// New Window Size
 		LOCAL iWinWidth			AS INT
 		LOCAL iWinHeight		AS INT
-		// New Control Size & Position		
+		// New Control Size & Position
 		LOCAL iCtlX				AS INT
 		LOCAL iCtlY				AS INT
 		LOCAL iCtlWidth			AS INT
@@ -256,25 +256,25 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 		LOCAL pB                    AS BYTE PTR
 		LOCAL oOwnerOffSet			AS Point
-		
+
 		LOCAL dwI, dwCount  AS DWORD
 		LOCAL oResize    AS OBJECT
-		
+
 		IF ! lDelayAlignment
 			RETURN SELF
 		ENDIF
-		
-		
+
+
 		dwCount := ALen(aAlignes)
-		
+
 		IF dwCount < 1 .OR. oWnd == NULL_OBJECT .or. oWnd:WindowState == system.Windows.Forms.FormWindowState.Minimized
 			RETURN  SELF
 		ENDIF
-		
+
 		oRect   := SELF:__Surface:ClientRectangle
 		iWinWidth  := oRect:Width
 		iWinHeight := oRect:Height
-		
+
 		IF aAlignes[1][1] == NULL_OBJECT
 			oOwnerSize	:= aAlignes[1][2]
 			IF oOwnerSize != NULL_OBJECT
@@ -288,15 +288,15 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ELSE
 			dwI := 1
 		ENDIF
-		
+
 		IF iWinRefWidth == iWinWidth .and. iWinRefHeight == iWinHeight
 			RETURN SELF
 		ENDIF
-		
+
 		oWnd:SuspendRedraw()
 		// First element in aAlignes has the window and its original size
 		// 1 = Window
-		// 2 = Size (Dimension object)		
+		// 2 = Size (Dimension object)
 		// Each other Element in aAlignes has the following values
 		// 1   = Control/ Window
 		// 2   = Type, Pointer or LONG
@@ -321,23 +321,23 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 					iCtlX      := aAlignes[dwI][3]
 					iCtlY      := aAlignes[dwI][4]
 					iCtlWidth  := iCtlRefWidth  := aAlignes[dwI][5]
-					iCtlHeight := iCtlRefHeight := aAlignes[dwI][6]  
-					
-					IF IsPtr(uType) 
+					iCtlHeight := iCtlRefHeight := aAlignes[dwI][6]
+
+					IF IsPtr(uType)
 						pB := (BYTE PTR) @dwType
 						IF (liMulDiv := pB[1]) > 0
 							iCtlX := GuiWin32.MulDiv(iWinWidth , liMulDiv>>4, (LONG) _AND(liMulDiv, 0XF))
 						ENDIF
 						IF (liMulDiv := pB[2]) > 0
 							iCtlY := GuiWin32.MulDiv(iWinHeight , liMulDiv>>4, (LONG)  _AND(liMulDiv, 0XF))
-						ENDIF 
+						ENDIF
 						IF (liMulDiv := pB[3]) > 0
 							iCtlWidth := GuiWin32.MulDiv(iWinWidth , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
-						ENDIF 
+						ENDIF
 						IF (liMulDiv := pB[4]) > 0
 							iCtlHeight := GuiWin32.MulDiv(iWinHeight , liMulDiv>>4,  (LONG) _AND(liMulDiv, 0XF))
 						ENDIF
-					ELSE        
+					ELSE
 						// Width
 						IF _AND(dwType, OA_PWIDTH) = OA_PWIDTH
 							iCtlWidth := GuiWin32.MulDiv(iWinWidth, iCtlRefWidth, iWinRefWidth)
@@ -353,13 +353,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 						// X-Position
 						IF _AND(dwType, OA_PX) = OA_PX
 							IF _AND(dwType, OA_PWIDTH) = OA_PWIDTH
-								iCtlX := GuiWin32.MulDiv(iWinWidth, iCtlX, iWinRefWidth) 
-							ELSE 
+								iCtlX := GuiWin32.MulDiv(iWinWidth, iCtlX, iWinRefWidth)
+							ELSE
 								iCtlX := GuiWin32.MulDiv(iWinWidth, iCtlX + iCtlRefWidth/2, iWinRefWidth) - iCtlWidth/2
-							ENDIF   
+							ENDIF
 						ELSEIF _AND(dwType, OA_X) = OA_X
 							iCtlX += iWinWidth - iWinRefWidth
-						ENDIF  
+						ENDIF
 						// Y- position
 						IF _AND(dwType, OA_PY) = OA_PY
 							IF _AND(dwType, OA_PHEIGHT) = OA_PHEIGHT
@@ -371,7 +371,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 							iCtlY += iWinHeight - iWinRefHeight
 						ENDIF
 
-					ENDIF   
+					ENDIF
 					// Since we are nesting controls in our GUI Classes we need to subtract the Offset of the owner
 					iCtlX -= oOwnerOffSet:X
 					iCtlY -= oOwnerOffSet:Y
@@ -429,30 +429,30 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ENDDO
 		oWnd:ResumeRedraw()
 		RETURN SELF
-	
 
-	METHOD __AssociateAccel(lSwitch AS LOGIC) AS Window STRICT 
+
+	METHOD __AssociateAccel(lSwitch AS LOGIC) AS Window STRICT
 		//IF lSwitch .AND. (oAccelerator != NULL_OBJECT)
 		//	SetAccelerator(oWnd, oAccelerator:Handle())
 		//ELSE //if !lswitch
 		//	SetAccelerator(NULL_PTR, NULL_PTR)
 		//ENDIF
-		
-		RETURN SELF
-	
 
-	METHOD __Close(oEvent AS @@Event) AS VOID STRICT 
+		RETURN SELF
+
+
+	METHOD __Close(oEvent AS @@Event) AS VOID STRICT
 		SELF:IsClosing := TRUE
 		SELF:Close(oEvent)
 		SELF:Destroy()
 		RETURN
-	
-	METHOD __CommandFromEvent(oEvent AS INamedEvent) AS LOGIC STRICT 
+
+	METHOD __CommandFromEvent(oEvent AS INamedEvent) AS LOGIC STRICT
 		LOCAL symNameSym AS SYMBOL
 		LOCAL oWindow AS OBJECT
 		LOCAL oReport AS OBJECT
 		LOCAL o AS OBJECT
-		
+
 		symNameSym := oEvent:NameSym
 		oWindow := SELF
 		IF oWindow IS ShellWindow
@@ -461,8 +461,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				oWindow := SELF
 			ENDIF
 		ENDIF
-		
-		
+
+
 		DO WHILE TRUE
 			IF IsMethod(oWindow, symNameSym)
 				Send(oWindow, symNameSym)
@@ -474,7 +474,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				EXIT
 			ENDIF
 		ENDDO
-		
+
 		IF IsClassOf(symNameSym, #Window)
 			IF IsInstanceOf(SELF, #ChildAppWindow)
 				oWindow:=SELF
@@ -496,11 +496,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			ENDIF
 			RETURN TRUE
 		ENDIF
-		
-		RETURN FALSE
-	
 
-	METHOD __CreateSelfBitmap() AS IntPtr STRICT 
+		RETURN FALSE
+
+
+	METHOD __CreateSelfBitmap() AS IntPtr STRICT
 		// Todo __CreateSelfBitmap
 		LOCAL hDIB AS PTR
 		//LOCAL hBitmap AS PTR
@@ -509,65 +509,65 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//LOCAL hMemDC AS PTR
 		//LOCAL rc IS _winRECT
 		//LOCAL x, y AS INT
-		
-		
-		
+
+
+
 		//_hDC := GetWindowDC(oWnd)
-		
+
 		//IF (_hDC != NULL_PTR)
 		//	hMemDC := CreateCompatibleDC(hDC)
 		//	IF (hMemDC != NULL_PTR)
 		//		GetWindowRect(oWnd, @rc)
 		//		x := rc:right - rc:left
 		//		y := rc:bottom - rc:top
-		
+
 		//		hBitmap := CreateCompatibleBitmap(_hDC, x, y)
-		
+
 		//		IF (hBitmap != NULL_PTR)
 		//			hBitmapOld := SelectObject(hMemDC, hBitmap)
 		//			PatBlt(hMemDC, 0, 0, x, y, WHITENESS)
 		//			BitBlt(hMemDC, 0, 0, x, y, _hDC, 0, 0, SRCCOPY)
 		//			SelectObject(hMemDC, hBitmapOld)
 		//		ENDIF
-		
+
 		//		DeleteDC(hMemDC)
 		//	ENDIF
-		
+
 		//	ReleaseDC(oWnd, _hDC)
 		//ENDIF
-		
+
 		//IF (hBitmap != NULL_PTR)
 		//	hDIB := __WCDIBFromBitmap(hBitmap)
 		//	DeleteObject(hBitmap)
 		//ENDIF
-		
-		RETURN hDIB
-	
 
-	ACCESS __Cursor AS VOSDK.Cursor STRICT 
+		RETURN hDIB
+
+
+	ACCESS __Cursor AS VOSDK.Cursor STRICT
 		RETURN oCursor
 
-	ASSIGN __Cursor(oNewCursor AS VOSDK.Cursor)  STRICT 
+	ASSIGN __Cursor(oNewCursor AS VOSDK.Cursor)  STRICT
 		oCursor:=oNewCursor
-	
+
 	[Obsolete];
-	METHOD __DestroyChildren() AS VOID STRICT 
+	METHOD __DestroyChildren() AS VOID STRICT
 		RETURN
-	
+
 	[Obsolete];
-	METHOD __DestroyWnd() AS LOGIC STRICT 
+	METHOD __DestroyWnd() AS LOGIC STRICT
 		RETURN TRUE
-	
-	METHOD __EnableHelpCursor(lEnabled AS LOGIC) AS Window STRICT 
+
+	METHOD __EnableHelpCursor(lEnabled AS LOGIC) AS Window STRICT
 		// Todo __EnableHelpCursor
 		//LOCAL strucPoint IS _WinPoint
 		//LOCAL x, y AS LONGINT
 		//LOCAL liHitArea AS LONGINT
 		//LOCAL oWndCursor AS PTR
 		//LOCAL oWndChildCursor AS PTR
-		
-		
-		
+
+
+
 		//// lHelpMenu := lEnabled
 		//IF lEnabled
 		//	IF !lHelpCursorOn
@@ -585,7 +585,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	lHelpCursorOn := FALSE
 		//	IF IsWindowVisible(oWnd) .AND. (GetCapture() == 0)
 		//		GetCursorPos(@strucPoint)
-		
+
 		//		// Locate Window or ChildWindow currently containing cursor.
 		//		// This is needed for passing to WM_SETCURSOR
 		//		x := strucPoint:x
@@ -607,11 +607,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	ENDIF
 		//ENDIF
 		RETURN SELF
-	
 
-	METHOD __FilterHelpCursor(wArea AS LONGINT) AS LOGIC STRICT 
+
+	METHOD __FilterHelpCursor(wArea AS LONGINT) AS LOGIC STRICT
 		LOCAL lTemp AS LOGIC
-		
+
 		DO CASE
 		CASE wArea==HTCAPTION
 			lTemp := TRUE
@@ -637,25 +637,25 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		OTHERWISE
 			lTemp := FALSE
 		ENDCASE
-		
-		RETURN lTemp
-	
-	
 
-	METHOD __GetDC() AS IntPtr STRICT 
+		RETURN lTemp
+
+
+
+	METHOD __GetDC() AS IntPtr STRICT
 		// Todo ? __GetDC
 		//LOCAL hFont AS PTR
 		//LOCAL strucLogPen IS _WinLogPen
 		//LOCAL strucLogBrush IS _WinLogBrush
 		//LOCAL r IS _WinRECT
-		
-		
-		
+
+
+
 		//IF SELF:Handle(4) == NULL_PTR
 		//	//PaintInfo = 0
 		//	RETURN NULL_PTR
 		//ENDIF
-		
+
 		//IF (hDC == NULL_PTR)
 		//	WCDCAdd(SELF)
 		//	SELF:hDC := GetDC(SELF:Handle(4))
@@ -663,19 +663,19 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	// else
 		//	// WCDCTop(self)
 		//ENDIF
-		
+
 		//IF (hDC != NULL_PTR)
 		//	IF !DCInitialized
 		//		IF (WC.CoordinateSystem == WC.CartesianCoordinates)
 		//			SetMapMode(hDC, MM_TEXT)
 		//			SetMapMode(hDC, MM_ANISOTROPIC)
-		
+
 		//			GetClientRect(SELF:Handle(4), @r)
 		//			SetViewportExtEx(hDC, r:right, r:bottom, NULL_PTR) // device coords
 		//			SetWindowExtEx(hDC, r:right, -r:bottom, NULL_PTR) // logical coords used by GDI
 		//			SetViewportOrgEx(hDC, 0, r:bottom-1, NULL_PTR)
 		//		ENDIF
-		
+
 		//		DCInitialized := TRUE
 		//		__WCLogicalBackgroundBrush(SELF,@strucLogBrush)
 		//		SetBkColor(hDC, strucLogBrush:lbColor)
@@ -685,7 +685,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//			SetBkMode(hDC, OPAQUE)
 		//		ENDIF
 		//	ENDIF
-		
+
 		//	IF DCFontNeeded .AND. !DCFontInUse
 		//		IF oFont != NULL_OBJECT
 		//			oFont:Create(FALSE, hDC)
@@ -698,7 +698,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//		DCFontNeeded := FALSE
 		//		SetTextAlign(hDC, _OR(TA_LEFT,TA_BOTTOM))
 		//	ENDIF
-		
+
 		//	IF DCPenNeeded .AND. !DCPenInUse
 		//		IF oPen != NULL_OBJECT
 		//			SelectObject ( hDC, oPen:Handle())
@@ -712,7 +712,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//		DCPenInUse := TRUE
 		//		DCPenNeeded := FALSE
 		//	ENDIF
-		
+
 		//	IF DCBrushNeeded .AND. !DCBrushInUse
 		//		IF oForeground != NULL_OBJECT
 		//			SelectObject(hDC, oForeground:Handle())
@@ -724,11 +724,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//		DCBrushNeeded := FALSE
 		//	ENDIF
 		//ENDIF
-		
-		RETURN hDC
-	
 
-	METHOD __GetMyOleObjects AS ARRAY STRICT 
+		RETURN hDC
+
+
+	METHOD __GetMyOleObjects AS ARRAY STRICT
 		LOCAL aMyControls AS ARRAY
 		LOCAL aObjects		AS ARRAY
 		LOCAL iLen			AS DWORD
@@ -742,18 +742,18 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			ENDIF
 		NEXT
 		RETURN aObjects
-	
-	
 
-	//METHOD __GetPaintRect() AS _WINRECT STRICT 
+
+
+	//METHOD __GetPaintRect() AS _WINRECT STRICT
 	//	//PP-030828 Strong typing
-	
-	
-	//	RETURN strucPaintRect
-	
-	
 
-	METHOD __HandleListItemDrag(oEvent AS @@Event) AS Window STRICT 
+
+	//	RETURN strucPaintRect
+
+
+
+	METHOD __HandleListItemDrag(oEvent AS @@Event) AS Window STRICT
 		// needed ?
 		//LOCAL dli AS _winDRAGLISTINFO
 		//STATIC LOCAL iBeginDragItem AS INT
@@ -764,15 +764,15 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		////RvdH 070713 Fixed ItemDrag problem
 		//dli := PTR(_CAST, oEvent:lParam)
 		//DO CASE
-		//CASE (dli:uNotification == DL_BEGINDRAG) 
+		//CASE (dli:uNotification == DL_BEGINDRAG)
 		//	iBeginDragItem := LBItemFromPt(dli:oWnd, @dli:ptCursor, TRUE)
 		//	DrawInsert(SELF:Handle(), dli:oWnd, iBeginDragItem)
 		//	SELF:EventReturnValue := 1L
-		//CASE (dli:uNotification == DL_DRAGGING)                
+		//CASE (dli:uNotification == DL_DRAGGING)
 		//	iCurItem := LBItemFromPt(dli:oWnd, @dli:ptCursor, TRUE)
 		//	DrawInsert(SELF:handle(), dli:oWnd, iCurItem)
 		//	SELF:EventReturnValue := DL_MOVECURSOR
-		//CASE (dli:uNotification == DL_DROPPED)                 
+		//CASE (dli:uNotification == DL_DROPPED)
 		//	iCurItem := LBItemFromPt(dli:oWnd, @dli:ptCursor, TRUE)
 		//	DrawInsert(SELF:handle(), dli:oWnd, -1)
 		//	oLB := (LIstBox) __WCGetControlByHandle(dli:oWnd)
@@ -788,16 +788,16 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	ENDIF
 		//ENDCASE
 		RETURN SELF
-	
 
-	METHOD __HandlePointer(oEvent AS @@Event, lHelp AS LOGIC, lClient AS LOGIC) AS Window STRICT 
+
+	METHOD __HandlePointer(oEvent AS @@Event, lHelp AS LOGIC, lClient AS LOGIC) AS Window STRICT
 		// needed ?
 		//LOCAL oObject AS OBJECT
 		//LOCAL lParam AS LONG
 		//LOCAL hHandle AS PTR
-		
-		
-		
+
+
+
 		//IF lHelp
 		//	IF (oApp != NULL_OBJECT)
 		//		SetCursor(oApp:__HelpCursor)
@@ -813,7 +813,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//				oObject := oObject:Owner:DataWindow
 		//			ENDIF
 		//		ENDIF
-		
+
 		//		// $$$
 		//		/*
 		//		do while (IsInstanceOf(oObject, #Control) .or. IsInstanceOf(oObject, #Window))
@@ -823,7 +823,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//		oObject := oObject:Owner
 		//		enddo
 		//		*/
-		
+
 		//		IF (oObject == NULL_OBJECT) .OR. IsInstanceOf(oObject, #App)
 		//			oObject:=SELF
 		//		ENDIF
@@ -841,13 +841,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	ENDIF
 		//ENDIF
 		RETURN SELF
-	
 
-	METHOD __HelpFilter(oEvent AS @@Event) AS LOGIC STRICT 
+
+	METHOD __HelpFilter(oEvent AS @@Event) AS LOGIC STRICT
 		LOCAL wParam AS DWORD
-		
-		
-		
+
+
+
 		wParam := LoWord(oEvent:wParam)
 		IF (wParam >= ID_FIRSTWCHELPID)
 			DO CASE
@@ -860,56 +860,56 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			ENDCASE
 			RETURN TRUE
 		ENDIF
-		
-		RETURN FALSE
-	
 
-	METHOD __InCursorHelpMode() AS LOGIC STRICT 
+		RETURN FALSE
+
+
+	METHOD __InCursorHelpMode() AS LOGIC STRICT
 		//PP-030828 Strong typing
 		RETURN lHelpOn .AND. lHelpCursorOn
-	
 
-	ACCESS __Parent AS OBJECT STRICT 
+
+	ACCESS __Parent AS OBJECT STRICT
 		//PP-030828 Strong typing
 		RETURN oParent
-	
 
-	METHOD __PreMenuCommand(oMenuCommandEvent AS MenuCommandEvent) AS USUAL STRICT 
-		
+
+	METHOD __PreMenuCommand(oMenuCommandEvent AS MenuCommandEvent) AS USUAL STRICT
+
 		IF SELF:PreMenuCommand( oMenuCommandEvent)
 			RETURN SELF
 		ENDIF
-		
+
 		IF ! SELF:__CommandFromEvent(oMenuCommandEvent)
 			RETURN SELF:MenuCommand(oMenuCommandEvent)
 		ENDIF
 		RETURN SELF
-	
+
 
 	[Obsolete];
-	METHOD __PrePreMenuCommand() 
-		
-		RETURN SELF
-	
+	METHOD __PrePreMenuCommand()
 
-	METHOD __ProcessHelp(oEvent AS @@Event) AS LOGIC STRICT 
+		RETURN SELF
+
+
+	METHOD __ProcessHelp(oEvent AS @@Event) AS LOGIC STRICT
 		// Todo __ProcessHelp
 		//LOCAL oObject AS OBJECT
 		//LOCAL oHL AS HyperLabel
 		//LOCAL sHelpInfo AS _winHelpInfo
 		//LOCAL hTemp AS PTR
 		//LOCAL cKey AS STRING
-		
+
 		//IF oCurrentHelp != NULL_OBJECT .AND. ! lHelpOn
 		//	sHelpInfo := PTR(_CAST, oEvent:lParam)
-		
+
 		//	hTemp := sHelpInfo:hItemHandle
-		
+
 		//	IF (oObject :=__WCGetObjectByHandle(hTemp)) == NULL_OBJECT
 		//		hTemp   := PTR(_CAST, GetWindowLong(hTemp, GWL_oWndPARENT))
 		//		oObject :=__WCGetObjectByHandle(hTemp)
 		//	ENDIF
-		
+
 		//	IF oObject != NULL_OBJECT
 		//		IF sHelpInfo:iContextType == HELPINFO_WINDOW
 		//			IF IsInstanceOf(oObject, #Control)
@@ -938,27 +938,27 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//				oHL := ((Menu)oObject):HyperLabel(sHelpInfo:iCtrlId)
 		//			ENDIF
 		//		ENDIF
-		
+
 		//		IF oHL != NULL_OBJECT
 		//			cKEY := oHL:HelpContext
 		//		ENDIF
 		//		IF cKey == NULL_STRING .AND. IsInstanceOf(oObject, #ShellWindow)
 		//			cKey := "HelpContents"
 		//		ENDIF
-		
+
 		//		oCurrentHelp:Show(cKey, sHelpInfo)
 		//		SELF:EventReturnValue := 1l
 		//		RETURN TRUE
 		//	ENDIF
 		//ENDIF
-		
-		RETURN FALSE
-	
 
-	METHOD __ProcessHelpCursor(oWin AS OBJECT, wArea AS LONGINT) AS LOGIC STRICT 
+		RETURN FALSE
+
+
+	METHOD __ProcessHelpCursor(oWin AS OBJECT, wArea AS LONGINT) AS LOGIC STRICT
 		LOCAL liTemp AS LONGINT
 		LOCAL hTemp AS PTR
-		
+
 		hTemp:=oWin:Handle()
 		// is it a window or child window
 		// if hTemp==oWnd .or. !IsInstanceOf(oWin,#Printer)
@@ -996,71 +996,71 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ELSE
 			GuiWin32.PostMessage(hTemp, WM_WCHELP, HelpControl, LONGINT(_CAST,hTemp))
 		ENDIF
-		
+
 		RETURN TRUE
-	
+
 	[Obsolete];
-	METHOD __ProcessToolTip(oControlNotifyEvent AS OBJECT) AS VOID STRICT 
+	METHOD __ProcessToolTip(oControlNotifyEvent AS OBJECT) AS VOID STRICT
 		// Handled by windows forms
 		RETURN
-	
+
 	METHOD __ReadResource(oResourceID AS ResourceID, oOwner as OBJECT) AS LOGIC
 		IF oResourceID != NULL_OBJECT
 			oResourceDialog := ResourceDialog{oResourceID:Handle(), oResourceID:Name, oOwner}
-		ENDIF			
+		ENDIF
 		IF oResourceDialog != NULL_OBJECT
 			SELF:Caption	:= oResourceDialog:Caption
 			SELF:dwStyle	:= oResourceDialog:Style
 			SELF:dwExStyle  := oResourceDialog:ExStyle
 		ENDIF
 		RETURN oResourceDialog != NULL_OBJECT
-	
-	METHOD __ReleaseDC() AS VOID STRICT 
-		// needed ?		
+
+	METHOD __ReleaseDC() AS VOID STRICT
+		// needed ?
 		//IF (hDC != NULL_PTR)
 		//	WCDCDelete(SELF)
 		//	ReleaseDC(SELF:Handle(4), hDC)
 		//	hDC := NULL_PTR
 		//ENDIF
 		RETURN
-	
 
-	METHOD __SetBrushNeeded(lNew AS LOGIC) AS LOGIC STRICT 
+
+	METHOD __SetBrushNeeded(lNew AS LOGIC) AS LOGIC STRICT
 		DCBrushNeeded := lNew
 		RETURN lNew
-	
 
-	METHOD __SetDCInitialized(lNew AS LOGIC) AS LOGIC STRICT 
+
+	METHOD __SetDCInitialized(lNew AS LOGIC) AS LOGIC STRICT
 		DCInitialized := lNew
 		RETURN lNew
-	
 
-	METHOD __SetFont(oNewFont AS Font) AS Font STRICT 
+
+	METHOD __SetFont(oNewFont AS Font) AS Font STRICT
 		oFont := oNewFont
 		SELF:__SetFont()
 		RETURN oFont
-	
+
 	METHOD __SetFont() AS VOID STRICT
 		IF SELF:oFont != NULL_OBJECT .and. SELF:oWnd != NULL_OBJECT
 			oWnd:Font := SELF:oFont:__Font
 		ENDIF
-		RETURN 
+		RETURN
 
-	METHOD __SetPenNeeded(lNew AS LOGIC) AS LOGIC STRICT 
+	METHOD __SetPenNeeded(lNew AS LOGIC) AS LOGIC STRICT
 		DCPenNeeded := lNew
 		RETURN lNew
-	
-	[Obsolete];
-	METHOD __SetSelfAssoAccel(lSwitch AS LOGIC) AS VOID STRICT 
-		RETURN
-	
 
 	[Obsolete];
-	METHOD __SetSelfMenu() AS VOID STRICT 
+	METHOD __SetSelfAssoAccel(lSwitch AS LOGIC) AS VOID STRICT
 		RETURN
-	
-	METHOD __Timer() AS VOID STRICT 
-		
+
+
+	[Obsolete];
+	METHOD __SetSelfMenu() AS VOID STRICT
+		RETURN
+
+	METHOD __Timer() AS VOID STRICT
+
 		dwTimerCount := dwTimerCount - 1
 		IF (dwTimerCount == 0)
 			SELF:Timer()
@@ -1070,18 +1070,18 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				lTimerRegistered := FALSE
 			ENDIF
 		ENDIF
-		
-		RETURN 
-	
+
+		RETURN
+
 
 	[Obsolete];
-	METHOD __ToolTipHandle() AS IntPtr STRICT 
+	METHOD __ToolTipHandle() AS IntPtr STRICT
 		// Tooltips are handled in the Panel class
 		RETURN IntPtr.Zero
-	
 
-	METHOD __UpdateTrayIcon(dwNIM,oIcon,dwID,sToolTip) 
-		
+
+	METHOD __UpdateTrayIcon(dwNIM,oIcon,dwID,sToolTip)
+
 		DEFAULT(@dwID, 1)
 		DEFAULT(@sToolTip,"")
 		DEFAULT(@oIcon,NULL_OBJECT)
@@ -1099,29 +1099,29 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	ACCESS Accelerator AS Accelerator
 		RETURN oAccelerator
 
-	ASSIGN Accelerator(oNewAccelerator AS Accelerator) 
+	ASSIGN Accelerator(oNewAccelerator AS Accelerator)
 		oAccelerator := oNewAccelerator
-		RETURN 
-	
+		RETURN
 
-	METHOD AddTrayIcon(oTrayIcon, dwID, sToolTip) 
+
+	METHOD AddTrayIcon(oTrayIcon, dwID, sToolTip)
 		//PP-030902
 		RETURN SELF:__UpdateTrayIcon(NIM_ADD,oTrayIcon,dwID,sToolTip)
 
 
-	METHOD Animate(nTime,nFlags) 
-		
+	METHOD Animate(nTime,nFlags)
+
 		LOCAL dwTime,dwFlags AS DWORD
 		// Determine Windows version
 		dwTime	:= nTime
 		dwFlags := nFlags
 		GuiWin32.AnimateWindow(SELF:Handle(),dwTime,dwFlags)
 		RETURN TRUE
-	
+
 	ACCESS Automated AS LOGIC
 		RETURN lAutomated
 
-	ASSIGN Automated(lNewVal AS LOGIC) 
+	ASSIGN Automated(lNewVal AS LOGIC)
 		IF lNewVal != SELF:lAutomated
 			SELF:lAutomated := lNewVal
 			//#ifdef USE_OLEOBJECT
@@ -1132,53 +1132,53 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			//		_VOOLEUnRegisterAutomationObject(PTR(_CAST, SELF))
 			//		//PCALL(gpfnOLEUnRegisterAutomationObject, PTR(_CAST, SELF))
 			//	ENDIF
-			//#endif		
+			//#endif
 		ENDIF
-	
-	
+
+
 
 	ACCESS Background  AS Brush
 		RETURN oBackground
-	
 
-	ASSIGN Background(oNewBackground AS Brush) 
+
+	ASSIGN Background(oNewBackground AS Brush)
 		oBackground := oNewBackground
 		IF oBackGround != NULL_OBJECT .and. oBackground:Color != NULL_OBJECT
 			SELF:__Surface:BackColor := 	oBackground:Color
 		ELSE
 			// Need to add a paint handler
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 
 	ACCESS CanvasArea  AS BoundingBox
 		RETURN (BoundingBox) __Form:ClientRectangle
-	
 
-	METHOD CanvasErase() 
+
+	METHOD CanvasErase()
 		RETURN NIL
-	
+
 
 	ACCESS Caption AS STRING
 		RETURN cCaption
 
-	ASSIGN Caption(sNewCaption AS STRING) 
+	ASSIGN Caption(sNewCaption AS STRING)
 		cCaption := sNewCaption
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			oWnd:Text := sNewCaption
 		ENDIF
-		RETURN 
-	
+		RETURN
 
-	METHOD Center() 
-		IF SELF:__IsValid 
+
+	METHOD Center()
+		IF SELF:__IsValid
 			SELF:__Form:Center()
 		ENDIF
 		RETURN NIL
 
 
-	
-	METHOD Close(oEvent) 
+
+	METHOD Close(oEvent)
 		IF SELF:__IsValid .and. ! SELF:IsClosing
 			SELF:IsClosing := TRUE
 			IF oWnd:IsAttached
@@ -1187,10 +1187,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ENDIF
 		RETURN NIL
 
-	METHOD ComboBoxExNotify(oControlNotifyEvent) 
+	METHOD ComboBoxExNotify(oControlNotifyEvent)
 		//Todo ComboBoxExNotify
 		//LOCAL oCNE AS ControlNotifyEvent
-		//oCNE := oControlNotifyEvent 
+		//oCNE := oControlNotifyEvent
 		//IF oCNE:NotifyCode = CBEN_ENDEDIT
 		//	SELF:ComboBoxExEndEdit(ComboBoxExEndEditEvent{oCNE})
 		//ENDIF
@@ -1198,15 +1198,15 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 	ACCESS ContextMenu AS Menu
 		RETURN oContextMenu
-	
-	ASSIGN ContextMenu(oNewMenu AS Menu) 
+
+	ASSIGN ContextMenu(oNewMenu AS Menu)
 		oContextMenu := oNewMenu
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			IF oNewMenu == NULL_OBJECT
 				oWnd:ContextMenu := NULL_OBJECT
 			ELSE
 				oWnd:ContextMenu := oNewMenu:__Menu:AsContextMenu()
-			
+
 			ENDIF
 		ENDIF
 	METHOD ContextMenuShow(oPos AS Point) AS VOID
@@ -1214,27 +1214,27 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oWnd:ContextMenu:Show(oWnd, oPos)
 		ENDIF
 		RETURN
-		
-	METHOD ControlNotify(oControlNotifyEvent) 
+
+	METHOD ControlNotify(oControlNotifyEvent)
 		// Handling Window
 		/*LOCAL oTargetWnd AS Window
 		LOCAL nCode AS DWORD
 		LOCAL lParam AS LONGINT
-		
+
 		// TCN_SELCHANGE, TCN_SELCHANGING, TCN_KEYDOWN
 		LOCAL oControl 	AS OBJECT
 		LOCAL oEvt			AS ControlNotifyEvent
 		LOCAL strucNotify AS _winNMHDR
-		
-		
+
+
 		//RvdH 061218 Copied some of the code from ControlNotify for performance reasons
 		oEvt 			:= oControlNotifyEvent
 		strucNotify := PTR(_CAST, oEvt:lParam)
-		
+
 		nCode 	:= strucNotify:_code
 		lParam 	:= oEvt:lParam
 		oControl :=__WCGetObjectByHandle(strucNotify:oWndFrom)
-		
+
 		IF (IsInstanceOf(SELF, #__FormDialogWindow) .AND. IsInstanceOf(oParent, #__FormFrame))
 		oTargetWnd := ((__FormFrame)oParent):DataWindow
 		oTargetWnd:EventReturnValue := 0
@@ -1244,71 +1244,71 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ELSE
 		oTargetWnd := SELF
 		ENDIF
-		
+
 		DO CASE
-		
+
 		CASE nCode = NM_CUSTOMDRAW
 		//PP-030319 Call control's CustomDraw method to handle notification. Thanks to S Ebert
 		IF oControl != NULL_OBJECT .AND. IsMethod(oControl, #CustomDraw)
 		oTargetWnd:EventReturnValue := Send(oControl, #CustomDraw, lParam)
 		ENDIF
-		
+
 		CASE nCode == LVN_ODCACHEHINT
 		//PP-031115
 		IF IsMethod(oControl,  #__CacheHint)
 		Send(oControl, #__CacheHint, oEvt)
 		ENDIF
-		
+
 		//SE-060519
 		CASE nCode = LVN_GETDISPINFO  .OR. nCode = TVN_GETDISPINFO .OR.;
 		nCode = CBEN_GETDISPINFO .OR. nCode = TBN_GETDISPINFO .OR. nCode = HDN_GETDISPINFOA
 		IF (oControl != NULL_OBJECT)
 		oControl:__GetDispInfo(oEvt)
 		ENDIF
-		
-		CASE nCode == EN_PROTECTED      
+
+		CASE nCode == EN_PROTECTED
 		oTargetWnd:RichEditProtected(RichEditProtectEvent{oEvt})
 
 		CASE nCode == EN_SELCHANGE
 		oTargetWnd:RichEditSelectionChange(RichEditSelectionEvent{oEvt})
-		
+
 		CASE nCode == EN_STOPNOUNDO
 		oTargetWnd:RichEditUndoLost(oEvt)
-		
+
 		CASE nCode == LVN_BEGINDRAG .OR. nCode == LVN_BEGINRDRAG
 		IF IVarGet(oControl, #DragDropEnabled)
 		oTargetWnd:ListViewItemDrag(ListViewDragEvent{oEvt})
 		ENDIF
-		
+
 		CASE nCode == LVN_BEGINLABELEDIT .OR. nCode == LVN_ENDLABELEDIT
 		oTargetWnd:ListViewItemEdit(ListViewEditEvent{oEvt})
-		
+
 		CASE nCode == LVN_COLUMNCLICK
 		oTargetWnd:ListViewColumnClick(ListViewColumnClickEvent{oEvt})
-		
+
 		CASE nCode == LVN_DELETEITEM
 		oTargetWnd:ListViewItemDelete(ListViewDeleteEvent{oEvt})
-		
+
 		CASE nCode == LVN_KEYDOWN
 		oTargetWnd:ListViewKeyDown(ListViewKeyEvent{oEvt})
-		
+
 		CASE nCode == LVN_ITEMCHANGING
 		oTargetWnd:ListViewItemChanging(ListViewItemEvent{oEvt})
-		
+
 		CASE nCode == LVN_ITEMCHANGED
 		//PP-031115
 		IF IsInstanceOfUsual(oControl, #DataListView)
 		((DataListView) oControl):__ItemChanged( oEvt)
 		ENDIF
 		oTargetWnd:ListViewItemChanged( ListViewItemEvent{oEvt})
-		
+
 		CASE nCode == LVN_ODFINDITEM
 		//PP-030319 Corrected setting of return value. Fixes problem finding item in DLV on DW. Thanks to S Ebert
 		//PP-031115
 		IF IsMethod(oControl,  #__FindItem)
 		oTargetWnd:EventReturnValue := Send(oControl, #__FindItem, oEvt)
 		ENDIF
-		
+
 		CASE nCode == NM_CLICK .OR. nCode == NM_RCLICK
 		IF IsInstanceOf(oControl, #TreeView)
 		oTargetWnd:TreeViewMouseButtonDown( TreeViewMouseEvent{oEvt})
@@ -1317,99 +1317,99 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ELSEIF IsInstanceOf(oControl, #SysLink)
 		oTargetWnd:SysLinkSelect( SysLinkSelectEvent{oEvt})
 		ENDIF
-		
+
 		CASE nCode == NM_DBLCLK .OR. nCode == NM_RDBLCLK
 		IF IsInstanceOf(oControl, #TreeView)
 		oTargetWnd:TreeViewMouseButtonDoubleClick(TreeViewMouseEvent{oEvt})
 		ELSEIF IsInstanceOf(oControl, #ListView)
 		oTargetWnd:ListViewMouseButtonDoubleClick(ListViewMouseEvent{oEvt})
 		ENDIF
-		
+
 		CASE nCode == TCN_SELCHANGE
 		IF IsInstanceOf(oControl, #TabControl)
 		// !!! was in wrong order in 730 !!!
 		((TabControl)oControl):__FocusPage( TabCtrl_GetCurSel(oControl:Handle()))
 		oTargetWnd:TabSelect(oEvt)
 		ENDIF
-		
+
 		CASE nCode == TCN_SELCHANGING
 		oTargetWnd:TabSelectionChanging(oEvt)
-		
+
 		CASE nCode == TCN_KEYDOWN
 		oTargetWnd:TabKeyDown(oEvt)
-		
+
 		CASE nCode == TTN_NEEDTEXT // is identical to TTN_GETDISPINFO
 		//PP-030909 Move this CASE to a separate method
 		SELF:__ProcessToolTip(oEvt)
-		
+
 		CASE nCode == TVN_BEGINDRAG .OR. nCode == TVN_BEGINRDRAG
 		IF IVarGet(oControl, #DragDropEnabled)
 		oTargetWnd:TreeViewItemDrag(TreeViewDragEvent{oEvt})
 		ENDIF
-		
+
 		CASE nCode == TVN_BEGINLABELEDIT .OR. nCode == TVN_ENDLABELEDIT
 		oTargetWnd:TreeViewItemEdit(TreeViewEditEvent{oEvt})
-		
+
 		CASE nCode == TVN_DELETEITEM
 		oTargetWnd:TreeViewItemDelete( TreeViewDeleteEvent{oEvt})
-		
+
 		CASE nCode == TVN_ITEMEXPANDED
 		oTargetWnd:TreeViewItemExpanded( TreeViewExpandedEvent{oEvt})
-		
+
 		CASE nCode == TVN_ITEMEXPANDING
 		oTargetWnd:TreeViewItemExpanding( TreeViewExpandingEvent{oEvt})
-		
+
 		CASE nCode == TVN_KEYDOWN
 		oTargetWnd:TreeViewKeyDown( TreeViewKeyEvent{oEvt})
-		
+
 		CASE nCode == TVN_SELCHANGEDA
 		oTargetWnd:TreeViewSelectionChanged( TreeViewSelectionEvent{oEvt})
-		
+
 		CASE nCode == TVN_SELCHANGINGA
 		oTargetWnd:TreeViewSelectionChanging( TreeViewSelectionEvent{oEvt})
-		
+
 		CASE (nCode == MCN_SELECT) .OR. (nCode == MCN_SELCHANGE)
 		oTargetWnd:MonthCalSelectionChanged( MonthCalSelectionEvent{oEvt})
-		
+
 		CASE (nCode == DTN_DATETIMECHANGE)
 		oTargetWnd:DateTimeSelectionChanged( DateTimeSelectionEvent{oEvt})
-		
+
 		CASE (nCode == RBN_HEIGHTCHANGE)
 		oTargetWnd:ToolBarHeightChanged( oEvt)
-		
+
 		//SE-060519
 		CASE nCode >= CBEN_LAST .AND. nCode <= CBEN_FIRST
 		oTargetWnd:ComboBoxExNotify( oEvt)
-		
+
 		OTHERWISE
 		//PP-040504 Forwards control's parent notify messages back to the control. Thanks to S Ebert
 		IF oControl != NULL_OBJECT .AND. IsMethod(oControl, #ParentNotify)
 		oTargetWnd:EventReturnValue := Send(oControl, #ParentNotify, nCode, lParam)
 		ENDIF
-		
+
 		END CASE
-		
+
 		IF (oTargetWnd != SELF)
 		SELF:EventReturnValue := oTargetWnd:EventReturnValue
 		ENDIF
-		
+
 		IF (SELF:EventReturnValue == 0)
 		RETURN SELF:Default(oEvt)
 		ENDIF*/
 		RETURN NIL
 
-	METHOD DateTimeSelectionChanged(oDateTimeSelectionEvent) 
+	METHOD DateTimeSelectionChanged(oDateTimeSelectionEvent)
 		//Sets the modified flag only, if the DTP-Control becomes changed.
 		//In ComCtrl32 DLL below version 6, this eventhandler becomes called twice
 		//if you change the date with the calender control.
 		//With this change the workaround in the DateTimePicker:__Update() method
 		//is not longer needed. The old workaround worked not correct in all cases.
-		
+
 		LOCAL oDTPicker AS DateTimePicker
-		LOCAL cText     AS STRING 
+		LOCAL cText     AS STRING
 		LOCAL oEvt		  AS DateTimeSelectionEvent
 		LOCAL cOldValue  AS STRING
-		oEvt := oDateTimeSelectionEvent 	
+		oEvt := oDateTimeSelectionEvent
 		oDTPicker := (DateTimePicker) oEvt:Control
 		cOldValue := oDTPicker:AsString()
 		cText := oDTPicker:TextValue
@@ -1436,14 +1436,14 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 
 		RETURN 0L
-	
 
-	METHOD DeActivate(oEvent AS Event) 
+
+	METHOD DeActivate(oEvent AS Event)
 		SELF:DeactivateAllOLEObjects()
 		RETURN SELF:Default(oEvent)
-	
 
-	METHOD DeactivateAllOLEObjects(oExcept) 
+
+	METHOD DeactivateAllOLEObjects(oExcept)
 		#ifdef USE_OLEOBJECTS
 		//RvdH 041123 Added method at Window Level
 		//				  Also removed lNeedUpdate
@@ -1460,46 +1460,46 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	IF oOle <> oException
 		//		oOLE:Deactivate()
 		//		//IF oOLE:IsInPlaceActive
-		
+
 		//		//ENDIF
 		//	ENDIF
 		//NEXT
-		#endif	
+		#endif
 		RETURN SELF
-	
-	
 
-	METHOD Default(oEvent AS Event) 
+
+
+	METHOD Default(oEvent AS Event)
 		SELF:EventReturnValue := 1L
 		RETURN SELF
-	
-	METHOD DeleteTrayIcon(dwID) 
+
+	METHOD DeleteTrayIcon(dwID)
 		DEFAULT(REF dwID, 0)
 		IF oTrayIcon != NULL_OBJECT
 			IF oTrayIcon:ID == dwID
 				oTrayIcon:Destroy()
 			ENDIF
 		ENDIF
-		RETURN SELF	
+		RETURN SELF
 
-	METHOD Destroy() AS USUAL 
+	METHOD Destroy() AS USUAL
 		IF lAutomated
 			SELF:Automated := FALSE
 		ENDIF
-		
+
 		//__WCUnregisterMenu(oMenu)
 		//__WCUnregisterMenu(oContextMenu)
-		
-		IF SELF:__IsValid 
+
+		IF SELF:__IsValid
 			IF oWnd:IsAttached
 				oWnd:Dispose()
 			ENDIF
-			
+
 			IF (oToolBar != NULL_OBJECT)
 				oToolBar:Destroy()
 				oToolBar := NULL_OBJECT
 			ENDIF
-			
+
 			oMenu := NULL_OBJECT
 			oIcon := NULL_OBJECT
 			oIconSmall := NULL_OBJECT
@@ -1513,41 +1513,41 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oForeground := NULL_OBJECT
 			lTimerRegistered := FALSE
 		ENDIF
-		
+
 		SUPER:Destroy()
 		UnregisterAxit(SELF)
 		//Gc.Collect()
 		RETURN NIL
-	
+
 
 	METHOD Disable()  AS VOID
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			oWnd:Enabled := FALSE
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 
 	//ACCESS DragDropClient AS DragDropClient
 	//	RETURN oDragDropClient
-	
+
 
 	//ACCESS DragDropServer AS DragDropServer
 	//	RETURN oDragDropServer
-	
+
 
 	//ACCESS DragImageList AS VOSDK.ImageList
 	//	RETURN oDragImageList
-	
 
-	METHOD Draw(oDrawObject) 
+
+	METHOD Draw(oDrawObject)
 		LOCAL cnt, i AS DWORD
 		LOCAL oDraw as DrawObject
 		LOCAL aDraw as Array
-		
+
 		IF (oWnd == NULL_OBJECT) .AND. !IsInstanceOf(SELF, #Printer)
 			RETURN SELF
 		ENDIF
-		
+
 		IF !IsArray(oDrawObject)
 			IF !IsInstanceOfUsual(oDrawObject,#DrawObject)
 				WCError{#Draw,#Window,__WCSTypeError,oDrawObject,1}:@@Throw()
@@ -1567,30 +1567,30 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				oDraw:Draw()
 			NEXT
 		ENDIF
-		
+
 		RETURN SELF
-	
 
-	METHOD DrawBackground(hdc, oWindow) 
+
+	METHOD DrawBackground(hdc, oWindow)
 		RETURN FALSE
-	
 
-	METHOD Drop(oDE ) 
+
+	METHOD Drop(oDE )
 		RETURN NIL
 
 	METHOD Enable()  AS VOID
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			oWnd:Enabled := TRUE
 		ENDIF
-		RETURN 
+		RETURN
 
-	METHOD EnableCloseBox(lValue := TRUE AS LOGIC) 
-		LOCAL hBox AS IntPtr	
-		IF SELF:__IsValid 
-			hBox := GuiWin32.GetSystemMenu(oWnd:Handle,FALSE) 
+	METHOD EnableCloseBox(lValue := TRUE AS LOGIC)
+		LOCAL hBox AS IntPtr
+		IF SELF:__IsValid
+			hBox := GuiWin32.GetSystemMenu(oWnd:Handle,FALSE)
 		ENDIF
 		IF hBox != IntPtr.Zero
-			IF lValue 
+			IF lValue
 				RETURN GuiWin32.EnableMenuItem(hBox,SC_CLOSE,MF_ENABLED)
 			ELSE
 				RETURN GuiWin32.EnableMenuItem(hBox,SC_CLOSE,_OR(MF_GRAYED,MF_BYCOMMAND))
@@ -1607,15 +1607,15 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             ELSE
                 IF SELF:oDragDropClient != NULL_OBJECT
                     SELF:oDragDropClient:Destroy()
-                    SELF:oDragDropClient:= NULL_OBJECT 
+                    SELF:oDragDropClient:= NULL_OBJECT
                 ENDIF
             ENDIF
         ENDIF
-		RETURN 
-	
+		RETURN
+
 
 	[Obsolete];
-	METHOD EnableDragDropServer(lEnable := TRUE AS LOGIC)  
+	METHOD EnableDragDropServer(lEnable := TRUE AS LOGIC)
 		//IF lEnable
 		//	IF (oDragDropServer == NULL_OBJECT)
 		//		oDragDropServer := DragDropServer{SELF}
@@ -1624,12 +1624,12 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	oDragDropServer:Destroy()
 		//	oDragDropServer := NULL_OBJECT
 		//ENDIF
-		
-		RETURN SELF
-	
 
-	METHOD EnableHelp(lEnable AS LOGIC, oHelpDisplay AS HelpDisplay) 
-		
+		RETURN SELF
+
+
+	METHOD EnableHelp(lEnable AS LOGIC, oHelpDisplay AS HelpDisplay)
+
 		IF lHelpOn
 			// Disable previous Help
 			lHelpOn := FALSE
@@ -1638,7 +1638,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				oApp:__SetHelpWind(NULL_OBJECT, HM_NONE)
 			ENDIF
 		ENDIF
-		
+
 		IF lEnable
 			// Enable New Help
 			oCurrentHelp := oHelpDisplay
@@ -1652,16 +1652,16 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ELSE
 			oCurrentHelp := NULL_OBJECT
 		ENDIF
-		
+
 		RETURN SELF
-	
+
 
 	METHOD EnableHelpButton() AS VOID STRICT
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			oWnd:HelpButton := TRUE
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 
 	METHOD EnableHelpCursor() AS VOID STRICT
 		IF lHelpOn
@@ -1669,51 +1669,51 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ELSE
 			GuiWin32.PostMessage(SELF:Handle(), WM_SYSCOMMAND, SC_CONTEXTHELP, 0)
 		ENDIF
-		
-		RETURN 
-	
 
-	METHOD EnableThemeDialogTexture(dwStyle) 
+		RETURN
+
+
+	METHOD EnableThemeDialogTexture(dwStyle)
 		// Todo EnableThemeDialogTexture
-		
+
 		//RETURN EnableThemeDialogTexture(SELF,dwStyle)
 		RETURN SELF
 
 	METHOD EnableToolTips(lEnable := TRUE AS LOGIC) AS VOID
 		// Todo EnableToolTips
-		
-		IF lEnable 
+
+		IF lEnable
 			IF SELF:__Surface IS VOPanel VAR panel
-				panel:EnableToolTips(lEnable)			
+				panel:EnableToolTips(lEnable)
 			ENDIF
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 
 
 	ACCESS Font AS VOSDK.Font
 		RETURN oFont
-	
 
-	ASSIGN Font(oNewFont AS VOSDK.Font) 
+
+	ASSIGN Font(oNewFont AS VOSDK.Font)
 		oFont := oNewFont
 		SELF:__SetFont()
-		RETURN 
-	
+		RETURN
+
 
 	ACCESS Foreground AS Brush
 		RETURN oForeground
-	
 
-	ASSIGN Foreground(oNewForeground AS Brush) 
+
+	ASSIGN Foreground(oNewForeground AS Brush)
 		oForeground := oNewForeground
 		DCBrushInUse := FALSE
 		DCBrushNeeded := TRUE
 		// this forces the new object to be selected into the current DC and allows proper releasing of the old one
 		SELF:__GetDC()
-		
-		RETURN 
-	
+
+		RETURN
+
 
 	METHOD GetAllChildren() AS ARRAY STRICT
 		LOCAL aRet AS ARRAY
@@ -1751,7 +1751,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 					VAR oControl := control ASTYPE IVOControlProperties
 					aRet:Add(oControl:Control)
 					// Get the children of the group boxes also in this list
-					IF oControl IS IVOGroupBox 
+					IF oControl IS IVOGroupBox
 						LOCAL aGroupChildren AS IList<IVOControl>
 						VAR oGroup :=  control ASTYPE IVOGroupBox
 						aGroupChildren := oGroup:getAllChildren(NULL)
@@ -1761,9 +1761,9 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 					ENDIF
 				ENDIF
 			NEXT
-		ENDIF		
+		ENDIF
 		RETURN aRet
-	
+
 
 	METHOD GetDlgItem(nItem AS LONG) AS ResourceDialogItem
 		// For a Window based on a resource, this returns the control from the resource
@@ -1773,13 +1773,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN NULL_OBJECT
 
 	METHOD GetStyle() AS LONG
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			RETURN GuiWin32.GetWindowLong(oWnd:Handle, GWL_STYLE)
 		ENDIF
 		RETURN SELF:dwStyle
-		
+
 	METHOD GetExStyle AS LONG
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			RETURN GuiWin32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
 		ENDIF
 		RETURN SELF:dwExStyle
@@ -1787,7 +1787,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 	METHOD Handle() AS IntPtr  CLIPPER
 		LOCAL hWin AS Intptr
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			hWin := oWnd:Handle
 			RETURN hWin
 		ENDIF
@@ -1806,23 +1806,23 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	ACCESS HelpDisplay AS HelpDisplay
 		RETURN oCurrentHelp
 
-	ASSIGN HelpDisplay(oHelpDisplay AS HelpDisplay) 
+	ASSIGN HelpDisplay(oHelpDisplay AS HelpDisplay)
 		SELF:EnableHelp(TRUE, oHelpDisplay)
-		
-		RETURN 
-	
-	METHOD HelpRequest(oHelpRequestEvent) 
+
+		RETURN
+
+	METHOD HelpRequest(oHelpRequestEvent)
 		LOCAL dwType AS LONG
 		LOCAL oHRE AS HelpRequestEvent
 		LOCAL oP AS OBJECT
-	
+
 		oP := SELF:Owner
 		DO WHILE IsInstanceOf(oP, #Window)
 			((Window) oP):__EnableHelpCursor(FALSE)
 			oP := ((Window) oP):Owner
 		ENDDO
-			
-		IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent) 
+
+		IF IsInstanceOfUsual(oHelpRequestEvent, #HelpRequestEvent)
 			IF SELF:HelpDisplay==NULL_OBJECT
 				IF IsMethod(SELF:oParent, #HelpRequest)
 					Send(SELF:oParent, #HelpRequest, oHelpRequestEvent)
@@ -1850,32 +1850,32 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				ENDCASE
 			ENDIF
 		ENDIF
-		
+
 
 		RETURN NIL
-	
+
 
 	METHOD Hide() AS VOID STRICT
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			oWnd:Visible := FALSE
 		ENDIF
-		
-		RETURN 
-	
 
-	METHOD HorizontalScroll(oScrollEvent AS ScrollEvent) 
+		RETURN
+
+
+	METHOD HorizontalScroll(oScrollEvent AS ScrollEvent)
 		LOCAL oScrollBar AS ScrollBar
 		LOCAL oEvt	:= oScrollEvent AS ScrollEvent
-		
+
 		oScrollBar := oEvt:ScrollBar
 		IF (oScrollBar != NULL_OBJECT)
 			oScrollBar:ThumbPosition := oEvt:Position
 		ENDIF
-		
-		RETURN SELF:Default(oEvt)
-	
 
-	METHOD HorizontalSlide(uSliderEvent AS SliderEvent) 
+		RETURN SELF:Default(oEvt)
+
+
+	METHOD HorizontalSlide(uSliderEvent AS SliderEvent)
 		LOCAL oSlider AS Slider
 		LOCAL oSliderEvent AS SliderEvent
 		oSliderEvent := uSliderEvent
@@ -1884,60 +1884,60 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oSlider:ThumbPosition := oSliderEvent:Position
 		ENDIF
 		RETURN SELF:Default(oSliderEvent)
-	
 
-	METHOD HorizontalSpin(oSpinnerEvent AS SpinnerEvent) 
+
+	METHOD HorizontalSpin(oSpinnerEvent AS SpinnerEvent)
 		LOCAL oSpinner AS Spinner
 		LOCAL oEvt	:= oSpinnerEvent AS SpinnerEvent
-		
+
 		oSpinner := oEvt:Spinner
 		IF (oSpinner != NULL_OBJECT)
 			oSpinner:Position := oEvt:Position
 		ENDIF
-		
+
 		RETURN SELF:Default(oEvt)
-	
+
 
 	ACCESS HyperLabel AS HyperLabel
 		RETURN oHyperLabel
-	
 
-	ASSIGN HyperLabel(oHL AS HyperLabel) 
+
+	ASSIGN HyperLabel(oHL AS HyperLabel)
 		IF IsInstanceOfUsual(oHL,#HyperLabel)
 			oHyperLabel := oHL
 			SELF:@@StatusMessage(oHL, MESSAGEPERMANENT)
 		ENDIF
-		
-		RETURN 
-	
+
+		RETURN
+
 
 	ACCESS Icon AS Icon
 		RETURN oIcon
-	
 
-	ASSIGN Icon(oNewIcon AS Icon) 
+
+	ASSIGN Icon(oNewIcon AS Icon)
 		oIcon := oNewIcon
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			SELF:__Form:Icon := oIcon:__Icon
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 
 	ACCESS IconSm AS Icon
 		RETURN oIconSmall
-	
 
-	ASSIGN IconSm(oNewIcon AS Icon) 
+
+	ASSIGN IconSm(oNewIcon AS Icon)
 		oIconSmall := oNewIcon
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			SELF:__Form:SmallIcon := oIconSmall:__Icon
 		ENDIF
-		RETURN 
-	
+		RETURN
 
-	CONSTRUCTOR(oOwner) 
-		
-		
+
+	CONSTRUCTOR(oOwner)
+
+
 		SUPER()
 		IF oOwner != NULL_OBJECT
 			IF oOwner IS System.Windows.Forms.Form
@@ -1947,7 +1947,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			ENDIF
 		ENDIF
 		oOrigin := Point{0,0}
-		
+
 		aAlignes		:= {}
 		aDelayedAlignes := {}
 		lDelayAlignment := TRUE
@@ -1955,15 +1955,15 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 		//PP-030910
 		SELF:SetBackgroundBrush()
-		oWnd  := (VoForm) SELF:__CreateForm()	
+		oWnd  := (VoForm) SELF:__CreateForm()
 		IF oWnd != NULL_OBJECT
 			oWnd:Visible := FALSE
 			SELF:__SetFont()
 
 		ENDIF
-		RETURN 
-	
-	
+		RETURN
+
+
 	METHOD IsEnabled()  AS LOGIC CLIPPER
 		IF oWnd != NULL_OBJECT
 			RETURN oWnd:Enabled
@@ -1975,53 +1975,53 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			RETURN oWnd:WindowState == System.Windows.Forms.FormWindowState.Minimized
 		ENDIF
 		RETURN FALSE
-	
+
 
 	METHOD IsVisible()  AS LOGIC
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			RETURN oWnd:Visible
 		ENDIF
 		RETURN FALSE
-	
-	METHOD IsZoomed() 
-		IF SELF:__IsValid 
+
+	METHOD IsZoomed()
+		IF SELF:__IsValid
 			RETURN oWnd:WindowState == System.Windows.Forms.FormWindowState.Maximized
 		ENDIF
 		RETURN FALSE
 
-	METHOD LineTo(oPoint) 
+	METHOD LineTo(oPoint)
 		//Todo
 		//LOCAL dwLen, i AS DWORD
-		//LOCAL oPT AS Point                    
+		//LOCAL oPT AS Point
 		//LOCAL aPT AS ARRAY
-		
+
 		//IF (oWnd != NULL_PTR) .OR. IsInstanceOf(SELF, #Printer)
 		//	DCPenNeeded := TRUE
 		//	IF (SELF:__GetDC() != NULL_PTR)
 		//		IF !IsArray(oPoint)
 		//			LineTo(hDC, oPoint:x, oPoint:y)
-		//		ELSE      
-		//			aPT := oPoint 
+		//		ELSE
+		//			aPT := oPoint
 		//			dwLen := ALen(aPT)
 		//			FOR i:=1 UPTO dwLen
-		//				oPT := aPT[i] 
+		//				oPT := aPT[i]
 		//				LineTo(hDC, oPT:X, oPT:Y)
 		//			NEXT
 		//		ENDIF
 		//	ENDIF
 		//ENDIF
-		
-		RETURN SELF
-	
 
-	METHOD ListViewItemDrag(oListViewDragEvent) 
+		RETURN SELF
+
+
+	METHOD ListViewItemDrag(oListViewDragEvent)
 		// Todo
 		//LOCAL oControl AS ListView
-		//LOCAL oPoint AS Point 
+		//LOCAL oPoint AS Point
 		//LOCAL oEvt :=oListViewDragEvent AS ListViewDragEvent
-		
+
 		//oControl := OBJECT(oEvt:Control)
-		
+
 		//IF oControl:DragDropEnabled
 		//	IF oControl:DragImageList == NULL_OBJECT
 		//		oDragImageList := oControl:__CreateDragImageList(oEvt:ListViewItem:ItemIndex)
@@ -2038,22 +2038,22 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	ShowCursor(FALSE)
 		//	SetCapture(SELF:Handle())
 		//ENDIF
-		
+
 		RETURN SELF:Default(oListViewDragEvent)
-	
+
 	ACCESS Menu AS Menu
 		RETURN oMenu
-	
-	ASSIGN Menu(oNewMenu AS Menu) 
+
+	ASSIGN Menu(oNewMenu AS Menu)
 		oMenu := oNewMenu
 		oMenu:__Owner := SELF
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			SELF:__Form:Menu := oMenu:__Menu
 		ENDIF
 		FOREACH oItem AS VOMenuItem IN oNewMenu:__Menu:MenuItems
 			oItem:MergeType := System.Windows.Forms.MenuMerge.Remove
 		NEXT
-		
+
 		IF (oMenu == NULL_OBJECT)
 			SELF:Accelerator := NULL_OBJECT
 			SELF:ToolBar := NULL_OBJECT
@@ -2062,28 +2062,28 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			SELF:ToolBar := oMenu:ToolBar
 			oMenu:SetShortCuts(SELF:Accelerator)
 		ENDIF
-		RETURN 
-	
+		RETURN
 
-	METHOD MinMaxInfo(oMinMaxInfoEvent) 
+
+	METHOD MinMaxInfo(oMinMaxInfoEvent)
 		LOCAL oEvt := oMinMaxInfoEvent AS MinMaxInfoEvent
 		IF oMinSize != NULL_OBJECT
 			oEvt:MinTrackSize := oMinSize
 		ENDIF
 		RETURN SELF
-	
+
 
 	ACCESS MinSize AS Dimension
 		RETURN oMinSize
-	
-	ASSIGN MinSize(oSize AS Dimension) 
+
+	ASSIGN MinSize(oSize AS Dimension)
 		oMinSize := oSize
-	
-	METHOD ModifyTrayIcon(oTrayIcon, dwID, sToolTip) 
+
+	METHOD ModifyTrayIcon(oTrayIcon, dwID, sToolTip)
 		//PP-030902
 		RETURN SELF:__UpdateTrayIcon(NIM_MODIFY,oTrayIcon,dwID,sToolTip)
-	
-	METHOD MonthCalSelectionChanged(_oMonthCalSelectionEvent) 
+
+	METHOD MonthCalSelectionChanged(_oMonthCalSelectionEvent)
 		// Todo
 		//LOCAL oMonthCal AS MonthCalendar
 		//Local oMonthCalSelectionEvent as MonthCalSelectionEvent
@@ -2097,12 +2097,12 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//IF IsInstanceOf(oMonthCal:Owner, #DataWindow)
 		//	((DataWindow) oMonthCal:Owner):__DoValidate(oMonthCal)
 		//ENDIF
-		
+
 		RETURN SELF:Default(_oMonthCalSelectionEvent)
-	
 
 
-	METHOD MouseButtonUp(oMouseEvent) 
+
+	METHOD MouseButtonUp(oMouseEvent)
 		// Todo MouseButtonUp
 
 		//IF lDragActive
@@ -2112,36 +2112,36 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	oDragImageList := NULL_OBJECT
 		//	lDragActive := FALSE
 		//ENDIF
-		
-		
-		RETURN SELF:Default(oMouseEvent)
-	
 
-	METHOD MouseDrag(oMouseEvent) 
+
+		RETURN SELF:Default(oMouseEvent)
+
+
+	METHOD MouseDrag(oMouseEvent)
 		// Todo MouseDrag
 		//LOCAL oEvt := oMouseEvent AS MouseEvent
-		
+
 		//IF lDragActive
 		//	oDragImageList:DragMove(oEvt:Position)
 		//	//ImageList_DragMove(oMouseEvent:Position:Y, oMouseEvent:Position:Y)
 		//ENDIF
-		
-		RETURN SELF:Default(oMouseEvent)
-	
-	
 
-	METHOD MouseTrapOff() 
+		RETURN SELF:Default(oMouseEvent)
+
+
+
+	METHOD MouseTrapOff()
 		// Todo MouseTrapOff
 		//ReleaseCapture()
 		RETURN NIL
-	
 
-	METHOD MouseTrapOn() 
+
+	METHOD MouseTrapOn()
 		// Todo MouseTrapOn
 		//SetCapture(SELF:Handle(0))
 		RETURN NIL
-	
-	
+
+
 	METHOD MoveTo(oPoint AS Point)  AS Point
 		// Todo
 		//LOCAL winPoint IS _winPoint  // dcaton 070316 was _winsize
@@ -2152,9 +2152,9 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//		RETURN Point{winPoint:x,winPoint:y}
 		//	ENDIF
 		//ENDIF
-		
+
 		RETURN Point{0, 0}
-	
+
 	ACCESS NameSym AS SYMBOL
 		IF SELF:HyperLabel != NULL_OBJECT
 			RETURN SELF:HyperLabel:NameSym
@@ -2164,55 +2164,55 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 	ACCESS Origin AS Point
 		RETURN WC.GetOrigin(SELF)
-	
-	ASSIGN Origin(oPoint AS Point) 
-		IF SELF:__IsValid 
+
+	ASSIGN Origin(oPoint AS Point)
+		IF SELF:__IsValid
 			oWnd:Location := oPoint
 		ELSE
 			WC.MoveWindow(oWnd, oPoint, TRUE)
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 	ACCESS Owner AS OBJECT
 		RETURN oParent
 
-	ASSIGN Owner(oWindow AS OBJECT) 
-		IF IsInstanceOfUsual(oWindow, #Window)  
+	ASSIGN Owner(oWindow AS OBJECT)
+		IF IsInstanceOfUsual(oWindow, #Window)
 			SELF:oParent := oWindow
-			IF SELF:__IsValid 
+			IF SELF:__IsValid
 				oWnd:Owner := ((Window) oWindow):__Form
 			ENDIF
 		ENDIF
-		RETURN 
-	
+		RETURN
 
-	ASSIGN OwnerAlignment(iNewVal AS USUAL) 
+
+	ASSIGN OwnerAlignment(iNewVal AS USUAL)
 		LOCAL oFormWindow  	AS OBJECT
 		LOCAL oWindow		AS WINDOW
 		oFormWindow := SELF:Owner
-		IF IsInstanceOf(oFormWindow, #Window)  
+		IF IsInstanceOf(oFormWindow, #Window)
 			oWindow := oFormWindow
 			oWindow:__AddAlign(SELF, iNewVal)
 		ENDIF
-		RETURN 
-	
+		RETURN
 
-	METHOD PaintBackground(hDC) 
+
+	METHOD PaintBackground(hDC)
 		// Todo PaintBackground
 		//LOCAL strRect IS _winRECT
 		//LOCAL _hdc AS PTR
 		//LOCAL _handle AS PTR
 		//LOCAL hBrush AS PTR
-		
-		
-		
+
+
+
 		//_handle := SELF:Handle(4)
 		//IF IsPtr(hDC)
 		//	_hdc := hDC
 		//ELSE
 		//	_hdc := GetDC(_handle)
 		//ENDIF
-		
+
 		//IF (oBackground == NULL_OBJECT)
 		//	hBrush := GetClassLong(_handle, GCL_HBRBACKGROUND)
 		//	IF (hBrush == NULL_PTR)
@@ -2222,41 +2222,41 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	hBrush := oBackground:Handle()
 		//	oBackground:__SetBrushOrg(_hdc, _handle)
 		//ENDIF
-		
+
 		//GetClientRect(_handle, @strRect)
 		//FillRect(_hdc, @strRect, hBrush)
-		
+
 		//IF !IsPtr(hDC)
 		//	ReleaseDC(_handle, _hdc)
 		//ENDIF
-		
-		RETURN NIL
-	
 
-	METHOD PaintBoundingBox(oBoundingBox, kPaintMode) 
+		RETURN NIL
+
+
+	METHOD PaintBoundingBox(oBoundingBox, kPaintMode)
 		//Todo PaintBoundingBox
 		//LOCAL hBrush AS PTR
 		//LOCAL r IS _WinRect
-		
-		
-		
+
+
+
 		//IF !IsInstanceOfUsual(oBoundingBox, #BoundingBox)
 		//	WCError{#PaintBoundingBox,#Window,__WCSTypeError,oBoundingBox,1}:@@Throw()
 		//ENDIF
-		
+
 		//IF oForeground == NULL_OBJECT
 		//	hBrush:= GetStockObject(BLACK_BRUSH)
 		//ELSE
 		//	hBrush := oForeground:Handle()
 		//ENDIF
-		
+
 		//SELF:__GetDC()
-		
+
 		//r:Left := oBoundingBox:Origin:X
 		//r:Top := oBoundingBox:Origin:Y
 		//r:Right := oBoundingBox:Extent:X
 		//r:Bottom := oBoundingBox:Extent:Y
-		
+
 		//DO CASE
 		//CASE kPaintMode == PAINTFRAME
 		//	FrameRect(hdc, @r, hBrush)
@@ -2265,22 +2265,22 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//OTHERWISE
 		//	FillRect(hdc, @r, hBrush)
 		//ENDCASE
-		
+
 		RETURN NIL
-	
+
 
 	ACCESS Pen as Pen
 		RETURN oPen
-	
 
-	ASSIGN Pen(oPen AS Pen) 
+
+	ASSIGN Pen(oPen AS Pen)
 		SELF:oPen := oPen
 		DCPenNeeded := TRUE
 		DCPenInUse := FALSE
 		// this forces the new object to be selected into the current DC and allows proper releasing of the old one
 		SELF:__GetDC()
-		RETURN 
-	
+		RETURN
+
 
 	ACCESS Pointer AS Pointer
 		IF SELF:__Form != NULL_OBJECT
@@ -2290,20 +2290,20 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oPointer := Pointer{}
 		ENDIF
 		RETURN oPointer
-	
-	ASSIGN Pointer(oNewPointer AS Pointer) 
+
+	ASSIGN Pointer(oNewPointer AS Pointer)
 		oPointer := oNewPointer
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			SELF:__Form:Cursor := oPointer
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 	METHOD PostInit() CLIPPER
 		RETURN SELF
-	
+
 	METHOD PreInit()  CLIPPER
 		RETURN SELF
-	
+
 
 
 	METHOD Print(oDevice)
@@ -2318,7 +2318,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//LOCAL hDCPrinter AS PTR
 		//LOCAL rc IS _winRECT
 		//LOCAL DocInfo IS _winDOCINFO
-		
+
 		//IF !IsNil(oDevice)
 		//	IF !IsInstanceOfUsual(oDevice, #PrintingDevice)
 		//		WCError{#Init,#Printer,__WCSTypeError,oDevice,2}:@@Throw()
@@ -2327,45 +2327,45 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//ELSE
 		//	oPrintingDev := PrintingDevice{}
 		//ENDIF
-		
+
 		//hDIB := SELF:__CreateSelfBitmap()
-		
+
 		//IF (hDIB != NULL_PTR)
 		//	cDevice 		:= oPrintingDev:Device
 		//	cDriver 		:= oPrintingDev:Driver
 		//	cPort 		:= oPrintingDev:Port
 		//	ptrDevMode 	:= oPrintingDev:GetDevMode()
-		
+
 		//	hDCPrinter := CreateDC(String2Psz(cDriver), String2Psz(cDevice), String2Psz(cPort), ptrDevMode)
-		
+
 		//	IF (hDCPrinter != NULL_PTR)
 		//		MemSet(@DocInfo, 0, _SIZEOF(_winDOCINFO))
 		//		DocInfo:cbSize := _SIZEOF(_winDOCINFO)
-		//		DocInfo:lpszDocName := String2Psz( "Vulcan.NET Print Job")
-		
+		//		DocInfo:lpszDocName := String2Psz( "XSharp Print Job")
+
 		//		StartDoc(hDCPrinter, @DocInfo)
 		//		StartPage(hDCPrinter)
-		
+
 		//		SetMapMode(hDCPrinter, MM_TEXT)
 		//		__WCGetPictureCoordinates(oWnd, hDCPrinter, @rc)
 		//		lRet := __WCStretchDibBlt(hDCPrinter, rc:left, rc:top, rc:right - rc:left, rc:bottom - rc:top, hDib)
-		
+
 		//		EndPage(hDCPrinter)
 		//		EndDoc(hDCPrinter)
 		//	ENDIF
-		
+
 		//	GlobalFree(hDIB)
 		//ENDIF
-		
-		RETURN lRet
-	
 
-	METHOD RegisterTimer(nInterval, lOneTime) 
-		
+		RETURN lRet
+
+
+	METHOD RegisterTimer(nInterval, lOneTime)
+
 		IF !IsLong(nInterval)
 			WCError{#RegisterTimer,#Window,__WCSTypeError,nInterval,1}:@@Throw()
 		ENDIF
-		
+
 		IF !IsNil(lOneTime)
 			IF !IsLogic(lOneTime)
 				WCError{#RegisterTimer,#Window,__WCSTypeError,lOneTime,2}:@@Throw()
@@ -2378,7 +2378,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ELSE
 			dwTimerInterval := nInterval
 		ENDIF
-		
+
 		IF (nInterval > 0)
 			dwTimerCount:=nInterval
 			IF !lTimerRegistered
@@ -2389,36 +2389,36 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			WC.UnregisterTimer(SELF)
 			lTimerRegistered := FALSE
 		ENDIF
-		
+
 		RETURN SELF
-	
+
 
 	METHOD RePaint() AS VOID STRICT
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			SELF:oWnd:Invalidate(TRUE)
-		ENDIF		
-		RETURN 
-	
+		ENDIF
+		RETURN
+
 
 	METHOD RepaintBoundingBox(oBoundingBox AS BoundingBox) AS VOID STRICT
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			SELF:oWnd:Invalidate( (System.Drawing.Rectangle) oBoundingBox)
-		ENDIF	
-		RETURN 
-	
-	METHOD Resize(oResizeEvent) 
+		ENDIF
+		RETURN
+
+	METHOD Resize(oResizeEvent)
 		LOCAL uRet AS USUAL
-		uRet := SELF:@@Default(oResizeEvent) 
+		uRet := SELF:@@Default(oResizeEvent)
 		SELF:__AlignControls()
 		RETURN uRet
 
-	METHOD Scroll(oDimension, oBoundingBox, lClip) 
+	METHOD Scroll(oDimension, oBoundingBox, lClip)
 		// Todo Scroll
 		//LOCAL oBB AS BoundingBox
 		//LOCAL strucRectScroll IS _WinRect
 		//LOCAL strucRectClip AS _WinRect
 		//LOCAL oPoint AS Point
-		
+
 		//IF !IsInstanceOfUsual(oDimension,#Dimension)
 		//	WCError{#Scroll,#Window,__WCSTypeError,oDimension,1}:@@Throw()
 		//ENDIF
@@ -2430,14 +2430,14 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//ELSE
 		//	oBB:=SELF:CanvasArea
 		//ENDIF
-		
+
 		//oPoint:=__WCConvertPoint(SELF,oBB:Origin)
 		//strucRectScroll:Left:=oPoint:X
 		//strucRectScroll:Bottom:=oPoint:Y
 		//oPoint:=__WCConvertPoint(SELF, Point{oBB:Right,oBB:Top} )
 		//strucRectScroll:Right:=oPoint:X
 		//strucRectScroll:Top:=oPoint:Y
-		
+
 		//IF !IsNil(lClip)
 		//	IF !IsLogic(lClip)
 		//		WCError{#Scroll,#Window,__WCSTypeError,lClip,3}:@@Throw()
@@ -2450,14 +2450,14 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	strucRectClip:=@strucRectScroll
 		//	//strucRectClip:=Ptr(_cast,strucRectScroll)
 		//ENDIF
-		
+
 		//ScrollWindow( oWnd, oDimension:Width, - oDimension:Height, @strucRectScroll, strucRectClip )
-		
+
 		RETURN SELF
-	
+
 
 	METHOD SetAlignStartSize(oSize AS Dimension) AS VOID
-		
+
 		IF ALen(aAlignes) = 0 .OR. aAlignes[1][1] != NULL_OBJECT
 			AAdd(aAlignes, NIL)
 			IF ALen(aAlignes) > 1
@@ -2469,25 +2469,25 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oSize := (Dimension) oWnd:ClientRectangle
 		ENDIF
 		aAlignes[1][2] := oSize
-		RETURN 
-	
+		RETURN
 
-	METHOD SetBackgroundBrush(dwNew) 
+
+	METHOD SetBackgroundBrush(dwNew)
 		// TOdo SetBackgroundBrush
 		//Default(@dwNew,COLOR_3DSHADOW)
-		
+
 		//SetClassLong(SELF:handle(), GCL_HBRBACKGROUND, dwNew)
 		RETURN SELF
-	
 
-	METHOD SetExStyle(dwSetExStyle, lEnable) 
+
+	METHOD SetExStyle(dwSetExStyle, lEnable)
 		LOCAL iWnd AS IVOForm
 		DEFAULT(@lEnable, TRUE)
-		
+
 		IF (oWnd != NULL_OBJECT)
 			iWnd := (IVOForm) (OBJECT) oWnd
 			dwExStyle := GuiWin32.GetWindowLong(oWnd:Handle, GWL_EXSTYLE)
-			
+
 			IF lEnable
 				dwExStyle := _OR(dwExStyle, LONG(_CAST, dwSetExStyle))
 				iWnd:Properties:ExStyle |= dwSetExStyle
@@ -2495,39 +2495,39 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				dwExStyle := _AND(dwExStyle, _NOT(LONG(_CAST, dwSetExStyle)))
 				iWnd:Properties:NotExStyle |= dwSetExStyle
 			ENDIF
-			
+
 			GuiWin32.SetWindowLong(oWnd:Handle, GWL_EXSTYLE, dwExStyle)
 		ENDIF
-		
+
 		RETURN dwExStyle
-	
+
 
 	METHOD SetFocus() AS VOID STRICT
 		IF SELF:__IsValid  .AND. oWnd:Visible
 			oWnd:Focus()
 		ENDIF
-		RETURN 
-	
+		RETURN
 
-	METHOD SetHandle(oNewWnd AS VOForm) 
+
+	METHOD SetHandle(oNewWnd AS VOForm)
 		oWnd := oNewWnd
 		RETURN oWnd
-	
 
-	METHOD SetStyle(dwSetStyle, lEnable) 
-		
+
+	METHOD SetStyle(dwSetStyle, lEnable)
+
 		DEFAULT(@lEnable, TRUE)
-		
-			
+
+
 			IF lEnable
 				dwStyle := _OR(dwStyle, LONG(_CAST, dwSetStyle))
-				
+
 		ELSE
 				dwStyle := _AND(dwStyle, _NOT(LONG(_CAST, dwSetStyle)))
 			ENDIF
-		
+
 		RETURN dwStyle
-	
+
 	METHOD __GetStartPosFromShowState(kSHowState AS LONG) AS System.Windows.Forms.FormStartPosition
 		LOCAL startPos AS System.Windows.Forms.FormStartPosition
 		IF (kSHowState == SHOWZOOMED)
@@ -2535,7 +2535,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ELSEIF (kSHowState == SHOWICONIZED)
 			oWnd:WindowState :=System.Windows.Forms.FormWindowState.Minimized
 			//ELSEIF kShowState == SHOWINACTIVE
-			//	
+			//
 		ELSEIF kSHowState == SHOWCENTERED
 			IF  IsInstanceOf(SELF, #dialogWindow)
 				startPos := System.Windows.Forms.FormStartPosition.CenterScreen
@@ -2554,13 +2554,13 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN startPos
 
 	METHOD SuspendLayout AS VOID STRICT
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			SELF:oWnd:SuspendLayout()
 		ENDIF
 		RETURN
-	
+
 	METHOD ResumeLayout AS VOID STRICT
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			SELF:oWnd:ResumeLayout()
 		ENDIF
 		RETURN
@@ -2570,7 +2570,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
     METHOD Show() AS VOID STRICT
         SELF:Show(SHOWNORMAL)
-        
+
 	METHOD Show(kShowState AS LONG ) AS VOID STRICT
 		IF SELF:__IsValid
             oWnd:SuspendLayout()
@@ -2596,7 +2596,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				LOCAL IMPLIED oPoint := oWnd:Location
 				LOCAL lChanged AS LOGIC
 				IF oWnd:Location:Y + oWnd:Size:Height > oWnd:Parent:Height
-					oPoint:Y := (oWnd:Parent:Height - oWnd:Height) /2 
+					oPoint:Y := (oWnd:Parent:Height - oWnd:Height) /2
 					lChanged := TRUE
 				ENDIF
 				IF oWnd:Location:X + oWnd:Size:Width > oWnd:Parent:Width .or. lChanged
@@ -2614,7 +2614,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				IF lChanged
 					oWnd:Location := oPoint
                 ENDIF
-			ENDIF	
+			ENDIF
 			lDelayAlignment := FALSE
 			FOREACH aElement AS ARRAY IN aDelayedAlignes
 				SELF:__AddAlign(aElement[1], aElement[2])
@@ -2630,10 +2630,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
             oWnd:ResumeLayout()
 			oWnd:Show()
 
-		ENDIF	
-		RETURN 
+		ENDIF
+		RETURN
 
-	METHOD ShowBalloonTrayTip(oIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo) 
+	METHOD ShowBalloonTrayTip(oIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo)
 		DEFAULT(@dwID,1)
 		DEFAULT(@sHeading,"")
 		DEFAULT(@sToolTip,"")
@@ -2651,21 +2651,21 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 	ACCESS Size AS Dimension
 		LOCAL oSize AS Dimension
-		IF SELF:__IsValid 
+		IF SELF:__IsValid
 			oSize := oWnd:Size
 		ELSE
-			oSize := Dimension{}			
+			oSize := Dimension{}
 		ENDIF
-		RETURN oSize	
-	
+		RETURN oSize
 
-	ASSIGN Size(oDimension AS Dimension) 
-		IF SELF:__IsValid 
+
+	ASSIGN Size(oDimension AS Dimension)
+		IF SELF:__IsValid
 			oWnd:Size := oDimension
 		ENDIF
-		
-		RETURN 
-	
+
+		RETURN
+
 
 	METHOD SizeText(cTextToSize AS STRING) AS Dimension
 		LOCAL oDim AS Dimension
@@ -2675,20 +2675,20 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oDim := System.Windows.Forms.TextRenderer.MeasureText(cTextToSize, System.Drawing.SystemFonts.DefaultFont)
 		ENDIF
 		RETURN oDim
-	
 
-	METHOD @@StatusMessage(oHL, ntype) 
+
+	METHOD @@StatusMessage(oHL, ntype)
 		RETURN NIL
-	
-	METHOD SysLinkSelect(oSysLinkSelectEvent) 
+
+	METHOD SysLinkSelect(oSysLinkSelectEvent)
 		// TOdo SysLinkSelect
 		//LOCAL li IS _winLITEM
 		//LOCAL i AS INT
 		//LOCAL oEvt := oSysLinkSelectEvent AS SysLinkSelectEvent
-		
+
 		//IF SLen(oEvt:URL) > 0
 		//	ShellExecute(NULL_PTR, String2Psz("open"), String2Psz(oEvt:URL), NULL, NULL_PTR, SW_SHOW)
-		
+
 		//	li:mask := _OR(LIF_ITEMINDEX, LIF_STATE)
 		//	li:iLink := oEvt:LinkIndex
 		//	li:stateMask := LIS_VISITED
@@ -2696,39 +2696,39 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	i:=SendMessage(oEvt:Control:Handle(), LM_SETITEM, 0, LONGINT(_CAST, @li))
 		//ENDIF
 		RETURN SELF:Default(oSysLinkSelectEvent)
-	
+
 
 	ACCESS TextColor as Pen
 		RETURN oPen
-	
 
-	ASSIGN TextColor(oNewPen as Pen) 
+
+	ASSIGN TextColor(oNewPen as Pen)
 		SELF:Pen:= oNewPen
-		RETURN 
-	
+		RETURN
 
-	METHOD TextPrint(cText, oPoint) 
+
+	METHOD TextPrint(cText, oPoint)
 		// Todo TextPrint
 		//LOCAL strucLogBrush IS _WinLogBrush
 		//LOCAL iOldMode, iNewMode AS INT
 		//LOCAL dwOldBack AS DWORD
 		//LOCAL lUsingBrush AS LOGIC
-		
-		
-		
+
+
+
 		//IF !IsString(cText)
 		//	WCError{#TextPrint,#Window,__WCSTypeError,cText,1}:@@Throw()
 		//ENDIF
 		//IF !IsInstanceOfUsual(oPoint,#Point)
 		//	WCError{#TextPrint,#Window,__WCSTypeError,oPoint,2}:@@Throw()
 		//ENDIF
-		
+
 		//DCFontNeeded := TRUE
 		//DCPenNeeded := TRUE
-		
+
 		//IF (SELF:__GetDC() != NULL_PTR)
 		//	iNewMode := TRANSPARENT
-		
+
 		//	IF oForeground != NULL_OBJECT
 		//		__WCLogicalBrush(oForeground, @strucLogBrush)
 		//		IF strucLogBrush:lbStyle != BS_HOLLOW
@@ -2744,57 +2744,57 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//		SetBkColor(hDC, dwOldBack)
 		//	ENDIF
 		//ENDIF
-		
+
 		RETURN SELF
-	
+
 
 	METHOD Timer()  CLIPPER
 		RETURN SELF
-	
+
 
 	ACCESS ToolBar AS ToolBar
 		RETURN oToolBar
-	
 
-	ASSIGN ToolBar(oNewToolBar AS ToolBar) 
+
+	ASSIGN ToolBar(oNewToolBar AS ToolBar)
 		IF oNewToolBar != NULL_OBJECT
 			IF (SELF:Menu != NULL_OBJECT) .AND. (SELF:Menu:ToolBar != oNewToolBar)
 				SELF:Menu:ToolBar := NULL_OBJECT
 			ENDIF
-			
+
 			IF (oToolBar != NULL_OBJECT) .AND. (oToolBar != oNewToolBar)
 				oToolBar:Destroy()
 			ENDIF
-			
+
 			oToolBar := oNewToolBar
-			
+
 			IF oToolBar != NULL_OBJECT
 				oToolBar:__SetParent(SELF)
 				oToolBar:Show()
 			ENDIF
 		ENDIF
-		RETURN 
-	
+		RETURN
 
 
-	METHOD ToTop() 
-		IF SELF:__IsValid 
+
+	METHOD ToTop()
+		IF SELF:__IsValid
 			oWnd:BringToFront()
 		ENDIF
 		RETURN NIL
-	
 
-	
 
-	METHOD TreeViewItemDrag(oTreeViewDragEvent) 
+
+
+	METHOD TreeViewItemDrag(oTreeViewDragEvent)
 		//LOCAL oControl AS TreeView
 		//LOCAL oPoint AS Point
 		//LOCAL oEvt := oTreeViewDragEvent AS TreeViewDragEvent
-		
-		
-		
+
+
+
 		//oControl := OBJECT(oEvt:Control)
-		
+
 		//IF oControl:DragDropEnabled
 		//	IF oControl:DragImageList == NULL_OBJECT
 		//		oDragImageList := oControl:__CreateDragImageList(oEvt:TreeViewItem:NameSym)
@@ -2812,28 +2812,28 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		//	ShowCursor(FALSE)
 		//	SetCapture(SELF:Handle())
 		//ENDIF
-		
+
 		RETURN SELF:Default(oTreeViewDragEvent)
-	
-	METHOD Update() 
-		IF SELF:__IsValid 
+
+	METHOD Update()
+		IF SELF:__IsValid
 			SELF:oWnd:Update()
 		ENDIF
-		
+
 		RETURN NIL
 
-	METHOD VerticalScroll(oScrollEvent AS ScrollEvent) 
+	METHOD VerticalScroll(oScrollEvent AS ScrollEvent)
 		LOCAL oScrollBar AS ScrollBar
 		LOCAL oEvt	:= oScrollEvent AS ScrollEvent
-		
+
 		oScrollBar := oEvt:ScrollBar
 		IF (oScrollBar != NULL_OBJECT)
 			oScrollBar:ThumbPosition:=oEvt:Position
 		ENDIF
-		
+
 		RETURN SELF:Default(oEvt)
 
-	METHOD VerticalSlide(uSliderEvent AS SliderEvent) 
+	METHOD VerticalSlide(uSliderEvent AS SliderEvent)
 		LOCAL oSlider AS Slider
 		LOCAL oSliderEvent AS SliderEvent
 		oSliderEvent := uSliderEvent
@@ -2842,18 +2842,18 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oSlider:ThumbPosition := oSliderEvent:Position
 		ENDIF
 		RETURN SELF:Default(oSliderEvent)
-	
-	METHOD VerticalSpin(oSpinnerEvent AS SpinnerEvent) 
+
+	METHOD VerticalSpin(oSpinnerEvent AS SpinnerEvent)
 		LOCAL oSpinner AS Spinner
 		LOCAL oEvt	:= oSpinnerEvent AS SpinnerEvent
-		
+
 		oSpinner := OBJECT(oEvt:Spinner)
 		IF (oSpinner != NULL_OBJECT)
 			oSpinner:Position:=oEvt:Position
 		ENDIF
-		
+
 		RETURN SELF:Default(oEvt)
-	
+
 	ACCESS WindowArea AS BoundingBox
 		RETURN (BoundingBox) __Form:Bounds
 
@@ -2862,11 +2862,11 @@ END CLASS
 
 
 CLASS __ForeignWindow INHERIT Window
-	
+
 	CONSTRUCTOR(oWndSelf)
 		SUPER()
 		oWnd := oWndSelf
-		RETURN 
+		RETURN
 
 END CLASS
 

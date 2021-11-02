@@ -1,40 +1,24 @@
 ﻿FUNCTION Start() AS VOID STRICT
-LOCAL bBlock AS _CODEBLOCK
-LOCAL cVar AS USUAL
-LOCAL cClass AS USUAL
+	TestClass.DoSomething()
+	RETURN
 
-cVar := "x"
-PRIVATE &cVar
-&cVar := "a"
-? &cVar
+CLASS TestClass
 
-bBlock := &( "{||MyTestFunc(@x)}" )
-bBlock:Eval()
-? &cVar // this is ok now
+	STATIC METHOD DoSomething() AS VOID STRICT
 
-cClass := "c"
-PRIVATE &cClass
-bBlock := &( "{||c := MyTestClass{}}" )
-bBlock:Eval()
+		LOCAL cTime AS STRING
+		LOCAL nH, nM, nS AS INT
 
-bBlock := &( "{||c:TestMethod(@x)}" )
-bBlock:Eval()
+		cTime := Time()
+		_ToHMS(cTime, OUT nH, OUT nM, OUT nS)
 
-? &cVar // this still doesn't work
+		LOCAL FUNCTION _ToHMS(cTimeString AS STRING, nH OUT INT, nM OUT INT, nS OUT INT) AS LOGIC PASCAL
+			nH := Val(Left(cTimeString, 2))
+			nM := Val(SubStr(cTimeString, 4, 2))
+			nS := Val(SubStr(cTimeString, 7, 2))
+			RETURN TRUE
+		END FUNCTION
 
-WAIT
-
-RETURN
-
-FUNCTION MyTestFunc(y)
-y := "b"
-RETURN TRUE
-
-CLASS MyTestClass
-DECLARE METHOD TestMethod
-
-METHOD TestMethod(y REF STRING) AS VOID
-y := "c"
-RETURN
+		RETURN
 
 END CLASS

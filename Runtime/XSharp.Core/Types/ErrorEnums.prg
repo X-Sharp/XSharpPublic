@@ -61,12 +61,12 @@ BEGIN NAMESPACE XSharp
         MEMBER EG_EVALSTACK    := 48
         MEMBER EG_ERRORBLOCK   := 49
         MEMBER EG_PROTECTION   := 50
-        
+
         MEMBER EG_BADPTR       := 51
         MEMBER EG_BADPAGEFAULT := 52
         MEMBER EG_ERRORBUILD   := 53
         MEMBER EG_DYNPTR       := 54
-        
+
         // Vulcan errors
         MEMBER EG_INACCESSIBLETYPE := 55
         MEMBER EG_AMBIGUOUSMETHOD  := 56
@@ -76,9 +76,9 @@ BEGIN NAMESPACE XSharp
 
         // Last Member
         MEMBER EG_MAX          := 59
-        
+
     END ENUM
-    /// <summary>Error code Enum that matches the Visual Objecs and Vulcan Error Severity codesFDesc</summary>
+    /// <summary>Error code Enum that matches the XSharp Error Severity codesFDesc</summary>
     /// <note type="tip">
     /// These enums are also available as DEFINES and can therefore also be used without the "Severity." prefix.
     /// </note>
@@ -88,8 +88,8 @@ BEGIN NAMESPACE XSharp
         MEMBER ES_ERROR        := 2
         MEMBER ES_CATASTROPHIC := 3
     END ENUM
-    
-    /// <summary>Error code Enum that matches the Visual Objecs and Vulcan Error Sub Codes</summary>
+
+    /// <summary>Error code Enum that matches the XSharp Error Sub Codes</summary>
     /// <note type="tip">
     /// These enums are also available as DEFINES and can therefore also be used without the "Subcodes." prefix.
     /// </note>
@@ -139,9 +139,9 @@ BEGIN NAMESPACE XSharp
         MEMBER EDB_NOORDER := EDB + 51
         MEMBER EDB_NODB    := EDB + 52
         MEMBER EDB_ASSERTION := EDB + 53
-        
-        
-        
+
+
+
         MEMBER ERDD             := 1100
         MEMBER ERDD_OPEN_FILE   := ERDD + 01
         MEMBER ERDD_OPEN_MEMO   := ERDD + 02
@@ -180,7 +180,7 @@ BEGIN NAMESPACE XSharp
         MEMBER ERDD_CLOSE_FILE := ERDD + 40
         MEMBER ERDD_CLOSE_MEMO := ERDD + 41
         MEMBER ERDD_CLOSE_ORDER := ERDD + 42
-        
+
         MEMBER ERDD_INVALID_ORDER := ERDD + 50
         MEMBER ERDD_RECNO_MISSING := ERDD + 51
         MEMBER ERDD_NOORDER := ERDD + 52
@@ -207,15 +207,15 @@ BEGIN NAMESPACE XSharp
         MEMBER ERDD_OUTOFMEMORY := ERDD + 118
         MEMBER ERDD_INVALIDARG := ERDD + 119
         MEMBER ERDD_NOEVENTHANDLER := ERDD + 120
-        
+
         // Start of user definable errors
         MEMBER ERDD_USER := 2000
-        
+
         // These were originally in the CMX code
         MEMBER ERDD_SCOPETYPEMISMATCH := 8007     // ScopeTypeMismatch
         MEMBER ERDD_NOTCUSTOM := 8008     // NotCustom
         MEMBER ERDD_INVALIDRECORDLIST := 9001      // InvalidRecordList
-        
+
     END ENUM
 END NAMESPACE
 

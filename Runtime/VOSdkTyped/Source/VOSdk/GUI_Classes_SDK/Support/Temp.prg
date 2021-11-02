@@ -48,7 +48,7 @@ FUNCTION __ShowLastError()
 
 
 #ifdef DOCUMENTATION
-FUNCTION DebOut(uParam as USUAL) AS VOID
+FUNCTION DebOut(uParam params USUAL[]) AS VOID
 RETURN
 FUNCTION CreateInstance( args PARAMS USUAL[]) AS USUAL
 RETURN NIL

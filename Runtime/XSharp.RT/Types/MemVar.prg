@@ -116,10 +116,11 @@ END CLASS
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
 [DebuggerDisplay("Memvar: {Name,nq}: {Value}")];
 PUBLIC CLASS XSharp.MemVar
-    // Delegates for reading and writing
+    /// <summary>Delegate for reading memvars.</summary>
     /// <param name="name">Name of the Memvar for which the value has to be retrieved</param>
     /// <returns>The value of the memory variable. </returns>
     DELEGATE Getter(name AS STRING) AS USUAL
+    /// <summary>Delegate for writing memvars.</summary>
     /// <param name="name">Name of the Memvar for which the value has to be retrieved</param>
     /// <param name="value">Value to assign to the memory variable</param>
     /// <remarks>When the variable does not exist then a new memory variable may be created.</remarks>

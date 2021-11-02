@@ -25,7 +25,7 @@ CLASS XSharp.StateChangedEventArgs
     PROPERTY Setting  AS XSharp.Set AUTO GET INIT
     /// <summary>Old value of the setting</summary>
     PROPERTY OldValue AS OBJECT AUTO GET INIT
-    /// <summary">New value of the setting</summary>
+    /// <summary>New value of the setting</summary>
     PROPERTY NewValue AS OBJECT AUTO GET INIT
     INTERNAL CONSTRUCTOR()
         RETURN
@@ -34,7 +34,7 @@ END CLASS
 /// Container Class that holds the XSharp Runtime state
 /// </summary>
 /// <remarks>
-/// Please note that unlike in Visual Objects and Vulcan.NET every thread has its own copy of the runtime state.<br/>
+/// Please note that unlike in most XBase products every thread has its own copy of the runtime state.<br/>
 /// The runtime state from a new thread is a copy of the state of the main thread at that moment.
 /// </remarks>
 CLASS XSharp.RuntimeState
@@ -82,6 +82,7 @@ CLASS XSharp.RuntimeState
 	/// <summary>Retrieve the runtime state for the current thread</summary>
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
+    /// <summary>This event is invoked when the runtime state is changed.</summary>
     PUBLIC STATIC EVENT StateChanged AS StateChanged
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE oSettings AS Dictionary<XSharp.Set, OBJECT>

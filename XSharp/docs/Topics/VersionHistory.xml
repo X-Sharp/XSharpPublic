@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -40,13 +40,16 @@
       <li styleclass="Body Text">Fixed a VS crash when clicking on a generic class (#827)</li>
       <li styleclass="Body Text">Fixed a problem with the keyword colorization for expressions such as <text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">SET</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">CENTURY</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &amp;cOn, </text>where <text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&amp;cOn</text> was colored in the keyword color.</li>
       <li styleclass="Body Text">Parameter tips for nested function calls required an extra space before the name of the nested function (#728)</li>
+      <li styleclass="Body Text">Fixed a problem with the form designer deleting delegates and other nested types in the form.prg (#828)</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
     <para styleclass="Heading3">New features</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added missing ErrorExec() function (#830)</li>
       <li styleclass="Body Text">Added support for BlobDirectExport, BlobDirectImport, BlobDirectPut and BlobDirectGet (#832)</li>
+      <li styleclass="Body Text">When you do a numeric operation on two USUALs of different types we now make sure that decimal values are no longer lost (#808). For example a LONG + DECIMAL will result in a DECIMAL. <link displaytype="text" defaultstyle="true" type="topiclink" href="USUAL">See the table in the USUAL type page in this help file for the possible return values when mixed types are used.</link></li>
     </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text styleclass="Heading3">Bug Fixes</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -55,7 +58,11 @@
       <li styleclass="Body Text">Fixed some problems with the ACopy() function (#815)</li>
       <li styleclass="Body Text">Fixed a few issues that were remaining related to DATEs in VOSTRUCTs (#773)</li>
     </list>
-    <para styleclass="Body Text"></para>
+    <para styleclass="Heading1"><text styleclass="Heading2">Macro compiler</text></para>
+    <para styleclass="Heading3">New features</para>
+    <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Added support for the &amp; operator (#835)</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.9.0.2 (Cahors)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>

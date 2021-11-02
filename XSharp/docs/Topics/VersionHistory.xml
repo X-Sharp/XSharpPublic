@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -47,6 +47,7 @@
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added missing ErrorExec() function (#830)</li>
       <li styleclass="Body Text">Added support for BlobDirectExport, BlobDirectImport, BlobDirectPut and BlobDirectGet (#832)</li>
+      <li styleclass="Body Text">Fixed a problem with creating DBF files with custom file extension. Also added support for _SET_MEMOEXT (#834)</li>
       <li styleclass="Body Text">When you do a numeric operation on two USUALs of different types we now make sure that decimal values are no longer lost (#808). For example a LONG + DECIMAL will result in a DECIMAL. <link displaytype="text" defaultstyle="true" type="topiclink" href="USUAL">See the table in the USUAL type page in this help file for the possible return values when mixed types are used.</link></li>
     </list>
     <para styleclass="Body Text"></para>

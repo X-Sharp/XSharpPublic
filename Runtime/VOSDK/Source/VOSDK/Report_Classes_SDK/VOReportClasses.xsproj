@@ -8,9 +8,8 @@
     <AssemblyName>VOReportClasses</AssemblyName>
     <Name>VOReportClasses</Name>
     <OutputName>VOReportClasses</OutputName>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
-    <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>false</Nostandarddefs>
+    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
+    
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
@@ -82,5 +81,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-<Import Project="..\VOSDKDocs.Targets" />
+  <Import Project="..\VOSDKDocs.Targets" />
 </Project>

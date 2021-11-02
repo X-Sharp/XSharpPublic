@@ -9,8 +9,7 @@
     <Name>VOSQLClasses</Name>
     <OutputName>VOSQLClasses</OutputName>
     <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
-    <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>false</Nostandarddefs>
+    
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

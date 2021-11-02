@@ -39,7 +39,7 @@ CLASS DbFileSpec INHERIT FileSpec
 
 
 /// <include file="Rdd.xml" path="doc/DbFileSpec.ctor/*" />
-CONSTRUCTOR( oFS AS FileSpec, cDriver := "" AS STRING, _aRDDs := NULL_ARRAY AS ARRAY) 
+CONSTRUCTOR( oFS AS FileSpec, cDriver := "" AS STRING, _aRDDs := NULL_ARRAY AS ARRAY)
     SELF(oFS:FullPath, cDriver, _aRDDs)
 
 
@@ -373,7 +373,7 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRdds ) AS USUAL CLIPPE
 	LOCAL cPath AS STRING
 	LOCAL cFileName AS STRING
 	LOCAL cNewName AS STRING
-	LOCAL aFullPath AS ARRAY 
+	LOCAL aFullPath AS ARRAY
 	LOCAL oSelf AS DbFileSpec
 	LOCAL lOldAnsi AS LOGIC
 	LOCAL cbOldErr AS USUAL
@@ -537,7 +537,7 @@ ACCESS DBFName AS STRING
 
 
 /// <include file="Rdd.xml" path="doc/DbFileSpec.DBFSGetInfo/*" />
-METHOD DBFSGetInfo( xRdds, aHidden ) AS USUAL CLIPPER 
+METHOD DBFSGetInfo( xRdds, aHidden ) AS USUAL CLIPPER
 	LOCAL cAlias AS STRING
 	LOCAL cFile AS STRING
 	LOCAL aDirArray AS ARRAY

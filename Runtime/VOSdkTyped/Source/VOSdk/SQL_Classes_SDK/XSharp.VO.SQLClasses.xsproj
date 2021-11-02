@@ -10,7 +10,6 @@
     <OutputName>XSSQLClasses</OutputName>
     <XSharpProjectversion>2.8.3.14</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Unsafe>false</Unsafe>
     <VO6>false</VO6>

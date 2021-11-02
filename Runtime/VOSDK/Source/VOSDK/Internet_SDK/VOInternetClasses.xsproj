@@ -9,8 +9,7 @@
     <Name>VOInternetClasses</Name>
     <OutputName>VOInternetClasses</OutputName>
     <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
-    <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>false</Nostandarddefs>
+    
     <vo9>false</vo9>
     <vo10>false</vo10>
   </PropertyGroup>

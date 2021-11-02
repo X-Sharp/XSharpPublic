@@ -9,8 +9,6 @@
     <Name>VOConsoleClasses</Name>
     <OutputName>VOConsoleClasses</OutputName>
     <XSharpProjectversion>2.8.0.10</XSharpProjectversion>
-    <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <VO15>false</VO15>
     <FOX1>false</FOX1>

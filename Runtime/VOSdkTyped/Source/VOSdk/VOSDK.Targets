@@ -57,6 +57,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
     <ErrorReport>prompt</ErrorReport>
+	<Nostandarddefs>True</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>true</EmitDebugInformation>

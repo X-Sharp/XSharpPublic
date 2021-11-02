@@ -52,6 +52,7 @@ BEGIN NAMESPACE XSharpModel
          FileName             := cFileName
          LastChanged          := dModified
          _wasRead             := FALSE
+         Loaded               := FALSE
          Size                 := 0
          SELF:Initialize()
          SELF:UpdateAssembly()
@@ -165,7 +166,9 @@ BEGIN NAMESPACE XSharpModel
       METHOD Refresh() AS VOID
          IF SELF:Exists
             IF SELF:IsModifiedOnDisk
+               SELF:_wasRead := FALSE
                //WriteOutputMessage("AssemblyInfo.Refresh() Assembly was changed: "+SELF:FileName )
+               SELF:Loaded := FALSE
                SELF:UpdateAssembly()
             ENDIF
          ENDIF

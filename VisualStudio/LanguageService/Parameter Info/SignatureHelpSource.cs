@@ -15,6 +15,7 @@ namespace XSharp.LanguageService
         internal int Length { get; set; }
         internal Modifiers Visibility { get; set; }
         internal char triggerChar { get; set; }
+        internal int triggerPosition { get; set; }
         internal string triggerToken { get; set; }
         internal XSharpSearchLocation Location { get; set; }
         internal XSharpSignatureProperties(XSharpSearchLocation location)

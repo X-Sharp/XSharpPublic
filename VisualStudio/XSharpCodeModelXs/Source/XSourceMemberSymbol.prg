@@ -96,7 +96,7 @@ BEGIN NAMESPACE XSharpModel
                    ENDIF
                    VAR cType := variable:ShortTypeName
                    IF variable:IsTyped .AND. variable:ParamType != ParamType.As
-                      parameters += variable:ParamTypeDesc + cType
+                      parameters += variable:ParamTypeDesc:TrimStart() + cType
                    ELSE
                       parameters += cType
                    ENDIF
@@ -135,7 +135,7 @@ BEGIN NAMESPACE XSharpModel
                    ENDIF
                 ENDIF
                 IF ( SELF:Kind == Kind.@@Constructor )
-                   desc := SELF:Parent:Name + vars
+                   desc := XLiterals.ConstructorName + vars
                 ELSE
                    desc := SELF:Name + vars
                 ENDIF
@@ -168,7 +168,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature()
       PROPERTY OriginalTypeName  AS STRING               GET SELF:TypeName
       PROPERTY TypeParameters as IList<STRING>           GET SELF:_signature:TypeParameters:ToArray()
-      PROPERTY TypeParametersList AS STRING              GET SELF:_signature:TypeParametersList
+      PROPERTY TypeParameterList AS STRING               GET SELF:_signature:TypeParameterList
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
       PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
       PROPERTY Location       AS STRING GET SELF:File:FullPath

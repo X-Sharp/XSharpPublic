@@ -41,7 +41,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY AllMembers  AS IList<IXMemberSymbol> GET
       PROPERTY IsTyped     AS LOGIC  GET
       PROPERTY BaseType    AS IXTypeSymbol GET
-      PROPERTY BaseTypeName  AS STRING GET
+      PROPERTY BaseTypeName AS STRING GET
+      PROPERTY GenericName AS STRING GET SET
       PROPERTY Interfaces  AS IList<STRING> GET
       PROPERTY IsGeneric   AS LOGIC GET
       PROPERTY OriginalTypeName  AS STRING GET
@@ -53,6 +54,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD   GetMembers(elementName AS STRING) AS IList<IXMemberSymbol>
       METHOD   GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMemberSymbol>
       PROPERTY TypeParameters  as IList<STRING> GET
+      PROPERTY TypeParameterList AS STRING GET
       PROPERTY TypeParameterConstraints as IList<STRING> GET
       PROPERTY XMLSignature   AS STRING GET
 
@@ -89,7 +91,7 @@ BEGIN NAMESPACE XSharpModel
       END INTERFACE
 
     INTERFACE IXParameterSymbol   INHERIT IXVariableSymbol
-      PROPERTY ParamType      AS ParamType  GET
+      PROPERTY ParamType      AS ParamType  GET SET
       PROPERTY ParamTypeDesc  AS STRING GET
     END INTERFACE
 

@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharpModel
    CLASS XBaseSignature
       PROPERTY TypeParameters                AS List<STRING>   AUTO GET INTERNAL SET
       PROPERTY TypeParameterContraints       AS List<STRING>   AUTO GET INTERNAL SET
-      PROPERTY TypeParametersList            AS STRING         GET ToList(SELF:TypeParameters)
+      PROPERTY TypeParameterList             AS STRING         GET ToList(SELF:TypeParameters)
       PROPERTY TypeParameterConstraintsList  AS STRING         GET ToList(SELF:TypeParameterContraints)
       
       

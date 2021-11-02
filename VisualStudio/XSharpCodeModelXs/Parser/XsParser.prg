@@ -342,21 +342,21 @@ BEGIN NAMESPACE XSharpModel
               typelist:Add(type:FullName, type)
             ENDIF
             last := type
-         NEXT
+            NEXT
+         VAR lasttoken := _tokens[_tokens.Count -1]
          IF last != NULL .AND. last:Range:StartLine == last:Range:EndLine .and. ! last:SingleLine
             // adjust the end of the type with the start of the current line
             // find the last token in the stream
-            VAR index := _tokens.Count -1
-            VAR token := _tokens[index]
-            last:Range     := last:Range:WithEnd(token)
-            last:Interval  := last:Interval:WithEnd(token)
+
+            last:Range     := last:Range:WithEnd(lasttoken)
+            last:Interval  := last:Interval:WithEnd(lasttoken)
          ENDIF
          Log(i"Completed, found {_EntityList.Count} entities and {typelist.Count} types")
          IF SELF:_EntityList:Count > 0
             VAR lastEntity          := SELF:_EntityList:Last()
             if ! lastEntity:Kind:IsClassMember(_dialect)
-                lastEntity:Range        := lastEntity:Range:WithEnd(LastToken)
-                lastEntity:Interval     := lastEntity:Interval:WithEnd(LastToken)
+                lastEntity:Range        := lastEntity:Range:WithEnd(lasttoken)
+                lastEntity:Interval     := lastEntity:Interval:WithEnd(lasttoken)
             ENDIF
          ELSE
              // Add at least one entity that represents the global namespace
@@ -701,7 +701,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                 entityKind := Kind.Assign
             ENDIF
          CASE XSharpLexer.PROPERTY
-            IF SELF:IsId(SELF:La2)
+            IF SELF:IsId(SELF:La2) .or. SELF:La2 == XSharpLexer.SELF
                 entityKind := Kind.Property
             ENDIF
          CASE XSharpLexer.OPERATOR
@@ -1447,7 +1447,9 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
             // read to EndOfLine
             SELF:GetSourceInfo(_start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR source)
             SELF:ReadLine()
-
+            if typePars != null && typePars:Count > 0
+                id += "`"+typePars:Count:ToString()
+            endif
             VAR xType := XSourceTypeSymbol{id, kind, _attributes, range, interval, _file}
             xType:SourceCode := source
 
@@ -2181,6 +2183,12 @@ signature             : Id=identifier
             oSig:TypeParameterContraints:Add(SELF:ParseTypeParameterConstraints())
          ENDDO
          oSig:CallingConvention  := SELF:ParseCallingConvention()
+         IF oSig:CallingConvention == CallingConvention.Clipper
+             FOREACH var parameter in oSig:Parameters
+                 parameter:TypeName := XLiterals.UsualType
+                 parameter:ParamType := ParamType.As
+             NEXT
+         ENDIF
          SELF:ParseExpressionBody()
          RETURN oSig
 
@@ -2227,9 +2235,6 @@ signature             : Id=identifier
             VAR atts := SELF:TokensAsString(ParseAttributes())
             VAR sId   := ""
             VAR sTypeName := ""
-            IF _file:Project:ParseOptions:VOUntypedAllowed
-                sTypeName := "USUAL"
-            ENDIF
             IF SELF:La1 == XSharpLexer.SELF
                isSelf := TRUE
                Consume()
@@ -2247,24 +2252,17 @@ signature             : Id=identifier
                   Consume()
                ENDIF
                sTypeName := SELF:ParseTypeName()
+            ELSE
+                IF _file:Project:ParseOptions:VOUntypedAllowed
+                    sTypeName := "USUAL"
+                ENDIF
             ENDIF
             LOCAL variable AS XSourceParameterSymbol
             VAR endToken := SELF:LastToken
             SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
             variable := XSourceParameterSymbol{CurrentEntity, sId, range,interval, sTypeName}
             IF token != NULL
-               SWITCH token:Type
-               CASE XSharpLexer.AS
-                  variable:ParamType := ParamType.As
-               CASE XSharpLexer.IN
-                  variable:ParamType := ParamType.In
-               CASE XSharpLexer.OUT
-                  variable:ParamType := ParamType.Out
-               CASE XSharpLexer.REF
-                  variable:ParamType := ParamType.Ref
-               CASE XSharpLexer.PARAMS
-                  variable:ParamType := ParamType.Params
-               END SWITCH
+               variable:ParamType := (ParamType) token.Type
             ENDIF
             IF defaultExpr != NULL
                variable:Value := SELF:TokensAsString(defaultExpr)
@@ -2503,12 +2501,14 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
 
          DO WHILE ! SELF:Eos() .AND. ! done
             SWITCH SELF:La1
-               CASE XSharpLexer.LPAREN
-               CASE XSharpLexer.LBRKT
+            CASE XSharpLexer.LT
+            CASE XSharpLexer.LPAREN
+            CASE XSharpLexer.LBRKT
             CASE XSharpLexer.LCURLY
                nested++
-               CASE XSharpLexer.RPAREN
-               CASE XSharpLexer.RBRKT
+            CASE XSharpLexer.GT
+            CASE XSharpLexer.RPAREN
+            CASE XSharpLexer.RBRKT
             CASE XSharpLexer.RCURLY
                   nested--
 

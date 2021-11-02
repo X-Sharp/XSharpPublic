@@ -22,14 +22,12 @@ BEGIN NAMESPACE XSharpModel
 
          // Properties
       PROPERTY Value        AS STRING AUTO
-      PROPERTY IsArray      AS LOGIC AUTO
       PROPERTY TypeName     AS STRING AUTO
       PROPERTY IsTyped      AS LOGIC GET TRUE
       PROPERTY IsStatic     AS LOGIC GET FALSE
       PROPERTY OriginalTypeName as STRING AUTO
       PROPERTY Description  AS STRING
          GET
-            //
             LOCAL prefix AS STRING
             prefix := "PARAMETER "
             VAR result := prefix + SELF:Prototype
@@ -84,11 +82,10 @@ BEGIN NAMESPACE XSharpModel
          */
 
         METHOD Clone() AS IXVariableSymbol
-            RETURN (IXVariableSymbol) SELF:MemberwiseClone()
+            RETURN (XPEParameterSymbol) SELF:MemberwiseClone()
 
 
    END CLASS
-
 
 END NAMESPACE
 

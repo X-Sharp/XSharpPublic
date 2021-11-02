@@ -45,6 +45,7 @@
     <para styleclass="Heading3">New features</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added missing ErrorExec() function (#830)</li>
+      <li styleclass="Body Text">Added support for BlobDirectExport, BlobDirectImport, BlobDirectPut and BlobDirectGet (#832)</li>
     </list>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text"><text styleclass="Heading3">Bug Fixes</text></para>

@@ -36,7 +36,7 @@ namespace XSharp.CodeDom
         internal string CurrentFile { get; set; }
         internal Stack<ParserRuleContext> contextStack;
         internal ParserRuleContext currentContext;
-        public XCodeTypeDeclaration CurrentType { get; protected set; }
+        public CodeTypeDeclaration CurrentType { get; protected set; }
        
 
 #if DUMPSNIPPETS
@@ -226,10 +226,19 @@ namespace XSharp.CodeDom
             exitType(context);
 
         }
+        public override void EnterDelegate_([NotNull] XSharpParser.Delegate_Context context)
+        {
+            enterType(context);
+        }
+        public override void ExitDelegate_([NotNull] XSharpParser.Delegate_Context context)
+        {
+            exitType(context);
+        }
         public override void EnterStructure_(XSharpParser.Structure_Context context)
         {
             enterType(context);
         }
+
         public override void ExitStructure_(XSharpParser.Structure_Context context)
         {
             exitType(context);
@@ -1299,7 +1308,7 @@ namespace XSharp.CodeDom
         /// <param name="element"></param>
         /// <param name="context"></param>
         /// <param name="tokens"></param>
-        protected void FillCodeSource(CodeObject element, ParserRuleContext context)
+        protected void SaveSourceCode(CodeObject element, ParserRuleContext context)
         {
             var source = GetRuleSource(context);
             if (element.HasLeadingTrivia())

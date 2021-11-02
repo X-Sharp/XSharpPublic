@@ -121,7 +121,14 @@ namespace XSharp.CodeDom
         }
     }
 
+    [DebuggerDisplay("{Name,nq}")]
+    public class XCodeTypeDelegate : CodeTypeDelegate, IXCodeObject
+    {
+        public XCodeTypeDelegate(string name) : base(name)
+        {
 
+        }
+    }
     [DebuggerDisplay("{Name,nq}")]
     public class XCodeTypeDeclaration : CodeTypeDeclaration, IXCodeObject
     {

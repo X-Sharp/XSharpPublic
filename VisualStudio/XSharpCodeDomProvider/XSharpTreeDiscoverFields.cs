@@ -105,11 +105,13 @@ namespace XSharp.CodeDom
                 if (varContext.Initializer != null)
                 {
                     field.InitExpression = BuildExpression(varContext.Initializer, false);
+                    SaveSourceCode(field.InitExpression, varContext.Initializer);
                 }
                 FillCodeDomDesignerData(field, varContext.Start.Line, varContext.Start.Column);
                 // write original source for the attributes
                 AddMemberAttributes(field, classVarModifiers, context.Modifiers);
                 writeTrivia(field, context);
+                SaveSourceCode(field, varContext);
                 //
                 FieldList[currentContext].Add(field);
             }

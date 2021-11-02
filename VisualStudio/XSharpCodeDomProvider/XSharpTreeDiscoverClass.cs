@@ -62,7 +62,7 @@ namespace XSharp.CodeDom
     class XSharpClassDiscover : XSharpBaseDiscover
     {
         private XCodeMemberMethod initComponent;
-        public Stack<XCodeTypeDeclaration> CurrentTypeStack { get; protected set; }
+        public Stack<CodeTypeDeclaration> CurrentTypeStack { get; protected set; }
 
         public XSharpClassDiscover(IProjectTypeHelper projectNode, CodeTypeDeclaration typeInOtherFile) : base(projectNode, typeInOtherFile)
         {
@@ -71,7 +71,7 @@ namespace XSharp.CodeDom
             // The default Namespace, so we can work if none is provided... :)
             this.CurrentNamespace = new XCodeNamespace("");
             this.CodeCompileUnit.Namespaces.Add(this.CurrentNamespace);
-            CurrentTypeStack = new Stack<XCodeTypeDeclaration>();
+            CurrentTypeStack = new Stack<CodeTypeDeclaration>();
 
             // If we have some Nested Namespaces, we will need to keep track
             this.NamespaceStack = new Stack<XCodeNamespace>();
@@ -201,15 +201,17 @@ namespace XSharp.CodeDom
         {
             if ((parents != null) && (parents.Count > 0))
             {
-                foreach (var interfaces in parents)
+                foreach (var typecontext in parents)
                 {
-                    var ifName = interfaces.GetCleanText();
-                    newClass.BaseTypes.Add(BuildTypeReference(ifName));
+                    var ifName = typecontext.GetCleanText();
+                    var baseType = BuildTypeReference(ifName);
+                    SaveSourceCode(baseType, typecontext);
+                    newClass.BaseTypes.Add(baseType);
                 }
             }
         }
 
-        public void addAttributes(XCodeTypeDeclaration newClass, XSharpParser.AttributesContext attributes)
+        public void addAttributes(CodeTypeDeclaration newClass, XSharpParser.AttributesContext attributes)
         {
             if (attributes != null)
             {
@@ -217,7 +219,7 @@ namespace XSharp.CodeDom
             }
         }
 
-        private void pushCurrentType(XCodeTypeDeclaration newClass)
+        private void pushCurrentType(CodeTypeDeclaration newClass)
         {
             if (CurrentType != null)
             {
@@ -237,7 +239,7 @@ namespace XSharp.CodeDom
             base.EnterClass_(context);
             XCodeTypeDeclaration newClass = new XCodeTypeDeclaration(context.Id.GetCleanText());
             newClass.IsClass = true;
-
+            bool nested = CurrentType != null;
             pushCurrentType(newClass);
             addAttributes(newClass, context.Attributes);
             writeTrivia(newClass, context);
@@ -249,7 +251,9 @@ namespace XSharp.CodeDom
             if (context.BaseType != null)
             {
                 string baseName = context.BaseType.GetCleanText();
-                newClass.BaseTypes.Add(BuildTypeReference(baseName));
+                var baseType = BuildTypeReference(baseName);
+                SaveSourceCode(baseType, context.BaseType);
+                newClass.BaseTypes.Add(baseType);
             }
             // IMPLEMENTS ?
             addInterfaces(newClass, context._Implements);
@@ -257,7 +261,10 @@ namespace XSharp.CodeDom
             // Add the variables from this class to the Members collection and lookup table
             ClearMembers();
             addFields(newClass, context);
-            
+            if (nested)
+            {
+                SaveSourceCode(newClass, context);
+            }
         }
 
         public override void EnterEnum_([NotNull] XSharpParser.Enum_Context context)
@@ -271,11 +278,9 @@ namespace XSharp.CodeDom
             writeTrivia(newClass, context);
             ContextToTypeModifiers(newClass, context.Modifiers);
             ContextToTypeAttributes(newClass, context.Modifiers);
-
-
             ClearMembers();
             addFields(newClass, context);
-            FillCodeSource(newClass, context);
+            SaveSourceCode(newClass, context);
         }
 
         public override void ExitEnum_([NotNull] XSharpParser.Enum_Context context)
@@ -283,6 +288,25 @@ namespace XSharp.CodeDom
             base.ExitEnum_(context);
             closeType(null);
         }
+
+        public override void EnterDelegate_([NotNull] XSharpParser.Delegate_Context context)
+        {
+            base.EnterDelegate_(context);
+            var newClass = new XCodeTypeDelegate(context.Id.GetCleanText());
+            newClass.ReturnType = BuildDataType(context.Type);
+            newClass.Parameters.AddRange(GetParametersList(context.ParamList));
+            pushCurrentType(newClass);
+            addAttributes(newClass, context.Attributes);
+            writeTrivia(newClass, context);
+            SaveSourceCode(newClass, context);
+
+        }
+        public override void ExitDelegate_([NotNull] XSharpParser.Delegate_Context context)
+        {
+            base.ExitDelegate_(context);
+            closeType(null);
+        }
+
         public override void EnterInterface_([NotNull] XSharpParser.Interface_Context context)
         {
             base.EnterInterface_(context);
@@ -302,7 +326,7 @@ namespace XSharp.CodeDom
             // Add the variables from this class to the Members collection and lookup table
             ClearMembers();
             addFields(newClass, context);
-            FillCodeSource(newClass, context);
+            SaveSourceCode(newClass, context);
 
         }
         public override void EnterStructure_(XSharpParser.Structure_Context context)
@@ -324,7 +348,7 @@ namespace XSharp.CodeDom
             // Add the variables from this class to the Members collection and lookup table
             ClearMembers();
             addFields(newClass, context);
-            FillCodeSource(newClass, context);
+            SaveSourceCode(newClass, context);
 
 
         }
@@ -430,7 +454,7 @@ namespace XSharp.CodeDom
                     FillCodeDomDesignerData(newMethod, line, column);
                     // Copy all source code to User_Data
                     // --> See XSharpCodeGenerator.GenerateMethod for writing
-                    FillCodeSource(newMethod, context);
+                    SaveSourceCode(newMethod, context);
 
                 }
             }
@@ -485,6 +509,7 @@ namespace XSharp.CodeDom
             // write original source for the attributes
             AddMemberAttributes(evt, evt.Attributes, context.Modifiers);
             this.addClassMember(new XMemberType(evt.Name, MemberTypes.Event, false, null, "Void"));
+            SaveSourceCode(evt, context);
         }
 
         public override void EnterConstructor([NotNull] XSharpParser.ConstructorContext context)
@@ -498,7 +523,7 @@ namespace XSharp.CodeDom
                 ctor.Attributes = ContextToConstructorModifiers(context.Modifiers);
             }
             FillCodeDomDesignerData(ctor, context.Start.Line, context.Start.Column);
-            FillCodeSource(ctor, context);
+            SaveSourceCode(ctor, context);
             // write original source for the attributes
             AddMemberAttributes(ctor, ctor.Attributes, context.Modifiers);
             this.CurrentType.Members.Add(ctor);

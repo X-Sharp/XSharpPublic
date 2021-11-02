@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -56,13 +56,13 @@ BEGIN NAMESPACE XSharp.VO.Tests
             u2 := 0.5m
             Assert.Equal(2m, (System.Decimal)(u1 /u2 ))
             Assert.Equal(0m, (System.Decimal)(u1 %u2 ))
-            u2 := 0.25m            
+            u2 := 0.25m
             Assert.Equal(4m, (System.Decimal)(u1 /u2 ))
             Assert.Equal(0m, (System.Decimal)(u1 %u2 ))
-            u2 := 0.33m   
+            u2 := 0.33m
             Assert.Equal(3.0303030303030303030303030303m, (System.Decimal)(u1 /u2 ))
             Assert.Equal(0.01m, (System.Decimal)(u1 %u2 ))
-            
+
 			RETURN
 
     [Fact, Trait("Category", "Usual")];
@@ -76,7 +76,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
         b := u
         Assert.Equal(TRUE, u == 0h1234)
         RETURN
-        
+
 
 	[Fact, Trait("Category", "Usual")];
 		METHOD UsualCurrencyTests() AS VOID
@@ -101,7 +101,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
             LOCAL u1, u2 AS USUAL
             u1 := 1
-            u2 := $0.5 
+            u2 := $0.5
             Assert.Equal($2, (CURRENCY)(u1 /u2 ))
             Assert.Equal($0, (CURRENCY)(u1 %u2 ))
             u2 := $0.25
@@ -110,7 +110,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             u2 := $0.33
             Assert.Equal($3.0303, (CURRENCY)(u1 /u2 ))
             Assert.Equal($0.01, (CURRENCY)(u1 %u2 ))
-            
+
             u2 := $.5
             Assert.Equal($0.5, (CURRENCY) u2)
             u2 += $.5
@@ -150,7 +150,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             RuntimeState.CompilerOptionOVF := previous
 			u := "a text"
 			Assert.Throws(TYPEOF(Error), { => l := (LONG) u})	// Conversion Error
-			
+
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
@@ -169,7 +169,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			r := u
 			Assert.Equal(r,System.Single.MaxValue)
 			Assert.Equal(r,  (REAL4) u)
-				
+
 			RETURN
 
         [Fact, Trait("Category", "Usual")];
@@ -188,7 +188,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			r := u
 			Assert.Equal(r,System.Double.MaxValue)
 			Assert.Equal(r,  (REAL8) u)
-				
+
 			RETURN
 
 
@@ -205,7 +205,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			//Assert.Throws(TYPEOF(Error), { => l := (SHORT) u})	// Overflow Error
 			u := "a text"
 			Assert.Throws(TYPEOF(Error), { => l := (SHORT) u})	// Conversion Error
-			
+
 			RETURN
 
 		[Fact, Trait("Category", "Usual")];
@@ -298,7 +298,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((INT) u, 4)
 			u++
 			Assert.Equal((INT) u, 5)
-			Assert.Throws(TYPEOF(Error), { => u += "a"})	
+			Assert.Throws(TYPEOF(Error), { => u += "a"})
 
 			u := (INT64) 1
 			u += (INT) 1
@@ -309,7 +309,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((INT64) u, 4)
 			u++
 			Assert.Equal((INT64) u, 5)
-			Assert.Throws(TYPEOF(Error), { => u += "a"})	
+			Assert.Throws(TYPEOF(Error), { => u += "a"})
 
 			u :=   1.0
 			u += 1
@@ -320,19 +320,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((FLOAT) u, 4.0)
 			u ++
 			Assert.Equal((FLOAT) u, 5.0)
-			Assert.Throws(TYPEOF(Error), { => u += "a"})	
+			Assert.Throws(TYPEOF(Error), { => u += "a"})
 
 			u := "abc"
 			u += "def"
 			Assert.Equal((STRING) u, "abcdef")
-			Assert.Throws(TYPEOF(Error), { => u += 1})	
+			Assert.Throws(TYPEOF(Error), { => u += 1})
 
 			VAR d := (DATE) datetime.Now
 			u := d
 			u += 1
 			d += 1
 			Assert.Equal((DATE) u,  d)
-			
+
 			LOCAL u1,u2 AS USUAL
 			LOCAL dwSep, dwDigit AS DWORD
 			dwSep := SetDecimalSep(Asc(","))
@@ -358,7 +358,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			SetDecimalSep(dwSep)
 			SetDigit(dwDigit)
-			
+
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualSubOperatorTests() AS VOID
@@ -372,7 +372,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((INT) u, 97)
 			u--
 			Assert.Equal((INT) u, 96)
-			Assert.Throws(TYPEOF(Error), { => u -= "a"})	
+			Assert.Throws(TYPEOF(Error), { => u -= "a"})
 
 			u := (INT64) 1000
 			u -= (INT) 1
@@ -383,7 +383,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((INT64) u, 997)
 			u--
 			Assert.Equal((INT64) u, 996)
-			Assert.Throws(TYPEOF(Error), { => u -= "a"})	
+			Assert.Throws(TYPEOF(Error), { => u -= "a"})
 
 			u := 111.1
 			u -= 1
@@ -394,18 +394,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((FLOAT) u, 108.1)
 			u--
 			Assert.Equal((FLOAT) u, 107.1)
-			Assert.Throws(TYPEOF(Error), { => u -= "a"})	
+			Assert.Throws(TYPEOF(Error), { => u -= "a"})
 
 			u := "abc"
 			u -= "def"
 			Assert.Equal((STRING) u, "abcdef")
-			Assert.Throws(TYPEOF(Error), { => u -= 1})	
+			Assert.Throws(TYPEOF(Error), { => u -= 1})
 
 		[Fact, Trait("Category", "Usual string comparisons")];
 		METHOD UsualStringComparisons() AS VOID
 			LOCAL lExact := SetExact() AS LOGIC
 			LOCAL u AS USUAL
-			
+
 			FOR LOCAL n := 1 AS INT UPTO 2
 				SetExact(n == 1)
 				u := "ABC"
@@ -421,7 +421,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				Assert.True(u != "ABC")
 				Assert.True(u <> "ABC")
 			NEXT
-			
+
 			SetExact(lExact)
 
 		[Fact, Trait("Category", "Usual conversion tests")];
@@ -431,11 +431,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u := UInt32.MaxValue
 			d := SELF:UsualConversionTests_helper(u)
 			Assert.Equal(UInt32.MaxValue - 1 , d)
-		
+
 		METHOD UsualConversionTests_helper(d AS DWORD) AS DWORD
 			d --
 		RETURN d
-		
+
         [Fact, Trait("Category", "Usual conversion tests")];
 		METHOD UsualIsTests() AS VOID
 			LOCAL u AS USUAL
@@ -570,7 +570,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			cVal := SELF:GetNullStringInUsual()
 			Assert.True(Empty(cVal))
 			Assert.True(cVal == "")
-		
+
 		PRIVATE METHOD GetNullStringInUsual() AS USUAL
 			LOCAL cRet AS STRING
 		RETURN cRet
@@ -594,6 +594,197 @@ BEGIN NAMESPACE XSharp.VO.Tests
                 c += AsString(u)
             NEXT
             Assert.Equal("123", c)
+
+		[Fact, Trait("Category", "usual mixed numeric types")];
+		METHOD UsualMixedLong() AS VOID
+            LOCAL u1, u2 as USUAL
+            // LHS LONG
+            u1 := 1
+            u2 := 2
+            Assert.True(IsLong(u1+u2))
+            Assert.True(IsLong(u1-u2))
+            Assert.True(IsLong(u1*u2))
+            Assert.True(IsLong(u1%u2))
+            Assert.True(IsFloat(u1/u2))
+            u2 := (Int64) 2
+            Assert.True(IsInt64(u1+u2))
+            Assert.True(IsInt64(u1-u2))
+            Assert.True(IsInt64(u1*u2))
+            Assert.True(IsInt64(u1%u2))
+            Assert.True(IsFloat(u1/u2))
+            u2 := 2.0
+            Assert.True(IsFloat(u1+u2))
+            Assert.True(IsFloat(u1-u2))
+            Assert.True(IsFloat(u1*u2))
+            Assert.True(IsFloat(u1%u2))
+            Assert.True(IsFloat(u1/u2))
+
+            u2 := $2.0
+            Assert.True(IsCurrency(u1+u2))
+            Assert.True(IsCurrency(u1-u2))
+            Assert.True(IsCurrency(u1*u2))
+            Assert.True(IsCurrency(u1%u2))
+            Assert.True(IsCurrency(u1/u2))
+
+            u2 := 2.0m
+            Assert.True(IsDecimal(u1+u2))
+            Assert.True(IsDecimal(u1-u2))
+            Assert.True(IsDecimal(u1*u2))
+            Assert.True(IsDecimal(u1%u2))
+            Assert.True(IsDecimal(u1/u2))
+
+		[Fact, Trait("Category", "usual mixed numeric types")];
+		METHOD UsualMixedInt64() AS VOID
+            LOCAL u1, u2 as USUAL
+            // LHS INT64
+            u1 := (int64) 1
+            u2 := 2
+            Assert.True(IsInt64(u1+u2))
+            Assert.True(IsInt64(u1-u2))
+            Assert.True(IsInt64(u1*u2))
+            Assert.True(IsInt64(u1%u2))
+            Assert.True(IsFloat(u1/u2))
+            u2 := (Int64) 2
+            Assert.True(IsInt64(u1+u2))
+            Assert.True(IsInt64(u1-u2))
+            Assert.True(IsInt64(u1*u2))
+            Assert.True(IsInt64(u1%u2))
+            Assert.True(IsFloat(u1/u2))
+            u2 := 2.0
+            Assert.True(IsFloat(u1+u2))
+            Assert.True(IsFloat(u1-u2))
+            Assert.True(IsFloat(u1*u2))
+            Assert.True(IsFloat(u1%u2))
+            Assert.True(IsFloat(u1/u2))
+
+            u2 := $2.0
+            Assert.True(IsCurrency(u1+u2))
+            Assert.True(IsCurrency(u1-u2))
+            Assert.True(IsCurrency(u1*u2))
+            Assert.True(IsCurrency(u1%u2))
+            Assert.True(IsCurrency(u1/u2))
+
+            u2 := 2.0m
+            Assert.True(IsDecimal(u1+u2))
+            Assert.True(IsDecimal(u1-u2))
+            Assert.True(IsDecimal(u1*u2))
+            Assert.True(IsDecimal(u1%u2))
+            Assert.True(IsDecimal(u1/u2))
+
+
+		[Fact, Trait("Category", "usual mixed numeric types")];
+		METHOD UsualMixedFloat() AS VOID
+            LOCAL u1, u2 as USUAL
+            // LHS FLOAT
+            u1 := 1.0
+            u2 := 2
+            Assert.True(IsFloat(u1+u2))
+            Assert.True(IsFloat(u1-u2))
+            Assert.True(IsFloat(u1*u2))
+            Assert.True(IsFloat(u1%u2))
+            Assert.True(IsFloat(u1/u2))
+            u2 := (Int64) 2
+            Assert.True(IsFloat(u1+u2))
+            Assert.True(IsFloat(u1-u2))
+            Assert.True(IsFloat(u1*u2))
+            Assert.True(IsFloat(u1%u2))
+            Assert.True(IsFloat(u1/u2))
+            u2 := 2.0
+            Assert.True(IsFloat(u1+u2))
+            Assert.True(IsFloat(u1-u2))
+            Assert.True(IsFloat(u1*u2))
+            Assert.True(IsFloat(u1%u2))
+            Assert.True(IsFloat(u1/u2))
+
+            u2 := $2.0
+            Assert.True(IsFloat(u1+u2))
+            Assert.True(IsFloat(u1-u2))
+            Assert.True(IsFloat(u1*u2))
+            Assert.True(IsFloat(u1%u2))
+            Assert.True(IsFloat(u1/u2))
+
+            u2 := 2.0m
+            Assert.True(IsFloat(u1+u2))
+            Assert.True(IsFloat(u1-u2))
+            Assert.True(IsFloat(u1*u2))
+            Assert.True(IsFloat(u1%u2))
+            Assert.True(IsFloat(u1/u2))
+
+		[Fact, Trait("Category", "usual mixed numeric types")];
+		METHOD UsualMixedCurrency() AS VOID
+            LOCAL u1, u2 as USUAL
+
+            // LHS Currency
+            u1 := $1.0
+            u2 := 2
+            Assert.True(IsCurrency(u1+u2))
+            Assert.True(IsCurrency(u1-u2))
+            Assert.True(IsCurrency(u1*u2))
+            Assert.True(IsCurrency(u1%u2))
+            Assert.True(IsCurrency(u1/u2))
+            u2 := (Int64) 2
+            Assert.True(IsCurrency(u1+u2))
+            Assert.True(IsCurrency(u1-u2))
+            Assert.True(IsCurrency(u1*u2))
+            Assert.True(IsCurrency(u1%u2))
+            Assert.True(IsCurrency(u1/u2))
+            u2 := 2.0
+            Assert.True(IsCurrency(u1+u2))
+            Assert.True(IsCurrency(u1-u2))
+            Assert.True(IsCurrency(u1*u2))
+            Assert.True(IsCurrency(u1%u2))
+            Assert.True(IsCurrency(u1/u2))
+
+            u2 := $2.0
+            Assert.True(IsCurrency(u1+u2))
+            Assert.True(IsCurrency(u1-u2))
+            Assert.True(IsCurrency(u1*u2))
+            Assert.True(IsCurrency(u1%u2))
+            Assert.True(IsCurrency(u1/u2))
+
+            u2 := 2.0m
+            Assert.True(IsCurrency(u1+u2))
+            Assert.True(IsCurrency(u1-u2))
+            Assert.True(IsCurrency(u1*u2))
+            Assert.True(IsCurrency(u1%u2))
+            Assert.True(IsCurrency(u1/u2))
+		[Fact, Trait("Category", "usual mixed numeric types")];
+		METHOD UsualMixedDecimal() AS VOID
+            LOCAL u1, u2 as USUAL
+            // LHS Decimal
+            u1 := 1.0m
+            u2 := 2
+            Assert.True(IsDecimal(u1+u2))
+            Assert.True(IsDecimal(u1-u2))
+            Assert.True(IsDecimal(u1*u2))
+            Assert.True(IsDecimal(u1%u2))
+            Assert.True(IsDecimal(u1/u2))
+            u2 := (Int64) 2
+            Assert.True(IsDecimal(u1+u2))
+            Assert.True(IsDecimal(u1-u2))
+            Assert.True(IsDecimal(u1*u2))
+            Assert.True(IsDecimal(u1%u2))
+            Assert.True(IsDecimal(u1/u2))
+            u2 := 2.0
+            Assert.True(IsDecimal(u1+u2))
+            Assert.True(IsDecimal(u1-u2))
+            Assert.True(IsDecimal(u1*u2))
+            Assert.True(IsDecimal(u1%u2))
+            Assert.True(IsDecimal(u1/u2))
+
+            u2 := $2.0
+            Assert.True(IsDecimal(u1+u2))
+            Assert.True(IsDecimal(u1-u2))
+            Assert.True(IsDecimal(u1*u2))
+            Assert.True(IsDecimal(u1%u2))
+            Assert.True(IsDecimal(u1/u2))
+
+            u2 := 2.0m
+            Assert.True(IsDecimal(u1+u2))
+            Assert.True(IsDecimal(u1-u2))
+            Assert.True(IsDecimal(u1*u2))
+            Assert.True(IsDecimal(u1%u2))
+            Assert.True(IsDecimal(u1/u2))
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

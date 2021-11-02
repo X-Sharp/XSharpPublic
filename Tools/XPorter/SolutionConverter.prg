@@ -7,6 +7,8 @@
 
 USING System.Collections.Generic
 USING System.Xml
+USING System.Globalization
+USING System.Text
 
 
 CLASS SolutionConverter

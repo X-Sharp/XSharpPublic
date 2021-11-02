@@ -9,8 +9,7 @@
     <Name>VOWin32APILibrary</Name>
     <OutputName>VOWin32APILibrary</OutputName>
     <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
-    <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>false</Nostandarddefs>
+    
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
   </PropertyGroup>

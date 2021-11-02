@@ -8,9 +8,8 @@
     <AssemblyName>VORDDClasses</AssemblyName>
     <Name>VORDDClasses</Name>
     <OutputName>VORDDClasses</OutputName>
-    <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
+    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>false</Nostandarddefs>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Unsafe>false</Unsafe>
     <VO6>false</VO6>
@@ -22,6 +21,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <DocumentationFile>VORDDClasses.Xml</DocumentationFile>
@@ -86,5 +86,5 @@
     <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
-<Import Project="..\VOSDKDocs.Targets" />
+  <Import Project="..\VOSDKDocs.Targets" />
 </Project>

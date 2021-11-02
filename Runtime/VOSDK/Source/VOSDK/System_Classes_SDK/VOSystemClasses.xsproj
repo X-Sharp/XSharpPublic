@@ -9,8 +9,7 @@
     <Name>VOSystemClasses</Name>
     <OutputName>VOSystemClasses</OutputName>
     <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
-    <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>false</Nostandarddefs>
+    
     <PlatformTarget>AnyCPU</PlatformTarget>
     <VO4>false</VO4>
     <VO6>false</VO6>

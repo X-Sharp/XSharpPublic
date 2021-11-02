@@ -9,8 +9,7 @@
     <Name>VOGUIClasses</Name>
     <OutputName>VOGUIClasses</OutputName>
     <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
-    <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>false</Nostandarddefs>
+    
     <LB>true</LB>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

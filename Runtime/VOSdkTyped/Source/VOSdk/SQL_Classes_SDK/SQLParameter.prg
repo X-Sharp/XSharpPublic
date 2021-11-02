@@ -26,9 +26,9 @@ CLASS SqlParameter
 
 /// <include file="Sql.xml" path="doc/SqlParameter.ctor/*" />
 CONSTRUCTOR(xValue,nIO,nODBCType,nSize) 
-	DEFAULT nIO 		TO SQL_PARAM_INPUT
-	DEFAULT nODBCType	TO SQL_TYPE_UNKNOWN
-	DEFAULT nSize		TO 0
+	@@Default(REF nIO, SQL_PARAM_INPUT)
+	@@Default(REF nODBCType, SQL_TYPE_UNKNOWN)
+	@@Default(REF nSize, 0)
 	SELF:IO			:= nIO
 	SELF:ODBCType	:= nODBCType
 	SELF:SetValue(xValue,nSize)

@@ -28,6 +28,10 @@ FileStatusGuid = F65B741C-F9C6-4D4B-A7D3-3E7AAAB893C0
 CustomControlsGuid = 91D751CB-030B-4A75-98B9-05D9B82C3067
 DefaultPropertiesGuid = 25819EAF-9863-441B-90D0-A9072599943A
 
+[Recent References]
+RecentReference = GAC:XSharp.Core,v4,2.6.0.0
+RecentReference = GAC:XSharp.RT,v4,2.6.0.0
+
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Runtime issues,D2167BBF-156A-4E64-861D-753C3894EE87,E440B545-3C18-4457-A54F-4F3256349ABE
@@ -100460,6 +100464,118 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = C811 - Problems with ACopy() function
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY *************
+Application = C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\C812\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C812
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = EC4745FE-98A2-488E-88A2-BB0D8AADCC9D
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY FileGroups]
+[C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY Files]
+File = %AppPath%\Prg\C812.prg
+FileGUID = 4F2DBCB0-49CA-46C5-925B-F7EEB8C3EC18
+FileType = Code
+CopyToBin = 0
+[C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+[C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY Resources]
+[C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY Native Resources]
+[C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY License files]
+[C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY
 [EndApplications]
 
 [Configurations]

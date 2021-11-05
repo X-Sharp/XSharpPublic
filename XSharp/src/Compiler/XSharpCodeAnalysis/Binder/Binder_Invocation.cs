@@ -190,6 +190,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BoundExpression BindFoxProArrayPossibleAccess(InvocationExpressionSyntax node, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
+            if (node.XGenerated)
+                return null;
             var xnode = node.XNode as XSharpParserRuleContext;
 
             var argCount = analyzedArguments.Arguments.Count;
@@ -214,7 +216,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 // If the invocationExpression binds to a method or function in the runtime
                 // then we NEVER see this as a parenthesized array access
-                var idMethod = BindXSIdentifier(simple, invoked: false, indexed: true, diagnostics: diagnostics, bindMethod: true,
+                var idMethod = BindXSIdentifier(simple, invoked: true, indexed: false, diagnostics: diagnostics, bindMethod: true,
                         bindSafe: false);
                 if (idMethod != null && idMethod is BoundMethodGroup bmg)
                 {

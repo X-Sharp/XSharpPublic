@@ -706,23 +706,34 @@ namespace XSharp.CodeDom
 
             writeMemberAccessModifier(e, e.Attributes, false, true);
 
-            this.OutputIdentifier(e.Name);
-
-            if (e.InitExpression != null)
+            if (e.HasSourceCode() && ! fromDesigner)
             {
-                bool hasCode = e.InitExpression.HasSourceCode();
-                this.writeAssignment();
-                if (fromDesigner || !hasCode)
-                {
-                    this.GenerateExpression(e.InitExpression);
-                }
-                else
-                {
-                    writeOriginalCode(e.InitExpression, true);
-                }
+                // we do not use writeOriginalCode because
+                // the modifier is not part of the source code in the case
+                // of a field and that would add another CRLF after the modifier
+                var sourceCode = e.GetSourceCode();
+                this.Output.Write(sourceCode);
             }
-            base.Output.Write(" " + keywordAS);
-            this.OutputType(e.Type);
+            else
+            {
+                this.OutputIdentifier(e.Name);
+
+                if (e.InitExpression != null)
+                {
+                    bool hasCode = e.InitExpression.HasSourceCode();
+                    this.writeAssignment();
+                    if (fromDesigner || !hasCode)
+                    {
+                        this.GenerateExpression(e.InitExpression);
+                    }
+                    else
+                    {
+                        writeOriginalCode(e.InitExpression, true);
+                    }
+                }
+                base.Output.Write(" " + keywordAS);
+                this.OutputType(e.Type);
+            }
             base.Output.WriteLine();
 
         }

@@ -154,6 +154,7 @@ namespace XSharp.Project
 
             }
             _prjNode.ProjectModel.ResetParseOptions(ParseOptions);
+            _prjNode.EnforceSelf = _prjNode.GetProjectProperty(XSharpProjectFileConstants.EnforceSelf).ToLower() == "true";
         }
 
     }

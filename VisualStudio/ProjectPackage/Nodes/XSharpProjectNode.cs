@@ -1453,9 +1453,14 @@ namespace XSharp.Project
             return (ext.EndsWith("proj", StringComparison.OrdinalIgnoreCase));
         }
 
-#region IXSharpProject Interface
-        
+        #region IXSharpProject Interface
 
+        bool _enforceSelf = false;
+        public bool EnforceSelf
+        {
+            get => _enforceSelf;
+            set => _enforceSelf = value;
+        }
         public void RunInForeGroundThread(Action a)
         {
 

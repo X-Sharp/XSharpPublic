@@ -64,6 +64,11 @@
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Added support for the &amp; operator (#835)</li>
     </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">VOXporter</text></para>
+    <para styleclass="Heading3">Bug Fixes</para>
+    <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed problem with incorrectly prefixing PUBLIC declarations with &quot;@@&quot;</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.9.0.2 (Cahors)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>

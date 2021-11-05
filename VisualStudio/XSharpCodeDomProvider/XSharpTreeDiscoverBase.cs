@@ -1894,11 +1894,8 @@ namespace XSharp.CodeDom
                     {
                         result.Append(xtoken.TriviaAsText);
                     }
-                    else
-                    {
-                        result.Append(xtoken.Text);
-                        result.Append(' ');
-                    }
+                    result.Append(xtoken.Text);
+                    result.Append(' ');
                 }
                 else if (token.Payload is XSharpToken xtoken2)
                 {
@@ -1906,11 +1903,9 @@ namespace XSharp.CodeDom
                     {
                         result.Append(xtoken2.TriviaAsText);
                     }
-                    else
-                    {
-                        result.Append(xtoken2.Text);
-                        result.Append(' ');
-                    }
+
+                    result.Append(xtoken2.Text);
+                    result.Append(' ');
 
                 }
                 else

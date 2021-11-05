@@ -75,6 +75,7 @@ INTERNAL CLASS AssemblyReader
             assembly:ExtensionMethods:Add( XPEMethodSymbol{md, assembly })
          next
          assembly:Namespaces             := _nameSpaces
+         assembly:Loaded                 := TRUE
          if ! String.IsNullOrEmpty(assembly:GlobalClassName)
              var globaltype := assembly:Types[assembly:GlobalClassName]
              var members := globaltype:XMembers:Where ({ m => m:IsPublic })
@@ -89,7 +90,6 @@ INTERNAL CLASS AssemblyReader
                  assembly:GlobalMembers:Add(mem:Prototype, mem)
              next
          endif
-         assembly:Loaded                 := TRUE
          RETURN
       ENDIF
       RETURN

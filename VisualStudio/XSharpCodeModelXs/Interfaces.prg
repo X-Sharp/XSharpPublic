@@ -36,6 +36,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY RootNameSpace AS STRING GET
       PROPERTY Url AS STRING GET
       PROPERTY Dialect as XSharpDialect GET
+      PROPERTY EnforceSelf as LOGIC GET
 
    END INTERFACE
 

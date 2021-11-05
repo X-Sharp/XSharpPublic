@@ -27,6 +27,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY RootNameSpace AS STRING GET ""
       PROPERTY Url AS STRING GET "(OrphanedFiles).xsproj"
       PROPERTY Dialect AS XSharpDialect GET XSharpDialect.Core
+      PROPERTY EnforceSelf as LOGIC GET FALSE
       PROPERTY Name  AS STRING GET "(OrphanedFiles)"
       #endregion
    PRIVATE _parseOptions AS XSharpParseOptions

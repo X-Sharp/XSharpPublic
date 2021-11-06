@@ -32,11 +32,9 @@ namespace XSharp.MacroCompiler
                 return new ObjectInitializerSymbol(symbol as TypeSymbol);
             }
 
-            Expr dummySelf;
-
             OverloadResult ovRes = null;
 
-            var res = TryBindCall(null, symbol.Lookup(SystemNames.CtorName), args, out dummySelf, out writeBack, ref ovRes, Options.Binding);
+            var res = TryBindCall(null, symbol.Lookup(SystemNames.CtorName), args, out var _, out writeBack, ref ovRes, Options.Binding);
 
             if (res != null)
                 return res;

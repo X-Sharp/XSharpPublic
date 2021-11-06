@@ -897,6 +897,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             b.Bind(ref Expr);
             Expr.RequireGetAccess();
+            this.Symbol = Compilation.Get(WellKnownMembers.XSharp_RT_Functions_Evaluate);
             b.Convert(ref Expr, Compilation.Get(NativeType.String));
             Datatype = Compilation.Get(NativeType.Usual);
             return null;
@@ -991,14 +992,36 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal override Node Bind(Binder b)
         {
+            // check for macro expression
+            // When & is followed by a (
+            // then this is parsed a so called ParenExpression
+            // We consider this to be a macro
+            // unless it is prefixed by a ":" or a "->" token.
+            // The & could be the first token in the macro
+            // so check to make sure that there is a Prev token
+            // There is Always a next token after the &, either an ID or a LPAREN
+            bool macroCompile = false;
+            TokenType prev = this.Token.Prev != null ? this.Token.Prev.Type : TokenType.WS;
+            if (this.Token.Next.Type == TokenType.LPAREN
+                && prev!= TokenType.COLON && prev != TokenType.ALIAS)
+            {
+                Expr = new MacroExpr(Expr, this.Token);
+                macroCompile = true;
+            }
             b.Bind(ref Expr);
             Expr.RequireGetAccess();
-            b.Convert(ref Expr, Compilation.Get(NativeType.String));
+            if (macroCompile)
+                b.Convert(ref Expr, Compilation.Get(NativeType.Usual));
+            else
+                b.Convert(ref Expr, Compilation.Get(NativeType.String));
+
             switch (Affinity)
             {
                 case BindAffinity.AliasField:
                     return AliasExpr.Bound(Expr);
                 case BindAffinity.Member:
+                    return Expr;
+                case BindAffinity.Access when macroCompile:
                     return Expr;
                 default:
                     ThrowError(ErrorCode.InvalidRuntimeIdExpr);

@@ -2,13 +2,13 @@
 
 namespace XSharp.MacroCompiler.ObjectMacro
 {
-    public delegate object MacroCodeblockDelegate(params object[] args);
+    internal delegate object MacroCodeblockDelegate(params object[] args);
 
-    public class MacroCodeblock : ICodeblock
+    internal class MacroCodeblock : ICodeblock
     {
         MacroCodeblockDelegate _eval;
         int _pcount;
-        public MacroCodeblock(MacroCodeblockDelegate evalMethod, int pCount)
+        internal MacroCodeblock(MacroCodeblockDelegate evalMethod, int pCount)
         {
             _eval = evalMethod;
             _pcount = pCount;
@@ -21,7 +21,7 @@ namespace XSharp.MacroCompiler.ObjectMacro
         public int PCount() => _pcount;
     }
 
-    public class MacroMemVarCodeblock : MacroCodeblock
+    internal class MacroMemVarCodeblock : MacroCodeblock
     {
         public override object EvalBlock(params object[] args)
         {
@@ -35,34 +35,38 @@ namespace XSharp.MacroCompiler.ObjectMacro
                 __MemVarRelease(nLevel);
             }
         }
-        public MacroMemVarCodeblock(MacroCodeblockDelegate evalMethod, int pCount) : base(evalMethod, pCount) { }
+        internal MacroMemVarCodeblock(MacroCodeblockDelegate evalMethod, int pCount) : base(evalMethod, pCount) { }
     }
 }
 
 namespace XSharp.MacroCompiler.UsualMacro
 {
-    public delegate __Usual MacroCodeblockDelegate(params __Usual[] args);
+    internal delegate __Usual MacroCodeblockDelegate(params __Usual[] args);
 
-    class DummyCodeblock : ICodeblock
+    class NestedCodeblock : ICodeblock
     {
         int _pcount;
-        public DummyCodeblock(int pCount) { _pcount = pCount; }
+        public NestedCodeblock(int pCount) { _pcount = pCount; }
         public object EvalBlock(params object[] args) => null;
         public int PCount() => _pcount;
 
     }
 
-    public class MacroCodeblock : _Codeblock
+    internal class MacroCodeblock : _Codeblock
     {
         MacroCodeblockDelegate _eval;
         public override __Usual Eval(params __Usual[] args) => _eval(args);
-        public MacroCodeblock(MacroCodeblockDelegate evalMethod, int pCount, string source, bool isBlock) : base(new DummyCodeblock(pCount), source, isBlock, false)
+        internal MacroCodeblock(MacroCodeblockDelegate evalMethod, int pCount, string source, bool isBlock) : 
+            base(new NestedCodeblock(pCount), source, isBlock, false)
         {
             _eval = evalMethod;
         }
     }
-
-    public class MacroMemVarCodeblock : MacroCodeblock
+    /// <summary>
+    /// This class holds a codeblock that creates memory variables. The Eval() method initializes
+    /// the memory level and releases the allocated memory variables at the end.
+    /// </summary>
+    internal class MacroMemVarCodeblock : MacroCodeblock
     {
         public override __Usual Eval(params __Usual[] args)
         {
@@ -76,6 +80,6 @@ namespace XSharp.MacroCompiler.UsualMacro
                 __MemVarRelease(nLevel);
             }
         }
-        public MacroMemVarCodeblock(MacroCodeblockDelegate evalMethod, int pCount, string source, bool isBlock) : base(evalMethod, pCount, source, isBlock) { }
+        internal MacroMemVarCodeblock(MacroCodeblockDelegate evalMethod, int pCount, string source, bool isBlock) : base(evalMethod, pCount, source, isBlock) { }
     }
 }

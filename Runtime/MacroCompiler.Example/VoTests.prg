@@ -28,6 +28,7 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
 
     FUNCTION TestByRefPriv() AS VOID
+    /*
         PRIVATE x
         VAR mc := CreateMacroCompiler()
         x := "a"
@@ -52,14 +53,22 @@ BEGIN NAMESPACE MacroCompilerTest
 
 
         WAIT
+    */
     FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running VO tests ...")
         TestGlobals.tsi := teststruct{1}
         TestGlobals.tci := testclass{1}
 
         ResetOverrides()
-
+        PUBLIC cExpr
+        PUBLIC lExpr := TRUE
+        m->cExpr := "Left('12345', 3)"
+        m->lExpr := TRUE
         // test embedded macro expression
+        ? TestMacro(mc, "&(cExpr)", Args(), "123", typeof(string) )
+        ? TestMacro(mc, "IIF(lExpr, &(cExpr),'abc')", Args(), "123", typeof(string) )
+        m->lExpr := FALSE
+        ? TestMacro(mc, "IIF(lExpr,'abc' ,&(cExpr))", Args(), "123", typeof(string) )
         TestMacro(mc, e"{|| &('1+2') }", Args(), 3, TYPEOF(LONG))
 
         // Test dotted AND and OR in combination with numbers

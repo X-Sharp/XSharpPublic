@@ -246,13 +246,14 @@ namespace XSharp.Project
 
         }
 
-        private void BuildEvents_ProjectConfigurationChanged(Community.VisualStudio.Toolkit.Project obj)
+        private void BuildEvents_ProjectConfigurationChanged(Community.VisualStudio.Toolkit.Project prj)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-
+            if (!prj.IsXSharp())
+                return;
             foreach (var project in XSharpProjectNode.AllProjects)
             {
-                if (string.Compare(project.Url, obj?.FullPath, true) == 0)
+                if (string.Compare(project.Url, prj?.FullPath, true) == 0)
                 {
                     project.CreateProjectOptions();
                 }

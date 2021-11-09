@@ -2,6 +2,18 @@
 using Microsoft.VisualStudio.Shell;
 using System.Threading.Tasks;
 using System.Diagnostics;
+namespace Community.VisualStudio.Toolkit
+{
+    internal static class CVTProjectExtensions
+    {
+        internal static bool IsXSharp(this Project project)
+        {
+            var path = project.FullPath;
+            var ext = System.IO.Path.GetExtension(path).ToLower();
+            return ext == ".xsproj" || ext == ".xsprj";
+        }
+    }
+}
 namespace XSharp.Project
 {
     internal static class Commands
@@ -9,8 +21,7 @@ namespace XSharp.Project
         internal async static Task<bool> ProjectIsXSharpProjectAsync()
         {
             var project = await VS.Solutions.GetActiveProjectAsync();
-            var path = project.FullPath;
-            return System.IO.Path.GetExtension(path).ToLower() == ".xsproj";
+            return project.IsXSharp();
         }
         internal static string GetXsPath(string subpath)
         {

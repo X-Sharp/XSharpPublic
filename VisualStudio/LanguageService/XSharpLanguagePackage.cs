@@ -450,10 +450,9 @@ namespace XSharp.LanguageService
             if (_libraryManager != null)
                 _libraryManager.OnIdle();
 
-            var walker = XSharpModel.ModelWalker.GetWalker();
-            if (walker != null && !walker.IsRunning && walker.HasWork)
+            if (!ModelWalker.IsRunning && ModelWalker.HasWork)
             {
-                walker.Walk();
+                ModelWalker.Walk();
             }
             return 0;
         }

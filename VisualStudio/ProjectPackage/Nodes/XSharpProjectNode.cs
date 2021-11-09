@@ -1615,18 +1615,6 @@ namespace XSharp.Project
             {
                 this.BuildProject.Save();
             }
-
-            if (XSolution.IsOpen)
-            {
-                var model = this.ProjectModel;
-                foreach (var file in this.URLNodes)
-                {
-                    model.AddFile(file.Key);
-                }
-                
-                ModelWalker.GetWalker().Walk();
-                
-            }
         }
 
         public override int Save(string fileToBeSaved, int remember, uint formatIndex)

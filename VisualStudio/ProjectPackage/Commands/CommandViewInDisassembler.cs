@@ -10,6 +10,15 @@ namespace XSharp.Project
     [Command(PackageIds.idViewInDisassembler)]
     internal sealed class CommandViewInDisassembler : BaseCommand<CommandViewInDisassembler>
     {
+        protected override void BeforeQueryStatus(EventArgs e)
+        {
+            base.BeforeQueryStatus(e);
+            ThreadHelper.JoinableTaskFactory.Run(CheckAvailabilityAsync);
+        }
+        private async Task CheckAvailabilityAsync()
+        {
+            Command.Visible = await Commands.ProjectIsXSharpProjectAsync();
+        }
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             var project = await VS.Solutions.GetActiveProjectAsync();

@@ -18,22 +18,26 @@ namespace XSharp.Project
 
         private async Task CheckAvailabilityAsync()
         {
-            var project = await VS.Solutions.GetActiveProjectAsync();
-            var path = project.FullPath;
-            var xsproject = XSolution.FindProject(path);
-            var isVulcan = false;
-            //if (xsproject != null)
-            //{
-            //    foreach (var asmref in xsproject.AssemblyReferences)
-            //    {
-            //        if (asmref.FullName.Contains("Vulcan"))
-            //        {
-            //            isVulcan = true;
-            //            break;
-            //        }
-            //    }
-            //}
-            Command.Visible = isVulcan;
+            Command.Visible = await Commands.ProjectIsXSharpProjectAsync();
+            if (Command.Visible)
+            {
+                var project = await VS.Solutions.GetActiveProjectAsync();
+                var path = project.FullPath;
+                var xsproject = XSolution.FindProject(path);
+                var isVulcan = false;
+                //if (xsproject != null)
+                //{
+                //    foreach (var asmref in xsproject.AssemblyReferences)
+                //    {
+                //        if (asmref.FullName.Contains("Vulcan"))
+                //        {
+                //            isVulcan = true;
+                //            break;
+                //        }
+                //    }
+                //}
+                Command.Visible = isVulcan;
+            }
         }
 
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)

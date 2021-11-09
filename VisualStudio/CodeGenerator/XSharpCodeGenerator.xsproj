@@ -9,19 +9,11 @@
     <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <ProjectGuid>b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CodeGenerator</RootNamespace>
     <AssemblyName>XSharp.CodeGenerator</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <Nologo>true</Nologo>
-    <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <OutputName>CodeGenerator</OutputName>
-    <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
-    <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>false</Nostandarddefs>
-    <OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -33,9 +25,6 @@
     <StandardDefs />
     <MemVar>false</MemVar>
     <Undeclared>false</Undeclared>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,9 +35,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>165</DisabledWarnings>
-    <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <CommandLineOption />
     <PPO>false</PPO>
@@ -63,9 +50,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings>165</DisabledWarnings>
-    <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <CommandLineOption />
     <PPO>false</PPO>

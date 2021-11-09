@@ -182,7 +182,7 @@ namespace XSharp.LanguageService
         {
             // No Hierarchy or... Hierarchy already registered ?
             // disable classview for now
-            if (XSettings.DisableClassViewObjectView)// || true)
+            if ( XSettings.DisableClassViewObjectView)
             {
                 return;
             }
@@ -580,9 +580,9 @@ namespace XSharp.LanguageService
                 }
 
             }
-            catch
+            catch (Exception e)
             {
-
+                Debug.WriteLine(e.Message);
             }
         }
 

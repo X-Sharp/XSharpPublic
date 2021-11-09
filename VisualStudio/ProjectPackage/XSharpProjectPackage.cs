@@ -178,6 +178,7 @@ namespace XSharp.Project
         public static XSharpProjectPackage XInstance = null;
         private XSharpLanguageService _langservice;
 
+
         // =========================================================================================
         // Properties
         // =========================================================================================
@@ -217,6 +218,7 @@ namespace XSharp.Project
 
 
             this.settings = new XPackageSettings(this);
+            VS.Events.BuildEvents.ProjectConfigurationChanged += BuildEvents_ProjectConfigurationChanged;
 
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
             // Indicate how to open the different source files : SourceCode or Designer ??
@@ -244,6 +246,18 @@ namespace XSharp.Project
 
         }
 
+        private void BuildEvents_ProjectConfigurationChanged(Community.VisualStudio.Toolkit.Project obj)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            foreach (var project in XSharpProjectNode.AllProjects)
+            {
+                if (string.Compare(project.Url, obj?.FullPath, true) == 0)
+                {
+                    project.CreateProjectOptions();
+                }
+            }
+        }
 
 
         public async Task<bool> GetEditorOptionsAsync()

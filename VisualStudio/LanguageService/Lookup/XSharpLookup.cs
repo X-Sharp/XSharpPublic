@@ -827,7 +827,8 @@ namespace XSharp.LanguageService
                 var ctors = SearchConstructors(xtype, Modifiers.Public);
                 if (ctors.Count == 0 && xtype is XSourceTypeSymbol)
                 {
-                    var ctor = new XSourceMemberSymbol(XLiterals.ConstructorName, Kind.Constructor, Modifiers.Public, location.Member.Range, location.Member.Interval, "",false);
+                    var ctor = new XSourceMemberSymbol(XLiterals.ConstructorName, Kind.Constructor, Modifiers.Public,
+                        location.Member.Range, location.Member.Interval, "", false);
                     ctor.Parent = xtype;
                     ctor.DeclaringType = xtype.FullName;
 

@@ -51,6 +51,7 @@ namespace XSharp.Project
         IVsDesignTimeAssemblyResolution, IVsProject5, IProjectTypeHelper, IXsProjectDesigner
     //, IVsReferenceManagerUser
     {
+        static List<XSharpProjectNode> nodes = new List<XSharpProjectNode>();
 
         static Dictionary<string, string> dependencies;
         static XSharpProjectNode()
@@ -71,6 +72,7 @@ namespace XSharp.Project
             }
         }
 
+        internal static XSharpProjectNode[] AllProjects => nodes.ToArray();
         internal enum XSharpProjectImageName
         {
             Project = 0,
@@ -114,7 +116,10 @@ namespace XSharp.Project
             // True : New WPF way
             // False: C++-Like Property pages
             this.SupportsProjectDesigner = true;
-
+            lock (nodes)
+            {
+                nodes.Add(this);
+            }
         }
 
         private void XSharpProjectNode_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
@@ -303,7 +308,7 @@ namespace XSharp.Project
             return options;
         }
 
-        private void invalidateOptions()
+        internal void InvalidateOptions()
         {
             this.options = null;
             this.OutputFile = null;
@@ -313,7 +318,7 @@ namespace XSharp.Project
         public override void SetProjectFileDirty(bool value)
         {
             base.SetProjectFileDirty(value);
-            invalidateOptions();
+            InvalidateOptions();
         }
 
         public override ProjectOptions GetProjectOptions(ConfigCanonicalName configCanonicalName)
@@ -326,7 +331,7 @@ namespace XSharp.Project
                     var xoptions = this.options as XSharpProjectOptions;
                     if (xoptions.ConfigCanonicalName != configCanonicalName)
                     {
-                        invalidateOptions();
+                        InvalidateOptions();
                     }
                 }
                 if (this.options == null)
@@ -1205,7 +1210,7 @@ namespace XSharp.Project
 
             private set
             {
-                projectModel = null;
+                projectModel = value;
             }
         }
 
@@ -1217,12 +1222,15 @@ namespace XSharp.Project
 #else
             var list = new List<Task>();
 #endif
-            _taskListManager.Clear();
-            foreach (var task in tasks)
+            if (_taskListManager != null)
             {
-                _taskListManager.AddItem(task, this.ProjectIDGuid);
+                _taskListManager.Clear();
+                foreach (var task in tasks)
+                {
+                    _taskListManager.AddItem(task, this.ProjectIDGuid);
+                }
+                _taskListManager.Refresh();
             }
-            _taskListManager.Refresh();
         }
 
         private void OnFileWalkComplete(XFile xfile)
@@ -1602,10 +1610,22 @@ namespace XSharp.Project
         {
             this.isLoading = true; // gets reset in OnAfterProjectOpen
             base.Reload();
-
+            CreateListManagers();
             if (ResetDependencies())
             {
                 this.BuildProject.Save();
+            }
+
+            if (XSolution.IsOpen)
+            {
+                var model = this.ProjectModel;
+                foreach (var file in this.URLNodes)
+                {
+                    model.AddFile(file.Key);
+                }
+                
+                ModelWalker.GetWalker().Walk();
+                
             }
         }
 
@@ -1783,7 +1803,7 @@ namespace XSharp.Project
             base.SetConfiguration(config);
             if (invalidate)
             {
-                invalidateOptions();
+                InvalidateOptions();
             }
             if (this.designTimeAssemblyResolution == null)
             {
@@ -1942,6 +1962,11 @@ namespace XSharp.Project
         {
             projectModel = null;
             base.Dispose(disposing);
+            lock (nodes)
+            {
+                if (nodes.Contains(this))
+                    nodes.Remove(this);
+            }
         }
         private bool _dialectIsCached = false;
         private VsParser.XSharpDialect _dialect;
@@ -1966,6 +1991,14 @@ namespace XSharp.Project
 
         }
 
+        public void CreateParseOptions()
+        {
+            var xoptions = CreateProjectOptions() as XSharpProjectOptions;
+            if (xoptions != null)
+            {
+                xoptions.BuildCommandLine();
+            }
+        }
         public XSharpParseOptions ParseOptions
         {
             get

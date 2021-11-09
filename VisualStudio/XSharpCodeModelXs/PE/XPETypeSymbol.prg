@@ -25,6 +25,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY ShortName      AS STRING       AUTO GET INTERNAL SET
         PROPERTY TypeDef        AS TypeDefinition GET _typeDef
         PROPERTY GenericName    AS STRING AUTO
+        PROPERTY TickedName     AS STRING GET _typeDef:Name
 
         CONSTRUCTOR(typedef as TypeDefinition, asm as XAssembly)
             SUPER(typedef:Name, GetKind(typedef), ConvertAttributes(typedef:Attributes), asm)

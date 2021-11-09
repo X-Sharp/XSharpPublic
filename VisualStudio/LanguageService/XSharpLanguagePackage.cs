@@ -261,11 +261,11 @@ namespace XSharp.LanguageService
             serviceContainer.AddService(typeof(XSharpLegacyLanguageService),
                                         languageService,
                                         true);
-            if (!XSettings.DisableClassViewObjectView)
-            {
-                ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
-                serviceContainer.AddService(typeof(IXSharpLibraryManager), callback, true);
-            }
+            //if (!XSettings.DisableClassViewObjectView)
+            //{
+            //    ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
+            //    serviceContainer.AddService(typeof(IXSharpLibraryManager), callback, true);
+            //}
 
             RegisterDebuggerEvents();
             addOurFileExtensionsForDiffAndPeek("Diff\\SupportedContentTypes");

@@ -30,7 +30,6 @@ BEGIN NAMESPACE XSharpModel
       // Methods
       STATIC CONSTRUCTOR
          _projects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase}
-         CreateOrphanedFilesProject()
          IsClosing   := FALSE
          _commentTokens := List < XCommentToken >{}
         CVT.VS.Events.BuildEvents.ProjectBuildStarted += BuildEvents_ProjectBuildStarted
@@ -107,10 +106,17 @@ BEGIN NAMESPACE XSharpModel
 
 
       INTERNAL STATIC METHOD Add(project AS XProject) AS LOGIC
+
+
          RETURN @@Add(project:Name, project)
 
       INTERNAL STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
          WriteOutputMessage("XModel.Solution.Add() "+projectName)
+         IF project:ProjectNode IS OrphanedFilesProject
+            // Ok
+         ELSEif _projects:Count == 0
+             CreateOrphanedFilesProject()
+         ENDIF
          IF _projects:ContainsKey(projectName)
             RETURN FALSE
          ENDIF
@@ -215,6 +221,9 @@ BEGIN NAMESPACE XSharpModel
 
       STATIC METHOD SetStatusBarText(cText AS STRING) AS VOID
          CVT.VS.StatusBar.ShowMessageAsync(cText):FireAndForget(TRUE)
+
+      STATIC METHOD SetStatusBarProgress(cMessage as STRING, nItem AS LONG, nTotal as LONG) AS VOID
+         CVT.VS.StatusBar.ShowProgressAsync(cMessage, nItem, nTotal):FireAndForget(TRUE)
 
       STATIC METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
         if onOff

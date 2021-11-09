@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Core.Imaging;
@@ -21,6 +22,7 @@ using Microsoft.VisualStudio.Language.StandardClassification;
 using System.Threading.Tasks;
 using LanguageService.CodeAnalysis.XSharp;
 using Microsoft.VisualStudio.Imaging.Interop;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace XSharp.LanguageService
 {
@@ -94,14 +96,14 @@ namespace XSharp.LanguageService
                     return null;
                 var lookupresult = new List<IXSymbol>();
                 lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state,out var notProcessed,true));
-
+                var lastToken = tokenList.LastOrDefault();
                 //
                 if (lookupresult.Count > 0)
                 {
                     var element = lookupresult[0];
                     var qiContent = new List<object>();
 
-                        if (element.Kind == Kind.Constructor)
+                        if (element.Kind == Kind.Constructor && lastToken?.Type != XSharpLexer.CONSTRUCTOR )
                         {
                             if (element.Parent != null)
                             {

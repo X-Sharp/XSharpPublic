@@ -169,17 +169,20 @@ namespace XSharp.LanguageService
                 {
                     genName = genName.Substring(0, index);
                 }
-                genName += "<";
-                int count = 0;
-                int max = typeInfo.TypeParameters.Count;
-                foreach (var genType in typeInfo.TypeParameters)
+                if (genName.IndexOf('<') == -1)
                 {
-                    genName += genType;
-                    count++;
-                    if ((count < max))
-                        genName += ", ";
+                    genName += "<";
+                    int count = 0;
+                    int max = typeInfo.TypeParameters.Count;
+                    foreach (var genType in typeInfo.TypeParameters)
+                    {
+                        genName += genType;
+                        count++;
+                        if ((count < max))
+                            genName += ", ";
+                    }
+                    genName += ">";
                 }
-                genName += ">";
                 Name = genName;
 
             }

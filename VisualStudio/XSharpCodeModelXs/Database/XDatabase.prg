@@ -19,7 +19,8 @@ BEGIN NAMESPACE XSharpModel
 	STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
 	STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
-	PRIVATE CONST CurrentDbVersion := 0.9 AS System.Double
+    STATIC PROPERTY DeleteOnClose as LOGIC AUTO
+	PRIVATE CONST CurrentDbVersion := 1.0 AS System.Double
 
 		STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
 			LOCAL lValid := FALSE AS LOGIC
@@ -59,6 +60,10 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				SaveToDisk(oConn, cFile)
 				oConn:Close()
+                if DeleteOnClose
+                    File.Delete(cFile)
+                    DeleteOnClose := FALSE
+                endif
 				RETURN TRUE
 			ENDIF
 			oConn := NULL
@@ -903,7 +908,7 @@ BEGIN NAMESPACE XSharpModel
 					oCmd:Parameters:AddWithValue("$attributes",0)}
 					FOREACH VAR typeref IN oAssembly:Types:Values
 						pars[0]:Value := oAssembly:Id
-						pars[1]:Value := typeref:Name
+						pars[1]:Value := typeref:TickedName // when generic then the name followed with `<n>
 						pars[2]:Value := typeref:Namespace
 						pars[3]:Value := typeref:FullName
 						pars[4]:Value := (INT) typeref:Kind

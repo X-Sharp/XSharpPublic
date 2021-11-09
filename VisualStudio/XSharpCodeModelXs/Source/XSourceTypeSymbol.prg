@@ -24,8 +24,16 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _signature      AS XTypeSignature
       PRIVATE _isClone        AS LOGIC
       PROPERTY SourceCode     AS STRING AUTO
-      PROPERTY ShortName      AS STRING  GET IIF(!SELF:IsGeneric, SELF:Name, SELF:Name:Substring(0, SELF:Name:IndexOf("<")-1))
+      PROPERTY ShortName      AS STRING GET IIF(!SELF:IsGeneric, SELF:Name, SELF:Name:Substring(0, SELF:Name:IndexOf("<")-1))
       PROPERTY GenericName    AS STRING AUTO
+      PROPERTY TickedName     AS STRING
+        GET
+            IF SELF:IsGeneric
+                RETURN SELF:Name+"`"+SELF:TypeParameters:Count:ToString()
+            ENDIF
+            RETURN SELF:Name
+        END GET
+      END PROPERTY
 
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, span AS TextRange, position AS TextInterval, oFile AS XFile)
          SUPER(name, kind, attributes, span, position)

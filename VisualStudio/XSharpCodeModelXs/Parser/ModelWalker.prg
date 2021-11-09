@@ -21,6 +21,7 @@ USING XSharp.Parser
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.Text
 
+
 BEGIN NAMESPACE XSharpModel
     Internal Enum WalkerthreadState
         MEMBER None
@@ -95,7 +96,7 @@ BEGIN NAMESPACE XSharpModel
         //WriteOutputMessage("<<-- RemoveProject()")
 
         INTERNAL STATIC METHOD FileWalk(file AS XFile) AS VOID
-            IF ! XSolution.IsOpen
+            IF ! XSolution.IsOpen .or. file == NULL
                 RETURN
             ENDIF
             LOCAL walkFile := TRUE AS LOGIC
@@ -103,7 +104,7 @@ BEGIN NAMESPACE XSharpModel
                 WriteOutputMessage("..."+file:FullPath)
                 BEGIN USING VAR walker := SourceWalker{file}
                     TRY
-                            walker:Parse(FALSE)
+                       walker:Parse(FALSE)
 
                     CATCH e AS Exception
                         XSolution.WriteException(e)
@@ -115,19 +116,6 @@ BEGIN NAMESPACE XSharpModel
                     END TRY
                 END USING
             ENDIF
-            //
-            // Moved to SourceWalker:Parse(), then moved to XSParser:Parse()
-            //			IF walkFile
-            //				TRY
-            //					IF file:Project != NULL
-            //						IF file:Project:FileWalkComplete != NULL
-            //							file:Project:FileWalkComplete?:Invoke(file)
-            //						ENDIF
-            //					ENDIF
-            //				CATCH e AS Exception
-            //					XSolution.WriteException(e)
-            //				END TRY
-            //			ENDIF
         RETURN
 
 
@@ -195,6 +183,7 @@ BEGIN NAMESPACE XSharpModel
                     IF !project:Loaded
                         LOOP
                     ENDIF
+
                     XSolution.SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
                     _currentProject := project
                     WriteOutputMessage("-->> Walker("+project.Name+")")
@@ -237,8 +226,9 @@ BEGIN NAMESPACE XSharpModel
                             XDatabase.DeleteFile(fileName)
                         endif
                     next
-
-                    _currentProject:ProjectWalkComplete?:Invoke(_currentProject)
+                    if _currentProject != null
+                        _currentProject:ProjectWalkComplete?:Invoke(_currentProject)
+                    endif
                     _currentProject := NULL
                     project:FileWalkCompleted := TRUE
                 ENDDO
@@ -273,19 +263,21 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 WalkReferences()
                 System.Threading.Thread.Sleep(1000)
-
+                IF _projectsForTypeResolution:Count == 0 .and. _projects:Count == 0
+                    EXIT
+                ENDIF
             ENDDO
 
         PRIVATE STATIC METHOD UpdateProgress (fileName as STRING) AS VOID
             BEGIN LOCK _gate
                 iProcessed++
-                IF iProcessed % 10 == 0 .OR. iProcessed == iTotal
+                IF iProcessed % 5 == 0 .OR. iProcessed == iTotal
                     XSolution.SetStatusBarText(String.Format("Walking {0} : Processing File {1} of {2}", cProject, iProcessed, iTotal))
                 ENDIF
-        END LOCK
+            END LOCK
         PRIVATE STATIC METHOD walkOneFile(fileName AS STRING) AS VOID
             VAR project := _currentProject
-            IF MustAbort
+            IF MustAbort .or. project == NULL
                 RETURN
             ENDIF
             IF project:Loaded .AND. XSolution:IsOpen
@@ -335,7 +327,7 @@ BEGIN NAMESPACE XSharpModel
         STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
             IF XSettings.EnableParseLog
                 XSolution.WriteOutputMessage("XModel.Walker "+message)
-        ENDIF
+            ENDIF
 
 
     END CLASS

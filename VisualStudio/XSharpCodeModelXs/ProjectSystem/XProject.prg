@@ -858,6 +858,13 @@ BEGIN NAMESPACE XSharpModel
          // convert the database objects to the PeTypeSymbols
          RETURN GetPETypes(result)
 
+      PRIVATE METHOD FindAssemblyById(IdAssembly as INT64) AS XAssembly
+
+            if _AssemblyDict:ContainsKey(IdAssembly)
+                RETURN _AssemblyDict[IdAssembly]
+            ENDIF
+            return NULL
+
       PRIVATE METHOD GetPETypes(found AS IList<XDbResult>) AS IList<XPETypeSymbol>
          LOCAL IdAssembly := -1 AS INT64
          LOCAL fullTypeName:= ""  AS STRING
@@ -865,18 +872,15 @@ BEGIN NAMESPACE XSharpModel
          LOCAL lastAsm := NULL as XAssembly
          FOREACH VAR element IN found
             // Skip types found in another project
-            fullTypeName := element:FullName
+            // we do not use the fullname because for generics that ends with <T> and not `1
+            if String.IsNullOrEmpty(element:Namespace)
+                fullTypeName := element:TypeName
+            else
+                fullTypeName := element:Namespace+"."+element:TypeName
+            endif
             IdAssembly   := element:IdAssembly
-            VAR name    := element:TypeName
-            VAR idType  := element:IdType
             if (lastAsm == null .or. lastAsm:Id != IdAssembly)
-                lastAsm := NULL
-                FOREACH VAR asm IN SELF:AssemblyReferences
-                   IF asm:Id == IdAssembly
-                        lastAsm := asm
-                        EXIT
-                   ENDIF
-                NEXT
+                lastAsm := FindAssemblyById(IdAssembly)
             ENDIF
             if lastAsm != null .and. lastAsm:Types:ContainsKey(fullTypeName)
                 var peType := lastAsm:Types[fullTypeName]
@@ -980,26 +984,19 @@ BEGIN NAMESPACE XSharpModel
          local systemFirst as LOGIC
          typeName := typeName:GetSystemTypeName(ParseOptions:XSharpRuntime)
          if SELF:GetTypeFromCache(typeName, OUT VAR petype)
-                return petype
+              return petype
          ENDIF
          systemFirst := typeName.StartsWith("XSharp." ) .or. typeName.StartsWith("System.")
          if (systemFirst)
-             var peresult := SELF:FindSystemType(typeName, usings)
+             result := SELF:FindSystemType(typeName, usings)
              if result == NULL
                 result := SELF:Lookup(typeName, usings)
-             else
-                result := peresult
-                SELF:_AssemblyTypeCache:Add(peresult:FullName, peresult )
              endif
 
          else
             result := SELF:Lookup(typeName, usings)
             if result == NULL
-                 var peresult := SELF:FindSystemType(typeName, usings)
-                 if result != null
-                    result := peresult
-                    SELF:_AssemblyTypeCache:Add(peresult:FullName, peresult)
-                 endif
+                 result := SELF:FindSystemType(typeName, usings)
             ENDIF
          endif
          RETURN result

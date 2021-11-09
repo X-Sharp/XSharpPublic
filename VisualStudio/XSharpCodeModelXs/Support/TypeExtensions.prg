@@ -91,6 +91,18 @@ BEGIN NAMESPACE XSharpModel
                     return XSharpToSystem[typename]
                 endif
             ENDIF
+            var index := typename:IndexOf("<")
+            if index > 0
+                var left     := typename:Substring(0, index)
+                var right    := typename:Substring(index+1)
+                right        := right:Substring(0, right:Length-1)
+                if right.Contains(",")
+                    var elements := right:Split( <char>{','}, StringSplitOptions.RemoveEmptyEntries)
+                    typename     := left+elements:Length:ToString()
+                else
+                    typename     := left+"`1"
+                endif
+            endif
             RETURN typename
 
 

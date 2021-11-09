@@ -317,7 +317,31 @@ namespace XSharp.LanguageService
                         case XSharpLexer.LPAREN:
                         case XSharpLexer.LCURLY:
                         case XSharpLexer.LBRKT:
-                            // these will be included
+                            break;
+                        case XSharpLexer.LT:
+                            // if this is a generic type
+                            // then add the complete
+                            bool first = true;
+                            bool endoflist = false;
+                            while (!endoflist)
+                            {
+                                endoflist = true;
+                                if (list.La1 == XSharpLexer.ID || XSharpLexer.IsType(list.La1))
+                                {
+                                    if (list.La2 == XSharpLexer.GT || list.La2 == XSharpLexer.COMMA)
+                                    {
+                                        if (first)
+                                        {
+                                            result.Add(token);
+                                            first = false;
+                                        }
+                                        result.Add(list.ConsumeAndGet()); // la1
+                                        result.Add(list.ConsumeAndGet()); // la2
+                                        endoflist = false;
+                                    }
+                                }
+                            }
+                            done = true;
                             break;
                         default:
                             done = true;

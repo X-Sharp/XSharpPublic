@@ -602,7 +602,8 @@ namespace XSharp.LanguageService
                                   isType;
                 if (isId && !list.Eoi() && list.La1 == XSharpLexer.LT)
                 {
-                    list.Consume();
+                    currentName += list.ConsumeAndGetText();
+
                     while (! list.Eoi())
                     {
                         var tokenNext = list.ConsumeAndGet();
@@ -799,6 +800,33 @@ namespace XSharp.LanguageService
                     state = CompletionState.General;
                     startOfExpression = true;
                     
+                }
+                else if (currentToken.Type == XSharpLexer.CONSTRUCTOR)
+                {
+                    if (currentType != null)
+                    {
+                        result.AddRange(currentType.GetConstructors());
+                        if (result.Count > 0)
+                        {
+                            IXSymbol selected;
+                            selected = result[0];
+                            if ( selected is XSourceEntity)
+                            {
+                                foreach (var item in result)
+                                {
+                                    if (item is XSourceEntity xs && xs.File.FullPath == location.File.FullPath)
+                                    {
+                                        if (xs.Range.StartLine <= location.LineNumber && xs.Range.EndLine >= location.LineNumber)
+                                        {
+                                            selected = xs;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            symbols.Push(selected);
+                        }
+                    }
                 }
                 else
                 {

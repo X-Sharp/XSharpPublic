@@ -21,12 +21,14 @@ namespace XSharp.Project
         }
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            await VS.StatusBar.ShowMessageAsync("Reloading the project to rebuild the XSharp intellisense database");
             var fileName = XDatabase.FileName;
-            XDatabase.CloseDatabase(fileName);
-            System.IO.File.Delete(fileName);
-            XDatabase.CreateOrOpenDatabase(fileName);
-            XSolution.RebuildIntellisense();
+            XDatabase.DeleteOnClose = true;
+            var sol = await VS.Solutions.GetCurrentSolutionAsync();
+            var path = sol.FullPath;
+            await VS.Commands.ExecuteAsync(KnownCommands.File_CloseProject, path);
+            await VS.Commands.ExecuteAsync(KnownCommands.File_OpenProject, path);
+            await VS.StatusBar.ClearAsync();
         }
     }
 }

@@ -83,10 +83,9 @@ BEGIN NAMESPACE XSharpModel
          _sqldb    := Path.Combine(folder, "X#Model.xsdb")
          XDatabase.CreateOrOpenDatabase(_sqldb)
          VAR dbprojectList := XDatabase.GetProjectFileNames()
-         var walker := ModelWalker.GetWalker()
          FOREACH var project in _projects:Values
             XDatabase.Read(project)
-            walker:AddProject(project)
+            ModelWalker.AddProject(project)
             FOREACH VAR dbproject  in dbprojectList
                if String.Compare(dbproject, project:FileName, StringComparison.OrdinalIgnoreCase) == 0
                   dbprojectList:Remove(dbproject)
@@ -125,8 +124,7 @@ BEGIN NAMESPACE XSharpModel
    STATIC METHOD Close() AS VOID
       IF IsOpen
          WriteOutputMessage("XModel.Solution.CloseSolution()")
-         ModelWalker.Suspend()
-         ModelWalker.GetWalker():StopThread()
+         ModelWalker.Stop()
          XDatabase.CloseDatabase(_sqldb)
 
          FOREACH VAR pair IN _projects:ToArray()
@@ -202,7 +200,7 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD WalkFile(fileName AS STRING) AS VOID
          VAR file := FindFile(fileName)
          IF file != NULL
-            ModelWalker.GetWalker():FileWalk(file)
+            ModelWalker.FileWalk(file)
          ENDIF
          RETURN
 

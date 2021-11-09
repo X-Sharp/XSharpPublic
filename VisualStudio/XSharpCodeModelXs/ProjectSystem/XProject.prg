@@ -184,7 +184,7 @@ BEGIN NAMESPACE XSharpModel
          XSolution.Add(SELF)
 
       PUBLIC METHOD Close() AS VOID
-         ModelWalker.GetWalker():RemoveProject(SELF)
+         ModelWalker.RemoveProject(SELF)
          XSolution.Remove(SELF)
          _projectNode := NULL
          SELF:UnLoad()
@@ -1344,10 +1344,10 @@ BEGIN NAMESPACE XSharpModel
             IF XSettings.EnableParseLog
                 WriteOutputMessage("Walk() ")
             ENDIF
-         ModelWalker.GetWalker():AddProject(SELF)
+         ModelWalker.AddProject(SELF)
 
       METHOD WalkFile(file AS XFile, lNotify := FALSE AS LOGIC) AS VOID
-         ModelWalker.GetWalker():FileWalk(file)
+         ModelWalker.FileWalk(file)
          IF FileWalkComplete != NULL .AND. lNotify
             FileWalkComplete(file)
          ENDIF

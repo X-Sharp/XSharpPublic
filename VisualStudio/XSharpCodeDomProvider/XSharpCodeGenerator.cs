@@ -89,6 +89,8 @@ namespace XSharp.CodeDom
                 }
             }
             XSharpToSystem.Add("LONG", "System.Int32");
+            XSharpToSystem.Add("LONGINT", "System.Int32");
+            XSharpToSystem.Add("SHORTINT", "System.Int16");
 
             return;
         }

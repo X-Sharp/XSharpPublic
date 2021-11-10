@@ -1052,8 +1052,18 @@ namespace XSharp.Project
         }
 
 
-#endregion
+        #endregion
+#if PACKAGEREFERENCE
+#region PackageReferences
+        public XSharpPackageReferenceContainerNode PackageReferenceContainerNode => FindChild("NuGet") as XSharpPackageReferenceContainerNode;
 
+        public virtual XSharpPackageReferenceNode CreatePackageReferenceNode(string name)
+        {
+            ProjectElement item = CreateMsBuildFileItem(name, "PackageReference");
+            return new XSharpPackageReferenceNode(this, item);
+        }
+#endregion
+#endif
 #region References Management Events
 
         private void ReferencesEvents_ReferenceRemoved(VSLangProj.Reference pReference)
@@ -1461,7 +1471,7 @@ namespace XSharp.Project
             return (ext.EndsWith("proj", StringComparison.OrdinalIgnoreCase));
         }
 
-        #region IXSharpProject Interface
+#region IXSharpProject Interface
 
         bool _enforceSelf = false;
         public bool EnforceSelf
@@ -2969,18 +2979,88 @@ namespace XSharp.Project
             return false;
         }
 
+        public const string AssemblyReferences = nameof(AssemblyReferences);
+        public const string CSharp = nameof(CSharp);
+        public const string DeclaredSourceItems = nameof(DeclaredSourceItems);
+        public const string DotNet = ".NET";
+        public const string Managed = nameof(Managed);
+        public const string PackageReferences = nameof(PackageReferences);
+        public const string Publish = nameof(Publish);
+        public const string UserSourceItems = nameof(UserSourceItems);
+        public const string WindowsXAML = nameof(WindowsXAML);
+        public const string WindowsXaml = nameof(WindowsXaml);
+        public const string WPF = nameof(WPF);
+        public const string XSharp = nameof(XSharp);
+
+        // Known unsupported capabilities
+        public const string AspNetCore = nameof(AspNetCore);
+        public const string BuildAndroidTarget = nameof(BuildAndroidTarget);
+        public const string BuildiOSProject = nameof(BuildiOSProject);
+        public const string CPS = nameof(CPS);
+        public const string DependenciesTree = nameof(DependenciesTree);
+        public const string DependencyPackageManagement = nameof(DependencyPackageManagement);
+        public const string DNX = nameof(DNX);
+        public const string DotNetCoreWeb = nameof(DotNetCoreWeb);
+        public const string DynamicFileNesting = nameof(DynamicFileNesting);
+        public const string HideConnectedServicesNode = nameof(HideConnectedServicesNode);
+        public const string PHP = nameof(PHP);
+        public const string Python = nameof(Python);
+        public const string SharedAssetsProject = nameof(SharedAssetsProject);
+        public const string TestContainer = nameof(TestContainer);
+        public const string VB = nameof(VB);
+        public const string VisualC = nameof(VisualC);
+        public const string WapProj = nameof(WapProj);
+        public const string Web = nameof(Web);
+        public const string WebsiteProject = nameof(WebsiteProject);
+        public const string WindowsXAMLAppxPackage = nameof(WindowsXAMLAppxPackage);
+        public const string WindowsXAMLEnableOverview = nameof(WindowsXAMLEnableOverview);
+        public const string MicrosoftVisualStudioConnectedServicesVirtualNode = "Microsoft.VisualStudio.ConnectedServices.VirtualNode";
+
+
         public bool IsSymbolPresent(string symbol)
         {
-            switch (symbol.ToLower())
+            switch (symbol)
             {
-                case "assemblyreferences":
-                case "declaredsourceitems":
-                case "usersourceitems":
-                case "windowsxaml":
-                case "csharp":
-                case "xsharp":
+                case AssemblyReferences:
+                case CSharp:
+                case DeclaredSourceItems:
+                case DotNet:
+                case Managed:
+                //case PackageReferences:
+                case Publish:
+                case UserSourceItems:
+                case WindowsXAML:
+                case WindowsXaml:
+                case WPF:
+                case XSharp:
                     return true;
+                case AspNetCore:
+                case BuildAndroidTarget:
+                case BuildiOSProject:
+                case CPS:
+                case DependenciesTree:
+                case DependencyPackageManagement:
+                case DNX:
+                case DotNetCoreWeb:
+                case DynamicFileNesting:
+                case HideConnectedServicesNode:
+                case MicrosoftVisualStudioConnectedServicesVirtualNode:
+                case PackageReferences:
+                case PHP:
+                case Python:
+                case SharedAssetsProject:
+                case TestContainer:
+                case VB:
+                case VisualC:
+                case WapProj:
+                case Web:
+                case WebsiteProject:
+                case WindowsXAMLAppxPackage:
+                case WindowsXAMLEnableOverview:
+                    return false;
             }
+            // intentionally no default so we can set a breakpoint and see what other capabilities
+            // might be needed
             return false;
         }
     }

@@ -66,6 +66,8 @@ BEGIN NAMESPACE XSharpModel
                 endif
             NEXT
             XSharpToSystem:Add("LONG", "System.Int32")
+            XSharpToSystem:Add("LONGINT", "System.Int32")
+            XSharpToSystem:Add("SHORTINT", "System.Int16")
 
         STATIC METHOD IsXSharpTypeName( SELF typeName as STRING) AS LOGIC
             RETURN XSharpToSystem:ContainsKey(typeName) .or. VulcanToSystem:ContainsKey(typeName)

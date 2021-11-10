@@ -4,7 +4,18 @@ MEMVAR testvar
 LOCAL pVarId      
 testvar := DATE()
 ? Type(pVarId)
+xAssert(Type(pVarId) == "U")
+
 pVarId := "testvar"
 ? Type(pVarId)   
-? Valtype(testvar)
+? ValType(testvar)
+xAssert( Type(pVarId)     == "D" )
+xAssert( ValType(testvar) == "D" )
+
+PROC xAssert(l AS LOGIC) 
+IF .NOT. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+ELSE
+	? "Assertion passed"   
+END IF
 

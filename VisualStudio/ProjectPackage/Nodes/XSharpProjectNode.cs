@@ -160,7 +160,7 @@ namespace XSharp.Project
 #else
                 var task = (Microsoft.VisualStudio.Shell.Task)sender;
 #endif
-                this.OpenElement(task.Document, task.Line, task.Column);
+                XSettings.OpenDocument(task.Document, task.Line, task.Column, false);
             }
         }
 
@@ -1534,45 +1534,7 @@ namespace XSharp.Project
                 return "";
             }
         }
-        public void OpenElement(string file, int line, int column)
-        {
-            IVsTextView textView;
-            try
-            {
-                ThreadHelper.ThrowIfNotOnUIThread();
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    var view = await VS.Documents.OpenViaProjectAsync(file);
-                    if (view == null)
-                    {
-                        view = await VS.Documents.OpenAsync(file);
-                    }
-                    var docview = await VS.Documents.GetDocumentViewAsync(file);
-                    textView = await docview.TextView.ToIVsTextViewAsync();
-                    if (textView != null)
-                    {
-                        //
-                        TextSpan span = new TextSpan();
-                        span.iStartLine = line - 1;
-                        span.iStartIndex = column - 1;
-                        span.iEndLine = line - 1;
-                        span.iEndIndex = column - 1;
-                        //
-                        textView.SetCaretPos(span.iStartLine, span.iStartIndex);
-                        textView.EnsureSpanVisible(span);
-                        if (span.iStartLine > 5)
-                            textView.SetTopLine(span.iStartLine - 5);
-                        else
-                            textView.SetTopLine(0);
-                    }
-                    await VS.Documents.OpenInPreviewTabAsync(file);
-                });
-            }
-            catch 
-            {
-                ;
-            }
-        }
+        
 
        
 
@@ -1887,32 +1849,7 @@ namespace XSharp.Project
             return;
         }
 
-        public bool IsVsBuilding
-        {
-            get
-            {
-                try
-                {
-                    return false;
-
-                }
-                catch (Exception e)
-                {
-                    if (System.Diagnostics.Debugger.IsAttached)
-                        System.Diagnostics.Debug.WriteLine("Error fetching IsVsBuilding: " + e.Message);
-                }
-                return false;
-            }
-        }
 #endregion
-        public bool IsDocumentOpen(string documentName)
-        {
-            
-            return ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                return await VS.Documents.IsOpenAsync(documentName);
-            });
-        }
 
 
         public void AddFileNode(string strFileName)
@@ -2678,7 +2615,7 @@ namespace XSharp.Project
 
         public string DocumentGetText(string fileName, ref bool isOpen)
         {
-            isOpen = IsDocumentOpen(fileName);
+            isOpen = XSettings.IsDocumentOpen(fileName);
             if (isOpen)
             {
                 XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;

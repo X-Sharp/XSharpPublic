@@ -23,7 +23,6 @@ BEGIN NAMESPACE XSharpModel
       METHOD FindProject(sProject AS STRING) AS Object
       METHOD GetIntellisenseErrorPos(fileName AS STRING) AS System.Collections.Generic.List<IXErrorPosition>
       METHOD HasFileNode(fileName AS STRING) AS LOGIC
-      METHOD OpenElement(file AS STRING, line AS LONG, column AS LONG) AS VOID
       METHOD ShowIntellisenseErrors() AS VOID
       METHOD SynchronizeKeywordCase(code as STRING, fileName as STRING) AS STRING
       METHOD RunInForeGroundThread( a as Action) AS VOID
@@ -44,6 +43,21 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Column AS LONG GET SET
       PROPERTY Length AS LONG GET SET
       PROPERTY Line AS LONG GET SET
+   END INTERFACE
+
+
+    /// <summary>This interface allows the code model to call back into the VS Shell</summary>
+   INTERFACE IXVsShellLink
+        METHOD OpenDocument(file AS STRING, line AS LONG, column AS LONG, lPreview as LOGIC) AS VOID
+        METHOD IsDocumentOpen(file as STRING) AS LOGIC
+        METHOD SetStatusBarText(cText AS STRING) AS VOID
+        METHOD SetStatusBarProgress(cMessage as STRING, nItem AS LONG, nTotal as LONG) AS VOID
+        METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
+        METHOD WriteOutputMessage(message AS STRING) AS VOID
+        METHOD WriteException(ex AS Exception) AS VOID
+        METHOD ShowMessageBox(message AS STRING) AS INT
+        PROPERTY IsVsBuilding AS LOGIC GET
+        PROPERTY LastBuildResult AS LOGIC GET
    END INTERFACE
 
 END NAMESPACE

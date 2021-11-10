@@ -290,13 +290,8 @@ namespace XSharp.LanguageService
             }
             GetIntellisenseSettings();
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            XSolution.LoadAllProjects();
         }
 
-        
-
-
-        
 
         protected override void Dispose(bool disposing)
         {

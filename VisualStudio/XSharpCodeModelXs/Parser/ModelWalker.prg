@@ -62,7 +62,7 @@ BEGIN NAMESPACE XSharpModel
                     _projects:Enqueue(xProject)
                 ENDIF
             END LOCK
-            IF (! IsRunning .AND. ! XSolution.IsVsBuilding)
+            IF (! IsRunning .AND. ! XSettings.IsVsBuilding)
                 Walk()
         ENDIF
 
@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharpModel
                     NEXT
                 ENDIF
             END LOCK
-            IF (! IsRunning .AND. ! XSolution.IsVsBuilding)
+            IF (! IsRunning .AND. ! XSettings.IsVsBuilding)
                 Walk()
         ENDIF
         //WriteOutputMessage("<<-- RemoveProject()")
@@ -168,7 +168,7 @@ BEGIN NAMESPACE XSharpModel
             LOCAL project AS XProject
             LOCAL parallelOptions AS System.Threading.Tasks.ParallelOptions
             project := NULL
-            IF  ! XSolution.IsVsBuilding
+            IF  ! XSettings.IsVsBuilding
                 DO WHILE _projects:Count > 0
                     if MustAbort
                         RETURN
@@ -235,7 +235,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN
         PRIVATE STATIC METHOD WalkReferences() AS VOID
-            IF _projectsForTypeResolution:Count != 0 .AND. ! XSolution:IsVsBuilding
+            IF _projectsForTypeResolution:Count != 0 .AND. ! XSettings:IsVsBuilding
                 DO WHILE _projectsForTypeResolution:Count > 0
                     if MustAbort
                         RETURN
@@ -281,7 +281,7 @@ BEGIN NAMESPACE XSharpModel
                 RETURN
             ENDIF
             IF project:Loaded .AND. XSolution:IsOpen
-                DO WHILE XSolution:IsVsBuilding .or. ModelWalker.IsSuspended
+                DO WHILE XSettings:IsVsBuilding .or. ModelWalker.IsSuspended
                     System.Threading.Thread.Sleep(1000)
                     IF MustAbort
                         RETURN

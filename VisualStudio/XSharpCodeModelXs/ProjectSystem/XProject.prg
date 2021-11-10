@@ -14,8 +14,7 @@ USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
 USING System.Diagnostics
 USING System.Reflection
-USING CVT := Community.VisualStudio.Toolkit
-USING Microsoft.VisualStudio.Shell
+USING EnvDTE
 
 #pragma options ("az", ON)
 BEGIN NAMESPACE XSharpModel
@@ -620,38 +619,8 @@ BEGIN NAMESPACE XSharpModel
          RETURN TRUE
 
 
-      ASYNC METHOD EnumFiles(oItem as CVT.SolutionItem, files as List<String>) AS VOID
-           await ThreadHelper.JoinableTaskFactory:SwitchToMainThreadAsync()
-           FOREACH item as CVT.SolutionItem in oItem:Children
-                SWITCH item:Type
-                CASE CVT.SolutionItemType.Project
-                CASE CVT.SolutionItemType.PhysicalFile
-                    files:Add(item:FullPath)
-                END SWITCH
-                EnumFiles(item, files)
-           NEXT
-
-      PRIVATE ASYNC METHOD LoadFiles() AS VOID
-        await ThreadHelper.JoinableTaskFactory:SwitchToMainThreadAsync()
-        var projects := AWAIT CVT.VS.Solutions.GetAllProjectsAsync()
-        FOREACH project AS CVT.Project in projects
-            if project:FullPath == SELF:FileName
-                var files := List<string>{}
-                EnumFiles(project, files)
-                FOREACH var file in files
-                    SELF:AddFile(file)
-                NEXT
-                EXIT
-            ENDIF
-        NEXT
-      METHOD ForceLoaded() AS VOID
-         IF ! SELF:HasFiles
-            SELF:LoadFiles()
-         ENDIF
-
 
       METHOD FindXFile(fullPath AS STRING) AS XFile
-        SELF:ForceLoaded()
          IF ! String.IsNullOrEmpty(fullPath)
             VAR file := SELF:_SourceFilesDict:Find(fullPath,SELF)
             IF file == NULL

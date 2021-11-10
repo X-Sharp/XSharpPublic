@@ -140,7 +140,7 @@ BEGIN NAMESPACE XSharpModel
                    desc := SELF:Name + vars
                 ENDIF
                 IF SELF:Kind:HasReturnType()
-                   desc := desc +  XLiterals.AsKeyWord + SELF:TypeName
+                   desc := desc +  XLiterals.AsKeyWord + SELF:TypeName:GetXSharpTypeName()
                 ENDIF
                 RETURN desc
             CATCH

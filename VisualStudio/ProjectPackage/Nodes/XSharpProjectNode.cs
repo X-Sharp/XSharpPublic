@@ -51,6 +51,7 @@ namespace XSharp.Project
         IVsDesignTimeAssemblyResolution, IVsProject5, IProjectTypeHelper, IXsProjectDesigner
     //, IVsReferenceManagerUser
     {
+        static List<XSharpProjectNode> nodes = new List<XSharpProjectNode>();
 
         static Dictionary<string, string> dependencies;
         static XSharpProjectNode()
@@ -71,6 +72,7 @@ namespace XSharp.Project
             }
         }
 
+        internal static XSharpProjectNode[] AllProjects => nodes.ToArray();
         internal enum XSharpProjectImageName
         {
             Project = 0,
@@ -114,7 +116,10 @@ namespace XSharp.Project
             // True : New WPF way
             // False: C++-Like Property pages
             this.SupportsProjectDesigner = true;
-
+            lock (nodes)
+            {
+                nodes.Add(this);
+            }
         }
 
         private void XSharpProjectNode_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
@@ -155,7 +160,7 @@ namespace XSharp.Project
 #else
                 var task = (Microsoft.VisualStudio.Shell.Task)sender;
 #endif
-                this.OpenElement(task.Document, task.Line, task.Column);
+                XSettings.OpenDocument(task.Document, task.Line, task.Column, false);
             }
         }
 
@@ -303,7 +308,7 @@ namespace XSharp.Project
             return options;
         }
 
-        private void invalidateOptions()
+        internal void InvalidateOptions()
         {
             this.options = null;
             this.OutputFile = null;
@@ -313,7 +318,7 @@ namespace XSharp.Project
         public override void SetProjectFileDirty(bool value)
         {
             base.SetProjectFileDirty(value);
-            invalidateOptions();
+            InvalidateOptions();
         }
 
         public override ProjectOptions GetProjectOptions(ConfigCanonicalName configCanonicalName)
@@ -326,7 +331,7 @@ namespace XSharp.Project
                     var xoptions = this.options as XSharpProjectOptions;
                     if (xoptions.ConfigCanonicalName != configCanonicalName)
                     {
-                        invalidateOptions();
+                        InvalidateOptions();
                     }
                 }
                 if (this.options == null)
@@ -1047,8 +1052,18 @@ namespace XSharp.Project
         }
 
 
-#endregion
+        #endregion
+#if PACKAGEREFERENCE
+#region PackageReferences
+        public XSharpPackageReferenceContainerNode PackageReferenceContainerNode => FindChild("NuGet") as XSharpPackageReferenceContainerNode;
 
+        public virtual XSharpPackageReferenceNode CreatePackageReferenceNode(string name)
+        {
+            ProjectElement item = CreateMsBuildFileItem(name, "PackageReference");
+            return new XSharpPackageReferenceNode(this, item);
+        }
+#endregion
+#endif
 #region References Management Events
 
         private void ReferencesEvents_ReferenceRemoved(VSLangProj.Reference pReference)
@@ -1205,7 +1220,7 @@ namespace XSharp.Project
 
             private set
             {
-                projectModel = null;
+                projectModel = value;
             }
         }
 
@@ -1217,12 +1232,15 @@ namespace XSharp.Project
 #else
             var list = new List<Task>();
 #endif
-            _taskListManager.Clear();
-            foreach (var task in tasks)
+            if (_taskListManager != null)
             {
-                _taskListManager.AddItem(task, this.ProjectIDGuid);
+                _taskListManager.Clear();
+                foreach (var task in tasks)
+                {
+                    _taskListManager.AddItem(task, this.ProjectIDGuid);
+                }
+                _taskListManager.Refresh();
             }
-            _taskListManager.Refresh();
         }
 
         private void OnFileWalkComplete(XFile xfile)
@@ -1454,8 +1472,13 @@ namespace XSharp.Project
         }
 
 #region IXSharpProject Interface
-        
 
+        bool _enforceSelf = false;
+        public bool EnforceSelf
+        {
+            get => _enforceSelf;
+            set => _enforceSelf = value;
+        }
         public void RunInForeGroundThread(Action a)
         {
 
@@ -1521,45 +1544,7 @@ namespace XSharp.Project
                 return "";
             }
         }
-        public void OpenElement(string file, int line, int column)
-        {
-            IVsTextView textView;
-            try
-            {
-                ThreadHelper.ThrowIfNotOnUIThread();
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    var view = await VS.Documents.OpenViaProjectAsync(file);
-                    if (view == null)
-                    {
-                        view = await VS.Documents.OpenAsync(file);
-                    }
-                    var docview = await VS.Documents.GetDocumentViewAsync(file);
-                    textView = await docview.TextView.ToIVsTextViewAsync();
-                    if (textView != null)
-                    {
-                        //
-                        TextSpan span = new TextSpan();
-                        span.iStartLine = line - 1;
-                        span.iStartIndex = column - 1;
-                        span.iEndLine = line - 1;
-                        span.iEndIndex = column - 1;
-                        //
-                        textView.SetCaretPos(span.iStartLine, span.iStartIndex);
-                        textView.EnsureSpanVisible(span);
-                        if (span.iStartLine > 5)
-                            textView.SetTopLine(span.iStartLine - 5);
-                        else
-                            textView.SetTopLine(0);
-                    }
-                    await VS.Documents.OpenInPreviewTabAsync(file);
-                });
-            }
-            catch 
-            {
-                ;
-            }
-        }
+        
 
        
 
@@ -1597,7 +1582,7 @@ namespace XSharp.Project
         {
             this.isLoading = true; // gets reset in OnAfterProjectOpen
             base.Reload();
-
+            CreateListManagers();
             if (ResetDependencies())
             {
                 this.BuildProject.Save();
@@ -1778,7 +1763,7 @@ namespace XSharp.Project
             base.SetConfiguration(config);
             if (invalidate)
             {
-                invalidateOptions();
+                InvalidateOptions();
             }
             if (this.designTimeAssemblyResolution == null)
             {
@@ -1874,32 +1859,7 @@ namespace XSharp.Project
             return;
         }
 
-        public bool IsVsBuilding
-        {
-            get
-            {
-                try
-                {
-                    return false;
-
-                }
-                catch (Exception e)
-                {
-                    if (System.Diagnostics.Debugger.IsAttached)
-                        System.Diagnostics.Debug.WriteLine("Error fetching IsVsBuilding: " + e.Message);
-                }
-                return false;
-            }
-        }
 #endregion
-        public bool IsDocumentOpen(string documentName)
-        {
-            
-            return ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                return await VS.Documents.IsOpenAsync(documentName);
-            });
-        }
 
 
         public void AddFileNode(string strFileName)
@@ -1937,6 +1897,11 @@ namespace XSharp.Project
         {
             projectModel = null;
             base.Dispose(disposing);
+            lock (nodes)
+            {
+                if (nodes.Contains(this))
+                    nodes.Remove(this);
+            }
         }
         private bool _dialectIsCached = false;
         private VsParser.XSharpDialect _dialect;
@@ -1961,6 +1926,14 @@ namespace XSharp.Project
 
         }
 
+        public void CreateParseOptions()
+        {
+            var xoptions = CreateProjectOptions() as XSharpProjectOptions;
+            if (xoptions != null)
+            {
+                xoptions.BuildCommandLine();
+            }
+        }
         public XSharpParseOptions ParseOptions
         {
             get
@@ -2652,7 +2625,7 @@ namespace XSharp.Project
 
         public string DocumentGetText(string fileName, ref bool isOpen)
         {
-            isOpen = IsDocumentOpen(fileName);
+            isOpen = XSettings.IsDocumentOpen(fileName);
             if (isOpen)
             {
                 XSharpFileNode node = this.FindURL(fileName) as XSharpFileNode;
@@ -3006,18 +2979,88 @@ namespace XSharp.Project
             return false;
         }
 
+        public const string AssemblyReferences = nameof(AssemblyReferences);
+        public const string CSharp = nameof(CSharp);
+        public const string DeclaredSourceItems = nameof(DeclaredSourceItems);
+        public const string DotNet = ".NET";
+        public const string Managed = nameof(Managed);
+        public const string PackageReferences = nameof(PackageReferences);
+        public const string Publish = nameof(Publish);
+        public const string UserSourceItems = nameof(UserSourceItems);
+        public const string WindowsXAML = nameof(WindowsXAML);
+        public const string WindowsXaml = nameof(WindowsXaml);
+        public const string WPF = nameof(WPF);
+        public const string XSharp = nameof(XSharp);
+
+        // Known unsupported capabilities
+        public const string AspNetCore = nameof(AspNetCore);
+        public const string BuildAndroidTarget = nameof(BuildAndroidTarget);
+        public const string BuildiOSProject = nameof(BuildiOSProject);
+        public const string CPS = nameof(CPS);
+        public const string DependenciesTree = nameof(DependenciesTree);
+        public const string DependencyPackageManagement = nameof(DependencyPackageManagement);
+        public const string DNX = nameof(DNX);
+        public const string DotNetCoreWeb = nameof(DotNetCoreWeb);
+        public const string DynamicFileNesting = nameof(DynamicFileNesting);
+        public const string HideConnectedServicesNode = nameof(HideConnectedServicesNode);
+        public const string PHP = nameof(PHP);
+        public const string Python = nameof(Python);
+        public const string SharedAssetsProject = nameof(SharedAssetsProject);
+        public const string TestContainer = nameof(TestContainer);
+        public const string VB = nameof(VB);
+        public const string VisualC = nameof(VisualC);
+        public const string WapProj = nameof(WapProj);
+        public const string Web = nameof(Web);
+        public const string WebsiteProject = nameof(WebsiteProject);
+        public const string WindowsXAMLAppxPackage = nameof(WindowsXAMLAppxPackage);
+        public const string WindowsXAMLEnableOverview = nameof(WindowsXAMLEnableOverview);
+        public const string MicrosoftVisualStudioConnectedServicesVirtualNode = "Microsoft.VisualStudio.ConnectedServices.VirtualNode";
+
+
         public bool IsSymbolPresent(string symbol)
         {
-            switch (symbol.ToLower())
+            switch (symbol)
             {
-                case "assemblyreferences":
-                case "declaredsourceitems":
-                case "usersourceitems":
-                case "windowsxaml":
-                case "csharp":
-                case "xsharp":
+                case AssemblyReferences:
+                case CSharp:
+                case DeclaredSourceItems:
+                case DotNet:
+                case Managed:
+                //case PackageReferences:
+                case Publish:
+                case UserSourceItems:
+                case WindowsXAML:
+                case WindowsXaml:
+                case WPF:
+                case XSharp:
                     return true;
+                case AspNetCore:
+                case BuildAndroidTarget:
+                case BuildiOSProject:
+                case CPS:
+                case DependenciesTree:
+                case DependencyPackageManagement:
+                case DNX:
+                case DotNetCoreWeb:
+                case DynamicFileNesting:
+                case HideConnectedServicesNode:
+                case MicrosoftVisualStudioConnectedServicesVirtualNode:
+                case PackageReferences:
+                case PHP:
+                case Python:
+                case SharedAssetsProject:
+                case TestContainer:
+                case VB:
+                case VisualC:
+                case WapProj:
+                case Web:
+                case WebsiteProject:
+                case WindowsXAMLAppxPackage:
+                case WindowsXAMLEnableOverview:
+                    return false;
             }
+            // intentionally no default so we can set a breakpoint and see what other capabilities
+            // might be needed
             return false;
         }
     }

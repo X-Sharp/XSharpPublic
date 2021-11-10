@@ -8,7 +8,6 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 USING System.Threading.Tasks
-USING EnvDTE
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.XSharp
 
@@ -19,7 +18,6 @@ BEGIN NAMESPACE XSharpModel
       CLASS OrphanedFilesProject IMPLEMENTS IXSharpProject
       #region properties
       PROPERTY IntermediateOutputPath AS STRING GET ""
-      PROPERTY IsVsBuilding AS LOGIC GET FALSE
       PROPERTY OutputFile AS STRING GET ""
       PROPERTY ParseOptions AS XSharpParseOptions GET _parseOptions
       PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET FALSE
@@ -27,6 +25,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY RootNameSpace AS STRING GET ""
       PROPERTY Url AS STRING GET "(OrphanedFiles).xsproj"
       PROPERTY Dialect AS XSharpDialect GET XSharpDialect.Core
+      PROPERTY EnforceSelf as LOGIC GET FALSE
       PROPERTY Name  AS STRING GET "(OrphanedFiles)"
       #endregion
    PRIVATE _parseOptions AS XSharpParseOptions

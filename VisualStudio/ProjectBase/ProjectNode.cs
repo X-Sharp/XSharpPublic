@@ -804,7 +804,10 @@ namespace Microsoft.VisualStudio.Project
             get
             {
                 // Default to file name
+                if (buildProject == null)
+                    return "";
                 string caption = this.buildProject.FullPath;
+
                 if (String.IsNullOrEmpty(caption))
                 {
                     if (this.buildProject.GetProperty(ProjectFileConstants.Name) != null)
@@ -2834,10 +2837,8 @@ namespace Microsoft.VisualStudio.Project
                 {
                     options.CheckedArithmetic = true;
                 }
-
                 if (GetProjectProperty("DefineConstants", false) != null)
                 {
-                    options.DefinedPreprocessorSymbols = new StringCollection();
                     foreach (string s in GetProjectProperty("DefineConstants", false).Replace(" \t\r\n", "").Split(';'))
                     {
                         options.DefinedPreprocessorSymbols.Add(s);

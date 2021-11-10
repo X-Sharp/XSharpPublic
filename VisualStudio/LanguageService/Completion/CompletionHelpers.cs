@@ -29,12 +29,7 @@ namespace XSharp.LanguageService
             _file = file;
             _settingIgnoreCase = ignoreCase;
         }
-        internal void AddUsingStaticMembers(XSharpSearchLocation location, XCompletionList compList, XFile file, string filterText)
-        {
-
-            var found = file.Project.FindGlobalMembersInAssemblyReferences(filterText);
-            FillMembers(location, compList, null, found, Modifiers.Public, true);
-        }
+       
         internal void AddTypeNames(XCompletionList compList, XSharpSearchLocation location, string startWith,
             bool onlyInterfaces = false, bool afterDot = false)
         {

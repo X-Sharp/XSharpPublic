@@ -99,8 +99,11 @@ namespace XSharp.LanguageService
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(
-                hierarchy.AdviseHierarchyEvents(this, out cookie));
+                if (hierarchy != null)
+                {
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(
+                        hierarchy.AdviseHierarchyEvents(this, out cookie));
+                }
             });
             //
             //if (doInitialScan)
@@ -214,7 +217,7 @@ namespace XSharp.LanguageService
             return ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            if ((null != hierarchy) || (0 == cookie))
+            if ((null == hierarchy) || (0 == cookie))
             {
                 return false;
             }
@@ -250,6 +253,8 @@ namespace XSharp.LanguageService
             int hr = VSConstants.S_OK;
             try
             {
+                if (hierarchy == null)
+                    return string.Empty;
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();

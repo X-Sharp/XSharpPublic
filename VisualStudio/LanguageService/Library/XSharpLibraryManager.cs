@@ -182,7 +182,7 @@ namespace XSharp.LanguageService
         {
             // No Hierarchy or... Hierarchy already registered ?
             // disable classview for now
-            if (XSettings.DisableClassViewObjectView)// || true)
+            if ( XSettings.DisableClassViewObjectView)
             {
                 return;
             }
@@ -223,7 +223,7 @@ namespace XSharp.LanguageService
             HierarchyListener listener = new HierarchyListener(hierarchy);
             listener.OnAddItem += new EventHandler<HierarchyEventArgs>(OnNewFile);
             listener.OnDeleteItem += new EventHandler<HierarchyEventArgs>(OnDeleteFile);
-            //listener.StartListening();
+            listener.StartListening();
             hierarchies.Add(hierarchy, listener);
             // and ask for any change in the files that are opened in Source editor.
             //RegisterForRDTEvents();
@@ -264,6 +264,7 @@ namespace XSharp.LanguageService
             {
                 listener.StopListening();
                 listener.Dispose();
+                listener = null;
             }
             hierarchies.Remove(hierarchy);
             XSharpModuleId[] keys;
@@ -580,9 +581,9 @@ namespace XSharp.LanguageService
                 }
 
             }
-            catch
+            catch (Exception e)
             {
-
+                Debug.WriteLine(e.Message);
             }
         }
 

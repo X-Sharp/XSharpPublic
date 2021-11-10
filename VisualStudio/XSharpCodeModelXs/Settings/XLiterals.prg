@@ -116,6 +116,8 @@ BEGIN NAMESPACE XSharpModel
 
 
         STATIC METHOD ToDisplayString(SELF mods AS Modifiers) AS STRING
+            // remove EXTERNAL since we do not have that in our language
+            mods := _AND(mods, ~Modifiers.External)
             if (mods == Modifiers.None)
                 return ""
             endif

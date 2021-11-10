@@ -9,9 +9,6 @@ USING System.IO
 USING System.Linq
 USING System
 BEGIN NAMESPACE XSharpModel
-    DELEGATE DisplayOutputMessage(message AS STRING) AS VOID
-    DELEGATE DisplayException(ex AS Exception) AS VOID
-    DELEGATE ShowMessageBox(message AS STRING) AS INT
     STATIC CLASS XSettings
         // Fields
         PUBLIC STATIC PROPERTY EnableLogging                      AS LOGIC AUTO
@@ -93,27 +90,61 @@ BEGIN NAMESPACE XSharpModel
 //        PUBLIC STATIC PROPERTY CompleteFunctionsA               AS LOGIC AUTO := TRUE
 //        PUBLIC STATIC PROPERTY CompleteNumChars                 AS LONG AUTO := 4
         PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := Int32.MaxValue
-
-        PUBLIC STATIC PROPERTY DisplayOutputMessage             AS DisplayOutputMessage AUTO := NoOutput
-        PUBLIC STATIC PROPERTY DisplayException                 AS DisplayException AUTO := NoException
-        PUBLIC STATIC PROPERTY ShowMessageBox                   AS ShowMessageBox AUTO := NoMessageBox
+        PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO
 
         PUBLIC STATIC PROPERTY DebuggerMode                AS DebuggerMode AUTO
         PUBLIC STATIC PROPERTY DebuggerIsRunning           AS LOGIC GET DebuggerMode != DebuggerMode.Design
 
-        PRIVATE STATIC METHOD NoOutput(message AS STRING) AS VOID
-        RETURN
-        PRIVATE STATIC METHOD NoException(ex AS Exception) AS VOID
-        RETURN
-        PRIVATE STATIC METHOD NoMessageBox(message AS STRING) AS INT
-        RETURN 0
+        PUBLIC STATIC METHOD DisplayOutputMessage(message AS STRING) AS VOID
+            IF EnableLogging .and. ShellLink != NULL
+                ShellLink:WriteOutputMessage(message)
+            ENDIF
+         RETURN
 
+        PUBLIC STATIC METHOD DisplayException(ex AS Exception) AS VOID
+         IF ShellLink != NULL
+            ShellLink:WriteException(ex)
+         ENDIF
+         RETURN
 
+        PUBLIC STATIC METHOD ShowMessageBox(cMessage as STRING) AS INT
+         IF ShellLink != NULL
+            RETURN ShellLink:ShowMessageBox(cMessage)
+         ENDIF
+         RETURN 0
 
-        STATIC METHOD FormatKeyword(sKeyword AS STRING) AS STRING
+      PUBLIC STATIC METHOD OpenDocument(file AS STRING, line AS LONG, column AS LONG, lPreview as LOGIC) AS VOID
+         IF ShellLink != NULL
+            ShellLink:OpenDocument(file, line, column, lPreview)
+         ENDIF
+
+        PUBLIC STATIC METHOD IsDocumentOpen(file AS STRING) AS LOGIC
+         IF ShellLink != NULL
+            RETURN ShellLink:IsDocumentOpen(file)
+         ENDIF
+         RETURN FALSE
+
+        PUBLIC STATIC METHOD SetStatusBarText(cText AS STRING) AS VOID
+        IF ShellLink != NULL_OBJECT
+            ShellLink:SetStatusBarText(cText)
+        ENDIF
+
+        PUBLIC STATIC METHOD SetStatusBarProgress(cMessage as STRING, nItem AS LONG, nTotal as LONG) AS VOID
+        IF ShellLink != NULL_OBJECT
+           ShellLink:SetStatusBarProgress(cMessage, nItem, nTotal)
+        ENDIF
+
+      PUBLIC STATIC METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
+        IF ShellLink != NULL_OBJECT
+            ShellLink:SetStatusBarAnimation(onOff, id)
+        ENDIF
+
+       PUBLIC STATIC PROPERTY IsVsBuilding AS LOGIC GET IIF(ShellLink != NULL, ShellLink:IsVsBuilding, FALSE)
+
+        PUBLIC STATIC METHOD FormatKeyword(sKeyword AS STRING) AS STRING
             RETURN FormatKeyword(sKeyword, XSettings.KeywordCase)
 
-        STATIC METHOD FormatKeyword(sKeyword AS STRING, nKeywordCase AS KeywordCase) AS STRING
+        PUBLIC STATIC METHOD FormatKeyword(sKeyword AS STRING, nKeywordCase AS KeywordCase) AS STRING
             IF sKeyword == NULL
                 RETURN ""
             ENDIF
@@ -129,16 +160,16 @@ BEGIN NAMESPACE XSharpModel
             END SWITCH
         RETURN sKeyword
 
-        STATIC METHOD FormatKeyword(sKeyword AS OBJECT) AS STRING
+        PUBLIC STATIC METHOD FormatKeyword(sKeyword AS OBJECT) AS STRING
             RETURN FormatKeyword(sKeyword:ToString(), XSettings.KeywordCase)
 
-        STATIC METHOD FormatKeyword(sKeyword AS OBJECT, nKeywordCase AS KeywordCase) AS STRING
+        PUBLIC STATIC METHOD FormatKeyword(sKeyword AS OBJECT, nKeywordCase AS KeywordCase) AS STRING
             RETURN FormatKeyword(sKeyword:ToString(), nKeywordCase)
 
-        STATIC METHOD FormatKeyword(keyword AS Kind) AS STRING
+        PUBLIC STATIC METHOD FormatKeyword(keyword AS Kind) AS STRING
             RETURN FormatKeyword(keyword , XSettings.KeywordCase)
 
-        STATIC METHOD FormatKeyword(keyword AS Kind, nKeywordCase AS KeywordCase) AS STRING
+        PUBLIC STATIC METHOD FormatKeyword(keyword AS Kind, nKeywordCase AS KeywordCase) AS STRING
             SWITCH (keyword)
                 CASE Kind.VODefine
                     RETURN XSettings.FormatKeyword("define",nKeywordCase)

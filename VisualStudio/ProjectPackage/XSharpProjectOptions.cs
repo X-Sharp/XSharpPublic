@@ -100,9 +100,12 @@ namespace XSharp.Project
 
             var defines = "";
             var value = "";
-            foreach (var d in DefinedPreprocessorSymbols)
+            if (DefinedPreprocessorSymbols != null)
             {
-                defines = defines + d + ";";
+                foreach (var d in DefinedPreprocessorSymbols)
+                {
+                    defines = defines + d + ";";
+                }
             }
             options.Add("d:" + defines);
             var include = _prjNode.GetProjectProperty("IncludePaths");
@@ -154,6 +157,9 @@ namespace XSharp.Project
 
             }
             _prjNode.ProjectModel.ResetParseOptions(ParseOptions);
+            var self = _prjNode.GetProjectProperty(XSharpProjectFileConstants.EnforceSelf);
+            
+            _prjNode.EnforceSelf = self?.ToLower() == "true";
         }
 
     }

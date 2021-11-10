@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Shell.TableManager;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
+using XSharpModel;
 
 namespace XSharp.Project
 {
@@ -180,7 +181,7 @@ namespace XSharp.Project
                     }
                     else
                     {
-                        isOpen = Project.IsDocumentOpen(file);
+                        isOpen = XSettings.IsDocumentOpen(file);
                         filenames.Add(file, isOpen);
                     }
                     if (isOpen && !keys.ContainsKey(key))
@@ -224,7 +225,7 @@ namespace XSharp.Project
                     }
                     else
                     {
-                        isOpen = Project.IsDocumentOpen(file);
+                        isOpen = XSettings.IsDocumentOpen(file);
                         filenames.Add(file, isOpen);
                     }
                     if (isOpen && !keys.ContainsKey(key) && (file == fileName))

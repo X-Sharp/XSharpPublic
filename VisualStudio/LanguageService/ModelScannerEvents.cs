@@ -14,8 +14,9 @@ using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharpModel;
 using File = System.IO.File;
-using Shell = Microsoft.VisualStudio.Shell;
 using System.Linq;
+using Microsoft.VisualStudio.Shell;
+
 
 namespace XSharp.LanguageService
 {
@@ -40,9 +41,9 @@ namespace XSharp.LanguageService
         #region ctors
         public ModelScannerEvents()
         {
-            Shell.ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
-                await Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
                 VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
                 VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
@@ -56,17 +57,27 @@ namespace XSharp.LanguageService
 
         }
 
+       
         private void SolutionEvents_OnBeforeOpenProject(string obj)
         {
             checkProjectFile(obj);
         }
-        private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project obj)
+        private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
         {
-            ;
-        }
-        private void DebuggerEvents_EnterRunMode(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
+            if (project.IsXSharp())
+            {
+                var xProject = XSolution.FindProject(project.FullPath);
+                if (xProject != null)
+                {
+                    addProjectFiles(xProject, project);
+                    if (XSolution.IsOpen)
+                    {
+                        ModelWalker.AddProject(xProject);
+                        ModelWalker.Walk();
+                    }
+                }
+            }
+            
         }
 
         private void ShellEvents_ShutdownStarted()
@@ -75,7 +86,7 @@ namespace XSharp.LanguageService
             XSharpModel.XSolution.Close();
         }
 
-        private async Task EnumChildrenAsync(SolutionItem obj, List<string> projects)
+        private async System.Threading.Tasks.Task EnumChildrenAsync(SolutionItem obj, List<string> projects)
         {
             //System.Diagnostics.Debug.WriteLine(obj.Type.ToString() + " " + obj.Name);
             try
@@ -166,7 +177,7 @@ namespace XSharp.LanguageService
             {
                 solutionFile = obj.FullPath;
                 var projects = new List<string>();
-                Shell.ThreadHelper.JoinableTaskFactory.Run(async delegate
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     var sol = await VS.Solutions.GetCurrentSolutionAsync();
                     await EnumChildrenAsync(obj, projects);
@@ -187,7 +198,6 @@ namespace XSharp.LanguageService
                     XSharpModel.XSolution.Open(solutionFile);
                 }
                 projectfiles.Clear();
-                XSolution.LoadAllProjects();
                 return;
             }
         }
@@ -197,7 +207,7 @@ namespace XSharp.LanguageService
         private void  SolutionEvents_OnBeforeCloseSolution()
         {
             bool hasXsProject = false;
-            Shell.ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 var vsProjects = await VS.Solutions.GetAllProjectsAsync();
                 foreach (var prj in vsProjects)
@@ -214,7 +224,7 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            Shell.ThreadHelper.JoinableTaskFactory.Run(async delegate
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
 
                 XSharpModel.XSolution.IsClosing = true;
@@ -322,4 +332,16 @@ namespace XSharp.LanguageService
 
     }
 }
-
+internal static class CVTProjectExtensions
+{
+    internal static bool IsXSharp(this Project project)
+    {
+        if (project != null)
+        {
+            var path = project.FullPath;
+            var ext = System.IO.Path.GetExtension(path).ToLower();
+            return ext == ".xsproj" || ext == ".xsprj";
+        }
+        return false;
+    }
+}

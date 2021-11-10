@@ -14,7 +14,11 @@ using Microsoft.VisualStudio.Project;
 using VSLangProj;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-
+#if PACKAGEREFERENCE
+using VSLangProj150;
+using VSLangProj140;
+using VSLangProj80;
+#endif
 namespace XSharp.Project
 {
     /// <summary>
@@ -68,7 +72,11 @@ namespace XSharp.Project
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
     [ComVisible(true), CLSCompliant(false)]
+#if PACKAGEREFERENCE	
+    public class OAXSharpVSProject : OAVSProject, VSProject3
+#else
     public class OAXSharpVSProject : OAVSProject
+#endif	
     {
         private OAVSProjectImports imports;
         private VSProjectEvents events;
@@ -92,6 +100,30 @@ namespace XSharp.Project
                 return events;
             }
         }
+#if PACKAGEREFERENCE
+        public object PublishManager => throw new NotImplementedException();
+
+        public VSProjectEvents2 Events2 => throw new NotImplementedException();
+
+        public AnalyzerReferences AnalyzerReferences => throw new NotImplementedException();
+
+        public PackageReferences PackageReferences
+        {
+            get
+            {
+                if (this.Project is XSharpProjectNode xpn)
+                {
+                    XSharpPackageReferenceContainerNode referenceContainer = xpn?.PackageReferenceContainerNode ?? null;
+                    if (referenceContainer == null)
+                    {
+                        return null;
+                    }
+                    return referenceContainer.Object as PackageReferences;
+                }
+                return null;
+            }
+        }
+#endif
 
     }
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]

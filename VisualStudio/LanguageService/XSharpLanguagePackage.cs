@@ -261,11 +261,11 @@ namespace XSharp.LanguageService
             serviceContainer.AddService(typeof(XSharpLegacyLanguageService),
                                         languageService,
                                         true);
-            if (!XSettings.DisableClassViewObjectView)
-            {
-                ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
-                serviceContainer.AddService(typeof(IXSharpLibraryManager), callback, true);
-            }
+            //if (!XSettings.DisableClassViewObjectView)
+            //{
+            //    ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
+            //    serviceContainer.AddService(typeof(IXSharpLibraryManager), callback, true);
+            //}
 
             RegisterDebuggerEvents();
             addOurFileExtensionsForDiffAndPeek("Diff\\SupportedContentTypes");
@@ -290,13 +290,8 @@ namespace XSharp.LanguageService
             }
             GetIntellisenseSettings();
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            XSolution.LoadAllProjects();
         }
 
-        
-
-
-        
 
         protected override void Dispose(bool disposing)
         {
@@ -450,10 +445,9 @@ namespace XSharp.LanguageService
             if (_libraryManager != null)
                 _libraryManager.OnIdle();
 
-            var walker = XSharpModel.ModelWalker.GetWalker();
-            if (walker != null && !walker.IsRunning && walker.HasWork)
+            if (!ModelWalker.IsRunning && ModelWalker.HasWork)
             {
-                walker.Walk();
+                ModelWalker.Walk();
             }
             return 0;
         }

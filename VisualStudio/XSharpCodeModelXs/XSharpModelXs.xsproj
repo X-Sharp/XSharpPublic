@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.4\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.4\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props')" />
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
+  <Import Project="..\Common.props" />
   <PropertyGroup>
     <ProjectGuid>EED6843B-B727-4F08-AA32-CA0F48FDDE3F</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -40,9 +40,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
-    <Includepaths>$(SolutionDir)\Common</Includepaths>
-    <Nostandarddefs>true</Nostandarddefs>
+    <XSharpProjectversion>2.9.1.1</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
     <StandardDefs />
     <MemVar>false</MemVar>
@@ -54,6 +52,7 @@
     <NoWin32Manifest>False</NoWin32Manifest>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
@@ -92,423 +91,18 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="Community.VisualStudio.Toolkit, Version=15.0.0.0, Culture=neutral, PublicKeyToken=79441d341a79572c">
-      <Name>Community.VisualStudio.Toolkit</Name>
-      <AssemblyName>Community.VisualStudio.Toolkit.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Community.VisualStudio.Toolkit.15.15.0.0-pre\lib\net46\Community.VisualStudio.Toolkit.dll</HintPath>
-    </Reference>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>EnvDTE</Name>
-      <AssemblyName>EnvDTE.dll</AssemblyName>
+      <AssemblyName>envdte.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\packages\EnvDTE.8.0.2\lib\net10\EnvDTE.dll</HintPath>
-    </Reference>
-    <Reference Include="EnvDTE100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>EnvDTE100</Name>
-      <AssemblyName>EnvDTE100.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\EnvDTE100.10.0.3\lib\net20\EnvDTE100.dll</HintPath>
-    </Reference>
-    <Reference Include="EnvDTE80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>EnvDTE80</Name>
-      <AssemblyName>EnvDTE80.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\EnvDTE80.8.0.3\lib\net10\EnvDTE80.dll</HintPath>
-    </Reference>
-    <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>EnvDTE90</Name>
-      <AssemblyName>EnvDTE90.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\EnvDTE90.9.0.3\lib\net10\EnvDTE90.dll</HintPath>
-    </Reference>
-    <Reference Include="EnvDTE90a, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>EnvDTE90a</Name>
-      <AssemblyName>EnvDTE90a.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\EnvDTE90a.9.0.3\lib\net10\EnvDTE90a.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\envdte.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>Microsoft.CSharp</Name>
       <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.CommandBars</Name>
-      <AssemblyName>Microsoft.VisualStudio.CommandBars.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.CommandBars.8.0.0.1\lib\net10\Microsoft.VisualStudio.CommandBars.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.ComponentModelHost, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.ComponentModelHost</Name>
-      <AssemblyName>Microsoft.VisualStudio.ComponentModelHost.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.ComponentModelHost.15.0.26228\lib\net45\Microsoft.VisualStudio.ComponentModelHost.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.CoreUtility</Name>
-      <AssemblyName>Microsoft.VisualStudio.CoreUtility.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.CoreUtility.15.0.26228\lib\net45\Microsoft.VisualStudio.CoreUtility.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Debugger.Engine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Debugger.Engine</Name>
-      <AssemblyName>Microsoft.VisualStudio.Debugger.Engine.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Debugger.Engine.15.0.26228\lib\net45\Microsoft.VisualStudio.Debugger.Engine.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Debugger.Interop.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Debugger.Interop.10.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Debugger.Interop.10.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Debugger.Interop.10.0.10.0.30320\lib\net20\Microsoft.VisualStudio.Debugger.Interop.10.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Debugger.Interop.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Debugger.Interop.11.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Debugger.Interop.11.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Debugger.Interop.11.0.11.0.50728\lib\net20\Microsoft.VisualStudio.Debugger.Interop.11.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Debugger.Interop.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Debugger.Interop.12.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Debugger.Interop.12.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Debugger.Interop.12.0.12.0.21006\lib\net20\Microsoft.VisualStudio.Debugger.Interop.12.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Debugger.Interop.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Debugger.Interop.14.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Debugger.Interop.14.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Debugger.Interop.14.0.14.3.25408\lib\net20\Microsoft.VisualStudio.Debugger.Interop.14.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Debugger.Interop.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Debugger.Interop.15.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Debugger.Interop.15.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Debugger.Interop.15.0.15.0.26228\lib\Microsoft.VisualStudio.Debugger.Interop.15.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Debugger.InteropA, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Debugger.InteropA</Name>
-      <AssemblyName>Microsoft.VisualStudio.Debugger.InteropA.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Debugger.InteropA.9.0.21023\lib\net10\Microsoft.VisualStudio.Debugger.InteropA.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Designer.Interfaces, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Designer.Interfaces</Name>
-      <AssemblyName>Microsoft.VisualStudio.Designer.Interfaces.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Designer.Interfaces.1.1.4323\lib\net11\Microsoft.VisualStudio.Designer.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.DpiAwareness, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.DpiAwareness</Name>
-      <AssemblyName>Microsoft.VisualStudio.DpiAwareness.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.DpiAwareness.6.0.28727\lib\net46\Microsoft.VisualStudio.DpiAwareness.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Editor, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Editor</Name>
-      <AssemblyName>Microsoft.VisualStudio.Editor.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Editor.15.0.26228\lib\net45\Microsoft.VisualStudio.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.ImageCatalog, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.ImageCatalog</Name>
-      <AssemblyName>Microsoft.VisualStudio.ImageCatalog.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.ImageCatalog.15.0.26228\lib\net45\Microsoft.VisualStudio.ImageCatalog.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Imaging, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Imaging</Name>
-      <AssemblyName>Microsoft.VisualStudio.Imaging.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Imaging.15.0.26228\lib\net45\Microsoft.VisualStudio.Imaging.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime</Name>
-      <AssemblyName>Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime.14.3.26930\lib\net20\Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Language.Intellisense, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Language.Intellisense</Name>
-      <AssemblyName>Microsoft.VisualStudio.Language.Intellisense.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Language.Intellisense.15.0.26228\lib\net45\Microsoft.VisualStudio.Language.Intellisense.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Language.NavigateTo.Interfaces, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Language.NavigateTo.Interfaces</Name>
-      <AssemblyName>Microsoft.VisualStudio.Language.NavigateTo.Interfaces.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Language.NavigateTo.Interfaces.15.0.26228\lib\net45\Microsoft.VisualStudio.Language.NavigateTo.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Language.StandardClassification, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Language.StandardClassification</Name>
-      <AssemblyName>Microsoft.VisualStudio.Language.StandardClassification.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Language.StandardClassification.15.0.26228\lib\net45\Microsoft.VisualStudio.Language.StandardClassification.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.OLE.Interop</Name>
-      <AssemblyName>Microsoft.VisualStudio.OLE.Interop.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.OLE.Interop.7.10.6071\lib\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Package.LanguageService.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Package.LanguageService.15.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Package.LanguageService.15.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Package.LanguageService.15.0.15.0.26228\lib\Microsoft.VisualStudio.Package.LanguageService.15.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.ProjectAggregator, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.ProjectAggregator</Name>
-      <AssemblyName>Microsoft.VisualStudio.ProjectAggregator.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.ProjectAggregator.8.0.50728\lib\net20\Microsoft.VisualStudio.ProjectAggregator.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Setup.Configuration.Interop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Setup.Configuration.Interop</Name>
-      <AssemblyName>Microsoft.VisualStudio.Setup.Configuration.Interop.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Interop.1.16.30\lib\net35\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.15.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.15.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.15.0.15.0.26228\lib\Microsoft.VisualStudio.Shell.15.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Design, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Design</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Design.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Design.15.0.26228\lib\net45\Microsoft.VisualStudio.Shell.Design.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Embeddable, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Embeddable</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Embeddable.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Embeddable.15.0.26228\lib\net45\Microsoft.VisualStudio.Shell.Embeddable.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Framework, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Framework</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Framework.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Framework.15.0.26228\lib\net45\Microsoft.VisualStudio.Shell.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Interop</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Interop.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Interop.7.10.6072\lib\net11\Microsoft.VisualStudio.Shell.Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Interop.10.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Interop.10.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Interop.10.0.10.0.30320\lib\net20\Microsoft.VisualStudio.Shell.Interop.10.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Interop.11.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Interop.11.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Interop.11.0.11.0.61031\lib\net20\Microsoft.VisualStudio.Shell.Interop.11.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Interop.12.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Interop.12.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Interop.12.0.12.0.30111\lib\net20\Microsoft.VisualStudio.Shell.Interop.12.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime, Version=12.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime.12.1.30329.0\lib\net20\Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime.14.3.26929\lib\net20\Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.15.0.DesignTime, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Interop.15.0.DesignTime</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Interop.15.0.DesignTime.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Interop.15.0.DesignTime.15.0.26201\lib\Microsoft.VisualStudio.Shell.Interop.15.0.DesignTime.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Interop.8.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Interop.8.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Interop.8.0.8.0.50728\lib\net11\Microsoft.VisualStudio.Shell.Interop.8.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Shell.Interop.9.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Shell.Interop.9.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Shell.Interop.9.0.9.0.30729\lib\Microsoft.VisualStudio.Shell.Interop.9.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TaskRunnerExplorer.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.TaskRunnerExplorer.14.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.TaskRunnerExplorer.14.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.TaskRunnerExplorer.14.0.14.0.0\lib\net40\Microsoft.VisualStudio.TaskRunnerExplorer.14.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Text.Data, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Text.Data</Name>
-      <AssemblyName>Microsoft.VisualStudio.Text.Data.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.Data.15.0.26228\lib\net45\Microsoft.VisualStudio.Text.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Text.Logic</Name>
-      <AssemblyName>Microsoft.VisualStudio.Text.Logic.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.Logic.15.0.26228\lib\net45\Microsoft.VisualStudio.Text.Logic.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Text.UI, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Text.UI</Name>
-      <AssemblyName>Microsoft.VisualStudio.Text.UI.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.UI.15.0.26228\lib\net45\Microsoft.VisualStudio.Text.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Text.UI.Wpf, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Text.UI.Wpf</Name>
-      <AssemblyName>Microsoft.VisualStudio.Text.UI.Wpf.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Text.UI.Wpf.15.0.26228\lib\net45\Microsoft.VisualStudio.Text.UI.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.TextManager.Interop</Name>
-      <AssemblyName>Microsoft.VisualStudio.TextManager.Interop.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.TextManager.Interop.7.10.6071\lib\net11\Microsoft.VisualStudio.TextManager.Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TextManager.Interop.12.1.DesignTime, Version=12.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.TextManager.Interop.12.1.DesignTime</Name>
-      <AssemblyName>Microsoft.VisualStudio.TextManager.Interop.12.1.DesignTime.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.TextManager.Interop.12.1.DesignTime.12.1.30330\lib\net20\Microsoft.VisualStudio.TextManager.Interop.12.1.DesignTime.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TextManager.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.TextManager.Interop.8.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.TextManager.Interop.8.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.TextManager.Interop.8.0.8.0.50728\lib\net11\Microsoft.VisualStudio.TextManager.Interop.8.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TextTemplating.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.TextTemplating.15.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.TextTemplating.15.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.TextTemplating.15.0.15.0.26228\lib\net45\Microsoft.VisualStudio.TextTemplating.15.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.TextTemplating.Interfaces.10.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.TextTemplating.Interfaces.10.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.TextTemplating.Interfaces.10.0.10.0.30319\lib\net40\Microsoft.VisualStudio.TextTemplating.Interfaces.10.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.TextTemplating.Interfaces.11.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.TextTemplating.Interfaces.11.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.TextTemplating.Interfaces.11.0.11.0.50727\lib\net45\Microsoft.VisualStudio.TextTemplating.Interfaces.11.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.TextTemplating.Interfaces.15.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.TextTemplating.Interfaces.15.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.TextTemplating.Interfaces.15.0.15.0.26228\lib\net45\Microsoft.VisualStudio.TextTemplating.Interfaces.15.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TextTemplating.VSHost.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.TextTemplating.VSHost.15.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.TextTemplating.VSHost.15.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.TextTemplating.VSHost.15.0.15.0.26228\lib\Microsoft.VisualStudio.TextTemplating.VSHost.15.0.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Threading, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Threading</Name>
-      <AssemblyName>Microsoft.VisualStudio.Threading.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Threading.15.0.240\lib\net45\Microsoft.VisualStudio.Threading.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Utilities, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Utilities</Name>
-      <AssemblyName>Microsoft.VisualStudio.Utilities.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Utilities.15.0.26228\lib\net46\Microsoft.VisualStudio.Utilities.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Validation, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Validation</Name>
-      <AssemblyName>Microsoft.VisualStudio.Validation.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Validation.15.0.82\lib\net45\Microsoft.VisualStudio.Validation.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Web.BrowserLink.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.VisualStudio.Web.BrowserLink.12.0</Name>
-      <AssemblyName>Microsoft.VisualStudio.Web.BrowserLink.12.0.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Microsoft.VisualStudio.Web.BrowserLink.12.0.12.0.0\lib\net40\Microsoft.VisualStudio.Web.BrowserLink.12.0.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>Microsoft.Win32.Primitives</Name>
@@ -519,13 +113,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <Name>Newtonsoft.Json</Name>
-      <AssemblyName>Newtonsoft.Json.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore">
       <Name>PresentationCore</Name>
       <SpecificVersion>False</SpecificVersion>
@@ -544,18 +131,6 @@
       <HintPath>..\..\packages\stdole.7.0.3302\lib\net10\stdole.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Collections.Immutable</Name>
-      <AssemblyName>System.Collections.Immutable.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ComponentModel.Composition">
-      <Name>System.ComponentModel.Composition</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.ComponentModel.Composition.dll</AssemblyName>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.115.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139">
@@ -570,6 +145,14 @@
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>System.Design.dll</AssemblyName>
     </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <Name>System.ValueTuple</Name>
+      <AssemblyName>System.ValueTuple.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>
+      </HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Windows">
       <Name>System.Windows</Name>
       <SpecificVersion>False</SpecificVersion>
@@ -579,62 +162,6 @@
       <Name>System.Xml</Name>
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>System.Xml.dll</AssemblyName>
-    </Reference>
-    <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VSLangProj</Name>
-      <AssemblyName>VSLangProj.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\VSLangProj.7.0.3301\lib\net10\VSLangProj.dll</HintPath>
-    </Reference>
-    <Reference Include="VslangProj100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VslangProj100</Name>
-      <AssemblyName>VSLangProj100.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\VSLangProj100.10.0.30320\lib\net20\VSLangProj100.dll</HintPath>
-    </Reference>
-    <Reference Include="VSLangProj110, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VSLangProj110</Name>
-      <AssemblyName>VSLangProj110.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\VSLangProj110.11.0.61031\lib\net20\VSLangProj110.dll</HintPath>
-    </Reference>
-    <Reference Include="VSLangProj140, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VSLangProj140</Name>
-      <AssemblyName>VSLangProj140.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\VSLangProj140.14.0.25030\lib\net20\VSLangProj140.dll</HintPath>
-    </Reference>
-    <Reference Include="VSLangProj150, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VSLangProj150</Name>
-      <AssemblyName>VSLangProj150.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\VSLangProj150.15.0.26229\lib\net20\VSLangProj150.dll</HintPath>
-    </Reference>
-    <Reference Include="VSLangProj2, Version=7.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VSLangProj2</Name>
-      <AssemblyName>VSLangProj2.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\VSLangProj2.7.0.5001\lib\net11\VSLangProj2.dll</HintPath>
-    </Reference>
-    <Reference Include="VSLangProj80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VSLangProj80</Name>
-      <AssemblyName>VSLangProj80.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\VSLangProj80.8.0.50728\lib\net11\VSLangProj80.dll</HintPath>
-    </Reference>
-    <Reference Include="VslangProj90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>VslangProj90</Name>
-      <AssemblyName>VSLangProj90.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\VSLangProj90.9.0.30730\lib\net10\VSLangProj90.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase">
       <Name>WindowsBase</Name>
@@ -749,15 +276,4 @@
     <RunPostBuildEvent />
   </PropertyGroup>
   <Import Project="..\..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.4\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.4\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.27\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.27\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.16.3.14\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.16.3.14\build\Microsoft.VisualStudio.SDK.Analyzers.targets'))" />
-  </Target>
-  <Import Project="..\..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.27\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.27\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets')" />
-  <Import Project="..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.16.3.14\build\Microsoft.VisualStudio.SDK.Analyzers.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.16.3.14\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" />
 </Project>

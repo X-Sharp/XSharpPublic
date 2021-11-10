@@ -73,18 +73,19 @@ BEGIN NAMESPACE MacroCompilerTest
             //VAR cb := XSharp._Codeblock{rtc, src, isCb, memVars}
             VAR cb := mc:CompileCodeblock(src)
 
-            VAR res := cb:Eval(args)
+            VAR res := (OBJECT) cb:Eval(args)
             LOCAL match AS LOGIC
             IF IsArray(expect)
-                match := XSharp.RT.Functions.ALen(expect) = XSharp.RT.Functions.ALen(res)
+                match := XSharp.RT.Functions.ALen(expect) = XSharp.RT.Functions.ALen((ARRAY) res)
                 FOR VAR i := 1 TO XSharp.RT.Functions.ALen(expect)
                     IF expect[i] != ((ARRAY)res)[i]
                         match := FALSE
                     END
                 NEXT
             ELSEIF t != NULL .AND. t:IsArray
-                LOCAL e := expect AS OBJECT
-                match := e:Length = res:Length .AND. t == res:GetType()
+                LOCAL e := expect AS System.Array
+                LOCAL r := (System.Array) res AS System.Array
+                match := e:Length = r:Length .AND. t == res:GetType()
                 LOCAL m := t:GetMethod("GetValue",<Type>{typeof(INT)}) AS System.Reflection.MethodInfo
                 FOR VAR i := 1 TO e:Length
                     VAR ve := m:Invoke(e,<OBJECT>{i-1})
@@ -151,15 +152,16 @@ BEGIN NAMESPACE MacroCompilerTest
             VAR res := cb:EvalBlock(args)
             LOCAL match AS LOGIC
             IF IsArray(expect)
-                match := XSharp.RT.Functions.ALen(expect) = XSharp.RT.Functions.ALen(res)
+                match := XSharp.RT.Functions.ALen((ARRAY) expect) = XSharp.RT.Functions.ALen((ARRAY) res)
                 FOR VAR i := 1 TO XSharp.RT.Functions.ALen(expect)
                     IF expect[i] != ((ARRAY)res)[i]
                         match := FALSE
                     END
                 NEXT
             ELSEIF t != NULL .AND. t:IsArray
-                LOCAL e := expect AS OBJECT
-                match := e:Length = res:Length .AND. t == res?:GetType()
+                LOCAL e := (System.Array) expect AS System.Array
+                LOCAL r := (System.Array) res as System.Array
+                match := e:Length = r:Length .AND. t == res?:GetType()
                 LOCAL m := t:GetMethod("GetValue",<Type>{typeof(INT)}) AS System.Reflection.MethodInfo
                 FOR VAR i := 1 TO e:Length
                     VAR ve := m:Invoke(e,<OBJECT>{i-1})

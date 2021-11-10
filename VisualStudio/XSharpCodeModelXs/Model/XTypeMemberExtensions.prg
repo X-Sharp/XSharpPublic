@@ -49,8 +49,8 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          IF (tm:Kind != Kind.@@Constructor)
             vars:Append(XLiterals.AsKeyWord)
-            vars:Append(tm:TypeName)
-          ENDIF
+            vars:Append(tm:TypeName:GetXSharpTypeName())
+         ENDIF
 
          RETURN vars:ToString()
 

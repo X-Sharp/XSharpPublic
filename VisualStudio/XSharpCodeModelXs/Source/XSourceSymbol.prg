@@ -28,8 +28,8 @@ BEGIN NAMESPACE XSharpModel
             SELF:Interval := interval
 
         METHOD OpenEditor() AS VOID
-            IF SELF:File?:Project?:ProjectNode != NULL
-                SELF:File:Project:ProjectNode:OpenElement(SELF:File:SourcePath, SELF:Range:StartLine+1, (SELF:Range:StartColumn ))
+            IF SELF:File != NULL
+                XSettings.OpenDocument(SELF:File:SourcePath, SELF:Range:StartLine+1, SELF:Range:StartColumn , FALSE)
             ENDIF
 
         METHOD InSameProject(otherSymbol AS XSourceSymbol) AS LOGIC

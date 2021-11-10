@@ -225,7 +225,7 @@ namespace XSharp.LanguageService
                 if (var is IXParameterSymbol xps )
                 {
                     if (var.Kind == Kind.Parameter)
-                        list.addPair(xps.ParamTypeDesc + " ", var.TypeName);
+                        list.addPair(xps.ParamTypeDesc + " ", var.TypeName.GetXSharpTypeName());
                 }
                 else if (var is XSourceVariableSymbol xsvs)
                 {
@@ -235,7 +235,7 @@ namespace XSharp.LanguageService
                     }
                     else
                     {
-                        list.addPair(xsvs.LocalTypeDesc + " ", var.TypeName);
+                        list.addPair(xsvs.LocalTypeDesc + " ", var.TypeName.GetXSharpTypeName());
                     }
                 }
                 if (var.IsArray)
@@ -381,7 +381,7 @@ namespace XSharp.LanguageService
                 }
                 if (this.typeMember.Kind.HasReturnType() && !String.IsNullOrEmpty(this.typeMember.TypeName))
                 {
-                    content.addReturnType(typeMember.TypeName);
+                    content.addReturnType(typeMember.TypeName.GetXSharpTypeName());
                 }
 
                 string returns;
@@ -524,7 +524,7 @@ namespace XSharp.LanguageService
         }
         static internal void addReturnType(this List<ClassifiedTextRun> content, string typeName)
         {
-            content.addPair(" " + XSettings.FormatKeyword("AS "), typeName);
+            content.addPair(" " + XSettings.FormatKeyword("AS "), typeName.GetXSharpTypeName());
         }
     }
 

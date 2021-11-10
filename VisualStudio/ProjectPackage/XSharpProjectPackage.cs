@@ -193,7 +193,7 @@ namespace XSharp.Project
             ModelScannerEvents.Start();
         }
 
-      
+        private XSharpShellLink oShellLink ;
 
         // XSharpLanguageService _langService = null;
 #region Overridden Implementation
@@ -203,9 +203,9 @@ namespace XSharp.Project
         /// </summary>
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            XSettings.DisplayOutputMessage = XSharpOutputPane.DisplayOutputMessage;
-            XSettings.DisplayException = XSharpOutputPane.DisplayException;
-            XSettings.ShowMessageBox = ShowMessageBox;
+            // Give the codemodel a way to talk to the VS Shell 
+            oShellLink = new XSharpShellLink();
+            XSettings.ShellLink = oShellLink;
 
             this.RegisterToolWindows();
 
@@ -301,12 +301,6 @@ namespace XSharp.Project
             get { return "XSharp"; }
         }
 
-        internal int ShowMessageBox(string message)
-        {
-            string title = string.Empty;
-            return (int) VS.MessageBox.Show(title, message);
-
-        }
 
 #endregion
         public int OnShellPropertyChange(int propid, object var)

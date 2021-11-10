@@ -107,29 +107,37 @@ BEGIN NAMESPACE XSharpModel
 
 
     STATIC METHOD GetXSharpTypeName( SELF typeName AS STRING) AS STRING
-            VAR pos := typeName:IndexOf("<")
+        VAR pos := typeName:IndexOf("<")
+        IF pos > 0
+            VAR lhs := typeName:Substring(0, pos)
+            VAR rhs := typeName:Substring(pos+1)
+            pos := lhs:IndexOf("`")
             IF pos > 0
-               VAR lhs := typeName:Substring(0, pos)
-               VAR rhs := typeName:Substring(pos+1)
-               pos := lhs:IndexOf("`")
-               IF pos > 0
-                  lhs := lhs:Substring(0,pos)
-               ENDIF
-               VAR parts := rhs:Split(",>":ToCharArray(),StringSplitOptions.RemoveEmptyEntries)
-               VAR delim := "<"
-               FOREACH VAR part IN parts
-                  lhs += delim
-                  delim := ","
-                  lhs += part:GetXSharpTypeName()
-               NEXT
-               lhs += ">"
-               typeName := lhs
-            ELSE
-               IF (SystemToXSharp:ContainsKey(typeName))
-                   typeName := SystemToXSharp[typeName]
-               ENDIF
+                lhs := lhs:Substring(0,pos)
             ENDIF
-            RETURN typeName
+            VAR parts := rhs:Split(",>":ToCharArray(),StringSplitOptions.RemoveEmptyEntries)
+            VAR delim := "<"
+            FOREACH VAR part IN parts
+                lhs += delim
+                delim := ","
+                lhs += part:GetXSharpTypeName()
+            NEXT
+            lhs += ">"
+            typeName := lhs
+        ELSE
+            IF (SystemToXSharp:ContainsKey(typeName))
+                typeName := SystemToXSharp[typeName]
+            ENDIF
+        ENDIF
+        IF typeName == "System.Void*"
+            typeName := "PTR"
+        ELSEIF typeName:EndsWith("*")
+            // translate System.UInt32* to DWORD PTR
+            // calls this function recursively !
+            typeName := typeName:Substring(0, typeName:Length-1)
+            typeName := typeName:GetXSharpTypeName()+" PTR"
+        ENDIF
+        RETURN typeName
 
     STATIC METHOD GetXSharpTypeName( SELF sysType AS Mono.Cecil.TypeReference) AS STRING
             LOCAL fullName AS STRING
@@ -172,8 +180,6 @@ BEGIN NAMESPACE XSharpModel
                 fullName := genTypeName + genericString
             ENDIF
             RETURN fullName+ suffix
-
-
 
     END CLASS
 

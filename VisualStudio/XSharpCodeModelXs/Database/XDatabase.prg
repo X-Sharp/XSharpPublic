@@ -19,7 +19,8 @@ BEGIN NAMESPACE XSharpModel
 	STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
 	STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
-	PRIVATE CONST CurrentDbVersion := 0.9 AS System.Double
+    STATIC PROPERTY DeleteOnClose as LOGIC AUTO
+	PRIVATE CONST CurrentDbVersion := 1.0 AS System.Double
 
 		STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
 			LOCAL lValid := FALSE AS LOGIC
@@ -59,6 +60,10 @@ BEGIN NAMESPACE XSharpModel
 			IF IsDbOpen
 				SaveToDisk(oConn, cFile)
 				oConn:Close()
+                if DeleteOnClose
+                    File.Delete(cFile)
+                    DeleteOnClose := FALSE
+                endif
 				RETURN TRUE
 			ENDIF
 			oConn := NULL
@@ -903,7 +908,7 @@ BEGIN NAMESPACE XSharpModel
 					oCmd:Parameters:AddWithValue("$attributes",0)}
 					FOREACH VAR typeref IN oAssembly:Types:Values
 						pars[0]:Value := oAssembly:Id
-						pars[1]:Value := typeref:Name
+						pars[1]:Value := typeref:TickedName // when generic then the name followed with `<n>
 						pars[2]:Value := typeref:Namespace
 						pars[3]:Value := typeref:FullName
 						pars[4]:Value := (INT) typeref:Kind
@@ -1048,7 +1053,6 @@ BEGIN NAMESPACE XSharpModel
 					END TRY
 				END LOCK
 			ENDIF
-			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
 		RETURN result
 
 
@@ -1066,19 +1070,19 @@ BEGIN NAMESPACE XSharpModel
 			Log(i"FindGlobalOrDefineLike '{sName}' returns {result.Count} matches")
 		RETURN result
 
-        STATIC METHOD _FindAssemblyWorker(sName AS STRING, sAssemblyIds AS STRING, nKind1 as Kind) AS IList<XDbResult>
+        STATIC METHOD _FindAssemblyWorker(sName AS STRING, sAssemblyIds AS STRING, nKind1 as Kind, like as LOGIC) AS IList<XDbResult>
 			// search class members in the Types list
 			VAR result := List<XDbResult>{}
             VAR sLike  := sName
 			IF IsDbOpen
 				BEGIN LOCK oConn
 					TRY
-                        IF ! sLike:EndsWith("%")
+                        IF like .and. ! sLike:EndsWith("%")
                             sLike += "%"
                         ENDIF
 					    USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
 					    oCmd:CommandText := "SELECT * FROM AssemblyGlobals WHERE name like $name " + ;
-					    " AND Kind = $kind1 AND IdAssembly in ("+sAssemblyIds+")"
+					        " AND Kind = $kind1 AND IdAssembly in ("+sAssemblyIds+")"
 					    oCmd:Parameters:AddWithValue("$name", sLike)
 					    oCmd:Parameters:AddWithValue("$kind1", (INT) nKind1)
 					    USING VAR rdr := oCmd:ExecuteReader()
@@ -1094,20 +1098,20 @@ BEGIN NAMESPACE XSharpModel
 					END TRY
 				END LOCK
 			ENDIF
-			Log(i"FindGlobalOrDefine '{sName}' returns {result.Count} matches")
 		RETURN result
 
-        STATIC METHOD FindAssemblyGlobalOrDefineLike(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
+
+        STATIC METHOD FindAssemblyGlobalOrDefine(sName AS STRING, sAssemblyIds AS STRING, lLike as LOGIC) AS IList<XDbResult>
 			// search class members in the Types list
-			VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Field)
-			Log(i"FindAssemblyGlobalOrDefineLike '{sName}' returns {result.Count} matches")
+			VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Field, lLike)
+			Log(i"FindAssemblyGlobalOrDefine '{sName}' returns {result.Count} matches")
 
             RETURN result
 
-        STATIC METHOD FindAssemblyFunctionLike(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
+        STATIC METHOD FindAssemblyFunction(sName AS STRING, sAssemblyIds AS STRING, lLike as LOGIC) AS IList<XDbResult>
 			// search class members in the Types list
-			VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Function)
-			Log(i"FindAssemblyFunctionLike '{sName}' returns {result.Count} matches")
+			VAR result := _FindAssemblyWorker(sName, sAssemblyIds, Kind.Function, lLike)
+			Log(i"FindAssemblyFunction '{sName}' returns {result.Count} matches")
             RETURN result
 
 		STATIC METHOD GetProjectTypes(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
@@ -1177,7 +1181,7 @@ BEGIN NAMESPACE XSharpModel
 		RETURN result
 
         STATIC METHOD GetAssemblyTypes(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
-			VAR stmt := "Select * from AssemblyTypes where name = $name AND IdAssembly in ("+sAssemblyIds+")"
+			VAR stmt := "Select * from AssemblyTypes where name = $name or fullname = $name AND IdAssembly in ("+sAssemblyIds+")"
 			VAR result := List<XDbResult>{}
 			IF IsDbOpen
 				BEGIN LOCK oConn

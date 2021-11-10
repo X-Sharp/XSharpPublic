@@ -47,6 +47,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE  _start        AS IToken
       PRIVATE  _hasXmlDoc    AS LOGIC
       PRIVATE  _tokens       AS IList<IToken>
+      PRIVATE  _firstTokenOnLine as IToken
       PRIVATE  _missingType  AS STRING
 
       PRIVATE PROPERTY CurrentEntity      AS XSourceEntity GET IIF(_EntityStack:Count > 0, _EntityStack:Peek(), NULL_OBJECT)
@@ -168,6 +169,7 @@ BEGIN NAMESPACE XSharpModel
 
          DO WHILE ! SELF:Eoi()
             VAR tokenBefore := LastToken
+            _firstTokenOnLine := SELF:Lt1
             LOCAL first := (XSharpToken) SELF:Lt1  AS XSharpToken
             IF ParsePPLine()
                LOOP
@@ -987,10 +989,6 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ENDIF
             SELF:ReadLine()
             RETURN TRUE
-         ELSE
-            IF SELF:_collectLocals
-                SELF:ParseForLocalDeclaration()
-            ENDIF
          ENDIF
          RETURN FALSE
 
@@ -2553,6 +2551,15 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          CASE XSharpLexer.DECLARE
             RETURN SELF:ParseXBaseDeclarationStatement()
 
+         CASE XSharpLexer.ID WHEN SELF:_firstTokenOnLine != NULL
+            // The PRIVATE and PUBLIC keyword may have been parsed as Modifier
+            SWITCH SELF:_firstTokenOnLine:Type
+            CASE XSharpLexer.PRIVATE
+            CASE XSharpLexer.PUBLIC
+                SELF:ParseMemvarAllocationStatement(SELF:_firstTokenOnLine:Type)
+                RETURN TRUE
+            END SWITCH
+
          END SWITCH
 
          DO WHILE ! SELF:Eos()
@@ -2914,7 +2921,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                ParseMemvarDeclarationStatement()
          CASE XSharpLexer.PUBLIC
          CASE XSharpLexer.PRIVATE
-            ParseMemvarAllocationStatement()
+            ParseMemvarAllocationStatement(SELF:La1)
          CASE XSharpLexer.DIMENSION
          CASE XSharpLexer.DECLARE
             ParseFoxProDim()
@@ -2952,15 +2959,18 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             NEXT
             RETURN
 
-          PRIVATE METHOD ParseMemvarAllocationStatement() AS VOID
+          PRIVATE METHOD ParseMemvarAllocationStatement(nType as LONG) AS VOID
             /*
                                 | T=(PRIVATE | PUBLIC)
                                   XVars+=xbasevar (COMMA XVars+=xbasevar)*   // PRIVATE Foo := 123,  PUBLIC Bar, PUBLIC MyArray[5,2]
                                   end=eos
             */
-            VAR start := SELF:Lt1
-            IF ! ExpectAny(XSharpLexer.PRIVATE, XSharpLexer.PUBLIC)
+            VAR start := SELF:_firstTokenOnLine
+            IF nType != XSharpLexer.PRIVATE && nType != XSharpLexer.PUBLIC
                RETURN
+            ENDIF
+            IF SELF:La1 == nType
+                Consume()
             ENDIF
             VAR result := List<XSourceVariableSymbol>{}
             VAR xVar := SELF:ParseXBaseVar()
@@ -2970,6 +2980,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                xVar := SELF:ParseXBaseVar()
                result:Add(xVar)
             ENDDO
+            SELF:ReadLine()
             FOREACH VAR mv IN result
                SELF:_locals:Add(mv)
             NEXT

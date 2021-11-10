@@ -7,6 +7,7 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
 USING Xide
+USING XSharpModel
 
 
 BEGIN NAMESPACE XSharp.VOEditors
@@ -370,7 +371,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 		VAR source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, REF lOpen)
 
 		IF .NOT. lOpen
-			oProject:ProjectNode:OpenElement(oFile:FullPath, 1,1)
+            XSettings.OpenDocument(oFile:FullPath, 1,1, false)
 		END IF
 		source := oProject:ProjectNode:DocumentGetText(oFile:FullPath, REF lOpen)
 		IF .NOT. lOpen .OR. source == NULL
@@ -390,8 +391,8 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
             LOCAL cLine := aLines[nTemplateLine] AS STRING
 			LOCAL cNew := VOWindowEditor.SubStituteTpl(cLine, cClass, oWindowDesign:cInitParams) AS STRING
 			oFile:Project:ProjectNode:DocumentInsertLine(oFile:FullPath, nLine, cNew)
-		NEXT
-		oFile:Project:ProjectNode:OpenElement(oFile:FullPath, nLine,1)
+        NEXT
+		XSettings.OpenDocument(oFile:FullPath, nLine,1, false)
 		XSharpModel.XSolution.WalkFile(oFile:FullPath)
 	RETURN
 

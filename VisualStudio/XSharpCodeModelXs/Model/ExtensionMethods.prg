@@ -64,8 +64,7 @@ BEGIN NAMESPACE XSharpModel
                     RETURN "#xtranslate"
                 CASE Kind.Undeclared
                     var cName := "UNDECLARED VARIABLE"
-                    var walker := ModelWalker.GetWalker()
-                    IF walker != null .and. (walker:IsRunning .or. walker:HasWork)
+                    IF ModelWalker.IsRunning .or. ModelWalker.HasWork
                         cName += " (building Intellisense database not completed"
                     ENDIF
                     RETURN cName

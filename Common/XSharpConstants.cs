@@ -163,6 +163,7 @@ namespace XSharp
         public const string OutputPath = "OutputPath";
         public const string OutputType = "OutputType";
         public const string OVF = "OVF";
+        public const string PackageReference = "PackageReference";
         public const string PlatformTarget = "PlatformTarget";
         public const string PostBuildEvent = "PostBuildEvent";
         public const string PreBuildEvent = "PreBuildEvent";

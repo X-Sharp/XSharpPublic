@@ -43,6 +43,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY BaseType    AS IXTypeSymbol GET
       PROPERTY BaseTypeName AS STRING GET
       PROPERTY GenericName AS STRING GET SET
+      PROPERTY TickedName  AS STRING GET
       PROPERTY Interfaces  AS IList<STRING> GET
       PROPERTY IsGeneric   AS LOGIC GET
       PROPERTY OriginalTypeName  AS STRING GET

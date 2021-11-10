@@ -189,6 +189,8 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
 
         #endregion
+
+
     }
 
     /// <summary>

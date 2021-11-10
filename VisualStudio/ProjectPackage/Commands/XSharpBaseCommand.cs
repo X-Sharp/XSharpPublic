@@ -1,13 +1,28 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using System;
-using Task = System.Threading.Tasks.Task;
+using System.Threading.Tasks;
 using System.Diagnostics;
+namespace Community.VisualStudio.Toolkit
+{
+    internal static class CVTProjectExtensions
+    {
+        internal static bool IsXSharp(this Project project)
+        {
+            var path = project.FullPath;
+            var ext = System.IO.Path.GetExtension(path).ToLower();
+            return ext == ".xsproj" || ext == ".xsprj";
+        }
+    }
+}
 namespace XSharp.Project
 {
     internal static class Commands
     {
+        internal async static Task<bool> ProjectIsXSharpProjectAsync()
+        {
+            var project = await VS.Solutions.GetActiveProjectAsync();
+            return project.IsXSharp();
+        }
         internal static string GetXsPath(string subpath)
         {
             string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
@@ -20,7 +35,7 @@ namespace XSharp.Project
             }
             return System.IO.Path.Combine(InstallPath, subpath);
         }
-        internal async static Task StartProcessAsync(string process, string parameters = "")
+        internal async static System.Threading.Tasks.Task StartProcessAsync(string process, string parameters = "")
         {
             if (System.IO.File.Exists(process))
             {

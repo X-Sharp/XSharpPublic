@@ -24,14 +24,14 @@ namespace Microsoft.VisualStudio.Project
         public bool EmitManifest { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public StringCollection DefinedPreprocessorSymbols { get; set; }
+        public StringCollection DefinedPreprocessorSymbols { get; set; } = new StringCollection();
 
         public string XmlDocFileName { get; set; }
 
         public string RecursiveWildcard { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public StringCollection ReferencedModules { get; set; }
+        public StringCollection ReferencedModules { get; set; } = new StringCollection();
 
         public string Win32Icon { get; set; }
 
@@ -68,7 +68,7 @@ namespace Microsoft.VisualStudio.Project
         public bool NoStandardLibrary { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public StringCollection AdditionalSearchPaths { get; set; }
+        public StringCollection AdditionalSearchPaths { get; set; } = new StringCollection();
 
         public bool HeuristicReferenceResolution { get; set; }
 

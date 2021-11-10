@@ -14,8 +14,7 @@ USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
 USING System.Diagnostics
 USING System.Reflection
-USING CVT := Community.VisualStudio.Toolkit
-USING Microsoft.VisualStudio.Shell
+USING EnvDTE
 
 #pragma options ("az", ON)
 BEGIN NAMESPACE XSharpModel
@@ -26,6 +25,7 @@ BEGIN NAMESPACE XSharpModel
       PROTECTED _id    := -1                    AS INT64
       PRIVATE _AssemblyReferences					AS List<XAssembly>
       PRIVATE _AssemblyDict					        AS Dictionary<INT64 ,XAssembly>
+      PRIVATE _AssemblyTypeCache                    AS Dictionary<STRING, XPETypeSymbol>
       PRIVATE _parseOptions := NULL					AS XSharpParseOptions
       PRIVATE _projectNode							   AS IXSharpProject
       PRIVATE _projectOutputDLLs						AS ConcurrentDictionary<STRING, STRING>
@@ -58,7 +58,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY DependentAssemblyList             AS STRING
          GET
             IF String.IsNullOrEmpty(_dependentAssemblyList)
-               _AssemblyDict := Dictionary<INT64, XAssembly>{}
+               SELF:_AssemblyDict := Dictionary<INT64, XAssembly>{}
+               SELF:_AssemblyTypeCache  := Dictionary<STRING, XPETypeSymbol>{}
                VAR result := ""
                var core := SystemTypeController.mscorlib
                if core != null
@@ -162,6 +163,7 @@ BEGIN NAMESPACE XSharpModel
       CONSTRUCTOR(project AS IXSharpProject)
          SUPER()
          SELF:_AssemblyReferences := List<XAssembly>{}
+         SELF:_AssemblyTypeCache  := Dictionary<STRING, XPETypeSymbol>{}
          SELF:_unprocessedAssemblyReferences       := List<STRING>{}
          SELF:_unprocessedProjectReferences        := List<STRING>{}
          SELF:_unprocessedStrangerProjectReferences:= List<STRING>{}
@@ -181,7 +183,7 @@ BEGIN NAMESPACE XSharpModel
          XSolution.Add(SELF)
 
       PUBLIC METHOD Close() AS VOID
-         ModelWalker.GetWalker():RemoveProject(SELF)
+         ModelWalker.RemoveProject(SELF)
          XSolution.Remove(SELF)
          _projectNode := NULL
          SELF:UnLoad()
@@ -191,6 +193,7 @@ BEGIN NAMESPACE XSharpModel
          _ImplicitNamespaces    := NULL
          _dependentAssemblyList := NULL
          _cachedAllNamespaces   := NULL
+         SELF:_AssemblyTypeCache := NULL
          RETURN
          #region AssemblyReferences
 
@@ -616,38 +619,8 @@ BEGIN NAMESPACE XSharpModel
          RETURN TRUE
 
 
-      ASYNC METHOD EnumFiles(oItem as CVT.SolutionItem, files as List<String>) AS VOID
-           await ThreadHelper.JoinableTaskFactory:SwitchToMainThreadAsync()
-           FOREACH item as CVT.SolutionItem in oItem:Children
-                SWITCH item:Type
-                CASE CVT.SolutionItemType.Project
-                CASE CVT.SolutionItemType.PhysicalFile
-                    files:Add(item:FullPath)
-                END SWITCH
-                EnumFiles(item, files)
-           NEXT
-
-      PRIVATE ASYNC METHOD LoadFiles() AS VOID
-        await ThreadHelper.JoinableTaskFactory:SwitchToMainThreadAsync()
-        var projects := AWAIT CVT.VS.Solutions.GetAllProjectsAsync()
-        FOREACH project AS CVT.Project in projects
-            if project:FullPath == SELF:FileName
-                var files := List<string>{}
-                EnumFiles(project, files)
-                FOREACH var file in files
-                    SELF:AddFile(file)
-                NEXT
-                EXIT
-            ENDIF
-        NEXT
-      METHOD ForceLoaded() AS VOID
-         IF ! SELF:HasFiles
-            SELF:LoadFiles()
-         ENDIF
-
 
       METHOD FindXFile(fullPath AS STRING) AS XFile
-        SELF:ForceLoaded()
          IF ! String.IsNullOrEmpty(fullPath)
             VAR file := SELF:_SourceFilesDict:Find(fullPath,SELF)
             IF file == NULL
@@ -672,32 +645,13 @@ BEGIN NAMESPACE XSharpModel
          #endregion
 
       #region Lookup Types and Functions
-      METHOD FindGlobalMembersInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
-        IF XSettings.EnableTypelookupLog
-            WriteOutputMessage(i"FindGlobalMembersInAssemblyReferences {name} ")
-        ENDIF
-         VAR result := List<IXMemberSymbol>{}
-         FOREACH VAR asm IN AssemblyReferences:ToArray()
-            IF !String.IsNullOrEmpty(asm:GlobalClassName)
-               VAR type := asm:GetType(asm.GlobalClassName)
-               IF type != NULL
-                  VAR methods := type:GetMembers(name,TRUE)
-                  IF methods:Count > 0
-                     result:AddRange(methods)
-                  ENDIF
-               ENDIF
-            ENDIF
-         NEXT
-         IF XSettings.EnableTypelookupLog
-            WriteOutputMessage(i"FindGlobalMembersInAssemblyReferences {name}, found {result.Count} occurences")
-         ENDIF
-         RETURN result
+
 
         METHOD FindGlobalsInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalsInAssemblyReferences {name} ")
         ENDIF
-         var dbresult := XDatabase.FindAssemblyGlobalOrDefineLike(name, SELF:DependentAssemblyList)
+         var dbresult := XDatabase.FindAssemblyGlobalOrDefine(name, SELF:DependentAssemblyList, FALSE)
          var result := SELF:_MembersFromGlobalType(dbresult)
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindGlobalsInAssemblyReferences {name}, found {result.Count} occurences")
@@ -708,7 +662,7 @@ BEGIN NAMESPACE XSharpModel
         IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindFunctionsInAssemblyReferences {name} ")
         ENDIF
-         var dbresult := XDatabase.FindAssemblyFunctionLike(name, SELF:DependentAssemblyList)
+         var dbresult := XDatabase.FindAssemblyFunction(name, SELF:DependentAssemblyList, FALSE)
          var result := SELF:_MembersFromGlobalType(dbresult)
          IF XSettings.EnableTypelookupLog
             WriteOutputMessage(i"FindFunctionsInAssemblyReferences {name}, found {result.Count} occurences")
@@ -873,6 +827,13 @@ BEGIN NAMESPACE XSharpModel
          // convert the database objects to the PeTypeSymbols
          RETURN GetPETypes(result)
 
+      PRIVATE METHOD FindAssemblyById(IdAssembly as INT64) AS XAssembly
+
+            if _AssemblyDict:ContainsKey(IdAssembly)
+                RETURN _AssemblyDict[IdAssembly]
+            ENDIF
+            return NULL
+
       PRIVATE METHOD GetPETypes(found AS IList<XDbResult>) AS IList<XPETypeSymbol>
          LOCAL IdAssembly := -1 AS INT64
          LOCAL fullTypeName:= ""  AS STRING
@@ -880,24 +841,31 @@ BEGIN NAMESPACE XSharpModel
          LOCAL lastAsm := NULL as XAssembly
          FOREACH VAR element IN found
             // Skip types found in another project
-            fullTypeName := element:FullName
+            // we do not use the fullname because for generics that ends with <T> and not `1
+            if String.IsNullOrEmpty(element:Namespace)
+                fullTypeName := element:TypeName
+            else
+                fullTypeName := element:Namespace+"."+element:TypeName
+            endif
             IdAssembly   := element:IdAssembly
-            VAR name    := element:TypeName
-            VAR idType  := element:IdType
             if (lastAsm == null .or. lastAsm:Id != IdAssembly)
-                lastAsm := NULL
-                FOREACH VAR asm IN SELF:AssemblyReferences
-                   IF asm:Id == IdAssembly
-                        lastAsm := asm
-                        EXIT
-                   ENDIF
-                NEXT
+                lastAsm := FindAssemblyById(IdAssembly)
             ENDIF
             if lastAsm != null .and. lastAsm:Types:ContainsKey(fullTypeName)
-                result:Add(lastAsm:Types[fullTypeName])
+                var peType := lastAsm:Types[fullTypeName]
+                result:Add(peType)
+                IF SELF:_AssemblyTypeCache != NULL
+                    IF !SELF:GetTypeFromCache(fullTypeName, OUT NULL)
+                        SELF:_AssemblyTypeCache:Add(fullTypeName, peType)
+                    endif
+                ENDIF
             ENDIF
          NEXT
          RETURN result
+
+      METHOD GetTypeFromCache(typeName AS STRING, result OUT XPETypeSymbol) AS LOGIC
+            result := NULL
+           RETURN SELF:_AssemblyTypeCache != NULL .and. SELF:_AssemblyTypeCache:TryGetValue(typeName, out result)
 
       METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS XPETypeSymbol
          IF XSettings.EnableTypelookupLog
@@ -907,7 +875,15 @@ BEGIN NAMESPACE XSharpModel
             SELF:RefreshStrangerProjectDLLOutputFiles()
          ENDIF
          SELF:ResolveReferences()
-         VAR type := SystemTypeController.FindType(name, usings, SELF:_AssemblyReferences)
+         IF GetTypeFromCache(name, out var petype)
+             return petype
+         endif
+         // lookup the type in the Database now
+         var result := XDatabase.GetAssemblyTypes(name, SELF:DependentAssemblyList)
+         result     := FilterUsings(result, usings, name, FALSE)
+         var peTypes := GetPETypes(result)
+         LOCAL type as XPETypeSymbol
+         type := peTypes:FirstOrDefault()
          IF XSettings.EnableTypelookupLog
             IF type != NULL
                WriteOutputMessage("FindSystemType() "+name+" found "+type:FullName)
@@ -974,11 +950,24 @@ BEGIN NAMESPACE XSharpModel
 
       METHOD FindType(typeName as STRING, usings AS IList<STRING>) AS IXTypeSymbol
          LOCAL result as IXTypeSymbol
+         local systemFirst as LOGIC
          typeName := typeName:GetSystemTypeName(ParseOptions:XSharpRuntime)
-         result := SELF:Lookup(typeName, usings)
-         if result == NULL
-             result := SELF:FindSystemType(typeName, usings)
+         if SELF:GetTypeFromCache(typeName, OUT VAR petype)
+              return petype
          ENDIF
+         systemFirst := typeName.StartsWith("XSharp." ) .or. typeName.StartsWith("System.")
+         if (systemFirst)
+             result := SELF:FindSystemType(typeName, usings)
+             if result == NULL
+                result := SELF:Lookup(typeName, usings)
+             endif
+
+         else
+            result := SELF:Lookup(typeName, usings)
+            if result == NULL
+                 result := SELF:FindSystemType(typeName, usings)
+            ENDIF
+         endif
          RETURN result
 
       METHOD Lookup(typeName AS STRING) AS XSourceTypeSymbol
@@ -1018,18 +1007,11 @@ BEGIN NAMESPACE XSharpModel
 
          RETURN _lastFound
 
-      METHOD LookupReferenced(typeName AS STRING) AS XSourceTypeSymbol
-         // lookup Type definition in X# projects referenced by this project
-         VAR usings := List<STRING>{}
-         RETURN Lookup(typeName, usings)
-
-      METHOD LookupReferenced(typeName AS STRING, usings AS IList<STRING>) AS XSourceTypeSymbol
-       // Is now identical to Lookup()
-         RETURN Lookup(typeName, usings)
 
       METHOD FilterUsings(list AS IList<XDbResult> , usings AS IList<STRING>, typeName AS STRING, partial AS LOGIC) AS IList<XDbResult>
          VAR result := List<XDbResult>{}
          VAR checkCase := SELF:ParseOptions:CaseSensitive
+         usings := AdjustUsings(REF typeName, usings)
          FOREACH VAR element IN list
             IF checkCase
                IF partial
@@ -1328,10 +1310,10 @@ BEGIN NAMESPACE XSharpModel
             IF XSettings.EnableParseLog
                 WriteOutputMessage("Walk() ")
             ENDIF
-         ModelWalker.GetWalker():AddProject(SELF)
+         ModelWalker.AddProject(SELF)
 
       METHOD WalkFile(file AS XFile, lNotify := FALSE AS LOGIC) AS VOID
-         ModelWalker.GetWalker():FileWalk(file)
+         ModelWalker.FileWalk(file)
          IF FileWalkComplete != NULL .AND. lNotify
             FileWalkComplete(file)
          ENDIF

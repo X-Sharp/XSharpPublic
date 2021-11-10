@@ -4,12 +4,9 @@
   <Import Project="..\Common.props" />
   <PropertyGroup>
     <Name>VODesigners_tester</Name>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <ProjectGuid>63d22c03-1d1a-4746-8e24-7bb1248696ee</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VODesigners_tester</RootNamespace>
     <AssemblyName>VODesigners_tester</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -20,13 +17,9 @@
     <StartupObject />
     <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <TargetFrameworkProfile />
     <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -51,8 +44,6 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings />
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
     <CommandLineOption />
     <PPO>false</PPO>
     <Prefer32Bit>False</Prefer32Bit>
@@ -71,8 +62,6 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>false</UseSharedCompilation>
     <DisabledWarnings />
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
     <CommandLineOption />
     <PPO>false</PPO>

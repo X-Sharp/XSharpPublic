@@ -178,6 +178,7 @@ namespace XSharp.Project
         public static XSharpProjectPackage XInstance = null;
         private XSharpLanguageService _langservice;
 
+
         // =========================================================================================
         // Properties
         // =========================================================================================
@@ -192,7 +193,7 @@ namespace XSharp.Project
             ModelScannerEvents.Start();
         }
 
-      
+        private XSharpShellLink oShellLink ;
 
         // XSharpLanguageService _langService = null;
 #region Overridden Implementation
@@ -202,9 +203,9 @@ namespace XSharp.Project
         /// </summary>
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            XSettings.DisplayOutputMessage = XSharpOutputPane.DisplayOutputMessage;
-            XSettings.DisplayException = XSharpOutputPane.DisplayException;
-            XSettings.ShowMessageBox = ShowMessageBox;
+            // Give the codemodel a way to talk to the VS Shell 
+            oShellLink = new XSharpShellLink();
+            XSettings.ShellLink = oShellLink;
 
             this.RegisterToolWindows();
 
@@ -217,6 +218,7 @@ namespace XSharp.Project
 
 
             this.settings = new XPackageSettings(this);
+            VS.Events.BuildEvents.ProjectConfigurationChanged += BuildEvents_ProjectConfigurationChanged;
 
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
             // Indicate how to open the different source files : SourceCode or Designer ??
@@ -244,6 +246,19 @@ namespace XSharp.Project
 
         }
 
+        private void BuildEvents_ProjectConfigurationChanged(Community.VisualStudio.Toolkit.Project prj)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (!prj.IsXSharp())
+                return;
+            foreach (var project in XSharpProjectNode.AllProjects)
+            {
+                if (string.Compare(project.Url, prj?.FullPath, true) == 0)
+                {
+                    project.CreateProjectOptions();
+                }
+            }
+        }
 
 
         public async Task<bool> GetEditorOptionsAsync()
@@ -286,12 +301,6 @@ namespace XSharp.Project
             get { return "XSharp"; }
         }
 
-        internal int ShowMessageBox(string message)
-        {
-            string title = string.Empty;
-            return (int) VS.MessageBox.Show(title, message);
-
-        }
 
 #endregion
         public int OnShellPropertyChange(int propid, object var)

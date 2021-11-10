@@ -526,9 +526,7 @@ namespace XSharp.LanguageService
             {
                 // Need to retrieve the Project, then the File...
                 var file = XSolution.FindFile(editorInfo.FileName);
-                var project = file.Project;
-                var node = project.ProjectNode;
-                node.OpenElement(file.FullPath, editorInfo.Line, editorInfo.Column);
+                XSettings.OpenDocument(file.FullPath, editorInfo.Line, editorInfo.Column, true);
             }
         }
 

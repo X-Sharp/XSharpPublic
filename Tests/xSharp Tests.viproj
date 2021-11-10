@@ -100578,7 +100578,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C813 - ICE with Type() in FoxPro dialect with /fox2+ enabled *************
 Application = C813 - ICE with Type() in FoxPro dialect with /fox2+ enabled
 IDEVersion = 1.06
@@ -100691,7 +100691,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C813 - ICE with Type() in FoxPro dialect with /fox2+ enabled
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C814 - Problem creating a codeblock inside a codeblock using the & syntax *************
 Application = C814 - Problem creating a codeblock inside a codeblock using the & syntax
 IDEVersion = 1.06

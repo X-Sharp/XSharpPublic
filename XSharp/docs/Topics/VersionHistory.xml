@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -12,7 +12,7 @@
     </header>
     <para styleclass="Body Text">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Heading1">Changes in 2.9.1.0 (Cahors)</para>
+    <para styleclass="Heading1">Changes in 2.9.1.1 (Cahors)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -41,6 +41,17 @@
       <li styleclass="Body Text">Fixed a problem with the keyword colorization for expressions such as <text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">SET</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">CENTURY</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &amp;cOn, </text>where <text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&amp;cOn</text> was colored in the keyword color.</li>
       <li styleclass="Body Text">Parameter tips for nested function calls required an extra space before the name of the nested function (#728)</li>
       <li styleclass="Body Text">Fixed a problem with the form designer deleting delegates and other nested types in the form.prg (#828)</li>
+      <li styleclass="Body Text">The background process to load the types in the ClassView / ObjectView windows was slowing down the VS performance. This has been disabled for now.</li>
+      <li styleclass="Body Text">Fixed type lookup for Generic types.</li>
+      <li styleclass="Body Text">Hovering the mouse over a constructor keyword was showing a tooltip for the class and not for the constructor. This has been fixed.</li>
+    </list>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Heading3">New features</para>
+    <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">We have added a context item to the project context menu in the solution explorer to edit the project file. This will unload the project when needed and then open the file for editing.</li>
+      <li styleclass="Body Text">The Rebuild Intellisense Database menu option in the Tools/XSharp menu now unloads the current solution, deletes the intellisense database and reopens the solution to make sure that the database is recreated correctly. </li>
+      <li styleclass="Body Text">We have made some changes to the process that parses the source code for a solution in the background.</li>
+      <li styleclass="Body Text">Generic Typenames are now stored in the Name`n format in the Intellisense database, for example IList`1 for IList&lt;T&gt;</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
     <para styleclass="Heading3">New features</para>

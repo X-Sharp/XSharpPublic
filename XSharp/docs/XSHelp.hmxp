@@ -705,7 +705,7 @@
       <config-value name="template">$(HMSYS)Templates\Word\Word-Template-Simple-A4.docx</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.9.1.0)</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Cahors (2.9.1.1)</variable>
       <variable id="APP" type="text" translate="true">XSharp</variable>
     </variables>
     <helpcontext-numbers/>

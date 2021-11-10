@@ -21,14 +21,14 @@
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>true</LB>
-    <NamedArgs>False</NamedArgs>
+    <NamedArgs>false</NamedArgs>
     <OVF>false</OVF>
     <Unsafe>false</Unsafe>
     <INS>false</INS>
     <NS>false</NS>
     <VO1>false</VO1>
     <VO2>false</VO2>
-    <VO3>false</VO3>
+    <VO3>False</VO3>
     <VO4>false</VO4>
     <VO5>false</VO5>
     <VO6>false</VO6>
@@ -42,7 +42,7 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.8.1.12</XSharpProjectversion>
+    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>false</Nostandarddefs>
     <AssemblyOriginatorKeyFile>$(Solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>

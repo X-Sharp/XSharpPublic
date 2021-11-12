@@ -65,6 +65,8 @@ artifacts/
 *.pidb
 *.svclog
 *.scc
+*.ppo
+*.zip
 
 # Chutzpah Test files
 _Chutzpah*
@@ -218,29 +220,15 @@ XSharp/docs/Help/
 *.vicfg
 *.viapp
 *.exe
-/Tests/Applications/C386/NativeResources.RES
-/Tests/Applications/C386/NativeResources.rc
-/Tests/Applications/C439/Prg/C439.ppo
-/Tests/Applications/C438/Prg/C438.ppo
-
-project.lock.json
-*.project.lock.json
+NativeResources.RES
+Native_Resources.rc
+*.lock.json
 XSharp/src/Setup/Preprocessed.iss
-Tests/Applications/C493/Resources/NativeResources.rc
-Tests/Applications/C493/Resources/NativeResources.res
 *.RES
 *.db
 *.opendb
 /XSharp/src/Setup/updatevsix.prg.cfg
 /XSharp/docs/~*
-/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharp.tokens
-/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpBaseListener.cs
-/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpLexer.cs
-/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpLexer.tokens
-/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpListener.cs
-/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharpParser.cs
+/XSharp/src/Compiler/XSharpCodeAnalysis/Generated/XSharp.*
 launchsettings.json
 *.ch?
-/Tests/Applications/C386/Native_Resources.rc
-/Tests/Applications/C493/Resources/Native_Resources.rc
-/Tests/Applications/C541/Resources/Native_Resources.rc

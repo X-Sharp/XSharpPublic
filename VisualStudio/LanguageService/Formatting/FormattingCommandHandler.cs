@@ -168,7 +168,7 @@ namespace XSharp.LanguageService
                                     _suspendSync = true;
                                     _linesToSync.Clear();
                                 }
-                                FormatDocumentV2();
+                                FormatDocument();
                             }
                             finally
                             {

@@ -98,6 +98,10 @@ INTERNAL CLASS AssemblyReader
       VAR vis := _AND(type:Attributes, TypeAttributes.VisibilityMask )
       IF vis == TypeAttributes.Public .OR. vis == TypeAttributes.NestedPublic
          VAR name := type:FullName
+         // we represent nested types by changing the parent to be a namespace
+         IF name:Contains("/")
+                name := name:Replace("/",".")
+         ENDIF
          VAR typeref := XPETypeSymbol{type, assembly}
          IF parentType != NULL
              parentType:AddChild(typeref)

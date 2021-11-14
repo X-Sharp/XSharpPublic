@@ -228,79 +228,76 @@ namespace XSharp.LanguageService
                 // XMLDoc ?
                 if (lineText == "///")
                 {
-                    bool inAComment = false;
+                    bool inAComment = true;
                     // Just to be sure we are not in a comment...
-                    if (line.LineNumber > 0)
+                    // Let's move at the beginning of the next line
+                    ITextSnapshotLine lineDown = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
+                    if (lineDown.Length > 0)
                     {
-                        // Let's move at the beginning of the line
-                        SnapshotPoint sspStart = new SnapshotPoint(_textView.TextSnapshot, line.Start.Position);
+                        SnapshotPoint sspStart = new SnapshotPoint(_textView.TextSnapshot, lineDown.Start.Position);
                         inAComment = cursorIsAfterSLComment(sspStart);
                     }
                     // 
                     if (!inAComment)
                     {
-                        ITextSnapshotLine lineDown = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
-                        if (lineDown.Length > 0)
+                        // Retrieve the tokens 
+                        var lineTokens = getTokensInLine(lineDown);
+                        FormattingContext context = new FormattingContext(lineTokens, XSharpDialect.Core);
+                        IToken startToken = context.GetFirstToken(true, true);
+                        // Search for ID
+                        while ((startToken != null) && (startToken.Type != XSharpLexer.ID))
                         {
-                            // Retrieve the tokens 
-                            var lineTokens = getTokensInLine(lineDown);
-                            FormattingContext context = new FormattingContext(lineTokens, XSharpDialect.Core);
-                            IToken startToken = context.GetFirstToken(true, true);
-                            // Search for ID
-                            while ((startToken != null) && (startToken.Type != XSharpLexer.ID))
-                            {
-                                context.MoveToNext();
-                                startToken = context.GetFirstToken(true, true);
-                            }
-                            if (startToken == null)
-                            {
-                                return;
-                            }
+                            context.MoveToNext();
+                            startToken = context.GetFirstToken(true, true);
+                        }
+                        if (startToken == null)
+                        {
+                            return;
+                        }
 
-                            // Try to retrieve the Entity down
-                            SnapshotPoint ssp = new SnapshotPoint(_textView.TextSnapshot, lineDown.Start.Position + startToken.StartIndex);
-                            var location = lineDown.Snapshot.TextBuffer.FindLocation(ssp);
-                            var tokens = lineDown.Snapshot.TextBuffer.GetTokens();
-                            CompletionState state;
-                            var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
-                            var lookupresult = new List<IXSymbol>();
-                            lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
-                            //
-                            if (lookupresult.Count > 0)
+                        // Try to retrieve the Entity down
+                        SnapshotPoint ssp = new SnapshotPoint(_textView.TextSnapshot, lineDown.Start.Position + startToken.StartIndex);
+                        var location = lineDown.Snapshot.TextBuffer.FindLocation(ssp);
+                        var tokens = lineDown.Snapshot.TextBuffer.GetTokens();
+                        CompletionState state;
+                        var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
+                        var lookupresult = new List<IXSymbol>();
+                        lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
+                        //
+                        if (lookupresult.Count > 0)
+                        {
+                            var element = lookupresult[0];
+                            // Default information
+                            // Retrieve the original line, and keep the prefix
+                            lineText = lineSpan.GetText();
+                            string prefix = lineText.Remove(lineText.Length - 3, 3);
+                            // Insert XMLDoc template
+                            string xmlDoc = " <summary>" + Environment.NewLine;
+                            xmlDoc += prefix + "/// " + Environment.NewLine;
+                            xmlDoc += prefix + "/// </summary>";
+                            // Has parameters ?
+                            if (element is IXMemberSymbol mem)
                             {
-                                var element = lookupresult[0];
-                                // Default information
-                                // Retrieve the original line, and keep the prefix
-                                lineText = lineSpan.GetText();
-                                string prefix = lineText.Remove(lineText.Length - 3, 3);
-                                // Insert XMLDoc template
-                                string xmlDoc = " <summary>" + Environment.NewLine;
-                                xmlDoc += prefix + "/// " + Environment.NewLine;
-                                xmlDoc += prefix + "/// </summary>";
-                                // Has parameters ?
-                                if (element is IXMemberSymbol mem)
+                                // Now fill with retrieved information
+                                foreach (var param in mem.Parameters)
                                 {
-                                    // Now fill with retrieved information
-                                    foreach (var param in mem.Parameters)
-                                    {
-                                        xmlDoc += Environment.NewLine + prefix + "/// <param name=";
-                                        xmlDoc += '"';
-                                        xmlDoc += param.Name;
-                                        xmlDoc += '"';
-                                        xmlDoc += "></param>";
-                                    }
-                                    if (string.Compare(mem.TypeName, "void", true) != 0)
-                                    {
-                                        xmlDoc += Environment.NewLine + prefix + "/// <returns>";
-                                        xmlDoc += "</returns>";
-                                    }
+                                    xmlDoc += Environment.NewLine + prefix + "/// <param name=";
+                                    xmlDoc += '"';
+                                    xmlDoc += param.Name;
+                                    xmlDoc += '"';
+                                    xmlDoc += "></param>";
                                 }
-                                _textView.TextBuffer.Insert(_textView.Caret.Position.BufferPosition.Position, xmlDoc);
-                                // Move the Caret in the Summary area
-                                ITextSnapshotLine moveToline = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
-                                SnapshotPoint point = new SnapshotPoint(moveToline.Snapshot, moveToline.End.Position);
-                                _textView.Caret.MoveTo(point);
+                                if (string.Compare(mem.TypeName, "void", true) != 0)
+                                {
+                                    xmlDoc += Environment.NewLine + prefix + "/// <returns>";
+                                    xmlDoc += "</returns>";
+                                }
                             }
+                            _textView.TextBuffer.Insert(_textView.Caret.Position.BufferPosition.Position, xmlDoc);
+                            // Move the Caret in the Summary area
+                            ITextSnapshotLine moveToline = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
+                            SnapshotPoint point = new SnapshotPoint(moveToline.Snapshot, moveToline.End.Position);
+                            _textView.Caret.MoveTo(point);
                         }
                     }
                 }
@@ -688,7 +685,7 @@ namespace XSharp.LanguageService
             return false;
         }
 
-
+        #region Token Helpers for XMLDoc generation
         private bool getBufferedTokens(out XSharpTokens xTokens, ITextBuffer textBuffer)
         {
             if (textBuffer.Properties != null && textBuffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens))
@@ -763,6 +760,7 @@ namespace XSharp.LanguageService
             }
             return tokens;
         }
+        #endregion
     }
 }
 #endif

@@ -340,6 +340,7 @@ namespace XSharp.LanguageService
             }
         }
 
+
         /// <summary>
         /// Format document, evaluating line after line
         /// </summary>
@@ -1550,7 +1551,7 @@ namespace XSharp.LanguageService
         #endregion
 
         #region New Formatting process
-        class FormattingContext
+        internal class FormattingContext
         {
             readonly IList<IToken> allTokens;
             int currentIndex;

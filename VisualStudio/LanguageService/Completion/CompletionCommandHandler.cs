@@ -13,8 +13,13 @@ using Microsoft.VisualStudio.Text;
 using XSharpModel;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
+using System.Collections.Generic;
+using LanguageService.SyntaxTree;
+using LanguageService.CodeAnalysis.XSharp;
+using static XSharp.LanguageService.XSharpFormattingCommandHandler;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
-#if ! ASYNCCOMPLETION
+#if !ASYNCCOMPLETION
 namespace XSharp.LanguageService
 {
     [Export(typeof(IVsTextViewCreationListener))]
@@ -30,7 +35,7 @@ namespace XSharp.LanguageService
         [Import]
         internal ICompletionBroker CompletionBroker { get; set; }
 
-         [Import]
+        [Import]
         internal IBufferTagAggregatorFactoryService BufferTagAggregatorFactoryService { get; set; }
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
@@ -47,6 +52,7 @@ namespace XSharp.LanguageService
                     ));
         }
     }
+
     internal class XSharpCompletionCommandHandler : IOleCommandTarget
     {
         readonly ITextView _textView;
@@ -56,6 +62,7 @@ namespace XSharp.LanguageService
         readonly IBufferTagAggregatorFactoryService _aggregator;
         bool completionWasSelected = false;
         XSharpSignatureHelpCommandHandler _signatureCommandHandler = null;
+        int slashCounter;
 
         internal XSharpCompletionCommandHandler(IVsTextView textViewAdapter, ITextView textView,
             ICompletionBroker completionBroker, IBufferTagAggregatorFactoryService aggregator)
@@ -66,6 +73,7 @@ namespace XSharp.LanguageService
             this._aggregator = aggregator;
             //add this to the filter chain
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
+            slashCounter = 0;
         }
 
 
@@ -80,11 +88,11 @@ namespace XSharp.LanguageService
             {
                 ;
             }
-            else if (pguidCmdGroup == VSConstants.VSStd2K )
+            else if (pguidCmdGroup == VSConstants.VSStd2K)
             {
                 switch (nCmdID)
                 {
-                    case (int) VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                    case (int)VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     case (int)VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case (int)VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
                         // in this case we WANT to include keywords in the list
@@ -95,7 +103,7 @@ namespace XSharp.LanguageService
                         handled = CompleteCompletionSession('\0');
                         break;
                     case (int)VSConstants.VSStd2KCmdID.TAB:
-                        handled = CompleteCompletionSession('\t' );
+                        handled = CompleteCompletionSession('\t');
                         break;
                     case (int)VSConstants.VSStd2KCmdID.CANCEL:
                         handled = CancelCompletionSession();
@@ -120,7 +128,7 @@ namespace XSharp.LanguageService
                                 }
                                 else if (XSettings.EditorCommitChars.Contains(ch))
                                 {
-                                    handled = CompleteCompletionSession( ch); 
+                                    handled = CompleteCompletionSession(ch);
                                 }
                                 else
                                 {
@@ -129,6 +137,7 @@ namespace XSharp.LanguageService
                             }
                             //
                         }
+
                         break;
                     default:
                         break;
@@ -138,7 +147,7 @@ namespace XSharp.LanguageService
             {
                 switch (nCmdID)
                 {
-                    case (int) VSConstants.VSStd97CmdID.Undo:
+                    case (int)VSConstants.VSStd97CmdID.Undo:
                     case (int)VSConstants.VSStd97CmdID.Redo:
                         CancelCompletionSession();
                         break;
@@ -160,7 +169,7 @@ namespace XSharp.LanguageService
                 }
                 result = m_nextCommandHandler.Exec(ref cmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }           // 3. Post process
-            if (ErrorHandler.Succeeded(result) && ! XSettings.DisableCodeCompletion)
+            if (ErrorHandler.Succeeded(result) && !XSettings.DisableCodeCompletion)
             {
                 if (pguidCmdGroup == VSConstants.VSStd2K)
                 {
@@ -181,6 +190,9 @@ namespace XSharp.LanguageService
                                     case '.':
                                         StartCompletionSession(nCmdID, ch);
                                         break;
+                                    case '/':
+                                        InsertXMLDoc();
+                                        break;
                                     default:
                                         //completeCurrentToken(nCmdID, ch);
                                         break;
@@ -197,8 +209,104 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            
+
             return result;
+        }
+
+        private void InsertXMLDoc()
+        {
+            try
+            {
+                // Retrieve Position
+                SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
+                var line = caret.GetContainingLine();
+                SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
+                // And the text before the current character 
+                string lineText = lineSpan.GetText();
+                // Remove all type of spaces
+                lineText = lineText.TrimStart(' ', '\t');
+                // XMLDoc ?
+                if (lineText == "///")
+                {
+                    bool inAComment = false;
+                    // Just to be sure we are not in a comment...
+                    if (line.LineNumber > 0)
+                    {
+                        // Let's move at the beginning of the line
+                        SnapshotPoint sspStart = new SnapshotPoint(_textView.TextSnapshot, line.Start.Position);
+                        inAComment = cursorIsAfterSLComment(sspStart);
+                    }
+                    // 
+                    if (!inAComment)
+                    {
+                        ITextSnapshotLine lineDown = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
+                        if (lineDown.Length > 0)
+                        {
+                            // Retrieve the tokens 
+                            var lineTokens = getTokensInLine(lineDown);
+                            FormattingContext context = new FormattingContext(lineTokens, XSharpDialect.Core);
+                            IToken startToken = context.GetFirstToken(true, true);
+                            // Search for ID
+                            while ((startToken != null) && (startToken.Type != XSharpLexer.ID))
+                            {
+                                context.MoveToNext();
+                                startToken = context.GetFirstToken(true, true);
+                            }
+                            if (startToken == null)
+                            {
+                                return;
+                            }
+
+                            // Try to retrieve the Entity down
+                            SnapshotPoint ssp = new SnapshotPoint(_textView.TextSnapshot, lineDown.Start.Position + startToken.StartIndex);
+                            var location = lineDown.Snapshot.TextBuffer.FindLocation(ssp);
+                            var tokens = lineDown.Snapshot.TextBuffer.GetTokens();
+                            CompletionState state;
+                            var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
+                            var lookupresult = new List<IXSymbol>();
+                            lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
+                            //
+                            if (lookupresult.Count > 0)
+                            {
+                                var element = lookupresult[0];
+                                // Default information
+                                // Retrieve the original line, and keep the prefix
+                                lineText = lineSpan.GetText();
+                                string prefix = lineText.Remove(lineText.Length - 3, 3);
+                                // Insert XMLDoc template
+                                string xmlDoc = " <summary>" + Environment.NewLine;
+                                xmlDoc += prefix + "/// " + Environment.NewLine;
+                                xmlDoc += prefix + "/// </summary>";
+                                // Has parameters ?
+                                if (element is IXMemberSymbol mem)
+                                {
+                                    // Now fill with retrieved information
+                                    foreach (var param in mem.Parameters)
+                                    {
+                                        xmlDoc += Environment.NewLine + prefix + "/// <param name=";
+                                        xmlDoc += param.Name;
+                                        xmlDoc += "</param>";
+                                    }
+                                    if (string.Compare(mem.TypeName, "void", true) != 0)
+                                    {
+                                        xmlDoc += Environment.NewLine + prefix + "/// <returns>";
+                                        xmlDoc += "</returns>";
+                                    }
+                                }
+                                _textView.TextBuffer.Insert(_textView.Caret.Position.BufferPosition.Position, xmlDoc);
+                                // Move the Caret in the Summary area
+                                ITextSnapshotLine moveToline = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
+                                SnapshotPoint point = new SnapshotPoint(moveToline.Snapshot, moveToline.End.Position);
+                                _textView.Caret.MoveTo(point);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                WriteOutputMessage("InsertXMLDoc: error " + e.Message);
+            }
         }
 
         //private void completeCurrentToken(uint nCmdID, char ch)
@@ -271,7 +379,7 @@ namespace XSharp.LanguageService
             return true;
         }
 
-        bool CompleteCompletionSession(char ch )
+        bool CompleteCompletionSession(char ch)
         {
             if (_completionSession == null)
             {
@@ -286,7 +394,7 @@ namespace XSharp.LanguageService
             if (_completionSession.SelectedCompletionSet != null)
             {
                 bool addDelim = false;
-                
+
                 if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
                 {
                     completion = _completionSession.SelectedCompletionSet.SelectionStatus.Completion;
@@ -302,7 +410,7 @@ namespace XSharp.LanguageService
                 switch (kind)
                 {
                     case Kind.Keyword:
-                        formatKeyword(completion); 
+                        formatKeyword(completion);
                         break;
                     case Kind.Class:
                     case Kind.Structure:
@@ -508,7 +616,7 @@ namespace XSharp.LanguageService
             }
 
             //
-        //
+            //
         }
 
         private void OnCompletionSessionDismiss(object sender, EventArgs e)
@@ -532,7 +640,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSettings.DisplayOutputMessage("XSharp.Completion:"+ strMessage);
+                XSettings.DisplayOutputMessage("XSharp.Completion:" + strMessage);
             }
         }
         private char GetTypeChar(IntPtr pvaIn)
@@ -576,6 +684,82 @@ namespace XSharp.LanguageService
                     return true;
             }
             return false;
+        }
+
+
+        private bool getBufferedTokens(out XSharpTokens xTokens, ITextBuffer textBuffer)
+        {
+            if (textBuffer.Properties != null && textBuffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens))
+            {
+                return xTokens != null && xTokens.Complete;
+            }
+            xTokens = null;
+            return false;
+        }
+
+        private IList<IToken> getTokensInLine(ITextSnapshotLine line)
+        {
+            IList<IToken> tokens = new List<IToken>();
+            ITextBuffer textBuffer = line.Snapshot.TextBuffer;
+            // Already been lexed ?
+            if (getBufferedTokens(out var xTokens, textBuffer))
+            {
+                var allTokens = xTokens.TokenStream.GetTokens();
+                if (allTokens != null)
+                {
+                    if (xTokens.SnapShot.Version == textBuffer.CurrentSnapshot.Version)
+                    {
+                        // Ok, use it
+                        int startIndex = -1;
+                        // Move to the line position
+                        for (int i = 0; i < allTokens.Count; i++)
+                        {
+                            if (allTokens[i].StartIndex >= line.Start.Position)
+                            {
+                                startIndex = i;
+                                break;
+                            }
+                        }
+                        if (startIndex > -1)
+                        {
+                            // Move to the end of line
+                            int currentLine = allTokens[startIndex].Line;
+                            do
+                            {
+                                tokens.Add(allTokens[startIndex]);
+                                startIndex++;
+
+                            } while ((startIndex < allTokens.Count) && (currentLine == allTokens[startIndex].Line));
+                            return tokens;
+                        }
+                    }
+                }
+            }
+            // Ok, do it now
+            var text = line.GetText();
+            tokens = getTokens(text);
+            return tokens;
+            //
+        }
+
+        private IList<IToken> getTokens(string text)
+        {
+            IList<IToken> tokens;
+            try
+            {
+                string fileName;
+                fileName = "MissingFile.prg";
+                var reporter = new ErrorIgnorer();
+                bool ok = XSharp.Parser.VsParser.Lex(text, fileName, XSharpParseOptions.Default, reporter, out ITokenStream tokenStream);
+                var stream = tokenStream as BufferedTokenStream;
+                tokens = stream.GetTokens();
+            }
+            catch (Exception e)
+            {
+                XSettings.DisplayException(e);
+                tokens = new List<IToken>();
+            }
+            return tokens;
         }
     }
 }

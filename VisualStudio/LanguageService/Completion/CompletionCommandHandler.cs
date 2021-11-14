@@ -284,7 +284,9 @@ namespace XSharp.LanguageService
                                     foreach (var param in mem.Parameters)
                                     {
                                         xmlDoc += Environment.NewLine + prefix + "/// <param name=";
+                                        xmlDoc += '"';
                                         xmlDoc += param.Name;
+                                        xmlDoc += '"';
                                         xmlDoc += "></param>";
                                     }
                                     if (string.Compare(mem.TypeName, "void", true) != 0)

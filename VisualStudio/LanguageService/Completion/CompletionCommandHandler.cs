@@ -245,7 +245,11 @@ namespace XSharp.LanguageService
                         FormattingContext context = new FormattingContext(lineTokens, XSharpDialect.Core);
                         IToken startToken = context.GetFirstToken(true, true);
                         // Search for ID
-                        while ((startToken != null) && (startToken.Type != XSharpLexer.ID))
+                        while ((startToken != null) &&
+                            ( (startToken.Type != XSharpLexer.ID) &&
+                            (startToken.Type != XSharpLexer.CONSTRUCTOR) &&
+                            (startToken.Type != XSharpLexer.DESTRUCTOR)
+                            ))
                         {
                             context.MoveToNext();
                             startToken = context.GetFirstToken(true, true);
@@ -287,7 +291,9 @@ namespace XSharp.LanguageService
                                     xmlDoc += '"';
                                     xmlDoc += "></param>";
                                 }
-                                if (string.Compare(mem.TypeName, "void", true) != 0)
+                                if ( (string.Compare(mem.TypeName, "void", true) != 0) &&
+                                     ( (mem.Kind != Kind.Constructor)&&(mem.Kind != Kind.Destructor))
+                                     )
                                 {
                                     xmlDoc += Environment.NewLine + prefix + "/// <returns>";
                                     xmlDoc += "</returns>";

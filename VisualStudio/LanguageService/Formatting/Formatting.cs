@@ -577,13 +577,28 @@ namespace XSharp.LanguageService
                 case XSharpLexer.STRUCTURE:
                 case XSharpLexer.VOSTRUCT:
                 case XSharpLexer.ENUM:
+                case XSharpLexer.UNION:
+                    // We are inside something ?
                     if (nestedEntity.Count() > 0)
                     {
                         current = nestedEntity.Peek();
                         switch (current.Item1)
                         {
+                            case XSharpLexer.DELEGATE:
                             case XSharpLexer.FUNCTION:
                             case XSharpLexer.PROCEDURE:
+                            case XSharpLexer.CONSTRUCTOR:
+                            case XSharpLexer.DESTRUCTOR:
+                            case XSharpLexer.ASSIGN:
+                            case XSharpLexer.ACCESS:
+                            case XSharpLexer.METHOD:
+                            case XSharpLexer.PROPERTY:
+                            case XSharpLexer.OPERATOR:
+                            case XSharpLexer.EVENT:
+                            // These can also have no closing end marker
+                            case XSharpLexer.VOSTRUCT:
+                            case XSharpLexer.ENUM:
+                            case XSharpLexer.UNION:
                                 // Move back this opening Keyword
                                 currentIndent = current.Item2;
                                 nestedEntity.Pop();
@@ -622,6 +637,10 @@ namespace XSharp.LanguageService
                             case XSharpLexer.PROPERTY:
                             case XSharpLexer.OPERATOR:
                             case XSharpLexer.EVENT:
+                            // These can also have no closing end marker
+                            case XSharpLexer.VOSTRUCT:
+                            case XSharpLexer.ENUM:
+                            case XSharpLexer.UNION:
                                 // Move back this opening Keyword
                                 current = nestedEntity.Pop();
                                 currentIndent = current.Item2;
@@ -767,6 +786,8 @@ namespace XSharp.LanguageService
                                 case XSharpLexer.INTERFACE:
                                 case XSharpLexer.STRUCTURE:
                                 case XSharpLexer.VOSTRUCT:
+                                case XSharpLexer.ENUM:
+                                case XSharpLexer.UNION:
                                     // Do we have such block Type before in the list ?
                                     int found = nestedEntity.FindLastIndex((pair) => pair.Item1 == nextKeyword.Type);
                                     if (found > -1)
@@ -811,6 +832,7 @@ namespace XSharp.LanguageService
                             case XSharpLexer.STRUCTURE:
                             case XSharpLexer.VOSTRUCT:
                             case XSharpLexer.ENUM:
+                            case XSharpLexer.UNION:
                             case XSharpLexer.ADD:
                             case XSharpLexer.REMOVE:
                             case XSharpLexer.SET:

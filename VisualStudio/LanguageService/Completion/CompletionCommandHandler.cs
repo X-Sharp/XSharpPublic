@@ -285,7 +285,7 @@ namespace XSharp.LanguageService
                                     {
                                         xmlDoc += Environment.NewLine + prefix + "/// <param name=";
                                         xmlDoc += param.Name;
-                                        xmlDoc += "</param>";
+                                        xmlDoc += "></param>";
                                     }
                                     if (string.Compare(mem.TypeName, "void", true) != 0)
                                     {

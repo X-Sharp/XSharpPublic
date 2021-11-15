@@ -280,23 +280,30 @@ namespace XSharp.LanguageService
                             xmlDoc += prefix + "/// " + Environment.NewLine;
                             xmlDoc += prefix + "/// </summary>";
                             // Has parameters ?
-                            if (element is IXMemberSymbol mem)
+                            if (element.Kind.HasParameters())
                             {
-                                // Now fill with retrieved information
-                                foreach (var param in mem.Parameters)
+                                if (element is IXMemberSymbol mem)
                                 {
-                                    xmlDoc += Environment.NewLine + prefix + "/// <param name=";
-                                    xmlDoc += '"';
-                                    xmlDoc += param.Name;
-                                    xmlDoc += '"';
-                                    xmlDoc += "></param>";
+                                    // Now fill with retrieved information
+                                    foreach (var param in mem.Parameters)
+                                    {
+                                        xmlDoc += Environment.NewLine + prefix + "/// <param name=";
+                                        xmlDoc += '"';
+                                        xmlDoc += param.Name;
+                                        xmlDoc += '"';
+                                        xmlDoc += "></param>";
+                                    }
                                 }
-                                if ( (string.Compare(mem.TypeName, "void", true) != 0) &&
-                                     ( (mem.Kind != Kind.Constructor)&&(mem.Kind != Kind.Destructor))
-                                     )
+                            }
+                            if ( element.Kind.HasReturnType() )
+                            {
+                                if (element is IXSymbolBase elt)
                                 {
-                                    xmlDoc += Environment.NewLine + prefix + "/// <returns>";
-                                    xmlDoc += "</returns>";
+                                    if ((string.Compare(elt.TypeName, "void", true) != 0))
+                                    {
+                                        xmlDoc += Environment.NewLine + prefix + "/// <returns>";
+                                        xmlDoc += "</returns>";
+                                    }
                                 }
                             }
                             _textView.TextBuffer.Insert(_textView.Caret.Position.BufferPosition.Position, xmlDoc);

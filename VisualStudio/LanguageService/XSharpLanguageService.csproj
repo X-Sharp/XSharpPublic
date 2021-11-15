@@ -4,7 +4,7 @@
   <Import Project="..\Common.props" />
   <PropertyGroup>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-	<CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
+    <CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
     <UseCodebase>true</UseCodebase>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
@@ -25,8 +25,7 @@
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
     <Ngen>false</Ngen>
     <TargetFrameworkProfile />
-	<CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
-
+    <CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -197,16 +196,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.327</Version>
+      <Version>15.0.330</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Language">
       <Version>15.8.525</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>15.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf">
       <Version>15.8.525</Version>

@@ -28,7 +28,7 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
 
     FUNCTION TestByRefPriv() AS VOID
-    /*
+
         PRIVATE x
         VAR mc := CreateMacroCompiler()
         x := "a"
@@ -50,10 +50,21 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "{|c|c:testmethod(@x), x}", Args(c), "b", typeof(STRING))
         x := "a"
         TestMacro(mc, "{|c|c:testmethod(ref x), x}", Args(c), "b", typeof(STRING))
-
+        x := "a"
+        TestMacro(mc, "{|c|c:testmethodlate(@x), x}", Args(c), "b", typeof(STRING))
+        x := "a"
+        TestMacro(mc, "{|c|c:testmethodlate(ref x), x}", Args(c), "b", typeof(STRING))
+        x := "a"
+        TestMacro(mc, "{|c|Send(c,#testmethod,@x), x}", Args(c), "b", typeof(STRING))
+        x := "a"
+        TestMacro(mc, "{|c|Send(c,#testmethod,ref x), x}", Args(c), "b", typeof(STRING))
+       x := "a"
+        TestMacro(mc, "{|c|Send(c,#testmethodlate,@x), x}", Args(c), "b", typeof(STRING))
+        x := "a"
+        TestMacro(mc, "{|c|Send(c,#testmethodlate,ref x), x}", Args(c), "b", typeof(STRING))
 
         WAIT
-    */
+
     FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running VO tests ...")
         TestGlobals.tsi := teststruct{1}

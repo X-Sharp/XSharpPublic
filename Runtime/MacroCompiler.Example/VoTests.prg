@@ -28,7 +28,6 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut)
 
     FUNCTION TestByRefPriv() AS VOID
-
         PRIVATE x
         VAR mc := CreateMacroCompiler()
         x := "a"
@@ -45,7 +44,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "{||testfunclate(@x), x}", Args(), "b", typeof(STRING))
         var c := TestRefCall{}
         x := "a"
-        TestMacro(mc, "{|c|c:testmethod(x), x}", Args(c), "b", typeof(STRING))
+        TestMacro(mc, "{|c|c:testmethod(x), x}", Args(c), "a", typeof(STRING)) // note: cannot auto-determine REF with late-bound calls!!!
         x := "a"
         TestMacro(mc, "{|c|c:testmethod(@x), x}", Args(c), "b", typeof(STRING))
         x := "a"
@@ -62,8 +61,6 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "{|c|Send(c,#testmethodlate,@x), x}", Args(c), "b", typeof(STRING))
         x := "a"
         TestMacro(mc, "{|c|Send(c,#testmethodlate,ref x), x}", Args(c), "b", typeof(STRING))
-
-        WAIT
 
     FUNCTION VoTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running VO tests ...")
@@ -631,6 +628,8 @@ BEGIN NAMESPACE MacroCompilerTest
         RETURN
 
 END NAMESPACE
+
+
 
 
 

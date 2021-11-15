@@ -197,9 +197,10 @@ namespace XSharp.MacroCompiler
                     expr = self;
                     self = null;
                     Convert(ref expr, Compilation.Get(NativeType.Usual), options);
+                    ApplyUsualConversions(args, out writeBack);
                     var obj = new Arg(expr ?? LiteralExpr.Bound(Constant.Create(null)));
                     var name = new Arg(symbolExpr.Name);
-                    var arguments = new Arg(LiteralArray.Bound(args.Args));
+                    var arguments = ApplyUsualConversions(args, out writeBack);
                     args.Args.Clear();
                     args.Args.Add(obj);
                     args.Args.Add(name);
@@ -214,7 +215,7 @@ namespace XSharp.MacroCompiler
                     Convert(ref expr, Compilation.Get(NativeType.Usual), options);
                     var obj = new Arg(expr ?? LiteralExpr.Bound(Constant.Create(null)));
                     var name = new Arg(LiteralExpr.Bound(Constant.Create(symbolDynamic.Name)));
-                    var arguments = new Arg(LiteralArray.Bound(args.Args));
+                    var arguments = ApplyUsualConversions(args, out writeBack);
                     args.Args.Clear();
                     args.Args.Add(obj);
                     args.Args.Add(name);
@@ -226,9 +227,10 @@ namespace XSharp.MacroCompiler
                 {
                     self = null;
                     Convert(ref expr, Compilation.Get(NativeType.Usual), options);
+                    ApplyUsualConversions(args, out writeBack);
                     var obj = new Arg(expr);
                     var name = new Arg(LiteralExpr.Bound(Constant.Create(SystemNames.DelegateInvokeName)));
-                    var arguments = new Arg(LiteralArray.Bound(args.Args));
+                    var arguments = ApplyUsualConversions(args, out writeBack);
                     args.Args.Clear();
                     args.Args.Add(obj);
                     args.Args.Add(name);
@@ -289,6 +291,46 @@ namespace XSharp.MacroCompiler
                     }
                 }
                 ovRes = ovr.Better(ovRes);
+            }
+        }
+        Arg ApplyUsualConversions(ArgList args, out Expr writeBack)
+        {
+            writeBack = null;
+            bool hasRefArgs = false;
+            for (int i = 0; i < args.Args.Count; i++)
+            {
+                var e = args.Args[i].Expr;
+                Convert(ref e, Compilation.Get(NativeType.Usual));
+                if (args.Args[i].RefKind != RefKind.None)
+                    hasRefArgs = true;
+            }
+            var arguments = new Arg(LiteralArray.Bound(args.Args));
+            if (hasRefArgs)
+            {
+                var conv = ConversionSymbol.Create(ConversionSymbol.Create(ConversionKind.Identity), new ConversionToTemp(arguments.Expr.Datatype));
+                Convert(ref arguments.Expr, arguments.Expr.Datatype, conv);
+                for (int i = 0; i < args.Args.Count; i++)
+                {
+                    if (args.Args[i].RefKind != RefKind.None)
+                        HandleVarArgWriteBack(conv, args.Args[i].Expr, i, ref writeBack);
+                }
+            }
+            return arguments;
+
+            void HandleVarArgWriteBack(ConversionSymbol conv, Expr e, int i, ref Expr wb)
+            {
+                if (e.Symbol?.HasSetAccess == true || e is AutoVarExpr || e is AliasExpr)
+                {
+                    // Handle writeBack
+                    Expr t = IdExpr.Bound(conv.IndirectRefConversionTempLocal());
+                    t = ArrayAccessExpr.Bound(t, ArgList.Bound(LiteralExpr.Bound(Constant.Create(i + 1))), this);
+                    var wc = Conversion(t, e.Datatype, BindOptions.Default);
+                    if (wc.Exists)
+                    {
+                        Convert(ref t, e.Datatype, wc);
+                        SymbolExtensions.AddExpr(ref wb, AssignExpr.Bound(e, t, BindOptions.Default));
+                    }
+                }
             }
         }
 

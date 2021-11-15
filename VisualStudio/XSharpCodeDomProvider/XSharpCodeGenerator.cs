@@ -1597,20 +1597,66 @@ namespace XSharp.CodeDom
         {
             this.OutputIdentifier(e.VariableName);
         }
+
+        private void WriteEscapedChar(char value)
+        {
+            base.Output.Write("\\u");
+            int num = value;
+            base.Output.Write(num.ToString("X4", CultureInfo.InvariantCulture));
+            
+        }
+
+
+        private void GeneratePrimitiveChar(char c)
+        {
+            this.Output.Write("c\'");
+            switch (c)
+            {
+                case '\r':
+                    base.Output.Write("\\r");
+                    break;
+                case '\t':
+                    base.Output.Write("\\t");
+                    break;
+                case '"':
+                    base.Output.Write("\\\"");
+                    break;
+                case '\'':
+                    base.Output.Write("\\'");
+                    break;
+                case '\\':
+                    base.Output.Write("\\\\");
+                    break;
+                case '\0':
+                    base.Output.Write("\\0");
+                    break;
+                case '\n':
+                    base.Output.Write("\\n");
+                    break;
+                case '\u0084':
+                case '\u0085':
+                case '\u2028':
+                case '\u2029':
+                    this.WriteEscapedChar( c);
+                    break;
+                default:
+                    if (char.IsSurrogate(c))
+                    {
+                        this.WriteEscapedChar( c);
+                    }
+                    else
+                    {
+                        base.Output.Write(c);
+                    }
+                    break;
+            }
+            this.Output.Write('\'');
+        }
         protected override void GeneratePrimitiveExpression(CodePrimitiveExpression e)
         {
-            if (e.Value is char)
+            if (e.Value is char c)
             {
-                var c = (char)e.Value;
-                if ((int)c < 127)
-                {
-                    base.Output.Write("c'" + c.ToString() + "'");
-                }
-                else
-                {
-                    var i = (int)c;
-                    base.Output.Write("c'\\x" + i.ToString("X") + "'");
-                }
+                GeneratePrimitiveChar(c);
 
             }
             else

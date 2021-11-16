@@ -294,6 +294,66 @@ BEGIN NAMESPACE XSharpModel
       ENDIF
       RETURN result
 
+    STATIC METHOD GetTypeSource(element AS XDbResult, members AS IList<XDbResult>, file as XFile) AS STRING
+         VAR sb := System.Text.StringBuilder{}
+         if file != NULL
+            foreach var strusing in file:Usings
+                sb:AppendLine("USING "+strusing)
+             next
+             foreach var strusing in file:StaticUsings
+                sb:AppendLine("USING STATIC "+strusing)
+            next
+         ENDIF
+         sb:AppendLine(element:SourceCode)
+         FOREACH VAR xmember IN members
+            var source := xmember:SourceCode
+            // replace private with hidden to avoid confusion
+            if source:ToLower():StartsWith("private")
+               source := "HIDDEN "+source:Substring(7)
+            endif
+            if source:ToLower():StartsWith("public")
+               source := "EXPORT "+source:Substring(6)
+            endif
+            sb:AppendLine(source)
+
+            SWITCH xmember:Kind
+            CASE Kind.Property
+               source := xmember:SourceCode:ToLower():Replace('\t',' ')
+               IF source:Contains(" get") .OR. ;
+                  source:Contains(" set") .OR. ;
+                  source:Contains(" auto")
+                  // single line
+                  NOP
+               ELSE
+                   sb:AppendLine("END PROPERTY")
+               ENDIF
+            CASE Kind.Event
+               source := xmember:SourceCode:ToLower():Replace('\t',' ')
+               IF source:Contains(" add") .OR. ;
+                  source:Contains(" remove")
+                  // single line
+                  NOP
+               ELSE
+                  sb:AppendLine("END EVENT")
+               ENDIF
+            END SWITCH
+         NEXT
+         SWITCH element:Kind
+         CASE Kind.Class
+            IF element:ClassType == (INT) XSharpDialect.XPP
+               sb:AppendLine("ENDCLASS")
+            ELSEIF element:ClassType == (INT) XSharpDialect.FoxPro
+               sb:AppendLine("ENDDEFINE")
+            ELSE
+               sb:AppendLine("END CLASS")
+            ENDIF
+         CASE Kind.Structure
+            sb:AppendLine("END STRUCTURE")
+         CASE Kind.Interface
+            sb:AppendLine("END INTERFACE")
+         END SWITCH
+         RETURN sb:ToString()
+
 END CLASS
 
 END NAMESPACE

@@ -1080,7 +1080,6 @@ BEGIN NAMESPACE XSharpModel
          //todo Collect interfaces from IMPLEMENTS clauses
          VAR members  := XDatabase.GetMembers(sTypeIds):ToArray()
          VAR oType   := found[0]
-         VAR source  := GetTypeSource(oType, members)
          var project := XSolution.FindProject(oType:Project)
          VAR file    := project:GetFileById(oType:IdFile)
          IF file == null
@@ -1089,8 +1088,10 @@ BEGIN NAMESPACE XSharpModel
          IF file == NULL
             RETURN NULL
          ENDIF
+         VAR source  := XSourceTypeSymbol.GetTypeSource(oType, members, file)
          aFiles:Add(oType:IdFile, file)
          VAR walker        := SourceWalker{file, FALSE}
+         walker:SaveToDisk := FALSE
          walker:Parse(source) // we are not interested in locals but we also do not want to update the database here
          IF walker:EntityList:Count > 0
             namespace      := oType:Namespace
@@ -1219,57 +1220,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN result
 
 
-      PRIVATE METHOD GetTypeSource(element AS XDbResult, members AS IList<XDbResult>) AS STRING
-         VAR sb := StringBuilder{}
-         sb:AppendLine(element:SourceCode)
-         FOREACH VAR xmember IN members
-            var source := xmember:SourceCode
-            // replace private with hidden to avoid confusion
-            if source:ToLower():StartsWith("private")
-               source := "HIDDEN "+source:Substring(7)
-            endif
-            if source:ToLower():StartsWith("public")
-               source := "EXPORT "+source:Substring(6)
-            endif
-            sb:AppendLine(source)
 
-            SWITCH xmember:Kind
-            CASE Kind.Property
-               source := xmember:SourceCode:ToLower():Replace('\t',' ')
-               IF source:Contains(" get") .OR. ;
-                  source:Contains(" set") .OR. ;
-                  source:Contains(" auto")
-                  // single line
-                  NOP
-               ELSE
-                   sb:AppendLine("END PROPERTY")
-               ENDIF
-            CASE Kind.Event
-               source := xmember:SourceCode:ToLower():Replace('\t',' ')
-               IF source:Contains(" add") .OR. ;
-                  source:Contains(" remove")
-                  // single line
-                  NOP
-               ELSE
-                  sb:AppendLine("END EVENT")
-               ENDIF
-            END SWITCH
-         NEXT
-         SWITCH element:Kind
-         CASE Kind.Class
-            IF element:ClassType == (INT) XSharpDialect.XPP
-               sb:AppendLine("ENDCLASS")
-            ELSEIF element:ClassType == (INT) XSharpDialect.FoxPro
-               sb:AppendLine("ENDDEFINE")
-            ELSE
-               sb:AppendLine("END CLASS")
-            ENDIF
-         CASE Kind.Structure
-            sb:AppendLine("END STRUCTURE")
-         CASE Kind.Interface
-            sb:AppendLine("END INTERFACE")
-         END SWITCH
-         RETURN sb:ToString()
 
       METHOD GetExtensions( typeName AS STRING) AS IList<IXMemberSymbol>
          RETURN SystemTypeController.LookForExtensions( typeName, SELF:_AssemblyReferences)

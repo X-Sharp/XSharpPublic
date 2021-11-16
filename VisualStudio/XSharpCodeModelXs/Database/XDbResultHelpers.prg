@@ -71,7 +71,7 @@ BEGIN NAMESPACE XSharpModel
                     file:Id        := element:IdFile
 					VAR members := XDatabase.GetMembers(element:IdType)
                     // now create a temporary source for the parser
-                    VAR source     := GetTypeSource(element, members)
+                    VAR source     := XSourceTypeSymbol.GetTypeSource(element, members, file)
                     VAR walker := SourceWalker{file, FALSE}
                     IF walker:EntityList:Count > 0
                         VAR xElement      := walker:EntityList:First()
@@ -102,7 +102,7 @@ BEGIN NAMESPACE XSharpModel
             //
             TRY
                 // now create a temporary source for the parser
-                VAR source     := GetTypeSource( NULL, found)
+                VAR source     := XSourceTypeSymbol.GetTypeSource( NULL, found, origin)
                 IF found:Count() == 0
                     RETURN result
                 ENDIF
@@ -132,52 +132,5 @@ BEGIN NAMESPACE XSharpModel
                 XSolution.WriteOutputMessage("BuildFullFuncsInFile: "+ e:Message)
             END TRY
         RETURN result
-        // Comes from XProject, would be worth to merge source ???
-        PRIVATE STATIC METHOD GetTypeSource(element AS XDbResult, members AS IList<XDbResult>) AS STRING
-            VAR sb := StringBuilder{}
-            IF element != NULL
-                sb:AppendLine(element:SourceCode)
-            ENDIF
-            FOREACH VAR xmember IN members
-                sb:AppendLine(xmember:SourceCode)
-                SWITCH xmember:Kind
-                    CASE Kind.Property
-                        VAR source := xmember:SourceCode:ToLower():Replace('\t',' ')
-                        IF source:Contains(" get") .OR. ;
-                                source:Contains(" set") .OR. ;
-                                source:Contains(" auto")
-                                // single line
-                            NOP
-                        ELSE
-                            sb:AppendLine("END PROPERTY")
-                        ENDIF
-                    CASE Kind.Event
-                        VAR source := xmember:SourceCode:ToLower():Replace('\t',' ')
-                        IF source:Contains(" add") .OR. ;
-                                source:Contains(" remove")
-                                // single line
-                            NOP
-                        ELSE
-                            sb:AppendLine("END EVENT")
-                        ENDIF
-                END SWITCH
-            NEXT
-            IF element != NULL
-                SWITCH element:Kind
-                    CASE Kind.Class
-                        IF element:ClassType == (INT) XSharpDialect.XPP
-                            sb:AppendLine("ENDCLASS")
-                        ELSEIF element:ClassType == (INT) XSharpDialect.FoxPro
-                            sb:AppendLine("ENDDEFINE")
-                        ELSE
-                            sb:AppendLine("END CLASS")
-                        ENDIF
-                    CASE Kind.Structure
-                        sb:AppendLine("END STRUCTURE")
-                    CASE Kind.Interface
-                        sb:AppendLine("END INTERFACE")
-                END SWITCH
-            ENDIF
-            RETURN sb:ToString()
-        END CLASS
+    END CLASS
 END NAMESPACE // global::XSharpCodeModel.Model

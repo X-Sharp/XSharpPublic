@@ -371,8 +371,8 @@ BEGIN NAMESPACE XSharpModel
              SELF:_EntityList:Add(xmember)
              SELF:_globalType:AddMember(xmember)
          ENDIF
+         _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
          IF ! lLocals .AND. SELF:SaveToDisk
-            _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
             _file:SaveToDatabase()
          ENDIF
       PRIVATE METHOD AddNameSpaceToUsing(name as STRING) AS VOID

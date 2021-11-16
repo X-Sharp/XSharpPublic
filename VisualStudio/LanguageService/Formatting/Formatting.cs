@@ -209,7 +209,7 @@ namespace XSharp.LanguageService
             {
                 return xTokens != null && xTokens.Complete;
             }
-            xTokens = null;            
+            xTokens = null;
             return false;
         }
 
@@ -247,7 +247,7 @@ namespace XSharp.LanguageService
                     }
                     else
                     {
-                        switch ((EnvDTE.vsIndentStyle) _settings.IndentStyle)
+                        switch ((EnvDTE.vsIndentStyle)_settings.IndentStyle)
                         {
                             case EnvDTE.vsIndentStyle.vsIndentStyleSmart:
                                 indentation = getDesiredIndentation(line, editSession, alignOnPrev);
@@ -340,6 +340,10 @@ namespace XSharp.LanguageService
             }
         }
 
+
+        /// <summary>
+        /// Format document, evaluating line after line
+        /// </summary>
         private void FormatDocument()
         {
             WriteOutputMessage("FormatDocument() -->>");
@@ -348,7 +352,7 @@ namespace XSharp.LanguageService
                 // can't edit !
                 return;
             }
-
+            var settings = _buffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
             // Try to retrieve an already parsed list of Tags
             if (_classifier != null)
             {
@@ -358,129 +362,121 @@ namespace XSharp.LanguageService
                 stopWatch.Start();
 #endif
                 //
-                ITextSnapshot snapshot = _classifier.Snapshot;
-                SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                var classifications = _classifier.GetRegionTags();
-                // We cannot use SortedList, because we may have several Classification that start at the same position
-                List<ClassificationSpan> sortedTags = new List<ClassificationSpan>();
-                foreach (var tag in classifications)
+                FormattingContext context = null;
+                // Already been lexed ?
+                if (getBufferedTokens(out var xTokens))
                 {
-                    sortedTags.Add(tag);
-                }
-                sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
-                // Now that Tags are sorted, we can use a stack to arrange them by pairs
-                Stack<Tuple<Span, int>> regionStarts = new Stack<Tuple<Span, int>>();
-                List<Tuple<Span, Span, int, int>> regions = new List<Tuple<Span, Span, int, int>>();
-                //
-
-                foreach (var tag in sortedTags)
-                {
-                    if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStartFormat))
+                    var tokens = xTokens.TokenStream.GetTokens();
+                    // Ok, we have some tokens
+                    if (tokens != null)
                     {
-                        int startTokenType = -1;
-                        if (tag is XsClassificationSpan)
-                            startTokenType = (tag as XsClassificationSpan).startTokenType;
-                        regionStarts.Push(new Tuple<Span, int>(tag.Span.Span, startTokenType));
-                    }
-                    else if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
-                    {
-                        if (regionStarts.Count > 0)
+                        // And they are the right ones
+                        if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
                         {
-                            var start = regionStarts.Pop();
-                            int endTokenType = -1;
-                            if (tag is XsClassificationSpan)
-                                endTokenType = (tag as XsClassificationSpan).endTokenType;
-                            regions.Add(new Tuple<Span, Span, int, int>(start.Item1, tag.Span.Span, start.Item2, endTokenType));
+                            // Ok, use it
+                            context = new FormattingContext(tokens, this.ParseOptions.Dialect);
                         }
                     }
                 }
-                // In order to try to speed up the formatting process, it would be good to have the regions sorted by their Start
-                regions.Sort((a, b) => a.Item1.Start.CompareTo(b.Item1.Start));
-                //Now, we have a list of Regions Start/Stop
+                // No Tokens....Ok, do the lexing now
+                if (context == null)
+                    context = new FormattingContext(this, _buffer.CurrentSnapshot);
+                //
                 // wait until we can work
                 while (_buffer.EditInProgress)
                 {
                     System.Threading.Thread.Sleep(100);
                 }
+                // Create an Edit Sessions
                 var editSession = _buffer.CreateEdit();
                 try
                 {
                     var lines = _buffer.CurrentSnapshot.Lines;
                     int indentSize = 0;
-                    bool inComment = false;
                     int lineContinue = 0;
-                    int prevIndentSize = 0;
-                    int continueOffset = _settings.IndentSize * _settings.IndentFactor;
-                    char prevstart = '\0';
+                    int nextIndentSize = 0;
+                    int moveAfterFormatting = 0;
+                    List<Tuple<int, int>> nestedEntity = new List<Tuple<int, int>>();
+                    List<ITextSnapshotLine> listDoc = new List<ITextSnapshotLine>();
+                    List<ITextSnapshotLine> listMulti = new List<ITextSnapshotLine>();
+                    IToken endToken = null;
+                    // We are more forward, line per line
                     foreach (var snapLine in lines)
                     {
-                        bool lineAfterAttributes = false;
                         // Ignore Empty lines
                         if (snapLine.Length > 0)
                         {
-                            SnapshotSpan sSpan = new SnapshotSpan(snapLine.Start, snapLine.End);
-                            string lineText = sSpan.GetText();
-                            lineText = lineText.Trim();
-
-                            if (lineText.Length > 0)
+                            context.MoveTo(snapLine.Start);
+                            // Get the first Token on line
+                            IToken startToken = context.GetFirstToken(true);
+                            if (startToken != null)
                             {
-                                char start = lineText.Substring(0, 1)[0];
-                                char end = lineText.Substring(lineText.Length - 1, 1)[0];
-                                //
-                                if (lineContinue == 1)
+                                // Token is NewLine ? Skip
+                                if (startToken.Type == XSharpLexer.NL)
+                                    continue;
+                                // How does the line end ?
+                                endToken = context.GetLastToken(true);
+                                // XML Doc will be re-indented when we find the corresponding entity
+                                if (startToken.Type == XSharpLexer.DOC_COMMENT)
                                 {
-                                    if (prevstart != '[')
-                                    {
-                                        indentSize = prevIndentSize + continueOffset;
-                                    }
-                                    else
-                                    {
-                                        lineAfterAttributes = true;
-                                    }
-
+                                    listDoc.Add(snapLine);
+                                    continue;
                                 }
-                                else if (lineContinue > 1)
+                                // Certainly an Attribut, save for later indentation
+                                if ((startToken.Type == XSharpLexer.LBRKT) && (endToken.Type == XSharpLexer.LINE_CONT))
                                 {
-                                    indentSize = prevIndentSize;
+                                    listMulti.Add(snapLine);
+                                    continue;
                                 }
-                                else
+                                // Not a continuing line
+                                if (lineContinue == 0)
                                 {
-                                    indentSize = getDesiredIndentationInDocument(snapLine, regions, out inComment);
-                                }
-                                prevstart = start;
-                                // Not in comment, Multiple line but not Attribute
-                                if (!inComment && (end == ';'))
-                                {
-                                    if (lineContinue == 0)
-                                    {
-                                        // Keep the previous Indentation
-                                        lineContinue = 1;
-                                        prevIndentSize = indentSize;
-                                    }
-                                    else if (lineContinue == 1)
-                                    {
-                                        if (!lineAfterAttributes)
-                                        {
-                                            lineContinue = 2;
-                                            prevIndentSize = indentSize;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    lineContinue = 0;
+                                    indentSize = GetLineIndentation(snapLine, context, nextIndentSize, settings, out moveAfterFormatting, nestedEntity);
                                 }
                             }
-                        }
-                        if (canFormatLine(snapLine))
-                        {
-                            formatLineCase(editSession, snapLine);
-                            FormatLineIndent(editSession, snapLine, indentSize);
+                            //
+                            if (canFormatLine(snapLine))
+                            {
+                                formatLineCaseV2(context, editSession, snapLine);
+                            }
+                            // Do we have XMLDoc waiting ?
+                            if (listDoc.Count > 0)
+                            {
+                                foreach (var docLine in listDoc)
+                                {
+                                    FormatLineIndent(editSession, docLine, indentSize * settings.IndentSize);
+                                }
+                                listDoc.Clear();
+                            }
+                            // Do we have Attributes waiting ?
+                            if (listMulti.Count > 0)
+                            {
+                                foreach (var attrLine in listMulti)
+                                {
+                                    FormatLineIndent(editSession, attrLine, indentSize * settings.IndentSize);
+                                }
+                                listMulti.Clear();
+                            }
+                            // Ok, now format....
+                            FormatLineIndent(editSession, snapLine, indentSize * settings.IndentSize);
+                            //
+                            nextIndentSize = indentSize;
+                            nextIndentSize += moveAfterFormatting;
+                            // The current line will continue
+                            if (endToken?.Type == XSharpLexer.LINE_CONT)
+                                lineContinue = 1;
+                            else
+                                lineContinue = 0;
                         }
                     }
                 }
+                catch (Exception e)
+                {
+                    WriteOutputMessage("FormatDocument : error " + e.Message);
+                }
                 finally
                 {
+                    // Validate the Edit Session ?
                     if (editSession.HasEffectiveChanges)
                     {
                         editSession.Apply();
@@ -512,360 +508,378 @@ namespace XSharp.LanguageService
             WriteOutputMessage("FormatDocument() <<--");
         }
 
+
         /// <summary>
         /// Calculate the indentation in characters
         /// </summary>
-        /// <param name="snapLine"></param>
-        /// <param name="regions"></param>
-        /// <param name="inComment"></param>
-        /// <returns></returns>
-        private int getDesiredIndentationInDocument(ITextSnapshotLine snapLine, List<Tuple<Span, Span, int, int>> regions, out bool inComment)
+        private int GetLineIndentation(ITextSnapshotLine snapLine, FormattingContext context, int currentIndent, SourceCodeEditorSettings settings, out int moveAfterFormatting, List<Tuple<int, int>> nestedEntity)
         {
-            int indentValue = 0;
-            int mlCmtSpaces = 0;
-            string openKeyword = "";
-            inComment = false;
-            //
-            //List<IMappingTagSpan<IClassificationTag>> tags = getTagsInLine(snapLine);
-            // In Tuple Regions, the items are :
-            // Item1 is Start
-            // Item2 is End
-
-            foreach (var region in regions)
+            // 
+            moveAfterFormatting = 0;
+            // Go to the begginning of the line
+            context.MoveTo(snapLine.Start);
+            IToken openKeyword = context.GetFirstToken(true, true);
+            IToken nextKeyword = null;
+            Tuple<int, int> current;
+            if (openKeyword == null)
             {
-                // The line is before the current region, so skip
-                if (snapLine.End.Position < region.Item1.Start)
-                {
-                    continue;
-                }
-                // The line is after the current region, so skip
-                if (snapLine.Start.Position > region.Item2.Start)
-                {
-                    continue;
-                }
-                //
-                int length;
-                length = getLineLength(snapLine.Snapshot, region.Item1.Start);
-                if (length <= 0)
-                    length = 1;
-                // Get the opening keyword, at the beginning of the currently processed region
-                int startTokenType = region.Item3;
-                int endTokenType = region.Item4;
-                if (startTokenType == -1)
-                    openKeyword = getFirstKeywordInLine(snapLine, region.Item1.Start, length);
-                //
-                if ((snapLine.Start.Position <= region.Item1.Start) && (snapLine.End.Position >= region.Item1.Start))
-                {
-                    // We are on the line opening a Region
-                    // What kind of region ?
-                    // Skip comment and using regions
-                    if (startTokenType == -1)
-                    {
-                        switch (openKeyword)
-                        {
-                            case "//":
-                            case "USING":
-                            case "#USING":
-                            case "#DEFINE":
-                            case "#INCLUDE":
-                            case "#REGION":
-                                continue;
-                            case "DEFINE":
-                                // Warning !! It could DEFINE CLASS in FOXPRO
-                                openKeyword = getKeywordInLine(snapLine, region.Item1.Start, length, 2);
-                                if (string.Compare(openKeyword, "class", true) != 0)
-                                    continue;
-                                break;
-                            default:
-                                break;
-                        }
-                        /*
-                        if (openKeyword == "//")
-                        {
-                            // Get the current indentation
-                            SnapshotSpan sSpan = new SnapshotSpan(snapLine.Start, snapLine.End);
-                            string lineText = sSpan.GetText();
-                            lineText = lineText.Replace("\t", new string(' ', settings.IndentSize));
-                            mlCmtSpaces = (lineText.Length - lineText.TrimStart().Length);
-                            // What is the difference with the start
-                            length = region.Item1.End - region.Item1.Start + 1;
-                            if (length <= 0)
-                                length = 1;
-                            sSpan = new SnapshotSpan(snapLine.Snapshot, region.Item1.Start, length);
-                            lineText = sSpan.GetText();
-                            lineText = lineText.Replace("\t", new string(' ', settings.IndentSize));
-                            mlCmtSpaces = mlCmtSpaces - (lineText.Length - lineText.TrimStart().Length);
-                            //
-                            inComment = true;
-                            continue;
-                        }
-                        */
-                        // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
-                        string startToken = searchMiddleKeyword(openKeyword);
-                        if (startToken != null)
-                        {
-                            indentValue--;
-                        }
-                        // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
-                        // Check for a setting
-                        if (_settings.FormatAlignDoCase)
-                        {
-                            // Move back keywords ( CASE, OTHERWISE )
-                            startToken = searchSpecialMiddleKeyword(openKeyword);
-                            if (startToken != null)
-                            {
-                                indentValue--;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        switch (startTokenType)
-                        {
-                            case XSharpLexer.SL_COMMENT:
-                            case XSharpLexer.USING:
-                            case XSharpLexer.PP_INCLUDE:
-                            case XSharpLexer.PP_DEFINE:
-                            case XSharpLexer.PP_REGION:
-                                continue;
-                            case XSharpLexer.DEFINE:
-                                // Warning !! It could DEFINE CLASS in FOXPRO
-                                openKeyword = getKeywordInLine(snapLine, region.Item1.Start, length, 2);
-                                if (string.Compare(openKeyword, "class", true) != 0)
-                                    continue;
-                                break;
-                            default:
-                                break;
-                        }
-                        // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
-                        switch (startTokenType)
-                        {
-                            case XSharpLexer.ELSE:
-                            case XSharpLexer.ELSEIF:
-                            case XSharpLexer.FINALLY:
-                            case XSharpLexer.CATCH:
-                            case XSharpLexer.RECOVER:
-                            case XSharpLexer.PP_ELSE:
-                                indentValue--;
-                                break;
-                        }
-                        // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
-                        // Check for a setting
-                        if (_settings.FormatAlignDoCase)
-                        {
-                            // Move back keywords ( CASE, OTHERWISE )
-                            switch (startTokenType)
-                            {
-                                case XSharpLexer.CASE:
-                                case XSharpLexer.OTHERWISE:
-                                    indentValue--;
-                                    break;
-                            }
-                        }
-                    }
-                }
-                else if ((snapLine.Start.Position > region.Item1.Start) && (snapLine.End.Position < region.Item2.Start))
-                {
-                    // We are inside a Region
-                    // Comment or Using region ?
-                    if (startTokenType == -1)
-                    {
-                        switch (openKeyword)
-                        {
-                            case "//":
-                            case "USING":
-                            case "#USING":
-                            case "#DEFINE":
-                            case "#INCLUDE":
-                            case "#REGION":
-                                continue;
-                            case "DEFINE":
-                                // Warning !! It could DEFINE CLASS in FOXPRO
-                                openKeyword = getKeywordInLine(snapLine, region.Item1.Start, length, 2);
-                                if (string.Compare(openKeyword, "class", true) != 0)
-                                    continue;
-                                break;
-                            default:
-                                break;
-                        }
-                        // We are between the opening Keyword and the closing Keyword
-                        if (!_settings.FormatAlignMethod)
-                        {
-
-                            indentValue++;
-                        }
-                        else
-                        {
-                            // no closing keyword
-                            if (!_codeBlockKeywords.Contains(openKeyword))
-                            {
-                                indentValue++;
-                            }
-                        }
-                        // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
-                        string startToken = searchMiddleKeyword(openKeyword);
-                        if (startToken != null)
-                        {
-                            indentValue--;
-                        }
-                        //
-                    }
-                    else
-                    {
-                        switch (startTokenType)
-                        {
-                            case XSharpLexer.SL_COMMENT:
-                            case XSharpLexer.USING:
-                            case XSharpLexer.PP_INCLUDE:
-                            case XSharpLexer.PP_DEFINE:
-                            case XSharpLexer.PP_REGION:
-                                continue;
-                            case XSharpLexer.DEFINE:
-                                // Warning !! It could DEFINE CLASS in FOXPRO
-                                openKeyword = getKeywordInLine(snapLine, region.Item1.Start, length, 2);
-                                if (string.Compare(openKeyword, "class", true) != 0)
-                                    continue;
-                                break;
-                            default:
-                                break;
-                        }
-                        // We are between the opening Keyword and the closing Keyword
-                        if (!_settings.FormatAlignMethod)
-                        {
-
-                            indentValue++;
-                        }
-                        else
-                        {
-                            // no closing keyword
-                            switch (startTokenType)
-                            {
-                                case XSharpLexer.FUNCTION:
-                                case XSharpLexer.PROCEDURE:
-                                case XSharpLexer.CONSTRUCTOR:
-                                case XSharpLexer.DESTRUCTOR:
-                                case XSharpLexer.ASSIGN:
-                                case XSharpLexer.ACCESS:
-                                case XSharpLexer.METHOD:
-                                case XSharpLexer.OPERATOR:
-                                    break;
-                                default:
-                                    indentValue++;
-                                    break;
-                            }
-                        }
-                        // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
-                        switch (startTokenType)
-                        {
-                            case XSharpLexer.ELSE:
-                            case XSharpLexer.ELSEIF:
-                            case XSharpLexer.FINALLY:
-                            case XSharpLexer.CATCH:
-                            case XSharpLexer.RECOVER:
-                            case XSharpLexer.PP_ELSE:
-                                indentValue--;
-                                break;
-                        }
-                    }
-                }
-                else //if ((region.Item2.Start >= snapLine.Start.Position) && (region.Item2.End <= snapLine.End.Position))
-                {
-                    // We are on the closing Keyword
-                    if (!_settings.FormatAlignMethod)
-                    {
-                        if (startTokenType == -1)
-                        {
-                            // normally, no closing keyword
-                            if (_codeBlockKeywords.Contains(openKeyword))
-                            {
-                                // per Default
-                                indentValue++;
-                                // Ok, CodeBlock, we can have an optional END as the last statement
-                                int currentLength;
-                                currentLength = getLineLength(snapLine.Snapshot, snapLine.Start.Position);
-                                if (currentLength <= 0)
-                                    currentLength = 1;
-                                // Get the opening keyword, at the beginning of the currently processed region
-                                string insideKeyword = getFirstKeywordInLine(snapLine, snapLine.Start.Position, currentLength);
-                                //if (Array.Find(_xtraKeywords, kw => string.Compare(kw, insideKeyword, true) == 0) != null)
-                                //{
-                                //    indentValue--;
-                                //}
-                                //else
-                                if (string.Compare(insideKeyword, "end", true) == 0)
-                                {
-                                    // We may have an optionnal closing keyword indication
-                                    insideKeyword = getKeywordInLine(snapLine, snapLine.Start.Position, currentLength, 2);
-                                    if ((string.Compare(openKeyword, insideKeyword, true) == 0)) //|| (string.Compare(openKeyword, "class", true) == 0) )
-                                    {
-                                        indentValue--;
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            switch (startTokenType)
-                            {
-                                case XSharpLexer.FUNCTION:
-                                case XSharpLexer.PROCEDURE:
-                                case XSharpLexer.CONSTRUCTOR:
-                                case XSharpLexer.DESTRUCTOR:
-                                case XSharpLexer.ASSIGN:
-                                case XSharpLexer.ACCESS:
-                                case XSharpLexer.METHOD:
-                                case XSharpLexer.OPERATOR:
-                                    // per Default
-                                    indentValue++;
-                                    //
-                                    switch (endTokenType)
-                                    {
-                                        case XSharpLexer.END:
-                                            // We may have an optionnal closing keyword indication
-                                            indentValue--;
-                                            break;
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-                    //
-                    if (!_settings.FormatAlignDoCase)
-                    {
-                        // Don't indent
-                        // Move back keywords ( CASE, OTHERWISE )
-                        if (startTokenType == -1)
-                        {
-                            string startToken = searchSpecialMiddleKeyword(openKeyword);
-                            if (startToken != null)
-                            {
-                                indentValue++;
-                            }
-                        }
-                        else
-                        {
-                            switch (startTokenType)
-                            {
-                                case XSharpLexer.CASE:
-                                case XSharpLexer.OTHERWISE:
-                                    indentValue++;
-                                    break;
-                            }
-                        }
-                    }
-
-                }
-                //}
-                //}
+                WriteOutputMessage("FormatDocument : Error when moving in Tokens");
+                return 0; // This should never happen
             }
-            //}
+            // These must NOT change the indentation, so eat them
+            int[] typeToIgnore = { XSharpLexer.PRIVATE, XSharpLexer.HIDDEN,
+                                    XSharpLexer.PROTECTED, XSharpLexer.INTERNAL,
+                                    XSharpLexer.PUBLIC, XSharpLexer.EXPORT,
+                                    XSharpLexer.CONST, XSharpLexer.VIRTUAL, XSharpLexer.STATIC };
+            while (typeToIgnore.Contains<int>(openKeyword.Type))
+            {
+                // Check the next one
+                context.MoveToNext();
+                openKeyword = context.GetFirstToken(true, true);
+                if (openKeyword == null)
+                {
+                    WriteOutputMessage("FormatDocument : Error when moving in Tokens");
+                    return currentIndent; // This should never happen
+                }
+            }
+            //int startTokenType = openKeyword.Type;
+            // DEFINE CLASS in VFP
+            if (openKeyword.Type == XSharpLexer.DEFINE)
+            {
+                if (context.Dialect == XSharpDialect.FoxPro)
+                {
+                    // Check the next one
+                    context.MoveToNext();
+                    openKeyword = context.GetFirstToken(true);
+                    if (openKeyword == null)
+                    {
+                        WriteOutputMessage("FormatDocument : Error when moving in Tokens");
+                        return currentIndent; // This should never happen
+                    }
+                    if (openKeyword.Type != XSharpLexer.CLASS)
+                        context.MoveBack();
+                }
+            }
+            //
+            switch (openKeyword.Type)
+            {
+                // Ignoring
+                case XSharpLexer.ML_COMMENT:
+                case XSharpLexer.SL_COMMENT:
+                case XSharpLexer.USING:
+                case XSharpLexer.PP_INCLUDE:
+                case XSharpLexer.PP_DEFINE:
+                case XSharpLexer.PP_REGION:
+                    break;
+                // Open Entity
+                case XSharpLexer.CLASS:
+                case XSharpLexer.INTERFACE:
+                case XSharpLexer.STRUCTURE:
+                case XSharpLexer.VOSTRUCT:
+                case XSharpLexer.ENUM:
+                case XSharpLexer.UNION:
+                    // We are inside something ?
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                        switch (current.Item1)
+                        {
+                            case XSharpLexer.DELEGATE:
+                            case XSharpLexer.FUNCTION:
+                            case XSharpLexer.PROCEDURE:
+                            case XSharpLexer.CONSTRUCTOR:
+                            case XSharpLexer.DESTRUCTOR:
+                            case XSharpLexer.ASSIGN:
+                            case XSharpLexer.ACCESS:
+                            case XSharpLexer.METHOD:
+                            case XSharpLexer.PROPERTY:
+                            case XSharpLexer.OPERATOR:
+                            case XSharpLexer.EVENT:
+                            // These can also have no closing end marker
+                            case XSharpLexer.VOSTRUCT:
+                            case XSharpLexer.ENUM:
+                            case XSharpLexer.UNION:
+                                // Move back this opening Keyword
+                                currentIndent = current.Item2;
+                                nestedEntity.Pop();
+                                break;
+                        }
+                    }
+                    // Move inside this opening Keyword for the next line
+                    // and indicate that as the minimum indenting size
+                    moveAfterFormatting++;
+                    nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                    break;
+                case XSharpLexer.DELEGATE:
+                case XSharpLexer.FUNCTION:
+                case XSharpLexer.PROCEDURE:
+                case XSharpLexer.CONSTRUCTOR:
+                case XSharpLexer.DESTRUCTOR:
+                case XSharpLexer.ASSIGN:
+                case XSharpLexer.ACCESS:
+                case XSharpLexer.METHOD:
+                case XSharpLexer.PROPERTY:
+                case XSharpLexer.OPERATOR:
+                case XSharpLexer.EVENT:
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                        switch (current.Item1)
+                        {
+                            case XSharpLexer.DELEGATE:
+                            case XSharpLexer.FUNCTION:
+                            case XSharpLexer.PROCEDURE:
+                            case XSharpLexer.CONSTRUCTOR:
+                            case XSharpLexer.DESTRUCTOR:
+                            case XSharpLexer.ASSIGN:
+                            case XSharpLexer.ACCESS:
+                            case XSharpLexer.METHOD:
+                            case XSharpLexer.PROPERTY:
+                            case XSharpLexer.OPERATOR:
+                            case XSharpLexer.EVENT:
+                            // These can also have no closing end marker
+                            case XSharpLexer.VOSTRUCT:
+                            case XSharpLexer.ENUM:
+                            case XSharpLexer.UNION:
+                                // Move back this opening Keyword
+                                current = nestedEntity.Pop();
+                                currentIndent = current.Item2;
+                                break;
+                        }
+                    }
+                    // Move inside this opening Keyword for the next line
+                    moveAfterFormatting++;
+                    nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                    break;
+                case XSharpLexer.ADD:
+                case XSharpLexer.REMOVE:
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                        switch (current.Item1)
+                        {
+                            case XSharpLexer.EVENT:
+                                // Move back this opening Keyword
+                                //currentIndent--;
+                                break;
+                        }
+                    }
+                    // Move inside this opening Keyword for the next line
+                    // and indicate that as the minimum indenting size
+                    moveAfterFormatting++;
+                    nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                    break;
+                case XSharpLexer.SET:
+                case XSharpLexer.GET:
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                        switch (current.Item1)
+                        {
+                            case XSharpLexer.PROPERTY:
+                                // Move back this opening Keyword
+                                //currentIndent--;
+                                break;
+                        }
+                    }
+                    // Move inside this opening Keyword for the next line
+                    // and indicate that as the minimum indenting size
+                    moveAfterFormatting++;
+                    nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                    break;
+                // Move inside these keywords
+                case XSharpLexer.BEGIN:
+                    // NAMESPACE ?
+                    // Check the next one
+                    context.MoveToNext();
+                    nextKeyword = context.GetFirstToken(true);
+                    if (nextKeyword != null)
+                    {
+                        if (nextKeyword.Type == XSharpLexer.NAMESPACE)
+                        {
+                            // A NAMESPACE alwasy start in 0
+                            currentIndent = 0;
+                        }
+                        context.MoveBack();
+                        nestedEntity.Push(new Tuple<int, int>(nextKeyword.Type, currentIndent));
+                    }
+                    moveAfterFormatting++;
+                    break;
+                case XSharpLexer.DO:    // DO CASE, DO WHILE, ...
+                    // Check the next one
+                    context.MoveToNext();
+                    nextKeyword = context.GetFirstToken(true);
+                    if (nextKeyword != null)
+                    {
+                        context.MoveBack();
+                        nestedEntity.Push(new Tuple<int, int>(nextKeyword.Type, currentIndent));
+                    }
+                    moveAfterFormatting++;
+                    break;
+                case XSharpLexer.IF:
+                case XSharpLexer.FOR:
+                case XSharpLexer.FOREACH:
+                case XSharpLexer.WHILE:
+                case XSharpLexer.SWITCH:
+                case XSharpLexer.REPEAT:
+                case XSharpLexer.PP_IFDEF:
+                case XSharpLexer.PP_IFNDEF:
+                case XSharpLexer.WITH:
+                case XSharpLexer.TRY:
+                    moveAfterFormatting++;
+                    nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                    break;
+                // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
+                case XSharpLexer.ELSE:
+                case XSharpLexer.ELSEIF:
+                //
+                case XSharpLexer.FINALLY:
+                case XSharpLexer.CATCH:
+                //
+                case XSharpLexer.RECOVER:
+                //
+                case XSharpLexer.PP_ELSE:
+                    // Move back this opening Keyword
+                    currentIndent--;
+                    // Move inside this opening Keyword for the next line
+                    moveAfterFormatting++;
+                    break;
+                // Move back keywords (or not) ( CASE, OTHERWISE )
+                case XSharpLexer.CASE:
+                case XSharpLexer.OTHERWISE:
+                    // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
+                    // Check for a setting
+                    //if (settings.FormatAlignDoCase)
+                    {
+                        currentIndent--;
+                    }
+                    moveAfterFormatting++;
+                    break;
+                // Closing Keywords
+                case XSharpLexer.END:
+                    // What about END CLASS, END NAMESPACE, END VOSTRUCT,
+                    current = null;
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                    }
+                    // Check the next one
+                    context.MoveToNext();
+                    nextKeyword = context.GetFirstToken(true);
+                    if ((nextKeyword != null) && (current != null))
+                    {
+                        context.MoveBack();
+                        if ((current.Item1 == nextKeyword.Type) ||
+                           ((current.Item1 == XSharpLexer.WHILE) && (nextKeyword.Type == XSharpLexer.DO)))
+                        {
+                            // Move back this opening Keyword
+                            // Close the Entity
+                            current = nestedEntity.Pop();
+                            currentIndent = current.Item2;
+                        }
+                        else
+                        {
+                            switch (nextKeyword.Type)
+                            {
+                                case XSharpLexer.NAMESPACE:
+                                case XSharpLexer.CLASS:
+                                case XSharpLexer.INTERFACE:
+                                case XSharpLexer.STRUCTURE:
+                                case XSharpLexer.VOSTRUCT:
+                                case XSharpLexer.ENUM:
+                                case XSharpLexer.UNION:
+                                    // Do we have such block Type before in the list ?
+                                    int found = nestedEntity.FindLastIndex((pair) => pair.Item1 == nextKeyword.Type);
+                                    if (found > -1)
+                                    {
+                                        while (nestedEntity.Count - 1 >= found)
+                                        {
+                                            // Move back this opening Keyword
+                                            // Close the Entity
+                                            current = nestedEntity.Pop();
+                                            currentIndent = current.Item2;
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (current != null)
+                    {
+                        switch (current.Item1)
+                        {
+                            case XSharpLexer.IF:
+                            case XSharpLexer.WHILE:
+                            case XSharpLexer.SWITCH:
+                            case XSharpLexer.PP_IFDEF:
+                            case XSharpLexer.PP_IFNDEF:
+                            case XSharpLexer.WITH:
+                            case XSharpLexer.TRY:
+                            case XSharpLexer.CASE:
+                            case XSharpLexer.DELEGATE:
+                            case XSharpLexer.FUNCTION:
+                            case XSharpLexer.PROCEDURE:
+                            case XSharpLexer.CONSTRUCTOR:
+                            case XSharpLexer.DESTRUCTOR:
+                            case XSharpLexer.ASSIGN:
+                            case XSharpLexer.ACCESS:
+                            case XSharpLexer.METHOD:
+                            case XSharpLexer.PROPERTY:
+                            case XSharpLexer.OPERATOR:
+                            case XSharpLexer.EVENT:
+                            case XSharpLexer.CLASS:
+                            case XSharpLexer.INTERFACE:
+                            case XSharpLexer.STRUCTURE:
+                            case XSharpLexer.VOSTRUCT:
+                            case XSharpLexer.ENUM:
+                            case XSharpLexer.UNION:
+                            case XSharpLexer.ADD:
+                            case XSharpLexer.REMOVE:
+                            case XSharpLexer.SET:
+                            case XSharpLexer.GET:
+                                // Move back this opening Keyword
+                                // Close the Entity
+                                current = nestedEntity.Pop();
+                                currentIndent = current.Item2;
+                                break;
+                        }
+                    }
+                    break;
+                case XSharpLexer.NEXT:
+                case XSharpLexer.ENDIF:
+                case XSharpLexer.ENDDO:
+                case XSharpLexer.ENDCASE:
+                case XSharpLexer.UNTIL:
+                case XSharpLexer.PP_ENDIF:
+                    // Move the Keyword back
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                        if (((current.Item1 == XSharpLexer.FOR) && (openKeyword.Type == XSharpLexer.NEXT)) ||
+                             ((current.Item1 == XSharpLexer.FOREACH) && (openKeyword.Type == XSharpLexer.NEXT)) ||
+                             ((current.Item1 == XSharpLexer.IF) && (openKeyword.Type == XSharpLexer.ENDIF)) ||
+                             ((current.Item1 == XSharpLexer.WHILE) && (openKeyword.Type == XSharpLexer.ENDDO)) ||
+                             ((current.Item1 == XSharpLexer.CASE) && (openKeyword.Type == XSharpLexer.ENDCASE)) ||
+                             ((current.Item1 == XSharpLexer.REPEAT) && (openKeyword.Type == XSharpLexer.UNTIL)) ||
+                             ((current.Item1 == XSharpLexer.PP_IFDEF) && (openKeyword.Type == XSharpLexer.PP_ENDIF)) ||
+                             ((current.Item1 == XSharpLexer.PP_IFNDEF) && (openKeyword.Type == XSharpLexer.PP_ENDIF))
+                             )
+                        {
+                            // Move back this opening Keyword
+                            // Close the Entity
+                            current = nestedEntity.Pop();
+                            currentIndent = current.Item2;
+                        }
+                    }
+                    break;
+            }
             // This should NOT happen
-            if (indentValue < 0)
+            if (currentIndent < 0)
             {
-                indentValue = 0;
+                currentIndent = 0;
             }
-            //
-            return (indentValue * _settings.IndentSize) + mlCmtSpaces;
+            // The number of needed indentation
+            return currentIndent;
         }
 
         private int getLineLength(ITextSnapshot snapshot, int start)
@@ -1253,7 +1267,7 @@ namespace XSharp.LanguageService
                             {
                                 try
                                 {
-                                    FormatLineIndent( editSession, prevLine, indentValue);
+                                    FormatLineIndent(editSession, prevLine, indentValue);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1287,7 +1301,7 @@ namespace XSharp.LanguageService
                                     if (startToken != null)
                                     {
                                         // The startToken is a list of possible tokens
-                                        specialIndentValue = alignToSpecificTokens(line, new List<string>( startToken.Split( new char[]{',' } ) ) );
+                                        specialIndentValue = alignToSpecificTokens(line, new List<string>(startToken.Split(new char[] { ',' })));
                                         // The can be aligned to SWITCH/DO CASE or indented
                                         if (!_settings.FormatAlignDoCase)
                                         {
@@ -1349,7 +1363,7 @@ namespace XSharp.LanguageService
                     lineNumber--;
                     ITextSnapshotLine line = currentLine.Snapshot.GetLineFromLineNumber(lineNumber);
                     var tokens = getTokensInLine(line);
-                    string currentKeyword ;
+                    string currentKeyword;
                     //
                     if (tokens.Count > 0)
                     {
@@ -1559,7 +1573,7 @@ namespace XSharp.LanguageService
         #endregion
 
         #region New Formatting process
-        class FormattingContext
+        internal class FormattingContext
         {
             readonly IList<IToken> allTokens;
             int currentIndex;
@@ -1631,6 +1645,11 @@ namespace XSharp.LanguageService
                 Dialect = dialect;
             }
 
+            /// <summary>
+            /// Move to a specific position in the Snapshot,
+            /// and set to the specific Token
+            /// </summary>
+            /// <param name="positionToReach"></param>
             public void MoveTo(int positionToReach)
             {
                 this.prevIndex = this.currentIndex;
@@ -1638,38 +1657,52 @@ namespace XSharp.LanguageService
                     return;
                 //
                 int newPos = binarySearch(0, allTokens.Count - 1, positionToReach);
-                if ( newPos > -1 )
+                if (newPos > -1)
                 {
                     currentIndex = newPos;
                     currentPosition = allTokens[newPos].StartIndex;
-                            
+
                 }
                 else
                 {
                     currentIndex = -1;
-                    currentPosition = -1;    
+                    currentPosition = -1;
                 }
             }
 
+            /// <summary>
+            /// Move to the next Token
+            /// </summary>
             public void MoveToNext()
             {
                 this.prevIndex = this.currentIndex;
                 this.CurrentIndex++;
             }
 
+            /// <summary>
+            /// Move back to the previous position.
+            /// This can be done after a MoveToNext or a GetFirstToken with andMove==true
+            /// </summary>
             public void MoveBack()
             {
-                this.currentIndex = this.prevIndex;
+                this.CurrentIndex = this.prevIndex;
             }
 
-
-            public IToken GetFirstToken(bool ignoreSpaces)
+            /// <summary>
+            /// Get the first token in the current line, starting from the current position.
+            /// The operation won't skip line, so it can return NULL if there are no token in the line.
+            /// </summary>
+            /// <param name="ignoreSpaces">Ignore Spaces</param>
+            /// <param name="andMove">move the position to the found Token. Default to False</param>
+            /// <returns></returns>
+            public IToken GetFirstToken(bool ignoreSpaces, bool andMove = false)
             {
                 IToken first = null;
+                int start = 0;
                 if (currentPosition > -1)
                 {
                     int currentLine = allTokens[currentIndex].Line;
-                    int start = currentIndex;
+                    start = currentIndex;
                     while (start < allTokens.Count)
                     {
                         IToken token = allTokens[start];
@@ -1691,9 +1724,19 @@ namespace XSharp.LanguageService
                         }
                     }
                 }
+                if ((first != null) && andMove)
+                {
+                    this.prevIndex = currentIndex;
+                    this.CurrentIndex = start;
+                }
                 return first;
             }
 
+            /// <summary>
+            /// Get the last token in the current line
+            /// </summary>
+            /// <param name="ignoreSpaces">Ignore Spaces</param>
+            /// <returns></returns>
             public IToken GetLastToken(bool ignoreSpaces)
             {
                 IToken last = null;
@@ -1723,6 +1766,12 @@ namespace XSharp.LanguageService
                 return last;
             }
 
+            /// <summary>
+            /// Get the first token, starting from the current position.
+            /// This can move to another line.
+            /// </summary>
+            /// <param name="ignoreSpaces"></param>
+            /// <returns></returns>
             public IToken GetToken(bool ignoreSpaces)
             {
                 IToken first = null;
@@ -1752,7 +1801,7 @@ namespace XSharp.LanguageService
                 return first;
             }
 
-            private int binarySearch( int left, int right, int toReach)
+            private int binarySearch(int left, int right, int toReach)
             {
                 if (right >= left)
                 {
@@ -1766,11 +1815,11 @@ namespace XSharp.LanguageService
                     // If element is smaller than middle, then 
                     // it can only be present in left subarray 
                     if (allTokens[middle].StartIndex > toReach)
-                        return binarySearch( left, middle - 1, toReach);
+                        return binarySearch(left, middle - 1, toReach);
 
                     // Else the element can only be present 
                     // in right subarray 
-                    return binarySearch( middle + 1, right, toReach);
+                    return binarySearch(middle + 1, right, toReach);
                 }
 
                 // We reach here when element is not present 
@@ -1813,492 +1862,6 @@ namespace XSharp.LanguageService
 
         }
 
-        private void FormatDocumentV2()
-        {
-            WriteOutputMessage("FormatDocumentV2() -->>");
-            if (!_buffer.CheckEditAccess())
-            {
-                // can't edit !
-                return;
-            }
-            var settings = _buffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
-            // Try to retrieve an already parsed list of Tags
-            if (_classifier != null)
-            {
-#if TRACE
-                //
-                System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
-                stopWatch.Start();
-#endif
-                //
-                FormattingContext context = null;
-                // Already been lexed ?
-                if (getBufferedTokens(out var xTokens))
-                {
-                    var tokens = xTokens.TokenStream.GetTokens();
-                    // Ok, we have some tokens
-                    if (tokens != null)
-                    {
-                        // And they are the right ones
-                        if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
-                        {
-                            // Ok, use it
-                            context = new FormattingContext(tokens, this.ParseOptions.Dialect);
-                        }
-                    }
-                }
-                // No Tokens....Ok, do the lexing now
-                if (context == null)
-                    context = new FormattingContext(this, _buffer.CurrentSnapshot);
-                //
-                #region Get and Sort Regions
-                ITextSnapshot snapshot = _classifier.Snapshot;
-                SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
-                var classifications = _classifier.GetRegionTags();
-                // We cannot use SortedList, because we may have several Classification that start at the same position
-                List<ClassificationSpan> sortedTags = new List<ClassificationSpan>();
-                foreach (var tag in classifications)
-                {
-                    sortedTags.Add(tag);
-                }
-                sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
-                // Now that Tags are sorted, we can use a stack to arrange them by pairs
-                Stack<RegionTag> regionStarts = new Stack<RegionTag>();
-                List<Region> regions = new List<Region>();
-                //
-                foreach (var tag in sortedTags)
-                {
-                    if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStartFormat))
-                    {
-                        int startTokenType = -1;
-                        if (tag is XsClassificationSpan)
-                            startTokenType = (tag as XsClassificationSpan).startTokenType;
-                        if ( startTokenType == -1 )
-                        {
-                            // Ok, we miss the info during the parsing, but, we will try to get it here
-                            context.MoveTo(tag.Span.Start);
-                            IToken openKeyword = context.GetFirstToken(true);
-                            if (openKeyword != null)
-                            {
-                                startTokenType = openKeyword.Type;
-                            }
-                        }
-                        regionStarts.Push(new RegionTag(tag.Span.Span, startTokenType));
-                    }
-                    else if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
-                    {
-                        if (regionStarts.Count > 0)
-                        {
-                            var start2 = regionStarts.Pop();
-                            int endTokenType = -1;
-                            if (tag is XsClassificationSpan)
-                                endTokenType = (tag as XsClassificationSpan).endTokenType;
-                            regions.Add(new Region(start2.TagSpan, tag.Span.Span, start2.TagType, endTokenType));
-                        }
-                    }
-                }
-                // In order to try to speed up the formatting process, it would be good to have the regions sorted by their Start
-                regions.Sort((a, b) => a.Start.TagSpan.Start.CompareTo(b.Start.TagSpan.Start));
-
-                //Now, we have a list of Regions Start/Stop
-                #endregion
-                // wait until we can work
-                while (_buffer.EditInProgress)
-                {
-                    System.Threading.Thread.Sleep(100);
-                }
-                var editSession = _buffer.CreateEdit();
-                try
-                {
-                    
-
-
-                    var lines = _buffer.CurrentSnapshot.Lines;
-                    int indentSize = 0;
-                    bool inComment = false;
-                    int lineContinue = 0;
-                    int prevIndentSize = 0;
-                    int continueOffset = settings.IndentSize * settings.IndentFactor;
-                    IToken prevstart = null;
-                    // We are more forward, line per line
-                    foreach (var snapLine in lines)
-                    {
-                        bool lineAfterAttributes = false;
-                        // Ignore Empty lines
-                        if (snapLine.Length > 0)
-                        {
-                            context.MoveTo(snapLine.Start);
-                            IToken start = context.GetFirstToken(true);
-                            if (start != null)
-                            {
-                                IToken end = context.GetLastToken(true);
-                                //
-                                if (lineContinue == 1)
-                                {
-                                    if (prevstart.Type != XSharpLexer.LBRKT)
-                                    {
-                                        indentSize = prevIndentSize + continueOffset;
-                                    }
-                                    else
-                                    {
-                                        lineAfterAttributes = true;
-                                    }
-
-                                }
-                                else if (lineContinue > 1)
-                                {
-                                    indentSize = prevIndentSize;
-                                }
-                                else
-                                {
-                                    indentSize = getDesiredIndentationInDocumentV2(context, snapLine, regions, out inComment, settings);
-                                }
-                                prevstart = start;
-                                // Not in comment, Multiple line but not Attribute
-                                if (!inComment && (end.Type == XSharpLexer.SEMI))
-                                {
-                                    if (lineContinue == 0)
-                                    {
-                                        // Keep the previous Indentation
-                                        lineContinue = 1;
-                                        prevIndentSize = indentSize;
-                                    }
-                                    else if (lineContinue == 1)
-                                    {
-                                        if (!lineAfterAttributes)
-                                        {
-                                            lineContinue = 2;
-                                            prevIndentSize = indentSize;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    lineContinue = 0;
-                                }
-                            }
-                        }
-                        if (canFormatLine(snapLine))
-                        {
-                            formatLineCaseV2(context, editSession, snapLine);
-                        }
-                        FormatLineIndent(editSession, snapLine, indentSize);
-                        
-                    }
-                }
-                finally
-                {
-                    if (editSession.HasEffectiveChanges)
-                    {
-                        editSession.Apply();
-                    }
-                    else
-                    {
-                        editSession.Cancel();
-                    }
-                }
-                //
-#if TRACE
-                stopWatch.Stop();
-                // Get the elapsed time as a TimeSpan value.
-                TimeSpan ts = stopWatch.Elapsed;
-
-                // Format and display the TimeSpan value.
-                string elapsedTime = string.Format("{0:00}h {1:00}m {2:00}.{3:00}s",
-                    ts.Hours, ts.Minutes, ts.Seconds,
-                    ts.Milliseconds / 10);
-                //
-                WriteOutputMessage("FormatDocument : Done in " + elapsedTime);
-#endif
-            }
-            else
-            {
-                FormatCaseForWholeBuffer();
-            }
-            //
-            WriteOutputMessage("FormatDocument() <<--");
-        }
-
-        //private int getLineLengthV2(ITextSnapshot snapshot, int start)
-        //{
-        //    int length = 0;
-        //    bool found = false;
-        //    char car;
-        //    int currrentPos = start;
-        //    int pos = 0;
-        //    bool mayContinue = false;
-        //    char[] newLine = Environment.NewLine.ToCharArray();
-        //    do
-        //    {
-        //        car = snapshot[currrentPos];
-        //        if (car == newLine[pos])
-        //        {
-        //            if (pos == newLine.Length - 1)
-        //            {
-        //                if (!mayContinue)
-        //                {
-        //                    found = true;
-        //                    break;
-        //                }
-        //                pos = 0;
-        //            }
-        //            else
-        //                pos++;
-        //        }
-        //        else
-        //        {
-        //            if (car == ';')
-        //                mayContinue = true;
-        //            else
-        //                mayContinue = false;
-        //            pos = 0;
-        //        }
-        //        //
-        //        currrentPos++;
-        //        if (currrentPos >= snapshot.Length)
-        //        {
-        //            break;
-        //        }
-        //    } while (!found);
-        //    //
-        //    if (found)
-        //    {
-        //        length = (currrentPos - start + 1) - newLine.Length;
-        //    }
-        //    return length;
-        //}
-
-        private int getDesiredIndentationInDocumentV2(FormattingContext context, ITextSnapshotLine snapLine, List<Region> regions, out bool inComment, SourceCodeEditorSettings settings)
-        {
-            int indentValue = 0;
-            int mlCmtSpaces = 0;
-            //string openKeyword = "";
-            inComment = false;
-            //
-            //List<IMappingTagSpan<IClassificationTag>> tags = getTagsInLine(snapLine);
-            // In Tuple Regions, the items are :
-            // Item1 is Start
-            // Item2 is End
-            foreach (var region in regions)
-            {
-                // The line is before the current region, so skip
-                if (snapLine.End.Position < region.Start.TagSpan.Start)
-                {
-                    continue;
-                }
-                // The line is after the current region, so skip
-                if (snapLine.Start.Position > region.End.TagSpan.Start)
-                {
-                    continue;
-                }
-                // Get the opening keyword, at the beginning of the currently processed region
-                int startTokenType = region.Start.TagType;
-                int endTokenType = region.End.TagType; // Do we have a Closing Keyword ?
-                if (startTokenType == -1) // The parsing has not initialized it, do it now.
-                {
-                    int prevIndex = context.CurrentIndex;
-                    context.MoveTo(region.Start.TagSpan.Start);
-                    IToken openKeyword = context.GetFirstToken(true);
-                    if (openKeyword == null)
-                    {
-                        WriteOutputMessage("FormatDocument : Error when moving in Tokens");
-                        continue; // This should never happen
-                    }
-                    startTokenType = openKeyword.Type;
-                    // save it for the next time...
-                    region.Start.TagType = startTokenType;
-                    context.CurrentIndex = prevIndex;
-                }
-                //
-                if ((snapLine.Start.Position <= region.Start.TagSpan.Start) && (snapLine.End.Position >= region.Start.TagSpan.Start))
-                {
-                    // We are on the line opening a Region
-                    // What kind of region ?
-                    // Skip comment and using regions
-                    switch (startTokenType)
-                    {
-                        case XSharpLexer.ML_COMMENT:
-                        case XSharpLexer.SL_COMMENT:
-                        case XSharpLexer.USING:
-                        case XSharpLexer.PP_INCLUDE:
-                        case XSharpLexer.PP_DEFINE:
-                        case XSharpLexer.PP_REGION:
-                            continue;
-                        case XSharpLexer.DEFINE:
-                            // Warning !! It could DEFINE CLASS in FOXPRO
-                            if (context.Dialect == XSharpDialect.FoxPro)
-                            {
-                                context.MoveToNext();
-                                IToken openKeyword = context.GetFirstToken(true);
-                                if (openKeyword == null)
-                                {
-                                    WriteOutputMessage("FormatDocument : Error when moving in Tokens");
-                                    continue; // This should never happen
-                                }
-                                context.MoveBack();
-                                if (openKeyword.Type != XSharpLexer.CLASS)
-                                    continue;
-                            }
-                            else
-                                continue;
-                            break;
-                        default:
-                            break;
-                    }
-                    // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
-                    switch (startTokenType)
-                    {
-                        case XSharpLexer.ELSE:
-                        case XSharpLexer.ELSEIF:
-                        case XSharpLexer.FINALLY:
-                        case XSharpLexer.CATCH:
-                        case XSharpLexer.RECOVER:
-                        case XSharpLexer.PP_ELSE:
-                            indentValue--;
-                            break;
-                    }
-                    // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
-                    // Check for a setting
-                    if (settings.FormatAlignDoCase)
-                    {
-                        // Move back keywords ( CASE, OTHERWISE )
-                        switch (startTokenType)
-                        {
-                            case XSharpLexer.CASE:
-                            case XSharpLexer.OTHERWISE:
-                                indentValue--;
-                                break;
-                        }
-                    }
-                }
-                else if ((snapLine.Start.Position > region.Start.TagSpan.Start) && (snapLine.End.Position < region.End.TagSpan.Start))
-                {
-                    // We are inside a Region
-                    // Comment or Using region ?
-                    switch (startTokenType)
-                    {
-                        
-                        case XSharpLexer.USING:
-                        case XSharpLexer.PP_INCLUDE:
-                        case XSharpLexer.PP_DEFINE:
-                        case XSharpLexer.PP_REGION:
-                            continue;
-                        case XSharpLexer.DEFINE:
-                            // Warning !! It could DEFINE CLASS in FOXPRO
-                            if (context.Dialect == XSharpDialect.FoxPro)
-                            {
-                                context.MoveToNext();
-                                IToken openKeyword = context.GetFirstToken(true);
-                                if (openKeyword == null)
-                                {
-                                    WriteOutputMessage("FormatDocument : Error when moving in Tokens");
-                                    continue; // This should never happen
-                                }
-                                context.MoveBack();
-                                if (openKeyword.Type != XSharpLexer.CLASS)
-                                    continue;
-                            }
-                            else
-                                continue;
-                            break;
-                        default:
-                            if (XSharpLexer.IsComment(startTokenType))
-                                continue;
-                            break;
-                    }
-                    // We are between the opening Keyword and the closing Keyword
-                    if (!settings.FormatAlignMethod)
-                    {
-
-                        indentValue++;
-                    }
-                    else
-                    {
-                        // no closing keyword
-                        switch (startTokenType)
-                        {
-                            case XSharpLexer.FUNCTION:
-                            case XSharpLexer.PROCEDURE:
-                            case XSharpLexer.CONSTRUCTOR:
-                            case XSharpLexer.DESTRUCTOR:
-                            case XSharpLexer.ASSIGN:
-                            case XSharpLexer.ACCESS:
-                            case XSharpLexer.METHOD:
-                            case XSharpLexer.OPERATOR:
-                                break;
-                            default:
-                                indentValue++;
-                                break;
-                        }
-                    }
-                    // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
-                    switch (startTokenType)
-                    {
-                        case XSharpLexer.ELSE:
-                        case XSharpLexer.ELSEIF:
-                        case XSharpLexer.FINALLY:
-                        case XSharpLexer.CATCH:
-                        case XSharpLexer.RECOVER:
-                        case XSharpLexer.PP_ELSE:
-                            indentValue--;
-                            break;
-                    }
-                }
-                else //if ((region.Item2.Start >= snapLine.Start.Position) && (region.Item2.End <= snapLine.End.Position))
-                {
-                    // We are on the closing Keyword
-                    if (!settings.FormatAlignMethod)
-                    {
-                        switch (startTokenType)
-                        {
-                            case XSharpLexer.FUNCTION:
-                            case XSharpLexer.PROCEDURE:
-                            case XSharpLexer.CONSTRUCTOR:
-                            case XSharpLexer.DESTRUCTOR:
-                            case XSharpLexer.ASSIGN:
-                            case XSharpLexer.ACCESS:
-                            case XSharpLexer.METHOD:
-                            case XSharpLexer.OPERATOR:
-                                // per Default
-                                indentValue++;
-                                //
-                                switch (endTokenType)
-                                {
-                                    case XSharpLexer.END:
-                                        // We may have an optionnal closing keyword indication
-                                        indentValue--;
-                                        break;
-                                }
-                                break;
-                        }
-                    }
-                    //
-                    if (!settings.FormatAlignDoCase)
-                    {
-                        // Don't indent
-                        // Move back keywords ( CASE, OTHERWISE )
-                        switch (startTokenType)
-                        {
-                            case XSharpLexer.CASE:
-                            case XSharpLexer.OTHERWISE:
-                                indentValue++;
-                                break;
-                        }
-                    }
-
-                }
-                //}
-                //}
-            }
-            //}
-            // This should NOT happen
-            if (indentValue < 0)
-            {
-                indentValue = 0;
-            }
-            //
-            return (indentValue * settings.IndentSize) + mlCmtSpaces;
-        }
 
         private void formatLineCaseV2(FormattingContext context, ITextEdit editSession, ITextSnapshotLine line)
         {
@@ -2326,9 +1889,9 @@ namespace XSharp.LanguageService
             context.MoveTo(line.Start);
             IToken token = context.GetToken(true);
             int workOnLine = -1;
-            if ( token != null )
+            if (token != null)
                 workOnLine = token.Line;
-            while ( token != null )
+            while (token != null)
             {
                 formatToken(editSession, 0, token);
                 //
@@ -2343,7 +1906,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            
+
         }
         #endregion
 
@@ -2362,5 +1925,42 @@ namespace XSharp.LanguageService
             ; //  _errors.Add(new XError(fileName, span, errorCode, message, args));
         }
         #endregion
+    }
+
+    static class ListExtension
+    {
+        public static T Pop<T>(this List<T> list)
+        {
+            int listEnd = list.Count;
+            if (listEnd > 0)
+            {
+                T r = list[listEnd - 1];
+                list.RemoveAt(listEnd - 1);
+                return r;
+            }
+            else
+            {
+                throw new InvalidOperationException("List cannot be empty");
+            }
+        }
+
+        public static void Push<T>(this List<T> list, T v)
+        {
+            list.Add(v);
+        }
+
+        public static T Peek<T>(this List<T> list)
+        {
+            int listEnd = list.Count;
+            if (listEnd > 0)
+            {
+                T r = list[listEnd - 1];
+                return r;
+            }
+            else
+            {
+                throw new InvalidOperationException("List cannot be empty");
+            }
+        }
     }
 }

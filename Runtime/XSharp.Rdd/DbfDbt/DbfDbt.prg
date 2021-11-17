@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Text
@@ -12,12 +12,12 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DBFDBT INHERIT DBF
         PRIVATE _oDbtMemo AS DBTMemo
         PROPERTY Encoding AS Encoding GET SUPER:_Encoding
- 
+
         CONSTRUCTOR
             SUPER()
             SELF:_Memo := _oDbtMemo := DBTMemo{SELF}
-            
-        VIRTUAL PROPERTY Driver AS STRING GET "DBFDBT"
+
+        VIRTUAL PROPERTY Driver AS STRING GET nameof(DBFDBT)
         // Return the memo content as STRING
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
             LOCAL buffer AS BYTE[]
@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     oResult := IntPtr.Zero
                 ENDIF
-                    
+
             CASE DbInfo.DBI_MEMOSTREAM
                 IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDbtMemo:IsOpen)
                     oResult := SELF:_oDbtMemo:_oStream
@@ -74,7 +74,7 @@ BEGIN NAMESPACE XSharp.RDD
                        fldPos := Convert.ToInt32(oNewValue)
                        oResult := SELF:GetValue(fldPos)
                     CATCH ex AS Exception
-                        oResult := ""   
+                        oResult := ""
                         SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, "DBFDBT.Info")
                     END TRY
                 ENDIF
@@ -86,10 +86,10 @@ BEGIN NAMESPACE XSharp.RDD
                 oResult := SUPER:Info(nOrdinal, oNewValue)
             END SWITCH
             RETURN oResult
-            
-            
+
+
      END CLASS
-            
-    
-    
+
+
+
 END NAMESPACE

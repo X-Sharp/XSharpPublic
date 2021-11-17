@@ -21,7 +21,7 @@ CLASS DBFVFP INHERIT DBFCDX
 		SELF:_AllowedFieldTypes := "BCDFGILMNPQTVWY0"
 		RETURN
 		
-	PUBLIC   PROPERTY Driver                  AS STRING GET "DBFVFP"
+	PUBLIC   PROPERTY Driver                  AS STRING GET nameof(DBFVFP)
     INTERNAL PROPERTY DbcName        AS STRING AUTO
     INTERNAL PROPERTY DbcPosition    AS INT GET DbfHeader.SIZE + SELF:_Fields:Length  * DbfField.SIZE +1
 

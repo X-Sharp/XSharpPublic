@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS SDF INHERIT TEXTRDD  
         PROTECT buffer AS BYTE[]
         /// <inheritdoc />
-        OVERRIDE PROPERTY Driver AS STRING GET "SDF"
+        OVERRIDE PROPERTY Driver AS STRING GET nameof(SDF)
         
         
         PROTECTED METHOD _readRecord() AS LOGIC STRICT

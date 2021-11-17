@@ -21,27 +21,17 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_oFptMemo:ExportMode := BLOB_EXPORT_APPEND
 
             /// <inheritdoc />
-        PROPERTY Driver AS STRING GET "DBFFPT"
-
-
+        PROPERTY Driver AS STRING GET nameof(DBFFPT)
 
         METHOD GetValue(nFldPos AS LONG) AS OBJECT
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
-                VAR rawData := (BYTE[])SUPER:GetValue(nFldPos)
-                var column  := SELF:_GetColumn(nFldPos)
-                IF column:IsBinary
-                    if rawData != NULL
-                        return rawData
-                    else
-                        return <byte>{}
-                    endif
-                ENDIF
-                IF rawData != NULL
-                    // So, extract the "real" Data
-                    RETURN SELF:_oFptMemo:DecodeValue(rawData)
-                ELSE
-                    RETURN String.Empty
+                VAR rawData := _oFptMemo:GetRawValueWithHeader(nFldPos)
+                 if rawData != NULL
+                     RETURN SELF:_oFptMemo:DecodeValue(rawData)
+                 else
+                    var column  := SELF:_GetColumn(nFldPos)
+                    return column:BlankValue()
                 ENDIF
             ENDIF
             RETURN SUPER:GetValue(nFldPos)

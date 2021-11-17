@@ -765,11 +765,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                      _DebOut32("DBFCDX Fixed by moving last key from Left Sibling "+ oLeft:PageNoX)
                   ENDIF
                 ENDIF
-#ifdef TESTCDX                
+#ifdef TESTCDX
                IF isFixed
                   branch:ValidateLevel()
                 ENDIF
-#endif                
+#endif
                RETURN isFixed
 
 
@@ -1018,7 +1018,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 recno  := SELF:_locateKey(bSearchKey, padLen, IIF(seekInfo:SoftSeek , SearchMode.SoftSeek , SearchMode.Left),recno)
                 result := SELF:_oRdd:__Goto(recno)
                 IF activeFilter
-                    SELF:Descending := oldDescend   
+                    SELF:Descending := oldDescend
                     SELF:_oRdd:SkipFilter(1)
                     SELF:Descending := FALSE
                     recno := SELF:_RecNo
@@ -1092,7 +1092,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 IF found
                                     result := SELF:_oRdd:__Goto(recno)
                                 ELSE
-                                    IF diff == -strCmp
+                                    IF diff == -strCmp .and. fSoft
                                         found := TRUE
                                         result := SELF:_GoToRecno(recno)
                                     ELSE

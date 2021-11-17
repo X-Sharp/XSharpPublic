@@ -345,10 +345,10 @@ BEGIN NAMESPACE XSharp
     LOCAL e AS Error
     if ex != null
         e			  := Error{ ex }
-        e:Description := ErrString( EG_EXCEPTION ) + ":" + ex:Message
+        e:Description := ErrString( EG_EXCEPTION ) + ": " + ex:Message
     else
         e			  := Error{  }
-        e:Description := ErrString( EG_SEQUENCE ) + ":" + ex:Message
+        e:Description := ErrString( EG_SEQUENCE )
     endif
     RETURN e
 

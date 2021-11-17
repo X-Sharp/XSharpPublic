@@ -5045,11 +5045,41 @@ RETURN
 
 			DbCloseArea()
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD BlobGetTest() AS VOID // https://github.com/X-Sharp/XSharpPublic/issues/681
+		    LOCAL cDbf AS STRING
+			LOCAL aStruct AS ARRAY
+
+			RddSetDefault("DBFCDX")
+
+			cDbf := GetTempFileName()
+			DbCreate(cDbf, { { "DATA", "M", 10, 0, "DATA" } })
+
+			DbUseArea(,,cDbf)
+            var cData := "The quick brown fox jumps over the lazy dog"
+            DbAppend()
+            FieldPut(1, cData)
+            var result := BlobGet(1, 10, 10)
+            Assert.Equal( result, cData:Substring(9,10))
+            result := BlobGet(1)
+            Assert.Equal( result, cData)
+            DbAppend()
+            var data := BYTE[]{ 10 }
+            data[4] := 42
+            FieldPut(1, data)
+            result := BlobGet(1)
+            var bResult := (byte[]) result
+            Assert.Equal( bResult:Length, data:Length)
+            for var nByte := 1 to bResult:Length
+                Assert.Equal( bResult[nByte], data[nByte])
+            next
+            DbCloseArea()
+
 
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD BLOBDirectPut_Test() AS VOID // https://github.com/X-Sharp/XSharpPublic/issues/832
-			LOCAL cDbf AS STRING
+            			LOCAL cDbf AS STRING
 			LOCAL aStruct AS ARRAY
 			LOCAL nRecSize, nBlockNo AS INT
 			LOCAL pRecord, pField AS BYTE PTR

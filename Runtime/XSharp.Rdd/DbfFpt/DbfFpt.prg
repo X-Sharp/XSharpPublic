@@ -134,34 +134,10 @@ BEGIN NAMESPACE XSharp.RDD
             CASE DbInfo.DBI_MEMOVERSION
                 oResult := DB_MEMOVER_STD
             CASE DbInfo.BLOB_GET
-                // oNewValue should be object[] with 3 elements
-                TRY
-                    IF oNewValue IS OBJECT[] VAR oArray
-                        IF oArray:Length >= 3
-                            VAR nFld    := Convert.ToInt32(oArray[0])
-                            VAR nOffset := Convert.ToInt32(oArray[1])
-                            VAR nLen    := Convert.ToInt32(oArray[2])
-                            VAR rawData := (BYTE[])SUPER:GetValue(nFld)
-                            IF rawData != NULL .AND. rawData:Length > 8 // 1st 8 bytes are the header
-                                VAR nDataLen := rawData:Length -8
-                                nOffset += 8
-                                IF nOffset <= rawData:Length
-                                    VAR nToCopy := nLen
-                                    IF nToCopy == 0
-                                        nToCopy := nDataLen
-                                    ELSEIF nToCopy > nDataLen - nOffset + 1
-                                        nToCopy := nDataLen - nOffset + 1
-                                    ENDIF
-                                    VAR result  := BYTE[]{nToCopy}
-                                    System.Array.Copy(rawData, nOffset, result,0, nToCopy)
-                                    oResult := SELF:_Encoding:GetString(result,0, nToCopy)
-                                ENDIF
-                            ENDIF
-                        ENDIF
-                    ENDIF
-                CATCH ex AS Exception
-                    SELF:_dbfError(ex, Subcodes.ERDD_READ, Gencode.EG_CORRUPTION, "DBFFPT.BlobGet")
-                END TRY
+                IF oNewValue IS XSharp.RDD.IBlobData VAR oBlob
+                    oResult := _oFptMemo:BlobInfo(nOrdinal, oBlob)
+                ENDIF
+
             CASE DbInfo.BLOB_NMODE
                 IF oNewValue IS LONG VAR iExportMode
                     SELF:_oFptMemo:ExportMode := iExportMode

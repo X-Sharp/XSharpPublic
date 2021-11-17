@@ -102,6 +102,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
             TRY
                 SELF:_hFile    := FCreate2( SELF:FullPath,_OR(FC_NORMAL, FO_EXCLUSIVE))
+                IF File(SELF:FullPath)
+                    // Adjust Filename to handle 8 char DOS names
+                    SELF:_fullPath := FPathName()
+                ENDIF
                 SELF:_oStream  := FGetStream(SELF:_hFile)
             CATCH
                 SELF:Close()

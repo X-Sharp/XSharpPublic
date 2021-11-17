@@ -71,12 +71,20 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_ReadOnly  := info:ReadOnly
             SELF:_hFile     := FCreate( SELF:FileName)
             SELF:_oStream   := FGetStream(_hFile)
+            IF File(SELF:FileName)
+                // Adjust Filename to handle 8 char DOS names
+                SELF:FileName := FPathName()
+            ENDIF
             RETURN SELF:IsOpen
 
        VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             SELF:FileName  := System.IO.Path.ChangeExtension( info:FullName, SELF:Extension )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
+            IF File(SELF:FileName)
+                // Adjust Filename to handle 8 char DOS names
+                SELF:FileName := FPathName()
+            ENDIF
             SELF:_hFile     := FOpen(SELF:FileName, info:FileMode)
             SELF:_oStream   := FGetStream(_hFile)
             RETURN SELF:IsOpen

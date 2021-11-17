@@ -278,6 +278,10 @@ BEGIN NAMESPACE XSharp.RDD
 
             //
             SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
+            IF File(SELF:_FileName)
+                // Adjust Filename to handle 8 char DOS names
+                SELF:_FileName := FPathName()
+            ENDIF
             IF SELF:IsOpen
                 isOK := SELF:_DetermineCodePage()
                 SELF:_prepareFields()

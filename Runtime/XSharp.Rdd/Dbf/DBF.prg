@@ -905,6 +905,10 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 	SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
     //
 	SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
+    // Adjust path to be sure we handle DOS 8 name chars correctly
+    IF File(SELF:_FileName)
+        SELF:_FileName := FPathName()
+    ENDIF
 	IF SELF:IsOpen
         SELF:_oStream    := (FileStream) FGetStream(SELF:_hFile)
 		LOCAL fieldCount :=  SELF:_Fields:Length AS INT

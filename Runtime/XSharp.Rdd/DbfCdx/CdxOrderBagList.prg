@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -15,11 +15,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL SEALED CLASS CdxOrderBagList
         PRIVATE _oRdd AS DBFCDX
         PRIVATE _bags AS List<CdxOrderBag>
-        
+
         INTERNAL PROPERTY CurrentOrder AS CdxTag AUTO
         INTERNAL PROPERTY BagCount AS LONG GET _bags:Count
-        
-            
+
+
         INTERNAL PROPERTY First AS CdxOrderBag GET IIF(_bags:Count > 0, _bags[0], NULL)
         INTERNAL CONSTRUCTOR(oRdd AS DBFCDX)
             _oRdd := oRdd
@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL isOk := FALSE AS LOGIC
             // add Existing order bag to the list.
             // looks for bags through the normal paths
-             IF File(info:BagName)
+            IF File(info:BagName)
                 info:BagName := FPathName()
                 IF SELF:FindOrderBag(info:BagName) == NULL_OBJECT
                     TRY
@@ -61,9 +61,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN isOk
         INTERNAL METHOD _AddBag(oBag AS CdxOrderBag) AS VOID
             _bags:Add(oBag)
-            RETURN 
+            RETURN
         PRIVATE METHOD _CreateBag(info AS DbOrderCreateInfo) AS CdxOrderBag
-            // Create new OrderBag on disk 
+            // Create new OrderBag on disk
             LOCAL oBag AS CdxOrderBag
             oBag := CdxOrderBag{_oRdd}
             oBag:CreateBag(info:BagName)
@@ -111,12 +111,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         lOk := SELF:Focus(oI)
                     ENDIF
                     RETURN lOk
-                    
+
                 CATCH ex AS Exception
-                    SELF:_oRdd:_dbfError(ex, Subcodes.EDB_CREATEINDEX,Gencode.EG_CORRUPTION,  "CdxOrderBagList.Create") 
+                    SELF:_oRdd:_dbfError(ex, Subcodes.EDB_CREATEINDEX,Gencode.EG_CORRUPTION,  "CdxOrderBagList.Create")
                     RETURN FALSE
                 END TRY
-            
+
         INTERNAL METHOD Close(orderInfo AS DbOrderInfo) AS LOGIC
             // close the bag that matches the orderinfo. Structural indexes are also closed. Is that correct ?
             IF SELF:FindOrder(orderInfo, OUT VAR oTag)
@@ -141,7 +141,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:CurrentOrder := NULL
             IF orderInfo:AllTags
                 FOREACH oBag AS CdxOrderBag IN _bags
-                    IF lCloseStructural 
+                    IF lCloseStructural
                         oBag:Close()
                     ELSEIF ! oBag:Structural
                         oBag:Close()
@@ -170,7 +170,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
             ENDIF
             RETURN lOk
-            
+
         INTERNAL METHOD Destroy(orderInfo AS DbOrderInfo) AS LOGIC
             // destroy the first bag that matches the orderInfo.
             // when 2 bags exist with the same tag name then the first one will be destroyed.
@@ -183,7 +183,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             RETURN FALSE
-            
+
         INTERNAL PROPERTY IsHot AS LOGIC
             GET
                 // return TRUE as soon as one bag is hot
@@ -195,7 +195,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             END GET
         END PROPERTY
-        
+
         INTERNAL METHOD GoCold() AS LOGIC
             LOCAL lOk AS LOGIC
             // Process all even of one fails
@@ -206,7 +206,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             RETURN lOk
-            
+
         INTERNAL METHOD GoHot() AS LOGIC
             LOCAL lOk AS LOGIC
             // Process all even of one fails
@@ -217,7 +217,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             RETURN lOk
-            
+
         INTERNAL METHOD Flush() AS LOGIC
             LOCAL lOk AS LOGIC
             // Process all even of one fails
@@ -228,7 +228,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             RETURN lOk
-            
+
         INTERNAL METHOD Rebuild() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := TRUE
@@ -239,7 +239,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             SELF:GoCold()
             RETURN lOk
-            
+
         INTERNAL METHOD Focus(orderinfo AS DbOrderInfo) AS LOGIC
             VAR result := SELF:FindOrder(orderinfo, OUT VAR oOrder)
             SELF:CurrentOrder := oOrder
@@ -289,8 +289,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             ENDIF
             RETURN FALSE
-            
-        INTERNAL PROPERTY Count AS INT 
+
+        INTERNAL PROPERTY Count AS INT
             GET
                 LOCAL nResult := 0 AS LONG
                 FOREACH oBag AS CdxOrderBag IN _bags
@@ -299,7 +299,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN nResult
             END GET
         END PROPERTY
-        
+
         INTERNAL METHOD OrderPos(oTagToFind AS CdxTag) AS LONG
             LOCAL nPos := 0 AS LONG
             // return relative position over all the orderbags
@@ -314,7 +314,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 NEXT
             ENDIF
             RETURN 0
-            
+
          INTERNAL METHOD BagName(nBagPos AS LONG) AS STRING
             IF nBagPos > 0 .AND. nBagPos <= _bags:Count
                RETURN _bags[nBagPos-1]:FullPath

@@ -212,10 +212,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:Open(openInfo)
                 RETURN TRUE
             ENDIF
-            SELF:FullPath := cFullName
             SELF:_hFile    := FCreate(cFullName)
             SELF:_stream   := FGetStream(SELF:_hFile)
-
+            IF File(cFullName)
+                // Make sure the full name is returned and not the DOS Short Name
+                SELF:FullPath :=FPathName()
+            ENDIF
             // Allocate Root Page
             _root   := CdxFileHeader{SELF}
             _root:Initialize()
@@ -282,6 +284,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF !File(cFullName)
                 RETURN FALSE
             ENDIF
+            // Adjust Filename to handle 8 char DOS names
+            cFullName := FPathName()
             SELF:FullPath := cFullName
             SELF:_OpenInfo := _oRdd:_OpenInfo
             SELF:_hFile    := FOpen(cFullName, _OpenInfo:FileMode)

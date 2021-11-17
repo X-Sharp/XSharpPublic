@@ -627,6 +627,23 @@ BEGIN NAMESPACE XSharp.RDD
             local bData   as byte[]
             SWITCH nOrdinal
 
+            CASE DbInfo.BLOB_GET
+                VAR nFldPos := Convert.ToInt32(oBlobInfo:Data)
+                IF SELF:_oRdd:_isMemoField( nFldPos )
+                    VAR rawData := SELF:GetRawValueWithHeader(nFldPos)
+                    oResult := SELF:DecodeValue(rawData)
+                    IF oResult IS String VAR strResult
+                        VAR nOffset := oBlobInfo:Start
+                        VAR nLen    := oBlobInfo:Length
+                        // Note that nOffSet is a 1 based offset !
+                        nOffset -= 1
+                        if nLen > strResult:Length - nOffset
+                            nLen := strResult:Length - nOffset
+                        endif
+                       oResult := strResult:Substring(nOffset, nLen)
+                    ENDIF
+                ENDIF
+
             CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE
                 blockNr := oBlobInfo:Pointer
                 oResult := SELF:_GetBlockType(blockNr)
@@ -714,10 +731,8 @@ BEGIN NAMESPACE XSharp.RDD
        /// <param name="bData">The raw block including the 8 byte header</param>
        INTERNAL METHOD DecodeValue(bData AS BYTE[]) AS OBJECT
             // bData includes the header
-            LOCAL encoding  AS Encoding
             LOCAL offset AS LONG
             VAR token := FlexMemoToken{bData, _oStream}
-            encoding := SELF:_oRdd:_Encoding //ASCIIEncoding{}
             SWITCH token:DataType
             CASE FlexFieldType.Array16
             CASE FlexFieldType.Array32
@@ -733,9 +748,9 @@ BEGIN NAMESPACE XSharp.RDD
                // Some drivers are stupid enough to allocate blocks in the FPT with a zero length..
                 IF token:Length > 0
                     IF bData[bData:Length-1] == 0
-                        RETURN encoding:GetString(bData,8, bData:Length-9)
+                        RETURN SELF:Encoding:GetString(bData,8, bData:Length-9)
                     ELSE
-                        RETURN encoding:GetString(bData,8, bData:Length-8)
+                        RETURN SELF:Encoding:GetString(bData,8, bData:Length-8)
                     ENDIF
                 ENDIF
                 RETURN ""
@@ -822,12 +837,12 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE FlexArrayTypes.String32
                     length := BitConverter.ToInt32(bData,nOffset)
                     nOffset += 4
-                    element := SELF:_oRdd:_Encoding:GetString(bData, nOffset, length)
+                    element := SELF:Encoding:GetString(bData, nOffset, length)
                     nOffset += length
                 CASE FlexArrayTypes.String16
                     length := BitConverter.ToInt16(bData,nOffset)
                     nOffset += 2
-                    element := SELF:_oRdd:_Encoding:GetString(bData, nOffset, length)
+                    element := SELF:Encoding:GetString(bData, nOffset, length)
                     nOffset += length
                 CASE FlexArrayTypes.Float
                     element := 0.0
@@ -943,7 +958,7 @@ BEGIN NAMESPACE XSharp.RDD
                 token := FlexMemoToken{bData, _oStream}
                 token:DataType := FlexFieldType.String
                 token:Length   := sValue:Length
-                VAR bytes := SELF:_oRdd:_Encoding:GetBytes(sValue)
+                VAR bytes := SELF:Encoding:GetBytes(sValue)
                 System.Array.Copy(bytes,0, bData,FlexMemoToken.TokenLength, bytes:Length)
                 RETURN bData
             CASE TypeCode.Object

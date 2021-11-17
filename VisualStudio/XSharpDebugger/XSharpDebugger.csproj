@@ -104,7 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.330</Version>
+      <Version>15.0.339</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Debugger.Metadata">
       <Version>15.9.28307</Version>

@@ -804,21 +804,32 @@ CLASS XSharp.CoreDb
         VAR lResult :=  CoreDb.Do( { =>
              LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
              IF oRdd IS Workarea VAR oWa
-                LOCAL oFld AS RddFieldInfo
-                oFld := oWa:GetField((LONG) nPos)
-                IF oFld != NULL
-                    IF oFld:FieldType.IsMemo()
-                        RETURN FieldPut(nPos, aValue)
-                    ELSE
-                        VAR nOffSet := oFld:Offset
-                        VAR nLen    := oFld:Length
-                        IF aValue != NULL .AND. aValue:Length >= nLen
-                            VAR aCopy := oWa:GetRec()
-                            System.Array.Copy(aValue, 0, aCopy, nOffSet, nLen)
-                            oWa:PutRec(aCopy)
-                            RETURN TRUE
+                var oCanPut := oWa:Info(DBI_CANPUTREC, NULL)
+                IF oCanPut IS LOGIC VAR lCanPut .and. lCanPut
+                    LOCAL oFld AS RddFieldInfo
+                    oFld := oWa:GetField((LONG) nPos)
+                    IF oFld != NULL
+                        IF oFld:FieldType.IsMemo()
+                            RETURN FieldPut(nPos, aValue)
+                        ELSE
+                            VAR nOffSet := oFld:Offset
+                            VAR nLen    := oFld:Length
+                            IF aValue != NULL
+                                IF aValue:Length >= nLen
+                                    VAR aCopy := oWa:GetRec()
+                                    System.Array.Copy(aValue, 0, aCopy, nOffSet, nLen)
+                                    oWa:PutRec(aCopy)
+                                    RETURN TRUE
+                                ELSE
+                                    VAR oError := Error{EG_DATAWIDTH, __FUNCTION__, i"Not enough bytes for field. Required is {nLen} bytes" }
+                                    THROW oError
+                                ENDIF
+                            ENDIF
                         ENDIF
                     ENDIF
+                ELSE
+                    VAR oError := Error{EG_UNSUPPORTED, __FUNCTION__, "RDD does not support PutRec" }
+                    THROW oError
                 ENDIF
             ENDIF
             RETURN FALSE

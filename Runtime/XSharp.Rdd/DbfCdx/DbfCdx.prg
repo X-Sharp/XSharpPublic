@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DBFCDX INHERIT DBFFPT
         INTERNAL _indexList  AS CdxOrderBagList
         INTERNAL PROPERTY CurrentOrder AS CdxTag GET _indexList:CurrentOrder
-        VIRTUAL PROPERTY Driver  AS STRING GET "DBFCDX"
+        VIRTUAL PROPERTY Driver  AS STRING GET nameof(DBFCDX)
         INTERNAL PROPERTY MustForceRel AS LOGIC GET _RelInfoPending != NULL
 
 

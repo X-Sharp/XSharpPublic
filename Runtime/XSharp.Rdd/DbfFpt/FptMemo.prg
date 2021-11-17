@@ -147,9 +147,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN block
 
-        /// <summary></summary>
-        /// <param name="nFldPos">One based field number</param>
-        METHOD GetValue(nFldPos AS INT) AS OBJECT
+        INTERNAL METHOD GetRawValueWithHeader(nFldPos as INT) AS BYTE[]
             LOCAL blockNbr AS LONG
             LOCAL block := NULL AS BYTE[]
             IF SELF:IsOpen
@@ -157,8 +155,18 @@ BEGIN NAMESPACE XSharp.RDD
                 IF ( blockNbr > 0 )
                     block := SELF:_getBlock(blockNbr)
                 ENDIF
-                // At this level, the return value is the raw Data, in BYTE[]
             ENDIF
+            RETURN block
+
+        /// <summary></summary>
+        /// <param name="nFldPos">One based field number</param>
+        METHOD GetValue(nFldPos AS INT) AS OBJECT
+            LOCAL block := SELF:GetRawValueWithHeader(nFldPos) AS BYTE[]
+            if block != NULL
+                var result := BYTE[]{block:Length - 8}
+                System.Array.Copy(block, 8, result,0, result:Length)
+                block := result
+            endif
             RETURN block
        PRIVATE METHOD _WriteBlockToFile(nBlockNr as INT, fileName as STRING) AS LOGIC
             local block as byte[]

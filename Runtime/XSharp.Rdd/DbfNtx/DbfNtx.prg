@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DBFNTX INHERIT DBFDBT
         INTERNAL _indexList AS NtxOrderList
         INTERNAL PROPERTY CurrentOrder AS NtxOrder GET _indexList:CurrentOrder
-        VIRTUAL PROPERTY Driver AS STRING GET "DBFNTX"
+        VIRTUAL PROPERTY Driver AS STRING GET nameof(DBFNTX)
         CONSTRUCTOR()
             SUPER()
             SELF:_indexList := NtxOrderList{SELF}

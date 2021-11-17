@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System.Collections.Generic
@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharp.RDD
     [DebuggerDisplay("TSV ({Alias,nq})")];
     CLASS TSV INHERIT CSV
         /// <inheritdoc/>
-        OVERRIDE PROPERTY Driver AS STRING GET "TSV" 
+        OVERRIDE PROPERTY Driver AS STRING GET nameof(TSV)
         CONSTRUCTOR
             SUPER()
             SELF:FieldSeparator := Chr(9)
@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharp.RDD
     [DebuggerDisplay("CSV ({Alias,nq})")];
     CLASS CSV INHERIT DELIM
         /// <inheritdoc/>
-        OVERRIDE PROPERTY Driver AS STRING GET "CSV" 
+        OVERRIDE PROPERTY Driver AS STRING GET nameof(CSV)
 
         CONSTRUCTOR
             SUPER()
@@ -46,7 +46,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:StringDelimiter := RuntimeState.StringDelimiter
             SELF:_lHasHeader := FALSE
         /// <inheritdoc/>
-        OVERRIDE PROPERTY Driver AS STRING GET "DELIM" 
+        OVERRIDE PROPERTY Driver AS STRING GET nameof(DELIM)
 
         PROTECTED METHOD _readRecord() AS LOGIC STRICT
             IF _BufferValid .OR. SELF:EoF
@@ -153,7 +153,7 @@ BEGIN NAMESPACE XSharp.RDD
                     OTHERWISE
                         afterCR := FALSE
                     END SWITCH
-                NEXT                    
+                NEXT
             ENDDO
             FSeek3(SELF:_hFile, (LONG) dwPos, FS_SET)
             // Suppress last line when it has a length of 0
@@ -182,8 +182,8 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_WriteString(result)
         ENDIF
         RETURN lOk
-        
-    /// <inheritdoc/>    
+
+    /// <inheritdoc/>
     OVERRIDE METHOD GoTop() AS LOGIC
         local lOk as LOGIC
         lOk := SUPER:GoTop()

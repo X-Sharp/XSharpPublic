@@ -2579,7 +2579,7 @@ RETURN
 			RddSetDefault("DBFNTX")
 
 			cDbf := GetTempFileName()
-			DbCreate(cDbf, {{"FLD1","C",10,0},{"MEMO1","M",10,0}})
+			DbCreate(cDbf, {{"FLD1","C",5,0},{"MEMO1","M",10,0}})
 
 			DbUseArea(,,cDbf)
 			DbAppend()
@@ -2602,6 +2602,9 @@ RETURN
 			a := BYTE[]{10_000}
 			FOR LOCAL n := 1 AS INT UPTO a:Length
 				a[n] := (BYTE)(n % 256)
+                if a[n] == 26   // This is the EOF char. Needs to be replaced with something harmless
+                    a[n] := 42
+                endif
 			NEXT
 			FieldPutBytes( 2, a )
 			a := FieldGetBytes(2)
@@ -2609,6 +2612,11 @@ RETURN
 			LOCAL lSame := TRUE AS LOGIC
 			FOR LOCAL n := 1 AS INT UPTO 10_000
 				IF a[n] != (BYTE)(n % 256)
+                    if n % 256 == 26
+                        if a[n] == 42
+                            loop
+                        endif
+                    endif
 					lSame := FALSE
 					EXIT
 				END IF

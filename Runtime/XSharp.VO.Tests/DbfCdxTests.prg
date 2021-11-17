@@ -4966,7 +4966,8 @@ RETURN
 			RddSetDefault("DBFCDX")
 
 			cDbf := GetTempFileName()
-			DbCreate(cDbf, {{"FLD1","C",10,0},{"MEMO1","M",10,0}})
+            FErase(cDbf + ".cdx")
+			DbCreate(cDbf, {{"FLD1","C",5,0},{"MEMO1","M",10,0}})
 
 			DbUseArea(,,cDbf)
 			DbAppend()
@@ -5012,6 +5013,7 @@ RETURN
 			RddSetDefault("DBFCDX")
 
 			cDbf := GetTempFileName()
+            FErase(cDbf + ".cdx")
 			DbCreate(cDbf, {{"FLD1","C",3,0} , {"FLD2","C",3,0}})
 
 			DbUseArea(,,cDbf)
@@ -5118,7 +5120,7 @@ RETURN
 
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING
 			// we may want to put them to a specific folder etc
-		RETURN cFileName
+		    RETURN cFileName
 
 	END CLASS
 END NAMESPACE

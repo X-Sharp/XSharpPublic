@@ -19,6 +19,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 	/// </summary>
 	CLASS TestDBF
 
+
+
 		[Fact, Trait("Dbf", "Open")];
 		METHOD OpenDBF() AS VOID
 			// CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
@@ -566,11 +568,10 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			Assert.Equal( TRUE, isFile  )
 			RETURN
 
-		[Fact, Trait("Dbf", "CreateAppendDBT")];
-		METHOD CheckCreateAppendDBFDBT() AS VOID
-			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
+        PRIVATE METHOD CreateFileHelper(cFilename as STRING, data OUT STRING[], Memos OUT List<String>) AS DbOpenInfo
+            LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ "XMenTestJ.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ cFilename, "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			LOCAL fieldInfo AS STRING[]
@@ -591,8 +592,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// Now, Add some Data
 			//"ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
 			LOCAL datas := "1,Professor Xavier,T;2,Wolverine,T;3,Tornade,F;4,Cyclops,T;5,Diablo,T" AS STRING
-			LOCAL data := datas:Split( ';' ) AS STRING[]
-			VAR Memos := List<STRING>{}
+			data := datas:Split( ';' )
+			Memos := List<STRING>{}
 			//
 			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
 				//
@@ -606,6 +607,14 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:PutValue( 5, Memos[ Memos:Count -1 ] )
 			NEXT
 			myDBF:Close()
+            return dbInfo
+
+		[Fact, Trait("Dbf", "CreateAppendDBT")];
+		METHOD CheckCreateAppendDBFDBT() AS VOID
+
+			VAR dbInfo := CreateFileHelper("XMenTestJ.DBF", OUT VAR data, OUT VAR Memos)
+			LOCAL myDBF := DBFDBT{} AS DBFDBT
+
 			// Now, Verify
 			myDBF:Open( dbInfo )
 			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
@@ -677,9 +686,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "ModifyDBT_2")];
 		METHOD CheckModifyDBT_2() AS VOID
 			// Create and put some Data
-			SELF:CheckCreateAppendDBFDBT()
+			VAR dbInfo := CreateFileHelper("XMenTestK.DBF", OUT var _, OUT VAR _)
 			// Now Modify in the same space
-			VAR dbInfo := DbOpenInfo{ "XMenTestJ.DBF", "XMenTest", 1, FALSE, FALSE }
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			VAR Memos := List<STRING>{}
 			// Now, Modify the Memo

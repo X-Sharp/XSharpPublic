@@ -561,6 +561,268 @@ namespace XSharp.LanguageService
                 }
             }
             //
+            if (!isIgnored(openKeyword.Type))
+            {
+                if (isOpenEntity(openKeyword.Type))
+                {
+                    // Open Entity
+                    // We are inside something ?
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                        if (isMemberStart(current.Item1) || isOpenEntityWithOptionalEndMarker(current.Item1))
+                        {
+                            // Move back this opening Keyword
+                            currentIndent = current.Item2;
+                            nestedEntity.Pop();
+                        }
+                    }
+                    // Move inside this opening Keyword for the next line
+                    // and indicate that as the minimum indenting size
+                    moveAfterFormatting++;
+                    nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                }
+                else if (isMemberStart(openKeyword.Type))
+                {
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                        if (isMemberStart(current.Item1) || !isOpenEntityWithEndMarker(current.Item1))
+                        {
+                            // Move back this opening Keyword
+                            current = nestedEntity.Pop();
+                            currentIndent = current.Item2;
+                        }
+                    }
+                    // Move inside this opening Keyword for the next line
+                    moveAfterFormatting++;
+                    nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                }
+                else if (isAddOrRemove(openKeyword.Type))
+                {
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                        if (current.Item1 == XSharpLexer.EVENT)
+                        {
+                            // Move back this opening Keyword
+                            //currentIndent--;
+                        }
+                    }
+                    // Move inside this opening Keyword for the next line
+                    // and indicate that as the minimum indenting size
+                    moveAfterFormatting++;
+                    nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                }
+                else if (isSetOrGet(openKeyword.Type))
+                {
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                        if (current.Item1 == XSharpLexer.PROPERTY)
+                        {
+                            // Move back this opening Keyword
+                            //currentIndent--;
+                        }
+                    }
+                    // Move inside this opening Keyword for the next line
+                    // and indicate that as the minimum indenting size
+                    moveAfterFormatting++;
+                    nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                }
+                else if (openKeyword.Type == XSharpLexer.BEGIN)
+                {
+                    // NAMESPACE ?
+                    // Check the next one
+                    context.MoveToNext();
+                    nextKeyword = context.GetFirstToken(true);
+                    if (nextKeyword != null)
+                    {
+                        if (nextKeyword.Type == XSharpLexer.NAMESPACE)
+                        {
+                            // A NAMESPACE alwasy start in 0
+                            currentIndent = 0;
+                        }
+                        context.MoveBack();
+                        nestedEntity.Push(new Tuple<int, int>(nextKeyword.Type, currentIndent));
+                    }
+                    moveAfterFormatting++;
+                }
+                else if (openKeyword.Type == XSharpLexer.DO)
+                {
+                    // DO CASE, DO WHILE, ...
+                    // Check the next one
+                    context.MoveToNext();
+                    nextKeyword = context.GetFirstToken(true);
+                    if (nextKeyword != null)
+                    {
+                        context.MoveBack();
+                        nestedEntity.Push(new Tuple<int, int>(nextKeyword.Type, currentIndent));
+                    }
+                    moveAfterFormatting++;
+                }
+                else if (isStartOfBlock(openKeyword.Type) || isForOrForeach(openKeyword.Type))
+                {
+                    moveAfterFormatting++;
+                    nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                }
+                else if (isMiddleOfBlock(openKeyword.Type))
+                {
+                    // Move back this opening Keyword
+                    currentIndent--;
+                    // Move inside this opening Keyword for the next line
+                    moveAfterFormatting++;
+                }
+                else if (isCaseOrOtherwise(openKeyword.Type))
+                {
+                    // Move back keywords (or not) ( CASE, OTHERWISE )
+                    // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
+                    // Check for a setting
+                    //if (settings.FormatAlignDoCase)
+                    {
+                        currentIndent--;
+                    }
+                    moveAfterFormatting++;
+                }
+                else if (openKeyword.Type == XSharpLexer.END)
+                {
+                    // Closing Keywords
+                    // What about END CLASS, END NAMESPACE, END VOSTRUCT,
+                    current = null;
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                    }
+                    // Check the next one
+                    context.MoveToNext();
+                    nextKeyword = context.GetFirstToken(true);
+                    if ((nextKeyword != null) && (current != null))
+                    {
+                        context.MoveBack();
+                        if ((current.Item1 == nextKeyword.Type) ||
+                           ((current.Item1 == XSharpLexer.WHILE) && (nextKeyword.Type == XSharpLexer.DO)))
+                        {
+                            // Move back this opening Keyword
+                            // Close the Entity
+                            current = nestedEntity.Pop();
+                            currentIndent = current.Item2;
+                        }
+                        else
+                        {
+                            if ((nextKeyword.Type == XSharpLexer.NAMESPACE) || isOpenEntity(nextKeyword.Type))
+                            {
+                                // Do we have such block Type before in the list ?
+                                int found = nestedEntity.FindLastIndex((pair) => pair.Item1 == nextKeyword.Type);
+                                if (found > -1)
+                                {
+                                    while (nestedEntity.Count - 1 >= found)
+                                    {
+                                        // Move back this opening Keyword
+                                        // Close the Entity
+                                        current = nestedEntity.Pop();
+                                        currentIndent = current.Item2;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (current != null)
+                    {
+                        if (isStartOfBlock(current.Item1) || isMemberStart(current.Item1) ||
+                            isOpenEntity(current.Item1) || isAddOrRemove(current.Item1) ||
+                            isSetOrGet(current.Item1) || isCaseOrOtherwise(current.Item1))
+
+                        {
+                            // Move back this opening Keyword
+                            // Close the Entity
+                            current = nestedEntity.Pop();
+                            currentIndent = current.Item2;
+                        }
+                    }
+                }
+                else if (isNext(openKeyword.Type) || isEndOfBlock(openKeyword.Type))
+                {
+                    // Move the Keyword back
+                    if (nestedEntity.Count() > 0)
+                    {
+                        current = nestedEntity.Peek();
+                        if (((current.Item1 == XSharpLexer.FOR) && (openKeyword.Type == XSharpLexer.NEXT)) ||
+                             ((current.Item1 == XSharpLexer.FOREACH) && (openKeyword.Type == XSharpLexer.NEXT)) ||
+                             ((current.Item1 == XSharpLexer.IF) && (openKeyword.Type == XSharpLexer.ENDIF)) ||
+                             ((current.Item1 == XSharpLexer.WHILE) && (openKeyword.Type == XSharpLexer.ENDDO)) ||
+                             ((current.Item1 == XSharpLexer.CASE) && (openKeyword.Type == XSharpLexer.ENDCASE)) ||
+                             ((current.Item1 == XSharpLexer.REPEAT) && (openKeyword.Type == XSharpLexer.UNTIL)) ||
+                             ((current.Item1 == XSharpLexer.PP_IFDEF) && (openKeyword.Type == XSharpLexer.PP_ENDIF)) ||
+                             ((current.Item1 == XSharpLexer.PP_IFNDEF) && (openKeyword.Type == XSharpLexer.PP_ENDIF))
+                             )
+                        {
+                            // Move back this opening Keyword
+                            // Close the Entity
+                            current = nestedEntity.Pop();
+                            currentIndent = current.Item2;
+                        }
+                    }
+                }
+            }
+            // This should NOT happen
+            if (currentIndent < 0)
+            {
+                currentIndent = 0;
+            }
+            // The number of needed indentation
+            return currentIndent;
+        }
+
+
+        private int GetLineIndentation_Old(ITextSnapshotLine snapLine, FormattingContext context, int currentIndent, SourceCodeEditorSettings settings, out int moveAfterFormatting, List<Tuple<int, int>> nestedEntity)
+        {
+            // 
+            moveAfterFormatting = 0;
+            // Go to the begginning of the line
+            context.MoveTo(snapLine.Start);
+            IToken openKeyword = context.GetFirstToken(true, true);
+            IToken nextKeyword = null;
+            Tuple<int, int> current;
+            if (openKeyword == null)
+            {
+                WriteOutputMessage("FormatDocument : Error when moving in Tokens");
+                return 0; // This should never happen
+            }
+            // These must NOT change the indentation, so eat them
+            int[] typeToIgnore = { XSharpLexer.PRIVATE, XSharpLexer.HIDDEN,
+                                    XSharpLexer.PROTECTED, XSharpLexer.INTERNAL,
+                                    XSharpLexer.PUBLIC, XSharpLexer.EXPORT,
+                                    XSharpLexer.CONST, XSharpLexer.VIRTUAL, XSharpLexer.STATIC };
+            while (typeToIgnore.Contains<int>(openKeyword.Type))
+            {
+                // Check the next one
+                context.MoveToNext();
+                openKeyword = context.GetFirstToken(true, true);
+                if (openKeyword == null)
+                {
+                    WriteOutputMessage("FormatDocument : Error when moving in Tokens");
+                    return currentIndent; // This should never happen
+                }
+            }
+            //int startTokenType = openKeyword.Type;
+            // DEFINE CLASS in VFP
+            if (openKeyword.Type == XSharpLexer.DEFINE)
+            {
+                if (context.Dialect == XSharpDialect.FoxPro)
+                {
+                    // Check the next one
+                    context.MoveToNext();
+                    openKeyword = context.GetFirstToken(true);
+                    if (openKeyword == null)
+                    {
+                        WriteOutputMessage("FormatDocument : Error when moving in Tokens");
+                        return currentIndent; // This should never happen
+                    }
+                    if (openKeyword.Type != XSharpLexer.CLASS)
+                        context.MoveBack();
+                }
+            }
+            //
             switch (openKeyword.Type)
             {
                 // Ignoring
@@ -706,7 +968,7 @@ namespace XSharp.LanguageService
                     moveAfterFormatting++;
                     break;
                 case XSharpLexer.DO:    // DO CASE, DO WHILE, ...
-                    // Check the next one
+                                        // Check the next one
                     context.MoveToNext();
                     nextKeyword = context.GetFirstToken(true);
                     if (nextKeyword != null)
@@ -931,6 +1193,248 @@ namespace XSharp.LanguageService
             return length;
         }
 
+
+
+        /// <summary>
+        /// ML_COMMENT, SL_COMMENT, USING, PP_INCLUDE, PP_DEFINE, PP_REGION
+        /// </summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+
+        private bool isIgnored(int keywordType)
+        {
+            switch (keywordType)
+            {
+                // Ignoring
+                case XSharpLexer.ML_COMMENT:
+                case XSharpLexer.SL_COMMENT:
+                case XSharpLexer.USING:
+                case XSharpLexer.PP_INCLUDE:
+                case XSharpLexer.PP_DEFINE:
+                case XSharpLexer.PP_REGION:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// CLASS, INTERFACE, STRUCTURE, VOSTRUCT, ENUM, UNION
+        /// </summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isOpenEntity(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.CLASS:
+                case XSharpLexer.INTERFACE:
+                case XSharpLexer.STRUCTURE:
+                case XSharpLexer.VOSTRUCT:
+                case XSharpLexer.ENUM:
+                case XSharpLexer.UNION:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// CLASS, INTERFACE, STRUCTURE
+        /// </summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isOpenEntityWithEndMarker(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.CLASS:
+                case XSharpLexer.INTERFACE:
+                case XSharpLexer.STRUCTURE:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// VOSTRUCT, ENUM, UNION
+        /// </summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isOpenEntityWithOptionalEndMarker(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.VOSTRUCT:
+                case XSharpLexer.ENUM:
+                case XSharpLexer.UNION:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// DELEGATE, FUNCTION, PROCEDURE, CONSTRUCTOR, DESTRUCTOR, ASSIGN, ACCESS, METHOD, PROPERTY, OPERATOR, EVENT
+        /// </summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isMemberStart(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.DELEGATE:
+                case XSharpLexer.FUNCTION:
+                case XSharpLexer.PROCEDURE:
+                case XSharpLexer.CONSTRUCTOR:
+                case XSharpLexer.DESTRUCTOR:
+                case XSharpLexer.ASSIGN:
+                case XSharpLexer.ACCESS:
+                case XSharpLexer.METHOD:
+                case XSharpLexer.PROPERTY:
+                case XSharpLexer.OPERATOR:
+                case XSharpLexer.EVENT:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// ADD, REMOVE
+        /// </summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isAddOrRemove(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.ADD:
+                case XSharpLexer.REMOVE:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// SET, GET
+        /// </summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isSetOrGet(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.SET:
+                case XSharpLexer.GET:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// IF,  WHILE, SWITCH, REPEAT, PP_IFDEF, PP_IFNDEF, WITH, TRY
+        ///</summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isStartOfBlock(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.IF:
+                case XSharpLexer.WHILE:
+                case XSharpLexer.SWITCH:
+                case XSharpLexer.REPEAT:
+                case XSharpLexer.PP_IFDEF:
+                case XSharpLexer.PP_IFNDEF:
+                case XSharpLexer.WITH:
+                case XSharpLexer.TRY:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// FOR, FOREACH
+        ///</summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isForOrForeach(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.FOR:
+                case XSharpLexer.FOREACH:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// ELSE, ELSEIF, FINALLY, CATCH, RECOVER, PP_ELSE
+        /// </summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isMiddleOfBlock(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.ELSE:
+                case XSharpLexer.ELSEIF:
+                case XSharpLexer.FINALLY:
+                case XSharpLexer.CATCH:
+                case XSharpLexer.RECOVER:
+                case XSharpLexer.PP_ELSE:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// ENDIF, ENDDO, ENDCASE, UNTIL, PP_ENDIF
+        /// </summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isEndOfBlock(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.ENDIF:
+                case XSharpLexer.ENDDO:
+                case XSharpLexer.ENDCASE:
+                case XSharpLexer.UNTIL:
+                case XSharpLexer.PP_ENDIF:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// NEXT
+        /// </summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isNext(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.NEXT:
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// NEXT
+        /// </summary>
+        /// <param name="keywordType"></param>
+        /// <returns></returns>
+        private bool isCaseOrOtherwise(int keywordType)
+        {
+            switch (keywordType)
+            {
+                case XSharpLexer.CASE:
+                case XSharpLexer.OTHERWISE:
+                    return true;
+            }
+            return false;
+        }
 
         /// <summary>
         /// Retrieve all Tags in the Line

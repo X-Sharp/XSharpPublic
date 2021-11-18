@@ -227,6 +227,7 @@ BEGIN NAMESPACE XSharpModel
                     IF _typeDef:HasCustomAttributes
                         isCoClass := _typeDef:CustomAttributes:FirstOrDefault( { x => x:AttributeType:FullName == "System.Runtime.InteropServices.CoClassAttribute"}) != NULL
                     ENDIF
+                    SELF:_signature:ClearInterfaces()
                     FOREACH VAR @@interface IN _typeDef:Interfaces
                         VAR ifname := @@interface:InterfaceType:FullName
                         // cecil returns System.Collections.Generic.IList`1<T> for the FullName

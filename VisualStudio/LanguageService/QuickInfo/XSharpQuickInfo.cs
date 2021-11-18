@@ -103,7 +103,7 @@ namespace XSharp.LanguageService
                     var element = lookupresult[0];
                     var qiContent = new List<object>();
 
-                        if (element.Kind == Kind.Constructor && lastToken?.Type != XSharpLexer.CONSTRUCTOR )
+                        if (element.Kind == Kind.Constructor && lastToken?.Type != XSharpLexer.CONSTRUCTOR  && lastToken?.Type != XSharpLexer.LPAREN)
                         {
                             if (element.Parent != null)
                             {

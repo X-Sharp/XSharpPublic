@@ -647,6 +647,9 @@ namespace XSharp.LanguageService
                                   currentToken.Type == XSharpLexer.KWID ||
                                   currentToken.Type == XSharpLexer.SELF ||
                                   currentToken.Type == XSharpLexer.SUPER ||
+                                  currentToken.Type == XSharpLexer.TYPEOF ||
+                                  currentToken.Type == XSharpLexer.NAMEOF ||
+                                  currentToken.Type == XSharpLexer.SIZEOF ||
                                   currentToken.Type == XSharpLexer.COLONCOLON ||
                                   isType;
                 if (isId && !list.Eoi() && list.La1 == XSharpLexer.LT)
@@ -716,9 +719,16 @@ namespace XSharp.LanguageService
                     }
                     else if (startOfExpression)
                     {
+                        // resolve pcount etc.
+                        resolvePseudofunction(currentName, result, location);
+
                         // The first token in the list can be a Function or a Procedure
                         // Except if we already have a Type
-                        result.AddRange(SearchFunction(location, currentName));
+                        if (result.Count == 0 )
+                        {
+                            result.AddRange(SearchFunction(location, currentName));
+                        }
+
                         if (result.Count == 0 && currentType != null )
                         {
                             // no method lookup when enforceself is enabled
@@ -1037,7 +1047,52 @@ namespace XSharp.LanguageService
             }
             return null;
         }
-        
+
+        private static void resolvePseudofunction(string name, List<IXSymbol> result, XSharpSearchLocation location)
+        {
+            string returntype = String.Empty;
+            switch (name.ToLower())
+            {
+                case "nameof":
+                case "chr":
+                case "_chr":
+                    returntype = "System.String";
+                    break;
+                case "typeof":
+                    returntype = "System.Type";
+                    break;
+                case "sizeof":
+                case "pcount":
+                case "argcount":
+                    returntype = "System.Int32";
+                    break;
+                case "slen":
+                    returntype = "System.UInt32";
+                    break;
+                case "_getmparam":
+                case "_getfparam":
+                    returntype = "USUAL";
+                    break;
+                case "_args":
+                    returntype = "USUAL[]";
+                    break;
+                case "_getinst":
+                    returntype = "System.IntPtr";
+                    break;
+                case "string2psz":
+                case "cast2psz":
+                    returntype = "PSZ";
+                    break;
+                default:
+                    break;
+            }
+            if (returntype != string.Empty)
+            {
+                var symbol = new XSourceMemberSymbol(name, Kind.PseudoFunction, Modifiers.None, new TextRange(), new TextInterval(), returntype);
+                symbol.File = new XFile("", location.Project);
+                result.Add(symbol);
+            }
+        }
         private static IXMemberSymbol AdjustGenericMember(IXMemberSymbol xmember, IXSymbol memberdefinition)
         {
             /*

@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:Interval := interval
 
         METHOD OpenEditor() AS VOID
-            IF SELF:File != NULL
+            IF SELF:File != NULL .and. SELF:Kind != Kind.PseudoFunction
                 XSettings.OpenDocument(SELF:File:SourcePath, SELF:Range:StartLine+1, SELF:Range:StartColumn , FALSE)
             ENDIF
 

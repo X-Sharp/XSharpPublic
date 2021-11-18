@@ -426,8 +426,25 @@ namespace XSharp.LanguageService
                 // calculate where the lparen before the comma is.
                 if (ssp.Position >= ssp.Snapshot.Length)
                     ssp -= 1;
-                while (ssp.Position > 0 && ssp.GetChar() != '(' && ssp.GetChar() != '{')
+                bool done = false;
+                int nested = 0;
+                while (ssp.Position > 0  && ! done)
                 {
+                    var ch = ssp.GetChar();
+                    switch (ch)
+                    {
+                        case '(':
+                        case '[':
+                        case '{':
+                            done = nested == 0;
+                            nested -= 1;
+                            break;
+                        case ')':
+                        case ']':
+                        case '}':
+                            nested += 1;
+                            break;
+                    }
                     ssp = ssp - 1;
                 }
                 props.Start = ssp.Position;

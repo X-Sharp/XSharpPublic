@@ -228,12 +228,7 @@ namespace XSharp.LanguageService.Editors.BraceMatching
             {
                 // Second, try to Match Keywords
                 // Try to retrieve an already parsed list of Tags
-                XSharpClassifier xsClassifier = null;
-                if (SourceBuffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
-                {
-                    xsClassifier = SourceBuffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
-                }
-
+                XSharpClassifier xsClassifier = SourceBuffer.GetClassifier();
                 if (xsClassifier != null)
                 {
 

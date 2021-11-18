@@ -63,11 +63,13 @@ namespace XSharp.LanguageService
         {
             if (_classifier == null)
             {
-                if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out _classifier))
-                {
+                _classifier  = _buffer.GetClassifier();
+                if (_classifier != null)
                     _classifier.ClassificationChanged += Classifier_ClassificationChanged;
-                }
+
             }
+
+
 
         }
         internal XSharpFormattingCommandHandler(IVsTextView textViewAdapter, ITextView textView,

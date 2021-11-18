@@ -66,6 +66,16 @@ namespace XSharp.LanguageService
             return null;
         }
 
+        public static XSharpClassifier GetClassifier(this ITextBuffer buffer)
+        {
+            XSharpClassifier classifier;
+            if (buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out classifier))
+            {
+                return classifier;
+            }
+            return null;
+        }
+
         public static String GetXAMLFile(this ITextBuffer buffer)
         {
             ITextDocument textDoc;
@@ -75,8 +85,6 @@ namespace XSharp.LanguageService
             }
             return null;
         }
-
-
 
         internal static bool IsXSharpDocument(this ITextDocumentFactoryService factory, ITextBuffer buffer)
         {
@@ -119,6 +127,12 @@ namespace XSharp.LanguageService
             }
             return file != null;
         }
+        internal static XSourceEntity FindEntity(this ITextBuffer buffer, SnapshotPoint point)
+        {
+            var file = buffer.GetFile();
+            return XSharpLookup.FindEntity(point.GetContainingLine().LineNumber, file);
+        }
+        
         internal static XSourceMemberSymbol FindMember(this ITextBuffer buffer, SnapshotPoint point)
         {
             var file = buffer.GetFile();
@@ -143,6 +157,23 @@ namespace XSharp.LanguageService
                 currentNS = ns.FullName;
             var location = new XSharpSearchLocation(file, member, snapshot, line, point, currentNS);
             return location;
+        }
+
+        internal static XSourceEntity FindEntity(this ITextView textview)
+        {
+            if (textview == null)
+                return null;
+            return FindEntity(textview, textview.Caret.Position.BufferPosition);
+        }
+        internal static XSourceEntity FindEntity(this ITextView textview, SnapshotPoint ssp)
+        {
+            if (textview == null)
+                return null;
+            if (ssp == null)
+            {
+                ssp = textview.Caret.Position.BufferPosition;
+            }
+            return textview.TextBuffer.FindEntity(ssp);
         }
 
         internal static XSourceMemberSymbol FindMember(this ITextView textview)

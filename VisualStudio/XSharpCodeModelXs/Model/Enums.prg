@@ -150,6 +150,7 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@XTranslate  :=  39
       MEMBER @@Undeclared  :=  40
       MEMBER @@TypeParameter  :=  41
+      MEMBER @@PseudoFunction := 42
    END ENUM
 
    [Flags];

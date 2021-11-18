@@ -38,6 +38,8 @@ BEGIN NAMESPACE XSharpModel
 
         STATIC METHOD DisplayName( SELF elementKind AS Kind) AS STRING
             SWITCH elementKind
+                CASE Kind.PseudoFunction
+                    RETURN "FUNCTION"
                 CASE Kind.VOGlobal
                     RETURN "GLOBAL"
                 CASE Kind.VODefine
@@ -85,6 +87,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.VODLL
                 CASE Kind.LocalFunc
                 CASE Kind.LocalProc
+                CASE Kind.PseudoFunction
                     //
                     RETURN TRUE
             END SWITCH
@@ -106,6 +109,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.VOGlobal
                 CASE Kind.VODefine
                 CASE Kind.LocalFunc
+                CASE Kind.PseudoFunction
                     RETURN TRUE
             END SWITCH
         RETURN FALSE
@@ -132,6 +136,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Translate
                 CASE Kind.XTranslate
                 CASE Kind.Attribute
+                CASE Kind.PseudoFunction
                     RETURN TRUE
             END SWITCH
         RETURN FALSE
@@ -219,6 +224,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Method
                 CASE Kind.Function
                 CASE Kind.Procedure
+                CASE Kind.PseudoFunction
                     RETURN TRUE
             END SWITCH
         RETURN FALSE
@@ -326,6 +332,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Procedure
                 CASE Kind.LocalFunc
                 CASE Kind.LocalProc
+                CASE Kind.PseudoFunction
                     imgK := ImageListKind.Overload
                 CASE Kind.Constructor
                 CASE Kind.Destructor

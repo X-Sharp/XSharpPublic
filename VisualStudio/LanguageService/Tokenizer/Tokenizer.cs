@@ -130,6 +130,9 @@ namespace XSharp.LanguageService
                 bool done = false;
                 switch (selectedToken.Type)
                 {
+                    case XSharpLexer.NAMEOF:
+                    case XSharpLexer.TYPEOF:
+                    case XSharpLexer.SIZEOF:
                     case XSharpLexer.SELF:
                     case XSharpLexer.SUPER:
                         if (nextToken != null && nextToken.Type == XSharpLexer.LPAREN)
@@ -416,6 +419,9 @@ namespace XSharp.LanguageService
                         result.Add(token);
                         break;
                     case XSharpLexer.ID:
+                    case XSharpLexer.NAMEOF:
+                    case XSharpLexer.TYPEOF:
+                    case XSharpLexer.SIZEOF:
                         result.Add(token);
                         break;
                     case XSharpLexer.RCURLY:

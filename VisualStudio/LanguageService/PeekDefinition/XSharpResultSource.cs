@@ -28,6 +28,8 @@ namespace XSharp.LanguageService
                     return;
                 }
                 var fileName = Path.GetFileName(this.peekableItem._gotoElement.File.FullPath);
+                if (string.IsNullOrEmpty(fileName))
+                    return;
                 var label = this.peekableItem._gotoElement.Name;
                 var title = string.Format("{0} - ({1}, {2})", fileName, this.peekableItem._gotoElement.Range.StartLine, this.peekableItem._gotoElement.Range.StartColumn+1);
 

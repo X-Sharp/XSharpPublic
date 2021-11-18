@@ -126,12 +126,25 @@ namespace XSharp.LanguageService
                     }
                 }
                 var selectedToken = tokens[tokenUnderCursor];
+                var nextToken = tokenUnderCursor < tokens.Count-1 ? tokens[tokenUnderCursor+1] : null;
                 bool done = false;
-                if (XSharpLexer.IsKeyword(selectedToken.Type))
+                switch (selectedToken.Type)
                 {
-                    tokens.Clear();
-                    tokens.Add(selectedToken);
-                    return tokens;
+                    case XSharpLexer.SELF:
+                    case XSharpLexer.SUPER:
+                        if (nextToken != null && nextToken.Type == XSharpLexer.LPAREN)
+                        {
+                            return tokens;
+                        }
+                        break;
+                    default:
+                        if (XSharpLexer.IsKeyword(selectedToken.Type))
+                        {
+                            tokens.Clear();
+                            tokens.Add(selectedToken);
+                            return tokens;
+                        }
+                        break;
                 }
                 // When we are not on a Keyword then we need to walk back in the tokenlist to see
                 // if we can evaluate the expression

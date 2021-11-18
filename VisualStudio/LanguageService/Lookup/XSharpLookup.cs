@@ -569,7 +569,8 @@ namespace XSharp.LanguageService
                         continue;
                     case XSharpLexer.DOT:
                         state = CompletionState.StaticMembers | CompletionState.Namespaces | CompletionState.Types;
-                        if (location.Project.ParseOptions.AllowDotForInstanceMembers)
+                        if (location.Project.ParseOptions.AllowDotForInstanceMembers ||
+                            (currentType != null && currentType.IsVoStruct() ))
                             state |= CompletionState.InstanceMembers;
                         resetState = false;
                         startOfExpression = false;

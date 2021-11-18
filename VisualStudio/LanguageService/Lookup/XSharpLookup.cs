@@ -395,10 +395,53 @@ namespace XSharp.LanguageService
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.OutParam);
             return null;
         }
+        private static IList<XSharpToken> deleteNestedTokens(IList<XSharpToken> tokens)
+        {
+            IList<XSharpToken> result = new List<XSharpToken>();
+            if (tokens == null)
+                return result;
+            int level = 0;
+            bool hasId = false;
+            foreach (var token in tokens)
+            {
+                switch (token.Type)
+                {
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.LCURLY:
+                    case XSharpLexer.LBRKT:
+                        if (hasId)
+                        {
+                            if (level == 0)
+                                result.Add(token);
+                            level += 1;
+                        }
+                        break;
+                    case XSharpLexer.RPAREN:
+                    case XSharpLexer.RCURLY:
+                    case XSharpLexer.RBRKT:
+                        level -= 1;
+                        if (level == 0)
+                            result.Add(token);
+                        break;
+                    case XSharpLexer.ID:
+                        hasId = true;
+                        if (level == 0)
+                            result.Add(token);
+                        break;
+                    default:
+                        if (level == 0)
+                            result.Add(token);
+                        break;
+                }
+            }
+            return result;
+        }
         private static IXTypeSymbol ResolveImpliedAssign(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
         {
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.Assignment || xVar.ImpliedKind == ImpliedKind.Using);
             var tokenList = xVar.Expression;
+            // delete tokens between {} and other operators so we get the return type of the outer construct
+            tokenList = deleteNestedTokens(tokenList);
             var result = RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed);
             var element = result.FirstOrDefault();
             return GetTypeFromSymbol(location, element);
@@ -569,7 +612,8 @@ namespace XSharp.LanguageService
                         continue;
                     case XSharpLexer.DOT:
                         state = CompletionState.StaticMembers | CompletionState.Namespaces | CompletionState.Types;
-                        if (location.Project.ParseOptions.AllowDotForInstanceMembers)
+                        if (location.Project.ParseOptions.AllowDotForInstanceMembers ||
+                            (currentType != null && currentType.IsVoStruct() ))
                             state |= CompletionState.InstanceMembers;
                         resetState = false;
                         startOfExpression = false;

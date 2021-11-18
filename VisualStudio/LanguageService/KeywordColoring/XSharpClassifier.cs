@@ -155,6 +155,13 @@ namespace XSharp.LanguageService
         {
             ClassifyBuffer(this._buffer.CurrentSnapshot);
         }
+        public void Parse()
+        {
+            XSharpTokens xTokens = _buffer.GetTokens();
+            if (xTokens.Entities == null)
+                ParseEntities();
+        }
+
         private void ClassifyBuffer(ITextSnapshot snapshot)
         {
             if (XSettings.DisableSyntaxHighlighting)
@@ -259,6 +266,10 @@ namespace XSharp.LanguageService
         #region Parser Methods
         private void BuildModelDoWork(object sender, DoWorkEventArgs e)
         {
+            ParseEntities();
+        }
+        private void ParseEntities()
+        { 
             if (XSettings.DisableEntityParsing)
                 return;
             Trace.WriteLine("-->> XSharpClassifier.BuildModelDoWork()");
@@ -290,6 +301,8 @@ namespace XSharp.LanguageService
         private void RegisterEntityBoundaries()
         {
             // Register the entity boundaries for the line separators
+            XSharpTokens xTokens = _buffer.GetTokens();
+            xTokens.Entities = _sourceWalker.EntityList;
             foreach (var entity in _sourceWalker.EntityList)
             {
                 var line = entity.Range.StartLine;
@@ -303,7 +316,6 @@ namespace XSharp.LanguageService
                 {
                     lineState.SetFlags(line, LineFlags.EntityStart);
                 }
-
             }
         }
         private void DoRepaintRegions()

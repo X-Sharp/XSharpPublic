@@ -161,13 +161,18 @@ namespace XSharp.LanguageService
 
         }
 
-        public static XSourceMemberSymbol FindMember(int nLine, XFile file)
+        public static XSourceEntity FindEntity(int nLine, XFile file)
         {
             if (file == null || file.EntityList == null)
             {
                 return null;
             }
-            var member = file.FindMemberAtRow(nLine);
+            return file.FindMemberAtRow(nLine);
+
+        }
+        public static XSourceMemberSymbol FindMember(int nLine, XFile file)
+        {
+            var member = FindEntity(nLine, file);
             if (member is XSourceMemberSymbol)
             {
                 return member as XSourceMemberSymbol;

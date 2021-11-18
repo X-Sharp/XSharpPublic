@@ -18,6 +18,7 @@ using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp;
 using static XSharp.LanguageService.XSharpFormattingCommandHandler;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using System.Text;
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
 #if !ASYNCCOMPLETION
 namespace XSharp.LanguageService
@@ -62,7 +63,6 @@ namespace XSharp.LanguageService
         readonly IBufferTagAggregatorFactoryService _aggregator;
         bool completionWasSelected = false;
         XSharpSignatureHelpCommandHandler _signatureCommandHandler = null;
-        int slashCounter;
 
         internal XSharpCompletionCommandHandler(IVsTextView textViewAdapter, ITextView textView,
             ICompletionBroker completionBroker, IBufferTagAggregatorFactoryService aggregator)
@@ -73,7 +73,6 @@ namespace XSharp.LanguageService
             this._aggregator = aggregator;
             //add this to the filter chain
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
-            slashCounter = 0;
         }
 
 
@@ -220,93 +219,78 @@ namespace XSharp.LanguageService
                 // Retrieve Position
                 SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
                 var line = caret.GetContainingLine();
-                SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
-                // And the text before the current character 
-                string lineText = lineSpan.GetText();
+                if (line.LineNumber >= _textView.TextSnapshot.LineCount -1)
+                    return;
+                string lineText = line.GetText();
                 // Remove all type of spaces
-                lineText = lineText.TrimStart(' ', '\t');
+                lineText = lineText.Trim(' ', '\t');
                 // XMLDoc ?
-                if (lineText == "///")
+                if (lineText == "///" )
                 {
-                    bool inAComment = true;
-                    // Just to be sure we are not in a comment...
-                    // Let's move at the beginning of the next line
-                    ITextSnapshotLine lineDown = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
-                    if (lineDown.Length > 0)
+                    // force buffer to be classified to see if we are on a line before a comment
+                    var classifier = _textView.TextBuffer.GetClassifier();
+                    classifier.Classify();
+                    var lines = _textView.TextBuffer.GetLineState();
+                    bool beforeAComment = lines.IsComment(line.LineNumber + 1);
+                    if (!beforeAComment)
                     {
-                        SnapshotPoint sspStart = new SnapshotPoint(_textView.TextSnapshot, lineDown.Start.Position);
-                        inAComment = cursorIsAfterSLComment(sspStart);
-                    }
-                    // 
-                    if (!inAComment)
-                    {
-                        // Retrieve the tokens 
-                        var lineTokens = getTokensInLine(lineDown);
-                        FormattingContext context = new FormattingContext(lineTokens, XSharpDialect.Core);
-                        IToken startToken = context.GetFirstToken(true, true);
-                        // Search for ID
-                        while ((startToken != null) &&
-                            ( (startToken.Type != XSharpLexer.ID) &&
-                            (startToken.Type != XSharpLexer.CONSTRUCTOR) &&
-                            (startToken.Type != XSharpLexer.DESTRUCTOR)
-                            ))
+                        // Make sure that the entity list matches the contents of the buffer
+                        ITextSnapshotLine lineDown = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
+                        // Parse the entities
+                        classifier.Parse();
+                        var entity = _textView.FindEntity(lineDown.Start);
+                        if (entity != null && entity.Range.StartLine > line.LineNumber)
                         {
-                            context.MoveToNext();
-                            startToken = context.GetFirstToken(true, true);
-                        }
-                        if (startToken == null)
-                        {
-                            return;
-                        }
-
-                        // Try to retrieve the Entity down
-                        SnapshotPoint ssp = new SnapshotPoint(_textView.TextSnapshot, lineDown.Start.Position + startToken.StartIndex);
-                        var location = lineDown.Snapshot.TextBuffer.FindLocation(ssp);
-                        var tokens = lineDown.Snapshot.TextBuffer.GetTokens();
-                        CompletionState state;
-                        var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
-                        var lookupresult = new List<IXSymbol>();
-                        lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
-                        //
-                        if (lookupresult.Count > 0)
-                        {
-                            var element = lookupresult[0];
                             // Default information
                             // Retrieve the original line, and keep the prefix
-                            lineText = lineSpan.GetText();
+                            lineText = line.GetText().TrimEnd();
                             string prefix = lineText.Remove(lineText.Length - 3, 3);
                             // Insert XMLDoc template
-                            string xmlDoc = " <summary>" + Environment.NewLine;
-                            xmlDoc += prefix + "/// " + Environment.NewLine;
-                            xmlDoc += prefix + "/// </summary>";
-                            // Has parameters ?
-                            if (element.Kind.HasParameters())
+                            var sb = new StringBuilder();
+                            sb.AppendLine($" <summary>\r\n{prefix}/// \r\n{prefix}/// </summary>");
+                            var member = entity as XSourceMemberSymbol;
+                            var type = entity as XSourceTypeSymbol;
+                            if (type != null && type.Kind == Kind.Delegate)
                             {
-                                if (element is IXMemberSymbol mem)
+                                // delegate have a generated Invoke method with the parameters and return type
+                                member = type.Members.First() as XSourceMemberSymbol;
+                            }
+                            IList<string> typeParameters = null;
+                            if (member != null)
+                            {
+                                typeParameters = member.TypeParameters;
+                                // Now fill with retrieved information
+                                foreach (var param in member.Parameters)
                                 {
-                                    // Now fill with retrieved information
-                                    foreach (var param in mem.Parameters)
+                                    sb.AppendLine(prefix + $"/// <param name=\"{param.Name}\"></param>");
+                                }
+                                if (member.Kind.IsProperty() )
+                                {
+                                    sb.AppendLine(prefix + "/// <value></value>");
+                                }
+                                else if (member.Kind.HasReturnType() && ! member.Kind.IsField() )
+                                {
+                                    if ((string.Compare(member.ReturnType, "void", true) != 0))
                                     {
-                                        xmlDoc += Environment.NewLine + prefix + "/// <param name=";
-                                        xmlDoc += '"';
-                                        xmlDoc += param.Name;
-                                        xmlDoc += '"';
-                                        xmlDoc += "></param>";
+                                        sb.AppendLine(prefix + "/// <returns></returns>");
                                     }
                                 }
                             }
-                            if ( element.Kind.HasReturnType() )
+                            if (type != null)
                             {
-                                if (element is IXSymbolBase elt)
+                                typeParameters = type.TypeParameters;
+                            }
+                            if (typeParameters != null)
+                            { 
+                                foreach (var typeparam in typeParameters)
                                 {
-                                    if ((string.Compare(elt.TypeName, "void", true) != 0))
-                                    {
-                                        xmlDoc += Environment.NewLine + prefix + "/// <returns>";
-                                        xmlDoc += "</returns>";
-                                    }
+                                    sb.AppendLine(prefix + $"/// <typeparam name=\"{typeparam}\"></typeparam>");
                                 }
                             }
-                            _textView.TextBuffer.Insert(_textView.Caret.Position.BufferPosition.Position, xmlDoc);
+                            // remove last CRLF from sb
+                            if (sb.Length > 2)
+                                sb.Length = sb.Length - 2;
+                            _textView.TextBuffer.Insert(_textView.Caret.Position.BufferPosition.Position, sb.ToString());
                             // Move the Caret in the Summary area
                             ITextSnapshotLine moveToline = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
                             SnapshotPoint point = new SnapshotPoint(moveToline.Snapshot, moveToline.End.Position);

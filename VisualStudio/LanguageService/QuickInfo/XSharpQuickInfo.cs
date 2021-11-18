@@ -470,6 +470,12 @@ namespace XSharp.LanguageService
             text = text.Replace("\r", "\r\t");
             return text;
         }
+        static internal void addWs(this List<ClassifiedTextRun> content)
+        {
+            var temp = new ClassifiedTextRun(PredefinedClassificationTypeNames.WhiteSpace, " ");
+            content.Add(temp);
+
+        }
         static internal void addKeyword(this List<ClassifiedTextRun> content, string kw)
         {
             var temp = new ClassifiedTextRun(PredefinedClassificationTypeNames.Keyword, kw);

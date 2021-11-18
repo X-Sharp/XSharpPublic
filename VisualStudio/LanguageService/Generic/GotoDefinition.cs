@@ -223,8 +223,8 @@ namespace XSharp.LanguageService
                 {
                     orphProject.AddAssemblyReference(asm.FileName);
                 }
-                XSettings.OpenDocument(temp, line, 1, true);
             }
+            XSettings.OpenDocument(temp, line, 1, true);
 
         }
 

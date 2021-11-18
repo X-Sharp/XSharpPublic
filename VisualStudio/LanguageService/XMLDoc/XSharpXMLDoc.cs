@@ -15,6 +15,7 @@ using Microsoft;
 using Task = System.Threading.Tasks.Task;
 using Community.VisualStudio.Toolkit;
 using System.Text;
+using System.Xml;
 
 namespace XSharp.LanguageService
 {
@@ -217,7 +218,7 @@ namespace XSharp.LanguageService
 
                     var result = file.ParseMemberSignature(key, out id);
                     result = file.GetMemberXML(id, out xml);
-                    var summary = GetSummary(file, xml, out var returns, out var remarks);
+                    var summary = GetSummary(xml, out var returns, out var remarks);
                     if (! String.IsNullOrWhiteSpace(summary))
                     {
                         sb.Append(addXml("summary", summary));
@@ -252,33 +253,52 @@ namespace XSharp.LanguageService
             return null;
 
         }
-        static private string GetSummary(IVsXMLMemberIndex file, string xml, out string returns, out string remarks)
+        static private string GetSummary(string xml, out string returns, out string remarks)
         {
             returns = remarks = "";
             string summary = "";
-            IVsXMLMemberData data = null;
-            int result = 0;
-            string myreturns = "", myremarks = ""; 
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            string myreturns = "", myremarks = "";
+            if (string.IsNullOrEmpty(xml))
+                return "";
+            try
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                result = file.GetMemberDataFromXML(xml, out data);
-                if (result >= 0 && data != null)
+                var doc = new XmlDocument();
+                doc.LoadXml(xml);
+                var node = doc.FirstChild;
+                foreach (XmlNode child in node.ChildNodes)
                 {
-                    result = data.GetSummaryText(out summary);
-                    result = data.GetReturnsText(out myreturns);
-                    result = data.GetRemarksText(out myremarks);
+                    switch (child.Name.ToLower())
+                    {
+                        case "summary":
+                            summary = child.InnerXml;
+                            break;
+                        case "returns":
+                            myreturns = child.InnerXml;
+                            break;
+                        case "remarks":
+                            myremarks = child.InnerXml;
+                            break;
+                    }
                 }
-            });
-            summary = CleanUpResult(summary);
-            returns = CleanUpResult(myreturns);
-            remarks = CleanUpResult(myremarks);
+                summary = CleanUpResult(summary);
+                returns = CleanUpResult(myreturns);
+                remarks = CleanUpResult(myremarks);
+            }
+            catch (Exception e)
+            {
+                XSettings.DisplayOutputMessage("Exception in XSharpXMLDocMember.GetSummary");
+                XSettings.DisplayException(e);
+
+            }
             return summary;
+
         }
         static string CleanUpResult(string source)
         {
             if (!string.IsNullOrEmpty(source))
             {
+                source = source.Replace("\n", "");
+                source = source.Replace("\r", "");
                 if (source.Contains("\t"))
                 {
                     source = source.Replace("\t", " ");
@@ -288,6 +308,10 @@ namespace XSharp.LanguageService
                     source = source.Replace("  ", " ");
                 }
                 source = source.Replace(". ", ".\r");
+                
+                source = source.Replace("<br />", "\r");
+                source = source.Replace("<br/>", "\r");
+                source = source.TrimStart();
             }
             return source;
         }
@@ -311,7 +335,7 @@ namespace XSharp.LanguageService
                 var xfile = XSharpXMLDocTools.Firstfile;
                 if (xfile != null && !string.IsNullOrEmpty(xml))
                 {
-                    summary = GetSummary(xfile, xml, out returns, out remarks);
+                    summary = GetSummary(xml, out returns, out remarks);
                 }
                 return summary;
 
@@ -335,7 +359,7 @@ namespace XSharp.LanguageService
                     var result = file.ParseMemberSignature(sig, out id);
                     result = file.GetMemberXML(id, out xml);
                 });
-                summary = GetSummary(file, xml, out returns, out remarks);
+                summary = GetSummary(xml, out returns, out remarks);
             }
             return summary;
         }
@@ -354,7 +378,7 @@ namespace XSharp.LanguageService
                 var xfile = XSharpXMLDocTools.Firstfile;
                 if (xfile != null && !string.IsNullOrEmpty(xml))
                 {
-                    summary = GetSummary(xfile, xml, out returns, out remarks);
+                    summary = GetSummary(xml, out returns, out remarks);
                 }
                 return summary;
 
@@ -385,7 +409,7 @@ namespace XSharp.LanguageService
                     });
                     if (!string.IsNullOrEmpty(xml))
                     {
-                        summary = GetSummary(file, xml, out returns, out remarks);
+                        summary = GetSummary(xml, out returns, out remarks);
                     }
                 }
             }

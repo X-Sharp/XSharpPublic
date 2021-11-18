@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XSharpModel;
 
 namespace XSharp.LanguageService
 {
@@ -21,7 +22,10 @@ namespace XSharp.LanguageService
         {
             TokenStream = tokenstream;
             SnapShot = snapshot;
+            Entities = null;
         }
         public bool Complete => TokenStream != null && SnapShot != null;
+        public IList<XSourceEntity> Entities { get; set; }
+
     }
 }

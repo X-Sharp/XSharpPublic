@@ -41,6 +41,13 @@ namespace XSharp.LanguageService
                 }
             }
         }
+        internal bool IsComment(int line)
+        {
+            var flags = GetFlags(line);
+            return flags.HasFlag(LineFlags.SingleLineComments) ||
+                flags.HasFlag(LineFlags.MultiLineComments) ||
+                flags.HasFlag(LineFlags.DocComments);
+        }
         internal void RemoveFlags(int line, LineFlags flags)
         {
             if (dict.ContainsKey(line))

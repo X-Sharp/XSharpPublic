@@ -214,7 +214,8 @@ namespace XSharp.LanguageService
                     Directory.CreateDirectory(tempFolder);
                 }
                 WorkFolder = tempFolder;
-                Semaphore = File.Create(semFile);
+                if (!File.Exists(semFile))
+                    Semaphore = File.Create(semFile);
             }
             var ns = petype.Namespace + "." + petype.Assembly.Version;
             var name = petype.Name;

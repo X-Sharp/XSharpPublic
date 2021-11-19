@@ -609,6 +609,15 @@ namespace XSharp.LanguageService
                                     symbols.Push(type);
                             }
                         }
+                        else if (symbols.Count > 0)
+                        {
+                            if (symbols.Peek() is IXTypeSymbol type)
+                                currentType = type;
+                            else if (symbols.Peek() is IXMemberSymbol member)
+                            {
+                                currentType = member.ResolvedType;
+                            }
+                        }
                         continue;
                     case XSharpLexer.DOT:
                         state = CompletionState.StaticMembers | CompletionState.Namespaces | CompletionState.Types;

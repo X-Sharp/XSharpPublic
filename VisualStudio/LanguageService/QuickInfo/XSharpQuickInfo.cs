@@ -525,7 +525,10 @@ namespace XSharp.LanguageService
         {
             if (!String.IsNullOrEmpty(location))
             {
-                content.addPair("\rLocation:", " " + location);
+                if (location == XSolution.BuiltInFunctions)
+                    content.addPair("\rLocation:", " Built-in X# functions" );
+                else
+                    content.addPair("\rLocation:", " " + location);
             }
         }
         static internal void addReturnType(this List<ClassifiedTextRun> content, string typeName)

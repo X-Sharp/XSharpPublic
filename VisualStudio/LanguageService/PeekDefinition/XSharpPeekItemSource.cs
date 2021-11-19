@@ -51,7 +51,7 @@ namespace XSharp.LanguageService
                 //
                 if (result.Count > 0 )
                 {
-                    if (result[0] is XSourceSymbol symbol && symbol.Kind != Kind.PseudoFunction)
+                    if (result[0] is XSourceSymbol symbol )
                     {
                         peekableItems.Add(new XSharpDefinitionPeekItem(symbol, _peekResultFactory));
                     }

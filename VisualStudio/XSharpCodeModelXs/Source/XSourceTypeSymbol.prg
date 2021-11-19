@@ -95,16 +95,18 @@ BEGIN NAMESPACE XSharpModel
 
       INTERNAL METHOD SetInterfaces (interfaces as IList<String>) AS VOID
          SELF:_signature:Interfaces:Clear()
-         SELF:_signature:Interfaces:AddRange(interfaces)
+         FOREACH var interf in interfaces
+                SELF:_signature:Interfaces:Add(interf:Trim())
+         NEXT
 
       METHOD AddInterface(sInterface AS STRING) AS VOID
-         SELF:_signature:AddInterface(sInterface)
+         SELF:_signature:AddInterface(sInterface:Trim())
 
       METHOD AddTypeParameter(name AS STRING) AS VOID
-         SELF:_signature:TypeParameters:Add(name)
+         SELF:_signature:TypeParameters:Add(name:Trim())
 
       METHOD AddConstraints(name AS STRING) AS VOID
-         SELF:_signature:TypeParameterContraints:Add(name)
+         SELF:_signature:TypeParameterContraints:Add(name:Trim())
 
       PROPERTY Interfaces  AS IList<STRING>              GET SELF:_signature:Interfaces:ToArray()
       PROPERTY InterfaceList AS STRING                   GET SELF:_signature:InterfaceList

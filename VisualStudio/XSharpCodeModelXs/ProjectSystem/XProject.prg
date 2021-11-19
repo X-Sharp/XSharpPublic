@@ -71,11 +71,11 @@ BEGIN NAMESPACE XSharpModel
                      result += ","
                   ENDIF
                   result += assembly:Id:ToString()
-               NEXT
-               if ! _AssemblyDict.ContainsKey(core:Id)
-                   _AssemblyDict:Add(core:Id, core)
-                   _AssemblyReferences:Add(core)
-               ENDIF
+                NEXT
+                if core != NULL .and. ! _AssemblyDict.ContainsKey(core:Id)
+                    _AssemblyDict:Add(core:Id, core)
+                    _AssemblyReferences:Add(core)
+                endif
                _dependentAssemblyList := result
             ENDIF
             RETURN _dependentAssemblyList
@@ -1079,7 +1079,10 @@ BEGIN NAMESPACE XSharpModel
          NEXT
          IF sTypeIds:Length == 0
             RETURN NULL
-        ENDIF
+         ENDIF
+         interfaces := interfaces:Replace(";","")
+         interfaces := interfaces:Replace("\r","")
+         interfaces := interfaces:Replace("\n","")
          VAR aIF := interfaces.Split(<CHAR>{c','}, StringSplitOptions.RemoveEmptyEntries)
          //todo Collect interfaces from IMPLEMENTS clauses
          VAR members  := XDatabase.GetMembers(sTypeIds):ToArray()

@@ -145,6 +145,11 @@
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>System.Design.dll</AssemblyName>
     </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+      <SpecificVersion>False</SpecificVersion>
+      <AssemblyName>System.Drawing.dll</AssemblyName>
+    </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
       <Name>System.ValueTuple</Name>
       <AssemblyName>System.ValueTuple.dll</AssemblyName>
@@ -158,11 +163,12 @@
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>System.Windows.dll</AssemblyName>
     </Reference>
-    <Reference Include="System.Xml">
-      <Name>System.Xml</Name>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
       <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.Xml.dll</AssemblyName>
+      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
     </Reference>
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase">
       <Name>WindowsBase</Name>
       <SpecificVersion>False</SpecificVersion>
@@ -186,6 +192,7 @@
     <Compile Include="Database\XDatabase.prg" />
     <Compile Include="Database\XDbResult.prg" />
     <Compile Include="Database\XDbResultHelpers.prg" />
+    <Compile Include="MetaData\BuiltInFunctions.prg" />
     <Compile Include="Model\ClassGenerator.prg" />
     <Compile Include="Model\CommentTask.prg" />
     <Compile Include="Parser\XSharpTokenList.prg" />

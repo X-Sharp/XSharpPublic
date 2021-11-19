@@ -77,6 +77,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Method
                 CASE Kind.Assign
                 CASE Kind.Access
+                CASE Kind.Property
                 CASE Kind.Function
                 CASE Kind.Procedure
                 CASE Kind.Event

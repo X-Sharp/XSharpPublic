@@ -178,6 +178,7 @@ BEGIN NAMESPACE XSharpModel
                LOOP
             ENDIF
             LOCAL startOfTrivia := -1 as LONG
+            SELF:ParseUdcTokens()
             aAttribs := SELF:ParseAttributes()
             VAR mods := SELF:ParseVisibilityAndModifiers()
             VAR vis  := _AND(mods, Modifiers.VisibilityMask)
@@ -516,6 +517,11 @@ using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoper
          ENDIF
          SELF:ReadLine()
          RETURN TRUE
+      PRIVATE METHOD ParseUdcTokens() AS VOID
+        DO WHILE SELF:La1 == XSharpLexer.UDC_KEYWORD
+            SELF:Consume()
+        ENDDO
+        RETURN
 
       PRIVATE METHOD ParseAttributes() AS IList<XSharpToken>
 /*
@@ -856,6 +862,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          LOCAL nStart  := 0 AS LONG
          LOCAL nMiddle := 0 AS LONG
          LOCAL nEnd    := 0 AS LONG
+         SELF:ParseUdcTokens()  // Read UDC tokens on the current line
          SWITCH SELF:La1
          CASE XSharpLexer.BEGIN
             SWITCH SELF:La2
@@ -1195,7 +1202,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                Tokens:Add(SELF:ConsumeAndGet())
             ENDDO
          ENDIF
-         RETURN SELF:TokensAsString(Tokens)
+         RETURN SELF:TokensAsString(Tokens,FALSE)
 
       PRIVATE METHOD TokensAsString(tokens AS IList<XSharpToken>, lAddTrivia := TRUE AS LOGIC) AS STRING
          LOCAL sb AS StringBuilder
@@ -2712,6 +2719,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          DO WHILE SELF:Eos() .AND. !SELF:Eoi()
              Consume()
          ENDDO
+         SELF:ParseUdcTokens()  // Read UDC tokens on the current line
          SWITCH SELF:La1
          CASE XSharpLexer.FIELD
             IF !SELF:ParseFieldStatement()

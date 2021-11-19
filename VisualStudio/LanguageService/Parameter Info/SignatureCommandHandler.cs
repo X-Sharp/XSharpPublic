@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Text;
 using XSharpModel;
 using Microsoft.VisualStudio.Editor;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using System.Collections.Generic;
 
 
 #pragma warning disable CS0649 // Field is never assigned to, for the imported fields
@@ -82,7 +83,7 @@ namespace XSharp.LanguageService
                 switch (nCmdID)
                 {
                     case (int)VSConstants.VSStd2KCmdID.PARAMINFO:
-                        StartSignatureSession(false);
+                        StartSignatureSession(true);
                         break;
                     case (int)VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     case (int)VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
@@ -243,61 +244,65 @@ namespace XSharp.LanguageService
             // Then, the corresponding Type/Element if possible
             // Check if we can get the member where we are
 
-            var tokenList = XSharpTokenTools.GetTokenList(location, out var state);
-            while (tokenList.Count > 0)
+            var tokenList = XSharpTokenTools.GetTokenListBeforeCaret(location, out var state);
+            // tokenlist may look like ID1 ( ID2 ( e1 , e2)
+            // after the closing paren we come here and want to completely remove the  ID2 ( e1, e2 ) part
+            // when we have this ID1 ( e1 ) then there should be no parameter completion at all
+            // The same for ID1 { e1 }
+            // so we need to see if LPAREN / RPAREN is closed and if LCURLY / RCURLY is closed and if LBRKT / RBRKT is closed
+            int nested = 0;
+            var openTokens = new Stack<XSharpToken>();
+            for (int i = 0; i < tokenList.Count; i++)
             {
-                var last = tokenList[tokenList.Count - 1];
-                if (last.Position > ssp.Position)
+                var token = tokenList[i];
+                switch (token.Type)
                 {
-                    tokenList.RemoveAt(tokenList.Count - 1);
-                }
-                else if (last.Position == ssp.Position )
-                {
-                    bool delete = false;
-                    switch (last.Type)
-                    {
-                        case XSharpLexer.COMMA:
-                            delete = props.triggerChar != ',';
-                            break;
-                        case XSharpLexer.LCURLY:
-                            delete = props.triggerChar != ',' && props.triggerChar != '{';
-                            break;
-                        case XSharpLexer.LPAREN:
-                            delete = props.triggerChar != ',' && props.triggerChar != '(';
-                            break;
-                        case XSharpLexer.RPAREN:
-                            if (props.triggerChar == ')')
-                                delete = props.triggerPosition != last.Position;
-                            else
-                                delete = true;
-                            break;
-                        case XSharpLexer.RCURLY:
-                            if (props.triggerChar == '}')
-                                delete = props.triggerPosition != last.Position;
-                            else
-                                delete = true;
-                            break;
-                        default:
-                            delete = true;
-                            break;
-                    }
-                    if (delete)
-                    {
-                        tokenList.RemoveAt(tokenList.Count - 1);
-                    }
-                    else
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.LCURLY:
+                    case XSharpLexer.LBRKT:
+                        openTokens.Push(token);
+                        break;
+                    case XSharpLexer.RPAREN:
+                        if (openTokens.Count > 0 && openTokens.Peek().Type == XSharpLexer.LPAREN)
+                            openTokens.Pop();
+                        break;
+                    case XSharpLexer.RCURLY:
+                        if (openTokens.Count > 0 && openTokens.Peek().Type == XSharpLexer.LCURLY)
+                            openTokens.Pop();
+                        break;
+                    case XSharpLexer.RBRKT:
+                        if (openTokens.Count > 0 && openTokens.Peek().Type == XSharpLexer.LBRKT)
+                            openTokens.Pop();
+                        break;
+                    case XSharpLexer.STRING_CONST:
+                    case XSharpLexer.INTERPOLATED_STRING_CONST:
+                    case XSharpLexer.CHAR_CONST:
+                        if (token.Position < location.Position && location.Position < token.Position+token.Text.Length)
+                        {
+                            // comma inside literal !
+                            return null;
+                        }
                         break;
                 }
-                else 
+            }
+ 
+            if (openTokens.Count == 0)
+            {
+                tokenList.Clear();
+            }
+            else
+            {
+                var pos = tokenList.IndexOf(openTokens.Peek());
+                if (pos >= 0)
                 {
-                    break;
+                    tokenList.RemoveRange(pos + 1, tokenList.Count - pos - 1);
                 }
             }
             if (comma)
             {
                 // check to see if there is a lparen or lcurly before the comma
                 bool done = false;
-                int nested = 0;
+                nested = 0;
                 while (tokenList.Count > 0 && ! done)
                 {
                     var token = tokenList[tokenList.Count-1];
@@ -423,37 +428,40 @@ namespace XSharp.LanguageService
             props.Element = currentElement;
             if (comma)
             {
-                // calculate where the lparen before the comma is.
-                if (ssp.Position >= ssp.Snapshot.Length)
-                    ssp -= 1;
+                var tokenList = XSharpTokenTools.GetTokenListBeforeCaret(location, out var state);
                 bool done = false;
                 int nested = 0;
-                while (ssp.Position > 0  && ! done)
+                for (int i = tokenList.Count-1; i >= 0 && ! done; i--)
                 {
-                    var ch = ssp.GetChar();
-                    switch (ch)
+                    var token = tokenList[i];
+                    switch (token.Type)
                     {
-                        case '(':
-                        case '[':
-                        case '{':
+                        case XSharpLexer.LPAREN:
+                        case XSharpLexer.LCURLY:
+                        case XSharpLexer.LBRKT:
                             done = nested == 0;
+                            if (done)
+                            {
+                                props.Start = token.Position;
+                                props.Length = _textView.Caret.Position.BufferPosition.Position - token.Position;
+                            }
                             nested -= 1;
                             break;
-                        case ')':
-                        case ']':
-                        case '}':
+                        case XSharpLexer.RPAREN:
+                        case XSharpLexer.RCURLY:
+                        case XSharpLexer.RBRKT:
                             nested += 1;
                             break;
                     }
-                    ssp = ssp - 1;
                 }
-                props.Start = ssp.Position;
+
             }
             else
             {
                 props.Start = ssp.Position;
+                props.Length = _textView.Caret.Position.BufferPosition.Position - ssp.Position;
             }
-            props.Length = _textView.Caret.Position.BufferPosition.Position - ssp.Position;
+            
 
             try
             {

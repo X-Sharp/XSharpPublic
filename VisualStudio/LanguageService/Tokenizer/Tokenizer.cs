@@ -25,19 +25,19 @@ namespace XSharp.LanguageService
             return XSharpCompletionSource.StringEquals(lhs, rhs);
         }
 
-        /// <summary>
-        /// Retrieve a List of Token, based on a position in buffer.
-        /// Moving back in the buffer, all tokens are retrieved and stored.
-        /// </summary>
-        /// <param name="triggerPointPosition">The position in the buffer </param>
-        /// <param name="triggerPointLineNumber"></param>
-        /// <param name="bufferText"></param>
-        /// <param name="stopToken">The IToken that stops the move backwards</param>
-        /// <param name="fromGotoDefn">Indicate if the call is due to Goto Definition</param>
-        /// <param name="file">XFile object to use for the context</param>
-        /// <param name="fromMember">The Member containing the position</param>
-        /// <param name="includeKeywords">Should keywords be included in the tokenlist</param>
-        /// <returns></returns>
+        internal static List<XSharpToken> GetTokenListBeforeCaret(XSharpSearchLocation location, out CompletionState state)
+        {
+            var bufferText = location.Snapshot.GetText();
+            var tokens = _getTokenList(location, bufferText, out state, false);
+            var result = new List<XSharpToken>();
+            foreach (var token in tokens)
+            {
+                if (token.Position <= location.Position)
+                    result.Add(token);
+            }
+            return result;
+        }
+
         internal static List<XSharpToken> GetTokenList(XSharpSearchLocation location, out CompletionState state, bool includeKeywords = false)
         {
             var bufferText = location.Snapshot.GetText();
@@ -68,8 +68,9 @@ namespace XSharp.LanguageService
                 nWidth = Math.Min(nWidth, bufferText.Length - fromMember.Interval.Start);
                 bufferText = bufferText.Substring(fromMember.Interval.Start, nWidth);
                 // Adapt the positions.
+                bufferText = new string(' ', fromMember.Interval.Start) + bufferText;
                 location = location.With(location.LineNumber - fromMember.Range.StartLine,
-                    location.Position - fromMember.Interval.Start );
+                    location.Position );
             }
             else
             {

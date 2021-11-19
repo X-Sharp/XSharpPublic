@@ -311,6 +311,8 @@ namespace XSharp.LanguageService
                 
                 source = source.Replace("<br />", "\r");
                 source = source.Replace("<br/>", "\r");
+                source = source.Replace("\r\r", "\r");
+                source = source.Replace("\r ", "\r");
                 source = source.TrimStart();
             }
             return source;

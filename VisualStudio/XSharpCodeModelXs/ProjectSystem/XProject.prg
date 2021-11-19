@@ -181,6 +181,10 @@ BEGIN NAMESPACE XSharpModel
          SELF:Loaded := TRUE
          SELF:FileWalkCompleted := FALSE
          XSolution.Add(SELF)
+         var cFile := XSolution.BuiltInFunctions
+         IF ! String.IsNullOrEmpty(cFile) .and. System.IO.File.Exists(cFile)
+             SELF:AddFile(cFile)
+         ENDIF
 
       PUBLIC METHOD Close() AS VOID
          ModelWalker.RemoveProject(SELF)

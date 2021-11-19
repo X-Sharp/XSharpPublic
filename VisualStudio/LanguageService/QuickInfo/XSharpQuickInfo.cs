@@ -72,9 +72,11 @@ namespace XSharp.LanguageService
                 ITextSnapshot currentSnapshot = ssp.Snapshot;
                 bool abort = false;
                 var tokens = _textBuffer.GetTokens();
+                if (tokens == null)
+                    return null;
                 if (cancellationToken.IsCancellationRequested)
                     return null;
-                if (! abort)
+                if (!abort)
                 {
                     WriteOutputMessage($"Triggerpoint: {triggerPoint.Value.Position}");
                     // We don't want to lex the buffer. So get the tokens from the last lex run
@@ -90,12 +92,12 @@ namespace XSharp.LanguageService
                     return null;
                 var location = _textBuffer.FindLocation(ssp);
                 CompletionState state;
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 if (cancellationToken.IsCancellationRequested)
                     return null;
                 var lookupresult = new List<IXSymbol>();
-                lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state,out var notProcessed,true));
+                lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
                 var lastToken = tokenList.LastOrDefault();
                 //
                 if (lookupresult.Count > 0)
@@ -103,46 +105,46 @@ namespace XSharp.LanguageService
                     var element = lookupresult[0];
                     var qiContent = new List<object>();
 
-                        if (element.Kind == Kind.Constructor && lastToken?.Type != XSharpLexer.CONSTRUCTOR  && lastToken?.Type != XSharpLexer.LPAREN)
+                    if (element.Kind == Kind.Constructor && lastToken?.Type != XSharpLexer.CONSTRUCTOR && lastToken?.Type != XSharpLexer.LPAREN)
+                    {
+                        if (element.Parent != null)
                         {
-                            if (element.Parent != null)
-                            {
-                                var xtype = element.Parent as IXTypeSymbol;
-                                var qitm = new XTypeAnalysis(xtype);
-                                AddImage(qiContent, qitm.Image);
-                                var description = new ClassifiedTextElement(qitm.WPFDescription);
-                                qiContent.Add(description);
-
-                            }
-                        }
-                        else if (element is IXMemberSymbol mem)
-                        {
-                            QuickInfoTypeMember qitm = new QuickInfoTypeMember(mem);
-                            AddImage(qiContent, qitm.Image);
-                            var description = new ClassifiedTextElement(qitm.WPFDescription);
-                            qiContent.Add(description);
-                        }
-                        else if (element is IXVariableSymbol var)
-                        {
-                            QuickInfoVariable qitm = new QuickInfoVariable(var);
-                            AddImage(qiContent, qitm.Image);
-                            var description = new ClassifiedTextElement(qitm.WPFDescription);
-                            qiContent.Add(description);
-
-                        }
-                        else if (element is IXTypeSymbol xtype)
-                        {
+                            var xtype = element.Parent as IXTypeSymbol;
                             var qitm = new XTypeAnalysis(xtype);
                             AddImage(qiContent, qitm.Image);
                             var description = new ClassifiedTextElement(qitm.WPFDescription);
                             qiContent.Add(description);
+
                         }
-                        else
-                        {
-                            var qitm = new XAnalysis(element);
-                            AddImage(qiContent, qitm.Image);
-                            var description = new ClassifiedTextElement(qitm.WPFDescription);
-                            qiContent.Add(description);
+                    }
+                    else if (element is IXMemberSymbol mem)
+                    {
+                        QuickInfoTypeMember qitm = new QuickInfoTypeMember(mem);
+                        AddImage(qiContent, qitm.Image);
+                        var description = new ClassifiedTextElement(qitm.WPFDescription);
+                        qiContent.Add(description);
+                    }
+                    else if (element is IXVariableSymbol var)
+                    {
+                        QuickInfoVariable qitm = new QuickInfoVariable(var);
+                        AddImage(qiContent, qitm.Image);
+                        var description = new ClassifiedTextElement(qitm.WPFDescription);
+                        qiContent.Add(description);
+
+                    }
+                    else if (element is IXTypeSymbol xtype)
+                    {
+                        var qitm = new XTypeAnalysis(xtype);
+                        AddImage(qiContent, qitm.Image);
+                        var description = new ClassifiedTextElement(qitm.WPFDescription);
+                        qiContent.Add(description);
+                    }
+                    else
+                    {
+                        var qitm = new XAnalysis(element);
+                        AddImage(qiContent, qitm.Image);
+                        var description = new ClassifiedTextElement(qitm.WPFDescription);
+                        qiContent.Add(description);
                     }
                     if (cancellationToken.IsCancellationRequested)
                         return null;
@@ -166,7 +168,7 @@ namespace XSharp.LanguageService
             return null;
         }
 
-        private void AddImage( List<object> qiContent, ImageMoniker image)
+        private void AddImage(List<object> qiContent, ImageMoniker image)
         {
             if (image.Id != KnownMonikers.None.Id)
             {
@@ -203,58 +205,17 @@ namespace XSharp.LanguageService
         }
         internal class QuickInfoBase
         {
-            internal QuickInfoBase()
+            IXSymbol _symbol;
+            internal QuickInfoBase(IXSymbol symbol)
             {
+                _symbol = symbol;
             }
-
-            protected void addVarInfo(List<ClassifiedTextRun> list, IXVariableSymbol var)
-            {
-                var name = var.Name;
-                var hasValue = !string.IsNullOrEmpty(var.Value);
-                if (hasValue && var.Kind == Kind.DbField)
-                {
-                    name = var.Value + "->" + name;
-                }
-                list.addText(name + " ");
-                if (hasValue && var.Kind != Kind.DbField) // default value
-                {
-                    var text = " :=  " + var.Value + " ";
-                    list.addText(text);
-
-                }
-                if (var is IXParameterSymbol xps )
-                {
-                    if (var.Kind == Kind.Parameter)
-                        list.addPair(xps.ParamTypeDesc + " ", var.TypeName.GetXSharpTypeName());
-                }
-                else if (var is XSourceVariableSymbol xsvs)
-                {
-                    if (var.Kind == Kind.Undeclared)
-                    {
-
-                    }
-                    else
-                    {
-                        list.addPair(xsvs.LocalTypeDesc + " ", var.TypeName.GetXSharpTypeName());
-                    }
-                }
-                if (var.IsArray)
-                {
-                    list.addText("[] ");
-                }
-            }
-
-        }
-
-        internal class QuickInfoTypeMember : QuickInfoBase
-        {
-            IXMemberSymbol typeMember;
 
             internal ImageMoniker Image
             {
                 get
                 {
-                    switch (typeMember.Kind)
+                    switch (_symbol.Kind)
                     {
                         case Kind.Constructor:
                         case Kind.Destructor:
@@ -289,7 +250,52 @@ namespace XSharp.LanguageService
                     return KnownMonikers.None;
                 }
             }
-            internal QuickInfoTypeMember(IXMemberSymbol tm) : base()
+
+
+            protected void addVarInfo(List<ClassifiedTextRun> list, IXVariableSymbol var)
+            {
+                var name = var.Name;
+                var hasValue = !string.IsNullOrEmpty(var.Value);
+                if (hasValue && var.Kind == Kind.DbField)
+                {
+                    name = var.Value + "->" + name;
+                }
+                list.addText(name + " ");
+                if (hasValue && var.Kind != Kind.DbField) // default value
+                {
+                    var text = " :=  " + var.Value + " ";
+                    list.addText(text);
+
+                }
+                if (var is IXParameterSymbol xps)
+                {
+                    if (var.Kind == Kind.Parameter)
+                        list.addPair(xps.ParamTypeDesc + " ", var.TypeName.GetXSharpTypeName());
+                }
+                else if (var is XSourceVariableSymbol xsvs)
+                {
+                    if (var.Kind == Kind.Undeclared)
+                    {
+
+                    }
+                    else
+                    {
+                        list.addPair(xsvs.LocalTypeDesc + " ", var.TypeName.GetXSharpTypeName());
+                    }
+                }
+                if (var.IsArray)
+                {
+                    list.addText("[] ");
+                }
+            }
+
+        }
+
+        internal class QuickInfoTypeMember : QuickInfoBase
+        {
+            IXMemberSymbol typeMember;
+
+            internal QuickInfoTypeMember(IXMemberSymbol tm) : base(tm)
             {
                 this.typeMember = tm;
             }
@@ -301,7 +307,7 @@ namespace XSharp.LanguageService
                     var content = new List<ClassifiedTextRun>();
 
                     string text;
-                    if (this.typeMember.Modifiers != Modifiers.None )
+                    if (this.typeMember.Modifiers != Modifiers.None)
                     {
                         text = XSettings.FormatKeyword(this.typeMember.ModifiersKeyword) + " ";
                         content.addKeyword(text);
@@ -343,7 +349,7 @@ namespace XSharp.LanguageService
                 if (!this.typeMember.Kind.IsGlobalTypeMember())
                 {
                     name = this.typeMember.Parent.Name;
-                    var pos = name.IndexOfAny(new char[]{ '`','<'});
+                    var pos = name.IndexOfAny(new char[] { '`', '<' });
                     {
                         if (pos > 0)
                         {
@@ -399,22 +405,7 @@ namespace XSharp.LanguageService
         {
             IXVariableSymbol xVar;
 
-            internal ImageMoniker Image
-            {
-                get
-                {
-                    switch (xVar.Kind)
-                    {
-                        case Kind.Parameter:
-                            return KnownMonikers.Parameter;
-                        case Kind.Local:
-                        case Kind.MemVar:
-                            return KnownMonikers.LocalVariable;
-                    }
-                    return KnownMonikers.None;
-                }
-            }
-            internal QuickInfoVariable(IXVariableSymbol var) : base()
+            internal QuickInfoVariable(IXVariableSymbol var) : base(var)
             {
                 this.xVar = var;
             }
@@ -526,7 +517,7 @@ namespace XSharp.LanguageService
             if (!String.IsNullOrEmpty(location))
             {
                 if (location == XSolution.BuiltInFunctions)
-                    content.addPair("\rLocation:", " Built-in X# functions" );
+                    content.addPair("\rLocation:", " Built-in X# functions");
                 else
                     content.addPair("\rLocation:", " " + location);
             }

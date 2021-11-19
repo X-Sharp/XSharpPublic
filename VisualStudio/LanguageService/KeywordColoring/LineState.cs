@@ -20,6 +20,9 @@ namespace XSharp.LanguageService
         Inactive = 1 << 5,
         SingleLineEntity = 1 << 6,
     }
+    /// <summary>
+    /// This class keeps the state for 0 based line numbers
+    /// </summary>
     internal class XSharpLineState
     {
         private Dictionary<int, LineFlags> dict;

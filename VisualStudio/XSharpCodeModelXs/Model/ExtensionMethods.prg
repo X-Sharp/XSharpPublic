@@ -266,7 +266,6 @@ BEGIN NAMESPACE XSharpModel
 
         STATIC METHOD HasMembers(SELF eKind AS Kind) AS LOGIC
             SWITCH eKind
-                CASE Kind.Namespace
                 CASE Kind.Class
                 CASE Kind.Structure
                 CASE Kind.Interface
@@ -284,7 +283,6 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Class
                 CASE Kind.Structure
                 CASE Kind.Interface
-                CASE Kind.Enum
                     RETURN TRUE
             END SWITCH
         RETURN FALSE

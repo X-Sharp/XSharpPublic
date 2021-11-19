@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
       PRIVATE PROPERTY CurrentBlock       AS XSourceBlock   GET IIF(_BlockStack:Count > 0, _BlockStack:Peek(), NULL_OBJECT)
-      PRIVATE PROPERTY CurrentEntityKind  AS Kind     GET IIF(_EntityStack:Count > 0, CurrentEntity:Kind, Kind:Unknown)
+      PRIVATE PROPERTY CurrentEntityKind  AS Kind     GET IIF(_EntityStack:Count > 0, CurrentEntity:Kind, Kind.Unknown)
       PRIVATE PROPERTY InFoxClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XSharpDialect.FoxPro
       PRIVATE PROPERTY InXppClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XSharpDialect.XPP
       PROPERTY EntityList AS IList<XSourceEntity>  GET _EntityList
@@ -233,14 +233,25 @@ BEGIN NAMESPACE XSharpModel
                         lastEntity:Interval    := lastEntity:Interval:WithEnd(tokenBefore)
                      ENDIF
                      _EntityList:Add(entity)
-
+                     VAR isMember := entity IS XSourceMemberSymbol
+                     VAR isType   := entity IS XSourceTypeSymbol
+                     var canAddMembers  := CurrentEntityKind:HasMembers()
+                     var canAddChildren := CurrentEntityKind:HasChildren()
                      LOCAL mustPop as LOGIC
                      IF _EntityStack:Count == 0
                         mustPop := FALSE
-                     ELSEIF CurrentEntityKind:HasMembers()
-                        mustPop := FALSE
-                     ELSEIF CurrentEntity IS XSourceTypeSymbol
-                        mustPop := FALSE
+                     ELSEIF isType
+                         IF canAddChildren
+                            mustPop := FALSE
+                         ELSE
+                            mustPop := TRUE
+                         ENDIF
+                     ELSEIF isMember
+                        IF canAddMembers
+                            mustPop := FALSE
+                        ELSE
+                            mustPop := TRUE
+                        ENDIF
                      ELSEIF CurrentEntityKind:HasBody() .and. entity:Kind:IsLocal()
                         mustPop := FALSE
                      ELSE
@@ -250,20 +261,21 @@ BEGIN NAMESPACE XSharpModel
                         _EntityStack:Pop()
                      ENDIF
                      IF entity:Kind:IsGlobalTypeMember() .AND. entity IS XSourceMemberSymbol VAR xGlobalMember
+                        // GLOBAL, DEFINE, FUNCTION, PROCEDURE
+                        // also #define, #command etc
                         SELF:_globalType:AddMember(xGlobalMember)
                      ELSEIF entity:Kind:IsLocal()
                         entity:Parent := CurrentEntity
-                     ELSE
-                        IF CurrentEntityKind:HasMembers() .AND. CurrentEntity IS XSourceTypeSymbol VAR xEnt
-                           IF entity IS XSourceMemberSymbol VAR xMember .AND. xMember:Parent == NULL
-                              xEnt:AddMember( xMember )
-                           ENDIF
-                           IF entity IS XSourceTypeSymbol VAR xChild .AND. ! XSourceTypeSymbol.IsGlobalType(xEnt)
-                              xEnt:AddChild( xChild )
-                              xChild:Namespace := xEnt:FullName
-                           ENDIF
+                     ELSEIF canAddMembers .AND. CurrentEntity IS XSourceTypeSymbol VAR xEnt
+                        // CurrentEntity should be a type: Class, Structure, Interface, Enum, VoStruct, Union
+                        IF entity IS XSourceMemberSymbol VAR xMember .AND. xMember:Parent == NULL
+                            xEnt:AddMember( xMember )
                         ENDIF
-
+                     ELSEIF canAddChildren .and. entity IS XSourceTypeSymbol VAR xChild .AND. ! XSourceTypeSymbol.IsGlobalType(xEnt) ;
+                            .and. xEnt:Kind:HasChildren()
+                        // Namespace, class, structure, interface can have children (nested types)
+                        xEnt:AddChild( xChild )
+                        xChild:Namespace := xEnt:FullName
                      ENDIF
                      IF ! entity:SingleLine
                         _EntityStack:Push(entity)

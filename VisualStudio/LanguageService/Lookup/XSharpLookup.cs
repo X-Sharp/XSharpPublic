@@ -795,6 +795,11 @@ namespace XSharp.LanguageService
                     {
                         symbols.Push(result[0]);
                     }
+                    else
+                    {
+                        symbols.Clear();
+                        break;
+                    }
                 }
                 else if (isId)
                 {
@@ -856,6 +861,11 @@ namespace XSharp.LanguageService
                     if (result.Count > 0)
                     {
                         symbols.Push(result[0]);
+                    }
+                    else
+                    {
+                        symbols.Clear();
+                        break;
                     }
                 }
                 else if (XSharpLexer.IsOperator(currentToken.Type))

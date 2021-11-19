@@ -270,13 +270,13 @@ namespace XSharp.LanguageService
                     switch (child.Name.ToLower())
                     {
                         case "summary":
-                            summary = child.InnerXml;
+                            summary = decodeChildNodes(child);
                             break;
                         case "returns":
-                            myreturns = child.InnerXml;
+                            myreturns = decodeChildNodes(child);
                             break;
                         case "remarks":
-                            myremarks = child.InnerXml;
+                            myremarks = decodeChildNodes(child);
                             break;
                     }
                 }
@@ -288,10 +288,44 @@ namespace XSharp.LanguageService
             {
                 XSettings.DisplayOutputMessage("Exception in XSharpXMLDocMember.GetSummary");
                 XSettings.DisplayException(e);
+                summary = "** Invalid XML comment ** \r"+e.Message;
 
             }
             return summary;
 
+        }
+        static string decodeChildNodes(XmlNode node)
+        {
+            if (node.HasChildNodes)
+            {
+                var sb = new StringBuilder();
+                foreach (var child in node.ChildNodes)
+                {
+                    if (child is XmlNode cnode)
+                    {
+                        switch (cnode.Name)
+                        {
+                            case "cref":
+                                break;
+                            case "br":
+                                sb.Append("<br />");
+                                break;
+                            case "paramref":
+                                sb.Append("'"+cnode.Attributes.GetNamedItem("name").InnerText+"'");
+                                break;
+                            default:
+                                sb.Append(decodeChildNodes(cnode));
+                                break;
+                        }
+                    }
+                    else if (child is XmlElement el)
+                    {
+                        sb.Append(el.InnerText);
+                    }
+                }
+                return sb.ToString();
+            }
+            return node.InnerText;
         }
         static string CleanUpResult(string source)
         {
@@ -310,7 +344,6 @@ namespace XSharp.LanguageService
                 source = source.Replace(". ", ".\r");
                 
                 source = source.Replace("<br />", "\r");
-                source = source.Replace("<br/>", "\r");
                 source = source.Replace("\r\r", "\r");
                 source = source.Replace("\r ", "\r");
                 source = source.TrimStart();

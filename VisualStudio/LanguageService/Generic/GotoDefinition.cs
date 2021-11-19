@@ -37,7 +37,7 @@ namespace XSharp.LanguageService
                 string currentNS = TextView.FindNamespace();
                 var location = TextView.FindLocation();
                 var state = CompletionState.General | CompletionState.Types | CompletionState.Namespaces;
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location,  out state);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 var result = new List<IXSymbol>();

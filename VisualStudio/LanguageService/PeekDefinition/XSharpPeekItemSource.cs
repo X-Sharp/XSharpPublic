@@ -44,8 +44,7 @@ namespace XSharp.LanguageService
                     return;
 
                 CompletionState state;
-                var tokens = _textBuffer.GetTokens();
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
                 var result = new List<IXSymbol>();
                 result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
                 //

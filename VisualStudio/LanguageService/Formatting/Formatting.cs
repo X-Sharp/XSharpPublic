@@ -362,6 +362,7 @@ namespace XSharp.LanguageService
                 stopWatch.Start();
 #endif
                 //
+                _classifier.ClassifyWhenNeeded();
                 FormattingContext context = null;
                 // Already been lexed ?
                 if (getBufferedTokens(out var xTokens))

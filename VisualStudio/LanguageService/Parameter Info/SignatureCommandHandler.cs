@@ -233,7 +233,6 @@ namespace XSharp.LanguageService
             // Also no need to filter on visibility since that has been done in the completionlist already !
             // First, where are we ?
             var location = props.Location;
-            IXMemberSymbol currentElement = null;
             // When we have a multi line source line this is the line where the open paren or open curly is
 
             if (location.Member != null && location.Member.Range.StartLine == ssp.GetContainingLine().LineNumber)
@@ -341,7 +340,8 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            
+
+            IXMemberSymbol currentElement = null;
             // We don't care of the corresponding Type, we are looking for the currentElement
             var element = XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true).FirstOrDefault();
             if (element is IXMemberSymbol mem)

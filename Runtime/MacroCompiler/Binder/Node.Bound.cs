@@ -634,6 +634,42 @@ namespace XSharp.MacroCompiler.Syntax
         protected Expr WriteBack = null;
         internal override Node Bind(Binder b)
         {
+            if (b.Options.FoxParenArrayAccess && Expr is IdExpr id && (Args.Args.Count == 1 || Args.Args.Count == 2))
+            {
+                if (Affinity == BindAffinity.Assign)
+                {
+                    // transform to array access
+                    var a = new ArrayAccessExpr(Expr, Args);
+                    b.Bind(ref a, Affinity);
+                    return a;
+                }
+                else
+                {
+                    Expr e = new IdExpr(id.Name);
+                    b.Bind(ref e, BindAffinity.Invoke);
+                    if (e.Symbol?.IsMethodOrMethodGroup() == true)
+                    {
+                        if (b.Options.UndeclaredVariableResolution == VariableResolution.TreatAsFieldOrMemvar)
+                        {
+                            // transform to call to __FoxArrayAccess()
+                            var m = (Args.Args.Count == 1) ? WellKnownMembers.XSharp_VFP_Functions___FoxArrayAccess_1 : WellKnownMembers.XSharp_VFP_Functions___FoxArrayAccess_2;
+                            Args.Args.Insert(0, new Arg(LiteralExpr.Bound(Constant.Create(id.Name))));
+                            Args.Args.Insert(1, new Arg(new IdExpr(id.Name)));
+                            b.Bind(ref Args);
+                            if (Args.Args[1].Expr is AutoVarExpr av)
+                                av.Safe = true;
+                            return MethodCallExpr.Bound(b, null, Compilation.Get(m), null, Args);
+                        }
+                    }
+                    else
+                    {
+                        // transform to array access
+                        var a = new ArrayAccessExpr(Expr, Args);
+                        b.Bind(ref a, Affinity);
+                        return a;
+                    }
+                }
+            }
             b.Bind(ref Expr, BindAffinity.Invoke);
             b.Bind(ref Args);
             Symbol = b.BindMethodCall(Expr, Expr.Symbol, Args, out Self, out WriteBack);
@@ -1051,12 +1087,13 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class AutoVarExpr : Expr
     {
         internal Expr Var;
+        internal bool Safe = false;
         AutoVarExpr(Expr var) : base(var.Token) { Var = var; }
         public override string ToString() { return "{Var:" + Var.ToString() + "}"; }
-        internal static AutoVarExpr Bound(string varName)
+        internal static AutoVarExpr Bound(string varName, bool safe = false)
         {
             var e = LiteralExpr.Bound(Constant.Create(varName));
-            return new AutoVarExpr(e) { Symbol = e.Symbol, Datatype = Compilation.Get(NativeType.Usual) };
+            return new AutoVarExpr(e) { Symbol = e.Symbol, Datatype = Compilation.Get(NativeType.Usual), Safe = safe };
         }
         internal override void RequireGetAccess() => RequireValue();
         internal override void RequireSetAccess() => RequireValue();

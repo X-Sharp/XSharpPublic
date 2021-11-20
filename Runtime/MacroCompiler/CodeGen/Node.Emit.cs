@@ -632,7 +632,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override void Emit(ILGenerator ilg, bool preserve)
         {
             Var.Emit(ilg);
-            var m = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___VarGet) as MethodSymbol;
+            var m = Compilation.Get(Safe ? WellKnownMembers.XSharp_RT_Functions___VarGetSafe : WellKnownMembers.XSharp_RT_Functions___VarGet) as MethodSymbol;
             ilg.Emit(OpCodes.Call, m.Method);
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);

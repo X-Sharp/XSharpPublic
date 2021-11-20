@@ -12,6 +12,9 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
+FUNCTION TestI(i as int) as int
+    return i
+
 FUNCTION Args(args PARAMS OBJECT[]) AS OBJECT[]
     RETURN args
 
@@ -381,6 +384,7 @@ FUNCTION S_EnforceTypeC(uVar,cTyp) CLIPPER
         END SWITCH
     ENDIF
     RETURN NIL
+
 
 
 

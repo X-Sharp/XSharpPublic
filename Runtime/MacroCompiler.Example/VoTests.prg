@@ -117,6 +117,14 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(FALSE), -42, typeof(INT))
         TestMacro(mc, e"{|e| if( e = 1, 'true','false' ) ", Args(1), "true", typeof(String) )
 
+        mc:Options:FoxParenArrayAccess = true
+        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
+        TestMacro(mc, e"{|a,b| asdgfafd := a, asdgfafd(2) }", Args({10,20,30}, 1), 20, typeof(INT))
+        TestMacro(mc, e"{|aq| aq(1)}", Args({10,20,30}, 1), 10, typeof(int))
+        TestMacro(mc, e"{|a| a(3) += a(2) + a(1), a(3)}", Args({10,20,30}, 1), 60, typeof(int))
+        TestMacro(mc, e"{|aq| aq(2,1)}", Args({{10,20,30},{40,50,60}}, 1), 40, typeof(int))
+        mc:Options:FoxParenArrayAccess = false
+
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         TestMacro(mc, e"{|| eval({||true}) }", Args(), true, typeof(logic))
         TestMacro(mc, e"{|o| eval({|a|a},o) }", Args(TRUE), TRUE, typeof(LOGIC))

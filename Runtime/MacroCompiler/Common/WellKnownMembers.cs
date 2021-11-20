@@ -56,6 +56,10 @@ namespace XSharp.MacroCompiler
         XSharp_Internal_CompilerServices_EnterBeginSequence,
         XSharp_Internal_CompilerServices_ExitBeginSequence,
         XSharp_Error_WrapRawException,
+        XSharp_RT_Functions___MemVarGetSafe,
+        XSharp_RT_Functions___VarGetSafe,
+        XSharp_VFP_Functions___FoxArrayAccess_1,
+        XSharp_VFP_Functions___FoxArrayAccess_2,
     }
 
     public static partial class Compilation
@@ -106,6 +110,10 @@ namespace XSharp.MacroCompiler
             XSharpQualifiedFunctionNames.EnterSequence+"|"+VulcanQualifiedFunctionNames.EnterSequence,
             XSharpQualifiedFunctionNames.ExitSequence+"|"+VulcanQualifiedFunctionNames.ExitSequence,
             XSharpQualifiedFunctionNames.WrapException+"|"+VulcanQualifiedFunctionNames.WrapException,
+            XSharpQualifiedFunctionNames.MemVarGetSafe,
+            XSharpQualifiedFunctionNames.VarGetSafe,
+            XSharpQualifiedFunctionNames.FoxArrayAccess_1,
+            XSharpQualifiedFunctionNames.FoxArrayAccess_2,
         };
 
         static MemberSymbol[] WellKnownMemberSymbols;
@@ -142,7 +150,8 @@ namespace XSharp.MacroCompiler
                 foreach (var m in (WellKnownMembers[])Enum.GetValues(typeof(WellKnownMembers)))
                 {
                     var names = MemberNames[(int)m];
-                    Debug.Assert(m.ToString().StartsWith(names.Replace("global::", "").Replace('.', '_').Replace("`", "_T").Replace("$", "").Replace("@", "").Split('|', '(').First()));
+                    var flatname = names.Replace("global::", "").Replace('.', '_').Replace("`", "_T").Replace("$", "").Replace("@", "").Split('|', '(').First();
+                    Debug.Assert(m.ToString().StartsWith(flatname));
                     memberSymbols[(int)m] = FindMember(names);
                     Debug.Assert(memberSymbols[(int)m] != null);
                 }

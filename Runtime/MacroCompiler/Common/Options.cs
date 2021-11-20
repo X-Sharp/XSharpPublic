@@ -43,7 +43,7 @@ namespace XSharp.MacroCompiler
 
         public static MacroOptions VisualObjects { get => new MacroOptions() { AllowMemvarAlias = false, AllowDotAccess = false, Dialect = XSharpDialect.VO }; }
 
-        public static MacroOptions FoxPro { get => new MacroOptions() { Dialect = XSharpDialect.FoxPro }; }
+        public static MacroOptions FoxPro { get => new MacroOptions() { Dialect = XSharpDialect.FoxPro, FoxParenArrayAccess = XSharp.RuntimeState.CompilerOptionFox2 }; }
 
         public XSharpDialect Dialect = XSharpDialect.VO;
 
@@ -57,6 +57,8 @@ namespace XSharp.MacroCompiler
 
         public bool VOFloatConstants = true;
         public bool VODateConstants = true;
+
+        public bool FoxParenArrayAccess = false;
 
         public bool AllowMemvarAlias = true;
         public bool AllowDotAccess = true;

@@ -202,6 +202,11 @@ namespace XSharp.MacroCompiler
         internal const string PushWorkarea = "global::XSharp.RT.Functions.__pushWorkarea";
         internal const string PopWorkarea = "global::XSharp.RT.Functions.__popWorkarea";
         internal const string Evaluate = "global::XSharp.RT.Functions.Evaluate$(System.String)";
+        internal const string VarGetSafe = "global::XSharp.RT.Functions.__VarGetSafe";
+        internal const string MemVarGetSafe = "global::XSharp.RT.Functions.__MemVarGetSafe";
+        // In VFP assembly
+        internal const string FoxArrayAccess_1 = "XSharp.VFP.Functions.__FoxArrayAccess$(System.String,XSharp.__Usual,XSharp.__Usual)";
+        internal const string FoxArrayAccess_2 = "XSharp.VFP.Functions.__FoxArrayAccess$(System.String,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)";
     }
     internal static class OurAssemblyNames
     {

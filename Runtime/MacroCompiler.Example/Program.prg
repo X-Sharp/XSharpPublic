@@ -37,6 +37,11 @@ BEGIN NAMESPACE MacroCompilerTest
         "RETURN a+b+c"}),1,2,3)
         wait*/
 
+        /*mc:Options:FoxParenArrayAccess = true
+        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
+        TestMacro(mc, "TestI := {10,20}, TestI(1)", Args(), 1, typeof(INT))
+        wait*/
+
         TestByRefPriv()
         ParserTestsFox(CreateFoxScriptCompiler())
         ParserTests(CreateScriptCompiler())

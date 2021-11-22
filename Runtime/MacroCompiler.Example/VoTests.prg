@@ -117,13 +117,47 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(FALSE), -42, typeof(INT))
         TestMacro(mc, e"{|e| if( e = 1, 'true','false' ) ", Args(1), "true", typeof(String) )
 
-        mc:Options:FoxParenArrayAccess = true
+        mc:Options:FoxParenArrayAccess := true
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
-        TestMacro(mc, e"{|a,b| asdgfafd := a, asdgfafd(2) }", Args({10,20,30}, 1), 20, typeof(INT))
-        TestMacro(mc, e"{|aq| aq(1)}", Args({10,20,30}, 1), 10, typeof(int))
-        TestMacro(mc, e"{|a| a(3) += a(2) + a(1), a(3)}", Args({10,20,30}, 1), 60, typeof(int))
-        TestMacro(mc, e"{|aq| aq(2,1)}", Args({{10,20,30},{40,50,60}}, 1), 40, typeof(int))
-        mc:Options:FoxParenArrayAccess = false
+        M->Foo := __FoxArray{10}
+        M->Foo := __FoxAssign(M->Foo ,42)
+
+        TestMacro(mc, e"{|a,b| asdgfafd := a, asdgfafd(2) }", Args(M->Foo, 1), 42, typeof(INT))
+        TestMacro(mc, e"{|aq| aq(1)}", Args(M->Foo, 1), 42, typeof(int))
+        TestMacro(mc, e"{|a| a(3) += a(2) + a(1), a(3)}", Args(M->Foo), 126, typeof(int))
+        M->FoxArrayTest := __FoxArray{2,3}
+        M->FoxArrayTest[1,1] := 10
+        M->FoxArrayTest[1,2] := 20
+        M->FoxArrayTest[1,3] := 30
+        M->FoxArrayTest[2,1] := 40
+        M->FoxArrayTest[2,2] := 50
+        M->FoxArrayTest[2,3] := 60
+        // When 'FoxArrayTest' is an aray and we use 1 or 2 indices
+        // then access the arrar
+        TestMacro(mc, e"{|| FoxArrayTest(1,1)}", Args(), 10, typeof(int))
+        // Note that FoxPro allows to access the 2 dimensional array with 1 dimension as well
+
+        TestMacro(mc, e"{|| FoxArrayTest(1)}", Args(), 10, typeof(int))
+        TestMacro(mc, e"{|| FoxArrayTest(6)}", Args(), 60, typeof(int))
+        TestMacro(mc, e"{|| FoxArrayTest(1,2)}", Args(), 20, typeof(int))
+        TestMacro(mc, e"{|| FoxArrayTest(1,3)}", Args(), 30, typeof(int))
+        TestMacro(mc, e"{|| FoxArrayTest(2,1)}", Args(), 40, typeof(int))
+        TestMacro(mc, e"{|| FoxArrayTest(2,2)}", Args(), 50, typeof(int))
+        TestMacro(mc, e"{|| FoxArrayTest(2,3)}", Args(), 60, typeof(int))
+        //
+        // with 3 dimensions the macro compiler call the function
+        TestMacro(mc, e"{|| FoxArrayTest(10,20,30)}", Args(), 102, typeof(int))
+        // The next line should call the function because '2' and '3' are
+        // invalid array indexes, should call function
+        TestMacro(mc, e"{|| FoxArrayTest('2','3')}", Args(), 42, typeof(int))
+        //
+        // when the value of the public is not an array then the runtime
+        // calls the function.  this returns 42 +  the sum of the indices
+        M->FoxArrayTest := "testme"
+        TestMacro(mc, e"{|| FoxArrayTest(10,10)}", Args(), 62, typeof(int))
+        TestMacro(mc, e"{|| FoxArrayTest(20,20)}", Args(), 82, typeof(int))
+
+        mc:Options:FoxParenArrayAccess := false
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         TestMacro(mc, e"{|| eval({||true}) }", Args(), true, typeof(logic))

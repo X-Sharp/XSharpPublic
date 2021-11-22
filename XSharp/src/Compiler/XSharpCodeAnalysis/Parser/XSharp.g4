@@ -936,7 +936,7 @@ argumentList        :  Args+=namedArgument (COMMA Args+=namedArgument)*
                     ;
 
                     // NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
-namedArgument       wNamedArgs}?  Name=identifierName Op=assignoperator  ( RefOut=(REF | OUT) )? Expr=expression?
+namedArgument       :  {AllowNamedArgs}?   Name=identifierName Op=assignoperator  ( RefOut=(REF | OUT) )? Expr=expression?
                     |   RefOut=OUT Var=VAR Id=varidentifier
                     |   RefOut=OUT Id=varidentifier AS Type=datatype
                     |   RefOut=OUT Null=NULL

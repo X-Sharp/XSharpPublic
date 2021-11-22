@@ -12,6 +12,16 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
+FUNCTION FoxArrayTest(a1, a2, a3) CLIPPER 
+    local result := 42 as INT
+    FOREACH var arg in _Args()
+        IF IsLong(arg)
+            result += arg
+        ENDIF
+    next
+    RETURN result
+
+
 FUNCTION TestI(i as int) as int
     return i
 

@@ -636,6 +636,11 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (b.Options.FoxParenArrayAccess && Expr is IdExpr id && (Args.Args.Count == 1 || Args.Args.Count == 2))
             {
+                // Todo:
+                // Validate also if the array indexes are or could be numeric
+                // So valid are:
+                // LONG, USUAL, OBJECT
+                // When not, then we call the function always
                 if (Affinity == BindAffinity.Assign)
                 {
                     // transform to array access

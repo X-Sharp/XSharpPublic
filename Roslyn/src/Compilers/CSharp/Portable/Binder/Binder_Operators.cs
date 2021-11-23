@@ -3682,6 +3682,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return new BoundAsOperator(node, operand, typeExpression, Conversion.NoConversion, resultType, hasErrors: true);
             }
 
+#if XSHARP
+            if (operandType.IsUsualType())
+            {
+                operandType = GetSpecialType(SpecialType.System_Object, diagnostics, node);
+                operand = CreateConversion(operand, operandType, diagnostics);
+                operandTypeKind = operandType.TypeKind;
+            }
+#endif
             if (operandTypeKind == TypeKind.Dynamic)
             {
                 // if operand has a dynamic type, we do the same thing as though it were an object

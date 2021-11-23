@@ -100804,6 +100804,119 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
   Optimize=0
 ENDApplication = C814 - Problem creating a codeblock inside a codeblock using the & syntax
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION R811 - ASTYPE for USUAL *************
+Application = R811 - ASTYPE for USUAL
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\R811\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R811
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 3DB66D32-3231-4725-933D-50CCD5BCC41A
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R811 - ASTYPE for USUAL FileGroups]
+[R811 - ASTYPE for USUAL Files]
+File = %AppPath%\Prg\R811.prg
+FileGUID = 0E5CF505-874B-447F-A643-A460EACF9B57
+FileType = Code
+CopyToBin = 0
+[R811 - ASTYPE for USUAL References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+[R811 - ASTYPE for USUAL Resources]
+[R811 - ASTYPE for USUAL Native Resources]
+[R811 - ASTYPE for USUAL License files]
+[R811 - ASTYPE for USUAL General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R811 - ASTYPE for USUAL Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R811 - ASTYPE for USUAL
 [EndApplications]
 
 [Configurations]

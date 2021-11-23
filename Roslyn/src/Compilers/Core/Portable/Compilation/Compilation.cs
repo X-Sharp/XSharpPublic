@@ -3135,7 +3135,20 @@ namespace Microsoft.CodeAnalysis
             {
                 return 0;
             }
-
+#if XSHARP
+            {
+                // During documentation generation we get an artificual syntaxtree
+                // that is not part of the original syntaxtree
+                if (tree1.GetRoot() is CSharp.Syntax.DocumentationCommentTriviaSyntax dcts1)
+                {
+                    tree1 = dcts1.OriginalNode.SyntaxTree;
+                }
+                if (tree2.GetRoot() is CSharp.Syntax.DocumentationCommentTriviaSyntax dcts2)
+                {
+                    tree2 = dcts2.OriginalNode.SyntaxTree;
+                }
+            }
+#endif
             Debug.Assert(this.ContainsSyntaxTree(tree1));
             Debug.Assert(this.ContainsSyntaxTree(tree2));
 

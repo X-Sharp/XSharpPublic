@@ -38,10 +38,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public SyntaxTriviaList GetFunctionDoc(CSharpSyntaxNode node)
         {
-            //if (node.XGenerated && node is ClassDeclarationSyntax cds && cds.Identifier.Text.EndsWith("Functions") && cds.Location != Location.None)
-            //{
-            //    return ParseTrivia("/// <summary>Compiler generated Functions Class that holds the functions, Globals and Defines.</summary>");
-            //}
+            // We only generate the function doc for the default tree to avoid generating an empty line for every prg file.
+            if (node is ClassDeclarationSyntax &&
+                node.CsGreen.XDefaultTree)
+            {
+                return ParseTrivia("/// <summary></summary>");
+            }
             return default;
         }
         public SyntaxTriviaList GetLeadingTrivia(CSharpSyntaxNode parent, CompilationUnitSyntax cu)

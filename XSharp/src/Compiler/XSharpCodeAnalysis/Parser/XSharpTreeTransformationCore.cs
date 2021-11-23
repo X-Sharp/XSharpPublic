@@ -1593,10 +1593,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: globalClassMembers,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)) /*))*/;
+                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)) ;
             _pool.Free(modifiers);
             _pool.Free(globalClassMembers);
             classdecl.XGenerated = true;
+            classdecl.XDefaultTree = true;
+            classdecl.XNode = new XSharpParserRuleContext();
             if (nameSpace.Length > 0)
             {
                 classdecl = GenerateNamespace(nameSpace, MakeList<MemberDeclarationSyntax>(classdecl));

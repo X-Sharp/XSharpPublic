@@ -247,6 +247,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasMemVarLevel = 1 << 22,   // member property
             UsesPCount = 1 << 23,       // member property
             ParameterAssign = 1 << 24, // member property
+            HasExplicitVirtual = 1 << 25, // member property
+            HasExplicitOverride = 1 << 26, // member property
         }
         #endregion
 
@@ -399,6 +401,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get { return flags.HasFlag(EntityFlags.ParameterAssign); }
                 set { flags = setFlag(flags, EntityFlags.ParameterAssign, value); }
+            }
+            public bool HasExplicitOverride
+            {
+                get { return flags.HasFlag(EntityFlags.HasExplicitOverride); }
+                set { flags = setFlag(flags, EntityFlags.HasExplicitOverride, value); }
+            }
+            public bool HasExplicitVirtual
+            {
+                get { return flags.HasFlag(EntityFlags.HasExplicitVirtual); }
+                set { flags = setFlag(flags, EntityFlags.HasExplicitVirtual, value); }
             }
 
             internal Dictionary<string, MemVarFieldInfo> Fields = null;

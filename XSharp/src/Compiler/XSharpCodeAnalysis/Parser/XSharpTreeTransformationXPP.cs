@@ -563,7 +563,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             { 
                 modifiers = decodeXppMemberModifiers(context.Info.Visibility, false, context.Modifiers?._Tokens);
             }
-
+            if (context.Modifiers != null)
+            {
+                context.Data.HasExplicitOverride = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);
+                context.Data.HasExplicitVirtual = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.VIRTUAL);
+            }
             TypeSyntax returnType = getDataType(context.Type);
             var attributes = getAttributes(context.Attributes);
             var parameters = getParameters(context.ParamList);

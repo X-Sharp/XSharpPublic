@@ -579,9 +579,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected SyntaxList<SyntaxToken> DefaultMethodModifiers(XSharpParserRuleContext context, bool inInterface, bool inStructure, bool noOverride = false)
         {
             var rb = _pool.Allocate();
-            if (!inInterface)
+            rb.FixDefaultVisibility();
+            if (!inInterface && !_options.HasOption(CompilerOption.Strict, context, PragmaOptions))
             {
-                rb.FixDefaultVisibility();
                 // structures do not get virtual or override modifiers
                 if (!inStructure && !noOverride)
                 {
@@ -3201,6 +3201,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = m.ToList<SyntaxToken>();
                 _pool.Free(m);
             }
+            if (context.Modifiers != null)
+            {
+                context.Data.HasExplicitOverride = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);
+                context.Data.HasExplicitVirtual = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.VIRTUAL);
+            }
 
             if (singleLine)         // Single Line Syntax
             {
@@ -3507,6 +3512,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 mods = m.ToList<SyntaxToken>();
                 _pool.Free(m);
+            }
+            if (context.Modifiers != null)
+            {
+                context.Data.HasExplicitOverride = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);
+                context.Data.HasExplicitVirtual = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.VIRTUAL);
             }
             var isExtern = mods.Any((int) SyntaxKind.ExternKeyword);
             var type = getReturnType(context);
@@ -4088,6 +4098,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, isInInterface, context.isInStructure(), context.TypeParameters != null);
+            if (context.Modifiers != null)
+            {
+                context.Data.HasExplicitOverride = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);
+                context.Data.HasExplicitVirtual = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.VIRTUAL);
+            }
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var isStatic = mods.Any((int)SyntaxKind.StaticKeyword);

@@ -404,6 +404,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.LateBinding:  // lb
                     return CheckOption(option, LateBinding, context, options);
 
+                case CompilerOption.Strict:  // strict
+                    return CheckOption(option, Strict, context, options);
+
                 case CompilerOption.SignedUnsignedConversion: // vo4
                 case CompilerOption.ResolveTypedFunctionPointersToPtr: // vo6
                 case CompilerOption.CompatibleIIF:  // vo10

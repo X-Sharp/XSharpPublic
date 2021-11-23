@@ -5381,7 +5381,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                                This only works for the VO, XPP and Harbour dialects.
 -undeclared[+|-]               Should the compiler allow undeclared variables
                                This only works for the VO, XPP and Harbour dialects.
--strict[+|-]                   Enforce the use of SELF: or THIS. for accessing members inside a class
+-strict[+|-]                   Enforce the use of VIRTUAL and OVERRIDE for virtual members of classes
 
                         - PREPROCESOR -
  

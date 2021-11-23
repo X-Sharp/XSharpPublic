@@ -699,8 +699,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
 #if XSHARP
                 var syntax = this.DeclaringSyntaxReferences[0].GetSyntax();
+                var ent = this._property.GetEntity();
+                bool wasExplicitVirtual = !this.DeclaringCompilation.Options.VirtualInstanceMethods;
+                if (ent != null)
+                {
+                    wasExplicitVirtual = ent.Data.HasExplicitVirtual;
+                }
                 // Disable warning when compiling with /vo3
-                if (!this.DeclaringCompilation.Options.HasOption(CompilerOption.VirtualInstanceMethods, syntax))
+                if (wasExplicitVirtual)
                 {
                     // '{0}' is a new virtual member in sealed class '{1}'
                     diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);

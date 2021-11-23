@@ -13,6 +13,9 @@ using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
+#if XSHARP
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+#endif
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -609,11 +612,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
 #if XSHARP
                 var syntax = this.DeclaringSyntaxReferences[0].GetSyntax();
-                // Disable warning when compiling with /vo3
-                if (!this.DeclaringCompilation.Options.HasOption(CompilerOption.VirtualInstanceMethods, syntax))
+                bool wasExplicitVirtual = !this.DeclaringCompilation.Options.VirtualInstanceMethods;
+                var node = syntax.XNode;
+                if (node is not XP.XSharpParser.IEntityContext ent)
                 {
-                // '{0}' is a new virtual member in sealed type '{1}'
-                diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
+                    ent = node.GetChild(0) as XP.IEntityContext;
+                }
+                if (ent != null)
+                {
+                    wasExplicitVirtual = ent.Data.HasExplicitVirtual;
+                }
+                // Disable warning when compiling with /vo3
+                if (wasExplicitVirtual)
+                {
+                   // '{0}' is a new virtual member in sealed type '{1}'
+                   diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
                 }
 #else
                     // '{0}' is a new virtual member in sealed class '{1}'

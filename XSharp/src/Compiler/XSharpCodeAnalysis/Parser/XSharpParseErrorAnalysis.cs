@@ -489,6 +489,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case CompilerOption.LateBinding:
                             case CompilerOption.MemVars:
                             case CompilerOption.EnforceSelf:
+                            case CompilerOption.Strict:
                             case CompilerOption.UndeclaredMemVars:
                             // case "vo1": // Init/axit
                             case CompilerOption.Vo2:     // Initialize string variables with empty strings

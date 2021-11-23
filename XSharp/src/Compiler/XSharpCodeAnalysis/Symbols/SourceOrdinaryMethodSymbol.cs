@@ -15,11 +15,26 @@ using Microsoft.CodeAnalysis.Collections;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal abstract partial class SourceOrdinaryMethodSymbolBase 
     {
+
+        protected XP.IEntityContext GetEntity()
+        {
+            XP.IEntityContext result = null;
+            var node = this.SyntaxNode.XNode;
+            {
+                if (node is XP.IEntityContext ent)
+                    result = ent;
+                else if (node.GetChild(0) is XP.IEntityContext entchild)
+                    result = entchild;
+            }
+            return result;
+
+        }
 
         protected bool XsGenerateDebugInfo
         {
@@ -139,11 +154,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         this._name = overriddenMethod.Name;
                     }
                     // remove generated Virtual Modifiers
-                    foreach (var token in node.Modifiers)
+                    var ent = GetEntity();
+                    if (ent != null && ! ent.Data.HasExplicitVirtual)
                     {
-                        if (token.Kind == SyntaxKind.VirtualKeyword && token.XGenerated)
+                        foreach (var token in node.Modifiers)
                         {
-                            mods = mods & ~DeclarationModifiers.Virtual;
+                            if (token.Kind == SyntaxKind.VirtualKeyword && token.XGenerated)
+                            {
+                                mods = mods & ~DeclarationModifiers.Virtual;
+                            }
                         }
                     }
 
@@ -153,12 +172,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     // remove generated Override Modifiers
                     bool removed = false;
-                    foreach (var token in node.Modifiers)
+                    var ent = GetEntity();
+                    if (ent != null && !ent.Data.HasExplicitOverride)
                     {
-                        if (token.Kind == SyntaxKind.OverrideKeyword && token.XGenerated)
+                        foreach (var token in node.Modifiers)
                         {
-                            mods = mods & ~DeclarationModifiers.Override;
-                            removed = true;
+                            if (token.Kind == SyntaxKind.OverrideKeyword && token.XGenerated)
+                            {
+                                mods = mods & ~DeclarationModifiers.Override;
+                                removed = true;
+                            }
                         }
                     }
                     if (!removed)

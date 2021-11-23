@@ -57,6 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool PreProcessorOutput { get; internal set; } = false;
         public bool SaveAsCSharp { get; internal set; } = false;
+        public bool Strict { get; internal set; } = false;
         public bool DumpAST { get; internal set; } = false;
         public bool ShowDefs { get; internal set; } = false;
         public bool EnforceSelf { get; internal set; } = false;
@@ -282,6 +283,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ClrVersion = 1 << 28,
         EnforceSelf = 1 << 29,
         AllowDotForInstanceMembers = 1 << 30,
+        Strict = 1 << 31,
         All = -1
 
     }
@@ -410,6 +412,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.EnforceSelf;
                 case "undeclared":
                     return CompilerOption.UndeclaredMemVars;
+                case "strict":
+                    return CompilerOption.Strict;
                 case "vo1":
                     return CompilerOption.Vo1;
                 case "vo2":

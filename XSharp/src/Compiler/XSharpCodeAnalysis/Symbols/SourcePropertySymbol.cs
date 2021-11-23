@@ -16,6 +16,7 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -62,9 +63,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
     }
+
+    internal partial class SourcePropertySymbolBase
+    {
+        internal XP.IEntityContext? GetEntity()
+        {
+            XP.IEntityContext? result = null;
+            var node = this.CSharpSyntaxNode.XNode;
+            if (node is XP.IEntityContext ent)
+                result = ent;
+            else if (node.GetChild(0) is XP.IEntityContext entchild)
+                result = entchild;
+            return result;
+
+        }
+    }
     internal sealed partial class SourcePropertySymbol
     {
         private TypeWithAnnotations _newPropertyType = default;
+
 
         internal void RemoveModifier(DeclarationModifiers mod)
         {

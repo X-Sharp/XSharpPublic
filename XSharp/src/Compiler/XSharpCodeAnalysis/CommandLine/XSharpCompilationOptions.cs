@@ -129,6 +129,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Overflow:
                     return CheckOption(option, CheckOverflow, syntax);
 
+                case CompilerOption.VirtualInstanceMethods:
+                    return CheckOption(option, VirtualInstanceMethods, syntax);
+
                 case CompilerOption.MemVars:
                     return CheckOption(option, MemVars, syntax);
 

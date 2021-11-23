@@ -613,7 +613,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = vomods.ToList<SyntaxToken>();
                 _pool.Free(vomods);
             }
-            
+            if (context.Modifiers != null)
+            {
+                context.Data.HasExplicitOverride = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);
+                context.Data.HasExplicitVirtual = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.VIRTUAL);
+            }
             if (!isExtern)
             {
                 isExtern = hasDllImport(attributes);

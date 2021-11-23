@@ -6,11 +6,7 @@
 #nullable disable
 using System;
 using System.Linq;
-using Roslyn.Utilities;
-using Microsoft.CodeAnalysis.Symbols;
 using Microsoft.CodeAnalysis;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -70,7 +66,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     }
                                     else
                                     {
-                                        constant = ConstantValue.Create(arg.Value, arg.Type.SpecialType);
+                                        // The result of a numeric fold stored as defaultparameter value
+                                        // may have a different value than we expect.
+                                        // we convert the value to the right type here.
+                                        // Fixes C805
+                                        var value = arg.Value;
+                                        var valueType = CodeAnalysis.SpecialTypeExtensions.FromRuntimeTypeOfLiteralValue(value);
+                                        if (arg.Type.SpecialType != valueType)
+                                        {
+                                            switch (arg.Type.SpecialType)
+                                            {
+                                                case SpecialType.System_Byte:
+                                                    value = Convert.ChangeType(value, typeof(byte));
+                                                    break;
+                                                case SpecialType.System_SByte:
+                                                    value = Convert.ChangeType(value, typeof(sbyte));
+                                                    break;
+                                                case SpecialType.System_Int16:
+                                                    value = Convert.ChangeType(value, typeof(short));
+                                                    break;
+                                                case SpecialType.System_UInt16:
+                                                    value = Convert.ChangeType(value, typeof(ushort));
+                                                    break;
+                                                case SpecialType.System_Int32:
+                                                    value = Convert.ChangeType(value, typeof(int));
+                                                    break;
+                                                case SpecialType.System_UInt32:
+                                                    value = Convert.ChangeType(value, typeof(uint));
+                                                    break;
+                                                case SpecialType.System_Int64:
+                                                    value = Convert.ChangeType(value, typeof(long));
+                                                    break;
+                                                case SpecialType.System_UInt64:
+                                                    value = Convert.ChangeType(value, typeof(ulong));
+                                                    break;
+                                            }
+                                        }
+                                        constant = ConstantValue.Create(value, arg.Type.SpecialType);
                                         var netType = compilation.GetSpecialType(arg.Type.SpecialType);
                                         return new BoundLiteral(syntax, constant, netType);
                                     }

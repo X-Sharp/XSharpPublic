@@ -100466,7 +100466,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C811 - Problems with ACopy() function
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY *************
 Application = C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY
 IDEVersion = 1.06
@@ -100509,8 +100509,8 @@ FileType = Code
 CopyToBin = 0
 [C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY Resources]
 [C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY Native Resources]
 [C812 - Problems with ARRAY OF <type> and assigning/comparing to NULL_ARRAY License files]
@@ -100621,9 +100621,9 @@ FileType = Code
 CopyToBin = 0
 [C813 - ICE with Type() in FoxPro dialect with /fox2+ enabled References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.6.0.0
 [C813 - ICE with Type() in FoxPro dialect with /fox2+ enabled Resources]
 [C813 - ICE with Type() in FoxPro dialect with /fox2+ enabled Native Resources]
 [C813 - ICE with Type() in FoxPro dialect with /fox2+ enabled License files]
@@ -100734,8 +100734,8 @@ FileType = Code
 CopyToBin = 0
 [C814 - Problem creating a codeblock inside a codeblock using the & syntax References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceGAC = XSharp.Core,1,0,2.6.0.0
+ReferenceGAC = XSharp.RT,1,0,2.6.0.0
 [C814 - Problem creating a codeblock inside a codeblock using the & syntax Resources]
 [C814 - Problem creating a codeblock inside a codeblock using the & syntax Native Resources]
 [C814 - Problem creating a codeblock inside a codeblock using the & syntax License files]

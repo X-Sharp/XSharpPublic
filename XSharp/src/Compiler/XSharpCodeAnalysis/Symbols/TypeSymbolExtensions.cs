@@ -79,6 +79,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             return type is { } && type.Name == OurTypeNames.ArrayType;
         }
+        internal static bool IsArrayBaseType(this TypeSymbol type)
+        {
+            return type is { } && type.Name == OurTypeNames.ArrayBase;
+        }
         internal static bool IsFloatType(this TypeSymbol type)
         {
             return type is { } && (type.Name == OurTypeNames.FloatType || type.Name == OurTypeNames.VnFloatType);

@@ -459,6 +459,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                     right = CreateConversion(right, Compilation.GetSpecialType(SpecialType.System_Boolean), diagnostics);
                     rightType = right.Type;
                 }
+                else if (leftType.IsArrayType())
+                {
+                    if (rightType.IsArrayBaseType() && left.Kind == BoundKind.DefaultExpression)
+                    {
+                        left = new BoundLiteral(left.Syntax, ConstantValue.Null, null);
+                        return opType;
+                    }
+                }
+                else if (rightType.IsArrayType())
+                {
+                    if (leftType.IsArrayBaseType() && right.Kind == BoundKind.DefaultExpression)
+                    {
+                        right = new BoundLiteral(right.Syntax, ConstantValue.Null, null);
+                        return opType;
+                    }
+                }
             }
 
             if (Compilation.Options.HasRuntime && xnode != null)

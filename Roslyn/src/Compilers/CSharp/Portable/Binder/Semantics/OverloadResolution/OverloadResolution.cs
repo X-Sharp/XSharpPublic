@@ -3788,8 +3788,9 @@ outerDefault:
                             conversion = Conversion.NullLiteral;
                         }
 
-                        if (implicitCastsAndConversions && argumentRefKind == RefKind.None && 
-                            argument is BoundAddressOfOperator b && candidate.HasClipperCallingConvention())
+                        if (implicitCastsAndConversions && argumentRefKind == RefKind.None &&
+                            argument is BoundAddressOfOperator b &&
+                            (candidate.HasClipperCallingConvention() || argument.Type.IsUsualType()))
                         {
                             argumentRefKind = RefKind.Ref;
                         }

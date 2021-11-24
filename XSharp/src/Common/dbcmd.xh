@@ -24,6 +24,7 @@
 
 #command SELECT <whatever>              => DbSelectArea( <(whatever)> )
 #command SELECT <f>([<list,...>])       => DbSelectArea( <f>(<list>) )
+#command SELECT &<whatever>             => DbSelectArea( <whatever> )
 
 #command USE                            => DbCloseArea()
 
@@ -381,6 +382,7 @@
 
 // NOTE:  CLOSE <alias> must precede the others
 #command CLOSE <alias>              => <alias>->( DbCloseArea() )
+#command CLOSE &<alias>             => (<alias>)->( DbCloseArea() )
 
 #command CLOSE                      => DbCloseArea()
 #command CLOSE [al: DATABASES,ALL>] => DbCloseAll()

@@ -100175,8 +100175,8 @@ FileType = Code
 CopyToBin = 0
 [C809 - Program hangs with incorrect late bound call References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
 [C809 - Program hangs with incorrect late bound call Resources]
 [C809 - Program hangs with incorrect late bound call Native Resources]
 [C809 - Program hangs with incorrect late bound call License files]

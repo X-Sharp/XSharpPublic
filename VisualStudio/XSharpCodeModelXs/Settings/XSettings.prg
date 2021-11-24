@@ -75,6 +75,11 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY CodeGeneratorPublicStyle         AS PublicStyle AUTO
         PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
 
+        PUBLIC STATIC PROPERTY IndentEntityContent               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentBlockContent               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentCaseContent                AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentCaseLabel                AS LOGIC AUTO
+
 //        PUBLIC STATIC PROPERTY CompleteLocals                   AS LOGIC AUTO := TRUE
 //        PUBLIC STATIC PROPERTY CompleteSelf                     AS LOGIC AUTO := TRUE
 //        PUBLIC STATIC PROPERTY CompleteParent                   AS LOGIC AUTO := TRUE

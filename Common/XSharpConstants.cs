@@ -88,7 +88,8 @@ namespace XSharp
         public const string OtherOptionsPageGuidString = "FC6059E3-9762-407B-83BB-A90D2C57D710";
         public const string CompletionOptionsPageGuidString = "E37D51D4-30AA-4A28-81CA-1A486397640C";
         public const string FileNodePropertiesGuidString = "B7971A68-EA46-4814-AC67-1424A59DC7EB";
-
+        public const string IndentingOptionsPageGuidString = "A8545AC1-4DD9-4A18-890C-C96CDC790950";
+        
         public const string WPFProjectFactory = "5ADB76EC-7017-476A-A8E0-25D4202FFCF0";
         public const string WPFFlavor = "14989543-69A4-4C47-A31C-74B6A6DB719B";
 

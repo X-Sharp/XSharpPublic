@@ -110,11 +110,20 @@
     <Compile Include="LightBulb\CreateStubProvider.cs" />
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />
     <Compile Include="LightBulb\ImplementInterfaceProvider.cs" />
+    <Compile Include="OptionsPages\IndentingOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\IndentingOptionsControl.Designer.cs">
+      <DependentUpon>IndentingOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionsPages\FormattingOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="OptionsPages\FormattingOptionsControl.Designer.cs">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionsPages\IndentingOptionsPage.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>
@@ -212,6 +221,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="OptionsPages\IndentingOptionsControl.resx">
+      <DependentUpon>IndentingOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\FormattingOptionsControl.resx">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
     </EmbeddedResource>

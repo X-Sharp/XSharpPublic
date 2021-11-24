@@ -76,13 +76,13 @@ namespace XSharp.Project
             List<string> options = new List<string>();
             options.Add("dialect:" + _prjNode.GetProjectProperty("Dialect"));
             var asmNodes = new List<XSharpAssemblyReferenceNode>();
-            _prjNode.FindNodesOfType<XSharpAssemblyReferenceNode>(asmNodes);
+            _prjNode.FindNodesOfType(asmNodes);
             foreach (var asmNode in asmNodes)
             {
                 options.Add("r:" + asmNode.Url);
             }
             var prjNodes = new List<XSharpProjectReferenceNode>();
-            _prjNode.FindNodesOfType<XSharpProjectReferenceNode>(prjNodes);
+            _prjNode.FindNodesOfType(prjNodes);
             foreach (var prjNode in prjNodes)
             {
                 var path = prjNode.ReferencedProjectOutputPath;
@@ -92,7 +92,7 @@ namespace XSharp.Project
                 }
             }
             var comNodes = new List<XSharpComReferenceNode>();
-            _prjNode.FindNodesOfType<XSharpComReferenceNode>(comNodes);
+            _prjNode.FindNodesOfType(comNodes);
             foreach (var comNode in comNodes)
             {
                 options.Add("r:" + comNode.Url);
@@ -121,7 +121,8 @@ namespace XSharp.Project
             options.Add("ns:" + _prjNode.GetProjectProperty("RootNamespace"));
             var flags = new string[] {"vo1", "vo2" , "vo3" , "vo4" , "vo5" , "vo6" , "vo7" , "vo8" , "vo9" ,
                 "vo10" , "vo11" , "vo12", "vo13", "vo14", "vo15","vo16",
-                "cs", "az","ins", "lb","memvar","namedargs","undeclared","unsafe","xpp1","xpp2","fox1", "allowdot"};
+                "cs", "az","ins", "lb","memvar","namedargs","undeclared","unsafe","xpp1","xpp2","fox1",
+                "allowdot","enforceself","enforcevirtual"};
             foreach (var flag in flags)
             {
                 value = _prjNode.GetProjectProperty(flag);

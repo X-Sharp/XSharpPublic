@@ -37,7 +37,7 @@ namespace XSharp.LanguageService
                 string currentNS = TextView.FindNamespace();
                 var location = TextView.FindLocation();
                 var state = CompletionState.General | CompletionState.Types | CompletionState.Namespaces;
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location,  out state);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 var result = new List<IXSymbol>();
@@ -130,7 +130,59 @@ namespace XSharp.LanguageService
         {
             return XSharpXMLDocMember.GetDoc(asmName, key);
         }
+
+
         private static void GotoSystemType(ITextView TextView, XPETypeSymbol petype, XPESymbol element)
+        {
+            var xFile = CreateFileForSystemType(petype, element);
+            var entity = FindElementInFile(xFile, petype, element);
+            var file = TextView.TextBuffer.GetFile();
+            // Copy references to the Orphan file project so type lookup works as expected
+            var orphProject = XSolution.OrphanedFilesProject;
+            var project = file.Project;
+            if (project != orphProject)
+            {
+                orphProject.ClearAssemblyReferences();
+                foreach (var asm in project.AssemblyReferences)
+                {
+                    orphProject.AddAssemblyReference(asm.FileName);
+                }
+            }
+            XSettings.OpenDocument(xFile.FullPath, entity.Range.StartLine, 1, true);
+
+        }
+
+        public static XSourceEntity FindElementInFile(XFile file, XPETypeSymbol petype, XSymbol element)
+        {
+            var walker = new SourceWalker(file, false);
+            walker.Parse(false);
+            var entities = walker.EntityList;
+            XSourceEntity result = null;
+            if (petype.IsFunctionsClass)
+            {
+                foreach (var entity in entities)
+                {
+                    if (entity.Prototype == element.Prototype)
+                    {
+                        result = entity;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var entity in entities)
+                {
+                    if (entity.FullName == element.FullName)
+                    {
+                        result = entity;
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+        internal static XFile CreateFileForSystemType(XPETypeSymbol petype, XPESymbol element)
         {
             asmName = petype.Assembly;
             bool mustCreate = false;
@@ -162,7 +214,8 @@ namespace XSharp.LanguageService
                     Directory.CreateDirectory(tempFolder);
                 }
                 WorkFolder = tempFolder;
-                Semaphore = File.Create(semFile);
+                if (!File.Exists(semFile))
+                    Semaphore = File.Create(semFile);
             }
             var ns = petype.Namespace + "." + petype.Assembly.Version;
             var name = petype.Name;
@@ -184,50 +237,8 @@ namespace XSharp.LanguageService
                 VS.StatusBar.EndAnimationAsync(StatusAnimation.General).FireAndForget();
             }
             var xFile = XSolution.AddOrphan(temp);
-            var walker = new SourceWalker(xFile, false);
-            walker.Parse(false);
-            var entities = walker.EntityList;
-            var line = 1;
-
-            if (petype.IsFunctionsClass)
-            {
-                foreach (var entity in entities)
-                {
-                    if (entity.Prototype == element.Prototype)
-                    {
-                        line = entity.Range.StartLine + 1;
-                        break;
-                    }
-                }
+            return xFile;
             }
-            else
-            {
-                foreach (var entity in entities)
-                {
-                    if (entity.FullName == element.FullName)
-                    {
-                        line = entity.Range.StartLine + 1;
-                        break;
-                    }
-                }
-
-            }
-            var file = TextView.TextBuffer.GetFile();
-            // Copy references to the Orphan file project so type lookup works as expected
-            var orphProject = XSolution.OrphanedFilesProject;
-            var project = file.Project;
-            if (project != orphProject)
-            {
-                orphProject.ClearAssemblyReferences();
-                foreach (var asm in project.AssemblyReferences)
-                {
-                    orphProject.AddAssemblyReference(asm.FileName);
-                }
-            }
-            XSettings.OpenDocument(temp, line, 1, true);
-
-        }
-
 
         internal static void WriteOutputMessage(string strMessage)
         {

@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
       PRIVATE PROPERTY CurrentBlock       AS XSourceBlock   GET IIF(_BlockStack:Count > 0, _BlockStack:Peek(), NULL_OBJECT)
-      PRIVATE PROPERTY CurrentEntityKind  AS Kind     GET IIF(_EntityStack:Count > 0, CurrentEntity:Kind, Kind:Unknown)
+      PRIVATE PROPERTY CurrentEntityKind  AS Kind     GET IIF(_EntityStack:Count > 0, CurrentEntity:Kind, Kind.Unknown)
       PRIVATE PROPERTY InFoxClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XSharpDialect.FoxPro
       PRIVATE PROPERTY InXppClass AS LOGIC GET CurrentType != NULL .AND. CurrentType:ClassType == XSharpDialect.XPP
       PROPERTY EntityList AS IList<XSourceEntity>  GET _EntityList
@@ -178,6 +178,7 @@ BEGIN NAMESPACE XSharpModel
                LOOP
             ENDIF
             LOCAL startOfTrivia := -1 as LONG
+            SELF:ParseUdcTokens()
             aAttribs := SELF:ParseAttributes()
             VAR mods := SELF:ParseVisibilityAndModifiers()
             VAR vis  := _AND(mods, Modifiers.VisibilityMask)
@@ -233,14 +234,25 @@ BEGIN NAMESPACE XSharpModel
                         lastEntity:Interval    := lastEntity:Interval:WithEnd(tokenBefore)
                      ENDIF
                      _EntityList:Add(entity)
-
+                     VAR isMember := entity IS XSourceMemberSymbol
+                     VAR isType   := entity IS XSourceTypeSymbol
+                     var canAddMembers  := CurrentEntityKind:HasMembers()
+                     var canAddChildren := CurrentEntityKind:HasChildren()
                      LOCAL mustPop as LOGIC
                      IF _EntityStack:Count == 0
                         mustPop := FALSE
-                     ELSEIF CurrentEntityKind:HasMembers()
-                        mustPop := FALSE
-                     ELSEIF CurrentEntity IS XSourceTypeSymbol
-                        mustPop := FALSE
+                     ELSEIF isType
+                         IF canAddChildren
+                            mustPop := FALSE
+                         ELSE
+                            mustPop := TRUE
+                         ENDIF
+                     ELSEIF isMember
+                        IF canAddMembers
+                            mustPop := FALSE
+                        ELSE
+                            mustPop := TRUE
+                        ENDIF
                      ELSEIF CurrentEntityKind:HasBody() .and. entity:Kind:IsLocal()
                         mustPop := FALSE
                      ELSE
@@ -250,20 +262,21 @@ BEGIN NAMESPACE XSharpModel
                         _EntityStack:Pop()
                      ENDIF
                      IF entity:Kind:IsGlobalTypeMember() .AND. entity IS XSourceMemberSymbol VAR xGlobalMember
+                        // GLOBAL, DEFINE, FUNCTION, PROCEDURE
+                        // also #define, #command etc
                         SELF:_globalType:AddMember(xGlobalMember)
                      ELSEIF entity:Kind:IsLocal()
                         entity:Parent := CurrentEntity
-                     ELSE
-                        IF CurrentEntityKind:HasMembers() .AND. CurrentEntity IS XSourceTypeSymbol VAR xEnt
-                           IF entity IS XSourceMemberSymbol VAR xMember .AND. xMember:Parent == NULL
-                              xEnt:AddMember( xMember )
-                           ENDIF
-                           IF entity IS XSourceTypeSymbol VAR xChild .AND. ! XSourceTypeSymbol.IsGlobalType(xEnt)
-                              xEnt:AddChild( xChild )
-                              xChild:Namespace := xEnt:FullName
-                           ENDIF
+                     ELSEIF canAddMembers .AND. CurrentEntity IS XSourceTypeSymbol VAR xEnt
+                        // CurrentEntity should be a type: Class, Structure, Interface, Enum, VoStruct, Union
+                        IF entity IS XSourceMemberSymbol VAR xMember .AND. xMember:Parent == NULL
+                            xEnt:AddMember( xMember )
                         ENDIF
-
+                     ELSEIF canAddChildren .and. entity IS XSourceTypeSymbol VAR xChild .AND. ! XSourceTypeSymbol.IsGlobalType(xEnt) ;
+                            .and. xEnt:Kind:HasChildren()
+                        // Namespace, class, structure, interface can have children (nested types)
+                        xEnt:AddChild( xChild )
+                        xChild:Namespace := xEnt:FullName
                      ENDIF
                      IF ! entity:SingleLine
                         _EntityStack:Push(entity)
@@ -504,6 +517,11 @@ using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoper
          ENDIF
          SELF:ReadLine()
          RETURN TRUE
+      PRIVATE METHOD ParseUdcTokens() AS VOID
+        DO WHILE SELF:La1 == XSharpLexer.UDC_KEYWORD
+            SELF:Consume()
+        ENDDO
+        RETURN
 
       PRIVATE METHOD ParseAttributes() AS IList<XSharpToken>
 /*
@@ -844,6 +862,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          LOCAL nStart  := 0 AS LONG
          LOCAL nMiddle := 0 AS LONG
          LOCAL nEnd    := 0 AS LONG
+         SELF:ParseUdcTokens()  // Read UDC tokens on the current line
          SWITCH SELF:La1
          CASE XSharpLexer.BEGIN
             SWITCH SELF:La2
@@ -1183,7 +1202,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                Tokens:Add(SELF:ConsumeAndGet())
             ENDDO
          ENDIF
-         RETURN SELF:TokensAsString(Tokens)
+         RETURN SELF:TokensAsString(Tokens,FALSE)
 
       PRIVATE METHOD TokensAsString(tokens AS IList<XSharpToken>, lAddTrivia := TRUE AS LOGIC) AS STRING
          LOCAL sb AS StringBuilder
@@ -2700,6 +2719,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          DO WHILE SELF:Eos() .AND. !SELF:Eoi()
              Consume()
          ENDDO
+         SELF:ParseUdcTokens()  // Read UDC tokens on the current line
          SWITCH SELF:La1
          CASE XSharpLexer.FIELD
             IF !SELF:ParseFieldStatement()

@@ -77,6 +77,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Method
                 CASE Kind.Assign
                 CASE Kind.Access
+                CASE Kind.Property
                 CASE Kind.Function
                 CASE Kind.Procedure
                 CASE Kind.Event
@@ -266,7 +267,6 @@ BEGIN NAMESPACE XSharpModel
 
         STATIC METHOD HasMembers(SELF eKind AS Kind) AS LOGIC
             SWITCH eKind
-                CASE Kind.Namespace
                 CASE Kind.Class
                 CASE Kind.Structure
                 CASE Kind.Interface
@@ -284,7 +284,6 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Class
                 CASE Kind.Structure
                 CASE Kind.Interface
-                CASE Kind.Enum
                     RETURN TRUE
             END SWITCH
         RETURN FALSE

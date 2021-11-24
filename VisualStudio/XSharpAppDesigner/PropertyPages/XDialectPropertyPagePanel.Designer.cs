@@ -87,11 +87,11 @@ namespace XSharp.Project
             this.tableLayoutPanel1.Controls.Add(this.chkVO5, 1, 6);
             this.tableLayoutPanel1.Controls.Add(this.chkVO6, 1, 7);
             this.tableLayoutPanel1.Controls.Add(this.chkVO15, 1, 8);
-            this.tableLayoutPanel1.Controls.Add(this.lblXPP, 1, 10);
-            this.tableLayoutPanel1.Controls.Add(this.chkXPP1, 1, 11);
             this.tableLayoutPanel1.Controls.Add(this.lblVFP, 0, 10);
             this.tableLayoutPanel1.Controls.Add(this.chkFox1, 0, 11);
             this.tableLayoutPanel1.Controls.Add(this.chkFox2, 0, 12);
+            this.tableLayoutPanel1.Controls.Add(this.chkXPP1, 1, 12);
+            this.tableLayoutPanel1.Controls.Add(this.lblXPP, 1, 11);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -316,7 +316,7 @@ namespace XSharp.Project
             this.lblXPP.AutoSize = true;
             this.lblXPP.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblXPP.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.lblXPP.Location = new System.Drawing.Point(303, 220);
+            this.lblXPP.Location = new System.Drawing.Point(303, 233);
             this.lblXPP.Name = "lblXPP";
             this.lblXPP.Size = new System.Drawing.Size(130, 13);
             this.lblXPP.TabIndex = 23;
@@ -326,7 +326,7 @@ namespace XSharp.Project
             // 
             this.chkXPP1.AutoSize = true;
             this.chkXPP1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.chkXPP1.Location = new System.Drawing.Point(303, 236);
+            this.chkXPP1.Location = new System.Drawing.Point(303, 259);
             this.chkXPP1.Name = "chkXPP1";
             this.chkXPP1.Size = new System.Drawing.Size(150, 17);
             this.chkXPP1.TabIndex = 26;

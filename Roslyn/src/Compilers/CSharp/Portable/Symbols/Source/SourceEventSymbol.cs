@@ -605,13 +605,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
 
                 bool wasExplicitVirtual = !this.DeclaringCompilation.Options.VirtualInstanceMethods;
-                XP.IEntityContext? entity = null;
+                XP.IMemberContext? entity = null;
                 var node = this.CSharpSyntaxNode.XNode;
-                if (node is XP.IEntityContext ent)
+                if (node is XP.IMemberContext ent)
                 {
                     entity = ent;
                 }
-                else if (node.GetChild(0) is XP.IEntityContext entchild)
+                else if (node.GetChild(0) is XP.IMemberContext entchild)
                 {
                     entity = entchild;
                 }

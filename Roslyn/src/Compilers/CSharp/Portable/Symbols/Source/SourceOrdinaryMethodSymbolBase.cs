@@ -614,9 +614,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var syntax = this.DeclaringSyntaxReferences[0].GetSyntax();
                 bool wasExplicitVirtual = !this.DeclaringCompilation.Options.VirtualInstanceMethods;
                 var node = syntax.XNode;
-                if (node is not XP.IEntityContext ent)
+                if (node is not XP.IMemberContext ent)
                 {
-                    ent = node.GetChild(0) as XP.IEntityContext;
+                    ent = node.GetChild(0) as XP.IMemberContext;
                 }
                 if (ent != null)
                 {

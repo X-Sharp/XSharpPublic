@@ -189,7 +189,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.ExpressionBody != null)
             {
-                var parent = context.Parent as XSharpParser.IEntityWithBodyContext;
+                var parent = context.Parent as XSharpParser.IMemberWithBodyContext;
                 if (parent != null && parent.Statements != null)
                 {
                     if (parent.Statements._Stmts.Count > 0)

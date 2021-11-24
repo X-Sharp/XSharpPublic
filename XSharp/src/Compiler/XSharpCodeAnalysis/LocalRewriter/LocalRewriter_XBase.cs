@@ -453,7 +453,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         internal static BoundStatement RemoveUnusedVars(
-                 XSharpParser.EntityData data,
+                 XSharpParser.MemberData data,
                  BoundStatement statement,
                  DiagnosticBag diagnostics)
         {

@@ -80,7 +80,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var syntaxRef = parameters[0].DeclaringSyntaxReferences[0];
                     var syntax = syntaxRef.GetSyntax();
                     var xnode = syntax.XNode;
-                    var ent = xnode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.IEntityContext;
+                    var ent = xnode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.IMemberContext;
                     if (ent != null && ent.Data.HasClipperCallingConvention)
                     {
                         builder.Append('(');

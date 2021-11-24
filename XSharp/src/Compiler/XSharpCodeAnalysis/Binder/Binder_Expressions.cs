@@ -965,11 +965,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             var parent = node.XNode as XSharpParserRuleContext;
                             while (parent != null)
                             {
-                                if (parent is IEntityContext)
+                                if (parent is IMemberContext)
                                     break;
                                 parent = parent.Parent as XSharpParserRuleContext;
                             }
-                            if (parent is IEntityContext iec)
+                            if (parent is IMemberContext iec)
                             {
                                 iec.Data.HasUndeclared = true;
                             }

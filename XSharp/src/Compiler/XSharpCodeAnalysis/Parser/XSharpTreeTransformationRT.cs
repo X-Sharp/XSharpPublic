@@ -505,7 +505,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        protected override BlockSyntax GenerateEntryPoint(SyntaxList<SyntaxToken> modifiers, [NotNull] XP.IEntityContext context, BlockSyntax body,
+        protected override BlockSyntax GenerateEntryPoint(SyntaxList<SyntaxToken> modifiers, [NotNull] XP.IMemberContext context, BlockSyntax body,
                      SyntaxList<AttributeListSyntax> attributeList, ParameterListSyntax parList)
         {
             // We handle the following:
@@ -649,7 +649,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return MakeBlock(trystmt);
         }
 
-        protected void GenerateStartFunction(SyntaxList<SyntaxToken> modifiers, [NotNull] XP.IEntityContext context, BlockSyntax body,
+        protected void GenerateStartFunction(SyntaxList<SyntaxToken> modifiers, [NotNull] XP.IMemberContext context, BlockSyntax body,
                     SyntaxList<AttributeListSyntax> attributeList, ParameterListSyntax parList)
         {
             // only
@@ -1053,7 +1053,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected MemVarFieldInfo addFieldOrMemvar(string name, string prefix, XSharpParserRuleContext context, bool isParameter)
         {
-            if (CurrentEntity.Data.GetField(name) != null)
+            if (CurrentMember.Data.GetField(name) != null)
             {
                 context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
                 return null;
@@ -1061,7 +1061,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
 
-                var info = CurrentEntity.Data.AddField(name, prefix, context);
+                var info = CurrentMember.Data.AddField(name, prefix, context);
                 info.IsParameter = isParameter;
                 return info;
             }
@@ -1078,13 +1078,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // declare memvars
             context.SetSequencePoint(context.end);
-            if (CurrentEntity == null)
+            if (CurrentMember == null)
             {
                 return;
             }
             if (_options.SupportsMemvars)
             {
-                CurrentEntity.Data.HasMemVars = true;
+                CurrentMember.Data.HasMemVars = true;
                 if (context.T.Type == XP.MEMVAR || context.T.Type == XP.PARAMETERS)
                 {
                     foreach (var memvar in context._Vars)
@@ -1113,18 +1113,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.T.Type == XP.PARAMETERS || context.T.Type == XP.LPARAMETERS)
             {
                 // parameters and lparameters assume CC
-                CurrentEntity.Data.HasClipperCallingConvention = true;
-                if (CurrentEntity.Data.HasParametersStmt || CurrentEntity.Data.HasLParametersStmt || CurrentEntity.Data.HasFormalParameters)
+                var member = CurrentMember;
+                member.Data.HasClipperCallingConvention = true;
+                if (member.Data.HasParametersStmt || member.Data.HasLParametersStmt || member.Data.HasFormalParameters)
                 {
                     // trigger error message by setting both
                     // that way 2 x PARAMETERS or 2x LPARAMETERS will also trigger an error
-                    CurrentEntity.Data.HasParametersStmt = true;
-                    CurrentEntity.Data.HasLParametersStmt = true;
+                    member.Data.HasParametersStmt = true;
+                    member.Data.HasLParametersStmt = true;
                 }
                 else
                 {
-                    CurrentEntity.Data.HasParametersStmt = (context.T.Type == XP.PARAMETERS);
-                    CurrentEntity.Data.HasLParametersStmt = (context.T.Type == XP.LPARAMETERS);
+                    member.Data.HasParametersStmt = (context.T.Type == XP.PARAMETERS);
+                    member.Data.HasLParametersStmt = (context.T.Type == XP.LPARAMETERS);
                 }
             }
         }
@@ -1180,9 +1181,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _filewideMemvars.TryGetValue(name, out memvar);
             }
             // the next is also needed when memvars are not supported, since name could be a field
-            if (memvar == null && CurrentEntity != null)
+            if (memvar == null && CurrentMember != null)
             {
-                memvar = CurrentEntity.Data.GetField(name);
+                memvar = CurrentMember.Data.GetField(name);
             }
             return memvar;
         }
@@ -1321,7 +1322,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         #region Helpers for Method Init and Method Axit (/vo1)
         protected ConstructorDeclarationSyntax createConstructor(
-            XP.IEntityWithBodyContext context,
+            XP.IMemberWithBodyContext context,
             SyntaxList<SyntaxToken> modifiers,
             XP.AttributesContext atts,
             XP.ParameterListContext paramlist,
@@ -1399,7 +1400,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         protected DestructorDeclarationSyntax createDestructor(
-            XP.IEntityWithBodyContext context,
+            XP.IMemberWithBodyContext context,
             SyntaxList<SyntaxToken> modifiers,
             XP.AttributesContext atts,
             XP.StatementBlockContext stmtblock,
@@ -1449,7 +1450,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (!_options.HasOption(CompilerOption.UntypedAllowed, context, PragmaOptions))
                     type = _getMissingType();
-                else if (CurrentEntity != null && CurrentEntity.Data.HasTypedParameter)
+                else if (CurrentEntity != null && CurrentMember.Data.HasTypedParameter)
                     type = _usualType;
                 else
                     type = _getMissingType();
@@ -1639,11 +1640,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCallingconvention([NotNull] XP.CallingconventionContext context)
         {
-            if (CurrentEntity != null)
+            if (CurrentMember != null)
             {
                 if (context.Convention.Type == XP.CLIPPER && context.Parent == CurrentEntity)
                 {
-                    CurrentEntity.Data.HasClipperCallingConvention = true;
+                    CurrentMember.Data.HasClipperCallingConvention = true;
                 }
             }
             base.ExitCallingconvention(context);
@@ -1802,10 +1803,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (CurrentEntity != null)
             {
-                var info = CurrentEntity.Data.GetField(name);
+                var info = CurrentMember.Data.GetField(name);
                 if (info != null && info.IsParameter)
                 {
-                    CurrentEntity.Data.ParameterAssign = true;
+                    CurrentMember.Data.ParameterAssign = true;
                     info.IsWritten = true;
                 }
             }
@@ -2455,7 +2456,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected override BlockSyntax AddMissingReturnStatement(BlockSyntax body, XP.StatementBlockContext stmtBlock, TypeSyntax returnType)
         {
-            if (CurrentEntity != null && !CurrentEntity.Data.HasYield)
+            if (CurrentMember != null && !CurrentMember.Data.HasYield)
             {
                 if (_options.HasOption(CompilerOption.AllowMissingReturns, stmtBlock, PragmaOptions) && stmtBlock != null && NeedsReturn(stmtBlock._Stmts))
                 {
@@ -2488,7 +2489,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var expr = context.Expr?.CsNode as ExpressionSyntax;
             // when / vo9 is enabled then add missing Expression
-            var ent = CurrentEntity;
+            var ent = CurrentMember;
             ErrorCode errcode = (ErrorCode)0;
 
             if (ent != null)
@@ -2506,7 +2507,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         errcode = ErrorCode.WRN_MissingReturnValue;
                     }
-                    if (ent is XP.IEntityWithBodyContext ientbody)
+                    if (ent is XP.IMemberWithBodyContext ientbody)
                     {
                         TypeSyntax dataType;
                         if (ent.Data.HasMissingReturnType)
@@ -2759,11 +2760,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitParameter(context);
             // Only apply the default parameter attribute when there
             // are no Attributes on the parameter, such as [CallerMember]
-            var inLocalFuncProc = CurrentEntity is XP.LocalfuncprocContext;
+            var inLocalFuncProc = CurrentMember is XP.LocalfuncprocContext;
             // For local function we cannot use the VO compatible defaults and also no attributes
             if (!inLocalFuncProc && context.Default != null && context.Attributes == null)
             {
-                if (CurrentEntity.Data.HasClipperCallingConvention)
+                if (CurrentMember.Data.HasClipperCallingConvention)
                 {
                     var par = context.CsNode as ParameterSyntax;
                     par = par.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_DefaultParameterValueWithClipperCallingConvention, context.Start.StartIndex, context.FullWidth));
@@ -3123,7 +3124,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpIntrinsicNames.ClipperArgs:
                     case XSharpIntrinsicNames.GetMParam:
                     case XSharpIntrinsicNames.GetFParam:
-                        if (CurrentEntity != null && CurrentEntity.Data.HasClipperCallingConvention)
+                        if (CurrentEntity != null && CurrentMember.Data.HasClipperCallingConvention)
                         {
                             if (GenerateClipCallFunc(context, name))
                                 return;
@@ -3296,7 +3297,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return _clipperParams;
         }
-        protected void Check4ClipperCC(XP.IEntityContext context, IList<XP.ParameterContext> parameters, IToken Convention, XP.DatatypeContext returnType)
+        protected void Check4ClipperCC(XP.IMemberContext context, IList<XP.ParameterContext> parameters, IToken Convention, XP.DatatypeContext returnType)
         {
             bool isEntryPoint = false;
             bool hasConvention = false;
@@ -3346,7 +3347,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     foreach (XP.ParameterContext par in parameters)
                     {
-                        CurrentEntity.Data.AddField(par.Id.GetText(), XSharpSpecialNames.ClipperParamPrefix, par);
+                        CurrentMember.Data.AddField(par.Id.GetText(), XSharpSpecialNames.ClipperParamPrefix, par);
                     }
                 }
             }
@@ -3362,7 +3363,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                ));
         }
 
-        private void implementNoClipCall(XP.IEntityContext context, ref ParameterListSyntax parameters, ref TypeSyntax dataType)
+        private void implementNoClipCall(XP.IMemberContext context, ref ParameterListSyntax parameters, ref TypeSyntax dataType)
         {
             if (!context.Data.HasClipperCallingConvention)
                 return;
@@ -3388,7 +3389,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameters = MakeParameterList(@params);
             }
         }
-        protected override void ImplementClipperAndPSZ(XP.IEntityWithBodyContext context,
+        protected override void ImplementClipperAndPSZ(XP.IMemberWithBodyContext context,
             ref SyntaxList<AttributeListSyntax> attributes, ref ParameterListSyntax parameters, ref BlockSyntax body,
             ref TypeSyntax dataType)
         {
@@ -3537,7 +3538,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         _options.XSharpRuntime ? XSharpQualifiedFunctionNames.PszRelease : VulcanQualifiedFunctionNames.PszRelease,
                                         MakeArgumentList(MakeArgument(GenerateSimpleName(XSharpSpecialNames.VoPszList))), true), null));
                     }
-                    if (parameternames.Count > 0 && CurrentEntity.Data.ParameterAssign)
+                    if (parameternames.Count > 0 && CurrentMember.Data.ParameterAssign)
                     {
                         var updatestmt = GenerateGetClipperByRefAssignParam(parameternames, context.Data, (XSharpParserRuleContext)context);
                         finallystmts.Add(updatestmt);
@@ -3616,9 +3617,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = CreateObject(this._pszType, args);
                 return expr;
             }
-            if (CurrentEntity != null)
+            if (CurrentMember != null)
             {
-                CurrentEntity.Data.UsesPSZ = true;
+                CurrentMember.Data.UsesPSZ = true;
                 NameSyntax pszlist = GenerateSimpleName(XSharpSpecialNames.VoPszList);
                 var argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
                 expr = GenerateMethodCall(
@@ -3672,8 +3673,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..
             BinaryExpressionSyntax cond;
-            if (CurrentEntity != null)
-                CurrentEntity.Data.UsesPCount = true;
+            if (CurrentMember != null)
+                CurrentMember.Data.UsesPCount = true;
             // no changes to expr for length comparison, even with /az
             cond = _syntaxFactory.BinaryExpression(
                                 SyntaxKind.GreaterThanOrEqualExpression,
@@ -3699,7 +3700,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(indices);
             return result;
         }
-        private StatementSyntax GenerateGetClipperByRefAssignParam(List<string> paramNames, XP.EntityData data, XSharpParserRuleContext context)
+        private StatementSyntax GenerateGetClipperByRefAssignParam(List<string> paramNames, XP.MemberData data, XSharpParserRuleContext context)
         {
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..
@@ -3789,9 +3790,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (name == XSharpIntrinsicNames.ArgCount)
             {
                 // Number of declared arguments in the function/methods
-                if (CurrentEntity != null)
+                if (CurrentMember != null)
                 {
-                    var currEnt = this.CurrentEntity;
+                    var currEnt = this.CurrentMember;
                     int argCount = 0;
                     if (currEnt != null && currEnt.Params != null)
                     {
@@ -3815,7 +3816,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (_options.NoClipCall)
                 {
-                    var currEnt = this.CurrentEntity;
+                    var currEnt = this.CurrentMember;
                     int argCount = 0;
                     if (currEnt != null && currEnt.Params != null)
                     {
@@ -3826,9 +3827,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    if (CurrentEntity != null)
+                    if (CurrentMember != null)
                     {
-                        CurrentEntity.Data.UsesPCount = true;
+                        CurrentMember.Data.UsesPCount = true;
                     }
                     expr = GenerateSimpleName(CurrentEntity?.isScript() != true ? XSharpSpecialNames.ClipperPCount : XSharpSpecialNames.ScriptClipperPCount);
                     if (argList.Arguments.Count != 0)
@@ -3864,7 +3865,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterMethod([NotNull] XP.MethodContext context)
         {
             base.EnterMethod(context);
-            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.Type);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.ReturnType);
             switch (context.RealType)
             {
                 case XP.ACCESS:
@@ -3891,7 +3892,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterFuncproc([NotNull] XP.FuncprocContext context)
         {
             base.EnterFuncproc(context);
-            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.Type);
+            Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.ReturnType);
         }
 
         public override void EnterConstructor([NotNull] XP.ConstructorContext context)

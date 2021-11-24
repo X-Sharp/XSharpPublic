@@ -409,7 +409,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
         #region Methods with Bodies
 
-        private void CheckInitMethods(XP.IEntityContext context)
+        private void CheckInitMethods(XP.IMemberContext context)
         {
             context.Data.MustBeVoid = false;
             var idName = context.ShortName;
@@ -513,7 +513,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-        private void implementConstructor([NotNull] XP.IXPPEntityContext context)
+        private void implementConstructor([NotNull] XP.IXPPMemberContext context)
         {
             var idName = context.ShortName;
             var classCtor = XSharpString.Compare(idName, XSharpIntrinsicNames.InitClassMethod) == 0;
@@ -580,7 +580,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var method = XppCreateMethod(context, name, attributes, modifiers, parameters, returnType);
             context.Put(method);
         }
-        MemberDeclarationSyntax XppCreateMethod(XP.IXPPEntityContext context, SyntaxToken idName, SyntaxList<AttributeListSyntax> attributes,
+        MemberDeclarationSyntax XppCreateMethod(XP.IXPPMemberContext context, SyntaxToken idName, SyntaxList<AttributeListSyntax> attributes,
             SyntaxList<SyntaxToken> modifiers, ParameterListSyntax parameters, TypeSyntax returnType)
         {
             var nobody = context.ExprBody != null;

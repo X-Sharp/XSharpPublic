@@ -186,12 +186,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             get
             {
-                if (Entities.Count > 0)
+                if (Entities.Count > 0 )
                     return Entities.Peek();
                 return null;
             }
         }
-
+        protected XP.IMemberContext CurrentMember => CurrentEntity as XP.IMemberContext;
+        protected XP.ITypeContext CurrentType => CurrentEntity as XP.ITypeContext;
         protected bool IsScript => _isScript;
         #endregion
 
@@ -381,7 +382,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     name = modName + ":" + name.Substring(name.IndexOf(".") + 1);
                 }
 
-                RetType = fc.Type;
+                RetType = fc.ReturnType;
                 Params = fc.ParamList;
             }
             
@@ -404,7 +405,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     name += mc.Id.GetText();
                 }
-                RetType = mc.Type;
+                RetType = mc.ReturnType;
                 Params = mc.ParamList;
                 switch (mc.T.Token.Type)
                 {
@@ -1348,7 +1349,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
-        protected virtual void ImplementClipperAndPSZ(XP.IEntityWithBodyContext context,
+        protected virtual void ImplementClipperAndPSZ(XP.IMemberWithBodyContext context,
             ref SyntaxList<AttributeListSyntax> attributes, ref ParameterListSyntax parameters, ref BlockSyntax body,
             ref TypeSyntax dataType)
         {
@@ -1679,7 +1680,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // When one of the two is missing and we are in a partial class
                 // then we generate a normal method. Later from the LanguageParser
                 // we will generate a property and in its body we will call the generated method
-                var ent = context as XP.IEntityContext;
+                var ent = context as XP.ITypeContext;
                 if (ent != null && ent.Data.Partial)
                 {
                     MemberDeclarationSyntax result;
@@ -2487,7 +2488,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 GlobalEntities.Externs.Add(s as ExternAliasDirectiveSyntax);
             }
         }
-        protected BlockSyntax processEntityBody(XP.IEntityWithBodyContext entity)
+        protected BlockSyntax processEntityBody(XP.IMemberWithBodyContext entity)
         {
             if (entity.Statements == null)
                 return null;
@@ -2542,7 +2543,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return context.Get<TypeSyntax>();
             return _getMissingType();
         }
-        protected TypeSyntax getReturnType(XP.IEntityContext context)
+        protected TypeSyntax getReturnType(XP.IMemberContext context)
         {
             return getDataType(context.ReturnType);
         }
@@ -3102,7 +3103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 attributeLists: getAttributes(context.Attributes),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                 delegateKeyword: SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword),
-                returnType: getReturnType(context),
+                returnType: getDataType(context.ReturnType),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: getTypeParameters(context.TypeParameters),
                 parameterList: getParameters(context.ParamList),
@@ -4207,7 +4208,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             var body = hasNoBody ? null : processEntityBody(context);
-            var returntype = context.Type?.Get<TypeSyntax>();
+            var returntype = context.ReturnType?.Get<TypeSyntax>();
             if (returntype == null)
             {
                 if (context.RealType == XP.ASSIGN)
@@ -4847,7 +4848,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var nobody = context.Sig.ExpressionBody != null;
             var body = nobody ? null : processEntityBody(context);
             var expressionBody = GetExpressionBody(context.Sig.ExpressionBody);
-            var returntype = isprocedure ? voidType : context.Type.Get<TypeSyntax>();
+            var returntype = isprocedure ? voidType : context.ReturnType.Get<TypeSyntax>();
             returntype.XVoDecl = true;
             var id = context.Id.Get<SyntaxToken>();
             SyntaxList<AttributeListSyntax> attributes = default;
@@ -4927,9 +4928,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterParameterList([NotNull] XP.ParameterListContext context)
         {
-            if (context._Params?.Count > 0)
+            if (context._Params?.Count > 0 && CurrentMember != null)
             {
-                CurrentEntity.Data.HasFormalParameters = true;
+                CurrentMember.Data.HasFormalParameters = true;
             }
         }
         public override void ExitParameterList([NotNull] XP.ParameterListContext context)
@@ -5214,7 +5215,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string name = context.Id.GetText();
             context.Data.IsEntryPoint = XSharpString.Equals(name, _entryPoint)
                     && _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication();
-            if (context.Data.IsEntryPoint && context.Type == null)
+            if (context.Data.IsEntryPoint && context.ReturnType == null)
             {
                 context.Data.MustBeVoid = true;
             }
@@ -5293,7 +5294,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (_options.Dialect != XSharpDialect.FoxPro)
                 {
-                    if (context.Type != null && context.Type.GetText().ToLower() != "void")
+                    if (context.ReturnType != null && context.ReturnType.GetText().ToLower() != "void")
                     {
                         returntype = NotInDialect(returntype, "Procedure with non VOID return type");
                     }
@@ -5679,7 +5680,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        protected virtual BlockSyntax GenerateEntryPoint(SyntaxList<SyntaxToken> modifiers, [NotNull] XP.IEntityContext context, BlockSyntax body,
+        protected virtual BlockSyntax GenerateEntryPoint(SyntaxList<SyntaxToken> modifiers, [NotNull] XP.IMemberContext context, BlockSyntax body,
                     SyntaxList<AttributeListSyntax> attributeList, ParameterListSyntax parList)
         {
             // In the core dialect GenerateEntryPoint does nothing special
@@ -5917,9 +5918,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (isDim ) 
             {
-                if (CurrentEntity != null)
-                { 
-                    CurrentEntity.Data.HasDimVar = true;
+                if (CurrentMember != null)
+                {
+                    CurrentMember.Data.HasDimVar = true;
                 }
                 varType.XVoIsDim = true;
             }
@@ -5992,7 +5993,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             vardecl.XVoIsDim = isDim;
             vardecl.XNode = context;
             var name = context.Id.GetText();
-            var memvar = CurrentEntity?.Data.GetField(name);
+            var memvar = CurrentMember?.Data.GetField(name);
             if (memvar != null && !memvar.IsLocal)
             {
                 vardecl = vardecl.WithAdditionalDiagnostics( new SyntaxDiagnosticInfo(ErrorCode.ERR_MemvarFieldWithSameName, name));
@@ -6055,7 +6056,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint();
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             var name = context.Id.GetText();
-            var field = CurrentEntity?.Data.GetField(name);
+            var field = CurrentMember?.Data.GetField(name);
             if (field != null && !field.IsLocal)
             {
                 context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
@@ -6653,7 +6654,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     statements.Add(stmtCtx.Get<StatementSyntax>());
                 }
             }
-            if (CurrentEntity != null && CurrentEntity.Data.HasDimVar)
+            if (CurrentMember != null && CurrentMember.Data.HasDimVar)
             {
                 // Check for LOCAL DIM arrays and change them to Fixed statements
                 statements = CheckForLocalDimArrays(statements);
@@ -6663,7 +6664,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private List<StatementSyntax> CheckForLocalDimArrays(List<StatementSyntax> statements)
         {
-            if (!CurrentEntity?.Data.HasAddressOf == true)
+            if (!CurrentMember?.Data.HasAddressOf == true)
                 return statements;
 
             foreach (var stmt in statements.ToList())
@@ -6981,7 +6982,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.SetSequencePoint(context.end);
             var expr = context.Expr?.Get<ExpressionSyntax>();
-            var ent = CurrentEntity;
+            var ent = CurrentMember;
             if (context.Void != null && ent != null && !ent.Data.MustBeVoid)
             {
                 expr = GenerateLiteral(0);
@@ -6996,8 +6997,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax arg;
             SyntaxToken token;
             context.SetSequencePoint(context.end);
-            if (CurrentEntity != null)
-                CurrentEntity.Data.HasYield = true;
+            if (CurrentMember != null)
+                CurrentMember.Data.HasYield = true;
             if (context.Break != null)  // yield exit or yield break
             {
                 kind = SyntaxKind.YieldBreakStatement;
@@ -7323,9 +7324,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // in VO ~is XOR for binary expressions and bitwise negation (ones complement) for unary expressions
             // in C# ^is XOR and ~is Bitwise negation (ones complement)
             // SyntaxPrefixOp() takes care of the Unary operators
-            if (CurrentEntity != null && context.Op.Type == XP.ADDROF)
+            if (CurrentMember != null && context.Op.Type == XP.ADDROF)
             {
-                CurrentEntity.Data.HasAddressOf = true;
+                CurrentMember.Data.HasAddressOf = true;
             }
 
             context.Put(_syntaxFactory.PrefixUnaryExpression(

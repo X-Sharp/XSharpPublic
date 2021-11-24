@@ -22,14 +22,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     internal abstract partial class SourceOrdinaryMethodSymbolBase 
     {
 
-        protected XP.IEntityContext GetEntity()
+        protected XP.IMemberContext GetEntity()
         {
-            XP.IEntityContext result = null;
+            XP.IMemberContext result = null;
             var node = this.SyntaxNode.XNode;
             {
-                if (node is XP.IEntityContext ent)
+                if (node is XP.IMemberContext ent)
                     result = ent;
-                else if (node.GetChild(0) is XP.IEntityContext entchild)
+                else if (node.GetChild(0) is XP.IMemberContext entchild)
                     result = entchild;
             }
             return result;

@@ -58,7 +58,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 xnode = fmc.Member;
             }
-            if (xnode is XSharpParser.IEntityContext iec)
+            if (xnode is XSharpParser.IMemberContext iec)
             {
                  body = LocalRewriter.RemoveUnusedVars(iec.Data, body, diagnostics);
             }

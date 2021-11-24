@@ -609,6 +609,15 @@ namespace XSharp.LanguageService
                                     symbols.Push(type);
                             }
                         }
+                        else if (symbols.Count > 0)
+                        {
+                            if (symbols.Peek() is IXTypeSymbol type)
+                                currentType = type;
+                            else if (symbols.Peek() is IXMemberSymbol member)
+                            {
+                                currentType = member.ResolvedType;
+                            }
+                        }
                         continue;
                     case XSharpLexer.DOT:
                         state = CompletionState.StaticMembers | CompletionState.Namespaces | CompletionState.Types;
@@ -647,6 +656,9 @@ namespace XSharp.LanguageService
                                   currentToken.Type == XSharpLexer.KWID ||
                                   currentToken.Type == XSharpLexer.SELF ||
                                   currentToken.Type == XSharpLexer.SUPER ||
+                                  currentToken.Type == XSharpLexer.TYPEOF ||
+                                  currentToken.Type == XSharpLexer.NAMEOF ||
+                                  currentToken.Type == XSharpLexer.SIZEOF ||
                                   currentToken.Type == XSharpLexer.COLONCOLON ||
                                   isType;
                 if (isId && !list.Eoi() && list.La1 == XSharpLexer.LT)
@@ -716,9 +728,11 @@ namespace XSharp.LanguageService
                     }
                     else if (startOfExpression)
                     {
+                        
                         // The first token in the list can be a Function or a Procedure
                         // Except if we already have a Type
                         result.AddRange(SearchFunction(location, currentName));
+
                         if (result.Count == 0 && currentType != null )
                         {
                             // no method lookup when enforceself is enabled
@@ -781,6 +795,11 @@ namespace XSharp.LanguageService
                     {
                         symbols.Push(result[0]);
                     }
+                    else
+                    {
+                        symbols.Clear();
+                        break;
+                    }
                 }
                 else if (isId)
                 {
@@ -842,6 +861,11 @@ namespace XSharp.LanguageService
                     if (result.Count > 0)
                     {
                         symbols.Push(result[0]);
+                    }
+                    else
+                    {
+                        symbols.Clear();
+                        break;
                     }
                 }
                 else if (XSharpLexer.IsOperator(currentToken.Type))
@@ -1037,7 +1061,7 @@ namespace XSharp.LanguageService
             }
             return null;
         }
-        
+
         private static IXMemberSymbol AdjustGenericMember(IXMemberSymbol xmember, IXSymbol memberdefinition)
         {
             /*

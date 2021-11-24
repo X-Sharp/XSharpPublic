@@ -229,7 +229,7 @@ namespace XSharp.LanguageService
                 {
                     // force buffer to be classified to see if we are on a line before a comment
                     var classifier = _textView.TextBuffer.GetClassifier();
-                    classifier.Classify();
+                    classifier.ClassifyWhenNeeded();
                     var lines = _textView.TextBuffer.GetLineState();
                     bool beforeAComment = lines.IsComment(line.LineNumber + 1);
                     if (!beforeAComment)

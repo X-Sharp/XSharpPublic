@@ -110,7 +110,9 @@ BEGIN NAMESPACE XSharpModel
             GET
                 var result := SELF:VisibilityKeyword + " "
                 result += SELF:ModifiersKeyword + " "
-                result += SELF:KindKeyword + " "
+                IF SELF:Kind != Kind.Field
+                    result += SELF:KindKeyword + " "
+                ENDIF
                 result += SELF:Prototype
                 RETURN result:Replace("  ", " ")
             END GET

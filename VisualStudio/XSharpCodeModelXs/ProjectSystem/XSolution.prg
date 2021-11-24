@@ -24,6 +24,7 @@ BEGIN NAMESPACE XSharpModel
       // OrphanedFiles Project is always open, so at least 1
       STATIC PROPERTY HasProject AS  LOGIC GET _projects:Count > 1
       STATIC PROPERTY FileName AS STRING GET _fileName
+      STATIC PROPERTY BuiltInFunctions AS STRING AUTO
       STATIC PROPERTY CommentTokens AS IList<XCommentToken> GET _commentTokens
 
       // Methods
@@ -44,6 +45,20 @@ BEGIN NAMESPACE XSharpModel
          XSettings.DisplayException(ex)
          RETURN
 
+      STATIC METHOD CreateBuiltInFunctions(folder as STRING) AS VOID
+         TRY
+             BuiltInFunctions := Path.Combine(folder, "BuiltInFunctions.prg")
+             IF System.IO.File.Exists(BuiltInFunctions)
+                 System.IO.File.SetAttributes(BuiltInFunctions, FileAttributes.Normal)
+                 System.IO.File.Delete(BuiltInFunctions)
+             ENDIF
+             System.IO.File.WriteAllText(BuiltInFunctions, XSharpBuiltInFunctions(BuiltInFunctions))
+             System.IO.File.SetAttributes(BuiltInFunctions, FileAttributes.ReadOnly)
+         CATCH e as Exception
+            XSettings.DisplayException(e)
+            BuiltInFunctions := ""
+         END TRY
+
       STATIC METHOD Open(cFile as STRING) AS VOID
          _fileName := cFile
          var folder := Path.GetDirectoryName(_fileName)
@@ -55,6 +70,7 @@ BEGIN NAMESPACE XSharpModel
          IF ! Directory.Exists(folder)
             Directory.CreateDirectory(folder)
          ENDIF
+         CreateBuiltInFunctions(folder)
          _sqldb    := Path.Combine(folder, "X#Model.xsdb")
          XDatabase.CreateOrOpenDatabase(_sqldb)
          VAR dbprojectList := XDatabase.GetProjectFileNames()
@@ -67,13 +83,15 @@ BEGIN NAMESPACE XSharpModel
                   EXIT
                ENDIF
             NEXT
+            IF System.IO.File.Exists(BuiltInFunctions)
+                project:AddFile(BuiltInFunctions)
+            ENDIF
          NEXT
          if dbprojectList:Count > 0
             FOREACH var dbproject in dbprojectList
                XDatabase.DeleteProject(dbproject)
             NEXT
-            endif
-
+         endif
          ModelWalker.Start()
 
       STATIC METHOD AddOrphan(fileName as STRING) AS XFile

@@ -232,6 +232,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
             EmbeddedFiles="@(EmbeddedFiles)"
             EmitDebugInformation="$(EmitDebugInformation)"
             EnforceSelf="$(EnforceSelf)"
+            EnforceVirtual="$(EnforceVirtual)"
             EnvironmentVariables="$(XscEnvironment)"
             ErrorEndLocation="$(ErrorEndLocation)"
             ErrorLog="$(ErrorLog)"

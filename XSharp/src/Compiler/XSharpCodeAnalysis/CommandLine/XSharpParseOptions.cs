@@ -115,7 +115,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool AllowNamedArguments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
-        public bool Strict { get; private set; }
+        public bool EnforceVirtual { get; private set; }
+        public bool EnforceSelf { get; private set; }
         public string StdDefs { get; private set; } = string.Empty;
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
@@ -189,7 +190,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
                 StdDefs = opt.StdDefs;
-                Strict = opt.EnforceSelf;
+                EnforceVirtual = opt.EnforceVirtual;
+                EnforceSelf = opt.EnforceSelf;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
                 ParseLevel = opt.ParseLevel;
@@ -276,7 +278,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             ParseLevel = opt.ParseLevel;
             SaveAsCSharp = opt.SaveAsCSharp;
             StdDefs = opt.StdDefs;
-            Strict = opt.Strict;
+            EnforceVirtual = opt.EnforceVirtual;
+            EnforceSelf = opt.EnforceSelf;
             Verbose = opt.Verbose;
             AllowNamedArguments = opt.AllowNamedArguments;
             VoInitAxitMethods = opt.VoInitAxitMethods; // vo1
@@ -404,8 +407,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.LateBinding:  // lb
                     return CheckOption(option, LateBinding, context, options);
 
-                case CompilerOption.Strict:  // strict
-                    return CheckOption(option, Strict, context, options);
+                case CompilerOption.EnforceVirtual:  // enforcevirtual
+                    return CheckOption(option, EnforceVirtual, context, options);
+
+                case CompilerOption.EnforceSelf:  // enforceself
+                    return CheckOption(option, EnforceSelf, context, options);
 
                 case CompilerOption.SignedUnsignedConversion: // vo4
                 case CompilerOption.ResolveTypedFunctionPointersToPtr: // vo6

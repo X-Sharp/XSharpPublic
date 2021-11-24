@@ -5,8 +5,8 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/786
 // Make OVERRIDE mandatory
 
-//#pragma options("vo3", on)
-#pragma options("strict", on)
+#pragma options("vo3", on)
+#pragma options("enforcevirtual", on)
 FUNCTION Start() AS VOID
 LOCAL o AS Parent
 o := Child{}     

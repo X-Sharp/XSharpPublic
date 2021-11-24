@@ -50,7 +50,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ImplicitNameSpace { get; private set; }
         //bool InitLocals { get; set; }
         public bool LateBinding { get; private set; }
-        public bool Strict { get; private set; }
+        public bool EnforceSelf { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
         public bool HasRuntime { get { return this.Dialect.NeedsRuntime(); } }
         public bool FoxArraySupport { get; private set; } = false;
@@ -87,11 +87,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //XPPInheritFromAbstract = opt.Xpp1;        // Handled in the parser
                 //XPPUntypedmain= opt.Xpp2;                 // Handled in the parser
                 //FoxInheritUnknown= opt.Fox1;              // Handled in the parser
+                //EnforceVirtual = opt.EnforceVirtual;      // Handled in the parser
                 FoxArraySupport = opt.Fox2;
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
-                Strict = opt.EnforceSelf;
+                EnforceSelf = opt.EnforceSelf;
                 UndeclaredMemVars = opt.UndeclaredMemVars;
                 MemVars = opt.MemVars;
                 TargetDLL = opt.TargetDLL;
@@ -136,7 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CheckOption(option, MemVars, syntax);
 
                 case CompilerOption.EnforceSelf:
-                    return CheckOption(option, Strict, syntax);
+                    return CheckOption(option, EnforceSelf, syntax);
 
                 case CompilerOption.UndeclaredMemVars:
                     return CheckOption(option, UndeclaredMemVars, syntax);
@@ -172,6 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.FloatConstants: // vo14
                 case CompilerOption.UntypedAllowed: // v015
                 case CompilerOption.DefaultClipperContructors: // v016
+                case CompilerOption.EnforceVirtual:
                     return false;
 
             }
@@ -230,7 +232,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             LateBinding = opt.LateBinding;
             TargetDLL = opt.TargetDLL;
             RuntimeAssemblies = opt.RuntimeAssemblies;
-            Strict = opt.Strict;
+            //EnforceVirtual = opt.EnforceVirtual;  // Handled in the parser
+            EnforceSelf = opt.EnforceSelf;
             //VoInitAxitMethods = opt.VoInitAxitMethods; // vo1 // Handled in the parser
             VONullStrings = opt.VONullStrings; // vo2
             VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3   

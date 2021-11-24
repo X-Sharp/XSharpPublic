@@ -581,7 +581,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var rb = _pool.Allocate();
             rb.FixDefaultVisibility();
-            if (!inInterface && !_options.HasOption(CompilerOption.Strict, context, PragmaOptions))
+            if (!inInterface && !_options.HasOption(CompilerOption.EnforceVirtual, context, PragmaOptions))
             {
                 // structures do not get virtual or override modifiers
                 if (!inStructure && !noOverride)

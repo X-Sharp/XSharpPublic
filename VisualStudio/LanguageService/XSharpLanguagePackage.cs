@@ -86,7 +86,8 @@ namespace XSharp.LanguageService
     //Note that the name of the entry in Tools/Options/TextEditor is defined in VsPackage.Resx in item #1 as X#
     [ProvideLanguageEditorOptionPage(typeof(IntellisenseOptionsPage), LanguageName, null, "Intellisense", pageNameResourceId: "205")]  
     //[ProvideLanguageEditorOptionPage(typeof(CompletionOptionsPage), LanguageName, null, "Settings Completion", pageNameResourceId: "204")]   
-    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]       
+    [ProvideLanguageEditorOptionPage(typeof(FormattingOptionsPage), LanguageName, null, "Formatting", pageNameResourceId: "202")]
+    [ProvideLanguageEditorOptionPage(typeof(IndentingOptionsPage), LanguageName, null, "Indentation", pageNameResourceId: "206")]
     [ProvideLanguageEditorOptionPage(typeof(OtherOptionsPage), LanguageName, null, "Other", pageNameResourceId: "203")]       
     public sealed class XSharpLanguageService : AsyncPackage, IVsShellPropertyEvents, IVsDebuggerEvents, IOleComponent
     {
@@ -115,6 +116,7 @@ namespace XSharp.LanguageService
 
         IntellisenseOptionsPage _intellisensePage;
         FormattingOptionsPage _formattingPage;
+        IndentingOptionsPage _indentingPage;
         OtherOptionsPage _otherOptionsPage;
         //CompletionOptionsPage _completionOptionsPage;
         internal void GetIntellisenseSettings()
@@ -126,6 +128,10 @@ namespace XSharp.LanguageService
             if (_formattingPage == null)
             {
                 _formattingPage = (FormattingOptionsPage)GetDialogPage(typeof(FormattingOptionsPage));
+            }
+            if (_indentingPage == null)
+            {
+                _indentingPage = (IndentingOptionsPage)GetDialogPage(typeof(IndentingOptionsPage));
             }
             if (_otherOptionsPage == null)
             {
@@ -200,6 +206,11 @@ namespace XSharp.LanguageService
             XSettings.EditorTrimTrailingWhiteSpace = _formattingPage.TrimTrailingWhiteSpace;
             XSettings.EditorInsertFinalNewline = _formattingPage.InsertFinalNewLine;
             XSettings.KeywordCase = _formattingPage.KeywordCase;
+            // Indentation
+            XSettings.IndentEntityContent = _indentingPage.IndentEntityContent;
+            XSettings.IndentBlockContent = _indentingPage.IndentBlockContent;
+            XSettings.IndentCaseContent = _indentingPage.IndentCaseContent;
+            XSettings.IndentCaseLabel = _indentingPage.IndentCaseLabel;
 
             // Completion
             //XSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;

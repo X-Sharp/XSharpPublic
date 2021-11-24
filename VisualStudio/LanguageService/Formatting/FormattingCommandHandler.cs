@@ -368,7 +368,7 @@ namespace XSharp.LanguageService
                             if (nLine < snapshot.LineCount && nLine >= 0)
                             {
                                 ITextSnapshotLine line = snapshot.GetLineFromLineNumber(nLine);
-                                formatLineCase(editSession, line);
+                                FormatLineCase(editSession, line);
                             }
                             // when it takes longer than 2 seconds, then abort
                             if (++counter > 100 && DateTime.Now > end)
@@ -526,7 +526,7 @@ namespace XSharp.LanguageService
             return false;
         }
 
-        private void formatLineCase(ITextEdit editSession, ITextSnapshotLine line)
+        private void FormatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {
             if (XSettings.DebuggerIsRunning)
             {

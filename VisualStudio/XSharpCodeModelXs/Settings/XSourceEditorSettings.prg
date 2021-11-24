@@ -16,8 +16,15 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC PROPERTY IdentifierCase             AS LOGIC AUTO
         PUBLIC PROPERTY TrimTrailingWhiteSpace     AS LOGIC AUTO
         PUBLIC PROPERTY InsertFinalNewline         AS LOGIC AUTO
+        //[Obsolete];
         PUBLIC PROPERTY FormatAlignDoCase            AS LOGIC AUTO
+        //[Obsolete];
         PUBLIC PROPERTY FormatAlignMethod            AS LOGIC AUTO
+
+        PUBLIC PROPERTY IndentEntityContent            AS LOGIC AUTO
+        PUBLIC PROPERTY IndentBlockContent            AS LOGIC AUTO
+        PUBLIC PROPERTY IndentCaseContent            AS LOGIC AUTO
+        PUBLIC PROPERTY IndentCaseLabel            AS LOGIC AUTO
 
 
         CONSTRUCTOR()
@@ -31,9 +38,15 @@ BEGIN NAMESPACE XSharpModel
             IdentifierCase := XSettings.IdentifierCase
             TrimTrailingWhiteSpace := XSettings.EditorTrimTrailingWhiteSpace
             InsertFinalNewline := XSettings.EditorInsertFinalNewline
+            //
             FormatAlignDoCase := XSettings.EditorFormatAlignDoCase
             FormatAlignMethod := XSettings.EditorFormatAlignMethod
-            
+            //
+            IndentEntityContent := XSettings.IndentEntityContent
+            IndentBlockContent := XSettings.IndentBlockContent
+            IndentCaseContent := XSettings.IndentCaseContent
+            IndentCaseLabel := XSettings.IndentCaseLabel
+
 
     END CLASS
 

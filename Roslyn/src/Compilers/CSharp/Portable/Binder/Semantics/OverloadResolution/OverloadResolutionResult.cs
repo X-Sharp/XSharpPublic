@@ -1250,6 +1250,27 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (refParameter == RefKind.None || refParameter == RefKind.In)
                 {
+#if XSHARP
+                    if (argument is BoundAddressOfOperator)
+                    {
+                        //  Argument {0} should not be passed with the '@' prefix
+                        diagnostics.Add(
+                            ErrorCode.ERR_BadAddressOfArg,
+                            sourceLocation,
+                            symbols,
+                            arg + 1);
+                    }
+                    else
+                    {
+                        //  Argument {0} should not be passed with the {1} keyword
+                        diagnostics.Add(
+                            ErrorCode.ERR_BadArgExtraRef,
+                            sourceLocation,
+                            symbols,
+                            arg + 1,
+                            refArg.ToArgumentDisplayString());
+                    }
+#else
                     //  Argument {0} should not be passed with the {1} keyword
                     diagnostics.Add(
                         ErrorCode.ERR_BadArgExtraRef,
@@ -1257,6 +1278,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         symbols,
                         arg + 1,
                         refArg.ToArgumentDisplayString());
+#endif
                 }
                 else
                 {

@@ -318,21 +318,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var parNumber = result.ValidResult.Result.ParameterFromArgument(i);
                 var parRefKind = member.Parameters[parNumber].RefKind;
-                var parType = member.Parameters[parNumber].Type;
-
                 var arg = analyzedArguments.Arguments[i];
-                var adjustUsualArg = false;
-                if (parType.IsUsualType() && arg is BoundAddressOfOperator bap && bap.Operand.Type.IsUsualType())
-                {
-                    adjustUsualArg = true;
-                }
-
-                if ((analyzedArguments.RefKind(i) == RefKind.None && parRefKind != RefKind.None) || adjustUsualArg)
+                var isBoundAddress = arg is BoundAddressOfOperator;
+                var isRefKindMismatch = analyzedArguments.RefKind(i) == RefKind.None && parRefKind != RefKind.None;
+                if (isRefKindMismatch || isBoundAddress)
                 { 
-                    if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, arg.Syntax) || adjustUsualArg)
+                    if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, arg.Syntax))
                     {
                         bool adjust = false;
-                        if (arg is BoundAddressOfOperator)
+                        if (isBoundAddress)
                         {
                             arg = (arg as BoundAddressOfOperator).Operand;
                             adjust = true;
@@ -341,7 +335,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             adjust = false;
                         }
-                        else
+                        else if (isRefKindMismatch)
                         {
                             adjust = true;
                             Error(diagnostics, ErrorCode.WRN_AutomaticRefGeneration, arg.Syntax, i + 1, parRefKind);

@@ -3741,31 +3741,8 @@ outerDefault:
 
 #if XSHARP
 
-                    bool boundAddressOp = argument.Kind == BoundKind.AddressOfOperator;
                     bool literalNullForRefParameter = false;
                     bool implicitCastsAndConversions = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, argument.Syntax);
-                    var parType = parameters.ParameterTypes[argumentPosition];
-                    if (boundAddressOp && implicitCastsAndConversions)
-                    {
-                        // fix issue where a function / method with an AS USUAL
-                        // is called with the @ operator
-                        // The only exception is the QOut statement where we allow the address to be passed.
-                        var qout = argument?.Syntax?.XNode?.Parent is XP.QoutStmtContext;
-                        if (!qout)
-                        {
-                            // we cannot use parameters.ParameterRefKind here because when the @ operator is used
-                            // then this immutablearray is not initialized
-
-                            var refKinds = candidate.GetParameterRefKinds();
-                            if (!refKinds.IsDefault && refKinds.Length >= argumentPosition + 1)
-                                parameterRefKind = refKinds[argumentPosition];
-                            if (parameterRefKind == RefKind.None && parType.Type.IsUsualType())
-                            {
-                                arguments.SetRefKind(argumentPosition, RefKind.Ref);
-                                argumentRefKind = RefKind.Ref;
-                            }
-                        }
-                    }
                     if (conversion.Kind == ConversionKind.NoConversion)
                     {
                         if (implicitCastsAndConversions)
@@ -3779,16 +3756,33 @@ outerDefault:
                             {
                                 literalNullForRefParameter = true;
                             }
-                            if (!literalNullForRefParameter)
+                            else
                             {
-                                if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None /*&& argument.Syntax.Kind() == SyntaxKind.AddressOfExpression*/ && argument is BoundAddressOfOperator)
+                                if (argument is BoundAddressOfOperator baoo)
                                 {
-                                    argument = (argument as BoundAddressOfOperator).Operand;
+                                    var parType = parameters.ParameterTypes[argumentPosition].Type;
+                                    if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None)
+                                    {
+                                        // pass value @foo to function/method that is declared as BAR (n REF Something)
+                                        argument = baoo.Operand;
+                                    }
+                                    else if (!parType.IsPointerType() && !parType.IsVoStructOrUnion())
+                                    {
+                                        var xNode = argument.Syntax.XNode;
+                                        if (xNode.Parent is not XP.QoutStmtContext)
+                                        {
+                                            // pass value @foo to function/method that is declared as BAR (n AS Something)
+                                            argument = baoo.Operand;
+                                            argumentRefKind = RefKind.Ref;
+                                            arguments.SetRefKind(argumentPosition, argumentRefKind);
+                                        }
+                                    }
                                 }
                             }
                         }
                         if (parameterRefKind == RefKind.Out && argumentRefKind == RefKind.Ref)
                         {
+                            // pass variable with REF to function/method that expects OUT (Vulcan did not have OUT)
                             argumentRefKind = parameterRefKind;
                             arguments.SetRefKind(argumentPosition, argumentRefKind);
                             useSiteDiagnostics = new HashSet<DiagnosticInfo>();
@@ -3817,7 +3811,7 @@ outerDefault:
                         }
 
                         if (implicitCastsAndConversions && argumentRefKind == RefKind.None &&
-                            argument is BoundAddressOfOperator b &&
+                            argument is BoundAddressOfOperator &&
                             candidate.HasClipperCallingConvention())
                         {
                             argumentRefKind = RefKind.Ref;

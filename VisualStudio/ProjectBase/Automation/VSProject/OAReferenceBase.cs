@@ -11,10 +11,16 @@
 
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.InteropServices;
 using VSLangProj;
+using VSLangProj110;
+using VSLangProj150;
+using VSLangProj2;
 using VSLangProj80;
+
 
 namespace Microsoft.VisualStudio.Project.Automation
 {
@@ -24,7 +30,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     /// <typeparam name="RefType"></typeparam>
     [SuppressMessage("Microsoft.Naming", "CA1715:IdentifiersShouldHaveCorrectPrefix", MessageId = "T")]
     [ComVisible(true), CLSCompliant(false)]
-    public abstract class OAReferenceBase<RT> : Reference3, IDisposable
+    public abstract class OAReferenceBase<RT> : Reference3, IDisposable, Reference4, Reference2, Reference, Reference6, Reference5
         where RT : ReferenceNode
     {
         #region fields
@@ -205,12 +211,60 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
         }
 
-        public bool Resolved  =>referenceNode.Resolved; 
+        public bool Resolved  =>referenceNode.Resolved;
 
-        public abstract string RuntimeVersion { get; }
+        public virtual string RuntimeVersion => "";
 
-        public virtual bool SpecificVersion { get; set; }
+        public virtual bool SpecificVersion
+        {
+            get
+            {
+                return false;
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        public virtual string SubType {  get;set; }
+        public string SubType
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool EmbedInteropTypes { get; set; }
+
+        public void GetMetadata(Array parrbstrDesiredMetadata, out Array pparrbstrMetadataElements, out Array pparrbstrMetadataValues)
+        {
+            Dictionary<string, string> outData = new Dictionary<string, string>();
+            foreach (string meta in parrbstrDesiredMetadata)
+            {
+                outData.Add(meta, referenceNode.ItemNode.GetEvaluatedMetadata(meta));
+            }
+            pparrbstrMetadataElements = outData.Keys.ToArray();
+            pparrbstrMetadataValues = outData.Values.ToArray();
+
+        }
+
+        public void AddOrUpdateMetadata(Array parrbstrMetadataElements, Array parrbstrMetadataValues)
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            for (int i = 0; i < parrbstrMetadataElements.Length; i++)
+            {
+                referenceNode.ItemNode.SetMetadata(parrbstrMetadataElements.GetValue(i) as string, parrbstrMetadataValues.GetValue(i) as string);
+            }
+
+        }
+
+        public Array ExpandedSdkReferences =>  new object[0];
+
+        public Reference Group => null;
     }
 }

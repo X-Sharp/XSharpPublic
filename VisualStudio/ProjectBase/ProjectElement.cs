@@ -147,7 +147,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="project">Project that owns this item</param>
         /// <param name="existingItem">an MSBuild.ProjectItem; can be null if virtualFolder is true</param>
         /// <param name="virtualFolder">Is this item virtual (such as reference folder)</param>
-        internal ProjectElement(ProjectNode project, MSBuild.ProjectItem existingItem, bool virtualFolder)
+        public ProjectElement(ProjectNode project, MSBuild.ProjectItem existingItem, bool virtualFolder)
         {
             Utilities.ArgumentNotNull("project", project);
             if(!virtualFolder && existingItem == null)

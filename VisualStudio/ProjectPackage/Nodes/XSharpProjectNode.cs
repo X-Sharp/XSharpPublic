@@ -1054,8 +1054,24 @@ namespace XSharp.Project
 
         #endregion
 #if PACKAGEREFERENCE
-#region PackageReferences
-        public XSharpPackageReferenceContainerNode PackageReferenceContainerNode => FindChild("NuGet") as XSharpPackageReferenceContainerNode;
+        #region PackageReferences
+
+        protected override void ProcessReferences()
+        {
+            // Nuget package references are added as child to the Reference Node.
+            base.ProcessReferences();
+            HierarchyNode referenceContainerNode = GetReferenceContainer() as HierarchyNode;
+            var packageContainer = PackageReferenceContainerNode;
+            if (packageContainer == null)
+            {
+                packageContainer = new XSharpPackageReferenceContainerNode(this);
+                referenceContainerNode.AddChild(packageContainer);
+            }
+            packageContainer.LoadReferencesFromBuildProject(this);
+        }
+
+        public XSharpPackageReferenceContainerNode PackageReferenceContainerNode =>
+            FindChild(XSharpPackageReferenceContainerNode.PackageReferencesNodeVirtualName) as XSharpPackageReferenceContainerNode;
 
         public virtual XSharpPackageReferenceNode CreatePackageReferenceNode(string name)
         {

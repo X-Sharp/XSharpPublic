@@ -99,5 +99,8 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "XPROJ")]
         [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores")]
         public const int IDM_VS_CTXT_XPROJ_PROJITEM = 0x0417;
+
+        public const int IDM_VS_CTXT_PACKAGEREFERENCE = 1187;
+        public const int IDM_VS_CTXT_PACKAGEREFERENCE_GROUP = 1186;
     }
 }

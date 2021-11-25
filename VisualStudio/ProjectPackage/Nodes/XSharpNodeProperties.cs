@@ -535,5 +535,56 @@ namespace XSharp.Project
         #endregion
     }
 
+    [ComVisible(true)]
+    public class XSharpPackageReferenceNodeProperties : NodeProperties
+    {
+        #region ctors
+        public XSharpPackageReferenceNodeProperties(HierarchyNode node)
+            : base(node)
+        {
+
+        }
+
+        #endregion
+
+        [SRCategoryAttribute(SR.Misc)]
+        [LocDisplayName(SR.Identity)]
+        [SRDescriptionAttribute(SR.IdentityDescription)]
+        public override string Name
+        {
+            get
+            {
+                var o = Node as XSharpPackageReferenceNode;
+                return o.Name;
+            }
+        }
+
+        [SRCategoryAttribute(SR.Misc)]
+        [LocDisplayName(SR.FileType)]
+        [SRDescriptionAttribute(SR.FileTypeDescription)]
+        public virtual string FileType
+        {
+            get
+            {
+                return "PackageReference";
+            }
+        }
+
+        [SRCategoryAttribute(SR.Misc)]
+        [LocDisplayName(SR.Version)]
+        [SRDescriptionAttribute(SR.VersionDescription)]
+        public virtual string Version
+        {
+            get
+            {
+                var o = Node as XSharpPackageReferenceNode;
+                return o.Version;
+            }
+        }
+        public override string GetClassName()
+        {
+            return "PackageReference Properties";
+        }
+    }
 
 }

@@ -73,6 +73,7 @@ namespace XSharp.Project
         public const int bmpDanglingReference = 0x000C;
         public const int bmpTabOrder = 0x000D;
         public const int bmpFoxPro = 0x000E;
+        public const int bmpNuGet = 0x000F;
         public const int IDM_IF_TOOLBAR_FORMAT = 0x0601;
         public const int IDG_IF_KEYBOARD = 0x0320;
         public const int cmdidShowGrid = 0x6001;

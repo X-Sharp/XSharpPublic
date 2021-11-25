@@ -1,12 +1,14 @@
-﻿using EnvDTE;
-using Microsoft.VisualStudio;
+﻿using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
+using Microsoft.VisualStudio.Shell;
+using NuGet.VisualStudio;
 using System;
 using System.IO;
 using System.Linq;
-
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 namespace XSharp.Project
 {
     public class XSharpPackageReferenceNode : HierarchyNode
@@ -18,7 +20,7 @@ namespace XSharp.Project
 
         private string _caption;
 
-        public override int ImageIndex => 56;
+        public override int ImageIndex => (int)ProjectNode.ImageName.Nuget;
 
         public override object Object => this;
 
@@ -28,11 +30,8 @@ namespace XSharp.Project
         {
             get
             {
-                if (string.IsNullOrEmpty(_caption))
-                {
-                    _caption = GetCaption();
-                }
-                return _caption;
+                
+                return Name;
             }
         }
 
@@ -59,7 +58,7 @@ namespace XSharp.Project
 
         public override Guid ItemTypeGuid => VSConstants.PlatformReferenceProvider_Guid;
 
-        public override int MenuCommandId => 1105;
+        public override int MenuCommandId => Microsoft.VisualStudio.Project.VsMenus.IDM_VS_CTXT_PACKAGEREFERENCE;
 
         public XSharpPackageReferenceNode(ProjectNode projectManager, ProjectElement element)
             : base(projectManager, element)
@@ -69,6 +68,12 @@ namespace XSharp.Project
             {
                 base.Parent = XSharpProject.PackageReferenceContainerNode;
             }
+        }
+
+        protected override NodeProperties CreatePropertiesObject()
+        {
+            return new XSharpPackageReferenceNodeProperties(this);
+
         }
 
         private string GetCaption()
@@ -106,28 +111,52 @@ namespace XSharp.Project
 
         protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
-            if (cmdGroup == VsMenus.guidStandardCommandSet97)
+       
+            if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet97)
             {
-                if (cmd == 17 || cmd == 168)
+                if (cmd == (uint)VSConstants.VSStd97CmdID.Remove)
                 {
                     result |= (QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED);
-                    return 0;
+                    return VSConstants.S_OK;
                 }
             }
             return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
         }
-
         protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
-            if (cmdGroup == VsMenus.guidStandardCommandSet97)
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet97)
             {
-                if (cmd == 17 || cmd == 168)
+                if (cmd == (uint)VSConstants.VSStd97CmdID.Remove)
                 {
-                    //((IComponentModel)GetService(typeof(SComponentModel))).GetService<IVsPackageUninstaller>()?.UninstallPackage(base.ProjectMgr.GetAutomationObject() as XSharpProjectNode, base.ItemNode.GetMetadata("Include"), removeDependencies: false);
-                    return 0;
+                    IComponentModel model;
+                    model = (IComponentModel)GetService(typeof(SComponentModel));
+                    if (model != null)
+                    {
+                        var service = model.GetService<IVsPackageUninstaller>();
+                        if (service != null)
+                        {
+                            var project = base.ProjectMgr.GetAutomationObject() as EnvDTE.Project;
+                            service.UninstallPackage(project, base.ItemNode.GetMetadata("Include"), removeDependencies: false);
+                            return 0;
+                        }
+                    }
                 }
             }
             return base.ExecCommandOnNode(cmdGroup, cmd, nCmdexecopt, pvaIn, pvaOut);
         }
+    }
+}
+// This has been copied from the Nuget.VisualStudio.dll assembly
+namespace NuGet.VisualStudio
+{
+    [ComImport]
+    [CompilerGenerated]
+    [Guid("AF63941E-6BA8-4FEC-9827-8E4D1113F231")]
+    [TypeIdentifier]
+    public interface IVsPackageUninstaller
+    {
+        void UninstallPackage(EnvDTE.Project project, string packageId, bool removeDependencies);
     }
 }

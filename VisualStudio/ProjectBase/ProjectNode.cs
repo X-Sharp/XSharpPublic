@@ -392,8 +392,8 @@ namespace Microsoft.VisualStudio.Project
             PFX = 50,
             [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "SNK")]
             SNK = 51,
-
-            ImageLast = 51
+            Nuget=52,
+            ImageLast = 52
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
-using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,8 +16,7 @@ namespace XSharp.Project
 
         private OAVSPackageReferences _vsPackageReferences;
 
-
-        public const string PackageReferencesNodeVirtualName = "NuGet";
+        public const string PackageReferencesNodeVirtualName = "NuGet Packages";
 
         public List<XSharpPackageReferenceNode> PackageReferenceNodes
         {
@@ -33,15 +32,15 @@ namespace XSharp.Project
             set;
         }
 
-        public override string Caption => "NuGet";
+        public override string Caption => PackageReferencesNodeVirtualName;
 
-        public override int ImageIndex => 56;
+        public override int ImageIndex => (int)ProjectNode.ImageName.Nuget;
 
-        public override int SortPriority => 300;
+        public override int SortPriority => DefaultSortOrderNode.NuGetPackagesNode;
 
         public override Guid ItemTypeGuid => VSConstants.GUID_ItemType_VirtualFolder;
 
-        public override int MenuCommandId => 1104;
+        public override int MenuCommandId => Microsoft.VisualStudio.Project.VsMenus.IDM_VS_CTXT_PACKAGEREFERENCE_GROUP;
 
         public override string Url => base.VirtualNodeName;
 
@@ -53,17 +52,22 @@ namespace XSharp.Project
             _vsPackageReferences = new OAVSPackageReferences(this);
             PackageReferenceNodes = new List<XSharpPackageReferenceNode>();
             XSharpProjectNode = parent;
-            base.VirtualNodeName = "NuGet";
+            base.VirtualNodeName = PackageReferencesNodeVirtualName;
         }
+        protected override NodeProperties CreatePropertiesObject()
+        {
+            return new ReferenceContainerNodeProperties(this);
 
+        }
         public override object GetProperty(int propId)
         {
-            switch (propId)
+            switch ((__VSHPROPID) propId)
             {
-                case -2043:
-                    return 1;
-                case -2042:
-                case -1002:
+                case __VSHPROPID.VSHPROPID_IsHiddenItem:
+                    var result = this.FirstChild == null;
+                    return result;
+                case __VSHPROPID.VSHPROPID_NextVisibleSibling:
+                case __VSHPROPID.VSHPROPID_NextSibling:
                     return base.NextSibling?.ID;
                 default:
                     {
@@ -118,35 +122,45 @@ namespace XSharp.Project
         public void Remove(string bstrName)
         {
             XSharpPackageReferenceNode match = PackageReferenceNodes.Where((XSharpPackageReferenceNode node) => node.Name.Equals(bstrName, StringComparison.InvariantCultureIgnoreCase)).First();
+            if (match != null)
+            {
+                PackageReferenceNodes.Remove(match);
+                match.Remove(removeFromStorage: false);
+            }
         }
 
-        public bool TryGetReference(string bstrName, Array parrbstrDesiredMetadata, out string pbstrVersion, out Array pbstrMetadataElements, out Array pbstrMetadataValues)
+        public bool TryGetReference(string bstrName, Array aDesiredMetadata, out string pbstrVersion, out Array aMetadataElements, out Array aMetadataValues)
         {
-            IEnumerable<XSharpPackageReferenceNode> matches = PackageReferenceNodes.Where((XSharpPackageReferenceNode node) => node.Name.Equals(bstrName, StringComparison.InvariantCultureIgnoreCase));
-            if (matches.Count() == 0)
+            // the array aDesiredMetadata contains the names of the properties
+            // that they want.
+            // we also always return the Version
+            var nodes = PackageReferenceNodes.Where((n) =>
+                n.Name.Equals(bstrName, StringComparison.InvariantCultureIgnoreCase));
+            if (nodes.Count() == 0)
             {
                 pbstrVersion = null;
-                pbstrMetadataElements = null;
-                pbstrMetadataValues = null;
+                aMetadataElements = null;
+                aMetadataValues = null;
                 return false;
             }
-            XSharpPackageReferenceNode match = matches.FirstOrDefault();
-            pbstrVersion = ((!string.IsNullOrEmpty(match?.ItemNode.GetMetadata("Version"))) ? match?.ItemNode.GetMetadata("Version") : match?.Version);
-            Dictionary<string, string> metadata = new Dictionary<string, string>();
-            IEnumerable<string> desiredMetadata = parrbstrDesiredMetadata.Cast<string>();
-            foreach (ProjectMetadata mde in match?.ItemNode.Item.Metadata)
+            var node = nodes.FirstOrDefault();
+            string verName = "Version";
+            pbstrVersion = ((!string.IsNullOrEmpty(node?.ItemNode.GetMetadata(verName))) ? node?.ItemNode.GetMetadata(verName) : node?.Version);
+            var metadata = new Dictionary<string, string>();
+            var desiredMetadata = aDesiredMetadata.Cast<string>();
+            foreach (ProjectMetadata mde in node?.ItemNode.Item.Metadata)
             {
                 if (desiredMetadata.Contains(mde.Name))
                 {
                     metadata.Add(mde.Name, mde.EvaluatedValue);
                 }
-                else if (string.Compare(mde.Name, "Version", ignoreCase: true) == 0)
+                else if (string.Compare(mde.Name, verName, ignoreCase: true) == 0)
                 {
-                    metadata.Add(mde.Name, match.Version);
+                    metadata.Add(mde.Name, node.Version);
                 }
             }
-            pbstrMetadataElements = metadata.Keys.ToArray();
-            pbstrMetadataValues = metadata.Values.ToArray();
+            aMetadataElements = metadata.Keys.ToArray();
+            aMetadataValues = metadata.Values.ToArray();
             return true;
         }
 
@@ -159,13 +173,12 @@ namespace XSharp.Project
         {
             return XSharpProjectNode.CreatePackageReferenceNode(name);
         }
-
-        public virtual void LoadReferencesFromBuildProject(XSharpProjectNode buildProject)
+        internal virtual void LoadReferencesFromBuildProject(XSharpProjectNode buildProject)
         {
-            foreach (ProjectItem item in base.ProjectMgr.BuildProject.ThreadSafeGetItems("PackageReference"))
+            foreach (var item in base.ProjectMgr.BuildProject.ThreadSafeGetItems(ProjectFileConstants.PackageReference))
             {
-                ProjectElement element = new ProjectElement(base.ProjectMgr, item, false);
-                XSharpPackageReferenceNode referenceNode = new XSharpPackageReferenceNode(base.ProjectMgr, element);
+                var element = new ProjectElement(base.ProjectMgr, item, false);
+                var referenceNode = new XSharpPackageReferenceNode(ProjectMgr, element);
                 bool found = false;
                 HierarchyNode i = base.FirstChild;
                 while (i != null && !found)
@@ -187,24 +200,6 @@ namespace XSharp.Project
         protected override string GetCanonicalName()
         {
             return Path.Combine(base.ProjectMgr.ProjectFolder, Caption);
-        }
-
-        protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
-        {
-            if (cmdGroup == Microsoft.VisualStudio.Shell.VsMenus.guidStandardCommandSet2K)
-            {
-                if (cmd == 1113 || cmd == 1125 || cmd - 1129 <= 1)
-                {
-                    result |= QueryStatusResult.INVISIBLE;
-                    return 0;
-                }
-            }
-            return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
-        }
-
-        protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
-        {
-            return base.ExecCommandOnNode(cmdGroup, cmd, nCmdexecopt, pvaIn, pvaOut);
         }
     }
 }

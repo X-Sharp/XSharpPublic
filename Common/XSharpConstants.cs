@@ -123,6 +123,10 @@ namespace XSharp
         public const int Properties = 9;
         public const int Reference = 10;
         public const int DanglingReference = 11;
+        public const int TabOrder = 12;
+        public const int FoxPro = 13;
+        public const int NuGet = 14;
+
 
     }
     internal static class XSharpProjectFileConstants

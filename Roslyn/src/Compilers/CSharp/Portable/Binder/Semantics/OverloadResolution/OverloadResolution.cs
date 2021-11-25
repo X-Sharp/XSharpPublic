@@ -14,6 +14,10 @@ using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Symbols;
 using Roslyn.Utilities;
 
+#if XSHARP
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+#endif
+
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal enum BetterResult
@@ -3736,8 +3740,6 @@ outerDefault:
                     RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
 
 #if XSHARP
-                    // fix issue where a function / method with an AS USUAL
-                    // is called with the @ operator
 
                     bool boundAddressOp = argument.Kind == BoundKind.AddressOfOperator;
                     bool literalNullForRefParameter = false;
@@ -3745,16 +3747,23 @@ outerDefault:
                     var parType = parameters.ParameterTypes[argumentPosition];
                     if (boundAddressOp && implicitCastsAndConversions)
                     {
-                        // we cannot use parameters.ParameterRefKind here because when the @ operator is used
-                        // then this immutablearray is not initialized
-
-                        var refKinds = candidate.GetParameterRefKinds();
-                        if (!refKinds.IsDefault && refKinds.Length >= argumentPosition + 1)
-                            parameterRefKind = refKinds[argumentPosition];
-                        if (parameterRefKind == RefKind.None && parType.Type.IsUsualType())
+                        // fix issue where a function / method with an AS USUAL
+                        // is called with the @ operator
+                        // The only exception is the QOut statement where we allow the address to be passed.
+                        var qout = argument?.Syntax?.XNode?.Parent is XP.QoutStmtContext;
+                        if (!qout)
                         {
-                            arguments.SetRefKind(argumentPosition, RefKind.Ref);
-                            argumentRefKind = RefKind.Ref;
+                            // we cannot use parameters.ParameterRefKind here because when the @ operator is used
+                            // then this immutablearray is not initialized
+
+                            var refKinds = candidate.GetParameterRefKinds();
+                            if (!refKinds.IsDefault && refKinds.Length >= argumentPosition + 1)
+                                parameterRefKind = refKinds[argumentPosition];
+                            if (parameterRefKind == RefKind.None && parType.Type.IsUsualType())
+                            {
+                                arguments.SetRefKind(argumentPosition, RefKind.Ref);
+                                argumentRefKind = RefKind.Ref;
+                            }
                         }
                     }
                     if (conversion.Kind == ConversionKind.NoConversion)

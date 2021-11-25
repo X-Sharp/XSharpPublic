@@ -314,17 +314,22 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool CheckValidRefOmittedArguments(OverloadResolutionResult<MethodSymbol> result, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
             var member = result.ValidResult.Member;
-            
             for (int i = 0; i < analyzedArguments.Arguments.Count; i++)
             {
                 var parNumber = result.ValidResult.Result.ParameterFromArgument(i);
                 var parRefKind = member.Parameters[parNumber].RefKind;
+                var parType = member.Parameters[parNumber].Type;
 
-                if (analyzedArguments.RefKind(i) == RefKind.None &&  parRefKind != RefKind.None)
+                var arg = analyzedArguments.Arguments[i];
+                var adjustUsualArg = false;
+                if (parType.IsUsualType() && arg is BoundAddressOfOperator bap && bap.Operand.Type.IsUsualType())
                 {
-                    var arg = analyzedArguments.Arguments[i];
+                    adjustUsualArg = true;
+                }
 
-                    if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, arg.Syntax))
+                if ((analyzedArguments.RefKind(i) == RefKind.None && parRefKind != RefKind.None) || adjustUsualArg)
+                { 
+                    if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, arg.Syntax) || adjustUsualArg)
                     {
                         bool adjust = false;
                         if (arg is BoundAddressOfOperator)

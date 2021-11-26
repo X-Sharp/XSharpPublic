@@ -11,7 +11,7 @@
     <ProjectGuid>{FFA0338A-27ED-42BA-B801-EC5AD32A7396}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp.LanguageService</RootNamespace>
-    <AssemblyName>XSharpLanguageService</AssemblyName>
+    <AssemblyName>XSharpLanguageService2022</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.8</TargetFrameworkMoniker>
     <RuntimeIdentifier>win</RuntimeIdentifier>

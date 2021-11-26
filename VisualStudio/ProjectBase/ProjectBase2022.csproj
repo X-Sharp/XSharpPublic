@@ -1,16 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="..\Common.props" />
+  <Import Project="..\Common2022.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Microsoft.VisualStudio.Project</RootNamespace>
-    <AssemblyName>XSharp.ProjectBase</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <AssemblyName>XSharp.ProjectBase2022</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <RuntimeIdentifier>win</RuntimeIdentifier>
     <TargetFrameworkProfile />
-    <ProjectGuid>{CACB60A9-1E76-4F92-8831-B134A658C695}</ProjectGuid>
+    <ProjectGuid>{CACB60A9-1E76-4F92-8831-B134A658C696}</ProjectGuid>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -22,21 +21,17 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>TRACE;DEBUG;XSHARP</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <DefineConstants>TRACE;DEBUG;XSHARP;DEV17</DefineConstants>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>1762;VSSDK006</NoWarn>
+    <NoWarn>1762;VSSDK006;NU1603</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <DefineConstants>XSHARP;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <DefineConstants>XSHARP;TRACE;DEV17</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>VSTHRD010;VSSDK006;1762</NoWarn>
+    <NoWarn>VSTHRD010;VSSDK006;1762;NU1603</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -218,29 +213,21 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.339</Version>
+    <PackageReference Include="Community.VisualStudio.Toolkit.17">
+      <Version>17.0.343</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
-      <Version>15.9.20</Version>
+      <Version>17.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Tasks.Core">
-      <Version>15.9.20</Version>
-    </PackageReference>
-    <PackageReference Include="System.Design">
-      <Version>4.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="VSLangProj150">
-      <Version>16.7.30328.74</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.VSHelp">
-      <Version>7.0.4</Version>
+      <Version>17.0.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
-      <Name>XSharpModelXs</Name>
+      <Name>XSharpModel</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

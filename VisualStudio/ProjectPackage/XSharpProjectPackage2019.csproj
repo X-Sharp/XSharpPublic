@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
-  <Import Project="..\Common.props" />
+  <Import Project="..\Common2019.props" />
   <PropertyGroup>
     <!--Visual Studio will use the value of will use MinimumVisualStudioVersion to detect if a project needs to be updated.
     To allow the project to be loaded in multiple VS versions, conditionally check the project -->
@@ -17,15 +17,12 @@
     <RootNamespace>XSharp.Project</RootNamespace>
     <AssemblyName>XSharpProject</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <TargetFrameworkProfile />
     <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}</ProjectGuid>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
@@ -40,7 +37,6 @@
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
-    <CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
@@ -193,6 +189,8 @@
     </Content>
     <Content Include="Editors\Todo.txt" />
     <Content Include="Snippets\SnippetsIndex.xml" />
+    <Content Include="source.extension.2019.vsixmanifest" />
+    <Content Include="source.extension.2022.vsixmanifest" />
     <Content Include="Template.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -439,7 +437,7 @@
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.xsproj" />
-    <VSIXSourceItem Include="..\..\Binaries\Debug\XSharpDebugger.vsdconfig">
+    <VSIXSourceItem Include="..\..\Binaries\2019\Debug\XSharpDebugger.vsdconfig">
       <Link>XSharpDebugger.vsdconfig</Link>
     </VSIXSourceItem>
     <None Include="Snippets\Snippets\case.snippet" />
@@ -652,11 +650,12 @@
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Name>XSharpCodeGenerator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LanguageService\XSharpLanguageService.csproj">
+    <ProjectReference Include="..\LanguageService\XSharpLanguageService2019.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>
-      <Name>XSharpLanguageService</Name>
+      <Name>XSharpLanguageService2019</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+      <VSIXSubPath>LanguageService2019</VSIXSubPath>
     </ProjectReference>
     <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
       <Project>{c9e9f119-d5a7-493b-88c9-4b5dd5ad653f}</Project>
@@ -664,29 +663,31 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bBuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\ProjectBase\ProjectBase.csproj">
+    <ProjectReference Include="..\ProjectBase\ProjectBase2019.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c695}</Project>
-      <Name>ProjectBase</Name>
+      <Name>ProjectBase2019</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpAppDesigner\XSharpAppDesigner.csproj">
+    <ProjectReference Include="..\AppDesigner\XSharpAppDesigner2019.csproj">
       <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe0}</Project>
-      <Name>XSharpAppDesigner</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj">
-      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
-      <Name>XSharpCodeDomProvider</Name>
+      <Name>XSharpAppDesigner2019</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
-      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
-      <Name>XSharpModelXs</Name>
+    <ProjectReference Include="..\CodeDomProvider\XSharpCodeDomProvider2019.csproj">
+      <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
+      <Name>XSharpCodeDomProvider2019</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpDebugger\XSharpDebugger.csproj">
-      <Project>{16272550-75E6-4B9D-91E3-653BD141C755}</Project>
-      <Name>XSharpDebugger</Name>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>XSharpModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Debugger\XSharpDebugger2019.csproj">
+      <Project>{16272550-75e6-4b9d-91e3-653bd141c755}</Project>
+      <Name>XSharpDebugger2019</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
@@ -727,22 +728,19 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.339</Version>
+      <Version>15.0.343</Version>
     </PackageReference>
     <PackageReference Include="System.ComponentModel">
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
-      <Version>1.0.115</Version>
+      <Version>1.0.115.5</Version>
     </PackageReference>
     <PackageReference Include="System.Design">
       <Version>4.0.0</Version>
     </PackageReference>
     <PackageReference Include="VSLangProj150">
       <Version>16.7.30328.74</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.VSHelp">
-      <Version>7.0.4</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -767,10 +765,13 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <PropertyGroup>
+    <PreBuildEvent>copy $(ProjectDir)source.extension.2019.vsixmanifest  $(ProjectDir)source.extension.vsixmanifest
+	</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
+
   <Target Name="AfterBuild">
   </Target>
   -->

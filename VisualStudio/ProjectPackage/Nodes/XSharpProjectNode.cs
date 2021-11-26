@@ -364,7 +364,7 @@ namespace XSharp.Project
             }
             return null;
         }
-       
+
         public __VSPROJOUTPUTTYPE GetOutPutType()
         {
             string outputTypeAsString = this.ProjectMgr.GetProjectProperty("OutputType", false);
@@ -402,7 +402,7 @@ namespace XSharp.Project
                 case (int)__VSHPROPID6.VSHPROPID_ShowAllProjectFilesInProjectView:
                     return true;
                 case (int)__VSHPROPID6.VSHPROPID_NuGetPackageProjectTypeContext:
-                    return "XSharp.ProjectSystem"; 
+                    return "XSharp.ProjectSystem";
                 //case (int)__VSHPROPID6.VSHPROPID_Subcaption:
                 //case (int)__VSHPROPID7.VSHPROPID_ShortSubcaption:
                 //    return "X#";
@@ -1542,9 +1542,9 @@ namespace XSharp.Project
         }
 
 
-        
-        
-        
+
+
+
 
         public string IntermediateOutputPath
         {
@@ -1560,9 +1560,9 @@ namespace XSharp.Project
                 return "";
             }
         }
-        
 
-       
+
+
 
         string _prefix = null;
 
@@ -1589,7 +1589,7 @@ namespace XSharp.Project
             }
 
         }
-        
+
 
 #endregion
 
@@ -1723,12 +1723,12 @@ namespace XSharp.Project
         }
         public int GetDefaultGenerator(string wszFilename, out string pbstrGenProgID)
         {
-            string temp = String.Empty; 
+            string temp = String.Empty;
             int result = VSConstants.S_FALSE;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                
+
                 if (createIVsSingleFileGeneratorFactory())
                     result = factory.GetDefaultGenerator(wszFilename, out temp);
             });
@@ -2259,7 +2259,7 @@ namespace XSharp.Project
                 }
                 var newcondition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
                 if (condition != newcondition)
-                { 
+                {
                     changed = true;
                     group.Condition = newcondition;
                 }
@@ -2374,7 +2374,7 @@ namespace XSharp.Project
             if (changed )
             {
                 if (this.QueryEditProjectFile(true))
-                { 
+                {
                     UpdateProjectVersion();
                     Utilities.DeleteFileSafe(filename);
                     BuildProject.Xml.Save(filename);
@@ -2591,7 +2591,7 @@ namespace XSharp.Project
             return changed;
 
         }
-  
+
 
 #region IVsProject5
         public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)

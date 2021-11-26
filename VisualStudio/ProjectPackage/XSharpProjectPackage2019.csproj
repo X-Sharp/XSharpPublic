@@ -351,18 +351,14 @@
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>XSharpProjectPackage1.cs</LastGenOutput>
     </VSCTCompile>
-    <Content Include="XSharpAppDesigner.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Content Include="XSharpAppDesigner2019.pkgdef" />
+    <Content Include="XSharpAppDesigner2022.pkgdef" />
     <Content Include="XSharpDebugger.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="XSharpLanguageService.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Content Include="XSharpLanguageService2019.pkgdef" />
+    <Content Include="XSharpLanguageService2022.pkgdef" />
     <Content Include="XSharpProjectCPS.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -730,14 +726,8 @@
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
       <Version>15.0.343</Version>
     </PackageReference>
-    <PackageReference Include="System.ComponentModel">
-      <Version>4.3.0</Version>
-    </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <Version>1.0.115.5</Version>
-    </PackageReference>
-    <PackageReference Include="System.Design">
-      <Version>4.0.0</Version>
     </PackageReference>
     <PackageReference Include="VSLangProj150">
       <Version>16.7.30328.74</Version>

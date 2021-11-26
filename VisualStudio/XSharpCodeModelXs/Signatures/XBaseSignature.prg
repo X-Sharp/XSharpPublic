@@ -16,12 +16,12 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameterContraints       AS List<STRING>   AUTO GET INTERNAL SET
       PROPERTY TypeParameterList             AS STRING         GET ToList(SELF:TypeParameters)
       PROPERTY TypeParameterConstraintsList  AS STRING         GET ToList(SELF:TypeParameterContraints)
-      
-      
+
+
       CONSTRUCTOR()
          SELF:TypeParameters             := List<STRING>{}
          SELF:TypeParameterContraints    := List<STRING>{}
-         
+
       STATIC METHOD ToList(list as List<STRING>) AS STRING
          var result := ""
          FOREACH var item in list
@@ -30,12 +30,12 @@ BEGIN NAMESPACE XSharpModel
             endif
             result += item
          NEXT
-         return result              
-         
+         return result
+
       METHOD AddTypeParameter(name AS STRING) AS VOID
          SELF:TypeParameters:Add(name)
          RETURN
-         
+
       METHOD AddConstraints(name AS STRING) AS VOID
          SELF:TypeParameterContraints:Add(name)
          RETURN
@@ -61,13 +61,13 @@ BEGIN NAMESPACE XSharpModel
                res += par + " "
             NEXT
         ENDIF
-        return res:Trim()    
-            
+        return res:Trim()
+
 
       METHOD ToString() AS STRING
          LOCAL res AS STRING
          res := SELF:GetTypeParameterNames()
-         res += " "+GetTypeParameterContraints() 
+         res += " "+GetTypeParameterContraints()
          RETURN res:Trim()
 
       METHOD ReadGenericParameters(genericParameters as Mono.Collections.Generic.Collection<Mono.Cecil.GenericParameter> ) AS VOID
@@ -89,8 +89,8 @@ BEGIN NAMESPACE XSharpModel
                     SELF:TypeParameterContraints:Add(cConstraint)
                 ELSE
                     SELF:TypeParameterContraints:Add("")
-                        
+
                 ENDIF
-            NEXT                      
+            NEXT
    END CLASS
 END NAMESPACE

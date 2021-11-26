@@ -15,6 +15,7 @@ namespace XSharp.LanguageService.OptionsPages
         public bool IndentBlockContent { get; set; }
         public bool IndentCaseContent { get; set; }
         public bool IndentCaseLabel { get; set; }
-        
+        public bool IndentMultiLines { get; set; }
+
     }
 }

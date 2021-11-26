@@ -211,6 +211,7 @@ namespace XSharp.LanguageService
             XSettings.IndentBlockContent = _indentingPage.IndentBlockContent;
             XSettings.IndentCaseContent = _indentingPage.IndentCaseContent;
             XSettings.IndentCaseLabel = _indentingPage.IndentCaseLabel;
+            XSettings.IndentMultiLines = _indentingPage.IndentMultiLines;
 
             // Completion
             //XSettings.CompleteLocals = _completionOptionsPage.CompleteLocals;

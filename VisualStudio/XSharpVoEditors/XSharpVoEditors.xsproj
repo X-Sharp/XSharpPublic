@@ -38,7 +38,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.9.1.1</XSharpProjectversion>
     <NoWin32Manifest>False</NoWin32Manifest>
     <NamedArgs>true</NamedArgs>
     <MemVar>false</MemVar>
@@ -55,8 +55,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>False</Prefer32Bit>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <RegisterForComInterop>False</RegisterForComInterop>
     <WarningsAsErrors />
@@ -154,8 +152,8 @@
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
-      <Name>XSharpModelXs</Name>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
+      <Name>XSharpModel</Name>
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Private>True</Private>
     </ProjectReference>

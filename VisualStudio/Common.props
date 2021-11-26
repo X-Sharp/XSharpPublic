@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
   <PropertyGroup>
+    <VSTarget Condition=" '$(VSTarget)' == '' ">2019</VSTarget>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -15,18 +15,26 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(Solutiondir)common\XSharp.snk</AssemblyOriginatorKeyFile>
     <Langversion>7.3</Langversion>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <TargetFrameworkVersion Condition=" '$(VSTarget)' == '2022' ">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkMoniker Condition=" '$(VSTarget)' == '2022' ">.NETFramework,Version=v4.8</TargetFrameworkMoniker>
+    <RuntimeIdentifier Condition=" '$(VSTarget)' == '2019' ">win-x86</RuntimeIdentifier>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\$(VSTarget)\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)Binaries\$(VSTarget)\$(Configuration)\</OutputPath>
     <GenerateFullPaths>true</GenerateFullPaths>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Nologo>true</Nologo>
-	<CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile />
+
   </PropertyGroup>
 
 

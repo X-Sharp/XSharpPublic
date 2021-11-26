@@ -1,57 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="..\Common.props" />
+  <Import Project="..\Common2022.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <RootNamespace>XSharp.Project</RootNamespace>
-    <AssemblyName>XSharpAppDesigner</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <AssemblyName>XSharpAppDesigner2022</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <RuntimeIdentifier>win</RuntimeIdentifier>
-    <ProjectGuid>{4484939E-DDA8-4033-8B1C-E8F60A2BAFE0}</ProjectGuid>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
+    <ProjectGuid>{4484939E-DDA8-4033-8B1C-E8F60A2BAFE1}</ProjectGuid>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
-    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
-    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <ExtensionInstallationFolder>XSharp\Project</ExtensionInstallationFolder>
     <VsixType>v3</VsixType>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CreateVsixContainer>True</CreateVsixContainer>
     <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
-    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>15.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>TRACE;DEBUG;XSHARP</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <DefineConstants>TRACE;DEBUG;XSHARP;DEV17</DefineConstants>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
     <NoWarn>1762</NoWarn>
     <DeployExtension>True</DeployExtension>
-    <DocumentationFile>
-    </DocumentationFile>
     <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE;XSHARP;DEV17</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -184,6 +165,30 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ProjectBase\ProjectBase2022.csproj">
+      <Project>{cacb60a9-1e76-4f92-8831-b134a658c696}</Project>
+      <Name>ProjectBase2022</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
+      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
+      <Name>XSharpModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit.17">
+      <Version>17.0.343</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build">
+      <Version>17.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build.Tasks.Core">
+      <Version>17.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel">
+      <Version>4.3.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="PropertyPages\XDebugPropertyPagePanel.resx">
       <DependentUpon>XDebugPropertyPagePanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -238,33 +243,6 @@
     <EmbeddedResource Include="Wix\XPropertyPagePanel.resx">
       <DependentUpon>XPropertyPagePanel.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ProjectBase\ProjectBase.csproj">
-      <Project>{cacb60a9-1e76-4f92-8831-b134a658c695}</Project>
-      <Name>ProjectBase</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
-      <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
-      <Name>XSharpModelXs</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.339</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Build">
-      <Version>15.9.20</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Build.Tasks.Core">
-      <Version>15.9.20</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.15.6.DesignTime">
-      <Version>15.6.27415</Version>
-    </PackageReference>
-    <PackageReference Include="System.ComponentModel">
-      <Version>4.3.0</Version>
-    </PackageReference>
   </ItemGroup>
   <PropertyGroup>
     <!--

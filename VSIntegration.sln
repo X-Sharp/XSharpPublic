@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1433
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED0EE32E-392F-4848-B0F6-5C13C628A4A9}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,27 +15,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Common\XSharpConstants.cs = Common\XSharpConstants.cs
 	EndProjectSection
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpModelXs", "VisualStudio\XSharpCodeModelXs\XSharpModelXs.xsproj", "{EED6843B-B727-4F08-AA32-CA0F48FDDE3F}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpModel", "VisualStudio\XSharpCodeModelXs\XSharpModel.xsproj", "{EED6843B-B727-4F08-AA32-CA0F48FDDE3F}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners_tester", "VisualStudio\VODesigners_tester\VODesigners_tester.xsproj", "{63D22C03-1D1A-4746-8E24-7BB1248696EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpLanguageService", "VisualStudio\LanguageService\XSharpLanguageService.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpProjectMPF", "VisualStudio\ProjectPackage\XSharpProjectMPF.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}"
-EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpVoEditors", "VisualStudio\XSharpVoEditors\XSharpVoEditors.xsproj", "{7619DB88-6286-4EF1-8273-2A08CC8AC70E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpCodeDomProvider", "VisualStudio\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj", "{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpCodeDomProvider2019", "VisualStudio\CodeDomProvider\XSharpCodeDomProvider2019.csproj", "{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpDebugger", "VisualStudio\XSharpDebugger\XSharpDebugger.csproj", "{16272550-75E6-4B9D-91E3-653BD141C755}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpDebugger2019", "VisualStudio\Debugger\XSharpDebugger2019.csproj", "{16272550-75E6-4B9D-91E3-653BD141C755}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpCodeGenerator", "VisualStudio\CodeGenerator\XSharpCodeGenerator.xsproj", "{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBase", "VisualStudio\ProjectBase\ProjectBase.csproj", "{CACB60A9-1E76-4F92-8831-B134A658C695}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBase2019", "VisualStudio\ProjectBase\ProjectBase2019.csproj", "{CACB60A9-1E76-4F92-8831-B134A658C695}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpAppDesigner", "VisualStudio\XSharpAppDesigner\XSharpAppDesigner.csproj", "{4484939E-DDA8-4033-8B1C-E8F60A2BAFE0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpAppDesigner2019", "VisualStudio\AppDesigner\XSharpAppDesigner2019.csproj", "{4484939E-DDA8-4033-8B1C-E8F60A2BAFE0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XSharpMonoCecil", "VisualStudio\Mono.Cecil\XSharpMonoCecil.csproj", "{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpLanguageService2019", "VisualStudio\LanguageService\XSharpLanguageService2019.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpProjectPackage2019", "VisualStudio\ProjectPackage\XSharpProjectPackage2019.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,22 +61,6 @@ Global
 		{63D22C03-1D1A-4746-8E24-7BB1248696EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{63D22C03-1D1A-4746-8E24-7BB1248696EE}.Release|x86.ActiveCfg = Release|Any CPU
 		{63D22C03-1D1A-4746-8E24-7BB1248696EE}.Release|x86.Build.0 = Release|Any CPU
-		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|x86.Build.0 = Debug|Any CPU
-		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|x86.ActiveCfg = Release|Any CPU
-		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|x86.Build.0 = Release|Any CPU
-		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Debug|x86.Build.0 = Debug|Any CPU
-		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Release|x86.ActiveCfg = Release|Any CPU
-		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Release|x86.Build.0 = Release|Any CPU
 		{7619DB88-6286-4EF1-8273-2A08CC8AC70E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7619DB88-6286-4EF1-8273-2A08CC8AC70E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7619DB88-6286-4EF1-8273-2A08CC8AC70E}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -133,6 +117,22 @@ Global
 		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|x86.ActiveCfg = Release|Any CPU
 		{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}.Release|x86.Build.0 = Release|Any CPU
+		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|x86.ActiveCfg = Debug|x86
+		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|x86.Build.0 = Debug|x86
+		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|x86.ActiveCfg = Release|x86
+		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|x86.Build.0 = Release|x86
+		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Debug|x86.ActiveCfg = Debug|x86
+		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Debug|x86.Build.0 = Debug|x86
+		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Release|x86.ActiveCfg = Release|x86
+		{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

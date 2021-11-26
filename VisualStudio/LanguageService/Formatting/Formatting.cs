@@ -396,9 +396,12 @@ namespace XSharp.LanguageService
                     int indentSize = 0;
                     int lineContinue = 0;
                     int nextIndentSize = 0;
+                    int multiIndentSize = 0;
                     int moveAfterFormatting = 0;
+                    int moveContinuingLine = 0;
                     List<Tuple<int, int>> nestedEntity = new List<Tuple<int, int>>();
                     List<ITextSnapshotLine> listDoc = new List<ITextSnapshotLine>();
+                    List<ITextSnapshotLine> listAttributes = new List<ITextSnapshotLine>();
                     List<ITextSnapshotLine> listMulti = new List<ITextSnapshotLine>();
                     IToken endToken = null;
                     // We are more forward, line per line
@@ -426,13 +429,21 @@ namespace XSharp.LanguageService
                                 // Certainly an Attribut, save for later indentation
                                 if ((startToken.Type == XSharpLexer.LBRKT) && (endToken.Type == XSharpLexer.LINE_CONT))
                                 {
+                                    listAttributes.Add(snapLine);
+                                    continue;
+                                }
+                                // Line continuation, save for later indentation
+                                if ( lineContinue == 1)
+                                {
                                     listMulti.Add(snapLine);
+                                    if (endToken.Type != XSharpLexer.LINE_CONT)
+                                        lineContinue = 0;
                                     continue;
                                 }
                                 // Not a continuing line
                                 if (lineContinue == 0)
                                 {
-                                    indentSize = GetLineIndentation(snapLine, context, nextIndentSize, settings, out moveAfterFormatting, nestedEntity);
+                                    indentSize = GetLineIndentation(snapLine, context, nextIndentSize, settings, out moveAfterFormatting, out moveContinuingLine, nestedEntity);
                                 }
                             }
                             //
@@ -450,11 +461,20 @@ namespace XSharp.LanguageService
                                 listDoc.Clear();
                             }
                             // Do we have Attributes waiting ?
-                            if (listMulti.Count > 0)
+                            if (listAttributes.Count > 0)
                             {
-                                foreach (var attrLine in listMulti)
+                                foreach (var attrLine in listAttributes)
                                 {
                                     FormatLineIndent(editSession, attrLine, indentSize * settings.IndentSize);
+                                }
+                                listAttributes.Clear();
+                            }
+                            // Do we have some line Continuation waiting ?
+                            if (listMulti.Count > 0)
+                            {
+                                foreach (var multiLine in listMulti)
+                                {
+                                    FormatLineIndent(editSession, multiLine, multiIndentSize * settings.IndentSize);
                                 }
                                 listMulti.Clear();
                             }
@@ -465,9 +485,17 @@ namespace XSharp.LanguageService
                             nextIndentSize += moveAfterFormatting;
                             // The current line will continue
                             if (endToken?.Type == XSharpLexer.LINE_CONT)
+                            {
                                 lineContinue = 1;
+                                if (settings.IndentMultiLines)
+                                    multiIndentSize = indentSize + moveContinuingLine;
+                                else
+                                    multiIndentSize = indentSize;
+                            }
                             else
+                            {
                                 lineContinue = 0;
+                            }
                         }
                     }
                 }
@@ -521,10 +549,11 @@ namespace XSharp.LanguageService
         /// <param name="moveAfterFormatting">The number of Indentation to apply AFTER the returned value is applied</param>
         /// <param name="nestedEntity">a List of opened Entities</param>
         /// <returns>The number of Indentation to apply</returns>
-        private int GetLineIndentation(ITextSnapshotLine snapLine, FormattingContext context, int currentIndent, SourceCodeEditorSettings settings, out int moveAfterFormatting, List<Tuple<int, int>> nestedEntity)
+        private int GetLineIndentation(ITextSnapshotLine snapLine, FormattingContext context, int currentIndent, SourceCodeEditorSettings settings, out int moveAfterFormatting, out int moveContinuingLine, List<Tuple<int, int>> nestedEntity)
         {
             // 
             moveAfterFormatting = 0;
+            moveContinuingLine = 0;
             try
             {
 
@@ -607,6 +636,15 @@ namespace XSharp.LanguageService
                                 currentIndent = current.Item2;
                             }
                         }
+                        // Does this line continue ?
+                        if (settings.IndentMultiLines)
+                        {
+                            var endToken = context.GetLastToken(true);
+                            if (endToken.Type == XSharpLexer.LINE_CONT)
+                            {
+                                moveContinuingLine++;
+                            }
+                        }
                         // Move inside this opening Keyword for the next line
                         if (settings.IndentBlockContent)
                             moveAfterFormatting++;
@@ -678,13 +716,25 @@ namespace XSharp.LanguageService
                     }
                     else if (isStartOfBlock(openKeyword.Type) || isForOrForeach(openKeyword.Type))
                     {
+                        // SWITCH is here as a start of block, DO CASE as it's own start of block
                         if (openKeyword.Type == XSharpLexer.SWITCH)
                         {
                             if (settings.IndentCaseLabel)
                                 moveAfterFormatting++;
                         }
                         else
+                        {
                             moveAfterFormatting++;
+                            // Does this line continue ?
+                            if (settings.IndentMultiLines)
+                            {
+                                var endToken = context.GetLastToken(true);
+                                if (endToken.Type == XSharpLexer.LINE_CONT)
+                                {
+                                    moveContinuingLine++;
+                                }
+                            }
+                        }
                         nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
                     }
                     else if (isMiddleOfBlock(openKeyword.Type))

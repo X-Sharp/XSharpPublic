@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC PROPERTY IndentBlockContent            AS LOGIC AUTO
         PUBLIC PROPERTY IndentCaseContent            AS LOGIC AUTO
         PUBLIC PROPERTY IndentCaseLabel            AS LOGIC AUTO
-
+        PUBLIC PROPERTY IndentMultiLines              AS LOGIC AUTO
 
         CONSTRUCTOR()
             TabSize      := XSettings.EditorTabSize
@@ -46,7 +46,7 @@ BEGIN NAMESPACE XSharpModel
             IndentBlockContent := XSettings.IndentBlockContent
             IndentCaseContent := XSettings.IndentCaseContent
             IndentCaseLabel := XSettings.IndentCaseLabel
-
+            IndentMultiLines := XSettings.IndentMultiLines
 
     END CLASS
 

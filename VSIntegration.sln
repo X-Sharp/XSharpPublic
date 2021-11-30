@@ -21,21 +21,21 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners_tester", "Visua
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpVoEditors", "VisualStudio\XSharpVoEditors\XSharpVoEditors.xsproj", "{7619DB88-6286-4EF1-8273-2A08CC8AC70E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpCodeDomProvider2019", "VisualStudio\CodeDomProvider\XSharpCodeDomProvider2019.csproj", "{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpCodeDomProvider", "VisualStudio\CodeDomProvider\XSharpCodeDomProvider.csproj", "{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpDebugger2019", "VisualStudio\Debugger\XSharpDebugger2019.csproj", "{16272550-75E6-4B9D-91E3-653BD141C755}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpDebugger", "VisualStudio\Debugger\XSharpDebugger.csproj", "{16272550-75E6-4B9D-91E3-653BD141C755}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpCodeGenerator", "VisualStudio\CodeGenerator\XSharpCodeGenerator.xsproj", "{B837AC3B-9C61-49E4-9F4F-C8AD1FAF21CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBase2019", "VisualStudio\ProjectBase\ProjectBase2019.csproj", "{CACB60A9-1E76-4F92-8831-B134A658C695}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBase", "VisualStudio\ProjectBase\ProjectBase.csproj", "{CACB60A9-1E76-4F92-8831-B134A658C695}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpAppDesigner2019", "VisualStudio\AppDesigner\XSharpAppDesigner2019.csproj", "{4484939E-DDA8-4033-8B1C-E8F60A2BAFE0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpAppDesigner", "VisualStudio\AppDesigner\XSharpAppDesigner.csproj", "{4484939E-DDA8-4033-8B1C-E8F60A2BAFE0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XSharpMonoCecil", "VisualStudio\Mono.Cecil\XSharpMonoCecil.csproj", "{C9E9F119-D5A7-493B-88C9-4B5DD5AD653F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpLanguageService2019", "VisualStudio\LanguageService\XSharpLanguageService2019.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpLanguageService", "VisualStudio\LanguageService\XSharpLanguageService.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpProjectPackage2019", "VisualStudio\ProjectPackage\XSharpProjectPackage2019.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpProjectPackage", "VisualStudio\ProjectPackage\XSharpProjectPackage.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

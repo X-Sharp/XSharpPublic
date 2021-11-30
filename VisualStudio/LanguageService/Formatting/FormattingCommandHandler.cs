@@ -20,7 +20,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace XSharp.LanguageService
 {
     [Export(typeof(IVsTextViewCreationListener))]
-    [Name("XSharp Completion Provider")]
+    [Name("XSharp Formatting Provider")]
     [TextViewRole(PredefinedTextViewRoles.Editable)]
     [ContentType(XSharpConstants.LanguageName)]
     internal class XSharpFormattingProvider : IVsTextViewCreationListener

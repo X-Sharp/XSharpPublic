@@ -358,7 +358,6 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="XSharpLanguageService2019.pkgdef" />
-    <Content Include="XSharpLanguageService2022.pkgdef" />
     <Content Include="XSharpProjectCPS.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -646,9 +645,9 @@
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Name>XSharpCodeGenerator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LanguageService\XSharpLanguageService2019.csproj">
+    <ProjectReference Include="..\LanguageService\XSharpLanguageService.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>
-      <Name>XSharpLanguageService2019</Name>
+      <Name>XSharpLanguageService</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
       <VSIXSubPath>LanguageService2019</VSIXSubPath>
@@ -659,21 +658,21 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bBuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\ProjectBase\ProjectBase2019.csproj">
+    <ProjectReference Include="..\ProjectBase\ProjectBase.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c695}</Project>
-      <Name>ProjectBase2019</Name>
+      <Name>ProjectBase</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\AppDesigner\XSharpAppDesigner2019.csproj">
+    <ProjectReference Include="..\AppDesigner\XSharpAppDesigner.csproj">
       <Project>{4484939e-dda8-4033-8b1c-e8f60a2bafe0}</Project>
-      <Name>XSharpAppDesigner2019</Name>
+      <Name>XSharpAppDesigner</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\CodeDomProvider\XSharpCodeDomProvider2019.csproj">
+    <ProjectReference Include="..\CodeDomProvider\XSharpCodeDomProvider.csproj">
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
-      <Name>XSharpCodeDomProvider2019</Name>
+      <Name>XSharpCodeDomProvider</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
@@ -681,9 +680,9 @@
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>XSharpModel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Debugger\XSharpDebugger2019.csproj">
+    <ProjectReference Include="..\Debugger\XSharpDebugger.csproj">
       <Project>{16272550-75e6-4b9d-91e3-653bd141c755}</Project>
-      <Name>XSharpDebugger2019</Name>
+      <Name>XSharpDebugger</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>

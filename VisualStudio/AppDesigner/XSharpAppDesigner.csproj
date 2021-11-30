@@ -167,9 +167,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProjectBase\ProjectBase2019.csproj">
+    <ProjectReference Include="..\ProjectBase\ProjectBase.csproj">
       <Project>{cacb60a9-1e76-4f92-8831-b134a658c695}</Project>
-      <Name>ProjectBase2019</Name>
+      <Name>ProjectBase</Name>
     </ProjectReference>
     <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>

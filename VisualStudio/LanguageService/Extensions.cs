@@ -75,6 +75,15 @@ namespace XSharp.LanguageService
             }
             return null;
         }
+        public static SourceCodeEditorSettings GetSettings(this ITextBuffer buffer)
+        {
+            SourceCodeEditorSettings settings;
+            if (buffer.Properties.TryGetProperty(typeof(SourceCodeEditorSettings), out settings))
+            {
+                return settings;
+            }
+            return null;
+        }
 
         public static String GetXAMLFile(this ITextBuffer buffer)
         {

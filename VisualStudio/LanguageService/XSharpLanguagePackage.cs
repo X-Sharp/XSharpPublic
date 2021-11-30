@@ -370,10 +370,31 @@ namespace XSharp.LanguageService
                 if (!lValue && optionWasChanged)
                 {
                     GetIntellisenseSettings();
+                    RefreshDocumentSettingsAsync().FireAndForget();
                 }
             }
             return VSConstants.S_OK;
         }
+
+        /// <summary>
+        /// Reload the source code editor settings for all open X# editor windows
+        /// </summary>
+        /// <returns></returns>
+        private async System.Threading.Tasks.Task RefreshDocumentSettingsAsync()
+        {
+            var docs = await VS.Windows.GetAllDocumentWindowsAsync();
+            foreach (var doc in docs)
+            {
+                var view = await doc.GetDocumentViewAsync();
+                var buffer = view.TextBuffer;
+                if (buffer.GetClassifier() != null)
+                {
+                    EditorConfigReader.ReadSettings(buffer, view.FilePath);
+                }
+            }
+            return;
+        }
+
         #region IVSDebuggerEvents
         private void RegisterDebuggerEvents()
         {

@@ -351,13 +351,16 @@
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>XSharpProjectPackage1.cs</LastGenOutput>
     </VSCTCompile>
-    <Content Include="XSharpAppDesigner2019.pkgdef" />
-    <Content Include="XSharpAppDesigner2022.pkgdef" />
+    <Content Include="XSharpAppDesigner.pkgdef">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="XSharpDebugger.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="XSharpLanguageService2019.pkgdef" />
+    <Content Include="XSharpLanguageService.pkgdef">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="XSharpProjectCPS.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

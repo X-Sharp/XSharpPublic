@@ -153,7 +153,14 @@ namespace XSharp.MacroCompiler
                     var flatname = names.Replace("global::", "").Replace('.', '_').Replace("`", "_T").Replace("$", "").Replace("@", "").Split('|', '(').First();
                     Debug.Assert(m.ToString().StartsWith(flatname));
                     memberSymbols[(int)m] = FindMember(names);
-                    Debug.Assert(memberSymbols[(int)m] != null);
+                    if (names.IndexOf("VFP") == -1 )
+                    {
+                        Debug.Assert(memberSymbols[(int)m] != null);
+                    }
+                    else if (XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro)
+                    {
+                        Debug.Assert(memberSymbols[(int)m] != null);
+                    }
                 }
 
             }

@@ -24,10 +24,10 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="Designers.pkgdef" TargetPath="|%CurrentProject%|" d:VsixSubPath="ProjectSystem" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" d:ProjectName="%CurrentProject%" d:VsixSubPath="ProjectSystem" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpDebugger.pkgdef" />
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|XSharpLanguageService;PkgdefProjectOutputGroup|" d:VsixSubPath="LanguageService" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|XSharpLanguageService|" d:VsixSubPath="LanguageService" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpAppDesigner.pkgdef" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="XSharpLanguageService.pkgdef" />
-        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="XSharpLanguageService"   />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="XSharpLanguageService"  Path="|XSharpLanguageService|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
         <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
         <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />

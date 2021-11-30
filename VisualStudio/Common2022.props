@@ -3,6 +3,9 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
      <VSTarget>2022</VSTarget>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkMoniker>.NETFramework,Version=v4.8</TargetFrameworkMoniker>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
   </PropertyGroup>
 <Import Project="Common.props" />
 

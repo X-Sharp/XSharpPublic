@@ -4,6 +4,9 @@
   <PropertyGroup>
      <VSTarget>2019</VSTarget>
      <CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
 
   </PropertyGroup>
 <Import Project="Common.props" />

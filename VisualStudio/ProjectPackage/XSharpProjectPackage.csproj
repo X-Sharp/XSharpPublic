@@ -37,6 +37,7 @@
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
+    <CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartAction>Program</StartAction>
@@ -130,9 +131,7 @@
     <Compile Include="ErrorList\TaskListProvider.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
     <Compile Include="OptionsPages\BaseOptionsModel.cs" />
-    <Compile Include="OptionsPages\BaseOptionsPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="OptionsPages\BaseOptionsPage.cs" />
     <Compile Include="OptionsPages\OtherEditorOptions.cs" />
     <Compile Include="OptionsPages\DialogPageProvider.cs" />
     <Compile Include="OptionsPages\WindowEditorOptions.cs" />
@@ -653,7 +652,6 @@
       <Name>XSharpLanguageService</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
-      <VSIXSubPath>LanguageService2019</VSIXSubPath>
     </ProjectReference>
     <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
       <Project>{c9e9f119-d5a7-493b-88c9-4b5dd5ad653f}</Project>

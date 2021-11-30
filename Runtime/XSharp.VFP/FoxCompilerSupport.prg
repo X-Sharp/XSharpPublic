@@ -60,16 +60,19 @@ INTERNAL FUNCTION __FoxMemVarPut(cName AS STRING, uValue AS USUAL) AS USUAL
     RETURN XSharp.MemVar._Put(cName, uValue)
 
 
-[NeedsAccessToLocals(TRUE)];
 FUNCTION __FoxAssign(uLHS AS USUAL, uValue AS USUAL) AS USUAL
-    IF uLHS IS __FoxArray .AND. ! uValue IS __FoxArray
-        RETURN __FoxFillArray(uLHS, uValue )
+    IF uLHS IS __FoxArray VAR aFoxArray
+        IF uValue IS __FoxArray
+            RETURN uValue
+        ELSEIF uValue IS __Array VAR aValue
+            aFoxArray:__AssignFrom(aValue)
+            RETURN aFoxArray
+        ELSE
+           RETURN __FoxFillArray(uLHS, uValue )
+        ENDIF
     ELSE
         RETURN uValue
     ENDIF
-
-
-
 
 FUNCTION __FoxFillArray(uArray AS USUAL, uValue AS USUAL) AS USUAL
     IF IsArray(uArray) .AND. ! IsArray(uValue)
@@ -80,6 +83,7 @@ FUNCTION __FoxFillArray(uArray AS USUAL, uValue AS USUAL) AS USUAL
         ENDIF
     ENDIF
     RETURN uArray
+
 
 FUNCTION __FoxRedim(uCurrent AS USUAL, nRows AS DWORD, nCols := 0 AS DWORD) AS __FoxArray
     LOCAL result := NULL AS __FoxArray

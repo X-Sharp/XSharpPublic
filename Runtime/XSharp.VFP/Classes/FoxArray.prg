@@ -65,6 +65,88 @@ BEGIN NAMESPACE XSharp
             NEXT
             RETURN
 
+        INTERNAL METHOD __ArrayAssignError(uValue as USUAL, nRow as INT, nCol as INT, lSizeError := FALSE AS LOGIC)
+            LOCAL err     := Error.ArgumentError(ProcName(),"value", "") as Error
+            err:Stack     := ErrorStack(1)
+            err:Arg := NULL
+
+            if lSizeError .and. uValue IS __Array VAR aValue
+                err:Description := i": Row {nRow} has an incorrect size "+aValue:ElementsToString()
+                err:Arg    := i"[{nRow}]"
+                err:Args   := <OBJECT>{aValue:ElementsToString()}
+            ELSEIF nCol > 0
+                 err:Args      := NULL
+                IF uValue IS __Array VAR aValue2
+                    err:Description := i": Element [{nRow}, {nCol}] is an array " + aValue2:ElementsToString()
+                ELSE
+                    NOP // should not happen
+                ENDIF
+            ELSE
+                if uValue IS __Array VAR aValue2
+                    err:Description := i": Row [{nRow}] is an array: "+aValue2:ElementsToString()
+                    err:Arg         := i"[{nRow}]"
+                    err:Args        := <OBJECT>{aValue2:ElementsToString()}
+                ELSE
+                    err:Description := i": Row [{nRow}] is NOT an array"
+                    err:Arg         := i"[{nRow}]"
+                    err:Args        := <OBJECT>{uValue}
+                ENDIF
+            endif
+            err:Description += " (You can only assign a one dimensional or a symmetrical two dimensional array to a FoxPro Compatible Array)"
+            THROW err
+
+        INTERNAL METHOD __AssignFrom(aValue as __Array) AS VOID
+            IF aValue:Length == 0
+                SELF:_internalList:Clear()
+                RETURN
+            ENDIF
+            LOCAL uValue as USUAL
+            uValue := aValue[1]
+            IF IsArray(uValue)
+                SELF:__AssignFrom2DimArray(aValue)
+                RETURN
+            ENDIF
+            // Inspect to see if each element is NOT an array
+            FOR VAR nRow := 2 to aValue:Length
+                VAR element := aValue[nRow]
+                IF element IS __Array VAR aElement
+                    SELF:__ArrayAssignError(element, nRow, 0, FALSE)
+                ENDIF
+            NEXT
+            SELF:_nCols := 0
+            SELF:_internalList:Clear()
+            SELF:_internalList:AddRange(aValue:_internalList)
+
+        METHOD __AssignFrom2DimArray(aValue as __Array) AS VOID
+            LOCAL aRow := aValue[1] as ARRAY
+            LOCAL nRowSize := aRow:Length as DWORD
+            FOR VAR nRow := 2 to aValue:Length
+                VAR element := aValue[nRow]
+                IF element IS __Array VAR aElement
+                    IF  aElement:Length == nRowSize
+                        FOR var nCol := 1 to aElement:Length
+                            var uChild := aElement[nCol]
+                            IF uChild IS __Array
+                                SELF:__ArrayAssignError(aValue, nRow, nCol, FALSE)
+                            ENDIF
+                        NEXT
+                    ELSE
+                        SELF:__ArrayAssignError(element, nRow, 0, TRUE)
+                    ENDIF
+                ELSE
+                    SELF:__ArrayAssignError(element, nRow, 0, FALSE)
+                ENDIF
+            NEXT
+            // There is no simple way to assign all the values
+            // So do it the slow way
+            SELF:ReDim(aValue:Length, nRowSize)
+            FOR var i := 1 to aValue:Length
+                FOR var j := 1 to nRowSize
+                    var uValue := aValue[i,j]
+                    SELF:__SetElement(uValue, i-1, j-1)
+                NEXT
+            NEXT
+
         INTERNAL METHOD __GetDimensionError(nDimensionsAsked AS LONG) AS Error
             VAR err         := Error.BoundError(ProcName(2),"indices", 1)
             IF SELF:MultiDimensional
@@ -76,7 +158,7 @@ BEGIN NAMESPACE XSharp
             RETURN err
 
         INTERNAL STATIC METHOD __NestedArrayError() AS Error
-            VAR err     := Error.ArgumentError(ProcName(2),"value", "You cannot assign an array to an element inside a Fox Array")
+            VAR err     := Error.ArgumentError(ProcName(2),"value", "You cannot assign an array to an element inside a FoxPro Compatible Array")
             err:Stack   := ErrorStack(1)
             RETURN err
 

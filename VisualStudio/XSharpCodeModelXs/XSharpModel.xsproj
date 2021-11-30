@@ -54,32 +54,7 @@
       <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>Microsoft.Win32.Primitives</Name>
-      <AssemblyName>Microsoft.Win32.Primitives.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>
-      </HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="PresentationCore">
-      <Name>PresentationCore</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>PresentationCore.dll</AssemblyName>
-    </Reference>
-    <Reference Include="PresentationFramework">
-      <Name>PresentationFramework</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>PresentationFramework.dll</AssemblyName>
-    </Reference>
-    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>stdole</Name>
-      <AssemblyName>stdole.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\stdole.7.0.3302\lib\net10\stdole.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -89,40 +64,6 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
       <HintPath>..\..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.115.5\lib\net46\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Design">
-      <Name>System.Design</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.Design.dll</AssemblyName>
-    </Reference>
-    <Reference Include="System.Drawing">
-      <Name>System.Drawing</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.Drawing.dll</AssemblyName>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
-      <Name>System.ValueTuple</Name>
-      <AssemblyName>System.ValueTuple.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>
-      </HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Windows">
-      <Name>System.Windows</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.Windows.dll</AssemblyName>
-    </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Name>System.Windows.Forms</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase">
-      <Name>WindowsBase</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>WindowsBase.dll</AssemblyName>
     </Reference>
     <Reference Include="XSharp.VSParser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VSParser</Name>

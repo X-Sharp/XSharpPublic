@@ -15,7 +15,7 @@ namespace XSharp.LanguageService
     partial class XSharpFormattingCommandHandler
     {
 
-
+        SourceCodeEditorSettings _settings;
 
         #region Keywords Definitions
         private static string[] _indentKeywords;

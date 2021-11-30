@@ -6,13 +6,13 @@
 using XSharpModel;
 using System.Data.Common;
 using EditorConfig.Core;
+using Microsoft.VisualStudio.Text;
 
 namespace XSharp.LanguageService
 {
-    internal partial class XSharpFormattingCommandHandler
+    internal partial class EditorConfigReader
     {
-        EditorConfig.Core.FileConfiguration _configuration = null;
-        SourceCodeEditorSettings _settings = null;
+        static EditorConfigParser configParser;
         private const string KEYWORDCASE = "keyword_case";
         private const string IDENTIFIERCASE = "identifier_case";
         private const string UDCCASE = "udc_case";
@@ -23,74 +23,78 @@ namespace XSharp.LanguageService
         private const string LOWER = "lower";
         private const string TITLE = "title";
 
-
-        private void ReadSettings(string fileName)
+        static EditorConfigReader()
         {
-            var configParser = new EditorConfigParser();
-            _configuration = configParser.Parse(fileName);
-            _settings = new SourceCodeEditorSettings(); // this gets a copy of the current Tools/Options settings
-            if (_configuration.Properties.Count > 0)
+            configParser = new EditorConfigParser();
+        }
+        internal static SourceCodeEditorSettings ReadSettings(ITextBuffer buffer, string fileName)
+        {
+            
+            var configuration = configParser.Parse(fileName);
+            var settings = new SourceCodeEditorSettings(); // this gets a copy of the current Tools/Options settings
+            if (configuration.Properties.Count > 0)
             {
-                if (_configuration.IndentStyle.HasValue)
-                    _settings.TabsAsSpaces = _configuration.IndentStyle.Value == IndentStyle.Space;
-                if (_configuration.TabWidth.HasValue)
-                    _settings.TabSize = _configuration.TabWidth.Value;
-                if (_configuration.IndentSize != null)
+                if (configuration.IndentStyle.HasValue)
+                    settings.TabsAsSpaces = configuration.IndentStyle.Value == IndentStyle.Space;
+                if (configuration.TabWidth.HasValue)
+                    settings.TabSize = configuration.TabWidth.Value;
+                if (configuration.IndentSize != null)
                 {
-                    if (_configuration.IndentSize.NumberOfColumns.HasValue)
-                        _settings.IndentSize = _configuration.IndentSize.NumberOfColumns.Value;
-                    else if (_configuration.IndentSize.UseTabWidth)
-                        _settings.IndentSize = _settings.TabSize;
+                    if (configuration.IndentSize.NumberOfColumns.HasValue)
+                        settings.IndentSize = configuration.IndentSize.NumberOfColumns.Value;
+                    else if (configuration.IndentSize.UseTabWidth)
+                        settings.IndentSize = settings.TabSize;
                 }
-                if (_configuration.TrimTrailingWhitespace.HasValue)
-                    _settings.TrimTrailingWhiteSpace = _configuration.TrimTrailingWhitespace.Value;
-                if (_configuration.InsertFinalNewline.HasValue)
-                    _settings.InsertFinalNewline = _configuration.InsertFinalNewline.Value;
+                if (configuration.TrimTrailingWhitespace.HasValue)
+                    settings.TrimTrailingWhiteSpace = configuration.TrimTrailingWhitespace.Value;
+                if (configuration.InsertFinalNewline.HasValue)
+                    settings.InsertFinalNewline = configuration.InsertFinalNewline.Value;
 
-                if (_configuration.Properties.ContainsKey(KEYWORDCASE))
+                if (configuration.Properties.ContainsKey(KEYWORDCASE))
                 {
-                    var temp = _configuration.Properties[KEYWORDCASE].ToLower();
+                    var temp = configuration.Properties[KEYWORDCASE].ToLower();
                     switch (temp)
                     {
                         case UPPER:
-                            _settings.KeywordCase = KeywordCase.Upper;
+                            settings.KeywordCase = KeywordCase.Upper;
                             break;
                         case LOWER:
-                            _settings.KeywordCase = KeywordCase.Lower;
+                            settings.KeywordCase = KeywordCase.Lower;
                             break;
                         case TITLE:
-                            _settings.KeywordCase = KeywordCase.Title;
+                            settings.KeywordCase = KeywordCase.Title;
                             break;
                         default:
-                            _settings.KeywordCase = KeywordCase.None;
+                            settings.KeywordCase = KeywordCase.None;
                             break;
                     }
 
                 }
-                if (_configuration.Properties.ContainsKey(IDENTIFIERCASE))
+                if (configuration.Properties.ContainsKey(IDENTIFIERCASE))
                 {
-                    var temp = _configuration.Properties[IDENTIFIERCASE].ToLower();
-                    _settings.IdentifierCase = temp == TRUE;
+                    var temp = configuration.Properties[IDENTIFIERCASE].ToLower();
+                    settings.IdentifierCase = temp == TRUE;
                 }
-                if (_configuration.Properties.ContainsKey(UDCCASE))
+                if (configuration.Properties.ContainsKey(UDCCASE))
                 {
-                    var temp = _configuration.Properties[UDCCASE].ToLower();
-                    _settings.UDCKeywordCase = temp == TRUE;
+                    var temp = configuration.Properties[UDCCASE].ToLower();
+                    settings.UDCKeywordCase = temp == TRUE;
                 }
-                if (_configuration.Properties.ContainsKey(ALIGNDOCASE))
+                if (configuration.Properties.ContainsKey(ALIGNDOCASE))
                 {
-                    var temp = _configuration.Properties[ALIGNDOCASE].ToLower();
-                    _settings.IdentifierCase = temp == TRUE;
+                    var temp = configuration.Properties[ALIGNDOCASE].ToLower();
+                    settings.IdentifierCase = temp == TRUE;
                 }
-                if (_configuration.Properties.ContainsKey(ALIGNMETHOD))
+                if (configuration.Properties.ContainsKey(ALIGNMETHOD))
                 {
-                    var temp = _configuration.Properties[ALIGNMETHOD].ToLower();
-                    _settings.IdentifierCase = temp == TRUE;
+                    var temp = configuration.Properties[ALIGNMETHOD].ToLower();
+                    settings.IdentifierCase = temp == TRUE;
                 }
             }
-            if (_buffer.Properties.ContainsProperty(typeof(SourceCodeEditorSettings)))
-                _buffer.Properties.RemoveProperty(typeof(SourceCodeEditorSettings));
-            _buffer.Properties.AddProperty(typeof(SourceCodeEditorSettings), _settings);
+            if (buffer.Properties.ContainsProperty(typeof(SourceCodeEditorSettings)))
+                buffer.Properties.RemoveProperty(typeof(SourceCodeEditorSettings));
+            buffer.Properties.AddProperty(typeof(SourceCodeEditorSettings), settings);
+            return settings;
         }
 
     }

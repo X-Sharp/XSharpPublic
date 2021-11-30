@@ -93,7 +93,9 @@ namespace XSharp.LanguageService
                 }
             }
             if (_file != null)
-                ReadSettings(_file.FullPath);
+            {
+                _settings = EditorConfigReader.ReadSettings(_buffer, _file.FullPath);
+            }
 
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
             registerClassifier();
@@ -123,6 +125,7 @@ namespace XSharp.LanguageService
             Guid cmdGroup = pguidCmdGroup;
             bool completionActive = false; 
             registerClassifier();
+            _settings = _buffer.GetSettings();
             // 1. Pre-process
             if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
             {

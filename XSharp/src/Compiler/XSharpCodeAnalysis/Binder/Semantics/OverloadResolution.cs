@@ -11,10 +11,146 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XP=LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using System;
 using Microsoft.CodeAnalysis.PooledObjects;
+using System.Collections.Immutable;
+
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class OverloadResolution
     {
+
+        private MemberAnalysisResult XsAddConstructorToCandidateSet(MemberAnalysisResult result, MethodSymbol constructor,
+            AnalyzedArguments arguments, bool completeResults, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            if (result.IsValid && IsValidParams(constructor) && Compilation.Options.HasRuntime)
+            {
+                // Find Params argument
+                BoundExpression paramsArg = null;
+                var parameters = constructor.Parameters;
+                for (int arg = 0; arg < arguments.Arguments.Count; ++arg)
+                {
+                    int parm = result.ParameterFromArgument(arg);
+                    if (parm >= parameters.Length)
+                        continue;
+                    var parameter = parameters[parm];
+                    if (parameter.IsParams)
+                    {
+                        paramsArg = arguments.Argument(arg);
+                    }
+                }
+
+                // If params arg is USUAL prefer the expanded form
+                if (paramsArg != null && paramsArg.Type.IsUsualType())
+                {
+                    if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
+                    {
+                        if (!constructor.HasUseSiteError)
+                        {
+                            var expandedResult = IsConstructorApplicableInExpandedForm(constructor, arguments, completeResults, ref useSiteDiagnostics);
+                            if (expandedResult.IsValid || completeResults)
+                            {
+                                result = expandedResult;
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        private Conversion XsIsApplicable( Symbol candidate, AnalyzedArguments arguments, ref BoundExpression argument,
+            ImmutableArray<int> argsToParameters, int argumentPosition, EffectiveParameters parameters,
+            ref RefKind argumentRefKind, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
+            bool literalNullForRefParameter = false;
+            bool implicitCastsAndConversions = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, argument.Syntax);
+            Conversion conversion = Conversion.NoConversion;
+            if (implicitCastsAndConversions)
+            {
+                // C590 Allow NULL as argument for REF parameters
+                var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
+                    : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
+                    : default(ImmutableArray<RefKind>);
+                RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
+                if (realParamRefKind == RefKind.Ref && argument.Kind == BoundKind.Literal && ((BoundLiteral)argument).IsLiteralNull())
+                {
+                    literalNullForRefParameter = true;
+                }
+                else
+                {
+                    if (argument is BoundAddressOfOperator baoo)
+                    {
+                        var argType = baoo.Operand.Type;
+                        var parType = parameters.ParameterTypes[argumentPosition].Type;
+                        var argIsPtr = argType.IsPointerType() ||
+                            argType.IsVoStructOrUnion() ||
+                            argType.IsPszType() ||
+                            argType.SpecialType == SpecialType.System_IntPtr;
+                        if (!argIsPtr)
+                        {
+                            var parIsPtr = parType.IsPointerType() ||
+                                parType.IsVoStructOrUnion() ||
+                                parType.IsPszType() ||
+                                parType.SpecialType == SpecialType.System_IntPtr;
+                            if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None)
+                            {
+                                // pass value @foo to function/method that is declared as BAR (n REF Something)
+                                argument = baoo.Operand;
+                            }
+                            else if (!parIsPtr)
+                            {
+                                var xNode = argument.Syntax.XNode;
+                                if (xNode.Parent is not XP.QoutStmtContext)
+                                {
+                                    // pass value @foo to function/method that is declared as BAR (n AS Something)
+                                    argument = baoo.Operand;
+                                    argumentRefKind = RefKind.Ref;
+                                    arguments.SetRefKind(argumentPosition, argumentRefKind);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (parameterRefKind == RefKind.Out && argumentRefKind == RefKind.Ref)
+            {
+                // pass variable with REF to function/method that expects OUT (Vulcan did not have OUT)
+                argumentRefKind = parameterRefKind;
+                arguments.SetRefKind(argumentPosition, argumentRefKind);
+                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                var info = new CSDiagnosticInfo(ErrorCode.WRN_ArgumentRefParameterOut,
+                                                new object[] { argumentPosition + 1, parameterRefKind.ToParameterDisplayString() });
+                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                useSiteDiagnostics.Add(info);
+            }
+            if (parameterRefKind.IsByRef() && argumentRefKind == RefKind.None)
+            {
+                argumentRefKind = parameterRefKind;
+                arguments.SetRefKind(argumentPosition, argumentRefKind);
+                if (!implicitCastsAndConversions)
+                {
+                    useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                    var info = new CSDiagnosticInfo(ErrorCode.ERR_BadArgExtraRef,
+                                                    new object[] { argumentPosition + 1, argumentRefKind.ToParameterDisplayString() });
+                    useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                    useSiteDiagnostics.Add(info);
+                }
+            }
+
+            if (literalNullForRefParameter)
+            {
+                conversion = Conversion.NullLiteral;
+            }
+
+            if (implicitCastsAndConversions && argumentRefKind == RefKind.None &&
+                argument is BoundAddressOfOperator &&
+                candidate.HasClipperCallingConvention())
+            {
+                argumentRefKind = RefKind.Ref;
+            }
+            return conversion;
+        }
+
         private static BetterResult PreferMostDerived<TMember>(MemberResolutionResult<TMember> m1, MemberResolutionResult<TMember> m2, ref HashSet<DiagnosticInfo> useSiteDiagnostics) where TMember : Symbol
         {
             var t1 = m1.Member.ContainingType;
@@ -129,7 +265,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (m1.Member.GetParameterCount() == m2.Member.GetParameterCount())
                 {
-                    // In case of 2 methods with the same # of parameters 
+                    // In case of 2 methods with the same # of parameters
                     // we have different / extended rules compared to C#
                     var parsLeft = m1.Member.GetParameters();
                     var parsRight = m2.Member.GetParameters();
@@ -340,7 +476,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     return true;
                                 }
                                 if (!TypeSymbol.Equals(parLeft.Type ,parRight.Type))
-                                { 
+                                {
                                     if (parLeft.Type.IsFloatType())
                                     {
                                         result = BetterResult.Left;
@@ -395,7 +531,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 // when both methods are in a functions class from different assemblies
                 // pick the first one in the references list
-                // 
+                //
                 if (asm1 != asm2
                     && string.Equals(m1.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, XSharpString.Comparison)
                     && string.Equals(m2.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, XSharpString.Comparison))
@@ -550,7 +686,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (left.Type.IsIntegralType() && right.Type.IsIntegralType()
                             && op1.Kind.IsIntegral() && op2.Kind.IsIntegral())
                         {
-                            // when both operands have integral types, choose the one that match the sign and or size 
+                            // when both operands have integral types, choose the one that match the sign and or size
                             // we check the lhs of the expression first
                             bool exprSigned = left.Type.SpecialType.IsSignedIntegralType();
                             bool op1Signed = op1.LeftType.SpecialType.IsSignedIntegralType();

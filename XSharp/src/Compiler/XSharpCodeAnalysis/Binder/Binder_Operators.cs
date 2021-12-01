@@ -6,6 +6,7 @@
 #nullable disable
 using System;
 using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -570,9 +571,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         //case XSharpParser.DIV:
                         if (xnode.Op.Type == XSharpParser.MINUS)
                         {
-                            // String Subtract 
+                            // String Subtract
                             // LHS    - RHS
-                            // STRING - STRING 
+                            // STRING - STRING
                             // STRING -- USUAL
                             // USUAL  - STRING
                             if (leftString && (rightString || rightUsual))
@@ -589,7 +590,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (opType == VOOperatorType.None)
                         {
                             // Add or Subtract USUAL with other type
-                            // LHS   - RHS 
+                            // LHS   - RHS
                             // Usual - Date
                             // Date  - Usual
                             // Usual - Float
@@ -806,7 +807,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // In vulcan when we have defined a structure like:
             // VOSTRUCT _WINWIN32_FIND_DATA
             //   MEMBER DIM cFileName[10] AS BYTE
-            // This translates to 
+            // This translates to
             // [StructLayout(LayoutKind.Sequential, Pack=8), VOStruct(10, 10)]
             //    public struct _WINWIN32_FIND_DATA
             //    {
@@ -822,21 +823,24 @@ namespace Microsoft.CodeAnalysis.CSharp
             // The fixedBuffer is represented with a SourceFixedFieldSymbol
             // and the cFileName element is then accessed by reference:
             // cTemp := Psz2String(@pData:cFileName)
-            // in C# we do not need the @ sign. 
+            // in C# we do not need the @ sign.
             // So when we detect that the Operand is a Field of the type SourceFixedFieldSymbol
             // we simply return the direct reference to the field without the AddressOf operator
             if (node.Operand is InvocationExpressionSyntax)
             {
                 bool lAliasedExpression = false;
-                if (node.Operand.XNode is XSharpParser.PrimaryExpressionContext pec)
+                if (node.Operand.XNode is XSharpParser.PrimaryExpressionContext pec && pec.Expr is XSharpParser.AliasedExpressionContext)
                 {
-                    if (pec.Expr is XSharpParser.AliasedExpressionContext)
-                        lAliasedExpression = true;
+                    lAliasedExpression = true;
                 }
                 if (lAliasedExpression)
+                {
                     Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfAliasedExpression, node.Operand);
+                }
                 else
+                {
                     Error(diagnostics, ErrorCode.ERR_CannotTakeAddressOfFunctionOrMethod, node.Operand);
+                }
                 return BadExpression(node);
             }
 
@@ -868,6 +872,30 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (expr is BoundArrayAccess bac)
                 {
                     var type = expr.Type;
+                    if (bac.Expression.Kind == BoundKind.Local)
+                    {
+                        // when the local is declared with DIM then there is also a fixed pointer
+                        // LOCAL DIM abTemp[100]   AS BYTE
+                        // then we translate @abTemp[1] to abTemp$dim
+                        var dimlocal = FindDimLocal((BoundLocal)bac.Expression);
+                        if (dimlocal != null)
+                        {
+                            if (bac.Indices.Length == 1)
+                            {
+                                var index = bac.Indices[0];
+                                var local = new BoundLocal(expr.Syntax, dimlocal, null, dimlocal.Type);
+                                if (index.ConstantValue != null && index.ConstantValue.SpecialType == SpecialType.System_Int32)
+                                {
+                                    if (index.ConstantValue.Int32Value == 0)
+                                    {
+                                        return local;
+                                    }
+                                }
+                                return new BoundBinaryOperator(bac.Syntax, BinaryOperatorKind.IntAddition, local, index, null, null,
+                                    LookupResultKind.Viable, default, dimlocal.Type);
+                            }
+                        }
+                    }
                     if (bac.Expression.ExpressionSymbol is SourceLocalSymbol sls && type.IsVoStructOrUnion())
                     {
                         var syntaxes = sls.DeclaringSyntaxReferences;
@@ -884,6 +912,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (expr.Kind == BoundKind.Local)
             {
+                // when the local is declared with DIM then there is also a fixed pointer
+                // LOCAL DIM abTemp[100]   AS BYTE
+                // then we translate @abTemp to abTemp$dim
+                var local = (BoundLocal)expr;
+                var dimlocal = FindDimLocal(local);
+                if (dimlocal != null)
+                {
+                    return new BoundLocal(expr.Syntax, dimlocal, null, dimlocal.Type);
+                }
+
                 // only translate @name to @name[0] when not IsDecl
                 if (expr.Type.IsArray())
                 {
@@ -899,6 +937,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var bacc = new BoundArrayAccess(node.Operand, expr, aindex.ToImmutableAndFree(), elType, false);
                     TypeSymbol ptrType = new PointerTypeSymbol(TypeWithAnnotations.Create(elType));
                     return new BoundAddressOfOperator(node, bacc, false, ptrType, hasErrors: false);
+                }
+                var decl = local.LocalSymbol.DeclaringSyntaxReferences[0];
+                if (decl is not null && decl.GetSyntax() is CSharpSyntaxNode csnode && csnode.XVoIsDecl)
+                {
+                    // local foo IS SomeType
+                    // SomeFunc(@foo)
+                    TypeSymbol ptrType = new PointerTypeSymbol(TypeWithAnnotations.Create(local.Type));
+                    return new BoundAddressOfOperator(node, local, false, ptrType, hasErrors: false);
                 }
             }
             return null;
@@ -1007,6 +1053,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 falseExpr = CreateConversion(falseExpr, falseType, diagnostics);
             }
         }
+
+        private LocalSymbol FindDimLocal(BoundLocal local)
+        {
+            var decl = local.LocalSymbol.DeclaringSyntaxReferences[0];
+            if (decl is not null && decl.GetSyntax() is CSharpSyntaxNode csnode && csnode.XVoIsDim && this is not FixedStatementBinder)
+            {
+
+                var dimName = local.LocalSymbol.Name + XSharpSpecialNames.DimSuffix;
+                LookupResult result = LookupResult.GetInstance();
+                HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+                var binder = this.LookupSymbolsInternal(result, dimName, 0, null, LookupOptions.Default, false, ref useSiteDiagnostics);
+                var symbol = result.SingleSymbolOrDefault;
+                return symbol as LocalSymbol;
+            }
+            return null;
+        }
         private static object FoldXsUncheckedIntegralBinaryOperator(BinaryOperatorKind kind, ConstantValue valueLeft, ConstantValue valueRight, ref SpecialType resultType)
         {
             unchecked
@@ -1104,7 +1166,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         BoundExpression XsHandleIntegralTypes(BoundBinaryOperator binaryOperator, TypeSymbol leftType, TypeSymbol rightType)
         {
-            // This is the place where we will handle VO specific conversion 
+            // This is the place where we will handle VO specific conversion
             // when the left and right types are equal we want a result of the same type.
             // also shift operations should return the left type: C277 ByteValue >> 2 should not return int but byte.
             BoundExpression result = binaryOperator;
@@ -1130,7 +1192,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     preferredType = rightType;
                 }
-                // we do not want to convert when the result is a folded constant that is too 
+                // we do not want to convert when the result is a folded constant that is too
                 // large to fit into our destination type
                 if (result.ConstantValue != null)
                 {

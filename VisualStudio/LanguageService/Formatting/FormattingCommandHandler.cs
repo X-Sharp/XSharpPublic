@@ -185,6 +185,10 @@ namespace XSharp.LanguageService
                             }
                             break;
 
+                        case (int)VSConstants.VSStd2KCmdID.FORMATSELECTION:
+                            FormatSelection();
+                            break;
+
                         case (int)VSConstants.VSStd2KCmdID.RETURN:
                             if (!completionActive)
                                 FormatLine();
@@ -204,6 +208,8 @@ namespace XSharp.LanguageService
             }
             return result;
         }
+
+
 
         private void Textbuffer_Changing(object sender, TextContentChangingEventArgs e)
         {

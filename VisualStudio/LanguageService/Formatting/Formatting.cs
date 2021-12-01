@@ -352,7 +352,11 @@ namespace XSharp.LanguageService
                 // can't edit !
                 return;
             }
-            var settings = _buffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
+            if (_buffer.CurrentSnapshot.Length == 0)
+            {
+                // Nothing to do
+                return;
+            }
             // Try to retrieve an already parsed list of Tags
             if (_classifier != null)
             {
@@ -363,158 +367,23 @@ namespace XSharp.LanguageService
 #endif
                 //
                 _classifier.ClassifyWhenNeeded();
-                FormattingContext context = null;
-                // Already been lexed ?
-                if (getBufferedTokens(out var xTokens))
-                {
-                    var tokens = xTokens.TokenStream.GetTokens();
-                    // Ok, we have some tokens
-                    if (tokens != null)
-                    {
-                        // And they are the right ones
-                        if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
-                        {
-                            // Ok, use it
-                            context = new FormattingContext(tokens, this.ParseOptions.Dialect);
-                        }
-                    }
-                }
-                // No Tokens....Ok, do the lexing now
-                if (context == null)
-                    context = new FormattingContext(this, _buffer.CurrentSnapshot);
+
                 //
                 // wait until we can work
                 while (_buffer.EditInProgress)
                 {
                     System.Threading.Thread.Sleep(100);
                 }
-                // Create an Edit Sessions
-                var editSession = _buffer.CreateEdit();
-                try
+                // Get all lines
+                var lines = _buffer.CurrentSnapshot.Lines;
+                var endLine = _buffer.CurrentSnapshot.LineCount - 1;
+                if (endLine < 1)
                 {
-                    var lines = _buffer.CurrentSnapshot.Lines;
-                    int indentSize = 0;
-                    int lineContinue = 0;
-                    int nextIndentSize = 0;
-                    int multiIndentSize = 0;
-                    int moveAfterFormatting = 0;
-                    int moveContinuingLine = 0;
-                    List<Tuple<int, int>> nestedEntity = new List<Tuple<int, int>>();
-                    List<ITextSnapshotLine> listDoc = new List<ITextSnapshotLine>();
-                    List<ITextSnapshotLine> listAttributes = new List<ITextSnapshotLine>();
-                    List<ITextSnapshotLine> listMulti = new List<ITextSnapshotLine>();
-                    IToken endToken = null;
-                    // We are more forward, line per line
-                    foreach (var snapLine in lines)
-                    {
-                        // Ignore Empty lines
-                        if (snapLine.Length > 0)
-                        {
-                            context.MoveTo(snapLine.Start);
-                            // Get the first Token on line
-                            IToken startToken = context.GetFirstToken(true);
-                            if (startToken != null)
-                            {
-                                // Token is NewLine ? Skip
-                                if (startToken.Type == XSharpLexer.NL)
-                                    continue;
-                                // How does the line end ?
-                                endToken = context.GetLastToken(true);
-                                // XML Doc will be re-indented when we find the corresponding entity
-                                if (startToken.Type == XSharpLexer.DOC_COMMENT)
-                                {
-                                    listDoc.Add(snapLine);
-                                    continue;
-                                }
-                                // Certainly an Attribut, save for later indentation
-                                if ((startToken.Type == XSharpLexer.LBRKT) && (endToken.Type == XSharpLexer.LINE_CONT))
-                                {
-                                    listAttributes.Add(snapLine);
-                                    continue;
-                                }
-                                // Line continuation, save for later indentation
-                                if ( lineContinue == 1)
-                                {
-                                    listMulti.Add(snapLine);
-                                    if (endToken.Type != XSharpLexer.LINE_CONT)
-                                        lineContinue = 0;
-                                    continue;
-                                }
-                                // Not a continuing line
-                                if (lineContinue == 0)
-                                {
-                                    indentSize = GetLineIndentation(snapLine, context, nextIndentSize, settings, out moveAfterFormatting, out moveContinuingLine, nestedEntity);
-                                }
-                            }
-                            //
-                            if (canFormatLine(snapLine))
-                            {
-                                FormatLineCase(context, editSession, snapLine);
-                            }
-                            // Do we have XMLDoc waiting ?
-                            if (listDoc.Count > 0)
-                            {
-                                foreach (var docLine in listDoc)
-                                {
-                                    FormatLineIndent(editSession, docLine, indentSize * settings.IndentSize);
-                                }
-                                listDoc.Clear();
-                            }
-                            // Do we have Attributes waiting ?
-                            if (listAttributes.Count > 0)
-                            {
-                                foreach (var attrLine in listAttributes)
-                                {
-                                    FormatLineIndent(editSession, attrLine, indentSize * settings.IndentSize);
-                                }
-                                listAttributes.Clear();
-                            }
-                            // Do we have some line Continuation waiting ?
-                            if (listMulti.Count > 0)
-                            {
-                                foreach (var multiLine in listMulti)
-                                {
-                                    FormatLineIndent(editSession, multiLine, multiIndentSize * settings.IndentSize);
-                                }
-                                listMulti.Clear();
-                            }
-                            // Ok, now format....
-                            FormatLineIndent(editSession, snapLine, indentSize * settings.IndentSize);
-                            //
-                            nextIndentSize = indentSize;
-                            nextIndentSize += moveAfterFormatting;
-                            // The current line will continue
-                            if (endToken?.Type == XSharpLexer.LINE_CONT)
-                            {
-                                lineContinue = 1;
-                                if (settings.IndentMultiLines)
-                                    multiIndentSize = indentSize + moveContinuingLine;
-                                else
-                                    multiIndentSize = indentSize;
-                            }
-                            else
-                            {
-                                lineContinue = 0;
-                            }
-                        }
-                    }
+                    // Nothing to do
+                    return;
                 }
-                catch (Exception e)
-                {
-                    WriteOutputMessage("FormatDocument : error " + e.Message);
-                }
-                finally
-                {
-                    // Validate the Edit Session ?
-                    if (editSession.HasEffectiveChanges)
-                    {
-                        editSession.Apply();
-                    }
-                    else
-                    {
-                        editSession.Cancel();
-                    }
-                }
+                // Format the full text, with an first Indentation set to 0
+                FormatSpan(lines, 0, endLine, 0);
                 //
 #if TRACE
                 stopWatch.Stop();
@@ -535,6 +404,173 @@ namespace XSharp.LanguageService
             }
             //
             WriteOutputMessage("FormatDocument() <<--");
+        }
+
+        private void FormatSpan(IEnumerable<ITextSnapshotLine> lines, int startLine, int endLine, int startIndent)
+        {
+            FormattingContext context = null;
+            // Already been lexed ?
+            if (getBufferedTokens(out var xTokens))
+            {
+                var tokens = xTokens.TokenStream.GetTokens();
+                // Ok, we have some tokens
+                if (tokens != null)
+                {
+                    // And they are the right ones
+                    if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
+                    {
+                        // Ok, use it
+                        context = new FormattingContext(tokens, this.ParseOptions.Dialect);
+                    }
+                }
+            }
+            // No Tokens....Ok, do the lexing now
+            if (context == null)
+                context = new FormattingContext(this, _buffer.CurrentSnapshot);
+            // Retrieve the current settings
+            var settings = _buffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
+
+            // Create an Edit Session
+            var editSession = _buffer.CreateEdit();
+            try
+            {
+                // Init to -1, so first lineNumber is 0
+                int lineNumber = -1;
+                int indentSize = startIndent;
+                int lineContinue = 0;
+                int nextIndentSize = 0;
+                int multiIndentSize = 0;
+                int moveAfterFormatting = 0;
+                int moveContinuingLine = 0;
+                List<Tuple<int, int>> nestedEntity = new List<Tuple<int, int>>();
+                List<ITextSnapshotLine> listDoc = new List<ITextSnapshotLine>();
+                List<ITextSnapshotLine> listAttributes = new List<ITextSnapshotLine>();
+                List<ITextSnapshotLine> listMulti = new List<ITextSnapshotLine>();
+                IToken endToken = null;
+                // We are more forward, line per line
+                foreach (var snapLine in lines)
+                {
+                    // The current Line Number (from 0 to LineCount-1)
+                    lineNumber++;
+                    ///// used by FormatSelection
+                    //if (lineNumber < startLine)
+                    //    continue;
+                    //if (lineNumber > endLine)
+                    //    break;
+                    /////
+                    // Ignore Empty lines
+                    if (snapLine.Length > 0)
+                    {
+                        context.MoveTo(snapLine.Start);
+                        // Get the first Token on line
+                        IToken startToken = context.GetFirstToken(true);
+                        if (startToken != null)
+                        {
+                            // Token is NewLine ? Skip
+                            if (startToken.Type == XSharpLexer.NL)
+                                continue;
+                            // How does the line end ?
+                            endToken = context.GetLastToken(true);
+                            // XML Doc will be re-indented when we find the corresponding entity
+                            if (startToken.Type == XSharpLexer.DOC_COMMENT)
+                            {
+                                listDoc.Add(snapLine);
+                                continue;
+                            }
+                            // Certainly an Attribut, save for later indentation
+                            if ((startToken.Type == XSharpLexer.LBRKT) && (endToken.Type == XSharpLexer.LINE_CONT))
+                            {
+                                listAttributes.Add(snapLine);
+                                continue;
+                            }
+                            // Line continuation, save for later indentation
+                            if (lineContinue == 1)
+                            {
+                                listMulti.Add(snapLine);
+                                if (endToken.Type != XSharpLexer.LINE_CONT)
+                                    lineContinue = 0;
+                                continue;
+                            }
+                            // Not a continuing line
+                            if (lineContinue == 0)
+                            {
+                                indentSize = GetLineIndentation(snapLine, context, nextIndentSize, settings, out moveAfterFormatting, out moveContinuingLine, nestedEntity);
+                            }
+                        }
+                        //
+                        if ((snapLine.LineNumber >= startLine) && (snapLine.LineNumber <= endLine))
+                            if (canFormatLine(snapLine))
+                            {
+                                FormatLineCase(context, editSession, snapLine);
+                            }
+                        // Do we have XMLDoc waiting ?
+                        if (listDoc.Count > 0)
+                        {
+                            foreach (var docLine in listDoc)
+                            {
+                                if ((docLine.LineNumber >= startLine) && (docLine.LineNumber <= endLine))
+                                    FormatLineIndent(editSession, docLine, indentSize * settings.IndentSize);
+                            }
+                            listDoc.Clear();
+                        }
+                        // Do we have Attributes waiting ?
+                        if (listAttributes.Count > 0)
+                        {
+                            foreach (var attrLine in listAttributes)
+                            {
+                                if ((attrLine.LineNumber >= startLine) && (attrLine.LineNumber <= endLine))
+                                    FormatLineIndent(editSession, attrLine, indentSize * settings.IndentSize);
+                            }
+                            listAttributes.Clear();
+                        }
+                        // Do we have some line Continuation waiting ?
+                        if (listMulti.Count > 0)
+                        {
+                            foreach (var multiLine in listMulti)
+                            {
+                                if ((multiLine.LineNumber >= startLine) && (multiLine.LineNumber <= endLine))
+                                    FormatLineIndent(editSession, multiLine, multiIndentSize * settings.IndentSize);
+                            }
+                            listMulti.Clear();
+                        }
+                        // Ok, now format....
+                        if ((snapLine.LineNumber >= startLine) && (snapLine.LineNumber <= endLine))
+                            FormatLineIndent(editSession, snapLine, indentSize * settings.IndentSize);
+                        //
+                        nextIndentSize = indentSize;
+                        nextIndentSize += moveAfterFormatting;
+                        // The current line will continue
+                        if (endToken?.Type == XSharpLexer.LINE_CONT)
+                        {
+                            lineContinue = 1;
+                            if (settings.IndentMultiLines)
+                                multiIndentSize = indentSize + moveContinuingLine;
+                            else
+                                multiIndentSize = indentSize;
+                        }
+                        else
+                        {
+                            lineContinue = 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                WriteOutputMessage("FormatDocument : error " + e.Message);
+            }
+            finally
+            {
+                // Validate the Edit Session ?
+                if (editSession.HasEffectiveChanges)
+                {
+                    editSession.Apply();
+                }
+                else
+                {
+                    editSession.Cancel();
+                }
+            }
         }
 
 
@@ -908,6 +944,20 @@ namespace XSharp.LanguageService
         }
 
 
+        /// <summary>
+        /// Format the current selection
+        /// </summary>
+        private void FormatSelection()
+        {
+            int startPosition = _textView.Selection.Start.Position.Position;
+            int endPosition = _textView.Selection.End.Position.Position;
+            //
+            int startLine = _buffer.CurrentSnapshot.GetLineNumberFromPosition(startPosition);
+            int endLine = _buffer.CurrentSnapshot.GetLineNumberFromPosition(endPosition);
+            //
+            var lines = _buffer.CurrentSnapshot.Lines;
+            FormatSpan(lines, startLine, endLine, 0);
+        }
 
         #region Check Token types
 

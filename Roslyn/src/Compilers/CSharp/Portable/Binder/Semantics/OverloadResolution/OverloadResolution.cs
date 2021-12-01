@@ -712,39 +712,7 @@ outerDefault:
             var normalResult = IsConstructorApplicableInNormalForm(constructor, arguments, completeResults, ref useSiteDiagnostics);
             var result = normalResult;
 #if XSHARP
-            if (normalResult.IsValid && IsValidParams(constructor) && Compilation.Options.HasRuntime)
-            {
-                // Find Params argument
-                BoundExpression paramsArg = null;
-                var parameters = constructor.Parameters;
-                for (int arg = 0; arg < arguments.Arguments.Count; ++arg)
-                {
-                    int parm = normalResult.ParameterFromArgument(arg);
-                    if (parm >= parameters.Length)
-                        continue;
-                    var parameter = parameters[parm];
-                    if (parameter.IsParams)
-                    {
-                        paramsArg = arguments.Argument(arg);
-                    }
-                }
-
-                // If params arg is USUAL prefer the expanded form
-                if (paramsArg != null && paramsArg.Type.IsUsualType())
-                {
-                    if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
-                    {
-                        if (!constructor.HasUseSiteError)
-                        {
-                            var expandedResult = IsConstructorApplicableInExpandedForm(constructor, arguments, completeResults, ref useSiteDiagnostics);
-                            if (expandedResult.IsValid || completeResults)
-                            {
-                                result = expandedResult;
-                            }
-                        }
-                    }
-                }
-            }
+            normalResult = XsAddConstructorToCandidateSet(result, constructor, arguments, completeResults, ref useSiteDiagnostics);
 #endif
             if (!normalResult.IsValid)
             {
@@ -1006,7 +974,7 @@ outerDefault:
                 }
 
                 // If params arg is USUAL prefer the expanded form
-                if (paramsArg!= null & paramsArg.Type.IsUsualType())
+                if (paramsArg != null & paramsArg.Type.IsUsualType())
                 {
                     if (arguments.RefKinds.Count == 0 || arguments.RefKinds[0] == RefKind.None)
                     {
@@ -1350,11 +1318,15 @@ outerDefault:
 #if XSHARP
                 // For constructor calls we do not want to change the C# method of locating the right overload
                 if (result.Member.Name == ".ctor")
-#endif
-                if (IsLessDerivedThanAny(result.LeastOverriddenMember.ContainingType, results, ref useSiteDiagnostics))
                 {
-                    results[f] = new MemberResolutionResult<TMember>(result.Member, result.LeastOverriddenMember, MemberAnalysisResult.LessDerived());
+#endif
+                    if (IsLessDerivedThanAny(result.LeastOverriddenMember.ContainingType, results, ref useSiteDiagnostics))
+                    {
+                        results[f] = new MemberResolutionResult<TMember>(result.Member, result.LeastOverriddenMember, MemberAnalysisResult.LessDerived());
+                    }
+#if XSHARP
                 }
+#endif
             }
         }
 
@@ -3709,11 +3681,7 @@ outerDefault:
             for (int argumentPosition = 0; argumentPosition < paramCount; argumentPosition++)
             {
                 BoundExpression argument = arguments.Argument(argumentPosition);
-#if XSHARP
-                Conversion conversion = Conversion.NoConversion;
-#else
-                Conversion conversion ;
-#endif
+                Conversion conversion;
                 if (isVararg && argumentPosition == paramCount - 1)
                 {
                     // Only an __arglist() expression is convertible.
@@ -3730,131 +3698,56 @@ outerDefault:
                 }
                 else
                 {
+                    RefKind argumentRefKind = arguments.RefKind(argumentPosition);
+                    RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
 #if XSHARP
                     if (argument.Syntax.XIsMissingArgument)
                     {
                         conversion = Conversion.Identity;
                     }
-#endif
-                    RefKind argumentRefKind = arguments.RefKind(argumentPosition);
-                    RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
-
-#if XSHARP
-
-                    bool literalNullForRefParameter = false;
-                    bool implicitCastsAndConversions = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, argument.Syntax);
-                    if (conversion.Kind == ConversionKind.NoConversion)
+                    else
                     {
-                        if (implicitCastsAndConversions)
-                        {
-                            // C590 Allow NULL as argument for REF parameters
-                            var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
-                                : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
-                                : default(ImmutableArray<RefKind>);
-                            RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
-                            if (realParamRefKind == RefKind.Ref && argument.Kind == BoundKind.Literal && ((BoundLiteral)argument).IsLiteralNull())
-                            {
-                                literalNullForRefParameter = true;
-                            }
-                            else
-                            {
-                                if (argument is BoundAddressOfOperator baoo)
-                                {
-                                    var parType = parameters.ParameterTypes[argumentPosition].Type;
-                                    if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None)
-                                    {
-                                        // pass value @foo to function/method that is declared as BAR (n REF Something)
-                                        argument = baoo.Operand;
-                                    }
-                                    else if (!parType.IsPointerType() && !parType.IsVoStructOrUnion())
-                                    {
-                                        var xNode = argument.Syntax.XNode;
-                                        if (xNode.Parent is not XP.QoutStmtContext)
-                                        {
-                                            // pass value @foo to function/method that is declared as BAR (n AS Something)
-                                            argument = baoo.Operand;
-                                            argumentRefKind = RefKind.Ref;
-                                            arguments.SetRefKind(argumentPosition, argumentRefKind);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (parameterRefKind == RefKind.Out && argumentRefKind == RefKind.Ref)
-                        {
-                            // pass variable with REF to function/method that expects OUT (Vulcan did not have OUT)
-                            argumentRefKind = parameterRefKind;
-                            arguments.SetRefKind(argumentPosition, argumentRefKind);
-                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                            var info = new CSDiagnosticInfo(ErrorCode.WRN_ArgumentRefParameterOut,
-                                                            new object[] { argumentPosition + 1, parameterRefKind.ToParameterDisplayString() });
-                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                            useSiteDiagnostics.Add(info);
-                        }
-                        if (parameterRefKind.IsByRef() && argumentRefKind == RefKind.None)
-                        {
-                            argumentRefKind = parameterRefKind;
-                            arguments.SetRefKind(argumentPosition, argumentRefKind);
-                            if (!implicitCastsAndConversions)
-                            {
-                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                                var info = new CSDiagnosticInfo(ErrorCode.ERR_BadArgExtraRef,
-                                                                new object[] { argumentPosition + 1, argumentRefKind.ToParameterDisplayString() });
-                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                                useSiteDiagnostics.Add(info);
-                            }
-                        }
-
-                        if (literalNullForRefParameter)
-                        {
-                            conversion = Conversion.NullLiteral;
-                        }
-
-                        if (implicitCastsAndConversions && argumentRefKind == RefKind.None &&
-                            argument is BoundAddressOfOperator &&
-                            candidate.HasClipperCallingConvention())
-                        {
-                            argumentRefKind = RefKind.Ref;
-                        }
+                        conversion = XsIsApplicable(candidate, arguments, ref argument, argsToParameters,
+                            argumentPosition, parameters, ref argumentRefKind, ref useSiteDiagnostics);
                     }
                     if (conversion.Kind == ConversionKind.NoConversion)
                     {
 #endif
-                    bool forExtensionMethodThisArg = arguments.IsExtensionMethodThisArgument(argumentPosition);
+                        bool forExtensionMethodThisArg = arguments.IsExtensionMethodThisArgument(argumentPosition);
 
-                    if (forExtensionMethodThisArg)
-                    {
-                        Debug.Assert(argumentRefKind == RefKind.None);
-                        if (parameterRefKind == RefKind.Ref)
+                        if (forExtensionMethodThisArg)
                         {
-                            // For ref extension methods, we omit the "ref" modifier on the receiver arguments
-                            // Passing the parameter RefKind for finding the correct conversion.
-                            // For ref-readonly extension methods, argumentRefKind is always None.
-                            argumentRefKind = parameterRefKind;
+                            Debug.Assert(argumentRefKind == RefKind.None);
+                            if (parameterRefKind == RefKind.Ref)
+                            {
+                                // For ref extension methods, we omit the "ref" modifier on the receiver arguments
+                                // Passing the parameter RefKind for finding the correct conversion.
+                                // For ref-readonly extension methods, argumentRefKind is always None.
+                                argumentRefKind = parameterRefKind;
+                            }
                         }
-                    }
 
-                    conversion = CheckArgumentForApplicability(
-                        candidate,
-                        argument,
-                        argumentRefKind,
-                        parameters.ParameterTypes[argumentPosition].Type,
-                        parameterRefKind,
-                        ignoreOpenTypes,
-                        ref useSiteDiagnostics,
-                        forExtensionMethodThisArg);
+                        conversion = CheckArgumentForApplicability(
+                            candidate,
+                            argument,
+                            argumentRefKind,
+                            parameters.ParameterTypes[argumentPosition].Type,
+                            parameterRefKind,
+                            ignoreOpenTypes,
+                            ref useSiteDiagnostics,
+                            forExtensionMethodThisArg);
 
-                    if (forExtensionMethodThisArg && !Conversions.IsValidExtensionMethodThisArgConversion(conversion))
-                    {
-                        // Return early, without checking conversions of subsequent arguments,
-                        // if the instance argument is not convertible to the 'this' parameter,
-                        // even when 'completeResults' is requested. This avoids unnecessary
-                        // lambda binding in particular, for instance, with LINQ expressions.
-                        // Note that BuildArgumentsForErrorRecovery will still bind some number
-                        // of overloads for the semantic model.
-                        Debug.Assert(badArguments == null);
-                        Debug.Assert(conversions == null);
-                        return MemberAnalysisResult.BadArgumentConversions(argsToParameters, ImmutableArray.Create(argumentPosition), ImmutableArray.Create(conversion));
+                        if (forExtensionMethodThisArg && !Conversions.IsValidExtensionMethodThisArgConversion(conversion))
+                        {
+                            // Return early, without checking conversions of subsequent arguments,
+                            // if the instance argument is not convertible to the 'this' parameter,
+                            // even when 'completeResults' is requested. This avoids unnecessary
+                            // lambda binding in particular, for instance, with LINQ expressions.
+                            // Note that BuildArgumentsForErrorRecovery will still bind some number
+                            // of overloads for the semantic model.
+                            Debug.Assert(badArguments == null);
+                            Debug.Assert(conversions == null);
+                            return MemberAnalysisResult.BadArgumentConversions(argsToParameters, ImmutableArray.Create(argumentPosition), ImmutableArray.Create(conversion));
                         }
 #if XSHARP
                     }

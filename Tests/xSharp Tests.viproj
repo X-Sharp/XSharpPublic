@@ -36,6 +36,8 @@ RecentReference = Browse:C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll
 RecentReference = Browse:C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll
 RecentReference = GAC:XSharp.Rdd,v4,2.6.0.0
 RecentReference = GAC:VOWin32APILibrary,v4,2.6.0.0
+RecentReference = Browse:C:\XSharp\DevRt\Binaries\Debug\XSharp.Rdd.dll
+RecentReference = Browse:C:\XSharp\DevRt\Binaries\Debug\VOWin32APILibrary.dll
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
@@ -101259,7 +101261,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R814 - AddressOf when calling function with AS USUAL
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C815 - Various issues with the @ operator *************
 Application = C815 - Various issues with the @ operator
 IDEVersion = 1.06
@@ -101267,7 +101269,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -101302,10 +101304,10 @@ FileType = Code
 CopyToBin = 0
 [C815 - Various issues with the @ operator References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.Rdd,1,0,2.6.0.0
-ReferenceGAC = CLR4,VOWin32APILibrary,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Rdd.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\VOWin32APILibrary.dll,1,1
 [C815 - Various issues with the @ operator Resources]
 [C815 - Various issues with the @ operator Native Resources]
 [C815 - Various issues with the @ operator License files]

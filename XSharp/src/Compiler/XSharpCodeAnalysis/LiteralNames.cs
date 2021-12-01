@@ -12,7 +12,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         internal const string ClipperArgs = "$args";
     }
-    internal static class OurTypeNames 
+    internal static class OurTypeNames
     {
         internal const string CodeBlockType = "Codeblock";
         internal const string UsualType = "__Usual";
@@ -119,6 +119,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string AccessSuffix = "$Access";
         internal const string AssignSuffix = "$Assign";
         internal const string PropertySuffix = "$Method";
+        internal const string DimSuffix = "$Dim";
 
         internal const string CodeBlockParameter = "Cb$Param$";
         internal const string CodeBlockLamda = "Cb$Eval$";

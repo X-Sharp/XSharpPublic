@@ -4,15 +4,20 @@
 
 // Snippets taken as is from customers' code, I have intentionally not "fixed" them
 FUNCTION Start() AS VOID
-    //NoRunTest6()
     NoRunTest1()
+    NoRunTest3()
+    NoRunTest5()
+    NoRunTest6()
+    NoRunTest7()
+    NoRunTest8()
+    NoRunTest9()
 RETURN
 
 PROCEDURE NoRunTest1()
-	LOCAL nHandle := NULL_PTR	AS IntPtr
+/*	LOCAL nHandle := NULL_PTR	AS IntPtr
 	LOCAL sInstall	IS ADS_MGMT_INSTALL_INFO
 	LOCAL nInstall	AS WORD
-	AdsMgGetInstallInfo(nHandle,@sInstall,@nInstall)
+	AdsMgGetInstallInfo(nHandle,@sInstall,@nInstall)*/
 	
 PROCEDURE NoRunTest2()
 	LOCAL DIM buf[ 123 ] 	AS BYTE	
@@ -22,7 +27,18 @@ PROCEDURE NoRunTest2()
 
 PROCEDURE NoRunTest3()
 	LOCAL DOCINFO IS _WINDOCINFO
-	MEMSET(@DOCINFO, 0, _SIZEOF(_WINDOCINFO))
+	MemSet(@DOCINFO, 255, _SIZEOF(_WINDOCINFO))
+	MemSet(@DOCINFO, 0, 2)
+	
+	LOCAL p AS BYTE PTR
+	p := @DOCINFO
+	? p[1]
+	? p[2]
+	? p[3]
+	xAssert(p[1] == 0)
+	xAssert(p[2] == 0)
+	xAssert(p[3] == 255)
+	xAssert(p[4] == 255)
 	
 	
 PROCEDURE NoRunTest4()
@@ -32,8 +48,10 @@ PROCEDURE NoRunTest4()
 
 PROCEDURE NoRunTest5()
 	LOCAL strucCharFormat IS _winCHARFORMAT
-	LOCAL cFaceName := "" AS STRING
-	MemCopy(@strucCharFormat:szFaceName[1], PTR(_CAST, cFaceName), SLen(cFaceName)+1)	
+	LOCAL cFaceName := "buffer" AS STRING
+	MemCopy(@strucCharFormat:szFaceName[1], String2Psz(cFaceName), SLen(cFaceName))
+	? Psz2String(strucCharFormat:szFaceName)
+	xAssert(Psz2String(strucCharFormat:szFaceName) == "buffer")
 
 PROCEDURE NoRunTest6()
 	LOCAL DIM firstDay[2] AS BYTE
@@ -54,11 +72,40 @@ PROCEDURE NoRunTest7()
 	FOR i := 1 TO 3
     	? cRet := Psz2String(@abTemp[i])   
 	NEXT
+	xAssert( Psz2String(@abTemp[1]) == "ABC")
+	xAssert( Psz2String(@abTemp[2]) == "BC")
+	xAssert( Psz2String(@abTemp[3]) == "C")
 
 PROCEDURE NoRunTest8()
 	LOCAL uValue := 1,uTemp := 2 AS USUAL
 	bConvertLogicToUsual(uValue, 123, @uTemp)
+	xAssert(uTemp == 456)
 	
 FUNCTION bConvertLogicToUsual(lValue AS LOGIC, uConvertRule AS USUAL, uValue REF USUAL) AS LOGIC STRICT
+	uValue := 456
 RETURN FALSE
 
+PROCEDURE NoRunTest9()
+	LOCAL nDword AS DWORD
+	IF FALSE
+		VoDbSelect( 123,  @nDword )
+	ENDIF
+	nDword := 456
+	MyVoDbSelect(123, @nDword)
+	? nDword
+	xAssert(nDword == 2)
+	
+FUNCTION MyVoDbSelect(wNew AS DWORD,wOld OUT USUAL) AS LOGIC
+	wOld := 1
+RETURN TRUE
+FUNCTION MyVoDbSelect(wNew AS DWORD,wOld OUT DWORD ) AS LOGIC
+	wOld := 2
+RETURN TRUE
+
+
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
+RETURN 

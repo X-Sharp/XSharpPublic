@@ -4,7 +4,6 @@
 
 // Snippets taken as is from customers' code, I have intentionally not "fixed" them
 FUNCTION Start() AS VOID
-    NoRunTest1()
     NoRunTest3()
     NoRunTest5()
     NoRunTest6()

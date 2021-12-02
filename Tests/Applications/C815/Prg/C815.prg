@@ -14,10 +14,10 @@ FUNCTION Start() AS VOID
 RETURN
 
 PROCEDURE NoRunTest1()
-/*	LOCAL nHandle := NULL_PTR	AS IntPtr
+	LOCAL nHandle := NULL_PTR	AS IntPtr
 	LOCAL sInstall	IS ADS_MGMT_INSTALL_INFO
 	LOCAL nInstall	AS WORD
-	AdsMgGetInstallInfo(nHandle,@sInstall,@nInstall)*/
+	AdsMgGetInstallInfo(nHandle,@sInstall,@nInstall)
 	
 PROCEDURE NoRunTest2()
 	LOCAL DIM buf[ 123 ] 	AS BYTE	

@@ -102,6 +102,13 @@ FUNCTION MyVoDbSelect(wNew AS DWORD,wOld OUT DWORD ) AS LOGIC
 RETURN TRUE
 
 
+// This error here happens only when XSharp.Core.dll is before XSharp.RT.dll in the list of references, doesn't happen if they are entered the other way around
+// It's because those two libraries have 2 overloads of the FRead3() function, but should this have any effect?
+PROCEDURE NoRunTest10()
+	LOCAL pHandle, pByte AS BYTE
+	FRead3(pHandle, @pByte, 1) // error XS9109: Argument 2 may not be passed with the '@' prefix
+	
+	
 PROC xAssert(l AS LOGIC)
 IF .not. l
 	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}

@@ -185,7 +185,7 @@ namespace XSharp.LanguageService
             if (line.Length < 60)
             {
                 result += line;
-                result += $"<\\{token}>\r\n";
+                result += $"</{token}>\r\n";
             }
             else
             {
@@ -193,7 +193,7 @@ namespace XSharp.LanguageService
                 {
                     result += "\r\n" + element;
                 }
-                result += $"\r\n<\\{token}>\r\n";
+                result += $"\r\n</{token}>\r\n";
             }
             return result;
         }

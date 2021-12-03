@@ -452,6 +452,7 @@ END CLASS
 
 
       METHOD AddTypeParameters(aPars AS Mono.Collections.Generic.Collection<GenericParameter>) AS VOID
+         SELF:_signature:TypeParameters:Clear()
          FOREACH typeParam AS Mono.Cecil.GenericParameter IN aPars
             SELF:_signature:TypeParameters:Add(typeParam:Name)
          NEXT

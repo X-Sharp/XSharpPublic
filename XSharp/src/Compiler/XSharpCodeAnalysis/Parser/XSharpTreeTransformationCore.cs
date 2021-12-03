@@ -577,15 +577,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected SyntaxList<SyntaxToken> DefaultMethodModifiers(XSharpParserRuleContext context, bool inInterface, bool inStructure, bool noOverride = false)
+        protected SyntaxList<SyntaxToken> DefaultMethodModifiers(XSharpParserRuleContext context, bool allowOverride)
         {
             var rb = _pool.Allocate();
+            bool inInterface = context.isInInterface();
             rb.FixDefaultVisibility();
             if (!inInterface)
             {
+                bool inStructure = context.isInStructure();
                 bool enforceOverride = _options.HasOption(CompilerOption.EnforceOverride, context, PragmaOptions);
                 // structures do not get virtual or override modifiers
-                if (!inStructure && !noOverride)
+                if (!inStructure && !allowOverride)
                 {
                     if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions))
                     {
@@ -3191,7 +3193,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken));
             }
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, context.isInInterface(), context.isInStructure());
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, false);
             //if (context.ExplicitIface != null)
             {
                 var m = _pool.Allocate();
@@ -3310,7 +3312,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     context.Put(_syntaxFactory.EventFieldDeclaration(
                         attributeLists: getAttributes(context.Attributes),
-                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, context.isInInterface(), context.isInStructure()),
+                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, false),
                         eventKeyword: context.E.SyntaxKeyword(),
                         declaration: _syntaxFactory.VariableDeclaration(
                             getReturnType(context),
@@ -3511,7 +3513,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var isInStruct = context.isInStructure();
             var isAuto = context.Auto != null;
             var isMulti = context.Multi != null;
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, isInInterface, context.isInStructure());
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, false);
             if (context.ExplicitIface != null)
             {
                 var m = _pool.Allocate();
@@ -4107,7 +4109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.T.Start,context.end.Stop);
             var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, isInInterface, context.isInStructure(), context.TypeParameters != null);
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, context.TypeParameters != null);
             if (context.Modifiers != null)
             {
                 context.Data.HasExplicitOverride = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);

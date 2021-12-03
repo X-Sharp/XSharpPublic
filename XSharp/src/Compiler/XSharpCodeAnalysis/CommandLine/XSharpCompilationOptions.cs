@@ -173,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.FloatConstants: // vo14
                 case CompilerOption.UntypedAllowed: // v015
                 case CompilerOption.DefaultClipperContructors: // v016
-                case CompilerOption.EnforceVirtual:
+                case CompilerOption.EnforceOverride:
                     return false;
 
             }

@@ -581,15 +581,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var rb = _pool.Allocate();
             rb.FixDefaultVisibility();
-            if (!inInterface && !_options.HasOption(CompilerOption.EnforceVirtual, context, PragmaOptions))
+            if (!inInterface)
             {
+                bool enforceOverride = _options.HasOption(CompilerOption.EnforceOverride, context, PragmaOptions);
                 // structures do not get virtual or override modifiers
                 if (!inStructure && !noOverride)
                 {
                     if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions))
-                        rb.FixDefaultVirtual();
+                    {
+                        rb.FixVirtual(enforceOverride);
+                    }
                     else
-                        rb.FixDefaultMethod();
+                    {
+                        rb.FixOverride(enforceOverride);
+                    }
                 }
             }
             var r = rb.ToList<SyntaxToken>();
@@ -1739,14 +1744,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (!AccMet.IsInInterface)
                 {
+                    bool enforceOverride = _options.HasOption(CompilerOption.EnforceOverride, context, PragmaOptions);
                     getMods.FixDefaultVisibility();
-                    if (_options.HasOption(CompilerOption.VirtualInstanceMethods,context, PragmaOptions) && !AccMet.IsInStructure)
+                    if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions) && !AccMet.IsInStructure)
                     {
-                        getMods.FixDefaultVirtual();
+                        getMods.FixVirtual(enforceOverride);
                     }
                     else
                     {
-                        getMods.FixDefaultMethod();
+                        getMods.FixOverride(enforceOverride);
                     }
                 }
                 getVisLvl = getMods.GetVisibilityLevel();
@@ -1763,13 +1769,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     setMods.FixDefaultVisibility();
                     var assign = (XSharpParserRuleContext) AssMet;
+                    bool enforceOverride = _options.HasOption(CompilerOption.EnforceOverride, context, PragmaOptions);
                     if (_options.HasOption(CompilerOption.VirtualInstanceMethods, assign, PragmaOptions) && !assign.isInStructure())
                     {
-                        setMods.FixDefaultVirtual();
+                        setMods.FixVirtual(enforceOverride);
                     }
                     else
                     {
-                        setMods.FixDefaultMethod();
+                        setMods.FixOverride(enforceOverride);
                     }
                 }
                 setVisLvl = setMods.GetVisibilityLevel();
@@ -5132,7 +5139,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             SyntaxListBuilder modifiers = _pool.Allocate();
             bool genericParent = false;
-            // Memberm odifiers are used for Methods and Properties
+            // Membermodifiers are used for Methods and Properties
             if (context.Parent is XP.MethodContext mc)
             {
                 genericParent = mc.TypeParameters != null || mc._ConstraintsClauses.Count > 0;
@@ -5141,12 +5148,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             AddUniqueModifiers(modifiers, context._Tokens, false, isInInterface);
             if (!isInInterface)
             {
+                bool enforceOverride = _options.HasOption(CompilerOption.EnforceOverride, context, PragmaOptions);
+
                 modifiers.FixDefaultVisibility();
                 if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions) && !context.isInStructure())
-                    modifiers.FixDefaultVirtual();
+                {
+                    modifiers.FixVirtual(enforceOverride);
+                }
                 else if (!genericParent)
                 {
-                    modifiers.FixDefaultMethod();
+                    modifiers.FixOverride(enforceOverride);
                 }
             }
             context.PutList(modifiers.ToList<SyntaxToken>());

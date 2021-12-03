@@ -115,7 +115,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool AllowNamedArguments { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
-        public bool EnforceVirtual { get; private set; }
+        public bool EnforceOverride { get; private set; }
         public bool EnforceSelf { get; private set; }
         public string StdDefs { get; private set; } = string.Empty;
         public bool Verbose { get; private set; }
@@ -190,7 +190,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
                 StdDefs = opt.StdDefs;
-                EnforceVirtual = opt.EnforceVirtual;
+                EnforceOverride = opt.EnforceOverride;
                 EnforceSelf = opt.EnforceSelf;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
@@ -278,7 +278,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             ParseLevel = opt.ParseLevel;
             SaveAsCSharp = opt.SaveAsCSharp;
             StdDefs = opt.StdDefs;
-            EnforceVirtual = opt.EnforceVirtual;
+            EnforceOverride = opt.EnforceOverride;
             EnforceSelf = opt.EnforceSelf;
             Verbose = opt.Verbose;
             AllowNamedArguments = opt.AllowNamedArguments;
@@ -407,8 +407,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.LateBinding:  // lb
                     return CheckOption(option, LateBinding, context, options);
 
-                case CompilerOption.EnforceVirtual:  // enforcevirtual
-                    return CheckOption(option, EnforceVirtual, context, options);
+                case CompilerOption.EnforceOverride:  // EnforceOverride
+                    return CheckOption(option, EnforceOverride, context, options);
 
                 case CompilerOption.EnforceSelf:  // enforceself
                     return CheckOption(option, EnforceSelf, context, options);

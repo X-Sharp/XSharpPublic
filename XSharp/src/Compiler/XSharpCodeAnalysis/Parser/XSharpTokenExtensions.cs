@@ -1529,30 +1529,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             list.Add(makeGeneratedToken(SyntaxKind.PublicKeyword));
         }
 
-        public static void FixDefaultVirtual(this SyntaxListBuilder list)
+        public static bool CanBeVirtual(this SyntaxListBuilder list)
         {
             if (list.Any((int)SyntaxKind.StaticKeyword) ||
                 list.Any((int)SyntaxKind.ExternKeyword) ||
                 list.Any((int)SyntaxKind.AbstractKeyword) ||
                 list.Any((int)SyntaxKind.PrivateKeyword))
+            {
+                return false;
+            }
+            return true;
+
+        }
+        public static void FixVirtual(this SyntaxListBuilder list, bool enforceOverride)
+        {
+            if (!list.CanBeVirtual())
                 return;
             if (!list.Any((int)SyntaxKind.VirtualKeyword))
             {
                 list.Add(makeGeneratedToken(SyntaxKind.VirtualKeyword));
             }
-            if (list.Any((int)SyntaxKind.NewKeyword) || list.Any((int)SyntaxKind.AbstractKeyword))
+            if (list.Any((int)SyntaxKind.NewKeyword))
                 return;
-            if (!list.Any((int)SyntaxKind.OverrideKeyword))
+            if (!enforceOverride && !list.Any((int)SyntaxKind.OverrideKeyword))
             {
                 list.Add(makeGeneratedToken(SyntaxKind.OverrideKeyword));
             }
         }
 
-        public static void FixDefaultMethod(this SyntaxListBuilder list)
+        public static void FixOverride(this SyntaxListBuilder list, bool enforceOverride)
         {
-            /*if (!list.Any(SyntaxKind.VirtualKeyword))
-                return;*/
-            if (list.Any((int)SyntaxKind.StaticKeyword) || list.Any((int)SyntaxKind.ExternKeyword) || list.Any((int)SyntaxKind.OverrideKeyword) || list.Any((int)SyntaxKind.NewKeyword) || list.Any((int)SyntaxKind.AbstractKeyword) || list.Any((int)SyntaxKind.PrivateKeyword))
+            if (!enforceOverride ||
+                !list.CanBeVirtual()||
+                list.Any((int)SyntaxKind.OverrideKeyword) ||
+                list.Any((int)SyntaxKind.NewKeyword))
                 return;
             list.Add(makeGeneratedToken(SyntaxKind.OverrideKeyword));
         }
@@ -1561,7 +1571,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (list.Any((int)SyntaxKind.PublicKeyword))
                 return 0;
-            if (list.Any((int)SyntaxKind.ProtectedKeyword)) {
+            if (list.Any((int)SyntaxKind.ProtectedKeyword))
+            {
                 if (list.Any((int)SyntaxKind.InternalKeyword))
                     return 1;
                 else

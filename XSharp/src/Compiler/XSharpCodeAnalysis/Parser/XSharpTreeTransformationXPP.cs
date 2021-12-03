@@ -897,13 +897,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers.AddCheckUnique(kw);
                 }
             }
-            if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions) && ! hasFinal)
+            bool enforceOverride = _options.HasOption(CompilerOption.EnforceOverride, context, PragmaOptions);
+            if (_options.HasOption(CompilerOption.VirtualInstanceMethods, context, PragmaOptions) && !hasFinal)
             {
-                modifiers.FixDefaultVirtual();
+                modifiers.FixVirtual(enforceOverride);
             }
-            else if (!noOverRide && ! hasFinal)
+            else if (!noOverRide && !hasFinal)
             {
-                modifiers.FixDefaultMethod();
+                modifiers.FixOverride(enforceOverride);
             }
             context.PutList(modifiers.ToList<SyntaxToken>());
             _pool.Free(modifiers);

@@ -6,7 +6,7 @@
 // Make OVERRIDE mandatory
 
 #pragma options("vo3", on)
-#pragma options("enforcevirtual", on)
+#pragma options("enforceoverride", on)
 FUNCTION Start() AS VOID
 LOCAL o AS Parent
 o := Child{}     
@@ -37,3 +37,14 @@ END CLASS
 
 METHOD Dummy2 AS LOGIC CLASS A
     RETURN  TRUE
+    
+
+#pragma options("vo3", on)
+#pragma options("enforceoverride", on)
+CLASS parent1
+	METHOD Skata() AS VOID
+END CLASS
+CLASS child1 INHERIT parent1
+	METHOD Skata() AS VOID
+END CLASS
+

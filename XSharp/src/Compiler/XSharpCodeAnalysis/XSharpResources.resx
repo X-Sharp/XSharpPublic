@@ -5351,7 +5351,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -cs[+|-]                       Case Sensitivity on/off
 -dialect:&lt;string&gt;              Specify xBase Dialect: Core, VO, Vulcan, dBase, FoxPro, xBase++, Harbour
 -enforceself[+|-]              Enforce the use of SELF (or SUPER) inside methods to access properties and methods.
--enforcevirtual[+|-]           Enforce the use of VIRTUAL and OVERRIDE for virtual members of classes
+-enforceoverride[+|-]          Enforce the use of OVERRIDE or NEW for members in subclasses
 -fovf[+|-]                     Float overflow exceptions(mapped to /checked)
 -ins[+|-]                      Implicit namespace lookup
 -lb[+|-]                       Allow late binding

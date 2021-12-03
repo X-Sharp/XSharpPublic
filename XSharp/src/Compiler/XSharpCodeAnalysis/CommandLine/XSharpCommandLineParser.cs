@@ -284,8 +284,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         options.StdDefs = value;
                     }
                     break;
-                case "enforcevirtual":
-                    options.EnforceVirtual = positive;
+                case "enforceoverride":
+                    options.EnforceOverride = positive;
                     break;
                 case "tocs":
                     options.SaveAsCSharp = positive;

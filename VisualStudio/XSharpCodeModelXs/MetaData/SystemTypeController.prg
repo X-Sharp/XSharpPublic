@@ -82,6 +82,7 @@ BEGIN NAMESPACE XSharpModel
          VAR assemblies := List<XAssembly>{}
          var asm := FindAssembly(assemblyName)
          IF asm != null .and. asm:Loaded
+            assemblies:Add(asm)
             FOREACH var name in asm:ReferencedAssemblies
                var asm2 := FindAssembly(name)
                if asm2 != null .and. asm2:Loaded

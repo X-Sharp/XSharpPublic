@@ -317,8 +317,7 @@ namespace XSharp.LanguageService
                                     }
                                 }
                             }
-                            done = true;
-                            break;
+                            continue;
                         default:
                             done = true;
                             break;

@@ -10,6 +10,8 @@ FUNCTION Start() AS VOID
     NoRunTest7()
     NoRunTest8()
     NoRunTest9()
+    NoRunTest10()
+    NoRunTest11()
 RETURN
 
 PROCEDURE NoRunTest1()
@@ -86,9 +88,9 @@ RETURN FALSE
 
 PROCEDURE NoRunTest9()
 	LOCAL nDword AS DWORD
-	IF FALSE
-		VoDbSelect( 123,  @nDword )
-	ENDIF
+	VoDbSelect( 123,  @nDword )    
+	VoDbSelect( 456,  @nDword )    
+	xAssert(nDword == 123)
 	nDword := 456
 	MyVoDbSelect(123, @nDword)
 	? nDword
@@ -105,8 +107,35 @@ RETURN TRUE
 // This error here happens only when XSharp.Core.dll is before XSharp.RT.dll in the list of references, doesn't happen if they are entered the other way around
 // It's because those two libraries have 2 overloads of the FRead3() function, but should this have any effect?
 PROCEDURE NoRunTest10()
-	LOCAL pHandle, pByte AS BYTE
-	FRead3(pHandle, @pByte, 1) // error XS9109: Argument 2 may not be passed with the '@' prefix
+	LOCAL pByte AS BYTE     
+	LOCAL pHandle AS IntPtr
+	System.IO.File.WriteAllText("test.txt", "A")
+	IF File("test.txt")
+    	pHandle := FOpen(FPathName(),FO_READ)
+	    FRead3(pHandle, @pByte, 1) // error XS9109: Argument 2 may not be passed with the '@' prefix
+        FClose(pHandle)
+        xAssert(pByte == Asc("A")  )
+	ENDIF
+    RETURN
+
+
+#pragma options("lb", on)
+PROCEDURE NoRunTest11()
+LOCAL o AS OBJECT
+o := TestClass{}
+LOCAL rf := 123 AS INT 
+o:Test(1, @rf)
+? rf
+xAssert(rf == 456)
+rf := 123
+Send(o, "Test", 1, @rf) 
+? rf
+xAssert(rf == 456)
+
+CLASS TestClass
+	METHOD Test(n AS INT, rf REF INT) AS VOID
+		rf := 456
+END CLASS
 	
 	
 PROC xAssert(l AS LOGIC)
@@ -115,3 +144,6 @@ IF .not. l
 END IF
 ? "Assertion passed"
 RETURN 
+
+
+

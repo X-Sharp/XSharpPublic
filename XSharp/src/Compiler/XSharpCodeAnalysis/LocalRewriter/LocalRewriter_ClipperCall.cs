@@ -151,14 +151,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private void writeRefBack(ImmutableArray<BoundExpression> arguments, RefKind[] refKinds,
-            BoundExpression boundPars, BoundLocal[] argBoundTemps, BoundPropertyAccess[] boundProperties, ImmutableArray<BoundExpression>.Builder exprs)
+            BoundExpression boundPars, BoundLocal[] argBoundTemps, BoundPropertyAccess[] boundProperties,
+            ImmutableArray<BoundExpression>.Builder exprs, int offSet)
         {
             exprs.Clear();
             for (int i = 0; i < arguments.Length; i++)
             {
                 if (refKinds[i].IsWritableReference()) // Ref and Out
                 {
-                    BoundExpression idx = _factory.Literal(i);
+                    BoundExpression idx = _factory.Literal(i - offSet);
                     var elem = _factory.ArrayAccess(boundPars, ImmutableArray.Create(idx));
                     if (boundProperties[i] != null)
                     {
@@ -286,8 +287,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 BoundExpression callAssignment = _factory.AssignmentExpression(boundCallTemp, bc);
 
                 // generate statements that assign param array elements back to the locals
-
-                writeRefBack(arguments, refKinds, boundPars, argBoundTemps, properties, exprs);
+                writeRefBack(arguments, refKinds, boundPars, argBoundTemps, properties, exprs, 0);
                 var postExprs = exprs.ToImmutable();
                 exprs.Clear();
 
@@ -499,8 +499,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             argTemps.Add(parsTemp);
 
             preExprs = exprs.ToImmutable();
-
-            writeRefBack(arguments, refKinds, boundPars, argBoundTemps, properties, exprs);
+            writeRefBack(arguments, refKinds, boundPars, argBoundTemps, properties, exprs, method.ParameterCount - 1);
 
             argumentRefKindsOpt = rewrittenArgumentRefKindsOpt;
             temps = argTemps.ToImmutable();

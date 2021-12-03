@@ -100922,7 +100922,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R811 - ASTYPE for USUAL
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 084FC9A2-9274-4770-AE44-6D078B06BA37
 ; ************** APPLICATION R812 - Explicit Virtual and Override *************
 Application = R812 - Explicit Virtual and Override
 IDEVersion = 1.06
@@ -101372,7 +101372,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-  Optimize=0
+  Optimize=1
 ENDApplication = C815 - Various issues with the @ operator
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
@@ -101383,7 +101383,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -101418,8 +101418,8 @@ FileType = Code
 CopyToBin = 0
 [C816 - Various issues with the @ operator #2 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.6.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.6.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
 [C816 - Various issues with the @ operator #2 Resources]
 [C816 - Various issues with the @ operator #2 Native Resources]
 [C816 - Various issues with the @ operator #2 License files]
@@ -101446,7 +101446,7 @@ VO16=0
 FOX1=0
 FOX2=0
 XPP1=0
-LateBound=0
+LateBound=1
 Unsafe=1
 Undeclared=0
 EnforceSelf=0

@@ -100,13 +100,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                             else if (!parIsPtr)
                             {
                                 var xNode = argument.Syntax.XNode;
-                                if (xNode.Parent is not XP.QoutStmtContext)
+                                var isParams = candidate is MethodSymbol ms && ms.IsParams();
+                                if (!isParams && xNode.Parent is not XP.QoutStmtContext )
                                 {
                                     // pass value @foo to function/method that is declared as BAR (n AS Something)
+                                    argument = baoo.Operand;
+                                    argumentRefKind = RefKind.Ref;
                                     if (completeResults)
                                     {
-                                        argument = baoo.Operand;
-                                        argumentRefKind = RefKind.Ref;
                                         arguments.SetRefKind(argumentPosition, argumentRefKind);
                                     }
                                 }

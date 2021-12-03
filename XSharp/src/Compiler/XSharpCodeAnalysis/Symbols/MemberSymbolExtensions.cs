@@ -86,29 +86,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         internal static bool HasClipperCallingConvention(this Symbol method)
         {
-            if (method is SourceMemberMethodSymbol)
+            if (method is MethodSymbol ms)
             {
-                var sms = method as SourceMemberMethodSymbol;
-                var xnode = sms.SyntaxNode?.XNode;
-                if (xnode != null)
+                if (ms.IsParams())
                 {
-                    var clsmethod = xnode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.ClsmethodContext;
-                    if (clsmethod != null)
-                    {
-                        return clsmethod.Member.Data.HasClipperCallingConvention;
-                    }
+                    var parType = ms.Parameters[ms.ParameterCount - 1].Type;
+                    return parType is ArrayTypeSymbol at && at.ElementType.IsUsualType();
                 }
-            }
-            if (method != null)
-            {
-                var pars = method.GetParameters();
-                if (pars.Length != 1)
-                    return false;
-                var par = pars[0];
-                if (par.Name == XSharpSpecialNames.ClipperArgs)
-                    return true;
-                if (par.Name == VulcanSpecialNames.ClipperArgs)
-                    return true;
             }
             return false;
         }

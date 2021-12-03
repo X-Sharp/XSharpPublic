@@ -101375,7 +101375,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=1
 ENDApplication = C815 - Various issues with the @ operator
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C816 - Various issues with the @ operator #2 *************
 Application = C816 - Various issues with the @ operator #2
 IDEVersion = 1.06

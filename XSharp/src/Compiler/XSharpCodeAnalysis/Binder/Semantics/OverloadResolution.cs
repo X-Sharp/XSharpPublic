@@ -58,7 +58,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private Conversion XsIsApplicable( Symbol candidate, AnalyzedArguments arguments, ref BoundExpression argument,
-            ImmutableArray<int> argsToParameters, int argumentPosition, EffectiveParameters parameters,
+            ImmutableArray<int> argsToParameters, int argumentPosition, EffectiveParameters parameters, bool completeResults,
             ref RefKind argumentRefKind, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
@@ -103,9 +103,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 if (xNode.Parent is not XP.QoutStmtContext)
                                 {
                                     // pass value @foo to function/method that is declared as BAR (n AS Something)
-                                    argument = baoo.Operand;
-                                    argumentRefKind = RefKind.Ref;
-                                    arguments.SetRefKind(argumentPosition, argumentRefKind);
+                                    if (completeResults)
+                                    {
+                                        argument = baoo.Operand;
+                                        argumentRefKind = RefKind.Ref;
+                                        arguments.SetRefKind(argumentPosition, argumentRefKind);
+                                    }
                                 }
                             }
                         }

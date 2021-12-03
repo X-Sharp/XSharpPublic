@@ -3708,7 +3708,7 @@ outerDefault:
                     else
                     {
                         conversion = XsIsApplicable(candidate, arguments, ref argument, argsToParameters,
-                            argumentPosition, parameters, ref argumentRefKind, ref useSiteDiagnostics);
+                            argumentPosition, parameters, completeResults, ref argumentRefKind, ref useSiteDiagnostics);
                     }
                     if (conversion.Kind == ConversionKind.NoConversion)
                     {

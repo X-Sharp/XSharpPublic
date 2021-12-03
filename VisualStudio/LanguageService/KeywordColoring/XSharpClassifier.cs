@@ -75,6 +75,7 @@ namespace XSharp.LanguageService
                 return null;
             }
         }
+        public SourceWalker SourceWalker => _sourceWalker;
 
         #endregion
 

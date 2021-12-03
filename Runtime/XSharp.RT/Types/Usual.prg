@@ -2986,7 +2986,11 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.String		; RETURN "C"
                 CASE __UsualType.Object		; RETURN "O"
                 CASE __UsualType.Symbol		; RETURN "#"
-                CASE __UsualType.Void		; RETURN "U"
+                CASE __UsualType.Void
+                    IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                        RETURN "L"
+                    ENDIF
+                    RETURN "U"
                 OTHERWISE
                     Debug.Fail( "Unhandled data type in Usual:Valtype" )
                 END SWITCH

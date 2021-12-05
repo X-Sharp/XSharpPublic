@@ -584,6 +584,7 @@ namespace XSharp.LanguageService
                 formatToken(editSession, lineStart, token);
             }
         }
+
         private void FormatCaseForWholeBuffer()
         {
             if (XSettings.DebuggerIsRunning)

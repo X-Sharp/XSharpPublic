@@ -14,7 +14,21 @@ BEGIN NAMESPACE XSharpModel
 
    STATIC CLASS TypeMemberExtensions
 
-      STATIC METHOD GetProtoType(SELF tm as IXMemberSymbol) AS STRING
+
+      STATIC METHOD ClipperParameters(SELF tm as IXMemberSymbol) AS STRING
+          IF tm:Kind:HasParameters()
+                VAR names := StringBuilder{}
+                FOREACH var param in tm:Parameters
+                    if names:Length > 0
+                        names:Append(", ")
+                    endif
+                    names:Append(param:Name)
+                NEXT
+                return names:ToString()
+          ENDIF
+          RETURN ""
+
+      STATIC METHOD GetProtoType(SELF tm as IXMemberSymbol, lApplyCallingConvention := FALSE AS LOGIC) AS STRING
          VAR vars := StringBuilder{}
          IF tm:TypeParameters?:Count > 0
             VAR delim := "<"
@@ -28,11 +42,19 @@ BEGIN NAMESPACE XSharpModel
          IF tm:Kind:HasParameters()
             IF ( tm:Kind == Kind.@@Constructor )
                vars:Append("{")
-               vars:Append(tm:ParameterList)
+               if lApplyCallingConvention .and. tm:CallingConvention == CallingConvention.Clipper
+                  vars:Append(tm:ClipperParameters())
+               else
+                  vars:Append(tm:ParameterList)
+               endif
                vars:Append("}")
             ELSE
                vars:Append("(")
-               vars:Append(tm:ParameterList)
+               if lApplyCallingConvention .and. tm:CallingConvention == CallingConvention.Clipper
+                 vars:Append(tm:ClipperParameters())
+               else
+                 vars:Append(tm:ParameterList)
+               endif
                vars:Append(")")
             ENDIF
          ENDIF

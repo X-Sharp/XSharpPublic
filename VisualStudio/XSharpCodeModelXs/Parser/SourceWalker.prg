@@ -21,22 +21,17 @@ BEGIN NAMESPACE XSharpModel
         #region fields
         PRIVATE _errors     AS IList<XError>
         PRIVATE _file       AS XFile
-        PRIVATE _prjNode    AS IXSharpProject
-        PRIVATE _tokenStream AS ITokenStream
         PRIVATE _entities   AS IList<XSourceEntity>
         PRIVATE _blocks     AS IList<XSourceBlock>
         PRIVATE _locals     AS IList<XSourceVariableSymbol>
-        PRIVATE _options    AS XSharpParseOptions
 
         #endregion
         #region Properties
         PROPERTY HasParseErrors AS LOGIC AUTO
 
-        PRIVATE PROPERTY parseOptions AS XSharpParseOptions GET SELF:_prjNode:ParseOptions
+        PRIVATE PROPERTY ProjectNode as IXSharpProject GET SELF:_file?:Project?:ProjectNode
+        PRIVATE PROPERTY ParseOptions AS XSharpParseOptions GET SELF:ProjectNode?:ParseOptions
 
-        PROPERTY TokenStream AS ITokenStream GET SELF:_tokenStream
-
-        PROPERTY StartPosition AS INT AUTO
         PROPERTY SourcePath AS STRING AUTO  // Save it because calculation the XAML source path is a bit expensive
 
         PROPERTY EntityList AS IList<XSourceEntity> GET _entities
@@ -50,10 +45,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:SaveToDisk := lSaveResults
             IF (file != NULL)
                 SELF:_file := file
-                SELF:_prjNode := SELF:_file?:Project?:ProjectNode
-                SELF:StartPosition := 0
                 SELF:SourcePath := SELF:_file:SourcePath
-                SELF:_options   := SELF:_file:Project:ParseOptions
                 SELF:_errors   := List<XError>{}
                 SELF:_entities := List<XSourceEntity>{}
                 SELF:_blocks   := List<XSourceBlock>{}
@@ -69,8 +61,6 @@ BEGIN NAMESPACE XSharpModel
                 //
                 SELF:_errors := NULL
                 SELF:_file := NULL
-                SELF:_prjNode := NULL
-                SELF:_tokenStream := NULL
                 SELF:_blocks   := NULL
                 SELF:_locals   := NULL
             ENDIF
@@ -86,10 +76,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_errors := List<XError>{}
             LOCAL stream := NULL AS ITokenStream
             TRY
-                XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, _options, SELF, OUT stream)
-                BEGIN LOCK SELF
-                    SELF:_tokenStream := stream
-                END LOCK
+                XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, SELF:ParseOptions, SELF, OUT stream)
             CATCH e AS Exception
                 WriteOutputMessage("Lex() Failed:")
                 WriteOutputMessage(SELF:SourcePath)
@@ -128,9 +115,12 @@ BEGIN NAMESPACE XSharpModel
 
 
         METHOD ParseTokens(tokens AS ITokenStream , lIncludeRegions AS LOGIC, lIncludeLocals AS LOGIC) AS VOID
+            IF SELF:ParseOptions == NULL
+                RETURN
+            ENDIF
             WriteOutputMessage("-->> ParseTokens() "+SELF:SourcePath+" locals "+lIncludeLocals:ToString()+" )")
             TRY
-                VAR parser := XsParser{_file, _options:Dialect}
+                VAR parser := XsParser{_file, SELF:ParseOptions:Dialect}
                 parser:SaveToDisk := SELF:SaveToDisk
                 parser:Parse(tokens , lIncludeRegions, lIncludeLocals)
                 SELF:_entities := parser:EntityList

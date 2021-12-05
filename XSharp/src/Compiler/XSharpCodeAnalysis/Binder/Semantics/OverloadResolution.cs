@@ -148,7 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (implicitCastsAndConversions && argumentRefKind == RefKind.None &&
                 argument is BoundAddressOfOperator &&
-                candidate.HasClipperCallingConvention())
+                candidate.EndsWithUsualParams())
             {
                 argumentRefKind = RefKind.Ref;
             }

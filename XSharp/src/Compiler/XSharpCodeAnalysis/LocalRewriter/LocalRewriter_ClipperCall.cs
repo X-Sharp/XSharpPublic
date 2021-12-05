@@ -270,7 +270,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 temps.Add(parsTemp);
                 BoundExpression parsAssignment = _factory.AssignmentExpression(boundPars, argsNode);
 
-                // local temp 
+                // local temp
                 // __InternalSend( oObject, cName, temp = paramArray)
 
                 var sendArgs = ImmutableArray.CreateBuilder<BoundExpression>();
@@ -424,7 +424,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return null;
                 if (dostmt != null && !dostmt.HasRefArguments)
                     return null;
-                if (node.Method.HasClipperCallingConvention())
+                if (node.Method.EndsWithUsualParams())
                     isClipperCall = true;
             }
             if (memVarsByReference && !isClipperCall)
@@ -581,7 +581,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // the sequence now contains:
             // save vars
             // result = Call
-            // assign params by reference from temp back to 
+            // assign params by reference from temp back to
             // return result
             return new BoundSequence(node.Syntax, temps.ToImmutable(), exprs.ToImmutableArray(), boundCallTemp, node.Type);
 

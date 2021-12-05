@@ -3809,7 +3809,7 @@ outerDefault:
             // - for a ref or out parameter, the type of the argument is identical to the type of the corresponding parameter.
 
 #if XSHARP
-            if (argRefKind != parRefKind && argRefKind == RefKind.Ref && candidate is MethodSymbol ms && ms.HasClipperCallingConvention() )
+            if (argRefKind != parRefKind && argRefKind == RefKind.Ref && candidate is MethodSymbol ms && ms.EndsWithUsualParams() )
             {
                 argRefKind = RefKind.None;
                 if (argument is BoundAddressOfOperator b)

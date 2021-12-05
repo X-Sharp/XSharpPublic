@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
             
-        PUBLIC METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
+        OVERRIDE METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL byteArray AS BYTE[]
             LOCAL nLen      AS LONG

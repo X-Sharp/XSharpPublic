@@ -17,9 +17,9 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER()
             SELF:_Memo := _oDbtMemo := DBTMemo{SELF}
 
-        VIRTUAL PROPERTY Driver AS STRING GET nameof(DBFDBT)
+        OVERRIDE PROPERTY Driver AS STRING GET nameof(DBFDBT)
         // Return the memo content as STRING
-        METHOD GetValue(nFldPos AS LONG) AS OBJECT
+        OVERRIDE METHOD GetValue(nFldPos AS LONG) AS OBJECT
             LOCAL buffer AS BYTE[]
             // not a memo ?
             IF SELF:_isMemoField( nFldPos )
@@ -38,7 +38,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SUPER:GetValue(nFldPos)
 
         /// <inheritdoc />
-        VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+        OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult AS OBJECT
             SWITCH nOrdinal
             CASE DbInfo.DBI_MEMOHANDLE

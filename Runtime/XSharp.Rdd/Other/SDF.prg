@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -14,14 +14,14 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>SDF RDD. For reading and writing text files.</summary>
 
     [DebuggerDisplay("SDF ({Alias,nq})")];
-    CLASS SDF INHERIT TEXTRDD  
+    CLASS SDF INHERIT TEXTRDD
         PROTECT buffer AS BYTE[]
         /// <inheritdoc />
         OVERRIDE PROPERTY Driver AS STRING GET nameof(SDF)
-        
-        
-        PROTECTED METHOD _readRecord() AS LOGIC STRICT
-            IF _BufferValid 
+
+
+        PROTECTED OVERRIDE METHOD _readRecord() AS LOGIC STRICT
+            IF _BufferValid
                 RETURN TRUE
             ENDIF
             IF SELF:EoF
@@ -43,10 +43,10 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             SELF:EoF := TRUE
             RETURN FALSE
-            
 
 
-        PROTECTED METHOD _writeRecord() AS LOGIC STRICT 
+
+        PROTECTED OVERRIDE METHOD _writeRecord() AS LOGIC STRICT
             LOCAL oSb AS StringBuilder
             LOCAL nIndex AS LONG
             oSb := StringBuilder{}
@@ -55,7 +55,7 @@ BEGIN NAMESPACE XSharp.RDD
                 VAR oValue := SELF:_fieldData[nIndex]
                 VAR sValue := SELF:_getFieldString(oField, oValue)
                 SWITCH oField:FieldType
-                    CASE DbFieldType.Number         // 'N'  
+                    CASE DbFieldType.Number         // 'N'
                     CASE DbFieldType.Float          // 'F'
                         IF sValue:Length != oField:Length
                             sValue := sValue:PadLeft(oField:Length,' ')
@@ -77,8 +77,8 @@ BEGIN NAMESPACE XSharp.RDD
             oSb:Append(SELF:_RecordSeparator)
             SELF:_WriteString(oSb:ToString())
             RETURN TRUE
-            
-        PROTECTED METHOD _getLastRec AS LONG
+
+        PROTECTED OVERRIDE METHOD _getLastRec AS LONG
             LOCAL dwPos AS DWORD
             LOCAL dwLen AS LONG
             LOCAL nCount AS LONG
@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN TRUE
             ENDIF
             RETURN FALSE
-            
-            
+
+
     END CLASS
 END NAMESPACE

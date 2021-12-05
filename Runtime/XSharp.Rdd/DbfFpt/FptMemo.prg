@@ -160,7 +160,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         /// <summary></summary>
         /// <param name="nFldPos">One based field number</param>
-        METHOD GetValue(nFldPos AS INT) AS OBJECT
+        OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
             LOCAL block := SELF:GetRawValueWithHeader(nFldPos) AS BYTE[]
             if block != NULL
                 var result := BYTE[]{block:Length - 8}
@@ -205,7 +205,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         /// <inheritdoc />
         /// <param name="nFldPos">One based field number</param>
-        METHOD GetValueLength(nFldPos AS INT) AS LONG
+        OVERRIDE METHOD GetValueLength(nFldPos AS INT) AS LONG
             var blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
             var blockLen := SELF:_GetBlockLen(blockNbr)
             // Don't forget to remove the 8 Bytes
@@ -333,7 +333,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <summary>Write value to field.</summary>
         /// <param name="nFldPos">One based field number</param>
         /// <param name="oValue">Data to write. Should be BYTE[] and include the header with the type</param>
-        VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+        OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             IF SELF:IsOpen .and. oValue IS BYTE[] VAR bytes
                 // AT this level the bytes[] array already contains the header with type and length
                 var blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
@@ -364,7 +364,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
         /// <inheritdoc />
-        VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+        OVERRIDE METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
             TRY
                 VAR oColumn := SELF:_oRdd:_GetColumn(nFldPos) ASTYPE DbfColumn
                 IF oColumn != NULL .AND. oColumn:IsMemo
@@ -399,7 +399,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN 0
 
         /// <inheritdoc />
-        VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
+        OVERRIDE METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             LOCAL isOk      AS LOGIC
             SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
             isOk := SUPER:CreateMemFile(info)
@@ -423,7 +423,7 @@ BEGIN NAMESPACE XSharp.RDD
         RETURN isOk
 
         /// <inheritdoc />
-        VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
+        OVERRIDE METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
             isOk := SUPER:OpenMemFile(info)
@@ -502,7 +502,7 @@ BEGIN NAMESPACE XSharp.RDD
         RETURN unlocked
 
 
-        VIRTUAL METHOD Zap() AS LOGIC
+        OVERRIDE METHOD Zap() AS LOGIC
             IF SELF:IsOpen
                 IF SELF:Shared
                     SELF:Error(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "FPTMemo.Zap")

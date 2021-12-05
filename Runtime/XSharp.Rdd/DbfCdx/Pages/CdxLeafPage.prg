@@ -167,7 +167,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER:Clear()
             SELF:_clear()
 
-        INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID
+        INTERNAL OVERRIDE METHOD InitBlank(oTag AS CdxTag) AS VOID
             SELF:Tag    := oTag
             SELF:Initialize(KeyLength)
             IF SELF IS CdxTagList
@@ -182,7 +182,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 TrailByte := 32
             ENDIF
 
-        INTERNAL VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
+        INTERNAL OVERRIDE METHOD _setTag(newTag AS CdxTag) AS VOID
             SUPER:_setTag(newTag)
             IF SELF IS CdxTagList
                 TrailByte := 0
@@ -227,7 +227,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             MemSet(SELF:Buffer,CDXLEAF_HEADERLEN,CDXLEAF_BYTESFREE,0)
             RETURN
 
-        INTERNAL VIRTUAL METHOD Read() AS LOGIC
+        INTERNAL OVERRIDE METHOD Read() AS LOGIC
 			VAR Ok := SUPER:Read()
             System.Diagnostics.Debug.Assert (SELF:PageType:HasFlag(CdxPageType.Leaf))
             IF Ok
@@ -238,7 +238,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY ValidKeys AS LOGIC GET _leaves != NULL .AND. _leaves:Count == SELF:NumKeys
 #region ICdxKeyValue
 
-        INTERNAL METHOD GetRecno(nPos AS Int32) AS Int32
+        INTERNAL OVERRIDE METHOD GetRecno(nPos AS Int32) AS Int32
             IF SELF:ValidKeys
                 RETURN _leaves[nPos]:Recno
             ENDIF
@@ -254,13 +254,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             nRecno      := _AND( nRecno , SELF:RecnoMask)
             RETURN nRecno
 
-        INTERNAL METHOD GetChildPage(nPos AS Int32) AS Int32
+        INTERNAL OVERRIDE METHOD GetChildPage(nPos AS Int32) AS Int32
             RETURN 0
 
-        INTERNAL METHOD GetChildren as IList<LONG>
+        INTERNAL OVERRIDE METHOD GetChildren as IList<LONG>
             RETURN List<LONG>{}
 
-        INTERNAL METHOD GetKey(nPos AS Int32) AS BYTE[]
+        INTERNAL OVERRIDE METHOD GetKey(nPos AS Int32) AS BYTE[]
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             IF nPos >= 0 .AND. nPos < SELF:NumKeys
                 SELF:_ExpandKeys(FALSE)
@@ -394,7 +394,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
 
-        INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[(WORD) (SELF:NumKeys-1)])
+        INTERNAL OVERRIDE PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[(WORD) (SELF:NumKeys-1)])
         INTERNAL PROPERTY Keys    AS IList<CdxLeaf>
             GET
                 SELF:_ExpandKeys(FALSE)
@@ -910,7 +910,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
            ENDIF
            RETURN (WORD) (SELF:NumKeys+1)
 
-       INTERNAL METHOD Dump AS STRING
+       INTERNAL OVERRIDE METHOD Dump AS STRING
             LOCAL sb AS StringBuilder
             VAR iLen := SELF:Tag:KeyLength
             sb := StringBuilder{}

@@ -330,7 +330,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
             RETURN isOk
 
-        PUBLIC METHOD Flush() AS LOGIC
+        OVERRIDE METHOD Flush() AS LOGIC
             IF !SELF:Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
                 SELF:GoCold()
                 SELF:_PageList:Flush(FALSE)

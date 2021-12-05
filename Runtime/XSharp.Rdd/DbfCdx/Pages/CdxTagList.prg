@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tags
 
-        INTERNAL METHOD Initialize(keyLength AS WORD) AS VOID
+        INTERNAL OVERRIDE METHOD Initialize(keyLength AS WORD) AS VOID
             SUPER:Initialize(keyLength)
             _tags := List<CdxTag>{}
             SELF:PageType := CdxPageType.Leaf + CdxPageType.Root

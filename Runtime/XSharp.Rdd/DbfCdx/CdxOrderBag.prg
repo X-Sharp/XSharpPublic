@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         #region RDD Overloads
             /// <inheritdoc />
-        METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
+        OVERRIDE METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
             THROW NotImplementedException{}
 
         INTERNAL STATIC METHOD GetIndexExtFromDbfExt(cDbfName AS STRING) AS STRING
@@ -70,7 +70,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END SWITCH
             RETURN CDX_EXTENSION
             /// <inheritdoc />
-        METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
+        OVERRIDE METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
             LOCAL cTag AS STRING
             IF info:Order IS STRING VAR strOrder .and. ! String.IsNullOrWhiteSpace(strOrder)
                 cTag := strOrder
@@ -132,24 +132,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN found
 
             /// <inheritdoc />
-        METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
+        OVERRIDE METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
-        METHOD OrderInfo(nOrdinal AS DWORD) AS OBJECT
+        OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
             THROW NotImplementedException{}
             /// <inheritdoc />
-        METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
+        OVERRIDE METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
-        METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
+        OVERRIDE METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
-        METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
+        OVERRIDE METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
 
 
-        METHOD OrderListRebuild( ) AS LOGIC
+        OVERRIDE METHOD OrderListRebuild( ) AS LOGIC
             LOCAL aTags AS CdxTag[]
             LOCAL cBagName AS STRING
             LOCAL lOk AS LOGIC
@@ -175,10 +175,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
             /// <inheritdoc />
-        METHOD Seek(info AS DbSeekInfo) AS LOGIC
+        OVERRIDE METHOD Seek(info AS DbSeekInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
-        PROPERTY Found AS LOGIC
+        OVERRIDE PROPERTY Found AS LOGIC
             GET
                 THROW NotImplementedException{}
             END GET
@@ -328,7 +328,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN FALSE
 
 
-         METHOD Flush() AS LOGIC
+         OVERRIDE METHOD Flush() AS LOGIC
             LOCAL lOk AS LOGIC
             // Process all tags even if one fails
             lOk := TRUE
@@ -501,17 +501,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE METHOD _LockRetry(nOffSet AS INT64, nLen AS INT64,sPrefix AS STRING) AS VOID
             LOCAL result := FALSE AS LOGIC
-            var timer := LockTimer{}
-            timer:Start()
+            // note that there is no wait here. Research showed that the VO/Vulcan drivers
+            // also did not wait
             REPEAT
                 result := SELF:_stream:SafeLock(nOffSet, nLen)
-                IF ! result
-                    IF timer:TimeOut(FullPath, nOffSet, nLen)
-                        RETURN
-                    ENDIF
-                    var wait := 10 +rand:@@Next() % 50
-                    System.Threading.Thread.Sleep(wait)
-                ENDIF
             UNTIL result
             //DebOut32( "Locked " +nOffSet:ToString()+" "+nLen:ToString())
 

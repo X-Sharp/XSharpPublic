@@ -22,7 +22,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
         SUPER:_Driver := "AXSQLRDD"
 
 	/// <inheritdoc />
-    VIRTUAL METHOD Close() AS LOGIC
+    OVERRIDE METHOD Close() AS LOGIC
         IF ! SUPER:Close()
             RETURN FALSE
         ENDIF
@@ -39,14 +39,14 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
     PROPERTY ACESQLStatementHandle AS System.IntPtr GET SELF:_hStatement
 
 	/// <inheritdoc />
-    VIRTUAL METHOD Info(uiOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+    OVERRIDE METHOD Info(uiOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
         IF (uiOrdinal == DbInfo.DBI_GET_ACE_STMT_HANDLE )
             RETURN SELF:_hStatement
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
 
 	/// <inheritdoc />
-    VIRTUAL METHOD Open(openInfo AS DbOpenInfo) AS LOGIC
+    OVERRIDE METHOD Open(openInfo AS DbOpenInfo) AS LOGIC
         LOCAL sName AS string
         LOCAL query AS object
 
@@ -124,7 +124,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 
 
 	/// <inheritdoc />
-   VIRTUAL METHOD RecInfo( uiOrdinal AS INT, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
+   OVERRIDE METHOD RecInfo( uiOrdinal AS INT, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
     LOCAL isLive AS BYTE
     LOCAL recNum AS DWORD
     IF uiOrdinal != DbRecordInfo.DBRI_UPDATED

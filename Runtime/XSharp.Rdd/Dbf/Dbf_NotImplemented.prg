@@ -18,83 +18,83 @@ BEGIN NAMESPACE XSharp.RDD
     PARTIAL CLASS DBF
 
     	/// <inheritdoc />
-		METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
+		OVERRIDE METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
             RETURN SUPER:BlobInfo(uiPos, uiOrdinal)
 
-    
+
         /// <inheritdoc />
-        METHOD ClearFilter() 	AS LOGIC
+        OVERRIDE METHOD ClearFilter() 	AS LOGIC
             RETURN SUPER:ClearFilter()
 
         /// <inheritdoc />
-		METHOD ClearRel() AS LOGIC
+		OVERRIDE METHOD ClearRel() AS LOGIC
             RETURN SUPER:ClearRel()
 
          /// <inheritdoc />
-        METHOD ClearScope() 	AS LOGIC
+        OVERRIDE METHOD ClearScope() 	AS LOGIC
             RETURN SUPER:ClearScope()
          /// <inheritdoc />
-        METHOD Continue()		AS LOGIC
+        OVERRIDE METHOD Continue()		AS LOGIC
             RETURN SUPER:Continue()
-            
 
-            
+
+
          /// <inheritdoc />
-        METHOD DbEval(info AS DbEvalInfo) AS LOGIC
+        OVERRIDE METHOD DbEval(info AS DbEvalInfo) AS LOGIC
             RETURN SUPER:DbEval(info)
-            
-            
+
+
          /// <inheritdoc />
-        METHOD FieldIndex(fieldName AS STRING) AS LONG
+        OVERRIDE METHOD FieldIndex(fieldName AS STRING) AS LONG
             RETURN SUPER:FieldIndex(fieldName)
-            
+
 			/// <inheritdoc />
-		METHOD FieldName(nFldPos AS LONG) AS STRING
+		OVERRIDE METHOD FieldName(nFldPos AS LONG) AS STRING
 			RETURN SUPER:FieldName( nFldPos )
-			
+
 
 
           /// <inheritdoc />
-        METHOD GetScope()		AS DbScopeInfo
+        OVERRIDE METHOD GetScope()		AS DbScopeInfo
             RETURN SUPER:GetScope()
-           
+
 
 		/// <inheritdoc />
-		METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
+		OVERRIDE METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
             RETURN SUPER:OrderCondition(info)
 
 
 		/// <inheritdoc />
-		METHOD RelEval(info AS DbRelInfo) AS LOGIC
+		OVERRIDE METHOD RelEval(info AS DbRelInfo) AS LOGIC
             RETURN SUPER:RelEval(info)
 		/// <inheritdoc />
-		METHOD RelText(nRelNum AS DWORD) AS STRING
+		OVERRIDE METHOD RelText(nRelNum AS DWORD) AS STRING
             RETURN SUPER:RelText(nRelNum)
 
 		/// <inheritdoc />
-		METHOD SetRel(info AS DbRelInfo) AS LOGIC
+		OVERRIDE METHOD SetRel(info AS DbRelInfo) AS LOGIC
             RETURN SUPER:SetRel(info)
 
-	
-            
+
+
          /// <inheritdoc />
-        METHOD SkipFilter(nToSkip AS INT) AS LOGIC
+        OVERRIDE METHOD SkipFilter(nToSkip AS INT) AS LOGIC
             RETURN SUPER:SkipFilter(nToSkip)
-            
+
          /// <inheritdoc />
-        METHOD SkipScope(nToSkip AS INT) AS LOGIC
-            RETURN SUPER:SkipScope(nToSkip)            
-            
-            
-        
+        OVERRIDE METHOD SkipScope(nToSkip AS INT) AS LOGIC
+            RETURN SUPER:SkipScope(nToSkip)
+
+
+
          /// <inheritdoc />
-        METHOD SetScope(info AS DbScopeInfo) AS LOGIC
+        OVERRIDE METHOD SetScope(info AS DbScopeInfo) AS LOGIC
             RETURN SUPER:SetScope(info)
 
 		/// <inheritdoc />
-		METHOD Trans(info AS DbTransInfo) 		AS LOGIC
+		OVERRIDE METHOD Trans(info AS DbTransInfo) 		AS LOGIC
             RETURN SUPER:Trans(info)
-        
-            
+
+
     END CLASS
 END NAMESPACE

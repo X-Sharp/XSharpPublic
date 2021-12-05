@@ -1,6 +1,6 @@
 //
-// Copyright (c) B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -20,12 +20,12 @@ CLASS DBFVFP INHERIT DBFCDX
 		SUPER()
 		SELF:_AllowedFieldTypes := "BCDFGILMNPQTVWY0"
 		RETURN
-		
-	PUBLIC   PROPERTY Driver                  AS STRING GET nameof(DBFVFP)
+
+	OVERRIDE PROPERTY Driver                  AS STRING GET nameof(DBFVFP)
     INTERNAL PROPERTY DbcName        AS STRING AUTO
     INTERNAL PROPERTY DbcPosition    AS INT GET DbfHeader.SIZE + SELF:_Fields:Length  * DbfField.SIZE +1
 
-    PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
+    OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
 	LOCAL isOk AS LOGIC
     isOk := SUPER:Create(openInfo)
     IF isOk
@@ -34,7 +34,7 @@ CLASS DBFVFP INHERIT DBFCDX
     SELF:_ReadDbcInfo()
     RETURN isOk
 
-    PROTECTED VIRTUAL METHOD _checkField( dbffld REF DbfField) AS LOGIC
+    PROTECTED OVERRIDE METHOD _checkField( dbffld REF DbfField) AS LOGIC
         IF dbffld:Type:IsVfp()
             IF dbffld:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
                 IF dbffld:Counter == 0
@@ -89,7 +89,7 @@ CLASS DBFVFP INHERIT DBFCDX
         ENDIF
         LOCAL cExt := System.IO.Path.GetExtension(SELF:_FileName) AS STRING
         IF cExt:ToLower() == ".dbc"
-            SELF:_Header:TableFlags  |= DBFTableFlags.IsDBC 
+            SELF:_Header:TableFlags  |= DBFTableFlags.IsDBC
         ENDIF
         SELF:_Header:HeaderLen += VFP_BACKLINKSIZE
         SELF:_HeaderLength   += VFP_BACKLINKSIZE
@@ -99,7 +99,7 @@ CLASS DBFVFP INHERIT DBFCDX
         RETURN
 
     /// <inheritdoc />
-    METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
+    OVERRIDE METHOD CreateFields(aFields AS RddFieldInfo[]) AS LOGIC
         LOCAL NullCount := 0 AS LONG
         LOCAL nullFld  := NULL AS RddFieldInfo
         LOCAL lOk := FALSE as LOGIC
@@ -126,11 +126,11 @@ CLASS DBFVFP INHERIT DBFCDX
         lOk := SUPER:CreateFields(aFields)
         RETURN lOk
 
-        PROPERTY FieldCount AS LONG
+        OVERRIDE PROPERTY FieldCount AS LONG
         GET
             // Exclude the _NullColumn
             LOCAL ret := 0 AS LONG
-            IF SELF:_Fields != NULL 
+            IF SELF:_Fields != NULL
                 ret := SELF:_Fields:Length
                 IF SELF:_NullColumn != NULL
                     ret -= 1
@@ -140,7 +140,7 @@ CLASS DBFVFP INHERIT DBFCDX
         END GET
         END PROPERTY
 
-    METHOD Open ( info AS DbOpenInfo) AS LOGIC
+    OVERRIDE METHOD Open ( info AS DbOpenInfo) AS LOGIC
         LOCAL lOk AS LOGIC
         LOCAL lOld AS LOGIC
         // Delay auto open until after we have read the DBC name and we have read the long fieldnames
@@ -157,10 +157,10 @@ CLASS DBFVFP INHERIT DBFCDX
             ENDIF
             SELF:GoTop()
         ENDIF
-        
+
         RETURN lOk
 
-    METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+    OVERRIDE METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
         IF nOrdinal == DbFieldInfo.DBS_PROPERTIES
            RETURN DbFieldInfo.DBS_FLAGS
         ENDIF
@@ -217,7 +217,7 @@ CLASS DBFVFP INHERIT DBFCDX
 
 
     /// <inheritdoc />
-    METHOD AddField(info AS RddFieldInfo) AS LOGIC
+    OVERRIDE METHOD AddField(info AS RddFieldInfo) AS LOGIC
         LOCAL isOk AS LOGIC
         isOk := SUPER:AddField( info )
         IF String.Compare(info:Name, _NULLFLAGS,TRUE) == 0 .AND. info IS DbfNullColumn VAR dbfnc
@@ -233,7 +233,7 @@ CLASS DBFVFP INHERIT DBFCDX
         ENDIF
         RETURN isOk
 
-    OVERRIDE PROTECTED METHOD _readRecord() AS LOGIC 
+    OVERRIDE PROTECTED METHOD _readRecord() AS LOGIC
         LOCAL lOk AS LOGIC
         LOCAL lMustReadNull AS LOGIC
         lMustReadNull := ! SELF:_BufferValid
@@ -245,10 +245,10 @@ CLASS DBFVFP INHERIT DBFCDX
 
     OVERRIDE PROTECTED METHOD _writeRecord() AS LOGIC
         // Write VFP Null flags, if any
-        IF SELF:_NullColumn != NULL .AND. ! SELF:_ReadOnly 
+        IF SELF:_NullColumn != NULL .AND. ! SELF:_ReadOnly
             SELF:_NullColumn:PutValue(0, SELF:_RecordBuffer)
         ENDIF
-        RETURN SUPER:_writeRecord() 
+        RETURN SUPER:_writeRecord()
 END CLASS
 
 
@@ -257,4 +257,4 @@ END CLASS
 END NAMESPACE
 
 
- 
+

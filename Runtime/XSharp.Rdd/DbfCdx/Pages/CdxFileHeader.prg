@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:ForExprLen := 1
             SELF:Generation := SELF:RootVersion
 
-        INTERNAL METHOD Dump() AS STRING
+        INTERNAL OVERRIDE METHOD Dump() AS STRING
             LOCAL oSb AS StringBuilder
             oSb := StringBuilder{}
             oSb:AppendLine("CDX Header for "+_bag:FullPath)

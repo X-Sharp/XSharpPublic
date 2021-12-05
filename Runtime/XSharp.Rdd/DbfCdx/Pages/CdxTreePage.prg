@@ -151,7 +151,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT INTERNAL METHOD GetKey(nPos AS Int32) AS BYTE[]
         ABSTRACT INTERNAL METHOD GetChildren as IList<LONG>
 
-         INTERNAL VIRTUAL METHOD Read() AS LOGIC
+         INTERNAL OVERRIDE METHOD Read() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := SUPER:Read()
             IF lOk
@@ -159,7 +159,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN lOk
 
-        INTERNAL VIRTUAL METHOD Write() AS LOGIC
+        INTERNAL OVERRIDE METHOD Write() AS LOGIC
             IF SELF:PageNo > 0
                 System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:RightPtr)
                 System.Diagnostics.Debug.Assert(SELF:PageNo != SELF:LeftPtr)

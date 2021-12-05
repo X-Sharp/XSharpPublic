@@ -21,9 +21,9 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_oFptMemo:ExportMode := BLOB_EXPORT_APPEND
 
             /// <inheritdoc />
-        PROPERTY Driver AS STRING GET nameof(DBFFPT)
+        OVERRIDE PROPERTY Driver AS STRING GET nameof(DBFFPT)
 
-        METHOD GetValue(nFldPos AS LONG) AS OBJECT
+        OVERRIDE METHOD GetValue(nFldPos AS LONG) AS OBJECT
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 VAR rawData := _oFptMemo:GetRawValueWithHeader(nFldPos)
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
 
-        METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
+        OVERRIDE METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
             IF SELF:_ReadOnly
                 SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
             ENDIF
@@ -80,7 +80,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
             /// <inheritdoc />
-        VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+        OVERRIDE METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
             LOCAL oResult := NULL AS OBJECT
             SWITCH nOrdinal
             CASE DbInfo.DBI_MEMOHANDLE
@@ -187,7 +187,7 @@ BEGIN NAMESPACE XSharp.RDD
             END SWITCH
             RETURN oResult
 
-        VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+        OVERRIDE METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
            IF SELF:_ReadOnly
                 SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
             ENDIF

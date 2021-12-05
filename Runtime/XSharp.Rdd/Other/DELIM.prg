@@ -48,7 +48,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc/>
         OVERRIDE PROPERTY Driver AS STRING GET nameof(DELIM)
 
-        PROTECTED METHOD _readRecord() AS LOGIC STRICT
+        PROTECTED OVERRIDE METHOD _readRecord() AS LOGIC STRICT
             IF _BufferValid .OR. SELF:EoF
                 return true
             endif
@@ -87,7 +87,7 @@ BEGIN NAMESPACE XSharp.RDD
             _BufferValid := TRUE
             RETURN TRUE
 
-        PROTECTED METHOD _writeRecord() AS LOGIC STRICT
+        PROTECTED OVERRIDE METHOD _writeRecord() AS LOGIC STRICT
             LOCAL nIndex as LONG
             LOCAL hasDelimiter as LOGIC
             _oSb:Clear()
@@ -130,7 +130,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_WriteString(_oSb:ToString())
             RETURN TRUE
 
-        PROTECTED METHOD _getLastRec AS LONG
+        PROTECTED OVERRIDE METHOD _getLastRec AS LONG
             LOCAL dwPos     AS DWORD
             LOCAL nCount := 0 AS LONG
             LOCAL buffer    AS BYTE[]

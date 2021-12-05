@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -14,7 +14,7 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 
 /// <summary>
-/// The AdsRDD class. 
+/// The AdsRDD class.
 /// </summary>
 CLASS XSharp.ADS.AdsError INHERIT RddError
     PRIVATE _msg AS STRING
@@ -27,7 +27,7 @@ CLASS XSharp.ADS.AdsError INHERIT RddError
         SELF:Severity     := dwSeverity
         SELF:FuncSym      := strFunction
         SELF:FileName     := strFile
-     PROPERTY SubCodeText AS STRING GET _msg
-        
-        
+     OVERRIDE PROPERTY SubCodeText AS STRING GET _msg
+
+
 END CLASS

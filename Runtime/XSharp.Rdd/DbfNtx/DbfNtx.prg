@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DBFNTX INHERIT DBFDBT
         INTERNAL _indexList AS NtxOrderList
         INTERNAL PROPERTY CurrentOrder AS NtxOrder GET _indexList:CurrentOrder
-        VIRTUAL PROPERTY Driver AS STRING GET nameof(DBFNTX)
+        OVERRIDE PROPERTY Driver AS STRING GET nameof(DBFNTX)
         CONSTRUCTOR()
             SUPER()
             SELF:_indexList := NtxOrderList{SELF}
@@ -26,17 +26,17 @@ BEGIN NAMESPACE XSharp.RDD
 
 
             #REGION Order Support
-        VIRTUAL METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
+        OVERRIDE METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
             VAR result :=  SELF:_indexList:Create(orderInfo)
             RETURN result
 
-        VIRTUAL METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
+        OVERRIDE METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
             RETURN SUPER:OrderDestroy(orderInfo)
 
-        METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
+        OVERRIDE METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
             RETURN SUPER:OrderCondition(info)
 
-        VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
+        OVERRIDE METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
             BEGIN LOCK SELF
                 SELF:GoCold()
                 LOCAL fullPath AS STRING
@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN lOk
             END LOCK
 
-        VIRTUAL METHOD OrderListDelete(orderInfo AS DbOrderInfo) AS LOGIC
+        OVERRIDE METHOD OrderListDelete(orderInfo AS DbOrderInfo) AS LOGIC
 
             BEGIN LOCK SELF
 
@@ -57,13 +57,13 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SELF:_indexList:CloseAll()
             END LOCK
 
-        VIRTUAL METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC
+        OVERRIDE METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC
             BEGIN LOCK SELF
                 SELF:GoCold()
                 RETURN SELF:_indexList:SetFocus(orderInfo)
             END LOCK
 
-        VIRTUAL METHOD OrderListRebuild() AS LOGIC
+        OVERRIDE METHOD OrderListRebuild() AS LOGIC
             BEGIN LOCK SELF
                 IF SELF:Shared
                     // Error !! Cannot be written !
@@ -293,7 +293,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         #endregion
         #region relations
-        METHOD ForceRel() AS LOGIC
+        OVERRIDE METHOD ForceRel() AS LOGIC
             LOCAL isOk    := TRUE AS LOGIC
             IF SELF:_RelInfoPending != NULL
                 // Save the current context
@@ -325,7 +325,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOk
             #endregion
         #region Pack, Zap
-        METHOD Pack() AS LOGIC
+        OVERRIDE METHOD Pack() AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := SUPER:Pack()
@@ -334,7 +334,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN isOk
 
-        PUBLIC METHOD Zap() AS LOGIC
+        OVERRIDE METHOD Zap() AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := SUPER:Zap()
@@ -347,7 +347,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         #REGION Open, Close, Create
 
-        PUBLIC OVERRIDE METHOD Close() AS LOGIC
+        OVERRIDE METHOD Close() AS LOGIC
             LOCAL orderInfo AS DbOrderInfo
             BEGIN LOCK SELF
                 SELF:GoCold()
@@ -357,7 +357,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SUPER:Close()
             END LOCK
 
-        PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
+        OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := SUPER:Create(openInfo)
@@ -379,7 +379,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_Header:Version := sig
             ENDIF
         RETURN isOk
-        METHOD Open(info AS DbOpenInfo) AS LOGIC
+        OVERRIDE METHOD Open(info AS DbOpenInfo) AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := SUPER:Open(info)
             RETURN lOk
@@ -392,7 +392,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SELF:_readRecord()
 
 
-        PUBLIC METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
+        OVERRIDE METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := FALSE
@@ -408,7 +408,7 @@ BEGIN NAMESPACE XSharp.RDD
             END LOCK
             RETURN isOk
 
-        PUBLIC METHOD GoBottom() AS LOGIC
+        OVERRIDE METHOD GoBottom() AS LOGIC
             BEGIN LOCK SELF
                 local result as LOGIC
                 IF SELF:CurrentOrder != NULL
@@ -420,7 +420,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN result
             END LOCK
 
-        PUBLIC METHOD GoTop() AS LOGIC
+        OVERRIDE METHOD GoTop() AS LOGIC
             BEGIN LOCK SELF
                 LOCAL result AS LOGIC
                 IF SELF:CurrentOrder != NULL
@@ -436,7 +436,7 @@ BEGIN NAMESPACE XSharp.RDD
             // Skip without reset of topstack
             RETURN SUPER:GoTo(nRec)
 
-        METHOD GoTo(nRec AS LONG) AS LOGIC
+        OVERRIDE METHOD GoTo(nRec AS LONG) AS LOGIC
             local result as LOGIC
             SELF:GoCold()
             IF SELF:CurrentOrder != NULL
@@ -446,7 +446,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN result
 
 
-        PUBLIC METHOD SkipRaw( move AS LONG ) AS LOGIC
+        OVERRIDE METHOD SkipRaw( move AS LONG ) AS LOGIC
             BEGIN LOCK SELF
                 local result as LOGIC
                 IF SELF:CurrentOrder != NULL
@@ -461,7 +461,7 @@ BEGIN NAMESPACE XSharp.RDD
         #ENDREGION
 
         #REGION GoCold, GoHot, Flush
-        PUBLIC OVERRIDE METHOD GoCold() AS LOGIC
+        OVERRIDE METHOD GoCold() AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := TRUE
@@ -476,7 +476,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SUPER:GoCold()
             END LOCK
 
-        PUBLIC OVERRIDE METHOD GoHot() AS LOGIC
+        OVERRIDE METHOD GoHot() AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := TRUE
@@ -488,7 +488,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SELF:_indexList:GoHot()
             END LOCK
 
-        PUBLIC OVERRIDE METHOD Flush() AS LOGIC
+        OVERRIDE METHOD Flush() AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := TRUE

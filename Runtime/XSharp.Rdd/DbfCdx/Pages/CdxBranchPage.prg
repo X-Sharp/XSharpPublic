@@ -92,7 +92,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
             //? "Branch Page", SELF:PageNoX, SELF:NumKeys, "Startswith ", GetRecno(0), _bag:_oRDD:_Encoding:GetString(GetKey(0),0,_keyLen)
-        INTERNAL METHOD InitBlank(oTag AS CdxTag) AS VOID
+        INTERNAL OVERRIDE METHOD InitBlank(oTag AS CdxTag) AS VOID
             SELF:PageType   := CdxPageType.Branch
             SELF:NumKeys    := 0
             SELF:LeftPtr    := SELF:RightPtr   := -1
@@ -110,19 +110,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER:Clear()
             SELF:_clear()
 
-        INTERNAL METHOD Read() AS LOGIC
+        INTERNAL OVERRIDE METHOD Read() AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := SUPER:Read()
             RETURN lOk
 
-        INTERNAL METHOD GetKey(nPos AS Int32) AS BYTE[]
+        INTERNAL OVERRIDE METHOD GetKey(nPos AS Int32) AS BYTE[]
             LOCAL nStart AS INT
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
             RETURN SELF:_GetBytes( nStart, _keyLen)
 
         [INLINE];
-        INTERNAL METHOD GetRecno(nPos AS Int32) AS Int32
+        INTERNAL OVERRIDE METHOD GetRecno(nPos AS Int32) AS Int32
             LOCAL nStart AS INT
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
@@ -137,12 +137,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_SetLongLE(nStart+_pageNoOffSet, nPage)
             return CdxAction.Ok
 
-        INTERNAL METHOD GetChildPage(nPos AS Int32) AS Int32
+        INTERNAL OVERRIDE METHOD GetChildPage(nPos AS Int32) AS Int32
             LOCAL nStart AS INT
             nStart := CDXBRANCH_HEADERLEN + nPos * _dataLen
             RETURN SELF:_GetLongLE(nStart+_pageNoOffSet)
 
-        INTERNAL METHOD GetChildren as IList<LONG>
+        INTERNAL OVERRIDE METHOD GetChildren as IList<LONG>
             // used in the dump routine to avoid recursion
             VAR oList := List<LONG>{}
             FOR VAR i := 0 to SELF:NumKeys - 1
@@ -156,7 +156,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // The _Set.. methods set the isHot flag of the page automatically
 
 
-        INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[(WORD) (SELF:NumKeys-1)])
+        INTERNAL OVERRIDE PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[(WORD) (SELF:NumKeys-1)])
 
         INTERNAL PROPERTY MaxKeys AS LONG GET _maxKeys
 
@@ -319,7 +319,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             RETURN CdxAction.Ok
 
-        INTERNAL METHOD Dump AS STRING
+        INTERNAL OVERRIDE METHOD Dump AS STRING
             LOCAL sb AS StringBuilder
             LOCAL i := 0 AS WORD
             sb := StringBuilder{}

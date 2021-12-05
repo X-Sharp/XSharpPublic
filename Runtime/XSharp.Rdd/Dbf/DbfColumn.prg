@@ -758,13 +758,13 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN TRUE  
 	    
         /// <inheritdoc/>
-        VIRTUAL METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
+        OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             // FoxPro throws an error when writing to an autonumber field. We do that too.    
             SELF:RDD:_dbfError(Subcodes.ERDD_WRITE ,EG_READONLY,"PutValue", i"Field '{SELF:Name}' is ReadOnly")
             RETURN FALSE
 	    
         /// <inheritdoc/>
-        VIRTUAL METHOD NewRecord(buffer AS BYTE[]) AS VOID
+        OVERRIDE METHOD NewRecord(buffer AS BYTE[]) AS VOID
             // when shared then read the header again to get the current values of the counter and incrstep
             // increment the counter and write to the header
             // then write the current value to the buffer

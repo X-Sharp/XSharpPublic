@@ -39,7 +39,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_ReadOnly := oRDD:ReadOnly
 
             /// <inheritdoc />
-        METHOD Flush() AS LOGIC
+        OVERRIDE METHOD Flush() AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
             IF SELF:IsOpen
                 SELF:_oStream:Flush()
@@ -48,7 +48,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOk
 
         /// <inheritdoc />
-        VIRTUAL METHOD CloseMemFile( ) AS LOGIC
+        OVERRIDE METHOD CloseMemFile( ) AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
             IF SELF:IsOpen
                 //
@@ -65,7 +65,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN isOk
 
-        VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
+        OVERRIDE METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             SELF:FileName  := System.IO.Path.ChangeExtension( info:FullName, SELF:Extension )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
@@ -77,7 +77,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN SELF:IsOpen
 
-       VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
+       OVERRIDE METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             SELF:FileName  := System.IO.Path.ChangeExtension( info:FullName, SELF:Extension )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly

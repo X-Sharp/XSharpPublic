@@ -406,6 +406,184 @@ namespace XSharp.LanguageService
             WriteOutputMessage("FormatDocument() <<--");
         }
 
+        private void FormatSpan_Next(IEnumerable<ITextSnapshotLine> lines, int startLine, int endLine, int startIndent)
+        {
+
+            XSharpTokens xTokens = null;
+            // Already been lexed ?
+            if (_buffer.Properties != null && _buffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens))
+            {
+                if ((xTokens == null) || !xTokens.Complete)
+                {
+                    WriteOutputMessage("FormatSpan : no Tokens in the current buffer.");
+                    return;
+                }
+            }
+            var xLines = xTokens.Lines;
+            // Retrieve the current settings
+            SourceCodeEditorSettings settings = null;
+            if (!_buffer.Properties.TryGetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings), out settings))
+            {
+                WriteOutputMessage("FormatSpan : no Settings in the current buffer.");
+                return;
+            }
+            XSharpLineState linesState = null;
+            if (!_buffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
+            {
+                WriteOutputMessage("FormatSpan : no LineState in the current buffer.");
+                return;
+            }
+            // Create an Edit Session
+            var editSession = _buffer.CreateEdit();
+            try
+            {
+                // Init to -1, so first lineNumber is 0
+                int lineNumber = -1;
+                int indentSize = startIndent;
+                int lineContinue = 0;
+                int nextIndentSize = 0;
+                int multiIndentSize = 0;
+                int moveAfterFormatting = 0;
+                int moveContinuingLine = 0;
+                List<Tuple<int, int>> nestedEntity = new List<Tuple<int, int>>();
+                List<ITextSnapshotLine> listDoc = new List<ITextSnapshotLine>();
+                List<ITextSnapshotLine> listAttributes = new List<ITextSnapshotLine>();
+                List<ITextSnapshotLine> listMulti = new List<ITextSnapshotLine>();
+                IToken endToken = null;
+                IList<XSharpToken> lineTokens = null;
+                // We are more forward, line per line
+                foreach (var snapLine in lines)
+                {
+                    // The current Line Number (from 0 to LineCount-1)
+                    lineNumber++;
+                    ///// used by FormatSelection
+                    //if (lineNumber < startLine)
+                    //    continue;
+                    //if (lineNumber > endLine)
+                    //    break;
+                    /////
+                    // Ignore Empty lines
+                    if (snapLine.Length > 0)
+                    {
+                        var lineState = linesState.GetFlags(lineNumber);
+                        // XML Doc will be re-indented when we find the corresponding entity
+                        if (lineState == LineFlags.DocComments)
+                        {
+                            listDoc.Add(snapLine);
+                            continue;
+                        }
+                        if (lineState != LineFlags.SingleLineComments)
+                        {
+                            if (!xLines.TryGetValue(lineNumber, out lineTokens))
+                                continue;
+                            FormattingLineContext context = new FormattingLineContext(lineTokens, this.ParseOptions.Dialect);
+                            // Get the first Token on line
+                            IToken startToken = context.GetFirstToken(true);
+                            if (startToken != null)
+                            {
+                                // Token is NewLine ? Skip
+                                if (startToken.Type == XSharpLexer.NL)
+                                    continue;
+                                // How does the line end ?
+                                endToken = context.GetLastToken(true);
+
+                                // Certainly an Attribut, save for later indentation
+                                if ((startToken.Type == XSharpLexer.LBRKT) && (endToken.Type == XSharpLexer.LINE_CONT))
+                                {
+                                    listAttributes.Add(snapLine);
+                                    continue;
+                                }
+                                // Line continuation, save for later indentation
+                                if (lineContinue == 1)
+                                {
+                                    listMulti.Add(snapLine);
+                                    if (endToken.Type != XSharpLexer.LINE_CONT)
+                                        lineContinue = 0;
+                                    continue;
+                                }
+                                // Not a continuing line
+                                if (lineContinue == 0)
+                                {
+                                    indentSize = GetLineIndentation_Next(context, nextIndentSize, settings, out moveAfterFormatting, out moveContinuingLine, nestedEntity);
+                                }
+                            }
+                            //
+                            if ((snapLine.LineNumber >= startLine) && (snapLine.LineNumber <= endLine))
+                                if (canFormatLine(snapLine))
+                                {
+                                    FormatLineCase_Next(context, editSession, snapLine);
+                                }
+                            // Do we have XMLDoc waiting ?
+                            if (listDoc.Count > 0)
+                            {
+                                foreach (var docLine in listDoc)
+                                {
+                                    if ((docLine.LineNumber >= startLine) && (docLine.LineNumber <= endLine))
+                                        FormatLineIndent(editSession, docLine, indentSize * settings.IndentSize);
+                                }
+                                listDoc.Clear();
+                            }
+                            // Do we have Attributes waiting ?
+                            if (listAttributes.Count > 0)
+                            {
+                                foreach (var attrLine in listAttributes)
+                                {
+                                    if ((attrLine.LineNumber >= startLine) && (attrLine.LineNumber <= endLine))
+                                        FormatLineIndent(editSession, attrLine, indentSize * settings.IndentSize);
+                                }
+                                listAttributes.Clear();
+                            }
+                            // Do we have some line Continuation waiting ?
+                            if (listMulti.Count > 0)
+                            {
+                                foreach (var multiLine in listMulti)
+                                {
+                                    if ((multiLine.LineNumber >= startLine) && (multiLine.LineNumber <= endLine))
+                                        FormatLineIndent(editSession, multiLine, multiIndentSize * settings.IndentSize);
+                                }
+                                listMulti.Clear();
+                            }
+                        }
+                        // Ok, now format....
+                        if ((snapLine.LineNumber >= startLine) && (snapLine.LineNumber <= endLine))
+                            FormatLineIndent(editSession, snapLine, indentSize * settings.IndentSize);
+                        //
+                        nextIndentSize = indentSize;
+                        nextIndentSize += moveAfterFormatting;
+                        // The current line will continue
+                        if (endToken?.Type == XSharpLexer.LINE_CONT)
+                        {
+                            lineContinue = 1;
+                            if (settings.IndentMultiLines)
+                                multiIndentSize = indentSize + moveContinuingLine;
+                            else
+                                multiIndentSize = indentSize;
+                        }
+                        else
+                        {
+                            lineContinue = 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                WriteOutputMessage("FormatSpan : error " + e.Message);
+            }
+            finally
+            {
+                // Validate the Edit Session ?
+                if (editSession.HasEffectiveChanges)
+                {
+                    editSession.Apply();
+                }
+                else
+                {
+                    editSession.Cancel();
+                }
+            }
+        }
+
         private void FormatSpan(IEnumerable<ITextSnapshotLine> lines, int startLine, int endLine, int startIndent)
         {
             FormattingContext context = null;
@@ -557,7 +735,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                WriteOutputMessage("FormatDocument : error " + e.Message);
+                WriteOutputMessage("FormatSpan : error " + e.Message);
             }
             finally
             {
@@ -572,7 +750,6 @@ namespace XSharp.LanguageService
                 }
             }
         }
-
 
         /// <summary>
         /// Calculate the indentation in characters
@@ -894,55 +1071,311 @@ namespace XSharp.LanguageService
         }
 
 
-        private int getLineLength(ITextSnapshot snapshot, int start)
+        private int GetLineIndentation_Next(FormattingLineContext context, int currentIndent, SourceCodeEditorSettings settings, out int moveAfterFormatting, out int moveContinuingLine, List<Tuple<int, int>> nestedEntity)
         {
-            int length = 0;
-            bool found = false;
-            char car;
-            int currrentPos = start;
-            int pos = 0;
-            bool mayContinue = false;
-            char[] newLine = Environment.NewLine.ToCharArray();
-            do
+            // 
+            moveAfterFormatting = 0;
+            moveContinuingLine = 0;
+            try
             {
-                car = snapshot[currrentPos];
-                if (car == newLine[pos])
+                // Go to the begginning of the line
+                IToken openKeyword = context.GetFirstToken(true, true);
+                IToken nextKeyword = null;
+                Tuple<int, int> current;
+                if (openKeyword == null)
                 {
-                    if (pos == newLine.Length - 1)
-                    {
-                        if (!mayContinue)
-                        {
-                            found = true;
-                            break;
-                        }
-                        pos = 0;
-                    }
-                    else
-                        pos++;
+                    WriteOutputMessage("FormatDocument : Error when moving in Tokens");
+                    return 0; // This should never happen
                 }
-                else
+                // These must NOT change the indentation, so eat them
+                int[] typeToIgnore = { XSharpLexer.PRIVATE, XSharpLexer.HIDDEN,
+                                    XSharpLexer.PROTECTED, XSharpLexer.INTERNAL,
+                                    XSharpLexer.PUBLIC, XSharpLexer.EXPORT,
+                                    XSharpLexer.CONST, XSharpLexer.VIRTUAL, XSharpLexer.STATIC };
+                while (typeToIgnore.Contains<int>(openKeyword.Type))
                 {
-                    if (car == ';')
-                        mayContinue = true;
-                    else
-                        mayContinue = false;
-                    pos = 0;
+                    // Check the next one
+                    context.MoveToNext();
+                    openKeyword = context.GetFirstToken(true, true);
+                    if (openKeyword == null)
+                    {
+                        WriteOutputMessage("FormatDocument : Error when moving in Tokens");
+                        return currentIndent; // This should never happen
+                    }
+                }
+                //int startTokenType = openKeyword.Type;
+                // DEFINE CLASS in VFP
+                if (openKeyword.Type == XSharpLexer.DEFINE)
+                {
+                    if (context.Dialect == XSharpDialect.FoxPro)
+                    {
+                        // Check the next one
+                        context.MoveToNext();
+                        openKeyword = context.GetFirstToken(true);
+                        if (openKeyword == null)
+                        {
+                            WriteOutputMessage("FormatDocument : Error when moving in Tokens");
+                            return currentIndent; // This should never happen
+                        }
+                        if (openKeyword.Type != XSharpLexer.CLASS)
+                            context.MoveBack();
+                    }
                 }
                 //
-                currrentPos++;
-                if (currrentPos >= snapshot.Length)
+                if (!isIgnored(openKeyword.Type))
                 {
-                    break;
-                }
-            } while (!found);
-            //
-            if (found)
-            {
-                length = (currrentPos - start + 1) - newLine.Length;
-            }
-            return length;
-        }
+                    if (isOpenEntity(openKeyword.Type))
+                    {
+                        // Open Entity
+                        // We are inside something ?
+                        if (nestedEntity.Count() > 0)
+                        {
+                            current = nestedEntity.Peek();
+                            if (isMemberStart(current.Item1) || isOpenEntityWithOptionalEndMarker(current.Item1))
+                            {
+                                // Move back this opening Keyword
+                                currentIndent = current.Item2;
+                                nestedEntity.Pop();
+                            }
+                        }
+                        // Move inside this opening Keyword for the next line
+                        // and indicate that as the minimum indenting size
+                        if (settings.IndentEntityContent)
+                            moveAfterFormatting++;
+                        nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                    }
+                    else if (isMemberStart(openKeyword.Type))
+                    {
+                        if (nestedEntity.Count() > 0)
+                        {
+                            current = nestedEntity.Peek();
+                            if (isMemberStart(current.Item1) || !isOpenEntityWithEndMarker(current.Item1))
+                            {
+                                // Move back this opening Keyword
+                                current = nestedEntity.Pop();
+                                currentIndent = current.Item2;
+                            }
+                        }
+                        // Does this line continue ?
+                        if (settings.IndentMultiLines)
+                        {
+                            var endToken = context.GetLastToken(true);
+                            if (endToken.Type == XSharpLexer.LINE_CONT)
+                            {
+                                moveContinuingLine++;
+                            }
+                        }
+                        // Move inside this opening Keyword for the next line
+                        if (settings.IndentBlockContent)
+                            moveAfterFormatting++;
+                        nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                    }
+                    else if (isAddOrRemove(openKeyword.Type))
+                    {
+                        if (nestedEntity.Count() > 0)
+                        {
+                            current = nestedEntity.Peek();
+                            if (current.Item1 == XSharpLexer.EVENT)
+                            {
+                                // Move back this opening Keyword
+                                //currentIndent--;
+                            }
+                        }
+                        // Move inside this opening Keyword for the next line
+                        // and indicate that as the minimum indenting size
+                        moveAfterFormatting++;
+                        nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                    }
+                    else if (isSetOrGet(openKeyword.Type))
+                    {
+                        if (nestedEntity.Count() > 0)
+                        {
+                            current = nestedEntity.Peek();
+                            if (current.Item1 == XSharpLexer.PROPERTY)
+                            {
+                                // Move back this opening Keyword
+                                //currentIndent--;
+                            }
+                        }
+                        // Move inside this opening Keyword for the next line
+                        // and indicate that as the minimum indenting size
+                        moveAfterFormatting++;
+                        nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                    }
+                    else if (openKeyword.Type == XSharpLexer.BEGIN)
+                    {
+                        // NAMESPACE ?
+                        // Check the next one
+                        context.MoveToNext();
+                        nextKeyword = context.GetFirstToken(true);
+                        if (nextKeyword != null)
+                        {
+                            if (nextKeyword.Type == XSharpLexer.NAMESPACE)
+                            {
+                                // A NAMESPACE alwasy start in 0
+                                currentIndent = 0;
+                            }
+                            context.MoveBack();
+                            nestedEntity.Push(new Tuple<int, int>(nextKeyword.Type, currentIndent));
+                        }
+                        moveAfterFormatting++;
+                    }
+                    else if (openKeyword.Type == XSharpLexer.DO)
+                    {
+                        // DO CASE, DO WHILE, ...
+                        // Check the next one
+                        context.MoveToNext();
+                        nextKeyword = context.GetFirstToken(true);
+                        if (nextKeyword != null)
+                        {
+                            context.MoveBack();
+                            nestedEntity.Push(new Tuple<int, int>(nextKeyword.Type, currentIndent));
+                        }
+                        if ((nextKeyword.Type == XSharpLexer.CASE) && (settings.IndentCaseLabel))
+                            moveAfterFormatting++;
+                    }
+                    else if (isStartOfBlock(openKeyword.Type) || isForOrForeach(openKeyword.Type))
+                    {
+                        // SWITCH is here as a start of block, DO CASE as it's own start of block
+                        if (openKeyword.Type == XSharpLexer.SWITCH)
+                        {
+                            if (settings.IndentCaseLabel)
+                                moveAfterFormatting++;
+                        }
+                        else
+                        {
+                            moveAfterFormatting++;
+                            // Does this line continue ?
+                            if (settings.IndentMultiLines)
+                            {
+                                var endToken = context.GetLastToken(true);
+                                if (endToken.Type == XSharpLexer.LINE_CONT)
+                                {
+                                    moveContinuingLine++;
+                                }
+                            }
+                        }
+                        nestedEntity.Push(new Tuple<int, int>(openKeyword.Type, currentIndent));
+                    }
+                    else if (isMiddleOfBlock(openKeyword.Type))
+                    {
+                        // Move back this opening Keyword
+                        currentIndent--;
+                        // Move inside this opening Keyword for the next line
+                        moveAfterFormatting++;
+                    }
+                    else if (isCaseOrOtherwise(openKeyword.Type))
+                    {
+                        // Move back keywords (or not) ( CASE, OTHERWISE )
+                        // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
+                        current = null;
+                        // we CANNOT have a CASE/OTHERWISE alone....
+                        if (nestedEntity.Count() > 0)
+                        {
+                            // This one should be a CASE or SWITCH
+                            current = nestedEntity.Peek();
+                            // This is the indentation of the "container"
+                            currentIndent = current.Item2;
+                            // Check for a setting
+                            if (settings.IndentCaseLabel)
+                                currentIndent++;
+                            if (settings.IndentCaseContent)
+                                moveAfterFormatting++;
+                        }
+                    }
+                    else if (openKeyword.Type == XSharpLexer.END)
+                    {
+                        // Closing Keywords
+                        // What about END CLASS, END NAMESPACE, END VOSTRUCT,
+                        current = null;
+                        if (nestedEntity.Count() > 0)
+                        {
+                            current = nestedEntity.Peek();
+                        }
+                        // Check the next one
+                        context.MoveToNext();
+                        nextKeyword = context.GetFirstToken(true);
+                        if ((nextKeyword != null) && (current != null))
+                        {
+                            context.MoveBack();
+                            if ((current.Item1 == nextKeyword.Type) ||
+                               ((current.Item1 == XSharpLexer.WHILE) && (nextKeyword.Type == XSharpLexer.DO)))
+                            {
+                                // Move back this opening Keyword
+                                // Close the Entity
+                                current = nestedEntity.Pop();
+                                currentIndent = current.Item2;
+                            }
+                            else
+                            {
+                                if ((nextKeyword.Type == XSharpLexer.NAMESPACE) || isOpenEntity(nextKeyword.Type))
+                                {
+                                    // Do we have such block Type before in the list ?
+                                    int found = nestedEntity.FindLastIndex((pair) => pair.Item1 == nextKeyword.Type);
+                                    if (found > -1)
+                                    {
+                                        while (nestedEntity.Count - 1 >= found)
+                                        {
+                                            // Move back this opening Keyword
+                                            // Close the Entity
+                                            current = nestedEntity.Pop();
+                                            currentIndent = current.Item2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (current != null)
+                        {
+                            if (isStartOfBlock(current.Item1) || isMemberStart(current.Item1) ||
+                                isOpenEntity(current.Item1) || isAddOrRemove(current.Item1) ||
+                                isSetOrGet(current.Item1) || isCaseOrOtherwise(current.Item1))
 
+                            {
+                                // Move back this opening Keyword
+                                // Close the Entity
+                                current = nestedEntity.Pop();
+                                currentIndent = current.Item2;
+                            }
+                        }
+                    }
+                    else if (isNext(openKeyword.Type) || isEndOfBlock(openKeyword.Type))
+                    {
+                        // Move the Keyword back
+                        if (nestedEntity.Count() > 0)
+                        {
+                            current = nestedEntity.Peek();
+                            if (((current.Item1 == XSharpLexer.FOR) && (openKeyword.Type == XSharpLexer.NEXT)) ||
+                                 ((current.Item1 == XSharpLexer.FOREACH) && (openKeyword.Type == XSharpLexer.NEXT)) ||
+                                 ((current.Item1 == XSharpLexer.IF) && (openKeyword.Type == XSharpLexer.ENDIF)) ||
+                                 ((current.Item1 == XSharpLexer.WHILE) && (openKeyword.Type == XSharpLexer.ENDDO)) ||
+                                 ((current.Item1 == XSharpLexer.CASE) && (openKeyword.Type == XSharpLexer.ENDCASE)) ||
+                                 ((current.Item1 == XSharpLexer.REPEAT) && (openKeyword.Type == XSharpLexer.UNTIL)) ||
+                                 ((current.Item1 == XSharpLexer.PP_IFDEF) && (openKeyword.Type == XSharpLexer.PP_ENDIF)) ||
+                                 ((current.Item1 == XSharpLexer.PP_IFNDEF) && (openKeyword.Type == XSharpLexer.PP_ENDIF))
+                                 )
+                            {
+                                // Move back this opening Keyword
+                                // Close the Entity
+                                current = nestedEntity.Pop();
+                                currentIndent = current.Item2;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                WriteOutputMessage("GetLineIndentation : error " + e.Message);
+            }
+            // This should NOT happen
+            if (currentIndent < 0)
+            {
+                currentIndent = 0;
+            }
+            // The number of needed indentation
+            return currentIndent;
+        }
 
         /// <summary>
         /// Format the current selection
@@ -1387,6 +1820,7 @@ namespace XSharp.LanguageService
             return keyword;
         }
 
+        /*
         private string getKeywordInLine(ITextSnapshotLine line, int start, int length, int keywordPosition)
         {
             var tokens = getTokensInLine(line.Snapshot, start, length);
@@ -1479,6 +1913,7 @@ namespace XSharp.LanguageService
             }
             return keyword;
         }
+        */
         #endregion
 
 
@@ -2118,6 +2553,194 @@ namespace XSharp.LanguageService
             }
         }
 
+        internal class FormattingLineContext
+        {
+            readonly IList<XSharpToken> allLineTokens;
+            int currentIndex;
+            int prevIndex;
+            int currentPosition;
+            public XSharpDialect Dialect { get; private set; }
+
+            public int CurrentIndex
+            {
+                get
+                {
+                    return currentIndex;
+                }
+
+                set
+                {
+                    currentIndex = value;
+                    if (currentIndex < allLineTokens.Count && currentIndex >= 0)
+                        currentPosition = allLineTokens[currentIndex].StartIndex;
+                    else
+                        currentPosition = -1;
+                }
+            }
+
+            public int CurrentPosition
+            {
+                get
+                {
+                    return currentPosition;
+                }
+
+            }
+
+
+            internal FormattingLineContext(IList<XSharpToken> tokens, XSharpDialect dialect)
+            {
+                allLineTokens = tokens;
+                if (allLineTokens.Count > 0)
+                {
+                    currentIndex = 0;
+                    prevIndex = 0;
+                    currentPosition = allLineTokens[0].StartIndex;
+                }
+                else
+                {
+                    currentIndex = -1;
+                    prevIndex = -1;
+                    currentPosition = -1;
+                }
+                //
+                Dialect = dialect;
+            }
+
+            /// <summary>
+            /// Move to the next Token
+            /// </summary>
+            public void MoveToNext()
+            {
+                this.prevIndex = this.currentIndex;
+                this.CurrentIndex++;
+            }
+
+            /// <summary>
+            /// Move back to the previous position.
+            /// This can be done after a MoveToNext or a GetFirstToken with andMove==true
+            /// </summary>
+            public void MoveBack()
+            {
+                this.CurrentIndex = this.prevIndex;
+            }
+
+            /// <summary>
+            /// Get the first token in the current line, starting from the current position.
+            /// The operation won't skip line, so it can return NULL if there are no token in the line.
+            /// </summary>
+            /// <param name="ignoreSpaces">Ignore Spaces</param>
+            /// <param name="andMove">move the position to the found Token. Default to False</param>
+            /// <returns></returns>
+            public IToken GetFirstToken(bool ignoreSpaces, bool andMove = false)
+            {
+                IToken first = null;
+                int start = 0;
+                if (currentPosition > -1)
+                {
+                    int currentLine = allLineTokens[currentIndex].Line;
+                    start = currentIndex;
+                    while (start < allLineTokens.Count)
+                    {
+                        IToken token = allLineTokens[start];
+                        if (token.Line != currentLine)
+                        {
+                            break;
+                        }
+                        // skip whitespace tokens
+                        if (((token.Type == XSharpLexer.WS) && ignoreSpaces) ||
+                            (token.Type == XSharpLexer.EOS))
+                        {
+                            start++;
+                            continue;
+                        }
+                        else
+                        {
+                            first = token;
+                            break;
+                        }
+                    }
+                }
+                if ((first != null) && andMove)
+                {
+                    this.prevIndex = currentIndex;
+                    this.CurrentIndex = start;
+                }
+                return first;
+            }
+
+            /// <summary>
+            /// Get the last token in the current line
+            /// </summary>
+            /// <param name="ignoreSpaces">Ignore Spaces</param>
+            /// <returns></returns>
+            public IToken GetLastToken(bool ignoreSpaces)
+            {
+                IToken last = null;
+                if (currentPosition > -1)
+                {
+                    int currentLine = allLineTokens[currentIndex].Line;
+                    int start = currentIndex;
+                    // Move to the end, and pass
+                    while (start < allLineTokens.Count)
+                    {
+                        IToken token = allLineTokens[start];
+                        if (token.Line != currentLine)
+                        {
+                            break;
+                        }
+                        // skip whitespace tokens
+                        if (((token.Type == XSharpLexer.WS) && ignoreSpaces) ||
+                            (token.Type == XSharpLexer.EOS))
+                        {
+                            start++;
+                            continue;
+                        }
+                        last = token;
+                        start++;
+                    }
+                }
+                return last;
+            }
+
+            /// <summary>
+            /// Get the first token, starting from the current position.
+            /// This can move to another line.
+            /// </summary>
+            /// <param name="ignoreSpaces"></param>
+            /// <returns></returns>
+            public IToken GetToken(bool ignoreSpaces)
+            {
+                IToken first = null;
+                if (currentPosition > -1)
+                {
+                    //int currentLine = allTokens[currentIndex].Line;
+                    int start = currentIndex;
+                    while (start < allLineTokens.Count)
+                    {
+                        IToken token = allLineTokens[start];
+                        // skip whitespace tokens
+                        if (((token.Type == XSharpLexer.WS) && ignoreSpaces) ||
+                            (token.Type == XSharpLexer.EOS))
+                        {
+                            start++;
+                            continue;
+                        }
+                        else
+                        {
+                            first = token;
+                            break;
+                        }
+                    }
+                    //
+                    CurrentIndex = start;
+                }
+                return first;
+            }
+
+        }
+
+        /*
         /// <summary>
         /// A RegionTag has a TagSpan ans a TagType
         /// </summary>
@@ -2151,7 +2774,7 @@ namespace XSharp.LanguageService
             { }
 
         }
-
+        */
 
         private void FormatLineCase(FormattingContext context, ITextEdit editSession, ITextSnapshotLine line)
         {
@@ -2198,6 +2821,52 @@ namespace XSharp.LanguageService
             }
 
         }
+
+        private void FormatLineCase_Next(FormattingLineContext context, ITextEdit editSession, ITextSnapshotLine line)
+        {
+            if (XSettings.DebuggerIsRunning)
+            {
+                return;
+            }
+            if (!canFormatLine(line))
+            {
+                return;
+            }
+
+            if (XSettings.KeywordCase == KeywordCase.None)
+            {
+                return;
+            }
+            if (line.LineNumber == getCurrentLine())
+            {
+                // Come back later.
+                registerLineForCaseSync(line.LineNumber);
+                return;
+            }
+            WriteOutputMessage($"formatLineCaseV2({line.LineNumber + 1})");
+            //
+            IToken token = context.GetToken(true);
+            int workOnLine = -1;
+            if (token != null)
+                workOnLine = token.Line;
+            while (token != null)
+            {
+                formatToken(editSession, 0, token);
+                //
+                context.MoveToNext();
+                token = context.GetToken(true);
+                if (token != null)
+                {
+                    if (token.Line != workOnLine)
+                    {
+                        context.MoveBack();
+                        token = null;
+                    }
+                }
+            }
+
+        }
+
         #endregion
 
     }

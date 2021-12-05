@@ -5,6 +5,8 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using System.Reflection;
 using XSharpModel;
+using LanguageService.SyntaxTree;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace XSharp.LanguageService
 {
@@ -73,41 +75,20 @@ namespace XSharp.LanguageService
             }
         }
 
-        internal static int CalculateCommaPosition(string sigText, int lastPos)
+        internal static int CalculateCommaPosition(string sigText, int lastPos, ITextBuffer buffer)
         {
+
+            var classifier = buffer.GetClassifier();
+            var walker = classifier.SourceWalker;
+            var stream = walker.Lex(sigText);
+            var tokens = ((BufferedTokenStream)stream).GetTokens();
             int commaCount = 0;
-            bool instring = false;
-            char endchar = '\0';
-            int currentPos = 0;
-            foreach (char ch in sigText)
+            foreach (var token in tokens)
             {
-                if (currentPos > lastPos)
-                {
+                if (token.Column > lastPos)
                     break;
-                }
-                currentPos += 1;
-                if (!instring)
-                {
-                    switch (ch)
-                    {
-                        case '\'':
-                        case '"':
-                            instring = true;
-                            endchar = ch;
-                            break;
-                        case '[':
-                            instring = true;
-                            endchar = ']';
-                            break;
-                        case ',':
-                            commaCount++;
-                            break;
-                    }
-                }
-                else if (ch == endchar)
-                {
-                    instring = false;
-                }
+                if (token.Type == XSharpLexer.COMMA)
+                    commaCount += 1;
             }
             return commaCount;
         }
@@ -124,8 +105,7 @@ namespace XSharp.LanguageService
             string sigText = ApplicableToSpan.GetText(m_subjectBuffer.CurrentSnapshot);
             if ( atPosition == -1 )
                 atPosition = sigText.Length;
-            var commaCount = CalculateCommaPosition(sigText, atPosition);
-
+            var commaCount = CalculateCommaPosition(sigText, atPosition, m_subjectBuffer);
 
             if (commaCount < Parameters.Count)
             {
@@ -405,7 +385,7 @@ namespace XSharp.LanguageService
             //the number of commas in the string is the index of the current parameter
             string sigText = ApplicableToSpan.GetText(m_textBuffer.CurrentSnapshot);
 
-            var commaCount = XSharpVsSignature.CalculateCommaPosition(sigText,sigText.Length);
+            var commaCount = XSharpVsSignature.CalculateCommaPosition(sigText,sigText.Length, m_textBuffer);
 
             //
             List<ISignature> signatures = new List<ISignature>();

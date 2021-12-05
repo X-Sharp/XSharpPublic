@@ -259,14 +259,17 @@ END CLASS
                 var result := SELF:VisibilityKeyword + " "
                 result += SELF:ModifiersKeyword + " "
                 result += SELF:KindKeyword + " "
+                var temp := SELF:GetProtoType(TRUE)
                 if (SELF:Kind == Kind.Constructor)
-                    var temp := SELF:Prototype
                     temp := temp.Replace('}',')')
                     var pos := temp.IndexOf('{')
                     temp := "("+temp:Substring(pos+1)
                     result += temp
                 ELSE
-                    result += SELF:Prototype
+                    result += temp
+                endif
+                if self:CallingConvention == CallingConvention.Clipper
+                    result += " CLIPPER"
                 endif
                 RETURN result:Replace("  ", " ")
             END GET
@@ -449,6 +452,7 @@ END CLASS
 
 
       METHOD AddTypeParameters(aPars AS Mono.Collections.Generic.Collection<GenericParameter>) AS VOID
+         SELF:_signature:TypeParameters:Clear()
          FOREACH typeParam AS Mono.Cecil.GenericParameter IN aPars
             SELF:_signature:TypeParameters:Add(typeParam:Name)
          NEXT

@@ -288,7 +288,7 @@ class     EntityObject
             oParam:cType := cType
             return
 
-            virtual method ToString() as string
+            OVERRIDE method ToString() as string
             local cRet as string
             //		LOCAL n AS INT
             if self:eType == EntityType._Property .or. self:eType == EntityType._Access .or. self:eType == EntityType._Assign .or. ;

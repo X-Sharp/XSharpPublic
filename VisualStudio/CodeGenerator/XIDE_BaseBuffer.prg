@@ -11,9 +11,9 @@ CLASS BaseBuffer INHERIT LanguageBuffer
 		SUPER(eFileType , _aLines)
 	RETURN
 
-	VIRTUAL PROTECTED METHOD Parse(eItems AS BufferParseItems) AS ArrayList
+	OVERRIDE PROTECTED METHOD Parse(eItems AS BufferParseItems) AS ArrayList
 	RETURN SELF:Parse(eItems , 0 , 0 , 0)
-	VIRTUAL PROTECTED METHOD Parse(eItems AS BufferParseItems , nStartLine AS INT , nEndLine AS INT , nExceptLine AS INT) AS ArrayList
+	OVERRIDE PROTECTED METHOD Parse(eItems AS BufferParseItems , nStartLine AS INT , nEndLine AS INT , nExceptLine AS INT) AS ArrayList
 #region locals
 		LOCAL oLine AS LineObject
 		LOCAL oStatementLine AS LineObject

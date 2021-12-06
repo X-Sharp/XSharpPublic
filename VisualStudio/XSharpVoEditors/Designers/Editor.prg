@@ -94,7 +94,7 @@ INTERNAL SEALED CLASS ParseInfo
 		SELF:aParams:Set(SELF:aParams:Count - 1 , cType)
 	RETURN
 
-	METHOD ToString() AS STRING
+	OVERRIDE METHOD ToString() AS STRING
 		LOCAL cRet AS STRING
 		LOCAL n AS INT
 		IF SELF:eType == EntityType._Access .or. SELF:eType == EntityType._Assign .or. SELF:eType == EntityType._Constructor .or. SELF:eType == EntityType._Destructor .or. SELF:eType == EntityType._Event .or. SELF:eType == EntityType._IVar .or. SELF:eType == EntityType._Method

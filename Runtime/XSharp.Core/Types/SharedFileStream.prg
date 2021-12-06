@@ -46,7 +46,7 @@ BEGIN NAMESPACE XSharp.IO
         RETURN
         /// <inheritdoc />
         /// <remarks>This method calls the Windows GetFileSize() function directly.</remarks>
-        PUBLIC PROPERTY Length AS INT64
+        PUBLIC OVERRIDE PROPERTY Length AS INT64
             GET
                   IF GetFileSizeEx(SELF:hFile, OUT VAR size)
                       RETURN size

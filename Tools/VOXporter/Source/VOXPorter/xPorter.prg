@@ -202,7 +202,7 @@ CLASS WarningDialog INHERIT Form
 		SELF:lAllowClose := TRUE
 		SELF:oTimer:Dispose()
 	RETURN
-	PROTECTED METHOD OnClosing(e AS System.ComponentModel.CancelEventArgs) AS VOID
+	PROTECTED OVERRIDE  METHOD OnClosing(e AS System.ComponentModel.CancelEventArgs) AS VOID
 		SUPER:OnClosing(e)
 		IF .NOT. SELF:lAllowClose .AND. Control.ModifierKeys != Keys.Control
 			e:Cancel := TRUE

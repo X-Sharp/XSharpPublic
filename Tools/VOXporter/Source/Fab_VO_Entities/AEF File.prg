@@ -46,7 +46,7 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 	    SELF:Close()
     RETURN
 
-    METHOD Close() AS VOID
+    OVERRIDE METHOD Close() AS VOID
 	    //
 	    SELF:oMS:Close()
 	    SELF:oFS:CLose()
@@ -68,13 +68,13 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 	    cTime := TString( SELF:dwCreateTime % 86400 )
     RETURN cTime
 */
-    ACCESS Description AS STRING
+    OVERRIDE ACCESS Description AS STRING
     RETURN SELF:cDescription
 
-    ACCESS ExeName AS STRING
+    OVERRIDE ACCESS ExeName AS STRING
     RETURN SELF:cExeName
 
-    METHOD ExportModule( cModName AS STRING, cFileName AS STRING ) AS LOGIC
+    OVERRIDE METHOD ExportModule( cModName AS STRING, cFileName AS STRING ) AS LOGIC
         // TODO ExportModule
         /*
 	    LOCAL 	i 			AS INT
@@ -129,7 +129,7 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
     */
     RETURN FALSE
 
-    ACCESS FullPath AS STRING
+    OVERRIDE ACCESS FullPath AS STRING
     RETURN SELF:cFilePath
 
     ASSIGN FullPath( cNew AS STRING )
@@ -210,18 +210,18 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 	    //
     RETURN
 
-    ACCESS IsDLL AS LOGIC
+    OVERRIDE ACCESS IsDLL AS LOGIC
     RETURN ( SELF:cType == "D" )
 
 
-    ACCESS IsLibrary AS LOGIC
+    OVERRIDE ACCESS IsLibrary AS LOGIC
     RETURN ( SELF:cType == "L" )
 
     ACCESS IsConsole AS LOGIC
     RETURN ( SELF:cType == "C" )
 
 
-    ACCESS	IsValid AS LOGIC
+    OVERRIDE ACCESS	IsValid AS LOGIC
     RETURN	SELF:lIsAef
 
 
@@ -249,11 +249,11 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
     	NEXT
     RETURN oList
 
-    ACCESS LibraryNameList AS xARRAY
+    OVERRIDE ACCESS LibraryNameList AS xARRAY
     RETURN SELF:aLibs
 
 
-    ACCESS	ModuleCount AS DWORD
+    OVERRIDE ACCESS	ModuleCount AS DWORD
     RETURN ALen( SELF:aMods )
 
 
@@ -285,7 +285,7 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
     	NEXT
     RETURN oList
 
-    ACCESS	ModuleList AS xARRAY
+    OVERRIDE ACCESS	ModuleList AS xARRAY
 	    LOCAL 	nCpt	AS	DWORD
 	    LOCAL 	nMax	AS	DWORD
 	    LOCAL 	aTemp	AS	xARRAY
@@ -315,10 +315,10 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
 	    //
     RETURN aTemp
 */
-    ACCESS Name	AS STRING
+    OVERRIDE ACCESS Name	AS STRING
     RETURN SELF:cName
 
-    PROTECT METHOD Scan() AS VOID
+    OVERRIDE PROTECT METHOD Scan() AS VOID
 	    LOCAL aTemp		AS xARRAY
 	    LOCAL PosData   AS LONG
 	    LOCAL PosStart  AS LONG
@@ -453,13 +453,13 @@ CLASS FabAEFFile	INHERIT		FabApplicationAbstract
     RETURN
 
 
-    METHOD	SortByName( ) AS VOID
+    OVERRIDE METHOD	SortByName( ) AS VOID
 /*	    // Sort Entities by Names
 	    SELF:aMods := ASort( SELF:aMods, , , { |x,y| x[1] < y[ 1 ] } )
 	    //*/
     RETURN
 
-    ACCESS Success AS LOGIC
+    OVERRIDE ACCESS Success AS LOGIC
     RETURN SELF:lSuccess
 
 

@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp
     VIRTUAL PROPERTY Stack              AS STRING GET SELF:StackTrace SET SELF:StackTrace := Value
 
 	PRIVATE _StackTrace AS STRING
-    VIRTUAL PROPERTY StackTrace         AS STRING
+    OVERRIDE PROPERTY StackTrace         AS STRING
     	GET
     		IF String.IsNullOrEmpty(SELF:_StackTrace)
     			RETURN SUPER:StackTrace

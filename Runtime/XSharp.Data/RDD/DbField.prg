@@ -49,10 +49,10 @@ INTERNAL CLASS XSharp.DbFieldDescriptor INHERIT PropertyDescriptor
     #endregion   
     #region methods
     
-    VIRTUAL METHOD CanResetValue(component AS OBJECT) AS LOGIC
+    OVERRIDE METHOD CanResetValue(component AS OBJECT) AS LOGIC
         RETURN TRUE
         
-    VIRTUAL METHOD GetValue(component AS OBJECT) AS OBJECT
+    OVERRIDE METHOD GetValue(component AS OBJECT) AS OBJECT
         LOCAL record AS DbRecord
         LOCAL returnValue AS OBJECT
         /// cast to strongy typed variable first
@@ -69,25 +69,25 @@ INTERNAL CLASS XSharp.DbFieldDescriptor INHERIT PropertyDescriptor
         ENDIF
         RETURN returnValue
         
-    VIRTUAL METHOD ResetValue(component AS OBJECT) AS VOID
+    OVERRIDE METHOD ResetValue(component AS OBJECT) AS VOID
         SELF:SetValue(component, DBNull.Value)
         
-    VIRTUAL METHOD SetValue(component AS OBJECT, value AS OBJECT) AS VOID
+    OVERRIDE METHOD SetValue(component AS OBJECT, value AS OBJECT) AS VOID
         LOCAL record AS DbRecord
         record := (DbRecord)component 
         record:Item[SELF:_dbField:Ordinal] := value
         RETURN
         
     /// Must be overwritten as the the base class declares this method as abstract.
-    VIRTUAL METHOD ShouldSerializeValue(component AS OBJECT) AS LOGIC
+    OVERRIDE METHOD ShouldSerializeValue(component AS OBJECT) AS LOGIC
         RETURN FALSE
     #endregion
     
     #region properties
-    PROPERTY ComponentType  AS System.Type  GET typeof(DbRecord)
-    PROPERTY DbField        AS DbField      GET SELF:_dbField SET SELF:_dbField := value
-    PROPERTY IsReadOnly     AS LOGIC        GET SELF:_dbField:ReadOnly
-    PROPERTY PropertyType   AS System.Type  GET SELF:_dbField:DataType
+    OVERRIDE PROPERTY ComponentType  AS System.Type  GET typeof(DbRecord)
+    OVERRIDE PROPERTY DbField        AS DbField      GET SELF:_dbField SET SELF:_dbField := value
+    OVERRIDE PROPERTY IsReadOnly     AS LOGIC        GET SELF:_dbField:ReadOnly
+    OVERRIDE PROPERTY PropertyType   AS System.Type  GET SELF:_dbField:DataType
     #endregion
     
 END CLASS

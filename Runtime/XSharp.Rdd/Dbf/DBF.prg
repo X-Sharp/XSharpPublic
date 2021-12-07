@@ -427,7 +427,7 @@ OVERRIDE METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
                 IF timer:TimeOut(SELF:FullPath, SELF:_lockScheme:Offset, 1)
                     RETURN FALSE
                 ENDIF
-                System.Threading.Thread.Sleep(100)
+                System.Threading.Thread.Sleep(1)
 
             ELSE
                 EXIT

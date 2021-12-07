@@ -74,7 +74,7 @@ INTERNAL ABSTRACT CLASS FptHeader
                 IF timer:TimeOut(SELF:_oRDD:Memo:FullPath, nOffSet, nLen)
                     RETURN
                 ENDIF
-                var wait := 10 +rand:@@Next() % 50
+                var wait := 1 +rand:@@Next() % 10
                 System.Threading.Thread.Sleep(wait)
             ENDIF
         UNTIL result

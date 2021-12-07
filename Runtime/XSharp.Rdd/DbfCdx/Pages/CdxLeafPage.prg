@@ -114,7 +114,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         // Other fields
         PRIVATE _leaves    AS List<CdxLeaf>
-
+        INTERNAL aClear     as BYTE[]
 
 #endregion
 #region constants
@@ -277,26 +277,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             LOCAL nOffSet   AS Int32
             LOCAL aBytes := BYTE[]{KeyLength} AS BYTE[]
-            local aClear := BYTE[]{KeyLength} AS BYTE[]
             LOCAL nRecno    AS Int32
             LOCAL nDup, nTrail AS BYTE
             LOCAL nCopy     AS Int32
             LOCAL nStart    AS Int32
             LOCAL nStep     AS Int32
             LOCAL nLast     AS Int32
-            LOCAL trailchar  AS BYTE
 
             // First key starts at end of page
             nStart := CDXPAGE_SIZE
             _leaves := List<CdxLeaf>{}
-            IF SELF:Tag != NULL
-                trailchar :=  (BYTE) IIF (Tag:KeyType == __UsualType.String, 32, 0)
-            ELSEIF SELF IS CdxTagList
-                trailchar := 0
-            ELSE
-                trailchar := 32
+            IF SELF IS CdxTagList
+                SELF:aClear := BYTE[]{KeyLength}
             ENDIF
-            MemSet(aClear, 0, SELF:KeyLength, trailchar)
             nOffSet := CDXLEAF_HEADERLEN
             nStep := SELF:DataBytes
             IF SELF:NumKeys > 0

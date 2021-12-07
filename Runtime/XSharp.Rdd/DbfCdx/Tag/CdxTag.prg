@@ -63,6 +63,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE getKeyValue     AS ValueBlock       // Delegate to calculate the key
         PRIVATE _Collation      AS VfpCollation
         PRIVATE _Valid          AS LOGIC
+        INTERNAL aClear         AS BYTE[]
 
 #endregion
 
@@ -181,6 +182,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_currentvalue      := RddKeyData{_keySize}
             SELF:_Scopes[0]:SetBuffer(_keySize)
             SELF:_Scopes[1]:SetBuffer(_keySize)
+            SELF:aClear := BYTE[]{_keySize}
+            var trailchar :=  (BYTE) IIF (KeyType == __UsualType.String, 32, 0)
+            FOR VAR i := 0 to SELF:KeyLength -1
+                aClear[i] := trailchar
+            NEXT
             RETURN
 
 

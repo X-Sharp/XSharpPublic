@@ -206,9 +206,11 @@
   <!-- 
     Add ThirdPartyNotices.rtf to all shipping NuGet packages.
   -->
-  <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(IsShipping)' == 'true'">
-    <None Include="$(ThirdPartyNoticesFilePath)" PackagePath="ThirdPartyNotices.rtf" Visible="false" Pack="true"/>
-  </ItemGroup>
+  <!-- Disabled for XSharp -->
+
+  <!-- <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(IsShipping)' == 'true'"> -->
+    <!-- <None Include="$(ThirdPartyNoticesFilePath)" PackagePath="ThirdPartyNotices.rtf" Visible="false" Pack="true"/> -->
+  <!-- </ItemGroup> -->
 
   <!--
     Append common text to package specific PackageDescription.
@@ -220,7 +222,6 @@
     <PropertyGroup>
       <PackageDescription>
       $(PackageDescription)
-      More details at https://aka.ms/roslyn-packages
       This package was built from the source at $(PrivateRepositoryUrl)/commit/$(SourceRevisionId).
       </PackageDescription>
     </PropertyGroup>

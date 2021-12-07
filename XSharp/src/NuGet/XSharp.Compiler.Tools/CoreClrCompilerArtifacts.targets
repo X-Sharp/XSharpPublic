@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) XSharp B.V.  All Rights Reserved. See the LICENSE file in the project root for more information. -->
+<Project>
+  <Target Name="InitializeCoreClrCompilerArtifacts">
+    <ItemGroup>
+      <CoreClrCompilerToolsArtifact Include="$(ArtifactsBinDir)XSharp.Build\$(Configuration)\net472\*.targets" />
+      <CoreClrCompilerToolsArtifact Include="$(ArtifactsBinDir)XSharp.Build\$(Configuration)\net472\*.props" />
+      <CoreClrCompilerToolsArtifact Include="$(ArtifactsBinDir)XSharp.Build\$(Configuration)\net472\**\*.xaml" />
+      <CoreClrCompilerToolsArtifact Include="$(ArtifactsBinDir)XSharp.Build\$(Configuration)\net472\XSharp.Build.dll" />
+
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)XSharpCodeAnalysis\$(Configuration)\netcoreapp3.1\XSharp.CodeAnalysis.dll" />
+      
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\netcoreapp3.1\xsc.dll" />
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\netcoreapp3.1\xsc.deps.json" />
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\netcoreapp3.1\xsc.runtimeconfig.json" />
+
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)XSCompiler\$(Configuration)\netcoreapp3.1\XSCompiler.dll" />
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)XSCompiler\$(Configuration)\netcoreapp3.1\XSCompiler.deps.json" />
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)XSCompiler\$(Configuration)\netcoreapp3.1\XSCompiler.runtimeconfig.json" />
+
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)xsi\$(Configuration)\netcoreapp3.1\xsi.dll" />
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)xsi\$(Configuration)\netcoreapp3.1\xsi.deps.json" />
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)xsi\$(Configuration)\netcoreapp3.1\xsi.runtimeconfig.json" />
+
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)XSharpScripting\$(Configuration)\netcoreapp3.1\XSharp.Scripting.dll" />
+
+
+      <!-- References that are either not in the target framework or are a higher version -->
+      <!-- N.B.: The backslashes below cannot be replaced with forward slashes.
+         https://github.com/NuGet/Home/issues/3584 -->
+      <CoreClrCompilerBinArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\netcoreapp3.1\System.*.dll"/>
+      <CoreClrCompilerBinRuntimesArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\netcoreapp3.1\runtimes\**" />
+    </ItemGroup>
+  </Target>
+</Project>

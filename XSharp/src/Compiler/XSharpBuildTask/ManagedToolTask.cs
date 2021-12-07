@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.IO;
 using Microsoft.Build.Utilities;
 
 // Most of this code was 'inspired' by the C# build task
@@ -21,45 +22,49 @@ namespace XSharp.Build
 #if NOTUSED
         protected abstract string PathToManagedTool { get; }
 
-        protected override string GenerateCommandLineCommands()
+        protected string PathToManagedToolWithoutExtension
+        {
+            get
+            {
+                var extension = Path.GetExtension(PathToManagedTool);
+                return PathToManagedTool.Substring(0, PathToManagedTool.Length - extension.Length);
+            }
+        }
+
+        /// <summary>
+        /// Note: "Native" here does not necessarily mean "native binary".
+        /// "Native" in this context means "native invocation", and running the executable directly.
+        /// </summary>
+        protected abstract string PathToNativeTool { get; }
+
+        /// <summary>
+        /// GenerateCommandLineCommands generates the actual OS-level arguments:
+        /// if dotnet needs to be executed and the managed assembly is the first argument,
+        /// then this will contain the managed assembly followed by ToolArguments
+        /// </summary>
+        protected sealed override string GenerateCommandLineCommands()
         {
             var commandLineArguments = ToolArguments;
-            if (IsManagedTool && IsCliHost(out string pathToDotnet))
+            if (IsManagedTool)
             {
-                var pathToTool = PathToManagedTool;
-                if (pathToTool is null)
-                {
-                    Log.LogErrorWithCodeFromResources("General_ToolFileNotFound", ToolName);
-                }
-                commandLineArguments = PrependFileToArgs(pathToTool, commandLineArguments);
+                (_, commandLineArguments, _) = RuntimeHostInfo.GetProcessInfo(PathToManagedToolWithoutExtension, commandLineArguments);
             }
 
             return commandLineArguments;
         }
 
-        / <summary>
-        / This generates the path to the executable that is directly ran.
-        / This could be the managed assembly itself (on desktop .net on Windows),
-        / or a runtime such as dotnet.
-        / </summary>
+        /// <summary>
+        /// This generates the path to the executable that is directly ran.
+        /// This could be the managed assembly itself (on desktop .NET on Windows),
+        /// or a runtime such as dotnet.
+        /// </summary>
         protected sealed override string GenerateFullPathToTool()
         {
-            if (IsManagedTool)
-            {
-                if (IsCliHost(out string pathToDotnet))
-                {
-                    return pathToDotnet;
-                }
-                else
-                {
-                    return PathToManagedTool;
-                }
-            }
-            else
-            {
-                return PathToNativeTool;
-            }
+            return IsManagedTool
+                ? RuntimeHostInfo.GetProcessInfo(PathToManagedToolWithoutExtension, string.Empty).processFilePath
+                : PathToNativeTool;
         }
+
 #endif
         protected abstract string ToolNameWithoutExtension { get; }
 
@@ -76,29 +81,5 @@ namespace XSharp.Build
         protected sealed override string ToolName
             => $"{ToolNameWithoutExtension}.exe";
 
-#if NOTUSED
-        private static bool IsCliHost(out string pathToDotnet)
-        {
-            if (CoreClrShim.IsRunningOnCoreClr)
-            {
-                pathToDotnet = Environment.GetEnvironmentVariable("DOTNET_HOST_PATH");
-                return !string.IsNullOrEmpty(pathToDotnet);
-            }
-            else
-            {
-                pathToDotnet = null;
-                return false;
-            }
-        }
-
-        private static string PrependFileToArgs(string pathToTool, string commandLineArgs)
-        {
-            var builder = new CommandLineBuilderExtension();
-            builder.AppendFileNameIfNotNull(pathToTool);
-            builder.AppendTextUnquoted(" ");
-            builder.AppendTextUnquoted(commandLineArgs);
-            return builder.ToString();
-        }
-#endif
     }
 }

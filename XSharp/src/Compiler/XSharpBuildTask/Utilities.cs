@@ -186,7 +186,7 @@ namespace XSharp.Build
             catch (Exception e) when (IsIoRelatedException(e)) { }
             return path;
         }
-		
+
         internal static void DeleteNoThrow(string path)
         {
             try
@@ -196,7 +196,7 @@ namespace XSharp.Build
             catch (Exception e) when (IsIoRelatedException(e)) { }
         }
 
-		internal static bool IsIoRelatedException(Exception e) =>
+        internal static bool IsIoRelatedException(Exception e) =>
             e is UnauthorizedAccessException ||
             e is NotSupportedException ||
             (e is ArgumentException && !(e is ArgumentNullException)) ||

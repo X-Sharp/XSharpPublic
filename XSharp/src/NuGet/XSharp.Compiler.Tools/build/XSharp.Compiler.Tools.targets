@@ -1,0 +1,5 @@
+﻿<!-- Copyright (c) XSharp B.V.  All Rights Reserved. See the LICENSE file in the project root for more information. -->
+<Project>
+<Import Condition="'$(MSBuildRuntimeType)' != 'Core'" Project="$(_XSharpTasksDirectory)XSharp.Targets" />
+<Import Condition="'$(MSBuildRuntimeType)' == 'Core'" Project="$(_XSharpTasksDirectory)XSharp.Net.Sdk.Targets" />
+</Project>

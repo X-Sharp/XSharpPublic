@@ -1,0 +1,18 @@
+﻿<!-- Copyright (c) XSharp B.V.  All Rights Reserved. See the LICENSE file in the project root for more information. -->
+<Project>
+  <PropertyGroup>
+    <_XSharpTargetDirectoryName Condition="'$(MSBuildRuntimeType)' == 'Core'">netcoreapp3.1</_XSharpTargetDirectoryName>
+    <_XSharpTargetDirectoryName Condition="'$(MSBuildRuntimeType)' != 'Core'">net472</_XSharpTargetDirectoryName>
+    <_XSharpTasksDirectory>$(MSBuildThisFileDirectory)..\tasks\$(_XSharpTargetDirectoryName)\</_XSharpTasksDirectory>
+    <XSharpTasksAssembly>$(_XSharpTasksDirectory)XSharp.Build.dll</XSharpTasksAssembly>
+    <UseSharedCompilation Condition="'$(UseSharedCompilation)' == ''">true</UseSharedCompilation>
+    <XSharpMsBuildDir>$(_XSharpTasksDirectory)</XSharpMsBuildDir>
+    <XscToolPath>$(_XSharpTasksDirectory)</XscToolPath>
+  </PropertyGroup>
+
+  <UsingTask TaskName="XSharp.Build.Xsc" AssemblyFile="$(XSharpTasksAssembly)" />
+  <UsingTask TaskName="CreateXSharpManifestResourceName" AssemblyFile="$(XSharpTasksAssembly)"/>
+  <UsingTask TaskName="NativeResourceCompiler" AssemblyFile="$(XSharpTasksAssembly)"/>
+  <Import Condition="'$(MSBuildRuntimeType)' != 'Core'" Project="$(_XSharpTasksDirectory)XSharp.Default.Props" />
+  <Import Condition="'$(MSBuildRuntimeType)' == 'Core'" Project="$(_XSharpTasksDirectory)XSharp.Net.Sdk.Props" />
+</Project>

@@ -277,6 +277,12 @@ namespace XSharp.Build
             get { return (string)_store[nameof(DisabledWarnings)]; }
         }
 
+        public bool DisableSdkPath
+        {
+            set { _store[nameof(DisableSdkPath)] = value; }
+            get { return _store.GetOrDefault(nameof(DisableSdkPath), false); }
+        }
+
         public bool ErrorEndLocation
         {
             set { _store[nameof(ErrorEndLocation)] = value; }
@@ -288,6 +294,13 @@ namespace XSharp.Build
             set { _store[nameof(ErrorReport)] = value; }
             get { return (string)_store[nameof(ErrorReport)]; }
         }
+
+        public string GeneratedFilesOutputPath
+        {
+            set { _store[nameof(GeneratedFilesOutputPath)] = value; }
+            get { return (string)_store[nameof(GeneratedFilesOutputPath)]; }
+        }
+
         public bool GenerateFullPaths
         {
             set { _store[nameof(GenerateFullPaths)] = value; }
@@ -338,6 +351,12 @@ namespace XSharp.Build
             get { return (string)_store[nameof(VsSessionGuid)]; }
         }
 
+        public bool UseHostCompilerIfAvailable
+        {
+            set { _store[nameof(UseHostCompilerIfAvailable)] = value; }
+            get { return _store.GetOrDefault(nameof(UseHostCompilerIfAvailable), false); }
+        }
+
         public bool VulcanCompatibleResources
         {
             set { _store[nameof(VulcanCompatibleResources)] = value; }
@@ -362,6 +381,17 @@ namespace XSharp.Build
             get { return (string)_store[nameof(WarningsNotAsErrors)]; }
         }
 
+        public string Nullable
+        {
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    _store[nameof(Nullable)] = value;
+                }
+            }
+            get { return (string)_store[nameof(Nullable)]; }
+        }
 
 
         #endregion
@@ -393,16 +423,12 @@ namespace XSharp.Build
             return FindXsc(this.ToolName);
         }
 
-
-        protected override string GenerateCommandLineCommands()
+        protected internal override void AddCommandLineCommands(CommandLineBuilderExtension commandLine)
         {
-            // overridden because we add the /cs flag here
-            var commandLine = new XSharpCommandLineBuilder(false);
-            commandLine.AppendWhenTrue("/noconfig", _store, nameof(NoConfig));
-            commandLine.AppendWhenTrue("/shared", _store, nameof(UseSharedCompilation));
+            base.AddCommandLineCommands(commandLine);
             commandLine.AppendWhenTrue("/cs", _store, nameof(CS));
-            return commandLine.ToString();
         }
+
 
         /// <summary>
         /// Mostly copied from the csc task in Roslyn
@@ -414,6 +440,7 @@ namespace XSharp.Build
             commandLine.AppendPlusOrMinusSwitch("/unsafe", _store, nameof(AllowUnsafeBlocks));
             commandLine.AppendPlusOrMinusSwitch("/checked", _store, nameof(CheckForOverflowUnderflow));
             commandLine.AppendSwitchWithSplitting("/nowarn:", DisabledWarnings, ",", ';', ',');
+            commandLine.AppendSwitchIfNotNull("/generatedfilesout:", GeneratedFilesOutputPath);
             commandLine.AppendWhenTrue("/fullpaths", _store, nameof(GenerateFullPaths));
             commandLine.AppendSwitchIfNotNull("/moduleassemblyname:", ModuleAssemblyName);
             commandLine.AppendSwitchIfNotNull("/pdb:", PdbFile);
@@ -430,6 +457,8 @@ namespace XSharp.Build
             commandLine.AppendWhenTrue("/errorendlocation", _store, nameof(ErrorEndLocation));
             commandLine.AppendSwitchIfNotNull("/preferreduilang:", PreferredUILang);
             commandLine.AppendPlusOrMinusSwitch("/highentropyva", _store, nameof(HighEntropyVA));
+            commandLine.AppendSwitchIfNotNull("/nullable:", Nullable);
+            commandLine.AppendWhenTrue("/nosdkpath", _store, nameof(DisableSdkPath));
             //// If not design time build and the globalSessionGuid property was set then add a -globalsessionguid:<guid>
             //bool designTime = false;
             //if (HostObject != null)
@@ -465,7 +494,7 @@ namespace XSharp.Build
             commandLine.AppendSwitchWithSplitting("/warnaserror+:", WarningsAsErrors, ",", ';', ',');
             commandLine.AppendSwitchWithSplitting("/warnaserror-:", WarningsNotAsErrors, ",", ';', ',');
 
-            // It's a good idea for the response file to be the very last switch passed, just
+            // It's a good idea for the response file to be the very last switch passed, just 
             // from a predictability perspective.  It also solves the problem that a dogfooder
             // ran into, which is described in an email thread attached to bug VSWhidbey 146883.
             // See also bugs 177762 and 118307 for additional bugs related to response file position.
@@ -550,7 +579,7 @@ namespace XSharp.Build
         /// This method handles the necessary work of looking at the "Aliases" attribute on
         /// the incoming "References" items, and making sure to generate the correct
         /// command-line on csc.exe.  The syntax for aliasing a reference is:
-        ///     csc.exe /reference:Foo=System.Xml.dll
+        ///     csc.exe /reference:Goo=System.Xml.dll
         ///
         /// The "Aliases" attribute on the "References" items is actually a comma-separated
         /// list of aliases, and if any of the aliases specified is the string "global",
@@ -652,7 +681,7 @@ namespace XSharp.Build
         /// Then we look at the resulting list of strings, and remove any that are
         /// illegal identifiers, and pass the remaining ones through to the compiler.
         /// 
-        /// Note that CSharp does support assigning a value to the constants ... in
+        /// Note that CSharp doesn't support assigning a value to the constants ... in
         /// other words, a constant is either defined or not defined ... it can't have
         /// an actual value.
         /// </summary>

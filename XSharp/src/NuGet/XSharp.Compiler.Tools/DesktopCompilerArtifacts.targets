@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) XSharp B.V.  All Rights Reserved. See the LICENSE file in the project root for more information. -->
+<Project>
+
+  <!--
+    The CompilerArtifact list is used to generate XSharp.Compiler package.
+    Keeping the list in central location allows us to make sure that these packages include the same files.
+
+    Ngen* attributes indicate how VS should NGEN the assemblies that are distributed by VS Setup.
+    NgenApplication is relative to the Roslyn install directory within MSBuild (i.e. MSBuild\15.0\Bin\Roslyn).
+    Assemblies NGEN'd as priority 1 are selected based on how much JIT time they contribute, when not NGEN'd,
+    to the Visual Studio scenarios listed below. The more JIT time required for an assembly, the more likely
+    there will be a noticeable performance impact.
+        1. Start the IDE.
+        2. Load a managed solution.
+        3. Build the solution.
+
+    Set OverwriteOptimizationData to true to replace optimization data already embedded in the assembly with data retrieved from VS training scenarios.
+    We only need to specify this for assemblies built outside or Roslyn repo since the projects in Roslyn repo are responsible for embedding 
+    VS training data to the assemblies they produce.
+  -->
+
+  <Target Name="InitializeDesktopCompilerArtifacts">
+    <ItemGroup>
+      
+      <!-- The Roslyn built binaries must be taken from these locations because this is the location where signing occurs -->
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSharpCodeAnalysis\$(Configuration)\net472\XSharp.CodeAnalysis.dll" NgenArchitecture="all" NgenApplication="XSCompiler.exe" NgenPriority="1"/>
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSharpScripting\$(Configuration)\net472\XSharp.Scripting.dll" NgenArchitecture="all" NgenApplication="xsi.exe"/>
+	  
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\net472\Microsoft.DiaSymReader.Native.amd64.dll"/>
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\net472\Microsoft.DiaSymReader.Native.x86.dll"/>
+	  
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\net472\xsc.exe" NgenArchitecture="all" NgenApplication="csc.exe" NgenPriority="2"/>
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\net472\xsc.exe.config"/>
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)xsc\$(Configuration)\net472\xsc.rsp"/>
+	  
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)xsi\$(Configuration)\net472\xsi.exe" NgenArchitecture="all" NgenApplication="csi.exe" NgenPriority="2"/>
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)xsi\$(Configuration)\net472\xsi.exe.config"/>
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)xsi\$(Configuration)\net472\xsi.rsp"/>
+	  
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSCompiler\$(Configuration)\net472\XSCompiler.exe" NgenArchitecture="all" NgenApplication="XSCompiler.exe" NgenPriority="1"/>
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSCompiler\$(Configuration)\net472\XSCompiler.exe.config"/>
+	  
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSharp.Build\$(Configuration)\net472\*.targets" />
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSharp.Build\$(Configuration)\net472\*.props" />
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSharp.Build\$(Configuration)\net472\**\*.xaml" />
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)XSharp.Build\$(Configuration)\net472\XSharp.Build.dll" />
+
+
+      <!--
+        Do not overwrite optimization data of System.Threading.Tasks.Extensions.dll
+        This assembly is signed by Open key in CoreFX and MicroBuild does not support this key.
+        Arcade SignTool doesn't support signing directly at this point either.
+        https://github.com/dotnet/arcade/issues/1204
+        
+        We don't currently collect optimization data for the following assemblies.
+      -->
+      <_NoOptimizationData Include="$(ArtifactsBinDir)xsi\$(Configuration)\net472\System.Threading.Tasks.Extensions.dll"/>
+      <_NoOptimizationData Include="$(ArtifactsBinDir)xsi\$(Configuration)\net472\System.Buffers.dll"/>
+      <_NoOptimizationData Include="$(ArtifactsBinDir)xsi\$(Configuration)\net472\System.Memory.dll"/>
+      <_NoOptimizationData Include="$(ArtifactsBinDir)xsi\$(Configuration)\net472\System.Numerics.Vectors.dll"/>      
+      <_NoOptimizationData Include="$(ArtifactsBinDir)xsi\$(Configuration)\net472\System.Text.Encoding.CodePages.dll"/>
+      
+      <!--
+        System.Numerics.Vector requires JIT, since its size is dynamic and based on the underlying CPU support.
+      -->
+      <_NoNGen Include="$(ArtifactsBinDir)xsi\$(Configuration)\net472\System.Numerics.Vectors.dll"/>
+      
+      <DesktopCompilerArtifact Include="$(ArtifactsBinDir)xsi\$(Configuration)\net472\System.*.dll" Exclude="@(_NoOptimizationData)" NgenArchitecture="all" NgenApplication="VBCSCompiler.exe" OverwriteNgenOptimizationData="true"/>
+      
+      <!-- Note: do not use Update attribute (see https://github.com/microsoft/msbuild/issues/1124) -->
+      <DesktopCompilerArtifact NgenPriority="1" Condition="'%(Identity)' == '$(ArtifactsBinDir)xsi\$(Configuration)\net472\System.Collections.Immutable.dll'" />
+      <DesktopCompilerArtifact NgenPriority="1" Condition="'%(Identity)' == '$(ArtifactsBinDir)xsi\$(Configuration)\net472\System.Reflection.Metadata.dll'" />
+      
+      <DesktopCompilerArtifact Include="@(_NoOptimizationData)" Exclude="@(_NoNGen)" NgenArchitecture="all" NgenApplication="XSCompiler.exe" OverwriteNgenOptimizationData="false"/>
+      <DesktopCompilerArtifact Include="@(_NoNGen)" />
+
+ 
+    </ItemGroup>
+  </Target>
+</Project>

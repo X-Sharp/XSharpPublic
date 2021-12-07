@@ -141,6 +141,12 @@ namespace XSharp.Build
             get { return _store.GetOrDefault(nameof(PublicSign), false); }
         }
 
+        public ITaskItem[] AnalyzerConfigFiles
+        {
+            set { _store[nameof(AnalyzerConfigFiles)] = value; }
+            get { return (ITaskItem[])_store[nameof(AnalyzerConfigFiles)]; }
+        }
+
         /// <summary>Gets or sets a value indicating whether the compiler generates debugging information.</summary>
         /// <returns>true if debugging information is generated; otherwise, false;</returns>
         public bool EmitDebugInformation
@@ -272,6 +278,12 @@ namespace XSharp.Build
             get { return (string)_store[nameof(Platform)]; }
         }
 
+        public ITaskItem[] PotentialAnalyzerConfigFiles
+        {
+            set { _store[nameof(PotentialAnalyzerConfigFiles)] = value; }
+            get { return (ITaskItem[])_store[nameof(PotentialAnalyzerConfigFiles)]; }
+        }
+
         public bool Prefer32Bit
         {
             set { _store[nameof(Prefer32Bit)] = value; }
@@ -329,6 +341,12 @@ namespace XSharp.Build
         {
             set { _store[nameof(SharedCompilationId)] = value; }
             get { return (string)_store[nameof(SharedCompilationId)]; }
+        }
+
+        public bool SkipAnalyzers
+        {
+            set { _store[nameof(SkipAnalyzers)] = value; }
+            get { return _store.GetOrDefault(nameof(SkipAnalyzers), false); }
         }
 
         public bool SkipCompilerExecution
@@ -779,7 +797,7 @@ namespace XSharp.Build
                     OutputAssembly.ItemSpec += ".exe";
                 }
             }
-			
+
             commandLine.AppendSwitchIfNotNull("/addmodule:", AddModules, ",");
             commandLine.AppendSwitchWithInteger("/codepage:", _store, nameof(CodePage));
 
@@ -822,7 +840,7 @@ namespace XSharp.Build
             AddAnalyzersToCommandLine(commandLine, Analyzers);
             AddAdditionalFilesToCommandLine(commandLine);
 
-
+            // Append the sources.
             commandLine.AppendFileNamesIfNotNull(Sources, " ");
         }
 
@@ -835,9 +853,11 @@ namespace XSharp.Build
             commandLine.AppendSwitchWithSplitting("/instrument:", Instrument, ",", ';', ',');
             commandLine.AppendSwitchIfNotNull("/sourcelink:", SourceLink);
             commandLine.AppendSwitchIfNotNull("/langversion:", LangVersion);
+            commandLine.AppendPlusOrMinusSwitch("/skipanalyzers", _store, nameof(SkipAnalyzers));
 
             AddFeatures(commandLine, Features);
             AddEmbeddedFilesToCommandLine(commandLine);
+            AddAnalyzerConfigFilesToCommandLine(commandLine);
         }
 		
         /// <summary>
@@ -873,7 +893,7 @@ namespace XSharp.Build
                 commandLine.AppendSwitchIfNotNull("/analyzer:", analyzer.ItemSpec);
             }
         }
-        /// <summary>If an alternate tool name or tool path was specified in the project file, then that tool is used rather than the host compiler for integrated development environment (IDE) builds.</summary>
+
         /// <summary>
         /// Adds a "/additionalfile:" switch to the command line for each additional file.
         /// </summary>
@@ -907,6 +927,20 @@ namespace XSharp.Build
             }
         }
 		
+        /// <summary>
+        /// Adds a "/editorconfig:" switch to the command line for each .editorconfig file.
+        /// </summary>
+        private void AddAnalyzerConfigFilesToCommandLine(CommandLineBuilderExtension commandLine)
+        {
+            if (AnalyzerConfigFiles != null)
+            {
+                foreach (ITaskItem analyzerConfigFile in AnalyzerConfigFiles)
+                {
+                    commandLine.AppendSwitchIfNotNull("/analyzerconfig:", analyzerConfigFile.ItemSpec);
+                }
+            }
+        }
+
         /// <summary>
         /// Configure the debug switches which will be placed on the compiler command-line.
         /// The matrix of debug type and symbol inputs and the desired results is as follows:
@@ -1048,11 +1082,15 @@ namespace XSharp.Build
         /// </summary>
         private void NormalizePaths(ITaskItem[] taskItems)
         {
+            if (taskItems is null)
+                return;
+
             foreach (var item in taskItems)
             {
                 item.ItemSpec = Utilities.GetFullPathNoThrow(item.ItemSpec);
             }
         }
+
         /// <summary>
         /// Whether the command line compiler was invoked, instead
         /// of the host object compiler.
@@ -1062,6 +1100,7 @@ namespace XSharp.Build
             get;
             set;
         }
+
         private bool _hostCompilerSupportsAllParameters;
         protected bool HostCompilerSupportsAllParameters
         {
@@ -1182,8 +1221,8 @@ namespace XSharp.Build
                         {
 						// This is rather unlikely, and the inproc compiler seems to log an error anyway.
 	                    Log.LogMessage("Expected file \"{ 0}\" does not exist", "default.win32manifest");
-                		}
-						
+                        }
+
                         return pathToDefaultManifest;
                     }
                 }

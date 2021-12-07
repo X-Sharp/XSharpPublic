@@ -2,12 +2,12 @@
 <!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information. -->
 <Project>
   <!--
-    Roslyn version
+    XSharp version
   -->
   <PropertyGroup>
-    <MajorVersion>3</MajorVersion>
+    <MajorVersion>2</MajorVersion>
     <MinorVersion>9</MinorVersion>
-    <PatchVersion>0</PatchVersion>
+    <PatchVersion>2</PatchVersion>
     <PreReleaseVersionLabel>4</PreReleaseVersionLabel>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <!--

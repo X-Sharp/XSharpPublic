@@ -7630,7 +7630,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Unexpected token '{0}', expected '{1}'.</value>
   </data>
   <data name="ERR_ExpressionBodyClipperCallingConvention" xml:space="preserve">
-    <value>An Expression Body is not supported for methods / functions with untyped parameters.</value>
+    <value>An Expression Body is not supported for methods / functions with CLIPPER calling convention.</value>
   </data>
   <data name="WRN_PropertyTypeChangedInParentType" xml:space="preserve">
     <value>'{0}': Type was changed to '{2}' in the parenttype '{1}'. The compiler will automatically propagate the new type '{2}' to the subclass.</value>
@@ -7645,10 +7645,15 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>FoxPro Array support requires the /memvar compiler option.</value>
   </data>
   <data name="ERR_NILByRefOrOut" xml:space="preserve">
-   <value>The NIL value cannot be passed as an argument to a function or method that expects a REF or OUT value.</value>
+   <value>The NIL value cannot be passed as an argument to a function or method declared with a REF or OUT parameter.</value>
  </data>
   <data name="ERR_BadAddressOfArg" xml:space="preserve">
   <value>Argument {0} may not be passed with the '@' prefix</value>
+    <comment>This is the argument position !</comment>
   </data>
+  <data name="ERR_String2PszMustBeAssignedToLocal" xml:space="preserve">
+  <value>String2Psz() and Cast2Psz() are only allowed in a local context.</value>
+  </data>
+
 </root>
 

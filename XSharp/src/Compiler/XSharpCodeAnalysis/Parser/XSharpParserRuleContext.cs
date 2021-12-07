@@ -40,7 +40,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             // We only generate the function doc for the default tree to avoid generating an empty line for every prg file.
             if (node is ClassDeclarationSyntax &&
-                node.CsGreen.XDefaultTree)
+                node.XDefaultTree)
             {
                 return ParseTrivia("/// <summary></summary>");
             }

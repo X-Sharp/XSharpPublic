@@ -101487,7 +101487,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C816 - Various issues with the @ operator #2
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 084FC9A2-9274-4770-AE44-6D078B06BA37
 ; ************** APPLICATION R816 - Function Overloads *************
 Application = R816 - Function Overloads
 IDEVersion = 1.06
@@ -101600,9 +101600,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R816 - Function Overloads
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION R817 *************
-Application = R817
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+; ************** APPLICATION R817 - Ambigous overloads *************
+Application = R817 - Ambigous overloads
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -101635,21 +101635,21 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R817 FileGroups]
-[R817 Files]
+[R817 - Ambigous overloads FileGroups]
+[R817 - Ambigous overloads Files]
 File = %AppPath%\Prg\R817.prg
 FileGUID = 1BF63FC3-A58B-46C8-91BB-B9FA40B9B78C
 FileType = Code
 CopyToBin = 0
-[R817 References]
+[R817 - Ambigous overloads References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
-[R817 Resources]
-[R817 Native Resources]
-[R817 License files]
-[R817 General Options]
+[R817 - Ambigous overloads Resources]
+[R817 - Ambigous overloads Native Resources]
+[R817 - Ambigous overloads License files]
+[R817 - Ambigous overloads General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -101682,7 +101682,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R817 Configurations]
+[R817 - Ambigous overloads Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -101711,7 +101711,120 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R817
+ENDApplication = R817 - Ambigous overloads
+
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+; ************** APPLICATION R818 *************
+Application = R818
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = VO
+Folder = %ProjectPath%\Applications\R818\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = R818
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = E2A1448A-DEBF-4B64-AF73-882A47291972
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+StdDefsFile = 
+AppToRun = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[R818 FileGroups]
+[R818 Files]
+File = %AppPath%\Prg\R818.prg
+FileGUID = E9F386F9-FE45-4F7A-BCC4-08A56789E63C
+FileType = Code
+CopyToBin = 0
+[R818 References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
+[R818 Resources]
+[R818 Native Resources]
+[R818 License files]
+[R818 General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+FOX1=0
+FOX2=0
+XPP1=0
+LateBound=0
+Unsafe=0
+Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
+MemVar=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[R818 Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+  Optimize=0
+ENDApplication = R818
 [EndApplications]
 
 [Configurations]

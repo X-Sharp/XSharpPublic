@@ -1504,6 +1504,14 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
 
 #if XSHARP
+                var assignment = node as AssignmentExpressionSyntax;
+                if (assignment.Right.XIsString2Psz)
+                {
+                    if (op1.Kind == BoundKind.FieldAccess)
+                    {
+                        Error(diagnostics, ErrorCode.ERR_String2PszMustBeAssignedToLocal, assignment.Right);
+                    }
+                }
                 if (Compilation.Options.HasOption(CompilerOption.FoxArraySupport, node))
                 {
                     // convert op2 to methodcall __FoxAssign(op1, op2)

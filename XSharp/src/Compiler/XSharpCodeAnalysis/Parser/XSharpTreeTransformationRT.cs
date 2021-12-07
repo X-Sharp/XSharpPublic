@@ -3627,9 +3627,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     argList, true);
                 var args = MakeArgumentList(MakeArgument(expr));
                 expr = CreateObject(this._pszType, args);
+                expr.XIsString2Psz = true;
                 return expr;
             }
-            return null;
+            expr = CreateObject(this.objectType, EmptyArgumentList());
+            expr.XIsString2Psz = true;
+            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_String2PszMustBeAssignedToLocal));
+            return expr;
         }
 
         private bool GenerateString2Psz(XP.MethodCallContext context, string name)

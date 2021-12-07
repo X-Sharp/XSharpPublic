@@ -272,7 +272,11 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR-(lhs AS USUAL, rhs AS CURRENCY) AS CURRENCY
             // set decimals for LHS to 0, so max decmals is decimals right
-            RETURN CURRENCY{lhs}:Subtract(rhs)
+            local lr8 AS Real8
+            LOCAL rr8 AS Real8
+            lr8 := (Real8) lhs
+            rr8 := (Real8) rhs
+            RETURN CURRENCY{lr8}:Subtract(rr8)
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR*(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY

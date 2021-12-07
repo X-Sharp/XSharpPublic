@@ -512,8 +512,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // prefer method with "native VO" parameter type
                             if (argType.IsUsualType())
                             {
+                                // See https://github.com/X-Sharp/XSharpPublic/issues/836
+                                // when calling overloads in the same type we do not want to
+                                // automatically choose an overload when one or more arguments are USUAL
+                                if (TypeSymbol.Equals(m1.Member.ContainingType,m2.Member.ContainingType))
+                                {
+                                    // 2 overloads in the same type. same number of parameters. Usual argument
+                                    // this is dangerous
+                                    result = BetterResult.Neither;
+                                    return false;
+                                }
+
                                 // no need to check if parleft or parright are usual that was checked above
-                                if (!TypeSymbol.Equals(parLeft.Type ,parRight.Type))
+                                if (!TypeSymbol.Equals(parLeft.Type, parRight.Type))
                                 {
                                     // is there an VO style conversion possible ?
                                     var leftConvert = parLeft.Type.IsValidVOUsualType(Compilation);
@@ -522,9 +533,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     {
                                         // One is a valid conversion, the other is not.
                                         if (leftConvert)
+                                        {
                                             result = BetterResult.Left;
+                                        }
                                         else
+                                        {
                                             result = BetterResult.Right;
+                                        }
                                         return true;
                                     }
                                 }
@@ -598,9 +613,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return false;
             // Local Functions
-            CSDiagnosticInfo GenerateAmbiguousWarning(Symbol r1, Symbol r2)
+            CSDiagnosticInfo GenerateAmbiguousWarning(Symbol r1, Symbol r2, bool error = false)
             {
-                var info = new CSDiagnosticInfo(ErrorCode.WRN_XSharpAmbiguous,
+
+                var info = new CSDiagnosticInfo(error? ErrorCode.ERR_AmbigCall : ErrorCode.WRN_XSharpAmbiguous,
                         new object[] {
                         r1.Name,
                         r1.Kind.ToString(),

@@ -463,6 +463,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void EnterXppmethod([NotNull] XP.XppmethodContext context)
         {
+            CheckVirtualOverride(context, context.Modifiers?._Tokens);
             Check4ClipperCC(context, context.ParamList?._Params, null, context.Type);
             CheckInitMethods(context);
             string name ;
@@ -562,11 +563,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             { 
                 modifiers = decodeXppMemberModifiers(context.Info.Visibility, false, context.Modifiers?._Tokens);
-            }
-            if (context.Modifiers != null)
-            {
-                context.Data.HasExplicitOverride = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);
-                context.Data.HasExplicitVirtual = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.VIRTUAL);
             }
             TypeSyntax returnType = getDataType(context.Type);
             var attributes = getAttributes(context.Attributes);

@@ -579,8 +579,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.RealType = XP.METHOD;
             }
+            CheckVirtualOverride(context, context.Modifiers?._Tokens);
         }
- 
+
         public override void ExitFoxmethod([NotNull] XP.FoxmethodContext context)
         {
             context.SetSequencePoint(context.T.Token, context.end.Stop);
@@ -614,12 +615,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = vomods.ToList<SyntaxToken>();
                 _pool.Free(vomods);
             }
-            if (context.Modifiers != null)
-            {
-                context.Data.HasExplicitOverride = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);
-                context.Data.HasExplicitVirtual = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.VIRTUAL);
-            }
-            if (!isExtern)
+           if (!isExtern)
             {
                 isExtern = hasDllImport(attributes);
                 hasNoBody = hasNoBody || isExtern;
@@ -855,7 +851,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var list = MakeSeparatedList(GenerateVariable(fldName, null));
             var decl = _syntaxFactory.VariableDeclaration(type, list);
-            var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(modifiers, true);
+            var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(modifiers, false);
             var fdecl = _syntaxFactory.FieldDeclaration(
                                     attributeLists: default,
                                     modifiers: mods,

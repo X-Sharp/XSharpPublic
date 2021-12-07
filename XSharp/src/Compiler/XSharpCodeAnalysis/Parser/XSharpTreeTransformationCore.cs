@@ -2878,6 +2878,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
 
+        protected void CheckVirtualOverride(XP.IMemberContext context, IList<IToken> tokens)
+        {
+            if (tokens != null)
+            {
+                context.Data.HasExplicitOverride = tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);
+                context.Data.HasExplicitVirtual = tokens.Any(t => t.Type == XSharpLexer.VIRTUAL);
+            }
+
+        }
+
         #region User Defined Types
         public override void EnterInterface_([NotNull] XP.Interface_Context context)
         {
@@ -3174,6 +3184,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Events
+
+        public override void EnterEvent_([NotNull] XP.Event_Context context)
+        {
+            CheckVirtualOverride(context, context.Modifiers?._Tokens);
+            base.EnterEvent_(context);
+        }
+
         public override void ExitEvent_([NotNull] XP.Event_Context context)
         {
 
@@ -3213,12 +3230,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = m.ToList<SyntaxToken>();
                 _pool.Free(m);
             }
-            if (context.Modifiers != null)
-            {
-                context.Data.HasExplicitOverride = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);
-                context.Data.HasExplicitVirtual = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.VIRTUAL);
-            }
-
+ 
             if (singleLine)         // Single Line Syntax
             {
                 var acclist = _syntaxFactory.AccessorList(
@@ -3503,6 +3515,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Properties
+        public override void EnterProperty([NotNull] XP.PropertyContext context)
+        {
+            CheckVirtualOverride(context, context.Modifiers?._Tokens);
+        }
         public override void ExitProperty([NotNull] XP.PropertyContext context)
         {
             if (context.Multi != null)
@@ -3524,11 +3540,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 mods = m.ToList<SyntaxToken>();
                 _pool.Free(m);
-            }
-            if (context.Modifiers != null)
-            {
-                context.Data.HasExplicitOverride = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);
-                context.Data.HasExplicitVirtual = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.VIRTUAL);
             }
             var isExtern = mods.Any((int) SyntaxKind.ExternKeyword);
             var type = getReturnType(context);
@@ -4012,6 +4023,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.RealType = context.T.Token.Type;
             context.Data.MustBeVoid = context.RealType == XP.ASSIGN;
+            CheckVirtualOverride(context, context.Modifiers?._Tokens);
         }
 
         protected bool hasAttribute(SyntaxList<AttributeListSyntax> attributes, string attributeName)
@@ -4110,11 +4122,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context, context.TypeParameters != null);
-            if (context.Modifiers != null)
-            {
-                context.Data.HasExplicitOverride = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.OVERRIDE);
-                context.Data.HasExplicitVirtual = context.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.VIRTUAL);
-            }
             var isExtern = mods.Any((int)SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any((int)SyntaxKind.AbstractKeyword);
             var isStatic = mods.Any((int)SyntaxKind.StaticKeyword);

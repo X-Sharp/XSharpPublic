@@ -1559,7 +1559,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static void FixOverride(this SyntaxListBuilder list, bool enforceOverride)
         {
-            if (!enforceOverride ||
+            if (enforceOverride ||
                 !list.CanBeVirtual()||
                 list.Any((int)SyntaxKind.OverrideKeyword) ||
                 list.Any((int)SyntaxKind.NewKeyword))

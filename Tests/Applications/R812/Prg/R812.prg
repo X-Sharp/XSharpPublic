@@ -42,9 +42,26 @@ METHOD Dummy2 AS LOGIC CLASS A
 #pragma options("vo3", on)
 #pragma options("enforceoverride", on)
 CLASS parent1
-	METHOD Skata() AS VOID
+	METHOD Test() AS VOID
 END CLASS
 CLASS child1 INHERIT parent1
-	METHOD Skata() AS VOID
+	METHOD Test() AS VOID
 END CLASS
+
+
+
+#pragma options("vo3", off)
+#pragma options("enforceoverride", off)
+
+// without enforceoverride the keyword VIRTUAL for the child is interpreted as OVERRIDE
+// but that keyword is not stricly needed
+
+CLASS parent2                            
+    PUBLIC Foo AS STRING
+	VIRTUAL METHOD Test() AS VOID
+END CLASS
+CLASS child2 INHERIT parent2
+	METHOD Test() AS VOID
+END CLASS
+
 

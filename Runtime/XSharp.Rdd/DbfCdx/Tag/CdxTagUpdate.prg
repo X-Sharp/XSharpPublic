@@ -845,6 +845,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_Hot := TRUE
                 ENDIF
                 SELF:_newvalue:CopyTo(SELF:_currentvalue)
+                SELF:OrderBag:_PageList:Flush(TRUE)
                 RETURN TRUE
             FINALLY
                 IF SELF:Shared
@@ -874,5 +875,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     END CLASS
 
 END NAMESPACE
+
 
 

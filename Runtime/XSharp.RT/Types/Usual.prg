@@ -313,9 +313,9 @@ BEGIN NAMESPACE XSharp
                     ELSEIF o IS ICodeblock VAR cb
                         SELF:_flags				:= UsualFlags{__UsualType.Codeblock}
                         SELF:_refData           := cb
-                    ELSEIF o IS OBJECT[]   VAR oArray
-                        SELF:_flags				:= UsualFlags{__UsualType.Array}
-                        SELF:_refData           := ARRAY{oArray}
+//                    ELSEIF o IS OBJECT[]   VAR oArray
+//                        SELF:_flags				:= UsualFlags{__UsualType.Array}
+//                        SELF:_refData           := ARRAY{oArray}
                     ELSE
                         SELF:_flags				:= UsualFlags{__UsualType.Object}
                         SELF:_refData           := o

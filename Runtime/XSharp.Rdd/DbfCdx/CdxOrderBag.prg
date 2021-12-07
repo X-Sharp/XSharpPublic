@@ -343,6 +343,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
          INTERNAL METHOD FlushPages() AS LOGIC
             RETURN SELF:_PageList:Flush(FALSE)
 
+         INTERNAL METHOD SavePages() AS LOGIC
+            RETURN SELF:_PageList:Flush(TRUE)
+
          METHOD GoCold() AS LOGIC
             LOCAL lOk AS LOGIC
             // Process all tags even if one fails

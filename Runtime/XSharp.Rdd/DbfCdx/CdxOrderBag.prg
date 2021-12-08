@@ -431,9 +431,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             IF oPage:IsHot
                 isOk := SELF:_stream:SafeWriteAt(oPage:PageNo, oPage:Buffer)
-                IF isOk .and. SELF:Shared
-                    SELF:_stream:Flush(TRUE)
-                ENDIF
             ELSE
                 isOk := TRUE
             ENDIF
@@ -681,6 +678,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_PageList:SetVersion(version)
 #endif
             SELF:_root:Write()
+            SELF:_stream:Flush(TRUE)
 
     #endregion
 
@@ -692,3 +690,4 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END CLASS
 END NAMESPACE
+

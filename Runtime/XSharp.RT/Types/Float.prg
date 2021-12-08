@@ -406,7 +406,7 @@ BEGIN NAMESPACE XSharp
         METHOD Add(rhs AS USUAL) AS FLOAT
             LOCAL result AS FLOAT
             IF rhs:IsFloat
-                result := SELF:Add ( (FLOAT) rhs)
+                result := SELF:Add (  rhs:_floatValue)
             ELSEIF rhs:IsDecimal .OR. rhs:IsCurrency
                 result := SELF:Add ( (System.Decimal) rhs)
             ELSEIF  rhs:IsLong
@@ -427,7 +427,7 @@ BEGIN NAMESPACE XSharp
         METHOD Subtract(rhs AS USUAL) AS FLOAT
             LOCAL result AS FLOAT
             IF rhs:IsFloat
-                result := SELF:Subtract( (FLOAT) rhs)
+                result := SELF:Subtract(  rhs:_floatValue)
             ELSEIF rhs:IsDecimal .OR. rhs:IsCurrency
                 result := SELF:Subtract( (System.Decimal) rhs)
             ELSEIF  rhs:IsLong

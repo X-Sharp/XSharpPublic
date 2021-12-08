@@ -34,6 +34,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 buffer := _bag:AllocBuffer()
                 oLeaf  := CdxLeafPage{_bag, -1, buffer, SELF:KeyLength}
                 oLeaf:InitBlank(SELF)
+                oLeaf:aClear := SELF:aClear
                 oLeaf:Write() // will give it a pagenumber
                 IF SELF:_inBatch
                     oLeaf:PageType |= CdxPageType.Batch

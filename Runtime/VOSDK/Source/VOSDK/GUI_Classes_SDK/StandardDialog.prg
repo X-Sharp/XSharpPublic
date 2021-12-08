@@ -304,7 +304,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 	pCurPos := pszNew
 
 
-	IF (PTR(_CAST, pszFilters) != NULL_PTR)
+	IF  pszFilters != NULL_PSZ
 		MemCopy(pCurPos, pszFilters, DWORD(iOldLen-1))
 		MemFree(pszFilters)
 		pCurPos += iOldLen-1
@@ -329,7 +329,7 @@ METHOD __ClearFilters() AS VOID STRICT
 
 
 
-	IF (PTR(_CAST, pszFilters) != NULL_PTR)
+	IF pszFilters != NULL_PSZ
 		MemFree(pszFilters)
 		pszFilters := NULL_PSZ
 		iFilterLen := 0
@@ -388,11 +388,13 @@ METHOD Destroy()  AS USUAL CLIPPER
 
 	IF (pOpenFileName != NULL_PTR)
 		MemFree(pOpenFileName)
+        pOpenFileName := NULL_PTR
 	ENDIF
 
 
-	IF (PTR(_CAST, pszFilters) != NULL_PTR)
+	IF pszFilters != NULL_PSZ
 		MemFree(pszFilters)
+        pszFilters := NULL_PSZ
 	ENDIF
 
 
@@ -736,7 +738,7 @@ METHOD Show()
 	LOCAL aResults AS ARRAY
 
 
-
+    TRY
 
 
 
@@ -754,9 +756,9 @@ METHOD Show()
 	sOFN:nMaxFile 	:= MAX_LEN
 	sOFN:lpstrFileTitle := NULL_PSZ
 	sOFN:nMaxFileTitle := 0
-	sOFN:lpstrDefExt 	:= String2Psz(cDefExt)
-	sOFN:lpstrInitialDir:= String2Psz(InitDir)
-	sOFN:lpstrTitle 	:= String2Psz(Title)
+	sOFN:lpstrDefExt 	:= StringAlloc(cDefExt)
+	sOFN:lpstrInitialDir:= StringAlloc(InitDir)
+	sOFN:lpstrTitle 	:= StringAlloc(Title)
 	sOFN:Flags 			:= Flags
 	sOFN:FlagsEx 		:= FlagsEx
 #ifdef __VULCAN__
@@ -848,7 +850,7 @@ METHOD Show()
 			Result := NULL_STRING
 			lRet := FALSE
 		ENDIF
-	ENDIF
+    ENDIF
 
 
 #ifdef __VULCAN__
@@ -862,13 +864,24 @@ METHOD Show()
 	Flags := sOFN:Flags
 
 
-	IF (PTR(_CAST, pszRes) != NULL_PTR)
-		MemFree(pszRes)
-	ENDIF
+    FINALLY
+	    IF pszRes != NULL_PTR
+		    MemFree(pszRes)
+	    ENDIF
+
+        IF sOFN != NULL
+            sOFN:lpstrFile := NULL_PSZ
+            MemFree(sOFN:lpstrDefExt 	)
+            sOFN:lpstrDefExt := NULL_PSZ
+            MemFree(sOFN:lpstrInitialDir)
+            sOFN:lpstrInitialDir := NULL_PSZ
+            MemFree(sOFN:lpstrTitle 	)
+            sOFN:lpstrTitle := NULL_PSZ
+        ENDIF
+    END TRY
 
 
 	RETURN lRet
-
 
 END CLASS
 

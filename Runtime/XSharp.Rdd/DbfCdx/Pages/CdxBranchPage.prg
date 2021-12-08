@@ -296,6 +296,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 oTarget:Add(node:Recno, node:ChildPage, node:Key)
             NEXT
             SELF:Write()
+            oTarget:Write()
             RETURN CdxAction.Ok
 
 
@@ -513,3 +514,4 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END CLASS
 END NAMESPACE
+

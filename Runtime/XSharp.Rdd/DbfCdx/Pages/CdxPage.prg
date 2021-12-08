@@ -1,7 +1,7 @@
 // CdxBlock.prg
 // Created by    : fabri
 // Creation Date : 10/25/2018 10:43:18 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : FABPORTABLE
 
 USING System
@@ -22,8 +22,8 @@ USING STATIC XSharp.Conversions
 #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
 #XTRANSLATE \[NODEBUG\] => \[DebuggerStepThroughAttribute\]
 #else
-#XTRANSLATE \[HIDDEN\] => 
-#XTRANSLATE [\INLINE\] => 
+#XTRANSLATE \[HIDDEN\] =>
+#XTRANSLATE [\INLINE\] =>
 #XTRANSLATE \[NODEBUG\] =>
 #endif
 
@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD SetBuffer(buffer AS BYTE[]) AS VOID
             _buffer := buffer
 
-			
+
 		INTERNAL VIRTUAL METHOD Write() AS LOGIC
             IF ! Self:IsHot
                 return TRUE
@@ -107,17 +107,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         #endregion
         #region Helper Methods to read/write numbers are strings out of the buffer
-        
-			[INLINE];        
+
+			[INLINE];
 			PROTECTED INTERNAL METHOD _GetByte(nOffset AS INT) AS BYTE
 				RETURN Buffer[ nOffset]
 
-            [INLINE];        
+            [INLINE];
 			PROTECTED INTERNAL METHOD _SetByte(nOffset AS INT, bValue AS BYTE) AS VOID
 				Buffer[ nOffset] := bValue
                 _hot := TRUE
 
-            [INLINE];        
+            [INLINE];
 			PROTECTED INTERNAL METHOD _GetWord(nOffSet AS INT) AS WORD
                 BEGIN UNCHECKED
                     LOCAL wValue AS __WordStruct
@@ -126,7 +126,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN wValue:wordValue
                 END UNCHECKED
 
-           [INLINE];        
+           [INLINE];
 			PROTECTED INTERNAL METHOD _GetShort(nOffSet AS INT) AS SHORT
                 BEGIN UNCHECKED
                     LOCAL wValue AS __WordStruct
@@ -134,8 +134,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     wValue:b2 := Buffer[nOffSet+1]
                     RETURN wValue:shortValue
                 END UNCHECKED
-				
-			[INLINE];        
+
+			[INLINE];
 			PROTECTED INTERNAL METHOD _SetWord(nOffSet AS INT, _wValue AS WORD) AS VOID
                 BEGIN UNCHECKED
                     LOCAL wValue AS __WordStruct
@@ -146,17 +146,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 END UNCHECKED
                 RETURN
 
-			[INLINE];        
+			[INLINE];
 			PROTECTED INTERNAL METHOD _SetShort(nOffSet AS INT, siValue AS SHORT) AS VOID
                 LOCAL wValue AS __WordStruct
                 wValue:shortValue := siValue
 	            Buffer[nOffSet]   := wValue:b1
                 Buffer[nOffSet+1] := wValue:b2
 				_hot := TRUE
-                RETURN 
+                RETURN
 
-				
-			[INLINE];        
+
+			[INLINE];
 			PROTECTED INTERNAL METHOD _GetDWord(nOffSet AS INT) AS DWORD
                 LOCAL liValue AS __LongStruct
 	            liValue:b1 := Buffer[nOffSet]
@@ -165,7 +165,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 liValue:b4 := Buffer[nOffSet+3]
                 RETURN liValue:dwordValue
 
-			[INLINE];        
+			[INLINE];
 			PROTECTED INTERNAL METHOD _GetDWordLE(nOffSet AS INT) AS DWORD
                 LOCAL liValue AS __LongStruct
 	            liValue:b4 := Buffer[nOffSet]
@@ -173,28 +173,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 liValue:b2 := Buffer[nOffSet+2]
                 liValue:b1 := Buffer[nOffSet+3]
                 RETURN liValue:dwordValue
-				
-			[INLINE];        
+
+			[INLINE];
 			PROTECTED INTERNAL METHOD _SetDWord(nOffSet AS INT, dwValue AS DWORD) AS VOID
                 LOCAL liValue AS __LongStruct
                 liValue:dwordValue := dwValue
-	            Buffer[nOffSet]   :=  liValue:b1  
-                Buffer[nOffSet+1] :=  liValue:b2  
-                Buffer[nOffSet+2] :=  liValue:b3  
-                Buffer[nOffSet+3] :=  liValue:b4  
+	            Buffer[nOffSet]   :=  liValue:b1
+                Buffer[nOffSet+1] :=  liValue:b2
+                Buffer[nOffSet+2] :=  liValue:b3
+                Buffer[nOffSet+3] :=  liValue:b4
 				_hot := TRUE
 
-			[INLINE];        
+			[INLINE];
 			PROTECTED INTERNAL METHOD _SetDWordLE(nOffSet AS INT, dwValue AS DWORD) AS VOID
                 LOCAL liValue AS __LongStruct
                 liValue:dwordValue := dwValue
-	            Buffer[nOffSet]   :=  liValue:b4  
-                Buffer[nOffSet+1] :=  liValue:b3  
-                Buffer[nOffSet+2] :=  liValue:b2  
-                Buffer[nOffSet+3] :=  liValue:b1  
+	            Buffer[nOffSet]   :=  liValue:b4
+                Buffer[nOffSet+1] :=  liValue:b3
+                Buffer[nOffSet+2] :=  liValue:b2
+                Buffer[nOffSet+3] :=  liValue:b1
 				_hot := TRUE
-                
-			[INLINE];        
+
+			[INLINE];
 			PROTECTED INTERNAL METHOD _GetLong(nOffSet AS INT) AS Int32
                 LOCAL liValue AS __LongStruct
 	            liValue:b1 := Buffer[nOffSet]
@@ -203,7 +203,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 liValue:b4 := Buffer[nOffSet+3]
                 RETURN liValue:longValue
 
-			[INLINE];        
+			[INLINE];
 			PROTECTED INTERNAL METHOD _GetLongLE(nOffSet AS INT) AS Int32
                 LOCAL liValue AS __LongStruct
 	            liValue:b4 := Buffer[nOffSet]
@@ -211,40 +211,40 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 liValue:b2 := Buffer[nOffSet+2]
                 liValue:b1 := Buffer[nOffSet+3]
                 RETURN liValue:longValue
-			
-				
-			[INLINE];        
+
+
+			[INLINE];
 			PROTECTED INTERNAL METHOD _SetLong(nOffSet AS INT, longValue AS Int32) AS VOID
                 LOCAL liValue AS __LongStruct
                 liValue:longValue := longValue
-	            Buffer[nOffSet]   :=  liValue:b1  
-                Buffer[nOffSet+1] :=  liValue:b2  
-                Buffer[nOffSet+2] :=  liValue:b3  
-                Buffer[nOffSet+3] :=  liValue:b4  
+	            Buffer[nOffSet]   :=  liValue:b1
+                Buffer[nOffSet+1] :=  liValue:b2
+                Buffer[nOffSet+2] :=  liValue:b3
+                Buffer[nOffSet+3] :=  liValue:b4
 				_hot := TRUE
 
-			[INLINE];        
+			[INLINE];
 			PROTECTED INTERNAL METHOD _SetLongLE(nOffSet AS INT, longValue AS Int32) AS VOID
                 LOCAL liValue AS __LongStruct
                 liValue:longValue := longValue
-	            Buffer[nOffSet]   :=  liValue:b4 
-                Buffer[nOffSet+1] :=  liValue:b3  
-                Buffer[nOffSet+2] :=  liValue:b2  
-                Buffer[nOffSet+3] :=  liValue:b1  
+	            Buffer[nOffSet]   :=  liValue:b4
+                Buffer[nOffSet+1] :=  liValue:b3
+                Buffer[nOffSet+2] :=  liValue:b2
+                Buffer[nOffSet+3] :=  liValue:b1
 				_hot := TRUE
 
 
-			[INLINE];        
+			[INLINE];
 			INTERNAL METHOD _GetString( nOffSet AS INT, count AS INT) AS STRING
 				LOCAL str := _bag:Encoding:GetString( _buffer,nOffSet, count ) AS STRING
-				IF str == NULL 
+				IF str == NULL
 					str := String.Empty
                 ELSEIF str:EndsWith(e"\0")
                     str := str:TrimEnd(<CHAR>{'\0'})
 				ENDIF
 				RETURN str
 
-			[INLINE];        
+			[INLINE];
             INTERNAL METHOD _GetBytes( nOffSet AS INT, count AS INT) AS BYTE[]
                 LOCAL result AS BYTE[]
                 result := BYTE[]{count}
@@ -252,34 +252,28 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN result
 
 
-			[INLINE];        
+			[INLINE];
 			INTERNAL  METHOD _SetString(nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
 				// Be sure to fill the Buffer with 0
-				MemSet( _buffer, nOffSet, nSize , 0)
-				_bag:Encoding:GetBytes( sValue, 0, Math.Min(nSize,sValue:Length), _buffer, nOffSet)
+                LOCAL nDataLength := Math.Min(nSize,sValue:Length) AS LONG
+                FOR VAR nI := nDataLength to nSize -1
+                    _buffer[nOffSet+nI] := 0
+                NEXT
+				_bag:Encoding:GetBytes( sValue, 0, nDataLength, _buffer, nOffSet)
 				_hot := TRUE
             #endregion
 
-
-
-        STATIC METHOD MemSet(bytes AS BYTE[], start AS INT, length AS INT, bValue AS BYTE) AS VOID
-            BEGIN UNCHECKED
-                VAR finish := start+length-1
-                FOR VAR i := start TO finish
-                    bytes[i] := bValue
-                NEXT
-            END UNCHECKED
 
 		INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
 
         INTERNAL VIRTUAL METHOD Dump AS STRING
             RETURN String.Empty
 
- 
-       
+
+
 	END CLASS
 
 
 
 
-END NAMESPACE 
+END NAMESPACE

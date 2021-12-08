@@ -92,8 +92,8 @@ METHOD __BuildDataField( a AS ARRAY ) AS DataField STRICT
 
 
 	IF IsArray( a )
-		oRet := DataField{ a[ DBS_NAME ], FieldSpec{ a[ DBS_NAME ], a[ DBS_TYPE ],  ;
-			a[ DBS_LEN ], a[ DBS_DEC ] } }
+		oRet := DataField{ (STRING) a[ DBS_NAME ], FieldSpec{ (STRING) a[ DBS_NAME ] , a[ DBS_TYPE ],  ;
+			(DWORD) a[ DBS_LEN ], (DWORD)  a[ DBS_DEC ] } }
 	ENDIF
 	RETURN oRet
 
@@ -718,7 +718,7 @@ METHOD __SetupLocks( )  AS VOID STRICT
 	RETURN
 /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />
 CONSTRUCTOR( cFile AS STRING, lShareMode := FALSE AS OBJECT, lReadOnlyMode := FALSE AS OBJECT, xDriver:= "" AS STRING, aRDD := NULL_ARRAY AS ARRAY)
-    SELF(FileSpec{cFile}, lShareMode, lReadOnlyMode , xDriver, aRDD ) 
+    SELF(FileSpec{cFile}, lShareMode, lReadOnlyMode , xDriver, aRDD )
 
 
 /// <include file="Rdd.xml" path="doc/DbServer.ctor/*" />

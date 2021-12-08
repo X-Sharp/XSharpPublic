@@ -114,7 +114,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         // Other fields
         PRIVATE _leaves    AS List<CdxLeaf>
-        INTERNAL aClear     as BYTE[]
 
 #endregion
 #region constants
@@ -170,29 +169,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL OVERRIDE METHOD InitBlank(oTag AS CdxTag) AS VOID
             SELF:Tag    := oTag
             SELF:Initialize(KeyLength)
-            IF SELF IS CdxTagList
-                TrailByte := 0
-            ELSEIF Tag != NULL
-                IF Tag:Collation != NULL
-                    TrailByte := 0
-                ELSE
-                    TrailByte := (BYTE) (IIF(Tag:KeyType == __UsualType.String, 32, 0) )
-                ENDIF
-            ELSE
-                TrailByte := 32
-            ENDIF
+            SELF:TrailByte := oTag:TrailByte
 
         INTERNAL OVERRIDE METHOD _setTag(newTag AS CdxTag) AS VOID
             SUPER:_setTag(newTag)
-            IF SELF IS CdxTagList
-                TrailByte := 0
-            ELSEIF newTag != NULL
-                IF _tag:Collation != NULL
-                    TrailByte := 0
-                ELSE
-                    TrailByte := (BYTE) (IIF(_tag:KeyType == __UsualType.String, 32, 0) )
-                ENDIF
-            ENDIF
+            SELF:TrailByte := newTag:TrailByte
 
         INTERNAL VIRTUAL METHOD Initialize(nKeyLength AS WORD) AS VOID
             VAR wasRoot := SELF:IsRoot
@@ -224,7 +205,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Freespace  := CDXLEAF_BYTESFREE
             SELF:NumKeys    := 0
             SELF:_leaves    := NULL
-            MemSet(SELF:Buffer,CDXLEAF_HEADERLEN,CDXLEAF_BYTESFREE,0)
+            //MemSet(SELF:Buffer,CDXLEAF_HEADERLEN,CDXLEAF_BYTESFREE,0)
             RETURN
 
         INTERNAL OVERRIDE METHOD Read() AS LOGIC
@@ -283,12 +264,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nStart    AS Int32
             LOCAL nStep     AS Int32
             LOCAL nLast     AS Int32
+            LOCAL aBlank    as BYTE[]
 
             // First key starts at end of page
             nStart := CDXPAGE_SIZE
             _leaves := List<CdxLeaf>{}
             IF SELF IS CdxTagList
-                SELF:aClear := BYTE[]{KeyLength}
+                aBlank := BYTE[]{KeyLength}
+            ELSE
+                aBlank := SELF:Tag:BlankKey
             ENDIF
             nOffSet := CDXLEAF_HEADERLEN
             nStep := SELF:DataBytes
@@ -306,7 +290,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_getDupTrail(iTemp, OUT nDup, OUT nTrail)
                     nCopy    := SELF:KeyLength - nTrail - nDup
                     IF nTrail > 0 .and. nTrail <= SELF:KeyLength
-                       System.Array.Copy(aClear, 0,  aBytes, SELF:KeyLength - nTrail, nTrail)
+                       System.Array.Copy(aBlank, 0,  aBytes, SELF:KeyLength - nTrail, nTrail)
                     ENDIF
                     // Copy to aBytes from pos nDup
                     IF nCopy > 0 .and. nCopy <= nStart
@@ -396,7 +380,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         END PROPERTY
 #endregion
         INTERNAL METHOD SetRecordBits(numRecs AS LONG) AS VOID
-            VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
+            VAR bits    := CdxHelpers.GetBits(SELF:KeyLength)
             VAR totbits := bits * 2
 
 

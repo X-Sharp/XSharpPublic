@@ -7,12 +7,46 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 namespace Microsoft.CodeAnalysis.CSharp
 {
 
     internal partial class Binder
     {
+
+        internal void XsCheckPsz2String(SyntaxNode node, BoundExpression op1, DiagnosticBag diagnostics)
+        {
+            var assignment = node as AssignmentExpressionSyntax;
+            if (assignment.Right.XIsString2Psz)
+            {
+                if (op1 is BoundFieldAccess bfa)
+                {
+                    var symbol = bfa.FieldSymbol;
+                    var decltype = symbol.ContainingType;
+                    var ok = false;
+                    if (decltype.IsVoStructOrUnion())
+                    {
+                        var receiver = bfa.ReceiverOpt;
+                        if (receiver is BoundLocal local)
+                        {
+                            var localSymbol = local.LocalSymbol;
+                            var decl = localSymbol.DeclaringSyntaxReferences;
+                            if (decl.Length > 0)
+                            {
+                                var syntax = decl[0].GetSyntax() as CSharpSyntaxNode;
+                                ok = syntax.XVoIsDecl;
+                            }
+                        }
+                    }
+                    if (!ok)
+                    {
+                        Error(diagnostics, ErrorCode.ERR_String2PszMustBeAssignedToLocal, assignment.Right);
+                    }
+                }
+            }
+        }
+
         internal BoundExpression XsBindFoxArrayAssign(SyntaxNode node, BoundExpression op1, BoundExpression op2, DiagnosticBag diagnostics)
         {
             // nothing to do for Variable Symbols

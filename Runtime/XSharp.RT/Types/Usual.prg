@@ -352,35 +352,35 @@ BEGIN NAMESPACE XSharp
 
         /// No checks for typeflag. These private properties should always be accessed after checking the correct type
         [HIDDEN];
-        PRIVATE PROPERTY _arrayValue    AS ARRAY			[NODEBUG] GET (ARRAY) _refData
+        INTERNAL PROPERTY _arrayValue    AS ARRAY			[NODEBUG] GET (ARRAY) _refData
         [HIDDEN];
-        PRIVATE PROPERTY _codeblockValue AS ICodeblock		[NODEBUG] GET (ICodeblock) _refData
+        INTERNAL PROPERTY _codeblockValue AS ICodeblock		[NODEBUG] GET (ICodeblock) _refData
         [HIDDEN];
-        PRIVATE PROPERTY _currencyValue	AS CURRENCY	        [NODEBUG] GET __Currency{ (System.Decimal) _refData}
+        INTERNAL PROPERTY _currencyValue	AS CURRENCY	        [NODEBUG] GET __Currency{ (System.Decimal) _refData}
         [HIDDEN];
-        PRIVATE PROPERTY _dateValue		AS DATE				[NODEBUG] GET _valueData:d
+        INTERNAL PROPERTY _dateValue		AS DATE				[NODEBUG] GET _valueData:d
         [HIDDEN];
-        PRIVATE PROPERTY _dateTimeValue AS DateTime			[NODEBUG] GET _valueData:dt
+        INTERNAL PROPERTY _dateTimeValue AS DateTime			[NODEBUG] GET _valueData:dt
         [HIDDEN];
-        PRIVATE PROPERTY _decimalValue	AS System.Decimal	[NODEBUG] GET (System.Decimal) _refData
+        INTERNAL PROPERTY _decimalValue	AS System.Decimal	[NODEBUG] GET (System.Decimal) _refData
         [HIDDEN];
-        PRIVATE PROPERTY _floatValue    AS FLOAT			[NODEBUG] GET FLOAT{ _valueData:r8, _width, _decimals}
+        INTERNAL PROPERTY _floatValue    AS FLOAT			[NODEBUG] GET FLOAT{ _valueData:r8, _width, _decimals}
         [HIDDEN];
-        PRIVATE PROPERTY _i64Value		AS INT64			[NODEBUG] GET _valueData:i64
+        INTERNAL PROPERTY _i64Value		AS INT64			[NODEBUG] GET _valueData:i64
         [HIDDEN];
-        PRIVATE PROPERTY _intValue		AS INT				[NODEBUG] GET _valueData:i
+        INTERNAL PROPERTY _intValue		AS INT				[NODEBUG] GET _valueData:i
         [HIDDEN];
-        PRIVATE PROPERTY _logicValue	AS LOGIC			[NODEBUG] GET _valueData:l
+        INTERNAL PROPERTY _logicValue	AS LOGIC			[NODEBUG] GET _valueData:l
         [HIDDEN];
-        PRIVATE PROPERTY _ptrValue		AS IntPtr			[NODEBUG] GET _valueData:p
+        INTERNAL PROPERTY _ptrValue		AS IntPtr			[NODEBUG] GET _valueData:p
         [HIDDEN];
-        PRIVATE PROPERTY _r8Value		AS REAL8			[NODEBUG] GET _valueData:r8
+        INTERNAL PROPERTY _r8Value		AS REAL8			[NODEBUG] GET _valueData:r8
         [HIDDEN];
-        PRIVATE PROPERTY _stringValue   AS STRING			[NODEBUG] GET (STRING) _refData
+        INTERNAL PROPERTY _stringValue   AS STRING			[NODEBUG] GET (STRING) _refData
         [HIDDEN];
-        PRIVATE PROPERTY _symValue		AS SYMBOL			[NODEBUG] GET _valueData:s
+        INTERNAL PROPERTY _symValue		AS SYMBOL			[NODEBUG] GET _valueData:s
         [HIDDEN];
-        PRIVATE PROPERTY _binaryValue	AS BINARY		    [NODEBUG] GET __Binary{ (BYTE[]) _refData}
+        INTERNAL PROPERTY _binaryValue	AS BINARY		    [NODEBUG] GET __Binary{ (BYTE[]) _refData}
 
         // properties for floats
         [HIDDEN];

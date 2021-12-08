@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.Text.Formatting;
 using XSharpModel;
 using System.Reflection;
 using XSharp.Project.Editors.LightBulb;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace XSharp.LanguageService.Editors.LightBulb
 {
@@ -47,6 +48,11 @@ namespace XSharp.LanguageService.Editors.LightBulb
         private ITextBuffer m_textBuffer;
         private ITextView m_textView;
 
+        private IXTypeSymbol _classEntity;
+        private Dictionary<string, List<IXMemberSymbol>> _members;
+        private XFile _xfile;
+        private TextRange _range;
+
 #pragma warning disable CS0067
         public event EventHandler<EventArgs> SuggestedActionsChanged;
 
@@ -56,6 +62,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             this.m_textView = textView;
             this.m_textBuffer = textBuffer;
             //
+            _classEntity = null;
         }
 
         private bool TryGetWordUnderCaret(out TextExtent wordExtent)
@@ -100,10 +107,11 @@ namespace XSharp.LanguageService.Editors.LightBulb
 #pragma warning restore VSTHRD105
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            if (SearchImplement())
+            // Do we have members to Add ?
+            if (_members != null)
             {
                 ITrackingSpan trackingSpan = range.Snapshot.CreateTrackingSpan(range, SpanTrackingMode.EdgeInclusive);
-                var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(trackingSpan, this.m_textView );
+                var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(trackingSpan, this.m_textView, this.m_textBuffer, this._classEntity, this._members, this._range);
                 return new SuggestedActionSet[] { new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }) };
             }
             return Enumerable.Empty<SuggestedActionSet>();
@@ -123,56 +131,102 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         public bool SearchImplement()
         {
-#if NOTIMPLEMENTED
-            // Try to retrieve an already parsed list of Tags
-            XSharpClassifier xsClassifier = null;
-            if (m_textBuffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
-            {
-                xsClassifier = m_textBuffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
-            }
+            _classEntity = null;
+            _members = null;
+            //
+            _xfile = m_textBuffer.GetFile();
+            if (_xfile == null)
+                return false;
+            //
 
-            ITextCaret caret = m_textView.Caret;
-            if (xsClassifier != null && xsClassifier.Snapshot.Version == caret.Position.BufferPosition.Snapshot.Version)
+            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
+            ITextSnapshotLine line = caret.GetContainingLine();
+            foreach (var entity in _xfile.EntityList)
             {
-                //
-                ITextSnapshot snapshot = xsClassifier.Snapshot;
-                // Note we should use the same snapshot everywhere in this code.
-                // the snapshot in the classifier may be older than the current snapshot
-                if (snapshot.Length == 0)
-                    return false; // Should not happen : This means that the buffer is empty !!!
-                //
-                ITextViewLine iLine = caret.ContainingTextViewLine;
-                SnapshotSpan Span = new SnapshotSpan(snapshot, iLine.Start.Position, iLine.Length);
-                //
-                IList<ClassificationSpan> classifications = xsClassifier.GetClassificationSpans(Span);
-                //
-                foreach (var classification in classifications)
+                if (entity is XSourceTypeSymbol typeEntity)
                 {
-
-                    if (!classification.Span.Contains(caret.Position.BufferPosition))
-                        continue;
-
-                    var name = classification.ClassificationType.Classification.ToLower();
-                    //
-                    if (name.Contains("keyword"))
+                    if (typeEntity.Range.StartLine == line.LineNumber)
                     {
-                        SnapshotSpan cspan = classification.Span;
-                        string Keyword = snapshot.GetText(cspan);
-                        Keyword = Keyword.ToLower();
-                        // Search for Implements
-                        if (Keyword.Equals("implements"))
+                        // Got it !
+                        _classEntity = _xfile.FindType(typeEntity.FullName);
+                        if (_classEntity != null)
                         {
-                            // Disable LightBulb
-                            return false;
-                            //return true;
+                            _range = typeEntity.Range;
+                            break;
                         }
                     }
                 }
             }
-#endif
+            // Ok, we know the class, now does it have an Interface..and does it need it ?
+            if (_classEntity != null)
+            {
+                _members = BuildMissingMembers();
+                if (_members != null)
+                    return true;
+            }
+
             return false;
         }
 
+
+        internal void WriteOutputMessage(string strMessage)
+        {
+            if (XSettings.EnableParameterLog && XSettings.EnableLogging)
+            {
+                XSettings.DisplayOutputMessage("XSharp.LightBulb:" + strMessage);
+            }
+        }
+
+        private Dictionary<string, List<IXMemberSymbol>> BuildMissingMembers()
+        {
+            Dictionary<string, List<IXMemberSymbol>> toAdd = new Dictionary<string, List<IXMemberSymbol>>();
+
+            //
+            if (_classEntity.Interfaces.Count == 0)
+                return null;
+            //
+            foreach (string iface in _classEntity.Interfaces)
+            {
+                // Search The interface
+                // --> Default NameSpace
+                var iftype = _xfile.FindType(iface.Trim());
+                if (iftype != null)
+                {
+                    if (iftype.Kind == Kind.Interface)
+                    {
+                        List<IXMemberSymbol> elementsToAdd = new List<IXMemberSymbol>();
+                        // Search all Interface Members
+                        foreach (XSourceMemberSymbol mbr in iftype.Members)
+                        {
+                            bool found = false;
+                            // Is it already in classEntity ?
+                            foreach (IXMemberSymbol entityMbr in _classEntity.Members)
+                            {
+                                if (String.Compare(mbr.Description, entityMbr.Description, true) == 0)
+                                {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            // No, Add 
+                            if ( !found )
+                            {
+                                // No
+                                elementsToAdd.Add(mbr);
+                            }
+                        }
+                        if (elementsToAdd.Count > 0)
+                        {
+                            toAdd.Add(iftype.Name, elementsToAdd);
+                        }
+                    }
+                }
+            }
+            //
+            if (toAdd.Count == 0)
+                return null;
+            return toAdd;
+        }
 
     }
 

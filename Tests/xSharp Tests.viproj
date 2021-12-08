@@ -101714,8 +101714,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = R817 - Ambigous overloads
 
 ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
-; ************** APPLICATION R818 *************
-Application = R818
+; ************** APPLICATION R818 - String2Psz() for fields not allowed *************
+Application = R818 - String2Psz() for fields not allowed
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -101748,21 +101748,21 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R818 FileGroups]
-[R818 Files]
+[R818 - String2Psz() for fields not allowed FileGroups]
+[R818 - String2Psz() for fields not allowed Files]
 File = %AppPath%\Prg\R818.prg
 FileGUID = E9F386F9-FE45-4F7A-BCC4-08A56789E63C
 FileType = Code
 CopyToBin = 0
-[R818 References]
+[R818 - String2Psz() for fields not allowed References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
-[R818 Resources]
-[R818 Native Resources]
-[R818 License files]
-[R818 General Options]
+[R818 - String2Psz() for fields not allowed Resources]
+[R818 - String2Psz() for fields not allowed Native Resources]
+[R818 - String2Psz() for fields not allowed License files]
+[R818 - String2Psz() for fields not allowed General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -101795,7 +101795,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R818 Configurations]
+[R818 - String2Psz() for fields not allowed Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -101824,7 +101824,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R818
+ENDApplication = R818 - String2Psz() for fields not allowed
 [EndApplications]
 
 [Configurations]

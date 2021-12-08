@@ -91,6 +91,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             FOREACH VAR tag IN aTags
                 VAR bytes := BYTE[]{ SELF:KeyLength}
                 VAR name := tag:OrderName
+            	// Be sure to fill the Buffer with 0
+				MemSet( bytes, 0, KeyLength, 0)
                 SELF:Encoding:GetBytes( name, 0, Math.Min(KeyLength,name:Length), bytes, 0)
 				_hot := TRUE
 

@@ -255,15 +255,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			[INLINE];
 			INTERNAL  METHOD _SetString(nOffSet AS INT, nSize AS INT, sValue AS STRING) AS VOID
 				// Be sure to fill the Buffer with 0
-                LOCAL nDataLength := Math.Min(nSize,sValue:Length) AS LONG
-                FOR VAR nI := nDataLength to nSize -1
-                    _buffer[nOffSet+nI] := 0
-                NEXT
-				_bag:Encoding:GetBytes( sValue, 0, nDataLength, _buffer, nOffSet)
+				MemSet( _buffer, nOffSet, nSize , 0)
+				_bag:Encoding:GetBytes( sValue, 0, Math.Min(nSize,sValue:Length), _buffer, nOffSet)
 				_hot := TRUE
             #endregion
 
 
+        STATIC METHOD MemSet(bytes AS BYTE[], start AS INT, length AS INT, bValue AS BYTE) AS VOID
+            BEGIN UNCHECKED
+                VAR finish := start+length-1
+                FOR VAR i := start TO finish
+                    bytes[i] := bValue
+                NEXT
+            END UNCHECKED
 		INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
 
         INTERNAL VIRTUAL METHOD Dump AS STRING

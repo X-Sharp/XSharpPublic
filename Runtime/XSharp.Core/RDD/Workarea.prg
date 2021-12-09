@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.RDD
 	/// <summary>Base class for DBF based RDDs. Holds common properties such as the Workarea number, Alias, Fields list and various flags.</summary>
 	/// <seealso cref="IRdd"/>
     [DebuggerDisplay("Workarea ({Alias,nq})")];
-	CLASS Workarea IMPLEMENTS IRdd, IDisposable
+	CLASS Workarea IMPLEMENTS IRdd, IDisposable, IClosedRDD
 		// This class does NOT implement file based (DBF stuff).
 		// That is handled in the DBF class which inherits from RddBase
 		#region Fields
@@ -32,6 +32,7 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <summary>Is at BOF ?</summary>
 		PROTECTED _BoF			    AS LOGIC
 		PROTECTED _Bottom		    AS LOGIC
+        PROTECTED _Closed           AS LOGIC
 		PROTECTED _EoF			    AS LOGIC
 		PROTECTED _Found			AS LOGIC
 		PROTECTED _Top			    AS LOGIC
@@ -68,11 +69,11 @@ BEGIN NAMESPACE XSharp.RDD
 		// Memo and Order Implementation
 		PROTECTED _Memo			AS IMemo
 		/// <summary>Current index implementation.</summary>
-		PROTECTED _Order			AS IOrder
+        PROTECTED _Order			AS IOrder
 
 		/// <summary>Result of the last Block evaluation.</summary>
 		PROTECTED _EvalResult    AS OBJECT
-
+        PUBLIC PROPERTY Closed as LOGIC => SELF:_Closed
         PUBLIC PROPERTY Properties AS DatabasePropertyCollection
             GET
                 if _lazyProperties == NULL
@@ -423,6 +424,7 @@ BEGIN NAMESPACE XSharp.RDD
 					ENDIF
 				NEXT
 			ENDIF
+            SELF:_Closed := TRUE
 			RETURN TRUE
 
 			/// <inheritdoc />

@@ -110,9 +110,14 @@ namespace XSharp.LanguageService.Editors.LightBulb
             // Do we have members to Add ?
             if (_members != null)
             {
-                ITrackingSpan trackingSpan = range.Snapshot.CreateTrackingSpan(range, SpanTrackingMode.EdgeInclusive);
-                var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(trackingSpan, this.m_textView, this.m_textBuffer, this._classEntity, this._members, this._range);
-                return new SuggestedActionSet[] { new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }) };
+                List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
+                foreach (KeyValuePair<string, List<IXMemberSymbol>> intfaces in _members)
+                {
+                    var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range);
+                    suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
+                }
+
+                return suggest.ToArray();
             }
             return Enumerable.Empty<SuggestedActionSet>();
         }
@@ -209,7 +214,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                                 }
                             }
                             // No, Add 
-                            if ( !found )
+                            if (!found)
                             {
                                 // No
                                 elementsToAdd.Add(mbr);

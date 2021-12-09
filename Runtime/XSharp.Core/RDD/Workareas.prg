@@ -6,6 +6,7 @@
 
 USING System.Collections.Generic
 USING System.Diagnostics
+USING System.Linq
 
 #translate IsValidArea (<nArea>) => (<nArea> > 0 .and. <nArea> <= MaxWorkareas)
 
@@ -18,11 +19,42 @@ ABSTRACT CLASS XSharp.RDD.Workareas
     #endregion
     // This is a table across threads that has all the RDDs and Workareas
     STATIC PROTECTED _AllRDDs   AS Dictionary<IRdd, Workareas>
+    STATIC PRIVATE _oTimer       as System.Threading.Timer
 
-
+    STATIC METHOD Timer_Tick(state as Object) AS VOID
+        LOCAL aToClose := NULL as IList<IRdd>
+        BEGIN LOCK _AllRDDs
+            FOREACH var oRDD in _AllRDDs:Keys
+                IF oRDD IS IClosedRDD var oClosed
+                    LOCAL lRemove := oClosed:Closed AS LOGIC
+                    IF ! lRemove
+                        LOCAL areas := _AllRDDs[oRDD] as Workareas
+                        IF ! areas:Thread:IsAlive
+                            lRemove := TRUE
+                            oRDD:Close()
+                        ENDIF
+                    ENDIF
+                    IF lRemove
+                        if aToClose = NULL
+                            aToClose := List<IRdd>{}
+                        ENDIF
+                        aToClose:Add(oRDD)
+                    ENDIF
+                ENDIF
+            NEXT
+        END LOCK
+        IF aToClose != NULL
+            FOREACH VAR oRDD in aToClose
+                _CloseArea(oRDD)
+            NEXT
+        ENDIF
 
     STATIC CONSTRUCTOR()
         _AllRDDs  := Dictionary<IRdd, Workareas>{}
+        // every 30 seconds we do some cleanup for dangling RDD objects
+        _oTimer   := System.Threading.Timer{Timer_Tick,NULL, 0, 30_000}
+
+
     RETURN
     /// <exclude />
 
@@ -70,6 +102,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE iCurrentWorkarea    AS DWORD
         PRIVATE WorkareaStack       AS Stack<DWORD>
+        PRIVATE Thread              AS System.Threading.Thread
         // xbase++ has a cargo slot per Workarea
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE cargo    := Dictionary<DWORD, OBJECT>{} AS Dictionary<DWORD, OBJECT>      // 1 based area number and value
@@ -92,6 +125,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         RDDs				:= Dictionary<DWORD, IRdd>{}
         iCurrentWorkarea	:= 1
         WorkareaStack       := Stack<DWORD>{}
+        Thread              := System.Threading.Thread.CurrentThread
 
     ///<summary>Close All RDDs referenced by this Workarea list</summary>
     /// <returns>TRUE when all areas were closed succesfully. When one or more areas failed to close then FALSE is returned.</returns>
@@ -156,6 +190,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                         TRY
                             lResult := oRdd:Close()
                             Aliases:Remove(oRdd:Alias)
+                            // Remove from Global Thread-Wide list
                             Workareas._Remove(oRdd)
                         CATCH e AS Exception
                             lResult			:= FALSE

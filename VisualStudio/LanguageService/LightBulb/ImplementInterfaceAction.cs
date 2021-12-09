@@ -19,19 +19,17 @@ namespace XSharp.Project.Editors.LightBulb
 {
     internal class ImplementInterfaceSuggestedAction : ISuggestedAction
     {
-        private ITrackingSpan m_span;
         private string m_display;
         private ITextSnapshot m_snapshot;
         private ITextView m_textView;
         private IXTypeSymbol _classEntity;
-        private Dictionary<string, List<IXMemberSymbol>> _members;
+        private List<IXMemberSymbol> _members;
         private XSharpModel.TextRange _range;
 
-        public ImplementInterfaceSuggestedAction(ITrackingSpan span, ITextView textView, ITextBuffer m_textBuffer, IXTypeSymbol entity, Dictionary<string, List<IXMemberSymbol>> memberstoAdd, XSharpModel.TextRange range)
+        public ImplementInterfaceSuggestedAction(ITextView textView, ITextBuffer m_textBuffer, string intface, IXTypeSymbol entity, List<IXMemberSymbol> memberstoAdd, XSharpModel.TextRange range)
         {
-            m_span = span;
-            m_snapshot = span.TextBuffer.CurrentSnapshot;
-            m_display = string.Format("Implement Interfaces", span.GetText(m_snapshot));
+            m_snapshot = m_textBuffer.CurrentSnapshot;
+            m_display = "Implement " + intface;
             m_textView = textView;
             _classEntity = entity;
             _members = memberstoAdd;
@@ -42,24 +40,19 @@ namespace XSharp.Project.Editors.LightBulb
         {
             int count = 0;
             List<Inline> content = new List<Inline>();
-            foreach (KeyValuePair<string, List<IXMemberSymbol>> mbrs in _members)
+            int max = _members.Count;
+            foreach (IXMemberSymbol mbr in _members)
             {
-                var temp = new Run("Interface " + mbrs.Key + Environment.NewLine);
+                Run temp = new Run(mbr.Description + Environment.NewLine);
                 content.Add(temp);
-                int max = mbrs.Value.Count;
-                foreach (IXMemberSymbol mbr in mbrs.Value)
+                count++;
+                if ((count >= 3) && (max > 3))
                 {
-                    temp = new Run(mbr.Description + Environment.NewLine);
+                    temp = new Run("..." + Environment.NewLine);
                     content.Add(temp);
-                    count++;
-                    if (( count >= 3) && ( max > 3 ))
-                    {
-                        temp = new Run("..." + Environment.NewLine);
-                        content.Add(temp);
-                        temp = new Run(max.ToString() + " total members." + Environment.NewLine);
-                        content.Add(temp);
-                        break;
-                    }
+                    temp = new Run(max.ToString() + " total members." + Environment.NewLine);
+                    content.Add(temp);
+                    break;
                 }
             }
             var textBlock = new TextBlock();
@@ -122,15 +115,17 @@ namespace XSharp.Project.Editors.LightBulb
             String insertText;
             ITextSnapshotLine lastLine = m_snapshot.GetLineFromLineNumber(_range.EndLine);
             List<Inline> content = new List<Inline>();
+            // Add a comment with the Interface name ??
             insertText = Environment.NewLine;
-            foreach (KeyValuePair<string, List<IXMemberSymbol>> mbrs in _members)
+            foreach (IXMemberSymbol mbr in _members)
             {
-                foreach (IXMemberSymbol mbr in mbrs.Value)
-                {
-                    insertText += mbr.Description + Environment.NewLine;
-                }
-                insertText += Environment.NewLine;
+                // Todo : Check these
+                // Add XML doc on top of generated member ?
+                // Add a return with default value ?
+                // Add a THROW NotImplementedException ?
+                insertText += mbr.Description + Environment.NewLine;
             }
+            insertText += Environment.NewLine;
             // Create an Edit Session
             var editSession = m_textView.TextBuffer.CreateEdit();
             try

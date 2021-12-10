@@ -1103,21 +1103,21 @@ BEGIN NAMESPACE XSharp.RDD
 					oResult := _Alias
 				CASE DbInfo.DBI_FULLPATH
 					oResult := SELF:_FileName
-                CASE DbInfo.DBI_CHILDCOUNT
-                    oResult := SELF:_Relations:Count
-                CASE DbInfo.DBI_RDD_OBJECT
-                    oResult := SELF
-                OTHERWISE
-                    // Register an error that the info is not supported and return NULL
-                    // CoreDb.Info will detect that and will return FALSE
-                    LOCAL error := XSharp.Error.VOError(EG_UNSUPPORTED, "Info",nameof(nOrdinal),1, <OBJECT>{nOrdinal, oNewValue}) as Error
-                    error:Stack := ErrorStack(0)
-                    error:SubCode := 1153 // ERDD_UNSUPPORTED
-                    error:Severity := ES_ERROR
-                    error:SubSystem := SELF:Driver
-                    error:CanDefault := TRUE
-                    RuntimeState.LastRddError := error
-					oResult := NULL
+            CASE DbInfo.DBI_CHILDCOUNT
+                oResult := SELF:_Relations:Count
+            CASE DbInfo.DBI_RDD_OBJECT
+                oResult := SELF
+            OTHERWISE
+                // Register an error that the info is not supported and return NULL
+                // CoreDb.Info will detect that and will return FALSE
+                LOCAL error := XSharp.Error.VOError(EG_UNSUPPORTED, "Info",nameof(nOrdinal),1, <OBJECT>{nOrdinal, oNewValue}) as Error
+                error:Stack := ErrorStack(0)
+                error:SubCode := 1153 // ERDD_UNSUPPORTED
+                error:Severity := ES_ERROR
+                error:SubSystem := SELF:Driver
+                error:CanDefault := TRUE
+                RuntimeState.LastRddError := error
+					oResult := DBNull.Value
 				END SWITCH
 			RETURN oResult
 

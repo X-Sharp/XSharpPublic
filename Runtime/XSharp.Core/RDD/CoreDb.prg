@@ -1068,6 +1068,7 @@ CLASS XSharp.CoreDb
     STATIC METHOD Info(nOrdinal AS DWORD,oValue REF OBJECT) AS LOGIC
         VAR oTemp := oValue
         VAR result := CoreDb.Do ({ =>
+            RuntimeState.LastRddError := NULL
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__, FALSE) AS IRdd
             IF oRdd != null
                 IF (nOrdinal == DBI_RDD_OBJECT)
@@ -1076,6 +1077,9 @@ CLASS XSharp.CoreDb
                     oTemp := _RddList{(Workarea) oRdd}
                 ELSE
                     oTemp := oRdd:Info((INT) nOrdinal, oTemp)
+                ENDIF
+                if RuntimeState.LastRddError != NULL
+                    RETURN FALSE
                 ENDIF
                 RETURN TRUE
             ENDIF

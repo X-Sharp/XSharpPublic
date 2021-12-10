@@ -1360,7 +1360,6 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
     				SELF:_Header:isHot := TRUE
 			        IF SELF:Shared
 				        SELF:_writeHeader()
-                        _oStream:Flush(TRUE)
 					ENDIF
 				CATCH ex AS Exception
 					SELF:_dbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
@@ -2332,6 +2331,7 @@ END CLASS
 
 
 END NAMESPACE
+
 
 
 

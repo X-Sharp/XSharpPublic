@@ -505,7 +505,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Fact, Trait("Category", "Hacks")];
 		METHOD ArrayXPPSpecialHandling() AS VOID
-            LOCAL aValues := {1,2,4} AS ARRAY
+            LOCAL aValues := {1,2,4} AS ARRAY        
+            LOCAL eDialect AS XSharp.XSharpDialect
+            eDialect := RuntimeState.Dialect
             RuntimeState.Dialect := XSharpDialect.XPP
             Assert.True(  aValues[1,1] == TRUE)
             Assert.True(  aValues[2,2] == TRUE)
@@ -514,7 +516,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.True(  aValues[1,1] == "a")
             Assert.True(  aValues[2,2] == "b")
             Assert.True(  aValues[3,3] == "c")
-
+            RuntimeState.Dialect := eDialect
 
 	END CLASS
     CLASS IntegerSorter

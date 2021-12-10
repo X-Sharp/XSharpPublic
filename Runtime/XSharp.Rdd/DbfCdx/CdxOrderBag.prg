@@ -338,6 +338,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             lOk := SELF:FlushPages() .and. lOk
+            //_stream:SafeSetLength(_stream:Length)
+            _stream:Flush(TRUE)
             RETURN lOk
 
          INTERNAL METHOD FlushPages() AS LOGIC
@@ -678,7 +680,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_PageList:SetVersion(version)
 #endif
             SELF:_root:Write()
-            SELF:_stream:Flush(TRUE)
 
     #endregion
 
@@ -690,4 +691,5 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END CLASS
 END NAMESPACE
+
 

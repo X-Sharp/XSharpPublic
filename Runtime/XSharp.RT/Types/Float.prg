@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -14,16 +14,16 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
     // Type is Immutable, so no settable properties
-    /// <summary>Internal type that implements the VO Compatible FLOAT type.
+    /// <summary>Internal type that implements the XBase Compatible FLOAT type.
     /// This type has many operators and implicit converters that normally are never directly called from user code.
     /// </summary>
     /// <seealso cref="IFloat"/>
-    /// <seealso cref="RDD.DbFloat"/> 
+    /// <seealso cref="RDD.DbFloat"/>
     [DebuggerDisplay("{ToDebugString(),nq}", Type := "FLOAT" )];
     [StructLayout(LayoutKind.Explicit, Pack := 4)];
     [Serializable];
     PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
-        IConvertible,; 
+        IConvertible,;
         IFormattable, ;
         IComparable<__Float>, ;
         IEquatable<__Float>, ;
@@ -36,46 +36,46 @@ BEGIN NAMESPACE XSharp
         [FieldOffset(8)]  PRIVATE INITONLY _length AS SHORTINT
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffset(10)] PRIVATE INITONLY _decimals AS SHORTINT
-        
+
         #region constructors
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
         /// <param name="r8">Real8 value to convert to a FLOAT</param>
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         CONSTRUCTOR (r8 AS REAL8)
             SELF:_value    := r8
             SELF:_length   := 0
             SELF:_decimals := -1
-            
+
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         CONSTRUCTOR (r8 AS REAL8, decimals AS INT)
             SELF:_value    := r8
             SELF:_length   := 0
-            SELF:_decimals := (SHORTINT) decimals 
-            
+            SELF:_decimals := (SHORTINT) decimals
+
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         CONSTRUCTOR (r8 AS REAL8, decimals AS DWORD)
             SELF:_value    := r8
             SELF:_length   := 0
-            SELF:_decimals := (SHORTINT) decimals 
-            
+            SELF:_decimals := (SHORTINT) decimals
+
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         CONSTRUCTOR (r8 AS REAL8, length AS DWORD, decimals AS DWORD)
             SELF:_value    := r8
             SELF:_length   := (SHORTINT) length
-            SELF:_decimals := (SHORTINT) decimals 
-            
+            SELF:_decimals := (SHORTINT) decimals
+
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         CONSTRUCTOR (r8 AS REAL8, length AS INT, decimals AS INT )
             SELF:_value    := r8
             SELF:_length   := (SHORTINT) length
             SELF:_decimals := (SHORTINT) decimals
-            
+
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         CONSTRUCTOR (@@Value AS IFloat)
             SELF:_value		:= @@Value:Value
             SELF:_length	:= (SHORT)  @@Value:Digits
@@ -83,13 +83,13 @@ BEGIN NAMESPACE XSharp
         #endregion
         #region Properties
         /// <summary>REAL8 (System.Double) value</summary>
-        PROPERTY @@Value    AS REAL8	GET _value			
+        PROPERTY @@Value    AS REAL8	GET _value
         /// <summary>Width </summary>
-        PROPERTY Digits   AS INT	GET _length		
+        PROPERTY Digits   AS INT	GET _length
         /// <summary>Number of decimals</summary>
-        PROPERTY Decimals AS INT	GET _decimals	
+        PROPERTY Decimals AS INT	GET _decimals
         #endregion
-        
+
         #region Equality Operators
         /// <inheritdoc />
         OVERRIDE METHOD Equals(rhs AS OBJECT  ) AS LOGIC
@@ -100,13 +100,13 @@ BEGIN NAMESPACE XSharp
                 result := FALSE
             ENDIF
             RETURN result
-            
+
         /// <inheritdoc />
         METHOD Equals(rhs AS FLOAT ) AS LOGIC
             LOCAL delta AS REAL8
             LOCAL diff  AS REAL8
             LOCAL equal AS LOGIC
-            
+
             IF Double.IsNaN(rhs:_value) .or. Double.IsNaN(SELF:_value)
             	RETURN Double.IsNaN(rhs:_value) .and. Double.IsNaN(SELF:_value)
             ELSEIF rhs:_value == Double.PositiveInfinity .or. SELF:_value == Double.PositiveInfinity
@@ -114,7 +114,7 @@ BEGIN NAMESPACE XSharp
             ELSEIF rhs:_value == Double.NegativeInfinity .or. SELF:_value == Double.NegativeInfinity
             	RETURN rhs:_value == SELF:_value
             END IF
-            
+
             delta := RuntimeState.FloatDelta
             diff := _value - rhs:_value
             IF delta == 0.0
@@ -125,27 +125,27 @@ BEGIN NAMESPACE XSharp
                 equal := diff < delta
             ENDIF
             RETURN equal
-            
+
             /// <inheritdoc />
         OVERRIDE METHOD GetHashCode() AS INT
             RETURN SELF:_value:GetHashCode()
-            
-            /// <exclude />	
+
+            /// <exclude />
         METHOD GetTypeCode() AS TypeCode
             RETURN TypeCode.Double
-            
-            
+
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR ==(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
             RETURN lhs:Equals(rhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR !=(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
             RETURN ! lhs:Equals(rhs)
             #endregion
-            
+
         #region Comparison Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
@@ -158,8 +158,8 @@ BEGIN NAMESPACE XSharp
                 RETURN diff > 0.0
             ENDIF
             RETURN diff > delta
-            
-            
+
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR <(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
@@ -171,90 +171,90 @@ BEGIN NAMESPACE XSharp
                 RETURN diff < 0.0
             ENDIF
             RETURN diff < -delta
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR >=(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
             // call other operator methods for simplicity
             // we may want to optimize this later
             RETURN lhs > rhs .OR. lhs == rhs
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR <=(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
             // call other operator methods for simplicity
             // we may want to optimize this later
             RETURN lhs < rhs .OR. lhs == rhs
-            
+
             #endregion
-            
+
         #region Implicit Converters
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(b AS BYTE) AS FLOAT
             RETURN FLOAT{b, 0}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(sb AS SByte) AS FLOAT
             RETURN FLOAT{sb, 0}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(si AS SHORT) AS FLOAT
             RETURN FLOAT{si, 0}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(w AS WORD) AS FLOAT
             RETURN FLOAT{w, 0}
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
-            
+
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(i AS INT) AS FLOAT
             RETURN FLOAT{i, 0}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(dw AS DWORD) AS FLOAT
             RETURN FLOAT{dw, 0}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(i64 AS INT64) AS FLOAT
             RETURN FLOAT{i64, 0}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(ui64 AS UINT64) AS FLOAT
             RETURN FLOAT{ui64, 0}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(r4 AS REAL4) AS FLOAT
             RETURN FLOAT{r4, RuntimeState.Decimals}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(r8 AS REAL8) AS FLOAT
             RETURN FLOAT{r8, RuntimeState.Decimals}
-            
-            
+
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(val AS System.Decimal) AS FLOAT
             RETURN FLOAT{ (REAL8) val, RuntimeState.Decimals}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(fl  AS FLOAT) AS REAL8
             RETURN fl:_value
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(fl  AS FLOAT) AS REAL4
             RETURN (REAL4) fl:_value
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(fl  AS FLOAT) AS System.Decimal
@@ -306,56 +306,56 @@ BEGIN NAMESPACE XSharp
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR EXPLICIT(fl  AS FLOAT) AS UINT64
             RETURN (UINT64) fl:_value
-            
+
             #endregion
-            
+
         #region Numeric Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR +(fl  AS FLOAT) AS FLOAT
             RETURN fl
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR -(fl  AS FLOAT) AS FLOAT
             RETURN FLOAT{- fl:_value, fl:Digits, fl:Decimals}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR+(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
             RETURN lhs:Add(rhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR+(lhs AS FLOAT, rhs AS USUAL) AS FLOAT
             RETURN lhs:Add(rhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR+(lhs AS USUAL, rhs AS FLOAT) AS FLOAT
             RETURN rhs:Add(lhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR-(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
             RETURN lhs:Subtract(rhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR-(lhs AS FLOAT, rhs AS USUAL) AS FLOAT
             RETURN lhs:Subtract(rhs)
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR-(lhs AS USUAL, rhs AS FLOAT) AS FLOAT
             // set decimals for LHS to 0, so max decmals is decimals right
-            RETURN FLOAT{lhs, 0}:Subtract(rhs)		
-            
+            RETURN FLOAT{lhs, 0}:Subtract(rhs)
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR*(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
             RETURN FLOAT{ lhs:_value * rhs:_value, lhs:Decimals + rhs:Decimals}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         //[DebuggerStepThroughAttribute];
         OPERATOR/(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
@@ -364,44 +364,44 @@ BEGIN NAMESPACE XSharp
                 THROW DivideByZeroException{}
             ENDIF
             RETURN FLOAT{ tmp, RuntimeState.Decimals}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR%(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
             RETURN FLOAT{ lhs:_value % rhs:_value, RuntimeState.Decimals}
-            
+
             #endregion
         #region Unary Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR ++ (fl  AS FLOAT) AS FLOAT
             RETURN FLOAT{fl:_value+1, fl:Digits, fl:Decimals}
-            
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         OPERATOR -- (fl  AS FLOAT) AS FLOAT
             RETURN FLOAT{fl:_value-1, fl:Digits, fl:Decimals}
             #endregion
-            
+
         #region Explicit casts. Used inside Transform
-        /// <exclude />	
+        /// <exclude />
         [DebuggerStepThroughAttribute];
         METHOD CastToInt() AS INT
             RETURN (INT)(SELF:_value)
-            
-            /// <exclude />	
+
+            /// <exclude />
         [DebuggerStepThroughAttribute];
         METHOD CastToInt64() AS INT64
             RETURN (INT64)(SELF:_value)
-            
+
             #endregion
         #region Add and Subtract
-        /// <exclude />	
+        /// <exclude />
         [DebuggerStepThroughAttribute];
         METHOD Add(rhs AS FLOAT) AS FLOAT
             RETURN FLOAT{ SELF:_value + rhs:_value, Math.Max(SELF:_decimals, rhs:_decimals)}
-            
-            /// <exclude />	
+
+            /// <exclude />
         [DebuggerStepThroughAttribute];
         METHOD Add(rhs AS USUAL) AS FLOAT
             LOCAL result AS FLOAT
@@ -415,14 +415,14 @@ BEGIN NAMESPACE XSharp
                 THROW Error.ArgumentError(__ENTITY__,Nameof(rhs), "Argument is not numeric")
             ENDIF
             RETURN result
-            
-            
-            /// <exclude />	
+
+
+            /// <exclude />
         [DebuggerStepThroughAttribute];
         METHOD Subtract(rhs AS FLOAT) AS FLOAT
             RETURN FLOAT{ SELF:_value - rhs:_value, Math.Max(SELF:_decimals, rhs:_decimals)}
-            
-            /// <exclude />	
+
+            /// <exclude />
         [DebuggerStepThroughAttribute];
         METHOD Subtract(rhs AS USUAL) AS FLOAT
             LOCAL result AS FLOAT
@@ -431,76 +431,76 @@ BEGIN NAMESPACE XSharp
             ELSEIF rhs:IsDecimal .OR. rhs:IsCurrency
                 result := SELF:Subtract( (System.Decimal) rhs)
             ELSEIF  rhs:IsLong
-                result := FLOAT{ SELF:_value - (LONG) rhs, SELF:Digits, SELF:Decimals}			
+                result := FLOAT{ SELF:_value - (LONG) rhs, SELF:Digits, SELF:Decimals}
             ELSE
                 THROW Error.ArgumentError(__ENTITY__,Nameof(rhs), "Argument is not numeric")
             ENDIF
             RETURN result
-            
-            
+
+
             #endregion
-            
+
         #region IConvertable
         /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToBoolean(provider AS System.IFormatProvider) AS LOGIC
             RETURN _value ==  0.0
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToByte(provider AS System.IFormatProvider) AS BYTE
             RETURN ((IConvertible) _value):ToByte(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToChar(provider AS System.IFormatProvider) AS CHAR
             RETURN ((IConvertible) _value):ToChar(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToDateTime(provider AS System.IFormatProvider) AS System.DateTime
             RETURN ((IConvertible) _value):ToDateTime(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToDecimal(provider AS System.IFormatProvider) AS Decimal
             RETURN ((IConvertible) _value):ToDecimal(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToDouble(provider AS System.IFormatProvider) AS REAL8
             RETURN ((IConvertible) _value):ToDouble(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToInt16(provider AS System.IFormatProvider) AS SHORT
             RETURN ((IConvertible) _value):ToInt16(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToInt32(provider AS System.IFormatProvider) AS LONG
             RETURN ((IConvertible) _value):ToInt32(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToInt64(provider AS System.IFormatProvider) AS INT64
             RETURN ((IConvertible) _value):ToInt64(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToSByte(provider AS System.IFormatProvider) AS SByte
             RETURN ((IConvertible) _value):ToSByte(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToSingle(provider AS System.IFormatProvider) AS REAL4
             RETURN ((IConvertible) _value):ToSingle(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToType(conversionType AS System.Type, provider AS System.IFormatProvider) AS OBJECT
             RETURN ((IConvertible) _value):ToType(conversionType, provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToUInt16(provider AS System.IFormatProvider) AS WORD
             RETURN ((IConvertible) _value):ToUInt16(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToUInt32(provider AS System.IFormatProvider) AS DWORD
             RETURN ((IConvertible) _value):ToUInt32(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToUInt64(provider AS System.IFormatProvider) AS UINT64
             RETURN ((IConvertible) _value):ToUInt64(provider)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToString(provider AS System.IFormatProvider) AS STRING
             RETURN ((IConvertible) _value):ToString(provider)
@@ -509,11 +509,11 @@ BEGIN NAMESPACE XSharp
         /// <inheritdoc />
         PUBLIC OVERRIDE METHOD ToString() AS STRING
             RETURN Str1(SELF)
-            
+
         /// <inheritdoc cref="System.Double.ToString(System.String)"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING
             RETURN _value:ToString(sFormat)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD ToString(format AS STRING, provider AS System.IFormatProvider) AS STRING
             RETURN ((IFormattable) _value):ToString(format, provider)
@@ -522,7 +522,7 @@ BEGIN NAMESPACE XSharp
         /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS FLOAT) AS INT
             RETURN _value:CompareTo( rhs:_value)
-            
+
             /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS OBJECT) AS INT
             RETURN SELF:CompareTo( (FLOAT) rhs)
@@ -538,7 +538,7 @@ BEGIN NAMESPACE XSharp
             info:AddValue("Length", SELF:_length)
             info:AddValue("Decimals", SELF:_decimals)
             RETURN
-            
+
         /// <include file="RTComments.xml" path="Comments/SerializeConstructor/*" />
         CONSTRUCTOR (info AS SerializationInfo, context AS StreamingContext)
             IF info == NULL
@@ -555,5 +555,5 @@ BEGIN NAMESPACE XSharp
 
 
     END STRUCTURE
-     
+
 END NAMESPACE

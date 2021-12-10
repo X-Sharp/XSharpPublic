@@ -12,7 +12,7 @@ USING System.Runtime.CompilerServices
 USING System.Runtime.Serialization
 
 BEGIN NAMESPACE XSharp
-    /// <summary>Internal type that implements the VO Compatible SYMBOL type.<br/>
+    /// <summary>Internal type that implements the XBase Compatible SYMBOL type.<br/>
     /// This type has many operators and implicit converters that normally are never directly called from user code.<br/>
     /// There are also some operators that handle implicit conversions between Symbols and Strings in your code.
     /// </summary>

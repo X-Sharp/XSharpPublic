@@ -95,10 +95,13 @@ FUNCTION ErrorStack(wActivation := 1 AS DWORD) AS STRING
 INTERNAL STATIC CLASS XSharp.ErrorStackSettings
     STATIC PROPERTY ErrorStackVOFormat AS LOGIC AUTO
     STATIC CONSTRUCTOR
-        IF XSharp.RuntimeState.Dialect == XSharp.XSharpDialect.VO .OR. ;
-            XSharp.RuntimeState.Dialect == XSharp.XSharpDialect.Vulcan
+        SWITCH XSharp.RuntimeState.Dialect
+        CASE XSharp.XSharpDialect.VO
+        CASE XSharp.XSharpDialect.Vulcan
             ErrorStackVOFormat := TRUE
-        ENDIF
+        OTHERWISE
+            ErrorStackVOFormat := FALSE
+        END SWITCH
 END CLASS
 
 

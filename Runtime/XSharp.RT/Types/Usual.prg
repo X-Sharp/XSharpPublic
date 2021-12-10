@@ -13,7 +13,7 @@ USING System.Collections
 
 USING XSharp.Internal
 // use these UDCs to remove the attributes when needed during debugging
-#define USEATTRIB
+#undef USEATTRIB
 #ifdef USEATTRIB
 #XTRANSLATE \[HIDDEN\] => \[DebuggerBrowsable(DebuggerBrowsableState.Never)\]
 #XTRANSLATE \[INLINE\] => \[MethodImpl(MethodImplOptions.AggressiveInlining)\]
@@ -24,7 +24,7 @@ USING XSharp.Internal
 #XTRANSLATE \[NODEBUG\] =>
 #endif
 BEGIN NAMESPACE XSharp
-    /// <summary>Internal type that implements the VO Compatible USUAL type.<br/>
+    /// <summary>Internal type that implements the XBase Compatible USUAL type.<br/>
     /// This type has many operators and implicit converters that normally are never directly called from user code.
     /// </summary>
     [DebuggerDisplay("{ToDebuggerString(),nq}", Type := "USUAL")];

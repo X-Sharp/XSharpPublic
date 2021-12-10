@@ -5056,23 +5056,23 @@ RETURN
 			DbCreate(cDbf, { { "DATA", "M", 10, 0, "DATA" } })
 
 			DbUseArea(,,cDbf)
-            var cData := "The quick brown fox jumps over the lazy dog"
+            VAR cData := "The quick brown fox jumps over the lazy dog"
             DbAppend()
             FieldPut(1, cData)
-            var result := BlobGet(1, 10, 10)
+            VAR result := BLOBGet(1, 10, 10)
             Assert.Equal( result, cData:Substring(9,10))
-            result := BlobGet(1)
+            result := BLOBGet(1)
             Assert.Equal( result, cData)
             DbAppend()
-            var data := BYTE[]{ 10 }
+            VAR data := BYTE[]{ 10 }
             data[4] := 42
             FieldPut(1, data)
-            result := BlobGet(1)
-            var bResult := (byte[]) result
+            result := BLOBGet(1)
+            VAR bResult := (BYTE[]) result
             Assert.Equal( bResult:Length, data:Length)
-            for var nByte := 1 to bResult:Length
+            FOR VAR nByte := 1 TO bResult:Length
                 Assert.Equal( bResult[nByte], data[nByte])
-            next
+            NEXT
             DbCloseArea()
 
 

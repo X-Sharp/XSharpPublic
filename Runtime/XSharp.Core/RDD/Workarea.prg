@@ -1107,7 +1107,16 @@ BEGIN NAMESPACE XSharp.RDD
                     oResult := SELF:_Relations:Count
                 CASE DbInfo.DBI_RDD_OBJECT
                     oResult := SELF
-				OTHERWISE
+                OTHERWISE
+                    // Register an error that the info is not supported and return NULL
+                    // CoreDb.Info will detect that and will return FALSE
+                    LOCAL error := XSharp.Error.VOError(EG_UNSUPPORTED, "Info",nameof(nOrdinal),1, <OBJECT>{nOrdinal, oNewValue}) as Error
+                    error:Stack := ErrorStack(0)
+                    error:SubCode := 1153 // ERDD_UNSUPPORTED
+                    error:Severity := ES_ERROR
+                    error:SubSystem := SELF:Driver
+                    error:CanDefault := TRUE
+                    RuntimeState.LastRddError := error
 					oResult := NULL
 				END SWITCH
 			RETURN oResult

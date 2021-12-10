@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -23,7 +23,7 @@ FUNCTION _DebOut32( pszText AS STRING ) AS VOID
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/procfile/*" />
 FUNCTION ProcFile(wActivation AS DWORD) AS STRING
-	RETURN ProcFile((INT) wActivation + 1) 
+	RETURN ProcFile((INT) wActivation + 1)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/procfile/*" />
 FUNCTION ProcFile() AS STRING
@@ -33,17 +33,17 @@ FUNCTION ProcFile() AS STRING
 FUNCTION ProcFile(wActivation AS INT) AS STRING
    LOCAL st := StackTrace{ TRUE } AS StackTrace
    LOCAL file := "" AS STRING
-   
+
    IF ( wActivation + 1 < st:FrameCount .AND. wActivation >= 0)
 	  // Note: add 1 so this function isn't included in the stack trace
-      file :=  st:GetFrame( (INT) wActivation + 1 ):GetFileName()  
+      file :=  st:GetFrame( (INT) wActivation + 1 ):GetFileName()
    ENDIF
-   
+
    RETURN file
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/procline/*" />
 FUNCTION ProcLine(dwActivation AS DWORD) AS DWORD
-	RETURN ProcLine((INT) dwActivation + 1) 
+	RETURN ProcLine((INT) dwActivation + 1)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/procline/*" />
 FUNCTION ProcLine() AS DWORD
@@ -54,39 +54,39 @@ FUNCTION ProcLine() AS DWORD
 FUNCTION ProcLine(dwActivation AS INT) AS DWORD
    LOCAL st := StackTrace{ TRUE } AS StackTrace
    LOCAL line := 0 AS DWORD
-   
+
    IF ( dwActivation + 1 < st:FrameCount .AND. dwActivation >= 0)
 	  // Note: add 1 so this function isn't included in the stack trace
-      line := (DWORD) st:GetFrame( (INT) dwActivation + 1 ):GetFileLineNumber()  
+      line := (DWORD) st:GetFrame( (INT) dwActivation + 1 ):GetFileLineNumber()
    ENDIF
-   
-   RETURN line   	
+
+   RETURN line
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/procname/*" />
-FUNCTION ProcName() AS STRING 
+FUNCTION ProcName() AS STRING
 	RETURN ProcName( 1)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/procname/*" />
 FUNCTION ProcName(wActivation AS INT) AS STRING
    LOCAL st := StackTrace{ TRUE } AS StackTrace
    LOCAL name := "" AS STRING
-   
+
    IF ( wActivation + 1 < st:FrameCount .AND. wActivation >= 0)
 		VAR mi := st:GetFrame( wActivation + 1 ):GetMethod()
 		VAR t  := mi:DeclaringType
-		IF t == NULL 
+		IF t == NULL
 			name := mi:Name:ToUpperInvariant()
 		ELSE
 			name := String.Concat( mi:DeclaringType:Name, ":", mi:Name ):ToUpperInvariant()
 		ENDIF
    ENDIF
-   
+
    RETURN name
 
-/// <summary>Return the error stack as a string.</summary> 
-/// <param name="wActivation">Starting level. Defaults to 1.</param> 
-/// <returns>The error stack with line numbers. In the VO and Vulcan dialect the stack is in "VO Format"</returns> 
+/// <summary>Return the error stack as a string.</summary>
+/// <param name="wActivation">Starting level. Defaults to 1.</param>
+/// <returns>The error stack with line numbers. In the VO and Vulcan dialect the stack is in "VO Format"</returns>
 FUNCTION ErrorStack(wActivation := 1 AS DWORD) AS STRING
 	LOCAL oStackTrace AS System.Diagnostics.StackTrace
 	oStackTrace := System.Diagnostics.StackTrace{TRUE}
@@ -102,10 +102,10 @@ INTERNAL STATIC CLASS XSharp.ErrorStackSettings
 END CLASS
 
 
-/// <summary>Return the error stack as a string.</summary> 
-/// <param name="oStackTrace">StackTrace object to convert to an error stack string</param> 
-/// <param name="wActivation">Starting level. Defaults to 1.</param> 
-/// <returns>The error stack with line numbers. In the VO and Vulcan dialect the stack is in "VO Format"</returns> 
+/// <summary>Return the error stack as a string.</summary>
+/// <param name="oStackTrace">StackTrace object to convert to an error stack string</param>
+/// <param name="wActivation">Starting level. Defaults to 1.</param>
+/// <returns>The error stack with line numbers. In the VO and Vulcan dialect the stack is in "VO Format"</returns>
 /// <seealso cref='SetErrorStackVOFormat' />
 FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation := 1 AS DWORD) AS STRING
 	LOCAL cResult := "" AS STRING
@@ -115,9 +115,10 @@ FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation :=
     ELSE
         wStart := wActivation + 1
     ENDIF
-    
+
     IF ErrorStackSettings.ErrorStackVOFormat
 	    IF wStart <= oStackTrace:FrameCount - 1
+            VAR voFormat := ErrorStackSettings.ErrorStackVOFormat
 		    FOR VAR i := wStart UPTO (oStackTrace:FrameCount - 1)
 			    VAR oFrame := oStackTrace:GetFrame((INT)i)
 			    VAR oMethod := oFrame:GetMethod()
@@ -130,7 +131,12 @@ FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation :=
 				    oInnerType := oInnerType:DeclaringType
 			    ENDDO
 			    cStackLine += " (Line: " + oFrame:GetFileLineNumber():ToString() + ")" + CRLF
-			    cResult += cStackLine
+                if voFormat .and.  cStackLine:Contains("<>")
+                    // suppress lambda quotes on the stack
+                    nop
+                else
+			        cResult += " "+cStackLine
+                endif
 		    NEXT
 	    ELSE
 		    cResult := "*EmptyCallStack*" + CRLF
@@ -166,7 +172,7 @@ FUNCTION AltD() AS VOID
 	IF System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()
 	ENDIF
-	RETURN  
+	RETURN
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*" />
@@ -176,4 +182,4 @@ FUNCTION AltD(nMode AS INT) AS VOID
 	IF System.Diagnostics.Debugger.IsAttached
 		System.Diagnostics.Debugger.Break()
 	ENDIF
-	RETURN  
+	RETURN

@@ -11,7 +11,7 @@ USING System.Text
 USING System.Reflection
 BEGIN NAMESPACE XSharp
 	
-	/// <summary>Internal type that implements the VO Compatible PSZ type.<br/>
+	/// <summary>Internal type that implements the XBase Compatible PSZ type.<br/>
 	/// This type has many operators and implicit converters that normally are never directly called from user code.
 	/// </summary>
     /// <include file="RTComments.xml" path="Comments/PSZ/*" />

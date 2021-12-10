@@ -10,7 +10,7 @@ USING System.Diagnostics
 USING System.Runtime.Serialization
 USING System.Runtime.CompilerServices
 BEGIN NAMESPACE XSharp
-    /// <summary>Internal type that implements the VO Compatible DATE type in UNIONs and VOSTRUCTs</summary>
+    /// <summary>Internal type that implements the XBase Compatible DATE type in UNIONs and VOSTRUCTs</summary>
     [DebuggerDisplay("WinDate({ToString(),nq})", Type := "DATE")];
         [Serializable];
         PUBLIC STRUCT __WinDate IMPLEMENTS ISerializable

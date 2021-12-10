@@ -149,6 +149,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _leaves     := NULL
             TrailByte   := 0
             SELF:_getValues()
+            SELF:InitTrailKey()
 
             RETURN
 
@@ -167,6 +168,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SUPER:Clear()
             SELF:_clear()
 
+        INTERNAL METHOD InitTrailKey() AS VOID
+            SELF:aClear := BYTE[]{SELF:KeyLength}
+            IF TrailByte != 0
+                FOR VAR nI := 0 to KeyLength-1
+                    aClear[nI] := TrailByte
+                NEXT
+            ENDIF
+
         INTERNAL OVERRIDE METHOD InitBlank(oTag AS CdxTag) AS VOID
             SELF:Tag    := oTag
             SELF:Initialize(KeyLength)
@@ -181,6 +190,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 TrailByte := 32
             ENDIF
+            SELF:InitTrailKey()
 
         INTERNAL OVERRIDE METHOD _setTag(newTag AS CdxTag) AS VOID
             SUPER:_setTag(newTag)
@@ -193,6 +203,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     TrailByte := (BYTE) (IIF(_tag:KeyType == __UsualType.String, 32, 0) )
                 ENDIF
             ENDIF
+            SELF:InitTrailKey()
 
         INTERNAL VIRTUAL METHOD Initialize(nKeyLength AS WORD) AS VOID
             VAR wasRoot := SELF:IsRoot
@@ -207,6 +218,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:SetProperties()
             ENDIF
             SELF:LenShift      := (nKeyLength << 8 ) | (8 - SELF:DuplicateBits)
+            SELF:InitTrailKey()
             RETURN
 
         PRIVATE METHOD SetProperties() AS VOID

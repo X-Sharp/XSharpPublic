@@ -420,7 +420,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         METHOD Write(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
-            SELF:_PageList:CheckVersion(SELF:Root:RootVersion)
+            //SELF:_PageList:CheckVersion(SELF:Root:RootVersion)
+            Debug.Assert(oPage:Generation == SELF:Root:RootVersion) // only check version of current page!
             IF oPage:PageNo == -1
                 oPage:PageNo := SELF:FindFreePage()
                 oPage:IsHot  := TRUE
@@ -691,5 +692,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END CLASS
 END NAMESPACE
+
 
 

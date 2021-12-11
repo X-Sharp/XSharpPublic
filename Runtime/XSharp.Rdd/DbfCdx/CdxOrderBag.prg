@@ -681,6 +681,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _UpdateRootVersion() AS VOID
             var version := SELF:_root:RootVersion +1
             SELF:_root:RootVersion := version
+            SELF:_tagList:Generation := SELF:_root:RootVersion
+            FOREACH VAR tag IN SELF:_tagList:Tags
+                tag:Header:Generation := SELF:_root:RootVersion
+            NEXT
             // Update the pagelist first. otherwise writing the _root will fail.
 #ifdef CHECKVERSIONS
             SELF:_PageList:SetVersion(version)
@@ -697,6 +701,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END CLASS
 END NAMESPACE
+
+
 
 
 

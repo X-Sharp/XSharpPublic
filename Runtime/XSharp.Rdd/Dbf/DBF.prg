@@ -348,7 +348,6 @@ RETURN isOK
 
 PRIVATE METHOD _UpdateRecCount(nCount AS LONG) as LOGIC
 	SELF:_RecCount          := nCount
-	SELF:_Header:isHot      := TRUE
     SELF:_Header:RecCount   := nCount
     SELF:_wasChanged        := TRUE
     SELF:_writeHeader()
@@ -1358,8 +1357,7 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
 			IF isOK
 			   // Write Record
 				TRY
-	                // Don't forget to Update Header
-    				SELF:_Header:isHot := TRUE
+	                // Don't forget to Update Header (nkok: only if changed!)
 			        IF SELF:Shared
 				        SELF:_writeHeader()
 					ENDIF
@@ -2337,6 +2335,8 @@ END CLASS
 
 
 END NAMESPACE
+
+
 
 
 

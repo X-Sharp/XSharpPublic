@@ -1561,7 +1561,7 @@ OVERRIDE METHOD Flush() 			AS LOGIC
         //? SELF:CurrentThreadId, "After EOF"
 		SELF:_writeHeader()
         //? SELF:CurrentThreadId, "After writeHeader"
-        _oStream:Flush(TRUE)
+        _oStream:Flush(FALSE)
         //? SELF:CurrentThreadId, "After FFlush"
 	ENDIF
 	IF SELF:Shared .AND. locked

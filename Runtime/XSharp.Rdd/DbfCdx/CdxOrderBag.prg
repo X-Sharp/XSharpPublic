@@ -339,7 +339,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             NEXT
             lOk := SELF:FlushPages() .and. lOk
             //_stream:SafeSetLength(_stream:Length)
-            _stream:Flush(TRUE)
+            _stream:Flush(FALSE)
             RETURN lOk
 
          INTERNAL METHOD FlushPages() AS LOGIC

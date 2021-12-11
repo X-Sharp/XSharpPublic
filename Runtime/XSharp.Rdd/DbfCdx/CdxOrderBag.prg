@@ -12,7 +12,7 @@ USING System.Text
 USING System.IO
 USING System.Linq
 USING System.Diagnostics
-
+//#define CHECKVERSIONS
 
 BEGIN NAMESPACE XSharp.RDD.CDX
     /// <summary>
@@ -420,8 +420,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         METHOD Write(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
-            //SELF:_PageList:CheckVersion(SELF:Root:RootVersion)
-            Debug.Assert(oPage:Generation == SELF:Root:RootVersion) // only check version of current page!
+#ifdef CHECKVERSIONS
+            SELF:_PageList:CheckVersion(SELF:Root:RootVersion)
+#endif
             IF oPage:PageNo == -1
                 oPage:PageNo := SELF:FindFreePage()
                 oPage:IsHot  := TRUE
@@ -453,7 +454,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
          METHOD SetPage(page AS CdxPage) AS VOID
             SELF:_PageList:SetPage(page:PageNo, page)
-#ifdef DEBUG
+#ifdef CHECKVERSIONS
             page:Generation := SELF:Root:RootVersion
 #endif
 
@@ -677,7 +678,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             var version := SELF:_root:RootVersion +1
             SELF:_root:RootVersion := version
             // Update the pagelist first. otherwise writing the _root will fail.
-#ifdef DEBUG
+#ifdef CHECKVERSIONS
             SELF:_PageList:SetVersion(version)
 #endif
             SELF:_root:Write()
@@ -692,6 +693,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END CLASS
 END NAMESPACE
+
 
 
 

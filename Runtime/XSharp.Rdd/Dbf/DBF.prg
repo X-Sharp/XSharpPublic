@@ -1561,7 +1561,11 @@ OVERRIDE METHOD Flush() 			AS LOGIC
         //? SELF:CurrentThreadId, "After EOF"
 		SELF:_writeHeader()
         //? SELF:CurrentThreadId, "After writeHeader"
-        _oStream:Flush(FALSE)
+        IF XSharp.RuntimeState.GetValue<LOGIC>(Set.HardCommit)
+            _oStream:Flush(TRUE)
+        ELSE
+            _oStream:Flush(FALSE)
+        ENDIF
         //? SELF:CurrentThreadId, "After FFlush"
 	ENDIF
 	IF SELF:Shared .AND. locked
@@ -2331,7 +2335,6 @@ END CLASS
 
 
 END NAMESPACE
-
 
 
 

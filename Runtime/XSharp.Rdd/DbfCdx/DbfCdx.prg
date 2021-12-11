@@ -592,7 +592,10 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD SkipRaw( move AS LONG ) AS LOGIC
             BEGIN LOCK SELF
                 LOCAL result AS LOGIC
-                IF SELF:CurrentOrder != NULL
+                IF move == 0 .AND. (SUPER:_fLocked .OR. SUPER:_Locks:Contains(SUPER:RecNo)) .AND. SUPER:_BufferValid
+                    SELF:GoCold()
+                    RETURN TRUE
+                ELSEIF SELF:CurrentOrder != NULL
                     result := SELF:CurrentOrder:SkipRaw(move)
                     SELF:_CheckEofBof()
                 ELSE
@@ -658,3 +661,6 @@ BEGIN NAMESPACE XSharp.RDD
     END CLASS
 
 END NAMESPACE
+
+
+

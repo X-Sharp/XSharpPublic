@@ -233,8 +233,10 @@ OVERRIDE METHOD Skip(nToSkip AS INT) AS LOGIC
 	LOCAL result := FALSE AS LOGIC
 	SELF:ForceRel()
 	IF SELF:IsOpen
-		SELF:_Top := FALSE
-		SELF:_Bottom := FALSE
+        IF nToSkip != 0 .OR. !( SELF:_fLocked .OR. SELF:_Locks:Contains( SELF:RecNo ) ) .OR. !SELF:_BufferValid
+		    SELF:_Top := FALSE
+		    SELF:_Bottom := FALSE
+        ENDIF
 		LOCAL delState := XSharp.RuntimeState.Deleted AS LOGIC
         //
 		IF nToSkip == 0  .OR. delState .OR. ( SELF:_FilterInfo != NULL .AND. SELF:_FilterInfo:Active )
@@ -2335,6 +2337,7 @@ END CLASS
 
 
 END NAMESPACE
+
 
 
 

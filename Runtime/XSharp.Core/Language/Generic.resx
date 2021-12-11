@@ -181,7 +181,7 @@
     <value>Expression for macro compiler incorrect.</value>
   </data>
   <data name="EDB_EXPR_WIDTH" xml:space="preserve">
-    <value>Expression for macro compiler too long</value>
+    <value>Index Expression too long</value>
   </data>
   <data name="EDB_DRIVERLOAD" xml:space="preserve">
     <value>Could not load RDD</value>

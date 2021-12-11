@@ -224,6 +224,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_Valid := FALSE
                 RETURN FALSE
             ENDIF
+            IF oKey IS STRING VAR strKey .and. strKey:Length > MAX_KEY_LEN
+                SELF:_oRdd:_dbfError(Subcodes.EDB_EXPR_WIDTH,Gencode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions", FALSE)
+                return FALSE
+            ENDIF
             SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
 
 

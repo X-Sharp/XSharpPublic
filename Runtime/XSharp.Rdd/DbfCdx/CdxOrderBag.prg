@@ -338,8 +338,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             lOk := SELF:FlushPages() .and. lOk
-            //_stream:SafeSetLength(_stream:Length)
-            _stream:Flush(FALSE)
+            IF XSharp.RuntimeState.GetValue<LOGIC>(Set.HardCommit)
+                _stream:Flush(TRUE)
+            ELSE
+                _stream:Flush(FALSE)
+                _stream:SafeSetLength(_stream:Length)
+            ENDIF
             RETURN lOk
 
          INTERNAL METHOD FlushPages() AS LOGIC
@@ -693,6 +697,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END CLASS
 END NAMESPACE
+
+
 
 
 

@@ -181,7 +181,7 @@
     <value>Ausdruck für Macro Compiler fehlt</value>
   </data>
   <data name="EDB_EXPR_WIDTH" xml:space="preserve">
-    <value>Ausdruck für Macro Compiler zu lang</value>
+    <value>Index Ausdruck zu lang</value>
   </data>
   <data name="EDB_DRIVERLOAD" xml:space="preserve">
     <value>Kann RDD nicht laden</value>

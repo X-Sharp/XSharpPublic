@@ -220,7 +220,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                                 elementsToAdd.Add(mbr);
                             }
                         }
-                        if (elementsToAdd.Count > 0)
+                        if ( (elementsToAdd.Count > 0) && !toAdd.ContainsKey( iftype.Name))
                         {
                             toAdd.Add(iftype.Name, elementsToAdd);
                         }

@@ -1557,7 +1557,9 @@ OVERRIDE METHOD Flush() 			AS LOGIC
             SELF:_RecCount := SELF:_calculateRecCount()
             //? SELF:CurrentThreadId, "After CalcReccount"
         ENDIF
-		SELF:_putEndOfFileMarker()
+        IF ! SELF:_Shared
+		    SELF:_putEndOfFileMarker()
+        ENDIF
         //? SELF:CurrentThreadId, "After EOF"
 		SELF:_writeHeader()
         //? SELF:CurrentThreadId, "After writeHeader"

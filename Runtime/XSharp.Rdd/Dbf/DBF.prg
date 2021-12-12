@@ -1551,7 +1551,7 @@ OVERRIDE METHOD Flush() 			AS LOGIC
 	isOK := SELF:GoCold()
 
 	IF isOK .and. SELF:_wasChanged
-		IF SELF:Shared
+		IF SELF:Shared .AND. SELF:Header:isHot
 			locked := SELF:HeaderLock( DbLockMode.Lock )
             // Another workstation may have added another record, so make sure we update the reccount
             SELF:_RecCount := SELF:_calculateRecCount()
@@ -1561,7 +1561,9 @@ OVERRIDE METHOD Flush() 			AS LOGIC
 		    SELF:_putEndOfFileMarker()
         ENDIF
         //? SELF:CurrentThreadId, "After EOF"
-		SELF:_writeHeader()
+        IF SELF:Header:isHot
+		    SELF:_writeHeader()
+        ENDIF
         //? SELF:CurrentThreadId, "After writeHeader"
         IF XSharp.RuntimeState.GetValue<LOGIC>(Set.HardCommit)
             _oStream:Flush(TRUE)

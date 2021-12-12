@@ -8,6 +8,8 @@ USING System.Drawing
 USING System.Linq
 USING Xide
 
+GLOBAL glCreateFilePerClass := FALSE AS LOGIC
+
 GLOBAL gaNewKeywordsInXSharp := <STRING>{;
 	"EVENT","INT64","ENUM","DELEGATE","PARTIAL","INTERFACE",;
 	"CONSTRUCTOR","DESTRUCTOR","FINALLY","TRY","CATCH","THROW","SEALED","ABSTRACT",;
@@ -1160,7 +1162,37 @@ CLASS ApplicationDescriptor
 
 			IF oModule:Generated
 				xPorter.Message("  Generating module :" , oModule:Name)
-				File.WriteAllLines(cFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.UTF8)
+				
+				IF glCreateFilePerClass
+					LOCAL cModuleSubFolder AS STRING
+					cModuleSubFolder := MakePathLegal( oModule:Name )
+					Directory.CreateDirectory(cFolder + "\" + cModuleSubFolder)
+					FOREACH oClass AS KeyValuePair<STRING, OutputCode> IN oModule:GeneratedClasses
+						LOCAL cFileName AS STRING
+						cFileName := MakePathLegal( oClass:Key ) + ".prg"
+						File.WriteAllLines(cFolder + "\" + cModuleSubFolder + "\" + cFileName , oClass:Value:Lines , System.Text.Encoding.UTF8)
+						oModule:GeneratedSubFiles:Add(cModuleSubFolder + "\" + cFileName)
+					NEXT
+					
+					LOCAL oNonClass AS OutputCode
+					oNonClass := OutputCode{}
+					oNonClass:Combine(oModule:GeneratedDefines)
+					oNonClass:Combine(oModule:GeneratedGlobals)
+					oNonClass:Combine(oModule:GeneratedFuncs)
+					oNonClass:Combine(oModule:GeneratedRest)
+					IF oNonClass:Lines:Count != 0
+						LOCAL cFileName AS STRING
+						cFileName := "(Non-class)" + ".prg"
+						File.WriteAllLines(cFolder + "\" + cModuleSubFolder + "\" + cFileName , oNonClass:Lines , System.Text.Encoding.UTF8)
+						oModule:GeneratedSubFiles:Add(cModuleSubFolder + "\" + cFileName)
+					END IF
+					
+					LOOP
+					
+				ELSE
+					File.WriteAllLines(cFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.UTF8)
+				ENDIF
+				
 			END IF
 
 			IF xPorter.ExportToXide
@@ -1515,25 +1547,50 @@ CLASS ApplicationDescriptor
 					LOCAL cName AS STRING
 					cName := oModule:PathValidName + ".prg"
 					IF lXide
-						oOutput:WriteLine("File = %AppPath%\" + cName)
-						oOutput:WriteLine("FileGUID = " + NewGuid())
-						oOutput:WriteLine("FileType = Code")
-						IF oModule:HasDesignerChild
-							oOutput:WriteLine("DesignerFileGUID = " + NewGuid())
+						IF glCreateFilePerClass
+							LOCAL cFolderGuid AS STRING
+							cFolderGuid := NewGuid()
+							oOutput:WriteLine("FileFolder = " + oModule:PathValidName)
+							oOutput:WriteLine("FileGroupGUID = " + cFolderGuid)
+							FOREACH cFileName AS STRING IN oModule:GeneratedSubFiles
+								oOutput:WriteLine("File = %AppPath%\" + cFileName)
+//								oOutput:WriteLine("File = " + cFileName)
+								oOutput:WriteLine("FileGUID = " + NewGuid())
+								oOutput:WriteLine("FileFileGroup = " + cFolderGuid)
+								oOutput:WriteLine("FileType = Code")
+							NEXT
+						ELSE
+							oOutput:WriteLine("File = %AppPath%\" + cName)
+							oOutput:WriteLine("FileGUID = " + NewGuid())
+							oOutput:WriteLine("FileType = Code")
+							IF oModule:HasDesignerChild
+								oOutput:WriteLine("DesignerFileGUID = " + NewGuid())
+							END IF
 						END IF
 					ELSE
-						oOutput:WriteLine(String.Format(e"<Compile Include=\"{0}\">" , cName))
-						IF SELF:_lIsWinForms
-							IF oModule:IsDesignerChild
-								oOutput:WriteLine(String.Format("  <DependentUpon>{0}</DependentUpon>", cName:Replace(".Designer.",".")) )
-							ELSE
-								oOutput:WriteLine("  <SubType>Form</SubType>")
-							END IF
+						IF glCreateFilePerClass
+							FOREACH cFileName AS STRING IN oModule:GeneratedSubFiles
+								oOutput:WriteLine(String.Format(e"<Compile Include=\"{0}\">" , cFileName))
+								oOutput:WriteLine("</Compile>")
+							NEXT
 						ELSE
-							oOutput:WriteLine("  <SubType>Code</SubType>")
-						END IF
-						oOutput:WriteLine("</Compile>")
+							oOutput:WriteLine(String.Format(e"<Compile Include=\"{0}\">" , cName))
+							IF SELF:_lIsWinForms
+								IF oModule:IsDesignerChild
+									oOutput:WriteLine(String.Format("  <DependentUpon>{0}</DependentUpon>", cName:Replace(".Designer.",".")) )
+								ELSE
+									oOutput:WriteLine("  <SubType>Form</SubType>")
+								END IF
+							ELSE
+								oOutput:WriteLine("  <SubType>Code</SubType>")
+							END IF
+							oOutput:WriteLine("</Compile>")
+						ENDIF
 					END IF
+					
+					IF glCreateFilePerClass
+						LOOP
+					ENDIF
 
 					IF lXide
 						IF oModule:XIDErc != NULL
@@ -1744,6 +1801,8 @@ CLASS ModuleDescriptor
 	PROTECT _cXIDErc AS STRING
 
 	PROTECT _aDesigners AS List<Designer>
+	
+	PROTECT _aGeneratedSubFiles AS List<STRING>
 
 	CONSTRUCTOR(cName AS STRING , oApp AS ApplicationDescriptor , aCode AS STRING[])
 		SELF:_cName := cName
@@ -1761,6 +1820,7 @@ CLASS ModuleDescriptor
 		SELF:_cXIDErc := NULL
 
 		SELF:_aDesigners := List<Designer>{}
+		SELF:_aGeneratedSubFiles := List<STRING>{}
 	RETURN
 
 	PROPERTY Name AS STRING GET SELF:_cName
@@ -1772,6 +1832,7 @@ CLASS ModuleDescriptor
 	PROPERTY XIDErc AS STRING GET SELF:_cXIDErc
 	PROPERTY HasDesignerChild AS LOGIC AUTO
 	PROPERTY IsDesignerChild AS LOGIC AUTO
+	PROPERTY GeneratedSubFiles AS List<STRING> GET SELF:_aGeneratedSubFiles
 
 	PROPERTY Designers AS List<Designer> GET SELF:_aDesigners
 
@@ -1940,6 +2001,12 @@ CLASS ModuleDescriptor
 
 	RETURN
 
+	PROPERTY GeneratedClasses AS SortedList<STRING, OutputCode> AUTO
+	PROPERTY GeneratedDefines AS OutputCode AUTO
+	PROPERTY GeneratedGlobals AS OutputCode AUTO
+	PROPERTY GeneratedFuncs AS OutputCode AUTO
+	PROPERTY GeneratedRest AS OutputCode AUTO
+
 	METHOD Generate() AS OutputCode
 		LOCAL oCode AS OutputCode
 		LOCAL oClasses , oDefines , oTextblocks , oGlobals , oFuncs , oRest AS OutputCode
@@ -1952,9 +2019,14 @@ CLASS ModuleDescriptor
 		oGlobals := OutputCode{}
 		oFuncs := OutputCode{}
 		oRest := OutputCode{}
+		
+		SELF:GeneratedClasses := SortedList<STRING, OutputCode> {SELF:_aClasses:Count}
 
-		FOREACH oClass AS ClassDescriptor IN SELF:_aClasses
-			oClasses:Combine(oClass:Generate())
+		FOREACH oClassDescr AS ClassDescriptor IN SELF:_aClasses
+			LOCAL oClass AS OutputCode
+			oClass := oClassDescr:Generate()
+			oClasses:Combine(oClass)
+			SELF:GeneratedClasses:Add(oClassDescr:Name, oClass)
 		NEXT
 
 		FOREACH oEntity AS EntityDescriptor IN SELF:_aEntities
@@ -1982,6 +2054,11 @@ CLASS ModuleDescriptor
 				oRest:Combine(oEntity:Generate())
 			END CASE
 		NEXT
+		
+		SELF:GeneratedFuncs := oFuncs
+		SELF:GeneratedGlobals := oGlobals
+		SELF:GeneratedDefines := oDefines
+		SELF:GeneratedRest := oRest
 
 		oCode := OutputCode{}
 

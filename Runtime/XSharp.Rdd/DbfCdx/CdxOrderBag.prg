@@ -23,6 +23,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL CONST CDX_EXTENSION := ".CDX" AS STRING
 
 #endregion
+        PRIVATE  _newPageAllocated := FALSE AS LOGIC
         INTERNAL _hFile     AS IntPtr
         INTERNAL _stream    AS FileStream
         INTERNAL _OpenInfo	AS DbOpenInfo
@@ -342,7 +343,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 _stream:Flush(TRUE)
             ELSE
                 _stream:Flush(FALSE)
-                _stream:SafeSetLength(_stream:Length)
             ENDIF
             RETURN lOk
 
@@ -396,6 +396,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     throw IOException{cMessage}
                 ENDIF
                 nPage   := (LONG) _stream:Length
+                _newPageAllocated := TRUE
             ENDIF
             RETURN nPage
 
@@ -690,6 +691,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_PageList:SetVersion(version)
 #endif
             SELF:_root:Write()
+            IF _newPageAllocated
+                _stream:SafeSetLength(_stream:Length)
+                _newPageAllocated := FALSE
+            ENDIF
 
     #endregion
 

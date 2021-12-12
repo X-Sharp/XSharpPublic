@@ -49,7 +49,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         private ITextView m_textView;
 
         private IXTypeSymbol _classEntity;
-        private Dictionary<string, List<IXMemberSymbol>> _members;
+        private Dictionary<string, List<XSourceMemberSymbol>> _members;
         private XFile _xfile;
         private TextRange _range;
 
@@ -65,26 +65,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
             _classEntity = null;
         }
 
-        private bool TryGetWordUnderCaret(out TextExtent wordExtent)
-        {
-            ITextCaret caret = m_textView.Caret;
-            SnapshotPoint point;
-
-            if (caret.Position.BufferPosition > 0)
-            {
-                point = caret.Position.BufferPosition - 1;
-            }
-            else
-            {
-                wordExtent = default(TextExtent);
-                return false;
-            }
-
-            ITextStructureNavigator navigator = m_factory.NavigatorService.GetTextStructureNavigator(m_textBuffer);
-
-            wordExtent = navigator.GetExtentOfWord(point);
-            return true;
-        }
 #pragma warning disable VSTHRD105
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
@@ -111,12 +91,12 @@ namespace XSharp.LanguageService.Editors.LightBulb
             if (_members != null)
             {
                 List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
-                foreach (KeyValuePair<string, List<IXMemberSymbol>> intfaces in _members)
+                foreach (KeyValuePair<string, List<XSourceMemberSymbol>> intfaces in _members)
                 {
                     var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range);
                     suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
                 }
-
+               
                 return suggest.ToArray();
             }
             return Enumerable.Empty<SuggestedActionSet>();
@@ -134,16 +114,20 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return false;
         }
 
+        /// <summary>
+        /// Retrieve the Entity, and check if it has an Interface and if some members are missing
+        /// </summary>
+        /// <returns></returns>
         public bool SearchImplement()
         {
+            // Reset
             _classEntity = null;
             _members = null;
-            //
+            // Sorry, we are lost...
             _xfile = m_textBuffer.GetFile();
             if (_xfile == null)
                 return false;
             //
-
             SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
             foreach (var entity in _xfile.EntityList)
@@ -169,7 +153,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 if (_members != null)
                     return true;
             }
-
             return false;
         }
 
@@ -182,10 +165,9 @@ namespace XSharp.LanguageService.Editors.LightBulb
             }
         }
 
-        private Dictionary<string, List<IXMemberSymbol>> BuildMissingMembers()
+        private Dictionary<string, List<XSourceMemberSymbol>> BuildMissingMembers()
         {
-            Dictionary<string, List<IXMemberSymbol>> toAdd = new Dictionary<string, List<IXMemberSymbol>>();
-
+            Dictionary<string, List<XSourceMemberSymbol>> toAdd = new Dictionary<string, List<XSourceMemberSymbol>>();
             //
             if (_classEntity.Interfaces.Count == 0)
                 return null;
@@ -199,7 +181,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 {
                     if (iftype.Kind == Kind.Interface)
                     {
-                        List<IXMemberSymbol> elementsToAdd = new List<IXMemberSymbol>();
+                        List<XSourceMemberSymbol> elementsToAdd = new List<XSourceMemberSymbol>();
                         // Search all Interface Members
                         foreach (XSourceMemberSymbol mbr in iftype.Members)
                         {

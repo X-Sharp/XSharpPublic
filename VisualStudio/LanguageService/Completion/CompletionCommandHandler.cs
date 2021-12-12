@@ -179,6 +179,11 @@ namespace XSharp.LanguageService
                             FilterCompletionSession('\0');
                             break;
 
+                        case (int)VSConstants.VSStd2KCmdID.RETURN:
+                            // Check if we are inside a XMLDoc comment ///
+                            InjectXMLDoc();
+                            break;
+
                         case (int)VSConstants.VSStd2KCmdID.TYPECHAR:
                             char ch = GetTypeChar(pvaIn);
                             if (_completionSession == null)
@@ -212,6 +217,48 @@ namespace XSharp.LanguageService
             return result;
         }
 
+        /// <summary>
+        /// Push XMLDoc /// after a return char if we are just after an existing line with XMLDoc
+        /// </summary>
+        private void InjectXMLDoc()
+        {
+            try
+            {
+                // Retrieve Position
+                SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
+                var line = caret.GetContainingLine();
+                if ((line.LineNumber >= _textView.TextSnapshot.LineCount - 1) || (line.LineNumber ==0))
+                    return;
+
+                // force buffer to be classified to see if we are on a line before a comment
+                var classifier = _textView.TextBuffer.GetClassifier();
+                classifier.ClassifyWhenNeeded();
+                var lines = _textView.TextBuffer.GetLineState();
+                // Check if the line up is a DocComment
+                bool afterADocComment = lines.GetFlags(line.LineNumber - 1).HasFlag(LineFlags.DocComments);
+                // Ok, check the content
+                if (afterADocComment)
+                {
+                    // Get the line
+                    ITextSnapshotLine lineUp = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber - 1);
+                    // To retrieve the text and align to it
+                    string lineText = lineUp.GetText();
+                    int count = lineText.TakeWhile(Char.IsWhiteSpace).Count();
+                    string prefix = lineText.Substring(0, count) + "/// ";
+                    _textView.TextBuffer.Insert(_textView.Caret.Position.BufferPosition.Position, prefix);
+                    // Move the Caret 
+                    _textView.Caret.MoveTo(new SnapshotPoint(_textView.TextSnapshot, caret.Position + prefix.Length));
+                }
+            }
+            catch (Exception e)
+            {
+                WriteOutputMessage("InjectXMLDoc: error " + e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Insert XMLDoc Comments
+        /// </summary>
         private void InsertXMLDoc()
         {
             try
@@ -219,19 +266,21 @@ namespace XSharp.LanguageService
                 // Retrieve Position
                 SnapshotPoint caret = _textView.Caret.Position.BufferPosition;
                 var line = caret.GetContainingLine();
-                if (line.LineNumber >= _textView.TextSnapshot.LineCount -1)
+                if (line.LineNumber >= _textView.TextSnapshot.LineCount - 1)
                     return;
                 string lineText = line.GetText();
                 // Remove all type of spaces
                 lineText = lineText.Trim(' ', '\t');
                 // XMLDoc ?
-                if (lineText == "///" )
+                if (lineText == "///")
                 {
                     // force buffer to be classified to see if we are on a line before a comment
                     var classifier = _textView.TextBuffer.GetClassifier();
                     classifier.ClassifyWhenNeeded();
                     var lines = _textView.TextBuffer.GetLineState();
+                    // Check if the line down if a comment
                     bool beforeAComment = lines.IsComment(line.LineNumber + 1);
+                    // Ok, check the content
                     if (!beforeAComment)
                     {
                         // Make sure that the entity list matches the contents of the buffer
@@ -264,11 +313,11 @@ namespace XSharp.LanguageService
                                 {
                                     sb.AppendLine(prefix + $"/// <param name=\"{param.Name}\"></param>");
                                 }
-                                if (member.Kind.IsProperty() )
+                                if (member.Kind.IsProperty())
                                 {
                                     sb.AppendLine(prefix + "/// <value></value>");
                                 }
-                                else if (member.Kind.HasReturnType() && ! member.Kind.IsField() )
+                                else if (member.Kind.HasReturnType() && !member.Kind.IsField())
                                 {
                                     if ((string.Compare(member.ReturnType, "void", true) != 0))
                                     {
@@ -281,7 +330,7 @@ namespace XSharp.LanguageService
                                 typeParameters = type.TypeParameters;
                             }
                             if (typeParameters != null)
-                            { 
+                            {
                                 foreach (var typeparam in typeParameters)
                                 {
                                     sb.AppendLine(prefix + $"/// <typeparam name=\"{typeparam}\"></typeparam>");

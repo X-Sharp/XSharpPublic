@@ -133,7 +133,7 @@
     <value>Invalid filename specification</value>
   </data>
   <data name="EDB_CREATEINDEX" xml:space="preserve">
-    <value>Invalid filename specification</value>
+    <value>Error creating index</value>
   </data>
   <data name="EDB_SETORDER" xml:space="preserve">
     <value>Invalid order specification</value>
@@ -178,7 +178,7 @@
     <value>Invalid record number argument</value>
   </data>
   <data name="EDB_EXPRESSION" xml:space="preserve">
-    <value>Expression for macro compiler incorrect.</value>
+    <value>Index Expression incorrect.</value>
   </data>
   <data name="EDB_EXPR_WIDTH" xml:space="preserve">
     <value>Index Expression too long</value>

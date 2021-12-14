@@ -16,6 +16,8 @@ USING System.Globalization
 USING System.Collections.Generic
 USING System.Diagnostics
 
+#define INPUTBUFFER
+
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF RDD. Usually not used 'stand alone'</summary>
 [DebuggerDisplay("DBF ({Alias,nq})")];
@@ -76,6 +78,11 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_HasMemo
     NEW PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
     INTERNAL PROPERTY Stream AS FileStream GET SELF:_oStream
+
+#ifdef INPUTBUFFER
+    INTERNAL _inBuffer AS InputBuffer
+#endif
+
 /*
 PROTECTED METHOD ConvertToMemory() AS LOGIC
      IF !SELF:_OpenInfo:Shared
@@ -122,6 +129,9 @@ PRIVATE METHOD _AllocateBuffers() AS VOID
 			column:InitValue(SELF:_BlankBuffer)
 		ENDIF
 	NEXT
+#ifdef INPUTBUFFER
+	_inBuffer := InputBuffer{SELF:_oStream, SELF:_HeaderLength, SELF:_RecordLength, SELF:Shared}
+#endif
 
 CONSTRUCTOR()
 	SELF:_hFile     := F_ERROR
@@ -596,6 +606,9 @@ PROTECTED METHOD _lockDBFFile() AS LOGIC
 			SELF:_Locks:Clear()
 		ENDIF
 		SELF:_fLocked := SELF:_lockFile()
+#ifdef INPUTBUFFER
+		_inBuffer:Invalidate()
+#endif
         // Invalidate Buffer
 		SELF:GoTo( SELF:RecNo )
 		isOK := SELF:_fLocked
@@ -905,7 +918,11 @@ OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
 	SELF:_Shared := SELF:_OpenInfo:Shared
 	SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
     //
+#ifdef INPUTBUFFER
+	SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE | FO_UNBUFFERED)
+#else
 	SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
+#endif
     // Adjust path to be sure we handle DOS 8 name chars correctly
     IF File(SELF:_FileName)
         SELF:_FileName := FPathName()
@@ -1061,7 +1078,11 @@ OVERRIDE METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
 	SELF:_Alias := SELF:_OpenInfo:Alias
 	SELF:_Shared := SELF:_OpenInfo:Shared
 	SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
+#ifdef INPUTBUFFER
+	SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode | FO_UNBUFFERED)
+#else
 	SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode)
+#endif
 
 	IF SELF:IsOpen
 		SELF:_oStream    := (FileStream) FGetStream(SELF:_hFile)
@@ -1165,7 +1186,7 @@ RETURN isOK
 
 INTERNAL METHOD _readField(nOffSet as LONG, oField as DbfField) AS LOGIC
     // Read single field. Called from AutoIncrement code to read the counter value
-    RETURN  _oStream:SafeReadAt(nOffSet,oField:Buffer,DbfField.SIZE)
+    RETURN _oStream:SafeReadAt(nOffSet,oField:Buffer,DbfField.SIZE)
 
 INTERNAL METHOD _writeField(nOffSet as LONG, oField as DbfField) AS LOGIC
     // Write single field in header. Called from AutoIncrement code to update the counter value
@@ -1325,7 +1346,12 @@ VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
 	IF  isOK
         // Record pos is One-Based
 		LOCAL lOffset := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength AS LONG
+#ifdef INPUTBUFFER
+		isOK := _inBuffer:Read(lOffset, SELF:_RecordBuffer, SELF:_RecordLength)
+#else
 		isOK := _oStream:SafeReadAt(lOffset, SELF:_RecordBuffer, SELF:_RecordLength)
+#endif
+
 		IF isOK
 			// Read Record
 			SELF:_BufferValid := TRUE
@@ -1353,7 +1379,11 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
             // Record pos is One-Based
 			LOCAL recordPos AS LONG
 			recordPos := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength
+#ifdef INPUTBUFFER
+            isOK := _inBuffer:Write(recordPos, SELF:_RecordBuffer, SELF:_RecordLength)
+#else
             isOK :=  _oStream:SafeWriteAt(recordPos, SELF:_RecordBuffer)
+#endif
 			IF isOK
 			   // Write Record
 				TRY

@@ -624,8 +624,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ELSE
                          records := 0
                         IF SELF:GoTop() .AND. ! SELF:Stack:Empty
-                            VAR topStack := SELF:CurrentStack
-                            VAR page     := topStack:Page
+                            VAR page     := SELF:CurrentStack:Page
                             DO WHILE TRUE
                                 IF page == NULL
                                     EXIT

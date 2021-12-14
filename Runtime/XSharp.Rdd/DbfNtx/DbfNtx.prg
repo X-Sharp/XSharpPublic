@@ -433,7 +433,7 @@ BEGIN NAMESPACE XSharp.RDD
             END LOCK
 
         METHOD __Goto(nRec AS LONG) AS LOGIC
-            // Skip without reset of topstack
+            // Skip without reset of stack
             RETURN SUPER:GoTo(nRec)
 
         OVERRIDE METHOD GoTo(nRec AS LONG) AS LOGIC

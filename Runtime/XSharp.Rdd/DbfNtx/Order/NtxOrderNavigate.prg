@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -18,13 +18,13 @@ USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD.NTX
 
     INTERNAL PARTIAL SEALED CLASS NtxOrder
-    
+
         // MEthods for walking indices, so GoTop, GoBottom, Skip and Seek
-        
+
         PUBLIC METHOD GoBottom() AS LOGIC
             LOCAL locked AS LOGIC
             LOCAL result AS LOGIC
-            
+
             locked := FALSE
             TRY
                 IF SELF:_Scopes[BOTTOMSCOPE]:IsSet
@@ -49,15 +49,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:_unLockForRead()
                 ENDIF
             END TRY
-            
-            
+
+
         PUBLIC METHOD GoTop() AS LOGIC
             LOCAL locked AS LOGIC
             LOCAL result AS LOGIC
             locked := FALSE
             TRY
                 SELF:_oRdd:GoCold()
-                
+
                 IF SELF:_Scopes[TOPSCOPE]:IsSet
                     result := SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPETOP)
                     IF !SELF:_oRdd:Found
@@ -76,15 +76,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         result := SELF:_oRdd:SkipFilter(1)
                     ENDIF
                 ENDIF
-                RETURN result    
+                RETURN result
             FINALLY
                 IF locked
                     result := SELF:_unLockForRead()
                 ENDIF
             END TRY
-            
-            
-            
+
+
+
         OVERRIDE METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL byteArray AS BYTE[]
@@ -112,8 +112,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             RETURN SELF:_Seek(seekInfo, byteArray)
-            
-            
+
+
         PUBLIC METHOD SkipRaw(nToSkip AS LONG ) AS LOGIC
             LOCAL recno AS LONG
             LOCAL isBof AS LOGIC
@@ -136,7 +136,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             changedBof := FALSE
             changedEof := FALSE
             locked := FALSE
-            
+
             TRY
                 orgToSkip := nToSkip
                 SELF:_oRdd:GoCold()
@@ -159,7 +159,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         SELF:_GoToRecno( SELF:_RecNo)
                     ENDIF
                 ENDIF
-                
+
                 IF orgToSkip != 0
                     IF SELF:HasScope
                         isBof := SELF:_oRdd:BoF
@@ -167,7 +167,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         var newrec := SELF:_ScopeSkip(nToSkip)
                         IF newrec != -1 // -1  means that there was nothing to do
                             recno := newrec
-                        ENDIF 
+                        ENDIF
                         IF isBof != SELF:_oRdd:BoF
                             changedBof := TRUE
                             isBof := SELF:_oRdd:BoF
@@ -203,17 +203,17 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     IF changedEof
                         SELF:_oRdd:_SetEOF(isEof)
                     ENDIF
-                endif                
+                endif
             CATCH ex AS Exception
-                SELF:_oRdd:_dbfError(ex, Subcodes.EDB_SKIP,Gencode.EG_CORRUPTION,  "NtxOrder.SkipRaw") 
+                SELF:_oRdd:_dbfError(ex, Subcodes.EDB_SKIP,Gencode.EG_CORRUPTION,  "NtxOrder.SkipRaw")
             FINALLY
                 IF locked
                     result := SELF:_unLockForRead() .AND. result
                 ENDIF
             END TRY
             RETURN result
-            
-            
+
+
         PRIVATE METHOD _getNextKey(thisPage AS LOGIC , moveDirection AS SkipDirection ) AS LONG
             LOCAL page AS NtxPage
             LOCAL node AS NtxPageNode
@@ -221,27 +221,26 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF SELF:_TopStack == 0
                 RETURN 0
             ENDIF
-            VAR topStack := SELF:CurrentStack
-            page := SELF:_PageList:Read(topStack:Page)
-            node := page[topStack:Pos]
+            page := SELF:_PageList:Read(SELF:CurrentStack:Page)
+            node := page[SELF:CurrentStack:Pos]
             IF thisPage
                 IF moveDirection == SkipDirection.Backward
-                    topStack:Pos--
-                    node:Pos := topStack:Pos
+                    SELF:CurrentStack:Pos--
+                    node:Pos := SELF:CurrentStack:Pos
                 ENDIF
                 SELF:_saveCurrentRecord(node)
                 RETURN node:Recno
             ENDIF
-            
+
             IF moveDirection == SkipDirection.Forward
-                topStack:Pos++
-                node:Pos := topStack:Pos
+                SELF:CurrentStack:Pos++
+                node:Pos := SELF:CurrentStack:Pos
                 IF node:PageNo != 0
                     RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:PageNo)
                 ENDIF
-                IF topStack:Pos == topStack:Count
-                    DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == topStack:Count
-                        topStack := SELF:PopPage()
+                IF SELF:CurrentStack:Pos == SELF:CurrentStack:Count
+                    DO WHILE SELF:_TopStack != 0 .AND. SELF:CurrentStack:Pos == SELF:CurrentStack:Count
+                        SELF:PopPage()
                     ENDDO
                     RETURN SELF:_getNextKey(TRUE, SkipDirection.Forward)
                 ENDIF
@@ -251,50 +250,49 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF node:PageNo != 0
                 RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo)
             ENDIF
-            IF topStack:Pos == 0
-                DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == 0
-                    topStack := SELF:PopPage()
+            IF SELF:CurrentStack:Pos == 0
+                DO WHILE SELF:_TopStack != 0 .AND. SELF:CurrentStack:Pos == 0
+                    SELF:PopPage()
                 ENDDO
                 RETURN SELF:_getNextKey(TRUE, SkipDirection.Backward)
             ENDIF
-            topStack:Pos--
-            node:Pos := topStack:Pos
+            SELF:CurrentStack:Pos--
+            node:Pos := SELF:CurrentStack:Pos
             SELF:_saveCurrentRecord(node)
             RETURN node:Recno
-            
-            
+
+
         PRIVATE METHOD _findItemPos(record REF LONG , nodePage AS LOGIC ) AS LOGIC
             LOCAL page   AS NtxPage
             LOCAL node   AS NtxPageNode
             IF SELF:_TopStack == 0
                 RETURN FALSE
             ENDIF
-            VAR topStack := SELF:CurrentStack
-            page := SELF:_PageList:Read(topStack:Page)
-            node := page[topStack:Pos]
+            page := SELF:_PageList:Read(SELF:CurrentStack:Page)
+            node := page[SELF:CurrentStack:Pos]
             IF nodePage
-                topStack:Pos--
+                SELF:CurrentStack:Pos--
                 record++
                 RETURN TRUE
             ENDIF
             IF node:PageNo != 0
                 SELF:_locate(NULL, 0, SearchMode.Bottom, node:PageNo)
-                record += (topStack:Pos + 1)
-                topStack:Pos := 0
+                record += (SELF:CurrentStack:Pos + 1)
+                SELF:CurrentStack:Pos := 0
                 RETURN TRUE
             ENDIF
-            IF topStack:Pos == 0
-                DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == 0
-                    topStack := SELF:PopPage()
+            IF SELF:CurrentStack:Pos == 0
+                DO WHILE SELF:_TopStack != 0 .AND. SELF:CurrentStack:Pos == 0
+                    SELF:PopPage()
                 ENDDO
                 RETURN SELF:_findItemPos(REF record, TRUE)
             ENDIF
-            record += topStack:Pos
-            topStack:Pos := 0
+            record += SELF:CurrentStack:Pos
+            SELF:CurrentStack:Pos := 0
             RETURN TRUE
-            
-          
-            
+
+
+
         PRIVATE METHOD _getScopePos() AS LONG
             LOCAL first AS LONG
             LOCAL last AS LONG
@@ -323,11 +321,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN last - first + 1
             ENDIF
             RETURN first - last + 1
-            
-            
+
+
         INTERNAL METHOD _saveCurrentKey(rcno AS LONG, oData AS RddKeyData) AS LOGIC
             LOCAL isOk AS LOGIC
-            
+
             isOk := TRUE
             IF rcno != oData:Recno .OR. SELF:Shared
                 oData:Recno := rcno
@@ -340,14 +338,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRdd:_dbfError(Subcodes.ERDD_KEY_EVAL, Gencode.EG_DATATYPE, SELF:FileName)
             ENDIF
             RETURN isOk
-            
-            
-            
+
+
+
         PRIVATE METHOD _ScopeSkip(lNumKeys AS LONG ) AS LONG
             LOCAL result AS LONG
             LOCAL recno AS LONG
             LOCAL SkipDirection AS SkipDirection
-	    
+
             VAR RT_Deleted := XSharp.RuntimeState.Deleted
             result := SELF:_RecNo
             IF lNumKeys == 1
@@ -413,14 +411,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             RETURN recno
-            
-            
+
+
         PRIVATE METHOD _ScopeSeek(uiScope AS DbOrder_Info ) AS LOGIC
             LOCAL result AS LOGIC
             LOCAL seekInfo AS DbSeekInfo
             LOCAL obj AS OBJECT
             LOCAL mustSeek AS LOGIC
-            
+
             result := TRUE
             seekInfo := DbSeekInfo{}
             IF uiScope == DbOrder_Info.DBOI_SCOPETOP
@@ -452,12 +450,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             RETURN result
-            
-            
+
+
         PRIVATE METHOD _isBeforeBottomScope() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL itmBottomScope AS OBJECT
-            
+
             isOk := SELF:_oRdd:Found
             IF !isOk .AND. SELF:_RecNo != 0
                 IF SELF:_Scopes[BOTTOMSCOPE]:IsSet
@@ -474,8 +472,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             RETURN isOk
-            
-            
+
+
         PRIVATE METHOD _goRecord(keyBytes AS BYTE[], keyLen AS LONG, gotoRec AS LONG ) AS LONG
             LOCAL recno AS LONG
             // Search the first occurence from the start of the index
@@ -485,8 +483,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 recno := SELF:_getNextKey(FALSE, SkipDirection.Forward)
             ENDDO
             RETURN recno
-            
-            
+
+
         INTERNAL METHOD _GoToRecno(recno AS LONG ) AS LOGIC
             LOCAL result AS LOGIC
             result := TRUE
@@ -505,7 +503,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRdd:__Goto(recno)
             ENDIF
             RETURN result
-            
+
         PRIVATE METHOD _locateKey( keyBuffer AS BYTE[] , bufferLen AS LONG , searchMode AS SearchMode ) AS LONG
             // Find Key starting at the top of the index
             SELF:ClearStack()
@@ -517,8 +515,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             RETURN SELF:_locate(keyBuffer, bufferLen, searchMode, SELF:_firstPageOffset)
-            
-            
+
+
         PRIVATE METHOD _locate(keyBuffer AS BYTE[] , keyLength AS LONG , searchMode AS SearchMode , pageOffset AS LONG ) AS LONG
             LOCAL foundPos  AS WORD
             LOCAL page      AS NtxPage
@@ -526,7 +524,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL node      AS NtxPageNode
             LOCAL minPos    AS WORD
             LOCAL maxPos    AS WORD
-            // find a key starting at the pageOffSet passed 
+            // find a key starting at the pageOffSet passed
             foundPos := 0
             //Load the page at pageOffset
             page := SELF:_PageList:Read(pageOffset)
@@ -538,7 +536,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             nodeCount := page:NodeCount
             // Get the first one
             node := page[0]
-            
+
             SWITCH searchMode
             CASE SearchMode.Right
                 IF SELF:_Descending
@@ -592,7 +590,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     IF searchMode == SearchMode.Left .AND. SELF:__Compare(node:KeyBytes, keyBuffer, keyLength) == 0
                         searchMode := SearchMode.SoftSeek
                     ENDIF
-                    
+
             CASE SearchMode.Bottom
                 node:Pos := foundPos := nodeCount
                 IF node:PageNo == 0 .AND. foundPos > 0
@@ -604,16 +602,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             END SWITCH
             // Add info in the stack
             SELF:_TopStack++
-            VAR topStack := SELF:CurrentStack
-            topStack:Pos      := foundPos
-            topStack:Page     := pageOffset
-            topStack:Count    := nodeCount
-            
+            SELF:CurrentStack:Pos      := foundPos
+            SELF:CurrentStack:Page     := pageOffset
+            SELF:CurrentStack:Count    := nodeCount
+
             node:Pos := foundPos
             IF node:PageNo != 0
                 RETURN SELF:_locate(keyBuffer, keyLength, searchMode, node:PageNo)
             ENDIF
-            
+
             IF foundPos < nodeCount .AND. foundPos >= 0
                 SWITCH searchMode
                 CASE SearchMode.SoftSeek
@@ -631,23 +628,23 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     RETURN 0
                 END SWITCH
             ELSEIF searchMode == SearchMode.SoftSeek
-                DO WHILE SELF:_TopStack != 0 .AND. topStack:Pos == topStack:Count
-                    topStack := SELF:PopPage()
+                DO WHILE SELF:_TopStack != 0 .AND. SELF:CurrentStack:Pos == SELF:CurrentStack:Count
+                    SELF:PopPage()
                 ENDDO
                 IF SELF:_TopStack != 0
-                    page := SELF:_PageList:Read(topStack:Page)
+                    page := SELF:_PageList:Read(SELF:CurrentStack:Page)
                     IF page == NULL
                         SELF:ClearStack()
                         RETURN 0
                     ENDIF
-                    node := page[topStack:Pos]
+                    node := page[SELF:CurrentStack:Pos]
                     SELF:_saveCurrentRecord(node)
                     RETURN node:Recno
                 ENDIF
             ENDIF
             RETURN 0
-            
-            
+
+
         PRIVATE METHOD _skipFilter(recno AS LONG , iPolar AS SkipDirection ) AS LONG
             IF SELF:_oRdd:__Goto(recno)
                 SELF:_oRdd:SkipFilter((INT) iPolar)
@@ -670,7 +667,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL text AS STRING
             LOCAL temp AS BYTE
             LOCAL activeFilter as LOGIC
-            
+
             activeFilter := XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:FilterInfo:Active
             TRY
                 SELF:_oRdd:GoCold()
@@ -755,7 +752,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                                 seekInfo:SoftSeek := fSoft
                             ENDIF
                             IF found
-                            // we are on the first matching key. When we seek Last then we 
+                            // we are on the first matching key. When we seek Last then we
                             // skip to the last record that matches the key that we searched for
                                 IF seekInfo:Last
                                     DO WHILE strCmp == 0
@@ -818,22 +815,22 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRdd:_SetBOF(SELF:_oRdd:RecCount == 0)
                 SELF:_oRdd:Found := found
                 RETURN result
-                
+
             FINALLY
                 IF locked
                     result := SELF:_unLockForRead()
                 ENDIF
             END TRY
-            
+
         PRIVATE METHOD _Seek(dbsi AS DbSeekInfo , lpval AS OBJECT ) AS LOGIC
             LOCAL byteArray AS BYTE[]
             byteArray := BYTE[]{ SELF:_keySize }
             SELF:_ToString(lpval, SELF:_keySize, SELF:_keyDecimals, byteArray)
             dbsi:SoftSeek := TRUE
             RETURN SELF:_Seek(dbsi, byteArray)
-            
+
     END CLASS
-    
+
 END NAMESPACE
 
 

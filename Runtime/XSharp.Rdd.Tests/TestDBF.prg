@@ -718,5 +718,99 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			myDBF:Close()
 			RETURN
 
+        CLASS TestInputBuffer INHERIT InputBuffer
+            PROPERTY Stream         AS System.IO.Stream GET SELF:_stream
+            PROPERTY RecordLength   AS LONG GET _recordLength
+            PROPERTY HeaderLength   AS LONG GET _headerLength
+            PROPERTY Shared         AS LOGIC GET _shared SET _shared := VALUE
+            PROPERTY LookAhead      AS INT GET _look_ahead SET _look_ahead := VALUE
+            PROPERTY LookBehind     AS INT GET _look_behind SET _look_behind := VALUE
+            PROPERTY InBuffer       AS BYTE[] GET _inBuffer
+            PROPERTY InBufferOfs    AS LONG GET _inBufferOfs SET _inBufferOfs := VALUE
+            PROPERTY InBufferLen    AS LONG GET _inBufferLen SET _inBufferLen := VALUE
+            PROPERTY InBufferTick   AS INT GET _inBufferTick SET _inBufferTick := VALUE
+            CONSTRUCTOR(stream AS System.IO.Stream, headerLength AS INT, recordLength AS INT, shared AS LOGIC) AS VOID
+                SUPER(stream, headerLength, recordLength, shared)
+        END CLASS
+
+		[Fact, Trait("Dbf", "InBuffer")];
+		METHOD CheckDbfInBuffer() AS VOID
+            VAR stream := System.IO.MemoryStream{200101}
+            FOR VAR i := 1 TO 200101
+                stream:WriteByte((Byte)i)
+            NEXT
+            stream:Position := 0
+
+            VAR buf := TestInputBuffer{stream, 100, 200, FALSE}
+            Assert.Equal( stream, buf:Stream )
+            Assert.Equal( 100, buf:HeaderLength )
+            Assert.Equal( 200, buf:RecordLength )
+            Assert.Equal( FALSE, buf:Shared )
+            Assert.Equal( 16384/200 - 16384/200/4, buf:LookAhead )
+            Assert.Equal( 16384/200/4 - 1, buf:LookBehind )
+            Assert.Equal( 16200, buf:InBuffer:Length )
+            Assert.Equal( 0, buf:InBufferOfs )
+            Assert.Equal( 0, buf:InBufferLen )
+
+            VAR b := BYTE[]{200}
+            Assert.Equal( TRUE, buf:Read(100, b, 200) )
+            Assert.Equal( 100, buf:InBufferOfs )
+            Assert.Equal( 16200, buf:InBufferLen )
+            Assert.Equal( 101, b[1] )
+
+            Assert.Equal( TRUE, buf:Read(300, b, 200) )
+            Assert.Equal( 100, buf:InBufferOfs )
+            Assert.Equal( 16200, buf:InBufferLen )
+            Assert.Equal( 301%256, b[1] )
+            Assert.Equal( 500%256, b[200] )
+
+            Assert.Equal( TRUE, buf:Read(100+81*200, b, 200) )
+            Assert.Equal( 100+(81-buf:LookBehind)*200, buf:InBufferOfs )
+            Assert.Equal( 16200, buf:InBufferLen )
+            Assert.Equal( (101+81*200)%256, b[1] )
+            Assert.Equal( (300+81*200)%256, b[200] )
+
+            Assert.Equal( TRUE, buf:Read(100+500*200, b, 200) )
+            Assert.Equal( 100+(500-buf:LookBehind)*200, buf:InBufferOfs )
+            Assert.Equal( 16200, buf:InBufferLen )
+            Assert.Equal( (101+500*200)%256, b[1] )
+            Assert.Equal( (300+500*200)%256, b[200] )
+
+            Assert.Equal( TRUE, buf:Read(100+200*200, b, 200) )
+            Assert.Equal( 100+(200-buf:LookAhead)*200, buf:InBufferOfs )
+            Assert.Equal( 16200, buf:InBufferLen )
+            Assert.Equal( (101+200*200)%256, b[1] )
+            Assert.Equal( (300+200*200)%256, b[200] )
+
+            // Test forward access
+            FOR VAR i := 1 TO 200000/200
+                Assert.Equal( TRUE, buf:Read(100+(i-1)*200, b, 200) )
+                Assert.Equal( (101+(i-1)*200)%256, b[1] )
+                Assert.Equal( (300+(i-1)*200)%256, b[200] )
+            NEXT
+
+            // Test backward access
+            FOR VAR i := 200000/200 DOWNTO 1
+                Assert.Equal( TRUE, buf:Read(100+(i-1)*200, b, 200) )
+                Assert.Equal( (101+(i-1)*200)%256, b[1] )
+                Assert.Equal( (300+(i-1)*200)%256, b[200] )
+            NEXT
+
+            // Test random access
+            VAR rand := System.Random{}
+            FOR VAR n := 1 TO 20000
+                VAR i := rand:Next(200000/200)+1
+                Assert.Equal( TRUE, buf:Read(100+(i-1)*200, b, 200) )
+                Assert.Equal( (101+(i-1)*200)%256, b[1] )
+                Assert.Equal( (300+(i-1)*200)%256, b[200] )
+            NEXT
+
+            buf:Invalidate()
+            Assert.Equal( 0, buf:InBufferOfs )
+            Assert.Equal( 0, buf:InBufferLen )
+
+			RETURN
+
 	END CLASS
 END NAMESPACE // XSharp.RDD.Tests
+

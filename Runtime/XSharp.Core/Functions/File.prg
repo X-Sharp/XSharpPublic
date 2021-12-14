@@ -40,7 +40,7 @@ DEFINE FO_WRITE       := 1
 /// <summary>FOpen() Open Mode: Open for reading or writing</summary>
 DEFINE FO_READWRITE   := 2
 ///  <summary>FOpen() Open Mode: UnBuffered. Added to FO_READ, FO_WRITE and FO_READWRITE</summary>
-DEFINE FO_UNBUFFERED  := 10
+DEFINE FO_UNBUFFERED  := 8
 
 // FOPEN() sharing modes (combine with open mode using +)
 /// <summary>FOpen() Sharing Mode: Compatibility mode (default)</summary>
@@ -1061,3 +1061,4 @@ FUNCTION FSize(cFileName AS STRING) AS INT64
         RETURN fileInfo:Length
     ENDIF
     RETURN 0
+

@@ -5152,5 +5152,22 @@ RETURN
 			// we may want to put them to a specific folder etc
 		    RETURN cFileName
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestOrdScopeReturnValue() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{"CFIELD","C",1,0}} , {"S","S","N"})
+			DbCreateIndex(cDbf , "CFIELD")
+			DbCloseArea()
+
+			DbUseArea( TRUE ,,cDBF )
+			Assert.True(OrdScope(TOPSCOPE, "S") == NIL)
+			Assert.True(OrdScope(BOTTOMSCOPE, "S") == NIL)
+			Assert.Equal("S", OrdScope(TOPSCOPE, "N"))
+			Assert.Equal("S", OrdScope(BOTTOMSCOPE, "N"))
+			DbCloseArea()
+		RETURN
 	END CLASS
 END NAMESPACE

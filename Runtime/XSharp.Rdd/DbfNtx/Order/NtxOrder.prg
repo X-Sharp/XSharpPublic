@@ -350,7 +350,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_Header:FirstPageOffset        := SELF:_firstPageOffset
                 SELF:_Header:Write( )
             ENDIF
-            _oStream:Flush()
+            _oStream:Flush(XSharp.RuntimeState.GetValue<LOGIC>(Set.HardCommit))
             RETURN TRUE
 
         PUBLIC METHOD Close() AS LOGIC
@@ -807,5 +807,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     END CLASS
 
 END NAMESPACE
+
 
 

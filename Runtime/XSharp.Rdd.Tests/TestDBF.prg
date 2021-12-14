@@ -809,6 +809,18 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             Assert.Equal( 0, buf:InBufferOfs )
             Assert.Equal( 0, buf:InBufferLen )
 
+            Assert.Equal( FALSE, buf:Read(100+200000, b, 200) )
+            Assert.Equal( 100+(1000-buf:LookBehind)*200, buf:InBufferOfs )
+            Assert.Equal( 1+buf:LookBehind*200, buf:InBufferLen )
+
+            Assert.Equal( FALSE, buf:Read(100+200200, b, 200) )
+            Assert.Equal( 100+(1001-buf:LookBehind)*200, buf:InBufferOfs )
+            Assert.Equal( 0, buf:InBufferLen )
+
+            Assert.Equal( FALSE, buf:Read(100+400200, b, 200) )
+            Assert.Equal( 100+(2001-buf:LookBehind)*200, buf:InBufferOfs )
+            Assert.Equal( 0, buf:InBufferLen )
+
 			RETURN
 
 	END CLASS

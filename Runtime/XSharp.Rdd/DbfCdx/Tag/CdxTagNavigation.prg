@@ -302,18 +302,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:Stack:Empty
                 RETURN 0
             ENDIF
-            VAR topStack := SELF:CurrentStack
-            page    := topStack:Page
-            node    := page[topStack:Pos]
+            page    := SELF:CurrentStack:Page
+            node    := page[SELF:CurrentStack:Pos]
 
             IF moveDirection == SkipDirection.Forward
-                topStack:Pos++
-                node:Pos := topStack:Pos
+                SELF:CurrentStack:Pos++
+                node:Pos := SELF:CurrentStack:Pos
                 IF node:Pos < page:NumKeys .AND. node:ChildPageNo != 0
                     RETURN SELF:_locate(NULL, 0, SearchMode.Top, node:ChildPageNo,0)
                 ENDIF
                 // Once we are at the bottom level then we simply skip forward using the Right Pointers
-                IF topStack:Pos == page:NumKeys
+                IF SELF:CurrentStack:Pos == page:NumKeys
 #ifdef TESTCDX
                     IF ! page:ValidateSiblings()
                         SELF:ThrowException(Subcodes.ERDD_INVALID_ORDER,Gencode.EG_CORRUPTION,  "CdxTag._getNextKey","Incorrect link between sibling pages for page: "+page:PageNoX)
@@ -353,7 +352,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF node:ChildPageNo != 0
                 RETURN SELF:_locate(NULL, 0, SearchMode.Bottom, node:ChildPageNo,0)
             ENDIF
-            IF topStack:Pos == 0
+            IF SELF:CurrentStack:Pos == 0
                 IF page:HasLeft
                     VAR leftPtr := page:LeftPtr
                     VAR newpage   := SELF:GetPage(leftPtr)
@@ -365,8 +364,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 RETURN SELF:_getNextKey(SkipDirection.Backward)
             ENDIF
-            topStack:Pos--
-            node:Pos := topStack:Pos
+            SELF:CurrentStack:Pos--
+            node:Pos := SELF:CurrentStack:Pos
             SELF:_saveCurrentRecord(node)
             RETURN node:Recno
 
@@ -378,10 +377,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             // this assumes the top of the stack has the leaf page where our key is.
             // we count the # of keys to the right of that page and add the pos on the top of the stack
-            VAR topStack := SELF:Stack:Top
-            LOCAL page  := (CdxTreePage) topStack:Page AS CdxTreePage
+            LOCAL page  := (CdxTreePage) SELF:CurrentStack:Page AS CdxTreePage
             LOCAL pos AS LONG
-            pos := topStack:Pos
+            pos := SELF:CurrentStack:Pos
             DO WHILE page:HasLeft
                 VAR nextPage := page:LeftPtr
                 page := SELF:GetPage(nextPage)
@@ -790,7 +788,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:ClearStack()
                 RETURN 0
             ENDIF
-            VAR topStack      := SELF:CurrentStack
             // How many Items in that page ?
             nodeCount := page:NumKeys
             IF nodeCount == 0
@@ -903,8 +900,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         RETURN 0
                 END SWITCH
             ELSEIF searchMode == SearchMode.SoftSeek
-                DO WHILE ! SELF:Stack:Empty .AND. topStack:Pos == topStack:Page:NumKeys
-                    topStack := SELF:PopPage()
+                DO WHILE ! SELF:Stack:Empty .AND. SELF:CurrentStack:Pos == SELF:CurrentStack:Page:NumKeys
+                    SELF:PopPage()
                 ENDDO
                 IF ! SELF:Stack:Empty
                     page := SELF:Stack:Top:Page
@@ -912,7 +909,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:ClearStack()
                         RETURN 0
                     ENDIF
-                    node := page[topStack:Pos]
+                    node := page[SELF:CurrentStack:Pos]
                     SELF:_saveCurrentRecord(node)
                     RETURN node:Recno
                 ENDIF

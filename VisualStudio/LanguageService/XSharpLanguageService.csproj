@@ -64,6 +64,8 @@
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
     <Compile Include="KeywordColoring\LineState.cs" />
+    <Compile Include="LightBulb\PropertyAction.cs" />
+    <Compile Include="LightBulb\PropertyProvider.cs" />
     <Compile Include="LineSeparators\GraphicsResult.cs" />
     <Compile Include="LineSeparators\GraphicsTag.cs" />
     <Compile Include="LineSeparators\LineSeparatorManager.cs" />

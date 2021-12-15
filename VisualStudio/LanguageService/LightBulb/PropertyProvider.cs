@@ -23,9 +23,9 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace XSharp.LanguageService.Editors.LightBulb
 {
     [Export(typeof(ISuggestedActionsSourceProvider))]
-    [Name("Implement Interface Suggested Action")]
+    [Name("Property Suggested Action")]
     [ContentType(LanguageName)]
-    internal class ImplementInterfaceSuggestedActionsSourceProvider : ISuggestedActionsSourceProvider
+    internal class PropertySuggestedActionsSourceProvider : ISuggestedActionsSourceProvider
     {
         [Import(typeof(ITextStructureNavigatorSelectorService))]
         internal ITextStructureNavigatorSelectorService NavigatorService { get; set; }
@@ -38,17 +38,17 @@ namespace XSharp.LanguageService.Editors.LightBulb
             {
                 return null;
             }
-            return new ImplementInterfaceSuggestedActionsSource(this, textView, textBuffer);
+            return new PropertySuggestedActionsSource(this, textView, textBuffer);
         }
     }
 
-    internal class ImplementInterfaceSuggestedActionsSource : ISuggestedActionsSource
+    internal class PropertySuggestedActionsSource : ISuggestedActionsSource
     {
-        private ImplementInterfaceSuggestedActionsSourceProvider m_factory;
+        private PropertySuggestedActionsSourceProvider m_factory;
         private ITextBuffer m_textBuffer;
         private ITextView m_textView;
 
-        private IXTypeSymbol _classEntity;
+        private XSourceMemberSymbol _memberEntity;
         private Dictionary<string, List<XSourceMemberSymbol>> _members;
         private XFile _xfile;
         private TextRange _range;
@@ -56,47 +56,37 @@ namespace XSharp.LanguageService.Editors.LightBulb
 #pragma warning disable CS0067
         public event EventHandler<EventArgs> SuggestedActionsChanged;
 
-        public ImplementInterfaceSuggestedActionsSource(ImplementInterfaceSuggestedActionsSourceProvider ImplementInterfaceSuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer)
+        public PropertySuggestedActionsSource(PropertySuggestedActionsSourceProvider propertySuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer)
         {
-            this.m_factory = ImplementInterfaceSuggestedActionsSourceProvider;
+            this.m_factory = propertySuggestedActionsSourceProvider;
             this.m_textView = textView;
             this.m_textBuffer = textBuffer;
             //
-            _classEntity = null;
+            _memberEntity = null;
         }
 
 #pragma warning disable VSTHRD105
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            //return Task.Factory.StartNew(() =>
-            //{
-            //    TextExtent extent;
-            //    if (TryGetWordUnderCaret(out extent))
-            //    {
-            //        // don't display the action if the extent has whitespace  
-            //        return extent.IsSignificant;
-            //    }
-            //    return false;
-            //});
-
             return Task.Factory.StartNew(() =>
             {
-                return SearchImplement();
+                return SearchField();
             });
         }
 #pragma warning restore VSTHRD105
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            // Do we have members to Add ?
-            if (SearchMissingMembers())
+            // Do we have PROPERTY to Add ?
+            if (SearchMissingProperty())
             {
                 List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
-                foreach (KeyValuePair<string, List<XSourceMemberSymbol>> intfaces in _members)
-                {
-                    var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range);
-                    suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
-                }
-
+                // Single line
+                var PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, false);
+                suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
+                // Multi Line
+                PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, true);
+                suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
+                //
                 return suggest.ToArray();
             }
             return Enumerable.Empty<SuggestedActionSet>();
@@ -118,10 +108,10 @@ namespace XSharp.LanguageService.Editors.LightBulb
         /// Retrieve the Entity, and check if it has an Interface and if some members are missing
         /// </summary>
         /// <returns></returns>
-        public bool SearchMissingMembers()
+        public bool SearchMissingProperty()
         {
             // Reset
-            _classEntity = null;
+            _memberEntity = null;
             _members = null;
             // Sorry, we are lost...
             _xfile = m_textBuffer.GetFile();
@@ -134,26 +124,41 @@ namespace XSharp.LanguageService.Editors.LightBulb
             //
             foreach (var entity in _xfile.EntityList)
             {
-                if (entity is XSourceTypeSymbol typeEntity)
+                if (entity is XSourceMemberSymbol memberEntity)
                 {
-                    if (typeEntity.Range.StartLine == caretLine)
+                    if ((memberEntity.Kind == Kind.Field) && (memberEntity.Range.StartLine == caretLine))
                     {
                         // Got it !
-                        _classEntity = _xfile.FindType(typeEntity.FullName);
-                        if (_classEntity != null)
+                        var mbr = _xfile.FindMemberAtRow(caretLine);
+                        if (mbr is XSourceMemberSymbol mbrEntity)
                         {
-                            _range = typeEntity.Range;
+                            _memberEntity = mbrEntity;
+                            _range = mbrEntity.Range;
                             break;
                         }
                     }
                 }
             }
-            // Ok, we know the class, now does it have an Interface..and does it need it ?
-            if (_classEntity != null)
+            // Ok, we know the Field, Check that we don't already have a Property with same name
+            if (_memberEntity != null)
             {
-                _members = BuildMissingMembers();
-                if (_members != null)
-                    return true;
+                // Sorry... ;)
+                bool alreadyExist = true;
+                if (_memberEntity.Parent is XSourceTypeSymbol container)
+                {
+                    // Remove the first Underscore
+                    string searchFor = _memberEntity.Name.Substring(1);
+                    alreadyExist = false;
+                    foreach (var member in container.Members)
+                    {
+                        if ((member.Kind == Kind.Property) && (String.Compare(member.Name, searchFor, true) == 0))
+                        {
+                            alreadyExist = true;
+                            break;
+                        }
+                    }
+                }
+                return !alreadyExist;
             }
             return false;
         }
@@ -167,57 +172,11 @@ namespace XSharp.LanguageService.Editors.LightBulb
             }
         }
 
-        private Dictionary<string, List<XSourceMemberSymbol>> BuildMissingMembers()
-        {
-            Dictionary<string, List<XSourceMemberSymbol>> toAdd = new Dictionary<string, List<XSourceMemberSymbol>>();
-            //
-            if (_classEntity.Interfaces.Count == 0)
-                return null;
-            //
-            foreach (string iface in _classEntity.Interfaces)
-            {
-                // Search The interface
-                // --> Default NameSpace
-                var iftype = _xfile.FindType(iface.Trim());
-                if (iftype != null)
-                {
-                    if (iftype.Kind == Kind.Interface)
-                    {
-                        List<XSourceMemberSymbol> elementsToAdd = new List<XSourceMemberSymbol>();
-                        // Search all Interface Members
-                        foreach (XSourceMemberSymbol mbr in iftype.Members)
-                        {
-                            bool found = false;
-                            // Is it already in classEntity ?
-                            foreach (IXMemberSymbol entityMbr in _classEntity.Members)
-                            {
-                                if (String.Compare(mbr.Description, entityMbr.Description, true) == 0)
-                                {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            // No, Add 
-                            if (!found)
-                            {
-                                // No
-                                elementsToAdd.Add(mbr);
-                            }
-                        }
-                        if ((elementsToAdd.Count > 0) && !toAdd.ContainsKey(iftype.Name))
-                        {
-                            toAdd.Add(iftype.Name, elementsToAdd);
-                        }
-                    }
-                }
-            }
-            //
-            if (toAdd.Count == 0)
-                return null;
-            return toAdd;
-        }
-
-        private bool SearchImplement()
+        /// <summary>
+        /// Search a potential field-ID
+        /// </summary>
+        /// <returns></returns>
+        private bool SearchField()
         {
             if (m_textBuffer.Properties == null)
                 return false;
@@ -238,12 +197,22 @@ namespace XSharp.LanguageService.Editors.LightBulb
             //
             var xLines = xTokens.Lines;
             //
+            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
+            ITextSnapshotLine line = caret.GetContainingLine();
+            //
             IList<XSharpToken> lineTokens = null;
             List<XSharpToken> fulllineTokens = new List<XSharpToken>();
-            var lineNumber = SearchRealStartLine();
+            var lineNumber = line.LineNumber;
             var lineState = linesState.GetFlags(lineNumber);
-            // It must be a EntityStart
-            if (lineState != LineFlags.EntityStart)
+            // Search the first line
+            while (lineState == LineFlags.Continued)
+            {
+                // Move back
+                lineNumber--;
+                lineState = linesState.GetFlags(lineNumber);
+            }
+            // It must be a SingleLineEntity
+            if (lineState != LineFlags.SingleLineEntity)
                 return false;
             if (!xLines.TryGetValue(lineNumber, out lineTokens))
                 return false;
@@ -264,11 +233,32 @@ namespace XSharp.LanguageService.Editors.LightBulb
                     }
                 }
             } while (lineState == LineFlags.Continued);
-            // Now, search for IMPLEMENT
+            // Now, search for an ID, which is a Field... Here just check that we have an ID
+            // Todo : Let's say it MUST START with an underscore... We may have a setting for that
             bool found = false;
-            foreach( var token in fulllineTokens)
+            bool foundID = false;
+            bool hasVisibility = false;
+            foreach (var token in fulllineTokens)
             {
-                if ( token.Type == XSharpLexer.IMPLEMENTS )
+                if ((token.Type == XSharpLexer.PUBLIC) ||
+                     (token.Type == XSharpLexer.EXPORT) ||
+                      (token.Type == XSharpLexer.PROTECTED) ||
+                       (token.Type == XSharpLexer.HIDDEN) ||
+                       (token.Type == XSharpLexer.PRIVATE) ||
+                       (token.Type == XSharpLexer.INTERNAL) ||
+                        (token.Type == XSharpLexer.INSTANCE))
+                {
+                    hasVisibility = true;
+                }
+                if (hasVisibility && (token.Type == XSharpLexer.ID))
+                {
+                    // TODO : Use a Setting
+                    if (token.Text.StartsWith("_"))
+                    {
+                        foundID = true;
+                    }
+                }
+                if (hasVisibility && foundID && (token.Type == XSharpLexer.AS))
                 {
                     found = true;
                     break;

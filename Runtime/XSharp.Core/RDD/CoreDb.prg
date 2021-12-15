@@ -1272,6 +1272,9 @@ CLASS XSharp.CoreDb
         VAR info := DbOrderInfo{}
         info:BagName := cBagName
         info:Order   := oOrder
+        if oOrder == NULL
+            RddError.PostArgumentError( __FUNCTION__, EDB_ORDDESTROY, nameof(oOrder), 2, <OBJECT>{ oOrder } )
+        ENDIF
         VAR result := oRdd:OrderDestroy(info)
         RAISE IndexDelete SAVEBAGNAME(cBagName , oOrder)
         RETURN result
@@ -1326,6 +1329,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         cBagName := cBagName?:Trim()
         IF String.IsNullOrEmpty(cBagName)
+            RddError.PostArgumentError( __FUNCTION__, EDB_SETINDEX, nameof(cBagName), 1, <OBJECT>{ cBagName } )
             RETURN FALSE
         ELSE
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd

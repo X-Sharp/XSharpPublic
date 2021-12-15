@@ -110,7 +110,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDDO
             IF errorLevel <= 1
                 IF SELF:Shared
-                    SELF:_PageList:Flush(TRUE)
+                    SELF:_PageList:Flush(FALSE)
                     SELF:_indexVersion++
                     SELF:_PutHeader()
                     SELF:_Hot := FALSE

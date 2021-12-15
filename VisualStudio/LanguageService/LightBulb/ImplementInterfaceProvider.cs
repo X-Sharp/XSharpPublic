@@ -88,7 +88,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
             // Do we have members to Add ?
-            if (_members != null)
+            if (SearchMissingMembers())
             {
                 List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
                 foreach (KeyValuePair<string, List<XSourceMemberSymbol>> intfaces in _members)
@@ -96,7 +96,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                     var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range);
                     suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
                 }
-               
+
                 return suggest.ToArray();
             }
             return Enumerable.Empty<SuggestedActionSet>();
@@ -118,7 +118,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         /// Retrieve the Entity, and check if it has an Interface and if some members are missing
         /// </summary>
         /// <returns></returns>
-        public bool SearchImplement()
+        public bool SearchMissingMembers()
         {
             // Reset
             _classEntity = null;
@@ -128,13 +128,15 @@ namespace XSharp.LanguageService.Editors.LightBulb
             if (_xfile == null)
                 return false;
             //
-            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
-            ITextSnapshotLine line = caret.GetContainingLine();
+            int caretLine = SearchRealStartLine();
+            if (caretLine < 0)
+                return false;
+            //
             foreach (var entity in _xfile.EntityList)
             {
                 if (entity is XSourceTypeSymbol typeEntity)
                 {
-                    if (typeEntity.Range.StartLine == line.LineNumber)
+                    if (typeEntity.Range.StartLine == caretLine)
                     {
                         // Got it !
                         _classEntity = _xfile.FindType(typeEntity.FullName);
@@ -202,7 +204,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                                 elementsToAdd.Add(mbr);
                             }
                         }
-                        if ( (elementsToAdd.Count > 0) && !toAdd.ContainsKey( iftype.Name))
+                        if ((elementsToAdd.Count > 0) && !toAdd.ContainsKey(iftype.Name))
                         {
                             toAdd.Add(iftype.Name, elementsToAdd);
                         }
@@ -215,7 +217,103 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return toAdd;
         }
 
+        private bool SearchImplement()
+        {
+            if (m_textBuffer.Properties == null)
+                return false;
+            //
+            XSharpLineState linesState = null;
+            if (!m_textBuffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
+            {
+                return false;
+            }
+            //
+            XSharpTokens xTokens;
+            if (!m_textBuffer.Properties.TryGetProperty(typeof(XSharpTokens), out xTokens))
+            {
+                return false;
+            }
+            if (!xTokens.Complete)
+                return false;
+            //
+            var xLines = xTokens.Lines;
+            //
+            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
+            ITextSnapshotLine line = caret.GetContainingLine();
+            //
+            IList<XSharpToken> lineTokens = null;
+            List<XSharpToken> fulllineTokens = new List<XSharpToken>();
+            var lineNumber = line.LineNumber;
+            var lineState = linesState.GetFlags(lineNumber);
+            // Search the first line
+            while (lineState == LineFlags.Continued)
+            {
+                // Move back
+                lineNumber--;
+                lineState = linesState.GetFlags(lineNumber);
+            }
+            // It must be a EntityStart
+            if (lineState != LineFlags.EntityStart)
+                return false;
+            if (!xLines.TryGetValue(lineNumber, out lineTokens))
+                return false;
+            //
+            fulllineTokens.AddRange(lineTokens);
+            // Check if the following line is continuing this one
+            do
+            {
+                lineNumber++;
+                lineState = linesState.GetFlags(lineNumber);
+                if (lineState == LineFlags.Continued)
+                {
+                    xLines.TryGetValue(lineNumber, out lineTokens);
+                    if (lineTokens != null)
+                    {
+                        fulllineTokens.AddRange(lineTokens);
+                        continue;
+                    }
+                }
+            } while (lineState == LineFlags.Continued);
+            // Now, search for IMPLEMENT
+            bool found = false;
+            foreach( var token in fulllineTokens)
+            {
+                if ( token.Type == XSharpLexer.IMPLEMENTS )
+                {
+                    found = true;
+                    break;
+                }
+            }
+            return found;
+        }
+
+        /// <summary>
+        /// Based on the Caret line position, check if this is a continuig line
+        /// </summary>
+        /// <returns></returns>
+        private int SearchRealStartLine()
+        {
+            //
+            XSharpLineState linesState = null;
+            if (!m_textBuffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
+            {
+                return -1;
+            }
+            //
+            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
+            ITextSnapshotLine line = caret.GetContainingLine();
+            //
+            var lineNumber = line.LineNumber;
+            var lineState = linesState.GetFlags(lineNumber);
+            // Search the first line
+            while (lineState == LineFlags.Continued)
+            {
+                // Move back
+                lineNumber--;
+                lineState = linesState.GetFlags(lineNumber);
+            }
+            return lineNumber;
+        }
+
     }
-
-
 }

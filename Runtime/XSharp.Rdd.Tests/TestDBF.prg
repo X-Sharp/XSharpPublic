@@ -330,7 +330,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CheckCreateDBF() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ "XMenTestC.DBF", "XMenTest", 1, FALSE, FALSE }
+ 			VAR dbInfo := DbOpenInfo{ TempFileName(), "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			LOCAL fieldInfo AS STRING[]
@@ -354,7 +354,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 
         [Fact, Trait("Dbf", "CreateAppend")];
         METHOD CheckCreateAppendDBF() AS VOID
-		    CheckCreateAppendDBF("XMenTest1.dbf")
+		    CheckCreateAppendDBF(TempFileName())
 
 		METHOD CheckCreateAppendDBF(cFileName AS STRING) AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
@@ -421,7 +421,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CheckCreateBigAppendDBF() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ "XMenTestE.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ TempFileName(), "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			LOCAL fieldInfo AS STRING[]
@@ -466,9 +466,10 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "Zap")];
 		METHOD CheckZap() AS VOID
 			//
-			SELF:CheckCreateAppendDBF("XMenTestF.DBF")
+            var fileName := TempFileName()
+			SELF:CheckCreateAppendDBF(fileName)
 			//
-			VAR dbInfo := DbOpenInfo{ "XMenTestF.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ fileName, "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo )
@@ -486,9 +487,10 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "Zap")];
 		METHOD CheckZapAppend() AS VOID
 			//
-			SELF:CheckCreateAppendDBF("XMenTestG.DBF")
+            var file := TempFileName()
+			SELF:CheckCreateAppendDBF(file)
 			//
-			VAR dbInfo := DbOpenInfo{ "XMenTestG.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ file, "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo )
@@ -516,9 +518,10 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "Pack")];
 		METHOD CheckPack() AS VOID
 			//
-			SELF:CheckCreateAppendDBF("XMenTestH.DBF")
+            var file := TempFileName()
+			SELF:CheckCreateAppendDBF(file)
 			//
-			VAR dbInfo := DbOpenInfo{ "XMenTestH.DBF", "", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ file, "", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo )
@@ -543,7 +546,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CheckCreateDBFMemo() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ "XMenTestI.DBF", "XMenTest", 1, FALSE, FALSE }
+            var cFile := TempFileName()
+			VAR dbInfo := DbOpenInfo{cFile , "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			LOCAL fieldInfo AS STRING[]
@@ -564,7 +568,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			myDBF:Close()
 			//
-			LOCAL isFile := System.IO.File.Exists( "XMenTestI.DBT" ) AS LOGIC
+            cFile := System.IO.Path.ChangeExtension(cFile, ".DBT")
+			LOCAL isFile := System.IO.File.Exists( cFile ) AS LOGIC
 			Assert.Equal( TRUE, isFile  )
 			RETURN
 
@@ -610,9 +615,9 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             return dbInfo
 
 		[Fact, Trait("Dbf", "CreateAppendDBT")];
-		METHOD CheckCreateAppendDBFDBT() AS VOID
-
-			VAR dbInfo := CreateFileHelper("XMenTestJ.DBF", OUT VAR data, OUT VAR Memos)
+		METHOD CheckCreateAppendDBFDBT() AS STRING
+            var file := TempFileName()
+			VAR dbInfo := CreateFileHelper(file, OUT VAR data, OUT VAR Memos)
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 
 			// Now, Verify
@@ -644,15 +649,15 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			NEXT
 			//
 			myDBF:Close()
-			RETURN
+			RETURN file
 
 
 		[Fact, Trait("Dbf", "ModifyDBT")];
 		METHOD CheckModifyDBT() AS VOID
 			// Create and put some Data
-			SELF:CheckCreateAppendDBFDBT()
+			var cFile := SELF:CheckCreateAppendDBFDBT()
 			// Now Modify in the same space
-			VAR dbInfo := DbOpenInfo{ "XMenTestJ.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ cFile, "XMenTest", 1, FALSE, FALSE }
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			VAR Memos := List<STRING>{}
 			// Now, Modify the Memo
@@ -686,7 +691,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "ModifyDBT_2")];
 		METHOD CheckModifyDBT_2() AS VOID
 			// Create and put some Data
-			VAR dbInfo := CreateFileHelper("XMenTestK.DBF", OUT var _, OUT VAR _)
+			VAR dbInfo := CreateFileHelper(TempFileName(), OUT var _, OUT VAR _)
 			// Now Modify in the same space
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			VAR Memos := List<STRING>{}
@@ -822,7 +827,13 @@ BEGIN NAMESPACE XSharp.RDD.Tests
             Assert.Equal( 0, buf:InBufferLen )
 
 			RETURN
-
+        STATIC PRIVATE nCounter AS LONG
+        STATIC PRIVATE gate := Object{} as Object
+        STATIC METHOD TempFilename() as STRING
+            BEGIN LOCK gate
+            nCounter += 1
+            end lock
+            return "TestDBF"+nCounter:ToString()
 	END CLASS
 END NAMESPACE // XSharp.RDD.Tests
 

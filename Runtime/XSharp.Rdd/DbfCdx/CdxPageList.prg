@@ -155,7 +155,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF ! keepData
                 WHILE _pages:Count > CDXPAGE_MAXCOUNT
                     VAR node := SELF:_lruPages:First
-                    _lruPages:RemoveFirst()
+                    _lruPages:Remove(node)
                     _pages:Remove(node:Value:PageNo)
                 END WHILE
             ENDIF

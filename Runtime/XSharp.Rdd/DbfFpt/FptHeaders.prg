@@ -18,6 +18,8 @@ INTERNAL ABSTRACT CLASS FptHeader
     PROTECT _oStream as FileStream
     PROTECT _nOffSet as LONG
     PROTECT _nLength AS LONG
+    PRIVATE CONST LOCK_TIMEOUT := 10_000 AS LONG    // Milliseconds
+    PRIVATE CONST LOCK_WAIT    := 4 AS LONG // Ticks (18.2 per second)
     INTERNAL PROPERTY Stream   AS FileStream GET _oStream SET _oStream := value
     INTERNAL PROPERTY ReadOnly as LOGIC GET _oRDD:ReadOnly
     INTERNAL PROPERTY Shared   as LOGIC GET _oRDD:Shared
@@ -65,22 +67,30 @@ INTERNAL ABSTRACT CLASS FptHeader
 
      PROTECTED METHOD _LockRetry(nOffSet AS INT64, nLen AS INT64) AS VOID
         LOCAL result := FALSE AS LOGIC
-        var timer := LockTimer{}
-        timer:Start()
+        var startTime := System.Environment.TickCount
+        var endTime := startTime + LOCK_TIMEOUT
         REPEAT
             result := SELF:_oStream:SafeLock(nOffSet, nLen)
-            IF ! result
-
-                IF timer:TimeOut(SELF:_oRDD:Memo:FullPath, nOffSet, nLen)
-                    RETURN
-                ENDIF
-                var wait := 1 +rand:@@Next() % 10
-                System.Threading.Thread.Sleep(wait)
+            IF result
+                EXIT
+            ENDIF
+            var now := System.Environment.TickCount
+            if now < startTime
+                startTime := now
+            endif
+            now += LOCK_WAIT
+            DO WHILE System.Environment.TickCount < now
+                NOP
+            ENDDO
+            IF now > endTime
+                // Throw Exception
+                SELF:_oRDD:_dbfError(  Subcodes.ERDD_WRITE_LOCK_TIMEOUT, Gencode.EG_LOCK_TIMEOUT,__FUNCTION__,"Lock failed")
             ENDIF
         UNTIL result
+        RETURN
     PROTECTED METHOD _Unlock(nOffSet AS INT64, nLen AS INT64) AS LOGIC
-            VAR res := SELF:_oStream:SafeUnlock(nOffSet, nLen)
-            RETURN res
+        VAR res := SELF:_oStream:SafeUnlock(nOffSet, nLen)
+        RETURN res
 END CLASS
 INTERNAL CLASS FoxHeader INHERIT FptHeader
     // FoxPro memo Header:

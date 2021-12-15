@@ -49,7 +49,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
         private ITextView m_textView;
 
         private XSourceMemberSymbol _memberEntity;
-        private Dictionary<string, List<XSourceMemberSymbol>> _members;
         private XFile _xfile;
         private TextRange _range;
 
@@ -112,53 +111,30 @@ namespace XSharp.LanguageService.Editors.LightBulb
         {
             // Reset
             _memberEntity = null;
-            _members = null;
-            // Sorry, we are lost...
-            _xfile = m_textBuffer.GetFile();
-            if (_xfile == null)
-                return false;
-            //
-            int caretLine = SearchRealStartLine();
-            if (caretLine < 0)
-                return false;
-            //
-            foreach (var entity in _xfile.EntityList)
+            if (SearchField())
             {
-                if (entity is XSourceMemberSymbol memberEntity)
+                _range = _memberEntity.Range;
+                // Ok, we know the Field, Check that we don't already have a Property with same name
+                if (_memberEntity != null)
                 {
-                    if ((memberEntity.Kind == Kind.Field) && (memberEntity.Range.StartLine == caretLine))
+                    // Sorry... ;)
+                    bool alreadyExist = true;
+                    if (_memberEntity.Parent is XSourceTypeSymbol container)
                     {
-                        // Got it !
-                        var mbr = _xfile.FindMemberAtRow(caretLine);
-                        if (mbr is XSourceMemberSymbol mbrEntity)
+                        // Remove the first Underscore
+                        string searchFor = _memberEntity.Name.Substring(1);
+                        alreadyExist = false;
+                        foreach (var member in container.Members)
                         {
-                            _memberEntity = mbrEntity;
-                            _range = mbrEntity.Range;
-                            break;
+                            if ((member.Kind == Kind.Property) && (String.Compare(member.Name, searchFor, true) == 0))
+                            {
+                                alreadyExist = true;
+                                break;
+                            }
                         }
                     }
+                    return !alreadyExist;
                 }
-            }
-            // Ok, we know the Field, Check that we don't already have a Property with same name
-            if (_memberEntity != null)
-            {
-                // Sorry... ;)
-                bool alreadyExist = true;
-                if (_memberEntity.Parent is XSourceTypeSymbol container)
-                {
-                    // Remove the first Underscore
-                    string searchFor = _memberEntity.Name.Substring(1);
-                    alreadyExist = false;
-                    foreach (var member in container.Members)
-                    {
-                        if ((member.Kind == Kind.Property) && (String.Compare(member.Name, searchFor, true) == 0))
-                        {
-                            alreadyExist = true;
-                            break;
-                        }
-                    }
-                }
-                return !alreadyExist;
             }
             return false;
         }
@@ -176,7 +152,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         /// Search a potential field-ID
         /// </summary>
         /// <returns></returns>
-        private bool SearchField()
+        private bool SearchField_old()
         {
             if (m_textBuffer.Properties == null)
                 return false;
@@ -265,6 +241,32 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 }
             }
             return found;
+        }
+
+        private bool SearchField()
+        {
+            if (m_textBuffer.Properties == null)
+                return false;
+            //
+            SnapshotPoint caret = this.m_textView.Caret.Position.BufferPosition;
+            var location = this.m_textBuffer.FindLocation(caret);
+            CompletionState state;
+            var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
+            // LookUp for the BaseType, reading the TokenList (From left to right)
+            var lookupresult = new List<IXSymbol>();
+            lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
+            var lastToken = tokenList.LastOrDefault();
+            //
+            if (lookupresult.Count > 0)
+            {
+                var element = lookupresult[0];
+                if (element is XSourceMemberSymbol mem)
+                {
+                    _memberEntity = mem;
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

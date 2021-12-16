@@ -117,20 +117,22 @@ namespace XSharp.Project.Editors.LightBulb
             var settings = m_textView.TextBuffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
             //m_span.TextBuffer.Replace(m_span.GetSpan(m_snapshot), ");
             StringBuilder insertText;
-            // First line of the Entity
-            ITextSnapshotLine firstLine = m_snapshot.GetLineFromLineNumber(_range.EndLine);
+            // Last line of the Entity
+            int lineNumber = Math.Min(_range.EndLine, m_snapshot.LineCount - 1);
+            ITextSnapshotLine lastLine = m_snapshot.GetLineFromLineNumber(lineNumber);
             // Retrieve the text
-            string lineText = firstLine.GetText();
+            string lineText = lastLine.GetText();
             // and count how many spaces we have before
             int count = lineText.TakeWhile(Char.IsWhiteSpace).Count();
             // Get these plus one as prefix
-            string prefix = lineText.Substring(0, count) + new String(' ', settings.IndentSize);
-            ITextSnapshotLine lastLine = m_snapshot.GetLineFromLineNumber(_range.EndLine);
+            string prefix = lineText.Substring(0, count);
+            string indent = new String(' ', settings.IndentSize);
             List<Inline> content = new List<Inline>();
             // Add a comment with the Interface name ??
             insertText = new StringBuilder();
             insertText.AppendLine();
             insertText.Append(prefix);
+            insertText.Append(indent);
             insertText.AppendLine("#region Implement " + m_interface);
             insertText.AppendLine();
             foreach (XSourceMemberSymbol mbr in _members)
@@ -139,29 +141,76 @@ namespace XSharp.Project.Editors.LightBulb
                 // Add XML doc on top of generated member ? <- Could be a Setting ?
                 // Add a return with default value ? <- Could be a Setting ?
                 // Add a THROW NotImplementedException ? <- Could be a Setting ?
-                insertText.Append(prefix);
-                insertText.AppendLine(mbr.Description);
-                //                if (Kind.IsMethod(mbr.Kind))
-                if ( mbr.Kind.IsMethod() )
+                if (mbr.Kind.IsMethod())
                 {
                     insertText.Append(prefix);
-                    insertText.Append(' ', settings.IndentSize);
-                    insertText.AppendLine("THROW NotImplementedException{}");
+                    insertText.Append(indent);
+                    insertText.AppendLine(mbr.Description);
                     insertText.Append(prefix);
-                    insertText.Append(' ', settings.IndentSize);
-                    insertText.Append("RETURN ");
-                    if (mbr.Kind.HasReturnType())
+                    insertText.Append(indent);
+                    insertText.Append(indent);
+                    insertText.AppendLine("THROW NotImplementedException{}");
+                }
+                else if (mbr.Kind.IsProperty())
+                {
+                    //
+                    string propDef = mbr.SourceCode;
+                    var keywords = propDef.Split(new char[] { ' ', '\t' });
+                    bool hasGet = keywords.Contains("get", StringComparer.InvariantCultureIgnoreCase);
+                    bool hasSet = keywords.Contains("set", StringComparer.InvariantCultureIgnoreCase);
+                    bool hasAuto = keywords.Contains("auto", StringComparer.InvariantCultureIgnoreCase);
+                    insertText.Append(prefix);
+                    insertText.Append(indent);
+                    //insertText.Append(' '); ModVis already has a final space
+                    if (hasAuto)
                     {
-                        if ((string.Compare(mbr.ReturnType, "void", true) != 0))
+                        insertText.Append(mbr.ModVis);
+                        insertText.AppendLine(mbr.SourceCode);
+                    }
+                    else
+                    {
+                        insertText.AppendLine(mbr.Description);
+                        if (hasGet)
                         {
-                            insertText.Append(poorManDefaultValue(mbr.ReturnType));
-                            insertText.AppendLine();
+                            insertText.Append(prefix);
+                            insertText.Append(indent);
+                            insertText.Append(indent);
+                            insertText.AppendLine("GET");
+                            insertText.Append(prefix);
+                            insertText.Append(indent);
+                            insertText.Append(indent);
+                            insertText.Append(indent);
+                            insertText.AppendLine("THROW NotImplementedException{}");
+                            insertText.Append(prefix);
+                            insertText.Append(indent);
+                            insertText.Append(indent);
+                            insertText.AppendLine("END GET");
                         }
+                        if (hasSet)
+                        {
+                            insertText.Append(prefix);
+                            insertText.Append(indent);
+                            insertText.Append(indent);
+                            insertText.AppendLine("SET");
+                            insertText.Append(prefix);
+                            insertText.Append(indent);
+                            insertText.Append(indent);
+                            insertText.Append(indent);
+                            insertText.AppendLine("THROW NotImplementedException{}");
+                            insertText.Append(prefix);
+                            insertText.Append(indent);
+                            insertText.Append(indent);
+                            insertText.AppendLine("END SET");
+                        }
+                        insertText.Append(prefix);
+                        insertText.Append(indent);
+                        insertText.Append("END PROPERTY");
                     }
                 }
                 insertText.AppendLine();
             }
             insertText.Append(prefix);
+            insertText.Append(indent);
             insertText.AppendLine("#endregion");
             // Create an Edit Session
             var editSession = m_textView.TextBuffer.CreateEdit();

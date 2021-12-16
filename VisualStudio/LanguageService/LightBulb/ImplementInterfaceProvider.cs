@@ -52,6 +52,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         private Dictionary<string, List<XSourceMemberSymbol>> _members;
         private XFile _xfile;
         private TextRange _range;
+        private SnapshotPoint _oldCaret ;
 
 #pragma warning disable CS0067
         public event EventHandler<EventArgs> SuggestedActionsChanged;
@@ -81,7 +82,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
             return Task.Factory.StartNew(() =>
             {
-                return SearchImplement();
+                return SearchMissingMembers();
             });
         }
 #pragma warning restore VSTHRD105

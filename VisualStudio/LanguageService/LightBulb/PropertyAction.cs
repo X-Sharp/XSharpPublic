@@ -156,7 +156,8 @@ namespace XSharp.Project.Editors.LightBulb
             StringBuilder insertText = new StringBuilder();
             insertText.Append(prefix);
             insertText.Append(_fieldEntity.ModVis);
-            insertText.Append(" PROPERTY ");
+            //insertText.Append(' '); ModVis already has a final space
+            insertText.Append("PROPERTY ");
             insertText.Append(_fieldEntity.Name.Substring(1));
             insertText.Append(" AS ");
             insertText.Append(_fieldEntity.TypeName);

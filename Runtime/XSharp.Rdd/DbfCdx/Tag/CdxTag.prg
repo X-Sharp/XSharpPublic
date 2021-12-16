@@ -28,27 +28,33 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #region fields
         PRIVATE _Encoding AS Encoding
         PRIVATE _Hot AS LOGIC
-        PRIVATE _Conditional AS LOGIC
-        PRIVATE _Descending AS LOGIC
-        PRIVATE _Unique AS LOGIC
-        PRIVATE _Custom AS LOGIC
-        PRIVATE _SingleField AS LONG            // 0 based FieldIndex
-        PRIVATE _SourceIndex AS LONG
+        PRIVATE _Conditional  AS LOGIC
+        PRIVATE _Descending   AS LOGIC
+        PRIVATE _Unique       AS LOGIC
+        PRIVATE _Custom       AS LOGIC
+        /// <summary>0 based FieldIndex</summary>
+        PRIVATE _SingleField  AS LONG
+        /// <summary>Start location in buffer for single field index</summary>
+        PRIVATE _SourceIndex  AS LONG
         PRIVATE _KeyCodeBlock AS ICodeblock
         PRIVATE _ForCodeBlock AS ICodeblock
-        PRIVATE _KeyExpr AS STRING
-        PRIVATE _ForExpr AS STRING
+        PRIVATE _KeyExpr      AS STRING
+        PRIVATE _ForExpr      AS STRING
         PRIVATE _currentvalue AS RddKeyData
-        INTERNAL _newvalue     AS RddKeyData
-        PRIVATE _newKeyLen AS LONG
-        PRIVATE _KeyExprType AS LONG
-        PRIVATE _keySize AS WORD
+        PRIVATE _newvalue     AS RddKeyData
+        /// <summary>Is the index nullable (one or more fields are nullable)</summary>
+        PRIVATE _NullableKey   AS LOGIC
+        /// <summary>List of fields that are evaluated for an index expression</summary>
+        PRIVATE _indexedFields AS IList<INT>
+        PRIVATE _newKeyLen     AS LONG
+        PRIVATE _KeyExprType   AS LONG
+        PRIVATE _keySize       AS WORD
         PRIVATE _sourcekeySize AS WORD
-        PRIVATE _rootPage AS LONG
-        PRIVATE _ordCondInfo AS DbOrderCondInfo
-        PRIVATE _keyBuffer := BYTE[]{8} AS BYTE[]
-        INTERNAL _orderName AS STRING
-        INTERNAL _Ansi AS LOGIC
+        PRIVATE _rootPage      AS LONG
+        PRIVATE _ordCondInfo   AS DbOrderCondInfo
+        PRIVATE _keyBuffer     AS BYTE[]
+        INTERNAL _orderName    AS STRING
+        INTERNAL _Ansi         AS LOGIC
         // Scopes
         PRIVATE DIM _Scopes[2] AS ScopeInfo
         PRIVATE _scopeEmpty    AS LOGIC
@@ -95,11 +101,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Custom         	AS LOGIC GET SELF:_Custom
         INTERNAL PROPERTY Unique         	AS LOGIC GET SELF:_Unique
         INTERNAL PROPERTY Signature      	AS BYTE AUTO
-        INTERNAL PROPERTY NullableKey       AS LOGIC AUTO
         INTERNAL PROPERTY Options        	AS CdxOptions AUTO
         INTERNAL PROPERTY LockOffSet     	AS LONG AUTO
         INTERNAL PROPERTY CurrentStack      AS CdxStackEntry GET  SELF:_stack:Top
-        INTERNAL PROPERTY RootPage          AS LONG AUTO
         INTERNAL PROPERTY Stack             AS CdxPageStack GET _stack
 
         // Scopes
@@ -115,6 +119,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         PRIVATE METHOD _InitFields(oBag AS CdxOrderBag) AS VOID
+			SELF:_keyBuffer := BYTE[]{8}
             SELF:_bag           := oBag
             SELF:_oRdd          := oBag:_oRdd
             SELF:_stack         := CdxPageStack{SELF}
@@ -155,6 +160,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Unique        := SELF:Options:HasFlag(CdxOptions.Unique)
             SELF:_Custom        := SELF:Options:HasFlag(CdxOptions.Custom)
             SELF:_Conditional   := SELF:Options:HasFlag(CdxOptions.HasFor)
+            SELF:_NullableKey   := SELF:Options:HasFlag(CdxOptions.VFP_Nullable)
             RETURN
 
 
@@ -184,9 +190,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Scopes[1]:SetBuffer(_keySize)
             SELF:aClear := BYTE[]{_keySize}
             var trailchar :=  (BYTE) IIF (KeyType == __UsualType.String, 32, 0)
-            FOR VAR i := 0 to SELF:KeyLength -1
-                aClear[i] := trailchar
-            NEXT
+            IF trailchar != 0
+                FOR VAR i := 0 to SELF:KeyLength -1
+                    aClear[i] := trailchar
+                NEXT
+            ENDIF
             RETURN
 
 
@@ -204,6 +212,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD EvaluateExpressions() AS LOGIC
             LOCAL evalOk AS LOGIC
             LOCAL oKey := NULL AS OBJECT
+            LOCAL fields := NULL AS List<INT>
             evalOk := TRUE
             SELF:_Valid := TRUE
             TRY
@@ -216,7 +225,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             TRY
+                SELF:_oRdd:GoTo(0)
+                SELF:_oRdd:_fieldList := fields := List<INT>{}
                 oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
+                SELF:_oRdd:_fieldList := NULL
+                SELF:_indexedFields := fields:ToArray()
             CATCH AS Exception
                 evalOk := FALSE
             END TRY
@@ -267,19 +280,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:getKeyValue := _getFieldValueWithCollation
                     ENDIF
                 END SWITCH
-                SELF:NullableKey := fld:Flags:HasFlag(DBFFieldFlags.Nullable)
+                SELF:_NullableKey := fld:Flags:HasFlag(DBFFieldFlags.Nullable)
                 IF SELF:_keySize == 0
                     SELF:_keySize := SELF:_sourcekeySize
-                    IF SELF:NullableKey
-                        SELF:_keySize += 1
-                    ENDIF
+                ENDIF
+                IF SELF:_NullableKey
+                    SELF:_keySize += 1
                 ENDIF
                 isOk := TRUE
             ELSE
+                FOREACH var nFld in fields
+                    var fld := SELF:_oRdd:_Fields[nFld-1]
+                    IF fld:Flags:HasFlag(DBFFieldFlags.Nullable)
+                        SELF:_NullableKey := TRUE
+                        EXIT
+                    ENDIF
+                NEXT
                 SELF:_sourcekeySize := SELF:_keySize    := 0
                 SELF:getKeyValue := _getExpressionValue
                 isOk             := SELF:_determineSize(oKey)
-                IF SELF:Header != NULL .AND. SELF:Header:KeySize != SELF:_keySize .AND. SELF:Header:KeySize != SELF:_keySize+1
+                IF SELF:_NullableKey
+                    SELF:_keySize += 1
+                ENDIF
+                IF SELF:Header != NULL .AND. SELF:Header:KeySize != SELF:_keySize
                     IF SELF:_Collation != NULL
                         SELF:_keySize := SELF:Header:KeySize
                     ELSE
@@ -287,23 +310,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:SetSyntaxError(ex)
                     ENDIF
                 ENDIF
-            ENDIF
-           IF SELF:_KeyExprType == __UsualType.String
+             ENDIF
+            IF SELF:_KeyExprType == __UsualType.String
                 IF SELF:_Collation != NULL
-                    IF SELF:NullableKey
+                    IF SELF:_NullableKey
                         SELF:__Compare := _compareCollationNull
                     ELSE
                         SELF:__Compare := _compareCollation
                     ENDIF
                 ELSE
-                    IF SELF:NullableKey
+                    IF SELF:_NullableKey
                         SELF:__Compare := _compareTextNull
                     ELSE
                         SELF:__Compare := _compareText
                     ENDIF
                 ENDIF
             ELSE
-                IF SELF:NullableKey
+                IF SELF:_NullableKey
                     SELF:__Compare := _compareBinNull
                 ELSE
                     SELF:__Compare := _compareBin
@@ -519,7 +542,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 sLen := text:Length
             ENDIF
             resultLength := sLen
-            IF SELF:NullableKey
+            IF SELF:_NullableKey
                 buffer[0] := 128
                 SELF:_Encoding:GetBytes( text, 0, sLen, buffer, 1)
             ELSE
@@ -791,7 +814,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF hDump != F_ERROR
                 SELF:_bag:_PageList:DumpHandle := hDump
                 SELF:_bag:_PageList:Flush(FALSE)
-                sBlock := SELF:_Header:Dump("Filedump for:"+sName)
+                SELF:_bag:_PageList:Clear()
+                sBlock := SELF:_bag:Root:Dump()
+                FWrite(hDump, sBlock)
+                sBlock := SELF:_bag:TagList:Dump()
+                FWrite(hDump, sBlock)
+                sBlock := SELF:_Header:Dump("-----------")
                 FWrite(hDump, sBlock)
                 // Collect all pages
                 LOCAL aPages AS List<LONG>
@@ -865,20 +893,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // Methods to calculate keys. We have split these to optimize index creating
 
         PRIVATE METHOD _getNullKey(byteArray AS BYTE[] ) AS LOGIC
-            LOCAL oCol   := (DbfColumn) SELF:_oRdd:_Fields[_SingleField] AS DbfColumn
-            LOCAL isNull := oCol:IsNull() AS LOGIC
-            IF (isNull)
-                FOR VAR i := 0 TO byteArray:Length-1
-                    byteArray[i] := 0
-                NEXT
-            ELSE
-                byteArray[0] := 128
-            ENDIF
+            LOCAL isNull := FALSE AS LOGIC
+            byteArray[0] := 128
+            FOREACH var nFld in SELF:_indexedFields
+                LOCAL oCol   := (DbfColumn) SELF:_oRdd:_Fields[nFld-1] AS DbfColumn
+                isNull := oCol:IsNull()
+                IF isNull
+                    FOR VAR i := 0 TO byteArray:Length-1
+                        byteArray[i] := 0
+                    NEXT
+                    EXIT
+                ENDIF
+            NEXT
             RETURN isNull
         PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
             LOCAL offSet := 0 AS LONG
-            IF SELF:NullableKey
+            IF SELF:_NullableKey
                 IF SELF:_getNullKey(byteArray)
                     RETURN TRUE
                 ENDIF
@@ -891,7 +922,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
        PRIVATE METHOD _getIntFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
             LOCAL offSet := 0 AS LONG
-            IF SELF:NullableKey
+            IF SELF:_NullableKey
                 IF SELF:_getNullKey(byteArray)
                     RETURN TRUE
                 ENDIF
@@ -901,11 +932,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             System.Array.Copy(_keyBuffer, 0, byteArray, offSet, 4)
             RETURN TRUE
 
-
         PRIVATE METHOD _getDateFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL oValue := SELF:_oRdd:GetValue(_SingleField+1) AS OBJECT
             LOCAL offSet := 0 AS LONG
-            IF SELF:NullableKey
+            IF SELF:_NullableKey
                 IF SELF:_getNullKey(byteArray)
                     RETURN TRUE
                 ENDIF
@@ -930,7 +960,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_oRdd:Validate()
             LOCAL offSet := 0 AS LONG
             LOCAL toCopy := SELF:_keySize AS LONG
-            IF SELF:NullableKey
+            IF SELF:_NullableKey
                 IF SELF:_getNullKey(byteArray)
                     RETURN TRUE
                 ENDIF
@@ -950,8 +980,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL result := TRUE AS LOGIC
             TRY
                 SELF:_oRdd:Validate()
+                IF SELF:_NullableKey
+                    IF SELF:_getNullKey(byteArray)
+                        RETURN TRUE
+                    ENDIF
+                ENDIF
                 VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
                 LOCAL uiRealLen := 0 AS LONG
+                // _toString handles the prefix
                 result := SELF:_ToString(oKeyValue, SELF:_keySize,  byteArray,  REF uiRealLen)
             CATCH ex AS Exception
                 SELF:SetSyntaxError(ex)

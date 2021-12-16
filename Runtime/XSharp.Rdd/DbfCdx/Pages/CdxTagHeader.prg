@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 /*
@@ -13,23 +13,16 @@
 		long	version;			0x08	    4       counter that increments when index is updated
 		int2	keyLen;				0x0c  = 12 	2       2 bytes, but max = 240
 		char	tagType;			0x0e  = 14 	1       see CdxOptions Enum
-		char	signature;			0x0f	    1       
-        int2    headerLen;          0x10        2       .
-        int2    pageLen;            0x12        2       .
-        long    collation           0x14        4       .
-        char    reserved            0x18        68      . This area is often not filled
-        char    lang                0x44        26      . ADI files for Advantage use this !
-        char    collatver           0x76        4       .
-        char    reserved            0x7a        372     .
+        ** this block is undocumented **
         char    vfpcollation        0x1ee       8       .
-        //char    ignorecase          0x1f3       1       .  // overlaps ?
-        //char    expression length   0x1f4       2       .  // overlaps ?
-		int2	descend;			0x1f6 = 502 2       . 
+
+		int2	descend;			0x1f6 = 502 2       .
 		int2	forExprPos          0x1f8 = 504 2       .
 		int2	forExprLen;			0x1fa = 506 2       . Key Expression Length + For Expression Length Max 512
 		int2    keyExprPos          0x1fc = 508 2       . bytes
 		int2	keyExprLen;			0x1fe = 510 2       .
-        // the next page after the tag header has the key expression and for expression. 
+        expressions                 0x200 = 512 .. 1023
+        // the next page after the tag header has the key expression and for expression.
         // The key expression is delimited with a zero byte. The for expression starts at the position
         // indicated in the tag header.
 
@@ -59,7 +52,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:TagName    := cTagName
             SELF:_getValues()
             SELF:_tag := oTag
-#region Read/Write            
+#region Read/Write
 
          INTERNAL METHOD Dump(sIntro AS STRING) AS STRING
             LOCAL oSb AS StringBuilder
@@ -109,7 +102,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL PROPERTY RootPage AS LONG GET _rootPage;
             SET SELF:_SetLong(CDXTAGHEADER_ROOT, value), _rootPage := value
-            
+
 		INTERNAL PROPERTY KeySize		AS WORD	GET _keyLength;
 			SET SELF:_SetWord(CDXTAGHEADER_KEYLENGTH, value), _keyLength := value
 
@@ -170,7 +163,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PRIVATE CONST CDXTAGHEADER_FOREXPRLEN     := 0x1fa	AS WORD		// Length of filter expression incl zero terminator
 		PRIVATE CONST CDXTAGHEADER_KEYEXPRPOS     := 0x1fc	AS WORD		// Offset of Key expression
 		PRIVATE CONST CDXTAGHEADER_KEYEXPRLEN     := 0x1fe	AS WORD		// Length of key expression incl zero terminator
-#endregion			
+#endregion
 
         INTERNAL OVERRIDE METHOD Read() AS LOGIC
             LOCAL lOk as LOGIC
@@ -179,11 +172,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_getValues()
             ENDIF
             RETURN lOk
-            
+
         INTERNAL METHOD UpdateWhenNeeded() AS VOID
             IF SELF:_bag:Root:RootVersion != SELF:Generation
                 SELF:Read()
             ENDIF
             RETURN
 	END CLASS
-END NAMESPACE 
+END NAMESPACE

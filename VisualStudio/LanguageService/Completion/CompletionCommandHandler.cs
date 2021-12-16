@@ -229,22 +229,17 @@ namespace XSharp.LanguageService
                 var line = caret.GetContainingLine();
                 if ((line.LineNumber >= _textView.TextSnapshot.LineCount - 1) || (line.LineNumber ==0))
                     return;
-
-                // force buffer to be classified to see if we are on a line before a comment
-                var classifier = _textView.TextBuffer.GetClassifier();
-                classifier.ClassifyWhenNeeded();
-                var lines = _textView.TextBuffer.GetLineState();
-                // Check if the line up is a DocComment
-                bool afterADocComment = lines.GetFlags(line.LineNumber - 1).HasFlag(LineFlags.DocComments);
+                // Do not classify here. Not really needed yet
+                ITextSnapshotLine lineUp = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber - 1);
+                string lineText = lineUp.GetText();
+                var afterADocComment = lineText.Trim().StartsWith("///");
                 // Ok, check the content
                 if (afterADocComment)
                 {
                     // Get the line
-                    ITextSnapshotLine lineUp = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber - 1);
                     // To retrieve the text and align to it
-                    string lineText = lineUp.GetText();
                     int count = lineText.TakeWhile(Char.IsWhiteSpace).Count();
-                    string prefix = lineText.Substring(0, count) + "/// ";
+                    string prefix = lineText.Substring(0, count + 4); // copy starting whitespace + /// + separator
                     _textView.TextBuffer.Insert(_textView.Caret.Position.BufferPosition.Position, prefix);
                     // Move the Caret 
                     _textView.Caret.MoveTo(new SnapshotPoint(_textView.TextSnapshot, caret.Position + prefix.Length));
@@ -274,17 +269,23 @@ namespace XSharp.LanguageService
                 // XMLDoc ?
                 if (lineText == "///")
                 {
-                    // force buffer to be classified to see if we are on a line before a comment
-                    var classifier = _textView.TextBuffer.GetClassifier();
-                    classifier.ClassifyWhenNeeded();
-                    var lines = _textView.TextBuffer.GetLineState();
-                    // Check if the line down if a comment
-                    bool beforeAComment = lines.IsComment(line.LineNumber + 1);
-                    // Ok, check the content
-                    if (!beforeAComment)
+                    // Check next && previous Line . No need to classify here. We'll do that later
+                    // when we're not next to a comment
+                    var lineDown = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
+                    var nextToAComment = lineDown.GetText().Trim().StartsWith("///");
+                    if (! nextToAComment && line.LineNumber > 0)
                     {
+                        var lineUp = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber - 1);
+                        nextToAComment = lineUp.GetText().Trim().StartsWith("///");
+
+                    }
+                    if (!nextToAComment)
+                    {
+                        // force buffer to be classified to see if we are on a line before a comment
+                        var classifier = _textView.TextBuffer.GetClassifier();
+                        classifier.ClassifyWhenNeeded();
+                        var lines = _textView.TextBuffer.GetLineState();
                         // Make sure that the entity list matches the contents of the buffer
-                        ITextSnapshotLine lineDown = _textView.TextSnapshot.GetLineFromLineNumber(line.LineNumber + 1);
                         // Parse the entities
                         classifier.Parse();
                         var entity = _textView.FindEntity(lineDown.Start);

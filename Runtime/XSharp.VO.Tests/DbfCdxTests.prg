@@ -5142,8 +5142,19 @@ RETURN
 
 		[Fact, Trait("Category", "DBF")];
 		METHOD VariousFptTests() AS VOID
+			LOCAL wBlockSize AS WORD
+			DoFptTest(100)
+			wBlockSize := RuntimeState.MemoBlockSize
+			RuntimeState.MemoBlockSize := 64
+			DoFptTest(10)
+			RuntimeState.MemoBlockSize := 20
+			DoFptTest(10)
+			RuntimeState.MemoBlockSize := 10
+			DoFptTest(10)
+			RuntimeState.MemoBlockSize := wBlockSize
+		
+		METHOD DoFptTest(nRecords AS DWORD) AS VOID
 			LOCAL cDbf AS STRING
-			LOCAL nRecords := 100 AS DWORD
 			LOCAL aSizes := <DWORD>{1,5,20,2000,500,100,200,30,20,10,1000,1,500,5,5,700,700,150,2000,1500,10,20} AS DWORD[]
 			LOCAL aValues AS ARRAY
 			aValues := ArrayCreate(nRecords)

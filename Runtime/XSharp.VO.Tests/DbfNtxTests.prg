@@ -1219,6 +1219,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
             NEXT
             DbCloseArea()
             // Repeat for DBFCDX
+            VAR cCdx := Path.ChangeExtension(cDbf, ".CDX")
+            FErase(cCdx)
             DbCreate(cDbf, {{"KEY","C",10,0}},"DBFCDX")
             DbUseArea(TRUE,"DBFCDX",cDbf)
             DbCreateIndex(cDbf,"KEY")

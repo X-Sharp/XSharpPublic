@@ -5075,10 +5075,10 @@ RETURN
             DbCloseArea()
 
 
-#warning Disabled BLOBDirectPut_Test, as it seems to cause some corruption
+//#warning Disabled BLOBDirectPut_Test, as it seems to cause some corruption
 		[Fact, Trait("Category", "DBF")];
 		METHOD BLOBDirectPut_Test() AS VOID // https://github.com/X-Sharp/XSharpPublic/issues/832
-/*			LOCAL cDbf AS STRING
+			LOCAL cDbf AS STRING
 			LOCAL nRecSize, nBlockNo AS INT
 			LOCAL pRecord, pField AS BYTE PTR
 			LOCAL aRecordBuf AS BYTE[]
@@ -5136,7 +5136,7 @@ RETURN
 			Assert.Equal( "record 3", STRING( FieldGetSym(#DATA) ) )
 			VoDbSkip(1)
 			Assert.True( VoDbEof() )
-			VoDbCloseArea()*/
+			VoDbCloseArea()
 
 
 
@@ -5152,7 +5152,7 @@ RETURN
 			RuntimeState.MemoBlockSize := 10
 			DoFptTest(10)
 			RuntimeState.MemoBlockSize := wBlockSize
-		
+
 		METHOD DoFptTest(nRecords AS DWORD) AS VOID
 			LOCAL cDbf AS STRING
 			LOCAL aSizes := <DWORD>{1,5,20,2000,500,100,200,30,20,10,1000,1,500,5,5,700,700,150,2000,1500,10,20} AS DWORD[]

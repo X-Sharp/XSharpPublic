@@ -52,6 +52,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF ! SELF:EvaluateExpressions()
                 RETURN FALSE
             ENDIF
+
             SELF:_orderName := (STRING)createInfo:Order
             IF String.IsNullOrEmpty(SELF:_orderName)
                 SELF:_oRdd:_dbfError( Gencode.EG_ARG, Subcodes.EDB_CREATEINDEX)
@@ -191,6 +192,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             IF SELF:_Custom
                 options |= CdxOptions.Custom
+            ENDIF
+            IF SELF:_NullableKey
+                options |= CdxOptions.VFP_Nullable
             ENDIF
             IF SELF:_Conditional
                 SELF:_Header:ForExprLen    := (WORD)(_ForExpr:Length +1)

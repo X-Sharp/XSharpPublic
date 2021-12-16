@@ -917,21 +917,38 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
        INTERNAL OVERRIDE METHOD Dump AS STRING
             LOCAL sb AS StringBuilder
-            VAR iLen := SELF:Tag:KeyLength
+            LOCAL iLen AS WORD
+            VAR lTagList := SELF IS CdxTagList
+            IF lTagList
+                iLen := 10
+            ELSE
+                iLen := SELF:Tag:KeyLength
+            ENDIF
             sb := StringBuilder{}
+            sb:AppendLine("")
             sb:AppendLine("--------------------------")
-            sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}, Free Bytes {3}", SELF:PageType, SELF:PageNo, SELF:NumKeys, SELF:Freespace))
-            sb:AppendLine(String.Format("                 DataBytes: {0}, RecordBits: {1}, DuplicateBits: {2}, TrailBit: {3}", SELF:DataBytes, SELF:RecordBits, SELF:DuplicateBits, SELF:TrailingBits))
+            if lTagList
+                sb:AppendLine(String.Format("{0} Page {1:X6}, # of tags: {2}, Free Bytes {3}", "TagList", SELF:PageNo, SELF:NumKeys, SELF:Freespace))
+            else
+                sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}, Free Bytes {3}", SELF:PageType, SELF:PageNo, SELF:NumKeys, SELF:Freespace))
+            endif
+            sb:AppendLine(String.Format("     RecnoMask: 0x{0:X}, DuplicateMask: 0x{1:X}, TrailingMask: 0x{2:X}",SELF:RecnoMask, SELF:DuplicateMask, SELF:TrailingMask))
+            sb:AppendLine(String.Format("     DataBytes: {0}, RecordBits: {1}, DuplicateBits: {2}, TrailBit: {3}", SELF:DataBytes, SELF:RecordBits, SELF:DuplicateBits, SELF:TrailingBits))
             sb:AppendLine(String.Format("Left page reference {0:X6}", SELF:LeftPtr))
             IF SELF:NumKeys > 0
                SELF:_ExpandKeys(FALSE)
                VAR nPos := 0
                FOREACH VAR leaf IN _leaves
-                    sb:AppendLine(String.Format("Item {0,2}, Record {1,5}, Data {2,3}, Dup {3,3}, Trail {4,3} : {5} ", nPos,  leaf:Recno, iLen-leaf:Dup-leaf:Trail, leaf:Dup, leaf:Trail, leaf:KeyText))
+                    IF lTagList
+                        sb:AppendLine(String.Format("Item {0,2}, Page {1:X8}, Data {2,3}, Dup {3,3}, Trail {4,3} : {5} ", nPos,  leaf:Recno, iLen-leaf:Dup-leaf:Trail, leaf:Dup, leaf:Trail, leaf:KeyText))
+                    ELSE
+                        sb:AppendLine(String.Format("Item {0,2}, Record {1,5}, Data {2,3}, Dup {3,3}, Trail {4,3} : {5} ", nPos,  leaf:Recno, iLen-leaf:Dup-leaf:Trail, leaf:Dup, leaf:Trail, leaf:KeyText))
+                    ENDIF
                     nPos++
                 NEXT
             ENDIF
             sb:AppendLine(String.Format("Right page reference {0:X6}", SELF:RightPtr))
+            sb:AppendLine("")
             RETURN sb:ToString()
 
         METHOD DumpKeys AS VOID

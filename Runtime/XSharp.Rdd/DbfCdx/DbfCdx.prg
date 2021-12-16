@@ -7,6 +7,7 @@
 USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 USING XSharp.RDD.Enums
+USING System.Collections.Generic
 USING System.IO
 USING System.Diagnostics
 
@@ -28,7 +29,9 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL PROPERTY CurrentOrder AS CdxTag GET _indexList:CurrentOrder
         OVERRIDE PROPERTY Driver  AS STRING GET nameof(DBFCDX)
         INTERNAL PROPERTY MustForceRel AS LOGIC GET _RelInfoPending != NULL
-
+        // this is used to monitor which fields are using during index creation
+        // so we can deduce if there is a nullable field in the index
+        INTERNAL _fieldList AS List<INT>
 
         CONSTRUCTOR()
             SUPER()
@@ -53,8 +56,16 @@ BEGIN NAMESPACE XSharp.RDD
             #endif
 
 
-
             #region Order Support
+            // GetValue is overridden so we can keep track of the fields
+            // that are using in calculating an index expression.
+            // _fieldList will only be set when the code to evaluate index expressions
+            // is running
+            OVERRIDE METHOD GetValue(nFldPos as LONG) AS OBJECT
+                IF SELF:_fieldList != NULL
+                    SELF:_fieldList:Add(nFldPos)
+                ENDIF
+                RETURN SUPER:GetValue(nFldPos)
 
             OVERRIDE METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
                 VAR result := SELF:_indexList:Create(orderInfo)

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -39,8 +39,8 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN DbfMemoColumn{oInfo,oRDD}
             CASE DbFieldType.Logic       // L
                 RETURN DbfLogicColumn{oInfo,oRDD}
-            CASE DbFieldType.Integer    // 'I' 
-            //CASE DbFieldType.Integer2   // '2' 
+            CASE DbFieldType.Integer    // 'I'
+            //CASE DbFieldType.Integer2   // '2'
             //CASE DbFieldType.Integer4   // '4'
                 IF oInfo:IsAutoIncrement
                     RETURN DbfAutoIncrementColumn{oInfo,oRDD}
@@ -111,14 +111,14 @@ BEGIN NAMESPACE XSharp.RDD
        /// <param name="buffer">Record buffer for the current record</param>
         VIRTUAL METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             IF SELF:IsNull()
-                RETURN NULL
+                RETURN DBNull.Value
             ENDIF
             RETURN SELF:_GetString(buffer)
 
         /// <summary>Handle NULL values.</summary>
        /// <param name="buffer">Record buffer for the current record</param>
-        VIRTUAL METHOD HandleNullValue(buffer AS BYTE[]) AS LOGIC 
-            SELF:InitValue(buffer)                      
+        VIRTUAL METHOD HandleNullValue(buffer AS BYTE[]) AS LOGIC
+            SELF:InitValue(buffer)
             IF SELF:IsNullable
                 RETURN SELF:SetNullValue()
             ENDIF
@@ -138,7 +138,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN FALSE
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
-        PROTECTED METHOD SetNullValue() AS LOGIC 
+        PROTECTED METHOD SetNullValue() AS LOGIC
             IF SELF:IsNullable .AND. SELF:RDD:_NullColumn != NULL
                 SELF:RDD:_NullColumn:SetBit(SELF:NullBit, TRUE)
                 RETURN TRUE
@@ -150,7 +150,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsNullable .AND. SELF:RDD:_NullColumn != NULL
                 SELF:RDD:_NullColumn:SetBit(SELF:NullBit, FALSE)
             ENDIF
-            RETURN 
+            RETURN
 
         /// <summary>Get the default "empty" value, as you would get at EOF</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
@@ -168,7 +168,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:Offset+nLen >= buffer:Length
                 NOP
             ENDIF
-            DO WHILE nPos < nLen .AND. buffer[SELF:Offset+nPos] == 32 
+            DO WHILE nPos < nLen .AND. buffer[SELF:Offset+nPos] == 32
                 nPos++
             ENDDO
             FOR VAR i := nPos TO nLen -1
@@ -187,7 +187,7 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE 57  // 9
                     nValue := nValue * 10 + (b - 48)
                 OTHERWISE
-                    lValid := FALSE        
+                    lValid := FALSE
                 END SWITCH
                 IF ! lValid
                     EXIT
@@ -242,7 +242,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
         /// <inheritdoc/>
        OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
-            IF SELF:IsVarLength 
+            IF SELF:IsVarLength
                 buffer[SELF:Offset + SELF:Length-1] := 0
             ELSEIF SELF:IsUnicode
                 VAR str := STRING{' ',SELF:Length /2}
@@ -305,7 +305,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         /// <inheritdoc/>
         OVERRIDE METHOD Validate() AS LOGIC
-            IF SELF:Length == 0  .OR. SELF:Decimals > 0  .OR. SELF:Length > System.UInt16.MaxValue 
+            IF SELF:Length == 0  .OR. SELF:Decimals > 0  .OR. SELF:Length > System.UInt16.MaxValue
                 RETURN FALSE
             ENDIF
             RETURN TRUE
@@ -313,7 +313,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS STRING
             IF SELF:IsNull()
-                RETURN NULL
+                RETURN DBNull.Value
             ENDIF
             IF SELF:IsBinary
                 result := System.Text.Encoding.Default:GetString(buffer, SELF:Offset, SELF:Length)
@@ -356,7 +356,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result := NULL AS IDate
             IF SELF:IsNull()
-                RETURN NULL
+                RETURN DBNull.Value
             ENDIF
             LOCAL nValue := SELF:_GetNumericValue(buffer) AS INT64
             LOCAL lOk := FALSE AS LOGIC
@@ -422,7 +422,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS LOGIC
             IF SELF:IsNull()
-                RETURN NULL
+                RETURN DBNull.Value
             ENDIF
             SWITCH buffer[SELF:Offset]
             CASE 84 // T
@@ -434,7 +434,7 @@ BEGIN NAMESPACE XSharp.RDD
                 result := FALSE
             END SWITCH
             RETURN result
-            
+
         /// <inheritdoc/>
        OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             IF oValue == NULL
@@ -465,12 +465,12 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL result AS IFloat
             LOCAL r8 AS REAL8
             IF SELF:IsNull()
-                RETURN NULL
+                RETURN DBNull.Value
             ENDIF
             LOCAL nPos, nLen AS LONG
             nLen := SELF:Length
             nPos := 0
-            DO WHILE  nPos < nLen .AND. buffer[SELF:Offset+nPos] == 32 
+            DO WHILE  nPos < nLen .AND. buffer[SELF:Offset+nPos] == 32
                 nPos++
             ENDDO
             LOCAL lDec := FALSE AS LOGIC
@@ -479,7 +479,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL lNegative := FALSE AS LOGIC
             LOCAL lFirst    := TRUE AS LOGIC
             LOCAL lLast     := FALSE AS LOGIC
-            nBefore :=  nCount := nDec:= 0 
+            nBefore :=  nCount := nDec:= 0
             FOR VAR i := nPos TO nLen -1
                 LOCAL b AS BYTE
                 b := buffer[SELF:Offset+i]
@@ -509,7 +509,7 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE 54  // 6
                 CASE 55  // 7
                 CASE 56  // 8
-                CASE 57  // 9 
+                CASE 57  // 9
                     nCount := nCount * 10 + (b - 48)
                     nDec   += 1
                 CASE 46  // .
@@ -522,12 +522,12 @@ BEGIN NAMESPACE XSharp.RDD
                         lDec    := TRUE
                     ENDIF
                 CASE 32
-                    lLast := TRUE       
+                    lLast := TRUE
                 CASE 42  // *  Numeric overflow
                 OTHERWISE
-                    lValid := FALSE        
+                    lValid := FALSE
                 END SWITCH
-                IF ! lValid 
+                IF ! lValid
                     EXIT
                 ENDIF
                 lFirst := FALSE
@@ -563,7 +563,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL str AS STRING
             str := r8Value:ToString("F", numformat)
             LOCAL lDataWidthError := FALSE AS LOGIC
-            IF str:Length > Length 
+            IF str:Length > Length
                 str := STRING{'*', Length}
                 lDataWidthError := TRUE
             ELSE
@@ -579,10 +579,10 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN DbFloat{0.0, SELF:Length, SELF:Decimals}
         /// <inheritdoc/>
        OVERRIDE METHOD Validate() AS LOGIC
-           IF SELF:Length >= 1  .AND.  SELF:Length <= 255 
-                IF SELF:Decimals > 0 
+           IF SELF:Length >= 1  .AND.  SELF:Length <= 255
+                IF SELF:Decimals > 0
                     // We must check that we have enough space for DOT and decimal
-                    IF SELF:Length <= 2  .OR.  SELF:Decimals >= SELF:Length -1 
+                    IF SELF:Length <= 2  .OR.  SELF:Decimals >= SELF:Length -1
                         RETURN FALSE
                     ENDIF
                 ENDIF
@@ -607,7 +607,7 @@ BEGIN NAMESPACE XSharp.RDD
             // Read the Memo Block Number
             LOCAL result AS LONG
             IF SELF:IsNull()
-                RETURN NULL
+                RETURN DBNull.Value
             ENDIF
             IF SELF:Length == 10
                 result  := (LONG) SELF:_GetNumericValue(buffer)
@@ -649,11 +649,11 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_PutString(buffer, strValue)
             ENDIF
             RETURN TRUE
-            
+
         /// <inheritdoc/>
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN NULL
-            
+
         /// <inheritdoc/>
        OVERRIDE METHOD Validate() AS LOGIC
             IF SELF:Length != 4
@@ -675,7 +675,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS LONG
             IF SELF:IsNull()
-                RETURN NULL
+                RETURN DBNull.Value
             ENDIF
             IF SELF:Length == 4
                 result := BuffToLong(buffer, SELF:Offset)
@@ -685,7 +685,7 @@ BEGIN NAMESPACE XSharp.RDD
                 result := 0
             ENDIF
             RETURN result
-            
+
         /// <inheritdoc/>
         OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             IF SELF:Length == 4
@@ -722,7 +722,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc/>
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN 0
-       
+
         /// <inheritdoc/>
        OVERRIDE METHOD Validate() AS LOGIC
             SELF:Decimals := 0
@@ -752,17 +752,17 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL oField  AS DbfField
             oField := DbfField{SELF:RDD:_Encoding}
             SELF:RDD:_readField(SELF:OffSetInHeader, oField)
-            oField:Counter := SELF:Counter 
-            oField:IncStep := (BYTE) SELF:IncrStep 
+            oField:Counter := SELF:Counter
+            oField:IncStep := (BYTE) SELF:IncrStep
             SELF:RDD:_writeField(SELF:OffSetInHeader, oField)
-            RETURN TRUE  
-	    
+            RETURN TRUE
+
         /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
-            // FoxPro throws an error when writing to an autonumber field. We do that too.    
+            // FoxPro throws an error when writing to an autonumber field. We do that too.
             SELF:RDD:_dbfError(Subcodes.ERDD_WRITE ,EG_READONLY,"PutValue", i"Field '{SELF:Name}' is ReadOnly")
             RETURN FALSE
-	    
+
         /// <inheritdoc/>
         OVERRIDE METHOD NewRecord(buffer AS BYTE[]) AS VOID
             // when shared then read the header again to get the current values of the counter and incrstep
@@ -776,8 +776,8 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:Counter += SELF:IncrStep
             SELF:Write()
             SELF:RDD:HeaderLock( DbLockMode.UnLock )
-	    
-	    // Call SUPER:PutValue because we have overwritten PutValue to not allow to write, 
+
+	    // Call SUPER:PutValue because we have overwritten PutValue to not allow to write,
 	    // but this of course is the exception, since we HAVE to write the new autonumber field.
             SUPER:PutValue(nCurrent, buffer)
             RETURN
@@ -795,7 +795,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS REAL8
             IF SELF:IsNull()
-                RETURN NULL
+                RETURN DBNull.Value
             ENDIF
             result := BitConverter.ToDouble(buffer, SELF:Offset)
             RETURN DbFloat{result,-1,-1}
@@ -839,7 +839,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL tmp AS REAL8
             LOCAL result AS Decimal
             IF SELF:IsNull()
-                RETURN NULL
+                RETURN DBNull.Value
             ENDIF
             tmp := BitConverter.ToInt64(buffer, SELF:Offset)
             result := (decimal) (tmp/ (10 ^ SELF:Decimals))
@@ -916,9 +916,9 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN DateTime { (INT)year, (INT) month, (INT) day}
         /// <inheritdoc/>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
-            LOCAL result AS DateTime 
+            LOCAL result AS DateTime
             IF SELF:IsNull()
-                RETURN NULL
+                RETURN DBNull.Value
             ENDIF
             result := DateTime.MinValue
             VAR julian  := System.BitConverter.ToInt32(buffer, SELF:Offset)
@@ -1010,7 +1010,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD Validate() AS LOGIC
             SELF:Decimals := 0
             SELF:Length   := 8
-            RETURN TRUE  
+            RETURN TRUE
 
     END CLASS
     /// <summary>Class for reading / writing the Special Column for NULL values. </summary>
@@ -1023,20 +1023,20 @@ BEGIN NAMESPACE XSharp.RDD
             data    := BYTE[]{SELF:Length}
             bitArray:= System.Collections.BitArray{data}
             RETURN
-            
+
         /// <inheritdoc/>
        OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             SELF:bitArray:SetAll(FALSE)
             SELF:PutValue(0, buffer)
             RETURN
-            
+
         /// <inheritdoc/>
        OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             // Read the bits from the buffer, dummy return value
             System.Array.Copy(buffer, SELF:Offset, data, 0, SELF:Length)
             bitArray:= System.Collections.BitArray{data}
             RETURN NULL
-            
+
         /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             // Write the bits to the buffer, ignore oValue

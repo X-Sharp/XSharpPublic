@@ -13,34 +13,37 @@ USING System.IO
 USING STATIC XSharp.Conversions
 BEGIN NAMESPACE XSharp.RDD
 INTERNAL ABSTRACT CLASS FptHeader
-    PROTECT Buffer AS BYTE[]
-    PROTECT _oRDD  AS DBF
-    PROTECT _oStream as FileStream
-    PROTECT _nOffSet as LONG
-    PROTECT _nLength AS LONG
+    PROTECT INITONLY _Buffer AS BYTE[]
+    PROTECT INITONLY _oRDD  AS DBF
+    PROTECT _Stream as FileStream
+    PROTECT INITONLY _OffSet as LONG
+    PROTECT INITONLY _Length AS LONG
     PRIVATE CONST LOCK_TIMEOUT := 10_000 AS LONG    // Milliseconds
     PRIVATE CONST LOCK_WAIT    := 4 AS LONG // Ticks (18.2 per second)
-    INTERNAL PROPERTY Stream   AS FileStream GET _oStream SET _oStream := value
+    INTERNAL PROPERTY Stream   AS FileStream GET SELF:_Stream SET SELF:_Stream := value
     INTERNAL PROPERTY ReadOnly as LOGIC GET _oRDD:ReadOnly
     INTERNAL PROPERTY Shared   as LOGIC GET _oRDD:Shared
+    PROTECTED PROPERTY Buffer as BYTE[] GET _Buffer
+    PROTECTED PROPERTY OffSet as LONG GET _OffSet
+    PROTECTED PROPERTY Length as LONG GET _Length
     INTERNAL CONSTRUCTOR(oRDD as DBF, nOffSet as LONG, nLength as LONG)
         SELF:_oRDD := oRDD
-        SELF:Buffer := BYTE[]{nLength}
-        SELF:_nOffSet := nOffSet
-        SELF:_nLength := nLength
-        SELF:_oStream := NULL
+        SELF:_Buffer := BYTE[]{nLength}
+        SELF:_OffSet := nOffSet
+        SELF:_Length := nLength
+        SELF:_Stream := NULL
 
     INTERNAL VIRTUAL METHOD Clear() AS VOID
         Array.Clear(SELF:Buffer, 0, SELF:Buffer:Length)
 
     INTERNAL METHOD Read() AS LOGIC
         local lOk := FALSE AS LOGIC
-        IF _oStream != NULL
+        IF SELF:Stream != NULL
             DO WHILE ! lOk
-                _oStream:SafeSetPos(_nOffSet)
-                lOk := _oStream:SafeRead(Buffer, _nLength)
+                SELF:Stream:SafeSetPos(SELF:OffSet)
+                lOk := SELF:Stream:SafeRead(Buffer, SELF:Length)
                 IF ! lOk
-                    if _oStream:Length < _nOffSet+_nLength
+                    if SELF:Stream:Length < SELF:OffSet+SELF:Length
                         EXIT
                     ENDIF
                     System.Threading.Thread.Sleep(5)
@@ -50,12 +53,12 @@ INTERNAL ABSTRACT CLASS FptHeader
         RETURN lOk
     INTERNAL METHOD Write() AS LOGIC
         local lOk := FALSE AS LOGIC
-        IF _oStream != NULL
+        IF SELF:Stream != NULL
             DO WHILE ! lOk
-                _oStream:SafeSetPos(_nOffSet)
-                lOk := _oStream:SafeWrite(Buffer)
+                SELF:Stream:SafeSetPos(SELF:OffSet)
+                lOk := SELF:Stream:SafeWrite(Buffer)
                 IF ! lOk
-                    if _oStream:Length < _nOffSet + _nLength
+                    if SELF:Stream:Length < SELF:OffSet + SELF:Length
                         EXIT
                     ENDIF
                     System.Threading.Thread.Sleep(5)
@@ -70,7 +73,7 @@ INTERNAL ABSTRACT CLASS FptHeader
         var startTime := System.Environment.TickCount
         var endTime := startTime + LOCK_TIMEOUT
         REPEAT
-            result := SELF:_oStream:SafeLock(nOffSet, nLen)
+            result := SELF:Stream:SafeLock(nOffSet, nLen)
             IF result
                 EXIT
             ENDIF
@@ -89,7 +92,7 @@ INTERNAL ABSTRACT CLASS FptHeader
         UNTIL result
         RETURN
     PROTECTED METHOD _Unlock(nOffSet AS INT64, nLen AS INT64) AS LOGIC
-        VAR res := SELF:_oStream:SafeUnlock(nOffSet, nLen)
+        VAR res := SELF:Stream:SafeUnlock(nOffSet, nLen)
         RETURN res
 END CLASS
 INTERNAL CLASS FoxHeader INHERIT FptHeader
@@ -180,15 +183,15 @@ INTERNAL CLASS FlexHeader INHERIT FptHeader
         SELF:Clear()
     INTERNAL OVERRIDE METHOD Clear() AS VOID
         SUPER:Clear()
-        SELF:Buffer[0] := 70    // 'F';
-        SELF:Buffer[1] := 108   // 'l';
-        SELF:Buffer[2] := 101   // 'e';
-        SELF:Buffer[3] := 120   // 'x';
-        SELF:Buffer[4] := 70    // 'F';
-        SELF:Buffer[5] := 105   // 'i';
-        SELF:Buffer[6] := 108   // 'l';
-        SELF:Buffer[7] := 101   // 'e';
-        SELF:Buffer[8] := 51    // '3';
+        SELF:Buffer[0] := (BYTE) 'F'
+        SELF:Buffer[1] := (BYTE) 'l'
+        SELF:Buffer[2] := (BYTE) 'e'
+        SELF:Buffer[3] := (BYTE) 'x'
+        SELF:Buffer[4] := (BYTE) 'F'
+        SELF:Buffer[5] := (BYTE) 'i'
+        SELF:Buffer[6] := (BYTE) 'l'
+        SELF:Buffer[7] := (BYTE) 'e'
+        SELF:Buffer[8] := (BYTE) '3'
         SELF:MajorVersion := 2
         SELF:MinorVersion := 8
         SELF:IndexDefect  := FALSE
@@ -206,15 +209,15 @@ INTERNAL CLASS FlexHeader INHERIT FptHeader
 
     INTERNAL PROPERTY Valid AS LOGIC
         GET
-            RETURN  SELF:Buffer[0] == 70  .AND. ;    // 'F';
-                    SELF:Buffer[1] == 108 .AND. ;   // 'l';
-                    SELF:Buffer[2] == 101 .AND. ;   // 'e';
-                    SELF:Buffer[3] == 120 .AND. ;   // 'x';
-                    SELF:Buffer[4] == 70  .AND. ;   // 'F';
-                    SELF:Buffer[5] == 105 .AND. ;   // 'i';
-                    SELF:Buffer[6] == 108 .AND. ;   // 'l';
-                    SELF:Buffer[7] == 101 .AND. ;   // 'e';
-                    SELF:Buffer[8] == 51            // '3';
+            RETURN  SELF:Buffer[0] == (BYTE) 'F' .AND. ;
+                    SELF:Buffer[1] == (BYTE) 'l' .AND. ;
+                    SELF:Buffer[2] == (BYTE) 'e' .AND. ;
+                    SELF:Buffer[3] == (BYTE) 'x' .AND. ;
+                    SELF:Buffer[4] == (BYTE) 'F' .AND. ;
+                    SELF:Buffer[5] == (BYTE) 'i' .AND. ;
+                    SELF:Buffer[6] == (BYTE) 'l' .AND. ;
+                    SELF:Buffer[7] == (BYTE) 'e' .AND. ;
+                    SELF:Buffer[8] == (BYTE) '3'
 
         END GET
     END PROPERTY

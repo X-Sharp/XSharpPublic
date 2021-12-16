@@ -1027,10 +1027,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FOR LOCAL n := 1 AS INT UPTO 10
 				AAdd(aStruct , {"MEMO" + n:ToString() , "M" , 10 , 0})
             NEXT
-            local cCdx as STRING
+            LOCAL cCdx AS STRING
             cCdx := Path.ChangeExtension(cDbf,".CDX")
             IF File(cCdx)
-                Ferase(cCdx)
+                FErase(cCdx)
             ENDIF
 			DbCreate(cDbf , aStruct)
 			DbUseArea(,,cDbf)
@@ -1314,9 +1314,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			a := BYTE[]{10_000}
 			FOR LOCAL n := 1 AS INT UPTO a:Length
 				a[n] := (BYTE)(n % 256)
-                if a[n] == 26   // This is the EOF char. Needs to be replaced with something harmless
+                IF a[n] == 26   // This is the EOF char. Needs to be replaced with something harmless
                     a[n] := 42
-                endif
+                ENDIF
 			NEXT
 			FieldPutBytes( 2, a )
 			a := FieldGetBytes(2)
@@ -1324,11 +1324,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL lSame := TRUE AS LOGIC
 			FOR LOCAL n := 1 AS INT UPTO 10_000
 				IF a[n] != (BYTE)(n % 256)
-                    if n % 256 == 26
-                        if a[n] == 42
-                            loop
-                        endif
-                    endif
+                    IF n % 256 == 26
+                        IF a[n] == 42
+                            LOOP
+                        ENDIF
+                    ENDIF
 					lSame := FALSE
 					EXIT
 				END IF
@@ -1337,6 +1337,74 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 			DbCloseArea()
 
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD VariousDbtTests() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL nRecords := 100 AS DWORD
+			LOCAL aSizes := <DWORD>{1,5,20,2000,500,100,200,30,20,10,1000,1,500,5,5,700,700,150,2000,1500,10,20} AS DWORD[]
+			LOCAL aValues AS ARRAY
+			aValues := ArrayCreate(nRecords)
+			FOR LOCAL n := 1 AS DWORD UPTO nRecords
+				aValues[n] := Replicate(n:ToString() , aSizes[n % aSizes:Length + 1])
+			NEXT
+			
+			LOCAL FUNCTION CheckValues() AS VOID
+				dbt1->DbGoTop()
+				FOR LOCAL n := 1 AS DWORD UPTO nRecords
+					Assert.Equal( (STRING) aValues[n], (STRING) dbt1->FieldGet(2) )
+					dbt1->DbSkip()
+				NEXT
+			END FUNCTION
+
+			RddSetDefault("DBFNTX")
+
+			cDbf := GetTempFileName()
+			DbCreate(cDbf, {{"FLD1","C",3,0} , {"MEMOFLD2","M",10,0}})
+
+			DbUseArea(TRUE,,cDbf,"dbt1",TRUE)
+			DbUseArea(TRUE,,cDbf,"dbt2",TRUE)
+			FOR LOCAL n := 1 AS INT UPTO nRecords
+				IF n % 2 == 1
+					dbt1->DbAppend()
+					dbt1->FieldPut(2, aValues[n])
+				ELSE
+					dbt2->DbAppend()
+					dbt2->FieldPut(2, aValues[n])
+				END IF
+			NEXT
+			dbt1->DbGoTop()
+			dbt2->DbGoTop()
+			
+			CheckValues()
+			
+			FOR LOCAL i := 1 AS INT UPTO 20
+				// shift memo sizes
+				AAdd(aValues, aValues[1])
+				ADel(aValues, 1)
+				ASize(aValues , nRecords)
+				FOR LOCAL n := 1 AS INT UPTO nRecords
+					IF n % 2 == 1
+						dbt1->DbGoto(n)
+						dbt1->RLock()
+						dbt1->FieldPut(2, aValues[n])
+					ELSE
+						dbt2->DbGoto(n)
+						dbt2->RLock()
+						dbt2->FieldPut(2, aValues[n])
+					END IF
+					dbt1->DbUnLock()
+					dbt2->DbUnLock()
+				NEXT
+				dbt1->DbGoTop()
+				dbt2->DbGoTop()
+
+				CheckValues()
+			NEXT
+			
+			dbt1->DbCloseArea()
+			dbt2->DbCloseArea()
+			
 
 
 		STATIC INTERNAL METHOD GetTempFileName() AS STRING

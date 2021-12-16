@@ -5150,7 +5150,7 @@ RETURN
 			FOR LOCAL n := 1 AS DWORD UPTO nRecords
 				aValues[n] := Replicate(n:ToString() , aSizes[n % aSizes:Length + 1])
 			NEXT
-			
+
 			LOCAL FUNCTION CheckValues() AS VOID
 				fpt1->DbGoTop()
 				FOR LOCAL n := 1 AS DWORD UPTO nRecords
@@ -5178,9 +5178,9 @@ RETURN
 			NEXT
 			fpt1->DbGoTop()
 			fpt2->DbGoTop()
-			
+
 			CheckValues()
-			
+
 			FOR LOCAL i := 1 AS INT UPTO 20
 				// shift memo sizes
 				AAdd(aValues, aValues[1])
@@ -5204,10 +5204,10 @@ RETURN
 
 				CheckValues()
 			NEXT
-			
+
 			fpt1->DbCloseArea()
 			fpt2->DbCloseArea()
-			
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
@@ -5216,6 +5216,21 @@ RETURN
 
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING
 			// we may want to put them to a specific folder etc
+            IF File(cFileName+".DBF")
+                Ferase(FPathName())
+            ENDIF
+            IF File(cFileName+".DBT")
+                Ferase(FPathName())
+            ENDIF
+            IF File(cFileName+".FPT")
+                Ferase(FPathName())
+            ENDIF
+            IF File(cFileName+".CDX")
+                Ferase(FPathName())
+            ENDIF
+            IF File(cFileName+".NTX")
+                Ferase(FPathName())
+            ENDIF
 		    RETURN cFileName
 
 		[Fact, Trait("Category", "DBF")];

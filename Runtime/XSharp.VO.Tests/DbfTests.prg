@@ -984,7 +984,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 
 
-	
+
 		// TECH-0YI914Z4I2, Problem opening dbf with dbt via SetDefault()
 		[Fact, Trait("Category", "DBF")];
 		METHOD SetDefault_test() AS VOID
@@ -1348,11 +1348,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			FOR LOCAL n := 1 AS DWORD UPTO nRecords
 				aValues[n] := Replicate(n:ToString() , aSizes[n % aSizes:Length + 1])
 			NEXT
-			
+
 			LOCAL FUNCTION CheckValues() AS VOID
 				dbt1->DbGoTop()
 				FOR LOCAL n := 1 AS DWORD UPTO nRecords
-					Assert.Equal( (STRING) aValues[n], (STRING) dbt1->FieldGet(2) )
+					Assert.Equal( (STRING) aValues[n], Trim(dbt1->FieldGet(2)) )
 					dbt1->DbSkip()
 				NEXT
 			END FUNCTION
@@ -1375,9 +1375,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			NEXT
 			dbt1->DbGoTop()
 			dbt2->DbGoTop()
-			
+
 			CheckValues()
-			
+
 			FOR LOCAL i := 1 AS INT UPTO 20
 				// shift memo sizes
 				AAdd(aValues, aValues[1])
@@ -1401,10 +1401,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 				CheckValues()
 			NEXT
-			
+
 			dbt1->DbCloseArea()
 			dbt2->DbCloseArea()
-			
+
 
 
 		STATIC INTERNAL METHOD GetTempFileName() AS STRING
@@ -1413,7 +1413,22 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		    RETURN GetTempFileName("testdbf"+NTrim(nCounter))
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING
 			// we may want to put them to a specific folder etc
-		RETURN cFileName
+		    IF File(cFileName+".DBF")
+                Ferase(FPathName())
+            ENDIF
+            IF File(cFileName+".DBT")
+                Ferase(FPathName())
+            ENDIF
+            IF File(cFileName+".FPT")
+                Ferase(FPathName())
+            ENDIF
+            IF File(cFileName+".CDX")
+                Ferase(FPathName())
+            ENDIF
+            IF File(cFileName+".NTX")
+                Ferase(FPathName())
+            ENDIF
+		    RETURN cFileName
 		STATIC INTERNAL METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY) AS VOID
 			CreateDatabase(cFileName, aFields , {})
 		STATIC INTERNAL METHOD CreateDatabase(cFileName AS STRING, aFields AS ARRAY, aValues AS ARRAY) AS VOID

@@ -5155,11 +5155,11 @@ RETURN
 
 		METHOD DoFptTest(nRecords AS DWORD) AS VOID
 			LOCAL cDbf AS STRING
-			LOCAL aSizes := <DWORD>{1,5,20,2000,500,100,200,30,20,10,1000,1,500,5,5,700,700,150,2000,1500,10,20} AS DWORD[]
+			LOCAL aSizes := <DWORD>{1,5,20,2000,500,100,200,30,20,10,5000,1,500,5,5,700,700,150,2000,15000,1000,10,20} AS DWORD[]
 			LOCAL aValues AS ARRAY
 			aValues := ArrayCreate(nRecords)
 			FOR LOCAL n := 1 AS DWORD UPTO nRecords
-				aValues[n] := Replicate(n:ToString() , aSizes[n % aSizes:Length + 1])
+				aValues[n] := Replicate(Left(n:ToString(),1) , aSizes[n % aSizes:Length + 1])
 			NEXT
 
 			LOCAL FUNCTION CheckValues() AS VOID
@@ -5228,19 +5228,19 @@ RETURN
 		STATIC PRIVATE METHOD GetTempFileName(cFileName AS STRING) AS STRING
 			// we may want to put them to a specific folder etc
             IF File(cFileName+".DBF")
-                Ferase(FPathName())
+                FErase(FPathName())
             ENDIF
             IF File(cFileName+".DBT")
-                Ferase(FPathName())
+                FErase(FPathName())
             ENDIF
             IF File(cFileName+".FPT")
-                Ferase(FPathName())
+                FErase(FPathName())
             ENDIF
             IF File(cFileName+".CDX")
-                Ferase(FPathName())
+                FErase(FPathName())
             ENDIF
             IF File(cFileName+".NTX")
-                Ferase(FPathName())
+                FErase(FPathName())
             ENDIF
 		    RETURN cFileName
 

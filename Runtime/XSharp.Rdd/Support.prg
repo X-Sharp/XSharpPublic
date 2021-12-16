@@ -71,9 +71,9 @@ BEGIN NAMESPACE XSharp.RDD
     END CLASS
 
     INTERNAL CLASS RddKeyData
-        EXPORT Recno   AS LONG
-        EXPORT Key     AS BYTE[]
-        EXPORT ForCond AS LOGIC
+        PROPERTY Recno   AS LONG AUTO
+        PROPERTY Key     AS BYTE[] AUTO
+        PROPERTY ForCond AS LOGIC AUTO
         INTERNAL CONSTRUCTOR (nKeyLen AS LONG)
             SELF:ForCond := TRUE
             SELF:Recno   := -1

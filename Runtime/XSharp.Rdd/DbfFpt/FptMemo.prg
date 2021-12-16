@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:Shared
                 IF SELF:_lockCount == 0
                     DO WHILE ! SELF:_tryLock(0, 1, 10)
-                        SELF:_lockCount := 1
+                        NOP
                     ENDDO
                     SELF:_lockCount := 1
                 ELSE

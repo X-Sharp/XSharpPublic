@@ -21,18 +21,18 @@ CLASS DBFVFP INHERIT DBFCDX
 		SELF:_AllowedFieldTypes := "BCDFGILMNPQTVWY0"
 		RETURN
 
-	OVERRIDE PROPERTY Driver                  AS STRING GET nameof(DBFVFP)
+	OVERRIDE PROPERTY Driver         AS STRING GET nameof(DBFVFP)
     INTERNAL PROPERTY DbcName        AS STRING AUTO
     INTERNAL PROPERTY DbcPosition    AS INT GET DbfHeader.SIZE + SELF:_Fields:Length  * DbfField.SIZE +1
 
     OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
-	LOCAL isOk AS LOGIC
-    isOk := SUPER:Create(openInfo)
-    IF isOk
-        SELF:_SetFoxHeader()
-    ENDIF
-    SELF:_ReadDbcInfo()
-    RETURN isOk
+        LOCAL isOk AS LOGIC
+        isOk := SUPER:Create(openInfo)
+        IF isOk
+            SELF:_SetFoxHeader()
+        ENDIF
+        SELF:_ReadDbcInfo()
+        RETURN isOk
 
     PROTECTED OVERRIDE METHOD _checkField( dbffld REF DbfField) AS LOGIC
         IF dbffld:Type:IsVfp()
@@ -251,10 +251,5 @@ CLASS DBFVFP INHERIT DBFCDX
         RETURN SUPER:_writeRecord()
 END CLASS
 
-
-
-
 END NAMESPACE
-
-
 

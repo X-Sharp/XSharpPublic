@@ -2514,7 +2514,7 @@
     <value>{0} Operator nicht verfügbar für USUAL Typ "{1}"</value>
   </data>
   <data name="USUALCONVERSIONERR" xml:space="preserve">
-    <value>Konvertierungsfehler von USUAL ({0})  oin {1}</value>
+    <value>Konvertierungsfehler von USUAL ({0}) in {1}</value>
   </data>
   <data name="VERSION" xml:space="preserve">
     <value>Version: </value>

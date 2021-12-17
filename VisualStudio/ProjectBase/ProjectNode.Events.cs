@@ -30,6 +30,10 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
         }
+        public virtual void ReferencesChanged()
+        {
+
+        }
     }
 
 }

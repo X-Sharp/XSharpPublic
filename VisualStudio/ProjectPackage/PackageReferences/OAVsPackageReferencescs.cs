@@ -60,6 +60,13 @@ namespace XSharp.Project
             return PackageReferenceContainerNode.TryGetReference(bstrName, parrbstrDesiredMetadata, out pbstrVersion, out pbstrMetadataElements, out pbstrMetadataValues);
         }
 
-        EnvDTE.Project PackageReferences.ContainingProject => throw new NotImplementedException();
+        EnvDTE.Project PackageReferences.ContainingProject
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return ContainingProject.Object as EnvDTE.Project;
+            }
+        }
     }
 }

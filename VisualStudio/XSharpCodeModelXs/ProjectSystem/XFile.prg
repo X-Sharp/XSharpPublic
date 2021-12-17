@@ -37,7 +37,14 @@ BEGIN NAMESPACE XSharpModel
             SELF:_project := project
 
         PROPERTY CommentTasks AS IList<XCommentTask> AUTO
-        PROPERTY EntityList   AS 	List<XSourceEntity> GET _entityList
+        PROPERTY EntityList   AS 	List<XSourceEntity>
+            GET
+                IF _entityList != null
+                    RETURN _entityList
+                ENDIF
+                RETURN List<XSourceEntity>{}
+            END GET
+        END PROPERTY
         PROPERTY Dialect AS XSharpDialect GET _project:Dialect
         PROPERTY Virtual AS LOGIC AUTO
 

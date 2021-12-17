@@ -40,6 +40,7 @@ using File = System.IO.File;
 
 using VsParser = global::LanguageService.CodeAnalysis.XSharp;
 
+
 namespace XSharp.Project
 {
     /// <summary>
@@ -1060,6 +1061,20 @@ namespace XSharp.Project
         {
             // Nuget package references are added as child to the Reference Node.
             base.ProcessReferences();
+            this.LoadPackageReferences();
+        }
+
+        public override void ReferencesChanged()
+        {
+            base.ReferencesChanged();
+            if (! isLoading)
+            {
+                LoadReferencesInProjectModel();
+            }
+        }
+
+        private void LoadPackageReferences()
+        {
             HierarchyNode referenceContainerNode = GetReferenceContainer() as HierarchyNode;
             var packageContainer = PackageReferenceContainerNode;
             if (packageContainer == null)
@@ -1068,6 +1083,7 @@ namespace XSharp.Project
                 referenceContainerNode.AddChild(packageContainer);
             }
             packageContainer.LoadReferencesFromBuildProject(this);
+
         }
 
         public XSharpPackageReferenceContainerNode PackageReferenceContainerNode =>
@@ -1487,7 +1503,19 @@ namespace XSharp.Project
             return (ext.EndsWith("proj", StringComparison.OrdinalIgnoreCase));
         }
 
-#region IXSharpProject Interface
+        internal void BuildStarted()
+        {
+
+        }
+        internal void BuildEnded()
+        {
+
+            RefreshReferencesFromResponseFile();
+        }
+
+
+
+        #region IXSharpProject Interface
 
         bool _enforceSelf = false;
         public bool EnforceSelf
@@ -1603,7 +1631,54 @@ namespace XSharp.Project
             {
                 this.BuildProject.Save();
             }
+            this.LoadReferencesInProjectModel();
         }
+
+        private void RefreshReferencesFromResponseFile()
+        {
+            // find the resource file and read the lines with /reference
+            string tempPath = System.IO.Path.GetTempPath();
+            string file = Path.Combine(tempPath, "LastXSharpResponseFile.Rsp");
+            if (File.Exists(file))
+            {
+                var response = File.ReadAllText(file);
+                response = response.Replace("\r", "");
+                response = response.Replace("\n", "");
+                var lines = response.Split(new char[] { '/'},StringSplitOptions.RemoveEmptyEntries);
+                var references = new List<string>();
+                foreach (var line in lines)
+                {
+                    if (line.StartsWith("reference:"))
+                    {
+                        var reffile = line.Substring(10).Trim();
+                        if (reffile[0] == '"')
+                            reffile = reffile.Substring(1, reffile.Length - 2);
+                        references.Add(reffile);
+
+                    }
+                }
+                ProjectModel.RefreshReferences(references);
+            }
+        }
+
+        internal void LoadReferencesInProjectModel()
+        {
+            // find all the assembly references
+
+            var target = "FindReferenceAssembliesForReferences";
+            var buildResult = this.ProjectMgr.Build(target);
+            if (buildResult.IsSuccessful)
+            {
+                var items = buildResult.ProjectInstance.GetItems("ReferencePath");
+                var references = new List<string>();
+                foreach (var item in items)
+                {
+                    references.Add(item.EvaluatedInclude);
+                }
+                ProjectModel.RefreshReferences(references);
+            }
+        }
+        
 
         public override int Save(string fileToBeSaved, int remember, uint formatIndex)
         {

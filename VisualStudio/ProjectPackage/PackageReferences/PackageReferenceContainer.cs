@@ -1,4 +1,5 @@
 ﻿using Microsoft.Build.Evaluation;
+using Microsoft.Build.Execution;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
@@ -18,7 +19,7 @@ namespace XSharp.Project
 
         public const string PackageReferencesNodeVirtualName = "NuGet Packages";
 
-        public List<XSharpPackageReferenceNode> PackageReferenceNodes
+        public List<XSharpPackageReferenceNode> PackageReferenceNodes 
         {
             get;
             set;
@@ -40,7 +41,7 @@ namespace XSharp.Project
 
         public override Guid ItemTypeGuid => VSConstants.GUID_ItemType_VirtualFolder;
 
-        public override int MenuCommandId => Microsoft.VisualStudio.Project.VsMenus.IDM_VS_CTXT_PACKAGEREFERENCE_GROUP;
+        public override int MenuCommandId => VsMenus.IDM_VS_CTXT_PACKAGEREFERENCE_GROUP;
 
         public override string Url => base.VirtualNodeName;
 
@@ -93,7 +94,7 @@ namespace XSharp.Project
 
         public void AddOrUpdate(string bstrName, string bstrVersion, Array pbstrMetadataElements, Array pbstrMetadataValues)
         {
-            IEnumerable<XSharpPackageReferenceNode> matches = PackageReferenceNodes.Where((XSharpPackageReferenceNode node) => node.Name.Equals(bstrName, StringComparison.InvariantCultureIgnoreCase));
+            var matches = PackageReferenceNodes.Where(node => string.Equals( node.Name, bstrName, StringComparison.InvariantCultureIgnoreCase));
             if (matches.Count() > 0)
             {
                 XSharpPackageReferenceNode currentPackage = matches.First();
@@ -117,15 +118,17 @@ namespace XSharp.Project
                 PackageReferenceNodes.Add(packageReference);
                 AddChild(packageReference);
             }
+            this.ProjectMgr.ReferencesChanged();
         }
 
         public void Remove(string bstrName)
         {
-            XSharpPackageReferenceNode match = PackageReferenceNodes.Where((XSharpPackageReferenceNode node) => node.Name.Equals(bstrName, StringComparison.InvariantCultureIgnoreCase)).First();
+            var match = PackageReferenceNodes.Where( node => string.Equals(node.Name, bstrName, StringComparison.InvariantCultureIgnoreCase)).First();
             if (match != null)
             {
                 PackageReferenceNodes.Remove(match);
                 match.Remove(removeFromStorage: false);
+                this.ProjectMgr.ReferencesChanged();
             }
         }
 
@@ -134,8 +137,7 @@ namespace XSharp.Project
             // the array aDesiredMetadata contains the names of the properties
             // that they want.
             // we also always return the Version
-            var nodes = PackageReferenceNodes.Where((n) =>
-                n.Name.Equals(bstrName, StringComparison.InvariantCultureIgnoreCase));
+            var nodes = PackageReferenceNodes.Where((n) => string.Equals(n.Name ,bstrName, StringComparison.InvariantCultureIgnoreCase));
             if (nodes.Count() == 0)
             {
                 pbstrVersion = null;
@@ -175,7 +177,7 @@ namespace XSharp.Project
         }
         internal virtual void LoadReferencesFromBuildProject(XSharpProjectNode buildProject)
         {
-            foreach (var item in base.ProjectMgr.BuildProject.ThreadSafeGetItems(ProjectFileConstants.PackageReference))
+            foreach (var item in base.ProjectMgr.BuildProject.GetItems(ProjectFileConstants.PackageReference))
             {
                 var element = new ProjectElement(base.ProjectMgr, item, false);
                 var referenceNode = new XSharpPackageReferenceNode(ProjectMgr, element);
@@ -195,11 +197,14 @@ namespace XSharp.Project
                     PackageReferenceNodes.Add(referenceNode);
                 }
             }
+            this.ProjectMgr.ReferencesChanged();
+
         }
 
         protected override string GetCanonicalName()
         {
             return Path.Combine(base.ProjectMgr.ProjectFolder, Caption);
         }
+        
     }
 }

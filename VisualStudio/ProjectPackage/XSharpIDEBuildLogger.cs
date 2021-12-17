@@ -91,6 +91,10 @@ namespace XSharp.Project
             try
             {
                 base.ProjectStartedHandler(sender, buildEvent);
+                if (this.ProjectNode is XSharpProjectNode xprj)
+                {
+                    xprj.BuildStarted();
+                }
                 mustLog = true;
             }
             catch (Exception e)
@@ -106,6 +110,10 @@ namespace XSharp.Project
                 if (didCompile)
                 {
                     errorlistManager.Refresh();
+                }
+                if (this.ProjectNode is XSharpProjectNode  xprj)
+                {
+                    xprj.BuildEnded();
                 }
             }
             catch (Exception e)

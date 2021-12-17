@@ -1447,13 +1447,13 @@ namespace Microsoft.VisualStudio.Project
             {
 				config.ProjectMgr.StartAsyncBuild(options, this.config.ConfigCanonicalName, output, target, (result, projectInstance) =>
 				{
-					this.BuildCoda(new BuildResult(result, projectInstance), output, shouldRepaintReferences);
+					this.BuildCoda(new BuildResult(result, projectInstance, null), output, shouldRepaintReferences);
 				});
             }
             catch(Exception e)
             {
                 XSettings.DisplayException(e);
-				this.BuildCoda(new BuildResult(MSBuildResult.Failed, null), output, shouldRepaintReferences);
+				this.BuildCoda(new BuildResult(MSBuildResult.Failed, null, null), output, shouldRepaintReferences);
                 throw;
             }
 		}

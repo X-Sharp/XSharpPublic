@@ -114,7 +114,8 @@ namespace XSharp.Project
        
             if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet97)
             {
-                if (cmd == (uint)VSConstants.VSStd97CmdID.Remove)
+                if (cmd == (uint)VSConstants.VSStd97CmdID.Remove ||
+                    cmd == (uint)VSConstants.VSStd97CmdID.Delete)
                 {
                     result |= (QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED);
                     return VSConstants.S_OK;
@@ -128,7 +129,8 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
             if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet97)
             {
-                if (cmd == (uint)VSConstants.VSStd97CmdID.Remove)
+                if (cmd == (uint)VSConstants.VSStd97CmdID.Delete ||
+                    cmd == (uint)VSConstants.VSStd97CmdID.Remove)
                 {
                     IComponentModel model;
                     model = (IComponentModel)GetService(typeof(SComponentModel));

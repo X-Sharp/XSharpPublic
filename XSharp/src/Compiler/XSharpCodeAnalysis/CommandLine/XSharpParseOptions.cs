@@ -132,6 +132,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ImplicitNamespace { get; private set; }
         public bool HasRuntime { get { return this.Dialect.NeedsRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars() && MemVars; } }
+        public bool SuppressInit1 { get; set; } = false;
 #if !VSPARSER
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
 #else
@@ -146,7 +147,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public RuntimeAssemblies RuntimeAssemblies { get; private set; } = RuntimeAssemblies.None;
         public bool Overflow { get; private set; }
         public CSharpCommandLineArguments? CommandLineArguments { get; private set; }
-        public TextWriter? ConsoleOutput { get; private set; } 
+        public TextWriter? ConsoleOutput { get; private set; }
         public bool cs => CaseSensitive;
         public bool lb => LateBinding;
         public bool vo1 => VoInitAxitMethods;
@@ -231,6 +232,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 InitLocals = opt.InitLocals;
                 UndeclaredMemVars = opt.UndeclaredMemVars;
                 AllowUnsafe = opt.AllowUnsafe;
+                SuppressInit1 = opt.SuppressInit1;
             }
             LanguageVersion = defaultLanguageVersion;
         }
@@ -317,6 +319,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             UndeclaredMemVars = opt.UndeclaredMemVars;
             InitLocals = opt.InitLocals;
             AllowUnsafe = opt.AllowUnsafe;
+            SuppressInit1 = opt.SuppressInit1;
         }
 
         public CSharpParseOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)

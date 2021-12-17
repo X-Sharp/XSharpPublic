@@ -727,12 +727,12 @@
   <data name="Credits" xml:space="preserve">
     <value>
 	The XSharp development team:
-	
+
 		Fabrice Foray (France)
 		Nikos Kokkalis (Greece)
 		Chris Pyrgas (Greece)
 		Robert van der Hulst (The Netherlands)
-	
+
 	More info on www.xsharp.info
     </value>
   </data>
@@ -5240,7 +5240,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="IDS_LangVersions" xml:space="preserve">
     <value>Supported language versions:</value>
   </data>
-  
+
   <data name="IDS_CSCHelp" xml:space="preserve">
     <value>
                               X# Compiler Options
@@ -5293,7 +5293,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -linkresource:&lt;resinfo&gt;       Link the specified resource to this assembly
                               (Short form: -linkres) Where the resinfo format
                               is &lt;file&gt;[,&lt;string name&gt;[,public|private]]
--usenativeversion             Do not generate a managed version resource from Assembly attributes 
+-usenativeversion             Do not generate a managed version resource from Assembly attributes
                               but use the native version resource supplied in the Win32 resource file.
 
                        - CODE GENERATION -
@@ -5346,7 +5346,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                               Specify nullable context option enable|disable|warnings|annotations.
 
                         - XBASE COMPATIBILITY -
--allowdot[+|-]                 Control if the DOT operator can be used for instance members or not. 
+-allowdot[+|-]                 Control if the DOT operator can be used for instance members or not.
 -az[+|-]                       Use Zero based arrays
 -cs[+|-]                       Case Sensitivity on/off
 -dialect:&lt;string&gt;              Specify xBase Dialect: Core, VO, Vulcan, dBase, FoxPro, xBase++, Harbour
@@ -5355,6 +5355,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -fovf[+|-]                     Float overflow exceptions(mapped to /checked)
 -ins[+|-]                      Implicit namespace lookup
 -lb[+|-]                       Allow late binding
+-noinit[+|-]                   Suppress generation of Init and Exit code that forces a DLL to be loaded at startup
 -norun[+|-]                    Do not link to any default runtime
 -ns:&lt;string&gt;                   Default Namespace
 -s[+-]                         Syntax Check only (will not produce an assembly output)
@@ -5374,18 +5375,18 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -vo13[+|-]                     Compatible String Comparisons
 -vo14[+|-]                     Use Float Literals
 -vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
--vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor 
+-vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor
 -fox1[+|-]                     All FoxPro classes are assumed to inherit from the Custom class
 -fox2[+|-]                     FoxPro Array support (fill with simple assignment, alow parenthesized array elements)
 -xpp1[+|-]                     All classes inherit from the Abstract class (default = OFF)
--memvar[+|-]                   Should memory variables (PUBLIC and PRIVATE variables) be supported. 
+-memvar[+|-]                   Should memory variables (PUBLIC and PRIVATE variables) be supported.
                                This only works for the VO, XPP and Harbour dialects.
 -undeclared[+|-]               Should the compiler allow undeclared variables
                                This only works for the VO, XPP and Harbour dialects.
 
 
                         - PREPROCESOR -
- 
+
 -i:&lt;path&gt;                        Additional Include path
 -nostddef[+|-]                 Do not include standard defines from XSharpDefs.xh
 -ppo[+|-]                      Generate preprocessor output

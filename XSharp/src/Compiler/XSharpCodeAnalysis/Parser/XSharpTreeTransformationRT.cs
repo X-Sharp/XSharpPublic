@@ -11,7 +11,7 @@ using System.Diagnostics;
 using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;  
+using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.PooledObjects;
@@ -378,8 +378,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             // Put Everything in separate methods $Init1 .. $Init3
-            // Always generate $Init1
-            members.Add(CreateInitFunction(init1, XSharpSpecialNames.InitProc1, isApp));
+            // Suppress generating $init1 when no methods are found and SuppressInit1 = true;
+            if (!_options.SuppressInit1 || init1.Count > 0)
+            {
+                members.Add(CreateInitFunction(init1, XSharpSpecialNames.InitProc1, isApp));
+            }
             if (init2.Count > 0)
             {
                 members.Add(CreateInitFunction(init2, XSharpSpecialNames.InitProc2, isApp));
@@ -388,7 +391,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 members.Add(CreateInitFunction(init3, XSharpSpecialNames.InitProc3, isApp, filewidepublics));
             }
-            members.Add(CreateInitFunction(exit, XSharpSpecialNames.ExitProc, isApp));
+
+            if (!_options.SuppressInit1 || exit.Count > 0)
+            {
+                members.Add(CreateInitFunction(exit, XSharpSpecialNames.ExitProc, isApp));
+            }
             if (hasPCall)
             {
                 members.Add(CreatePCallFunction());
@@ -511,7 +518,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // We handle the following:
             // 1) when the defined Start function has Clipper calling convention then we generate a new start function
             //    with string[] parameters and we call the defined start function
-            // 2) we add a block 
+            // 2) we add a block
 
             var stmts = new List<StatementSyntax>();
             BlockSyntax epcall;
@@ -664,7 +671,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (atype.ElementType != stringtype)
                     {
                         // need to convert parameters to string[]
-                        var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>(); 
+                        var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
                         emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
                         var emptyrank = _syntaxFactory.ArrayRankSpecifier(
                               SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
@@ -903,7 +910,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
             string Name = context.Name.GetText();
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
-            // SomeVar(1,2) Can also be a FoxPro array access 
+            // SomeVar(1,2) Can also be a FoxPro array access
             if (context.Parent.Parent is not XP.MethodCallContext ||
                 (_options.HasOption(CompilerOption.FoxArraySupport, context, PragmaOptions)))
             {
@@ -1026,7 +1033,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         protected ExpressionSyntax GetAmpBasedName(IToken Amp, XP.IdentifierNameContext id)
         {
-            if (Amp != null) // PUBLIC &cVarName 
+            if (Amp != null) // PUBLIC &cVarName
             {
                 return getMacroNameExpression(id);
             }
@@ -1617,7 +1624,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // replace Default(USUAL) with NIL
             var type = context.Type.Get<TypeSyntax>();
             if (type == _usualType)
-            { 
+            {
                 context.Put(GenerateNIL());
             }
         }
@@ -1711,7 +1718,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Op.Type == XP.SUBSTR)
             {
-                string method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.InStr : VulcanQualifiedFunctionNames.InStr; 
+                string method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.InStr : VulcanQualifiedFunctionNames.InStr;
                 var argLeft = context.Left.Get<ExpressionSyntax>();
                 var argRight = context.Right.Get<ExpressionSyntax>();
                 var args = MakeArgumentList(MakeArgument(argLeft), MakeArgument(argRight));
@@ -1838,7 +1845,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ExpressionSyntax field;
                 if (fieldNode != null)
                 {
-                    // we only get here for the Area variant. 
+                    // we only get here for the Area variant.
                     area = fieldNode.Area.Get<ExpressionSyntax>();
                     field = GenerateLiteral(fieldNode.Field.GetText());
                 }
@@ -1898,7 +1905,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (fieldNode != null || fieldNodeLate != null)
             {
                 // postfix on an aliased field
-                // but not of the simple alias->fieldName type 
+                // but not of the simple alias->fieldName type
                 ExpressionSyntax area;
                 ExpressionSyntax field;
                 if (fieldNode != null)
@@ -1967,7 +1974,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 lhs = SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(baseName));
             }
-            // & var..Method() is also allowed. 
+            // & var..Method() is also allowed.
             if (string.IsNullOrEmpty(addition))
             {
                 return lhs;
@@ -2941,7 +2948,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                parameterList: paramList,
                constraintClauses: null,
                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            m.XNode = context; // link the Delegate to the calling code 
+            m.XNode = context; // link the Delegate to the calling code
             ClassEntities.Peek().Members.Add(m);    // add to current class
             // Now change the context and create the call to the delegate
             return GeneratePCallDelegateCall(context, name);
@@ -2967,7 +2974,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 delarglist.Add(context.ArgList._Args[i].Get<ArgumentSyntax>());
             }
-            // expr = Delegate (a,b,c) 
+            // expr = Delegate (a,b,c)
             expr = _syntaxFactory.InvocationExpression(expr, MakeArgumentList(delarglist.ToArray()));
             context.Put(expr);
             return true;
@@ -4160,12 +4167,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             /*
               | ( Id=identifier | LPAREN Alias=expression RPAREN)
                        ALIAS ( (LPAREN Expr=expression RPAREN)
-                      | Expr=expression )   
+                      | Expr=expression )
             */
             // there are 4 variations:
             // workarea = Id or Alias
             // expression between parens or not
-            // 
+            //
             // assignments in the RHS are handled in the ExitAssignmentExpression
 
             var push = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.PushWorkarea : VulcanQualifiedFunctionNames.PushWorkarea, MakeArgumentList(MakeArgument(wa)), true);
@@ -4177,7 +4184,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Parent.Parent.Parent is XP.ExpressionStmtContext)
             {
                 // context.Parent is always a primaryexpression
-                // if context.Parent.Parent is a Expressionstatement then we do not have 
+                // if context.Parent.Parent is a Expressionstatement then we do not have
                 // save the return value of the expression
                 pushStmt.XNode = wa.XNode;
                 popStmt.XNode = expr.XNode;
@@ -4208,7 +4215,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //
             // translate to a lambda with the following contents:
             //
-            //  {  => 
+            //  {  =>
             //   __pushWorkarea(CUSTOMER)
             //   try
             //     return expr
@@ -4263,8 +4270,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             /*
             | FIELD ALIAS (Alias=identifier ALIAS)? Field=identifier    #aliasedField		      // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
-            | Alias=identifier ALIAS Field=identifier                   #aliasedField		      // CUSTOMER->NAME, 
-            | LPAREN Area=identifier RPAREN ALIAS Field=identifier      #aliasedField		      // (nCust)->NAME 
+            | Alias=identifier ALIAS Field=identifier                   #aliasedField		      // CUSTOMER->NAME,
+            | LPAREN Area=identifier RPAREN ALIAS Field=identifier      #aliasedField		      // (nCust)->NAME
             */
             var fldName = context.Field.GetText();
             if (context.Area != null)
@@ -4296,7 +4303,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             /*
                     | Alias=identifier              ALIAS AMP Field=expression  #aliasedFieldLate	    // CUSTOMER->&fldName
                     | FIELD ALIAS (Alias=identifier ALIAS)? AMP Field=expression #aliasedFieldLate	  // _FIELD->CUSTOMER->&fldName or _FIELD->&fldName
-                    | LPAREN Area=identifier RPAREN ALIAS AMP Field=expression  #aliasedFieldLate	    // (nCust)->&fldName 
+                    | LPAREN Area=identifier RPAREN ALIAS AMP Field=expression  #aliasedFieldLate	    // (nCust)->&fldName
 
             */
 
@@ -4446,7 +4453,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitVoConversionExpression([NotNull] XP.VoConversionExpressionContext context)
         {
 
-            // Special case for PSZ(..) 
+            // Special case for PSZ(..)
             // PSZ("String") becomes String2Psz("String")
             // USUAL(<expr>) gets simplified to <expr>
             if (context.XType != null)

@@ -63,6 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool EnforceSelf { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
         public string StdDefs { get; internal set; } = string.Empty;
+        public bool SuppressInit1 { get; internal set; } = false;
         public XSharpTargetDLL TargetDLL { get; internal set; } = XSharpTargetDLL.Other;
         public bool Verbose { get; internal set; } = false;
         public bool Vo1 { get; internal set; } = false;

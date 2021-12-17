@@ -49,10 +49,10 @@ namespace XSharp.LanguageService.Editors.LightBulb
         private ITextView m_textView;
 
         private IXTypeSymbol _classEntity;
-        private Dictionary<string, List<XSourceMemberSymbol>> _members;
+        private Dictionary<string, List<IXMemberSymbol>> _members;
         private XFile _xfile;
         private TextRange _range;
-        private SnapshotPoint _oldCaret ;
+
 
 #pragma warning disable CS0067
         public event EventHandler<EventArgs> SuggestedActionsChanged;
@@ -92,7 +92,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             if (SearchMissingMembers())
             {
                 List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
-                foreach (KeyValuePair<string, List<XSourceMemberSymbol>> intfaces in _members)
+                foreach (KeyValuePair<string, List<IXMemberSymbol>> intfaces in _members)
                 {
                     var ImplementInterfaceAction = new ImplementInterfaceSuggestedAction(this.m_textView, this.m_textBuffer, intfaces.Key, this._classEntity, intfaces.Value, this._range);
                     suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { ImplementInterfaceAction }));
@@ -168,9 +168,9 @@ namespace XSharp.LanguageService.Editors.LightBulb
             }
         }
 
-        private Dictionary<string, List<XSourceMemberSymbol>> BuildMissingMembers()
+        private Dictionary<string, List<IXMemberSymbol>> BuildMissingMembers()
         {
-            Dictionary<string, List<XSourceMemberSymbol>> toAdd = new Dictionary<string, List<XSourceMemberSymbol>>();
+            Dictionary<string, List<IXMemberSymbol>> toAdd = new Dictionary<string, List<IXMemberSymbol>>();
             //
             if (_classEntity.Interfaces.Count == 0)
                 return null;
@@ -184,15 +184,15 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 {
                     if (iftype.Kind == Kind.Interface)
                     {
-                        List<XSourceMemberSymbol> elementsToAdd = new List<XSourceMemberSymbol>();
+                        List<IXMemberSymbol> elementsToAdd = new List<IXMemberSymbol>();
                         // Search all Interface Members
-                        foreach (XSourceMemberSymbol mbr in iftype.Members)
+                        foreach (IXMemberSymbol mbr in iftype.Members)
                         {
                             bool found = false;
                             // Is it already in classEntity ?
                             foreach (IXMemberSymbol entityMbr in _classEntity.Members)
                             {
-                                if (String.Compare(mbr.Description, entityMbr.Description, true) == 0)
+                                if (String.Compare(this.GetDescription(mbr), this.GetDescription(entityMbr), true) == 0)
                                 {
                                     found = true;
                                     break;
@@ -304,6 +304,18 @@ namespace XSharp.LanguageService.Editors.LightBulb
                 lineState = linesState.GetFlags(lineNumber);
             }
             return lineNumber;
+        }
+
+        private string GetDescription(IXMemberSymbol mbr)
+        {
+            string desc = mbr.Description;
+            if ((mbr is XPEMethodSymbol) || (mbr is XPEPropertySymbol))
+            {
+                desc = desc.Replace(" ABSTRACT ", "");
+                desc = desc.Replace(" NEW ", "");
+                desc = desc.Replace(" OVERRIDE ", "");
+            }
+            return desc;
         }
 
     }

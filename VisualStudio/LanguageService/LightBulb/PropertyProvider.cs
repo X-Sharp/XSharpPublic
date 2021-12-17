@@ -49,7 +49,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
         private ITextView m_textView;
 
         private XSourceMemberSymbol _memberEntity;
-        private XFile _xfile;
         private TextRange _range;
 
 #pragma warning disable CS0067
@@ -122,7 +121,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
                     if (_memberEntity.Parent is XSourceTypeSymbol container)
                     {
                         // Remove the first Underscore
-                        string searchFor = _memberEntity.Name.Substring(1);
+                        string searchFor = _memberEntity.Name; //.Substring(1);
                         alreadyExist = false;
                         foreach (var member in container.Members)
                         {

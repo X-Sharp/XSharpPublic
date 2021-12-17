@@ -260,7 +260,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             if (lookupresult.Count > 0)
             {
                 var element = lookupresult[0];
-                if (element is XSourceMemberSymbol mem)
+                if (element is XSourceMemberSymbol mem && mem.Kind == Kind.Field)
                 {
                     _memberEntity = mem;
                     return true;

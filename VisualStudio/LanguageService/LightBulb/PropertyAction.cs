@@ -105,15 +105,15 @@ namespace XSharp.Project.Editors.LightBulb
             var settings = m_textView.TextBuffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
             //m_span.TextBuffer.Replace(m_span.GetSpan(m_snapshot), ");
             StringBuilder insertText;
-            // First line of the Entity
-            ITextSnapshotLine firstLine = m_snapshot.GetLineFromLineNumber(_range.EndLine);
+            // Last line of the Entity
+            int lineNumber = Math.Min(_range.EndLine, m_snapshot.LineCount - 1);
+            ITextSnapshotLine lastLine = m_snapshot.GetLineFromLineNumber(lineNumber);
             // Retrieve the text
-            string lineText = firstLine.GetText();
+            string lineText = lastLine.GetText();
             // and count how many spaces we have before
             int count = lineText.TakeWhile(Char.IsWhiteSpace).Count();
             // Get these as prefix
             string prefix = lineText.Substring(0, count);
-            ITextSnapshotLine lastLine = m_snapshot.GetLineFromLineNumber(_range.EndLine);
             List<Inline> content = new List<Inline>();
             // Add a comment with the Interface name ??
             insertText = new StringBuilder();

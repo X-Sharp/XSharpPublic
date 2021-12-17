@@ -25,10 +25,10 @@ namespace XSharp.Project.Editors.LightBulb
         private ITextSnapshot m_snapshot;
         private ITextView m_textView;
         private IXTypeSymbol _classEntity;
-        private List<XSourceMemberSymbol> _members;
+        private List<IXMemberSymbol> _members;
         private XSharpModel.TextRange _range;
 
-        public ImplementInterfaceSuggestedAction(ITextView textView, ITextBuffer m_textBuffer, string intface, IXTypeSymbol entity, List<XSourceMemberSymbol> memberstoAdd, XSharpModel.TextRange range)
+        public ImplementInterfaceSuggestedAction(ITextView textView, ITextBuffer m_textBuffer, string intface, IXTypeSymbol entity, List<IXMemberSymbol> memberstoAdd, XSharpModel.TextRange range)
         {
             m_snapshot = m_textBuffer.CurrentSnapshot;
             m_interface = intface;
@@ -45,7 +45,7 @@ namespace XSharp.Project.Editors.LightBulb
             int max = _members.Count;
             foreach (IXMemberSymbol mbr in _members)
             {
-                Run temp = new Run(mbr.Description + Environment.NewLine);
+                Run temp = new Run(this.GetDescription(mbr) + Environment.NewLine);
                 content.Add(temp);
                 count++;
                 if ((count >= 3) && (max > 3))
@@ -62,6 +62,18 @@ namespace XSharp.Project.Editors.LightBulb
             textBlock.Padding = new Thickness(5);
             textBlock.Inlines.AddRange(content);
             return Task.FromResult<object>(textBlock);
+        }
+
+        private string GetDescription(IXMemberSymbol mbr)
+        {
+            string desc = mbr.Description;
+            if ((mbr is XPEMethodSymbol) || (mbr is XPEPropertySymbol))
+            {
+                desc = desc.Replace(" ABSTRACT ", "");
+                desc = desc.Replace(" NEW ", "");
+                desc = desc.Replace(" OVERRIDE ", "");
+            }
+            return desc;
         }
 
         public Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken)
@@ -135,17 +147,19 @@ namespace XSharp.Project.Editors.LightBulb
             insertText.Append(indent);
             insertText.AppendLine("#region Implement " + m_interface);
             insertText.AppendLine();
-            foreach (XSourceMemberSymbol mbr in _members)
+            foreach (IXMemberSymbol mbr in _members)
             {
                 // Todo : Check these
                 // Add XML doc on top of generated member ? <- Could be a Setting ?
                 // Add a return with default value ? <- Could be a Setting ?
                 // Add a THROW NotImplementedException ? <- Could be a Setting ?
+                //
+                string desc = this.GetDescription(mbr);
                 if (mbr.Kind.IsMethod())
                 {
                     insertText.Append(prefix);
                     insertText.Append(indent);
-                    insertText.AppendLine(mbr.Description);
+                    insertText.AppendLine(desc);
                     insertText.Append(prefix);
                     insertText.Append(indent);
                     insertText.Append(indent);
@@ -153,23 +167,34 @@ namespace XSharp.Project.Editors.LightBulb
                 }
                 else if (mbr.Kind.IsProperty())
                 {
-                    //
-                    string propDef = mbr.SourceCode;
-                    var keywords = propDef.Split(new char[] { ' ', '\t' });
-                    bool hasGet = keywords.Contains("get", StringComparer.InvariantCultureIgnoreCase);
-                    bool hasSet = keywords.Contains("set", StringComparer.InvariantCultureIgnoreCase);
-                    bool hasAuto = keywords.Contains("auto", StringComparer.InvariantCultureIgnoreCase);
+                    bool hasGet = false;
+                    bool hasSet = false;
+                    bool hasAuto = false;
+                    string propDef = "";
+                    if (mbr is XSourceMemberSymbol xsMbr)
+                    {
+                        propDef = xsMbr.SourceCode;
+                        var keywords = propDef.Split(new char[] { ' ', '\t' });
+                        hasGet = keywords.Contains("get", StringComparer.InvariantCultureIgnoreCase);
+                        hasSet = keywords.Contains("set", StringComparer.InvariantCultureIgnoreCase);
+                        hasAuto = keywords.Contains("auto", StringComparer.InvariantCultureIgnoreCase);
+                    }
+                    else if (mbr is XPEPropertySymbol peMbr)
+                    {
+                        hasGet = peMbr.Accessors.HasFlag(AccessorKind.Get);
+                        hasSet = peMbr.Accessors.HasFlag(AccessorKind.Set);
+                    }
                     insertText.Append(prefix);
                     insertText.Append(indent);
                     //insertText.Append(' '); ModVis already has a final space
                     if (hasAuto)
                     {
                         insertText.Append(mbr.ModVis);
-                        insertText.AppendLine(mbr.SourceCode);
+                        insertText.AppendLine(propDef);
                     }
                     else
                     {
-                        insertText.AppendLine(mbr.Description);
+                        insertText.AppendLine(desc);
                         if (hasGet)
                         {
                             insertText.Append(prefix);
@@ -237,34 +262,6 @@ namespace XSharp.Project.Editors.LightBulb
                 }
                 //
             }
-        }
-
-        /// <summary>
-        /// Try to infer a default value
-        /// </summary>
-        /// <param name="returnType"></param>
-        /// <returns></returns>
-        private string poorManDefaultValue(string returnType)
-        {
-            string ret = "";
-            returnType = returnType.ToLower();
-            switch (returnType)
-            {
-                case "int":
-                case "long":
-                case "float":
-                case "double":
-                    ret = "0";
-                    break;
-                case "boolean":
-                case "logic":
-                    ret = "false";
-                    break;
-                default:
-                    ret = "null";
-                    break;
-            }
-            return ret;
         }
 
 

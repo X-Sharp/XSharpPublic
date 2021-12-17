@@ -201,6 +201,28 @@ BEGIN NAMESPACE XSharpModel
          RETURN
          #region AssemblyReferences
 
+        METHOD RefreshReferences(asmList as IList<string>) AS VOID
+            var oldAsm := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase}
+            var newAsm := List<string>{}
+            foreach var name in SELF:AssemblyReferenceNames
+                oldAsm:Add(name, name)
+            next
+
+            FOREACH var asmFile in asmList
+                if oldAsm:ContainsKey(asmFile)
+                    oldAsm:Remove(asmFile)
+                else
+                    newAsm:Add(asmFile)
+                endif
+            next
+            FOREACH var item in oldAsm
+                SELF:RemoveAssemblyReference(item:Value)
+            NEXT
+            FOREACH var item in newAsm
+                SELF:AddAssemblyReference(item)
+            NEXT
+            RETURN
+
          METHOD AddAssemblyReference(path AS STRING) AS VOID
             IF ! String.IsNullOrEmpty(path)
                IF XSettings.EnableReferenceInfoLog

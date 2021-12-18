@@ -82,8 +82,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
 
         DESTRUCTOR()
-                VAR fs := _stream ASTYPE FileStream
-                IF fs != NULL
+                IF _name != NULL
                     BEGIN LOCK BufferCache
                         LOCAL t AS WeakBuffer
                         IF BufferCache:TryGetValue(_name, OUT t)

@@ -26,23 +26,28 @@ namespace XSharp.Project.Editors.LightBulb
         private XSourceMemberSymbol _fieldEntity;
         private XSharpModel.TextRange _range;
         private bool _full;
+        private string _generateName;
+        private bool _renameField;
 
-        public PropertySuggestedAction(ITextView textView, ITextBuffer m_textBuffer, XSourceMemberSymbol fieldToPropertize, XSharpModel.TextRange range, bool fullProperty )
+        public PropertySuggestedAction(ITextView textView, ITextBuffer m_textBuffer, XSourceMemberSymbol fieldToPropertize, XSharpModel.TextRange range, bool fullProperty, string genName, bool renField)
         {
             m_snapshot = m_textBuffer.CurrentSnapshot;
             m_textView = textView;
+            //
             _fieldEntity = fieldToPropertize;
             _range = range;
             _full = fullProperty;
+            _renameField = renField;
+            _generateName = genName;
         }
 
         public Task<object> GetPreviewAsync(CancellationToken cancellationToken)
         {
             List<Inline> content = new List<Inline>();
             //
-            foreach (string desc in CreateProperty("",0))
+            foreach (string desc in CreateProperty("", 0))
             {
-                Run temp = new Run(desc + Environment.NewLine );
+                Run temp = new Run(desc + Environment.NewLine);
                 content.Add(temp);
             }
             // Create a "simple" list... Would be cool to have Colors...
@@ -63,7 +68,7 @@ namespace XSharp.Project.Editors.LightBulb
         }
         public string DisplayText
         {
-            get{ return "Encapsulate field:" + (_full ? "(full) " : " ") + _fieldEntity.Name; }
+            get { return "Encapsulate field:" + (_full ? "(full) " : " ") + _fieldEntity.Name + (_renameField ? "(and rename field) " : " "); }
         }
         public ImageMoniker IconMoniker
         {
@@ -121,12 +126,22 @@ namespace XSharp.Project.Editors.LightBulb
             var editSession = m_textView.TextBuffer.CreateEdit();
             try
             {
-                foreach( string line in CreateProperty(prefix, settings.IndentSize))
+                foreach (string line in CreateProperty(prefix, settings.IndentSize))
                 {
                     insertText.AppendLine(line);
                 }
                 // Inject code
                 editSession.Insert(lastLine.Start.Position, insertText.ToString());
+                if (_renameField)
+                {
+                    lineNumber = _fieldEntity.Range.StartLine;
+                    ITextSnapshotLine fieldLine = m_snapshot.GetLineFromLineNumber(lineNumber);
+                    string sourceCode = _fieldEntity.SourceCode;
+                    sourceCode = sourceCode.Replace(_fieldEntity.Name, _generateName);
+                    editSession.Insert( fieldLine.Start.Position, prefix);
+                    editSession.Replace( fieldLine.Extent, sourceCode);
+                }
+                
             }
             catch (Exception e)
             {
@@ -148,21 +163,25 @@ namespace XSharp.Project.Editors.LightBulb
             }
         }
 
-        private List<String> CreateProperty(string prefix, int indentSize )
+        private List<String> CreateProperty(string prefix, int indentSize)
         {
             List<String> result = new List<string>();
             String indent = new string(' ', indentSize);
             //
             StringBuilder insertText = new StringBuilder();
             insertText.Append(prefix);
-            insertText.Append(_fieldEntity.ModVis);
+            //insertText.Append(_fieldEntity.ModVis);
+            insertText.Append("PUBLIC "); // C# always set generated Properties as PUBLIC
             //insertText.Append(' '); ModVis already has a final space
             insertText.Append("PROPERTY ");
-            insertText.Append(_fieldEntity.Name.Substring(1));
+            if (_renameField)
+                insertText.Append(_fieldEntity.Name);
+            else
+                insertText.Append(_generateName);
             insertText.Append(" AS ");
             insertText.Append(_fieldEntity.TypeName);
             insertText.Append(" ");
-            if (_full )
+            if (_full)
             {
                 result.Add(insertText.ToString());
                 insertText.Clear();
@@ -179,7 +198,10 @@ namespace XSharp.Project.Editors.LightBulb
                 insertText.Append(indent);
                 insertText.Append("RETURN ");
             }
-            insertText.Append(_fieldEntity.Name);
+            if (!_renameField)
+                insertText.Append(_fieldEntity.Name);
+            else
+                insertText.Append(_generateName);
             insertText.Append(" ");
             if (_full)
             {
@@ -202,7 +224,10 @@ namespace XSharp.Project.Editors.LightBulb
                 insertText.Append(indent);
                 insertText.Append(indent);
             }
-            insertText.Append(_fieldEntity.Name);
+            if (!_renameField)
+                insertText.Append(_fieldEntity.Name);
+            else
+                insertText.Append(_generateName);
             insertText.Append(" := VALUE ");
             if (_full)
             {

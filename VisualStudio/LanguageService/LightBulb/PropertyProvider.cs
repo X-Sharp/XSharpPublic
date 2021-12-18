@@ -50,6 +50,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         private XSourceMemberSymbol _memberEntity;
         private TextRange _range;
+        private string _fieldName;
 
 #pragma warning disable CS0067
         public event EventHandler<EventArgs> SuggestedActionsChanged;
@@ -74,18 +75,27 @@ namespace XSharp.LanguageService.Editors.LightBulb
 #pragma warning restore VSTHRD105
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
+            string searchFor;
+            bool generateProp;
             // Do we have PROPERTY to Add ?
-            if (SearchMissingProperty())
+            if (SearchMissing(out searchFor, out generateProp))
             {
                 List<SuggestedActionSet> suggest = new List<SuggestedActionSet>();
+                // Generate Property and Keep Field
+                // Generate Property and Rename Field
+
                 // Single line
-                var PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, false);
+                var PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, false, searchFor, !generateProp);
                 suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
                 // Multi Line
-                PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, true);
+                PropAction = new PropertySuggestedAction(this.m_textView, this.m_textBuffer, this._memberEntity, this._range, true, searchFor, !generateProp);
                 suggest.Add(new SuggestedActionSet(new ISuggestedAction[] { PropAction }));
                 //
                 return suggest.ToArray();
+            }
+            else if (_memberEntity != null) // The Field exist, 
+            {
+
             }
             return Enumerable.Empty<SuggestedActionSet>();
         }
@@ -103,37 +113,59 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
 
         /// <summary>
-        /// Retrieve the Entity, and check if it has an Interface and if some members are missing
+        /// 1- check/retrieve the Field the caret is on
+        /// 2- check if it needs a Property :
+        ///   - if the field xxx starts with _ or m_, we search for xxx
+        ///   - if the field xxx doesn't start with any of the two,
+        ///     we will offer to create the Property with the same name and rename the Field
+        /// And we must check that we don't have an existing field/property with the "new" name
         /// </summary>
         /// <returns></returns>
-        public bool SearchMissingProperty()
+        public bool SearchMissing(out string searchFor, out bool generateProp)
         {
-            // Reset
-            _memberEntity = null;
-            if (SearchField())
+            searchFor = "";
+            generateProp = false;
+            // we are on a Field ?
+            if (_memberEntity != null)
             {
+                // Get it's location
                 _range = _memberEntity.Range;
                 // Ok, we know the Field, Check that we don't already have a Property with same name
-                if (_memberEntity != null)
+                // Assumption...
+                bool alreadyExist = true;
+                if (_memberEntity.Parent is XSourceTypeSymbol container)
                 {
-                    // Sorry... ;)
-                    bool alreadyExist = true;
-                    if (_memberEntity.Parent is XSourceTypeSymbol container)
+                    // Check the name
+                    searchFor = _memberEntity.Name;
+                    // We will generate a Property
+                    generateProp = false;
+                    if (searchFor.StartsWith("_"))
                     {
-                        // Remove the first Underscore
-                        string searchFor = _memberEntity.Name; //.Substring(1);
-                        alreadyExist = false;
-                        foreach (var member in container.Members)
+                        searchFor = searchFor.TrimStart(new char[] { '_' });
+                        generateProp = true;
+                    }
+                    else if (searchFor.StartsWith("m_", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        searchFor = searchFor.Substring(2);
+                        generateProp = true;
+                    }
+                    // Not generating a Property, so search a Field starting with _
+                    if (!generateProp)
+                    {
+                        searchFor = "_" + _memberEntity.Name;
+                    }
+                    //
+                    alreadyExist = false;
+                    foreach (var member in container.Members)
+                    {
+                        if (((member.Kind == Kind.Property) || (member.Kind == Kind.Field)) && (String.Compare(member.Name, searchFor, true) == 0))
                         {
-                            if ((member.Kind == Kind.Property) && (String.Compare(member.Name, searchFor, true) == 0))
-                            {
-                                alreadyExist = true;
-                                break;
-                            }
+                            alreadyExist = true;
+                            break;
                         }
                     }
-                    return !alreadyExist;
                 }
+                return !alreadyExist;
             }
             return false;
         }
@@ -242,8 +274,14 @@ namespace XSharp.LanguageService.Editors.LightBulb
             return found;
         }
 
+        /// <summary>
+        /// Search the item under the caret.
+        /// If a Field, it is stored in _memberentity
+        /// </summary>
+        /// <returns>True if the caret is placed ona Field</returns>
         private bool SearchField()
         {
+            _memberEntity = null;
             if (m_textBuffer.Properties == null)
                 return false;
             //
@@ -269,7 +307,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
         }
 
         /// <summary>
-        /// Based on the Caret line position, check if this is a continuig line
+        /// Based on the Caret line position, check if this is a continuing line
         /// </summary>
         /// <returns></returns>
         private int SearchRealStartLine()

@@ -607,7 +607,12 @@ namespace XSharp.LanguageService
                 context = new FormattingContext(this, _buffer.CurrentSnapshot);
             // Retrieve the current settings
             var settings = _buffer.Properties.GetProperty<SourceCodeEditorSettings>(typeof(SourceCodeEditorSettings));
-
+            XSharpLineState linesState = null;
+            if (!_buffer.Properties.TryGetProperty<XSharpLineState>(typeof(XSharpLineState), out linesState))
+            {
+                WriteOutputMessage("FormatSpan : no LineState in the current buffer.");
+                return;
+            }
             // Create an Edit Session
             var editSession = _buffer.CreateEdit();
             try
@@ -639,6 +644,7 @@ namespace XSharp.LanguageService
                     // Ignore Empty lines
                     if (snapLine.Length > 0)
                     {
+                        var lineState = linesState.GetFlags(lineNumber);
                         context.MoveTo(snapLine.Start);
                         // Get the first Token on line
                         IToken startToken = context.GetFirstToken(true);
@@ -673,6 +679,8 @@ namespace XSharp.LanguageService
                             if (lineContinue == 0)
                             {
                                 indentSize = GetLineIndentation(snapLine, context, nextIndentSize, settings, out moveAfterFormatting, out moveContinuingLine, nestedEntity);
+                                if (lineState.HasFlag(LineFlags.SingleLineEntity))
+                                    moveAfterFormatting = 0;
                             }
                         }
                         //

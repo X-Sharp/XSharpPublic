@@ -20,6 +20,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONST INBUFFER_MAX_SIZE := 16384 AS INT
 
         PROTECT _stream        AS Stream
+        PROTECT _name          AS STRING
         PROTECT _recordLength  AS LONG
         PROTECT _headerLength  AS LONG
         PROTECT _shared        AS LOGIC
@@ -31,8 +32,20 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _inBufferLen   AS LONG
         PROTECT _inBufferTick  AS INT
 
+        CLASS WeakBuffer
+            INTERNAL RefCount := 1 AS WORD
+            INTERNAL Buffer AS BYTE[]
+            CONSTRUCTOR(size AS LONG)
+                Buffer := BYTE[]{size}
+            INTERNAL METHOD Resize(size AS LONG) AS VOID
+                System.Array.Resize(REF Buffer, size)
+        END CLASS
+
+        PRIVATE STATIC BufferCache := Dictionary<STRING, WeakBuffer>{} AS Dictionary<STRING, WeakBuffer>
+
         CONSTRUCTOR(stream AS Stream, headerLength AS INT, recordLength AS INT, shared AS LOGIC) AS VOID
             _stream := stream
+            _name := (stream ASTYPE FileStream)?:Name
             _recordLength := recordLength
             _headerLength := headerLength
             _shared := shared
@@ -44,11 +57,43 @@ BEGIN NAMESPACE XSharp.RDD
             _look_behind := nRec - _look_ahead - 1
 
             IF _look_ahead > 0 && _look_behind >= 0
-                _inBuffer := BYTE[]{(1+SELF:_look_ahead+SELF:_look_behind)*SELF:_recordLength}
+                IF _name != NULL
+                    BEGIN LOCK BufferCache
+                        LOCAL t AS WeakBuffer
+                        VAR size := (1+SELF:_look_ahead+SELF:_look_behind)*SELF:_recordLength
+                        IF BufferCache:TryGetValue(_name, OUT t)
+                            t:RefCount += 1
+                            IF size != t:Buffer:Length
+                                t:Resize(size)
+                            ENDIF
+                        ELSE
+                            t := WeakBuffer{size}
+                            BufferCache:Add(_name, t)
+                        ENDIF
+                        _inBuffer := t:Buffer
+                    END LOCK
+                ELSE
+                    _inBuffer := BYTE[]{(1+SELF:_look_ahead+SELF:_look_behind)*SELF:_recordLength}
+                ENDIF
             ELSE
                 _inBuffer := NULL
             ENDIF
 
+            RETURN
+
+        DESTRUCTOR()
+                VAR fs := _stream ASTYPE FileStream
+                IF fs != NULL
+                    BEGIN LOCK BufferCache
+                        LOCAL t AS WeakBuffer
+                        IF BufferCache:TryGetValue(_name, OUT t)
+                            t:RefCount -= 1
+                            IF t:RefCount < 1
+                                BufferCache:Remove(_name)
+                            ENDIF
+                        ENDIF
+                    END LOCK
+                ENDIF
             RETURN
 
         PRIVATE METHOD ReadAt(position AS LONG, buffer AS BYTE[], offset AS LONG, length AS LONG) AS LONG
@@ -141,8 +186,9 @@ BEGIN NAMESPACE XSharp.RDD
         METHOD Write(offset AS LONG, buffer AS BYTE[], size AS LONG) AS LOGIC
             VAR res := SELF:WriteAt(offset, buffer, 0, size)
             IF res .AND. _inBuffer != NULL
-                IF offset >= _inBufferOfs .AND. offset+size <= _inBufferOfs+_inBufferLen
-                    Array.Copy( buffer, 0, _inBuffer, offset - _inBufferOfs, size )
+                IF offset <= _inBufferOfs+_inBufferLen .AND. offset+size >= _inBufferOfs
+                    VAR buffer_ofs := Math.Max( 0, _inBufferOfs - offset )
+                    Array.Copy( buffer, buffer_ofs, _inBuffer, Math.Max( 0, offset - _inBufferOfs), size - buffer_ofs )
                 ENDIF
             ENDIF
             RETURN res

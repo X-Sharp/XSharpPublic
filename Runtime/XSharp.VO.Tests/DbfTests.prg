@@ -563,6 +563,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBError_test() AS VOID
 			LOCAL cDbf AS STRING
+			
+			LOCAL FUNCTION _Throw(oError AS Exception) AS VOID
+				THROW oError
+			END FUNCTION
 
 			cDbf := __FUNCTION__
 
@@ -570,6 +574,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbUseArea(,,cDbf,,TRUE)
 			Assert.True( DbAppend() )
 			Assert.True( DbUnLock() )
+			LOCAL oErrorBlock AS CODEBLOCK
+			oErrorBlock := ErrorBlock({|oError|_Throw(oError)})
 			TRY
 				? FieldPut ( 1 , "ABC") // record not locked
 			CATCH e AS XSharp.Error
@@ -579,6 +585,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				? e:OSCodeText
 				? e:ToString() // exception here
 			FINALLY
+				ErrorBlock(oErrorBlock)
 				Assert.True( DbCloseArea() )
 			END TRY
 		RETURN

@@ -194,17 +194,21 @@ BEGIN NAMESPACE XSharp.RDD
             VAR res := SELF:WriteAt(offset, buffer, 0, size)
             IF res .AND. _inBuffer != NULL
                 BEGIN LOCK _weakBuffer
-                    IF offset <= _inBufferOfs+_inBufferLen .AND. offset+size >= _inBufferOfs
+                    IF offset < _inBufferOfs+_inBufferLen .AND. offset+size > _inBufferOfs
                         VAR buffer_ofs := Math.Max( 0, _inBufferOfs - offset )
-                        Array.Copy( buffer, buffer_ofs, _inBuffer, Math.Max( 0, offset - _inBufferOfs), size - buffer_ofs )
+                        VAR inbuffer_ofs := Math.Max( 0, offset - _inBufferOfs )
+                        VAR buffer_size := Math.Min( size - buffer_ofs, _inBufferLen - inbuffer_ofs )
+                        Array.Copy( buffer, buffer_ofs, _inBuffer, inbuffer_ofs, buffer_size )
                     ENDIF
                 END LOCK
             ENDIF
             RETURN res
 
         METHOD Invalidate() AS VOID
-            _inBufferOfs := 0
-            _inBufferLen := 0
+            BEGIN LOCK _weakBuffer
+                _inBufferOfs := 0
+                _inBufferLen := 0
+            END LOCK
             RETURN
     END CLASS
 

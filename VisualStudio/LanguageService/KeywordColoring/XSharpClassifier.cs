@@ -856,7 +856,7 @@ namespace XSharp.LanguageService
                 {
                     var token = (XSharpToken) tokenStream.Get(iToken);
                     // store the tokens per line in a dictionary so we can quickly look them up
-                    if (token.Channel == XSharpLexer.DefaultTokenChannel)
+                    if ( (token.Channel == XSharpLexer.DefaultTokenChannel) ||( token.Channel == XSharpLexer.DEFOUTCHANNEL ) )
                     {
                         var line = token.Line - 1;  // VS Has 0 based line numbers
                         if (!lines.ContainsKey(line))

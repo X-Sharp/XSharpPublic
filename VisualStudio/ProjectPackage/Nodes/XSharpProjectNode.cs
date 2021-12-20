@@ -1507,10 +1507,12 @@ namespace XSharp.Project
         {
 
         }
-        internal void BuildEnded()
+        internal void BuildEnded(bool didCompile)
         {
-
-            RefreshReferencesFromResponseFile();
+            if (didCompile)
+            {
+                RefreshReferencesFromResponseFile();
+            }
         }
 
 

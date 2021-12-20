@@ -68,7 +68,7 @@ namespace XSharp.Project.Editors.LightBulb
         }
         public string DisplayText
         {
-            get { return "Encapsulate field:" + (_full ? "(full) " : " ") + _fieldEntity.Name + (_renameField ? "(and rename field) " : " "); }
+            get { return "Encapsulate field:" + (_full ? "(full) " : " ") + _fieldEntity.Name.Replace("_", "__") + (_renameField ? "(and rename field) " : " "); }
         }
         public ImageMoniker IconMoniker
         {

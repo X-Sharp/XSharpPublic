@@ -50,7 +50,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
 
         private XSourceMemberSymbol _memberEntity;
         private TextRange _range;
-        private string _fieldName;
 
 #pragma warning disable CS0067
         public event EventHandler<EventArgs> SuggestedActionsChanged;
@@ -64,15 +63,14 @@ namespace XSharp.LanguageService.Editors.LightBulb
             _memberEntity = null;
         }
 
-#pragma warning disable VSTHRD105
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 return SearchField();
             });
         }
-#pragma warning restore VSTHRD105
+
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
             string searchFor;
@@ -273,7 +271,7 @@ namespace XSharp.LanguageService.Editors.LightBulb
             }
             return found;
         }
-
+        
         /// <summary>
         /// Search the item under the caret.
         /// If a Field, it is stored in _memberentity
@@ -292,7 +290,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
             // LookUp for the BaseType, reading the TokenList (From left to right)
             var lookupresult = new List<IXSymbol>();
             lookupresult.AddRange(XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
-            var lastToken = tokenList.LastOrDefault();
             //
             if (lookupresult.Count > 0)
             {

@@ -369,7 +369,7 @@ BEGIN NAMESPACE XSharpModel
          Log(i"Completed, found {_EntityList.Count} entities and {typelist.Count} types")
          IF SELF:_EntityList:Count > 0
             VAR lastEntity          := SELF:_EntityList:Last()
-            if ! lastEntity:Kind:IsClassMember(_dialect)
+            if ! lastEntity:Kind:IsClassMember(_dialect) .and. ! lastEntity:Kind:HasEndKeyword()
                 lastEntity:Range        := lastEntity:Range:WithEnd(lasttoken)
                 lastEntity:Interval     := lastEntity:Interval:WithEnd(lasttoken)
             ENDIF

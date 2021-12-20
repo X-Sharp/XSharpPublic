@@ -205,7 +205,9 @@ BEGIN NAMESPACE XSharpModel
             var oldAsm := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase}
             var newAsm := List<string>{}
             foreach var name in SELF:AssemblyReferenceNames
-                oldAsm:Add(name, name)
+                IF ! oldAsm:ContainsKey(name)
+                    oldAsm:Add(name, name)
+                endif
             next
 
             FOREACH var asmFile in asmList

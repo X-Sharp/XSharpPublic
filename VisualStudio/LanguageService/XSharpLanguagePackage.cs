@@ -199,8 +199,6 @@ namespace XSharp.LanguageService
             }
             // Formatting
             XSettings.EditorIndentFactor = _formattingPage.MultiFactor;
-            XSettings.EditorFormatAlignDoCase = _formattingPage.AlignDoCase;
-            XSettings.EditorFormatAlignMethod = _formattingPage.AlignMethod;
             XSettings.IdentifierCase = _formattingPage.IdentifierCase;
             XSettings.UDCKeywordCase = _formattingPage.UdcCase;
             XSettings.EditorTrimTrailingWhiteSpace = _formattingPage.TrimTrailingWhiteSpace;

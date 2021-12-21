@@ -20,8 +20,8 @@ namespace XSharp.LanguageService
         #region Keywords Definitions
         private static string[] _indentKeywords;
         private static string[] _codeBlockKeywords;
-        private static string[] _specialCodeBlockKeywords;
         private static string[][] _middleKeywords;
+        private static string[][] _endKeywords;
         private static string[][] _specialKeywords;
         private static Dictionary<string, List<string>> _specialOutdentKeywords;
         //private static string[] _xtraKeywords;
@@ -34,12 +34,14 @@ namespace XSharp.LanguageService
                 _indentKeywords = getIndentKeywords();
                 // Start of Method, Function, ...
                 _codeBlockKeywords = getStartOfCodeKeywords();
-                _specialCodeBlockKeywords = getSpecialStartOfCodeKeywords();
                 // Middle Keywords : ELSE, ELSEIF, ...
                 _middleKeywords = getMiddleKeywords();
-                // Name is Self-explanatory
+
+                // End Keywords : ELSE, ELSEIF, ...
+                _endKeywords = getendkeywords();// Name is Self-explanatory
+
                 _specialKeywords = getSpecialMiddleKeywords();
-                // Build list for Outdent tokens
+                // Build list for Outdent tokens where the end keyword can map multiple tokens
                 _specialOutdentKeywords = getSpecialOutdentKeywords();
                 //
                 //_xtraKeywords = getXtraKeywords();
@@ -51,24 +53,28 @@ namespace XSharp.LanguageService
         {
             // "DO" is removed by getFirstKeywordInLine(), so it is useless here...
             return new string[]{
-                "DO","FOR","FOREACH","WHILE","IF",
+                "DO CASE","DO SWITCH", "FOR","FOREACH","WHILE","IF",
                 "BEGIN","TRY","REPEAT","SWITCH",
                 "INTERFACE","ENUM","CLASS","STRUCTURE","VOSTRUCT","UNION",
-                "#IFDEF" };
+                "#IFDEF", "#IFNDEF"};
         }
+
+
 
         private static Dictionary<string, List<string>> getSpecialOutdentKeywords()
         {
-            // These are keywords that trigger out-denting. Some keywords have multiple begin keywords
+            // These are keywords that trigger out-denting. Each keywords has multiple begin keywords
             // ...
             var result = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
-            result.Add("ENDIF", new List<string>() { "IF" });
-            result.Add("ENDCASE", new List<string>() { "DO" });
-            result.Add("UNTIL", new List<string>() { "REPEAT" });
             result.Add("NEXT", new List<string>() { "FOR", "FOREACH" });
-            result.Add("END", new List<string>() { "BEGIN", "DO", "IF", "TRY", "WHILE", "GET", "SET", "PROPERTY", "EVENT", "ADD", "REMOVE", "SWITCH", "CLASS", "STRUCTURE", "INTERFACE", "ENUM", "FUNCTION", "PROCEDURE", "CONSTUCTOR", "DESTRUCTOR", "ACCESS", "ASSIGN", "METHOD", "OPERATOR" });
             result.Add("ENDDO", new List<string>() { "DO", "WHILE" });
-            result.Add("#ENDIF", new List<string>() { "#IFDEF" });
+            result.Add("#ENDIF", new List<string>() { "#IFDEF", "#IFNDEF" });
+            // when end is followed by a keyword we look with that keyword
+            // this are all for constructs that have an optional following word.
+            // so CLASS, STRUCTURE etc are excluded
+            result.Add("END", new List<string>() { "BEGIN", "DO", "IF", "TRY", "WHILE", "GET", "SET", "INIT", "PROPERTY",
+                "EVENT", "ADD", "REMOVE", "SWITCH", "ENUM", "FUNCTION", "PROCEDURE", "CONSTUCTOR", "DESTRUCTOR", "ACCESS",
+                "ASSIGN", "METHOD", "OPERATOR" });
             return result;
         }
 
@@ -79,15 +85,7 @@ namespace XSharp.LanguageService
                 "FUNCTION","PROCEDURE",
                 "CONSTRUCTOR","DESTRUCTOR",
                 "ACCESS","ASSIGN",
-                "METHOD","OPERATOR"
-            };
-        }
-
-        // These are special Start of Code, because they have an END
-        private static string[] getSpecialStartOfCodeKeywords()
-        {
-            // Entities where a closing keyword is mandatory
-            return new string[]{
+                "METHOD","OPERATOR",
                 "GET", "SET", "PROPERTY", "ADD", "REMOVE", "EVENT"
             };
         }
@@ -106,9 +104,62 @@ namespace XSharp.LanguageService
                 new string[]{ "FINALLY", "TRY" },
                 new string[]{ "CATCH", "TRY" },
                 new string[]{ "RECOVER", "BEGIN" },
-                new string[]{ "#ELSE","#IFDEF" }
             };
         }
+        private static string[][] getendkeywords()
+        {
+            // these are keywords that we have between other keywords
+            //
+            // "else" is the keyword that will trigger the process
+            // "if" is the keyword to align to
+            // ...
+            return new string[][]
+            {
+                new string[]{ "END IF ","IF" },
+                new string[]{ "ENDIF","IF" },
+                new string[]{ "END TRY", "TRY" },
+                new string[]{ "ENDTRY", "TRY" },
+                new string[]{ "END CASE", "DO CASE" },
+                new string[]{ "ENDCASE", "DO CASE" },
+                new string[]{ "END SWITCH", "SWITCH" },
+                new string[]{ "UNTIL", "REPEAT" },
+                new string[]{ "END CLASS", "CLASS" },
+                new string[]{ "END STRUCTURE", "STRUCTURE" },
+                new string[]{ "END INTERFACE", "INTERFACE" },
+                new string[]{ "END ENUM", "ENUM" },
+                new string[]{ "END FUNCTION", "FUNCTION" },
+                new string[]{ "ENDFUNC", "FUNCTION" },
+                new string[]{ "END PROCEDURE", "PROCEDURE" },
+                new string[]{ "ENDPROC", "PROCEDURE" },
+                new string[]{ "END CONSTRUCTOR", "CONSTRUCTOR" },
+                new string[]{ "END DESTRUCTOR", "DESTRUCTOR" },
+                new string[]{ "END ACCESS", "ACCESS" },
+                new string[]{ "END ASSIGN", "ASSIGN" },
+                new string[]{ "END METHOD", "METHOD" },
+                new string[]{ "END OPERATOR", "OPERATOR" },
+                new string[]{ "END PROPERTY", "PROPERTY" },
+                new string[]{ "END EVENT", "EVENT" },
+                new string[]{ "END GET", "GET" },
+                new string[]{ "END SET", "SET" },
+                new string[]{ "END INIT", "INIT" },
+                new string[]{ "END ADD", "ADD" },
+                new string[]{ "END REMOVE", "REMOVE" },
+                new string[]{ "END VOSTRUCT", "VOSTRUCT" },
+                new string[]{ "END UNION", "UNION" },
+                new string[]{ "END WITH", "WITH" },
+                new string[]{ "END NAMESPACE", "BEGIN" },
+                new string[]{ "END SEQUENCE", "BEGIN" },
+                new string[]{ "END LOCK", "BEGIN" },
+                new string[]{ "END SCOPE", "BEGIN" },
+                new string[]{ "END CHECKED", "BEGIN" },
+                new string[]{ "END UNCHECKED", "BEGIN" },
+                new string[]{ "END USING", "BEGIN" },
+                new string[]{ "END FIXED", "BEGIN" }
+
+        };
+        }
+
+
 
         private static string[][] getSpecialMiddleKeywords()
         {
@@ -118,32 +169,33 @@ namespace XSharp.LanguageService
             // ...
             return new string[][]
             {
-                new string[]{ "CASE","DO,SWITCH,BEGIN" },
-                new string[]{ "OTHERWISE", "DO,SWITCH,BEGIN" }
+                new string[]{ "CASE","DO CASE,DO SWITCH,SWITCH,BEGIN" },
+                new string[]{ "OTHERWISE", "DO CASE,DO SWITCH,SWITCH,BEGIN" },
+                new string[]{ "#ELSE", "#IFDEF,#IFNDEF" }
             };
         }
 
-        //private static string[] getXtraKeywords()
-        //{
-        //    //
-        //    return new string[]{
-        //        "ENDFUNC", "ENDPROC", "ENDFOR", "ENDDEFINE"
-        //    };
-        //}
-
-        private static string searchMiddleKeyword(string keyword)
+        private static string searchMiddleKeyword(string keyword, out bool isMiddle)
         {
-            string startToken = null;
-            for (int i = 0; i < _middleKeywords.Length; i++)
+            isMiddle = false;
+            foreach (var pair in _middleKeywords)
             {
-                var pair = _middleKeywords[i];
                 if (string.Compare(keyword, pair[0], true) == 0)
                 {
-                    startToken = pair[1];
-                    break;
+                    isMiddle = true;
+                    return pair[1];
                 }
             }
-            return startToken;
+            foreach (var pair in _endKeywords)
+            {
+                if (string.Compare(keyword, pair[0], true) == 0)
+                {
+                    isMiddle = false;
+                    return pair[1];
+                }
+            }
+            isMiddle = false;
+            return null;
         }
 
         private static string searchSpecialMiddleKeyword(string keyword)
@@ -215,7 +267,14 @@ namespace XSharp.LanguageService
 
         private void FormatLine()
         {
-            //
+            // When we get here we are at the start of the line.
+            // We want to make sure that the previous line is properly indented
+            // for example if the previous line closes a block such as FOR .. NEXT
+            // We also want to adjust the starting whitespace based on the previous line.
+            // When the previous line indicates the start of a block / entity
+            // then we add one "tab stop"
+            // otherwise we copy the whitespace from the previous line
+
             SnapshotPoint caret = this._textView.Caret.Position.BufferPosition;
             ITextSnapshotLine line = caret.GetContainingLine();
             // On what line are we ?
@@ -913,7 +972,7 @@ namespace XSharp.LanguageService
                         {
                             if (nextKeyword.Type == XSharpLexer.NAMESPACE)
                             {
-                                // A NAMESPACE alwasy start in 0
+                                // A NAMESPACE always start in 0
                                 currentIndent = 0;
                             }
                             context.MoveBack();
@@ -1957,26 +2016,20 @@ namespace XSharp.LanguageService
                     // We need to analyze the Previous line
                     lineNumber--;
                     ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
-                    string keyword = getFirstKeywordInLine(prevLine, out bool doSkipped, out indentValue);
+                    string keyword = getFirstKeywordInLine(prevLine, out indentValue);
                     if (indentValue < 0)
                         indentValue = 0;
                     _lastIndentValue = indentValue;
                     if (alignOnPrev)
                         return _lastIndentValue;
                     // ok, now check what we have, starting the previous line
+                    bool indentNextLine = false;
                     if (!string.IsNullOrEmpty(keyword))// && !doSkipped)
                     {
                         // Start of a block of code ?
                         if (_codeBlockKeywords.Contains(keyword))
                         {
-                            if (!_settings.FormatAlignMethod)
-                            {
-                                indentValue += _settings.IndentSize;
-                            }
-                        }
-                        else if (_specialCodeBlockKeywords.Contains(keyword))
-                        {
-                            if (!_settings.FormatAlignMethod)
+                            if (_settings.IndentEntityContent)
                             {
                                 indentValue += _settings.IndentSize;
                             }
@@ -2011,49 +2064,48 @@ namespace XSharp.LanguageService
                         }
                         else
                         {
-                            string startToken = searchMiddleKeyword(keyword);
-                            int specialIndentValue = -1;
+                            // this matches ELSE with IF but also ENDIF with IF and END IF with IF
+                            // isMiddel indicates if the next line needs to be indented or not
+                            string startToken = searchMiddleKeyword(keyword, out var isMiddle);
+                            int outdentValue = -1;
                             if (startToken != null)
                             {
                                 // Retrieve the Indentation for the previous line
-                                specialIndentValue = alignToSpecificTokens(line, new List<string> { startToken });
+                                outdentValue = alignToSpecificTokens(line, new List<string> { startToken });
+                                indentNextLine = isMiddle;
                             }
                             else
                             {
-                                if (doSkipped && keyword == "CASE")
+                                // We could have "special" middle keyword : CASE or OTHERWISE
+                                startToken = searchSpecialMiddleKeyword(keyword);
+                                if (startToken != null)
                                 {
-                                    if (!_settings.FormatAlignDoCase)
+                                    // The startToken is a list of possible tokens
+                                    outdentValue = alignToSpecificTokens(line, new List<string>(startToken.Split(new char[] { ',' })));
+                                    // The can be aligned to SWITCH/DO CASE or indented
+                                    if (_settings.IndentCaseLabel)
                                     {
-                                        indentValue += _settings.IndentSize;
+                                        outdentValue += _settings.IndentSize;
                                     }
-                                }
-                                else
-                                {
-                                    // We could have "special" middle keyword : CASE or OTHERWISE
-                                    startToken = searchSpecialMiddleKeyword(keyword);
-                                    if (startToken != null)
-                                    {
-                                        // The startToken is a list of possible tokens
-                                        specialIndentValue = alignToSpecificTokens(line, new List<string>(startToken.Split(new char[] { ',' })));
-                                        // The can be aligned to SWITCH/DO CASE or indented
-                                        if (!_settings.FormatAlignDoCase)
-                                        {
-                                            specialIndentValue += _settings.IndentSize;
-                                        }
-                                    }
+                                    indentNextLine = _settings.IndentCaseContent;
                                 }
 
                             }
-                            if (specialIndentValue != -1)
+                            if (outdentValue != -1)
                             {
                                 try
                                 {
                                     // De-Indent previous line !!!
                                     if (canIndentLine(prevLine))
                                     {
-                                        FormatLineIndent(editSession, prevLine, specialIndentValue);
+                                        FormatLineIndent(editSession, prevLine, outdentValue);
                                     }
-                                    indentValue = specialIndentValue + _settings.IndentSize;
+                                    indentValue = outdentValue;
+                                    if (indentNextLine)
+                                    {
+                                        indentValue += _settings.IndentSize;
+                                    }
+
                                 }
                                 catch (Exception ex)
                                 {
@@ -2107,11 +2159,22 @@ namespace XSharp.LanguageService
                         {
                             indentValue = getIndentTokenLength(token);
                             index++;
+                        }
+                        if (tokens.Count > index)
+                        {
                             token = tokens[index];
                         }
                         //
                         currentKeyword = token.Text.ToUpper();
-                        currentKeyword = currentKeyword.ToUpper();
+                        if (token.Type == XSharpLexer.DO)
+                        {
+                            // must be followed by whitespace and another token
+                            index += 2;
+                            if (tokens.Count > index  && XSharpLexer.IsKeyword(tokens[index].Type))
+                            {
+                                currentKeyword += " " + tokens[index ].Text.ToUpper();
+                            }
+                        }
                         if (tokenList.Contains(currentKeyword))
                         {
                             if (context.Count == 0)
@@ -2248,10 +2311,9 @@ namespace XSharp.LanguageService
         /// <param name="doSkipped">Bool value indicating if a "DO" keyword has been skipped</param>
         /// <param name="minIndent"></param>
         /// <returns></returns>
-        private string getFirstKeywordInLine(ITextSnapshotLine line, out bool doSkipped, out int minIndent)
+        private string getFirstKeywordInLine(ITextSnapshotLine line, out int minIndent)
         {
             minIndent = -1;
-            doSkipped = false;
             string startOfLine = line.GetText();
             string keyword = "";
             int index = 0;
@@ -2285,14 +2347,19 @@ namespace XSharp.LanguageService
                             keyword = "";
                             continue;
                         }
-                        if (token.Type == XSharpLexer.DO)
-                        {
-                            index++;
-                            keyword = "";
-                            doSkipped = true;
-                            continue;
-                        }
                         keyword = token.Text.ToUpper();
+                        if (token.Type == XSharpLexer.END && index < tokens.Count-2 && XSharpLexer.IsKeyword(tokens[index+2].Type))
+                        {
+                            index+=2;
+                            token = tokens[index];
+                            keyword += " " + token.Text.ToUpper();
+                        }
+                        else if (token.Type == XSharpLexer.DO && index < tokens.Count - 2 && XSharpLexer.IsKeyword(tokens[index + 2].Type))
+                        {
+                            index += 2;
+                            token = tokens[index];
+                            keyword += " " + token.Text.ToUpper();
+                        }
                     }
                     else if (XSharpLexer.IsComment(token.Type))
                     {
@@ -2301,7 +2368,7 @@ namespace XSharp.LanguageService
                     break;
                 }
             }
-            return keyword;
+            return keyword.Trim();
         }
         #endregion
 

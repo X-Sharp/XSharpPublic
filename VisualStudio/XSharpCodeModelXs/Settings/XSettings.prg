@@ -50,10 +50,6 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EditorCompletionAutoPairs          AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorCommitChars                  AS STRING AUTO
 
-        PUBLIC STATIC PROPERTY EditorFormatAlignDoCase            AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY EditorFormatAlignMethod            AS LOGIC AUTO
-        //PUBLIC STATIC PROPERTY EditorFormatAlignDoCase            AS LOGIC AUTO
-
         PUBLIC STATIC PROPERTY EditorNavigationIncludeFields        AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorNavigationSorted               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorNavigationMembersOfCurrentTypeOnly AS LOGIC AUTO

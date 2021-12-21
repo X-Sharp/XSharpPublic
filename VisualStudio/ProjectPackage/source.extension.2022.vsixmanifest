@@ -16,10 +16,6 @@ Includes a Project System, Language Service , Debugger Support, Custom Editors e
             <ProductArchitecture>amd64</ProductArchitecture>
         </InstallationTarget>
     </Installation>
-    <Dependencies>
-        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.7,)" />
-        <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[15.0,)" />
-    </Dependencies>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="Designers.pkgdef" TargetPath="|%CurrentProject%|" d:VsixSubPath="ProjectSystem" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" d:ProjectName="%CurrentProject%" d:VsixSubPath="ProjectSystem" />

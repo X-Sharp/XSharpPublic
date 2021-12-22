@@ -1865,6 +1865,11 @@ FileGUID = 5A6E69E4-8B22-4FAF-934E-E931C73C20C9
 FileFileGroup = 01F81BAF-05D1-46AA-ABF5-62658E79C911
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Dbf\InputBuffer.prg
+FileGUID = 04E79686-9E94-49DF-AF16-04E36FF3A710
+FileFileGroup = 01F81BAF-05D1-46AA-ABF5-62658E79C911
+FileType = Code
+CopyToBin = 0
 [XSharp.Rdd References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceProject = 354515DF-76E6-4CF9-B203-F8F632ACC2DC,1,0,XSharp.Core

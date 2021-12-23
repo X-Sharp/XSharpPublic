@@ -12,36 +12,65 @@
 INTERNAL STATIC CLASS ArrayHelpers
 
     STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, element  AS T , nStart AS LONG, nCount AS LONG) AS DWORD
-        LOCAL nItem AS LONG
-        LOCAL nLen  AS LONG
         ARRAYNOTNULL aTarget
-        nLen := (INT) aTarget:Length
-        FOR nItem := nStart TO nLen
-            IF Object.Equals(aTarget[ nItem], element)
-                RETURN (DWORD) nItem
-            ENDIF
-            nCount -= 1
-            IF nCount == 0
-                EXIT
-            ENDIF
-        NEXT
+        IF ! ArrayHelpers.ValidateArrayParams(aTarget, REF nStart, REF nCount, OUT VAR nSize)
+            RETURN 0
+        ENDIF
+        LOCAL nItem AS LONG
+        IF nStart < nSize
+            FOR nItem := nStart TO nSize
+                IF Object.Equals(aTarget[ nItem], element)
+                    RETURN (DWORD) nItem
+                ENDIF
+                nCount -= 1
+                IF nCount == 0
+                    EXIT
+                ENDIF
+            NEXT
+        ELSE
+            FOR nItem := nStart DOWNTO nSize
+                IF nCount > 0
+                    IF Object.Equals(aTarget[ nItem], element)
+                        RETURN (DWORD) nItem
+                    ENDIF
+                    nCount--
+                ELSE
+                    EXIT
+                ENDIF
+            NEXT
+        ENDIF
         RETURN 0
 
     STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, bAction AS @@Func<T, LOGIC> , nStart AS LONG, nCount AS LONG) AS DWORD
-        LOCAL nItem AS LONG
-        LOCAL nLen  AS LONG
         ARRAYNOTNULL aTarget
-        nLen := (INT) aTarget:Length
-        FOR nItem := nStart TO nLen
-            LOCAL oElement := aTarget[ nItem] AS T
-            IF bAction(oElement)
-                RETURN  (DWORD) nItem
-            ENDIF
-            nCount -= 1
-            IF nCount == 0
-                EXIT
-            ENDIF
-        NEXT
+        IF ! ArrayHelpers.ValidateArrayParams(aTarget, REF nStart, REF nCount, OUT VAR nSize)
+            RETURN 0
+        ENDIF
+        LOCAL nItem AS LONG
+        IF nStart < nSize
+            FOR nItem := nStart TO nSize
+                LOCAL oElement := aTarget[ nItem] AS T
+                IF bAction(oElement)
+                    RETURN  (DWORD) nItem
+                ENDIF
+                nCount -= 1
+                IF nCount == 0
+                    EXIT
+                ENDIF
+            NEXT
+        ELSE
+            FOR nItem := nStart DOWNTO nSize
+                LOCAL oElement := aTarget[ nItem] AS T
+                IF nCount > 0
+                    IF bAction(oElement)
+                        RETURN (DWORD) nItem
+                    ENDIF
+                    nCount--
+                ELSE
+                    EXIT
+                ENDIF
+            NEXT
+        ENDIF
         RETURN 0
 
 
@@ -271,6 +300,23 @@ INTERNAL STATIC CLASS ArrayHelpers
                 IF nStart < nSize
                     RETURN FALSE
                 END IF
+            END IF
+        END IF
+        RETURN TRUE
+    STATIC METHOD ValidateArrayParams<T>(aTarget AS __ArrayBase<T>, nStart REF LONG,nCount REF LONG, nSize OUT DWORD) AS LOGIC
+         nSize := aTarget:Length
+         IF nSize == 0
+             RETURN FALSE
+         ENDIF
+        IF nCount >= 0
+            IF nStart > nSize
+                RETURN FALSE
+            END IF
+        ELSE
+            nSize := 1
+            nCount := - nCount
+            IF nStart < nSize
+                RETURN FALSE
             END IF
         END IF
         RETURN TRUE
@@ -583,14 +629,14 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T) AS DWORD
     /// <typeparam name="T">The type of the array elements</typeparam>
     /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, act,1, (INT) aTarget:Length)
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, (INT) aTarget:Length- nStart +1)
 
 
@@ -598,7 +644,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DW
     /// <typeparam name="T">The type of the array elements</typeparam>
     /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, act, nStart, (INT) aTarget:Length - nStart +1)
 
 
@@ -606,13 +652,13 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS L
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG, nCount AS LONG) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG, nCount  AS LONG) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, act, nStart, nCount)
 
 

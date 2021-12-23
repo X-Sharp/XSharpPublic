@@ -1,5 +1,6 @@
 // 809. Program hangs with incorrect late bound call
-// https://github.com/X-Sharp/XSharpPublic/issues/810
+// https://github.com/X-Sharp/XSharpPublic/issues/810    
+// https://github.com/X-Sharp/XSharpPublic/issues/836
 // /vo7+ and Target:x86
 FUNCTION Start() AS VOID STRICT
 TestClass{}:DoSomething()

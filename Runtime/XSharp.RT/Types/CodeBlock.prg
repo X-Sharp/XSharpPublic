@@ -56,9 +56,9 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 		    uArgs := _ObjectArrayToUsualArray(args)
         ENDIF
         var result := SELF:Eval(uArgs)
-        IF IsNil(result) .and. RuntimeState.Dialect == XSharpDialect.FoxPro
-            result := FALSE
-        ENDIF
+//        IF IsNil(result) .and. RuntimeState.Dialect == XSharpDialect.FoxPro
+//            result := FALSE
+//        ENDIF
         RETURN result
 
 

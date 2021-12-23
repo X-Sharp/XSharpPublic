@@ -208,6 +208,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return BetterResult.Neither;
         }
+        /// <summary>
+        /// This function tries to decide which of 2 overloads needs to be picked.
+        /// The logic is VERY complicated and fragile
+        /// In the code below m1 is called Left and m2 is called Right (to match the return BetterLeft and BetterRight)
+        /// </summary>
+        /// <typeparam name="TMember"></typeparam>
+        /// <param name="m1"></param>
+        /// <param name="m2"></param>
+        /// <param name="arguments"></param>
+        /// <param name="result"></param>
+        /// <param name="useSiteDiagnostics"></param>
+        /// <returns></returns>
         private bool VOBetterFunctionMember<TMember>(
             MemberResolutionResult<TMember> m1,
             MemberResolutionResult<TMember> m2,
@@ -230,16 +242,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // prefer non runtime over runtime to allow customers to override built-in functions
                     if (asm1.IsRT() != asm2.IsRT())
                     {
-                        if (asm1.IsRT())
-                        {
-                            result = BetterResult.Right;
-                            return true;
-                        }
-                        else if (asm2.IsRT())
-                        {
-                            result = BetterResult.Left;
-                            return true;
-                        }
+                        result = asm1.IsRT() ? BetterResult.Right : BetterResult.Left;
+                        return true;
                     }
                     if (asm1.IsRT() && asm2.IsRT())
                     {
@@ -259,6 +263,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return true;
                     }
                 }
+                // Prefer strict over calling convention
                 if (m1.Member.HasClipperCallingConvention() != m2.Member.HasClipperCallingConvention())
                 {
                     if (m1.Member.HasClipperCallingConvention())
@@ -267,59 +272,52 @@ namespace Microsoft.CodeAnalysis.CSharp
                         result = BetterResult.Left;
                     return true;
                 }
+                // In case of 2 methods with the same # of parameters
+                // we have different / extended rules compared to C#
                 if (m1.Member.GetParameterCount() == m2.Member.GetParameterCount())
                 {
-                    // In case of 2 methods with the same # of parameters
-                    // we have different / extended rules compared to C#
                     var parsLeft = m1.Member.GetParameters();
                     var parsRight = m2.Member.GetParameters();
-                    var usualType = Compilation.UsualType();
-                    var objectType = Compilation.GetSpecialType(SpecialType.System_Object);
                     var len = parsLeft.Length;
                     if (arguments.Count < len)
                         len = arguments.Count;
 
-                    bool equalLeft = true;
-                    bool equalRight = true;
-                    // check if all left types are equal
-                    if (parsLeft.Length == arguments.Count)
+                    // we calculate the # of parameters with the same type
+                    int leftMatches = 0;
+                    int rightMatches = 0;
+                    // count the # of equal types
+                    for (int i = 0; i < len; i++)
                     {
-                        for (int i = 0; i < len; i++)
+                        var parLeft = parsLeft[i];
+                        var parRight = parsRight[i];
+                        var arg = arguments[i];
+                        if (Equals(parLeft.Type, arg.Type))
                         {
-                            var parLeft = parsLeft[i];
-                            var arg = arguments[i];
-                            if (!TypeSymbol.Equals(parLeft.Type,arg.Type))
-                            {
-                                equalLeft = false;
-                                break;
-                            }
+                            leftMatches += 1;
+                        }
+                        if (Equals(parRight.Type, arg.Type))
+                        {
+                            rightMatches += 1;
                         }
                     }
-                    // check if all right types are equal
-                    if (parsRight.Length == arguments.Count)
+                    // When one method/function matches in all parameters then pick that one
+                    if (leftMatches != rightMatches)
                     {
-                        for (int i = 0; i < len; i++)
+                        if (leftMatches == len)
                         {
-                            var parRight = parsRight[i];
-                            var arg = arguments[i];
-                            if (!TypeSymbol.Equals(parRight.Type, arg.Type))
-                            {
-                                equalRight = false;
-                                break;
-                            }
+                            result = BetterResult.Left;
+                            return true;
+                        }
+                        if (rightMatches == len)
+                        {
+                            result = BetterResult.Right;
+                            return true;
                         }
                     }
-                    // Only exit here when one of the two is better than the other
-                    if (equalLeft && !equalRight)
-                    {
-                        result = BetterResult.Left;
-                        return true;
-                    }
-                    if (equalRight && !equalLeft)
-                    {
-                        result = BetterResult.Right;
-                        return true;
-                    }
+                    leftMatches = 0;
+                    rightMatches = 0;
+
+                    int usualArgs = 0;
                     for (int i = 0; i < len; i++)
                     {
                         var parLeft = parsLeft[i];
@@ -329,86 +327,90 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var arg = arguments[i];
                         bool argCanBeByRef = arg.Kind == BoundKind.AddressOfOperator;
                         var argType = arg.Type;
+                        if (argType.IsUsualType())
+                        {
+                            usualArgs += 1;
+                        }
                         if (argCanBeByRef)
                         {
                             var bao = arg as BoundAddressOfOperator;
                             argType = bao.Operand.Type;
                         }
 
-                        if (!TypeSymbol.Equals(parLeft.Type,parRight.Type) || refLeft != refRight)
+                        if (!Equals(parLeft.Type, parRight.Type) || refLeft != refRight)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
                             if (parLeft.Type.IsUsualType() && argType.IsNotUsualType() && !parRight.Type.IsArray())
                             {
-                                result = BetterResult.Right;
-                                return true;
+                                rightMatches += 1;
+                                continue;
                             }
                             if (parRight.Type.IsUsualType() && argType.IsNotUsualType() && !parLeft.Type.IsArray())
                             {
-                                result = BetterResult.Left;
-                                return true;
+                                leftMatches += 1;
+                                continue;
                             }
                             // Prefer the method with Object type over the one with Object[] type
                             if (parLeft.Type.IsObjectType() && parRight.Type.IsArray() && ((ArrayTypeSymbol)parRight.Type).ElementType.IsObjectType())
                             {
-                                result = BetterResult.Left;
-                                return true;
+                                leftMatches += 1;
+                                continue;
                             }
                             if (parRight.Type.IsObjectType() && parLeft.Type.IsArray() && ((ArrayTypeSymbol)parLeft.Type).ElementType.IsObjectType())
                             {
-                                result = BetterResult.Right;
-                                return true;
+                                rightMatches += 1;
+                                continue;
                             }
                             // Now check for REF parameters and possible REF arguments
                             if (argCanBeByRef)
                             {
                                 var op = arg as BoundAddressOfOperator;
                                 var opType = op?.Operand?.Type;
-                                if (refLeft == RefKind.Ref && TypeSymbol.Equals(opType, parLeft.Type))
+                                if (refLeft == RefKind.Ref && Equals(opType, parLeft.Type))
                                 {
-                                    result = BetterResult.Left;
-                                    return true;
+                                    leftMatches += 1;
+                                    continue;
                                 }
-                                if (refRight == RefKind.Ref && TypeSymbol.Equals(opType, parRight.Type))
+                                if (refRight == RefKind.Ref && Equals(opType, parRight.Type))
                                 {
-                                    result = BetterResult.Right;
-                                    return true;
+                                    rightMatches += 1;
+                                    continue;
                                 }
                                 if (refLeft != refRight)
                                 {
                                     if (refLeft == RefKind.Ref)
                                     {
-                                        result = BetterResult.Left;
-                                        return true;
+                                        leftMatches += 1;
+                                        continue;
                                     }
                                     if (refRight == RefKind.Ref)
                                     {
-                                        result = BetterResult.Right;
-                                        return true;
+                                        rightMatches += 1;
+                                        continue;
                                     }
                                 }
                             }
                             if (refLeft != refRight)
                             {
-                                if (TypeSymbol.Equals(parLeft.Type ,argType) && refLeft != RefKind.None && argCanBeByRef)
+                                if (Equals(parLeft.Type, argType) && refLeft != RefKind.None && argCanBeByRef)
                                 {
-                                    result = BetterResult.Left;
-                                    return true;
+                                    leftMatches += 1;
+                                    continue;
                                 }
-                                if (TypeSymbol.Equals(parRight.Type, argType) && refRight != RefKind.None && argCanBeByRef)
+                                if (Equals(parRight.Type, argType) && refRight != RefKind.None && argCanBeByRef)
                                 {
-                                    result = BetterResult.Right;
-                                    return true;
+                                    rightMatches += 1;
+                                    continue;
                                 }
-                                if (TypeSymbol.Equals(parLeft.Type , argType) && refLeft == RefKind.None && !argCanBeByRef)
+                                if (Equals(parLeft.Type , argType) && refLeft == RefKind.None && !argCanBeByRef)
                                 {
-                                    result = BetterResult.Left;
-                                    return true;
+                                    leftMatches += 1;
+                                    continue;
                                 }
-                                if (TypeSymbol.Equals(parRight.Type , argType) && refRight == RefKind.None && !argCanBeByRef)
+                                if (Equals(parRight.Type , argType) && refRight == RefKind.None && !argCanBeByRef)
                                 {
-                                    result = BetterResult.Right;
-                                    return true;
+                                    rightMatches += 1;
+                                    continue;
                                 }
                             }
                             // now fall back to original type (and not addressof type)
@@ -417,79 +419,79 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (argType?.TypeKind == TypeKind.Enum)
                             {
                                 // First check if they have the enum type itself
-                                if (TypeSymbol.Equals(argType ,parLeft.Type))
+                                if (Equals(argType, parLeft.Type))
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (TypeSymbol.Equals(argType , parRight.Type))
+                                if (Equals(argType, parRight.Type))
                                 {
                                     result = BetterResult.Right;
                                     return true;
                                 }
                                 // Then check the underlying type
                                 argType = argType.GetEnumUnderlyingType();
-                                if (TypeSymbol.Equals(argType, parLeft.Type))
+                                if (Equals(argType, parLeft.Type))
                                 {
                                     result = BetterResult.Left;
                                     return true;
                                 }
-                                if (TypeSymbol.Equals(argType, parRight.Type))
+                                if (Equals(argType, parRight.Type))
                                 {
                                     result = BetterResult.Right;
                                     return true;
                                 }
                             }
-                            if (TypeSymbol.Equals(argType , parLeft.Type))
+                            if (Equals(argType , parLeft.Type))
                             {
-                                result = BetterResult.Left;
-                                return true;
+                                leftMatches += 1;
+                                continue;
                             }
-                            if (TypeSymbol.Equals(argType , parRight.Type))
+                            if (Equals(argType , parRight.Type))
                             {
-                                result = BetterResult.Right;
-                                return true;
+                                rightMatches += 1;
+                                continue;
                             }
                             // VoFloat prefers overload with double over all other conversions
                             if (argType.IsFloatType())
                             {
                                 var doubleType = Compilation.GetSpecialType(SpecialType.System_Double);
-                                if (TypeSymbol.Equals(parLeft.Type ,doubleType))
+                                if (Equals(parLeft.Type, doubleType))
                                 {
-                                    result = BetterResult.Left;
-                                    return true;
+                                    leftMatches += 1;
+                                    continue;
                                 }
-                                if (TypeSymbol.Equals(parRight.Type , doubleType))
+                                if (Equals(parRight.Type , doubleType))
                                 {
-                                    result = BetterResult.Right;
-                                    return true;
+                                    rightMatches += 1;
+                                    continue;
                                 }
                             }
                             // if argument is numeric and one of the two types is also and the other not
                             // then prefer the numeric type
-                            if (argType?.SpecialType != null && (argType.SpecialType.IsNumericType() || TypeSymbol.Equals(argType , Compilation.FloatType())))
+                            if (argType?.SpecialType != null && (argType.SpecialType.IsNumericType() || Equals(argType , Compilation.FloatType())))
                             {
                                 if (parLeft.Type.SpecialType.IsNumericType() && !parRight.Type.SpecialType.IsNumericType())
                                 {
-                                    result = BetterResult.Left;
-                                    return true;
+                                    leftMatches += 1;
+                                    continue;
                                 }
                                 if (parRight.Type.SpecialType.IsNumericType() && !parLeft.Type.SpecialType.IsNumericType())
                                 {
-                                    result = BetterResult.Right;
-                                    return true;
+                                    rightMatches += 1;
+                                    continue;
                                 }
-                                if (!TypeSymbol.Equals(parLeft.Type ,parRight.Type))
+                                if (!Equals(parLeft.Type ,parRight.Type))
                                 {
                                     if (parLeft.Type.IsFloatType())
                                     {
-                                        result = BetterResult.Left;
-                                        return true;
+                                        leftMatches += 1;
+                                        continue;
                                     }
                                     if (parRight.Type.IsFloatType())
                                     {
-                                        result = BetterResult.Right;
-                                        return true;
+                                        rightMatches += 1;
+                                        continue;
                                     }
                                 }
                                 var leftIntegral = parLeft.Type.IsIntegralType();
@@ -498,13 +500,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 {
                                     if (argType.IsIntegralType())
                                     {
-                                        result = leftIntegral ? BetterResult.Left : BetterResult.Right;
+                                        if (leftIntegral)
+                                            leftMatches += 1;
+                                        else
+                                            rightMatches += 1;
+                                        continue;
                                     }
                                     else
                                     {
-                                        result = rightIntegral ? BetterResult.Left : BetterResult.Right;
+                                        if (rightIntegral)
+                                            leftMatches += 1;
+                                        else
+                                            rightMatches += 1;
+                                        continue;
                                     }
-                                    return true;
                                 }
                             }
 
@@ -512,19 +521,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // prefer method with "native VO" parameter type
                             if (argType.IsUsualType())
                             {
-                                // See https://github.com/X-Sharp/XSharpPublic/issues/836
-                                // when calling overloads in the same type we do not want to
-                                // automatically choose an overload when one or more arguments are USUAL
-                                if (TypeSymbol.Equals(m1.Member.ContainingType,m2.Member.ContainingType))
-                                {
-                                    // 2 overloads in the same type. same number of parameters. Usual argument
-                                    // this is dangerous
-                                    result = BetterResult.Neither;
-                                    return false;
-                                }
-
                                 // no need to check if parleft or parright are usual that was checked above
-                                if (!TypeSymbol.Equals(parLeft.Type, parRight.Type))
+                                if (!Equals(parLeft.Type, parRight.Type))
                                 {
                                     // is there an VO style conversion possible ?
                                     var leftConvert = parLeft.Type.IsValidVOUsualType(Compilation);
@@ -533,27 +531,84 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     {
                                         // One is a valid conversion, the other is not.
                                         if (leftConvert)
-                                        {
-                                            result = BetterResult.Left;
-                                        }
+                                            leftMatches += 1;
                                         else
-                                        {
-                                            result = BetterResult.Right;
-                                        }
-                                        return true;
+                                            rightMatches += 1;
+                                        continue;
                                     }
                                 }
                             }
                         }
+                    }
+                    if (usualArgs != 0 && leftMatches == rightMatches)
+                    {
+                        int m1Generic = m1.Member.GetMemberTypeParameters().Length;
+                        int m2Generic = m2.Member.GetMemberTypeParameters().Length;
+                        if (m1Generic != 0  || m2Generic != 0)
+                        {
+                            // When generics are used with Usuals AND a Lambda we have
+                            // our __AreaEval or something similar
+                            // 'normal users' would not use a USUAL and a lambda (I hope)
+                            int lambdaArgs = 0;
+                            foreach (var arg in arguments)
+                            {
+                                if (arg.Kind == BoundKind.Lambda || arg.Kind == BoundKind.UnboundLambda)
+                                {
+                                    lambdaArgs += 1;
+                                }
+                            }
+                            if (m1Generic != m2Generic && lambdaArgs != 0)
+                            {
+                                if (m1Generic == lambdaArgs)
+                                {
+                                    result = BetterResult.Left;
+                                    return true;
+                                }
+                                if (m2Generic == lambdaArgs)
+                                {
+                                    result = BetterResult.Right;
+                                    return true;
+                                }
+                            }
+                        }
 
+                        // when we have a usual parameter prefer the method with the least generic parameters
+                        if (m1Generic < m2Generic)
+                        {
+                            result = BetterResult.Left;
+                            return true;
+                        }
+                        else if (m2Generic < m1Generic)
+                        {
+                            result = BetterResult.Right;
+                            return true;
+                        }
+
+
+                        // See https://github.com/X-Sharp/XSharpPublic/issues/836
+                        // when calling overloads in the same type we do not want to
+                        // automatically choose an overload when one or more arguments are USUAL
+                        if (Equals(m1.Member.ContainingType, m2.Member.ContainingType))
+                        {
+                            // 2 overloads in the same type. same number of parameters. Usual argument
+                            // this is dangerous
+                            result = BetterResult.Neither;
+                            return false;
+                        }
+                    }
+
+                    if (leftMatches != rightMatches)
+                    {
+                        result = leftMatches > rightMatches ? BetterResult.Left : BetterResult.Right;
+                        return true;
                     }
                 }
                 // when both methods are in a functions class from different assemblies
                 // pick the first one in the references list
                 //
                 if (asm1 != asm2
-                    && string.Equals(m1.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, XSharpString.Comparison)
-                    && string.Equals(m2.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, XSharpString.Comparison))
+                    && XSharpString.Equals(m1.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass)
+                    && XSharpString.Equals(m2.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass))
                 {
                     foreach (var reference in Compilation.ReferencedAssemblyNames)
                     {
@@ -801,7 +856,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var unop = (BoundUnaryOperator)right;
                 literal = unop.Operand.Kind == BoundKind.Literal;
             }
-            if (literal  && TypeSymbol.Equals(op1.LeftType , left.Type))
+            if (literal  && Equals(op1.LeftType , left.Type))
             {
                 if (left.Type.SpecialType.IsSignedIntegralType())     // When signed, always Ok
                     return BetterResult.Left;
@@ -825,7 +880,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var unop = (BoundUnaryOperator)left;
                 literal = unop.Operand.Kind == BoundKind.Literal;
             }
-            if (literal && TypeSymbol.Equals(op1.RightType , right.Type))
+            if (literal && Equals(op1.RightType , right.Type))
             {
                 if (right.Type.SpecialType.IsSignedIntegralType())     // When signed, always Ok
                     return BetterResult.Left;
@@ -864,7 +919,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private bool VOStructBinaryOperatorComparison(BinaryOperatorKind kind, BoundExpression left, BoundExpression right, BinaryOperatorOverloadResolutionResult result)
         {
-            if (TypeSymbol.Equals(left.Type , right.Type))
+            if (Equals(left.Type , right.Type))
             {
                 bool isVoStruct ;
                 if (left.Type.IsPointerType())

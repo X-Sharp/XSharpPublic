@@ -398,13 +398,7 @@ namespace XSharp.Build
 
         #region Properties that are in Targets but not used
 
-        public bool UseHostCompilerIfAvailable
-        {
-            set { _store[nameof(UseHostCompilerIfAvailable)] = value; }
-            get { return _store.GetOrDefault(nameof(UseHostCompilerIfAvailable), false); }
-        }
 
- 
         #endregion
 
         private bool useCRLF;

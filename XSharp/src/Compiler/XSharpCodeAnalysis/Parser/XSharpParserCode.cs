@@ -165,21 +165,32 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public PragmaBase Pragma;
         }
 
-#if !VSPARSER
+
         #region Interfaces
         public interface IPartialPropertyContext : ITypeContext
         {
+#if !VSPARSER
             List<IMethodContext> PartialProperties { get; set; }
+#endif
         }
 
         public interface IGlobalEntityContext : IMemberContext
         {
             FuncprocModifiersContext FuncProcModifiers { get; }
         }
-        public interface ILoopStmtContext
+        public interface ILoopStmtContext : IBlockStmtContext
+        {
+        }
+        public interface IBlockStmtContext
         {
             StatementBlockContext Statements { get; }
         }
+
+        public interface IFinallyBlockStmtContext : IBlockStmtContext
+        {
+            StatementBlockContext FinallyBlockStatements { get; }
+        }
+
 
         public interface ITypeParametersContext
         {
@@ -187,9 +198,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses { get; }
 
         }
-        public interface IMemberWithBodyContext : IMemberContext
+        public interface IMemberWithBodyContext : IMemberContext, IBlockStmtContext
         {
-            StatementBlockContext Statements { get; }
         }
 
         internal interface IBodyWithLocalFunctions
@@ -205,11 +215,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public interface ITypeContext : IEntityContext
         {
-            TypeData Data { get; }
+#if !VSPARSER
+         TypeData Data { get; }
+#endif
         }
         public interface IMemberContext : IEntityContext
         {
+#if !VSPARSER
             MemberData Data { get; }
+#endif
             DatatypeContext ReturnType { get; }
             ParameterListContext Params { get; }
 
@@ -223,13 +237,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             XppmemberModifiersContext Mods { get; }
             AttributesContext Atts { get; }
+#if !VSPARSER
             InternalSyntax.XppDeclaredMethodInfo Info { get; }
+#endif
             ParameterListContext Parameters { get; }
-            new StatementBlockContext Statements { get; set; }
+            void SetStatements(StatementBlockContext stmts);
             ExpressionContext ExprBody { get; }
         }
-        #endregion
-        #region Flags
+#endregion
+#region Flags
         [Flags]
         enum TypeFlags : int
         {
@@ -270,7 +286,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         #endregion
 
-
+#if !VSPARSER
         public class TypeData
         {
             TypeFlags setFlag(TypeFlags oldFlag, TypeFlags newFlag, bool set)
@@ -459,8 +475,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
                 return null;
             }
+        
         }
-
+#endif
         public partial class ScriptContext : IEntityContext
         {
             public string Name => null;
@@ -493,6 +510,50 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public IList<PragmaOption> PragmaOptions { get; set; }
             public IList<EntityContext> Entities => _Entities;
         }
+
+        public partial class BlockStmtContext : IBlockStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+        }
+        public partial class WithBlockContext : IBlockStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+        }
+        public partial class CaseBlockContext : IBlockStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+        }
+        public partial class IfElseBlockContext : IBlockStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+        }
+
+        public partial class SeqStmtContext : IFinallyBlockStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+            public StatementBlockContext FinallyBlockStatements { get { return FinBlock; } }
+
+        }
+        public partial class TryStmtContext : IFinallyBlockStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+            public StatementBlockContext FinallyBlockStatements { get { return FinBlock; } }
+        }
+
+        public partial class CatchBlockContext : IBlockStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+        }
+        public partial class RecoverBlockContext : IBlockStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlock; } }
+        }
+
+        public partial class SwitchBlockContext : IBlockStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+        }
+
         public partial class RepeatStmtContext : ILoopStmtContext
         {
             public StatementBlockContext Statements { get { return StmtBlk; } }
@@ -518,8 +579,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
             public ParameterListContext ParamList => Sig.ParamList;
             public CallingconventionContext CallingConvention => Sig.CallingConvention;
+#if !VSPARSER
+
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => Sig.Type;
             public string Name => ParentName + ShortName;
@@ -537,8 +601,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
             public ParameterListContext ParamList => Sig.ParamList;
             public CallingconventionContext CallingConvention => Sig.CallingConvention;
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => Sig.Type;
             public string Name => ParentName + ShortName;
@@ -569,8 +635,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public CallingconventionContext CallingConvention => Sig.CallingConvention;
             public bool IsInInterface => this.isInInterface();
             public bool IsInStructure => this.isInStructure();
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => this.ParamList;
             public MemberModifiersContext Mods => this.Modifiers;
             public string ShortName => this.Id.GetText();
@@ -607,8 +675,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public bool IsInInterface => false;
             public bool IsInStructure => false;
 
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => this.Sig.ParamList;
             public string ShortName => this.Sig.Id.GetText();
             public ExpressionContext ExpressionBody => Sig.ExpressionBody;
@@ -628,8 +698,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class EventAccessorContext : IMemberWithBodyContext, IBodyWithLocalFunctions
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public string Name => ParentName + Key.Text;
@@ -641,8 +713,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class PropertyAccessorContext : IMemberWithBodyContext, IBodyWithLocalFunctions
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public string Name => ParentName + Key.Text;
@@ -652,8 +726,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class PropertyLineAccessorContext : IMemberContext
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public string Name => ParentName + Key.Text;
@@ -661,8 +737,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class ConstructorContext : IMemberWithBodyContext, IBodyWithLocalFunctions
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => null;
             public string Name => ParentName + ShortName;
@@ -672,8 +750,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class DestructorContext : IMemberWithBodyContext, IBodyWithLocalFunctions
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public string Name => ParentName + ShortName;
@@ -683,8 +763,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class Event_Context : IMemberContext
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
             public string Name => ParentName + ShortName;
@@ -693,8 +775,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class VodefineContext : IMemberContext, IGlobalEntityContext
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => null;
             public string Name => ParentName + ShortName;
@@ -703,9 +787,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class PropertyContext : IMemberContext
         {
+#if !VSPARSER
             readonly MemberData data = new();
-
-            public MemberData Data { get { return data; } }
+            public MemberData Data => data;
+#endif
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
             public string Name => ParentName + ShortName;
@@ -719,8 +804,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class Operator_Context : IMemberWithBodyContext, IBodyWithLocalFunctions
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string Name => ParentName + ShortName;
@@ -741,8 +828,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class Delegate_Context : ITypeContext
         {
+#if !VSPARSER
             readonly TypeData data = new();
             public TypeData Data => data;
+#endif
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string Name => ParentName + ShortName;
@@ -750,48 +839,56 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class Interface_Context : IPartialPropertyContext, ITypeContext
         {
+#if !VSPARSER
             readonly TypeData data = new();
+            public TypeData Data => data;
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
                 get { return partialProperties; }
                 set { partialProperties = value; }
             }
-            public TypeData Data => data;
+#endif
             public string Name => ParentName + ShortName;
             public string ShortName => this.Id.GetText();
 
         }
         public partial class Class_Context : IPartialPropertyContext, ITypeContext
         {
+#if !VSPARSER
             readonly TypeData data = new();
+            public TypeData Data => data;
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
                 get { return partialProperties; }
                 set { partialProperties = value; }
             }
-            public TypeData Data => data;
+#endif
             public string Name => ParentName + ShortName;
             public string ShortName => Id.GetText();
         }
         public partial class Structure_Context : IPartialPropertyContext, ITypeContext
         {
+#if !VSPARSER
             readonly TypeData data = new();
+            public TypeData Data => data;
             List<IMethodContext> partialProperties = null;
             public List<IMethodContext> PartialProperties
             {
                 get { return partialProperties; }
                 set { partialProperties = value; }
             }
-            public TypeData Data => data;
+#endif
             public string Name => ParentName + ShortName;
             public string ShortName => Id.GetText();
         }
         public partial class VodllContext : IMemberContext, IGlobalEntityContext
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string Name => this.Id.GetText();
@@ -801,8 +898,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class VoglobalContext : IMemberContext, IGlobalEntityContext
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this._Vars.First().DataType;
             public string Name => this._Vars.First().Id.GetText();
@@ -811,8 +910,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class FoxdllContext : IMemberContext, IGlobalEntityContext
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
             public string Name => this.Id.GetText();
@@ -827,24 +928,30 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class VounionContext : ITypeContext
         {
+#if !VSPARSER
             readonly TypeData data = new();
             public TypeData Data => data;
+#endif
             public string Name => this.Id.GetText();
             public string ShortName => this.Id.GetText();
 
         }
         public partial class VostructContext : ITypeContext
         {
+#if !VSPARSER
             readonly TypeData data = new();
             public TypeData Data => data;
+#endif
             public string Name => this.Id.GetText();
             public string ShortName => this.Id.GetText();
 
         }
         public partial class XppclassContext : ITypeContext
         {
+#if !VSPARSER
             readonly TypeData data = new();
             public TypeData Data => data;
+#endif
             public string Name => ParentName + ShortName;
             public string ShortName => Id.GetText();
         }
@@ -855,8 +962,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class XppmethodContext : IXPPMemberContext
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string ShortName => this.Id.GetText();
@@ -868,18 +977,23 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return ParentName + name;
                 }
             }
-            public InternalSyntax.XppDeclaredMethodInfo Info { get; set; }
+#if !VSPARSER
+    public InternalSyntax.XppDeclaredMethodInfo Info { get; set; }
+#endif
             public XppmemberModifiersContext Mods => this.Modifiers;
             public AttributesContext Atts => this.Attributes;
-            public StatementBlockContext Statements { get { return this.StmtBlk; } set { this.StmtBlk = value; } }
+            public StatementBlockContext Statements => StmtBlk;
+            public void SetStatements(StatementBlockContext stmts) => this.StmtBlk = stmts;
             public ParameterListContext Parameters => this.ParamList;
             public IList<object> LocalFunctions { get; set; } = null;
             public ExpressionContext ExprBody { get { return this.ExpressionBody; } }
         }
         public partial class XppinlineMethodContext : IXPPMemberContext, IBodyWithLocalFunctions
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public string ShortName => this.Id.GetText();
@@ -891,10 +1005,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return ParentName + name;
                 }
             }
+#if !VSPARSER
             public InternalSyntax.XppDeclaredMethodInfo Info { get; set; }
+#endif
             public XppmemberModifiersContext Mods => this.Modifiers;
             public AttributesContext Atts => this.Attributes;
-            public StatementBlockContext Statements { get { return this.StmtBlk; } set { this.StmtBlk = value; } }
+            public StatementBlockContext Statements => StmtBlk;
+            public void SetStatements(StatementBlockContext stmts) => this.StmtBlk = stmts;
             public ParameterListContext Parameters => this.ParamList;
             public IList<object> LocalFunctions { get; set; } = null;
             public ExpressionContext ExprBody { get { return this.ExpressionBody; } }
@@ -910,8 +1027,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class XpppropertyContext : IMemberContext
         {
+#if !VSPARSER
             readonly MemberData data = new();
             public MemberData Data => data;
+#endif
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
             public string ShortName => this.Id.GetText();
@@ -926,7 +1045,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class FoxclassContext : IPartialPropertyContext, ITypeContext
         {
+#if !VSPARSER
             readonly TypeData data = new();
+            public TypeData Data => data;
             List<IMethodContext> partialProperties = null;
 
             public List<IMethodContext> PartialProperties
@@ -934,7 +1055,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return partialProperties; }
                 set { partialProperties = value; }
             }
-            public TypeData Data => data;
+#endif
             public string Name => ParentName + ShortName;
             public string ShortName => Id.GetText();
 
@@ -965,7 +1086,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal string FieldName => Name.GetText().ToUpper();
         }
 
-#endif
+
     }
 
     [DebuggerDisplay("{DebuggerDisplay()}")]
@@ -1248,12 +1369,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             IsFileWidePublic = filewidepublic;
         }
     }
-
+#endif
     internal static class RuleExtensions
     {
         internal static XSharpParserRuleContext Context([NotNull] this XSharpParser.IEntityContext entity) => (XSharpParserRuleContext)entity;
         internal static bool isScript([NotNull] this XSharpParser.IEntityContext entity) => entity is XSharpParser.ScriptContext;
-
+#if !VSPARSER
         internal static bool IsStatic(this InternalSyntax.ClassDeclarationSyntax classdecl)
         {
             return classdecl.Modifiers.Any((int)SyntaxKind.StaticKeyword);
@@ -1316,7 +1437,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return node.WithDiagnosticsGreen(result);
             }
         }
-
+#endif
         internal static bool IsRealCodeBlock([NotNull] this IXParseTree context)
         {
 
@@ -1369,7 +1490,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return null;
                 // when no => operator and no explicit parameters
                 // then this is a true codeblock
-                return cbc.SourceText;
+                if (context is XSharpParserRuleContext rule)
+                    return rule.SourceText;
             }
             return null;
         }
@@ -1431,5 +1553,5 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return parent.isInStructure();
         }
     }
-#endif
+
 }

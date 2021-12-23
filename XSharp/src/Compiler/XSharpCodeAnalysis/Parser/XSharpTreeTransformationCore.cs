@@ -6748,46 +6748,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Because these are not allowed inside a Switch
             foreach (var stmt in stmts)
             {
-                if (stmt is XP.JumpStmtContext)
+                switch (stmt)
                 {
-                    var jmpstmt = stmt as XP.JumpStmtContext;
-                    if (jmpstmt.Key.Type == XP.EXIT)
-                        return true;
-                }
-                if (stmt is XP.ILoopStmtContext)    // // For, Foreach, While, Repeat may have private exits
-                    continue;
-                if (stmt is XP.BlockStmtContext)    // Non looping block
-                {
-                    var blockstmt = stmt as XP.BlockStmtContext;
-                    if (ContainsExitStatement(blockstmt.StmtBlk._Stmts))
-                        return true;
-                }
-                if (stmt is XP.IfStmtContext)
-                {
-                    var ifstmt = stmt as XP.IfStmtContext;
-                    var ifelsestmt = ifstmt.IfStmt;
-                    if (ContainsExitStatement(ifelsestmt.StmtBlk._Stmts))           // First IF Block
-                        return true;
-                    while (ifelsestmt.ElseIfBlock != null)                          // Subsequent elseif blocks
-                    {
-                        ifelsestmt = ifelsestmt.ElseIfBlock;
-                        if (ContainsExitStatement(ifelsestmt.StmtBlk._Stmts))
+                    case XP.JumpStmtContext jmpstmt:
+                        if (jmpstmt.Key.Type == XP.EXIT)
                             return true;
-                    }
-                    if (ifelsestmt.ElseIfBlock != null &&                           // Else block
-                         ContainsExitStatement(ifelsestmt.ElseBlock._Stmts))
-                        return true;
-                }
-                if (stmt is XP.CaseStmtContext)
-                {
-                    var docasestmt = stmt as XP.CaseStmtContext;
-                    var casestmt = docasestmt.CaseStmt;     // CaseBlock
-                    while (casestmt != null)                // Handles the all case and otherwise blocks
-                    {
-                        if (ContainsExitStatement(casestmt.StmtBlk._Stmts))
+                        return false;
+
+                    case XP.ILoopStmtContext:
+                        // FOR , DO WHILE etc may have EXIT 
+                        continue;
+
+                    case XP.IBlockStmtContext blockstmt:
+                        // This includes TRY and SEQUENCE !
+                        if (ContainsExitStatement(blockstmt.Statements._Stmts))
                             return true;
-                        casestmt = casestmt.NextCase;
-                    }
+                        return false;
+
+                    case XP.IfStmtContext ifstmt:
+                        var ifelsestmt = ifstmt.IfStmt;
+                        var elsestmt = ifelsestmt?.ElseBlock;
+                        if (ContainsExitStatement(ifelsestmt.StmtBlk._Stmts))           // First IF Block
+                            return true;
+                        while (ifelsestmt.ElseIfBlock != null)                          // Subsequent elseif blocks
+                        {
+                            ifelsestmt = ifelsestmt.ElseIfBlock;
+                            elsestmt = ifelsestmt.ElseBlock;
+                            if (ContainsExitStatement(ifelsestmt.StmtBlk._Stmts))
+                                return true;
+                        }
+
+                        if (elsestmt != null &&                           // Else block
+                             ContainsExitStatement(elsestmt._Stmts))
+                            return true;
+                        return false;
+
+                    case XP.CaseStmtContext docasestmt:
+                        var casestmt = docasestmt.CaseStmt;     // CaseBlock
+                        while (casestmt != null)                // Handles the all case and otherwise blocks
+                        {
+                            if (ContainsExitStatement(casestmt.StmtBlk._Stmts))
+                                return true;
+                            casestmt = casestmt.NextCase;
+                        }
+                        return false;
                 }
             }
             return false;
@@ -6800,91 +6804,77 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (stmts.Count == 0)
                 return true;
             var stmt = stmts.Last();
-            if (stmt is XP.ReturnStmtContext)
+            bool hasdefault;
+            switch (stmt)
             {
-                return false;
-            }
-            if (stmt is XP.JumpStmtContext)
-            {
-                var jmpstmt = stmt as XP.JumpStmtContext;
-                if (jmpstmt.Key.Type == XP.THROW || jmpstmt.Key.Type == XP.BREAK)
+                case XP.ReturnStmtContext:
                     return false;
 
-                if ((jmpstmt.Key.Type == XP.EXIT || jmpstmt.Key.Type == XP.LOOP) && !inSideLoop)
-                {
-                    // LOOP or EXIT inside a nested Loop block
-                    return false;
-                }
-            }
-            if (stmt is XP.IfStmtContext)
-            {
-                var ifstmt = stmt as XP.IfStmtContext;
-                var ifelsestmt = ifstmt.IfStmt;
-                var elsestmt = ifelsestmt?.ElseBlock;           // The first ifelsestmt should always have a value, but better safe than sorry
-                // process to the end of the list
-                // when there is no else, then we need a break
-                // otherwise process every statement list
-                while (ifelsestmt != null)                     //
-                {
-                    if (NeedsBreak(ifelsestmt.StmtBlk._Stmts))
+                case XP.JumpStmtContext jmpstmt:
+                    switch (jmpstmt.Key.Type)
+                    {
+                        case XP.THROW:
+                        case XP.BREAK:
+                            return false;
+                        case XP.EXIT when !inSideLoop:
+                        case XP.LOOP when !inSideLoop:
+                            return false;
+                    }
+                    return true;
+
+
+                case XP.IfStmtContext ifstmt:
+                    var ifelsestmt = ifstmt.IfStmt;
+                    var elsestmt = ifelsestmt?.ElseBlock;           // The first ifelsestmt should always have a value, but better safe than sorry
+                                                                    // process to the end of the list
+                                                                    // when there is no else, then we need a break
+                                                                    // otherwise process every statement list
+                    while (ifelsestmt != null)                     //
+                    {
+                        if (NeedsBreak(ifelsestmt.StmtBlk._Stmts))
+                        {
+                            return true;
+                        }
+                        elsestmt = ifelsestmt.ElseBlock;
+                        ifelsestmt = ifelsestmt.ElseIfBlock;
+                    }
+                    // No Else, so there is at least one block that does not end with a RETURN etc.
+                    if (elsestmt == null)
                     {
                         return true;
                     }
-                    elsestmt = ifelsestmt.ElseBlock;
-                    ifelsestmt = ifelsestmt.ElseIfBlock;
-                }
-                // No Else, so there is at least one block that does not end with a RETURN etc.
-                if (elsestmt == null)
-                {
-                    return true;
-                }
-                else
-                {
                     return NeedsBreak(elsestmt._Stmts);
-                }
-            }
-            if (stmt is XP.CaseStmtContext)
-            {
-                var docasestmt = stmt as XP.CaseStmtContext;
-                var casestmt = docasestmt.CaseStmt;     // CaseBlock, there may be no blocks at all.
-                int lastkey = XP.CASE;
-                while (casestmt != null)                // otherwise is also a CaseBlock stored in NextCase
-                {
-                    if (NeedsBreak(casestmt.StmtBlk._Stmts))
-                        return true;
-                    lastkey = casestmt.Key.Type;
-                    casestmt = casestmt.NextCase;
-                }
-                if (lastkey == XP.CASE) // There is no otherwise
-                    return true;
-                return false;           // all branches end with a breaking statement
-            }
-            if (stmt is XP.BlockStmtContext)
-            {
-                var blockstmt = stmt as XP.BlockStmtContext;
-                return NeedsBreak(blockstmt.StmtBlk._Stmts);
-            }
-            if (stmt is XP.ILoopStmtContext)        // For, Foreach, While, Repeat
-            {
-                var blockstmt = stmt as XP.ILoopStmtContext;
-                return NeedsBreak(blockstmt.Statements._Stmts, true);
-            }
-            if (stmt is XP.SwitchStmtContext)
-            {
-                var swstmt = stmt as XP.SwitchStmtContext;
-                bool hasdefault = false;
-                foreach (var swBlock in swstmt._SwitchBlock)
-                {
-                    if (swBlock.StmtBlk._Stmts.Count > 0 && NeedsBreak(swBlock.StmtBlk._Stmts))
-                        return true;
-                    if (swBlock.Key.Type != XP.CASE)
-                        hasdefault = true;
-                }
-                if (!hasdefault)
-                    return true;
-                return false;           // all branches end with a breaking statement
-            }
 
+                case XP.CaseStmtContext docasestmt:
+                    var casestmt = docasestmt.CaseStmt;     // CaseBlock, there may be no blocks at all.
+                    hasdefault = false;
+                    while (casestmt != null)                // otherwise is also a CaseBlock stored in NextCase
+                    {
+                        if (NeedsBreak(casestmt.StmtBlk._Stmts))
+                            return true;
+                        if (casestmt.Key.Type == XP.OTHERWISE)
+                            hasdefault = true;
+                        casestmt = casestmt.NextCase;
+                    }
+                    // There is no otherwise
+                    return ! hasdefault;
+
+                case XP.IBlockStmtContext blockstmt:// this also includes ILoopStmtContxt
+                    return NeedsBreak(blockstmt.Statements._Stmts);
+
+                case XP.SwitchStmtContext swstmt:
+                    hasdefault = false;
+                    foreach (var swBlock in swstmt._SwitchBlock)
+                    {
+                        if (swBlock.StmtBlk._Stmts.Count > 0 && NeedsBreak(swBlock.StmtBlk._Stmts))
+                            return true;
+                        if (swBlock.Key.Type == XP.OTHERWISE)
+                            hasdefault = true;
+                    }
+                    // There is no otherwise
+                    return !hasdefault;
+
+            }
             return true;
         }
 

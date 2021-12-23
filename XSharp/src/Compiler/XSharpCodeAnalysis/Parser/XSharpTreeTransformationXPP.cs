@@ -290,13 +290,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Access Assign Method Path
              EndClass
              Method XbZ_LogWriter:Path(cPath)
-	            if PCount() == 1 .and. ValType(cPath) == 'C'
-		            ::cLogPath := alltrim(iif(empty(cPath), left(AppName(.t.), RAt('\', AppName(.t.))), cPath))
-		            ::cLogPath += iif(right(::cLogPath, 1) == '\', '', '\')
-		            if ::lLogActive .and. ::Stop(.t.)
-			            ::Open()
-		            endif
-	            endif
+                if PCount() == 1 .and. ValType(cPath) == 'C'
+                    ::cLogPath := alltrim(iif(empty(cPath), left(AppName(.t.), RAt('\', AppName(.t.))), cPath))
+                    ::cLogPath += iif(right(::cLogPath, 1) == '\', '', '\')
+                    if ::lLogActive .and. ::Stop(.t.)
+                        ::Open()
+                    endif
+                endif
             return (::cLogPath)
              */
             string name = context.Id.GetText();
@@ -531,7 +531,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                context.Statements = null;
+                context.SetStatements(null);
             }
         }
 

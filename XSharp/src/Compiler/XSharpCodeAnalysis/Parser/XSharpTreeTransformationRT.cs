@@ -2333,114 +2333,95 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (stmts.Count == 0)
                 return true;
             var stmt = stmts.Last();
-            if (stmt is XP.ReturnStmtContext || stmt is XP.YieldStmtContext)
+            switch (stmt)
             {
-                return false;
-            }
-            if (stmt is XP.JumpStmtContext)
-            {
-                var jmpstmt = stmt as XP.JumpStmtContext;
-                if (jmpstmt.Key.Type == XP.THROW)
+                case XP.ReturnStmtContext:
+                case XP.YieldStmtContext:
                     return false;
-                if (jmpstmt.Key.Type == XP.BREAK)
-                    return false;
-            }
-            if (stmt is XP.IfStmtContext)
-            {
-                var ifstmt = stmt as XP.IfStmtContext;
-                var ifelsestmt = ifstmt.IfStmt;
-                var elsestmt = ifelsestmt?.ElseBlock;
-                // The first ifelsestmt should always have a value, but better safe than sorry
-                // process to the end of the list
-                // when there is no else, then we need a break
-                // otherwise process every statement list
-                while (ifelsestmt != null)                     //
-                {
-                    if (NeedsReturn(ifelsestmt.StmtBlk._Stmts))
+
+                case XP.JumpStmtContext jmpstmt:
+                    if (jmpstmt.Key.Type == XP.THROW)
+                        return false;
+                    if (jmpstmt.Key.Type == XP.BREAK)
+                        return false;
+                    break;
+                case XP.IfStmtContext ifstmt:
+                    var ifelsestmt = ifstmt.IfStmt;
+                    var elsestmt = ifelsestmt?.ElseBlock;
+                    // The first ifelsestmt should always have a value, but better safe than sorry
+                    // process to the end of the list
+                    // when there is no else, then we need a break
+                    // otherwise process every statement list
+                    while (ifelsestmt != null)                     //
+                    {
+                        if (NeedsReturn(ifelsestmt.StmtBlk._Stmts))
+                        {
+                            return true;
+                        }
+                        elsestmt = ifelsestmt.ElseBlock;
+                        ifelsestmt = ifelsestmt.ElseIfBlock;
+                    }
+                    // No Else, so there is at least one block that does not end with a RETURN etc
+                    if (elsestmt == null || elsestmt._Stmts?.Count == 0)
                     {
                         return true;
                     }
-                    elsestmt = ifelsestmt.ElseBlock;
-                    ifelsestmt = ifelsestmt.ElseIfBlock;
-                }
-                // No Else, so there is at least one block that does not end with a RETURN etc
-                if (elsestmt == null || elsestmt._Stmts?.Count == 0)
-                {
-                    return true;
-                }
-                else
-                {
                     return NeedsReturn(elsestmt._Stmts);
-                }
-            }
-            if (stmt is XP.CaseStmtContext)
-            {
-                var docasestmt = stmt as XP.CaseStmtContext;
-                var casestmt = docasestmt.CaseStmt;     // CaseBlock, there may be no blocks at all.
-                int lastkey = XP.CASE;
-                while (casestmt != null)                // otherwise is also a CaseBlock stored in NextCase
-                {
-                    if (NeedsReturn(casestmt.StmtBlk._Stmts))
+
+                case XP.CaseStmtContext docasestmt:
+                    var casestmt = docasestmt.CaseStmt;     // CaseBlock, there may be no blocks at all.
+                    int lastkey = XP.CASE;
+                    while (casestmt != null)                // otherwise is also a CaseBlock stored in NextCase
+                    {
+                        if (NeedsReturn(casestmt.StmtBlk._Stmts))
+                            return true;
+                        lastkey = casestmt.Key.Type;
+                        casestmt = casestmt.NextCase;
+                    }
+                    return lastkey == XP.CASE; // There is no otherwise
+                                               // all branches end with a return  statement
+
+                case XP.SwitchStmtContext swstmt:
+                    bool hasdefault = false;
+                    foreach (var swBlock in swstmt._SwitchBlock)
+                    {
+                        if (swBlock.StmtBlk._Stmts.Count > 0 && NeedsReturn(swBlock.StmtBlk._Stmts))
+                            return true;
+                        if (swBlock.Key.Type != XP.CASE)
+                            hasdefault = true;
+                    }
+                    return !hasdefault;
+
+                // make sure Try and Seq are before IBlock because they are also blocks
+                case XP.TryStmtContext trystmt:
+                    // no finally check each of the blocks
+                    if (NeedsReturn(trystmt.StmtBlk._Stmts))
                         return true;
-                    lastkey = casestmt.Key.Type;
-                    casestmt = casestmt.NextCase;
-                }
-                if (lastkey == XP.CASE) // There is no otherwise
-                    return true;
-                return false;           // all branches end with a return  statement
-            }
-            if (stmt is XP.SwitchStmtContext)
-            {
-                var swstmt = stmt as XP.SwitchStmtContext;
-                bool hasdefault = false;
-                foreach (var swBlock in swstmt._SwitchBlock)
-                {
-                    if (swBlock.StmtBlk._Stmts.Count > 0 && NeedsReturn(swBlock.StmtBlk._Stmts))
+                    if (trystmt._CatchBlock?.Count == 0)
                         return true;
-                    if (swBlock.Key.Type != XP.CASE)
-                        hasdefault = true;
-                }
-                if (!hasdefault)
-                    return true;
-                return false;           // all branches end with a return statement
+                    foreach (var cb in trystmt._CatchBlock)
+                    {
+                        // if one of the catches has no return then we need to add a return
+                        if (NeedsReturn(cb.StmtBlk._Stmts))
+                            return true;
+                    }
+                    // all catch blocks are terminated
+                    return false;
+
+                case XP.SeqStmtContext seqstmt:
+                    if (NeedsReturn(seqstmt.StmtBlk._Stmts))
+                        return true;
+                    if (seqstmt.RecoverBlock == null)
+                        return true;
+                    return NeedsReturn(seqstmt.RecoverBlock.StmtBlock._Stmts);
+
+                case XP.IBlockStmtContext blockstmt:
+                    // For, Foreach, While, Repeat, but also BEGIN .. END and WITH .. END WITH
+                    return NeedsReturn(blockstmt.Statements._Stmts);
+
+
             }
 
-            if (stmt is XP.BlockStmtContext)
-            {
-                var blockstmt = stmt as XP.BlockStmtContext;
-                return NeedsReturn(blockstmt.StmtBlk._Stmts);
-            }
-            if (stmt is XP.ILoopStmtContext)        // For, Foreach, While, Repeat
-            {
-                var blockstmt = stmt as XP.ILoopStmtContext;
-                return NeedsReturn(blockstmt.Statements._Stmts);
-            }
-            if (stmt is XP.TryStmtContext)
-            {
-                var trystmt = stmt as XP.TryStmtContext;
-                // no finally check each of the blocks
-                if (NeedsReturn(trystmt.StmtBlk._Stmts))
-                    return true;
-                if (trystmt._CatchBlock?.Count == 0)
-                    return true;
-                foreach (var cb in trystmt._CatchBlock)
-                {
-                    // if one of the catches has no return then we need to add a return
-                    if (NeedsReturn(cb.StmtBlk._Stmts))
-                        return true;
-                }
-                // all catch blocks are terminated
-                return false;
-            }
-            if (stmt is XP.SeqStmtContext)
-            {
-                var seqstmt = stmt as XP.SeqStmtContext;
-                if (NeedsReturn(seqstmt.StmtBlk._Stmts))
-                    return true;
-                if (seqstmt.RecoverBlock == null)
-                    return true;
-                return NeedsReturn(seqstmt.RecoverBlock.StmtBlock._Stmts);
-            }
             return true;
         }
         private ExpressionSyntax GetReturnExpression(TypeSyntax returnType)

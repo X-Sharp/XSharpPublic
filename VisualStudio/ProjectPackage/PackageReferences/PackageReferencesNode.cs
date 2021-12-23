@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Shell;
-using NuGet.VisualStudio;
+
 using System;
 using System.IO;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace XSharp.Project
             get
             {
                 
-                return Name;
+                return GetCaption();
             }
         }
 
@@ -117,48 +117,13 @@ namespace XSharp.Project
                 if (cmd == (uint)VSConstants.VSStd97CmdID.Remove ||
                     cmd == (uint)VSConstants.VSStd97CmdID.Delete)
                 {
-                    result |= (QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED);
+                    // SUPPORTED is needed because otherwise the base class ignores our INVISIBLE flag !
+                    result |=  QueryStatusResult.INVISIBLE | QueryStatusResult.SUPPORTED;
                     return VSConstants.S_OK;
                 }
             }
             return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
         }
-        protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
-        {
-
-            ThreadHelper.ThrowIfNotOnUIThread();
-            if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet97)
-            {
-                if (cmd == (uint)VSConstants.VSStd97CmdID.Delete ||
-                    cmd == (uint)VSConstants.VSStd97CmdID.Remove)
-                {
-                    IComponentModel model;
-                    model = (IComponentModel)GetService(typeof(SComponentModel));
-                    if (model != null)
-                    {
-                        var service = model.GetService<IVsPackageUninstaller>();
-                        if (service != null)
-                        {
-                            var project = base.ProjectMgr.GetAutomationObject() as EnvDTE.Project;
-                            service.UninstallPackage(project, base.ItemNode.GetMetadata("Include"), removeDependencies: false);
-                            return 0;
-                        }
-                    }
-                }
-            }
-            return base.ExecCommandOnNode(cmdGroup, cmd, nCmdexecopt, pvaIn, pvaOut);
-        }
-    }
-}
-// This has been copied from the Nuget.VisualStudio.dll assembly
-namespace NuGet.VisualStudio
-{
-    [ComImport]
-    [CompilerGenerated]
-    [Guid("AF63941E-6BA8-4FEC-9827-8E4D1113F231")]
-    [TypeIdentifier]
-    public interface IVsPackageUninstaller
-    {
-        void UninstallPackage(EnvDTE.Project project, string packageId, bool removeDependencies);
+       
     }
 }

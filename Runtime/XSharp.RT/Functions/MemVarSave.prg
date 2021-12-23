@@ -521,12 +521,15 @@ INTERNAL CLASS MemReader
         //                                dec=number of decimal places
         //        if L length is 1
         //        if D length is 8, real8 format
+        //        if A array is array length
         DO WHILE wType <>ASC_EOF
             cVar	:= Chr(wType)+SELF:ReadBytes(10)
             cVar 	:= Left(cVar,At(Chr(0),cVar)-1):ToUpper()
             nType   := SELF:ReadByte()
             cType	:= Chr(_AND(nType,127U))
             SELF:ReadBytes(4)
+//            Console.WriteLine("mem file {0},{1} , {2} ",cVar, cType, nIndex)
+
             longCVarName:= ( cType!= Upper(cType)) // ctype in lower case means variable name bigger than 10 bytes
             cType:= Upper(cType)
             IF lUsemask

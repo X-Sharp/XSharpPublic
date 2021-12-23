@@ -9,6 +9,7 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Ngen>true</Ngen>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -149,7 +150,6 @@
     <Compile Include="Nodes\XSharpNodeProperties.cs" />
     <Compile Include="Editors\XSharpVOEditorPane.cs" />
     <Compile Include="Editors\Factories.cs" />
-    <Compile Include="PackageReferences\Extensionscs.cs" />
     <Compile Include="PackageReferences\OAVsPackageReferencescs.cs" />
     <Compile Include="PackageReferences\PackageReferenceContainer.cs" />
     <Compile Include="PackageReferences\PackageReferencesNode.cs" />

@@ -12,8 +12,8 @@ namespace XSharp.Project
         public OAVSPackageReferences(XSharpPackageReferenceContainerNode containerNode)
         {
             PackageReferenceContainerNode = containerNode;
-            //    PackageReferenceContainerNode.OnChildAdded += PackageReferenceContainerNode_OnChildAdded;
-            //    PackageReferenceContainerNode.OnChildRemoved += PackageReferenceContainerNode_OnChildRemoved;
+            PackageReferenceContainerNode.OnChildAdded += PackageReferenceContainerNode_OnChildAdded;
+            PackageReferenceContainerNode.OnChildRemoved += PackageReferenceContainerNode_OnChildRemoved;
         }
         private XSharpPackageReferenceContainerNode PackageReferenceContainerNode
         {
@@ -39,10 +39,12 @@ namespace XSharp.Project
 
         private void PackageReferenceContainerNode_OnChildRemoved(object sender, HierarchyNodeEventArgs e)
         {
+            ;
         }
 
         private void PackageReferenceContainerNode_OnChildAdded(object sender, HierarchyNodeEventArgs e)
         {
+            ;
         }
 
         public void AddOrUpdate(string bstrName, string bstrVersion, Array pbstrMetadataElements, Array pbstrMetadataValues)

@@ -304,24 +304,6 @@ FUNCTION ArrayInit(wElements AS DWORD, avalues REF USUAL[]) AS ARRAY
     NEXT
     RETURN aTemp
 
-INTERNAL FUNCTION __GetArray(uArray IN USUAL, a OUT __Array, lAllowNull as LOGIC) AS LOGIC
-    IF uArray:IsArray
-        a := uArray:_arrayValue
-        RETURN TRUE
-    ENDIF
-    a := NULL_ARRAY
-    IF uArray:IsNil
-        RETURN lAllowNull
-    ENDIF
-    RETURN FALSE
-
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
-FUNCTION AAdd(aTarget AS USUAL,uNewElement AS USUAL) AS USUAL
-    IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN AAdd(a, uNewElement)
-    ENDIF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
-
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
 
 FUNCTION AAdd(aTarget AS ARRAY,uNewElement AS USUAL) AS USUAL
@@ -334,13 +316,6 @@ FUNCTION AAdd<T>(aTarget AS __ArrayBase<T>,uNewElement AS T) AS T
     ARRAYNOTNULL aTarget
     aTarget:Add(uNewElement)
     RETURN uNewElement
-
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aclone/*" />
-FUNCTION AClone(aSource AS USUAL) AS ARRAY
-    IF __GetArray(aSource, OUT VAR a, TRUE)
-        RETURN AClone(a)
-    ENDIF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aSource), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aclone/*" />
 FUNCTION AClone(aSource AS ARRAY) AS ARRAY
@@ -359,13 +334,6 @@ FUNCTION AClone<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T>
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acloneshallow/*" />
-FUNCTION ACloneShallow(aSource AS USUAL) AS ARRAY
-    IF __GetArray(aSource, OUT VAR a, TRUE)
-        RETURN ACloneShallow(a)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aSource), "ARRAY Expected",1)
-
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acloneshallow/*" />
 FUNCTION ACloneShallow(aSource AS ARRAY) AS ARRAY
     IF aSource == NULL_ARRAY
         RETURN aSource
@@ -380,12 +348,6 @@ FUNCTION ACloneShallow<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T>
     END IF
     RETURN aSource:Clone()
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acloneshallow/*" />
-FUNCTION ADel(aTarget AS USUAL,dwPosition AS DWORD) AS ARRAY
-    IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN ADel(a, dwPosition)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
 FUNCTION ADel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
@@ -403,12 +365,6 @@ FUNCTION ADel<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T
     aTarget:Delete((INT) dwPosition)
     RETURN aTarget
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
-FUNCTION ATrueDel(aTarget AS USUAL,dwPosition AS DWORD) AS ARRAY
-     IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN ATrueDel(a, dwPosition)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
 FUNCTION ATrueDel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
@@ -451,13 +407,6 @@ RETURN Repl("[]", ADim(a))
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ains/*" />
-FUNCTION AIns(aTarget AS USUAL,dwPosition AS DWORD) AS ARRAY
-    IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN AIns(a, dwPosition)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ains/*" />
 FUNCTION AIns(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     ARRAYNOTNULL aTarget
     IF aTarget:__IsFoxArray
@@ -483,13 +432,6 @@ FUNCTION ALen<T>(aTarget AS __ArrayBase<T>) AS DWORD
     ENDIF
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alen/*" />
-FUNCTION ALen(aTarget AS USUAL) AS DWORD
-    IF __GetArray(aTarget, OUT VAR a, TRUE)
-        RETURN ALen(a)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
-
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alen/*" />
 FUNCTION ALen(aTarget AS ARRAY) AS DWORD
     IF aTarget == NULL
         RETURN 0
@@ -505,23 +447,10 @@ FUNCTION ArrayDeProtect<T>(aTarget AS __ArrayBase<T>) AS LOGIC
     RETURN aTarget:Lock(FALSE)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraydeprotect/*" />
-FUNCTION ArrayDeProtect(aTarget AS USUAL) AS LOGIC
-    IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN ArrayDeProtect(a)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
-
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraydeprotect/*" />
 FUNCTION ArrayDeProtect(aTarget AS ARRAY) AS LOGIC
     ARRAYNOTNULL aTarget
     RETURN aTarget:Lock(FALSE)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayget/*" />
-FUNCTION ArrayGet(aTarget AS USUAL,dwElement AS DWORD) AS USUAL
-    IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN ArrayGet(a, dwElement)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayget/*" />
 FUNCTION ArrayGet(aTarget AS ARRAY,dwElement AS DWORD) AS USUAL
@@ -534,12 +463,6 @@ FUNCTION ArrayGet<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD) AS T
     ARRAYNOTNULL aTarget
     RETURN aTarget:__GetElement( (INT) dwElement-1)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayprotect/*" />
-FUNCTION ArrayProtect(aTarget AS USUAL) AS LOGIC
-   IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN ArrayProtect(a)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayprotect/*" />
 FUNCTION ArrayProtect(aTarget AS ARRAY) AS LOGIC
@@ -560,12 +483,6 @@ FUNCTION ArrayPut<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uValue AS T) A
     aTarget:__SetElement(uValue, (INT)dwElement -1)
     RETURN uValue
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayput/*" />
-FUNCTION ArrayPut(aTarget AS USUAL,dwElement AS DWORD,uValue AS USUAL) AS USUAL
-    IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN ArrayPut(a, dwElement, uValue)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayput/*" />
 FUNCTION ArrayPut(aTarget AS ARRAY,dwElement AS DWORD,uValue AS USUAL) AS USUAL
@@ -573,12 +490,6 @@ FUNCTION ArrayPut(aTarget AS ARRAY,dwElement AS DWORD,uValue AS USUAL) AS USUAL
     aTarget:__SetElement(uValue, (INT)dwElement -1)
     RETURN uValue
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraystore/*" />
-FUNCTION ArrayStore(aSource AS USUAL,Buff AS USUAL PTR,dwLen AS DWORD) AS DWORD
-    IF __GetArray(aSource, OUT VAR a, TRUE)
-        RETURN ArrayStore(a, Buff, dwLen)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aSource), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraystore/*" />
 FUNCTION ArrayStore(aSource AS ARRAY,Buff AS USUAL PTR,dwLen AS DWORD) AS DWORD
@@ -605,13 +516,6 @@ FUNCTION ArrayStore<T>(aSource AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) A
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayswap/*" />
-FUNCTION ArraySwap(aTarget AS USUAL,dwElement AS DWORD,uNewValue AS USUAL) AS USUAL
-    IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN ArraySwap(a, dwElement, uNewValue)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
-
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayswap/*" />
 FUNCTION ArraySwap(aTarget AS ARRAY,dwElement AS DWORD,uNewValue AS USUAL) AS USUAL
     ARRAYNOTNULL aTarget
     RETURN aTarget:Swap((INT) dwElement, uNewValue)
@@ -622,24 +526,12 @@ FUNCTION ArraySwap<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uNewValue AS 
     ARRAYNOTNULL aTarget
     RETURN aTarget:Swap((INT) dwElement, uNewValue)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
-FUNCTION AScan(aTarget AS USUAL, uSearch AS USUAL,nStart := NIL AS USUAL,nCount := NIL AS USUAL) AS DWORD
-    IF __GetArray(aTarget, OUT VAR a, TRUE)
-        RETURN AScan(a, uSearch, nStart, nCount)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart := NIL AS USUAL,nCount := NIL AS USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount, SetExact())
 
-    /// <inheritdoc cref='AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AScan(aTarget AS USUAL, uSearch AS USUAL,nStart AS USUAL) AS DWORD
-    IF __GetArray(aTarget, OUT VAR a, TRUE)
-        RETURN AScan(a, uSearch, nStart)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <inheritdoc cref='AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS USUAL) AS DWORD
@@ -647,69 +539,34 @@ FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS USUAL) AS DWORD
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, NIL, SetExact())
 
     /// <inheritdoc cref='AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AScan(aTarget AS USUAL, uSearch AS USUAL) AS DWORD
-    IF __GetArray(aTarget, OUT VAR a, TRUE)
-        RETURN AScan(a, uSearch)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
-    /// <inheritdoc cref='AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, 1, NIL, SetExact())
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" />
-FUNCTION AScanExact( aTarget AS USUAL, uSearch AS USUAL, nStart := NIL AS USUAL, nCount := NIL AS USUAL) AS DWORD
-    IF __GetArray(aTarget, OUT VAR a, TRUE)
-        RETURN AScanExact(a, uSearch, nStart, nCount)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
+
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" />
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart := NIL AS USUAL, nCount := NIL AS USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount, TRUE )
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" />
-FUNCTION AScanExact( aTarget AS USUAL, uSearch AS USUAL, nStart AS USUAL) AS DWORD
-    IF __GetArray(aTarget, OUT VAR a, TRUE)
-        RETURN AScanExact(a, uSearch, nStart)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" />
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, NIL, TRUE )
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" />
-FUNCTION AScanExact( aTarget AS USUAL, uSearch AS USUAL) AS DWORD
-    IF __GetArray(aTarget, OUT VAR a, TRUE)
-        RETURN AScanExact(a, uSearch)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" />
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, 1, NIL, TRUE )
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbin/*" />
-FUNCTION AScanBin(aTarget AS USUAL,uSearch AS USUAL) AS DWORD
-    IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN AScanBin(a, uSearch)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbin/*" />
 FUNCTION AScanBin(aTarget AS ARRAY,uSearch AS USUAL) AS DWORD
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScanBin( "AscanBin" , aTarget, uSearch, FALSE )
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbinexact/*" />
-FUNCTION AScanBinExact(aTarget AS USUAL,uSearch AS USUAL) AS DWORD
-    IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN AScanBinExact(a, uSearch)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbinexact/*" />
 FUNCTION AScanBinExact(aTarget AS ARRAY,uSearch AS USUAL) AS DWORD
@@ -758,12 +615,6 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS L
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScan( aTarget, act, nStart, nCount)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asize/*" />
-FUNCTION ASize(aTarget AS USUAL,dwLength AS DWORD) AS ARRAY
-    IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN ASize(a, dwLength)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asize/*" />
 FUNCTION ASize(aTarget AS ARRAY,dwLength AS DWORD) AS ARRAY
@@ -778,12 +629,6 @@ FUNCTION ASize<T>(aTarget AS __ArrayBase<T>,dwLength AS DWORD) AS __ArrayBase<T>
     aTarget:Resize((INT) dwLength)
     RETURN aTarget
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atail/*" />
-FUNCTION ATail(aTarget AS USUAL) AS USUAL
-   IF __GetArray(aTarget, OUT VAR a, FALSE)
-        RETURN ATail(a)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atail/*" />
 FUNCTION ATail(aTarget AS ARRAY) AS USUAL
@@ -950,12 +795,6 @@ FUNCTION AReplicate(xFill AS USUAL,nElements AS DWORD) AS ARRAY
     NEXT
     RETURN a
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" />
-FUNCTION ASort(aTarget AS USUAL, nStart := NIL AS USUAL,nCount := NIL AS USUAL,cbOrder := NIL AS USUAL) AS ARRAY
-    IF __GetArray(aTarget, OUT VAR a, TRUE)
-        RETURN ASort(a, nStart, nCount, cbOrder)
-    END IF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aTarget), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" />
 FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,cbOrder := NIL AS USUAL) AS ARRAY
@@ -1098,12 +937,6 @@ FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD
     NEXT
     RETURN aArray
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
-FUNCTION AEval(aArray AS USUAL,cbBlock AS ICodeblock ) AS ARRAY
-    IF __GetArray(aArray, OUT VAR a, TRUE)
-        RETURN AEval(a, cbBlock)
-    ENDIF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aArray), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
 FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ) AS ARRAY
@@ -1113,12 +946,6 @@ FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ) AS ARRAY
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEval")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, uStart, uCount, FALSE)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
-FUNCTION AEval(aArray AS USUAL,cbBlock AS ICodeblock ,nStart AS USUAL ) AS ARRAY
-    IF __GetArray(aArray, OUT VAR a, TRUE)
-        RETURN AEval(a, cbBlock, nStart)
-    ENDIF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aArray), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
 FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ,nStart AS USUAL ) AS ARRAY
@@ -1128,12 +955,6 @@ FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ,nStart AS USUAL ) AS ARRAY
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart, uCount, FALSE)
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
-FUNCTION AEval(aArray AS USUAL,cbBlock AS ICodeblock ,nStart AS USUAL ,nCount AS USUAL) AS ARRAY
-    IF __GetArray(aArray, OUT VAR a, TRUE)
-        RETURN AEval(a, cbBlock, nStart, nCount)
-    ENDIF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aArray), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
 FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ,nStart AS USUAL ,nCount AS USUAL) AS ARRAY
@@ -1141,12 +962,6 @@ FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ,nStart AS USUAL ,nCount AS
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF nCount, "AEval")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart, nCount , FALSE )
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
-FUNCTION AEvalA(aArray AS USUAL,cbBlock AS ICodeblock) AS ARRAY
-    IF __GetArray(aArray, OUT VAR a, TRUE)
-        RETURN AEvalA(a, cbBlock)
-    ENDIF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aArray), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
 FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY
@@ -1156,12 +971,6 @@ FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEvalA")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, uStart,uCount , TRUE)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
-FUNCTION AEvalA(aArray AS USUAL,cbBlock AS ICodeblock, nStart AS USUAL ) AS ARRAY
-    IF __GetArray(aArray, OUT VAR a, TRUE)
-        RETURN AEvalA(a, cbBlock, nStart)
-    ENDIF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aArray), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
 FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock, nStart AS USUAL ) AS ARRAY
@@ -1170,12 +979,6 @@ FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock, nStart AS USUAL ) AS ARR
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF uCount, "AEvalA")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,uCount , TRUE)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
-FUNCTION AEvalA(aArray AS USUAL,cbBlock AS ICodeblock, nStart  AS USUAL ,nCount AS USUAL) AS ARRAY
-    IF __GetArray(aArray, OUT VAR a, TRUE)
-        RETURN AEvalA(a, cbBlock, nStart, nCount)
-    ENDIF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aArray), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
 FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock, nStart  AS USUAL ,nCount AS USUAL) AS ARRAY
@@ -1208,12 +1011,6 @@ FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DW
     NEXT
     RETURN aArray
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
-FUNCTION AEvalOld(aArray AS USUAL ,cbBlock AS ICodeblock,nStart  AS USUAL ,nCount AS USUAL) AS ARRAY
-    IF __GetArray(aArray, OUT VAR a, TRUE)
-        RETURN AEvalOld(a, cbBlock, nStart, nCount)
-    ENDIF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aArray), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
 FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock,nStart  AS USUAL ,nCount AS USUAL) AS ARRAY
@@ -1221,12 +1018,6 @@ FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock,nStart  AS USUAL ,nCoun
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF nCount, "AEvalOld")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,nCount , FALSE)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
-FUNCTION AEvalOld(aArray AS USUAL,cbBlock AS ICodeblock,nStart  AS USUAL ) AS ARRAY
-    IF __GetArray(aArray, OUT VAR a, TRUE)
-        RETURN AEvalOld(a, cbBlock, nStart)
-    ENDIF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aArray), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
 FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock,nStart  AS USUAL ) AS ARRAY
@@ -1235,12 +1026,6 @@ FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock,nStart  AS USUAL ) AS A
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF uCount, "AEvalOld")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,uCount , FALSE)
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
-FUNCTION AEvalOld(aArray AS USUAL ,cbBlock AS ICodeblock) AS ARRAY
-   IF __GetArray(aArray, OUT VAR a, TRUE)
-        RETURN AEvalOld(a, cbBlock)
-    ENDIF
-    THROW Error.ArgumentError(__FUNCTION__, nameof(aArray), "ARRAY Expected",1)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
 FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY

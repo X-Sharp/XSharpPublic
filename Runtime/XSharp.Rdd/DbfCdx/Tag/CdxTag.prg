@@ -284,9 +284,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:_keySize == 0
                     SELF:_keySize := SELF:_sourcekeySize
                 ENDIF
-                IF SELF:_NullableKey
-                    SELF:_keySize += 1
-                ENDIF
                 isOk := TRUE
             ELSE
                 FOREACH var nFld in fields

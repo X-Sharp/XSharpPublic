@@ -14,7 +14,7 @@ USING System.Runtime.CompilerServices
 /// </summary>
 /// <seealso cref="ICodeblock"/>
 //[DebuggerDisplay( "{ToString(),nq}", Type := "CODEBLOCK" )] ;
-ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
+ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock2
 	PRIVATE INITONLY _pcount AS INT
 
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -40,13 +40,16 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 	/// <returns>The value of the last expression within the codeblock as a USUAL.
 	/// If the last expression in the codeblock is of type VOID, then the codeblock
 	/// returns NIL.</returns>
-	/// <remarks>This method is abstract and is implemented in the derived class
+	/// <remarks>This method is abstract and is implemented in the derived classes
 	/// created by the compiler.</remarks>
-	PUBLIC ABSTRACT METHOD Eval(args PARAMS CONST USUAL[] ) AS USUAL
+    PUBLIC ABSTRACT METHOD Eval(args PARAMS CONST USUAL[] ) AS USUAL
 
+    /// <inheritdoc />
+    PROPERTY ResultType as __UsualType AUTO
 
 	/// <summary>
 	/// Eval method that can be called from code that does not "know" about the USUAL type.
+    /// such as the code in the RDD classes.
 	/// </summary>
 	PUBLIC VIRTUAL METHOD EvalBlock(args PARAMS OBJECT[] ) AS OBJECT
         LOCAL uArgs as USUAL[]
@@ -56,9 +59,10 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 		    uArgs := _ObjectArrayToUsualArray(args)
         ENDIF
         var result := SELF:Eval(uArgs)
-//        IF IsNil(result) .and. RuntimeState.Dialect == XSharpDialect.FoxPro
-//            result := FALSE
-//        ENDIF
+        SELF:ResultType := result:Type
+        IF IsNil(result) .and. RuntimeState.Dialect == XSharpDialect.FoxPro
+            result := FALSE
+        ENDIF
         RETURN result
 
 
@@ -135,6 +139,7 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock IMPLEMENTS IRtCodeblock
             ENDIF
 		    oRes := SELF:_innerBlock:EvalBlock(oArgs)
 		    uRes := __Usual{oRes}
+            SELF:ResultType := if(oRes == NULL , __UsualType:Void, uRes:Type)
         FINALLY
             IF _addsMemVars
                 XSharp.MemVar.ReleasePrivates(iLevel)

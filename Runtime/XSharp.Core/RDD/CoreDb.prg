@@ -13,6 +13,7 @@ USING System.IO
 USING System.Reflection
 USING System.Linq
 USING System.Text
+USING System.Diagnostics
 
 // Some UDCs to make the code easier to read
 #define EVENTS
@@ -229,6 +230,7 @@ CLASS XSharp.CoreDb
         ENDIF
         RAISE OperationFailed procName
 
+    [DebuggerStepThroughAttribute];
     INTERNAL STATIC METHOD Do<T>(action AS @@Func<T>) AS T
         TRY
             RETURN action()

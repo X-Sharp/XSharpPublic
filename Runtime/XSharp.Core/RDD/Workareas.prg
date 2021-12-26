@@ -7,7 +7,7 @@
 USING System.Collections.Generic
 USING System.Diagnostics
 USING System.Linq
-
+#undef AUTOCLOSETIMER
 #translate IsValidArea (<nArea>) => (<nArea> > 0 .and. <nArea> <= MaxWorkareas)
 
 /// <summary>Class that contains the list of open Workareas. Each thread will have its own list.</summary>
@@ -19,6 +19,7 @@ ABSTRACT CLASS XSharp.RDD.Workareas
     #endregion
     // This is a table across threads that has all the RDDs and Workareas
     STATIC PROTECTED _AllRDDs   AS Dictionary<IRdd, Workareas>
+#ifdef AUTOCLOSETIMER
     STATIC PRIVATE _oTimer       as System.Threading.Timer
 
     STATIC METHOD Timer_Tick(state as Object) AS VOID
@@ -48,12 +49,13 @@ ABSTRACT CLASS XSharp.RDD.Workareas
                 _CloseArea(oRDD)
             NEXT
         ENDIF
-
+#endif
     STATIC CONSTRUCTOR()
         _AllRDDs  := Dictionary<IRdd, Workareas>{}
-        // every 30 seconds we do some cleanup for dangling RDD objects
+#ifdef AUTOCLOSETIMER
+    // every 30 seconds we do some cleanup for dangling RDD objects
         _oTimer   := System.Threading.Timer{Timer_Tick,NULL, 0, 30_000}
-
+#endif
 
     RETURN
     /// <exclude />

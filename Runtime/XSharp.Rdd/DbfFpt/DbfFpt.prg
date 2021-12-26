@@ -15,6 +15,7 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
     CLASS DBFFPT INHERIT DBF
         PRIVATE _oFptMemo AS FPTMemo
+        PUBLIC PROPERTY ReturnRawData as LOGIC AUTO
         CONSTRUCTOR
             SUPER()
             SELF:_Memo := _oFptMemo := FPTMemo{SELF}
@@ -27,6 +28,9 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 VAR rawData := _oFptMemo:GetRawValueWithHeader(nFldPos)
+                IF SELF:ReturnRawData
+                    return rawData
+                endif
                  if rawData != NULL
                      RETURN SELF:_oFptMemo:DecodeValue(rawData)
                  else

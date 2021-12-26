@@ -1041,7 +1041,12 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     SELF:_EvalResult := oBlock:EvalBlock()
                 ENDIF
-				RETURN SELF:_EvalResult
+            // For the FoxPro dialect NIL is translated to FALSE
+            // but we do not want to return FALSE instead of NIL here
+            IF oBlock IS ICodeblock2 var oBlock2 .and. oBlock2:ResultType == __UsualType.Void
+                SELF:_EvalResult := NULL
+            ENDIF
+            RETURN SELF:_EvalResult
 
 			/// <inheritdoc />
 		VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT

@@ -146,7 +146,7 @@ BEGIN NAMESPACE XSharpModel
             END LOCK
          END GET
       END PROPERTY
-
+      
       INTERNAL METHOD SetMembers( list AS  IList<XSourceMemberSymbol>) AS VOID
         SELF:_members:Clear()
         SELF:_members:AddRange(list)

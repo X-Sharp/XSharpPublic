@@ -564,7 +564,7 @@ namespace XSharp.LanguageService
             int lineStart = line.Start.Position;
             if (line.Length == 0)
                 return;
-            var tokens = getTokensInLine(line);
+            var tokens = GetTokensInLine(line);
             if (tokens.Count > 0)
             {
                 if (tokens[0].StartIndex < lineStart)

@@ -64,9 +64,9 @@ namespace XSharp.Project
         {
             switch ((__VSHPROPID) propId)
             {
-                case __VSHPROPID.VSHPROPID_IsHiddenItem:
-                    var result = this.FirstChild == null;
-                    return result;
+                //case __VSHPROPID.VSHPROPID_IsHiddenItem:
+                //    var result = this.FirstChild != null;
+                //    return result;
                 case __VSHPROPID.VSHPROPID_NextVisibleSibling:
                 case __VSHPROPID.VSHPROPID_NextSibling:
                     return base.NextSibling?.ID;
@@ -118,7 +118,6 @@ namespace XSharp.Project
                 PackageReferenceNodes.Add(packageReference);
                 AddChild(packageReference);
             }
-            this.ProjectMgr.ReferencesChanged();
         }
 
         public void Remove(string bstrName)
@@ -128,7 +127,6 @@ namespace XSharp.Project
             {
                 PackageReferenceNodes.Remove(match);
                 match.Remove(removeFromStorage: false);
-                this.ProjectMgr.ReferencesChanged();
             }
         }
 
@@ -166,6 +164,7 @@ namespace XSharp.Project
             return true;
         }
 
+
         public IEnumerable<string> GetInstalledPackages()
         {
             return PackageReferenceNodes.Select((XSharpPackageReferenceNode node) => node.Name);
@@ -197,8 +196,6 @@ namespace XSharp.Project
                     PackageReferenceNodes.Add(referenceNode);
                 }
             }
-            this.ProjectMgr.ReferencesChanged();
-
         }
 
         protected override string GetCanonicalName()

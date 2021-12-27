@@ -973,7 +973,7 @@ namespace XSharp.LanguageService
                 var sym = new XSymbol(currentToken.Text, Kind.Keyword, Modifiers.Public);
                 result.Add(sym);
             }
-            else if (result.Count > 0)
+            else if (result.Count > 0 && result[0] != null)
             {
                 var res = result[0];
                 if (res.Kind.IsClassMember(location.Project.Dialect))

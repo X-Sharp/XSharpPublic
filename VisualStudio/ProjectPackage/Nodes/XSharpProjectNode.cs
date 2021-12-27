@@ -1064,21 +1064,13 @@ namespace XSharp.Project
             this.LoadPackageReferences();
         }
 
-        public override void ReferencesChanged()
-        {
-            base.ReferencesChanged();
-            if (! isLoading)
-            {
-                LoadReferencesInProjectModel();
-            }
-        }
-
+        
         private void LoadPackageReferences()
         {
-            HierarchyNode referenceContainerNode = GetReferenceContainer() as HierarchyNode;
             var packageContainer = PackageReferenceContainerNode;
             if (packageContainer == null)
             {
+                HierarchyNode referenceContainerNode = GetReferenceContainer() as HierarchyNode;
                 packageContainer = new XSharpPackageReferenceContainerNode(this);
                 referenceContainerNode.AddChild(packageContainer);
             }
@@ -1507,10 +1499,12 @@ namespace XSharp.Project
         {
 
         }
-        internal void BuildEnded()
+        internal void BuildEnded(bool didCompile)
         {
-
-            RefreshReferencesFromResponseFile();
+            if (didCompile)
+            {
+                RefreshReferencesFromResponseFile();
+            }
         }
 
 

@@ -21,13 +21,19 @@ namespace XSharp.Project.Editors.LightBulb
 {
     internal class PropertySuggestedAction : ISuggestedAction
     {
-        private ITextSnapshot m_snapshot;
-        private ITextView m_textView;
-        private XSourceMemberSymbol _fieldEntity;
-        private XSharpModel.TextRange _range;
-        private bool _full;
-        private string _generateName;
-        private bool _renameField;
+        private readonly ITextSnapshot m_snapshot;
+
+        public PropertySuggestedAction(ITextSnapshot snapshot)
+        {
+            m_snapshot = snapshot;
+        }
+
+        private readonly ITextView m_textView;
+        private readonly XSourceMemberSymbol _fieldEntity;
+        private readonly XSharpModel.TextRange _range;
+        private readonly bool _full;
+        private readonly string _generateName;
+        private readonly bool _renameField;
 
         public PropertySuggestedAction(ITextView textView, ITextBuffer m_textBuffer, XSourceMemberSymbol fieldToPropertize, XSharpModel.TextRange range, bool fullProperty, string genName, bool renField)
         {
@@ -51,8 +57,10 @@ namespace XSharp.Project.Editors.LightBulb
                 content.Add(temp);
             }
             // Create a "simple" list... Would be cool to have Colors...
-            var textBlock = new TextBlock();
-            textBlock.Padding = new Thickness(5);
+            var textBlock = new TextBlock
+            {
+                Padding = new Thickness(5)
+            };
             textBlock.Inlines.AddRange(content);
             return Task.FromResult<object>(textBlock);
         }
@@ -68,11 +76,11 @@ namespace XSharp.Project.Editors.LightBulb
         }
         public string DisplayText
         {
-            get { return "Encapsulate field:" + (_full ? "(full) " : " ") + _fieldEntity.Name + (_renameField ? "(and rename field) " : " "); }
+            get { return "Encapsulate field:" + (_full ? "(full) " : " ") + _fieldEntity.Name.Replace("_", "__") + (_renameField ? "(and rename field) " : " "); }
         }
         public ImageMoniker IconMoniker
         {
-            get { return default(ImageMoniker); }
+            get { return default; }
         }
         public string IconAutomationText
         {
@@ -99,7 +107,7 @@ namespace XSharp.Project.Editors.LightBulb
 
         public bool TryGetTelemetryId(out Guid telemetryId)
         {
-            // This is a sample action and doesn't participate in LightBulb telemetry  
+            // This is a sample action and doesn't participate in LightBulb telemetry
             telemetryId = Guid.Empty;
             return false;
         }
@@ -141,7 +149,7 @@ namespace XSharp.Project.Editors.LightBulb
                     editSession.Insert( fieldLine.Start.Position, prefix);
                     editSession.Replace( fieldLine.Extent, sourceCode);
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -245,35 +253,6 @@ namespace XSharp.Project.Editors.LightBulb
             result.Add(insertText.ToString());
             return result;
         }
-
-        /// <summary>
-        /// Try to infer a default value
-        /// </summary>
-        /// <param name="returnType"></param>
-        /// <returns></returns>
-        private string poorManDefaultValue(string returnType)
-        {
-            string ret = "";
-            returnType = returnType.ToLower();
-            switch (returnType)
-            {
-                case "int":
-                case "long":
-                case "float":
-                case "double":
-                    ret = "0";
-                    break;
-                case "boolean":
-                case "logic":
-                    ret = "false";
-                    break;
-                default:
-                    ret = "null";
-                    break;
-            }
-            return ret;
-        }
-
 
         internal void WriteOutputMessage(string strMessage)
         {

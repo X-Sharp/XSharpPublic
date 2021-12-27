@@ -66,7 +66,6 @@ namespace XSharp.LanguageService.Editors.LightBulb
             _classEntity = null;
         }
 
-#pragma warning disable VSTHRD105
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
             //return Task.Factory.StartNew(() =>
@@ -80,12 +79,11 @@ namespace XSharp.LanguageService.Editors.LightBulb
             //    return false;
             //});
 
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 return SearchMissingMembers();
             });
         }
-#pragma warning restore VSTHRD105
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
             // Do we have members to Add ?

@@ -467,12 +467,12 @@ namespace XSharp.LanguageService
                     {
                         var lineState = linesState.GetFlags(lineNumber);
                         // XML Doc will be re-indented when we find the corresponding entity
-                        if (lineState == LineFlags.DocComments)
+                        if (lineState.HasFlag(LineFlags.DocComments))
                         {
                             listDoc.Add(snapLine);
                             continue;
                         }
-                        if (lineState != LineFlags.SingleLineComments)
+                        if (!lineState.HasFlag(LineFlags.SingleLineComments))
                         {
                             if (!xLines.TryGetValue(lineNumber, out lineTokens))
                                 continue;
@@ -505,6 +505,8 @@ namespace XSharp.LanguageService
                                 if (lineContinue == 0)
                                 {
                                     indentSize = GetLineIndentation_Next(context, nextIndentSize, settings, out moveAfterFormatting, out moveContinuingLine, nestedEntity);
+                                    if (lineState.HasFlag(LineFlags.SingleLineEntity))
+                                        moveAfterFormatting = 0;
                                 }
                             }
                             //

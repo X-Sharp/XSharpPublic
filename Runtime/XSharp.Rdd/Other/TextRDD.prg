@@ -278,11 +278,8 @@ BEGIN NAMESPACE XSharp.RDD
 
             //
             SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
-            IF File(SELF:_FileName)
-                // Adjust Filename to handle 8 char DOS names
-                SELF:_FileName := FPathName()
-            ENDIF
             IF SELF:IsOpen
+                SELF:_FileName := FGetFileName(SELF:_hFile)
                 isOK := SELF:_DetermineCodePage()
                 SELF:_prepareFields()
             ELSE
@@ -301,15 +298,12 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_OpenInfo := info
             SELF:_Hot := FALSE
             SELF:_FileName := SELF:_OpenInfo:FullName
-            IF File(SELF:_FileName)
-                SELF:_FileName := FPathName()
-                SELF:_OpenInfo:FullName := SELF:_FileName
-            ENDIF
             SELF:_Alias := SELF:_OpenInfo:Alias
             SELF:_Shared := SELF:_OpenInfo:Shared
             SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
             SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode)
             IF SELF:IsOpen
+                SELF:_FileName := FGetFileName(SELF:_hFile)
                 isOK := SELF:_DetermineCodePage()
                 IF FSize(SELF:_hFile) < Int32.MaxValue
                     FConvertToMemoryStream(SELF:_hFile)

@@ -165,12 +165,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             isOk := FALSE
             SELF:_oRdd:GoCold()
             SELF:_Shared := SELF:_oRdd:Shared
-            IF File(SELF:FullPath)
-                // Adjust Filename to handle 8 char DOS names
-                SELF:_fullPath := FPathName()
-            ENDIF
             SELF:_hFile    := FOpen(SELF:FullPath, SELF:_oRdd:_OpenInfo:FileMode)
             SELF:_oStream  := FGetStream(SELF:_hFile)
+            IF SELF:_oStream  != NULL_OBJECT
+                SELF:_fullPath := SELF:_oStream:Name
+            ENDIF
             IF SELF:_hFile == F_ERROR
                 SELF:_oRdd:_dbfError( ERDD.OPEN_ORDER, Gencode.EG_OPEN, SELF:FileName)
                 RETURN FALSE

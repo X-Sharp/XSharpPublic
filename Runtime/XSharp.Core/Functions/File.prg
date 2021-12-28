@@ -1039,6 +1039,17 @@ FUNCTION FGetStream(pFile AS IntPtr) AS FileStream
     RETURN XSharp.IO.File.findStream(pFile)
 
 
+/// <summary>Return the filename for a file handle</summary>
+/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param>
+FUNCTION FGetFileName(pFile AS IntPtr) AS STRING
+    LOCAL oStream AS FileStream
+    oStream := XSharp.IO.File.findStream(pFile)
+    IF oStream != NULL_OBJECT
+        RETURN oStream:Name
+    ENDIF
+    RETURN String.Empty
+
+
 /// <summary>Returns the size in bytes of a specified file. </summary>
 /// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param>
 /// <returns>The size of the file or -1 when the file handle is not valid.</returns>

@@ -33,30 +33,33 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // looks for bags through the normal paths
             IF File(info:BagName)
                 info:BagName := FPathName()
-                IF SELF:FindOrderBag(info:BagName) == NULL_OBJECT
-                    TRY
-                        oBag := CdxOrderBag{_oRdd}
-                        oBag:Structural := lStructural
-                        _bags:Add(oBag)
-                        isOk := oBag:Open(info)
-                        IF isOk
-                            IF XSharp.RuntimeState.AutoOrder != 0
-                                SELF:CurrentOrder := oBag:Tags[0]
-                            ENDIF
-                        ELSE
-                            _bags:Remove(oBag)
+            ELSE
+                // Suggestion from Leonid to handle short path names
+                info:BagName := Path.Combine( Path.GetDirectoryName(info:BagName), Path.GetFileName(info:BagName) ) // Short name (MS-DOS 8.3) -> Long Name (if necessary)
+            ENDIF
+            IF SELF:FindOrderBag(info:BagName) == NULL_OBJECT
+                TRY
+                    oBag := CdxOrderBag{_oRdd}
+                    oBag:Structural := lStructural
+                    _bags:Add(oBag)
+                    isOk := oBag:Open(info)
+                    IF isOk
+                        IF XSharp.RuntimeState.AutoOrder != 0
+                            SELF:CurrentOrder := oBag:Tags[0]
                         ENDIF
-                        IF lStructural
-                            SELF:_oRdd:Header:TableFlags |= DBFTableFlags.HasStructuralCDX
-                        ENDIF
-                    CATCH e AS Exception
-                        XSharp.RuntimeState.LastRddError := e
-                        IF oBag != NULL .AND. SELF:_bags:Contains(oBag)
-                            SELF:_bags:Remove(oBag)
-                        ENDIF
-                        isOk := FALSE
-                    END TRY
-                ENDIF
+                    ELSE
+                        _bags:Remove(oBag)
+                    ENDIF
+                    IF lStructural
+                        SELF:_oRdd:Header:TableFlags |= DBFTableFlags.HasStructuralCDX
+                    ENDIF
+                CATCH e AS Exception
+                    XSharp.RuntimeState.LastRddError := e
+                    IF oBag != NULL .AND. SELF:_bags:Contains(oBag)
+                        SELF:_bags:Remove(oBag)
+                    ENDIF
+                    isOk := FALSE
+                END TRY
             ENDIF
             RETURN isOk
         INTERNAL METHOD _AddBag(oBag AS CdxOrderBag) AS VOID

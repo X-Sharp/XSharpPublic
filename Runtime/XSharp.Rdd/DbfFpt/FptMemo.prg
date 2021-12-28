@@ -173,9 +173,6 @@ BEGIN NAMESPACE XSharp.RDD
             block := SELF:_getBlock(nBlockNr)
             IF block != NULL
                 // So, extract the "real" Data
-                IF File(fileName)
-                    fileName := FPathName()
-                ENDIF
                 IF SELF:ExportMode == BLOB_EXPORT_APPEND
                     LOCAL file := System.IO.File.OpenWrite(fileName) AS FileStream
                     file:Seek(0, SeekOrigin.End)

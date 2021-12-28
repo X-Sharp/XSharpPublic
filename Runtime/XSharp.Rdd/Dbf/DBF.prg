@@ -924,11 +924,9 @@ OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
 	SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
 #endif
     // Adjust path to be sure we handle DOS 8 name chars correctly
-    IF File(SELF:_FileName)
-        SELF:_FileName := FPathName()
-    ENDIF
 	IF SELF:IsOpen
         SELF:_oStream    := (FileStream) FGetStream(SELF:_hFile)
+        SELF:_FileName   := _oStream:Name
 		LOCAL fieldCount :=  SELF:_Fields:Length AS INT
 		LOCAL fieldDefSize := fieldCount * DbfField.SIZE AS INT
 		LOCAL codePage AS LONG

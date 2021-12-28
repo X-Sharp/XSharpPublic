@@ -543,12 +543,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             var newDialect = options.Dialect;
             if (options.Dialect == XSharpDialect.Core)
             {
-                if (!options.ExplicitOptions.HasFlag(CompilerOption.NamedArgs))
+                if (!options.ExplicitOptions.HasFlag(CompilerOption.AllowNamedArgs))
                     options.AllowNamedArguments = true;
             }
             else
             {
-                if (!options.ExplicitOptions.HasFlag(CompilerOption.NamedArgs))
+                if (!options.ExplicitOptions.HasFlag(CompilerOption.AllowNamedArgs))
                     options.AllowNamedArguments = false;
                 //if (!options.ExplicitOptions.HasFlag(CompilerOption.EnforceSelf))
                 //    options.EnforceSelf = true;

@@ -479,17 +479,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 ErrorCode.ERR_CompilerOptionNotSupportedForDialect, opt,compopt.Description(), _options.Dialect);
                             _parseErrors.Add(errdata);
                         }
-
+                        // options sorted in alphabetical order with the exception of the fox and xpp options
                         switch (compopt)
                         {
-                            case CompilerOption.Overflow:
                             case CompilerOption.AllowDotForInstanceMembers:
                             case CompilerOption.ArrayZero:
+                            case CompilerOption.EnforceOverride:
+                            case CompilerOption.EnforceSelf:
                             case CompilerOption.InitLocals:
                             case CompilerOption.LateBinding:
                             case CompilerOption.MemVars:
-                            case CompilerOption.EnforceSelf:
-                            case CompilerOption.EnforceOverride:
+                            case CompilerOption.Overflow:
                             case CompilerOption.UndeclaredMemVars:
                             // case "vo1": // Init/axit
                             case CompilerOption.Vo2:     // Initialize string variables with empty strings

@@ -101600,7 +101600,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R816 - Function Overloads
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION R817 - Ambigous overloads *************
 Application = R817 - Ambigous overloads
 IDEVersion = 1.06
@@ -101939,7 +101939,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R819 - String2Psz is allowed for VOSTRUCT allocated with IS
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
 ; ************** APPLICATION C817 - Problem with Math.Round(float/int) when /vo12 is enabled (ambiguous call) *************
 Application = C817 - Problem with Math.Round(float/int) when /vo12 is enabled (ambiguous call)
 IDEVersion = 1.06

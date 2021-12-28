@@ -51,6 +51,7 @@ RETURN
 FUNCTION EvalFunc(n AS DWORD) AS VOID
 gcTest += n:ToString()
 ? n
+RETURN 
 
 PROC xAssert(l AS LOGIC)
 IF .not. l

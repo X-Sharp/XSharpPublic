@@ -829,7 +829,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (node.Operand is InvocationExpressionSyntax)
             {
                 bool lAliasedExpression = false;
-                if (node.Operand.XNode is XSharpParser.PrimaryExpressionContext pec && pec.Expr is XSharpParser.AliasedExpressionContext)
+                if (node.Operand.XNode is XSharpParser.PrimaryExpressionContext pec && 
+                   pec.Expr is XSharpParser.AliasedExpressionContext)
                 {
                     lAliasedExpression = true;
                 }

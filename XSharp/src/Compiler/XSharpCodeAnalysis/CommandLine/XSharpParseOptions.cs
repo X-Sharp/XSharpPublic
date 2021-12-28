@@ -149,8 +149,17 @@ namespace Microsoft.CodeAnalysis.CSharp
         public CSharpCommandLineArguments? CommandLineArguments { get; private set; }
         public TextWriter? ConsoleOutput { get; private set; }
         public bool cs => CaseSensitive;
+        public bool fox1 => FoxInheritUnknown;
+        public bool fox2 => FoxArraySupport;
         public bool lb => LateBinding;
         public bool vo1 => VoInitAxitMethods;
+        public bool vo10 => VOCompatibleIIF;
+        public bool vo11 => VOArithmeticConversions;
+        public bool vo12 => VOClipperIntegerDivisions;
+        public bool vo13 => VOStringComparisons;
+        public bool vo14 => VOFloatConstants;
+        public bool vo15 => VOUntypedAllowed;
+        public bool vo16 => VOClipperConstructors;
         public bool vo2 => VONullStrings;
         public bool vo3 => VirtualInstanceMethods;
         public bool vo4 => VOSignedUnsignedConversion;
@@ -159,80 +168,71 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool vo7 => VOImplicitCastsAndConversions;
         public bool vo8 => VOPreprocessorBehaviour;
         public bool vo9 => VOAllowMissingReturns;
-        public bool vo10 => VOCompatibleIIF;
-        public bool vo11 => VOArithmeticConversions;
-        public bool vo12 => VOClipperIntegerDivisions;
-        public bool vo13 => VOStringComparisons;
-        public bool vo14 => VOFloatConstants;
-        public bool vo15 => VOUntypedAllowed;
-        public bool vo16 => VOClipperConstructors;
         public bool xpp1 => XPPInheritFromAbstract;
         public bool xpp2 => XPPUntypedmain;
-        public bool fox1 => FoxInheritUnknown;
-        public bool fox2 => FoxArraySupport;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
             {
                 AllowDotForInstanceMembers = opt.AllowDotForInstanceMembers;
+                AllowNamedArguments = opt.AllowNamedArguments;
+                AllowUnsafe = opt.AllowUnsafe;
                 ArrayZero = opt.ArrayZero;
                 CaseSensitive = opt.CaseSensitive;
                 ClrVersion = opt.ClrVersion;
-                TargetDLL = opt.TargetDLL;
-                Dialect = opt.Dialect;
-                DefaultNamespace = opt.NameSpace;
+                ConsoleOutput = opt.ConsoleOutput;
                 DefaultIncludeDir = opt.DefaultIncludeDir;
-                ImplicitNamespace = opt.ImplicitNameSpace;
+                DefaultNamespace = opt.NameSpace;
+                Dialect = opt.Dialect;
                 DumpAST = opt.DumpAST;
-                WindowsDir = opt.WindowsDir;
-                SystemDir = opt.SystemDir;
-                NoStdDef = opt.NoStdDef;
-                NoClipCall = opt.NoClipCall;
-                ShowDefs = opt.ShowDefs;
-                ShowIncludes = opt.ShowIncludes;
-                StdDefs = opt.StdDefs;
                 EnforceOverride = opt.EnforceOverride;
                 EnforceSelf = opt.EnforceSelf;
-                Verbose = opt.Verbose;
-                PreprocessorOutput = opt.PreProcessorOutput;
-                ParseLevel = opt.ParseLevel;
+                FoxArraySupport = opt.Fox2;
+                FoxInheritUnknown = opt.Fox1;
+                ImplicitNamespace = opt.ImplicitNameSpace;
 #if !VSPARSER
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
 #else
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 #endif
+                InitLocals = opt.InitLocals;
+                LateBinding = opt.LateBinding;
+                MemVars = opt.MemVars;
+                NoClipCall = opt.NoClipCall;
+                NoStdDef = opt.NoStdDef;
+                Overflow = opt.Overflow;
+                ParseLevel = opt.ParseLevel;
+                ParseLevel = opt.ParseLevel;
+                PreprocessorOutput = opt.PreProcessorOutput;
+                RuntimeAssemblies = opt.RuntimeAssemblies;
+                SaveAsCSharp = opt.SaveAsCSharp;
+                ShowDefs = opt.ShowDefs;
+                ShowIncludes = opt.ShowIncludes;
+                StdDefs = opt.StdDefs;
+                SuppressInit1 = opt.SuppressInit1;
+                SystemDir = opt.SystemDir;
+                TargetDLL = opt.TargetDLL;
+                UndeclaredMemVars = opt.UndeclaredMemVars;
+                Verbose = opt.Verbose;
+                VirtualInstanceMethods = opt.Vo3;
+                VOAllowMissingReturns = opt.Vo9;
+                VOArithmeticConversions = opt.Vo11;
+                VOClipperCallingConvention = opt.Vo5;
+                VOClipperConstructors = opt.Vo16;
+                VOClipperIntegerDivisions = opt.Vo12;
+                VOCompatibleIIF = opt.Vo10;
+                VOFloatConstants = opt.Vo14;
+                VOImplicitCastsAndConversions = opt.Vo7;
                 VoInitAxitMethods = opt.Vo1;
                 VONullStrings = opt.Vo2;
-                VirtualInstanceMethods = opt.Vo3;
-                VOSignedUnsignedConversion = opt.Vo4;
-                VOClipperCallingConvention = opt.Vo5;
-                VOResolveTypedFunctionPointersToPtr = opt.Vo6;
-                VOImplicitCastsAndConversions = opt.Vo7;
                 VOPreprocessorBehaviour = opt.Vo8;
-                VOAllowMissingReturns = opt.Vo9;
-                VOCompatibleIIF = opt.Vo10;
-                VOArithmeticConversions = opt.Vo11;
-                VOClipperIntegerDivisions = opt.Vo12;
+                VOResolveTypedFunctionPointersToPtr = opt.Vo6;
+                VOSignedUnsignedConversion = opt.Vo4;
                 VOStringComparisons = opt.Vo13;
-                VOFloatConstants = opt.Vo14;
                 VOUntypedAllowed = opt.Vo15;
-                VOClipperConstructors = opt.Vo16;
+                WindowsDir = opt.WindowsDir;
                 XPPInheritFromAbstract = opt.Xpp1;
                 XPPUntypedmain = opt.Xpp2;
-                FoxInheritUnknown = opt.Fox1;
-                FoxArraySupport = opt.Fox2;
-                LateBinding = opt.LateBinding;
-                RuntimeAssemblies = opt.RuntimeAssemblies;
-                Overflow = opt.Overflow;
-                ConsoleOutput = opt.ConsoleOutput;
-                ParseLevel = opt.ParseLevel;
-                AllowNamedArguments = opt.AllowNamedArguments;
-                SaveAsCSharp = opt.SaveAsCSharp;
-                MemVars = opt.MemVars;
-                InitLocals = opt.InitLocals;
-                UndeclaredMemVars = opt.UndeclaredMemVars;
-                AllowUnsafe = opt.AllowUnsafe;
-                SuppressInit1 = opt.SuppressInit1;
             }
             LanguageVersion = defaultLanguageVersion;
         }
@@ -258,68 +258,66 @@ namespace Microsoft.CodeAnalysis.CSharp
         public void SetXSharpSpecificOptions(CSharpParseOptions opt)
         {
             AllowDotForInstanceMembers = opt.AllowDotForInstanceMembers;
-            ArrayZero = opt.ArrayZero;
-            ClrVersion = opt.ClrVersion;
-            CaseSensitive = opt.CaseSensitive;
-            TargetDLL = opt.TargetDLL;
-            MacroScript = opt.MacroScript;
-            DebugEnabled = opt.DebugEnabled;
-            DefaultIncludeDir = opt.DefaultIncludeDir;
-            Dialect = opt.Dialect;
-            DumpAST = opt.DumpAST;
-            WindowsDir = opt.WindowsDir;
-            SystemDir = opt.SystemDir;
-            DefaultNamespace = opt.DefaultNamespace;
-            ImplicitNamespace = opt.ImplicitNamespace;
-            IncludePaths = opt.IncludePaths;
-            ShowDefs = opt.ShowDefs;
-            ShowIncludes = opt.ShowIncludes;
-            NoStdDef = opt.NoStdDef;
-            NoClipCall = opt.NoClipCall;
-            PreprocessorOutput = opt.PreprocessorOutput;
-            ParseLevel = opt.ParseLevel;
-            SaveAsCSharp = opt.SaveAsCSharp;
-            StdDefs = opt.StdDefs;
-            EnforceOverride = opt.EnforceOverride;
-            EnforceSelf = opt.EnforceSelf;
-            Verbose = opt.Verbose;
             AllowNamedArguments = opt.AllowNamedArguments;
-            VoInitAxitMethods = opt.VoInitAxitMethods; // vo1
-            VONullStrings = opt.VONullStrings; // vo2
-            VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3
-            VOSignedUnsignedConversion = opt.VOSignedUnsignedConversion; // vo4
-            VOClipperCallingConvention = opt.VOClipperCallingConvention;  // vo5
-            VOResolveTypedFunctionPointersToPtr = opt.VOResolveTypedFunctionPointersToPtr; // vo6
-            VOImplicitCastsAndConversions = opt.VOImplicitCastsAndConversions; // vo7
-            VOPreprocessorBehaviour = opt.VOPreprocessorBehaviour; // vo8
-            VOAllowMissingReturns = opt.VOAllowMissingReturns; // vo9
-            VOCompatibleIIF = opt.VOCompatibleIIF; // vo10
-            VOArithmeticConversions = opt.VOArithmeticConversions; // vo11
-            VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions; // vo12
-            VOStringComparisons = opt.VOStringComparisons; // vo13
-            VOFloatConstants = opt.VOFloatConstants; // vo14
-            VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
-            VOClipperConstructors = opt.VOClipperConstructors; // vo16
-            XPPInheritFromAbstract = opt.XPPInheritFromAbstract; // xpp1
-            XPPUntypedmain = opt.XPPUntypedmain;    // xpp2
-            FoxInheritUnknown = opt.FoxInheritUnknown;  // fox1
-            FoxArraySupport = opt.FoxArraySupport;      // fox2
-            LateBinding = opt.LateBinding;
-
-            RuntimeAssemblies = opt.RuntimeAssemblies;
-            Overflow = opt.Overflow;
-            ConsoleOutput = opt.ConsoleOutput;
-
-            ParseLevel = opt.ParseLevel;
+            AllowUnsafe = opt.AllowUnsafe;
+            ArrayZero = opt.ArrayZero;
+            CaseSensitive = opt.CaseSensitive;
+            ClrVersion = opt.ClrVersion;
 #if !VSPARSER
             CommandLineArguments = opt.CommandLineArguments;
 #endif
-            LanguageVersion = defaultLanguageVersion;
-            MemVars = opt.MemVars;
-            UndeclaredMemVars = opt.UndeclaredMemVars;
+            ConsoleOutput = opt.ConsoleOutput;
+            DebugEnabled = opt.DebugEnabled;
+            DefaultIncludeDir = opt.DefaultIncludeDir;
+            DefaultNamespace = opt.DefaultNamespace;
+            Dialect = opt.Dialect;
+            DumpAST = opt.DumpAST;
+            EnforceOverride = opt.EnforceOverride;
+            EnforceSelf = opt.EnforceSelf;
+            FoxArraySupport = opt.FoxArraySupport;      // fox2
+            FoxInheritUnknown = opt.FoxInheritUnknown;  // fox1
+            ImplicitNamespace = opt.ImplicitNamespace;
+            IncludePaths = opt.IncludePaths;
             InitLocals = opt.InitLocals;
-            AllowUnsafe = opt.AllowUnsafe;
+            LanguageVersion = defaultLanguageVersion;
+            LateBinding = opt.LateBinding;
+            MacroScript = opt.MacroScript;
+            MemVars = opt.MemVars;
+            NoClipCall = opt.NoClipCall;
+            NoStdDef = opt.NoStdDef;
+            Overflow = opt.Overflow;
+            ParseLevel = opt.ParseLevel;
+            ParseLevel = opt.ParseLevel;
+            PreprocessorOutput = opt.PreprocessorOutput;
+            RuntimeAssemblies = opt.RuntimeAssemblies;
+            SaveAsCSharp = opt.SaveAsCSharp;
+            ShowDefs = opt.ShowDefs;
+            ShowIncludes = opt.ShowIncludes;
+            StdDefs = opt.StdDefs;
             SuppressInit1 = opt.SuppressInit1;
+            SystemDir = opt.SystemDir;
+            TargetDLL = opt.TargetDLL;
+            UndeclaredMemVars = opt.UndeclaredMemVars;
+            Verbose = opt.Verbose;
+            VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3
+            VOAllowMissingReturns = opt.VOAllowMissingReturns; // vo9
+            VOArithmeticConversions = opt.VOArithmeticConversions; // vo11
+            VOClipperCallingConvention = opt.VOClipperCallingConvention;  // vo5
+            VOClipperConstructors = opt.VOClipperConstructors; // vo16
+            VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions; // vo12
+            VOCompatibleIIF = opt.VOCompatibleIIF; // vo10
+            VOFloatConstants = opt.VOFloatConstants; // vo14
+            VOImplicitCastsAndConversions = opt.VOImplicitCastsAndConversions; // vo7
+            VoInitAxitMethods = opt.VoInitAxitMethods; // vo1
+            VONullStrings = opt.VONullStrings; // vo2
+            VOPreprocessorBehaviour = opt.VOPreprocessorBehaviour; // vo8
+            VOResolveTypedFunctionPointersToPtr = opt.VOResolveTypedFunctionPointersToPtr; // vo6
+            VOSignedUnsignedConversion = opt.VOSignedUnsignedConversion; // vo4
+            VOStringComparisons = opt.VOStringComparisons; // vo13
+            VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
+            WindowsDir = opt.WindowsDir;
+            XPPInheritFromAbstract = opt.XPPInheritFromAbstract; // xpp1
+            XPPUntypedmain = opt.XPPUntypedmain;    // xpp2
         }
 
         public CSharpParseOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
@@ -422,7 +420,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.ArithmeticConversions: // vo11
                 case CompilerOption.StringComparisons: // vo13
                     return false; // not handled during parsing
-
+                case CompilerOption.Vo1: // Init/Axit => Constructor / Destruction
+                case CompilerOption.Vo8: // Compatible Preprocessor
+                case CompilerOption.Xpp1: // Inherit from Custom
+                case CompilerOption.Xpp2:
+                case CompilerOption.Fox1: // Inherit from Custom
+                case CompilerOption.AllowNamedArgs: // AllowNamedArguments: used in Antlr rules
+                case CompilerOption.ImplicitNamespace:
+                case CompilerOption.ClrVersion:
+                case CompilerOption.All:
+                    break;
             }
             return false;
         }

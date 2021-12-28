@@ -12,10 +12,11 @@
   <Import Project="$(Solutiondir)src\Compiler\CompilerCommon.props" />
   <Import Project="$(RepositoryEngineeringDir)targets\GenerateCompilerExecutableBindingRedirects.targets" />
   <PropertyGroup>
+    <!-- Many of the properties below are used by the microsoft.dotnet.arcade.sdk  to build the nuget package -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
-    <PackageTags>XSharp Compiler </PackageTags>
+    <PackageTags>XSharp;Compiler;Build</PackageTags>
     <IsPackable>true</IsPackable>
     <NuspecPackageId>XSharp.Compiler.Tools</NuspecPackageId>
     <IncludeBuildOutput>false</IncludeBuildOutput>

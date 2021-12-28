@@ -1729,8 +1729,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (context.Op.Type == XP.DIV && _options.HasOption(CompilerOption.ClipperIntegerDivisions, context, PragmaOptions))
             {
-                var lhs = MakeCastTo(_floatType, context.Left.Get<ExpressionSyntax>());
-                var rhs = MakeCastTo(_floatType, context.Right.Get<ExpressionSyntax>());
+                var lhs = MakeCastTo(_usualType, context.Left.Get<ExpressionSyntax>());
+                var rhs = MakeCastTo(_usualType, context.Right.Get<ExpressionSyntax>());
                 context.Put(_syntaxFactory.BinaryExpression(
                     context.Op.ExpressionKindBinaryOp(),
                     lhs,

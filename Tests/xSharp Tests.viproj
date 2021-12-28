@@ -101939,7 +101939,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R819 - String2Psz is allowed for VOSTRUCT allocated with IS
 
-ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C817 - Problem with Math.Round(float/int) when /vo12 is enabled (ambiguous call) *************
 Application = C817 - Problem with Math.Round(float/int) when /vo12 is enabled (ambiguous call)
 IDEVersion = 1.06

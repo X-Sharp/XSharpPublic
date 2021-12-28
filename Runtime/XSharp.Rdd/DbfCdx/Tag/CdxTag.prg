@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         PRIVATE METHOD _InitFields(oBag AS CdxOrderBag) AS VOID
-			SELF:_keyBuffer := BYTE[]{8}
+			SELF:_keyBuffer     := BYTE[]{8}
             SELF:_bag           := oBag
             SELF:_oRdd          := oBag:_oRdd
             SELF:_stack         := CdxPageStack{SELF}
@@ -184,6 +184,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
         INTERNAL METHOD AllocateBuffers() AS VOID
+            SELF:_keyBuffer         := BYTE[]{_keySize}
             SELF:_newvalue          := RddKeyData{_keySize}
             SELF:_currentvalue      := RddKeyData{_keySize}
             SELF:_Scopes[0]:SetBuffer(_keySize)
@@ -283,6 +284,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_NullableKey := fld:Flags:HasFlag(DBFFieldFlags.Nullable)
                 IF SELF:_keySize == 0
                     SELF:_keySize := SELF:_sourcekeySize
+                ENDIF
+                IF SELF:_NullableKey
+                    SELF:_keySize += 1
                 ENDIF
                 isOk := TRUE
             ELSE

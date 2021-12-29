@@ -17,6 +17,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CreateVsixContainer>True</CreateVsixContainer>
     <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
+    <UseCodebase>true</UseCodebase>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +34,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE;XSHARP;DEV17</DefineConstants>
+    <CreateVsixContainer>False</CreateVsixContainer>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">

@@ -354,15 +354,9 @@
     </VSCTCompile>
     <Content Include="XSharpAppDesigner.pkgdef">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="XSharpDebugger.pkgdef">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="XSharpLanguageService.pkgdef">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="XSharpProjectCPS.pkgdef">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -436,7 +430,7 @@
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.xsproj" />
-    <VSIXSourceItem Include="..\..\Binaries\2019\Debug\XSharpDebugger.vsdconfig">
+    <VSIXSourceItem Include="XSharpDebugger.vsdconfig">
       <Link>XSharpDebugger.vsdconfig</Link>
     </VSIXSourceItem>
     <None Include="Snippets\Snippets\case.snippet" />
@@ -763,7 +757,6 @@
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
-
   <Target Name="AfterBuild">
   </Target>
   -->

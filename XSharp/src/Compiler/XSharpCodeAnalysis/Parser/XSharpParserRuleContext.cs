@@ -63,6 +63,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {
                         return ParseTrivia(start.XmlComments);
                     }
+                    if (start.SourceSymbol != null && start.SourceSymbol.HasXmlComments)
+                    {
+                        return ParseTrivia(start.SourceSymbol.XmlComments);
+                    }
                 }
                 if (parent is PropertyDeclarationSyntax propdecl)
                 {

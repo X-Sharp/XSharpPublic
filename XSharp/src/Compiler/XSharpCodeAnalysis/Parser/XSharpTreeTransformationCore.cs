@@ -1605,7 +1605,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(modifiers);
             _pool.Free(globalClassMembers);
             classdecl.XGenerated = true;
-            classdecl.XDefaultTree = true;
+            if (className != XSharpSpecialNames.ModuleName)
+                classdecl.XDefaultTree = true;
             classdecl.XNode = new XSharpParserRuleContext();
             if (nameSpace.Length > 0)
             {

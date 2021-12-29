@@ -12,14 +12,14 @@ namespace XSharp
         internal const string RegCompany = "XSharpBV";
         internal const string ProductName = "XSharp Cahors";
         internal const string Product = "XSharp";
-        // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE
+        // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE and the Versions.props file
 #if RUNTIME
         internal const string Version = "2.6.0.0";
 #else
-        internal const string Version = "2.9.0.0";
+        internal const string Version = "2.10.0.0";
 #endif
-        internal const string FileVersion = "2.9.2.0";
-        internal const string ProductVersion = "2.9b GA";
+        internal const string FileVersion = "2.10.0.0";
+        internal const string ProductVersion = "2.10 GA";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2021";
 

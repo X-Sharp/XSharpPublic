@@ -11,7 +11,7 @@
     <AssemblyName>XSharpCodeDomProvider</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
-     <RuntimeIdentifier>win</RuntimeIdentifier>
+    <RuntimeIdentifier>win</RuntimeIdentifier>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -68,12 +68,10 @@
     <Compile Include="XSharpTreeDiscoverClass.cs" />
     <Compile Include="XSharpTreeDiscoverFields.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.343</Version>
+      <Version>15.0.362</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

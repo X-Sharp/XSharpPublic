@@ -7,6 +7,7 @@ namespace XSharp.LanguageService.OptionsPages
 
     [Guid(XSharpConstants.IntellisenseOptionsPageGuidString)]
     [SharedSettings("TextEditor.XSharp",false)]
+    [ComVisible(true)]
     public class IntellisenseOptionsPage : XSDialogPage<IntellisenseOptionsControl>
     {
         public bool CompletionListTabs { get; set; }

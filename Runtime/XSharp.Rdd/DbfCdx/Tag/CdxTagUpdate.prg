@@ -34,6 +34,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 buffer := _bag:AllocBuffer()
                 oLeaf  := CdxLeafPage{_bag, -1, buffer, SELF:KeyLength}
                 oLeaf:InitBlank(SELF)
+                oLeaf:aClear := SELF:aClear
                 oLeaf:Write() // will give it a pagenumber
                 IF SELF:_inBatch
                     oLeaf:PageType |= CdxPageType.Batch
@@ -93,6 +94,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         CASE CdxActionType.AddKey
                         // Called during index creation
                             action := SELF:AddKey(action)
+
                         CASE CdxActionType.DeleteKey
                         // after adding the leaf we want to write a new key to the newly allocated page
                             action := SELF:DeleteKey(action)
@@ -129,9 +131,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         // Throw an exception
                             SELF:_UpdateError(NULL, "CdxTag.DoAction","Out of Bounds when writing to a page")
                             action := CdxAction.Ok
+
                         CASE CdxActionType.ExpandRecnos
                         // after expanding we either need to split or update the current page, so no nextlevel
                             action := SELF:ExpandRecnos(action)
+
                         OTHERWISE
                             SELF:_UpdateError(NULL, "CdxTag.DoAction","Unexpected Enum value "+action:ToString())
                     END SWITCH
@@ -845,6 +849,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_Hot := TRUE
                 ENDIF
                 SELF:_newvalue:CopyTo(SELF:_currentvalue)
+                SELF:OrderBag:SavePages()
                 RETURN TRUE
             FINALLY
                 IF SELF:Shared
@@ -874,5 +879,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     END CLASS
 
 END NAMESPACE
+
 
 

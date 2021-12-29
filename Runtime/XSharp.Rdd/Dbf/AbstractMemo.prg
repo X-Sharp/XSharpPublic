@@ -39,7 +39,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_ReadOnly := oRDD:ReadOnly
 
             /// <inheritdoc />
-        METHOD Flush() AS LOGIC
+        OVERRIDE METHOD Flush() AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
             IF SELF:IsOpen
                 SELF:_oStream:Flush()
@@ -48,7 +48,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOk
 
         /// <inheritdoc />
-        VIRTUAL METHOD CloseMemFile( ) AS LOGIC
+        OVERRIDE METHOD CloseMemFile( ) AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
             IF SELF:IsOpen
                 //
@@ -65,20 +65,26 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN isOk
 
-        VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
+        OVERRIDE METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             SELF:FileName  := System.IO.Path.ChangeExtension( info:FullName, SELF:Extension )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
             SELF:_hFile     := FCreate( SELF:FileName)
             SELF:_oStream   := FGetStream(_hFile)
+            if _oStream != NULL_OBJECT
+                SELF:FileName   := _oStream:Name
+            endif
             RETURN SELF:IsOpen
 
-       VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
+       OVERRIDE METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             SELF:FileName  := System.IO.Path.ChangeExtension( info:FullName, SELF:Extension )
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
             SELF:_hFile     := FOpen(SELF:FileName, info:FileMode)
             SELF:_oStream   := FGetStream(_hFile)
+            if _oStream != NULL_OBJECT
+                SELF:FileName   := _oStream:Name
+            endif
             RETURN SELF:IsOpen
 
      METHOD Error(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING) AS VOID

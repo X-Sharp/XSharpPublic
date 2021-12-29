@@ -119,7 +119,7 @@ BEGIN NAMESPACE XSharp
     VIRTUAL PROPERTY Stack              AS STRING GET SELF:StackTrace SET SELF:StackTrace := Value
 
 	PRIVATE _StackTrace AS STRING
-    VIRTUAL PROPERTY StackTrace         AS STRING
+    OVERRIDE PROPERTY StackTrace         AS STRING
     	GET
     		IF String.IsNullOrEmpty(SELF:_StackTrace)
     			RETURN SUPER:StackTrace
@@ -345,10 +345,10 @@ BEGIN NAMESPACE XSharp
     LOCAL e AS Error
     if ex != null
         e			  := Error{ ex }
-        e:Description := ErrString( EG_EXCEPTION ) + ":" + ex:Message
+        e:Description := ErrString( EG_EXCEPTION ) + ": " + ex:Message
     else
         e			  := Error{  }
-        e:Description := ErrString( EG_SEQUENCE ) + ":" + ex:Message
+        e:Description := ErrString( EG_SEQUENCE )
     endif
     RETURN e
 

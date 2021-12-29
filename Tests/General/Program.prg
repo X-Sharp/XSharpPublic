@@ -1,24 +1,35 @@
-﻿FUNCTION Start() AS VOID STRICT
-	TestClass.DoSomething()
-	RETURN
-
-CLASS TestClass
-
-	STATIC METHOD DoSomething() AS VOID STRICT
-
-		LOCAL cTime AS STRING
-		LOCAL nH, nM, nS AS INT
-
-		cTime := Time()
-		_ToHMS(cTime, OUT nH, OUT nM, OUT nS)
-
-		LOCAL FUNCTION _ToHMS(cTimeString AS STRING, nH OUT INT, nM OUT INT, nS OUT INT) AS LOGIC PASCAL
-			nH := Val(Left(cTimeString, 2))
-			nM := Val(SubStr(cTimeString, 4, 2))
-			nS := Val(SubStr(cTimeString, 7, 2))
-			RETURN TRUE
-		END FUNCTION
-
-		RETURN
-
-END CLASS
+﻿using System.IO
+FUNCTION Throwme(e AS Exception) AS VOID
+    THROW e
+FUNCTION Start() AS VOID STRICT
+    local aStruct as array
+    aStruct := {{"ID", "N",10,0},{"MEMO","M",10,0}}
+    DbCreate("test",aStruct, "DBFCDX")
+    DbUseArea(TRUE, "DBFCDX", "test","test1", TRUE)
+    DbUseArea(TRUE, "DBFCDX", "test","test2", TRUE)
+    DbSelectArea("test1")
+    DbAppend()
+    FieldPut(1, 1)
+    FieldPut(2, "Memo 1")
+    BlobRootLock()
+    DbSelectArea("test2")
+    BlobRootLock()
+    DbSelectArea("test1")
+    BlobRootPut("test")
+    BlobRootUnLock()
+    DbCommit()
+    DbSelectArea("test2")
+    DbAppend()
+    FieldPut(1, 2)
+    FieldPut(2, "Memo 2")
+    DbCommit()
+    BlobRootLock()
+    ? BlobRootGet()
+    BlobRootUnLock()
+    DbGoTop()
+    DO WHILE ! Eof()
+        ? FieldGet(2)
+        DbSkip(1)
+    ENDDO
+    DbCloseAll()
+    WAIT

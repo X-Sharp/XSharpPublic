@@ -12,7 +12,7 @@ namespace XSharp
         internal const string RegCompany = "XSharpBV";
         internal const string ProductName = "XSharp Cahors";
         internal const string Product = "XSharp";
-        // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE
+        // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE and the Versions.props file
 #if RUNTIME
         internal const string Version = "2.6.0.0";
 #else

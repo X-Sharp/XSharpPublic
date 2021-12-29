@@ -15,7 +15,7 @@ BEGIN NAMESPACE XSharp.RDD
 	/// <summary>Base class for DBF based RDDs. Holds common properties such as the Workarea number, Alias, Fields list and various flags.</summary>
 	/// <seealso cref="IRdd"/>
     [DebuggerDisplay("Workarea ({Alias,nq})")];
-	CLASS Workarea IMPLEMENTS IRdd, IDisposable
+	CLASS Workarea IMPLEMENTS IRdd, IDisposable, IClosedRDD
 		// This class does NOT implement file based (DBF stuff).
 		// That is handled in the DBF class which inherits from RddBase
 		#region Fields
@@ -32,6 +32,7 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <summary>Is at BOF ?</summary>
 		PROTECTED _BoF			    AS LOGIC
 		PROTECTED _Bottom		    AS LOGIC
+        PROTECTED _Closed           AS LOGIC
 		PROTECTED _EoF			    AS LOGIC
 		PROTECTED _Found			AS LOGIC
 		PROTECTED _Top			    AS LOGIC
@@ -68,11 +69,11 @@ BEGIN NAMESPACE XSharp.RDD
 		// Memo and Order Implementation
 		PROTECTED _Memo			AS IMemo
 		/// <summary>Current index implementation.</summary>
-		PROTECTED _Order			AS IOrder
+        PROTECTED _Order			AS IOrder
 
 		/// <summary>Result of the last Block evaluation.</summary>
 		PROTECTED _EvalResult    AS OBJECT
-
+        PUBLIC PROPERTY Closed as LOGIC => SELF:_Closed
         PUBLIC PROPERTY Properties AS DatabasePropertyCollection
             GET
                 if _lazyProperties == NULL
@@ -423,6 +424,7 @@ BEGIN NAMESPACE XSharp.RDD
 					ENDIF
 				NEXT
 			ENDIF
+            SELF:_Closed := TRUE
 			RETURN TRUE
 
 			/// <inheritdoc />
@@ -1039,7 +1041,12 @@ BEGIN NAMESPACE XSharp.RDD
                 ELSE
                     SELF:_EvalResult := oBlock:EvalBlock()
                 ENDIF
-				RETURN SELF:_EvalResult
+            // For the FoxPro dialect NIL is translated to FALSE
+            // but we do not want to return FALSE instead of NIL here
+            IF oBlock IS ICodeblock2 var oBlock2 .and. oBlock2:ResultType == __UsualType.Void
+                SELF:_EvalResult := NULL
+            ENDIF
+            RETURN SELF:_EvalResult
 
 			/// <inheritdoc />
 		VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
@@ -1101,12 +1108,23 @@ BEGIN NAMESPACE XSharp.RDD
 					oResult := _Alias
 				CASE DbInfo.DBI_FULLPATH
 					oResult := SELF:_FileName
-                CASE DbInfo.DBI_CHILDCOUNT
-                    oResult := SELF:_Relations:Count
-                CASE DbInfo.DBI_RDD_OBJECT
-                    oResult := SELF
-				OTHERWISE
-					oResult := NULL
+            CASE DbInfo.DBI_CHILDCOUNT
+                oResult := SELF:_Relations:Count
+            CASE DbInfo.DBI_OPTIMIZE
+                oResult := FALSE
+            CASE DbInfo.DBI_RDD_OBJECT
+                oResult := SELF
+            OTHERWISE
+                // Register an error that the info is not supported and return NULL
+                // CoreDb.Info will detect that and will return FALSE
+                LOCAL error := XSharp.Error.VOError(EG_UNSUPPORTED, "Info",nameof(nOrdinal),1, <OBJECT>{nOrdinal, oNewValue}) as Error
+                error:Stack := ErrorStack(0)
+                error:SubCode := 1153 // ERDD_UNSUPPORTED
+                error:Severity := ES_ERROR
+                error:SubSystem := SELF:Driver
+                error:CanDefault := TRUE
+                RuntimeState.LastRddError := error
+					oResult := DBNull.Value
 				END SWITCH
 			RETURN oResult
 

@@ -60,7 +60,12 @@ FUNCTION BLOBExport (nFieldPos, cTargetFile, kMode)  AS LOGIC CLIPPER
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobget/*" />
 FUNCTION BLOBGet(nFieldPos, nStart, nCount)  AS USUAL CLIPPER
-	RETURN VoDb.Info( BLOB_GET, BlobData{}{Data := nFieldPos, Start := nStart, Length := nCount} )
+    LOCAL info as OBJECT
+    @@Default( REF nStart, 1)
+    @@Default( REF nCount, Int32.MaxValue)
+    info := BlobData{}{Data := nFieldPos, Start := nStart, Length := nCount}
+    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Info( BLOB_GET,  REF info))
+    RETURN info
 
 
 

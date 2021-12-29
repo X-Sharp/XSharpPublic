@@ -18,7 +18,7 @@ INTERNAL STRUCTURE NameValuePair
     INTERNAL @@Value AS USUAL
 END STRUCTURE
 
-INTERNAL FUNCTION __GetFieldValues(aFieldList AS USUAL, lIncludeMemo AS LOGIC, lBlank AS LOGIC) AS NameValuePair[]
+INTERNAL FUNCTION __GetFieldValues(aFieldList IN USUAL, lIncludeMemo AS LOGIC, lBlank AS LOGIC) AS NameValuePair[]
     var fields :=  __BuildFieldList(aFieldList, lIncludeMemo)
     var values := List<NameValuePair>{}
     FOREACH var cName in fields
@@ -34,7 +34,7 @@ INTERNAL FUNCTION __GetAllElements(cSource as STRING) AS STRING[]
     cSource := cSource:ToUpperInvariant()
 RETURN cSource:Split(<Char>{c' ',c',',c'\t'}, StringSplitOptions.RemoveEmptyEntries)
 
-INTERNAL FUNCTION __BuildFieldList(aFieldList AS USUAL, lIncludeMemo as LOGIC) AS IList<String>
+INTERNAL FUNCTION __BuildFieldList(aFieldList IN USUAL, lIncludeMemo as LOGIC) AS IList<String>
 VAR selected := List<string>{}
 IF IsArray(aFieldList) .and. ALen(aFieldList) > 0
     FOREACH cFld AS STRING in aFieldList

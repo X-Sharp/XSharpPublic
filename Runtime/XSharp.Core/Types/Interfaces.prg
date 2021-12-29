@@ -1,10 +1,10 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING XSharp.RDD
-BEGIN NAMESPACE XSharp  
+BEGIN NAMESPACE XSharp
 
 	/// <summary>
 	/// This interface defines Date values
@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharp
 		PROPERTY Day		AS INT GET
 		/// <summary>Date as System.DateTime structure</summary>
 		/// <returns>System.DateTime value</returns>
-		PROPERTY @@Value		AS DateTime GET 
+		PROPERTY @@Value		AS DateTime GET
 		/// <summary>Is the date empty (NULL_DATE)</summary>
 		/// <returns>Logical value</returns>
 		PROPERTY IsEmpty	AS LOGIC GET
@@ -40,10 +40,14 @@ BEGIN NAMESPACE XSharp
 		PROPERTY @@Value    AS REAL8 GET
 		/// <summary>Number of digits (includes the optional decimal separator and decimals).</summary>
 		/// <returns>Integer value</returns>
-		PROPERTY Digits	  AS INT  GET 
+		PROPERTY Digits	  AS INT  GET
 		/// <summary>Number of decimals.</summary>
 		/// <returns>Integer value</returns>
-		PROPERTY Decimals AS INT  GET 
+		PROPERTY Decimals AS INT  GET
 	END INTERFACE
+
+    INTERFACE IClosedRDD
+        PROPERTY Closed as LOGIC GET
+    END INTERFACE
 
 END NAMESPACE

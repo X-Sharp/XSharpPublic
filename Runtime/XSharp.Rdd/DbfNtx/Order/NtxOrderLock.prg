@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -46,20 +46,20 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_maxLockTries := 99 //(LONG)XSharp.RuntimeState.LockTries
             SELF:_readLocks := 0
             SELF:_writeLocks := 0
-            IF  XSharp.RuntimeState.NewIndexLock 
+            IF  XSharp.RuntimeState.NewIndexLock
                 SELF:_LockOffset := LOCKOFFSET_NEW
             ELSE
                 SELF:_LockOffset := LOCKOFFSET_OLD
             ENDIF
             SELF:_HPLocking := XSharp.RuntimeState.HPLocking
-            
+
 
         PRIVATE METHOD _genSeed() AS DWORD
             LOCAL dateTime AS DateTime
-            
+
             dateTime := DateTime{Environment.TickCount}
             RETURN (DWORD)  (dateTime:Hour * 360000 + dateTime:Minute * 6000 + dateTime:Second * 100 + dateTime:Millisecond)
-            
+
         PRIVATE METHOD _lockBytes( nOffset AS DWORD, nLong AS DWORD , retries AS DWORD ) AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL counter AS DWORD
@@ -71,7 +71,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 Thread.Sleep(1)
             ENDDO
             RETURN isOk
-            
+
         PRIVATE METHOD _lockBytes( nOffset AS INT64, nLong AS INT64  ) AS LOGIC
             LOCAL locked AS LOGIC
             locked := _oStream:SafeLock(nOffset, nLong )
@@ -81,7 +81,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 Trace.WriteLine(i"Lock Error, position: {nOffset} length: {nLong} Message: {msg}")
             ENDIF
             RETURN locked
-            
+
         PRIVATE METHOD _unlockBytes( nOffset AS INT64, nLong AS INT64  ) AS LOGIC
             LOCAL unlocked AS LOGIC
             unlocked := _oStream:SafeUnlock( nOffset, nLong )
@@ -91,12 +91,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 Trace.WriteLine(i"UnLock Error, position: {nOffset} length: {nLong} Message: {msg}")
             ENDIF
             RETURN unlocked
-            
+
         PRIVATE METHOD _lockGate( tag AS DWORD ) AS LOGIC
             LOCAL count AS DWORD
             LOCAL isOk AS LOGIC
             LOCAL dwOffSet AS DWORD
-            
+
             count := 0
             isOk := FALSE
             dwOffSet := SELF:_getParkLotGate( tag )
@@ -104,7 +104,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 isOk := SELF:_lockBytes(dwOffSet, 1)
             ENDDO
             RETURN isOk
-            
+
         PRIVATE METHOD _lockInit() AS LOGIC
             LOCAL tries AS LONG
             LOCAL seed AS DWORD
@@ -116,31 +116,31 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF seed <= 0
                     seed := 1
                 ENDIF
-                seed := (seed * 1221 + 1) % LOT_SIZE 
+                seed := (seed * 1221 + 1) % LOT_SIZE
                 SELF:_parkPlace := seed
                 IF !SELF:_lockBytes(  ~(SELF:_parkPlace + TOKEN_AREA), 1)
                     RETURN FALSE
                 ENDIF
             ENDDO
-            
-            RETURN TRUE            
-            
-            
+
+            RETURN TRUE
+
+
         PRIVATE METHOD _getParkLotPlace( place AS DWORD ) AS DWORD
             RETURN (DWORD) (ROOT_LOT + LOT_SIZE * place)
-            
+
         PRIVATE METHOD _getParkLotGate( tagNumber AS DWORD ) AS DWORD
             LOCAL dwResult as DWORD
             dwResult := ROOT_GATE + LOT_SIZE * tagNumber
             RETURN ~dwResult
-            
+
         PRIVATE METHOD _lockExit() AS LOGIC
             RETURN SELF:_unlockBytes( (~(SELF:_parkPlace + 1)), 1)
-            
+
         PRIVATE METHOD _TryReadLock() AS LOGIC
             LOCAL result AS LOGIC
             LOCAL dwOffSet AS DWORD
-            
+
             result := FALSE
             IF SELF:_lockGate(SELF:_tagNumber)
                 dwOffSet := ~(SELF:_getParkLotPlace(SELF:_tagNumber) + SELF:_parkPlace)
@@ -154,24 +154,24 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             RETURN result
-            
-            
+
+
         PRIVATE METHOD _tryReadUnLock() AS LOGIC
             LOCAL dwOffSet AS DWORD
             dwOffSet := ~( SELF:_getParkLotPlace(SELF:_tagNumber) + SELF:_parkPlace )
             RETURN SELF:_unlockBytes( dwOffSet, 1)
-            
-            
+
+
         PRIVATE METHOD _tryWriteUnLock() AS LOGIC
             LOCAL dwOffSet AS DWORD
             dwOffSet := ~( SELF:_getParkLotPlace(SELF:_tagNumber) + LOT_SIZE )
             RETURN SELF:_unlockBytes( dwOffSet, 1)
-            
+
         PRIVATE METHOD _TryWriteLock() AS LOGIC
             LOCAL dwOffSet AS DWORD
             LOCAL maxTries AS DWORD
             LOCAL isOk AS LOGIC
-            
+
             dwOffSet := 0
             maxTries := 990
             isOk := FALSE
@@ -185,18 +185,18 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             RETURN isOk
-            
-            
+
+
         PRIVATE METHOD _tryExclLock() AS LOGIC
             RETURN SELF:_lockBytes( (DWORD)SELF:_LockOffset, 1, (DWORD)SELF:_maxLockTries)
-            
-            
+
+
         PRIVATE METHOD _tryExclUnlock() AS LOGIC
             RETURN SELF:_unlockBytes( (DWORD)SELF:_LockOffset, 1)
-            
+
         PRIVATE METHOD _lockForRead() AS LOGIC
             LOCAL locked AS LOGIC
-            
+
             locked := TRUE
             IF SELF:Shared
                 IF !SELF:_HPLocking
@@ -210,11 +210,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             RETURN locked
-            
-            
+
+
         PRIVATE METHOD _unLockForRead() AS LOGIC
             LOCAL result AS LOGIC
-            
+
             result := TRUE
             IF SELF:Shared
                 IF !SELF:_HPLocking
@@ -224,8 +224,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             RETURN result
-            
-            
+
+
         PRIVATE METHOD _ReadLock() AS LOGIC
             LOCAL isOk AS LOGIC
             isOk := TRUE
@@ -252,11 +252,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_LockStuff()
             ENDIF
             RETURN isOk
-            
-            
+
+
         PRIVATE METHOD _ReadUnLock() AS LOGIC
             LOCAL result AS LOGIC
-            
+
             result := TRUE
             Trace.Assert(SELF:_readLocks != 0, "Attempting read unlock with no pending locks")
             IF SELF:_readLocks != 0
@@ -275,11 +275,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             RETURN result
-            
-            
+
+
         PRIVATE METHOD _WriteLock() AS LOGIC
             LOCAL isOk AS LOGIC
-            
+
             isOk := TRUE
             IF SELF:_writeLocks != 0
                 SELF:_writeLocks++
@@ -303,15 +303,16 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_LockStuff()
             ENDIF
             RETURN isOk
-            
-            
+
+
         PRIVATE METHOD _WriteUnLock() AS LOGIC
             LOCAL isOk AS LOGIC
-            
+
             isOk := TRUE
             IF SELF:_writeLocks != 0
                 SELF:_writeLocks--
                 IF SELF:_writeLocks == 0
+                    SELF:_PageList:Flush(FALSE) // just in case - this should not be required
                     IF SELF:_HPLocking
                         IF !SELF:_tryWriteUnLock()
                             isOk := FALSE
@@ -324,18 +325,18 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             RETURN isOk
-            
-            
+
+
         PRIVATE METHOD _LockStuff() AS VOID
             IF SELF:_getHeader()
-                SELF:_PageList:Flush(FALSE)
+                SELF:_PageList:Clear()
                 SELF:_fileSize  := (LONG) _oStream:Length
                 SELF:ClearStack()
             ENDIF
-            
+
         PRIVATE METHOD _getHeader() AS LOGIC
             LOCAL changed AS LOGIC
-            
+
             changed := TRUE
             IF SELF:_Header:Read()
                 changed := (SELF:_indexVersion != SELF:_Header:IndexingVersion)
@@ -343,10 +344,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_firstPageOffset := SELF:_Header:FirstPageOffset
                 SELF:_nextUnusedPageOffset := SELF:_Header:NextUnusedPageOffset
             ENDIF
-            RETURN changed            
+            RETURN changed
     END CLASS
-    
-    
+
+
 END NAMESPACE
+
 
 

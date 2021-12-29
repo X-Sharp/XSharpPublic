@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
             InitTest()
-            VAR dbInfo := DbOpenInfo{ "TestNtx1.DBF", "TestNtx1", 1, FALSE, FALSE }
+            VAR dbInfo := DbOpenInfo{ TempFileName(), "TestNtx1", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
 			LOCAL fieldInfo AS STRING[]
@@ -58,7 +58,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			LOCAL ntxInfo AS DbOrderCreateInfo
 			ntxInfo := DbOrderCreateInfo{}
-			ntxInfo:BagName := "TestNtx1"
+			ntxInfo:BagName := TempFileName()
 			ntxInfo:Order := "TestNtx1"
 			ntxInfo:Expression := "ID"
 			//
@@ -71,7 +71,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD OpenDBFNtx() AS VOID
 			// ID,N,5,0;NAME,C,20,0
             InitTest()
-			VAR dbInfo := DbOpenInfo{ "TestNTX2.DBF", "customer", 1, FALSE, FALSE }
+            LOCAL cSource := TempFileName() as string
+			VAR dbInfo := DbOpenInfo{ cSource, "customer", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF AS DbfNtx
 			myDBF := DbfNtx{}
@@ -85,19 +86,12 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			LOCAL ntxInfo AS DbOrderInfo
 			ntxInfo := DbOrderInfo{}
-			ntxInfo:BagName := "TestNTX2"
-			ntxInfo:Order := "TestNTX2"
+			ntxInfo:BagName := cSource
+			ntxInfo:Order := cSource
 			// FilePath NullOrEmpty => Will get the FilePath of the DBF
 			Assert.Equal( TRUE, myDBF:OrderListAdd( ntxInfo ) )
 			//
 			RuntimeState.Workareas:CloseArea( dbInfo:WorkArea )
-			RETURN
-
-		[Fact, Trait("DbfNtx", "Read")];
-		METHOD ReadDBFNtx() AS VOID
-			//
-            InitTest()
-			SELF:CheckOrder( "TestNTX2" )
 			RETURN
 
 
@@ -105,15 +99,16 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CreateAppend() AS VOID
 			// Create the DBF, Define a Ntx, then add a some Data
             InitTest()
-            SELF:CreateAppendData( "CreateAppendX" )
+            local cSource := TempFileName() AS STRING
+            SELF:CreateAppendData( cSource )
 			// Now, Verify
-			SELF:CheckOrder( "CreateAppendX" )
+			SELF:CheckOrder( cSource )
 
 		[Fact, Trait("DbfNtx", "CreateAppendSkipZero")];
 		METHOD CreateAppendSkipZero() AS VOID
 			// Create the DBF, Define a Ntx, then add a some Data
             InitTest()
-            VAR cSource := "CreateSource"
+            VAR cSource := TempFileName()
 			SELF:CreateAppendData( cSource )
 			//
 			VAR dbInfo := DbOpenInfo{ cSource, "", 1, FALSE, FALSE }
@@ -134,7 +129,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL ntxInfo AS DbOrderInfo
 			ntxInfo := DbOrderInfo{}
 			ntxInfo:BagName := cSource
-			ntxInfo:Order := "XMenTest"
+			ntxInfo:Order := cSource
 			// FilePath NullOrEmpty => Will get the FilePath of the DBF
 			Assert.Equal( TRUE, myDBF:OrderListAdd( ntxInfo ) )
 			LOCAL oData1, oData2 AS OBJECT
@@ -208,7 +203,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD BigCreateAppend() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-            local cSource := "BigCreateAppend" as STRING
+            local cSource := TempFileName() as STRING
             InitTest()
 			VAR dbInfo := DbOpenInfo{ cSource, "XMenTest", 1, FALSE, FALSE }
 			//
@@ -236,7 +231,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			LOCAL ntxInfo AS DbOrderCreateInfo
 			ntxInfo := DbOrderCreateInfo{}
 			ntxInfo:BagName :=cSource
-			ntxInfo:Order := "XMenTest"
+			ntxInfo:Order := cSource
 			ntxInfo:Expression := "ID"
 			//
 			Assert.Equal( TRUE, myDBF:OrderCreate( ntxInfo ) )
@@ -315,6 +310,12 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//myDBF:Close()
 			RETURN
 
-
+        STATIC PRIVATE nCounter AS LONG
+        STATIC PRIVATE gate := Object{} as Object
+        STATIC METHOD TempFilename() as STRING
+            BEGIN LOCK gate
+            nCounter += 1
+            end lock
+            return "TestNTX"+nCounter:ToString()
 	END CLASS
 END NAMESPACE // XSharp.RDD.Tests

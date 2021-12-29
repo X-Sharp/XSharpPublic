@@ -4,6 +4,18 @@ USING System.Runtime.CompilerServices
 
 BEGIN NAMESPACE XSharp.ADS
 
+#pragma warning (9023, off) // taking the address of an unfixed expression
+
+INTERNAL FUNCTION  _AdsGetString(pBytes as Byte PTR, nLen as LONG) AS STRING
+    LOCAL cResult as STRING
+    LOCAL nPos as LONG
+    cResult := RuntimeState.WinEncoding:GetString(pBytes, nLen)
+    nPos := cResult:IndexOf('\0')
+    if nPos >= 0
+        cResult := cResult:Substring(0, nPos)
+    endif
+    RETURN cResult
+
 
 //typedef struct _ADD_FIELD_DESC_
 //   {
@@ -18,6 +30,9 @@ STRUCTURE ADD_FIELD_DESC
    [FieldOffset(0)] PUBLIC usFieldType    AS WORD
    [FieldOffset(2)] PUBLIC usFieldLength  AS WORD
    [FieldOffset(4)] PUBLIC usFieldDecimal AS WORD
+   PROPERTY FieldType       AS WORD GET usFieldType
+   PROPERTY FieldLength     AS WORD GET usFieldLength
+   PROPERTY FieldDecimal    AS WORD GET usFieldDecimal
 END STRUCTURE
 
 
@@ -30,6 +45,7 @@ END STRUCTURE
 [VoStructAttribute(4, 4)];
 STRUCTURE ADS_MGMT_RECORD_INFO
     PUBLIC ulRecordNumber AS DWORD      /* Record number that is locked */
+    PROPERTY RecordNumber       AS DWORD GET ulRecordNumber
 END STRUCTURE
 
 
@@ -50,7 +66,12 @@ STRUCTURE ADS_MGMT_UPTIME_INFO
     [FieldOffset(2)] PUBLIC usHours       AS WORD  /* Number of hours server has been up   */
     [FieldOffset(4)] PUBLIC usMinutes     AS WORD  /* Number of minutes server has been up */
     [FieldOffset(6)] PUBLIC usSeconds     AS WORD  /* Number of seconds server has been up */
-END STRUCTURE  
+    PROPERTY Days       AS WORD GET usDays
+    PROPERTY Hours      AS WORD GET usHours
+    PROPERTY Minutes    AS WORD GET usMinutes
+    PROPERTY Seconds    AS WORD GET usSeconds
+
+END STRUCTURE
 
 //typedef struct
 //   {
@@ -67,6 +88,10 @@ STRUCTURE ADS_MGMT_USAGE_INFO
     [FieldOffset(0)] PUBLIC ulInUse       AS DWORD  /* Number of items in use        */
     [FieldOffset(4)] PUBLIC ulMaxUsed     AS DWORD  /* Max number of items ever used */
     [FieldOffset(8)] PUBLIC ulRejected    AS DWORD  /* Number of items rejected      */
+    PROPERTY InUse       AS DWORD GET ulInUse
+    PROPERTY MaxUsed     AS DWORD GET ulMaxUsed
+    PROPERTY Rejected    AS DWORD GET ulRejected
+
 END STRUCTURE
 
 
@@ -146,6 +171,19 @@ STRUCTURE ADS_MGMT_COMM_STATS
     PUBLIC  ulInvalidPackets    AS DWORD /* Rcvd invalid packets (NT only)   */
     PUBLIC  ulRecvFromErrors    AS DWORD /* RecvFrom failed (NT only)        */
     PUBLIC  ulSendToErrors      AS DWORD /* SendTo failed (NT only)          */
+
+    PROPERTY PercentCheckSums  AS REAL8 GET dPercentCheckSums
+    PROPERTY TotalPackets      AS DWORD GET ulTotalPackets
+    PROPERTY RcvPktOutOfSeq    AS DWORD GET ulRcvPktOutOfSeq
+    PROPERTY NotLoggedIn       AS DWORD GET ulNotLoggedIn
+    PROPERTY RcvReqOutOfSeq    AS DWORD GET ulRcvReqOutOfSeq
+    PROPERTY CheckSumFailures  AS DWORD GET ulCheckSumFailures
+    PROPERTY DisconnectedUsers AS DWORD GET ulDisconnectedUsers
+    PROPERTY PartialConnects   AS DWORD GET ulPartialConnects
+    PROPERTY InvalidPackets    AS DWORD GET ulInvalidPackets
+    PROPERTY RecvFromErrors    AS DWORD GET ulRecvFromErrors
+    PROPERTY SendToErrors      AS DWORD GET ulSendToErrors
+
 END STRUCTURE
 
 
@@ -186,6 +224,23 @@ STRUCTURE ADS_MGMT_CONFIG_MEMORY
     PUBLIC ulSendEcbMem              AS DWORD  /* mem taken by send ECBs (NLM)  */
     PUBLIC ulWorkerThreadMem         AS DWORD  /* mem taken by worker threads   */
     PUBLIC ulQueryMem                AS DWORD  /* mem taken by queries          */
+
+    PROPERTY TotalConfigMem          AS DWORD  GET ulTotalConfigMem
+    PROPERTY ConnectionMem           AS DWORD  GET ulConnectionMem
+    PROPERTY WorkAreaMem             AS DWORD  GET ulWorkAreaMem
+    PROPERTY TableMem                AS DWORD  GET ulTableMem
+    PROPERTY IndexMem                AS DWORD  GET ulIndexMem
+    PROPERTY LockMem                 AS DWORD  GET ulLockMem
+    PROPERTY UserBufferMem           AS DWORD  GET ulUserBufferMem
+    PROPERTY TPSHeaderElemMem        AS DWORD  GET ulTPSHeaderElemMem
+    PROPERTY TPSVisibilityElemMem    AS DWORD  GET ulTPSVisibilityElemMem
+    PROPERTY TPSMemoTransElemMem     AS DWORD  GET ulTPSMemoTransElemMem
+    PROPERTY ReceiveEcbMem           AS DWORD  GET ulReceiveEcbMem
+    PROPERTY SendEcbMem              AS DWORD  GET ulSendEcbMem
+    PROPERTY WorkerThreadMem         AS DWORD  GET ulWorkerThreadMem
+    PROPERTY QueryMem                AS DWORD  GET ulQueryMem
+
+
 END STRUCTURE
 
 
@@ -205,6 +260,10 @@ STRUCTURE ADS_MGMT_TABLE_INFO
     PRIVATE CONST a2 := a1 + ACE.ADS_MGMT_MAX_PATH AS LONG
     [FieldOffset(a1)] PUBLIC aucTableName    AS BYTE     /* Fully qualified table name */
     [FieldOffset(a2)] PUBLIC usLockType      AS WORD     /* Advantage locking mode     */
+
+    PROPERTY TableName       AS STRING  GET _AdsGetString(@aucTableName,ACE.ADS_MGMT_MAX_PATH):Trim()
+    PROPERTY LockType        AS WORD    GET usLockType
+
 END STRUCTURE
 
 
@@ -219,6 +278,8 @@ END STRUCTURE
 STRUCTURE ADS_MGMT_INDEX_INFO
     // use Explicit layout to declare buffer for aucIndexName
     [FieldOffset(0)] PUBLIC aucIndexName   AS BYTE   /* Fully qualified index name */
+    PROPERTY IndexName       AS STRING  GET _AdsGetString(@aucIndexName,ACE.ADS_MGMT_MAX_PATH):Trim()
+
 END STRUCTURE
 
 //typedef struct
@@ -247,7 +308,15 @@ STRUCTURE ADS_MGMT_THREAD_ACTIVITY
     [FieldOffset(a4)] PUBLIC usConnNumber              AS WORD    /* NetWare conn num (NLM only) */
     [FieldOffset(a5)] PUBLIC usReserved1               AS WORD    /* Reserved                    */
     [FieldOffset(a6)] PUBLIC aucOSUserLoginName        AS BYTE    /* OS User Login Name          */
-END STRUCTURE   
+
+    PROPERTY ThreadNumber            AS DWORD   GET ulThreadNumber
+    PROPERTY OpCode                  AS WORD    GET usOpCode
+    PROPERTY UserName                AS STRING  GET _AdsGetString(@aucUserName,ACE.ADS_MAX_USER_NAME):Trim()
+    PROPERTY ConnNumber              AS WORD    GET usConnNumber
+    PROPERTY Reserved1               AS WORD    GET usReserved1
+    PROPERTY OSUserLoginName         AS STRING  GET _AdsGetString(@aucOSUserLoginName,ACE.ADS_MAX_USER_NAME):Trim()
+
+END STRUCTURE
 
 
 
@@ -278,7 +347,7 @@ STRUCTURE ADS_MGMT_USER_INFO
     PRIVATE CONST a7 := a6 + ACE.ADS_MAX_ADDRESS_SIZE AS LONG
     PRIVATE CONST a8 := a7 + ACE.ADS_MAX_MGMT_APPID_SIZE AS LONG
     PRIVATE CONST a9 := a8 + sizeof(DWORD) AS LONG
-   
+
     [FieldOffset(a1)] PUBLIC aucUserName                      AS BYTE    /* Name of connected user    */
     [FieldOffset(a2)] PUBLIC usConnNumber                     AS WORD    /* NetWare conn # (NLM only) */
     [FieldOffset(a3)] PUBLIC aucAuthUserName                  AS BYTE    /* Data Dictionary user name */
@@ -288,7 +357,17 @@ STRUCTURE ADS_MGMT_USER_INFO
     [FieldOffset(a7)] PUBLIC aucApplicationID                 AS BYTE    /* application id */
     [FieldOffset(a8)] PUBLIC ulAveRequestCost                 AS DWORD   /* estimated average cost of each server request */
     [FieldOffset(a9)] PUBLIC usReserved1                      AS WORD    /* reserved to maintain byte alignment (ace.pas structs are not packed) */
-END STRUCTURE        
+    PROPERTY UserName        as STRING GET _AdsGetString(@aucUserName,ACE.ADS_MAX_USER_NAME):Trim()
+    PROPERTY ConnNumber      as WORD   GET usConnNumber
+    PROPERTY AuthUserName    as STRING GET _AdsGetString(@aucAuthUserName,ACE.ADS_MAX_USER_NAME):Trim()
+    PROPERTY Address         as STRING GET _AdsGetString(@aucAddress,ACE.ADS_MAX_ADDRESS_SIZE):Trim()
+    PROPERTY OSUserLoginName as STRING GET _AdsGetString(@aucOSUserLoginName,ACE.ADS_MAX_USER_NAME):Trim()
+    PROPERTY TSAddress       as STRING GET _AdsGetString(@aucTSAddress,ACE.ADS_MAX_ADDRESS_SIZE):Trim()
+    PROPERTY ApplicationID   as STRING GET _AdsGetString(@aucApplicationID,ACE.ADS_MAX_MGMT_APPID_SIZE):Trim()
+    PROPERTY AveRequestCost  as DWORD  GET ulAveRequestCost
+    PROPERTY Reserved1       as WORD   GET  usReserved1
+
+END STRUCTURE
 
 
 
@@ -321,7 +400,7 @@ STRUCTURE ADS_MGMT_INSTALL_INFO
     PRIVATE CONST a8 := a7 + ACE.ADS_INST_DATE_LEN AS LONG
     PRIVATE CONST a9 := a8 + ACE.ADS_SERIAL_NUM_LEN AS LONG
     PRIVATE CONST a10 := a9 + sizeof(DWORD) AS LONG
-    
+
     [FieldOffset(a1)]  PUBLIC ulUserOption                     AS DWORD      /* User option purchased*/
     [FieldOffset(a2)]  PUBLIC aucRegisteredOwner               AS BYTE       /* Registered owner     */
     [FieldOffset(a3)]  PUBLIC aucVersionStr                    AS BYTE       /* Advantage version    */
@@ -332,8 +411,19 @@ STRUCTURE ADS_MGMT_INSTALL_INFO
     [FieldOffset(a8)]  PUBLIC aucSerialNumber                  AS BYTE       /* Serial number string */
     [FieldOffset(a9)]  PUBLIC ulMaxStatefulUsers               AS DWORD      /* How many stateful connections allowed */
     [FieldOffset(a10)] PUBLIC ulMaxStatelessUsers              AS DWORD      /* How many stateless connections allowed */
-END STRUCTURE
 
+    PROPERTY UserOption         as DWORD  GET ulUserOption
+    PROPERTY RegisteredOwner    as STRING GET _AdsGetString(@aucRegisteredOwner,ACE.ADS_REG_OWNER_LEN):Trim()
+    PROPERTY VersionStr         as STRING GET _AdsGetString(@aucVersionStr,ACE.ADS_REVISION_LEN):Trim()
+    PROPERTY InstallDate        as STRING GET _AdsGetString(@aucInstallDate,ACE.ADS_INST_DATE_LEN):Trim()
+    PROPERTY OemCharName        as STRING GET _AdsGetString(@aucOemCharName,ACE.ADS_OEM_CHAR_NAME_LEN):Trim()
+    PROPERTY AnsiCharName       as STRING GET _AdsGetString(@aucAnsiCharName,ACE.ADS_ANSI_CHAR_NAME_LEN):Trim()
+    PROPERTY EvalExpireDate     as STRING GET _AdsGetString(@aucEvalExpireDate,ACE.ADS_INST_DATE_LEN):Trim()
+    PROPERTY SerialNumber       as STRING GET _AdsGetString(@aucSerialNumber,ACE.ADS_SERIAL_NUM_LEN):Trim()
+    PROPERTY MaxStatefulUsers   as DWORD  GET ulMaxStatefulUsers
+    PROPERTY MaxStatelessUsers  as DWORD  GET ulMaxStatelessUsers
+
+END STRUCTURE
 
 
 //typedef struct
@@ -387,7 +477,7 @@ END STRUCTURE
 
 
     [VoStructAttribute(866, 4)];
-    [StructLayout(LayoutKind.Explicit, Size := 866)];    
+    [StructLayout(LayoutKind.Explicit, Size := 866)];
     STRUCTURE ADS_MGMT_CONFIG_PARAMS
     PRIVATE CONST a01 := 0   AS LONG
     PRIVATE CONST a02 := a01 + sizeof(DWORD) AS LONG
@@ -447,31 +537,80 @@ END STRUCTURE
     [FieldOffset(a17)] PUBLIC aucErrorLog             AS BYTE     /* error log path         */
     [FieldOffset(a18)] PUBLIC aucSemaphore            AS BYTE     /* semaphore file path    */
     [FieldOffset(a19)] PUBLIC aucTransaction          AS BYTE     /* TPS log file path      */
-    
+
     [FieldOffset(a20)] PUBLIC ucReserved3            AS BYTE       /* reserved                      */
     [FieldOffset(a21)] PUBLIC ucReserved4            AS BYTE       /* reserved                      */
     [FieldOffset(a22)] PUBLIC usSendIPPort           AS WORD       /* NT Service IP send port #     */
     [FieldOffset(a23)] PUBLIC usReceiveIPPort        AS WORD       /* NT Service IP rcv port #      */
     [FieldOffset(a24)] PUBLIC ucUseIPProtocol        AS BYTE       /* Win9x only. Which protocol to use */
     [FieldOffset(a25)] PUBLIC ucFlushEveryUpdate     AS BYTE       /* Win9x specific                */
-    
+
     [FieldOffset(a26)] PUBLIC ulGhostTimeout         AS DWORD      /* Diconnection time for partial connections */
     [FieldOffset(a27)] PUBLIC ulFlushFrequency       AS DWORD      /* For local server only         */
-    
+
     [FieldOffset(a28)] PUBLIC ulKeepAliveTimeOut     AS DWORD   /* When not using semaophore files. In milliseconds */
     [FieldOffset(a29)] PUBLIC ucDisplayNWLoginNames  AS BYTE    /* Display connections using user names. */
     [FieldOffset(a30)] PUBLIC ucUseSemaphoreFiles    AS BYTE    /* Whether or not to use semaphore files */
     [FieldOffset(a31)] PUBLIC ucUseDynamicAOFs       AS BYTE
     [FieldOffset(a32)] PUBLIC ucUseInternet          AS BYTE    /* 0 if an Internet port is not specified. */
-    
+
     [FieldOffset(a33)] PUBLIC usInternetPort         AS WORD    /* Internet Port */
     [FieldOffset(a34)] PUBLIC usMaxConnFailures      AS WORD    /* Maximum Internet connection failures allowed. */
     [FieldOffset(a35)] PUBLIC ulInternetKeepAlive    AS DWORD   /* In Milliseconds */
-    
+
     [FieldOffset(a36)] PUBLIC usCompressionLevel	 AS WORD    /* Compression option at server.  ADS_COMPRESS_NEVER, */
                                              /* ADS_COMPRESS_INTERNET, or ADS_COMPRESS_ALWAYS */
     [FieldOffset(a37)] PUBLIC ulNumQueries           AS DWORD   /* number of queries */
     [FieldOffset(a38)] PUBLIC usReceiveSSLPort       AS WORD    /* Port number used for SSL */
+
+
+
+    PROPERTY NumConnections        AS DWORD    GET ulNumConnections
+    PROPERTY NumWorkAreas          AS DWORD    GET ulNumWorkAreas
+    PROPERTY NumTables             AS DWORD    GET ulNumTables
+    PROPERTY NumIndexes            AS DWORD    GET ulNumIndexes
+    PROPERTY NumLocks              AS DWORD    GET ulNumLocks
+    PROPERTY UserBufferSize        AS DWORD    GET ulUserBufferSize
+    PROPERTY StatDumpInterval      AS DWORD    GET ulStatDumpInterval
+    PROPERTY ErrorLogMax           AS DWORD    GET ulErrorLogMax
+    PROPERTY NumTPSHeaderElems     AS DWORD    GET ulNumTPSHeaderElems
+    PROPERTY NumTPSVisibilityElems AS DWORD    GET ulNumTPSVisibilityElems
+    PROPERTY NumTPSMemoTransElems  AS DWORD    GET ulNumTPSMemoTransElems
+    PROPERTY NumReceiveECBs        AS WORD     GET usNumReceiveECBs
+    PROPERTY NumSendECBs           AS WORD     GET usNumSendECBs
+    PROPERTY NumBurstPackets       AS WORD     GET usNumBurstPackets
+    PROPERTY NumWorkerThreads      AS WORD     GET usNumWorkerThreads
+    PROPERTY SortBuffSize          AS DWORD    GET ulSortBuffSize
+    PROPERTY ErrorLog              AS STRING   GET _AdsGetString(@aucErrorLog,ACE.ADS_MAX_CFG_PATH):Trim()
+    PROPERTY Semaphore             AS STRING   GET _AdsGetString(@aucSemaphore,ACE.ADS_MAX_CFG_PATH):Trim()
+    PROPERTY Transaction           AS STRING   GET _AdsGetString(@aucTransaction,ACE.ADS_MAX_CFG_PATH):Trim()
+
+    PROPERTY Reserved3             AS BYTE   GET ucReserved3
+    PROPERTY Reserved4             AS BYTE   GET ucReserved4
+    PROPERTY SendIPPort            AS WORD   GET usSendIPPort
+    PROPERTY ReceiveIPPort         AS WORD   GET usReceiveIPPort
+    PROPERTY UseIPProtocol         AS BYTE   GET ucUseIPProtocol
+    PROPERTY FlushEveryUpdate      AS BYTE   GET ucFlushEveryUpdate
+
+   PROPERTY GhostTimeout          AS DWORD  GET ulGhostTimeout
+   PROPERTY FlushFrequency        AS DWORD  GET ulFlushFrequency
+
+   PROPERTY KeepAliveTimeOut      AS DWORD GET ulKeepAliveTimeOut
+   PROPERTY DisplayNWLoginNames   AS BYTE  GET ucDisplayNWLoginNames
+   PROPERTY UseSemaphoreFiles     AS BYTE  GET ucUseSemaphoreFiles
+   PROPERTY UseDynamicAOFs        AS BYTE  GET ucUseDynamicAOFs
+   PROPERTY UseInternet           AS BYTE  GET ucUseInternet
+
+   PROPERTY InternetPort          AS WORD  GET usInternetPort
+   PROPERTY MaxConnFailures       AS WORD  GET usMaxConnFailures
+   PROPERTY InternetKeepAlive     AS DWORD GET ulInternetKeepAlive
+
+   PROPERTY CompressionLevel	  AS WORD    GET usCompressionLevel
+   PROPERTY NumQueries            AS DWORD   GET ulNumQueries
+   PROPERTY ReceiveSSLPort        AS WORD    GET usReceiveSSLPort
+
+
+
 END STRUCTURE
 
 
@@ -481,16 +620,16 @@ END NAMESPACE
 DEFINE ADS_MGMT_ADT_LOCKING :=           ACE.ADS_MGMT_ADT_LOCKING
 DEFINE ADS_MGMT_CDX_LOCKING :=           ACE.ADS_MGMT_CDX_LOCKING
 DEFINE ADS_MGMT_COMIX_LOCKING :=         ACE.ADS_MGMT_COMIX_LOCKING
-    
+
 DEFINE ADS_MGMT_FILE_LOCK :=       ACE.ADS_MGMT_FILE_LOCK
-    
+
 /*
  * Constants for MgGetInstallInfo
  */
 DEFINE ADS_MGMT_LINUX_SERVER :=             ACE.ADS_MGMT_LINUX_SERVER
 DEFINE ADS_MGMT_LINUX_SERVER_64_BIT :=      ACE.ADS_MGMT_LINUX_SERVER_64_BIT
-    
-    
+
+
 /*
  * Constants for AdsMgGetLockOwner
  */
@@ -506,32 +645,32 @@ DEFINE ADS_MGMT_NTX_LOCKING :=           ACE.ADS_MGMT_NTX_LOCKING
 DEFINE ADS_MGMT_PROPRIETARY_LOCKING :=   ACE.ADS_MGMT_PROPRIETARY_LOCKING
 DEFINE ADS_MGMT_RECORD_LOCK :=     ACE.ADS_MGMT_RECORD_LOCK
 DEFINE ADS_MGMT_WIN9X_SERVER :=             ACE.ADS_MGMT_WIN9X_SERVER
-    
+
 DEFINE ADS_MAX_ADDRESS_SIZE :=    ACE.ADS_MAX_ADDRESS_SIZE
-    
+
 /*
  * Management API structures
  */
 DEFINE ADS_MAX_ADI_PAGESIZE :=     ACE.ADS_MAX_ADI_PAGESIZE
-    
-    
+
+
 /* data types */
 DEFINE ADS_MAX_CFG_PATH :=         ACE.ADS_MAX_CFG_PATH
-    
+
 /*
  * Constants for AdsMgGetServerType
  * Note ADS_MGMT_NETWARE_SERVER remains for backwards compatibility only
  */
 DEFINE ADS_MAX_CHAR_SETS :=              ACE.ADS_MAX_CHAR_SETS
-    
+
 /* Options for notification events */
 DEFINE ADS_MAX_DATEMASK :=         ACE.ADS_MAX_DATEMASK
 DEFINE ADS_MAX_DBF_FIELD_NAME :=   ACE.ADS_MAX_DBF_FIELD_NAME    /* maximum length of field name in a DBF */
 DEFINE ADS_MAX_ERROR_LEN :=        ACE.ADS_MAX_ERROR_LEN
 DEFINE ADS_MAX_FIELD_NAME :=       ACE.ADS_MAX_FIELD_NAME
-    
+
 /* Table properties between 200 and 299 */
-    
+
 /* Common properties numbers < 100 */
 DEFINE ADS_MAX_INDEX_EXPR_LEN :=   ACE.ADS_MAX_INDEX_EXPR_LEN   /* this is only accurate for index expressions */
 DEFINE ADS_MAX_INDEXES :=          ACE.ADS_MAX_INDEXES        /* physical index files, NOT index orders */
@@ -539,28 +678,28 @@ DEFINE ADS_MAX_KEY_LENGTH :=       ACE.ADS_MAX_KEY_LENGTH     /* maximum key val
                                           * of ADI indexes.  Max CDX key length is 240.  Max
                                           * NTX key length is 256 */
 DEFINE ADS_MAX_MGMT_APPID_SIZE :=  ACE.ADS_MAX_MGMT_APPID_SIZE
-    
-    
-    
+
+
+
 DEFINE ADS_MAX_OBJECT_NAME :=      ACE.ADS_MAX_OBJECT_NAME   /* maximum length of DD object name */
-    
-    
+
+
 /*
  * Valid range of page sizes for ADI indexes.  The default page size is 512
  * bytes.  Before using another page size, please read the section titled
  * "Index Page Size" in the Advantage Client Engine help file (ace.hlp)
  */
-DEFINE ADS_MAX_PATH :=             ACE.ADS_MAX_PATH  
+DEFINE ADS_MAX_PATH :=             ACE.ADS_MAX_PATH
 DEFINE ADS_MAX_TABLE_NAME :=       ACE.ADS_MAX_TABLE_NAME
-DEFINE ADS_MAX_TAG_NAME :=         ACE.ADS_MAX_TAG_NAME 
-DEFINE ADS_MAX_TAGS :=             ACE.ADS_MAX_TAGS   
-DEFINE ADS_MAX_USER_NAME :=        ACE.ADS_MAX_USER_NAME 
-    
+DEFINE ADS_MAX_TAG_NAME :=         ACE.ADS_MAX_TAG_NAME
+DEFINE ADS_MAX_TAGS :=             ACE.ADS_MAX_TAGS
+DEFINE ADS_MAX_USER_NAME :=        ACE.ADS_MAX_USER_NAME
+
 DEFINE ADS_REG_OWNER_LEN :=        ACE.ADS_REG_OWNER_LEN
-DEFINE ADS_REVISION_LEN :=         ACE.ADS_REVISION_LEN 
-DEFINE ADS_INST_DATE_LEN :=        ACE.ADS_INST_DATE_LEN  
-DEFINE ADS_OEM_CHAR_NAME_LEN :=    ACE.ADS_OEM_CHAR_NAME_LEN 
-DEFINE ADS_ANSI_CHAR_NAME_LEN :=   ACE.ADS_ANSI_CHAR_NAME_LEN 
-DEFINE ADS_SERIAL_NUM_LEN :=       ACE.ADS_SERIAL_NUM_LEN 
+DEFINE ADS_REVISION_LEN :=         ACE.ADS_REVISION_LEN
+DEFINE ADS_INST_DATE_LEN :=        ACE.ADS_INST_DATE_LEN
+DEFINE ADS_OEM_CHAR_NAME_LEN :=    ACE.ADS_OEM_CHAR_NAME_LEN
+DEFINE ADS_ANSI_CHAR_NAME_LEN :=   ACE.ADS_ANSI_CHAR_NAME_LEN
+DEFINE ADS_SERIAL_NUM_LEN :=       ACE.ADS_SERIAL_NUM_LEN
 
 

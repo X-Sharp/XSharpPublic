@@ -210,7 +210,7 @@ FUNCTION PosRepl(cString, cReplace, nStartPos ) AS STRING CLIPPER
     sSource     := cString
     sReplace    := cReplace
     @@Default(nStartPos, sSource:Length - sReplace:Length+1)
-    nStartPos := Math.Max(nStartPos, 1L)
+    nStartPos := Math.Max((int) nStartPos, 1L)
     LOCAL sb AS StringBuilder
     sb := StringBuilder{sSource}
     VAR nToDel := sReplace:Length  

@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
 
             /// <inheritdoc />
-        METHOD GetValue(nFldPos AS INT) AS OBJECT
+        OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
             LOCAL blockNbr AS LONG
             LOCAL blockLen := 0 AS LONG
             LOCAL memoBlock := NULL AS BYTE[]
@@ -60,11 +60,11 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN memoBlock
 
             /// <inheritdoc />
-        METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+        OVERRIDE METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
             THROW NotImplementedException{}
 
             /// <inheritdoc />
-        METHOD GetValueLength(nFldPos AS INT) AS INT
+        OVERRIDE METHOD GetValueLength(nFldPos AS INT) AS INT
             RETURN SELF:_getValueLength( nFldPos )
 
             // Do the calculation for the MemoLength
@@ -108,7 +108,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN blockLen
 
             /// <inheritdoc />
-        VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+        OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             LOCAL objType AS System.Type
             LOCAL objTypeCode AS System.TypeCode
             LOCAL str := NULL AS STRING
@@ -204,7 +204,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOk
 
             /// <inheritdoc />
-        VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+        OVERRIDE METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
             THROW NotImplementedException{}
 
         /// <summary>Return the extension set with Set.MemoExt or default extension</summary>
@@ -220,7 +220,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN DefExt
 
             /// <inheritdoc />
-        VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
+        OVERRIDE METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             LOCAL isOk      AS LOGIC
             SELF:Extension := SELF:_GetExtension()
             isOk := SUPER:CreateMemFile(info)
@@ -244,7 +244,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOk
 
             /// <inheritdoc />
-        VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
+        OVERRIDE METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             SELF:Extension  := SELF:_GetExtension()
             isOk := SUPER:OpenMemFile(info)
@@ -325,7 +325,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN unlocked
 
-        VIRTUAL METHOD Zap() AS LOGIC
+        OVERRIDE METHOD Zap() AS LOGIC
             IF SELF:IsOpen
                 IF SELF:Shared
                     SELF:Error(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "DBTMemo.Zap")

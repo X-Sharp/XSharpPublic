@@ -17,7 +17,7 @@ CLASS DbfHeader
     // Matches the DBF layout
     // Read/Write to/from the Stream with the Buffer
     // and access individual values using the other fields
-	
+
 	PRIVATE CONST OFFSET_SIG			 := 0  AS BYTE
 	PRIVATE CONST OFFSET_YEAR			 := 1  AS BYTE           // add 1900 so possible values are 1900 - 2155
 	PRIVATE CONST OFFSET_MONTH	         := 2  AS BYTE
@@ -35,7 +35,7 @@ CLASS DbfHeader
 	PRIVATE CONST OFFSET_CODEPAGE        := 29 AS BYTE
 	PRIVATE CONST OFFSET_RESERVED3       := 30 AS BYTE
 	INTERNAL CONST SIZE                  := 32 AS BYTE
-	
+
 	PRIVATE Buffer   AS BYTE[]
     PRIVATE _oRDD AS DBF
 
@@ -46,17 +46,17 @@ CLASS DbfHeader
     CONSTRUCTOR (oRDD AS DBF)
         SELF:_oRDD := oRDD
 	    Buffer := BYTE[]{DbfHeader.SIZE}
-	    isHot  := FALSE
+	    isHot  := TRUE
         RETURN
 
 PROPERTY Version    AS DBFVersion	;
     GET (DBFVersion) Buffer[OFFSET_SIG] ;
-    SET Buffer[OFFSET_SIG] := (BYTE) VALUE,isHot := TRUE
-	
+    SET isHot |= Version != VALUE, Buffer[OFFSET_SIG] := (BYTE) VALUE
+
 /// <summary>Year of last update
 /// YY is added to a base of 1900 decimal to determine the actual year.
-/// Therefore, YY has possible values from 0x00-0xFF, which allows for a range from 1900-2155.</summary>	
-PROPERTY Year		AS LONG			
+/// Therefore, YY has possible values from 0x00-0xFF, which allows for a range from 1900-2155.</summary>
+PROPERTY Year		AS LONG
 	GET
 		LOCAL nYear AS LONG
 		nYear := DateTime.Now:Year
@@ -64,90 +64,90 @@ PROPERTY Year		AS LONG
 		RETURN Buffer[OFFSET_YEAR] + nYear
 	END GET
 	SET
+		isHot |= Year != VALUE
 		Buffer[OFFSET_YEAR] := (BYTE) (VALUE% 100)
-		isHot := TRUE
 	END SET
 END PROPERTY
 
 /// <summary>Month of last update</summary>
 PROPERTY Month		AS BYTE			;
     GET Buffer[OFFSET_MONTH]	;
-    SET Buffer[OFFSET_MONTH] := VALUE, isHot := TRUE
-        
-/// <summary>Day of last update</summary>	
+    SET isHot |= Month != VALUE, Buffer[OFFSET_MONTH] := VALUE
+
+/// <summary>Day of last update</summary>
 PROPERTY Day		AS BYTE			;
     GET Buffer[OFFSET_DAY]	;
-    SET Buffer[OFFSET_DAY] := VALUE, isHot := TRUE
+    SET isHot |= Day != VALUE, Buffer[OFFSET_DAY] := VALUE
 
 /// <summary>Number of records in the table. (Least significant byte first.)</summary>
 PROPERTY RecCount	AS LONG			;
     GET BitConverter.ToInt32(Buffer, OFFSET_RECCOUNT) ;
-    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG)), isHot := TRUE
+    SET isHot |= RecCount != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG))
 
-/// <summary>Number of bytes in the header. (Least significant byte first.)</summary>	
+/// <summary>Number of bytes in the header. (Least significant byte first.)</summary>
 PROPERTY HeaderLen	AS SHORT		;
     GET BitConverter.ToInt16(Buffer, OFFSET_DATAOFFSET);
-    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT)), isHot := TRUE
-	
-/// <summary>Length of one data record, including deleted flag</summary>	
+    SET isHot |= HeaderLen != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT))
+
+/// <summary>Length of one data record, including deleted flag</summary>
 PROPERTY RecordLen	AS WORD		;
     GET BitConverter.ToUInt16(Buffer, OFFSET_RECSIZE);
-    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(WORD)), isHot := TRUE
-	
-/// <summary>Reserved flag at position 12</summary>	
+    SET isHot |= RecordLen != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(WORD))
+
+/// <summary>Reserved flag at position 12</summary>
 PROPERTY Reserved1	AS SHORT		;
     GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED1);
-    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED1, SIZEOF(SHORT)), isHot := TRUE
-	
+    SET isHot |= Reserved1 != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED1, SIZEOF(SHORT))
+
 /// <summary>Flag indicating incomplete dBASE IV transaction.</summary>
 PROPERTY Transaction AS BYTE		;
     GET Buffer[OFFSET_TRANSACTION];
-    SET Buffer[OFFSET_TRANSACTION] := VALUE, isHot := TRUE
-	
+    SET isHot |= Transaction != VALUE, Buffer[OFFSET_TRANSACTION] := VALUE
+
 /// <summary>dBASE IV encryption flag.</summary>
 PROPERTY Encrypted	AS BYTE			;
     GET Buffer[OFFSET_ENCRYPTED];
-    SET Buffer[OFFSET_ENCRYPTED] := VALUE, isHot := TRUE
+    SET isHot |= Encrypted != VALUE, Buffer[OFFSET_ENCRYPTED] := VALUE
 
-/// <summary>dBASE IV LAN value.</summary>	
+/// <summary>dBASE IV LAN value.</summary>
 PROPERTY DbaseLan	AS LONG			;
     GET BitConverter.ToInt32(Buffer, OFFSET_DBASELAN) ;
-    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DBASELAN, SIZEOF(LONG)), isHot := TRUE
+    SET isHot |= DbaseLan != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DBASELAN, SIZEOF(LONG))
 
-/// <summary>dBASE IV Multi User value.</summary>	
+/// <summary>dBASE IV Multi User value.</summary>
 PROPERTY MultiUser	AS LONG			;
     GET BitConverter.ToInt32(Buffer, OFFSET_MULTIUSER)	;
-    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_MULTIUSER, SIZEOF(LONG)), isHot := TRUE
+    SET isHot |= MultiUser != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_MULTIUSER, SIZEOF(LONG))
 
-/// <summary>Reserved flag at position 24</summary>	
+/// <summary>Reserved flag at position 24</summary>
 PROPERTY Reserved2	AS LONG			;
     GET BitConverter.ToInt32(Buffer, OFFSET_RESERVED2);
-    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED2, SIZEOF(LONG))
+    SET isHot |= Reserved2 != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED2, SIZEOF(LONG))
 
 
-/// <summary>Table Flags</summary>	
+/// <summary>Table Flags</summary>
 PROPERTY TableFlags	AS DBFTableFlags ;
     GET (DBFTableFlags)Buffer[OFFSET_HASTAGS] ;
-    SET Buffer[OFFSET_HASTAGS] := (BYTE) VALUE, isHot := TRUE
-        
-/// <summary>Code Page</summary>	
+    SET isHot |= TableFlags != VALUE, Buffer[OFFSET_HASTAGS] := (BYTE) VALUE
+
+/// <summary>Code Page</summary>
 PROPERTY CodePage	AS DbfHeaderCodepage			 ;
     GET (DbfHeaderCodepage) Buffer[OFFSET_CODEPAGE]  ;
-    SET Buffer[OFFSET_CODEPAGE] := (BYTE) VALUE, isHot := TRUE
-        
-/// <summary>Reserved flag at position 30</summary>	
+    SET isHot |= CodePage != VALUE, Buffer[OFFSET_CODEPAGE] := (BYTE) VALUE
+
+/// <summary>Reserved flag at position 30</summary>
 PROPERTY Reserved3	AS SHORT         ;
     GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED3);
-    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED3, SIZEOF(SHORT)), isHot := TRUE
-	
+    SET isHot |= Reserved3 != VALUE, Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED3, SIZEOF(SHORT))
+
 /// <summary>Date of last update.</summary>
-PROPERTY LastUpdate AS DateTime      ;  
+PROPERTY LastUpdate AS DateTime      ;
     GET DateTime{Year, Month, Day} ;
 
-/// <summary>Is the codepage an Ansi codepage</summary>	
+/// <summary>Is the codepage an Ansi codepage</summary>
 PROPERTY IsAnsi AS LOGIC GET CodePage:IsAnsi()
 
-PROPERTY FieldCount AS LONG GET  (SELF:HeaderLen - DbfHeader.SIZE) / DbfField.SIZE  
+PROPERTY FieldCount AS LONG GET  (SELF:HeaderLen - DbfHeader.SIZE) / DbfField.SIZE
 
     // Dbase (7?) Extends this with
     // [FieldOffSet(31)] PUBLIC LanguageDriverName[32]	 as BYTE
@@ -173,7 +173,7 @@ PROPERTY FieldCount AS LONG GET  (SELF:HeaderLen - DbfHeader.SIZE) / DbfField.SI
     0xE5   Clipper SIX driver, with SMT memo
     0xF5   FoxPro 2.x (or earlier) with memo
     0xFB   FoxBASE
-    
+
     FoxPro additional Table structure:
     28 	Table flags:
     0x01   file has a structural .cdx
@@ -193,10 +193,11 @@ PROPERTY FieldCount AS LONG GET  (SELF:HeaderLen - DbfHeader.SIZE) / DbfField.SI
     If the first byte is 0x00, the file is not associated with a database.
     Therefore, database files always contain 0x00.
     see also ftp://fship.com/pub/multisoft/flagship/docu/dbfspecs.txt
-    
+
     */
 
 METHOD Read() AS LOGIC
+    SELF:isHot := FALSE
     RETURN _oRDD:Stream:SafeReadAt(0, SELF:Buffer,SIZE)
 
 METHOD Write() AS LOGIC
@@ -220,3 +221,4 @@ METHOD Write() AS LOGIC
 END CLASS
 
 END NAMESPACE
+

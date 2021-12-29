@@ -1,11 +1,12 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Generic
 USING System.Diagnostics
 USING XSharp.RDD.Support
+using System.Reflection
 BEGIN NAMESPACE XSharp.RDD
 
     /// <summary>This classes manages open database. Both databases that are opened explicitely and also databases that are opened
@@ -14,8 +15,8 @@ BEGIN NAMESPACE XSharp.RDD
     /// The DoForDataBase() method selects this special datasession, executes the action that is passed as parameter
     /// and restores the original datasession. This way you can seek, evaluate macros etc without disturbing the normal opened cursors.</remarks>
     CLASS DbcManager
-        
-        STATIC PRIVATE _databases               AS List<DbcDatabase> 
+
+        STATIC PRIVATE _databases               AS List<DbcDatabase>
         STATIC PRIVATE PROPERTY DbcDataSession  AS DataSession AUTO
         STATIC INTERNAL PROPERTY ActiveDatabase  AS DbcDatabase AUTO
 
@@ -51,6 +52,15 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN DbcManager.DoForDatabase({ =>
                 local lOk := FALSE as LOGIC
                 lOk := CoreDb.UseArea(TRUE, "DBFVFP",cFileName, "", lShared,lReadOnly)
+                local oValue as OBJECT
+                IF lOk .and. CoreDb.Info(DBI_RDD_OBJECT,REF oValue)
+                    var oRDD := (IRdd) oValue
+                    var oProperty := oValue:GetType():GetProperty("ReturnRawData",;
+                        BindingFlags.FlattenHierarchy|BindingFlags.Public|BindingFlags.Instance| BindingFlags.IgnoreCase)
+                    if oProperty != NULL
+                        oProperty:SetValue(oRDD, TRUE)
+                    ENDIF
+                ENDIF
                 IF lOk .and. lValidate
                     lOk := ValidateStructure()
                     IF ! lOk
@@ -61,7 +71,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF lOk
                     local name as STRING
                     local area as DWORD
-                    
+
                     name := RuntimeState.Workareas:CurrentWorkarea:Alias
                     area := RuntimeState.Workareas:CurrentWorkarea:Area
                     local oDb as DbcDatabase
@@ -72,7 +82,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 RETURN lOk
                 })
-                
+
         /// <summary>Validate the DBC structure</summary>
         /// <returns>TRUE when the structure is OK, otherwise FALSE.</returns>
         STATIC METHOD ValidateStructure() AS LOGIC
@@ -82,8 +92,9 @@ BEGIN NAMESPACE XSharp.RDD
             var dbstruct := DbcStructure
             IF CoreDb.Info(DBI_RDD_OBJECT,REF oValue)
                 oRDD := (IRdd) oValue
+
                 IF oRDD != NULL .and. oRDD:FieldCount == dbstruct:Length
-                    FOR VAR nFld := 1 to dbstruct:Length 
+                    FOR VAR nFld := 1 to dbstruct:Length
                         var fld := dbstruct[nFld-1]
                         if oRDD:FieldName(nFld) != fld:Name
                             lOk := FALSE
@@ -97,7 +108,7 @@ BEGIN NAMESPACE XSharp.RDD
                         ENDIF
                     NEXT
                 ENDIF
-                
+
             ELSE
                 lOk := FALSE
             ENDIF
@@ -122,7 +133,7 @@ BEGIN NAMESPACE XSharp.RDD
                 END LOCK
             ENDIF
             RETURN lOk
-            
+
         /// <summary>Search a Database by file name</summary>
         /// <param name="cFileName">The fully qualified filename to look for, so MUST have an extension and path.</param>
         /// <returns>The database object (when found) otherwise NULL_OBJECT.</returns>
@@ -133,7 +144,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             NEXT
             RETURN NULL_OBJECT
-            
+
         /// <summary>Search a Database by name</summary>
         /// <param name="cName">Alias name of the database to close.</param>
         /// <returns>The database object (when found) otherwise NULL_OBJECT.</returns>
@@ -161,7 +172,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             END TRY
             RETURN DEFAULT(T)
-            
+
         INTERNAL STATIC METHOD Fail(e AS Exception) AS VOID
             RuntimeState.LastRddError := e
 
@@ -274,7 +285,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         /// <summary>List of tables</summary>
         PROPERTY Tables as ICollection<DbcTable> GET _tables:Values
-        PRIVATE _tables         AS Dictionary<String, DbcTable> 
+        PRIVATE _tables         AS Dictionary<String, DbcTable>
 
         /// <summary>List of connections</summary>
         PROPERTY Connections as ICollection<DbcConnection>  GET _connections:Values
@@ -282,10 +293,10 @@ BEGIN NAMESPACE XSharp.RDD
 
         /// <summary>List of views</summary>
         PROPERTY Views          AS ICollection<DbcView> GET _views:Values
-        PRIVATE _views          AS Dictionary<String, DbcView> 
+        PRIVATE _views          AS Dictionary<String, DbcView>
 
-        PRIVATE _other          AS Dictionary<String, DbcObject> 
-        
+        PRIVATE _other          AS Dictionary<String, DbcObject>
+
         INTERNAL CONSTRUCTOR(cName as STRING, cFileName as STRING, nArea as DWORD)
             SELF:_tables         := Dictionary<String, DbcTable>{StringComparer.OrdinalIgnoreCase}
             SELF:_views          := Dictionary<String, DbcView>{StringComparer.OrdinalIgnoreCase}
@@ -326,7 +337,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         /// <summary>Find a view in the Database container.</summary>
         /// <param name="cView">The view name to look for.</param>
-        PUBLIC METHOD FindView(cView as STRING) AS DbcView 
+        PUBLIC METHOD FindView(cView as STRING) AS DbcView
             RETURN SELF:FindObject(SELF:_views, cView)
 
         /// <summary>Loads the tables, views and connections from the DBC file</summary>
@@ -385,7 +396,7 @@ BEGIN NAMESPACE XSharp.RDD
                 if oField != NULL
                     RETURN oField:Properties:GetValue(cProp)
                 ELSE
-                    THROW Error.ArgumentError(__FUNCTION__, nameof(cName), "Could not find field '"+cName+"'")                        
+                    THROW Error.ArgumentError(__FUNCTION__, nameof(cName), "Could not find field '"+cName+"'")
                 endif
 
             CASE "table"
@@ -404,7 +415,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             END SWITCH
             RETURN NULL
-        
+
         /// <summary>-- todo --</summary>
         /// <summary>Worker method for DbSetProp() </summary>
         PUBLIC METHOD SetProp(cName as STRING, cType as STRING, cProp as STRING, ePropertyValue as OBJECT) AS LOGIC
@@ -412,10 +423,10 @@ BEGIN NAMESPACE XSharp.RDD
             // check for shared. When shared make sure that DBC has not been changed in the meantime
             // finally set/add the property and persist the property to the DBC file.
             RETURN FALSE
-            
-              
+
+
     END CLASS
-    
+
     /// <summary>Class that stores information about a table in a DBC</summary>
     /// <remarks>When opened the Fields, Indexes and Relations are not read. They need to be explicitely loaded with a call to GetData()</remarks>
     CLASS DbcTable INHERIT DbcObject
@@ -454,10 +465,10 @@ BEGIN NAMESPACE XSharp.RDD
                 self:_loaded := TRUE
             ENDIF
             RETURN
-        
+
 
     END CLASS
-    
+
     /// <summary>Class that stores information about a view in a DBC</summary>
     /// <remarks>When opened the Fields etc are not read. They need to be explicitely loaded with a call to GetData()</remarks>
     CLASS DbcView INHERIT DbcObject
@@ -465,13 +476,13 @@ BEGIN NAMESPACE XSharp.RDD
         PROPERTY Fields     AS List<DbcField> AUTO
         /// <summary>The database in which this table is defined.</summary>
         PROPERTY Database   As DbcDatabase GET (DbcDatabase) SELF:Parent
-            
+
         PRIVATE _loaded     AS LOGIC
         CONSTRUCTOR
             SUPER()
             SELF:Fields     := List<DbcField>{}
             SELF:_loaded    := FALSE
-            
+
         OVERRIDE METHOD GetData() AS VOID
             IF ! self:_loaded
                 var aChildren := SELF:LoadChildren(Database:Area)
@@ -491,7 +502,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR
             SUPER()
     END CLASS
-    
+
     /// <summary>Class that stores information about an index in a DBC</summary>
     CLASS DbcIndex INHERIT DbcObject
         CONSTRUCTOR
@@ -516,8 +527,8 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN TRUE
             ENDIF
             RETURN FALSE
-            
-            
+
+
     END CLASS
     /// <summary>Class that stores other info about Databases, such as the source and object code for Database </summary>
     CLASS DbcOther INHERIT DbcObject
@@ -533,7 +544,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN TRUE
           ENDIF
           RETURN FALSE
-        
+
     END CLASS
 
 
@@ -562,7 +573,7 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL CONST REC_SPSOURCE        := "StoredProceduresSource" as STRING
         INTERNAL CONST REC_SPCode          := "StoredProceduresObject" as STRING
 
-    
+
         PROPERTY ObjectID AS LONG AUTO
         PROPERTY ParentID AS LONG AUTO
         PROPERTY ObjectType AS STRING AUTO
@@ -582,7 +593,7 @@ BEGIN NAMESPACE XSharp.RDD
         END PROPERTY
         PRIVATE _lazyProperties  := NULL as DatabasePropertyCollection
         PROPERTY HasProperties as LOGIC GET _lazyProperties != NULL
-         
+
         CONSTRUCTOR
             Properties := DatabasePropertyCollection{}
         VIRTUAL METHOD Read() AS LOGIC
@@ -609,13 +620,13 @@ BEGIN NAMESPACE XSharp.RDD
             CASE NAME_CONNECTION
                 RETURN DbcConnection{}
             CASE NAME_FIELD
-                RETURN DbcField{}      
+                RETURN DbcField{}
             CASE NAME_INDEX
-                RETURN DbcIndex{}      
+                RETURN DbcIndex{}
             CASE NAME_RELATION
-                RETURN DbcRelation{}      
+                RETURN DbcRelation{}
             CASE NAME_DATABASE
-            OTHERWISE          
+            OTHERWISE
                 RETURN DbcOther{}
             END SWITCH
 
@@ -628,14 +639,21 @@ BEGIN NAMESPACE XSharp.RDD
             THROW RuntimeState:LastRddError
 
         METHOD DecodeProperties() AS VOID
-            LOCAL bProps as BYTE[]
-            bProps := (byte[]) SELF:ReadField(POS_PROPERTY)
-            SELF:Properties:FillFromMemo(bProps)
+            var oValue := SELF:ReadField(POS_PROPERTY)
+            if (oValue is byte[] VAR bProps)
+                bProps := (byte[]) oValue
+                SELF:Properties:FillFromMemo(bProps)
+            ELSEIF oValue is string VAR strValue
+                 NOP
+            ELSE
+                 NOP
+            ENDIF
+
             RETURN
 
 
         METHOD LoadChildren (nArea as DWORD) AS IList<DbcObject>
-            RETURN DbcManager.DoForDatabase( { => 
+            RETURN DbcManager.DoForDatabase( { =>
                 LOCAL nOld as DWORD
                 LOCAL lOk as LOGIC
                 VAR aChildren := List<DbcObject>{}
@@ -643,7 +661,7 @@ BEGIN NAMESPACE XSharp.RDD
                 lOk := CoreDb.OrdSetFocus(NULL, OBJECTTYPE_ORDER)
                 lOk := CoreDb.Seek(SELF:ObjectKey,FALSE,FALSE)
                 IF lOk
-                    DO WHILE ! CoreDb.Eof() 
+                    DO WHILE ! CoreDb.Eof()
                         VAR iValue := (INT) SELF:ReadField(POS_PARENTID)
                         IF iValue != SELF:ObjectID
                             EXIT
@@ -660,12 +678,12 @@ BEGIN NAMESPACE XSharp.RDD
                 CoreDb.Select(nOld, OUT NULL)
                 RETURN aChildren
                 })
-                
+
 
         VIRTUAL METHOD GetData() AS VOID
-            RETURN 
+            RETURN
 
- 
+
     END CLASS
 END NAMESPACE
 
@@ -687,7 +705,7 @@ STATIC CLASS XSharp.RDD.Dbc
         LOCAL oDb as DbcDatabase
         oDb := DbcManager.FindDatabase(cFileName)
         RETURN oDb
-        
+
 
     /// <summary>Create a database.</summary>
     STATIC METHOD Create(cFileName as STRING) AS LOGIC
@@ -742,7 +760,7 @@ STATIC CLASS XSharp.RDD.Dbc
     /// <summary>Close a database.</summary>
     STATIC METHOD Close(cName as STRING) AS LOGIC
         RETURN DbcManager.Close(cName)
-    
+
     /// <summary>Dump a database to the terminal window.</summary>
     STATIC METHOD Dump(cName as STRING) AS LOGIC
     VAR oDb := DbcManager.FindDatabaseByName(cName)
@@ -794,12 +812,12 @@ STATIC CLASS XSharp.RDD.Dbc
         FOREACH var oConn in oDb:Connections
             ? "  ",oConn:ObjectName
            DumpProperties(4, oConn:Properties)
-        NEXT        
+        NEXT
     ELSE
         ? "Database not found"
     ENDIF
     RETURN oDb != NULL
-    
+
     /// <summary>Dump the conents of a properties collection.</summary>
     STATIC METHOD DumpProperties(nSpace as LONG, Properties AS DatabasePropertyCollection) AS VOID
         var ws := String{' ', nSpace}

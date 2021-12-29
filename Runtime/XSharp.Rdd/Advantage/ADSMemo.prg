@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -14,27 +14,27 @@ USING XSharp.RDD.Support
 
 /// <summary>Advantage Memo support.</summary>
 CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
-    PRIVATE oRdd AS ADSRDD 
-    
+    PRIVATE oRdd AS ADSRDD
+
     CONSTRUCTOR(oArea AS Workarea)
         SUPER(oArea)
         oRdd := oArea ASTYPE ADSRDD
-    #region Helpers    
+    #region Helpers
     PROPERTY Table AS IntPtr GET oRdd:_Table
-    
+
     PRIVATE METHOD _CheckError(nResult AS DWORD) AS LOGIC
         RETURN SELF:oRdd:_CheckError(nResult)
     PRIVATE METHOD Unsupported(strFunctionName AS STRING) AS LOGIC
         SELF:oRdd:Unsupported(strFunctionName )
         RETURN FALSE
-    #endregion        
+    #endregion
     /// <summary>This method is not supported by the AdsMemo class </summary>
     #region Supported
-    VIRTUAL METHOD Flush() 			AS LOGIC
+    OVERRIDE METHOD Flush() 			AS LOGIC
         RETURN oRdd:Flush()
-        
+
         /// <inheritdoc />
-    METHOD GetValueLength(nFldPos AS LONG) AS LONG
+    OVERRIDE METHOD GetValueLength(nFldPos AS LONG) AS LONG
         LOCAL fld AS RddFieldInfo
         LOCAL dwField := (DWORD) nFldPos +1 AS DWORD
         fld := SELF:oRdd:_Fields[nFldPos]
@@ -52,37 +52,37 @@ CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
         #endregion
     #region Unsupported
     /// <summary>This method is not supported by the AdsMemo class </summary>
-    VIRTUAL METHOD CloseMemFile( ) AS LOGIC
+    OVERRIDE METHOD CloseMemFile( ) AS LOGIC
         // Not needed for Advantage. Handled externally
         RETURN SELF:Unsupported("CloseMemFile")
-        
+
         /// <summary>This method is not supported by the AdsMemo class </summary>
-    VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
+    OVERRIDE METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
         // Not needed for Advantage. Handled externally
         RETURN SELF:Unsupported("CreateMemFile")
-        
+
         /// <summary>This method is not supported by the AdsMemo class </summary>
-    VIRTUAL METHOD GetValue(nFldPos AS INT) AS OBJECT
+    OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
         RETURN SELF:Unsupported("GetValue")
-        
+
         /// <summary>This method is not supported by the AdsMemo class </summary>
-    VIRTUAL METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+    OVERRIDE METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
         RETURN SELF:Unsupported("GetValueFile")
-        
+
         /// <summary>This method is not supported by the AdsMemo class </summary>
-    VIRTUAL METHOD OpenMemFile( ) AS LOGIC
+    OVERRIDE METHOD OpenMemFile( info as DbOpenInfo) AS LOGIC
         // Not needed for Advantage. Handled externally
         RETURN SELF:Unsupported("OpenMemFile")
-        
+
         /// <summary>This method is not supported by the AdsMemo class </summary>
-    VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+    OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
         RETURN SELF:Unsupported("PutValue")
-        
+
         /// <summary>This method is not supported by the AdsMemo class </summary>
-    VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+    OVERRIDE METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
         // Not needed for Advantage. Handled externally
         RETURN SELF:Unsupported("PutValueFile")
-        
+
         #endregion
-        
+
 END CLASS

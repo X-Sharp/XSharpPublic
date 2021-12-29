@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -17,13 +17,13 @@ USING XSharp.RDD
 [TypeDescriptionProvider(typeof(DbRecordDescriptorProvider))];
 CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
     #region instance variables
-    
+
     INTERNAL PROPERTY Datasource  AS DbDataSource AUTO
     /// <inheritdoc/>
-    EVENT PropertyChanged AS PropertyChangedEventHandler 
-    
+    EVENT PropertyChanged AS PropertyChangedEventHandler
+
     #endregion
-    
+
     #region construtors
     /// the current record position, which is needed when we want to talk back to the dbf.
     /// <summary>Initializes a new instance of the DbRecord class</summary>
@@ -33,7 +33,7 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
     SELF:RecNo := position
     SELF:Datasource := source
     /// The server implements an event which will be triggered if a column value is changed.
-    /// This is the modern way to implement the Notify mechanism of the dataserver class. 
+    /// This is the modern way to implement the Notify mechanism of the dataserver class.
     SELF:Datasource:FieldChanged += DbNotifyFieldChange{ SELF , @FieldChange() }
     RETURN
     #endregion
@@ -48,8 +48,8 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
             SELF:Datasource:GoTo( SELF:RecNo )
         ENDIF
         RETURN changed
- 
-    // restore position in workarea 
+
+    // restore position in workarea
     PRIVATE METHOD RestorePos() AS VOID
         SELF:Datasource:GoTo(SELF:_previous)
         RETURN
@@ -93,7 +93,7 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
             LOCAL value AS OBJECT
             LOCAL changed:=FALSE AS LOGIC
             changed := SELF:SetPos()
-            /// Now we can retrieve the column value 
+            /// Now we can retrieve the column value
             value := Datasource:GetValue(fieldPos)
             /// Repsotion the dbf to the record we have been on before moving to the expected one.
             IF changed
@@ -101,12 +101,12 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
             ENDIF
             RETURN value
         END GET
-        
+
         SET
             LOCAL changed:=FALSE AS LOGIC
             changed := SELF:SetPos()
             SELF:Datasource:FieldChanged -= DbNotifyFieldChange{ SELF , @FieldChange() }
-            /// Now we can set the column value 
+            /// Now we can set the column value
             Datasource:PutValue(fieldPos,value)
             // we want to be informed again
             SELF:OnPropertyChanged(fieldPos)
@@ -140,30 +140,30 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged, IDbRow
 
     #region methods
     /// Always a good idea to implement this.
-    PUBLIC METHOD ToString() AS STRING STRICT
+    PUBLIC OVERRIDE METHOD ToString() AS STRING STRICT
         RETURN SELF:Datasource:Name+" "+SELF:RecNo:ToString()
-        
+
     /// This method will be called if somebody changes a column value inside the dbf server.
-    /// If the record number is the same as the one we're representing, the we raise the 
+    /// If the record number is the same as the one we're representing, the we raise the
     /// property changed event as one of our properties has changed.
     PRIVATE METHOD FieldChange( recno AS INT , colno AS INT ) AS VOID
         IF recno == SELF:RecNo
             SELF:OnPropertyChanged(colno)
         ENDIF
     RETURN
-    
-    /// We are using this to signal the consuming components that a property has changed. 
-        /// As the PropertyChangedEventArgs has to provide the name of the property changed, 
+
+    /// We are using this to signal the consuming components that a property has changed.
+        /// As the PropertyChangedEventArgs has to provide the name of the property changed,
     /// we are usign the column name of inside the dbf server.
     PRIVATE METHOD OnPropertyChanged(colno AS INT) AS VOID
     IF SELF:PropertyChanged != NULL
-        LOCAL args:=PropertyChangedEventArgs{SELF:Datasource:FieldName(colno)} AS PropertyChangedEventArgs 
+        LOCAL args:=PropertyChangedEventArgs{SELF:Datasource:FieldName(colno)} AS PropertyChangedEventArgs
         SELF:PropertyChanged(SELF,args)
     ENDIF
-    
+
     PRIVATE METHOD OnPropertyChanged(colname AS STRING ) AS VOID
     IF SELF:PropertyChanged != NULL
-        LOCAL args:=PropertyChangedEventArgs{colname} AS PropertyChangedEventArgs 
+        LOCAL args:=PropertyChangedEventArgs{colname} AS PropertyChangedEventArgs
         SELF:PropertyChanged(SELF,args)
     ENDIF
     RETURN
@@ -182,19 +182,19 @@ INTERNAL CLASS XSharp.DbRecordDescriptorProvider INHERIT TypeDescriptionProvider
     RETURN
     #endregion
     #region methods
-    /// This method is being called if someone wants to reflect the type we're operating on. 
-    PUBLIC VIRTUAL METHOD GetTypeDescriptor(objectType AS Type, instanceObject AS OBJECT) AS ICustomTypeDescriptor
+    /// This method is being called if someone wants to reflect the type we're operating on.
+    PUBLIC OVERRIDE METHOD GetTypeDescriptor(objectType AS Type, instanceObject AS OBJECT) AS ICustomTypeDescriptor
         LOCAL returnValue          AS ICustomTypeDescriptor
         LOCAL defaultDescriptor    AS ICustomTypeDescriptor
         defaultDescriptor := SUPER:GetTypeDescriptor(objectType,instanceObject)
-        
+
         IF instanceObject == NULL
             returnValue := defaultDescriptor
         ELSE
             /// of our special type descriptor.
             returnValue := (ICustomTypeDescriptor) DbRecordDescriptor{defaultDescriptor, (DbRecord) instanceObject}
         ENDIF
-        RETURN returnValue         
+        RETURN returnValue
     #endregion
 END CLASS
 
@@ -208,17 +208,17 @@ INTERNAL CLASS XSharp.DbRecordDescriptor  INHERIT CustomTypeDescriptor
         SUPER(parent)
         oDatasource := record:Datasource
         RETURN
-    
+
     #endregion
     #region methods
 
 
-    
-    PUBLIC VIRTUAL METHOD GetProperties() AS PropertyDescriptorCollection STRICT
+
+    PUBLIC OVERRIDE METHOD GetProperties() AS PropertyDescriptorCollection STRICT
         RETURN SELF:oDatasource:PropertyDescriptors
-        
+
     /// Same as the method before except that attributes are provided for filtering.
-    PUBLIC VIRTUAL METHOD GetProperties(attributes AS Attribute[]) AS PropertyDescriptorCollection
+    PUBLIC OVERRIDE METHOD GetProperties(attributes AS Attribute[]) AS PropertyDescriptorCollection
         RETURN SELF:oDatasource:PropertyDescriptors
 #endregion
 END CLASS

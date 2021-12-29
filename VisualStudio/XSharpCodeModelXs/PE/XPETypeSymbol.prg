@@ -126,22 +126,21 @@ BEGIN NAMESPACE XSharpModel
         INTERNAL STATIC METHOD AddMembers(aMembers AS  List<XPEMemberSymbol>, typedef AS TypeDefinition, parent AS XPETypeSymbol) AS VOID
 
             IF typedef:HasMethods
-                FOREACH VAR md IN typedef:Methods
+                FOREACH md as MethodDefinition IN typedef:Methods
                     // filter
                     IF md:IsPrivate .OR. md:IsAssembly
                         LOOP
                     ENDIF
                     VAR kind := Kind.Method
-                    IF md:IsRuntimeSpecialName
+                    if md:IsGetter .or. md:IsSetter
+                        loop
+                    endif
+                    if md:IsConstructor
+                         kind := Kind.Constructor
+                     ELSE
                         VAR name := md:Name
-                        IF name:StartsWith("set_")
-                            LOOP
-                        ELSEIF name:StartsWith("get_")
-                            LOOP
-                        ELSEIF name:StartsWith("op_")
+                        IF name:StartsWith("op_")
                             kind := Kind.Operator
-                        ELSEIF name:StartsWith(XLiterals.ConstructorName)
-                            kind := Kind.Constructor
                         ENDIF
                     ENDIF
                     VAR xmember := XPEMethodSymbol{md,parent:Assembly}
@@ -202,7 +201,7 @@ BEGIN NAMESPACE XSharpModel
                     if _baseType != NULL
                         // do not inherit private members from the base class
                         // and also no constructors
-                        VAR basemembers := _baseType:XMembers:Where( { m => m:IsMethodVisibleInSubclass()})
+                        VAR basemembers := _baseType:XPEMembers:Where( { m => m:IsMethodVisibleInSubclass()})
                         hasbasemembers := basemembers:Count() > 0
                         aMembers:AddRange( basemembers )
                     ENDIF
@@ -227,6 +226,7 @@ BEGIN NAMESPACE XSharpModel
                     IF _typeDef:HasCustomAttributes
                         isCoClass := _typeDef:CustomAttributes:FirstOrDefault( { x => x:AttributeType:FullName == "System.Runtime.InteropServices.CoClassAttribute"}) != NULL
                     ENDIF
+                    SELF:_signature:ClearInterfaces()
                     FOREACH VAR @@interface IN _typeDef:Interfaces
                         VAR ifname := @@interface:InterfaceType:FullName
                         // cecil returns System.Collections.Generic.IList`1<T> for the FullName
@@ -289,7 +289,12 @@ BEGIN NAMESPACE XSharpModel
                 RETURN members
             END GET
         END PROPERTY
-
+        PROPERTY XPEMembers AS IList<XPEMemberSymbol>
+            GET
+                SELF:Resolve()
+                RETURN SELF:_allmembers:ToArray()
+            END GET
+        END PROPERTY
         PROPERTY Members AS IList<IXMemberSymbol>
             GET
                 SELF:Resolve()
@@ -314,12 +319,24 @@ BEGIN NAMESPACE XSharpModel
                 RETURN SELF:GetFullName()
             END GET
         END PROPERTY
+        PROPERTY FullTickedName  AS STRING
+            GET
+                IF SELF:IsGeneric
+                    IF String.IsNullOrEmpty(SELF:Namespace)
+                        RETURN SELF:TickedName
+                    ENDIF
+                    RETURN SELF:Namespace + "." + SELF:TickedName
+                ENDIF
+                RETURN SELF:FullName
+            END GET
+        END PROPERTY
+
         PROPERTY Description AS STRING GET SELF:GetDescription()
         PROPERTY IsFunctionsClass as LOGIC GET SELF:Assembly != NULL .and. SELF:FullName == SELF:Assembly:GlobalClassName
         PROPERTY IsNested  AS LOGIC GET SELF:Parent IS XPETypeSymbol
-        PROPERTY IsGeneric as LOGIC GET _typeDef:HasGenericParameters
+        PROPERTY IsGeneric AS LOGIC GET _typeDef:HasGenericParameters
         PROPERTY IsStatic  AS LOGIC GET _typeDef:Attributes:HasFlag(TypeAttributes.Abstract |TypeAttributes.Sealed)
-        PROPERTY Location AS STRING GET SELF:Assembly:DisplayName
+        PROPERTY Location  AS STRING GET SELF:Assembly:DisplayName
 
         PROPERTY Children   AS IList<IXTypeSymbol>
             GET

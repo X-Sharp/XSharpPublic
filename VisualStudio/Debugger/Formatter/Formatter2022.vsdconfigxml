@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Copyright (c) Microsoft. All rights reserved.
+    Licensed under the MIT license. See LICENSE file in the project root for full license information.
+       
+    This is a configuration file that tells the debug engine about the existence of our Formatter
+    component.  For documentation of the vsdconfigxml format see:
+    https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Component-discovery-and-configuration
+-->
+<Configuration xmlns="http://schemas.microsoft.com/vstudio/vsdconfig/2008">
+
+  <DefineGuid Name="guidXSharpFormatterCompId" Value="D6AC95F0-998F-479F-A992-4F0A217ECEB9"/>
+  <DefineGuid Name="guidXSharpLanguageId" Value="F579403A-D3D3-47A0-BF03-9709575BEE69"/>
+
+  <ManagedComponent
+    ComponentId="guidXSharpFormatterCompId"
+    ComponentLevel="64000"
+    AssemblyName="XSharpDebugger2022"
+    Synchronized="true">
+    <!-- By setting the ComponentLevel to 64000, which is higher than the level of the C# Formatter (63000) we get called after the C# Formatter-->
+
+    <Class Name="XSharpDebugger.Formatter.XSharpFormatter">
+      <Implements>
+        <InterfaceGroup>
+          <Filter>
+            <LanguageId RequiredValue="guidXSharpLanguageId"/>
+          </Filter>
+          <Interface Name="IDkmClrFormatter"/>
+        </InterfaceGroup>
+      </Implements>
+    </Class>
+
+  </ManagedComponent>
+
+</Configuration>

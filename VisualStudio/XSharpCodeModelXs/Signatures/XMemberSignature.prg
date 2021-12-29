@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY CallingConvention        AS CallingConvention        AUTO GET INTERNAL SET
       PROPERTY DataType                 AS STRING                   AUTO GET INTERNAL SET
       PROPERTY IsExtension              AS LOGIC                    AUTO GET INTERNAL SET
-      
+
       PROPERTY HasParameters AS LOGIC GET SELF:Parameters:Count > 0
       PROPERTY ParameterCount  AS INT GET SELF:Parameters:Count
       PROPERTY ParameterList AS STRING
@@ -36,16 +36,16 @@ BEGIN NAMESPACE XSharpModel
             NEXT
             RETURN parameters
          END GET
-      END PROPERTY  
-      
+      END PROPERTY
+
       CONSTRUCTOR()
          SUPER()
          SELF:TypeParameters             := List<STRING>{}
          SELF:Parameters                 := List<IXParameterSymbol>{}
          SELF:TypeParameterContraints    := List<STRING>{}
          SELF:CallingConvention          := CallingConvention.None
-         
-      
+
+
       METHOD DebuggerDisplay() AS STRING
          LOCAL res AS STRING
          res := SELF:Id

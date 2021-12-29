@@ -8,6 +8,7 @@ namespace XSharp.LanguageService.OptionsPages
 
     [SharedSettings("TextEditor.XSharp",false)]
     [Guid(XSharpConstants.FormattingOptionsPageGuidString)]
+    [ComVisible(true)]
     public class FormattingOptionsPage : XSDialogPage<FormattingOptionsControl>
     {
         // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase

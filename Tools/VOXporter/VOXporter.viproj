@@ -28,6 +28,9 @@ FileStatusGuid = DBEE3A35-4FA0-4A45-B535-89296E3FA301
 CustomControlsGuid = 52ACC108-C00C-4E87-8CA8-7F1C5B7D65A0
 DefaultPropertiesGuid = DC6FD78A-F117-431E-8C2D-F6667142861F
 
+[Recent References]
+RecentReference = Browse:C:\xSharp\DevPublic\Binaries\Debug\XSharpVoEditors.dll
+
 [Application Groups]
 
 [Applications]
@@ -105,13 +108,13 @@ ReferenceBrowse = %ProjectPath%\Dll\XICOMMON.dll,1,1
 ReferenceBrowse = %ProjectPath%\Dll\XIRES.dll,1,1
 ReferenceBrowse = %ProjectPath%\Dll\XIDED.dll,1,1
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-ReferenceBrowse = C:\xSharp\DevPublic\Tools\VOXporter\Dll\XSharp.VODesigners.dll,1,1
 ReferenceGAC = CLR4,System.Xml,1,0,4.0.0.0
+ReferenceBrowse = C:\xSharp\DevPublic\Binaries\Debug\XSharpVoEditors.dll,1,1
 [VOXPorter Resources]
 ResourceFile = Designers , %AppPath%\Resources\Designers.resources
 ResourceFileGuid = 369B3304-1BF5-4D80-AA97-2B60C561DEDF
 Linked = 1
-Modified = 0
+Modified = 1
 Resource = Icon , %AppPath%\Resources\XSharp.ico
 ResourceGuid = 51DF50DF-CDE8-48EB-AF15-E849348BEA52
 Resource = Icon , %AppPath%\Resources\XSharpSm.ico
@@ -144,6 +147,8 @@ XPP1=0
 LateBound=0
 Unsafe=0
 Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
 Ovf=0
@@ -314,6 +319,8 @@ XPP1=0
 LateBound=0
 Unsafe=1
 Undeclared=0
+EnforceSelf=0
+UseNativeVersion=0
 MemVar=0
 IgnoreStdDefs=0
 Ovf=0

@@ -12,65 +12,21 @@
     <Nologo>true</Nologo>
     <Dialect>Vulcan</Dialect>
     <OutputName>XSharp.VoEditors</OutputName>
-    <StartupObject />
-    <ApplicationIcon />
     <TargetFrameworkProfile />
-    <AZ>false</AZ>
-    <CS>false</CS>
-    <LB>false</LB>
-    <OVF>false</OVF>
-    <Unsafe>false</Unsafe>
-    <INS>false</INS>
     <NS>true</NS>
-    <VO1>false</VO1>
-    <VO2>false</VO2>
     <VO3>true</VO3>
-    <VO4>false</VO4>
-    <VO5>false</VO5>
-    <VO6>false</VO6>
-    <VO7>false</VO7>
-    <VO8>false</VO8>
-    <VO9>false</VO9>
-    <VO10>false</VO10>
-    <VO11>false</VO11>
-    <VO12>false</VO12>
-    <VO13>false</VO13>
-    <VO14>false</VO14>
-    <VO15>false</VO15>
-    <VO16>false</VO16>
-    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
-    <NoWin32Manifest>False</NoWin32Manifest>
+    <XSharpProjectversion>2.9.1.1</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
-    <MemVar>false</MemVar>
-    <Undeclared>false</Undeclared>
-    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <Optimize>false</Optimize>
     <WarningLevel>4</WarningLevel>
     <DisabledWarnings>165,649,168,170</DisabledWarnings>
-    <CommandLineOption />
-    <PPO>false</PPO>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>False</Prefer32Bit>
-    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <RegisterForComInterop>False</RegisterForComInterop>
-    <WarningsAsErrors />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <Optimize>true</Optimize>
     <WarningLevel>4</WarningLevel>
     <DisabledWarnings>165,649,168,170</DisabledWarnings>
-    <CommandLineOption />
-    <PPO>false</PPO>
     <DefineConstants>TRACE</DefineConstants>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -154,8 +110,8 @@
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
-      <Name>XSharpModelXs</Name>
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
+      <Name>XSharpModel</Name>
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Private>True</Private>
     </ProjectReference>

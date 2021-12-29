@@ -1,4 +1,5 @@
 ﻿using EnvDTE;
+using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Linq;
@@ -8,6 +9,12 @@ namespace XSharp.Project
 {
     internal class OAVSPackageReferences : PackageReferences
     {
+        public OAVSPackageReferences(XSharpPackageReferenceContainerNode containerNode)
+        {
+            PackageReferenceContainerNode = containerNode;
+            PackageReferenceContainerNode.OnChildAdded += PackageReferenceContainerNode_OnChildAdded;
+            PackageReferenceContainerNode.OnChildRemoved += PackageReferenceContainerNode_OnChildRemoved;
+        }
         private XSharpPackageReferenceContainerNode PackageReferenceContainerNode
         {
             get;
@@ -28,20 +35,17 @@ namespace XSharp.Project
 
         public Array InstalledPackages => PackageReferenceContainerNode.GetInstalledPackages().ToArray();
 
-        public OAVSPackageReferences(XSharpPackageReferenceContainerNode containerNode)
+        
+
+        private void PackageReferenceContainerNode_OnChildRemoved(object sender, HierarchyNodeEventArgs e)
         {
-            PackageReferenceContainerNode = containerNode;
-            //PackageReferenceContainerNode.OnChildAdded += PackageReferenceContainerNode_OnChildAdded;
-            //PackageReferenceContainerNode.OnChildRemoved += PackageReferenceContainerNode_OnChildRemoved;
+            ;
         }
 
-        //private void PackageReferenceContainerNode_OnChildRemoved(object sender, HierarchyNodeEventArgs e)
-        //{
-        //}
-
-        //private void PackageReferenceContainerNode_OnChildAdded(object sender, HierarchyNodeEventArgs e)
-        //{
-        //}
+        private void PackageReferenceContainerNode_OnChildAdded(object sender, HierarchyNodeEventArgs e)
+        {
+            ;
+        }
 
         public void AddOrUpdate(string bstrName, string bstrVersion, Array pbstrMetadataElements, Array pbstrMetadataValues)
         {
@@ -56,6 +60,15 @@ namespace XSharp.Project
         public bool TryGetReference(string bstrName, Array parrbstrDesiredMetadata, out string pbstrVersion, out Array pbstrMetadataElements, out Array pbstrMetadataValues)
         {
             return PackageReferenceContainerNode.TryGetReference(bstrName, parrbstrDesiredMetadata, out pbstrVersion, out pbstrMetadataElements, out pbstrMetadataValues);
+        }
+
+        EnvDTE.Project PackageReferences.ContainingProject
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return ContainingProject.Object as EnvDTE.Project;
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ namespace XSharp
         // Environment variable that points to the BIN folder where xsc.exe AND rc.exe are located
         internal const string EnvironmentXSharpBin = "XSHARPBINPATH";
         internal const string EnvironmentXSharp = "XSHARPPATH";
-        // Environment variable on _developers_ machine to override location of xsc.exe. 
+        // Environment variable on _developers_ machine to override location of xsc.exe.
         // This also enables the "magic" button on the tools-options dialog
         // and adds CRLF to the response file between the various commands to make it easier to read.
         internal const string EnvironmentXSharpDev = "XSHARPDEV";
@@ -49,7 +49,7 @@ namespace XSharp
         internal const string StandardHeaderFile = "XSharpDefs.xh";
 
 
-		
+
         internal static bool WriteSetting(string name, int defvalue)
         {
             object result = defvalue;
@@ -94,7 +94,7 @@ namespace XSharp
             }
             return result;
         }
-		
+
 
     }
 }

@@ -17,11 +17,8 @@ namespace XSharp.LanguageService.OptionsPages
 
             chkSynchronizeUDCKeywords.Tag = nameof(FormattingOptionsPage.UdcCase);
             chkIdentifierCase.Tag = nameof(FormattingOptionsPage.IdentifierCase);
-            chkAlignDoCase.Tag = nameof(FormattingOptionsPage.AlignDoCase);
-            chkAlignMethod.Tag = nameof(FormattingOptionsPage.AlignMethod);
             chkInsertFinalNewLine.Tag = nameof(FormattingOptionsPage.InsertFinalNewLine);
             chkTrimTrailngWhiteSpace.Tag = nameof(FormattingOptionsPage.TrimTrailingWhiteSpace);
-            multiFactor.Tag = nameof(FormattingOptionsPage.MultiFactor);
 
         }
 

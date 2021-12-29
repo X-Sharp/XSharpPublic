@@ -14,9 +14,14 @@ namespace XSharp.Project
 
         internal XSharpShellLink()
         {
-            VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
-            VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
-            VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+           {
+               await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+               VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
+               VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
+               VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
+           });
+            
         }
 
         private void BuildEvents_SolutionBuildCancelled()

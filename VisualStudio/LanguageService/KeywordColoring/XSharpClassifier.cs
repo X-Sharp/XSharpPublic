@@ -56,18 +56,24 @@ namespace XSharp.LanguageService
         private XClassificationSpans _colorTags = new XClassificationSpans();
         private IList<ClassificationSpan> _lexerRegions = null;
         private IList<ClassificationSpan> _parserRegions = null;
-        private ITextDocumentFactoryService _txtdocfactory;
-        private bool _first = true;
+        private readonly bool _first = true;
         private IToken keywordContext;
-        private ITokenStream _tokens;
-        private ITextSnapshot _snapshot;
-        private XFile _file;
-        private List<String> xtraKeywords;
-        private XSharpLineState lineState;
+        private readonly List<String> xtraKeywords;
+        private readonly XSharpLineState lineState;
         #endregion
 
         #region Properties
-        public ITextSnapshot Snapshot => _snapshot;
+        public ITextSnapshot Snapshot
+        {
+            get
+            {
+                var xtokens = GetTokens();
+                if (xtokens != null)
+                    return xtokens.SnapShot;
+                return null;
+            }
+        }
+        public SourceWalker SourceWalker => _sourceWalker;
 
         #endregion
 
@@ -77,7 +83,7 @@ namespace XSharp.LanguageService
         /// </summary>
         /// <param name="registry">Classification registry.</param>
 
-        internal XSharpClassifier(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
+        internal XSharpClassifier(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService _)
         {
             XFile file = null;
             this._buffer = buffer;
@@ -89,7 +95,7 @@ namespace XSharp.LanguageService
             {
                 return;
             }
-            _file = file;
+
             //
             lineState = new XSharpLineState();
             buffer.Properties.AddProperty(typeof(XSharpLineState), lineState);
@@ -103,7 +109,7 @@ namespace XSharp.LanguageService
             _bwBuildModel = new BackgroundWorker();
             _bwBuildModel.DoWork += BuildModelDoWork;
 
-            _txtdocfactory = factory;
+
             if (xsharpKeywordType == null)
             {
                 // These fields are static so only initialize the first time
@@ -125,9 +131,9 @@ namespace XSharp.LanguageService
                 xsharpKwCloseType = registry.GetClassificationType(ColorizerConstants.XSharpBraceCloseFormat);
             }
             // Run a synchronous scan to set the initial buffer colors
-            _snapshot = buffer.CurrentSnapshot;
+            var snapshot = buffer.CurrentSnapshot;
             _sourceWalker = new SourceWalker(file);
-            ClassifyBuffer(_snapshot);
+            ClassifyBuffer(snapshot);
             _first = false;
             // start the model builder to do build a code model and the regions asynchronously
             try
@@ -151,29 +157,54 @@ namespace XSharp.LanguageService
             }
 
         }
+
+        private XSharpTokens GetTokens()
+        {
+            XSharpTokens xTokens;
+            lock (gate)
+            {
+                xTokens = _buffer.GetTokens();
+            }
+            return xTokens;
+        }
+
+        public void ClassifyWhenNeeded()
+        {
+            XSharpTokens xTokens = GetTokens();
+            if (xTokens == null || xTokens.SnapShot.Version != _buffer.CurrentSnapshot.Version)
+            {
+                Classify();
+            }
+        }
         public void Classify()
         {
             ClassifyBuffer(this._buffer.CurrentSnapshot);
         }
+        public void Parse()
+        {
+            XSharpTokens xTokens = GetTokens();
+            if (xTokens.Entities == null)
+                ParseEntities();
+        }
+
         private void ClassifyBuffer(ITextSnapshot snapshot)
         {
             if (XSettings.DisableSyntaxHighlighting)
                 return;
-            // verify if someone else did not classify this already
-            XSharpTokens xTokens = _buffer.GetTokens();
-            lineState.Clear();
-            ITokenStream tokens = null;
-            Debug("Starting classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            tokens = _sourceWalker.Lex(snapshot.GetText());
-            lock (gate)
-            {
-                _snapshot = snapshot;
-                _tokens = tokens;
-                xTokens = new XSharpTokens((BufferedTokenStream)tokens, snapshot);
-                _buffer.Properties[typeof(XSharpTokens)] = xTokens;
+            XSharpTokens xTokens = GetTokens();
 
+            if (xTokens == null || xTokens.SnapShot.Version != snapshot.Version)
+            {
+                lineState.Clear();
+                Debug("Starting classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
+                ITokenStream tokens = _sourceWalker.Lex(snapshot.GetText());
+                lock (gate)
+                {
+                    xTokens = new XSharpTokens((BufferedTokenStream)tokens, snapshot);
+                    _buffer.Properties[typeof(XSharpTokens)] = xTokens;
+                }
             }
-            BuildColorClassifications(tokens, snapshot);
+            BuildColorClassifications();
             Debug("Ending classify at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             return;
         }
@@ -191,7 +222,7 @@ namespace XSharp.LanguageService
             ClassifyBuffer(snapshot);
             e.Result = snapshot; // so we know the version of the snapshot that was used in this classifier
         }
-        private void triggerRepaint(ITextSnapshot snapshot)
+        private void TriggerRepaint(ITextSnapshot snapshot)
         {
             if (ClassificationChanged != null)
             {
@@ -219,10 +250,9 @@ namespace XSharp.LanguageService
                 }
                 if (e.Error == null)
                 {
-                    var snapshot = e.Result as ITextSnapshot;
-                    if (snapshot != null)
+                    if (e.Result is ITextSnapshot snapshot)
                     {
-                        triggerRepaint(snapshot);
+                        TriggerRepaint(snapshot);
                         // if the buffer has changed in the mean time then restart the classification
                         // because we have 'missed' the buffer_changed event because we were busy
                         var newSnapshot = _buffer.CurrentSnapshot;
@@ -236,7 +266,7 @@ namespace XSharp.LanguageService
                         }
                         else
                         {
-                            triggerRepaint(snapshot);
+                            TriggerRepaint(snapshot);
                             if (!_bwBuildModel.IsBusy)
                             {
                                 _bwBuildModel.RunWorkerAsync();
@@ -259,6 +289,10 @@ namespace XSharp.LanguageService
         #region Parser Methods
         private void BuildModelDoWork(object sender, DoWorkEventArgs e)
         {
+            ParseEntities();
+        }
+        private void ParseEntities()
+        {
             if (XSettings.DisableEntityParsing)
                 return;
             Trace.WriteLine("-->> XSharpClassifier.BuildModelDoWork()");
@@ -268,12 +302,13 @@ namespace XSharp.LanguageService
             // do we need to create a new tree
             // this happens the first time in the buffer only
             var snapshot = _buffer.CurrentSnapshot;
-            var tokens = _tokens;
+            var xTokens = GetTokens();
+            var tokens = xTokens.TokenStream;
             if (tokens != null)
             {
                 Debug("Starting model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
                 _sourceWalker.SaveToDisk = true;
-                _sourceWalker.ParseTokens(_tokens, true, false);
+                _sourceWalker.ParseTokens(tokens, true, false);
                 RegisterEntityBoundaries();
                 var regionTags = BuildRegionTags(_sourceWalker.EntityList, _sourceWalker.BlockList, snapshot, xsharpRegionStart, xsharpRegionStop);
                 lock (gate)
@@ -290,6 +325,10 @@ namespace XSharp.LanguageService
         private void RegisterEntityBoundaries()
         {
             // Register the entity boundaries for the line separators
+            XSharpTokens xTokens = GetTokens();
+            if (xTokens == null)
+                return;
+            xTokens.Entities = _sourceWalker.EntityList;
             foreach (var entity in _sourceWalker.EntityList)
             {
                 var line = entity.Range.StartLine;
@@ -303,7 +342,6 @@ namespace XSharp.LanguageService
                 {
                     lineState.SetFlags(line, LineFlags.EntityStart);
                 }
-
             }
         }
         private void DoRepaintRegions()
@@ -316,7 +354,7 @@ namespace XSharp.LanguageService
 
         }
 
-        public IList<ClassificationSpan> BuildRegionTags( IList<XSourceEntity> entities, IList<XSourceBlock> blocks, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
+        public IList<ClassificationSpan> BuildRegionTags(IList<XSourceEntity> entities, IList<XSourceBlock> blocks, ITextSnapshot snapshot, IClassificationType _, IClassificationType _1)
         {
             if (XSettings.DisableRegions)
             {
@@ -375,7 +413,7 @@ namespace XSharp.LanguageService
                 span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart);
                 regions.Add(span);
                 endPos = snapshot.GetLineFromPosition(endPos).Start;
-                nLineLength = snapshot.GetLineFromPosition(endPos).Length; 
+                nLineLength = snapshot.GetLineFromPosition(endPos).Length;
                 tokenSpan = new TextSpan(endPos, nLineLength);
                 span = tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop);
                 regions.Add(span);
@@ -772,7 +810,7 @@ namespace XSharp.LanguageService
 
 
 
-        private void scanForRegion(IToken token, int iToken, ITokenStream TokenStream,
+        private void ScanForRegion(IToken token, int iToken, ITokenStream TokenStream,
             ref int iLast, ITextSnapshot snapshot, IList<ClassificationSpan> regionTags)
         {
             if (iToken > iLast)
@@ -786,10 +824,17 @@ namespace XSharp.LanguageService
             }
         }
 
-        private void BuildColorClassifications(ITokenStream tokenStream, ITextSnapshot snapshot)
+        private void BuildColorClassifications()
         {
+            var tokens = GetTokens();
+            if (tokens == null)
+                return;
+            var tokenStream = tokens.TokenStream;
+            var snapshot = tokens.SnapShot;
+
             Debug("Start building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            XClassificationSpans newtags; //, texttags;
+            XClassificationSpans newtags;
+            var lines = new Dictionary<int, IList<XSharpToken>> (snapshot.LineCount);
             var regionTags = new List<ClassificationSpan>();
             if (tokenStream != null)
             {
@@ -805,7 +850,17 @@ namespace XSharp.LanguageService
                 IToken lastToken = null;
                 for (var iToken = 0; iToken < tokenStream.Size; iToken++)
                 {
-                    var token = tokenStream.Get(iToken);
+                    var token = (XSharpToken) tokenStream.Get(iToken);
+                    // store the tokens per line in a dictionary so we can quickly look them up
+                    if ( (token.Channel == XSharpLexer.DefaultTokenChannel) ||( token.Channel == XSharpLexer.DEFOUTCHANNEL ) )
+                    {
+                        var line = token.Line - 1;  // VS Has 0 based line numbers
+                        if (!lines.ContainsKey(line))
+                        {
+                            lines.Add(line, new List<XSharpToken>());
+                        }
+                        lines[line].Add(token);
+                    }
                     // Orphan End ?
                     if ((keywordContext != null) && (keywordContext.Line != token.Line) && (keywordContext.Type == XSharpLexer.END))
                     {
@@ -819,7 +874,7 @@ namespace XSharp.LanguageService
                         while (true)
                         {
                             iToken++;
-                            token = tokenStream.Get(iToken);
+                            token = (XSharpToken) tokenStream.Get(iToken);
                             if (token.Type == XSharpParser.EOS || token.Type == XSharpParser.Eof)
                                 break;
                             stop = token;
@@ -852,22 +907,22 @@ namespace XSharp.LanguageService
                             switch (token.Type)
                             {
                                 case XSharpLexer.PP_INCLUDE:
-                                    scanForRegion(token, iToken, tokenStream, ref iLastInclude, snapshot, regionTags);
+                                    ScanForRegion(token, iToken, tokenStream, ref iLastInclude, snapshot, regionTags);
                                     break;
                                 case XSharpLexer.PP_DEFINE:
-                                    scanForRegion(token, iToken, tokenStream, ref iLastPPDefine, snapshot, regionTags);
+                                    ScanForRegion(token, iToken, tokenStream, ref iLastPPDefine, snapshot, regionTags);
                                     break;
                                 case XSharpLexer.DEFINE:
-                                    scanForRegion(token, iToken, tokenStream, ref iLastDefine, snapshot, regionTags);
+                                    ScanForRegion(token, iToken, tokenStream, ref iLastDefine, snapshot, regionTags);
                                     break;
                                 case XSharpLexer.SL_COMMENT:
-                                    scanForRegion(token, iToken, tokenStream, ref iLastSLComment, snapshot, regionTags);
+                                    ScanForRegion(token, iToken, tokenStream, ref iLastSLComment, snapshot, regionTags);
                                     break;
                                 case XSharpLexer.DOC_COMMENT:
-                                    scanForRegion(token, iToken, tokenStream, ref iLastDocComment, snapshot, regionTags);
+                                    ScanForRegion(token, iToken, tokenStream, ref iLastDocComment, snapshot, regionTags);
                                     break;
                                 case XSharpLexer.USING:
-                                    scanForRegion(token, iToken, tokenStream, ref iLastUsing, snapshot, regionTags);
+                                    ScanForRegion(token, iToken, tokenStream, ref iLastUsing, snapshot, regionTags);
                                     break;
                                 default:
                                     break;
@@ -880,6 +935,7 @@ namespace XSharp.LanguageService
                     }
                 }
                 // Orphan End ?
+                tokens.Lines = lines;
                 if ((keywordContext != null) && (keywordContext.Type == XSharpLexer.END))
                 {
                     newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
@@ -893,13 +949,12 @@ namespace XSharp.LanguageService
             Trace.WriteLine("-->> XSharpClassifier.BuildColorClassifications()");
             lock (gate)
             {
-                _snapshot = snapshot;
                 _colorTags = newtags;
                 _lexerRegions = regionTags;
             }
             Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");
             Debug("End building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            triggerRepaint(snapshot);
+            TriggerRepaint(snapshot);
         }
 
         IToken ScanForLastToken(int type, int start, ITokenStream TokenStream, out int iLast)
@@ -907,12 +962,11 @@ namespace XSharp.LanguageService
             var lastFound = TokenStream.Get(start);
             int iLine = lastFound.Line;
             iLast = start;
-            IToken nextToken = lastFound;
-            IToken nextToken2 = lastFound;
+            IToken nextToken;
             for (int i = start + 1; i < TokenStream.Size - 2; i++)
             {
                 nextToken = TokenStream.Get(i);
-                nextToken2 = TokenStream.Get(i + 2);  // STATIC <WS> DEFINE for example.
+                IToken nextToken2 = TokenStream.Get(i + 2);
                 if (nextToken.Line > iLine)
                 {
                     if (nextToken.Type == type || (nextToken2.Type == type && nextToken.Type == XSharpLexer.STATIC))
@@ -927,7 +981,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            nextToken = lastFound;
+
             for (int i = iLast; i < TokenStream.Size; i++)
             {
                 nextToken = TokenStream.Get(i);
@@ -952,7 +1006,7 @@ namespace XSharp.LanguageService
                     var list = _parserRegions.ToList();
                     if (_lexerRegions != null)
                         list.AddRange(_lexerRegions);
-                    result = list; 
+                    result = list;
                 }
                 else if (_lexerRegions != null)
                 {
@@ -1066,10 +1120,10 @@ namespace XSharp.LanguageService
 
     internal class XClassificationSpans
     {
-        private IList<ClassificationSpan> _tags;
+        private readonly IList<ClassificationSpan> _tags;
         private readonly object gate = new object();
-        private IDictionary<int, List<ClassificationSpan>> _hash;
-        private IList<ClassificationSpan> _multilineTokens;
+        private readonly IDictionary<int, List<ClassificationSpan>> _hash;
+        private readonly IList<ClassificationSpan> _multilineTokens;
         internal XClassificationSpans()
         {
             lock (gate)

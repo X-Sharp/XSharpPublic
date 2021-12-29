@@ -20,6 +20,9 @@ namespace XSharp.LanguageService
         Inactive = 1 << 5,
         SingleLineEntity = 1 << 6,
     }
+    /// <summary>
+    /// This class keeps the state for 0 based line numbers
+    /// </summary>
     internal class XSharpLineState
     {
         private Dictionary<int, LineFlags> dict;
@@ -40,6 +43,13 @@ namespace XSharp.LanguageService
                     dict.Add(line, flags);
                 }
             }
+        }
+        internal bool IsComment(int line)
+        {
+            var flags = GetFlags(line);
+            return flags.HasFlag(LineFlags.SingleLineComments) ||
+                flags.HasFlag(LineFlags.MultiLineComments) ||
+                flags.HasFlag(LineFlags.DocComments);
         }
         internal void RemoveFlags(int line, LineFlags flags)
         {

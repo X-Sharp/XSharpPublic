@@ -74,14 +74,14 @@ CLASS	FabVNEntity	INHERIT FabEntityBase
     ACCESS LastBuildTime AS STRING
     RETURN SELF:cBTime*/
 
-    ACCESS Source AS STRING
+    OVERRIDE ACCESS Source AS STRING
     //p Return the Source code associated with this entity.
     RETURN SELF:oOwner:ExportSource( SELF:nStartLine, SELF:nEndLine )
 
-    VIRTUAL ACCESS ClassName AS STRING
+    OVERRIDE ACCESS ClassName AS STRING
     RETURN SELF:cClassName
 
-    VIRTUAL ACCESS NameSpace AS STRING
+    OVERRIDE ACCESS NameSpace AS STRING
     RETURN SELF:cNameSpace
 
 /*    ACCESS TypeSymbol AS STRING

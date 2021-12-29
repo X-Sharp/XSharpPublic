@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharpModel
 	STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-	PRIVATE CONST CurrentDbVersion := 1.0 AS System.Double
+	PRIVATE CONST CurrentDbVersion := 1.1 AS System.Double
 
 		STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
 			LOCAL lValid := FALSE AS LOGIC
@@ -910,14 +910,14 @@ BEGIN NAMESPACE XSharpModel
 						pars[0]:Value := oAssembly:Id
 						pars[1]:Value := typeref:TickedName // when generic then the name followed with `<n>
 						pars[2]:Value := typeref:Namespace
-						pars[3]:Value := typeref:FullName
+                  pars[3]:Value := typeref:FullTickedName
 						pars[4]:Value := (INT) typeref:Kind
 						pars[5]:Value := typeref:BaseType
 						pars[6]:Value := (INT) typeref:Attributes
 						oCmd:ExecuteNonQuery()
-                        IF hasGlobalClass .and. typeref:FullName == oAssembly:GlobalClassName
-                            globalType := typeref
-                        ENDIF
+                IF hasGlobalClass .and. typeref:FullName == oAssembly:GlobalClassName
+                    globalType := typeref
+                ENDIF
 					NEXT
                     IF globalType != NULL
                         // "CREATE TABLE ReferencedGlobals ("

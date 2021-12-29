@@ -196,17 +196,50 @@ namespace XSharp.LanguageService
 
                 if (Type.Modifiers != Modifiers.None)
                 {
-                    content.addKeyword(XSettings.FormatKeyword(Type.ModifiersKeyword) + " ");
+                    content.addKeyword(XSettings.FormatKeyword(Type.ModifiersKeyword) );
+                    content.addWs();
                 }
-                content.addKeyword(XSettings.FormatKeyword(Type.VisibilityKeyword) + " ");
+                content.addKeyword(XSettings.FormatKeyword(Type.VisibilityKeyword) );
+                content.addWs();
                 //
                 if (Type.Kind != Kind.Field)
                 {
-                    content.addKeyword(XSettings.FormatKeyword(Type.KindKeyword) + " ");
+                    content.addKeyword(XSettings.FormatKeyword(Type.KindKeyword) );
+                    content.addWs();
                 }
                 //
                 content.addText(Prototype);
-
+                if (!string.IsNullOrWhiteSpace(Type.BaseTypeName))
+                {
+                    content.addText("\r\n");
+                    content.addKeyword(XSettings.FormatKeyword("INHERIT") );
+                    content.addWs();
+                    content.addText(Type.BaseTypeName);
+                }
+                if (Type.Interfaces?.Count > 0)
+                {
+                    content.addText("\r\n");
+                    content.addKeyword(XSettings.FormatKeyword("IMPLEMENTS"));
+                    content.addWs();
+                    bool first = true;
+                    int count = 0;
+                    foreach (var name in Type.Interfaces)
+                    {
+                        if (first)
+                            first = false;
+                        else
+                        {
+                            content.addText(", ");
+                        }
+                        content.addText(name);
+                        if (++count > 4 && Type.Interfaces.Count > 5)
+                        {
+                            var rest = Type.Interfaces.Count - 5;
+                            content.addText($", ... ( {rest} more )");
+                            break;
+                        }
+                    }
+                }
                 //
                 string returns;
                 string remarks;

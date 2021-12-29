@@ -4,8 +4,6 @@
   <Import Project="..\Common.props" />
   <PropertyGroup>
     <Name>XSharpCodeGenerator</Name>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <CfgPath>$(Configuration)_$(Platform)</CfgPath>
     <ProjectGuid>b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -14,47 +12,19 @@
     <Dialect>Core</Dialect>
     <OutputName>CodeGenerator</OutputName>
     <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
-    <AZ>false</AZ>
-    <CS>false</CS>
-    <LB>false</LB>
     <NamedArgs>true</NamedArgs>
-    <OVF>false</OVF>
-    <Unsafe>false</Unsafe>
-    <INS>false</INS>
-    <NS>false</NS>
-    <StandardDefs />
-    <MemVar>false</MemVar>
-    <Undeclared>false</Undeclared>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DisabledWarnings>165</DisabledWarnings>
     <DelaySign>false</DelaySign>
-    <CommandLineOption />
-    <PPO>false</PPO>
-    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DisabledWarnings>165</DisabledWarnings>
     <DelaySign>false</DelaySign>
-    <CommandLineOption />
-    <PPO>false</PPO>
-    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>

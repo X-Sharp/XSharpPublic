@@ -166,9 +166,9 @@ CLASS XClassCreator
             aMethods:Remove(m)
         next
         local isVisible as @@Func<IXMemberSymbol, LOGIC>
-        isVisible := { m as IXMemberSymbol => m:IsExternalVisible}
+        isVisible := { m as IXMemberSymbol => m:IsExternalVisible .and. m:Name:IndexOfAny ( <char> {'$','<'}) == -1}
         IF isFunctionsClass
-            isVisible := { m as IXMemberSymbol => m:IsPublic}
+            isVisible := { m as IXMemberSymbol => m:IsPublic .and. m:Name:IndexOfAny ( <char> {'$','<'}) == -1}
         ELSE
             SELF:GetDoc(oType,nNest)
             SELF:AddAttributes(oType, aLines, nNest)
@@ -267,7 +267,7 @@ CLASS XClassCreator
 		nNest --
 
         IF ! isFunctionsClass
-		    VAR aNested := oType:XChildren:Where({ t=> t:Visibility > Modifiers.Private}):ToArray()
+		    VAR aNested := oType:XChildren:Where({ t=> t:IsExternalVisible .and. t:Name:IndexOfAny ( <char> {'$','<'}) == -1} ):ToArray()
 		    IF aNested:Length != 0
                 SELF:AddLine("#region Nested Classes", nNest)
 			    FOREACH VAR oChild in aNested

@@ -91,6 +91,10 @@ namespace XSharp.Project
             try
             {
                 base.ProjectStartedHandler(sender, buildEvent);
+                if (this.ProjectNode is XSharpProjectNode xprj)
+                {
+                    xprj.BuildStarted();
+                }
                 mustLog = true;
             }
             catch (Exception e)
@@ -106,6 +110,10 @@ namespace XSharp.Project
                 if (didCompile)
                 {
                     errorlistManager.Refresh();
+                }
+                if (this.ProjectNode is XSharpProjectNode  xprj)
+                {
+                    xprj.BuildEnded(didCompile);
                 }
             }
             catch (Exception e)
@@ -147,15 +155,12 @@ namespace XSharp.Project
                 if (messageEvent is TaskCommandLineEventArgs)
                 {
                     var taskEvent = messageEvent as TaskCommandLineEventArgs;
-                    if (taskEvent.CommandLine.ToLower().Contains("xsc.exe"))
+                    var cmdLine = taskEvent.CommandLine.ToLower();
+                    if (cmdLine.Contains("xsc.exe"))
                     {
                         didCompile = true;
                     }
-                }
-                else if (messageEvent is BuildMessageEventArgs)
-                {
-                    var bme = messageEvent as BuildMessageEventArgs;
-                    if (bme.SenderName?.ToLower() == "nativeresourcecompiler")
+                    else if (cmdLine.Contains("rc.exe"))
                     {
                         didCompile = true;
                     }
@@ -170,7 +175,6 @@ namespace XSharp.Project
         {
             try
             {
-                didCompile = true;
                 errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Error);
             }
             catch (Exception e)
@@ -182,7 +186,6 @@ namespace XSharp.Project
         {
             try
             {
-                didCompile = true;
                 errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Warning);
             }
             catch (Exception e)

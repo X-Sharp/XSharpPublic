@@ -68,7 +68,7 @@ CLASS	FabPRGEntity	INHERIT FabEntityBase
     RETURN SELF:cBTime*/
 
 
-    ACCESS Source AS STRING
+    OVERRIDE ACCESS Source AS STRING
     //p Return the Source code associated with this entity.
     RETURN SELF:oOwner:ExportSource( SELF:nStartLine, SELF:nEndLine )
 

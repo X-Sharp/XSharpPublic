@@ -20,7 +20,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace XSharp.LanguageService
 {
     [Export(typeof(IVsTextViewCreationListener))]
-    [Name("XSharp Completion Provider")]
+    [Name("XSharp Formatting Provider")]
     [TextViewRole(PredefinedTextViewRoles.Editable)]
     [ContentType(XSharpConstants.LanguageName)]
     internal class XSharpFormattingProvider : IVsTextViewCreationListener
@@ -63,11 +63,13 @@ namespace XSharp.LanguageService
         {
             if (_classifier == null)
             {
-                if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out _classifier))
-                {
+                _classifier  = _buffer.GetClassifier();
+                if (_classifier != null)
                     _classifier.ClassificationChanged += Classifier_ClassificationChanged;
-                }
+
             }
+
+
 
         }
         internal XSharpFormattingCommandHandler(IVsTextView textViewAdapter, ITextView textView,
@@ -91,7 +93,9 @@ namespace XSharp.LanguageService
                 }
             }
             if (_file != null)
-                ReadSettings(_file.FullPath);
+            {
+                _settings = EditorConfigReader.ReadSettings(_buffer, _file.FullPath);
+            }
 
             textViewAdapter.AddCommandFilter(this, out m_nextCommandHandler);
             registerClassifier();
@@ -121,6 +125,7 @@ namespace XSharp.LanguageService
             Guid cmdGroup = pguidCmdGroup;
             bool completionActive = false; 
             registerClassifier();
+            _settings = _buffer.GetSettings();
             // 1. Pre-process
             if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
             {
@@ -168,7 +173,7 @@ namespace XSharp.LanguageService
                                     _suspendSync = true;
                                     _linesToSync.Clear();
                                 }
-                                FormatDocumentV2();
+                                FormatDocument();
                             }
                             finally
                             {
@@ -178,6 +183,10 @@ namespace XSharp.LanguageService
                                     _suspendSync = false;
                                 }
                             }
+                            break;
+
+                        case (int)VSConstants.VSStd2KCmdID.FORMATSELECTION:
+                            FormatSelection();
                             break;
 
                         case (int)VSConstants.VSStd2KCmdID.RETURN:
@@ -199,6 +208,8 @@ namespace XSharp.LanguageService
             }
             return result;
         }
+
+
 
         private void Textbuffer_Changing(object sender, TextContentChangingEventArgs e)
         {
@@ -366,7 +377,7 @@ namespace XSharp.LanguageService
                             if (nLine < snapshot.LineCount && nLine >= 0)
                             {
                                 ITextSnapshotLine line = snapshot.GetLineFromLineNumber(nLine);
-                                formatLineCase(editSession, line);
+                                FormatLineCase(editSession, line);
                             }
                             // when it takes longer than 2 seconds, then abort
                             if (++counter > 100 && DateTime.Now > end)
@@ -524,7 +535,7 @@ namespace XSharp.LanguageService
             return false;
         }
 
-        private void formatLineCase(ITextEdit editSession, ITextSnapshotLine line)
+        private void FormatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {
             if (XSettings.DebuggerIsRunning)
             {
@@ -553,7 +564,7 @@ namespace XSharp.LanguageService
             int lineStart = line.Start.Position;
             if (line.Length == 0)
                 return;
-            var tokens = getTokensInLine(line);
+            var tokens = GetTokensInLine(line);
             if (tokens.Count > 0)
             {
                 if (tokens[0].StartIndex < lineStart)
@@ -573,6 +584,7 @@ namespace XSharp.LanguageService
                 formatToken(editSession, lineStart, token);
             }
         }
+
         private void FormatCaseForWholeBuffer()
         {
             if (XSettings.DebuggerIsRunning)
@@ -615,7 +627,7 @@ namespace XSharp.LanguageService
                 */
                 if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out XSharpClassifier classify))
                 {
-                    classify.Classify();
+                    classify.ClassifyWhenNeeded();
                 }
                 WriteOutputMessage("<-- CommandFilter.formatCaseForBuffer()");
             }

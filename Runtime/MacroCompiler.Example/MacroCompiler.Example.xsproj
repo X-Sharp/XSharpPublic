@@ -42,7 +42,7 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.9.1.1</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>false</Nostandarddefs>
     <AssemblyOriginatorKeyFile>$(Solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
@@ -51,42 +51,18 @@
     <Undeclared>False</Undeclared>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>x86</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <UseSharedCompilation>false</UseSharedCompilation>
-    <DisabledWarnings />
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <CommandLineOption />
-    <PPO>false</PPO>
-    <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings />
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
-    <CommandLineOption />
-    <PPO>false</PPO>
-    <Prefer32Bit>True</Prefer32Bit>
-    <RegisterForComInterop>False</RegisterForComInterop>
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
@@ -118,7 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
-      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
+      <Name>MacroCompiler</Name>
       <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
       <Private>True</Private>
     </ProjectReference>

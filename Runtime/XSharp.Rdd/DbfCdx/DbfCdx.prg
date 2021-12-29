@@ -7,6 +7,7 @@
 USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 USING XSharp.RDD.Enums
+USING System.Collections.Generic
 USING System.IO
 USING System.Diagnostics
 
@@ -26,9 +27,11 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DBFCDX INHERIT DBFFPT
         INTERNAL _indexList  AS CdxOrderBagList
         INTERNAL PROPERTY CurrentOrder AS CdxTag GET _indexList:CurrentOrder
-        VIRTUAL PROPERTY Driver  AS STRING GET "DBFCDX"
+        OVERRIDE PROPERTY Driver  AS STRING GET nameof(DBFCDX)
         INTERNAL PROPERTY MustForceRel AS LOGIC GET _RelInfoPending != NULL
-
+        // this is used to monitor which fields are using during index creation
+        // so we can deduce if there is a nullable field in the index
+        INTERNAL _fieldList AS List<INT>
 
         CONSTRUCTOR()
             SUPER()
@@ -53,23 +56,31 @@ BEGIN NAMESPACE XSharp.RDD
             #endif
 
 
-
             #region Order Support
+            // GetValue is overridden so we can keep track of the fields
+            // that are using in calculating an index expression.
+            // _fieldList will only be set when the code to evaluate index expressions
+            // is running
+            OVERRIDE METHOD GetValue(nFldPos as LONG) AS OBJECT
+                IF SELF:_fieldList != NULL
+                    SELF:_fieldList:Add(nFldPos)
+                ENDIF
+                RETURN SUPER:GetValue(nFldPos)
 
-            VIRTUAL METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
+            OVERRIDE METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
                 VAR result := SELF:_indexList:Create(orderInfo)
                 if result
                     SELF:MarkDbfHeader(SELF:_FileName,TRUE)
                 endif
                 RETURN result
 
-            VIRTUAL METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
+            OVERRIDE METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
                 RETURN SELF:_indexList:Destroy(orderInfo)
 
-            METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
+            OVERRIDE METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
                 RETURN SUPER:OrderCondition(info)
 
-            VIRTUAL METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
+            OVERRIDE METHOD OrderListAdd( orderInfo AS DbOrderInfo) AS LOGIC
                 BEGIN LOCK SELF
                     SELF:GoCold()
                     LOCAL fullPath AS STRING
@@ -105,19 +116,19 @@ BEGIN NAMESPACE XSharp.RDD
             METHOD _CloseAllIndexes(orderInfo AS DbOrderInfo, lCloseStructural AS LOGIC) AS LOGIC
                 RETURN SELF:_indexList:Delete(orderInfo, lCloseStructural)
 
-            VIRTUAL METHOD OrderListDelete(orderInfo AS DbOrderInfo) AS LOGIC
+            OVERRIDE METHOD OrderListDelete(orderInfo AS DbOrderInfo) AS LOGIC
                 BEGIN LOCK SELF
                     SELF:GoCold()
                     RETURN SELF:_CloseAllIndexes(orderInfo, FALSE)
                 END LOCK
 
-            VIRTUAL METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC
+            OVERRIDE METHOD OrderListFocus(orderInfo AS DbOrderInfo) AS LOGIC
                 BEGIN LOCK SELF
                     SELF:GoCold()
                     RETURN SELF:_indexList:Focus(orderInfo)
                 END LOCK
 
-            VIRTUAL METHOD OrderListRebuild() AS LOGIC
+            OVERRIDE METHOD OrderListRebuild() AS LOGIC
                 BEGIN LOCK SELF
                     IF SELF:Shared
                         // Error !! Cannot be written !
@@ -383,7 +394,7 @@ BEGIN NAMESPACE XSharp.RDD
 
             #endregion
         #region relations
-        METHOD ForceRel() AS LOGIC
+        OVERRIDE METHOD ForceRel() AS LOGIC
             LOCAL isOk    := TRUE AS LOGIC
             IF SELF:_RelInfoPending != NULL
                 // Save the current context
@@ -415,7 +426,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOk
             #endregion
         #region Pack, Zap
-        METHOD Pack() AS LOGIC
+        OVERRIDE METHOD Pack() AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := SUPER:Pack()
@@ -424,7 +435,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN isOk
 
-        PUBLIC METHOD Zap() AS LOGIC
+        OVERRIDE METHOD Zap() AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := SUPER:Zap()
@@ -437,7 +448,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         #region Open, Close, Create
 
-        PUBLIC OVERRIDE METHOD Close() AS LOGIC
+        OVERRIDE METHOD Close() AS LOGIC
             LOCAL orderInfo AS DbOrderInfo
             BEGIN LOCK SELF
                 SELF:GoCold()
@@ -447,7 +458,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SUPER:Close()
             END LOCK
 
-        PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
+        OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL lMemo := FALSE AS LOGIC
             isOk := SUPER:Create(openInfo)
@@ -476,7 +487,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN isOk
 
 
-        METHOD Open(info AS DbOpenInfo) AS LOGIC
+        OVERRIDE METHOD Open(info AS DbOpenInfo) AS LOGIC
             LOCAL lOk AS LOGIC
             lOk := SUPER:Open(info)
             IF lOk
@@ -525,7 +536,7 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL METHOD ReadRecord() AS LOGIC
             RETURN SELF:_readRecord()
 
-        PUBLIC METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
+        OVERRIDE METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := FALSE
@@ -541,7 +552,7 @@ BEGIN NAMESPACE XSharp.RDD
             END LOCK
             RETURN isOk
 
-        PUBLIC METHOD GoBottom() AS LOGIC
+        OVERRIDE METHOD GoBottom() AS LOGIC
             BEGIN LOCK SELF
                 LOCAL result AS LOGIC
                 IF SELF:CurrentOrder != NULL
@@ -558,7 +569,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN result
             END LOCK
 
-        PUBLIC METHOD GoTop() AS LOGIC
+        OVERRIDE METHOD GoTop() AS LOGIC
             BEGIN LOCK SELF
                 LOCAL result AS LOGIC
                 IF SELF:CurrentOrder != NULL
@@ -577,10 +588,10 @@ BEGIN NAMESPACE XSharp.RDD
             END LOCK
 
         METHOD __Goto(nRec AS LONG) AS LOGIC
-            // Skip without reset of topstack
+            // Skip without reset of stack
             RETURN SUPER:GoTo(nRec)
 
-        METHOD GoTo(nRec AS LONG) AS LOGIC
+        OVERRIDE METHOD GoTo(nRec AS LONG) AS LOGIC
             LOCAL result AS LOGIC
             SELF:GoCold()
             IF SELF:CurrentOrder != NULL
@@ -589,10 +600,13 @@ BEGIN NAMESPACE XSharp.RDD
             result := SUPER:GoTo(nRec)
             RETURN result
 
-        PUBLIC METHOD SkipRaw( move AS LONG ) AS LOGIC
+        OVERRIDE METHOD SkipRaw( move AS LONG ) AS LOGIC
             BEGIN LOCK SELF
                 LOCAL result AS LOGIC
-                IF SELF:CurrentOrder != NULL
+                IF move == 0 .AND. (SUPER:_fLocked .OR. SUPER:_Locks:Contains(SUPER:RecNo)) .AND. SUPER:_BufferValid
+                    SELF:GoCold()
+                    RETURN TRUE
+                ELSEIF SELF:CurrentOrder != NULL
                     result := SELF:CurrentOrder:SkipRaw(move)
                     SELF:_CheckEofBof()
                 ELSE
@@ -604,7 +618,7 @@ BEGIN NAMESPACE XSharp.RDD
         #ENDREGION
 
         #REGION GoCold, GoHot, Flush
-        PUBLIC OVERRIDE METHOD GoCold() AS LOGIC
+        OVERRIDE METHOD GoCold() AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := TRUE
@@ -619,7 +633,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SUPER:GoCold()
             END LOCK
 
-        PUBLIC OVERRIDE METHOD GoHot() AS LOGIC
+         OVERRIDE METHOD GoHot() AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := TRUE
@@ -631,7 +645,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SELF:_indexList:GoHot()
             END LOCK
 
-        PUBLIC OVERRIDE METHOD Flush() AS LOGIC
+        OVERRIDE METHOD Flush() AS LOGIC
             LOCAL isOk AS LOGIC
 
             isOk := TRUE
@@ -658,3 +672,6 @@ BEGIN NAMESPACE XSharp.RDD
     END CLASS
 
 END NAMESPACE
+
+
+

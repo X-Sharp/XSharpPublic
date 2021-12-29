@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Generic
@@ -36,7 +36,7 @@ CLASS XSharp.RDD.DatabasePropertyCollection INHERIT Dictionary<DatabasePropertyT
             return (T) SELF[key]
         ENDIF
         RETURN default(T)
-        
+
     /// <summary>Get the value for a property</summary>
     /// <param name="cProp">Property name to look for.</param>
     /// <returns>The value from the collection or an empty value of the right type.</returns>
@@ -58,7 +58,7 @@ CLASS XSharp.RDD.DatabasePropertyCollection INHERIT Dictionary<DatabasePropertyT
             END SWITCH
         ENDIF
         RETURN NULL
-    
+
     INTERNAL METHOD FillFromMemo(bProps as BYTE[]) AS VOID
         TRY
             SELF:Clear()
@@ -86,12 +86,16 @@ CLASS XSharp.RDD.DatabasePropertyCollection INHERIT Dictionary<DatabasePropertyT
                     endif
                     SELF:Add(dbProp, nValue)
                 CASE "C"
-                    VAR strValue := RuntimeState:WinEncoding:GetString(bProps, pos+7, len-8)
-                    SELF:Add(dbProp, strValue)
+                    if pos+len <= bProps:Length
+                        VAR strValue := RuntimeState:WinEncoding:GetString(bProps, pos+7, len-8)
+                        SELF:Add(dbProp, strValue)
+                    endif
                 OTHERWISE
-                    VAR strValue := RuntimeState:WinEncoding:GetString(bProps, pos+7, len-8)
-                    SELF:Add(dbProp, strValue)
-                END SWITCH                                
+                    if pos+len <= bProps:Length
+                        VAR strValue := RuntimeState:WinEncoding:GetString(bProps, pos+7, len-8)
+                        SELF:Add(dbProp, strValue)
+                    endif
+                END SWITCH
                 pos += len
             ENDDO
         CATCH
@@ -127,28 +131,28 @@ CLASS XSharp.RDD.DatabasePropertyCollection INHERIT Dictionary<DatabasePropertyT
                     oWriter:Write(bTrue)
                     oWriter:Write(SwapBytes(nType))
                     oWriter:Write(RuntimeState:WinEncoding:GetBytes(sData))
-                    
+
                 ELSEIF oData IS LONG VAR liValue
                     nLen    += 4
                     oWriter:Write(nLen)
                     oWriter:Write(bTrue)
                     oWriter:Write(SwapBytes(nType))
                     oWriter:Write(SwapBytes(liValue))
-                    
+
                 ELSEIF oData IS SHORT VAR siData
                     nLen    += 2
                     oWriter:Write(nLen)
                     oWriter:Write(bTrue)
                     oWriter:Write(SwapBytes(nType))
                     oWriter:Write(SwapBytes(siData))
-                    
+
                 ELSEIF oData IS BYTE VAR bValue
                     nLen    += 1
                     oWriter:Write(nLen)
                     oWriter:Write(bTrue)
                     oWriter:Write(SwapBytes(nType))
                     oWriter:Write(bValue)
-                    
+
                 ELSEIF oData IS LOGIC VAR lValue
                     nLen    += 1
                     oWriter:Write(nLen)
@@ -188,80 +192,80 @@ INTERNAL STATIC METHOD GetDatabasePropertyNumber(propertyName as STRING) AS LONG
 INTERNAL STATIC METHOD DatabasePropertyValType(nType as LONG) AS STRING
     SWITCH  (DatabasePropertyType) nType
     CASE DatabasePropertyType.Comment
-    CASE DatabasePropertyType.ConnectString    
+    CASE DatabasePropertyType.ConnectString
     CASE DatabasePropertyType.Database
-    CASE DatabasePropertyType.DataSource       
-    CASE DatabasePropertyType.Password         
-    CASE DatabasePropertyType.UserId           
+    CASE DatabasePropertyType.DataSource
+    CASE DatabasePropertyType.Password
+    CASE DatabasePropertyType.UserId
     CASE DatabasePropertyType.DBCEventFileName
-    CASE DatabasePropertyType.Caption          
+    CASE DatabasePropertyType.Caption
     CASE DatabasePropertyType.DisplayClass
     CASE DatabasePropertyType.DisplayClassLibrary
-    CASE DatabasePropertyType.InputMask        
-    CASE DatabasePropertyType.Format           
-    CASE DatabasePropertyType.RuleExpression   
-    CASE DatabasePropertyType.RuleText         
-    CASE DatabasePropertyType.DataType         
-    CASE DatabasePropertyType.DefaultValue     
-    CASE DatabasePropertyType.UpdateName       
-    CASE DatabasePropertyType.Path                
-    CASE DatabasePropertyType.InsertTrigger    
-    CASE DatabasePropertyType.UpdateTrigger    
-    CASE DatabasePropertyType.DeleteTrigger    
-    CASE DatabasePropertyType.PrimaryKey       
-    CASE DatabasePropertyType.ConnectName      
-    CASE DatabasePropertyType.ParameterList    
-    CASE DatabasePropertyType.SQL              
-    CASE DatabasePropertyType.Tables           
-        RETURN "C"        
-    CASE DatabasePropertyType.ConnectTimeout   
-    CASE DatabasePropertyType.DispLogin        
-    CASE DatabasePropertyType.IdleTimeout      
+    CASE DatabasePropertyType.InputMask
+    CASE DatabasePropertyType.Format
+    CASE DatabasePropertyType.RuleExpression
+    CASE DatabasePropertyType.RuleText
+    CASE DatabasePropertyType.DataType
+    CASE DatabasePropertyType.DefaultValue
+    CASE DatabasePropertyType.UpdateName
+    CASE DatabasePropertyType.Path
+    CASE DatabasePropertyType.InsertTrigger
+    CASE DatabasePropertyType.UpdateTrigger
+    CASE DatabasePropertyType.DeleteTrigger
+    CASE DatabasePropertyType.PrimaryKey
+    CASE DatabasePropertyType.ConnectName
+    CASE DatabasePropertyType.ParameterList
+    CASE DatabasePropertyType.SQL
+    CASE DatabasePropertyType.Tables
+        RETURN "C"
+    CASE DatabasePropertyType.ConnectTimeout
+    CASE DatabasePropertyType.DispLogin
+    CASE DatabasePropertyType.IdleTimeout
     CASE DatabasePropertyType.PacketSize
-    CASE DatabasePropertyType.QueryTimeOut     
-    CASE DatabasePropertyType.Transactions     
-    CASE DatabasePropertyType.WaitTime         
-    CASE DatabasePropertyType.Version          
-    CASE DatabasePropertyType.BatchUpdateCount 
-    CASE DatabasePropertyType.FetchSize        
-    CASE DatabasePropertyType.MaxRecords       
-    CASE DatabasePropertyType.SourceType       
-    CASE DatabasePropertyType.UpdateType       
-    CASE DatabasePropertyType.UseMemoSize      
-    CASE DatabasePropertyType.WhereType        
+    CASE DatabasePropertyType.QueryTimeOut
+    CASE DatabasePropertyType.Transactions
+    CASE DatabasePropertyType.WaitTime
+    CASE DatabasePropertyType.Version
+    CASE DatabasePropertyType.BatchUpdateCount
+    CASE DatabasePropertyType.FetchSize
+    CASE DatabasePropertyType.MaxRecords
+    CASE DatabasePropertyType.SourceType
+    CASE DatabasePropertyType.UpdateType
+    CASE DatabasePropertyType.UseMemoSize
+    CASE DatabasePropertyType.WhereType
     CASE DatabasePropertyType.OfflineRecs
     CASE DatabasePropertyType.OfflineRemRecs
-        RETURN "N"        
+        RETURN "N"
     CASE DatabasePropertyType.Asynchronous
-    CASE DatabasePropertyType.BatchMode        
+    CASE DatabasePropertyType.BatchMode
     CASE DatabasePropertyType.DisconnectRollback
-    CASE DatabasePropertyType.DispWarnings     
+    CASE DatabasePropertyType.DispWarnings
     CASE DatabasePropertyType.DBCEvents
-    CASE DatabasePropertyType.KeyField         
+    CASE DatabasePropertyType.KeyField
     CASE DatabasePropertyType.Updatable
     CASE DatabasePropertyType.AllowSimultaneousFetch
     CASE DatabasePropertyType.CompareMemo
     CASE DatabasePropertyType.FetchAsNeeded
-    CASE DatabasePropertyType.FetchMemo        
+    CASE DatabasePropertyType.FetchMemo
     CASE DatabasePropertyType.Prepared
-    CASE DatabasePropertyType.SendUpdates      
-    CASE DatabasePropertyType.ShareConnection  
+    CASE DatabasePropertyType.SendUpdates
+    CASE DatabasePropertyType.ShareConnection
     CASE DatabasePropertyType.IsUnique
-        RETURN "L"        
+        RETURN "L"
 
     // we have added this one
     CASE DatabasePropertyType.ColumnName
         RETURN "C"
     // internal for foxpro
-    CASE DatabasePropertyType.Class            
+    CASE DatabasePropertyType.Class
         RETURN "C"
     // no idea
-    CASE DatabasePropertyType.TimeStamp        
-        RETURN "L"        
+    CASE DatabasePropertyType.TimeStamp
+        RETURN "L"
     // Unknown numbers for now
     END SWITCH
     RETURN "C"
     STATIC METHOD IsValidProperty(cProp as STRING) AS LOGIC
         RETURN GetDatabasePropertyNumber(cProp) > 0
-            
+
 END CLASS

@@ -13,6 +13,7 @@ USING System.IO
 USING System.Reflection
 USING System.Linq
 USING System.Text
+USING System.Diagnostics
 
 // Some UDCs to make the code easier to read
 #define EVENTS
@@ -229,6 +230,7 @@ CLASS XSharp.CoreDb
         ENDIF
         RAISE OperationFailed procName
 
+    [DebuggerStepThroughAttribute];
     INTERNAL STATIC METHOD Do<T>(action AS @@Func<T>) AS T
         TRY
             RETURN action()
@@ -804,21 +806,32 @@ CLASS XSharp.CoreDb
         VAR lResult :=  CoreDb.Do( { =>
              LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
              IF oRdd IS Workarea VAR oWa
-                LOCAL oFld AS RddFieldInfo
-                oFld := oWa:GetField((LONG) nPos)
-                IF oFld != NULL
-                    IF oFld:FieldType.IsMemo()
-                        RETURN FieldPut(nPos, aValue)
-                    ELSE
-                        VAR nOffSet := oFld:Offset
-                        VAR nLen    := oFld:Length
-                        IF aValue != NULL .AND. aValue:Length >= nLen
-                            VAR aCopy := oWa:GetRec()
-                            System.Array.Copy(aValue, 0, aCopy, nOffSet, nLen)
-                            oWa:PutRec(aCopy)
-                            RETURN TRUE
+                var oCanPut := oWa:Info(DBI_CANPUTREC, NULL)
+                IF oCanPut IS LOGIC VAR lCanPut .and. lCanPut
+                    LOCAL oFld AS RddFieldInfo
+                    oFld := oWa:GetField((LONG) nPos)
+                    IF oFld != NULL
+                        IF oFld:FieldType.IsMemo()
+                            RETURN FieldPut(nPos, aValue)
+                        ELSE
+                            VAR nOffSet := oFld:Offset
+                            VAR nLen    := oFld:Length
+                            IF aValue != NULL
+                                IF aValue:Length >= nLen
+                                    VAR aCopy := oWa:GetRec()
+                                    System.Array.Copy(aValue, 0, aCopy, nOffSet, nLen)
+                                    oWa:PutRec(aCopy)
+                                    RETURN TRUE
+                                ELSE
+                                    VAR oError := Error{EG_DATAWIDTH, __FUNCTION__, i"Not enough bytes for field. Required is {nLen} bytes" }
+                                    THROW oError
+                                ENDIF
+                            ENDIF
                         ENDIF
                     ENDIF
+                ELSE
+                    VAR oError := Error{EG_UNSUPPORTED, __FUNCTION__, "RDD does not support PutRec" }
+                    THROW oError
                 ENDIF
             ENDIF
             RETURN FALSE
@@ -1057,6 +1070,7 @@ CLASS XSharp.CoreDb
     STATIC METHOD Info(nOrdinal AS DWORD,oValue REF OBJECT) AS LOGIC
         VAR oTemp := oValue
         VAR result := CoreDb.Do ({ =>
+            RuntimeState.LastRddError := NULL
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__, FALSE) AS IRdd
             IF oRdd != null
                 IF (nOrdinal == DBI_RDD_OBJECT)
@@ -1065,6 +1079,9 @@ CLASS XSharp.CoreDb
                     oTemp := _RddList{(Workarea) oRdd}
                 ELSE
                     oTemp := oRdd:Info((INT) nOrdinal, oTemp)
+                ENDIF
+                if RuntimeState.LastRddError != NULL
+                    RETURN FALSE
                 ENDIF
                 RETURN TRUE
             ENDIF
@@ -1257,6 +1274,9 @@ CLASS XSharp.CoreDb
         VAR info := DbOrderInfo{}
         info:BagName := cBagName
         info:Order   := oOrder
+        if oOrder == NULL
+            RddError.PostArgumentError( __FUNCTION__, EDB_ORDDESTROY, nameof(oOrder), 2, <OBJECT>{ oOrder } )
+        ENDIF
         VAR result := oRdd:OrderDestroy(info)
         RAISE IndexDelete SAVEBAGNAME(cBagName , oOrder)
         RETURN result
@@ -1311,6 +1331,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         cBagName := cBagName?:Trim()
         IF String.IsNullOrEmpty(cBagName)
+            RddError.PostArgumentError( __FUNCTION__, EDB_SETINDEX, nameof(cBagName), 1, <OBJECT>{ cBagName } )
             RETURN FALSE
         ELSE
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd

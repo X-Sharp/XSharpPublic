@@ -25,6 +25,7 @@ BEGIN NAMESPACE XSharp.IO
             SELF:_lruList  := LinkedList<LRUCacheItem<K, V>>{}
 
         INTERNAL PROPERTY Values AS IList<V>
+            [MethodImpl(MethodImplOptions.Synchronized)] ;
             GET
                 VAR result := List<V>{}
                 FOREACH VAR item in _cacheMap
@@ -310,7 +311,7 @@ BEGIN NAMESPACE XSharp.IO
 
         RETURN
 
-        PRIVATE _temp := BYTE[]{1} AS BYTE[] 
+        PRIVATE _temp := BYTE[]{1} AS BYTE[]
         /// <inheritdoc />
         /// <remarks>This method overrides the normal behavior of the FileStream class and writed the data to an inmemory cache, when possible </remarks>
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID

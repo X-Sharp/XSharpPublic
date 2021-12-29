@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System.Reflection
@@ -17,6 +17,21 @@ BEGIN NAMESPACE XSharp
         /// </summary>
         METHOD	PCount AS LONG
     END INTERFACE
+
+
+    /// <summary>
+    /// This interface extends the ICodeblock interface and adds a property
+    /// that returns the 'real' returntype of the codeblock, before
+    /// customizations are done to the value (for example for Foxpro where NIL gets converted to FALSE)
+    /// </summary>
+    INTERFACE ICodeblock2 INHERIT ICodeblock
+        /// <summary
+        /// Returns the real /original return type of the EvalBlock() method
+        /// </summary>
+        /// <value></value>
+        PROPERTY ResultType as __UsualType GET
+    END INTERFACE
+
 
     /// <summary>
 	/// This delegate is used to decide between 2 ambigous methods, functions or constructors

@@ -12,7 +12,7 @@ USING System.Text
 USING System.IO
 USING System.Linq
 USING System.Diagnostics
-
+//#define CHECKVERSIONS
 
 BEGIN NAMESPACE XSharp.RDD.CDX
     /// <summary>
@@ -23,6 +23,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL CONST CDX_EXTENSION := ".CDX" AS STRING
 
 #endregion
+        PRIVATE  _newPageAllocated := FALSE AS LOGIC
         INTERNAL _hFile     AS IntPtr
         INTERNAL _stream    AS FileStream
         INTERNAL _OpenInfo	AS DbOpenInfo
@@ -54,7 +55,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         #region RDD Overloads
             /// <inheritdoc />
-        METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
+        OVERRIDE METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
             THROW NotImplementedException{}
 
         INTERNAL STATIC METHOD GetIndexExtFromDbfExt(cDbfName AS STRING) AS STRING
@@ -70,7 +71,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END SWITCH
             RETURN CDX_EXTENSION
             /// <inheritdoc />
-        METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
+        OVERRIDE METHOD OrderCreate(info AS DbOrderCreateInfo) AS LOGIC
             LOCAL cTag AS STRING
             IF info:Order IS STRING VAR strOrder .and. ! String.IsNullOrWhiteSpace(strOrder)
                 cTag := strOrder
@@ -132,24 +133,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN found
 
             /// <inheritdoc />
-        METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
+        OVERRIDE METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
-        METHOD OrderInfo(nOrdinal AS DWORD) AS OBJECT
+        OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
             THROW NotImplementedException{}
             /// <inheritdoc />
-        METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
+        OVERRIDE METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
-        METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
+        OVERRIDE METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
-        METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
+        OVERRIDE METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
 
 
-        METHOD OrderListRebuild( ) AS LOGIC
+        OVERRIDE METHOD OrderListRebuild( ) AS LOGIC
             LOCAL aTags AS CdxTag[]
             LOCAL cBagName AS STRING
             LOCAL lOk AS LOGIC
@@ -175,10 +176,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
             /// <inheritdoc />
-        METHOD Seek(info AS DbSeekInfo) AS LOGIC
+        OVERRIDE METHOD Seek(info AS DbSeekInfo) AS LOGIC
             THROW NotImplementedException{}
             /// <inheritdoc />
-        PROPERTY Found AS LOGIC
+        OVERRIDE PROPERTY Found AS LOGIC
             GET
                 THROW NotImplementedException{}
             END GET
@@ -212,10 +213,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:Open(openInfo)
                 RETURN TRUE
             ENDIF
-            SELF:FullPath := cFullName
             SELF:_hFile    := FCreate(cFullName)
             SELF:_stream   := FGetStream(SELF:_hFile)
-
+            // Make sure the full name is returned and not the DOS Short Name
+            IF SELF:_stream != NULL_OBJECT
+                SELF:FullPath := SELF:_stream:Name
+            ENDIF
             // Allocate Root Page
             _root   := CdxFileHeader{SELF}
             _root:Initialize()
@@ -282,14 +285,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF !File(cFullName)
                 RETURN FALSE
             ENDIF
-            SELF:FullPath := cFullName
+            // Adjust Filename to handle 8 char DOS names
             SELF:_OpenInfo := _oRdd:_OpenInfo
             SELF:_hFile    := FOpen(cFullName, _OpenInfo:FileMode)
-            SELF:_stream   := FGetStream(SELF:_hFile)
-            SELF:_Encoding := _oRdd:_Encoding
             IF SELF:_hFile == F_ERROR
                 RETURN FALSE
             ENDIF
+            SELF:_stream   := FGetStream(SELF:_hFile)
+            IF SELF:_stream != NULL_OBJECT
+                SELF:FullPath := SELF:_stream:Name
+            ENDIF
+            SELF:_Encoding := _oRdd:_Encoding
             _root := CdxFileHeader{SELF}
             _root:Read()
             SELF:SetPage(_root)
@@ -324,7 +330,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN FALSE
 
 
-         METHOD Flush() AS LOGIC
+         OVERRIDE METHOD Flush() AS LOGIC
             LOCAL lOk AS LOGIC
             // Process all tags even if one fails
             lOk := TRUE
@@ -334,10 +340,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             lOk := SELF:FlushPages() .and. lOk
+            IF XSharp.RuntimeState.GetValue<LOGIC>(Set.HardCommit)
+                _stream:Flush(TRUE)
+            ELSE
+                _stream:Flush(FALSE)
+            ENDIF
             RETURN lOk
 
          INTERNAL METHOD FlushPages() AS LOGIC
             RETURN SELF:_PageList:Flush(FALSE)
+
+         INTERNAL METHOD SavePages() AS LOGIC
+            RETURN SELF:_PageList:Flush(TRUE)
 
          METHOD GoCold() AS LOGIC
             LOCAL lOk AS LOGIC
@@ -383,6 +397,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     throw IOException{cMessage}
                 ENDIF
                 nPage   := (LONG) _stream:Length
+                _newPageAllocated := TRUE
             ENDIF
             RETURN nPage
 
@@ -411,7 +426,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         METHOD Write(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
+#ifdef CHECKVERSIONS
             SELF:_PageList:CheckVersion(SELF:Root:RootVersion)
+#endif
             IF oPage:PageNo == -1
                 oPage:PageNo := SELF:FindFreePage()
                 oPage:IsHot  := TRUE
@@ -424,9 +441,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             IF oPage:IsHot
                 isOk := SELF:_stream:SafeWriteAt(oPage:PageNo, oPage:Buffer)
-                IF isOk .and. SELF:Shared
-                    SELF:_stream:Flush(TRUE)
-                ENDIF
             ELSE
                 isOk := TRUE
             ENDIF
@@ -446,7 +460,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
          METHOD SetPage(page AS CdxPage) AS VOID
             SELF:_PageList:SetPage(page:PageNo, page)
-#ifdef DEBUG
+#ifdef CHECKVERSIONS
             page:Generation := SELF:Root:RootVersion
 #endif
 
@@ -497,17 +511,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE METHOD _LockRetry(nOffSet AS INT64, nLen AS INT64,sPrefix AS STRING) AS VOID
             LOCAL result := FALSE AS LOGIC
-            var timer := LockTimer{}
-            timer:Start()
+            // note that there is no wait here. Research showed that the VO/Vulcan drivers
+            // also did not wait
             REPEAT
                 result := SELF:_stream:SafeLock(nOffSet, nLen)
-                IF ! result
-                    IF timer:TimeOut(FullPath, nOffSet, nLen)
-                        RETURN
-                    ENDIF
-                    var wait := 10 +rand:@@Next() % 50
-                    System.Threading.Thread.Sleep(wait)
-                ENDIF
             UNTIL result
             //DebOut32( "Locked " +nOffSet:ToString()+" "+nLen:ToString())
 
@@ -676,11 +683,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _UpdateRootVersion() AS VOID
             var version := SELF:_root:RootVersion +1
             SELF:_root:RootVersion := version
+            SELF:_tagList:Generation := SELF:_root:RootVersion
+            FOREACH VAR tag IN SELF:_tagList:Tags
+                tag:Header:Generation := SELF:_root:RootVersion
+            NEXT
             // Update the pagelist first. otherwise writing the _root will fail.
-#ifdef DEBUG
+#ifdef CHECKVERSIONS
             SELF:_PageList:SetVersion(version)
 #endif
             SELF:_root:Write()
+            IF _newPageAllocated
+                _stream:SafeSetLength(_stream:Length)
+                _newPageAllocated := FALSE
+            ENDIF
 
     #endregion
 
@@ -692,3 +707,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END CLASS
 END NAMESPACE
+
+
+
+
+
+
+
+

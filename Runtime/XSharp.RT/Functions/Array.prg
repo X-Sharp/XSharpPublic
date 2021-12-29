@@ -12,36 +12,65 @@
 INTERNAL STATIC CLASS ArrayHelpers
 
     STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, element  AS T , nStart AS LONG, nCount AS LONG) AS DWORD
-        LOCAL nItem AS LONG
-        LOCAL nLen  AS LONG
         ARRAYNOTNULL aTarget
-        nLen := (INT) aTarget:Length
-        FOR nItem := nStart TO nLen
-            IF Object.Equals(aTarget[ nItem], element)
-                RETURN (DWORD) nItem
-            ENDIF
-            nCount -= 1
-            IF nCount == 0
-                EXIT
-            ENDIF
-        NEXT
+        IF ! ArrayHelpers.ValidateArrayParams(aTarget, REF nStart, REF nCount, OUT VAR nSize)
+            RETURN 0
+        ENDIF
+        LOCAL nItem AS LONG
+        IF nStart < nSize
+            FOR nItem := nStart TO nSize
+                IF Object.Equals(aTarget[ nItem], element)
+                    RETURN (DWORD) nItem
+                ENDIF
+                nCount -= 1
+                IF nCount == 0
+                    EXIT
+                ENDIF
+            NEXT
+        ELSE
+            FOR nItem := nStart DOWNTO nSize
+                IF nCount > 0
+                    IF Object.Equals(aTarget[ nItem], element)
+                        RETURN (DWORD) nItem
+                    ENDIF
+                    nCount--
+                ELSE
+                    EXIT
+                ENDIF
+            NEXT
+        ENDIF
         RETURN 0
 
     STATIC METHOD AScan<T>(aTarget AS __ArrayBase<T>, bAction AS @@Func<T, LOGIC> , nStart AS LONG, nCount AS LONG) AS DWORD
-        LOCAL nItem AS LONG
-        LOCAL nLen  AS LONG
         ARRAYNOTNULL aTarget
-        nLen := (INT) aTarget:Length
-        FOR nItem := nStart TO nLen
-            LOCAL oElement := aTarget[ nItem] AS T
-            IF bAction(oElement)
-                RETURN  (DWORD) nItem
-            ENDIF
-            nCount -= 1
-            IF nCount == 0
-                EXIT
-            ENDIF
-        NEXT
+        IF ! ArrayHelpers.ValidateArrayParams(aTarget, REF nStart, REF nCount, OUT VAR nSize)
+            RETURN 0
+        ENDIF
+        LOCAL nItem AS LONG
+        IF nStart < nSize
+            FOR nItem := nStart TO nSize
+                LOCAL oElement := aTarget[ nItem] AS T
+                IF bAction(oElement)
+                    RETURN  (DWORD) nItem
+                ENDIF
+                nCount -= 1
+                IF nCount == 0
+                    EXIT
+                ENDIF
+            NEXT
+        ELSE
+            FOR nItem := nStart DOWNTO nSize
+                LOCAL oElement := aTarget[ nItem] AS T
+                IF nCount > 0
+                    IF bAction(oElement)
+                        RETURN (DWORD) nItem
+                    ENDIF
+                    nCount--
+                ELSE
+                    EXIT
+                ENDIF
+            NEXT
+        ENDIF
         RETURN 0
 
 
@@ -274,6 +303,23 @@ INTERNAL STATIC CLASS ArrayHelpers
             END IF
         END IF
         RETURN TRUE
+    STATIC METHOD ValidateArrayParams<T>(aTarget AS __ArrayBase<T>, nStart REF LONG,nCount REF LONG, nSize OUT DWORD) AS LOGIC
+         nSize := aTarget:Length
+         IF nSize == 0
+             RETURN FALSE
+         ENDIF
+        IF nCount >= 0
+            IF nStart > nSize
+                RETURN FALSE
+            END IF
+        ELSE
+            nSize := 1
+            nCount := - nCount
+            IF nStart < nSize
+                RETURN FALSE
+            END IF
+        END IF
+        RETURN TRUE
 
         END CLASS
 
@@ -304,8 +350,8 @@ FUNCTION ArrayInit(wElements AS DWORD, avalues REF USUAL[]) AS ARRAY
     NEXT
     RETURN aTemp
 
-
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
+
 FUNCTION AAdd(aTarget AS ARRAY,uNewElement AS USUAL) AS USUAL
     ARRAYNOTNULL aTarget
     RETURN AAdd<USUAL>(aTarget, uNewElement)
@@ -348,6 +394,7 @@ FUNCTION ACloneShallow<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T>
     END IF
     RETURN aSource:Clone()
 
+
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
 FUNCTION ADel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     ARRAYNOTNULL aTarget
@@ -357,13 +404,13 @@ FUNCTION ADel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
     aTarget:Delete((INT) dwPosition)
     RETURN aTarget
 
-
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION ADel<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T>
     ARRAYNOTNULL aTarget
     aTarget:Delete((INT) dwPosition)
     RETURN aTarget
+
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
 FUNCTION ATrueDel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
@@ -450,6 +497,7 @@ FUNCTION ArrayDeProtect(aTarget AS ARRAY) AS LOGIC
     ARRAYNOTNULL aTarget
     RETURN aTarget:Lock(FALSE)
 
+
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayget/*" />
 FUNCTION ArrayGet(aTarget AS ARRAY,dwElement AS DWORD) AS USUAL
     ARRAYNOTNULL aTarget
@@ -460,6 +508,7 @@ FUNCTION ArrayGet(aTarget AS ARRAY,dwElement AS DWORD) AS USUAL
 FUNCTION ArrayGet<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD) AS T
     ARRAYNOTNULL aTarget
     RETURN aTarget:__GetElement( (INT) dwElement-1)
+
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayprotect/*" />
 FUNCTION ArrayProtect(aTarget AS ARRAY) AS LOGIC
@@ -472,6 +521,7 @@ FUNCTION ArrayProtect<T>(aTarget AS __ArrayBase<T>) AS LOGIC
     ARRAYNOTNULL aTarget
     RETURN aTarget:Lock(TRUE)
 
+
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayput/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION ArrayPut<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uValue AS T) AS T
@@ -479,11 +529,13 @@ FUNCTION ArrayPut<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uValue AS T) A
     aTarget:__SetElement(uValue, (INT)dwElement -1)
     RETURN uValue
 
+
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayput/*" />
 FUNCTION ArrayPut(aTarget AS ARRAY,dwElement AS DWORD,uValue AS USUAL) AS USUAL
     ARRAYNOTNULL aTarget
     aTarget:__SetElement(uValue, (INT)dwElement -1)
     RETURN uValue
+
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraystore/*" />
 FUNCTION ArrayStore(aSource AS ARRAY,Buff AS USUAL PTR,dwLen AS DWORD) AS DWORD
@@ -520,6 +572,7 @@ FUNCTION ArraySwap<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uNewValue AS 
     ARRAYNOTNULL aTarget
     RETURN aTarget:Swap((INT) dwElement, uNewValue)
 
+
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart := NIL AS USUAL,nCount := NIL AS USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
@@ -531,11 +584,11 @@ FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, NIL, SetExact())
 
-
     /// <inheritdoc cref='AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, 1, NIL, SetExact())
+
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" />
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart := NIL AS USUAL, nCount := NIL AS USUAL) AS DWORD
@@ -555,10 +608,11 @@ FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD
     RETURN ArrayHelpers.AScan( aTarget, uSearch, 1, NIL, TRUE )
 
 
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbin/*" />
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbin/*" />
 FUNCTION AScanBin(aTarget AS ARRAY,uSearch AS USUAL) AS DWORD
     ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScanBin( "AscanBin" , aTarget, uSearch, FALSE )
+
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbinexact/*" />
 FUNCTION AScanBinExact(aTarget AS ARRAY,uSearch AS USUAL) AS DWORD
@@ -575,14 +629,14 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T) AS DWORD
     /// <typeparam name="T">The type of the array elements</typeparam>
     /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, act,1, (INT) aTarget:Length)
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, (INT) aTarget:Length- nStart +1)
 
 
@@ -590,7 +644,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DW
     /// <typeparam name="T">The type of the array elements</typeparam>
     /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, act, nStart, (INT) aTarget:Length - nStart +1)
 
 
@@ -598,14 +652,15 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS L
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG, nCount AS LONG) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount)
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" />
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG, nCount  AS LONG) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, act, nStart, nCount)
+
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asize/*" />
 FUNCTION ASize(aTarget AS ARRAY,dwLength AS DWORD) AS ARRAY
@@ -928,6 +983,7 @@ FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD
     NEXT
     RETURN aArray
 
+
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
 FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ) AS ARRAY
     ARRAYNULL aArray
@@ -936,12 +992,14 @@ FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ) AS ARRAY
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEval")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, uStart, uCount, FALSE)
 
+
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
 FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ,nStart AS USUAL ) AS ARRAY
     ARRAYNULL aArray
     LOCAL uCount    := NIL AS USUAL
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF uCount, "AEval")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart, uCount, FALSE)
+
 
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
@@ -966,6 +1024,7 @@ FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock, nStart AS USUAL ) AS ARR
     LOCAL uCount    := NIL AS USUAL
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF uCount, "AEvalA")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,uCount , TRUE)
+
 
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
 FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock, nStart  AS USUAL ,nCount AS USUAL) AS ARRAY
@@ -1013,6 +1072,7 @@ FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock,nStart  AS USUAL ) AS A
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF uCount, "AEvalOld")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,uCount , FALSE)
 
+
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
 FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY
     ARRAYNULL aArray
@@ -1020,6 +1080,4 @@ FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY
     LOCAL uCount	 := NIL AS USUAL
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEvalOld")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, uStart,uCount , FALSE)
-
-
 

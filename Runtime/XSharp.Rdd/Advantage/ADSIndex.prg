@@ -51,12 +51,12 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
 
 
         /// <inheritdoc />
-    VIRTUAL METHOD OrderCondition(info AS DbOrderCondInfo ) AS LOGIC
+    OVERRIDE METHOD OrderCondition(info AS DbOrderCondInfo ) AS LOGIC
         SELF:OrderCondInfo := info
         RETURN TRUE
 
         /// <inheritdoc />
-    VIRTUAL METHOD OrderCreate(info AS DbOrderCreateInfo ) AS LOGIC
+    OVERRIDE METHOD OrderCreate(info AS DbOrderCreateInfo ) AS LOGIC
         LOCAL cCondition AS STRING
         LOCAL nonAdditive AS LOGIC
         LOCAL mustEval  AS LOGIC
@@ -121,7 +121,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         RETURN SELF:oRDD:GoTop()
 
         /// <inheritdoc />
-    VIRTUAL METHOD OrderDestroy(info AS DbOrderInfo ) AS LOGIC
+    OVERRIDE METHOD OrderDestroy(info AS DbOrderInfo ) AS LOGIC
         LOCAL hIndex AS IntPtr
         hIndex := SELF:_FindIndex(info,"OrderDestroy")
         IF hIndex != IntPtr.Zero
@@ -142,7 +142,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             RETURN ".ADI"
         END SWITCH
         /// <inheritdoc />
-    VIRTUAL METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
+    OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
         LOCAL hIndex AS IntPtr
         LOCAL result AS DWORD
         LOCAL fileName AS STRING
@@ -453,7 +453,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
 
 
     /// <inheritdoc />
-    VIRTUAL METHOD OrderListAdd(info AS DbOrderInfo  ) AS LOGIC
+    OVERRIDE METHOD OrderListAdd(info AS DbOrderInfo  ) AS LOGIC
         LOCAL wLength AS WORD
         LOCAL wCurrent AS WORD
         LOCAL indices AS IntPtr[]
@@ -506,13 +506,13 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         RETURN SELF:oRDD:GoTop()
 
         /// <inheritdoc />
-    VIRTUAL METHOD OrderListDelete(info AS DbOrderInfo ) AS LOGIC
+    OVERRIDE METHOD OrderListDelete(info AS DbOrderInfo ) AS LOGIC
         SELF:_CheckError(ACE.AdsCloseAllIndexes(SELF:Table),EG_CLOSE)
         SELF:Index := IntPtr.Zero
         RETURN TRUE
 
         /// <inheritdoc />
-    VIRTUAL METHOD OrderListFocus(info AS DbOrderInfo ) AS LOGIC
+    OVERRIDE METHOD OrderListFocus(info AS DbOrderInfo ) AS LOGIC
         LOCAL oTmpInfo AS DbOrderInfo
         oTmpInfo :=DbOrderInfo{}
         SELF:OrderInfo(DBOI_NAME,oTmpInfo)
@@ -524,7 +524,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
 
 
         /// <inheritdoc />
-    VIRTUAL METHOD OrderListRebuild() AS LOGIC
+    OVERRIDE METHOD OrderListRebuild() AS LOGIC
         LOCAL options AS DWORD
         SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:Table, OUT options),EG_SHARED)
         IF !ADSRDD._HasFlag(options, ACE.ADS_EXCLUSIVE)
@@ -537,7 +537,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
 
 
         /// <inheritdoc />
-    VIRTUAL METHOD Seek(seekinfo AS DbSeekInfo) AS LOGIC
+    OVERRIDE METHOD Seek(seekinfo AS DbSeekInfo) AS LOGIC
         LOCAL seekMode AS WORD
         LOCAL found AS WORD
         LOCAL Key AS STRING

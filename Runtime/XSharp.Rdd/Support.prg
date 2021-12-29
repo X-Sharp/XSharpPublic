@@ -71,15 +71,39 @@ BEGIN NAMESPACE XSharp.RDD
     END CLASS
 
     INTERNAL CLASS RddKeyData
-        EXPORT Recno   AS LONG
-        EXPORT Key     AS BYTE[]
-        EXPORT ForCond AS LOGIC
+        PROPERTY Recno   AS LONG AUTO
+        PROPERTY Key     AS BYTE[] AUTO
+        PROPERTY ForCond AS LOGIC AUTO
         INTERNAL CONSTRUCTOR (nKeyLen AS LONG)
             SELF:ForCond := TRUE
             SELF:Recno   := -1
             SELF:Key     := BYTE[]{nKeyLen}
             RETURN
-
+#ifdef __DEBUG__
+        METHOD ToAscii (bytes AS BYTE[], lHex := FALSE AS LOGIC) AS STRING
+            VAR sb := System.Text.StringBuilder{}
+            IF bytes == NULL
+                RETURN ""
+            ENDIF
+            IF lHex
+                FOREACH VAR b IN bytes
+                    //IF b > 0
+                        sb:Append( String.Format("{0:X2}",b))
+                    //ENDIF
+                NEXT
+                sb:Append(" ")
+            ENDIF
+            FOREACH VAR b IN bytes
+                IF b > 31 .AND. b < 128
+                    sb:Append( (CHAR) b)
+                ELSE
+                    sb:Append('.')
+                ENDIF
+            NEXT
+            RETURN sb:ToString()
+        OVERRIDE METHOD ToString() AS STRING
+            RETURN ToAscii(SELF:Key, FALSE) + " "+Recno:ToString()
+#endif
         INTERNAL METHOD CopyTo(oOther AS RddKeyData) AS VOID
             oOther:ForCond := SELF:ForCond
             oOther:Recno   := SELF:Recno

@@ -105,9 +105,8 @@ FUNCTION DbApp(cSourceFile, acFields, cbForCondition, cbWhileCondition,nNext, nR
 
 		DbUseArea(TRUE, cDriver, cSourceFile, __UniqueAlias(cSourceFile), TRUE, TRUE,/*aStru*/,/*cDelim*/, acRDDs)
 		siFrom := VoDbGetSelect()
-		DbMoveToMemory()
 
-		acFields := {}
+        acFields := {}
 
 		n := FCount()
 		aMatch := DbStruct()
@@ -127,7 +126,6 @@ FUNCTION DbApp(cSourceFile, acFields, cbForCondition, cbWhileCondition,nNext, nR
 
 		IF (siFrom > 0)
 		   VoDbSetSelect((INT) siFrom)
-		   DbMoveToDisk()
 		   VoDbCloseArea()
 		ENDIF
 
@@ -315,14 +313,12 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, ;
 			ENDIF
 
 			DbUseArea(.T., cDriver, cTargetFile, __UniqueAlias(cTargetFile),,,,,acRDDs)
-		    DbMoveToMemory()
 			VoDbSelect(siFrom, REF siTo)
 
 			lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 
 			IF (siTo > 0)
 				VoDbSetSelect(INT(siTo))
-		                DbMoveToDisk()
 				VoDbCloseArea()
 			ENDIF
 
@@ -943,18 +939,4 @@ FUNCTION DbUpdate(cAlias, cbKey, lRand, cbReplace) AS LOGIC CLIPPER
 	END TRY
 
 	RETURN (lRetCode)
-
-
-FUNCTION DbMoveToMemory() AS LOGIC
-RETURN FALSE
-
-FUNCTION DbMoveToDisk() AS LOGIC
-RETURN FALSE
-
-
-
-
-
-
-
 

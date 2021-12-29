@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:Shared
                 IF SELF:_lockCount == 0
                     DO WHILE ! SELF:_tryLock(0, 1, 10)
-                        SELF:_lockCount := 1
+                        NOP
                     ENDDO
                     SELF:_lockCount := 1
                 ELSE
@@ -147,9 +147,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN block
 
-        /// <summary></summary>
-        /// <param name="nFldPos">One based field number</param>
-        METHOD GetValue(nFldPos AS INT) AS OBJECT
+        INTERNAL METHOD GetRawValueWithHeader(nFldPos as INT) AS BYTE[]
             LOCAL blockNbr AS LONG
             LOCAL block := NULL AS BYTE[]
             IF SELF:IsOpen
@@ -157,17 +155,24 @@ BEGIN NAMESPACE XSharp.RDD
                 IF ( blockNbr > 0 )
                     block := SELF:_getBlock(blockNbr)
                 ENDIF
-                // At this level, the return value is the raw Data, in BYTE[]
             ENDIF
+            RETURN block
+
+        /// <summary></summary>
+        /// <param name="nFldPos">One based field number</param>
+        OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
+            LOCAL block := SELF:GetRawValueWithHeader(nFldPos) AS BYTE[]
+            if block != NULL
+                var result := BYTE[]{block:Length - 8}
+                System.Array.Copy(block, 8, result,0, result:Length)
+                block := result
+            endif
             RETURN block
        PRIVATE METHOD _WriteBlockToFile(nBlockNr as INT, fileName as STRING) AS LOGIC
             local block as byte[]
             block := SELF:_getBlock(nBlockNr)
             IF block != NULL
                 // So, extract the "real" Data
-                IF File(fileName)
-                    fileName := FPathName()
-                ENDIF
                 IF SELF:ExportMode == BLOB_EXPORT_APPEND
                     LOCAL file := System.IO.File.OpenWrite(fileName) AS FileStream
                     file:Seek(0, SeekOrigin.End)
@@ -197,7 +202,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         /// <inheritdoc />
         /// <param name="nFldPos">One based field number</param>
-        METHOD GetValueLength(nFldPos AS INT) AS LONG
+        OVERRIDE METHOD GetValueLength(nFldPos AS INT) AS LONG
             var blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
             var blockLen := SELF:_GetBlockLen(blockNbr)
             // Don't forget to remove the 8 Bytes
@@ -325,7 +330,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <summary>Write value to field.</summary>
         /// <param name="nFldPos">One based field number</param>
         /// <param name="oValue">Data to write. Should be BYTE[] and include the header with the type</param>
-        VIRTUAL METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+        OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             IF SELF:IsOpen .and. oValue IS BYTE[] VAR bytes
                 // AT this level the bytes[] array already contains the header with type and length
                 var blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
@@ -356,7 +361,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
         /// <inheritdoc />
-        VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+        OVERRIDE METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
             TRY
                 VAR oColumn := SELF:_oRdd:_GetColumn(nFldPos) ASTYPE DbfColumn
                 IF oColumn != NULL .AND. oColumn:IsMemo
@@ -391,7 +396,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN 0
 
         /// <inheritdoc />
-        VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
+        OVERRIDE METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
             LOCAL isOk      AS LOGIC
             SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
             isOk := SUPER:CreateMemFile(info)
@@ -415,7 +420,7 @@ BEGIN NAMESPACE XSharp.RDD
         RETURN isOk
 
         /// <inheritdoc />
-        VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
+        OVERRIDE METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             SELF:Extension := SELF:_GetMemoExtFromDbfExt(info:FullName)
             isOk := SUPER:OpenMemFile(info)
@@ -494,7 +499,7 @@ BEGIN NAMESPACE XSharp.RDD
         RETURN unlocked
 
 
-        VIRTUAL METHOD Zap() AS LOGIC
+        OVERRIDE METHOD Zap() AS LOGIC
             IF SELF:IsOpen
                 IF SELF:Shared
                     SELF:Error(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "FPTMemo.Zap")
@@ -619,6 +624,23 @@ BEGIN NAMESPACE XSharp.RDD
             local bData   as byte[]
             SWITCH nOrdinal
 
+            CASE DbInfo.BLOB_GET
+                VAR nFldPos := Convert.ToInt32(oBlobInfo:Data)
+                IF SELF:_oRdd:_isMemoField( nFldPos )
+                    VAR rawData := SELF:GetRawValueWithHeader(nFldPos)
+                    oResult := SELF:DecodeValue(rawData)
+                    IF oResult IS String VAR strResult
+                        VAR nOffset := oBlobInfo:Start
+                        VAR nLen    := oBlobInfo:Length
+                        // Note that nOffSet is a 1 based offset !
+                        nOffset -= 1
+                        if nLen > strResult:Length - nOffset
+                            nLen := strResult:Length - nOffset
+                        endif
+                       oResult := strResult:Substring(nOffset, nLen)
+                    ENDIF
+                ENDIF
+
             CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE
                 blockNr := oBlobInfo:Pointer
                 oResult := SELF:_GetBlockType(blockNr)
@@ -706,10 +728,8 @@ BEGIN NAMESPACE XSharp.RDD
        /// <param name="bData">The raw block including the 8 byte header</param>
        INTERNAL METHOD DecodeValue(bData AS BYTE[]) AS OBJECT
             // bData includes the header
-            LOCAL encoding  AS Encoding
             LOCAL offset AS LONG
             VAR token := FlexMemoToken{bData, _oStream}
-            encoding := SELF:_oRdd:_Encoding //ASCIIEncoding{}
             SWITCH token:DataType
             CASE FlexFieldType.Array16
             CASE FlexFieldType.Array32
@@ -725,9 +745,9 @@ BEGIN NAMESPACE XSharp.RDD
                // Some drivers are stupid enough to allocate blocks in the FPT with a zero length..
                 IF token:Length > 0
                     IF bData[bData:Length-1] == 0
-                        RETURN encoding:GetString(bData,8, bData:Length-9)
+                        RETURN SELF:Encoding:GetString(bData,8, bData:Length-9)
                     ELSE
-                        RETURN encoding:GetString(bData,8, bData:Length-8)
+                        RETURN SELF:Encoding:GetString(bData,8, bData:Length-8)
                     ENDIF
                 ENDIF
                 RETURN ""
@@ -814,12 +834,12 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE FlexArrayTypes.String32
                     length := BitConverter.ToInt32(bData,nOffset)
                     nOffset += 4
-                    element := SELF:_oRdd:_Encoding:GetString(bData, nOffset, length)
+                    element := SELF:Encoding:GetString(bData, nOffset, length)
                     nOffset += length
                 CASE FlexArrayTypes.String16
                     length := BitConverter.ToInt16(bData,nOffset)
                     nOffset += 2
-                    element := SELF:_oRdd:_Encoding:GetString(bData, nOffset, length)
+                    element := SELF:Encoding:GetString(bData, nOffset, length)
                     nOffset += length
                 CASE FlexArrayTypes.Float
                     element := 0.0
@@ -935,7 +955,7 @@ BEGIN NAMESPACE XSharp.RDD
                 token := FlexMemoToken{bData, _oStream}
                 token:DataType := FlexFieldType.String
                 token:Length   := sValue:Length
-                VAR bytes := SELF:_oRdd:_Encoding:GetBytes(sValue)
+                VAR bytes := SELF:Encoding:GetBytes(sValue)
                 System.Array.Copy(bytes,0, bData,FlexMemoToken.TokenLength, bytes:Length)
                 RETURN bData
             CASE TypeCode.Object

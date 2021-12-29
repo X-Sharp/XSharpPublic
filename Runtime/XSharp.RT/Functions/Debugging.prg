@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -13,7 +13,7 @@ USING System.Diagnostics
 /// </summary>
 /// <param name="args">List of values to display on the debug terminal</param>
 
-FUNCTION DebOut( args PARAMS USUAL[]) AS VOID 
+FUNCTION DebOut( args PARAMS USUAL[]) AS VOID
 	var  sb := System.Text.StringBuilder{}
 	if args != NULL .and. args:Length > 0
 		FOREACH var arg in args
@@ -43,7 +43,4 @@ FUNCTION CanBreak() AS LOGIC
 /// </returns>
 FUNCTION Version() AS STRING
 	RETURN "XSharp "+__VERSION__
-
-
-
 

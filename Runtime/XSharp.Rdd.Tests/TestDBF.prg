@@ -19,6 +19,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 	/// </summary>
 	CLASS TestDBF
 
+
+
 		[Fact, Trait("Dbf", "Open")];
 		METHOD OpenDBF() AS VOID
 			// CUSTNUM,N,5,0	FIRSTNAME,C,10	LASTNAME,C,10	ADDRESS,C,25	CITY,C,15	STATE,C,2	ZIP,C,5	PHONE,C,13	FAX,C,13
@@ -328,7 +330,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CheckCreateDBF() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ "XMenTestC.DBF", "XMenTest", 1, FALSE, FALSE }
+ 			VAR dbInfo := DbOpenInfo{ TempFileName(), "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			LOCAL fieldInfo AS STRING[]
@@ -352,7 +354,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 
         [Fact, Trait("Dbf", "CreateAppend")];
         METHOD CheckCreateAppendDBF() AS VOID
-		    CheckCreateAppendDBF("XMenTest1.dbf")
+		    CheckCreateAppendDBF(TempFileName())
 
 		METHOD CheckCreateAppendDBF(cFileName AS STRING) AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
@@ -419,7 +421,7 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CheckCreateBigAppendDBF() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ "XMenTestE.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ TempFileName(), "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			LOCAL fieldInfo AS STRING[]
@@ -464,9 +466,10 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "Zap")];
 		METHOD CheckZap() AS VOID
 			//
-			SELF:CheckCreateAppendDBF("XMenTestF.DBF")
+            var fileName := TempFileName()
+			SELF:CheckCreateAppendDBF(fileName)
 			//
-			VAR dbInfo := DbOpenInfo{ "XMenTestF.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ fileName, "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo )
@@ -484,9 +487,10 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "Zap")];
 		METHOD CheckZapAppend() AS VOID
 			//
-			SELF:CheckCreateAppendDBF("XMenTestG.DBF")
+            var file := TempFileName()
+			SELF:CheckCreateAppendDBF(file)
 			//
-			VAR dbInfo := DbOpenInfo{ "XMenTestG.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ file, "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo )
@@ -514,9 +518,10 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "Pack")];
 		METHOD CheckPack() AS VOID
 			//
-			SELF:CheckCreateAppendDBF("XMenTestH.DBF")
+            var file := TempFileName()
+			SELF:CheckCreateAppendDBF(file)
 			//
-			VAR dbInfo := DbOpenInfo{ "XMenTestH.DBF", "", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ file, "", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBF{} AS DBF
 			IF myDBF:Open( dbInfo )
@@ -541,7 +546,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		METHOD CheckCreateDBFMemo() AS VOID
 			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ "XMenTestI.DBF", "XMenTest", 1, FALSE, FALSE }
+            var cFile := TempFileName()
+			VAR dbInfo := DbOpenInfo{cFile , "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			LOCAL fieldInfo AS STRING[]
@@ -562,15 +568,15 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			//
 			myDBF:Close()
 			//
-			LOCAL isFile := System.IO.File.Exists( "XMenTestI.DBT" ) AS LOGIC
+            cFile := System.IO.Path.ChangeExtension(cFile, ".DBT")
+			LOCAL isFile := System.IO.File.Exists( cFile ) AS LOGIC
 			Assert.Equal( TRUE, isFile  )
 			RETURN
 
-		[Fact, Trait("Dbf", "CreateAppendDBT")];
-		METHOD CheckCreateAppendDBFDBT() AS VOID
-			LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
+        PRIVATE METHOD CreateFileHelper(cFilename as STRING, data OUT STRING[], Memos OUT List<String>) AS DbOpenInfo
+            LOCAL fieldDefs := "ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0;BIOGRAPHY,M,10,0" AS STRING
 			LOCAL fields := fieldDefs:Split( ';' ) AS STRING[]
-			VAR dbInfo := DbOpenInfo{ "XMenTestJ.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ cFilename, "XMenTest", 1, FALSE, FALSE }
 			//
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			LOCAL fieldInfo AS STRING[]
@@ -591,8 +597,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			// Now, Add some Data
 			//"ID,N,5,0;NAME,C,20,0;MAN,L,1,0;BIRTHDAY,D,8,0"
 			LOCAL datas := "1,Professor Xavier,T;2,Wolverine,T;3,Tornade,F;4,Cyclops,T;5,Diablo,T" AS STRING
-			LOCAL data := datas:Split( ';' ) AS STRING[]
-			VAR Memos := List<STRING>{}
+			data := datas:Split( ';' )
+			Memos := List<STRING>{}
 			//
 			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
 				//
@@ -606,6 +612,14 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 				myDBF:PutValue( 5, Memos[ Memos:Count -1 ] )
 			NEXT
 			myDBF:Close()
+            return dbInfo
+
+		[Fact, Trait("Dbf", "CreateAppendDBT")];
+		METHOD CheckCreateAppendDBFDBT() AS STRING
+            var file := TempFileName()
+			VAR dbInfo := CreateFileHelper(file, OUT VAR data, OUT VAR Memos)
+			LOCAL myDBF := DBFDBT{} AS DBFDBT
+
 			// Now, Verify
 			myDBF:Open( dbInfo )
 			FOR VAR i := __ARRAYBASE__ TO data:Length - (1-__ARRAYBASE__)
@@ -635,15 +649,15 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			NEXT
 			//
 			myDBF:Close()
-			RETURN
+			RETURN file
 
 
 		[Fact, Trait("Dbf", "ModifyDBT")];
 		METHOD CheckModifyDBT() AS VOID
 			// Create and put some Data
-			SELF:CheckCreateAppendDBFDBT()
+			var cFile := SELF:CheckCreateAppendDBFDBT()
 			// Now Modify in the same space
-			VAR dbInfo := DbOpenInfo{ "XMenTestJ.DBF", "XMenTest", 1, FALSE, FALSE }
+			VAR dbInfo := DbOpenInfo{ cFile, "XMenTest", 1, FALSE, FALSE }
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			VAR Memos := List<STRING>{}
 			// Now, Modify the Memo
@@ -677,9 +691,8 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 		[Fact, Trait("Dbf", "ModifyDBT_2")];
 		METHOD CheckModifyDBT_2() AS VOID
 			// Create and put some Data
-			SELF:CheckCreateAppendDBFDBT()
+			VAR dbInfo := CreateFileHelper(TempFileName(), OUT var _, OUT VAR _)
 			// Now Modify in the same space
-			VAR dbInfo := DbOpenInfo{ "XMenTestJ.DBF", "XMenTest", 1, FALSE, FALSE }
 			LOCAL myDBF := DBFDBT{} AS DBFDBT
 			VAR Memos := List<STRING>{}
 			// Now, Modify the Memo
@@ -710,5 +723,117 @@ BEGIN NAMESPACE XSharp.RDD.Tests
 			myDBF:Close()
 			RETURN
 
+        CLASS TestInputBuffer INHERIT InputBuffer
+            PROPERTY Stream         AS System.IO.Stream GET SELF:_stream
+            PROPERTY RecordLength   AS LONG GET _recordLength
+            PROPERTY HeaderLength   AS LONG GET _headerLength
+            PROPERTY Shared         AS LOGIC GET _shared SET _shared := VALUE
+            PROPERTY LookAhead      AS INT GET _look_ahead SET _look_ahead := VALUE
+            PROPERTY LookBehind     AS INT GET _look_behind SET _look_behind := VALUE
+            PROPERTY InBuffer       AS BYTE[] GET _inBuffer
+            PROPERTY InBufferOfs    AS LONG GET _inBufferOfs SET _inBufferOfs := VALUE
+            PROPERTY InBufferLen    AS LONG GET _inBufferLen SET _inBufferLen := VALUE
+            PROPERTY InBufferTick   AS INT GET _inBufferTick SET _inBufferTick := VALUE
+            CONSTRUCTOR(stream AS System.IO.Stream, headerLength AS INT, recordLength AS INT, shared AS LOGIC) AS VOID
+                SUPER(stream, headerLength, recordLength, shared)
+        END CLASS
+
+		[Fact, Trait("Dbf", "InBuffer")];
+		METHOD CheckDbfInBuffer() AS VOID
+            VAR stream := System.IO.MemoryStream{200101}
+            FOR VAR i := 1 TO 200101
+                stream:WriteByte((Byte)i)
+            NEXT
+            stream:Position := 0
+
+            VAR buf := TestInputBuffer{stream, 100, 200, FALSE}
+            Assert.Equal( stream, buf:Stream )
+            Assert.Equal( 100, buf:HeaderLength )
+            Assert.Equal( 200, buf:RecordLength )
+            Assert.Equal( FALSE, buf:Shared )
+            Assert.Equal( 16384/200 - 16384/200/4, buf:LookAhead )
+            Assert.Equal( 16384/200/4 - 1, buf:LookBehind )
+            Assert.Equal( 16200, buf:InBuffer:Length )
+            Assert.Equal( 0, buf:InBufferOfs )
+            Assert.Equal( 0, buf:InBufferLen )
+
+            VAR b := BYTE[]{200}
+            Assert.Equal( TRUE, buf:Read(100, b, 200) )
+            Assert.Equal( 100, buf:InBufferOfs )
+            Assert.Equal( 16200, buf:InBufferLen )
+            Assert.Equal( 101, b[1] )
+
+            Assert.Equal( TRUE, buf:Read(300, b, 200) )
+            Assert.Equal( 100, buf:InBufferOfs )
+            Assert.Equal( 16200, buf:InBufferLen )
+            Assert.Equal( 301%256, b[1] )
+            Assert.Equal( 500%256, b[200] )
+
+            Assert.Equal( TRUE, buf:Read(100+81*200, b, 200) )
+            Assert.Equal( 100+(81-buf:LookBehind)*200, buf:InBufferOfs )
+            Assert.Equal( 16200, buf:InBufferLen )
+            Assert.Equal( (101+81*200)%256, b[1] )
+            Assert.Equal( (300+81*200)%256, b[200] )
+
+            Assert.Equal( TRUE, buf:Read(100+500*200, b, 200) )
+            Assert.Equal( 100+(500-buf:LookBehind)*200, buf:InBufferOfs )
+            Assert.Equal( 16200, buf:InBufferLen )
+            Assert.Equal( (101+500*200)%256, b[1] )
+            Assert.Equal( (300+500*200)%256, b[200] )
+
+            Assert.Equal( TRUE, buf:Read(100+200*200, b, 200) )
+            Assert.Equal( 100+(200-buf:LookAhead)*200, buf:InBufferOfs )
+            Assert.Equal( 16200, buf:InBufferLen )
+            Assert.Equal( (101+200*200)%256, b[1] )
+            Assert.Equal( (300+200*200)%256, b[200] )
+
+            // Test forward access
+            FOR VAR i := 1 TO 200000/200
+                Assert.Equal( TRUE, buf:Read(100+(i-1)*200, b, 200) )
+                Assert.Equal( (101+(i-1)*200)%256, b[1] )
+                Assert.Equal( (300+(i-1)*200)%256, b[200] )
+            NEXT
+
+            // Test backward access
+            FOR VAR i := 200000/200 DOWNTO 1
+                Assert.Equal( TRUE, buf:Read(100+(i-1)*200, b, 200) )
+                Assert.Equal( (101+(i-1)*200)%256, b[1] )
+                Assert.Equal( (300+(i-1)*200)%256, b[200] )
+            NEXT
+
+            // Test random access
+            VAR rand := System.Random{}
+            FOR VAR n := 1 TO 20000
+                VAR i := rand:Next(200000/200)+1
+                Assert.Equal( TRUE, buf:Read(100+(i-1)*200, b, 200) )
+                Assert.Equal( (101+(i-1)*200)%256, b[1] )
+                Assert.Equal( (300+(i-1)*200)%256, b[200] )
+            NEXT
+
+            buf:Invalidate()
+            Assert.Equal( 0, buf:InBufferOfs )
+            Assert.Equal( 0, buf:InBufferLen )
+
+            Assert.Equal( FALSE, buf:Read(100+200000, b, 200) )
+            Assert.Equal( 100+(1000-buf:LookBehind)*200, buf:InBufferOfs )
+            Assert.Equal( 1+buf:LookBehind*200, buf:InBufferLen )
+
+            Assert.Equal( FALSE, buf:Read(100+200200, b, 200) )
+            Assert.Equal( 100+(1001-buf:LookBehind)*200, buf:InBufferOfs )
+            Assert.Equal( 0, buf:InBufferLen )
+
+            Assert.Equal( FALSE, buf:Read(100+400200, b, 200) )
+            Assert.Equal( 100+(2001-buf:LookBehind)*200, buf:InBufferOfs )
+            Assert.Equal( 0, buf:InBufferLen )
+
+			RETURN
+        STATIC PRIVATE nCounter AS LONG
+        STATIC PRIVATE gate := Object{} as Object
+        STATIC METHOD TempFilename() as STRING
+            BEGIN LOCK gate
+            nCounter += 1
+            end lock
+            return "TestDBF"+nCounter:ToString()
 	END CLASS
 END NAMESPACE // XSharp.RDD.Tests
+

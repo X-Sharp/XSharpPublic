@@ -60,7 +60,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN lResult
 
-        VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
+        OVERRIDE METHOD FieldIndex(fieldName AS STRING) AS INT
             LOCAL result AS INT
             // SUPER:FieldIndex uses a dictionary, so that is fast, If that fails then
             // check again for colum names.
@@ -96,7 +96,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
 
-        OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+         OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             // nFldPos is 1 based, the RDD compiles with /az+
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
                 var row := _table:Rows[SELF:_RecNo -1]

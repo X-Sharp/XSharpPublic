@@ -9,7 +9,7 @@
 
     // This is used for the assembly version number, which the CLR uses to determine binding
     // This generally changes when we release a new full build
-    // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE CONSTANTS.CS FILE
+    // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE CONSTANTS.CS FILE and the Versions.props file
 #ifdef RUNTIME
     #define VERSION_NUMBER     "2.6.0.0"
 #else

@@ -181,7 +181,7 @@
     <value>Expression macro manquante</value>
   </data>
   <data name="EDB_EXPR_WIDTH" xml:space="preserve">
-    <value>Expression macro trop longue</value>
+    <value>Expression d'ordre trop longue</value>
   </data>
   <data name="EDB_DRIVERLOAD" xml:space="preserve">
     <value>Chargement impossible du RDD</value>

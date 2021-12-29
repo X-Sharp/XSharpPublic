@@ -336,7 +336,7 @@ INTERNAL METHOD _SetPaths(dwGenCode AS DWORD) AS DWORD
 RETURN 0u
 
     /// <inheritdoc />
-VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
+OVERRIDE METHOD Open(info AS DbOpenInfo) AS LOGIC
     LOCAL openmode AS WORD
     LOCAL alias AS STRING
     LOCAL charset AS WORD
@@ -432,7 +432,7 @@ VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
-VIRTUAL METHOD Close() AS LOGIC
+OVERRIDE METHOD Close() AS LOGIC
     LOCAL result AS LOGIC
     result := SUPER:Close()
     IF SELF:_Table != IntPtr.Zero
@@ -448,7 +448,7 @@ VIRTUAL METHOD Close() AS LOGIC
 RETURN result
 
     /// <inheritdoc />
-VIRTUAL METHOD Create(info AS DbOpenInfo) AS LOGIC
+OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
     LOCAL strFieldDef AS STRING
     LOCAL charset AS WORD
     LOCAL alias AS STRING
@@ -511,7 +511,7 @@ PROTECT OVERRIDE METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
     ENDIF
     RETURN TRUE
 
-VIRTUAL METHOD AddField(info AS RddFieldInfo) AS LOGIC
+OVERRIDE METHOD AddField(info AS RddFieldInfo) AS LOGIC
     LOCAL isOk AS LOGIC
     isOk := SUPER:AddField(info)
     IF isOk  .AND. info:FieldType == DbFieldType.Memo
@@ -544,19 +544,19 @@ METHOD RecordMovement() AS LOGIC
 RETURN TRUE
 
     /// <inheritdoc />
-VIRTUAL METHOD GoBottom() AS LOGIC
+OVERRIDE METHOD GoBottom() AS LOGIC
     SELF:_SynchronizeVODeletedFlag()
     SELF:_CheckError(ACE.AdsGotoBottom(SELF:CurrentOrder),EG_READ)
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
-VIRTUAL METHOD GoTop() AS LOGIC
+OVERRIDE METHOD GoTop() AS LOGIC
     SELF:_SynchronizeVODeletedFlag()
     SELF:_CheckError(ACE.AdsGotoTop(SELF:CurrentOrder),EG_READ)
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
-VIRTUAL METHOD GoTo(lRec AS LONG) AS LOGIC
+OVERRIDE METHOD GoTo(lRec AS LONG) AS LOGIC
     SELF:_CheckError(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR recordnum),EG_READ)
     IF recordnum == lRec
         SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT VAR atEOF),EG_READ)
@@ -571,7 +571,7 @@ VIRTUAL METHOD GoTo(lRec AS LONG) AS LOGIC
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
-VIRTUAL METHOD GoToId(oRecnum AS OBJECT) AS LOGIC
+OVERRIDE METHOD GoToId(oRecnum AS OBJECT) AS LOGIC
     LOCAL recNum AS LONG
     TRY
         recNum := System.Convert.ToInt32(oRecnum)
@@ -582,7 +582,7 @@ VIRTUAL METHOD GoToId(oRecnum AS OBJECT) AS LOGIC
 RETURN SELF:GoTo(recNum)
 
     /// <inheritdoc />
-VIRTUAL METHOD Skip(lCount AS LONG) AS LOGIC
+OVERRIDE METHOD Skip(lCount AS LONG) AS LOGIC
     LOCAL result AS DWORD
     LOCAL flag AS LOGIC
     SELF:_SynchronizeVODeletedFlag()
@@ -606,12 +606,12 @@ VIRTUAL METHOD Skip(lCount AS LONG) AS LOGIC
 RETURN flag
 
     /// <inheritdoc />
-VIRTUAL METHOD SkipFilter(lCount AS LONG) AS LOGIC
+OVERRIDE METHOD SkipFilter(lCount AS LONG) AS LOGIC
     // ADS has no difference with normal skip
 RETURN SELF:Skip(lCount)
 
     /// <inheritdoc />
-VIRTUAL METHOD SkipRaw(lCount AS LONG) AS LOGIC
+OVERRIDE METHOD SkipRaw(lCount AS LONG) AS LOGIC
     // ADS has no difference with normal skip
 RETURN SELF:Skip(lCount)
 
@@ -655,21 +655,21 @@ INTERNAL METHOD _SetScope(hIndex AS System.IntPtr, usScopeOption AS WORD, lClear
   #region Updates
 
   /// <inheritdoc />
-VIRTUAL METHOD Flush() AS LOGIC
+OVERRIDE METHOD Flush() AS LOGIC
 RETURN SELF:GoCold()
 
   /// <inheritdoc />
-VIRTUAL METHOD Refresh() AS LOGIC
+OVERRIDE METHOD Refresh() AS LOGIC
     SELF:_CheckError(ACE.AdsRefreshRecord(SELF:_Table),EG_READ)
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
-VIRTUAL METHOD GoCold() AS LOGIC
+OVERRIDE METHOD GoCold() AS LOGIC
     SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table),EG_READ)
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
-VIRTUAL METHOD GoHot() AS LOGIC
+OVERRIDE METHOD GoHot() AS LOGIC
     LOCAL dwRecNo AS DWORD
     LOCAL result AS DWORD
     //
@@ -705,7 +705,7 @@ VIRTUAL METHOD GoHot() AS LOGIC
 RETURN TRUE
 
     /// <inheritdoc />
-VIRTUAL METHOD Zap() AS LOGIC
+OVERRIDE METHOD Zap() AS LOGIC
     SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT VAR options),EG_WRITE)
     // Only allowed when opened exclusively
     IF !_HasFlag(options, ACE.ADS_EXCLUSIVE)
@@ -720,7 +720,7 @@ RETURN SELF:GoTop()
 
 
     /// <inheritdoc />
-VIRTUAL METHOD Append(fReleaseLocks AS LOGIC) AS LOGIC
+OVERRIDE METHOD Append(fReleaseLocks AS LOGIC) AS LOGIC
     LOCAL result        AS DWORD
     IF fReleaseLocks
         SELF:_CheckError(ACE.AdsGetHandleType(SELF:_Table, OUT VAR handleType),EG_APPENDLOCK)
@@ -742,23 +742,23 @@ VIRTUAL METHOD Append(fReleaseLocks AS LOGIC) AS LOGIC
     ENDIF
 RETURN SELF:RecordMovement()
 
-VIRTUAL METHOD Delete() AS LOGIC
+OVERRIDE METHOD Delete() AS LOGIC
     SELF:_CheckError(ACE.AdsDeleteRecord(SELF:_Table),EG_WRITE)
 RETURN TRUE
 
-VIRTUAL METHOD Recall() AS LOGIC
+OVERRIDE METHOD Recall() AS LOGIC
     SELF:_CheckError(ACE.AdsRecallRecord(SELF:_Table),EG_WRITE)
 RETURN SELF:RecordMovement()
 
     #endregion
 
   #region Read and Write
-METHOD GetValue(nFldPos AS INT) AS OBJECT
+OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
     VAR column   := (AdsColumn ) SELF:_Fields[nFldPos-1]
     RETURN column:GetValue()
 
 
-METHOD Pack () AS LOGIC
+OVERRIDE METHOD Pack () AS LOGIC
     SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT VAR options),EG_READ)
     IF !_HasFlag(options, ACE.ADS_EXCLUSIVE)
         SELF:ADSERROR(ACE.AE_TABLE_NOT_EXCLUSIVE, EG_SHARED, "Pack")
@@ -771,7 +771,7 @@ METHOD Pack () AS LOGIC
     SELF:_CheckError(ACE.AdsPackTable(SELF:_Table),EG_WRITE)
 RETURN SELF:GoTop()
 
-METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
+OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
     IF ! SELF:GoHot()
         RETURN FALSE
     ENDIF
@@ -793,15 +793,15 @@ PRIVATE PROPERTY CurrentOrder AS System.IntPtr
 END PROPERTY
 
   /// <inheritdoc />
-PROPERTY Found AS LOGIC GET SUPER:_Found
+OVERRIDE PROPERTY Found AS LOGIC GET SUPER:_Found
 INTERNAL PROPERTY IsADT AS LOGIC GET _TableType == ACE.ADS_ADT
-VIRTUAL PROPERTY Driver AS STRING GET _Driver
+OVERRIDE PROPERTY Driver AS STRING GET _Driver
 
 
 
 
       /// <inheritdoc />
-PROPERTY Deleted AS LOGIC
+OVERRIDE PROPERTY Deleted AS LOGIC
     GET
         LOCAL result AS DWORD
         result := ACE.AdsIsRecordDeleted(SELF:_Table, OUT VAR isDeleted)
@@ -819,13 +819,13 @@ PROPERTY Deleted AS LOGIC
     END GET
 END PROPERTY
 
-PROPERTY RecCount AS LONG
+OVERRIDE PROPERTY RecCount AS LONG
     GET
         SELF:_CheckError(ACE.AdsGetRecordCount(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR dwCount),EG_READ)
         RETURN (LONG) dwCount
     END GET
 END PROPERTY
-PROPERTY RecNo AS LONG GET (LONG) SELF:_RecNo
+OVERRIDE PROPERTY RecNo AS LONG GET (LONG) SELF:_RecNo
 PROPERTY _RecNo AS DWORD
     GET
         LOCAL result AS DWORD
@@ -846,7 +846,7 @@ END PROPERTY
 
 
     /// <inheritdoc />
-VIRTUAL METHOD Lock(lockInfo REF DbLockInfo) AS LOGIC
+OVERRIDE METHOD Lock(lockInfo REF DbLockInfo) AS LOGIC
     LOCAL lRecno := 0 AS DWORD
     LOCAL result := 0 AS DWORD
       //
@@ -884,7 +884,7 @@ VIRTUAL METHOD Lock(lockInfo REF DbLockInfo) AS LOGIC
 RETURN TRUE
 
       /// <inheritdoc />
-VIRTUAL METHOD UnLock(recordID AS OBJECT) AS LOGIC
+OVERRIDE METHOD UnLock(recordID AS OBJECT) AS LOGIC
     LOCAL result AS DWORD
     LOCAL dwRecno := 0 AS DWORD
     TRY
@@ -908,7 +908,7 @@ RETURN TRUE
 
     #region Filters
     /// <inheritdoc />
-VIRTUAL METHOD ClearFilter() AS LOGIC
+OVERRIDE METHOD ClearFilter() AS LOGIC
     LOCAL result AS DWORD
     IF SELF:_Table != System.IntPtr.Zero
         // Clear normal filter
@@ -925,13 +925,13 @@ VIRTUAL METHOD ClearFilter() AS LOGIC
     SELF:_FilterInfo := DbFilterInfo{}
 RETURN TRUE
 
-METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
+OVERRIDE METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
     SELF:_HasMemo := FALSE
 RETURN SUPER:SetFieldExtent(fieldCount)
 
 
       /// <inheritdoc />
-VIRTUAL METHOD SetFilter(fi AS DbFilterInfo) AS LOGIC
+OVERRIDE METHOD SetFilter(fi AS DbFilterInfo) AS LOGIC
     LOCAL result AS DWORD
       // Get the current date format so we can handle literal dates in the filter
     SELF:_SynchronizeSettings()
@@ -960,7 +960,7 @@ RETURN TRUE
       #endregion
     #region Relations
     /// <inheritdoc />
-VIRTUAL METHOD ClearRel() AS LOGIC
+OVERRIDE METHOD ClearRel() AS LOGIC
     VAR lOk := SUPER:ClearRel()
     IF SELF:_Table != System.IntPtr.Zero
         SELF:_CheckError(ACE.AdsClearRelation(SELF:_Table))
@@ -968,7 +968,7 @@ VIRTUAL METHOD ClearRel() AS LOGIC
 RETURN lOk
 
       /// <inheritdoc />
-VIRTUAL METHOD SetRel(relinfo AS DbRelInfo) AS LOGIC
+OVERRIDE METHOD SetRel(relinfo AS DbRelInfo) AS LOGIC
       // Needs a better solution of course. SELF:_Driver currently returns the fullname of the class, while Driver property is not implemented yet
     IF relinfo:Child:Driver != SELF:Driver
         SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UNSUPPORTED, "SetRel", "Related workareas must be opened with the same driver.")
@@ -985,7 +985,7 @@ RETURN lOk
 
     #region Info
     /// <inheritdoc />
-VIRTUAL METHOD FieldInfo(uiPos AS LONG, uiOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+OVERRIDE METHOD FieldInfo(uiPos AS LONG, uiOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
     LOCAL result AS DWORD
     SWITCH uiOrdinal
     CASE DBS_BLOB_TYPE
@@ -1017,7 +1017,7 @@ VIRTUAL METHOD FieldInfo(uiPos AS LONG, uiOrdinal AS INT, oNewValue AS OBJECT) A
     END SWITCH
 RETURN SUPER:FieldInfo(uiPos, uiOrdinal, oNewValue)
 
-VIRTUAL METHOD RecInfo(uiOrdinal AS LONG, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
+OVERRIDE METHOD RecInfo(uiOrdinal AS LONG, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
     LOCAL dwRecno AS DWORD
       //
     SWITCH (DbRecordInfo) uiOrdinal
@@ -1050,7 +1050,7 @@ RETURN SUPER:RecInfo( uiOrdinal, iRecID, oNewValue)
 
 
       /// <inheritdoc />
-VIRTUAL METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+OVERRIDE METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
     LOCAL result AS DWORD
     SWITCH (DbInfo)uiOrdinal
     CASE DbInfo.DBI_ISDBF
@@ -1218,10 +1218,10 @@ VIRTUAL METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 RETURN SUPER:Info(uiOrdinal, oNewValue)
 
 /// <inheritdoc/>
-VIRTUAL METHOD Trans(info AS DbTransInfo) AS LOGIC
+OVERRIDE METHOD Trans(info AS DbTransInfo) AS LOGIC
 	RETURN SUPER:Trans(info)
 /// <inheritdoc/>
-VIRTUAL METHOD TransRec(info AS DbTransInfo) AS LOGIC
+OVERRIDE METHOD TransRec(info AS DbTransInfo) AS LOGIC
 	RETURN SUPER:TransRec(info)
 
 
@@ -1238,40 +1238,40 @@ INTERNAL METHOD Unsupported(strFunctionName AS STRING) AS LOGIC
 RETURN FALSE
 
       /// <summary>This method is not supported by the AdsRDD class </summary>
-VIRTUAL METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC
+OVERRIDE METHOD AppendLock(uiMode AS DbLockMode) AS LOGIC
 RETURN SELF:Unsupported("AppendLock")
 
       /// <summary>This method is not supported by the AdsRDD class </summary>
-VIRTUAL METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
+OVERRIDE METHOD BlobInfo(uiPos AS DWORD, uiOrdinal AS DWORD) AS OBJECT
     SELF:Unsupported("BlobInfo")
 RETURN NULL
 
       /// <summary>This method is not supported by the AdsRDD class </summary>
-VIRTUAL METHOD ForceRel() AS LOGIC
+OVERRIDE METHOD ForceRel() AS LOGIC
 RETURN SELF:Unsupported("ForceRel")
 
       /// <summary>This method is not supported by the AdsRDD class </summary>
-VIRTUAL METHOD GetRec() AS BYTE[]
+OVERRIDE METHOD GetRec() AS BYTE[]
     SELF:Unsupported("GetRec")
 RETURN NULL
 
       /// <summary>This method is not supported by the AdsRDD class </summary>
-VIRTUAL METHOD GetValueFile(nFldPos AS INT, cFileName AS STRING) AS LOGIC
+OVERRIDE METHOD GetValueFile(nFldPos AS INT, cFileName AS STRING) AS LOGIC
     SELF:Unsupported("GetValueFile")
 RETURN FALSE
       /// <summary>This method is not supported by the AdsRDD class </summary>
-VIRTUAL METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
+OVERRIDE METHOD HeaderLock(uiMode AS DbLockMode) AS LOGIC
 RETURN SELF:Unsupported("HeaderLock")
       /// <summary>This method is not supported by the AdsRDD class </summary>
-VIRTUAL METHOD PutRec(aRec AS BYTE[])			AS LOGIC
+OVERRIDE METHOD PutRec(aRec AS BYTE[])			AS LOGIC
 RETURN SELF:Unsupported("PutRec")
       /// <summary>This method is not supported by the AdsRDD class </summary>
-VIRTUAL METHOD PutValueFile(nFldPos AS INT, cFileName AS STRING) AS LOGIC
+OVERRIDE METHOD PutValueFile(nFldPos AS INT, cFileName AS STRING) AS LOGIC
     SELF:Unsupported("PutValueFile")
 RETURN FALSE
 
       /// <summary>This method is not supported by the AdsRDD class </summary>
-VIRTUAL METHOD Sort(info AS DbSortInfo) AS LOGIC
+OVERRIDE METHOD Sort(info AS DbSortInfo) AS LOGIC
 RETURN SELF:Unsupported("Sort")
 
       #endregion

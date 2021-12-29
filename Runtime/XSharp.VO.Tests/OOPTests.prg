@@ -647,7 +647,7 @@ CLASS TestClassParent
         NOP
 END CLASS
 CLASS TestClassChild INHERIT TestClassParent
-    VIRTUAL ACCESS Name AS STRING
+    OVERRIDE ACCESS Name AS STRING
         RETURN "TestClassChild"
 END CLASS
 

@@ -314,11 +314,10 @@ BEGIN NAMESPACE XSharp
             NEXT
             RETURN result:ToArray()
 
-        PROTECTED OVERRIDE METHOD DebuggerString() AS STRING
+        PROTECTED VIRTUAL METHOD  ElementsToString() AS STRING
             LOCAL sb AS StringBuilder
             LOCAL cnt, tot AS LONG
             sb := StringBuilder{}
-            sb:Append(SELF:ToString())
             sb:Append("{")
             tot := _internalList:Count
             cnt := 0
@@ -336,6 +335,12 @@ BEGIN NAMESPACE XSharp
                 ENDIF
             NEXT
             sb:Append("}")
+            RETURN sb:ToString()
+        PROTECTED OVERRIDE METHOD DebuggerString() AS STRING
+            LOCAL sb AS StringBuilder
+            sb := StringBuilder{}
+            sb:Append(SELF:ToString())
+            sb:Append(SELF:ElementsToString())
             RETURN sb:ToString()
 
 
@@ -422,7 +427,7 @@ BEGIN NAMESPACE XSharp
             IF start > 0 .and. sourceLen > 0
                 IF start < sourceLen
                     FOR x := start UPTO sourceLen
-                        IF offSet > targetLen 
+                        IF offSet > targetLen
                             EXIT
                         ENDIF
                         aTarget:_internalList[offSet-1] := aSource:_internalList[ x -1]

@@ -10,13 +10,19 @@ GLOBAL ShowErrorDialog_Handler AS ShowErrorDialog_Delegate
 PROCEDURE ErrorSys _INIT1
    ErrorBlock( {|oError| DefError(oError)} )
    SetErrorLog( TRUE )
-   SetErrorLogFile( "VOERROR.LOG" )
+   SWITCH RuntimeState.Dialect
+   CASE XSharpDialect.VO
+   CASE XSharpDialect.Vulcan
+        SetErrorLogFile( "VOERROR.LOG" )
+   OTHERWISE
+        SetErrorLogFile( "ERROR.LOG" )
+   END SWITCH
    RETURN
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/break/*" />
 FUNCTION _Break(uValue AS USUAL) AS USUAL
-	BREAK uValue
+	THROW XSharp.Internal.WrappedException{uValue}
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorblock/*" />
@@ -257,3 +263,58 @@ INTERNAL DEFINE IDCLOSE         := 8
 INTERNAL DEFINE IDHELP          :=9
 INTERNAL DEFINE IDTRYAGAIN      := 10
 INTERNAL DEFINE IDCONTINUE      := 11
+
+
+
+
+/// <summary>
+/// This function is automatically inserted by the compiler in a compiler generated
+/// RECOVER USING block when you have a BEGIN SEQUENCE .. END SEQUENCE in your code
+/// without RECOVER USING clause
+/// </summary>
+/// <param name="u">The parameter that was passed in the BREAK statement or the call to the _Break function</param>
+/// <remarks>If a REAL exception occurs then this function is NOT called. The function is only called when
+/// the (generated) RECOVER USING block is called with a value from a BREAK statement. <br />
+/// The default implementation of this function (in the XSharp.RT assembly) does nothing.
+/// You can override this function in your own code if you want.
+/// The function should then have the following prototype
+/// <code language="X#">
+/// FUNCTION _SequenceRecover(u as USUAL) AS VOID
+/// </code>
+/// </remarks>
+/// <seelso cref='O:XSharp.RT.Functions._Break'>Break Function</seealso>
+FUNCTION _SequenceRecover(u as USUAL) AS VOID
+    RETURN
+
+
+/// <summary>
+/// This function is automatically inserted by the compiler in a RECOVER USING block and gets called when the
+/// RECOVER USING block is reached because of an exception.
+/// </summary>
+/// <param name="e">The exception that triggered the jump into the RECOVER USING block</param>
+/// <remarks>
+/// The default implementation of this function (in the XSharp.RT assembly) called the installed error handler
+/// that is installed with ErrorBlock()
+/// The function should then have the following prototype
+/// <code language="X#">
+/// FUNCTION _SequenceError(e as Exception) AS VOID
+/// </code>
+/// The default error handler installed in ErrorBlock(). This will show an error message and write the error to a LOG file.
+/// </remarks>
+/// <returns>The result of the call to the error handler installed in the ErrorBlock</returns>
+/// <seelso cref='O:XSharp.RT.Functions._Break'>Break Function</seealso>
+/// <seelso cref='O:XSharp.RT.Functions.ErrorBlock'>Break Function</seealso>
+FUNCTION _SequenceError(e as Exception) AS USUAL
+    LOCAL error as XSharp.Error
+    IF e IS XSharp.Error VAR err
+        error := err
+    ELSE
+        error := Error{e}
+    ENDIF
+    RETURN Eval(ErrorBlock(), error)
+
+
+
+
+
+

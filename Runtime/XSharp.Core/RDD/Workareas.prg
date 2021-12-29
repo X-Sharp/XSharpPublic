@@ -104,7 +104,9 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE iCurrentWorkarea    AS DWORD
         PRIVATE WorkareaStack       AS Stack<DWORD>
+#ifdef AUTOCLOSETIMER
         PRIVATE Thread              AS System.Threading.Thread
+#endif
         // xbase++ has a cargo slot per Workarea
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE cargo    := Dictionary<DWORD, OBJECT>{} AS Dictionary<DWORD, OBJECT>      // 1 based area number and value
@@ -127,7 +129,9 @@ ABSTRACT CLASS XSharp.RDD.Workareas
         RDDs				:= Dictionary<DWORD, IRdd>{}
         iCurrentWorkarea	:= 1
         WorkareaStack       := Stack<DWORD>{}
+#ifdef AUTOCLOSETIMER
         Thread              := System.Threading.Thread.CurrentThread
+#endif
 
     ///<summary>Close All RDDs referenced by this Workarea list</summary>
     /// <returns>TRUE when all areas were closed succesfully. When one or more areas failed to close then FALSE is returned.</returns>

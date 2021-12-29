@@ -319,12 +319,24 @@ BEGIN NAMESPACE XSharpModel
                 RETURN SELF:GetFullName()
             END GET
         END PROPERTY
+        PROPERTY FullTickedName  AS STRING
+            GET
+                IF SELF:IsGeneric
+                    IF String.IsNullOrEmpty(SELF:Namespace)
+                        RETURN SELF:TickedName
+                    ENDIF
+                    RETURN SELF:Namespace + "." + SELF:TickedName
+                ENDIF
+                RETURN SELF:FullName
+            END GET
+        END PROPERTY
+
         PROPERTY Description AS STRING GET SELF:GetDescription()
         PROPERTY IsFunctionsClass as LOGIC GET SELF:Assembly != NULL .and. SELF:FullName == SELF:Assembly:GlobalClassName
         PROPERTY IsNested  AS LOGIC GET SELF:Parent IS XPETypeSymbol
-        PROPERTY IsGeneric as LOGIC GET _typeDef:HasGenericParameters
+        PROPERTY IsGeneric AS LOGIC GET _typeDef:HasGenericParameters
         PROPERTY IsStatic  AS LOGIC GET _typeDef:Attributes:HasFlag(TypeAttributes.Abstract |TypeAttributes.Sealed)
-        PROPERTY Location AS STRING GET SELF:Assembly:DisplayName
+        PROPERTY Location  AS STRING GET SELF:Assembly:DisplayName
 
         PROPERTY Children   AS IList<IXTypeSymbol>
             GET

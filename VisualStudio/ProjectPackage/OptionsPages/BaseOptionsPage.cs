@@ -1,10 +1,12 @@
 ﻿using Microsoft.VisualStudio.Shell;
+using System.Runtime.InteropServices;
 
 namespace XSharp.Project.Options
 {
     /// <summary>
     /// A base class for a DialogPage to show in Tools -> Options.
     /// </summary>
+    [ComVisible(true)]
     internal class BaseOptionPage<T> : DialogPage where T : BaseOptionModel<T>, new()
     {
         private BaseOptionModel<T> _model;

@@ -8,6 +8,7 @@ namespace XSharp.LanguageService.OptionsPages
 
     [SharedSettings("TextEditor.XSharp",false)]
     [Guid(XSharpConstants.IndentingOptionsPageGuidString)]
+    [ComVisible(true)]
     public class IndentingOptionsPage : XSDialogPage<IndentingOptionsControl>
     {
         public bool IndentEntityContent { get; set; }

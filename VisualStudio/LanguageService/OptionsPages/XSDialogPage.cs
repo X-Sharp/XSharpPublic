@@ -1,10 +1,12 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 #pragma warning disable VSTHRD012 
 namespace XSharp.LanguageService.OptionsPages
 {
+    [ComVisible(true)]
     public class XSDialogPage<T> : DialogPage where T: XSUserControl, new()
     {
         internal XSDialogPage() : base()

@@ -40,7 +40,10 @@ namespace XSharp.LanguageService.Formatting
                 if ((short) code == (short) value)
                     return;
             }
-            Community.VisualStudio.Toolkit.VS.MessageBox.Show($"Code {code} is not in XKeyword Enum");
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                 Community.VisualStudio.Toolkit.VS.MessageBox.Show($"Code {code} is not in XKeyword Enum");
+            }
 
         }
         internal bool isEmpty => _code == 0;

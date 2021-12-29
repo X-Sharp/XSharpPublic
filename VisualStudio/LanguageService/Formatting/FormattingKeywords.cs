@@ -97,7 +97,21 @@ namespace XSharp.LanguageService.Formatting
         With = XSharpLexer.WITH,
         Local = XSharpLexer.LOCAL, // for LOCAL PROCEDURE
 
+
+        Return = XSharpLexer.RETURN,
+        Self = XSharpLexer.SELF,
+        Throw = XSharpLexer.THROW,
+        UDC = XSharpLexer.UDC_KEYWORD,
+        PP_undef = XSharpLexer.PP_UNDEF,
+        PP_translate = XSharpLexer.PP_TRANSLATE,
+        PP_command = XSharpLexer.PP_COMMAND,
+        PP_pragma = XSharpLexer.PRAGMA,
+        Var = XSharpLexer.VAR,
+        Nop = XSharpLexer.NOP,
+        Decimal = XSharpLexer.DECIMAL,
         
+
+
         Eof = XSharpLexer.Eof,
         Eos = XSharpLexer.EOS,
         Id = XSharpLexer.ID,

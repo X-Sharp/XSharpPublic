@@ -3052,7 +3052,7 @@ BEGIN NAMESPACE XSharp
         #region IIndexer
 		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
 		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-		/// <returns>The element stored at the indicated location in the collection.</returns>
+		/// <returns>The element stored at the indicated location in the array.</returns>
         /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
         PROPERTY SELF[index AS INT[]] AS USUAL
             [NODEBUG];
@@ -3095,6 +3095,11 @@ BEGIN NAMESPACE XSharp
             END SET
         END PROPERTY
 
+        /// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
+        /// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+        /// <param name="index2"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+		/// <returns>The element stored at the indicated location in the array.</returns>
+        /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
         PROPERTY SELF[index1 AS INT, index2 AS INT] AS USUAL
             [NODEBUG];
             GET
@@ -3114,7 +3119,7 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
 
         #endregion
-
+        /// <exclude />
         [NODEBUG];
         METHOD XppUsualIndex(index AS INT) AS USUAL
             IF RuntimeState.Dialect  == XSharpDialect.XPP
@@ -3134,10 +3139,6 @@ BEGIN NAMESPACE XSharp
             THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
 
         #region IIndexedProperties
-		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
-		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
-		/// <returns>The element stored at the indicated location in the collection.</returns>
-        /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
 
         [HIDDEN];
         INTERNAL PROPERTY IsIndexed AS LOGIC
@@ -3153,6 +3154,10 @@ BEGIN NAMESPACE XSharp
             END GET
         END PROPERTY
 
+		/// <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*" />
+		/// <param name="index"><include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*" /></param>
+		/// <returns>The element stored at the indicated location in the collection.</returns>
+        /// <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
         PROPERTY SELF[index AS INT ] AS USUAL
             [NODEBUG];
             GET

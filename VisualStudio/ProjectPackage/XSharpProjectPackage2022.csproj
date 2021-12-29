@@ -428,7 +428,7 @@
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.xsproj" />
-    <VSIXSourceItem Include="XSharpDebugger.vsdconfig">
+    <VSIXSourceItem Include="$(Outdir)XSharpDebugger.vsdconfig">
       <Link>XSharpDebugger.vsdconfig</Link>
     </VSIXSourceItem>
     <None Include="Snippets\Snippets\case.snippet" />

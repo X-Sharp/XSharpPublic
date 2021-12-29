@@ -188,6 +188,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="$(Outdir)XSharpProject.pkgdef " />
     <Content Include="Editors\Todo.txt" />
     <Content Include="Snippets\SnippetsIndex.xml" />
     <Content Include="source.extension.2019.vsixmanifest" />
@@ -430,7 +431,7 @@
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\Program.prg" />
     <ZipProject Include="Templates\Projects\Windows\ConsoleVulcan\VulcanConsole.xsproj" />
-    <VSIXSourceItem Include="XSharpDebugger.vsdconfig">
+    <VSIXSourceItem Include="$(Outdir)XSharpDebugger.vsdconfig">
       <Link>XSharpDebugger.vsdconfig</Link>
     </VSIXSourceItem>
     <None Include="Snippets\Snippets\case.snippet" />

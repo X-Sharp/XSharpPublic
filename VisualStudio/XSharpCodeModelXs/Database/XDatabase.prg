@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharpModel
 	STATIC PRIVATE currentFile AS STRING
     STATIC PROPERTY FileName as STRING GET currentFile
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
-	PRIVATE CONST CurrentDbVersion := 1.0 AS System.Double
+	PRIVATE CONST CurrentDbVersion := 1.1 AS System.Double
 
 		STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
 			LOCAL lValid := FALSE AS LOGIC

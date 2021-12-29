@@ -227,13 +227,6 @@
        ;    (<(a)>) -> (DbSetFilter( <{x}>, <(x)> ))                      ;
        ; END
 
-
-
-
-
-
-
-
 ** Commands without IN/ALIAS clause
 
 #command SCAN              ;

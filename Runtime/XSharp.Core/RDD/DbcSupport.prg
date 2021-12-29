@@ -156,6 +156,7 @@ BEGIN NAMESPACE XSharp.RDD
             NEXT
             RETURN NULL_OBJECT
 
+        [DebuggerStepThroughAttribute];
         INTERNAL STATIC METHOD DoForDatabase<T>(action AS @@Func<T>) AS T
             LOCAL old as DataSession
             old := RuntimeState.Workareas

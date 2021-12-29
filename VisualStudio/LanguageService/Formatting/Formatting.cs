@@ -30,7 +30,7 @@ namespace XSharp.LanguageService
 
         private static void GetKeywords()
         {
-                _memberKeywords = FormattingRule.MemberKeywords();
+            _memberKeywords = FormattingRule.MemberKeywords();
             _middleKeywords = FormattingRule.MiddleKeywords();
             _specialKeywords = FormattingRule.SpecialMiddleKeywords();
             _endKeywords = FormattingRule.EndKeywords();
@@ -728,8 +728,12 @@ namespace XSharp.LanguageService
                 }
                 if (!IsIgnored(openKeyword.Type))
                 {
-                    var xToken = new XToken(openKeyword.Type);
-                    FormattingRule rule = FormattingRule.GetStartRule(xToken);
+                    FormattingRule rule = default;
+                    if (XSharpLexer.IsKeyword(openKeyword.Type))
+                    {
+                        var xToken = new XToken(openKeyword.Type);
+                        rule = FormattingRule.GetStartRule(xToken);
+                    }
                     if (IsTypeStart(openKeyword.Type))
                     {
                         // Open Entity
@@ -1801,7 +1805,7 @@ namespace XSharp.LanguageService
                     lineNumber--;
                     ITextSnapshotLine line = currentLine.Snapshot.GetLineFromLineNumber(lineNumber);
                     var tokens = GetTokensInLine(line);
-                    XToken currentKeyword;
+                    XToken currentKeyword = default;
                     //
                     if (tokens.Count > 0)
                     {
@@ -1818,7 +1822,10 @@ namespace XSharp.LanguageService
                             token = tokens[index];
                         }
                         //
-                        currentKeyword = new XToken(token.Type);
+                        if (XSharpLexer.IsKeyword(token.Type))
+                        {
+                            currentKeyword = new XToken(token.Type);
+                        }
                         if (index < tokens.Count - 2)
                         {
                             var token2 = tokens[index + 2];
@@ -1853,13 +1860,6 @@ namespace XSharp.LanguageService
                                 tokenList = context.Pop();
                             }
                         }
-                        // Here we should also check for nested construct or we might get false positive...
-                        //List<XToken> outdentTokens;
-                        //if ((outdentTokens = searchSpecialOutdentKeyword(currentKeyword)) != null)
-                        //{
-                        //    context.Push(tokenList);
-                        //    tokenList = outdentTokens;
-                        //}
                         indentValue = 0;
                     }
                 }

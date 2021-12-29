@@ -16,8 +16,6 @@ namespace XSharp.LanguageService
         private const string KEYWORDCASE = "keyword_case";
         private const string IDENTIFIERCASE = "identifier_case";
         private const string UDCCASE = "udc_case";
-        private const string ALIGNDOCASE = "align_do_case";
-        private const string ALIGNMETHOD = "align_method";
         private const string TRUE = "true";
         private const string UPPER = "upper";
         private const string LOWER = "lower";
@@ -79,16 +77,6 @@ namespace XSharp.LanguageService
                 {
                     var temp = configuration.Properties[UDCCASE].ToLower();
                     settings.UDCKeywordCase = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(ALIGNDOCASE))
-                {
-                    var temp = configuration.Properties[ALIGNDOCASE].ToLower();
-                    settings.IdentifierCase = temp == TRUE;
-                }
-                if (configuration.Properties.ContainsKey(ALIGNMETHOD))
-                {
-                    var temp = configuration.Properties[ALIGNMETHOD].ToLower();
-                    settings.IdentifierCase = temp == TRUE;
                 }
             }
             if (buffer.Properties.ContainsProperty(typeof(SourceCodeEditorSettings)))

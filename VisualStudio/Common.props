@@ -18,8 +18,9 @@
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
-    <IntermediateOutputPath>$(SolutionDir)Binaries\$(VSTarget)\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <OutputPath>$(SolutionDir)Binaries\$(VSTarget)\$(Configuration)\</OutputPath>
+    <BinariesDir>$(SolutionDir)Binaries\$(VSTarget)\</BinariesDir>
+    <IntermediateOutputPath>$(BinariesDir)obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <OutputPath>$(BinariesDir)$(Configuration)\</OutputPath>
     <GenerateFullPaths>true</GenerateFullPaths>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Nologo>true</Nologo>
@@ -31,8 +32,5 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile />
-
   </PropertyGroup>
-
-
 </Project>

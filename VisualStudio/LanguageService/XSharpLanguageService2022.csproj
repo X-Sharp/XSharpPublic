@@ -63,6 +63,9 @@
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
+    <Compile Include="Formatting\FormattingKeywords.cs" />
+    <Compile Include="Formatting\FormattingRule.cs" />
+    <Compile Include="Formatting\XToken.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
     <Compile Include="KeywordColoring\LineState.cs" />
     <Compile Include="LightBulb\PropertyAction.cs" />

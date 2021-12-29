@@ -382,7 +382,7 @@ namespace XSharp.LanguageService
             if (triggerchar == '(' && ssp.Position < ssp.Snapshot.Length && ssp.GetChar() == ')')
                 ssp -= 1;
             var location = _textView.FindLocation(ssp);
-            if (location == null)
+            if (location == null || location.Member == null)
                 return false;
             if (location.Member.Range.StartLine == location.LineNumber)
                 return false;

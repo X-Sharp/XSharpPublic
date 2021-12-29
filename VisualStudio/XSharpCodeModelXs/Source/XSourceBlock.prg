@@ -12,7 +12,7 @@ USING LanguageService.SyntaxTree
 USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 BEGIN NAMESPACE XSharpModel
-   
+
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
     CLASS XSourceBlock
         PROPERTY Token1   AS IToken AUTO GET PRIVATE SET
@@ -23,12 +23,12 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY Type2    AS INT    GET Token2:Type
         PROPERTY Last     AS XSourceBlock GET IIF(Closed, SELF:Children:Last(), SELF)
         PROPERTY Closed   AS LOGIC  GET Children:Count > 0
-        
+
         CONSTRUCTOR(token1 AS IToken,token2 AS IToken)
             SELF:Token1   := token1
             SELF:Token2   := token2
             SELF:Children := List<XSourceBlock>{}
-            
+
         PROPERTY Valid    AS LOGIC
             GET
                 IF SELF:Closed
@@ -37,10 +37,10 @@ BEGIN NAMESPACE XSharpModel
                     CASE XSharpLexer.FOR
                     CASE XSharpLexer.FOREACH
                         RETURN last:Type == XSharpLexer.NEXT .OR. (last:Type == XSharpLexer.END .AND. last:Type2 == XSharpLexer.FOR)
-                    
+
                     CASE XSharpLexer.IF
                         RETURN last:Type == XSharpLexer.ENDIF .OR. last:Type == XSharpLexer.END
-                    
+
                     CASE XSharpLexer.DO
                         SWITCH SELF:Token2:Type
                             CASE XSharpLexer.WHILE
@@ -80,12 +80,12 @@ BEGIN NAMESPACE XSharpModel
                 FOREACH VAR child IN SELF:Children
                     res += " "+child:Text
                 NEXT
-                res += " ("+Token1:Line:ToString() 
+                res += " ("+Token1:Line:ToString()
                 res += "-"+Last:Token1:Line:ToString()+")"
             ELSE
                 res += " ("+Token1:Line:ToString() +")"
             ENDIF
             RETURN res
-                
+
     END CLASS
 END NAMESPACE

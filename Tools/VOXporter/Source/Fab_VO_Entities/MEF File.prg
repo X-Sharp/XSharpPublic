@@ -138,7 +138,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    SELF:Close()
     RETURN
 
-    METHOD Close() AS VOID
+    OVERRIDE METHOD Close() AS VOID
 	    //
 	    IF SELF:lFile
 	        SELF:oMS:Close()
@@ -164,7 +164,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
     RETURN cTime*/
 
 
-    METHOD EntityFind( cEntity AS STRING, nType AS DWORD ) AS OBJECT
+    OVERRIDE METHOD EntityFind( cEntity AS STRING, nType AS DWORD ) AS OBJECT
 	    LOCAL nCpt		AS	DWORD
 	    LOCAL oEnt		AS	FabMEFEntity
 	    LOCAL lFound	AS	LOGIC
@@ -192,11 +192,11 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
     	NEXT
     RETURN oList
 
-    VIRTUAL ACCESS	EntityList AS xARRAY
+    OVERRIDE ACCESS	EntityList AS xARRAY
     RETURN SELF:aEnt
 
 
-    METHOD ExportModule( cFileName AS STRING ) AS LOGIC
+    OVERRIDE METHOD ExportModule( cFileName AS STRING ) AS LOGIC
     /*
 	    LOCAL	dw			AS DWORD
 	    LOCAL	RecHeader	IS AefRecHeader
@@ -248,11 +248,11 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
     RETURN FALSE
 
 
-    ACCESS ExternalFile AS STRING
+    OVERRIDE ACCESS ExternalFile AS STRING
     RETURN SELF:cExtName
 
 
-    ACCESS	ExternalSource AS STRING
+    OVERRIDE ACCESS	ExternalSource AS STRING
 	    LOCAL cData	AS	STRING
 	    LOCAL data  AS  BYTE[]
 	    LOCAL ToASCII AS Encoding
@@ -270,7 +270,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
     RETURN cData
 
 
-    ACCESS FullPath AS STRING
+    OVERRIDE ACCESS FullPath AS STRING
     RETURN SELF:cFilePath
 
 
@@ -371,15 +371,15 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    ENDIF*/
     RETURN
 
-    ACCESS IsExternal AS LOGIC
+    OVERRIDE ACCESS IsExternal AS LOGIC
     RETURN !Empty( SELF:ExternalFile )
 
 
-    ACCESS	IsMef AS LOGIC
+    OVERRIDE ACCESS	IsMef AS LOGIC
     RETURN	SELF:lIsMef
 
 
-    ACCESS	IsPrg AS LOGIC
+    OVERRIDE ACCESS	IsPrg AS LOGIC
     RETURN	FALSE
 
 
@@ -398,7 +398,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
     RETURN cTime*/
 
 
-    PROTECT METHOD Scan() AS VOID
+    OVERRIDE PROTECT METHOD Scan() AS VOID
 	    LOCAL lFirst	AS	LOGIC
 	    LOCAL oInfoTemp AS  FabEntInfo
 	    LOCAL PosData   AS LONG
@@ -551,7 +551,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 	    SELF:lSuccess := ( SELF:iEnt == ALen( SELF:aEnt ) )
     RETURN
 
-    PUBLIC METHOD	SortByName( ) AS VOID
+    OVERRIDE PUBLIC METHOD	SortByName( ) AS VOID
         LOCAL lOk   AS LOGIC
         LOCAL nCpt  AS LONG
         LOCAL nMax  AS LONG
@@ -579,7 +579,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
         //
         RETURN
 
-    ACCESS Success AS LOGIC
+    OVERRIDE ACCESS Success AS LOGIC
     RETURN SELF:lSuccess
 
     PROTECT METHOD FillRecHeader() AS VOID

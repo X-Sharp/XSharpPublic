@@ -430,10 +430,10 @@ namespace Microsoft.VisualStudio.Project
         }
 
         // no loggers
-        public static bool BuildInstance(ProjectNode projectNode, ProjectInstance instance, string target)
+        public static bool BuildInstance(ProjectNode projectNode, ProjectInstance instance, string target, out BuildSubmission submission)
 		{
             ThreadHelper.ThrowIfNotOnUIThread();
-            BuildSubmission submission = projectNode.DoMSBuildSubmission(BuildKind.Sync, target, ref instance, null);
+            submission = projectNode.DoMSBuildSubmission(BuildKind.Sync, target, ref instance, null);
             if (submission == null)
                 return false;
 			return (submission.BuildResult.OverallResult == BuildResultCode.Success);
@@ -458,7 +458,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             var instance = this.ProjectMgr.ProjectInstance;
-			bool buildResultIsOk = BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences);
+			bool buildResultIsOk = BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences, out var submission);
 			if (!buildResultIsOk)
 			{
 				return;
@@ -492,7 +492,7 @@ namespace Microsoft.VisualStudio.Project
             // RvdH Only call ResolveAsemblyReferences when we cannot find any items
             if (group == null || group.Length == 0)
             {
-                BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences);
+                BuildInstance(this.ProjectMgr, instance, MsBuildTarget.ResolveAssemblyReferences, out var submission);
                 group = MSBuildProjectInstance.GetItems(instance, ProjectFileConstants.ReferencePath).ToArray();
 
             }

@@ -105,6 +105,10 @@ BEGIN NAMESPACE XSharpModel
                     typename     := left+"`1"
                 endif
             endif
+            // In case of a nested type, replace the forward slash with a dot
+            if typename:Contains("/")
+                typename := typename.Replace("/",".")
+            endif
             RETURN typename
 
 

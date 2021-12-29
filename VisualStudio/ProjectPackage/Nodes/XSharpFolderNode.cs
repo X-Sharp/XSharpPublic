@@ -89,7 +89,7 @@ namespace XSharp.Project
                     case VsCommands.Cut:
                     case VsCommands.PropSheetOrProperties:
                     case VsCommands.Rename:
-                        result = QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
+                        result = QueryStatusResult.SUPPORTED | QueryStatusResult.INVISIBLE;
                         return VSConstants.S_OK;
                     case VsCommands.Open:
                         result = QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED ;
@@ -98,13 +98,13 @@ namespace XSharp.Project
             }
             if (cmdGroup == VsMenus.guidStandardCommandSet2K)
             {
-                //switch ((VsCommands2K)cmd)
-                //{
-                //    case VsCommands2K.EXCLUDEFROMPROJECT:
-                        result = QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE ;
+                switch ((VsCommands2K)cmd)
+                {
+                    case VsCommands2K.EXCLUDEFROMPROJECT:
+                        result = QueryStatusResult.SUPPORTED | QueryStatusResult.INVISIBLE ;
                         return VSConstants.S_OK;
 
-                //}
+                }
             }
             return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
         }

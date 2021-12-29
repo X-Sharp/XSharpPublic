@@ -50,10 +50,6 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EditorCompletionAutoPairs          AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorCommitChars                  AS STRING AUTO
 
-        PUBLIC STATIC PROPERTY EditorFormatAlignDoCase            AS LOGIC AUTO
-        PUBLIC STATIC PROPERTY EditorFormatAlignMethod            AS LOGIC AUTO
-        //PUBLIC STATIC PROPERTY EditorFormatAlignDoCase            AS LOGIC AUTO
-
         PUBLIC STATIC PROPERTY EditorNavigationIncludeFields        AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorNavigationSorted               AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EditorNavigationMembersOfCurrentTypeOnly AS LOGIC AUTO
@@ -74,6 +70,12 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY CodeGeneratorShowXmlComments     AS LOGIC AUTO
         PUBLIC STATIC PROPERTY CodeGeneratorPublicStyle         AS PublicStyle AUTO
         PUBLIC STATIC PROPERTY CodeGeneratorPrivateStyle        AS PrivateStyle AUTO
+
+        PUBLIC STATIC PROPERTY IndentEntityContent               AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentBlockContent                AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentCaseContent                 AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentCaseLabel                   AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY IndentMultiLines                  AS LOGIC AUTO
 
 //        PUBLIC STATIC PROPERTY CompleteLocals                   AS LOGIC AUTO := TRUE
 //        PUBLIC STATIC PROPERTY CompleteSelf                     AS LOGIC AUTO := TRUE

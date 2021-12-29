@@ -64,12 +64,12 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region Events
-        internal event EventHandler<HierarchyNodeEventArgs> OnChildAdded
+        public event EventHandler<HierarchyNodeEventArgs> OnChildAdded
         {
             add { onChildAdded += value; }
             remove { onChildAdded -= value; }
         }
-        internal event EventHandler<HierarchyNodeEventArgs> OnChildRemoved
+        public event EventHandler<HierarchyNodeEventArgs> OnChildRemoved
         {
             add { onChildRemoved += value; }
             remove { onChildRemoved -= value; }

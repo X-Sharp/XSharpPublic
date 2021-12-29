@@ -8,6 +8,7 @@ namespace XSharp.LanguageService.OptionsPages
 
     [Guid(XSharpConstants.OtherOptionsPageGuidString)]
     [SharedSettings("TextEditor.XSharp",false)]
+    [ComVisible(true)]
     class OtherOptionsPage : XSDialogPage<OtherOptionsControl>
     {
         [DefaultValue(true)]

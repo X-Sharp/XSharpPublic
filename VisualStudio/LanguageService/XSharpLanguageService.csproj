@@ -1,15 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="..\Common.props" />
+  <Import Project="..\Common2019.props" />
   <PropertyGroup>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-	<CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
     <UseCodebase>true</UseCodebase>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <ProjectGuid>{FFA0338A-27ED-42BA-B801-EC5AD32A7395}</ProjectGuid>
@@ -17,36 +13,32 @@
     <RootNamespace>XSharp.LanguageService</RootNamespace>
     <AssemblyName>XSharpLanguageService</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkMoniker>.NETFramework,Version=v4.7.2</TargetFrameworkMoniker>
     <RuntimeIdentifier>win</RuntimeIdentifier>
-    <GeneratePkgDefFile>false</GeneratePkgDefFile>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
     <Ngen>false</Ngen>
     <TargetFrameworkProfile />
-	<CVST_NewtonsoftJsonMaxVersion>9.0.1</CVST_NewtonsoftJsonMaxVersion>
-
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;NOASYNCCOMPLETION</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <DefineConstants>DEBUG;NOASYNCCOMPLETION;XSHARP</DefineConstants>
     <CreateVsixContainer>False</CreateVsixContainer>
     <DeployExtension>False</DeployExtension>
-    <NoWarn>618;4014</NoWarn>
+    <NoWarn>618;4014;NU1603</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
+    <DefineConstants>NOASYNCCOMPLETION;XSHARP;DEV17</DefineConstants>
     <Optimize>true</Optimize>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <DeployExtension>False</DeployExtension>
     <CreateVsixContainer>False</CreateVsixContainer>
-    <NoWarn>618;4014;VSTHRD001;VSTHRD010;VSTHRD105;VSTHRD110</NoWarn>
+    <NoWarn>618;4014;NU1603</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
@@ -67,12 +59,17 @@
     <Compile Include="Completion\XSharpCompletionSourceProvider.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSource.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSourceProvider.cs" />
+    <Compile Include="Formatting\FormattingRule.cs" />
+    <Compile Include="Formatting\XToken.cs" />
+    <Compile Include="Formatting\FormattingKeywords.cs" />
     <Compile Include="Formatting\EditorConfigSettings.cs" />
     <Compile Include="Completion\XCompletionList.cs" />
     <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
     <Compile Include="KeywordColoring\LineState.cs" />
+    <Compile Include="LightBulb\PropertyAction.cs" />
+    <Compile Include="LightBulb\PropertyProvider.cs" />
     <Compile Include="LineSeparators\GraphicsResult.cs" />
     <Compile Include="LineSeparators\GraphicsTag.cs" />
     <Compile Include="LineSeparators\LineSeparatorManager.cs" />
@@ -111,11 +108,20 @@
     <Compile Include="LightBulb\CreateStubProvider.cs" />
     <Compile Include="LightBulb\ImplementInterfaceAction.cs" />
     <Compile Include="LightBulb\ImplementInterfaceProvider.cs" />
+    <Compile Include="OptionsPages\IndentingOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\IndentingOptionsControl.Designer.cs">
+      <DependentUpon>IndentingOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="OptionsPages\FormattingOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="OptionsPages\FormattingOptionsControl.Designer.cs">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionsPages\IndentingOptionsPage.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="OptionsPages\OtherOptionsControl.cs">
       <SubType>UserControl</SubType>
@@ -169,35 +175,27 @@
     <Compile Include="Tokenizer\XSharpTokens.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="XSharp.Vsparser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\Debug\XSharp.Vsparser.dll</HintPath>
     </Reference>
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mono.Cecil\XSharpMonoCecil.csproj">
       <Project>{c9e9f119-d5a7-493b-88c9-4b5dd5ad653f}</Project>
       <Name>XSharpMonoCecil</Name>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
+    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModel.xsproj">
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
-      <Name>XSharpModelXs</Name>
+      <Name>XSharpModel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.327</Version>
+      <Version>15.0.362</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>
@@ -205,17 +203,20 @@
     <PackageReference Include="Microsoft.VisualStudio.Language">
       <Version>15.8.525</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>15.0.1</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf">
       <Version>15.8.525</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.12.0">
       <Version>12.0.30112</Version>
     </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="OptionsPages\IndentingOptionsControl.resx">
+      <DependentUpon>IndentingOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="OptionsPages\FormattingOptionsControl.resx">
       <DependentUpon>FormattingOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -239,7 +240,7 @@
     <Content Include="Lookup\Notes.txt" />
     <Content Include="Parameter Info\Notes.txt" />
     <Content Include="QuickInfo\Notes.txt" />
-    <Content Include="XSharpLanguageService.pkgdef" />
+    <Content Include="$(Outdir)XSharpLanguageService.pkgdef" />
   </ItemGroup>
   <ItemGroup>
     <None Include="generatepkgdef.cmd" />

@@ -161,13 +161,18 @@ namespace XSharp.LanguageService
 
         }
 
-        public static XSourceMemberSymbol FindMember(int nLine, XFile file)
+        public static XSourceEntity FindEntity(int nLine, XFile file)
         {
             if (file == null || file.EntityList == null)
             {
                 return null;
             }
-            var member = file.FindMemberAtRow(nLine);
+            return file.FindMemberAtRow(nLine);
+
+        }
+        public static XSourceMemberSymbol FindMember(int nLine, XFile file)
+        {
+            var member = FindEntity(nLine, file);
             if (member is XSourceMemberSymbol)
             {
                 return member as XSourceMemberSymbol;
@@ -390,10 +395,53 @@ namespace XSharp.LanguageService
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.OutParam);
             return null;
         }
+        private static IList<XSharpToken> deleteNestedTokens(IList<XSharpToken> tokens)
+        {
+            IList<XSharpToken> result = new List<XSharpToken>();
+            if (tokens == null)
+                return result;
+            int level = 0;
+            bool hasId = false;
+            foreach (var token in tokens)
+            {
+                switch (token.Type)
+                {
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.LCURLY:
+                    case XSharpLexer.LBRKT:
+                        if (hasId)
+                        {
+                            if (level == 0)
+                                result.Add(token);
+                            level += 1;
+                        }
+                        break;
+                    case XSharpLexer.RPAREN:
+                    case XSharpLexer.RCURLY:
+                    case XSharpLexer.RBRKT:
+                        level -= 1;
+                        if (level == 0)
+                            result.Add(token);
+                        break;
+                    case XSharpLexer.ID:
+                        hasId = true;
+                        if (level == 0)
+                            result.Add(token);
+                        break;
+                    default:
+                        if (level == 0)
+                            result.Add(token);
+                        break;
+                }
+            }
+            return result;
+        }
         private static IXTypeSymbol ResolveImpliedAssign(XSharpSearchLocation location, XSourceImpliedVariableSymbol xVar, IXTypeSymbol currentType, Modifiers visibility)
         {
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.Assignment || xVar.ImpliedKind == ImpliedKind.Using);
             var tokenList = xVar.Expression;
+            // delete tokens between {} and other operators so we get the return type of the outer construct
+            tokenList = deleteNestedTokens(tokenList);
             var result = RetrieveElement(location, tokenList, CompletionState.General, out var notProcessed);
             var element = result.FirstOrDefault();
             return GetTypeFromSymbol(location, element);
@@ -561,10 +609,20 @@ namespace XSharp.LanguageService
                                     symbols.Push(type);
                             }
                         }
+                        else if (symbols.Count > 0)
+                        {
+                            if (symbols.Peek() is IXTypeSymbol type)
+                                currentType = type;
+                            else if (symbols.Peek() is IXMemberSymbol member)
+                            {
+                                currentType = member.ResolvedType;
+                            }
+                        }
                         continue;
                     case XSharpLexer.DOT:
                         state = CompletionState.StaticMembers | CompletionState.Namespaces | CompletionState.Types;
-                        if (location.Project.ParseOptions.AllowDotForInstanceMembers)
+                        if (location.Project.ParseOptions.AllowDotForInstanceMembers ||
+                            (currentType != null && currentType.IsVoStruct() ))
                             state |= CompletionState.InstanceMembers;
                         resetState = false;
                         startOfExpression = false;
@@ -598,6 +656,9 @@ namespace XSharp.LanguageService
                                   currentToken.Type == XSharpLexer.KWID ||
                                   currentToken.Type == XSharpLexer.SELF ||
                                   currentToken.Type == XSharpLexer.SUPER ||
+                                  currentToken.Type == XSharpLexer.TYPEOF ||
+                                  currentToken.Type == XSharpLexer.NAMEOF ||
+                                  currentToken.Type == XSharpLexer.SIZEOF ||
                                   currentToken.Type == XSharpLexer.COLONCOLON ||
                                   isType;
                 if (isId && !list.Eoi() && list.La1 == XSharpLexer.LT)
@@ -667,9 +728,11 @@ namespace XSharp.LanguageService
                     }
                     else if (startOfExpression)
                     {
+                        
                         // The first token in the list can be a Function or a Procedure
                         // Except if we already have a Type
                         result.AddRange(SearchFunction(location, currentName));
+
                         if (result.Count == 0 && currentType != null )
                         {
                             // no method lookup when enforceself is enabled
@@ -732,6 +795,11 @@ namespace XSharp.LanguageService
                     {
                         symbols.Push(result[0]);
                     }
+                    else
+                    {
+                        symbols.Clear();
+                        break;
+                    }
                 }
                 else if (isId)
                 {
@@ -788,11 +856,17 @@ namespace XSharp.LanguageService
                         notProcessed = namespacePrefix + currentName;
                         var sym = new XSourceUndeclaredVariableSymbol(location.Member, notProcessed, location.Member.Range, location.Member.Interval);
                         result.Add(sym);
+                        break;
                     }
                     // id found ?
                     if (result.Count > 0)
                     {
                         symbols.Push(result[0]);
+                    }
+                    else
+                    {
+                        symbols.Clear();
+                        break;
                     }
                 }
                 else if (XSharpLexer.IsOperator(currentToken.Type))
@@ -899,7 +973,7 @@ namespace XSharp.LanguageService
                 var sym = new XSymbol(currentToken.Text, Kind.Keyword, Modifiers.Public);
                 result.Add(sym);
             }
-            else if (result.Count > 0)
+            else if (result.Count > 0 && result[0] != null)
             {
                 var res = result[0];
                 if (res.Kind.IsClassMember(location.Project.Dialect))
@@ -988,7 +1062,7 @@ namespace XSharp.LanguageService
             }
             return null;
         }
-        
+
         private static IXMemberSymbol AdjustGenericMember(IXMemberSymbol xmember, IXSymbol memberdefinition)
         {
             /*

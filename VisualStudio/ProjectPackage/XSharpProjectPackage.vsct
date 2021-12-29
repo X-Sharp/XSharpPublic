@@ -463,6 +463,7 @@
       <IDSymbol name="bmpDanglingReference" value="12" />
       <IDSymbol name="bmpTabOrder" value="13" />
       <IDSymbol name="bmpFoxPro" value="14" />
+      <IDSymbol name="bmpNuGet" value="15" />
     </GuidSymbol>
 
     <GuidSymbol name="guidWinformsMenuGroup" value="{74D21312-2AEE-11D1-8BFB-00A0C90F26F7}">

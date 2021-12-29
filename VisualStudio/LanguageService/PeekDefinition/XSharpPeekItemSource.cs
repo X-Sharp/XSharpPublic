@@ -44,14 +44,37 @@ namespace XSharp.LanguageService
                     return;
 
                 CompletionState state;
-                var tokens = _textBuffer.GetTokens();
-                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, tokens.TokenStream, out state);
+                var tokenList = XSharpTokenTools.GetTokensUnderCursor(location, out state);
                 var result = new List<IXSymbol>();
                 result.AddRange( XSharpLookup.RetrieveElement(location, tokenList, state, out var notProcessed, true));
                 //
-                if (result.Count > 0 && result[0] is XSourceSymbol symbol)
+                if (result.Count > 0 )
                 {
-                    peekableItems.Add(new XSharpDefinitionPeekItem(symbol, _peekResultFactory));
+                    if (result[0] is XSourceSymbol symbol )
+                    {
+                        peekableItems.Add(new XSharpDefinitionPeekItem(symbol, _peekResultFactory));
+                    }
+                    else if (result[0] is XPESymbol pesymbol)
+                    {
+                        XPETypeSymbol petype;
+                        if (pesymbol is XPETypeSymbol)
+                        {
+                            petype = (XPETypeSymbol)pesymbol;
+                        }
+                        else if (pesymbol is XPEMemberSymbol member)
+                        {
+                            petype = (XPETypeSymbol) member.Parent;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                        var file = XSharpGotoDefinition.CreateFileForSystemType(petype, pesymbol);
+                        var entity = XSharpGotoDefinition.FindElementInFile(file, petype, pesymbol);
+                        if (entity != null)
+                            peekableItems.Add(new XSharpDefinitionPeekItem(entity, _peekResultFactory));
+
+                    }
                 }
             }
             catch (Exception ex)

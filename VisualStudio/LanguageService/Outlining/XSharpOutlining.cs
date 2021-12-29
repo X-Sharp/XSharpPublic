@@ -67,8 +67,8 @@ namespace XSharp.LanguageService
             {
                 _file =  buffer.GetFile();
             }
-
-            if (! buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+            var classifier = buffer.GetClassifier();
+            if (classifier == null)
             {
                 // should not happen we checked before we created the class
                 return;
@@ -96,12 +96,7 @@ namespace XSharp.LanguageService
                 yield break;
             }
             // Try to retrieve an already parsed list of Tags
-            XSharpClassifier xsClassifier = null;
-            if (buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
-            {
-                xsClassifier = buffer.Properties[typeof(XSharpClassifier)] as XSharpClassifier;
-            }
-
+            XSharpClassifier xsClassifier = buffer.GetClassifier();
             if (xsClassifier != null)
             {
                 //

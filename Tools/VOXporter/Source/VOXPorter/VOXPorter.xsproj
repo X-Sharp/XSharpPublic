@@ -39,7 +39,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.8.4.1</XSharpProjectversion>
+    <XSharpProjectversion>2.10.0.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <Allowdot>True</Allowdot>
@@ -125,12 +125,12 @@
       <Private>True</Private>
       <HintPath>..\..\Dll\XIRES.dll</HintPath>
     </Reference>
-    <Reference Include="XSharpVoEditors, Version=2.8.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+    <Reference Include="XSharpVoEditors, Version=2.10.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharpVoEditors</Name>
       <AssemblyName>XSharpVoEditors.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\Binaries\Debug\XSharpVoEditors.dll</HintPath>
+      <HintPath>..\..\..\..\Binaries\2019\Release\XSharpVoEditors.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -800,7 +800,7 @@ FUNCTION Transform( uValue AS USUAL, cSayPicture AS STRING ) AS STRING
         IF uValue:IsObject .AND. IsMethod( uValue, #Transform )
             ret := Send( uValue, "Transform" , cSayPicture )
         ELSE
-            THROW Error.ArgumentError( __ENTITY__, NAMEOF(uValue),  "Invalid argument type"  ,1)
+            THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uValue),  "Invalid argument type"  ,1)
         ENDIF
     END SWITCH
     RETURN ret

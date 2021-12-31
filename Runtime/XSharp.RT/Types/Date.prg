@@ -437,7 +437,7 @@ BEGIN NAMESPACE XSharp
 				ELSEIF days:IsNumeric
 					 RETURN SELF:Add( (REAL8) days)
 				ELSE
-					THROW Error.ArgumentError(__ENTITY__,NAMEOF(days),1, "Incompatible argument for Date:Add()",{days})
+					THROW Error.ArgumentError(__FUNCTION__,NAMEOF(days),1, "Incompatible argument for Date:Add()",{days})
 				ENDIF
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
@@ -490,7 +490,7 @@ BEGIN NAMESPACE XSharp
 				ELSEIF days:IsDate
 					 RETURN SELF:Subtract( days:_dateValue)
 				ELSE
-					THROW Error.ArgumentError(__ENTITY__,NAMEOF(days), 1, "Incompatible argument for Date:Subtract()", {days})
+					THROW Error.ArgumentError(__FUNCTION__,NAMEOF(days), 1, "Incompatible argument for Date:Subtract()", {days})
 				ENDIF
 
 			/// <exclude />

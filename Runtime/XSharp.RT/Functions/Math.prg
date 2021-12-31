@@ -29,7 +29,7 @@ FUNCTION Abs(nValue AS USUAL) AS USUAL
     ELSEIF nValue:IsFloat
         uRet := AbsFloat( nValue )
     ELSE
-        THROW  Error.ArgumentError( __ENTITY__, NAMEOF(nValue), "Argument not numeric",1)
+        THROW  Error.ArgumentError( __FUNCTION__, NAMEOF(nValue), "Argument not numeric",1)
     ENDIF
     RETURN uRet
 
@@ -94,7 +94,7 @@ FUNCTION Ceil(nNumber AS USUAL) AS USUAL
             result := r8
         ENDIF
     ELSE
-        THROW  Error.ArgumentError( __ENTITY__, NAMEOF(nNumber), "Argument not numeric",1)
+        THROW  Error.ArgumentError( __FUNCTION__, NAMEOF(nNumber), "Argument not numeric",1)
     ENDIF
     RETURN result
 
@@ -143,7 +143,7 @@ FUNCTION Floor(nNum AS USUAL) AS USUAL
             result := r8
         ENDIF
     ELSE
-        THROW  Error.ArgumentError( __ENTITY__, NAMEOF(nNum), "Argument not numeric",1)
+        THROW  Error.ArgumentError( __FUNCTION__, NAMEOF(nNum), "Argument not numeric",1)
     ENDIF
     RETURN result
 
@@ -160,7 +160,7 @@ FUNCTION Integer(nValue AS USUAL) AS USUAL
             result := Ceil(nValue)
         ENDIF
     ELSE
-        THROW Error.ArgumentError( __ENTITY__, NAMEOF(nValue), "Argument not numeric",1)
+        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(nValue), "Argument not numeric",1)
     ENDIF
     RETURN result
 
@@ -204,7 +204,7 @@ FUNCTION Round(nNumber AS USUAL,siDecimals AS INT) AS USUAL
     LOCAL r8     AS REAL8
 
     IF ! nNumber:IsNumeric
-        THROW Error.ArgumentError( __ENTITY__, NAMEOF(nNumber), "Argument is not numeric")
+        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(nNumber), "Argument is not numeric")
     ENDIF
 
     // For Integers we could round the numbers

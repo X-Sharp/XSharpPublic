@@ -32,7 +32,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">XBase Compatibility</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="44" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="43" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal">Option</para>
@@ -375,14 +375,6 @@
         </td>
         <td>
           <para styleclass="Normal">All classes inherit from the Abstract class</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">-xpp2</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Not used</para>
         </td>
       </tr>
     </table></para>

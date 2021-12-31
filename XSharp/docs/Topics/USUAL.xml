@@ -31,7 +31,6 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="7">
       <tr style="vertical-align:top">
         <td>
@@ -168,6 +167,8 @@
       </tr>
     </table></para>
     <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Implementation</para>
+    <para styleclass="Normal">The USUAL type is implemented in the structure &#160;XSharp.__Usual</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

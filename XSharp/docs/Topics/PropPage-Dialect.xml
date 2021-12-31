@@ -30,6 +30,7 @@
     <para styleclass="Body Text">The Dialect page contains some additional language settings. Some of these settings apply to all dialects. Others only apply to the given dialect and will only be enabled when the appropriate dialect is chosen.</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Normal"><image src="ProjectPropertiesDialect.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="20" colcount="3">
       <tr style="vertical-align:top">
         <td>

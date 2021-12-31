@@ -21,5 +21,7 @@
       <li styleclass="Body Text">There are implicit operators that convert a BINARY to a byte[] and back. There are also implicit operators that convert a Binary to a String and back.</li>
       <li styleclass="Body Text">When compiling with the Vulcan Runtime then the byte[] array is stored in a USUAL value for the non core dialects.</li>
     </list>
+    <para styleclass="Heading3">Implementation</para>
+    <para styleclass="Normal">The BINARY type is implemented in the class XSharp.__Binary<br/>The Usualtype of BINARY has the value 29</para>
   </body>
 </topic>

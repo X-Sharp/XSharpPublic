@@ -668,6 +668,9 @@
           <topicref type="topic" id="423890644701462" build="ALL" modified="2016-01-19T20:54:30.895Z" icon="0" href="ARRAY">
             <caption translate="true">ARRAY</caption>
           </topicref>
+          <topicref type="topic" id="445612376904734" build="ALL" modified="2021-12-31T09:09:49.089Z" icon="0" href="ARRAY-(FoxPro)">
+            <caption translate="true">ARRAY (FoxPro)</caption>
+          </topicref>
           <topicref type="topic" id="440703829294760" build="ALL" modified="2020-08-27T12:29:19.963Z" icon="0" href="BINARY">
             <caption translate="true">BINARY</caption>
           </topicref>
@@ -1461,6 +1464,9 @@
         <topicref type="topic" id="423892462437599" build="ALL" modified="2016-01-20T09:45:56.670Z" icon="0" href="opt-appconfig">
           <caption translate="true">-appconfig</caption>
         </topicref>
+        <topicref type="topic" id="445606132617327" build="ALL" modified="2021-12-30T13:59:05.473Z" icon="0" href="opt-ast">
+          <caption translate="true">-ast</caption>
+        </topicref>
         <topicref type="topic" id="423895373416237" build="ALL" modified="2016-01-20T09:45:58.371Z" icon="0" href="opt-az">
           <caption translate="true">-az</caption>
         </topicref>
@@ -1493,6 +1499,9 @@
         </topicref>
         <topicref type="topic" id="42390665422030" build="ALL" modified="2016-01-20T09:46:15.692Z" icon="0" href="opt-doc">
           <caption translate="true">-doc</caption>
+        </topicref>
+        <topicref type="topic" id="445606251965354" build="ALL" modified="2021-12-30T13:46:56.044Z" icon="0" href="opt-enforceoverride">
+          <caption translate="true">-enforceoverride</caption>
         </topicref>
         <topicref type="topic" id="442744878615658" build="ALL" modified="2021-03-19T13:15:34.222Z" icon="0" href="opt-enforceself">
           <caption translate="true">-enforceself</caption>
@@ -1541,6 +1550,9 @@
         </topicref>
         <topicref type="topic" id="423894559147117" build="ALL" modified="2016-01-20T09:46:52.421Z" icon="0" href="opt-langversion">
           <caption translate="true">-langversion</caption>
+        </topicref>
+        <topicref type="topic" id="44561699444337" build="ALL" modified="2021-12-30T13:55:10.055Z" icon="0" href="opt-lexonly">
+          <caption translate="true">-lexonly</caption>
         </topicref>
         <topicref type="topic" id="423892890596013" build="ALL" modified="2016-01-20T09:46:54.647Z" icon="0" href="opt-lb">
           <caption translate="true">-lb</caption>
@@ -1602,6 +1614,9 @@
         <topicref type="topic" id="423892971107092" build="ALL" modified="2016-01-20T09:47:17.159Z" icon="0" href="opt-parallel">
           <caption translate="true">-parallel</caption>
         </topicref>
+        <topicref type="topic" id="428115605166614" build="ALL" modified="2021-12-30T13:54:01.864Z" icon="0" href="opt-parseonly">
+          <caption translate="true">-parseonly</caption>
+        </topicref>
         <topicref type="topic" id="426331724895353" build="ALL" modified="2016-09-20T09:16:55.333Z" icon="0" href="opt-pathmap">
           <caption translate="true">-pathmap</caption>
         </topicref>
@@ -1634,9 +1649,6 @@
         </topicref>
         <topicref type="topic" id="423893013499884" build="ALL" modified="2016-01-20T09:47:28.436Z" icon="0" href="opt-ruleset">
           <caption translate="true">-ruleset</caption>
-        </topicref>
-        <topicref type="topic" id="428115605166614" build="ALL" modified="2017-03-17T16:02:09.990Z" icon="0" href="opt-s">
-          <caption translate="true">-s</caption>
         </topicref>
         <topicref type="topic" id="427117645122713" build="ALL" modified="2016-12-07T13:18:48.745Z" icon="0" href="_showdefs">
           <caption translate="true">-showdefs</caption>
@@ -1674,6 +1686,27 @@
         <topicref type="topic" id="423893850878914" build="ALL" modified="2016-01-20T09:47:56.869Z" icon="0" href="opt-vo1">
           <caption translate="true">-vo1</caption>
         </topicref>
+        <topicref type="topic" id="42390811694964" build="ALL" modified="2016-01-20T09:48:06.086Z" icon="0" href="opt-vo10">
+          <caption translate="true">-vo10</caption>
+        </topicref>
+        <topicref type="topic" id="423894115008435" build="ALL" modified="2016-01-20T09:48:06.986Z" icon="0" href="opt-vo11">
+          <caption translate="true">-vo11</caption>
+        </topicref>
+        <topicref type="topic" id="423892167710843" build="ALL" modified="2016-01-20T09:48:07.918Z" icon="0" href="opt-vo12">
+          <caption translate="true">-vo12</caption>
+        </topicref>
+        <topicref type="topic" id="423893391153373" build="ALL" modified="2016-01-20T09:48:08.880Z" icon="0" href="opt-vo13">
+          <caption translate="true">-vo13</caption>
+        </topicref>
+        <topicref type="topic" id="424475874975800" build="ALL" modified="2016-05-26T08:29:50.517Z" icon="0" href="opt-vo14">
+          <caption translate="true">-vo14</caption>
+        </topicref>
+        <topicref type="topic" id="425163894787003" build="ALL" modified="2016-05-26T09:05:09.907Z" icon="0" href="opt-vo15">
+          <caption translate="true">-vo15</caption>
+        </topicref>
+        <topicref type="topic" id="428177565857255" build="ALL" modified="2017-03-23T21:32:33.398Z" icon="0" href="opt-vo16">
+          <caption translate="true">-vo16</caption>
+        </topicref>
         <topicref type="topic" id="423894049775832" build="ALL" modified="2016-01-20T09:47:58.052Z" icon="0" href="opt-vo2">
           <caption translate="true">-vo2</caption>
         </topicref>
@@ -1697,27 +1730,6 @@
         </topicref>
         <topicref type="topic" id="423894376298841" build="ALL" modified="2016-01-20T09:48:05.125Z" icon="0" href="opt-vo9">
           <caption translate="true">-vo9</caption>
-        </topicref>
-        <topicref type="topic" id="42390811694964" build="ALL" modified="2016-01-20T09:48:06.086Z" icon="0" href="opt-vo10">
-          <caption translate="true">-vo10</caption>
-        </topicref>
-        <topicref type="topic" id="423894115008435" build="ALL" modified="2016-01-20T09:48:06.986Z" icon="0" href="opt-vo11">
-          <caption translate="true">-vo11</caption>
-        </topicref>
-        <topicref type="topic" id="423892167710843" build="ALL" modified="2016-01-20T09:48:07.918Z" icon="0" href="opt-vo12">
-          <caption translate="true">-vo12</caption>
-        </topicref>
-        <topicref type="topic" id="423893391153373" build="ALL" modified="2016-01-20T09:48:08.880Z" icon="0" href="opt-vo13">
-          <caption translate="true">-vo13</caption>
-        </topicref>
-        <topicref type="topic" id="424475874975800" build="ALL" modified="2016-05-26T08:29:50.517Z" icon="0" href="opt-vo14">
-          <caption translate="true">-vo14</caption>
-        </topicref>
-        <topicref type="topic" id="425163894787003" build="ALL" modified="2016-05-26T09:05:09.907Z" icon="0" href="opt-vo15">
-          <caption translate="true">-vo15</caption>
-        </topicref>
-        <topicref type="topic" id="428177565857255" build="ALL" modified="2017-03-23T21:32:33.398Z" icon="0" href="opt-vo16">
-          <caption translate="true">-vo16</caption>
         </topicref>
         <topicref type="topic" id="423892403560623" build="ALL" modified="2016-01-20T09:48:09.787Z" icon="0" href="opt-w">
           <caption translate="true">-w</caption>

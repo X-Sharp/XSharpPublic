@@ -12,7 +12,6 @@
       <para styleclass="Heading1">X# Compiler Options By Category</para>
     </header>
     <para styleclass="Body Text">The following compiler options are sorted by category. For an alphabetical list, see : <link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-Listed-Alph">X# Compiler Options Listed Alphabetically</link></para>
-    <para styleclass="Body Text">The options in <text style="font-weight:bold; color:#ff0000;">RED</text> are not supported yet.</para>
     <para styleclass="Heading2">Dialect support</para>
     <para styleclass="Heading2"><table styleclass="Default" rowcount="2" colcount="2">
       <thead style="vertical-align:top">
@@ -33,7 +32,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">XBase Compatibility</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="37" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="44" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal">Option</para>
@@ -42,6 +41,14 @@
           <para styleclass="Normal">Purpose</para>
         </td>
       </thead>
+      <tr style="vertical-align:top">
+        <td style="width:33%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-allowdot">-allowdot</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Allow the DOT (.) character as operator for instance members</para>
+        </td>
+      </tr>
       <tr style="vertical-align:top">
         <td style="width:33%;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-az">-az</link></para>
@@ -55,7 +62,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">-cs</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="color:#ff0000;">Specifies that the compiler should use case-sensitive type names </text></para>
+          <para styleclass="Normal">Specifies that the compiler should use case-sensitive type names </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -64,6 +71,22 @@
         </td>
         <td>
           <para styleclass="Normal">Instruct the compiler to emit debugging information. (short for /debug)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceoverride">-enforceoverride</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Enforce the use of the OVERRIDE keyword to override methods from parent classes in subclasses</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceself">-enforceself</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Enforce the use of SELF: to access fields, properties and methods inside a class</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -87,7 +110,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">-fox2</link></para>
         </td>
         <td>
-          <para styleclass="Normal">Make local variables visible to the macro compiler</para>
+          <para styleclass="Normal">Fompatible FoxPro Array support</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -96,6 +119,14 @@
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Specifies a directory to add to the #include file search path </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-initlocals">-initlocals</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Initialize all local variables</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -124,10 +155,26 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">-namedargs</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-namedargs">-namedarguments</link></para>
         </td>
         <td>
           <para styleclass="Normal"><text style="color:#000000;">Specifies whether to allow named arguments in the parser or not.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">-noinit</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">The normal behavior for the X# compiler is to generate a special $Init1() and $Exit() function for each DLL. These functions ensure that referenced DLLs are loaded at startup, so the types in these DLLs become available for late bound instantiation with CreateInstance() and the functions become available for _CallClipFunc(). -noinit suppresses the generation of these functions, unless there are init procedures or exit procedures</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">-norun</para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Obsolete compiler option in X#, inherited from Vulcan. To achieve this simply remove the references to the runtime DLLs and compile in the Core dialect</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -152,14 +199,6 @@
         </td>
         <td>
           <para styleclass="Normal">Specifies that exceptions will be raised on integer overflows </para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ppo">-ppo</link></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text style="color:#000000;">Writes preprocessor output to file </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -328,6 +367,22 @@
         </td>
         <td>
           <para styleclass="Normal">Treats all warnings as errors (alias for <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">-warnaserror</link>)</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-xpp1">-xpp1</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">All classes inherit from the Abstract class</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">-xpp2</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Not used</para>
         </td>
       </tr>
     </table></para>
@@ -525,7 +580,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">Debugging / Error checking</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="11" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="14" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
           <para styleclass="Normal">Option</para>
@@ -534,6 +589,14 @@
           <para styleclass="Normal">Purpose</para>
         </td>
       </thead>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ast">-ast</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Dump the abstract syntax tree for each source file (.ast extension)</para>
+        </td>
+      </tr>
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checked">-checked</link></para>
@@ -576,10 +639,26 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-lexonly">-lexonly</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">Tells the compiler to only lex the source code. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link></para>
         </td>
         <td>
           <para styleclass="Normal">Suppresses the compiler&apos;s generation of specified warnings.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-parseonly">-parseonly</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="color:#000000;">This compiler option tells the compiler to lex and parse the code. </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -616,7 +695,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">Preprocessor</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="7" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="8" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
           <para styleclass="Normal">Option</para>
@@ -671,6 +750,14 @@
         </td>
         <td>
           <para styleclass="Normal">Lists #include files in compiler output </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">-verbose</para>
+        </td>
+        <td>
+          <para styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal" style="font-weight:normal;">Shows includes, source file names, defines and more. on the console</text></para>
         </td>
       </tr>
     </table></para>
@@ -857,7 +944,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-s">-s</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-parseonly">-s</link></para>
         </td>
         <td>
           <para styleclass="Normal">Syntax check only</para>

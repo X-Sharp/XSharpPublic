@@ -41,6 +41,7 @@
     <para styleclass="Body Text">The Build properties page contains <text style="font-weight:bold; font-style:italic;">Configuration Specific </text>properties. So you can have different properties here for a Debug and a Release configuration. Please read the <link displaytype="text" defaultstyle="true" type="topiclink" href="Build-Configurations">Build Configuration</link> topic for more information about build configurations</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Normal"><image src="ProjectPropertiesBuild.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="19" colcount="3">
       <tr style="vertical-align:top">
         <td>

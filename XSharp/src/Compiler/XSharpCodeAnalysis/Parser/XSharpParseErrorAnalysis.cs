@@ -367,7 +367,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (tokens.Count >= 6 && tokens[3].Type == XSharpParser.COMMA && tokens[5].Type == XSharpParser.RPAREN)
                         {
                             i2 = tokens[4];
-                            numbers.Add( tokens[2] );
+                            numbers.Add(tokens[2]);
                         }
                         else if (tokens.Count >= 4 && tokens[3].Type == XSharpParser.RPAREN)
                         {
@@ -394,7 +394,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (i1 == null) 
             {
                 error = ErrorCode.WRN_IllegalPragma;
-                errortoken = context.P; 
+                errortoken = context.P;
             }
             if (error == ErrorCode.Unknown)
             {
@@ -449,7 +449,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (isWarning)
                 {
-                    context.Pragma = new PragmaWarning(context, state, numbers,i1,i2);
+                    context.Pragma = new PragmaWarning(context, state, numbers, i1, i2);
                 }
                 else if (numbers.Count == 0)
                 {
@@ -524,7 +524,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                 }
-
             }
 
             // C# does not validate the error codes, so we will not do that either.

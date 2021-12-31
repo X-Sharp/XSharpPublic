@@ -1749,13 +1749,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
 
                 case DEFINE:
-                    if (Dialect == XSharpDialect.FoxPro)   // FoxPro uses DEFINE CLASS
+                    if (Dialect == XSharpDialect.FoxPro && keyword == CLASS)   // FoxPro uses DEFINE CLASS
                         return keyword;
                     else
                         return ID;
 
                 case LOCAL:
                     if (keyword == FUNCTION || keyword == PROCEDURE || keyword == ARRAY)    // local function and procedure statement and local array
+                        return keyword;
+                    return ID;
+
+                case GLOBAL:
+                    if (keyword == CONST)    // GLOBAL CONST Id
                         return keyword;
                     return ID;
 

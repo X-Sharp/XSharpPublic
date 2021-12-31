@@ -112,6 +112,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     encode = true;
                     break;
 
+                case "namedargs":
                 case "namedarguments":
                     options.AllowNamedArguments = positive;
                     encode = true;
@@ -379,9 +380,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Xpp1 = positive;
                     encode = true;
                     break;
-                case "xpp2":       // untyped main instead of Start
-                    options.Xpp2 = positive;
-                    encode = true;
+                case "xpp2":       // ignored
+                    //options.Xpp2 = positive;
+                    //encode = true;
                     break;
                 case "fox1":       // Classes inherit from unknown
                     options.Fox1 = positive;
@@ -678,10 +679,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
-            if (options.Xpp1 || options.Xpp2)
+            if (options.Xpp1 )
             {
                 if (options.Dialect != XSharpDialect.XPP)
-                    AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/xpp1 and /xpp2 are only valid for the Xbase++ dialect");
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/xpp1 is only valid for the Xbase++ dialect");
             }
 
             if (options.UndeclaredMemVars && !options.MemVars)

@@ -336,7 +336,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                 }
-            }// _options.ParseLevel < Complete
+            }// _options.ParseLevel != Lex
 #if DEBUG && DUMP_TIMES
             {
                 var ts = DateTime.Now - t;

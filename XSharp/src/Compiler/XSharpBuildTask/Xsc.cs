@@ -55,7 +55,11 @@ namespace XSharp.Build
             set { _store[nameof(EnforceSelf)] = value; }
             get { return _store.GetOrDefault(nameof(EnforceSelf), false); }
         }
-
+        public bool NoInit
+        {
+            set { _store[nameof(NoInit)] = value; }
+            get { return _store.GetOrDefault(nameof(NoInit), false); }
+        }
         public bool LB
         {
             set { _store[nameof(LB)] = value; }
@@ -205,11 +209,6 @@ namespace XSharp.Build
         {
             set { _store[nameof(XPP1)] = value; }
             get { return _store.GetOrDefault(nameof(XPP1), false); }
-        }
-        public bool XPP2
-        {
-            set { _store[nameof(XPP2)] = value; }
-            get { return _store.GetOrDefault(nameof(XPP2), false); }
         }
         public bool FOX1
         {
@@ -752,6 +751,7 @@ namespace XSharp.Build
             }
             commandline.AppendPlusOrMinusSwitch("/enforceself", _store, nameof(EnforceSelf));
             commandline.AppendPlusOrMinusSwitch("/enforceoverride", _store, nameof(EnforceOverride));
+            commandline.AppendPlusOrMinusSwitch("/noinit", _store, nameof(NoInit));
             commandline.AppendPlusOrMinusSwitch("/ovf", _store, nameof(OVF));
             commandline.AppendPlusOrMinusSwitch("/ppo", _store, nameof(PPO));
             commandline.AppendPlusOrMinusSwitch("/vo1", _store, nameof(VO1));
@@ -773,7 +773,6 @@ namespace XSharp.Build
             if (Dialect.ToLower() == "xpp")
             {
                 commandline.AppendPlusOrMinusSwitch("/xpp1", _store, nameof(XPP1));
-                commandline.AppendPlusOrMinusSwitch("/xpp2", _store, nameof(XPP2));
             }
             if (Dialect.ToLower() == "foxpro")
             {

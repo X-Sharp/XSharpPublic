@@ -89,7 +89,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool UndeclaredMemVars = false;
         private bool VOStringComparisons = false;
         private bool XPPInheritFromAbstract = false;
-        private bool XPPUntypedmain = false;
         private bool FoxArraySupport = false;
         private bool LateBinding = false;
 
@@ -169,7 +168,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool vo8 => VOPreprocessorBehaviour;
         public bool vo9 => VOAllowMissingReturns;
         public bool xpp1 => XPPInheritFromAbstract;
-        public bool xpp2 => XPPUntypedmain;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -232,7 +230,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOUntypedAllowed = opt.Vo15;
                 WindowsDir = opt.WindowsDir;
                 XPPInheritFromAbstract = opt.Xpp1;
-                XPPUntypedmain = opt.Xpp2;
             }
             LanguageVersion = defaultLanguageVersion;
         }
@@ -317,7 +314,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
             WindowsDir = opt.WindowsDir;
             XPPInheritFromAbstract = opt.XPPInheritFromAbstract; // xpp1
-            XPPUntypedmain = opt.XPPUntypedmain;    // xpp2
         }
 
         public CSharpParseOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
@@ -423,7 +419,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Vo1: // Init/Axit => Constructor / Destruction
                 case CompilerOption.Vo8: // Compatible Preprocessor
                 case CompilerOption.Xpp1: // Inherit from Custom
-                case CompilerOption.Xpp2:
+                //case CompilerOption.Xpp2:
                 case CompilerOption.Fox1: // Inherit from Custom
                 case CompilerOption.AllowNamedArgs: // AllowNamedArguments: used in Antlr rules
                 case CompilerOption.ImplicitNamespace:

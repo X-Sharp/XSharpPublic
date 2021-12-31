@@ -83,7 +83,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Vo15 { get; internal set; } = false;
         public bool Vo16 { get; internal set; } = false;
         public bool Xpp1 { get; internal set; } = false;
-        public bool Xpp2 { get; internal set; } = false;
         public bool Fox1 { get; internal set; } = false;
         public bool Fox2 { get; internal set; } = false;
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
@@ -197,9 +196,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Xpp1:
                     Xpp1 = value;
                     break;
-                case CompilerOption.Xpp2:
-                    Xpp2 = value;
-                    break;
                 case CompilerOption.ClrVersion:
                 case CompilerOption.None:
                 default:
@@ -287,7 +283,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         Vo16 = 1 << 16,
         DefaultClipperContructors = Vo16,
         Xpp1 = 1 << 17,
-        Xpp2 = 1 << 18,
+        //Xpp2 = 1 << 18,
         Fox1 = 1 << 19,
         Fox2 = 1 << 20,
         FoxArraySupport = Fox2,
@@ -326,7 +322,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.UndeclaredMemVars:
                 case CompilerOption.UntypedAllowed:
                 case CompilerOption.Xpp1:
-                case CompilerOption.Xpp2:
+                //case CompilerOption.Xpp2:
                     return true;
                 case CompilerOption.AllowDotForInstanceMembers:
                 case CompilerOption.AllowMissingReturns:
@@ -420,8 +416,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return "Generate Clipper calling convention constructors for classes without constructor";
                 case CompilerOption.Xpp1:
                     return "All classes inherit from XPP.Abstract";
-                case CompilerOption.Xpp2:
-                    return "n/a";
+                //case CompilerOption.Xpp2:
+                //    return "n/a";
                 case CompilerOption.None:
                     return "";
             }
@@ -495,8 +491,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.Vo16;
                 case "xpp1":
                     return CompilerOption.Xpp1;
-                case "xpp2":
-                    return CompilerOption.Xpp2;
+                //case "xpp2":
+                //    return CompilerOption.Xpp2;
                 default:
                     break;
             }

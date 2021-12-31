@@ -1087,16 +1087,17 @@ queryContinuation   : I=INTO Id=identifier Body=queryBody
 
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
-identifier          : Token=ID  
-                    | XsToken=keywordxs
-                    | XppToken=keywordxpp
-                    | FoxToken=keywordfox
+identifier          : ID            // No names, we use the Start property to access the token
+                    | keywordxs
+                    | keywordxpp
+                    | keywordfox
                     ;
-
-identifierString    : Token=(ID | STRING_CONST)
-                    | XsToken=keywordxs
-                    | XppToken=keywordxpp
-                    | FoxToken=keywordfox
+                     
+identifierString    : ID            // No names, we use the Start property to access the token
+                    | STRING_CONST 
+                    | keywordxs
+                    | keywordxpp
+                    | keywordfox
                     ;
 
 
@@ -1199,7 +1200,7 @@ keywordxs           : Token=(AUTO | CHAR | CONST |  DEFAULT | GET | IMPLEMENTS |
                     | STEP | STRICT | TO | THISCALL |  UPTO | USING | WINCALL 
                     // The following keywords are handled in the fixPositionalKeyword() method of the lexer and will only be keywords at the right place
                     // but when they code event->(DoSomething()) we still need them in this rule...
-                    | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP 
+                    | DEFINE | TRY | SWITCH | EVENT| EXPLICIT | FIELD | FOREACH | UNTIL | PARAMETERS | YIELD | MEMVAR | NOP 
                     | PARTIAL | SEALED | ABSTRACT | UNSAFE | SCOPE | NAMESPACE | LOCK | IMPLICIT | IMPLIED | INITONLY | PROPERTY | INTERFACE
                     | VOSTRUCT | UNION | DECLARE | OPERATOR	
                     )

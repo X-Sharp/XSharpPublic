@@ -43,9 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool VOUntypedAllowed { get; private set; }// Handled in the parser
 
         //public bool XPPInheritFromAbstract { get; private set; } // Handled in the parser
-        //public bool XPPUntypedmain { get; private set; } // Handled in the parser
         //public bool FoxInheritUnknown { get; private set; } // Handled in the parser
-        //public bool FoxExposeLocals { get; private set; }
         public XSharpDialect Dialect { get; private set; }
         public bool ImplicitNameSpace { get; private set; }
         //bool InitLocals { get; set; }
@@ -85,7 +83,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //VOUntypedAllowed = opt.Vo15;              // Handled in the parser
                 //VOClipperConstructors = opt.Vo16;         // Handled in the parser
                 //XPPInheritFromAbstract = opt.Xpp1;        // Handled in the parser
-                //XPPUntypedmain= opt.Xpp2;                 // Handled in the parser
                 //FoxInheritUnknown= opt.Fox1;              // Handled in the parser
                 //EnforceVirtual = opt.EnforceVirtual;      // Handled in the parser
                 FoxArraySupport = opt.Fox2;

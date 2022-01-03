@@ -961,7 +961,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _Seek(seekInfo AS DbSeekInfo , bSearchKey AS BYTE[] ) AS LOGIC
             LOCAL recno := 0 AS LONG
             LOCAL result := FALSE  AS LOGIC
-            LOCAL fSoft := FALSE AS LOGIC
+            LOCAL fOriginalSoftSeekValue AS LOGIC
             LOCAL recnoOk := 0 AS LONG
             LOCAL locked := FALSE AS LOGIC
             LOCAL strCmp AS INT
@@ -976,6 +976,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL activeFilter AS LOGIC
             oldDescend   := SELF:Descending
             activeFilter := XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:FilterInfo:Active
+            fOriginalSoftSeekValue := seekInfo:SoftSeek
             TRY
                 SELF:Descending := FALSE
                 IF oldDescend
@@ -1005,7 +1006,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         needPadStr := TRUE
                         bSearchKey[len] := 1
                         padLen := len + 1
-                        fSoft := seekInfo:SoftSeek
                         seekInfo:SoftSeek := TRUE
                     ENDIF
                 ELSE
@@ -1048,7 +1048,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             ENDIF
                             SELF:_newvalue:Key[len] := 0
                             currentKeyBuffer[len] := temp
-                            seekInfo:SoftSeek := fSoft
+                            seekInfo:SoftSeek := fOriginalSoftSeekValue
                         ENDIF
                         IF found
                             // we are on the first matching key. When we seek Last then we
@@ -1080,7 +1080,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 ENDIF
                             ENDIF
                         ELSE
-                            // Not found, why are we doing this ?
+                            // This code gets executed when doing a GoBottom in a scoped index when the bottom scope does not exist
                             IF seekInfo:Last
                                 diff := strCmp
                                 recno := SELF:_nextKey(-1)
@@ -1089,7 +1089,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 IF found
                                     result := SELF:_oRdd:__Goto(recno)
                                 ELSE
-                                    IF diff == -strCmp .and. fSoft
+                                    IF diff == -strCmp .and. fOriginalSoftSeekValue
                                         found := TRUE
                                         result := SELF:_GoToRecno(recno)
                                     ELSE

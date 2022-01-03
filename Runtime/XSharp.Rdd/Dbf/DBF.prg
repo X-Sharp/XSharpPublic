@@ -100,6 +100,8 @@ INTERNAL METHOD _CheckEofBof() AS VOID
     IF SELF:RecCount == 0
         SELF:_SetEOF(TRUE)
         SELF:_SetBOF(TRUE)
+    ELSEIF SELF:RecNo > SELF:RecCount
+        SELF:_SetEOF(TRUE)
     ENDIF
 
 
@@ -259,8 +261,9 @@ OVERRIDE METHOD Skip(nToSkip AS INT) AS LOGIC
                 IF ( nToSkip < 0 ) .AND. SELF:_BoF
 				    SELF:GoTop()
 				    SELF:BoF := TRUE
-			    ENDIF
-			    IF nToSkip < 0
+                ENDIF
+                // when we land at EOF then do not reset the EOF flag
+			    IF nToSkip < 0 .and. SELF:RecNo < SELF:RecCount
 				    SELF:_SetEOF(FALSE)
 			    ELSEIF nToSkip > 0
 				    SELF:BoF := FALSE
@@ -1335,7 +1338,7 @@ RETURN oResult
 VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
 	LOCAL isOK AS LOGIC
     // Buffer is supposed to be correct
-	IF SELF:_BufferValid == TRUE .OR. SELF:EoF
+	IF SELF:_BufferValid == TRUE .OR. SELF:EoF .OR. SELF:RecNo > SELF:RecCount
 		RETURN TRUE
 	ENDIF
     // File Ok ?

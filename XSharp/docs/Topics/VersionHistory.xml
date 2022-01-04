@@ -51,6 +51,8 @@
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">Now the tooltip on a class includes also information about the parent class and implemented interfaces (if any) (#860)</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">We have added tooltips, parameter completion etc for the pseudo functions that are built into the compiler, such as PCount() and String2Psz().</text></li>
+      <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">We have added a first version of Lightbulb tips. For now to implement missing interface members and to convert a field to a Property. More implementations and configuration options will follow</text></li>
+      <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">We have added a new dialog to configure source code formatting with visual examples of the effects of the options.</text></li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

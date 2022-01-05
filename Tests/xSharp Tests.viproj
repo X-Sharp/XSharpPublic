@@ -102051,11 +102051,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C817 - Problem with Math.Round(float/int) when /vo12 is enabled (ambiguous call)
 
-<<<<<<< HEAD
 ApplicationGroup = 54E26745-C95C-4FDB-98B2-2AF8DB1DED34
-=======
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
->>>>>>> main
 ; ************** APPLICATION C820 - Problem passing AddressOf and ByReference in the same call *************
 Application = C820 - Problem passing AddressOf and ByReference in the same call
 IDEVersion = 1.06
@@ -102168,11 +102164,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C820 - Problem passing AddressOf and ByReference in the same call
 
-<<<<<<< HEAD
 ApplicationGroup = 084FC9A2-9274-4770-AE44-6D078B06BA37
-=======
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
->>>>>>> main
 ; ************** APPLICATION R820 *************
 Application = R820
 IDEVersion = 1.06

@@ -318,6 +318,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var parNumber = result.ValidResult.Result.ParameterFromArgument(i);
                 var parRefKind = member.Parameters[parNumber].RefKind;
+                var parType = member.Parameters[parNumber].Type;
                 var arg = analyzedArguments.Arguments[i];
                 var isBoundAddress = arg is BoundAddressOfOperator;
                 var isRefKindMismatch = analyzedArguments.RefKind(i) == RefKind.None && parRefKind != RefKind.None;
@@ -326,7 +327,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, arg.Syntax))
                     {
                         bool adjust = false;
-                        if (isBoundAddress)
+                        if (isBoundAddress && !parType.IsPointerType())
                         {
                             var baoo = (BoundAddressOfOperator)arg;
                             var isDecl = false;

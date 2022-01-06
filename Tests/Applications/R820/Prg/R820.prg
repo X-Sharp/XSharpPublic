@@ -1,5 +1,6 @@
 // https://github.com/X-Sharp/XSharpPublic/issues/902   
 #pragma options("vo7", on)
+
 FUNCTION Start( ) AS VOID
 LOCAL l AS LOGIC
 LOCAL x1, x2 IS _winRECT
@@ -53,3 +54,5 @@ IF .not. l
 END IF
 ? "Assertion passed"
 RETURN		
+
+

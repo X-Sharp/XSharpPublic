@@ -327,8 +327,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, arg.Syntax))
                     {
                         bool adjust = false;
-                        if (isBoundAddress && !parType.IsPointerType())
+                        if (isBoundAddress)
                         {
+                            // check to see if we really want to dereference
                             var baoo = (BoundAddressOfOperator)arg;
                             var isDecl = false;
                             if (baoo.Operand.Kind == BoundKind.Local)
@@ -337,11 +338,32 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 var decl = local.LocalSymbol.DeclaringSyntaxReferences[0];
                                 var decl1 = decl.GetSyntax() as CSharpSyntaxNode;
                                 isDecl = decl1.XVoIsDecl;
+                                // isDecl is true for local declared as
+                                // LOCAL rect IS _winRect
                             }
-                            if (!isDecl)
+                            if (isDecl)
+                            {
+                                // argument IS _winRect passed with @
+                                adjust = false;
+                            }
+                            else if (isRefKindMismatch)
+                            {
+                                // parameter declared with REF and argument passed with @
+                                adjust = true;
+                            }
+                            else if (parType.IsPointerType())
+                            {
+                                // parameter is a PTR, AS VOSTRUCT or so and argument passed with @
+                                adjust = false;
+                            }
+                            else
+                            {
+                                // argument is passed with @ but the parameter is neither a REF or a Pointer type.
+                                adjust = true;
+                            }
+                            if (adjust)
                             {
                                 arg = baoo.Operand;
-                                adjust = true;
                             }
                         }
                         else if (arg is BoundLiteral bl && bl.IsLiteralNull())

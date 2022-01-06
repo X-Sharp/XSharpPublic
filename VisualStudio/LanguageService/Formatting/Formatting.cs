@@ -699,7 +699,7 @@ namespace XSharp.LanguageService
                     WriteOutputMessage("FormatDocument : Error when moving in Tokens");
                     return 0; // This should never happen
                 }
-                while (XSharpLexer.IsModifier(openKeyword.Type))
+                while ( ( openKeyword.Type!= XSharpLexer.CLASS ) && XSharpLexer.IsModifier(openKeyword.Type))
                 {
                     // Check the next one
                     context.MoveToNext();

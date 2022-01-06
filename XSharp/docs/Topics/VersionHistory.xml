@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="cpc" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>Runtime chapter</keyword>
@@ -21,7 +21,7 @@
       <li styleclass="Body Text">Fixed a problem with generating XML documentation (#783, #855)</li>
       <li styleclass="Body Text">Prevented a warning from appearing for members of SEALED classes when /vo3 (all members VIRTUAL) is enabled (#785)</li>
       <li styleclass="Body Text">Fixed problems with assigning and comparing &quot;ARRAY OF &lt;type&gt;&quot; vars to NULL_ARRAY (#833)</li>
-      <li styleclass="Body Text">Fixed some issues with passing arguments by reference with the @ operator and/or using it as the AddressOf operator (#810)</li>
+      <li styleclass="Body Text">Fixed some issues with passing arguments by reference with the @ operator and/or using it as the AddressOf operator (#810, #899, #902)</li>
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

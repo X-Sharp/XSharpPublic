@@ -95,7 +95,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(InvalidCastException e)
             {
-                XSettings.DisplayOutputMessage("Exception" + e.Message);
+                XSettings.LogMessage("Exception" + e.Message);
             }
             finally
             {

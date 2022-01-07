@@ -207,7 +207,7 @@ namespace XSharp.LanguageService.Editors.HighlightWord
             }
             catch (Exception ex)
             {
-                XSettings.DisplayOutputMessage("HighlightWordTag Exception: " + ex.Message);
+                XSettings.LogMessage("HighlightWordTag Exception: " + ex.Message);
             }
         }
         static bool WordExtentIsValid(SnapshotPoint currentRequest, TextExtent word)

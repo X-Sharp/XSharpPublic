@@ -286,8 +286,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.DisplayOutputMessage("Exception in XSharpXMLDocMember.GetSummary");
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetSummary");
                 summary = "** Invalid XML comment ** \r"+e.Message;
 
             }
@@ -498,8 +497,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.DisplayOutputMessage("Exception in XSharpXMLDocMember.GetDocSummary");
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
             }
             //
             return summary;
@@ -583,8 +581,7 @@ namespace XSharp.LanguageService
                 }
                 catch (Exception e)
                 {
-                    XSettings.DisplayOutputMessage("Exception in XSharpXMLDocMember.GetDocSummary");
-                    XSettings.DisplayException(e);
+                    XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
                     return false;
                 }
                 return true;

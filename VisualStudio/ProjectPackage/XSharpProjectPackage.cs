@@ -165,7 +165,7 @@ namespace XSharp.Project
 #endif
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents,IVsDebuggerEvents
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IVsShellPropertyEvents,IVsDebuggerEvents, IDisposable
     {
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
@@ -241,6 +241,7 @@ namespace XSharp.Project
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
             _langservice = await GetServiceAsync(typeof(XSharpLanguageService)) as XSharpLanguageService;
+            
             await this.RegisterCommandsAsync();
             await GetEditorOptionsAsync();
 
@@ -278,6 +279,29 @@ namespace XSharp.Project
             XEditorSettings.FieldSpecParentClass = options.FieldSpecParentClass;
             XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
             XEditorSettings.Disassembler = options.Disassembler;
+
+            if (! options.Debugging && (options.LogToDebug || options.LogtoDisk))
+            {
+                options.LogToDebug = false;
+                options.LogtoDisk = false;
+                options.SaveAsync().FireAndForget();
+            }
+            else
+            {
+                if (!options.LogToDebug && !options.LogtoDisk)
+                {
+                    options.Debugging = false;
+                    options.SaveAsync().FireAndForget();
+                }
+            }
+
+            XSettings.EnableFileLogging = options.LogtoDisk;
+            XSettings.EnableDebugLogging = options.LogToDebug;
+            if (XSettings.EnableFileLogging || XSettings.EnableDebugLogging)
+                Logger.Start();
+            else
+                Logger.Stop();
+
             return true;
         }
         /// <summary>
@@ -321,6 +345,11 @@ namespace XSharp.Project
         public int OnModeChange(DBGMODE dbgmodeNew)
         {
             throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            Logger.Stop();
         }
     }
 

@@ -62,7 +62,7 @@ namespace XSharpLanguage
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSettings.DisplayOutputMessage(strMessage);
+                XSettings.LogMessage(strMessage);
             }
         }
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
@@ -100,8 +100,7 @@ namespace XSharpLanguage
             }
             catch (Exception ex)
             {
-                WriteOutputMessage("XAML AugmentCompletionSessions failed " );
-                XSettings.DisplayException(ex);
+                XSettings.LogException(ex, "XAML AugmentCompletionSessions failed");
             }
             finally
             {

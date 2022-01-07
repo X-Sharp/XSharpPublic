@@ -266,7 +266,7 @@ namespace Microsoft.VisualStudio.Project
                     VS.MessageBox.ShowError(title, e.Message);
                 }
 
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "OpenChildren");
                 throw;
             }
             finally

@@ -11,7 +11,7 @@ USING System
 BEGIN NAMESPACE XSharpModel
     STATIC CLASS XSettings
         // Fields
-        PUBLIC STATIC PROPERTY EnableLogging                      AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY EnableLogging                      AS LOGIC GET EnableFileLogging .or. EnableOutputWindowLogging .or. EnableDebugLogging
         PUBLIC STATIC PROPERTY EnableBraceMatchLog                AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EnableCodeCompletionLog            AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EnableDatabaseLog                  AS LOGIC AUTO
@@ -20,6 +20,10 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY EnableQuickInfoLog                 AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EnableReferenceInfoLog             AS LOGIC AUTO
         PUBLIC STATIC PROPERTY EnableTypelookupLog                AS LOGIC AUTO
+
+        PUBLIC STATIC PROPERTY EnableOutputWindowLogging          AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY EnableFileLogging                  AS LOGIC AUTO
+        PUBLIC STATIC PROPERTY EnableDebugLogging                 AS LOGIC AUTO
 
         PUBLIC STATIC PROPERTY DisableAssemblyReferences          AS LOGIC AUTO
         PUBLIC STATIC PROPERTY DisableBraceMatching               AS LOGIC AUTO
@@ -77,35 +81,22 @@ BEGIN NAMESPACE XSharpModel
         PUBLIC STATIC PROPERTY IndentCaseLabel                   AS LOGIC AUTO
         PUBLIC STATIC PROPERTY IndentMultiLines                  AS LOGIC AUTO
 
-//        PUBLIC STATIC PROPERTY CompleteLocals                   AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteSelf                     AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteParent                   AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteNamespaces               AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteTypes                    AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteKeywords                 AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteSnippets                 AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteGlobals                  AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteGlobalsP                 AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteGlobalsA                 AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteFunctions                AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteFunctionsP               AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteFunctionsA               AS LOGIC AUTO := TRUE
-//        PUBLIC STATIC PROPERTY CompleteNumChars                 AS LONG AUTO := 4
         PUBLIC STATIC PROPERTY MaxCompletionEntries             AS LONG AUTO := Int32.MaxValue
         PUBLIC STATIC PROPERTY ShellLink                        AS IXVsShellLink AUTO
+        PUBLIC STATIC PROPERTY LanguageService                  AS OBJECT AUTO
 
         PUBLIC STATIC PROPERTY DebuggerMode                AS DebuggerMode AUTO
         PUBLIC STATIC PROPERTY DebuggerIsRunning           AS LOGIC GET DebuggerMode != DebuggerMode.Design
 
-        PUBLIC STATIC METHOD DisplayOutputMessage(message AS STRING) AS VOID
+        PUBLIC STATIC METHOD LogMessage(message AS STRING) AS VOID
             IF EnableLogging .and. ShellLink != NULL
-                ShellLink:WriteOutputMessage(message)
+                ShellLink:LogMessage(message)
             ENDIF
          RETURN
 
-        PUBLIC STATIC METHOD DisplayException(ex AS Exception) AS VOID
+        PUBLIC STATIC METHOD LogException(ex AS Exception, msg as STRING) AS VOID
          IF ShellLink != NULL
-            ShellLink:WriteException(ex)
+            ShellLink:LogException(ex, msg)
          ENDIF
          RETURN
 

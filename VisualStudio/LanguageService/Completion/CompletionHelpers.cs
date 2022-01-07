@@ -485,7 +485,12 @@ namespace XSharp.LanguageService
                         baseType = "System.Object";
                 }
                 var parentType = sourceType.File.FindType(baseType, sourceType.Namespace);
-                if (baseType == "System.Enum" && staticOnly)
+               if (parentType.FullName == sourceType.FullName)
+                {
+                    ; // recursion !
+                    WriteOutputMessage("*** Recursion detected *** " + sourceType.FullName + " inherits from " + parentType.FullName);
+                }
+                else if (baseType == "System.Enum" && staticOnly)
                 {
                     ; // do nothing
                 }

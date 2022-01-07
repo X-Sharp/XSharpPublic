@@ -16,8 +16,11 @@ namespace XSharp.Project
         static OutputWindowPane pane = null;
         static bool busy = false;
 
-        internal static void DisplayException(Exception e)
+        internal static void DisplayException(Exception e, string message = "")
         {
+            DisplayOutputMessage("****************************");
+            DisplayOutputMessage("Exception occurred: " + message);
+            DisplayOutputMessage("****************************");
             DisplayOutputMessage(e.ToString());
         }
         internal static void DisplayOutputMessage(string message)
@@ -26,7 +29,7 @@ namespace XSharp.Project
         }
         internal async static Task DisplayOutputMessageAsync(string message)
         {
-            if (!XSharpModel.XSettings.EnableLogging)
+            if (!XSharpModel.XSettings.EnableOutputWindowLogging)
                 return;
             if (! busy && pane == null)
             {

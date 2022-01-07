@@ -228,7 +228,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                XSettings.DisplayOutputMessage("XSharp.Formatting:" + strMessage);
+                XSettings.LogMessage("XSharp.Formatting:" + strMessage);
             }
         }
         private int getCurrentLine()

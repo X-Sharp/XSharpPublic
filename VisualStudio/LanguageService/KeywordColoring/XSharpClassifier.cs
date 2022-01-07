@@ -226,7 +226,7 @@ namespace XSharp.LanguageService
         {
             if (ClassificationChanged != null)
             {
-                Trace.WriteLine("-->> XSharpClassifier.triggerRepaint()");
+                XSettings.LogMessage("-->> XSharpClassifier.triggerRepaint()");
                 if (snapshot != null && _buffer?.CurrentSnapshot != null)
                 {
                     // tell the editor that we have new info
@@ -236,12 +236,12 @@ namespace XSharp.LanguageService
                                 new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
                     }
                 }
-                Trace.WriteLine("<<-- XSharpClassifier.triggerRepaint()");
+                XSettings.LogMessage("<<-- XSharpClassifier.triggerRepaint()");
             }
         }
         private void ClassifyCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Trace.WriteLine("-->> XSharpClassifier.ClassifyCompleted()");
+            XSettings.LogMessage("-->> XSharpClassifier.ClassifyCompleted()");
             try
             {
                 if (e.Cancelled)
@@ -279,9 +279,9 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("<<-- Exception :" + ex.Message);
+                XSettings.LogException(ex, "XSharpClassifier.ClassifyCompleted()");
             }
-            Trace.WriteLine("<<-- XSharpClassifier.ClassifyCompleted()");
+            XSettings.LogMessage("<<-- XSharpClassifier.ClassifyCompleted()");
         }
 
         #endregion
@@ -295,7 +295,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.DisableEntityParsing)
                 return;
-            Trace.WriteLine("-->> XSharpClassifier.BuildModelDoWork()");
+            XSettings.LogMessage("-->> XSharpClassifier.ParseEntities()");
             // Note this runs in the background
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
@@ -318,7 +318,7 @@ namespace XSharp.LanguageService
                 DoRepaintRegions();
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             }
-            Trace.WriteLine("<<-- XSharpClassifier.BuildModelDoWork()");
+            XSettings.LogMessage("<<-- XSharpClassifier.ParseEntities()");
         }
         #endregion
 
@@ -360,7 +360,7 @@ namespace XSharp.LanguageService
             {
                 return new List<ClassificationSpan>();
             }
-            Trace.WriteLine("-->> XSharpClassifier.BuildRegionTagsNew()");
+            XSettings.LogMessage("-->> XSharpClassifier.BuildRegionTags()");
             var regions = new List<ClassificationSpan>();
             foreach (var entity in entities)
             {
@@ -399,7 +399,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            Trace.WriteLine("<<-- XSharpClassifier.BuildRegionTags()");
+            XSettings.LogMessage("<<-- XSharpClassifier.BuildRegionTags()");
             return regions;
         }
         private void AddRegionSpan(List<ClassificationSpan> regions, ITextSnapshot snapshot, int startPos, int endPos)
@@ -946,13 +946,13 @@ namespace XSharp.LanguageService
             {
                 newtags = _colorTags;
             }
-            Trace.WriteLine("-->> XSharpClassifier.BuildColorClassifications()");
+            XSettings.LogMessage("-->> XSharpClassifier.BuildColorClassifications()");
             lock (gate)
             {
                 _colorTags = newtags;
                 _lexerRegions = regionTags;
             }
-            Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");
+            XSettings.LogMessage("<<-- XSharpClassifier.BuildColorClassifications()");
             Debug("End building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             TriggerRepaint(snapshot);
         }
@@ -997,7 +997,7 @@ namespace XSharp.LanguageService
 
         public IList<ClassificationSpan> GetRegionTags()
         {
-            Trace.WriteLine("-->> XSharpClassifier.GetRegionTags()");
+            XSettings.LogMessage("-->> XSharpClassifier.GetRegionTags()");
             IList<ClassificationSpan> result;
             lock (gate)
             {
@@ -1017,19 +1017,19 @@ namespace XSharp.LanguageService
                     result = new List<ClassificationSpan>();
                 }
             }
-            Trace.WriteLine("<<-- XSharpClassifier.GetRegionTags()");
+            XSettings.LogMessage("<<-- XSharpClassifier.GetRegionTags()");
             return result;
         }
 
         public IList<ClassificationSpan> GetTags()
         {
-            Trace.WriteLine("-->> XSharpClassifier.GetTags()");
+            XSettings.LogMessage("-->> XSharpClassifier.GetTags()");
             IList<ClassificationSpan> ret;
             lock (gate)
             {
                 ret = _colorTags.Tags;
             }
-            Trace.WriteLine("<<-- XSharpClassifier.GetTags()");
+            XSettings.LogMessage("<<-- XSharpClassifier.GetTags()");
             return ret;
         }
 
@@ -1097,8 +1097,7 @@ namespace XSharp.LanguageService
         internal static void Debug(string msg, params object[] o)
         {
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-                System.Diagnostics.Debug.WriteLine(String.Format("XColorizer: " + msg, o));
+            XSettings.LogMessage(string.Format("XColorizer: " + msg, o));
 #endif
         }
     }

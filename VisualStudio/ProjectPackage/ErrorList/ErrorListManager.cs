@@ -89,16 +89,40 @@ namespace XSharp.Project
             }
 
         }
+
+        private IErrorListItem CreateItem(string file, int line, int column, int length, string errCode,
+            string message, MessageSeverity sev, ErrorSource errorSource, string projectName)
+        {
+            var item = new ErrorListItem()
+            {
+                Filename = file,
+                Line = line,
+                Column = column,
+                Length = length,
+                ErrorCode = errCode,
+                Message = message,
+                ProjectName = projectName,
+                ErrorSource = errorSource,
+                Severity = sev,
+                BuildTool = errorSource == ErrorSource.Build ? "Build" : "Live",
+                ProjectGuid = Project.ProjectIDGuid
+            };
+            return item;
+        }
+
         internal void AddBuildError(string file, int line, int column, string errCode,
             string message, MessageSeverity sev)
         {
-            this.AddError(BuildErrors, file, line, column, 1, errCode, message, Project.Caption, sev, ErrorSource.Build);
+
+            var item = this.CreateItem(file, line, column, 1, errCode, message, sev, ErrorSource.Build, Project.Caption);
+            this.AddError(BuildErrors, item );
         }
 
         internal void AddIntellisenseError(string file, int line, int column, int length, string errCode,
             string message, MessageSeverity sev)
         {
-            this.AddError(IntellisenseErrors, file, line, column, length, errCode, message, Project.Caption, sev, ErrorSource.Other);
+            var item = this.CreateItem(file, line, column, length, errCode, message, sev, ErrorSource.Other, Project.Caption);
+            this.AddError(IntellisenseErrors, item);
         }
 
         internal void ClearBuildErrors()
@@ -115,24 +139,8 @@ namespace XSharp.Project
             }
         }
 
-        private void AddError(IList<IErrorListItem> errors, string file, int line, int column, int length, string errCode, string message,
-            string projectName, MessageSeverity sev, ErrorSource errorSource)
+        private void AddError(IList<IErrorListItem> errors, IErrorListItem item)
         {
-            var item = new ErrorListItem()
-            {
-                Filename = file,
-                Line = line,
-                Column = column,
-                Length = length,
-                ErrorCode = errCode,
-                Message = message,
-                ProjectName = projectName,
-                ErrorSource = errorSource,
-                Severity = sev,
-                BuildTool = errorSource == ErrorSource.Build ? "Build" : "Live",
-                ProjectGuid = Project.ProjectIDGuid
-                //Manager = this
-            };
             lock (this)
             {
                 errors.Add(item);

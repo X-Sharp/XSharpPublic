@@ -225,7 +225,7 @@ BEGIN NAMESPACE XSharpModel
                             endif
 
                         CATCH exception AS System.Exception
-                            XSolution.WriteException(exception)
+                            XSolution.WriteException(exception,__FUNCTION__)
                         END TRY
                     END USING
                 END LOCK

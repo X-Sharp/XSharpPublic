@@ -8,9 +8,13 @@ namespace Community.VisualStudio.Toolkit
     {
         internal static bool IsXSharp(this Project project)
         {
-            var path = project.FullPath;
-            var ext = System.IO.Path.GetExtension(path).ToLower();
-            return ext == ".xsproj" || ext == ".xsprj";
+            if (project != null)
+            {
+                var path = project.FullPath;
+                var ext = System.IO.Path.GetExtension(path).ToLower();
+                return ext == ".xsproj" || ext == ".xsprj";
+            }
+            return false;
         }
     }
 }

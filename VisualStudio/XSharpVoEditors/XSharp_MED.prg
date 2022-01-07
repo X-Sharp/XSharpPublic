@@ -7,7 +7,7 @@ USING System.Collections.Generic
 USING System.Windows.Forms
 USING System.IO
 USING Xide
-
+using XSharpModel
 
 BEGIN NAMESPACE XSharp.VOEditors
 CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
@@ -110,6 +110,7 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
 			ENDIF
 
 		CATCH e AS Exception
+            XSettings.LogException(e, __FUNCTION__)
 
 			XFuncs.ErrorBox(e:Message )
 			lSuccess := FALSE

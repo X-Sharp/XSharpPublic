@@ -18,7 +18,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio;
 using LanguageService.CodeAnalysis.XSharp;
 using Microsoft.VisualStudio.Text.Tagging;
-
+#if ! ASYNCCOMPLETION
 namespace XSharp.LanguageService
 {
     [Export(typeof(ICompletionSourceProvider))]
@@ -49,4 +49,4 @@ namespace XSharp.LanguageService
 
 
 
-
+#endif

@@ -68,7 +68,7 @@ namespace XSharp.LanguageService.Editors.BraceMatching
         {
             if (XSettings.EnableBraceMatchLog && XSettings.EnableLogging)
             {
-                XSettings.DisplayOutputMessage("Brace Matching: " + sMessage);
+                XSettings.LogMessage("Brace Matching: " + sMessage);
             }
         }
 

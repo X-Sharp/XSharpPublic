@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharpModel
                        walker:Parse(FALSE)
 
                     CATCH e AS Exception
-                        XSolution.WriteException(e)
+                        XSettings.LogException(e, __FUNCTION__)
                         walkFile := FALSE
                     FINALLY
                         IF walker != NULL
@@ -157,8 +157,7 @@ BEGIN NAMESPACE XSharpModel
                         _WalkerThread:Start()
                     ENDIF
                 CATCH exception AS System.Exception
-                    WriteOutputMessage("Cannot start Background walker Thread : ")
-                    XSolution.WriteException(exception)
+                    XSolution.WriteException(exception,"Cannot start Background walker Thread")
 
                 END TRY
         ENDIF
@@ -202,8 +201,7 @@ BEGIN NAMESPACE XSharpModel
                     TRY
                         Parallel.ForEach(aFiles, parallelOptions, walkOneFile)
                     CATCH e AS Exception
-                        WriteOutputMessage("Parallel.Foreach failed")
-                        XSolution.WriteException(e)
+                        XSettings.LogException(e, __FUNCTION__)
                     END TRY
                     BEGIN LOCK _gate
                         _projectsForTypeResolution:Enqueue(project)
@@ -317,8 +315,7 @@ BEGIN NAMESPACE XSharpModel
                     ENDIF
                 CATCH exception AS System.Exception
                     //
-                    WriteOutputMessage("Cannot check Background walker Thread : ")
-                    XSolution.WriteException(exception)
+                    XSolution.WriteException(exception,"Cannot check Background walker Thread")
                 END TRY
                 RETURN FALSE
             END GET

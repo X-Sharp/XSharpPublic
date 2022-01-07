@@ -10,7 +10,7 @@ USING System.Collections.Generic
 
 USING System.IO
 using System.Text
-
+using XSHarpModel
 
 PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 	PROTECT cLoadedDir AS STRING
@@ -33,7 +33,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 
 	CONSTRUCTOR(_oSurface AS Control , _oGrid AS DesignerGrid)
 		SUPER(_oSurface)
-		
+
 		SELF:oGrid := _oGrid
 		SELF:oGrid:PropertyModified := PropertyUpdatedEventHandler{ SELF , @PropertyModifiedInGrid() }
 		SELF:oGrid:ControlKeyPressed := ControlKeyPressedEventHandler{ SELF , @ControlKeyPressedInGrid() }
@@ -66,7 +66,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 
 		SELF:oListView:GotFocus += EventHandler{ SELF , @ListGotFocus() }
 		SELF:oListView:LostFocus += EventHandler{ SELF , @ListLostFocus() }
-		
+
 		SELF:aFilesToDelete := List<STRING>{}
 
 		SELF:oTimer:Start()
@@ -79,7 +79,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 
 	ACCESS IsDirty AS LOGIC
 	RETURN SELF:nAction != SELF:nActionSaved
-		
+
 	VIRTUAL METHOD GiveFocus() AS VOID
 		SELF:oListView:Focus()
 	RETURN
@@ -121,7 +121,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 	METHOD LoadUsedFieldSpecNames() AS VOID
 		LOCAL aFieldSpecs AS FSEDesignFieldSpec[]
 		LOCAL n AS INT
-		
+
 		SELF:aUsedFieldSpecNames:Clear()
 		aFieldSpecs := SELF:GetFieldSpecs()
 		FOR n := 1 UPTO aFieldSpecs:Length
@@ -139,7 +139,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 			aRet[n+1] := oItem:oDesign
 		NEXT
 	RETURN aRet
-	
+
 	METHOD GetSelected() AS ArrayList
 		LOCAL oItem AS FSEDesignListViewItem
 		LOCAL aRet := ArrayList{} AS ArrayList
@@ -174,7 +174,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , cProp , oValue})
 			IF cProp == "type"
 				LOCAL nLength,nDecimal AS INT
-				SWITCH  (INT)oValue 
+				SWITCH  (INT)oValue
 				CASE 0
 					nLength := 10
 					nDecimal := 0
@@ -215,25 +215,25 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 		oDesign:lModified := TRUE
 		oDesign:oItem:ForeColor := Color.Red
 	RETURN
-	
+
 	METHOD ApplyProperty(_oDesign AS FSEDesignFieldSpec , oProp AS VODesignProperty) AS VOID
 		LOCAL oDesign AS FSEDesignFieldSpec
 		oDesign :=(FSEDesignFieldSpec)_oDesign
-		
-		switch oProp:Name 
-        case "classname" 
-        case "type" 
-        case "dec" 
-        case "len" 
-	    case "picture" 
-        case "required" 
-        case "minlen" 
+
+		switch oProp:Name
+        case "classname"
+        case "type"
+        case "dec"
+        case "len"
+	    case "picture"
+        case "required"
+        case "minlen"
         case "validation"
 			oDesign:oItem:SetValues()
 		end switch
-		
+
 	RETURN
-	
+
 	METHOD ResetModified() AS VOID
 		LOCAL oDesign AS FSEDesignFieldSpec
 		LOCAL n AS INT
@@ -245,11 +245,11 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 	RETURN
 
 	METHOD CanDoAction(eAction AS DesignerActionType) AS LOGIC
-		
+
 		IF SELF:lReadOnly
 			RETURN FALSE
 		ENDIF
-		
+
 		DO CASE
 /*		CASE eAction == DesignerActionType.Cut .or. eAction == DesignerActionType.Copy .or. ;
 			eAction == DesignerActionType.RemoveSelected
@@ -276,9 +276,9 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 //		LOCAL n AS INT
 
 		SELF:nActionDepth --
-	
+
 		IF SELF:nActionDepth == 0
-	
+
 			IF SELF:lClearUndoBuffer
 				SELF:nAction := 0
 				SELF:aActions:Clear()
@@ -287,7 +287,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 				oAction := (DesignerBasicAction)SELF:aActions[SELF:nAction - 1]
 				oAction:lGroup := TRUE
 			ENDIF
-	
+
 /*			IF oAction != NULL .and. oAction:aSelected:Count == 0
 				FOR n := 0 UPTO SELF:aSelected:Count - 1
 					oDesign := (DesignWindowItem)SELF:aSelected[n]
@@ -296,19 +296,19 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 					ENDIF
 				NEXT
 			ENDIF*/
-	
+
 			SELF:oGrid:Fill(SELF:GetSelected())
 
             IF SELF:IsDirtyChanged != NULL
                 SELF:IsDirtyChanged:Invoke(SELF , EventArgs{})
             ENDIF
-            
+
             IF !SELF:IsDirty
             	SELF:ResetModified()
             END IF
-	
+
 		ENDIF
-	
+
 	RETURN
 
 	VIRTUAL METHOD DoBasicAction(oAction AS DesignerBasicAction , eAction AS DesignerBasicActionType , uData AS ActionData) AS OBJECT
@@ -348,7 +348,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 				oUndo:eAction := DesignerBasicActionType.Remove
 				oUndo:uData := ActionData{oDesign:cGuid}
 				oAction:aUndo:Add(oUndo)
-				
+
 				oRedo := DesignerBasicAction{TRUE}
 				oRedo:eAction := DesignerBasicActionType.Create
 				oRedo:uData := ActionData{cGuid}
@@ -361,7 +361,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 					SELF:DoBasicAction(oAction , DesignerBasicActionType.SetProperty , ActionData{cGuid , oNameValue:Name , oNameValue:Value})
 				END DO
 			ENDIF
-			
+
 		CASE DesignerBasicActionType.Remove
 			cGuid := uData:cGuid
 			oDesign := SELF:GetDesignItemFromGuid(cGuid)
@@ -375,7 +375,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 				SELF:oListView:SelectedIndices:Add(SELF:oListView:Items:Count - 1)
 				SELF:oListView:SelectedItems[0]:Selected := TRUE
 			END IF
-			
+
 			SELF:lDidAction := TRUE
 			IF !oAction:lExecuted
 				aProperties := NameValueCollection{}
@@ -390,7 +390,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 				oUndo:eAction := DesignerBasicActionType.Create
 				oUndo:uData := ActionData{oDesign:cGuid , NULL , NULL , aProperties}
 				oAction:aUndo:Add(oUndo)
-				
+
 				oRedo := DesignerBasicAction{TRUE}
 				oRedo:eAction := DesignerBasicActionType.Remove
 				oRedo:uData := ActionData{oDesign:cGuid}
@@ -407,7 +407,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 					oUndo:eAction := DesignerBasicActionType.SetProperty
 					oUndo:uData := ActionData{oDesign:cGuid , uData:cData , oProp:Value}
 					oAction:aUndo:Add(oUndo)
-					
+
 					oRedo := DesignerBasicAction{TRUE}
 					oRedo:eAction := DesignerBasicActionType.SetProperty
 					oRedo:uData := ActionData{oDesign:cGuid , uData:cData , uData:oData}
@@ -417,7 +417,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 				SELF:PropertyGotUpdated(oDesign , oProp)
 //				SELF:AddAffected(oDesign)
 			ENDIF
-	
+
 		END SWITCH
 
 		oAction:lExecuted := TRUE
@@ -471,7 +471,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 								oPrgStream AS EditorStream, lVnfrmOnly AS LOGIC) AS LOGIC
 		LOCAL lSuccess AS LOGIC
 		LOCAL lError AS LOGIC
-		
+
 		IF .not. SELF:lLoadedAsXml
 			cVNfsFileName := Funcs.GetModuleFilenameFromBinary(cVNfsFileName) + ".Fieldspecs.xsfs"
 			IF .not. VOFieldSpecEditor.lEditorCloseWarningShown
@@ -495,7 +495,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 					lError := TRUE
 				END IF
 			END IF
-			
+
 			lSuccess := FALSE
 			IF !lError
 				IF !lVnfrmOnly
@@ -505,9 +505,9 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 					lSuccess := TRUE
 				END IF
 			END IF
-			
-		CATCH e AS Exception
 
+		CATCH e AS Exception
+            XSettings.LogException(e, __FUNCTION__)
 			MessageBox.Show(e:Message , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Exclamation)
 			lSuccess := FALSE
 
@@ -534,7 +534,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 		LOCAL lSuccess AS LOGIC
 		LOCAL lError AS LOGIC
 		LOCAL n,nAt AS INT
-		
+
 		TRY
 
 			oFileInfo := FileInfo{cVNFrmFileName}
@@ -545,7 +545,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 			IF nAt != -1
 				cBaseName := cBaseName:Substring(0 , nAt)
 			ENDIF
-						
+
 			cFileName := cBaseName
 			nAt := cFileName:IndexOf('.')
 			IF nAt != -1 // strip out window name
@@ -564,7 +564,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 					lError := TRUE
 				END IF
 			END IF
-			
+
 			lSuccess := FALSE
 			IF !lError
 				IF !lVnfrmOnly
@@ -584,7 +584,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 				NEXT
 				lSuccess := TRUE
 			ENDIF
-			
+
 		CATCH e AS Exception
 
 			MessageBox.Show(e:Message , Resources.EditorName , MessageBoxButtons.OK , MessageBoxIcon.Exclamation)
@@ -608,7 +608,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 
 	VIRTUAL METHOD Open(cFileName AS STRING) AS LOGIC
 	RETURN TRUE
-	
+
 	METHOD InitReadOnlyProperties() AS VOID
 		LOCAL oDesign AS FSEDesignFieldSpec
 		LOCAL aDesign AS ArrayList
@@ -626,7 +626,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 			END IF
 		NEXT
 	RETURN
-	
+
 	METHOD ShowCode() AS VOID
 		LOCAL oCode AS CodeContents
 		LOCAL aDesign AS ArrayList
@@ -635,7 +635,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 		LOCAL f AS Form
 
 		aDesign := SELF:GetAllDesignItems()
-		
+
 		f := Form{}
 		f:Size := Size{800 , 500}
 		f:ShowInTaskbar := FALSE
@@ -669,16 +669,16 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 		LOCAL aConstructor AS List<STRING>
 		LOCAL cLine AS STRING
 		LOCAL n AS INT
-		
+
 		oCode := CodeContents{}
-		
+
 		aClass := oCode:aClass
 		FOR n := 0 UPTO VOFieldSpecEditor.Template:aClass:Count - 1
 			cLine := VOFieldSpecEditor.Template:aClass[n]
 			cLine := TranslateLine(cLine , oDesign)
 			aClass:Add(cLine)
 		NEXT
-		
+
 		aConstructor := oCode:aConstructor
 		FOR n := 0 UPTO VOFieldSpecEditor.Template:aInit:Count - 1
 			cLine := VOFieldSpecEditor.Template:aInit[n]
@@ -686,7 +686,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 			aConstructor:Add(cLine)
 		NEXT
 	RETURN oCode
-	
+
 	INTERNAL STATIC METHOD TranslateLine(cLine AS STRING , oDesign AS FSEDesignFieldSpec) AS STRING
 		LOCAL oProp AS DesignProperty
 		LOCAL n , nAt AS INT
@@ -697,7 +697,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 
 		LOCAL aSorted AS SortedList
 		LOCAL rKey AS REAL8
-		
+
 		aSorted := SortedList{}
 		FOR n := 0 UPTO oDesign:aProperties:Count - 1
 			oProp := (DesignProperty)oDesign:aProperties[n]
@@ -707,7 +707,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 			END DO
 			aSorted:Add(rKey , oProp)
 		NEXT
-		
+
 		cUpper := cLine:ToUpper()
 		cRet := cLine
 //		FOR n := 0 UPTO oDesign:aProperties:Count - 1
@@ -739,7 +739,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 					IF cValue:Length == 0
 						cValue := "FieldSpec"
 					END IF
-					
+
 				CASE oProp:IsAuto .and. (oProp:Name == "minrange" .or. oProp:Name == "maxrange" .or. oProp:Name == "validation")
 					cValue := "NIL"
 
@@ -748,11 +748,11 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 					IF .not. cValue:StartsWith("{")
 						cValue := e"\"" + cValue + e"\""
 					END IF
-					
+
 				OTHERWISE
 
 					cValue := Funcs.TranslateCaption(oProp:TextValue , TRUE , FALSE)
-					
+
 					// Ultra hack, template probably contains quotes that we need to remove
 					IF cValue:StartsWith("LoadResString") .and. cRet:EndsWith(e"\"")
 						cRet := cRet:Substring(0 , cRet:Length - 1)
@@ -772,7 +772,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
 				cUpper := cLine:ToUpper()
 			END IF
 		NEXT
-		
+
 	RETURN cRet
 
 	PROTECTED METHOD NameExists(cName AS STRING) AS LOGIC
@@ -845,16 +845,16 @@ CLASS FSEListView INHERIT ListView
 		SELF:ContextMenu:MenuItems:Add("Delete FieldSpec" , EventHandler{ SELF , @ContextRemove() })
 
 	RETURN
-	
+
 	PROTECTED METHOD ProcessCmdKey(Msg REF Message,KeyData AS Keys) AS LOGIC
 		IF KeyData==Keys.Escape
 			RETURN FALSE
 		END IF
 	RETURN SUPER:ProcessCmdKey(REF Msg,KeyData)
-	
+
 	PROTECTED METHOD OnMouseUp(e AS MouseEventArgs) AS VOID
 		DO CASE
-		CASE e:Clicks==1 .and. e:Button==MouseButtons.Left 
+		CASE e:Clicks==1 .and. e:Button==MouseButtons.Left
 			IF SELF:oFSEditor:lLoadedAsXml
 				IF SELF:Items:Count == 0
 					SELF:Append()
@@ -864,14 +864,14 @@ CLASS FSEListView INHERIT ListView
 			END IF
 		END CASE
 	RETURN
-	
+
 	PROTECTED METHOD OnGotFocus(e AS EventArgs) AS VOID
 		SUPER:OnGotFocus(e)
 /*		IF SELF:Items:Count == 0 .and. SELF:oItemEdit == NULL
 			SELF:Append()
 		END IF*/
 	RETURN
-	
+
 	PROTECTED METHOD OnSelectedIndexChanged(e AS EventArgs) AS VOID
 		SUPER:OnSelectedIndexChanged(e)
 //		IF SELF:SelectedItems:Count != 0
@@ -892,7 +892,7 @@ CLASS FSEListView INHERIT ListView
 	METHOD ContextRemove(o AS OBJECT , e AS EventArgs) AS VOID
 		SELF:Delete()
 	RETURN
-	
+
 	PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
 		SUPER:OnKeyDown(e)
 		DO CASE
@@ -922,7 +922,7 @@ CLASS FSEListView INHERIT ListView
 			SELF:oIde:FocusEditor()*/
 		END CASE
 	RETURN
-	
+
 	METHOD Delete() AS VOID
 		LOCAL oItem AS FSEDesignListViewItem
 //		LOCAL nIndex AS INT
@@ -942,7 +942,7 @@ CLASS FSEListView INHERIT ListView
 			SELF:Items[SELF:Items:Count-1]:Selected:=TRUE
 		END IF*/
 	RETURN
-	
+
 	METHOD Append() AS VOID
 		IF SELF:lAppending .or. SELF:oItemEdit != NULL
 			RETURN
@@ -957,7 +957,7 @@ CLASS FSEListView INHERIT ListView
 		SELF:Items[SELF:Items:Count-1]:Selected := TRUE
 		SELF:ShowEdit(TRUE)
 	RETURN
-	
+
 	METHOD ShowEdit(_lAppending AS LOGIC) AS VOID
 		LOCAL oItem AS FSEDesignListViewItem
 		LOCAL oRect AS Rectangle
@@ -988,7 +988,7 @@ CLASS FSEListView INHERIT ListView
 		SELF:oEdit:BringToFront()
 		SELF:oEdit:Focus()
 	RETURN
-		
+
 	METHOD AcceptEdit() AS VOID
 		LOCAL oDesign AS FSEDesignFieldSpec
 		LOCAL n AS INT
@@ -1006,7 +1006,7 @@ CLASS FSEListView INHERIT ListView
 			SELF:CancelEdit()
 			RETURN
 		END IF
-		
+
 		IF SELF:lAppending
 			SELF:oFSEditor:BeginAction()
 			oDesign := (FSEDesignFieldSpec)SELF:oFSEditor:StartAction(DesignerBasicActionType.Create , ActionData{NULL , NULL , SELF:oItemEdit})
@@ -1054,7 +1054,7 @@ CLASS FSEListView INHERIT ListView
 		SELF:oItemEdit := NULL
 		SELF:Sorting := SortOrder.Ascending
 	RETURN
-	
+
 END CLASS
 
 
@@ -1109,15 +1109,15 @@ CLASS FSEDesignFieldSpec INHERIT DesignItem
 	CONSTRUCTOR(_oItem AS FSEDesignListViewItem , _oEditor AS VOFieldSpecEditor)
 
 		SUPER(_oEditor)
-		
+
 		LOCAL oProp AS VODesignProperty
-		
+
 		SELF:oItem := _oItem
 		SELF:oEditor := _oEditor
 
 		SELF:aPages := List<STRING>{}
 		SELF:aPages:Add("General")
-		
+
 //		SELF:AddProperty(VODesignProperty{"classname" , "FieldSpec" , "" , PropertyType.Text , PropertyStyles.ReadOnly})
 		SELF:AddProperty(VODesignProperty{"classname" , "FieldSpec" , "" , PropertyType.Text , PropertyStyles.None})
 		SELF:AddProperty(VODesignProperty{"superclass" , "Inherit from" , "" , PropertyType.Text , PropertyStyles.NoAuto})
@@ -1143,14 +1143,14 @@ CLASS FSEDesignFieldSpec INHERIT DesignItem
 
 		SELF:AddProperty(VODesignProperty{"dec" , "Decimal" , "Decimal" , PropertyType.Numeric , PropertyStyles.NoAuto})
 		SELF:AddProperty(VODesignProperty{"picture" , "Picture" , "Picture" , PropertyType.Text , PropertyStyles.NoAuto})
-	
+
 		SELF:AddProperty(VODesignProperty{"minlen","Min Length","",PropertyType.Numeric , PropertyStyles.NoAuto})
 		SELF:AddProperty(VODesignProperty{"minlendiag","Min Length Diagnostic","",PropertyType.Text , PropertyStyles.NoAuto})
 		SELF:AddProperty(VODesignProperty{"minlenhelp","Min Length Help","",PropertyType.Text , PropertyStyles.NoAuto})
 		SELF:AddProperty(VODesignProperty{"required","Required","","YESNO" , PropertyStyles.NoAuto})
 		SELF:AddProperty(VODesignProperty{"reqdiag","Required Diagnostic","",PropertyType.Text , PropertyStyles.NoAuto})
 		SELF:AddProperty(VODesignProperty{"reqhelp","Required Help","",PropertyType.Text , PropertyStyles.NoAuto})
-	
+
 		SELF:AddProperty(VODesignProperty{"minrange","Minimum","",PropertyType.Text , PropertyStyles.NoAuto})
 		SELF:AddProperty(VODesignProperty{"maxrange","Maximum","",PropertyType.Text , PropertyStyles.NoAuto})
 		SELF:AddProperty(VODesignProperty{"rangediag","Range Diagnostic","",PropertyType.Text , PropertyStyles.NoAuto})
@@ -1158,8 +1158,8 @@ CLASS FSEDesignFieldSpec INHERIT DesignItem
 		SELF:AddProperty(VODesignProperty{"validation","Validation","",PropertyType.Text , PropertyStyles.NoAuto})
 		SELF:AddProperty(VODesignProperty{"validdiag","Validation Diagnostic","",PropertyType.Text , PropertyStyles.NoAuto})
 		SELF:AddProperty(VODesignProperty{"validhelp","Validation Help","",PropertyType.Text , PropertyStyles.NoAuto})
-	
-	RETURN 
+
+	RETURN
 
 	METHOD AllowPropertyUpdate(oProp AS VODesignProperty , oValue AS OBJECT) AS LOGIC
 		IF oProp:Name == "hlname" .or. oProp:Name == "classname"
@@ -1194,19 +1194,19 @@ CLASS FieldSpecCode
 	CONSTRUCTOR()
 		SELF:Reset()
 	RETURN
-	
+
 	INTERNAL METHOD Reset() AS VOID
 		SELF:aClass := List<STRING>{}
 		SELF:aInit := List<STRING>{}
 	RETURN
-	
+
 	METHOD Read(cDirectory AS STRING) AS LOGIC
 		LOCAL oStream AS System.IO.StreamReader
 		LOCAL cLine,cUpper AS STRING
 		LOCAL aRead AS List<STRING>
 		LOCAL cOrigDir AS STRING
 		LOCAL cCavoWed AS STRING
-		
+
 //		cFileName := Application.StartupPath + "\cavofed.tpl"
 //		cFileName := "C:\cavo28\Bin\cavofed.tpl"
 //		cFileName := "C:\cavo28\Bin\cavofed_26.tpl"
@@ -1251,9 +1251,9 @@ CLASS FieldSpecCode
 				RETURN FALSE
 			ENDIF
 		END DO
-	
+
 		IF File.Exists(cCavoWed)
-			
+
 			SELF:Reset()
 		    oStream := System.IO.StreamReader{cCavoWed , System.Text.Encoding.GetEncoding(0)}
 			DO WHILE oStream:Peek()!=-1
@@ -1284,9 +1284,9 @@ CLASS FieldSpecCode
 			oStream:Close()
 			RETURN TRUE
 		ENDIF
-	
+
 	RETURN FALSE
-	
+
 END CLASS
 
 

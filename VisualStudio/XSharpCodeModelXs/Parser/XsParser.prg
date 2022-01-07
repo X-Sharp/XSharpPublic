@@ -272,8 +272,8 @@ BEGIN NAMESPACE XSharpModel
                         IF entity IS XSourceMemberSymbol VAR xMember .AND. xMember:Parent == NULL
                             xEnt:AddMember( xMember )
                         ENDIF
-                     ELSEIF canAddChildren .and. entity IS XSourceTypeSymbol VAR xChild .AND. ! XSourceTypeSymbol.IsGlobalType(xEnt) ;
-                            .and. xEnt:Kind:HasChildren()
+                     ELSEIF canAddChildren .and. xEnt != NULL .and. entity IS XSourceTypeSymbol VAR xChild .AND.  ;
+                        ! XSourceTypeSymbol.IsGlobalType(xEnt) .and. xEnt:Kind:HasChildren()
                         // Namespace, class, structure, interface can have children (nested types)
                         xEnt:AddChild( xChild )
                         xChild:Namespace := xEnt:FullName
@@ -3941,7 +3941,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
 
 
       PRIVATE STATIC METHOD Log(cMessage AS STRING) AS VOID
-         IF XSettings.EnableParseLog .AND. XSettings.EnableLogging
+         IF XSettings.EnableParseLog
             XSolution.WriteOutputMessage("XParser: "+cMessage)
          ENDIF
          RETURN

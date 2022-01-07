@@ -30,6 +30,7 @@ namespace XSharp.LanguageService
                 case Kind.Procedure:
                 case Kind.LocalFunc:
                 case Kind.LocalProc:
+                case Kind.VODLL:
                     imgG = StandardGlyphGroup.GlyphGroupMethod;
                     break;
                 case Kind.Structure:
@@ -75,6 +76,8 @@ namespace XSharp.LanguageService
                     imgG = StandardGlyphGroup.GlyphGroupUnion;
                     break;
                 case Kind.VODefine:
+                case Kind.Define:
+                case Kind.Undefine:
                     imgG = StandardGlyphGroup.GlyphGroupConstant;
                     break;
                 case Kind.VOStruct:
@@ -82,6 +85,27 @@ namespace XSharp.LanguageService
                     break;
                 case Kind.Keyword:
                     imgG = StandardGlyphGroup.GlyphKeyword;
+                    break;
+                case Kind.Using:
+                    imgG = StandardGlyphGroup.GlyphReference;
+                    break;
+                case Kind.Attribute:
+                    imgG = StandardGlyphGroup.GlyphGroupIntrinsic;
+
+                    break;
+                case Kind.Command:
+                case Kind.XCommand:
+                case Kind.Translate:
+                case Kind.XTranslate:
+                    imgG = StandardGlyphGroup.GlyphGroupMacro;
+                    break;
+                case Kind.TypeParameter:
+                    imgG = StandardGlyphGroup.GlyphGroupType;
+                    break;
+                case Kind.Unknown:
+                case Kind.Ignore:
+                case Kind.Undeclared:
+                    imgG = StandardGlyphGroup.GlyphGroupUnknown;
                     break;
             }
             return imgG;

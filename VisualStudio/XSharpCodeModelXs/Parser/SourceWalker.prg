@@ -80,7 +80,7 @@ BEGIN NAMESPACE XSharpModel
             CATCH e AS Exception
                 WriteOutputMessage("Lex() Failed:")
                 WriteOutputMessage(SELF:SourcePath)
-                WriteOutputMessage(e:ToString())
+                XSettings.LogException(e, __FUNCTION__)
             END TRY
             WriteOutputMessage("<<-- Lex() "+SELF:SourcePath)
             RETURN stream
@@ -128,9 +128,8 @@ BEGIN NAMESPACE XSharpModel
                 SELF:_locals   := parser:Locals
 
             CATCH e AS Exception
-                WriteOutputMessage("ParseTokens() Failed:")
                 WriteOutputMessage(SELF:SourcePath)
-                WriteOutputMessage(e:ToString())
+                XSettings.LogException(e, __FUNCTION__)
             END TRY
             WriteOutputMessage("<<-- ParseTokens() "+SELF:SourcePath)
 
@@ -155,7 +154,7 @@ BEGIN NAMESPACE XSharpModel
             CATCH e AS Exception
                 WriteOutputMessage("Parse() Failed:")
                 WriteOutputMessage(SELF:SourcePath)
-                WriteOutputMessage(e:ToString())
+                XSettings.LogException(e, __FUNCTION__)
 
             END TRY
             WriteOutputMessage("<<-- Parse() "+SELF:SourcePath)

@@ -258,7 +258,7 @@ namespace XSharp.Project.Editors.LightBulb
         {
             if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                XSettings.DisplayOutputMessage("ImplementInterfaceSuggestedAction:" + strMessage);
+                XSettings.LogMessage("ImplementInterfaceSuggestedAction:" + strMessage);
             }
         }
 

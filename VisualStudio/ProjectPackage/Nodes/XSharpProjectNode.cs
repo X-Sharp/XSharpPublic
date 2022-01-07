@@ -140,7 +140,7 @@ namespace XSharp.Project
 
         protected override void OnFileChanged(string url)
         {
-            //XSettings.DisplayOutputMessage("FileChangedOnDisk " + e.FileName);
+            //XSettings.LogMessage("FileChangedOnDisk " + e.FileName);
             if (IsXamlFile(url) || IsCodeFile(url))
             {
                 XFile file = this.ProjectModel.FindXFile(url);
@@ -1211,6 +1211,7 @@ namespace XSharp.Project
 
                 }
             }
+            Logger.Debug("InvokeMsBuild: " + target);
             return base.InvokeMsBuild(target);
         }
 
@@ -1497,7 +1498,7 @@ namespace XSharp.Project
 
         internal void BuildStarted()
         {
-
+            
         }
         internal void BuildEnded(bool didCompile)
         {
@@ -1619,6 +1620,7 @@ namespace XSharp.Project
         protected override void Reload()
         {
             this.isLoading = true; // gets reset in OnAfterProjectOpen
+            Logger.Information("Reload");
             base.Reload();
             CreateListManagers();
             if (ResetDependencies())
@@ -1918,6 +1920,7 @@ namespace XSharp.Project
         protected override void SetBuildConfigurationProperties(ConfigCanonicalName config)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            Logger.Debug("SetBuildConfigurationProperties " + config.ToString());
             var xoptions = this.options as XSharpProjectOptions;
             if (xoptions != null && xoptions.ConfigCanonicalName == config)
                 return;
@@ -2047,7 +2050,7 @@ namespace XSharp.Project
             // First remove the Navigation Data
             //
             ThreadHelper.ThrowIfNotOnUIThread();
-
+            Logger.Debug("Close " + this.ProjectFile);
             if (this.Site != null)
             {
 
@@ -2660,6 +2663,7 @@ namespace XSharp.Project
             return changed;
 
         }
+
 
 
 #region IVsProject5

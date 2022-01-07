@@ -124,8 +124,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.DisplayOutputMessage("FindIdentifier failed: ");
-                XSettings.DisplayException(ex);
+                XSettings.LogException(ex, "FindIdentifier failed");
             }
             finally
             {
@@ -1396,6 +1395,11 @@ namespace XSharp.LanguageService
                     {
                         baseType = location.FindType(type.BaseTypeName);
                     }
+                    if (baseType.FullName == type.FullName)
+                    {
+                        WriteOutputMessage("*** Recursion detected *** " + type.FullName + " inherits from " + baseType.FullName);
+                        return result;
+                    }
                     result.AddRange(SearchMembers(location, baseType, name, minVisibility));
                 }
                 if (XSettings.EnableTypelookupLog)
@@ -1585,7 +1589,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableTypelookupLog)
             {
-                XSettings.DisplayOutputMessage("XSharp.Lookup :" + message);
+                XSettings.LogMessage("XSharp.Lookup :" + message);
             }
         }
     }

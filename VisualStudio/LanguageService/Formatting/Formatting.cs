@@ -1767,8 +1767,8 @@ namespace XSharp.LanguageService
                                 }
                                 catch (Exception ex)
                                 {
-                                    WriteOutputMessage("Error indenting of current line ");
-                                    XSettings.DisplayException(ex);
+                                    XSettings.LogException(ex, "Error indenting of current line ");
+
                                 }
                             }
                         }
@@ -1783,8 +1783,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                WriteOutputMessage("SmartIndent.GetDesiredIndentation failed: ");
-                XSettings.DisplayException(ex);
+                XSettings.LogException(ex, "SmartIndent.GetDesiredIndentation failed");
             }
             return _lastIndentValue;
         }
@@ -1917,7 +1916,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e,"GetTokens");
                 tokens = new List<IToken>();
             }
             return tokens;

@@ -73,6 +73,7 @@ namespace XSharp.Project
             //List<String> args = new List<String>();
             //try
             //{
+            Logger.Debug("ProjectOptions: BuildCommandLine");
             List<string> options = new List<string>();
             options.Add("dialect:" + _prjNode.GetProjectProperty("Dialect"));
             var asmNodes = new List<XSharpAssemblyReferenceNode>();

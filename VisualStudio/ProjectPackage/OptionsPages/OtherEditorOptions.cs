@@ -37,6 +37,60 @@ namespace XSharp.Project.Options
         [Description("The full path to the disassembler path to use.")]
         public string Disassembler { get; set; } = "";
 
+        private bool _debugging = false;
+        [Category("Debugging")]
+        [DisplayName("Enable XSharp Project System debugging")]
+        [Description("Enable or Disable debugging to a LOG file or to the Debug window")]
+        public bool Debugging
+        {   get => _debugging;
+            set
+            {
+                bool changed = _debugging != value;
+                if (changed)
+                {
+                    _debugging = value;
+                    LogtoDisk = value;
+                    LogToDebug = value;
+
+                }
+            }
+        }
+        private bool _logToDisk = false;
+        [Category("Debugging")]
+        [DisplayName("Log to file")]
+        [Description("Log to a disk file (in %temp%\\XSharp.Intellisense folder)")]
+        public bool LogtoDisk
+        {
+            get => _logToDisk;
+            set
+            {
+                _logToDisk = value;
+                if (_logToDisk && !Debugging)
+                {
+                    Debugging = true;
+                }
+            }
+        }
+        private bool _logToDebug = false;
+        [Category("Debugging")]
+        [DisplayName("Log to Debug window")]
+        [Description("Log to Debugger window")]
+        public bool LogToDebug
+        {
+            get => _logToDebug;
+            set
+            {
+                _logToDebug = value;
+                if (_logToDebug && ! Debugging)
+                {
+                    Debugging = true;
+                }
+            }
+        }
+
+
+
+
     }
 }
 

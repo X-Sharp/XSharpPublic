@@ -10,22 +10,14 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Package;
-using Microsoft.VisualStudio.TextManager.Interop;
 
 using XSharp.LanguageService;
 using XSharp.Project.WPF;
 using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Globalization;
 using static XSharp.XSharpConstants;
-using XSharp.VOEditors;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Microsoft;
-using Microsoft.VisualStudio.ComponentModelHost;
 using XSharpModel;
 using Community.VisualStudio.Toolkit;
 /*
@@ -71,6 +63,9 @@ $WINDIR$	The Windows folder.
 [assembly: ProvideCodeBase(AssemblyName = "XSharpMonoCecil")]
 [assembly: ProvideCodeBase(AssemblyName = "System.Data.SQLite")]
 [assembly: ProvideCodeBase(AssemblyName = "Community.VisualStudio.Toolkit")]
+[assembly: ProvideCodeBase(AssemblyName = "Serilog")]
+[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.Debug")]
+[assembly: ProvideCodeBase(AssemblyName = "Serilog.Sinks.File")]
 
 namespace XSharp.Project
 {
@@ -280,29 +275,23 @@ namespace XSharp.Project
             XEditorSettings.ToolbarParentClass = options.ToolbarParentClass;
             XEditorSettings.Disassembler = options.Disassembler;
 
-            if (! options.Debugging && (options.LogToDebug || options.LogtoDisk))
-            {
-                options.LogToDebug = false;
-                options.LogtoDisk = false;
-                options.SaveAsync().FireAndForget();
-            }
-            else
-            {
-                if (!options.LogToDebug && !options.LogtoDisk)
-                {
-                    options.Debugging = false;
-                    options.SaveAsync().FireAndForget();
-                }
-            }
+            StartLogging();
+            return true;
+        }
 
-            XSettings.EnableFileLogging = options.LogtoDisk;
-            XSettings.EnableDebugLogging = options.LogToDebug;
+        private void StartLogging()
+        {
+            int FileLogging = (int) Constants.GetSetting("Log2File", 0);
+            int DebugLogging = (int) Constants.GetSetting("Log2Debug", 0);
+
+
+            XSettings.EnableFileLogging = FileLogging != 0;
+            XSettings.EnableDebugLogging = DebugLogging != 0;
             if (XSettings.EnableFileLogging || XSettings.EnableDebugLogging)
                 Logger.Start();
             else
                 Logger.Stop();
 
-            return true;
         }
         /// <summary>
         /// Read the comment tokens from the Tools/Options dialog and pass them to the CodeModel assembly
@@ -310,13 +299,13 @@ namespace XSharp.Project
         public void SetCommentTokens()
         {
             var commentTokens = _taskList.CommentTokens;
-            var tokens = new List<XSharpModel.XCommentToken>();
+            var tokens = new List<XCommentToken>();
             foreach (var token in commentTokens)
             {
-                var cmttoken = new XSharpModel.XCommentToken(token.Text, (int)token.Priority);
+                var cmttoken = new XCommentToken(token.Text, (int)token.Priority);
                 tokens.Add(cmttoken);
             }
-            XSharpModel.XSolution.SetCommentTokens(tokens);
+            XSolution.SetCommentTokens(tokens);
         }
 
 
@@ -336,6 +325,7 @@ namespace XSharp.Project
                 if (!(bool)var)
                 {
                     SetCommentTokens();
+                    StartLogging();
                     GetEditorOptionsAsync().FireAndForget();
                 }
             }

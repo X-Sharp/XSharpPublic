@@ -24,6 +24,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _entities   AS IList<XSourceEntity>
         PRIVATE _blocks     AS IList<XSourceBlock>
         PRIVATE _locals     AS IList<XSourceVariableSymbol>
+        PRIVATE _includeFiles as IList<string>
 
         #endregion
         #region Properties
@@ -33,9 +34,9 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE PROPERTY ParseOptions AS XSharpParseOptions GET SELF:ProjectNode?:ParseOptions
 
         PROPERTY SourcePath AS STRING AUTO  // Save it because calculation the XAML source path is a bit expensive
-
+        PROPERTY IncludeFiles AS IList<string>      GET _includeFiles
         PROPERTY EntityList AS IList<XSourceEntity> GET _entities
-        PROPERTY BlockList  AS IList<XSourceBlock>   GET _blocks
+        PROPERTY BlockList  AS IList<XSourceBlock>  GET _blocks
         PROPERTY File AS XFile GET _file
         PROPERTY SaveToDisk AS LOGIC AUTO
         #endregion
@@ -76,7 +77,8 @@ BEGIN NAMESPACE XSharpModel
             SELF:_errors := List<XError>{}
             LOCAL stream := NULL AS ITokenStream
             TRY
-                XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, SELF:ParseOptions, SELF, OUT stream)
+                XSharp.Parser.VsParser.Lex(cSource, SELF:SourcePath, SELF:ParseOptions, SELF, OUT stream, OUT VAR includeFiles)
+                SELF:_includeFiles := includeFiles
             CATCH e AS Exception
                 WriteOutputMessage("Lex() Failed:")
                 WriteOutputMessage(SELF:SourcePath)

@@ -196,7 +196,8 @@ namespace XSharp.LanguageService
                 ITokenStream tokens = _sourceWalker.Lex(snapshot.GetText());
                 lock (gate)
                 {
-                    xTokens = new XSharpTokens((BufferedTokenStream)tokens, snapshot);
+                    xTokens = new XSharpTokens((BufferedTokenStream)tokens, snapshot, _sourceWalker.IncludeFiles);
+                    
                     _buffer.Properties[typeof(XSharpTokens)] = xTokens;
                 }
             }

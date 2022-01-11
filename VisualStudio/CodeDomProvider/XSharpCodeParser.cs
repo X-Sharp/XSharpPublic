@@ -80,7 +80,7 @@ namespace XSharp.CodeDom
                 var reporter = new ErrorIgnorer();
                 ITokenStream tokenStream;
                 LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParserRuleContext xtree;
-                bool ok = XSharp.Parser.VsParser.Parse(source, this.FileName, _projectNode.ParseOptions, reporter, out tokenStream, out xtree);
+                bool ok = XSharp.Parser.VsParser.Parse(source, this.FileName, _projectNode.ParseOptions, reporter, out tokenStream, out xtree, out _);
 
                 // We need to d 2 steps here:
                 // 1 - Scan for the fields , so we know the difference between fields and properties when we perform step 2

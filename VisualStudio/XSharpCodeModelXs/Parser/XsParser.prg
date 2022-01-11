@@ -105,7 +105,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD Parse(lBlocks AS LOGIC, lLocals AS LOGIC) AS VOID
          VAR cSource  := System.IO.File.ReadAllText(_file:SourcePath)
          VAR options  := XSharpParseOptions.Default
-         XSharp.Parser.VsParser.Lex(cSource, SELF:_file:SourcePath, options, SELF, OUT VAR stream)
+         XSharp.Parser.VsParser.Lex(cSource, SELF:_file:SourcePath, options, SELF, OUT VAR stream, OUT VAR includeFiles)
          SELF:Parse(stream, lBlocks, lLocals)
          RETURN
 
@@ -372,10 +372,18 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          Log(i"Completed, found {_EntityList.Count} entities and {typelist.Count} types")
          IF SELF:_EntityList:Count > 0
-            VAR lastEntity          := SELF:_EntityList:Last()
-            if ! lastEntity:Kind:IsClassMember(_dialect) .and. ! lastEntity:Kind:HasEndKeyword()
+            LOCAL lastEntity          := SELF:_EntityList:Last() as XSourceEntity
+            if lastEntity:Kind:IsClassMember(_dialect)
+                // if type has no end clause then also set the end
+                if lastEntity:Range:StartLine == lastEntity:Range:EndLine
+                    lastEntity:Range        := lastEntity:Range:WithEnd(lasttoken)
+                    lastEntity:Interval     := lastEntity:Interval:WithEnd(lasttoken)
+                endif
+
+            elseif ! lastEntity:Kind:HasEndKeyword()
                 lastEntity:Range        := lastEntity:Range:WithEnd(lasttoken)
                 lastEntity:Interval     := lastEntity:Interval:WithEnd(lasttoken)
+
             ENDIF
          ELSE
              // Add at least one entity that represents the global namespace

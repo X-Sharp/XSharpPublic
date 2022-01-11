@@ -24,17 +24,19 @@ namespace XSharp.LanguageService
         /// <summary>
         /// Result from the Lexer
         /// </summary>
-        public BufferedTokenStream TokenStream { get; set; }
+        public BufferedTokenStream TokenStream { get; private set; }
         /// <summary>
         /// Snapshot on which the info is based
         /// </summary>
-        public ITextSnapshot SnapShot { get; set; }
-        public XSharpTokens(BufferedTokenStream tokenstream, ITextSnapshot snapshot)
+        public ITextSnapshot SnapShot { get; private set; }
+        public IList<string> IncludeFiles { get; private set; }
+        public XSharpTokens(BufferedTokenStream tokenstream, ITextSnapshot snapshot, IList<string> includeFiles)
         {
             TokenStream = tokenstream;
             SnapShot = snapshot;
             Entities = null;
             Lines = new Dictionary<int, IList<XSharpToken>>();
+            IncludeFiles = includeFiles;
         }
         public bool Complete => TokenStream != null && SnapShot != null;
         /// <summary>

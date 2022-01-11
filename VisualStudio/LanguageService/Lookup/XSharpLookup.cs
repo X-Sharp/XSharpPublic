@@ -1395,7 +1395,7 @@ namespace XSharp.LanguageService
                     {
                         baseType = location.FindType(type.BaseTypeName);
                     }
-                    if (baseType.FullName == type.FullName)
+                    if (baseType?.FullName == type.FullName)
                     {
                         WriteOutputMessage("*** Recursion detected *** " + type.FullName + " inherits from " + baseType.FullName);
                         return result;

@@ -35,8 +35,6 @@ namespace XSharp.LanguageService
         static private IClassificationType xsharpStringType;
         static private IClassificationType xsharpNumberType;
         static private IClassificationType xsharpPPType;
-        static private IClassificationType xsharpBraceOpenType;
-        static private IClassificationType xsharpBraceCloseType;
         static private IClassificationType xsharpRegionStart;
         static private IClassificationType xsharpRegionStop;
         static private IClassificationType xsharpInactiveType;
@@ -97,7 +95,7 @@ namespace XSharp.LanguageService
             }
 
             //
-            lineState = new XSharpLineState();
+            lineState = new XSharpLineState(buffer.CurrentSnapshot);
             buffer.Properties.AddProperty(typeof(XSharpLineState), lineState);
             xtraKeywords = new List<string>();
             // Initialize our background workers
@@ -121,14 +119,12 @@ namespace XSharp.LanguageService
                 xsharpNumberType = registry.GetClassificationType("number");
                 xsharpStringType = registry.GetClassificationType("string");
                 xsharpInactiveType = registry.GetClassificationType("excluded code");
-                xsharpBraceOpenType = registry.GetClassificationType(ColorizerConstants.XSharpBraceOpenFormat);
-                xsharpBraceCloseType = registry.GetClassificationType(ColorizerConstants.XSharpBraceCloseFormat);
                 xsharpLiteralType = registry.GetClassificationType("literal");
                 xsharpTextType = registry.GetClassificationType(ColorizerConstants.XSharpTextEndTextFormat);
                 xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
                 xsharpRegionStop = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
-                xsharpKwOpenType = registry.GetClassificationType(ColorizerConstants.XSharpBraceOpenFormat);
-                xsharpKwCloseType = registry.GetClassificationType(ColorizerConstants.XSharpBraceCloseFormat);
+                xsharpKwOpenType = registry.GetClassificationType(ColorizerConstants.XSharpKwOpenFormat);
+                xsharpKwCloseType = registry.GetClassificationType(ColorizerConstants.XSharpKwCloseFormat);
             }
             // Run a synchronous scan to set the initial buffer colors
             var snapshot = buffer.CurrentSnapshot;
@@ -343,6 +339,12 @@ namespace XSharp.LanguageService
                     lineState.SetFlags(line, LineFlags.EntityStart);
                 }
             }
+            lineState.Snapshot = this.Snapshot;
+            if (LineStateChanged != null)
+            {
+                LineStateChanged(this, new EventArgs());
+            }
+                
         }
         private void DoRepaintRegions()
         {
@@ -586,23 +588,11 @@ namespace XSharp.LanguageService
                     }
                     else if (XSharpLexer.IsOperator(tokenType))
                     {
-                        switch (tokenType)
-                        {
-                            case XSharpLexer.LPAREN:
-                            case XSharpLexer.LCURLY:
-                            case XSharpLexer.LBRKT:
-                                type = xsharpBraceOpenType;
-                                break;
+                        type = xsharpOperatorType;
+                        // we are no longer marking these with BraceOpen and BraceClose
+                        // to avoid accidental matching of an Open paren with an ENDIF keyword
 
-                            case XSharpLexer.RPAREN:
-                            case XSharpLexer.RCURLY:
-                            case XSharpLexer.RBRKT:
-                                type = xsharpBraceCloseType;
-                                break;
-                            default:
-                                type = xsharpOperatorType;
-                                break;
-                        }
+ 
                     }
                     if (type != null)
                     {
@@ -765,7 +755,9 @@ namespace XSharp.LanguageService
                         }
                     }
                     break;
+                case XSharpLexer.PROPERTY:
                 case XSharpLexer.SET:
+                case XSharpLexer.INIT:
                 case XSharpLexer.GET:
                 case XSharpLexer.ADD:
                 case XSharpLexer.REMOVE:
@@ -1048,6 +1040,7 @@ namespace XSharp.LanguageService
         /// affecting the span.
         /// </remarks>
         public event EventHandler<ClassificationChangedEventArgs> ClassificationChanged;
+        public event EventHandler<EventArgs> LineStateChanged;
 
 #pragma warning restore 67
 

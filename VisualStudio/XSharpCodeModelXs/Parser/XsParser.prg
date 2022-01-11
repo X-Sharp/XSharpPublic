@@ -153,6 +153,10 @@ BEGIN NAMESPACE XSharpModel
                         ENDIF
                      ENDIF
                   NEXT
+               ELSEIF lLocals .and. token:Channel == XSharpLexer.DEFOUTCHANNEL
+                    if token.Type != XSharpLexer.WS .and. ! XSharpLexer.IsComment(token.Type)
+                        _input:Add(token)
+                    endif
                ENDIF
              CASE XSharpLexer.DefaultTokenChannel
              CASE XSharpLexer.PREPROCESSORCHANNEL

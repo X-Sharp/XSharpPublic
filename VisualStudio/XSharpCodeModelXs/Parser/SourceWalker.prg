@@ -98,9 +98,9 @@ BEGIN NAMESPACE XSharpModel
                 IF td:ClassType == XSharpDialect.XPP
                     source += e"\r\nENDCLASS\r\n"
                 ELSEIF td:ClassType == XSharpDialect.FoxPro
-                    source += "\r\nENDDEFINE\r\n"
+                    source += e"\r\nENDDEFINE\r\n"
                 ELSE
-                    source += "\r\nEND CLASS\r\n"
+                    source += e"\r\nEND CLASS\r\n"
                 ENDIF
             ENDIF
             SELF:Parse(source, TRUE)

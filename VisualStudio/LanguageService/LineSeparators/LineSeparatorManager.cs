@@ -11,6 +11,8 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using System;
 using XSharpModel;
+using System.Collections.Generic;
+using Community.VisualStudio.Toolkit;
 
 namespace XSharp.LanguageService
 {
@@ -20,55 +22,37 @@ namespace XSharp.LanguageService
     /// </summary>
     internal class LineSeparatorManager
     {
-        readonly IWpfTextView _textView;
-        readonly ITextBuffer _buffer;
-        readonly IAdornmentLayer adornmentLayer;
-        private LineSeparatorTag _lineSeparatorTag;
+        private readonly IWpfTextView _textView;
+        private readonly ITextBuffer _buffer;
+        private readonly IAdornmentLayer _adornmentLayer;
         private readonly object _lineSeperatorTagGate = new object();
         private readonly IEditorFormatMap _editorFormatMap;
-        private XSharpClassifier _classifier;
-        private DateTime lastChange = DateTime.MinValue;
-        private TimeSpan interval = new TimeSpan(0, 0, 5);
+        private readonly XSharpClassifier _classifier;
 
-        internal LineSeparatorManager(IWpfTextView textView, IViewTagAggregatorFactoryService aggregatorService, IEditorFormatMapService editorFormatMapService)
+        private LineSeparatorTag _lineSeparatorTag;
+
+
+        internal LineSeparatorManager(DocumentView docView, LineSeparatorAdornmentManagerProvider provider, IViewTagAggregatorFactoryService aggregatorService, IEditorFormatMapService editorFormatMapService)
         {
-            _textView = textView;
-            adornmentLayer = textView.GetAdornmentLayer(Constants.LanguageName + "LineSeparator");
-            textView.LayoutChanged += OnLayoutChanged;
-            _buffer = textView.TextBuffer;
+            _textView = docView.TextView;
+            _adornmentLayer = _textView.GetAdornmentLayer(Constants.LanguageName + "LineSeparator");
+            _textView.LayoutChanged += OnLayoutChanged;
+            _buffer = docView.TextBuffer;
             _editorFormatMap = editorFormatMapService.GetEditorFormatMap("text");
             _editorFormatMap.FormatMappingChanged += FormatMappingChanged;
             _lineSeparatorTag = new LineSeparatorTag(_editorFormatMap);
-            registerClassifier();
-
-        }
-        private void registerClassifier()
-        {
-            if (_classifier == null)
+            if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out _classifier))
             {
-                if (_buffer.Properties.TryGetProperty(typeof(XSharpClassifier), out _classifier))
-                {
-                    _classifier.ClassificationChanged += Classifier_ClassificationChanged;
-                }
+                _classifier.LineStateChanged += LineStateChanged;
             }
 
         }
 
-        private void Classifier_ClassificationChanged(object sender, ClassificationChangedEventArgs e)
+        private void LineStateChanged(object sender, EventArgs e)
         {
-            if (DateTime.Now.Subtract(lastChange) < interval)
-            {
-                return;
-            }
-            lastChange = DateTime.Now;
-            ThreadHelper.JoinableTaskFactory.Run(async delegate
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                Repaint();
-            });
-            return;
+            Repaint();
         }
+
 
         private void FormatMappingChanged(object sender, FormatItemsEventArgs e)
         {
@@ -83,31 +67,35 @@ namespace XSharp.LanguageService
         /// </summary>
         private void OnLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
         {
+            Repaint();
+        }
+        internal void Repaint()
+        {
+            // now we know which lines to draw, now it is time to remove the old lines and paint the new ones
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                Repaint();
+                _repaint();
             });
-            return;
         }
-        private void Repaint()
+
+        private void _repaint()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            if (_buffer == null)
-                return;
-            // remove old tags
-            adornmentLayer.RemoveAllAdornments();
             // if they have switched of the dividers then abort
             if (!XSettings.EditorShowDividers)
                 return;
             var lineState = _buffer.GetLineState();
-            if (lineState == null)
-                return;
             var snapshot = _textView.TextSnapshot;
+            if (lineState == null || lineState.Snapshot.Version != snapshot.Version)
+                return;
             var viewLines = _textView.TextViewLines;
 
             var singleLineDividers = XSettings.EditorShowSingleLineDividers;
             // create new tags
+            // first collect the info about the lines to paint and then do the actual painting
+
+            var lineinfo = new List<SnapshotSpan>();
+
             foreach (var item in lineState.Lines)
             {
                 var add = false;
@@ -126,25 +114,37 @@ namespace XSharp.LanguageService
                         // add one to the line length to include the eol. Otherwise empty lines before an entity
                         // will not get a separator
                         var ssp = new SnapshotSpan(snapshot, line.Start, line.Length + 1);
-                        var tag = new TagSpan<LineSeparatorTag>(ssp, _lineSeparatorTag);
                         // A text view can hide lines and then IntersectsBufferSpan returns false for invisible lines
                         if (viewLines.IntersectsBufferSpan(ssp))
                         {
-                            var geometry = viewLines.GetMarkerGeometry(ssp);
-                            if (geometry != null)
-                            {
-                                var graphicsResult = _lineSeparatorTag.GetGraphics(_textView, geometry);
-                                adornmentLayer.AddAdornment(
-                                    behavior: AdornmentPositioningBehavior.TextRelative,
-                                    visualSpan: ssp,
-                                    tag: tag,
-                                    adornment: graphicsResult.VisualElement,
-                                    removedCallback: delegate { graphicsResult.Dispose(); });
-                            }
+                            lineinfo.Add(ssp);
                         }
                     }
                 }
             }
+
+           if (lineinfo.Count > 0)
+            {
+                // remove old tags
+                _adornmentLayer.RemoveAllAdornments();
+                foreach (var ssp in lineinfo)
+                {
+                    var tag = new TagSpan<LineSeparatorTag>(ssp, _lineSeparatorTag);
+                    var geometry = viewLines.GetMarkerGeometry(ssp);
+                    if (geometry != null)
+                    {
+                        var graphicsResult = _lineSeparatorTag.GetGraphics(_textView, geometry);
+                        _adornmentLayer.AddAdornment(
+                            behavior: AdornmentPositioningBehavior.TextRelative,
+                            visualSpan: ssp,
+                            tag: tag,
+                            adornment: graphicsResult.VisualElement,
+                            removedCallback: delegate { graphicsResult.Dispose(); });
+                    }
+                }
+            }
+
+
         }
     }
 }

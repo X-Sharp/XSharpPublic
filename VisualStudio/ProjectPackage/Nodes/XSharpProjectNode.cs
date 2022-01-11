@@ -1547,7 +1547,7 @@ namespace XSharp.Project
                 parseoptions = XSharpParseOptions.Default;
             ITokenStream tokenStream;
             var reporter = new XSharp.CodeDom.ErrorIgnorer();
-            bool ok = XSharp.Parser.VsParser.Lex(code, fileName, parseoptions, reporter, out tokenStream);
+            bool ok = XSharp.Parser.VsParser.Lex(code, fileName, parseoptions, reporter, out tokenStream, out _);
             var stream = tokenStream as BufferedTokenStream;
             var tokens = stream.GetTokens();
             foreach (var token in tokens)

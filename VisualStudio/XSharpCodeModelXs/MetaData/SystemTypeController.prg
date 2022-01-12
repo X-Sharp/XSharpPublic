@@ -161,7 +161,7 @@ BEGIN NAMESPACE XSharpModel
 				// Also Check into the Functions Class for Globals/Defines/...
 				result := Lookup("Functions." + typeName, assemblies)
 			CATCH e AS Exception
-				XSolution.WriteException(e)
+				XSolution.WriteException(e,__FUNCTION__)
 				result := NULL
 			FINALLY
                 IF XSettings.EnableTypelookupLog

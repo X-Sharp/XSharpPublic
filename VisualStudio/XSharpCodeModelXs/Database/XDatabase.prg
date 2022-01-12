@@ -134,7 +134,7 @@ BEGIN NAMESPACE XSharpModel
 						Log("Starting backup to "+currentFile)
 						SaveToDisk(oConn, currentFile )
 				CATCH e AS Exception
-					Log("Exception: "+e:ToString())
+					XSettings.LogException(e, __FUNCTION__)
 				FINALLY
 					//XSolution.SetStatusBarText("")
 					//XSolution.SetStatusBarAnimation(FALSE, 2)
@@ -559,8 +559,8 @@ BEGIN NAMESPACE XSharpModel
 					cmd:ExecuteNonQuery()
 				ENDIF
 			CATCH e AS Exception
-				Log("Exception: "+e:ToString())
 				Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
+				XSettings.LogException(e, __FUNCTION__)
 
 			END TRY
 		END LOCK
@@ -590,8 +590,8 @@ BEGIN NAMESPACE XSharpModel
 					oCmd:ExecuteNonQuery()
                ENDIF
 				CATCH e AS Exception
-					Log("Exception: "+e:ToString())
 					Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
+    				XSettings.LogException(e, __FUNCTION__)
 				END TRY
 			END LOCK
 		RETURN
@@ -682,11 +682,11 @@ BEGIN NAMESPACE XSharpModel
 										pars[14]:Value := (INT) typedef:ClassType
 										VAR id := (INT64) oCmd:ExecuteScalar()
 									typedef:Id := id
-								CATCH e AS Exception
-									Log("Exception: "+e:ToString())
+                                CATCH e AS Exception
 									Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
 									Log("Typedef: "+typedef:Name)
 									Log("Kind   : "+typedef:Kind:ToString())
+                      				XSettings.LogException(e, __FUNCTION__)
 								END TRY
 							NEXT
 						/*
@@ -741,13 +741,14 @@ BEGIN NAMESPACE XSharpModel
 									VAR id := (INT64) oCmd:ExecuteScalar()
 									xmember:Id := id
 								CATCH e AS Exception
-									Log("Exception: "+e:ToString())
+
 									Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
 									Log("Typedef: "+typedef:Name+" "+typedef:Id:ToString())
 									Log("Member : "+xmember:Name)
 									Log("Kind   : "+xmember:Kind:ToString())
 									Log("Line :   "+xmember:Range:StartLine:ToString())
 									Log("Column : "+xmember:Range:StartColumn:ToString())
+                    				XSettings.LogException(e, __FUNCTION__)
 								END TRY
 							NEXT
                   NEXT
@@ -772,12 +773,13 @@ BEGIN NAMESPACE XSharpModel
 							VAR id := (INT64) oCmd:ExecuteScalar()
 						xmember:Id := id
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
 						Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
 						Log("Member : "+xmember:Name)
 						Log("Kind   : "+xmember:Kind:ToString())
 						Log("Line :   "+xmember:Range:StartLine:ToString())
 						Log("Column : "+xmember:Range:StartColumn:ToString())
+               		    XSettings.LogException(e, __FUNCTION__)
+
 					END TRY
                   NEXT
 
@@ -800,8 +802,9 @@ BEGIN NAMESPACE XSharpModel
 							oCmd:ExecuteScalar()
 						NEXT
 				CATCH e AS Exception
-					Log("Exception: "+e:ToString())
 					Log("File   : "+oFile:FullPath+" "+oFile:Id:ToString())
+            		XSettings.LogException(e, __FUNCTION__)
+
 				END TRY
 
 			END LOCK
@@ -848,8 +851,8 @@ BEGIN NAMESPACE XSharpModel
 					lUpdated := TRUE
 				ENDIF
 			CATCH e AS Exception
-				Log("Exception: "+e:ToString())
 				Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
+                XSettings.LogException(e, __FUNCTION__)
 			END TRY
 
 		END LOCK
@@ -867,8 +870,9 @@ BEGIN NAMESPACE XSharpModel
 					USING VAR oCmd := SQLiteCommand{"Delete From Assemblies where Id = "+oAssembly:Id:ToString(), oConn}
 					oCmd:ExecuteNonQuery()
 				CATCH e AS Exception
-					Log("Exception: "+e:ToString())
 					Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
+                    XSettings.LogException(e, __FUNCTION__)
+
 				END TRY
 			END LOCK
 			RETURN
@@ -956,8 +960,9 @@ BEGIN NAMESPACE XSharpModel
 					oCmd:Parameters:AddWithValue("$size", oAssembly:Size)
 					oCmd:ExecuteNonQuery()
 				CATCH e AS Exception
-					Log("Exception: "+e:ToString())
 					Log("Assembly : "+oAssembly:FileName+" "+oAssembly:Id:ToString())
+                    XSettings.LogException(e, __FUNCTION__)
+
 				END TRY
 
 			END LOCK
@@ -999,7 +1004,8 @@ BEGIN NAMESPACE XSharpModel
                             endif
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+				        XSettings.LogException(e, __FUNCTION__)
+
 					END TRY
 				END LOCK
 			ENDIF
@@ -1049,7 +1055,7 @@ BEGIN NAMESPACE XSharpModel
                             endif
 					    ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1094,7 +1100,7 @@ BEGIN NAMESPACE XSharpModel
                             endif
 					    ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1127,7 +1133,7 @@ BEGIN NAMESPACE XSharpModel
 							result:Add(CreateTypeInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1151,7 +1157,7 @@ BEGIN NAMESPACE XSharpModel
                             endif
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1173,7 +1179,7 @@ BEGIN NAMESPACE XSharpModel
 					    ENDDO
 
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1193,7 +1199,7 @@ BEGIN NAMESPACE XSharpModel
 							result:Add(CreateRefTypeInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1216,7 +1222,7 @@ BEGIN NAMESPACE XSharpModel
                             endif
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1241,7 +1247,7 @@ BEGIN NAMESPACE XSharpModel
 					    ENDDO
 
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1261,7 +1267,7 @@ BEGIN NAMESPACE XSharpModel
 						    result:Add(CreateCommentTask(rdr))
 					    ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1281,7 +1287,7 @@ BEGIN NAMESPACE XSharpModel
                               result:Add(DbToString(rdr[0]))
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1303,7 +1309,7 @@ BEGIN NAMESPACE XSharpModel
 							ENDIF
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1326,7 +1332,7 @@ BEGIN NAMESPACE XSharpModel
 							ENDIF
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1358,7 +1364,7 @@ BEGIN NAMESPACE XSharpModel
 							ENDIF
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1377,7 +1383,7 @@ BEGIN NAMESPACE XSharpModel
 							result:Add(CreateTypeInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF
@@ -1398,7 +1404,7 @@ BEGIN NAMESPACE XSharpModel
 							result:Add(CreateMemberInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 
 				END LOCK
@@ -1423,7 +1429,7 @@ BEGIN NAMESPACE XSharpModel
                             endif
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 
 				END LOCK
@@ -1443,7 +1449,7 @@ BEGIN NAMESPACE XSharpModel
 							result:Add(CreateMemberInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 
 				END LOCK
@@ -1473,7 +1479,7 @@ BEGIN NAMESPACE XSharpModel
 							result:Add(CreateMemberInfo(rdr))
 						ENDDO
 					CATCH e AS Exception
-						Log("Exception: "+e:ToString())
+						XSettings.LogException(e, __FUNCTION__)
 					END TRY
 				END LOCK
 			ENDIF

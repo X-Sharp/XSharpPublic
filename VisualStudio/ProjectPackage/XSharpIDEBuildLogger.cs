@@ -62,10 +62,11 @@ namespace XSharp.Project
                 errorlistManager.ClearBuildErrors();
                 errors = warnings = 0;
                 didCompile = false;
+                Logger.Debug("Build Started");
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Logger.Exception(e, "BuildStartedHandler");
             }
         }
         protected override void BuildFinishedHandler(object sender, BuildFinishedEventArgs buildEvent)
@@ -74,15 +75,22 @@ namespace XSharp.Project
             {
                 try
                 {
+                    var msg = $"{warnings} Warning(s), {errors} Error(s)";
                     if (errors != 0)
-                        QueueOutputText(MessageImportance.High, $"{warnings} Warning(s), {errors} Error(s)\n");
+                    {
+                        QueueOutputText(MessageImportance.High, msg+"\n");
+                    }
                     else
-                        QueueOutputText(MessageImportance.Normal, $"{warnings} Warning(s), {errors} Error(s)\n");
+                    {
+
+                        QueueOutputText(MessageImportance.Normal, msg+"\n");
+                    }
                     base.BuildFinishedHandler(sender, buildEvent);
+                    Logger.Debug("Build Finished : " +msg  );
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
+                    Logger.Exception(e, "BuildFinishedHandler");
                 }
             }
         }
@@ -91,6 +99,7 @@ namespace XSharp.Project
             try
             {
                 base.ProjectStartedHandler(sender, buildEvent);
+                Logger.Debug("Project Build Started " + buildEvent.ProjectFile );
                 if (this.ProjectNode is XSharpProjectNode xprj)
                 {
                     xprj.BuildStarted();
@@ -99,7 +108,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Logger.Exception(e, "ProjectStartedHandler");
             }
         }
         protected override void ProjectFinishedHandler(object sender, ProjectFinishedEventArgs buildEvent)
@@ -107,6 +116,7 @@ namespace XSharp.Project
             try
             {
                 base.ProjectFinishedHandler(sender, buildEvent);
+                Logger.Debug("Project Build Finished " + buildEvent.ProjectFile );
                 if (didCompile)
                 {
                     errorlistManager.Refresh();
@@ -118,7 +128,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Logger.Exception(e, "ProjectFinishedHandler");
             }
 
         }
@@ -143,7 +153,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Logger.Exception(e, "QueueTaskEvent");
             }
 
         }
@@ -168,29 +178,33 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Logger.Exception(e, "MessageHandler");
             }
         }
         protected void ReportError(BuildErrorEventArgs args)
         {
             try
             {
+                string msg = $"{args.File} {args.LineNumber} {args.ColumnNumber} {args.Code} {args.Message}";
                 errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Error);
+                Logger.Debug("Build Error: "+ msg);
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Logger.Exception(e, "ReportError");
             }
         }
         protected void ReportWarning(BuildWarningEventArgs args)
         {
             try
             {
+                string msg = $"{args.File} {args.LineNumber} {args.ColumnNumber} {args.Code} {args.Message}";
                 errorlistManager.AddBuildError(args.File, args.LineNumber, args.ColumnNumber, args.Code, args.Message, MessageSeverity.Warning);
+                Logger.Debug("Build Warning: " + msg);
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                Logger.Exception(e, "ReportWarning");
             }
         }
     }

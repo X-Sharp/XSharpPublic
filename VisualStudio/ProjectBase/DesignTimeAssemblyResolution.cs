@@ -110,7 +110,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch (Exception ex)
             {
-                XSettings.DisplayException(ex);
+                XSettings.LogException(ex,"");
             }
             finally
             {

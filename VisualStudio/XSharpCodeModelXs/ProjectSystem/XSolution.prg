@@ -40,10 +40,10 @@ BEGIN NAMESPACE XSharpModel
 
     STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
         IF XSettings.EnableLogging
-            XSettings.DisplayOutputMessage(message)
+            XSettings.LogMessage(message)
         ENDIF
-    STATIC METHOD WriteException(ex AS Exception) AS VOID
-        XSettings.DisplayException(ex)
+    STATIC METHOD WriteException(ex AS Exception, msg as STRING) AS VOID
+        XSettings.LogException(ex, msg)
         RETURN
 
     STATIC METHOD CreateBuiltInFunctions(folder as STRING) AS VOID
@@ -56,11 +56,12 @@ BEGIN NAMESPACE XSharpModel
             System.IO.File.WriteAllText(BuiltInFunctions, XSharpBuiltInFunctions(BuiltInFunctions))
             System.IO.File.SetAttributes(BuiltInFunctions, FileAttributes.ReadOnly)
         CATCH e as Exception
-            XSettings.DisplayException(e)
+            XSettings.LogException(e,__FUNCTION__)
             BuiltInFunctions := ""
         END TRY
 
     STATIC METHOD Open(cFile as STRING) AS VOID
+        WriteOutputMessage("XModel.Solution.OpenSolution() "+cFile)
         _fileName := cFile
         var folder := Path.GetDirectoryName(_fileName)
         folder     := Path.Combine(folder, ".vs")
@@ -104,7 +105,7 @@ BEGIN NAMESPACE XSharpModel
         RETURN @@Add(project:Name, project)
 
     INTERNAL STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
-        WriteOutputMessage("XModel.Solution.Add() "+projectName)
+        WriteOutputMessage("XModel.Solution.Add() "+projectName+" "+project.FileName)
         IF project:ProjectNode IS OrphanedFilesProject
             // Ok
         ELSEif _projects:Count == 0
@@ -122,7 +123,7 @@ BEGIN NAMESPACE XSharpModel
 
     STATIC METHOD Close() AS VOID
         IF IsOpen
-            WriteOutputMessage("XModel.Solution.CloseSolution()")
+            WriteOutputMessage("XModel.Solution.CloseSolution()" + _fileName)
             ModelWalker.Stop()
             XDatabase.CloseDatabase(_sqldb)
 
@@ -183,6 +184,7 @@ BEGIN NAMESPACE XSharpModel
         RETURN FALSE
 
     INTERNAL STATIC METHOD RenameProject(oldName AS STRING, newName AS STRING) AS VOID
+         WriteOutputMessage("XModel.Solution.RenameProject() "+oldName+" "+newName)
         IF _projects:ContainsKey(oldName)
             _projects:TryRemove(oldName, OUT VAR project)
             IF project != NULL

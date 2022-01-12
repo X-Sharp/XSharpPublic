@@ -469,8 +469,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                WriteOutputMessage("Start Signature session failed:");
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "Start Signature session failed:");
             }
             //
             return true;
@@ -509,7 +508,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                XSettings.DisplayOutputMessage("XSharp.ParameterInfo:" + strMessage);
+                XSettings.LogMessage("XSharp.ParameterInfo:" + strMessage);
             }
         }
 

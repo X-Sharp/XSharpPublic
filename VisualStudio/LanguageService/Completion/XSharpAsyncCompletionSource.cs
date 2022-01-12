@@ -64,7 +64,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSettings.DisplayOutputMessage(strMessage);
+                XSettings.LogMessage(strMessage);
             }
         }
         public async Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token)

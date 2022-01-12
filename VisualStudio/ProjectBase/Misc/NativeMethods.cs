@@ -941,7 +941,7 @@ namespace Microsoft.VisualStudio.Project
             catch(UriFormatException e)
             {
 
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "IsSamePath");
             }
 
             return false;

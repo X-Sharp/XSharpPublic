@@ -62,6 +62,8 @@ BEGIN NAMESPACE XSharpModel
                     RETURN "#translate"
                 CASE Kind.XTranslate
                     RETURN "#xtranslate"
+                CASE Kind.Include
+                    RETURN "#include"
                 CASE Kind.Undeclared
                     var cName := "UNDECLARED VARIABLE"
                     IF ModelWalker.IsRunning .or. ModelWalker.HasWork
@@ -148,6 +150,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Translate
                 CASE Kind.XTranslate
                 CASE Kind.Attribute
+                CASE Kind.Include
                     RETURN TRUE
             END SWITCH
         RETURN FALSE
@@ -161,6 +164,7 @@ BEGIN NAMESPACE XSharpModel
             CASE Kind.XCommand
             CASE Kind.Translate
             CASE Kind.XTranslate
+            CASE Kind.Include
                 RETURN TRUE
             END SWITCH
         RETURN FALSE
@@ -216,6 +220,7 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Translate
                 CASE Kind.XTranslate
                 CASE Kind.Attribute
+                CASE Kind.Include
                     RETURN TRUE
             END SWITCH
         RETURN FALSE
@@ -388,8 +393,12 @@ BEGIN NAMESPACE XSharpModel
                 CASE Kind.Translate
                 CASE Kind.XTranslate
                     imgK := ImageListKind.Macro
+                CASE Kind.Include
+                    imgK := ImageListKind.Library
                 CASE Kind.Keyword
                     imgK := ImageListKind.Keyword
+                CASE Kind.Attribute
+                    imgK := ImageListKind.XmlAttribute
             END SWITCH
             SWITCH visibility
                 CASE Modifiers.Public

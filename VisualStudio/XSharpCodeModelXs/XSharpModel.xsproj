@@ -17,7 +17,7 @@
     <TargetFrameworkProfile />
     <CS>true</CS>
     <VO3>true</VO3>
-    <XSharpProjectversion>2.9.1.1</XSharpProjectversion>
+    <XSharpProjectversion>2.10.0.1</XSharpProjectversion>
     <NamedArgs>true</NamedArgs>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -91,6 +91,7 @@
     <Compile Include="PE\XPEParameterSymbol.prg" />
     <Compile Include="PE\XPESymbol.prg" />
     <Compile Include="PE\XPETypeSymbol.prg" />
+    <Compile Include="ProjectSystem\XDictionary.prg" />
     <Compile Include="Settings\XSourceEditorSettings.prg" />
     <Compile Include="Settings\XEditorSettings.prg" />
     <Compile Include="Settings\XLiterals.prg" />

@@ -35,8 +35,6 @@ namespace XSharp.LanguageService
         static private IClassificationType xsharpStringType;
         static private IClassificationType xsharpNumberType;
         static private IClassificationType xsharpPPType;
-        static private IClassificationType xsharpBraceOpenType;
-        static private IClassificationType xsharpBraceCloseType;
         static private IClassificationType xsharpRegionStart;
         static private IClassificationType xsharpRegionStop;
         static private IClassificationType xsharpInactiveType;
@@ -97,7 +95,7 @@ namespace XSharp.LanguageService
             }
 
             //
-            lineState = new XSharpLineState();
+            lineState = new XSharpLineState(buffer.CurrentSnapshot);
             buffer.Properties.AddProperty(typeof(XSharpLineState), lineState);
             xtraKeywords = new List<string>();
             // Initialize our background workers
@@ -121,14 +119,12 @@ namespace XSharp.LanguageService
                 xsharpNumberType = registry.GetClassificationType("number");
                 xsharpStringType = registry.GetClassificationType("string");
                 xsharpInactiveType = registry.GetClassificationType("excluded code");
-                xsharpBraceOpenType = registry.GetClassificationType(ColorizerConstants.XSharpBraceOpenFormat);
-                xsharpBraceCloseType = registry.GetClassificationType(ColorizerConstants.XSharpBraceCloseFormat);
                 xsharpLiteralType = registry.GetClassificationType("literal");
                 xsharpTextType = registry.GetClassificationType(ColorizerConstants.XSharpTextEndTextFormat);
                 xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
                 xsharpRegionStop = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
-                xsharpKwOpenType = registry.GetClassificationType(ColorizerConstants.XSharpBraceOpenFormat);
-                xsharpKwCloseType = registry.GetClassificationType(ColorizerConstants.XSharpBraceCloseFormat);
+                xsharpKwOpenType = registry.GetClassificationType(ColorizerConstants.XSharpKwOpenFormat);
+                xsharpKwCloseType = registry.GetClassificationType(ColorizerConstants.XSharpKwCloseFormat);
             }
             // Run a synchronous scan to set the initial buffer colors
             var snapshot = buffer.CurrentSnapshot;
@@ -200,7 +196,8 @@ namespace XSharp.LanguageService
                 ITokenStream tokens = _sourceWalker.Lex(snapshot.GetText());
                 lock (gate)
                 {
-                    xTokens = new XSharpTokens((BufferedTokenStream)tokens, snapshot);
+                    xTokens = new XSharpTokens((BufferedTokenStream)tokens, snapshot, _sourceWalker.IncludeFiles);
+                    
                     _buffer.Properties[typeof(XSharpTokens)] = xTokens;
                 }
             }
@@ -226,7 +223,7 @@ namespace XSharp.LanguageService
         {
             if (ClassificationChanged != null)
             {
-                Trace.WriteLine("-->> XSharpClassifier.triggerRepaint()");
+                XSettings.LogMessage("-->> XSharpClassifier.triggerRepaint()");
                 if (snapshot != null && _buffer?.CurrentSnapshot != null)
                 {
                     // tell the editor that we have new info
@@ -236,12 +233,12 @@ namespace XSharp.LanguageService
                                 new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
                     }
                 }
-                Trace.WriteLine("<<-- XSharpClassifier.triggerRepaint()");
+                XSettings.LogMessage("<<-- XSharpClassifier.triggerRepaint()");
             }
         }
         private void ClassifyCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Trace.WriteLine("-->> XSharpClassifier.ClassifyCompleted()");
+            XSettings.LogMessage("-->> XSharpClassifier.ClassifyCompleted()");
             try
             {
                 if (e.Cancelled)
@@ -279,9 +276,9 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                Trace.WriteLine("<<-- Exception :" + ex.Message);
+                XSettings.LogException(ex, "XSharpClassifier.ClassifyCompleted()");
             }
-            Trace.WriteLine("<<-- XSharpClassifier.ClassifyCompleted()");
+            XSettings.LogMessage("<<-- XSharpClassifier.ClassifyCompleted()");
         }
 
         #endregion
@@ -295,7 +292,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.DisableEntityParsing)
                 return;
-            Trace.WriteLine("-->> XSharpClassifier.BuildModelDoWork()");
+            XSettings.LogMessage("-->> XSharpClassifier.ParseEntities()");
             // Note this runs in the background
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
@@ -318,7 +315,7 @@ namespace XSharp.LanguageService
                 DoRepaintRegions();
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             }
-            Trace.WriteLine("<<-- XSharpClassifier.BuildModelDoWork()");
+            XSettings.LogMessage("<<-- XSharpClassifier.ParseEntities()");
         }
         #endregion
 
@@ -343,6 +340,12 @@ namespace XSharp.LanguageService
                     lineState.SetFlags(line, LineFlags.EntityStart);
                 }
             }
+            lineState.Snapshot = this.Snapshot;
+            if (LineStateChanged != null)
+            {
+                LineStateChanged(this, new EventArgs());
+            }
+                
         }
         private void DoRepaintRegions()
         {
@@ -360,7 +363,7 @@ namespace XSharp.LanguageService
             {
                 return new List<ClassificationSpan>();
             }
-            Trace.WriteLine("-->> XSharpClassifier.BuildRegionTagsNew()");
+            XSettings.LogMessage("-->> XSharpClassifier.BuildRegionTags()");
             var regions = new List<ClassificationSpan>();
             foreach (var entity in entities)
             {
@@ -399,7 +402,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            Trace.WriteLine("<<-- XSharpClassifier.BuildRegionTags()");
+            XSettings.LogMessage("<<-- XSharpClassifier.BuildRegionTags()");
             return regions;
         }
         private void AddRegionSpan(List<ClassificationSpan> regions, ITextSnapshot snapshot, int startPos, int endPos)
@@ -586,23 +589,11 @@ namespace XSharp.LanguageService
                     }
                     else if (XSharpLexer.IsOperator(tokenType))
                     {
-                        switch (tokenType)
-                        {
-                            case XSharpLexer.LPAREN:
-                            case XSharpLexer.LCURLY:
-                            case XSharpLexer.LBRKT:
-                                type = xsharpBraceOpenType;
-                                break;
+                        type = xsharpOperatorType;
+                        // we are no longer marking these with BraceOpen and BraceClose
+                        // to avoid accidental matching of an Open paren with an ENDIF keyword
 
-                            case XSharpLexer.RPAREN:
-                            case XSharpLexer.RCURLY:
-                            case XSharpLexer.RBRKT:
-                                type = xsharpBraceCloseType;
-                                break;
-                            default:
-                                type = xsharpOperatorType;
-                                break;
-                        }
+ 
                     }
                     if (type != null)
                     {
@@ -765,7 +756,9 @@ namespace XSharp.LanguageService
                         }
                     }
                     break;
+                case XSharpLexer.PROPERTY:
                 case XSharpLexer.SET:
+                case XSharpLexer.INIT:
                 case XSharpLexer.GET:
                 case XSharpLexer.ADD:
                 case XSharpLexer.REMOVE:
@@ -946,13 +939,13 @@ namespace XSharp.LanguageService
             {
                 newtags = _colorTags;
             }
-            Trace.WriteLine("-->> XSharpClassifier.BuildColorClassifications()");
+            XSettings.LogMessage("-->> XSharpClassifier.BuildColorClassifications()");
             lock (gate)
             {
                 _colorTags = newtags;
                 _lexerRegions = regionTags;
             }
-            Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");
+            XSettings.LogMessage("<<-- XSharpClassifier.BuildColorClassifications()");
             Debug("End building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             TriggerRepaint(snapshot);
         }
@@ -997,7 +990,7 @@ namespace XSharp.LanguageService
 
         public IList<ClassificationSpan> GetRegionTags()
         {
-            Trace.WriteLine("-->> XSharpClassifier.GetRegionTags()");
+            XSettings.LogMessage("-->> XSharpClassifier.GetRegionTags()");
             IList<ClassificationSpan> result;
             lock (gate)
             {
@@ -1017,19 +1010,19 @@ namespace XSharp.LanguageService
                     result = new List<ClassificationSpan>();
                 }
             }
-            Trace.WriteLine("<<-- XSharpClassifier.GetRegionTags()");
+            XSettings.LogMessage("<<-- XSharpClassifier.GetRegionTags()");
             return result;
         }
 
         public IList<ClassificationSpan> GetTags()
         {
-            Trace.WriteLine("-->> XSharpClassifier.GetTags()");
+            XSettings.LogMessage("-->> XSharpClassifier.GetTags()");
             IList<ClassificationSpan> ret;
             lock (gate)
             {
                 ret = _colorTags.Tags;
             }
-            Trace.WriteLine("<<-- XSharpClassifier.GetTags()");
+            XSettings.LogMessage("<<-- XSharpClassifier.GetTags()");
             return ret;
         }
 
@@ -1048,6 +1041,7 @@ namespace XSharp.LanguageService
         /// affecting the span.
         /// </remarks>
         public event EventHandler<ClassificationChangedEventArgs> ClassificationChanged;
+        public event EventHandler<EventArgs> LineStateChanged;
 
 #pragma warning restore 67
 
@@ -1097,8 +1091,7 @@ namespace XSharp.LanguageService
         internal static void Debug(string msg, params object[] o)
         {
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-                System.Diagnostics.Debug.WriteLine(String.Format("XColorizer: " + msg, o));
+            XSettings.LogMessage(string.Format("XColorizer: " + msg, o));
 #endif
         }
     }

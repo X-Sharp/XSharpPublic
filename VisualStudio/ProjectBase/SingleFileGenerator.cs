@@ -545,7 +545,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected bool CanEditFile(string documentMoniker)
         {
-            XSettings.DisplayOutputMessage(String.Format(CultureInfo.CurrentCulture, "\t**** CanEditFile called ****"));
+            XSettings.LogMessage(String.Format(CultureInfo.CurrentCulture, "\t**** CanEditFile called ****"));
 
             // Check the status of the recursion guard
             if (this.gettingCheckoutStatus)

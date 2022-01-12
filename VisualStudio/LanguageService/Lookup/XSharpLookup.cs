@@ -50,8 +50,7 @@ namespace XSharp.LanguageService
                 // 3) Locals (for entities with locals)
                 // 4) Properties or Fields
                 // 5) Globals and Defines
-                if (XSettings.EnableTypelookupLog)
-                    WriteOutputMessage($"--> FindIdentifier in {currentType.FullName}, '{name}' ");
+                WriteOutputMessage($"--> FindIdentifier in {currentType.FullName}, '{name}' ");
                 var member = location.Member;
                 if (currentType.TypeParameters.Count > 0 && currentType is XSourceTypeSymbol source)
                 {
@@ -124,8 +123,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.DisplayOutputMessage("FindIdentifier failed: ");
-                XSettings.DisplayException(ex);
+                XSettings.LogException(ex, "FindIdentifier failed");
             }
             finally
             {
@@ -134,6 +132,7 @@ namespace XSharp.LanguageService
                     nestedSearches.Remove(nestedSearches.Last());
                 }
             }
+            DumpResults(result, $"--> FindIdentifier in {currentType.FullName}, '{name}'");
             return result;
         }
 
@@ -155,8 +154,7 @@ namespace XSharp.LanguageService
             {
                 return xType.Value.XMembers.LastOrDefault();
             }
-            if (XSettings.EnableTypelookupLog)
-                WriteOutputMessage(string.Format("Cannot find member at 0 based position {0} in file {0} .", nPosition, file.FullPath));
+            WriteOutputMessage(string.Format("Cannot find member at 0 based position {0} in file {0} .", nPosition, file.FullPath));
             return null;
 
         }
@@ -208,11 +206,8 @@ namespace XSharp.LanguageService
                 return symbol.XMembers.LastOrDefault();
             }
 
+            WriteOutputMessage(string.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
 
-#if DEBUG
-            if (XSettings.EnableTypelookupLog)
-                WriteOutputMessage(string.Format("Cannot find member at 0 based line {0} in file {0} .", nLine, file.FullPath));
-#endif
             return null;
         }
 
@@ -1023,6 +1018,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
+            DumpResults(result,"RetrieveElements");
             return result;
         }
 
@@ -1162,8 +1158,7 @@ namespace XSharp.LanguageService
         /// <param name="foundElement"></param>
         private static IList<IXMemberSymbol> SearchConstructors(IXTypeSymbol type, Modifiers minVisibility)
         {
-            if (XSettings.EnableTypelookupLog)
-                WriteOutputMessage($"--> SearchConstructorIn {type?.FullName}");
+            WriteOutputMessage($"--> SearchConstructorIn {type?.FullName}");
             var result = new List<IXMemberSymbol>();
             if (type != null)
             {
@@ -1171,6 +1166,7 @@ namespace XSharp.LanguageService
                 var ctors = type.Members.Where(x => x.Kind == Kind.Constructor && x.IsVisible(minVisibility));
                 result.AddRange(ctors);
             }
+            DumpResults(result, $"--> SearchConstructorIn {type?.FullName}");
             return result;
         }
 
@@ -1284,8 +1280,7 @@ namespace XSharp.LanguageService
         private static IEnumerable<IXSymbol> SearchDelegateCall(XSharpSearchLocation location, string currentName, IXTypeSymbol currentType, Modifiers visibility)
         {
             var result = new List<IXSymbol>();
-            if (XSettings.EnableTypelookupLog)
-                WriteOutputMessage($"SearchDelegateCall in file {location.File.SourcePath} {currentName}");
+            WriteOutputMessage($"SearchDelegateCall in file {location.File.SourcePath} {currentName}");
 
             result.AddRange(FindIdentifier(location, currentName, currentType, visibility));
             if (result.Count > 0)
@@ -1309,6 +1304,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
+            DumpResults(result, $"--> SearchDelegateCall in file {location.File.SourcePath} {currentName} ");
             return result;
         }
 
@@ -1326,8 +1322,7 @@ namespace XSharp.LanguageService
 
         private static IEnumerable<IXSymbol> SearchNamespaces(XSharpSearchLocation location, string name)
         {
-            if (XSettings.EnableTypelookupLog)
-                WriteOutputMessage($"SearchNamespaces in file {location.File.SourcePath} '{name}'");
+            WriteOutputMessage($"SearchNamespaces in file {location.File.SourcePath} '{name}'");
             var result = new List<IXSymbol>();
             var namespaces = location.Project.AllNamespaces;
             foreach (var ns in namespaces)
@@ -1338,15 +1333,13 @@ namespace XSharp.LanguageService
                     break;
                 }
             }
-            if (XSettings.EnableTypelookupLog)
-                WriteOutputMessage($"SearchNamespaces in file {location.File.SourcePath} '{name}' returns {result.Count} items");
+            DumpResults(result, $"SearchNamespaces in file {location.File.SourcePath} '{name}' ");
             return result;
         }
 
         private static IEnumerable<IXTypeSymbol> SearchType(XSharpSearchLocation location, string name)
         {
-            if (XSettings.EnableTypelookupLog)
-                WriteOutputMessage($"SearchType in file {location.File.SourcePath} '{name}'");
+            WriteOutputMessage($"SearchType in file {location.File.SourcePath} '{name}'");
             var result = new List<IXTypeSymbol>();
             // translate out type names to system type names
             name = name.GetSystemTypeName(location.Project.ParseOptions.XSharpRuntime);
@@ -1354,8 +1347,7 @@ namespace XSharp.LanguageService
             var type = location.FindType(name);
             if (type != null)
                 result.Add(type);
-            if (XSettings.EnableTypelookupLog)
-                WriteOutputMessage($"SearchType in file {location.File.SourcePath} '{name}' returns {result.Count} items");
+            DumpResults(result, $"SearchType in file {location.File.SourcePath} '{name}'");
             return result;
         }
 
@@ -1380,8 +1372,7 @@ namespace XSharp.LanguageService
                 {
                     type = EnsureComplete(type, location);
                 }
-                if (XSettings.EnableTypelookupLog)
-                    WriteOutputMessage($" SearchMembers {type?.FullName} , '{name}'");
+                   WriteOutputMessage($" SearchMembers {type?.FullName} , '{name}'");
                 result.AddRange(type.GetMembers(name, true).Where((m) => m.IsVisible(minVisibility)));
                 if (result.Count() == 0 && !string.IsNullOrEmpty(type.BaseTypeName))
                 {
@@ -1396,13 +1387,17 @@ namespace XSharp.LanguageService
                     {
                         baseType = location.FindType(type.BaseTypeName);
                     }
+                    if (baseType?.FullName == type.FullName)
+                    {
+                        WriteOutputMessage("*** Recursion detected *** " + type.FullName + " inherits from " + baseType.FullName);
+                        DumpResults(result, $" SearchMembers {type?.FullName} , '{name}'");
+                        return result;
+                    }
                     result.AddRange(SearchMembers(location, baseType, name, minVisibility));
                 }
-                if (XSettings.EnableTypelookupLog)
-                    WriteOutputMessage($" SearchMembers {type?.FullName} , '{name}' returns {result.Count} items");
 
             }
-
+            DumpResults(result, $" SearchMembers {type?.FullName} , '{name}'");
             return result;
         }
         /// <summary>
@@ -1425,7 +1420,6 @@ namespace XSharp.LanguageService
                     type = EnsureComplete(type, location);
                 }
 
-                if (XSettings.EnableTypelookupLog)
                     WriteOutputMessage($" SearchMethodTypeIn {type.FullName} , '{name}'");
                 IEnumerable<IXMemberSymbol> tmp;
                 if (type.IsFunctionsClass)
@@ -1487,9 +1481,8 @@ namespace XSharp.LanguageService
                         result.AddRange(SearchMethod(location, baseType, name, minVisibility, staticOnly));
                     }
                 }
-                if (XSettings.EnableTypelookupLog)
-                    WriteOutputMessage($" SearchMethodTypeIn {type.FullName} , '{name}' returns {result.Count} items");
             }
+            DumpResults(result, $" SearchMethodTypeIn {type.FullName} , '{name}'");
             return result;
 
         }
@@ -1508,7 +1501,6 @@ namespace XSharp.LanguageService
             {
                 return result;
             }
-            if (XSettings.EnableTypelookupLog)
                 WriteOutputMessage($" SearchMethodStaticIn {location.File.SourcePath}, '{name}' ");
             //
             var emptyusing = new string[] { };
@@ -1527,8 +1519,7 @@ namespace XSharp.LanguageService
                     break;
                 }
             }
-            if (XSettings.EnableTypelookupLog)
-                WriteOutputMessage($" SearchMethodStaticIn {location.File.SourcePath}, '{name}' returns {result.Count} items");
+            DumpResults(result, $" SearchMethodStaticIn {location.File.SourcePath}, '{name}'");
             return result;
         }
 
@@ -1539,7 +1530,6 @@ namespace XSharp.LanguageService
             {
                 return result;
             }
-            if (XSettings.EnableTypelookupLog)
                 WriteOutputMessage($" SearchGlobalField {location.File.SourcePath},'{name}' ");
             if (location.Project.AssemblyReferences == null)
             {
@@ -1551,8 +1541,7 @@ namespace XSharp.LanguageService
             {
                 result.AddRange(global);
             }
-            if (XSettings.EnableTypelookupLog)
-                WriteOutputMessage($" SearchGlobalField {location.File.SourcePath},'{name}' returns {result.Count} items");
+            DumpResults(result, $" SearchGlobalField {location.File.SourcePath},'{name}'");
             return result;
         }
 
@@ -1564,7 +1553,6 @@ namespace XSharp.LanguageService
             {
                 return result;
             }
-            if (XSettings.EnableTypelookupLog)
                 WriteOutputMessage($" SearchFunction {location.File.SourcePath}, '{name}' ");
             IXMemberSymbol xMethod = location.File.Project.FindFunction(name);
             if (xMethod != null)
@@ -1576,16 +1564,29 @@ namespace XSharp.LanguageService
                 var found = location.Project.FindFunctionsInAssemblyReferences(name);
                 result.AddRange(found);
             }
-            if (XSettings.EnableTypelookupLog)
-                WriteOutputMessage($" SearchFunction {location.File.SourcePath}, '{name}' returns {result.Count} items");
+            DumpResults(result, $" SearchFunction {location.File.SourcePath}, '{name}'");
             return result;
+        }
+
+        static void DumpResults(IEnumerable<IXSymbol> results, string heading)
+        {
+            if (XSettings.EnableTypelookupLog)
+            {
+                XSettings.LogMessage(heading + " returns " + results.Count().ToString()+" items") ;
+                int i = 0;
+                foreach (var result in results)
+                {
+                    ++i;
+                    XSettings.LogMessage($"{i}: {result.Kind} {result.Prototype}");
+                }
+            }
         }
 
         static void WriteOutputMessage(string message)
         {
             if (XSettings.EnableTypelookupLog)
             {
-                XSettings.DisplayOutputMessage("XSharp.Lookup :" + message);
+                XSettings.LogMessage("XSharp.Lookup :" + message);
             }
         }
     }

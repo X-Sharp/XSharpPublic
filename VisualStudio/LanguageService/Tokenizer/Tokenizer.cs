@@ -79,7 +79,7 @@ namespace XSharp.LanguageService
         internal static IList<XSharpToken> GetTokensUnderCursor(XSharpSearchLocation location, out CompletionState state)
         {
 
-            var tokens = GetTokenList(location, out state, true, true);
+            var tokens = GetTokenList(location, out state, true, true).Where( (t) => t.Channel == XSharpLexer.DefaultTokenChannel).ToList();
             // Find "current" token
             
             if (tokens.Count > 0)

@@ -119,7 +119,7 @@ namespace XSharp.LanguageService
         IndentingOptionsPage _indentingPage;
         OtherOptionsPage _otherOptionsPage;
         //CompletionOptionsPage _completionOptionsPage;
-        internal void GetIntellisenseSettings()
+        public void GetIntellisenseSettings()
         {
             if (_intellisensePage == null)
             {
@@ -142,7 +142,7 @@ namespace XSharp.LanguageService
             //    _completionOptionsPage = (CompletionOptionsPage)GetDialogPage(typeof(CompletionOptionsPage));
             //}
             // Intellisense
-            XSettings.EnableLogging = _intellisensePage.EnableOutputPane;
+            XSettings.EnableOutputWindowLogging = _intellisensePage.EnableOutputPane;
             XSettings.EnableBraceMatchLog = _intellisensePage.EnableBraceMatchLog;
             XSettings.EnableCodeCompletionLog = _intellisensePage.EnableCodeCompletionLog;
             XSettings.EnableDatabaseLog = _intellisensePage.EnableDatabaseLog;
@@ -151,6 +151,7 @@ namespace XSharp.LanguageService
             XSettings.EnableQuickInfoLog = _intellisensePage.EnableQuickInfoLog;
             XSettings.EnableReferenceInfoLog = _intellisensePage.EnableReferenceInfoLog;
             XSettings.EnableTypelookupLog = _intellisensePage.EnableTypelookupLog;
+            
 
             XSettings.DisableAssemblyReferences = _intellisensePage.DisableAssemblyReferences;
             XSettings.DisableBraceMatching = _intellisensePage.DisableBraceMatching;
@@ -234,6 +235,7 @@ namespace XSharp.LanguageService
             XSettings.CodeGeneratorPrivateStyle = (PrivateStyle)_otherOptionsPage.PrivateStyle;
             XSettings.CodeGeneratorPublicStyle = (PublicStyle)_otherOptionsPage.PublicStyle;
             XSettings.FormEditorMakeBackupFiles = _otherOptionsPage.FormEditorMakeBackupFiles;
+            XSettings.EnableFileLogging = _otherOptionsPage.LanguageServiceLogging;
 
             // Persist in registry for CodeDomProvider code generation
             Constants.WriteSetting(Constants.RegistryKeywordCase, (int)XSettings.KeywordCase);
@@ -300,6 +302,7 @@ namespace XSharp.LanguageService
             }
             GetIntellisenseSettings();
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            XSettings.LanguageService = this;
         }
 
 

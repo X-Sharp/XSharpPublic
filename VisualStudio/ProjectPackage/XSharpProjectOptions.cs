@@ -40,12 +40,12 @@ namespace XSharp.Project
 
         }
         static string _includedirs;
-        internal static string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
+        internal static string REG_KEY = @"HKEY_LOCAL_MACHINE\" + (IntPtr.Size == 8 ? Constants.RegistryKey64 : Constants.RegistryKey);
         static XSharpProjectOptions()
         {
             //xsCmdLineparser = XSharpCommandLineParser.Default;
             _includedirs = "";
-            var path = (string)Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
+            var path = (string)Registry.GetValue(REG_KEY, Constants.RegistryValue, "");
             if (!string.IsNullOrEmpty(path))
             {
                 if (!path.EndsWith("\\"))
@@ -55,6 +55,11 @@ namespace XSharp.Project
             }
             // Check for Vulcan path
             var key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
+            if (IntPtr.Size == 8)
+            {
+                key = @"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Grafx\Vulcan.NET";
+            }
+
             path = (string)Registry.GetValue(key, "InstallPath", "");
             if (!string.IsNullOrEmpty(path))
             {
@@ -73,6 +78,7 @@ namespace XSharp.Project
             //List<String> args = new List<String>();
             //try
             //{
+            Logger.Debug("ProjectOptions: BuildCommandLine");
             List<string> options = new List<string>();
             options.Add("dialect:" + _prjNode.GetProjectProperty("Dialect"));
             var asmNodes = new List<XSharpAssemblyReferenceNode>();

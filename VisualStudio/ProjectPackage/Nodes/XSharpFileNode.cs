@@ -357,8 +357,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSettings.DisplayOutputMessage("AddDependant failed");
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "AddDependant failed");
             }
             dependant = (XSharpFileNode)ProjectMgr.CreateDependentFileNode(fileName);
 

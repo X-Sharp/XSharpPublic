@@ -61,9 +61,13 @@
             this.chkEnableQuickInfoLog = new System.Windows.Forms.CheckBox();
             this.chkEnableParameterTipsLog = new System.Windows.Forms.CheckBox();
             this.chkEnableCodeCompletionLog = new System.Windows.Forms.CheckBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.chkLogToFile = new System.Windows.Forms.CheckBox();
+            this.chkLogToDebug = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -313,7 +317,7 @@
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(450, 322);
+            this.btnOk.Location = new System.Drawing.Point(434, 375);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 6;
@@ -324,7 +328,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(552, 322);
+            this.btnCancel.Location = new System.Drawing.Point(536, 375);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 7;
@@ -419,13 +423,45 @@
             this.chkEnableCodeCompletionLog.Text = "Log code completion";
             this.chkEnableCodeCompletionLog.UseVisualStyleBackColor = true;
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.chkLogToDebug);
+            this.groupBox4.Controls.Add(this.chkLogToFile);
+            this.groupBox4.Location = new System.Drawing.Point(405, 263);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(222, 92);
+            this.groupBox4.TabIndex = 9;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Other logging (enables all options above)";
+            // 
+            // chkLogToFile
+            // 
+            this.chkLogToFile.AutoSize = true;
+            this.chkLogToFile.Location = new System.Drawing.Point(10, 19);
+            this.chkLogToFile.Name = "chkLogToFile";
+            this.chkLogToFile.Size = new System.Drawing.Size(72, 17);
+            this.chkLogToFile.TabIndex = 14;
+            this.chkLogToFile.Text = "Log to &file";
+            this.chkLogToFile.UseVisualStyleBackColor = true;
+            // 
+            // chkLogToDebug
+            // 
+            this.chkLogToDebug.AutoSize = true;
+            this.chkLogToDebug.Location = new System.Drawing.Point(10, 42);
+            this.chkLogToDebug.Name = "chkLogToDebug";
+            this.chkLogToDebug.Size = new System.Drawing.Size(128, 17);
+            this.chkLogToDebug.TabIndex = 15;
+            this.chkLogToDebug.Text = "Log to &debug window";
+            this.chkLogToDebug.UseVisualStyleBackColor = true;
+            // 
             // XSharpSpecialOptions
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(682, 379);
+            this.ClientSize = new System.Drawing.Size(813, 445);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
@@ -441,6 +477,8 @@
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -480,5 +518,8 @@
         internal System.Windows.Forms.CheckBox chkEnableOutputPane;
         internal System.Windows.Forms.CheckBox chkEnableTypeLookupLog;
         internal System.Windows.Forms.CheckBox chkEnableReferenceLog;
+        private System.Windows.Forms.GroupBox groupBox4;
+        internal System.Windows.Forms.CheckBox chkLogToDebug;
+        internal System.Windows.Forms.CheckBox chkLogToFile;
     }
 }

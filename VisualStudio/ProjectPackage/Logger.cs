@@ -74,7 +74,7 @@ namespace XSharp.Project
                     var ver = await VS.Shell.GetVsVersionAsync();
                     version = ver.ToString();
                 });
-                Log.Information("Visual Studio Exe     : " + System.Reflection.Assembly.GetExecutingAssembly().Location);
+                Log.Information("Visual Studio Exe     : " + Process.GetCurrentProcess().MainModule.FileName);
                 Log.Information("Visual Studio version : " + version);
                 Log.Information("XSharp Project System : " + Constants.FileVersion);
                 

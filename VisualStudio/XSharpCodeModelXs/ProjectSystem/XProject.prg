@@ -27,8 +27,8 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _AssemblyDict					        AS Dictionary<INT64 ,XAssembly>
       PRIVATE _AssemblyTypeCache                    AS Dictionary<STRING, XPETypeSymbol>
       PRIVATE _parseOptions := NULL					AS XSharpParseOptions
-      PRIVATE _projectNode							   AS IXSharpProject
-      PRIVATE _projectOutputDLLs						AS ConcurrentDictionary<STRING, STRING>
+      PRIVATE _projectNode							AS IXSharpProject
+      PRIVATE _projectOutputDLLs					AS ConcurrentDictionary<STRING, STRING>
       PRIVATE _ReferencedProjects					AS List<XProject>
       PRIVATE _StrangerProjects						AS List<Object>
       PRIVATE _unprocessedAssemblyReferences		AS List<STRING>
@@ -66,15 +66,19 @@ BEGIN NAMESPACE XSharpModel
                     result := core:Id:ToString()
                ENDIF
                FOREACH VAR assembly IN SELF:AssemblyReferences:ToArray()
-                  _AssemblyDict:Add(assembly:Id, assembly)
+                  IF ! _AssemblyDict:ContainsKey(assembly:Id)
+                     _AssemblyDict:Add(assembly:Id, assembly)
+                  ENDIF
                   IF result:Length > 0
                      result += ","
                   ENDIF
                   result += assembly:Id:ToString()
                 NEXT
-                if core != NULL .and. ! _AssemblyDict.ContainsKey(core:Id)
-                    _AssemblyDict:Add(core:Id, core)
-                    _AssemblyReferences:Add(core)
+                if core != NULL
+                    IF ! _AssemblyDict.ContainsKey(core:Id)
+                        _AssemblyDict:Add(core:Id, core)
+                        _AssemblyReferences:Add(core)
+                    endif
                 endif
                _dependentAssemblyList := result
             ENDIF

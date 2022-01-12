@@ -24,8 +24,8 @@ BEGIN NAMESPACE XSharpModel
       // Fields
       PROTECTED _id    := -1                    AS INT64
       PRIVATE _AssemblyReferences					AS List<XAssembly>
-      PRIVATE _AssemblyDict					        AS Dictionary<INT64 ,XAssembly>
-      PRIVATE _AssemblyTypeCache                    AS Dictionary<STRING, XPETypeSymbol>
+      PRIVATE _AssemblyDict					        AS XDictionary<INT64 ,XAssembly>
+      PRIVATE _AssemblyTypeCache                    AS XDictionary<STRING, XPETypeSymbol>
       PRIVATE _parseOptions := NULL					AS XSharpParseOptions
       PRIVATE _projectNode							AS IXSharpProject
       PRIVATE _projectOutputDLLs					AS ConcurrentDictionary<STRING, STRING>
@@ -58,17 +58,15 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY DependentAssemblyList             AS STRING
          GET
             IF String.IsNullOrEmpty(_dependentAssemblyList)
-               SELF:_AssemblyDict := Dictionary<INT64, XAssembly>{}
-               SELF:_AssemblyTypeCache  := Dictionary<STRING, XPETypeSymbol>{}
+               SELF:_AssemblyDict := XDictionary<INT64, XAssembly>{}
+               SELF:_AssemblyTypeCache  := XDictionary<STRING, XPETypeSymbol>{}
                VAR result := ""
                var core := SystemTypeController.mscorlib
                if core != null
                     result := core:Id:ToString()
                ENDIF
                FOREACH VAR assembly IN SELF:AssemblyReferences:ToArray()
-                  IF ! _AssemblyDict:ContainsKey(assembly:Id)
-                     _AssemblyDict:Add(assembly:Id, assembly)
-                  ENDIF
+                  _AssemblyDict:Add(assembly:Id, assembly)
                   IF result:Length > 0
                      result += ","
                   ENDIF
@@ -167,7 +165,7 @@ BEGIN NAMESPACE XSharpModel
       CONSTRUCTOR(project AS IXSharpProject)
          SUPER()
          SELF:_AssemblyReferences := List<XAssembly>{}
-         SELF:_AssemblyTypeCache  := Dictionary<STRING, XPETypeSymbol>{}
+         SELF:_AssemblyTypeCache  := XDictionary<STRING, XPETypeSymbol>{}
          SELF:_unprocessedAssemblyReferences       := List<STRING>{}
          SELF:_unprocessedProjectReferences        := List<STRING>{}
          SELF:_unprocessedStrangerProjectReferences:= List<STRING>{}
@@ -203,15 +201,14 @@ BEGIN NAMESPACE XSharpModel
          _cachedAllNamespaces   := NULL
          SELF:_AssemblyTypeCache := NULL
          RETURN
+
          #region AssemblyReferences
 
         METHOD RefreshReferences(asmList as IList<string>) AS VOID
-            var oldAsm := Dictionary<string, string>{StringComparer.OrdinalIgnoreCase}
+            var oldAsm := XDictionary<string, string>{StringComparer.OrdinalIgnoreCase}
             var newAsm := List<string>{}
             foreach var name in SELF:AssemblyReferenceNames
-                IF ! oldAsm:ContainsKey(name)
-                    oldAsm:Add(name, name)
-                endif
+                oldAsm:Add(name, name)
             next
 
             FOREACH var asmFile in asmList
@@ -1021,7 +1018,7 @@ BEGIN NAMESPACE XSharpModel
          LOCAL fullTypeName:= ""  AS STRING
          LOCAL namespace := "" AS STRING
          LOCAL sTypeIds := ""  as STRING
-         LOCAL aFiles   := Dictionary<INT64, XFile>{} AS Dictionary<INT64, XFile>
+         LOCAL aFiles   := XDictionary<INT64, XFile>{} AS XDictionary<INT64, XFile>
          LOCAL cXmlComment as STRING
          LOCAL projectIds as STRING
          local interfaces as STRING
@@ -1089,7 +1086,7 @@ BEGIN NAMESPACE XSharpModel
                xtype:Namespace   := namespace
                xtype:ClassType   := (XSharpDialect) oType:ClassType
                VAR xmembers := xtype:XMembers:ToArray()
-               VAR dict := Dictionary<STRING, IList<XSourceMemberSymbol>>{}
+               VAR dict := XDictionary<STRING, IList<XSourceMemberSymbol>>{}
                FOREACH m as XSourceMemberSymbol in xmembers
                   var key := m:Kind:ToString()+" "+m:Name
                   if ! dict:ContainsKey(key)

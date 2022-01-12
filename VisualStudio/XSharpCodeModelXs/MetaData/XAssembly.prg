@@ -17,10 +17,10 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE _wasRead              AS LOGIC
 
       PROPERTY Id                   AS INT64 AUTO GET INTERNAL SET
-      PROPERTY Types                AS Dictionary<STRING, XPETypeSymbol> AUTO
-      PROPERTY GlobalMembers        AS Dictionary<STRING, XPEMemberSymbol> AUTO
+      PROPERTY Types                AS XDictionary<STRING, XPETypeSymbol> AUTO
+      PROPERTY GlobalMembers        AS XDictionary<STRING, XPEMemberSymbol> AUTO
       PROPERTY ExtensionMethods     AS IList<XPEMemberSymbol> AUTO
-      PROPERTY ExtensionDict        AS Dictionary<STRING, IList<IXMemberSymbol> > AUTO
+      PROPERTY ExtensionDict        AS XDictionary<STRING, IList<IXMemberSymbol> > AUTO
       PROPERTY ImplicitNamespaces   AS IList<STRING> AUTO
       // Namespaces property can be deleted once we do the name bases lookup in the database
       INTERNAL PROPERTY Namespaces   AS IList<STRING> AUTO
@@ -58,8 +58,8 @@ BEGIN NAMESPACE XSharpModel
          SELF:UpdateAssembly()
 
      METHOD Initialize() AS VOID
-         Types                := Dictionary<STRING, XPETypeSymbol>{StringComparer.OrdinalIgnoreCase}
-         GlobalMembers        := Dictionary<STRING, XPEMemberSymbol>{}
+         Types                := XDictionary<STRING, XPETypeSymbol>{StringComparer.OrdinalIgnoreCase}
+         GlobalMembers        := XDictionary<STRING, XPEMemberSymbol>{}
          ImplicitNamespaces   := List<STRING>{}
          ReferencedAssemblies := List<STRING>{}
          DuplicateTypes       := NULL
@@ -246,7 +246,7 @@ BEGIN NAMESPACE XSharpModel
          RETURN result
 
       METHOD BuildExtensionDict() AS VOID
-         ExtensionDict := Dictionary<STRING, IList<IXMemberSymbol>> {StringComparer.OrdinalIgnoreCase}
+         ExtensionDict := XDictionary<STRING, IList<IXMemberSymbol>> {StringComparer.OrdinalIgnoreCase}
          FOREACH ext AS IXMemberSymbol IN SELF:ExtensionMethods
             IF ext:Parameters:Count > 0
                VAR par  := ext:Parameters:First()

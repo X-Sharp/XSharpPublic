@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharpModel
 
         // Methods
         STATIC CONSTRUCTOR()
-            SystemToXSharp  := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
+            SystemToXSharp  := XDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             SystemToXSharp:Add(XSharpTypeNames.SystemBoolean, "LOGIC")
             SystemToXSharp:Add(XSharpTypeNames.SystemByte, "BYTE")
             SystemToXSharp:Add(XSharpTypeNames.SystemChar, "CHAR")
@@ -52,8 +52,8 @@ BEGIN NAMESPACE XSharpModel
             SystemToXSharp:Add(XSharpTypeNames.XSharpUsual, "USUAL")
             SystemToXSharp:Add(XSharpTypeNames.XSharpWinBool, "LOGIC")
             SystemToXSharp:Add(XSharpTypeNames.XSharpWinDate, "DATE")
-            XSharpToSystem  := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
-            VulcanToSystem  := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
+            XSharpToSystem  := XDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
+            VulcanToSystem  := XDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             FOREACH VAR pair IN SystemToXSharp
                 if pair:Key:StartsWith("Vulcan")
                     IF ! VulcanToSystem:ContainsKey(pair:Value)

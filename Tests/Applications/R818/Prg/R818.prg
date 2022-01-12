@@ -20,7 +20,7 @@ CLASS TestClass
 		p1 := String2Psz("psz2") // should be  a warning here
 		? SELF:p1
 		? SELF:p2
-		? String2Psz("abc")
+		? String2Psz("abc")       
 	RETURN
 END CLASS
 

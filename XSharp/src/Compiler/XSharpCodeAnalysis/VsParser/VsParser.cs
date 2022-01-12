@@ -23,7 +23,7 @@ namespace XSharp.Parser
         private static void GetLexerErrors(XSharpLexer lexer, BufferedTokenStream tokenStream, List<ParseErrorData> parseErrors)
         {
             // get lexer errors
-              foreach (var error in lexer.LexErrors)
+            foreach (var error in lexer.LexErrors)
             {
                 parseErrors.Add(error);
             }
@@ -51,9 +51,10 @@ namespace XSharp.Parser
         }
 
         private static bool LexerHelper(string sourceText, string fileName, CSharpParseOptions options,
-            List<ParseErrorData> parseErrors, out ITokenStream tokens, out BufferedTokenStream ppStream)
+            List<ParseErrorData> parseErrors, out ITokenStream tokens, out BufferedTokenStream ppStream, out List<string> includeFiles)
         {
             ppStream = null;
+            includeFiles = null;
             var lexer = XSharpLexer.Create(sourceText, fileName, options);
             lexer.Options = options;
             var stream = lexer.GetTokenStream();
@@ -71,6 +72,11 @@ namespace XSharp.Parser
                     var pp = new XSharpPreprocessor(lexer, tokens, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
                     var ppTokens = pp.PreProcess();
                     ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
+                    includeFiles = new List<string>();
+                    foreach (var file in pp.IncludedFiles)
+                    {
+                        includeFiles.Add(file.Key);
+                    }
                 }
                 else
                 {
@@ -80,16 +86,23 @@ namespace XSharp.Parser
             }
             return tokens != null;
         }
-
+        [Obsolete("use the overload with the includeFiles parameter instead")]
         public static bool Parse(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener,
             out ITokenStream tokens, out XSharpParserRuleContext tree)
         {
+            return Parse(sourceText, fileName, options, listener, out tokens, out tree, out _);
+        }
+
+        public static bool Parse(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener,
+            out ITokenStream tokens, out XSharpParserRuleContext tree, out List<string> includeFiles)
+        {
             tree = null;
             tokens = null;
+            includeFiles = null;
             var parseErrors = ParseErrorData.NewBag();
             try
             {
-                LexerHelper(sourceText, fileName, options, parseErrors, out tokens, out var ppStream);
+                LexerHelper(sourceText, fileName, options, parseErrors, out tokens, out var ppStream, out includeFiles);
                 var parser = new XSharpParser(ppStream);
                 parser.Interpreter.tail_call_preserves_sll = false;     // default = true   Setting to FALSE will reduce memory used by parser
                 parser.Options = options;
@@ -134,14 +147,23 @@ namespace XSharp.Parser
             ReportErrors(parseErrors, listener);
             return tree != null;
         }
+        [Obsolete("use the overload with the includeFiles parameter instead")]
         public static bool PreProcess(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener,
-                out ITokenStream tokens)
+        out ITokenStream tokens)
+        {
+            return PreProcess(sourceText, fileName, options, listener, out tokens, out _);
+        }
+
+
+        public static bool PreProcess(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener,
+                out ITokenStream tokens, out List<string> includeFiles)
         {
             tokens = null;
+            includeFiles = null;
             var parseErrors = ParseErrorData.NewBag();
             try
             {
-                LexerHelper(sourceText, fileName, options, parseErrors, out _, out var ppStream);
+                LexerHelper(sourceText, fileName, options, parseErrors, out _, out var ppStream, out includeFiles);
                 tokens = ppStream;
             }
             catch (Exception)
@@ -151,14 +173,21 @@ namespace XSharp.Parser
             ReportErrors(parseErrors, listener);
             return tokens != null;
         }
-        public static bool Lex(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener, 
+        [Obsolete("use the overload with the includeFiles parameter instead")]
+        public static bool Lex(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener,
             out ITokenStream tokens)
         {
+            return Lex(sourceText, fileName, options, listener, out tokens, out _);
+        }
+        public static bool Lex(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener, 
+            out ITokenStream tokens, out List<string> includeFiles)
+        {
             tokens = null;
+            includeFiles = null;
             var parseErrors = ParseErrorData.NewBag();
             try
             {
-                LexerHelper(sourceText, fileName, options, parseErrors, out tokens, out _);
+                LexerHelper(sourceText, fileName, options, parseErrors, out tokens, out _, out includeFiles);
             }
             catch (Exception)
             {

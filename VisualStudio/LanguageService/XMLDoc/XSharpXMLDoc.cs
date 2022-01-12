@@ -42,7 +42,8 @@ namespace XSharp.LanguageService
         }
         private static async Task LoadCoreDllAsync()
         {
-            var node = @"HKEY_LOCAL_MACHINE\Software\XSharpBV\XSharp";
+            var node = IntPtr.Size == 8 ? Constants.RegistryKey64 : Constants.RegistryKey;
+
             var InstallPath = (string)Microsoft.Win32.Registry.GetValue(node, "XSharpPath", "");
             var assemblies = Path.Combine(InstallPath, "Assemblies");
             coreLoc = Path.Combine(assemblies, "XSharp.Core.dll");

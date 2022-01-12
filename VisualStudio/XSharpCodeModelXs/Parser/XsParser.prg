@@ -420,8 +420,12 @@ BEGIN NAMESPACE XSharpModel
          RETURN
 
       PRIVATE METHOD ParsePPLine() AS LOGIC
+         LOCAL entity as XSourceMemberSymbol
+         LOCAL kind AS Kind
          VAR token := SELF:La1
-         SWITCH SELF:La1
+         VAR start := SELF:Lt1
+
+         SWITCH token
          CASE XSharpLexer.PP_REGION
          CASE XSharpLexer.PP_IFDEF
          CASE XSharpLexer.PP_IFNDEF
@@ -440,13 +444,28 @@ BEGIN NAMESPACE XSharpModel
             IF _PPBlockStack:Count > 0
                _PPBlockStack:Peek():Children:Add( XSourceBlock{SELF:Lt1,SELF:Lt2})
             ENDIF
+         CASE XSharpLexer.PP_INCLUDE
+             var sb := StringBuilder{}
+             kind   := Kind.Include
+             SELF:Consume()
+             VAR eol   := SELF:Lt1
+             DO WHILE SELF:La1 != XSharpLexer.EOS
+                eol   := SELF:Lt1
+                sb:Append(eol:Text)
+                SELF:Consume()
+             ENDDO
+             SELF:GetSourceInfo(start, eol, OUT VAR range, OUT VAR interval, OUT VAR source)
+             VAR name := sb:ToString():Trim()
+             if name:StartsWith("""") .and. name.EndsWith("""")
+                name := name:Substring(1, name:Length-2)
+             endif
+             entity := XSourceMemberSymbol{name, kind, Modifiers.None, range,interval,"",FALSE}
+             entity:SourceCode := source
          CASE XSharpLexer.PP_DEFINE
          CASE XSharpLexer.PP_UNDEF
          CASE XSharpLexer.PP_COMMAND
          CASE XSharpLexer.PP_TRANSLATE
 
-             VAR type := SELF:La1
-             VAR start := SELF:Lt1
              VAR name  := SELF:Lt2:Text
              VAR eol   := SELF:Lt2
              var hasId := IsId(SELF:La2)
@@ -466,8 +485,7 @@ BEGIN NAMESPACE XSharpModel
                 SELF:Consume()
              ENDDO
              SELF:GetSourceInfo(start, eol, OUT VAR range, OUT VAR interval, OUT VAR source)
-             LOCAL kind AS Kind
-             SWITCH type
+             SWITCH token
              CASE XSharpLexer.PP_DEFINE
                  kind := Kind.Define
              CASE XSharpLexer.PP_UNDEF
@@ -485,16 +503,19 @@ BEGIN NAMESPACE XSharpModel
                     kind := Kind.XTranslate
                  ENDIF
              END SWITCH
-             VAR entity := XSourceMemberSymbol{name, kind, Modifiers.None, range,interval,"",FALSE}
+             entity := XSourceMemberSymbol{name, kind, Modifiers.None, range,interval,"",FALSE}
              entity:SourceCode := source
-             entity:File := _file
-             entity:SingleLine := TRUE
-             _EntityList.Add(entity)
-             _globalType:AddMember(entity)
          OTHERWISE
             RETURN FALSE
          END SWITCH
          SELF:ReadLine()
+         if entity != NULL
+             entity:ReturnType := ""
+             entity:File := _file
+             entity:SingleLine := TRUE
+             _EntityList.Add(entity)
+             _globalType:AddMember(entity)
+         ENDIF
          RETURN TRUE
 
         PRIVATE METHOD ParseUsing() AS LOGIC

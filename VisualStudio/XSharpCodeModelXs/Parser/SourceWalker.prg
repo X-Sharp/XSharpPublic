@@ -93,19 +93,42 @@ BEGIN NAMESPACE XSharpModel
             VAR owner := xmember:Parent
             VAR startLine := xmember:Range:StartLine
             VAR startIndex := xmember:Interval:Start+1
+            VAR sb := StringBuilder{}
+            local nLines := 0 as INT
+            // get the includes and defines from the start of the file
+            // until the entity that we are inspecting
+            foreach var entity in xmember:File:EntityList
+                if entity:Kind:IsPPSymbol()
+                    var ppentity := (XSourceMemberSymbol) entity
+                    sb:AppendLine(ppentity:SourceCode)
+                    ++nLines
+                endif
+                if entity:Range:StartLine >= xmember:Range:StartLine
+                    exit
+                endif
+            next
+
             IF owner IS XSourceTypeSymbol VAR td .AND. td:Name != XLiterals.GlobalName .AND. td:Kind == Kind.Class
-                source := td:SourceCode + e"\r\n" + source
-                startLine   -= 1
-                startIndex  -= (td:SourceCode:Length +2)
+                sb:AppendLine(td:SourceCode)
+                nLines += 1
+                startIndex  -= sb:Length
+                startLine   -= nLines
+                sb:AppendLine(source)
+                sb:AppendLine()
                 IF td:ClassType == XSharpDialect.XPP
-                    source += e"\r\nENDCLASS\r\n"
+                    sb:AppendLine("ENDCLASS")
                 ELSEIF td:ClassType == XSharpDialect.FoxPro
-                    source += e"\r\nENDDEFINE\r\n"
+                    sb:AppendLine("ENDDEFINE")
                 ELSE
-                    source += e"\r\nEND CLASS\r\n"
+                    sb:AppendLine("END CLASS")
                 ENDIF
+            ELSE
+                startIndex  -= sb:Length
+                startLine   -= nLines
+                sb:Append(source)
             ENDIF
-            SELF:Parse(source, TRUE)
+
+            SELF:Parse(sb:ToString(), TRUE)
             VAR result := List<XSourceVariableSymbol>{}
             FOREACH VAR xVar IN SELF:_locals
                 xVar:Range     := xVar:Range:AddLine(startLine)

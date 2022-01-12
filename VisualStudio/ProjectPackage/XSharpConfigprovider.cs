@@ -162,7 +162,7 @@ namespace XSharp.Project
             }
             catch (Exception e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e,"DebugLaunch");
 
                 return Marshal.GetHRForException(e);
             }

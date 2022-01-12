@@ -613,8 +613,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                WriteOutputMessage("Start Completion failed");
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "Start Completion failed");
             }
             return true;
         }
@@ -686,7 +685,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSettings.DisplayOutputMessage("XSharp.Completion:" + strMessage);
+                XSettings.LogMessage("XSharp.Completion:" + strMessage);
             }
         }
         private char GetTypeChar(IntPtr pvaIn)
@@ -802,7 +801,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e,"getTokens");
                 tokens = new List<IToken>();
             }
             return tokens;

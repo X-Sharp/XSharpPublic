@@ -2356,7 +2356,7 @@
 			</span>
 			<span class="cpp">&lt;</span>
 			<span class="fs">&lt;'</span>
-			<span class="xs">&lt;'</span>
+			<span class="xs">&lt;</span>
 			<span class="nu">(</span>
 		</span>
 		<xsl:for-each select="*">
@@ -2394,7 +2394,7 @@
 			</span>
 			<span class="cpp">&lt;</span>
 			<span class="fs">&lt;'</span>
-			<span class="xs">&lt;'</span>
+			<span class="xs">&lt;</span>
 			<span class="nu">(</span>
 		</span>
 		<xsl:for-each select="*">

@@ -58,10 +58,10 @@ namespace Microsoft.VisualStudio.Project
                             int hr;
                             hr = uiWindow.ExpandItem(uiHierarchy, VSConstants.VSITEMID_ROOT, EXPANDFLAGS.EXPF_ExpandParentsToShowItem);
                             if(ErrorHandler.Failed(hr))
-                                XSettings.DisplayOutputMessage("Failed to expand project node");
+                                XSettings.LogMessage("Failed to expand project node");
                             hr = uiWindow.ExpandItem(uiHierarchy, VSConstants.VSITEMID_ROOT, EXPANDFLAGS.EXPF_SelectItem);
                             if(ErrorHandler.Failed(hr))
-                                XSettings.DisplayOutputMessage("Failed to select project node");
+                                XSettings.LogMessage("Failed to select project node");
 
                             return hr;
                         }

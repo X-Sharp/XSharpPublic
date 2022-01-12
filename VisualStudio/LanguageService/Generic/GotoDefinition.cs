@@ -90,8 +90,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                WriteOutputMessage("Goto failed: ");
-                XSettings.DisplayException(ex);
+                XSettings.LogException(ex, "Goto failed");
             }
             finally
             {
@@ -244,7 +243,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableCodeCompletionLog && XSettings.EnableLogging)
             {
-                XSettings.DisplayOutputMessage(strMessage);
+                XSettings.LogMessage(strMessage);
             }
         }
     }

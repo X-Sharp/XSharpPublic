@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XSharpModel;
 using System.Collections.Immutable;
+using Microsoft.VisualStudio.Text;
 
 namespace XSharp.LanguageService
 {
@@ -26,9 +27,11 @@ namespace XSharp.LanguageService
     internal class XSharpLineState
     {
         private Dictionary<int, LineFlags> dict;
-        internal XSharpLineState()
+        internal ITextSnapshot Snapshot { get; set; }
+        internal XSharpLineState(ITextSnapshot snapshot )
         {
             dict = new Dictionary<int, LineFlags>();
+            Snapshot = snapshot;
         }
         internal void SetFlags(int line, LineFlags flags)
         {

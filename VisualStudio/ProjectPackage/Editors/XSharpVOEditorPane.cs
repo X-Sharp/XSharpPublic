@@ -1188,10 +1188,7 @@ namespace XSharp.Project
 
         #endregion
 
-        internal static void Debug(string strMessage)
-        {
-            XSettings.DisplayOutputMessage(strMessage);
-        }
+
 
         #region IVsFileChangeEvents Members
 
@@ -1204,7 +1201,7 @@ namespace XSharp.Project
         /// <returns></returns>
         int IVsFileChangeEvents.FilesChanged(uint cChanges, string[] rgpszFile, uint[] rggrfChange)
         {
-            Debug("**** Inside FilesChanged ****");
+            Logger.Debug("**** Inside FilesChanged ****");
             ThreadHelper.ThrowIfNotOnUIThread();
 
             //check the different parameters
@@ -1275,7 +1272,7 @@ namespace XSharp.Project
         /// <returns></returns>
         int IVsDocDataFileChangeControl.IgnoreFileChanges(int fIgnore)
         {
-            Debug("**** Inside IgnoreFileChanges ****");
+            Logger.Debug("**** Inside IgnoreFileChanges ****");
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (fIgnore != 0)
@@ -1327,7 +1324,7 @@ namespace XSharp.Project
         /// <returns>Result of teh operation</returns>
         private int SetFileChangeNotification(string strFileName, bool fStart)
         {
-            Debug($"**** Inside SetFileChangeNotification {strFileName} {fStart} {vsFileChangeCookie} ****");
+            Logger.Debug($"**** Inside SetFileChangeNotification {strFileName} {fStart} {vsFileChangeCookie} ****");
 
             int result = VSConstants.E_FAIL;
 
@@ -1373,7 +1370,7 @@ namespace XSharp.Project
 
         private int SuspendFileChangeNotification(string strFileName, int fSuspend)
         {
-            Debug($"**** Inside SuspendFileChangeNotification {strFileName} {fSuspend}****");
+            Logger.Debug($"**** Inside SuspendFileChangeNotification {strFileName} {fSuspend}****");
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (null == VsFileChangeEx)

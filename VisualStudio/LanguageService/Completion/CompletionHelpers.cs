@@ -485,7 +485,12 @@ namespace XSharp.LanguageService
                         baseType = "System.Object";
                 }
                 var parentType = sourceType.File.FindType(baseType, sourceType.Namespace);
-                if (baseType == "System.Enum" && staticOnly)
+               if (parentType.FullName == sourceType.FullName)
+                {
+                    ; // recursion !
+                    WriteOutputMessage("*** Recursion detected *** " + sourceType.FullName + " inherits from " + parentType.FullName);
+                }
+                else if (baseType == "System.Enum" && staticOnly)
                 {
                     ; // do nothing
                 }
@@ -723,6 +728,7 @@ namespace XSharp.LanguageService
             var iCurrentLine = Math.Min(location.Snapshot.LineCount - 1, location.LineNumber);
             // create a walker with just the contents of the current member
             // use a new file object so we will not destroy the types in the existing object
+            
             var walker = new SourceWalker(new XFile(member.File.FullPath, member.File.Project), false);
             var start = member.Interval.Start;
             var end = member.Interval.Width;

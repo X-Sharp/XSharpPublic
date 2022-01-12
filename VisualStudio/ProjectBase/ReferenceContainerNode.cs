@@ -562,7 +562,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(Exception e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "CreateAssemblyReferenceNode");
             }
 
             return node;
@@ -579,7 +579,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(Exception e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "CreateAssemblyReferenceNode");
             }
             
 

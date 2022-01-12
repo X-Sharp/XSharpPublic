@@ -58,8 +58,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.DisplayOutputMessage("XSharpResultSource.FindResults failed : " );
-                XSettings.DisplayException(ex);
+                XSettings.LogException(ex, "XSharpResultSource.FindResults failed : ");
             }
         }
 

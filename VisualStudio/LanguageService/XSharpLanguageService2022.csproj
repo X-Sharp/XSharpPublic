@@ -51,6 +51,12 @@
       <Link>XSharpConstants.cs</Link>
     </Compile>
     <Compile Include="BraceMatching\BraceMatching.cs" />
+    <Compile Include="Classifier\ClassificationDefinitions.cs" />
+    <Compile Include="Classifier\ColorizerConstants.cs" />
+    <Compile Include="Classifier\EditorFormats.cs" />
+    <Compile Include="Classifier\LineState.cs" />
+    <Compile Include="Classifier\XSharpClassifier.cs" />
+    <Compile Include="Classifier\XSharpClassifierProvider.cs" />
     <Compile Include="Completion\CompletionHelpers.cs" />
     <Compile Include="Completion\CompletionState.cs" />
     <Compile Include="Completion\CompletionCommandHandler.cs" />
@@ -67,7 +73,6 @@
     <Compile Include="Completion\XSharpGlyphTools.cs" />
     <Compile Include="Formatting\FormattingCommandHandler.cs" />
     <Compile Include="Generic\GotoDefinition.cs" />
-    <Compile Include="KeywordColoring\LineState.cs" />
     <Compile Include="LightBulb\PropertyAction.cs" />
     <Compile Include="LightBulb\PropertyProvider.cs" />
     <Compile Include="LineSeparators\GraphicsResult.cs" />
@@ -77,13 +82,10 @@
     <Compile Include="LineSeparators\LineSeparatorTag.cs" />
     <Compile Include="Lookup\XSharpSearchLocation.cs" />
     <Compile Include="Lookup\XSharpLookup.cs" />
-    <Compile Include="KeywordColoring\ClassificationDefinitions.cs" />
-    <Compile Include="KeywordColoring\ColorizerConstants.cs" />
     <Compile Include="Generic\EditorCommandHandler.cs" />
     <Compile Include="Lookup\AnalysisClasses.cs" />
     <Compile Include="Completion\XAMLCompletionSource.cs" />
     <Compile Include="Completion\XSharpCompletionSource.cs" />
-    <Compile Include="KeywordColoring\EditorFormats.cs" />
     <Compile Include="Errors\XSharpErrorColorizer.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Formatting\Formatting.cs" />
@@ -169,8 +171,6 @@
     <Compile Include="Tokenizer\Tokenizer.cs" />
     <Compile Include="Generic\EditorCommandProvider.cs" />
     <Compile Include="XMLDoc\XSharpXMLDoc.cs" />
-    <Compile Include="KeywordColoring\XSharpClassifier.cs" />
-    <Compile Include="KeywordColoring\XSharpClassifierProvider.cs" />
     <Compile Include="Outlining\XSharpOutlining.cs" />
     <Compile Include="Tokenizer\XSharpTokens.cs" />
   </ItemGroup>
@@ -195,7 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.17">
-      <Version>17.0.362</Version>
+      <Version>17.0.377</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>

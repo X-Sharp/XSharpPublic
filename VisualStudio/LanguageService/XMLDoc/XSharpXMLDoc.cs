@@ -42,7 +42,8 @@ namespace XSharp.LanguageService
         }
         private static async Task LoadCoreDllAsync()
         {
-            var node = @"HKEY_LOCAL_MACHINE\Software\XSharpBV\XSharp";
+            var node = IntPtr.Size == 8 ? Constants.RegistryKey64 : Constants.RegistryKey;
+
             var InstallPath = (string)Microsoft.Win32.Registry.GetValue(node, "XSharpPath", "");
             var assemblies = Path.Combine(InstallPath, "Assemblies");
             coreLoc = Path.Combine(assemblies, "XSharp.Core.dll");
@@ -219,7 +220,7 @@ namespace XSharp.LanguageService
                     var result = file.ParseMemberSignature(key, out id);
                     result = file.GetMemberXML(id, out xml);
                     var summary = GetSummary(xml, out var returns, out var remarks);
-                    if (! String.IsNullOrWhiteSpace(summary))
+                    if (! string.IsNullOrWhiteSpace(summary))
                     {
                         sb.Append(addXml("summary", summary));
                     }
@@ -286,13 +287,44 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.DisplayOutputMessage("Exception in XSharpXMLDocMember.GetSummary");
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetSummary");
                 summary = "** Invalid XML comment ** \r"+e.Message;
 
             }
             return summary;
 
+        }
+        static string decodeAttributes(XmlNode node)
+        {
+
+            if (node.Attributes.Count > 0)
+            {
+                var sb = new StringBuilder();
+                foreach (XmlAttribute attribute in node.Attributes)
+                {
+                    switch (attribute.Name)
+                    {
+                        case "href":
+                        case "cref":
+                            var text = attribute.InnerText;
+                            if (text.Length > 2 && text[1] == ':')
+                            {
+                                sb.Append(text.Substring(2));
+                            }
+                            else
+                            {
+                                sb.Append(text);
+                            }
+                            break;
+                        default:
+                            sb.Append(attribute.InnerText);
+                            break;
+                    }
+                }
+                return sb.ToString();
+
+            }
+            return node.InnerText;
         }
         static string decodeChildNodes(XmlNode node)
         {
@@ -305,6 +337,12 @@ namespace XSharp.LanguageService
                     {
                         switch (cnode.Name)
                         {
+                            case "see":
+                                if (cnode.InnerText.Length > 0)
+                                    sb.Append(cnode.InnerText);
+                                else
+                                    sb.Append(decodeAttributes(cnode));
+                                break;
                             case "cref":
                                 break;
                             case "br":
@@ -320,12 +358,22 @@ namespace XSharp.LanguageService
                     }
                     else if (child is XmlElement el)
                     {
-                        sb.Append(el.InnerText);
+                        if (el.InnerText.Length == 0)
+                        {
+                            sb.Append(decodeAttributes(el));
+                        }
+                        else
+                        {
+                            sb.Append(el.InnerText);
+                        }
                     }
                 }
                 return sb.ToString();
             }
-            return node.InnerText;
+            if (node.InnerText.Length > 0)
+                return node.InnerText;
+            else
+                return decodeAttributes(node);
         }
         static string CleanUpResult(string source)
         {
@@ -450,8 +498,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception e)
             {
-                XSettings.DisplayOutputMessage("Exception in XSharpXMLDocMember.GetDocSummary");
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
             }
             //
             return summary;
@@ -535,8 +582,7 @@ namespace XSharp.LanguageService
                 }
                 catch (Exception e)
                 {
-                    XSettings.DisplayOutputMessage("Exception in XSharpXMLDocMember.GetDocSummary");
-                    XSettings.DisplayException(e);
+                    XSettings.LogException(e, "Exception in XSharpXMLDocMember.GetDocSummary");
                     return false;
                 }
                 return true;

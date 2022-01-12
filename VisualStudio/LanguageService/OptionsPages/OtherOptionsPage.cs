@@ -17,6 +17,8 @@ namespace XSharp.LanguageService.OptionsPages
         public bool ShowSingleLineDividers { get; set; }
         [DefaultValue(true)]
         public bool ShowXmlComments { get; set; }
+        [DefaultValue(false)]
+        public bool LanguageServiceLogging { get; set; }
         [DefaultValue(0)]
         public int PublicStyle { get; set; }
         [DefaultValue(0)]

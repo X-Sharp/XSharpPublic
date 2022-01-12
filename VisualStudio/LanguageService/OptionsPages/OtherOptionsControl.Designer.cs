@@ -29,11 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OtherOptionsControl));
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.chkSingleLineDividers = new System.Windows.Forms.CheckBox();
             this.chkShowDividers = new System.Windows.Forms.CheckBox();
-            this.chkShowXMLComments = new System.Windows.Forms.CheckBox();
             this.lblPublic = new System.Windows.Forms.Label();
             this.rbPublic = new System.Windows.Forms.RadioButton();
             this.rbExport = new System.Windows.Forms.RadioButton();
@@ -41,11 +39,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.rbPrivate = new System.Windows.Forms.RadioButton();
             this.rbHidden = new System.Windows.Forms.RadioButton();
+            this.chkBackupForms = new System.Windows.Forms.CheckBox();
+            this.chkShowXMLComments = new System.Windows.Forms.CheckBox();
             this.grpOther = new System.Windows.Forms.GroupBox();
             this.grpCodeGenerator = new System.Windows.Forms.GroupBox();
             this.grpPrivate = new System.Windows.Forms.GroupBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.chkBackupForms = new System.Windows.Forms.CheckBox();
             this.grpOther.SuspendLayout();
             this.grpCodeGenerator.SuspendLayout();
             this.grpPrivate.SuspendLayout();
@@ -55,7 +54,7 @@
             // chkSingleLineDividers
             // 
             this.chkSingleLineDividers.AutoSize = true;
-            this.chkSingleLineDividers.Location = new System.Drawing.Point(20, 47);
+            this.chkSingleLineDividers.Location = new System.Drawing.Point(20, 44);
             this.chkSingleLineDividers.Name = "chkSingleLineDividers";
             this.chkSingleLineDividers.Size = new System.Drawing.Size(260, 17);
             this.chkSingleLineDividers.TabIndex = 1;
@@ -67,7 +66,7 @@
             // chkShowDividers
             // 
             this.chkShowDividers.AutoSize = true;
-            this.chkShowDividers.Location = new System.Drawing.Point(20, 23);
+            this.chkShowDividers.Location = new System.Drawing.Point(20, 20);
             this.chkShowDividers.Name = "chkShowDividers";
             this.chkShowDividers.Size = new System.Drawing.Size(247, 17);
             this.chkShowDividers.TabIndex = 0;
@@ -76,17 +75,6 @@
         "\"Outlining Margin Vertical Rule");
             this.chkShowDividers.UseVisualStyleBackColor = true;
             this.chkShowDividers.CheckedChanged += new System.EventHandler(this.chkShowDividers_CheckedChanged);
-            // 
-            // chkShowXMLComments
-            // 
-            this.chkShowXMLComments.AutoSize = true;
-            this.chkShowXMLComments.Location = new System.Drawing.Point(20, 18);
-            this.chkShowXMLComments.Name = "chkShowXMLComments";
-            this.chkShowXMLComments.Size = new System.Drawing.Size(341, 17);
-            this.chkShowXMLComments.TabIndex = 2;
-            this.chkShowXMLComments.Text = "Show XML comments in generated source code for Goto Definition";
-            this.toolTip1.SetToolTip(this.chkShowXMLComments, resources.GetString("chkShowXMLComments.ToolTip"));
-            this.chkShowXMLComments.UseVisualStyleBackColor = true;
             // 
             // lblPublic
             // 
@@ -165,6 +153,28 @@
             this.toolTip1.SetToolTip(this.rbHidden, "Use HIDDEN as modifier");
             this.rbHidden.UseVisualStyleBackColor = true;
             // 
+            // chkBackupForms
+            // 
+            this.chkBackupForms.AutoSize = true;
+            this.chkBackupForms.Location = new System.Drawing.Point(20, 67);
+            this.chkBackupForms.Name = "chkBackupForms";
+            this.chkBackupForms.Size = new System.Drawing.Size(237, 17);
+            this.chkBackupForms.TabIndex = 2;
+            this.chkBackupForms.Text = "&Backup source files in Windows Forms editor";
+            this.toolTip1.SetToolTip(this.chkBackupForms, "Backup the Form.prg and Form.Designer.Prg when making changes to forms in the Win" +
+        "dows Forms Editor");
+            this.chkBackupForms.UseVisualStyleBackColor = true;
+            // 
+            // chkShowXMLComments
+            // 
+            this.chkShowXMLComments.AutoSize = true;
+            this.chkShowXMLComments.Location = new System.Drawing.Point(20, 18);
+            this.chkShowXMLComments.Name = "chkShowXMLComments";
+            this.chkShowXMLComments.Size = new System.Drawing.Size(341, 17);
+            this.chkShowXMLComments.TabIndex = 2;
+            this.chkShowXMLComments.Text = "Show XML comments in generated source code for Goto Definition";
+            this.chkShowXMLComments.UseVisualStyleBackColor = true;
+            // 
             // grpOther
             // 
             this.grpOther.Controls.Add(this.chkBackupForms);
@@ -172,7 +182,7 @@
             this.grpOther.Controls.Add(this.chkShowDividers);
             this.grpOther.Location = new System.Drawing.Point(3, 3);
             this.grpOther.Name = "grpOther";
-            this.grpOther.Size = new System.Drawing.Size(385, 96);
+            this.grpOther.Size = new System.Drawing.Size(385, 95);
             this.grpOther.TabIndex = 1;
             this.grpOther.TabStop = false;
             this.grpOther.Text = "Other Options";
@@ -184,7 +194,7 @@
             this.grpCodeGenerator.Controls.Add(this.label1);
             this.grpCodeGenerator.Controls.Add(this.lblPublic);
             this.grpCodeGenerator.Controls.Add(this.chkShowXMLComments);
-            this.grpCodeGenerator.Location = new System.Drawing.Point(3, 105);
+            this.grpCodeGenerator.Location = new System.Drawing.Point(3, 104);
             this.grpCodeGenerator.Name = "grpCodeGenerator";
             this.grpCodeGenerator.Size = new System.Drawing.Size(385, 119);
             this.grpCodeGenerator.TabIndex = 3;
@@ -211,18 +221,6 @@
             this.groupBox1.Size = new System.Drawing.Size(203, 29);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
-            // 
-            // chkBackupForms
-            // 
-            this.chkBackupForms.AutoSize = true;
-            this.chkBackupForms.Location = new System.Drawing.Point(20, 70);
-            this.chkBackupForms.Name = "chkBackupForms";
-            this.chkBackupForms.Size = new System.Drawing.Size(237, 17);
-            this.chkBackupForms.TabIndex = 2;
-            this.chkBackupForms.Text = "&Backup source files in Windows Forms editor";
-            this.toolTip1.SetToolTip(this.chkBackupForms, "Backup the Form.prg and Form.Designer.Prg when making changes to forms in the Win" +
-        "dows Forms Editor");
-            this.chkBackupForms.UseVisualStyleBackColor = true;
             // 
             // OtherOptionsControl
             // 

@@ -22,12 +22,12 @@ namespace XSharp.LanguageService
         internal static ClassificationTypeDefinition XSharpRegionStopFormat = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(ColorizerConstants.XSharpBraceOpenFormat)]
-        internal static ClassificationTypeDefinition XSharpBraceOpenFormat = null;
+        [Name(ColorizerConstants.XSharpKwOpenFormat)]
+        internal static ClassificationTypeDefinition XSharpKwOpenFormat = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(ColorizerConstants.XSharpBraceCloseFormat)]
-        internal static ClassificationTypeDefinition XSharpBraceCloseFormat = null;
+        [Name(ColorizerConstants.XSharpKwCloseFormat)]
+        internal static ClassificationTypeDefinition XSharpKwCloseFormat = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ColorizerConstants.XSharpTextEndTextFormat)]

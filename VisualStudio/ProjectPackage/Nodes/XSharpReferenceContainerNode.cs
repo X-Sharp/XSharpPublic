@@ -67,7 +67,7 @@ namespace XSharp.Project
           }
           catch (Exception e)
           {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "CreateAssemblyReferenceNode");
             }
           ReferenceNode existing = null;
           if (isDuplicateNode(node, ref existing))
@@ -194,7 +194,7 @@ namespace XSharp.Project
           }
           catch (Exception e)
           {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "CreateAssemblyReferenceNode");
           }
           return node;
       }

@@ -185,7 +185,7 @@ namespace XSharp.LanguageService
         {
             if (XSettings.EnableParameterLog && XSettings.EnableLogging)
             {
-                XSettings.DisplayOutputMessage(strMessage);
+                XSettings.LogMessage(strMessage);
             }
         }
 
@@ -262,8 +262,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.DisplayOutputMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed ");
-                XSettings.DisplayException(ex);
+                XSettings.LogException(ex, "XSharpSignatureHelpSource.AugmentSignatureHelpSession Exception failed ");
             }
             finally
             {

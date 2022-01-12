@@ -1241,8 +1241,7 @@ namespace Microsoft.VisualStudio.Project
             catch (COMException e)
             {
 
-                XSettings.DisplayOutputMessage("COM Exception : " );
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "COM Exception");
                 return e.ErrorCode;
             }
 
@@ -1724,7 +1723,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch(COMException e)
                 {
-                    XSettings.DisplayException(e);
+                    XSettings.LogException(e, "InternalExecCommand");
                     returnValue = e.ErrorCode;
                 }
                 if(returnValue != VSConstants.S_OK)
@@ -3006,7 +3005,7 @@ namespace Microsoft.VisualStudio.Project
             }
             catch(COMException e)
             {
-                XSettings.DisplayException(e);
+                XSettings.LogException(e, "SaveItem");
                 returnCode = e.ErrorCode;
 
             	// Try to recover

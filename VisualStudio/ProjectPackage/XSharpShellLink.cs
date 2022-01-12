@@ -11,17 +11,88 @@ namespace XSharp.Project
 
         bool building;
         bool success;
+        
 
         internal XSharpShellLink()
         {
             ThreadHelper.JoinableTaskFactory.Run(async delegate
            {
                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+               VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
+               VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
+               VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
+               VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
+               VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
+               VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
+               VS.Events.SolutionEvents.OnBeforeCloseProject += SolutionEvents_OnBeforeCloseProject;
+               VS.Events.SolutionEvents.OnAfterRenameProject += SolutionEvents_OnAfterRenameProject;
                VS.Events.BuildEvents.SolutionBuildStarted += BuildEvents_SolutionBuildStarted;
                VS.Events.BuildEvents.SolutionBuildDone += BuildEvents_SolutionBuildDone;
                VS.Events.BuildEvents.SolutionBuildCancelled += BuildEvents_SolutionBuildCancelled;
            });
             
+        }
+
+        private void SolutionEvents_OnAfterRenameProject(Community.VisualStudio.Toolkit.Project obj)
+        {
+            Logger.SingleLine();
+            Logger.Information("Renamed project: " + obj?.FullPath ?? "");
+            Logger.SingleLine();
+        }
+
+        private void SolutionEvents_OnBeforeCloseProject(Community.VisualStudio.Toolkit.Project obj)
+        {
+            Logger.SingleLine();
+            Logger.Information("Closing project: " + obj?.FullPath ?? "");
+            Logger.SingleLine();
+
+        }
+
+        private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project obj)
+        {
+            Logger.SingleLine();
+            Logger.Information("Opened project: " + obj?.FullPath ?? "");
+            Logger.SingleLine();
+        }
+
+        private void SolutionEvents_OnBeforeOpenProject(string obj)
+        {
+            Logger.SingleLine();
+            Logger.Information("Opening project: " + obj ?? "");
+            Logger.SingleLine();
+        }
+
+        string solutionName = "";
+        private void SolutionEvents_OnBeforeCloseSolution()
+        {
+            Logger.SingleLine();
+            Logger.Information("Closing solution: " + solutionName);
+            Logger.SingleLine();
+        }
+
+        private void SolutionEvents_OnAfterCloseSolution()
+        {
+
+            Logger.SingleLine();
+            Logger.Information("Closed solution: " + solutionName);
+            Logger.SingleLine();
+            solutionName = "";
+        }
+
+        private void SolutionEvents_OnAfterOpenSolution(Solution obj)
+        {
+            Logger.SingleLine();
+            Logger.Information("Opened Solution: " + obj?.FullPath ?? "");
+            Logger.SingleLine();
+            solutionName = obj?.FullPath;
+        }
+
+        private void SolutionEvents_OnBeforeOpenSolution(string obj)
+        {
+            Logger.SingleLine();
+            Logger.Information("Opening Solution: " + obj ?? "");
+            Logger.SingleLine();
+            solutionName = obj;
         }
 
         private void BuildEvents_SolutionBuildCancelled()
@@ -65,13 +136,15 @@ namespace XSharp.Project
             return (int)VS.MessageBox.Show(title, message);
         }
 
-        public void WriteException(Exception ex)
+        public void LogException(Exception ex, string msg)
         {
+            Logger.Exception(ex, msg);
             XSharpOutputPane.DisplayException(ex);
         }
 
-        public void WriteOutputMessage(string message)
+        public void LogMessage(string message)
         {
+            Logger.Information(message);
             XSharpOutputPane.DisplayOutputMessage(message);
         }
 

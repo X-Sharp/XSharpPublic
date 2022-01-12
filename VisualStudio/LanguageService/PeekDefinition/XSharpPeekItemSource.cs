@@ -79,8 +79,7 @@ namespace XSharp.LanguageService
             }
             catch (Exception ex)
             {
-                XSettings.DisplayOutputMessage("XSharpPeekItemSource.AugmentPeekSession failed : " );
-                XSettings.DisplayException(ex);
+                XSettings.LogException(ex, "XSharpPeekItemSource.AugmentPeekSession failed : ");
             }
             finally
             {

@@ -35,7 +35,7 @@
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_GetFilesToPackage</TargetsForTfmSpecificContentInPackage>
     <!-- Remove NU5128 once https://github.com/NuGet/Home/issues/8583 is fixed -->
     <NoWarn>$(NoWarn);NU5100;NU5128;NU5118</NoWarn>
-
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <_DependsOn Condition="'$(TargetFramework)' == 'net472'">InitializeDesktopCompilerArtifacts</_DependsOn>
     <_DependsOn Condition="'$(TargetFramework)' == 'netcoreapp3.1'">InitializeCoreClrCompilerArtifacts</_DependsOn>
     <Authors>XSharp</Authors>
@@ -52,6 +52,9 @@
     <ProjectReference Update="@(ProjectReference)" Targets="Publish" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" SetTargetFramework="TargetFramework=netcoreapp3.1" />
   </ItemGroup>
 
+  <!--This defines the contents of the package
+  - The various EXE and DLL files and their dependencies go into the targets folder inside the package
+  -->
   <Target Name="_GetFilesToPackage" DependsOnTargets="$(_DependsOn)">
     <ItemGroup>
       <_File Include="@(DesktopCompilerArtifact)" TargetDir="tasks/net472" />
@@ -69,7 +72,7 @@
   <Import Project="DesktopCompilerArtifacts.targets" Condition="'$(TargetFramework)' == 'net472'" />
   <Import Project="CoreClrCompilerArtifacts.targets" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
   <ItemGroup>
-    <None Include="..\..\..\..\license.txt">
+    <None Include="$(Solutiondir)license.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
@@ -81,7 +84,7 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\Compiler\XSCompiler\XSCompiler.csproj" />
     <ProjectReference Include="..\..\Compiler\xsc\xsc.csproj" />

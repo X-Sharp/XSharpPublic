@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29728.190
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xsc", "src\Compiler\xsc\xsc.csproj", "{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -114,6 +114,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{5863A99A-F567-4191-BB25-75832BCD9E44}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XSharp.Compiler.Tools", "src\NuGet\XSharp.Compiler.Tools\XSharp.Compiler.Tools.csproj", "{D299219C-C9AA-45B2-ADDF-11E734031FBB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F738FD65-FFAF-4F52-8EFC-5AFFD1C42846} = {F738FD65-FFAF-4F52-8EFC-5AFFD1C42846}
+		{AEBEBC71-1FDE-4901-91E0-5667F9BB211A} = {AEBEBC71-1FDE-4901-91E0-5667F9BB211A}
+		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B} = {CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}
+		{BE3240A6-A018-4E62-B925-1A5415BD9A60} = {BE3240A6-A018-4E62-B925-1A5415BD9A60}
+		{014963AE-D6D1-4FF8-8D8A-8D417F5D8D1F} = {014963AE-D6D1-4FF8-8D8A-8D417F5D8D1F}
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2} = {9D02E3F9-7157-46B7-9E97-F62010E4B3F2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

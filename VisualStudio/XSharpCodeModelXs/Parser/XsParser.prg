@@ -317,7 +317,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
          ENDDO
          VAR types := SELF:_EntityList:Where( {x => x IS XSourceTypeSymbol})
-         VAR typelist := Dictionary<STRING, XSourceTypeSymbol>{System.StringComparer.InvariantCultureIgnoreCase}
+         VAR typelist := XDictionary<STRING, XSourceTypeSymbol>{System.StringComparer.InvariantCultureIgnoreCase}
          typelist:Add(_globalType:Name, _globalType)
          LOCAL last  := NULL AS XSourceTypeSymbol
          FOREACH type AS XSourceTypeSymbol IN types

@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY Id           AS INT64          AUTO      GET INTERNAL SET
         PRIVATE _globalType 	AS XSourceTypeSymbol
         PRIVATE _type			AS XFileType
-        PRIVATE _typeList		AS Dictionary<STRING, XSourceTypeSymbol>
+        PRIVATE _typeList		AS XDictionary<STRING, XSourceTypeSymbol>
         PRIVATE _entityList	AS List<XSourceEntity>
         PRIVATE _usings			AS List<STRING>
         PRIVATE _usingStatics	AS List<STRING>
@@ -160,7 +160,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_usings		   := List<STRING>{}
             SELF:_usingStatics	:= List<STRING>{}
             SELF:_entityList     := List<XSourceEntity>{}
-            SELF:_typeList		   := Dictionary<STRING, XSourceTypeSymbol>{System.StringComparer.InvariantCultureIgnoreCase}
+            SELF:_typeList		   := XDictionary<STRING, XSourceTypeSymbol>{System.StringComparer.InvariantCultureIgnoreCase}
             SELF:AddDefaultUsings()
             IF SELF:HasCode
                 SELF:_globalType	:= XSourceTypeSymbol.CreateGlobalType(SELF)

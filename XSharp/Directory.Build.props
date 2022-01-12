@@ -1,6 +1,11 @@
-<!-- Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license. See the LICENSE file in the project root for more information. -->
+
 <Project>
   <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" />
   <Import Project="eng\targets\Settings.props" />
+ <PropertyGroup>
+<!-- The following line fixes a problem The target "GetTargetPath" does not exist for projects that only target one framework
+     like our XSharp.Build project --> 
+  <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+ </PropertyGroup>
 </Project>
 

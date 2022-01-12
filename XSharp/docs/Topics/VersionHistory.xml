@@ -11,7 +11,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
-    <para styleclass="Heading1">Changes in 2.10.0.0 </para>
+    <para styleclass="Heading1">Changes in 2.10.0.1 </para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -22,13 +22,14 @@
       <li styleclass="Body Text">Prevented a warning from appearing for members of SEALED classes when /vo3 (all members VIRTUAL) is enabled (#785)</li>
       <li styleclass="Body Text">Fixed problems with assigning and comparing &quot;ARRAY OF &lt;type&gt;&quot; vars to NULL_ARRAY (#833)</li>
       <li styleclass="Body Text">Fixed some issues with passing arguments by reference with the @ operator and/or using it as the AddressOf operator (#810, #899, #902)</li>
+      <li styleclass="Body Text">Fixed a problem resolving parameters passed by reference with the @ operator when the function/ method had a parameter of the pointer type (#899, #902)</li>
     </list>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">New features</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">Added compiler option (/enforceoverride) to make the OVERRIDE modified mandatory when overriding a parent member (#786, #846)</text></li>
+      <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">Added compiler option (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-enforceoverride" style="font-weight:normal; font-style:normal; color:#000000;">-enforceoverride</link><text style="font-weight:normal; font-style:normal; color:#000000;">) to make the OVERRIDE modified mandatory when overriding a parent member (#786, #846)</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">The compiler now reports an error when using String2Psz() and Cast2Psz() in a non local context (since such PSZs are being released on exiting the current entity) (#775)</text></li>
       <li styleclass="Body Text"><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text>s and <text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">PROCEDURE</text>s now support the <text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">ASYNC</text> modifier (#853)</li>
-      <li styleclass="Body Text">You can now suppress the automatic generation of the $Init1() and $Exit() functions by passing the compiler commandline option /noinit (#854). This is NOT yet supported in the VS Properties dialog </li>
+      <li styleclass="Body Text">You can now suppress the automatic generation of the $Init1() and $Exit() functions by passing the compiler commandline <br/>option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noinit">-noinit</link> (#854). This is NOT yet supported in the VS Properties dialog </li>
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">Added support for the </text><text styleclass="Code Example" style="font-weight:bold; color:#ff0000;">ASTYPE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> operator also for USUAL vars (#857)</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">Allowed specifying </text><text styleclass="Code Example" style="font-weight:bold; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;type&gt; clause in </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">PUBLIC</text><text style="font-weight:normal; font-style:normal; color:#000000;"> var declarations (ignored by the compiler, but used by the editor in the future for intellisense) (#853)</text></li>
       <li styleclass="Body Text">The <text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text> &lt;datatype&gt; <text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">OF</text> &lt;classlib&gt; clause is now also supported for several other FoxPro compatible commands, such as PARAMETERS and PUBLIC.<br/>Since these variables are untyped at runtime by nature, the clause is ignored by the compiler and a warning is shown.</li>
@@ -54,6 +55,7 @@
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">We have added tooltips, parameter completion etc for the pseudo functions that are built into the compiler, such as PCount() and String2Psz().</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">We have added a first version of Lightbulb tips. For now to implement missing interface members and to convert a field to a Property. More implementations and configuration options will follow</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">We have added a new dialog to configure source code formatting with visual examples of the effects of the options.</text></li>
+      <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">We have added the ability to log operations of the X# VS integration to the Windows debug window and/or a logfile. </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">If you are experiencing unexplainable problems we will contact you and tell you how to enable these options, so you can send us a log file that shows what happened before a problem occurred inside Visual Studio. We have used Serilog for this.</text></li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -73,8 +75,13 @@
       <li styleclass="Body Text">Fixed a problem in the Windows Forms designer (#873)</li>
       <li styleclass="Body Text">Fixed an intellisense problem with ENUMs using no MEMBER keywords (#877)</li>
       <li styleclass="Body Text">Fixed a member completion problem with inherited exception types (#884)</li>
+      <li styleclass="Body Text">If an XML topic had sub elements of type &lt;see&gt; or other these were not shown in the editor. This has been fixed (#900)</li>
+      <li styleclass="Body Text">Unbalanced braces were sometimes matched in the editor with keywords. This has been fixed (#892)</li>
+      <li styleclass="Body Text">Line separators were sometimes flickering. This has been fixed (#792)</li>
+      <li styleclass="Body Text">When parsing for local variables we were not processing the include files. This could lead to a situation where a local that was declared in a conditional block (#ifdef SOMEVAR) was not found. This has been fixed. The editor parser now includes the header files and #defines and #undefines found in the code even when parsing a part of the source file (#893)</li>
+      <li styleclass="Body Text">#include lines are now included in the fields/members combobox in the editor (when fields are shown). They are also saved to the intellisense database.</li>
+      <li styleclass="Body Text">The editor was trying to show QuickInfo tooltips when the cursor was over an inactive preprocessor region (#ifdef). This no longer happens. </li>
     </list>
-    <para styleclass="Body Text"></para>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
     <para styleclass="Heading3">Bug fixes</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -90,6 +97,12 @@
       <li styleclass="Body Text">DbInfo() was returning TRUE even when an info enum was not supported.(#886)</li>
       <li styleclass="Body Text">Fixed also a possible DBFNTX corruption problem (#889)</li>
       <li styleclass="Body Text">DbEval() could fail in FoxPro when the codeblock was returning NIL or was VOID (#890)</li>
+      <li styleclass="Body Text"></li>
+    </list>
+    <para styleclass="Body Text">Fixed a problem with Softseek and descending indexes.</para>
+    <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed a problem where incorrect scope expressions could lead to unexpected results. Now the server goes to (and stays at) EOF with an incorrect scope.</li>
+      <li styleclass="Body Text">Fixed a problem with accessing FoxPro arrays with the parenthesis operators in a macro expression (#805). <br/>Please note that for this to work you have to compile the main program with <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link></li>
     </list>
     <para styleclass="Heading1">Changes in 2.9.1.1 (Cahors)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>

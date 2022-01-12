@@ -12,7 +12,7 @@
     </header>
     <para styleclass="Body Text">The following compiler options are sorted by category. For an alphabetical list, see : <link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-Listed-Alph">X# Compiler Options Listed Alphabetically</link></para>
     <para styleclass="Body Text">The options in <text style="font-weight:bold; color:#ff0000;">RED</text> are not supported yet.</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="101" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="102" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal">Option</para>
@@ -403,6 +403,14 @@
         </td>
         <td>
           <para styleclass="Normal">Instructs the compiler not to compile with xsc.rsp.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noinit">-noinit</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Suppress generation of empty $Init1() and &#160;$Exit() functions</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

@@ -48,6 +48,8 @@ namespace XSharp.LanguageService.OptionsPages
             this.chkEnableQuickInfoLog.Checked = _page.EnableQuickInfoLog;
             this.chkEnableTypeLookupLog.Checked = _page.EnableTypelookupLog;
             this.chkEnableReferenceLog.Checked = _page.EnableReferenceInfoLog;
+            this.chkLogToDebug.Checked = (int) Constants.GetSetting("Log2Debug", 0) != 0;
+            this.chkLogToFile.Checked = (int) Constants.GetSetting("Log2File", 0) != 0;
         }
         internal void SaveSettings()
         {
@@ -78,6 +80,9 @@ namespace XSharp.LanguageService.OptionsPages
             _page.EnableTypelookupLog = this.chkEnableTypeLookupLog.Checked;
             _page.EnableReferenceInfoLog = this.chkEnableReferenceLog.Checked;
             XSharpLanguageService.Instance.optionWasChanged = true;
+            Constants.WriteSetting("Log2Debug", chkLogToDebug.Checked ? 1 : 0);
+            Constants.WriteSetting("Log2File", chkLogToFile.Checked ? 1 : 0);
+
         }
 
     }

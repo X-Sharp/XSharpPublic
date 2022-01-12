@@ -49,16 +49,16 @@ BEGIN NAMESPACE UDCTesterApp
          IF oSettings:WriteLexTokens
             opt:Add("lexonly")
             VAR options2  := XSharpParseOptions.FromVsValues(opt)
-            XSharp.Parser.VsParser.Lex(source, "test.prg", options2, SELF, OUT VAR lextokenStream)
+            XSharp.Parser.VsParser.Lex(source, "test.prg", options2, SELF, OUT VAR lextokenStream, OUT VAR _)
             _errors:Clear()
             SELF:WriteTokens((BufferedTokenStream) lextokenStream, Path.Combine(cFolder,"test.lextokens.csv"))
          ENDIF
 
-         XSharp.Parser.VsParser.PreProcess(source, "test.prg", options, SELF, OUT VAR tokenStream)
+         XSharp.Parser.VsParser.PreProcess(source, "test.prg", options, SELF, OUT VAR tokenStream, OUT VAR _)
          IF oSettings:WritePPTokens
             SELF:WriteTokens((BufferedTokenStream) tokenStream, Path.Combine(cFolder,"test.pptokens.csv"))
          ENDIF
-            
+
          IF SELF:_errors:Count > 0
             VAR cMessage := ""
             FOREACH VAR msg IN _Errors
@@ -66,7 +66,7 @@ BEGIN NAMESPACE UDCTesterApp
             NEXT
             SELF:tbResult:Text := "Preprocessor errors detected: "+e"\r\n"+cMessage
          ELSE
-         VAR stream := (BufferedTokenStream) tokenStream 
+         VAR stream := (BufferedTokenStream) tokenStream
          VAR tokens := stream:GetTokens()
          VAR result := StringBuilder{}
          VAR afterEOS := FALSE
@@ -74,19 +74,19 @@ BEGIN NAMESPACE UDCTesterApp
             IF (token:HasTrivia)
                FOREACH VAR child IN token:Trivia
                   SWITCH child:Type
-                  CASE XSharpLexer.LINE_CONT 
+                  CASE XSharpLexer.LINE_CONT
                   CASE XSharpLexer.SL_COMMENT
                   CASE XSharpLexer.ML_COMMENT
                   CASE XSharpLexer.DOC_COMMENT
                   CASE XSharpLexer.EOS
-                     NOP      
+                     NOP
                   CASE XSharpLexer.WS
-                     IF ! afterEOS      
+                     IF ! afterEOS
                         result:Append(child:Text:Replace(e"\r\n",""))
                      ENDIF
-                  OTHERWISE       
+                  OTHERWISE
                      result:Append(child:Text)
-                     
+
                   END SWITCH
                NEXT
             ENDIF
@@ -97,10 +97,10 @@ BEGIN NAMESPACE UDCTesterApp
                    NOP
                OTHERWISE
                   result:Append(token:Text)
-                  
+
             END SWITCH
             afterEOS := token:Type == XSharpLexer.EOS
-         NEXT                         
+         NEXT
          SELF:tbResult:Text := result:ToString():TrimStart()
          IF oSettings:WritePPo
             File.WriteAllText(Path.Combine(cFolder,"test.ppo"), SELF:tbResult:Text)
@@ -136,7 +136,7 @@ BEGIN NAMESPACE UDCTesterApp
         ELSE
             sb:Append(token:Text:Replace(e"\r", ""):Replace(e"\n","<CRLF>"))
         ENDIF
-        
+
         sb:AppendLine()
 PRIVATE METHOD OkButton_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
    SELF:Close()
@@ -165,5 +165,5 @@ PRIVATE METHOD OkButton_Click(sender AS System.Object, e AS System.EventArgs) AS
     PRIVATE METHOD ReadSettings() AS VOID
         SELF:comboDialect:Text       := oSettings:DefaultDialect
         SELF:chkStandardDefs:Checked := oSettings:DefaultNoStdDefs
-   END CLASS 
+   END CLASS
 END NAMESPACE

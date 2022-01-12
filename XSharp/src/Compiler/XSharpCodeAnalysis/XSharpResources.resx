@@ -7652,8 +7652,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <value>Argument {0} may not be passed with the '@' prefix</value>
     <comment>This is the argument position !</comment>
   </data>
-  <data name="ERR_String2PszMustBeAssignedToLocal" xml:space="preserve">
-  <value>String2Psz() and Cast2Psz() are only allowed in a local context.</value>
+  <data name="WRN_String2PszMustBeAssignedToLocal" xml:space="preserve">
+  <value>String2Psz() and Cast2Psz() should only be used for variables that have a 'local' scope. The allocated PSZ will be automatically released once the current function/method ends.</value>
   </data>
 
 </root>

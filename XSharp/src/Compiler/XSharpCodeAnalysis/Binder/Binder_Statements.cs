@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     if (!ok)
                     {
-                        Error(diagnostics, ErrorCode.ERR_String2PszMustBeAssignedToLocal, assignment.Right);
+                        Error(diagnostics, ErrorCode.WRN_String2PszMustBeAssignedToLocal, assignment.Right);
                     }
                 }
             }

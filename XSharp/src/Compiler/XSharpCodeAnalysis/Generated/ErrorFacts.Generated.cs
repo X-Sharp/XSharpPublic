@@ -340,6 +340,7 @@
                 case ErrorCode.WRN_Unsupported:
                 case ErrorCode.WRN_PropertyTypeChangedInParentType:
                 case ErrorCode.WRN_MissingWithStatement:
+                case ErrorCode.WRN_String2PszMustBeAssignedToLocal:
                 case ErrorCode.WRN_XPPSuperIVarsAlwaysShared:
                 case ErrorCode.WRN_XPPFrozedNotSupported:
                 case ErrorCode.WRN_XPPVarIsInNotSupported:

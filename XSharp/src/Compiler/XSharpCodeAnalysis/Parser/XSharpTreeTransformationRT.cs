@@ -3620,7 +3620,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             expr = CreateObject(this.objectType, EmptyArgumentList());
             expr.XIsString2Psz = true;
-            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_String2PszMustBeAssignedToLocal));
+            expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_String2PszMustBeAssignedToLocal));
             return expr;
         }
 

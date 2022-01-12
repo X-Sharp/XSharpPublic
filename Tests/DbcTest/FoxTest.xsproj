@@ -14,7 +14,7 @@
     <Dialect>FoxPro</Dialect>
     <vo15>false</vo15>
     <OutputName>ConsoleApplication1</OutputName>
-    <XSharpProjectversion>2.9.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.10.0.0</XSharpProjectversion>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -34,7 +34,7 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <NoWin32Manifest>False</NoWin32Manifest>
     <Vo2>True</Vo2>
-    <Fox2>False</Fox2>
+    <Fox2>True</Fox2>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -52,7 +52,8 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption>/fox2</CommandLineOption>
+    <CommandLineOption>
+    </CommandLineOption>
     <PPO>True</PPO>
     <Prefer32Bit>True</Prefer32Bit>
     <RegisterForComInterop>False</RegisterForComInterop>

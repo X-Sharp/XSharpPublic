@@ -52,7 +52,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN DbcManager.DoForDatabase({ =>
                 local lOk := FALSE as LOGIC
                 lOk := CoreDb.UseArea(TRUE, "DBFVFP",cFileName, "", lShared,lReadOnly)
-                local oValue as OBJECT
+                local oValue := NULL as OBJECT
                 IF lOk .and. CoreDb.Info(DBI_RDD_OBJECT,REF oValue)
                     var oRDD := (IRdd) oValue
                     var oProperty := oValue:GetType():GetProperty("ReturnRawData",;

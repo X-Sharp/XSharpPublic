@@ -5227,6 +5227,58 @@ RETURN
 			fpt2->DbCloseArea()
 
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestOrdScopeReturnValue() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{"CFIELD","C",1,0}} , {"S","S","N"})
+			DbCreateIndex(cDbf , "CFIELD")
+			DbCloseArea()
+
+			DbUseArea( TRUE ,,cDBF )
+			Assert.True(OrdScope(TOPSCOPE, "S") == NIL)
+			Assert.True(OrdScope(BOTTOMSCOPE, "S") == NIL)
+			Assert.Equal("S", OrdScope(TOPSCOPE, "N"))
+			Assert.Equal("S", OrdScope(BOTTOMSCOPE, "N"))
+			DbCloseArea()
+		RETURN
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestSoftSeek() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/905
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+			RddSetDefault("DBFCDX")
+
+			DbfTests.CreateDatabase(cDbf, {{"CFIELD","C",5,0}} , {"A","B","B","C"})
+			DbCreateIndex(cDbf , "CFIELD")
+			DbCloseArea()
+
+			DbUseArea( TRUE ,,cDBF )
+
+			OrdScope(TOPSCOPE, "B")
+			OrdScope(BOTTOMSCOPE, "B")
+
+			DbGoTop()
+			Assert.Equal(2U, RecNo())
+			Assert.False(DbSeek("BB",FALSE))
+			Assert.True(Eof())
+			Assert.Equal(5U, RecNo())
+			
+			DbGoTop()
+			Assert.Equal(2U, RecNo())
+			Assert.False(DbSeek("BB",TRUE))
+			Assert.True(Eof())
+			Assert.Equal(5U, RecNo())
+			
+			DbCloseArea()
+		RETURN
+
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter
@@ -5250,23 +5302,5 @@ RETURN
                 FErase(FPathName())
             ENDIF
 		    RETURN cFileName
-
-		[Fact, Trait("Category", "DBF")];
-		METHOD TestOrdScopeReturnValue() AS VOID
-			LOCAL cDbf AS STRING
-			cDbf := DbfTests.GetTempFileName()
-			RddSetDefault("DBFCDX")
-
-			DbfTests.CreateDatabase(cDbf, {{"CFIELD","C",1,0}} , {"S","S","N"})
-			DbCreateIndex(cDbf , "CFIELD")
-			DbCloseArea()
-
-			DbUseArea( TRUE ,,cDBF )
-			Assert.True(OrdScope(TOPSCOPE, "S") == NIL)
-			Assert.True(OrdScope(BOTTOMSCOPE, "S") == NIL)
-			Assert.Equal("S", OrdScope(TOPSCOPE, "N"))
-			Assert.Equal("S", OrdScope(BOTTOMSCOPE, "N"))
-			DbCloseArea()
-		RETURN
 	END CLASS
 END NAMESPACE

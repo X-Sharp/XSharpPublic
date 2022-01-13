@@ -1,37 +1,18 @@
-﻿#command REPLACE [ <f1> WITH <x1> [, <fn> WITH <xn>] ]                  ;
-         [FOR <lfor>]                                                    ;
-         [WHILE <lwhile>]                                                ;
-         [NEXT <nnext>]                                                  ;
-         [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
-         [<noopt: NOOPTIMIZE>]                                          ;
-         [ALL]                                                          ;
-                                                                        ;
-      => DbEval(                                                        ;
-                 {||DbAutoLock(), _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>], DbAutoUnLock()},    ;
-                 <{lfor}>, <{lwhile}>, <nnext>, <rec>, <.rest.>, <.noopt.>;
-               )
+﻿// https://github.com/X-Sharp/XSharpPublic/issues/805
+FUNCTION Start() AS VOID
+PUBLIC a[3]
+PUBLIC B[42]
+a(1) = 42
+? Type ( "a(1)" )
+? Type ( "a[1]" )
+b := Today()
+? Type ( "b(42)" )
+MemVarRelease("B")
+b := Today()
+? Type ( "b(42)" )
+wait
+RETURN
 
 
-#command REPLACE <f1> WITH <v1> [, <fN> WITH <vN> ]                     ;
-      => DbAutoLock(); _FIELD-><f1> := <v1> [; _FIELD-><fN> := <vN>]; DbAutoUnLock()
-
-
-
-FUNCTION Start( ) AS VOID
-TRY
-    RddSetDefault("dbfcdx")
-    DbCreate("test", {{"test","C",10,0}})
-    USE test SHARED
-    DbAppend()
-    DbAppend()
-    DbAppend()
-    DbAppend()
-    DbGoTop()
-
-    REPLACE ALL Test with "abc"
-
-CATCH e as Exception
-? e:ToString()
-ENDTRY
-WAIT
+function b (num as int) as string
+    return num:ToString()

@@ -97,10 +97,7 @@
       <li styleclass="Body Text">DbInfo() was returning TRUE even when an info enum was not supported.(#886)</li>
       <li styleclass="Body Text">Fixed also a possible DBFNTX corruption problem (#889)</li>
       <li styleclass="Body Text">DbEval() could fail in FoxPro when the codeblock was returning NIL or was VOID (#890)</li>
-      <li styleclass="Body Text"></li>
-    </list>
-    <para styleclass="Body Text">Fixed a problem with Softseek and descending indexes.</para>
-    <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed a problem with Softseek and descending indexes.</li>
       <li styleclass="Body Text">Fixed a problem where incorrect scope expressions could lead to unexpected results. Now the server goes to (and stays at) EOF with an incorrect scope.</li>
       <li styleclass="Body Text">Fixed a problem with accessing FoxPro arrays with the parenthesis operators in a macro expression (#805). <br/>Please note that for this to work you have to compile the main program with <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link></li>
     </list>

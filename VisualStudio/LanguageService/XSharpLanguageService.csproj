@@ -214,6 +214,9 @@
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
     </PackageReference>
+    <PackageReference Include="VSLangProj150">
+      <Version>15.0.26229</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="OptionsPages\IndentingOptionsControl.resx">

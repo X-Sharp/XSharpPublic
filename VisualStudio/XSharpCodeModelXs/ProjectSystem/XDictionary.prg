@@ -5,7 +5,9 @@
 //
 
 USING System
+USING System.Collections.ObjectModel
 USING System.Collections.Generic
+USING System.Collections.Concurrent
 BEGIN NAMESPACE XSharpModel
 
     /// <summary>
@@ -13,7 +15,7 @@ BEGIN NAMESPACE XSharpModel
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    CLASS XDictionary<TKey, TValue> INHERIT Dictionary<TKey,TValue>
+    CLASS XDictionary<TKey, TValue> INHERIT ConcurrentDictionary<TKey,TValue>
 
         CONSTRUCTOR()
             SUPER()
@@ -24,11 +26,19 @@ BEGIN NAMESPACE XSharpModel
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        NEW METHOD Add( key as TKey, @@value as TValue) AS VOID
+        METHOD Add( key as TKey, @@value as TValue) AS VOID
             IF !SELF:ContainsKey(key)
-                SUPER:Add(key, @@value)
+                SUPER:TryAdd(key, @@value)
             ENDIF
+        METHOD Append(oDict as IDictionary<TKey, TValue>) AS VOID
+            FOREACH var item in oDict
+                SELF:Add(item:Key, item:Value)
+            NEXT
+        METHOD Remove(key as TKey) AS VOID
+            SUPER:TryRemove(key, out var _)
 
+        METHOD ToReadOnlyDictionary() AS IDictionary<TKey, TValue>
+            RETURN ReadOnlyDictionary<TKey, TValue>{SELF}
 
     END CLASS
 END NAMESPACE

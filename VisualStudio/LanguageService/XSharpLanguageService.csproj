@@ -50,6 +50,7 @@
     <Compile Include="..\..\Common\XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
+    <Compile Include="BraceCompletion\BraceCompletion.cs" />
     <Compile Include="BraceMatching\BraceMatching.cs" />
     <Compile Include="Completion\CompletionHelpers.cs" />
     <Compile Include="Completion\CompletionState.cs" />
@@ -197,7 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.377</Version>
+      <Version>15.0.390</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>

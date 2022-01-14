@@ -106,11 +106,6 @@ BEGIN NAMESPACE XSharpModel
 
     INTERNAL STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
         WriteOutputMessage("XModel.Solution.Add() "+projectName+" "+project.FileName)
-        IF project:ProjectNode IS OrphanedFilesProject
-            // Ok
-        ELSEif _projects:Count == 0
-            CreateOrphanedFilesProject()
-        ENDIF
         IF _projects:ContainsKey(projectName)
             RETURN FALSE
         ENDIF
@@ -222,10 +217,10 @@ BEGIN NAMESPACE XSharpModel
 
     STATIC METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
         XSettings.SetStatusBarAnimation(onOff, id)
-        // Properties
-    STATIC PROPERTY OrphanedFilesProject AS XProject
+
+   STATIC PROPERTY OrphanedFilesProject AS XProject
         GET
-            IF _orphanedFilesProject == NULL
+            IF _orphanedFilesProject == NULL .and. IsOpen
                 CreateOrphanedFilesProject()
             ENDIF
             RETURN _orphanedFilesProject

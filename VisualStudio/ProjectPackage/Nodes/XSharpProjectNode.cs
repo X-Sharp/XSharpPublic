@@ -305,7 +305,10 @@ namespace XSharp.Project
         /// <returns>This method returns a new instance of the ProjectOptions base class.</returns>
         public override ProjectOptions CreateProjectOptions()
         {
-            base.options = new XSharpProjectOptions(this);
+            var xoptions = new XSharpProjectOptions(this);
+            base.options = xoptions;
+            if (projectModel != null)   
+                projectModel.ResetParseOptions(null);
             return options;
         }
 
@@ -1032,7 +1035,7 @@ namespace XSharp.Project
             // This will call the callback in PojectPackage
             IXSharpLibraryManager libraryManager = Site.GetService(typeof(IXSharpLibraryManager)) as IXSharpLibraryManager;
             // Be sure we have External/system types for Intellisense
-            UpdateAssemblyReferencesModel();
+            //UpdateAssemblyReferencesModel();
             ThreadHelper.ThrowIfNotOnUIThread();
             if (null != libraryManager)
             {

@@ -4,18 +4,14 @@
 // See License.txt in the project root for license information.
 //
 
+using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio;
-using IServiceProvider = System.IServiceProvider;
 using System.IO;
-using System.Threading.Tasks;
-using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio.Shell.Interop;
+using System.Linq;
 using XSharpModel;
 using File = System.IO.File;
-using System.Linq;
-using Microsoft.VisualStudio.Shell;
 
 
 namespace XSharp.LanguageService
@@ -23,11 +19,11 @@ namespace XSharp.LanguageService
     /// <summary>
     /// This class is used to suspend and resume the background scanner upon certain Solution Events
     /// </summary>
-    public class ModelScannerEvents 
+    public class ModelScannerEvents
     {
         List<string> projectfiles;
         string solutionFile;
-        static Dictionary<string,string> changedProjectfiles;
+        static Dictionary<string, string> changedProjectfiles;
 
         static ModelScannerEvents events = null;
 
@@ -44,11 +40,14 @@ namespace XSharp.LanguageService
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
                 VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
                 VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
                 VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
                 VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
+                VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
+                VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
                 VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
                 projectfiles = new List<string>();
                 changedProjectfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -56,8 +55,32 @@ namespace XSharp.LanguageService
             });
 
         }
+        private void DocumentEvents_Opened(string document)
+        {
+#if DEBUG
+            XSolution.WriteOutputMessage("DocumentEvents_Opened " + document ?? "(none)");
+#endif
+        }
 
-       
+        private void DocumentEvents_Closed(string document)
+        {
+#if DEBUG
+            XSolution.WriteOutputMessage("DocumentEvents_Closed " + document ?? "(none)");
+#endif
+            var xFile = XSolution.FindFullPath(document);
+            if (xFile != null && xFile.Project == XSolution.OrphanedFilesProject)
+            {
+                XSolution.OrphanedFilesProject.RemoveFile(document);
+            }
+        }
+        private void SolutionEvents_OnBeforeOpenSolution(string obj)
+        {
+            // we do not see this for the first solution that is opened
+            // because we are usually not loaded then
+#if DEBUG
+            XSolution.WriteOutputMessage("SolutionEvents_OnBeforeOpenSolution " + obj ?? "(none)");
+#endif
+        }
         private void SolutionEvents_OnBeforeOpenProject(string obj)
         {
             checkProjectFile(obj);
@@ -77,7 +100,6 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            
         }
 
         private void ShellEvents_ShutdownStarted()
@@ -98,7 +120,7 @@ namespace XSharp.LanguageService
                         case SolutionItemType.Project:
                             var fileName = child.FullPath;
                             projects.Add(fileName);
-                            var project = (Community.VisualStudio.Toolkit.Project) child;
+                            var project = (Community.VisualStudio.Toolkit.Project)child;
                             var isXS = await project.IsKindAsync(GuidStrings.guidXSharpProjectFactoryString);
                             if (isXS)
                             {
@@ -177,10 +199,21 @@ namespace XSharp.LanguageService
             {
                 solutionFile = obj.FullPath;
                 var projects = new List<string>();
+                var files = new List<string>();
                 ThreadHelper.JoinableTaskFactory.Run(async delegate
                 {
                     var sol = await VS.Solutions.GetCurrentSolutionAsync();
                     await EnumChildrenAsync(obj, projects);
+                    var openwindows = await VS.Windows.GetAllDocumentWindowsAsync();
+                    foreach (var window in openwindows)
+                    {
+                        var view = await window.GetDocumentViewAsync();
+                        if (view != null)
+                        {
+                            files.Add(view.Document.FilePath);
+                        }
+                    }
+
                 });
 
                 if (string.IsNullOrEmpty(solutionFile))
@@ -200,11 +233,14 @@ namespace XSharp.LanguageService
                 projectfiles.Clear();
                 return;
             }
+
+            
+
         }
 
-  
 
-        private void  SolutionEvents_OnBeforeCloseSolution()
+
+        private void SolutionEvents_OnBeforeCloseSolution()
         {
             bool hasXsProject = false;
             ThreadHelper.JoinableTaskFactory.Run(async delegate
@@ -212,7 +248,7 @@ namespace XSharp.LanguageService
                 var vsProjects = await VS.Solutions.GetAllProjectsAsync();
                 foreach (var prj in vsProjects)
                 {
-                    hasXsProject= await prj.IsKindAsync(GuidStrings.guidXSharpProjectFactoryString);
+                    hasXsProject = await prj.IsKindAsync(GuidStrings.guidXSharpProjectFactoryString);
                     if (hasXsProject)
                     {
                         break;
@@ -220,7 +256,7 @@ namespace XSharp.LanguageService
                 }
             });
             // close OUR documents that are opened in design mode.
-            if (! hasXsProject)
+            if (!hasXsProject)
             {
                 return;
             }
@@ -230,7 +266,7 @@ namespace XSharp.LanguageService
                 XSharpModel.XSolution.IsClosing = true;
                 XSharpModel.XSolution.Close();
                 var frames = await VS.Windows.GetAllDocumentWindowsAsync();
-                
+
                 if (frames != null)
                 {
                     foreach (var frame in frames.ToList())
@@ -293,7 +329,7 @@ namespace XSharp.LanguageService
                 {
                     var left = xml.Substring(0, testpos);
                     var right = xml.Substring(testpos + MsTestGuid.Length);
-                    if (! changed)
+                    if (!changed)
                     {
                         DeleteFileSafe(original);
                         File.Copy(pszFileName, original);

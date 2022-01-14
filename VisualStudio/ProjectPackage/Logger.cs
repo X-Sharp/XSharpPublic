@@ -146,7 +146,7 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    Log.Error(e.Exception, "FirstChanceException");
+                    Log.Error(e.Exception, formatMessage("FirstChanceException"));
                 }
             }
         }
@@ -156,7 +156,7 @@ namespace XSharp.Project
             if (active)
             {
                 if (e.ExceptionObject is Exception ex)
-                    Log.Fatal(ex, "UnhandledException");
+                    Log.Fatal(ex, formatMessage("UnhandledException"));
             }
         }
 
@@ -179,20 +179,26 @@ namespace XSharp.Project
         internal static void Debug(string message)
         {
             if (active)
-                Log.Debug(message);
+            {
+                Log.Debug(formatMessage(message));
+            }
 
         }
         internal static void Information(string message)
         {
             if (active)
-                Log.Information(message);
+            {
+                Log.Information(formatMessage(message));
+            }
         }
 
 
         internal static void Exception(Exception e, string message)
         {
             if (active)
-                Log.Error(e, message);
+            {
+                Log.Error(e, formatMessage(message));
+            }
         }
         internal static void SingleLine()
         {
@@ -201,6 +207,11 @@ namespace XSharp.Project
         internal static void DoubleLine()
         {
             Information(doubleline);
+        }
+
+        private static string formatMessage(string message)
+        {
+            return string.Format("{0:X4} {1}", System.Threading.Thread.CurrentThread.ManagedThreadId, message);
         }
 
     }

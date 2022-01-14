@@ -1420,7 +1420,7 @@ namespace XSharp.LanguageService
                     type = EnsureComplete(type, location);
                 }
 
-                    WriteOutputMessage($" SearchMethodTypeIn {type.FullName} , '{name}'");
+                WriteOutputMessage($" SearchMethod {type.FullName} , '{name}'");
                 IEnumerable<IXMemberSymbol> tmp;
                 if (type.IsFunctionsClass)
                 {
@@ -1482,7 +1482,7 @@ namespace XSharp.LanguageService
                     }
                 }
             }
-            DumpResults(result, $" SearchMethodTypeIn {type.FullName} , '{name}'");
+            DumpResults(result, $" SearchMethod {type.FullName} , '{name}'");
             return result;
 
         }

@@ -252,6 +252,7 @@ namespace XSharp.Project
                 if (string.Compare(project.Url, prj?.FullPath, true) == 0)
                 {
                     project.CreateProjectOptions();
+                    
                 }
             }
         }

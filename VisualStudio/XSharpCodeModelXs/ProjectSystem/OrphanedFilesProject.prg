@@ -16,6 +16,7 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("Orphaned files")];
       CLASS OrphanedFilesProject IMPLEMENTS IXSharpProject
+        INTERNAL CONST OrphanName := "(OrphanedFiles)" AS STRING
       #region properties
       PROPERTY IntermediateOutputPath AS STRING GET ""
       PROPERTY OutputFile AS STRING GET ""
@@ -23,10 +24,10 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET FALSE
       PROPERTY Project AS XProject AUTO
       PROPERTY RootNameSpace AS STRING GET ""
-      PROPERTY Url AS STRING GET "(OrphanedFiles).xsproj"
+      PROPERTY Url AS STRING GET OrphanName+".xsproj"
       PROPERTY Dialect AS XSharpDialect GET XSharpDialect.Core
       PROPERTY EnforceSelf as LOGIC GET FALSE
-      PROPERTY Name  AS STRING GET "(OrphanedFiles)"
+      PROPERTY Name  AS STRING GET OrphanName
       #endregion
    PRIVATE _parseOptions AS XSharpParseOptions
       CONSTRUCTOR()

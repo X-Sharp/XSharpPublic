@@ -207,6 +207,7 @@ BEGIN NAMESPACE XSharpModel
         METHOD RefreshReferences(asmList as IList<string>) AS VOID
             var oldAsm := XDictionary<string, string>{StringComparer.OrdinalIgnoreCase}
             var newAsm := List<string>{}
+            SELF:LogReferenceMessage("RefreshReferences , old "+SELF:AssemblyReferenceNames:Count:ToString()+" new "+asmList:Count:ToString())
             foreach var name in SELF:AssemblyReferenceNames
                 oldAsm:Add(name, name)
             next
@@ -228,7 +229,7 @@ BEGIN NAMESPACE XSharpModel
 
          METHOD AddAssemblyReference(path AS STRING) AS VOID
             IF ! String.IsNullOrEmpty(path)
-               SELF:LogReferenceMessage("AddAssemblyReference (string) "+path)
+               SELF:LogReferenceMessage("AddAssemblyReference: "+path)
                SELF:_clearTypeCache()
                BEGIN LOCK _unprocessedAssemblyReferences
                   IF ! _unprocessedAssemblyReferences:Contains(path)
@@ -618,6 +619,13 @@ BEGIN NAMESPACE XSharpModel
             SELF:_OtherFilesDict:Add(filePath)
          ELSE
             SELF:_OtherFilesDict:Add(filePath)
+         ENDIF
+         IF SELF:Name != OrphanedFilesProject.OrphanName .and. XSolution.OrphanedFilesProject != NULL
+            var xFile := XSolution.OrphanedFilesProject:FindXFile(filePath)
+            if xFile != NULL
+                XSolution.OrphanedFilesProject:RemoveFile(filePath)
+                xFile:Project := SELF
+            ENDIF
          ENDIF
          RETURN TRUE
 

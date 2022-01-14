@@ -485,7 +485,7 @@ namespace XSharp.LanguageService
                         baseType = "System.Object";
                 }
                 var parentType = sourceType.File.FindType(baseType, sourceType.Namespace);
-               if (parentType.FullName == sourceType.FullName)
+               if (parentType != null && parentType.FullName == sourceType.FullName)
                 {
                     ; // recursion !
                     WriteOutputMessage("*** Recursion detected *** " + sourceType.FullName + " inherits from " + parentType.FullName);

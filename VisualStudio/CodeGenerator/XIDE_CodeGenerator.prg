@@ -385,12 +385,15 @@ RETURN
                 END IF
                 IF eType == EntityType._Constructor
                     LOCAL cOldLine := SELF:GetLine(nLine):LineText:Trim():ToUpper() AS STRING
-                    LOCAL nAt := cOldLine:LastIndexOf(')') AS INT
+                    /*LOCAL nAt := cOldLine:LastIndexOf(')') AS INT
                     IF nAt != -1
                         nAt := cOldLine:IndexOf("CLIPPER", nAt)
                         IF nAt != -1
                             cDeclarationLine += " CLIPPER"
                         ENDIF
+                    ENDIF*/
+                    IF cOldLine:EndsWith("CLIPPER") .and. .not. cDeclarationLine:ToUpper():Contains("CLIPPER")
+                        cDeclarationLine += " CLIPPER"
                     ENDIF
                 ENDIF
 				SELF:ReplaceWEDLine(cDeclarationLine , nLine)

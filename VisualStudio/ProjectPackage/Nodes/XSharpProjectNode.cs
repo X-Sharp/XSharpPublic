@@ -74,10 +74,6 @@ namespace XSharp.Project
         }
 
         internal static XSharpProjectNode[] AllProjects => nodes.ToArray();
-        internal enum XSharpProjectImageName
-        {
-            Project = 0,
-        }
 
         #region Constants
         internal const string ProjectTypeName = XSharpConstants.LanguageName;
@@ -286,7 +282,7 @@ namespace XSharp.Project
         {
             get
             {
-                return imageOffset + (int)XSharpProjectImageName.Project;
+                return imageOffset;
             }
         }
 
@@ -353,10 +349,7 @@ namespace XSharp.Project
         {
             // Do not prepare the build when we are not completely loaded. This
             // speeds up loading a bit
-            if (this.loaded)
-            {
                 base.PrepareBuild(config, cleanBuild);
-            }
         }
         void IXsProjectDesigner.RemoveProjectProperty(string name)
         {
@@ -1073,36 +1066,28 @@ namespace XSharp.Project
 
         #region PackageReferences
 
-        bool loaded = false;
-        internal void LoadReferences()
-        {
-            loaded = true;
-            ProcessReferences();
-            UpdateReferencesInProjectModel();
-        }
 
         protected override void ProcessReferences()
         {
             // Nuget package references are added as child to the Reference Node.
-            if (this.loaded)
-            {
-                base.ProcessReferences();
-                this.LoadPackageReferences();
-            }
+            base.ProcessReferences();
+            this.LoadPackageReferences();
         }
 
 
-        private void LoadPackageReferences()
+        internal void LoadPackageReferences()
         {
-            var packageContainer = PackageReferenceContainerNode;
-            if (packageContainer == null)
+            if (! this.IsLoading)
             {
-                HierarchyNode referenceContainerNode = GetReferenceContainer() as HierarchyNode;
-                packageContainer = new XSharpPackageReferenceContainerNode(this);
-                referenceContainerNode.AddChild(packageContainer);
+                var packageContainer = PackageReferenceContainerNode;
+                if (packageContainer == null)
+                {
+                    HierarchyNode referenceContainerNode = GetReferenceContainer() as HierarchyNode;
+                    packageContainer = new XSharpPackageReferenceContainerNode(this);
+                    referenceContainerNode.AddChild(packageContainer);
+                }
+                packageContainer.LoadReferencesFromBuildProject(this);
             }
-            packageContainer.LoadReferencesFromBuildProject(this);
-
         }
 
         public XSharpPackageReferenceContainerNode PackageReferenceContainerNode =>
@@ -2012,8 +1997,7 @@ namespace XSharp.Project
             base.Dispose(disposing);
             lock (nodes)
             {
-                if (nodes.Contains(this))
-                    nodes.Remove(this);
+                nodes.Remove(this);
             }
         }
         private bool _dialectIsCached = false;

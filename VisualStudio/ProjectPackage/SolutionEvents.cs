@@ -21,13 +21,10 @@ namespace XSharp.Project
             ThreadHelper.ThrowIfNotOnUIThread();
 
             // refresh the references for all projects
-            foreach (var project in XSolution.Projects)
+            foreach (var xnode in XSharpProjectNode.AllProjects)
             {
-                var node = project.ProjectNode;
-                if (node is XSharpProjectNode xnode)
-                {
-                    xnode.LoadReferences();
-                }
+                xnode.LoadPackageReferences();
+                xnode.UpdateReferencesInProjectModel();
             }
 
             return VSConstants.S_OK;

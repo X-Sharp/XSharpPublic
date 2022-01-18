@@ -607,6 +607,7 @@ BEGIN NAMESPACE XSharpModel
         SELF:_OtherFilesDict:Clear()
       METHOD AddFile(filePath AS STRING) AS LOGIC
          LOCAL xamlCodeBehindFile AS STRING
+         SELF:WriteOutputMessage(i"AddFile {filePath}")
          // DO NOT read the file ID from the database here.
          // This is called during startup of the solution, we try to do as little as possible
          VAR type := XFileTypeHelpers.GetFileType(filePath)
@@ -621,11 +622,13 @@ BEGIN NAMESPACE XSharpModel
             SELF:_OtherFilesDict:Add(filePath)
          ENDIF
          IF SELF:Name != OrphanedFilesProject.OrphanName .and. XSolution.OrphanedFilesProject != NULL
-            var xFile := XSolution.OrphanedFilesProject:FindXFile(filePath)
-            if xFile != NULL
-                XSolution.OrphanedFilesProject:RemoveFile(filePath)
-                xFile:Project := SELF
-            ENDIF
+            if filePath != XSolution.BuiltInFunctions
+                var xFile := XSolution.OrphanedFilesProject:FindXFile(filePath)
+                if xFile != NULL
+                    XSolution.OrphanedFilesProject:RemoveFile(filePath)
+                    xFile:Project := SELF
+                ENDIF
+             ENDIF
          ENDIF
          RETURN TRUE
 
@@ -644,6 +647,7 @@ BEGIN NAMESPACE XSharpModel
 
       METHOD RemoveFile(url AS STRING) AS VOID
          IF ! String.IsNullOrEmpty(url)
+            SELF:WriteOutputMessage(i"RemoveFile {url}")
             IF SELF:_OtherFilesDict:Remove(url)
                VAR file := XFile{url, SELF}
                IF file:IsXaml
@@ -659,7 +663,7 @@ BEGIN NAMESPACE XSharpModel
 
 
         METHOD FindGlobalsInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
-        LogTypeMessage(i"FindGlobalsInAssemblyReferences {name} ")
+         LogTypeMessage(i"FindGlobalsInAssemblyReferences {name} ")
          var dbresult := XDatabase.FindAssemblyGlobalOrDefine(name, SELF:DependentAssemblyList, FALSE)
          var result := SELF:_MembersFromGlobalType(dbresult)
          LogTypeMessage(i"FindGlobalsInAssemblyReferences {name}, found {result.Count} occurences")

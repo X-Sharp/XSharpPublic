@@ -27,6 +27,7 @@ BEGIN NAMESPACE XSharpModel
     STATIC PROPERTY FileName AS STRING GET _fileName
     STATIC PROPERTY BuiltInFunctions AS STRING AUTO
     STATIC PROPERTY CommentTokens AS IList<XCommentToken> GET _commentTokens
+    STATIC PROPERTY Projects AS IList<XProject> get _projects:Values:ToArray()
 
         // Methods
     STATIC CONSTRUCTOR
@@ -220,7 +221,7 @@ BEGIN NAMESPACE XSharpModel
 
    STATIC PROPERTY OrphanedFilesProject AS XProject
         GET
-            IF _orphanedFilesProject == NULL .and. IsOpen
+            IF _orphanedFilesProject == NULL
                 CreateOrphanedFilesProject()
             ENDIF
             RETURN _orphanedFilesProject

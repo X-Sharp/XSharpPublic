@@ -15,19 +15,19 @@ CLASS Menu INHERIT VObject
 
 	ACCESS __Menu as VOMenu
 		RETURN oMenu
-	
+
 	ASSIGN __Owner(oWin as Window)
 		oWindow := oWIn
 
 	METHOD __GetParent() AS Menu
 		LOCAL oMenu as Menu
-		oMenu := SELF 
-		
+		oMenu := SELF
+
 		DO WHILE oMenu:oParent != NULL_OBJECT
 			oMenu := oMenu:oParent
 		ENDDO
 		RETURN oMenu
-	
+
 	METHOD __CreateMenuItem(cCaption AS STRING, nId AS LONG) AS VOMenuItem
 		LOCAL oItem AS VOMenuItem
 		oItem := VOMenuItem{}
@@ -40,7 +40,7 @@ CLASS Menu INHERIT VObject
 		oItem:MenuItemID   := nId
 		oItem:Click  += OnItemClick
 		oItem:Select += OnItemSelect
-		oItem:Popup  += OnItemPopup		
+		oItem:Popup  += OnItemPopup
 		RETURN oItem
 
 	PROPERTY Accelerator AS Accelerator GET oAccelerator SET oAccelerator := Value
@@ -50,9 +50,9 @@ CLASS Menu INHERIT VObject
 
 	METHOD AddChild(oMenu as Menu) AS VOID
 		aadd(aChildren, oMenu)
-		RETURN 
+		RETURN
 
-	METHOD AppendItem(nItemID , xNewItem ) 
+	METHOD AppendItem(nItemID , xNewItem )
 		LOCAL cNewItem AS STRING
 		LOCAL oSubMenu	AS Menu
 		LOCAL oItem	    AS VOMenuItem
@@ -62,14 +62,14 @@ CLASS Menu INHERIT VObject
 			oSubMenu := nItemID
 			oSubMenu:SetParent(SELF)
 			SELF:AddChild(nItemID)
-			cNewItem := xNewItem 
+			cNewItem := xNewItem
 			oItem := SELF:__CreateMenuItem(cNewItem, oSubMenu:GetHashCode())
 			SELF:oMenu:MenuItems:Add(oItem)
-			
+
 			aItems := VOMenuItem[]{oSubMenu:__Menu:MenuItems:Count}
 			oSubMenu:__Menu:MenuItems:CopyTo(aItems, 0)
 			oItem:MenuItems:AddRange(aItems)
-			
+
 		ELSEIF IsNumeric(nItemID)
 			IF nItemID == MENUSEPARATOR
 				oItem := SELF:__CreateMenuItem("-", nItemID)
@@ -90,14 +90,14 @@ CLASS Menu INHERIT VObject
 				ENDIF
 			ENDIF
 		ENDIF
-		
+
 		RETURN oItem != NULL_OBJECT
 
 	METHOD CheckItem(nItemID )
 		IF IsSymbol(nItemID)
 			nItemID := SELF:GetMenuID((SYMBOL) nItemID)
 		ENDIF
-		LOCAL IMPLIED oItem := oMenu:GetItemByID(nItemID) 
+		LOCAL IMPLIED oItem := oMenu:GetItemByID(nItemID)
 		IF oItem != NULL_OBJECT
 			TRY
 				oItem:Checked := TRUE
@@ -105,7 +105,7 @@ CLASS Menu INHERIT VObject
 				// Do nothing
 			END TRY
 		ENDIF
-		
+
 		RETURN oItem != NULL_OBJECT
 
 	METHOD DeleteChild(oMenu as Menu)  AS LOGIC
@@ -134,7 +134,7 @@ CLASS Menu INHERIT VObject
 				IF oItem != NULL_OBJECT
 					oItem:Parent:MenuItems:Remove(oItem)
 					retVal := TRUE
-				ENDIF	
+				ENDIF
 			ENDIF
 		ELSE
 			nItemID := xItemIdOrMenu
@@ -149,9 +149,9 @@ CLASS Menu INHERIT VObject
 		ENDIF
 		RETURN retVal
 
-	
-	METHOD Destroy() AS USUAL 
-		oMenu			:= NULL_OBJECT	
+
+	METHOD Destroy() AS USUAL
+		oMenu			:= NULL_OBJECT
 		aItem			:= NULL_ARRAY
 		aChildren		:= NULL_ARRAY
 		oWindow			:= NULL_OBJECT
@@ -172,14 +172,14 @@ CLASS Menu INHERIT VObject
 			oItem:Enabled:= FALSE
 		ENDIF
 
-		RETURN oItem != NULL_OBJECT 
+		RETURN oItem != NULL_OBJECT
 
 	METHOD DisableAutoUpdate() AS VOID CLIPPER
 		SELF:SetAutoUpdate(999)
 
-		RETURN 
+		RETURN
 
-	METHOD EnableItem(nItemID)  
+	METHOD EnableItem(nItemID)
 		IF IsSymbol(nItemID)
 			nItemID := SELF:GetMenuID((SYMBOL) nItemID)
 		ENDIF
@@ -190,12 +190,12 @@ CLASS Menu INHERIT VObject
 		IF oItem != NULL_OBJECT
 			oItem:Enabled:= TRUE
 		ENDIF
-		RETURN oItem != NULL_OBJECT 
+		RETURN oItem != NULL_OBJECT
 
 	METHOD GetAutoUpdate() AS LONG CLIPPER
 		RETURN iAutoPosition
 
-		
+
 
 	METHOD GetSubMenu(nIndex AS DWORD)  AS Menu
 		LOCAL oResult AS Menu
@@ -206,12 +206,12 @@ CLASS Menu INHERIT VObject
 			oResult:RegisterItem(aItem[1], aItem[2])		// ID, HyperLabel
 		NEXT
 		RETURN oResult
-		
+
 
 	METHOD Handle() AS VOMenu STRICT
 		RETURN oMenu
 
-	METHOD HyperLabel(nItemID) 
+	METHOD HyperLabel(nItemID)
 		LOCAL dwIndex AS DWORD
 		LOCAL dwCount AS DWORD
 		LOCAL oHyperLabel AS HyperLabel
@@ -238,8 +238,8 @@ CLASS Menu INHERIT VObject
 
 		RETURN NULL_OBJECT
 
-	CONSTRUCTOR(xResourceID) 
-		
+	CONSTRUCTOR(xResourceID)
+
 		LOCAL oResMenu AS ResourceMenu
 		LOCAL oResourceID AS ResourceID
 		SUPER()
@@ -254,11 +254,11 @@ CLASS Menu INHERIT VObject
 			FOREACH IMPLIED oSubItem IN oItem:MenuItemArray
 				oMenu:MenuItems:Add(oSubItem:CloneMenu())
 			NEXT
-			
+
 		ELSE
 			oMenu := VOMenu{}
 			IF IsNil(xResourceID)
-				// Do nothing			
+				// Do nothing
 			ELSE
 				IF IsNumeric(xResourceID) .OR. IsPtr(xResourceID) .OR. IsSymbol(xResourceID) .OR. IsString(xResourceID)
 					oResourceID := ResourceID{xResourceID}
@@ -271,20 +271,20 @@ CLASS Menu INHERIT VObject
 				oResMenu:AddItemsTo(SELF)
 			ENDIF
 		ENDIF
-		RETURN 
+		RETURN
 
 	METHOD InsertItem(nItemID AS USUAL, xNewItem AS USUAL, nBeforeID AS INT) AS LOGIC
 		LOCAL retVal AS LOGIC
 		LOCAL cNewItem AS STRING
-		LOCAL oSubMenu AS Menu		
+		LOCAL oSubMenu AS Menu
 		LOCAL oItem	    as VOMenuItem
 		LOCAL aItems	as VOMenuItem[]
 		LOCAL oHl		as HyperLabel
-		
+
 		IF IsInstanceOfUsual(nItemID, #Menu)
 			oSubMenu := nItemID
 			oSubMenu:SetParent(SELF)
-			SELF:AddChild(oSubMenu) 
+			SELF:AddChild(oSubMenu)
 			cNewItem := xNewItem
 			oItem := SELF:__CreateMenuItem(cNewItem, oSubMenu:GetHashCode())
 			oItem := VOMenuItem{cNewItem}
@@ -292,31 +292,31 @@ CLASS Menu INHERIT VObject
 			aItems := VOMenuItem[]{oSubMenu:__Menu:MenuItems:Count}
 			oSubMenu:__Menu:MenuItems:CopyTo(aItems, 0)
 			oItem:MenuItems:AddRange(aItems)
-			
+
 		ELSEIF IsNumeric(nItemID)
 			IF (nItemID == MENUSEPARATOR)
 				oItem := SELF:__CreateMenuItem("-", nItemID)
-				SELF:oMenu:MenuItems:Add(nBeforeID, oItem )	
-				
+				SELF:oMenu:MenuItems:Add(nBeforeID, oItem )
+
 			ELSE
 				IF IsInstanceOfUsual(xNewItem, #HyperLabel)
 					oHl := xNewItem
 					cNewItem := oHl:Caption
 					oItem := SELF:__CreateMenuItem(cNewItem, nItemID)
-					SELF:oMenu:MenuItems:Add(nBeforeID, oItem)	
+					SELF:oMenu:MenuItems:Add(nBeforeID, oItem)
 				ELSEIF IsString(xNewItem)
 					cNewItem := xNewItem
 					oItem := SELF:__CreateMenuItem(cNewItem, nItemID)
-					SELF:oMenu:MenuItems:Add(nBeforeID, oItem)	
+					SELF:oMenu:MenuItems:Add(nBeforeID, oItem)
 				ELSEIF IsInstanceOfUsual(xNewItem, #Bitmap)
 					//retVal := InsertMenu(hMenu, nBeforeID, _OR(_OR(MF_BYCOMMAND, MF_BITMAP), MF_ENABLED), nItemID, PSZ(_CAST, xNewItem:Handle()))
 				ENDIF
 			ENDIF
 		ENDIF
 		RETURN retVal
-	
 
-	METHOD MakeMenuRtol(lRToL AS LOGIC) 
+
+	METHOD MakeMenuRtol(lRToL AS LOGIC)
 		//Todo MakeMenuRtol
 		RETURN SELF
 
@@ -342,10 +342,10 @@ CLASS Menu INHERIT VObject
 
 		RETURN NULL_SYMBOL
 
-	METHOD PostInit() 
+	METHOD PostInit()
 		RETURN NIL
 
-	METHOD PreInit() 
+	METHOD PreInit()
 		RETURN NIL
 
 	METHOD RegisterItem(nItemID, oHyperLabel ,  hParentMenu , nPosition ) AS LOGIC
@@ -368,11 +368,11 @@ CLASS Menu INHERIT VObject
 				//		oItem:Text := oItem:Text:Substring(0, oItem:Text:IndexOf(e"\t"))
 				//		oItem:ShowShortcut := TRUE
 				//	catch e as Exception
-						
+
 				//	end try
 				//ENDIF
 			ENDIF
-			
+
 		ENDIF
 		AAdd(aItem, {nItemID, oHyperLabel})
 		lResult := TRUE
@@ -380,13 +380,13 @@ CLASS Menu INHERIT VObject
 
 	METHOD SetAutoUpdate(nMenuNumber AS LONG) AS VOID
 		iAutoPosition := nMenuNumber
-		RETURN 
+		RETURN
 
 	METHOD SetParent(oMenu AS Menu) AS VOID
 		oParent := oMenu
-		RETURN 
+		RETURN
 
-		
+
 	METHOD SetShortCuts(oAccelerator AS Accelerator) AS VOID
 		SELF:__ClearShortCuts(SELF:__Menu)
 		IF oAccelerator != NULL_OBJECT
@@ -397,16 +397,16 @@ CLASS Menu INHERIT VObject
 				ENDIF
 			NEXT
 		ENDIF
-			
-			
+
+
 	METHOD __ClearShortCuts(oMenu as System.Windows.Forms.Menu) as VOID
-		FOREACH IMPLIED oItem in oMenu:MenuItems
+		FOREACH oItem AS System.Windows.Forms.MenuItem in oMenu:MenuItems
 			oItem:Shortcut := System.Windows.Forms.Shortcut.None
 			SELF:__ClearShortCuts(oItem)
 		NEXT
 		RETURN
-		
-	METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap) 
+
+	METHOD ShowAsPopup(oOwner, oPoint, kButton, kAlignment, oNotOverlap)
 		//Todo ShowAsPopup
 		/*
 		LOCAL hPopUpMenu  AS PTR
@@ -506,7 +506,7 @@ CLASS Menu INHERIT VObject
 		lRet := TrackPopupMenuEx(hPopUpMenu, _OR(DWORD(kButton), DWORD(kAlignment)),;
 		strucPoint:x, strucPoint:y, oOwner:Handle(), pTPM)
 		ENDIF
-		
+
 		RETURN lRet
 		*/
 		RETURN FALSE
@@ -521,7 +521,7 @@ CLASS Menu INHERIT VObject
 		IF oItem != NULL_OBJECT
 			oItem:Checked := FALSE
 		ENDIF
-		RETURN oItem != NULL_OBJECT 
+		RETURN oItem != NULL_OBJECT
 
 	METHOD UnregisterItem(nItemID )
 		LOCAL dwIndex AS DWORD
@@ -537,53 +537,53 @@ CLASS Menu INHERIT VObject
 			ENDIF
 		NEXT  // dwIndex
 		RETURN TRUE
-	
+
 	#region Events
-	
+
 	METHOD OnItemClick(Sender AS OBJECT, e AS EventArgs) AS VOID
 		LOCAL oEvt AS MenuCommandEvent
 		LOCAL oMenu AS Menu
 		LOCAL oMenuItem AS VOMenuItem
 		oMenu := SELF:__GetParent()
-		
+
 		IF oMenu:oWindow != NULL_OBJECT
 			oMenuItem := Sender
 			oEvt := MenuCommandEvent{SELF,oMenu:oWindow, oMenuItem:MenuItemID}
 			oMenu:oWindow:__PreMenuCommand(oEvt)
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 	METHOD OnItemSelect(Sender AS OBJECT, e AS EventArgs) AS VOID
 		LOCAL oMenu AS Menu
 		LOCAL oMenuItem AS VOMenuItem
-		
+
 		oMenu := SELF:__GetParent()
-		
+
 		IF oMenu:oWindow != NULL_OBJECT
 			oMenuItem := Sender
 			oMenu:oWindow:MenuSelect(MenuSelectEvent{SELF,oMenu:oWindow, oMenuItem:MenuItemID})
-		ENDIF		
-		RETURN 
-	
+		ENDIF
+		RETURN
+
 	METHOD OnItemPopup(Sender as OBJECT, e as EventArgs) AS VOid
 		LOCAL oMenu as Menu
 		LOCAL oMenuItem as VOMenuItem
 		oMenu := SELF:__GetParent()
-		
+
 		if oMenu:oWindow != NULL_OBJECT
 			oMenuItem := Sender
 			oMenu:oWindow:MenuInit(MenuInitEvent{SELF,oMenu:oWindow, oMenuItem:MenuItemID})
 		ENDIF
-		RETURN 		
-	
-	
-	
-	
+		RETURN
+
+
+
+
 	#endregion
-	
-	
+
+
 	#region Extensions
-	
+
 	METHOD GetMenuID(symItem AS SYMBOL) AS LONG
 		LOCAL nItem, nCount AS DWORD
 		LOCAL oHL			AS HyperLabel
@@ -595,8 +595,8 @@ CLASS Menu INHERIT VObject
 			ENDIF
 		NEXT
 		RETURN 0
-		
-		
+
+
 	METHOD SetAble(nID , lEnable ) AS VOID
 		DEFAULT(@lEnable, TRUE)
 		IF IsSymbol (nID)
@@ -609,8 +609,8 @@ CLASS Menu INHERIT VObject
 				SELF:DisableItem(nID)
 			ENDIF
 		ENDIF
-		RETURN 
-	
+		RETURN
+
 	METHOD SetCheck( nID , lCheck) AS VOID
 		DEFAULT(@lCheck, TRUE)
 		IF IsSymbol (nID)
@@ -622,29 +622,29 @@ CLASS Menu INHERIT VObject
 			ELSE
 				SELF:UnCheckItem(nID)
 			ENDIF
-		ENDIF		
+		ENDIF
 	#endregion
-	
+
 END CLASS
 
 //CLASS SystemMenu INHERIT Menu
 
 //	METHOD Destroy()  AS USUAL CLIPPER
-		
+
 //		SUPER:Destroy()
 //		RETURN SELF
 
 
-//	CONSTRUCTOR(oOwner) 
+//	CONSTRUCTOR(oOwner)
 //		//Todo SystemMenu class
 //		//SUPER(GetSystemMenu(((Window)oOwner):Handle(), FALSE))
 //		SUPER()
-//		RETURN 
+//		RETURN
 //END CLASS
 
 FUNCTION GetMenuItemCount(oMenu AS VOMenu) AS LONG
 	RETURN oMenu:MenuItems:Count
-	
+
 FUNCTION GetSubMenu(oMenu AS VOMenu, nItem AS LONG) AS VOMenuItem
 	LOCAL nCurrent AS LONG
 	nCurrent := 0

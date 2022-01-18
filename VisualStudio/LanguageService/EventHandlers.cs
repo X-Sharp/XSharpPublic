@@ -21,7 +21,6 @@ namespace XSharp.LanguageService
     /// </summary>
     public class ModelScannerEvents
     {
-        List<string> projectfiles;
         string solutionFile;
         static Dictionary<string, string> changedProjectfiles;
 
@@ -40,148 +39,77 @@ namespace XSharp.LanguageService
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
                 VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
                 VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
                 VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
+#if DEBUG
+                VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
                 VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
                 VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
                 VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
+#endif
                 VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
-                projectfiles = new List<string>();
                 changedProjectfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 XSharpModel.ModelWalker.Suspend();
             });
 
         }
+
+#if DEBUG        
         private void DocumentEvents_Opened(string document)
         {
-#if DEBUG
-            XSolution.WriteOutputMessage("DocumentEvents_Opened " + document ?? "(none)");
-#endif
-        }
 
+            XSolution.WriteOutputMessage("DocumentEvents_Opened " + document ?? "(none)");
+
+        }
+        
         private void DocumentEvents_Closed(string document)
         {
-#if DEBUG
             XSolution.WriteOutputMessage("DocumentEvents_Closed " + document ?? "(none)");
-#endif
-            var xFile = XSolution.FindFullPath(document);
-            if (xFile != null && xFile.Project == XSolution.OrphanedFilesProject)
-            {
-                XSolution.OrphanedFilesProject.RemoveFile(document);
-            }
         }
+        
         private void SolutionEvents_OnBeforeOpenSolution(string obj)
         {
             // we do not see this for the first solution that is opened
             // because we are usually not loaded then
-#if DEBUG
             XSolution.WriteOutputMessage("SolutionEvents_OnBeforeOpenSolution " + obj ?? "(none)");
-#endif
         }
+#endif
+
         private void SolutionEvents_OnBeforeOpenProject(string obj)
         {
+
+            XSolution.WriteOutputMessage("SolutionEvents_OnBeforeOpenProject " + obj ?? "(none)");
             checkProjectFile(obj);
         }
+#if DEBUG
         private void SolutionEvents_OnAfterOpenProject(Community.VisualStudio.Toolkit.Project project)
         {
-            if (project.IsXSharp())
-            {
-                var xProject = XSolution.FindProject(project.FullPath);
-                if (xProject != null)
-                {
-                    addProjectFiles(xProject, project);
-                    if (XSolution.IsOpen)
-                    {
-                        ModelWalker.AddProject(xProject);
-                        ModelWalker.Walk();
-                    }
-                }
-            }
+            XSolution.WriteOutputMessage("SolutionEvents_OnAfterOpenProject " + project.FullPath ?? "(none)");
+            //if (project.IsXSharp())
+            //{
+            //var xProject = XSolution.FindProject(project.FullPath);
+            //if (xProject != null)
+            //{
+            //    addProjectFiles(xProject, project);
+            //    if (XSolution.IsOpen)
+            //    {
+            //        ModelWalker.AddProject(xProject);
+            //        ModelWalker.Walk();
+            //    }
+            //}
+            //}
         }
+#endif
 
         private void ShellEvents_ShutdownStarted()
         {
-            XSharpModel.XSolution.IsClosing = true;
-            XSharpModel.XSolution.Close();
+            XSolution.IsClosing = true;
+            XSolution.Close();
         }
 
-        private async System.Threading.Tasks.Task EnumChildrenAsync(SolutionItem obj, List<string> projects)
-        {
-            //System.Diagnostics.Debug.WriteLine(obj.Type.ToString() + " " + obj.Name);
-            try
-            {
-                foreach (var child in obj.Children)
-                {
-                    switch (child.Type)
-                    {
-                        case SolutionItemType.Project:
-                            var fileName = child.FullPath;
-                            projects.Add(fileName);
-                            var project = (Community.VisualStudio.Toolkit.Project)child;
-                            var isXS = await project.IsKindAsync(GuidStrings.guidXSharpProjectFactoryString);
-                            if (isXS)
-                            {
-                                var xProject = XSolution.FindProject(fileName);
-                                addProjectFiles(xProject, project);
-                            }
-                            else
-                            {
-                                ; // do not enumerate the files in other project types
-                            }
-                            break;
-                        case SolutionItemType.PhysicalFile:
-                            await EnumChildrenAsync(child, projects);
-                            break;
-                        case SolutionItemType.PhysicalFolder:
-                            await EnumChildrenAsync(child, projects);
-                            break;
-                        case SolutionItemType.MiscProject:
-                            await EnumChildrenAsync(child, projects);
-                            break;
-                        case SolutionItemType.VirtualProject:
-                            await EnumChildrenAsync(child, projects);
-                            break;
-                        case SolutionItemType.Solution:
-                            await EnumChildrenAsync(child, projects);
-                            break;
-                        case SolutionItemType.SolutionFolder:
-                            await EnumChildrenAsync(child, projects);
-                            break;
-                        case SolutionItemType.Unknown:
-                            await EnumChildrenAsync(child, projects);
-                            break;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(obj.Type.ToString() + " " + e.Message);
-            }
-            return;
-        }
 
-        void addProjectFiles(XProject project, SolutionItem obj)
-        {
-            foreach (var child in obj.Children)
-            {
-                var fileName = child.FullPath;
-                switch (child.Type)
-                {
-                    case SolutionItemType.PhysicalFile:
-                        project.AddFile(fileName);
-                        // Add nested files
-                        addProjectFiles(project, child);
-                        break;
-                    case SolutionItemType.PhysicalFolder:
-                        // Add nested files
-                        addProjectFiles(project, child);
-                        break;
-                }
-            }
-        }
 
 
         /// <summary>
@@ -197,45 +125,16 @@ namespace XSharp.LanguageService
             // or closing of previous solution
             if (obj != null)
             {
+
+                // first check to see if there are any projects in the solution that have
+                // not been loaded
                 solutionFile = obj.FullPath;
-                var projects = new List<string>();
-                var files = new List<string>();
-                ThreadHelper.JoinableTaskFactory.Run(async delegate
-                {
-                    var sol = await VS.Solutions.GetCurrentSolutionAsync();
-                    await EnumChildrenAsync(obj, projects);
-                    var openwindows = await VS.Windows.GetAllDocumentWindowsAsync();
-                    foreach (var window in openwindows)
-                    {
-                        var view = await window.GetDocumentViewAsync();
-                        if (view != null)
-                        {
-                            files.Add(view.Document.FilePath);
-                        }
-                    }
-
-                });
-
-                if (string.IsNullOrEmpty(solutionFile))
-                {
-                    if (projects.Count > 0)
-                    {
-                        // open a project without solution.
-                        // assume solution name is the same as project name with different extension
-                        solutionFile = Path.ChangeExtension(projects[0], ".sln");
-                    }
-
-                }
                 if (!string.IsNullOrEmpty(solutionFile))
                 {
-                    XSharpModel.XSolution.Open(solutionFile);
+                    XSolution.Open(solutionFile);
                 }
-                projectfiles.Clear();
                 return;
             }
-
-            
-
         }
 
 
@@ -248,9 +147,9 @@ namespace XSharp.LanguageService
                 var vsProjects = await VS.Solutions.GetAllProjectsAsync();
                 foreach (var prj in vsProjects)
                 {
-                    hasXsProject = await prj.IsKindAsync(GuidStrings.guidXSharpProjectFactoryString);
-                    if (hasXsProject)
+                    if (prj.IsXSharp())
                     {
+                        hasXsProject = true;
                         break;
                     }
                 }
@@ -263,8 +162,8 @@ namespace XSharp.LanguageService
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
 
-                XSharpModel.XSolution.IsClosing = true;
-                XSharpModel.XSolution.Close();
+                XSolution.IsClosing = true;
+                XSolution.Close();
                 var frames = await VS.Windows.GetAllDocumentWindowsAsync();
 
                 if (frames != null)
@@ -285,9 +184,9 @@ namespace XSharp.LanguageService
 
         private void SolutionEvents_OnAfterCloseSolution()
         {
-            XSharpModel.XSolution.Close();
-            XSharp.LanguageService.XSharpXMLDocTools.Close();
-            XSharpModel.XSolution.IsClosing = false;
+            XSolution.Close();
+            XSharpXMLDocTools.Close();
+            XSolution.IsClosing = false;
         }
 
         static bool hasEnvironmentvariable = false;
@@ -299,13 +198,12 @@ namespace XSharp.LanguageService
         const string newText = @"$(XSharpMsBuildDir)";
         const string MsTestGuid = @"{3AC096D0-A1C2-E12C-1390-A8335801FDAB};";
 
-        private void checkProjectFile(string pszFileName)
+        private void checkProjectFile(string fileName)
         {
-            if (pszFileName != null && pszFileName.ToLower().EndsWith("xsproj") && File.Exists(pszFileName))
+            if (fileName != null && fileName.ToLower().EndsWith("xsproj") && File.Exists(fileName))
             {
-                projectfiles.Add(pszFileName);
-                string xml = File.ReadAllText(pszFileName);
-                var original = Path.ChangeExtension(pszFileName, ".original");
+                string xml = File.ReadAllText(fileName);
+                var original = Path.ChangeExtension(fileName, ".original");
                 bool changed = false;
                 if (hasEnvironmentvariable)
                 {
@@ -318,9 +216,9 @@ namespace XSharp.LanguageService
                             pos = xml.IndexOf(oldText, StringComparison.OrdinalIgnoreCase);
                         }
                         DeleteFileSafe(original);
-                        File.Copy(pszFileName, original);
-                        DeleteFileSafe(pszFileName);
-                        File.WriteAllText(pszFileName, xml);
+                        File.Copy(fileName, original);
+                        DeleteFileSafe(fileName);
+                        File.WriteAllText(fileName, xml);
                         changed = true;
                     }
                 }
@@ -332,16 +230,16 @@ namespace XSharp.LanguageService
                     if (!changed)
                     {
                         DeleteFileSafe(original);
-                        File.Copy(pszFileName, original);
+                        File.Copy(fileName, original);
                     }
                     xml = left + right;
-                    DeleteFileSafe(pszFileName);
-                    File.WriteAllText(pszFileName, xml);
+                    DeleteFileSafe(fileName);
+                    File.WriteAllText(fileName, xml);
                     changed = true;
                 }
                 if (changed)
                 {
-                    changedProjectfiles.Add(pszFileName, original);
+                    changedProjectfiles.Add(fileName, original);
                 }
             }
         }
@@ -381,3 +279,4 @@ internal static class CVTProjectExtensions
         return false;
     }
 }
+

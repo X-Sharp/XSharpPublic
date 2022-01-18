@@ -124,11 +124,13 @@ BEGIN NAMESPACE XSharpModel
 
 		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<XAssembly>) AS XPETypeSymbol
 			LOCAL result := NULL AS XPETypeSymbol
-            // Empty TypeName ???
-            IF String.IsNullOrEmpty( typeName )
+            STATIC LOCAL lastSearch := "" AS STRING
+            // Empty TypeName  or unwanted recursion
+            IF String.IsNullOrEmpty( typeName ) .or. typeName == lastSearch
                 RETURN result
             ENDIF
 			TRY
+                lastSearch := typeName
                 IF XSettings.EnableTypelookupLog
 				WriteOutputMessage("--> FindType() "+typeName)
                 ENDIF
@@ -163,11 +165,12 @@ BEGIN NAMESPACE XSharpModel
 			CATCH e AS Exception
 				XSolution.WriteException(e,__FUNCTION__)
 				result := NULL
-			FINALLY
+            FINALLY
+                lastSearch := ""
                 IF XSettings.EnableTypelookupLog
 				    WriteOutputMessage("<-- FindType() "+typeName+" " + IIF(result != NULL, result:FullName, "* not found *"))
                 ENDIF
-                END TRY
+            END TRY
 			RETURN result
 
 		STATIC METHOD LoadAssembly(cFileName AS STRING) AS XAssembly

@@ -43,10 +43,10 @@ namespace XSharp.LanguageService
                 VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
                 VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
                 VS.Events.SolutionEvents.OnBeforeOpenProject += SolutionEvents_OnBeforeOpenProject;
+                VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
 #if DEBUG
                 VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_OnBeforeOpenSolution;
                 VS.Events.SolutionEvents.OnAfterOpenProject += SolutionEvents_OnAfterOpenProject;
-                VS.Events.DocumentEvents.Closed += DocumentEvents_Closed;
                 VS.Events.DocumentEvents.Opened += DocumentEvents_Opened;
 #endif
                 VS.Events.ShellEvents.ShutdownStarted += ShellEvents_ShutdownStarted;
@@ -56,6 +56,20 @@ namespace XSharp.LanguageService
 
         }
 
+        private void DocumentEvents_Closed(string document)
+        {
+            // Remove document from OrphanedFilesProject
+            // So it can be opened in normal project afterwards
+            // when possible
+            XSolution.WriteOutputMessage("DocumentEvents_Closed " + document ?? "(none)");
+            var xfile = XSolution.FindFile(document);
+            if (xfile != null && xfile.Project.Name == OrphanedFilesProject.OrphanName)
+            {
+                XSolution.OrphanedFilesProject.RemoveFile(document);
+            }
+        }
+
+
 #if DEBUG        
         private void DocumentEvents_Opened(string document)
         {
@@ -64,10 +78,6 @@ namespace XSharp.LanguageService
 
         }
         
-        private void DocumentEvents_Closed(string document)
-        {
-            XSolution.WriteOutputMessage("DocumentEvents_Closed " + document ?? "(none)");
-        }
         
         private void SolutionEvents_OnBeforeOpenSolution(string obj)
         {

@@ -142,7 +142,7 @@ namespace XSharp.LanguageService
 
             if (spans.Count == 0 || _currentChar == null)   //there is no content in the buffer
                 yield break;
-
+            WriteOutputMessage($"GetTags() Spans: {spans.Count}");
 
             //don't do anything if the current SnapshotPoint is not initialized or at the end of the buffer
             if (!_currentChar.HasValue || _currentChar.Value.Position >= _currentChar.Value.Snapshot.Length)

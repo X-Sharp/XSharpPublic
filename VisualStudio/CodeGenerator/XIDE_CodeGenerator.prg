@@ -15,7 +15,7 @@ CLASS AbstractEditor
 		SELF:oBuffer:FullParse()
 		SELF:aLines := SELF:oBuffer:aLines
 	RETURN
-	
+
 	METHOD BeginCode() AS VOID
 		SELF:nStart := 0
 		SELF:nEnd := 0
@@ -46,7 +46,7 @@ CLASS AbstractEditor
 		SELF:nStart := 0
 		SELF:nEnd := 0
 	RETURN
-	
+
 	METHOD AddLine(cLine AS STRING) AS VOID
 		SELF:oBuffer:AddLine(cLine)
 	RETURN
@@ -66,7 +66,7 @@ CLASS AbstractEditor
 	METHOD DeleteAllLines() AS VOID
 		SELF:oBuffer:DeleteAllLines()
 	RETURN
-	
+
 END CLASS
 
 
@@ -169,9 +169,9 @@ METHOD AddInclude(cInclude AS STRING) AS VOID
 	LOCAL oLine AS LineObject
 	LOCAL nLine AS INT
 	LOCAL n AS INT
-	
+
 	nLine := 1
-	
+
 	FOR n := 1 UPTO SELF:aLines:Count
 		oLine := SELF:aLines[n - 1]
 		DO CASE
@@ -185,7 +185,7 @@ METHOD AddInclude(cInclude AS STRING) AS VOID
 	IF nLine <= 0
 		nLine := 1
 	ENDIF
-	
+
 	SELF:AddWEDLine("#include " + e"\"" + cInclude + e"\"" , nLine)
 	SELF:ModifiedLine(nLine)
 RETURN
@@ -248,7 +248,7 @@ RETURN
 			RETURN SELF:GetLine(nLine):oEntity
 		END IF
 	RETURN NULL
-	
+
 	METHOD FindEntity(eType AS EntityType , cName AS STRING , cClass AS STRING) AS INT
 		LOCAL nLine AS INT
 		SELF:FindEntity(eType , cName , cClass , nLine)
@@ -266,14 +266,14 @@ RETURN
 		LOCAL cTab , ceTab AS STRING
 		cTab := e"\t"
 		ceTab := e"\t"
-		
+
 		IF aEntity:Count == 0
 			RETURN 0
 		END IF
-		
+
 		cClass := cClass:ToUpper()
 		nLine := SELF:FindEntity(eType , cName , cClass)
-		
+
 		IF nLine == 0
 			IF eType == EntityType._Class
 				nLine := SELF:aLines:Count + 1
@@ -320,12 +320,12 @@ RETURN
 			oLine := SELF:GetLine(nLine)
 			LOCAL oDeclarationLine AS LineObject
 			oDeclarationLine := oLine
-			
+
 			DO WHILE oLine:lOutAmpersand .and. (oLine:LineText:Contains("[") .or. oLine:LineText:Contains("]"))
 				nLine ++
 				oLine := SELF:GetLine(nLine)
 			END DO
-			
+
 			IF (eOptions & EntityOptions.ClearOldFields) == EntityOptions.ClearOldFields
 				lRemoveFields := FALSE
 				nTemp := nLine
@@ -382,7 +382,20 @@ RETURN
 					IF .NOT. String.IsNullOrEmpty( oDeclarationLine:oEntity:cImplements:Trim() )
 						cDeclarationLine := cDeclarationLine + " IMPLEMENTS " + oDeclarationLine:oEntity:cImplements
 					ENDIF
-				END IF
+                END IF
+                IF eType == EntityType._Constructor
+                    LOCAL cOldLine := SELF:GetLine(nLine):LineText:Trim():ToUpper() AS STRING
+                    /*LOCAL nAt := cOldLine:LastIndexOf(')') AS INT
+                    IF nAt != -1
+                        nAt := cOldLine:IndexOf("CLIPPER", nAt)
+                        IF nAt != -1
+                            cDeclarationLine += " CLIPPER"
+                        ENDIF
+                    ENDIF*/
+                    IF cOldLine:EndsWith("CLIPPER") .and. .not. cDeclarationLine:ToUpper():Contains("CLIPPER")
+                        cDeclarationLine += " CLIPPER"
+                    ENDIF
+                ENDIF
 				SELF:ReplaceWEDLine(cDeclarationLine , nLine)
 				nLine ++
 			END IF
@@ -400,7 +413,7 @@ RETURN
 				oLine := SELF:AddWEDLine(cTab + cUser + cTagU , nLine)
 			END IF
 		END IF
-		
+
 		IF eType != EntityType._Class
 			IF nLine <= SELF:aLines:Count
 				oLine := SELF:GetLine(nLine)
@@ -409,7 +422,7 @@ RETURN
 				END IF
 			END IF
 		END IF
-		
+
 		SELF:CheckCreatedCode()
 	RETURN nFirst
 
@@ -418,7 +431,7 @@ RETURN
 		LOCAL lFound AS LOGIC
 		LOCAL nLine AS INT
 		LOCAL n AS INT
-		
+
 		cClass := cClass:ToUpper()
 		FOR n := 1 UPTO SELF:aLines:Count
 			oLine := SELF:GetLine(n)
@@ -437,13 +450,13 @@ RETURN
 				END IF
 			END IF
 		NEXT
-		
+
 		IF nLine != 0
 			SELF:AddWEDLine("END CLASS" , nLine)
 		END IF
-		
+
 	RETURN
-	
+
 	METHOD DeleteLine(nLine AS INT) AS VOID
 		SELF:RemoveWEDLine(nLine)
 		SELF:ModifiedLine(nLine)
@@ -479,7 +492,7 @@ RETURN
 		END DO
 
 		SELF:CheckCreatedCode()
-		
+
 	RETURN
 
 
@@ -497,7 +510,7 @@ RETURN
 			SELF:InsertLine(1 , cLine)
 		END IF
 	RETURN
-	
+
 	METHOD AddDefines(aDefines AS List<STRING> , aDefineValues AS List<STRING>) AS VOID
 		SELF:AddDefines(aDefines , aDefineValues , TRUE)
 	RETURN
@@ -557,7 +570,7 @@ RETURN
 		LOCAL cMask AS STRING
 		cMask := "DEFINE {0} := {1}"
 		IF lStatic
-			cMask := "STATIC "+cMask			
+			cMask := "STATIC "+cMask
         ENDIF
         IF nLine == 0
             nLine := 1

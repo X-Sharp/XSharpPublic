@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharpModel
          _file          := oFile
          _dialect       := dialect
          _locals        := List<XSourceVariableSymbol>{}
-         _file:InitTypeList()
+         _file:Clear()
          _globalType    := _file:GlobalType
          _globalType:ClearMembers()
          _EntityStack:Push(_globalType)

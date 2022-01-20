@@ -205,12 +205,12 @@ namespace XSharp.Project
             this.RegisterToolWindows();
 
             XSharpProjectPackage.instance = this;
+            this.SolutionListeners.Add(new SolutionEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             // The project selector helps to choose between MPF and CPS projects
             //_projectSelector = new XSharpProjectSelector();
             //await _projectSelector.InitAsync(this);
-
 
             this.settings = new XPackageSettings(this);
             VS.Events.BuildEvents.ProjectConfigurationChanged += BuildEvents_ProjectConfigurationChanged;
@@ -252,6 +252,7 @@ namespace XSharp.Project
                 if (string.Compare(project.Url, prj?.FullPath, true) == 0)
                 {
                     project.CreateProjectOptions();
+                    
                 }
             }
         }

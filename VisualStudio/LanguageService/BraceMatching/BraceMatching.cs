@@ -1,4 +1,9 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
@@ -11,7 +16,7 @@ using System.Linq;
 using XSharpModel;
 using static XSharp.XSharpConstants;
 
-namespace XSharp.LanguageService.Editors.BraceMatching
+namespace XSharp.LanguageService
 {
 
     [Export(typeof(IViewTaggerProvider))]
@@ -22,7 +27,7 @@ namespace XSharp.LanguageService.Editors.BraceMatching
     // 1 that matches the operator tokens which is implemented inside the toolkit
     // 2 tagger for keyword open/close pairs. This needs revisiting to use info
     // collected in the classifier
-    internal class BraceMatchingProvider : BraceMatchingBase
+    internal sealed class BraceMatchingProvider : BraceMatchingBase
     {
         public override Dictionary<char, char> BraceList { get; } = new Dictionary<char, char>()
         {

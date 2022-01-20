@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using XSharp;
-
+using System.Linq;
 namespace Microsoft.VisualStudio.Project
 {
     using System;
@@ -279,8 +279,26 @@ namespace Microsoft.VisualStudio.Project
                     foreach (ProjectPropertyGroupElement propGroup in buildProject.Xml.PropertyGroups)
                     {
                         // if there is, set it within that group
-                        if (String.Equals(propGroup.Condition.Trim(), config.Condition.Trim(), StringComparison.Ordinal))
+                        if (string.Equals(propGroup.Condition.Trim(), config.Condition.Trim(), StringComparison.Ordinal))
                         {
+                            // a property should only occur once in a group
+                            // when there is more than one property with the same name then delete all but the first
+                            // we filter on condition, because there could be 2 
+                            // same named properties with different conditions
+                            var children = propGroup.Children.Where((prop) =>
+                                prop.ElementName == this.propertyName && string.IsNullOrEmpty(prop.Condition));
+
+                            if (children.Count() > 1)
+                            {
+                                var first = children.First();
+                                foreach (var child in children)
+                                {
+                                    if (child != first)
+                                    {
+                                        propGroup.RemoveChild(child);
+                                    }
+                                }
+                            }
                             propGroup.SetProperty(this.propertyName, value);
                             set = true;
                             break;
@@ -309,7 +327,7 @@ namespace Microsoft.VisualStudio.Project
                     foreach (ProjectPropertyGroupElement propGroup in buildProject.Xml.PropertyGroups)
                     {
                         List<ProjectPropertyElement> propertiesToDelete = new List<ProjectPropertyElement>();
-                        if(!String.IsNullOrEmpty(propGroup.Condition))
+                        if(!string.IsNullOrEmpty(propGroup.Condition))
                         {
                             continue;
                         }
@@ -317,7 +335,7 @@ namespace Microsoft.VisualStudio.Project
                         foreach (ProjectPropertyElement property in propGroup.Properties)
                         {
                             // if there is, remove it so the new value is at the end of the file
-                            if (String.IsNullOrEmpty(property.Condition) && String.Equals(property.Name, this.propertyName, StringComparison.OrdinalIgnoreCase))
+                            if (string.IsNullOrEmpty(property.Condition) && string.Equals(property.Name, this.propertyName, StringComparison.OrdinalIgnoreCase))
                             {
                                 propertiesToDelete.Add(property);
                             }

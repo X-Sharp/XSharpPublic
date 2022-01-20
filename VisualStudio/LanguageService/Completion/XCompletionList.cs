@@ -192,24 +192,26 @@ namespace XSharp.LanguageService
     }
 
     // Build a list of all Keywords
-    internal static class XSharpTypes
+    internal static class XSharpSyntax
     {
         static IList<IXSymbol> _keywords;
         static IList<IXSymbol> _types;
-
-        static XSharpTypes()
+        static IDictionary<string,string> _keywordNames;
+        static XSharpSyntax()
         {
             // Dummy call to a Lexer; just to copy the Keywords, Types, ...
             // Pass default options so this will be the core dialect and no
             // 4 letter abbreviations will be in the list
             var lexer = XSharpLexer.Create("", "", XSharpParseOptions.Default);
             //
+            _keywordNames = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             var keywords = new List<IXSymbol>();
             var types = new List<IXSymbol>();
             //
             foreach (var keyword in lexer.KwIds)
             {
+                _keywordNames.Add(keyword.Key, keyword.Key);
                 keywords.Add(new XSourceSymbol(keyword.Key, Kind.Keyword, Modifiers.None));
                 if (XSharpLexer.IsType(keyword.Value))
                 {
@@ -221,7 +223,8 @@ namespace XSharp.LanguageService
             _types = types.ToArray();
         }
 
-        internal static IList<IXSymbol> Get()
+        internal static IDictionary<string, string> KeywordNames => _keywordNames;
+        internal static IList<IXSymbol> GetKeywords()
         {
             return _keywords;
         }

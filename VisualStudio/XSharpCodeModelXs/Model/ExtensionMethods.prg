@@ -15,6 +15,11 @@ BEGIN NAMESPACE XSharpModel
 
     STATIC CLASS ExtensionMethods
 
+        STATIC METHOD AddRange<T>(SELF items as SynchronizedCollection<T> ,  newItems as IList<T> ) AS VOID
+            FOREACH VAR item in newItems
+                items:Add(item)
+            NEXT
+
         STATIC METHOD CleanText(SELF token as IToken) AS STRING
             var result := token:Text
             if result:StartsWith("@@")

@@ -11,7 +11,7 @@
       <para styleclass="Heading1">Version History</para>
     </header>
     <para styleclass="Body Text">Note: When an item has a matching GitHub ticket then the ticket number is behind the item in parentheses prefixed with #. You can find these tickets by going to: <br/>https://github.com/X-Sharp/XSharpPublic/issues/<text style="font-weight:bold;">nnn</text> where <text style="font-weight:bold;">nnn</text> is the ticket number.<br/>If you find an issue in X# we recommend that you report it on GitHub. You will be notified of the progress on the work on your issue and the ticket number will be included in the documentation of new builds from now on (April 2021).</para>
-    <para styleclass="Heading1">Changes in 2.10.0.1 </para>
+    <para styleclass="Heading1">Changes in 2.10.0.3 </para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug fixes</text></para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -56,6 +56,8 @@
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">We have added a first version of Lightbulb tips. For now to implement missing interface members and to convert a field to a Property. More implementations and configuration options will follow</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">We have added a new dialog to configure source code formatting with visual examples of the effects of the options.</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">We have added the ability to log operations of the X# VS integration to the Windows debug window and/or a logfile. </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">If you are experiencing unexplainable problems we will contact you and tell you how to enable these options, so you can send us a log file that shows what happened before a problem occurred inside Visual Studio. We have used Serilog for this.</text></li>
+      <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">The Highlight Word feature now is case insensitive and no longer hightlights words that are part of a comment, string or inactive editor region</text></li>
+      <li styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">We have added &apos;Brace Completion&apos; to the editor</text></li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
     <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

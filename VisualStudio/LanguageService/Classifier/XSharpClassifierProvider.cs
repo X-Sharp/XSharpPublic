@@ -21,20 +21,16 @@ namespace XSharp.LanguageService
 
     internal class XSharpClassifierProvider : IClassifierProvider
     {
-        // Disable "Field is never assigned to..." compiler's warning. Justification: the field is assigned by MEF.
-#pragma warning disable 649
 
         /// <summary>
         /// Classification registry to be used for getting a reference
         /// to the custom classification type later.
         /// </summary>
         [Import]
-        private IClassificationTypeRegistryService classificationRegistry;
+        readonly IClassificationTypeRegistryService classificationRegistry= null;
 
         [Import]
-        ITextDocumentFactoryService factory = null;
-
-#pragma warning restore 649
+        readonly ITextDocumentFactoryService factory = null;
 
 
         #region IClassifierProvider
@@ -49,7 +45,8 @@ namespace XSharp.LanguageService
             // only return a classifier when this is really our document
             if (!factory.IsXSharpDocument( buffer))
                 return null;
-            return buffer.Properties.GetOrCreateSingletonProperty<XSharpClassifier>(creator: () => XSharpClassifier.GetColorizer(buffer, this.classificationRegistry, this.factory));
+            return buffer.Properties.GetOrCreateSingletonProperty(creator: () =>
+                XSharpClassifier.GetColorizer(buffer, this.classificationRegistry, this.factory));
         }
 
         #endregion

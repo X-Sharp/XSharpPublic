@@ -67,18 +67,23 @@ namespace XSharp.LanguageService.Editors.HighlightWord
                                                                        .GetClassificationSpans(sspan);
             foreach (ClassificationSpan span in classificationSpans)
             {
-                if (span.ClassificationType.IsOfType(PredefinedClassificationTypeNames.Comment))
-                {
-                    return true;
-                }
-                else if (span.ClassificationType.IsOfType(PredefinedClassificationTypeNames.String))
-                {
-                    return true;
-                }
-                else if (span.ClassificationType.IsOfType(PredefinedClassificationTypeNames.ExcludedCode))
-                {
-                    return true;
-                }
+                return IsInActiveSpan(span);
+            }
+            return false;
+        }
+        internal static bool IsInActiveSpan(ClassificationSpan span)
+        {
+            if (span.ClassificationType.IsOfType(PredefinedClassificationTypeNames.Comment))
+            {
+                return true;
+            }
+            else if (span.ClassificationType.IsOfType(PredefinedClassificationTypeNames.String))
+            {
+                return true;
+            }
+            else if (span.ClassificationType.IsOfType(PredefinedClassificationTypeNames.ExcludedCode))
+            {
+                return true;
             }
             return false;
         }

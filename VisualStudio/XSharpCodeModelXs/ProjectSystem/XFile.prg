@@ -40,6 +40,12 @@ BEGIN NAMESPACE XSharpModel
             SELF:_usingStatics	:= SynchronizedCollection<STRING>{}
             SELF:_entityList    := SynchronizedCollection<XSourceEntity>{}
             SELF:_typeList		:= XDictionary<STRING, XSourceTypeSymbol>{System.StringComparer.InvariantCultureIgnoreCase}
+            SELF:Clear()
+            IF SELF:HasCode
+                SELF:_globalType	:= XSourceTypeSymbol.CreateGlobalType(SELF)
+                SELF:_typeList:Add(SELF:_globalType:Name, SELF:_globalType)
+            ENDIF
+
 
         PROPERTY CommentTasks AS IList<XCommentTask> AUTO
         PROPERTY EntityList   AS IList<XSourceEntity>
@@ -167,10 +173,6 @@ BEGIN NAMESPACE XSharpModel
             SELF:_entityList:Clear()
             SELF:_typeList:Clear()
             SELF:AddDefaultUsings()
-            IF SELF:HasCode
-                SELF:_globalType	:= XSourceTypeSymbol.CreateGlobalType(SELF)
-                SELF:_typeList:Add(SELF:_globalType:Name, SELF:_globalType)
-            ENDIF
 
         METHOD SetTypes(types AS IDictionary<STRING, XSourceTypeSymbol>, usings AS IList<STRING>, ;
             staticUsings AS IList<STRING>, aEntities AS IList<XSourceEntity>) AS VOID

@@ -111,28 +111,34 @@ namespace XSharp.LanguageService
                         char ch = GetTypeChar(pvaIn);
                         if (_completionSession != null)
                         {
-                            if (char.IsLetterOrDigit(ch) || ch == '_')
+                            switch (ch)
                             {
-                                ; // do nothing now. Let the provider filter the list for us.
-                            }
-                            else
-                            {
-                                if (ch == '=' && _completionSession.Properties.TryGetProperty(XsCompletionProperties.Char, out char triggerChar) && triggerChar == ':')
-                                {
+                                case '_':
+                                    // do nothing now. Let the provider filter the list for us.
+                                    break;
+
+                                case '=':
                                     CancelCompletionSession();
-                                }
-                                else if (ch == '.' || ch == ':')
-                                {
+                                    break;
+                                case '.':
+                                case ':':
                                     handled = CompleteCompletionSession(ch);
-                                }
-                                else if (XSettings.EditorCommitChars.Contains(ch))
-                                {
-                                    handled = CompleteCompletionSession(ch);
-                                }
-                                else
-                                {
-                                    CancelCompletionSession();
-                                }
+                                    break;
+                                default:
+                                    if (char.IsLetterOrDigit(ch))
+                                    {
+                                        ; // do nothing
+                                    }
+                                    else if (XSettings.EditorCommitChars.Contains(ch))
+                                    {
+                                        handled = CompleteCompletionSession(ch);
+                                    }
+                                    else
+                                    {
+                                        CancelCompletionSession();
+                                    }
+
+                                    break;
                             }
                             //
                         }

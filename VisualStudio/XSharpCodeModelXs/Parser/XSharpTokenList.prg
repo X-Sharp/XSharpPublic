@@ -27,7 +27,7 @@ BEGIN NAMESPACE XSharpModel
     /// </summary>
     CLASS XSharpTokenList
         PRIVATE _list  AS IList<XSharpToken>
-        PRIVATE _lastToken AS XSharpToken
+        PRIVATE _lastReadToken AS XSharpToken
         PRIVATE _count  AS INT
         PRIVATE _index  AS INT
         PROPERTY La1 AS INT => SELF:La(1)
@@ -37,12 +37,14 @@ BEGIN NAMESPACE XSharpModel
         PROPERTY Lt2 AS XSharpToken => SELF:Lt(2)
         PROPERTY Lt3 AS XSharpToken => SELF:Lt(3)
 
-        PROPERTY LastToken as XSharpToken => _lastToken
+        PROPERTY LastReadToken as XSharpToken => _lastReadToken
+        PROPERTY FirstOrDefault as XSharpToken => _list:FirstOrDefault()
+        PROPERTY LastOrDefault  as XSharpToken => _list:LastOrDefault()
     CONSTRUCTOR(list as IList<XSharpToken>)
         _list  := list
         _count := list:Count
         _index := 0
-        _lastToken     := list:FirstOrDefault()
+        _lastReadToken     := list:FirstOrDefault()
          RETURN
 
     METHOD Reset as Void
@@ -81,13 +83,13 @@ BEGIN NAMESPACE XSharpModel
 
       METHOD SaveLastToken() AS VOID
          IF ! SELF:Eoi() .AND. SELF:La1 != XSharpLexer.EOS
-            _lastToken := _list[_index]
+            _lastReadToken := _list[_index]
          ENDIF
 
       METHOD ConsumeAndGet() AS XSharpToken
          if ! SELF:Eoi()
             VAR t := _list[_index]
-            _lastToken := t
+            _lastReadToken := t
             _index+= 1
             RETURN t
          endif
@@ -96,7 +98,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD ConsumeAndGetText() AS STRING
         if ! SELF:Eoi()
            VAR t := _list[_index]
-           _lastToken := t
+           _lastReadToken := t
            _index+= 1
            var result := t:Text
            if result:StartsWith("@@")

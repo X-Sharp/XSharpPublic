@@ -131,7 +131,7 @@ BEGIN NAMESPACE XSharpModel
          _collectBlocks := lBlocks
          _stream        := (BufferedTokenStream) tokenStream
          _tokens        := _stream:GetTokens()
-         VAR _input         := List<XSharpToken>{}
+         VAR _input     := List<XSharpToken>{}
          FOREACH token AS XSharpToken IN _tokens
             SWITCH token:Channel
             CASE TokenConstants.HiddenChannel
@@ -357,7 +357,7 @@ BEGIN NAMESPACE XSharpModel
               typelist:Add(type:FullName, type)
             ENDIF
             last := type
-            NEXT
+         NEXT
          VAR lasttoken := _tokens[_tokens.Count -1]
          IF last != NULL .AND. last:Range:StartLine == last:Range:EndLine .and. ! last:SingleLine
             // adjust the end of the type with the start of the current line
@@ -392,9 +392,11 @@ BEGIN NAMESPACE XSharpModel
              SELF:_EntityList:Add(xmember)
              SELF:_globalType:AddMember(xmember)
          ENDIF
-         _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
-         IF ! lLocals .AND. SELF:SaveToDisk
-            _file:SaveToDatabase()
+         IF ! lLocals
+	         _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
+             IF SELF:SaveToDisk
+                _file:SaveToDatabase()
+             ENDIF
          ENDIF
       PRIVATE METHOD AddNameSpaceToUsing(name as STRING) AS VOID
          var pos  := name:LastIndexOf(".")
@@ -819,21 +821,16 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                entityKind := Kind.Field // Not really a field but handled later
             ENDIF
          // XPP code between CLASS .. ENDCLASS
-         // we do no check for InXPPClass because this will
          // fail when partially parseing for locals lookup
-         CASE XSharpLexer.VAR
-            IF _dialect == XSharpDialect.XPP
-               entityKind := Kind.Field // Not really a field but handled later
-            ENDIF
+         CASE XSharpLexer.VAR WHEN  SELF:InXppClass
+            entityKind := Kind.Field // Not really a field but handled later
 
-         CASE XSharpLexer.COLON
-            IF _dialect == XSharpDialect.XPP .AND. _AND(mods, Modifiers.VisibilityMask) != Modifiers.None
+         CASE XSharpLexer.COLON WHEN SELF:InXppClass
+            IF _AND(mods, Modifiers.VisibilityMask) != Modifiers.None
                entityKind := Kind.Field // Not really a field but handled later
             ENDIF
-         CASE XSharpLexer.INLINE
-            IF _dialect == XSharpDialect.XPP
-               entityKind := Kind.Method // Not really a field but handled later
-            ENDIF
+         CASE XSharpLexer.INLINE WHEN SELF:InXppClass
+            entityKind := Kind.Method // Not really a field but handled later
          CASE XSharpLexer.LOCAL
             IF SELF:La2 == XSharpLexer.FUNCTION
                entityKind := Kind.LocalFunc
@@ -1162,7 +1159,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
       PRIVATE PROPERTY Lt1 AS XSharpToken => _list:Lt1
       PRIVATE PROPERTY Lt2 AS XSharpToken => _list:Lt2
       PRIVATE PROPERTY Lt3 AS XSharpToken => _list:Lt3
-      PRIVATE PROPERTY LastToken AS XSharpToken => _list:LastToken
+      PRIVATE PROPERTY LastToken AS XSharpToken => _list:LastReadToken
       PRIVATE METHOD La(nToken AS LONG) AS LONG => _list:La(nToken)
       PRIVATE METHOD Lt(nToken AS LONG) AS XSharpToken => _list:Lt(nToken)
       PRIVATE METHOD Eoi() AS LOGIC => _list:Eoi()

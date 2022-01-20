@@ -3,7 +3,7 @@ namespace XSharp.LanguageService.OptionsPages
 {
     public partial class IntellisenseOptionsControl : XSUserControl
     {
-        string defaultCommitChars = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
+        string defaultCommitChars = "{}[]().,:;+-*/%&|^!~<>?@#\'\"\\";
         public IntellisenseOptionsControl()
         {
             InitializeComponent();

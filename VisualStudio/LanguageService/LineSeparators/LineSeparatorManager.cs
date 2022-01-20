@@ -28,6 +28,7 @@ namespace XSharp.LanguageService
         private readonly object _lineSeperatorTagGate = new object();
         private readonly IEditorFormatMap _editorFormatMap;
         private readonly XSharpClassifier _classifier;
+        private bool closed = false;
 
         private LineSeparatorTag _lineSeparatorTag;
 
@@ -37,6 +38,7 @@ namespace XSharp.LanguageService
             _textView = docView.TextView;
             _adornmentLayer = _textView.GetAdornmentLayer(Constants.LanguageName + "LineSeparator");
             _textView.LayoutChanged += OnLayoutChanged;
+            _textView.Closed += OnClosed;
             _buffer = docView.TextBuffer;
             _editorFormatMap = editorFormatMapService.GetEditorFormatMap("text");
             _editorFormatMap.FormatMappingChanged += FormatMappingChanged;
@@ -45,6 +47,16 @@ namespace XSharp.LanguageService
             {
                 _classifier.LineStateChanged += LineStateChanged;
             }
+
+        }
+
+        private void OnClosed(object sender, EventArgs e)
+        {
+            closed = true;
+            _textView.Closed -= OnClosed;
+            _textView.LayoutChanged -= OnLayoutChanged;
+            _classifier.LineStateChanged -= LineStateChanged;
+            _editorFormatMap.FormatMappingChanged -= FormatMappingChanged;
 
         }
 
@@ -75,7 +87,8 @@ namespace XSharp.LanguageService
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                _repaint();
+                if (! closed)
+                    _repaint();
             });
         }
 

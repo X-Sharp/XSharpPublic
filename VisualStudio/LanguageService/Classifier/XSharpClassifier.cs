@@ -17,6 +17,8 @@ using XSharpModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using Microsoft.VisualStudio.Language.StandardClassification;
+
 namespace XSharp.LanguageService
 {
     /// <summary>
@@ -111,15 +113,15 @@ namespace XSharp.LanguageService
             if (xsharpKeywordType == null)
             {
                 // These fields are static so only initialize the first time
-                xsharpKeywordType = registry.GetClassificationType("keyword");
-                xsharpIdentifierType = registry.GetClassificationType("identifier");
-                xsharpCommentType = registry.GetClassificationType("comment");
-                xsharpOperatorType = registry.GetClassificationType("operator");
-                xsharpPPType = registry.GetClassificationType("preprocessor keyword");
-                xsharpNumberType = registry.GetClassificationType("number");
-                xsharpStringType = registry.GetClassificationType("string");
-                xsharpInactiveType = registry.GetClassificationType("excluded code");
-                xsharpLiteralType = registry.GetClassificationType("literal");
+                xsharpKeywordType = registry.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
+                xsharpIdentifierType = registry.GetClassificationType(PredefinedClassificationTypeNames.Identifier);
+                xsharpCommentType = registry.GetClassificationType(PredefinedClassificationTypeNames.Comment);
+                xsharpOperatorType = registry.GetClassificationType(PredefinedClassificationTypeNames.Operator);
+                xsharpPPType = registry.GetClassificationType(PredefinedClassificationTypeNames.PreprocessorKeyword);
+                xsharpNumberType = registry.GetClassificationType(PredefinedClassificationTypeNames.Number);
+                xsharpStringType = registry.GetClassificationType(PredefinedClassificationTypeNames.String);
+                xsharpInactiveType = registry.GetClassificationType(PredefinedClassificationTypeNames.ExcludedCode);
+                xsharpLiteralType = registry.GetClassificationType(PredefinedClassificationTypeNames.Literal);
                 xsharpTextType = registry.GetClassificationType(ColorizerConstants.XSharpTextEndTextFormat);
                 xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
                 xsharpRegionStop = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
@@ -1090,9 +1092,7 @@ namespace XSharp.LanguageService
 
         internal static void Debug(string msg, params object[] o)
         {
-#if DEBUG
-            XSettings.LogMessage(string.Format("XColorizer: " + msg, o));
-#endif
+            XSettings.LogMessage(string.Format("XSharpClassifier: " + msg, o));
         }
     }
 

@@ -71,7 +71,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         public override int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
         {
-            // Enum all sub project and add to dependeny list
+            // Enum all sub project and add to dependency list
             ThreadHelper.ThrowIfNotOnUIThread();
 
             UpdateDependencyListWithSubProjects(null);

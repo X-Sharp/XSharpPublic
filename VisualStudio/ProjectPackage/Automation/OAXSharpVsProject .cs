@@ -7,18 +7,13 @@
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Project.Automation;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using EnvDTE;
 using Microsoft.VisualStudio.Project;
 using VSLangProj;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-#if PACKAGEREFERENCE
+
 using VSLangProj150;
 using VSLangProj140;
 using VSLangProj80;
-#endif
+
 namespace XSharp.Project
 {
 
@@ -27,11 +22,7 @@ namespace XSharp.Project
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
     [ComVisible(true), CLSCompliant(false)]
-#if PACKAGEREFERENCE	
     public class OAXSharpVSProject : OAVSProject, VSProject4
-#else
-    public class OAXSharpVSProject : OAVSProject
-#endif	
     {
         private OAVSProjectImports imports;
         private VSProjectEvents events;
@@ -55,7 +46,7 @@ namespace XSharp.Project
                 return events;
             }
         }
-#if PACKAGEREFERENCE
+
         public object PublishManager => throw new NotImplementedException();
 
         public VSProjectEvents2 Events2 => throw new NotImplementedException();
@@ -81,7 +72,7 @@ namespace XSharp.Project
                 return null;
             }
         }
-#endif
+
 
     }
 

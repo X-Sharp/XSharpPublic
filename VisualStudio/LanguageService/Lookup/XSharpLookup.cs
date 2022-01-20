@@ -28,11 +28,12 @@ namespace XSharp.LanguageService
         static readonly List<string> nestedSearches = new List<string>();
         static public IEnumerable<IXSymbol> FindIdentifier(XSharpSearchLocation location, string name, IXTypeSymbol currentType, Modifiers visibility)
         {
-            if (name.EndsWith("."))
+            if (name != null && name.EndsWith("."))
                 name = name.Substring(0, name.Length - 1);
 
             var result = new List<IXSymbol>();
-            if (nestedSearches.Contains(name, StringComparer.OrdinalIgnoreCase))
+            if (nestedSearches.Contains(name, StringComparer.OrdinalIgnoreCase)
+                || location?.Member == null)
             {
                 return null;
             }
@@ -50,9 +51,9 @@ namespace XSharp.LanguageService
                 // 3) Locals (for entities with locals)
                 // 4) Properties or Fields
                 // 5) Globals and Defines
-                WriteOutputMessage($"--> FindIdentifier in {currentType.FullName}, '{name}' ");
+                WriteOutputMessage($"--> FindIdentifier in {currentType?.FullName}, '{name}' ");
                 var member = location.Member;
-                if (currentType.TypeParameters.Count > 0 && currentType is XSourceTypeSymbol source)
+                if (currentType?.TypeParameters.Count > 0 && currentType is XSourceTypeSymbol source)
                 {
                     foreach (var param in currentType.TypeParameters)
                     {
@@ -132,7 +133,7 @@ namespace XSharp.LanguageService
                     nestedSearches.Remove(nestedSearches.Last());
                 }
             }
-            DumpResults(result, $"--> FindIdentifier in {currentType.FullName}, '{name}'");
+            DumpResults(result, $"--> FindIdentifier in {currentType?.FullName}, '{name}'");
             return result;
         }
 
@@ -517,13 +518,18 @@ namespace XSharp.LanguageService
             if (location.Member.Kind.IsClassMember(location.Dialect))
             {
                 currentType = location.Member.ParentType;
-                symbols.Push(currentType);
+                if (currentType != null)
+                {
+                    symbols.Push(currentType);
+                }
             }
             else if (location.Member.Kind == Kind.EnumMember)
             {
                 currentType = location.Member.ParentType;
-                symbols.Push(currentType);
-
+                if (currentType != null)
+                {
+                    symbols.Push(currentType);
+                }
             }
             Modifiers visibility = Modifiers.Private;
             string namespacePrefix = "";
@@ -544,7 +550,8 @@ namespace XSharp.LanguageService
                 {
                     var top = symbols.Peek();
                     currentType = GetTypeFromSymbol(location, top);
-                    top.ResolvedType = currentType;
+                    if (top != null)
+                        top.ResolvedType = currentType;
                     count = symbols.Count;
                     if (top.Kind == Kind.Namespace)
                     {

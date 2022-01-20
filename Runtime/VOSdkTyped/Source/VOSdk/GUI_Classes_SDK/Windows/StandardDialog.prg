@@ -3,25 +3,25 @@
 USING VOSDK := XSharp.VO.SDK
 
 CLASS OpenDialog INHERIT StandardFileDialog
-	
+
 	PROTECT oOpen AS System.Windows.Forms.OpenFileDialog
-	
+
 	CONSTRUCTOR(oOwnWnd,cInitPath,dwFlag)
 		SUPER(oOwnWnd,cInitPath,dwFlag)
 		oDlg := oOpen := System.Windows.Forms.OpenFileDialog{}
 
 		IsOpen := TRUE
-		oOpen:CheckFileExists:= TRUE				
+		oOpen:CheckFileExists:= TRUE
 		oOpen:CheckPathExists := TRUE
 		Flags := _OR(OFN_EXPLORER, OFN_ALLOWMULTISELECT, OFN_FILEMUSTEXIST, OFN_PATHMUSTEXIST,OFN_ENABLEHOOK)
 		SELF:PostInit()
-		RETURN 
+		RETURN
 
 	METHOD Destroy() AS USUAL STRICT
 		oOpen := NULL_OBJECT
 		RETURN SUPER:Destroy()
 
-	METHOD Show() 
+	METHOD Show()
 		oOpen:ReadOnlyChecked	:= _AND(Flags, OFN_READONLY) != 0
 		oOpen:Multiselect		:= _AND(Flags , OFN_ALLOWMULTISELECT) != 0
 		oOpen:ShowReadOnly		:= _AND(Flags , OFN_HIDEREADONLY ) != 0
@@ -31,7 +31,7 @@ CLASS OpenDialog INHERIT StandardFileDialog
 END CLASS
 CLASS PaletteDialog INHERIT StandardColorDialog
 
-	CONSTRUCTOR(uOwner,oColor) 
+	CONSTRUCTOR(uOwner,oColor)
 
 
 		IF !IsNil(uOwner)
@@ -48,7 +48,7 @@ CLASS PaletteDialog INHERIT StandardColorDialog
 
 
 
-		RETURN 
+		RETURN
 
 END CLASS
 
@@ -57,7 +57,7 @@ CLASS SaveAsDialog INHERIT StandardFileDialog
 
 	PROTECT oSave AS System.Windows.Forms.SaveFileDialog
 
-	CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag) 
+	CONSTRUCTOR(oOwnWnd, cInitPath, dwFlag)
 
 		SUPER(oOwnWnd,cInitPath, dwFlag)
 		oDlg := oSave := System.Windows.Forms.SaveFileDialog{}
@@ -67,7 +67,7 @@ CLASS SaveAsDialog INHERIT StandardFileDialog
 		oSave:CreatePrompt := FALSE
 		Flags := _OR(OFN_EXPLORER, OFN_PATHMUSTEXIST, OFN_HIDEREADONLY, OFN_ENABLESIZING, OFN_ENABLEHOOK)
 		SELF:PostInit()
-		RETURN 
+		RETURN
 
 	METHOD Destroy() AS USUAL STRICT
 		oSave := NULL_OBJECT
@@ -79,7 +79,7 @@ END CLASS
 
 CLASS SelectDialog INHERIT StandardColorDialog
 
-	CONSTRUCTOR(uOwner,oColor) 
+	CONSTRUCTOR(uOwner,oColor)
 
 
 		IF !IsNil(uOwner)
@@ -93,8 +93,8 @@ CLASS SelectDialog INHERIT StandardColorDialog
 			SELF:oOwner := uOwner
 		ENDIF
 
-	
-		RETURN 
+
+		RETURN
 
 END CLASS
 
@@ -103,21 +103,21 @@ CLASS StandardColorDialog INHERIT StandardDialog
 	PROTECT liFlags AS LONGINT
 	PROTECT oDefColor AS Color
 	PROTECT oOwner AS Window
-	
+
 	CLASS VOCOlorDialog INHERIT System.Windows.Forms.ColorDialog
 		CONSTRUCTOR() STRICT
 			SUPER()
 	END CLASS
-	
+
 	STATIC PROPERTY CustomColors AS INT[] AUTO
 
-	METHOD Color() 
+	METHOD Color()
 		RETURN oDefColor
 
 	//METHOD Destroy() AS USUAL STRICT
 		//RETURN SELF
 
-	CONSTRUCTOR(oColor) 
+	CONSTRUCTOR(oColor)
 
 		SUPER()
 		oDefColor := Color{COLORBLACK}
@@ -129,9 +129,9 @@ CLASS StandardColorDialog INHERIT StandardDialog
 			oDefColor := oColor
 		ENDIF
 
-		RETURN 
+		RETURN
 
-	METHOD Show() 
+	METHOD Show()
 		LOCAL lRet AS LOGIC
 		LOCAL oColorDlg as VOColorDialog
 		LOCAL oRes AS System.Windows.Forms.DialogResult
@@ -149,14 +149,14 @@ CLASS StandardColorDialog INHERIT StandardDialog
 		ELSE
 			oColorDlg:AnyColor := TRUE
 		ENDIF
-		
+
 		IF oOwner != NULL_OBJECT
 			oRes := oColorDlg:ShowDialog(oOwner:__Form)
 		ELSE
 			oRes := oColorDlg:ShowDialog()
 		ENDIF
-		
-		lRet := (oRes ==System.Windows.Forms.DialogResult.OK) 
+
+		lRet := (oRes ==System.Windows.Forms.DialogResult.OK)
 		IF lRet
 			CustomColors := oColorDlg:CustomColors
 			oDefColor := oColorDlg:Color
@@ -168,9 +168,9 @@ END CLASS
 
 CLASS StandardDialog INHERIT VObject
 
-	CONSTRUCTOR() 
+	CONSTRUCTOR()
 		SUPER()
-		RETURN 
+		RETURN
 END CLASS
 
 CLASS StandardFileDialog INHERIT StandardDialog
@@ -181,33 +181,33 @@ CLASS StandardFileDialog INHERIT StandardDialog
 	PROTECT oOwner		AS Window
 	PROTECT oDlg		AS System.Windows.Forms.FileDialog
 
-	METHOD __AddFilter(sFilter AS STRING, sFilterDesc AS STRING) AS VOID STRICT 
+	METHOD __AddFilter(sFilter AS STRING, sFilterDesc AS STRING) AS VOID STRICT
 		LOCAL sOldFilter as STRING
 		sOldFilter := oDlg:Filter
 		IF !STRING.IsNullOrEmpty(sOldFilter) .and. !sOldFilter:EndsWith("|")
-			sOldFilter += "|" 
+			sOldFilter += "|"
 		ENDIF
 		oDlg:Filter := sOldFilter+sFilterDesc+"|"+sFilter
 		RETURN
 
-	METHOD __ClearFilters() AS VOID STRICT 
-		oDlg:Filter := String.Empty		
+	METHOD __ClearFilters() AS VOID STRICT
+		oDlg:Filter := String.Empty
 		RETURN
 
-	ACCESS __Flags AS DWORD STRICT 
+	ACCESS __Flags AS DWORD STRICT
 		RETURN Flags
 
 	ACCESS Caption  AS STRING
 		RETURN oDlg:Title
 
-	ASSIGN Caption(cNewCaption AS STRING) 
+	ASSIGN Caption(cNewCaption AS STRING)
 		oDlg:Title := cNewCaption
-		RETURN 
+		RETURN
 
 	ACCESS DefExt AS STRING
 		RETURN oDlg:DefaultExt
 
-	ASSIGN DefExt( cNew  AS STRING) 
+	ASSIGN DefExt( cNew  AS STRING)
 		//PP-040101
 		oDlg:DefaultExt := cNew
 
@@ -215,20 +215,20 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		IF oDlg != null_OBJECT
 			oDlg:Dispose()
 			oDlg := NULL_OBJECT
-		ENDIF		
+		ENDIF
 		RETURN SELF
 
-	METHOD Dispatch(oEvt, hDlg) 
+	METHOD Dispatch(oEvt, hDlg)
 		RETURN 0L
 
-	ASSIGN DlgStyle(flag as LOGIC) 
+	ASSIGN DlgStyle(flag as LOGIC)
 		IF flag
 			Flags := _OR(Flags, DWORD(_CAST, OFN_EXPLORER))
 		ELSE
 			Flags := _AND(Flags, DWORD(_CAST, _NOT(OFN_EXPLORER)))
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	ACCESS FileName AS STRING
 		RETURN oDlg:FileName
@@ -238,15 +238,15 @@ CLASS StandardFileDialog INHERIT StandardDialog
 
 	ASSIGN  FilterIndex (nIndex AS LONG)
 		oDlg:FilterIndex := nIndex
-	
-	METHOD Help() 
+
+	METHOD Help()
 		RETURN NIL
 
 	METHOD HelpRequest(oObject as Object, e as System.EventArgs) as VOID
 		SELF:Help()
 		RETURN
-		
-	ASSIGN HideReadOnly(flag AS LOGIC) 
+
+	ASSIGN HideReadOnly(flag AS LOGIC)
 		IF flag
 			Flags := _OR(Flags, OFN_HIDEREADONLY)
 		ELSE
@@ -254,9 +254,9 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		ENDIF
 
 
-		RETURN 
+		RETURN
 
-	CONSTRUCTOR(uOwner, uInitPath) 
+	CONSTRUCTOR(uOwner, uInitPath)
 
 
 		SUPER()
@@ -271,7 +271,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 			cInitPath := uInitPath
 		ENDIF
 		IsOpen := FALSE
-	
+
 	METHOD PostInit() AS VOID STRICT
 		LOCAL iPos AS INT
 		LOCAL cTest, cRest, cAllFiles AS STRING
@@ -280,7 +280,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		LOCAL Result as STRING
 		// needed for changing dialog's style (by OFN_EXPLORER)
 		Flags := OFN_ALLOWMULTISELECT
-		
+
 
 		//cAllFiles := ResourceString{__WCSAllFiles}:Value
 		cAllFiles := "All Files (*.*)|*.*"
@@ -318,26 +318,26 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		oDlg:AutoUpgradeEnabled := TRUE
 		oDlg:RestoreDirectory := TRUE
 		oDlg:FileName := cInitPath
-		
-		RETURN 
+
+		RETURN
 
 	ACCESS InitialDirectory AS STRING
 		RETURN oDlg:InitialDirectory
 
-	ASSIGN InitialDirectory(cNewDir AS STRING) 
+	ASSIGN InitialDirectory(cNewDir AS STRING)
 		IF ! empty(cNewDir)
 			IF !cNewDir:EndsWith("\")
 				cNewDir += "\"
 			ENDIF
 			oDlg:InitialDirectory := cNewDir
 		ENDIF
-		RETURN 
+		RETURN
 
 	ACCESS NoPlacesBar AS LOGIC
 		RETURN LOGIC(_CAST, _AND(FlagsEx, OFN_EX_NOPLACESBAR))
 
-	ASSIGN NoPlacesBar(flag AS LOGIC) 
-		
+	ASSIGN NoPlacesBar(flag AS LOGIC)
+
 
 		IF flag
 			FlagsEx := _OR(FlagsEx, OFN_EX_NOPLACESBAR)
@@ -345,20 +345,20 @@ CLASS StandardFileDialog INHERIT StandardDialog
 			FlagsEx := _AND(FlagsEx, _NOT(OFN_EX_NOPLACESBAR))
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	ACCESS ReadOnly AS LOGIC
 		RETURN LOGIC(_CAST, _AND(Flags, OFN_READONLY))
-	
-	ASSIGN ReadOnly(flag AS LOGIC) 
+
+	ASSIGN ReadOnly(flag AS LOGIC)
 		IF flag
 			Flags := _OR(Flags, OFN_READONLY)
 		ELSE
 			Flags := _AND(Flags, _NOT(OFN_READONLY))
 		ENDIF
-		RETURN 
+		RETURN
 
-	METHOD SetFilter(uFilter, uFilterDesc, nIndex) 
+	METHOD SetFilter(uFilter, uFilterDesc, nIndex)
 		LOCAL i AS INT
 
 		IF IsString(uFilter) .AND. IsString(uFilterDesc)
@@ -382,7 +382,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		ELSE
 			Flags := _AND(Flags, _NOT(DWORD(kStyle)))
 		ENDIF
-		RETURN 
+		RETURN
 
 	METHOD SetStyleEx(kStyle AS LONG, lOnOff := TRUE AS LOGIC) AS VOID
 		IF (lOnOff)
@@ -390,18 +390,21 @@ CLASS StandardFileDialog INHERIT StandardDialog
 		ELSE
 			FlagsEx := _AND(Flags, _NOT(DWORD(kStyle)))
 		ENDIF
-		RETURN 
+		RETURN
 
-	METHOD Show() 
+	METHOD Show()
 		LOCAL oRes AS System.Windows.Forms.DialogResult
 		oDlg:CheckFileExists := _AND(Flags, OFN_FILEMUSTEXIST)  != 0
 		oDlg:CheckPathExists := _AND(Flags, OFN_PATHMUSTEXIST) != 0
-		
+
 		IF oOwner != NULL_OBJECT
 			oRes := oDlg:ShowDialog(oOwner:__Form)
 		ELSE
 			oRes := oDlg:ShowDialog()
-		ENDIF
+        ENDIF
+		IF oRes == System.Windows.Forms.DialogResult.Cancel
+            oDlg:FileName := ""
+        ENDIF
 		RETURN oRes == System.Windows.Forms.DialogResult.OK
 
 END CLASS
@@ -413,14 +416,14 @@ CLASS StandardFolderDialog INHERIT StandardDialog
 	PROTECT dwType AS DWORD
 	PROTECT sResult AS STRING
 
-	ACCESS __StartFolder AS STRING STRICT 
+	ACCESS __StartFolder AS STRING STRICT
 		RETURN sStart
 
 
 	ACCESS FolderName AS STRING
 		RETURN sResult
 
-	CONSTRUCTOR(uOwner, sCaption, sStartFolder, kType) 
+	CONSTRUCTOR(uOwner, sCaption, sStartFolder, kType)
 		SUPER()
 		Default(@kType, BIF_RETURNONLYFSDIRS)
 		Default(@sCaption, "Browser Folder")
@@ -436,12 +439,12 @@ CLASS StandardFolderDialog INHERIT StandardDialog
 		IF IsNumeric(dwType)
 			dwType := kType
 		ENDIF
-		RETURN 
+		RETURN
 
 	ACCESS Result AS STRING
 		RETURN sResult
 
-	METHOD Show() 
+	METHOD Show()
 		LOCAL oDlg as System.Windows.Forms.FolderBrowserDialog
 		LOCAL oRes as System.Windows.Forms.DialogResult
 		LOCAL lRet as LOGIC
@@ -457,10 +460,10 @@ CLASS StandardFolderDialog INHERIT StandardDialog
 		ELSE
 			oRes := oDlg:ShowDialog()
 		ENDIF
-		
-		
+
+
 		lRet := oRes == System.Windows.Forms.DialogResult.OK
-		IF lRet			
+		IF lRet
 			SELF:sResult := oDlg:SelectedPath
 		ENDIF
 		RETURN lRet
@@ -487,7 +490,7 @@ CLASS StandardFontDialog INHERIT StandardDialog
 		ELSE
 			lANSIFlag := 0
 		ENDIF
-		RETURN 
+		RETURN
 
 	METHOD EnableEffects(bOnOff:= TRUE AS LOGIC) AS VOID
 		IF bOnOff
@@ -496,7 +499,7 @@ CLASS StandardFontDialog INHERIT StandardDialog
 			lEffectFlag := 0
 		ENDIF
 
-		RETURN 
+		RETURN
 
 	METHOD EnableFixedPitch(bOnOff:= TRUE AS LOGIC) AS VOID
 		IF bOnOff
@@ -504,7 +507,7 @@ CLASS StandardFontDialog INHERIT StandardDialog
 		ELSE
 			lFixPitchFlag := 0
 		ENDIF
-		RETURN 
+		RETURN
 
 	METHOD EnableTrueType(bOnOff:= TRUE AS LOGIC) AS VOID
 		IF bOnOff
@@ -512,16 +515,16 @@ CLASS StandardFontDialog INHERIT StandardDialog
 		ELSE
 			lTTYFlag := 0
 		ENDIF
-		RETURN 
+		RETURN
 
-	ASSIGN Flags(lInt as LONG) 
+	ASSIGN Flags(lInt as LONG)
 		lFlags := _OR(lFlags, LONGINT(_CAST, lInt))
-		RETURN 
+		RETURN
 
 	PROPERTY Font		AS VOSDK.Font	GET oFont	SET oFont	:= VALUE
 	PROPERTY FontColor  AS VOSDK.Color  GET oColor	SET oColor	:= VALUE
 
-	CONSTRUCTOR(uOwner) 
+	CONSTRUCTOR(uOwner)
 		IF !IsNil(uOwner)
 			IF !IsInstanceOfUsual(uOwner,#Window) .AND. IsInstanceOfUsual( uOwner,#Printer)
 				WCError{#Init,#StandardFontDialog,__WCSTypeError,uOwner,1}:@@Throw()
@@ -545,14 +548,14 @@ CLASS StandardFontDialog INHERIT StandardDialog
 
 		SELF:EnableEffects(TRUE)
 
-		RETURN 
+		RETURN
 
-	METHOD Show() 
+	METHOD Show()
 		LOCAL oDlg as System.Windows.Forms.FontDialog
 		LOCAL oRes as System.Windows.Forms.DialogResult
 		LOCAL lRet as LOGIC
 		oDlg := System.Windows.Forms.FontDialog{}
-		
+
 
 		IF (oFont != NULL_OBJECT)
 			oDlg:Font := oFont
@@ -572,7 +575,7 @@ CLASS StandardFontDialog INHERIT StandardDialog
 			oRes := oDlg:ShowDialog()
 		ENDIF
 		lRet := oRes == System.Windows.Forms.DialogResult.OK
-		IF lRet			
+		IF lRet
 			oFont  := oDlg:Font
 			oColor := oDlg:Color
 		ENDIF

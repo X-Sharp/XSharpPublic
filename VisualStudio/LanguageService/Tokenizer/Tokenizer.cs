@@ -386,17 +386,32 @@ namespace XSharp.LanguageService
                     case XSharpLexer.RCURLY:
                     case XSharpLexer.RPAREN:
                     case XSharpLexer.RBRKT:
-                        result.Add(token);
-                        // delete everything between parens, curly braces and brackets closing token before cursor pos
-                        if (token.Position < location.Position)
+                        bool add = true;
+                        if (result.Count > 0 && token == list.LastOrDefault)
                         {
-                            closeToken = token;
-                            if (token.Type == XSharpLexer.RCURLY)
-                                openToken = XSharpLexer.LCURLY;
-                            else if (token.Type == XSharpLexer.RPAREN)
-                                openToken = XSharpLexer.LPAREN;
-                            else if (token.Type == XSharpLexer.RBRKT)
-                                openToken = XSharpLexer.LBRKT;
+                            var lasttoken = result.Last();
+                            if (lasttoken.Type == XSharpLexer.COLON ||
+                                lasttoken.Type == XSharpLexer.DOT)
+                            {
+                                // closing char after colon or dot
+                                add = false;
+                                done = true;
+                            }
+                        }
+                        if (add)
+                        {
+                            result.Add(token);
+                            // delete everything between parens, curly braces and brackets closing token before cursor pos
+                            if (token.Position < location.Position)
+                            {
+                                closeToken = token;
+                                if (token.Type == XSharpLexer.RCURLY)
+                                    openToken = XSharpLexer.LCURLY;
+                                else if (token.Type == XSharpLexer.RPAREN)
+                                    openToken = XSharpLexer.LPAREN;
+                                else if (token.Type == XSharpLexer.RBRKT)
+                                    openToken = XSharpLexer.LBRKT;
+                            }
                         }
                         break;
                     case XSharpLexer.STATIC:        // These tokens are all before a namespace of a (namespace dot) type

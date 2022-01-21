@@ -12,7 +12,7 @@ USING System.Globalization
 USING System.Threading
 USING System.IO
 
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS DbfTests
 
@@ -563,7 +563,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD DBError_test() AS VOID
 			LOCAL cDbf AS STRING
-			
+
 			LOCAL FUNCTION _Throw(oError AS Exception) AS VOID
 				THROW oError
 			END FUNCTION

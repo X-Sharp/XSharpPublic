@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -11,7 +11,7 @@ USING XUnit
 
 
 // WinBool test
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS ClipperCallingTests
 
@@ -27,12 +27,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(2, SMtest(1,2) )
 			Assert.Equal(3, SMtest(1,2,3) )
 			Assert.Equal(4, SMtest(1,2,3,4) )
-		    Assert.Equal( 1, Ftest( 1 ) )   
-		    Assert.Equal( 1, Ftest( 2 ) )   
-		    Assert.Equal( 2, Ftest( 1, 2 ) )   
-		    Assert.Equal( TRUE, TestFunc( 1, "2" ) )   
-		    Assert.Equal( TRUE, TestFunc( 1, "2", 3 ) )   
-			Assert.Equal( FALSE, TestFunc() )   
+		    Assert.Equal( 1, Ftest( 1 ) )
+		    Assert.Equal( 1, Ftest( 2 ) )
+		    Assert.Equal( 2, Ftest( 1, 2 ) )
+		    Assert.Equal( TRUE, TestFunc( 1, "2" ) )
+		    Assert.Equal( TRUE, TestFunc( 1, "2", 3 ) )
+			Assert.Equal( FALSE, TestFunc() )
 
       Assert.Equal( TRUE, TestFunc4( 1 ) == 1 )
       Assert.Equal( TRUE, TestFunc4( "2" ) == "2" )
@@ -51,25 +51,25 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		METHOD MTest( x, y, z ) AS INT CLIPPER
 			RETURN pcount()
-      
+
 		STATIC METHOD SMtest( x, y, z ) AS INT CLIPPER
 			RETURN pcount()
 
-		
+
 	END CLASS
 END NAMESPACE
 
 
-     
+
 STATIC FUNCTION FTest( x, y, z ) AS INT CLIPPER
    RETURN pcount()
-   
+
 STATIC FUNCTION TestFunc( x, y ) AS LOGIC CLIPPER
    RETURN x == 1 .AND. y == "2"
 
-  
+
 STATIC FUNCTION TestFunc4( x ) AS USUAL CLIPPER
-   RETURN  _GetFParam( 1 ) 
-   
+   RETURN  _GetFParam( 1 )
+
 STATIC FUNCTION TestFunc5( x, y ) AS USUAL CLIPPER
-   RETURN _GetFParam( 2 )          
+   RETURN _GetFParam( 2 )

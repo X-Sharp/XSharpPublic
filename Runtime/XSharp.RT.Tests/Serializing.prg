@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -13,10 +13,10 @@ USING XUnit
 USING NewtonSoft.Json
 #pragma warnings(168, off)  // unused variables
 // Array tests are not working correctly yet with the current build
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS SerializeTests
-	 
+
  		[Trait("Category", "Serialize")];
 		[Fact];
         METHOD DateTestJson AS VOID
@@ -34,7 +34,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
              ENDIF
              VAR o := JsonConvert.DeserializeObject(s, type)
              RETURN o
-   
+
 		[Trait("Category", "Serialize")];
 		[Fact];
         METHOD DateTestBinary AS VOID
@@ -53,7 +53,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
              ms:Position := 0
              VAR o := bw:Deserialize(ms)
              RETURN o
-            
+
 
         [Trait("Category", "Serialize")];
 		[Fact];
@@ -112,7 +112,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
              VAR c2 := (CURRENCY) o
              Assert.True (c1 == c2)
             RETURN
-            
+
         [Trait("Category", "Serialize")];
         [Fact];
         METHOD BinaryTestJson AS VOID
@@ -180,7 +180,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
              Assert.True(o IS __WinBool)
              VAR b2 := (__WinBool ) o
              Assert.True (b1 == b2)
-            RETURN            
+            RETURN
             /// Serializing USUAL values to Json is a challenge
             // Calling SerializeObject will call ToObject() and will extract the contents of the usual
         /*
@@ -252,10 +252,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
              Assert.True (o IS USUAL)
              u2 := o
              Assert.True (u1 == u2)
-                
+
             RETURN
             */
-            
+
         [Trait("Category", "Serialize")];
         [Fact];
         METHOD ArrayTestJson AS VOID
@@ -268,10 +268,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
              // Json can only save "normal" types in an array
              // Json converter stores Int64 number for Long and String for date
 //             FOR VAR i := 1 TO ALen(a1)
-//                    Assert.True( a1[i] == a2[i]) 
+//                    Assert.True( a1[i] == a2[i])
 //             NEXT
             RETURN
-            
+
         [Trait("Category", "Serialize")];
         [Fact];
         METHOD ArrayTestBinary AS VOID
@@ -282,7 +282,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
              VAR a2 := (ARRAY) o
              Assert.True(Alen(a1) == ALen(a2))
              FOR VAR i := 1 TO ALen(a1)
-                    Assert.True( a1[i] == a2[i]) 
+                    Assert.True( a1[i] == a2[i])
              NEXT
             RETURN
 

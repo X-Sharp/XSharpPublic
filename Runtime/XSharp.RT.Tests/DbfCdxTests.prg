@@ -13,7 +13,7 @@ USING System.Globalization
 DEFINE GLOBAL_FLD := 123
 GLOBAL DEFINE_FLD := "abc"
 
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS DbfCdxTests
 
@@ -5267,13 +5267,13 @@ RETURN
 			Assert.False(DbSeek("BB",FALSE))
 			Assert.True(Eof())
 			Assert.Equal(5U, RecNo())
-			
+
 			DbGoTop()
 			Assert.Equal(2U, RecNo())
 			Assert.False(DbSeek("BB",TRUE))
 			Assert.True(Eof())
 			Assert.Equal(5U, RecNo())
-			
+
 			DbCloseArea()
 		RETURN
 

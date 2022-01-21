@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -9,10 +9,10 @@ USING System.Text
 USING XUnit
 
 
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS MemoryTests
-		[Fact, Trait("Category", "Memory")]; 
+		[Fact, Trait("Category", "Memory")];
 		UNSAFE METHOD MemoryTest() AS VOID
 			LOCAL p,q AS IntPtr
 			p := MemAlloc(10)
@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.NotEqual(p,q)
 			Assert.Equal(MemFree(p),0)
 			Assert.Equal(MemFree(q),0)
-			Assert.True(MemFree(q)!=0) 
+			Assert.True(MemFree(q)!=0)
 			Assert.False(MemFree(q)==0)
 			LOCAL pMem AS BYTE PTR
 			pMem := MemAlloc(10)
@@ -68,8 +68,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			MemFree(pMem)
 			MemFree(pMem2)
 		RETURN
-		
-		[Fact, Trait("Category", "Memory")]; 
+
+		[Fact, Trait("Category", "Memory")];
 		UNSAFE METHOD MemoryTest2() AS VOID
 			LOCAL pMem AS IntPtr
 			pMem := MemAlloc(100)

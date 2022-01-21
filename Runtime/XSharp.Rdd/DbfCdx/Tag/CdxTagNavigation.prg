@@ -178,8 +178,20 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN SELF:_oRdd:__Goto(0)
                 ENDIF
             ENDIF
-            RETURN SELF:_Seek(seekInfo, byteArray)
-
+            var result := SELF:_Seek(seekInfo, byteArray)
+            IF SELF:_Scopes[nScopeTop]:IsSet
+                nLen := SELF:_Scopes[nScopeTop]:Size
+                IF SELF:__ScopeCompare(SELF:_currentvalue:Key, nScopeTop, nLen) < 0
+                    RETURN SELF:_oRdd:__Goto(0)
+                ENDIF
+            ENDIF
+            IF SELF:_Scopes[nScopeBottom]:IsSet
+                nLen := SELF:_Scopes[nScopeTop]:Size
+                IF SELF:__ScopeCompare(SELF:_currentvalue:Key, nScopeBottom, nLen) > 0
+                    RETURN SELF:_oRdd:__Goto(0)
+                ENDIF
+            ENDIF
+            RETURN result
 
         INTERNAL METHOD SkipRaw(nToSkip AS LONG ) AS LOGIC
             LOCAL recno AS LONG
@@ -1108,6 +1120,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ELSE
                     found := FALSE
                 ENDIF
+                // if
+
+
                 IF !SELF:_oRdd:_isValid
                     SELF:ClearStack()
                 ENDIF

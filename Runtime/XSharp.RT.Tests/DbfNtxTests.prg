@@ -1519,5 +1519,40 @@ BEGIN NAMESPACE XSharp.RT.Tests
              NEXT
 
         DbCloseArea()
+        [Fact, Trait("Category", "DBF")];
+		METHOD TestSoftSeekWithScope() AS VOID
+			// https://github.com/X-Sharp/XSharpPublic/issues/905
+			LOCAL cDbf AS STRING
+			cDbf := DbfTests.GetTempFileName()
+			RddSetDefault("DBFNTX")
+
+			DbfTests.CreateDatabase(cDbf, {{"CFIELD","C",5,0}} , {"A","B","B","C"})
+			DbCreateIndex(cDbf , "CFIELD")
+			DbCloseArea()
+
+			DbUseArea( TRUE ,,cDBF )
+            DbSetIndex(cDbf)
+
+			OrdScope(TOPSCOPE, "B")
+			OrdScope(BOTTOMSCOPE, "B")
+
+			DbGoTop()
+			Assert.Equal(2U, RecNo())
+			Assert.False(DbSeek("BB",FALSE))
+			Assert.True(Eof())
+			Assert.Equal(5U, RecNo())
+
+			DbGoTop()
+			Assert.Equal(2U, RecNo())
+			Assert.False(DbSeek("BB",TRUE))
+            // different results here in VO for DBFNTX too
+            // but this now matches the results for DBFCDX
+			Assert.True(Eof())
+			Assert.Equal(5U, RecNo())
+
+			DbCloseArea()
+		RETURN
+
+
     END CLASS
 END NAMESPACE

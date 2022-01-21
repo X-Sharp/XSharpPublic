@@ -5247,7 +5247,7 @@ RETURN
 
 
 		[Fact, Trait("Category", "DBF")];
-		METHOD TestSoftSeek() AS VOID
+		METHOD TestSoftSeekWithScope() AS VOID
 			// https://github.com/X-Sharp/XSharpPublic/issues/905
 			LOCAL cDbf AS STRING
 			cDbf := DbfTests.GetTempFileName()

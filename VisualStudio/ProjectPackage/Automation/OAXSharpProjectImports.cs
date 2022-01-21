@@ -4,29 +4,20 @@
 // See License.txt in the project root for license information.
 //
 
-using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Project.Automation;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using EnvDTE;
-using Microsoft.VisualStudio.Project;
-using VSLangProj;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-#if PACKAGEREFERENCE
-using VSLangProj150;
-using VSLangProj140;
-using VSLangProj80;
-#endif
+
 namespace XSharp.Project
 {
-   
+
 
     public class OAVSProjectImports : VSLangProj.Imports
     {
-        EnvDTE.Project project;
-        List<string> imports;
+        readonly EnvDTE.Project project;
+        readonly List<string> imports;
 
         internal OAVSProjectImports(EnvDTE.Project prj)
         {
@@ -90,15 +81,13 @@ namespace XSharp.Project
 
         public void Remove(object index)
         {
-            if (index is Int32)
+            if (index is int iIndex)
             {
-                int iIndex = (Int32)index;
                 if (iIndex > 0 && iIndex <= imports.Count)
                     imports.Remove(imports[iIndex - 1]);
             }
-            else if (index is String)
+            else if (index is string sIndex)
             {
-                string sIndex = index as String;
                 if (imports.Contains(sIndex))
                 {
                     imports.Remove(sIndex);

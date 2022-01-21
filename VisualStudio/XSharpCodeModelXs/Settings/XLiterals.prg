@@ -104,7 +104,11 @@ BEGIN NAMESPACE XSharpModel
                         var parts := result:Split(<CHAR>{' '})
                         result := ""
                         FOREACH VAR s IN parts
-                            result += s:Substring(0,1):ToUpper()+s:Substring(1):ToLower()+" "
+                            if s:Length > 1
+                                result += s:Substring(0,1):ToUpper()+s:Substring(1):ToLower()+" "
+                            elseif s:Length == 1
+                                result += s:ToUpper()
+                            endif
                         NEXT
                     RETURN result:Substring(0, result:Length-1)
                 ELSE

@@ -74,10 +74,6 @@ namespace XSharp.Project
         }
 
         internal static XSharpProjectNode[] AllProjects => nodes.ToArray();
-        internal enum XSharpProjectImageName
-        {
-            Project = 0,
-        }
 
         #region Constants
         internal const string ProjectTypeName = XSharpConstants.LanguageName;
@@ -286,7 +282,7 @@ namespace XSharp.Project
         {
             get
             {
-                return imageOffset + (int)XSharpProjectImageName.Project;
+                return imageOffset;
             }
         }
 
@@ -305,7 +301,10 @@ namespace XSharp.Project
         /// <returns>This method returns a new instance of the ProjectOptions base class.</returns>
         public override ProjectOptions CreateProjectOptions()
         {
-            base.options = new XSharpProjectOptions(this);
+            var xoptions = new XSharpProjectOptions(this);
+            base.options = xoptions;
+            if (projectModel != null)   
+                projectModel.ResetParseOptions(null);
             return options;
         }
 
@@ -335,7 +334,7 @@ namespace XSharp.Project
                         InvalidateOptions();
                     }
                 }
-                if (this.options == null)
+                if (this.options == null )
                 {
                     this.options = base.GetProjectOptions(configCanonicalName);
                     var xoptions = this.options as XSharpProjectOptions;
@@ -346,7 +345,12 @@ namespace XSharp.Project
             });
         }
 
-
+        public override void PrepareBuild(ConfigCanonicalName config, bool cleanBuild)
+        {
+            // Do not prepare the build when we are not completely loaded. This
+            // speeds up loading a bit
+                base.PrepareBuild(config, cleanBuild);
+        }
         void IXsProjectDesigner.RemoveProjectProperty(string name)
         {
             var prop = this.BuildProject.GetProperty(name);
@@ -368,7 +372,7 @@ namespace XSharp.Project
 
         public __VSPROJOUTPUTTYPE GetOutPutType()
         {
-            string outputTypeAsString = this.ProjectMgr.GetProjectProperty("OutputType", false);
+            string outputTypeAsString = this.GetProjectProperty("OutputType", false);
             switch (outputTypeAsString.ToLower())
             {
                 case "winexe":
@@ -412,7 +416,11 @@ namespace XSharp.Project
                     return _VSQuickCheckAnswer.QCA_Always;
                 // Added for NuGet Support
                 case (int)__VSHPROPID8.VSHPROPID_ProjectCapabilitiesChecker:
-                    return new XSharpProjectCapabilitiesPresenceChecker();
+                    if (_checker == null)
+                    {
+                        _checker = new XSharpProjectCapabilitiesPresenceChecker();
+                    }
+                    return _checker;
 
                 // Test ?
                 case (int)__VSHPROPID5.VSHPROPID_TargetPlatformIdentifier:
@@ -420,6 +428,7 @@ namespace XSharp.Project
             }
             return base.GetProperty(propId);
         }
+        static private XSharpProjectCapabilitiesPresenceChecker _checker;
 
         private object automationobject;
         /// <summary>
@@ -508,7 +517,7 @@ namespace XSharp.Project
 
             var provider = newNode.OleServiceProvider;
 
-            provider.AddService(typeof(EnvDTE.Project), ProjectMgr.GetAutomationObject(), false);
+            provider.AddService(typeof(EnvDTE.Project), GetAutomationObject(), false);
             provider.AddService(typeof(EnvDTE.ProjectItem), newNode.GetAutomationObject(), false);
             provider.AddService(typeof(VSLangProj.VSProject), this.VSProject, false);
 
@@ -1032,7 +1041,7 @@ namespace XSharp.Project
             // This will call the callback in PojectPackage
             IXSharpLibraryManager libraryManager = Site.GetService(typeof(IXSharpLibraryManager)) as IXSharpLibraryManager;
             // Be sure we have External/system types for Intellisense
-            UpdateAssemblyReferencesModel();
+            //UpdateAssemblyReferencesModel();
             ThreadHelper.ThrowIfNotOnUIThread();
             if (null != libraryManager)
             {
@@ -1054,8 +1063,9 @@ namespace XSharp.Project
 
 
         #endregion
-#if PACKAGEREFERENCE
+
         #region PackageReferences
+
 
         protected override void ProcessReferences()
         {
@@ -1064,18 +1074,20 @@ namespace XSharp.Project
             this.LoadPackageReferences();
         }
 
-        
-        private void LoadPackageReferences()
-        {
-            var packageContainer = PackageReferenceContainerNode;
-            if (packageContainer == null)
-            {
-                HierarchyNode referenceContainerNode = GetReferenceContainer() as HierarchyNode;
-                packageContainer = new XSharpPackageReferenceContainerNode(this);
-                referenceContainerNode.AddChild(packageContainer);
-            }
-            packageContainer.LoadReferencesFromBuildProject(this);
 
+        internal void LoadPackageReferences()
+        {
+            if (! this.IsLoading)
+            {
+                var packageContainer = PackageReferenceContainerNode;
+                if (packageContainer == null)
+                {
+                    HierarchyNode referenceContainerNode = GetReferenceContainer() as HierarchyNode;
+                    packageContainer = new XSharpPackageReferenceContainerNode(this);
+                    referenceContainerNode.AddChild(packageContainer);
+                }
+                packageContainer.LoadReferencesFromBuildProject(this);
+            }
         }
 
         public XSharpPackageReferenceContainerNode PackageReferenceContainerNode =>
@@ -1087,7 +1099,7 @@ namespace XSharp.Project
             return new XSharpPackageReferenceNode(this, item);
         }
 #endregion
-#endif
+
 #region References Management Events
 
         private void ReferencesEvents_ReferenceRemoved(VSLangProj.Reference pReference)
@@ -1321,7 +1333,7 @@ namespace XSharp.Project
             {
                 this.ProjectModel.AddStrangerProjectReference(url);
             }
-            else if (this.IsProjectOpened)
+            else 
             {
                 var xnode = node as XSharpFileNode;
                 if (xnode != null && !xnode.IsNonMemberItem)
@@ -1361,8 +1373,8 @@ namespace XSharp.Project
                     }
 
                     // If this is another solution folder, do a recursive call, otherwise add
-                    // EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder
-                    if (subProject.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
+                    
+                    if (subProject.Kind.ToUpper() == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder.ToUpper())
                     {
                         list.AddRange(GetSolutionFolderProjects(subProject));
                     }
@@ -1393,8 +1405,7 @@ namespace XSharp.Project
                         {
                             continue;
                         }
-                        // EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder
-                        if (p.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
+                        if (p.Kind.ToUpper() == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder.ToUpper())
                         {
                             list.AddRange(GetSolutionFolderProjects(p));
                         }
@@ -1481,8 +1492,8 @@ namespace XSharp.Project
         private bool IsProjectFile(string fullPath)
         {
             string cExt = Path.GetExtension(fullPath);
-            return String.Equals(cExt, ".xsprj", StringComparison.OrdinalIgnoreCase)
-                || String.Equals(cExt, ".xsproj", StringComparison.OrdinalIgnoreCase);
+            return string.Equals(cExt, ".xsprj", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(cExt, ".xsproj", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -1627,7 +1638,6 @@ namespace XSharp.Project
             {
                 this.BuildProject.Save();
             }
-            this.LoadReferencesInProjectModel();
         }
 
         private void RefreshReferencesFromResponseFile()
@@ -1657,12 +1667,12 @@ namespace XSharp.Project
             }
         }
 
-        internal void LoadReferencesInProjectModel()
+        internal void UpdateReferencesInProjectModel()
         {
             // find all the assembly references
 
             var target = "FindReferenceAssembliesForReferences";
-            var buildResult = this.ProjectMgr.Build(target);
+            var buildResult = this.Build(target);
             if (buildResult.IsSuccessful)
             {
                 var items = buildResult.ProjectInstance.GetItems("ReferencePath");
@@ -1692,7 +1702,7 @@ namespace XSharp.Project
                 if (vnode != null)
                 {
                     string parent = vnode.GetParentName();
-                    if (!String.IsNullOrEmpty(parent))
+                    if (!string.IsNullOrEmpty(parent))
                     {
                         if (!(vnode.Parent is XSharpFileNode))
                         {
@@ -1861,7 +1871,7 @@ namespace XSharp.Project
         }
         public int GetTargetFramework(out string ppTargetFramework)
         {
-            ppTargetFramework = this.ProjectMgr.TargetFrameworkMoniker.FullName;
+            ppTargetFramework = this.TargetFrameworkMoniker.FullName;
             return VSConstants.S_OK;
         }
 
@@ -1888,8 +1898,8 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-#endregion
-#region TableManager
+        #endregion
+        #region TableManager
         //internal ITableManagerProvider tableManagerProvider { get; private set; }
         ErrorListManager _errorListManager = null;
         TaskListManager _taskListManager = null;
@@ -1987,8 +1997,7 @@ namespace XSharp.Project
             base.Dispose(disposing);
             lock (nodes)
             {
-                if (nodes.Contains(this))
-                    nodes.Remove(this);
+                nodes.Remove(this);
             }
         }
         private bool _dialectIsCached = false;

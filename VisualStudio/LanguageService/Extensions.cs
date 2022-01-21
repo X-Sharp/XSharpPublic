@@ -43,6 +43,8 @@ namespace XSharp.LanguageService
         public static XFile GetFile(this ITextBuffer buffer)
         {
             XFile file;
+            if (buffer == null)
+                return null;
             if (buffer.Properties.TryGetProperty(typeof(XFile), out file))
             {
                 return file;

@@ -50,6 +50,7 @@
     <Compile Include="..\..\Common\XSharpConstants.cs">
       <Link>XSharpConstants.cs</Link>
     </Compile>
+    <Compile Include="BraceCompletion\BraceCompletion.cs" />
     <Compile Include="BraceMatching\BraceMatching.cs" />
     <Compile Include="Completion\CompletionHelpers.cs" />
     <Compile Include="Completion\CompletionState.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Completion\XSharpCompletionSourceProvider.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSource.cs" />
     <Compile Include="Completion\XSharpAsyncCompletionSourceProvider.cs" />
+    <Compile Include="EventHandlers.cs" />
     <Compile Include="Formatting\FormattingRule.cs" />
     <Compile Include="Formatting\XToken.cs" />
     <Compile Include="Formatting\FormattingKeywords.cs" />
@@ -93,7 +95,6 @@
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
     <Compile Include="LanguageService\XSharpSource.cs" />
     <Compile Include="Library\HierarchyListener.cs" />
-    <Compile Include="ModelScannerEvents.cs" />
     <Compile Include="Generic\DropDownClient.cs" />
     <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="Library\Library.cs" />
@@ -197,10 +198,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.377</Version>
+      <Version>15.0.402</Version>
     </PackageReference>
     <PackageReference Include="editorconfig">
       <Version>0.12.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.CoreUtility">
+      <Version>15.8.525</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Language">
       <Version>15.8.525</Version>

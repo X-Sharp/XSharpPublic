@@ -62,7 +62,7 @@
     <DebuggerCommand>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\xunit.console.exe</DebuggerCommand>
     <DebuggerCommandArguments>$(TargetPath)</DebuggerCommandArguments>
     <DebuggerWorkingDirectory>c:\XSharp\DevPublic\packages\xunit.runner.console.2.2.0\tools\</DebuggerWorkingDirectory>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>165,169,219,618,168</DisabledWarnings>
     <SignAssembly>false</SignAssembly>

@@ -111,7 +111,20 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     RETURN SELF:_oRdd:__Goto(0)
                 ENDIF
             ENDIF
-            RETURN SELF:_Seek(seekInfo, byteArray)
+            var result := SELF:_Seek(seekInfo, byteArray)
+            IF SELF:_Scopes[TOPSCOPE]:IsSet
+                nLen := SELF:_Scopes[TOPSCOPE]:Size
+                IF SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[TOPSCOPE]:Buffer, nLen) < 0
+                    RETURN SELF:_oRdd:__Goto(0)
+                ENDIF
+            ENDIF
+            IF SELF:_Scopes[BOTTOMSCOPE]:IsSet
+                nLen := SELF:_Scopes[BOTTOMSCOPE]:Size 
+                IF SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, nLen) > 0
+                    RETURN SELF:_oRdd:__Goto(0)
+                ENDIF
+            ENDIF
+            RETURN result
 
 
         PUBLIC METHOD SkipRaw(nToSkip AS LONG ) AS LOGIC

@@ -1988,7 +1988,7 @@ CLASS ModuleDescriptor
 				LOCAL cPrev := "" AS STRING
 				aWords := EntityDescriptor.AnalyzeLine(oLine:LineText)
 				FOREACH oWord AS WordObject IN aWords
-					IF cPrev == "@"
+					IF cPrev == "@" .and. oWord:eStatus == WordStatus.Text
 						IF SELF:_oApp:ContainsFunction(oWord:cWord)
 //							MessageBox.Show(oWord:cWord , "Found callback function")
 							SELF:_oApp:RegisterCallback(oWord:cWord)

@@ -69,19 +69,72 @@ FUNCTION ProcName() AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/procname/*" />
 FUNCTION ProcName(wActivation AS INT) AS STRING
+    RETURN ProcName(wActivation , FALSE)
+FUNCTION ProcName(wActivation AS INT, lShowSignature AS LOGIC) AS STRING
    LOCAL st := StackTrace{ TRUE } AS StackTrace
    LOCAL name := "" AS STRING
 
-   IF ( wActivation + 1 < st:FrameCount .AND. wActivation >= 0)
+    IF ( wActivation + 1 < st:FrameCount .AND. wActivation >= 0)
 		VAR mi := st:GetFrame( wActivation + 1 ):GetMethod()
-		VAR t  := mi:DeclaringType
-		IF t == NULL
-			name := mi:Name:ToUpperInvariant()
-		ELSE
-			name := String.Concat( mi:DeclaringType:Name, ":", mi:Name ):ToUpperInvariant()
-		ENDIF
-   ENDIF
+        if lShowSignature
+            var stringBuilder := System.Text.StringBuilder{}
+            if mi:DeclaringType != null
+                stringBuilder:Append(mi:DeclaringType:FullName:Replace('+', '.'))
+                stringBuilder:Append(".")
+            endif
+            stringBuilder:Append(mi:Name)
+            var first := true
+            if mi is MethodInfo var m .and. m:IsGenericMethod
+                var genericArguments := m:GetGenericArguments()
+                stringBuilder:Append("<")
 
+                foreach var arg in genericArguments
+                    if (!first)
+                        stringBuilder:Append(",")
+                    else
+                        first := false
+                    endif
+                    stringBuilder:Append(arg:Name)
+                next
+                stringBuilder:Append(">")
+            endif
+            stringBuilder:Append("(")
+            first := true
+            foreach var param in mi:GetParameters()
+                if (!first)
+                    stringBuilder:Append(",")
+                else
+                    first := false
+                endif
+                var str := "<UnknownType>"
+                if param.ParameterType != null
+                    str := param.ParameterType.Name
+                endif
+                var dir := " as "
+                if param:IsIn
+                    if param:IsOut
+                        dir := " ref "
+                    else
+                        dir := " as  "
+                    endif
+                elseif param:IsOut
+                    dir := " out "
+                endif
+                stringBuilder.Append(param.Name+dir+str)
+            next
+            stringBuilder:Append(")")
+
+            name := stringBuilder:ToString()
+        ELSE
+		    VAR t  := mi:DeclaringType
+		    IF t == NULL
+			    name := mi:Name:ToUpperInvariant()
+            ELSE
+    	        name := String.Concat( mi:DeclaringType:Name, iif (mi:IsStatic, ".", ":"), mi:Name ):ToUpperInvariant()
+    
+            ENDIF
+        ENDIF
+    ENDIF
    RETURN name
 
 /// <summary>Return the error stack as a string.</summary>

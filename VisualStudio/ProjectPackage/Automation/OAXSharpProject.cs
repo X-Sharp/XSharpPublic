@@ -7,18 +7,8 @@
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Project.Automation;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using EnvDTE;
 using Microsoft.VisualStudio.Project;
-using VSLangProj;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-#if PACKAGEREFERENCE
-using VSLangProj150;
-using VSLangProj140;
-using VSLangProj80;
-#endif
+
 namespace XSharp.Project
 {
     /// <summary>

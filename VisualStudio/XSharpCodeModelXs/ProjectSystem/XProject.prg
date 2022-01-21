@@ -207,6 +207,7 @@ BEGIN NAMESPACE XSharpModel
         METHOD RefreshReferences(asmList as IList<string>) AS VOID
             var oldAsm := XDictionary<string, string>{StringComparer.OrdinalIgnoreCase}
             var newAsm := List<string>{}
+            SELF:LogReferenceMessage("RefreshReferences , old "+SELF:AssemblyReferenceNames:Count:ToString()+" new "+asmList:Count:ToString())
             foreach var name in SELF:AssemblyReferenceNames
                 oldAsm:Add(name, name)
             next
@@ -228,7 +229,7 @@ BEGIN NAMESPACE XSharpModel
 
          METHOD AddAssemblyReference(path AS STRING) AS VOID
             IF ! String.IsNullOrEmpty(path)
-               SELF:LogReferenceMessage("AddAssemblyReference (string) "+path)
+               SELF:LogReferenceMessage("AddAssemblyReference: "+path)
                SELF:_clearTypeCache()
                BEGIN LOCK _unprocessedAssemblyReferences
                   IF ! _unprocessedAssemblyReferences:Contains(path)
@@ -606,6 +607,7 @@ BEGIN NAMESPACE XSharpModel
         SELF:_OtherFilesDict:Clear()
       METHOD AddFile(filePath AS STRING) AS LOGIC
          LOCAL xamlCodeBehindFile AS STRING
+         SELF:WriteOutputMessage(i"AddFile {filePath}")
          // DO NOT read the file ID from the database here.
          // This is called during startup of the solution, we try to do as little as possible
          VAR type := XFileTypeHelpers.GetFileType(filePath)
@@ -618,6 +620,15 @@ BEGIN NAMESPACE XSharpModel
             SELF:_OtherFilesDict:Add(filePath)
          ELSE
             SELF:_OtherFilesDict:Add(filePath)
+         ENDIF
+         IF SELF:Name != OrphanedFilesProject.OrphanName .and. XSolution.OrphanedFilesProject != NULL
+            if filePath != XSolution.BuiltInFunctions
+                var xFile := XSolution.OrphanedFilesProject:FindXFile(filePath)
+                if xFile != NULL
+                    XSolution.OrphanedFilesProject:RemoveFile(filePath)
+                    xFile:Project := SELF
+                ENDIF
+             ENDIF
          ENDIF
          RETURN TRUE
 
@@ -636,6 +647,7 @@ BEGIN NAMESPACE XSharpModel
 
       METHOD RemoveFile(url AS STRING) AS VOID
          IF ! String.IsNullOrEmpty(url)
+            SELF:WriteOutputMessage(i"RemoveFile {url}")
             IF SELF:_OtherFilesDict:Remove(url)
                VAR file := XFile{url, SELF}
                IF file:IsXaml
@@ -651,7 +663,7 @@ BEGIN NAMESPACE XSharpModel
 
 
         METHOD FindGlobalsInAssemblyReferences(name AS STRING) AS IList<IXMemberSymbol>
-        LogTypeMessage(i"FindGlobalsInAssemblyReferences {name} ")
+         LogTypeMessage(i"FindGlobalsInAssemblyReferences {name} ")
          var dbresult := XDatabase.FindAssemblyGlobalOrDefine(name, SELF:DependentAssemblyList, FALSE)
          var result := SELF:_MembersFromGlobalType(dbresult)
          LogTypeMessage(i"FindGlobalsInAssemblyReferences {name}, found {result.Count} occurences")

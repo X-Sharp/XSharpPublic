@@ -183,7 +183,7 @@ namespace XSharp.LanguageService
 
         internal void AddXSharpKeywords(XCompletionList compList, string startWith)
         {
-            foreach (var kw in XSharpTypes.Get().Where(ti => nameStartsWith(ti.Name, startWith)))
+            foreach (var kw in XSharpSyntax.GetKeywords().Where(ti => nameStartsWith(ti.Name, startWith)))
             {
                 ImageSource icon = _glyphService.GetGlyph(kw.getGlyphGroup(), kw.getGlyphItem());
                 compList.Add(new XSCompletion(kw.Name, kw.Name, kw.Prototype, icon, null, Kind.Keyword, ""));
@@ -216,7 +216,7 @@ namespace XSharp.LanguageService
                 startLen = dotPos + 1;
             //
             // And our own Types
-            var xsharpTypes = XSharpTypes.GetTypes();
+            var xsharpTypes = XSharpSyntax.GetTypes();
             foreach (var typeInfo in xsharpTypes.Where(ti => nameStartsWith(ti.Name, startWith)))
             {
                 string realTypeName = typeInfo.FullName;
@@ -485,7 +485,7 @@ namespace XSharp.LanguageService
                         baseType = "System.Object";
                 }
                 var parentType = sourceType.File.FindType(baseType, sourceType.Namespace);
-               if (parentType.FullName == sourceType.FullName)
+               if (parentType != null && parentType.FullName == sourceType.FullName)
                 {
                     ; // recursion !
                     WriteOutputMessage("*** Recursion detected *** " + sourceType.FullName + " inherits from " + parentType.FullName);

@@ -27,6 +27,7 @@ BEGIN NAMESPACE XSharpModel
     STATIC PROPERTY FileName AS STRING GET _fileName
     STATIC PROPERTY BuiltInFunctions AS STRING AUTO
     STATIC PROPERTY CommentTokens AS IList<XCommentToken> GET _commentTokens
+    STATIC PROPERTY Projects AS IList<XProject> get _projects:Values:ToArray()
 
         // Methods
     STATIC CONSTRUCTOR
@@ -106,11 +107,6 @@ BEGIN NAMESPACE XSharpModel
 
     INTERNAL STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
         WriteOutputMessage("XModel.Solution.Add() "+projectName+" "+project.FileName)
-        IF project:ProjectNode IS OrphanedFilesProject
-            // Ok
-        ELSEif _projects:Count == 0
-            CreateOrphanedFilesProject()
-        ENDIF
         IF _projects:ContainsKey(projectName)
             RETURN FALSE
         ENDIF
@@ -222,8 +218,8 @@ BEGIN NAMESPACE XSharpModel
 
     STATIC METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
         XSettings.SetStatusBarAnimation(onOff, id)
-        // Properties
-    STATIC PROPERTY OrphanedFilesProject AS XProject
+
+   STATIC PROPERTY OrphanedFilesProject AS XProject
         GET
             IF _orphanedFilesProject == NULL
                 CreateOrphanedFilesProject()

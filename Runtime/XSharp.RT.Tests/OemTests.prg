@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING System
@@ -10,13 +10,13 @@ USING System.Text
 USING XUnit
 
 
-// Array tests are not working correctly yet with the current build
-BEGIN NAMESPACE XSharp.VO.Tests
+
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS OemTests
-	 
+
  		[Trait("Category", "Oem")];
-		[Fact]; 
+		[Fact];
 		METHOD ToAnsi() AS VOID
 			LOCAL c1, c2 AS STRING
 			c1 := "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"

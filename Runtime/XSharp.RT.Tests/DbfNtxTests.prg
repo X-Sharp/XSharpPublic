@@ -13,7 +13,7 @@ USING System.Globalization
 
 
 
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
     CLASS DbfNtxTests
 

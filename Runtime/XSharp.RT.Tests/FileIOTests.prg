@@ -11,7 +11,7 @@ USING XUnit
 
 
 // Array tests are not working correctly yet with the current build
-BEGIN NAMESPACE XSharp.VO.Tests
+BEGIN NAMESPACE XSharp.RT.Tests
 
 	CLASS FileIOTests
 

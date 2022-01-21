@@ -1413,6 +1413,63 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			dbt2->DbCloseArea()
 
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD CreateFromTestsDBFNTX() AS VOID
+         // https://github.com/X-Sharp/XSharpPublic/issues/917
+            RddSetDefault ( "DBFNTX" ) // DBFNTX
+            _CreateFromTests()
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD CreateFromTestsDBFCDX() AS VOID
+         // https://github.com/X-Sharp/XSharpPublic/issues/917
+            RddSetDefault ( "DBFCDX" ) // DBFNTX
+            _CreateFromTests()
+        METHOD _CreateFromTests() AS VOID
+            LOCAL cDbf, cDbf2, cDbf3 as STRING
+            LOCAL aStruct as ARRAY
+	        cDbf := GetTempFileName()
+            cDbf2 := GetTempFileName()
+            cDbf3 := GetTempFileName()
+
+	        Assert.True(DbCreate( cDBF , { { "LAST" , "C" , 1025 , 0 }}))
+	        Assert.True(DbUseArea( ,, cDbf ))
+            aStruct := DbStruct()
+	        Assert.True(1 == aStruct:Length)
+            Assert.True("LAST" == aStruct[1,1])
+            Assert.True("C" == aStruct[1,2])
+            Assert.True(1025 == aStruct[1,3])
+            Assert.True(0 == aStruct[1,4])
+	        ?
+//	        // same as COPY STRUCTURE EXTENDED TO
+	        Assert.True(DbCopyXStruct( cDbf2 ))
+
+	        Assert.True(DbCloseArea())
+
+            Assert.True(DbUseArea( ,, cDbf2 ))
+
+	        Assert.True(1 == LastRec())
+            Assert.True("LAST" == Trim(FieldGet(1)))
+            Assert.True("C" == FieldGet(2))
+            Assert.True(1 == FieldGet(3))
+            Assert.True(4 == FieldGet(4))
+            Assert.True(DbCloseArea())
+
+ 	        Assert.True(_DbCreate( cDbf3 , cDbf2 )) // -> falls back to DBCreate() etc.
+	        DbCloseArea()
+
+            DbUseArea( ,, cDbf3 )
+            aStruct := DbStruct()
+	        Assert.True(1 == aStruct:Length)
+            Assert.True("LAST" == aStruct[1,1])
+            Assert.True("C" == aStruct[1,2])
+            Assert.True(1025 == aStruct[1,3])
+            Assert.True(0 == aStruct[1,4])
+
+
+	        DbCloseArea()
+
+	        RETURN
+
 
 		STATIC INTERNAL METHOD GetTempFileName() AS STRING
             STATIC nCounter AS LONG

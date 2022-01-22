@@ -15,10 +15,18 @@ error XS9999: An internal compiler error has occurred: 'Object reference not set
 
 FUNCTION Start() AS VOID
 LOCAL d AS test_delegate
-d := test
-d()
+LOCAL d2 AS test_delegate_clippercall
+d := test                            
+d2 := test
+d(1,"a", today())
+d2(1,"a", today())
 
-DELEGATE test_delegate(a,b,c,d)
+DELEGATE test_delegate(a,b,c,d) 
+// this now generates an error because the delegate has a clipper calling convention.
+// if you want a delegate with a clipper calling convention try this
+DELEGATE test_delegate_clippercall( args PARAMS USUAL[]) AS USUAL
+
+
 
 FUNCTION test(a,b,c,d)
 ? a,b,c,d

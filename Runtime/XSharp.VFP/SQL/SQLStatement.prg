@@ -104,6 +104,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         VAR cTemp := System.IO.Path.GetTempFileName()
         SELF:CloseArea(cCursorName)
         // We do not use DBFVFPSQL to create the file because that driver deletes the file when it is closed.
+
         DbCreate(cTemp, aStruct, "DBFVFP", TRUE, cCursorName)
         SELF:CloseArea(cCursorName)
         VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
@@ -119,6 +120,8 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
     PRIVATE METHOD _ReturnsRows(cCommand AS STRING) AS LOGIC
+        RETURN TRUE
+/*
         LOCAL aParts := cCommand:Split(" ()":ToCharArray()) AS STRING[]
         IF aParts:Length > 0
             LOCAL cWord := aParts[1]:ToLower() AS STRING
@@ -140,7 +143,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             END SWITCH
         ENDIF
         RETURN FALSE
-
+*/
 
 
     CONSTRUCTOR(cDataSource AS STRING, cUser AS STRING, cPassword AS STRING, lShared AS LOGIC)
@@ -262,34 +265,61 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         IF SELF:_aParams:Count == 0
             RETURN TRUE
         ENDIF
-        IF SELF:ParamsObject == NULL
-            // Parameters but no values
-            RETURN FALSE
-        ENDIF
         SELF:_hasOutParams := FALSE
         FOREACH oParam AS SQLParameter IN SELF:_aParams
             LOCAL oDbParam AS DbParameter
             oDbParam := SELF:Connection:Factory:CreateParameter()
             oParam:DbParameter := oDbParam
-            oDbParam:ParameterName := oParam:Name
             IF oParam:ByRef
-                oDbParam:Direction := ParameterDirection.InputOutput
+                oDbParam:Direction := ParameterDirection.Output //.InputOutput
                 SELF:_hasOutParams := TRUE
             ELSE
                 oDbParam:Direction := ParameterDirection.Input
             ENDIF
             LOCAL oValue        AS OBJECT
-            IF SQLReflection.GetPropertyValue(SELF:ParamsObject,oParam:Name, OUT oValue)
-                IF oValue IS USUAL
-                    VAR uType := typeof(USUAL)
-                    VAR mi    := uType:GetMethod("ToObject")
-                    oValue    := mi:Invoke(NULL,<OBJECT>{oValue})
-                ENDIF
-                oDbParam:Value         := oValue
-                IF oValue IS STRING .AND. oParam:ByRef
-                    oDbParam:Size := 4096
-                ENDIF
-            ELSE
+            if oParam:Name[0]=c'('
+               oValue:= Evaluate(oParam:Name)
+            else
+               oValue:= MemVarGet(oParam:Name)
+            endif
+            IF oValue IS USUAL
+                VAR uType := typeof(USUAL)
+                VAR mi    := uType:GetMethod("ToObject")
+                oValue    := mi:Invoke(NULL,<OBJECT>{oValue})
+            elseif oValue is Int32
+                oDbParam:Value:= oValue
+            elseif oValue is Int64
+                oDbParam:Value:= oValue
+            elseif oValue IS DATE
+                oDbParam:DbType:= DbType.Date
+                oDbParam:Value := oValue
+            elseif oValue is DateTime
+                oDbParam:DbType:= DbType.DateTime
+                if oParam:ByRef
+                    oDbParam:Value:= oValue
+                else
+                    local dtValue:= (DateTime)oValue
+                    oDbParam:Value:= System.DateTime{dtValue:Year, dtValue:Month, dtValue:Day, dtValue:Hour, dtValue:Minute, dtValue:Second}
+                endif
+            elseif oValue is Decimal
+                oDbParam:DbType:=DbType.Decimal
+                oDbParam:Value:= oValue
+            elseif oValue is Currency
+                oDbParam:DbType:=DbType.Currency
+                oDbParam:Value:= oValue
+            elseif oValue is float
+                oDbParam:DbType:= DbType.Double
+                oDbParam:Value:= oValue
+            elseif oValue IS STRING
+                if oParam:ByRef
+                    oDbParam:Size := 256
+                    oDbParam:DbType:= DbType.String
+                else
+                    oDbParam:Size:= oValue.ToString():Length
+                    oDbParam:DbType:= DbType.AnsiString
+                endif
+                oDbParam:Value:= oValue
+            else
                 // Can't get value
                 RETURN FALSE
             ENDIF
@@ -302,28 +332,45 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             FOREACH oParam AS SQLParameter IN SELF:_aParams
                 IF oParam:ByRef
                     LOCAL oValue := oParam:DbParameter:Value AS OBJECT
-                    IF ! SQLReflection.SetPropertyValue(SELF:ParamsObject,oParam:Name, oValue)
-                        RETURN FALSE
-                    ENDIF
+                    MemVarPut(oParam.Name,oValue)
+                    //IF ! SQLReflection.SetPropertyValue(SELF:ParamsObject,oParam:Name, oValue)
+                    //    RETURN FALSE
+                    //ENDIF
                 ENDIF
             NEXT
         ENDIF
         RETURN TRUE
 
     METHOD Execute(cCommand AS STRING, cCursorName AS STRING, aInfo AS ARRAY) AS LONG
-        SELF:BeginTransaction()
-        cCommand := SELF:ParseCommand(cCommand, SELF:Connection:Factory:ParameterPrefix, SELF:Connection:Factory:ParameterNameInQuery)
-        SELF:_oNetCommand:CommandText := cCommand
-        IF ! SELF:_CreateParameters()
-           RETURN -1
-        ENDIF
-        SELF:CursorName := cCursorName
-        IF SELF:Asynchronous
-            RETURN SELF:_AsyncExecuteResult(aInfo)
-        ELSE
-            SELF:CopyToCursor()
-        ENDIF
-        RETURN SELF:_SaveResult(aInfo)
+        try
+            SELF:BeginTransaction()
+            cCommand := SELF:ParseCommand(cCommand, SELF:Connection:Factory:ParameterPrefix, SELF:Connection:Factory:ParameterNameInQuery)
+            SELF:_oNetCommand:CommandText := cCommand
+            if  self:_aParams:Count>0
+               IF ! SELF:_CreateParameters()
+                  RETURN -1
+               ENDIF
+            endif
+            SELF:CursorName := cCursorName
+            if self._hasOutParams
+                self:_oNetCommand:ExecuteNonQuery()
+                SELF:_WriteOutParameters()
+                return 1
+            else
+               IF SELF:Asynchronous
+                  RETURN SELF:_AsyncExecuteResult(aInfo)
+               ELSE
+                   SELF:CopyToCursor()
+               ENDIF
+            endif
+            RETURN SELF:_SaveResult(aInfo)
+        catch e as Exception
+            if self:_lastException== null
+               self:_lastException:= Error{e}
+            endif
+            return -1
+        end try
+
 
 
     METHOD Execute(aInfo AS ARRAY) AS LONG
@@ -468,10 +515,15 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         TRY
             SELF:_CloseReader()
             SELF:_lastException := NULL
-            IF SELF:_ReturnsRows(SELF:_oNetCommand:CommandText)
-                VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
+            IF SELF:_returnsRows
+               begin using VAR oDataReader:= SELF:_oNetCommand:ExecuteReader()
                 SELF:_WriteOutParameters()
-                SELF:CopyToCursor(oDataReader, 0)
+                IF (oDataReader== null) or (oDataReader!=null and  oDataReader:FieldCount=0)
+                   _aQueryResult := {{"", 0}}
+                else
+                   SELF:CopyToCursor(oDataReader, 0)
+                endif
+                end using
             ELSE
                 VAR result := SELF:_oNetCommand:ExecuteNonQuery()
                 SELF:_WriteOutParameters()
@@ -689,90 +741,89 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
 
-
-
-
+/// Foxpro detect the parameter with the quotation character '?'
+/// if the character followed is '@', It is an output parameter
+/// if the character followed is '(', It is an VFP expression closed between  parenthesis
+/// If the parameter are variables, they need to be private or publics and initialized before
     METHOD ParseCommand(cCommand AS STRING, cParamChar AS CHAR, lIncludeParameterNameInQuery AS LOGIC) AS STRING
-        LOCAL statements := List<STRING>{} AS List<STRING>
+
         LOCAL aParams    := List<SQLParameter>{} AS List<SQLParameter>
-        LOCAL inString := FALSE AS LOGIC
-        LOCAL inParam  := FALSE AS LOGIC
         LOCAL sb       := StringBuilder{cCommand:Length} AS StringBuilder
         LOCAL sbParam  := StringBuilder{cCommand:Length} AS StringBuilder
         LOCAL lParamByRef := FALSE AS LOGIC
-        FOREACH ch AS CHAR IN cCommand
-            SWITCH ch
-            CASE c'\''
-                inString := ! inString
-                sb:Append(ch)
-            CASE c';'
-                IF (! inString)
-                    IF inParam
-                        IF lIncludeParameterNameInQuery
-                            sb:Append(sbParam:ToString())
-                        ENDIF
-                        aParams:Add( SQLParameter{sbParam:ToString(), lParamByRef})
-                        inParam := FALSE
-                        sbParam:Clear()
-                    ENDIF
-                    statements:Add(sb:ToString())
-                    sb:Clear()
-                    LOOP
-                ENDIF
-                sb:Append(ch)
-            CASE c'@'
-                IF inParam
-                    IF sbParam:Length == 0
-                        lParamByRef := TRUE
-                    ENDIF
-                ELSE
-                    sb:Append(ch)
-                ENDIF
+        local sCmd := cCommand.Split( SELF:Connection:Factory:ParameterPrefix) as STRING[]
+        IF sCmd.Length>0
+           local lparamIndex:=-1 as int
+           sb:= StringBuilder{}
+           local lsPartIndex:= 0 as int
 
-            CASE c'?'
-                inParam := TRUE
-                lParamByRef := FALSE
-                sb:Append(cParamChar)
-            OTHERWISE
-                IF inParam
-                    IF Char.IsLetterOrDigit(ch) .OR. ch == c'_'
-                        sbParam:Append(ch)
-                    ELSE
-                        IF lIncludeParameterNameInQuery
-                            sb:Append(sbParam:ToString())
-                        ENDIF
-                        aParams:Add( SQLParameter{sbParam:ToString(), lParamByRef})
-                        inParam     := FALSE
-                        sbParam:Clear()
-                    ENDIF
-                ELSE
-                    sb:Append(ch)
-                ENDIF
-            END SWITCH
-        NEXT
-        IF inParam
-            IF lIncludeParameterNameInQuery
-                sb:Append(sbParam:ToString())
-            ENDIF
-            aParams:Add( SQLParameter{sbParam:ToString(), lParamByRef})
-        ENDIF
-        statements:Add(sb:ToString())
-        SELF:_aParams := aParams
-        VAR result := ""
-        VAR returns := FALSE
-        FOREACH VAR stmt IN statements
-            IF result:Length > 0
-                result += ';'
-            ENDIF
-            result += stmt
-            returns := SELF:_ReturnsRows(stmt)
-        NEXT
-        _returnsRows := returns
-        RETURN result
-
-
-
-
+           FOREACH sPart AS STRING IN sCmd
+                 local li as int
+                 lsPartIndex++
+                 if lsPartIndex=1
+                    sb.Append(sPart)
+                 elseif Left(sPart,1) ='('
+                    local levelOpen:=0
+                    local lExpression:= StringBuilder{} as StringBuilder
+                    foreach var ch in sPart
+                        if ch=c'('
+                           levelOpen++
+                           lExpression.Append(ch,1)
+                        elseif ch=c')'
+                           lExpression:Append(ch)
+                           if levelOpen>1
+                              levelOpen--
+                           elseif levelOpen=1 // expresion is finished
+                              exit
+                           else
+                              throw Error {"parsecommand error: ')' non expected"}
+                           endif
+                        else
+                           lExpression:Append(ch)
+                        endif
+                    endfor
+                    sb.Append(SELF:Connection:Factory:ParameterPrefix )
+                    var lParam:= SQLParameter {lExpression:ToString(), false}
+                    aParams:Add(lParam)
+                    if (sPart:Length> lExpression:Length)
+                       sb.Append(sPart:Substring(lExpression.Length ))
+                    endif
+                 elseif Char.IsLetter(sPart[0]) OR sPart[0] == c'_' OR sPart[0]== c'@'
+                    local lIsByRef:= false as logic
+                    if sPart[0]== c'@'
+                       lIsByRef:= true
+                    endif
+                    local sbVarName:= StringBuilder{} as StringBuilder
+                    if(!lIsByRef)
+                       sbVarName.Append(sPart[0])
+                    endif
+                    for li:= 1 to sPart.Length-1
+                       if Char.IsLetterOrDigit(sPart[li]) .OR. sPart[li] == c'_'
+                          sbVarName.Append(sPart[li])
+                       else
+                          exit
+                       endif
+                    endfor
+                    local sVarName:= sbVarName:ToString().ToUpper() as string
+                    local lParameterFound:= false
+                    sb.Append(SELF:Connection:Factory:ParameterPrefix)
+                    var lParam:= SQLParameter {sVarName, lIsByRef}
+                    aParams:Add(lParam)
+                    if (sPart.Length> sVarName.Length)
+                       sb.Append(sPart.Substring(sVarName.Length+iif(lIsByRef,1,0)))
+                    endif
+                 else
+                     // what happend???
+                     throw Error{"Parse Command error: what happend???"}
+                 endif
+           next
+           self:_aParams:= aParams
+           cCommand:= sb:ToString()
+        else
+            self:_aParams:= List<SQLParameter>{}
+        endif
+        SELF:_returnsRows:= true
+        RETURN cCommand
 END CLASS
 
 INTERNAL ENUM XSharp.VFP.AsyncState

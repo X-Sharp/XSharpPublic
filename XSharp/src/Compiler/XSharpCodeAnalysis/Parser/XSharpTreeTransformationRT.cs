@@ -1457,7 +1457,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (!_options.HasOption(CompilerOption.UntypedAllowed, context, PragmaOptions))
                     type = _getMissingType();
-                else if (CurrentEntity != null && CurrentMember.Data.HasTypedParameter)
+                else if (CurrentMember != null && CurrentMember.Data.HasTypedParameter)
                     type = _usualType;
                 else
                     type = _getMissingType();

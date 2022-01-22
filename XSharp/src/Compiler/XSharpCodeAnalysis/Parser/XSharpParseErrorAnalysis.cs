@@ -100,7 +100,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-   
         public override void VisitErrorNode([NotNull] IErrorNode node)
         {
             if (node.Symbol.Type == XSharpLexer.INCOMPLETE_STRING_CONST)
@@ -143,6 +142,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitWithBlock([NotNull] XSharpParser.WithBlockContext context)
         {
             checkMissingKeyword(context.e, context, "END [WITH]");
+        }
+
+        public override void ExitDelegate_([NotNull] XSharpParser.Delegate_Context context)
+        {
+            if (context.Type == null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.Stop, ErrorCode.ERR_TypeExpected));
+            }
+            foreach (var param in context.ParamList._Params)
+            {
+                // parameters for local functions should have type
+                if (param.Type == null)
+                {
+                    _parseErrors.Add(new ParseErrorData(param.Stop, ErrorCode.ERR_TypeExpected));
+
+                }
+            }
         }
 
 

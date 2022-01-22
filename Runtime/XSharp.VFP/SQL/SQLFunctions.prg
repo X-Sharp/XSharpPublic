@@ -5,6 +5,7 @@
 //
 USING System.Collections.Generic
 USING System
+USING System.Text
 USING XSharp.VFP
 USING XSharp.Data
 USING XSharp.RDD
@@ -96,7 +97,7 @@ FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlexec/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
-[NeedsAccessToLocals(TRUE)];
+// [NeedsAccessToLocals(TRUE)]; WHY need this attribute. FoxPro only need to access to privates or publics varibles
 FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursorName := "SQLRESULT" AS STRING, aCountInfo := NULL_ARRAY  AS ARRAY) AS LONG
     LOCAL aInfo AS ARRAY
     LOCAL prepared := FALSE AS LOGIC
@@ -119,16 +120,24 @@ FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursor
         IF aCountInfo != NULL_ARRAY
             CopyResults(aCountInfo, aInfo)
         ENDIF
+        // FoxPro returns current area is the first result cursor area and current Recno is top
+        // take care when there isn´t query result
+        if result >0 and Used(cCursorName)
+           if !DbSelectArea(cCursorName)
+              result:= -1
+           endif
+           if !DbGoTop()
+              result:= -1
+           endif
+        endif
         RETURN result
     ENDIF
     RETURN 0
 
 
 
-
 /// <summary>-- todo --</summary>
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlidledisconnect/*" />
-
 FUNCTION SqlIdleDisconnect( nStatementHandle AS LONG) AS LONG
     GetStatement(nStatementHandle)
     THROW NotImplementedException{}

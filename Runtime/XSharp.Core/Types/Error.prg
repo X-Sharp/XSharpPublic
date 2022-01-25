@@ -193,7 +193,7 @@ BEGIN NAMESPACE XSharp
             SELF:Gencode := EG_MEM
         ELSEIF ex IS RankException
             SELF:Gencode := EG_BOUND
-        ELSEIF ex IS IndexOutOfRangeExeption
+        ELSEIF ex IS IndexOutOfRangeException
             SELF:Gencode := EG_BOUND
         ELSEIF ex IS ArgumentException
             SELF:Gencode := EG_ARG

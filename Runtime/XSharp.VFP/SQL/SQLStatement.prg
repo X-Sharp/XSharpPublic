@@ -298,7 +298,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 if oParam:ByRef
                     oDbParam:Value:= oValue
                 else
-                    local dtValue:= (DateTime)oValue
+                    var dtValue:= (DateTime)oValue
                     oDbParam:Value:= System.DateTime{dtValue:Year, dtValue:Month, dtValue:Day, dtValue:Hour, dtValue:Minute, dtValue:Second}
                 endif
             elseif oValue is Decimal
@@ -632,7 +632,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         VAR cTemp := System.IO.Path.GetTempFileName()
         DbCreate(cTemp, aStruct, "DBFVFP")
         SELF:CloseArea(cCursorName)
-        VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
+        VoDbUseArea(TRUE, "DBFVFP",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
         FOREACH VAR oT IN oTables
@@ -665,7 +665,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         aStruct[4] := {"FIELD_DEC", "N", 3,0}
         VAR cTemp := System.IO.Path.GetTempFileName()
         DbCreate(cTemp, aStruct, "DBFVFP")
-        VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
+        VoDbUseArea(TRUE, "DBFVFP",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
         FOREACH schemaRow AS DataRow IN oSchema:Rows
@@ -712,7 +712,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         VAR cTemp := System.IO.Path.GetTempFileName()
         DbCreate(cTemp, aStruct, "DBFVFP")
         SELF:CloseArea(cCursorName)
-        VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
+        VoDbUseArea(TRUE, "DBFVFP",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
         FOREACH oRow AS DataRow IN oTable:Rows
@@ -749,11 +749,11 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
         LOCAL aParams    := List<SQLParameter>{} AS List<SQLParameter>
         LOCAL sb       := StringBuilder{cCommand:Length} AS StringBuilder
-        LOCAL sbParam  := StringBuilder{cCommand:Length} AS StringBuilder
-        LOCAL lParamByRef := FALSE AS LOGIC
+        //LOCAL sbParam  := StringBuilder{cCommand:Length} AS StringBuilder
+        //LOCAL lParamByRef := FALSE AS LOGIC
         local sCmd := cCommand.Split( SELF:Connection:Factory:ParameterPrefix) as STRING[]
         IF sCmd.Length>0
-           local lparamIndex:=-1 as int
+           //local lparamIndex:=-1 as int
            sb:= StringBuilder{}
            local lsPartIndex:= 0 as int
 
@@ -805,7 +805,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                        endif
                     endfor
                     local sVarName:= sbVarName:ToString().ToUpper() as string
-                    local lParameterFound:= false
+                    //local lParameterFound:= false
                     sb.Append(SELF:Connection:Factory:ParameterPrefix)
                     var lParam:= SQLParameter {sVarName, lIsByRef}
                     aParams:Add(lParam)

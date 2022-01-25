@@ -97,7 +97,7 @@ FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlexec/*" />
 /// <seealso cref="NeedsAccessToLocalsAttribute" />
-// [NeedsAccessToLocals(TRUE)]; WHY need this attribute. FoxPro only need to access to privates or publics varibles
+[NeedsAccessToLocals(TRUE)];
 FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursorName := "SQLRESULT" AS STRING, aCountInfo := NULL_ARRAY  AS ARRAY) AS LONG
     LOCAL aInfo AS ARRAY
     LOCAL prepared := FALSE AS LOGIC

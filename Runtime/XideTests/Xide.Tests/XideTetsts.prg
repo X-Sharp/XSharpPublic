@@ -13,7 +13,8 @@ FUNCTION Start() AS VOID
 
 	XideUnitTest.Initialize()
 	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.Core.Tests.StringTests):Assembly)
-	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VO.Tests.DateTests):Assembly)
+	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.RT.Tests.ArrayBaseTests):Assembly)
+	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VO.Tests.WinDateTests):Assembly)
 	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.RDD.Tests.TestDBF):Assembly)
 	XideUnitTest.AddTestsFromAssembly(TypeOf(XSharp.VFP.Tests.NumericTests):Assembly)
 

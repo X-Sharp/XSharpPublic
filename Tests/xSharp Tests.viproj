@@ -102622,8 +102622,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C822 - Internal Compiler Error with CLIPPER delegate
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION R823 *************
-Application = R823
+; ************** APPLICATION R823 - Local and Type with same name. Resolving instance properties, fields and methods *************
+Application = R823 - Local and Type with same name. Resolving instance properties, fields and methods
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -102656,21 +102656,21 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[R823 FileGroups]
-[R823 Files]
+[R823 - Local and Type with same name. Resolving instance properties, fields and methods FileGroups]
+[R823 - Local and Type with same name. Resolving instance properties, fields and methods Files]
 File = %AppPath%\Prg\R823.prg
 FileGUID = F7CF54F7-5FE1-4384-81D4-1BFB86928596
 FileType = Code
 CopyToBin = 0
-[R823 References]
+[R823 - Local and Type with same name. Resolving instance properties, fields and methods References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,0
 ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,0
-[R823 Resources]
-[R823 Native Resources]
-[R823 License files]
-[R823 General Options]
+[R823 - Local and Type with same name. Resolving instance properties, fields and methods Resources]
+[R823 - Local and Type with same name. Resolving instance properties, fields and methods Native Resources]
+[R823 - Local and Type with same name. Resolving instance properties, fields and methods License files]
+[R823 - Local and Type with same name. Resolving instance properties, fields and methods General Options]
 Switches=/allowdot
 ZeroArrays=0
 CaseSensitive=0
@@ -102703,7 +102703,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[R823 Configurations]
+[R823 - Local and Type with same name. Resolving instance properties, fields and methods Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -102732,7 +102732,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
   Optimize=0
-ENDApplication = R823
+ENDApplication = R823 - Local and Type with same name. Resolving instance properties, fields and methods
 [EndApplications]
 
 [Configurations]

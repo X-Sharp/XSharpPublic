@@ -19,6 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
         #region private fields (need to be accessed with HasOption())
         private bool ArrayZero;
+        private bool AllowDotForInstanceMembers;
         private bool VONullStrings;
         private bool VOImplicitCastsAndConversions;
         private bool MemVars;
@@ -66,6 +67,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (opt != null)
             {
                 ArrayZero = opt.ArrayZero;
+                AllowDotForInstanceMembers = opt.AllowDotForInstanceMembers;
                 //VoInitAxitMethods = opt.Vo1;              // Handled in the parser
                 VONullStrings = opt.Vo2;
                 VirtualInstanceMethods = opt.Vo3;
@@ -120,6 +122,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case CompilerOption.ArrayZero:
                     return CheckOption(option, ArrayZero, syntax);
+
+                case CompilerOption.AllowDotForInstanceMembers:
+                    return CheckOption(option, AllowDotForInstanceMembers, syntax);
 
                 case CompilerOption.LateBinding:
                     return CheckOption(option, LateBinding, syntax);
@@ -223,6 +228,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public void SetXSharpSpecificOptions(CSharpCompilationOptions opt)
         {
             ArrayZero = opt.ArrayZero;
+            AllowDotForInstanceMembers = opt.AllowDotForInstanceMembers;
             MacroScript = opt.MacroScript;
             Dialect = opt.Dialect;
             ImplicitNameSpace = opt.ImplicitNameSpace;

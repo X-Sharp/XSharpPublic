@@ -10,5 +10,5 @@ END CLASS
 FUNCTION Start() AS VOID STRICT
         VAR TestClass := TestClass{}
         Console.WriteLine(i"{TestClass.Ret}")
-	TestClass.Test()
+	    TestClass.Test()
         RETURN

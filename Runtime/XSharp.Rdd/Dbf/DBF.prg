@@ -1515,7 +1515,7 @@ OVERRIDE METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
 	IF oColumn != NULL .AND. oColumn:IsMemo
 		IF SELF:_readRecord()
             VAR blockNo := oColumn:GetValue(SELF:_RecordBuffer)
-            IF blockNo != NULL
+            IF blockNo != NULL .and. blockNo != DBNull.Value
 			    blockNbr := (LONG) blockNo
             ENDIF
 		ENDIF

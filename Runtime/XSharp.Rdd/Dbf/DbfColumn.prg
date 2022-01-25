@@ -258,7 +258,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc/>
        OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL str AS STRING
-            IF oValue == NULL
+            IF oValue == NULL .or. oValue == DBNull.Value
                 RETURN SELF:HandleNullValue(buffer)
             ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
@@ -377,7 +377,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN result
         /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
-            IF oValue == NULL
+            IF oValue == NULL .or. oValue == DBNull.Value
                 RETURN SELF:HandleNullValue(buffer)
             ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
@@ -437,7 +437,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         /// <inheritdoc/>
        OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
-            IF oValue == NULL
+            IF oValue == NULL .or. oValue == DBNull.Value
                 RETURN SELF:HandleNullValue(buffer)
             ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
@@ -549,7 +549,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc/>
       OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL r8Value AS REAL8
-            IF oValue == NULL
+            IF oValue == NULL .or. oValue == DBNull.Value
                 RETURN SELF:HandleNullValue(buffer)
             ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
@@ -627,7 +627,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             // oValue is the memo block number
             LOCAL intValue AS LONG
-            IF oValue == NULL
+            IF oValue == NULL .or. oValue == DBNull.Value
                 RETURN SELF:HandleNullValue(buffer)
             ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
@@ -701,7 +701,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL intValue AS LONG
-            IF oValue == NULL
+            IF oValue == NULL .or. oValue == DBNull.Value
                 RETURN SELF:HandleNullValue(buffer)
             ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
@@ -807,7 +807,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL r8Value AS REAL8
-            IF oValue == NULL
+            IF oValue == NULL .or. oValue == DBNull.Value
                 RETURN SELF:HandleNullValue(buffer)
             ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
@@ -849,7 +849,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL currValue AS System.Decimal
             LOCAL i64Value AS System.Int64
-            IF oValue == NULL
+            IF oValue == NULL .or. oValue == DBNull.Value
                 RETURN SELF:HandleNullValue(buffer)
             ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
@@ -965,7 +965,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL empty AS LOGIC
             LOCAL dt AS DateTime
-            IF oValue == NULL
+            IF oValue == NULL .or. oValue == DBNull.Value
                 RETURN SELF:HandleNullValue(buffer)
             ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()

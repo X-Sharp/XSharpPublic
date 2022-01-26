@@ -127,6 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOPreprocessorBehaviour { get; private set; }
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
+        public bool VOBeginSequence { get; private set; }
         public string DefaultNamespace { get; private set; } = "";
         public bool ImplicitNamespace { get; private set; }
         public bool HasRuntime { get { return this.Dialect.NeedsRuntime(); } }
@@ -159,6 +160,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool vo14 => VOFloatConstants;
         public bool vo15 => VOUntypedAllowed;
         public bool vo16 => VOClipperConstructors;
+        public bool vo17 => VOBeginSequence;
         public bool vo2 => VONullStrings;
         public bool vo3 => VirtualInstanceMethods;
         public bool vo4 => VOSignedUnsignedConversion;
@@ -215,6 +217,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VirtualInstanceMethods = opt.Vo3;
                 VOAllowMissingReturns = opt.Vo9;
                 VOArithmeticConversions = opt.Vo11;
+                VOBeginSequence = opt.Vo17;
                 VOClipperCallingConvention = opt.Vo5;
                 VOClipperConstructors = opt.Vo16;
                 VOClipperIntegerDivisions = opt.Vo12;
@@ -299,6 +302,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3
             VOAllowMissingReturns = opt.VOAllowMissingReturns; // vo9
             VOArithmeticConversions = opt.VOArithmeticConversions; // vo11
+            VOBeginSequence = opt.VOBeginSequence; // vo17
             VOClipperCallingConvention = opt.VOClipperCallingConvention;  // vo5
             VOClipperConstructors = opt.VOClipperConstructors; // vo16
             VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions; // vo12
@@ -396,6 +400,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case CompilerOption.DefaultClipperContructors: // vo16
                     return CheckOption(option, VOClipperConstructors, context, options);
+
+                case CompilerOption.CompatibleBeginSequence: // vo17
+                    return CheckOption(option, VOBeginSequence, context, options);
 
                 case CompilerOption.FoxArraySupport: // fox2
                     return CheckOption(option, FoxArraySupport, context, options);

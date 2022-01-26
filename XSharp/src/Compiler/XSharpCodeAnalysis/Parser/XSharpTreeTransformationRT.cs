@@ -2139,15 +2139,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //    and CompilerServices.ExitBeginSequence();
             // 2) an outer try that has the try - catch - finally from the seq statement itself
 
+            // If the compiler option vo17 is enabled then the runtime functions _SequenceRecover and _SequenceError
+            // will be called to handle the sequence statements without RECOVER (_SequenceRecover) and to handle
+            // "real" exceptions inside a BEGIN SEQUENCE (_SequenceError)
+            // without this option the behavior is like the behavior of Vulcan
+            //
+
+
             context.SetSequencePoint(context.end);
             var stmts = _pool.Allocate<StatementSyntax>();
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(
-                _options.XSharpRuntime ? XSharpQualifiedFunctionNames.EnterSequence : VulcanQualifiedFunctionNames.EnterSequence, true), context));
+            var call = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.EnterSequence : VulcanQualifiedFunctionNames.EnterSequence, true);
+            stmts.Add(GenerateExpressionStatement(call, context, true));
             stmts.Add(MakeBlock(context.StmtBlk.Get<BlockSyntax>()));
             var tryBlock = MakeBlock(stmts);
             stmts.Clear();
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(
-                _options.XSharpRuntime ? XSharpQualifiedFunctionNames.ExitSequence : VulcanQualifiedFunctionNames.ExitSequence, true),context));
+            call = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.ExitSequence : VulcanQualifiedFunctionNames.ExitSequence, true);
+            stmts.Add(GenerateExpressionStatement(call, context, true));
             var innerTry = _syntaxFactory.TryStatement(
                 attributeLists: default,
                 SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
@@ -2159,7 +2166,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             stmts.Add(innerTry);
             tryBlock = MakeBlock(stmts);
             stmts.Clear();
-            CatchClauseSyntax catchClause = null;
+            CatchClauseSyntax catchClause ;
             FinallyClauseSyntax finallyClause = null;
             if (context.RecoverBlock != null)
             {
@@ -2167,16 +2174,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                // generate a default catch block if there is no finally block
-                if (context.FinBlock == null)
-                {
-                    var cb = FixPosition(new XP.CatchBlockContext(context, 0), context.Stop);
-                    cb.StmtBlk = FixPosition(new XP.StatementBlockContext(cb, 0), context.Stop);
-                    this.ExitStatementBlock(cb.StmtBlk);
-                    this.ExitCatchBlock(cb);
-                    catchClause = cb.Get<CatchClauseSyntax>();
-
-                }
+                // generate a default catch block
+                // the code inside generateRecoverBlock 
+                // also takes care of compiler option /vo17
+                var emptyStmt = _syntaxFactory.EmptyStatement(null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                catchClause = generateRecoverBlock(context, MakeBlock(emptyStmt), null);
             }
             if (context.FinBlock != null)
             {
@@ -2195,120 +2197,118 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        public override void ExitRecoverBlock([NotNull] XP.RecoverBlockContext context)
+        public CatchClauseSyntax generateRecoverBlock(XSharpParserRuleContext context, BlockSyntax block, string Id)
         {
-            // The recover block has source code:
-            //RECOVER USING uValue
-            //  statements
-            //
-            // and gets converted to
-            //
-            // Catch obj as Exception
-            // if obj is VulcanWrappedException                                        // condition 1
-            //   uValue := ((VulcanWrappedException) obj).Value                        // assign 1
-            //
-            // else if obj is Vulcan.Error                                             // condition 2
-            //   uValue :=  obj1                                                       // assign 2
-            //
-            // else if obj is Exception                                                // condition 3
-            //   // wraps Exception in Vulcan.Error Object                             // Always true unless obj = NULL
-            //   uValue := (USUAL)  Error._WrapRawException((Exception) obj1))         // assign 3
-            //
-            // else
-            //   uValue := obj1                                                        // assign 4
-            // endif
             var stmts = _pool.Allocate<StatementSyntax>();
             var catchVar = SyntaxFactory.Identifier(XSharpSpecialNames.RecoverVarName);
-            context.SetSequencePoint(context.end);
-            if (context.Id != null)
+
+            var objName = GenerateSimpleName(XSharpSpecialNames.RecoverVarName);
+
+            var condition1 = _syntaxFactory.BinaryExpression(SyntaxKind.IsExpression, objName,
+                  SyntaxFactory.MakeToken(SyntaxKind.IsKeyword), GenerateQualifiedName(_wrappedExceptionType));
+
+            var unwrapException = MakeSimpleMemberAccess( MakeCastTo(GenerateQualifiedName(_wrappedExceptionType), objName),
+                            GenerateSimpleName("Value"));
+
+            var callRtError = GenerateMethodCall(ReservedNames.SequenceError, MakeArgumentList(MakeArgument(objName)), true);
+            var callRecover = GenerateMethodCall(ReservedNames.SequenceRecover, MakeArgumentList(MakeArgument(unwrapException)), true);
+
+            var wrapRaw = GenerateMethodCall(
+                        _options.XSharpRuntime ? XSharpQualifiedFunctionNames.WrapException : VulcanQualifiedFunctionNames.WrapException,
+                        MakeArgumentList(MakeArgument(objName)), true);
+
+            if (Id != null)
             {
-                var objName = GenerateSimpleName(XSharpSpecialNames.RecoverVarName);
-                var idName = GenerateSimpleName(context.Id.GetText());
+                // The recover block has source code:
+                //RECOVER USING uValue
+                //  statements
+                //
+                // and gets converted to
+                //
+                // Catch obj as Exception                                                  // objName
+                // if obj is VulcanWrappedException                                        // condition 1
+                //   uValue := ((VulcanWrappedException) obj).Value                        // assign 1
+                //
+                // else if obj is Error                                                    // condition 2
+                //   uValue :=  obj1                                                       // assign 2
+                //
+                // else                                                                    // else it is always an exception
+                //   // wraps Exception in Vulcan.Error Object                             // Always true unless obj = NULL
+                //   
+                //   uValue := (USUAL)  Error._WrapRawException(obj1))                     // assign 3
+                // when /vo17 is enabled then this line will become
+                //   uValue := _SequenceError(obj)
+                //
+                // endif
+                // statements
+                var idName = GenerateSimpleName(Id);
 
-                var condition1 = _syntaxFactory.BinaryExpression(
-                      SyntaxKind.IsExpression,
-                      objName,
-                      SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                      GenerateQualifiedName(_wrappedExceptionType));
+                var condition2 = _syntaxFactory.BinaryExpression(SyntaxKind.IsExpression, objName,
+                    SyntaxFactory.MakeToken(SyntaxKind.IsKeyword), GenerateQualifiedName(_errorType));
 
-                var condition2 = _syntaxFactory.BinaryExpression(
-                    SyntaxKind.IsExpression,
-                    objName,
-                    SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                    GenerateQualifiedName(_errorType));
-
-                var condition3 = _syntaxFactory.BinaryExpression(
-                    SyntaxKind.IsExpression,
-                    objName,
-                    SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                    GenerateQualifiedName(SystemQualifiedNames.Exception));
-
-                var assign1 = GenerateExpressionStatement(
-                    MakeSimpleAssignment(idName,
-                       MakeSimpleMemberAccess(
-                       MakeCastTo(GenerateQualifiedName(_wrappedExceptionType), objName),
-                         GenerateSimpleName("Value"))), context);
+                var assign1 = MakeSimpleAssignment(idName, unwrapException);
                 assign1.XGenerated = true;
 
-                var assign2 = GenerateExpressionStatement(MakeSimpleAssignment(idName, objName), context);
+                var assignstmt1 = GenerateExpressionStatement(assign1, context, true);
+
+                var assign2 = MakeSimpleAssignment(idName, objName);
                 assign2.XGenerated = true;
+                var assignstmt2 = GenerateExpressionStatement(assign2, context, true);
 
-                var assign3 = GenerateExpressionStatement(MakeSimpleAssignment(
-                    idName, MakeCastTo(_usualType, GenerateMethodCall(
-                        _options.XSharpRuntime ? XSharpQualifiedFunctionNames.WrapException : VulcanQualifiedFunctionNames.WrapException,
-                    MakeArgumentList(MakeArgument(objName)), true))), context);
+                ExpressionSyntax assign3;
+                if (_options.HasOption(CompilerOption.CompatibleBeginSequence, context, PragmaOptions))
+                {
+                    assign3 = MakeSimpleAssignment(idName, callRtError);
+                }
+                else
+                {
+                    assign3 = MakeSimpleAssignment(idName, MakeCastTo(_usualType, wrapRaw));
+                }
                 assign3.XGenerated = true;
+                var assignstmt3 = GenerateExpressionStatement(assign3, context, true);
 
-                var assign4 = GenerateExpressionStatement(MakeSimpleAssignment(idName, objName), context);
-                assign4.XGenerated = true;
-
+                // else block that calls _SequenceError  or assigns the Exception to uValue
                 var elseClause = _syntaxFactory.ElseClause(
-                   SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
-                   assign4);
-
-                // if 3
-                var ifstmt = _syntaxFactory.IfStatement(
-                            attributeLists: default,
-                            SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                            condition3,
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                            assign3, elseClause);
-                ifstmt.XGenerated = true;
-                // if 3 is assigned to the else block of if 2
-                elseClause = _syntaxFactory.ElseClause(
                     SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
-                    ifstmt);
+                    assignstmt3);
 
                 // if 2
-                ifstmt = _syntaxFactory.IfStatement(
-                            attributeLists: default,
-                            SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                            condition2,
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                            assign2, elseClause);
+                var ifstmt = GenerateIfStatement(condition2, assignstmt2, elseClause);
                 ifstmt.XGenerated = true;
                 // if 2 is assigned to the else block of if 1
                 elseClause = _syntaxFactory.ElseClause(
                     SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
                     ifstmt);
                 // if 1
-                ifstmt = _syntaxFactory.IfStatement(
-                            attributeLists: default,
-                            SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                            condition1,
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                            assign1, elseClause);
+                ifstmt = GenerateIfStatement(condition1, assignstmt1, elseClause);
                 ifstmt.XGenerated = true;
+                stmts.Add(ifstmt);
+            }
+            else if (_options.HasOption(CompilerOption.CompatibleBeginSequence, context, PragmaOptions))
+            {
+                // A block with just RECOVER
+                // will have the following contents
+                // when /vo17 is enabled
+                // Catch obj as Exception                                       // objName
+                // if obj is WrappedException                                   // condition 1
+                //   _SequenceRecover(((VulcanWrappedException) obj).Value)     // exprstmt 1
+                //
+                // else                                                         // else always an exception
+                //   _SequenceError(obj)                                        // exprstmt 3
+                //
+                // endif
+                var exprstmt3 = GenerateExpressionStatement(callRtError, context, true);
+                var elseclause = _syntaxFactory.ElseClause(SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword), exprstmt3);
+                var exprstmt1 = GenerateExpressionStatement(callRecover, context, true);
+
+                var ifstmt = GenerateIfStatement(condition1, exprstmt1, elseclause);
                 stmts.Add(ifstmt);
             }
             else
             {
-                catchVar = null;
+                // without /vo17 the block will be empty
             }
-            stmts.Add(context.StmtBlock.Get<BlockSyntax>());
+            stmts.Add(block);
             var catchClause = _syntaxFactory.CatchClause(
                 SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
                 _syntaxFactory.CatchDeclaration(
@@ -2319,8 +2319,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     null,
                     MakeBlock(stmts));
 
-            context.Put(catchClause);
             _pool.Free(stmts);
+            return catchClause;
+        }
+
+        public override void ExitRecoverBlock([NotNull] XP.RecoverBlockContext context)
+        {
+            var catchClause = generateRecoverBlock(context, context.StmtBlock.Get<BlockSyntax>(), context.Id?.GetText());
+            context.SetSequencePoint(context.end);
+            context.Put(catchClause);
         }
         #endregion
 

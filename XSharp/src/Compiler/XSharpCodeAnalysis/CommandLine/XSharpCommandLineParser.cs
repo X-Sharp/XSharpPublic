@@ -372,6 +372,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Vo16 = positive;
                     encode = true;
                     break;
+                case "vo17":    // VO Compatible BEGIN SEQUENCE 
+                    options.Vo17 = positive;
+                    encode = true;
+                    break;
                 case "wx":       // disable warning
                     name = "warnaserror+";
                     handled = false;

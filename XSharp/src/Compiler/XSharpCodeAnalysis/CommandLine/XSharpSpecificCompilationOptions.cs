@@ -82,6 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Vo14 { get; internal set; } = false;
         public bool Vo15 { get; internal set; } = false;
         public bool Vo16 { get; internal set; } = false;
+        public bool Vo17 { get; internal set; } = false;
         public bool Xpp1 { get; internal set; } = false;
         public bool Fox1 { get; internal set; } = false;
         public bool Fox2 { get; internal set; } = false;
@@ -193,6 +194,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.Vo16:
                     Vo16 = value;
                     break;
+                case CompilerOption.Vo17:
+                    Vo17 = value;
+                    break;
                 case CompilerOption.Xpp1:
                     Xpp1 = value;
                     break;
@@ -282,7 +286,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         UntypedAllowed = Vo15,
         Vo16 = 1 << 16,
         DefaultClipperContructors = Vo16,
-        Xpp1 = 1 << 17,
+        Vo17 = 1 << 17,
+        CompatibleBeginSequence = Vo17,
+        Xpp1 = 1 << 18,
         //Xpp2 = 1 << 18,
         Fox1 = 1 << 19,
         Fox2 = 1 << 20,
@@ -414,6 +420,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return "Allow untyped Locals and return types";
                 case CompilerOption.Vo16:
                     return "Generate Clipper calling convention constructors for classes without constructor";
+                case CompilerOption.Vo17:
+                    return "VO Compatible BEGIN SEQUENCE .. END ";
                 case CompilerOption.Xpp1:
                     return "All classes inherit from XPP.Abstract";
                 //case CompilerOption.Xpp2:
@@ -489,6 +497,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.Vo15;
                 case "vo16":
                     return CompilerOption.Vo16;
+                case "vo17":
+                    return CompilerOption.Vo17;
                 case "xpp1":
                     return CompilerOption.Xpp1;
                 //case "xpp2":

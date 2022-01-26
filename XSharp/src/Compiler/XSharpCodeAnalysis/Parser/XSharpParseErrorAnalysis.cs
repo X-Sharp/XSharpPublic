@@ -523,6 +523,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case CompilerOption.Vo14:    // Embed real constants as float
                             case CompilerOption.Vo15:    // Untyped allowed
                             case CompilerOption.Vo16:    // Add Clipper CC Missing constructors
+                            case CompilerOption.Vo17:    // Compatible Begin Sequence .. END Sequence
                                 context.Pragma = new PragmaOption(context, state, compopt);
                                 break;
                             //case "xpp1":    // classes inherit from XPP.Abstract
